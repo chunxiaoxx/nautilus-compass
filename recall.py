@@ -29,11 +29,41 @@ try:
 except Exception:
     pass
 
-PLUGIN_VERSION = "zenmind-mem v0.5"
+PLUGIN_VERSION = "zenmind-mem v0.6"
 HOME = Path.home()
 PLUGIN_DIR = HOME / ".claude" / "plugins" / "zenmind-mem"
 CACHE_DIR = PLUGIN_DIR / ".cache"
-ANCHORS_PATH = PLUGIN_DIR / "anchors.json"
+USAGE_LOG = CACHE_DIR / "usage.jsonl"
+
+
+def _select_anchors_path() -> "Path":
+    """v0.6 · cwd → profile auto-select."""
+    cwd = str(Path.cwd()).lower().replace("\\", "/")
+    if "quantum-buddha" in cwd or "zenmind" in cwd:
+        p = PLUGIN_DIR / "anchors_zenmind.json"
+        if p.exists():
+            return p
+    if "venture" in cwd or "creative-daily" in cwd:
+        p = PLUGIN_DIR / "anchors_vc.json"
+        if p.exists():
+            return p
+    return PLUGIN_DIR / "anchors.json"
+
+
+ANCHORS_PATH = _select_anchors_path()
+
+
+def log_usage(event: str, payload: dict) -> None:
+    """v0.6 · KPI 日志: drift_alert / strategy_hit / recall_hit · 给 audit 用."""
+    try:
+        CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        rec = {"ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+               "event": event, "anchors_profile": ANCHORS_PATH.name,
+               "cwd": str(Path.cwd()), **payload}
+        with open(USAGE_LOG, "a", encoding="utf-8") as f:
+            f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+    except Exception:
+        pass
 EMBED_MAX_CHARS = 1500    # 每 file embed 前 1500 字
 TOP_K = 5
 COSINE_MIN = 0.30
@@ -446,8 +476,17 @@ def try_daemon_recall(mem_dir: Path, user_prompt: str) -> bool:
                 for sc, txt in d["top_neg_hits"]:
                     print(f"    · cos={sc:.3f}  '{txt}'")
                 print(f"  ↑ 当前 prompt 跟这些'我历史的错' 高重合 · 注意别再犯")
+                log_usage("drift_alert", {
+                    "score": d["score"], "max_neg_hit": d["top_neg_hits"][0][0],
+                    "neg_anchor": d["top_neg_hits"][0][1][:80],
+                })
             print()
         recall = data.get("recall") or []
+        if recall:
+            log_usage("recall_hit", {
+                "n": len(recall), "top_score": recall[0]["score"],
+                "top_path": recall[0]["path"],
+            })
         if recall:
             print(f"🎯 召回 top {len(recall)} (BGE-bge-small-zh · daemon · query: {user_prompt[:60]}{'...' if len(user_prompt)>60 else ''}):")
             print()
@@ -510,6 +549,10 @@ def main():
             if strat_text:
                 print(strat_text)
                 print()
+                log_usage("strategy_hit", {
+                    "n_chars": len(strat_text),
+                    "query": user_prompt[:80],
+                })
         except Exception as _se:
             sys.stderr.write(f"[zenmind-mem] strategy lookup fail: {_se}\n")
 
