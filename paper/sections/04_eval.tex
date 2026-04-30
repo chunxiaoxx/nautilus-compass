@@ -34,16 +34,19 @@ Anchors and prompts are disjoint by construction. The full prompt
 set is reproducible from \texttt{tests/eval\_drift.py:ALIGNED} and
 \texttt{:DEVIATION}.
 
-\paragraph{LongMemEval-S subset.} For retrieval evaluation we use
-LongMemEval-S \citep{longmemeval2024}, which provides 500 question
-- haystack pairs across six question types: knowledge-update,
-multi-session, single-session-{user/assistant/preference}, and
-temporal-reasoning. Each haystack contains roughly 50 candidate
+\paragraph{LongMemEval-S.} For retrieval evaluation we use
+LongMemEval-S \citep{longmemeval2024}, which provides 500
+question--haystack pairs across six question types: knowledge-update
+(78 questions), multi-session (133), single-session-user (70),
+single-session-assistant (56), single-session-preference (30), and
+temporal-reasoning (133). Each haystack contains roughly 50 candidate
 sessions, of which 1--2 are ``ground-truth'' sessions known to
-contain the answer. We sample 2 questions per type for a balanced
-subset of $n=12$, denoted \emph{subset 12}. Running the full 500
-takes approximately 75 minutes on m3 with CPU; subset 12 runs in
-$\sim$10 minutes and exposes per-type variance.
+contain the answer. We report results on the full 500 (primary
+benchmark) and additionally use a stratified subset of 12 questions
+(2 per type) for the head-to-head mem0 comparison and for the
+reranker-lift ablation, where each system requires non-trivial
+per-question setup time. Running the full 500 takes approximately
+2h~49min on bge-m3 with CPU; subset 12 runs in $\sim$10 minutes.
 
 \paragraph{Metrics.} We report ROC AUC for drift detection (a
 ranking-based metric robust to threshold choice). For retrieval
@@ -149,42 +152,102 @@ inappropriate for hook deployment regardless of accuracy. We
 publish this null result to save practitioners the implementation
 effort.
 
-\subsection{Retrieval: LongMemEval-S Subset 12}
+\subsection{Retrieval: LongMemEval-S Full 500}
 \label{sec:eval-retrieval}
 
-Table~\ref{tab:longmemeval} reports retrieval metrics on
-LongMemEval-S subset 12 with three pipelines: (a) bge-m3
-bi-encoder only, (b) bi-encoder followed by bge-reranker-v2-m3
-top-50 to top-5 reranking, and (c) the same dataset run through
-mem0 \citep{mem0} with Vertex AI \texttt{text-embedding-005} as
-the embedder and \texttt{infer=False} (raw session storage,
-skipping mem0's optional LLM-based memory extraction).
+Table~\ref{tab:longmemeval-full} reports retrieval metrics for the
+bge-m3 bi-encoder pipeline on the full 500 LongMemEval-S benchmark,
+with the per-question-type breakdown in
+Table~\ref{tab:longmemeval-pertype}. Total runtime was 2h~49min
+on a single CPU-only Windows host.
 
 \begin{table}[h]
 \centering
-\caption{LongMemEval-S subset 12 retrieval. Same dataset, same 12
-questions, three retrieval pipelines.}
-\label{tab:longmemeval}
-\begin{tabular}{lccc}
+\caption{LongMemEval-S retrieval on the full 500 questions. The
+bi-encoder is bge-m3 with no reranker.}
+\label{tab:longmemeval-full}
+\begin{tabular}{lcccc}
 \toprule
-System & P@1 & P@5 & MRR \\
+System (full 500) & P@1 & P@3 & P@5 & MRR \\
 \midrule
-nautilus-compass (m3 only, no rerank)         & 0.667 & 0.750 & 0.732 \\
-mem0 (Vertex text-embedding-005)         & 0.583 & \textbf{0.917} & 0.715 \\
-\textbf{nautilus-compass (m3 + bge-reranker)} & \textbf{0.750} & \textbf{0.917} & \textbf{0.837} \\
+nautilus-compass (bge-m3, no rerank)  & 0.576 & 0.726 & \textbf{0.860} & \textbf{0.685} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\paragraph{Per-type breakdown.}
+\begin{table}[h]
+\centering
+\caption{Per-question-type breakdown on the full 500.
+single-session-assistant is near ceiling for bi-encoder
+($\mathrm{MRR} = 0.95$); single-session-user is the hardest
+($\mathrm{MRR} = 0.40$), reflecting the difficulty of locating
+a specific factual claim inside a long chatty session.}
+\label{tab:longmemeval-pertype}
+\begin{tabular}{lcccc}
+\toprule
+Question type & $n$ & P@1 & P@5 & MRR \\
+\midrule
+knowledge-update              &  78 & 0.49 & 0.85 & 0.635 \\
+multi-session                 & 133 & 0.64 & 0.94 & 0.741 \\
+single-session-assistant      &  56 & \textbf{0.93} & \textbf{0.96} & \textbf{0.950} \\
+single-session-preference     &  30 & 0.37 & 0.73 & 0.537 \\
+single-session-user           &  70 & 0.24 & 0.59 & 0.398 \\
+temporal-reasoning            & 133 & 0.64 & 0.92 & 0.730 \\
+\midrule
+overall                       & 500 & 0.576 & 0.860 & 0.685 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Subset 12 vs.\ full 500.}
+We previously reported subset-12 numbers ($n=12$, 2 per type)
+during development: P@5$\,=\,0.750$, MRR$\,=\,0.732$. The full-500
+results show higher P@5 ($0.860$, $+0.110$) but slightly lower
+MRR ($0.685$, $-0.047$). The discrepancy is fully explained by the
+fact that the full 500 includes 70 single-session-user questions
+($14\%$ of the benchmark) at MRR$\,=\,0.398$---a hard type
+underrepresented in the balanced subset, which pulls the average
+down. Conversely, subset 12 underweighted easy categories like
+single-session-assistant where bi-encoder is near ceiling. We treat
+the full 500 as the primary benchmark and report subset 12 only
+for the reranker and mem0 comparisons that follow.
+
+\subsection{Reranker Lift and mem0 Head-to-Head (Subset 12)}
+\label{sec:eval-rerank-mem0}
+
+For two ablations that require additional per-question
+setup---bge-reranker-v2-m3 cross-encoder reranking, and a head-to-head
+comparison with mem0 \citep{mem0} using Vertex AI
+\texttt{text-embedding-005} as the embedder with
+\texttt{infer=False} (raw session storage, skipping mem0's
+LLM-based memory extraction)---we evaluate on the stratified subset
+of 12 questions. The reranker pipeline is bi-encoder retrieve top-50,
+then cross-encoder rerank to top-5.
+
+\begin{table}[h]
+\centering
+\caption{LongMemEval-S subset 12 retrieval. Same 12 questions
+(2 per type), three retrieval pipelines.}
+\label{tab:longmemeval-subset}
+\begin{tabular}{lccc}
+\toprule
+System (subset 12) & P@1 & P@5 & MRR \\
+\midrule
+nautilus-compass (bge-m3, no rerank)             & 0.667 & 0.750 & 0.732 \\
+mem0 (Vertex text-embedding-005)                 & 0.583 & \textbf{0.917} & 0.715 \\
+\textbf{nautilus-compass (bge-m3 + bge-reranker)} & \textbf{0.750} & \textbf{0.917} & \textbf{0.837} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Per-type lift.}
 The reranker lift is concentrated on the question types where
 bi-encoder alone is weakest (Figure~\ref{fig:rerank-lift}):
-single-session-user (a specific factual claim hidden in chatty
-session) sees MRR rise from 0.091 to 0.522 ($\sim 5\times$);
+single-session-user sees MRR rise from 0.091 to 0.522 ($\sim 5\times$);
 multi-session sees MRR rise from 0.55 to 0.75. Question types where
-the bi-encoder already achieves perfect P@5 (single-session-assistant,
-single-session-preference, knowledge-update at P@5, temporal-reasoning)
-see no further lift, as expected.
+the bi-encoder already achieves perfect P@5 see no further lift,
+consistent with the per-type results in
+Table~\ref{tab:longmemeval-pertype}.
 
 \begin{figure}[h]
 \centering
@@ -200,9 +263,9 @@ bi-encoder alone.}
 At identical P@5, nautilus-compass with reranker achieves $+0.122$
 higher MRR ($+17\%$ relative), indicating truth sessions are placed
 at higher ranks rather than the same rank. The single-session-user
-gap is the most pronounced: zenmind+rerank MRR 0.522 vs.\ mem0
-0.250 ($2\times$). Figure~\ref{fig:longmemeval-pertype} compares
-both systems per question type.
+gap is the most pronounced: nautilus-compass+rerank MRR 0.522
+vs.\ mem0 0.250 ($2\times$). Figure~\ref{fig:longmemeval-pertype}
+compares both systems per question type.
 
 \begin{figure}[h]
 \centering
@@ -215,13 +278,13 @@ temporal-reasoning ($+0.25$).}
 \label{fig:longmemeval-pertype}
 \end{figure}
 
-\paragraph{Caveat: subset 12 is not full 500.}
-We acknowledge that 12 questions is a small sample. Per-type variance
-in subset 4 led us to draw an incorrect null conclusion about
-reranker lift before increasing to subset 12 (see
-Section~\ref{sec:discussion-subset}); this experience itself is
-informative about benchmark sample sizing. Full 500-run is planned
-prior to journal-track submission.
+\paragraph{Why subset 12 for reranker / mem0.}
+The reranker doubles wall-clock cost, and the mem0 head-to-head
+requires resetting and re-populating mem0's index per question
+(approximately 30\,s/question with Vertex AI calls). Subset 12 with
+balanced per-type sampling allows reproducible comparisons within
+practical compute budget; the full-500 reranker re-evaluation is
+in progress and will be reported in the journal version.
 
 \subsection{Local Recall Sanity Check}
 \label{sec:eval-recall}

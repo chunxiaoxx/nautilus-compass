@@ -1,0 +1,35 @@
+{
+  "dataset": "longmemeval_s",
+  "n": 4,
+  "embedder": "BAAI/bge-small-zh-v1.5",
+  "P@1": 0.25,
+  "P@3": 0.5,
+  "P@5": 0.5,
+  "MRR": 0.41382575757575757,
+  "by_type": {
+    "single-session-user": {
+      "n": 1,
+      "P@1": 0.0,
+      "P@5": 0.0,
+      "MRR": 0.030303030303030304
+    },
+    "single-session-assistant": {
+      "n": 1,
+      "P@1": 1.0,
+      "P@5": 1.0,
+      "MRR": 1.0
+    },
+    "multi-session": {
+      "n": 1,
+      "P@1": 0.0,
+      "P@5": 0.0,
+      "MRR": 0.125
+    },
+    "temporal-reasoning": {
+      "n": 1,
+      "P@1": 0.0,
+      "P@5": 1.0,
+      "MRR": 0.5
+    }
+  }
+}

@@ -29,11 +29,15 @@ multilingual one, and (iv) adding hard false-positive examples back
 into the negative anchor set.
 
 We further evaluate the embedded retrieval pipeline on LongMemEval-S
-\citep{longmemeval2024}, achieving P@5 = 0.917 and MRR = 0.837 (with
-BGE-Reranker), competitive with mem0 (P@5 = 0.917, MRR = 0.715) under
-identical conditions. Beyond detection, we ship adaptive anchor learning
-with eval-gated retraining, active-learning boundary sampling, and weighted
-deprecation of over-sensitive anchors.
+\citep{longmemeval2024}: on the full 500-question benchmark with
+bge-m3 alone we achieve P@5 = 0.860, MRR = 0.685; on the stratified
+subset-12 head-to-head with mem0 (Vertex AI \texttt{text-embedding-005},
+\texttt{infer=False}) under identical conditions, our pipeline with
+BGE-Reranker reaches P@5 = 0.917 and MRR = 0.837, against mem0's
+P@5 = 0.917, MRR = 0.715---tied on P@5 with a $+0.122$ MRR advantage
+(truth sessions ranked higher). Beyond detection, we ship adaptive
+anchor learning with eval-gated retraining, active-learning boundary
+sampling, and weighted deprecation of over-sensitive anchors.
 
 \textbf{Scope of claims.} This paper evaluates \emph{drift detection
 accuracy} (does our system correctly classify a prompt as aligned vs.\

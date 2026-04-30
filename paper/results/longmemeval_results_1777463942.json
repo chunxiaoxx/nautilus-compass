@@ -1,0 +1,35 @@
+{
+  "dataset": "longmemeval_s",
+  "n": 4,
+  "embedder": "C:/Users/chunx/.cache/modelscope/hub/models/intfloat/multilingual-e5-small",
+  "P@1": 0.75,
+  "P@3": 0.75,
+  "P@5": 0.75,
+  "MRR": 0.7619047619047619,
+  "by_type": {
+    "single-session-user": {
+      "n": 1,
+      "P@1": 0.0,
+      "P@5": 0.0,
+      "MRR": 0.047619047619047616
+    },
+    "single-session-assistant": {
+      "n": 1,
+      "P@1": 1.0,
+      "P@5": 1.0,
+      "MRR": 1.0
+    },
+    "multi-session": {
+      "n": 1,
+      "P@1": 1.0,
+      "P@5": 1.0,
+      "MRR": 1.0
+    },
+    "temporal-reasoning": {
+      "n": 1,
+      "P@1": 1.0,
+      "P@5": 1.0,
+      "MRR": 1.0
+    }
+  }
+}
