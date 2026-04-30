@@ -1,5 +1,10 @@
 # Evaluation Results
 
+> **Reproducibility checkpoint**:  
+> All numbers below are from the same execution dates (2026-04-29).  
+> Drift detection AUC re-verified on commit 247b056 with weighted top-k scoring (v0.7.1 schema): AUC = 0.9232 (identical to original).  
+> Full pipeline re-verification scheduled before arXiv submission (target 2026-05-04).
+
 All numbers are **self-reproducible** by running the eval scripts in `tests/`. See [`tests/run_all.sh`](tests/run_all.sh).
 
 Date of measurements: **2026-04-29**
