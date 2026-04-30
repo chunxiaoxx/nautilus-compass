@@ -1,5 +1,15 @@
 .cache/
+.cache.*/
 __pycache__/
 *.pyc
 *.pkl
 *.log
+*.jsonl
+# adapted anchors are user-specific (contain prompt history) · 不 commit
+anchors_adapted.json
+# sensitive paths
+**/.openai_key
+**/.zhipu_key
+**/.gemini_key
+**/.anthropic_key
+*.json.bak.*
