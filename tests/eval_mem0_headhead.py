@@ -39,7 +39,12 @@ def main():
 
     # 用 Vertex AI embedder · service account JSON · 无 OpenAI 依赖
     # infer=False 跳过 LLM extraction · 直接存原文 · 公平比 retrieval
-    GCP_JSON = r"C:\Users\chunx\Downloads\chunxiao-vm-260414-de9e73f4697d.json"
+    # 读 GOOGLE_APPLICATION_CREDENTIALS env var (Google SDK 标准) · 用户自己 export
+    GCP_JSON = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", "")
+    if not GCP_JSON or not Path(GCP_JSON).exists():
+        print("❌ Set GOOGLE_APPLICATION_CREDENTIALS=/path/to/your-gcp-sa.json", file=sys.stderr)
+        print("   See: https://cloud.google.com/docs/authentication/application-default-credentials", file=sys.stderr)
+        sys.exit(1)
     config = {
         "vector_store": {
             "provider": "qdrant",
