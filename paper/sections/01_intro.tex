@@ -1,0 +1,73 @@
+% =============== Introduction =================================================
+% Goal: 1.5-2 pages · structure:
+%   (1) the problem · (2) why existing solutions don't fit
+%   (3) our approach · (4) contributions
+% =============================================================================
+
+Modern coding agents based on Large Language Models (LLMs) such as
+Claude Code, Cursor, and Continue.dev sustain dialogue sessions
+spanning hundreds to thousands of turns. Within such sessions, a
+recurring failure mode is \emph{persona drift}: the assistant
+gradually forgets user-specified constraints (``always verify before
+claiming success''), slips into bad habits the user explicitly
+flagged earlier (``don't fabricate prior agreements''), or confabulates
+having reached agreements that were never made. These behaviors are
+not failures of factual recall---retrieval-augmented memory plugins
+\citep{mem0,letta} successfully retrieve the relevant memos---but
+failures of \emph{behavioral consistency}: the assistant has the
+information but does not act on it.
+
+\paragraph{Existing approaches fall into two categories.}
+\textit{(a) Memory plugins} like mem0 \citep{mem0}, Letta
+\citep{letta}, and Zep \citep{zep} focus on retrieval quality:
+finding the right memory entries to inject into the prompt. While
+these systems produce strong retrieval metrics (e.g., on
+LongMemEval \citep{longmemeval2024}), they leave open the question
+of whether the LLM \emph{honors} the retrieved content.
+\textit{(b) White-box safety methods}, exemplified by
+Persona Vectors \citep{personavectors2025}, identify directions in
+the model's activation space corresponding to specific traits and
+enable monitoring or steering of trait shifts. However, these
+methods require access to model weights or hidden states, putting
+them out of reach of the typical end-user who interacts with
+proprietary LLMs through black-box APIs.
+
+\paragraph{Our contribution.} We present \textbf{zenmind-mem}, a
+black-box persona drift detection system that runs entirely in user-space
+hooks of an LLM coding agent (we target Claude Code in our reference
+implementation, but the design is portable). At each user-issued
+prompt, we compute the cosine similarity between the prompt and a
+small set of \emph{behavioral anchor texts}, aggregated via weighted
+top-$k$ mean. Anchors come in two flavors: positive (desired task
+patterns) and negative (mistakes the user has flagged). The
+difference between aggregated positive and negative similarity
+yields a continuous \emph{drift score}, which we threshold into a
+three-band output (\emph{aligned} / \emph{neutral} /
+\emph{deviation}) and inject into the LLM's context for the current
+turn.
+
+\paragraph{Methodological insight.}
+Our central finding is that the design of the anchor set, not the
+choice of embedder or aggregation function, is the dominant factor
+determining detection accuracy. We document a four-step iteration
+that improves ROC AUC from 0.51 (random) to 0.92 on a 100-prompt
+synthetic test set, and report negative results (e.g., that
+substituting a cross-encoder reranker for the bi-encoder cosine
+yields no measurable improvement at $36\times$ the latency).
+
+\paragraph{Open source and reproducibility.}
+All code, anchor sets, evaluation scripts, and benchmark data are
+released under MIT (anchors under CC0) at
+\url{https://github.com/chunxiaoxx/zenmind-mem}. The four-step
+ablation, the head-to-head comparison with mem0 on LongMemEval-S,
+and the negative cross-encoder result are all reproducible from
+the repository in under one hour on a CPU-only machine.
+
+\paragraph{Relation to Persona Vectors.}
+Our work is \emph{complementary, not competing}, with
+\citet{personavectors2025}. Persona Vectors operates in
+activation space (white-box), giving more fine-grained signal but
+requiring model weights. zenmind-mem operates in prompt-text space
+(black-box), giving coarser signal but deployable by anyone with
+hook-level access to the agent. We argue that a robust safety
+posture for production LLM agents will combine both layers.
