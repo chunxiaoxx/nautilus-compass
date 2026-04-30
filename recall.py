@@ -37,16 +37,32 @@ USAGE_LOG = CACHE_DIR / "usage.jsonl"
 
 
 def _select_anchors_path() -> "Path":
-    """v0.6 · cwd → profile auto-select."""
+    """v0.7.1 · cwd → domain profile auto-select.
+
+    Order:
+      1. ZMM_ANCHORS_PROFILE env var (explicit override)
+      2. cwd substring match (zenmind / venture / legal / medical / finance)
+      3. anchors.json (default)
+    """
+    explicit = os.environ.get("ZMM_ANCHORS_PROFILE", "").strip()
+    if explicit:
+        p = PLUGIN_DIR / f"anchors_{explicit}.json"
+        if p.exists():
+            return p
+
     cwd = str(Path.cwd()).lower().replace("\\", "/")
-    if "quantum-buddha" in cwd or "zenmind" in cwd:
-        p = PLUGIN_DIR / "anchors_zenmind.json"
-        if p.exists():
-            return p
-    if "venture" in cwd or "creative-daily" in cwd:
-        p = PLUGIN_DIR / "anchors_vc.json"
-        if p.exists():
-            return p
+    domain_map = [
+        (("quantum-buddha", "zenmind"), "anchors_zenmind.json"),
+        (("venture", "creative-daily", "vc-radar"), "anchors_vc.json"),
+        (("legal", "contract", "law"), "anchors_legal.json"),
+        (("medical", "clinical", "patient", "rx"), "anchors_medical.json"),
+        (("finance", "trading", "fund", "risk", "portfolio"), "anchors_finance.json"),
+    ]
+    for keywords, fname in domain_map:
+        if any(kw in cwd for kw in keywords):
+            p = PLUGIN_DIR / fname
+            if p.exists():
+                return p
     return PLUGIN_DIR / "anchors.json"
 
 
