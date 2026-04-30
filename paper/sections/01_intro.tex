@@ -32,17 +32,22 @@ methods require access to model weights or hidden states, putting
 them out of reach of the typical end-user who interacts with
 proprietary LLMs through black-box APIs.
 
-\paragraph{Our contribution.} We present \textbf{nautilus-compass}, a
+\paragraph{Our contribution.} We present \textbf{Nautilus Compass}, a
 black-box persona drift detection system that runs entirely in user-space
-hooks of an LLM coding agent (we target Claude Code in our reference
-implementation, but the design is portable). At each user-issued
-prompt, we compute the cosine similarity between the prompt and a
-small set of \emph{behavioral anchor texts}, aggregated via weighted
-top-$k$ mean. Anchors come in two flavors: positive (desired task
-patterns) and negative (mistakes the user has flagged). The
-difference between aggregated positive and negative similarity
-yields a continuous \emph{drift score}, which we threshold into a
-three-band output (\emph{aligned} / \emph{neutral} /
+hooks of an LLM coding agent. The reference implementation ships as a
+Claude~Code plugin and as a generic MCP~2024-11-05 server (compatible with
+Cursor, Cline, Hermes, OpenClaw, and any other MCP client), with a CLI
+and a REST endpoint backed by the same BGE-m3 daemon---a single
+embedder service amortized across every entry point. The system is the
+first product in the \emph{Nautilus} open agent platform, designed so
+that any coding agent runtime can obtain drift telemetry without weight
+access. At each user-issued prompt, we compute the cosine similarity
+between the prompt and a small set of \emph{behavioral anchor texts},
+aggregated via weighted top-$k$ mean. Anchors come in two flavors:
+positive (desired task patterns) and negative (mistakes the user has
+flagged). The difference between aggregated positive and negative
+similarity yields a continuous \emph{drift score}, which we threshold
+into a three-band output (\emph{aligned} / \emph{neutral} /
 \emph{deviation}) and inject into the LLM's context for the current
 turn.
 
