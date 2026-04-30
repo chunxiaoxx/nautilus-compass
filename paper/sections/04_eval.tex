@@ -240,6 +240,87 @@ not the limiting factor in our retrieval results; the gaps in
 LongMemEval-S come from the difficulty of the question types,
 not embedder quality.
 
+\subsection{Held-out Test Set: Generalization Beyond Self-Authored Prompts}
+\label{sec:eval-holdout}
+
+The four-step ablation reported in
+Table~\ref{tab:drift-evolution} is on a 100-prompt set authored
+by the authors. To address train-test contamination concerns
+(Section~\ref{sec:method-evolution}), we additionally constructed
+a frozen held-out test set:
+
+\begin{enumerate}
+\item Mine candidate user prompts from real Claude~Code session
+  traces (\texttt{$\sim$/.claude/projects/<project>/<session>.jsonl})
+  with \texttt{type:user} message records.
+\item Filter out harness-injected prompts (system event markers),
+  prompts shorter than 15 characters, prompts longer than 200
+  characters.
+\item Submit each candidate to an independent LLM-as-judge (Vertex
+  AI Gemini Flash) with a fixed labeling prompt that classifies
+  into \{aligned, deviation, neutral\}.
+\item Take a random balanced sample of $n_{\mathrm{aligned}}$
+  aligned + $n_{\mathrm{deviation}}$ deviation labels; freeze as
+  \texttt{eval/holdout\_v1.json}.
+\end{enumerate}
+
+This construction has three properties relevant to train-test
+isolation: (i) prompts come from real production traces, not
+authored alongside anchors; (ii) labels come from an independent
+LLM judge, not the anchor authors; (iii) the resulting JSON file
+is committed to the repository with a frozen-at timestamp and a
+warning that anchor tuning may never reference it.
+
+We acknowledge that LLM-as-judge labeling is itself a noisy
+signal; we treat held-out AUC as a complementary metric to the
+in-set ablation rather than a definitive replacement. The proper
+end-to-end test (does drift alert injection cause behavior
+change?) is described in Section~\ref{sec:limitations-behavior}.
+
+We will publish held-out AUC numbers on the project repository as
+part of the v0.7.1 reproducibility checkpoint; this paper version
+provides the methodology and frozen test data, with empirical
+held-out numbers to follow before the full-version journal
+submission.
+
+\subsection{Baselines}
+\label{sec:eval-baselines}
+
+To control for the possibility that any sufficiently capable
+embedder yields high AUC on this kind of task, we report three
+baselines on the same 100-prompt synthetic set
+(Table~\ref{tab:baselines}):
+
+\begin{table}[h]
+\centering
+\caption{Drift detection baselines on 100-prompt synthetic test set
+(same set as the four-step ablation). The zero-shot baseline uses
+a generic deviation keyword list as anchors instead of curated
+task-shaped anchors, isolating the contribution of anchor curation
+from embedder strength.}
+\label{tab:baselines}
+\begin{tabular}{lcc}
+\toprule
+System & ROC AUC & $\Delta$ from random \\
+\midrule
+random (floor)                                 & 0.4408 & +0.000 \\
+keyword match (no embedder)                    & 0.6216 & +0.181 \\
+zero-shot SBERT (generic deviation keywords)   & 0.7484 & +0.308 \\
+\textbf{zenmind-mem v0.7.1 (curated anchors, top-3)} & \textbf{0.9232} & \textbf{+0.482} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The gap between zero-shot SBERT and zenmind-mem v0.7.1
+($\Delta$~AUC~$+0.175$) isolates the contribution of curated
+task-shaped anchors, controlling for embedder choice. The
+zero-shot baseline is non-trivial---a sufficiently capable
+embedder ($\mathrm{bge\text{-}m3}$) reaches AUC 0.75 with no
+anchor curation---but the curated anchor set adds substantial
+additional signal, consistent with our claim that
+\emph{anchor design is the dominant variable}
+(Section~\ref{sec:discussion-anchors}).
+
 \subsection{Latency}
 \label{sec:eval-latency}
 

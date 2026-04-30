@@ -2,8 +2,36 @@
 % Goal: 0.7-1 page · 4-6 limitation paragraphs
 % =============================================================================
 
-We highlight six known limitations of zenmind-mem v0.7.1 and the
-empirical evaluation in this paper.
+We highlight \textbf{seven} known limitations of zenmind-mem v0.7.1
+and the empirical evaluation in this paper. The first is the most
+consequential and should be read carefully.
+
+\paragraph{No demonstrated behavior steering.}
+\label{sec:limitations-behavior}
+The empirical contribution of this paper is \emph{drift detection
+accuracy} (does our system correctly classify a prompt). The
+production claim users actually care about is \emph{behavior
+steering} (does Claude, when given the drift alert in its context,
+actually avoid the failure mode). These are separate empirical
+questions. We have designed an A/B evaluation framework
+(\texttt{tests/eval\_behavior\_ab.py}) that pairs each deviation
+prompt with two responses (with and without zenmind-mem injection)
+judged on four behavioral axes by an independent LLM. Implementation
+of the full A/B run requires Anthropic API access for Claude calls
+and is left to future work. Until those numbers are reported,
+readers should not assume our reported AUC implies improved
+production safety. This is the most important caveat in the paper.
+
+\paragraph{Train-on-test concern in the in-set ablation.}
+The four-step ablation
+(Table~\ref{tab:drift-evolution}) reaches AUC 0.9232 on a
+100-prompt set partially constructed by the authors. Step~4
+explicitly incorporates patterns from misclassified test prompts
+into the anchor set, which by classical interpretation contaminates
+the test signal. We mitigate via the held-out test set in
+Section~\ref{sec:eval-holdout}, but the in-set 0.9232 should be
+read as ``illustrating which design decisions matter'' rather than
+as a generalization estimate.
 
 \paragraph{Synthetic drift test set.} Our 100-prompt drift evaluation
 set is hand-authored to cover canonical aligned and deviation

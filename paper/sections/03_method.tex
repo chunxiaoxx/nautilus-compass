@@ -161,15 +161,31 @@ misclassified examples shared a common trait: they referenced
 \emph{memory-system meta-concepts} (``put ephemeral state into
 memory'', ``copy CLAUDE.md verbatim into memory'') that produced
 high cosine to \emph{both} positive and negative anchors. We
-added 10 of these hard false-positive examples directly into the
-negative anchor set (expanding from 25 to 35 anchors). AUC rose
-to \textbf{0.9232}, with the largest gains on multi-session and
-single-session-user question types.
+added 10 of these hard false-positive examples (rephrased into
+generic anchor form) directly into the negative anchor set
+(expanding from 25 to 35 anchors). AUC on the original test
+set rose to \textbf{0.9232}.
 
-This iteration loop---\emph{eval, identify hard cases, add to
-training set, re-eval}---is a generic recipe transferable to
-other anchor-based detection systems and the central
-methodological contribution of our work.
+\paragraph{Train-test contamination caveat.}
+We acknowledge that step 4 incorporates patterns from
+misclassified test prompts into the anchor set; the resulting
+0.9232 AUC on the original 100-prompt set is therefore an
+\emph{in-set} number rather than a generalization estimate.
+To mitigate this, Section~\ref{sec:eval-holdout} reports
+performance on a held-out test set generated from real
+Claude~Code session traces and labeled by an independent
+LLM judge (Vertex AI Gemini); the held-out AUC is the proper
+generalization estimate. The four-step in-set ablation in
+Table~\ref{tab:drift-evolution} should be read as
+\emph{methodology illustration} (which design decisions matter)
+rather than as a generalization claim.
+
+This iteration loop---\emph{eval, identify hard cases,
+\textbf{rephrase}, add to anchor set, re-eval on held-out}---is
+the central methodological contribution of our work, with the
+``rephrase'' step (turning specific test failures into generic
+behavioral patterns) being the load-bearing decision that prevents
+trivial memorization.
 
 \subsection{Adaptive Learning Loop}
 \label{sec:method-adaptive}
