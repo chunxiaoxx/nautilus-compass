@@ -128,14 +128,16 @@ class StrategyStore:
                     s["last_used_at"] = _now_iso()
                     results.append((1.0, s))
                     continue
-                # 关键词匹配
+                # 关键词匹配 · v0.7 改 · 阈值 0.3 → 命中 ≥ 2 词即可
+                # 旧: hits/len(kws) >= 0.3 · 7 词的 strategy 必须命中 3 个 · 太严
+                # 新: 命中 2+ 词 OR 比例 ≥ 0.3 · 任一即可
                 kws = s.get("trigger_keywords") or []
                 hits = sum(1 for kw in kws if kw.lower() in q_lower)
                 if hits and kws:
                     score = hits / len(kws)
-                    if score >= 0.3:
+                    if hits >= 2 or score >= 0.3:
                         s["last_used_at"] = _now_iso()
-                        results.append((score, s))
+                        results.append((score + (0.05 if hits >= 2 else 0), s))
             if results:
                 self._rewrite()
             results.sort(key=lambda x: -x[0])

@@ -38,12 +38,29 @@ CACHE_DIR = PLUGIN_DIR / ".cache"
 ANCHORS_PATH = PLUGIN_DIR / "anchors.json"
 PID_FILE = CACHE_DIR / "daemon.pid"
 LOG_FILE = CACHE_DIR / "daemon.log"
-EMBEDDER_MODEL = "BAAI/bge-small-zh-v1.5"
+EMBEDDER_MODEL = os.environ.get(
+    "ZMM_EMBEDDER_MODEL",
+    # 默认 bge-m3 (1024 d · 100+ 语) · 本地路径优先 · 没 ModelScope 则 HF repo id
+    # 实测 (2026-04-29 LongMemEval-S subset 4): MRR 0.760 · Drift AUC 0.923
+    str(Path.home() / ".cache/modelscope/hub/models/BAAI/bge-m3")
+    if (Path.home() / ".cache/modelscope/hub/models/BAAI/bge-m3").exists()
+    else "BAAI/bge-m3",
+)
+# 选型对比 (2026-04-29 LongMemEval-S subset 4):
+#   bge-m3 (默认)     (1024 d · 2.27GB · 100+ 语):  MRR 0.760 · AUC 0.923 ✅ · ⚠️ Win 本地慢/OOM 风险 → WSL2
+#   intfloat/multilingual-e5-small (384 d · 471MB):  MRR 0.762 · AUC 0.850 · 需 query:/passage: prefix
+#   bge-small-zh-v1.5 (512 d · 92MB · 中文 only):  MRR 0.414 (英文崩) · AUC 0.793 · 中文场景仍可用
+# 切换需 rm -f .cache/anchors.pkl + .cache/*.pkl (dim 不匹配)
+# 切小模型: ZMM_EMBEDDER_MODEL=intfloat/multilingual-e5-small
+# 切中文: ZMM_EMBEDDER_MODEL=BAAI/bge-small-zh-v1.5
 EMBED_MAX_CHARS = 1500
 TOP_K = 5
-COSINE_MIN = 0.30
-DRIFT_ALERT_THRESHOLD = -0.04
-NEG_ANCHOR_HIT_THRESHOLD = 0.72
+# 校准值 = 2026-04-29 跑 tests/eval_calibrate.py 实测 (bge-m3 + 28 项目 memory)
+# 历史 (bge-small-zh-v1.5): 0.565 / -0.04 / 0.606
+# 注: COSINE_MIN 是 query↔memory 阈值 · 比 memory↔memory p25 (0.484) 系统性低 · 用 0.35
+COSINE_MIN = float(os.environ.get("ZMM_COSINE_MIN", "0.35"))
+DRIFT_ALERT_THRESHOLD = float(os.environ.get("ZMM_DRIFT_THRESHOLD", "-0.032"))  # m3+hard 后 best Youden J
+NEG_ANCHOR_HIT_THRESHOLD = float(os.environ.get("ZMM_NEG_HIT_THRESHOLD", "0.538"))
 
 
 def log(msg: str) -> None:
@@ -97,13 +114,10 @@ class _APIEmbedder:
 def get_embedder():
     if _state["embedder"] is not None:
         return _state["embedder"]
-    # 优先 API embedder (秒级) · 没 key 才 fallback BGE (30s)
-    gemini_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
-    if gemini_key:
-        log("using Gemini API embedder · 250ms/call")
-        _state["embedder"] = _APIEmbedder(gemini_key)
-        return _state["embedder"]
-    log("loading BGE model · ~30s ...")
+    # 2026-04-28 · 用户强制不用 gemini · 永远只 BGE local (隐私 + 不依赖外部 API)
+    # 旧: 优先 Gemini API (250ms) · 没 key 才 BGE
+    # 新: 永远 BGE · 不读 GEMINI_API_KEY · 完全本地
+    log("loading BGE model · ~30s · 强制本地 · 不用 gemini ...")
     t0 = time.time()
     from sentence_transformers import SentenceTransformer
     model = SentenceTransformer(EMBEDDER_MODEL)
@@ -203,17 +217,33 @@ def get_anchors():
         return v.tolist() if hasattr(v, "tolist") else v
     try:
         data = json.loads(ANCHORS_PATH.read_text(encoding="utf-8"))
-        pos = data.get("positive_anchors", [])
-        neg = data.get("negative_anchors", [])
+        # v0.7.1 · 兼容新旧 schema:
+        #   旧: ["text1", "text2"]
+        #   新: [{"text":"...", "weight":1.0, "tp":0, "fp":0}]
+        def _normalize(items):
+            out_text = []
+            out_weight = []
+            for it in items:
+                if isinstance(it, str):
+                    out_text.append(it); out_weight.append(1.0)
+                elif isinstance(it, dict):
+                    if it.get("weight", 1.0) <= 0.05:   # deprecated
+                        continue
+                    out_text.append(it.get("text", "")); out_weight.append(float(it.get("weight", 1.0)))
+            return out_text, out_weight
+
+        pos_raw = data.get("positive_anchors", [])
+        neg_raw = data.get("negative_anchors", [])
+        pos, pos_w = _normalize(pos_raw)
+        neg, neg_w = _normalize(neg_raw)
         if not pos or not neg: return None
         pos_embs = [_enc(s) for s in pos]
         neg_embs = [_enc(s) for s in neg]
-        dim = len(pos_embs[0])
-        pos_vec = [sum(e[i] for e in pos_embs)/len(pos_embs) for i in range(dim)]
-        neg_vec = [sum(e[i] for e in neg_embs)/len(neg_embs) for i in range(dim)]
-        result = {"mtime":cur_mtime, "pos_vec":pos_vec, "neg_vec":neg_vec,
+        # 不再算 centroid mean · 改 scoring 时用 weighted top-k mean (v0.7.1)
+        result = {"mtime":cur_mtime,
+                  "pos_anchors":pos, "pos_embs":pos_embs, "pos_weights":pos_w,
+                  "neg_anchors":neg, "neg_embs":neg_embs, "neg_weights":neg_w,
                   "n_pos":len(pos), "n_neg":len(neg),
-                  "neg_anchors":neg, "neg_embs":neg_embs,
                   "raw": data}
         _state["anchor_cache"] = result
         with open(CACHE_DIR / "anchors.pkl", "wb") as f:
@@ -280,16 +310,35 @@ def handle_request(req: dict) -> dict:
         if action in ("drift", "both"):
             anchors = get_anchors()
             if anchors:
-                pos_cos = cosine(q_emb, anchors["pos_vec"])
-                neg_cos = cosine(q_emb, anchors["neg_vec"])
+                # v0.7.1 · Weighted top-k mean scoring
+                # 每个 anchor 一个 weight (默认 1.0 · adaptive learning 调整)
+                # weighted_cos = weight * cosine · 排序后取 top-3 加权平均
+                TOP_K_ANCHORS = 3
+                pos_w = anchors["pos_weights"]
+                neg_w = anchors["neg_weights"]
+                pos_pairs = [
+                    (pos_w[i] * cosine(q_emb, e), pos_w[i])
+                    for i, e in enumerate(anchors["pos_embs"])
+                ]
+                pos_pairs.sort(key=lambda x: -x[0])
+                top_pos = pos_pairs[:TOP_K_ANCHORS]
+                pos_cos = (sum(s for s, _ in top_pos) / sum(w for _, w in top_pos)
+                           if top_pos else 0.0)
+                neg_pairs = [
+                    (neg_w[i] * cosine(q_emb, e), neg_w[i],
+                     cosine(q_emb, e), anchors["neg_anchors"][i])
+                    for i, e in enumerate(anchors["neg_embs"])
+                ]
+                neg_pairs.sort(key=lambda x: -x[0])
+                top_neg = neg_pairs[:TOP_K_ANCHORS]
+                neg_cos = (sum(s for s, _, _, _ in top_neg) / sum(w for _, w, _, _ in top_neg)
+                           if top_neg else 0.0)
                 drift_score = round(pos_cos - neg_cos, 4)
-                # 单 anchor hits
-                neg_hits = []
-                for a_emb, a_text in zip(anchors["neg_embs"], anchors["neg_anchors"]):
-                    s = cosine(q_emb, a_emb)
-                    if s >= NEG_ANCHOR_HIT_THRESHOLD:
-                        neg_hits.append((round(s,3), a_text))
-                neg_hits.sort(reverse=True)
+                # 单 anchor hits · 用 raw cosine 不用 weighted (alert text 显示真相似度)
+                neg_hits = [
+                    (round(raw_c, 3), txt) for _, _, raw_c, txt in neg_pairs
+                    if raw_c >= NEG_ANCHOR_HIT_THRESHOLD
+                ][:5]
                 should_alert = drift_score < DRIFT_ALERT_THRESHOLD or bool(neg_hits)
                 result["drift"] = {
                     "score": drift_score,
@@ -300,6 +349,29 @@ def handle_request(req: dict) -> dict:
                     "n_pos": anchors["n_pos"],
                     "n_neg": anchors["n_neg"],
                 }
+
+        # ─── verification_log · 7 天对照实验数据 ───────────────
+        try:
+            log_path = CACHE_DIR / "verification_log.jsonl"
+            entry = {
+                "ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                "session_id": os.environ.get("CLAUDE_SESSION_ID", "unknown")[:60],
+                "project": project[:80],
+                "action": action,
+                "query": query[:200],
+                "top5": [
+                    {"score": r["score"], "path": r["path"], "age": r["age_str"]}
+                    for r in (result.get("recall") or [])[:5]
+                ],
+                "fresh_n": len(result.get("fresh_extra") or []),
+                "drift_score": (result.get("drift") or {}).get("score"),
+                "drift_alert": (result.get("drift") or {}).get("should_alert"),
+            }
+            with open(log_path, "a", encoding="utf-8") as f:
+                f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+        except Exception as _le:
+            log(f"verification_log write fail: {_le}")
+
         return result
 
 

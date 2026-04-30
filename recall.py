@@ -29,7 +29,7 @@ try:
 except Exception:
     pass
 
-PLUGIN_VERSION = "zenmind-mem v0.6"
+PLUGIN_VERSION = "zenmind-mem v0.7"
 HOME = Path.home()
 PLUGIN_DIR = HOME / ".claude" / "plugins" / "zenmind-mem"
 CACHE_DIR = PLUGIN_DIR / ".cache"
@@ -66,10 +66,19 @@ def log_usage(event: str, payload: dict) -> None:
         pass
 EMBED_MAX_CHARS = 1500    # 每 file embed 前 1500 字
 TOP_K = 5
-COSINE_MIN = 0.30
-DRIFT_ALERT_THRESHOLD = -0.04    # 整体偏反锚点至少 0.04 才 alert (减 false positive)
-NEG_ANCHOR_HIT_THRESHOLD = 0.72   # 单条反锚点 cosine ≥ 0.72 才 alert (中文 BGE 高相关阈值)
-EMBEDDER_MODEL = "BAAI/bge-small-zh-v1.5"
+# 2026-04-29 校准 (bge-m3 实测) · 历史 (bge-small-zh-v1.5): 0.30 / -0.04 / 0.72
+# 注: COSINE_MIN 是 query↔memory 阈值 · 跟 memory 内部 p25=0.484 不同 ·
+#     query↔memory cosine 系统性更低 · m3 上短 query 跟长 memory body 一般 0.25-0.45
+#     用 0.25 让相关 memory 不被无故过滤 · TODO: 跑 eval_query_recall.py 实测 p25 校准
+COSINE_MIN = float(os.environ.get("ZMM_COSINE_MIN", "0.25"))
+DRIFT_ALERT_THRESHOLD = float(os.environ.get("ZMM_DRIFT_THRESHOLD", "-0.032"))  # m3+hard 后 best Youden J
+NEG_ANCHOR_HIT_THRESHOLD = float(os.environ.get("ZMM_NEG_HIT_THRESHOLD", "0.538"))
+# 默认 bge-m3 · 实测 LongMemEval MRR 0.760 / Drift AUC 0.92 · ZMM_EMBEDDER_MODEL 可覆盖
+_M3_LOCAL = HOME / ".cache/modelscope/hub/models/BAAI/bge-m3"
+EMBEDDER_MODEL = os.environ.get(
+    "ZMM_EMBEDDER_MODEL",
+    str(_M3_LOCAL) if _M3_LOCAL.exists() else "BAAI/bge-m3",
+)
 
 _embedder = None    # lazy global
 _anchor_cache = None   # lazy · {pos_vec, neg_vec, mtime, raw}
@@ -302,6 +311,29 @@ def build_embeddings(entries: list, cache: dict) -> dict:
     return cache
 
 
+def is_system_injected_prompt(text: str) -> bool:
+    """v0.7.1 · 检测 prompt 是不是 harness 自动注入的 system event · 不是用户真意图.
+
+    Today's data showed 30+ false drift alerts triggered by:
+      - <task-notification> XML blocks (Monitor events)
+      - <system-reminder> tags (task tools reminders)
+      - [Monitor event:...] markers
+    These shouldn't count as user-issued prompts for drift detection.
+    """
+    if not text:
+        return False
+    markers = (
+        "<task-notification>",
+        "<system-reminder>",
+        "[Monitor event",
+        "[SYSTEM NOTIFICATION",
+        "<task-id>",
+        "[Monitor timed out",
+    )
+    head = text[:500].lower()
+    return any(m.lower() in head for m in markers)
+
+
 def read_user_prompt_from_stdin() -> str:
     """Claude Code hook 通过 stdin 传 JSON · 拿 prompt 字段.
 
@@ -400,7 +432,9 @@ def render_v02_vector_mode(entries: list, query: str, cache: dict) -> None:
         render_v01_metadata_mode(entries)
         return
 
-    scoring_method = "BGE-bge-small-zh"
+    # label 跟实际 embedder 同步 · m3 / small-zh / 自定义路径都对
+    _model_label = Path(EMBEDDER_MODEL).name if "/" in EMBEDDER_MODEL or "\\" in EMBEDDER_MODEL else EMBEDDER_MODEL.split("/")[-1]
+    scoring_method = f"BGE-{_model_label}"
     threshold = COSINE_MIN
     scored = []
     for e in entries:
@@ -465,21 +499,46 @@ def try_daemon_recall(mem_dir: Path, user_prompt: str) -> bool:
             return False
         # 渲染 daemon 响应
         d = data.get("drift")
+        # v0.7.1 · system-injected prompt 跳过 drift 输出 (避免假报)
+        if d and is_system_injected_prompt(user_prompt):
+            d = None
         if d:
             tag = "✅ 在锚点内" if d["score"] > 0.05 and not d["should_alert"] \
                 else ("⚠️ 偏向反锚点" if d["should_alert"] else "≈ 中性")
             print(f"[Persona drift · {d['n_pos']}+{d['n_neg']} 锚点 · BGE · daemon]")
             print(f"  score={d['score']:+.3f} (alignment={d['alignment']:.3f} · "
                   f"deviation={d['deviation']:.3f}) · {tag}")
-            if d["should_alert"] and d["top_neg_hits"]:
-                print(f"  🔴 alert: 最匹配的反锚点 (你历史犯过的错):")
-                for sc, txt in d["top_neg_hits"]:
-                    print(f"    · cos={sc:.3f}  '{txt}'")
-                print(f"  ↑ 当前 prompt 跟这些'我历史的错' 高重合 · 注意别再犯")
-                log_usage("drift_alert", {
-                    "score": d["score"], "max_neg_hit": d["top_neg_hits"][0][0],
-                    "neg_anchor": d["top_neg_hits"][0][1][:80],
-                })
+            # v0.7 修 · log_usage 不再漏: drift_score 整体偏移也算 alert
+            # 旧: 只在 top_neg_hits 非空时 log · 漏掉 score < -0.04 但单 anchor 没命中的 case
+            if d["should_alert"]:
+                # v0.7.1 · 给 alert 一个 ID · 用户 feedback CLI 引用
+                import hashlib as _h
+                _alert_id = "a-" + _h.sha256(
+                    f"{user_prompt[:200]}{time.time()}".encode("utf-8")
+                ).hexdigest()[:8]
+                if d["top_neg_hits"]:
+                    print(f"  🔴 alert [{_alert_id}]: 最匹配的反锚点 (你历史犯过的错):")
+                    for sc, txt in d["top_neg_hits"]:
+                        print(f"    · cos={sc:.3f}  '{txt}'")
+                    print(f"  ↑ 跟'我历史的错'高重合 · 标 FP: zenmind-mem feedback {_alert_id} fp")
+                    log_usage("drift_alert", {
+                        "alert_id": _alert_id,
+                        "score": d["score"], "max_neg_hit": d["top_neg_hits"][0][0],
+                        "neg_anchor": d["top_neg_hits"][0][1][:80],
+                        "kind": "single_anchor_hit",
+                        "user_prompt": user_prompt[:300],
+                    })
+                else:
+                    # drift_score 整体偏移触发 · 但没单 anchor 命中
+                    print(f"  🔴 alert [{_alert_id}]: drift_score={d['score']:+.3f} 整体偏向反锚点云")
+                    print(f"  ↑ 标 FP: zenmind-mem feedback {_alert_id} fp")
+                    log_usage("drift_alert", {
+                        "alert_id": _alert_id,
+                        "score": d["score"], "max_neg_hit": 0,
+                        "neg_anchor": "",
+                        "kind": "score_threshold",
+                        "user_prompt": user_prompt[:300],
+                    })
             print()
         recall = data.get("recall") or []
         if recall:
@@ -488,7 +547,8 @@ def try_daemon_recall(mem_dir: Path, user_prompt: str) -> bool:
                 "top_path": recall[0]["path"],
             })
         if recall:
-            print(f"🎯 召回 top {len(recall)} (BGE-bge-small-zh · daemon · query: {user_prompt[:60]}{'...' if len(user_prompt)>60 else ''}):")
+            _model_label = Path(EMBEDDER_MODEL).name if ("/" in EMBEDDER_MODEL or "\\" in EMBEDDER_MODEL) else EMBEDDER_MODEL.split("/")[-1]
+            print(f"🎯 召回 top {len(recall)} (BGE-{_model_label} · daemon · query: {user_prompt[:60]}{'...' if len(user_prompt)>60 else ''}):")
             print()
             for r in recall:
                 age_s = r.get("age_seconds", 0)
@@ -509,9 +569,21 @@ def try_daemon_recall(mem_dir: Path, user_prompt: str) -> bool:
 
 
 def main():
-    # 默认 hook 模式 = metadata only (快 · <100ms)
-    # BGE 模式 = CLI 显式 --bge query · Claude 主动调用
+    # v0.7 · auto-promote to BGE mode if daemon alive (默认 hook 也走 daemon)
+    # 旧 (v0.6 及前): hook 默认只 metadata · daemon 跑了 12 天 0 次被调 · drift/recall 全空
+    # 新 (v0.7): hook 入口先 ping daemon · alive 就用 BGE (1.8s) · 不 alive 才 fallback metadata
     bge_mode = "--bge" in sys.argv
+    if not bge_mode:
+        try:
+            import socket as _sk0
+            with _sk0.socket(_sk0.AF_INET, _sk0.SOCK_STREAM) as _s0:
+                _s0.settimeout(2.0)   # 2026-04-29: 0.3s 太短 · m3 cold load 完成后还在 anchor pkl 重建会被误判 unreachable
+                _s0.connect(("127.0.0.1", 9876))
+                _s0.sendall(b'{"action":"ping"}\n')
+                if b'"pong"' in _s0.recv(1024):
+                    bge_mode = True   # daemon alive · 升级 BGE
+        except Exception:
+            pass
 
     mem_dir = find_active_project_memory_dir()
     if not mem_dir:
@@ -528,12 +600,13 @@ def main():
     if not entries:
         return 0
 
+    # v0.7 修 · 升级 bge_mode 也要读 stdin · 不然 daemon recall 永远不被打
     if bge_mode and "--query" in sys.argv:
         idx = sys.argv.index("--query")
         user_prompt = sys.argv[idx + 1] if idx + 1 < len(sys.argv) else ""
     else:
-        # hook 走 stdin · 但默认不调 BGE (太慢) · 只 metadata + drift (不调 query embed)
-        user_prompt = read_user_prompt_from_stdin() if not bge_mode else ""
+        # hook 走 stdin · v0.7 不再因为 bge_mode 跳过读取
+        user_prompt = read_user_prompt_from_stdin()
 
     print(f"<zenmind-mem-recall plugin={PLUGIN_VERSION}>")
     print(f"Project memory: {mem_dir.parent.name} · {len(entries)} entries")
@@ -556,13 +629,18 @@ def main():
         except Exception as _se:
             sys.stderr.write(f"[zenmind-mem] strategy lookup fail: {_se}\n")
 
+    # v0.7.1 · 跳过 system-injected prompt 的 drift 计算 (recall 仍跑 · 只 drift 跳过)
+    skip_drift = is_system_injected_prompt(user_prompt)
+    if skip_drift:
+        log_usage("drift_skip_system_event", {"prompt_head": user_prompt[:80]})
+
     # v0.3 · Persona drift · BGE 模式下 · daemon alive 时跳过 inline (避免双重 BGE load)
     daemon_alive = False
-    if user_prompt and bge_mode:
+    if user_prompt and bge_mode and not skip_drift:
         try:
             import socket as _sk
             with _sk.socket(_sk.AF_INET, _sk.SOCK_STREAM) as s:
-                s.settimeout(0.5)
+                s.settimeout(2.0)   # 2026-04-29: 同上 · 跟 line 543 一致
                 s.connect(("127.0.0.1", 9876))
                 s.sendall(b'{"action":"ping"}\n')
                 if b'"pong"' in s.recv(1024):

@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Test (Python ${{ matrix.python }} · ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python: ["3.10", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Cache HF + ModelScope models
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/huggingface
+            ~/.cache/modelscope
+          key: bge-cache-${{ matrix.os }}-${{ hashFiles('install_bge.sh') }}
+
+      - name: Install
+        run: |
+          pip install -e .[modelscope,fast-download]
+          # 用 small-zh 跑 CI · 比 m3 快 20x · 内存 < 200MB
+          python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('BAAI/bge-small-zh-v1.5')"
+
+      - name: Self-test
+        run: |
+          ZMM_EMBEDDER_MODEL=BAAI/bge-small-zh-v1.5 python selftest.py
+
+      - name: Drift eval
+        run: |
+          ZMM_EMBEDDER_MODEL=BAAI/bge-small-zh-v1.5 python tests/eval_drift.py | tee drift.log
+          # 校验: AUC 至少 0.65 · CI 用 small-zh 比 m3 弱
+          python -c "
+          import re
+          auc = float(re.search(r'ROC AUC\s*=\s*([\d.]+)', open('drift.log').read()).group(1))
+          assert auc >= 0.65, f'AUC regression: {auc}'
+          print(f'AUC OK: {auc}')
+          "
+
+      - name: Recall eval
+        run: |
+          ZMM_EMBEDDER_MODEL=BAAI/bge-small-zh-v1.5 python tests/eval_recall.py | tee recall.log
+          # 校验: P@5 至少 0.75
+          python -c "
+          import re
+          p5 = float(re.search(r'P@5\s*=\s*\d+/\d+\s*=\s*([\d.]+)', open('recall.log').read()).group(1))
+          assert p5 >= 0.75, f'P@5 regression: {p5}'
+          print(f'P@5 OK: {p5}')
+          "
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install ruff
+      - run: ruff check .

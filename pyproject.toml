@@ -1,0 +1,62 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zenmind-mem"
+version = "0.7.0"
+description = "Memory plugin for Claude Code · Persona drift L3 detection + DPT strategy distillation + 时间桶 recall"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [
+    { name = "chunxiaoxx" }
+]
+keywords = [
+    "claude-code", "memory", "persona-vectors", "drift-detection",
+    "rag", "embedding", "bge", "agent-memory"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+dependencies = [
+    "sentence-transformers>=2.7",
+]
+
+[project.optional-dependencies]
+modelscope = ["modelscope>=1.10"]
+rerank = ["sentence-transformers>=2.7"]   # CrossEncoder included
+fast-download = ["hf_transfer>=0.1"]
+dev = ["pytest>=7", "pytest-cov", "ruff"]
+
+[project.urls]
+Homepage = "https://github.com/chunxiaoxx/zenmind-mem"
+Issues = "https://github.com/chunxiaoxx/zenmind-mem/issues"
+
+[project.scripts]
+zenmind-mem = "zenmind_mem.cli:main"
+
+[tool.setuptools]
+package-dir = {"zenmind_mem" = "."}
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["zenmind_mem*"]
+exclude = ["tests*", ".cache*"]
+
+[tool.setuptools.package-data]
+"zenmind_mem" = ["anchors*.json", "*.sh"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
