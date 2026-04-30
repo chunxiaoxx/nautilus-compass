@@ -19,6 +19,9 @@ import sys
 import time
 from pathlib import Path
 
+import os as _os_
+TEST_CWD = _os_.environ.get("ZMM_TEST_CWD", str(Path.home()))
+
 try:
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 except Exception:
@@ -65,7 +68,7 @@ def check(cond: bool, label: str, detail: str = ""):
 
 # ── Test 1 · hook 模式速度 ──
 section("Test 1 · Hook 默认模式 (无 BGE) · 应 < 2s")
-out, lat = run_hook({"prompt": "测试"}, cwd="C:/Users/chunx/Projects/nautilus-core")
+out, lat = run_hook({"prompt": "测试"}, cwd=TEST_CWD)
 check(lat < 2.0, "hook latency", f"{lat:.2f}s")
 check("zenmind-mem-recall" in out, "标记输出")
 check("entries" in out, "entries 列出")
@@ -80,7 +83,7 @@ import shutil
 if CACHE.exists():
     shutil.rmtree(CACHE, ignore_errors=True)
 out, lat_cold = run_hook(
-    {}, cwd="C:/Users/chunx/Projects/nautilus-core",
+    {}, cwd=TEST_CWD,
     args=["--bge", "--query", "V5 治理飞轮"],
 )
 check("BGE-bge-small-zh" in out, "BGE 启用")
@@ -91,7 +94,7 @@ print(f"     cold latency: {lat_cold:.1f}s")
 # ── Test 3 · BGE warm cache ──
 section("Test 3 · BGE warm cache (cache 已建)")
 out, lat_warm = run_hook(
-    {}, cwd="C:/Users/chunx/Projects/nautilus-core",
+    {}, cwd=TEST_CWD,
     args=["--bge", "--query", "V5 治理飞轮"],
 )
 check("BGE-bge-small-zh" in out, "BGE 仍启用")
@@ -108,7 +111,7 @@ if anchor_pkl.exists():
     os.utime(ANCHORS, None)
     time.sleep(1)
     out, _ = run_hook(
-        {}, cwd="C:/Users/chunx/Projects/nautilus-core",
+        {}, cwd=TEST_CWD,
         args=["--bge", "--query", "测试"],
     )
     new_mtime_pkl = anchor_pkl.stat().st_mtime
@@ -126,14 +129,14 @@ check("entries" in out or len(out) < 10, "无 mapped project · 优雅 fallback"
 # ── Test 6 · 特殊 prompt ──
 section("Test 6 · 边界 prompt")
 # 6a · 空 prompt
-out, lat = run_hook({"prompt": ""}, cwd="C:/Users/chunx/Projects/nautilus-core")
+out, lat = run_hook({"prompt": ""}, cwd=TEST_CWD)
 check("zenmind-mem-recall" in out, "空 prompt 不崩")
 # 6b · 全 emoji
-out, lat = run_hook({"prompt": "🎉🚀✅⚠️💡"}, cwd="C:/Users/chunx/Projects/nautilus-core")
+out, lat = run_hook({"prompt": "🎉🚀✅⚠️💡"}, cwd=TEST_CWD)
 check("zenmind-mem-recall" in out, "全 emoji 不崩")
 # 6c · 超长 prompt (3000 字)
 long_p = "V5 治理 " * 500
-out, lat = run_hook({"prompt": long_p}, cwd="C:/Users/chunx/Projects/nautilus-core")
+out, lat = run_hook({"prompt": long_p}, cwd=TEST_CWD)
 check("zenmind-mem-recall" in out, "超长 prompt 不崩")
 
 
@@ -142,7 +145,7 @@ section("Test 7 · 字段名兼容")
 for key in ("prompt", "user_prompt", "message", "text", "content"):
     out, _ = run_hook(
         {key: "V5 治理"},
-        cwd="C:/Users/chunx/Projects/nautilus-core",
+        cwd=TEST_CWD,
     )
     has_hint = "想要真语义召回" in out
     check(has_hint or "📊" in out or "🟡" in out or "🟢" in out or "🔴" in out,
@@ -162,7 +165,7 @@ emb_cache = CACHE.glob("*_emb.pkl")
 # 取所有 .pkl 文件
 all_pkls = list(CACHE.glob("*.pkl"))
 out, lat = run_hook(
-    {}, cwd="C:/Users/chunx/Projects/nautilus-core",
+    {}, cwd=TEST_CWD,
     args=["--bge", "--query", "v5plugin deeptest"],
 )
 check(test_md.name in out or "v5plugin" in out.lower() or "Project memory" in out,

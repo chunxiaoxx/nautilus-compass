@@ -13,3 +13,4 @@ anchors_adapted.json
 **/.gemini_key
 **/.anthropic_key
 *.json.bak.*
+README_PRIVATE.md
