@@ -1,0 +1,120 @@
+% =============== Related Work =================================================
+% Goal: 1 page · structure:
+%   (1) Memory plugins (mem0/Letta/Zep) - retrieval focus
+%   (2) White-box persona monitoring (Persona Vectors)
+%   (3) Cross-encoders & rerankers
+%   (4) LLM agent benchmarks
+%   (5) Anchor-based behavior detection (analogies)
+% =============================================================================
+
+\subsection{Memory Systems for LLM Agents}
+\label{sec:related-memory}
+
+A growing line of work addresses the limited context window of LLMs
+through external memory. \textbf{mem0} \citep{mem0} stores
+key-value memories extracted from conversations and retrieves them
+via dense embeddings; the system targets production agent use cases
+and reports retrieval Recall@5 in the 0.5--0.6 range on
+LongMemEval-S. \textbf{Letta} (formerly MemGPT) \citep{letta}
+introduces a hierarchical memory architecture with archival
+storage and core memory, modeling LLM context management as an
+operating-system problem. \textbf{Zep} \citep{zep} adds temporal
+knowledge-graph structure on top of dense retrieval, optimizing for
+multi-session temporal reasoning. \textbf{A-MEM} \citep{amem}
+introduces dynamic links between memory entries with supersede
+detection, addressing memory staleness.
+
+These systems share a common assumption: \emph{the LLM will honor
+retrieved memory once it is injected into the context}. We argue
+that this assumption fails systematically over long sessions, and
+that complementary mechanisms are needed to monitor whether the
+agent's behavior actually aligns with the retrieved guidance.
+
+\subsection{White-box Persona Monitoring}
+\label{sec:related-persona}
+
+\citet{personavectors2025} represents the state of the art in
+white-box persona monitoring: they identify linear directions in
+the activation space of an LLM corresponding to traits such as
+sycophancy, hallucination propensity, and harmful intent. By
+projecting hidden activations onto these directions during
+inference, the authors demonstrate the ability to monitor and
+steer trait expression at deployment time, predict trait shifts
+induced by finetuning, and flag training data likely to cause
+undesirable persona changes.
+
+The chief limitation, from the perspective of the typical
+end-user of a coding agent, is that this method requires access
+to model weights or hidden states. This puts it out of reach of
+users interacting with proprietary LLMs (Claude, GPT-4, Gemini)
+through API or product surfaces. Our work targets exactly this
+deployment gap: providing a black-box analog that runs in
+user-space hooks without model-internal access.
+
+\subsection{Embedders and Cross-Encoder Rerankers}
+\label{sec:related-embed}
+
+We build on the BGE family of embedding models \citep{bgem3}.
+BGE-m3 in particular offers multilingual support across 100+
+languages with a 1024-dimensional output, making it suitable for
+mixed Chinese/English production agent contexts. For retrieval
+reranking, we leverage \texttt{bge-reranker-v2-m3}
+\citep{bgereranker}, a cross-encoder trained on similar data,
+which scores (query, candidate) pairs jointly rather than
+embedding them independently. Foundational sentence embedding
+methodology follows \citet{sbert}.
+
+A natural question is whether a cross-encoder can substitute for
+the bi-encoder cosine in our drift detection step (anchor
+matching). In Section~\ref{sec:eval-rerank-null}, we report a
+\emph{negative} result: cross-encoder substitution improves drift
+AUC by only 0.0008 at 36$\times$ the latency, suggesting that the
+short, semantically heterogeneous nature of behavioral anchor
+text leaves little token-interaction signal for cross-encoders to
+exploit, in contrast to the long-document setting of retrieval
+reranking.
+
+\subsection{Long-Context Memory Benchmarks}
+\label{sec:related-bench}
+
+We evaluate retrieval performance using LongMemEval-S
+\citep{longmemeval2024}, which provides 500 question-haystack
+pairs across six question types: knowledge update, multi-session
+synthesis, single-session-user/assistant/preference factual
+recall, and temporal reasoning. Each haystack contains roughly 50
+candidate sessions, making top-5 retrieval a meaningful target
+metric. Other relevant benchmarks include LoCoMo (long
+conversation memory) and PerLTQA (Chinese long-term persona
+dialogue), which we leave for future evaluation.
+
+\subsection{Anchor-Based Behavior Detection (Analogies)}
+\label{sec:related-anchors}
+
+Our anchor-based approach draws conceptual lineage from several
+threads. \textbf{Reward modeling in RLHF} aggregates many
+preference comparisons into a scalar reward; in our case we
+aggregate cosine similarity to many positive/negative behavioral
+anchors into a scalar drift score. \textbf{Behavioral cloning}
+in robotics learns from demonstrations; our positive anchors
+function as ``demonstrations of correct task patterns''.
+\textbf{Few-shot in-context learning} relies on a small set of
+examples to bias the LLM's distribution; our negative anchors
+function as ``examples of behaviors to avoid'', albeit operating
+externally rather than in-context.
+
+The core innovation in our system is not any single technical
+component but the empirical methodology for designing anchor sets
+that yield strong detection signal (Section~\ref{sec:method-evolution}),
+together with the integration with hook-level production
+deployment.
+
+\subsection{Strategy Distillation}
+\label{sec:related-strategy}
+
+\citet{dptagent} introduces distillation path-triggered (DPT)
+agents, which extract reasoning patterns from past task
+completions and inject them when similar tasks recur. We
+incorporate a lightweight DPT-style mechanism for cross-session
+strategy retrieval (Section~\ref{sec:method-strategy}), though it
+is not the focus of this paper. Our drift detection is
+orthogonal to and compatible with strategy distillation.
