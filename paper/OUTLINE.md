@@ -18,12 +18,12 @@ A Hook-level Anchor Matching Approach
 |---|---|---|---|---|
 | 0 | Abstract | ✅ W | drafted | done |
 | 1 | Introduction | ✅ W | drafted | done |
-| 2 | Related Work | ⏳ | TBD | 1.5h |
-| 3 | Method | ⏳ | TBD | 2h |
-| 4 | Evaluation | ⏳ | TBD | 2h (figures) |
-| 5 | Discussion | ⏳ | TBD | 1h |
-| 6 | Limitations | ⏳ | TBD | 0.5h |
-| 7 | Open Source | ⏳ | TBD | 0.5h |
+| 2 | Related Work | ✅ W | TBD | 1.5h |
+| 3 | Method | ✅ W | TBD | 2h |
+| 4 | Evaluation | ✅ W | TBD | 2h (figures) |
+| 5 | Discussion | ✅ W | TBD | 1h |
+| 6 | Limitations | ✅ W | TBD | 0.5h |
+| 7 | Open Source | ✅ W | TBD | 0.5h |
 
 **Total remaining**: ~7.5 hours work over 2-3 days.
 

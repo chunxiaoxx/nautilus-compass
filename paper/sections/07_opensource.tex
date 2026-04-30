@@ -1,0 +1,71 @@
+% =============== Open Source & Reproducibility ================================
+% Goal: 0.5 page
+% =============================================================================
+
+\subsection{Repository}
+\label{sec:os-repo}
+
+All code, anchor sets, evaluation scripts, and benchmark results
+are released under MIT license (anchor files released under
+CC0 1.0 to encourage forking and adaptation) at
+\url{https://github.com/chunxiaoxx/zenmind-mem}. The repository
+includes: the runtime daemon (\texttt{daemon.py}), hook entry
+points (\texttt{recall.py}, \texttt{mid\_session\_hook.py},
+\texttt{stop\_hook.py}), CLI tools (\texttt{feedback.py},
+\texttt{anchor\_generator.py}), six independent evaluation
+scripts (\texttt{tests/eval\_*.py}), three domain anchor profiles
+(\texttt{anchors\_\{legal,medical,finance\}.json}), and full
+documentation (CHANGELOG, RESULTS, CONTRIBUTING, OPEN\_SOURCE\_READINESS).
+
+\subsection{Reproducibility}
+\label{sec:os-repro}
+
+All numerical claims in this paper are reproducible from the
+current \texttt{main} branch with a single command:
+
+\begin{verbatim}
+git clone https://github.com/chunxiaoxx/zenmind-mem
+cd zenmind-mem
+pip install -e .[modelscope]
+bash tests/run_all.sh
+\end{verbatim}
+
+The runner produces self-contained log files in
+\texttt{.cache/eval-<timestamp>-<embedder>/} for each evaluation.
+Total runtime is approximately 90 minutes on a CPU-only host
+(dominated by m3 cold load and full LongMemEval-S subset 12 run).
+A subset 4 quick mode runs in under 10 minutes.
+
+The mem0 head-to-head requires a Google Cloud service account
+JSON for the Vertex AI embedder; see \texttt{tests/eval\_mem0\_headhead.py}
+for environment-variable setup. The numbers reported in
+Section~\ref{sec:eval-retrieval} were produced under these settings.
+
+\subsection{Continuous Integration}
+\label{sec:os-ci}
+
+A GitHub Actions workflow (\texttt{.github/workflows/ci.yml}) runs
+on Ubuntu and macOS, Python 3.10 and 3.12, on every push to
+\texttt{main}. The workflow installs dependencies, runs
+\texttt{selftest.py} for hook plumbing sanity, runs the drift
+evaluation with bge-small-zh-v1.5 (lighter for CI), and asserts
+ROC AUC $\geq 0.65$ as a regression gate.
+
+\subsection{Acknowledgments}
+\label{sec:os-ack}
+
+This work was deeply influenced by the Persona Vectors line of
+research at Anthropic \citep{personavectors2025}. We thank the
+authors for clearly articulating the problem of persona drift and
+for open-sourcing their methodology, which we hope our black-box
+analog complements rather than competes with. We also thank the
+BAAI team for the BGE family of multilingual embedders and
+rerankers \citep{bgem3, bgereranker}, and the LongMemEval authors
+\citep{longmemeval2024} for releasing a reusable benchmark.
+
+zenmind-mem is developed in the context of running production AI
+agent deployments for the
+\href{https://github.com/chunxiaoxx/nautilus}{Nautilus} multi-agent
+platform. The methodology presented here was iterated on real
+session traces from these deployments before being abstracted into
+the open-source release.

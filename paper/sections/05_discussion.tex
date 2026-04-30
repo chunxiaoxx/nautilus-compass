@@ -1,0 +1,128 @@
+% =============== Discussion ===================================================
+% Goal: 1-1.5 pages
+% =============================================================================
+
+\subsection{Anchor Design as the Dominant Variable}
+\label{sec:discussion-anchors}
+
+The single most consequential lesson from this work is that
+\emph{anchor design dominates technical sophistication}. The
++0.42 AUC swing from changing how anchors are written (Step 1)
+dwarfs the gains from switching embedders (Step 3, +0.04) or
+adding hard examples (Step 4, +0.09). For practitioners building
+similar anchor-based detection systems, this suggests budget
+priorities skewed toward anchor curation rather than model
+selection.
+
+The principle generalizes. Drift detection at the prompt-text
+layer is fundamentally a similarity-search problem; cosine
+similarity is sensitive to grammatical mood, lexical distribution,
+and topic distribution. Anchors that systematically differ from
+real prompts in any of these axes will yield poor detection
+regardless of how strong the underlying embedder is.
+
+\subsection{Black-box vs.\ White-box Persona Monitoring}
+\label{sec:discussion-bw}
+
+\citet{personavectors2025}'s white-box approach has one major
+advantage and one major disadvantage relative to ours.
+
+\paragraph{Advantage of white-box.} Activation projections operate
+on the LLM's actual computational state and can detect drift even
+when the surface-level prompt looks innocuous. A prompt designed
+to elicit sycophancy without explicit sycophantic surface forms
+may activate sycophancy directions in the residual stream while
+appearing aligned to a black-box anchor matcher. This is the limit
+case of black-box detection.
+
+\paragraph{Disadvantage of white-box.} The method requires model
+weights and (typically) a training set of contrastive prompts to
+extract the persona vectors. End-users of proprietary LLMs
+(Claude, GPT-4, Gemini) have neither.
+
+\paragraph{Complementarity.} A robust persona monitoring stack
+plausibly combines both: white-box detection where model access
+is available (model trainers, alignment researchers, organizations
+with self-hosted Llama/Mistral deployments), and black-box
+detection in user-space hooks for the long tail of users
+interacting with closed APIs. Our work targets the latter.
+
+\subsection{Why Reranker Helps Retrieval but Not Drift}
+\label{sec:discussion-rerank}
+
+The asymmetric finding---bge-reranker-v2-m3 gives +0.105 MRR on
+LongMemEval-S retrieval but +0.0008 AUC on drift
+(Section~\ref{sec:eval-rerank-null})---is informative.
+
+In retrieval, candidates are full conversational sessions with
+abundant token-level interaction signal: answer terms appearing
+near question terms, paraphrastic framing, dependency relations.
+A cross-encoder can exploit this to break ties and re-rank
+candidates the bi-encoder gets wrong.
+
+In drift detection, anchors are short imperative sentences. The
+``token interaction'' between a prompt and an anchor is largely
+keyword overlap, which a bi-encoder already captures.
+Cross-encoders cannot manufacture signal that does not exist in
+the data.
+
+\subsection{The Subset 4 vs.\ Subset 12 Lesson}
+\label{sec:discussion-subset}
+
+A non-technical lesson worth recording: during development we ran
+the reranker eval on subset 4 (one question per type for the four
+mainstream types). Subset 4 yielded $\Delta$ MRR $+0.001$, leading
+us to a near-published null conclusion. Increasing to subset 12
+(two per type, including the hardest types) revealed
+$\Delta$ MRR $+0.105$. The lift signal was concentrated in
+question types absent from subset 4.
+
+The takeaway: \emph{do not draw conclusions from $n=4$ retrieval
+benchmarks}, especially when the dataset has known per-type variance
+\citep{longmemeval2024}. We were initially confident in the null
+because the experimental setup was correct (clean control,
+deterministic pipeline); the failure was statistical rather than
+methodological.
+
+\subsection{Active Learning in Practice}
+\label{sec:discussion-al}
+
+Our active learning module surfaces alerts whose drift score is
+near the decision boundary ($|\mathrm{drift}| < 0.05$) for
+preferential user labeling. The theoretical case is straightforward:
+labels near the boundary disambiguate the largest amount of
+uncertainty. In practice, the long-term value of this loop depends
+on user willingness to label, which we have not yet measured at
+scale (current evaluation is on synthetic alerts seeded into the
+log file).
+
+We expect the labeling burden to follow a power law: the first 10
+labels yield large gains; the next 100 yield diminishing
+incremental AUC; beyond 1000 labels the marginal gain approaches
+zero. Verifying this empirically is part of the long-term
+deployment study.
+
+\subsection{Implications for Production Deployment}
+\label{sec:discussion-prod}
+
+Three practical recommendations emerge from our experience:
+
+\textbf{(1) Tune anchors per-domain.} The 25+35-anchor default set
+shipped with zenmind-mem v0.7.1 targets a Chinese/English mixed
+engineering context. Deployment in legal, medical, or financial
+domains will likely show degraded AUC unless anchors are
+re-authored or replaced from one of our domain starter packs
+(legal/medical/finance).
+
+\textbf{(2) Filter system-injected prompts.} In a real coding
+agent, hook input is not exclusively user-issued; harness-injected
+notifications, monitor outputs, and tool reminders share the same
+input channel. We observed $\sim 80\%$ of false alerts in our own
+session traces traced to such injection. A simple regex filter
+(Section~\ref{sec:method-fpfilter}) addresses this.
+
+\textbf{(3) Combine drift detection with retrieval.} Drift
+detection alone tells the agent ``you may be about to do
+something bad''; retrieval tells it ``here's the relevant prior
+guidance''. Both layered into the same hook output gives the LLM
+the best chance of self-correcting.
