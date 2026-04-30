@@ -11,16 +11,21 @@ white-box monitoring of trait shifts. However, this approach requires access
 to model weights, putting it out of reach of users who interact with closed
 LLMs (e.g., Claude, GPT-4) through APIs or coding agents.
 
-We present \textbf{nautilus-compass}, a black-box persona drift detection system
-for production LLM coding agents. Our method operates entirely at the
+We present \textbf{Nautilus Compass}, a black-box persona drift detection
+system for production LLM coding agents and the first product in the
+Nautilus open agent platform. Our method operates entirely at the
 prompt-text layer: cosine similarity between user prompts and a set of
 \emph{behavioral anchor texts} (positive/negative task patterns), aggregated
-via weighted top-$k$ mean. We document a four-step iterative methodology
-that improves ROC AUC from 0.51 (random) to 0.92 on a synthetic 50/50
-deviation test set: (i) replacing abstract maxim anchors with task-shaped
-anchors that match the user prompt distribution, (ii) replacing centroid
-mean with top-3 mean scoring, (iii) switching from a Chinese-only embedder
-to a multilingual one, and (iv) adding hard false-positive examples back
+via weighted top-$k$ mean. The system ships as a Claude~Code plugin, a
+generic MCP~2024-11-05 server (Cursor, Cline, Hermes, OpenClaw, ...),
+a CLI, and a REST API---one BGE-m3 daemon backs all four entry points,
+giving any agent runtime drift telemetry without weight access.
+We document a four-step iterative methodology that improves ROC AUC from
+0.51 (random) to 0.92 on a synthetic 50/50 deviation test set:
+(i) replacing abstract maxim anchors with task-shaped anchors that match
+the user prompt distribution, (ii) replacing centroid mean with top-3
+mean scoring, (iii) switching from a Chinese-only embedder to a
+multilingual one, and (iv) adding hard false-positive examples back
 into the negative anchor set.
 
 We further evaluate the embedded retrieval pipeline on LongMemEval-S
