@@ -123,51 +123,220 @@ def render_zenmind_prefix(prompt: str) -> str:
     return ""
 
 
-def call_claude(prompt: str) -> str:
-    """Stub: replace with real Anthropic API call when API key available."""
-    # TODO: when ANTHROPIC_API_KEY available, swap to real API:
-    # import anthropic
-    # client = anthropic.Anthropic()
-    # resp = client.messages.create(model="claude-3-5-haiku-20241022", ...)
-    return f"[STUB: real Claude API call needed for prompt: {prompt[:50]}...]"
+def call_subject_llm(prompt: str, system: str = "") -> str:
+    """Call the LLM under test (the 'subject' of the A/B experiment).
+
+    Provider chosen via env var ZMM_SUBJECT_PROVIDER:
+      - "claude"     · Anthropic API · ANTHROPIC_API_KEY
+      - "minimax"    · MiniMax  M2  · MINIMAX_API_KEY + MINIMAX_GROUP_ID
+      - "deepseek"   · DeepSeek (OpenAI-compatible) · DEEPSEEK_API_KEY
+      - "zhipu"      · 智谱 GLM-4-Flash (OpenAI-compatible) · ZHIPU_API_KEY
+      - "gemini"     · Vertex AI Gemini · GOOGLE_APPLICATION_CREDENTIALS
+      - "openai"     · OpenAI · OPENAI_API_KEY
+      - "moonshot"   · KIMI · MOONSHOT_API_KEY
+
+    All providers are OpenAI-compatible chat-completion-style except claude,
+    minimax, and gemini which use their own SDK. Keys are read from env;
+    no key material in git/log.
+    """
+    provider = os.environ.get("ZMM_SUBJECT_PROVIDER", "claude").lower()
+
+    if provider == "claude":
+        import anthropic
+        client = anthropic.Anthropic()
+        msg = client.messages.create(
+            model=os.environ.get("ZMM_SUBJECT_MODEL", "claude-haiku-4-5-20251001"),
+            max_tokens=1024,
+            system=system or "You are a helpful coding assistant.",
+            messages=[{"role": "user", "content": prompt}],
+        )
+        return "".join(b.text for b in msg.content if hasattr(b, "text"))
+
+    if provider == "minimax":
+        # MiniMax v2 chat completion (OpenAI-compatible URL)
+        import urllib.request
+        key = os.environ["MINIMAX_API_KEY"]
+        url = "https://api.minimax.io/v1/chat/completions"
+        body = json.dumps({
+            "model": os.environ.get("ZMM_SUBJECT_MODEL", "MiniMax-M2"),
+            "messages": ([{"role": "system", "content": system}] if system else []) +
+                        [{"role": "user", "content": prompt}],
+            "max_tokens": 1024,
+        }).encode("utf-8")
+        req = urllib.request.Request(
+            url, data=body,
+            headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
+        )
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            data = json.loads(resp.read())
+        return data["choices"][0]["message"]["content"]
+
+    if provider in ("deepseek", "zhipu", "moonshot", "openai"):
+        # All OpenAI-compatible
+        from openai import OpenAI
+        endpoints = {
+            "deepseek": "https://api.deepseek.com/v1",
+            "zhipu":    "https://open.bigmodel.cn/api/paas/v4",
+            "moonshot": "https://api.moonshot.cn/v1",
+            "openai":   None,  # default
+        }
+        keys_env = {
+            "deepseek": "DEEPSEEK_API_KEY",
+            "zhipu":    "ZHIPU_API_KEY",
+            "moonshot": "MOONSHOT_API_KEY",
+            "openai":   "OPENAI_API_KEY",
+        }
+        models = {
+            "deepseek": "deepseek-chat",
+            "zhipu":    "glm-4-flash",
+            "moonshot": "moonshot-v1-8k",
+            "openai":   "gpt-4o-mini",
+        }
+        client = OpenAI(
+            api_key=os.environ[keys_env[provider]],
+            base_url=endpoints[provider],
+        )
+        resp = client.chat.completions.create(
+            model=os.environ.get("ZMM_SUBJECT_MODEL", models[provider]),
+            messages=([{"role": "system", "content": system}] if system else []) +
+                     [{"role": "user", "content": prompt}],
+            max_tokens=1024,
+        )
+        return resp.choices[0].message.content
+
+    if provider == "gemini":
+        import vertexai
+        from vertexai.generative_models import GenerativeModel
+        gcp = json.load(open(os.environ["GOOGLE_APPLICATION_CREDENTIALS"], encoding="utf-8"))
+        vertexai.init(project=gcp["project_id"], location="us-central1")
+        m = GenerativeModel(os.environ.get("ZMM_SUBJECT_MODEL", "gemini-1.5-flash-002"))
+        full = (system + "\n\n" + prompt) if system else prompt
+        return m.generate_content(full).text
+
+    raise ValueError(f"Unknown ZMM_SUBJECT_PROVIDER={provider!r}")
 
 
-def call_gemini_judge(prompt: str, response: str) -> dict:
-    """Vertex AI Gemini judge."""
-    # TODO: implement Vertex AI judge call when GOOGLE_APPLICATION_CREDENTIALS set
-    # Stub returns neutral scores
-    return {"verify": 0.5, "destruct": 0.5, "secret": 0.5, "fabricate": 0.5}
+def call_judge_llm(user_prompt: str, ai_response: str) -> dict:
+    """Independent LLM-as-judge (separate from subject for fairness)."""
+    judge = os.environ.get("ZMM_JUDGE_PROVIDER", "gemini")
+    judge_prompt = JUDGE_PROMPT.format(user_prompt=user_prompt, ai_response=ai_response)
+
+    # 用 subject_llm 同一个机制 · 但临时切 provider · 临时切 model
+    saved = os.environ.get("ZMM_SUBJECT_PROVIDER", "")
+    os.environ["ZMM_SUBJECT_PROVIDER"] = judge
+    try:
+        raw = call_subject_llm(judge_prompt)
+    finally:
+        if saved:
+            os.environ["ZMM_SUBJECT_PROVIDER"] = saved
+        else:
+            os.environ.pop("ZMM_SUBJECT_PROVIDER", None)
+
+    # 解 JSON
+    try:
+        # 容忍 ```json fence
+        raw = raw.strip()
+        if "```" in raw:
+            import re as _re
+            m = _re.search(r"\{[^{}]*\}", raw)
+            if m: raw = m.group(0)
+        d = json.loads(raw)
+        return {k: float(d.get(k, 0.5)) for k in ("verify", "destruct", "secret", "fabricate")}
+    except Exception:
+        return {"verify": 0.5, "destruct": 0.5, "secret": 0.5, "fabricate": 0.5}
+
+
+def run_ab(n: int, dry_run: bool = False):
+    subject = os.environ.get("ZMM_SUBJECT_PROVIDER", "claude")
+    judge = os.environ.get("ZMM_JUDGE_PROVIDER", "gemini")
+    prompts = DEVIATION_PROMPTS[:n]
+
+    print(f"=== Behavior A/B eval ===")
+    print(f"  n = {len(prompts)}")
+    print(f"  subject LLM = {subject}")
+    print(f"  judge   LLM = {judge}")
+    print()
+
+    if dry_run:
+        print("--- DRY RUN: prefixes only, no API calls ---")
+        for i, p in enumerate(prompts[:3]):
+            prefix = render_zenmind_prefix(p)
+            print(f"\n[prompt {i+1}] {p}")
+            print(f"[injection]\n{prefix or '(no alert · drift below threshold)'}")
+        return
+
+    results = []
+    for i, p in enumerate(prompts):
+        prefix = render_zenmind_prefix(p)
+        # A: no injection
+        try:
+            resp_a = call_subject_llm(p)
+        except Exception as e:
+            resp_a = f"[ERROR A: {e}]"
+        # B: with injection
+        prompt_b = prefix + p if prefix else p
+        try:
+            resp_b = call_subject_llm(prompt_b)
+        except Exception as e:
+            resp_b = f"[ERROR B: {e}]"
+        # judge both
+        score_a = call_judge_llm(p, resp_a)
+        score_b = call_judge_llm(p, resp_b)
+        results.append({
+            "prompt": p, "had_injection": bool(prefix),
+            "response_a": resp_a, "response_b": resp_b,
+            "score_a": score_a, "score_b": score_b,
+        })
+        avg_a = sum(score_a.values()) / 4
+        avg_b = sum(score_b.values()) / 4
+        marker = "🔺" if avg_b > avg_a + 0.05 else ("🔻" if avg_b < avg_a - 0.05 else "≈")
+        print(f"  [{i+1}/{len(prompts)}] inj={bool(prefix):1d} A={avg_a:.2f} B={avg_b:.2f} {marker}", flush=True)
+
+    # Aggregate
+    n_inj = sum(1 for r in results if r["had_injection"])
+    avg_a_all = statistics.mean(sum(r["score_a"].values()) / 4 for r in results)
+    avg_b_all = statistics.mean(sum(r["score_b"].values()) / 4 for r in results)
+    delta = avg_b_all - avg_a_all
+
+    print(f"\n=== A/B aggregate (n={len(results)}, {n_inj} had drift injection) ===")
+    print(f"  avg A (no inj):  {avg_a_all:.4f}")
+    print(f"  avg B (with inj): {avg_b_all:.4f}")
+    print(f"  Δ (B - A):       {delta:+.4f}")
+
+    # paired t-test
+    try:
+        import math
+        diffs = [sum(r["score_b"].values())/4 - sum(r["score_a"].values())/4 for r in results]
+        m = statistics.mean(diffs); s = statistics.stdev(diffs) if len(diffs) > 1 else 0
+        if s > 0:
+            t = m * math.sqrt(len(diffs)) / s
+            print(f"  paired t-stat:   t={t:.2f}  (rough · n={len(diffs)})")
+    except Exception:
+        pass
+
+    # Per-axis
+    print(f"\n=== per-axis means ===")
+    for axis in ("verify", "destruct", "secret", "fabricate"):
+        a = statistics.mean(r["score_a"][axis] for r in results)
+        b = statistics.mean(r["score_b"][axis] for r in results)
+        print(f"  {axis:10s}  A={a:.3f}  B={b:.3f}  Δ={b-a:+.3f}")
+
+    out = PLUGIN / f".cache/eval_behavior_ab_{subject}_{int(time.time())}.json"
+    out.write_text(json.dumps({
+        "subject": subject, "judge": judge, "n": len(results),
+        "avg_a": avg_a_all, "avg_b": avg_b_all, "delta": delta,
+        "details": results,
+    }, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"\n  details: {out}")
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--n", type=int, default=10)
-    ap.add_argument("--judge-only", action="store_true",
-                    help="re-judge existing responses without re-querying Claude")
+    ap.add_argument("--dry-run", action="store_true",
+                    help="show injection prefix only · no API calls")
     args = ap.parse_args()
-
-    print("=== Behavior-change A/B eval (zenmind-mem injection) ===")
-    print(f"  n = {args.n}")
-    print()
-    print("⚠️ STATUS: stub implementation. Full eval requires:")
-    print("  - ANTHROPIC_API_KEY (for Claude API calls)")
-    print("  - GOOGLE_APPLICATION_CREDENTIALS (for Gemini judge)")
-    print()
-    print("Methodology designed; framework ready. Once API keys available,")
-    print("each prompt is run through Claude API twice (with/without zenmind-mem")
-    print("injection), then judged by Gemini on 4 axes. Paired t-test on means.")
-    print()
-    print("This is the proper test for the paper's behavior-steering claim.")
-    print("Until run with real APIs, paper must downgrade thesis to:")
-    print("  'detection accuracy' rather than 'behavior change'.")
-    print()
-
-    # Show prefix generation for first 3 prompts (works without APIs)
-    print("=== Sample injection prefixes (drift alerts that would be prepended) ===")
-    for i, p in enumerate(DEVIATION_PROMPTS[:3]):
-        prefix = render_zenmind_prefix(p)
-        print(f"\n[prompt {i+1}] {p}")
-        print(f"[zenmind injection]\n{prefix or '(no alert · drift not triggered)'}")
+    run_ab(args.n, dry_run=args.dry_run)
 
 
 if __name__ == "__main__":
