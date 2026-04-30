@@ -84,3 +84,18 @@ requiring model weights. zenmind-mem operates in prompt-text space
 (black-box), giving coarser signal but deployable by anyone with
 hook-level access to the agent. We argue that a robust safety
 posture for production LLM agents will combine both layers.
+
+\paragraph{Scope and limits of claims.}
+This paper makes a claim about \emph{detection accuracy}: given a
+user-issued prompt and a curated anchor set, our method classifies
+whether the prompt aligns with task-shaped positive patterns or
+deviates toward known failure modes, with held-out AUC reported in
+Section~\ref{sec:eval-holdout}. We do \emph{not} claim that the
+LLM, when given the resulting drift alert in its context, will
+actually change its behavior; that is a separate empirical question
+requiring controlled A/B evaluation against an LLM-as-judge, which
+we frame as the primary direction for future work
+(Section~\ref{sec:limitations-behavior}). Readers expecting
+``zenmind-mem causally improves Claude's safety'' should treat this
+paper as the precondition (we can detect drift) rather than the
+end-state (we have shown drift detection changes outcomes).
