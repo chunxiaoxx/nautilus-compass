@@ -61,7 +61,9 @@ takes ROC AUC from random ($0.5056$) to strong ($0.9232$).
 \begin{table}[h]
 \centering
 \caption{Four-step drift detection ablation. All evaluated on the
-same 50/50 prompt test set (Section~\ref{sec:eval-setup}).}
+same 50/50 prompt test set (Section~\ref{sec:eval-setup}).
+Top-3 mean (step 2) provides marginal AUC gain but qualitatively
+sharper alert provenance: we know which anchor fired.}
 \label{tab:drift-evolution}
 \begin{tabular}{llcc}
 \toprule
@@ -69,7 +71,7 @@ Step & Configuration & ROC AUC & Best-Youden Acc \\
 \midrule
 0 & v0.5: maxim anchors + centroid mean (bge-small-zh) & 0.5056 & 0.55 \\
 1 & + task-shaped anchors                              & 0.7928 & 0.74 \\
-2 & + top-3 mean (replacing centroid)                  & 0.79+  & 0.74 \\
+2 & + top-3 mean (replacing centroid)                  & 0.7935 & 0.74 \\
 3 & + bge-m3 (replacing bge-small-zh)                  & 0.8352 & 0.77 \\
 4 & + 10 hard FP examples in negative anchors          & \textbf{0.9232} & \textbf{0.84} \\
 \bottomrule
@@ -91,6 +93,23 @@ step-3 misclassifications revealed a coherent class of meta-prompts
 about memory-system mechanics; ten such examples added directly to
 the negative anchor set both teach the model what to flag and
 crowd out spurious anchor matches.
+
+\paragraph{Score distribution.}
+Figure~\ref{fig:drift-hist} shows the resulting drift score
+distributions for aligned and deviation prompts. The two distributions
+have substantial separation around the calibrated threshold
+$\mathrm{drift} = -0.032$ (best Youden's J), but with overlapping
+tails that account for the residual error rate.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/fig4_drift_histogram.pdf}
+\caption{Drift score distribution for the v0.7.1 final configuration.
+Aligned prompts (green) cluster around $+0.06$; deviation prompts
+(red) cluster around $-0.05$. The decision threshold (best Youden's J)
+sits at $-0.032$.}
+\label{fig:drift-hist}
+\end{figure}
 
 \subsection{Cross-Encoder Drift Scoring: Null Result}
 \label{sec:eval-rerank-null}
@@ -159,7 +178,7 @@ mem0 (Vertex text-embedding-005)         & 0.583 & \textbf{0.917} & 0.715 \\
 
 \paragraph{Per-type breakdown.}
 The reranker lift is concentrated on the question types where
-bi-encoder alone is weakest:
+bi-encoder alone is weakest (Figure~\ref{fig:rerank-lift}):
 single-session-user (a specific factual claim hidden in chatty
 session) sees MRR rise from 0.091 to 0.522 ($\sim 5\times$);
 multi-session sees MRR rise from 0.55 to 0.75. Question types where
@@ -167,12 +186,34 @@ the bi-encoder already achieves perfect P@5 (single-session-assistant,
 single-session-preference, knowledge-update at P@5, temporal-reasoning)
 see no further lift, as expected.
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/fig5_rerank_lift.pdf}
+\caption{Reranker MRR lift on LongMemEval-S subset 12 by question
+type. Hardest question type (single-session-user) sees $5\times$
+MRR improvement; easier types are already near ceiling for
+bi-encoder alone.}
+\label{fig:rerank-lift}
+\end{figure}
+
 \paragraph{Compared to mem0.}
 At identical P@5, zenmind-mem with reranker achieves $+0.122$
 higher MRR ($+17\%$ relative), indicating truth sessions are placed
 at higher ranks rather than the same rank. The single-session-user
 gap is the most pronounced: zenmind+rerank MRR 0.522 vs.\ mem0
-0.250 ($2\times$).
+0.250 ($2\times$). Figure~\ref{fig:longmemeval-pertype} compares
+both systems per question type.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/fig3_longmemeval_pertype.pdf}
+\caption{Per-question-type MRR on LongMemEval-S subset 12.
+zenmind-mem (m3+rerank) vs.\ mem0 (Vertex text-embedding-005).
+Same dataset, same 12 questions, \texttt{infer=False} for mem0.
+Largest gaps: single-session-user ($+0.27$ MRR for us) and
+temporal-reasoning ($+0.25$).}
+\label{fig:longmemeval-pertype}
+\end{figure}
 
 \paragraph{Caveat: subset 12 is not full 500.}
 We acknowledge that 12 questions is a small sample. Per-type variance

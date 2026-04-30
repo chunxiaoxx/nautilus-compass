@@ -1,0 +1,47 @@
+name: Build arXiv Preprint
+
+on:
+  push:
+    paths:
+      - 'paper/**'
+      - '.github/workflows/build-paper.yml'
+  pull_request:
+    paths:
+      - 'paper/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Compile zenmind-mem.tex
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compile LaTeX
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: zenmind-mem.tex
+          working_directory: paper/
+          # 2 pdflatex runs + bibtex for cross-refs
+          latexmk_use_xelatex: false
+          extra_system_packages: |
+            inkscape
+          args: -pdf -interaction=nonstopmode -file-line-error
+
+      - name: Upload PDF artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: zenmind-mem-preprint
+          path: paper/zenmind-mem.pdf
+          retention-days: 90
+
+      - name: Sanity check (PDF exists, > 100KB)
+        run: |
+          ls -la paper/zenmind-mem.pdf
+          size=$(stat -c %s paper/zenmind-mem.pdf)
+          if [ "$size" -lt 100000 ]; then
+            echo "❌ PDF is suspiciously small ($size bytes)"
+            exit 1
+          fi
+          echo "✅ PDF $size bytes"

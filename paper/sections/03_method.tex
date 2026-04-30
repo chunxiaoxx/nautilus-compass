@@ -25,6 +25,18 @@ TCP socket (\texttt{127.0.0.1:9876}), keeping the embedder warm
 across hook invocations. Cold-start latency on a CPU-only
 Windows/Linux host is 12--30 seconds; warm hot-path latency is
 1.8 seconds (single forward pass plus anchor cache lookup).
+Figure~\ref{fig:architecture} illustrates the data flow.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/fig1_architecture.pdf}
+\caption{System architecture. A user-issued prompt enters
+\texttt{UserPromptSubmit}, which forks three parallel paths:
+top-$k$ memory recall, drift scoring against behavioral anchors,
+and DPT-style strategy retrieval. The combined output is injected
+back into the LLM's system prompt for the same turn.}
+\label{fig:architecture}
+\end{figure}
 
 The system computes three artifacts at each
 \texttt{UserPromptSubmit}, in parallel where possible:
