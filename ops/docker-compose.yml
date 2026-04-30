@@ -1,0 +1,52 @@
+# Nautilus Compass · single-host deployment
+# Usage:
+#   docker compose -f ops/docker-compose.yml up -d
+#   curl http://localhost:8765/healthz
+#
+# For production scale-out: split into 2 services (daemon-only + N gateway replicas).
+# See ops/k8s/ for k8s manifests.
+
+version: "3.9"
+
+services:
+  compass:
+    build:
+      context: ..
+      dockerfile: ops/Dockerfile
+      args:
+        # set false if you'll mount the model from host instead of pre-baking
+        PREDOWNLOAD_MODEL: "true"
+    container_name: nautilus-compass
+    restart: unless-stopped
+    ports:
+      - "8765:8765"   # HTTP gateway · agents call this
+      # 9876 daemon kept internal · uncomment to debug:
+      # - "127.0.0.1:9876:9876"
+    environment:
+      COMPASS_DEFAULT_PROJECT: "${COMPASS_DEFAULT_PROJECT:-default}"
+      COMPASS_DEFAULT_TENANT: "${COMPASS_DEFAULT_TENANT:-default}"
+      COMPASS_GATEWAY_WORKERS: "2"
+      COMPASS_LOG_LEVEL: "info"
+    volumes:
+      # 1. tenant anchor profiles (anchors_<tenant>.json) - mounted read-only
+      - ./tenant-anchors:/opt/compass/anchors:ro
+      # 2. persistent feedback logs + adaptive weights (writable)
+      - compass-cache:/opt/compass/.cache
+      # 3. project memory dirs (read-only · what agents recall over)
+      - ${HOME}/.claude/projects:/root/.claude/projects:ro
+    healthcheck:
+      test: ["CMD", "curl", "-fs", "http://127.0.0.1:8765/readyz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 120s
+    deploy:
+      resources:
+        limits:
+          memory: 4G   # bge-m3 ≈ 2.3 GB resident · plus gateway workers
+        reservations:
+          memory: 3G
+
+volumes:
+  compass-cache:
+    name: nautilus-compass-cache
