@@ -1,0 +1,58 @@
+\documentclass{article}
+
+% NeurIPS-style or arXiv default · 之后选 venue 再换
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{url}
+\usepackage{caption}
+\usepackage{cite}
+\usepackage{amsmath}
+
+\hypersetup{colorlinks=true, linkcolor=blue, urlcolor=blue, citecolor=blue}
+
+\title{Black-box Persona Drift Detection for Production LLM Agents:\\
+       A Hook-level Anchor Matching Approach}
+
+\author{chunxiaoxx \and Contributors at \url{github.com/chunxiaoxx/zenmind-mem}}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\input{sections/00_abstract}
+\end{abstract}
+
+\section{Introduction}
+\input{sections/01_intro}
+
+\section{Related Work}
+\input{sections/02_related}
+
+\section{Method}
+\input{sections/03_method}
+
+\section{Evaluation}
+\input{sections/04_eval}
+
+\section{Discussion}
+\input{sections/05_discussion}
+
+\section{Limitations and Future Work}
+\input{sections/06_limitations}
+
+\section{Open Source and Reproducibility}
+\input{sections/07_opensource}
+
+\bibliographystyle{plain}
+\bibliography{refs}
+
+\end{document}

@@ -14,3 +14,13 @@ anchors_adapted.json
 **/.anthropic_key
 *.json.bak.*
 README_PRIVATE.md
+
+# arXiv preprint build artifacts (LaTeX 编译产出)
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.toc
+paper/*.bbl
+paper/*.blg
+paper/*.synctex.gz
+paper/build/

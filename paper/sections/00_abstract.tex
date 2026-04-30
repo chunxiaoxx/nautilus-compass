@@ -1,0 +1,32 @@
+% =============== Abstract ====================================================
+% Goal: 200-250 words · 4 moves: (1) gap (2) approach (3) result (4) implication
+% =============================================================================
+
+Production LLM agents drift over long sessions: they forget user-specified
+constraints, slip into mistakes the user already flagged, and confabulate
+prior agreements. \citet{personavectors2025} recently identified
+\emph{persona vectors}---linear directions in activation space corresponding
+to traits like sycophancy, hallucination, and harmful intent---enabling
+white-box monitoring of trait shifts. However, this approach requires access
+to model weights, putting it out of reach of users who interact with closed
+LLMs (e.g., Claude, GPT-4) through APIs or coding agents.
+
+We present \textbf{zenmind-mem}, a black-box persona drift detection system
+for production LLM coding agents. Our method operates entirely at the
+prompt-text layer: cosine similarity between user prompts and a set of
+\emph{behavioral anchor texts} (positive/negative task patterns), aggregated
+via weighted top-$k$ mean. We document a four-step iterative methodology
+that improves ROC AUC from 0.51 (random) to 0.92 on a synthetic 50/50
+deviation test set: (i) replacing abstract maxim anchors with task-shaped
+anchors that match the user prompt distribution, (ii) replacing centroid
+mean with top-3 mean scoring, (iii) switching from a Chinese-only embedder
+to a multilingual one, and (iv) adding hard false-positive examples back
+into the negative anchor set.
+
+We further evaluate the embedded retrieval pipeline on LongMemEval-S
+\citep{longmemeval2024}, achieving P@5 = 0.917 and MRR = 0.837 (with
+BGE-Reranker), competitive with mem0 (P@5 = 0.917, MRR = 0.715) under
+identical conditions. Beyond detection, we ship adaptive anchor learning
+with eval-gated retraining, active-learning boundary sampling, and weighted
+deprecation of over-sensitive anchors. Code and data are open-sourced at
+\url{github.com/chunxiaoxx/zenmind-mem}.
