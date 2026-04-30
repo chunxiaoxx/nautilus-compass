@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "nautilus-compass": {
+      "command": "python3",
+      "args": ["~/.claude/plugins/nautilus-compass/mcp_server.py"],
+      "env": {
+        "PYTHONIOENCODING": "utf-8",
+        "NAUTILUS_COMPASS_PROJECT": "C--Users-chunx"
+      }
+    }
+  }
+}
