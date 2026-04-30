@@ -4,7 +4,7 @@
 检测 supersede / contradict / supplement 关系 · 写 .cache/links.json.
 
 用法:
-  python3 ~/.claude/plugins/zenmind-mem/links_finder.py [project_encoded]
+  python3 ~/.claude/plugins/nautilus-compass/links_finder.py [project_encoded]
 
 链接判据:
   · cosine ≥ 0.85 + age 差 ≥ 5 day → supersede (新覆盖旧)
@@ -25,7 +25,7 @@ try:
 except Exception:
     pass
 
-PLUGIN_DIR = Path.home() / ".claude" / "plugins" / "zenmind-mem"
+PLUGIN_DIR = Path.home() / ".claude" / "plugins" / "nautilus-compass"
 CACHE_DIR = PLUGIN_DIR / ".cache"
 LINKS_FILE = CACHE_DIR / "links.json"
 

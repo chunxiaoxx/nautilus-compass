@@ -45,7 +45,7 @@ A Hook-level Anchor Matching Approach
 
 | Tab | Content | Source |
 |---|---|---|
-| Tab 1 | Comparison matrix (zenmind-mem vs mem0/Letta/claude-mem/Zep across 6 dims) | README |
+| Tab 1 | Comparison matrix (nautilus-compass vs mem0/Letta/claude-mem/Zep across 6 dims) | README |
 | Tab 2 | Drift detection 4-step ablation table (AUC + delta) | RESULTS.md |
 | Tab 3 | LongMemEval-S subset 12 results table | RESULTS.md |
 | Tab 4 | Latency vs accuracy trade-off (bi-encoder vs cross-encoder for drift) | RESULTS.md |

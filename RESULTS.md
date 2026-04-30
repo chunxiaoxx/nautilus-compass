@@ -93,11 +93,11 @@ By type — most lift on weakest types:
 
 | System | P@1 | P@5 | MRR |
 |---|---|---|---|
-| **zenmind-mem (m3 + bge-reranker-v2-m3)** | **0.750** | **0.917** | **0.837** ⭐ |
+| **nautilus-compass (m3 + bge-reranker-v2-m3)** | **0.750** | **0.917** | **0.837** ⭐ |
 | mem0 (Vertex text-embedding-005, infer=False) | 0.583 | **0.917** | 0.715 |
-| zenmind-mem m3 baseline (no rerank) | 0.667 | 0.750 | 0.732 |
+| nautilus-compass m3 baseline (no rerank) | 0.667 | 0.750 | 0.732 |
 
-P@5 打平在 0.917, but **zenmind-mem MRR +0.122 优势** = truth session 平均排得更靠前。
+P@5 打平在 0.917, but **nautilus-compass MRR +0.122 优势** = truth session 平均排得更靠前。
 
 | Question Type | mem0 MRR | zenmind+rerank MRR | Δ |
 |---|---|---|---|
@@ -114,9 +114,9 @@ P@5 打平在 0.917, but **zenmind-mem MRR +0.122 优势** = truth session 平�
 
 | System | LongMemEval-S Recall@5 (n=12) |
 |---|---|
-| **zenmind-mem m3 + bge-reranker** | **0.917** ⭐ |
+| **nautilus-compass m3 + bge-reranker** | **0.917** ⭐ |
 | **mem0 with Vertex text-embedding-005** | 0.917 (real run) |
-| zenmind-mem m3 baseline only | 0.75 |
+| nautilus-compass m3 baseline only | 0.75 |
 | mem0 (claimed retrieval-only baselines, paper) | ~0.5-0.6 |
 
 ⚠️ subset of 12 vs full 500 may overestimate — running full benchmark is on the roadmap.

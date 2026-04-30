@@ -2,7 +2,7 @@
 % Goal: 0.7-1 page · 4-6 limitation paragraphs
 % =============================================================================
 
-We highlight \textbf{seven} known limitations of zenmind-mem v0.7.1
+We highlight \textbf{seven} known limitations of nautilus-compass v0.7.1
 and the empirical evaluation in this paper. The first is the most
 consequential and should be read carefully.
 
@@ -15,7 +15,7 @@ steering} (does Claude, when given the drift alert in its context,
 actually avoid the failure mode). These are separate empirical
 questions. We have designed an A/B evaluation framework
 (\texttt{tests/eval\_behavior\_ab.py}) that pairs each deviation
-prompt with two responses (with and without zenmind-mem injection)
+prompt with two responses (with and without nautilus-compass injection)
 judged on four behavioral axes by an independent LLM. Implementation
 of the full A/B run requires Anthropic API access for Claude calls
 and is left to future work. Until those numbers are reported,
@@ -38,7 +38,7 @@ set is hand-authored to cover canonical aligned and deviation
 patterns. AUC 0.92 reflects performance on this distribution; real
 production prompt distributions may differ. We have not yet conducted
 a longitudinal study on real user traces, in part because the user
-base of zenmind-mem is currently the authors and a small private
+base of nautilus-compass is currently the authors and a small private
 deployment.
 
 \paragraph{Single-session-user retrieval ceiling.} On LongMemEval-S

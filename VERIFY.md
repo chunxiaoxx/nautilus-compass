@@ -1,11 +1,11 @@
-# zenmind-mem 真效验证协议
+# nautilus-compass 真效验证协议
 
 > 每次升级 / 决定开源前 跑一遍。
 > 4 维度 + 7 prompt · 不通过不开源。
 
 ## 验证前
 
-新开 Claude Code 会话 · 第一条 user 消息后 应看见 `<zenmind-mem-recall>` block。
+新开 Claude Code 会话 · 第一条 user 消息后 应看见 `<nautilus-compass-recall>` block。
 没看见 → hook 没挂 · 检查 `~/.claude/settings.json` `UserPromptSubmit`。
 
 ## 4 维度 7 测试 prompt
@@ -78,13 +78,13 @@
 ## 自动收集 · verification_log.jsonl
 
 daemon.py 已加探针 · 每次召回写到:
-`~/.claude/plugins/zenmind-mem/.cache/verification_log.jsonl`
+`~/.claude/plugins/nautilus-compass/.cache/verification_log.jsonl`
 
 字段:`ts/session_id/project/action/query/top5/fresh_n/drift_score/drift_alert`
 
 7 天后:
 ```bash
-wc -l ~/.claude/plugins/zenmind-mem/.cache/verification_log.jsonl
+wc -l ~/.claude/plugins/nautilus-compass/.cache/verification_log.jsonl
 # ≥ 100 行 = 数据够
 ```
 
@@ -92,7 +92,7 @@ wc -l ~/.claude/plugins/zenmind-mem/.cache/verification_log.jsonl
 
 ```bash
 # 选 30 条固定 prompt
-python ~/.claude/plugins/zenmind-mem/audit_kpi.py --ablation
+python ~/.claude/plugins/nautilus-compass/audit_kpi.py --ablation
 # 关 hook 跑一遍 · 开 hook 跑一遍 · LLM judge 打分
 ```
 

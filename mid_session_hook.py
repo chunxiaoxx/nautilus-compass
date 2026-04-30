@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""zenmind-mem v0.7 · PostToolUse hook · mid-session refresh.
+"""nautilus-compass v0.7 · PostToolUse hook · mid-session refresh.
 
-问题: session 长跑 + 自动压缩后 · zenmind-mem 状态丢失
+问题: session 长跑 + 自动压缩后 · nautilus-compass 状态丢失
       用户在 session 中段心智已变 · 但 hook 只在 session 开头跑
 解法: 每 N tool calls 跑一次轻量召回 · 把"session 期间"心智注入
 
@@ -24,7 +24,7 @@ try:
 except Exception:
     pass
 
-PLUGIN_DIR = Path.home() / ".claude" / "plugins" / "zenmind-mem"
+PLUGIN_DIR = Path.home() / ".claude" / "plugins" / "nautilus-compass"
 CACHE_DIR = PLUGIN_DIR / ".cache"
 STATE_FILE = CACHE_DIR / "mid_session_state.json"
 REFRESH_INTERVAL_S = 1200    # 20 min · 中段刷新阈值
@@ -139,7 +139,7 @@ def main():
         if alert:
             cos, anchor = alert
             sys.stderr.write(
-                f"[zenmind-mem tool-drift] ⚠️ {tool_name} cos={cos:.3f} → '{anchor[:80]}'\n"
+                f"[nautilus-compass tool-drift] ⚠️ {tool_name} cos={cos:.3f} → '{anchor[:80]}'\n"
                 f"  signature: {sig[:100]}\n"
             )
             # log_usage equivalent
@@ -163,7 +163,7 @@ def main():
                 last_retrain = state.get("last_auto_retrain_count", 0)
                 if fb_count - last_retrain >= 10:
                     sys.stderr.write(
-                        f"[zenmind-mem auto-retrain] 累计 {fb_count} feedback (Δ {fb_count - last_retrain})\n"
+                        f"[nautilus-compass auto-retrain] 累计 {fb_count} feedback (Δ {fb_count - last_retrain})\n"
                         f"  建议: python {PLUGIN_DIR}/feedback.py retrain\n"
                     )
                     state["last_auto_retrain_count"] = fb_count
@@ -180,8 +180,8 @@ def main():
         # 输出 mid-session 提醒 · 让 LLM 知道时间过去了 · 该重新校准
         elapsed_min = int(elapsed / 60)
         sys.stderr.write(
-            f"[zenmind-mem mid-session] {elapsed_min} min 已过 · {state['tool_count']} 次 tool · "
-            f"建议主动跑: python3 ~/.claude/plugins/zenmind-mem/recall.py --bge --query \"<当前任务关键词>\"\n"
+            f"[nautilus-compass mid-session] {elapsed_min} min 已过 · {state['tool_count']} 次 tool · "
+            f"建议主动跑: python3 ~/.claude/plugins/nautilus-compass/recall.py --bge --query \"<当前任务关键词>\"\n"
         )
         state["last_refresh_ts"] = now
     write_state(state)

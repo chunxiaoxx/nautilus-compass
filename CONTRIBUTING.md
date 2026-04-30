@@ -1,4 +1,4 @@
-# Contributing to zenmind-mem
+# Contributing to nautilus-compass
 
 Thanks for considering a contribution! Two big ways to help:
 
@@ -49,7 +49,7 @@ The 4-step evolution (0.51 → 0.92 AUC) is documented in [CHANGELOG.md](CHANGEL
 
 ```bash
 git clone <repo>
-cd zenmind-mem
+cd nautilus-compass
 pip install -e .[dev,modelscope]
 python tests/run_all.sh         # full eval suite (~5 min on small-zh, ~30 min on m3)
 ruff check .

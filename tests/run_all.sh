@@ -1,5 +1,5 @@
 #!/bin/bash
-# zenmind-mem 全套基线评估 · 切 embedder 后跑这个就出全部数字
+# nautilus-compass 全套基线评估 · 切 embedder 后跑这个就出全部数字
 # Usage:
 #   ./tests/run_all.sh                       # 用当前 daemon.py EMBEDDER_MODEL
 #   ZMM_EMBEDDER_MODEL=BAAI/bge-m3 ./tests/run_all.sh
@@ -16,7 +16,7 @@ OUT_DIR=".cache/eval-$(date +%Y%m%d-%H%M%S)-$(echo "$MODEL" | tr '/' '_')"
 mkdir -p "$OUT_DIR"
 
 echo "==========================================="
-echo "  zenmind-mem eval suite"
+echo "  nautilus-compass eval suite"
 echo "  embedder: $MODEL"
 echo "  output:   $OUT_DIR"
 echo "==========================================="

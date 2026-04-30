@@ -12,7 +12,7 @@
 \subsection{Architecture Overview}
 \label{sec:method-arch}
 
-zenmind-mem operates as a plugin to Claude Code via three hook
+nautilus-compass operates as a plugin to Claude Code via three hook
 points exposed by the agent runtime: \texttt{UserPromptSubmit}
 (fires before each user-issued prompt is processed),
 \texttt{PostToolUse} (fires after each tool invocation), and
@@ -199,7 +199,7 @@ self-improving loop:
   logged to \texttt{usage.jsonl} with the matching anchor and
   the user prompt.
 \item Users label alerts via a CLI:
-  \texttt{zenmind-mem feedback log <id> fp|tp}.
+  \texttt{nautilus-compass feedback log <id> fp|tp}.
 \item The retrain command consumes feedback. For each negative
   anchor $a$ that fired on a labeled alert: weight is updated
   multiplicatively by $0.7^{\mathrm{fp}_a} \cdot 1.1^{\mathrm{tp}_a}$,

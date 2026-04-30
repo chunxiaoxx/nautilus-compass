@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "zenmind-mem"
+name = "nautilus-compass"
 version = "0.7.0"
 description = "Memory plugin for Claude Code · Persona drift L3 detection + DPT strategy distillation + 时间桶 recall"
 readme = "README.md"
@@ -40,22 +40,22 @@ fast-download = ["hf_transfer>=0.1"]
 dev = ["pytest>=7", "pytest-cov", "ruff"]
 
 [project.urls]
-Homepage = "https://github.com/chunxiaoxx/zenmind-mem"
-Issues = "https://github.com/chunxiaoxx/zenmind-mem/issues"
+Homepage = "https://github.com/chunxiaoxx/nautilus-compass"
+Issues = "https://github.com/chunxiaoxx/nautilus-compass/issues"
 
 [project.scripts]
-zenmind-mem = "zenmind_mem.cli:main"
+nautilus-compass = "nautilus_compass.cli:main"
 
 [tool.setuptools]
-package-dir = {"zenmind_mem" = "."}
+package-dir = {"nautilus_compass" = "."}
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["zenmind_mem*"]
+include = ["nautilus_compass*"]
 exclude = ["tests*", ".cache*"]
 
 [tool.setuptools.package-data]
-"zenmind_mem" = ["anchors*.json", "*.sh"]
+"nautilus_compass" = ["anchors*.json", "*.sh"]
 
 [tool.ruff]
 line-length = 100

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""LongMemEval-S retrieval eval · 给 zenmind-mem 跑公开 benchmark.
+"""LongMemEval-S retrieval eval · 给 nautilus-compass 跑公开 benchmark.
 
 Dataset: xiaowu0162/longmemeval (HF) · 500 questions × 6 types
 本脚本测 retrieval-only · question 当 query · session 当 memory entry · ground truth = answer_session_ids
@@ -27,7 +27,7 @@ from pathlib import Path
 os.environ.setdefault("PYTHONIOENCODING", "utf-8")
 os.environ.setdefault("PYTHONUTF8", "1")
 
-PLUGIN = Path.home() / ".claude" / "plugins" / "zenmind-mem"
+PLUGIN = Path.home() / ".claude" / "plugins" / "nautilus-compass"
 sys.path.insert(0, str(PLUGIN))
 import daemon as zmd  # noqa: E402
 

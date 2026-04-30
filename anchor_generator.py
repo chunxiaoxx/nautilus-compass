@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Anchor auto-generator · 从用户 prompt 历史 + memory 推 anchors.
 
-Problem: zenmind-mem 当前 anchors.json 是手写 25+35 条 · 普通用户没 ML 经验写不来.
+Problem: nautilus-compass 当前 anchors.json 是手写 25+35 条 · 普通用户没 ML 经验写不来.
 Solution: 扫 ~/.claude/projects/<proj>/ 的 history.jsonl 提取真实 prompt
           + 简单 heuristic 抽 task pattern · 输出候选 anchors.
 

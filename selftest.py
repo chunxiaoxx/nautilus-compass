@@ -12,7 +12,7 @@ try:
 except Exception:
     pass
 
-PLUGIN = Path.home() / ".claude" / "plugins" / "zenmind-mem"
+PLUGIN = Path.home() / ".claude" / "plugins" / "nautilus-compass"
 
 
 def run_hook(prompt: str, bge: bool = False) -> str:

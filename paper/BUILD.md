@@ -4,7 +4,7 @@
 
 1. Go to https://www.overleaf.com → New Project → Upload Project
 2. Zip the entire `paper/` directory (including `figures/*.pdf`) and upload
-3. Set `zenmind-mem.tex` as the main document
+3. Set `nautilus-compass.tex` as the main document
 4. Compile: pdfLaTeX (default works)
 5. Download generated PDF
 
@@ -14,10 +14,10 @@ Estimated time: 5 minutes including upload.
 
 ```bash
 cd paper
-pdflatex zenmind-mem.tex
-bibtex zenmind-mem
-pdflatex zenmind-mem.tex
-pdflatex zenmind-mem.tex   # second pass for cross-refs
+pdflatex nautilus-compass.tex
+bibtex nautilus-compass
+pdflatex nautilus-compass.tex
+pdflatex nautilus-compass.tex   # second pass for cross-refs
 ```
 
 Required packages: `geometry`, `inputenc`, `fontenc`, `microtype`, `graphicx`,
@@ -41,7 +41,7 @@ gh run download <run-id>   # downloads paper-pdf artifact
 ## arXiv submission
 
 1. Compile PDF locally or via Overleaf/Actions
-2. Bundle source: `tar czf zenmind-mem-arxiv.tar.gz paper/zenmind-mem.tex paper/sections/ paper/figures/*.pdf paper/refs.bib`
+2. Bundle source: `tar czf nautilus-compass-arxiv.tar.gz paper/nautilus-compass.tex paper/sections/ paper/figures/*.pdf paper/refs.bib`
 3. Go to https://arxiv.org/submit
 4. Category: `cs.CL` primary, `cs.AI` secondary
 5. License: CC BY 4.0 recommended

@@ -5,7 +5,7 @@
 若 prompt 拿到: 真 BGE embed · top 5 cosine 相关 memory 段 + age 分组
 若 prompt 拿不到: 降级 v0.1 metadata 模式
 
-cache: ~/.claude/plugins/zenmind-mem/.cache/<proj_hash>.pkl
+cache: ~/.claude/plugins/nautilus-compass/.cache/<proj_hash>.pkl
   · {file_path: (mtime, embedding_list)}
   · file mtime 变 → 重 embed 那个 file
   · 总 cache miss = 第一次 cold start (1-2s)
@@ -29,9 +29,9 @@ try:
 except Exception:
     pass
 
-PLUGIN_VERSION = "zenmind-mem v0.7"
+PLUGIN_VERSION = "nautilus-compass v0.7"
 HOME = Path.home()
-PLUGIN_DIR = HOME / ".claude" / "plugins" / "zenmind-mem"
+PLUGIN_DIR = HOME / ".claude" / "plugins" / "nautilus-compass"
 CACHE_DIR = PLUGIN_DIR / ".cache"
 USAGE_LOG = CACHE_DIR / "usage.jsonl"
 
@@ -174,7 +174,7 @@ def get_embedder():
         _embedder = SentenceTransformer(EMBEDDER_MODEL)
         return _embedder
     except Exception as e:
-        sys.stderr.write(f"[zenmind-mem] BGE embedder unavailable: {e}\n")
+        sys.stderr.write(f"[nautilus-compass] BGE embedder unavailable: {e}\n")
         return None
 
 
@@ -241,7 +241,7 @@ def get_anchor_vectors():
             pickle.dump(result, f)
         return result
     except Exception as e:
-        sys.stderr.write(f"[zenmind-mem] anchor build failed: {e}\n")
+        sys.stderr.write(f"[nautilus-compass] anchor build failed: {e}\n")
         return None
 
 
@@ -430,7 +430,7 @@ def render_v02_vector_mode(entries: list, query: str, cache: dict) -> None:
     embedder = get_embedder()
     if embedder is None:
         # 没装 BGE · 直接回 metadata + age 警告 (v0.1 模式) · 不做 ngram fail
-        print(f"💡 装 BGE 享真语义召回: bash ~/.claude/plugins/zenmind-mem/install_bge.sh")
+        print(f"💡 装 BGE 享真语义召回: bash ~/.claude/plugins/nautilus-compass/install_bge.sh")
         print()
         render_v01_metadata_mode(entries)
         return
@@ -444,7 +444,7 @@ def render_v02_vector_mode(entries: list, query: str, cache: dict) -> None:
     try:
         q_emb = embedder.encode(q_str).tolist()
     except Exception as e:
-        sys.stderr.write(f"[zenmind-mem] query embed failed: {e!r} · query_repr={q_str[:100]!r}\n")
+        sys.stderr.write(f"[nautilus-compass] query embed failed: {e!r} · query_repr={q_str[:100]!r}\n")
         render_v01_metadata_mode(entries)
         return
 
@@ -511,7 +511,7 @@ def try_daemon_recall(mem_dir: Path, user_prompt: str) -> bool:
             line, _, _ = buf.partition(b"\n")
             data = json.loads(line.decode("utf-8"))
         if not data.get("ok"):
-            sys.stderr.write(f"[zenmind-mem daemon] err: {data.get('error')}\n")
+            sys.stderr.write(f"[nautilus-compass daemon] err: {data.get('error')}\n")
             return False
         # 渲染 daemon 响应
         d = data.get("drift")
@@ -536,7 +536,7 @@ def try_daemon_recall(mem_dir: Path, user_prompt: str) -> bool:
                     print(f"  🔴 alert [{_alert_id}]: 最匹配的反锚点 (你历史犯过的错):")
                     for sc, txt in d["top_neg_hits"]:
                         print(f"    · cos={sc:.3f}  '{txt}'")
-                    print(f"  ↑ 跟'我历史的错'高重合 · 标 FP: zenmind-mem feedback {_alert_id} fp")
+                    print(f"  ↑ 跟'我历史的错'高重合 · 标 FP: nautilus-compass feedback {_alert_id} fp")
                     log_usage("drift_alert", {
                         "alert_id": _alert_id,
                         "score": d["score"], "max_neg_hit": d["top_neg_hits"][0][0],
@@ -547,7 +547,7 @@ def try_daemon_recall(mem_dir: Path, user_prompt: str) -> bool:
                 else:
                     # drift_score 整体偏移触发 · 但没单 anchor 命中
                     print(f"  🔴 alert [{_alert_id}]: drift_score={d['score']:+.3f} 整体偏向反锚点云")
-                    print(f"  ↑ 标 FP: zenmind-mem feedback {_alert_id} fp")
+                    print(f"  ↑ 标 FP: nautilus-compass feedback {_alert_id} fp")
                     log_usage("drift_alert", {
                         "alert_id": _alert_id,
                         "score": d["score"], "max_neg_hit": 0,
@@ -580,7 +580,7 @@ def try_daemon_recall(mem_dir: Path, user_prompt: str) -> bool:
                     print(f"  · [{e['age_str']:>5} old] {e['path']} — {e['description'][:80]}")
         return True
     except Exception as e:
-        sys.stderr.write(f"[zenmind-mem daemon] unreachable ({e}) · fallback inline\n")
+        sys.stderr.write(f"[nautilus-compass daemon] unreachable ({e}) · fallback inline\n")
         return False
 
 
@@ -624,7 +624,7 @@ def main():
         # hook 走 stdin · v0.7 不再因为 bge_mode 跳过读取
         user_prompt = read_user_prompt_from_stdin()
 
-    print(f"<zenmind-mem-recall plugin={PLUGIN_VERSION}>")
+    print(f"<nautilus-compass-recall plugin={PLUGIN_VERSION}>")
     print(f"Project memory: {mem_dir.parent.name} · {len(entries)} entries")
     print(f"⚠️ 时间戳 = 关键 · 用户心智在迭代 · 不要用 7d+ 旧 memory 倒批今天判断")
     print()
@@ -643,7 +643,7 @@ def main():
                     "query": user_prompt[:80],
                 })
         except Exception as _se:
-            sys.stderr.write(f"[zenmind-mem] strategy lookup fail: {_se}\n")
+            sys.stderr.write(f"[nautilus-compass] strategy lookup fail: {_se}\n")
 
     # v0.7.1 · 跳过 system-injected prompt 的 drift 计算 (recall 仍跑 · 只 drift 跳过)
     skip_drift = is_system_injected_prompt(user_prompt)
@@ -695,7 +695,7 @@ def main():
     if user_prompt and bge_mode:
         # 优先尝试 daemon (< 1s) · 不行 fallback inline (~30s cold)
         if try_daemon_recall(mem_dir, user_prompt):
-            print(f"</zenmind-mem-recall>")
+            print(f"</nautilus-compass-recall>")
             return 0
         cache = load_cache(mem_dir)
         render_v02_vector_mode(entries, user_prompt, cache)
@@ -705,9 +705,9 @@ def main():
         if user_prompt:
             print()
             print(f"💡 想要真语义召回 · Bash 调:")
-            print(f"   python3 ~/.claude/plugins/zenmind-mem/recall.py --bge --query \"<问题>\"")
+            print(f"   python3 ~/.claude/plugins/nautilus-compass/recall.py --bge --query \"<问题>\"")
 
-    print(f"</zenmind-mem-recall>")
+    print(f"</nautilus-compass-recall>")
     return 0
 
 
@@ -715,5 +715,5 @@ if __name__ == "__main__":
     try:
         sys.exit(main())
     except Exception as e:
-        sys.stderr.write(f"zenmind-mem recall error (silenced): {e}\n")
+        sys.stderr.write(f"nautilus-compass recall error (silenced): {e}\n")
         sys.exit(0)
