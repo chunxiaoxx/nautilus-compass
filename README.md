@@ -200,6 +200,25 @@ ZMM_EMBEDDER_MODEL=BAAI/bge-small-zh-v1.5
 ZMM_ANCHORS_PROFILE=legal
 ```
 
+### Use as MCP server (Claude Code · Cursor · Cline · Hermes · OpenClaw · ...)
+
+Compass exposes 3 tools (`recall`, `drift_check`, `feedback_log`) over the standard MCP 2024-11-05 protocol — same install pattern across every MCP-compatible client.
+
+```json
+// ~/.claude.json or .mcp.json
+{
+  "mcpServers": {
+    "nautilus-compass": {
+      "command": "python3",
+      "args": ["~/.claude/plugins/nautilus-compass/mcp_server.py"],
+      "env": { "PYTHONIOENCODING": "utf-8" }
+    }
+  }
+}
+```
+
+Full guide: [`MCP_INSTALL.md`](MCP_INSTALL.md). Stdlib only · zero extra deps · no LLM API costs (BGE-m3 runs locally).
+
 ---
 
 ## v0.7.1 八件 production feature
