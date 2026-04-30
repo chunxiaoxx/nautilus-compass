@@ -51,9 +51,22 @@ Our central finding is that the design of the anchor set, not the
 choice of embedder or aggregation function, is the dominant factor
 determining detection accuracy. We document a four-step iteration
 that improves ROC AUC from 0.51 (random) to 0.92 on a 100-prompt
-synthetic test set, and report negative results (e.g., that
-substituting a cross-encoder reranker for the bi-encoder cosine
-yields no measurable improvement at $36\times$ the latency).
+synthetic test set (Figure~\ref{fig:auc-evolution}), and report
+negative results (e.g., that substituting a cross-encoder reranker
+for the bi-encoder cosine yields no measurable improvement at
+$36\times$ the latency).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/fig2_auc_evolution.pdf}
+\caption{Drift detection ROC AUC across the four-step methodology
+evolution. Each step is a controlled change with all other
+variables fixed; aggregate improvement is from random ($0.5056$)
+to strong ($0.9232$). The largest single jump comes from rewriting
+abstract maxim anchors as task-shaped sentences matching the
+prompt distribution.}
+\label{fig:auc-evolution}
+\end{figure}
 
 \paragraph{Open source and reproducibility.}
 All code, anchor sets, evaluation scripts, and benchmark data are
