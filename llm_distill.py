@@ -21,7 +21,7 @@ try:
 except Exception:
     pass
 
-PLUGIN_DIR = Path.home() / ".claude" / "plugins" / "zenmind-mem"
+PLUGIN_DIR = Path.home() / ".claude" / "plugins" / "nautilus-compass"
 HAIKU_MODEL = "claude-haiku-4-5-20251001"
 PROXY_URL = "https://api.qixuw.com/v1/messages"   # qixuw 兼容 Anthropic API
 TIMEOUT = 30

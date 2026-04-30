@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""zenmind-mem feedback CLI · adaptive anchor learning loop (E).
+"""nautilus-compass feedback CLI · adaptive anchor learning loop (E).
 
 Usage:
   feedback list                    # 列出最近 alerts (5 条)
@@ -9,7 +9,7 @@ Usage:
 
 Workflow:
   1. hook 触发 alert → log 到 .cache/usage.jsonl
-  2. 用户标 alert: zenmind-mem feedback log a-12345678 fp
+  2. 用户标 alert: nautilus-compass feedback log a-12345678 fp
   3. 累计 ≥10 条 feedback 后跑 retrain
   4. retrain 生成 anchors_adapted.json (审过即可替换 anchors.json)
 
@@ -34,7 +34,7 @@ from pathlib import Path
 os.environ.setdefault("PYTHONIOENCODING", "utf-8")
 os.environ.setdefault("PYTHONUTF8", "1")
 
-PLUGIN = Path.home() / ".claude" / "plugins" / "zenmind-mem"
+PLUGIN = Path.home() / ".claude" / "plugins" / "nautilus-compass"
 USAGE_LOG = PLUGIN / ".cache/usage.jsonl"
 FEEDBACK_LOG = PLUGIN / ".cache/feedback.jsonl"
 ANCHORS_PATH = PLUGIN / "anchors.json"
@@ -115,7 +115,7 @@ def cmd_stats(args):
     feedback = load_feedback()
     fp_n = sum(1 for v in feedback.values() if v == "fp")
     tp_n = sum(1 for v in feedback.values() if v == "tp")
-    print(f"=== zenmind-mem feedback stats ===")
+    print(f"=== nautilus-compass feedback stats ===")
     print(f"  total alerts: {len(alerts)}")
     print(f"  labeled: {len(feedback)} ({fp_n} FP · {tp_n} TP)")
     if len(feedback) > 0:
@@ -273,7 +273,7 @@ def cmd_retrain(args):
 
 
 def main():
-    ap = argparse.ArgumentParser(prog="zenmind-mem-feedback")
+    ap = argparse.ArgumentParser(prog="nautilus-compass-feedback")
     sub = ap.add_subparsers(dest="cmd", required=True)
 
     p_list = sub.add_parser("list", help="show pending alerts")

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""zenmind-mem KPI audit · 看真实使用率 · 1 周后跑."""
+"""nautilus-compass KPI audit · 看真实使用率 · 1 周后跑."""
 import io
 import json
 import sys
@@ -12,7 +12,7 @@ try:
 except Exception:
     pass
 
-LOG = Path.home() / ".claude" / "plugins" / "zenmind-mem" / ".cache" / "usage.jsonl"
+LOG = Path.home() / ".claude" / "plugins" / "nautilus-compass" / ".cache" / "usage.jsonl"
 
 if not LOG.exists():
     print("no usage log yet · plugin 未真用过")
@@ -44,7 +44,7 @@ types_24h = Counter(r["event"] for r in events if in_range(r, since_24h))
 types_7d = Counter(r["event"] for r in events if in_range(r, since_7d))
 profiles_7d = Counter(r.get("anchors_profile", "?") for r in events if in_range(r, since_7d))
 
-print(f"=== zenmind-mem KPI · {now.strftime('%Y-%m-%d %H:%M UTC')} ===")
+print(f"=== nautilus-compass KPI · {now.strftime('%Y-%m-%d %H:%M UTC')} ===")
 print(f"\n总事件: {len(events)}")
 print(f"\n24h 内 ({sum(types_24h.values())} events):")
 for k, v in types_24h.most_common():

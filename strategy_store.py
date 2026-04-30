@@ -2,7 +2,7 @@
 
 复用 V5 nautilus-v5/learning/strategy_store.py 设计 · 跨 session 持久化.
 
-存储: ~/.claude/plugins/zenmind-mem/.cache/strategies.jsonl
+存储: ~/.claude/plugins/nautilus-compass/.cache/strategies.jsonl
 schema:
   {
     "id": "st-xxx",
@@ -35,7 +35,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-PLUGIN_DIR = Path.home() / ".claude" / "plugins" / "zenmind-mem"
+PLUGIN_DIR = Path.home() / ".claude" / "plugins" / "nautilus-compass"
 CACHE_DIR = PLUGIN_DIR / ".cache"
 STRATEGY_PATH = CACHE_DIR / "strategies.jsonl"
 

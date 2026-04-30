@@ -8,7 +8,7 @@
 All code, anchor sets, evaluation scripts, and benchmark results
 are released under MIT license (anchor files released under
 CC0 1.0 to encourage forking and adaptation) at
-\url{https://github.com/chunxiaoxx/zenmind-mem}. The repository
+\url{https://github.com/chunxiaoxx/nautilus-compass}. The repository
 includes: the runtime daemon (\texttt{daemon.py}), hook entry
 points (\texttt{recall.py}, \texttt{mid\_session\_hook.py},
 \texttt{stop\_hook.py}), CLI tools (\texttt{feedback.py},
@@ -24,8 +24,8 @@ All numerical claims in this paper are reproducible from the
 current \texttt{main} branch with a single command:
 
 \begin{verbatim}
-git clone https://github.com/chunxiaoxx/zenmind-mem
-cd zenmind-mem
+git clone https://github.com/chunxiaoxx/nautilus-compass
+cd nautilus-compass
 pip install -e .[modelscope]
 bash tests/run_all.sh
 \end{verbatim}
@@ -63,7 +63,7 @@ BAAI team for the BGE family of multilingual embedders and
 rerankers \citep{bgem3, bgereranker}, and the LongMemEval authors
 \citep{longmemeval2024} for releasing a reusable benchmark.
 
-zenmind-mem is developed in the context of running production AI
+nautilus-compass is developed in the context of running production AI
 agent deployments for the
 \href{https://github.com/chunxiaoxx/nautilus}{Nautilus} multi-agent
 platform. The methodology presented here was iterated on real

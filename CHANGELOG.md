@@ -15,8 +15,8 @@ Rebuilt the persona drift detection from the ground up in 4 steps:
 
 | System | P@1 | P@5 | MRR |
 |---|---|---|---|
-| **zenmind-mem (m3 + bge-reranker-v2-m3)** | **0.750** | **0.917** | **0.837** |
-| zenmind-mem (m3 only · no rerank) | 0.667 | 0.750 | 0.732 |
+| **nautilus-compass (m3 + bge-reranker-v2-m3)** | **0.750** | **0.917** | **0.837** |
+| nautilus-compass (m3 only · no rerank) | 0.667 | 0.750 | 0.732 |
 | mem0 (claimed retrieval-only) | n/a | ~0.6 | ~0.55 |
 
 Reranker gives biggest lift on weakest question types:

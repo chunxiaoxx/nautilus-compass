@@ -50,5 +50,5 @@ print(f'OK · embedding dim={len(emb)}')
 }
 
 echo ""
-echo "✅ BGE 装好 · zenmind-mem 自动启用真语义召回"
+echo "✅ BGE 装好 · nautilus-compass 自动启用真语义召回"
 echo "   下个 Claude Code prompt 会看到 🎯 BGE 召回 top 5 相关 memory"

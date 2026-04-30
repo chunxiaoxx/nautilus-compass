@@ -11,7 +11,7 @@ white-box monitoring of trait shifts. However, this approach requires access
 to model weights, putting it out of reach of users who interact with closed
 LLMs (e.g., Claude, GPT-4) through APIs or coding agents.
 
-We present \textbf{zenmind-mem}, a black-box persona drift detection system
+We present \textbf{nautilus-compass}, a black-box persona drift detection system
 for production LLM coding agents. Our method operates entirely at the
 prompt-text layer: cosine similarity between user prompts and a set of
 \emph{behavioral anchor texts} (positive/negative task patterns), aggregated
@@ -42,4 +42,4 @@ real Claude~Code session traces and labeled by an independent LLM judge
 to mitigate train-on-test concerns.
 
 Code, anchors, and frozen test data are open-sourced at
-\url{github.com/chunxiaoxx/zenmind-mem}.
+\url{github.com/chunxiaoxx/nautilus-compass}.

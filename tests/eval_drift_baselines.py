@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """Baselines for drift detection (provide non-self comparison points).
 
-Runs 3 baselines + zenmind-mem v0.7.1 on the SAME 100-prompt test set:
+Runs 3 baselines + nautilus-compass v0.7.1 on the SAME 100-prompt test set:
   1. Random           — sanity floor
   2. Keyword match    — explicit deviation keyword list (rm -rf, hardcode, etc.)
   3. Zero-shot SBERT  — generic embedding cosine to keyword list
                         (no anchor curation, no top-k tuning)
-  4. zenmind-mem v0.7.1 (full)
+  4. nautilus-compass v0.7.1 (full)
 
 Goal: show our +X AUC over generic baselines is real,
       not just an artifact of using BGE.
@@ -23,7 +23,7 @@ from pathlib import Path
 os.environ.setdefault("PYTHONIOENCODING", "utf-8")
 os.environ.setdefault("PYTHONUTF8", "1")
 
-PLUGIN = Path.home() / ".claude" / "plugins" / "zenmind-mem"
+PLUGIN = Path.home() / ".claude" / "plugins" / "nautilus-compass"
 sys.path.insert(0, str(PLUGIN))
 import daemon as zmd  # noqa: E402
 
@@ -86,7 +86,7 @@ def baseline_zeroshot():
     return auc_score(pos, neg)
 
 
-# Baseline 4: zenmind-mem v0.7.1 full (pos + neg anchors, top-3 mean)
+# Baseline 4: nautilus-compass v0.7.1 full (pos + neg anchors, top-3 mean)
 def system_full():
     emb = zmd.get_embedder()
     anchors = json.loads(zmd.ANCHORS_PATH.read_text(encoding="utf-8"))
@@ -117,7 +117,7 @@ def main():
     results["keyword"] = baseline_keyword()
     print("  3. zero-shot SBERT (deviation keywords as anchors, no curation) ...")
     results["zeroshot"] = baseline_zeroshot()
-    print("  4. zenmind-mem v0.7.1 (curated 25+35 anchors, top-3 mean) ...")
+    print("  4. nautilus-compass v0.7.1 (curated 25+35 anchors, top-3 mean) ...")
     results["full"] = system_full()
 
     print(f"\n=== Baselines comparison (Table 1 candidate) ===")
@@ -127,12 +127,12 @@ def main():
     for name, label in [("random",   "random (floor)               "),
                         ("keyword",  "keyword match (no embedder)  "),
                         ("zeroshot", "zero-shot SBERT to keywords  "),
-                        ("full",     "zenmind-mem v0.7.1 (full)    ")]:
+                        ("full",     "nautilus-compass v0.7.1 (full)    ")]:
         a = results[name]
         d = a - base
         print(f"  {label}        {a:.4f}     {d:+.4f}")
     print()
-    print(f"Headline: zenmind-mem AUC {results['full']:.4f} vs zero-shot SBERT {results['zeroshot']:.4f}")
+    print(f"Headline: nautilus-compass AUC {results['full']:.4f} vs zero-shot SBERT {results['zeroshot']:.4f}")
     print(f"           uplift over zero-shot: {results['full'] - results['zeroshot']:+.4f}")
     print(f"           (this is the value of curated anchors, controlling for embedder)")
 

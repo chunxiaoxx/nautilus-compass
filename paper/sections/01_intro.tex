@@ -32,7 +32,7 @@ methods require access to model weights or hidden states, putting
 them out of reach of the typical end-user who interacts with
 proprietary LLMs through black-box APIs.
 
-\paragraph{Our contribution.} We present \textbf{zenmind-mem}, a
+\paragraph{Our contribution.} We present \textbf{nautilus-compass}, a
 black-box persona drift detection system that runs entirely in user-space
 hooks of an LLM coding agent (we target Claude Code in our reference
 implementation, but the design is portable). At each user-issued
@@ -71,7 +71,7 @@ prompt distribution.}
 \paragraph{Open source and reproducibility.}
 All code, anchor sets, evaluation scripts, and benchmark data are
 released under MIT (anchors under CC0) at
-\url{https://github.com/chunxiaoxx/zenmind-mem}. The four-step
+\url{https://github.com/chunxiaoxx/nautilus-compass}. The four-step
 ablation, the head-to-head comparison with mem0 on LongMemEval-S,
 and the negative cross-encoder result are all reproducible from
 the repository in under one hour on a CPU-only machine.
@@ -80,7 +80,7 @@ the repository in under one hour on a CPU-only machine.
 Our work is \emph{complementary, not competing}, with
 \citet{personavectors2025}. Persona Vectors operates in
 activation space (white-box), giving more fine-grained signal but
-requiring model weights. zenmind-mem operates in prompt-text space
+requiring model weights. nautilus-compass operates in prompt-text space
 (black-box), giving coarser signal but deployable by anyone with
 hook-level access to the agent. We argue that a robust safety
 posture for production LLM agents will combine both layers.
@@ -96,6 +96,6 @@ actually change its behavior; that is a separate empirical question
 requiring controlled A/B evaluation against an LLM-as-judge, which
 we frame as the primary direction for future work
 (Section~\ref{sec:limitations-behavior}). Readers expecting
-``zenmind-mem causally improves Claude's safety'' should treat this
+``nautilus-compass causally improves Claude's safety'' should treat this
 paper as the precondition (we can detect drift) rather than the
 end-state (we have shown drift detection changes outcomes).

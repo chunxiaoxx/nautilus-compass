@@ -12,7 +12,7 @@ on:
 
 jobs:
   build:
-    name: Compile zenmind-mem.tex
+    name: Compile nautilus-compass.tex
     runs-on: ubuntu-latest
 
     steps:
@@ -21,7 +21,7 @@ jobs:
       - name: Compile LaTeX
         uses: xu-cheng/latex-action@v3
         with:
-          root_file: zenmind-mem.tex
+          root_file: nautilus-compass.tex
           working_directory: paper/
           # 2 pdflatex runs + bibtex for cross-refs
           latexmk_use_xelatex: false
@@ -32,14 +32,14 @@ jobs:
       - name: Upload PDF artifact
         uses: actions/upload-artifact@v4
         with:
-          name: zenmind-mem-preprint
-          path: paper/zenmind-mem.pdf
+          name: nautilus-compass-preprint
+          path: paper/nautilus-compass.pdf
           retention-days: 90
 
       - name: Sanity check (PDF exists, > 100KB)
         run: |
-          ls -la paper/zenmind-mem.pdf
-          size=$(stat -c %s paper/zenmind-mem.pdf)
+          ls -la paper/nautilus-compass.pdf
+          size=$(stat -c %s paper/nautilus-compass.pdf)
           if [ "$size" -lt 100000 ]; then
             echo "❌ PDF is suspiciously small ($size bytes)"
             exit 1

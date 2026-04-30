@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """V5 Memory Plugin · BGE Daemon · keep model loaded · TCP IPC.
 
-启动: bash ~/.claude/plugins/zenmind-mem/daemon_start.sh
+启动: bash ~/.claude/plugins/nautilus-compass/daemon_start.sh
 停止: 杀 PID (写在 .cache/daemon.pid)
 
 Protocol (JSON over TCP localhost:9876):
@@ -33,7 +33,7 @@ except Exception:
 
 HOST = "127.0.0.1"
 PORT = 9876
-PLUGIN_DIR = Path.home() / ".claude" / "plugins" / "zenmind-mem"
+PLUGIN_DIR = Path.home() / ".claude" / "plugins" / "nautilus-compass"
 CACHE_DIR = PLUGIN_DIR / ".cache"
 ANCHORS_PATH = PLUGIN_DIR / "anchors.json"
 PID_FILE = CACHE_DIR / "daemon.pid"

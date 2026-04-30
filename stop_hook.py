@@ -25,7 +25,7 @@ try:
 except Exception:
     pass
 
-PLUGIN_DIR = Path.home() / ".claude" / "plugins" / "zenmind-mem"
+PLUGIN_DIR = Path.home() / ".claude" / "plugins" / "nautilus-compass"
 CACHE_DIR = PLUGIN_DIR / ".cache"
 LOG_FILE = CACHE_DIR / "auto_distill_log.jsonl"
 

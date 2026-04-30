@@ -1,4 +1,4 @@
-# zenmind-mem
+# nautilus-compass
 
 > **Memory plugin for Claude Code with persona drift detection** —
 > stops your AI from repeating mistakes you've already flagged.
@@ -15,7 +15,7 @@
 传统 mem 系统 (mem0/Letta/claude-mem):
   "我能更准地找回旧 memory"
 
-zenmind-mem 多做一步:
+nautilus-compass 多做一步:
   "memory 找回了 + 检测 AI 是不是要犯老毛病 + 提醒走过的对的路"
 ```
 
@@ -45,7 +45,7 @@ mem0/Letta/claude-mem/Zep 都在抢"找回最相关 memory"。但**memory 找回
                            │
                            ▼
             ┌──────────────────────────────────────┐
-            │  UserPromptSubmit Hook (zenmind-mem)  │
+            │  UserPromptSubmit Hook (nautilus-compass)  │
             └──────────────────────────────────────┘
                            │
         ┌──────────────────┼──────────────────┐
@@ -80,7 +80,7 @@ mem0/Letta/claude-mem/Zep 都在抢"找回最相关 memory"。但**memory 找回
 
 ## 装了 vs 没装 · 用户感知
 
-### 没装 zenmind-mem
+### 没装 nautilus-compass
 ```
 你: 把 dist/ 部署到生产
 Claude: 已部署完成 ✅
@@ -89,7 +89,7 @@ Claude: 已部署完成 ✅
 Claude: 抱歉, 让我看看…
 ```
 
-### 装了 zenmind-mem
+### 装了 nautilus-compass
 ```
 你: 把 dist/ 部署到生产
 
@@ -115,7 +115,7 @@ Claude:
 | Letta | ✅ 强 | ❌ | ❌ | partial | optional |
 | claude-mem | ⚠️ session 末端 | ❌ | ❌ | ❌ | ✅ |
 | Zep | ✅ + graph | ❌ | ⚠️ 时序 | ❌ | ❌ |
-| **zenmind-mem** | ✅ **MRR 0.84** | ✅ **AUC 0.92** | ✅ 24h vs 7d+ | ✅ DPT 风格 | ✅ |
+| **nautilus-compass** | ✅ **MRR 0.84** | ✅ **AUC 0.92** | ✅ 24h vs 7d+ | ✅ DPT 风格 | ✅ |
 
 ---
 
@@ -138,13 +138,13 @@ Claude:
 
 | 系统 | P@1 | P@5 | MRR |
 |---|---|---|---|
-| **zenmind-mem (m3 + bge-reranker)** | **0.750** | **0.917** | **0.837** ⭐ |
+| **nautilus-compass (m3 + bge-reranker)** | **0.750** | **0.917** | **0.837** ⭐ |
 | **mem0 (Vertex text-embedding-005, real run)** | 0.583 | 0.917 | 0.715 |
-| zenmind-mem (m3 only, no rerank) | 0.667 | 0.750 | 0.732 |
+| nautilus-compass (m3 only, no rerank) | 0.667 | 0.750 | 0.732 |
 | mem0 (paper claim) | n/a | ~0.6 | ~0.55 |
 
 **P@5 打平 mem0 0.917 + MRR +0.122 优势** = truth session 平均排序更靠前。
-**single-session-user MRR**: zenmind-mem 0.522 vs mem0 0.250 (**2x improvement**)。
+**single-session-user MRR**: nautilus-compass 0.522 vs mem0 0.250 (**2x improvement**)。
 
 ---
 
@@ -152,30 +152,30 @@ Claude:
 
 ```bash
 # 1. Clone + install
-git clone https://github.com/<you>/zenmind-mem ~/.claude/plugins/zenmind-mem
-bash ~/.claude/plugins/zenmind-mem/install.sh
+git clone https://github.com/<you>/nautilus-compass ~/.claude/plugins/nautilus-compass
+bash ~/.claude/plugins/nautilus-compass/install.sh
 
 # 2. 在 ~/.claude/settings.json 挂 hook
 #    (install.sh 会自动写, 也可手动)
 {
   "hooks": {
     "UserPromptSubmit": [{ "matcher": "", "hooks": [
-      { "type": "command", "command": "bash ~/.claude/plugins/zenmind-mem/hook.sh" }
+      { "type": "command", "command": "bash ~/.claude/plugins/nautilus-compass/hook.sh" }
     ]}],
     "PostToolUse": [{ "matcher": "", "hooks": [
-      { "type": "command", "command": "python3 ~/.claude/plugins/zenmind-mem/mid_session_hook.py 2>/dev/null" }
+      { "type": "command", "command": "python3 ~/.claude/plugins/nautilus-compass/mid_session_hook.py 2>/dev/null" }
     ]}],
     "Stop": [{ "matcher": "", "hooks": [
-      { "type": "command", "command": "python3 ~/.claude/plugins/zenmind-mem/stop_hook.py 2>/dev/null" }
+      { "type": "command", "command": "python3 ~/.claude/plugins/nautilus-compass/stop_hook.py 2>/dev/null" }
     ]}]
   }
 }
 
 # 3. 启动 daemon (一次性 cold load · ~30s · 之后 1.8s warm)
-bash ~/.claude/plugins/zenmind-mem/daemon_start.sh
+bash ~/.claude/plugins/nautilus-compass/daemon_start.sh
 ```
 
-第一条 prompt 就会看到 `<zenmind-mem-recall>` block 注入。
+第一条 prompt 就会看到 `<nautilus-compass-recall>` block 注入。
 
 ### 切 embedder
 
@@ -232,7 +232,7 @@ ZMM_ANCHORS_PROFILE=legal
 
 > Anthropic [arXiv:2507.21509 "Persona Vectors"](https://arxiv.org/abs/2507.21509) 用 **activation-space directions** 监测/控制 trait shifts。这是 white-box 方法 (要 model weights)。
 >
-> **zenmind-mem 不是这篇论文的实现**。我们是在 prompt-text layer 用 cosine 比 anchor 文本——black-box 方法。两者**目标相似 (监测人格漂移)、机制完全不同 (activation vs text)、互补不替代**。Anthropic 的方法更精确；我们的方法**任何 Claude Code 用户能用**。
+> **nautilus-compass 不是这篇论文的实现**。我们是在 prompt-text layer 用 cosine 比 anchor 文本——black-box 方法。两者**目标相似 (监测人格漂移)、机制完全不同 (activation vs text)、互补不替代**。Anthropic 的方法更精确；我们的方法**任何 Claude Code 用户能用**。
 
 ---
 
@@ -254,7 +254,7 @@ ZMM_ANCHORS_PROFILE=legal
          A Hook-level Anchor Matching Approach},
   author={chunxiaoxx and contributors},
   year={2026},
-  howpublished={\url{https://github.com/<you>/zenmind-mem}}
+  howpublished={\url{https://github.com/<you>/nautilus-compass}}
 }
 ```
 

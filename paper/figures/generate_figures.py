@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate all figures for the zenmind-mem arXiv preprint.
+"""Generate all figures for the nautilus-compass arXiv preprint.
 
 Outputs:
   fig2_auc_evolution.pdf       - 4-step AUC line chart (KEY hero figure)
@@ -105,7 +105,7 @@ def fig3_longmemeval_pertype():
     w = 0.38
 
     fig, ax = plt.subplots(figsize=(8.5, 4.5))
-    bars1 = ax.bar(x - w/2, zenmind, w, label="zenmind-mem (m3 + bge-rerank)", color="#2563eb")
+    bars1 = ax.bar(x - w/2, zenmind, w, label="nautilus-compass (m3 + bge-rerank)", color="#2563eb")
     bars2 = ax.bar(x + w/2, mem0, w, label="mem0 (Vertex text-embedding)", color="#dc2626")
 
     # Annotate values
@@ -120,7 +120,7 @@ def fig3_longmemeval_pertype():
     ax.set_ylim(0, 1.15)
     ax.set_ylabel("MRR")
     ax.set_title("LongMemEval-S subset 12: per-question-type MRR\n"
-                 "zenmind-mem (m3+rerank) vs mem0 (Vertex), n=12, same dataset", pad=10)
+                 "nautilus-compass (m3+rerank) vs mem0 (Vertex), n=12, same dataset", pad=10)
     ax.legend(loc="upper right", framealpha=0.95)
     plt.savefig(OUT / "fig3_longmemeval_pertype.pdf")
     plt.close()
@@ -133,7 +133,7 @@ def fig3_longmemeval_pertype():
 def fig4_drift_histogram():
     """Show how aligned vs deviation prompts separate after step 4 anchors."""
     # Read actual eval log if exists, else simulate from known stats
-    log = Path.home() / ".claude/plugins/zenmind-mem/.cache/eval_drift_log.jsonl"
+    log = Path.home() / ".claude/plugins/nautilus-compass/.cache/eval_drift_log.jsonl"
     if log.exists():
         items = []
         for line in open(log, encoding="utf-8"):
@@ -164,7 +164,7 @@ def fig4_drift_histogram():
     ax.set_xlabel("drift score = top-3 pos cosine mean − top-3 neg cosine mean")
     ax.set_ylabel("count")
     ax.set_title("Drift score distribution: aligned vs. deviation prompts\n"
-                 "(zenmind-mem v0.7.1 · bge-m3 + 25 pos + 35 neg anchors · ROC AUC = 0.9232)",
+                 "(nautilus-compass v0.7.1 · bge-m3 + 25 pos + 35 neg anchors · ROC AUC = 0.9232)",
                  pad=10)
     ax.legend(loc="upper left", framealpha=0.95)
     plt.savefig(OUT / "fig4_drift_histogram.pdf")
@@ -239,7 +239,7 @@ def fig1_architecture():
     box(5, 9.2, 5.5, 0.8, 'User prompt: "deploy dist/ to prod"', "#fef3c7", "#f59e0b")
 
     # Hook layer
-    box(5, 7.8, 7.5, 0.8, 'UserPromptSubmit Hook  →  zenmind-mem/recall.py')
+    box(5, 7.8, 7.5, 0.8, 'UserPromptSubmit Hook  →  nautilus-compass/recall.py')
 
     # 3 parallel paths
     box(2.0, 5.8, 3.0, 1.4, "Recall\n\nTop-K memory by\ntime + cosine", "#dcfce7", "#16a34a")

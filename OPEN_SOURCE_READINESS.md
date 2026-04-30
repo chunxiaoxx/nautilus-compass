@@ -1,4 +1,4 @@
-# zenmind-mem · Open Source Readiness Brief
+# nautilus-compass · Open Source Readiness Brief
 
 > **当前状态 (2026-04-29)**: 内部用 ✅ · 公开开源待 LongMemEval 数据 + 6 月维护承诺
 
@@ -8,7 +8,7 @@
 
 ## 真实数据 (实测 vs 业界)
 
-| 指标 | zenmind-mem | mem0 (paper) | Letta | claude-mem |
+| 指标 | nautilus-compass | mem0 (paper) | Letta | claude-mem |
 |---|---|---|---|---|
 | Retrieval MRR (本地 28 mem leave-one-out) | **0.969** | ~0.55-0.65 | ~0.5-0.6 | n/a (only stop-hook) |
 | LongMemEval-S subset 4 (bge-m3) | **0.760** | ~0.4-0.6 | n/a | n/a |
@@ -41,7 +41,7 @@
 ### 必做 (才能 ship 1.0)
 - [ ] **LongMemEval-S 公开数字** (跑中)
 - [ ] **README 头图 = head-to-head 对比表**（mem0 / Letta / claude-mem 同 dataset）
-- [ ] **`pip install zenmind-mem` 包装** (不只是 plugin dir)
+- [ ] **`pip install nautilus-compass` 包装** (不只是 plugin dir)
 - [ ] **MIT license + CONTRIBUTING.md**
 - [ ] **Examples**: 3 个 30 行能跑的示例
 - [ ] **CI**: GitHub Actions 跑 selftest + deeptest + eval suite (跨 Win/Mac/Linux)
@@ -65,7 +65,7 @@
 
 ## 不开源 (但留作 Nautilus / 才燊护城河)
 
-- 才燊 6 部门 Agent 用 zenmind-mem 当 persona 一致性保险
+- 才燊 6 部门 Agent 用 nautilus-compass 当 persona 一致性保险
 - Nautilus 内部 V5 SuperAgent 用 strategy distillation 跨 session 学习
 - 这两个**应用层**反正是私有, drift detection 内部用就够用
 
@@ -75,6 +75,6 @@
 |---|---|---|
 | LongMemEval-S subset 12 → 500 全跑 | 1.5h (m3 in-loop) | 公开数字 |
 | mem0 / Letta head-to-head | 1 天 | head-to-head 表 |
-| pip 包装 + setup.py + entry_points | 半天 | `pip install zenmind-mem` |
+| pip 包装 + setup.py + entry_points | 半天 | `pip install nautilus-compass` |
 | README 头图 + 4 步演化 narrative | 半天 | 公开 GitHub |
 | 决定 go/no-go | 看 LongMemEval 数字后 | merge or pivot to blog |

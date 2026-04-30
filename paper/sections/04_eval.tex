@@ -169,9 +169,9 @@ questions, three retrieval pipelines.}
 \toprule
 System & P@1 & P@5 & MRR \\
 \midrule
-zenmind-mem (m3 only, no rerank)         & 0.667 & 0.750 & 0.732 \\
+nautilus-compass (m3 only, no rerank)         & 0.667 & 0.750 & 0.732 \\
 mem0 (Vertex text-embedding-005)         & 0.583 & \textbf{0.917} & 0.715 \\
-\textbf{zenmind-mem (m3 + bge-reranker)} & \textbf{0.750} & \textbf{0.917} & \textbf{0.837} \\
+\textbf{nautilus-compass (m3 + bge-reranker)} & \textbf{0.750} & \textbf{0.917} & \textbf{0.837} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -197,7 +197,7 @@ bi-encoder alone.}
 \end{figure}
 
 \paragraph{Compared to mem0.}
-At identical P@5, zenmind-mem with reranker achieves $+0.122$
+At identical P@5, nautilus-compass with reranker achieves $+0.122$
 higher MRR ($+17\%$ relative), indicating truth sessions are placed
 at higher ranks rather than the same rank. The single-session-user
 gap is the most pronounced: zenmind+rerank MRR 0.522 vs.\ mem0
@@ -208,7 +208,7 @@ both systems per question type.
 \centering
 \includegraphics[width=0.95\textwidth]{figures/fig3_longmemeval_pertype.pdf}
 \caption{Per-question-type MRR on LongMemEval-S subset 12.
-zenmind-mem (m3+rerank) vs.\ mem0 (Vertex text-embedding-005).
+nautilus-compass (m3+rerank) vs.\ mem0 (Vertex text-embedding-005).
 Same dataset, same 12 questions, \texttt{infer=False} for mem0.
 Largest gaps: single-session-user ($+0.27$ MRR for us) and
 temporal-reasoning ($+0.25$).}
@@ -306,12 +306,12 @@ System & ROC AUC & $\Delta$ from random \\
 random (floor)                                 & 0.4408 & +0.000 \\
 keyword match (no embedder)                    & 0.6216 & +0.181 \\
 zero-shot SBERT (generic deviation keywords)   & 0.7484 & +0.308 \\
-\textbf{zenmind-mem v0.7.1 (curated anchors, top-3)} & \textbf{0.9232} & \textbf{+0.482} \\
+\textbf{nautilus-compass v0.7.1 (curated anchors, top-3)} & \textbf{0.9232} & \textbf{+0.482} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The gap between zero-shot SBERT and zenmind-mem v0.7.1
+The gap between zero-shot SBERT and nautilus-compass v0.7.1
 ($\Delta$~AUC~$+0.175$) isolates the contribution of curated
 task-shaped anchors, controlling for embedder choice. The
 zero-shot baseline is non-trivial---a sufficiently capable

@@ -27,7 +27,7 @@ try:
 except Exception:
     pass
 
-PLUGIN = Path.home() / ".claude" / "plugins" / "zenmind-mem"
+PLUGIN = Path.home() / ".claude" / "plugins" / "nautilus-compass"
 RECALL = PLUGIN / "recall.py"
 ANCHORS = PLUGIN / "anchors.json"
 CACHE = PLUGIN / ".cache"
@@ -70,7 +70,7 @@ def check(cond: bool, label: str, detail: str = ""):
 section("Test 1 · Hook 默认模式 (无 BGE) · 应 < 2s")
 out, lat = run_hook({"prompt": "测试"}, cwd=TEST_CWD)
 check(lat < 2.0, "hook latency", f"{lat:.2f}s")
-check("zenmind-mem-recall" in out, "标记输出")
+check("nautilus-compass-recall" in out, "标记输出")
 check("entries" in out, "entries 列出")
 check("BGE-bge-small-zh" not in out, "BGE 没启动 (默认快路径)")
 
@@ -130,14 +130,14 @@ check("entries" in out or len(out) < 10, "无 mapped project · 优雅 fallback"
 section("Test 6 · 边界 prompt")
 # 6a · 空 prompt
 out, lat = run_hook({"prompt": ""}, cwd=TEST_CWD)
-check("zenmind-mem-recall" in out, "空 prompt 不崩")
+check("nautilus-compass-recall" in out, "空 prompt 不崩")
 # 6b · 全 emoji
 out, lat = run_hook({"prompt": "🎉🚀✅⚠️💡"}, cwd=TEST_CWD)
-check("zenmind-mem-recall" in out, "全 emoji 不崩")
+check("nautilus-compass-recall" in out, "全 emoji 不崩")
 # 6c · 超长 prompt (3000 字)
 long_p = "V5 治理 " * 500
 out, lat = run_hook({"prompt": long_p}, cwd=TEST_CWD)
-check("zenmind-mem-recall" in out, "超长 prompt 不崩")
+check("nautilus-compass-recall" in out, "超长 prompt 不崩")
 
 
 # ── Test 7 · stdin 字段名兼容 ──
@@ -158,7 +158,7 @@ mem_dir = Path.home() / ".claude" / "projects" / "C--Users-chunx-Projects-nautil
 test_md = mem_dir / "_v5plugin_deeptest.md"
 test_md.write_text(
     "---\nname: v5plugin_deeptest\ndescription: 临时 deep test marker\ntype: project\n---\n"
-    "测试 zenmind-mem plugin 真按 mtime 增量 embed\n",
+    "测试 nautilus-compass plugin 真按 mtime 增量 embed\n",
     encoding="utf-8",
 )
 emb_cache = CACHE.glob("*_emb.pkl")

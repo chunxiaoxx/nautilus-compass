@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""mem0 vs zenmind-mem head-to-head on LongMemEval-S subset 12.
+"""mem0 vs nautilus-compass head-to-head on LongMemEval-S subset 12.
 
 For fair retrieval-only comparison:
   - Add each haystack session as a separate mem0 memory
@@ -161,7 +161,7 @@ def main():
         "by_type": {qt: {"P@5": m_["p5"]/m_["n"], "MRR": statistics.mean(m_["rrs"]) if m_["rrs"] else 0, "n": m_["n"]}
                     for qt, m_ in type_metrics.items()},
     }
-    out = Path.home() / ".claude/plugins/zenmind-mem/.cache/eval_mem0_headhead.json"
+    out = Path.home() / ".claude/plugins/nautilus-compass/.cache/eval_mem0_headhead.json"
     with open(out, "w", encoding="utf-8") as f:
         json.dump(summary, f, ensure_ascii=False, indent=2)
     print(f"\n  详细: {out}")
