@@ -1,0 +1,47 @@
+{
+  "dataset": "longmemeval_s",
+  "n": 12,
+  "embedder": "C:/Users/chunx/.cache/modelscope/hub/models/BAAI/bge-m3",
+  "P@1": 0.5833333333333334,
+  "P@3": 0.6666666666666666,
+  "P@5": 0.75,
+  "MRR": 0.66314568838288,
+  "by_type": {
+    "knowledge-update": {
+      "n": 2,
+      "P@1": 0.5,
+      "P@5": 1.0,
+      "MRR": 0.75
+    },
+    "multi-session": {
+      "n": 2,
+      "P@1": 0.5,
+      "P@5": 0.5,
+      "MRR": 0.5294117647058824
+    },
+    "single-session-assistant": {
+      "n": 2,
+      "P@1": 1.0,
+      "P@5": 1.0,
+      "MRR": 1.0
+    },
+    "single-session-preference": {
+      "n": 2,
+      "P@1": 1.0,
+      "P@5": 1.0,
+      "MRR": 1.0
+    },
+    "single-session-user": {
+      "n": 2,
+      "P@1": 0.0,
+      "P@5": 0.0,
+      "MRR": 0.09946236559139784
+    },
+    "temporal-reasoning": {
+      "n": 2,
+      "P@1": 0.5,
+      "P@5": 1.0,
+      "MRR": 0.6
+    }
+  }
+}
