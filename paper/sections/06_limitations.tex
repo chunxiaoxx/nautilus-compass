@@ -1,0 +1,59 @@
+% =============== Limitations & Future Work ====================================
+% Goal: 0.7-1 page · 4-6 limitation paragraphs
+% =============================================================================
+
+We highlight six known limitations of zenmind-mem v0.7.1 and the
+empirical evaluation in this paper.
+
+\paragraph{Synthetic drift test set.} Our 100-prompt drift evaluation
+set is hand-authored to cover canonical aligned and deviation
+patterns. AUC 0.92 reflects performance on this distribution; real
+production prompt distributions may differ. We have not yet conducted
+a longitudinal study on real user traces, in part because the user
+base of zenmind-mem is currently the authors and a small private
+deployment.
+
+\paragraph{Single-session-user retrieval ceiling.} On LongMemEval-S
+single-session-user questions, even with bge-reranker-v2-m3 we
+achieve MRR 0.522. The remaining gap is not closable by any
+embedding-based reranker: the questions ask for a specific factual
+claim (``What degree did I graduate with?'') buried in a 50-session
+chatty haystack. Closing this gap requires LLM-based reasoning over
+candidates, which is out of scope for our local-only deployment but
+trivial to add when API access is acceptable.
+
+\paragraph{Subset 12 is not the full benchmark.} Our LongMemEval-S
+results are on a balanced subset of 12 questions (2 per type). Per-type
+variance within the full 500 may yield different aggregate metrics.
+Running the full 500 takes approximately 75 minutes on m3 + CPU; we
+plan to publish the full-set numbers in the GitHub repository before
+journal-track submission.
+
+\paragraph{Cross-domain anchor profiles need expert review.} The
+legal, medical, and finance starter anchor sets we ship are written
+by software engineers reasoning about each domain's typical patterns,
+not by domain experts. Production deployment in any of these
+sensitive areas should involve review by qualified domain
+practitioners before relying on drift detection signals.
+
+\paragraph{Daemon caches a single anchor profile.} The current
+implementation cold-loads one anchor profile at daemon startup;
+switching profile requires daemon restart. Multi-profile in-memory
+caching with per-request profile selection is planned for v0.8.
+
+\paragraph{Windows m3 cold-load failure modes.} On Windows with
+Python 3.14, the Hugging Face Hub client (\texttt{httpx} backend)
+intermittently fails to download large models like bge-m3 (2.27~GB),
+showing zero-byte progress. We work around this via the ModelScope
+mirror but consider it a deployment-environment fragility rather
+than a fundamental fix. The recommended production setup is WSL2 or
+a Linux/macOS host.
+
+\paragraph{Future directions.} Beyond the items above, we are
+particularly interested in: (a) cross-anchor similarity analysis to
+detect anchor redundancy and over-coverage, (b) integration with
+white-box methods when activation access is available, (c)
+automated anchor generation from user history (current implementation
+is a regex-pattern v0.1; LLM-based v0.2 is on the roadmap), and
+(d) cross-language transfer of anchor sets via multilingual
+embedders.
