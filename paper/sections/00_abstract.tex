@@ -29,15 +29,18 @@ multilingual one, and (iv) adding hard false-positive examples back
 into the negative anchor set.
 
 We further evaluate the embedded retrieval pipeline on LongMemEval-S
-\citep{longmemeval2024}: on the full 500-question benchmark with
-bge-m3 alone we achieve P@5 = 0.860, MRR = 0.685; on the stratified
-subset-12 head-to-head with mem0 (Vertex AI \texttt{text-embedding-005},
-\texttt{infer=False}) under identical conditions, our pipeline with
-BGE-Reranker reaches P@5 = 0.917 and MRR = 0.837, against mem0's
-P@5 = 0.917, MRR = 0.715---tied on P@5 with a $+0.122$ MRR advantage
-(truth sessions ranked higher). Beyond detection, we ship adaptive
-anchor learning with eval-gated retraining, active-learning boundary
-sampling, and weighted deprecation of over-sensitive anchors.
+\citep{longmemeval2024}: on the full 500-question benchmark, bge-m3
+alone reaches P@5 = 0.860, MRR = 0.685; adding bge-reranker-v2-m3
+lifts this to P@5 = 0.920, MRR = 0.855 ($\Delta$ MRR $= +0.170$, with
+the largest gains on hard question types like single-session-user
+$+0.188$ and single-session-preference $+0.251$). On a stratified
+subset-12 head-to-head with mem0 (Vertex AI
+\texttt{text-embedding-005}, \texttt{infer=False}) under identical
+conditions, our pipeline with the same reranker matches mem0 at
+P@5 = 0.917 and exceeds it at MRR ($0.837$ vs $0.715$,
+$+17\%$ relative). Beyond detection, we ship adaptive anchor learning
+with eval-gated retraining, active-learning boundary sampling, and
+weighted deprecation of over-sensitive anchors.
 
 \textbf{Scope of claims.} This paper evaluates \emph{drift detection
 accuracy} together with a \emph{cross-vendor behavior-steering A/B}

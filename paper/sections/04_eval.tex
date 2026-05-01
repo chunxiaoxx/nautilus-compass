@@ -163,41 +163,61 @@ on a single CPU-only Windows host.
 
 \begin{table}[h]
 \centering
-\caption{LongMemEval-S retrieval on the full 500 questions. The
-bi-encoder is bge-m3 with no reranker.}
+\caption{LongMemEval-S retrieval on the full 500 questions. Reranker
+is bge-reranker-v2-m3 (cross-encoder) applied to top-50 bi-encoder
+candidates, returning top-5. GPU run: bi-encoder 169~min CPU and
+reranker eval 67~min on GTX 1060 6\,GB.}
 \label{tab:longmemeval-full}
 \begin{tabular}{lcccc}
 \toprule
 System (full 500) & P@1 & P@3 & P@5 & MRR \\
 \midrule
-nautilus-compass (bge-m3, no rerank)  & 0.576 & 0.726 & \textbf{0.860} & \textbf{0.685} \\
+nautilus-compass (bge-m3, no rerank)  & 0.576 & 0.726 & 0.860 & 0.685 \\
+\textbf{nautilus-compass (bge-m3 + bge-reranker)} & \textbf{0.802} & --- & \textbf{0.920} & \textbf{0.855} \\
+\midrule
+$\Delta$ from reranker                & $+0.226$ & --- & $+0.060$ & $+0.170$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \begin{table}[h]
 \centering
-\caption{Per-question-type breakdown on the full 500.
-single-session-assistant is near ceiling for bi-encoder
-($\mathrm{MRR} = 0.95$); single-session-user is the hardest
-($\mathrm{MRR} = 0.40$), reflecting the difficulty of locating
-a specific factual claim inside a long chatty session.}
+\caption{Per-question-type breakdown on the full 500. Bi-encoder vs.\
+bi-encoder + bge-reranker-v2-m3. The reranker dramatically improves
+the hardest types (\emph{single-session-user} MRR
+$0.398 \rightarrow 0.586$, \emph{single-session-preference}
+$0.537 \rightarrow 0.788$, \emph{knowledge-update}
+$0.635 \rightarrow 0.848$) while leaving already-saturated types
+unchanged.}
 \label{tab:longmemeval-pertype}
-\begin{tabular}{lcccc}
+\small
+\begin{tabular}{lcccccc}
 \toprule
-Question type & $n$ & P@1 & P@5 & MRR \\
+\multirow{2}{*}{Question type} & \multirow{2}{*}{$n$}
+  & \multicolumn{2}{c}{bi-encoder only} & \multicolumn{2}{c}{+ reranker}
+  & $\Delta$ MRR \\
+  & & P@5 & MRR & P@5 & MRR & \\
 \midrule
-knowledge-update              &  78 & 0.49 & 0.85 & 0.635 \\
-multi-session                 & 133 & 0.64 & 0.94 & 0.741 \\
-single-session-assistant      &  56 & \textbf{0.93} & \textbf{0.96} & \textbf{0.950} \\
-single-session-preference     &  30 & 0.37 & 0.73 & 0.537 \\
-single-session-user           &  70 & 0.24 & 0.59 & 0.398 \\
-temporal-reasoning            & 133 & 0.64 & 0.92 & 0.730 \\
+knowledge-update              &  78 & 0.85 & 0.635 & 0.91 & \textbf{0.848} & $+0.213$ \\
+multi-session                 & 133 & 0.94 & 0.741 & 0.96 & \textbf{0.920} & $+0.179$ \\
+single-session-assistant      &  56 & 0.96 & \textbf{0.950} & 0.98 & 0.939 & $-0.011$ \\
+single-session-preference     &  30 & 0.73 & 0.537 & 0.93 & \textbf{0.788} & $+0.251$ \\
+single-session-user           &  70 & 0.59 & 0.398 & 0.70 & \textbf{0.586} & $+0.188$ \\
+temporal-reasoning            & 133 & 0.92 & 0.730 & 0.97 & \textbf{0.914} & $+0.184$ \\
 \midrule
-overall                       & 500 & 0.576 & 0.860 & 0.685 \\
+overall                       & 500 & 0.860 & 0.685 & \textbf{0.920} & \textbf{0.855} & $+0.170$ \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+The reranker re-evaluation on the full 500 (using GPU acceleration on
+a GTX 1060 6\,GB, 67~min wall clock) closes the loop on the subset-12
+reranker-lift result reported in
+Section~\ref{sec:eval-rerank-mem0} below: the same $+0.10$+ MRR gain
+seen on subset 12 generalizes to $+0.170$ on the full 500, with no
+ceiling artifact and consistent direction across all 6 question types
+(except single-session-assistant, which is already at MRR $0.95$ for
+bi-encoder alone).
 
 \paragraph{Subset 12 vs.\ full 500.}
 We previously reported subset-12 numbers ($n=12$, 2 per type)
@@ -212,17 +232,18 @@ single-session-assistant where bi-encoder is near ceiling. We treat
 the full 500 as the primary benchmark and report subset 12 only
 for the reranker and mem0 comparisons that follow.
 
-\subsection{Reranker Lift and mem0 Head-to-Head (Subset 12)}
+\subsection{mem0 Head-to-Head (Subset 12)}
 \label{sec:eval-rerank-mem0}
 
-For two ablations that require additional per-question
-setup---bge-reranker-v2-m3 cross-encoder reranking, and a head-to-head
-comparison with mem0 \citep{mem0} using Vertex AI
-\texttt{text-embedding-005} as the embedder with
-\texttt{infer=False} (raw session storage, skipping mem0's
-LLM-based memory extraction)---we evaluate on the stratified subset
-of 12 questions. The reranker pipeline is bi-encoder retrieve top-50,
-then cross-encoder rerank to top-5.
+The reranker lift is now reported on the full 500
+(Table~\ref{tab:longmemeval-pertype}). For the head-to-head
+comparison with mem0 \citep{mem0}---using Vertex AI
+\texttt{text-embedding-005} as the embedder with \texttt{infer=False}
+(raw session storage, skipping mem0's LLM-based memory extraction)---we
+retain the stratified subset of 12 questions because re-running mem0
+at full scale requires resetting and re-populating its index per
+question (approximately 30 seconds of Vertex AI calls per question,
+making full-500 prohibitive).
 
 \begin{table}[h]
 \centering
@@ -278,13 +299,16 @@ temporal-reasoning ($+0.25$).}
 \label{fig:longmemeval-pertype}
 \end{figure}
 
-\paragraph{Why subset 12 for reranker / mem0.}
-The reranker doubles wall-clock cost, and the mem0 head-to-head
-requires resetting and re-populating mem0's index per question
-(approximately 30\,s/question with Vertex AI calls). Subset 12 with
-balanced per-type sampling allows reproducible comparisons within
-practical compute budget; the full-500 reranker re-evaluation is
-in progress and will be reported in the journal version.
+\paragraph{Why subset 12 for mem0.}
+The mem0 head-to-head requires resetting and re-populating mem0's
+index per question (approximately 30\,s/question of Vertex AI calls),
+making full-500 prohibitive. Subset 12 with balanced per-type sampling
+allows a reproducible direct comparison within a practical compute
+budget. The reranker numbers, in contrast, are now reported on the
+full 500 (Table~\ref{tab:longmemeval-pertype}); subset-12 P@5$=0.917$
+and MRR$=0.837$ from the table above are consistent with the full-500
+P@5$=0.920$, MRR$=0.855$, validating the subset-12 reranker result at
+scale.
 
 \subsection{Local Recall Sanity Check}
 \label{sec:eval-recall}

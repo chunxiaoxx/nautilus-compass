@@ -47,27 +47,27 @@ This is on a small in-domain Chinese corpus. The numbers are correspondingly hig
 
 [LongMemEval](https://arxiv.org/abs/2410.10813) (Wu et al., NeurIPS 2024) — 500 question-haystack pairs across 6 question types. Each haystack has ~50 candidate sessions.
 
-### Full 500 · bge-m3 bi-encoder only (no rerank)
+### Full 500 · primary benchmark (bi-encoder + reranker)
 
-| Metric | Value |
-|---|---|
-| **P@1** | **0.576** |
-| **P@3** | **0.726** |
-| **P@5** | **0.860** |
-| **MRR** | **0.685** |
+| System | P@1 | P@5 | MRR |
+|---|---|---|---|
+| bge-m3 (no rerank) | 0.576 | 0.860 | 0.685 |
+| **bge-m3 + bge-reranker-v2-m3** | **0.802** | **0.920** | **0.855** |
+| **Δ from reranker** | **+0.226** | **+0.060** | **+0.170** |
 
-Total runtime: 169 min (CPU · Windows · Python 3.14).
+Runtime: 169 min CPU bi-encoder · 67 min GPU (GTX 1060 6GB) reranker.
 
 ### Per-question-type breakdown · full 500
 
-| Question type | n | P@1 | P@5 | MRR |
-|---|---|---|---|---|
-| knowledge-update | 78 | 0.49 | 0.85 | 0.635 |
-| multi-session | 133 | 0.64 | **0.94** | 0.741 |
-| single-session-assistant | 56 | **0.93** | **0.96** | **0.950** |
-| single-session-preference | 30 | 0.37 | 0.73 | 0.537 |
-| single-session-user | 70 | 0.24 | 0.59 | 0.398 |
-| temporal-reasoning | 133 | 0.64 | 0.92 | 0.730 |
+| Question type | n | bi-encoder P@5 | bi-encoder MRR | + reranker P@5 | + reranker MRR | Δ MRR |
+|---|---|---|---|---|---|---|
+| knowledge-update | 78 | 0.85 | 0.635 | 0.91 | **0.848** | +0.213 |
+| multi-session | 133 | 0.94 | 0.741 | 0.96 | **0.920** | +0.179 |
+| single-session-assistant | 56 | 0.96 | **0.950** | 0.98 | 0.939 | -0.011 |
+| single-session-preference | 30 | 0.73 | 0.537 | 0.93 | **0.788** | +0.251 |
+| single-session-user | 70 | 0.59 | 0.398 | 0.70 | **0.586** | +0.188 |
+| temporal-reasoning | 133 | 0.92 | 0.730 | 0.97 | **0.914** | +0.184 |
+| **overall** | **500** | **0.860** | **0.685** | **0.920** | **0.855** | **+0.170** |
 
 **Reproduce**: `python tests/eval_longmemeval.py --full`
 
@@ -140,7 +140,7 @@ P@5 打平在 0.917, but **nautilus-compass MRR +0.122 优势** = truth session 
 | nautilus-compass m3 baseline only | 0.75 |
 | mem0 (claimed retrieval-only baselines, paper) | ~0.5-0.6 |
 
-⚠️ Reranker numbers are on subset 12 only (per-question setup cost). Full 500 reranker re-eval running on GPU as of 2026-04-30; ETA ~55 min.
+✅ Full 500 reranker re-eval landed (GTX 1060 6GB · 67 min): subset-12 numbers (P@5=0.917, MRR=0.837) generalize at scale to P@5=0.920, MRR=0.855 — confirming the subset-12 result was not a sample-size artifact.
 
 **Note on debugging trajectory** (lessons): on subset 4, reranker showed +0.001 MRR (apparently null). On subset 12, reranker shows +0.105 MRR (clearly significant). The subset 4 sample size masked the signal because the one single-session-user question in subset 4 had its truth at rank 26 (out of top-50 retrieve window), beyond what the reranker could reach. **Lesson: don't conclude from n=4.**
 

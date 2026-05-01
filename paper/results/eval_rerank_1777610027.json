@@ -1,0 +1,59 @@
+{
+  "embedder": "C:\\Users\\chunx\\.cache\\modelscope\\hub\\models\\BAAI\\bge-m3",
+  "reranker": "C:\\Users\\chunx\\.cache\\modelscope\\hub\\models\\BAAI\\bge-reranker-v2-m3",
+  "n": 500,
+  "baseline": {
+    "P@1": 0.576,
+    "P@5": 0.86,
+    "MRR": 0.6846808368034684
+  },
+  "rerank": {
+    "P@1": 0.802,
+    "P@5": 0.92,
+    "MRR": 0.8547579208891354
+  },
+  "by_type": {
+    "single-session-user": {
+      "baseline_MRR": 0.3983551890882718,
+      "rerank_MRR": 0.5855619825443971,
+      "baseline_P@5": 0.5857142857142857,
+      "rerank_P@5": 0.7,
+      "n": 70
+    },
+    "multi-session": {
+      "baseline_MRR": 0.7409177706170187,
+      "rerank_MRR": 0.9200678394287417,
+      "baseline_P@5": 0.9398496240601504,
+      "rerank_P@5": 0.9624060150375939,
+      "n": 133
+    },
+    "single-session-preference": {
+      "baseline_MRR": 0.537255291005291,
+      "rerank_MRR": 0.7879761904761905,
+      "baseline_P@5": 0.7333333333333333,
+      "rerank_P@5": 0.9333333333333333,
+      "n": 30
+    },
+    "temporal-reasoning": {
+      "baseline_MRR": 0.7301659151095241,
+      "rerank_MRR": 0.9144801713880661,
+      "baseline_P@5": 0.9172932330827067,
+      "rerank_P@5": 0.9699248120300752,
+      "n": 133
+    },
+    "knowledge-update": {
+      "baseline_MRR": 0.634514097014097,
+      "rerank_MRR": 0.8480857513945749,
+      "baseline_P@5": 0.8461538461538461,
+      "rerank_P@5": 0.9102564102564102,
+      "n": 78
+    },
+    "single-session-assistant": {
+      "baseline_MRR": 0.9498511904761905,
+      "rerank_MRR": 0.9393707482993198,
+      "baseline_P@5": 0.9642857142857143,
+      "rerank_P@5": 0.9821428571428571,
+      "n": 56
+    }
+  }
+}
