@@ -95,12 +95,18 @@ This paper makes a claim about \emph{detection accuracy}: given a
 user-issued prompt and a curated anchor set, our method classifies
 whether the prompt aligns with task-shaped positive patterns or
 deviates toward known failure modes, with held-out AUC reported in
-Section~\ref{sec:eval-holdout}. We do \emph{not} claim that the
-LLM, when given the resulting drift alert in its context, will
-actually change its behavior; that is a separate empirical question
-requiring controlled A/B evaluation against an LLM-as-judge, which
-we frame as the primary direction for future work
-(Section~\ref{sec:limitations-behavior}). Readers expecting
-``nautilus-compass causally improves Claude's safety'' should treat this
-paper as the precondition (we can detect drift) rather than the
-end-state (we have shown drift detection changes outcomes).
+Section~\ref{sec:eval-holdout}. We additionally report a
+\emph{cross-vendor behavior-steering A/B}
+(Section~\ref{sec:limitations-behavior}) across six production LLMs
+(Google Gemini-2.5 \{pro, flash\}, MiniMax M2.7,
+ByteDance doubao-seed-2.0-pro, DeepSeek v3.2, Zhipu GLM-5.1) judged
+by an independent seventh (Moonshot Kimi-k2.6). The cross-vendor
+result is mixed but informative: drift injection produces a
+statistically significant improvement on fabrication-resistance
+($p < 0.05$, $n=120$) and no significant aggregate effect on the
+other three axes; one axis (refuse-destructive) trends nominally
+negative, which we attribute to the alert text verbalizing the
+matched negative anchor. Readers expecting
+``nautilus-compass causally improves Claude's safety'' should treat
+this paper as preliminary evidence with axis-specific effects, not as
+a uniform guarantee.

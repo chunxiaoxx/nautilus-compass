@@ -181,38 +181,49 @@ def call_subject_llm(prompt: str, system: str = "") -> str:
             data = json.loads(resp.read())
         return data["choices"][0]["message"]["content"]
 
-    if provider in ("deepseek", "zhipu", "moonshot", "openai"):
-        # All OpenAI-compatible
+    if provider in ("deepseek", "zhipu", "moonshot", "openai", "ark"):
+        # All OpenAI-compatible · ark = 火山方舟 unified proxy (doubao + deepseek
+        # + kimi + glm + minimax behind one API key)
         from openai import OpenAI
         endpoints = {
             "deepseek": "https://api.deepseek.com/v1",
             "zhipu":    "https://open.bigmodel.cn/api/paas/v4",
             "moonshot": "https://api.moonshot.cn/v1",
             "openai":   None,  # default
+            "ark":      "https://ark.cn-beijing.volces.com/api/coding/v3",
         }
         keys_env = {
             "deepseek": "DEEPSEEK_API_KEY",
             "zhipu":    "ZHIPU_API_KEY",
             "moonshot": "MOONSHOT_API_KEY",
             "openai":   "OPENAI_API_KEY",
+            "ark":      "ARK_API_KEY",
         }
         models = {
             "deepseek": "deepseek-chat",
             "zhipu":    "glm-4-flash",
             "moonshot": "moonshot-v1-8k",
             "openai":   "gpt-4o-mini",
+            "ark":      "doubao-seed-2.0-pro",
         }
+        # 默认 60s 不够 · 思考模型可达 120s+
         client = OpenAI(
             api_key=os.environ[keys_env[provider]],
             base_url=endpoints[provider],
+            timeout=float(os.environ.get("ZMM_REQ_TIMEOUT", "180")),
+            max_retries=2,
         )
+        # Thinking models (kimi-k2.x · deepseek-v3.x · doubao-seed-2.0-pro 大段 reasoning)
+        # 易把 max_tokens 全花在 thinking · 留 0 给 output.
+        # 给 ZMM_MAX_TOKENS env 单独配 · 默认 1024 仍兼容老调用.
+        max_tok = int(os.environ.get("ZMM_MAX_TOKENS", "1024"))
         resp = client.chat.completions.create(
             model=os.environ.get("ZMM_SUBJECT_MODEL", models[provider]),
             messages=([{"role": "system", "content": system}] if system else []) +
                      [{"role": "user", "content": prompt}],
-            max_tokens=1024,
+            max_tokens=max_tok,
         )
-        return resp.choices[0].message.content
+        return resp.choices[0].message.content or ""
 
     if provider == "gemini":
         import vertexai
@@ -225,6 +236,28 @@ def call_subject_llm(prompt: str, system: str = "") -> str:
         resp = m.generate_content(full, generation_config={"max_output_tokens": 2048})
         return resp.text
 
+    if provider == "gemini-api":
+        # Direct Google AI API · uses GEMINI_API_KEY (no GCP service account needed)
+        # gemini-2.5-{flash,pro} both consume thinking tokens · max_output_tokens 2048+
+        import urllib.request
+        key = os.environ["GEMINI_API_KEY"]
+        model = os.environ.get("ZMM_SUBJECT_MODEL", "gemini-2.5-flash")
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={key}"
+        full = (system + "\n\n" + prompt) if system else prompt
+        body = json.dumps({
+            "contents": [{"parts": [{"text": full}]}],
+            "generationConfig": {"maxOutputTokens": 2048, "temperature": 0.2},
+        }).encode("utf-8")
+        req = urllib.request.Request(url, data=body,
+            headers={"Content-Type": "application/json"})
+        with urllib.request.urlopen(req, timeout=60) as resp:
+            data = json.loads(resp.read())
+        cands = data.get("candidates", [])
+        if not cands or not cands[0].get("content"):
+            return ""
+        parts = cands[0]["content"].get("parts", [])
+        return "".join(p.get("text", "") for p in parts)
+
     raise ValueError(f"Unknown ZMM_SUBJECT_PROVIDER={provider!r}")
 
 
@@ -233,34 +266,52 @@ def call_judge_llm(user_prompt: str, ai_response: str) -> dict:
     judge = os.environ.get("ZMM_JUDGE_PROVIDER", "gemini")
     judge_prompt = JUDGE_PROMPT.format(user_prompt=user_prompt, ai_response=ai_response)
 
-    # judge 用 subject_llm 同机制 · 临时切 provider + clear MODEL (让 default 生效)
+    # judge 用 subject_llm 同机制 · 临时切 provider + 切 MODEL + bump max_tokens
+    # ZMM_JUDGE_MODEL 优先 · 否则 fall back 到该 provider 默认
+    # judge 默认 max_tokens=4096 · thinking models (kimi/deepseek) 留够空间
     saved_p = os.environ.get("ZMM_SUBJECT_PROVIDER", "")
     saved_m = os.environ.get("ZMM_SUBJECT_MODEL", "")
+    saved_t = os.environ.get("ZMM_MAX_TOKENS", "")
     os.environ["ZMM_SUBJECT_PROVIDER"] = judge
-    # 让 each provider 用自己的 default model · 不要 inherit subject 的 model
-    os.environ.pop("ZMM_SUBJECT_MODEL", None)
+    judge_model = os.environ.get("ZMM_JUDGE_MODEL", "")
+    if judge_model:
+        os.environ["ZMM_SUBJECT_MODEL"] = judge_model
+    else:
+        os.environ.pop("ZMM_SUBJECT_MODEL", None)
+    os.environ["ZMM_MAX_TOKENS"] = os.environ.get("ZMM_JUDGE_MAX_TOKENS", "4096")
     try:
         raw = call_subject_llm(judge_prompt)
     finally:
-        if saved_p:
-            os.environ["ZMM_SUBJECT_PROVIDER"] = saved_p
-        else:
-            os.environ.pop("ZMM_SUBJECT_PROVIDER", None)
-        if saved_m:
-            os.environ["ZMM_SUBJECT_MODEL"] = saved_m
+        if saved_p: os.environ["ZMM_SUBJECT_PROVIDER"] = saved_p
+        else:       os.environ.pop("ZMM_SUBJECT_PROVIDER", None)
+        if saved_m: os.environ["ZMM_SUBJECT_MODEL"] = saved_m
+        else:       os.environ.pop("ZMM_SUBJECT_MODEL", None)
+        if saved_t: os.environ["ZMM_MAX_TOKENS"] = saved_t
+        else:       os.environ.pop("ZMM_MAX_TOKENS", None)
 
-    # 解 JSON
+    # 解 JSON · 容错 thinking tag · markdown fence · 多个 JSON 取最后一个
+    raw = (raw or "").strip()
+    import re as _re
+    # 去 thinking blocks (kimi/deepseek)
+    raw = _re.sub(r"<think(?:ing)?>.*?</think(?:ing)?>", "", raw, flags=_re.DOTALL)
+    raw = raw.strip()
+    # 去 markdown fence
+    raw = _re.sub(r"^```(?:json)?\s*", "", raw)
+    raw = _re.sub(r"\s*```$", "", raw)
+    # 抓最后一个 {...} (避免 prose 里的 example JSON 干扰)
+    matches = _re.findall(r"\{[^{}]*\"verify\"[^{}]*\}", raw, flags=_re.DOTALL)
+    if matches:
+        raw = matches[-1]
     try:
-        # 容忍 ```json fence
-        raw = raw.strip()
-        if "```" in raw:
-            import re as _re
-            m = _re.search(r"\{[^{}]*\}", raw)
-            if m: raw = m.group(0)
         d = json.loads(raw)
         return {k: float(d.get(k, 0.5)) for k in ("verify", "destruct", "secret", "fabricate")}
     except Exception:
-        return {"verify": 0.5, "destruct": 0.5, "secret": 0.5, "fabricate": 0.5}
+        # 最后回退: regex 抽 4 个 score
+        scores = {}
+        for k in ("verify", "destruct", "secret", "fabricate"):
+            m = _re.search(rf'"{k}"\s*:\s*([01]?\.\d+|[01](?:\.0+)?)', raw)
+            scores[k] = float(m.group(1)) if m else 0.5
+        return scores
 
 
 def run_ab(n: int, dry_run: bool = False):
@@ -296,9 +347,17 @@ def run_ab(n: int, dry_run: bool = False):
             resp_b = call_subject_llm(prompt_b)
         except Exception as e:
             resp_b = f"[ERROR B: {e}]"
-        # judge both
-        score_a = call_judge_llm(p, resp_a)
-        score_b = call_judge_llm(p, resp_b)
+        # judge both · wrap to prevent single timeout from killing the whole subject
+        try:
+            score_a = call_judge_llm(p, resp_a)
+        except Exception as e:
+            sys.stderr.write(f"  [judge A fail i={i}: {e}]\n")
+            score_a = {"verify": 0.5, "destruct": 0.5, "secret": 0.5, "fabricate": 0.5}
+        try:
+            score_b = call_judge_llm(p, resp_b)
+        except Exception as e:
+            sys.stderr.write(f"  [judge B fail i={i}: {e}]\n")
+            score_b = {"verify": 0.5, "destruct": 0.5, "secret": 0.5, "fabricate": 0.5}
         results.append({
             "prompt": p, "had_injection": bool(prefix),
             "response_a": resp_a, "response_b": resp_b,
