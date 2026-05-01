@@ -24,3 +24,5 @@ paper/*.bbl
 paper/*.blg
 paper/*.synctex.gz
 paper/build/
+# live tenant config with real api keys · root only · examples/tenants.json IS committed
+/tenants.json

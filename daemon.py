@@ -78,6 +78,9 @@ def log(msg: str) -> None:
 _state = {
     "embedder": None,
     "anchor_cache": None,
+    # v0.7.2 · multi-profile cache · keyed by abs anchors path
+    # {path_str: {mtime, pos_anchors, pos_embs, pos_weights, neg_anchors, neg_embs, neg_weights, n_pos, n_neg, raw}}
+    "anchor_caches": {},
     "memory_caches": {},   # {project_dir: {file_path: (mtime, embedding)}}
     "lock": threading.Lock(),
 }
@@ -205,18 +208,29 @@ def get_memory_entries(mem_dir: Path):
     return entries
 
 
-def get_anchors():
-    if not ANCHORS_PATH.exists():
+def get_anchors(anchors_path: Path | None = None):
+    """Load + embed anchor profile · cached by absolute path.
+
+    v0.7.2: multi-profile cache. Each unique path keeps its own embedded
+    set in `_state['anchor_caches']`. `_state['anchor_cache']` (singular)
+    kept as alias for the most recently loaded profile for back-compat
+    with code that doesn't pass anchors_path.
+    """
+    p = anchors_path if anchors_path is not None else ANCHORS_PATH
+    if not p.exists():
         return None
-    cur_mtime = ANCHORS_PATH.stat().st_mtime
-    if _state["anchor_cache"] and _state["anchor_cache"]["mtime"] == cur_mtime:
-        return _state["anchor_cache"]
+    cur_mtime = p.stat().st_mtime
+    key = str(p.resolve())
+    cached = _state["anchor_caches"].get(key)
+    if cached and cached["mtime"] == cur_mtime:
+        _state["anchor_cache"] = cached  # back-compat alias
+        return cached
     embedder = get_embedder()
     def _enc(s):
         v = embedder.encode(s)
         return v.tolist() if hasattr(v, "tolist") else v
     try:
-        data = json.loads(ANCHORS_PATH.read_text(encoding="utf-8"))
+        data = json.loads(p.read_text(encoding="utf-8"))
         # v0.7.1 · 兼容新旧 schema:
         #   旧: ["text1", "text2"]
         #   新: [{"text":"...", "weight":1.0, "tp":0, "fp":0}]
@@ -245,12 +259,16 @@ def get_anchors():
                   "neg_anchors":neg, "neg_embs":neg_embs, "neg_weights":neg_w,
                   "n_pos":len(pos), "n_neg":len(neg),
                   "raw": data}
-        _state["anchor_cache"] = result
-        with open(CACHE_DIR / "anchors.pkl", "wb") as f:
-            pickle.dump(result, f)
+        _state["anchor_caches"][key] = result
+        _state["anchor_cache"] = result   # back-compat alias to most recent
+        # only persist the default anchors.json profile; per-tenant profiles
+        # stay in-memory to avoid cross-tenant leakage to disk
+        if p == ANCHORS_PATH:
+            with open(CACHE_DIR / "anchors.pkl", "wb") as f:
+                pickle.dump(result, f)
         return result
     except Exception as e:
-        log(f"anchor build fail: {e}")
+        log(f"anchor build fail for {p.name}: {e}")
         return None
 
 
@@ -308,7 +326,9 @@ def handle_request(req: dict) -> dict:
             ]
 
         if action in ("drift", "both"):
-            anchors = get_anchors()
+            # v0.7.2 · per-request anchor profile (gateway passes anchors_path)
+            ap = req.get("anchors_path")
+            anchors = get_anchors(Path(ap) if ap else None)
             if anchors:
                 # v0.7.1 · Weighted top-k mean scoring
                 # 每个 anchor 一个 weight (默认 1.0 · adaptive learning 调整)

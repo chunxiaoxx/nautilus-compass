@@ -19,9 +19,11 @@ Or via Dockerfile / docker-compose (see ops/docker-compose.yml).
 """
 from __future__ import annotations
 
+import collections
 import json
 import os
 import socket
+import threading
 import time
 from pathlib import Path
 from typing import Any
@@ -32,7 +34,7 @@ from pydantic import BaseModel, Field
 
 PROTOCOL_VERSION = "2024-11-05"
 SERVER_NAME = "nautilus-compass-gateway"
-SERVER_VERSION = "0.7.0"
+SERVER_VERSION = "0.7.2"
 
 DAEMON_HOST = os.environ.get("COMPASS_DAEMON_HOST", "127.0.0.1")
 DAEMON_PORT = int(os.environ.get("COMPASS_DAEMON_PORT", "9876"))
@@ -41,6 +43,76 @@ DEFAULT_TENANT = os.environ.get("COMPASS_DEFAULT_TENANT", "default")
 PLUGIN_DIR = Path(__file__).resolve().parent
 CACHE_DIR = PLUGIN_DIR / ".cache"
 TENANT_ANCHOR_DIR = Path(os.environ.get("COMPASS_ANCHOR_DIR", str(PLUGIN_DIR)))
+TENANTS_FILE = Path(os.environ.get(
+    "COMPASS_TENANTS_FILE", str(PLUGIN_DIR / "tenants.json")))
+# auth modes: "none" (no key check) · "header" (X-API-Key required when tenant has non-null key)
+AUTH_MODE = os.environ.get("COMPASS_AUTH_MODE", "header").lower()
+
+
+# ─── tenant config + rate limiting (in-memory · k8s autoscale will need redis) ───
+
+_tenants_cache: dict = {"mtime": 0.0, "data": None}
+_rate_buckets: dict = collections.defaultdict(collections.deque)
+_rate_lock = threading.Lock()
+
+
+def load_tenants() -> dict:
+    """Reload tenants.json if file mtime changed · 0 cost on no-change."""
+    if not TENANTS_FILE.exists():
+        return {"tenants": {"default": {"api_key": None, "anchors_profile": "anchors.json", "rate_limit_per_min": 0}}}
+    try:
+        m = TENANTS_FILE.stat().st_mtime
+        if _tenants_cache["data"] is not None and m == _tenants_cache["mtime"]:
+            return _tenants_cache["data"]
+        data = json.loads(TENANTS_FILE.read_text(encoding="utf-8"))
+        _tenants_cache["mtime"] = m
+        _tenants_cache["data"] = data
+        return data
+    except Exception:
+        return _tenants_cache["data"] or {"tenants": {}}
+
+
+def get_tenant_config(tenant: str) -> dict:
+    cfg = load_tenants().get("tenants", {})
+    return cfg.get(tenant, cfg.get("default", {}))
+
+
+def authorize(tenant: str, api_key: str | None) -> dict:
+    """Check API key · raise HTTPException on failure · return tenant config."""
+    cfg = get_tenant_config(tenant)
+    if not cfg:
+        raise HTTPException(401, f"unknown tenant: {tenant}")
+    expected = cfg.get("api_key")
+    if AUTH_MODE == "none" or expected is None:
+        return cfg
+    if not api_key or api_key != expected:
+        raise HTTPException(401, "invalid or missing X-API-Key")
+    return cfg
+
+
+def check_rate_limit(tenant: str, cfg: dict):
+    """Sliding-window per-minute rate limit · 429 on exceed."""
+    rpm = int(cfg.get("rate_limit_per_min", 0) or 0)
+    if rpm <= 0:
+        return
+    now = time.time()
+    cutoff = now - 60.0
+    with _rate_lock:
+        bucket = _rate_buckets[tenant]
+        while bucket and bucket[0] < cutoff:
+            bucket.popleft()
+        if len(bucket) >= rpm:
+            raise HTTPException(429, f"rate limit exceeded ({rpm}/min for tenant={tenant})")
+        bucket.append(now)
+
+
+def resolve_anchors_path(cfg: dict) -> str | None:
+    """Map tenant config → absolute anchors path passed to daemon."""
+    profile = cfg.get("anchors_profile") or "anchors.json"
+    candidate = TENANT_ANCHOR_DIR / profile
+    if not candidate.exists():
+        candidate = TENANT_ANCHOR_DIR / "anchors.json"
+    return str(candidate.resolve()) if candidate.exists() else None
 
 app = FastAPI(
     title="Nautilus Compass Gateway",
@@ -165,16 +237,19 @@ def do_recall(args: dict, tenant: str) -> dict:
     }
 
 
-def do_drift_check(args: dict, tenant: str) -> dict:
+def do_drift_check(args: dict, tenant: str, tenant_cfg: dict | None = None) -> dict:
     prompt = (args.get("prompt") or "").strip()
     if not prompt:
         raise HTTPException(400, "prompt required")
     project = _resolve_project(args.get("project")) or "C--Users-chunx"
-    # Note: anchors are loaded by daemon side via env or anchors.json mtime poll.
-    # Tenant routing is currently a logged annotation; full per-tenant anchor switching
-    # requires daemon-side multi-anchor profile cache (next iteration).
+    # v0.7.2 · per-tenant anchor profile: gateway resolves the absolute path
+    # and passes it to daemon, which keeps a multi-profile cache.
+    anchors_path = resolve_anchors_path(tenant_cfg or get_tenant_config(tenant))
+    daemon_req = {"action": "drift", "query": prompt, "project": project, "top_k": 1}
+    if anchors_path:
+        daemon_req["anchors_path"] = anchors_path
     try:
-        res = daemon_call({"action": "drift", "query": prompt, "project": project, "top_k": 1})
+        res = daemon_call(daemon_req)
     except Exception as e:
         raise HTTPException(503, f"daemon unreachable: {e}")
     if not res.get("ok"):
@@ -257,11 +332,23 @@ TOOL_SCHEMAS = [
 
 # ─── REST endpoints ────────────────────────────────────────────────
 
+def _gate(tenant: str, api_key: str | None) -> dict:
+    """Run auth + rate-limit · return tenant config or raise HTTPException."""
+    cfg = authorize(tenant, api_key)
+    check_rate_limit(tenant, cfg)
+    return cfg
+
+
 @app.post("/v1/recall")
-def post_recall(req: RecallReq, x_tenant_id: str | None = Header(default=None)):
+def post_recall(
+    req: RecallReq,
+    x_tenant_id: str | None = Header(default=None),
+    x_api_key: str | None = Header(default=None),
+):
     tenant = x_tenant_id or DEFAULT_TENANT
     t0 = time.time()
     try:
+        _gate(tenant, x_api_key)
         out = do_recall(req.model_dump(exclude_none=True), tenant)
         log_request(tenant, "recall", True, int((time.time() - t0) * 1000),
                     {"hits": len(out.get("hits", []))})
@@ -272,13 +359,19 @@ def post_recall(req: RecallReq, x_tenant_id: str | None = Header(default=None)):
 
 
 @app.post("/v1/drift_check")
-def post_drift(req: DriftReq, x_tenant_id: str | None = Header(default=None)):
+def post_drift(
+    req: DriftReq,
+    x_tenant_id: str | None = Header(default=None),
+    x_api_key: str | None = Header(default=None),
+):
     tenant = x_tenant_id or DEFAULT_TENANT
     t0 = time.time()
     try:
-        out = do_drift_check(req.model_dump(exclude_none=True), tenant)
+        cfg = _gate(tenant, x_api_key)
+        out = do_drift_check(req.model_dump(exclude_none=True), tenant, cfg)
         log_request(tenant, "drift_check", True, int((time.time() - t0) * 1000),
-                    {"alert": out.get("should_alert"), "score": out.get("score")})
+                    {"alert": out.get("should_alert"), "score": out.get("score"),
+                     "profile": cfg.get("anchors_profile")})
         return out
     except HTTPException:
         log_request(tenant, "drift_check", False, int((time.time() - t0) * 1000))
@@ -286,13 +379,22 @@ def post_drift(req: DriftReq, x_tenant_id: str | None = Header(default=None)):
 
 
 @app.post("/v1/feedback_log")
-def post_feedback(req: FeedbackReq, x_tenant_id: str | None = Header(default=None)):
+def post_feedback(
+    req: FeedbackReq,
+    x_tenant_id: str | None = Header(default=None),
+    x_api_key: str | None = Header(default=None),
+):
     tenant = x_tenant_id or DEFAULT_TENANT
     t0 = time.time()
-    out = do_feedback_log(req.model_dump(), tenant)
-    log_request(tenant, "feedback_log", True, int((time.time() - t0) * 1000),
-                {"direction": req.direction})
-    return out
+    try:
+        _gate(tenant, x_api_key)
+        out = do_feedback_log(req.model_dump(), tenant)
+        log_request(tenant, "feedback_log", True, int((time.time() - t0) * 1000),
+                    {"direction": req.direction})
+        return out
+    except HTTPException:
+        log_request(tenant, "feedback_log", False, int((time.time() - t0) * 1000))
+        raise
 
 
 # ─── MCP-over-HTTP endpoints ───────────────────────────────────────
@@ -312,14 +414,23 @@ def mcp_tools_list():
 
 
 @app.post("/mcp/tools/call")
-def mcp_tools_call(req: MCPToolCallReq, x_tenant_id: str | None = Header(default=None)):
+def mcp_tools_call(
+    req: MCPToolCallReq,
+    x_tenant_id: str | None = Header(default=None),
+    x_api_key: str | None = Header(default=None),
+):
     tenant = x_tenant_id or DEFAULT_TENANT
     fn = TOOL_FNS.get(req.name)
     if not fn:
         raise HTTPException(404, f"unknown tool: {req.name}")
     t0 = time.time()
     try:
-        result = fn(req.arguments, tenant)
+        cfg = _gate(tenant, x_api_key)
+        # drift_check accepts cfg as 3rd arg · others ignore extras via kwargs check
+        try:
+            result = fn(req.arguments, tenant, cfg) if req.name == "drift_check" else fn(req.arguments, tenant)
+        except TypeError:
+            result = fn(req.arguments, tenant)
         log_request(tenant, req.name, True, int((time.time() - t0) * 1000))
         return {"content": [{"type": "text", "text": json.dumps(result, ensure_ascii=False, indent=2)}]}
     except HTTPException as he:
