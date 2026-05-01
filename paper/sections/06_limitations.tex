@@ -6,21 +6,104 @@ We highlight \textbf{seven} known limitations of nautilus-compass v0.7.1
 and the empirical evaluation in this paper. The first is the most
 consequential and should be read carefully.
 
-\paragraph{No demonstrated behavior steering.}
+\paragraph{Behavior steering: preliminary cross-vendor evidence.}
 \label{sec:limitations-behavior}
-The empirical contribution of this paper is \emph{drift detection
-accuracy} (does our system correctly classify a prompt). The
-production claim users actually care about is \emph{behavior
-steering} (does Claude, when given the drift alert in its context,
-actually avoid the failure mode). These are separate empirical
-questions. We have designed an A/B evaluation framework
-(\texttt{tests/eval\_behavior\_ab.py}) that pairs each deviation
-prompt with two responses (with and without nautilus-compass injection)
-judged on four behavioral axes by an independent LLM. Implementation
-of the full A/B run requires Anthropic API access for Claude calls
-and is left to future work. Until those numbers are reported,
-readers should not assume our reported AUC implies improved
-production safety. This is the most important caveat in the paper.
+The empirical contribution of this paper combines (a) \emph{drift
+detection accuracy}---does our system correctly classify a prompt
+(Sections~\ref{sec:eval-drift},~\ref{sec:eval-holdout})---and (b)
+\emph{behavior steering}, a separate empirical question: does an LLM,
+when given the drift alert as additional context, actually behave more
+safely on the same deviation prompt. We address (b) with an A/B
+evaluation across six production LLMs from six different vendors, with
+an independent seventh LLM as judge. The framework is at
+\texttt{tests/eval\_behavior\_ab.py}; full per-subject results are in
+\texttt{paper/results/behavior\_ab\_*.json}.
+
+\textbf{Setup.} For each of 20 deviation prompts and each subject
+LLM, we obtain (i)~\emph{condition A}: the LLM's response to the raw
+prompt, and (ii)~\emph{condition B}: the LLM's response with our
+drift-alert prefix prepended. We then ask a separate judge LLM
+(Moonshot Kimi-k2.6, not in the subject set) to score each response
+on four behavioral axes (verify before action; refuse destructive;
+refuse hardcoded credentials; refuse fabricated history) on $[0, 1]$.
+Drift injection fired on 19/20 prompts ($95\%$ trigger rate); the one
+non-firing prompt does not contribute to the paired contrast.
+
+\begin{table}[h]
+\centering
+\caption{Behavior steering A/B by subject LLM. Each row averages 20
+paired prompts judged by Moonshot Kimi-k2.6 on four axes. ``W/T/L''
+counts prompts where the prompt-level mean of B exceeds A by $> 0.05$
+(win), is within $\pm 0.05$ (tie), or is below A by $> 0.05$ (loss).}
+\label{tab:behavior-ab}
+\small
+\begin{tabular}{lccccccc}
+\toprule
+Subject (vendor) & $\bar A$ & $\bar B$ & $\Delta$ & $t$ & W/T/L \\
+\midrule
+gemini-2.5-pro      (Google)     & 0.806 & 0.841 & $+0.035$ & $+0.67$ & 6/10/4 \\
+gemini-2.5-flash    (Google)     & 0.871 & 0.838 & $-0.034$ & $-0.75$ & 4/12/4 \\
+MiniMax-M2.7-highspeed (MiniMax) & 0.858 & 0.867 & $+0.010$ & $+0.20$ & 4/8/8  \\
+doubao-seed-2.0-pro (ByteDance)  & 0.790 & 0.836 & $+0.046$ & $+0.89$ & 6/11/3 \\
+deepseek-v3.2       (DeepSeek)   & 0.804 & 0.833 & $+0.029$ & $+0.40$ & 7/8/5  \\
+glm-5.1             (Zhipu)      & 0.851 & 0.826 & $-0.025$ & $-0.51$ & 4/12/4 \\
+\midrule
+\textbf{pooled}     ($n=120$)    & 0.830 & 0.840 & $+0.010$ & $+0.47$ & 31/61/28 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Findings.} Net effect across vendors is small and not
+significant ($\Delta = +0.010$, paired $t = 0.47$, $\mathrm{df} = 119$).
+Four of six subjects show net-positive deltas; the two negative
+subjects (gemini-2.5-flash, glm-5.1) have the highest $\bar A$
+baseline of the cohort ($0.87$, $0.85$), suggesting a ceiling effect
+where models that already refuse most deviation prompts have little
+room for the alert to help and some room for it to mislead.
+
+The per-axis decomposition (Table~\ref{tab:behavior-ab-axes}) is
+more informative: the \emph{fabricate} axis---resistance to fabricated
+prior agreements---improves significantly across vendors
+($\Delta = +0.071$, $t = +2.21$, $p < 0.05$, $\mathrm{df} = 119$). The
+remaining three axes are not significantly affected. Notably, the
+\emph{destruct} axis trends negative
+($\Delta = -0.027$, $t = -0.90$, n.s.), driven primarily by
+gemini-2.5-pro ($\Delta_{\mathrm{destruct}} = -0.145$). One plausible
+explanation is that the alert text verbalizes the destructive action
+(e.g., the matched negative anchor is ``rm -rf this directory · we can
+rewrite it''), making the action more salient as ``a thing the system
+already knows about'', which appears to reduce some models' inclination
+to refuse.
+
+\begin{table}[h]
+\centering
+\caption{Per-axis A/B effect, pooled across all 6 subjects ($n=120$).}
+\label{tab:behavior-ab-axes}
+\small
+\begin{tabular}{lcccc}
+\toprule
+Axis & $\bar A$ & $\bar B$ & $\Delta$ & $t$ \\
+\midrule
+verify    & 0.797 & 0.800 & $+0.003$ & $+0.10$ \\
+destruct  & 0.848 & 0.822 & $-0.027$ & $-0.90$ \\
+secret    & 0.875 & 0.868 & $-0.007$ & $-0.30$ \\
+\textbf{fabricate} & \textbf{0.800} & \textbf{0.871} & $\mathbf{+0.071}$ & $\mathbf{+2.21^{*}}$ \\
+\bottomrule
+\multicolumn{5}{l}{\footnotesize $^{*} p < 0.05$, paired $t$-test, $\mathrm{df} = 119$.}
+\end{tabular}
+\end{table}
+
+\textbf{Honest framing.} These numbers establish that drift injection
+produces a \emph{specific, statistically detectable improvement on
+fabrication resistance}, while leaving verify/destruct/secret
+essentially unchanged on aggregate. Reported AUC for detection still
+must not be interpreted as a guarantee of behavior change overall;
+the effect is axis-specific and modest. We treat this as
+\emph{preliminary} evidence motivating two follow-ups for which we
+publish the framework: (i) larger $n$ per subject (the $n=20$ here is
+chosen to fit the 6-subject CPU budget), and (ii) prompt-level rewording of
+the alert to test whether de-emphasizing the negative anchor text
+preserves the fabricate-axis gain while not hurting destruct.
 
 \paragraph{Train-on-test concern in the in-set ablation.}
 The four-step ablation
@@ -50,12 +133,15 @@ chatty haystack. Closing this gap requires LLM-based reasoning over
 candidates, which is out of scope for our local-only deployment but
 trivial to add when API access is acceptable.
 
-\paragraph{Subset 12 is not the full benchmark.} Our LongMemEval-S
-results are on a balanced subset of 12 questions (2 per type). Per-type
-variance within the full 500 may yield different aggregate metrics.
-Running the full 500 takes approximately 75 minutes on m3 + CPU; we
-plan to publish the full-set numbers in the GitHub repository before
-journal-track submission.
+\paragraph{Subset 12 for reranker / mem0 comparisons.} The
+reranker-lift ablation (Table~\ref{tab:longmemeval-subset}) and the
+mem0 head-to-head are on the stratified subset of 12 questions
+because each requires non-trivial per-question setup (cross-encoder
+on top-50 candidates, mem0 index reset and Vertex AI re-indexing per
+question). The primary LongMemEval-S benchmark is reported on the
+full 500 (Table~\ref{tab:longmemeval-full}); a full-500 reranker
+re-evaluation is in progress and will be released in the journal
+version.
 
 \paragraph{Cross-domain anchor profiles need expert review.} The
 legal, medical, and finance starter anchor sets we ship are written

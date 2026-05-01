@@ -40,15 +40,20 @@ anchor learning with eval-gated retraining, active-learning boundary
 sampling, and weighted deprecation of over-sensitive anchors.
 
 \textbf{Scope of claims.} This paper evaluates \emph{drift detection
-accuracy} (does our system correctly classify a prompt as aligned vs.\
-deviating), not yet \emph{behavior steering} (does the LLM, when given
-the drift alert, actually change its output). We provide an A/B evaluation
-framework for behavior steering and discuss it as the primary direction
-for future work. Reported AUC numbers should be read as classifier metrics
-on synthetic and held-out test sets, not as guarantees about downstream
-LLM behavior change. We also report a held-out test set generated from
-real Claude~Code session traces and labeled by an independent LLM judge
-to mitigate train-on-test concerns.
+accuracy} together with a \emph{cross-vendor behavior-steering A/B}
+across six production LLMs (Google Gemini-2.5 \{pro, flash\}, MiniMax
+M2.7, ByteDance doubao-seed-2.0-pro, DeepSeek v3.2, Zhipu GLM-5.1)
+judged by an independent seventh model (Moonshot Kimi-k2.6). Pooled
+across $n=120$ paired prompts, drift injection produces a
+statistically significant improvement on the fabrication-resistance
+axis ($\Delta = +0.071$, paired $t = +2.21$, $p < 0.05$) but no
+significant aggregate effect on verify/destruct/secret axes. The
+average net effect is positive but small ($\Delta = +0.010$,
+$p \approx 0.64$). We treat this as preliminary system-level evidence
+rather than as a guarantee that detection AUC implies production
+safety. We additionally report a held-out test set generated from
+real Claude~Code session traces and labeled by an independent LLM
+judge to mitigate train-on-test concerns on the in-set ablation.
 
 Code, anchors, and frozen test data are open-sourced at
 \url{github.com/chunxiaoxx/nautilus-compass}.
