@@ -1,0 +1,45 @@
+{
+  "embedder": "C:/Users/chunx/.cache/modelscope/hub/models/BAAI/bge-m3",
+  "reranker": "C:\\Users\\chunx\\.cache\\modelscope\\hub\\models\\BAAI\\bge-reranker-v2-m3",
+  "n": 4,
+  "baseline": {
+    "P@1": 0.75,
+    "P@5": 0.75,
+    "MRR": 0.7596153846153846
+  },
+  "rerank": {
+    "P@1": 0.75,
+    "P@5": 0.75,
+    "MRR": 0.7608695652173914
+  },
+  "by_type": {
+    "single-session-user": {
+      "baseline_MRR": 0.038461538461538464,
+      "rerank_MRR": 0.043478260869565216,
+      "baseline_P@5": 0.0,
+      "rerank_P@5": 0.0,
+      "n": 1
+    },
+    "single-session-assistant": {
+      "baseline_MRR": 1.0,
+      "rerank_MRR": 1.0,
+      "baseline_P@5": 1.0,
+      "rerank_P@5": 1.0,
+      "n": 1
+    },
+    "multi-session": {
+      "baseline_MRR": 1.0,
+      "rerank_MRR": 1.0,
+      "baseline_P@5": 1.0,
+      "rerank_P@5": 1.0,
+      "n": 1
+    },
+    "temporal-reasoning": {
+      "baseline_MRR": 1.0,
+      "rerank_MRR": 1.0,
+      "baseline_P@5": 1.0,
+      "rerank_P@5": 1.0,
+      "n": 1
+    }
+  }
+}

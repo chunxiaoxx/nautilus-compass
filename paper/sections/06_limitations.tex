@@ -146,15 +146,15 @@ chatty haystack. Closing this gap requires LLM-based reasoning over
 candidates, which is out of scope for our local-only deployment but
 trivial to add when API access is acceptable.
 
-\paragraph{Subset 12 for reranker / mem0 comparisons.} The
-reranker-lift ablation (Table~\ref{tab:longmemeval-subset}) and the
-mem0 head-to-head are on the stratified subset of 12 questions
-because each requires non-trivial per-question setup (cross-encoder
-on top-50 candidates, mem0 index reset and Vertex AI re-indexing per
-question). The primary LongMemEval-S benchmark is reported on the
-full 500 (Table~\ref{tab:longmemeval-full}); a full-500 reranker
-re-evaluation is in progress and will be released in the journal
-version.
+\paragraph{Subset 12 for mem0 only.} The mem0 head-to-head
+(Table~\ref{tab:longmemeval-subset}) is on the stratified subset of
+12 questions because re-running mem0 at full scale requires resetting
+and re-populating its index per question (approximately 30~s of
+Vertex AI calls per question). Reranker numbers, in contrast, are now
+reported on the full 500 (Table~\ref{tab:longmemeval-pertype}) using
+GPU acceleration (GTX 1060 6\,GB, 67~min), and the subset-12 result
+generalizes cleanly to scale (P@5 $0.917 \rightarrow 0.920$, MRR
+$0.837 \rightarrow 0.855$).
 
 \paragraph{Cross-domain anchor profiles need expert review.} The
 legal, medical, and finance starter anchor sets we ship are written
