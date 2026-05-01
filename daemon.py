@@ -123,7 +123,15 @@ def get_embedder():
     log("loading BGE model · ~30s · 强制本地 · 不用 gemini ...")
     t0 = time.time()
     from sentence_transformers import SentenceTransformer
-    model = SentenceTransformer(EMBEDDER_MODEL)
+    # v0.7.2 · cuda autodetect · ZMM_DEVICE env override
+    try:
+        import torch
+        device = os.environ.get("ZMM_DEVICE",
+                                "cuda" if torch.cuda.is_available() else "cpu")
+    except Exception:
+        device = "cpu"
+    log(f"BGE device: {device}")
+    model = SentenceTransformer(EMBEDDER_MODEL, device=device)
     # 包一个 wrapper · encode 返 list 兼容 _APIEmbedder
     class _BGEWrapper:
         def encode(self, text, **kwargs):

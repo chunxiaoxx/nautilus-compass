@@ -93,6 +93,19 @@ secret    & 0.875 & 0.868 & $-0.007$ & $-0.30$ \\
 \end{tabular}
 \end{table}
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/fig6_behavior_ab_heatmap.pdf}
+\caption{Cross-vendor behavior steering A/B heatmap. Each cell is the
+$\Delta$ judge score (B with drift alert minus A without) for one
+subject LLM × one behavioral axis. Significance markers from per-subject
+paired $t$-tests: \textbf{·} $p<0.10$, \textbf{$\star$} $p<0.05$,
+\textbf{$\star\star$} $p<0.01$ (df = 19 per cell). Fabrication-resistance
+is positive across 5 of 6 subjects; verify and destruct show notable
+per-vendor variance.}
+\label{fig:behavior-ab-heatmap}
+\end{figure}
+
 \textbf{Honest framing.} These numbers establish that drift injection
 produces a \emph{specific, statistically detectable improvement on
 fabrication resistance}, while leaving verify/destruct/secret

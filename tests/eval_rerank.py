@@ -58,9 +58,12 @@ def main():
 
     # Load reranker
     from sentence_transformers import CrossEncoder
+    import torch
+    # v0.7.2 · device autodetect · cuda if available · CPU fallback · ZMM_DEVICE override
+    device = os.environ.get("ZMM_DEVICE", "cuda" if torch.cuda.is_available() else "cpu")
     t0 = time.time()
-    print("loading CrossEncoder ...")
-    reranker = CrossEncoder(RERANKER_PATH, device="cpu")
+    print(f"loading CrossEncoder on {device} ...")
+    reranker = CrossEncoder(RERANKER_PATH, device=device)
     print(f"reranker ready: {time.time()-t0:.1f}s")
 
     emb = zmd.get_embedder()

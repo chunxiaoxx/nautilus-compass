@@ -271,10 +271,87 @@ def fig1_architecture():
     print("✅ fig1_architecture.pdf")
 
 
+def fig6_behavior_ab_heatmap():
+    """Cross-vendor behavior A/B heatmap · 6 subjects × 4 axes · cell = Δ (B − A).
+
+    Reads paper/results/behavior_ab_<label>.json files.
+    Annotates significance (★) on cells where |t| > 1.658 (p<0.10 per-subject).
+    """
+    import statistics
+    import math
+    RESULTS = OUT.parent / "results"
+    labels = [
+        ("gemini-2-5-pro", "Gemini 2.5 Pro\n(Google)"),
+        ("gemini-2-5-flash", "Gemini 2.5 Flash\n(Google)"),
+        ("minimax-m2-7", "MiniMax M2.7\n(MiniMax)"),
+        ("doubao-seed-2-0", "Doubao Seed 2.0\n(ByteDance)"),
+        ("deepseek-v3-2", "DeepSeek v3.2\n(DeepSeek)"),
+        ("glm-5-1", "GLM-5.1\n(Zhipu)"),
+    ]
+    axes = ["verify", "destruct", "secret", "fabricate"]
+
+    deltas = np.zeros((len(labels), len(axes)))
+    sig_marks = [["" for _ in axes] for _ in labels]
+
+    for i, (key, _) in enumerate(labels):
+        p = RESULTS / f"behavior_ab_{key}.json"
+        if not p.exists():
+            continue
+        d = json.loads(p.read_text(encoding="utf-8"))
+        for j, ax in enumerate(axes):
+            a_vals = [r["score_a"][ax] for r in d["details"]]
+            b_vals = [r["score_b"][ax] for r in d["details"]]
+            diffs = [b - a for a, b in zip(a_vals, b_vals)]
+            mean_d = statistics.mean(diffs)
+            sd = statistics.stdev(diffs) if len(diffs) > 1 else 0
+            t = mean_d * math.sqrt(len(diffs)) / sd if sd > 0 else 0
+            deltas[i, j] = mean_d
+            if abs(t) > 2.617:
+                sig_marks[i][j] = "★★"
+            elif abs(t) > 1.980:
+                sig_marks[i][j] = "★"
+            elif abs(t) > 1.658:
+                sig_marks[i][j] = "·"
+
+    fig, ax = plt.subplots(figsize=(8.0, 5.5))
+    vmax = max(abs(deltas.min()), abs(deltas.max()))
+    im = ax.imshow(deltas, cmap="RdYlGn", vmin=-vmax, vmax=vmax, aspect="auto")
+
+    ax.set_xticks(range(len(axes)))
+    ax.set_xticklabels([f"{a}\nresistance" for a in axes], fontsize=10)
+    ax.set_yticks(range(len(labels)))
+    ax.set_yticklabels([lbl for _, lbl in labels], fontsize=9)
+
+    # Annotate each cell
+    for i in range(len(labels)):
+        for j in range(len(axes)):
+            color = "black" if abs(deltas[i, j]) < vmax * 0.6 else "white"
+            text = f"{deltas[i, j]:+.2f}"
+            if sig_marks[i][j]:
+                text += f"\n{sig_marks[i][j]}"
+            ax.text(j, i, text, ha="center", va="center",
+                    color=color, fontsize=10, fontweight="medium")
+
+    cbar = plt.colorbar(im, ax=ax, label="Δ judge score (B with alert  −  A no alert)",
+                        shrink=0.8)
+    cbar.ax.tick_params(labelsize=9)
+
+    ax.set_title(
+        "Cross-Vendor Behavior Steering A/B (n=20 paired prompts per subject)\n"
+        "Δ > 0 = drift alert improves resistance · ★★ p<0.01 ★ p<0.05 · p<0.10",
+        fontsize=11, pad=10,
+    )
+    ax.set_xlabel("Behavioral axis (judge: Kimi-k2.6)", fontsize=10, labelpad=8)
+    plt.savefig(OUT / "fig6_behavior_ab_heatmap.pdf")
+    plt.close()
+    print("✅ fig6_behavior_ab_heatmap.pdf")
+
+
 if __name__ == "__main__":
     fig1_architecture()
     fig2_auc_evolution()
     fig3_longmemeval_pertype()
     fig4_drift_histogram()
     fig5_rerank_lift()
-    print("\nDone. 5 figures in", OUT)
+    fig6_behavior_ab_heatmap()
+    print("\nDone. 6 figures in", OUT)

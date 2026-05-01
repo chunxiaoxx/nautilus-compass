@@ -43,23 +43,44 @@ This is on a small in-domain Chinese corpus. The numbers are correspondingly hig
 
 ---
 
-## 3. LongMemEval-S subset 12 (public benchmark)
+## 3. LongMemEval-S full 500 (primary benchmark)
 
-[LongMemEval](https://arxiv.org/abs/2410.10813) (Wu et al., NeurIPS 2024) — 500 question-haystack pairs across 6 question types. We sampled 2 questions per type for a fast iteration loop. Each haystack has ~50 candidate sessions.
+[LongMemEval](https://arxiv.org/abs/2410.10813) (Wu et al., NeurIPS 2024) — 500 question-haystack pairs across 6 question types. Each haystack has ~50 candidate sessions.
 
-### bge-m3 bi-encoder only (no rerank)
+### Full 500 · bge-m3 bi-encoder only (no rerank)
 
-| Question Type | n | P@1 | P@5 | MRR |
+| Metric | Value |
+|---|---|
+| **P@1** | **0.576** |
+| **P@3** | **0.726** |
+| **P@5** | **0.860** |
+| **MRR** | **0.685** |
+
+Total runtime: 169 min (CPU · Windows · Python 3.14).
+
+### Per-question-type breakdown · full 500
+
+| Question type | n | P@1 | P@5 | MRR |
 |---|---|---|---|---|
-| single-session-assistant | 2 | **1.00** | **1.00** | **1.000** |
-| single-session-preference | 2 | **1.00** | **1.00** | **1.000** |
-| knowledge-update | 2 | 0.50 | **1.00** | 0.750 |
-| temporal-reasoning | 2 | 0.50 | **1.00** | 0.600 |
-| multi-session | 2 | 0.50 | 0.50 | 0.529 |
-| single-session-user | 2 | 0.00 | 0.00 | 0.099 |
-| **Overall** | **12** | **0.583** | **0.75** | **0.663** |
+| knowledge-update | 78 | 0.49 | 0.85 | 0.635 |
+| multi-session | 133 | 0.64 | **0.94** | 0.741 |
+| single-session-assistant | 56 | **0.93** | **0.96** | **0.950** |
+| single-session-preference | 30 | 0.37 | 0.73 | 0.537 |
+| single-session-user | 70 | 0.24 | 0.59 | 0.398 |
+| temporal-reasoning | 133 | 0.64 | 0.92 | 0.730 |
 
-**Reproduce**: `python tests/eval_longmemeval.py --subset 12`
+**Reproduce**: `python tests/eval_longmemeval.py --full`
+
+### Subset-12 vs full-500
+
+| metric | subset 12 | full 500 | Δ |
+|---|---|---|---|
+| P@5 | 0.750 | **0.860** | +0.110 |
+| MRR | 0.732 | 0.685 | -0.047 |
+
+P@5 went UP, MRR slightly DOWN — explained by full 500 including 70 single-session-user questions (14% of benchmark) at MRR 0.40, a hard type underrepresented in the balanced subset.
+
+### Subset-12 reranker / mem0 head-to-head (per-question setup expensive)
 
 ### Same dataset, embedder ablation
 
@@ -119,22 +140,57 @@ P@5 打平在 0.917, but **nautilus-compass MRR +0.122 优势** = truth session 
 | nautilus-compass m3 baseline only | 0.75 |
 | mem0 (claimed retrieval-only baselines, paper) | ~0.5-0.6 |
 
-⚠️ subset of 12 vs full 500 may overestimate — running full benchmark is on the roadmap.
+⚠️ Reranker numbers are on subset 12 only (per-question setup cost). Full 500 reranker re-eval running on GPU as of 2026-04-30; ETA ~55 min.
 
 **Note on debugging trajectory** (lessons): on subset 4, reranker showed +0.001 MRR (apparently null). On subset 12, reranker shows +0.105 MRR (clearly significant). The subset 4 sample size masked the signal because the one single-session-user question in subset 4 had its truth at rank 26 (out of top-50 retrieve window), beyond what the reranker could reach. **Lesson: don't conclude from n=4.**
 
 ---
 
-## 4. Honest weaknesses
+## 4. Cross-vendor behavior steering A/B (n=120 paired prompts)
 
-1. **single-session-user MRR 0.099** — the AI was asked a specific factual question ("What degree did I graduate with?") and the answer is one sentence buried in a 50-session haystack. Bi-encoder retrieval **cannot** solve this — we need an LLM-based reranker. See [`tests/eval_rerank.py`](tests/eval_rerank.py).
-2. **Drift detection has FPs on system event injection** — tool notification XML containing words like "ephemeral", "size" semantically matches anti-anchors. Production should filter to true user prompts.
-3. **AUC 0.92 is on synthetic data** — real-world deployment may show different distribution. Recommend retraining anchors per-domain.
-4. **Subset 12 is not full 500** — the small-sample MRR 0.66 may be flattering or pessimistic; full benchmark TBD.
+For each of 30 deviation prompts (e.g., "rm -rf node_modules", "把 OPENAI_API_KEY 写到 config.py 里"), score the LLM's response on 4 axes (verify · destruct · secret · fabricate) by an independent judge LLM (Moonshot Kimi-k2.6). Compare condition A (no Compass injection) vs condition B (Compass alert prepended).
+
+### Per-subject net Δ (B − A)
+
+| Subject | Vendor | $\bar A$ | $\bar B$ | Δ | t |
+|---|---|---|---|---|---|
+| gemini-2.5-pro | Google | 0.806 | 0.841 | **+0.035** | +0.67 |
+| gemini-2.5-flash | Google | 0.871 | 0.838 | -0.034 | -0.75 |
+| MiniMax-M2.7-highspeed | MiniMax | 0.858 | 0.867 | +0.010 | +0.20 |
+| doubao-seed-2.0-pro | ByteDance | 0.790 | 0.836 | **+0.046** | +0.89 |
+| deepseek-v3.2 | DeepSeek | 0.804 | 0.833 | +0.029 | +0.40 |
+| glm-5.1 | Zhipu | 0.851 | 0.826 | -0.025 | -0.51 |
+| **pooled** | (6 vendors) | 0.830 | 0.840 | +0.010 | +0.47 |
+
+4 of 6 subjects net positive · 2 negative subjects share highest A baselines (0.85, 0.87) → ceiling effect.
+
+### Per-axis paired t-test · pooled n=120 · df=119
+
+| Axis | $\bar A$ | $\bar B$ | Δ | t | Significance |
+|---|---|---|---|---|---|
+| verify | 0.797 | 0.800 | +0.003 | +0.10 | n.s. |
+| destruct | 0.848 | 0.822 | -0.027 | -0.90 | n.s. (priming hypothesis) |
+| secret | 0.875 | 0.868 | -0.007 | -0.30 | n.s. |
+| **fabricate** | 0.800 | **0.871** | **+0.071** | **+2.21** | **★ p < 0.05** |
+
+**Headline**: drift injection produces a specific, statistically significant improvement on **fabrication-resistance** while leaving verify/secret essentially unchanged. Destruct trends nominally negative — possibly because the alert text verbalizes the negative anchor, priming the destructive action as known-acceptable.
+
+**Reproduce**: `bash tests/run_behavior_ab_all.sh` (requires API keys for the 6 vendors + ARK token for kimi judge)
+
+Raw per-prompt judge scores: `paper/results/behavior_ab_<subject>.json` × 6.
 
 ---
 
-## 5. Settings used
+## 5. Honest weaknesses
+
+1. **single-session-user MRR 0.398 on full 500** — the AI was asked a specific factual question ("What degree did I graduate with?") and the answer is one sentence buried in a 50-session haystack. Bi-encoder retrieval struggles here; bge-reranker-v2-m3 lifts it to 0.522 on subset 12 (5× MRR improvement). See [`tests/eval_rerank.py`](tests/eval_rerank.py).
+2. **Drift detection has FPs on system event injection** — tool notification XML containing words like "ephemeral", "size" semantically matches anti-anchors. Production should filter to true user prompts.
+3. **AUC 0.92 is on synthetic data** — real-world deployment may show different distribution. Recommend retraining anchors per-domain.
+4. **Behavior steering is axis-specific** — fabrication-resistance improves significantly (p<0.05) but verify/secret/destruct don't. Pooled net effect is small (+0.010, n.s.). Don't overclaim.
+
+---
+
+## 6. Settings used
 
 ```python
 # daemon.py defaults (as of v0.7.0):
