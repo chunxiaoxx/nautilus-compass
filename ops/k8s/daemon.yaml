@@ -1,0 +1,134 @@
+# Nautilus Compass · BGE-m3 daemon
+# - StatefulSet · single replica (in-memory anchor cache · cannot horizontally scale)
+# - Headless service for stable DNS: compass-daemon.<ns>.svc.cluster.local:9876
+# - PVC for ModelScope cache (re-use bge-m3 download across pod restarts · 2.27 GB)
+# - Resource: 4 GiB RAM · 1 vCPU baseline · 2 vCPU burst
+#
+# To horizontally scale daemon: shard by tenant (consistent hash in gateway)
+# OR use Redis-backed shared anchor cache (planned v0.8)
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: compass-daemon
+  labels:
+    app.kubernetes.io/name: nautilus-compass
+    app.kubernetes.io/component: daemon
+spec:
+  serviceName: compass-daemon-headless
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: nautilus-compass
+      app.kubernetes.io/component: daemon
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: nautilus-compass
+        app.kubernetes.io/component: daemon
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: daemon
+          image: ghcr.io/chunxiaoxx/nautilus-compass:0.7.2
+          imagePullPolicy: IfNotPresent
+          command: ["python", "/opt/compass/daemon.py"]
+          ports:
+            - name: tcp
+              containerPort: 9876
+          env:
+            - name: PYTHONUNBUFFERED
+              value: "1"
+            - name: PYTHONIOENCODING
+              value: "utf-8"
+          volumeMounts:
+            - name: model-cache
+              mountPath: /root/.cache/modelscope
+            - name: tenant-anchors
+              mountPath: /opt/compass/anchors
+              readOnly: true
+            - name: daemon-cache
+              mountPath: /opt/compass/.cache
+          resources:
+            requests:
+              cpu: "1"
+              memory: "3Gi"
+            limits:
+              cpu: "2"
+              memory: "4Gi"
+          # 60s startup probe (cold-load m3) → liveness
+          startupProbe:
+            tcpSocket:
+              port: tcp
+            failureThreshold: 30  # 30 × 5 s = 150 s grace
+            periodSeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: tcp
+            periodSeconds: 30
+            failureThreshold: 3
+      volumes:
+        - name: tenant-anchors
+          configMap:
+            name: compass-anchors
+            optional: true
+  volumeClaimTemplates:
+    - metadata:
+        name: model-cache
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 5Gi
+    - metadata:
+        name: daemon-cache
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 2Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: compass-daemon-headless
+  labels:
+    app.kubernetes.io/name: nautilus-compass
+    app.kubernetes.io/component: daemon
+spec:
+  clusterIP: None      # headless · stable DNS for StatefulSet
+  selector:
+    app.kubernetes.io/name: nautilus-compass
+    app.kubernetes.io/component: daemon
+  ports:
+    - name: tcp
+      port: 9876
+      targetPort: tcp
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: compass-daemon
+  labels:
+    app.kubernetes.io/name: nautilus-compass
+    app.kubernetes.io/component: daemon
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: nautilus-compass
+    app.kubernetes.io/component: daemon
+  ports:
+    - name: tcp
+      port: 9876
+      targetPort: tcp
+---
+# Don't kill the daemon during voluntary disruptions (node drain, etc.)
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: compass-daemon-pdb
+spec:
+  maxUnavailable: 0
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: nautilus-compass
+      app.kubernetes.io/component: daemon

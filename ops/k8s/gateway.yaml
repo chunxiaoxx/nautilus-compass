@@ -1,0 +1,129 @@
+# Nautilus Compass · HTTP/MCP gateway
+# - Deployment · N replicas · stateless (delegates to daemon)
+# - HPA · 1-10 replicas · target 70% CPU
+# - Reads tenants.json from compass-tenants Secret
+# - Reads anchor profiles from compass-anchors ConfigMap (shared with daemon)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: compass-gateway
+  labels:
+    app.kubernetes.io/name: nautilus-compass
+    app.kubernetes.io/component: gateway
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: nautilus-compass
+      app.kubernetes.io/component: gateway
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: nautilus-compass
+        app.kubernetes.io/component: gateway
+    spec:
+      containers:
+        - name: gateway
+          image: ghcr.io/chunxiaoxx/nautilus-compass:0.7.2
+          imagePullPolicy: IfNotPresent
+          command:
+            - "uvicorn"
+            - "compass_http:app"
+            - "--host=0.0.0.0"
+            - "--port=8765"
+            - "--workers=2"
+          ports:
+            - name: http
+              containerPort: 8765
+          env:
+            - name: COMPASS_DAEMON_HOST
+              value: "compass-daemon.default.svc.cluster.local"
+            - name: COMPASS_DAEMON_PORT
+              value: "9876"
+            - name: COMPASS_TENANTS_FILE
+              value: "/opt/compass/secrets/tenants.json"
+            - name: COMPASS_ANCHOR_DIR
+              value: "/opt/compass/anchors"
+            - name: COMPASS_AUTH_MODE
+              value: "header"
+            - name: COMPASS_DEFAULT_TENANT
+              value: "default"
+            - name: PYTHONUNBUFFERED
+              value: "1"
+            - name: PYTHONIOENCODING
+              value: "utf-8"
+          volumeMounts:
+            - name: tenants-secret
+              mountPath: /opt/compass/secrets
+              readOnly: true
+            - name: tenant-anchors
+              mountPath: /opt/compass/anchors
+              readOnly: true
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 30
+      volumes:
+        - name: tenants-secret
+          secret:
+            secretName: compass-tenants
+        - name: tenant-anchors
+          configMap:
+            name: compass-anchors
+            optional: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: compass-gateway
+  labels:
+    app.kubernetes.io/name: nautilus-compass
+    app.kubernetes.io/component: gateway
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: nautilus-compass
+    app.kubernetes.io/component: gateway
+  ports:
+    - name: http
+      port: 8765
+      targetPort: http
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: compass-gateway-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: compass-gateway
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300  # 5 min cooldown
+    scaleUp:
+      stabilizationWindowSeconds: 30
