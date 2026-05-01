@@ -1,0 +1,35 @@
+{
+  "_doc": "Per-tenant config for Nautilus Compass HTTP gateway. Mount this at /opt/compass/tenants.json (env: COMPASS_TENANTS_FILE). Set api_key=null on a tenant to allow unauthenticated access (header 'X-Tenant-ID' alone is enough).",
+  "_format": {
+    "tenants": {
+      "<tenant_id>": {
+        "api_key": "sk-... (string · null = no auth required)",
+        "anchors_profile": "anchors_<domain>.json (optional · falls back to anchors.json)",
+        "rate_limit_per_min": 60,
+        "default_project": "C--Users-chunx (optional)"
+      }
+    }
+  },
+  "tenants": {
+    "default": {
+      "api_key": null,
+      "anchors_profile": "anchors.json",
+      "rate_limit_per_min": 60
+    },
+    "caishen": {
+      "api_key": "REPLACE_WITH_GENERATED_KEY",
+      "anchors_profile": "anchors_finance.json",
+      "rate_limit_per_min": 120
+    },
+    "zenxin": {
+      "api_key": "REPLACE_WITH_GENERATED_KEY",
+      "anchors_profile": "anchors_zenmind.json",
+      "rate_limit_per_min": 120
+    },
+    "demo": {
+      "api_key": "demo-pub-key-not-secret",
+      "anchors_profile": "anchors.json",
+      "rate_limit_per_min": 30
+    }
+  }
+}
