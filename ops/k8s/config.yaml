@@ -1,0 +1,64 @@
+# Nautilus Compass · tenant config (Secret) + anchor profiles (ConfigMap)
+#
+# IMPORTANT: replace REPLACE_WITH_GENERATED_KEY values before applying.
+# Generate keys: openssl rand -base64 32
+#
+# Apply: kubectl apply -f ops/k8s/config.yaml
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: compass-tenants
+type: Opaque
+stringData:
+  # Mounted at /opt/compass/secrets/tenants.json by gateway pods
+  tenants.json: |
+    {
+      "tenants": {
+        "default": {
+          "api_key": null,
+          "anchors_profile": "anchors.json",
+          "rate_limit_per_min": 60
+        },
+        "caishen": {
+          "api_key": "REPLACE_WITH_GENERATED_KEY",
+          "anchors_profile": "anchors_finance.json",
+          "rate_limit_per_min": 120
+        },
+        "zenxin": {
+          "api_key": "REPLACE_WITH_GENERATED_KEY",
+          "anchors_profile": "anchors_zenmind.json",
+          "rate_limit_per_min": 120
+        }
+      }
+    }
+---
+# Bake the shipped anchor profiles into a ConfigMap so both daemon and
+# gateway pods can mount the same set. Keep keys in alphabetical order
+# matching the repo layout. Files >1 MB don't fit in a ConfigMap;
+# anchors_*.json are well under that.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: compass-anchors
+data:
+  # NOTE: paste the actual JSON content from the repo's anchors_*.json files
+  # here at apply time. We leave a small placeholder set so the YAML parses.
+  anchors.json: |
+    {
+      "_doc": "Replace with anchors.json from repo · keep this format",
+      "positive_anchors": [],
+      "negative_anchors": []
+    }
+  anchors_finance.json: |
+    {
+      "_doc": "Replace with anchors_finance.json from repo",
+      "positive_anchors": [],
+      "negative_anchors": []
+    }
+  anchors_zenmind.json: |
+    {
+      "_doc": "Replace with anchors_zenmind.json from repo",
+      "positive_anchors": [],
+      "negative_anchors": []
+    }

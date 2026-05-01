@@ -1,0 +1,41 @@
+# Optional · expose gateway via Ingress (nginx) with TLS
+# Adjust host + cert-manager annotations for your cluster.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: compass-gateway-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-body-size: "1m"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - compass.example.com
+      secretName: compass-tls
+  rules:
+    - host: compass.example.com
+      http:
+        paths:
+          - path: /v1
+            pathType: Prefix
+            backend:
+              service:
+                name: compass-gateway
+                port:
+                  number: 8765
+          - path: /mcp
+            pathType: Prefix
+            backend:
+              service:
+                name: compass-gateway
+                port:
+                  number: 8765
+          - path: /healthz
+            pathType: Exact
+            backend:
+              service:
+                name: compass-gateway
+                port:
+                  number: 8765

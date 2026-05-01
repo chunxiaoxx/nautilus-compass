@@ -1,0 +1,27 @@
+# Apply: kubectl apply -k ops/k8s
+# Or with namespace override: kubectl apply -k ops/k8s -n nautilus
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - daemon.yaml
+  - gateway.yaml
+  - config.yaml
+  - ingress.yaml         # remove if not using Ingress
+
+commonLabels:
+  app.kubernetes.io/name: nautilus-compass
+  app.kubernetes.io/version: "0.7.2"
+
+# Bake anchor JSON content into the ConfigMap from repo files
+# This way config.yaml stays small + repo anchors_*.json stays single-source.
+configMapGenerator:
+  - name: compass-anchors
+    behavior: replace
+    files:
+      - ../../anchors.json
+      - ../../anchors_finance.json
+      - ../../anchors_legal.json
+      - ../../anchors_medical.json
+      - ../../anchors_vc.json
+      - ../../anchors_zenmind.json
