@@ -97,7 +97,60 @@ temporal-reasoning drops 22 pts.}
   cost increase.
 \end{itemize}
 
-\subsection{Decision: hold V4-pro full 500}
+\subsection{Full-500 update (2026-05-06)}
+\label{app:v4-full500}
+
+We subsequently ran the full 500-question evaluation under
+\texttt{think-high} (no \texttt{max\_tokens} cap · vanilla pipeline ·
+no per-type routing) to test whether the sample 48 trends survive on
+n=500. They mostly do not.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Type} & \textbf{v0.8 (V3.2 n=500)} & \textbf{V4 sample (n=48)} & \textbf{V4 full (n=500)} & \textbf{Δ vs v0.8} \\
+\midrule
+single-session-assistant  & 83.9\% & 75.0\% & \textbf{87.5\%} (49/56) & \textbf{+3.6} \\
+single-session-preference & 53.3\% & 50.0\% & \textbf{66.7\%} (20/30) & \textbf{+13.4} \\
+single-session-user       & 57.1\% & 75.0\% & 58.6\% (41/70)  & +1.5 \\
+knowledge-update          & 57.7\% & 75.0\% & 56.4\% (44/78)  & \(-1.3\) \\
+multi-session             & 54.9\% & 62.5\% & 52.6\% (70/133) & \(-2.3\) \\
+temporal-reasoning        & 46.6\% & 25.0\% & 43.6\% (58/133) & \(-3.0\) \\
+\midrule
+\textbf{Overall}          & \textbf{56.6\%} & 60.4\% & \textbf{56.4\%} (282/500) & \(-0.2\) \\
+\bottomrule
+\end{tabular}
+\caption{V4-pro \texttt{think-high} full 500 vs the sample 48 estimate
+and the v0.8 V3.2 baseline. Cost: approximately \$8 USD wall-clock 6.3
+hours on a single T4 (CPU bge-m3 · GPU contention with cross-judge
+runs).}
+\label{tab:v4-full500}
+\end{table}
+
+\paragraph{Verdict.} V4-pro \texttt{think-high} is essentially tied
+with V3.2 (\(-0.2\) pts overall · within noise). Per-type, V4 wins
+clearly on ssa (\(+3.6\)) and ssp (\(+13.4\)) but loses on multi-session
+(\(-2.3\)) and temporal-reasoning (\(-3.0\)). The headline number for
+this paper remains v0.8 V3.2 56.6\%.
+
+\paragraph{Lesson on sample size.} The sample 48 estimate showed +4.2
+pts over v0.8 (60.4\% vs 56.2\%); the full 500 showed \(-0.2\) pts. Five
+of six per-type point estimates from sample 48 disagreed with the
+full-500 measurement by more than the per-type 95\% CI half-width.
+Knowledge-update sample +17.3 was the largest outlier (full \(-1.3\)).
+Future model substitutions should not be approved on n<100 samples
+alone.
+
+\paragraph{Cost vs gain.} V4-pro at $\sim$\$0.016/q is 8× more
+expensive than V3.2 at $\sim$\$0.002/q (Volc Ark coding plan). Tied
+accuracy and 8× cost yields no production case for V4-pro
+\texttt{think-high} on this benchmark. \texttt{think-max} or
+selective routing (V4 for ssa/ssp · V3.2 for ms/temporal) is the only
+path to a positive economic case · neither is in scope for v1.0 paper.
+
+\subsection{Decision (2026-05-05): held full 500}
 
 Based on sample 48 results (60.4\% · +4.2 vs v0.8 sample 56.2\%),
 we \textbf{do not} run V4-pro full 500 in current configuration. Reasons:
