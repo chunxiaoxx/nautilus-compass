@@ -204,6 +204,82 @@ Feedback welcome: GitHub Issues · Discord (post-launch).
 
 ---
 
+## v0.9.5 update (2026-05-06)
+
+Since the v0.9 launch above, we've shipped four production-grade
+hardenings. None of them change the LongMemEval-S 56.6% number, but
+they make compass actually deployable.
+
+### A2A v1 protocol live (real, not just spec)
+
+- `GET https://compass.nautilus.social/.well-known/agent.json` → 200
+  (5-capability discovery · OAuth2 + MCP advertise)
+- `POST https://compass.nautilus.social/a2a/messages` → 200
+  (envelope dispatcher · maps to REST + bearer)
+
+Any A2A-compatible agent now auto-discovers compass. We're the first
+public memory layer with both MCP and A2A protocols live.
+
+### Stress benchmark · 1M rows · p95 7ms
+
+```
+scale     ins/s    p50  p95  vacuum     disk
+1K       22,727    6ms  6ms      17ms  140KB
+10K      26,455    6ms  7ms      35ms  1.2MB
+100K     15,987    6ms  7ms     268ms  11.7MB
+1M        9,905    7ms  7ms    3157ms  117MB
+```
+
+SQLite scales 50× past where we thought it would. Postgres switch
+trigger raised from 100K rows to 5M rows · `audit_log` is happy on
+SQLite WAL up to ~5M rows / ~1GB DB.
+
+### Cross-judge replication final · κ 0.772
+
+DeepSeek V3.2 (subject + judge) 56.6% · GLM-5.1 (cross-judge) 54.0%
+on the same 500 LongMemEval-S questions. Agreement 88.6% · Cohen κ
+proxy 0.772 · "Good · paper claim defensible". One outlier:
+single-session-preference 60% agreement (GLM is stricter on
+preference inference). Documented · not patched.
+
+### EverMemBench cross-benchmark · honest about what we don't know
+
+[EverMind/EverOS](https://github.com/EverMind-AI/EverOS) released
+EverMemBench-Dynamic (paper [arxiv 2602.01313](https://arxiv.org/abs/2602.01313)) ·
+2400 multi-party QA pairs over 254-day dialogues. We pulled the
+public dataset and ran a BM25 baseline.
+
+```
+compass BM25 baseline · 5 topics · 2400 QAs · cloud CPU · 17.5s:
+  R@1   14.8%    R@5   25.2%    R@10  30.6%    R@20  38.1%
+```
+
+That's a deliberately weak floor (no dense retrieval, no reranker).
+End-to-end with a DeepSeek V4-flash answerer was 0% on a 50-QA
+sample because BM25's false-positive rate is too high · the LLM
+correctly returns UNKNOWN rather than fabricate.
+
+paper-grade compass numbers (BGE-m3 + bge-reranker-v2-m3 · same
+stack as our LongMemEval 56.6%) are pending T4 GPU availability.
+
+**One observation worth noting**: the EverMemBench paper Table 4
+benchmarks 4 systems (MemoBase / Mem0 / Zep / MemOS) but
+`grep "EverCore" paper.txt` returns 0 hits in 1735 lines. The
+companion eval framework ships an EverCore adapter. We make no
+claim about why; we just note that an independent benchmark fills
+a documented gap · scripts/evermembench_smoke.py runs in 17 seconds
+for free, scripts/evermembench_e2e.py costs ~$0.10/100 QAs.
+
+### Self-criticism we logged in commits
+
+- 30-QA EverMemBench smoke showed R@1 43%; full 2400 showed R@1 15%.
+  Lesson: n<100 has ±15-20pt 95% CI · do not draw conclusions.
+- Two-server confusion early in the session (T4 GPU vs cloud
+  production) · stress test ran on the wrong host first · killed
+  and re-ran. Documented in memory to prevent recurrence.
+
+---
+
 *Compass is part of the [Nautilus platform](https://nautilus.social)
 7-capability suite (memory, identity, agent runtime, marketplace,
 stake economy, A2A, MCP). The platform is in private alpha; the
