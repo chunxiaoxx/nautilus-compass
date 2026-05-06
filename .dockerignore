@@ -1,0 +1,41 @@
+# compass · build context excludes
+.git
+.github
+.cache
+.venv
+__pycache__
+*.pyc
+*.pyo
+.pytest_cache
+.mypy_cache
+.ruff_cache
+node_modules
+*.egg-info
+dist
+build
+
+# logs
+*.log
+
+# secrets
+.env
+.env.local
+.env.production
+
+# user data
+.compass/
+.claude-mem/
+
+# old backups
+backup-*
+backups/
+
+# eval cache (large)
+.cache/longmemeval_*.jsonl
+.cache/*_summary.json
+
+# editor
+.vscode
+.idea
+*.swp
+*.swo

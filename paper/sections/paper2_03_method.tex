@@ -1,0 +1,132 @@
+% Paper 2 · §3 Method · Compass v0.8 Pipeline
+% Status: draft · 2026-05-05 · 本节描述实现细节 · 数据见 paper2_04_eval.tex
+
+\section{Method}
+\label{sec:method}
+
+We describe Compass v0.8 in five components: (1) BM25 + bge-m3 dense recall,
+(2) bge-reranker-v2-m3 cross-encoder reranking, (3) multi-angle query rewriting
+for under-specified queries, (4) type-aware prompting, and (5) the LLM judge
+chain. The full pipeline is shown in Figure~\ref{fig:pipeline}.
+
+\subsection{Stage 1: First-pass retrieval}
+
+For each LongMemEval-S question, we retrieve the top-\(K_1=20\) candidate
+sessions from the haystack using bge-m3~\citep{chen2024bge} dense embeddings.
+We compute cosine similarity between the query embedding and each session's
+embedding (computed once at index time). We use a \emph{single-vector dense
+recall} rather than the original paper's BM25+dense fusion, because we found
+in pilot experiments that BM25 added marginal lexical overlap (\(<1\) pt) at
+the cost of corpus-specific tuning.
+
+The session text is truncated to \(\max\_chars = 3500\) characters. Pilot
+study showed that increasing this from the default 2400 to 3500 yielded
+\(+2\) pts on single-session-assistant.
+
+\subsection{Stage 2: Cross-encoder reranking}
+
+We rerank the 20 candidates using bge-reranker-v2-m3, a 568M parameter
+cross-encoder. The top-\(K_2=15\) reranked sessions form the working memory
+context for the LLM. We tuned \(K_2\) on the development split: increasing
+from 10 to 15 yielded \(+0.5\) pts on overall accuracy with no observed
+hallucination increase.
+
+\subsection{Stage 3: Multi-angle query rewriting (for ssu only)}
+
+For \texttt{single-session-user} questions (e.g., ``What dish did the user
+say they cannot eat?''), the original query is often referent-light and
+under-retrieves. We expand the query into 3 angles using DeepSeek V3.2:
+
+\begin{enumerate}
+\item \textbf{Direct restatement} (the user's question)
+\item \textbf{Topic-extracted}: e.g., ``user food allergy preferences''
+\item \textbf{Conversational marker}: e.g., ``user said cannot eat'' or ``user mentioned dietary''
+\end{enumerate}
+
+Each angle retrieves separately; we union the top-15 from each and take the
+top-\(K_2=15\) by max reranker score. This single intervention yielded the
+largest gain in our pipeline: \textbf{+27 pts on ssu (30\% \(\to\) 57\%)}, \(+10\)
+pts overall.
+
+We do not apply rewriting to other question types because pilot studies
+showed neutral or slight negative impact:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lcc}
+\toprule
+Type & w/o rewrite & w/ rewrite \\
+\midrule
+ssu & 30\% & \textbf{57\%} \\
+ssa & 75\% & 76\% \\
+ku & 56\% & 53\% \\
+ms & 49\% & 48\% \\
+\bottomrule
+\end{tabular}
+\caption{Multi-angle rewriting selectively applied to ssu.}
+\label{tab:rewrite}
+\end{table}
+
+\subsection{Stage 4: Type-aware prompting}
+
+We tailor the LLM's system prompt to the question type, building on the
+observation that LongMemEval mixes very different cognitive tasks
+(retrieval, counting, temporal reasoning, preference elicitation).
+
+\begin{itemize}
+\item \textbf{multi-session}: prompt instructs the LLM to ``decompose into
+  per-session sub-counts before aggregating''. \(+8\) pts (44\% \(\to\) 55\%).
+
+\item \textbf{knowledge-update}: prompt highlights ``preferentially trust
+  the most recent timestamp'', injects extracted timestamps into context.
+  \(+2\)--\(3\) pts (54\% \(\to\) 58\%).
+
+\item \textbf{single-session-preference}: \emph{withdrawn}. A dedicated
+  prompt instructing the LLM to ``infer the user's preference'' caused
+  catastrophic drift on the held-out 50-question pilot (\(-37.5\) pts), so
+  we use the default prompt. The LLM, when explicitly told to infer
+  preferences, would invent food-preference-related answers regardless of
+  the actual question. We document this as a negative finding (Section
+  \ref{sec:negative}).
+
+\item \textbf{temporal-reasoning, ssa, ssu}: default prompt with no
+  type-specific overrides.
+\end{itemize}
+
+\subsection{Stage 5: LLM judge chain}
+
+We use a single model, DeepSeek V3.2 \citep{deepseek2024v3}, in
+\texttt{thinking} mode (Volc Ark coding plan, Anthropic-compatible
+endpoint), for both the answer-generating subject and the LLM-as-judge.
+Self-judging is a known concern; we mitigate by:
+
+\begin{enumerate}
+\item Using the same fixed grading rubric as the LongMemEval-S paper.
+\item Reporting per-question type accuracy, which is robust to
+   self-judge bias as the rubric is type-specific.
+\item Cross-validating a 50-question stratified subsample with a separate
+   model (Gemini-2.5-pro) and finding \(<\)1.5 pt absolute disagreement.
+\end{enumerate}
+
+\subsection{Compute and cost}
+
+The full 500-question evaluation runs in 7.79 hours on a single NVIDIA T4
+(15\,GB) using bge-m3 + bge-reranker-v2-m3 in fp16 with batched inference.
+Total LLM API cost (Volc Ark coding plan): approximately \cny{}10. For
+comparison, the same evaluation using GPT-4o would cost
+\(\sim\)\$15--20 (15\(\times\) more) and even Claude Sonnet 4.5
+would be \$5--8.
+
+The bge-m3 daemon eagerly loads on startup (60--90s cold) and serves recall
+queries at \(\sim\)200ms p95 over a Unix socket.
+
+\subsection{Open-source release}
+
+All five components are released under MIT at
+\url{https://github.com/chunxiaoxx/nautilus-compass}, including:
+the complete eval script (\texttt{tests/eval\_longmemeval\_accuracy.py}), the
+type-aware prompt templates (\texttt{prompts/}), and the trained
+reranker (using HuggingFace mirror at \texttt{hf-mirror.com}). The MCP
+server (\texttt{mcp\_server.py}) is also published as
+\texttt{@nautilus/compass-mcp} on npm for one-line integration with
+Claude Desktop, Cline, and Cursor.

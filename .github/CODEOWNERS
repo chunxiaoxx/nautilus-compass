@@ -1,0 +1,45 @@
+# compass · CODEOWNERS
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-security/customizing-your-repository/about-code-owners
+
+# Default owner · all PRs need at least this person
+* @chunxiaoxx
+
+# Core memory pipeline (high-impact · careful review needed)
+/recall.py @chunxiaoxx
+/daemon.py @chunxiaoxx
+/session_writer.py @chunxiaoxx
+/drift_history.py @chunxiaoxx
+/session_search.py @chunxiaoxx
+
+# Anchors (require domain expert review · not just owner)
+/anchors*.json @chunxiaoxx
+# Domain-specific anchors should add a domain expert as co-owner
+/anchors_finance.json @chunxiaoxx  # TODO: add finance domain expert
+/anchors_legal.json @chunxiaoxx    # TODO: add legal domain expert
+/anchors_medical.json @chunxiaoxx  # TODO: add medical domain expert
+/anchors_zenmind.json @chunxiaoxx
+
+# MCP server + protocol surface (compatibility-critical)
+/mcp_server.py @chunxiaoxx
+/sdk/a2a_adapter.py @chunxiaoxx
+/sdk/compass_client.py @chunxiaoxx
+/sdk/attach_memory.py @chunxiaoxx
+
+# HTTP server + auth + sqlite schema (security-critical)
+/compass_http*.py @chunxiaoxx
+/openapi.yaml @chunxiaoxx
+/SECURITY.md @chunxiaoxx
+
+# Build / release / CI infra
+/.github/ @chunxiaoxx
+/pyproject.toml @chunxiaoxx
+/CHANGELOG.md @chunxiaoxx
+/npm/ @chunxiaoxx
+/cursor-extension/ @chunxiaoxx
+
+# Paper / docs (less strict review)
+/paper/ @chunxiaoxx
+/README.md @chunxiaoxx
+/INSTALL.md @chunxiaoxx
+/CONTRIBUTING.md @chunxiaoxx
+/landing/ @chunxiaoxx

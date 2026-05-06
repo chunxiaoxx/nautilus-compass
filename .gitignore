@@ -26,3 +26,16 @@ paper/*.synctex.gz
 paper/build/
 # live tenant config with real api keys · root only · examples/tenants.json IS committed
 /tenants.json
+
+# secrets · API keys · DO NOT commit
+.env
+.env.local
+.env.production
+.env.*.local
+
+# user data buffer
+.compass/
+~/.compass/
+
+# legacy
+.claude-mem/

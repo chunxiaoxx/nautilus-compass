@@ -1,0 +1,58 @@
+% Paper 2 · §6 Limitations and threats to validity
+% Status: draft · 2026-05-05
+
+\section{Limitations and threats to validity}
+\label{sec:limitations}
+
+\paragraph{Self-judging bias.}
+We use DeepSeek V3.2 as both the answer-generating subject and the
+LLM-as-judge. Self-judging is a known concern \citep{zheng2024judging}.
+We mitigate by adopting the LongMemEval-S paper's fixed grading rubric
+verbatim, and by cross-validating a 50-question stratified sample
+with Gemini-2.5-pro acting as judge: absolute disagreement was
+\(<\)1.5 pts. Full cross-judge replication on n=500 with a third model
+is on our roadmap (estimated \cny{}30 additional cost).
+
+\paragraph{Closed-haystack assumption.}
+LongMemEval-S provides 50K-token closed haystacks where every relevant
+session is in the corpus. Our results may not transfer to open-domain RAG
+where relevant content must be identified among millions of documents.
+In particular, our negative finding on Neo4j graph reranking
+(\S\ref{sec:negative}.a) is closed-haystack-specific; we expect the
+opposite tradeoff in open-domain settings (the original Zep result). We
+plan a mixed-domain replication with NQ + LongMemEval-S as a future
+benchmark.
+
+\paragraph{Region-specific cost economics.}
+Our cost analysis (\$3.50 USD per 500-question run) is specific to
+Chinese cloud providers (Tencent Cloud T4 spot, Volc Ark coding plan).
+Equivalent setup with AWS T4 + Anthropic Claude or OpenAI GPT-4o would
+cost \(\geq\)\$50 per run. The 1/15 cost claim should be read as a
+\emph{regional advantage}, not a fundamental architecture advantage.
+That said, our pipeline is provider-neutral: replacing the Volc Ark
+endpoint with any Anthropic-compatible API (Claude, Gemini, etc.) is
+a one-line change.
+
+\paragraph{Model availability.}
+The Volc Ark coding plan provides nine open-via-API models at flat
+rates that are unusual in the market. If this rate structure changes
+or the plan is withdrawn, our cost claim degrades by \(5\)--\(15\times\).
+We mitigate by maintaining provider-neutral SDK code and by mirroring
+the bge-m3 + reranker weights to a self-hostable replication
+(HuggingFace mirror at \texttt{hf-mirror.com}).
+
+\paragraph{LongMemEval-S format constraints.}
+LongMemEval-S evaluates 6 specific question types over chat
+transcripts. Real-world memory tasks include task-completion
+verification, multi-modal recall, and code understanding, which our
+benchmark does not test. Compass v0.8's drift detection
+(\S\ref{sec:method}.A) addresses the verification gap, but we do not
+quantitatively benchmark it in this paper.
+
+\paragraph{No live deployment data.}
+All 500-question runs are offline reproductions. The companion plugin
+runs in production at \url{https://compass.nautilus.social} since
+2026-05-01 with a small user base; we do not yet report user-derived
+accuracy because the user count and question diversity are too small
+for statistical claims. We expect to report user-derived metrics in
+a follow-up after \(\geq\)1000 active users.

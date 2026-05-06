@@ -1,0 +1,12 @@
+{
+  "_doc": "Paste into ~/.cursor/mcp.json. Cursor will register compass tools on next chat.",
+  "mcpServers": {
+    "compass": {
+      "command": "compass-mcp",
+      "env": {
+        "COMPASS_USER_ID": "u_REPLACE_ME",
+        "COMPASS_AGENT_TYPE": "cursor"
+      }
+    }
+  }
+}

@@ -1,0 +1,64 @@
+# compass v0.9 systemd unit · production-ready
+# Install:
+#   sudo cp scripts/compass.service /etc/systemd/system/compass.service
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now compass.service
+#   sudo systemctl status compass
+# Logs:
+#   journalctl -u compass -f
+
+[Unit]
+Description=Compass v0.9 · cross-agent memory layer
+Documentation=https://github.com/chunxiaoxx/nautilus-compass
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/compass
+
+# Environment file (override via /etc/default/compass)
+EnvironmentFile=-/etc/default/compass
+Environment="COMPASS_DB_PATH=/var/lib/compass/compass.db"
+Environment="COMPASS_REGION=cn-shanghai"
+Environment="PYTHONIOENCODING=utf-8"
+Environment="PYTHONUTF8=1"
+
+ExecStartPre=/bin/mkdir -p /var/lib/compass
+ExecStartPre=/bin/chown ubuntu:ubuntu /var/lib/compass
+
+ExecStart=/home/ubuntu/mf/envs/c/bin/uvicorn compass_http_v09:app \
+    --host 0.0.0.0 --port 8770 \
+    --workers 4 \
+    --log-level info \
+    --access-log
+
+# Restart policy
+Restart=on-failure
+RestartSec=10
+StartLimitInterval=300
+StartLimitBurst=5
+
+# Security hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/var/lib/compass /tmp
+PrivateTmp=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictNamespaces=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+LockPersonality=true
+
+# Resource limits
+LimitNOFILE=65535
+MemoryHigh=4G
+MemoryMax=8G
+
+[Install]
+WantedBy=multi-user.target

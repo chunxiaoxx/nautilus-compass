@@ -74,6 +74,14 @@ def main():
     sys.path.insert(0, str(PLUGIN_DIR))
     from strategy_store import StrategyStore
 
+    # v0.8 · session_writer (替代 claude-mem 的 writer)
+    # 先写本次 session memory · 再走 distill 链路接力
+    try:
+        from session_writer import main as _writer_main
+        _writer_main()
+    except Exception as _we:
+        sys.stderr.write(f"[stop_hook] session_writer fail: {_we}\n")
+
     latest = find_latest_session_memory()
     if not latest:
         print("[stop_hook] no session memory found · skip")

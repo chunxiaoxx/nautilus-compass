@@ -1,0 +1,134 @@
+# compass v1.0 · self-host docker-compose
+# Status: 2026-05-05 · enterprise self-hosting deployment template
+#
+# Usage:
+#   1. Create .env from .env.example · fill in secrets
+#   2. docker-compose up -d
+#   3. Initial migration: docker-compose exec compass python tools/migrate_to_sqlite.py --user-id u_admin
+#   4. Verify: curl http://localhost:8765/healthz
+#
+# Components:
+#   - compass-api: FastAPI server (compass_http_v09)
+#   - compass-daemon: bge-m3 + reranker (GPU optional · falls back to CPU)
+#   - compass-raid: RAID-2 reviewer worker (org plan only · skip for personal)
+#   - compass-stake: Stake event publisher (skip if no Nautilus stake module)
+#   - postgres: optional · for v1.1+ scale (sqlite default)
+#   - redis: optional · for rate limiting + session
+
+version: "3.9"
+
+services:
+  compass-api:
+    image: nautilus/compass:0.9.0-dev
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${COMPASS_API_PORT:-8765}:8765"
+    environment:
+      COMPASS_DB_PATH: /data/compass.db
+      COMPASS_REGION: ${COMPASS_REGION:-cn-shanghai}
+      NAUTILUS_JWT_SECRET: ${NAUTILUS_JWT_SECRET:?required}
+      COMPASS_DAEMON_HOST: compass-daemon:9876
+    volumes:
+      - compass-data:/data
+      - compass-cache:/root/.cache
+    depends_on:
+      - compass-daemon
+    command: >
+      uvicorn compass_http_v09:app
+      --host 0.0.0.0 --port 8765
+      --workers ${COMPASS_API_WORKERS:-4}
+      --access-log
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8765/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  compass-daemon:
+    image: nautilus/compass:0.9.0-dev
+    restart: unless-stopped
+    expose:
+      - "9876"
+    environment:
+      ZMM_DEVICE: ${ZMM_DEVICE:-cpu}      # Set to "cuda" if GPU available
+      HF_ENDPOINT: ${HF_ENDPOINT:-https://hf-mirror.com}
+    volumes:
+      - compass-cache:/root/.cache
+      - ~/.claude/projects:/root/.claude/projects:ro
+    command: python daemon.py
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+        # If no GPU available, just remove this `devices:` block.
+
+  compass-raid:
+    image: nautilus/compass:0.9.0-dev
+    restart: unless-stopped
+    profiles: ["org"]   # Only start with: docker-compose --profile org up
+    environment:
+      COMPASS_RAID_POLL_S: 30
+    volumes:
+      - compass-data:/data
+      - compass-raid-queue:/root/.compass/raid_queue
+    command: python compass_raid.py serve
+
+  compass-stake:
+    image: nautilus/compass:0.9.0-dev
+    restart: unless-stopped
+    profiles: ["nautilus"]   # Only start if integrating with Nautilus stake module
+    environment:
+      COMPASS_A2A_STAKE_URL: ${NAUTILUS_STAKE_URL}
+      NAUTILUS_API_TOKEN: ${NAUTILUS_API_TOKEN}
+      COMPASS_STAKE_POLL_S: 60
+    volumes:
+      - compass-stake-events:/root/.compass/stake_events
+    command: python stake_publisher.py serve
+
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    profiles: ["scale"]   # v1.1+ · larger deployments
+    environment:
+      POSTGRES_USER: compass
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?required}
+      POSTGRES_DB: compass
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    expose:
+      - "5432"
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    profiles: ["scale"]
+    command: redis-server --appendonly yes --maxmemory 1gb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis-data:/data
+
+  nginx:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    ports:
+      - "${HTTP_PORT:-80}:80"
+      - "${HTTPS_PORT:-443}:443"
+    volumes:
+      - ./nginx_v10.conf:/etc/nginx/conf.d/compass.conf:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    depends_on:
+      - compass-api
+
+volumes:
+  compass-data:
+  compass-cache:
+  compass-raid-queue:
+  compass-stake-events:
+  postgres-data:
+  redis-data:

@@ -1,0 +1,76 @@
+% Paper 2 · Figure 3: 8 deep fusion points with Nautilus platform
+% Visual map of compass × Nautilus integration
+
+\documentclass[border=8pt]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{positioning, fit, shapes.geometric, arrows.meta}
+
+\begin{document}
+\begin{tikzpicture}[
+    nautilus/.style={
+      draw=blue!50, fill=blue!8, rounded corners=4pt,
+      minimum width=32mm, minimum height=10mm,
+      align=center, font=\small
+    },
+    compass/.style={
+      draw=orange!50, fill=orange!10, rounded corners=4pt,
+      minimum width=32mm, minimum height=10mm,
+      align=center, font=\small
+    },
+    fusion/.style={
+      draw=green!50!black, very thick,
+      circle, fill=green!15, minimum size=8mm,
+      font=\footnotesize\bfseries
+    },
+    edge/.style={->, thick, gray!70}
+]
+
+% Nautilus platform (left)
+\node[nautilus] (auth) {nautilus.social\\auth (JWT)};
+\node[nautilus, below=of auth] (agent) {nautilus-agent\\runtime SDK};
+\node[nautilus, below=of agent] (stake) {stake economy\\\& reward};
+\node[nautilus, below=of stake] (mkt) {marketplace};
+
+% Compass (right)
+\node[compass, right=58mm of auth] (cauth) {compass.nautilus.social\\multi-user};
+\node[compass, below=of cauth] (cmem) {memory layer\\(observations DB)};
+\node[compass, below=of cmem] (cdrift) {drift detection\\(anchors AUC=0.92)};
+\node[compass, below=of cdrift] (cprof) {profile aggregate\\\& metrics};
+
+% Fusion points
+\node[fusion] (f1) at ($(auth)!0.5!(cauth)$) {1};
+\node[fusion] (f2) at ($(auth)!0.5!(cauth) + (0,-6mm)$) {2};
+\node[fusion] (f3) at ($(agent)!0.5!(cmem)$) {3};
+\node[fusion] (f6) at ($(agent)!0.5!(cdrift)$) {6};
+\node[fusion] (f4) at ($(stake)!0.5!(cdrift)$) {4};
+\node[fusion] (f7) at ($(agent)!0.5!(cdrift) + (0,-4mm)$) {7};
+\node[fusion] (f5) at ($(mkt)!0.5!(cprof)$) {5};
+\node[fusion] (f8) at ($(stake)!0.5!(cmem) + (0,-3mm)$) {8};
+
+% Edges
+\foreach \a/\b/\f in {auth/cauth/f1, auth/cauth/f2,
+                       agent/cmem/f3, agent/cdrift/f6, agent/cdrift/f7,
+                       stake/cdrift/f4, stake/cmem/f8,
+                       mkt/cprof/f5} {
+  \draw[edge] (\a) -- (\f);
+  \draw[edge] (\f) -- (\b);
+}
+
+% Legend
+\node[anchor=north west, font=\footnotesize, align=left] at (current bounding box.south west)
+  {\textbf{8 fusion points}:
+   1=identity SSO ·
+   2=OAuth2 ·
+   3=runtime injection ·
+   4=stake$\times$drift ·
+   5=marketplace metrics ·
+   6=anchor inheritance ·
+   7=RAID-2 review ·
+   8=v5-mem migration};
+
+% Section labels
+\node[font=\bfseries, above=2mm of auth] {Nautilus Platform};
+\node[font=\bfseries, above=2mm of cauth] {compass};
+
+\end{tikzpicture}
+\end{document}

@@ -73,3 +73,71 @@ jobs:
         with: { python-version: "3.12" }
       - run: pip install ruff
       - run: ruff check .
+
+  v09-integration:
+    name: v0.9 integration tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Install
+        run: pip install -e .
+      - name: Run v0.9 integration tests
+        env:
+          PYTHONIOENCODING: utf-8
+          PYTHONUTF8: "1"
+        run: python tests/test_compass_v09.py
+      - name: A2A adapter selftest
+        run: python sdk/a2a_adapter.py selftest
+
+  v09-mcp-smoke:
+    name: v0.9 MCP server (7 tools)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -e .
+      - name: MCP initialize + tools/list
+        env:
+          PYTHONIOENCODING: utf-8
+        run: |
+          python -c "
+          import json, subprocess
+          p = subprocess.Popen(['python', 'mcp_server.py'],
+              stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True, encoding='utf-8')
+          out, _ = p.communicate(
+              input=json.dumps({'jsonrpc':'2.0','id':1,'method':'initialize','params':{}}) + '\n' +
+                    json.dumps({'jsonrpc':'2.0','id':2,'method':'tools/list','params':{}}) + '\n',
+              timeout=15)
+          tools = []
+          for line in out.splitlines():
+              try:
+                  d = json.loads(line)
+                  if 'tools' in d.get('result', {}):
+                      tools = [t['name'] for t in d['result']['tools']]
+              except: pass
+          assert len(tools) == 7, f'expected 7 tools, got {len(tools)}: {tools}'
+          print(f'OK: {tools}')"
+
+  v09-npm-wrapper:
+    name: v0.9 npm wrapper
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+      - run: pip install -e .
+      - run: cd npm && node bin/cli.js --selftest
+
+  v09-cursor-extension:
+    name: v0.9 Cursor extension build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+      - run: cd cursor-extension && npm install && npm run compile

@@ -1,0 +1,102 @@
+% Paper 2 · Appendix B · Cross-Judge Replication (preempt template)
+% Will be filled with real numbers after cross-judge run completes (~7h ETA)
+% Status: 2026-05-05 · template ready · numbers pending
+
+\section{Cross-judge replication}
+\label{app:crossjudge}
+
+To address the self-judge concern raised in §\ref{sec:limitations}, we
+replicate the LongMemEval-S evaluation with a different model family
+serving as judge while keeping the subject model identical (DeepSeek
+V3.2 thinking).
+
+\subsection{Setup}
+
+\begin{itemize}
+\item Subject model: DeepSeek V3.2 thinking (same as §\ref{sec:eval})
+\item Self-judge run: DeepSeek V3.2 thinking · n=500 · accuracy 56.6\%
+\item Cross-judge run: GLM-5.1 thinking (Volc Ark) · n=500
+\item Pipeline: identical (m3-rerank · 5-component · query rewrite)
+\item Cost: \cny{}3 additional (judge LLM tokens only)
+\end{itemize}
+
+We chose GLM-5.1 because it is from a different model family
+(Zhipu AI · ChatGLM lineage vs DeepSeek's), trained on different data
+mixes, and has comparable parameter count, so its judging behavior is
+unlikely to share systematic bias with the subject.
+
+\subsection{Results}
+
+\textbf{[Filled after cross-judge run completes · 2026-05-XX]}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Type} & \textbf{Self-judge} & \textbf{Cross-judge} & \textbf{Δ} \\
+\midrule
+single-session-assistant     & 83.9\% & TBD\% & TBD \\
+knowledge-update             & 57.7\% & TBD\% & TBD \\
+single-session-user          & 57.1\% & TBD\% & TBD \\
+multi-session                & 54.9\% & TBD\% & TBD \\
+single-session-preference    & 53.3\% & TBD\% & TBD \\
+temporal-reasoning           & 46.6\% & TBD\% & TBD \\
+\midrule
+\textbf{Overall}             & \textbf{56.6\%} & \textbf{TBD\%} & \textbf{TBD} \\
+\bottomrule
+\end{tabular}
+\caption{Self-judge vs cross-judge accuracy on identical 500 questions.
+Numbers will be filled after evaluation completes.}
+\label{tab:crossjudge}
+\end{table}
+
+\subsection{Agreement analysis}
+
+We compute per-question agreement (both judges marked correct, or both
+incorrect) and Cohen's κ proxy = $2 \cdot \text{agreement} - 1$.
+
+\textbf{[Filled after analysis script runs:
+tools/cross\_judge\_analysis.py]}
+
+\subsection{Interpretation thresholds}
+
+We adopt the following ex-ante thresholds (registered before run):
+
+\begin{itemize}
+\item Agreement $\geq 0.95$ : excellent · self-judge bias < 5 pts ·
+  paper claims fully defensible.
+\item Agreement $\geq 0.85$ : good · documented bias · paper claims
+  defensible with appendix note.
+\item Agreement $\geq 0.75$ : moderate · paper claims qualified ·
+  abstract revised to "comparable to" instead of "matches".
+\item Agreement $< 0.75$ : significant · re-design eval before
+  publication · likely use Gemini as third judge.
+\end{itemize}
+
+These thresholds were defined before the cross-judge run started, to
+avoid p-hacking the interpretation of the result.
+
+\subsection{Reproducibility}
+
+The cross-judge run uses the same script with environment overrides:
+
+\begin{verbatim}
+ZMM_LLM_PROVIDER=ark
+ZMM_SUBJECT_MODEL=deepseek-v3.2
+ZMM_JUDGE_MODEL=glm-5.1            # ← change · was deepseek-v3.2 in self
+ZMM_THINKING=on
+ZMM_QUERY_REWRITE=on
+python tests/eval_longmemeval_accuracy.py --pipeline=m3-rerank --full
+\end{verbatim}
+
+Per-question logs are saved to a separate JSONL file. The agreement
+analysis script (\texttt{tools/cross\_judge\_analysis.py}) computes
+all numbers in this section automatically:
+
+\begin{verbatim}
+python tools/cross_judge_analysis.py \
+    --self  .cache/longmemeval_acc_*_<self_ts>.jsonl \
+    --cross .cache/longmemeval_acc_*_<cross_ts>.jsonl \
+    --output paper/results/cross_judge_analysis.json
+\end{verbatim}

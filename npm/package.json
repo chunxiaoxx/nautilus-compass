@@ -1,0 +1,38 @@
+{
+  "name": "@nautilus/compass-mcp",
+  "version": "0.9.0-dev",
+  "description": "MCP server for compass · cross-agent memory layer · drift-aware writer · LongMemEval-S 56.6%",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "memory",
+    "claude",
+    "cline",
+    "cursor",
+    "agent",
+    "drift-detection",
+    "nautilus"
+  ],
+  "homepage": "https://compass.nautilus.social",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chunxiaoxx/nautilus-compass"
+  },
+  "license": "MIT",
+  "author": "chunxiaoxx",
+  "main": "bin/cli.js",
+  "bin": {
+    "compass-mcp": "bin/cli.js"
+  },
+  "files": [
+    "bin/",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node bin/cli.js --selftest"
+  }
+}

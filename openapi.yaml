@@ -1,0 +1,330 @@
+openapi: 3.1.0
+info:
+  title: compass-gateway
+  description: |
+    Cross-agent memory layer for the Nautilus platform.
+    Multi-user · multi-region · drift-aware writer · LongMemEval-S 56.6%.
+  version: 0.9.0-dev
+  license:
+    name: MIT
+    url: https://github.com/chunxiaoxx/nautilus-compass/blob/main/LICENSE
+  contact:
+    name: Nautilus Compass
+    url: https://compass.nautilus.social
+
+servers:
+  - url: https://compass.nautilus.social
+    description: Production (cn-shanghai · default)
+  - url: https://eu.compass.nautilus.social
+    description: EU (Frankfurt · GDPR)
+  - url: https://us.compass.nautilus.social
+    description: US (Virginia)
+
+security:
+  - bearerAuth: []
+  - legacyHeaderAuth: []
+
+paths:
+  /healthz:
+    get:
+      summary: Health check
+      security: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Health'
+
+  /v1/auth/signup:
+    post:
+      summary: Sign up
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignupIn'
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '409':
+          description: Email already registered
+
+  /v1/auth/login:
+    post:
+      summary: Login
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginIn'
+      responses:
+        '200':
+          description: JWT issued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Invalid credentials
+
+  /v1/observations:
+    post:
+      summary: Write a single observation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Observation'
+      responses:
+        '201':
+          description: Observation indexed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok: { type: boolean }
+                  obs_id: { type: string }
+                  indexed_at: { type: string, format: date-time }
+        '400': { description: Missing content/encrypted_body }
+        '403': { description: user_id mismatch }
+        '409': { description: Duplicate obs_id }
+
+  /v1/observations/batch:
+    post:
+      summary: Batch write (≤100 observations)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                observations:
+                  type: array
+                  items: { $ref: '#/components/schemas/Observation' }
+                  maxItems: 100
+      responses:
+        '200':
+          description: Mixed result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok: { type: boolean }
+                  accepted: { type: integer }
+                  rejected: { type: integer }
+                  rejected_ids: { type: array, items: { type: string } }
+                  errors:
+                    type: array
+                    items: { type: object }
+
+  /v1/recall:
+    get:
+      summary: Cross-agent semantic recall
+      parameters:
+        - { in: query, name: q, required: true, schema: { type: string } }
+        - { in: query, name: top_k, schema: { type: integer, default: 5 } }
+        - { in: query, name: cross_agent, schema: { type: boolean, default: true } }
+        - { in: query, name: drift, schema: { type: string, enum: [green, yellow, red] } }
+        - { in: query, name: agent_id, schema: { type: string } }
+      responses:
+        '200':
+          description: Hits
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user_id: { type: string }
+                  query: { type: string }
+                  hits:
+                    type: array
+                    items: { $ref: '#/components/schemas/Hit' }
+
+  /v1/agents:
+    get:
+      summary: List user's agents
+      responses:
+        '200':
+          description: Agents
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Agent' }
+
+  /v1/agents/register:
+    post:
+      summary: Register a new agent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [agent_type]
+              properties:
+                agent_type:
+                  type: string
+                  enum: [claude-code, openclaw, hermes, cursor, codex, zenmind, nautilus, caishen, custom]
+                workspace: { type: string }
+                device_id: { type: string }
+                metadata: { type: object }
+      responses:
+        '201':
+          description: Agent registered
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  agent_id: { type: string }
+
+  /v1/profile:
+    get:
+      summary: User profile aggregate
+      parameters:
+        - { in: query, name: days, schema: { type: integer, default: 90 } }
+      responses:
+        '200':
+          description: Profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    legacyHeaderAuth:
+      type: apiKey
+      in: header
+      name: X-User-ID
+      description: Legacy compatibility header for tools that haven't auth'd yet (v0.7.2 → v0.9 transition)
+
+  schemas:
+    Health:
+      type: object
+      properties:
+        status: { type: string }
+        service: { type: string }
+        version: { type: string }
+        region: { type: string }
+        users: { type: integer }
+        observations: { type: integer }
+
+    SignupIn:
+      type: object
+      required: [email, passphrase]
+      properties:
+        email: { type: string, format: email }
+        passphrase: { type: string, minLength: 12 }
+        region:
+          type: string
+          enum: [cn-shanghai, eu-frankfurt, us-virginia]
+          default: cn-shanghai
+
+    LoginIn:
+      type: object
+      required: [email, passphrase]
+      properties:
+        email: { type: string }
+        passphrase: { type: string }
+
+    AuthResponse:
+      type: object
+      properties:
+        user_id: { type: string }
+        token: { type: string }
+        region: { type: string }
+        encryption_salt: { type: string }
+
+    Observation:
+      type: object
+      required: [obs_id, user_id, agent_id, agent_type, ts, meta]
+      properties:
+        obs_id:
+          type: string
+          pattern: ^ob_[a-zA-Z0-9_]+$
+        user_id:
+          type: string
+          pattern: ^u_[a-zA-Z0-9_]+$
+        agent_id:
+          type: string
+          pattern: ^ag_[a-zA-Z0-9_]+$
+        agent_type:
+          type: string
+          enum: [claude-code, openclaw, hermes, cursor, codex, zenmind, nautilus, caishen, custom]
+        ts: { type: string, format: date-time }
+        meta:
+          type: object
+          properties:
+            type:
+              type: string
+              enum: [bugfix, feature, refactor, discovery, decision, change]
+            concept:
+              type: string
+              enum: [gotcha, pattern, trade-off, how-it-works, why-it-exists, problem-solution, what-changed]
+            drift:
+              type: string
+              enum: [green, yellow, red]
+            drift_signals:
+              type: array
+              items: { type: string }
+        content:
+          type: object
+          properties:
+            name: { type: string }
+            description: { type: string }
+            body: { type: string }
+        encrypted_body: { type: string, description: "AES-GCM ciphertext (base64) · Pro+ default" }
+        encryption_version: { type: string, default: v1 }
+
+    Hit:
+      type: object
+      properties:
+        obs_id: { type: string }
+        agent_id: { type: string }
+        score: { type: number }
+        ts: { type: string }
+        drift: { type: string }
+        type: { type: string }
+        content_or_encrypted: { type: object }
+
+    Agent:
+      type: object
+      properties:
+        agent_id: { type: string }
+        agent_type: { type: string }
+        workspace: { type: string }
+        device_id: { type: string }
+        last_seen_at: { type: string }
+
+    Profile:
+      type: object
+      properties:
+        user_id: { type: string }
+        days: { type: integer }
+        source_obs_count: { type: integer }
+        summary:
+          type: object
+          properties:
+            top_agents: { type: array }
+            types: { type: object }
+            drift_distribution: { type: object }

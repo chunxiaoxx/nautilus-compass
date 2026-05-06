@@ -1,0 +1,94 @@
+% Paper 2 · §7 Open source release
+% Status: draft · 2026-05-05
+
+\section{Open source release}
+\label{sec:opensource}
+
+We release all artifacts at
+\url{https://github.com/chunxiaoxx/nautilus-compass} under MIT license:
+
+\begin{itemize}
+
+\item \textbf{Pipeline implementation} (\texttt{tests/eval\_longmemeval\_accuracy.py}):
+   the complete 5-component evaluation script with full prompt set, run on
+   any Anthropic-compatible LLM endpoint via the \texttt{ZMM\_LLM\_PROVIDER}
+   environment variable.
+
+\item \textbf{Per-question logs} (\texttt{.cache/longmemeval\_acc\_*.jsonl}):
+   one JSONL line per question containing the retrieved context, generated
+   answer, judge decision, and ground truth.  Sufficient to re-derive
+   any per-type or aggregate metric.
+
+\item \textbf{Anchor packs} (\texttt{anchors\_platform\_base.json},
+   \texttt{anchors\_finance.json}, \texttt{anchors\_legal.json},
+   \texttt{anchors\_medical.json}, \texttt{anchors\_vc.json},
+   \texttt{anchors\_zenmind.json}): pre-trained 25-positive + 35-negative
+   anchor sentences for the drift detector, organized by domain.
+
+\item \textbf{MCP server} (\texttt{mcp\_server.py}): exposes 7 tools
+   (\texttt{recall}, \texttt{drift\_check}, \texttt{drift\_history},
+   \texttt{session\_search}, \texttt{profile}, \texttt{ingest\_obs},
+   \texttt{feedback\_log}) over JSON-RPC 2.0 stdio. Compatible with
+   Claude Desktop, Cline, Cursor.
+
+\item \textbf{A2A adapter} (\texttt{sdk/a2a\_adapter.py}): HTTP service
+   exposing 4 capabilities (\texttt{STORE\_OBS}, \texttt{RETRIEVE\_MEMORY},
+   \texttt{QUERY\_PROFILE}, \texttt{QUERY\_DRIFT\_HISTORY}) over the A2A
+   protocol envelope.
+
+\item \textbf{npm wrapper} (\texttt{@nautilus/compass-mcp}): Node.js
+   shim that auto-detects Python and spawns the MCP server. Single-line
+   integration via \texttt{npx -y @nautilus/compass-mcp}.
+
+\item \textbf{Cursor extension} (\texttt{cursor-extension/}): VS Code
+   extension TypeScript scaffold with 5 commands (\texttt{recall},
+   \texttt{drift\_history}, \texttt{ingest\_obs}, \texttt{profile},
+   \texttt{start\_mcp\_server}).
+
+\item \textbf{Cross-platform multi-agent SDK} (\texttt{sdk/compass\_client.py},
+   \texttt{sdk/attach\_memory.py}): Python client library and one-line
+   Nautilus-agent integration helper.
+
+\item \textbf{Reproducibility scripts} (\texttt{tests/}): smoke tests for
+   all 7 components, end-to-end self-test, and 48-question stratified
+   pilot for rapid development.
+
+\end{itemize}
+
+\subsection{Hardware and cost reproduction}
+
+A complete reproduction of the 56.6\% headline result requires:
+
+\begin{itemize}
+\item Tencent Cloud T4 GPU spot (\(\sim\)\$0.10/hour), 8 hours for full-500;
+\item Volc Ark coding plan API key (free tier eligible for 100K
+   tokens/day; paid \(\sim\)\cny{}1 per million input tokens);
+\item HuggingFace bge-m3 + bge-reranker-v2-m3 weights (\(\sim\)2.5\,GB total);
+\item LongMemEval-S dataset \citep{wu2024longmemeval}.
+\end{itemize}
+
+Total reproduction cost: \(\sim\)\$3.50 USD per 500-question run. This
+is suitable for individual researchers and small teams without
+institutional cloud budgets.
+
+\subsection{Long-term roadmap}
+
+The compass project is part of the Nautilus platform 7-capability
+suite. Roadmap items beyond the v0.8 release reported here:
+
+\begin{itemize}
+\item v0.9: server-side observations endpoint, JWT auth, sqlite migration,
+   multi-region sharding (cn-shanghai, eu-frankfurt, us-virginia);
+\item v0.9.5: stake-coupled drift economics
+   (drift=red \(\to\) stake penalty; green \(\to\) bonus);
+\item v1.0: end-to-end encryption (libsodium client-side), team plan
+   (shared memory rooms), Apache 2.0 dual-license for enterprise self-hosting;
+\item v1.0.1: cross-agent profile aggregation; agent recommendation
+   on Nautilus marketplace.
+\end{itemize}
+
+We invite contributions, particularly:
+benchmark replications on alternative LLM stacks;
+domain-specific anchor packs;
+A2A protocol agent integrations;
+client-side encryption library bindings.

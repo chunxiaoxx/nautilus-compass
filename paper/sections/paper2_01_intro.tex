@@ -1,0 +1,75 @@
+% Paper 2 · §1 Introduction
+% Status: draft · 2026-05-05
+
+\section{Introduction}
+\label{sec:intro}
+
+Long-term memory is the next frontier for LLM agents. As coding assistants
+\citep{anthropic2024claude}, autonomous task agents \citep{schick2024toolformer},
+and conversational companions move from single-turn tools to multi-session
+systems, the bottleneck has shifted from \emph{generation quality} to
+\emph{recall fidelity}: can the agent reliably retrieve, count, update, and
+reason temporally over its own past interactions?
+
+The LongMemEval-S benchmark \citep{wu2024longmemeval} crystallized this
+problem with a 500-question evaluation across six question types
+(single-session-assistant, single-session-user, single-session-preference,
+multi-session, knowledge-update, temporal-reasoning) over 50K-token chat
+haystacks. Recent baselines hover at 35--60\% accuracy, with the strongest
+results requiring expensive proprietary stacks: GPT-4o judges, graph
+databases (Zep \citep{zep2025}), or $20+ per evaluation run.
+
+This paper makes three contributions:
+
+\begin{enumerate}
+\item \textbf{State-of-the-art accuracy with Chinese open-via-API LLMs.}
+   We achieve \textbf{56.6\% on LongMemEval-S} (n=500) using DeepSeek
+   V3.2 thinking via the Volc Ark coding plan, matching the Zep SOTA band
+   (55--60\%) and the paper RAG SOTA (50--60\%) at less than 1/15 the
+   commercial-API cost. Total cost to reproduce: \(\sim\)\$3.50 USD.
+   This is the first published 500-question evaluation using exclusively
+   Chinese-LLM + local-bge-m3 infrastructure.
+
+\item \textbf{A 5-component pipeline with one large-gain intervention.}
+   Our pipeline combines bge-m3 dense recall, bge-reranker-v2-m3
+   cross-encoder reranking, multi-angle query rewriting,
+   type-aware prompting, and a single-model judge chain. The
+   single-largest gain is \emph{multi-angle query rewriting} for
+   single-session-user questions, which yielded \textbf{+27 pts} (30\%
+   \(\to\) 57\%) by retrieving with 3 query reformulations and
+   max-fusing the reranker scores. Each component is independently
+   ablated.
+
+\item \textbf{Per-model thinking effectiveness varies dramatically, with
+   one mode causing catastrophic failure.} On 48-question pilot,
+   thinking helps DeepSeek V3.2 (+10 pts), helps GLM-5.1 (+2 pts),
+   shows zero gain for Kimi K2.6, and triggers a refusal cascade for
+   MiniMax M2.7-highspeed (44\% refusal rate at full-500). We document
+   this as the most important practical finding for production
+   deployment: \emph{per-model thinking-on/off must be benchmarked
+   for each release}, not assumed.
+\end{enumerate}
+
+We release Compass v0.8 as an open-source MIT-licensed memory plugin
+\url{https://github.com/chunxiaoxx/nautilus-compass} that includes:
+
+\begin{itemize}
+\item the full 5-component pipeline as a Python package,
+\item an MCP server (\texttt{compass-mcp}) compatible with Claude
+  Desktop, Cline, and Cursor,
+\item an A2A protocol adapter for cross-agent message routing,
+\item Volc-Ark, MiniMax, Anthropic, and OpenAI-compatible LLM bindings,
+\item all 500-question per-model evaluation logs,
+\item the daemon-based bge-m3 + reranker indexer,
+\item an orthogonal anchor-based drift detector (AUC=0.92).
+\end{itemize}
+
+The remainder of the paper proceeds as follows. \S\ref{sec:related}
+positions our work against existing memory systems
+(Mem0, Letta, A-MEM, Zep, claude-mem). \S\ref{sec:method}
+describes the 5-component pipeline. \S\ref{sec:eval} reports the
+full benchmark results across 6 LLMs and the per-component ablation.
+\S\ref{sec:discussion} interprets the findings, including the V-shaped
+trajectory in cumulative accuracy. \S\ref{sec:limitations} discusses
+threats to validity. \S\ref{sec:opensource} describes the released
+artifacts.

@@ -1,0 +1,36 @@
+# compass · bge-m3 daemon systemd unit
+# Install:
+#   sudo cp scripts/compass-daemon.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now compass-daemon.service
+
+[Unit]
+Description=Compass bge-m3 daemon · semantic recall + drift detection
+After=network-online.target
+Before=compass.service
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/compass
+
+EnvironmentFile=-/etc/default/compass
+Environment="ZMM_DEVICE=cuda"
+Environment="HF_ENDPOINT=https://hf-mirror.com"
+Environment="PYTHONIOENCODING=utf-8"
+
+ExecStart=/home/ubuntu/mf/envs/c/bin/python /home/ubuntu/compass/daemon.py
+
+Restart=on-failure
+RestartSec=15
+
+# bge-m3 takes 60-90s cold load · don't restart in panic
+StartLimitInterval=600
+StartLimitBurst=3
+
+LimitNOFILE=65535
+MemoryHigh=8G
+
+[Install]
+WantedBy=multi-user.target
