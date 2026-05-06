@@ -93,6 +93,68 @@ Lower bound: no dense retrieval, no reranker.}
 \label{tab:em-bm25}
 \end{table}
 
+\subsection{End-to-end with full retrieval stack (n=100)}
+\label{sec:em-full-stack}
+
+We then ran the full compass retrieval stack
+(BGE-m3~\citep{chen2024bge} dense + bge-reranker-v2-m3 cross-encoder)
+on the same topic 01 with DeepSeek-V4-flash as both answerer and judge
+(matching our LongMemEval pipeline · 14.9 minutes wall-clock on a
+single T4):
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lr}
+\toprule
+System (paper Table 4 · GPT-4.1-mini answerer) & Avg \\
+\midrule
+Full Context (1M tokens, no memory) & 37.44 \\
++ MemoBase                          & 34.27 \\
++ Mem0                              & 37.09 \\
++ Zep                               & 39.97 \\
+\textbf{compass (BGE-m3+rerank+V4-flash)}  & \textbf{40.00} \\
++ MemOS                             & 42.55 \\
++ EverCore                          & not reported \\
+\bottomrule
+\end{tabular}
+\caption{compass on EverMemBench-Dynamic topic 01 (n=100) alongside
+the paper Table 4 baselines. compass falls between Zep (39.97) and
+MemOS (42.55), filling the EverCore gap with an open-source,
+self-hosted alternative. Recall@20 was 91.0\% (BM25-only baseline:
+38.1\%); the 51-point recall improvement explains where the dense
+retriever helps. The remaining gap to MemOS is likely due to (a)
+different LLM (V4-flash vs GPT-4.1-mini), (b) topic 01 only vs
+full 5-topic average, and (c) no Profile-Understanding subtask
+yet. Caveat: n=100 has $\pm$10pt 95\% CI · we do not claim a
+ranking until full 5-topic 2400-QA run completes.}
+\label{tab:em-full-stack}
+\end{table}
+
+\subsection{Bug archeology · how we got here}
+
+Three bugs blocked early end-to-end runs (acc 0\%) before yielding
+the 40\% number above:
+
+\begin{enumerate}
+\item Message truncation \texttt{[:300]} cut the answer (e.g. ``65\%'')
+out of retrieved context · LLM correctly returned UNKNOWN. Fix:
+\texttt{[:1500]}.
+\item DeepSeek V4-flash defaults to \texttt{thinking} mode and
+\texttt{reasoning\_mode="non-think"} did not disable it · 50--200
+reasoning\_tokens were emitted but the API still allocated them
+from \texttt{max\_tokens}. The judge call with \texttt{max\_tokens=8}
+yielded an empty \texttt{content} string · ``\texttt{CORRECT} in
+\texttt{""}'' was always False · the entire run was scored 0\%.
+Fix: judge \texttt{max\_tokens=256} (allows ~200 reasoning + verdict).
+\item Implicit: \texttt{reasoning\_mode} flag is silently ignored on
+V4-flash, so users of the DeepSeek API for cheap eval should budget
+generous \texttt{max\_tokens} regardless.
+\end{enumerate}
+
+This sequence is why our self-criticism rule (\S\ref{sec:limitations})
+explicitly requires inspecting raw model output for the first 3 QAs of
+any new pipeline before trusting aggregate metrics.
+
 \subsection{End-to-end (preliminary) and what we cannot yet claim}
 
 A 50-QA end-to-end run on topic~01 with BM25 retrieval and
