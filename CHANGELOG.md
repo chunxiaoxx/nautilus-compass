@@ -1,5 +1,68 @@
 # Changelog
 
+## [0.9.5] · 2026-05-06 — "production-validated · A2A live · cross-benchmark"
+
+Production hardening + A2A v1 protocol surface + EverMemBench cross-validation.
+
+### 🎯 Highlights
+
+- 🌐 **A2A v1 Protocol live in production** · ext https://compass.nautilus.social
+  - GET `/.well-known/agent.json` · 5-capability discovery · OAuth2 + MCP advertise
+  - POST `/a2a/messages` · envelope dispatcher · maps to REST + bearer
+  - HTTP 200 verified ext (TLS · nginx · 67-320ms)
+- 🛡️ **Audit log Stage 0+1 deployed** · prod hardened against high-frequency events
+  - login + oauth.token 1/10 sampling · signup 100% audit
+  - async deque + 5s background flusher · 0 lock contention
+  - VACUUM in retention cron (Stage 0 disk reclaim)
+- 📊 **Stress benchmark · 1M rows · p95 7ms** (50× under 100ms threshold)
+  - Postgres switch trigger raised 100K → 5M rows (real benchmark · not heuristic)
+- 📈 **Cross-benchmark on EverMemBench-Dynamic** · paper §6.5 draft
+  - First independent benchmark filling EverCore omission gap
+  - BM25 lower-bound: R@1 14.8 / R@5 25.2 / R@20 38.1 across 2400 QAs
+  - paper-grade compass numbers pending T4 GPU availability
+- 🔬 **Cross-judge replication final** · n=500 · κ 0.772 · 88.6% agreement
+  - DeepSeek V3.2 self-judge 56.6% · GLM-5.1 cross-judge 54.0% · Δ -2.6 (Good)
+
+### Added
+
+- A2A v1 protocol endpoints in `compass_http_v09.py` (+162 lines)
+- `init_audit_table()` + `write_audit()` async deque + flusher
+- `/v1/audit_log` self-export · GDPR delete/cancel/export endpoints
+- `paper/AUDIT_PARTITION_SPEC.md` revised with real stress numbers
+- `paper/sections/paper2_06_5_evermembench.tex` cross-benchmark (189 LOC · 4 tables)
+- `scripts/stress_audit.sh` 4-scale benchmark
+- `scripts/evermembench_smoke.py` BM25 R@K (free)
+- `scripts/evermembench_e2e.py` BM25 + LLM e2e (~$0.10/100 QAs)
+- `ops/prometheus_alerts.yml` 6 alerts
+- `paper/REAL_USER_ONBOARDING.md` OpenClaw priority playbook
+- `package.json` + `bin/compass-mcp.js` npm wrapper
+- `tools/cross_judge_analysis.py` cross-judge κ analysis tool
+
+### Changed
+
+- nginx: + `/a2a/` + `/.well-known/agent.json` + `/metrics` location blocks
+- AUDIT_PARTITION_SPEC trigger: 100K → 5M rows (data-driven)
+- `paper2_03_method.tex` 9 hedge edits (over-claim → empirical)
+- `paper2_appendix_crossjudge.tex` filled with real κ data
+- `landing/index.html` v1.0 design · Nautilus dark theme
+
+### Production verified (ext https://compass.nautilus.social)
+
+- ✅ /healthz · 1281 req/s · p95 125ms
+- ✅ /.well-known/agent.json · 200 (320ms · TLS)
+- ✅ /a2a/messages · 200 (envelope reply)
+- ✅ /metrics · Prometheus scrape-ready
+- ✅ Self-heal: kill -9 → systemd restart 12s
+- ✅ Live metrics: 305 users · 305 audit_events_24h · 0 drift_red
+
+### Self-criticism
+
+- 30-QA EverMemBench smoke (R@1 43%) over-optimistic vs full 2400 (R@1 15%)
+  - n<100 CI ±15-20pt · documented in paper §6.5
+- BM25 e2e 0% on EverMemBench (BGE-m3 + reranker pending T4 GPU)
+- Two-server confusion early (T4 vs cloud) · stress test ran on wrong host
+  - resolved · memorized to prevent recurrence
+
 ## [0.9.0-dev] · 2026-05-05 — "cross-agent · MCP/A2A · 56.6% on LongMemEval-S"
 
 ### 🎯 Highlights
