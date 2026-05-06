@@ -261,6 +261,9 @@ def signup(body: SignupIn):
             conn.commit()
         except sqlite3.IntegrityError:
             raise HTTPException(409, "email already registered")
+    write_audit(user_id, 'user.signup', 'user', user_id,
+                metadata={'email_hash': hashlib.sha256(body.email.encode()).hexdigest()[:16],
+                          'region': body.region})
     token = _issue_jwt(user_id, body.region)
     return {"user_id": user_id, "token": token, "region": body.region,
             "encryption_salt": salt.hex()}
@@ -280,6 +283,10 @@ def login(body: LoginIn):
         conn.execute("UPDATE users SET last_login_at = ? WHERE user_id = ?",
                      (datetime.now(timezone.utc).isoformat(), u["user_id"]))
         conn.commit()
+    import random
+    # sample 1/10 of login events to keep audit volume manageable (Stage 1 mitigation)
+    if random.random() < 0.1:
+        write_audit(u["user_id"], 'user.login', 'user', u["user_id"])
     token = _issue_jwt(u["user_id"], u["region"])
     return {"user_id": u["user_id"], "token": token, "region": u["region"]}
 
@@ -357,7 +364,10 @@ def oauth_token(code: str, code_verifier: str, client_id: str,
         "exp": int(time.time()) + 86400,
     }, JWT_SECRET, algorithm="HS256")
 
-    write_audit(user_id, "oauth.token", "client", client_id)
+    import random as _r
+    # sample 1/10 of oauth.token events (Stage 1 mitigation)
+    if _r.random() < 0.1:
+        write_audit(user_id, "oauth.token", "client", client_id)
     return {
         "access_token": access_token,
         "token_type": "Bearer",
@@ -693,24 +703,84 @@ def init_audit_table():
         """)
 
 
-def write_audit(user_id, action, resource_type=None, resource_id=None,
-                ip=None, ua=None, metadata=None):
-    """Append audit entry · best-effort · never blocks request on failure."""
+# --- v0.9.1 Stage 1: async batched audit writer ---
+import threading as _audit_threading
+from collections import deque as _audit_deque
+
+_audit_buffer = _audit_deque(maxlen=1000)
+_audit_buffer_lock = _audit_threading.Lock()
+_audit_thread_started = False
+_audit_thread_lock = _audit_threading.Lock()
+AUDIT_FLUSH_INTERVAL = 5.0  # seconds
+
+
+def _audit_flush_once():
+    """Drain buffer and bulk-insert in one transaction. Best-effort."""
+    with _audit_buffer_lock:
+        if not _audit_buffer:
+            return 0
+        rows = list(_audit_buffer)
+        _audit_buffer.clear()
     try:
         with sqlite3.connect(DB_PATH) as conn:
-            conn.execute("""
+            conn.executemany("""
                 INSERT INTO audit_log
                 (audit_id, ts, user_id, action, resource_type, resource_id, ip_addr, user_agent, metadata)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
-                f"aud_{uuid.uuid4().hex[:10]}",
-                datetime.now(timezone.utc).isoformat(),
-                user_id, action, resource_type, resource_id, ip, ua,
-                json.dumps(metadata, ensure_ascii=False) if metadata else None,
-            ))
+            """, rows)
             conn.commit()
-    except Exception:
-        pass  # don't fail request if audit fails
+        return len(rows)
+    except Exception as e:
+        print(f"[audit] flush failed ({len(rows)} rows): {e}", file=sys.stderr, flush=True)
+        # re-queue rows · so we don't lose them
+        try:
+            with _audit_buffer_lock:
+                for r in rows:
+                    _audit_buffer.append(r)
+        except Exception:
+            pass
+        return 0
+
+
+def _audit_flush_loop():
+    while True:
+        try:
+            time.sleep(AUDIT_FLUSH_INTERVAL)
+            n = _audit_flush_once()
+            if n:
+                print(f"[audit] flushed {n} rows", file=sys.stderr, flush=True)
+        except Exception as e:
+            print(f"[audit] loop error: {e}", file=sys.stderr, flush=True)
+
+
+def _start_audit_thread():
+    global _audit_thread_started
+    with _audit_thread_lock:
+        if _audit_thread_started:
+            return
+        t = _audit_threading.Thread(target=_audit_flush_loop, name="audit-flusher", daemon=True)
+        t.start()
+        _audit_thread_started = True
+        print("[audit] background flusher started (interval=5s, maxlen=1000)", file=sys.stderr, flush=True)
+
+
+def write_audit(user_id, action, resource_type=None, resource_id=None,
+                ip=None, ua=None, metadata=None):
+    """Append audit entry to in-memory buffer · flushed every 5s by background thread.
+
+    Signature unchanged · 100% backward-compat. Failure-safe: never raises."""
+    try:
+        row = (
+            f"aud_{uuid.uuid4().hex[:10]}",
+            datetime.now(timezone.utc).isoformat(),
+            user_id, action, resource_type, resource_id, ip, ua,
+            json.dumps(metadata, ensure_ascii=False) if metadata else None,
+        )
+        with _audit_buffer_lock:
+            _audit_buffer.append(row)
+    except Exception as e:
+        print(f"[audit] enqueue failed: {e}", file=sys.stderr, flush=True)
+        # don't fail request if audit fails
 
 
 @app.get("/v1/audit_log")
@@ -844,12 +914,91 @@ def export_my_data(user_id: str = Depends(auth_user)):
     }
 
 
+
+
+# ---- A2A Protocol v1 · Envelope Dispatcher ----
+@app.post("/a2a/messages")
+def a2a_dispatch(envelope: dict):
+    """A2A v1 envelope handler · dispatches to REST endpoints.
+
+    Stateless reply: REST is the canonical contract; envelope clients should
+    follow `use_endpoint` with their bearer token. Discovery via
+    /.well-known/agent.json describes capabilities + auth.
+    """
+    if envelope.get("protocol") != "a2a/v1":
+        return {"status": "err", "error": "unsupported protocol · need a2a/v1"}
+    msg_type = envelope.get("type")
+    cap_map = {
+        "STORE_OBS":             ("/v1/observations",        "POST"),
+        "RETRIEVE_MEMORY":       ("/v1/recall",              "POST"),
+        "QUERY_PROFILE":         ("/v1/profile",             "GET"),
+        "QUERY_DRIFT":           ("/v1/drift",               "GET"),
+        "DISCOVER_CAPABILITIES": ("/.well-known/agent.json", "GET"),
+    }
+    if msg_type not in cap_map:
+        return {"status": "err", "error": f"unknown type: {msg_type}",
+                "valid_types": list(cap_map.keys())}
+    ep, method = cap_map[msg_type]
+    return {
+        "protocol":     "a2a/v1",
+        "from":         "compass-memory",
+        "to":           envelope.get("from", "?"),
+        "ts":           __import__("datetime").datetime.utcnow().isoformat() + "Z",
+        "in_reply_to":  envelope.get("msg_id"),
+        "type":         "REPLY",
+        "status":       "redirect",
+        "use_endpoint": ep,
+        "use_method":   method,
+        "note":         "A2A v1 = REST dispatch · call use_endpoint with bearer token from /v1/oauth/token",
+    }
+
+
+# ---- A2A Protocol v1 · Agent Discovery ----
+@app.get("/.well-known/agent.json")
+def a2a_well_known():
+    """Standard agent discovery endpoint (Anthropic + Google A2A spec).
+    Lets any A2A-compatible agent auto-discover capabilities + auth."""
+    return {
+        "schema_version": "v0.0.1-a2a",
+        "agent": {
+            "id": "compass.nautilus.social",
+            "name": "Nautilus Compass",
+            "description": "Cross-agent memory layer · MCP + A2A · drift-aware · LongMemEval-S 56.6% (validated)",
+            "version": "0.9.0",
+            "homepage": "https://github.com/chunxiaoxx/nautilus-compass",
+            "capabilities": [
+                {"name": "STORE_OBS", "endpoint": "/v1/observations", "method": "POST",
+                 "description": "Write a single observation (with drift signal) to user memory"},
+                {"name": "RETRIEVE_MEMORY", "endpoint": "/v1/recall", "method": "POST",
+                 "description": "Cross-agent semantic + keyword recall"},
+                {"name": "QUERY_PROFILE", "endpoint": "/v1/profile", "method": "GET",
+                 "description": "User work profile aggregate"},
+                {"name": "QUERY_DRIFT", "endpoint": "/v1/drift", "method": "GET",
+                 "description": "AI drift timeline (compass-exclusive feature)"}
+            ],
+            "auth": {
+                "type": "oauth2",
+                "authorization_endpoint": "/v1/oauth/authorize",
+                "token_endpoint": "/v1/oauth/token",
+                "scopes": ["read:memory", "write:memory"]
+            },
+            "mcp_alternative": {
+                "server": "@nautilus/compass-mcp",
+                "registry": "https://www.npmjs.com/package/@nautilus/compass-mcp",
+                "command": "compass-mcp"
+            },
+            "documentation": "https://github.com/chunxiaoxx/nautilus-compass#a2a-protocol"
+        }
+    }
+
+
 # ---- Init ----
 
 @app.on_event("startup")
 def on_startup():
     init_db()
     init_audit_table()
+    _start_audit_thread()
 
 
 if __name__ == "__main__":
