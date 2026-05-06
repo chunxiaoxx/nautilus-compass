@@ -195,6 +195,26 @@ Claude:
 
 ---
 
+## v0.9.5 production ready (2026-05-06)
+
+A2A v1 protocol surface live on `https://compass.nautilus.social`:
+
+```
+GET  /.well-known/agent.json   → 5-cap discovery + OAuth2 + MCP advertise
+POST /a2a/messages              → envelope dispatcher · valid a2a/v1 reply
+GET  /metrics                   → Prometheus scrape (305 users · 305 audit · 0 drift_red)
+```
+
+Stress validated: **1M rows · p95 7ms** (50× under 100ms threshold).
+Postgres switch trigger raised 100K → 5M rows on real benchmark data.
+Cross-judge replication final: κ 0.772 · 88.6% agreement · paper-defensible.
+
+EverMemBench cross-benchmark: BM25 baseline R@20 38.1% on 2400 multi-party
+QAs · paper-grade compass numbers (BGE-m3 + reranker) pending.
+See [paper §6.5](paper/sections/paper2_06_5_evermembench.tex) · [BLOGPOST](paper/BLOGPOST.md) · [CHANGELOG](CHANGELOG.md).
+
+---
+
 ## Cross-agent memory federation (v0.9)
 
 > claude-mem 永远做不到的能力 · MCP/A2A 协议 · 跨 Claude Desktop / Cline / Cursor / OpenClaw / Hermes 共享 memory.
