@@ -1,0 +1,153 @@
+# Compass v0.9 Production - Prometheus Alerting Rules
+#
+# Targets metrics exposed by compass /metrics endpoint:
+#   - compass_users_total           (gauge)
+#   - compass_observations_total    (counter)
+#   - compass_observations_24h      (gauge)
+#   - compass_drift_red_24h         (gauge)
+#   - compass_audit_events_24h      (gauge)
+#   - compass_region_info           (gauge, label-only)
+#
+# Scrape config snippet (add to prometheus.yml under scrape_configs:):
+# ----------------------------------------------------------------------
+# - job_name: 'compass'
+#   scrape_interval: 30s
+#   static_configs:
+#     - targets: ['compass.nautilus.social:443']
+#   metrics_path: '/metrics'
+#   scheme: 'https'
+# ----------------------------------------------------------------------
+
+groups:
+  - name: compass_production
+    interval: 30s
+    rules:
+
+      # ----------------------------------------------------------------
+      # 1. AuditFlood
+      # SQLite edge-deployment cannot sustain >100K audit rows/day.
+      # Trigger early so v0.9.5 partition migration can be scheduled
+      # before write contention bites.
+      # ----------------------------------------------------------------
+      - alert: AuditFlood
+        expr: compass_audit_events_24h > 100000
+        for: 10m
+        labels:
+          severity: warning
+          component: compass
+          subsystem: audit
+        annotations:
+          summary: "Compass audit log exceeding 100K events/24h ({{ $value | humanize }})"
+          description: |
+            audit_events_24h = {{ $value }} on instance {{ $labels.instance }}.
+            SQLite single-file audit log will start contending on writes.
+            ACTION: schedule v0.9.5 partition migration (monthly tables).
+          runbook: "https://github.com/chunxiaoxx/nautilus-compass/blob/main/docs/runbooks/audit_flood.md"
+
+      # ----------------------------------------------------------------
+      # 2. DriftRedSurge
+      # >50 users hitting AI red-drift in 24h suggests anchor pack is
+      # stale or a model upgrade has shifted alignment.
+      # ----------------------------------------------------------------
+      - alert: DriftRedSurge
+        expr: compass_drift_red_24h > 50
+        for: 15m
+        labels:
+          severity: warning
+          component: compass
+          subsystem: drift
+        annotations:
+          summary: "AI drift_red surge: {{ $value }} red-drift events/24h"
+          description: |
+            drift_red_24h = {{ $value }} on instance {{ $labels.instance }}.
+            Many users are seeing AI behavior diverge from their anchors.
+            Likely causes: anchor pack outdated, upstream model version bump,
+            or tenant prompt regression.
+            ACTION: review recent anchor pack diff + check tenant prompt history.
+          runbook: "https://github.com/chunxiaoxx/nautilus-compass/blob/main/docs/runbooks/drift_red_surge.md"
+
+      # ----------------------------------------------------------------
+      # 3. HighIngestRate
+      # Sustained >100 obs/sec means the SQLite-backed write path is
+      # nearing its single-writer ceiling. Pre-warn so we can scale
+      # (move to Postgres / shard) before tail latency degrades.
+      # ----------------------------------------------------------------
+      - alert: HighIngestRate
+        expr: rate(compass_observations_total[5m]) > 100
+        for: 10m
+        labels:
+          severity: warning
+          component: compass
+          subsystem: ingest
+        annotations:
+          summary: "Compass ingest rate {{ $value | humanize }} obs/sec (>100/sec for 10m)"
+          description: |
+            5m write rate = {{ $value }} observations/sec on {{ $labels.instance }}.
+            SQLite single-writer will become the bottleneck soon.
+            ACTION: prepare scale-out (Postgres migration or per-tenant shard).
+          runbook: "https://github.com/chunxiaoxx/nautilus-compass/blob/main/docs/runbooks/high_ingest_rate.md"
+
+      # ----------------------------------------------------------------
+      # 4. NoActivity (CRITICAL)
+      # We have registered users but zero observations in the last hour.
+      # Strong signal that the ingest path is broken (auth, DB, or proxy).
+      # ----------------------------------------------------------------
+      - alert: NoActivity
+        expr: increase(compass_observations_total[1h]) == 0 and compass_users_total > 0
+        for: 15m
+        labels:
+          severity: critical
+          component: compass
+          subsystem: ingest
+        annotations:
+          summary: "Compass has {{ with query \"compass_users_total\" }}{{ . | first | value }}{{ end }} users but 0 observations in 1h"
+          description: |
+            Zero observations recorded in the last hour despite
+            compass_users_total > 0 on instance {{ $labels.instance }}.
+            Likely causes: ingest endpoint 5xx, DB lock, auth regression,
+            reverse-proxy misroute.
+            ACTION: check /healthz, tail compass-gateway logs, verify TLS cert,
+            curl POST /v1/observations with a known token.
+          runbook: "https://github.com/chunxiaoxx/nautilus-compass/blob/main/docs/runbooks/no_activity.md"
+
+      # ----------------------------------------------------------------
+      # 5. HealthDown (CRITICAL)
+      # Prometheus cannot scrape /metrics for >1m. Service is down or
+      # network-partitioned.
+      # ----------------------------------------------------------------
+      - alert: HealthDown
+        expr: up{job="compass"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          component: compass
+          subsystem: availability
+        annotations:
+          summary: "Compass /metrics unreachable for >1m on {{ $labels.instance }}"
+          description: |
+            Prometheus scrape of job=compass has failed for >1 minute.
+            up{job="compass"} = 0 for instance {{ $labels.instance }}.
+            ACTION: check systemctl status compass-gateway, verify
+            compass.nautilus.social DNS + TLS, check firewall.
+          runbook: "https://github.com/chunxiaoxx/nautilus-compass/blob/main/docs/runbooks/health_down.md"
+
+      # ----------------------------------------------------------------
+      # 6. ZeroUsersFor7d (INFO)
+      # Product traction signal: deployed but no one signed up in a week.
+      # Not an outage — feeds into product/GTM review, not pager.
+      # ----------------------------------------------------------------
+      - alert: ZeroUsersFor7d
+        expr: compass_users_total == 0
+        for: 7d
+        labels:
+          severity: info
+          component: compass
+          subsystem: product
+        annotations:
+          summary: "Compass has zero registered users for 7 days on {{ $labels.instance }}"
+          description: |
+            compass_users_total has been 0 for 7 consecutive days.
+            This is a product-traction signal, not an outage.
+            ACTION: review GTM funnel, check signup flow E2E,
+            decide whether to invest more in distribution or pivot.
+          runbook: "https://github.com/chunxiaoxx/nautilus-compass/blob/main/docs/runbooks/zero_users_traction.md"
