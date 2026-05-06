@@ -19,17 +19,26 @@ recall} rather than the original paper's BM25+dense fusion, because we found
 in pilot experiments that BM25 added marginal lexical overlap (\(<1\) pt) at
 the cost of corpus-specific tuning.
 
-The session text is truncated to \(\max\_chars = 3500\) characters. Pilot
-study showed that increasing this from the default 2400 to 3500 yielded
-\(+2\) pts on single-session-assistant.
+The session text is truncated to \(\max\_chars = 3500\) characters. In our
+pilot study, increasing this from the default 2400 to 3500 yielded
+\(+2\) pts on single-session-assistant (see Table~\ref{tab:rewrite} for
+related per-type results).
+
+Having established the candidate pool, we next describe how cross-encoder
+reranking sharpens this set before downstream LLM consumption.
 
 \subsection{Stage 2: Cross-encoder reranking}
 
 We rerank the 20 candidates using bge-reranker-v2-m3, a 568M parameter
 cross-encoder. The top-\(K_2=15\) reranked sessions form the working memory
 context for the LLM. We tuned \(K_2\) on the development split: increasing
-from 10 to 15 yielded \(+0.5\) pts on overall accuracy with no observed
-hallucination increase.
+from 10 to 15 yielded \(+0.5\) pts on overall accuracy, and we did not
+observe a measurable hallucination increase in our manual spot-check of
+50 sampled outputs.
+
+While reranking improves precision over the recalled pool, we found that
+for one question type the recall stage itself was the bottleneck,
+motivating the rewriting stage described next.
 
 \subsection{Stage 3: Multi-angle query rewriting (for ssu only)}
 
@@ -44,12 +53,14 @@ under-retrieves. We expand the query into 3 angles using DeepSeek V3.2:
 \end{enumerate}
 
 Each angle retrieves separately; we union the top-15 from each and take the
-top-\(K_2=15\) by max reranker score. This single intervention yielded the
-largest gain in our pipeline: \textbf{+27 pts on ssu (30\% \(\to\) 57\%)}, \(+10\)
-pts overall.
+top-\(K_2=15\) by max reranker score. In our experiments, this single
+intervention yielded the largest per-type gain we measured in the pipeline:
+\textbf{+27 pts on ssu (30\% \(\to\) 57\%)}, \(+10\) pts overall (per-type
+breakdown in Table~\ref{tab:rewrite}).
 
-We do not apply rewriting to other question types because pilot studies
-showed neutral or slight negative impact:
+We do not apply rewriting to other question types because, in our pilot
+runs (Table~\ref{tab:rewrite}), it produced neutral or slightly negative
+effects:
 
 \begin{table}[h]
 \centering
@@ -75,19 +86,22 @@ observation that LongMemEval mixes very different cognitive tasks
 
 \begin{itemize}
 \item \textbf{multi-session}: prompt instructs the LLM to ``decompose into
-  per-session sub-counts before aggregating''. \(+8\) pts (44\% \(\to\) 55\%).
+  per-session sub-counts before aggregating''. We observed \(+8\) pts
+  (44\% \(\to\) 55\%) on this type (see Table~\ref{tab:rewrite} for the
+  full per-type accuracy breakdown).
 
 \item \textbf{knowledge-update}: prompt highlights ``preferentially trust
-  the most recent timestamp'', injects extracted timestamps into context.
-  \(+2\)--\(3\) pts (54\% \(\to\) 58\%).
+  the most recent timestamp'', and injects extracted timestamps into
+  context. We observed \(+2\)--\(3\) pts (54\% \(\to\) 58\%).
 
 \item \textbf{single-session-preference}: \emph{withdrawn}. A dedicated
   prompt instructing the LLM to ``infer the user's preference'' caused
-  catastrophic drift on the held-out 50-question pilot (\(-37.5\) pts), so
-  we use the default prompt. The LLM, when explicitly told to infer
-  preferences, would invent food-preference-related answers regardless of
-  the actual question. We document this as a negative finding (Section
-  \ref{sec:negative}).
+  a large accuracy regression on our held-out 50-question pilot
+  (\(-37.5\) pts in our run), so we revert to the default prompt. We
+  observed that, when explicitly told to infer preferences, the LLM
+  tended to produce food-preference-related answers in cases where the
+  question concerned other topics. We document this as a negative
+  finding (Section~\ref{sec:negative}).
 
 \item \textbf{temporal-reasoning, ssa, ssu}: default prompt with no
   type-specific overrides.
@@ -98,24 +112,29 @@ observation that LongMemEval mixes very different cognitive tasks
 We use a single model, DeepSeek V3.2 \citep{deepseek2024v3}, in
 \texttt{thinking} mode (Volc Ark coding plan, Anthropic-compatible
 endpoint), for both the answer-generating subject and the LLM-as-judge.
-Self-judging is a known concern; we mitigate by:
+Self-judging is a known concern in the literature; we attempt to mitigate
+it by:
 
 \begin{enumerate}
 \item Using the same fixed grading rubric as the LongMemEval-S paper.
 \item Reporting per-question type accuracy, which is robust to
    self-judge bias as the rubric is type-specific.
 \item Cross-validating a 50-question stratified subsample with a separate
-   model (Gemini-2.5-pro) and finding \(<\)1.5 pt absolute disagreement.
+   model (Gemini-2.5-pro) and observing \(<\)1.5 pt absolute disagreement
+   in this subsample (we caution that this does not rule out residual
+   self-judge bias in unsampled regions of the benchmark).
 \end{enumerate}
 
 \subsection{Compute and cost}
 
-The full 500-question evaluation runs in 7.79 hours on a single NVIDIA T4
-(15\,GB) using bge-m3 + bge-reranker-v2-m3 in fp16 with batched inference.
-Total LLM API cost (Volc Ark coding plan): approximately \cny{}10. For
-comparison, the same evaluation using GPT-4o would cost
-\(\sim\)\$15--20 (15\(\times\) more) and even Claude Sonnet 4.5
-would be \$5--8.
+In our setup, the full 500-question evaluation runs in 7.79 hours on a
+single NVIDIA T4 (15\,GB) using bge-m3 + bge-reranker-v2-m3 in fp16 with
+batched inference. Total LLM API cost (Volc Ark coding plan) was
+approximately \cny{}10 in our runs. Based on the public per-token
+pricing at the time of writing, we estimate the same evaluation using
+GPT-4o would cost on the order of \$15--20, and Claude Sonnet 4.5 on
+the order of \$5--8 (these are rough estimates; actual cost may vary
+with prompt length and caching).
 
 The bge-m3 daemon eagerly loads on startup (60--90s cold) and serves recall
 queries at \(\sim\)200ms p95 over a Unix socket.
