@@ -28,6 +28,18 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 
+def _is_correct(d: dict) -> bool:
+    """Normalize is_correct field · jsonl stores as string sometimes."""
+    v = d.get("is_correct")
+    if isinstance(v, bool):
+        return v
+    if isinstance(v, str):
+        return v.lower() in ("true", "1", "yes")
+    if isinstance(v, (int, float)):
+        return bool(v)
+    return False
+
+
 def load_jsonl(path: Path) -> dict:
     """Load per-question results · keyed by question_id."""
     by_qid = {}
@@ -52,9 +64,9 @@ def compute_agreement(self_run: dict, cross_run: dict) -> dict:
     if not common:
         return {"error": "no common questions", "self_n": len(self_run), "cross_n": len(cross_run)}
 
-    overall_self = sum(1 for qid in common if self_run[qid].get("correct"))
-    overall_cross = sum(1 for qid in common if cross_run[qid].get("correct"))
-    agree = sum(1 for qid in common if self_run[qid].get("correct") == cross_run[qid].get("correct"))
+    overall_self = sum(1 for qid in common if _is_correct(self_run[qid]))
+    overall_cross = sum(1 for qid in common if _is_correct(cross_run[qid]))
+    agree = sum(1 for qid in common if _is_correct(self_run[qid]) == _is_correct(cross_run[qid]))
     n = len(common)
 
     by_type_data = defaultdict(lambda: {"agree": 0, "total": 0,
@@ -66,15 +78,15 @@ def compute_agreement(self_run: dict, cross_run: dict) -> dict:
         qtype = s.get("question_type") or c.get("question_type") or "?"
         d = by_type_data[qtype]
         d["total"] += 1
-        if s.get("correct"):
+        if _is_correct(s):
             d["self_correct"] += 1
-        if c.get("correct"):
+        if _is_correct(c):
             d["cross_correct"] += 1
-        if s.get("correct") == c.get("correct"):
+        if _is_correct(s) == _is_correct(c):
             d["agree"] += 1
-        elif s.get("correct") and not c.get("correct"):
+        elif _is_correct(s) and not _is_correct(c):
             d["self_only"] += 1
-        elif c.get("correct") and not s.get("correct"):
+        elif _is_correct(c) and not _is_correct(s):
             d["cross_only"] += 1
 
     by_type = {}
@@ -93,8 +105,8 @@ def compute_agreement(self_run: dict, cross_run: dict) -> dict:
     # Confusion matrix
     confusion = {"both_right": 0, "both_wrong": 0, "self_only": 0, "cross_only": 0}
     for qid in common:
-        s_ok = self_run[qid].get("correct")
-        c_ok = cross_run[qid].get("correct")
+        s_ok = _is_correct(self_run[qid])
+        c_ok = _is_correct(cross_run[qid])
         if s_ok and c_ok:
             confusion["both_right"] += 1
         elif not s_ok and not c_ok:

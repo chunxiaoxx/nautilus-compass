@@ -1,0 +1,23 @@
+[Unit]
+Description=Nautilus Compass · gateway + BGE daemon
+After=network-online.target postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/nautilus-compass
+Environment=PYTHONUNBUFFERED=1
+Environment=COMPASS_PG_DSN=postgresql://nautilus_user:nautilus2024@localhost:5432/nautilus_production
+Environment=COMPASS_AUTH_BACKEND=pg
+Environment=COMPASS_TRUST_TENANT_HEADER=0
+Environment=COMPASS_DEMO_RPH=20
+EnvironmentFile=-/home/ubuntu/nautilus-mvp/phase3/backend/.env
+ExecStart=/home/ubuntu/nautilus-compass/ops/start.sh
+Restart=on-failure
+RestartSec=10
+StandardOutput=append:/home/ubuntu/nautilus-compass/.cache/service.log
+StandardError=append:/home/ubuntu/nautilus-compass/.cache/service.log
+
+[Install]
+WantedBy=multi-user.target

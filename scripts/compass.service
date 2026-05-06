@@ -29,7 +29,7 @@ Environment="PYTHONUTF8=1"
 ExecStartPre=/bin/mkdir -p /var/lib/compass
 ExecStartPre=/bin/chown ubuntu:ubuntu /var/lib/compass
 
-ExecStart=/home/ubuntu/mf/envs/c/bin/uvicorn compass_http_v09:app \
+ExecStart=/usr/local/bin/uvicorn compass_http_v09:app \
     --host 0.0.0.0 --port 8770 \
     --workers 4 \
     --log-level info \
