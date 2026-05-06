@@ -97,8 +97,8 @@ insert_rows() {
         meta = sprintf("{\"ip\":\"10.%d.%d.%d\",\"ua\":\"ua_%d\",\"sz\":%d}", \
                       int(rand()*256), int(rand()*256), int(rand()*256), \
                       int(rand()*999), int(rand()*10000));
-        # escape single quotes (none in our generators, but defensive)
-        printf "INSERT INTO audit_log(user_id,ts,action,resource,metadata) VALUES(\"%s\",%d,\"%s\",\"%s\",\"%s\");\n", \
+        # SQLite string literals MUST use single quotes (double = identifier ref)
+        printf "INSERT INTO audit_log(user_id,ts,action,resource,metadata) VALUES('"'"'%s'"'"',%d,'"'"'%s'"'"','"'"'%s'"'"','"'"'%s'"'"');\n", \
                uid, ts, a, res, meta;
         if (i % B == 0 || i == N) printf "COMMIT;\n";
       }
