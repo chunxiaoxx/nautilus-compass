@@ -1,0 +1,46 @@
+{
+  "name": "@nautilus/compass-mcp",
+  "version": "0.9.0-beta.1",
+  "description": "Cross-agent memory layer · MCP + A2A · drift-aware · open eval (LongMemEval-S 56.6%)",
+  "keywords": [
+    "mcp",
+    "a2a",
+    "memory",
+    "agent",
+    "claude-desktop",
+    "cursor",
+    "cline",
+    "rag",
+    "longmemeval",
+    "nautilus"
+  ],
+  "homepage": "https://github.com/chunxiaoxx/nautilus-compass",
+  "bugs": "https://github.com/chunxiaoxx/nautilus-compass/issues",
+  "license": "MIT",
+  "author": "Nautilus team",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chunxiaoxx/nautilus-compass.git"
+  },
+  "bin": {
+    "compass-mcp": "bin/compass-mcp.js"
+  },
+  "files": [
+    "bin/",
+    "mcp_server.py",
+    "sdk/a2a_adapter.py",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node bin/compass-mcp.js --self-check",
+    "postinstall": "node bin/compass-mcp.js --postinstall || true"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}
