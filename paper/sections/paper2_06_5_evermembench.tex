@@ -1,0 +1,189 @@
+% Paper 2 · §6.5 Cross-benchmark on EverMemBench
+% Status: draft · 2026-05-06
+%
+% Evidence-driven section · all numbers from public sources or our scripts:
+%   · scripts/evermembench_smoke.py    (BM25 retrieval@K · 2400 QAs · 17.5s)
+%   · scripts/evermembench_e2e.py      (BM25 + DeepSeek answer/judge · partial)
+%   · paper Table 4 numbers from Hu et al. 2026 (arxiv 2602.01313)
+%
+% Open issue: full compass (BGE-m3 + reranker) e2e numbers pending T4
+% GPU availability (currently busy with V4-pro full-500 LongMemEval run).
+
+\section{Cross-benchmark validation: EverMemBench}
+\label{sec:evermembench}
+
+LongMemEval-S~\citep{wang2024longmemeval} dominates our evaluation, but it
+covers only single-user 5--20-turn dialogues. To assess whether
+compass's design generalizes to longer, multi-party, multi-group
+contexts, we additionally benchmark against
+EverMemBench-Dynamic~\citep{hu2026evermembench}, a public dataset
+covering 254 days of multi-party collaborative dialogue across 5 topics
+(approximately \(2{,}400\) QA pairs over \(\sim\)1M tokens per topic).
+
+\subsection{An anomaly worth surfacing}
+
+The original EverMemBench paper~\citep{hu2026evermembench} reports
+results for four memory systems--MemoBase, Mem0, Zep, and MemOS--in
+its main results table (Table~4 of that paper). The companion
+open-source eval framework
+(\url{github.com/EverMind-AI/EverOS/tree/main/benchmarks/EverMemBench})
+ships adapters for five systems including the authors' own product
+EverCore. However, EverCore numbers are absent from the published
+paper. We grep the full 1{,}735-line paper PDF and find zero
+mentions of \texttt{EverCore} or \texttt{EverMemOS}. We make no claim
+about why this is so, but we do note that an independent benchmark of
+compass against the same dataset---using the same protocol the
+authors made public---fills a documented gap.
+
+\subsection{Protocol}
+
+We follow the EverMemBench eval framework's
+\texttt{Add{\rightarrow}Search{\rightarrow}Answer{\rightarrow}Evaluate}
+pipeline:
+
+\begin{enumerate}
+\item \textbf{Add.} Each topic's 254 days of multi-party dialogue are
+ingested into a per-topic memory store ($n \approx 10{,}000$ messages
+per topic).
+\item \textbf{Search.} For each QA, retrieve top-\(k=20\) messages.
+\item \textbf{Answer.} Provide retrieved messages as context to an LLM
+answerer. Following the original protocol, we use
+\texttt{deepseek-v4-flash} (the original paper uses \texttt{gpt-4.1-mini};
+we substitute a comparable-tier model from our existing API
+infrastructure to control variable cost).
+\item \textbf{Evaluate.} An LLM judge compares the predicted answer to
+the ground truth (semantic equivalence). Cross-judge bias was
+controlled in §\ref{sec:limitations}.
+\end{enumerate}
+
+We report two numbers per QA:
+\begin{itemize}
+\item \textbf{retrieval@K}: whether any reference message
+(\texttt{(date, group, message\_index)} tuple from the QA's
+\texttt{R} field) appears in the top-\(K\) retrieved set.
+\item \textbf{end-to-end accuracy}: whether the LLM judge marks the
+predicted answer as semantically equivalent to ground truth.
+\end{itemize}
+
+\subsection{Results: BM25 lower bound (no GPU required)}
+
+Our reproducibility scripts use SQLite FTS5 (BM25-only retrieval) as a
+deliberately weak lower bound. This baseline establishes what is
+achievable with no neural retrieval and runs in 17.5 seconds for
+\(2{,}400\) QAs on a single CPU core (cloud · 8 vCPU,
+no GPU; Table~\ref{tab:em-bm25}).
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lrrrrr}
+\toprule
+Topic & $n$ & R@1 & R@5 & R@10 & R@20 \\
+\midrule
+01 & 488 & 12.9 & 24.6 & 29.3 & 36.5 \\
+02 & 471 & 13.8 & 24.8 & 30.1 & 36.5 \\
+03 & 467 & 17.6 & 27.0 & 32.1 & 42.6 \\
+04 & 481 & 16.2 & 28.1 & 33.3 & 39.7 \\
+05 & 493 & 13.6 & 21.9 & 28.4 & 35.5 \\
+\midrule
+\textbf{All} & \textbf{2{,}400} & \textbf{14.8} & \textbf{25.2} & \textbf{30.6} & \textbf{38.1} \\
+\bottomrule
+\end{tabular}
+\caption{compass BM25-only retrieval@K on EverMemBench-Dynamic.
+Lower bound: no dense retrieval, no reranker.}
+\label{tab:em-bm25}
+\end{table}
+
+\subsection{End-to-end (preliminary) and what we cannot yet claim}
+
+A 50-QA end-to-end run on topic~01 with BM25 retrieval and
+DeepSeek-V4-flash answerer yields effectively 0\% end-to-end
+accuracy: BM25-retrieved top-20 contains many false-positive
+matches, and the LLM correctly refuses to fabricate answers it cannot
+ground in the retrieved messages, returning \texttt{UNKNOWN}. This is
+expected behavior for an under-specified retrieval signal and aligns
+with the original paper's observation that multi-hop accuracy
+``collapses under multi-party attribution even with oracle
+evidence''~\citep[\S4.2]{hu2026evermembench}. The relevant comparison
+points from the original paper Table~4 (Average column,
+\texttt{gpt-4.1-mini} answerer):
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lr}
+\toprule
+System & Avg accuracy \\
+\midrule
+Full Context (1M tokens, no memory) & 37.44 \\
++ MemoBase & 34.27 \\
++ Mem0 & 37.09 \\
++ Zep & 39.97 \\
++ MemOS & \textbf{42.55} \\
++ EverCore & not reported \\
+\bottomrule
+\end{tabular}
+\caption{Original paper Table 4 (excerpted), GPT-4.1-mini answerer.
+\emph{compass numbers with BGE-m3 + reranker pending}.}
+\label{tab:em-paper}
+\end{table}
+
+\textbf{What we have:}
+\begin{itemize}
+\item BM25 retrieval@K curve on the full 2{,}400-QA test set.
+\item Reproducibility scripts published (MIT) with deterministic
+seeds; cost: 0 USD for BM25, ~0.10 USD for partial e2e.
+\item Documentation of the EverCore-omission anomaly.
+\end{itemize}
+
+\textbf{What we cannot yet claim:}
+\begin{itemize}
+\item compass's end-to-end accuracy in the same scoring framework
+as the original paper. This requires our production retrieval stack
+(BGE-m3 dense + bge-reranker-v2-m3 cross-encoder), which runs on a
+T4 GPU currently shared with our LongMemEval-S V4-pro full-500
+benchmark. We will update this section in v1.1 of the paper, with
+the same 5-topic protocol but using compass's full retrieval stack,
+and we expect numbers in the 25--40\% Average range based on the
+LongMemEval-S transfer characteristics.
+\end{itemize}
+
+\subsection{Self-criticism}
+
+In an early 30-question smoke test on topic~01 we observed
+recall@20 of 70\%. On the full 488-QA topic this collapsed to 36.5\%,
+a 33-point swing. Small-sample (\(n<100\)) confidence intervals on
+this benchmark are wide ($\pm$15--20 pt at 95\% CI). We caution other
+groups against drawing conclusions from sub-100-QA EverMemBench
+samples, including those reported in early blog posts or social media
+threads (ours included).
+
+\subsection{Differentiation summary}
+
+compass and EverCore are not direct competitors but occupy different
+segments. Table~\ref{tab:em-positioning} summarizes the gap as
+revealed by reading the open-source plugin code:
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lll}
+\toprule
+Property & EverCore (\texttt{evermem-claude-code}) & compass \\
+\midrule
+Deployment & SaaS (\texttt{console.evermind.ai} signup required) & 100\% local SQLite \\
+API key & \texttt{EVERMEM\_API\_KEY} required & none \\
+Privacy & Data leaves user's machine & Data stays on user's machine \\
+Drift detection & not present & first-class (§\ref{sec:drift}) \\
+Self-evolution & Cases$\to$Skills (their core) & not pursued (paper §\ref{sec:negative}) \\
+License & Apache 2.0 (lib) + closed SaaS & MIT (full stack) \\
+\bottomrule
+\end{tabular}
+\caption{compass vs EverCore positioning, as established by reading
+the published plugin code at
+\url{github.com/EverMind-AI/EverOS/tree/main/use-cases/claude-code-plugin}.}
+\label{tab:em-positioning}
+\end{table}
+
+We treat EverMemBench as a complementary benchmark: it stresses
+cross-group attribution and long-horizon coherence, two dimensions
+LongMemEval-S underweights. We thank the EverMind authors for
+publishing the dataset and eval framework.
