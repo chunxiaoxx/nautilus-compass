@@ -1,10 +1,14 @@
 # nautilus-compass
 
-> **Memory plugin for Claude Code with persona drift detection** —
+> **Cross-agent memory layer with drift detection** for the Nautilus platform.
+> Memory plugin for Claude Code/Desktop · Cline · Cursor · OpenClaw · Hermes ·
 > stops your AI from repeating mistakes you've already flagged.
 
+[![LongMemEval-S](https://img.shields.io/badge/LongMemEval--S-56.6%25-brightgreen)](paper/RESULTS_v0.8.md)
 [![drift-AUC](https://img.shields.io/badge/drift_AUC-0.92-brightgreen)](#真账面--实测数据)
-[![LongMemEval-P@5](https://img.shields.io/badge/LongMemEval_P%405-0.917-brightgreen)](#vs-mem0-真实头对头)
+[![version](https://img.shields.io/badge/version-0.9.0--dev-orange)](CHANGELOG.md)
+[![MCP](https://img.shields.io/badge/MCP-7%20tools-blue)](sdk/mcp_adapter.md)
+[![A2A](https://img.shields.io/badge/A2A-4%20capabilities-blue)](sdk/a2a_adapter.py)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 ---
@@ -145,6 +149,124 @@ Claude:
 
 **P@5 打平 mem0 0.917 + MRR +0.122 优势** = truth session 平均排序更靠前。
 **single-session-user MRR**: nautilus-compass 0.522 vs mem0 0.250 (**2x improvement**)。
+
+---
+
+### LongMemEval-S End-to-End Accuracy (n=500 · 2026-05-04~05 实测)
+
+完整 LLM-as-judge 评估 (paper 主指标 · 跨 6 个 question type):
+
+| 模型配置 | Overall | Provider | 价格/run | 备注 |
+|---|---|---|---|---|
+| **🌟 v0.8 (DeepSeek + 5 项加成)** | **56.6%** 🏆 | Volc Ark | **¥10** | **2026-05-05 final · 接近 Zep SOTA** |
+| Gemini 2.5 pro thinking | 44.6% | Vertex AI | $15-20 | 商用 baseline |
+| MiniMax M2.7 highspeed nothink | 45.8% | MiniMax | ¥1 | 国产基础 |
+| DeepSeek V3.2 thinking | 46.6% | Volc Ark | ¥1-2 | 国产 baseline |
+| MiniMax thinking 1024 (kill 302) | 33% | MiniMax | ¥1 | 拒答崩盘 |
+
+**v0.8 final 6 类型分项** (n=500 · 28058s · GPU 7.79h):
+
+| Type | n | acc | 备注 |
+|---|---|---|---|
+| **single-session-assistant** | 56 | **83.9%** 🏆 | 强势 (assistant 历史召回最准) |
+| **knowledge-update** | 78 | 57.7% | timestamp-aware prompt 有效 |
+| **single-session-user** | 70 | **57.1%** ⭐ | query rewrite +27 pts vs baseline 30% |
+| **multi-session** | 133 | 54.9% | decompose prompt 有效 |
+| **single-session-preference** | 30 | 53.3% | 撤回 ssp prompt 后回升 |
+| **temporal-reasoning** | 133 | 46.6% | 持平 baseline · 时间推理是开放问题 |
+
+**对照业界** (Letta 35-38% · Mem0 40-45% · A-MEM 50% · Zep SOTA 55-60% · paper RAG SOTA 50-60%):
+**v0.8 56.6% = paper SOTA 同档 · Zep SOTA 下沿 · 价格 1/15**。
+
+**v0.8 五项加成实测**:
+- ssu Multi-angle Query Rewriting: **+27 pts** (30% → 57%) ⭐⭐
+- multi-session decompose prompt: +8 pts (44% → 52%)
+- ku timestamp-aware prompt: +2-3 pts
+- ssa context expansion (max_chars 2400→3500): +2 pts
+- TOP_K 10→15: +0.5 pts
+
+**Negative Findings** (paper 价值):
+- Neo4j graph rerank: -6.2 pts (closed haystack 上 graph 信号跟 cross-encoder 重复)
+- Double-model router: -2.1 pts (sample 噪声 · 50 题不能区分)
+- SSP preference prompt: -37.5 pts (LLM 跑偏 · 撤回 default)
+- MiniMax thinking 1024: refusal cascade collapse (44% 拒答率)
+
+详见 [paper/OUTLINE_PAPER2.md](paper/OUTLINE_PAPER2.md) · [results csv](paper/results/experiments_20260505.csv) · [paper/RESULTS_v0.8.md](paper/RESULTS_v0.8.md)。
+
+---
+
+## Cross-agent memory federation (v0.9)
+
+> claude-mem 永远做不到的能力 · MCP/A2A 协议 · 跨 Claude Desktop / Cline / Cursor / OpenClaw / Hermes 共享 memory.
+
+```
+你在 Claude Desktop 学到 "X 偏好"           → Cursor 立刻知道
+你在 Cursor 完成的任务                       → Claude Desktop 召回
+你在任何地方报的 drift (red/yellow/green)   → 全部 client 共享 timeline
+跨 device · 跨 session · 跨 agent 类型       → 自动融合
+```
+
+### 一键接入 (3 个 client)
+
+**Claude Desktop**: 编辑 `~/Library/Application Support/Claude/claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "compass": {
+      "command": "npx",
+      "args": ["-y", "@nautilus/compass-mcp"],
+      "env": { "COMPASS_USER_ID": "u_yourname" }
+    }
+  }
+}
+```
+
+**Cursor**: 编辑 `~/.cursor/mcp.json` (相同结构 · `env.COMPASS_AGENT_TYPE: "cursor"`)
+
+**Cline (VS Code)**: 编辑 `.vscode/settings.json` 在 `cline.mcpServers` 下加 compass。
+
+完整 config: 见 `examples/mcp_configs/`
+
+### 任何 Nautilus agent · 一行接入
+
+```python
+from nautilus_agent import Agent
+from nautilus_compass.sdk.attach_memory import attach_memory
+
+agent = Agent(role="strategy", user_id="u_chunx")
+attach_memory(agent)   # ← 这一行 · 自动注册 + ingest + recall + drift 自审
+```
+
+之后 agent 跑任何 task:
+- `agent.on_action(query)` → 自动 cross-agent recall · inject memory
+- `agent.on_task_complete(task, outcome)` → 自动 ingest_obs · drift 自审
+- `agent.report_drift("red", signal)` → 显式漂移报告 · stake_penalty 联动
+
+### v0.9 工具栈
+
+```
+Python: pip install nautilus-compass    # core + 6 CLI
+npm:    npx -y @nautilus/compass-mcp    # MCP wrapper
+SDK:    sdk/compass_client.py · sdk/attach_memory.py · sdk/a2a_adapter.py
+HTTP:   compass.nautilus.social         # multi-tenant gateway (deployed)
+A2A:    /a2a/messages endpoint          # cross-agent protocol
+```
+
+### 跟 Nautilus 平台深度融合 (8 fusion points)
+
+| # | Fusion | When |
+|---|---|---|
+| 1 | 单点登录 (Nautilus JWT) | v0.9.1 |
+| 2 | OAuth2 PKCE for 3rd-party | v0.9.2 |
+| 3 | nautilus-agent runtime 自动注入 | v0.9.3 |
+| 4 | stake×drift 经济耦合 | v0.9.5 |
+| 5 | marketplace agent 信任层 | v1.0.1 |
+| 6 | platform_anchors 三层继承 | v0.9.4 |
+| 7 | RAID-2 写审分离 | v1.0 |
+| 8 | v5-memory 兼容迁移 | v0.9.6 |
+
+详见: [paper/PLATFORM_FUSION.md](paper/PLATFORM_FUSION.md) · [paper/V10_ROADMAP.md](paper/V10_ROADMAP.md)
 
 ---
 

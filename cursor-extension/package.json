@@ -1,0 +1,91 @@
+{
+  "name": "compass-cursor",
+  "displayName": "Compass Memory · Cross-agent",
+  "description": "Cross-agent memory + drift detection in Cursor · session_writer + recall + drift_history (LongMemEval-S 56.6%)",
+  "version": "0.9.0-dev",
+  "publisher": "nautilus",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other",
+    "AI"
+  ],
+  "keywords": [
+    "memory",
+    "cross-agent",
+    "mcp",
+    "drift-detection",
+    "claude",
+    "nautilus"
+  ],
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "compass.recall",
+        "title": "Compass: Recall Memory",
+        "category": "Compass"
+      },
+      {
+        "command": "compass.driftHistory",
+        "title": "Compass: Show Drift Timeline (last 30d)",
+        "category": "Compass"
+      },
+      {
+        "command": "compass.ingestObs",
+        "title": "Compass: Write Observation",
+        "category": "Compass"
+      },
+      {
+        "command": "compass.profile",
+        "title": "Compass: Show My Profile",
+        "category": "Compass"
+      },
+      {
+        "command": "compass.startMcpServer",
+        "title": "Compass: Start MCP Server",
+        "category": "Compass"
+      }
+    ],
+    "configuration": {
+      "title": "Compass",
+      "properties": {
+        "compass.userId": {
+          "type": "string",
+          "default": "u_local",
+          "description": "User ID (Nautilus account · v0.9.1 接 SSO)"
+        },
+        "compass.agentType": {
+          "type": "string",
+          "default": "cursor",
+          "description": "Agent type identifier · 自动跟其他 agent 区分"
+        },
+        "compass.baseUrl": {
+          "type": "string",
+          "default": "https://compass.nautilus.social",
+          "description": "Compass platform URL"
+        },
+        "compass.autoIngestOnSave": {
+          "type": "boolean",
+          "default": false,
+          "description": "Auto-ingest observation when saving session (experimental)"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {}
+}

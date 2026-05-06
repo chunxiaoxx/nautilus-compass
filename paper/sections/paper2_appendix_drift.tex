@@ -1,0 +1,147 @@
+% Paper 2 · Appendix A · Drift detection details
+% Status: draft · 2026-05-05 · 详细补充 §3.A 章节
+
+\appendix
+
+\section{Drift detection · technical details}
+\label{app:drift}
+
+This appendix expands on the orthogonal anchor-based drift detection
+introduced in §\ref{sec:method} and §\ref{sec:related}. The detector is
+production-deployed in the \texttt{compass} hook and is not strictly
+required for LongMemEval-S evaluation, but it is part of why we believe
+\compass{} differs categorically from prior memory systems.
+
+\subsection{Definition}
+
+For a user prompt $q$ at hook time, we compute:
+
+\begin{align}
+\text{align}(q) &= \max_{a \in A_+} \cos(\bgem(q), \bgem(a)) \\
+\text{deviate}(q) &= \max_{a \in A_-} \cos(\bgem(q), \bgem(a)) \\
+\text{drift\_score}(q) &= \text{deviate}(q) - \text{align}(q)
+\end{align}
+
+where $A_+$ is a set of 25 \emph{positive anchors} (sentences that
+exemplify aligned behavior at this user's domain) and $A_-$ is a set of
+35 \emph{negative anchors} (sentences that exemplify drift exemplars).
+Drift is flagged when $\text{drift\_score}(q) > \tau$ \emph{or} when any
+single negative anchor's cosine exceeds $\theta$.
+
+The thresholds $\tau, \theta$ are calibrated per-domain (see
+§\ref{app:calib}) but typical values are $\tau = 0.05$ and $\theta = 0.78$.
+
+\subsection{Anchor design}
+
+Both anchor sets are written as \emph{task-style sentences} matching the
+distribution of real prompts. We deliberately avoid abstract maxims
+(``always be careful''); pilot studies showed that maxim-style anchors
+yield AUC$\approx$0.51 (chance) while task-style anchors yield 0.92.
+
+Example positive anchor (engineering domain, \texttt{anchors.json}):
+\begin{quote}\itshape
+  ``ssh cloud · 看 PG \texttt{agent\_wallets} 余额轨迹 · 不靠推测''
+\end{quote}
+
+Example negative anchor (engineering domain):
+\begin{quote}\itshape
+  ``跑 verify 命令看实际输出 · 没看到 OK 不说完成'' \emph{(positive)}\\
+  ``声称完成但未验证 · 没看实际输出就说 OK'' \emph{(negative · same surface form)}
+\end{quote}
+
+The contrast pair makes the cosine geometry separate the right
+behaviors despite high lexical overlap.
+
+\subsection{Layered anchor inheritance (\#6 fusion)}
+
+Production anchors are loaded from three layers:
+
+\begin{enumerate}
+\item \texttt{anchors\_platform\_base.json}: 15 positive + 25 negative
+  generic platform anchors (e.g., ``don't claim done before
+  verifying''). Maintained by \compass{} platform admins; affects all tenants.
+
+\item \texttt{anchors\_<domain>.json}: domain-specific (e.g.,
+  \texttt{anchors\_finance.json} for financial reasoning, \texttt{anchors\_legal.json}
+  for legal review). Maintained by domain experts.
+
+\item \texttt{anchors.json}: tenant/user custom anchors, refined from
+  feedback signal.
+\end{enumerate}
+
+Total layered cost (with all three): 65 positive + 85 negative anchors,
+about 32\,KB JSON, 200\,ms cold load (one-time on daemon start).
+
+\subsection{Calibration}
+\label{app:calib}
+
+Thresholds $\tau, \theta$ are calibrated per-domain on a held-out
+50-prompt validation set:
+
+\begin{itemize}
+\item Compute drift\_score on each prompt.
+\item Sweep $\tau \in [-0.1, 0.2]$ and $\theta \in [0.5, 0.95]$.
+\item Pick $(\tau, \theta)$ maximizing $F_1$ at fixed false-positive
+  rate $\le 5\%$.
+\end{itemize}
+
+Per-domain thresholds (engineering domain shown):
+$\tau = 0.045$, $\theta = 0.781$, AUC = 0.92, $F_1 = 0.84$,
+fpr = 0.04, latency p95 = 47\,ms.
+
+\subsection{Self-audit at session end}
+
+In addition to per-prompt drift detection, \compass{} v0.9 adds
+\emph{post-session self-audit}: after each Claude Code session,
+\texttt{session\_writer.py} calls DeepSeek V3.2 to summarize the
+session and assign one of \texttt{green/yellow/red} drift labels
+plus 0--3 \texttt{drift\_signals} (specific evidence sentences).
+
+Self-audit is not the same as anchor-based detection:
+
+\begin{itemize}
+\item Anchor-based: real-time at hook · per-prompt · cosine over
+  bge-m3.
+\item Self-audit: post-hoc · per-session · LLM judgment.
+\end{itemize}
+
+The two are complementary: anchor catches drift as it happens;
+self-audit catches drift the user didn't flag. Together they form
+the data feeding the \texttt{drift\_history} timeline tool.
+
+\subsection{Performance targets in production}
+
+For production deployment (compass.nautilus.social), drift detection
+must satisfy:
+
+\begin{itemize}
+\item Latency: hook overhead $\le$ 50\,ms p95 (else affects
+  perceived AI responsiveness).
+\item Memory: anchor matrix fits in 200\,MB (1024-d float16 $\times$
+  150 anchors $\times$ 2 sets $\sim$300\,KB raw, expand for batched
+  inference).
+\item False positive rate: $\le 5\%$ at chosen threshold (else users
+  ignore alerts).
+\item Catch rate on synthetic drift injection: $\ge 80\%$.
+\end{itemize}
+
+All four are met by the bge-m3 daemon configuration described in
+\S\ref{sec:method}.
+
+\subsection{Limitations of drift detection}
+
+Anchor-based drift is \emph{black-box}: we don't know if the LLM is
+internally drifting, only that its outputs match patterns we've labeled
+as drift. White-box methods like Persona Vectors
+\citep{anthropic2025persona} require model weight access we don't have.
+
+Drift detection is also \emph{closed-set}: it only catches drift that
+matches some pre-existing negative anchor. Novel drift modes require
+new anchors. We mitigate by (a) deploying a feedback signal pathway
+(\texttt{compass.feedback\_log} MCP tool) and (b) periodic anchor
+retraining on accumulated signals (\texttt{python feedback.py
+retrain}).
+
+Finally, drift detection is currently English+Chinese-centric (bge-m3
+training distribution). Other languages may show degraded AUC; we
+do not have rigorous data here yet.

@@ -67,3 +67,69 @@ Eval scripts read `ZMM_EMBEDDER_MODEL` env var. Set it before runs.
 ## License of contributions
 
 By submitting a PR you agree your contribution is MIT-licensed. Anchors files are CC0.
+
+We are evaluating dual-licensing under Apache 2.0 for v1.0 enterprise
+self-hosting; this is undecided as of 2026-05-05. Existing contributions
+remain MIT-only unless contributors opt in.
+
+---
+
+## v0.9 additions (2026-05-05)
+
+The v0.8 release introduced new component domains; the same contribution
+flow applies, but please mind these:
+
+### MCP server tools (`mcp_server.py`)
+
+When adding a new tool:
+1. Add a `tool_<name>(args)` function returning `_ok(text)` or `_err(msg)`
+2. Register in `TOOLS` dict with proper inputSchema (JSON Schema draft-07)
+3. Add an integration test to `tests/test_compass_v09.py`
+4. Bump `SERVER_VERSION` in `mcp_server.py`
+5. Document in `sdk/mcp_adapter.md` and update `examples/mcp_configs/*` if needed
+
+### A2A capabilities (`sdk/a2a_adapter.py`)
+
+When adding a new capability:
+1. Add to `CAPABILITIES` dict with input/output schema
+2. Add a branch in `handle_a2a_message`
+3. Add a selftest case
+4. Update `sdk/a2a_adapter.py` docstring
+
+### Drift testing (the unique requirement)
+
+Because compass is a drift-aware system, contributions that touch
+behavior/prompts/anchors must be tested for regressions:
+
+```bash
+python tests/eval_drift.py    # AUC must remain ≥ 0.85
+python tests/eval_recall.py   # P@5 must remain ≥ 0.85
+python tests/test_compass_v09.py  # 7 v0.9 integration tests
+python sdk/a2a_adapter.py selftest
+```
+
+### Roadmap awareness
+
+Before proposing big features, please skim:
+
+- [paper/V10_ROADMAP.md](paper/V10_ROADMAP.md) — 12-month phase plan
+- [paper/PLATFORM_FUSION.md](paper/PLATFORM_FUSION.md) — Nautilus integration
+- [paper/RESULTS_v0.8.md](paper/RESULTS_v0.8.md) — current benchmark state
+- [paper/V09_API_SPEC.md](paper/V09_API_SPEC.md) — server endpoint contract
+
+If your idea fits a planned phase, mark it; if not, discuss in an issue
+first to avoid parallel divergent designs.
+
+### Provider-neutral contributions
+
+We run on Volc Ark · Anthropic · Gemini · OpenAI · any Anthropic-compatible
+endpoint. Contributions must remain provider-neutral; vendor-specific
+features behind feature flags only.
+
+### Communication
+
+- Issues: use the templates in `.github/ISSUE_TEMPLATE/`
+- PRs: use `.github/PULL_REQUEST_TEMPLATE.md`
+- Discussions: GitHub Discussions
+- Real-time: Nautilus platform Discord (post-launch)
+

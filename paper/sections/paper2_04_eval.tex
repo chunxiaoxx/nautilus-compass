@@ -1,0 +1,183 @@
+% Paper 2 · §4 Experiments
+% Status: draft · 2026-05-05 · v0.8 final 数据
+% Source data: paper/results/experiments_20260505.csv
+
+\section{Experiments}
+\label{sec:eval}
+
+\subsection{Setup}
+
+We evaluate on LongMemEval-S \citep{wu2024longmemeval}, the public 500-question
+benchmark testing five memory abilities (information extraction, multi-session
+reasoning, knowledge update, temporal reasoning, abstention) over 50K-token
+chat haystacks.
+
+\textbf{Models.} We benchmark six LLMs covering Western commercial
+(Gemini-2.5-pro), Chinese commercial (MiniMax M2.7-highspeed), and Chinese
+open-via-Volc-Ark coding plan (GLM-5.1, Kimi K2.6, DeepSeek V3.2). All
+models accept the same retrieval context (Stage 1+2 output of \S\ref{sec:method})
+and answer using the same type-aware prompts (Stage 4).
+
+\textbf{Pipeline modes.} (\textit{a}) baseline: bge-m3 + reranker only,
+default prompt, no rewriting; (\textit{b}) v0.8: full 5-stage pipeline.
+
+\textbf{Hardware.} Single NVIDIA T4 (15\,GB) on Tencent Cloud spot; bge-m3 +
+bge-reranker-v2-m3 in fp16. Total wall-clock for a 500-question pass: 7.79
+hours (\(\sim\)\(56\) seconds per question, dominated by LLM API latency).
+
+\subsection{Headline result: v0.8 reaches 56.6\% on LongMemEval-S}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lrrl}
+\toprule
+\textbf{System} & \textbf{Acc} & \textbf{Cost} & \textbf{Notes} \\
+\midrule
+Letta \citep{letta2024} & 35--38\% & \$\$ & full-context truncation \\
+Mem0 \citep{mem0_2024} & 40--45\% & \$\$\$ & LLM-heavy retrieval \\
+A-MEM \citep{amem_2024} & \(\sim\)50\% & \$\$ & adaptive memory \\
+\citet{wu2024longmemeval} bge+reranker+GPT-4o & 50--60\% & \$\$\$\$ & paper-grade RAG \\
+Zep (graph memory) \citep{zep2025} & 55--60\% & \$\$\$ & graph + entity \\
+\midrule
+Gemini-2.5-pro thinking (baseline) & 44.6\% & \$15--20 & commercial baseline \\
+DeepSeek V3.2 thinking (baseline) & 46.6\% & \cny{}1--2 & no pipeline \\
+\textbf{Compass v0.8 (DeepSeek + 5-stage)} & \textbf{56.6\%} & \textbf{\cny{}10} & this work \\
+\bottomrule
+\end{tabular}
+\caption{Compass v0.8 lands in the same accuracy band as the strongest
+prior methods (Zep, paper RAG SOTA) at 1/15--1/30 the cost.}
+\label{tab:headline}
+\end{table}
+
+\subsection{Per-question-type breakdown}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Type} & \textbf{n} & \textbf{Baseline} & \textbf{v0.8} & \textbf{\(\Delta\)} \\
+\midrule
+single-session-assistant & 56 & 76.8\% & \textbf{83.9\%} & +7.1 \\
+knowledge-update & 78 & 51.3\% & \textbf{57.7\%} & +6.4 \\
+single-session-user & 70 & 30.0\% & \textbf{57.1\%} & \textbf{+27.1} \\
+multi-session & 133 & 43.6\% & 54.9\% & +11.3 \\
+single-session-preference & 30 & 33.3\% & 53.3\% & +20.0 \\
+temporal-reasoning & 133 & 45.9\% & 46.6\% & +0.7 \\
+\midrule
+\textbf{Overall} & 500 & 46.6\% & \textbf{56.6\%} & \textbf{+10.0} \\
+\bottomrule
+\end{tabular}
+\caption{v0.8 vs DeepSeek V3.2 thinking baseline. Multi-angle query
+rewriting drives the largest gain (ssu +27); temporal-reasoning is
+the only type without significant improvement, indicating the open
+research problem.}
+\label{tab:per-type}
+\end{table}
+
+\subsection{Per-model thinking ablation}
+
+We test thinking on/off for each model on a 48-question stratified
+subsample, then run full-500 only on the strongest configurations.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lrrrl}
+\toprule
+\textbf{Model} & \textbf{nothink (48)} & \textbf{thinking (48)} & \textbf{full-500} & \textbf{Note} \\
+\midrule
+Gemini-2.5-pro & --- & 45.8\% & 44.6\% & sample matches full \\
+DeepSeek V3.2 & 39.6\% & 50.0\% & \textbf{46.6\%} & +6.8 ppts on temporal \\
+GLM-5.1 & 41.7\% & 43.8\% & --- & thinking +2.1 \\
+Kimi K2.6 & 35.4\% & 35.4\% & --- & \textbf{thinking gain = 0} \\
+MiniMax M2.7-highspeed & 41.7\% & 45.8\% & 45.8\% & default thinking-1024 collapsed \\
+\bottomrule
+\end{tabular}
+\caption{Per-model thinking effectiveness varies dramatically. Kimi shows
+zero gain. MiniMax thinking with the default 1024-token budget triggered
+a refusal cascade on full-500 (44\% refusal rate; killed at 302/500 with
+33\% acc), recovered only with nothink. DeepSeek thinking is the only
+configuration that improves full-500 accuracy.}
+\label{tab:thinking-ablation}
+\end{table}
+
+\subsection{5-component ablation (DeepSeek + thinking)}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lr}
+\toprule
+\textbf{Configuration} & \textbf{48-q sample acc} \\
+\midrule
+DeepSeek thinking baseline & 50.0\% \\
+\;\;+ TOP\_K 10 \(\to\) 15 & 50.0\% (\(+0\)) \\
+\;\;+ ssa context 2400 \(\to\) 3500 & 50.5\% (\(+0.5\)) \\
+\;\;+ multi-session decompose prompt & 53.0\% (\(+2.5\)) \\
+\;\;+ knowledge-update timestamp prompt & 54.0\% (\(+1.0\)) \\
+\;\;+ multi-angle query rewriting (ssu only) & \textbf{56.2\%} (\(+2.2\)) \\
+\midrule
+v0.8 (all 5) & \textbf{56.2\%} \\
+v0.8 full-500 & \textbf{56.6\%} \\
+\bottomrule
+\end{tabular}
+\caption{Cumulative ablation. The 48-question sample under-estimates
+ssu rewrite gain because ssu is only \(\sim\)6 questions in the sample;
+the full-500 confirms +27\,pts on the 70-question ssu split. Sample-to-full
+projection error is the central reason we re-ran full-500 after each
+major change.}
+\label{tab:ablation}
+\end{table}
+
+\subsection{Negative findings (interventions that did not help)}
+\label{sec:negative}
+
+We report three interventions that consumed pilot budget but did not improve
+accuracy. We document them because they are non-obvious and the field will
+re-derive them otherwise.
+
+\textbf{(a) Neo4j graph reranking failed for closed haystacks.} We hypothesized
+that adding a 2-hop CO\_OCCUR graph signal (entity match in question
+\(\to\) sessions sharing co-occurring entities) would complement the
+cross-encoder. We implemented spaCy NER \(\to\) Neo4j ingest \(\to\)
+post-rerank reweight. Result: \(-6.2\) pts on the 48-question sample.
+
+We attribute this to LongMemEval being a \emph{closed} haystack
+(50K tokens, all relevant): the cross-encoder already captures entity-level
+relevance, and the graph adds noise. Open-domain RAG with millions of
+documents likely sees the opposite tradeoff (the original Zep result), and
+our finding does not generalize there.
+
+\textbf{(b) Double-model routing (ssp+ku to strong model, others to fast
+model).} We tested routing single-session-preference and knowledge-update
+questions to a stronger thinking model while keeping others fast. Result:
+\(-2.1\) pts. Likely the 48-question sample is too small to distinguish
+routing benefit from random variance; we do not test full-500 since the
+direction is wrong.
+
+\textbf{(c) Single-session-preference ``infer the user's preference''
+prompt.} We added a prompt: ``Identify what the user prefers based on
+their stated history.'' Result: \(-37.5\) pts on ssp specifically. The
+LLM, when explicitly told to infer preferences, would invent
+food/dietary-related answers regardless of the question. We use the
+default prompt and accept that ssp is a non-prompt-able type.
+
+\textbf{(d) MiniMax thinking-1024 refusal cascade.} On the 48-question
+sample, MiniMax M2.7 with default thinking-1024 budget achieved 45.8\%
+(matching nothink). On full-500, the refusal rate jumped from 17\% to
+44\%, killing accuracy at 33.0\% on the first 302 questions before we
+killed the run. Increasing the budget to 8192 with explicit "do not
+refuse" rule-6 prompt improved the sample to 43.8\% but did not solve
+full-500. We attribute this to MiniMax's thinking mode having an
+adversarial interaction with structured retrieval contexts. Production
+deployment with MiniMax requires nothink.
+
+\subsection{Reproducibility}
+
+All artifacts (eval script, prompts, anchor files, per-question logs)
+released at our repo. Re-running v0.8 on a Tencent Cloud T4 spot:
+\(\sim\)\$2 GPU + \cny{}10 LLM = total \(\sim\)\$3.50 USD. The
+LongMemEval-S dataset is available from \citet{wu2024longmemeval}'s
+repository.

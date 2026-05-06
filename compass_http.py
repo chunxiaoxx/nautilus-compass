@@ -28,9 +28,20 @@ import time
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI, Header, HTTPException, Request
+from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
+
+# Day 3 · PG-backed multi-tenant auth (replaces file-based legacy below)
+try:
+    from middleware.auth import Tenant, authenticate
+    PG_AUTH_AVAILABLE = True
+except Exception as _e:
+    PG_AUTH_AVAILABLE = False
+    Tenant = None  # type: ignore
+
+# AUTH_BACKEND: 'pg' (default · PG tenants table) | 'file' (legacy · tenants.json · dev only)
+AUTH_BACKEND = os.environ.get("COMPASS_AUTH_BACKEND", "pg" if PG_AUTH_AVAILABLE else "file").lower()
 
 PROTOCOL_VERSION = "2024-11-05"
 SERVER_NAME = "nautilus-compass-gateway"
@@ -339,62 +350,152 @@ def _gate(tenant: str, api_key: str | None) -> dict:
     return cfg
 
 
+# ─── Day 3 · PG-backed v1 endpoints (auth via Depends(authenticate)) ───────────────
+
+def _gate_or_legacy(
+    request: Request,
+    x_tenant_id: str | None,
+    x_api_key: str | None,
+    x_agent_key: str | None,
+    authorization: str | None,
+):
+    """Return (tenant_id, anchors_profile_cfg).
+
+    PG mode: call authenticate() · returns Tenant · profile = tenant.profile (PG)
+    File mode (legacy dev): use tenants.json · X-API-Key check
+    """
+    if AUTH_BACKEND == "pg" and PG_AUTH_AVAILABLE:
+        t = authenticate(request,
+                         x_agent_key=x_agent_key,
+                         authorization=authorization,
+                         x_tenant_id=x_tenant_id)
+        return t.tenant_id, {"anchors_profile": f"anchors_{t.profile}.json"
+                             if t.profile not in ("general", "default", None)
+                             else "anchors.json"}
+    # legacy file-based fallback
+    tenant = x_tenant_id or DEFAULT_TENANT
+    cfg = _gate(tenant, x_api_key)
+    return tenant, cfg
+
+
 @app.post("/v1/recall")
 def post_recall(
     req: RecallReq,
-    x_tenant_id: str | None = Header(default=None),
-    x_api_key: str | None = Header(default=None),
+    request: Request,
+    x_tenant_id: str | None = Header(default=None, alias="X-Tenant-ID"),
+    x_api_key: str | None = Header(default=None, alias="X-API-Key"),
+    x_agent_key: str | None = Header(default=None, alias="X-Agent-Key"),
+    authorization: str | None = Header(default=None),
 ):
-    tenant = x_tenant_id or DEFAULT_TENANT
     t0 = time.time()
     try:
-        _gate(tenant, x_api_key)
+        tenant, _cfg = _gate_or_legacy(request, x_tenant_id, x_api_key,
+                                       x_agent_key, authorization)
         out = do_recall(req.model_dump(exclude_none=True), tenant)
         log_request(tenant, "recall", True, int((time.time() - t0) * 1000),
                     {"hits": len(out.get("hits", []))})
         return out
     except HTTPException:
-        log_request(tenant, "recall", False, int((time.time() - t0) * 1000))
+        log_request(x_tenant_id or "?", "recall", False, int((time.time() - t0) * 1000))
         raise
 
 
 @app.post("/v1/drift_check")
 def post_drift(
     req: DriftReq,
-    x_tenant_id: str | None = Header(default=None),
-    x_api_key: str | None = Header(default=None),
+    request: Request,
+    x_tenant_id: str | None = Header(default=None, alias="X-Tenant-ID"),
+    x_api_key: str | None = Header(default=None, alias="X-API-Key"),
+    x_agent_key: str | None = Header(default=None, alias="X-Agent-Key"),
+    authorization: str | None = Header(default=None),
 ):
-    tenant = x_tenant_id or DEFAULT_TENANT
     t0 = time.time()
     try:
-        cfg = _gate(tenant, x_api_key)
+        tenant, cfg = _gate_or_legacy(request, x_tenant_id, x_api_key,
+                                      x_agent_key, authorization)
         out = do_drift_check(req.model_dump(exclude_none=True), tenant, cfg)
         log_request(tenant, "drift_check", True, int((time.time() - t0) * 1000),
                     {"alert": out.get("should_alert"), "score": out.get("score"),
                      "profile": cfg.get("anchors_profile")})
         return out
     except HTTPException:
-        log_request(tenant, "drift_check", False, int((time.time() - t0) * 1000))
+        log_request(x_tenant_id or "?", "drift_check", False, int((time.time() - t0) * 1000))
         raise
 
 
 @app.post("/v1/feedback_log")
 def post_feedback(
     req: FeedbackReq,
-    x_tenant_id: str | None = Header(default=None),
-    x_api_key: str | None = Header(default=None),
+    request: Request,
+    x_tenant_id: str | None = Header(default=None, alias="X-Tenant-ID"),
+    x_api_key: str | None = Header(default=None, alias="X-API-Key"),
+    x_agent_key: str | None = Header(default=None, alias="X-Agent-Key"),
+    authorization: str | None = Header(default=None),
 ):
-    tenant = x_tenant_id or DEFAULT_TENANT
     t0 = time.time()
     try:
-        _gate(tenant, x_api_key)
+        tenant, _cfg = _gate_or_legacy(request, x_tenant_id, x_api_key,
+                                       x_agent_key, authorization)
         out = do_feedback_log(req.model_dump(), tenant)
         log_request(tenant, "feedback_log", True, int((time.time() - t0) * 1000),
                     {"direction": req.direction})
         return out
     except HTTPException:
-        log_request(tenant, "feedback_log", False, int((time.time() - t0) * 1000))
+        log_request(x_tenant_id or "?", "feedback_log", False, int((time.time() - t0) * 1000))
         raise
+
+
+@app.get("/v1/onboard_redirect")
+def get_onboard_redirect(vertical: str | None = None):
+    """Day 7 · 不再独立注册 · compass = 平台 7 件套之一 · 重定向到 platform onboard."""
+    base = os.environ.get("PLATFORM_ONBOARD_URL", "https://nautilus.social/onboard")
+    target = f"{base}?source=compass"
+    if vertical:
+        target += f"&vertical={vertical}"
+    return JSONResponse(
+        status_code=302,
+        headers={"Location": target},
+        content={"redirect": target,
+                 "message": "Compass is part of Nautilus platform. "
+                            "Get your X-Agent-Key by joining the platform."},
+    )
+
+
+# ── /v1/demo · 公开免认证 · 给落地页用 · 限流 5/h/IP ────────────
+import collections as _collections
+import threading as _threading
+_demo_buckets: dict = _collections.defaultdict(_collections.deque)
+_demo_lock = _threading.Lock()
+DEMO_RATE_PER_HOUR = int(os.environ.get("COMPASS_DEMO_RPH", "5"))
+
+
+@app.post("/v1/demo")
+def post_demo(req: DriftReq, request: Request):
+    """Public demo endpoint · drift_check with default 'general' anchors · IP rate limit.
+
+    Marketing landing page calls this · no auth · low quota per IP."""
+    ip = request.client.host if request.client else "unknown"
+    now = time.time()
+    cutoff = now - 3600.0
+    with _demo_lock:
+        bucket = _demo_buckets[ip]
+        while bucket and bucket[0] < cutoff:
+            bucket.popleft()
+        if len(bucket) >= DEMO_RATE_PER_HOUR:
+            raise HTTPException(
+                status_code=429,
+                detail={
+                    "error": "demo_rate_limit",
+                    "hint": f"Demo limited to {DEMO_RATE_PER_HOUR}/h/IP. "
+                            "Join Nautilus platform for unlimited: nautilus.social/onboard",
+                },
+            )
+        bucket.append(now)
+    out = do_drift_check(req.model_dump(exclude_none=True), "_demo",
+                        {"anchors_profile": "anchors.json"})
+    out["demo"] = True
+    out["upgrade_url"] = "https://nautilus.social/onboard?source=compass"
+    return out
 
 
 # ─── MCP-over-HTTP endpoints ───────────────────────────────────────

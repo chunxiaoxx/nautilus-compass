@@ -1,0 +1,125 @@
+% Paper 2 main · v0.8 LongMemEval-S 56.6% · Compass platform release
+% Author: chunxiaoxx
+% Status: 2026-05-05 draft · all 8 sections + 3 figures ready
+%
+% Build:
+%   pdflatex paper2_main.tex
+%   bibtex paper2_main
+%   pdflatex paper2_main.tex
+%   pdflatex paper2_main.tex
+%
+% Or with tectonic (one-shot):
+%   tectonic paper2_main.tex
+
+\documentclass[11pt,letterpaper]{article}
+
+% --- packages ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{xeCJK}                  % 中文支持
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!50!black,
+  urlcolor=blue!60!black,
+  citecolor=blue!60!black
+}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{positioning, arrows.meta, shapes, fit, calc}
+\usepackage{cite}
+\usepackage{authblk}
+
+% --- shorthands ---
+\newcommand{\cny}{¥}                 % CN yuan
+\newcommand{\compass}{\textsc{Compass}}
+\newcommand{\bgem}{\textsc{bge-m3}}
+
+% --- title ---
+\title{Closing the Memory Recall Gap with Chinese LLMs:\\
+A Multi-Stage Retrieval Pipeline Achieving Zep-SOTA Performance \\
+on LongMemEval-S at 1/15 Cost}
+
+\author[1]{chunxiaoxx}
+\affil[1]{Nautilus Platform · \texttt{compass.nautilus.social}}
+
+\date{2026-05-05}
+
+\begin{document}
+\maketitle
+
+% --- abstract ---
+\input{sections/paper2_00_abstract}
+
+% --- main body ---
+\input{sections/paper2_01_intro}
+\input{sections/paper2_02_related}
+\input{sections/paper2_03_method}
+\input{sections/paper2_04_eval}
+\input{sections/paper2_05_discussion}
+\input{sections/paper2_06_limitations}
+\input{sections/paper2_07_opensource}
+
+% --- figures (inlined as separate float) ---
+\begin{figure}[t]
+  \centering
+  \input{figures/pipeline_v08}
+  \caption{Compass v0.8 5-stage pipeline. Stage 1.5 (multi-angle query
+    rewriting) is conditional on question type, applied only to
+    single-session-user, where it yields the largest single gain
+    (\(+27\) pts).}
+  \label{fig:pipeline}
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+  \input{figures/trajectory_v08}
+  \caption{Cumulative accuracy by question index. The V-shape reflects
+    per-type difficulty differences (single-session-user peak,
+    temporal-reasoning trough, single-session-assistant rebound) rather
+    than model degradation. Final cumulative accuracy: \(56.6\%\).}
+  \label{fig:trajectory}
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+  \input{figures/fusion_diagram}
+  \caption{Eight deep-fusion points between \compass{} and the Nautilus
+    platform. Identity (1), agent runtime (3), and stake economy (4) are
+    the load-bearing integrations; v5-memory migration (8) and RAID-2
+    review (7) are deferred to v0.9.6 and v1.0 respectively.}
+  \label{fig:fusion}
+\end{figure}
+
+% --- conclusion ---
+\section{Conclusion}
+\label{sec:conclusion}
+
+We presented \compass{} v0.8, a memory recall pipeline achieving
+\(56.6\%\) on LongMemEval-S using DeepSeek V3.2 + bge-m3 + multi-angle
+query rewriting at \(\sim\)\$3.50 per 500-question reproduction. The
+pipeline is open-source under MIT, ships as both a Python package
+(\texttt{nautilus-compass}) and a Node MCP wrapper
+(\texttt{@nautilus/compass-mcp}), and integrates with Claude Desktop,
+Cline, Cursor, and any MCP/A2A-compatible client. An orthogonal
+anchor-based drift detector achieves \(\text{AUC}=0.92\) at
+\(<\)50\,ms p95 hook latency.
+
+The contribution that we believe will most impact production deployments
+is the documented per-model thinking ablation: choosing thinking-on/off
+must be benchmarked per release, and we report the first MiniMax
+thinking refusal-cascade collapse in the literature. We hope this prompts
+similar systematic per-model evaluations in subsequent work.
+
+% --- bibliography ---
+\bibliographystyle{plain}
+\bibliography{paper2_refs}
+
+\end{document}

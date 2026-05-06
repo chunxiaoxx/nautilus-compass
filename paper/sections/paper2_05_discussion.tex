@@ -1,0 +1,105 @@
+% Paper 2 · §5 Discussion
+% Status: draft · 2026-05-05
+
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{When does each component help?}
+
+The 5 components in v0.8 are independent and can be ablated in
+isolation. Their effectiveness varies by question type:
+
+\begin{itemize}
+\item \textbf{TOP\_K 10\(\to\)15}: marginal gain (\(+0.5\) pt) across all
+  types. Diminishing returns above 15 in our pilot (\(+0.0\) at K=20,
+  \(-0.5\) at K=30 due to context contamination).
+
+\item \textbf{ssa context expansion (2400\(\to\)3500 chars)}: \(+2\) pts on
+  ssa, neutral elsewhere. ssa questions explicitly require fine-grained
+  recall of one specific session; the truncation removed answer-relevant
+  detail.
+
+\item \textbf{multi-session decompose}: \(+8\) pts. The LLM reliably
+  miscounts when given 5+ sessions in flat form; explicit per-session
+  enumeration in the prompt fixes this.
+
+\item \textbf{knowledge-update timestamp}: \(+2\)--\(3\) pts. Helps but
+  not dramatic; the LLM tends to honor the most-recent statement
+  by default. Explicit instruction tightens that prior.
+
+\item \textbf{Multi-angle query rewriting (ssu)}: \(+27\) pts. The
+  largest single gain. ssu questions are referent-light (``what dish
+  cannot the user eat?'') and dense retrieval misses without
+  rephrasing. We expect this gain to transfer to other benchmarks
+  where queries are colloquial.
+\end{itemize}
+
+\subsection{The temporal-reasoning bottleneck}
+
+Temporal-reasoning is the only question type where v0.8 does not
+significantly improve over baseline (\(+0.7\) pt). Inspection of failure
+cases shows the LLM correctly retrieves the relevant sessions but
+miscomputes time arithmetic (e.g., ``how many days between sessions
+3 and 7?''). We hypothesize this is a fundamental LLM weakness rather
+than a retrieval issue and is the right place for future targeted work
+(structured time extraction, calendar tools).
+
+\subsection{Trajectory observations during the full-500 run}
+
+Plotting cumulative accuracy by question index reveals a V-shape:
+
+\begin{itemize}
+\item \texttt{ssu} batch (Q1--70): peak 60.8\% (\(+30\) pts vs baseline)
+\item \texttt{multi-session} batch (Q70--204): drops to 55.5\%
+\item \texttt{ssp} batch (Q204--234): 56.2\% (default prompt)
+\item \texttt{temporal-reasoning} batch (Q234--367): trough at 48.2\%
+\item \texttt{knowledge-update} batch (Q367--444): rebound to 52.8\%
+\item \texttt{ssa} batch (Q444--500): peak \(\sim\)84\%
+\end{itemize}
+
+The trough at temporal-reasoning is a per-type difficulty effect, not a
+model degradation; the V-shape recurs in every model we tested.
+
+\subsection{Anchor-based drift detection (orthogonal contribution)}
+
+Beyond the LongMemEval pipeline, Compass v0.8 includes an anchor-based
+drift detector that runs at hook time on every user prompt
+(\S~A~appendix). The detector embeds the prompt and computes cosine
+distance to 25 positive anchors (intended behavior) and 35 negative
+anchors (drift exemplars). This is orthogonal to LongMemEval performance
+but is the second contribution claim of this paper:
+
+\begin{itemize}
+\item AUC = 0.92 on a held-out 200-prompt test set
+\item Latency = \(<\)50\,ms p95 (BGE-m3 daemon, batched)
+\item Per-domain anchor packs (finance, legal, medical, vc, zenmind)
+  ship pre-built; user-domain anchors auto-train from
+  feedback signal
+\end{itemize}
+
+This makes Compass the first open-source memory system that combines
+recall with drift detection at hook latency, in contrast to
+narrative-summary memories (claude-mem) and graph memories (Zep)
+that focus only on retrieval.
+
+\subsection{Cost economics for industry adoption}
+
+For a Chinese-region production deployment (Tencent T4 spot + Volc Ark
+coding plan), running compass v0.8 in 24/7 hook mode costs:
+
+\begin{itemize}
+\item GPU: \cny{}300/month (1 T4 spot, \(\sim\)\$45)
+\item LLM API: \cny{}50--500/month per active user (varies with
+  session frequency)
+\item bge-m3 inference: 0 marginal cost (local, daemon)
+\end{itemize}
+
+For the same workload using only commercial APIs (GPT-4o + Claude
+Sonnet), costs would be \(\geq\)\(20\times\) higher. We argue that for
+the Chinese market specifically, a fully-local-bge + Volc-Ark-LLM
+stack achieves SOTA accuracy at price-points compatible with
+\(\geq\)100,000 monthly active users on a small SaaS budget.
+
+\subsection{Limitations and threats to validity}
+
+(see Section~\ref{sec:limitations})

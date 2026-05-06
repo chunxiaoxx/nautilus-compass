@@ -28,7 +28,7 @@ from typing import Any
 
 PROTOCOL_VERSION = "2024-11-05"
 SERVER_NAME = "nautilus-compass"
-SERVER_VERSION = "0.7.0"
+SERVER_VERSION = "0.9.0-dev"
 DAEMON_HOST = "127.0.0.1"
 DAEMON_PORT = 9876
 DAEMON_TIMEOUT = 30.0
@@ -155,6 +155,163 @@ def tool_drift_check(args: dict) -> dict:
     return _ok("\n".join(lines))
 
 
+def tool_ingest_obs(args: dict) -> dict:
+    """v0.9 · 写一条 observation 到当前 user 的 memory · 跨 agent 融合.
+
+    Direct write (bypass LLM distillation) · suitable for explicit agent reports.
+    For session-end auto-distill, the Stop hook handles that automatically.
+    """
+    name = (args.get("name") or "").strip()
+    if not name:
+        return _err("name required")
+    description = (args.get("description") or "").strip()
+    body = (args.get("body") or "").strip()
+    type_ = (args.get("type") or "discovery").strip()
+    concept = (args.get("concept") or "pattern").strip()
+    drift = (args.get("drift") or "green").strip()
+    if drift not in ("green", "yellow", "red"):
+        drift = "green"
+    drift_signals = args.get("drift_signals") or []
+    agent_type = (args.get("agent_type") or os.environ.get("COMPASS_AGENT_TYPE") or "custom").strip()
+    user_id = os.environ.get("COMPASS_USER_ID", "u_local")
+    project = resolve_project(args.get("project"))
+    if not project:
+        project = "C--Users-chunx"
+
+    # Format as v0.8 session_*.md frontmatter
+    from datetime import datetime
+    ts = datetime.now().strftime("%Y%m%d-%H%M")
+    import re
+    slug = re.sub(r"[^\w一-鿿]+", "-", name).strip("-")[:30] or "obs"
+    out_dir = PROJECTS_DIR / project / "memory"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out_file = out_dir / f"session_{ts}_{slug}.md"
+
+    # Build markdown
+    signals_yaml = "[]" if not drift_signals else "\n  - " + "\n  - ".join(f'"{s}"' for s in drift_signals)
+    md = f"""---
+name: {name}
+description: {description[:200]}
+type: {type_}
+concept: {concept}
+drift: {drift}
+drift_signals: {signals_yaml}
+agent_type: {agent_type}
+user_id: {user_id}
+ingested_via: mcp
+---
+
+# {name}
+
+## 上下文
+{description}
+
+## 内容
+{body}
+"""
+    out_file.write_text(md, encoding="utf-8")
+    return _ok(f"obs written · {out_file.name} · agent_type={agent_type} · drift={drift}")
+
+
+def tool_drift_history(args: dict) -> dict:
+    """v0.9 · 跨 project 看用户的 drift timeline · claude-mem 没有的能力."""
+    days = int(args.get("days") or 30)
+    project_filter = args.get("project_filter")
+    sys.path.insert(0, str(PLUGIN_DIR))
+    try:
+        from drift_history import collect_sessions
+    except Exception as e:
+        return _err(f"drift_history module not loadable: {e}")
+    rows = collect_sessions(days, project_filter)
+    if not rows:
+        return _ok(f"No sessions in last {days}d")
+    from collections import Counter
+    counts = Counter(r["drift"] for r in rows)
+    lines = [
+        f"Drift history · last {days}d · {len(rows)} sessions across {len(set(r['project'] for r in rows))} projects",
+        f"  green:  {counts.get('green',0)} · AI 一次到位",
+        f"  yellow: {counts.get('yellow',0)} · 小绕弯及时纠正",
+        f"  red:    {counts.get('red',0)} · 偏离意图",
+        f"  ?:      {counts.get('?',0)} · 老格式无 drift",
+    ]
+    reds = [r for r in rows if r["drift"] == "red"]
+    if reds:
+        lines.append("\nRED sessions:")
+        for r in reds[:5]:
+            lines.append(f"  · [{r['project']}] {r['name']}")
+            for sig in r.get("drift_signals", [])[:3]:
+                lines.append(f"      · {sig}")
+    yellow_sigs = []
+    for r in rows:
+        if r["drift"] == "yellow":
+            yellow_sigs.extend(r.get("drift_signals", []))
+    if yellow_sigs:
+        from collections import Counter as C
+        top = C(yellow_sigs).most_common(3)
+        lines.append("\nTop yellow signals:")
+        for sig, c in top:
+            lines.append(f"  {c}× · {sig}")
+    return _ok("\n".join(lines))
+
+
+def tool_session_search(args: dict) -> dict:
+    """v0.9 · 跨 project keyword search session_*.md · drift/type 过滤."""
+    query = (args.get("query") or "").strip()
+    if not query:
+        return _err("query required")
+    drift = args.get("drift")
+    type_ = args.get("type")
+    days = int(args.get("days") or 60)
+    top_k = int(args.get("top_k") or 5)
+    sys.path.insert(0, str(PLUGIN_DIR))
+    try:
+        from session_search import search
+    except Exception as e:
+        return _err(f"session_search module not loadable: {e}")
+    hits = search(query, drift=drift, type_filter=type_, days=days, top=top_k)
+    if not hits:
+        return _ok(f"No matches for '{query}'")
+    lines = [f"{len(hits)} hits for '{query}' (drift={drift or 'any'} · last {days}d)"]
+    for h in hits:
+        fm = h["fm"]
+        lines.append(
+            f"  [{h['score']:.1f}] [{h['project']}] {fm.get('name','?')} "
+            f"({fm.get('drift','?')} · {fm.get('type','?')})"
+        )
+    return _ok("\n".join(lines))
+
+
+def tool_profile(args: dict) -> dict:
+    """v0.9 · 用户画像 (placeholder · v1.0 client-side aggregate)."""
+    days = int(args.get("days") or 90)
+    sys.path.insert(0, str(PLUGIN_DIR))
+    try:
+        from drift_history import collect_sessions
+    except Exception as e:
+        return _err(f"profile module fail: {e}")
+    rows = collect_sessions(days, None)
+    if not rows:
+        return _ok(f"No data in last {days}d")
+    from collections import Counter
+    types = Counter(r.get("type", "?") for r in rows)
+    drifts = Counter(r.get("drift", "?") for r in rows)
+    projs = Counter(r["project"] for r in rows)
+    lines = [
+        f"User profile (last {days}d · {len(rows)} sessions)",
+        "",
+        f"Top projects:",
+    ]
+    for p, c in projs.most_common(5):
+        lines.append(f"  {c:3d} · {p}")
+    lines.append(f"\nWork types:")
+    for t, c in types.most_common():
+        lines.append(f"  {c:3d} · {t}")
+    lines.append(f"\nDrift:")
+    for d, c in drifts.most_common():
+        lines.append(f"  {c:3d} · {d}")
+    return _ok("\n".join(lines))
+
+
 def tool_feedback_log(args: dict) -> dict:
     direction = (args.get("direction") or "").strip().lower()
     if direction not in ("good", "bad"):
@@ -173,6 +330,73 @@ def tool_feedback_log(args: dict) -> dict:
 
 
 TOOLS = {
+    "ingest_obs": {
+        "fn": tool_ingest_obs,
+        "schema": {
+            "name": "ingest_obs",
+            "description": "v0.9 · Write one observation to the user's cross-agent memory. Use after a discrete task/decision/discovery. Includes drift self-audit (claude-mem can't do this).",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "name": {"type": "string", "description": "8-15 char title · Chinese OK"},
+                    "description": {"type": "string", "description": "≤200 char one-liner"},
+                    "body": {"type": "string", "description": "Full observation text"},
+                    "type": {"type": "string", "enum": ["bugfix","feature","refactor","discovery","decision","change"], "default": "discovery"},
+                    "concept": {"type": "string", "enum": ["gotcha","pattern","trade-off","how-it-works","why-it-exists","problem-solution","what-changed"], "default": "pattern"},
+                    "drift": {"type": "string", "enum": ["green","yellow","red"], "default": "green", "description": "AI drift self-audit · honest reporting"},
+                    "drift_signals": {"type": "array", "items": {"type": "string"}, "default": [], "description": "Concrete evidence if drift!=green"},
+                    "agent_type": {"type": "string", "description": "Which agent ingesting (claude-code/openclaw/hermes/cursor/codex/custom). Defaults to env COMPASS_AGENT_TYPE."},
+                    "project": {"type": "string", "description": "Target project (defaults to most-recent)"},
+                },
+                "required": ["name"],
+            },
+        },
+    },
+    "drift_history": {
+        "fn": tool_drift_history,
+        "schema": {
+            "name": "drift_history",
+            "description": "v0.9 · Cross-project AI drift timeline. green/yellow/red counts, top RED sessions with signals. compass-only feature.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "days": {"type": "integer", "default": 30},
+                    "project_filter": {"type": "string", "description": "Optional substring match"},
+                },
+            },
+        },
+    },
+    "session_search": {
+        "fn": tool_session_search,
+        "schema": {
+            "name": "session_search",
+            "description": "v0.9 · Keyword search across all session_*.md files in user's projects. Supports drift/type filter.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "query": {"type": "string"},
+                    "drift": {"type": "string", "enum": ["green","yellow","red"]},
+                    "type": {"type": "string", "enum": ["bugfix","feature","refactor","discovery","decision","change"]},
+                    "days": {"type": "integer", "default": 60},
+                    "top_k": {"type": "integer", "default": 5},
+                },
+                "required": ["query"],
+            },
+        },
+    },
+    "profile": {
+        "fn": tool_profile,
+        "schema": {
+            "name": "profile",
+            "description": "v0.9 · User profile derived from session aggregate (top projects · work types · drift dist). v1.0 will add client-side E2EE aggregation.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "days": {"type": "integer", "default": 90},
+                },
+            },
+        },
+    },
     "recall": {
         "fn": tool_recall,
         "schema": {

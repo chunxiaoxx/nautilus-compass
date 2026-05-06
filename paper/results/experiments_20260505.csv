@@ -1,0 +1,20 @@
+model,config,sample_or_full,n,overall_acc,knowledge_update,multi_session,ssa,ssp,ssu,temporal,cost_usd_estimate,gpu_hours,notes
+Gemini-2.5-pro,thinking-default,sample-balanced,48,0.458,0.500,0.625,0.625,0.625,0.250,0.125,0.5,0.5,sample 50题 v3 baseline
+Gemini-2.5-pro,thinking-default,full,500,0.446,0.551,0.444,0.732,0.433,0.229,0.383,15.0,4.0,商用 baseline · paper-grade
+MiniMax-M2.7-highspeed,nothink,sample-balanced,48,0.417,0.500,0.625,0.625,0.375,0.250,0.125,0.5,0.4,
+MiniMax-M2.7-highspeed,nothink,full,500,0.458,0.564,0.444,0.750,0.467,0.257,0.391,1.0,3.4,国产SOTA-1 · 1/15 价格
+MiniMax-M2.7-highspeed,thinking-1024,sample-balanced,48,0.458,0.500,0.625,0.625,0.500,0.250,0.250,1.0,0.5,sample 假象
+MiniMax-M2.7-highspeed,thinking-1024,full-302-killed,302,0.328,NA,NA,NA,NA,NA,0.096,3.0,1.7,thinking 拒答崩盘 · 拒答率 44%
+MiniMax-M2.7-highspeed,thinking-8192-rule6,sample-balanced,48,0.438,0.625,0.625,0.625,0.375,0.250,0.125,1.5,0.6,thinking 加 budget 也没救
+GLM-5.1,nothink,sample-balanced,48,0.417,NA,NA,NA,NA,NA,NA,0.3,0.5,ark coding plan
+GLM-5.1,thinking,sample-balanced,48,0.438,NA,NA,NA,NA,NA,NA,0.5,0.6,thinking +2.1
+Kimi-K2.6,nothink,sample-balanced,48,0.354,NA,NA,NA,NA,NA,NA,0.2,0.5,弱
+Kimi-K2.6,thinking,sample-balanced,48,0.354,NA,NA,NA,NA,NA,NA,0.4,0.7,thinking 加成=0
+DeepSeek-V3.2,nothink,sample-balanced,48,0.396,NA,NA,NA,NA,NA,NA,0.3,0.4,
+DeepSeek-V3.2,thinking,sample-balanced,48,0.500,0.625,0.625,0.625,0.625,0.375,0.125,0.6,0.5,sample 第一
+DeepSeek-V3.2,thinking,full,500,0.466,0.513,0.436,0.768,0.333,0.300,0.459,2.0,5.4,国产 SOTA · ssp 弱点
+DeepSeek-V3.2,thinking-graph-neo4j,sample-balanced,48,0.438,0.500,0.625,0.625,0.625,0.125,0.125,0.4,1.6,graph rerank 拖累 -6.2
+DeepSeek-V3.2,thinking-router-ssp+ku,sample-balanced,48,0.479,0.625,0.625,0.625,0.375,0.375,0.250,0.5,0.5,router 没显著加成
+DeepSeek-V3.2,thinking-v0.8-5项,sample-balanced,48,0.562,0.625,0.625,0.750,0.250,0.750,0.375,0.7,0.8,query rewrite 巨大加成 ssu+37.5 · ssp prompt 拖累 -37.5
+DeepSeek-V3.2,thinking-v0.8.1-no-ssp-prompt,full,500,0.566,0.577,0.549,0.839,0.533,0.571,0.466,3.0,7.8,🌟 v0.8 FINAL · +10 pts vs baseline DeepSeek 46.6% · ssa 83.9% 强势 · temporal 46.6% 持平 baseline · ssu+27 (30→57) 加成稳
+DeepSeek-V4-pro,think-high-CPU,sample-balanced,48,0.604,0.750,0.625,0.750,0.500,0.750,0.250,1.4,3.3,🆕 V4-pro 1M context · ku/ssa/ssu 三段 75% · ssa -9 vs v0.8 (reasoning_content 截断假设) · temporal 25% 崩盘 -22 · 不显著 +4 vs v0.8 sample 56.2 · HOLD full 500

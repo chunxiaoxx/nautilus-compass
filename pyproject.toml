@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nautilus-compass"
-version = "0.7.0"
-description = "Memory plugin for Claude Code · Persona drift L3 detection + DPT strategy distillation + 时间桶 recall"
+version = "0.9.0-dev"
+description = "Cross-agent memory layer for the Nautilus platform · MCP/A2A protocol · drift-aware writer · LongMemEval-S benchmark · E2EE-ready"
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
@@ -14,7 +14,8 @@ authors = [
 ]
 keywords = [
     "claude-code", "memory", "persona-vectors", "drift-detection",
-    "rag", "embedding", "bge", "agent-memory"
+    "rag", "embedding", "bge", "agent-memory", "mcp", "a2a",
+    "nautilus-platform", "cross-agent", "longmemeval"
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -38,6 +39,8 @@ modelscope = ["modelscope>=1.10"]
 rerank = ["sentence-transformers>=2.7"]   # CrossEncoder included
 fast-download = ["hf_transfer>=0.1"]
 dev = ["pytest>=7", "pytest-cov", "ruff"]
+e2ee = ["pynacl>=1.5"]                    # libsodium · v1.0 default
+nautilus = ["nautilus-agent>=0.5"]        # platform SDK · v0.9.3 fusion
 
 [project.urls]
 Homepage = "https://github.com/chunxiaoxx/nautilus-compass"
@@ -45,6 +48,11 @@ Issues = "https://github.com/chunxiaoxx/nautilus-compass/issues"
 
 [project.scripts]
 nautilus-compass = "nautilus_compass.cli:main"
+compass-mcp = "nautilus_compass.mcp_server:main"
+compass-a2a = "nautilus_compass.sdk.a2a_adapter:serve"
+compass-drift-history = "nautilus_compass.drift_history:main"
+compass-session-search = "nautilus_compass.session_search:main"
+compass-session-writer = "nautilus_compass.session_writer:main"
 
 [tool.setuptools]
 package-dir = {"nautilus_compass" = "."}

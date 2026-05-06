@@ -1,0 +1,12 @@
+{
+  "_doc": "Paste into .vscode/settings.json (per-project) or VS Code user settings (global). Cline will spawn compass-mcp on first tool call.",
+  "cline.mcpServers": {
+    "compass": {
+      "command": "compass-mcp",
+      "env": {
+        "COMPASS_USER_ID": "u_REPLACE_ME",
+        "COMPASS_AGENT_TYPE": "cline-vscode"
+      }
+    }
+  }
+}

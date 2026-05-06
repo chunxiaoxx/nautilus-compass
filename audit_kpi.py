@@ -45,6 +45,18 @@ types_7d = Counter(r["event"] for r in events if in_range(r, since_7d))
 profiles_7d = Counter(r.get("anchors_profile", "?") for r in events if in_range(r, since_7d))
 
 print(f"=== nautilus-compass KPI · {now.strftime('%Y-%m-%d %H:%M UTC')} ===")
+
+# v0.7.2 · 24h recall_hit=0 自动报警 (daemon 没跑/失联)
+recall_24h = types_24h.get("recall_hit", 0)
+strategy_24h = types_24h.get("strategy_hit", 0)
+if recall_24h == 0 and strategy_24h > 0:
+    print(f"\n🚨 ALERT · 24h recall_hit=0 · daemon 可能 down")
+    print(f"   strategy_hit={strategy_24h} 说明 hook 在跑 · 但 BGE 召回 0 次 = daemon 失联或没启动")
+    print(f"   修: nohup python ~/.claude/plugins/nautilus-compass/daemon.py > /tmp/compass_daemon.log 2>&1 &")
+    print(f"   测: python -c \"import socket;s=socket.socket();s.settimeout(2);s.connect(('127.0.0.1',9876));s.sendall(b'\\\"action\\\":\\\"ping\\\"\\\\n');print(s.recv(64))\"")
+elif recall_24h == 0 and strategy_24h == 0:
+    print(f"\n⚠️ 24h 无任何事件 · plugin hook 可能没装/没跑 · 检查 ~/.claude/settings.json")
+
 print(f"\n总事件: {len(events)}")
 print(f"\n24h 内 ({sum(types_24h.values())} events):")
 for k, v in types_24h.most_common():

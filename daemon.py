@@ -407,6 +407,21 @@ def serve():
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     PID_FILE.write_text(str(os.getpid()), encoding="utf-8")
     log(f"daemon starting PID={os.getpid()} port={PORT}")
+
+    # v0.7.2 fix · eager-load bge-m3 + anchors at startup. Lazy load caused
+    # 60-90s hang on first 'both' request → hook 60s timeout → fallback inline
+    # (recall.py 583). With eager load · startup slow but all requests <1s.
+    try:
+        log("eager-loading bge-m3 + anchors...")
+        _t0 = time.time()
+        _ = get_embedder()
+        log(f"  embedder ready · {time.time()-_t0:.1f}s")
+        _t1 = time.time()
+        _ = get_anchors()
+        log(f"  anchors ready · {time.time()-_t1:.1f}s · total startup {time.time()-_t0:.1f}s")
+    except Exception as _e:
+        log(f"eager-load fail (will retry lazy): {_e}")
+
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     try:

@@ -70,14 +70,33 @@ ANCHORS_PATH = _select_anchors_path()
 
 
 def log_usage(event: str, payload: dict) -> None:
-    """v0.6 · KPI 日志: drift_alert / strategy_hit / recall_hit · 给 audit 用."""
+    """v0.6 · KPI 日志: drift_alert / strategy_hit / recall_hit · 给 audit 用.
+    v0.7.2 加固: daily archive · 每天首次写时 cp 当前 usage.jsonl 到 archive ·
+    防意外清空 (历史教训: 5-04 发现 821 行历史丢失 · 仅 backup 留 339 行).
+    """
     try:
         CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        # daily archive · 每天首次 log 时 snapshot 当前 usage.jsonl
+        if USAGE_LOG.exists() and USAGE_LOG.stat().st_size > 0:
+            today = time.strftime("%Y%m%d", time.gmtime())
+            archive_dir = CACHE_DIR / "usage_archive"
+            archive_dir.mkdir(exist_ok=True)
+            archive_today = archive_dir / f"usage_{today}.jsonl"
+            if not archive_today.exists():
+                import shutil
+                shutil.copy2(USAGE_LOG, archive_today)
         rec = {"ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
                "event": event, "anchors_profile": ANCHORS_PATH.name,
                "cwd": str(Path.cwd()), **payload}
+        # v0.7.2 加固 (C): fsync 确保数据落盘 · 防 OS buffer 丢失或并发 truncate
         with open(USAGE_LOG, "a", encoding="utf-8") as f:
             f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+            f.flush()
+            try:
+                import os as _os
+                _os.fsync(f.fileno())
+            except Exception:
+                pass
     except Exception:
         pass
 EMBED_MAX_CHARS = 1500    # 每 file embed 前 1500 字
@@ -704,8 +723,16 @@ def main():
         render_v01_metadata_mode(entries)
         if user_prompt:
             print()
-            print(f"💡 想要真语义召回 · Bash 调:")
-            print(f"   python3 ~/.claude/plugins/nautilus-compass/recall.py --bge --query \"<问题>\"")
+            # v0.7.2 · daemon down 时显眼警告 · 不再 silent fallback
+            print("🚨 BGE daemon DOWN · 你看到的是 metadata 列表 · 不是真语义召回")
+            print("   启动: nohup python ~/.claude/plugins/nautilus-compass/daemon.py > /tmp/compass_daemon.log 2>&1 &")
+            print("   验证: nautilus-compass-recall 块出现 'BGE-bge-m3 · daemon · query:' 才是真召回")
+            # v0.7.2 加固 (A): metadata fallback 也 log_usage · 即使 daemon down 也保留事件足迹
+            log_usage("metadata_fallback", {
+                "n_entries": len(entries),
+                "user_prompt": user_prompt[:200],
+                "reason": "bge_mode=False (daemon down or --bge not passed)",
+            })
 
     print(f"</nautilus-compass-recall>")
     return 0

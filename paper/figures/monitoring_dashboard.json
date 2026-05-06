@@ -1,0 +1,64 @@
+{
+  "_doc": "Grafana dashboard JSON · scrapes compass /metrics endpoint · v1.0 §15 Monitoring requirement",
+  "_install": "Import via Grafana UI: + → Import → paste this JSON · select Prometheus datasource",
+  "title": "Compass v0.9",
+  "tags": ["compass", "nautilus"],
+  "timezone": "browser",
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "panels": [
+    {
+      "id": 1,
+      "title": "Users · Agents · Observations",
+      "type": "stat",
+      "targets": [
+        {"expr": "compass_users_total", "legendFormat": "users", "refId": "A"},
+        {"expr": "compass_agents_total", "legendFormat": "agents", "refId": "B"},
+        {"expr": "compass_observations_total", "legendFormat": "obs", "refId": "C"}
+      ],
+      "gridPos": {"x": 0, "y": 0, "w": 8, "h": 4}
+    },
+    {
+      "id": 2,
+      "title": "Observations / 24h",
+      "type": "graph",
+      "targets": [
+        {"expr": "compass_observations_24h", "refId": "A"}
+      ],
+      "gridPos": {"x": 8, "y": 0, "w": 8, "h": 4}
+    },
+    {
+      "id": 3,
+      "title": "Drift Red events / 24h",
+      "type": "graph",
+      "targets": [
+        {"expr": "compass_drift_red_24h", "refId": "A"}
+      ],
+      "alert": {
+        "conditions": [
+          {"evaluator": {"params": [10], "type": "gt"}, "query": {"params": ["A"]}}
+        ],
+        "name": "drift red elevated · investigate user behavior"
+      },
+      "gridPos": {"x": 16, "y": 0, "w": 8, "h": 4}
+    },
+    {
+      "id": 4,
+      "title": "Audit events / 24h",
+      "type": "graph",
+      "targets": [
+        {"expr": "compass_audit_events_24h", "refId": "A"}
+      ],
+      "gridPos": {"x": 0, "y": 4, "w": 12, "h": 4}
+    },
+    {
+      "id": 5,
+      "title": "Region info",
+      "type": "stat",
+      "targets": [
+        {"expr": "compass_region_info", "legendFormat": "{{region}}", "refId": "A"}
+      ],
+      "gridPos": {"x": 12, "y": 4, "w": 12, "h": 4}
+    }
+  ]
+}

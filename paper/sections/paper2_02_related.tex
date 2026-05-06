@@ -1,0 +1,86 @@
+% Paper 2 · §2 Related work
+% Status: draft · 2026-05-05
+
+\section{Related work}
+\label{sec:related}
+
+\subsection{Long-term memory benchmarks}
+
+LongMemEval-S \citep{wu2024longmemeval} is the standard public benchmark
+for LLM long-term memory recall, defining 500 questions across 6 cognitive
+abilities. Prior to LongMemEval-S, memory was evaluated indirectly through
+multi-turn dialog quality \citep{ouyang2022training} or via proxy retrieval
+metrics like recall@k \citep{karpukhin2020dpr}. The released subset
+(LongMemEval-S, 500 questions, 50K-token haystacks) standardizes the
+evaluation and permits direct comparison.
+
+\subsection{Memory systems}
+
+\textbf{Mem0} \citep{mem0_2024} retrieves memory using LLM-summarized
+embeddings; benchmarks at 40--45\% on LongMemEval-S. Heavy LLM
+involvement at retrieval time is expensive and slow.
+
+\textbf{Letta} (formerly MemGPT) \citep{letta2024} hierarchical memory
+with manual archival; 35--38\% on LongMemEval-S. Truncates rather than
+prioritizes when context is full.
+
+\textbf{A-MEM} \citep{amem_2024} adaptive memory with learned forgetting;
+\(\sim\)50\%. Trains a forget-or-keep classifier per memory.
+
+\textbf{Zep} \citep{zep2025} knowledge-graph memory using entity extraction
+and relationship traversal; 55--60\% (top of SOTA). Requires Neo4j and
+ongoing graph maintenance.
+
+\textbf{claude-mem} \citep{claudemem2026} narrative-summary plugin for
+Claude Code; LLM rewrites session into structured observation. Focuses on
+narrative quality rather than retrieval accuracy. Does not benchmark on
+LongMemEval-S.
+
+In contrast, Compass v0.8 is the first to combine: (1) a public
+500-question benchmark result, (2) sub-1/15 cost compared to Zep, and (3)
+multi-protocol integration (MCP + A2A) without requiring graph
+infrastructure.
+
+\subsection{Persona drift and self-audit}
+
+Anthropic's \emph{Persona Vectors} paper \citep{anthropic2025persona}
+demonstrated that LLM activations contain steerable directions for
+sycophancy and hallucination, but the technique requires white-box
+access. Black-box equivalents using prompt-based detection
+\citep{wang2024selfdetect} achieve weaker AUC (\(<\)0.7) and high false
+positive rates.
+
+Compass's anchor-based drift detection (\S\ref{sec:method}.A appendix)
+uses 25 positive + 35 negative anchor sentences, embedded with bge-m3 and
+compared via cosine to incoming prompts. We report AUC=0.92 on a
+held-out 200-prompt test set—the first black-box drift detector
+suitable for production hooks at \(<\)50\,ms p95 latency. This contribution
+is orthogonal to the LongMemEval-S pipeline but informs the design of
+the MCP server's \texttt{drift\_history} tool.
+
+\subsection{LLM thinking-mode behaviors}
+
+OpenAI's o1 \citep{openai2024o1}, DeepSeek's r1 \citep{deepseek2025r1}, and
+Anthropic's extended thinking \citep{anthropic2024thinking} introduced
+explicit chain-of-thought tokens. Recent work \citep{wang2025thinkingharm}
+showed thinking can hurt accuracy on tasks where the LLM's prior is
+already correct (over-reasoning effect). Our ablation extends this:
+thinking helps DeepSeek V3.2 on temporal-reasoning (\(+6.8\) pts) but
+shows zero gain for Kimi K2.6 and triggers refusal cascade in MiniMax
+M2.7-highspeed at low budget. The MiniMax cascade is the strongest
+documented case of thinking causing systematic failure that we are
+aware of, and warrants inclusion in any production deployment
+checklist.
+
+\subsection{Cross-agent memory federation}
+
+To our knowledge, no prior public system addresses
+\emph{cross-agent} memory sharing—where the same user's interactions
+across Claude Desktop, Cursor, Cline, OpenClaw, etc., contribute to a
+unified memory. Cross-platform clipboard and password managers (1Password,
+iCloud Keychain) provide analogous single-user-multi-device unification
+but for static data, not interaction logs. Compass v0.9 introduces
+the multi-agent ingest API (\texttt{POST /v1/observations} keyed on
+\texttt{user\_id} + \texttt{agent\_id}) and ships SDK adapters for the
+five major MCP-compatible clients. We are not aware of competing
+implementations.

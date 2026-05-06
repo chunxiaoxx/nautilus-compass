@@ -1,5 +1,78 @@
 # Changelog
 
+## [0.9.0-dev] · 2026-05-05 — "cross-agent · MCP/A2A · 56.6% on LongMemEval-S"
+
+### 🎯 Highlights
+
+- 🏆 **LongMemEval-S full-500 final = 56.6%** (DeepSeek V3.2 + 5 项加成 · ¥10 总成本)
+  - 接近 Zep SOTA 下沿 (55-60%) · paper RAG SOTA 同档 (50-60%)
+  - +12 pts vs Gemini-2.5-pro baseline (44.6%)
+  - 1/15 cost vs commercial API stack
+- 🆕 **Cross-agent memory federation** · 跨 Claude Desktop · Cline · Cursor · OpenClaw · Hermes 共享 memory
+- 🆕 **MCP server v0.9** · 7 tools (4 new: ingest_obs · drift_history · session_search · profile)
+- 🆕 **A2A adapter** · 4 capabilities (STORE/RETRIEVE/PROFILE/DRIFT_HISTORY)
+- 🆕 **npm wrapper** · `@nautilus/compass-mcp` · `npx -y` 即用
+- 🆕 **session_writer + drift-aware obs** · session 末自动蒸馏 · drift 自审 (claude-mem 替代 + 增强)
+
+### Added
+
+- `session_writer.py` · Volc Ark DeepSeek session 蒸馏 (¥0.05/session)
+- `drift_history.py` + `session_search.py` · cross-project · ASCII timeline · keyword + drift filter
+- `daemon_anchor_loader.py` · 3-layer anchors (platform_base + domain + tenant)
+- `anchors_platform_base.json` · 通用 15 pos + 25 neg
+- `sdk/compass_client.py` · multi-agent ingest SDK · offline buffer · E2EE-ready
+- `sdk/attach_memory.py` · one-line Nautilus agent integration
+- `sdk/a2a_adapter.py` · A2A protocol HTTP service (4 capabilities)
+- `sdk/mcp_adapter.md` · MCP server installation spec
+- `mcp_server.py` · 3 tools → 7 tools
+- `npm/` · `@nautilus/compass-mcp` Node wrapper · auto Python detection
+- `cursor-extension/` · VS Code extension TypeScript scaffold
+- `examples/openclaw_integration.py` · `examples/hermes_integration.py`
+- `examples/mcp_configs/` · paste-ready Claude Desktop · Cline · Cursor configs
+- `paper/PLATFORM_FUSION.md` · 8 fusion points
+- `paper/V09_USER_SCHEMA.md` · multi-user · multi-region · E2EE schema
+- `paper/V09_API_SPEC.md` · server endpoint spec + FastAPI 实施
+- `paper/V10_ROADMAP.md` · 12-month 17-phase roadmap
+- `paper/RESULTS_v0.8.md` · 论文级 final 数据
+- `paper/STAKE_DRIFT_COUPLING.md` · #4 fusion · economic spec
+- `paper/sections/paper2_*.tex` · paper 2 LaTeX 8/8 sections (abstract · intro · related · method · eval · discussion · limitations · opensource)
+- `INSTALL.md` · 3 install methods + 4 client configs
+- `tools/migrate_from_v5.py` · v5-memory migration · #8 fusion
+- `tests/test_compass_v09.py` · 7 integration tests
+- `.github/workflows/ci.yml` · v0.9 multi-Python + npm + cursor + smoke
+- `LICENSE` · MIT 首次正式声明
+
+### Changed
+
+- `pyproject.toml` v0.7 → v0.9.0-dev · 5 entry points · keyword expanded
+- `mcp_server.py` v0.7 → v0.9 · 3 tools → 7 tools
+- `stop_hook.py` · 加 session_writer 调用 · 不依赖 claude-mem
+- `landing/index.html` · 加 v0.9 路线 + 8 fusion points sections
+- `README.md` · LongMemEval section ~54% → 56.6% final
+- `paper/results/experiments_20260505.csv` · v0.8 final 行填入 + 6 类型分项
+
+### Removed
+
+- claude-mem dependency (234 MB cache + uv tool + .claude-mem data)
+  - session_writer 自给 · 不需要 claude-mem 写 session memory
+  - v0.9 之前可共存 · 现在 compass 完整覆盖
+
+### Performance
+
+- LongMemEval-S full-500: **0.466 (baseline) → 0.566 (v0.8)** · +10 pts
+- Per-type: ssa 76.8→83.9 · ku 51.3→57.7 · ssu 30.0→**57.1** ⭐⭐ · ms 43.6→54.9 · ssp 33.3→53.3 · temporal 45.9→46.6
+- bge-m3 daemon recall p95: ~200ms (no change)
+- session_writer cost: ¥0.05/session via Volc Ark DeepSeek V3.2
+
+### Negative findings (paper 价值)
+
+- Neo4j graph rerank: -6.2 pts (closed haystack 上跟 cross-encoder 重复)
+- Double-model router (ssp+ku 用强 model): -2.1 pts (sample noise)
+- SSP "infer preference" prompt: -37.5 pts (LLM 跑偏 · 撤回)
+- MiniMax thinking-1024: 44% refusal cascade · full-500 collapsed at 33%
+- Kimi K2.6 thinking: 0 gain (vs DeepSeek +10)
+
+
 ## [0.7.0] - 2026-04-29 — "from coin-toss to 0.92 AUC"
 
 ### 🎯 Drift detection: 0.51 → 0.92 AUC
