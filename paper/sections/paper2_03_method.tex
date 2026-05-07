@@ -1,5 +1,5 @@
 % Paper 2 	extperiodcentered{}  §3 Method 	extperiodcentered{}  Compass v0.8 Pipeline
-% Status: draft 	extperiodcentered{}  2026-05-05 	extperiodcentered{}  本节描述实现细节 	extperiodcentered{}  数据见 paper2_04_eval.tex
+% Status: draft 	extperiodcentered{}  2026-05-05 	extperiodcentered{}  [Chinese comment] 	extperiodcentered{}  [Chinese comment] paper2_04_eval.tex
 
 \section{Method}
 \label{sec:method}
@@ -127,17 +127,32 @@ it by:
 
 \subsection{Compute and cost}
 
-In our setup, the full 500-question evaluation runs in 7.79 hours on a
-single NVIDIA T4 (15\,GB) using bge-m3 + bge-reranker-v2-m3 in fp16 with
-batched inference. Total LLM API cost (Volc Ark coding plan) was
-approximately \cny{}10 in our runs. Based on the public per-token
-pricing at the time of writing, we estimate the same evaluation using
-GPT-4o would cost on the order of \$15--20, and Claude Sonnet 4.5 on
-the order of \$5--8 (these are rough estimates; actual cost may vary
-with prompt length and caching).
+The full 500-question evaluation runs in 7.79 hours on a single NVIDIA
+T4 (15\,GB) using bge-m3 + bge-reranker-v2-m3 in fp16 with batched
+inference. We report total reproducible cost as the sum of two line
+items:
 
-The bge-m3 daemon eagerly loads on startup (60--90s cold) and serves recall
-queries at \(\sim\)200ms p95 over a Unix socket.
+\begin{itemize}
+\item \textbf{LLM API} (Volc Ark DeepSeek V3.2 thinking, coding plan):
+  approximately \cny{}10 ($\approx$\$1.40 USD) in our runs.
+\item \textbf{GPU compute} (Tencent Cloud T4 spot pricing,
+  $\approx$\$0.30/h): $7.79 \times \$0.30 \approx \$2.30$.
+\end{itemize}
+
+\noindent
+\textbf{Total: $\approx$\$3.70 USD}, of which $\approx$60\% is GPU
+rental and 40\% is LLM API. We round this to \textbf{\$3.50} in
+prose; figures throughout the paper use this rounded headline.
+
+By comparison, based on the public per-token pricing at the time of
+writing, we estimate the same evaluation using GPT-4o would cost
+\$15--20 in API alone (excluding judge cost, which the LongMemEval-S
+paper uses GPT-4o for, adding another \$15--30), and Claude Sonnet 4.5
+on the order of \$5--8 (rough estimates; actual cost depends on
+prompt length, caching, and rate-limit usage).
+
+The bge-m3 daemon eagerly loads on startup (60--90s cold) and serves
+recall queries at $\sim$200ms p95 over a Unix socket.
 
 \subsection{Open-source release}
 

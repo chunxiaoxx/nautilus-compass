@@ -72,7 +72,7 @@ on LongMemEval-S at 1/15 Cost}
 % --- figures (inlined as separate float) ---
 \begin{figure}[t]
   \centering
-  \fbox{\parbox{0.95\textwidth}{\centering [pipeline\_v08 figure · TikZ source in \texttt{figures/pipeline\_v08.tex}]\\\vspace{1em}}}
+  \includegraphics[width=0.95\textwidth]{figures/pipeline_v08.pdf}
   \caption{Compass v0.8 5-stage pipeline. Stage 1.5 (multi-angle query
     rewriting) is conditional on question type, applied only to
     single-session-user, where it yields the largest single gain
@@ -127,7 +127,8 @@ similar systematic per-model evaluations in subsequent work.
 \input{sections/paper2_v4_appendix}
 
 % --- bibliography ---
-\bibliographystyle{plain}
+% plainnat is natbib's numeric-style sibling of plain (compatible with \citep / \citet)
+\bibliographystyle{plainnat}
 \bibliography{paper2_refs}
 
 \end{document}
