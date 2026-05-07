@@ -47,3 +47,4 @@ dist/
 *.egg-info/
 *.whl
 *.tar.gz
+build/
