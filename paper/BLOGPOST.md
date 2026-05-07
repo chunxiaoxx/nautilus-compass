@@ -250,17 +250,33 @@ EverMemBench-Dynamic (paper [arxiv 2602.01313](https://arxiv.org/abs/2602.01313)
 public dataset and ran a BM25 baseline.
 
 ```
-compass BM25 baseline · 5 topics · 2400 QAs · cloud CPU · 17.5s:
+compass BM25 lower bound · 5 topics · 2400 QAs · cloud CPU · 17.5s:
   R@1   14.8%    R@5   25.2%    R@10  30.6%    R@20  38.1%
 ```
 
 That's a deliberately weak floor (no dense retrieval, no reranker).
-End-to-end with a DeepSeek V4-flash answerer was 0% on a 50-QA
-sample because BM25's false-positive rate is too high · the LLM
-correctly returns UNKNOWN rather than fabricate.
 
-paper-grade compass numbers (BGE-m3 + bge-reranker-v2-m3 · same
-stack as our LongMemEval 56.6%) are pending T4 GPU availability.
+compass full stack (BGE-m3 + bge-reranker-v2-m3 + DeepSeek V4-flash
+answerer/judge), 5 topics × 100 stratified QAs = 500 total, T4 GPU
+76 min, ~$1.50:
+
+```
+              recall@20   accuracy
+compass         94.8%      41.0%
+
+paper Table 4 baselines (GPT-4.1-mini answerer · 9-subtask Avg):
+  Full Context  -          37.44%
+  + MemoBase    -          34.27%
+  + Mem0        -          37.09%
+  + Zep         -          39.97%   ← compass +1.0
+  + compass     94.8%      41.00%   ← independent · fills gap
+  + MemOS       -          42.55%   ← compass -1.5
+  + EverCore    -          NOT REPORTED
+```
+
+compass sits between Zep and MemOS · open-source, self-hosted ·
+the EverCore-position number that the original paper omits. Per-topic
+CV is 6% (40/38/42/45/40) · cross-topic stability is high.
 
 **One observation worth noting**: the EverMemBench paper Table 4
 benchmarks 4 systems (MemoBase / Mem0 / Zep / MemOS) but
