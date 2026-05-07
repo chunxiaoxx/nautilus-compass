@@ -11,7 +11,10 @@ try:
 except Exception:
     pass
 
-PLUGIN = Path.home() / ".claude" / "plugins" / "nautilus-compass"
+PLUGIN_USER = Path.home() / ".claude" / "plugins" / "nautilus-compass"
+# CI / dev · fall back to the script's own directory when the user-level
+# plugin install hasn't happened yet (eg. fresh clone, no pip install).
+PLUGIN = PLUGIN_USER if PLUGIN_USER.exists() else Path(__file__).resolve().parent
 
 
 def run_hook(prompt: str, bge: bool = False) -> str:

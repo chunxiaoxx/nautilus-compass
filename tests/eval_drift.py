@@ -14,13 +14,16 @@ from __future__ import annotations
 import json
 import sys
 import time
+import pathlib
 from pathlib import Path
 
 import os as _os
 _os.environ.setdefault("PYTHONIOENCODING", "utf-8")
 _os.environ.setdefault("PYTHONUTF8", "1")
 
-PLUGIN = Path.home() / ".claude" / "plugins" / "nautilus-compass"
+PLUGIN_USER = Path.home() / ".claude" / "plugins" / "nautilus-compass"
+# CI fallback · use repo root when user-level plugin not installed
+PLUGIN = PLUGIN_USER if PLUGIN_USER.exists() else pathlib.Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PLUGIN))
 import daemon as zmd  # noqa: E402
 
