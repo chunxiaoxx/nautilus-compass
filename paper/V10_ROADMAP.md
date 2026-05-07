@@ -63,10 +63,10 @@
 
 1. ✅ MCP server v0.9 重构 (7 tools) — done
 2. ✅ A2A adapter 雏形 — done
-3. ⬜ A2A adapter 自测跑通 (selftest)
-4. ⬜ 把本 session 自动写一条 obs 看 drift 字段
-5. ⬜ v0.8 final 出来 → 更新 paper/results/experiments_*.csv
-6. ⬜ npm/uv publish 准备 (package.json · setup.py)
+3. ✅ A2A adapter 自测跑通 (selftest) — 2026-05-07 · 3/3 pass · DISCOVER + STORE_OBS + QUERY_DRIFT_HISTORY
+4. ✅ 把本 session 自动写一条 obs 看 drift 字段 — selftest 自动验证
+5. ✅ v0.8 final 出来 → 更新 paper/results/experiments_*.csv — 56.6% locked
+6. ✅ npm/uv publish 准备 (package.json · setup.py) — nautilus-compass-mcp@0.9.5 shipped
 7. ⬜ landing page 加 "v0.9 路线" section
 8. ⬜ 注册 a2a-registry.nautilus.social (假设这个域名将在 Nautilus 平台启用)
 
