@@ -238,7 +238,7 @@ See [paper §6.5](paper/sections/paper2_06_5_evermembench.tex) · [BLOGPOST](pap
   "mcpServers": {
     "compass": {
       "command": "npx",
-      "args": ["-y", "@nautilus/compass-mcp"],
+      "args": ["-y", "nautilus-compass-mcp"],
       "env": { "COMPASS_USER_ID": "u_yourname" }
     }
   }
@@ -270,7 +270,7 @@ attach_memory(agent)   # ← 这一行 · 自动注册 + ingest + recall + drift
 
 ```
 Python: pip install nautilus-compass    # core + 6 CLI
-npm:    npx -y @nautilus/compass-mcp    # MCP wrapper
+npm:    npx -y nautilus-compass-mcp    # MCP wrapper
 SDK:    sdk/compass_client.py · sdk/attach_memory.py · sdk/a2a_adapter.py
 HTTP:   compass.nautilus.social         # multi-tenant gateway (deployed)
 A2A:    /a2a/messages endpoint          # cross-agent protocol
