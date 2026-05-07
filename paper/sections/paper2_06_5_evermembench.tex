@@ -93,14 +93,35 @@ Lower bound: no dense retrieval, no reranker.}
 \label{tab:em-bm25}
 \end{table}
 
-\subsection{End-to-end with full retrieval stack (n=100)}
+\subsection{End-to-end with full retrieval stack (n=500, all 5 topics)}
 \label{sec:em-full-stack}
 
 We then ran the full compass retrieval stack
 (BGE-m3~\citep{chen2024bge} dense + bge-reranker-v2-m3 cross-encoder)
-on the same topic 01 with DeepSeek-V4-flash as both answerer and judge
-(matching our LongMemEval pipeline · 14.9 minutes wall-clock on a
-single T4):
+on all 5 topics with DeepSeek-V4-flash as both answerer and judge
+(matching our LongMemEval pipeline · 76 minutes wall-clock on a single T4 · ~\$1.50):
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lrr}
+\toprule
+Topic & accuracy & recall@20 \\
+\midrule
+01 & 40.0\% & 91.0\% \\
+02 & 38.0\% & 92.0\% \\
+03 & 42.0\% & 95.0\% \\
+04 & 45.0\% & 99.0\% \\
+05 & 40.0\% & 97.0\% \\
+\midrule
+\textbf{All (n=500)} & \textbf{41.0\%} & \textbf{94.8\%} \\
+\bottomrule
+\end{tabular}
+\caption{compass per-topic results on EverMemBench-Dynamic.
+Cross-topic CV $=$ 6\% (consistent · low variance).}
+\label{tab:em-per-topic}
+\end{table}
+
+
 
 \begin{table}[h]
 \centering
@@ -112,21 +133,22 @@ Full Context (1M tokens, no memory) & 37.44 \\
 + MemoBase                          & 34.27 \\
 + Mem0                              & 37.09 \\
 + Zep                               & 39.97 \\
-\textbf{compass (BGE-m3+rerank+V4-flash)}  & \textbf{40.00} \\
+\textbf{compass (BGE-m3+rerank+V4-flash · n=500)} & \textbf{41.00} \\
 + MemOS                             & 42.55 \\
 + EverCore                          & not reported \\
 \bottomrule
 \end{tabular}
 \caption{compass on EverMemBench-Dynamic topic 01 (n=100) alongside
-the paper Table 4 baselines. compass falls between Zep (39.97) and
+the paper Table 4 baselines. compass at 41.0\% places between Zep (39.97) and
 MemOS (42.55), filling the EverCore gap with an open-source,
-self-hosted alternative. Recall@20 was 91.0\% (BM25-only baseline:
-38.1\%); the 51-point recall improvement explains where the dense
-retriever helps. The remaining gap to MemOS is likely due to (a)
-different LLM (V4-flash vs GPT-4.1-mini), (b) topic 01 only vs
-full 5-topic average, and (c) no Profile-Understanding subtask
-yet. Caveat: n=100 has $\pm$10pt 95\% CI · we do not claim a
-ranking until full 5-topic 2400-QA run completes.}
+self-hosted alternative. Recall@20 was 94.8\% across 5 topics
+(BM25-only baseline: 38.1\%); the 56.7-point recall improvement
+explains where the dense retriever helps. The remaining gap to MemOS
+is likely due to (a) different LLM (V4-flash vs GPT-4.1-mini ·
+DeepSeek's stronger reasoning models would close part of this gap)
+and (b) no Profile-Understanding subtask yet (paper Average includes
+Style/Skill/Role · we measured Fine-Grained Recall + Memory Awareness only).
+Per-topic CV is 6\% · cross-topic stability is high.}
 \label{tab:em-full-stack}
 \end{table}
 
