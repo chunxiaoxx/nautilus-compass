@@ -17,7 +17,7 @@ jobs:
         python: ["3.10", "3.12"]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -58,7 +58,7 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
       - run: pip install ruff
@@ -68,7 +68,7 @@ jobs:
     name: v0.9 integration tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
       - name: Install
@@ -85,7 +85,7 @@ jobs:
     name: v0.9 MCP server (7 tools)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
       - run: pip install -e .
@@ -115,7 +115,7 @@ jobs:
     name: v0.9 npm wrapper
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
       - uses: actions/setup-node@v4
@@ -127,7 +127,7 @@ jobs:
     name: v0.9 Cursor extension build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-node@v4
         with: { node-version: "20" }
       - run: cd cursor-extension && npm install && npm run compile
