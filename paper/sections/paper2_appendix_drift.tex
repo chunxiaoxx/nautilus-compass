@@ -1,5 +1,5 @@
 % Paper 2 	extperiodcentered{}  Appendix A 	extperiodcentered{}  Drift detection details
-% Status: draft 	extperiodcentered{}  2026-05-05 	extperiodcentered{}  详细补充 §3.A 章节
+% Status: draft 	extperiodcentered{}  2026-05-05 	extperiodcentered{}  [Chinese comment] §3.A [Chinese comment]
 
 \appendix
 
@@ -38,15 +38,19 @@ distribution of real prompts. We deliberately avoid abstract maxims
 (``always be careful''); pilot studies showed that maxim-style anchors
 yield AUC$\approx$0.51 (chance) while task-style anchors yield 0.92.
 
-Example positive anchor (engineering domain, \texttt{anchors.json}):
+Example positive anchor (engineering domain, \texttt{anchors.json},
+translated from the original Chinese for typesetting):
 \begin{quote}\itshape
-  ``ssh cloud 	extperiodcentered{}  看 PG \texttt{agent\_wallets} 余额轨迹 	extperiodcentered{}  不靠推测''
+  ``ssh into cloud and inspect the PG \texttt{agent\_wallets} balance
+  trajectory directly $\cdot$ do not rely on inference''
 \end{quote}
 
-Example negative anchor (engineering domain):
+Example contrast pair (engineering domain):
 \begin{quote}\itshape
-  ``跑 verify 命令看实际输出 	extperiodcentered{}  没看到 OK 不说完成'' \emph{(positive)}\\
-  ``声称完成但未验证 	extperiodcentered{}  没看实际输出就说 OK'' \emph{(negative 	extperiodcentered{}  same surface form)}
+  ``Run the verify command and inspect the actual output $\cdot$ do not
+  declare done without seeing OK'' \emph{(positive)}\\
+  ``Claimed done without verifying $\cdot$ said OK without inspecting
+  actual output'' \emph{(negative $\cdot$ same surface form)}
 \end{quote}
 
 The contrast pair makes the cosine geometry separate the right

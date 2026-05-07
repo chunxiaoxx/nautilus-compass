@@ -1,30 +1,25 @@
 % Paper 2 	extperiodcentered{}  §0 Abstract
-% Status: 2026-05-06 v1.0 draft · LongMemEval 56.6 + EverMemBench 41.0
+% Status: 2026-05-07 v1.0 · trimmed to 189 words (was 280) for venue compliance
 
 \begin{abstract}
-We present Compass, an open-source memory recall pipeline for LLM agents.
-On LongMemEval-S (n=500), Compass achieves \textbf{56.6\% accuracy} using
-DeepSeek V3.2 thinking, ties the Zep SOTA band (55--60\%) and surpasses
-the Gemini-2.5-pro baseline (44.6\%) by $+12$ points, at $\sim$\$3.50
-total reproducible cost --- under 1/15 the cost of GPT-4o-judged stacks.
-On the newly released EverMemBench-Dynamic (n=500, 5-topic stratified),
-Compass scores \textbf{41.0\%}, sitting between Zep (39.97) and MemOS
-(42.55) on the original Table 4 ranking and exceeding MemoBase (34.27)
+Compass is an open-source memory recall pipeline for LLM agents. On
+LongMemEval-S (n=500), Compass reaches \textbf{56.6\% accuracy} using
+DeepSeek V3.2 thinking, tying the Zep SOTA band (55--60\%) and
+surpassing the Gemini-2.5-pro baseline (44.6\%) by $+12$ points at
+$\sim$\$3.50 reproducible cost---under 1/15 of GPT-4o-judged stacks.
+On EverMemBench-Dynamic (n=500), Compass scores \textbf{41.0\%},
+between Zep (39.97) and MemOS (42.55) and exceeding MemoBase (34.27)
 and Mem0 (37.09) by 4--7 points. Our 5-stage pipeline combines BGE-m3
 dense recall, bge-reranker-v2-m3 cross-encoder reranking, multi-angle
-query rewriting (3 reformulations $\cdot$ union-deduplicated), type-aware
-prompting, and a single-model judge chain validated by cross-judge
-replication ($\kappa{=}0.772$). Ablations show multi-angle query
-rewriting is the dominant lever ($+27$ pts on single-session-user),
-larger than the cross-encoder reranker. We benchmark 6 LLMs and report
-per-model thinking-mode effectiveness: DeepSeek V3.2 gains $+10$ pts
-under thinking, GLM-5.1 gains $+2$, Kimi K2.6 is neutral, MiniMax M2.7
-triggers a 44\% refusal cascade, and DeepSeek V4-pro think-high ties
-V3.2 at 8\(\times\) cost. Negative findings are reported honestly:
-Neo4j graph reranking reduces accuracy by 6 pts on closed haystacks,
-and an n${<}100$ sample over-estimated V4-pro by $+4.4$ points relative
-to the full 500-question measurement. We ship an MIT-licensed Python
-package, MCP server (Claude Desktop $\cdot$ Cline $\cdot$ Cursor), A2A
-protocol adapter, and full reproduction scripts at
-\url{https://github.com/chunxiaoxx/nautilus-compass}.
+query rewriting, type-aware prompting, and a judge chain validated by
+cross-judge replication ($\kappa{=}0.772$). Multi-angle query rewriting
+is the dominant lever ($+27$ pts on single-session-user), larger than
+the reranker. Across 6 LLMs, thinking-mode effectiveness varies
+dramatically: DeepSeek V3.2 gains $+10$ pts; GLM-5.1 $+2$; Kimi K2.6
+neutral; MiniMax M2.7 triggers a 44\% refusal cascade; DeepSeek V4-pro
+think-high ties V3.2 at 8\(\times\) cost. Negative findings: Neo4j
+graph reranking reduces accuracy by 6 pts on closed haystacks; n${<}100$
+samples over-estimated V4-pro by $+4.4$ points vs full 500. Code, MCP/A2A
+integrations, and full reproduction scripts at
+\url{https://github.com/chunxiaoxx/nautilus-compass} under MIT.
 \end{abstract}
