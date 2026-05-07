@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nautilus-compass"
-version = "0.9.0-dev"
+version = "0.9.5"
 description = "Cross-agent memory layer for the Nautilus platform · MCP/A2A protocol · drift-aware writer · LongMemEval-S benchmark · E2EE-ready"
 readme = "README.md"
 requires-python = ">=3.9"

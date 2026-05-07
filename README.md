@@ -4,9 +4,12 @@
 > Memory plugin for Claude Code/Desktop · Cline · Cursor · OpenClaw · Hermes ·
 > stops your AI from repeating mistakes you've already flagged.
 
+[![CI](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/ci.yml)
+[![arXiv build](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/build-paper.yml/badge.svg?branch=main)](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/build-paper.yml)
 [![LongMemEval-S](https://img.shields.io/badge/LongMemEval--S-56.6%25-brightgreen)](paper/RESULTS_v0.8.md)
+[![EverMemBench](https://img.shields.io/badge/EverMemBench-41.0%25-brightgreen)](paper/sections/paper2_06_5_evermembench.tex)
 [![drift-AUC](https://img.shields.io/badge/drift_AUC-0.92-brightgreen)](#真账面--实测数据)
-[![version](https://img.shields.io/badge/version-0.9.0--dev-orange)](CHANGELOG.md)
+[![version](https://img.shields.io/badge/version-0.9.5-orange)](CHANGELOG.md)
 [![MCP](https://img.shields.io/badge/MCP-7%20tools-blue)](sdk/mcp_adapter.md)
 [![A2A](https://img.shields.io/badge/A2A-4%20capabilities-blue)](sdk/a2a_adapter.py)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
