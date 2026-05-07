@@ -16,10 +16,13 @@ Production hardening + A2A v1 protocol surface + EverMemBench cross-validation.
   - VACUUM in retention cron (Stage 0 disk reclaim)
 - 📊 **Stress benchmark · 1M rows · p95 7ms** (50× under 100ms threshold)
   - Postgres switch trigger raised 100K → 5M rows (real benchmark · not heuristic)
-- 📈 **Cross-benchmark on EverMemBench-Dynamic** · paper §6.5 draft
+- 📈 **Cross-benchmark on EverMemBench-Dynamic** · paper §6.5 final (n=500)
   - First independent benchmark filling EverCore omission gap
-  - BM25 lower-bound: R@1 14.8 / R@5 25.2 / R@20 38.1 across 2400 QAs
-  - paper-grade compass numbers pending T4 GPU availability
+  - BM25 lower-bound (free): R@1 14.8 / R@5 25.2 / R@20 38.1
+  - **compass full stack (BGE-m3 + bge-reranker-v2-m3 + V4-flash):**
+    **recall@20 94.8% · e2e 41.0% on n=500 (5 topics)**
+  - Position vs paper Table 4 baselines: Zep 39.97 → **compass 41.00** → MemOS 42.55
+  - Per-topic CV 6% · paper-defensible
 - 🔬 **Cross-judge replication final** · n=500 · κ 0.772 · 88.6% agreement
   - DeepSeek V3.2 self-judge 56.6% · GLM-5.1 cross-judge 54.0% · Δ -2.6 (Good)
 
