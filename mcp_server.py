@@ -28,7 +28,7 @@ from typing import Any
 
 PROTOCOL_VERSION = "2024-11-05"
 SERVER_NAME = "nautilus-compass"
-SERVER_VERSION = "0.9.0-dev"
+SERVER_VERSION = "0.9.5"
 DAEMON_HOST = "127.0.0.1"
 DAEMON_PORT = 9876
 DAEMON_TIMEOUT = 30.0

@@ -54,6 +54,6 @@ CMD ["uvicorn", "compass_http_v09:app", "--host", "0.0.0.0", "--port", "8765"]
 # Metadata labels
 LABEL org.opencontainers.image.title="nautilus-compass"
 LABEL org.opencontainers.image.description="Cross-agent memory layer with drift detection · LongMemEval-S 56.6%"
-LABEL org.opencontainers.image.version="0.9.0-dev"
+LABEL org.opencontainers.image.version="0.9.5"
 LABEL org.opencontainers.image.licenses="MIT"
 LABEL org.opencontainers.image.source="https://github.com/chunxiaoxx/nautilus-compass"

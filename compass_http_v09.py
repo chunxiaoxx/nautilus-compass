@@ -48,7 +48,7 @@ DB_PATH = Path(os.environ.get("COMPASS_DB_PATH", "/var/lib/compass/compass.db"))
 JWT_SECRET = os.environ.get("NAUTILUS_JWT_SECRET", "dev-secret-rotate-in-prod")
 REGION = os.environ.get("COMPASS_REGION", "cn-shanghai")
 DAEMON_HOST = os.environ.get("COMPASS_DAEMON_HOST", "127.0.0.1:9876")
-SERVER_VERSION = "0.9.0-dev"
+SERVER_VERSION = "0.9.5"
 
 app = FastAPI(
     title="compass-gateway",
