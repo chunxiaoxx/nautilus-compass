@@ -11,35 +11,60 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    name: Compile nautilus-compass.tex
+  paper1:
+    name: Compile paper 1 (drift detection)
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
-
       - name: Compile LaTeX
         uses: xu-cheng/latex-action@v3
         with:
           root_file: nautilus-compass.tex
           working_directory: paper/
-          # 2 pdflatex runs + bibtex for cross-refs
           latexmk_use_xelatex: false
           extra_system_packages: |
             inkscape
           args: -pdf -interaction=nonstopmode -file-line-error
-
       - name: Upload PDF artifact
         uses: actions/upload-artifact@v4
         with:
-          name: nautilus-compass-preprint
+          name: paper1-drift-preprint
           path: paper/nautilus-compass.pdf
           retention-days: 90
-
       - name: Sanity check (PDF exists, > 100KB)
         run: |
           ls -la paper/nautilus-compass.pdf
           size=$(stat -c %s paper/nautilus-compass.pdf)
+          if [ "$size" -lt 100000 ]; then
+            echo "❌ PDF is suspiciously small ($size bytes)"
+            exit 1
+          fi
+          echo "✅ PDF $size bytes"
+
+  paper2:
+    name: Compile paper 2 (memory recall)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile LaTeX
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: paper2_main.tex
+          working_directory: paper/
+          latexmk_use_xelatex: false
+          extra_system_packages: |
+            inkscape
+          args: -pdf -interaction=nonstopmode -file-line-error
+      - name: Upload PDF artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: paper2-memory-preprint
+          path: paper/paper2_main.pdf
+          retention-days: 90
+      - name: Sanity check (PDF exists, > 100KB)
+        run: |
+          ls -la paper/paper2_main.pdf
+          size=$(stat -c %s paper/paper2_main.pdf)
           if [ "$size" -lt 100000 ]; then
             echo "❌ PDF is suspiciously small ($size bytes)"
             exit 1
