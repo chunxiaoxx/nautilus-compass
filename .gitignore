@@ -41,3 +41,9 @@ paper/build/
 .claude-mem/
 *.egg-info
 npm/.npmrc
+
+# python build artifacts
+dist/
+*.egg-info/
+*.whl
+*.tar.gz
