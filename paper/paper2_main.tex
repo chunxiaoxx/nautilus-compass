@@ -16,6 +16,7 @@
 % --- packages ---
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb}
 \usepackage{textcomp}               % \textyen, \textcurrency
 \usepackage{geometry}
 \geometry{margin=1in}
@@ -71,7 +72,7 @@ on LongMemEval-S at 1/15 Cost}
 % --- figures (inlined as separate float) ---
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\textwidth]{figures/pipeline_v08}
+  \fbox{\parbox{0.95\textwidth}{\centering [pipeline\_v08 figure · TikZ source in \texttt{figures/pipeline\_v08.tex}]\\\vspace{1em}}}
   \caption{Compass v0.8 5-stage pipeline. Stage 1.5 (multi-angle query
     rewriting) is conditional on question type, applied only to
     single-session-user, where it yields the largest single gain
@@ -81,7 +82,7 @@ on LongMemEval-S at 1/15 Cost}
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\textwidth]{figures/trajectory_v08}
+  \fbox{\parbox{0.95\textwidth}{\centering [trajectory\_v08 figure · TikZ source in \texttt{figures/trajectory\_v08.tex}]\\\vspace{1em}}}
   \caption{Cumulative accuracy by question index. The V-shape reflects
     per-type difficulty differences (single-session-user peak,
     temporal-reasoning trough, single-session-assistant rebound) rather
@@ -91,7 +92,7 @@ on LongMemEval-S at 1/15 Cost}
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\textwidth]{figures/fusion_diagram}
+  \fbox{\parbox{0.95\textwidth}{\centering [fusion\_diagram figure · TikZ source in \texttt{figures/fusion\_diagram.tex}]\\\vspace{1em}}}
   \caption{Eight deep-fusion points between \compass{} and the Nautilus
     platform. Identity (1), agent runtime (3), and stake economy (4) are
     the load-bearing integrations; v5-memory migration (8) and RAID-2

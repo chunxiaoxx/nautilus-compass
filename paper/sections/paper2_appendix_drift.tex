@@ -1,9 +1,9 @@
-% Paper 2 · Appendix A · Drift detection details
-% Status: draft · 2026-05-05 · 详细补充 §3.A 章节
+% Paper 2 	extperiodcentered{}  Appendix A 	extperiodcentered{}  Drift detection details
+% Status: draft 	extperiodcentered{}  2026-05-05 	extperiodcentered{}  详细补充 §3.A 章节
 
 \appendix
 
-\section{Drift detection · technical details}
+\section{Drift detection 	extperiodcentered{}  technical details}
 \label{app:drift}
 
 This appendix expands on the orthogonal anchor-based drift detection
@@ -40,13 +40,13 @@ yield AUC$\approx$0.51 (chance) while task-style anchors yield 0.92.
 
 Example positive anchor (engineering domain, \texttt{anchors.json}):
 \begin{quote}\itshape
-  ``ssh cloud · 看 PG \texttt{agent\_wallets} 余额轨迹 · 不靠推测''
+  ``ssh cloud 	extperiodcentered{}  看 PG \texttt{agent\_wallets} 余额轨迹 	extperiodcentered{}  不靠推测''
 \end{quote}
 
 Example negative anchor (engineering domain):
 \begin{quote}\itshape
-  ``跑 verify 命令看实际输出 · 没看到 OK 不说完成'' \emph{(positive)}\\
-  ``声称完成但未验证 · 没看实际输出就说 OK'' \emph{(negative · same surface form)}
+  ``跑 verify 命令看实际输出 	extperiodcentered{}  没看到 OK 不说完成'' \emph{(positive)}\\
+  ``声称完成但未验证 	extperiodcentered{}  没看实际输出就说 OK'' \emph{(negative 	extperiodcentered{}  same surface form)}
 \end{quote}
 
 The contrast pair makes the cosine geometry separate the right
@@ -100,9 +100,9 @@ plus 0--3 \texttt{drift\_signals} (specific evidence sentences).
 Self-audit is not the same as anchor-based detection:
 
 \begin{itemize}
-\item Anchor-based: real-time at hook · per-prompt · cosine over
+\item Anchor-based: real-time at hook 	extperiodcentered{}  per-prompt 	extperiodcentered{}  cosine over
   bge-m3.
-\item Self-audit: post-hoc · per-session · LLM judgment.
+\item Self-audit: post-hoc 	extperiodcentered{}  per-session 	extperiodcentered{}  LLM judgment.
 \end{itemize}
 
 The two are complementary: anchor catches drift as it happens;
