@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """nautilus-compass KPI audit · 看真实使用率 · 1 周后跑."""
-import io
 import json
 import sys
 from collections import Counter
@@ -8,7 +7,7 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
 try:
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
+    sys.stdout.reconfigure(encoding="utf-8")  # safe · no buffer aliasing
 except Exception:
     pass
 

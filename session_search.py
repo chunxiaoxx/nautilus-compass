@@ -14,14 +14,13 @@ Note (P4 minimum viable):
 """
 from __future__ import annotations
 
-import io
 import re
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path
 
 try:
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
+    sys.stdout.reconfigure(encoding="utf-8")  # safe · no buffer aliasing
 except Exception:
     pass
 
@@ -63,6 +62,8 @@ def search(query: str, drift: str | None = None, type_filter: str | None = None,
     cutoff = (datetime.now() - timedelta(days=days)).timestamp()
     terms = [t for t in re.split(r"\s+", query.strip()) if t]
     candidates = []
+    if not PROJECTS.exists():
+        return candidates
     for proj in PROJECTS.iterdir():
         if not proj.is_dir():
             continue

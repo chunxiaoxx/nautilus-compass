@@ -12,7 +12,6 @@ Output:
 """
 from __future__ import annotations
 
-import io
 import re
 import sys
 from collections import Counter
@@ -20,7 +19,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 try:
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
+    sys.stdout.reconfigure(encoding="utf-8")  # safe · no buffer aliasing
 except Exception:
     pass
 

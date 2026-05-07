@@ -14,14 +14,13 @@
 R1: 修 stub claude-mem 不 deprecate 矛盾旧记忆 → A-MEM 真接
 R3: 复用 daemon BGE · 0 新 LLM session
 """
-import io
 import json
 import socket
 import sys
 from pathlib import Path
 
 try:
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
+    sys.stdout.reconfigure(encoding="utf-8")  # safe · no buffer aliasing
 except Exception:
     pass
 

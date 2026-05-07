@@ -32,7 +32,7 @@ import sys
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Iterable, Optional
+from typing import Iterable
 
 DEFAULT_DB = Path(os.environ.get("COMPASS_DB_PATH", "/var/lib/compass/compass.db"))
 DEFAULT_PROJECTS = Path.home() / ".claude" / "projects"

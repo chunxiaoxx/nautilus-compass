@@ -17,15 +17,18 @@ from huggingface_hub import hf_hub_download
 from FlagEmbedding import BGEM3FlagModel
 from sentence_transformers import CrossEncoder  # working w/ new transformers
 
-TOPICS = ["01"]
-N_QUESTIONS_PER_TOPIC = 100              # smoke first · increase later
-TOP_K_RECALL = 50                        # BGE-m3 cosine top-K
-TOP_K_RERANK = 20                        # reranker output
+TOPICS = ["01", "02", "03", "04", "05"]   # all topics · stratified
+N_QUESTIONS_PER_TOPIC = 100              # 100 per topic = 500 total
+TOP_K_RECALL = 100                       # BGE-m3 cosine top-K (was 50)
+TOP_K_RERANK = 30                        # reranker output (was 20)
+CTX_CHAR_LIMIT = 2500                    # per-message char limit (was 1500)
+PER_DAY_MAX = 2                          # day-bucket: max msgs per day in final
+QUERY_REWRITE = True                     # paper §3.3 · 3 angles
 
 DEEPSEEK_KEY = os.environ.get("DEEPSEEK_API_KEY") or sys.exit("set DEEPSEEK_API_KEY")
 DEEPSEEK_URL = "https://api.deepseek.com/v1/chat/completions"
-ANSWER_MODEL = "deepseek-v4-flash"
-JUDGE_MODEL  = "deepseek-v4-flash"
+ANSWER_MODEL = os.environ.get("ANSWER_MODEL", "deepseek-v4-pro")  # was v4-flash · pro for accuracy
+JUDGE_MODEL  = os.environ.get("JUDGE_MODEL",  "deepseek-v4-flash")  # cheap judge OK
 
 
 def call_deepseek(model, system, user, max_tokens=200):
@@ -83,11 +86,33 @@ def flatten_messages(days):
     return out
 
 
-ANSWER_SYS = ("You are a memory-augmented agent. Answer the user's question "
-              "concisely (one short sentence or value). Use ONLY the provided "
-              "messages as context. If the answer is not found, say UNKNOWN.")
+ANSWER_SYS = (
+    "You are a memory-augmented agent answering questions over a "
+    "multi-day, multi-party project conversation log.\n"
+    "\n"
+    "When you receive CONTEXT MESSAGES tagged [DATE GROUP #IDX], reason as follows:\n"
+    "1. Identify which speaker / group / day the question targets.\n"
+    "2. For multi-step questions, decompose: who · when · what was said.\n"
+    "3. For numbers, percentages, dates, or specific names: cite the exact value\n"
+    "   from the message that contains it. Do not paraphrase numerical answers.\n"
+    "4. For 'after X happened, what was Y?': locate the message describing X,\n"
+    "   then look at messages from the same speaker/group AFTER that timestamp.\n"
+    "5. Answer concisely: one short sentence or a single value.\n"
+    "6. If the retrieved messages do not contain enough information, say UNKNOWN.\n"
+    "Do NOT fabricate. Use ONLY the provided messages."
+)
 JUDGE_SYS = ("Compare PREDICTED to GROUND_TRUTH. Reply CORRECT or INCORRECT only.\n"
              "Semantic equivalence OK (e.g. '65%' = 'sixty-five percent').")
+
+REWRITE_SYS = (
+    "You are a query rewriting assistant for memory retrieval over multi-day "
+    "project chat logs. Given a question, output exactly 3 lines, each one a "
+    "different reformulation that captures different lexical angles:\n"
+    "Line 1: Direct restatement (use the original entities verbatim).\n"
+    "Line 2: Topic-extracted (the underlying domain/task as a noun phrase).\n"
+    "Line 3: Conversational-marker (how someone might say it in chat: 'X said', 'Y mentioned', 'after Z').\n"
+    "No numbering, no bullets, no preamble. Just 3 lines."
+)
 
 
 def main():
@@ -118,7 +143,7 @@ def main():
         days = json.loads(Path(dlg_path).read_text())
 
         msgs = flatten_messages(days)
-        texts = [f"{m[3]}: {m[4][:1500]}" for m in msgs]
+        texts = [f"{m[3]}: {m[4][:CTX_CHAR_LIMIT]}" for m in msgs]
         keys = [(m[0], m[1], m[2]) for m in msgs]
         print(f"[topic {TOPIC}] {len(msgs)} messages · encoding ...", flush=True)
 
@@ -143,17 +168,43 @@ def main():
             if not refs:
                 continue
 
-            q_emb = bge.encode([Q], return_dense=True)["dense_vecs"][0].astype(np.float32)
-            q_emb = q_emb / (np.linalg.norm(q_emb) + 1e-9)
-            sims = emb_norm @ q_emb
-            top_idx = np.argpartition(-sims, TOP_K_RECALL)[:TOP_K_RECALL]
-            top_idx = top_idx[np.argsort(-sims[top_idx])]
+            # ---- Query rewriting (paper §3.3 · 3 angles) ----
+            queries = [Q]
+            if QUERY_REWRITE:
+                try:
+                    rewritten = call_deepseek("deepseek-v4-flash", REWRITE_SYS, Q, 256)
+                    extra = [ln.strip() for ln in rewritten.splitlines() if ln.strip()][:3]
+                    queries = [Q] + extra if extra else [Q]
+                except Exception:
+                    pass  # fall back to single Q on rewrite fail
 
-            # rerank top-K_RECALL with cross-encoder, take top-K_RERANK
+            # ---- Multi-angle BGE retrieval · union dedup ----
+            q_embs = bge.encode(queries, return_dense=True)["dense_vecs"].astype(np.float32)
+            q_embs = q_embs / (np.linalg.norm(q_embs, axis=1, keepdims=True) + 1e-9)
+            # Per-angle top-K_RECALL · union
+            cand_set = set()
+            for q_e in q_embs:
+                sims_a = emb_norm @ q_e
+                t_a = np.argpartition(-sims_a, TOP_K_RECALL)[:TOP_K_RECALL]
+                cand_set.update(int(i) for i in t_a)
+            top_idx = np.array(sorted(cand_set))
+
+            # ---- Rerank candidates with cross-encoder · score by Q (orig) ----
             pairs = [[Q, texts[i]] for i in top_idx]
             scores = rk.predict(pairs, batch_size=32, show_progress_bar=False)
-            order = np.argsort(-np.asarray(scores))[:TOP_K_RERANK]
-            final_idx = [int(top_idx[i]) for i in order]
+            scored = sorted(zip(scores, top_idx), key=lambda x: -x[0])
+
+            # ---- Day-bucket: max PER_DAY_MAX per (date) in final top ----
+            day_count = {}
+            final_idx = []
+            for sc, idx in scored:
+                date = msgs[idx][0]
+                if day_count.get(date, 0) >= PER_DAY_MAX:
+                    continue
+                day_count[date] = day_count.get(date, 0) + 1
+                final_idx.append(int(idx))
+                if len(final_idx) >= TOP_K_RERANK:
+                    break
 
             retrieved_keys = [keys[i] for i in final_idx]
             if any(rk_ in refs for rk_ in retrieved_keys):
@@ -162,18 +213,19 @@ def main():
             ctx_lines = []
             for i in final_idx:
                 d, g, ix, sp, ct = msgs[i]
-                ctx_lines.append(f"[{d} {g} #{ix}] {sp}: {ct[:1500]}")
+                ctx_lines.append(f"[{d} {g} #{ix}] {sp}: {ct[:CTX_CHAR_LIMIT]}")
             ctx = "\n".join(ctx_lines)
             user_msg = f"CONTEXT MESSAGES:\n{ctx}\n\nQUESTION: {Q}\n\nANSWER:"
 
             try:
-                pred = call_deepseek(ANSWER_MODEL, ANSWER_SYS, user_msg, 1024).strip()
+                # V4-pro think-high uses ~500-1500 reasoning_tokens · budget generously
+                pred = call_deepseek(ANSWER_MODEL, ANSWER_SYS, user_msg, 2048).strip()
             except Exception as e:
                 print(f"  [skip {qa['id']}] answer fail: {e}", flush=True)
                 continue
             try:
                 verdict = call_deepseek(JUDGE_MODEL, JUDGE_SYS,
-                    f"PREDICTED: {pred}\nGROUND_TRUTH: {A}\nVerdict:", 256).strip().upper()
+                    f"PREDICTED: {pred}\nGROUND_TRUTH: {A}\nVerdict:", 512).strip().upper()
             except Exception as e:
                 print(f"  [skip {qa['id']}] judge fail: {e}", flush=True)
                 continue

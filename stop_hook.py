@@ -12,16 +12,14 @@ Claude Code Stop hook · 每个 session 结束时跑 ·
 
 输出: 写到 .cache/auto_distill_log.jsonl 让用户 review
 """
-import io
 import json
-import re
 import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
 
 try:
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
+    sys.stdout.reconfigure(encoding="utf-8")  # safe · no buffer aliasing
 except Exception:
     pass
 

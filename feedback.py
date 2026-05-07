@@ -22,13 +22,11 @@ Design:
 from __future__ import annotations
 
 import argparse
-import hashlib
-import io
 import json
 import os
 import sys
 import time
-from collections import Counter, defaultdict
+from collections import defaultdict
 from pathlib import Path
 
 os.environ.setdefault("PYTHONIOENCODING", "utf-8")

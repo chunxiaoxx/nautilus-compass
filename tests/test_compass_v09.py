@@ -76,7 +76,7 @@ def test_compass_client_offline_buffer():
 
 def test_a2a_adapter_messages():
     """A2A adapter · DISCOVER + STORE + QUERY 各回路."""
-    from a2a_adapter import handle_a2a_message, CAPABILITIES
+    from a2a_adapter import handle_a2a_message
 
     # 1. DISCOVER_CAPABILITIES
     r1 = handle_a2a_message({

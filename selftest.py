@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """V5 Memory Plugin 端到端自测 · 跑完输出 PASS/FAIL 表."""
-import io
 import json
 import subprocess
 import sys
@@ -8,7 +7,7 @@ import time
 from pathlib import Path
 
 try:
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
+    sys.stdout.reconfigure(encoding="utf-8")  # safe · no buffer aliasing
 except Exception:
     pass
 

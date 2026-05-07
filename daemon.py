@@ -14,11 +14,9 @@ Protocol (JSON over TCP localhost:9876):
   · Anchors cache: similarly
   · 多客户端并发 OK · single threaded GIL 但 BGE encode 快 (~50ms/句)
 """
-import io
 import json
 import os
 import pickle
-import re
 import socket
 import sys
 import threading
@@ -26,8 +24,8 @@ import time
 from pathlib import Path
 
 try:
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
-    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8")
+    sys.stdout.reconfigure(encoding="utf-8")  # safe · no buffer aliasing
+    sys.stderr.reconfigure(encoding="utf-8")  # safe · no buffer aliasing
 except Exception:
     pass
 

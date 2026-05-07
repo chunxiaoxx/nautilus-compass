@@ -16,7 +16,6 @@ import argparse
 import json
 import os
 import re
-from collections import Counter, defaultdict
 from pathlib import Path
 
 os.environ.setdefault("PYTHONIOENCODING", "utf-8")
@@ -184,5 +183,4 @@ def main():
 
 
 if __name__ == "__main__":
-    import sys
     main()

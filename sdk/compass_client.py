@@ -33,7 +33,7 @@ import urllib.request
 import urllib.error
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Optional
+from typing import Optional
 
 DEFAULT_BASE = "https://compass.nautilus.social"
 TIMEOUT = 10

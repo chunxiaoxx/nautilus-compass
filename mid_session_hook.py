@@ -11,7 +11,6 @@
     才触发一次 BGE refresh (走 daemon)
   · 失败完全静默
 """
-import io
 import json
 import socket
 import sys
@@ -19,8 +18,8 @@ import time
 from pathlib import Path
 
 try:
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
-    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8")
+    sys.stdout.reconfigure(encoding="utf-8")  # safe · no buffer aliasing
+    sys.stderr.reconfigure(encoding="utf-8")  # safe · no buffer aliasing
 except Exception:
     pass
 

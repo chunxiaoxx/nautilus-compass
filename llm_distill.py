@@ -7,17 +7,14 @@ R3 偏离: 加 LLM call · 但每 session 1 次 · ~$0.001 · 可控
 触发条件: 环境变量 ANTHROPIC_API_KEY 或 CLAUDE_API_KEY 设置
 没 key → 静默跳过 (留 v0.6 关键词模式)
 """
-import io
 import json
 import os
 import sys
-import time
 import urllib.request
-from datetime import datetime, timezone
 from pathlib import Path
 
 try:
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
+    sys.stdout.reconfigure(encoding="utf-8")  # safe · no buffer aliasing
 except Exception:
     pass
 
