@@ -117,7 +117,7 @@ Production hardening + A2A v1 protocol surface + EverMemBench cross-validation.
 - 🆕 **Cross-agent memory federation** · 跨 Claude Desktop · Cline · Cursor · OpenClaw · Hermes 共享 memory
 - 🆕 **MCP server v0.9** · 7 tools (4 new: ingest_obs · drift_history · session_search · profile)
 - 🆕 **A2A adapter** · 4 capabilities (STORE/RETRIEVE/PROFILE/DRIFT_HISTORY)
-- 🆕 **npm wrapper** · `@nautilus/compass-mcp` · `npx -y` 即用
+- 🆕 **npm wrapper** · `nautilus-compass-mcp` · `npx -y` 即用
 - 🆕 **session_writer + drift-aware obs** · session 末自动蒸馏 · drift 自审 (claude-mem 替代 + 增强)
 
 ### Added
@@ -131,7 +131,7 @@ Production hardening + A2A v1 protocol surface + EverMemBench cross-validation.
 - `sdk/a2a_adapter.py` · A2A protocol HTTP service (4 capabilities)
 - `sdk/mcp_adapter.md` · MCP server installation spec
 - `mcp_server.py` · 3 tools → 7 tools
-- `npm/` · `@nautilus/compass-mcp` Node wrapper · auto Python detection
+- `npm/` · `nautilus-compass-mcp` Node wrapper · auto Python detection
 - `cursor-extension/` · VS Code extension TypeScript scaffold
 - `examples/openclaw_integration.py` · `examples/hermes_integration.py`
 - `examples/mcp_configs/` · paste-ready Claude Desktop · Cline · Cursor configs

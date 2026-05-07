@@ -1,4 +1,4 @@
-# Publish guide · @nautilus/compass-mcp
+# Publish guide · nautilus-compass-mcp
 
 ## 真预 publish 验证(本地)
 
@@ -29,7 +29,7 @@ npm publish --dry-run --access public
 npm publish --access public
 
 # 4. 真 verify
-npm view @nautilus/compass-mcp
+npm view nautilus-compass-mcp
 ```
 
 ## 真 post-publish 推广

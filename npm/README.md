@@ -1,4 +1,4 @@
-# @nautilus/compass-mcp
+# nautilus-compass-mcp
 
 > MCP server wrapper for **nautilus-compass** · cross-agent memory + drift-aware writer · **LongMemEval-S 56.6%** (paper SOTA tier · 1/15 price)
 
@@ -13,9 +13,9 @@ pip install nautilus-compass
 uv tool install nautilus-compass
 
 # Then install npm wrapper
-npm install -g @nautilus/compass-mcp
+npm install -g nautilus-compass-mcp
 # or use directly via npx (no install)
-npx -y @nautilus/compass-mcp
+npx -y nautilus-compass-mcp
 ```
 
 ### 2. Configure your MCP client
@@ -27,7 +27,7 @@ npx -y @nautilus/compass-mcp
   "mcpServers": {
     "compass": {
       "command": "npx",
-      "args": ["-y", "@nautilus/compass-mcp"],
+      "args": ["-y", "nautilus-compass-mcp"],
       "env": {
         "COMPASS_USER_ID": "u_yourname",
         "COMPASS_AGENT_TYPE": "claude-desktop"
@@ -44,7 +44,7 @@ npx -y @nautilus/compass-mcp
   "mcpServers": {
     "compass": {
       "command": "npx",
-      "args": ["-y", "@nautilus/compass-mcp"],
+      "args": ["-y", "nautilus-compass-mcp"],
       "env": {
         "COMPASS_USER_ID": "u_yourname",
         "COMPASS_AGENT_TYPE": "cursor"
@@ -61,7 +61,7 @@ npx -y @nautilus/compass-mcp
   "cline.mcpServers": {
     "compass": {
       "command": "npx",
-      "args": ["-y", "@nautilus/compass-mcp"]
+      "args": ["-y", "nautilus-compass-mcp"]
     }
   }
 }
@@ -106,7 +106,7 @@ compass                     =  "AI 行为审计 + 跨 agent 记忆基建"
 ## Selftest
 
 ```bash
-npx -y @nautilus/compass-mcp --selftest
+npx -y nautilus-compass-mcp --selftest
 # Expected: OK: python3 + nautilus-compass found
 ```
 
