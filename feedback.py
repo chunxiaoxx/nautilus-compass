@@ -32,7 +32,9 @@ from pathlib import Path
 os.environ.setdefault("PYTHONIOENCODING", "utf-8")
 os.environ.setdefault("PYTHONUTF8", "1")
 
-PLUGIN = Path.home() / ".claude" / "plugins" / "nautilus-compass"
+_PLUGIN_USER = Path.home() / ".claude" / "plugins" / "nautilus-compass"
+# CI / pip-install fallback · use the script's own dir when user-level path absent
+PLUGIN = _PLUGIN_USER if _PLUGIN_USER.exists() else Path(__file__).resolve().parent
 USAGE_LOG = PLUGIN / ".cache/usage.jsonl"
 FEEDBACK_LOG = PLUGIN / ".cache/feedback.jsonl"
 ANCHORS_PATH = PLUGIN / "anchors.json"

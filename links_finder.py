@@ -24,7 +24,9 @@ try:
 except Exception:
     pass
 
-PLUGIN_DIR = Path.home() / ".claude" / "plugins" / "nautilus-compass"
+_PLUGIN_USER = Path.home() / ".claude" / "plugins" / "nautilus-compass"
+# CI / pip-install fallback · use the script's own dir when user-level path absent
+PLUGIN_DIR = _PLUGIN_USER if _PLUGIN_USER.exists() else Path(__file__).resolve().parent
 CACHE_DIR = PLUGIN_DIR / ".cache"
 LINKS_FILE = CACHE_DIR / "links.json"
 
