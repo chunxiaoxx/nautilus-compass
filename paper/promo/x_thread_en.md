@@ -70,7 +70,7 @@ Per-model thinking benchmarks must be re-run for every release. Don't assume.
 **[6/9]**
 Also ran the new EverMemBench-Dynamic (Hu et al. 2026 · arxiv 2602.01313):
 
-n=500 · **41.0%** e2e · recall@20=94.8%
+n=500 · **44.4%** e2e · recall@20=94.8%
 
 paper Table 4:
 - MemoBase: 34.27

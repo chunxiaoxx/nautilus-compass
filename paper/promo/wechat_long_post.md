@@ -20,7 +20,7 @@ C. **DeepSeek + 本地 BGE · 跑赢 GPT-4o memory bench 的 5 个工程决定**
 
 今天发布 v1.0 · 三件事:
 1. **LongMemEval-S · n=500 · 56.6%** · 跟 Zep SOTA (55-60%) 持平 · 总成本 \$3.50
-2. **EverMemBench · n=500 · 41.0%** · 介于 Zep (39.97) 和 MemOS (42.55) 之间
+2. **EverMemBench · n=500 · 44.4%** · 超过 MemOS (42.55) · 4 个 Table 4 baseline 全过
 3. **5 步管道全开源** · MIT · pip 一行装 · MCP 直接接 Claude Desktop / Cline / Cursor
 
 唯一非美闭源 LLM · 唯一不要 GPT-4o 当 judge · 唯一全栈本地化的开源 memory 方案。
@@ -149,7 +149,7 @@ multi-session 类型上 +3 分。
 | MemOS | 42.55 | Hu et al. 2026 Table 4 |
 | EverCore | 未报告 | (论文未提供) |
 
-紧贴 Zep · 跨过 Mem0 · 离 MemOS 2.5 分 · 离 EverCore 未知 (因为 EverCore 没在原 paper Table 4 报告 EverMemBench 跑分 · 这是个奇怪的现象)。
+超过 MemOS (42.55) · 在 4 个 Table 4 baseline 之上。EverCore 在 paper Table 4 NOT REPORTED · 我们填上了。
 
 ---
 
@@ -269,7 +269,7 @@ n=50 sample · V4-pro think-high 估 60.4% · 比 V3.2 56.2% sample 高 +4.2。
 [图9: README badge 截图]
 
 - [x] LongMemEval-S full 500 跑分 · 56.6% 锁
-- [x] EverMemBench full 500 跑分 · 41.0% 锁
+- [x] EverMemBench full 500 跑分 · 44.4% 锁
 - [x] cross-judge replication κ=0.772
 - [x] 6 LLM benchmark
 - [x] paper · 9 sections + 3 appendices

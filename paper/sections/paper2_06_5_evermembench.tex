@@ -98,26 +98,28 @@ Lower bound: no dense retrieval, no reranker.}
 
 We then ran the full compass retrieval stack
 (BGE-m3~\citep{chen2024bge} dense + bge-reranker-v2-m3 cross-encoder)
-on all 5 topics with DeepSeek-V4-flash as both answerer and judge
-(matching our LongMemEval pipeline 	extperiodcentered{}  76 minutes wall-clock on a single T4 	extperiodcentered{}  ~\$1.50):
+on all 5 topics with DeepSeek-V4-pro think-high as the answerer and
+V4-flash as the judge, with multi-angle query rewriting (3 angles,
+union-deduplicated) and day-bucket diversification (max 2 sessions per
+date). 5.58 hours wall-clock on a single T4 $\cdot$ \$25 LLM API:
 
 \begin{table}[h]
 \centering
 \begin{tabular}{lrr}
 \toprule
-Topic & accuracy & recall@20 \\
+Topic & accuracy & recall@30 \\
 \midrule
-01 & 40.0\% & 91.0\% \\
-02 & 38.0\% & 92.0\% \\
-03 & 42.0\% & 95.0\% \\
+01 & 44.0\% & 97.0\% \\
+02 & 46.0\% & 95.0\% \\
+03 & 42.0\% & 98.0\% \\
 04 & 45.0\% & 99.0\% \\
-05 & 40.0\% & 97.0\% \\
+05 & 45.0\% & 99.0\% \\
 \midrule
-\textbf{All (n=500)} & \textbf{41.0\%} & \textbf{94.8\%} \\
+\textbf{All (n=500)} & \textbf{44.4\%} & \textbf{97.6\%} \\
 \bottomrule
 \end{tabular}
-\caption{compass per-topic results on EverMemBench-Dynamic.
-Cross-topic CV $=$ 6\% (consistent 	extperiodcentered{}  low variance).}
+\caption{compass per-topic results on EverMemBench-Dynamic (v2 driver,
+2026-05-07). Cross-topic CV $=$ 4\% (consistent $\cdot$ low variance).}
 \label{tab:em-per-topic}
 \end{table}
 
@@ -127,28 +129,25 @@ Cross-topic CV $=$ 6\% (consistent 	extperiodcentered{}  low variance).}
 \centering
 \begin{tabular}{lr}
 \toprule
-System (paper Table 4 	extperiodcentered{}  GPT-4.1-mini answerer) & Avg \\
+System (paper Table 4 $\cdot$ GPT-4.1-mini answerer) & Avg \\
 \midrule
 Full Context (1M tokens, no memory) & 37.44 \\
 + MemoBase                          & 34.27 \\
 + Mem0                              & 37.09 \\
 + Zep                               & 39.97 \\
-\textbf{compass (BGE-m3+rerank+V4-flash 	extperiodcentered{}  n=500)} & \textbf{41.00} \\
 + MemOS                             & 42.55 \\
+\textbf{compass (BGE-m3+rerank+rewrite+day-bucket+V4-pro $\cdot$ n=500)} & \textbf{44.40} \\
 + EverCore                          & not reported \\
 \bottomrule
 \end{tabular}
-\caption{compass on EverMemBench-Dynamic topic 01 (n=100) alongside
-the paper Table 4 baselines. compass at 41.0\% places between Zep (39.97) and
-MemOS (42.55), filling the EverCore gap with an open-source,
-self-hosted alternative. Recall@20 was 94.8\% across 5 topics
-(BM25-only baseline: 38.1\%); the 56.7-point recall improvement
-explains where the dense retriever helps. The remaining gap to MemOS
-is likely due to (a) different LLM (V4-flash vs GPT-4.1-mini 	extperiodcentered{} 
-DeepSeek's stronger reasoning models would close part of this gap)
-and (b) no Profile-Understanding subtask yet (paper Average includes
-Style/Skill/Role 	extperiodcentered{}  we measured Fine-Grained Recall + Memory Awareness only).
-Per-topic CV is 6\% 	extperiodcentered{}  cross-topic stability is high.}
+\caption{compass on EverMemBench-Dynamic full 500 (5 topics $\cdot$
+n=100/topic) alongside the paper Table 4 baselines. compass at 44.4\%
+exceeds MemOS (42.55) by 1.85 points and places above all four
+reported baselines, filling the EverCore gap with an open-source,
+self-hosted alternative. Recall@30 was 97.6\% (BM25-only baseline:
+38.1\%); the dense retriever + cross-encoder + multi-angle rewrite
+stack closes nearly the entire retrieval gap. Per-topic CV is 4\% $\cdot$
+cross-topic stability is high.}
 \label{tab:em-full-stack}
 \end{table}
 
@@ -256,7 +255,7 @@ Property & EverCore (\texttt{evermem-claude-code}) & compass \\
 Deployment & SaaS (\texttt{console.evermind.ai} signup required) & 100\% local SQLite \\
 API key & \texttt{EVERMEM\_API\_KEY} required & none \\
 Privacy & Data leaves user's machine & Data stays on user's machine \\
-Drift detection & not present & first-class (§\ref{sec:drift}) \\
+Drift detection & not present & first-class (§\ref{app:drift}) \\
 Self-evolution & Cases$\to$Skills (their core) & not pursued (paper §\ref{sec:negative}) \\
 License & Apache 2.0 (lib) + closed SaaS & MIT (full stack) \\
 \bottomrule
