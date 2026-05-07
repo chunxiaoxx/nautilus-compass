@@ -14,7 +14,6 @@ cache: ~/.claude/plugins/nautilus-compass/.cache/<proj_hash>.pkl
 R1: 修 stub claude-mem 不实时校准 → 真 BGE 召回
 """
 import hashlib
-import io
 import json
 import os
 import pickle
@@ -25,7 +24,7 @@ from pathlib import Path
 
 # Force UTF-8 stdout (Windows GBK)
 try:
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
+    sys.stdout.reconfigure(encoding="utf-8")  # safe · no buffer aliasing
 except Exception:
     pass
 

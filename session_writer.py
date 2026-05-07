@@ -10,7 +10,6 @@ Stop hook 阶段:
 
 成本: DeepSeek ~¥0.05 · Haiku ~¥1.50 · 优先 ARK · fallback Anthropic proxy.
 """
-import io
 import json
 import os
 import re
@@ -21,7 +20,7 @@ from datetime import datetime
 from pathlib import Path
 
 try:
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
+    sys.stdout.reconfigure(encoding="utf-8")  # safe · no buffer aliasing
 except Exception:
     pass
 

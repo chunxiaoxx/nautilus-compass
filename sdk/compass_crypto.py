@@ -26,10 +26,8 @@ import base64
 import hashlib
 import hmac
 import json
-import os
 import secrets
 import sys
-from typing import Any
 
 
 # ---- HKDF (RFC 5869 · SHA256) ----

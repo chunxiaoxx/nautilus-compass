@@ -26,14 +26,13 @@ If v5-memory is JSON · YAML · markdown · plain text · we handle all.
 from __future__ import annotations
 
 import argparse
-import io
 import json
 import os
 import re
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Iterable
 
 DEFAULT_SOURCE = Path.home() / "v5-memory"
 DEFAULT_TARGET = Path.home() / ".claude" / "projects" / "C--Users-chunx" / "memory" / "imported_v5"

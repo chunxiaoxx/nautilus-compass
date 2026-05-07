@@ -10,10 +10,8 @@ Test 6: 跨项目 (cwd 切到非 nautilus-core)
 Test 7: 特殊 prompt (空 / 仅符号 / 超长 / 含 emoji)
 Test 8: stdin 字段名兼容 (prompt / user_prompt / message)
 """
-import io
 import json
 import os
-import pickle
 import subprocess
 import sys
 import time
@@ -23,7 +21,7 @@ import os as _os_
 TEST_CWD = _os_.environ.get("ZMM_TEST_CWD", str(Path.home()))
 
 try:
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
+    sys.stdout.reconfigure(encoding="utf-8")  # safe · no buffer aliasing
 except Exception:
     pass
 

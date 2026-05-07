@@ -8,8 +8,6 @@ Run: python tests/eval_recall.py
 """
 from __future__ import annotations
 
-import io
-import json
 import re
 import statistics
 import sys

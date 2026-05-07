@@ -55,12 +55,11 @@ compass-session-search = "nautilus_compass.session_search:main"
 compass-session-writer = "nautilus_compass.session_writer:main"
 
 [tool.setuptools]
+# Map package "nautilus_compass" to repo root · all top-level .py files
+# become submodules. Explicit `packages` (not `find`) avoids setuptools
+# also treating tests/, scripts/, etc as packages.
+packages = ["nautilus_compass"]
 package-dir = {"nautilus_compass" = "."}
-
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["nautilus_compass*"]
-exclude = ["tests*", ".cache*"]
 
 [tool.setuptools.package-data]
 "nautilus_compass" = ["anchors*.json", "*.sh"]
@@ -68,3 +67,24 @@ exclude = ["tests*", ".cache*"]
 [tool.ruff]
 line-length = 100
 target-version = "py39"
+extend-exclude = [
+    "scripts/_archive",
+    ".cache",
+    "__pycache__",
+]
+
+[tool.ruff.lint]
+# Default ruff = pyflakes (F) + pycodestyle errors (E)
+# We disable the legacy-style E rules that conflict with the project's
+# compact one-line style; we keep the bug-catching F rules.
+ignore = [
+    "E701",  # multiple statements on one line (colon) · used in compact one-liners
+    "E702",  # multiple statements on one line (semicolon) · same
+    "E401",  # multiple imports on one line · stdlib batch imports
+    "E402",  # module-import-not-at-top · sys.path tweaks before imports
+    "E722",  # bare except · used in defensive boundary handlers
+    "E731",  # lambda-assignment · used in lookup tables
+    "E741",  # ambiguous variable name · l/I/O sometimes domain-natural
+    "F541",  # f-string without placeholders · stylistic
+    "F841",  # unused variable · often kept for symmetry / future use
+]
