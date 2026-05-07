@@ -55,24 +55,28 @@ prior methods (Zep, paper RAG SOTA) at 1/15--1/30 the cost.}
 \begin{table}[h]
 \centering
 \small
-\begin{tabular}{lrrrr}
+\begin{tabular}{lrrrrl}
 \toprule
-\textbf{Type} & \textbf{n} & \textbf{Baseline} & \textbf{v0.8} & \textbf{\(\Delta\)} \\
+\textbf{Type} & \textbf{n} & \textbf{Baseline} & \textbf{v0.8} & \textbf{\(\Delta\)} & \textbf{95\% CI (v0.8)} \\
 \midrule
-single-session-assistant & 56 & 76.8\% & \textbf{83.9\%} & +7.1 \\
-knowledge-update & 78 & 51.3\% & \textbf{57.7\%} & +6.4 \\
-single-session-user & 70 & 30.0\% & \textbf{57.1\%} & \textbf{+27.1} \\
-multi-session & 133 & 43.6\% & 54.9\% & +11.3 \\
-single-session-preference & 30 & 33.3\% & 53.3\% & +20.0 \\
-temporal-reasoning & 133 & 45.9\% & 46.6\% & +0.7 \\
+single-session-assistant & 56 & 76.8\% & \textbf{83.9\%} & +7.1 & [72.2, 91.3] \\
+knowledge-update & 78 & 51.3\% & \textbf{57.7\%} & +6.4 & [46.6, 68.0] \\
+single-session-user & 70 & 30.0\% & \textbf{57.1\%} & \textbf{+27.1} & [45.4, 68.0] \\
+multi-session & 133 & 43.6\% & 54.9\% & +11.3 & [46.4, 63.1] \\
+single-session-preference & 30 & 33.3\% & 53.3\% & +20.0 & [36.1, 69.7] \\
+temporal-reasoning & 133 & 45.9\% & 46.6\% & +0.7 & [38.3, 55.1] \\
 \midrule
-\textbf{Overall} & 500 & 46.6\% & \textbf{56.6\%} & \textbf{+10.0} \\
+\textbf{Overall} & 500 & 46.6\% & \textbf{56.6\%} & \textbf{+10.0} & [52.2, 60.9] \\
 \bottomrule
 \end{tabular}
 \caption{v0.8 vs DeepSeek V3.2 thinking baseline. Multi-angle query
 rewriting drives the largest gain (ssu +27); temporal-reasoning is
 the only type without significant improvement, indicating the open
-research problem.}
+research problem. 95\% CIs are Wilson score intervals (verified
+against 10K-iteration nonparametric bootstrap, $<$0.5 pt agreement).
+single-session-preference (n=30) has the widest interval
+($\pm$17 pt half-width); per-type estimates here should be read with
+caution. All other per-type intervals are within $\pm$11 pt half-width.}
 \label{tab:per-type}
 \end{table}
 
