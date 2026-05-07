@@ -1,33 +1,30 @@
 % Paper 2 	extperiodcentered{}  §0 Abstract
-% Status: draft 	extperiodcentered{}  2026-05-05 	extperiodcentered{}  v0.8 final 数字
+% Status: 2026-05-06 v1.0 draft · LongMemEval 56.6 + EverMemBench 41.0
 
 \begin{abstract}
-We present Compass v0.8, an open-source memory recall pipeline that achieves
-\textbf{56.6\% accuracy on LongMemEval-S} (n=500) using DeepSeek V3.2
-thinking via the Volc Ark coding plan, surpassing the Gemini-2.5-pro baseline
-(44.6\%) by \(+12\) pts at less than 1/15 the cost. Compass v0.8 lands in
-the same accuracy band as Zep SOTA (55--60\%) and the paper RAG SOTA
-(50--60\%) but uses an entirely Chinese-LLM + local-bge-m3 backend with no
-commercial API dependency. Per-question-type breakdown:
-single-session-assistant 83.9\%, knowledge-update 57.7\%,
-single-session-user 57.1\% (\(+27\) pts vs baseline), multi-session 54.9\%,
-single-session-preference 53.3\%, temporal-reasoning 46.6\%. Our key
-findings: (1) per-model thinking effectiveness varies dramatically:
-DeepSeek thinking yields \(+6.8\) pts on temporal-reasoning while Kimi
-K2.6 thinking has zero gain and MiniMax thinking with default 1024-token
-budget triggers a refusal cascade (44\% refusal rate, 33\% accuracy at
-n=302); (2) multi-angle query rewriting on single-session-user yields
-\(+27\) pts, the single most impactful intervention in our 5-component
-pipeline; (3) type-aware prompting for multi-session decomposition
-(\(+8\) pts) and knowledge-update timestamping (\(+2\)--\(3\) pts) yields
-modest but reliable gains; (4) negative findings: Neo4j graph reranking
-on closed haystacks reduces accuracy by 6 pts; double-model routing
-shows no significant gain; the explicit ``infer user's preference''
-prompt for ssp catastrophically drifts the LLM (\(-37.5\) pts) and is
-withdrawn. We benchmark 6 LLMs (Gemini-2.5-pro, MiniMax M2.7-highspeed
-\(\times\) 3 modes, GLM-5.1, Kimi K2.6, DeepSeek V3.2), provide
-reproducible scripts, and ship a multi-protocol integration kit (MCP
-server, A2A adapter, npm wrapper) for cross-agent memory federation.
-Total cost to reproduce all evaluations: \(\sim\)\cny{}25 (\(\sim\)\$3.50
-USD). Code at \url{https://github.com/chunxiaoxx/nautilus-compass}.
+We present Compass, an open-source memory recall pipeline for LLM agents.
+On LongMemEval-S (n=500), Compass achieves \textbf{56.6\% accuracy} using
+DeepSeek V3.2 thinking, ties the Zep SOTA band (55--60\%) and surpasses
+the Gemini-2.5-pro baseline (44.6\%) by $+12$ points, at $\sim$\$3.50
+total reproducible cost --- under 1/15 the cost of GPT-4o-judged stacks.
+On the newly released EverMemBench-Dynamic (n=500, 5-topic stratified),
+Compass scores \textbf{41.0\%}, sitting between Zep (39.97) and MemOS
+(42.55) on the original Table 4 ranking and exceeding MemoBase (34.27)
+and Mem0 (37.09) by 4--7 points. Our 5-stage pipeline combines BGE-m3
+dense recall, bge-reranker-v2-m3 cross-encoder reranking, multi-angle
+query rewriting (3 reformulations $\cdot$ union-deduplicated), type-aware
+prompting, and a single-model judge chain validated by cross-judge
+replication ($\kappa{=}0.772$). Ablations show multi-angle query
+rewriting is the dominant lever ($+27$ pts on single-session-user),
+larger than the cross-encoder reranker. We benchmark 6 LLMs and report
+per-model thinking-mode effectiveness: DeepSeek V3.2 gains $+10$ pts
+under thinking, GLM-5.1 gains $+2$, Kimi K2.6 is neutral, MiniMax M2.7
+triggers a 44\% refusal cascade, and DeepSeek V4-pro think-high ties
+V3.2 at 8\(\times\) cost. Negative findings are reported honestly:
+Neo4j graph reranking reduces accuracy by 6 pts on closed haystacks,
+and an n${<}100$ sample over-estimated V4-pro by $+4.4$ points relative
+to the full 500-question measurement. We ship an MIT-licensed Python
+package, MCP server (Claude Desktop $\cdot$ Cline $\cdot$ Cursor), A2A
+protocol adapter, and full reproduction scripts at
+\url{https://github.com/chunxiaoxx/nautilus-compass}.
 \end{abstract}
