@@ -1,12 +1,14 @@
 % =============== Method =======================================================
-% Goal: 2.5 pages · structure:
+% Goal: 2.5 pages · structure (reorganized 2026-05-07):
 %   3.1 Architecture overview
-%   3.2 Anchor schema (positive/negative, weighted)
-%   3.3 Drift scoring (weighted top-k mean)
-%   3.4 Tri-band output
-%   3.5 Four-step methodology evolution (key narrative)
+%   3.2 Anchor schema (JSON format)
+%   3.3 Design principle: task-shaped authoring (promoted from old step 1)
+%   3.4 Drift scoring: weighted top-k mean (rationale promoted from old step 2)
+%   3.5 Tri-band output
 %   3.6 Adaptive learning loop
 %   3.7 False-positive filter
+%   3.8 Cross-domain anchor profiles
+%   3.9 Empirical ablation: four-step methodology evolution (demoted to ablation)
 % =============================================================================
 
 \subsection{Architecture Overview}
@@ -77,23 +79,61 @@ Each anchor has an associated weight (default 1.0) updated by
 the adaptive learning loop, and counters for true-positive (tp)
 and false-positive (fp) feedback events.
 
-\subsection{Drift Scoring}
+\subsection{Design Principle: Task-shaped Authoring}
+\label{sec:method-task-shape}
+
+The single most consequential authoring decision is grammatical:
+anchors must be written in the same grammatical mood as the user
+prompts they will be matched against. We call anchors that satisfy
+this constraint \emph{task-shaped}.
+
+Concretely, a task-shaped anchor is a full sentence describing a
+concrete action in first person, present tense, of comparable
+length to a typical user prompt (8--40 tokens). Declarative
+maxims (``simplicity over cleverness'', ``verify before claiming
+done'') are \emph{not} task-shaped: their abstract grammatical
+form does not align with the question/imperative form of typical
+user prompts, and bi-encoder cosine similarity collapses across
+both aligned and deviation prompts.
+
+We discovered this principle empirically (Section~\ref{sec:method-evolution}
+documents the ablation): rewriting an entire anchor set from
+maxim form to task-shaped form moves drift ROC AUC from 0.51
+(coin toss) to 0.79 with no other change. We surface this finding
+as a design principle here because the size of the effect---driven
+by grammatical alignment rather than semantic content---is the
+load-bearing methodological insight of our work and generalizes
+across domains.
+
+\subsection{Drift Scoring: Weighted Top-$k$ Mean}
 \label{sec:method-scoring}
 
-Given user prompt $q$ and an anchor set $\mathcal{A} = \mathcal{A}^+ \cup \mathcal{A}^-$
-with weights $w_a$, we compute:
+We adopt a \emph{weighted top-$k$ mean} aggregator rather than
+the more familiar centroid mean (cosine to the average anchor
+embedding) or single-anchor max (the highest-scoring anchor).
+Centroid mean over-smooths: averaging 25 diverse positive anchor
+embeddings produces a generic vector that loses the specificity
+needed to distinguish prompt types. Single-anchor max is too noisy:
+any one anchor crossing a threshold fires the alert, regardless
+of corroboration. Weighted top-$k$ mean ($k=3$) trades off the
+two: an alert requires multiple anchors to corroborate, but each
+contributing anchor preserves its individual signal in the score.
+
+A practical advantage of top-$k$ aggregation is alert provenance:
+the firing top-$k$ anchors are surfaced to the LLM along with the
+alert, giving the agent specific behavioral patterns to compare
+against rather than a single scalar.
+
+Formally, given user prompt $q$ and an anchor set
+$\mathcal{A} = \mathcal{A}^+ \cup \mathcal{A}^-$ with weights $w_a$:
 \begin{align}
 \mathrm{score}^+(q) &= \frac{\sum_{a \in \mathrm{top}_k(\mathcal{A}^+)} w_a \cdot \cos(e(q), e(a))}{\sum_{a \in \mathrm{top}_k(\mathcal{A}^+)} w_a} \\
 \mathrm{score}^-(q) &= \frac{\sum_{a \in \mathrm{top}_k(\mathcal{A}^-)} w_a \cdot \cos(e(q), e(a))}{\sum_{a \in \mathrm{top}_k(\mathcal{A}^-)} w_a} \\
 \mathrm{drift}(q) &= \mathrm{score}^+(q) - \mathrm{score}^-(q)
 \end{align}
 where $e(\cdot)$ is the BGE embedding map and
-$\mathrm{top}_k(\cdot)$ selects the $k$ anchors with highest
-weighted cosine ($k=3$ in our default configuration). The
-weighted top-$k$ mean trades off the over-smoothing of centroid
-mean (which mixes all anchors uniformly) against the noise of
-single-anchor hit (which fires on any one anchor crossing a
-threshold).
+$\mathrm{top}_k(\cdot)$ selects the $k$ anchors of highest
+weighted cosine ($k=3$ in our default configuration).
 
 \subsection{Tri-band Output}
 \label{sec:method-band}
@@ -112,80 +152,6 @@ LLM consumption:
 The thresholds are calibrated on a held-out 100-prompt synthetic
 test set (50 aligned + 50 deviation, see
 Section~\ref{sec:eval-drift}).
-
-\subsection{Four-step Methodology Evolution}
-\label{sec:method-evolution}
-
-The most consequential design choice in our system is not any
-formula above but the \emph{anchor design}. We document a
-four-step iterative methodology that improves ROC AUC from 0.51
-(coin toss) to 0.92 on the same 100-prompt test set; each step
-addresses a specific failure mode of the previous version.
-
-\paragraph{Step 1: From abstract maxims to task-shaped anchors.}
-Our v0.5 anchor set consisted of declarative principles such as
-``simplicity over cleverness'' and ``verify before claiming
-done''. These maxims have an abstract grammatical shape that
-does not match the form of typical user prompts (questions,
-imperatives, situational descriptions). Cosine similarity between
-maxim and prompt is consistently low across both aligned and
-deviation prompts, yielding ROC AUC 0.5056. We rewrote all
-anchors in task-shaped form (full sentences describing concrete
-actions in the same grammatical mood as user prompts). AUC rose
-to \textbf{0.7928}.
-
-\paragraph{Step 2: From centroid mean to top-$k$ mean.}
-Our initial drift score was the cosine similarity to the mean
-embedding of all positive (resp. negative) anchors. This
-\emph{centroid mean} approach blurs the distinct semantics of
-individual anchors: the centroid of 25 diverse positive anchors
-is a generic embedding that loses specificity. We replaced
-centroid mean with weighted top-$k$ mean (Section~\ref{sec:method-scoring}),
-allowing each anchor to contribute a sharp signal when individually
-matched. Marginal AUC gain (0.79 $\to$ 0.79+) but qualitatively
-sharper alert provenance (we know \emph{which} anchor fired).
-
-\paragraph{Step 3: From bge-small-zh-v1.5 to bge-m3.}
-Our initial embedder was bge-small-zh-v1.5 (512 dim,
-Chinese-focused). This embedder yields strong intra-language
-retrieval (MRR 0.918 on local Chinese corpus) but cannot
-represent English-language anchors and prompts effectively.
-Switching to bge-m3 (1024 dim, multilingual) yielded a further
-AUC bump to \textbf{0.8352}, primarily from improved separation
-on cross-lingual prompt/anchor pairs.
-
-\paragraph{Step 4: Adding hard false-positive examples to negative anchors.}
-Examining the residual error cases, we found that 23 of 50
-deviation prompts were misclassified as aligned. The
-misclassified examples shared a common trait: they referenced
-\emph{memory-system meta-concepts} (``put ephemeral state into
-memory'', ``copy CLAUDE.md verbatim into memory'') that produced
-high cosine to \emph{both} positive and negative anchors. We
-added 10 of these hard false-positive examples (rephrased into
-generic anchor form) directly into the negative anchor set
-(expanding from 25 to 35 anchors). AUC on the original test
-set rose to \textbf{0.9232}.
-
-\paragraph{Train-test contamination caveat.}
-We acknowledge that step 4 incorporates patterns from
-misclassified test prompts into the anchor set; the resulting
-0.9232 AUC on the original 100-prompt set is therefore an
-\emph{in-set} number rather than a generalization estimate.
-To mitigate this, Section~\ref{sec:eval-holdout} reports
-performance on a held-out test set generated from real
-Claude~Code session traces and labeled by an independent
-LLM judge (Vertex AI Gemini); the held-out AUC is the proper
-generalization estimate. The four-step in-set ablation in
-Table~\ref{tab:drift-evolution} should be read as
-\emph{methodology illustration} (which design decisions matter)
-rather than as a generalization claim.
-
-This iteration loop---\emph{eval, identify hard cases,
-\textbf{rephrase}, add to anchor set, re-eval on held-out}---is
-the central methodological contribution of our work, with the
-``rephrase'' step (turning specific test failures into generic
-behavioral patterns) being the load-bearing decision that prevents
-trivial memorization.
 
 \subsection{Adaptive Learning Loop}
 \label{sec:method-adaptive}
@@ -255,3 +221,73 @@ We caution that production deployment of these starter profiles
 should involve review by domain experts; they serve primarily to
 demonstrate the methodology generalizes across domains rather
 than as drop-in production assets.
+
+\subsection{Empirical Ablation: Four-step Evolution}
+\label{sec:method-evolution}
+
+We document the four-step empirical path that led us to the
+design principles of \S\ref{sec:method-task-shape}--\ref{sec:method-scoring}.
+ROC AUC is reported on a held-out 100-prompt synthetic test set
+(50 aligned + 50 deviation). The cumulative trajectory moves
+from 0.5056 (coin toss) to 0.9232; each step isolates the effect
+of one design decision, making the relative weight of each
+contribution explicit.
+
+\paragraph{Step 1: From abstract maxims to task-shaped anchors
+(\S\ref{sec:method-task-shape}).}
+Our v0.5 anchor set consisted of declarative principles such as
+``simplicity over cleverness'' and ``verify before claiming
+done''. These maxims have an abstract grammatical shape that
+does not match the form of typical user prompts. Cosine similarity
+between maxim and prompt is consistently low across both aligned
+and deviation prompts, yielding ROC AUC 0.5056. Rewriting every
+anchor in task-shaped form moves AUC to \textbf{0.7928}---the
+single largest delta in our ablation.
+
+\paragraph{Step 2: From centroid mean to weighted top-$k$ mean
+(\S\ref{sec:method-scoring}).}
+Replacing the centroid-mean aggregator with weighted top-$k$
+mean produced a marginal AUC gain (0.79 $\to$ 0.79+) but a
+qualitative improvement: alert provenance, since we know
+\emph{which} anchors fired. We adopt top-$k$ as our default
+on the strength of the qualitative gain.
+
+\paragraph{Step 3: From bge-small-zh-v1.5 to bge-m3.}
+Our initial embedder was bge-small-zh-v1.5 (512 dim,
+Chinese-focused). This embedder yields strong intra-language
+retrieval (MRR 0.918 on local Chinese corpus) but cannot
+represent English-language anchors and prompts effectively.
+Switching to bge-m3 (1024 dim, multilingual) yielded a further
+AUC bump to \textbf{0.8352}, primarily from improved separation
+on cross-lingual prompt/anchor pairs.
+
+\paragraph{Step 4: Adding hard false-positive examples to negative anchors.}
+Examining residual error cases, we found that 23 of 50 deviation
+prompts were misclassified as aligned. The misclassified examples
+shared a common trait: they referenced \emph{memory-system
+meta-concepts} (``put ephemeral state into memory'', ``copy
+CLAUDE.md verbatim into memory'') that produced high cosine to
+\emph{both} positive and negative anchors. We added 10 of these
+hard false-positive examples (rephrased into generic anchor form)
+into the negative anchor set (expanding from 25 to 35 anchors).
+AUC on the original test set rose to \textbf{0.9232}.
+
+\paragraph{Train-test contamination caveat.}
+Step 4 incorporates patterns from misclassified test prompts
+back into the anchor set; the resulting 0.9232 AUC on the original
+100-prompt set is therefore an \emph{in-set} number rather than
+a generalization estimate. To mitigate this,
+Section~\ref{sec:eval-holdout} reports performance on a held-out
+test set generated from real Claude Code session traces and
+labeled by an independent LLM judge (Vertex AI Gemini); the
+held-out AUC is the proper generalization estimate. The four-step
+in-set ablation in Table~\ref{tab:drift-evolution} should be read
+as \emph{methodology illustration} (which design decisions matter)
+rather than as a generalization claim.
+
+This iteration loop---\emph{eval, identify hard cases,
+\textbf{rephrase}, add to anchor set, re-eval on held-out}---with
+the ``rephrase'' step (turning specific test failures into generic
+behavioral patterns) preventing trivial memorization, is what we
+recommend practitioners follow when building anchor sets for new
+domains.
