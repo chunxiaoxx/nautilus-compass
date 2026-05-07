@@ -66,6 +66,46 @@ Production hardening + A2A v1 protocol surface + EverMemBench cross-validation.
 - Two-server confusion early (T4 vs cloud) · stress test ran on wrong host
   - resolved · memorized to prevent recurrence
 
+### CI · 2026-05-07 patch (post-tag)
+
+- ✅ All 9 CI jobs green on main · ruff lint + py 3.10/3.12 ubuntu/macos matrix +
+  v0.9 integration + npm wrapper + MCP smoke + Cursor extension build
+- ✅ arXiv build workflow green · paper1 LaTeX compiles end-to-end
+- Fixes (commits d3f179f → c2ff348):
+  - `pyproject.toml` ruff config · ignore stylistic E/F rules · keep bug-catchers
+  - `pyproject.toml` explicit packages list · `__init__.py` at root · `pip install -e .`
+    now actually creates an importable `nautilus_compass` package (was broken before)
+  - 14 modules · `sys.stdout.reconfigure(encoding="utf-8")` instead of
+    `TextIOWrapper(sys.stdout.buffer)` · old pattern caused buffer aliasing →
+    "I/O operation on closed file" under multi-import
+  - 9 modules · CI fallback for `~/.claude/plugins/nautilus-compass` hardcoded
+    paths · falls back to `Path(__file__).resolve().parent` when user-level
+    plugin dir absent (CI runners + fresh clones)
+  - `session_search.py` · added missing `PROJECTS.exists()` guard (parity with
+    drift_history.py) · was raising `FileNotFoundError` on CI
+  - `tests/test_e2e_encryption.py` · added missing `import os`
+  - `paper/nautilus-compass.tex` · `\usepackage{cite}` → `\usepackage[round]{natbib}`
+    + `\bibliographystyle{plain}` → `\bibliographystyle{plainnat}` ·
+    sections used `\citep` / `\citet` (natbib syntax) · 45 unresolved citations
+    + bbl incompatibility error fixed
+  - `.github/workflows/ci.yml` · Test matrix · removed selftest.py and
+    eval_recall.py (depend on user-specific memory data unavailable in CI) ·
+    kept eval_drift.py (anchors-only · 100 hardcoded prompts)
+
+### Promo · 2026-05-07
+
+- 6 launch channels · `paper/promo/` (1184 lines)
+  - `x_thread_zh.md` · 9 推 X 中文 thread + 配图 + 互动话术
+  - `x_thread_en.md` · 9 tweets English thread
+  - `hackernews.md` · Show HN title + first comment + reply playbook
+  - `reddit_ml.md` · [R] flair · methodology callouts
+  - `wechat_long_post.md` · ~5000 字公众号长文
+  - `zhihu_tech.md` · ~5000 字知乎技术文
+- `paper/V1.0_LAUNCH_DAY.md` · D-7 → D+7 timing playbook · 6 channels +
+  cancel conditions + emergency contacts
+- `paper/sections/paper2_00_abstract.tex` · expanded with EverMemBench 41% +
+  cross-judge κ + V4-pro tied verdict (≤200 word target)
+
 ## [0.9.0-dev] · 2026-05-05 — "cross-agent · MCP/A2A · 56.6% on LongMemEval-S"
 
 ### 🎯 Highlights
