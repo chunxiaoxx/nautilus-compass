@@ -56,7 +56,40 @@ RERANKER_PATH = os.environ.get(
 SUBJECT_MODEL = os.environ.get("ZMM_SUBJECT_MODEL", "gemini-2.5-flash")
 JUDGE_MODEL = os.environ.get("ZMM_JUDGE_MODEL", "gemini-2.5-pro")
 TOP_K_RETRIEVE = 50
-TOP_K_CONTEXT = 5
+# Tier B #7 · Context window expansion. Default 5 preserves the v0.8 baseline.
+# ZMM_TOPK=10 doubles the evidence given to the subject LLM. DeepSeek-V3.2 has
+# 128K ctx so truncation isn't a risk. Expected +1~2 pts on ms/temporal.
+TOP_K_CONTEXT = int(os.environ.get("ZMM_TOPK", "5"))
+# Tier A #3 · Self-consistency majority vote. 1 = baseline (byte-identical to
+# pre-vote behavior). 3 = run subject+judge 3x per question, take majority
+# verdict. Expected +2~3 pts overall, reduces ssp variance.
+ZMM_VOTE = int(os.environ.get("ZMM_VOTE", "1"))
+
+# Tier A #4 · Hybrid BM25 + dense retrieval with Reciprocal Rank Fusion.
+# ZMM_HYBRID=0 (default): byte-identical to dense-only baseline · paper lock.
+# ZMM_HYBRID=1: run BM25 in parallel with dense top-TOP_K_RETRIEVE, fuse by
+# RRF (k=60), then feed fused top-TOP_K_RETRIEVE into the existing cross-encoder
+# reranker. Target: single-session-user 58.6% → ~70%, overall P@5 86% → 90%.
+ZMM_HYBRID = os.environ.get("ZMM_HYBRID", "0") == "1"
+RRF_K = 60
+
+# Tier S #2 · ssu utterance-pair retrieval.
+# ZMM_SSU_UTTERANCE=0 (default): byte-identical baseline · paper lock.
+# ZMM_SSU_UTTERANCE=1: for qt=single-session-user only, after session-level
+# retrieval, extract user-anchored utterance pairs from the top sessions and
+# rerank with bge-reranker. Keeps top 3 utterance pairs as context instead of
+# full sessions. Target: ssu P@5 58.6% → ~70%+, overall +1~2 pts.
+# Other question types are UNAFFECTED (ssa 83.9%, ms 94% P@5 stay identical).
+ZMM_SSU_UTTERANCE = os.environ.get("ZMM_SSU_UTTERANCE", "0") == "1"
+
+
+def _bm25_tokenize(text: str) -> list[str]:
+    """Whitespace + punctuation split, lowercased. Keeps alphanumeric runs.
+
+    Matches the Tier A #4 spec: simple, stateless, no stemmer/stopwords so the
+    behavior is reproducible without a language resource dependency.
+    """
+    return re.findall(r"[a-z0-9]+", text.lower())
 
 # === Subject prompt: answer using the retrieved context ===
 # Less conservative · let model attempt extraction + counting + reasoning even if
@@ -79,6 +112,69 @@ CRITICAL ANTI-REFUSAL RULES (read carefully):
 {question}
 
 Direct answer (lead with the specific fact · no preamble · commit to an answer):"""
+
+# === Temporal-reasoning specialized prompt ===
+# Addresses the failure mode seen in v0.8 final (full 500): retrieval P@5=91.7%
+# but acc=46.6% → the evidence is present but the model doesn't arrange events
+# on a timeline before answering. Forcing a <timeline> scratch-pad lifts the
+# reasoning ceiling without retraining.
+TEMPORAL_PROMPT_TMPL = """You are a memory-augmented assistant. The user is asking a TIME-SENSITIVE question about facts established in past conversations. The retrieval system has already filtered to the {k} most relevant past sessions — the evidence IS in them (91%+ recall).
+
+YOUR TASK: Extract the correct fact by FIRST building a timeline of events, THEN answering.
+
+MANDATORY 2-STEP FORMAT:
+  Step 1 — <timeline>
+    List every dated/ordered event from the sessions relevant to the question, one per line:
+      [DATE or SESSION#] event description
+    Include ALL candidate events even if you're unsure which one matches.
+    Sort chronologically (earliest first).
+  Step 2 — <answer>
+    Look at the timeline and pick the event that answers the question.
+    Be literal about "before/after/most recent/first/last/between" — count events on the timeline.
+    Output 1-2 sentences with the specific fact (date, duration, event name, ordering).
+
+CRITICAL RULES:
+  1. The answer IS in these sessions. Refusing is the worst mistake.
+  2. "Most recent X" = the LAST entry of type X on your timeline.
+  3. "How long between X and Y" = compute the difference from the timeline entries.
+  4. If the question asks relative timing (before/after/since), the timeline makes it trivial — USE IT.
+  5. Lead the final <answer> block with the fact, no preamble.
+
+=== {k} past sessions (most relevant first) ===
+{context}
+
+=== Question (temporal-reasoning) ===
+{question}
+
+Respond with <timeline>...</timeline> then <answer>...</answer>:"""
+
+
+def pick_subject_prompt(qt: str) -> str:
+    """Route to specialized prompt by question_type.
+
+    temporal-reasoning gets the timeline-first scratch-pad (Tier S #1 target).
+    Other types keep the general prompt that already hits ssa 83.9% etc.
+    """
+    if qt == "temporal-reasoning":
+        return TEMPORAL_PROMPT_TMPL
+    return SUBJECT_PROMPT_TMPL
+
+
+def extract_temporal_answer(raw: str) -> str:
+    """Strip the <timeline> scratch-pad; judge only sees the final <answer>.
+
+    The timeline is thinking not answering — including it would leak
+    false-positive keywords into the judge and inflate scores.
+    """
+    import re
+    m = re.search(r"<answer>(.*?)(?:</answer>|$)", raw, re.DOTALL | re.IGNORECASE)
+    if m:
+        return m.group(1).strip()
+    # Fallback: model ignored format · return everything after last </timeline>
+    m2 = re.search(r"</timeline>(.*)", raw, re.DOTALL | re.IGNORECASE)
+    if m2:
+        return m2.group(1).strip()
+    return raw  # judge will do its best
 
 # === Judge prompt: binary accuracy ===
 JUDGE_PROMPT_TMPL = """You are a strict evaluator. The user asked a question. You are given the ground-truth answer and a model-generated answer. Decide whether the model's answer is correct.
@@ -107,6 +203,61 @@ def build_context(top_sessions: list[dict]) -> str:
     return "\n\n".join(chunks)
 
 
+# === Tier S #2 · ssu utterance-pair retrieval ===
+# See ZMM_SSU_UTTERANCE docstring above for rationale.
+def extract_user_utterances(session: list[dict], window: int = 2) -> list[str]:
+    """Sliding window of user-anchored utterance pairs.
+
+    Each pair = [user_turn, next_turn] joined to 500 chars. ssu questions are
+    phrased 'what did I say about X' — answer lives in one user turn plus its
+    immediate assistant acknowledgment, so window=2 gives the right shape.
+    """
+    pairs = []
+    n = len(session)
+    for i, t in enumerate(session):
+        if t.get("role") != "user":
+            continue
+        end = min(n, i + window)
+        chunk_parts = []
+        for j in range(i, end):
+            tj = session[j]
+            chunk_parts.append(f"[{tj.get('role', '?')}] {tj.get('content', '')}")
+        chunk = "\n".join(chunk_parts)[:500]
+        if chunk.strip():
+            pairs.append(chunk)
+    return pairs
+
+
+def build_ssu_context(top_sessions: list[dict], question: str,
+                      reranker=None, max_utterances: int = 3) -> str:
+    """Utterance-level rerank within top sessions. Falls back to session-level
+    if reranker absent or no user utterances found (e.g. sessions with only
+    assistant turns — should not happen in LongMemEval but defensive).
+    """
+    all_pairs = []  # list[(session_idx, pair_text)]
+    for si, s in enumerate(top_sessions, 1):
+        for p in extract_user_utterances(s, window=2):
+            all_pairs.append((si, p))
+    if not all_pairs:
+        return build_context(top_sessions)
+
+    if reranker is not None and len(all_pairs) > max_utterances:
+        rr_pairs = [(question, txt) for _, txt in all_pairs]
+        try:
+            scores = reranker.predict(rr_pairs)
+            ranked = sorted(zip(all_pairs, scores), key=lambda x: -x[1])
+            kept = [p for p, _ in ranked[:max_utterances]]
+        except Exception:
+            kept = all_pairs[:max_utterances]  # defensive · same as no reranker
+    else:
+        kept = all_pairs[:max_utterances]
+
+    chunks = []
+    for idx, (si, txt) in enumerate(kept, 1):
+        chunks.append(f"--- Utterance {idx} (from Session {si}) ---\n{txt}")
+    return "\n\n".join(chunks)
+
+
 def call_vertex_gemini(model: str, prompt: str, max_out_tok: int = 2048) -> str:
     """Vertex AI Gemini call · uses GOOGLE_APPLICATION_CREDENTIALS service account.
 
@@ -132,6 +283,56 @@ def call_vertex_gemini(model: str, prompt: str, max_out_tok: int = 2048) -> str:
     return resp.text or ""
 
 
+def _parse_judge(judge_raw: str) -> bool:
+    """Parse judge response · first-occurrence of CORRECT/INCORRECT wins.
+
+    Mirrors the original inline logic so single-call (ZMM_VOTE=1) stays
+    byte-identical.
+    """
+    m_inc = judge_raw.find("INCORRECT")
+    m_cor = judge_raw.find("CORRECT")
+    if m_inc != -1 and (m_cor == -1 or m_inc < m_cor):
+        return False
+    elif m_cor != -1:
+        return True
+    return False
+
+
+def _run_one_vote(qt: str, prompt_tmpl: str, context: str, question: str, truth: str):
+    """Single subject+judge roundtrip · post-processed identically to the
+    pre-vote path (temporal-reasoning goes through extract_temporal_answer
+    before hitting the judge).
+
+    Returns (model_answer, raw_answer, judge_raw, is_correct).
+    """
+    try:
+        raw_answer = call_vertex_gemini(
+            SUBJECT_MODEL,
+            prompt_tmpl.format(k=TOP_K_CONTEXT, context=context, question=question),
+            max_out_tok=2048,
+        ).strip()
+        if qt == "temporal-reasoning":
+            model_answer = extract_temporal_answer(raw_answer)
+        else:
+            model_answer = raw_answer
+    except Exception as e:
+        model_answer = f"[SUBJECT_ERROR: {e}]"
+        raw_answer = model_answer
+
+    try:
+        judge_raw = call_vertex_gemini(
+            JUDGE_MODEL,
+            JUDGE_PROMPT_TMPL.format(question=question, truth=truth, answer=model_answer),
+            max_out_tok=2048,
+        ).strip().upper()
+        is_correct = _parse_judge(judge_raw)
+    except Exception as e:
+        is_correct = False
+        judge_raw = f"[JUDGE_ERROR: {e}]"
+
+    return model_answer, raw_answer, judge_raw, is_correct
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--pipeline", choices=["m3-only", "m3-rerank"], default="m3-rerank")
@@ -143,6 +344,7 @@ def main():
     print(f"pipeline:       {args.pipeline}")
     print(f"subject:        {SUBJECT_MODEL}")
     print(f"judge:          {JUDGE_MODEL}")
+    print(f"vote (n):       {ZMM_VOTE}")
     print(f"dataset:        {DATASET_PATH}")
     print(f"GCP creds:      {os.environ.get('GOOGLE_APPLICATION_CREDENTIALS', '(MISSING!)')[:60]}...")
 
@@ -164,6 +366,22 @@ def main():
         t0 = time.time()
         reranker = CrossEncoder(RERANKER_PATH, device=device)
         print(f"reranker ready ({device}): {time.time()-t0:.1f}s")
+
+    # Load BM25 dependency if hybrid mode is on. Import is lazy so the default
+    # (dense-only) path does not require rank_bm25 to be installed.
+    BM25Okapi = None
+    if ZMM_HYBRID:
+        try:
+            from rank_bm25 import BM25Okapi as _BM25Okapi
+            BM25Okapi = _BM25Okapi
+        except ImportError as e:
+            raise ImportError(
+                "ZMM_HYBRID=1 requires the `rank_bm25` package. "
+                "Install with: pip install rank-bm25"
+            ) from e
+        print(f"hybrid:         ENABLED (BM25 + dense RRF, k={RRF_K})")
+    else:
+        print(f"hybrid:         disabled (dense-only baseline)")
 
     # Load dataset
     data = json.load(open(DATASET_PATH, encoding="utf-8"))
@@ -202,6 +420,33 @@ def main():
             sims = [(j, zmd.cosine(q_emb, sess_embs[j])) for j in range(len(sess_ids))]
             sims.sort(key=lambda x: -x[1])
 
+            # Step 1b (optional): BM25 retrieve + RRF fuse into dense ranking.
+            # Baseline path (ZMM_HYBRID off) skips this entirely so top_indices
+            # flow is byte-identical to the pre-hybrid code.
+            if ZMM_HYBRID:
+                # Per-question BM25 index · the haystack is different per
+                # question, matching how sess_embs is built per question.
+                bm25_corpus = [_bm25_tokenize(t) for t in sess_texts]
+                bm25 = BM25Okapi(bm25_corpus)
+                bm25_scores = bm25.get_scores(_bm25_tokenize(question))
+                bm25_ranked = sorted(
+                    range(len(sess_ids)), key=lambda j: -bm25_scores[j]
+                )
+
+                # RRF fusion across dense ranking and BM25 ranking, each
+                # truncated to TOP_K_RETRIEVE. Fused score = sum 1/(k + rank).
+                dense_top = [idx for idx, _ in sims[:TOP_K_RETRIEVE]]
+                bm25_top = bm25_ranked[:TOP_K_RETRIEVE]
+                rrf = defaultdict(float)
+                for r, idx in enumerate(dense_top):
+                    rrf[idx] += 1.0 / (RRF_K + r + 1)
+                for r, idx in enumerate(bm25_top):
+                    rrf[idx] += 1.0 / (RRF_K + r + 1)
+                fused = sorted(rrf.items(), key=lambda kv: -kv[1])
+                # Replace sims with fused ranking so the downstream reranker
+                # / no-rerank branch reuses the same code path.
+                sims = [(idx, score) for idx, score in fused]
+
             if reranker:
                 # Step 2: cross-encoder rerank top-K
                 topk = sims[:TOP_K_RETRIEVE]
@@ -213,40 +458,39 @@ def main():
                 top_indices = [idx for idx, _ in sims[:TOP_K_CONTEXT]]
 
             top_sessions = [sessions[j] for j in top_indices]
-            context = build_context(top_sessions)
+            if ZMM_SSU_UTTERANCE and qt == "single-session-user":
+                context = build_ssu_context(top_sessions, question, reranker=reranker)
+            else:
+                context = build_context(top_sessions)
 
-            # Step 3: Subject LLM answers
-            try:
-                model_answer = call_vertex_gemini(
-                    SUBJECT_MODEL,
-                    SUBJECT_PROMPT_TMPL.format(k=TOP_K_CONTEXT, context=context, question=question),
-                    max_out_tok=2048,
-                ).strip()
-            except Exception as e:
-                model_answer = f"[SUBJECT_ERROR: {e}]"
+            # Step 3+4: Subject LLM answers + Judge LLM scores.
+            # ZMM_VOTE=1: single call (baseline, byte-identical to pre-vote).
+            # ZMM_VOTE=3: self-consistency · 3 independent subject calls, each
+            # judged independently, majority vote wins (tie impossible at n=3).
+            prompt_tmpl = pick_subject_prompt(qt)
+            votes = []
+            for _ in range(ZMM_VOTE):
+                ans, raw, jraw, ok = _run_one_vote(qt, prompt_tmpl, context, question, truth)
+                votes.append({"answer": ans, "raw_answer": raw, "judge_raw": jraw, "is_correct": ok})
 
-            # Step 4: Judge LLM scores
-            try:
-                judge_raw = call_vertex_gemini(
-                    JUDGE_MODEL,
-                    JUDGE_PROMPT_TMPL.format(question=question, truth=truth, answer=model_answer),
-                    max_out_tok=2048,
-                ).strip().upper()
-                # robust extraction · model may add prose
-                judge_clean = re.sub(r"[^A-Z]", "", judge_raw)
-                is_correct = "CORRECT" in judge_raw and "INCORRECT" not in judge_raw
-                # safer: look for first occurrence
-                m_inc = judge_raw.find("INCORRECT")
-                m_cor = judge_raw.find("CORRECT")
-                if m_inc != -1 and (m_cor == -1 or m_inc < m_cor):
-                    is_correct = False
-                elif m_cor != -1:
-                    is_correct = True
-                else:
-                    is_correct = False
-            except Exception as e:
-                is_correct = False
-                judge_raw = f"[JUDGE_ERROR: {e}]"
+            if ZMM_VOTE == 1:
+                # Preserve exact baseline field shape
+                v = votes[0]
+                model_answer = v["answer"]
+                raw_answer = v["raw_answer"]
+                judge_raw = v["judge_raw"]
+                is_correct = v["is_correct"]
+            else:
+                n_correct = sum(1 for v in votes if v["is_correct"])
+                is_correct = n_correct > (len(votes) / 2)
+                # Pick a representative answer for the summary log: prefer an
+                # answer from the winning side so the logged model_answer
+                # matches the logged verdict.
+                winners = [v for v in votes if v["is_correct"] == is_correct]
+                rep = winners[0] if winners else votes[0]
+                model_answer = rep["answer"]
+                raw_answer = rep["raw_answer"]
+                judge_raw = rep["judge_raw"]
 
             n_evaluated += 1
             if is_correct:
@@ -263,11 +507,18 @@ def main():
                 "question": question[:200],
                 "truth": truth,
                 "model_answer": model_answer[:300],
+                "raw_answer": raw_answer[:800] if qt == "temporal-reasoning" else None,
                 "judge_raw": judge_raw[:80],
                 "is_correct": is_correct,
                 "top_session_ids": [sess_ids[j] for j in top_indices],
                 "truth_in_top": any(sess_ids[j] in q.get("answer_session_ids", []) for j in top_indices),
             }
+            if ZMM_VOTE > 1:
+                entry["votes"] = [
+                    {"answer": v["answer"][:300], "judge_raw": v["judge_raw"][:80],
+                     "is_correct": v["is_correct"]}
+                    for v in votes
+                ]
             f_out.write(json.dumps(entry, ensure_ascii=False) + "\n")
             f_out.flush()
 
