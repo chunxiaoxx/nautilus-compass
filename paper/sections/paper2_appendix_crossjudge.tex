@@ -1,5 +1,5 @@
-% Paper 2 · Appendix B · Cross-Judge Replication
-% Status: 2026-05-06 · cross-judge run complete · real numbers filled
+% Paper 2 	extperiodcentered{}  Appendix B 	extperiodcentered{}  Cross-Judge Replication
+% Status: 2026-05-06 	extperiodcentered{}  cross-judge run complete 	extperiodcentered{}  real numbers filled
 
 \section{Cross-judge replication}
 \label{app:crossjudge}
@@ -13,14 +13,14 @@ V3.2 thinking).
 
 \begin{itemize}
 \item Subject model: DeepSeek V3.2 thinking (same as §\ref{sec:eval})
-\item Self-judge run: DeepSeek V3.2 thinking · n=500 · accuracy 56.6\%
-\item Cross-judge run: GLM-5.1 thinking (Volc Ark) · n=500
-\item Pipeline: identical (m3-rerank · 5-component · query rewrite)
+\item Self-judge run: DeepSeek V3.2 thinking 	extperiodcentered{}  n=500 	extperiodcentered{}  accuracy 56.6\%
+\item Cross-judge run: GLM-5.1 thinking (Volc Ark) 	extperiodcentered{}  n=500
+\item Pipeline: identical (m3-rerank 	extperiodcentered{}  5-component 	extperiodcentered{}  query rewrite)
 \item Cost: \cny{}3 additional (judge LLM tokens only)
 \end{itemize}
 
 We chose GLM-5.1 because it is from a different model family
-(Zhipu AI · ChatGLM lineage vs DeepSeek's), trained on different data
+(Zhipu AI 	extperiodcentered{}  ChatGLM lineage vs DeepSeek's), trained on different data
 mixes, and has comparable parameter count, so its judging behavior is
 unlikely to share systematic bias with the subject.
 
@@ -31,7 +31,7 @@ unlikely to share systematic bias with the subject.
 \small
 \begin{tabular}{lrrrr}
 \toprule
-\textbf{Type} & \textbf{Self} & \textbf{Cross} & \textbf{Δ} & \textbf{Agree.} \\
+\textbf{Type} & \textbf{Self} & \textbf{Cross} & \textbf{\(\Delta\)} & \textbf{Agree.} \\
 \midrule
 single-session-assistant     & 83.9\% & 83.9\% & $+0.0$  & 100.0\% \\
 knowledge-update             & 57.7\% & 62.8\% & $+5.1$  & 87.2\%  \\
@@ -44,7 +44,7 @@ temporal-reasoning           & 46.6\% & 45.1\% & $-1.5$  & 88.0\%  \\
 \bottomrule
 \end{tabular}
 \caption{Self-judge (DeepSeek V3.2) vs cross-judge (GLM-5.1) accuracy
-on identical 500 LongMemEval-S questions. Δ = cross $-$ self;
+on identical 500 LongMemEval-S questions. \(\Delta\) = cross $-$ self;
 Agree. = per-question agreement rate (both correct or both wrong).}
 \label{tab:crossjudge}
 \end{table}
@@ -67,7 +67,7 @@ preference statements before marking the answer correct. We do not
 claim either judge is ``right'' here --- preference inference is
 genuinely under-specified in the LongMemEval rubric --- but the
 asymmetry is real and worth flagging to readers. Excluding \texttt{ssp},
-overall agreement rises to 91.7\% and Δ shrinks to $-1.0$ pt.
+overall agreement rises to 91.7\% and \(\Delta\) shrinks to $-1.0$ pt.
 
 \paragraph{Confusion matrix.} Decomposing the 500 questions by joint
 correctness (Table~\ref{tab:crossjudge-confusion}):
@@ -96,19 +96,19 @@ of the $2.6$ pt overall gap, and is concentrated in \texttt{ssp}.
 \subsection{Agreement analysis}
 
 We compute per-question agreement (both judges marked correct, or both
-incorrect) and Cohen's κ proxy = $2 \cdot \text{agreement} - 1$.
+incorrect) and Cohen's \(\kappa\) proxy = $2 \cdot \text{agreement} - 1$.
 
 \begin{itemize}
 \item Overall agreement: \textbf{88.6\%} (443 / 500 questions)
-\item Cohen's κ proxy: \textbf{0.772}
-\item Self-only-correct: 35 (7.0\%) · Cross-only-correct: 22 (4.4\%)
+\item Cohen's \(\kappa\) proxy: \textbf{0.772}
+\item Self-only-correct: 35 (7.0\%) 	extperiodcentered{}  Cross-only-correct: 22 (4.4\%)
 \item Self-judge bias (overall): $-2.6$ pts (cross is stricter on net)
 \end{itemize}
 
 Agreement is highest on \texttt{ssa} (100\%, both judges find this
 question type easy and unambiguous) and lowest on \texttt{ssp} (60\%,
 the preference-rubric divergence above). Removing \texttt{ssp},
-agreement is 91.7\% and κ proxy is 0.834.
+agreement is 91.7\% and \(\kappa\) proxy is 0.834.
 
 \subsection{Interpretation thresholds}
 \label{subsec:thresholds-anchor}
@@ -116,21 +116,21 @@ agreement is 91.7\% and κ proxy is 0.834.
 We adopt the following ex-ante thresholds (registered before run):
 
 \begin{itemize}
-\item Agreement $\geq 0.95$ : excellent · self-judge bias < 5 pts ·
+\item Agreement $\geq 0.95$ : excellent 	extperiodcentered{}  self-judge bias < 5 pts 	extperiodcentered{} 
   paper claims fully defensible.
-\item Agreement $\geq 0.85$ : good · documented bias · paper claims
+\item Agreement $\geq 0.85$ : good 	extperiodcentered{}  documented bias 	extperiodcentered{}  paper claims
   defensible with appendix note.
-\item Agreement $\geq 0.75$ : moderate · paper claims qualified ·
+\item Agreement $\geq 0.75$ : moderate 	extperiodcentered{}  paper claims qualified 	extperiodcentered{} 
   abstract revised to "comparable to" instead of "matches".
-\item Agreement $< 0.75$ : significant · re-design eval before
-  publication · likely use Gemini as third judge.
+\item Agreement $< 0.75$ : significant 	extperiodcentered{}  re-design eval before
+  publication 	extperiodcentered{}  likely use Gemini as third judge.
 \end{itemize}
 
 These thresholds were defined before the cross-judge run started, to
 avoid p-hacking the interpretation of the result.
 
 \paragraph{Where this run lands.} Our observed agreement of
-\textbf{88.6\%} (κ proxy 0.772) falls cleanly inside the ``Good''
+\textbf{88.6\%} (\(\kappa\) proxy 0.772) falls cleanly inside the ``Good''
 band ($\geq 0.85$) and approaches the ``Excellent'' threshold (0.95).
 Within our pre-registered threshold for paper-defensible claims, this
 result requires only this appendix-level disclosure, not a revision of
@@ -145,7 +145,7 @@ The cross-judge run uses the same script with environment overrides:
 \begin{verbatim}
 ZMM_LLM_PROVIDER=ark
 ZMM_SUBJECT_MODEL=deepseek-v3.2
-ZMM_JUDGE_MODEL=glm-5.1            # ← change · was deepseek-v3.2 in self
+ZMM_JUDGE_MODEL=glm-5.1            # ← change 	extperiodcentered{}  was deepseek-v3.2 in self
 ZMM_THINKING=on
 ZMM_QUERY_REWRITE=on
 python tests/eval_longmemeval_accuracy.py --pipeline=m3-rerank --full

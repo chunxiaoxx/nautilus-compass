@@ -1,10 +1,10 @@
-% Paper 2 · §6.5 Cross-benchmark on EverMemBench
-% Status: draft · 2026-05-06
+% Paper 2 	extperiodcentered{}  §6.5 Cross-benchmark on EverMemBench
+% Status: draft 	extperiodcentered{}  2026-05-06
 %
-% Evidence-driven section · all numbers from public sources or our scripts:
-%   · scripts/evermembench_smoke.py    (BM25 retrieval@K · 2400 QAs · 17.5s)
-%   · scripts/evermembench_e2e.py      (BM25 + DeepSeek answer/judge · partial)
-%   · paper Table 4 numbers from Hu et al. 2026 (arxiv 2602.01313)
+% Evidence-driven section 	extperiodcentered{}  all numbers from public sources or our scripts:
+%   	extperiodcentered{}  scripts/evermembench_smoke.py    (BM25 retrieval@K 	extperiodcentered{}  2400 QAs 	extperiodcentered{}  17.5s)
+%   	extperiodcentered{}  scripts/evermembench_e2e.py      (BM25 + DeepSeek answer/judge 	extperiodcentered{}  partial)
+%   	extperiodcentered{}  paper Table 4 numbers from Hu et al. 2026 (arxiv 2602.01313)
 %
 % Open issue: full compass (BGE-m3 + reranker) e2e numbers pending T4
 % GPU availability (currently busy with V4-pro full-500 LongMemEval run).
@@ -70,7 +70,7 @@ predicted answer as semantically equivalent to ground truth.
 Our reproducibility scripts use SQLite FTS5 (BM25-only retrieval) as a
 deliberately weak lower bound. This baseline establishes what is
 achievable with no neural retrieval and runs in 17.5 seconds for
-\(2{,}400\) QAs on a single CPU core (cloud · 8 vCPU,
+\(2{,}400\) QAs on a single CPU core (cloud 	extperiodcentered{}  8 vCPU,
 no GPU; Table~\ref{tab:em-bm25}).
 
 \begin{table}[h]
@@ -99,7 +99,7 @@ Lower bound: no dense retrieval, no reranker.}
 We then ran the full compass retrieval stack
 (BGE-m3~\citep{chen2024bge} dense + bge-reranker-v2-m3 cross-encoder)
 on all 5 topics with DeepSeek-V4-flash as both answerer and judge
-(matching our LongMemEval pipeline · 76 minutes wall-clock on a single T4 · ~\$1.50):
+(matching our LongMemEval pipeline 	extperiodcentered{}  76 minutes wall-clock on a single T4 	extperiodcentered{}  ~\$1.50):
 
 \begin{table}[h]
 \centering
@@ -117,7 +117,7 @@ Topic & accuracy & recall@20 \\
 \bottomrule
 \end{tabular}
 \caption{compass per-topic results on EverMemBench-Dynamic.
-Cross-topic CV $=$ 6\% (consistent · low variance).}
+Cross-topic CV $=$ 6\% (consistent 	extperiodcentered{}  low variance).}
 \label{tab:em-per-topic}
 \end{table}
 
@@ -127,13 +127,13 @@ Cross-topic CV $=$ 6\% (consistent · low variance).}
 \centering
 \begin{tabular}{lr}
 \toprule
-System (paper Table 4 · GPT-4.1-mini answerer) & Avg \\
+System (paper Table 4 	extperiodcentered{}  GPT-4.1-mini answerer) & Avg \\
 \midrule
 Full Context (1M tokens, no memory) & 37.44 \\
 + MemoBase                          & 34.27 \\
 + Mem0                              & 37.09 \\
 + Zep                               & 39.97 \\
-\textbf{compass (BGE-m3+rerank+V4-flash · n=500)} & \textbf{41.00} \\
+\textbf{compass (BGE-m3+rerank+V4-flash 	extperiodcentered{}  n=500)} & \textbf{41.00} \\
 + MemOS                             & 42.55 \\
 + EverCore                          & not reported \\
 \bottomrule
@@ -144,29 +144,29 @@ MemOS (42.55), filling the EverCore gap with an open-source,
 self-hosted alternative. Recall@20 was 94.8\% across 5 topics
 (BM25-only baseline: 38.1\%); the 56.7-point recall improvement
 explains where the dense retriever helps. The remaining gap to MemOS
-is likely due to (a) different LLM (V4-flash vs GPT-4.1-mini ·
+is likely due to (a) different LLM (V4-flash vs GPT-4.1-mini 	extperiodcentered{} 
 DeepSeek's stronger reasoning models would close part of this gap)
 and (b) no Profile-Understanding subtask yet (paper Average includes
-Style/Skill/Role · we measured Fine-Grained Recall + Memory Awareness only).
-Per-topic CV is 6\% · cross-topic stability is high.}
+Style/Skill/Role 	extperiodcentered{}  we measured Fine-Grained Recall + Memory Awareness only).
+Per-topic CV is 6\% 	extperiodcentered{}  cross-topic stability is high.}
 \label{tab:em-full-stack}
 \end{table}
 
-\subsection{Bug archeology · how we got here}
+\subsection{Bug archeology 	extperiodcentered{}  how we got here}
 
 Three bugs blocked early end-to-end runs (acc 0\%) before yielding
 the 40\% number above:
 
 \begin{enumerate}
 \item Message truncation \texttt{[:300]} cut the answer (e.g. ``65\%'')
-out of retrieved context · LLM correctly returned UNKNOWN. Fix:
+out of retrieved context 	extperiodcentered{}  LLM correctly returned UNKNOWN. Fix:
 \texttt{[:1500]}.
 \item DeepSeek V4-flash defaults to \texttt{thinking} mode and
-\texttt{reasoning\_mode="non-think"} did not disable it · 50--200
+\texttt{reasoning\_mode="non-think"} did not disable it 	extperiodcentered{}  50--200
 reasoning\_tokens were emitted but the API still allocated them
 from \texttt{max\_tokens}. The judge call with \texttt{max\_tokens=8}
-yielded an empty \texttt{content} string · ``\texttt{CORRECT} in
-\texttt{""}'' was always False · the entire run was scored 0\%.
+yielded an empty \texttt{content} string 	extperiodcentered{}  ``\texttt{CORRECT} in
+\texttt{""}'' was always False 	extperiodcentered{}  the entire run was scored 0\%.
 Fix: judge \texttt{max\_tokens=256} (allows ~200 reasoning + verdict).
 \item Implicit: \texttt{reasoning\_mode} flag is silently ignored on
 V4-flash, so users of the DeepSeek API for cheap eval should budget

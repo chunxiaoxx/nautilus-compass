@@ -1,5 +1,5 @@
-% Paper 2 · Appendix C · DeepSeek V4 preliminary results
-% Status: 2026-05-05 · sample 48 FINAL · 60.4% · HOLD full 500 (待 max_tokens 调高重测)
+% Paper 2 	extperiodcentered{}  Appendix C 	extperiodcentered{}  DeepSeek V4 preliminary results
+% Status: 2026-05-05 	extperiodcentered{}  sample 48 FINAL 	extperiodcentered{}  60.4% 	extperiodcentered{}  HOLD full 500 (待 max_tokens 调高重测)
 
 \section{DeepSeek V4 preliminary results}
 \label{app:deepseek-v4}
@@ -12,29 +12,29 @@ context window (vs V3.2's 128K).
 We ran a 50-question stratified subset evaluation with V4-pro under
 \texttt{think-high} to test if the new model + larger context window
 shifts the accuracy ceiling, while keeping the rest of the pipeline
-identical (m3-rerank · query rewriting · type-aware prompts).
+identical (m3-rerank 	extperiodcentered{}  query rewriting 	extperiodcentered{}  type-aware prompts).
 
 \subsection{Setup}
 
 \begin{itemize}
-\item Subject + Judge: DeepSeek V4-pro (subject) · V4-flash (judge ·
-  cross-family avoided since same vendor · documented limitation).
+\item Subject + Judge: DeepSeek V4-pro (subject) 	extperiodcentered{}  V4-flash (judge 	extperiodcentered{} 
+  cross-family avoided since same vendor 	extperiodcentered{}  documented limitation).
 \item Reasoning mode: \texttt{think-high}
-\item Context: full 1M tokens · no truncation needed for LongMemEval-S
+\item Context: full 1M tokens 	extperiodcentered{}  no truncation needed for LongMemEval-S
   50K haystacks.
 \item Pipeline: identical to v0.8 (Stage 1-5 from §\ref{sec:method}).
 \item Cost: \$1.40 USD for 50 questions (vs \$0.15 USD for v0.8 50q
-  on Volc Ark coding plan · 9× more expensive).
+  on Volc Ark coding plan 	extperiodcentered{}  9× more expensive).
 \end{itemize}
 
-\subsection{Sample 48 results (n=48 stratified · 8 per type)}
+\subsection{Sample 48 results (n=48 stratified 	extperiodcentered{}  8 per type)}
 
 \begin{table}[h]
 \centering
 \small
 \begin{tabular}{lrrr}
 \toprule
-\textbf{Type} & \textbf{V0.8 (V3.2)} & \textbf{V4-pro think-high} & \textbf{Δ} \\
+\textbf{Type} & \textbf{V0.8 (V3.2)} & \textbf{V4-pro think-high} & \textbf{\(\Delta\)} \\
 \midrule
 knowledge-update         & 57.7\% & \textbf{75.0\%} (6/8) & \textbf{+17.3} ⭐ \\
 single-session-assistant & 83.9\% & 75.0\% (6/8) & \(-8.9\) \\
@@ -46,8 +46,8 @@ temporal-reasoning       & 46.6\% & \textbf{25.0\%} (2/8) & \textbf{\(-21.6\)} �
 \textbf{Overall (sample)} & 56.2\% & \textbf{60.4\%} & +4.2 \\
 \bottomrule
 \end{tabular}
-\caption{DeepSeek V4-pro \texttt{think-high} mode · sample 48. Three
-question types (ku · ssa · ssu) reach 75\% accuracy, demonstrating that
+\caption{DeepSeek V4-pro \texttt{think-high} mode 	extperiodcentered{}  sample 48. Three
+question types (ku 	extperiodcentered{}  ssa 	extperiodcentered{}  ssu) reach 75\% accuracy, demonstrating that
 1M context + native reasoning solves a new band of recall tasks. However,
 two regressions are notable: ssa drops 9 pts vs v0.8, and
 temporal-reasoning drops 22 pts.}
@@ -78,7 +78,7 @@ temporal-reasoning drops 22 pts.}
 
 \item \textbf{Cost vs gain trade-off.} V4-pro think-high at \$0.028/q
   vs V3.2 thinking at \$0.003/q is 9× more expensive. The +5-8 pts
-  overall gain projection means roughly \$0.005 per accuracy point ·
+  overall gain projection means roughly \$0.005 per accuracy point 	extperiodcentered{} 
   not unreasonable for paper-grade benchmarks but unattractive for
   high-volume production.
 \end{itemize}
@@ -86,14 +86,14 @@ temporal-reasoning drops 22 pts.}
 \subsection{Limitations of preliminary V4 data}
 
 \begin{itemize}
-\item Only 35/50 questions completed at submission time · final
+\item Only 35/50 questions completed at submission time 	extperiodcentered{}  final
   numbers may shift ±3 pts.
-\item V4-pro + V4-flash judge is \emph{not} a true cross-family check ·
+\item V4-pro + V4-flash judge is \emph{not} a true cross-family check 	extperiodcentered{} 
   both from DeepSeek vendor. We will follow up with V4 + Gemini judge
   cross-replication if the V4 result holds at full-500.
 \item CPU-mode bge-m3 (used to avoid GPU contention with v3.2 cross-judge
   run) doesn't affect retrieval quality but slows wall-clock.
-\item think-max mode untested · may push accuracy higher at further
+\item think-max mode untested 	extperiodcentered{}  may push accuracy higher at further
   cost increase.
 \end{itemize}
 
@@ -101,7 +101,7 @@ temporal-reasoning drops 22 pts.}
 \label{app:v4-full500}
 
 We subsequently ran the full 500-question evaluation under
-\texttt{think-high} (no \texttt{max\_tokens} cap · vanilla pipeline ·
+\texttt{think-high} (no \texttt{max\_tokens} cap 	extperiodcentered{}  vanilla pipeline 	extperiodcentered{} 
 no per-type routing) to test whether the sample 48 trends survive on
 n=500. They mostly do not.
 
@@ -110,7 +110,7 @@ n=500. They mostly do not.
 \small
 \begin{tabular}{lrrrr}
 \toprule
-\textbf{Type} & \textbf{v0.8 (V3.2 n=500)} & \textbf{V4 sample (n=48)} & \textbf{V4 full (n=500)} & \textbf{Δ vs v0.8} \\
+\textbf{Type} & \textbf{v0.8 (V3.2 n=500)} & \textbf{V4 sample (n=48)} & \textbf{V4 full (n=500)} & \textbf{\(\Delta\) vs v0.8} \\
 \midrule
 single-session-assistant  & 83.9\% & 75.0\% & \textbf{87.5\%} (49/56) & \textbf{+3.6} \\
 single-session-preference & 53.3\% & 50.0\% & \textbf{66.7\%} (20/30) & \textbf{+13.4} \\
@@ -124,13 +124,13 @@ temporal-reasoning        & 46.6\% & 25.0\% & 43.6\% (58/133) & \(-3.0\) \\
 \end{tabular}
 \caption{V4-pro \texttt{think-high} full 500 vs the sample 48 estimate
 and the v0.8 V3.2 baseline. Cost: approximately \$8 USD wall-clock 6.3
-hours on a single T4 (CPU bge-m3 · GPU contention with cross-judge
+hours on a single T4 (CPU bge-m3 	extperiodcentered{}  GPU contention with cross-judge
 runs).}
 \label{tab:v4-full500}
 \end{table}
 
 \paragraph{Verdict.} V4-pro \texttt{think-high} is essentially tied
-with V3.2 (\(-0.2\) pts overall · within noise). Per-type, V4 wins
+with V3.2 (\(-0.2\) pts overall 	extperiodcentered{}  within noise). Per-type, V4 wins
 clearly on ssa (\(+3.6\)) and ssp (\(+13.4\)) but loses on multi-session
 (\(-2.3\)) and temporal-reasoning (\(-3.0\)). The headline number for
 this paper remains v0.8 V3.2 56.6\%.
@@ -147,21 +147,21 @@ alone.
 expensive than V3.2 at $\sim$\$0.002/q (Volc Ark coding plan). Tied
 accuracy and 8× cost yields no production case for V4-pro
 \texttt{think-high} on this benchmark. \texttt{think-max} or
-selective routing (V4 for ssa/ssp · V3.2 for ms/temporal) is the only
-path to a positive economic case · neither is in scope for v1.0 paper.
+selective routing (V4 for ssa/ssp 	extperiodcentered{}  V3.2 for ms/temporal) is the only
+path to a positive economic case 	extperiodcentered{}  neither is in scope for v1.0 paper.
 
 \subsection{Decision (2026-05-05): held full 500}
 
-Based on sample 48 results (60.4\% · +4.2 vs v0.8 sample 56.2\%),
+Based on sample 48 results (60.4\% 	extperiodcentered{}  +4.2 vs v0.8 sample 56.2\%),
 we \textbf{do not} run V4-pro full 500 in current configuration. Reasons:
 
 \begin{itemize}
-\item Improvement (+4.2 pts) is below our \textbf{≥3 pt
+\item Improvement (+4.2 pts) is below our \textbf{\(\ge\)3 pt
   significance threshold} but within sample noise on n=48.
 \item The 22 pt drop on temporal-reasoning is a regression that must be
   investigated before committing \$14 + 8h to a full run.
 \item The 9 pt drop on ssa supports the \texttt{reasoning\_content}
-  truncation hypothesis · before retrying, set
+  truncation hypothesis 	extperiodcentered{}  before retrying, set
   \texttt{max\_tokens=16384} (4× current).
 \end{itemize}
 
@@ -169,8 +169,8 @@ Recommended next steps (deferred to follow-up addendum):
 
 \begin{enumerate}
 \item V4-pro \texttt{think-high} + \texttt{max\_tokens=16384} sample 48
-  (\$2 · 1h) · check if ssa returns to 75--80\% and temporal to ~46\%.
-\item If yes, run V4-pro full 500 with the new max\_tokens (\$14 · 8h).
-\item V4-pro \texttt{think-max} on sample 48 (\$3 · 1.5h) · may push ku/ssu
+  (\$2 	extperiodcentered{}  1h) 	extperiodcentered{}  check if ssa returns to 75--80\% and temporal to ~46\%.
+\item If yes, run V4-pro full 500 with the new max\_tokens (\$14 	extperiodcentered{}  8h).
+\item V4-pro \texttt{think-max} on sample 48 (\$3 	extperiodcentered{}  1.5h) 	extperiodcentered{}  may push ku/ssu
   higher but risks worse temporal.
 \end{enumerate}
