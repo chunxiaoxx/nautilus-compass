@@ -40,3 +40,4 @@ paper/build/
 # legacy
 .claude-mem/
 *.egg-info
+npm/.npmrc
