@@ -146,13 +146,58 @@ re-derive them otherwise.
 that adding a 2-hop CO\_OCCUR graph signal (entity match in question
 \(\to\) sessions sharing co-occurring entities) would complement the
 cross-encoder. We implemented spaCy NER \(\to\) Neo4j ingest \(\to\)
-post-rerank reweight. Result: \(-6.2\) pts on the 48-question sample.
+post-rerank reweight. Result: \(-6.2\) pts on the 48-question sample
+(0.500 \(\to\) 0.438).
 
-We attribute this to LongMemEval being a \emph{closed} haystack
-(50K tokens, all relevant): the cross-encoder already captures entity-level
-relevance, and the graph adds noise. Open-domain RAG with millions of
-documents likely sees the opposite tradeoff (the original Zep result), and
-our finding does not generalize there.
+The aggregate damage is concentrated in two question types, with the
+remaining four entirely unaffected (Table~\ref{tab:neo4j-subtype}). Both
+hurt types share a structural feature: the canonical answer lives in a
+single specific session, but the question's entity vocabulary appears
+across many other sessions. Graph reranking promotes those distractor
+sessions, displacing the actual answer session out of top-$k$.
+\texttt{single-session-user} (e.g., \emph{``what is the user's
+preferred coffee order?''}) is the worst-hit because user-stated facts
+are typically anchored to one session while the entity (``coffee'')
+recurs throughout. \texttt{knowledge-update} is the second-worst because
+superseded prior versions of the answer share entity vocabulary with the
+correct (latest) version. The four spared types either tolerate
+multiple supporting sessions (\texttt{multi-session}), already match
+correctly on token-level cues (\texttt{ssa}, \texttt{ssp}), or depend
+on temporal reasoning the graph cannot improve (\texttt{temporal}).
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Type} & \textbf{Baseline} & \textbf{+Neo4j} & \textbf{\(\Delta\)} \\
+\midrule
+single-session-user & 0.375 & 0.125 & \textbf{\(-25.0\)} \\
+knowledge-update    & 0.625 & 0.500 & \textbf{\(-12.5\)} \\
+multi-session       & 0.625 & 0.625 & 0.0 \\
+single-session-assistant & 0.625 & 0.625 & 0.0 \\
+single-session-preference & 0.625 & 0.625 & 0.0 \\
+temporal-reasoning  & 0.125 & 0.125 & 0.0 \\
+\midrule
+\textbf{Overall (48-q)} & \textbf{0.500} & \textbf{0.438} & \textbf{\(-6.2\)} \\
+\bottomrule
+\end{tabular}
+\caption{Per-type breakdown of the Neo4j -6.2 pts regression. Damage
+is concentrated in \texttt{ssu} and \texttt{ku} — types where the
+canonical answer session shares entity vocabulary with many distractor
+sessions. With n=8 per type the absolute deltas are noisy, but the
+zero-delta floor across four other types is structurally consistent
+with the closed-haystack explanation.}
+\label{tab:neo4j-subtype}
+\end{table}
+
+We therefore attribute the regression to LongMemEval being a
+\emph{closed} haystack (50K tokens, all relevant): the cross-encoder
+already captures entity-level relevance, and the graph compounds rather
+than complements it on types that need session-level disambiguation.
+Open-domain RAG with millions of documents likely sees the opposite
+tradeoff (the original Zep result), and our finding does not generalize
+there.
 
 \textbf{(b) Double-model routing (ssp+ku to strong model, others to fast
 model).} We tested routing single-session-preference and knowledge-update
