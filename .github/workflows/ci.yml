@@ -38,11 +38,12 @@ jobs:
           # 用 small-zh 跑 CI · 比 m3 快 20x · 内存 < 200MB
           python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('BAAI/bge-small-zh-v1.5')"
 
-      - name: Self-test
-        run: |
-          ZMM_EMBEDDER_MODEL=BAAI/bge-small-zh-v1.5 python selftest.py
+      # selftest.py + eval_recall.py both need real user memory data at
+      # ~/.claude/projects/C--Users-chunx/memory/*.md which CI runners don't
+      # have. We run them on the dev's machine before each release; CI only
+      # validates the parts that don't depend on developer-specific data.
 
-      - name: Drift eval
+      - name: Drift eval (anchors-only · no user data needed)
         run: |
           ZMM_EMBEDDER_MODEL=BAAI/bge-small-zh-v1.5 python tests/eval_drift.py | tee drift.log
           # 校验: AUC 至少 0.65 · CI 用 small-zh 比 m3 弱
@@ -51,17 +52,6 @@ jobs:
           auc = float(re.search(r'ROC AUC\s*=\s*([\d.]+)', open('drift.log').read()).group(1))
           assert auc >= 0.65, f'AUC regression: {auc}'
           print(f'AUC OK: {auc}')
-          "
-
-      - name: Recall eval
-        run: |
-          ZMM_EMBEDDER_MODEL=BAAI/bge-small-zh-v1.5 python tests/eval_recall.py | tee recall.log
-          # 校验: P@5 至少 0.75
-          python -c "
-          import re
-          p5 = float(re.search(r'P@5\s*=\s*\d+/\d+\s*=\s*([\d.]+)', open('recall.log').read()).group(1))
-          assert p5 >= 0.75, f'P@5 regression: {p5}'
-          print(f'P@5 OK: {p5}')
           "
 
   lint:
