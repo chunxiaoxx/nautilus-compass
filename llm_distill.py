@@ -18,7 +18,9 @@ try:
 except Exception:
     pass
 
-PLUGIN_DIR = Path.home() / ".claude" / "plugins" / "nautilus-compass"
+_PLUGIN_USER = Path.home() / ".claude" / "plugins" / "nautilus-compass"
+# CI / pip-install fallback · use the script's own dir when user-level path absent
+PLUGIN_DIR = _PLUGIN_USER if _PLUGIN_USER.exists() else Path(__file__).resolve().parent
 HAIKU_MODEL = "claude-haiku-4-5-20251001"
 PROXY_URL = "https://api.qixuw.com/v1/messages"   # qixuw 兼容 Anthropic API
 TIMEOUT = 30

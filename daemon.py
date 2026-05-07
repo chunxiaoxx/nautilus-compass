@@ -31,7 +31,10 @@ except Exception:
 
 HOST = "127.0.0.1"
 PORT = 9876
-PLUGIN_DIR = Path.home() / ".claude" / "plugins" / "nautilus-compass"
+_PLUGIN_USER = Path.home() / ".claude" / "plugins" / "nautilus-compass"
+# CI / pip-install fallback · use the script's own dir when user-level
+# plugin path doesn't exist (eg. installed via pip · or fresh git clone)
+PLUGIN_DIR = _PLUGIN_USER if _PLUGIN_USER.exists() else Path(__file__).resolve().parent
 CACHE_DIR = PLUGIN_DIR / ".cache"
 ANCHORS_PATH = PLUGIN_DIR / "anchors.json"
 PID_FILE = CACHE_DIR / "daemon.pid"
