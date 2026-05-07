@@ -51,6 +51,47 @@ through API or product surfaces. Our work targets exactly this
 deployment gap: providing a black-box analog that runs in
 user-space hooks without model-internal access.
 
+\subsection{Black-box Safety and Behavior Classifiers}
+\label{sec:related-blackbox}
+
+To our knowledge, no published work targets prompt-level
+\emph{persona drift} detection in the closed-API setting that
+Persona Vectors addresses with weight access. Adjacent black-box
+threads we surveyed:
+
+\textbf{Constitutional AI} \citep{constitutional2022} trains models
+to self-critique against natural-language principles. The
+principles act as soft anchors at training time, whereas our
+anchors operate at inference time over arbitrary deployed models.
+\textbf{Detoxify} and similar text classifiers \citep{detoxify}
+provide black-box safety classification (toxicity, severe
+toxicity, identity attacks) by training discriminative classifiers
+on labeled corpora. These give a single safety score per prompt
+but do not offer the per-anchor provenance needed to surface a
+specific drift mode (e.g., ``you are repeating mistake X you
+previously flagged'').
+\textbf{OpenAI Moderation API} \citep{openai-mod} and
+\textbf{Anthropic Safe API} \citep{anthropic-safe} expose
+black-box safety endpoints, but their dimensions
+(harassment, self-harm, sexual, violence) are coarser than
+production agents' actual drift modes (forgetting verification,
+fabricating prior agreement, ignoring user-flagged constraints).
+\textbf{Prompt-level safety probes} \citep{promptinject2023,
+textdefendr2024} test models against adversarial prompt
+injections; this targets a different threat model (external
+adversary) from ours (internal session drift).
+\textbf{Reward models} as black-box judges
+\citep{skywork2024,helpsteer2024} train scalar safety/helpfulness
+predictors; these offer one global score per prompt but again
+lack per-pattern provenance.
+
+Compared to the above, our contribution is a
+\emph{user-space, anchor-based, per-prompt drift detector with
+matched-anchor provenance}. The anchors can be authored by
+end-users (rather than baked in at training time), making the
+system extensible to drift modes the safety vendors do not
+prioritize.
+
 \subsection{Embedders and Cross-Encoder Rerankers}
 \label{sec:related-embed}
 
