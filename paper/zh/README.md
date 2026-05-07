@@ -19,7 +19,7 @@
 
 > "LongMemEval-S 上 56.6% · 跟 Zep SOTA 持平 · 总成本 1/15"
 
-5 步管道结合 BGE-m3 dense 召回 · bge-reranker-v2-m3 cross-encoder 重排 · 多角度 query 重写 · 类型感知 prompt · 单模型 judge 链。在 LongMemEval-S 上达 56.6% (n=500) · 跟 Zep SOTA 持平 · 1/15 cost。在 EverMemBench-Dynamic 上达 41.0% · 介于 Zep 和 MemOS 之间。
+5 步管道结合 BGE-m3 dense 召回 · bge-reranker-v2-m3 cross-encoder 重排 · 多角度 query 重写 · 类型感知 prompt · 单模型 judge 链。在 LongMemEval-S 上达 56.6% (n=500) · 跟 Zep SOTA 持平 · 1/15 cost。在 EverMemBench-Dynamic 上达 44.4% · 超过 MemOS (42.55) 且高于全部 4 个 Table 4 baseline。
 
 **英文版 PDF** · `paper/paper2_main.pdf` (24 页 · 354K)
 
@@ -30,7 +30,7 @@
 | 指标 | Compass | 业界对照 |
 |---|---|---|
 | LongMemEval-S | **56.6%** | Zep 55-60% (SOTA) · GPT-4o 50-60% |
-| EverMemBench-Dynamic | **41.0%** | Zep 39.97 · MemOS 42.55 |
+| EverMemBench-Dynamic | **44.4%** | Zep 39.97 · MemOS 42.55 |
 | 漂移 detection AUC | **0.92** (in-set) / 0.86 (holdout) | Persona Vectors 白盒 (不可比) |
 | 总成本 / run | **\$3.50** | GPT-4o stack \$50+ |
 | 模型依赖 | DeepSeek V3.2 (国产) | GPT-4o / Claude 商用闭源 |

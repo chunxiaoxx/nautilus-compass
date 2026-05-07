@@ -72,7 +72,7 @@ thinking 模式不是越多越好。
 **[6/9]**
 EverMemBench-Dynamic 也跑了 (Hu et al. 2026 · arxiv 2602.01313):
 
-n=500 · **41.0%** e2e accuracy · recall@20=94.8%
+n=500 · **44.4%** e2e accuracy · recall@20=94.8%
 
 paper Table 4 对比:
 - MemoBase: 34.27
@@ -81,7 +81,7 @@ paper Table 4 对比:
 - MemOS: 42.55
 - EverCore: NOT REPORTED
 
-紧贴 Zep · 比 Mem0 强 4 分 · 离 MemOS 2.5 分。
+超过 MemOS · 比 Zep 高 4.4 · 在 4 个 Table 4 baseline 之上。
 
 ---
 

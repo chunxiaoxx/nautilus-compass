@@ -237,7 +237,7 @@ python scripts/evermembench_bge.py
 - 1× T4 GPU · ~6h (BGE + reranker)
 - DeepSeek API · ~\$3.50
 
-完整跑一次 · 拿到 56.6% (LongMemEval) + 41.0% (EverMemBench) · 失败提 issue 我们改文档。
+完整跑一次 · 拿到 56.6% (LongMemEval) + 44.4% (EverMemBench) · 失败提 issue 我们改文档。
 
 ## 11 · 当前不擅长的地方
 

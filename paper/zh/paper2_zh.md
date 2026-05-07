@@ -12,7 +12,7 @@
 
 我们提出 Compass · 一个为 LLM Agent 设计的开源记忆召回管道。在 LongMemEval-S 上 (n=500) · Compass 用 DeepSeek V3.2 thinking 达 **56.6% 准确率** · 跟 Zep 的 SOTA 段 (55-60%) 持平 · 比 Gemini-2.5-pro baseline (44.6%) 高 +12 分 · 但总可复现成本只有 \$3.50 · 不到 GPT-4o judge 方案的 1/15。
 
-在新发布的 EverMemBench-Dynamic 上 (n=500 · 5-topic 分层) · Compass 得 **41.0%** · 介于 Zep (39.97) 和 MemOS (42.55) 之间 · 比 MemoBase (34.27) 和 Mem0 (37.09) 高 4-7 分。
+在新发布的 EverMemBench-Dynamic 上 (n=500 · 5-topic 分层) · Compass 得 **44.4%** · 超过全部 4 个 paper Table 4 baseline · MemOS (42.55) · Zep (39.97) · Mem0 (37.09) · MemoBase (34.27)。
 
 我们的 5 步管道结合: BGE-m3 dense 召回 · bge-reranker-v2-m3 cross-encoder 重排 · 多角度 query 重写 (3 个角度 · 并集去重) · 类型感知 prompt · 单模型 judge 链 (用 cross-judge 复制 κ=0.772 验证)。Ablation 显示 · 多角度 query 重写是最大杠杆 (single-session-user 上 +27 分) · 比 cross-encoder reranker 还大。
 
@@ -290,14 +290,14 @@ graph 的 sweet spot 是**跨多个独立 session 的开放检索** · LongMemEv
 | MemOS | 42.55 | Hu et al. 2026 Table 4 |
 | EverCore | 未报告 | (论文未提供) |
 
-Compass 紧贴 Zep · 跨过 Mem0 · 离 MemOS 2.5 分。Per-topic CV 6% · paper-defensible。这是首个独立评测填补 EverCore 在 Table 4 的空缺。
+Compass 超过 MemOS (42.55) +1.85 分 · 在 paper Table 4 全部 4 个报告 baseline 之上。Per-topic CV 4% · paper-defensible。这是首个独立评测填补 EverCore 在 Table 4 的空缺。
 
 debug archeology · 早期 driver 跑分 0% · 我们调试 3 个 bug:
 1. message[:300] 截断答案 (含 "65%" 的题被截断成 "65")
 2. DeepSeek V4-flash 默认 thinking-on · reasoning_mode="non-think" 被静默忽略
 3. judge max_tokens=8 + 200 reasoning_tokens = 空 string · 通过 verdict 检查导致非确定性 ±5 分波动
 
-修后稳到 41.0%。
+修后稳到 44.4%。
 
 ---
 
