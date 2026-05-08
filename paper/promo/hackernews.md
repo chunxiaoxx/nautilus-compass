@@ -32,7 +32,7 @@ What it is:
 Numbers (full reproduction in repo):
 - LongMemEval-S (n=500): 56.6% — ties Zep SOTA band, 15-20 pts above mem0/
   MemoBase. $3.50 total cost using DeepSeek V3.2 thinking.
-- EverMemBench-Dynamic (n=500): 44.4% — above MemOS (42.55), beating all 4 reported Table 4 baselines
+- EverMemBench-Dynamic (n=500): 44.4% (Run 1) + 47.3% (Run 2 independent replication, n=497) — both above MemOS (42.55), mean 45.84% beats all 4 reported Table 4 baselines
   on paper Table 4.
 - Cross-judge replication κ=0.772 on a 100-q subset.
 
