@@ -7,9 +7,12 @@ LongMemEval-S (n=500), Compass reaches \textbf{56.6\% accuracy} using
 DeepSeek V3.2 thinking, tying the Zep SOTA band (55--60\%) and
 surpassing the Gemini-2.5-pro baseline (44.6\%) by $+12$ points at
 $\sim$\$3.50 reproducible cost---under 1/15 of GPT-4o-judged stacks.
-On EverMemBench-Dynamic (n=500), Compass scores \textbf{44.4\%},
-exceeding all four reported Table 4 baselines: MemoBase (34.27),
-Mem0 (37.09), Zep (39.97), and MemOS (42.55). Our 5-stage pipeline combines BGE-m3
+On EverMemBench-Dynamic (5 topics $\times$ 100 QAs), Compass scores
+\textbf{44.4\%} (n=500, Run 1) and \textbf{47.3\%} (n=497, Run 2,
+3 transient API skips); both endpoints exceed all four reported
+Table 4 baselines: MemoBase (34.27), Mem0 (37.09), Zep (39.97), and
+MemOS (42.55), and the across-run mean (45.84\%) clears MemOS by
+$+$3.3 pts. Our 5-stage pipeline combines BGE-m3
 dense recall, bge-reranker-v2-m3 cross-encoder reranking, multi-angle
 query rewriting, type-aware prompting, and a judge chain validated by
 cross-judge replication ($\kappa{=}0.772$). Multi-angle query rewriting
