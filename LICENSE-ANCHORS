@@ -1,0 +1,17 @@
+CC0 1.0 Universal (Public Domain Dedication)
+
+The behavioral anchor files in this repository (`anchors*.json`,
+`positive_anchors.json`, `negative_anchors.json`, and any file matching
+`anchors_*.json`) are released into the public domain under the Creative
+Commons CC0 1.0 Universal Public Domain Dedication.
+
+You are encouraged to replace these defaults with your own behavioral
+anchors tuned to your specific deployment context. No attribution is
+required when reusing or modifying the anchor files; attribution is
+welcome but not necessary.
+
+Full text: https://creativecommons.org/publicdomain/zero/1.0/
+
+The rest of the codebase (Python source, Node MCP wrapper, documentation,
+LaTeX papers under `paper/`, scripts, tests) remains MIT-licensed; see
+`LICENSE` for those terms.
