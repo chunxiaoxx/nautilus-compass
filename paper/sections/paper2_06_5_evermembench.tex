@@ -38,7 +38,7 @@ authors made public---fills a documented gap.
 \subsection{Protocol}
 
 We follow the EverMemBench eval framework's
-\texttt{Add{\rightarrow}Search{\rightarrow}Answer{\rightarrow}Evaluate}
+\texttt{Add$\rightarrow$Search$\rightarrow$Answer$\rightarrow$Evaluate}
 pipeline:
 
 \begin{enumerate}
@@ -93,33 +93,48 @@ Lower bound: no dense retrieval, no reranker.}
 \label{tab:em-bm25}
 \end{table}
 
-\subsection{End-to-end with full retrieval stack (n=500, all 5 topics)}
+\subsection{End-to-end with full retrieval stack (two independent runs, n=500 / n=497)}
 \label{sec:em-full-stack}
 
 We then ran the full compass retrieval stack
 (BGE-m3~\citep{chen2024bge} dense + bge-reranker-v2-m3 cross-encoder)
-on all 5 topics with DeepSeek-V4-pro think-high as the answerer and
-V4-flash as the judge, with multi-angle query rewriting (3 angles,
+on all 5 topics with DeepSeek V4-flash as both the answerer and the
+judge (cheap end-to-end · matches the run-banner header in our log),
+with multi-angle query rewriting (3 angles,
 union-deduplicated) and day-bucket diversification (max 2 sessions per
-date). 5.58 hours wall-clock on a single T4 $\cdot$ \$25 LLM API:
+date). To estimate inherent LLM-judge variance, we executed the
+identical pipeline twice (Run 1 on 2026-05-07 · Run 2 on 2026-05-08);
+the answerer and judge calls are non-deterministic at DeepSeek's
+default temperature, so the two runs differ only in API-side stochasticity.
+Each run cost \$25 LLM API and 5.6 hours wall-clock on a single T4.
+Run 2 had 3 questions skipped on topic 04 due to transient DeepSeek API
+5xx errors (treated as UNKNOWN; not retried, to avoid biasing the run).
 
 \begin{table}[h]
 \centering
-\begin{tabular}{lrr}
+\begin{tabular}{lrrrr}
 \toprule
-Topic & accuracy & recall@30 \\
+Topic & Run 1 acc & Run 1 r@30 & Run 2 acc & Run 2 r@30 \\
 \midrule
-01 & 44.0\% & 97.0\% \\
-02 & 46.0\% & 95.0\% \\
-03 & 42.0\% & 98.0\% \\
-04 & 45.0\% & 99.0\% \\
-05 & 45.0\% & 99.0\% \\
+01 (multi-hop)        & 44.0\% & 97.0\% & 47.0\% & 98.0\% \\
+02 (temporal)         & 46.0\% & 95.0\% & 44.0\% & 94.0\% \\
+03                    & 42.0\% & 98.0\% & 49.0\% & 98.0\% \\
+04 ($n_{2}=97$)       & 45.0\% & 99.0\% & 47.4\% & 99.0\% \\
+05                    & 45.0\% & 99.0\% & 49.0\% & 99.0\% \\
 \midrule
-\textbf{All (n=500)} & \textbf{44.4\%} & \textbf{97.6\%} \\
+\textbf{All}          & \textbf{44.4\%} (n=500) & \textbf{97.6\%} & \textbf{47.3\%} (n=497) & \textbf{98.2\%} \\
+\midrule
+\textit{Mean across 2 runs} & \multicolumn{2}{c}{\textit{45.85\%}} & \multicolumn{2}{c}{\textit{97.9\%}} \\
+\textit{Range}              & \multicolumn{2}{c}{\textit{2.9 pts (44.4--47.3)}} & \multicolumn{2}{c}{\textit{0.6 pts}} \\
 \bottomrule
 \end{tabular}
-\caption{compass per-topic results on EverMemBench-Dynamic (v2 driver,
-2026-05-07). Cross-topic CV $=$ 4\% (consistent $\cdot$ low variance).}
+\caption{compass per-topic results on EverMemBench-Dynamic across two
+independent identical-pipeline runs. Cross-topic CV stays at $\sim$4\%
+within each run; cross-run CV at the All level is $\sim$3.2\%, which we
+read as the inherent variance of stochastic LLM answer/judge calls at
+this scale. Both endpoints (44.4\% Run 1, 47.3\% Run 2) sit above every
+reported Table 4 baseline; we report the lower of the two as the headline
+in the abstract to avoid cherry-picking.}
 \label{tab:em-per-topic}
 \end{table}
 
@@ -136,25 +151,28 @@ Full Context (1M tokens, no memory) & 37.44 \\
 + Mem0                              & 37.09 \\
 + Zep                               & 39.97 \\
 + MemOS                             & 42.55 \\
-\textbf{compass (BGE-m3+rerank+rewrite+day-bucket+V4-pro $\cdot$ n=500)} & \textbf{44.40} \\
+\textbf{compass (BGE-m3+rerank+rewrite+day-bucket+V4-flash $\cdot$ Run 1, n=500)} & \textbf{44.40} \\
+\textbf{compass (BGE-m3+rerank+rewrite+day-bucket+V4-flash $\cdot$ Run 2, n=497)} & \textbf{47.28} \\
+\textbf{compass (mean of 2 independent runs)}                                    & \textbf{45.84} \\
 + EverCore                          & not reported \\
 \bottomrule
 \end{tabular}
-\caption{compass on EverMemBench-Dynamic full 500 (5 topics $\cdot$
-n=100/topic) alongside the paper Table 4 baselines. compass at 44.4\%
-exceeds MemOS (42.55) by 1.85 points and places above all four
-reported baselines, filling the EverCore gap with an open-source,
-self-hosted alternative. Recall@30 was 97.6\% (BM25-only baseline:
-38.1\%); the dense retriever + cross-encoder + multi-angle rewrite
-stack closes nearly the entire retrieval gap. Per-topic CV is 4\% $\cdot$
-cross-topic stability is high.}
+\caption{compass on EverMemBench-Dynamic alongside the paper Table 4
+baselines. Both independent runs of the identical pipeline (44.4\% Run 1,
+47.3\% Run 2) exceed MemOS (42.55) -- by 1.85 and 4.73 points respectively
+-- and the mean of the two runs (45.84\%) places above all four reported
+baselines. Recall@30 was 97.6\%/98.2\% (BM25-only baseline: 38.1\%); the
+dense retriever + cross-encoder + multi-angle rewrite stack closes nearly
+the entire retrieval gap. Per-topic CV is $\sim$4\% within each run;
+between-run variance at the All level is $\sim$3.2\%, consistent with the
+inherent stochasticity of LLM answer/judge calls.}
 \label{tab:em-full-stack}
 \end{table}
 
 \subsection{Bug archeology 	extperiodcentered{}  how we got here}
 
 Three bugs blocked early end-to-end runs (acc 0\%) before yielding
-the 40\% number above:
+the 44.4\% headline above:
 
 \begin{enumerate}
 \item Message truncation \texttt{[:300]} cut the answer (e.g. ``65\%'')
