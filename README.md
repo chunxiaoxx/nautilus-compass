@@ -10,7 +10,7 @@
 [![CI](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/ci.yml)
 [![arXiv build](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/build-paper.yml/badge.svg?branch=main)](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/build-paper.yml)
 [![LongMemEval-S](https://img.shields.io/badge/LongMemEval--S-56.6%25-brightgreen)](paper/RESULTS_v0.8.md)
-[![EverMemBench](https://img.shields.io/badge/EverMemBench-44.4%25-brightgreen)](paper/sections/paper2_06_5_evermembench.tex)
+[![EverMemBench](https://img.shields.io/badge/EverMemBench-44.4%E2%80%9347.3%25-brightgreen)](paper/sections/paper2_06_5_evermembench.tex)
 [![drift-AUC](https://img.shields.io/badge/drift_AUC-0.92-brightgreen)](#真账面--实测数据)
 [![version](https://img.shields.io/badge/version-1.0.0--rc2-orange)](CHANGELOG.md)
 [![MCP](https://img.shields.io/badge/MCP-7%20tools%20%C2%B7%20TLS%20%C2%B7%20RBAC-blue)](docs/mcp-usage.md)
@@ -370,7 +370,7 @@ A2A:    /a2a/messages endpoint          # cross-agent protocol
 
 ```bash
 # 1. Clone + install
-git clone https://github.com/<you>/nautilus-compass ~/.claude/plugins/nautilus-compass
+git clone https://github.com/chunxiaoxx/nautilus-compass ~/.claude/plugins/nautilus-compass
 bash ~/.claude/plugins/nautilus-compass/install.sh
 
 # 2. 在 ~/.claude/settings.json 挂 hook
@@ -483,15 +483,32 @@ Full guide: [`MCP_INSTALL.md`](MCP_INSTALL.md). Stdlib only · zero extra deps �
 
 ## Cite
 
-如果你用了我们方法，请引用 (arXiv 论文上线后会更新)：
+如果你用了我们方法或 benchmark · 请引用 (arXiv 论文上线后 `howpublished` 会更新成 arXiv ID)：
+
+**Paper 1 · drift detection**:
 
 ```bibtex
-@misc{zenmindmem2026,
-  title={Black-box Persona Drift Detection for Production LLM Agents:
-         A Hook-level Anchor Matching Approach},
-  author={chunxiaoxx and contributors},
+@misc{nautiluscompass-drift-2026,
+  title={Nautilus Compass: Black-box Persona Drift Detection for
+         Production LLM Agents},
+  author={Chunxiao Wang},
   year={2026},
-  howpublished={\url{https://github.com/<you>/nautilus-compass}}
+  note={Yiluo Technology Co., Ltd.},
+  howpublished={\url{https://github.com/chunxiaoxx/nautilus-compass}}
+}
+```
+
+**Paper 2 · LongMemEval-S + EverMemBench retrieval pipeline**:
+
+```bibtex
+@misc{nautiluscompass-memrecall-2026,
+  title={Closing the Memory Recall Gap with Chinese LLMs:
+         A Multi-Stage Retrieval Pipeline Achieving Zep-SOTA Performance
+         on LongMemEval-S at 1/15 Cost},
+  author={Chunxiao Wang},
+  year={2026},
+  note={Yiluo Technology Co., Ltd.},
+  howpublished={\url{https://github.com/chunxiaoxx/nautilus-compass}}
 }
 ```
 
