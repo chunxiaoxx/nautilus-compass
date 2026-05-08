@@ -126,6 +126,7 @@ Topic & Run 1 acc & Run 1 r@30 & Run 2 acc & Run 2 r@30 \\
 \midrule
 \textit{Mean across 2 runs} & \multicolumn{2}{c}{\textit{45.85\%}} & \multicolumn{2}{c}{\textit{97.9\%}} \\
 \textit{Range}              & \multicolumn{2}{c}{\textit{2.9 pts (44.4--47.3)}} & \multicolumn{2}{c}{\textit{0.6 pts}} \\
+\textit{Run 2 95\% CI}      & \multicolumn{2}{c}{---} & \multicolumn{2}{c}{\textit{(42.9\%, 51.7\%)}} \\
 \bottomrule
 \end{tabular}
 \caption{compass per-topic results on EverMemBench-Dynamic across two
@@ -134,7 +135,9 @@ within each run; cross-run CV at the All level is $\sim$3.2\%, which we
 read as the inherent variance of stochastic LLM answer/judge calls at
 this scale. Both endpoints (44.4\% Run 1, 47.3\% Run 2) sit above every
 reported Table 4 baseline; we report the lower of the two as the headline
-in the abstract to avoid cherry-picking.}
+in the abstract to avoid cherry-picking. The Run 2 row also reports a
+95\% percentile bootstrap CI on the All accuracy ($B{=}10000$ resamples,
+seed 20260507) computed from the per-question JSONL log.}
 \label{tab:em-per-topic}
 \end{table}
 
@@ -165,7 +168,14 @@ baselines. Recall@30 was 97.6\%/98.2\% (BM25-only baseline: 38.1\%); the
 dense retriever + cross-encoder + multi-angle rewrite stack closes nearly
 the entire retrieval gap. Per-topic CV is $\sim$4\% within each run;
 between-run variance at the All level is $\sim$3.2\%, consistent with the
-inherent stochasticity of LLM answer/judge calls.}
+inherent stochasticity of LLM answer/judge calls. Important honesty
+caveat: the lower bound of the Run 2 95\% CI (42.9\%) sits only 0.35 pts
+above MemOS's reported 42.55, so we cannot claim a single-run
+strict-significance result against MemOS without a paired comparison; the
+2-run mean (45.84\%) clears MemOS by 3.29 pts, and Run 2's point estimate
+(47.28) clears by 4.73 pts, but a definitive significance test would
+require sampling variance from MemOS or a matched-pair re-run on their
+public artifacts (which are not available).}
 \label{tab:em-full-stack}
 \end{table}
 
