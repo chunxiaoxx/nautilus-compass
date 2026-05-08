@@ -28,7 +28,7 @@ from typing import Any
 
 PROTOCOL_VERSION = "2024-11-05"
 SERVER_NAME = "nautilus-compass"
-SERVER_VERSION = "0.9.5"
+SERVER_VERSION = "1.0.0"
 DAEMON_HOST = "127.0.0.1"
 DAEMON_PORT = 9876
 DAEMON_TIMEOUT = 30.0
@@ -312,6 +312,40 @@ def tool_profile(args: dict) -> dict:
     return _ok("\n".join(lines))
 
 
+def tool_long_task(args: dict, emit=None, is_cancelled=None,
+                   log=None) -> dict:
+    """Demo tool for notifications/progress (Task #58) + logging (Task #59).
+
+    Emits `steps` progress frames (default 3) · checks `is_cancelled()`
+    between frames. Tool authors use this pattern: call
+    `emit(progress, total, message)` at each milestone, and check
+    `is_cancelled()` before committing irreversible work. Optional
+    `log(level, data)` pushes `notifications/message` frames gated by
+    the session's logging/setLevel threshold.
+    """
+    try:
+        steps = max(1, min(int(args.get("steps", 3)), 20))
+    except (TypeError, ValueError):
+        steps = 3
+    fired = 0
+    cancelled = False
+    if log:
+        log("info", f"long_task starting · steps={steps}")
+    for i in range(1, steps + 1):
+        if is_cancelled and is_cancelled():
+            cancelled = True
+            if log:
+                log("warning", f"long_task cancelled at step {i}/{steps}")
+            break
+        if emit:
+            emit(progress=i, total=steps, message=f"step {i}/{steps}")
+        if log:
+            log("debug", f"long_task step {i}/{steps}")
+        fired += 1
+    status = "cancelled" if cancelled else "done"
+    return _ok(f"long_task {status} · fired {fired}/{steps} progress frames")
+
+
 def tool_feedback_log(args: dict) -> dict:
     direction = (args.get("direction") or "").strip().lower()
     if direction not in ("good", "bad"):
@@ -443,6 +477,20 @@ TOOLS = {
             },
         },
     },
+    "long_task": {
+        "fn": tool_long_task,
+        "progress": True,  # emit/is_cancelled injected when _meta.progressToken set
+        "schema": {
+            "name": "long_task",
+            "description": "v1.0 · Demo tool for notifications/progress + cancelled. Emits N progress frames · checks cancellation between frames. Use as a smoke tool for MCP clients that want to exercise the progress/cancel wire.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "steps": {"type": "integer", "default": 3, "description": "1-20 · how many progress frames to emit"},
+                },
+            },
+        },
+    },
 }
 
 
@@ -458,33 +506,513 @@ def _err(msg: str) -> dict:
 
 # ─── JSON-RPC 2.0 dispatch ─────────────────────────────────────────
 
-def handle_message(msg: dict) -> dict | None:
+# Operator metrics · updated by the TCP loop · read by server/status.
+# Counters are ints with the GIL so increments are atomic enough for
+# per-message bookkeeping; `_metrics_lock` only guards the connection
+# set, which is a composite update.
+import threading as _threading
+
+_SERVER_STARTED_AT = time.time()
+_metrics_lock = _threading.Lock()
+_metrics = {
+    "active_connections": 0,
+    "total_connections": 0,
+    "auth_failures": 0,
+    "messages_handled": 0,
+}
+
+
+def _metrics_inc(key: str, delta: int = 1) -> None:
+    with _metrics_lock:
+        _metrics[key] = _metrics.get(key, 0) + delta
+
+
+def _metrics_snapshot() -> dict:
+    with _metrics_lock:
+        snap = dict(_metrics)
+    snap["uptime_seconds"] = round(time.time() - _SERVER_STARTED_AT, 3)
+    snap["server"] = {"name": SERVER_NAME, "version": SERVER_VERSION}
+    return snap
+
+
+# ─── MCP resources/* (Task #48) ────────────────────────────────────
+# Expose recent session_*.md files as MCP Resources so peer agents can
+# read them over the protocol (not just via recall's snippet). URIs look
+# like `compass://session/<project>/<filename>`. We restrict reads to
+# files inside ~/.claude/projects/*/memory with a session_*.md name · no
+# arbitrary filesystem access.
+
+RESOURCE_SCHEME = "compass"
+PROJECTS_ROOT = Path.home() / ".claude" / "projects"
+RESOURCE_LIST_LIMIT = 50
+RESOURCE_MAX_BYTES = 256 * 1024  # 256 KiB · session logs rarely exceed this
+
+
+def _list_session_resources(limit: int = RESOURCE_LIST_LIMIT) -> list[dict]:
+    if not PROJECTS_ROOT.exists():
+        return []
+    entries: list[tuple[float, Path, str]] = []
+    for proj_dir in PROJECTS_ROOT.iterdir():
+        mem = proj_dir / "memory"
+        if not mem.is_dir():
+            continue
+        for p in mem.glob("session_*.md"):
+            try:
+                entries.append((p.stat().st_mtime, p, proj_dir.name))
+            except OSError:
+                continue
+    entries.sort(key=lambda t: t[0], reverse=True)
+    out: list[dict] = []
+    for mtime, path, project in entries[:limit]:
+        out.append({
+            "uri": f"{RESOURCE_SCHEME}://session/{project}/{path.name}",
+            "name": path.stem,
+            "mimeType": "text/markdown",
+            "description": f"session log · project={project} · mtime={int(mtime)}",
+        })
+    return out
+
+
+def _resolve_session_uri(uri: str) -> Path:
+    """Parse and validate a compass:// URI to a real Path · reject traversal."""
+    if not isinstance(uri, str) or not uri.startswith(f"{RESOURCE_SCHEME}://session/"):
+        raise ValueError(f"unsupported uri scheme: {uri!r}")
+    rest = uri[len(f"{RESOURCE_SCHEME}://session/"):]
+    parts = rest.split("/")
+    if len(parts) != 2 or not all(parts):
+        raise ValueError(f"uri must be {RESOURCE_SCHEME}://session/<project>/<file>")
+    project, name = parts
+    # Reject anything that isn't a plain session_*.md filename · blocks
+    # path traversal and arbitrary file access even if someone slips a
+    # URL-encoded "/" in.
+    if "/" in name or "\\" in name or ".." in name or ".." in project:
+        raise ValueError("path traversal rejected")
+    if not name.startswith("session_") or not name.endswith(".md"):
+        raise ValueError("only session_*.md files are exposed as resources")
+    proj_dir = (PROJECTS_ROOT / project).resolve()
+    # Double-check proj_dir is still under PROJECTS_ROOT after resolve.
+    try:
+        proj_dir.relative_to(PROJECTS_ROOT.resolve())
+    except ValueError:
+        raise ValueError("project escapes projects root")
+    target = (proj_dir / "memory" / name).resolve()
+    target.relative_to(proj_dir)  # must be inside the project
+    if not target.is_file():
+        raise FileNotFoundError(f"no such resource: {uri}")
+    return target
+
+
+def _read_session_resource(uri: str) -> dict:
+    path = _resolve_session_uri(uri)
+    data = path.read_bytes()
+    if len(data) > RESOURCE_MAX_BYTES:
+        data = data[:RESOURCE_MAX_BYTES]
+        truncated = True
+    else:
+        truncated = False
+    text = data.decode("utf-8", errors="replace")
+    content = {"uri": uri, "mimeType": "text/markdown", "text": text}
+    if truncated:
+        content["text"] += f"\n\n<!-- truncated at {RESOURCE_MAX_BYTES} bytes -->\n"
+    return {"contents": [content]}
+
+
+# ─── token-scoped RBAC (Task #49) ──────────────────────────────────
+# A token maps to a set of scopes. Scopes gate tool/resource calls:
+#   tools.read      · recall, drift_history, session_search, profile, drift_check
+#   tools.write     · ingest_obs, feedback_log
+#   resources.read  · resources/list + resources/read
+#   *               · everything (legacy / dev)
+# Unauthenticated TCP (no --token) and stdio grant "*" — localhost trust.
+
+TOOL_SCOPE_MAP = {
+    "recall": "tools.read",
+    "drift_history": "tools.read",
+    "session_search": "tools.read",
+    "profile": "tools.read",
+    "drift_check": "tools.read",
+    "long_task": "tools.read",
+    "ingest_obs": "tools.write",
+    "feedback_log": "tools.write",
+}
+
+ALL_SCOPES = {"*", "tools.read", "tools.write", "resources.read"}
+
+
+def _parse_token_spec(spec: str) -> tuple[str, set[str]]:
+    """`foo` → (foo, {*}). `foo:a,b` → (foo, {a, b})."""
+    if ":" in spec:
+        token, rest = spec.split(":", 1)
+        scopes = {s.strip() for s in rest.split(",") if s.strip()}
+    else:
+        token, scopes = spec, {"*"}
+    token = token.strip()
+    if not token:
+        raise ValueError("empty token in spec")
+    bad = scopes - ALL_SCOPES
+    if bad:
+        raise ValueError(f"unknown scopes {sorted(bad)} · known={sorted(ALL_SCOPES)}")
+    return token, scopes
+
+
+def _load_token_table(specs: list[str] | None, token_file: str | None) -> dict[str, set[str]]:
+    """Merge --token cli specs and --token-file JSON into {token: scopes}.
+
+    Side effect: registers any `rate_limit: {rps, burst}` entries from the
+    token file into the module-level `_RATE_BUCKETS` map. CLI `--rate-limit`
+    flags are handled separately in main() after the table is built.
+    """
+    table: dict[str, set[str]] = {}
+    if specs:
+        for s in specs:
+            t, sc = _parse_token_spec(s)
+            table[t] = sc
+    if token_file:
+        with open(token_file, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        if not isinstance(data, dict):
+            raise ValueError("token file must be a JSON object {token: [scopes]} "
+                             "or {token: {scopes: [...], rate_limit: {rps, burst}}}")
+        for t, v in data.items():
+            if isinstance(v, list):
+                scopes = set(v)
+                rl = None
+            elif isinstance(v, dict):
+                scopes = set(v.get("scopes") or ["*"])
+                rl = v.get("rate_limit")
+            else:
+                scopes = {"*"}
+                rl = None
+            bad = scopes - ALL_SCOPES
+            if bad:
+                raise ValueError(f"token {t!r}: unknown scopes {sorted(bad)}")
+            table[t] = scopes
+            if rl:
+                try:
+                    rps = float(rl["rps"])
+                    burst = float(rl.get("burst", rl["rps"]))
+                except (KeyError, TypeError, ValueError) as e:
+                    raise ValueError(f"token {t!r}: bad rate_limit {rl!r}: {e}")
+                _rate_register(t, rps, burst)
+    return table
+
+
+def _has_scope(scopes: set[str] | None, required: str) -> bool:
+    if scopes is None:
+        return True  # stdio / no-auth mode
+    return "*" in scopes or required in scopes
+
+
+# ─── per-token rate limit (Task #51) ───────────────────────────────
+# Classic token-bucket · refills at `rps` tokens/sec · caps at `burst`.
+# `acquire()` returns (ok, retry_after_seconds). Thread-safe by fine-grained
+# lock per bucket — contention is only on the rate-limited client, so
+# per-token locking keeps well-behaved peers lock-free.
+
+class RateBucket:
+    __slots__ = ("rps", "burst", "_tokens", "_last", "_lock")
+
+    def __init__(self, rps: float, burst: float) -> None:
+        if rps <= 0 or burst <= 0:
+            raise ValueError("rps and burst must be positive")
+        self.rps = float(rps)
+        self.burst = float(burst)
+        self._tokens = float(burst)
+        self._last = time.monotonic()
+        self._lock = _threading.Lock()
+
+    def acquire(self, cost: float = 1.0, *, now: float | None = None) -> tuple[bool, float]:
+        with self._lock:
+            t = now if now is not None else time.monotonic()
+            # Refill.
+            delta = max(0.0, t - self._last)
+            self._tokens = min(self.burst, self._tokens + delta * self.rps)
+            self._last = t
+            if self._tokens >= cost:
+                self._tokens -= cost
+                return True, 0.0
+            # Report when the bucket will have one whole token again.
+            need = cost - self._tokens
+            return False, need / self.rps
+
+    def snapshot(self) -> dict:
+        with self._lock:
+            return {"rps": self.rps, "burst": self.burst,
+                    "tokens": round(self._tokens, 3)}
+
+
+# Gate map · methods not listed here are unlimited (ping, status, initialize,
+# notifications/*, tools/list are protocol chatter · cheap and safe).
+RATE_LIMITED_METHODS = {"tools/call", "resources/list", "resources/read"}
+
+# Populated by _load_token_table / _rate_flag parsing · token → RateBucket.
+# None scopes (dev mode / stdio) bypass lookup entirely.
+_RATE_BUCKETS: dict[str, RateBucket] = {}
+_RATE_BUCKETS_LOCK = _threading.Lock()
+
+# ─── notifications/cancelled bookkeeping (Task #58) ──────────────
+# Notify-only semantics: any `tools/call` whose requestId shows up here
+# is considered cancelled by the client. The current sync dispatch can't
+# abort an in-flight tool, but tools that emit progress frames can check
+# _is_cancelled() between frames to bail early. The set auto-reaps on
+# reply completion to keep memory bounded.
+_CANCELLED_REQUEST_IDS: set = set()
+_CANCELLED_LOCK = _threading.Lock()
+
+
+def _mark_cancelled(request_id) -> None:
+    with _CANCELLED_LOCK:
+        _CANCELLED_REQUEST_IDS.add(request_id)
+
+
+def _is_cancelled(request_id) -> bool:
+    with _CANCELLED_LOCK:
+        return request_id in _CANCELLED_REQUEST_IDS
+
+
+def _clear_cancelled(request_id) -> None:
+    """Drop a requestId from the cancelled set · called after reply sent."""
+    with _CANCELLED_LOCK:
+        _CANCELLED_REQUEST_IDS.discard(request_id)
+
+
+# ─── MCP logging (spec 2024-11-05) ────────────────────────────────
+#
+# `logging/setLevel` is a client-issued request that chooses the minimum
+# severity the server should push back via `notifications/message`. The
+# level is per-session: each transport owner holds a small dict and
+# threads it through handle_message. We use Python's logging levels as
+# a superset of the MCP enum (debug/info/notice/warning/error/critical/
+# alert/emergency) · anything below the requested level is dropped.
+
+LOG_LEVELS = {
+    "debug": 10, "info": 20, "notice": 25, "warning": 30,
+    "error": 40, "critical": 50, "alert": 60, "emergency": 70,
+}
+DEFAULT_LOG_LEVEL = "info"
+
+
+def _normalize_log_level(level: str) -> str | None:
+    if not isinstance(level, str):
+        return None
+    level = level.lower()
+    return level if level in LOG_LEVELS else None
+
+
+def _should_emit_log(session_level: str, record_level: str) -> bool:
+    """True if a record at record_level passes the session's threshold."""
+    threshold = LOG_LEVELS.get(session_level, LOG_LEVELS[DEFAULT_LOG_LEVEL])
+    incoming = LOG_LEVELS.get(record_level, LOG_LEVELS[DEFAULT_LOG_LEVEL])
+    return incoming >= threshold
+
+
+def emit_log(emit_notification, session_level: str, level: str,
+             data, logger: str | None = None) -> bool:
+    """Push a notifications/message frame if level passes the session gate.
+
+    Returns True if a frame was dispatched, False if filtered or if no
+    emitter is wired (stdio loop for example). Kept tolerant · a missing
+    emitter must never raise from inside a tool.
+    """
+    if emit_notification is None:
+        return False
+    level = _normalize_log_level(level) or DEFAULT_LOG_LEVEL
+    if not _should_emit_log(session_level or DEFAULT_LOG_LEVEL, level):
+        return False
+    frame = {
+        "jsonrpc": "2.0",
+        "method": "notifications/message",
+        "params": {"level": level, "data": data},
+    }
+    if logger:
+        frame["params"]["logger"] = logger
+    try:
+        emit_notification(frame)
+    except Exception:
+        return False
+    return True
+
+
+def _rate_bucket_for(token: str | None) -> RateBucket | None:
+    if token is None:
+        return None
+    with _RATE_BUCKETS_LOCK:
+        return _RATE_BUCKETS.get(token)
+
+
+def _rate_register(token: str, rps: float, burst: float) -> None:
+    with _RATE_BUCKETS_LOCK:
+        _RATE_BUCKETS[token] = RateBucket(rps, burst)
+
+
+def _rate_clear() -> None:
+    """Test helper · wipe all registered buckets."""
+    with _RATE_BUCKETS_LOCK:
+        _RATE_BUCKETS.clear()
+
+
+def _parse_rate_flag(spec: str) -> tuple[str, float, float]:
+    """`TOKEN=rps/burst` → (token, rps, burst). Used by --rate-limit."""
+    if "=" not in spec:
+        raise ValueError("rate-limit spec must be TOKEN=rps/burst")
+    token, rest = spec.split("=", 1)
+    token = token.strip()
+    if not token:
+        raise ValueError("rate-limit token is empty")
+    if "/" not in rest:
+        raise ValueError("rate value must be rps/burst (e.g. 5/10)")
+    rps_s, burst_s = rest.split("/", 1)
+    try:
+        rps, burst = float(rps_s), float(burst_s)
+    except ValueError:
+        raise ValueError(f"rate-limit rps/burst not numeric: {rest!r}")
+    if rps <= 0 or burst <= 0:
+        raise ValueError("rps and burst must be positive")
+    return token, rps, burst
+
+
+def handle_message(msg: dict, scopes: set[str] | None = None,
+                   token: str | None = None,
+                   emit_notification=None,
+                   logging_state: dict | None = None) -> dict | None:
     method = msg.get("method", "")
     params = msg.get("params") or {}
     msg_id = msg.get("id")
 
+    # notifications/cancelled · client asks us to stop working on a
+    # previously-issued requestId. Notify-only semantics: record the id,
+    # long-running tools poll _is_cancelled() between progress frames.
+    if method == "notifications/cancelled":
+        rid = params.get("requestId")
+        if rid is not None:
+            _mark_cancelled(rid)
+        return None  # notification · no reply
+
+    # logging/setLevel · session-scoped threshold the transport owner
+    # keeps across calls on this connection. Invalid levels rejected
+    # with -32602 so clients fail fast instead of silently downgrading.
+    if method == "logging/setLevel":
+        level = _normalize_log_level(params.get("level", ""))
+        if level is None:
+            return _reply_err(msg_id, -32602,
+                              f"invalid log level: {params.get('level')!r}")
+        if logging_state is not None:
+            logging_state["level"] = level
+        return _reply(msg_id, {})
+
+    # Rate limit gate · applied before scope check so the client doesn't
+    # leak scope info by spamming. Unknown methods and protocol chatter
+    # never hit the bucket.
+    if method in RATE_LIMITED_METHODS:
+        bucket = _rate_bucket_for(token)
+        if bucket is not None:
+            ok, retry_after = bucket.acquire()
+            if not ok:
+                return _reply_err(
+                    msg_id, -32029,
+                    f"rate limited · retry in {retry_after:.2f}s",
+                )
+
     if method == "initialize":
         return _reply(msg_id, {
             "protocolVersion": PROTOCOL_VERSION,
-            "capabilities": {"tools": {}},
+            "capabilities": {"tools": {}, "resources": {}, "logging": {}},
             "serverInfo": {"name": SERVER_NAME, "version": SERVER_VERSION},
         })
     if method == "notifications/initialized":
         return None  # notification · no reply
     if method == "tools/list":
-        return _reply(msg_id, {"tools": [t["schema"] for t in TOOLS.values()]})
+        visible = []
+        for t in TOOLS.values():
+            req = TOOL_SCOPE_MAP.get(t["schema"]["name"], "tools.read")
+            if _has_scope(scopes, req):
+                visible.append(t["schema"])
+        return _reply(msg_id, {"tools": visible})
     if method == "tools/call":
         name = params.get("name")
         args = params.get("arguments") or {}
         tool = TOOLS.get(name)
         if not tool:
             return _reply_err(msg_id, -32601, f"unknown tool: {name}")
+        req = TOOL_SCOPE_MAP.get(name, "tools.read")
+        if not _has_scope(scopes, req):
+            return _reply_err(msg_id, -32001, f"scope required: {req}")
         try:
-            return _reply(msg_id, tool["fn"](args))
+            # Progress-aware tools: when the client included
+            # `_meta.progressToken`, wire an emit callback that pushes
+            # notifications/progress frames back over the caller's
+            # transport. is_cancelled() lets the tool bail cooperatively.
+            meta = params.get("_meta") or {}
+            progress_token = meta.get("progressToken")
+            # notifications/message (logging · Task #59) · gated by the
+            # session's setLevel threshold. Closure captures the current
+            # state dict so future setLevel calls take effect mid-tool.
+            session_level_ref = logging_state or {"level": DEFAULT_LOG_LEVEL}
+
+            def _log(level, data, logger=None):
+                return emit_log(emit_notification,
+                                session_level_ref.get("level", DEFAULT_LOG_LEVEL),
+                                level, data, logger=logger)
+            if tool.get("progress") and progress_token is not None and emit_notification:
+                def _emit(progress, total=None, message=None):
+                    frame = {
+                        "jsonrpc": "2.0",
+                        "method": "notifications/progress",
+                        "params": {
+                            "progressToken": progress_token,
+                            "progress": progress,
+                        },
+                    }
+                    if total is not None:
+                        frame["params"]["total"] = total
+                    if message is not None:
+                        frame["params"]["message"] = message
+                    emit_notification(frame)
+                result = tool["fn"](args, emit=_emit,
+                                    is_cancelled=lambda: _is_cancelled(msg_id),
+                                    log=_log)
+            elif tool.get("progress"):
+                # Tool supports progress but client didn't ask · call
+                # without emit. is_cancelled still wired so a cancellation
+                # notification racing ahead still takes effect.
+                result = tool["fn"](args, emit=None,
+                                    is_cancelled=lambda: _is_cancelled(msg_id),
+                                    log=_log)
+            else:
+                result = tool["fn"](args)
+            reply = _reply(msg_id, result)
         except Exception as e:
-            return _reply_err(msg_id, -32603, f"tool {name} failed: {e}")
+            reply = _reply_err(msg_id, -32603, f"tool {name} failed: {e}")
+        finally:
+            _clear_cancelled(msg_id)
+        return reply
     if method == "ping":
         return _reply(msg_id, {})
+    if method == "server/status":
+        # Unauthenticated-safe: only aggregate counters · no per-client
+        # state or tool output. Useful for probes and dashboards.
+        return _reply(msg_id, _metrics_snapshot())
+    if method == "resources/list":
+        if not _has_scope(scopes, "resources.read"):
+            return _reply_err(msg_id, -32001, "scope required: resources.read")
+        limit = params.get("limit") or RESOURCE_LIST_LIMIT
+        try:
+            limit = max(1, min(int(limit), RESOURCE_LIST_LIMIT))
+        except (TypeError, ValueError):
+            return _reply_err(msg_id, -32602, "limit must be an integer")
+        return _reply(msg_id, {"resources": _list_session_resources(limit=limit)})
+    if method == "resources/read":
+        if not _has_scope(scopes, "resources.read"):
+            return _reply_err(msg_id, -32001, "scope required: resources.read")
+        uri = params.get("uri")
+        if not uri:
+            return _reply_err(msg_id, -32602, "uri required")
+        try:
+            return _reply(msg_id, _read_session_resource(uri))
+        except ValueError as e:
+            return _reply_err(msg_id, -32602, str(e))
+        except FileNotFoundError as e:
+            return _reply_err(msg_id, -32002, str(e))
     return _reply_err(msg_id, -32601, f"method not found: {method}")
 
 
@@ -496,9 +1024,14 @@ def _reply_err(msg_id: Any, code: int, message: str) -> dict:
     return {"jsonrpc": "2.0", "id": msg_id, "error": {"code": code, "message": message}}
 
 
-# ─── stdio loop ────────────────────────────────────────────────────
+# ─── transport loops ──────────────────────────────────────────────
 
-def main() -> int:
+def _stdio_loop() -> int:
+    """Read one JSON-RPC message per line from stdin · reply on stdout.
+
+    This is the default transport and the one Claude Code / Desktop use.
+    Session state is implicit (single process = single client).
+    """
     sys.stdout.reconfigure(encoding="utf-8")
     sys.stdin.reconfigure(encoding="utf-8")
     for line in sys.stdin:
@@ -509,11 +1042,200 @@ def main() -> int:
             msg = json.loads(line)
         except json.JSONDecodeError:
             continue
-        reply = handle_message(msg)
+        reply = handle_message(msg, emit_notification=lambda f: (
+            sys.stdout.write(json.dumps(f, ensure_ascii=False) + "\n"),
+            sys.stdout.flush(),
+        ))
         if reply is not None:
             sys.stdout.write(json.dumps(reply, ensure_ascii=False) + "\n")
             sys.stdout.flush()
     return 0
+
+
+def _build_server_ssl_context(cert: str, key: str,
+                              client_ca: str | None = None):
+    """Return an ssl.SSLContext for the TCP server.
+
+    cert + key required. `client_ca` enables mTLS — every connecting peer
+    must present a cert signed by that CA. Raises on bad paths.
+    """
+    import ssl
+    ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+    ctx.load_cert_chain(certfile=cert, keyfile=key)
+    if client_ca:
+        ctx.load_verify_locations(cafile=client_ca)
+        ctx.verify_mode = ssl.CERT_REQUIRED
+    return ctx
+
+
+def _tcp_loop(host: str, port: int,
+              token_table: dict[str, set[str]] | None,
+              ssl_ctx=None) -> int:
+    """Accept concurrent clients over TCP · one thread per client.
+
+    Wire format: line-delimited JSON-RPC, same as stdio. The first message
+    from every client MUST be either:
+      1. `initialize` with `params.authToken` matching a token in `token_table`
+         (auth enforced · peer inherits that token's scopes), or
+      2. a plain `initialize` (when token_table is None · dev mode · full scope).
+
+    Unauthenticated clients get one `-32001 unauthorized` reply and are
+    disconnected. We log to stderr so operators see auth failures without
+    polluting the wire.
+    """
+    import socket
+    import threading
+
+    if token_table is None:
+        sys.stderr.write(
+            "WARN · nautilus-compass MCP TCP running without any --token. "
+            "Do not expose this port to untrusted networks.\n"
+        )
+
+    srv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    srv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    srv.bind((host, port))
+    srv.listen(16)
+    proto = "tls" if ssl_ctx else "tcp"
+    sys.stderr.write(f"nautilus-compass MCP listening on {host}:{port} ({proto})\n")
+
+    def _serve(conn: socket.socket, addr: tuple) -> None:
+        # None scopes = localhost dev grants everything. A real token
+        # grants that token's scope set.
+        authed = token_table is None
+        scopes: set[str] | None = None if authed else set()
+        session_token: str | None = None
+        # Per-connection mutable state threaded into handle_message ·
+        # logging_state["level"] starts at DEFAULT_LOG_LEVEL and can be
+        # updated via logging/setLevel. Isolated per socket so one
+        # client's verbose level never leaks into another's session.
+        logging_state: dict = {"level": DEFAULT_LOG_LEVEL}
+        _metrics_inc("total_connections")
+        _metrics_inc("active_connections")
+        try:
+            buf = b""
+            with conn, conn.makefile("rwb", buffering=0) as _f:
+                while True:
+                    chunk = conn.recv(4096)
+                    if not chunk:
+                        return
+                    buf += chunk
+                    while b"\n" in buf:
+                        line, buf = buf.split(b"\n", 1)
+                        line = line.strip()
+                        if not line:
+                            continue
+                        try:
+                            msg = json.loads(line.decode("utf-8"))
+                        except (json.JSONDecodeError, UnicodeDecodeError):
+                            continue
+                        if not authed:
+                            supplied = ((msg.get("params") or {}).get("authToken")
+                                        if isinstance(msg.get("params"), dict) else None)
+                            if msg.get("method") != "initialize" or supplied not in (token_table or {}):
+                                err = _reply_err(msg.get("id"), -32001, "unauthorized")
+                                conn.sendall((json.dumps(err) + "\n").encode("utf-8"))
+                                _metrics_inc("auth_failures")
+                                sys.stderr.write(f"AUTH-FAIL · {addr[0]}:{addr[1]}\n")
+                                return
+                            authed = True
+                            scopes = set((token_table or {}).get(supplied, set()))
+                            session_token = supplied
+                            # strip token before forwarding to handle_message so it
+                            # never shows up in logs or downstream
+                            if isinstance(msg.get("params"), dict):
+                                msg["params"].pop("authToken", None)
+                        reply = handle_message(
+                            msg, scopes=scopes, token=session_token,
+                            emit_notification=lambda f: conn.sendall(
+                                (json.dumps(f, ensure_ascii=False) + "\n").encode("utf-8")),
+                            logging_state=logging_state,
+                        )
+                        _metrics_inc("messages_handled")
+                        if reply is not None:
+                            conn.sendall((json.dumps(reply, ensure_ascii=False) + "\n").encode("utf-8"))
+        except (ConnectionResetError, BrokenPipeError, OSError):
+            return
+        finally:
+            _metrics_inc("active_connections", -1)
+
+    try:
+        while True:
+            conn, addr = srv.accept()
+            if ssl_ctx is not None:
+                try:
+                    conn = ssl_ctx.wrap_socket(conn, server_side=True)
+                except Exception as e:
+                    sys.stderr.write(f"TLS-HANDSHAKE-FAIL · {addr[0]}:{addr[1]} · {e}\n")
+                    try:
+                        conn.close()
+                    except OSError:
+                        pass
+                    continue
+            t = threading.Thread(target=_serve, args=(conn, addr), daemon=True)
+            t.start()
+    except KeyboardInterrupt:
+        return 0
+    finally:
+        srv.close()
+
+
+def main() -> int:
+    import argparse
+    p = argparse.ArgumentParser(prog="nautilus-compass-mcp")
+    p.add_argument("--transport", choices=["stdio", "tcp"], default="stdio",
+                   help="Transport layer. Default: stdio (for Claude Code / Desktop). "
+                        "Use tcp for cross-machine A2A.")
+    p.add_argument("--host", default="127.0.0.1",
+                   help="TCP bind host. Default 127.0.0.1 · use 0.0.0.0 only behind a VPN.")
+    p.add_argument("--port", type=int, default=8766,
+                   help="TCP bind port. Default 8766.")
+    p.add_argument("--token", action="append", default=None,
+                   help="Shared secret required on `initialize` in TCP mode. "
+                        "Accepts `TOKEN` (full scope · legacy) or `TOKEN:scope1,scope2` "
+                        "(scope-restricted). Repeatable. Falls back to COMPASS_MCP_TOKEN. "
+                        "stdio mode ignores this. Scopes: tools.read, tools.write, resources.read.")
+    p.add_argument("--token-file", default=os.environ.get("COMPASS_MCP_TOKEN_FILE"),
+                   help="JSON file mapping {token: [scopes]}. Merged with --token.")
+    p.add_argument("--rate-limit", action="append", default=None,
+                   help="Per-token token-bucket in TOKEN=rps/burst form. "
+                        "Repeatable. Unlisted tokens are unlimited.")
+    p.add_argument("--tls-cert", default=None,
+                   help="Path to PEM server cert. Required with --tls-key.")
+    p.add_argument("--tls-key", default=None,
+                   help="Path to PEM server private key.")
+    p.add_argument("--tls-client-ca", default=None,
+                   help="Path to PEM CA · enables mTLS · requires client cert.")
+    args = p.parse_args()
+
+    if args.transport == "stdio":
+        return _stdio_loop()
+    # Legacy env fallback: COMPASS_MCP_TOKEN as a single full-scope token.
+    specs = list(args.token) if args.token else []
+    env_tok = os.environ.get("COMPASS_MCP_TOKEN")
+    if env_tok and not specs and not args.token_file:
+        specs = [env_tok]
+    try:
+        table = _load_token_table(specs, args.token_file)
+        for rl in args.rate_limit or []:
+            tok, rps, burst = _parse_rate_flag(rl)
+            _rate_register(tok, rps, burst)
+    except (ValueError, OSError, json.JSONDecodeError) as e:
+        sys.stderr.write(f"ERR · bad token config: {e}\n")
+        return 2
+    ssl_ctx = None
+    if args.tls_cert or args.tls_key or args.tls_client_ca:
+        if not (args.tls_cert and args.tls_key):
+            sys.stderr.write("ERR · --tls-cert and --tls-key must be set together\n")
+            return 2
+        try:
+            ssl_ctx = _build_server_ssl_context(
+                args.tls_cert, args.tls_key, args.tls_client_ca)
+        except (OSError, ValueError) as e:
+            sys.stderr.write(f"ERR · TLS cert load failed: {e}\n")
+            return 2
+    return _tcp_loop(args.host, args.port,
+                     table if table else None, ssl_ctx=ssl_ctx)
 
 
 if __name__ == "__main__":
