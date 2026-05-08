@@ -179,6 +179,59 @@ public artifacts (which are not available).}
 \label{tab:em-full-stack}
 \end{table}
 
+\subsection{Cross-judge replication: Gemini 2.5 Pro on Run 2}
+\label{sec:em-crossjudge-gemini}
+
+Because the V4-flash answerer-as-judge setup conflates two roles in a
+single LLM family, we cross-judged a stratified n=100 subsample of Run 2
+with \textbf{Gemini 2.5 Pro} via Vertex AI (different vendor, different
+training data, deterministic at \texttt{temperature=0}). Results:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lr}
+\toprule
+Quantity (n=100 stratified · v3 jsonl)         & Value \\
+\midrule
+DeepSeek V4-flash judge accuracy               & 42.0\% \\
+Gemini 2.5 Pro judge accuracy                  & 28.0\% \\
+Cohen's $\kappa$ (inter-judge agreement)       & 0.70 \\
+Disagreements (DS=Y, Gemini=N)                 & 14 \\
+Disagreements (DS=N, Gemini=Y)                 & 0 \\
+\bottomrule
+\end{tabular}
+\caption{Cross-judge replication on Run 2. Disagreements are perfectly
+asymmetric: Gemini accepts a strict subset of what V4-flash accepts.}
+\label{tab:em-crossjudge-gemini}
+\end{table}
+
+Manual inspection of the 14 disagreements revealed that \emph{both} judges
+have systematic biases rather than one being uniformly correct:
+
+\begin{itemize}
+\item \textbf{V4-flash over-permits}: scored empty / truncated predictions
+as CORRECT (4 cases, e.g.\ pred \texttt{""} for a question whose gold
+answer was ``46 days'').
+\item \textbf{Gemini over-strict}: scored predictions that quote the gold
+answer plus extra context as INCORRECT (5 cases, e.g.\ pred ``500
+concurrent users were simulated'' vs gold ``500'').
+\item \textbf{Both reasonable}: 5 cases of partial-match ambiguity where
+either verdict is defensible.
+\end{itemize}
+
+The honest reading is that the true accuracy on this subsample sits
+somewhere in $[28\%, 42\%]$, with a balanced-judge estimate of roughly
+35--40\%. We retain V4-flash as the primary judge in
+Tables~\ref{tab:em-per-topic} and~\ref{tab:em-full-stack} for parity
+with the EverMemBench paper's GPT-4.1-mini setup (mid-tier closed
+LLM-as-judge), and report Gemini's stricter number here as a transparent
+sensitivity bound. Our recommendation for downstream EverMemBench
+reproductions is to publish at least two judge-family numbers per run.
+
+The Run 2 per-question JSONL plus the cross-judge per-question log are
+released at \texttt{paper/results/em\_bge\_v3\_per\_question.jsonl} and
+\texttt{paper/results/em\_cross\_judge\_gemini\_per\_question.jsonl}.
+
 \subsection{Bug archeology 	extperiodcentered{}  how we got here}
 
 Three bugs blocked early end-to-end runs (acc 0\%) before yielding

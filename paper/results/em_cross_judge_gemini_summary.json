@@ -1,0 +1,107 @@
+{
+  "model": "gemini-2.5-pro",
+  "input_jsonl": "C:\\Users\\chunx\\tmp_em_v3.jsonl",
+  "sample_n": 100,
+  "parsed_n": 100,
+  "unparsed_n": 0,
+  "deepseek_acc": 0.42,
+  "gemini_acc": 0.28,
+  "cohen_kappa": 0.6988,
+  "disagree_total": 14,
+  "deepseek_yes_gemini_no": 14,
+  "deepseek_no_gemini_yes": 0,
+  "examples_deepseek_yes_gemini_no": [
+    {
+      "topic": "01",
+      "qa_id": "F_TP_Top01_004",
+      "Q": "In the Carbon Emissions Accounting and Asset Management Platform project, how many days did the comp",
+      "gold": "The task started on October 24, 2025, and ended on October 30, 2025, lasting 7 days.",
+      "pred": "7 days",
+      "deepseek": true,
+      "gemini": false
+    },
+    {
+      "topic": "01",
+      "qa_id": "F_SH_Top01_033",
+      "Q": "When reviewing the first draft of the user interview outline for the carbon emissions management pla",
+      "gold": "Lizhen Zhou",
+      "pred": "Lizhen Zhou (Boss Zhou) suggested adding the question about customizable reporting dimensions during",
+      "deepseek": true,
+      "gemini": false
+    },
+    {
+      "topic": "03",
+      "qa_id": "F_SH_Top03_024",
+      "Q": "According to the test report submitted by Xue Han, how many concurrent users were simulated during t",
+      "gold": "500",
+      "pred": "500 concurrent users were simulated, as explicitly stated in Xue Han's test report for the login int",
+      "deepseek": true,
+      "gemini": false
+    },
+    {
+      "topic": "04",
+      "qa_id": "F_MH_Top04_005",
+      "Q": "On the Data Asset Portal, after the API for data permission applications was developed, how long did",
+      "gold": "From August 8, 2025 to September 23, 2025, there is a period of 46 days.",
+      "pred": "",
+      "deepseek": true,
+      "gemini": false
+    },
+    {
+      "topic": "04",
+      "qa_id": "F_SH_Top04_007",
+      "Q": "When Chunlan Shao introduces the preliminary plan for the portal project's basic security scan, what",
+      "gold": "OWASP ZAP tool",
+      "pred": "Chunlan Shao plans to use the OWASP ZAP tool for the basic security scan.",
+      "deepseek": true,
+      "gemini": false
+    },
+    {
+      "topic": "04",
+      "qa_id": "F_SH_Top04_046",
+      "Q": "In the Data Development Governance Platform project, after Kai Yuan shared the detailed design docum",
+      "gold": "The interface contract in Chapter 2 and the idempotency guarantee solution in Chapter 4.",
+      "pred": "Kai Yuan specifically reminded everyone to pay close attention to the **API contract in Chapter 2** ",
+      "deepseek": true,
+      "gemini": false
+    },
+    {
+      "topic": "04",
+      "qa_id": "F_MH_Top04_038",
+      "Q": "In the data service center group, after the colleague responsible for establishing the project's Git",
+      "gold": "From May 30, 2025 to September 9, 2025, there is a gap of 102 days.",
+      "pred": "",
+      "deepseek": true,
+      "gemini": false
+    },
+    {
+      "topic": "04",
+      "qa_id": "F_TP_Top04_005",
+      "Q": "In the Unified Data Development and Governance Platform project, how many days did it take for Siyu ",
+      "gold": "The task started on November 24, 2025, and ended on November 26, 2025, lasting 3 days.",
+      "pred": "From November 24 to November 26, Siyu Liang started scanning base images and finished the final appl",
+      "deepseek": true,
+      "gemini": false
+    },
+    {
+      "topic": "05",
+      "qa_id": "F_MH_Top05_002",
+      "Q": "After the K8s deployment configuration for the user profiling service was completed in the intellige",
+      "gold": "From October 10, 2025 to November 12, 2025, there are 33 days.",
+      "pred": "After the K8s deployment configuration for the user profiling service was completed on 2025-10-10, i",
+      "deepseek": true,
+      "gemini": false
+    },
+    {
+      "topic": "05",
+      "qa_id": "F_SH_Top05_010",
+      "Q": "When planning the review meeting for the \"Financial Diagnosis and Planning Application\" project, bas",
+      "gold": "At least 2.5 hours",
+      "pred": "2.5 hours",
+      "deepseek": true,
+      "gemini": false
+    }
+  ],
+  "examples_deepseek_no_gemini_yes": [],
+  "elapsed_sec": 313.3
+}
