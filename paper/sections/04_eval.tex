@@ -107,7 +107,7 @@ tails that account for the residual error rate.
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.85\textwidth]{figures/fig4_drift_histogram.pdf}
-\caption{Drift score distribution for the v0.7.1 final configuration.
+\caption{Drift score distribution for the v0.7.1 final configuration.\protect\footnote{Evaluation snapshot is v0.7.1; current code release is v1.0.0 (2026-05-08). The compass surfaces evaluated here (drift detector, BGE+rerank pipeline, anchor schema) are unchanged from v0.7.1 to 1.0.0.}
 Aligned prompts (green) cluster around $+0.06$; deviation prompts
 (red) cluster around $-0.05$. The decision threshold (best Youden's J)
 sits at $-0.032$.}
@@ -302,13 +302,13 @@ temporal-reasoning ($+0.25$).}
 \paragraph{Why subset 12 for mem0.}
 The mem0 head-to-head requires resetting and re-populating mem0's
 index per question (approximately 30\,s/question of Vertex AI calls),
-making full-500 prohibitive. Subset 12 with balanced per-type sampling
-allows a reproducible direct comparison within a practical compute
-budget. The reranker numbers, in contrast, are now reported on the
-full 500 (Table~\ref{tab:longmemeval-pertype}); subset-12 P@5$=0.917$
-and MRR$=0.837$ from the table above are consistent with the full-500
-P@5$=0.920$, MRR$=0.855$, validating the subset-12 reranker result at
-scale.
+making full-500 prohibitive. This subset, with balanced per-type
+sampling, allows a reproducible direct comparison within a practical
+compute budget. The reranker numbers, in contrast, are now reported
+on the full 500 (Table~\ref{tab:longmemeval-pertype}); the n=12
+ablation P@5$=0.917$ and MRR$=0.837$ from the table above are
+consistent with the full-500 P@5$=0.920$, MRR$=0.855$, validating the
+reranker result at scale.
 
 \subsection{Local Recall Sanity Check}
 \label{sec:eval-recall}

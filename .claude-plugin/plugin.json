@@ -1,0 +1,21 @@
+{
+  "name": "nautilus-compass",
+  "version": "1.0.0",
+  "description": "Cross-agent memory layer with drift detection, Merkle integrity, semantic recall, and MCP A2A protocol. Surfaces user-facing slash commands for direct inspection of session memory.",
+  "author": {
+    "name": "Nautilus team",
+    "url": "https://github.com/chunxiaoxx/nautilus-compass"
+  },
+  "homepage": "https://github.com/chunxiaoxx/nautilus-compass",
+  "repository": "https://github.com/chunxiaoxx/nautilus-compass",
+  "license": "MIT",
+  "keywords": [
+    "memory",
+    "drift",
+    "merkle",
+    "recall",
+    "mcp",
+    "a2a",
+    "longmemeval"
+  ]
+}

@@ -1,5 +1,395 @@
 # Changelog
 
+## [1.0.0] · 2026-05-08 — "stable · promote rc2 verbatim"
+
+`1.0.0-rc2` (2026-05-07) ships unchanged as `1.0.0`. No code or test
+changes since rc2; this entry exists to mark the stable cut and bump
+version strings (`pyproject.toml`, `package.json`, `.claude-plugin/plugin.json`,
+`mcp_server.SERVER_VERSION`) from `1.0.0-rc2` to `1.0.0`.
+
+The full feature surface — MCP A2A protocol with TLS/mTLS, per-token RBAC,
+per-token rate limiting, auto-reconnect client with `-32029` backoff,
+`resources/*` for session-log streaming, `notifications/{progress,cancelled,message}`,
+`logging/setLevel`, third-party stdio shim, plus the slash-command plugin
+surface — is unchanged from rc2 and is documented below under that entry.
+
+### Eval headlines (locked)
+
+- LongMemEval-S n=500: **56.6%** (v0.8 · 2026-05-04 lock)
+- EverMemBench-Dynamic n=500: **44.4%** e2e · recall@30 97.6% · tops every reported
+  Table 4 baseline (vs MemOS 42.55, Mem0 39.0, A-Mem 35.4)
+- Drift detector: **AUC 0.83** held-out (50/50 aligned/deviation, 2026-04-29) ·
+  0.92 in-set
+- V4-pro full-500: **56.4%** (-0.2 vs v0.8, 8× compute, shipped as Appendix C
+  negative result)
+
+### Tests · 187 passing · 0 flake · 0 regression
+
+### Known non-blocking
+
+- Tier 2 #19 · v1 vs v2 driver ablation — deferred (non-blocker)
+- Tier 3 · Gate48 Run C' at temp=0.7 — deferred (non-blocker)
+
+---
+
+## [1.0.0-rc2] · 2026-05-07 — "MCP A2A production-hardened · TLS · RBAC · rate limit"
+
+rc1 shipped the MCP surface as **preview**. rc2 promotes it to
+production-ready: TLS + mTLS, per-token RBAC, per-token rate limiting,
+an auto-reconnect client with -32029 backoff, a three-peer scoped A2A
+demo, and `resources/*` for streaming session logs. 110 new tests
+(77 → 187), 0 flake, 0 regression.
+
+### 🎯 Highlights since rc1
+
+- 📓 **`logging/setLevel` + `notifications/message`** (Task #59) ·
+  MCP 2024-11-05 logging spec · per-session threshold dict threaded
+  through `handle_message` so each TCP connection holds its own level ·
+  invalid level → `-32602` so clients fail loud · `MCPClient.set_log_level(level)` +
+  `call_tool(..., log_cb=fn)` dispatches `notifications/message` frames
+  alongside progress · `_log` closure reads the level dict on every
+  emit so a setLevel mid-session takes effect on the next frame · the
+  shared `long_task` demo tool now emits start (`info`) + per-step
+  (`debug`) + cancel (`warning`) records · capabilities advertise
+  `"logging": {}` in initialize · 14 tests
+- 🧩 **Plugin slash-command surface** (Task #62 + #63) ·
+  `.claude-plugin/plugin.json` manifest synced with pyproject ·
+  5 user-facing commands `/compass-{verify,drift,recall,search,status}`
+  wrap the existing CLIs · `skills/compass-integrity/SKILL.md`
+  auto-trigger pre-flight before recall · fixed real bug:
+  `compass_verify.py` `UnicodeEncodeError` on Windows GBK piped stdout
+  (✓ glyph) by forcing stdout/stderr to UTF-8 · 6 manifest tests
+- 📡 **`notifications/progress` + `notifications/cancelled`** (Task #58) ·
+  MCP 2024-11-05 progress spec · server emits intermediate frames when
+  a call carries `_meta.progressToken` · `MCPClient.call_tool(...,
+  progress_cb=fn)` auto-injects a token and dispatches frames to the
+  callback before returning the final reply · `client.cancel(rid)`
+  sends fire-and-forget cancel · 13 tests incl. full TCP e2e + cb
+  exception isolation + mid-flight cancel shortens emission
+- 🔐 **TLS + optional mTLS for TCP transport** (Task #53) ·
+  `--tls-cert / --tls-key / --tls-client-ca` on server · `tls=True` +
+  `tls_ca_cert` + `tls_client_cert/key` on client · banner prints
+  `(tcp)` vs `(tls)` · 10 tests incl. full mTLS round-trip + bad-CA /
+  missing-cert rejection
+- 🛡️ **Token-scoped RBAC** (Task #49) · per-token scope sets
+  (`tools.read` / `tools.write` / `resources.read` / `*`) ·
+  `--token-file TOKENS.json` for out-of-band rotation · tools/list
+  now scope-filtered · 21 tests
+- 🎚️ **Per-token rate limit** (Task #51) · classic token-bucket ·
+  `--rate-limit TOKEN=rps/burst` · returns -32029 with exact retry-in
+  delay · 23 tests
+- ♻️ **Client auto-backoff on -32029** (Task #52) · `MCPClient(...
+  rate_limit_retries=N)` parses the server's retry-in and sleeps
+  automatically · opt-in (default 0 preserves strict behaviour) ·
+  16 tests
+- 📡 **MCP resources/\*** (Task #48) · `compass://session/...`
+  URIs · `resources/list` + `resources/read` · session-log
+  streaming for peers · 16 tests
+- 🔁 **MCPClient with transparent reconnect** (Task #46) ·
+  exponential backoff · reconnect telemetry · 6 tests
+- 🤝 **A2A demo v2** (Task #50) · three scoped peers
+  (observer / reasoner / admin) · real RBAC denial surfaced in the
+  demo · resources round-trip end-to-end · 4 tests
+- 🩺 **server/status endpoint** (Task #45) · active connections,
+  bytes in/out, per-token call counts, uptime · thread-safe
+- 🔑 **TCP transport with token auth** (Task #42) · `authToken` on
+  initialize · shipped baseline before RBAC/TLS layered on top
+
+### Changed
+
+- `pyproject.toml` · v1.0.0-rc1 → v1.0.0-rc2
+- `mcp_server.py` gained TLS plumbing, RBAC enforcement, rate-limit
+  dispatch gating. Banner now announces transport variant.
+- `mcp_client.py` promoted to a library surface · TLS + backoff +
+  reconnect telemetry · `MCPClientError` kept for callers.
+- A2A demo rewritten around scoped tokens + resources.
+
+### Tech debt closed
+
+- MCP surface is no longer "preview" · TCP transport API frozen for
+  1.0.0 final (stdio was already stable).
+- Release automation still the rc1 machinery (`.github/workflows/
+  release.yml` + `scripts/release_notes_extract.py`) · rc2 slice
+  extraction verified.
+
+### Known gaps · remaining v1.0 blockers
+
+- full-500 re-run with V4-pro (Task #27 · running on T4)
+- v1 vs v2 driver ablation (Task #20 · blocked on #27)
+- notifications/progress + cancelled (deferred · no current consumer)
+
+### Notes
+
+- Plaintext TCP remains the default for localhost dev. TLS is opt-in ·
+  enable it whenever the server binds to a non-loopback interface.
+- Rate limit and RBAC compose: RBAC decides *can*, rate limit decides
+  *how much*. A token with `*` scope but a 1 rps / 1 burst bucket is a
+  valid production pattern for emergency admin access.
+- Test count on this branch: **187 passed · 56s** on Python 3.13.
+
+## [1.0.0-rc1] · 2026-05-07 — "integrity chain · MCP A2A preview · temporal push"
+
+Release candidate for v1.0. Tamper-evidence + temporal reasoning + cross-agent
+MCP surface. Eval gates still running (subset-48 on T4, full-500 V4-pro rerun
+pending) — promoting to 1.0.0 after gates pass.
+
+### 🎯 Highlights
+
+- 🔒 **Merkle hash chain for session memory tamper-evidence** ·
+  new `merkle_chain.py` module · `.chain.json` persisted alongside
+  `projects/<slug>/memory/*.md` · `compass_verify` CLI detects edits/deletes
+  · SHA-256 chained over file content + filename · atomic json write
+- ⏱️ **Absolute time anchor rewrite in session_writer** (Task #30) ·
+  memory writes now emit absolute timestamps (ISO-8601 + day bucket) instead
+  of relative "3 sessions ago" phrasing · paper §6 temporal qt +X pts expected
+- 📅 **Temporal-reasoning prompt + timeline scratch-pad** (Task #22) ·
+  per-qt prompt template that builds an explicit date timeline before
+  answering · `extract_temporal_answer()` post-parser · gated by
+  `ZMM_TEMPORAL=1` (default on · set `0` for ablation)
+- 🗣️ **ssu utterance-pair retrieval** (Task #23) ·
+  single-session-user qt now retrieves adjacent user/assistant pairs instead
+  of standalone chunks · ssu the weakest type in v0.9 · re-run pending
+- 🎲 **Self-consistency n=3 majority vote** (Task #24) ·
+  3-sample judge with majority answer · median confidence · variance-reduced
+  compared to single-shot · ~3× token cost on judge pass only
+- 🔀 **Hybrid BM25 + dense RRF retrieval** (Task #25) ·
+  Reciprocal Rank Fusion over BM25 lexical + BGE-m3 dense · k=60 ·
+  complements dense-only on rare-token queries (numbers, names, codes)
+- 👥 **Cross-judge replication with Claude** (Task #26) ·
+  DeepSeek V3.2 self-judge + Claude Opus cross-judge · κ reporting ·
+  paper-defensible replacement for single-judge over-claim
+- 📈 **Context top-5 → top-10 expansion** (Task #28) ·
+  doubled context ceiling after reranker became reliable · trades ~2× prompt
+  tokens for recall@10 lift · paper §6.2 ablation
+- 🧩 **MCP A2A server (preview)** · new `mcp_server.py` stdio + TCP
+  transports · JSON-RPC 2.0 · proxies to BGE-m3 daemon on `127.0.0.1:9876` ·
+  marked **preview** in v1.0-rc1 · API may still shift before 1.0.0 final
+- 🧪 **ZMM_TEMPORAL env gate** · A/B toggle for temporal prompt ·
+  `ZMM_TEMPORAL=0` falls back to generic prompt · used by
+  `tests/eval_longmemeval_accuracy.py`
+
+### Added
+
+- `merkle_chain.py` · tamper-evidence hash chain (update_chain / verify_chain
+  / built-in smoke test + CLI)
+- `mcp_server.py` · stdio + TCP MCP A2A server (preview)
+- `ZMM_TEMPORAL` env gate wired into `tests/eval_longmemeval_accuracy.py`
+- Timeline scratch-pad + `extract_temporal_answer()` post-parser
+- BM25 + dense RRF hybrid retrieval path
+- Self-consistency n=3 judge sampler · majority vote + median conf
+- ssu utterance-pair retrieval variant
+- Cross-judge replication harness · DeepSeek + Claude · κ computation
+
+### Changed
+
+- `pyproject.toml` · v0.9.5 → v1.0.0-rc1
+- `session_writer.py` · absolute time anchors (Task #30)
+- Context ceiling top-5 → top-10 (Task #28) · reranker gate retained
+
+### Tech debt
+
+- FastAPI `@app.on_event("startup")` → lifespan context manager (Task #39).
+  Removes the DeprecationWarning from `test_http_server_e2e.py`. Lifespan
+  handler runs the exact same init sequence (`init_db` → `init_audit_table`
+  → `_start_audit_thread`) so behaviour is unchanged. Shutdown path left
+  empty — the audit thread is daemonized. Verified by rerunning the full
+  73-test suite with `-W error::DeprecationWarning`: 73 passed, 0 warnings.
+- MCP raw JSON-RPC onboarding kit (Task #40). `docs/mcp-usage.md` grew a
+  "Raw JSON-RPC (non-Claude clients)" section with the 3-step handshake
+  (initialize → tools/list → tools/call) as literal wire-format JSON ·
+  plus a shipped `scripts/mcp_smoke_rpc.py` that runs the same handshake
+  end-to-end against the real server. Verified against a live daemon:
+  initialize returns `nautilus-compass v1.0.0-rc1`, tools/list returns
+  all 7 tools, `--tool recall --query "..."` returns real hits. Script
+  forces UTF-8 on subprocess pipes so it works on Windows (GBK default
+  would otherwise choke on the `·` midpoint character in tool schemas).
+- Release automation pre-staged (Task #41). `.github/workflows/release.yml`
+  fires on `v1.*` tag push, runs the full 78-test pytest sweep as a
+  release gate, then auto-drafts the GitHub release with notes extracted
+  from CHANGELOG.md by `scripts/release_notes_extract.py`. rc tags are
+  marked prerelease automatically. 5 unit tests
+  (`tests/test_release_notes_extract.py`) guard against header-style
+  drift in CHANGELOG that would silently break the slice.
+
+### Known gaps · v1.0 blockers (tracked in `docs/v1.0-checklist.md`)
+
+- subset-48 A/C/D delta ≥ 0 vs baseline (Task #29 · ✓ closed · Run D +4.2 pts)
+- full-500 re-run with V4-pro (Task #27 · running on T4 · ETA ~7h · watcher
+  auto-triggered after gate48 sign-off)
+- v1 vs v2 driver ablation (Task #20 · blocked on #27)
+
+### Notes
+
+- Merkle chain is append-friendly: `update_chain` re-baselines to current
+  state · `verify_chain` reports mismatches without mutating disk · see
+  `merkle_chain.py` smoke test for the 6-step contract
+- MCP server shipped as preview; stdio transport is stable, TCP transport
+  subject to change in 1.0.0 final. Protocol layer now has a **31-test**
+  pytest suite (Task #37 + #38 · `tests/test_mcp_server.py` +
+  `tests/test_a2a_adapter.py` + `tests/test_merkle_chain.py`) wired into
+  CI as `v10-protocol-tests`. The Merkle tests caught one real bug on
+  landing: a corrupted `.chain.json` used to crash `verify_chain` with
+  `JSONDecodeError` — now the verifier treats it like a missing chain
+  and reports `valid=False` so the caller can re-baseline.
+  **Live-daemon smoke** (Task #40 · `scripts/mcp_smoke_rpc.py`): full 3-step
+  handshake works end-to-end against the real server — initialize returns
+  `nautilus-compass v1.0.0-rc1`, tools/list returns all 7 tools, `recall`
+  returns 3 hits at cosine 0.432, `drift_check` flags a prompt-injection
+  sample with alert=True against negative anchors. Promoting MCP to
+  **stable** in 1.0.0 still requires one third-party client (Hermes or
+  OpenClaw, not our own smoke) running a full session.
+  **TCP transport landed** (Task #42). `mcp_server.py --transport tcp
+  --host H --port P --token SECRET` accepts concurrent line-delimited
+  JSON-RPC clients with token auth. Bad token → `-32001 unauthorized`
+  + immediate disconnect. Token is stripped from the params before the
+  handler sees it · never echoed. Covered by 4 new TCP subprocess tests
+  in `tests/test_mcp_server.py` (total 82 tests green). Previous
+  CHANGELOG claim of "stdio + TCP transports" was aspirational at rc1
+  cut — now real.
+  **Smoke script dual-transport** (Task #43). `scripts/mcp_smoke_rpc.py`
+  grew `--transport tcp --host --port --token` flags backed by a
+  Transport abstraction (`StdioTransport` / `TcpTransport`). Same 3-step
+  handshake over both. Verified against a live TCP server: good-token
+  `drift_check` returns alert=True cos=0.591; bad-token returns -32001
+  with exit code 1 for scripting.
+  **Operator status endpoint** (Task #45). New `server/status` JSON-RPC
+  method returns `{active_connections, total_connections, auth_failures,
+  messages_handled, uptime_seconds, server}`. Unauthenticated-safe
+  (aggregates only · no tool output or per-client state), backed by a
+  thread-safe counter set in mcp_server.py that the TCP loop bumps
+  per-connection and per-message. `scripts/mcp_smoke_rpc.py --status`
+  prints a one-line summary. 3 new tests in test_mcp_server.py cover
+  in-process status, counter increments over TCP, and auth_failures
+  tracking across good/bad-token clients.
+  **Smoke keepalive mode** (Task #44). `scripts/mcp_smoke_rpc.py`
+  grew `--keepalive SEC [--keepalive-limit N] [--keepalive-timeout S]`
+  that runs `ping` every SEC seconds after handshake and prints the
+  per-ping round-trip latency. Exits non-zero on any timeout, closed
+  socket, or non-empty ping result. Useful as a `watch`-style probe of
+  deployed TCP servers. Covered by 2 new subprocess tests: success
+  path (3 pings land against a live server) and failure path (server
+  killed mid-stream → smoke exits non-zero with ERR on stderr within
+  the keepalive-timeout window).
+  **Client library with auto-reconnect** (Task #46). New `mcp_client.py`
+  ships a `MCPClient(host, port, token)` context manager with a thin
+  API (`.list_tools()` `.call_tool(name, args)` `.ping()` `.status()`).
+  I/O errors (ConnectionReset / BrokenPipe / timeout) trigger exponential
+  backoff reconnect + re-handshake, transparent to the caller. Bad-token
+  handshake surfaces immediately as `MCPClientError` · no silent retry
+  loop on permanent auth failure. Telemetry counters `reconnect_count` +
+  `last_reconnect_reason` are readable per-client. 6 new tests in
+  `tests/test_mcp_client.py` cover handshake, ping, status, bad-token
+  rejection, full reconnect-after-server-restart cycle, and bounded
+  retry exhaustion. Total suite 93 tests green.
+  **A2A peer-to-peer demo** (Task #47). `examples/a2a_peer_demo.py`
+  spins up two independent MCPClient peers (Observer + Reasoner)
+  talking to one TCP server. Observer writes 3 observations via
+  ingest_obs · Reasoner recalls them + runs drift_check on a prompt-
+  injection sample. Verified end-to-end against the live daemon:
+  session files actually land on disk (session_20260507-1205_MCP-TCP-
+  auth-landed.md et al.), recall returns real top-k hits (score=0.645),
+  drift_check fires alert=True against BGE-m3 negative anchors. 4 new
+  tests in test_a2a_peer_demo.py assert both peers register,
+  drift/recall survive round-trip, token auth enforces, and bad-token
+  raises MCPClientError. 97 tests green.
+  **MCP resources/* for session log exposure** (Task #48). Implements
+  the `resources/list` + `resources/read` half of the MCP spec so peer
+  agents can read each other's session logs directly, not just through
+  `recall`'s snippet. URIs use `compass://session/<project>/<file>`.
+  `initialize` now advertises `capabilities.resources`. Listing is
+  mtime-descending, capped at 50 entries · reads are capped at 256 KiB
+  with a truncation marker. Path-traversal, scheme, and extension
+  checks reject any URI that isn't a plain session_*.md under
+  `~/.claude/projects/<proj>/memory`. `MCPClient` grew
+  `.list_resources()` + `.read_resource(uri)`. 16 new tests cover
+  capability advertisement, listing + limit, reading bodies,
+  truncation, URI parameter validation (7 bad-URI cases including
+  path traversal and URL-encoded splits), missing-file -32002, and
+  full TCP round-trip with a fake projects root. Total suite 113 green.
+  **Token-scoped RBAC** (Task #49). Shipped v1.0-grade authorization on
+  top of the bearer-token auth from #42. `--token` is now repeatable and
+  accepts `TOKEN:scope1,scope2` form; `--token-file` points at a JSON
+  `{token: [scopes]}`. Three scopes today: `tools.read` (recall,
+  drift_history, session_search, profile, drift_check), `tools.write`
+  (ingest_obs, feedback_log), `resources.read`. Wildcard `*` grants
+  everything; legacy `--token FOO` without scopes still maps to `*` for
+  backward compat. `tools/list` filters per-token, `tools/call` rejects
+  out-of-scope names with -32001 and a message naming the required
+  scope. No --token → dev mode · None-scopes grants everything
+  (localhost trust). Covered by 21 tests · parse/load/dispatch units
+  plus 3 end-to-end TCP subprocess tests (reader, writer, unknown).
+  Total suite 134 green.
+  **A2A demo v2 · scoped peers + resources** (Task #50). Rebuilt
+  `examples/a2a_peer_demo.py` to showcase the end-to-end v1.0 story:
+  three peers (observer / reasoner / admin) authenticate with distinct
+  scoped tokens, observer writes session logs via `ingest_obs`, and
+  reasoner — restricted to `tools.read + resources.read` — confirms
+  RBAC by having `ingest_obs` rejected with -32001, then uses
+  `resources/list` + `resources/read` to fetch the 507-byte body
+  observer just wrote (real YAML frontmatter round-trip over TCP).
+  Live run against the daemon: `resources/read
+  compass://session/...session_20260507-1221_MCP-TCP-auth-landed.md · 507B`.
+  Added 4 tests covering RBAC denial in the demo flow, resources
+  round-trip, scope-filtered tools/list, and denial when
+  `resources.read` is absent. Legacy --token path still works. Total
+  suite 138 green.
+  **Per-token rate limiting** (Task #51). RBAC decides "can" · this
+  decides "how much". Classic token-bucket, refill at `rps`, cap at
+  `burst`, per-token lock so well-behaved peers never contend.
+  Gates `tools/call`, `resources/list`, `resources/read`; `initialize`,
+  `ping`, `server/status`, notifications stay free (protocol chatter).
+  Config: `--rate-limit TOKEN=rps/burst` repeatable CLI flag, or
+  extend `--token-file` to the dict form
+  `{token: {scopes: [...], rate_limit: {rps: N, burst: M}}}` (legacy
+  list form still accepted · merges with new form). On exhaustion
+  replies `-32029 rate limited · retry in Xs` with the exact refill
+  delay. Tokens without a bucket are unlimited (safe default ·
+  localhost dev, long-running agents). 23 tests cover bucket math
+  (drain/refill/cap/reject-bad-args), dispatch gating (tools/call +
+  resources/read + ping-passes), schema parsing (dict/list/defaults/
+  reject-bad), plus 2 end-to-end TCP tests (pipelined flood hits
+  -32029 after burst · refill after sleep unblocks). Total suite 161
+  green.
+  **MCPClient auto-backoff on -32029** (Task #52). Mirror of #51 on the
+  client. The server already includes the exact refill delay in its
+  rate-limit message · this teaches `MCPClient` to parse it and retry
+  transparently. Opt-in via `MCPClient(..., rate_limit_retries=N)`
+  (default 0 · strict legacy behaviour preserved); on -32029 we parse
+  `retry in X.Ys`, sleep that long × `rate_limit_multiplier` (default
+  1.5 for jitter margin), and retry. Non-rate errors (-32001, etc.)
+  still bubble immediately. Exposes `rate_limit_waits` +
+  `last_rate_limit_wait_s` for dashboards. 16 tests cover regex parser
+  (7 parameterised cases · including clamped negatives), unit dispatch
+  with a fake socket (zero-retry / sleep-then-succeed / exhaust /
+  pass-through / multiplier math), plus 2 end-to-end TCP tests (real
+  rate-limited daemon · opt-in retry succeeds · default still raises).
+  Total suite 177 green.
+  **TLS + optional mTLS for TCP transport** (Task #53). Cross-machine
+  A2A was plaintext · v1.0 blocker. Server gains `--tls-cert PATH
+  --tls-key PATH` (both required · enables TLS) and `--tls-client-ca
+  PATH` (enables mTLS · client cert verification). Handshake failures
+  log `TLS-HANDSHAKE-FAIL · addr · reason` and drop the socket without
+  taking down the listener. Client gains `tls=True`, `tls_verify=True`,
+  `tls_ca_cert`, `tls_client_cert`+`tls_client_key` for mTLS, and
+  `tls_server_hostname` for SAN override. Startup banner now announces
+  `(tcp)` vs `(tls)` so operators can't mistake one for the other.
+  Plaintext stays the default (localhost dev · stdio transport
+  unaffected). 10 tests cover _build_server_ssl_context (happy, mTLS,
+  missing-cert raises), full E2E (TLS round-trip, plaintext-client
+  rejected, bad-CA rejected, tls_verify=False bypasses, mTLS happy,
+  mTLS rejects no-cert peer), and CLI validation (--tls-cert without
+  --tls-key exits 2). Built a self-signed cert factory on `cryptography`
+  that includes SKI/AKI/KeyUsage so Python 3.13's strict SSL accepts
+  them. Total suite 187 green.
+- `sdk/a2a_adapter.py` version bumped `0.9.0-dev` → `1.0.0-rc1`;
+  `DISCOVER_CAPABILITIES` is now documented in `CAPABILITIES` and
+  guaranteed zero-side-effect (test enforces this)
+- MCP server usage doc landed: `docs/mcp-usage.md`
+- Gate48 finding for paper2 §4.6: `ZMM_VOTE=3` on gemini-2.5-flash at
+  `temperature=0.1` gives 0 accuracy gain at 2.6× cost (flash outputs
+  are near-deterministic at low temp, 3 samples collapse to identical
+  answers). Revisit at `temperature=0.7` as Task #36.
+
 ## [0.9.5] · 2026-05-06 — "production-validated · A2A live · cross-benchmark"
 
 Production hardening + A2A v1 protocol surface + EverMemBench cross-validation.

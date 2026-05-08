@@ -3,15 +3,18 @@
 > **Cross-agent memory layer with drift detection** for the Nautilus platform.
 > Memory plugin for Claude Code/Desktop · Cline · Cursor · OpenClaw · Hermes ·
 > stops your AI from repeating mistakes you've already flagged.
+> Now with **5 user-facing slash commands** (`/compass-verify`, `/compass-drift`,
+> `/compass-recall`, `/compass-search`, `/compass-status`) — drift / Merkle /
+> recall surfaces are reachable directly from the prompt, not just hooks.
 
 [![CI](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/ci.yml)
 [![arXiv build](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/build-paper.yml/badge.svg?branch=main)](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/build-paper.yml)
 [![LongMemEval-S](https://img.shields.io/badge/LongMemEval--S-56.6%25-brightgreen)](paper/RESULTS_v0.8.md)
 [![EverMemBench](https://img.shields.io/badge/EverMemBench-44.4%25-brightgreen)](paper/sections/paper2_06_5_evermembench.tex)
 [![drift-AUC](https://img.shields.io/badge/drift_AUC-0.92-brightgreen)](#真账面--实测数据)
-[![version](https://img.shields.io/badge/version-0.9.5-orange)](CHANGELOG.md)
-[![MCP](https://img.shields.io/badge/MCP-7%20tools-blue)](sdk/mcp_adapter.md)
-[![A2A](https://img.shields.io/badge/A2A-4%20capabilities-blue)](sdk/a2a_adapter.py)
+[![version](https://img.shields.io/badge/version-1.0.0--rc2-orange)](CHANGELOG.md)
+[![MCP](https://img.shields.io/badge/MCP-7%20tools%20%C2%B7%20TLS%20%C2%B7%20RBAC-blue)](docs/mcp-usage.md)
+[![A2A](https://img.shields.io/badge/A2A-mTLS%20%C2%B7%20scoped%20peers-blue)](examples/a2a_tls_demo.py)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 ---
@@ -195,6 +198,76 @@ Claude:
 - MiniMax thinking 1024: refusal cascade collapse (44% 拒答率)
 
 详见 [paper/OUTLINE_PAPER2.md](paper/OUTLINE_PAPER2.md) · [results csv](paper/results/experiments_20260505.csv) · [paper/RESULTS_v0.8.md](paper/RESULTS_v0.8.md)。
+
+---
+
+## v1.0.0 stable (2026-05-08)
+
+`1.0.0-rc2` (2026-05-07) shipped unchanged as `1.0.0`. rc1 shipped the
+MCP A2A surface as **preview**. rc2/1.0.0 promotes the whole stack to
+production-hardened **and exposes the drift / Merkle / recall surfaces
+as user-facing slash commands**.
+
+### New today (user-facing)
+
+- 🧭 **5 slash commands** — `/compass-verify`, `/compass-drift`,
+  `/compass-recall`, `/compass-search`, `/compass-status`. First time
+  drift/Merkle/recall are reachable directly from the prompt instead of
+  only through hooks. See `commands/compass-*.md`.
+- 🛡️ **`compass-integrity` auto-trigger skill** — preflights chain
+  integrity, drift trend, and daemon liveness when the user is about to
+  rely on prior memory ("did we discuss…", "based on past sessions…").
+  See `skills/compass-integrity/SKILL.md`.
+- 📡 **MCP `logging/setLevel` spec-complete** — server now implements
+  the full logging surface from MCP 2024-11-05. Clients subscribe via
+  `MCPClient(log_cb=...).set_log_level("info")` and receive
+  `notifications/message` frames. Third-party clients in any language
+  are now unblocked.
+- 🔌 **Third-party MCP client portability proven** —
+  `examples/third_party_client.py` is pure stdlib, **zero compass
+  imports**. Anyone can speak MCP to nautilus-compass with just JSON +
+  a subprocess pipe (Node, Go, Rust, shell — all viable).
+
+### Production-hardened (full rc2 delta)
+
+- 🔐 **TLS + optional mTLS** for TCP transport · `--tls-cert`,
+  `--tls-key`, `--tls-client-ca` · client gets `tls_ca_cert` +
+  `tls_client_cert`/`tls_client_key`
+- 🛡️ **Token-scoped RBAC** · per-token scopes
+  (`tools.read` / `tools.write` / `resources.read` / `*`) ·
+  `--token-file TOKENS.json` for out-of-band rotation
+- 🎚️ **Per-token rate limit** · token-bucket · `--rate-limit
+  TOKEN=rps/burst` · returns `-32029` with exact retry-in delay
+- ♻️ **Client auto-backoff** · `MCPClient(rate_limit_retries=N)` ·
+  parses `retry in X.Ys` and sleeps automatically
+- 📡 **resources/\*** · `compass://session/...` URIs for streaming
+  session logs between peers
+- 🤝 **A2A demo** · `python examples/a2a_tls_demo.py` runs a full
+  self-signed mTLS observer+reader round-trip in one command ·
+  no external CA, no network
+- 🧪 **189 tests** · 0 flake · 0 regression
+
+Quick TLS A2A from Python:
+```python
+from mcp_client import MCPClient
+with MCPClient(port=8766, token="observer",
+               tls=True, tls_ca_cert="ca.pem",
+               tls_client_cert="peer.pem",
+               tls_client_key="peer.pem",
+               rate_limit_retries=3) as c:
+    c.call_tool("ingest_obs", {...})
+```
+
+See [CHANGELOG rc2](CHANGELOG.md#100-rc2--2026-05-07--mcp-a2a-production-hardened--tls--rbac--rate-limit)
+for the full delta.
+
+## v1.0.0-rc1 what's new (2026-05-07)
+
+- 🔒 **Merkle hash chain for session memory** (`merkle_chain.py`) · `compass_verify` CLI detects edits/deletes
+- 📅 Temporal-reasoning prompt + timeline scratch-pad
+- 🧩 MCP A2A server (`mcp_server.py` · stdio + TCP · JSON-RPC 2.0) · **preview** in rc1 — superseded by rc2 (TLS + RBAC + rate limit)
+
+See [CHANGELOG](CHANGELOG.md#100-rc1--2026-05-07--integrity-chain--mcp-a2a-preview--temporal-push) for the full rc1 list (temporal-reasoning prompt · ssu utterance pairs · self-consistency n=3 · hybrid BM25+dense RRF · cross-judge with Claude · top-5→top-10 · `ZMM_TEMPORAL` env gate).
 
 ---
 

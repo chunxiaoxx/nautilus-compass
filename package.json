@@ -1,6 +1,6 @@
 {
   "name": "@nautilus/compass-mcp",
-  "version": "0.9.0-beta.1",
+  "version": "1.0.0",
   "description": "Cross-agent memory layer · MCP + A2A · drift-aware · open eval (LongMemEval-S 56.6%)",
   "keywords": [
     "mcp",
