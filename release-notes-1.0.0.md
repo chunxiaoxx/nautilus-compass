@@ -40,7 +40,7 @@ Raw per-question logs ship in the repo:
 ### Install
 
     pip install nautilus-compass==1.0.0
-    npm install -g @nautilus/compass-mcp@1.0.0
+    npm install -g nautilus-compass@1.0.0
 
 Or one-line auto-install for any of 6 supported MCP clients
 (Claude Code, Claude Desktop, Cursor, Cline, Continue.dev, Zed):
@@ -87,7 +87,7 @@ From `1.0.0-rc2`:
 
     pip install --upgrade nautilus-compass
     # or
-    npm install -g @nautilus/compass-mcp@1.0.0
+    npm install -g nautilus-compass@1.0.0
 
 No data migration. Restart your MCP client to pick up the new server
 version string in `/.well-known/agent.json`.
