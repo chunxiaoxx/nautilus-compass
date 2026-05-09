@@ -126,7 +126,11 @@ Claude:
 | Letta | ✅ 强 | ❌ | ❌ | partial | optional |
 | claude-mem | ⚠️ session 末端 | ❌ | ❌ | ❌ | ✅ |
 | Zep | ✅ + graph | ❌ | ⚠️ 时序 | ❌ | ❌ |
-| **nautilus-compass** | ✅ **MRR 0.84** | ✅ **AUC 0.92** | ✅ 24h vs 7d+ | ✅ DPT 风格 | ✅ |
+| MemOS | ✅ EM 42.55 | ❌ | ❌ | ❌ | OSS only |
+| Smriti | archive-only | ❌ | ❌ | ❌ | ✅ |
+| **nautilus-compass** | ✅ **EM 44.4-47.3 · LME 56.6** | ✅ **AUC 0.83 held-out** | ✅ 24h vs 7d+ | ✅ DPT 风格 | ✅ |
+
+> Smriti (`zero8dotdev/smriti`) 名字很像、范畴不同 —— 它是团队对话归档+git 分享，不是 runtime memory layer，所以多数列是 out-of-scope 而不是缺功能。
 
 ---
 
