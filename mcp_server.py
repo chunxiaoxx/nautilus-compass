@@ -597,8 +597,9 @@ def tool_governance_audit(args: dict) -> dict:
     days = int(args.get("days") or 7)
     project = resolve_project(args.get("project")) or "C--Users-chunx"
     mem_dir = PROJECTS_DIR / project / "memory"
-    if not mem_dir.is_dir():
-        return _err(f"no memory dir for project {project}")
+    # Fresh install / CI runner won't have a memory dir · proceed with empty scan
+    # so audit_id is still generated and the archive is still written (0 files,
+    # 0 suspects). Callers and demos can trust the output shape unconditionally.
 
     cutoff = time.time() - days * 86400
     red_drift = []
