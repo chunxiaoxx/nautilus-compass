@@ -1,4 +1,4 @@
-"""compass v0.9 · A2A (Agent-to-Agent) Protocol Adapter.
+"""compass v1.0 · A2A (Agent-to-Agent) Protocol Adapter.
 
 让任何 A2A 兼容 agent 把 compass 当作 memory layer 使用.
 Nautilus 平台力推 A2A · 这是 Tier 1 接入路径.
@@ -10,11 +10,13 @@ A2A Protocol (Google · 2025):
       "from": "ag_xxx",
       "to": "compass-memory",
       "ts": "2026-05-05T10:00:00Z",
-      "type": "STORE_OBS" | "RETRIEVE_MEMORY" | "QUERY_PROFILE" | "QUERY_DRIFT_HISTORY",
+      "type": "STORE_OBS" | "RETRIEVE_MEMORY" | "QUERY_PROFILE"
+            | "QUERY_DRIFT_HISTORY" | "DISCOVER_CAPABILITIES",
       "payload": {...}
     }
 
 Capabilities exposed:
+  DISCOVER_CAPABILITIES  · 列全部可用消息类型 · 零副作用, 用于对接探测
   STORE_OBS              · 写一条 observation
   RETRIEVE_MEMORY        · 召回相关 memory
   QUERY_PROFILE          · 查用户画像
@@ -40,6 +42,11 @@ PLUGIN_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PLUGIN_DIR))
 
 CAPABILITIES = {
+    "DISCOVER_CAPABILITIES": {
+        "description": "Return this capability map. Zero side effects. Use for adapter health check and client-side feature detection.",
+        "input": {},
+        "output": {"capabilities": "dict · this same map keyed by message type"},
+    },
     "STORE_OBS": {
         "description": "Write a single observation (with drift self-audit) to user's cross-agent memory.",
         "input": {
@@ -172,7 +179,7 @@ def serve(port: int = 8765, host: str = "127.0.0.1"):
             if self.path == "/a2a/capabilities":
                 self._send_json(200, {
                     "agent": "compass-memory",
-                    "version": "0.9.0-dev",
+                    "version": "1.0.0-rc1",
                     "protocol": "a2a/v1",
                     "capabilities": CAPABILITIES,
                 })
