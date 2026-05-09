@@ -1,0 +1,64 @@
+name: Publish to PyPI
+
+# Triggers on every git tag matching v*.*.* (semver releases).
+# Builds sdist + wheel, then uploads to PyPI via OIDC trusted publisher
+# (no static token in repo secrets).
+#
+# To enable on PyPI side (one-time):
+#   1. Log in to https://pypi.org/manage/project/nautilus-compass/settings/publishing/
+#   2. Add a "Trusted publisher" with:
+#        - PyPI Project: nautilus-compass
+#        - Owner:   chunxiaoxx
+#        - Repository name: nautilus-compass
+#        - Workflow name:   publish-pypi.yml
+#        - Environment:     pypi-release
+#   3. Push a tag (e.g. `git tag v1.0.1 && git push origin v1.0.1`).
+#   This workflow will then build and publish without anyone holding a token.
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: |
+          python -m pip install --upgrade pip
+          pip install build twine
+      - run: python -m build
+      - run: python -m twine check dist/*
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 7
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi-release
+      url: https://pypi.org/p/nautilus-compass
+    permissions:
+      id-token: write   # OIDC needs this; do NOT add `contents: write`
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          # No `password` field -> uses OIDC token issued by GitHub.
+          # Trust must be configured on PyPI side per top-of-file comment.
+          packages-dir: dist/
+          verbose: true
