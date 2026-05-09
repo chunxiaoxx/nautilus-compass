@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.0.0] · 2026-05-08 — "stable · promote rc2 verbatim"
+## [1.0.0] · 2026-05-08 — "stable · promote rc2 verbatim · repo public"
 
 `1.0.0-rc2` (2026-05-07) ships unchanged as `1.0.0`. No code or test
 changes since rc2; this entry exists to mark the stable cut and bump
@@ -13,17 +13,26 @@ per-token rate limiting, auto-reconnect client with `-32029` backoff,
 `logging/setLevel`, third-party stdio shim, plus the slash-command plugin
 surface — is unchanged from rc2 and is documented below under that entry.
 
+The repository went **public** on 2026-05-08 — code, anchors, frozen
+test data, and audit-log tooling are MIT-licensed (CC0 for anchor files)
+at https://github.com/chunxiaoxx/nautilus-compass.
+
 ### Eval headlines (locked)
 
 - LongMemEval-S n=500: **56.6%** (v0.8 · 2026-05-04 lock)
-- EverMemBench-Dynamic n=500: **44.4%** e2e · recall@30 97.6% · tops every reported
-  Table 4 baseline (vs MemOS 42.55, Mem0 39.0, A-Mem 35.4)
+- EverMemBench-Dynamic n=500: **44.4% (Run 1)** / **47.3% (Run 2, n=497)** ·
+  cross-run mean **45.84%** · 95% CI on Run 2: [42.9%, 51.7%] (B=10000 bootstrap) ·
+  tops every reported Table 4 baseline (Mem0 37.09, Zep 39.97, MemOS 42.55)
+- Cross-judge sensitivity (Gemini 2.5 Pro on stratified n=100 of Run 2):
+  DS V4-flash 42.0% · Gemini 2.5 Pro 28.0% · Cohen's κ = 0.70 · 14
+  asymmetric DS=Y/Gemini=N disagreements · honest range [28%, 42%],
+  balanced-judge mid ~35-40%
 - Drift detector: **AUC 0.83** held-out (50/50 aligned/deviation, 2026-04-29) ·
   0.92 in-set
 - V4-pro full-500: **56.4%** (-0.2 vs v0.8, 8× compute, shipped as Appendix C
   negative result)
 
-### Tests · 187 passing · 0 flake · 0 regression
+### Tests · 228 passing · 0 flake · 0 regression
 
 ### Known non-blocking
 
