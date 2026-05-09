@@ -1,5 +1,118 @@
 # Changelog
 
+## [1.1.0] · 2026-05-09 — "recall consumption fix · V7 v0.2 governance plan"
+
+Released 12 hours after `v1.0.0`. Three production bug fixes around recall
+consumption that were exposed by a sister-agent post-mortem, plus a new
+capability-driven governance layer (V7 v0.2) and a session-recovery
+utility. Tool surface 10 → 14.
+
+### Recall consumption · the failure mode this fixes
+
+Recall today returned title + 120-char description per hit. Agents
+skimmed labels (e.g. "audit-gate / xhs-cards-embed / wxid"), assumed
+they had consumed the memory, and acted without ever reading the body.
+Same anti-pattern reproduced across sessions despite recall hitting the
+exact right files. Fix is three layers:
+
+- **v0** (recall.py) · top-3 hits in both metadata and vector mode now
+  embed first 800 chars of post-frontmatter body in an indented `│`
+  block. Agent gets actual rules in working context — no extra `Read`
+  tool call required to consume.
+- **v1** (recall.py) · anti-anchor alerts now embed past-mistake body
+  via two-tier match: substring 6-gram against the anchor + lesson
+  concept frontmatter (Tier 1, precise), falling back to recent
+  `drift!=green` sessions (Tier 2, the agent's own self-reported slips).
+  Alert is now actionable, not just a label.
+- **v2** (`recall_consumption.py` · new module) · detects "recall fired
+  but never `Read`'d" drift signal. Walks back to the N-th most-recent
+  recall block in the session jsonl, extracts paths, checks subsequent
+  assistant turns for matching `Read` tool_use. Surfaces in `drift_check`
+  MCP tool result (independent of BGE daemon · runs even when daemon
+  unreachable) and in `mid_session_hook` every 25 tool calls (only nags
+  when ≥3 unconsumed and ratio < 0.3). Verified on a 130MB session: 41
+  recall hits surfaced, 0 consumed.
+
+### V7 governance v0.2 · capability-driven plan (no templates)
+
+`v0.1 governance_dispatch` was a fan-out router · static dict mapping
+channel → executor. SaaS dialog correctly pushed back: template libraries
+can't cover the long tail of industries.
+
+`v0.2 governance_plan` (new MCP tool) replaces the template approach by
+reading two registries instead of carrying logic in V7:
+
+1. `~/.claude/projects/_platform_registry/agents_capabilities.json`
+   (live · platform exports) · falls back to bundled
+   `examples/v7_default_capabilities.json`
+2. `~/.claude/projects/_platform_registry/anchor_packs_phases.json`
+   (live · platform exports) · falls back to bundled
+   `examples/v7_default_phases.json`
+
+For each phase, V7 finds the best-scoring executor by capability match
+(+10 capability id, +5 domain match, +3 anchor pack match). Adding a
+new vertical = 1 row in `platform_anchor_packs` (phases JSONB) + 1 row
+in `platform_agents.metadata.capabilities[]`. Zero V7 source change.
+
+Demo verifies two domains: `marketing/dev-tools` (4-phase DAG → V5)
+and `caishen-finance/audit` (5-phase DAG · V6 wins for `numeric-audit`
+because V5 doesn't declare it · V5 takes write+publish).
+
+Full schema in [`docs/PLATFORM_HANDSHAKE.md`](docs/PLATFORM_HANDSHAKE.md) §9.
+Platform-side has 4 new wires to ship (capability export, phases ALTER+
+export, DAG-aware minting, telegram `/plan` command) tracked in §9.4.
+
+### New utility · session image surgeon
+
+`scripts/session_image_surgeon.py` recovers a Claude Code session that
+the API rejects with `400 Could not process image`. Stream-validates
+every base64 image (magic bytes + size + Pillow verify), replaces only
+the bad ones with a text placeholder, preserves all other content.
+
+Used today to unstick a 130MB / 32914-line session: 45 images total,
+44 valid, 1 corrupted ("PIL Truncated File Read"). Session resumed via
+`claude --resume <sessionId>` with full context intact.
+
+### Tool surface
+
+10 → 14 MCP tools:
+
+- New: `governance_plan` (V7 v0.2)
+- Already in v1.0: `recall`, `drift_check`, `ingest_obs`, `drift_history`,
+  `session_search`, `profile`, `feedback_log`, `long_task`,
+  `submit_platform_task`, `ingest_platform_task_result`,
+  `governance_dispatch`, `governance_audit`, `governance_lock_check`
+
+### Compatibility
+
+- Backward compatible with v1.0.0 callers · all v1.0 tools have
+  unchanged signatures
+- `recall` response shape extended (extra body lines under existing
+  hits) · downstream parsers tolerant of header-style listings still
+  work
+- `drift_check` output may now include trailing consumption block ·
+  parsers should tolerate optional trailing sections
+
+### Files changed
+
+- `recall.py` · v0 + v1 (body embed + lesson finder)
+- `recall_consumption.py` · NEW · v2 detection module
+- `mcp_server.py` · `governance_plan` tool + drift_check consumption hook
+- `mid_session_hook.py` · periodic consumption check
+- `examples/v7_default_capabilities.json` · NEW
+- `examples/v7_default_phases.json` · NEW
+- `examples/v7_governance_demo.py` · + step 5 v0.2 plan smoke
+- `scripts/session_image_surgeon.py` · NEW
+- `docs/PLATFORM_HANDSHAKE.md` · §9 added
+- `governance.lock` · refreshed (recall.py is L0)
+
+### Eval headlines (unchanged from v1.0.0)
+
+LongMemEval-S 56.6% (n=500) · EverMemBench-Dynamic 47.3% (n=497, run 2) ·
+Drift detector ROC AUC 0.83 (held-out) · Reproduction cost $3.50.
+
+---
+
 ## [1.0.0] · 2026-05-08 — "stable · promote rc2 verbatim · repo public"
 
 `1.0.0-rc2` (2026-05-07) ships unchanged as `1.0.0`. No code or test
