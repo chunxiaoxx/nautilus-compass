@@ -256,6 +256,18 @@ You may use this in any project, commercial or otherwise, with attribution.
 
 ---
 
+## Star history
+
+[![Star History Chart](https://api.star-history.com/svg?repos=chunxiaoxx/nautilus-compass&type=Date)](https://star-history.com/#chunxiaoxx/nautilus-compass&Date)
+
+## Contributors
+
+<a href="https://github.com/chunxiaoxx/nautilus-compass/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=chunxiaoxx/nautilus-compass" alt="Contributors" />
+</a>
+
+PRs welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## Contact
 
 - **Author**: Chunxiao Wang · Yiluo Technology Co., Ltd. · `chunxiaoxx@gmail.com`
