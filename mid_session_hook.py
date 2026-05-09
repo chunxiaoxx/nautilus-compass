@@ -185,6 +185,25 @@ def main():
             f"建议主动跑: python3 ~/.claude/plugins/nautilus-compass/recall.py --bge --query \"<当前任务关键词>\"\n"
         )
         state["last_refresh_ts"] = now
+
+    # v1.0+ · v2 · check recall consumption every 25 tool calls (cheap, 5KB tail read)
+    # Trigger when ratio drops below 0.3 (most surfaced files unread) · only stderr-print
+    if state["tool_count"] % 25 == 0:
+        try:
+            sys.path.insert(0, str(PLUGIN_DIR))
+            from recall_consumption import audit_consumption, render_consumption_warning
+            rep = audit_consumption(window_user_turns=5)
+            unc = rep.get("unconsumed_paths") or []
+            seen = rep.get("recall_paths_seen") or []
+            # Only nag if there's signal · ≥3 unconsumed AND ratio < 0.3
+            if len(unc) >= 3 and rep.get("ratio", 1.0) < 0.3:
+                warn = render_consumption_warning(rep)
+                if warn:
+                    sys.stderr.write(f"[nautilus-compass recall-consumption]\n{warn}\n")
+                    state["last_consumption_warn_ts"] = now
+        except Exception:
+            pass
+
     write_state(state)
     return 0
 
