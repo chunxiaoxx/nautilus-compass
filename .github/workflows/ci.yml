@@ -81,8 +81,8 @@ jobs:
       - name: A2A adapter selftest
         run: python sdk/a2a_adapter.py selftest
 
-  v09-mcp-smoke:
-    name: v0.9 MCP server (7 tools)
+  v10-mcp-smoke:
+    name: v1.0 MCP server (10 tools)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -108,8 +108,12 @@ jobs:
                   if 'tools' in d.get('result', {}):
                       tools = [t['name'] for t in d['result']['tools']]
               except: pass
-          assert len(tools) == 7, f'expected 7 tools, got {len(tools)}: {tools}'
-          print(f'OK: {tools}')"
+          # 7 stable v0.9 tools must be present; v1.0 added long_task/submit_platform_task/ingest_platform_task_result.
+          REQUIRED = {'recall', 'drift_check', 'ingest_obs', 'drift_history', 'session_search', 'profile', 'feedback_log'}
+          missing = REQUIRED - set(tools)
+          assert not missing, f'missing required tools: {missing} (got: {tools})'
+          assert len(tools) >= 7, f'expected >=7 tools, got {len(tools)}: {tools}'
+          print(f'OK: {len(tools)} tools · {tools}')"
 
   v09-npm-wrapper:
     name: v0.9 npm wrapper
@@ -131,3 +135,17 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: "20" }
       - run: cd cursor-extension && npm install && npm run compile
+
+  v10-protocol-tests:
+    name: v1.0 MCP + A2A protocol pytest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -e . pytest
+      - name: MCP + A2A protocol unit tests
+        env:
+          PYTHONIOENCODING: utf-8
+          PYTHONUTF8: "1"
+        run: pytest tests/test_mcp_server.py tests/test_a2a_adapter.py tests/test_merkle_chain.py -q
