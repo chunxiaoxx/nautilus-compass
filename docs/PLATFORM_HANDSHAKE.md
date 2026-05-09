@@ -333,6 +333,98 @@ $ python session_search.py "platform task"
 
 End-to-end submit → file → ingest → session_search round-trip verified.
 
+### §7.1 Real production · `dispatch_marketing_bounty` SQL contract
+
+The file-based stubs above are the OSS-side dev path. **In SaaS production
+the same flywheel runs through a SQL function on `nautilus_production`
+that V5 cycle already consumes today.** Verified e2e on 2026-05-09 by
+the OSS dialog.
+
+**Function signature** (deployed on `nautilus_production` Postgres 14,
+discovered via `\df dispatch_marketing_bounty`):
+
+```sql
+CREATE OR REPLACE FUNCTION public.dispatch_marketing_bounty(
+    p_title       text,
+    p_channel     text,                                       -- 'dev.to' (Stage 1 live) · 'x' / 'github' (dry-run) · 'email' (pending SMTP)
+    p_asset_path  text,                                       -- relative to ~/nautilus-mvp/phase3/ on cloud · platform reads this
+    p_reward_nau  integer DEFAULT 50,
+    p_source      text    DEFAULT 'compass-marketing'::text,  -- attribution · who/what dispatched
+    p_assigned_to text    DEFAULT NULL                        -- pre-assign optional · NULL = open claim
+) RETURNS character varying;                                  -- bounty_id · format 'mkt-<32-hex>'
+```
+
+**Caller pattern** (compass dialog → SaaS):
+
+```sql
+SELECT dispatch_marketing_bounty(
+    'Compass v0.9 · LongMemEval-S 56.6% · cross-agent memory federation',
+    'dev.to',
+    'paper/BLOGPOST.md',
+    50,
+    'compass-org-fire-from-compass-dialog'
+);
+-- → 'mkt-597d4f9026e84a4e8bfc32d2032b86ea'
+```
+
+**State machine** (V5 cycle drives transitions on `platform_bounties`):
+
+```
+posted_at → claimed_at → submitted_at
+  open      claimed       completed         (status column)
+  request   request       request           (phase column · request flow)
+            ↓
+            claimed_by = 'nautilus-prime-001'   (or other platform_agent.agent_id)
+                            ↓
+                            result_url = 'https://dev.to/<user>/<slug>'
+                            score      = (judge-assigned · NULL if channel skips judge)
+```
+
+**End-to-end verification** (2026-05-09 13:05:35 → 13:06:04 · **29s round-trip**):
+
+| Time (CST) | Event | Source |
+|---|---|---|
+| 13:05:35 | `dispatch_marketing_bounty(...)` returns `mkt-597d4f9026...` | compass dialog SQL |
+| 13:05:49 | V5 cycle claims · `claimed_by=nautilus-prime-001` (+14s) | `platform_bounties` row update |
+| 13:06:04 | platform agent submits · `status=completed`, `result_url` written (+15s) | `platform_bounties` row update |
+| 13:06:55 | `curl -sIL https://dev.to/.../compass-v09-...` → **HTTP/2 200** | external curl from cloud (本地 GFW 卡 dev.to · cloud egress 干净) |
+
+User-perceived latency was 3.1× faster than the platform dialog's 90s
+estimate — V5 cycle's 60s polling interval just happened to be near
+the start of the next tick at dispatch time.
+
+**Stage 1 cutover state** (as of 2026-05-09):
+
+| Channel | State | Notes |
+|---|---|---|
+| `dev.to` | ✅ live · real publish | Verified by this run |
+| `x` | 🟡 dry-run | Auth wired but POST disabled until launch ready |
+| `github` | 🟡 dry-run | Same as `x` |
+| `email` | 🔴 pending SMTP credential | Owner: SaaS dialog |
+
+**Completion side-effect** (per platform dialog): `platform_bounties.status`
+flipping to `completed` fires a trigger that inserts a row into
+`platform_external_events` (the cross-system event bus). Compass-side
+doesn't read that table directly — instead, the recommended pattern
+for the OSS half is to call the BP3 `ingest_platform_task_result`
+MCP tool from a SaaS-side webhook handler so the result lands in the
+user's compass `session_*.md` memory dir.
+
+**File-stub vs SQL-bounty: when to use which**
+
+| Dimension | File-stub (`submit_platform_task`) | SQL bounty (`dispatch_marketing_bounty`) |
+|---|---|---|
+| Trigger | Any compass dialog (MCP tool call) | DB connection (psql / SQL client / SaaS API caller) |
+| Backend | `~/.claude/projects/_platform_queue/<id>.json` | `platform_bounties` table on `nautilus_production` |
+| Consumer | Platform V5 cycle file-poller (TBD) | Existing V5 cycle (in production today) |
+| Use case | OSS user local dev · cross-machine sync via filesystem · no SaaS account needed | Real production · NAU economy · agent billing · Stage 1+ channel publish |
+| Cutover | env `COMPASS_PLATFORM_QUEUE_URL` flips it to HTTP POST · file remains audit | Direct DB or future `/v1/bounties/dispatch` HTTP wrapper |
+
+**Future convergence** (proposed): a future `submit_platform_task`
+mode flag (`mode="bounty"`) could route to the SQL contract via a
+SaaS HTTP wrapper, giving OSS users one tool name with two backends
+chosen by deployment context.
+
 ### Open coordination questions for SaaS dialog
 
 1. Should `_platform_queue` live in `~/.claude/projects/` (current — works for single-host dev), or move to a Redis / Postgres queue once SaaS is involved?
