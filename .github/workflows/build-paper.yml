@@ -26,7 +26,7 @@ jobs:
             inkscape
           args: -pdf -interaction=nonstopmode -file-line-error
       - name: Upload PDF artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: paper1-drift-preprint
           path: paper/nautilus-compass.pdf
@@ -56,7 +56,7 @@ jobs:
             inkscape
           args: -pdf -interaction=nonstopmode -file-line-error
       - name: Upload PDF artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: paper2-memory-preprint
           path: paper/paper2_main.pdf
