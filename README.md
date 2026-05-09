@@ -109,6 +109,10 @@ EverMemBench to avoid cherry-picking; the cross-run mean (45.84%) clears
 MemOS by +3.3 pts. See `paper/sections/paper2_06_5_evermembench.tex`
 for honest dual-run + Gemini cross-judge sensitivity analysis.
 
+**Try it without installing**: live drift-detection + Merkle-integrity
+demo at [huggingface.co/spaces/chunxiaox/nautilus-compass](https://huggingface.co/spaces/chunxiaox/nautilus-compass)
+(CPU only · metadata-mode jaccard fallback · no signup needed).
+
 ---
 
 ## Quickstart
