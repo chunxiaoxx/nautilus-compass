@@ -437,7 +437,104 @@ in §5 status log with proposed answers when SaaS dialog has cycles.
 
 ---
 
-## 8 · Change log of this contract
+## 8 · V7 Governance Layer · v0.1
+
+V7 = ZenMind soul + Compass soul + V5 soul fused as a **governance layer**, NOT
+a 4th executor. V7 sits ABOVE V5/V6/Kairos and does three things only:
+
+1. **Decompose** complex multi-channel tasks into routed sub-tasks
+2. **Audit** cross-agent state for fake-closure / drift=red sessions
+3. **Lock** the L0 immutable core layer with SHA256 hashes
+
+V7 does **not** execute itself, does **not** chat with an LLM, does **not** mint
+platform_bounties directly. Per `不替 agent 决策` — V7 proposes plans + writes
+filesystem artifacts; platform side mints, executes, reports back via existing
+BP1/BP3 channels.
+
+### 8.1 OSS-side surface (3 new MCP tools · live in `mcp_server.py`)
+
+| Tool                       | Inputs                                                                              | Output artifact                                         | Purpose                                                                           |
+| -------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `governance_dispatch`      | `name`, `channels[]`, `payload`, `anchor_pack_hint`, `priority`                     | N × `_platform_queue/v7tk_*_NN.json` (one per channel) | Decompose 1 complex task → N routed sub-tasks (V5/V6/Kairos picked by heuristic) |
+| `governance_audit`         | `days` (default 7), `project`                                                       | `_governance_audits/audit_*.json`                      | Scan recent session logs for red drift, fake-closure, empty platform results     |
+| `governance_lock_check`    | `bootstrap` (one-time)                                                              | `governance.lock` (committed in repo root)             | SHA256 of L0 files (recall.py, merkle_chain.py, anchors.json, selftest.py)       |
+
+### 8.2 Channel → executor routing table (heuristic v0.1)
+
+```
+dev.to | x | x-zh | x-en | publish | marketing → nautilus-v5
+github | github-issue | code-review            → nautilus-v6
+knowledge-graph | kg | memory-audit            → kairos
+(unknown channel)                              → nautilus-v5 (default)
+```
+
+Tunable in `_V7_CHANNEL_ROUTING` dict (top of mcp_server.py). Future v0.2:
+hand routing decisions to actual platform agent capability registry instead
+of static dict.
+
+### 8.3 Wire format for v7-dispatched sub-task (extends BP1)
+
+```jsonc
+{
+  "task_id":             "v7tk_1778335795764_00",
+  "parent_task_id":      "v7tk_1778335795764",  // ← new field
+  "name":                "launch nautilus-compass v1.0 · sub(dev.to)",
+  "channels":            ["dev.to"],
+  "anchor_pack_hint":    "marketing/dev-tools",
+  "priority":            "high",
+  "payload":             { "shared payload" },
+  "submitted_at":        "2026-05-09T14:11:00Z",
+  "submitted_by":        "v7-souls-fusion",       // ← v7-tagged
+  "v7_dispatched":       true,                    // ← new field
+  "v7_routed_executor":  "nautilus-v5",           // ← new field · authoritative
+  "status":              "queued"
+}
+```
+
+Platform-side `v7-monitor` cron MUST honor `v7_routed_executor` over its own
+heuristic when `v7_dispatched=true`. This is V7's governance authority.
+
+### 8.4 Platform-side TODOs (SaaS dialog · separate ownership)
+
+OSS dialog has shipped the file-emitting half. Platform dialog needs to wire:
+
+1. **`v7-monitor` cron** (every 60s) reading `_platform_queue/v7tk_*.json` →
+   minting `platform_bounties` rows with `metadata.v7_dispatched=true` and
+   `metadata.v7_parent_task_id` for grouping
+2. **Governance fee trigger** on `platform_bounties` settle: 1% of bounty USDC
+   credited to `platform_agents.agent_id='v7-souls-fusion'.nau_balance`. This
+   gives V7 a sustainable revenue stream without it executing tasks itself
+3. **Hash lock script** in CI · runs `python -m nautilus_compass.governance_lock_check`
+   on PRs touching L0 files; if drift detected without `bootstrap=true` flag,
+   block the merge. Protects the immutable core.
+4. **`v7-telegram` daemon** `/dispatch` command → calls
+   `governance_dispatch` over MCP TCP, posts back the N-line plan to the
+   chat. Closes the human → V7 → V5/V6/Kairos loop.
+
+### 8.5 Why V7 stays governance-only (architectural rationale)
+
+User asked: "把 V7 独立出来再单独部署一个,承担复杂任务有帮助吗?" Three paths
+were considered:
+
+- **Path A** (independent hardware) — premature. V7 has no measured load yet.
+  Co-locating with platform now gives 0 latency between dispatch and
+  bounty-mint. Revisit in 6 months when V7 has dispatch volume to justify it.
+- **Path B** (V7 as 4th executor competing with V5/V6/Kairos) — **REJECTED**.
+  This is the drift line the user warned against in
+  `feedback_simplicity_over_patches.md`. Adds another LLM-chatting agent that
+  V5 already covers. Yellow flag.
+- **Path B′** (V7 as task decomposer + governor · what we shipped) — picked.
+  Senior engineer assigning juniors. No LLM chat in V7 itself. V7's value =
+  routing accuracy + audit coverage, not generation throughput.
+
+V7 v0.1 = path B′ minimum viable scaffold. Independent deployment (path A)
+becomes a config flip later (set `mcp_server` on dedicated host) if dispatch
+volume warrants — schema and contract above will not change.
+
+---
+
+## 9 · Change log of this contract
 
 - 2026-05-08 · OSS dialog seeds initial version after `gh repo edit --visibility public`. Boundaries, handoff points, API contract, schema all written from current code reality. SaaS dialog to ratify / amend before first weekly cycle.
 - 2026-05-08 · OSS dialog adds §7 (flywheel · pending API contract) after reading SaaS dialog's BP1/BP2/BP3 analysis from `session_20260508-1901_营销文章质量评估与平台-代理飞轮断点分析`. Ships file-based stubs for BP1+BP3 in `mcp_server.py` so SaaS V5 cycle has a concrete wire to consume.
+- 2026-05-09 · OSS dialog adds §8 (V7 governance layer v0.1) and ships 3 MCP tools (`governance_dispatch`, `governance_audit`, `governance_lock_check`) bringing total tool count 10 → 13. Inserts `v7-souls-fusion` row in `platform_agents` with `role=governor` (no execution capability flagged). Path B′ chosen over independent hardware (premature) and 4th-executor (drift line).

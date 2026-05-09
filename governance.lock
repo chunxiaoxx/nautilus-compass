@@ -1,0 +1,10 @@
+{
+  "version": "v0.1",
+  "locked_at": "2026-05-09T14:18:59Z",
+  "files": {
+    "recall.py": "b237a21886f4ce9f2c47a6161bc14fc95c61e8ba629687a122ae3c1dd35d4f0e",
+    "merkle_chain.py": "2381d08d762d55096ccf87d85f7b30e13a1d749b9d5d946d17bfb9caa7f3aead",
+    "anchors.json": "bfd5cbdae0cb35db50ea338443141b2058405e35b24ea0de291010d1cce2fb2a",
+    "selftest.py": "681929262d24a610c52fa4f164f60c33a5046ece261a319c48ab8be88ef281ee"
+  }
+}

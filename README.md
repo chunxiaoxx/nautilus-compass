@@ -224,6 +224,31 @@ python examples/platform_flywheel_demo.py
 The full wire spec, breakpoint analysis, and SaaS-side TODO list live in
 [`docs/PLATFORM_HANDSHAKE.md`](docs/PLATFORM_HANDSHAKE.md) §7.
 
+### V7 governance layer (v0.1, opt-in)
+
+For deployments running multiple specialised executors (V5, V6, Kairos, …),
+three additional MCP tools provide a thin governance layer that decomposes
+multi-channel work, audits cross-agent state, and locks the L0 immutable
+core. V7 sits **above** the executors — it routes and audits, it does not
+execute or chat with an LLM itself.
+
+| Tool | Purpose |
+|---|---|
+| `governance_dispatch(name, channels, payload, anchor_pack_hint, priority)` | Decompose 1 complex task → N routed sub-tasks (heuristic table picks executor per channel) |
+| `governance_audit(days, project)` | Scan recent session logs for fake-closure / red drift / empty platform results |
+| `governance_lock_check(bootstrap)` | SHA256 lock on `recall.py`, `merkle_chain.py`, `anchors.json`, `selftest.py` |
+
+```bash
+python examples/v7_governance_demo.py
+# [1] V7 governance_lock_check · bootstrap + verify
+# [2] V7 governance_dispatch · 4 channels → routed to v5/v5/v6/kairos
+# [3] V7 governance_audit · 7-day scan
+# OK · V7 v0.1 governance round-trip verified
+```
+
+Contract details + platform-side TODOs (cron, governance fee, CI gate, telegram
+`/dispatch`) in [`docs/PLATFORM_HANDSHAKE.md`](docs/PLATFORM_HANDSHAKE.md) §8.
+
 ---
 
 ## Documentation
