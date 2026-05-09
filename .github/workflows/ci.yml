@@ -140,7 +140,7 @@ jobs:
     name: v1.0 MCP + A2A protocol pytest
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
       - run: pip install -e . pytest
@@ -149,3 +149,17 @@ jobs:
           PYTHONIOENCODING: utf-8
           PYTHONUTF8: "1"
         run: pytest tests/test_mcp_server.py tests/test_a2a_adapter.py tests/test_merkle_chain.py -q
+
+  v10-v7-governance-smoke:
+    name: v1.0 V7 governance demo (lock+dispatch+audit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -e .
+      - name: V7 v0.1 round-trip · 3 governance tools
+        env:
+          PYTHONIOENCODING: utf-8
+          PYTHONUTF8: "1"
+        run: python examples/v7_governance_demo.py

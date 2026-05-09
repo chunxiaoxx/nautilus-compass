@@ -39,6 +39,8 @@ FEEDBACK_LOG = CACHE_DIR / "feedback.jsonl"
 PROJECTS_DIR = Path.home() / ".claude" / "projects"
 PLATFORM_QUEUE_DIR = PROJECTS_DIR / "_platform_queue"
 PLATFORM_RESULTS_DIR = PROJECTS_DIR / "_platform_results"
+GOVERNANCE_LOCK = PLUGIN_DIR / "governance.lock"
+GOVERNANCE_AUDIT_DIR = PROJECTS_DIR / "_governance_audits"
 
 
 # ─── daemon I/O ────────────────────────────────────────────────────
@@ -492,6 +494,220 @@ agent_id: {agent_id}
     return _ok(f"result ingested · task={task_id} · session={out_file.name} · drift={drift}")
 
 
+# ─── V7 governance layer · v0.1 ────────────────────────────────────
+#
+# V7 is NOT a 4th executor — it sits ABOVE V5/V6/Kairos and routes complex
+# tasks (dispatch), audits cross-agent state (audit), and verifies the
+# immutable core layer hasn't drifted (lock_check). Per memory feedback
+# `不替 agent 决策`: these tools propose plans and write files; platform
+# agents and the v7-telegram daemon are responsible for actual minting /
+# bounty creation. No self-LLM-chat: V7 reads filesystem state, not LLMs.
+
+# Heuristic sub-task router · channel name → executor agent_id
+_V7_CHANNEL_ROUTING = {
+    "dev.to": "nautilus-v5",
+    "x": "nautilus-v5",
+    "x-zh": "nautilus-v5",
+    "x-en": "nautilus-v5",
+    "github": "nautilus-v6",
+    "github-issue": "nautilus-v6",
+    "code-review": "nautilus-v6",
+    "knowledge-graph": "kairos",
+    "kg": "kairos",
+    "memory-audit": "kairos",
+    "publish": "nautilus-v5",
+    "marketing": "nautilus-v5",
+}
+
+
+def _v7_route_channel(channel: str) -> str:
+    return _V7_CHANNEL_ROUTING.get(channel.lower().strip(), "nautilus-v5")
+
+
+def tool_governance_dispatch(args: dict) -> dict:
+    """v1.0+ · V7 governance · decompose a complex task into routed sub-tasks.
+
+    V7 acts as senior engineer assigning juniors. Takes a complex task spec
+    (multiple channels / multiple steps), decomposes into one sub-task per
+    channel, picks an executor (V5/V6/Kairos) per sub-task using heuristic
+    routing, and writes each sub-task as a queue file via the same BP1
+    mechanism (so platform side picks it up unchanged). Returns the
+    dispatch plan but does NOT directly mint platform_bounties — that
+    stays platform-side per `不替 agent 决策`.
+
+    Use when one logical task spans multiple channels / executors.
+    """
+    name = (args.get("name") or "").strip()
+    if not name:
+        return _err("name required")
+    channels = args.get("channels") or []
+    if not channels:
+        return _err("channels required for dispatch (use submit_platform_task for single-channel)")
+    payload = args.get("payload") or {}
+    anchor_pack = (args.get("anchor_pack_hint") or "").strip()
+    priority = (args.get("priority") or "normal").strip()
+    if priority not in ("low", "normal", "high"):
+        priority = "normal"
+
+    PLATFORM_QUEUE_DIR.mkdir(parents=True, exist_ok=True)
+    base_id = f"v7tk_{int(time.time()*1000)}"
+    plan = []
+    for idx, ch in enumerate(channels):
+        executor = _v7_route_channel(ch)
+        sub_task_id = f"{base_id}_{idx:02d}"
+        sub_file = PLATFORM_QUEUE_DIR / f"{sub_task_id}.json"
+        sub_spec = {
+            "task_id": sub_task_id,
+            "parent_task_id": base_id,
+            "name": f"{name} · sub({ch})",
+            "channels": [ch],
+            "anchor_pack_hint": anchor_pack,
+            "priority": priority,
+            "payload": payload,
+            "submitted_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "submitted_by": "v7-souls-fusion",
+            "compass_session_id": os.environ.get("CLAUDE_SESSION_ID"),
+            "callback_url": os.environ.get("COMPASS_CALLBACK_URL"),
+            "status": "queued",
+            "v7_dispatched": True,
+            "v7_routed_executor": executor,
+        }
+        sub_file.write_text(json.dumps(sub_spec, ensure_ascii=False, indent=2), encoding="utf-8")
+        plan.append({"sub_task_id": sub_task_id, "channel": ch, "routed_to": executor})
+
+    plan_lines = "\n".join(
+        f"  · {p['channel']:<20} → {p['routed_to']:<20} ({p['sub_task_id']})"
+        for p in plan
+    )
+    return _ok(
+        f"V7 dispatch · parent={base_id} · {len(plan)} sub-tasks queued\n{plan_lines}\n"
+        f"platform-side: v7-monitor cron should mint bounties for files matching v7tk_*.json"
+    )
+
+
+def tool_governance_audit(args: dict) -> dict:
+    """v1.0+ · V7 governance · cross-agent fake-closure audit.
+
+    Scans recent session_*.md files for warning signs:
+      · drift=red sessions in last N days
+      · sessions tagged 'completed' but with empty/<50char body
+      · platform task results without channels_published list
+    Returns suspects · does NOT auto-correct (V7 governance, not execution).
+    """
+    days = int(args.get("days") or 7)
+    project = resolve_project(args.get("project")) or "C--Users-chunx"
+    mem_dir = PROJECTS_DIR / project / "memory"
+    if not mem_dir.is_dir():
+        return _err(f"no memory dir for project {project}")
+
+    cutoff = time.time() - days * 86400
+    red_drift = []
+    fake_closure = []
+    empty_results = []
+    scanned = 0
+
+    for f in mem_dir.glob("*.md"):
+        try:
+            if f.stat().st_mtime < cutoff:
+                continue
+            text = f.read_text(encoding="utf-8", errors="ignore")
+            scanned += 1
+            head = text[:2000]
+            # drift=red detection
+            if "\ndrift: red" in head or "drift: red\n" in head:
+                red_drift.append(f.name)
+            # closed/completed but body too thin
+            if any(m in head.lower() for m in ("status: completed", "status: closed", "status: done")):
+                body = text.split("---", 2)[-1] if text.count("---") >= 2 else text
+                if len(body.strip()) < 80:
+                    fake_closure.append(f.name)
+            # platform task result missing channels
+            if "ingested_via: mcp · ingest_platform_task_result" in head:
+                if "Channels published\n  (none)" in text:
+                    empty_results.append(f.name)
+        except Exception:
+            continue
+
+    GOVERNANCE_AUDIT_DIR.mkdir(parents=True, exist_ok=True)
+    audit_id = f"audit_{int(time.time())}"
+    audit_file = GOVERNANCE_AUDIT_DIR / f"{audit_id}.json"
+    audit_file.write_text(json.dumps({
+        "audit_id": audit_id,
+        "scanned_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "project": project,
+        "days": days,
+        "files_scanned": scanned,
+        "red_drift": red_drift,
+        "fake_closure": fake_closure,
+        "empty_platform_results": empty_results,
+    }, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    suspects_total = len(red_drift) + len(fake_closure) + len(empty_results)
+    return _ok(
+        f"V7 audit · {audit_id} · scanned {scanned} files in last {days}d\n"
+        f"  red_drift: {len(red_drift)}\n"
+        f"  fake_closure: {len(fake_closure)}\n"
+        f"  empty_platform_results: {len(empty_results)}\n"
+        f"  total_suspects: {suspects_total}\n"
+        f"archive: {audit_file}"
+    )
+
+
+def tool_governance_lock_check(args: dict) -> dict:
+    """v1.0+ · V7 governance · L0/L1 hash lock verification.
+
+    Reads governance.lock (committed in repo) which lists SHA256 hashes
+    of L0 immutable core files. Recomputes current hashes and reports
+    any drift. If governance.lock missing, lists candidate L0 files
+    and writes the initial lock (one-time bootstrap).
+    """
+    import hashlib
+
+    L0_FILES = [
+        "recall.py",
+        "merkle_chain.py",
+        "anchors.json",
+        "selftest.py",
+    ]
+
+    def sha256(p: Path) -> str:
+        try:
+            return hashlib.sha256(p.read_bytes()).hexdigest()
+        except Exception:
+            return "missing"
+
+    bootstrap = bool(args.get("bootstrap"))
+    current = {f: sha256(PLUGIN_DIR / f) for f in L0_FILES}
+
+    if bootstrap or not GOVERNANCE_LOCK.exists():
+        GOVERNANCE_LOCK.write_text(json.dumps({
+            "version": "v0.1",
+            "locked_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "files": current,
+        }, ensure_ascii=False, indent=2), encoding="utf-8")
+        return _ok(
+            f"V7 lock · bootstrapped at {GOVERNANCE_LOCK.name}\n" +
+            "\n".join(f"  {f}: {h[:16]}..." for f, h in current.items())
+        )
+
+    locked = json.loads(GOVERNANCE_LOCK.read_text(encoding="utf-8"))
+    expected = locked.get("files", {})
+    drifted = [f for f, h in current.items() if expected.get(f) != h]
+    if drifted:
+        diff_lines = "\n".join(
+            f"  {f}: locked={expected.get(f,'?')[:16]}... actual={current[f][:16]}..."
+            for f in drifted
+        )
+        return _ok(
+            f"V7 lock · DRIFT detected · {len(drifted)} L0 file(s) changed\n{diff_lines}\n"
+            f"locked_at: {locked.get('locked_at')}\n"
+            f"action: review change · re-bootstrap with bootstrap=true if intentional"
+        )
+    return _ok(
+        f"V7 lock · OK · {len(current)} L0 files unchanged since {locked.get('locked_at')}"
+    )
+
+
 TOOLS = {
     "ingest_obs": {
         "fn": tool_ingest_obs,
@@ -654,6 +870,51 @@ TOOLS = {
                     "project": {"type": "string", "description": "Target project (defaults to most-recent)"},
                 },
                 "required": ["task_id"],
+            },
+        },
+    },
+    "governance_dispatch": {
+        "fn": tool_governance_dispatch,
+        "schema": {
+            "name": "governance_dispatch",
+            "description": "v1.0+ · V7 governance · Decompose a complex multi-channel task into routed sub-tasks. V7 sits ABOVE V5/V6/Kairos and assigns each channel to the right executor (V5 for marketing/publish, V6 for code-review/github, Kairos for kg/memory-audit). Writes one queue file per sub-task; platform v7-monitor cron mints bounties. V7 does not execute itself — pure governance/routing.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "name": {"type": "string", "description": "Top-level task name · 8-40 chars"},
+                    "channels": {"type": "array", "items": {"type": "string"}, "description": "Required · channels to dispatch to · each becomes one sub-task"},
+                    "payload": {"type": "object", "description": "Shared payload all sub-tasks see"},
+                    "anchor_pack_hint": {"type": "string", "description": "Domain anchor pack hint"},
+                    "priority": {"type": "string", "enum": ["low","normal","high"], "default": "normal"},
+                },
+                "required": ["name", "channels"],
+            },
+        },
+    },
+    "governance_audit": {
+        "fn": tool_governance_audit,
+        "schema": {
+            "name": "governance_audit",
+            "description": "v1.0+ · V7 governance · Cross-agent fake-closure audit. Scans recent session_*.md for: drift=red, status=completed with empty body, platform task results without published channels. Returns suspects but does not auto-correct. Run weekly or on-demand before releases.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "days": {"type": "integer", "default": 7, "description": "Window in days"},
+                    "project": {"type": "string", "description": "Target project (defaults to most-recent)"},
+                },
+            },
+        },
+    },
+    "governance_lock_check": {
+        "fn": tool_governance_lock_check,
+        "schema": {
+            "name": "governance_lock_check",
+            "description": "v1.0+ · V7 governance · L0/L1 hash lock verification. Compares SHA256 of L0 immutable core files (compass.py, anchors_*.json, selftest.py) against governance.lock. If lock missing or bootstrap=true, writes a fresh lock. Detects tampering of core layer.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "bootstrap": {"type": "boolean", "default": False, "description": "Force re-bootstrap of lock file (use after intentional L0 change)"},
+                },
             },
         },
     },
