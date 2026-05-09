@@ -134,11 +134,26 @@ def tool_drift_check(args: dict) -> dict:
     if not project:
         # drift detection works without project memory · use any project name as placeholder
         project = "C--Users-chunx"
+
+    # v1.0+ · v2 · always run consumption audit (independent of BGE daemon).
+    # This is the failure mode where recall surfaced the right files but the
+    # agent skipped reading bodies. Runs even when daemon is down.
+    consumption_warn: str | None = None
+    try:
+        from recall_consumption import audit_consumption, render_consumption_warning
+        rep = audit_consumption(window_user_turns=5)
+        consumption_warn = render_consumption_warning(rep)
+    except Exception:
+        pass
+
     try:
         res = daemon_call(
             {"action": "drift", "query": prompt, "project": project, "top_k": 1}
         )
     except Exception as e:
+        # Daemon down · still surface consumption audit if any (don't waste it)
+        if consumption_warn:
+            return _ok(f"daemon unreachable: {e} · BGE drift skipped\n\n{consumption_warn}")
         return _err(f"daemon unreachable: {e}")
     if not res.get("ok"):
         return _err(res.get("error", "daemon error"))
@@ -156,6 +171,9 @@ def tool_drift_check(args: dict) -> dict:
         lines.append("  top negative anchor hits:")
         for cos, txt in d["top_neg_hits"]:
             lines.append(f"    · cos={cos:.3f} · {txt[:120]}")
+    if consumption_warn:
+        lines.append("")
+        lines.append(consumption_warn)
     return _ok("\n".join(lines))
 
 
