@@ -194,6 +194,34 @@ than missing features.
 
 ---
 
+## Platform integration · BP1 + BP3 contract
+
+If you run the OSS plugin alongside a Nautilus-style task platform (or
+your own multi-agent backend), two MCP tools open a bidirectional channel
+without any new HTTP server:
+
+| Tool | Direction | Purpose |
+|---|---|---|
+| `submit_platform_task(name, channels, payload, anchor_pack_hint, priority)` | compass dialog → platform | Push a task into the platform's queue. File-based by default (`~/.claude/projects/_platform_queue/<id>.json`); auto-promotes to HTTP `POST` when `COMPASS_PLATFORM_QUEUE_URL` is set. |
+| `ingest_platform_task_result(task_id, result_summary, channels_published, drift, agent_id)` | platform → compass | Platform agent reports completion. Writes a JSON archive AND a `session_*.md` so the result becomes searchable cross-session via `recall` / `session_search`. |
+
+End-to-end round-trip — no platform deployment needed for the OSS half:
+
+```bash
+python examples/platform_flywheel_demo.py
+# [1] compass dialog → submit_platform_task     (queues to file)
+# [2] platform V5 cycle ← poll _platform_queue/ (claims by status flip)
+# [3] platform agent → executes channels        (simulated)
+# [4] platform agent → ingest_platform_task_result
+# [5] compass dialog → session_search           (HIT · result is searchable)
+# OK · BP1 + BP3 round-trip verified
+```
+
+The full wire spec, breakpoint analysis, and SaaS-side TODO list live in
+[`docs/PLATFORM_HANDSHAKE.md`](docs/PLATFORM_HANDSHAKE.md) §7.
+
+---
+
 ## Documentation
 
 - [`docs/AGENT_ONBOARDING.md`](docs/AGENT_ONBOARDING.md) — per-agent install configs (6 platforms + 3 frameworks)
