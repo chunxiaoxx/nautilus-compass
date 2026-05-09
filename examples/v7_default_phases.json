@@ -1,0 +1,97 @@
+{
+  "$comment": "V7 v0.2 phase registry · OSS-side defaults. Platform cron may overwrite ~/.claude/projects/_platform_registry/anchor_packs_phases.json with live data; if absent V7 falls back to this. Each entry: domain → phases[]. Phase schema: {id, requires_capability, depends_on[], description}. Domain '_default' is used when no domain hint matches.",
+  "version": "v0.2",
+  "domains": {
+    "_default": {
+      "phases": [
+        {"id": "research-evidence", "requires_capability": "web-research",
+         "description": "Gather evidence and citations"},
+        {"id": "write-narrative", "requires_capability": "long-form-write",
+         "depends_on": ["research-evidence"],
+         "description": "Compose the artifact"},
+        {"id": "publish-channels", "requires_capability": "publish-dispatch",
+         "depends_on": ["write-narrative"],
+         "description": "Push to target channels"},
+        {"id": "measure-impact", "requires_capability": "retrospective",
+         "depends_on": ["publish-channels"],
+         "description": "Track outcomes · feed back into anchor pack"}
+      ]
+    },
+    "marketing/dev-tools": {
+      "phases": [
+        {"id": "research-evidence", "requires_capability": "web-research",
+         "description": "Survey existing dev-tools content + benchmarks"},
+        {"id": "write-narrative", "requires_capability": "long-form-write",
+         "depends_on": ["research-evidence"],
+         "description": "Article / thread that fits anchor pack 'marketing/dev-tools'"},
+        {"id": "publish-channels", "requires_capability": "publish-dispatch",
+         "depends_on": ["write-narrative"],
+         "description": "Distribute to dev.to · x-en · GitHub release notes"},
+        {"id": "measure-impact", "requires_capability": "retrospective",
+         "depends_on": ["publish-channels"],
+         "description": "Click-through · stars · downstream issues"}
+      ]
+    },
+    "vc/article": {
+      "phases": [
+        {"id": "research-evidence", "requires_capability": "web-research",
+         "description": "Round up VC tickers / interviews / data"},
+        {"id": "write-narrative", "requires_capability": "long-form-write",
+         "depends_on": ["research-evidence"],
+         "description": "Long-form per 创投春晓 voice + framework"},
+        {"id": "publish-channels", "requires_capability": "publish-dispatch",
+         "depends_on": ["write-narrative"],
+         "description": "Wechat · zhihu · substack · X-zh"},
+        {"id": "measure-impact", "requires_capability": "retrospective",
+         "depends_on": ["publish-channels"]}
+      ]
+    },
+    "caishen-finance/audit": {
+      "phases": [
+        {"id": "ingest-source-data", "requires_capability": "numeric-audit",
+         "description": "Pull QoQ books · normalise"},
+        {"id": "verify-numbers", "requires_capability": "numeric-audit",
+         "depends_on": ["ingest-source-data"],
+         "description": "Cross-check totals · flag deltas > tolerance"},
+        {"id": "write-narrative", "requires_capability": "long-form-write",
+         "depends_on": ["verify-numbers"],
+         "description": "Audit report (signed off by V6 · not V5)"},
+        {"id": "publish-channels", "requires_capability": "publish-dispatch",
+         "depends_on": ["write-narrative"],
+         "description": "Email · internal archive · NOT public"},
+        {"id": "measure-impact", "requires_capability": "retrospective",
+         "depends_on": ["publish-channels"]}
+      ]
+    },
+    "code-review": {
+      "phases": [
+        {"id": "diff-collect", "requires_capability": "code-review",
+         "description": "Gather PR diff + linked issues"},
+        {"id": "review-execute", "requires_capability": "code-review",
+         "depends_on": ["diff-collect"],
+         "description": "Comment on diff · evaluate test coverage"},
+        {"id": "test-execute", "requires_capability": "test-execution",
+         "depends_on": ["review-execute"],
+         "description": "Run test suite · attach report"},
+        {"id": "publish-channels", "requires_capability": "publish-dispatch",
+         "depends_on": ["test-execute"],
+         "description": "Post review back to GitHub PR"}
+      ]
+    },
+    "kg-ingest": {
+      "phases": [
+        {"id": "ingest-source", "requires_capability": "kg-ingest",
+         "description": "Read source documents"},
+        {"id": "extract-entities", "requires_capability": "kg-ingest",
+         "depends_on": ["ingest-source"],
+         "description": "Identify nodes + edges"},
+        {"id": "merge-into-graph", "requires_capability": "kg-ingest",
+         "depends_on": ["extract-entities"],
+         "description": "Merge into Neo4j with conflict resolution"},
+        {"id": "memory-audit", "requires_capability": "memory-audit",
+         "depends_on": ["merge-into-graph"],
+         "description": "Verify graph consistency · drift check"}
+      ]
+    }
+  }
+}

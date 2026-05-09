@@ -41,6 +41,9 @@ PLATFORM_QUEUE_DIR = PROJECTS_DIR / "_platform_queue"
 PLATFORM_RESULTS_DIR = PROJECTS_DIR / "_platform_results"
 GOVERNANCE_LOCK = PLUGIN_DIR / "governance.lock"
 GOVERNANCE_AUDIT_DIR = PROJECTS_DIR / "_governance_audits"
+PLATFORM_REGISTRY_DIR = PROJECTS_DIR / "_platform_registry"
+V7_DEFAULT_CAPABILITIES = PLUGIN_DIR / "examples" / "v7_default_capabilities.json"
+V7_DEFAULT_PHASES = PLUGIN_DIR / "examples" / "v7_default_phases.json"
 
 
 # ─── daemon I/O ────────────────────────────────────────────────────
@@ -727,6 +730,216 @@ def tool_governance_lock_check(args: dict) -> dict:
     )
 
 
+# ─── V7 governance v0.2 · capability-driven plan ──────────────────────
+#
+# v0.1 governance_dispatch was a fan-out router: input channels[], output
+# one bounty per channel via static dict lookup. Doesn't decompose anything.
+#
+# v0.2 governance_plan reads two registries (live · with bundled defaults)
+# and produces a DAG of routed sub-tasks:
+#
+#   1. platform_anchor_packs · domain → phases[]
+#      (phases declare required_capability + depends_on → DAG shape)
+#   2. platform_agents · agent_id → capabilities[]
+#      (capabilities declare what each executor produces · which channels ·
+#       which anchor packs they own)
+#
+# V7 matches phase.requires_capability against agents' declared capabilities,
+# scores by domain affinity (capability.domains contains domain_hint) and
+# anchor pack alignment, picks one executor per phase, emits one queue file
+# per node with parent_task_id + depends_on for platform-side ordering.
+#
+# Adding a new vertical = add 1 row to platform_anchor_packs (live) or
+# 1 entry to v7_default_phases.json (bundled). V7 source code unchanged.
+
+
+def _v7_load_registry(live_path: Path, default_path: Path) -> dict:
+    """Prefer live platform-exported registry · fall back to bundled defaults.
+
+    Live takes precedence so platform can override per-deployment without
+    recompiling V7. Defaults ship with the package so V7 works standalone
+    (CI, local dev) before any platform integration.
+    """
+    if live_path.exists():
+        try:
+            return json.loads(live_path.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+    if default_path.exists():
+        try:
+            return json.loads(default_path.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+    return {}
+
+
+def _v7_score_executor(agent: dict, capability_id: str,
+                        domain_hint: str, anchor_pack: str) -> int:
+    """Score how well an agent matches a phase. Higher = better match.
+
+    +10  capability id matches
+    +5   capability lists domain_hint in its domains[] (or domains is empty/missing → wildcard)
+    +3   capability lists the requested anchor_pack
+    +1   tie-breaker fallback so any match scores above 0
+    """
+    score = 0
+    for cap in agent.get("capabilities", []) or []:
+        if cap.get("id") != capability_id:
+            continue
+        score = max(score, 1)
+        score += 10
+        cap_domains = cap.get("domains")
+        if cap_domains is None or not cap_domains:
+            score += 1   # wildcard executor · OK but lower than domain-matched
+        elif domain_hint and any(domain_hint in d for d in cap_domains):
+            score += 5
+        cap_packs = cap.get("anchor_packs") or []
+        if anchor_pack and anchor_pack in cap_packs:
+            score += 3
+    return score
+
+
+def tool_governance_plan(args: dict) -> dict:
+    """v1.0+ · V7 v0.2 · capability-driven complex-task plan.
+
+    Reads platform_anchor_packs phase registry + platform_agents capability
+    registry · produces a DAG of (phase_id, executor, depends_on) nodes ·
+    optionally writes one queue file per node so v7-monitor can mint bounties.
+    No templates · no LLM-chat · pure registry queries.
+
+    Use over governance_dispatch when one logical goal needs multiple
+    executors in sequence (research → write → publish → measure rather
+    than fan-out across channels).
+    """
+    goal = (args.get("goal") or "").strip()
+    if not goal:
+        return _err("goal required (high-level task description)")
+    domain_hint = (args.get("domain_hint") or "").strip()
+    anchor_pack = (args.get("anchor_pack_hint") or "").strip()
+    payload = args.get("payload") or {}
+    priority = (args.get("priority") or "normal").strip()
+    dry_run = bool(args.get("dry_run"))
+    if priority not in ("low", "normal", "high"):
+        priority = "normal"
+
+    # Load registries (live > bundled default)
+    caps = _v7_load_registry(
+        PLATFORM_REGISTRY_DIR / "agents_capabilities.json",
+        V7_DEFAULT_CAPABILITIES,
+    )
+    phases_reg = _v7_load_registry(
+        PLATFORM_REGISTRY_DIR / "anchor_packs_phases.json",
+        V7_DEFAULT_PHASES,
+    )
+    if not caps.get("agents") or not phases_reg.get("domains"):
+        return _err("registries missing or empty · check examples/v7_default_*.json")
+
+    # Resolve phases for domain (specific match → fuzzy contains → _default)
+    domains = phases_reg["domains"]
+    phases: list = []
+    matched_domain = "_default"
+    if domain_hint and domain_hint in domains:
+        phases = domains[domain_hint].get("phases", [])
+        matched_domain = domain_hint
+    elif domain_hint:
+        # fuzzy: pick first domain that contains the hint as substring
+        for k, v in domains.items():
+            if k != "_default" and (domain_hint in k or k in domain_hint):
+                phases = v.get("phases", [])
+                matched_domain = k
+                break
+    if not phases:
+        phases = domains.get("_default", {}).get("phases", [])
+        matched_domain = "_default"
+    if not phases:
+        return _err(f"no phases defined for domain={domain_hint!r} (no _default fallback)")
+
+    # Plan DAG: phase → best-scoring executor
+    PLATFORM_QUEUE_DIR.mkdir(parents=True, exist_ok=True)
+    base_id = f"v7plan_{int(time.time()*1000)}"
+    plan_nodes: list[dict] = []
+    unresolved: list[str] = []
+
+    for phase in phases:
+        cap_id = phase.get("requires_capability", "")
+        if not cap_id:
+            continue
+        ranked = []
+        for agent in caps.get("agents", []):
+            sc = _v7_score_executor(agent, cap_id, domain_hint, anchor_pack)
+            if sc > 0:
+                ranked.append((sc, agent.get("agent_id", "?")))
+        if not ranked:
+            unresolved.append(f"{phase['id']}(needs {cap_id})")
+            continue
+        ranked.sort(reverse=True)
+        executor = ranked[0][1]
+        node = {
+            "phase_id": phase["id"],
+            "requires_capability": cap_id,
+            "executor": executor,
+            "depends_on": phase.get("depends_on", []),
+            "description": phase.get("description", ""),
+            "score": ranked[0][0],
+        }
+        plan_nodes.append(node)
+
+    if unresolved:
+        return _err(
+            f"V7 plan · cannot resolve {len(unresolved)} phase(s) · "
+            f"no executor declares required capability:\n"
+            f"  · " + "\n  · ".join(unresolved) + "\n"
+            f"action: register the capability in platform_agents or "
+            f"_platform_registry/agents_capabilities.json"
+        )
+
+    # Write queue files (one per node) unless dry_run
+    written: list[str] = []
+    if not dry_run:
+        for idx, node in enumerate(plan_nodes):
+            sub_id = f"{base_id}_{idx:02d}"
+            spec = {
+                "task_id": sub_id,
+                "parent_task_id": base_id,
+                "name": f"{goal} · {node['phase_id']}",
+                "phase_id": node["phase_id"],
+                "depends_on_phase_ids": node["depends_on"],
+                "requires_capability": node["requires_capability"],
+                "v7_routed_executor": node["executor"],
+                "v7_dispatched": True,
+                "v7_plan_version": "v0.2",
+                "anchor_pack_hint": anchor_pack,
+                "domain_hint": domain_hint,
+                "matched_domain": matched_domain,
+                "priority": priority,
+                "payload": payload,
+                "submitted_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                "submitted_by": "v7-souls-fusion",
+                "compass_session_id": os.environ.get("CLAUDE_SESSION_ID"),
+                "callback_url": os.environ.get("COMPASS_CALLBACK_URL"),
+                "status": "queued",
+            }
+            f = PLATFORM_QUEUE_DIR / f"{sub_id}.json"
+            f.write_text(json.dumps(spec, ensure_ascii=False, indent=2), encoding="utf-8")
+            written.append(sub_id)
+
+    plan_lines = "\n".join(
+        f"  · {n['phase_id']:<25} → {n['executor']:<20} "
+        f"(needs={n['requires_capability']} · score={n['score']} "
+        f"· depends_on={n['depends_on'] or 'none'})"
+        for n in plan_nodes
+    )
+    src_caps = "live" if (PLATFORM_REGISTRY_DIR / "agents_capabilities.json").exists() else "bundled-default"
+    src_phases = "live" if (PLATFORM_REGISTRY_DIR / "anchor_packs_phases.json").exists() else "bundled-default"
+    msg = (
+        f"V7 plan · parent={base_id} · domain={matched_domain} · "
+        f"{len(plan_nodes)} phases · "
+        f"caps={src_caps} · phases={src_phases}\n{plan_lines}\n"
+        f"{'DRY RUN · 0 queue files written' if dry_run else f'{len(written)} sub-task file(s) written to _platform_queue/'}"
+    )
+    return _ok(msg)
+
+
 TOOLS = {
     "ingest_obs": {
         "fn": tool_ingest_obs,
@@ -934,6 +1147,25 @@ TOOLS = {
                 "properties": {
                     "bootstrap": {"type": "boolean", "default": False, "description": "Force re-bootstrap of lock file (use after intentional L0 change)"},
                 },
+            },
+        },
+    },
+    "governance_plan": {
+        "fn": tool_governance_plan,
+        "schema": {
+            "name": "governance_plan",
+            "description": "v1.0+ · V7 v0.2 · Capability-driven complex-task plan. Reads platform_anchor_packs phase registry + platform_agents capability registry · produces a DAG of (phase_id, executor, depends_on) routed sub-tasks · emits one queue file per node with depends_on so v7-monitor can mint bounties in the right order. No templates · no LLM-chat · pure registry queries. Adding a new vertical = 1 row in registry, no V7 code change. Use over governance_dispatch when one logical goal needs sequential phases (research → write → publish → measure) rather than fan-out to channels.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "goal": {"type": "string", "description": "High-level task description · 8-200 chars"},
+                    "domain_hint": {"type": "string", "description": "Domain key matching platform_anchor_packs · e.g. 'marketing/dev-tools' · 'caishen-finance/audit' · falls back to _default phases if unmatched"},
+                    "anchor_pack_hint": {"type": "string", "description": "Quality anchor pack identifier · used to score executor match"},
+                    "payload": {"type": "object", "description": "Shared payload visible to all phase sub-tasks"},
+                    "priority": {"type": "string", "enum": ["low","normal","high"], "default": "normal"},
+                    "dry_run": {"type": "boolean", "default": False, "description": "Compute the plan and return it without writing queue files · for inspection"},
+                },
+                "required": ["goal"],
             },
         },
     },

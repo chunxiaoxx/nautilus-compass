@@ -533,8 +533,189 @@ volume warrants — schema and contract above will not change.
 
 ---
 
-## 9 · Change log of this contract
+## 9 · V7 Governance v0.2 · capability-driven plan (no templates)
+
+v0.1 `governance_dispatch` was a fan-out router — channels[] in, one bounty
+per channel out, static dict lookup. SaaS dialog correctly pointed out
+template libraries can't cover thousands of industries. v0.2 fixes this by
+making V7 read two registries instead of carrying logic itself:
+
+```
+                 ┌──────────────────────────────────┐
+goal             │  V7 governance_plan              │       N queue files
+domain_hint  ──→ │   1. lookup phases for domain    │ ──→   one per phase node
+anchor_pack_hint │   2. for each phase, find best   │       depends_on preserved
+                 │      executor (capability match) │       v7_routed_executor set
+                 │   3. emit DAG of (phase, exec)   │       v7-monitor mints bounty
+                 └──────────────────────────────────┘
+                          ↑              ↑
+              registry: phases    registry: capabilities
+              (per-domain DAG     (per-agent: what it
+               of required        produces, which channels,
+               capabilities)      which anchor packs)
+```
+
+### 9.1 Two registries (lives on platform · file-exported for OSS to read)
+
+**Capabilities registry** — `~/.claude/projects/_platform_registry/agents_capabilities.json` (live · platform exports) · falls back to `examples/v7_default_capabilities.json` (bundled).
+
+```jsonc
+{
+  "version": "v0.2",
+  "agents": [
+    {
+      "agent_id": "nautilus-v5",
+      "capabilities": [
+        {
+          "id": "long-form-write",
+          "outputs": ["article", "post", "thread"],
+          "channels": ["dev.to", "x", "wechat"],     // optional
+          "domains": ["marketing", "vc"],            // optional · null = wildcard
+          "anchor_packs": ["marketing/dev-tools"]    // optional
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Phases registry** — `~/.claude/projects/_platform_registry/anchor_packs_phases.json` (live) · falls back to `examples/v7_default_phases.json`.
+
+```jsonc
+{
+  "version": "v0.2",
+  "domains": {
+    "_default": {                     // used when no domain matches
+      "phases": [
+        {"id": "research-evidence", "requires_capability": "web-research"},
+        {"id": "write-narrative",   "requires_capability": "long-form-write",
+         "depends_on": ["research-evidence"]},
+        {"id": "publish-channels",  "requires_capability": "publish-dispatch",
+         "depends_on": ["write-narrative"]},
+        {"id": "measure-impact",    "requires_capability": "retrospective",
+         "depends_on": ["publish-channels"]}
+      ]
+    },
+    "caishen-finance/audit": {        // overrides _default for this vertical
+      "phases": [
+        {"id": "ingest-source-data", "requires_capability": "numeric-audit"},
+        {"id": "verify-numbers",     "requires_capability": "numeric-audit",
+         "depends_on": ["ingest-source-data"]},
+        {"id": "write-narrative",    "requires_capability": "long-form-write",
+         "depends_on": ["verify-numbers"]},
+        // ...
+      ]
+    }
+  }
+}
+```
+
+### 9.2 Scoring (executor selection per phase)
+
+For each phase's `requires_capability`, V7 ranks every agent's matching
+capability. Tie-breaker prefers tighter domain match + anchor pack alignment:
+
+```
++10  capability id matches
++5   capability.domains[] contains domain_hint  (or +1 if domains absent · wildcard)
++3   capability.anchor_packs[] contains anchor_pack_hint
++1   any-match floor (so single matches still rank)
+```
+
+Ranked list · highest scoring agent wins the phase. Ties broken by registry
+order. If no agent matches → V7 returns error listing missing capabilities ·
+caller decides whether to relax constraints or register a new capability.
+
+### 9.3 Wire format · v0.2 sub-task file (extends BP1 + §8.3)
+
+Each phase becomes one queue file with new fields beyond v0.1:
+
+```jsonc
+{
+  "task_id":              "v7plan_1778341741181_00",
+  "parent_task_id":       "v7plan_1778341741181",
+  "name":                 "<goal> · <phase_id>",
+  "phase_id":             "research-evidence",          // new
+  "depends_on_phase_ids": [],                           // new · DAG ordering
+  "requires_capability":  "web-research",               // new · audit trail
+  "v7_routed_executor":   "nautilus-v5",
+  "v7_dispatched":        true,
+  "v7_plan_version":      "v0.2",                       // new · vs v0.1 fan-out
+  "anchor_pack_hint":     "marketing/dev-tools",
+  "domain_hint":          "marketing/dev-tools",
+  "matched_domain":       "marketing/dev-tools",        // new · resolved domain
+  "priority":             "high",
+  "payload":              { /* shared */ },
+  "submitted_at":         "...",
+  "submitted_by":         "v7-souls-fusion",
+  "status":               "queued"
+}
+```
+
+`v7-monitor` cron MUST honor `depends_on_phase_ids` — only mint bounty when
+all parent phases are settled. `v7_plan_version="v0.2"` lets cron decide
+whether to fan-out (v0.1) or DAG-order (v0.2).
+
+### 9.4 Platform-side TODOs (extends §8.4)
+
+**TODO 5 · export capability registry**
+Cron (every 10 min): SELECT agent_id, metadata->'capabilities' FROM
+`platform_agents` → write JSON to
+`~/.claude/projects/_platform_registry/agents_capabilities.json`.
+This makes platform-side capability changes visible to V7 without restart.
+
+**TODO 6 · phases registry · ALTER + export**
+```sql
+ALTER TABLE platform_anchor_packs
+  ADD COLUMN IF NOT EXISTS phases JSONB DEFAULT '[]'::jsonb;
+```
+Backfill phases for the existing 6 anchor packs (use
+`examples/v7_default_phases.json` as starting point, override per-domain
+where the workflow differs from the generic `_default`).
+
+Cron (every 10 min): SELECT domain, phases FROM platform_anchor_packs →
+write JSON to `~/.claude/projects/_platform_registry/anchor_packs_phases.json`.
+
+**TODO 7 · DAG-aware bounty minting**
+v7-monitor cron MUST gate `v7_plan_version="v0.2"` files: only mint when
+all `depends_on_phase_ids` siblings have `status="settled"`. Track sibling
+state via the parent_task_id grouping.
+
+**TODO 8 · governance_plan via v7-telegram**
+Add `/plan <goal> [domain]` command to v7-telegram daemon. Calls
+`governance_plan` over MCP TCP. Posts the resulting DAG plan back to chat
+WITH dry_run=true initially so user can `/approve <parent_id>` before
+queue files are written.
+
+### 9.5 Why this scales (vs templates) — answer to user pushback
+
+User: *"千行百业有各种不同的任务类型永远不可能覆盖" 模板库的根本问题*。
+
+Right. v0.2 doesn't store any per-vertical template in V7 source. The two
+registries are platform-managed data, not code:
+
+| Add a new vertical (e.g. `medical/literature-review`) | Effort |
+| --- | --- |
+| 1. INSERT into `platform_anchor_packs` with `phases JSONB` | 1 row |
+| 2. INSERT/UPDATE `platform_agents.metadata.capabilities[]` for any new declared capability | 1 row |
+| 3. (optional) drop a channel adapter file in `nautilus_v5/channels/medical-journal.py` | 1 file |
+| **V7 source code change** | **0** |
+| **MCP tool surface change** | **0** |
+
+This is the same flywheel the SaaS dialog already designed for publishing
+(channels → adapter files; verticals → anchor pack files). v0.2 just
+extends the same idea to decomposition (verticals → phases JSONB).
+
+Cross-domain workflows that don't match any registered domain fall back to
+`_default` (research → write → publish → measure), which is the long-tail
+catch-all. Domains can override only the parts they need; the schema is
+additive.
+
+---
+
+## 10 · Change log of this contract
 
 - 2026-05-08 · OSS dialog seeds initial version after `gh repo edit --visibility public`. Boundaries, handoff points, API contract, schema all written from current code reality. SaaS dialog to ratify / amend before first weekly cycle.
 - 2026-05-08 · OSS dialog adds §7 (flywheel · pending API contract) after reading SaaS dialog's BP1/BP2/BP3 analysis from `session_20260508-1901_营销文章质量评估与平台-代理飞轮断点分析`. Ships file-based stubs for BP1+BP3 in `mcp_server.py` so SaaS V5 cycle has a concrete wire to consume.
 - 2026-05-09 · OSS dialog adds §8 (V7 governance layer v0.1) and ships 3 MCP tools (`governance_dispatch`, `governance_audit`, `governance_lock_check`) bringing total tool count 10 → 13. Inserts `v7-souls-fusion` row in `platform_agents` with `role=governor` (no execution capability flagged). Path B′ chosen over independent hardware (premature) and 4th-executor (drift line).
+- 2026-05-09 · OSS dialog adds §9 (V7 governance v0.2 · capability-driven plan) and ships `governance_plan` MCP tool (13 → 14 tools) with two bundled default registries (`examples/v7_default_capabilities.json` + `examples/v7_default_phases.json`). Per SaaS dialog feedback that template libraries can't cover the long tail of industries · v0.2 reads two registries instead. Adding a new vertical = 1 row + 1 phase JSONB block · 0 V7 source change. Platform TODO list 4 → 8 (TODO 5/6/7/8 in §9.4).
