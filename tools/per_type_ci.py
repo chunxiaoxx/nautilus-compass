@@ -12,7 +12,6 @@ Run:
 """
 from __future__ import annotations
 
-import csv
 import math
 import random
 from pathlib import Path
