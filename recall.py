@@ -406,6 +406,126 @@ def load_links() -> dict:
         return {}
 
 
+def _parse_session_for_lesson(f: "Path", body_chars: int) -> dict | None:
+    """Parse one session_*.md · extract frontmatter + body excerpt."""
+    try:
+        text = f.read_text(encoding="utf-8", errors="ignore")
+    except Exception:
+        return None
+    fm = {}
+    body = text
+    if text.startswith("---"):
+        end = text.find("\n---", 4)
+        if end > 0:
+            for line in text[4:end].split("\n"):
+                if ":" in line:
+                    k, _, v = line.partition(":")
+                    fm[k.strip().lower()] = v.strip()
+            body = text[end+4:].strip()
+    age_seconds = time.time() - f.stat().st_mtime
+    age_str = (f"{age_seconds/3600:.1f}h" if age_seconds < 86400
+               else f"{int(age_seconds/86400)}d")
+    return {
+        "path": f.name,
+        "age_seconds": age_seconds,
+        "age_str": age_str,
+        "fm": fm,
+        "body": body[:body_chars],
+    }
+
+
+def find_lessons_for_anchor(anchor_text: str, mem_dir: "Path",
+                             max_lessons: int = 2,
+                             body_chars: int = 600,
+                             max_age_days: int = 60) -> list:
+    """v1.0+ · v1 fix · find past sessions that relate to this anti-anchor.
+
+    Anti-anchor alerts today say "this matches a past mistake" but never
+    surface WHICH past mistake. Agent ignores the alert because investigation
+    cost > guess cost. This helper embeds the actual past-mistake body so
+    it lands in agent working context.
+
+    Tiered match · falls back when narrower tier returns nothing:
+      Tier 1 · substring 6-gram match against the anchor text + lesson-type
+              frontmatter (concept ∈ {gotcha, problem-solution, trade-off}
+              OR type ∈ {bugfix}). Most precise.
+      Tier 2 · recent drift-flagged sessions (drift ∈ {yellow, red}) ·
+              age ≤ max_age_days. The agent's own self-reported drift
+              moments · always relevant when an anti-anchor fires.
+
+    Returns up to max_lessons items {path, age_str, body, source} where
+    source ∈ {anchor-substring, recent-drift}.
+    """
+    if not mem_dir or not mem_dir.is_dir():
+        return []
+    cutoff = time.time() - max_age_days * 86400
+
+    # Tier 1 · substring + lesson concept
+    LESSON_CONCEPTS = {"gotcha", "problem-solution", "trade-off"}
+    LESSON_TYPES = {"bugfix"}
+    tier1: list[dict] = []
+    needle = (anchor_text or "").strip()
+    grams = {needle[i:i+6] for i in range(max(1, len(needle)-5))} if len(needle) >= 6 else set()
+    for f in mem_dir.glob("session_*.md"):
+        try:
+            if f.stat().st_mtime < cutoff:
+                continue
+        except Exception:
+            continue
+        if grams:
+            try:
+                if not any(g in f.read_text(encoding="utf-8", errors="ignore") for g in grams):
+                    continue
+            except Exception:
+                continue
+        else:
+            continue   # no usable anchor text · skip tier 1
+        info = _parse_session_for_lesson(f, body_chars)
+        if not info:
+            continue
+        fm = info["fm"]
+        if fm.get("concept", "").lower() in LESSON_CONCEPTS or fm.get("type", "").lower() in LESSON_TYPES:
+            info["source"] = "anchor-substring"
+            tier1.append(info)
+    if tier1:
+        tier1.sort(key=lambda c: c["age_seconds"])
+        return tier1[:max_lessons]
+
+    # Tier 2 · recent drift!=green sessions (the agent's own admitted slip-ups)
+    tier2: list[dict] = []
+    for f in mem_dir.glob("session_*.md"):
+        try:
+            if f.stat().st_mtime < cutoff:
+                continue
+        except Exception:
+            continue
+        info = _parse_session_for_lesson(f, body_chars)
+        if not info:
+            continue
+        drift = info["fm"].get("drift", "").lower()
+        if drift in ("yellow", "red"):
+            info["source"] = f"recent-drift-{drift}"
+            tier2.append(info)
+    tier2.sort(key=lambda c: c["age_seconds"])
+    return tier2[:max_lessons]
+
+
+def render_anti_anchor_lessons(anchor_text: str, mem_dir, indent: str = "      ") -> None:
+    """Print past lessons for this anti-anchor · indented under alert."""
+    lessons = find_lessons_for_anchor(anchor_text, mem_dir)
+    if not lessons:
+        return
+    src = lessons[0].get("source", "")
+    label = ("上次踩过这个坑" if src == "anchor-substring"
+             else f"最近你自己标了 {src} · 没修干净就别再开新洞")
+    print(f"{indent}↑ {label} · 看正文:")
+    for lsn in lessons:
+        print(f"{indent}  📖 [{lsn['age_str']:>5} ago · {lsn.get('source','?')}] {lsn['path']}")
+        body = lsn["body"].rstrip()
+        for ln in body.splitlines():
+            print(f"{indent}     │ {ln}")
+
+
 def annotate_with_links(file_name: str, links: dict) -> str:
     """给 memory file 名加 supersede 标注 (在 metadata mode 用)."""
     if not links:
@@ -575,6 +695,12 @@ def try_daemon_recall(mem_dir: Path, user_prompt: str) -> bool:
                     print(f"  🔴 alert [{_alert_id}]: 最匹配的反锚点 (你历史犯过的错):")
                     for sc, txt in d["top_neg_hits"]:
                         print(f"    · cos={sc:.3f}  '{txt}'")
+                    # v1.0+ · v1 · embed past-mistake body so alert is actionable
+                    try:
+                        top_anchor_text = d["top_neg_hits"][0][1]
+                        render_anti_anchor_lessons(top_anchor_text, mem_dir, indent="  ")
+                    except Exception:
+                        pass
                     print(f"  ↑ 跟'我历史的错'高重合 · 标 FP: nautilus-compass feedback {_alert_id} fp")
                     log_usage("drift_alert", {
                         "alert_id": _alert_id,
@@ -728,6 +854,11 @@ def main():
                 print(f"  🔴 alert: 最匹配的反锚点 (你历史犯过的错 · max_hit={max_neg_hit:.3f}):")
                 for sc, s in top_neg_hits[:3]:
                     print(f"    · cos={sc:.3f}  '{s}'")
+                # v1.0+ · v1 · embed past-mistake body so alert is actionable
+                try:
+                    render_anti_anchor_lessons(top_neg_hits[0][1], mem_dir, indent="  ")
+                except Exception:
+                    pass
                 print(f"  ↑ 当前 prompt 跟这些'我历史的错' 高重合 · 注意别再犯")
             print()
 
