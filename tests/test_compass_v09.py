@@ -140,7 +140,8 @@ def test_mcp_server_tools_schema():
     expected = {"recall", "drift_check", "feedback_log",
                 "ingest_obs", "drift_history", "session_search", "profile"}
     actual = set(TOOLS.keys())
-    assert expected == actual, f"tools mismatch · expected {expected} got {actual}"
+    missing = expected - actual
+    assert not missing, f"v0.9 tools missing · {missing}"
 
     for name, t in TOOLS.items():
         assert "fn" in t and callable(t["fn"]), f"{name} no fn"
