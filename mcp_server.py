@@ -37,6 +37,8 @@ PLUGIN_DIR = Path(__file__).resolve().parent
 CACHE_DIR = PLUGIN_DIR / ".cache"
 FEEDBACK_LOG = CACHE_DIR / "feedback.jsonl"
 PROJECTS_DIR = Path.home() / ".claude" / "projects"
+PLATFORM_QUEUE_DIR = PROJECTS_DIR / "_platform_queue"
+PLATFORM_RESULTS_DIR = PROJECTS_DIR / "_platform_results"
 
 
 # ─── daemon I/O ────────────────────────────────────────────────────
@@ -363,6 +365,133 @@ def tool_feedback_log(args: dict) -> dict:
     return _ok(f"feedback logged · run `python feedback.py retrain` to update anchors")
 
 
+def tool_submit_platform_task(args: dict) -> dict:
+    """v1.0+ · BP1 · compass dialog → platform task channel.
+
+    File-based queue stub. Writes a JSON spec to ~/.claude/projects/_platform_queue/.
+    Platform V5 cycle (or future A2A POST /a2a/tasks/queue) consumes from this dir.
+    Once platform endpoint goes live, set COMPASS_PLATFORM_QUEUE_URL to switch to HTTP.
+    """
+    name = (args.get("name") or "").strip()
+    if not name:
+        return _err("name required")
+    channels = args.get("channels") or []
+    payload = args.get("payload") or {}
+    anchor_pack = (args.get("anchor_pack_hint") or "").strip()
+    priority = (args.get("priority") or "normal").strip()
+    if priority not in ("low", "normal", "high"):
+        priority = "normal"
+
+    PLATFORM_QUEUE_DIR.mkdir(parents=True, exist_ok=True)
+    task_id = f"tk_{int(time.time()*1000)}"
+    task_file = PLATFORM_QUEUE_DIR / f"{task_id}.json"
+    spec = {
+        "task_id": task_id,
+        "name": name,
+        "channels": channels,
+        "anchor_pack_hint": anchor_pack,
+        "priority": priority,
+        "payload": payload,
+        "submitted_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "submitted_by": os.environ.get("COMPASS_DIALOG_ID", "compass-default"),
+        "compass_session_id": os.environ.get("CLAUDE_SESSION_ID"),
+        "callback_url": os.environ.get("COMPASS_CALLBACK_URL"),
+        "status": "queued",
+    }
+    task_file.write_text(json.dumps(spec, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    # If platform HTTP endpoint configured, also POST (best-effort, non-blocking on failure)
+    queue_url = os.environ.get("COMPASS_PLATFORM_QUEUE_URL")
+    http_status = "file-only (no COMPASS_PLATFORM_QUEUE_URL)"
+    if queue_url:
+        try:
+            import urllib.request
+            req = urllib.request.Request(
+                queue_url,
+                data=json.dumps(spec).encode("utf-8"),
+                headers={"Content-Type": "application/json",
+                         "Authorization": f"Bearer {os.environ.get('COMPASS_PLATFORM_TOKEN','')}"},
+                method="POST",
+            )
+            with urllib.request.urlopen(req, timeout=5) as resp:
+                http_status = f"POSTed · {resp.status}"
+        except Exception as e:
+            http_status = f"POST failed (queued locally): {type(e).__name__}"
+
+    return _ok(f"task queued · id={task_id} · channels={channels} · priority={priority} · {http_status}")
+
+
+def tool_ingest_platform_task_result(args: dict) -> dict:
+    """v1.0+ · BP3 · platform task done → ingest result back into compass memory.
+
+    Platform agent (or callback handler) reports completion. We write
+    (a) JSON archive to _platform_results/, (b) session_*.md for cross-session search.
+    Closes the agent → platform → agent loop.
+    """
+    task_id = (args.get("task_id") or "").strip()
+    if not task_id:
+        return _err("task_id required")
+    summary = (args.get("result_summary") or "").strip()[:1000]
+    channels_published = args.get("channels_published") or []
+    drift = (args.get("drift") or "green").strip()
+    if drift not in ("green", "yellow", "red"):
+        drift = "green"
+    agent_id = (args.get("agent_id") or "platform-agent-unknown").strip()
+
+    PLATFORM_RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    result_file = PLATFORM_RESULTS_DIR / f"{task_id}_result.json"
+    result_file.write_text(json.dumps({
+        "task_id": task_id,
+        "result_summary": summary,
+        "channels_published": channels_published,
+        "drift": drift,
+        "agent_id": agent_id,
+        "completed_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+    }, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    # Also ingest as session_*.md so session_search picks it up cross-project
+    project = resolve_project(args.get("project")) or "C--Users-chunx"
+    out_dir = PROJECTS_DIR / project / "memory"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    from datetime import datetime
+    ts = datetime.now().strftime("%Y%m%d-%H%M")
+    out_file = out_dir / f"session_{ts}_platform_{task_id[:24]}.md"
+
+    if channels_published:
+        channels_block = "\n".join(
+            f"  - {c.get('channel','?')} · {c.get('status','?')} · {c.get('url','-')}"
+            for c in channels_published
+        )
+    else:
+        channels_block = "  (none)"
+
+    md = f"""---
+name: platform task {task_id} result
+description: {summary[:200]}
+type: feature
+concept: what-changed
+drift: {drift}
+agent_type: platform-agent
+ingested_via: mcp · ingest_platform_task_result
+task_id: {task_id}
+agent_id: {agent_id}
+---
+
+# Platform task {task_id} · result
+
+## Summary
+{summary}
+
+## Channels published
+{channels_block}
+
+## Agent
+{agent_id}
+"""
+    out_file.write_text(md, encoding="utf-8")
+    return _ok(f"result ingested · task={task_id} · session={out_file.name} · drift={drift}")
+
+
 TOOLS = {
     "ingest_obs": {
         "fn": tool_ingest_obs,
@@ -488,6 +617,43 @@ TOOLS = {
                 "properties": {
                     "steps": {"type": "integer", "default": 3, "description": "1-20 · how many progress frames to emit"},
                 },
+            },
+        },
+    },
+    "submit_platform_task": {
+        "fn": tool_submit_platform_task,
+        "schema": {
+            "name": "submit_platform_task",
+            "description": "v1.0+ · BP1 · Queue a task for the Nautilus platform (V5 cycle / platform_agents). File-based by default; HTTP POST when COMPASS_PLATFORM_QUEUE_URL is set. Use this to hand work from a compass dialog to the platform: publishing, code review, content generation, anything platform agents can specialize in. Pair with ingest_platform_task_result for the return leg.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "name": {"type": "string", "description": "Short task name · 8-40 chars"},
+                    "channels": {"type": "array", "items": {"type": "string"}, "default": [], "description": "Target channels · e.g. ['dev.to','x','github']. Empty = let platform router decide."},
+                    "payload": {"type": "object", "description": "Task-specific payload · platform reads this · keep it JSON-serialisable"},
+                    "anchor_pack_hint": {"type": "string", "description": "Domain anchor pack hint · e.g. 'marketing/dev-tools' · platform uses this to score quality"},
+                    "priority": {"type": "string", "enum": ["low","normal","high"], "default": "normal"},
+                },
+                "required": ["name"],
+            },
+        },
+    },
+    "ingest_platform_task_result": {
+        "fn": tool_ingest_platform_task_result,
+        "schema": {
+            "name": "ingest_platform_task_result",
+            "description": "v1.0+ · BP3 · Platform agent reports a completed task back to compass. Writes a JSON archive AND a session_*.md so the result becomes searchable cross-session. Closes the loop submit_platform_task → V5 cycle → ingest_platform_task_result. Typically called by the platform callback handler, not directly by users.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "task_id": {"type": "string", "description": "Task id returned by submit_platform_task"},
+                    "result_summary": {"type": "string", "description": "≤1000 char summary of what was done"},
+                    "channels_published": {"type": "array", "items": {"type": "object"}, "default": [], "description": "List of {channel, url, status} dicts"},
+                    "drift": {"type": "string", "enum": ["green","yellow","red"], "default": "green", "description": "Platform agent self-audit · same semantics as ingest_obs"},
+                    "agent_id": {"type": "string", "description": "platform_agents.agent_id of who completed"},
+                    "project": {"type": "string", "description": "Target project (defaults to most-recent)"},
+                },
+                "required": ["task_id"],
             },
         },
     },

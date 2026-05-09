@@ -236,6 +236,116 @@ Blockers in either column stop their owner until cleared.
 
 ---
 
-## 7 · Change log of this contract
+## 7 · Bidirectional flywheel · pending API contract
+
+Status as of 2026-05-08 evening: SaaS dialog has identified **3 flywheel
+breakpoints** between compass dialog (this side) and platform / V5 cycle
+(SaaS side):
+
+| BP  | Description                                              | Owner          | Status |
+|-----|----------------------------------------------------------|----------------|--------|
+| BP1 | compass dialog → platform task channel missing           | **OSS · this** | 🟢 stub shipped, see below |
+| BP2 | V5 publishing claim cycle hook — agent claim rate low    | SaaS · #419    | 🟡 in progress |
+| BP3 | task completion → memory ingest loop missing             | **both**       | 🟢 stub shipped, see below |
+
+### BP1 — `submit_platform_task` (compass → platform)
+
+OSS dialog ships a new MCP tool in `mcp_server.py` (commit 2026-05-08)
+that any compass dialog can call to push a task into the platform task
+queue. Default mode is **file-based**: writes a JSON spec to
+`~/.claude/projects/_platform_queue/<task_id>.json`. The platform V5
+cycle (SaaS side) polls that directory.
+
+When SaaS endpoint is live, set env on the compass side:
+
+```bash
+export COMPASS_PLATFORM_QUEUE_URL=https://compass.nautilus.social/v1/tasks/queue
+export COMPASS_PLATFORM_TOKEN=<bearer>
+```
+
+Then the same tool also POSTs to the HTTP endpoint (file remains as audit fallback).
+
+**Wire format** (compass writes / platform reads):
+
+```json
+{
+  "task_id": "tk_<unix_ms>",
+  "name": "publish-dev-to-launch-post",
+  "channels": ["dev.to", "x"],
+  "anchor_pack_hint": "marketing/dev-tools",
+  "priority": "normal",
+  "payload": { "title": "...", "body_md": "...", "..." : "..." },
+  "submitted_at": "2026-05-08T13:00:00Z",
+  "submitted_by": "<COMPASS_DIALOG_ID env>",
+  "compass_session_id": "<CLAUDE_SESSION_ID env>",
+  "callback_url": "<COMPASS_CALLBACK_URL env, optional>",
+  "status": "queued"
+}
+```
+
+**SaaS side TODO** (platform dialog):
+1. Add poller / webhook handler at `~/.claude/projects/_platform_queue/`
+2. (Eventually) implement `POST /v1/tasks/queue` that accepts this same JSON
+3. V5 cycle hook (#419) claims by `priority` desc + `anchor_pack_hint` → matching `platform_anchor_packs`
+4. After claim, set `status` field in the file (`queued` → `claimed` → `running` → `done`)
+5. Call `ingest_platform_task_result` on completion (BP3 below)
+
+### BP3 — `ingest_platform_task_result` (platform → compass)
+
+Closes the loop. Platform agent (or platform-side callback handler) calls
+this MCP tool when a task completes. It writes:
+
+1. JSON archive to `~/.claude/projects/_platform_results/<task_id>_result.json`
+2. A `session_*.md` to the user's compass memory dir → searchable cross-session
+
+**Wire format** (platform writes / compass ingests):
+
+```json
+{
+  "task_id": "tk_<unix_ms>",
+  "result_summary": "≤1000 char what-was-done",
+  "channels_published": [
+    {"channel": "dev.to",  "url": "https://dev.to/u/post-slug", "status": "success"},
+    {"channel": "x",       "url": "https://x.com/u/status/123", "status": "success"}
+  ],
+  "drift": "green | yellow | red",
+  "agent_id": "platform_agents.agent_id of who completed"
+}
+```
+
+**Why this matters**: once a platform task result lands as a `session_*.md`,
+the next time *any* compass dialog (this one, the platform dialog, or
+a third agent on a different machine) calls `session_search` or
+`recall`, the platform's output is treated as first-class memory. That
+is the second half of the flywheel — platform output becomes input for
+the next cross-session reasoning loop.
+
+### Smoke verification (already done OSS-side)
+
+```
+$ python -m nautilus_compass.mcp_server  # initialize → tools/list → tools/call
+TOOLS (10): [..., 'submit_platform_task', 'ingest_platform_task_result']
+SUBMIT: task queued · id=tk_… · file-only (no COMPASS_PLATFORM_QUEUE_URL)
+INGEST: result ingested · session=session_…_platform_tk_….md · drift=green
+$ python session_search.py "platform task"
+[12.2] (top hit, freshly ingested smoke result)
+```
+
+End-to-end submit → file → ingest → session_search round-trip verified.
+
+### Open coordination questions for SaaS dialog
+
+1. Should `_platform_queue` live in `~/.claude/projects/` (current — works for single-host dev), or move to a Redis / Postgres queue once SaaS is involved?
+2. Does V5 cycle want the `payload` blob opaque, or do we add a typed schema per `anchor_pack_hint` so the cycle can validate before claiming?
+3. For multi-tenant SaaS, the task spec will need a `tenant_id` field — OK to add now, or wait until SaaS multi-tenancy lands?
+4. `callback_url` is OAuth2-bearer authenticated. Compass side needs to mint short-lived tokens. Spec out the token exchange — is `/v1/oauth/callback-tokens` the right endpoint name?
+
+OSS dialog will not block on these — defaults are reasonable. Mark them
+in §5 status log with proposed answers when SaaS dialog has cycles.
+
+---
+
+## 8 · Change log of this contract
 
 - 2026-05-08 · OSS dialog seeds initial version after `gh repo edit --visibility public`. Boundaries, handoff points, API contract, schema all written from current code reality. SaaS dialog to ratify / amend before first weekly cycle.
+- 2026-05-08 · OSS dialog adds §7 (flywheel · pending API contract) after reading SaaS dialog's BP1/BP2/BP3 analysis from `session_20260508-1901_营销文章质量评估与平台-代理飞轮断点分析`. Ships file-based stubs for BP1+BP3 in `mcp_server.py` so SaaS V5 cycle has a concrete wire to consume.
