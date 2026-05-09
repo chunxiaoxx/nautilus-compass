@@ -177,6 +177,7 @@ def parse_memory_file(path: Path) -> dict:
         "age_seconds": age_seconds,
         "age_str": age_str,
         "path": path.name,
+        "body": body[:1500],          # v1.0+ · for body-embed render · v0
         "embed_text": (fm.get("description", "") + "\n" + body)[:EMBED_MAX_CHARS],
         "mtime": path.stat().st_mtime,
         "fullpath": str(path),
@@ -426,9 +427,19 @@ def render_v01_metadata_mode(entries: list) -> None:
     older.sort(key=lambda x: x["age_seconds"])
     if fresh:
         print(f"🟢 当前心智 (≤24h · {len(fresh)} · **优先信任**):")
-        for e in fresh:
+        # v1.0+ · v0 fix · top 3 fresh get body excerpt embedded so agent
+        # has rule body in context · breaks the "title-only consumption" failure mode
+        BODY_TOP = 3
+        BODY_CHARS = 800
+        for idx, e in enumerate(fresh):
             ann = annotate_with_links(e["path"], links)
             print(f"  · [{e['age_str']:>5} old] {e['path']:<40} — {e['description'][:80]}{ann}")
+            if idx < BODY_TOP and e.get("body"):
+                body = e["body"][:BODY_CHARS].rstrip()
+                indented = "\n".join(f"      │ {ln}" for ln in body.splitlines())
+                print(indented)
+                if len(e.get("body","")) > BODY_CHARS:
+                    print(f"      │ … (+{len(e['body'])-BODY_CHARS} more · Read {e['path']} for rest)")
     if recent:
         print(f"🟡 近期 (1-7d · {len(recent)} · 可参考):")
         for e in recent[:8]:
@@ -489,13 +500,23 @@ def render_v02_vector_mode(entries: list, query: str, cache: dict) -> None:
 
     print(f"🎯 召回 top {len(top)} ({scoring_method} · query: {query[:60]}{'...' if len(query)>60 else ''}):")
     print()
-    for score, e in top:
-        # 标 fresh/old · 帮我判断是不是当前心智
+    # v1.0+ · v0 fix · top BODY_TOP get full body excerpt to break the
+    # "recall is consumption" illusion · agent now has rule body in context · no
+    # extra Read tool call needed. Top BODY_TOP+1..K stay on description-only.
+    BODY_TOP = 3
+    BODY_CHARS = 800
+    for idx, (score, e) in enumerate(top):
         flag = "🟢" if e["age_seconds"] < 86400 else ("🟡" if e["age_seconds"] < 7*86400 else "🔴")
         print(f"  {flag} score={score:.3f} · [{e['age_str']:>5} old] {e['path']}")
         if e["description"]:
             print(f"       {e['description'][:120]}")
-    print()
+        if idx < BODY_TOP and e.get("body"):
+            body = e["body"][:BODY_CHARS].rstrip()
+            indented = "\n".join(f"       │ {ln}" for ln in body.splitlines())
+            print(indented)
+            if len(e.get("body","")) > BODY_CHARS:
+                print(f"       │ … (+{len(e['body'])-BODY_CHARS} more · Read {e['path']} for rest)")
+        print()
     # 同时附 24h 内所有 fresh memory · 不在 top 也显示 (心智优先)
     fresh_not_in_top = [
         e for e in entries
