@@ -195,6 +195,39 @@ def step_3_audit(host: str, port: int, token: str, verbose: bool) -> None:
         print(f"    audit={audit_id} · scanned={scanned} · suspects={suspects}")
 
 
+def step_5_v02_plan(host: str, port: int, token: str, verbose: bool) -> None:
+    """V7 v0.2 · capability-driven plan · two domains exercised."""
+    print("\n[5] V7 v0.2 governance_plan · capability-driven DAG")
+    cases = [
+        ("marketing-launch", "launch nautilus-compass v1.0 to dev-tools community",
+         "marketing/dev-tools", 4),
+        ("finance-audit", "caishen Q1 audit",
+         "caishen-finance/audit", 5),
+    ]
+    with MCPClient(host=host, port=port, token=token,
+                   client_name="v7-demo") as c:
+        for label, goal, domain, expected_phases in cases:
+            reply = c.call_tool("governance_plan", {
+                "goal": goal,
+                "domain_hint": domain,
+                "anchor_pack_hint": domain,
+                "priority": "high",
+                "dry_run": True,
+            })
+            text = _text(reply)
+            if verbose:
+                print(text)
+            if "V7 plan" not in text:
+                raise RuntimeError(f"plan output unexpected for {label}: {text}")
+            # parse: count phase lines (start with '  · ')
+            phase_lines = [ln for ln in text.splitlines() if ln.startswith("  ·")]
+            if len(phase_lines) != expected_phases:
+                raise RuntimeError(
+                    f"{label}: expected {expected_phases} phases, got {len(phase_lines)}"
+                )
+            print(f"    {label:<18} · {expected_phases} phases · domain={domain}")
+
+
 def step_4_cleanup(parent_id: str, verbose: bool) -> None:
     """Idempotent: remove demo artefacts."""
     print("\n[4] cleanup demo artefacts")
@@ -230,6 +263,7 @@ def main(argv: list[str] | None = None) -> int:
             step_1_lock_bootstrap(host, port, DEMO_TOKEN, args.verbose)
             parent_id = step_2_dispatch(host, port, DEMO_TOKEN, args.verbose)
             step_3_audit(host, port, DEMO_TOKEN, args.verbose)
+            step_5_v02_plan(host, port, DEMO_TOKEN, args.verbose)
         except (MCPClientError, RuntimeError) as e:
             print(f"\nDEMO FAILED: {e}")
             return 2
@@ -238,9 +272,9 @@ def main(argv: list[str] | None = None) -> int:
                 step_4_cleanup(parent_id, args.verbose)
 
     print("\n" + "=" * 64)
-    print("OK · V7 v0.1 governance round-trip verified")
-    print("    lock_check · dispatch → 4 routed files · audit scan")
-    print("    platform side TODO: v7-monitor cron + governance fee · §8.4")
+    print("OK · V7 v0.2 governance round-trip verified")
+    print("    lock_check · dispatch → 4 routed files · audit scan · plan DAG")
+    print("    platform side TODO: v7-monitor cron + governance fee · §8.4 + §9.4")
     print("=" * 64)
     return 0
 

@@ -1,0 +1,70 @@
+{
+  "$comment": "V7 v0.2 capability registry · OSS-side defaults. Platform cron may overwrite ~/.claude/projects/_platform_registry/agents_capabilities.json with live data; if absent, V7 falls back to this. Each entry: agent_id + capabilities[]. Capability schema: {id, domains?, outputs, channels?, anchor_packs?}.",
+  "version": "v0.2",
+  "agents": [
+    {
+      "agent_id": "nautilus-v5",
+      "capabilities": [
+        {
+          "id": "long-form-write",
+          "outputs": ["article", "post", "thread"],
+          "channels": ["dev.to", "x", "x-en", "x-zh", "wechat", "substack"],
+          "anchor_packs": ["marketing/dev-tools", "vc/article", "general"]
+        },
+        {
+          "id": "publish-dispatch",
+          "outputs": ["published-url"],
+          "channels": ["dev.to", "x", "x-en", "x-zh", "wechat", "substack", "email", "github-issue"]
+        },
+        {
+          "id": "web-research",
+          "outputs": ["evidence-bundle", "citation-list"]
+        },
+        {
+          "id": "marketing-bounty-claim",
+          "outputs": ["bounty-receipt"],
+          "anchor_packs": ["marketing/dev-tools"]
+        }
+      ]
+    },
+    {
+      "agent_id": "nautilus-v6",
+      "capabilities": [
+        {
+          "id": "code-review",
+          "outputs": ["review-report", "diff-comments"],
+          "channels": ["github", "github-issue", "github-pr"],
+          "anchor_packs": ["code-review", "security-review"]
+        },
+        {
+          "id": "numeric-audit",
+          "outputs": ["audit-report"],
+          "anchor_packs": ["caishen-finance/audit", "general/numeric"]
+        },
+        {
+          "id": "test-execution",
+          "outputs": ["test-report", "coverage-summary"]
+        }
+      ]
+    },
+    {
+      "agent_id": "kairos",
+      "capabilities": [
+        {
+          "id": "kg-ingest",
+          "outputs": ["graph-nodes", "graph-edges"],
+          "channels": ["kg", "knowledge-graph", "neo4j"]
+        },
+        {
+          "id": "memory-audit",
+          "outputs": ["audit-summary", "drift-report"],
+          "anchor_packs": ["memory-audit"]
+        },
+        {
+          "id": "retrospective",
+          "outputs": ["retro-report", "lessons-learned"]
+        }
+      ]
+    }
+  ]
+}
