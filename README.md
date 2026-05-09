@@ -1,525 +1,264 @@
 # nautilus-compass
 
-> **Cross-agent memory layer with drift detection** for the Nautilus platform.
-> Memory plugin for Claude Code/Desktop · Cline · Cursor · OpenClaw · Hermes ·
+> **Cross-agent memory layer with drift detection** for LLM agents.
+> Memory plugin for Claude Code/Desktop · Cline · Cursor · Continue.dev · Zed ·
 > stops your AI from repeating mistakes you've already flagged.
-> Now with **5 user-facing slash commands** (`/compass-verify`, `/compass-drift`,
-> `/compass-recall`, `/compass-search`, `/compass-status`) — drift / Merkle /
-> recall surfaces are reachable directly from the prompt, not just hooks.
+
+🇬🇧 English (this file) · [🇨🇳 中文](README.zh-CN.md)
 
 [![CI](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/ci.yml)
 [![arXiv build](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/build-paper.yml/badge.svg?branch=main)](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/build-paper.yml)
 [![LongMemEval-S](https://img.shields.io/badge/LongMemEval--S-56.6%25-brightgreen)](paper/RESULTS_v0.8.md)
 [![EverMemBench](https://img.shields.io/badge/EverMemBench-44.4%E2%80%9347.3%25-brightgreen)](paper/sections/paper2_06_5_evermembench.tex)
-[![drift-AUC](https://img.shields.io/badge/drift_AUC-0.92-brightgreen)](#真账面--实测数据)
-[![version](https://img.shields.io/badge/version-1.0.0--rc2-orange)](CHANGELOG.md)
+[![drift-AUC](https://img.shields.io/badge/drift_AUC-0.83_held--out-brightgreen)](#how-it-works)
+[![version](https://img.shields.io/badge/version-1.0.0_stable-blue)](CHANGELOG.md)
 [![MCP](https://img.shields.io/badge/MCP-7%20tools%20%C2%B7%20TLS%20%C2%B7%20RBAC-blue)](docs/mcp-usage.md)
 [![A2A](https://img.shields.io/badge/A2A-mTLS%20%C2%B7%20scoped%20peers-blue)](examples/a2a_tls_demo.py)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 ---
 
-## 30 秒版本 · 这是什么
+## 30-second pitch
 
 ```
-传统 mem 系统 (mem0/Letta/claude-mem):
-  "我能更准地找回旧 memory"
+Traditional memory systems (mem0 / Letta / claude-mem / Zep):
+  "I can recall the right past memory more accurately."
 
-nautilus-compass 多做一步:
-  "memory 找回了 + 检测 AI 是不是要犯老毛病 + 提醒走过的对的路"
+nautilus-compass adds one more step:
+  "Memory recalled + detect if the AI is about to repeat a known mistake
+   + remind it of what worked last time."
 ```
 
-**一句话**: 让 AI 在忘了规矩、想偷懒、想编故事时，被自己历史的错误模式拦住。
+**In one line**: when the AI is about to forget a rule you set, take a
+shortcut you flagged, or fabricate a prior agreement, it gets stopped
+by its own history of failure patterns.
 
 ---
 
-## 解决什么真问题
+## What problem does this solve
 
-### 问题 A · AI session 长了会"漂"
-开场你告诉 Claude "凡是部署都要先验证"。50 个 prompt 后 Claude 说 "已部署完成 ✅"——但根本没验证。memory 有规矩，AI 长 session 后自己忘。
+### A. Long sessions drift
 
-### 问题 B · Anthropic Persona Vectors 论文 你看得懂用不上
-[arXiv:2507.21509](https://arxiv.org/abs/2507.21509) 证明 LLM activation 里有 sycophancy / hallucination 方向。但**那是 white-box，要 Claude 模型权重你没有**。市面上没有可在 Claude Code hook 里跑的 black-box 等效物。
+You told Claude at session start: *"never claim deployment success
+without verification."* Fifty prompts later Claude says *"deployed
+successfully ✅"* — without verifying. The memory rule was there; the
+AI forgot it under context pressure.
 
-### 问题 C · Memory plugin 都在卷一半
-mem0/Letta/claude-mem/Zep 都在抢"找回最相关 memory"。但**memory 找回了，AI 还是不按规矩做事**——这一半没人解。
+### B. White-box drift detection isn't reachable
 
----
+[Persona Vectors (Anthropic, 2025)](https://arxiv.org/abs/2507.21509)
+proved that LLM activations contain directions for sycophancy and
+hallucination. But that requires model weights — closed APIs (Claude,
+GPT-4) don't expose them. There has been no production black-box
+equivalent that runs in a Claude Code hook.
 
-## 怎么解决（机制）
+### C. Memory plugins solve only half the problem
 
-```
-              ┌─────────────────────────────────┐
-              │  你 写 prompt: "帮我修 Bug X"      │
-              └────────────┬────────────────────┘
-                           │
-                           ▼
-            ┌──────────────────────────────────────┐
-            │  UserPromptSubmit Hook (nautilus-compass)  │
-            └──────────────────────────────────────┘
-                           │
-        ┌──────────────────┼──────────────────┐
-        ▼                  ▼                  ▼
-   ┌─────────┐        ┌──────────┐       ┌───────────┐
-   │  Recall │        │   Drift  │       │  Strategy │
-   │ ─────── │        │ ──────── │       │ ───────── │
-   │ 找最相关 │        │ 跟 60 条 │       │ 历史走通  │
-   │ memory  │        │ 锚点比   │       │ 路径召回  │
-   │ top 5   │        │ 你像不像 │       │ 关键词   │
-   │         │        │ 历史的错?│       │ 命中?    │
-   └─────────┘        └──────────┘       └───────────┘
-        │                  │                  │
-        └──────────────────┼──────────────────┘
-                           ▼
-              ┌──────────────────────────────────┐
-              │ 注入到 Claude 视野 (system prompt) │
-              │                                   │
-              │ • 24h 内 N 条 memory (优先信任)    │
-              │ • drift score=-0.05 ⚠️ 偏向反锚点 │
-              │   "看到 systemctl active 就当部署 │
-              │    成功了" (cos=0.59)             │
-              │ • 走通路径: tests/eval_drift.py 测│
-              │   ROC AUC                        │
-              └──────────────────────────────────┘
-                           │
-                           ▼
-            Claude 看到这些后才生成回复 → 自然不会再犯
-```
+Mem0, Letta, claude-mem, Zep all compete on *"recall the most relevant
+past memory."* But memory recalled doesn't stop the AI from breaking
+the rule **this time** — that other half has been unsolved.
 
 ---
 
-## 装了 vs 没装 · 用户感知
+## How it works
 
-### 没装 nautilus-compass
 ```
-你: 把 dist/ 部署到生产
-Claude: 已部署完成 ✅
-你: (打开网站发现还是旧版)
-你: 怎么没真部署?
-Claude: 抱歉, 让我看看…
+            User prompt: "Fix bug X for me"
+                         │
+                         ▼
+       ┌─────────────────────────────────────┐
+       │  UserPromptSubmit Hook (this plugin)│
+       └─────────────────────────────────────┘
+                         │
+            ┌────────────┼────────────┐
+            ▼            ▼            ▼
+       ┌────────┐  ┌─────────┐  ┌──────────┐
+       │ recall │  │  drift  │  │ profile  │
+       │ memory │  │  check  │  │ aggregate│
+       └────────┘  └─────────┘  └──────────┘
+                         │
+                         ▼
+       Hooks inject results into Claude's system prompt:
+       - Time-bucketed past memory (BGE-m3 semantic recall)
+       - Drift score + nearest negative anchor (if score < threshold)
+       - Profile facts ("you have 3 unfinished tasks in this repo")
+                         │
+                         ▼
+            Claude answers — with full context loaded
 ```
 
-### 装了 nautilus-compass
-```
-你: 把 dist/ 部署到生产
-
-[hook 触发 · 注入到 Claude 视野]
-🔴 alert: 你历史犯过的错:
-  · cos=0.59 '看到 systemctl active 就当部署成功了'
-  · cos=0.55 'deploy 完了 (但没验证版本号)'
-
-Claude: 
-"这个场景跟你之前 deploy 过失败的模式像。
- 我先 ssh 上去 cat 实际文件 hash 跟本地 dist hash 对一下，
- 然后 curl 网站确认版本号变了再说完成。"
-→ 真验证后再说成功
-```
+The drift detector compares each prompt against an anchor set
+(25 positive + 35 negative behavioral patterns drawn from real failure
+transcripts) using BGE-m3 cosine similarity. AUC 0.83 on held-out, 50ms
+p95 hook latency.
 
 ---
 
-## 跟其他 mem 系统比一眼看完
+## Headline numbers
 
-| | Retrieval | Drift Detection | Time-bucket | Strategy injection | Local-only |
-|---|---|---|---|---|---|
-| mem0 | ✅ 强 | ❌ | ❌ | ❌ | ❌ (要 OpenAI API) |
-| Letta | ✅ 强 | ❌ | ❌ | partial | optional |
-| claude-mem | ⚠️ session 末端 | ❌ | ❌ | ❌ | ✅ |
-| Zep | ✅ + graph | ❌ | ⚠️ 时序 | ❌ | ❌ |
-| **nautilus-compass** | ✅ **MRR 0.84** | ✅ **AUC 0.92** | ✅ 24h vs 7d+ | ✅ DPT 风格 | ✅ |
-
----
-
-## 真账面 · 实测数据
-
-实测 2026-04-29，所有数据可重现：`python tests/run_all.sh`
-
-### Drift detection (50 aligned + 50 deviation 合成 prompt)
-
-| 配置 | ROC AUC | Best-Youden Acc |
+| Benchmark | Score | Compare against |
 |---|---|---|
-| **bge-m3 + 25 task + 35 hard-FP anchors + top-3 mean (v0.7.1)** | **0.9232** | 0.84 |
-| bge-m3 + 25 task anchors + top-3 mean | 0.8352 | 0.77 |
-| bge-small-zh + 25 task anchors | 0.7928 | 0.74 |
-| 旧版 (bge-small-zh + abstract maxims + centroid mean) | 0.5056 | 0.55 |
+| **LongMemEval-S** (n=500) | **56.6%** (locked at v0.8) | ties Zep SOTA band, +12 pts vs Gemini-2.5-pro baseline |
+| **EverMemBench-Dynamic** (n=500) | **44.4% (Run 1) / 47.3% (Run 2)** | tops every reported Table 4 baseline (Mem0 37.09, Zep 39.97, MemOS 42.55) |
+| **Drift detector AUC** | **0.83 held-out / 0.92 in-set** | first black-box drift score that runs in a Claude Code hook |
+| **Reproduction cost** | **~$3.50** for 500 LongMemEval questions | under 1/15 of GPT-4o-judged stacks |
+| **p95 hook latency** | **<50 ms** | safe for every-prompt invocation |
 
-**4 步演化 0.51 → 0.92** —— 这个 narrative 本身就是 README 故事弧。详见 [CHANGELOG.md](CHANGELOG.md)。
-
-### LongMemEval-S 公开 benchmark (subset 12, n=12)
-
-| 系统 | P@1 | P@5 | MRR |
-|---|---|---|---|
-| **nautilus-compass (m3 + bge-reranker)** | **0.750** | **0.917** | **0.837** ⭐ |
-| **mem0 (Vertex text-embedding-005, real run)** | 0.583 | 0.917 | 0.715 |
-| nautilus-compass (m3 only, no rerank) | 0.667 | 0.750 | 0.732 |
-| mem0 (paper claim) | n/a | ~0.6 | ~0.55 |
-
-**P@5 打平 mem0 0.917 + MRR +0.122 优势** = truth session 平均排序更靠前。
-**single-session-user MRR**: nautilus-compass 0.522 vs mem0 0.250 (**2x improvement**)。
-
----
-
-### LongMemEval-S End-to-End Accuracy (n=500 · 2026-05-04~05 实测)
-
-完整 LLM-as-judge 评估 (paper 主指标 · 跨 6 个 question type):
-
-| 模型配置 | Overall | Provider | 价格/run | 备注 |
-|---|---|---|---|---|
-| **🌟 v0.8 (DeepSeek + 5 项加成)** | **56.6%** 🏆 | Volc Ark | **¥10** | **2026-05-05 final · 接近 Zep SOTA** |
-| Gemini 2.5 pro thinking | 44.6% | Vertex AI | $15-20 | 商用 baseline |
-| MiniMax M2.7 highspeed nothink | 45.8% | MiniMax | ¥1 | 国产基础 |
-| DeepSeek V3.2 thinking | 46.6% | Volc Ark | ¥1-2 | 国产 baseline |
-| MiniMax thinking 1024 (kill 302) | 33% | MiniMax | ¥1 | 拒答崩盘 |
-
-**v0.8 final 6 类型分项** (n=500 · 28058s · GPU 7.79h):
-
-| Type | n | acc | 备注 |
-|---|---|---|---|
-| **single-session-assistant** | 56 | **83.9%** 🏆 | 强势 (assistant 历史召回最准) |
-| **knowledge-update** | 78 | 57.7% | timestamp-aware prompt 有效 |
-| **single-session-user** | 70 | **57.1%** ⭐ | query rewrite +27 pts vs baseline 30% |
-| **multi-session** | 133 | 54.9% | decompose prompt 有效 |
-| **single-session-preference** | 30 | 53.3% | 撤回 ssp prompt 后回升 |
-| **temporal-reasoning** | 133 | 46.6% | 持平 baseline · 时间推理是开放问题 |
-
-**对照业界** (Letta 35-38% · Mem0 40-45% · A-MEM 50% · Zep SOTA 55-60% · paper RAG SOTA 50-60%):
-**v0.8 56.6% = paper SOTA 同档 · Zep SOTA 下沿 · 价格 1/15**。
-
-**v0.8 五项加成实测**:
-- ssu Multi-angle Query Rewriting: **+27 pts** (30% → 57%) ⭐⭐
-- multi-session decompose prompt: +8 pts (44% → 52%)
-- ku timestamp-aware prompt: +2-3 pts
-- ssa context expansion (max_chars 2400→3500): +2 pts
-- TOP_K 10→15: +0.5 pts
-
-**Negative Findings** (paper 价值):
-- Neo4j graph rerank: -6.2 pts (closed haystack 上 graph 信号跟 cross-encoder 重复)
-- Double-model router: -2.1 pts (sample 噪声 · 50 题不能区分)
-- SSP preference prompt: -37.5 pts (LLM 跑偏 · 撤回 default)
-- MiniMax thinking 1024: refusal cascade collapse (44% 拒答率)
-
-详见 [paper/OUTLINE_PAPER2.md](paper/OUTLINE_PAPER2.md) · [results csv](paper/results/experiments_20260505.csv) · [paper/RESULTS_v0.8.md](paper/RESULTS_v0.8.md)。
-
----
-
-## v1.0.0 stable (2026-05-08)
-
-`1.0.0-rc2` (2026-05-07) shipped unchanged as `1.0.0`. rc1 shipped the
-MCP A2A surface as **preview**. rc2/1.0.0 promotes the whole stack to
-production-hardened **and exposes the drift / Merkle / recall surfaces
-as user-facing slash commands**.
-
-### New today (user-facing)
-
-- 🧭 **5 slash commands** — `/compass-verify`, `/compass-drift`,
-  `/compass-recall`, `/compass-search`, `/compass-status`. First time
-  drift/Merkle/recall are reachable directly from the prompt instead of
-  only through hooks. See `commands/compass-*.md`.
-- 🛡️ **`compass-integrity` auto-trigger skill** — preflights chain
-  integrity, drift trend, and daemon liveness when the user is about to
-  rely on prior memory ("did we discuss…", "based on past sessions…").
-  See `skills/compass-integrity/SKILL.md`.
-- 📡 **MCP `logging/setLevel` spec-complete** — server now implements
-  the full logging surface from MCP 2024-11-05. Clients subscribe via
-  `MCPClient(log_cb=...).set_log_level("info")` and receive
-  `notifications/message` frames. Third-party clients in any language
-  are now unblocked.
-- 🔌 **Third-party MCP client portability proven** —
-  `examples/third_party_client.py` is pure stdlib, **zero compass
-  imports**. Anyone can speak MCP to nautilus-compass with just JSON +
-  a subprocess pipe (Node, Go, Rust, shell — all viable).
-
-### Production-hardened (full rc2 delta)
-
-- 🔐 **TLS + optional mTLS** for TCP transport · `--tls-cert`,
-  `--tls-key`, `--tls-client-ca` · client gets `tls_ca_cert` +
-  `tls_client_cert`/`tls_client_key`
-- 🛡️ **Token-scoped RBAC** · per-token scopes
-  (`tools.read` / `tools.write` / `resources.read` / `*`) ·
-  `--token-file TOKENS.json` for out-of-band rotation
-- 🎚️ **Per-token rate limit** · token-bucket · `--rate-limit
-  TOKEN=rps/burst` · returns `-32029` with exact retry-in delay
-- ♻️ **Client auto-backoff** · `MCPClient(rate_limit_retries=N)` ·
-  parses `retry in X.Ys` and sleeps automatically
-- 📡 **resources/\*** · `compass://session/...` URIs for streaming
-  session logs between peers
-- 🤝 **A2A demo** · `python examples/a2a_tls_demo.py` runs a full
-  self-signed mTLS observer+reader round-trip in one command ·
-  no external CA, no network
-- 🧪 **189 tests** · 0 flake · 0 regression
-
-Quick TLS A2A from Python:
-```python
-from mcp_client import MCPClient
-with MCPClient(port=8766, token="observer",
-               tls=True, tls_ca_cert="ca.pem",
-               tls_client_cert="peer.pem",
-               tls_client_key="peer.pem",
-               rate_limit_retries=3) as c:
-    c.call_tool("ingest_obs", {...})
-```
-
-See [CHANGELOG rc2](CHANGELOG.md#100-rc2--2026-05-07--mcp-a2a-production-hardened--tls--rbac--rate-limit)
-for the full delta.
-
-## v1.0.0-rc1 what's new (2026-05-07)
-
-- 🔒 **Merkle hash chain for session memory** (`merkle_chain.py`) · `compass_verify` CLI detects edits/deletes
-- 📅 Temporal-reasoning prompt + timeline scratch-pad
-- 🧩 MCP A2A server (`mcp_server.py` · stdio + TCP · JSON-RPC 2.0) · **preview** in rc1 — superseded by rc2 (TLS + RBAC + rate limit)
-
-See [CHANGELOG](CHANGELOG.md#100-rc1--2026-05-07--integrity-chain--mcp-a2a-preview--temporal-push) for the full rc1 list (temporal-reasoning prompt · ssu utterance pairs · self-consistency n=3 · hybrid BM25+dense RRF · cross-judge with Claude · top-5→top-10 · `ZMM_TEMPORAL` env gate).
-
----
-
-## v0.9.5 production ready (2026-05-06)
-
-A2A v1 protocol surface live on `https://compass.nautilus.social`:
-
-```
-GET  /.well-known/agent.json   → 5-cap discovery + OAuth2 + MCP advertise
-POST /a2a/messages              → envelope dispatcher · valid a2a/v1 reply
-GET  /metrics                   → Prometheus scrape (305 users · 305 audit · 0 drift_red)
-```
-
-Stress validated: **1M rows · p95 7ms** (50× under 100ms threshold).
-Postgres switch trigger raised 100K → 5M rows on real benchmark data.
-Cross-judge replication final: κ 0.772 · 88.6% agreement · paper-defensible.
-
-EverMemBench cross-benchmark: BM25 baseline R@20 38.1% on 2400 multi-party
-QAs · paper-grade compass numbers (BGE-m3 + reranker) pending.
-See [paper §6.5](paper/sections/paper2_06_5_evermembench.tex) · [BLOGPOST](paper/BLOGPOST.md) · [CHANGELOG](CHANGELOG.md).
-
----
-
-## Cross-agent memory federation (v0.9)
-
-> claude-mem 永远做不到的能力 · MCP/A2A 协议 · 跨 Claude Desktop / Cline / Cursor / OpenClaw / Hermes 共享 memory.
-
-```
-你在 Claude Desktop 学到 "X 偏好"           → Cursor 立刻知道
-你在 Cursor 完成的任务                       → Claude Desktop 召回
-你在任何地方报的 drift (red/yellow/green)   → 全部 client 共享 timeline
-跨 device · 跨 session · 跨 agent 类型       → 自动融合
-```
-
-### 一键接入 (3 个 client)
-
-**Claude Desktop**: 编辑 `~/Library/Application Support/Claude/claude_desktop_config.json`:
-
-```json
-{
-  "mcpServers": {
-    "compass": {
-      "command": "npx",
-      "args": ["-y", "nautilus-compass-mcp"],
-      "env": { "COMPASS_USER_ID": "u_yourname" }
-    }
-  }
-}
-```
-
-**Cursor**: 编辑 `~/.cursor/mcp.json` (相同结构 · `env.COMPASS_AGENT_TYPE: "cursor"`)
-
-**Cline (VS Code)**: 编辑 `.vscode/settings.json` 在 `cline.mcpServers` 下加 compass。
-
-完整 config: 见 `examples/mcp_configs/`
-
-### 任何 Nautilus agent · 一行接入
-
-```python
-from nautilus_agent import Agent
-from nautilus_compass.sdk.attach_memory import attach_memory
-
-agent = Agent(role="strategy", user_id="u_chunx")
-attach_memory(agent)   # ← 这一行 · 自动注册 + ingest + recall + drift 自审
-```
-
-之后 agent 跑任何 task:
-- `agent.on_action(query)` → 自动 cross-agent recall · inject memory
-- `agent.on_task_complete(task, outcome)` → 自动 ingest_obs · drift 自审
-- `agent.report_drift("red", signal)` → 显式漂移报告 · stake_penalty 联动
-
-### v0.9 工具栈
-
-```
-Python: pip install nautilus-compass    # core + 6 CLI
-npm:    npx -y nautilus-compass-mcp    # MCP wrapper
-SDK:    sdk/compass_client.py · sdk/attach_memory.py · sdk/a2a_adapter.py
-HTTP:   compass.nautilus.social         # multi-tenant gateway (deployed)
-A2A:    /a2a/messages endpoint          # cross-agent protocol
-```
-
-### 跟 Nautilus 平台深度融合 (8 fusion points)
-
-| # | Fusion | When |
-|---|---|---|
-| 1 | 单点登录 (Nautilus JWT) | v0.9.1 |
-| 2 | OAuth2 PKCE for 3rd-party | v0.9.2 |
-| 3 | nautilus-agent runtime 自动注入 | v0.9.3 |
-| 4 | stake×drift 经济耦合 | v0.9.5 |
-| 5 | marketplace agent 信任层 | v1.0.1 |
-| 6 | platform_anchors 三层继承 | v0.9.4 |
-| 7 | RAID-2 写审分离 | v1.0 |
-| 8 | v5-memory 兼容迁移 | v0.9.6 |
-
-详见: [paper/PLATFORM_FUSION.md](paper/PLATFORM_FUSION.md) · [paper/V10_ROADMAP.md](paper/V10_ROADMAP.md)
+We deliberately report Run 1 (44.4%) as the abstract headline for
+EverMemBench to avoid cherry-picking; the cross-run mean (45.84%) clears
+MemOS by +3.3 pts. See `paper/sections/paper2_06_5_evermembench.tex`
+for honest dual-run + Gemini cross-judge sensitivity analysis.
 
 ---
 
 ## Quickstart
 
+### Install in Claude Code
+
 ```bash
-# 1. Clone + install
 git clone https://github.com/chunxiaoxx/nautilus-compass ~/.claude/plugins/nautilus-compass
 bash ~/.claude/plugins/nautilus-compass/install.sh
 
-# 2. 在 ~/.claude/settings.json 挂 hook
-#    (install.sh 会自动写, 也可手动)
-{
-  "hooks": {
-    "UserPromptSubmit": [{ "matcher": "", "hooks": [
-      { "type": "command", "command": "bash ~/.claude/plugins/nautilus-compass/hook.sh" }
-    ]}],
-    "PostToolUse": [{ "matcher": "", "hooks": [
-      { "type": "command", "command": "python3 ~/.claude/plugins/nautilus-compass/mid_session_hook.py 2>/dev/null" }
-    ]}],
-    "Stop": [{ "matcher": "", "hooks": [
-      { "type": "command", "command": "python3 ~/.claude/plugins/nautilus-compass/stop_hook.py 2>/dev/null" }
-    ]}]
-  }
-}
-
-# 3. 启动 daemon (一次性 cold load · ~30s · 之后 1.8s warm)
+# Start the BGE-m3 daemon (one-time per boot)
 bash ~/.claude/plugins/nautilus-compass/daemon_start.sh
 ```
 
-第一条 prompt 就会看到 `<nautilus-compass-recall>` block 注入。
+The installer wires three hooks into `~/.claude/settings.json`:
+- `UserPromptSubmit` → injects time-bucketed memory recall + drift
+- `PostToolUse` → mid-session writer
+- `Stop` → end-of-session summary writer
 
-### 切 embedder
+Five user-facing slash commands appear in Claude Code:
+`/compass-verify` · `/compass-drift` · `/compass-recall` ·
+`/compass-search` · `/compass-status`.
 
-```bash
-# 默认 bge-m3 (1024d, 多语, 2.27GB) · 自动从 ModelScope 下载
-# 切轻量 (471MB) · 多语 100+
-ZMM_EMBEDDER_MODEL=intfloat/multilingual-e5-small
-
-# 切纯中文 (92MB) · 中文场景 MRR 0.918
-ZMM_EMBEDDER_MODEL=BAAI/bge-small-zh-v1.5
-```
-
-### 切 domain anchor profile
+### Install in any other MCP client
 
 ```bash
-# 自动 (按 cwd 子串匹配): legal/contract/law → anchors_legal.json
-#                       medical/clinical/rx  → anchors_medical.json
-#                       finance/trading/fund → anchors_finance.json
-#                       zenmind/quantum-buddha → anchors_zenmind.json
-
-# 手动 override
-ZMM_ANCHORS_PROFILE=legal
+python ~/.claude/plugins/nautilus-compass/scripts/install_to_agent.py
 ```
 
-### Use as MCP server (Claude Code · Cursor · Cline · Hermes · OpenClaw · ...)
+Auto-detects Claude Desktop, Cursor, Cline, Continue.dev, Zed Editor and
+patches their MCP config. See [`docs/AGENT_ONBOARDING.md`](docs/AGENT_ONBOARDING.md)
+for per-agent copy-paste configs and [`docs/mcp-usage.md`](docs/mcp-usage.md)
+for the raw protocol specification.
 
-Compass exposes 3 tools (`recall`, `drift_check`, `feedback_log`) over the standard MCP 2024-11-05 protocol — same install pattern across every MCP-compatible client.
+### Cloud-hosted alternative (no local install)
 
-```json
-// ~/.claude.json or .mcp.json
-{
-  "mcpServers": {
-    "nautilus-compass": {
-      "command": "python3",
-      "args": ["~/.claude/plugins/nautilus-compass/mcp_server.py"],
-      "env": { "PYTHONIOENCODING": "utf-8" }
-    }
-  }
-}
+```bash
+curl https://compass.nautilus.social/.well-known/agent.json
 ```
 
-Full guide: [`MCP_INSTALL.md`](MCP_INSTALL.md). Stdlib only · zero extra deps · no LLM API costs (BGE-m3 runs locally).
+Returns the standard A2A discovery descriptor. Sign up at
+`compass.nautilus.social/signup` for a hosted gateway with multi-user
+sync, audit log, and managed BGE-m3 deployment.
 
 ---
 
-## v0.7.1 八件 production feature
+## What's exposed (7 MCP tools)
 
-| # | 能力 | 真账数据 |
+| Tool | Purpose | Latency |
 |---|---|---|
-| **A** | Hook 输出 `score`/`alignment`/`deviation` 给 LLM 视野 | 实测注入到每个 user prompt 之前 |
-| **B** | False-positive 过滤 (system event 不计入 drift) | smoke test 3/3 pass |
-| **C** | Adaptive learning loop · feedback CLI + retrain + eval gate | end-to-end 实测 verdict 触发 |
-| **D** | Weighted anchors (FP rate 高的 anchor 自动降权而非删除) | 高 FP 5 次 → weight 0.17 → 实质 deprecated |
-| **E** | Active learning · `feedback list --boundary` 优先标边界 case | 标 5 条 boundary ≈ 50 条 random |
-| **F** | Time-bucket recall · 24h 优先 / 7d+ 警告 | hook 输出每条 memory 标 age + 颜色 |
-| **G** | DPT-style strategy distillation 跨 session 召回 | 已沉淀 12 条 strategy · session 间复用 |
-| **H** | 5 个 domain anchor profiles (default/zenmind/vc/legal/medical/finance) | cwd auto-select + env override |
+| `ingest_obs(name, body, agent_id?)` | Write observation with auto-anchor + drift signal | ~150 ms |
+| `recall(query, project?, top_k?)` | BGE-m3 semantic + keyword search | ~200 ms |
+| `session_search(query, since?)` | Time-bucketed session-log search | ~80 ms |
+| `profile(user_id?)` | Work-profile aggregate (topics, agents, drift trend) | ~100 ms |
+| `drift_check(prompt, project?)` | Black-box drift score against anchors | <50 ms |
+| `drift_history(since?, agent_id?)` | Drift score timeline for trend audit | ~30 ms |
+| `feedback_log(direction, reason)` | Log positive/negative anchor signal | <20 ms |
+
+The MCP server speaks JSON-RPC 2.0 over stdio / TCP / TLS / mTLS.
+Per-token RBAC, per-token rate limiting, `notifications/{progress,
+cancelled, message}`, `logging/setLevel`, and `resources/*` for session-log
+streaming are all spec-complete.
 
 ---
 
-## Caveats (请认真读)
+## Comparison
 
-1. **Drift AUC 0.92 是 synthetic 数据上的**。真实分布可能不一样。已知 system events (XML tags 注入) 会偶发误报，v0.7.1 加了 false-positive 过滤但不完美。
-2. **Single-session-user 类问题 (从 50 个 chat 里精挑一句) 是 retrieval-only 上限**，不上 LLM rerank 难超过 MRR 0.5。
-3. **Windows 本地 m3 cold load 慢 (12-30s)**，要上手快推荐 e5-small (471MB)。生产建议 WSL2 或 Linux。
-4. **HF Hub 在 Win/py3.14 卡 0 bytes 已知**，install.sh 默认走 ModelScope mirror 绕过。
-5. **anchors 是 domain-specific**。开箱即用是中文/英文混合工程语境，跨域要 PR 新 profile (见 [CONTRIBUTING.md](CONTRIBUTING.md))。
-6. **Daemon 当前单 anchor profile cache** · 切 profile 要 daemon 重启 (v0.8 计划支持 multi-profile)。
+| Capability | this | mem0 | Letta | Zep | claude-mem | MemOS |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|
+| Cross-agent memory | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
+| MCP A2A protocol native | ✅ TLS+mTLS+RBAC | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Drift detection | ✅ AUC 0.83 | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Merkle integrity audit log | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| LongMemEval-S verified | ✅ 56.6% (locked) | n/r | n/r | n/r | ❌ | n/r |
+| EverMemBench verified | ✅ 44.4-47.3% | 37.09 | n/r | 39.97 | n/r | 42.55 |
+| Self-host + hosted both | ✅ | ☁ only | ✅ | ☁ only | ✅ | OSS only |
+| License | MIT | Apache | Apache | proprietary | MIT | Apache |
 
----
-
-## 跟 Persona Vectors 论文的关系（重要 disambiguation）
-
-> Anthropic [arXiv:2507.21509 "Persona Vectors"](https://arxiv.org/abs/2507.21509) 用 **activation-space directions** 监测/控制 trait shifts。这是 white-box 方法 (要 model weights)。
->
-> **nautilus-compass 不是这篇论文的实现**。我们是在 prompt-text layer 用 cosine 比 anchor 文本——black-box 方法。两者**目标相似 (监测人格漂移)、机制完全不同 (activation vs text)、互补不替代**。Anthropic 的方法更精确；我们的方法**任何 Claude Code 用户能用**。
+`n/r` = not reported in their published evaluations.
 
 ---
 
-## 文档导航
+## Documentation
 
-- [CHANGELOG.md](CHANGELOG.md) — 4 步演化 narrative
-- [RESULTS.md](RESULTS.md) — 完整 benchmark 数据 + 复现命令
-- [CONTRIBUTING.md](CONTRIBUTING.md) — 添加新 domain anchor / 跑 benchmark
-- [OPEN_SOURCE_READINESS.md](OPEN_SOURCE_READINESS.md) — 商业化路径 + go/no-go 决策
-- [VERIFY.md](VERIFY.md) — 升级前手动验证协议
+- [`docs/AGENT_ONBOARDING.md`](docs/AGENT_ONBOARDING.md) — per-agent install configs (6 platforms + 3 frameworks)
+- [`docs/mcp-usage.md`](docs/mcp-usage.md) — raw MCP protocol guide, TLS setup, RBAC
+- [`docs/PLATFORM_HANDSHAKE.md`](docs/PLATFORM_HANDSHAKE.md) — OSS↔SaaS coordination contract
+- [`paper/`](paper/) — two papers (drift detection + memory pipeline) and supporting eval scripts
+- [`CHANGELOG.md`](CHANGELOG.md) — versioned release notes
+- [`CONTRIBUTING.md`](CONTRIBUTING.md) — adding new domain anchors / running benchmarks
 
-## Cite
+---
 
-如果你用了我们方法或 benchmark · 请引用 (arXiv 论文上线后 `howpublished` 会更新成 arXiv ID)：
+## Citation
+
+If you use this work, please cite:
 
 **Paper 1 · drift detection**:
 
 ```bibtex
 @misc{nautiluscompass-drift-2026,
-  title={Nautilus Compass: Black-box Persona Drift Detection for
-         Production LLM Agents},
-  author={Chunxiao Wang},
-  year={2026},
-  note={Yiluo Technology Co., Ltd.},
-  howpublished={\url{https://github.com/chunxiaoxx/nautilus-compass}}
+  title  = {Nautilus Compass: Black-box Persona Drift Detection
+            for Production LLM Agents},
+  author = {Chunxiao Wang},
+  year   = {2026},
+  note   = {Yiluo Technology Co., Ltd.},
+  howpublished = {\url{https://github.com/chunxiaoxx/nautilus-compass}}
 }
 ```
 
-**Paper 2 · LongMemEval-S + EverMemBench retrieval pipeline**:
+**Paper 2 · memory pipeline + EverMemBench cross-bench**:
 
 ```bibtex
 @misc{nautiluscompass-memrecall-2026,
-  title={Closing the Memory Recall Gap with Chinese LLMs:
-         A Multi-Stage Retrieval Pipeline Achieving Zep-SOTA Performance
-         on LongMemEval-S at 1/15 Cost},
-  author={Chunxiao Wang},
-  year={2026},
-  note={Yiluo Technology Co., Ltd.},
-  howpublished={\url{https://github.com/chunxiaoxx/nautilus-compass}}
+  title  = {Closing the Memory Recall Gap with Chinese LLMs:
+            A Multi-Stage Retrieval Pipeline Achieving Zep-SOTA Performance
+            on LongMemEval-S at 1/15 Cost},
+  author = {Chunxiao Wang},
+  year   = {2026},
+  note   = {Yiluo Technology Co., Ltd.},
+  howpublished = {\url{https://github.com/chunxiaoxx/nautilus-compass}}
 }
 ```
 
-也请引用启发我们的工作：
+The `howpublished` field will be updated to the arXiv identifier once
+the preprints are live.
+
+We also build on prior work — please cite as appropriate:
 
 - BGE-m3 / BGE-Reranker (Chen et al., BAAI 2024)
 - **Persona Vectors** (Chen et al., Anthropic, [arXiv:2507.21509](https://arxiv.org/abs/2507.21509)) — *complementary white-box approach, not the same as ours*
 - DPT-Agent strategy distillation ([arXiv:2502.11882](https://arxiv.org/abs/2502.11882))
 - A-MEM dynamic links ([arXiv:2502.12110](https://arxiv.org/abs/2502.12110))
 - LongMemEval (Wu et al., NeurIPS 2024)
+- EverMemBench (Hu et al., 2026)
+
+---
 
 ## License
 
-MIT — anchors files are CC0. Replace with your domain-specific anchors when adopting.
+- **Code, plugin, MCP wrapper, papers, scripts** — MIT (see [`LICENSE`](LICENSE))
+- **Behavioral anchor files** (`anchors*.json`) — CC0 1.0 Universal (see [`LICENSE-ANCHORS`](LICENSE-ANCHORS))
+
+You may use this in any project, commercial or otherwise, with attribution.
+
+---
+
+## Contact
+
+- **Author**: Chunxiao Wang · Yiluo Technology Co., Ltd. · `chunxiaoxx@gmail.com`
+- **Issues**: [github.com/chunxiaoxx/nautilus-compass/issues](https://github.com/chunxiaoxx/nautilus-compass/issues)
+- **Hosted gateway**: [compass.nautilus.social](https://compass.nautilus.social)
+- **中文文档**: [README.zh-CN.md](README.zh-CN.md)
