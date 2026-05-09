@@ -176,18 +176,21 @@ streaming are all spec-complete.
 
 ## Comparison
 
-| Capability | this | mem0 | Letta | Zep | claude-mem | MemOS |
-|---|:---:|:---:|:---:|:---:|:---:|:---:|
-| Cross-agent memory | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
-| MCP A2A protocol native | ✅ TLS+mTLS+RBAC | ❌ | ❌ | ❌ | ❌ | ❌ |
-| Drift detection | ✅ AUC 0.83 | ❌ | ❌ | ❌ | ❌ | ❌ |
-| Merkle integrity audit log | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| LongMemEval-S verified | ✅ 56.6% (locked) | n/r | n/r | n/r | ❌ | n/r |
-| EverMemBench verified | ✅ 44.4-47.3% | 37.09 | n/r | 39.97 | n/r | 42.55 |
-| Self-host + hosted both | ✅ | ☁ only | ✅ | ☁ only | ✅ | OSS only |
-| License | MIT | Apache | Apache | proprietary | MIT | Apache |
+| Capability | this | mem0 | Letta | Zep | claude-mem | MemOS | Smriti |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| Cross-agent memory | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | archive-only |
+| MCP A2A protocol native | ✅ TLS+mTLS+RBAC | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Drift detection | ✅ AUC 0.83 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Merkle integrity audit log | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| LongMemEval-S verified | ✅ 56.6% (locked) | n/r | n/r | n/r | ❌ | n/r | ❌ |
+| EverMemBench verified | ✅ 44.4-47.3% | 37.09 | n/r | 39.97 | n/r | 42.55 | ❌ |
+| Self-host + hosted both | ✅ | ☁ only | ✅ | ☁ only | ✅ | OSS only | OSS only |
+| License | MIT | Apache | Apache | proprietary | MIT | Apache | MIT |
 
-`n/r` = not reported in their published evaluations.
+`n/r` = not reported in their published evaluations. Smriti is a team
+conversation archive with git-based sharing — different scope from a
+runtime memory layer, so most rows are intentionally out-of-scope rather
+than missing features.
 
 ---
 
