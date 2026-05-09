@@ -31,7 +31,7 @@ import sqlite3
 import sys
 import time
 import uuid
-from contextlib import contextmanager
+from contextlib import asynccontextmanager, contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
@@ -50,10 +50,24 @@ REGION = os.environ.get("COMPASS_REGION", "cn-shanghai")
 DAEMON_HOST = os.environ.get("COMPASS_DAEMON_HOST", "127.0.0.1:9876")
 SERVER_VERSION = "0.9.5"
 
+@asynccontextmanager
+async def _lifespan(_app):
+    # Startup · these names are resolved at call time (app startup), not at
+    # import time, so forward references to init_db / init_audit_table /
+    # _start_audit_thread defined further down in the module are fine.
+    init_db()
+    init_audit_table()
+    _start_audit_thread()
+    yield
+    # Shutdown · audit thread is daemonized so it exits with the process;
+    # nothing else to clean up here.
+
+
 app = FastAPI(
     title="compass-gateway",
     version=SERVER_VERSION,
     description="Cross-agent memory layer for Nautilus platform · multi-user · multi-region",
+    lifespan=_lifespan,
 )
 
 app.add_middleware(
@@ -994,11 +1008,9 @@ def a2a_well_known():
 
 # ---- Init ----
 
-@app.on_event("startup")
-def on_startup():
-    init_db()
-    init_audit_table()
-    _start_audit_thread()
+# Startup is handled by the lifespan context manager declared near the top
+# of the module (see _lifespan). We keep this section as an anchor for any
+# future shutdown hooks.
 
 
 if __name__ == "__main__":

@@ -4,7 +4,7 @@
 
 Please report security issues privately. Do NOT open a public issue.
 
-- **Email**: security@nautilus.social (PGP key on `nautilus.social/security`)
+- **Email**: chunxiaoxx@gmail.com (PGP key on `nautilus.social/security`)
 - **Backup**: file an issue with the label `security:embargo` (we'll respond and move discussion privately)
 
 We aim to respond within 72 hours.

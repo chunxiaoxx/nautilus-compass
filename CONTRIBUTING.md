@@ -133,3 +133,35 @@ features behind feature flags only.
 - Discussions: GitHub Discussions
 - Real-time: Nautilus platform Discord (post-launch)
 
+## v1.0 additions (2026-05-08)
+
+### Merkle tamper-evidence (`merkle_chain.py` + `compass_verify.py`)
+
+Memory writes now emit a SHA-256 chain. Contributors touching
+`session_writer.py` must preserve the `_finalize_chain(out.parent)` call
+after `write_session_md` · its absence silently breaks tamper-evidence.
+
+Run `python compass_verify.py --all` after any change that writes,
+migrates, or deletes session markdown. A failing verify gates the PR.
+
+### MCP tool additions (post-v1.0)
+
+To add a new tool to `mcp_server.py`:
+
+1. Implement `tool_<name>(args: dict) -> dict` returning a `_ok()` / `_err()` result.
+2. Add a `"<name>": {"fn": tool_<name>, "schema": {...}}` entry to the `TOOLS` dict.
+3. Document the tool in `docs/mcp-usage.md` under "Tools".
+4. Add a smoke test that drives `initialize` + `tools/call` over stdio.
+5. Bump `SERVER_VERSION` in `mcp_server.py` using semver rules · minor for new tool, patch for schema fix, major for breaking change.
+
+### ZMM\_\* env flags
+
+v1.0 gates every optional feature behind a `ZMM_*` environment variable so
+every ablation row in paper2 §4 is reproducible. New features default to
+**off** and must ship with:
+
+- the flag parsed at the entry point of the feature,
+- a README line describing what the flag does,
+- an eval row that demonstrates the flag's effect on at least one of
+  subset-48 or full-500.
+

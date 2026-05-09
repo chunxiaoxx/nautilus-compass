@@ -22,8 +22,18 @@ N_QUESTIONS_PER_TOPIC = 100              # 100 per topic = 500 total
 TOP_K_RECALL = 100                       # BGE-m3 cosine top-K (was 50)
 TOP_K_RERANK = 30                        # reranker output (was 20)
 CTX_CHAR_LIMIT = 2500                    # per-message char limit (was 1500)
-PER_DAY_MAX = 2                          # day-bucket: max msgs per day in final
-QUERY_REWRITE = True                     # paper §3.3 · 3 angles
+
+# Task #20 · v1 vs v2 driver ablation knobs.
+#   v1 baseline (paper Table 4 protocol): ANSWER_MODEL=deepseek-v4-flash,
+#     EM_REWRITE=0, EM_DAY_BUCKET=0  → 41.0%
+#   v2 (current default):  ANSWER_MODEL=deepseek-v4-pro,
+#     EM_REWRITE=1, EM_DAY_BUCKET=1  → 44.4%
+# To attribute the +3.4 pt delta, toggle one knob at a time while holding
+# the others at v1. Three 500-question runs on T4 (~30 min each) give the
+# per-knob contributions. All knobs default to v2 so the main pipeline is
+# unchanged.
+PER_DAY_MAX = 2 if os.environ.get("EM_DAY_BUCKET", "1") == "1" else 9999
+QUERY_REWRITE = os.environ.get("EM_REWRITE", "1") == "1"  # paper §3.3 · 3 angles
 
 DEEPSEEK_KEY = os.environ.get("DEEPSEEK_API_KEY") or sys.exit("set DEEPSEEK_API_KEY")
 DEEPSEEK_URL = "https://api.deepseek.com/v1/chat/completions"
