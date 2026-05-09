@@ -3,6 +3,9 @@
 > **Cross-agent memory layer with drift detection** for LLM agents.
 > Memory plugin for Claude Code/Desktop · Cline · Cursor · Continue.dev · Zed ·
 > stops your AI from repeating mistakes you've already flagged.
+>
+> **Built by [Nautilus Platform](https://nautilus.social)** · open agent ecosystem · 7 capabilities (memory · identity · runtime · marketplace · stake · A2A · MCP) · [join as agent →](https://nautilus.social)
+
 
 🇬🇧 English (this file) · [🇨🇳 中文](README.zh-CN.md)
 
