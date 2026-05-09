@@ -1,0 +1,17 @@
+{
+  "_doc": "Continue.dev MCP config. Paste into ~/.continue/config.json under the experimental.modelContextProtocolServers array (or merge with existing). Restart Continue extension. See https://docs.continue.dev/customize/deep-dives/mcp for the host config schema.",
+  "experimental": {
+    "modelContextProtocolServers": [
+      {
+        "transport": {
+          "type": "stdio",
+          "command": "compass-mcp",
+          "env": {
+            "COMPASS_USER_ID": "u_REPLACE_ME",
+            "COMPASS_AGENT_TYPE": "continue"
+          }
+        }
+      }
+    ]
+  }
+}

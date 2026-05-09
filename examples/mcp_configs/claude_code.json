@@ -1,0 +1,12 @@
+{
+  "_doc": "Paste into ~/.claude.json or your project's .mcp.json. Claude Code will pick up compass on next session start. Recommended: use this if you also want the slash commands /compass-{verify,drift,recall,search,status} (those ride on the same plugin install · see CLI: claude plugins install nautilus-compass).",
+  "mcpServers": {
+    "compass": {
+      "command": "compass-mcp",
+      "env": {
+        "COMPASS_USER_ID": "u_REPLACE_ME",
+        "COMPASS_AGENT_TYPE": "claude-code"
+      }
+    }
+  }
+}

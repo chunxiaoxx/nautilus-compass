@@ -1,0 +1,15 @@
+{
+  "_doc": "Zed editor MCP config. Paste into ~/.config/zed/settings.json under the context_servers key (Zed 0.150+ required for MCP). Restart Zed after. See https://zed.dev/docs/assistant/model-context-protocol for the host schema.",
+  "context_servers": {
+    "compass": {
+      "command": {
+        "path": "compass-mcp",
+        "args": [],
+        "env": {
+          "COMPASS_USER_ID": "u_REPLACE_ME",
+          "COMPASS_AGENT_TYPE": "zed"
+        }
+      }
+    }
+  }
+}
