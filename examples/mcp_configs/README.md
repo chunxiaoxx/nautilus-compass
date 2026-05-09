@@ -1,6 +1,6 @@
 # compass MCP configs · paste-and-go
 
-> Drop-in config files for major MCP-compatible clients · v0.9
+> Drop-in config files for the 6 major MCP-compatible clients · v1.0
 
 ## Prerequisites
 
@@ -13,13 +13,16 @@ uv tool install nautilus-compass    # 推荐 (隔离 env)
 compass-mcp --help     # 应该能起 (虽然这个 server 是 stdio · 不会立刻有输出 · Ctrl+C 退)
 ```
 
-## 客户端配置
+## 客户端配置 (6)
 
 | Client | 配置文件 | 用法 |
 |---|---|---|
+| **Claude Code** | `claude_code.json` | 粘进 `~/.claude.json` 或项目级 `.mcp.json` · 配合 `claude plugins install nautilus-compass` 一并启用 5 个 slash commands |
 | **Claude Desktop** | `claude_desktop.json` | macOS: `~/Library/Application Support/Claude/claude_desktop_config.json` · Windows: `%APPDATA%/Claude/claude_desktop_config.json` |
 | **Cline (VS Code)** | `cline_vscode.json` | 粘进 `.vscode/settings.json` 或 user settings |
 | **Cursor** | `cursor.json` | `~/.cursor/mcp.json` |
+| **Continue.dev** | `continue_dev.json` | `~/.continue/config.json` 下 `experimental.modelContextProtocolServers` 数组 |
+| **Zed** | `zed.json` | `~/.config/zed/settings.json` 下 `context_servers` 块 (Zed 0.150+) |
 
 ## 用前
 
@@ -41,7 +44,7 @@ compass-mcp --help     # 应该能起 (虽然这个 server 是 stdio · 不会�
 
 ## 跨 client 融合
 
-3 个 client 同时配 compass · 相同 user_id → 自动跨 agent memory 融合:
+任意 6 个 client 同时配 compass · 相同 user_id → 自动跨 agent memory 融合:
 
 ```
 你在 Claude Desktop 学到 "X 偏好" → Cline 也立刻知道
