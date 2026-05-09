@@ -1,62 +1,32 @@
 % =============== Abstract ====================================================
-% Goal: 200-250 words · 4 moves: (1) gap (2) approach (3) result (4) implication
+% Goal: ~240 words / ~1800 chars (arXiv 1920-char cap)
 % =============================================================================
 
-Production LLM agents drift over long sessions: they forget user-specified
-constraints, slip into mistakes the user already flagged, and confabulate
-prior agreements. \citet{personavectors2025} recently identified
-\emph{persona vectors}---linear directions in activation space corresponding
-to traits like sycophancy, hallucination, and harmful intent---enabling
-white-box monitoring of trait shifts. However, this approach requires access
-to model weights, putting it out of reach of users who interact with closed
-LLMs (e.g., Claude, GPT-4) through APIs or coding agents.
+Production LLM coding agents drift over long sessions: they forget
+user-specified constraints, slip into mistakes the user already
+flagged, and confabulate prior agreements. White-box approaches such
+as persona vectors require model weights and so cannot be applied to
+closed APIs (Claude, GPT-4) that most users actually interact with.
 
-We present \textbf{Nautilus Compass}, a black-box persona drift detection
-system for production LLM coding agents and the first product in the
-Nautilus open agent platform. Our method operates entirely at the
-prompt-text layer: cosine similarity between user prompts and a set of
-\emph{behavioral anchor texts} (positive/negative task patterns), aggregated
-via weighted top-$k$ mean. The system ships as a Claude~Code plugin, a
-generic MCP~2024-11-05 server (Cursor, Cline, Hermes, OpenClaw, ...),
-a CLI, and a REST API---one BGE-m3 daemon backs all four entry points,
-giving any agent runtime drift telemetry without weight access.
-We document a four-step iterative methodology that improves ROC AUC from
-0.51 (random) to 0.92 on a synthetic 50/50 deviation test set:
-(i) replacing abstract maxim anchors with task-shaped anchors that match
-the user prompt distribution, (ii) replacing centroid mean with top-3
-mean scoring, (iii) switching from a Chinese-only embedder to a
-multilingual one, and (iv) adding hard false-positive examples back
-into the negative anchor set.
+We present \textbf{Nautilus Compass}, a black-box persona drift
+detector for production coding agents. The method operates entirely
+at the prompt-text layer: cosine similarity between user prompts and
+behavioral anchor texts (positive and negative task patterns),
+aggregated by a weighted top-$k$ mean using BGE-m3 embeddings. The
+system ships as a Claude Code plugin, a generic MCP 2024-11-05 A2A
+server (Cursor, Cline, Hermes, OpenClaw), a CLI, and a REST API,
+all backed by one daemon. We additionally release a Merkle-chained
+audit log so anchor updates and detection events are tamper-evident
+across multi-agent handoffs.
 
-We further evaluate the embedded retrieval pipeline on LongMemEval-S
-\citep{longmemeval2024}: on the full 500-question benchmark, bge-m3
-alone reaches P@5 = 0.860, MRR = 0.685; adding bge-reranker-v2-m3
-lifts this to P@5 = 0.920, MRR = 0.855 ($\Delta$ MRR $= +0.170$, with
-the largest gains on hard question types like single-session-user
-$+0.188$ and single-session-preference $+0.251$). On a stratified
-subset-12 head-to-head with mem0 (Vertex AI
-\texttt{text-embedding-005}, \texttt{infer=False}) under identical
-conditions, our pipeline with the same reranker matches mem0 at
-P@5 = 0.917 and exceeds it at MRR ($0.837$ vs $0.715$,
-$+17\%$ relative). Beyond detection, we ship adaptive anchor learning
-with eval-gated retraining, active-learning boundary sampling, and
-weighted deprecation of over-sensitive anchors.
+On a held-out test set built from real Claude Code session traces and
+labeled by an independent LLM judge, Compass reaches ROC AUC 0.83 for
+drift detection. The embedded retrieval pipeline scores 56.6\% on
+LongMemEval-S v0.8 and 44.4\% on EverMemBench-Dynamic (n=500), the
+top of the open-source baselines we evaluated against. We treat
+detection accuracy as necessary but not sufficient for production
+safety; a paired cross-vendor behavior A/B accompanies these numbers
+as preliminary system-level evidence.
 
-\textbf{Scope of claims.} This paper evaluates \emph{drift detection
-accuracy} together with a \emph{cross-vendor behavior-steering A/B}
-across six production LLMs (Google Gemini-2.5 \{pro, flash\}, MiniMax
-M2.7, ByteDance doubao-seed-2.0-pro, DeepSeek v3.2, Zhipu GLM-5.1)
-judged by an independent seventh model (Moonshot Kimi-k2.6). Pooled
-across $n=120$ paired prompts, drift injection produces a
-statistically significant improvement on the fabrication-resistance
-axis ($\Delta = +0.071$, paired $t = +2.21$, $p < 0.05$) but no
-significant aggregate effect on verify/destruct/secret axes. The
-average net effect is positive but small ($\Delta = +0.010$,
-$p \approx 0.64$). We treat this as preliminary system-level evidence
-rather than as a guarantee that detection AUC implies production
-safety. We additionally report a held-out test set generated from
-real Claude~Code session traces and labeled by an independent LLM
-judge to mitigate train-on-test concerns on the in-set ablation.
-
-Code, anchors, and frozen test data are open-sourced at
-\url{github.com/chunxiaoxx/nautilus-compass}.
+Code, anchors, frozen test data, and audit-log tooling are
+MIT-licensed at \url{github.com/chunxiaoxx/nautilus-compass}.

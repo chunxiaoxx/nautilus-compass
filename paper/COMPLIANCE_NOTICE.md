@@ -50,7 +50,7 @@ There is no opt-out — we don't sell your data to begin with.
 
 ### Contact
 
-ccpa@nautilus.social
+chunxiaoxx@gmail.com
 
 ---
 
@@ -68,7 +68,7 @@ We process your personal data based on:
 ```
 Nautilus Platform
 [ADDRESS · TBD before EU launch]
-DPO: dpo@nautilus.social
+DPO: chunxiaoxx@gmail.com
 ```
 
 ### Data Processor (when self-hosted)
@@ -83,7 +83,7 @@ and we are not involved in your data processing.
 | Access | 15 | `GET /v1/observations` etc. |
 | Rectification | 16 | Edit/re-write observations |
 | Erasure | 17 | `DELETE /v1/users/me` |
-| Restriction | 18 | Pause processing: contact dpo@ |
+| Restriction | 18 | Pause processing: contact chunxiaoxx@gmail.com |
 | Portability | 20 | Export endpoint (planned v0.9.5) |
 | Object | 21 | Cancel account |
 
@@ -111,7 +111,7 @@ we will notify you within 72 hours per Article 33-34.
 ### DPA (Data Processing Agreement)
 
 For enterprise / business deployments:
-[email dpo@nautilus.social for DPA template before signing service contract]
+[email chunxiaoxx@gmail.com for DPA template before signing service contract]
 
 ---
 
@@ -122,7 +122,7 @@ For enterprise / business deployments:
 ```
 Nautilus Platform
 [地址 · TBD]
-个人信息保护负责人 (DPO): pipl@nautilus.social
+个人信息保护负责人 (DPO): chunxiaoxx@gmail.com
 ```
 
 ### 收集的个人信息类型
@@ -167,7 +167,7 @@ Pro+ 用户的内容信息为客户端 E2EE 加密 · 服务器无法解密。
 ### 投诉 / 联系
 
 ```
-邮箱: pipl@nautilus.social
+邮箱: chunxiaoxx@gmail.com
 监管投诉: 国家互联网信息办公室
 ```
 

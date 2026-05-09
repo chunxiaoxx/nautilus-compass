@@ -147,3 +147,12 @@ env:
 per-question log: .cache/longmemeval_acc_m3_rerank_full_1777975609.jsonl
 summary:          .cache/longmemeval_acc_m3_rerank_full_1777975609_summary.json
 ```
+
+---
+
+## Provenance footer (2026-05-07)
+
+V4-pro full-500 evaluated 2026-05-06 at 56.4% (-0.2 vs v0.8); see
+`paper/sections/paper2_v4_appendix.tex` and the finalization memo
+`paper/paper2_finalization_decision_2026-05-07.md`. **Headline locked
+at v0.8 56.6%** — do not re-litigate without a new full-500 run.

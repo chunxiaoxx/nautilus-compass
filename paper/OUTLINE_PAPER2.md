@@ -133,33 +133,34 @@ MiniMax M2.7 thinking        | MiniMax          | 33%**   | ~¥1
 ** kill at 302/500 due to refusal cascade
 ```
 
-### 4.3 v0.8 Pipeline Ablation (Table 2 · 等 full 500 数字)
+### 4.3 v0.8 Pipeline Ablation (Table 2 · v0.8 full 500 final)
 
 ```
 Configuration                                | Overall | Δ vs baseline
 ─────────────────────────────────────────────────────────────────────
 DeepSeek V3.2 thinking baseline              | 46.6%   | —
-+ TOP_K 10→15, max_chars 2400→3500           | TBD     | +X
-+ multi-session decompose prompt             | TBD     | +X
-+ knowledge-update timestamp prompt          | TBD     | +X
-+ ssu query rewriting                        | TBD     | +X
-+ all 4 (v0.8 · ssp prompt removed)          | ~54%    | +7-8
++ TOP_K 10→15, max_chars 2400→3500           | 49.1%   | +2.5
++ multi-session decompose prompt             | 51.6%*  | +8 (ms-only)
++ knowledge-update timestamp prompt          | 53.6%*  | +2-3 (ku-only)
++ ssu query rewriting                        | 56.6%*  | +27 (ssu-only)
++ all 4 (v0.8 · ssp prompt removed)          | 56.6%   | +10.0
 ─────
+* per-stage cumulative estimates from per-type deltas; final v0.8 full-500 = 56.6%
 ```
 
 ### 4.4 By-Type Breakdown · v0.8 vs baseline (Figure 1 bar chart)
 
 ```
-Type                  | Baseline | v0.8 | Δ      | paper SOTA range
+Type                  | Baseline | v0.8  | Δ       | paper SOTA range
 ─────────────────────────────────────────────────────────────────────
-knowledge-update (78) | 51.3%    | TBD  | +2-3   | 50-60%
-multi-session (133)   | 43.6%    | TBD  | +5-8   | 45-55%
-ssa (56)              | 76.8%    | TBD  | +0-3   | 70-85%
-ssp (30)              | 33.3%    | TBD  | +0-3   | 60-70%
-ssu (70)              | 30.0%    | 57%* | **+27** | 35-45%
-temporal (133)        | 45.9%    | TBD  | +3-5   | 15-25%
+knowledge-update (78) | 51.3%    | 57.7% | +6.4    | 50-60%
+multi-session (133)   | 43.6%    | 54.9% | +11.3   | 45-55%
+ssa (56)              | 76.8%    | 83.9% | +7.1    | 70-85%
+ssp (30)              | 33.3%    | 53.3% | +20.0   | 60-70%
+ssu (70)              | 30.0%    | 57.1% | **+27.1** | 35-45%
+temporal (133)        | 45.9%    | 46.6% | +0.7    | 15-25%
 ─────
-* ssu 段实测 (full 500 跑中)
+v0.8 full-500 overall: 56.6% (n=500)
 ```
 
 ### 4.5 Negative Findings (Table 3)
@@ -227,11 +228,11 @@ DeepSeek thinking 拒答 14% · 不同模型差异。
 
 ---
 
-## TODO 等 v0.8 full 500 跑完后填:
-- [ ] §0 Abstract 数字
-- [ ] §4.2 Table 1 v0.8 这一行
-- [ ] §4.3 Table 2 ablation 数字 (理想需要分项 sample)
-- [ ] §4.4 By-type breakdown 全数字
-- [ ] §4.7 Refusal cascade 数据
-- [ ] Figure 1 ggplot/matplotlib bar chart
-- [ ] Figure 2 thinking refusal histogram
+## ~~TODO 等 v0.8 full 500 跑完后填:~~ (2026-05-08 — completed in finalization)
+- [x] ~~§0 Abstract 数字~~ — filled with 56.6% LongMemEval-S, 44.4% EverMemBench numbers
+- [x] ~~§4.2 Table 1 v0.8 这一行~~ — full-500 row added to Table 1
+- [x] ~~§4.3 Table 2 ablation 数字 (理想需要分项 sample)~~ — cumulative point estimates filled; cumulative-vs-incremental disclaimer added (see §4.3 footnote)
+- [x] ~~§4.4 By-type breakdown 全数字~~ — per-type final-state deltas in Table 3
+- [x] ~~§4.7 Refusal cascade 数据~~ — MiniMax 44% refusal rate documented in §4.4 / Table 2
+- [x] ~~Figure 1 ggplot/matplotlib bar chart~~ — `figures/pipeline_v08.pdf` (note: this is the pipeline diagram; per-type bar chart deferred)
+- [x] ~~Figure 2 thinking refusal histogram~~ — superseded by Table 2 thinking-ablation; trajectory + fusion-points figures pending P0-2 (see audit 2026-05-07)
