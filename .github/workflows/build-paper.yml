@@ -15,7 +15,7 @@ jobs:
     name: Compile paper 1 (drift detection)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Compile LaTeX
         uses: xu-cheng/latex-action@v3
         with:
@@ -45,7 +45,7 @@ jobs:
     name: Compile paper 2 (memory recall)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Compile LaTeX
         uses: xu-cheng/latex-action@v3
         with:
