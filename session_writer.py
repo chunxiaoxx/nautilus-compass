@@ -270,6 +270,24 @@ def write_session_md(md: str, project_dir: Path) -> Path:
     return out
 
 
+def _finalize_chain(memory_dir: Path) -> None:
+    """v1.0 · tamper-evidence hook · update .chain.json after session write.
+
+    Called from main() AFTER write_session_md() returns with the file fully
+    flushed to disk. Fail-soft by contract: any error is logged but never
+    propagated · chain integrity must never block a session write.
+
+    Lazy import so that if merkle_chain is absent/broken the writer module
+    itself still loads cleanly (stop_hook would otherwise fail to import).
+    """
+    try:
+        sys.path.insert(0, str(PLUGIN_DIR))
+        from merkle_chain import update_chain  # lazy
+        update_chain(memory_dir)
+    except Exception as e:
+        sys.stderr.write(f"[session_writer] merkle chain update fail: {e}\n")
+
+
 def append_strategy(strat: dict, source: str) -> str | None:
     """One-shot strategy ingestion · skip if skip_strategy=true."""
     if strat.get("skip_strategy"):
@@ -348,6 +366,7 @@ def main() -> int:
     memory_md = normalize_md(memory_md)
     out = write_session_md(memory_md, project_dir)
     print(f"[session_writer] wrote {out.name} ({len(memory_md)} chars · provider={os.environ.get('COMPASS_WRITER_PROVIDER','ark')})")
+    _finalize_chain(out.parent)  # v1.0 · merkle tamper-evidence · fail-soft
     if strat:
         sid = append_strategy(strat, out.stem)
         if sid:

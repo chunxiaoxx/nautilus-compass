@@ -82,6 +82,12 @@ RRF_K = 60
 # Other question types are UNAFFECTED (ssa 83.9%, ms 94% P@5 stay identical).
 ZMM_SSU_UTTERANCE = os.environ.get("ZMM_SSU_UTTERANCE", "0") == "1"
 
+# Ablation gate for the temporal-reasoning specialization.
+# ZMM_TEMPORAL=1 (default): use the timeline scratch-pad prompt + extract_temporal_answer.
+# ZMM_TEMPORAL=0: treat temporal-reasoning like any other qt (generic prompt, no pre-vote
+# extraction) so we can measure the lift from the temporal specialization alone.
+TEMPORAL_ENABLED = os.environ.get("ZMM_TEMPORAL", "1") == "1"
+
 
 def _bm25_tokenize(text: str) -> list[str]:
     """Whitespace + punctuation split, lowercased. Keeps alphanumeric runs.
@@ -152,10 +158,13 @@ Respond with <timeline>...</timeline> then <answer>...</answer>:"""
 def pick_subject_prompt(qt: str) -> str:
     """Route to specialized prompt by question_type.
 
-    temporal-reasoning gets the timeline-first scratch-pad (Tier S #1 target).
+    temporal-reasoning gets the timeline-first scratch-pad (Tier S #1 target)
+    when TEMPORAL_ENABLED. Ablation path (ZMM_TEMPORAL=0) falls back to the
+    generic template so temporal-reasoning is evaluated with the same prompt
+    as every other qt.
     Other types keep the general prompt that already hits ssa 83.9% etc.
     """
-    if qt == "temporal-reasoning":
+    if qt == "temporal-reasoning" and TEMPORAL_ENABLED:
         return TEMPORAL_PROMPT_TMPL
     return SUBJECT_PROMPT_TMPL
 
@@ -311,7 +320,7 @@ def _run_one_vote(qt: str, prompt_tmpl: str, context: str, question: str, truth:
             prompt_tmpl.format(k=TOP_K_CONTEXT, context=context, question=question),
             max_out_tok=2048,
         ).strip()
-        if qt == "temporal-reasoning":
+        if qt == "temporal-reasoning" and TEMPORAL_ENABLED:
             model_answer = extract_temporal_answer(raw_answer)
         else:
             model_answer = raw_answer
@@ -345,6 +354,7 @@ def main():
     print(f"subject:        {SUBJECT_MODEL}")
     print(f"judge:          {JUDGE_MODEL}")
     print(f"vote (n):       {ZMM_VOTE}")
+    print(f"temporal:       {'enabled (ZMM_TEMPORAL=1)' if TEMPORAL_ENABLED else 'disabled (ZMM_TEMPORAL=0)'}")
     print(f"dataset:        {DATASET_PATH}")
     print(f"GCP creds:      {os.environ.get('GOOGLE_APPLICATION_CREDENTIALS', '(MISSING!)')[:60]}...")
 
