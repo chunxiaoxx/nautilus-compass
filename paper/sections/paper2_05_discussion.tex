@@ -102,4 +102,16 @@ stack achieves SOTA accuracy at price-points compatible with
 
 \subsection{Limitations and threats to validity}
 
+\paragraph{On sample size for model substitution decisions.}
+A sample-48 evaluation of DeepSeek V4-pro showed a \(+4.2\) pt gain
+over v0.8, which would have justified a model swap; the corresponding
+full-500 evaluation came back at \(-0.2\) pts, a tied result within
+noise (see Appendix~C). Of the six per-type point estimates derived
+from the sample-48 run, five disagreed with the full-500 measurement
+by more than the 95\% confidence interval half-width, with several
+flipping sign entirely. We therefore adopt the rule that we do not
+approve model substitutions on \(n<100\) samples; preliminary
+small-\(n\) results are used only to decide whether a full evaluation
+is worth the compute, not to commit a substitution.
+
 (see Section~\ref{sec:limitations})

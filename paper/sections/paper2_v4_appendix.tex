@@ -1,7 +1,7 @@
-% Paper 2 	extperiodcentered{}  Appendix C 	extperiodcentered{}  DeepSeek V4 preliminary results
-% Status: 2026-05-05 	extperiodcentered{}  sample 48 FINAL 	extperiodcentered{}  60.4% 	extperiodcentered{}  HOLD full 500 ([Chinese comment] max_tokens [Chinese comment])
+% Paper 2 	extperiodcentered{}  Appendix C 	extperiodcentered{}  DeepSeek V4-pro: a tied-accuracy negative result
+% Status: 2026-05-07 	extperiodcentered{}  full 500 LANDED 	extperiodcentered{}  56.4% 	extperiodcentered{}  -0.2 vs v0.8 	extperiodcentered{}  CLOSED
 
-\section{DeepSeek V4 preliminary results}
+\section{DeepSeek V4-pro: a tied-accuracy negative result}
 \label{app:deepseek-v4}
 
 DeepSeek released V4-pro and V4-flash via official API
@@ -36,12 +36,12 @@ identical (m3-rerank 	extperiodcentered{}  query rewriting 	extperiodcentered{} 
 \toprule
 \textbf{Type} & \textbf{V0.8 (V3.2)} & \textbf{V4-pro think-high} & \textbf{\(\Delta\)} \\
 \midrule
-knowledge-update         & 57.7\% & \textbf{75.0\%} (6/8) & \textbf{+17.3} ⭐ \\
+knowledge-update         & 57.7\% & \textbf{75.0\%} (6/8) & \textbf{+17.3} $\star$ \\
 single-session-assistant & 83.9\% & 75.0\% (6/8) & \(-8.9\) \\
-single-session-user      & 57.1\% & \textbf{75.0\%} (6/8) & \textbf{+17.9} ⭐ \\
+single-session-user      & 57.1\% & \textbf{75.0\%} (6/8) & \textbf{+17.9} $\star$ \\
 multi-session            & 54.9\% & 62.5\% (5/8) & +7.6 \\
 single-session-preference& 53.3\% & 50.0\% (4/8) & \(-3.3\) \\
-temporal-reasoning       & 46.6\% & \textbf{25.0\%} (2/8) & \textbf{\(-21.6\)} ⚠️ \\
+temporal-reasoning       & 46.6\% & \textbf{25.0\%} (2/8) & \textbf{\(-21.6\)} $\dagger$ \\
 \midrule
 \textbf{Overall (sample)} & 56.2\% & \textbf{60.4\%} & +4.2 \\
 \bottomrule
@@ -129,11 +129,15 @@ runs).}
 \label{tab:v4-full500}
 \end{table}
 
-\paragraph{Verdict.} V4-pro \texttt{think-high} is essentially tied
-with V3.2 (\(-0.2\) pts overall 	extperiodcentered{}  within noise). Per-type, V4 wins
-clearly on ssa (\(+3.6\)) and ssp (\(+13.4\)) but loses on multi-session
+\subsection{Verdict and sample-size lesson}
+\label{app:v4-verdict}
+
+V4-pro \texttt{think-high} is essentially tied with V3.2
+(\(-0.2\) pts overall 	extperiodcentered{}  within noise). Per-type, V4 wins clearly on
+ssa (\(+3.6\)) and ssp (\(+13.4\)) but loses on multi-session
 (\(-2.3\)) and temporal-reasoning (\(-3.0\)). The headline number for
-this paper remains v0.8 V3.2 56.6\%.
+this paper remains v0.8 V3.2 56.6\%, and V4-pro is preserved here as
+a closed negative result, not a future milestone.
 
 \paragraph{Lesson on sample size.} The sample 48 estimate showed +4.2
 pts over v0.8 (60.4\% vs 56.2\%); the full 500 showed \(-0.2\) pts. Five
@@ -150,27 +154,8 @@ accuracy and 8× cost yields no production case for V4-pro
 selective routing (V4 for ssa/ssp 	extperiodcentered{}  V3.2 for ms/temporal) is the only
 path to a positive economic case 	extperiodcentered{}  neither is in scope for v1.0 paper.
 
-\subsection{Decision (2026-05-05): held full 500}
-
-Based on sample 48 results (60.4\% 	extperiodcentered{}  +4.2 vs v0.8 sample 56.2\%),
-we \textbf{do not} run V4-pro full 500 in current configuration. Reasons:
-
-\begin{itemize}
-\item Improvement (+4.2 pts) is below our \textbf{\(\ge\)3 pt
-  significance threshold} but within sample noise on n=48.
-\item The 22 pt drop on temporal-reasoning is a regression that must be
-  investigated before committing \$14 + 8h to a full run.
-\item The 9 pt drop on ssa supports the \texttt{reasoning\_content}
-  truncation hypothesis 	extperiodcentered{}  before retrying, set
-  \texttt{max\_tokens=16384} (4× current).
-\end{itemize}
-
-Recommended next steps (deferred to follow-up addendum):
-
-\begin{enumerate}
-\item V4-pro \texttt{think-high} + \texttt{max\_tokens=16384} sample 48
-  (\$2 	extperiodcentered{}  1h) 	extperiodcentered{}  check if ssa returns to 75--80\% and temporal to ~46\%.
-\item If yes, run V4-pro full 500 with the new max\_tokens (\$14 	extperiodcentered{}  8h).
-\item V4-pro \texttt{think-max} on sample 48 (\$3 	extperiodcentered{}  1.5h) 	extperiodcentered{}  may push ku/ssu
-  higher but risks worse temporal.
-\end{enumerate}
+% [Removed 2026-05-07] The "Decision (2026-05-05): held full 500"
+% subsection is obsolete: the full 500 has since been run (see
+% Section~\ref{app:v4-verdict}). The sample-48 hold rationale and the
+% follow-up max_tokens / think-max enumerations belong in lab notes,
+% not in the camera-ready appendix.

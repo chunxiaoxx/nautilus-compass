@@ -156,6 +156,4 @@ A: We don't comment on this in press kit. Reach out via email if interested.
 
 ## Embargo / press contacts
 
-- General: hello@nautilus.social (or compass@nautilus.social if differentiated)
-- Security: security@nautilus.social
-- Press / interviews: press@nautilus.social
+- All inquiries (general / security / press / interviews): chunxiaoxx@gmail.com

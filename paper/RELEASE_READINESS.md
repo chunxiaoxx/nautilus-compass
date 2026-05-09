@@ -1,5 +1,9 @@
 # compass v0.9.0-dev · Release Readiness
 
+> ⚠️ **SUPERSEDED 2026-05-08** · this doc reflects the v0.9.0-dev cycle.
+> Current release line: **v1.0.0-rc2** (CHANGELOG.md is authoritative).
+> Kept as-is for historical context · do not retrofit version numbers.
+>
 > Status: 2026-05-05 · 90% READY · awaiting user GO/NO-GO for cloud deploy + npm publish
 > Decision owner: @chunxiaoxx (user)
 
