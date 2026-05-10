@@ -40,6 +40,28 @@ jobs:
             exit 1
           fi
           echo "✅ PDF $size bytes"
+      - name: Build arXiv tarball (paper 1)
+        run: |
+          mkdir -p _arxiv_p1
+          cp paper/nautilus-compass.tex _arxiv_p1/
+          cp paper/refs.bib _arxiv_p1/
+          mkdir -p _arxiv_p1/sections
+          cp paper/sections/0[0-7]_*.tex _arxiv_p1/sections/
+          # Pre-built bbl (arxiv prefers it · saves their bibtex run)
+          cp paper/nautilus-compass.bbl _arxiv_p1/ 2>/dev/null || true
+          # PDF figures (whitelist · no SVG)
+          mkdir -p _arxiv_p1/figures
+          find paper -maxdepth 2 -name '*.pdf' \
+            ! -name 'nautilus-compass.pdf' ! -name 'paper2_main.pdf' \
+            -exec cp {} _arxiv_p1/figures/ \; 2>/dev/null || true
+          tar czf arxiv_paper1.tar.gz -C _arxiv_p1 .
+          ls -lh arxiv_paper1.tar.gz
+      - name: Upload arXiv tarball (paper 1)
+        uses: actions/upload-artifact@v7
+        with:
+          name: paper1-arxiv-tarball
+          path: arxiv_paper1.tar.gz
+          retention-days: 90
 
   paper2:
     name: Compile paper 2 (memory recall)
@@ -70,3 +92,23 @@ jobs:
             exit 1
           fi
           echo "✅ PDF $size bytes"
+      - name: Build arXiv tarball (paper 2)
+        run: |
+          mkdir -p _arxiv_p2
+          cp paper/paper2_main.tex _arxiv_p2/
+          cp paper/paper2_refs.bib _arxiv_p2/ 2>/dev/null || cp paper/refs.bib _arxiv_p2/paper2_refs.bib 2>/dev/null || true
+          mkdir -p _arxiv_p2/sections
+          cp paper/sections/paper2_*.tex _arxiv_p2/sections/
+          cp paper/paper2_main.bbl _arxiv_p2/ 2>/dev/null || true
+          mkdir -p _arxiv_p2/figures
+          find paper -maxdepth 2 -name '*.pdf' \
+            ! -name 'nautilus-compass.pdf' ! -name 'paper2_main.pdf' \
+            -exec cp {} _arxiv_p2/figures/ \; 2>/dev/null || true
+          tar czf arxiv_paper2.tar.gz -C _arxiv_p2 .
+          ls -lh arxiv_paper2.tar.gz
+      - name: Upload arXiv tarball (paper 2)
+        uses: actions/upload-artifact@v7
+        with:
+          name: paper2-arxiv-tarball
+          path: arxiv_paper2.tar.gz
+          retention-days: 90
