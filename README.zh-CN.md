@@ -1,10 +1,19 @@
 # nautilus-compass · 中文版
 
-> **跨 agent 记忆层 + drift 检测** · LLM agent 的开源 memory plugin。
+> **业界第一份不烧 LLM extraction token 的开源 Agent 记忆层** ·
+> 黑盒架构 · 阻止 AI 重复犯你已经指出过的错。
 > 适配 Claude Code/Desktop · Cline · Cursor · Continue.dev · Zed ·
-> 阻止 AI 重复犯你已经指出过的错。
 > 5 个用户级 slash command (`/compass-verify`, `/compass-drift`,
 > `/compass-recall`, `/compass-search`, `/compass-status`)。
+>
+> *为什么叫"黑盒"?* Mem0 / Letta / Cognee / Zep / MemOS 这 5 家头部
+> 全部要先调 LLM 把对话抽成事实/实体/图谱再存。compass 用 BGE-m3
+> 本地 embed 原文 · 跳过 extraction 这一步。代价是 LongMemEval -30pt ·
+> 收获是 ~14× 便宜复现(基于火山引擎 DeepSeek 定价 · 海外约 5-10x ·
+> 仍远低于 GPT-4o-judged stack)· **memory 层全本地**(agent LLM 和
+> judge LLM 默认走云 API · 都可换 Ollama / vLLM 本地)· 跨 LLM 中立 ·
+> drift 检测唯一。完整论证:
+> [paper/BLACKBOX_VS_WHITEBOX.md](paper/BLACKBOX_VS_WHITEBOX.md)。
 
 [🇬🇧 English](README.md) · 🇨🇳 中文 (本文件)
 
@@ -23,14 +32,21 @@
 ## 30 秒版本 · 这是什么
 
 ```
-传统 mem 系统 (mem0/Letta/claude-mem):
-  "我能更准地找回旧 memory"
+白盒记忆层 (Mem0 / Letta / Cognee / Zep / MemOS / smrti):
+  "我先调 LLM 把对话抽成事实/实体/图谱再存。
+   烧 extraction token · 数据要发给 OpenAI · 绑特定 LLM provider。"
 
-nautilus-compass 多做一步:
-  "memory 找回了 + 检测 AI 是不是要犯老毛病 + 提醒走过的对的路"
+黑盒记忆层 (compass · 本项目):
+  "我用 BGE-m3 本地 embed 原文 · 不调 LLM 抽事实 · 不建图。
+   原文还在索引里 · 所以可以对照'当前 prompt 是不是要犯过去那次的错'。"
 ```
 
-**一句话**: 让 AI 在忘了规矩、想偷懒、想编故事时，被自己历史的错误模式拦住。
+代价是真实存在的:LongMemEval-S 上比白盒 head (OMEGA/Mem0g) 低 30 分 ·
+因为没 entity-aware retrieval。**收获**是 14× 便宜复现 / 全本地部署 /
+跨 LLM 中立 / drift 检测(白盒架构天然做不了)。完整论证:
+[paper/BLACKBOX_VS_WHITEBOX.md](paper/BLACKBOX_VS_WHITEBOX.md)。
+
+**一句话**: 让 AI 在忘了规矩、想偷懒、想编故事时,被自己历史的错误模式拦住。
 
 ---
 
@@ -120,17 +136,24 @@ Claude:
 
 ## 跟其他 mem 系统比一眼看完
 
-| | Retrieval | Drift Detection | Time-bucket | Strategy injection | Local-only |
-|---|---|---|---|---|---|
-| mem0 | ✅ 强 | ❌ | ❌ | ❌ | ❌ (要 OpenAI API) |
-| Letta | ✅ 强 | ❌ | ❌ | partial | optional |
-| claude-mem | ⚠️ session 末端 | ❌ | ❌ | ❌ | ✅ |
-| Zep | ✅ + graph | ❌ | ⚠️ 时序 | ❌ | ❌ |
-| MemOS | ✅ EM 42.55 | ❌ | ❌ | ❌ | OSS only |
-| Smriti | archive-only | ❌ | ❌ | ❌ | ✅ |
-| **nautilus-compass** | ✅ **EM 44.4-47.3 · LME 56.6** | ✅ **AUC 0.83 held-out** | ✅ 24h vs 7d+ | ✅ DPT 风格 | ✅ |
+| | 架构 | Retrieval | Drift Detection | Time-bucket | Strategy injection | Local-only |
+|---|---|---|---|---|---|---|
+| Mem0 | 🔴 白盒 (默认 gpt-5-mini extract) | ✅ 强 | ❌ | ❌ | ❌ | ❌ (要 OpenAI API) |
+| Letta | 🔴 白盒 (是 stateful agent runtime) | ✅ 强 | ❌ | ❌ | partial | optional |
+| Cognee | 🔴 白盒 (cognify pipeline 调 LLM 建图谱) | ✅ + graph | ❌ | ❌ | ❌ | ❌ |
+| Zep | 🔴 白盒 (Graphiti 框架建 temporal 图谱) | ✅ + graph | ❌ | ⚠️ 时序 | ❌ | ❌ |
+| MemOS | 🔴 白盒 (MOS_CHAT_MODEL_PROVIDER 必配) | ✅ EM 42.55 | ❌ | ❌ | ❌ | OSS only |
+| smrti (cyqlelabs) | 🔴 白盒 (默认 hybrid GLiNER2+LLM extract) | ✅ + graph | ❌ | ❌ | ❌ | ⚠️ 可选 local |
+| claude-mem | 🟡 (session 末端归档) | ⚠️ | ❌ | ❌ | ❌ | ✅ |
+| **nautilus-compass** | 🟢 **黑盒 (BGE-m3 直 embed)** | ✅ **EM 44.4-47.3 · LME 56.6** | ✅ **AUC 0.83 held-out** | ✅ 24h vs 7d+ | ✅ DPT 风格 | ✅ |
 
-> Smriti (`zero8dotdev/smriti`) 名字很像、范畴不同 —— 它是团队对话归档+git 分享，不是 runtime memory layer，所以多数列是 out-of-scope 而不是缺功能。
+> **白盒 vs 黑盒** = memory 内部存索引时是否调 LLM 抽事实。6/6 头部全是白盒 ·
+> compass 是公开核实里第一份黑盒(2026-05-10 验证)。代价显式承认在
+> [BLACKBOX_VS_WHITEBOX.md](paper/BLACKBOX_VS_WHITEBOX.md)。
+>
+> *另有 `zero8dotdev/smriti` 名字相似但范畴不同 —— 团队对话归档+git 分享 ·
+> 不是 runtime memory layer。这里讨论的是 `cyqlelabs/smrti`(LLM extract +
+> proxy 拦截 OpenAI 请求)。*
 
 ---
 
@@ -186,8 +209,10 @@ Claude:
 | **single-session-preference** | 30 | 53.3% | 撤回 ssp prompt 后回升 |
 | **temporal-reasoning** | 133 | 46.6% | 持平 baseline · 时间推理是开放问题 |
 
-**对照业界** (Letta 35-38% · Mem0 40-45% · A-MEM 50% · Zep SOTA 55-60% · paper RAG SOTA 50-60%):
-**v0.8 56.6% = paper SOTA 同档 · Zep SOTA 下沿 · 价格 1/15**。
+**对照同 setup 开源段 (GPT-4o-mini judge · top-K=5 · 无 entity graph)**:
+Letta 35-38% · Mem0 40-45% · A-MEM 50% · Zep / paper RAG 50-60% — compass 56.6% 在这段位上沿,价格 1/15。
+
+**⚠️ 但白盒 head 不在这段** —— 近期白盒 leader (OMEGA 95.4% · Mem0g 93.4% · ByteRover 92.8%) 在 LongMemEval-S 报 90+%。它们带 entity graph + 重型 judge + LLM extraction,**这是白盒架构上限**。compass 黑盒架构(不调 LLM 抽事实)在 LongMemEval 上有 ~30pt 架构天花板,**这不是调参能补的差距**。换得 14× 便宜复现 / 全本地 / drift 唯一。详见 [BLACKBOX_VS_WHITEBOX.md](paper/BLACKBOX_VS_WHITEBOX.md)。
 
 **v0.8 五项加成实测**:
 - ssu Multi-angle Query Rewriting: **+27 pts** (30% → 57%) ⭐⭐

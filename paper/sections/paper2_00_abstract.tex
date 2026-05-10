@@ -1,28 +1,34 @@
 % Paper 2 	extperiodcentered{}  §0 Abstract
-% Status: 2026-05-07 v1.0 · trimmed to 189 words (was 280) for venue compliance
+% Status: 2026-05-10 v1.1 · added black-box framing + cost caveat + softened Zep
+% framing · arXiv 1920-char cap target
 
 \begin{abstract}
-Compass is an open-source memory recall pipeline for LLM agents. On
-LongMemEval-S (n=500), Compass reaches \textbf{56.6\% accuracy} using
-DeepSeek V3.2 thinking, tying the Zep SOTA band (55--60\%) and
-surpassing the Gemini-2.5-pro baseline (44.6\%) by $+12$ points at
-$\sim$\$3.50 reproducible cost---under 1/15 of GPT-4o-judged stacks.
-On EverMemBench-Dynamic (5 topics $\times$ 100 QAs), Compass scores
-\textbf{44.4\%} (n=500, Run 1) and \textbf{47.3\%} (n=497, Run 2,
-3 transient API skips); both endpoints exceed all four reported
-Table 4 baselines: MemoBase (34.27), Mem0 (37.09), Zep (39.97), and
-MemOS (42.55), and the across-run mean (45.84\%) clears MemOS by
-$+$3.3 pts. Our 5-stage pipeline combines BGE-m3
-dense recall, bge-reranker-v2-m3 cross-encoder reranking, multi-angle
-query rewriting, type-aware prompting, and a judge chain validated by
-cross-judge replication ($\kappa{=}0.772$). Multi-angle query rewriting
-is the dominant lever ($+27$ pts on single-session-user), larger than
-the reranker. Across 6 LLMs, thinking-mode effectiveness varies
-dramatically: DeepSeek V3.2 gains $+10$ pts; GLM-5.1 $+2$; Kimi K2.6
-neutral; MiniMax M2.7 triggers a 44\% refusal cascade; DeepSeek V4-pro
-think-high ties V3.2 at 8\(\times\) cost. Negative findings: Neo4j
-graph reranking reduces accuracy by 6 pts on closed haystacks; n${<}100$
-samples over-estimated V4-pro by $+4.4$ points vs full 500. Code, MCP/A2A
-integrations, and full reproduction scripts at
+Compass is an open-source memory recall pipeline for LLM agents that,
+unlike Mem0, Letta, Cognee, Zep, MemOS, and smrti, does not call an LLM
+to extract facts or build a graph at index time; raw conversation text
+is embedded directly with BGE-m3. On LongMemEval-S (n=500), Compass
+reaches \textbf{56.6\% accuracy} using DeepSeek V3.2 thinking, the
+upper end of open-source same-setup baselines (50--60\%) and $+12$
+points over the Gemini-2.5-pro baseline (44.6\%). Recent white-box
+leaders (OMEGA, Mem0g, ByteRover) report 90+\% on the same benchmark;
+we treat that gap as the architectural ceiling of the no-extraction
+design rather than a tuning gap. End-to-end reproduction cost is
+\$3.50 on Volcengine DeepSeek pricing (regional; offshore providers
+$5$--$10\times$ that, still well under GPT-4o-judged stacks at \$50+).
+On EverMemBench-Dynamic, Compass scores \textbf{44.4\%} (n=500, Run 1)
+and \textbf{47.3\%} (n=497, Run 2); both runs exceed all four published
+Table 4 baselines (MemoBase, Mem0, Zep, MemOS, top at 42.55), with
+across-run mean 45.84\% clearing MemOS by $+$3.3 pts. We do not claim
+industry SOTA: OMEGA and Mem0g have not published comparable
+EverMemBench numbers. Our 5-stage pipeline combines BGE-m3 dense recall,
+bge-reranker-v2-m3 reranking, multi-angle query rewriting, type-aware
+prompting, and cross-judge replication ($\kappa{=}0.772$). Multi-angle
+query rewriting is the dominant lever ($+27$ pts on
+single-session-user), larger than the reranker. Across 6 LLMs,
+thinking-mode effectiveness varies: DeepSeek V3.2 $+10$ pts; GLM-5.1
+$+2$; MiniMax M2.7 triggers a 44\% refusal cascade. Negative findings:
+Neo4j graph reranking $-6$ pts on closed haystacks; n${<}100$ samples
+over-estimated V4-pro by $+4.4$ points vs full 500. Code, MCP/A2A
+integrations, full reproduction scripts at
 \url{https://github.com/chunxiaoxx/nautilus-compass} under MIT.
 \end{abstract}
