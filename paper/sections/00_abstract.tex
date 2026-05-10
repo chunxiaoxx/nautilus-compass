@@ -9,24 +9,26 @@ as persona vectors require model weights and so cannot be applied to
 closed APIs (Claude, GPT-4) that most users actually interact with.
 
 We present \textbf{Nautilus Compass}, a black-box persona drift
-detector for production coding agents. The method operates entirely
-at the prompt-text layer: cosine similarity between user prompts and
-behavioral anchor texts (positive and negative task patterns),
-aggregated by a weighted top-$k$ mean using BGE-m3 embeddings. The
-system ships as a Claude Code plugin, a generic MCP 2024-11-05 A2A
-server (Cursor, Cline, Hermes, OpenClaw), a CLI, and a REST API,
-all backed by one daemon. We additionally release a Merkle-chained
-audit log so anchor updates and detection events are tamper-evident
-across multi-agent handoffs.
+detector and agent memory layer for production coding agents. The
+method operates entirely at the prompt-text layer: cosine similarity
+between user prompts and behavioral anchor texts, aggregated by a weighted top-$k$ mean using
+BGE-m3 embeddings. Compass is, to our knowledge, the only public
+agent memory layer (among Mem0, Letta, Cognee, Zep, MemOS, smrti
+verified May~2026) that does not call an LLM at index time to extract
+facts or build a graph; raw conversation text is embedded directly.
+The system ships as a Claude Code plugin, an MCP~2024-11-05 A2A server
+(Cursor, Cline, Hermes), a CLI, and a REST API on one daemon, with a
+Merkle-chained audit log for tamper-evident anchor updates.
 
 On a held-out test set built from real Claude Code session traces and
 labeled by an independent LLM judge, Compass reaches ROC AUC 0.83 for
 drift detection. The embedded retrieval pipeline scores 56.6\% on
-LongMemEval-S v0.8 and 44.4\% on EverMemBench-Dynamic (n=500), the
-top of the open-source baselines we evaluated against. We treat
-detection accuracy as necessary but not sufficient for production
-safety; a paired cross-vendor behavior A/B accompanies these numbers
-as preliminary system-level evidence.
+LongMemEval-S v0.8 and 44.4\% on EverMemBench-Dynamic (n=500), topping
+the four published EverMemBench Table~4 baselines. LongMemEval-S 56.6\% is \textasciitilde 30 points below recent
+white-box leaders (90+\%); we treat that as the architectural ceiling
+of the no-extraction design. End-to-end reproduction cost is \$3.50
+(\textasciitilde 14$\times$ cheaper than GPT-4o-judged stacks). A paired cross-vendor behavior A/B
+accompanies these numbers as preliminary system-level evidence.
 
 Code, anchors, frozen test data, and audit-log tooling are
 MIT-licensed at \url{github.com/chunxiaoxx/nautilus-compass}.

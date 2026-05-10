@@ -22,12 +22,19 @@ databases (Zep \citep{zep2025}), or \$20+ per evaluation run.
 This paper makes three contributions:
 
 \begin{enumerate}
-\item \textbf{State-of-the-art accuracy with Chinese open-via-API LLMs.}
-   We achieve \textbf{56.6\% on LongMemEval-S} (n=500) using DeepSeek
-   V3.2 thinking via the Volc Ark coding plan, matching the Zep SOTA band
-   (55--60\%) and the paper RAG SOTA (50--60\%) at less than 1/15 the
-   commercial-API cost. Total cost to reproduce: \(\sim\)\$3.50 USD.
-   This is the first published 500-question evaluation using exclusively
+\item \textbf{Open-source same-setup head accuracy with Chinese
+   open-via-API LLMs.} We achieve \textbf{56.6\% on LongMemEval-S}
+   (n=500) using DeepSeek V3.2 thinking via the Volc Ark coding plan,
+   the upper end of the open-source same-setup band (Letta, Mem0,
+   A-MEM, Zep, paper RAG: 35--60\%) at less than 1/15 the
+   commercial-API cost. Total cost to reproduce: \(\sim\)\$3.50 USD on
+   Volcengine pricing; offshore providers cost $5$--$10\times$ that
+   (still well below GPT-4o-judged stacks at \$50+); see
+   \S\ref{sec:limitations} for the regional-economics caveat. Recent
+   white-box leaders (OMEGA, Mem0g, ByteRover) report 90+\% on
+   LongMemEval-S; we treat that gap as the architectural ceiling of
+   the no-extraction design rather than a tuning gap. This is the
+   first published 500-question evaluation using exclusively
    Chinese-LLM + local-bge-m3 infrastructure.
 
 \item \textbf{A 5-component pipeline with one large-gain intervention.}

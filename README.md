@@ -1,8 +1,20 @@
 # nautilus-compass
 
-> **Cross-agent memory layer with drift detection** for LLM agents.
+> **Black-box agent memory with drift detection** ·
+> the only public memory layer that doesn't burn LLM tokens to extract
+> facts before storing.
 > Memory plugin for Claude Code/Desktop · Cline · Cursor · Continue.dev · Zed ·
 > stops your AI from repeating mistakes you've already flagged.
+>
+> *Why "black-box"?* Mem0, Letta, Cognee, Zep, MemOS all call an LLM at
+> index time to extract entities or build a graph. compass embeds raw
+> text with BGE-m3 locally and skips that step entirely · ~14× cheaper
+> to reproduce on Volcengine DeepSeek pricing (regional; offshore
+> providers ~5–10× that, still well below GPT-4o-judged stacks),
+> the **memory layer itself runs fully local** (the agent LLM and judge
+> LLM are cloud APIs in our default config; both replaceable with local
+> Ollama/vLLM), drift-aware. Read the full architectural argument:
+> [paper/BLACKBOX_VS_WHITEBOX.md](paper/BLACKBOX_VS_WHITEBOX.md).
 >
 > **Built by [Nautilus Platform](https://nautilus.social)** · open agent ecosystem · 7 capabilities (memory · identity · runtime · marketplace · stake · A2A · MCP) · [join as agent →](https://nautilus.social)
 
@@ -24,13 +36,23 @@
 ## 30-second pitch
 
 ```
-Traditional memory systems (mem0 / Letta / claude-mem / Zep):
-  "I can recall the right past memory more accurately."
+White-box memory layers (Mem0, Letta, Cognee, Zep, MemOS, smrti):
+  "I call an LLM to extract facts from your conversation,
+   then store them in a graph. Pay extraction tokens. Send
+   data to the provider."
 
-nautilus-compass adds one more step:
-  "Memory recalled + detect if the AI is about to repeat a known mistake
-   + remind it of what worked last time."
+Black-box memory (compass · this project):
+  "I embed raw text locally with BGE-m3. No extraction LLM.
+   No graph. No data leaving your machine. And because raw
+   prompts are still in the index, I can score the next
+   prompt against your past mistakes before the agent acts."
 ```
+
+The trade is real: −30 points on LongMemEval-S vs white-box leaders that
+build entity graphs, in exchange for 14× cheaper reproduction, full
+local-deployment, cross-LLM portability, and drift detection that
+white-box systems can't offer. Full argument:
+[paper/BLACKBOX_VS_WHITEBOX.md](paper/BLACKBOX_VS_WHITEBOX.md).
 
 **In one line**: when the AI is about to forget a rule you set, take a
 shortcut you flagged, or fabricate a prior agreement, it gets stopped
@@ -99,12 +121,12 @@ p95 hook latency.
 
 ## Headline numbers
 
-| Benchmark | Score | Compare against |
+| Benchmark | Score | Honest compare |
 |---|---|---|
-| **LongMemEval-S** (n=500) | **56.6%** (locked at v0.8) | ties Zep SOTA band, +12 pts vs Gemini-2.5-pro baseline |
-| **EverMemBench-Dynamic** (n=500) | **44.4% (Run 1) / 47.3% (Run 2)** | tops every reported Table 4 baseline (Mem0 37.09, Zep 39.97, MemOS 42.55) |
-| **Drift detector AUC** | **0.83 held-out / 0.92 in-set** | first black-box drift score that runs in a Claude Code hook |
-| **Reproduction cost** | **~$3.50** for 500 LongMemEval questions | under 1/15 of GPT-4o-judged stacks |
+| **LongMemEval-S** (n=500) | **56.6%** (locked at v0.8) | open-source 50–60% band · white-box leaders (OMEGA, Mem0g, ByteRover) report 90+% — that gap is an architectural ceiling for black-box, not a tuning gap. See [BLACKBOX_VS_WHITEBOX](paper/BLACKBOX_VS_WHITEBOX.md). |
+| **EverMemBench-Dynamic** (n=500) | **44.4% (Run 1) / 47.3% (Run 2)** | tops the four published Table 4 baselines (Mem0 37.09, Zep 39.97, MemOS 42.55, MemoBase 34.27). Not "industry SOTA" — OMEGA / Mem0g haven't reported on EverMemBench publicly. |
+| **Drift detector AUC** | **0.83 held-out / 0.92 in-set** | only public memory layer that does drift detection at all — white-box systems abstract prompts into facts before drift becomes checkable |
+| **Reproduction cost** | **~$3.50** for 500 LongMemEval questions | ~14× cheaper than GPT-4o-judged stacks ($50+) |
 | **p95 hook latency** | **<50 ms** | safe for every-prompt invocation |
 
 We deliberately report Run 1 (44.4%) as the abstract headline for
