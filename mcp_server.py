@@ -28,10 +28,14 @@ from typing import Any
 
 PROTOCOL_VERSION = "2024-11-05"
 SERVER_NAME = "nautilus-compass"
-SERVER_VERSION = "1.4.0"
+SERVER_VERSION = "1.5.0"
 DAEMON_HOST = "127.0.0.1"
 DAEMON_PORT = 9876
 DAEMON_TIMEOUT = 30.0
+
+# v1.5 · S2 proof-of-recall · in-memory token store · 30 min TTL · LRU evict at 1000
+RECALL_TOKEN_TTL_S = 1800
+RECALL_TOKEN_MAX = 1000
 
 PLUGIN_DIR = Path(__file__).resolve().parent
 CACHE_DIR = PLUGIN_DIR / ".cache"
@@ -76,6 +80,91 @@ def daemon_call(req: dict, timeout: float = DAEMON_TIMEOUT) -> dict:
         return json.loads(buf.decode("utf-8"))
     finally:
         s.close()
+
+
+# ─── v1.5 · S2 proof-of-recall · token store ──────────────────────
+
+import secrets as _secrets
+from collections import OrderedDict as _OrderedDict
+
+# token → {issued_at, agent_type, top3_paths, top3_descriptions, query}
+# OrderedDict for LRU · access bumps to end · oldest at start
+_recall_tokens: "_OrderedDict[str, dict]" = _OrderedDict()
+
+
+def _mint_recall_token(agent_type: str, top3: list, query: str) -> str:
+    """Generate recall_token · register top3 snippets · LRU evict + TTL prune."""
+    now = time.time()
+    # prune expired
+    expired = [k for k, v in _recall_tokens.items()
+               if now - v["issued_at"] > RECALL_TOKEN_TTL_S]
+    for k in expired:
+        _recall_tokens.pop(k, None)
+    # LRU evict if over max
+    while len(_recall_tokens) >= RECALL_TOKEN_MAX:
+        _recall_tokens.popitem(last=False)
+    token = "rt_" + _secrets.token_hex(8)
+    _recall_tokens[token] = {
+        "issued_at": now,
+        "agent_type": (agent_type or "unknown")[:60],
+        "query": (query or "")[:200],
+        "top3_paths": [(h.get("path") or "") for h in top3],
+        # store BOTH path basenames and description text · client can cite either
+        "top3_descriptions": [(h.get("description") or "")[:300] for h in top3],
+    }
+    return token
+
+
+def _validate_recall_proof(token: str, cited_snippets: list, agent_type: str) -> tuple[bool, str]:
+    """Check token live + agent matches + at least 1 cited snippet matches a top3 entry.
+
+    Returns: (ok, reason)
+      ok=True · reason=""
+      ok=False · reason ∈ {"token_not_found_or_expired", "agent_type_mismatch", "no_snippet_overlap", "empty_cited"}
+    """
+    if not token or not isinstance(token, str):
+        return False, "no_token_provided"
+    rec = _recall_tokens.get(token)
+    if not rec:
+        return False, "token_not_found_or_expired"
+    now = time.time()
+    if now - rec["issued_at"] > RECALL_TOKEN_TTL_S:
+        _recall_tokens.pop(token, None)
+        return False, "token_not_found_or_expired"
+    if rec["agent_type"] != (agent_type or "unknown")[:60]:
+        return False, "agent_type_mismatch"
+    if not cited_snippets or not isinstance(cited_snippets, list):
+        return False, "empty_cited"
+    # snippet match: cited string must contain part of top3 path OR substantial overlap with description
+    valid = False
+    for cs in cited_snippets:
+        if not isinstance(cs, str):
+            continue
+        cs_lower = cs.lower().strip()
+        if len(cs_lower) < 5:
+            continue
+        # path basename match
+        for path in rec["top3_paths"]:
+            base = path.rsplit("/", 1)[-1].lower()
+            if base and base in cs_lower:
+                valid = True; break
+        if valid: break
+        # description overlap (>= 20 chars contiguous)
+        for desc in rec["top3_descriptions"]:
+            if not desc: continue
+            desc_lower = desc.lower()
+            # check for >= 20-char contiguous overlap
+            for i in range(0, len(cs_lower) - 19):
+                if cs_lower[i:i+20] in desc_lower:
+                    valid = True; break
+            if valid: break
+        if valid: break
+    if not valid:
+        return False, "no_snippet_overlap"
+    return True, ""
+
+
+# ─── end v1.5 · S2 ─────────────────────────────────────────────────
 
 
 def resolve_project(explicit: str | None) -> str | None:
@@ -133,7 +222,12 @@ def tool_recall(args: dict) -> dict:
     if not hits:
         text = f"No memories matched for query: {query!r} ({scope_label})"
     else:
-        lines = [f"Recall · query={query!r} · {scope_label} · {len(hits)} hits"]
+        # v1.5 · S2 proof-of-recall · mint token for top3 · agent quotes 1+ snippet in next ingest_obs
+        recall_token = _mint_recall_token(agent_type or "unknown", hits[:3], query)
+        lines = [
+            f"Recall · query={query!r} · {scope_label} · {len(hits)} hits",
+            f"recall_token: {recall_token}  (cite ≥1 snippet in next ingest_obs · 30 min TTL · proof-of-recall)",
+        ]
         for h in hits:
             origin = f" [{h['project']}]" if scope == "user" and h.get("project") else ""
             lines.append(
@@ -300,6 +394,12 @@ def tool_ingest_obs(args: dict) -> dict:
 
     Direct write (bypass LLM distillation) · suitable for explicit agent reports.
     For session-end auto-distill, the Stop hook handles that automatically.
+
+    v1.5 · S2 proof-of-recall · optional `recall_token` + `cited_snippets`:
+      · recall_token from previous recall call (30 min TTL)
+      · cited_snippets = list of strings · each must overlap one top3 path/desc
+      · validation result written to frontmatter `proof_of_recall: pass|fail|not_attempted`
+      · backward compatible: omit both → not_attempted · ingest still succeeds
     """
     name = (args.get("name") or "").strip()
     if not name:
@@ -323,6 +423,17 @@ def tool_ingest_obs(args: dict) -> dict:
     if thread_role and thread_role not in ("outbound", "inbound", "self_note"):
         thread_role = "self_note"
 
+    # v1.5 · S2 proof-of-recall validation
+    recall_token = (args.get("recall_token") or "").strip()
+    cited_snippets = args.get("cited_snippets") or []
+    if recall_token or cited_snippets:
+        ok, reason = _validate_recall_proof(recall_token, cited_snippets, agent_type)
+        proof_of_recall = "pass" if ok else "fail"
+        proof_reason = "" if ok else reason
+    else:
+        proof_of_recall = "not_attempted"
+        proof_reason = ""
+
     # Format as v0.8 session_*.md frontmatter
     from datetime import datetime
     ts = datetime.now().strftime("%Y%m%d-%H%M")
@@ -337,6 +448,9 @@ def tool_ingest_obs(args: dict) -> dict:
     thread_lines = ""
     if thread_id:
         thread_lines = f"\nthread_id: {thread_id}\nthread_role: {thread_role or 'self_note'}"
+    proof_lines = f"\nproof_of_recall: {proof_of_recall}"
+    if proof_reason:
+        proof_lines += f"\nproof_of_recall_reason: {proof_reason}"
     md = f"""---
 name: {name}
 description: {description[:200]}
@@ -346,7 +460,7 @@ drift: {drift}
 drift_signals: {signals_yaml}
 agent_type: {agent_type}
 user_id: {user_id}
-ingested_via: mcp{thread_lines}
+ingested_via: mcp{thread_lines}{proof_lines}
 ---
 
 # {name}
@@ -359,7 +473,10 @@ ingested_via: mcp{thread_lines}
 """
     out_file.write_text(md, encoding="utf-8")
     suffix = f" · thread={thread_id}" if thread_id else ""
-    return _ok(f"obs written · {out_file.name} · agent_type={agent_type} · drift={drift}{suffix}")
+    proof_suffix = f" · proof_of_recall={proof_of_recall}"
+    if proof_of_recall == "fail":
+        proof_suffix += f" ({proof_reason})"
+    return _ok(f"obs written · {out_file.name} · agent_type={agent_type} · drift={drift}{suffix}{proof_suffix}")
 
 
 def tool_drift_history(args: dict) -> dict:
@@ -1084,6 +1201,8 @@ TOOLS = {
                     "project": {"type": "string", "description": "Target project (defaults to most-recent)"},
                     "thread_id": {"type": "string", "description": "v1.1 · Optional thread identifier for multi-turn conversations (e.g. 'thread_devto_azender1_safeagent'). Enables thread_recall."},
                     "thread_role": {"type": "string", "enum": ["outbound","inbound","self_note"], "description": "v1.1 · Role of this message in the thread. Required if thread_id is set."},
+                    "recall_token": {"type": "string", "description": "v1.5 · proof-of-recall · token from a prior recall call (30 min TTL). Pair with cited_snippets to prove you actually consumed the recall hits. Omit if no recall preceded this ingest."},
+                    "cited_snippets": {"type": "array", "items": {"type": "string"}, "default": [], "description": "v1.5 · proof-of-recall · list of snippet quotes (file basenames or description fragments ≥20 chars). At least one must overlap a top-3 entry from the recall_token. Failure marks proof_of_recall=fail in frontmatter (still writes · advisory)."},
                 },
                 "required": ["name"],
             },

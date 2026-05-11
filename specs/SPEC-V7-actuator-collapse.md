@@ -4,26 +4,36 @@ suggested_owner: platform-dialog (V7 runtime maintainer)
 effort: 3-5 days
 gh_issue: (not opened · this is a handoff to platform-dialog · not compass-internal)
 thread_id: spec-V7-actuator-collapse
-status: draft · handoff
+status: draft · cooperative (not critique)
 created: 2026-05-11
-severity: 架构级 · 当前 V7 脑身分离的真根因
+updated: 2026-05-11T16:00 · cooperative rewrite
+severity: 架构级 · selector → actuator wire 模板
 ---
+
+> **Update 2026-05-11 16:00** · V7 platform-dialog 在 15:17 已自做 MiniMax tool-use smoke
+> (stop_reason='tool_use' + ToolUseBlock 真返回) · 自承 "我之前 'cheap LLM 没 tool 能力'
+> 完全是错的"。SPEC 原 §"反驳借口" 已删 · 这份是协作版 · 提供 reference impl 给 V7
+> 4-research-agent 出结论后参考 · 不是批评。
 
 # Goal · 一句话
 
 V7 selector(LLM) 调 propose_code_change 时 · 不再写 platform_proposals 表等 cron 来执 · **同一 tool 调用一步完成 propose+test+PR · 像 OpenClaw / Hermes / Claude Code 那样**。
 
-# Why · 不是 LLM 能力问题 (反 platform-dialog 那段辩词)
+# Why · V7 已自证 · 这里是补充 wire 模板
 
-V7 platform-dialog 自承"廉价 LLM 偏好生成不偏好 tool-use" · 这是**vendor lock-in 借口**:
+V7 platform-dialog 15:17 实证 (已自撤回 "cheap LLM 不能 tool-use"):
 
-| 平台-dialog 论证 | 反证 |
-|---|---|
-| MiniMax 不会 tool-use | OpenClaw 用同款 MiniMax 真在调工具 |
-| cheap LLM 选 think 多于 act | Claude Code 代码已泄露 · agent wire 决定 act 优先 |
-| 升级 Claude Sonnet 才能真 act | 那是把架构 bug 推给模型 vendor 来收钱 |
+```
+Smoke 1 PASS · MiniMax 真返回 stop_reason='tool_use'
++ 完整 ToolUseBlock(name='get_weather', input={"city":"Tokyo"})
++ 附 ThinkingBlock (extended thinking 也支持)
+```
 
-**真根因 = wire 层 bug · 不是模型能力**:
+V7 当前在跑 4 个 background research agent 找最优 wire pattern (Hermes 6 子文件 + Claude Code 泄露版 + 历史 memory + compass-as-tool-discovery)。
+
+这份 SPEC 不是反驳 · 是给 V7 research 出结论后**比较参考的备选 actuator pattern**。具体路径 V7 可选 (Hermes 风 / Claude Code 风 / OpenClaw 风 / 这份的 single-call collapse)。
+
+**3 段拓扑现状**:
 
 ```
 V7 当前拓扑 (3 段 · 每段等 cron):
@@ -162,13 +172,12 @@ Per `specs/DISPATCH_PROTOCOL.md` §4, S2 (proof-of-recall) was kept self because
 - 改 selector tool 定义
 - ship + 测 propose/merge 比率
 
-# Bottom line
+# Bottom line · 协作版
 
-V7 platform-dialog 那段"无法自跑 · 要么升级模型要么人工 merge"是**懦弱的二选一**:
+V7 已自做 smoke 证明模型不是瓶颈 (15:17) · 现在 4 个 research agent 在找最优 wire。这份 SPEC 提供一个具体 collapse pattern 备选:
 
-- ❌ 升级模型 (a) · 把架构 bug 推给模型 vendor
-- ❌ 人工 merge (c) · 承认 agent 是 PPT
+- selector → actuator 接成单 tool · OpenClaw / Hermes / Claude Code 都有类似 pattern
+- 不依赖模型升级 · 不依赖更多 cron
+- compass 这边 1 文件 patch 已活示范了同模式 (`ops/v0.9_to_v14_adapter_patch.py` · 110 行 · 1 调用栈 · 不三段)
 
-✅ 真路径 (b) · 把 actuator 接成单 tool call · OpenClaw/Hermes/Claude Code 都做了 · 不是新发明
-
-**这才叫 agent · 不叫脑半身瘫痪。**
+**V7 research 出结果后 · 这份 SPEC 是参考之一 · 不是唯一答案。**
