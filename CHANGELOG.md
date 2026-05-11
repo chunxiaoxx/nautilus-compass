@@ -1,5 +1,170 @@
 # Changelog
 
+## [1.2.0] · 2026-05-11 — "dogfood ladder · thread recall · cloud MCP TCP"
+
+Two days after `v1.1.0`. Closes the "infra-without-consumer" gap: v1.0
+shipped MCP / A2A protocols and a token-authed TCP server, but in the
+72 hours after launch zero platform-side agents called any compass MCP
+tool. v1.2 fixes this with a 5-level dogfood ladder, a thread-aware
+recall primitive for multi-day partnership / engagement loops, and a
+cloud MCP TCP deployment that ships verified end-to-end. Tool surface
+14 → 15.
+
+### Dogfood ladder · structural fix for cross-agent consumption
+
+Introduced the dogfood ladder evidence model (`docs/L2_WIRE_GUIDE.md`,
+`docs/DOGFOOD_BRIDGE.md`) — five distinct levels with distinct
+evidence standards:
+
+- **L0** · platform solo cron · today's baseline
+- **L1** · compass MCP endpoint live · zero platform-side calls (the
+  bad state · same anti-pattern as 305-case "shipped but never
+  consumed")
+- **L2** · platform agents (V5 / V6 / Kairos) call compass MCP
+  recall + drift_check + ingest every cycle · evidence: ≥10 daily
+  calls per agent in `verification_log.jsonl`
+- **L3** · V7 (TBD) compass-first · every cycle =
+  recall → draft → drift_check → send → ingest
+- **L4** · cross-dialog · compass-dialog and platform-dialog ingest
+  into the same cloud instance · either side recalls the other's work
+
+Ship targets L2 ready (wire guide + 6 minted tokens + cloud endpoint
+live + cycle-prompt patch documented) so the platform side can move
+from L1 to L2 without re-designing anything.
+
+### `thread_recall(thread_id)` · multi-day conversation recall (L3 enabler)
+
+New MCP tool · v1.2 tool count 15. Returns the chronological message
+stream for a long-running back-and-forth tagged with a stable
+`thread_id` frontmatter field. Whereas `recall` does semantic top-k
+across all memory, `thread_recall` returns the full ordered sequence
+for one thread.
+
+Use case: V7 partnership-loop. An agent talks with a founder over
+7-14 days across many messages. White-box memory abstracts these
+into facts and loses the raw thread — compass keeps raw
+`session_*.md` per message tagged with `thread_id`, so the next
+reply draft has the full 12-message history reconstructable.
+
+Companion change to `ingest_obs`: two new optional inputs
+`thread_id` (stable id, e.g. `thread_devto_azender1_safeagent`)
+and `thread_role` (`outbound` / `inbound` / `self_note`). When set,
+frontmatter records them so `thread_recall` can filter.
+
+End-to-end verified via `MCPClient` → `compass-mcp-tcp.service` →
+BGE daemon → memory dir on cloud VM (`session_20260511-1200_L2-E2E-smoke.md`).
+
+### Cloud MCP TCP endpoint · `compass-mcp-tcp.service`
+
+New systemd unit at `ops/compass-mcp-tcp.service`. Deploys the MCP
+TCP server on the compass cloud VM, bound to `127.0.0.1:9877`.
+Loads bearer tokens from `/etc/compass/tokens.json` (0640 root:ubuntu).
+
+Why loopback-only: even with token auth, exposing MCP TCP to the
+public internet means tokens travel in cleartext. Platform agents
+on the same VM use loopback directly; cross-machine dialog Claude
+Code sessions use SSH tunnel:
+
+```
+ssh -fN -L 9877:127.0.0.1:9877 cloud
+```
+
+Then either dialog can register `nautilus-compass-cloud` in
+`~/.claude.json` mcpServers and call compass tools natively.
+
+Six bearer tokens minted (nautilus-v5, nautilus-v6, kairos,
+v7-souls-fusion read-only, claude-code-compass-dialog,
+claude-code-platform-dialog) with token-scoped RBAC (tools.read,
+tools.write).
+
+### `ops/mcp_stdio_to_cloud.py` · stdio → cloud TCP wrapper
+
+50-line Python wrapper that lets Claude Code's stdio MCP transport
+talk to the cloud TCP MCP server. Reads JSON-RPC from stdin, injects
+`params.authToken` from `COMPASS_CLOUD_TOKEN` env, forwards to cloud
+over TCP, streams responses back to stdout (bytes-level · works
+around Windows GBK encoding).
+
+Setup once in `~/.claude.json` mcpServers and any Claude Code
+session can call compass tools natively, no more
+`subprocess.run python -c "from mcp_client import ..."` boilerplate.
+
+### `anchors_compass_marketing.json` · 31 + 37 anti-overclaim pack
+
+New domain anchor pack for drift_check on outbound marketing copy.
+Borns from the 305-case + P1-1 case (two over-claim incidents in
+24 hours · 2026-05-09 and 2026-05-10).
+
+- 31 positive anchors: honest factual framing (black-box vs white-box,
+  the four published numbers, architectural ceiling caveat, no
+  "industry SOTA")
+- 37 negative anchors: over-claim language (industry SOTA, zero token,
+  100% recall, dead competitors, hype words, generic CTAs,
+  305-pattern fake-closure)
+
+v1.1 calibration round 1 (2026-05-11) sharpened the 305-anchor and
+100%-recall-anchor to absolute-claim phrasing after a baseline run
+on a real azender1 dev.to reply draft showed 4/5 paragraphs
+false-positive should_alert. After calibration: 2/5 false positives.
+Calibration is an iterative process · future rounds will track
+true-positive vs false-positive rates from real outbound to
+auto-retrain anchor weights.
+
+### `docs/FRAMING_KIT_SYSTEM_PROMPT.md` · ~1500-token agent system prompt pack
+
+Loaded as the first part of any agent system prompt that writes
+public-facing compass copy (V5 marketing cycle, V6 content gen,
+V7 engagement / partnership-loop). Locks in the four published
+numbers (56.6 / 44.4 / AUC 0.83 / $3.50), the architectural
+identity (only public memory layer with zero LLM extraction at
+index time), and the 10 "what you must NOT claim" rules. Pairs
+with `anchors_compass_marketing.json` for post-generation drift_check.
+
+### Tool surface
+
+14 → 15 MCP tools. New: `thread_recall`.
+
+`ingest_obs` gains two optional inputs (`thread_id`, `thread_role`)
+without changing required-args contract.
+
+### Verified ship evidence (2026-05-11 11:58-13:06 CST)
+
+- Cloud `compass-mcp-tcp.service` active (running) on 127.0.0.1:9877
+- 6 tokens loaded from `/etc/compass/tokens.json` · token auth
+  verified (`params.authToken`)
+- 15 tools listed via `tools/list` · `thread_recall` present
+- `ingest_obs(thread_id='thread_L2_dogfood_verification', ...)` →
+  `thread_recall` round-trip · full body returned in chronological
+  order
+- 3 dogfood session lessons ingested to cloud via local Windows
+  → SSH tunnel → cloud MCP TCP · platform-dialog token simulated
+  recall returns those 3 hits cross-dialog (federation verified)
+- `drift_check` on azender1 reply draft (5 paragraphs) returned
+  real signals with FP at 2/5 after v1.1 anchor calibration
+- Git commits `0ee5bb0` (5 ship files), `4385a68` (ops wrapper +
+  127.0.0.1 rebind), this release (anchor v1.1 + CHANGELOG)
+
+### Coordination with platform dialog
+
+Tokens and cycle-prompt patch handed off to platform dialog via
+`_compass_tokens_handoff.md` (gitignored). Platform-side next:
+update V5 / V6 / Kairos cron system prompts with the 4-call cycle
+pattern (recall → drift_check → send → ingest), add
+`helix.compass_call_count_24h` metric. L2 evidence gate: ≥10 daily
+calls per agent in 48 hours.
+
+### What's not in this release
+
+- v1.2 ship of A2A polling tool (cross-dialog real-time messaging)
+  · waiting on Claude Code MCP runtime extensions or polling
+  fallback in v1.3
+- V7 itself (compass-first super-agent) · waits on L2 evidence
+  showing platform agents really consume compass MCP daily
+- Outreach drafts to `@max_quimby`, `@andreap`, `@supertrained`
+  · waits on raw comments
+- arxiv moderation: papers 7569111 + 7570898 still in queue
+  (Monday morning UTC · normal weekend hold)
+
 ## [1.1.0] · 2026-05-09 — "recall consumption fix · V7 v0.2 governance plan"
 
 Released 12 hours after `v1.0.0`. Three production bug fixes around recall
