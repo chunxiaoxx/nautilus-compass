@@ -34,7 +34,8 @@ LAST_ALERT_FILE = Path(os.environ.get(
 ALERT_AFTER_RUNS = int(os.environ.get("COMPASS_L2_ALERT_AFTER", "3"))
 ALERT_COOLDOWN_HRS = int(os.environ.get("COMPASS_L2_ALERT_COOLDOWN", "24"))
 
-REQUIRED_AGENTS = ["nautilus-v5", "nautilus-v6", "v7-souls-fusion", "kairos"]
+REQUIRED_AGENTS = ["nautilus-prime-001", "nautilus-v6", "v7-souls-fusion", "kairos"]
+# 2026-05-11 · alias fix · V5 in platform_agents registers as 'nautilus-prime-001' not 'nautilus-v5'
 
 
 def _read_json(path: Path, default):
