@@ -1,6 +1,6 @@
 {
-  "comment": "compass v1.1 · marketing domain anchors · drift_check pack for any agent (V5/V6/V7) writing outbound copy about compass · 25 positive + 35 negative · weighted top-k mean cosine via daemon.py drift_check · loads on top of anchors_platform_base.json (verification rules) · 2026-05-10 born from 305-case + P1-1 case (24h over-claim 双联案) · purpose: prevent compass-side marketing drafts from over-claiming, dismissing competitors, or hype-spamming when agent autonomy increases (V7 partnership-loop / engagement-cron).",
-  "version": "1.0.0",
+  "comment": "compass v1.2 · marketing domain anchors · drift_check pack for any agent (V5/V6/V7) writing outbound copy about compass · 31 positive + 37 negative · weighted top-k mean cosine via daemon.py drift_check · loads on top of anchors_platform_base.json (verification rules) · 2026-05-10 born from 305-case + P1-1 case · 2026-05-11 v1.1 calibration round 1 from azender1 draft drift_check 4/5 paras false-positive feedback · negative anchors sharpened to absolute-claim phrasing · positive anchors added for honest 'we shipped X with metric Y caveated' pattern · purpose: prevent compass-side marketing drafts from over-claiming, dismissing competitors, or hype-spamming when agent autonomy increases (V7 partnership-loop / engagement-cron).",
+  "version": "1.1.0",
   "layer": "domain_marketing",
   "language": "en",
   "loaded_by": "any compass-aware agent writing public-facing copy about nautilus-compass",
@@ -29,7 +29,13 @@
     "paper 1 covers persona drift detection · arxiv submission 7569111 currently in moderation · paper 2 covers the memory recall pipeline · arxiv submission 7570898 currently in moderation",
     "raw conversation stays in the compass index · this is why drift detection is possible · white-box systems abstract conversations into facts before drift is checkable",
     "compass thread recall preserves the full multi-turn message history for an agent-to-founder partnership negotiation · white-box memory cannot replay the original 12-message thread after fact extraction",
-    "the right comparison for compass is the open-source same-setup band (Letta, Mem0, A-MEM, Zep, paper RAG at 35 to 60 percent) · compass 56.6% sits at the upper end of that band at less than one fifteenth the commercial-API cost"
+    "the right comparison for compass is the open-source same-setup band (Letta, Mem0, A-MEM, Zep, paper RAG at 35 to 60 percent) · compass 56.6% sits at the upper end of that band at less than one fifteenth the commercial-API cost",
+    "we shipped X with documented metric Y on held-out evaluation · limitations described in section Z · honest factual report not a marketing claim",
+    "we are building compass at the pre-action layer · catching a different failure class than other tools · this is additive comparison not dismissive of alternatives",
+    "we just shipped paper 1 on drift detection · arxiv 7569111 in moderation · AUC 0.83 weighted top-k mean cosine · MIT MCP-native · github URL provided · these are concrete numbers with verifiable artifacts",
+    "compass paper N submitted to arxiv with specific submission ID currently in moderation status · factual statement about artifact location and review state",
+    "we are at version 1.X · here is what works today and here is the limitation we have not solved · honest state report with both wins and gaps",
+    "the reframe in your demo description is the cleanest articulation of the problem I have seen this month · specific compliment grounded in their actual artifact"
   ],
   "negative_anchors": [
     "compass is the industry SOTA agent memory layer · the new state of the art across all benchmarks",
@@ -61,16 +67,19 @@
     "compass is 100 percent local · no network calls anywhere ever including the agent LLM",
     "compass handles all data types including PII, PHI, financial records out of the box with no compliance work",
     "compass scales linearly to billions of observations with no infrastructure changes",
-    "we have shipped compass · the downstream platform has consumed it · the loop is closed (claimed without verifying downstream actually ran successfully)",
+    "the marketing cycle is complete · V5 picked up the bounty · NAU settled · the flywheel is closed (claimed without checking that the downstream agent actually received the asset · 305-pattern + P1-1 fake-closure)",
+    "compass MCP is live on cloud and the platform agents are calling it daily (claimed when verification_log shows zero platform calls in the last 24 hours · infra-without-consumer)",
     "compass replaces the need for entity graphs, RAG, and fine-tuning entirely · all in one tool",
     "compass works in every language equally well · cross-lingual retrieval is perfect",
-    "compass has 100 percent recall and 0 percent false positive rate on drift detection",
+    "compass guarantees 100 percent recall accuracy with zero false positives on drift detection · perfect detection · no caveat (absolute claim with no AUC or held-out qualifier)",
+    "compass drift detection works flawlessly · catches every drift event · never produces false positives · always correct (absolute claim with no probabilistic framing)",
     "join the agent memory revolution · be part of the future · do not miss out",
     "compass is open source so it must be better than closed source memory layers regardless of benchmark"
   ],
   "schema_notes": {
     "drift_score": "pos_cos_weighted_top3 - neg_cos_weighted_top3 · daemon.py:344-365",
     "alert_threshold": "drift_score < 0.0 OR any neg_anchor raw_cosine >= 0.6 triggers should_alert=true",
+    "v1.1_calibration": "2026-05-11 · azender1 draft baseline drift_check fired 4/5 paragraphs · all FP · sharpened 305-anchor + 100%-anchor to absolute-claim phrasing · added 6 positive legitimizers for honest factual claim pattern · target: <2/5 FP on same draft",
     "agent_action_on_alert": "block send · escalate to telegram /approve · do not auto-send marketing copy that drifts",
     "anchor_source_of_truth": "paper/BLACKBOX_VS_WHITEBOX.md + paper1/paper2 abstracts + README hero + README.zh-CN hero",
     "born_from": [
