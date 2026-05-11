@@ -129,6 +129,95 @@ def tool_recall(args: dict) -> dict:
     return _ok(text)
 
 
+def tool_thread_recall(args: dict) -> dict:
+    """v1.1 · L3 dogfood · multi-turn thread recall by thread_id frontmatter tag.
+
+    Use case: V7 partnership-loop / engagement-cron — agent talks with a
+    founder/commenter over 7-14 days across many messages. White-box memory
+    abstracts these into facts and loses raw thread. Compass keeps raw
+    session_*.md per message tagged with `thread_id` in frontmatter; this
+    tool returns the chronological message stream so the next reply call
+    has full context.
+
+    Inputs: thread_id (required), project (optional), since (optional ISO),
+            limit (default 50), include_body (default true).
+
+    Returns: ordered list of {ts, thread_role, name, description, body, path}
+    sorted by file mtime ASC. Empty list if no matching session_*.md.
+    """
+    thread_id = (args.get("thread_id") or "").strip()
+    if not thread_id:
+        return _err("thread_id required")
+    project = resolve_project(args.get("project"))
+    if not project:
+        return _err("no project memory found · set NAUTILUS_COMPASS_PROJECT or pass project=")
+    limit = int(args.get("limit") or 50)
+    since_iso = (args.get("since") or "").strip()
+    include_body = args.get("include_body", True)
+
+    mem_dir = PROJECTS_DIR / project / "memory"
+    if not mem_dir.is_dir():
+        return _err(f"memory dir not found: {mem_dir}")
+
+    since_ts = 0.0
+    if since_iso:
+        try:
+            from datetime import datetime
+            since_ts = datetime.fromisoformat(since_iso.replace("Z", "+00:00")).timestamp()
+        except Exception:
+            return _err(f"invalid since ISO timestamp: {since_iso}")
+
+    hits = []
+    for f in mem_dir.glob("session_*.md"):
+        try:
+            text = f.read_text(encoding="utf-8", errors="ignore")
+        except Exception:
+            continue
+        fm = {}
+        body = text
+        if text.startswith("---"):
+            end = text.find("\n---", 4)
+            if end > 0:
+                for line in text[4:end].split("\n"):
+                    if ":" in line:
+                        k, _, v = line.partition(":")
+                        fm[k.strip().lower()] = v.strip()
+                body = text[end + 4:].strip()
+        if fm.get("thread_id") != thread_id:
+            continue
+        mtime = f.stat().st_mtime
+        if mtime < since_ts:
+            continue
+        hits.append({
+            "ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(mtime)),
+            "ts_epoch": mtime,
+            "thread_role": fm.get("thread_role", "self_note"),
+            "name": fm.get("name", ""),
+            "description": fm.get("description", "")[:200],
+            "body": body[:2000] if include_body else "",
+            "path": f.name,
+        })
+
+    hits.sort(key=lambda x: x["ts_epoch"])
+    hits = hits[:limit]
+    if not hits:
+        return _ok(f"thread_recall · thread_id={thread_id!r} · 0 messages (no session_*.md tagged with this thread_id in {mem_dir})")
+
+    lines = [
+        f"thread_recall · thread_id={thread_id!r} · project={project} · {len(hits)} messages chronological"
+    ]
+    for h in hits:
+        lines.append(
+            f"\n[{h['ts']}] {h['thread_role']} · {h['name']}\n"
+            f"  ({h['path']})\n"
+            f"  desc: {h['description']}"
+        )
+        if include_body and h["body"]:
+            indented = "\n".join("  | " + ln for ln in h["body"].split("\n"))
+            lines.append(indented)
+    return _ok("\n".join(lines))
+
+
 def tool_drift_check(args: dict) -> dict:
     prompt = (args.get("prompt") or "").strip()
     if not prompt:
@@ -202,6 +291,11 @@ def tool_ingest_obs(args: dict) -> dict:
     project = resolve_project(args.get("project"))
     if not project:
         project = "C--Users-chunx"
+    # v1.1 · L3 dogfood · optional thread tagging for thread_recall
+    thread_id = (args.get("thread_id") or "").strip()
+    thread_role = (args.get("thread_role") or "").strip()
+    if thread_role and thread_role not in ("outbound", "inbound", "self_note"):
+        thread_role = "self_note"
 
     # Format as v0.8 session_*.md frontmatter
     from datetime import datetime
@@ -214,6 +308,9 @@ def tool_ingest_obs(args: dict) -> dict:
 
     # Build markdown
     signals_yaml = "[]" if not drift_signals else "\n  - " + "\n  - ".join(f'"{s}"' for s in drift_signals)
+    thread_lines = ""
+    if thread_id:
+        thread_lines = f"\nthread_id: {thread_id}\nthread_role: {thread_role or 'self_note'}"
     md = f"""---
 name: {name}
 description: {description[:200]}
@@ -223,7 +320,7 @@ drift: {drift}
 drift_signals: {signals_yaml}
 agent_type: {agent_type}
 user_id: {user_id}
-ingested_via: mcp
+ingested_via: mcp{thread_lines}
 ---
 
 # {name}
@@ -235,7 +332,8 @@ ingested_via: mcp
 {body}
 """
     out_file.write_text(md, encoding="utf-8")
-    return _ok(f"obs written · {out_file.name} · agent_type={agent_type} · drift={drift}")
+    suffix = f" · thread={thread_id}" if thread_id else ""
+    return _ok(f"obs written · {out_file.name} · agent_type={agent_type} · drift={drift}{suffix}")
 
 
 def tool_drift_history(args: dict) -> dict:
@@ -958,6 +1056,8 @@ TOOLS = {
                     "drift_signals": {"type": "array", "items": {"type": "string"}, "default": [], "description": "Concrete evidence if drift!=green"},
                     "agent_type": {"type": "string", "description": "Which agent ingesting (claude-code/openclaw/hermes/cursor/codex/custom). Defaults to env COMPASS_AGENT_TYPE."},
                     "project": {"type": "string", "description": "Target project (defaults to most-recent)"},
+                    "thread_id": {"type": "string", "description": "v1.1 · Optional thread identifier for multi-turn conversations (e.g. 'thread_devto_azender1_safeagent'). Enables thread_recall."},
+                    "thread_role": {"type": "string", "enum": ["outbound","inbound","self_note"], "description": "v1.1 · Role of this message in the thread. Required if thread_id is set."},
                 },
                 "required": ["name"],
             },
@@ -1021,6 +1121,24 @@ TOOLS = {
                     "top_k": {"type": "integer", "default": 5, "description": "Number of hits to return"},
                 },
                 "required": ["query"],
+            },
+        },
+    },
+    "thread_recall": {
+        "fn": tool_thread_recall,
+        "schema": {
+            "name": "thread_recall",
+            "description": "v1.1 · L3 dogfood · Multi-turn thread recall by thread_id frontmatter tag. Returns the chronological message stream for a long-running back-and-forth (e.g. agent ↔ commenter / founder partnership negotiation, multi-day support thread). Whereas `recall` does semantic top-k across all memory, `thread_recall` returns the full ordered sequence for one thread_id. Pair with `ingest_obs(thread_id=..., thread_role='outbound'|'inbound'|'self_note')` to populate the thread. Compass keeps raw bodies — white-box memory loses the thread when it abstracts into facts.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "thread_id": {"type": "string", "description": "Unique thread identifier (e.g. 'thread_devto_azender1_safeagent')"},
+                    "project": {"type": "string", "description": "Project memory dir name. Defaults to most-recently-modified."},
+                    "since": {"type": "string", "description": "Optional ISO 8601 timestamp · only return messages after this time"},
+                    "limit": {"type": "integer", "default": 50, "description": "Max number of messages to return (default 50)"},
+                    "include_body": {"type": "boolean", "default": True, "description": "Whether to include the raw message body (first 2000 chars). False = headers-only summary."},
+                },
+                "required": ["thread_id"],
             },
         },
     },
@@ -1305,6 +1423,7 @@ def _read_session_resource(uri: str) -> dict:
 
 TOOL_SCOPE_MAP = {
     "recall": "tools.read",
+    "thread_recall": "tools.read",
     "drift_history": "tools.read",
     "session_search": "tools.read",
     "profile": "tools.read",
