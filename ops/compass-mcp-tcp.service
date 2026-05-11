@@ -12,7 +12,7 @@ Environment=PYTHONUNBUFFERED=1
 # Tokens are loaded from /etc/compass/tokens.env via --token-file flag
 ExecStart=/usr/bin/python3 /home/ubuntu/nautilus-compass/mcp_server.py \
     --transport tcp \
-    --host 0.0.0.0 \
+    --host 127.0.0.1 \
     --port 9877 \
     --token-file /etc/compass/tokens.json
 Restart=on-failure
