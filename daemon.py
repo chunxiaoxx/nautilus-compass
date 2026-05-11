@@ -286,6 +286,8 @@ def handle_request(req: dict) -> dict:
     query = (req.get("query") or "").strip()[:2000]
     project = req.get("project", "")
     top_k = int(req.get("top_k") or TOP_K)
+    # v1.3 · agent_type for per-agent L2 evidence dashboard (#104)
+    agent_type = (req.get("agent_type") or "unknown")[:60]
     if not query:
         return {"ok": False, "error": "empty query"}
 
@@ -385,6 +387,7 @@ def handle_request(req: dict) -> dict:
             entry = {
                 "ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
                 "session_id": os.environ.get("CLAUDE_SESSION_ID", "unknown")[:60],
+                "agent_type": agent_type,
                 "project": project[:80],
                 "action": action,
                 "query": query[:200],

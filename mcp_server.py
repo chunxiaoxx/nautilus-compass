@@ -52,7 +52,14 @@ def daemon_call(req: dict, timeout: float = DAEMON_TIMEOUT) -> dict:
     """Send JSON request to BGE daemon · return parsed reply.
 
     Raises socket.error / json.JSONDecodeError on transport failure.
+
+    v1.3 · forwards COMPASS_AGENT_TYPE env to daemon for per-agent L2
+    evidence in verification_log.jsonl (#104).
     """
+    if "agent_type" not in req:
+        env_agent = os.environ.get("COMPASS_AGENT_TYPE")
+        if env_agent:
+            req = {**req, "agent_type": env_agent}
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.settimeout(timeout)
     try:
@@ -104,8 +111,13 @@ def tool_recall(args: dict) -> dict:
     if not project:
         return _err("no project memory found · set NAUTILUS_COMPASS_PROJECT or pass project=")
     top_k = int(args.get("top_k") or 5)
+    # v1.3 #104 · forward client-supplied agent_type to daemon log
+    agent_type = args.get("agent_type") or os.environ.get("COMPASS_AGENT_TYPE")
     try:
-        res = daemon_call({"action": "recall", "query": query, "project": project, "top_k": top_k})
+        req = {"action": "recall", "query": query, "project": project, "top_k": top_k}
+        if agent_type:
+            req["agent_type"] = agent_type
+        res = daemon_call(req)
     except Exception as e:
         return _err(f"daemon unreachable: {e} · run daemon_start.sh")
     if not res.get("ok"):
@@ -238,10 +250,16 @@ def tool_drift_check(args: dict) -> dict:
     except Exception:
         pass
 
+    # v1.3 #104 · forward client-supplied agent_type to daemon log
+    agent_type = args.get("agent_type") or os.environ.get("COMPASS_AGENT_TYPE")
     try:
-        res = daemon_call(
-            {"action": "drift", "query": prompt, "project": project, "top_k": 1}
-        )
+        req = {"action": "drift", "query": prompt, "project": project, "top_k": 1}
+        if agent_type:
+            req["agent_type"] = agent_type
+        anchors_path = args.get("anchors_path")
+        if anchors_path:
+            req["anchors_path"] = anchors_path
+        res = daemon_call(req)
     except Exception as e:
         # Daemon down · still surface consumption audit if any (don't waste it)
         if consumption_warn:
