@@ -1,0 +1,29 @@
+[Unit]
+Description=Nautilus Compass · MCP TCP server (dogfood L2 endpoint for platform agents)
+After=network-online.target compass.service
+Wants=network-online.target
+Requires=compass.service
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/nautilus-compass
+Environment=PYTHONUNBUFFERED=1
+# Tokens are loaded from /etc/compass/tokens.env via --token-file flag
+ExecStart=/usr/bin/python3 /home/ubuntu/nautilus-compass/mcp_server.py \
+    --transport tcp \
+    --host 0.0.0.0 \
+    --port 9877 \
+    --token-file /etc/compass/tokens.json
+Restart=on-failure
+RestartSec=10
+StandardOutput=append:/home/ubuntu/nautilus-compass/.cache/mcp-tcp.log
+StandardError=append:/home/ubuntu/nautilus-compass/.cache/mcp-tcp.log
+
+# Resource limits to prevent runaway
+MemoryHigh=512M
+MemoryMax=1G
+TasksMax=128
+
+[Install]
+WantedBy=multi-user.target

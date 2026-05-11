@@ -32,6 +32,9 @@ paper/build/
 .env.local
 .env.production
 .env.*.local
+_compass_tokens_handoff.md
+_tokens.env
+tokens.env
 
 # user data buffer
 .compass/
