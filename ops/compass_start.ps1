@@ -123,3 +123,19 @@ function cstart {
 
 # Optional alias if `cstart` is too generic for you
 Set-Alias -Name ccc -Value cstart -Description "Compass Cloud Claude shortcut"
+
+# ────────────────────────────────────────────────────────────────────
+# Top-level shortcuts · just type the project name to launch its dialog
+#   nautilus  → C:\Users\chunx\Projects\nautilus-core\phase3
+#   venture   → C:\Users\chunx\venture_daily_report      (创投日报)
+#   zen       → C:\Users\chunx\quantum-buddha-project    (禅心)
+#   chunx     → C:\Users\chunx                           (compass + HR)
+# Each one auto-ensures the SSH tunnel to cloud:9877 then launches
+# `claude --dangerously-skip-permissions`. Type /resume after launch.
+# ────────────────────────────────────────────────────────────────────
+
+function nautilus { cstart nautilus }
+function venture  { cstart vdr      }
+function zen      { cstart zen      }
+function chunx    { cstart chunx    }
+
