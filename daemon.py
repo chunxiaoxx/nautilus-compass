@@ -281,6 +281,28 @@ def get_anchors(anchors_path: Path | None = None):
         return None
 
 
+def _list_user_project_dirs() -> list[tuple[str, Path]]:
+    """v1.4 · scope=user · enumerate all (project_name, memory_dir) under ~/.claude/projects/
+
+    Skips:
+      · entries starting with '_' (e.g. _platform_queue · platform internals)
+      · directories without a memory/ subdir
+    """
+    base = Path.home() / ".claude" / "projects"
+    if not base.exists():
+        return []
+    out = []
+    for d in sorted(base.iterdir()):
+        if not d.is_dir():
+            continue
+        if d.name.startswith("_"):
+            continue
+        mem = d / "memory"
+        if mem.is_dir():
+            out.append((d.name, mem))
+    return out
+
+
 def handle_request(req: dict) -> dict:
     action = req.get("action", "both")
     query = (req.get("query") or "").strip()[:2000]
@@ -288,16 +310,26 @@ def handle_request(req: dict) -> dict:
     top_k = int(req.get("top_k") or TOP_K)
     # v1.3 · agent_type for per-agent L2 evidence dashboard (#104)
     agent_type = (req.get("agent_type") or "unknown")[:60]
+    # v1.4 · S3 cross-project recall · scope=project (default) or scope=user
+    scope = (req.get("scope") or "project").strip().lower()
+    if scope not in ("project", "user"):
+        return {"ok": False, "error": f"scope must be 'project' or 'user', got {scope!r}"}
     if not query:
         return {"ok": False, "error": "empty query"}
 
-    # 找 mem_dir
-    if project:
+    # 找 mem_dir(s) · scope-aware
+    mem_dirs: list[tuple[str, Path]] = []
+    if scope == "project":
+        if not project:
+            return {"ok": False, "error": "project required when scope=project"}
         mem_dir = Path.home() / ".claude" / "projects" / project / "memory"
         if not mem_dir.exists():
             return {"ok": False, "error": f"no memory dir for {project}"}
-    else:
-        return {"ok": False, "error": "project required"}
+        mem_dirs = [(project, mem_dir)]
+    else:  # scope == "user"
+        mem_dirs = _list_user_project_dirs()
+        if not mem_dirs:
+            return {"ok": False, "error": "no project memory dirs found under ~/.claude/projects/"}
 
     with _state["lock"]:
         embedder = get_embedder()
@@ -307,12 +339,25 @@ def handle_request(req: dict) -> dict:
         except Exception as e:
             return {"ok": False, "error": f"query embed fail: {e}"}
 
-        result = {"ok": True, "project": project, "query": query[:80]}
+        result = {
+            "ok": True,
+            "project": project or (mem_dirs[0][0] if mem_dirs else ""),
+            "scope": scope,
+            "projects_scanned": [p for p, _ in mem_dirs],
+            "query": query[:80],
+        }
 
         if action in ("recall", "both"):
-            entries = get_memory_entries(mem_dir)
+            # Union entries across all mem_dirs · tag each with its origin project
+            all_entries: list[dict] = []
+            for proj_name, mdir in mem_dirs:
+                for e in get_memory_entries(mdir):
+                    # shallow-tag origin (don't mutate cache entries)
+                    if "project" not in e:
+                        e["project"] = proj_name
+                    all_entries.append(e)
             scored = []
-            for e in entries:
+            for e in all_entries:
                 if not e.get("embedding"): continue
                 s = cosine(q_emb, e["embedding"])
                 if s >= COSINE_MIN:
@@ -321,18 +366,21 @@ def handle_request(req: dict) -> dict:
             top = scored[:top_k]
             result["recall"] = [
                 {"score": round(s, 3), "path": e["path"],
+                 "project": e.get("project", ""),
                  "age_str": e["age_str"], "age_seconds": e["age_seconds"],
                  "description": e["description"]}
                 for s, e in top
             ]
             # fresh memories not in top
+            top_set = {(t[1]["path"], t[1].get("project", "")) for t in top}
             fresh_extra = [
-                e for e in entries
-                if e["age_seconds"] < 86400 and e not in [t[1] for t in top]
+                e for e in all_entries
+                if e["age_seconds"] < 86400
+                and (e["path"], e.get("project", "")) not in top_set
             ]
             result["fresh_extra"] = [
-                {"path": e["path"], "age_str": e["age_str"],
-                 "description": e["description"]}
+                {"path": e["path"], "project": e.get("project", ""),
+                 "age_str": e["age_str"], "description": e["description"]}
                 for e in sorted(fresh_extra, key=lambda x: x["age_seconds"])
             ]
 
