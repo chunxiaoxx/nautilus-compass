@@ -28,7 +28,7 @@ from typing import Any
 
 PROTOCOL_VERSION = "2024-11-05"
 SERVER_NAME = "nautilus-compass"
-SERVER_VERSION = "1.2.0"
+SERVER_VERSION = "1.4.0"
 DAEMON_HOST = "127.0.0.1"
 DAEMON_PORT = 9876
 DAEMON_TIMEOUT = 30.0
@@ -107,14 +107,20 @@ def tool_recall(args: dict) -> dict:
     query = (args.get("query") or "").strip()
     if not query:
         return _err("query required")
+    # v1.4 · scope=project (default · current behavior) or scope=user (cross-project union for same user)
+    scope = (args.get("scope") or "project").strip().lower()
+    if scope not in ("project", "user"):
+        return _err(f"scope must be 'project' or 'user' · got {scope!r}")
     project = resolve_project(args.get("project"))
-    if not project:
+    if not project and scope == "project":
         return _err("no project memory found · set NAUTILUS_COMPASS_PROJECT or pass project=")
     top_k = int(args.get("top_k") or 5)
     # v1.3 #104 · forward client-supplied agent_type to daemon log
     agent_type = args.get("agent_type") or os.environ.get("COMPASS_AGENT_TYPE")
     try:
-        req = {"action": "recall", "query": query, "project": project, "top_k": top_k}
+        req = {"action": "recall", "query": query, "top_k": top_k, "scope": scope}
+        if project:
+            req["project"] = project
         if agent_type:
             req["agent_type"] = agent_type
         res = daemon_call(req)
@@ -123,13 +129,15 @@ def tool_recall(args: dict) -> dict:
     if not res.get("ok"):
         return _err(res.get("error", "daemon error"))
     hits = res.get("recall", [])
+    scope_label = f"scope={scope}" + (f", project={project}" if scope == "project" else " (all projects)")
     if not hits:
-        text = f"No memories matched for query: {query!r} (project={project})"
+        text = f"No memories matched for query: {query!r} ({scope_label})"
     else:
-        lines = [f"Recall · query={query!r} · project={project} · {len(hits)} hits"]
+        lines = [f"Recall · query={query!r} · {scope_label} · {len(hits)} hits"]
         for h in hits:
+            origin = f" [{h['project']}]" if scope == "user" and h.get("project") else ""
             lines.append(
-                f"  · score={h['score']:.3f} · {h['age_str']} · {h['path']}\n"
+                f"  · score={h['score']:.3f} · {h['age_str']}{origin} · {h['path']}\n"
                 f"    {h.get('description', '')[:140]}"
             )
         fresh = res.get("fresh_extra") or []

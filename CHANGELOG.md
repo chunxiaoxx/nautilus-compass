@@ -1,5 +1,75 @@
 # Changelog
 
+## [1.4.0] · 2026-05-11 — "cross-project recall · L5 dispatch protocol · L2 gate alarm"
+
+Same day as v1.3. Three additions that don't depend on platform-side
+wiring (so they ship now while platform L2 evidence gate is still empty):
+
+### S3 · Cross-project recall (`scope` parameter)
+
+`compass.recall()` now accepts `scope` argument:
+
+- `scope="project"` (default) · current behavior · single project memory
+- `scope="user"` · union across all projects under `~/.claude/projects/`
+  (excluding `_*` platform internals) · same user · cross-language ok
+  (BGE-m3 multilingual)
+
+Wired in `daemon.py` via new `_list_user_project_dirs()` helper and a
+union-then-score loop. `mcp_server.py` forwards the param. Per-result
+`project` field tagged so callers see which project each hit came from.
+
+Smoke verified on cloud daemon (2 projects · `C--Users-chunx` + `default`):
+
+- backward compat: no scope arg → defaults to `project` (existing behavior)
+- scope=user: scans both, returns 5 hits with origin tags
+- invalid scope: rejected with helpful error
+- warm-cache perf: 1.07x avg vs scope=project (well below 30% target)
+- cold-cache first run: 2.16x · acceptable since BGE embed dominates
+
+Use case white-box can't do: lessons from nautilus debugging (305-case,
+P1-1 fake-closure) auto-surface when writing in chunx or zenmind project.
+Entity-graph systems can't union entities across unrelated codebases;
+black-box embedding union just works.
+
+### specs/ · Dispatch protocol for L5 dogfood
+
+Four new docs in `specs/` (committed but no GitHub issue yet · waiting
+for L2 evidence gate to be hit):
+
+- `DISPATCH_PROTOCOL.md` · how platform agents pick up compass upgrade
+  specs · 5-condition review gate · drift_check + proof-of-recall
+  required in every PR body
+- `SPEC-S1-anchor-learner.md` · weekly cron auto-tune anchors_*.json
+  based on FP/FN signal · suggested owner V5 · 3 days · NOT dispatched
+  yet
+- `SPEC-S2-proof-of-recall.md` · protocol-level kill of P1-1
+  fake-closure mode · recall_token nonce + cited_snippets validation ·
+  high-risk so self-implement · 5 days
+- `SPEC-S3-cross-project-recall.md` · implemented in this release
+
+### ops/ · L2 evidence gate Telegram alarm
+
+`ops/monitor_l2_evidence_gate.{sh,py}` cron (every 6h) reads
+`/var/log/compass-l2-metrics.json` (from `compass_l2_metrics.py`),
+tracks per-agent consecutive-miss streak, alerts Telegram if any of
+nautilus-v5/v6/v7-souls-fusion/kairos misses 3 consecutive 6h windows
+(= 18h continuous miss). 24h cooldown per agent to avoid spam.
+
+Reason: v1.0 → v1.3 has been shipping infra fast, but verification_log
+shows zero platform-side calls (V5 = 0, V6 = 0, V7 = 0, Kairos = 0 in
+the last 7 days). This is the same fake-closure pattern as 305-case
+and P1-1. The alarm now catches it in 18h instead of via human review.
+
+Hard gate: SPEC-S1 will NOT be dispatched to V5 until V5 hits ≥10
+calls/day for 3 consecutive days. Documented in
+`specs/DISPATCH_PROTOCOL.md` §0.
+
+### Tool surface
+
+15 → 15 (no new MCP tool · just new `scope` arg on `recall`).
+
+---
+
 ## [1.2.0] · 2026-05-11 — "dogfood ladder · thread recall · cloud MCP TCP"
 
 Two days after `v1.1.0`. Closes the "infra-without-consumer" gap: v1.0
