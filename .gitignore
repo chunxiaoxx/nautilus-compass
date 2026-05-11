@@ -35,6 +35,8 @@ paper/build/
 _compass_tokens_handoff.md
 _tokens.env
 tokens.env
+_max_quimby_draft.md
+_test_*.py
 
 # user data buffer
 .compass/

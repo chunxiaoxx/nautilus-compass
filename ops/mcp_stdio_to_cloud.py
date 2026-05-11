@@ -64,7 +64,11 @@ def _open_cloud() -> socket.socket:
 
 
 def _inject_auth(line: str) -> str:
-    """Add authToken to params of any JSON-RPC request from stdin."""
+    """Add authToken + agent_type to outgoing JSON-RPC requests.
+
+    v1.3 (#104) · also injects COMPASS_AGENT_TYPE into tools/call arguments
+    so the cloud daemon can log per-agent verification entries.
+    """
     try:
         msg = json.loads(line)
     except json.JSONDecodeError:
@@ -74,6 +78,13 @@ def _inject_auth(line: str) -> str:
         if not isinstance(params, dict):
             params = {}
         params["authToken"] = TOKEN
+        # Inject agent_type into tool call arguments
+        if msg.get("method") == "tools/call":
+            args = params.get("arguments")
+            if not isinstance(args, dict):
+                args = {}
+            args.setdefault("agent_type", AGENT_TYPE)
+            params["arguments"] = args
         msg["params"] = params
     return json.dumps(msg)
 
