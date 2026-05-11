@@ -1,5 +1,63 @@
 # Changelog
 
+## [1.5.0] · 2026-05-11 — "proof-of-recall · protocol-level fake-closure killer"
+
+Same day as v1.4. Ships S2 from `specs/SPEC-S2-proof-of-recall.md`.
+
+### S2 · Proof-of-recall protocol
+
+`recall` now returns a `recall_token` (16-hex nonce · 30 min TTL · 1000-entry
+LRU). Subsequent `ingest_obs` can pass `recall_token` + `cited_snippets`:
+
+- validation: agent_type match · token live · ≥1 cited string overlaps a top-3
+  entry (path basename OR ≥20-char description overlap)
+- result written to session_*.md frontmatter as
+  `proof_of_recall: pass | fail | not_attempted`
+- failure modes (advisory · never blocks):
+  - `no_token_provided` · `token_not_found_or_expired` · `agent_type_mismatch`
+  - `empty_cited` · `no_snippet_overlap` ← the smoking gun for P1-1 pattern
+- backward compatible: omit both args → `not_attempted` · old clients no break
+
+### Why this matters
+
+Kills the P1-1 / 305 fake-closure mode at protocol level:
+
+```
+before: recall → agent ignores → ingest "done" → cron catches hours later
+after:  recall → agent must quote top-3 → ingest validates → frontmatter records
+        → dashboard groups by proof_of_recall → fake_closure has zero-latency signal
+```
+
+### Files
+
+- `mcp_server.py` · in-memory token store · `_mint_recall_token` + `_validate_recall_proof`
+  · hooked into `tool_recall` (mint on hit) and `tool_ingest_obs` (validate)
+  · SERVER_VERSION 1.4.0 → 1.5.0
+- `tests/test_proof_of_recall.py` · 10 unit tests (token TTL, LRU, validation paths)
+- `tests/test_proof_of_recall_e2e.py` · 5 E2E tests (recall → ingest round-trip)
+- `docs/PROOF_OF_RECALL.md` · protocol spec · migration timeline (v1.5 advisory →
+  v1.6 conditional reject → v2.0 hard enforce) · self-dogfood note
+
+### Tests
+
+```
+tests/test_proof_of_recall.py:     10/10 PASS
+tests/test_proof_of_recall_e2e.py:  5/5  PASS
+```
+
+### Tool surface
+
+ingest_obs schema gains 2 optional args (`recall_token`, `cited_snippets`).
+Other 14 tools unchanged.
+
+### Migration
+
+v1.5 is advisory only · no agent code change required · all existing flows work.
+Clients that opt in get a fake-closure receipt in the session frontmatter.
+v1.6 will start rejecting agents with > 20% fail rate over 24h (TBD).
+
+---
+
 ## [1.4.0] · 2026-05-11 — "cross-project recall · L5 dispatch protocol · L2 gate alarm"
 
 Same day as v1.3. Three additions that don't depend on platform-side
