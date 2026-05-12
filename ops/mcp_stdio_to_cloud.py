@@ -48,6 +48,27 @@ HOST = os.environ.get("COMPASS_CLOUD_HOST", "127.0.0.1")
 PORT = int(os.environ.get("COMPASS_CLOUD_PORT", "9877"))
 TOKEN = os.environ.get("COMPASS_CLOUD_TOKEN")
 AGENT_TYPE = os.environ.get("COMPASS_AGENT_TYPE", "claude-code-cloud-proxy")
+# Debug · set COMPASS_BRIDGE_LOG=/path/to/file to trace every line in/out
+LOG_PATH = os.environ.get("COMPASS_BRIDGE_LOG", "")
+_log_fh = None
+if LOG_PATH:
+    try:
+        _log_fh = open(LOG_PATH, "a", encoding="utf-8", buffering=1)
+        _log_fh.write(f"\n=== bridge start · pid={os.getpid()} · agent={AGENT_TYPE} ===\n")
+    except Exception:
+        _log_fh = None
+
+
+def _trace(tag: str, data) -> None:
+    if not _log_fh:
+        return
+    try:
+        import time as _t
+        ts = _t.strftime("%H:%M:%S")
+        s = data if isinstance(data, str) else data.decode("utf-8", errors="replace")
+        _log_fh.write(f"{ts} {tag}: {s[:500]}\n")
+    except Exception:
+        pass
 
 if not TOKEN:
     sys.stderr.write(
@@ -60,6 +81,10 @@ def _open_cloud() -> socket.socket:
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.settimeout(10.0)
     s.connect((HOST, PORT))
+    # Connect done · switch to blocking mode for the live session.
+    # If we leave 10s timeout, recv times out after server idles 10s
+    # (which it always does between requests) · bridge exits · MCP fails.
+    s.settimeout(None)
     return s
 
 
@@ -122,30 +147,39 @@ def _try_local_stub(line: str):
     return (json.dumps(resp) + "\n").encode("utf-8")
 
 
-def _pump_in_to_cloud(cloud: socket.socket) -> None:
-    """stdin → (inject authToken | local stub) → cloud TCP / stdout.
+_stdout_lock = threading.Lock()
 
-    For methods in _LOCAL_STUB_METHODS we answer locally and never
-    forward to cloud · prevents -32601 fatals on prompts/list etc.
-    """
-    out_fh = sys.stdout.buffer
+
+def _write_stdout(payload: bytes) -> None:
+    """Single point for writing to stdout · serialized so stub responses and
+    cloud forwards never interleave bytes mid-frame."""
+    with _stdout_lock:
+        sys.stdout.buffer.write(payload)
+        sys.stdout.buffer.flush()
+
+
+def _pump_in_to_cloud(cloud: socket.socket) -> None:
+    """stdin → (inject authToken | local stub) → cloud TCP / stdout."""
     for raw in sys.stdin:
         if not raw.strip():
             continue
         line = raw.rstrip("\n")
+        _trace("STDIN", line)
         stub = _try_local_stub(line)
         if stub is not None:
             if stub:
-                out_fh.write(stub)
-                out_fh.flush()
+                _trace("STUB", stub)
+                _write_stdout(stub)
             continue
         out = _inject_auth(line)
         try:
             cloud.sendall((out + "\n").encode("utf-8"))
+            _trace("→CLOUD", out)
         except Exception as e:
             sys.stderr.write(f"send fail: {e!r}\n")
+            _trace("ERR", f"send fail: {e!r}")
             return
-    # stdin closed · half-close cloud send
+    _trace("STDIN", "<eof>")
     try:
         cloud.shutdown(socket.SHUT_WR)
     except Exception:
@@ -154,23 +188,24 @@ def _pump_in_to_cloud(cloud: socket.socket) -> None:
 
 def _pump_cloud_to_out(cloud: socket.socket) -> None:
     """cloud TCP → stdout (line-buffered, raw bytes · bypass platform encoding)."""
-    out = sys.stdout.buffer  # write bytes directly · Windows GBK proof
     buf = b""
     while True:
         try:
             chunk = cloud.recv(65536)
         except Exception as e:
             sys.stderr.write(f"recv fail: {e!r}\n")
+            _trace("ERR", f"recv fail: {e!r}")
             return
         if not chunk:
+            _trace("CLOUD", "<eof>")
             return
         buf += chunk
         while b"\n" in buf:
             line, buf = buf.split(b"\n", 1)
             if not line.strip():
                 continue
-            out.write(line + b"\n")
-            out.flush()
+            _trace("CLOUD→", line)
+            _write_stdout(line + b"\n")
 
 
 def main() -> int:
