@@ -117,11 +117,11 @@ function Start-LocalCompassDaemon {
 
 function Stop-LocalCompassDaemon {
     if (Test-Path $script:PidFile) {
-        $pid = Get-Content $script:PidFile -ErrorAction SilentlyContinue
-        if ($pid) {
-            Stop-Process -Id $pid -Force -ErrorAction SilentlyContinue
+        $daemonPid = Get-Content $script:PidFile -ErrorAction SilentlyContinue
+        if ($daemonPid) {
+            Stop-Process -Id $daemonPid -Force -ErrorAction SilentlyContinue
             Remove-Item $script:PidFile -ErrorAction SilentlyContinue
-            Write-Host "[compass-local] stopped pid=$pid" -ForegroundColor Yellow
+            Write-Host "[compass-local] stopped pid=$daemonPid" -ForegroundColor Yellow
             return
         }
     }
@@ -131,8 +131,8 @@ function Stop-LocalCompassDaemon {
 
 function Get-LocalCompassDaemonStatus {
     if (Test-LocalDaemonAlive) {
-        $pid = if (Test-Path $script:PidFile) { Get-Content $script:PidFile -ErrorAction SilentlyContinue } else { "?" }
-        Write-Host "[compass-local] UP · pid=$pid · port=$($script:DaemonPort)" -ForegroundColor Green
+        $daemonPid = if (Test-Path $script:PidFile) { Get-Content $script:PidFile -ErrorAction SilentlyContinue } else { "?" }
+        Write-Host "[compass-local] UP · pid=$daemonPid · port=$($script:DaemonPort)" -ForegroundColor Green
         if (Test-Path $script:LogFile) {
             Write-Host "[compass-local] recent log:" -ForegroundColor DarkGray
             Get-Content $script:LogFile -Tail 5 | ForEach-Object { Write-Host "  $_" -ForegroundColor DarkGray }
