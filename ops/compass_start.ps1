@@ -25,13 +25,13 @@
 #       the prior session (this script does not auto-/resume).
 
 $script:CompassProjectPaths = @{
-    "nautilus"   = "C:\Users\chunx\Projects\nautilus-core\phase3"
+    "nautilus"   = "C:\Users\chunx\Projects\nautilus-core"
     "vdr"        = "C:\Users\chunx\venture_daily_report"
     "venture"    = "C:\Users\chunx\venture_daily_report"
     "zen"        = "C:\Users\chunx\quantum-buddha-project"
     "zenmind"    = "C:\Users\chunx\quantum-buddha-project"
     "chunx"      = "C:\Users\chunx"
-    "compass"    = "C:\Users\chunx\.claude\plugins\nautilus-compass"
+    "compass"    = "C:\Users\chunx"
 }
 
 $script:CompassCloudPort = 9877
@@ -58,7 +58,16 @@ function Start-CompassTunnel {
         return $true
     }
     Write-Host "[compass] starting SSH tunnel to $($script:CompassCloudHost):9877..." -ForegroundColor Cyan
-    $args = @("-fN", "-L", "$($script:CompassCloudPort):127.0.0.1:9877", $script:CompassCloudHost)
+    # keepalive · prevents NAT/firewall from killing idle tunnel
+    # ExitOnForwardFailure · die fast if port already bound rather than silent zombie
+    $args = @(
+        "-fN",
+        "-o", "ServerAliveInterval=30",
+        "-o", "ServerAliveCountMax=3",
+        "-o", "ExitOnForwardFailure=yes",
+        "-L", "$($script:CompassCloudPort):127.0.0.1:9877",
+        $script:CompassCloudHost
+    )
     Start-Process -WindowStyle Hidden -FilePath "ssh" -ArgumentList $args -Wait
     Start-Sleep -Milliseconds 800
     if (Test-CompassTunnel) {
@@ -67,6 +76,16 @@ function Start-CompassTunnel {
     }
     Write-Warning "[compass] tunnel did not come up · Claude Code will still launch but nautilus-compass-cloud MCP will fail to connect"
     return $false
+}
+
+function ctunnel {
+    # mid-session tunnel revive · use when /mcp says Failed -32000 or × failed
+    # then run `/mcp reconnect` in Claude Code without exiting the dialog
+    if (Test-CompassTunnel) {
+        Write-Host "[compass] tunnel already UP on 127.0.0.1:$($script:CompassCloudPort)" -ForegroundColor Green
+        return
+    }
+    Start-CompassTunnel | Out-Null
 }
 
 function cstop {
