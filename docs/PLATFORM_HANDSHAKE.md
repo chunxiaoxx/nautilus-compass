@@ -308,6 +308,7 @@ Then the same tool also POSTs to the HTTP endpoint (file remains as audit fallba
 {
   "task_id": "tk_<unix_ms>",
   "name": "publish-dev-to-launch-post",
+  "tenant_id": "nautilus-internal",
   "channels": ["dev.to", "x"],
   "anchor_pack_hint": "marketing/dev-tools",
   "priority": "normal",
@@ -319,6 +320,13 @@ Then the same tool also POSTs to the HTTP endpoint (file remains as audit fallba
   "status": "queued"
 }
 ```
+
+**`tenant_id`** (added 2026-05-12 per §6 SaaS dialog Q3 answer · compass dialog ack):
+defaults to `nautilus-internal` for our own platform dispatch. Multi-tenant SaaS
+gating turns on when SaaS multi-tenancy lands (~4-8 weeks). Zero migration cost
+because field is present from day one. Platform stores in `metadata->>'tenant_id'`.
+Required when `COMPASS_PLATFORM_TENANT_ID` env is set; otherwise defaults applied
+by both `submit_platform_task` (compass) and `load_plan_files()` (platform poller).
 
 **SaaS side TODO** (platform dialog):
 1. Add poller / webhook handler at `~/.claude/projects/_platform_queue/`
