@@ -89,12 +89,57 @@ def _inject_auth(line: str) -> str:
     return json.dumps(msg)
 
 
+# v1.5.2 · Claude Code calls these MCP standard methods after initialize.
+# Cloud server doesn't implement them (returns -32601 method not found) which
+# Claude treats as fatal connection failure. We short-circuit locally with
+# empty list responses — fully spec-compliant per MCP 2024-11-05.
+_LOCAL_STUB_METHODS = {
+    "prompts/list":              {"prompts": []},
+    "resources/templates/list":  {"resourceTemplates": []},
+}
+
+
+def _try_local_stub(line: str):
+    """If method is in _LOCAL_STUB_METHODS, return JSON-RPC response bytes.
+    Returns None otherwise (caller forwards to cloud)."""
+    try:
+        msg = json.loads(line)
+    except json.JSONDecodeError:
+        return None
+    if not isinstance(msg, dict):
+        return None
+    method = msg.get("method")
+    if method not in _LOCAL_STUB_METHODS:
+        return None
+    if "id" not in msg:
+        # notification · no response needed
+        return b""
+    resp = {
+        "jsonrpc": "2.0",
+        "id": msg["id"],
+        "result": _LOCAL_STUB_METHODS[method],
+    }
+    return (json.dumps(resp) + "\n").encode("utf-8")
+
+
 def _pump_in_to_cloud(cloud: socket.socket) -> None:
-    """stdin → (inject authToken) → cloud TCP."""
+    """stdin → (inject authToken | local stub) → cloud TCP / stdout.
+
+    For methods in _LOCAL_STUB_METHODS we answer locally and never
+    forward to cloud · prevents -32601 fatals on prompts/list etc.
+    """
+    out_fh = sys.stdout.buffer
     for raw in sys.stdin:
         if not raw.strip():
             continue
-        out = _inject_auth(raw.rstrip("\n"))
+        line = raw.rstrip("\n")
+        stub = _try_local_stub(line)
+        if stub is not None:
+            if stub:
+                out_fh.write(stub)
+                out_fh.flush()
+            continue
+        out = _inject_auth(line)
         try:
             cloud.sendall((out + "\n").encode("utf-8"))
         except Exception as e:

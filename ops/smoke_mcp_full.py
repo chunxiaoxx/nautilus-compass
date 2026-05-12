@@ -28,6 +28,8 @@ MSGS = [
     {"jsonrpc": "2.0", "method": "notifications/initialized", "params": {}},
     {"jsonrpc": "2.0", "id": 2, "method": "tools/list", "params": {}},
     {"jsonrpc": "2.0", "id": 3, "method": "resources/list", "params": {}},
+    {"jsonrpc": "2.0", "id": 4, "method": "prompts/list", "params": {}},
+    {"jsonrpc": "2.0", "id": 5, "method": "resources/templates/list", "params": {}},
 ]
 
 
