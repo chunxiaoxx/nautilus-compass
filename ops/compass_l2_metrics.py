@@ -18,7 +18,7 @@ Output schema:
   "window_hours": 24,
   "totals": { "recall": 42, "drift_check": 18, "ingest_obs": 7, ... },
   "by_agent_type": {
-    "nautilus-v5": {
+    "nautilus-prime-001": {
       "recall": 30, "drift_check": 30, "ingest_obs": 30,
       "first_call": "2026-05-10T05:31:01Z",
       "last_call":  "2026-05-11T05:29:47Z"
@@ -28,7 +28,7 @@ Output schema:
   },
   "l2_evidence_gate": {
     "target_per_agent_per_day": 10,
-    "agents_meeting_gate": ["nautilus-v5"],
+    "agents_meeting_gate": ["nautilus-prime-001"],
     "agents_below_gate": ["nautilus-v6", "kairos"],
     "agents_absent": ["v7-souls-fusion"]
   }
@@ -56,7 +56,7 @@ WINDOW_HOURS = int(os.environ.get("COMPASS_L2_WINDOW_HOURS", "24"))
 L2_GATE_PER_AGENT_PER_DAY = int(os.environ.get("COMPASS_L2_GATE", "10"))
 
 EXPECTED_AGENTS = [
-    "nautilus-v5",
+    "nautilus-prime-001",
     "nautilus-v6",
     "kairos",
     "v7-souls-fusion",
