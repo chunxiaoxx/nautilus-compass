@@ -208,6 +208,21 @@ def _pump_cloud_to_out(cloud: socket.socket) -> None:
             _write_stdout(line + b"\n")
 
 
+def _heartbeat(cloud: socket.socket) -> None:
+    """v1.5.5 · send empty newline every 60s when idle · prevents TCP middlebox
+    or sshd channel timeout from killing 2-5 min idle connection.
+    mcp_server.py accept-loop skips empty/non-JSON lines safely."""
+    import time as _t
+    while True:
+        _t.sleep(60)
+        try:
+            cloud.sendall(b"\n")
+            _trace("HEARTBEAT", "tick")
+        except Exception as e:
+            _trace("ERR", f"heartbeat send fail: {e!r}")
+            return
+
+
 def main() -> int:
     try:
         cloud = _open_cloud()
@@ -225,8 +240,10 @@ def main() -> int:
 
     t_in = threading.Thread(target=_pump_in_to_cloud, args=(cloud,), daemon=True)
     t_out = threading.Thread(target=_pump_cloud_to_out, args=(cloud,), daemon=True)
+    t_hb = threading.Thread(target=_heartbeat, args=(cloud,), daemon=True)
     t_in.start()
     t_out.start()
+    t_hb.start()
     t_out.join()  # exit when cloud closes
     try:
         cloud.close()
