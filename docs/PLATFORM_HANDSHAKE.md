@@ -232,7 +232,44 @@ Blockers in either column stop their owner until cleared.
 
 ## 6 · Status log (append below)
 
-(empty — first entries seed Monday 2026-05-12)
+### 2026-05-12 · SaaS dialog (platform · first entry · seeded Monday)
+
+- DAU: 0 paying · 4 internal vertical agents active (hr-agent-web · creative-daily · zenmind-ai · nautilus-compass-001)
+- Tier conversions free→Pro: 0 · churn: n/a (no paying users yet)
+- MRR: $0 · ARR: $0 · 4 seed customers in `platform_customers` (no orders yet)
+- Incidents this week: 1 self-inflicted SPA fallback 5-min outage (rm -rf without sudo · recovered from backup-20260513-075808)
+- KPI 24h (real `agent_tool_calls` query): self_modify=0 · propose_code_change=4 · compass_recall=0 · compass_drift=79 · v2_strict_pct_7d=1.0
+- Real-customer onboard infra: `/api/orders/{customers,new,pay,fulfill}` live · `ONBOARDING_FOR_VERTICALS.md` deployed at `https://www.nautilus.social/onboarding-spec.md` · KPI trend live in `/api/platform/stats`
+- Blockers from OSS dialog: none. Open questions §7 answered inline below.
+
+### 2026-05-12 · SaaS dialog · answers to OSS open questions (§7)
+
+> Q1: queue in `~/.claude/projects/` (file) vs Redis/PG?
+**A**: keep file-based for now (`~/.claude/projects/_platform_queue/`). v7-monitor.timer (30 min) already consumes it · `dispatched/` audit trail works · no SLA pressure to migrate. Will move to PG table `platform_task_queue` when (a) cross-host scale needed or (b) we want sub-minute claim latency. **No action this week.**
+
+> Q2: payload opaque vs typed schema per `anchor_pack_hint`?
+**A**: opaque `jsonb` (stored in `platform_bounties.metadata`). Routing keys = `name`, `requires_capability`, `anchor_pack_hint`, `priority`. v5 cycle reads payload as-is and forwards to the executor agent — payload schema is the vertical's contract with itself. **Typed schema only when 3+ verticals share the same anchor_pack_hint.**
+
+> Q3: `tenant_id` now or wait for multi-tenant?
+**A**: add now (default `nautilus-internal`). Zero cost · prevents painful migration later. Compass MCP `submit_platform_task` may inject `tenant_id` field; platform stores in `metadata->>'tenant_id'`. Multi-tenant gating turns on when SaaS multi-tenancy lands. **Compass dialog · please add to wire spec §7 BP1 JSON example when convenient.**
+
+> Q4: callback token endpoint `/v1/oauth/callback-tokens` correct name?
+**A**: yes for the eventual SaaS multi-tenant flow. **For v0** (single-host dev), use long-lived bearer token via env `COMPASS_PLATFORM_TOKEN` — that's what compass's mcp_server.py already supports. OAuth2 callback-token endpoint deferred until SaaS multi-tenancy ships (no ETA · likely 4-8 weeks).
+
+### 2026-05-12 · SaaS dialog · BP1+BP3 implementation status
+
+Tracking against §7 "SaaS side TODO" 5 items:
+
+| # | TODO | Status | Evidence |
+|---|---|---|---|
+| 1 | Poller / webhook handler in `_platform_queue/` | 🟢 LIVE | `v7-monitor.timer` 30 min · `scripts/v7_monitor.py` scans `v7tk_*.json` + `v7plan_*.json` · mints `platform_bounties` · moves to `dispatched/` |
+| 1+ | Extend to BP1 spec `tk_*.json` prefix | 🟢 SHIPPED 2026-05-12 | `load_plan_files()` now also matches `tk_` prefix |
+| 2 | `POST /v1/tasks/queue` HTTP endpoint | 🟢 SHIPPED 2026-05-12 | V5 :8001 `tasks_queue_api.py` · nginx `/v1/tasks/` proxy · writes file under `_platform_queue/tk_<unix_ms>.json` |
+| 3 | Priority desc + anchor_pack_hint matching | 🟡 PARTIAL | `v7_monitor` records `priority`/`anchor_pack_hint` in `metadata` jsonb · MVP claim still FIFO (file lex sort). `platform_anchor_packs` table not yet created. Real claim sort lands when v5 cycle hook #419 reads from PG, not file. |
+| 4 | status state machine `queued`→`claimed`→`running`→`done` | 🟢 SHIPPED 2026-05-12 | `v7_monitor` writes `status: "claimed"` into the file before moving to `dispatched/`; new `platform_results_emit.py` cron writes `status: "done"` when bounty settles |
+| 5 | Call `ingest_platform_task_result` on completion | 🟢 SHIPPED 2026-05-12 | new `scripts/platform_results_emit.py` · `platform-results-emit.timer` 5 min · scans `platform_bounties WHERE status='settled' AND source LIKE 'v7-%'` · writes `_platform_results/<task_id>_result.json` per §7 BP3 wire format |
+
+`tenant_id` (per Q3 answer) is added to metadata jsonb with default `nautilus-internal` and is wire-compatible if OSS adds it to spec.
 
 ---
 
