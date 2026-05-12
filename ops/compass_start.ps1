@@ -59,7 +59,10 @@ function Start-CompassTunnel {
         Write-Host "[compass] tunnel already up on 127.0.0.1:$($script:CompassCloudPort)" -ForegroundColor DarkGray
         return $true
     }
-    Write-Host "[compass] starting SSH tunnel to $($script:CompassCloudHost):9877..." -ForegroundColor Cyan
+    Write-Host "[compass] starting SSH tunnel to $($script:CompassCloudHost) (-L 9877 + -R 9876 BGE)" -ForegroundColor Cyan
+    # Bidirectional tunnel:
+    #   -L 9877 · local→cloud  · MCP TCP transport (Claude Code uses)
+    #   -R 9876 · cloud→local  · cloud agents call local GPU BGE daemon
     # keepalive · prevents NAT/firewall from killing idle tunnel
     # ExitOnForwardFailure · die fast if port already bound rather than silent zombie
     $args = @(
@@ -68,15 +71,16 @@ function Start-CompassTunnel {
         "-o", "ServerAliveCountMax=3",
         "-o", "ExitOnForwardFailure=yes",
         "-L", "$($script:CompassCloudPort):127.0.0.1:9877",
+        "-R", "9876:127.0.0.1:9876",
         $script:CompassCloudHost
     )
     Start-Process -WindowStyle Hidden -FilePath "ssh" -ArgumentList $args -Wait
     Start-Sleep -Milliseconds 800
     if (Test-CompassTunnel) {
-        Write-Host "[compass] tunnel up" -ForegroundColor Green
+        Write-Host "[compass] tunnel up · MCP wire OK · BGE reverse tunnel cloud→local 9876 also UP" -ForegroundColor Green
         return $true
     }
-    Write-Warning "[compass] tunnel did not come up · Claude Code will still launch but nautilus-compass-cloud MCP will fail to connect"
+    Write-Warning "[compass] tunnel did not come up · Claude Code will still launch but MCP will fail"
     return $false
 }
 
