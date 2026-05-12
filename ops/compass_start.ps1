@@ -32,6 +32,8 @@ $script:CompassProjectPaths = @{
     "zenmind"    = "C:\Users\chunx\quantum-buddha-project"
     "chunx"      = "C:\Users\chunx"
     "compass"    = "C:\Users\chunx"
+    "agent"      = "C:\Users\chunx\Projects\nautilus-v5"
+    "superagent" = "C:\Users\chunx\Projects\nautilus-v5"
 }
 
 $script:CompassCloudPort = 9877
@@ -157,4 +159,5 @@ function nautilus { cstart nautilus }
 function venture  { cstart vdr      }
 function zen      { cstart zen      }
 function chunx    { cstart chunx    }
+function agent    { cstart agent    }
 
