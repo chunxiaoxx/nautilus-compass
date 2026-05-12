@@ -1,6 +1,6 @@
 {
-  "comment": "compass v1.5 · self-audit domain anchors · drift_check pack · 18 positive + 22 negative · 2026-05-11 inception. Catches compass-agent's OWN meta-errors: testing wrong data source, claiming downstream-consumed without verify, 'infra ship = task done' (305-pattern), premature L-tier dispatch, architectural conclusions without code evidence, double-fake closure (closed task + closed via wrong dashboard). Pair with daemon env ZMM_NEG_HIT_THRESHOLD=0.62 (between 0.538 default and 0.65 marketing). Purpose: prevent compass agent itself from shipping fake closures of its own meta work · use as second-pass drift_check on session_*.md before ingest_obs with proof_of_recall=pass.",
-  "version": "1.0.0",
+  "comment": "compass v1.5.4 · self-audit domain anchors · drift_check pack · 22 positive + 26 negative · 2026-05-12 v1.1 calibration. Catches compass-agent's OWN meta-errors. v1.0 (2026-05-11) seeded with 18+22 from L2-not-live + close-loop-verification + dual-flywheel cases. v1.1 (2026-05-12) refit with today's 4 caught-by-self fake-closures from MCP wire saga: (a) service restart treated as root-cause fix (only cleared queue), (b) smoke used convenient 10s idle gap not production 10-15min P95, (c) stacked retry+keepalive as 'double insurance' without verifying each link independent, (d) used agent_tool_calls success-row count as 'recall flowing' signal but soft-fails don't write DB so failures invisible. Pair with daemon env ZMM_NEG_HIT_THRESHOLD=0.62. Purpose: prevent compass agent itself from shipping fake closures of its own meta work · use as second-pass drift_check on session_*.md before ingest_obs with proof_of_recall=pass.",
+  "version": "1.1.0",
   "layer": "domain_self_audit",
   "language": "en",
   "loaded_by": "compass-dialog · before any task closure · before any session_*.md outbound ingest",
@@ -22,7 +22,15 @@
     "I cannot type into V7 dialog because it is a separate Claude Code process with no inter-process API · the next best thing is Telegram notification on outbound session arrival · honest scope acknowledgement",
     "the gap is V5/V6/Kairos compass_client.py has no recall + ingest function · this is V7's 09:09 diagnosis · I am consuming that diagnosis by shipping compass_client_v15.py · attribution preserved",
     "I will not ship more docs to fix architectural concerns · I will ship the 110-line adapter patch that closes the actual wire gap on cloud · narrative does not close loops · code does",
-    "this commit has 26 tests passing · 3 cloud-verified shipping artifacts · 0 narrative-only deliverables · this is the bar for closure"
+    "this commit has 26 tests passing · 3 cloud-verified shipping artifacts · 0 narrative-only deliverables · this is the bar for closure",
+    "service restart cleared the queue but the root cause was uvicorn keep-alive 5s · I admit the restart was symptom relief not root cause · pulled journal evidence after V7 reported recurrence at 10:27 · only then did I diagnose the true keepalive race",
+    "my smoke used 10s idle between recall calls but production gap is 10-15 min · smoke was happy-path sampling not P95 · I designed smoke_long_idle.py with 90s idle to actually exercise the failure window before claiming fix",
+    "I stacked uvicorn keepalive + V7 client retry and called it 'double insurance' but bridge.log showed retry reused the same stale pool connection · double-NULL is not double-insurance · each layer must be independently verified end-to-end with a real failing call",
+    "I used agent_tool_calls success-row count as 'recall is flowing' signal but V5 soft-fails do not write to DB · I now grep V5 err log directly for compass_client_v15 fail entries which is the actual ground-truth signal not a monitoring proxy",
+    "the restart only cleared the queue · the bug is symptom of keepalive race · root cause not yet fixed · I will continue diagnosis after restart not declare victory",
+    "the 6 of 6 smoke OK is necessary but not sufficient · production idle distribution covers 10-15 min gaps which this 10s smoke did not exercise · I will design a P95-representative smoke before claiming root cause fix",
+    "the keepalive and retry layers are stacked but each must be tested independently against a real failing call · I will verify each layer in isolation before calling it double insurance",
+    "the agent_tool_calls DB shows success rows for compass_recall · but it does not show soft-fail rows · I will grep the V5 err log directly as the ground truth before claiming recall is flowing"
   ],
   "negative_anchors": [
     "L2 wire is live and platform agents are calling daily (claimed when verification_log shows zero platform calls in the last 24 hours and the consumer side has zero code references to compass)",
@@ -46,18 +54,25 @@
     "compass adapter is shipped and the dual flywheel is wired (shipping the adapter is one of three required steps · the other two are anchors loaded plus consumer side calling the right path with the right headers · stopping at step one and standing victory)",
     "we have decided on the architecture and there is no need to revisit (architectural decisions made in the heat of a 4-hour synthesis with zero days of production data should never be marked final · revisit is the default not the exception)",
     "this PR is approved because the LLM judge auto-approved (LLM judge approving its own implementation is reviewer collusion of the worst kind · independent human verification is the minimum bar · auto-approve is auto-falsify)",
-    "I have already learned this lesson and won't repeat it (claimed within 24 hours of repeating the exact same lesson · the 305-case happened today not last quarter · learning is not a binary state · it persists only if anchored)"
+    "I have already learned this lesson and won't repeat it (claimed within 24 hours of repeating the exact same lesson · the 305-case happened today not last quarter · learning is not a binary state · it persists only if anchored)",
+    "I restarted the service and the bug is fixed (restart only cleared the cold-start queue · the actual root cause was uvicorn keep-alive timeout 5s under V5 httpx pool reuse · symptom relief misdiagnosed as root-cause fix · V7 reported same failure 1h later which is when I finally pulled journal logs)",
+    "my smoke ran 6 of 6 OK so the root cause is fixed (smoke used 10s idle between calls but production V5 calls recall every 10-15 minutes · idle gap far exceeds keep-alive 75s · smoke was happy-path sampling not P95 distribution · false-positive root-cause claim)",
+    "the keep-alive 75 plus V7 retry decorator is double insurance and we are safe now (assumed two independent layers but retry reused the same stale pool connection in same httpx client · both layers failed identically · double-broken is not double-safe · each defense must be verified end-to-end against a real failing call independently)",
+    "the agent_tool_calls table shows compass_recall is being called so recall is flowing (success-only DB rows do not include V5 soft-fail catches · V5 swallows RemoteProtocolError and never writes failure entries · DB monitoring signal is incomplete and hides ongoing regressions · grep V5 err log for compass_client_v15 WARN is the actual ground truth not the proxy metric)"
   ],
   "schema_notes": {
     "drift_score": "pos_cos_weighted_top3 - neg_cos_weighted_top3 · daemon.py:344-365",
     "alert_threshold": "drift_score < 0.0 OR any neg_anchor raw_cosine >= 0.62 triggers should_alert=true",
     "v1.0_calibration": "2026-05-11 · inception · target: catch '测错表 fake closure' pattern (the meta-error I shipped 2x today) · target FP rate <15% on routine session_*.md ingest · TP rate >80% on synthetic 305-pattern test set",
+    "v1.1_calibration": "2026-05-12 · refit with 4 today-caught self fake-closures from MCP wire saga · added 4 neg + 8 pos (4 anti-mirror with same surface vocab as bad) · ACTUAL CALIBRATION RESULT on local GTX 1060 BGE-m3 cuda · TP 3/4 (75% · missed 'restart=fixed' because anchor too verbose vs short query) · FP 3/4 (BGE-m3 surface-word similarity dominates over semantic intent · 'I confirmed downstream V5 consumed' matched bad 'commit landed but downstream never consumed' anchor at cos 0.741) · NEXT-STEP: anchors are most useful as PROMPT-TIME guidance to the human/LLM doing the ingest_obs · not as automated drift_check gate · v1.2 will fine-tune BGE on TP/FP examples or use larger judge model for borderline · current threshold 0.65 keeps TP but accepts FP",
+    "v1.1_usage_recommendation": "human/LLM workflow · before any ingest_obs · paste the candidate session body + load anchors_self_audit.json content · ask LLM 'does this match any neg_anchor pattern? would you accept this if you were the QA reviewer?' · this catches the 4 today-cases reliably via reasoning · automated drift_check on these anchors is advisory not gating · raise PR if drift_check alerts but human can override",
     "agent_action_on_alert": "block ingest_obs · escalate via cross_dialog_notifier · do not auto-write self-narrating session_*.md that drifts",
-    "anchor_source_of_truth": "session_20260511-1244_close-loop-verification.md (P1-1 case) + session_20260511-1805_L2-not-live-platform-must-wire.md (today's 305-replay-on-self) + session_20260511-1900_dual-flywheel-wired.md (reversal admission)",
+    "anchor_source_of_truth": "session_20260511-1244_close-loop-verification.md (P1-1 case) + session_20260511-1805_L2-not-live-platform-must-wire.md (today's 305-replay-on-self) + session_20260511-1900_dual-flywheel-wired.md (reversal admission) + session_20260512-1448_keepalive-75-shipped (v1.1 case #2) + session_20260512-1524_conn-close-shipped (v1.1 cases #1 #3 #4)",
     "born_from": [
       "305-case (2026-05-09): healthz number reported without source verification",
       "P1-1-case (2026-05-10): commit landed but downstream V5 never consumed · closure claimed without verifying downstream",
-      "Self-305-case (2026-05-11): I (compass-dialog) looked at v1.4 verification_log and missed v0.9 PostgreSQL agent_tool_calls · standing L2-not-live closure on partial data · cross-source verification gap"
+      "Self-305-case (2026-05-11): I (compass-dialog) looked at v1.4 verification_log and missed v0.9 PostgreSQL agent_tool_calls · standing L2-not-live closure on partial data · cross-source verification gap",
+      "MCP-wire-saga (2026-05-12): 4-hour MCP × failed debug · 8 layered bugs · 4 self-caught fake-closures: restart-as-fix · convenient-smoke · stacked-broken-defenses · DB-success-as-flow-signal · all 4 baked into v1.1 anchors"
     ],
     "do_not_use_for": [
       "marketing copy (use anchors_compass_marketing.json)",
