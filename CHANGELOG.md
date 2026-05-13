@@ -1,5 +1,87 @@
 # Changelog
 
+## [1.5.1] · 2026-05-13 — "data hygiene · 4 signal gates"
+
+Patch over v1.5.0. Four small gates that tighten recall signal
+after 12 days of real dogfood showed the plugin was drowning in its
+own session flow.
+
+### #1 · Importance gate (write-side)
+
+`session_*.md` files now require `drift: red` frontmatter to enter
+the recall index. `feedback_*` / `reference_*` / `anchor_*` bypass
+the gate (explicit user intent → always keep).
+
+Real effect: `C--Users-chunx` project 767 → 56 entries (−92.7% noise).
+`recall_start` banner now displays the real count.
+
+### #2 · numeric_claims hook (anti-hallucination)
+
+New `numeric_claims.py` with 5 regex patterns (entries / percentage /
+agents / tools / port). `stop_hook` ingests at session close to
+`~/.cache/compass/numeric_claims.jsonl` (append-only audit log).
+`recall_start` cross-references the next query: if the query
+contains a number for the same entity that disagrees with the
+14d-recent history, a `cross_ref alert` is embedded in the recall
+banner.
+
+Real trigger observed: query mentioning `9999 entries` +
+`100 agents` fired 2 alerts against the last session's `56 entries`
+/ 25+35 anchor claim.
+
+### #4 · Query expansion (read-side)
+
+`query_synonyms.json` · 18 high-frequency keys · on key match,
+append up to 8 synonyms to the query before BGE embedding.
+
+Example: `"daemon 挂了"` →
+`"daemon 挂了 | 守护进程 BGE 9876 9877 systemd"`.
+
+Real effect: top-5 for that query now includes sessions that only
+used "守护进程" (Chinese) — would have missed under the literal
+"daemon" token. daemon-related hit scored 0.553.
+
+### #5 · archived_at decay
+
+Sessions older than 30 days drop from the candidate pool unless the
+query contains a history keyword (`历史 / 曾经 / 旧 / archive / old /
+history`). All current sessions < 30d so the trigger path is
+deployed but not yet firing.
+
+### Dropped
+
+`loop_anchor` drift gate (originally planned as #3) cut. Plugin has
+no hook surface into `/loop` iteration state so the proposal was a
+phantom need.
+
+### Files
+
+- `recall.py` · importance gate (filter during index build) ·
+  `_expand_query()` + synonym-file loader · archived_at filter.
+  +92 lines.
+- `stop_hook.py` · `ingest_numeric_claims(session_md)` call at
+  session close. +9 lines.
+- `numeric_claims.py` · new · 5 regex patterns ·
+  `ingest_numeric_claims` + `cross_ref_numeric_claims` + JSONL audit.
+- `query_synonyms.json` · new · 18 keys mapped to synonym lists.
+- Version: `pyproject.toml` / `__init__.py` / `recall.PLUGIN_VERSION`
+  aligned to **1.5.1** (were drifting at 1.2.0 / 0.9.5 / v0.7 ·
+  this release closes the version-drift debt).
+
+### Why a patch, not a minor
+
+All four gates are data-hygiene tuning of the same surfaces shipped
+in v1.5.0 (write path, recall path). No new tool, no new protocol,
+no new MCP method. Clean `X.Y.1` bump.
+
+### Migration
+
+None. Drop-in. Existing session files re-indexed on next daemon
+rebuild (~30s).
+
+---
+
+
 ## [1.5.0] · 2026-05-11 — "proof-of-recall · protocol-level fake-closure killer"
 
 Same day as v1.4. Ships S2 from `specs/SPEC-S2-proof-of-recall.md`.
