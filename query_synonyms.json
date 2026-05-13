@@ -1,0 +1,22 @@
+{
+  "_comment": "v1.7 #4 query expansion · key 命中则附加 values 到 query 末尾",
+  "_strategy": "key 是 query 里出现的 token · values 是要追加的同义/相关词 · BGE 对扩展词敏感",
+  "daemon": ["守护进程", "BGE", "9876", "9877", "systemd"],
+  "BGE": ["bge-m3", "embedding", "向量", "daemon"],
+  "compass": ["nautilus-compass", "plugin", "memory", "recall"],
+  "drift": ["漂移", "anchor", "锚点", "persona"],
+  "recall": ["召回", "hits", "top_k", "memory"],
+  "memory": ["session", "frontmatter", "md"],
+  "fake_closure": ["伪完成", "未消费", "feedback_close_loop"],
+  "v7": ["V7", "platform-dialog", "partnership"],
+  "V5": ["nautilus-v5", "production", "api"],
+  "outreach": ["dispatch", "marketing", "broadcast", "Telegram"],
+  "anchor": ["anchors", "锚点", "compass_marketing", "calibration"],
+  "L2": ["dogfood", "MCP", "TCP", "9877"],
+  "tunnel": ["reverse", "ngrok", "watchdog"],
+  "session_writer": ["frontmatter", "drift", "type"],
+  "stop_hook": ["UserPromptSubmit", "Stop", "auto_distill"],
+  "MCP": ["jsonrpc", "mcp_server", "TCP", "stdio"],
+  "paper": ["arxiv", "EverMemBench", "paper1", "paper2"],
+  "OAuth": ["Gmail", "credentials", "token"]
+}

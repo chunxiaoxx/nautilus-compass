@@ -648,6 +648,37 @@ def render_v02_vector_mode(entries: list, query: str, cache: dict) -> None:
             print(f"  · [{e['age_str']:>5} old] {e['path']} — {e['description'][:80]}")
 
 
+def _expand_query(query: str) -> str:
+    """v1.7 #4 · query expansion · 命中 synonym 就追加 · 提升 BGE recall.
+
+    保守 · 只追加最多 8 个 token · 避免 query 过长稀释 embedding.
+    fail-soft · 任何异常返原 query.
+    """
+    try:
+        syn_path = Path(__file__).resolve().parent / "query_synonyms.json"
+        if not syn_path.exists():
+            return query
+        synonyms = json.loads(syn_path.read_text(encoding="utf-8"))
+        added = []
+        ql = query.lower()
+        for key, vals in synonyms.items():
+            if key.startswith("_"):
+                continue
+            if key.lower() in ql:
+                for v in vals:
+                    if v.lower() not in ql and v not in added:
+                        added.append(v)
+                        if len(added) >= 8:
+                            break
+            if len(added) >= 8:
+                break
+        if not added:
+            return query
+        return query + " | " + " ".join(added)
+    except Exception:
+        return query
+
+
 def try_daemon_recall(mem_dir: Path, user_prompt: str) -> bool:
     """尝试连 daemon · 拿 recall+drift · 输出后返 True · 失败返 False.
 
@@ -655,11 +686,12 @@ def try_daemon_recall(mem_dir: Path, user_prompt: str) -> bool:
     """
     import socket as _socket
     project = mem_dir.parent.name
+    expanded_prompt = _expand_query(user_prompt)
     try:
         with _socket.socket(_socket.AF_INET, _socket.SOCK_STREAM) as s:
             s.settimeout(60.0)
             s.connect(("127.0.0.1", 9876))
-            req = {"action": "both", "query": user_prompt[:2000],
+            req = {"action": "both", "query": expanded_prompt[:2000],
                    "project": project, "top_k": TOP_K}
             s.sendall(json.dumps(req, ensure_ascii=False).encode("utf-8") + b"\n")
             buf = b""
@@ -772,12 +804,54 @@ def main():
 
     files = sorted(mem_dir.glob("*.md"))
     entries = []
+    # v1.7 #1+#5 · importance gate + archived_at decay
+    # · gate keeps high-signal types in recall · plain session 流水 only kept if drift!=green
+    # · archived_at: 30d+ files demoted unless query has '历史/曾经/旧/archive/old'
+    raw_user_prompt = ""
+    try:
+        # peek without consuming · we only need keywords for gate decision
+        import os as _os
+        raw_user_prompt = _os.environ.get("COMPASS_QUERY_PEEK", "")
+    except Exception:
+        pass
+    archive_keywords = ("历史", "曾经", "曾", "旧", "archive", "old", "history")
+    want_archived = any(k in raw_user_prompt for k in archive_keywords) if raw_user_prompt else False
+
+    HIGH_SIGNAL_TYPES = {"bugfix", "fix", "feature", "feedback", "reference",
+                         "decision", "discovery", "trade-off", "problem-solution",
+                         "gotcha", "pattern"}
+    n_dropped_noise = 0
+    n_dropped_archived = 0
     for f in files:
         if f.name.upper() in ("MEMORY.MD", "INDEX.MD"):
             continue
         info = parse_memory_file(f)
-        if info:
-            entries.append(info)
+        if not info:
+            continue
+        # gate · drop plain green session 流水 unless they're high-signal types
+        ftype = (info.get("type") or "").lower()
+        # parse drift from frontmatter (re-read · cheap on small files)
+        try:
+            text_head = Path(info["fullpath"]).read_text(encoding="utf-8")[:2000]
+            drift_val = ""
+            for ln in text_head.split("\n"):
+                if ln.startswith("drift:"):
+                    drift_val = ln.split(":", 1)[1].strip().lower()
+                    break
+        except Exception:
+            drift_val = ""
+        # v1.7 #1 · session_*.md 必须 drift=red 才进 recall index
+        # · 96% session 标 green/yellow · LLM 自评太松 · 不能用 type 区分
+        # · feedback_*/reference_*/anchor_* 等非 session 文件全保留
+        if f.name.startswith("session_") and drift_val != "red":
+            n_dropped_noise += 1
+            continue
+        # v1.7 #5 · archived_at 衰减 · 30d+ session 也 drop · 除非 query 含历史词
+        age_days = info.get("age_seconds", 0) / 86400
+        if age_days > 30 and not want_archived and f.name.startswith("session_"):
+            n_dropped_archived += 1
+            continue
+        entries.append(info)
     if not entries:
         return 0
 
@@ -792,6 +866,18 @@ def main():
     print(f"<nautilus-compass-recall plugin={PLUGIN_VERSION}>")
     print(f"Project memory: {mem_dir.parent.name} · {len(entries)} entries")
     print(f"⚠️ 时间戳 = 关键 · 用户心智在迭代 · 不要用 7d+ 旧 memory 倒批今天判断")
+
+    # v1.7 #2 · numeric_claims cross-ref · query 含数字时检查历史冲突
+    try:
+        from numeric_claims import cross_ref as _nc_cross_ref
+        _nc_alerts = _nc_cross_ref(user_prompt) if user_prompt else []
+        if _nc_alerts:
+            print()
+            print("[Numeric drift · 反幻觉 hook]")
+            for _a in _nc_alerts[:5]:
+                print(f"  {_a}")
+    except Exception:
+        pass
     print()
 
     # v0.4 · Strategy lookup (hook 默认就跑 · 0 BGE · 关键词命中即可)
