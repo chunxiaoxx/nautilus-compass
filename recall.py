@@ -28,7 +28,7 @@ try:
 except Exception:
     pass
 
-PLUGIN_VERSION = "nautilus-compass v0.7"
+PLUGIN_VERSION = "nautilus-compass v1.5.1"
 HOME = Path.home()
 PLUGIN_DIR = HOME / ".claude" / "plugins" / "nautilus-compass"
 CACHE_DIR = PLUGIN_DIR / ".cache"
