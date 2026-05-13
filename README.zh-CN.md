@@ -229,6 +229,19 @@ Letta 35-38% · Mem0 40-45% · A-MEM 50% · Zep / paper RAG 50-60% — compass 5
 
 详见 [paper/OUTLINE_PAPER2.md](paper/OUTLINE_PAPER2.md) · [results csv](paper/results/experiments_20260505.csv) · [paper/RESULTS_v0.8.md](paper/RESULTS_v0.8.md)。
 
+**复现实验数据**: 行为锚点 + session trace 标注集 (drift ROC + LongMemEval-S /
+EverMemBench 评测用) 已上 Hugging Face Hub:
+[huggingface.co/datasets/chunxiaox/nautilus-compass-test-data](https://huggingface.co/datasets/chunxiaox/nautilus-compass-test-data)
+
+```python
+from datasets import load_dataset
+ds = load_dataset("chunxiaox/nautilus-compass-test-data")
+```
+
+**在线 demo**: 漂移检测 + Merkle 完整性可视化 ·
+[huggingface.co/spaces/chunxiaox/nautilus-compass](https://huggingface.co/spaces/chunxiaox/nautilus-compass)
+(CPU · metadata jaccard fallback · 无需登录)。
+
 ---
 
 ## v1.0.0 stable (2026-05-08)

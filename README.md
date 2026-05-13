@@ -138,6 +138,16 @@ for honest dual-run + Gemini cross-judge sensitivity analysis.
 demo at [huggingface.co/spaces/chunxiaox/nautilus-compass](https://huggingface.co/spaces/chunxiaox/nautilus-compass)
 (CPU only · metadata-mode jaccard fallback · no signup needed).
 
+**Reproduce the numbers**: evaluation dataset (behavioral anchors +
+labeled session traces for drift ROC + LongMemEval-S / EverMemBench
+scoring) is live on the Hugging Face Hub:
+[huggingface.co/datasets/chunxiaox/nautilus-compass-test-data](https://huggingface.co/datasets/chunxiaox/nautilus-compass-test-data)
+
+```python
+from datasets import load_dataset
+ds = load_dataset("chunxiaox/nautilus-compass-test-data")
+```
+
 ---
 
 ## Quickstart
