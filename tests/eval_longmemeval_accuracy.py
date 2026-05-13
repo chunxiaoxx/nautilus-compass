@@ -64,6 +64,7 @@ TOP_K_CONTEXT = int(os.environ.get("ZMM_TOPK", "5"))
 # pre-vote behavior). 3 = run subject+judge 3x per question, take majority
 # verdict. Expected +2~3 pts overall, reduces ssp variance.
 ZMM_VOTE = int(os.environ.get("ZMM_VOTE", "1"))
+SUBJECT_TEMPERATURE = float(os.environ.get("ZMM_SUBJECT_TEMPERATURE", "0.1"))
 
 # Tier A #4 · Hybrid BM25 + dense retrieval with Reciprocal Rank Fusion.
 # ZMM_HYBRID=0 (default): byte-identical to dense-only baseline · paper lock.
@@ -267,7 +268,8 @@ def build_ssu_context(top_sessions: list[dict], question: str,
     return "\n\n".join(chunks)
 
 
-def call_vertex_gemini(model: str, prompt: str, max_out_tok: int = 2048) -> str:
+def call_vertex_gemini(model: str, prompt: str, max_out_tok: int = 2048,
+                       temperature: float = 0.1) -> str:
     """Vertex AI Gemini call · uses GOOGLE_APPLICATION_CREDENTIALS service account.
 
     NOTE: gemini-2.5-pro/flash are thinking models · the 'thinking budget' is
@@ -286,7 +288,7 @@ def call_vertex_gemini(model: str, prompt: str, max_out_tok: int = 2048) -> str:
         contents=prompt,
         config={
             "max_output_tokens": max_out_tok,
-            "temperature": 0.1,
+            "temperature": temperature,
         },
     )
     return resp.text or ""
@@ -319,6 +321,7 @@ def _run_one_vote(qt: str, prompt_tmpl: str, context: str, question: str, truth:
             SUBJECT_MODEL,
             prompt_tmpl.format(k=TOP_K_CONTEXT, context=context, question=question),
             max_out_tok=2048,
+            temperature=SUBJECT_TEMPERATURE,
         ).strip()
         if qt == "temporal-reasoning" and TEMPORAL_ENABLED:
             model_answer = extract_temporal_answer(raw_answer)
@@ -354,6 +357,7 @@ def main():
     print(f"subject:        {SUBJECT_MODEL}")
     print(f"judge:          {JUDGE_MODEL}")
     print(f"vote (n):       {ZMM_VOTE}")
+    print(f"subject temp:   {SUBJECT_TEMPERATURE} (judge stays 0.1)")
     print(f"temporal:       {'enabled (ZMM_TEMPORAL=1)' if TEMPORAL_ENABLED else 'disabled (ZMM_TEMPORAL=0)'}")
     print(f"dataset:        {DATASET_PATH}")
     print(f"GCP creds:      {os.environ.get('GOOGLE_APPLICATION_CREDENTIALS', '(MISSING!)')[:60]}...")
@@ -554,6 +558,8 @@ def main():
         "pipeline": args.pipeline,
         "subject_model": SUBJECT_MODEL,
         "judge_model": JUDGE_MODEL,
+        "subject_temperature": SUBJECT_TEMPERATURE,
+        "vote_n": ZMM_VOTE,
         "n": n,
         "accuracy": correct / n if n else 0,
         "by_type": {qt: {"n": s["n"], "correct": s["correct"], "acc": s["correct"]/s["n"] if s["n"] else 0}
