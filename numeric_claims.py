@@ -21,18 +21,49 @@ CLAIMS_FILE = CACHE_DIR / "numeric_claims.jsonl"
 # Patterns · anchor-keyword + numeric value
 # 保守 · 只抓高价值 entity · 避免抓到版本号 / 日期等噪音
 PATTERNS = [
-    # "1076 entries" / "56 entries"
+    # 数字 + entity (forward · 自由文本主流序)
     (re.compile(r"(\d[\d,]*)\s*entries\b", re.I), "entries"),
-    # "44.4%" / "92.7%" · 跟 "recall/准确率/drop/覆盖率" 相邻才抓
     (re.compile(r"(\d+(?:\.\d+)?)\s*%\s*(?:recall|准确率|drop|降|覆盖率|accuracy)", re.I), "percentage"),
-    # "6 agents" / "1 agents"
     (re.compile(r"(\d+)\s*agents?\b", re.I), "agents"),
-    # "16 tools" · mcp tool count
     (re.compile(r"(\d+)\s*tools?\b(?!kit)", re.I), "tools"),
-    # "9877 port" / "port 9877"
     (re.compile(r"port\s*(\d{4,5})\b", re.I), "port"),
     (re.compile(r"(\d{4,5})\s*port\b", re.I), "port"),
+    # v1.5.2 #2 · entity + 数字 (reverse · frontmatter / list 形式)
+    (re.compile(r"\bentries\s*[:=]?\s*(\d[\d,]*)\b", re.I), "entries"),
+    (re.compile(r"\bagents?\s*[:=]?\s*(\d+)\b", re.I), "agents"),
+    (re.compile(r"\btools?\s*[:=]?\s*(\d+)\b(?!kit)", re.I), "tools"),
 ]
+
+
+_FRONTMATTER_RE = re.compile(r"^---\s*\n(.*?)\n---\s*\n", re.S)
+
+
+def _parse_seed_block(text: str) -> list[dict]:
+    """v1.5.2 #2 · extract numeric_claims_seed from yaml frontmatter.
+
+    yaml list of strings like:
+      - "v1.5.1 entries 56"
+      - "anchors pos 28"
+    runs PATTERNS over each string · returns matched claims.
+    Avoids requiring PyYAML · regex extraction works for our 1-level list.
+    """
+    out = []
+    m = _FRONTMATTER_RE.match(text)
+    if not m:
+        return out
+    fm = m.group(1)
+    seed_re = re.compile(r"numeric_claims_seed\s*:\s*\n((?:\s+-\s+.*\n?)+)", re.M)
+    sm = seed_re.search(fm)
+    if not sm:
+        return out
+    for line in sm.group(1).splitlines():
+        line = line.strip()
+        if not line.startswith("-"):
+            continue
+        item = line.lstrip("- ").strip().strip("\"'")
+        if item:
+            out.extend(extract_from_text(item))
+    return out
 
 
 def extract_from_text(text: str) -> list[dict]:
@@ -105,11 +136,32 @@ def cross_ref(query: str, lookback_days: int = 14) -> list[str]:
             if rec["value"] != qc["value"]:
                 days_ago = (time.time() - rec["ts"]) / 86400
                 alerts.append(
-                    f"⚠️ 数字冲突 [{qc['entity']}] · {days_ago:.1f}d 前你说 {rec['value']} "
+                    f"[!] 数字冲突 [{qc['entity']}] · {days_ago:.1f}d 前你说 {rec['value']} "
                     f"· 现在说 {qc['value']} · 来源: {Path(rec['source']).name}"
                 )
                 break
     return alerts
+
+
+def already_ingested(source_file: str) -> bool:
+    """v1.5.2 #1 · True if CLAIMS_FILE already has any record from this source.
+
+    Used by stop_hook to skip re-ingest on daily 24h glob.
+    """
+    if not CLAIMS_FILE.exists():
+        return False
+    try:
+        with CLAIMS_FILE.open("r", encoding="utf-8") as fp:
+            for line in fp:
+                try:
+                    rec = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                if rec.get("source") == source_file:
+                    return True
+    except Exception:
+        return False
+    return False
 
 
 def ingest_session_file(path: Path) -> int:
@@ -118,8 +170,18 @@ def ingest_session_file(path: Path) -> int:
         text = path.read_text(encoding="utf-8", errors="ignore")
     except Exception:
         return 0
-    claims = extract_from_text(text)
-    return append_claims(str(path), claims)
+    # v1.5.2 #2 · frontmatter seed 优先 + 反向 regex 全文 · 合并去重
+    seed_claims = _parse_seed_block(text)
+    body_claims = extract_from_text(text)
+    seen = set()
+    merged = []
+    for c in seed_claims + body_claims:
+        key = (c["entity"], c["value"])
+        if key in seen:
+            continue
+        seen.add(key)
+        merged.append(c)
+    return append_claims(str(path), merged)
 
 
 if __name__ == "__main__":

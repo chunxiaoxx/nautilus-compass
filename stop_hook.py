@@ -50,6 +50,29 @@ def find_latest_session_memory() -> Path | None:
     return candidates[0][1]
 
 
+def recent_session_memories(within_hours: float = 24.0) -> list[Path]:
+    """v1.5.2 #1 · 所有项目 memory 中 mtime 在 within_hours 内的 session_*.md
+
+    解决 age_s > 3600 单文件 gate 导致 daily 启动漏 ingest 的问题.
+    """
+    projects_dir = Path.home() / ".claude" / "projects"
+    if not projects_dir.exists():
+        return []
+    cutoff = time.time() - within_hours * 3600
+    out = []
+    for proj in projects_dir.iterdir():
+        if not (proj / "memory").exists():
+            continue
+        for f in (proj / "memory").glob("session_*.md"):
+            try:
+                if f.stat().st_mtime >= cutoff:
+                    out.append(f)
+            except Exception:
+                pass
+    out.sort(key=lambda p: p.stat().st_mtime, reverse=True)
+    return out
+
+
 def parse_session_summary(path: Path) -> str:
     """读 session memory · 提 description + body 前 1500 字."""
     try:
@@ -87,20 +110,30 @@ def main():
         print("[stop_hook] no session memory found · skip")
         return 0
 
-    age_s = time.time() - latest.stat().st_mtime
-    if age_s > 3600:
-        # 上次 session memory > 1h 旧 · 不是本次 session
-        print(f"[stop_hook] latest session {latest.name} is {age_s/60:.1f} min old · skip")
-        return 0
-
-    # v1.7 #2 · numeric_claims ingest · fail-soft
+    # v1.5.2 #1 · numeric_claims ingest 24h glob · 不被 latest age_gate 吃掉
+    # · 上线时 latest 可能 24h 老 · 但本周新 session 仍要 ingest
     try:
-        from numeric_claims import ingest_session_file
-        _nc_n = ingest_session_file(latest)
-        if _nc_n:
-            print(f"[stop_hook] numeric_claims: ingested {_nc_n} claim(s) from {latest.name}")
+        from numeric_claims import ingest_session_file, already_ingested
+        _nc_total = 0
+        _nc_files = 0
+        for f in recent_session_memories(within_hours=24.0):
+            if already_ingested(str(f)):
+                continue
+            _nc_total += ingest_session_file(f)
+            _nc_files += 1
+        if _nc_total:
+            print(f"[stop_hook] numeric_claims: ingested {_nc_total} claim(s) from {_nc_files} new session(s)")
     except Exception as _nce:
         sys.stderr.write(f"[stop_hook] numeric_claims ingest fail: {_nce}\n")
+
+    age_s = time.time() - latest.stat().st_mtime
+    if age_s > 3600:
+        # 上次 session memory > 1h 旧 · 不是本次 session · strategy match 仍 skip
+        # · numeric_claims 已在上面跑完不受影响
+        print(f"[stop_hook] latest session {latest.name} is {age_s/60:.1f} min old · skip strategy match")
+        return 0
+
+    # v1.7 #2 · numeric_claims ingest 已在 age_gate 前移到 24h glob 路径 (v1.5.2 #1)
 
     summary = parse_session_summary(latest).lower()
     if not summary:

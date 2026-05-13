@@ -1,5 +1,53 @@
 # Changelog
 
+## [1.5.2] · 2026-05-13 — "self-verify caught fake-closure · 3 gates"
+
+Patch over v1.5.1. Self-verifying v1.5.1 surfaced one fake-closure
+(numeric_claims hook ran 0 times because age_gate skipped) plus two
+secondary issues. v1.5.2 ships three real gates; one (drift_check
+in stop_hook) is deferred to v1.5.3 pending local BGE daemon wiring.
+
+### #1 · stop_hook 24h glob ingest (was: latest-only + age_gate)
+
+`stop_hook.py` now scans every `session_*.md` from the last 24h
+(via new `recent_session_memories(within_hours=24)` helper) and
+ingests numeric_claims for any not yet seen by `already_ingested`
+(jsonl source-path dedup). The age_gate still applies to strategy
+matching only, not to numeric_claims.
+
+Real effect: jsonl `~/.cache/compass/numeric_claims.jsonl` went
+from 2 → 17 records on first run · 9 new sessions covered · 7
+distinct sources. Single-latest-only path missed 15 records.
+
+### #2 · numeric_claims reverse regex + frontmatter seed helper
+
+`numeric_claims.py` PATTERNS extended with reverse forms
+(`entries:1076`, `agents=4`, `tools: 22`) plus new
+`_parse_seed_block()` extracting from yaml `numeric_claims_seed`
+list in frontmatter.
+
+Validation: fixture with 5 seed strings → 4/5 matched (entries 56,
+port 8770, agents 4, tools 22). Fifth ("pos 28 neg 28 anchors")
+intentionally not matched · `pos`/`neg`/`anchors` not registered
+high-value entities. Self_verify session frontmatter helper found
+0 matches because seed text was placed in body, not frontmatter
+(my own process bug, not plugin bug).
+
+### #3 · ASCII alert · safe on GBK consoles
+
+`recall_start` cross_ref alert no longer embeds non-ASCII glyphs
+(替换 unicode 三角 → `[!]` 符号 + ASCII 文本). Avoids
+`UnicodeEncodeError` on Windows GBK terminals when the alert
+prints during recall banner injection.
+
+### #4 · drift_check in stop_hook · DEFERRED to v1.5.3
+
+Wiring drift_check HTTP into stop_hook needs local BGE daemon
+ready + compass_http auth setup. Local daemon was loading at ship
+time. Not blocking · the 3 gates above ship clean.
+
+---
+
 ## [1.5.1] · 2026-05-13 — "data hygiene · 4 signal gates"
 
 Patch over v1.5.0. Four small gates that tighten recall signal
