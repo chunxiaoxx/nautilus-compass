@@ -93,6 +93,15 @@ def main():
         print(f"[stop_hook] latest session {latest.name} is {age_s/60:.1f} min old · skip")
         return 0
 
+    # v1.7 #2 · numeric_claims ingest · fail-soft
+    try:
+        from numeric_claims import ingest_session_file
+        _nc_n = ingest_session_file(latest)
+        if _nc_n:
+            print(f"[stop_hook] numeric_claims: ingested {_nc_n} claim(s) from {latest.name}")
+    except Exception as _nce:
+        sys.stderr.write(f"[stop_hook] numeric_claims ingest fail: {_nce}\n")
+
     summary = parse_session_summary(latest).lower()
     if not summary:
         return 0
