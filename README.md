@@ -1,5 +1,7 @@
 # nautilus-compass
 
+<!-- mcp-name: io.github.chunxiaoxx/nautilus-compass -->
+
 > **Black-box agent memory with drift detection** ·
 > the only public memory layer that doesn't burn LLM tokens to extract
 > facts before storing.
