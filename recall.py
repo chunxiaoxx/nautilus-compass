@@ -28,7 +28,7 @@ try:
 except Exception:
     pass
 
-PLUGIN_VERSION = "nautilus-compass v1.6.1"
+PLUGIN_VERSION = "nautilus-compass v1.6.2"
 HOME = Path.home()
 PLUGIN_DIR = HOME / ".claude" / "plugins" / "nautilus-compass"
 CACHE_DIR = PLUGIN_DIR / ".cache"
@@ -98,6 +98,32 @@ def log_usage(event: str, payload: dict) -> None:
                 pass
     except Exception:
         pass
+def _log_drift_mitigation(alert_id: str, drift: dict, user_prompt: str) -> None:
+    """v1.7.0 · 方向 3 D6-7 · 写 drift mitigation event 到独立 sidecar.
+
+    跟 usage.jsonl 分开 · 让 D13 真测 act-on rate 时一键 grep.
+    """
+    try:
+        CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        sidecar = CACHE_DIR / "drift_mitigation_log.jsonl"
+        rec = {
+            "ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "alert_id": alert_id,
+            "score": drift.get("score"),
+            "alignment": drift.get("alignment"),
+            "deviation": drift.get("deviation"),
+            "max_neg_hit": drift.get("top_neg_hits", [[0, ""]])[0][0]
+                if drift.get("top_neg_hits") else 0,
+            "kind": "single_anchor_hit" if drift.get("top_neg_hits") else "score_threshold",
+            "mitigation_injected": True,
+            "user_prompt_head": user_prompt[:200],
+        }
+        with open(sidecar, "a", encoding="utf-8") as f:
+            f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+    except Exception:
+        pass
+
+
 EMBED_MAX_CHARS = 1500    # 每 file embed 前 1500 字
 TOP_K = 5
 # 2026-04-29 校准 (bge-m3 实测) · 历史 (bge-small-zh-v1.5): 0.30 / -0.04 / 0.72
@@ -752,6 +778,16 @@ def try_daemon_recall(mem_dir: Path, user_prompt: str) -> bool:
                         "kind": "score_threshold",
                         "user_prompt": user_prompt[:300],
                     })
+
+                # v1.7.0 · 方向 3 D6-7 · drift mitigation prompt-inject
+                # alert fire 时不只显示 · 给真行动引导 + 日志 act-on 跟踪
+                print()
+                print(f"  🟢 mitigation hint [{_alert_id}]:")
+                print(f"     1. 先 acknowledge 这次 drift · 别假装没看见 score")
+                print(f"     2. Pivot 回 reference reply 方向 · 翻一条 score>+0.05 的 session 看真口径")
+                print(f"     3. 若真 FP(我误报)· `nautilus-compass feedback {_alert_id} fp` 真标 · 不要忍着不标")
+                print(f"     4. 行动后下次 stop_hook 自动 log act-on · D13 看真 act-on rate (target ≥70%)")
+                _log_drift_mitigation(_alert_id, d, user_prompt)
             print()
         recall = data.get("recall") or []
         if recall:
@@ -867,6 +903,34 @@ def main():
     print(f"Project memory: {mem_dir.parent.name} · {len(entries)} entries")
     print(f"⚠️ 时间戳 = 关键 · 用户心智在迭代 · 不要用 7d+ 旧 memory 倒批今天判断")
 
+    # v1.8.0 · 用户战略 anchor 强制压头 · 长 session stance 衰减唯一真解
+    # 不靠 BGE 相似度命中(可能不命中) · 任何 query 都强制 surface
+    # · anchor_user_strategic_compass.md 7 条 stance
+    # · anchor_anti_patterns_history.md 10 大复发模式
+    try:
+        anchor_home = Path.home() / ".claude" / "projects" / "C--Users-chunx" / "memory"
+        for anchor_name, label in [
+            ("anchor_user_strategic_compass.md", "📌 用户战略 anchor · 7 条 stance"),
+            ("anchor_anti_patterns_history.md", "🔴 anti-pattern · 10 复发模式"),
+        ]:
+            anchor_path = anchor_home / anchor_name
+            if not anchor_path.exists():
+                continue
+            text = anchor_path.read_text(encoding="utf-8", errors="replace")
+            # Extract h1 + h2 titles only · 不展开正文(避免 prompt 头臃肿)
+            titles = []
+            for ln in text.splitlines():
+                s = ln.strip()
+                if s.startswith("## ") and len(titles) < 12:
+                    titles.append(s[3:].strip())
+            print()
+            print(f"[{label}]")
+            for t in titles[:10]:
+                print(f"  · {t}")
+            print(f"  → 全文: {anchor_path.name} · 第 1 个 response 必含 'active anchor: X / Y'")
+    except Exception as _ae:
+        sys.stderr.write(f"[nautilus-compass] anchor surface fail: {_ae}\n")
+
     # v1.7 #2 · numeric_claims cross-ref · query 含数字时检查历史冲突
     try:
         from numeric_claims import cross_ref as _nc_cross_ref
@@ -876,6 +940,23 @@ def main():
             print("[Numeric drift · 反幻觉 hook]")
             for _a in _nc_alerts[:5]:
                 print(f"  {_a}")
+    except Exception:
+        pass
+
+    # v1.7.0 · 方向 2 D3-4 · cross-agent contract surface
+    # 把 outstanding (deadline 未到) + expired (未消费过期) 注入 prompt 头
+    # · sweep 168h · 不阻塞 recall · fail-soft
+    try:
+        from contract import (
+            scan_sessions_for_contracts, _default_memory_roots,
+            format_for_prompt_injection,
+        )
+        _c_scan = scan_sessions_for_contracts(_default_memory_roots(), within_hours=168.0)
+        _c_block = format_for_prompt_injection(_c_scan, max_show=5)
+        if _c_block:
+            print()
+            print("[Cross-agent contracts · close_loop hook]")
+            print(_c_block)
     except Exception:
         pass
     print()

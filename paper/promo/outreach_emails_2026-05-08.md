@@ -63,7 +63,7 @@ missed something obvious.
 
 ## 3 · Sander Dieleman
 
-**To:** [TODO: confirm reachable email · sander.ai has no listed contact, may need DeepMind relay or Twitter DM]
+**To:** sanderdieleman@gmail.com
 **Subject:** Anchor-based drift · feedback on §3 method
 
 Hi Sander,
@@ -88,7 +88,7 @@ we're missing before posting to arXiv.
 
 ## 4 · Jay Alammar
 
-**To:** [TODO: confirm email · jalammar.github.io contact form or Twitter DM]
+**To:** jayalammar42@gmail.com
 **Subject:** Illustrated NautilusCompass? Drift detection has a clean visual
 
 Hi Jay,
