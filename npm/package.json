@@ -1,6 +1,6 @@
 {
   "name": "nautilus-compass-mcp",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "MCP server for compass · cross-agent memory layer · drift-aware writer · LongMemEval-S 56.6%",
   "keywords": [
     "mcp",
