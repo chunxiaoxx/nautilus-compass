@@ -1,0 +1,53 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.chunxiaoxx/nautilus-compass",
+  "description": "Drift-aware cross-agent memory · MCP/A2A · LongMemEval-S 56.6% · 1/15 Zep cost",
+  "title": "Nautilus Compass",
+  "websiteUrl": "https://github.com/chunxiaoxx/nautilus-compass",
+  "repository": {
+    "url": "https://github.com/chunxiaoxx/nautilus-compass",
+    "source": "github"
+  },
+  "version": "1.6.0",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "registryBaseUrl": "https://pypi.org",
+      "identifier": "nautilus-compass",
+      "version": "1.6.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "runtimeHint": "python3",
+      "runtimeArguments": [
+        {
+          "type": "named",
+          "name": "-m",
+          "value": "nautilus_compass.mcp_server",
+          "isRequired": true
+        }
+      ]
+    }
+  ],
+  "_meta": {
+    "io.modelcontextprotocol.registry/publisher-provided": {
+      "tool": "manual-publisher",
+      "version": "1.0.0",
+      "tags": [
+        "memory",
+        "drift-detection",
+        "a2a",
+        "dmas",
+        "bge-m3",
+        "longmemeval",
+        "agent-infrastructure"
+      ],
+      "benchmarks": {
+        "longmemeval_s": "56.6%",
+        "cost_vs_zep": "1/15"
+      },
+      "paper_url": "https://arxiv.org/abs/2512.02410",
+      "homepage": "https://compass.nautilus.social"
+    }
+  }
+}
