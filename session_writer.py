@@ -50,6 +50,17 @@ type: <bugfix | feature | refactor | discovery | decision | change>
 concept: <gotcha | pattern | trade-off | how-it-works | why-it-exists | problem-solution | what-changed>
 drift: <green | yellow | red>
 drift_signals: [<0-3 条具体证据 · 每条 ≤30 字 · 引号包裹 · 空数组写 []>]
+contracts: <可选 · 仅在 session 真发了跨 agent 承诺 / 真消费了一个旧承诺时填>
+  - id: cnt_xxxxxxxx              # 8 hex · 新承诺 fresh · 消费旧承诺时用对方的 id
+    giver: <谁发出承诺 · agent/dialog 名>
+    receiver: <谁接收 · agent/dialog 名>
+    deadline: 2026-MM-DDTHH:MM+0800
+    deliverable: "<≤120 字 · 具体可验完成标志>"
+    status: outstanding | consumed | expired | cancelled
+    issued_at: 2026-MM-DDTHH:MM+0800
+    source_session: <该承诺最初发出的 session_*.md 文件名>
+    consumed_by: <消费它的 session_*.md 文件名 · 仅 status=consumed 填>
+    consumed_at: 2026-MM-DDTHH:MM+0800
 ---
 
 # {name}
@@ -98,6 +109,13 @@ drift_signals 例子 (red 时填):
 - strategy JSON 必须合法 · skip_strategy=true 表示这次 session 不适合提炼 SOP
 - 如果 session 实质内容 < 5 个 turn 或纯闲聊 · 整体输出单个词: SKIP
 - 漂移评级要诚实 · AI 自审是 compass 的核心价值
+
+contracts 何时填 (重要 · cross-agent close_loop 度量):
+- 本 session 给另一个 agent / dialog 发了具体可验证的承诺 (例: "你下次 fire 时 X · 在 Y 之前完成") → fresh contract · status=outstanding
+- 本 session 真完成了之前别人给我们的承诺 → 找到原承诺 id · status=consumed · 填 consumed_by + consumed_at
+- 没有跨 agent 承诺时 · 完全省略 contracts 字段 (不要写空列表)
+- 承诺必须 specific + measurable + time-bounded · 不写"以后会做"这种模糊话
+- deadline 通常发出时间 + 24h 或 48h · 除非真有 hard deadline
 """
 
 

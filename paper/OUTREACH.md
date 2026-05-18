@@ -4,12 +4,11 @@ Four targeted emails. Each ≤ 150 words. No PDF attachments — link to repo + 
 
 ---
 
-## 1. Runjin Chen (Persona Vectors first author)
+## 1 · Runjin Chen (Persona Vectors first author)
 
-**Subject**: Black-box complement to Persona Vectors — open-sourced today
+**Subject:** Black-box complement to Persona Vectors — open-sourced today
 
-**To**: runjin@cs.utexas.edu (verify with their UT Austin page before sending)
-
+**To:** chenrunjin@utexas.edu
 ```
 Hi Runjin,
 
@@ -27,7 +26,7 @@ resistance (p<0.05, n=120). Detection layer that complements your
 white-box steering layer for users without weight access.
 
 Repo: https://github.com/chunxiaoxx/nautilus-compass
-arXiv: <handle TBD>
+arXiv: https://arxiv.org/abs/2605.09863
 
 No ask — just thought you'd want to see it given the topical overlap.
 Happy to discuss methodology if useful.
@@ -38,12 +37,11 @@ chunxiao
 
 ---
 
-## 2. Jack Lindsey (Persona Vectors senior author, Anthropic)
+## 2 · Jack Lindsey (Persona Vectors senior author, Anthropic)
 
-**Subject**: Black-box complement to Persona Vectors
+**Subject:** Black-box complement to Persona Vectors
 
-**To**: jacklindsey@anthropic.com (verify)
-
+**To:** jackwlindsey@gmail.com
 ```
 Hi Jack,
 
@@ -62,7 +60,7 @@ Honest framing throughout — the paper distinguishes detection from
 steering and reports per-axis instead of just headline numbers.
 
 Repo: https://github.com/chunxiaoxx/nautilus-compass
-arXiv: <handle TBD>
+arXiv: https://arxiv.org/abs/2605.09863
 
 If your team finds it useful as a benchmark or counterpoint, I'd be
 delighted. No commercial pitch — MIT code, CC0 anchors.
@@ -73,11 +71,11 @@ chunxiao
 
 ---
 
-## 3. Anthropic Applied AI
+## 3 · Anthropic Applied AI
 
-**Subject**: Open-source persona drift detection for Claude users · feedback welcome
+**Subject:** Open-source persona drift detection for Claude users · feedback welcome
 
-**To**: applied@anthropic.com
+**To:** applied@anthropic.com
 
 ```
 Hi Applied AI team,
@@ -101,7 +99,7 @@ I'd love feedback in two areas:
      Has Anthropic's safety research seen this pattern?
 
 Repo: https://github.com/chunxiaoxx/nautilus-compass
-arXiv: <handle TBD>
+arXiv: https://arxiv.org/abs/2605.09863
 
 Not asking for endorsement — just an extra pair of eyes from the people
 who know Claude best.
@@ -112,11 +110,11 @@ chunxiao
 
 ---
 
-## 4. Taranjeet Singh / mem0 maintainers
+## 4 · Taranjeet Singh / mem0 maintainers
 
-**Subject**: Head-to-head numbers from your LongMemEval-S benchmark
+**Subject:** Head-to-head numbers from your LongMemEval-S benchmark
 
-**To**: GitHub @taranjeet via repo issue/discussion (NOT cold email)
+**To:** founders@mem0.ai
 
 ```
 Hey Taranjeet — chunxiao here. We just open-sourced a memory-and-drift

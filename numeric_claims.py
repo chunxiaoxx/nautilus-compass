@@ -36,33 +36,37 @@ PATTERNS = [
 
 
 _FRONTMATTER_RE = re.compile(r"^---\s*\n(.*?)\n---\s*\n", re.S)
+# v1.5.3 #2 · 不再 anchor 到 frontmatter · 让正文段的 `numeric_claims_seed:` 块也能抓.
+# Token 够独特 · 不会在散文里误命中.
+_SEED_BLOCK_RE = re.compile(
+    r"numeric_claims_seed\s*:\s*\n((?:[ \t]*-\s+.*\n?)+)",
+    re.M,
+)
 
 
 def _parse_seed_block(text: str) -> list[dict]:
-    """v1.5.2 #2 · extract numeric_claims_seed from yaml frontmatter.
+    """v1.5.3 #2 · extract numeric_claims_seed from frontmatter OR body.
 
-    yaml list of strings like:
+    Searches anywhere in the document for `numeric_claims_seed:` followed by
+    indented `- ` list lines. Multiple blocks 合并. yaml list of strings like:
       - "v1.5.1 entries 56"
       - "anchors pos 28"
     runs PATTERNS over each string · returns matched claims.
     Avoids requiring PyYAML · regex extraction works for our 1-level list.
+
+    v1.5.2 → v1.5.3 change: 放弃 `^---...---` 前缀限制. Reason:
+    手写 session(via Write tool, 不走 session_writer) 经常把 seed 放代码块
+    描述里 · 不在 frontmatter · 导致全 miss.
     """
     out = []
-    m = _FRONTMATTER_RE.match(text)
-    if not m:
-        return out
-    fm = m.group(1)
-    seed_re = re.compile(r"numeric_claims_seed\s*:\s*\n((?:\s+-\s+.*\n?)+)", re.M)
-    sm = seed_re.search(fm)
-    if not sm:
-        return out
-    for line in sm.group(1).splitlines():
-        line = line.strip()
-        if not line.startswith("-"):
-            continue
-        item = line.lstrip("- ").strip().strip("\"'")
-        if item:
-            out.extend(extract_from_text(item))
+    for sm in _SEED_BLOCK_RE.finditer(text):
+        for line in sm.group(1).splitlines():
+            line = line.strip()
+            if not line.startswith("-"):
+                continue
+            item = line.lstrip("- ").strip().strip("\"'")
+            if item:
+                out.extend(extract_from_text(item))
     return out
 
 

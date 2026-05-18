@@ -44,7 +44,7 @@ STATE_FILE = Path(os.environ.get(
 ))
 WATCH_THREADS = os.environ.get(
     "CROSS_DIALOG_WATCH_THREADS",
-    "compass-platform-handoff,compass-dogfood-L3,spec-V7-actuator-collapse"
+    "compass-platform-handoff,compass-agent-handoff,compass-dogfood-L3,spec-V7-actuator-collapse"
 ).split(",")
 MAX_SEEN = 500  # state file rotation
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
