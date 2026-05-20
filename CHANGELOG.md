@@ -1,5 +1,39 @@
 # Changelog
 
+## [1.6.3] · 2026-05-20 — "packaging fix · v1.6.2 was broken"
+
+Critical packaging fix. v1.6.2 wheel only included top-level files;
+`from nautilus_compass.sdk.attach_memory import attach_memory` failed
+with `ModuleNotFoundError: No module named 'nautilus_compass.sdk'` at
+install time. All 6 console scripts (compass-mcp, compass-drift-history,
+etc) were broken in v1.6.2.
+
+### Fix
+
+- `pyproject.toml`: `packages` list now explicitly includes
+  `nautilus_compass.sdk` and `nautilus_compass.middleware`;
+  `package-dir` maps each subdir.
+- `sdk/__init__.py`: created (re-exports `attach_memory` for the
+  public API surface).
+- `__init__.py`: `__version__` synced `1.5.1` → `1.6.3` (was stale
+  across v1.5.x and v1.6.x releases).
+- `package.json`: `1.6.2` → `1.6.3`.
+
+### Verified
+
+- `pip install nautilus-compass==1.6.3`
+- `from nautilus_compass.sdk import attach_memory` · OK
+- `nautilus_compass.__version__ == "1.6.3"` · OK
+- `nautilus_compass.middleware` · OK
+
+### Note on missing v1.5.3 → v1.6.2 entries
+
+This file lags real releases (v1.5.3, v1.5.6, v1.5.7, v1.6.0, v1.6.1,
+v1.6.2). Their commit messages are the canonical source for now;
+backfill PR planned.
+
+---
+
 ## [1.5.2] · 2026-05-13 — "self-verify caught fake-closure · 3 gates"
 
 Patch over v1.5.1. Self-verifying v1.5.1 surfaced one fake-closure
