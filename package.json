@@ -1,6 +1,6 @@
 {
   "name": "nautilus-compass",
-  "version": "1.6.2",
+  "version": "1.6.3",
   "description": "Cross-agent memory layer · MCP + A2A protocol · drift-aware · open eval (LongMemEval-S 56.6% · EverMemBench 44.4-47.3%) · Claude Code/Desktop/Cursor/Cline/Continue/Zed",
   "keywords": [
     "mcp",
