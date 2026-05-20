@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nautilus-compass"
-version = "1.6.2"
+version = "1.6.3"
 description = "Cross-agent memory layer for the Nautilus platform · MCP/A2A protocol · drift-aware writer · LongMemEval-S benchmark · E2EE-ready"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -55,14 +55,16 @@ compass-session-search = "nautilus_compass.session_search:main"
 compass-session-writer = "nautilus_compass.session_writer:main"
 
 [tool.setuptools]
-# Map package "nautilus_compass" to repo root · all top-level .py files
-# become submodules. Explicit `packages` (not `find`) avoids setuptools
-# also treating tests/, scripts/, etc as packages.
-packages = ["nautilus_compass"]
-package-dir = {"nautilus_compass" = "."}
+# v1.6.3 fix: must include sdk/ and middleware/ as subpackages.
+# v1.6.2 was broken — only top-level was packaged, so `nautilus_compass.sdk`
+# and `nautilus_compass.middleware` imports failed at install time.
+# Explicit list (not `find`) avoids setuptools treating tests/, scripts/, etc as packages.
+packages = ["nautilus_compass", "nautilus_compass.sdk", "nautilus_compass.middleware"]
+package-dir = {"nautilus_compass" = ".", "nautilus_compass.sdk" = "sdk", "nautilus_compass.middleware" = "middleware"}
 
 [tool.setuptools.package-data]
 "nautilus_compass" = ["anchors*.json", "*.sh"]
+"nautilus_compass.sdk" = ["*.md"]
 
 [tool.ruff]
 line-length = 100
