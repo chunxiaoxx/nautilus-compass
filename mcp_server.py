@@ -434,6 +434,20 @@ def tool_ingest_obs(args: dict) -> dict:
         proof_of_recall = "not_attempted"
         proof_reason = ""
 
+    # v1.7 · MEME-extension · declaration_field (depends_on / declaration_type / supersedes)
+    # See paper/SPEC_DECLARATION_FIELD.md §2 for design rationale.
+    depends_on = args.get("depends_on") or []
+    if not isinstance(depends_on, list):
+        depends_on = []
+    declaration_type = (args.get("declaration_type") or "none").strip()
+    if declaration_type not in ("cascade", "absence", "deletion", "none"):
+        declaration_type = "none"
+    supersedes = args.get("supersedes") or []
+    if not isinstance(supersedes, list):
+        supersedes = []
+    if declaration_type != "deletion":
+        supersedes = []  # only meaningful when declaration_type=deletion
+
     # Format as v0.8 session_*.md frontmatter
     from datetime import datetime
     ts = datetime.now().strftime("%Y%m%d-%H%M")
@@ -451,6 +465,13 @@ def tool_ingest_obs(args: dict) -> dict:
     proof_lines = f"\nproof_of_recall: {proof_of_recall}"
     if proof_reason:
         proof_lines += f"\nproof_of_recall_reason: {proof_reason}"
+    # v1.7 · MEME-extension · emit depends_on/declaration_type/supersedes
+    dep_lines = ""
+    if depends_on:
+        dep_lines += "\ndepends_on:\n  - " + "\n  - ".join(depends_on)
+    dep_lines += f"\ndeclaration_type: {declaration_type}"
+    if supersedes:
+        dep_lines += "\nsupersedes:\n  - " + "\n  - ".join(supersedes)
     md = f"""---
 name: {name}
 description: {description[:200]}
@@ -460,7 +481,7 @@ drift: {drift}
 drift_signals: {signals_yaml}
 agent_type: {agent_type}
 user_id: {user_id}
-ingested_via: mcp{thread_lines}{proof_lines}
+ingested_via: mcp{thread_lines}{proof_lines}{dep_lines}
 ---
 
 # {name}
@@ -1203,6 +1224,9 @@ TOOLS = {
                     "thread_role": {"type": "string", "enum": ["outbound","inbound","self_note"], "description": "v1.1 · Role of this message in the thread. Required if thread_id is set."},
                     "recall_token": {"type": "string", "description": "v1.5 · proof-of-recall · token from a prior recall call (30 min TTL). Pair with cited_snippets to prove you actually consumed the recall hits. Omit if no recall preceded this ingest."},
                     "cited_snippets": {"type": "array", "items": {"type": "string"}, "default": [], "description": "v1.5 · proof-of-recall · list of snippet quotes (file basenames or description fragments ≥20 chars). At least one must overlap a top-3 entry from the recall_token. Failure marks proof_of_recall=fail in frontmatter (still writes · advisory)."},
+                    "depends_on": {"type": "array", "items": {"type": "string"}, "default": [], "description": "v1.7 · MEME-extension · 0-5 file basenames of session_*.md this entry causally depends on. Empty list if standalone. Powers cascade-closure recall via transitive BFS (depth ≤ 3) when COMPASS_CHAIN_RECALL=1."},
+                    "declaration_type": {"type": "string", "enum": ["cascade", "absence", "deletion", "none"], "default": "none", "description": "v1.7 · MEME-extension · cascade=needs ancestors to interpret / absence=asserts X did NOT happen (MEME Abs) / deletion=supersedes earlier obs (MEME Del) / none=standalone."},
+                    "supersedes": {"type": "array", "items": {"type": "string"}, "default": [], "description": "v1.7 · MEME-extension · only meaningful when declaration_type=deletion · file basenames being retracted. Recall down-weights superseded entries."},
                 },
                 "required": ["name"],
             },

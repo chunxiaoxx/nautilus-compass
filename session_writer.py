@@ -50,6 +50,9 @@ type: <bugfix | feature | refactor | discovery | decision | change>
 concept: <gotcha | pattern | trade-off | how-it-works | why-it-exists | problem-solution | what-changed>
 drift: <green | yellow | red>
 drift_signals: [<0-3 条具体证据 · 每条 ≤30 字 · 引号包裹 · 空数组写 []>]
+depends_on: [<0-5 file basenames of session_*.md this entry causally depends on · empty list if standalone · v1.7 MEME-extension>]
+declaration_type: <cascade | absence | deletion | none · default none · v1.7 MEME-extension>
+supersedes: [<only when declaration_type=deletion · file basenames being retracted · v1.7 MEME-extension>]
 contracts: <可选 · 仅在 session 真发了跨 agent 承诺 / 真消费了一个旧承诺时填>
   - id: cnt_xxxxxxxx              # 8 hex · 新承诺 fresh · 消费旧承诺时用对方的 id
     giver: <谁发出承诺 · agent/dialog 名>

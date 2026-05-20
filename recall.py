@@ -183,10 +183,35 @@ def parse_memory_file(path: Path) -> dict:
     if text.startswith("---"):
         end = text.find("\n---", 4)
         if end > 0:
+            # v1.7 · list-aware parser: empty scalar value `key:` followed by
+            # indented `- item` lines accumulates into fm[key] = [...]. Plain
+            # `key: value` stays scalar. Nested mappings (`- id: x`) reset state.
+            cur_list_key = None
             for line in text[4:end].split("\n"):
+                stripped = line.strip()
+                if cur_list_key and stripped.startswith("- "):
+                    item = stripped[2:].strip()
+                    if ":" in item:
+                        # nested mapping (e.g. contracts:) · do not treat as
+                        # string list · drop out of list mode
+                        cur_list_key = None
+                        continue
+                    item = item.strip('"').strip("'")
+                    if item:
+                        fm[cur_list_key].append(item)
+                    continue
                 if ":" in line:
                     k, _, v = line.partition(":")
-                    fm[k.strip()] = v.strip()
+                    key = k.strip()
+                    val = v.strip()
+                    if val == "":
+                        fm[key] = []
+                        cur_list_key = key
+                    else:
+                        fm[key] = val
+                        cur_list_key = None
+                else:
+                    cur_list_key = None
             body = text[end + 4:].strip()
     age_seconds = time.time() - path.stat().st_mtime
     age_days = age_seconds / 86400
@@ -196,17 +221,24 @@ def parse_memory_file(path: Path) -> dict:
         age_str = f"{int(age_days)}d"
     else:
         age_str = f"{int(age_days/30)}mo"
+    # v1.7 · MEME-extension · expose new frontmatter fields for chain recall
+    _dep = fm.get("depends_on", [])
+    _sup = fm.get("supersedes", [])
     return {
-        "name": fm.get("name", path.stem),
-        "description": fm.get("description", "")[:120],
-        "type": fm.get("type", "?"),
+        "name": fm.get("name", path.stem) if isinstance(fm.get("name"), str) else path.stem,
+        "description": (fm.get("description", "") if isinstance(fm.get("description"), str) else "")[:120],
+        "type": fm.get("type", "?") if isinstance(fm.get("type"), str) else "?",
         "age_seconds": age_seconds,
         "age_str": age_str,
         "path": path.name,
         "body": body[:1500],          # v1.0+ · for body-embed render · v0
-        "embed_text": (fm.get("description", "") + "\n" + body)[:EMBED_MAX_CHARS],
+        "embed_text": ((fm.get("description", "") if isinstance(fm.get("description"), str) else "") + "\n" + body)[:EMBED_MAX_CHARS],
         "mtime": path.stat().st_mtime,
         "fullpath": str(path),
+        # v1.7 · MEME-extension fields (chain recall)
+        "depends_on": _dep if isinstance(_dep, list) else [],
+        "declaration_type": fm.get("declaration_type", "none") if isinstance(fm.get("declaration_type"), str) else "none",
+        "supersedes": _sup if isinstance(_sup, list) else [],
     }
 
 
@@ -600,6 +632,79 @@ def render_v01_metadata_mode(entries: list) -> None:
             print(f"  ... +{len(older)-6} 条更老")
 
 
+def transitive_close(top: list, all_entries: list, max_depth: int = 3) -> list:
+    """v1.7 · MEME-extension · expand top-K with depends_on ancestors via BFS.
+
+    Args:
+        top: list of (score, entry_dict) tuples · BGE top-K cosine seeds
+        all_entries: full entries list · index target for ancestor lookup
+        max_depth: BFS cap (default 3 · Seokwon 32k-filler avg chain depth ~2.4)
+
+    Returns:
+        list of (score, entry) · seeds preserved + ancestors appended.
+        Ancestors are NOT re-cosined · they are pinned because the seed declared
+        them via `depends_on:` frontmatter field. Synthetic score = -(depth+1)
+        sorts ancestors below cosine top but above fresh fallback.
+
+    See paper/SPEC_DECLARATION_FIELD.md §3b for design rationale.
+    """
+    index = {e["path"]: e for e in all_entries}
+    seen = {e["path"] for _, e in top}
+    out = list(top)
+    frontier = [(0, e) for _, e in top]
+    while frontier:
+        depth, e = frontier.pop(0)
+        if depth >= max_depth:
+            continue
+        for parent_name in (e.get("depends_on") or []):
+            parent = index.get(parent_name)
+            if parent is None or parent["path"] in seen:
+                continue
+            seen.add(parent["path"])
+            out.append((-(depth + 1.0), parent))
+            frontier.append((depth + 1, parent))
+    return out
+
+
+def verify_cascade_closure(top: list, query: str = "") -> dict:
+    """v1.7 · MEME-extension · MEME bench harness helper.
+
+    Given recall top-K, verify that every `declaration_type=cascade` hit has
+    all its `depends_on` ancestors also present in top. For MEME Cas scoring.
+
+    Args:
+        top: list of (score, entry_dict) tuples · recall output
+        query: optional original query string (unused · reserved for logging)
+
+    Returns:
+        {"complete": bool, "missing": list[dict], "cascade_hits": int}
+        · complete = True iff no missing ancestors
+        · missing = [{"cascade": <path>, "missing_ancestor": <name>}, ...]
+        · cascade_hits = count of cascade-typed entries in top
+
+    Used by MEME eval harness only · not production recall path.
+    See paper/SPEC_DECLARATION_FIELD.md §3c.
+    """
+    top_paths = {e["path"] for _, e in top}
+    cascade_hits = 0
+    missing = []
+    for _score, e in top:
+        if e.get("declaration_type") != "cascade":
+            continue
+        cascade_hits += 1
+        for parent_name in (e.get("depends_on") or []):
+            if parent_name not in top_paths:
+                missing.append({
+                    "cascade": e["path"],
+                    "missing_ancestor": parent_name,
+                })
+    return {
+        "complete": len(missing) == 0,
+        "missing": missing,
+        "cascade_hits": cascade_hits,
+    }
+
+
 def render_v02_vector_mode(entries: list, query: str, cache: dict) -> None:
     """v0.2 真 BGE 向量召回 · 没装 BGE 时直接回 metadata 模式 (n-gram 中文召回不准)."""
     embedder = get_embedder()
@@ -638,6 +743,11 @@ def render_v02_vector_mode(entries: list, query: str, cache: dict) -> None:
 
     scored.sort(key=lambda x: -x[0])
     top = scored[:TOP_K]
+
+    # v1.7 · MEME-extension · transitive_close via depends_on BFS · staged rollout
+    # Enable with COMPASS_CHAIN_RECALL=1 · ancestors pinned with synthetic score -depth-1
+    if os.environ.get("COMPASS_CHAIN_RECALL") == "1":
+        top = transitive_close(top, entries)
 
     if not top:
         print(f"⚠️ 无 score ≥ {threshold} 的相关 memory ({scoring_method}) · 降级 metadata")
