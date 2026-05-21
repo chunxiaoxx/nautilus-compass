@@ -1289,6 +1289,65 @@ def tool_add_worker(args: dict) -> dict:
     return _ok(f"Worker '{name}' (type={spec_type}) registered · {workers_file.name}")
 
 
+def tool_proof_of_impact(args: dict) -> dict:
+    """v1.7.1 · S4 · Proof-of-Impact MCP tool · trace agent action to cited memory.
+
+    Records PoI event via proof/poi_emitter.emit_full · which:
+      1. Writes NAU records to .cache/poi_emit.jsonl (suppressing self-cite)
+      2. Appends full event to .cache/poi_events.jsonl audit log
+      3. Updates cited memory frontmatter (cumulative_impact / event_count / last_at)
+
+    Caller computes impact_score via proof.poi_calculator beforehand or passes
+    explicit value. drift_penalty applied via memory frontmatter scan.
+
+    Reference: paper/SPEC_PROOF_OF_IMPACT.md sections 3-5.
+    """
+    try:
+        from proof.poi_schema import ProofOfImpact
+        from proof.poi_calculator import compute_with_drift
+        from proof.poi_emitter import emit_full
+    except ImportError as e:
+        return _err(f"proof subpackage not importable: {e}")
+
+    action_id = (args.get("action_id") or "").strip()
+    if not action_id:
+        return _err("action_id required")
+    agent_id = (args.get("agent_id") or "").strip()
+    if not agent_id:
+        return _err("agent_id required")
+    cited = args.get("cited_memory_paths") or []
+    if not isinstance(cited, list) or not cited:
+        return _err("cited_memory_paths (list) required · cannot be empty")
+    outcome = (args.get("action_outcome") or "pending").strip()
+    if outcome not in ("success", "failure", "partial", "pending"):
+        return _err(f"action_outcome must be one of success/failure/partial/pending · got {outcome!r}")
+    from datetime import datetime, timezone
+    now_iso = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    timestamp_action = (args.get("timestamp_action") or now_iso).strip()
+    timestamp_outcome = (args.get("timestamp_outcome") or now_iso).strip()
+
+    try:
+        poi = ProofOfImpact(
+            action_id=action_id,
+            agent_id=agent_id,
+            cited_memory_paths=cited,
+            action_outcome=outcome,
+            timestamp_action=timestamp_action,
+            timestamp_outcome=timestamp_outcome,
+            declaration_type=(args.get("declaration_type") or "supports").strip(),
+            notes=(args.get("notes") or "").strip(),
+        )
+    except ValueError as e:
+        return _err(f"PoI validation: {e}")
+
+    score = compute_with_drift(poi)
+    result = emit_full(poi)
+    return _ok(
+        f"PoI recorded · action={action_id} · score={score} · "
+        f"nau_records={result['nau_records']} · frontmatter_updated={result['frontmatter_updated']}"
+    )
+
+
 TOOLS = {
     "ingest_obs": {
         "fn": tool_ingest_obs,
@@ -1545,6 +1604,27 @@ TOOLS = {
                     "dry_run": {"type": "boolean", "default": False, "description": "Compute the plan and return it without writing queue files · for inspection"},
                 },
                 "required": ["goal"],
+            },
+        },
+    },
+    "proof_of_impact": {
+        "fn": tool_proof_of_impact,
+        "schema": {
+            "name": "proof_of_impact",
+            "description": "v1.7.1 · S4 · Proof-of-Impact · trace agent action to cited memory · deterministic impact score (LLM-free formula) · emits NAU records to .cache/poi_emit.jsonl + full event log + frontmatter cumulative_impact update. Suppresses self-cite by default. action_outcome enum: success/failure/partial/pending. See paper/SPEC_PROOF_OF_IMPACT.md.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "action_id": {"type": "string", "description": "External action ID (V5 bounty_id, V7 task_id, etc.)"},
+                    "agent_id": {"type": "string", "description": "Acting agent identifier"},
+                    "cited_memory_paths": {"type": "array", "items": {"type": "string"}, "description": "Memory paths cited during action (from prior recall_token + cited_snippets)"},
+                    "action_outcome": {"type": "string", "enum": ["success", "failure", "partial", "pending"], "default": "pending"},
+                    "timestamp_action": {"type": "string", "description": "ISO8601 when action started (defaults to now)"},
+                    "timestamp_outcome": {"type": "string", "description": "ISO8601 when outcome observed (defaults to now)"},
+                    "declaration_type": {"type": "string", "enum": ["supports", "contradicts", "neutral"], "default": "supports"},
+                    "notes": {"type": "string", "description": "≤200 char optional narrative"},
+                },
+                "required": ["action_id", "agent_id", "cited_memory_paths"],
             },
         },
     },
