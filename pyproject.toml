@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nautilus-compass"
-version = "1.6.3"
-description = "Cross-agent memory layer for the Nautilus platform · MCP/A2A protocol · drift-aware writer · LongMemEval-S benchmark · E2EE-ready"
+version = "1.7.1"
+description = "Opinionated EvoMap · cross-agent memory with schema-declared 4-tier lifecycle + Ebbinghaus decay + LLM-free promotion · MCP/A2A · drift-aware · LongMemEval-S 56.6%"
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }

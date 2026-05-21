@@ -1,7 +1,7 @@
 {
   "name": "nautilus-compass",
-  "version": "1.6.3",
-  "description": "Cross-agent memory layer · MCP + A2A protocol · drift-aware · open eval (LongMemEval-S 56.6% · EverMemBench 44.4-47.3%) · Claude Code/Desktop/Cursor/Cline/Continue/Zed",
+  "version": "1.7.1",
+  "description": "Opinionated EvoMap · cross-agent memory with schema-declared lifecycle (4-tier · Ebbinghaus decay · LLM-free promotion) · MCP + A2A · drift-aware · LongMemEval-S 56.6% · EverMemBench 44.4-47.3% · Claude Code/Desktop/Cursor/Cline/Continue/Zed",
   "keywords": [
     "mcp",
     "a2a",
@@ -33,7 +33,8 @@
     "LICENSE"
   ],
   "engines": {
-    "node": ">=18"
+    "node": ">=18",
+    "bun": ">=1.0"
   },
   "scripts": {
     "test": "node bin/compass-mcp.js --self-check",
