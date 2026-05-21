@@ -448,6 +448,33 @@ def tool_ingest_obs(args: dict) -> dict:
     if declaration_type != "deletion":
         supersedes = []  # only meaningful when declaration_type=deletion
 
+    # v1.7.1 · lifecycle extension (llm-wiki2 fuse) · tier/decay_rate/forget_at/promote_after/reinforce_count
+    # See paper/LLM_WIKI2_FUSE_DESIGN.md §3 for schema rationale.
+    LIFECYCLE_TIERS = ("working", "episodic", "semantic", "procedural")
+    TIER_DEFAULT_PROMOTE = {
+        "working": "1_access",
+        "episodic": "5_access",
+        "semantic": "20_access",
+        "procedural": None,
+    }
+    tier = (args.get("tier") or "working").strip()
+    if tier not in LIFECYCLE_TIERS:
+        tier = "working"
+    try:
+        decay_rate = float(args.get("decay_rate", 0.5))
+        if not (0.0 <= decay_rate <= 1.0):
+            decay_rate = 0.5
+    except (TypeError, ValueError):
+        decay_rate = 0.5
+    forget_at = (args.get("forget_at") or "").strip() or None
+    promote_after = (args.get("promote_after") or "").strip() or TIER_DEFAULT_PROMOTE.get(tier)
+    try:
+        reinforce_count = int(args.get("reinforce_count", 0))
+        if reinforce_count < 0:
+            reinforce_count = 0
+    except (TypeError, ValueError):
+        reinforce_count = 0
+
     # Format as v0.8 session_*.md frontmatter
     from datetime import datetime
     ts = datetime.now().strftime("%Y%m%d-%H%M")
@@ -472,6 +499,16 @@ def tool_ingest_obs(args: dict) -> dict:
     dep_lines += f"\ndeclaration_type: {declaration_type}"
     if supersedes:
         dep_lines += "\nsupersedes:\n  - " + "\n  - ".join(supersedes)
+
+    # v1.7.1 · lifecycle extension · emit tier/decay_rate/forget_at/promote_after/reinforce_count
+    # See paper/LLM_WIKI2_FUSE_DESIGN.md §3.
+    lifecycle_lines = f"\ntier: {tier}"
+    lifecycle_lines += f"\ndecay_rate: {decay_rate}"
+    if forget_at:
+        lifecycle_lines += f"\nforget_at: {forget_at}"
+    if promote_after:
+        lifecycle_lines += f"\npromote_after: {promote_after}"
+    lifecycle_lines += f"\nreinforce_count: {reinforce_count}"
     md = f"""---
 name: {name}
 description: {description[:200]}
@@ -481,7 +518,7 @@ drift: {drift}
 drift_signals: {signals_yaml}
 agent_type: {agent_type}
 user_id: {user_id}
-ingested_via: mcp{thread_lines}{proof_lines}{dep_lines}
+ingested_via: mcp{thread_lines}{proof_lines}{dep_lines}{lifecycle_lines}
 ---
 
 # {name}
@@ -1227,6 +1264,11 @@ TOOLS = {
                     "depends_on": {"type": "array", "items": {"type": "string"}, "default": [], "description": "v1.7 · MEME-extension · 0-5 file basenames of session_*.md this entry causally depends on. Empty list if standalone. Powers cascade-closure recall via transitive BFS (depth ≤ 3) when COMPASS_CHAIN_RECALL=1."},
                     "declaration_type": {"type": "string", "enum": ["cascade", "absence", "deletion", "none"], "default": "none", "description": "v1.7 · MEME-extension · cascade=needs ancestors to interpret / absence=asserts X did NOT happen (MEME Abs) / deletion=supersedes earlier obs (MEME Del) / none=standalone."},
                     "supersedes": {"type": "array", "items": {"type": "string"}, "default": [], "description": "v1.7 · MEME-extension · only meaningful when declaration_type=deletion · file basenames being retracted. Recall down-weights superseded entries."},
+                    "tier": {"type": "string", "enum": ["working", "episodic", "semantic", "procedural"], "default": "working", "description": "v1.7.1 · lifecycle (llm-wiki2 fuse) · llm-wiki2 4-tier names verbatim. Default working."},
+                    "decay_rate": {"type": "number", "minimum": 0.0, "maximum": 1.0, "default": 0.5, "description": "v1.7.1 · lifecycle · Ebbinghaus exponential decay rate (0.0-1.0). Resets on access event."},
+                    "forget_at": {"type": "string", "description": "v1.7.1 · lifecycle · ISO8601 timestamp · soft-archive when reached. Null/omit = never forget."},
+                    "promote_after": {"type": "string", "description": "v1.7.1 · lifecycle · '<N>d' duration OR '<N>_access' count for tier promotion. Default by tier (working=1_access · episodic=5_access · semantic=20_access · procedural=null)."},
+                    "reinforce_count": {"type": "integer", "minimum": 0, "default": 0, "description": "v1.7.1 · lifecycle · access event 累计. Each recall hit increments. Resets decay timer."},
                 },
                 "required": ["name"],
             },

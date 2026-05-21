@@ -53,6 +53,11 @@ drift_signals: [<0-3 条具体证据 · 每条 ≤30 字 · 引号包裹 · 空�
 depends_on: [<0-5 file basenames of session_*.md this entry causally depends on · empty list if standalone · v1.7 MEME-extension>]
 declaration_type: <cascade | absence | deletion | none · default none · v1.7 MEME-extension>
 supersedes: [<only when declaration_type=deletion · file basenames being retracted · v1.7 MEME-extension>]
+tier: <working | episodic | semantic | procedural · default working · v1.7.1 lifecycle (llm-wiki2 fuse)>
+decay_rate: <0.0-1.0 float · default 0.5 · Ebbinghaus exponential decay · v1.7.1 lifecycle>
+forget_at: <ISO8601 timestamp or null=never · v1.7.1 lifecycle · soft-archive when reached>
+promote_after: <"Nd" duration OR "N_access" count · default by tier · v1.7.1 lifecycle>
+reinforce_count: <int · default 0 · access event 累计 · v1.7.1 lifecycle · resets decay on each access>
 contracts: <可选 · 仅在 session 真发了跨 agent 承诺 / 真消费了一个旧承诺时填>
   - id: cnt_xxxxxxxx              # 8 hex · 新承诺 fresh · 消费旧承诺时用对方的 id
     giver: <谁发出承诺 · agent/dialog 名>
