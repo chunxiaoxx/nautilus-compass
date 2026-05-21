@@ -62,6 +62,67 @@ by its own history of failure patterns.
 
 ---
 
+## What's new in v1.7.1 · Opinionated EvoMap
+
+v1.7.1 ships a deterministic **lifecycle layer** on top of the black-box
+memory base — paradigm fuse of [llm-wiki2](https://gist.github.com/rohitg00/2067ab416f7bbe447c1977edaaa681e2) (Karpathy v2),
+[agentmemory](https://github.com/rohitg00/agentmemory) (LongMemEval-S 95.2% R@5),
+and [GBrain](https://github.com/garrytan/gbrain) (Garry Tan · MIT).
+
+**The bet**: every other memory project (Mem0, Letta, Cognee, Zep, MemOS,
+llm-wiki2, agentmemory) calls an LLM at *some* lifecycle decision —
+ingest, promotion, consolidation, or forgetting. compass v1.7.1 makes
+them all schema-declared.
+
+### 5 new frontmatter fields (write-time LLM-free)
+
+```yaml
+tier: working | episodic | semantic | procedural   # 4 tiers verbatim from llm-wiki2
+decay_rate: 0.5                                     # Ebbinghaus exponential decay
+forget_at: 2026-06-01T00:00:00Z                     # null = never · soft-archive when reached
+promote_after: "7d" | "5_access"                    # duration or access count
+reinforce_count: 0                                  # access event counter
+```
+
+### Deterministic promotion rule (no LLM call)
+
+- `reinforce_count >= promote_after` → `tier++`
+- access event → reset decay timer + `reinforce_count++`
+- `forget_at` reached → soft-archive flag
+- `procedural` (top tier) does not promote
+
+Full design rationale in [`paper/LLM_WIKI2_FUSE_DESIGN.md`](paper/LLM_WIKI2_FUSE_DESIGN.md);
+implementation at [`recall.py:708+`](recall.py).
+
+### Other v1.7.1 additions
+
+- **9 agentmemory-verbatim lifecycle hooks** in `stop_hook.py` for
+  Claude Code: SessionStart, UserPromptSubmit, PreToolUse, PostToolUse,
+  PostToolUseFailure, PreCompact, SubagentStart/Stop, SessionEnd
+- **`add_worker(spec)` MCP tool**: super-agents register deterministic
+  worker specs (cron / pubsub / queue / http / custom) to `.cache/workers.jsonl`
+- **RRF k=60 fusion** in `recall.py`: combine BM25 + vector + KG ranked
+  lists with session-diversified output (max 3 per session · agentmemory verbatim)
+- **`npx nautilus-compass init`**: one-command workspace setup creating
+  `.compass/.env`, sample anchors, and Claude Code hook templates
+
+### "Opinionated" — what we declined
+
+Frame borrowed from [GBrain](https://github.com/garrytan/gbrain)
+("Garry's Opinionated OpenClaw/Hermes Agent Brain"). compass v1.7.1 takes
+a stance on what *not* to include:
+
+- ❌ **No LLM at ingest** (USD 3.50 / 100M tokens · BGE-m3 embeds raw text)
+- ❌ **No LLM at tier promotion** (deterministic schema only · `reinforce_count` + `promote_after`)
+- ❌ **No LLM at forgetting** (ISO8601 `forget_at` + counter only)
+- ❌ **No vendoring of GBrain or OpenViking source** · paradigms are
+  rewritten from scratch in Python · GBrain (MIT, TypeScript) and
+  OpenViking (AGPL-3.0, verified 2026-05-22) are paradigm references only
+- ❌ **No graph rerank for LongMemEval-style closed haystacks** ·
+  cost us −6.2 pts in v0.8 ([`paper/RESULTS_v0.8.md`](paper/RESULTS_v0.8.md))
+
+---
+
 ## What problem does this solve
 
 ### A. Long sessions drift
