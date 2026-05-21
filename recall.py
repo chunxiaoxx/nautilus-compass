@@ -807,6 +807,85 @@ def promote_lifecycle_tier(entry: dict, now=None) -> dict:
     }
 
 
+def rrf_fusion(*ranked_lists, k: int = 60, top_k: int = 10,
+               session_diversify: bool = True, max_per_session: int = 3) -> list:
+    """v1.7.1 · Phase 2.C · Reciprocal Rank Fusion · agentmemory paradigm.
+
+    Combine multiple ranked retrieval lists (e.g. BM25 + vector + graph) into a
+    single fused ranking. Each list contributes 1/(k + rank_i + 1) to each
+    item's cumulative RRF score · agentmemory verbatim default k=60.
+
+    Args:
+        *ranked_lists: each list = [(score, entry), ...] · order matters (rank = index)
+                       · entry must be a dict with "path" key (unique identifier)
+        k: RRF damping constant (default 60 · agentmemory verbatim)
+        top_k: max items in fused output
+        session_diversify: if True · cap max_per_session hits per session group
+                          (agentmemory verbatim · default max=3)
+        max_per_session: cap per session group when session_diversify=True
+
+    Returns:
+        [(fused_score, entry), ...] · top_k limited · session-diversified if requested
+
+    Reference · agentmemory README (rohitg00 · 15.3K stars · LongMemEval-S 95.2% R@5)
+    · "Reciprocal Rank Fusion (RRF, k=60) · session-diversified (max 3 results per session)".
+
+    No LLM · pure rank-based arithmetic · deterministic.
+    """
+    from pathlib import Path as _Path
+
+    # Identify each entry by path (unique key)
+    fused_scores: dict = {}  # path → cumulative RRF score
+    entry_by_path: dict = {}
+
+    for ranked in ranked_lists:
+        if not ranked:
+            continue
+        for rank, item in enumerate(ranked):
+            # Item shape · (score, entry) tuple · or bare entry dict
+            if isinstance(item, tuple) and len(item) >= 2:
+                entry = item[1]
+            elif isinstance(item, dict):
+                entry = item
+            else:
+                continue
+            if not isinstance(entry, dict):
+                continue
+            path = entry.get("path")
+            if not path:
+                continue
+            entry_by_path[path] = entry
+            # RRF formula · 1 / (k + rank + 1) · rank 0-indexed → 1-indexed for fairness
+            fused_scores[path] = fused_scores.get(path, 0.0) + 1.0 / (k + rank + 1)
+
+    # Sort by fused score desc
+    sorted_paths = sorted(fused_scores.items(), key=lambda x: x[1], reverse=True)
+
+    if not session_diversify:
+        return [(score, entry_by_path[path]) for path, score in sorted_paths[:top_k]]
+
+    # Session-diversified · cap max_per_session per session group
+    session_counts: dict = {}
+    output: list = []
+    for path, score in sorted_paths:
+        entry = entry_by_path[path]
+        # Session id · prefer explicit · fallback to parent directory
+        session_id = entry.get("session_id") or entry.get("thread_id")
+        if not session_id:
+            try:
+                session_id = _Path(path).parent.name
+            except Exception:
+                session_id = "unknown"
+        if session_counts.get(session_id, 0) >= max_per_session:
+            continue
+        session_counts[session_id] = session_counts.get(session_id, 0) + 1
+        output.append((score, entry))
+        if len(output) >= top_k:
+            break
+
+    return output
+
+
 def render_v02_vector_mode(entries: list, query: str, cache: dict) -> None:
     """v0.2 真 BGE 向量召回 · 没装 BGE 时直接回 metadata 模式 (n-gram 中文召回不准)."""
     embedder = get_embedder()

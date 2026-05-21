@@ -1239,6 +1239,56 @@ def tool_governance_plan(args: dict) -> dict:
     return _ok(msg)
 
 
+def tool_add_worker(args: dict) -> dict:
+    """v1.7.1 · Phase 2.B · agentmemory iii worker plug paradigm.
+
+    Narrow scope · register a deterministic worker spec for super-agent
+    self-evolving runtime. No code execution · just spec persisted to
+    .cache/workers.jsonl for inspection by upstream runtime (V5 / V7).
+
+    Use case · super-agent declares "I want a `iii-cron-daily` worker that
+    fires at 09:00 daily" · this tool records the spec deterministically.
+
+    Reference · agentmemory README (rohitg00 · 15.3K stars) iii worker add
+    paradigm verbatim · paper/LLM_WIKI2_FUSE_DESIGN.md §3 for schema fit.
+    """
+    import json as _json
+    from datetime import datetime, timezone
+
+    name = (args.get("name") or "").strip()
+    if not name:
+        return _err("name required")
+    spec_type = (args.get("spec_type") or "custom").strip()
+    if spec_type not in ("cron", "pubsub", "queue", "http", "custom"):
+        spec_type = "custom"
+    description = (args.get("description") or "").strip()
+    config = args.get("config") or {}
+    if not isinstance(config, dict):
+        config = {}
+    agent_type = (args.get("agent_type")
+                  or os.environ.get("COMPASS_AGENT_TYPE")
+                  or "custom").strip()
+
+    ts = datetime.now(timezone.utc).isoformat()
+    record = {
+        "name": name,
+        "spec_type": spec_type,
+        "description": description[:200],
+        "config": config,
+        "registered_at": ts,
+        "agent_type": agent_type,
+        "registered_by": "compass_mcp",
+    }
+
+    cache_dir = Path.home() / ".claude" / "plugins" / "nautilus-compass" / ".cache"
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    workers_file = cache_dir / "workers.jsonl"
+    with workers_file.open("a", encoding="utf-8") as f:
+        f.write(_json.dumps(record, ensure_ascii=False) + "\n")
+
+    return _ok(f"Worker '{name}' (type={spec_type}) registered · {workers_file.name}")
+
+
 TOOLS = {
     "ingest_obs": {
         "fn": tool_ingest_obs,
@@ -1495,6 +1545,24 @@ TOOLS = {
                     "dry_run": {"type": "boolean", "default": False, "description": "Compute the plan and return it without writing queue files · for inspection"},
                 },
                 "required": ["goal"],
+            },
+        },
+    },
+    "add_worker": {
+        "fn": tool_add_worker,
+        "schema": {
+            "name": "add_worker",
+            "description": "v1.7.1 · Phase 2.B · agentmemory iii worker plug paradigm · register deterministic worker spec for super-agent self-evolving runtime. Records to .cache/workers.jsonl · no code execution · narrow scope (cron/pubsub/queue/http/custom). Super-agent declares 'I want a iii-cron-daily worker' and this tool persists the spec.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "name": {"type": "string", "description": "Worker name · unique identifier"},
+                    "spec_type": {"type": "string", "enum": ["cron", "pubsub", "queue", "http", "custom"], "default": "custom", "description": "Worker primitive type (agentmemory iii-* family)"},
+                    "description": {"type": "string", "description": "≤200 char what this worker does"},
+                    "config": {"type": "object", "description": "Free-form config dict (cron schedule, topic, queue name, http endpoint, etc.)"},
+                    "agent_type": {"type": "string", "description": "Registering agent type · defaults to env COMPASS_AGENT_TYPE"},
+                },
+                "required": ["name"],
             },
         },
     },
