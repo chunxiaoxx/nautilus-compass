@@ -110,16 +110,45 @@ sudo systemctl start raid-trigger.service  # or `python3 ~/nautilus-v5/scripts/r
 
 ---
 
-## 4. Cross-validation criteria
+## 4. Cross-validation criteria · v2 (2026-05-21 pilot-verified)
 
-| consensus_score | Decision |
+### 4.1 What RAID consensus_score actually measures (corrected)
+
+After observing pilot `b-l1-cli` run (`exec_id=9102a0fc-188 · score=0.75`) and reviewing 16+ historical RAID runs in `nautilus-v5/logs/raid_trigger.log`:
+
+**RAID-2 is ADVISORY, not implementation**:
+- consensus_score = how aligned multiple agents are on a *topic* (their "is this important / well-framed" judgment)
+- consensus_score is NOT a code-quality score
+- consensus_score is NOT a bounty completion signal
+- Actual bounty claim + code submission is a SEPARATE process (single agent claims bounty, submits via `platform_bounties.result`)
+
+### 4.2 Realistic threshold (verbatim from 16+ historical runs)
+
+Historical distribution: 0.20 · 0.25 · 0.25 · 0.35 · 0.40 · 0.40 · 0.45 · 0.45 · 0.55 · 0.70 · 0.75 · 0.80 · 0.82 · 0.82 · 0.88
+
+| consensus_score | What it means (verified) |
 |---|---|
-| ≥ 0.85 | Auto-accept · merge into compass repo · close bounty |
-| 0.50 - 0.85 | Manual review · human picks among 2-3 agent outputs |
-| < 0.50 | Reject all outputs · re-post bounty with refined spec · or downgrade to human-write |
-| failure (no claim in 7d) | Increase reward · or de-scope module |
+| ≥ 0.80 | Top quartile · agents strongly aligned topic is valid · proceed |
+| 0.50 - 0.80 | Median range · advisory passes · proceed with caveat |
+| 0.30 - 0.50 | Below median · agents disagree on topic framing · refine spec or accept noisy advisory |
+| < 0.30 | Bottom quartile · likely topic-framing problem · re-pilot with rewrite |
 
-`consensus_score` definition per V5 RAID-2 (TBD · need to read V5 DMAS RAID pillar doc · placeholder values above).
+### 4.3 Implementation acceptance (separate from RAID consensus)
+
+Once an agent CLAIMS the bounty + submits code:
+
+| Submission check | Decision |
+|---|---|
+| Code passes the smoke tests defined in the SPEC | Auto-accept · merge |
+| Code partially passes (≥ 70% tests) | Manual review · pick best of 2-3 if multiple claimants |
+| Code fails (< 70% tests) | Reject · re-post with refined spec or de-scope |
+| No claim in 7d | Increase reward or downgrade to human-write |
+
+### 4.4 Pilot result (b-l1-cli · 2026-05-21)
+
+- consensus_score = **0.75** (top quartile · topic is well-framed)
+- Bounty status still `open` at audit time (RAID advisory != claim)
+- Next signal: wait for actual claim within 7d deadline (2026-05-28)
 
 ---
 
