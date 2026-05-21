@@ -35,11 +35,12 @@ Version 3, 19 November 2007
 - ✅ Apache 2.0 subdirs (`crates/ov_cli` only) · compass MIT can consume freely
 - ✅ Paradigm-only reference (read README/docs · cite design pattern without code fork) · OK
 
-**Adapter strategy (v2 · revised)**:
-- ❌ Do NOT vendor OV main source (would contaminate compass MIT)
+**Adapter strategy (v3 · 2026-05-21 user-clarified)**:
+- ❌ Do NOT vendor OV main source (contaminates compass MIT via copyleft)
 - ❌ Do NOT `pip install openviking` and link main · same contamination
-- ✅ Reference OV `crates/ov_cli` (Apache 2.0) only · re-implement L0/L1/L2 tier paradigm from scratch in compass · cite OV as design reference
-- ✅ Cite OV LoCoMo10 benchmark (+43% task / -91% token) as third-party result · paradigm validation without code dependency
+- ✅ **DO reimplement L0/L1/L2 paradigm from scratch in Python** (agent-driven · read OV README + docs + public demo · re-design + re-code · clean-room style · no verbatim copy)
+- ✅ Cite OV as design reference + LoCoMo10 benchmark (+43% task / -91% token) as third-party paradigm validation
+- ✅ User clarification 2026-05-21: "GBrain 跟 OpenViking 的代码可以让 agent 做重新编译,思路和架构,设计都可以直接借鉴" — agent rewrite of paradigm is the explicit strategy
 
 **Required attribution actions** (P0 before paper3 ship):
 1. Cite OV verbatim with **license correction** in all paper/docs: "OpenViking (volcengine · AGPL-3.0 main + Apache 2.0 subdirs · 24.3k stars)"

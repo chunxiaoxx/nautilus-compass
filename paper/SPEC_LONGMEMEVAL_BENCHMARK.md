@@ -1,9 +1,21 @@
 # SPEC · LongMemEval-S Benchmark · compass + RRF vs agentmemory 95.2% R@5
 
-> **Status**: Spec design only · 2026-05-21
-> **Target**: paper3 v2 §3 真 baseline compare · cite agentmemory R@5 95.2% · validate compass RRF lift
-> **Scope**: 真**reuse existing infrastructure** · 真 NO new eval script
+> **Status**: Spec design only · 2026-05-21 · **DO NOT RUN until v2.0 完整 ship**
+> **Target**: paper3 v2 §3 baseline compare · cite agentmemory R@5 95.2% · validate compass lift
+> **Scope**: reuse existing infrastructure · NO new eval script
 > **Run effort**: User-triggered · T4 GPU · 8-12h walltime · ~$0(Flash judge or DeepSeek free tier)
+>
+> ⚠️ **TIMING GATE · 2026-05-21 user-clarified**:
+> v1.7.1 当前只 ship lifecycle schema + 9 hooks + add_worker + RRF 算法局部 · v2.0 还缺 Layer 2 分级存储 + Proof-of-Impact + GBrain skillpack adoption 包装。**在 v2.0 完整 ship 前跑分大概率打不过 agentmemory 95.2% R@5(它是完整 production)** · 留下负面数据点会污染 paper3 cite。
+>
+> 正确顺序:
+> 1. ship Layer 2 (OV paradigm 重写 · 1-2w)
+> 2. ship Proof-of-Impact (~400 LOC · 1w)
+> 3. ship GBrain skillpack 重写 + adoption 包装(1-2w)
+> 4. 然后跑此 benchmark · 正面对比 agentmemory
+> 5. 通过 → paper3 arXiv 投稿
+>
+> **下次 session 进来读此 spec 不要直接 SSH T4 开跑** · 先 grep "TIMING GATE" 段确认 v2.0 ship 完。
 
 ---
 
