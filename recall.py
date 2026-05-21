@@ -705,6 +705,108 @@ def verify_cascade_closure(top: list, query: str = "") -> dict:
     }
 
 
+def promote_lifecycle_tier(entry: dict, now=None) -> dict:
+    """v1.7.1 · llm-wiki2 fuse · deterministic LLM-free tier promotion + forget check.
+
+    Args:
+        entry: dict with frontmatter fields · tier / decay_rate / forget_at /
+               promote_after / reinforce_count / created_at (or timestamp)
+        now: optional datetime (default datetime.now()) · for deterministic testing
+
+    Returns:
+        {"tier": <possibly-promoted tier>, "promoted": bool, "archived": bool,
+         "reinforce_count": int}
+
+    Rules (verbatim from paper/LLM_WIKI2_FUSE_DESIGN.md §4):
+        - Rule A (access event · caller-driven): reinforce_count++ · decay_rate reset
+        - Rule B (promote check):
+            · promote_after "Nd"      → (now - created_at) >= N days → tier++
+            · promote_after "N_access" → reinforce_count >= N → tier++
+            · procedural tier (top) does NOT promote
+        - Rule C (forget check):
+            · forget_at != None AND now >= forget_at → archive flag
+
+    No LLM calls. Pure schema-driven arithmetic.
+
+    Default promote_after by tier (when entry omits explicit value):
+        working    → "1_access"
+        episodic   → "5_access"
+        semantic   → "20_access"
+        procedural → None (top)
+    """
+    from datetime import datetime, timedelta
+    import re
+
+    TIERS = ("working", "episodic", "semantic", "procedural")
+    TIER_DEFAULTS = {
+        "working": "1_access",
+        "episodic": "5_access",
+        "semantic": "20_access",
+        "procedural": None,
+    }
+
+    if now is None:
+        now = datetime.now()
+
+    tier = entry.get("tier", "working")
+    if tier not in TIERS:
+        tier = "working"
+    try:
+        reinforce_count = int(entry.get("reinforce_count", 0) or 0)
+    except (TypeError, ValueError):
+        reinforce_count = 0
+    promote_after = entry.get("promote_after") or TIER_DEFAULTS.get(tier)
+    forget_at_str = entry.get("forget_at")
+    created_at_str = entry.get("created_at") or entry.get("timestamp")
+
+    def _parse_iso(s):
+        """Parse ISO8601 · drop tz for naive comparison with `now`."""
+        if not s:
+            return None
+        try:
+            s = str(s).replace("Z", "+00:00").replace(" ", "T", 1)
+            dt = datetime.fromisoformat(s)
+            if dt.tzinfo is not None:
+                dt = dt.replace(tzinfo=None)
+            return dt
+        except (ValueError, TypeError):
+            return None
+
+    # Rule C · forget check
+    archived = False
+    forget_dt = _parse_iso(forget_at_str)
+    if forget_dt is not None and now >= forget_dt:
+        archived = True
+
+    # Rule B · promote check
+    promoted = False
+    if promote_after and tier != "procedural":
+        m_count = re.match(r"^(\d+)_access$", str(promote_after))
+        m_dur = re.match(r"^(\d+)d$", str(promote_after))
+        should_promote = False
+        if m_count:
+            threshold = int(m_count.group(1))
+            if reinforce_count >= threshold:
+                should_promote = True
+        elif m_dur:
+            days = int(m_dur.group(1))
+            created_dt = _parse_iso(created_at_str)
+            if created_dt is not None and (now - created_dt) >= timedelta(days=days):
+                should_promote = True
+        if should_promote:
+            idx = TIERS.index(tier)
+            if idx < len(TIERS) - 1:
+                tier = TIERS[idx + 1]
+                promoted = True
+
+    return {
+        "tier": tier,
+        "promoted": promoted,
+        "archived": archived,
+        "reinforce_count": reinforce_count,
+    }
+
+
 def render_v02_vector_mode(entries: list, query: str, cache: dict) -> None:
     """v0.2 真 BGE 向量召回 · 没装 BGE 时直接回 metadata 模式 (n-gram 中文召回不准)."""
     embedder = get_embedder()
