@@ -59,8 +59,8 @@ compass-session-writer = "nautilus_compass.session_writer:main"
 # v1.6.2 was broken — only top-level was packaged, so `nautilus_compass.sdk`
 # and `nautilus_compass.middleware` imports failed at install time.
 # Explicit list (not `find`) avoids setuptools treating tests/, scripts/, etc as packages.
-packages = ["nautilus_compass", "nautilus_compass.sdk", "nautilus_compass.middleware"]
-package-dir = {"nautilus_compass" = ".", "nautilus_compass.sdk" = "sdk", "nautilus_compass.middleware" = "middleware"}
+packages = ["nautilus_compass", "nautilus_compass.sdk", "nautilus_compass.middleware", "nautilus_compass.storage"]
+package-dir = {"nautilus_compass" = ".", "nautilus_compass.sdk" = "sdk", "nautilus_compass.middleware" = "middleware", "nautilus_compass.storage" = "storage"}
 
 [tool.setuptools.package-data]
 "nautilus_compass" = ["anchors*.json", "*.sh"]
