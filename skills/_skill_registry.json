@@ -1,0 +1,30 @@
+{
+  "drift_summary": {
+    "codified_at": "",
+    "name": "drift_summary",
+    "path": "codified\\drift_summary",
+    "review_count": 0,
+    "status": "codified"
+  },
+  "echo_demo": {
+    "codified_at": "",
+    "name": "echo_demo",
+    "path": "codified\\echo_demo",
+    "review_count": 0,
+    "status": "codified"
+  },
+  "lifecycle_report": {
+    "codified_at": "",
+    "name": "lifecycle_report",
+    "path": "codified\\lifecycle_report",
+    "review_count": 0,
+    "status": "codified"
+  },
+  "session_audit": {
+    "codified_at": "",
+    "name": "session_audit",
+    "path": "codified\\session_audit",
+    "review_count": 0,
+    "status": "codified"
+  }
+}
