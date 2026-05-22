@@ -16,6 +16,19 @@ Protocol (JSON over TCP localhost:9876):
 """
 import json
 import os
+
+# v2.0.2 · P6 · BLAS internal thread limit · CRITICAL: must set BEFORE importing
+# any numpy/torch/sentence-transformers downstream. Each BGE encode call would
+# otherwise spawn 4-8 BLAS/OMP threads internally. With ThreadPoolExecutor(8)
+# worker threads concurrently encoding, 8×4=32 internal threads thrash on a
+# 4-core CPU. 2026-05-22 observed: 206% CPU sustained · 24 CLOSE_WAIT after
+# 19min · ingest timeout under V5/V7/Kairos concurrent load. Limiting BLAS
+# to 1 thread per encode (8 workers × 1 internal = 8 threads on 4 cores · OK).
+os.environ.setdefault("OMP_NUM_THREADS", "1")
+os.environ.setdefault("MKL_NUM_THREADS", "1")
+os.environ.setdefault("OPENBLAS_NUM_THREADS", "1")
+os.environ.setdefault("NUMEXPR_NUM_THREADS", "1")
+
 import pickle
 import socket
 import sys
@@ -23,6 +36,14 @@ import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+
+# P6 (companion) · torch single-thread per encode · applied after import
+try:
+    import torch as _torch_for_threadcap
+    _torch_for_threadcap.set_num_threads(1)
+    _torch_for_threadcap.set_num_interop_threads(1)
+except Exception:
+    pass
 
 # v2.0.0 · P4 fix · bounded handler pool prevents unbounded thread spawn
 # under V5/V7 retry storms (root cause of 288-thread leak observed
