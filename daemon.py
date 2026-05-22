@@ -500,6 +500,89 @@ def serve():
     log("daemon stopped")
 
 
+def handle_ingest(req: dict) -> dict:
+    """v2.0.0 · S5 · ingest text -> compass memory .md + embed + cache.
+
+    Lets platform agents (V5/V6/V7) feed text into compass without going
+    through session_writer + LLM summarize. Use case: ingest task outputs,
+    agent observations, audit logs.
+
+    Required:
+      text (str): session content
+      project (str): project name (encoded cwd or platform tenant id)
+    Optional lifecycle frontmatter (v1.7.1 · LLM_WIKI2 paradigm):
+      tier (working|episodic|semantic|procedural)
+      decay_rate (float 0-1)
+      forget_at (ISO8601)
+      promote_after (e.g., "7d" or "5_access")
+    Optional metadata:
+      filename (override default timestamp-based name)
+      agent_type, agent_id, tags, source
+
+    Returns:
+      {ok: true, path: "<written .md>", embedded: true, embed_dim: 1024, project: "..."}
+    """
+    import hashlib as _hashlib
+    import pickle as _pickle
+    from datetime import datetime, timezone
+
+    text = (req.get("text") or "").strip()
+    project = (req.get("project") or "").strip()
+    if not text:
+        return {"ok": False, "error": "empty text"}
+    if not project:
+        return {"ok": False, "error": "project required for ingest"}
+    if len(text) > 500_000:
+        return {"ok": False, "error": "text too large (>500KB) · split before ingest"}
+
+    mem_dir = Path.home() / ".claude" / "projects" / project / "memory"
+    mem_dir.mkdir(parents=True, exist_ok=True)
+
+    fname = (req.get("filename") or "").strip()
+    if not fname:
+        ts = time.strftime("%Y%m%d_%H%M%S")
+        hsh = abs(hash(text)) % 100000
+        fname = f"ingest_{ts}_{hsh}.md"
+    if not fname.endswith(".md"):
+        fname += ".md"
+    fname = fname.replace("/", "_").replace("\\", "_")
+
+    fm = ["---", f"name: {fname[:-3]}",
+          f"created: {datetime.now(timezone.utc).isoformat()}",
+          "type: ingest", "source: bge-daemon-ingest"]
+    for k in ("tier", "decay_rate", "forget_at", "promote_after",
+              "agent_type", "agent_id", "tags"):
+        v = req.get(k)
+        if v is not None and v != "":
+            if isinstance(v, list):
+                fm.append(f"{k}: [{', '.join(repr(x) for x in v)}]")
+            else:
+                fm.append(f"{k}: {v}")
+    fm.append("---")
+    fm.append("")
+    content = "\n".join(fm) + text.rstrip() + "\n"
+
+    out_path = mem_dir / fname
+    out_path.write_text(content, encoding="utf-8")
+
+    try:
+        embedder = get_embedder()
+        vec = embedder.encode(text[:5000])
+        if hasattr(vec, "tolist"):
+            vec = vec.tolist()
+        proj_key = str(mem_dir)
+        cache = _state["memory_caches"].setdefault(proj_key, {})
+        cache[str(out_path)] = (out_path.stat().st_mtime, vec)
+        proj_hash = _hashlib.sha256(proj_key.encode()).hexdigest()[:12]
+        with open(CACHE_DIR / f"{proj_hash}.pkl", "wb") as f:
+            _pickle.dump({"embeddings": cache}, f)
+        return {"ok": True, "path": str(out_path), "project": project,
+                "embedded": True, "embed_dim": len(vec)}
+    except Exception as e:
+        return {"ok": True, "path": str(out_path), "project": project,
+                "embedded": False, "embed_warning": str(e)}
+
+
 def handle_conn(conn: socket.socket):
     try:
         conn.settimeout(60)
@@ -523,6 +606,10 @@ def handle_conn(conn: socket.socket):
             conn.sendall(b'{"ok":true,"shutdown":true}\n')
             log("shutdown requested")
             os._exit(0)
+        if req.get("action") == "ingest":
+            resp_bytes = json.dumps(handle_ingest(req), ensure_ascii=False).encode("utf-8") + b"\n"
+            conn.sendall(resp_bytes)
+            return
         resp = handle_request(req)
         conn.sendall(json.dumps(resp, ensure_ascii=False).encode("utf-8") + b"\n")
     except Exception as e:
