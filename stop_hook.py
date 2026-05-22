@@ -450,8 +450,28 @@ def hook_subagent_stop(payload: dict) -> dict:
 
 
 def hook_session_end(payload: dict) -> dict:
-    """SessionEnd · session complete · mark completion. tier=episodic."""
-    return _emit_lifecycle_event("SessionEnd", payload, tier="episodic")
+    """SessionEnd · session complete · mark completion + trigger self_evolve.
+
+    v2.0.0 · #2 · trigger Layer 2 L1 auto-build when ungrouped sessions
+    accumulate past DEFAULT_L1_TRIGGER_THRESHOLD (3). Graceful · errors
+    don't block hook return (the lifecycle event still emits).
+    """
+    event = _emit_lifecycle_event("SessionEnd", payload, tier="episodic")
+    # OV-paradigm self-evolve · build L1 collapse layer + entity link scan
+    try:
+        from storage.self_evolve import evolve_at_session_end
+        # Find active project memory dir · same convention as recall.py
+        from recall import find_active_project_memory_dir
+        mem_dir = find_active_project_memory_dir()
+        if mem_dir is not None:
+            result = evolve_at_session_end(mem_dir)
+            if result.get("l1_triggered", {}).get("triggered"):
+                # Attach summary into the hook event for observability
+                event.setdefault("self_evolve", {})["l1"] = result["l1_triggered"]
+    except Exception as e:
+        # Fail-soft · don't break SessionEnd hook
+        event.setdefault("self_evolve_error", str(e))
+    return event
 
 
 def _write_hook_event(event: dict) -> None:
