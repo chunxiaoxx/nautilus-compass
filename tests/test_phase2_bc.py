@@ -17,7 +17,6 @@ from unittest.mock import patch
 # Make repo root importable
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-import mcp_server
 from mcp_server import tool_add_worker, TOOLS
 from recall import rrf_fusion
 

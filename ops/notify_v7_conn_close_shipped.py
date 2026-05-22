@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """Write outbound session_*.md to V7 · A (Connection: close) shipped + B optional."""
-import os
 from pathlib import Path
 from datetime import datetime
 

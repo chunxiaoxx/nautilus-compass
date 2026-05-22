@@ -1,7 +1,6 @@
 """S3 module 4 · l1_recall_overlay.py smoke tests."""
 import sys
 import os
-import json
 import tempfile
 from pathlib import Path
 

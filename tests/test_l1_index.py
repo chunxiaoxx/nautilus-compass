@@ -1,7 +1,6 @@
 """S3 module 3 · l1_index.py smoke tests · pure logic · no BGE."""
 import sys
 import os
-import json
 import tempfile
 from pathlib import Path
 

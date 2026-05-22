@@ -1,7 +1,6 @@
 """S4 module 4 · tool_proof_of_impact smoke tests."""
 import sys
 import os
-import json
 import tempfile
 from pathlib import Path
 
