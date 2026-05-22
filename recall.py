@@ -925,6 +925,41 @@ def render_v02_vector_mode(entries: list, query: str, cache: dict) -> None:
     scored.sort(key=lambda x: -x[0])
     top = scored[:TOP_K]
 
+    # v2.0.0 · #1a · PoI ranking boost · re-rank top-K by each entry's
+    # cumulative_impact frontmatter (positive → boost, negative → demote).
+    # NO-OP if no memory has cumulative_impact yet (cold start fully
+    # equivalent to v0.8). Set COMPASS_NO_POI_BOOST=1 to opt out.
+    if os.environ.get("COMPASS_NO_POI_BOOST") != "1":
+        try:
+            from recall_pkg.poi_weighting import boost_top_k
+            _before_top = top
+            top = boost_top_k(top)
+            # Truncate back to TOP_K after potential re-rank
+            top = top[:TOP_K]
+        except Exception as _e:
+            sys.stderr.write(f"[PoI boost] skipped: {_e!r}\n")
+
+    # v2.0.0 · #1b · Layer 2 L1 overlay · collapse member L0 sessions to their
+    # L1 summary entry when {mem_dir}/_l1/_l1_index.json exists. Graceful
+    # NO-OP if no L1 index has been built yet (preserves v0.8 path byte-for-
+    # byte on cold projects). Set COMPASS_NO_L1_OVERLAY=1 to opt out.
+    if os.environ.get("COMPASS_NO_L1_OVERLAY") != "1":
+        try:
+            from storage.l1_recall_overlay import collapse_to_l1
+            _mem_dir = find_active_project_memory_dir()
+            if _mem_dir is not None:
+                _l1_dir = _mem_dir / "_l1"
+                if (_l1_dir / "_l1_index.json").exists():
+                    _before = len(top)
+                    top = collapse_to_l1(top, _l1_dir, max_collapse_per_l1=1)
+                    if len(top) != _before:
+                        sys.stderr.write(
+                            f"[L1 overlay] collapsed {_before} → {len(top)} entries\n"
+                        )
+        except Exception as _e:
+            # Graceful · L0 path stays intact even if overlay misbehaves
+            sys.stderr.write(f"[L1 overlay] skipped: {_e!r}\n")
+
     # v1.7 · MEME-extension · transitive_close via depends_on BFS · staged rollout
     # Enable with COMPASS_CHAIN_RECALL=1 · ancestors pinned with synthetic score -depth-1
     if os.environ.get("COMPASS_CHAIN_RECALL") == "1":
