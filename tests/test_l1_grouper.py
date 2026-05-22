@@ -18,7 +18,6 @@ from storage.l1_grouper import (
     parse_session_frontmatter,
     group_by_thread,
     cluster_by_topic,
-    group_sessions,
     THREAD_MIN_SIZE,
     TOPIC_MIN_SIZE,
 )

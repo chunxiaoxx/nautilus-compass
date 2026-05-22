@@ -19,12 +19,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from stop_hook import (
     HOOK_DISPATCH,
     hook_session_start,
-    hook_user_prompt_submit,
-    hook_pre_tool_use,
-    hook_post_tool_use,
     hook_post_tool_use_failure,
     hook_pre_compact,
-    hook_subagent_start,
     hook_subagent_stop,
     hook_session_end,
     _emit_lifecycle_event,

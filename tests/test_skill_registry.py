@@ -1,7 +1,6 @@
 """S_GBrain module 2 · skill_registry smoke tests."""
 import sys
 import os
-import json
 import tempfile
 from pathlib import Path
 
@@ -10,7 +9,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from skills_pkg.skill_registry import (
     load_registry, save_registry, rebuild_registry,
     promote, list_by_status, increment_review_count,
-    REGISTRY_FILENAME, PROMOTE_FROM_TO,
+    PROMOTE_FROM_TO,
 )
 
 

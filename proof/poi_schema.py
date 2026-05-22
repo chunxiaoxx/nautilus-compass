@@ -8,7 +8,7 @@ Reference: paper/SPEC_PROOF_OF_IMPACT.md section 3.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, asdict
 from typing import Optional, List
 
 VALID_OUTCOMES = ("success", "failure", "partial", "pending")

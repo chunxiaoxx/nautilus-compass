@@ -21,7 +21,6 @@ Each step verifies data passes correctly between modules. No LLM at any step.
 """
 import sys
 import os
-import json
 import tempfile
 from pathlib import Path
 
@@ -81,7 +80,7 @@ def step_1_setup_project(tmp_root: Path) -> dict:
 def step_2_drift_routing(memory: Path) -> dict:
     """Route each session by drift label · dry-run + filter recall eligibility."""
     from drift.routing import (
-        route_entry, filter_eligible, infer_route, ROUTE_RED, ROUTE_YELLOW, ROUTE_GREEN,
+        filter_eligible, infer_route,
     )
     from storage.entity_extractor import scan_session_file
 
@@ -232,7 +231,7 @@ def step_9_poi_weighting_boost(memory: Path) -> dict:
 def step_10_job_queue(cache: Path) -> dict:
     """Register worker · enqueue 2 jobs · process · verify completion."""
     from skills_pkg.job_queue import (
-        register_worker, enqueue, process_due, stats, STATUS_COMPLETED,
+        register_worker, enqueue, process_due, stats,
     )
     db = cache / "queue.db"
     register_worker("integration-test-worker", spec_type="queue", db_path=db)

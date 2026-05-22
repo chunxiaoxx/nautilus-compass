@@ -9,7 +9,6 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from storage.l2_distiller import (
     ollama_available, extractive_fallback, distill_l1_files,
     render_l2_overview, build_l2,
-    L2_DIR_NAME, MAX_L1_INPUT_CHARS,
 )
 
 

@@ -13,7 +13,6 @@ import json
 import shutil
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Optional
 
 try:
     from .skill_loader import parse_skill_md, SkillSchemaError, VALID_STATUSES

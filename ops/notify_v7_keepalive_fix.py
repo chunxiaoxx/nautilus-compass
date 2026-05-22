@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
 """Write outbound session_*.md to V7 · keep-alive 75 shipped + ask client retry."""
-import os
-import urllib.request
-import urllib.parse
-import json
 from pathlib import Path
 from datetime import datetime
 

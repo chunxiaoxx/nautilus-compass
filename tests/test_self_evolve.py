@@ -2,7 +2,6 @@
 import sys
 import os
 import json
-import time
 import tempfile
 from pathlib import Path
 
@@ -11,7 +10,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from storage.self_evolve import (
     recent_sessions, count_ungrouped, scan_entity_links,
     trigger_l1_build_if_due, evolve_at_session_end, log_evolve_event,
-    DEFAULT_L1_TRIGGER_THRESHOLD, EVOLVE_LOG,
+    EVOLVE_LOG,
 )
 
 

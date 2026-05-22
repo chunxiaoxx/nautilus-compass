@@ -11,7 +11,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from skills_pkg.skill_registry import (
-    list_by_status, promote, rebuild_registry, load_registry,
+    list_by_status, promote,
 )
 from skills_pkg.skill_evaluator import evaluate
 from skills_pkg.skill_cron_emitter import emit_for_skill

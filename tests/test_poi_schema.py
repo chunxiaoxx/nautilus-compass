@@ -5,7 +5,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from proof.poi_schema import (
     ProofOfImpact, validate_iso8601,
-    VALID_OUTCOMES, VALID_DECLARATIONS,
+    VALID_OUTCOMES,
 )
 
 

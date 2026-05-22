@@ -11,7 +11,6 @@ Idempotent · checks for marker.
 """
 from __future__ import annotations
 import sys
-import re
 from pathlib import Path
 
 TARGET = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("/home/ubuntu/compass/compass_http_v09.py")

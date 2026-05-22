@@ -17,9 +17,7 @@ mcp_server.daemon_call + http_v09._call_v14_daemon retry ladder:
 Idempotent · safe to re-run.
 """
 import pathlib
-import re
 import sys
-import subprocess
 
 
 MCP_SERVER = pathlib.Path("/home/ubuntu/nautilus-compass/mcp_server.py")

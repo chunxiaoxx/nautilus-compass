@@ -26,15 +26,15 @@ from pathlib import Path
 from typing import Optional
 
 try:
-    from .l1_grouper import group_sessions, parse_session_frontmatter
+    from .l1_grouper import group_sessions, parse_session_frontmatter  # noqa: F401
     from .l1_renderer import render_all
     from .l1_index import update_index
-    from .entity_extractor import build_session_links, scan_session_file
+    from .entity_extractor import build_session_links, scan_session_file  # noqa: F401
 except (ImportError, ValueError):
-    from storage.l1_grouper import group_sessions, parse_session_frontmatter  # type: ignore
+    from storage.l1_grouper import group_sessions  # type: ignore
     from storage.l1_renderer import render_all  # type: ignore
     from storage.l1_index import update_index  # type: ignore
-    from storage.entity_extractor import build_session_links, scan_session_file  # type: ignore
+    from storage.entity_extractor import scan_session_file  # type: ignore
 
 DEFAULT_LOOKBACK_HOURS = 24
 DEFAULT_L1_TRIGGER_THRESHOLD = 3

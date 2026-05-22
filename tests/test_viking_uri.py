@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from storage.viking_uri import (
     parse_uri, make_uri, resolve_to_path, path_to_uri,
-    SCHEME, TIER_L0, TIER_L1, TIER_L2,
+    TIER_L0, TIER_L1, TIER_L2,
 )
 
 

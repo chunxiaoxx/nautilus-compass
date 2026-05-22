@@ -25,9 +25,9 @@ from pathlib import Path
 from typing import Optional
 
 try:
-    from .l1_grouper import parse_session_frontmatter
+    from .l1_grouper import parse_session_frontmatter  # noqa: F401
 except (ImportError, ValueError):
-    from storage.l1_grouper import parse_session_frontmatter  # type: ignore
+    pass  # type: ignore
 
 OLLAMA_URL = os.environ.get("COMPASS_OLLAMA_URL", "http://127.0.0.1:11434")
 OLLAMA_MODEL = os.environ.get("COMPASS_OLLAMA_MODEL", "qwen2.5:7b")
