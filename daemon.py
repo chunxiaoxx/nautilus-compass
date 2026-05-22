@@ -21,7 +21,18 @@ import socket
 import sys
 import threading
 import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+
+# v2.0.0 · P4 fix · bounded handler pool prevents unbounded thread spawn
+# under V5/V7 retry storms (root cause of 288-thread leak observed
+# 2026-05-22). 8 workers matches the 4-core CPU's effective concurrency
+# for BGE-m3 inference; further requests queue at the OS socket backlog.
+DAEMON_MAX_HANDLER_THREADS = int(os.environ.get("COMPASS_DAEMON_POOL", "8"))
+_HANDLER_POOL = ThreadPoolExecutor(
+    max_workers=DAEMON_MAX_HANDLER_THREADS,
+    thread_name_prefix="bge-handler",
+)
 
 try:
     sys.stdout.reconfigure(encoding="utf-8")  # safe · no buffer aliasing
@@ -481,7 +492,10 @@ def serve():
     except OSError as e:
         log(f"bind fail · already running? {e}")
         sys.exit(2)
-    sock.listen(8)
+    # v2.0.0 · P4 · increased backlog from 8 → 128 so overflow during burst
+    # waits at OS level instead of being refused (which retry-stormed callers
+    # would only amplify). Pool of 8 workers drains the queue.
+    sock.listen(128)
     log(f"listening {HOST}:{PORT}")
 
     while True:
@@ -492,7 +506,22 @@ def serve():
         except Exception as e:
             log(f"accept fail: {e}")
             continue
-        threading.Thread(target=handle_conn, args=(conn,), daemon=True).start()
+        # v2.0.0 · P4 · bounded pool · was `threading.Thread(...).start()`
+        # which spawned unbounded under retry storms · 288 threads leaked
+        # 2026-05-22. Pool rejects via RuntimeError when shutting down · OS
+        # socket backlog (listen(128) above) handles momentary overflow.
+        try:
+            _HANDLER_POOL.submit(handle_conn, conn)
+        except RuntimeError as e:
+            log(f"pool reject: {e}")
+            try:
+                conn.sendall(b'{"ok":false,"error":"daemon shutting down"}\n')
+            except Exception:
+                pass
+            try:
+                conn.close()
+            except Exception:
+                pass
 
     sock.close()
     if PID_FILE.exists():
