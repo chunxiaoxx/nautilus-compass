@@ -342,128 +342,132 @@ def handle_request(req: dict) -> dict:
         if not mem_dirs:
             return {"ok": False, "error": "no project memory dirs found under ~/.claude/projects/"}
 
-    with _state["lock"]:
-        embedder = get_embedder()
-        try:
-            v = embedder.encode(query)
-            q_emb = v.tolist() if hasattr(v, "tolist") else v
-        except Exception as e:
-            return {"ok": False, "error": f"query embed fail: {e}"}
+    # v2.0.2 · P5 · 移除 global lock 包 embed · BGE-m3 + sentence-transformers
+    # + torch 真 thread-safe(GIL 保护 dict ops · torch.no_grad 内置)· 不需手动
+    # 串行. P4 修了 thread 数蓄积(288→8 pool)· 但全局 lock 仍把 8 worker 串
+    # 行成 1 真 effective 并发 · 真 root cause 真 CLOSE_WAIT 蓄积(209 案).
+    # 期望 throughput 4-8x · CLOSE_WAIT 不再爆炸.
+    embedder = get_embedder()  # eager-loaded at daemon startup · idempotent
+    try:
+        v = embedder.encode(query)
+        q_emb = v.tolist() if hasattr(v, "tolist") else v
+    except Exception as e:
+        return {"ok": False, "error": f"query embed fail: {e}"}
 
-        result = {
-            "ok": True,
-            "project": project or (mem_dirs[0][0] if mem_dirs else ""),
-            "scope": scope,
-            "projects_scanned": [p for p, _ in mem_dirs],
-            "query": query[:80],
-        }
+    result = {
+        "ok": True,
+        "project": project or (mem_dirs[0][0] if mem_dirs else ""),
+        "scope": scope,
+        "projects_scanned": [p for p, _ in mem_dirs],
+        "query": query[:80],
+    }
 
-        if action in ("recall", "both"):
-            # Union entries across all mem_dirs · tag each with its origin project
-            all_entries: list[dict] = []
-            for proj_name, mdir in mem_dirs:
-                for e in get_memory_entries(mdir):
-                    # shallow-tag origin (don't mutate cache entries)
-                    if "project" not in e:
-                        e["project"] = proj_name
-                    all_entries.append(e)
-            scored = []
-            for e in all_entries:
-                if not e.get("embedding"): continue
-                s = cosine(q_emb, e["embedding"])
-                if s >= COSINE_MIN:
-                    scored.append((s, e))
-            scored.sort(key=lambda x: -x[0])
-            top = scored[:top_k]
-            result["recall"] = [
-                {"score": round(s, 3), "path": e["path"],
-                 "project": e.get("project", ""),
-                 "age_str": e["age_str"], "age_seconds": e["age_seconds"],
-                 "description": e["description"]}
-                for s, e in top
+    if action in ("recall", "both"):
+        # Union entries across all mem_dirs · tag each with its origin project
+        all_entries: list[dict] = []
+        for proj_name, mdir in mem_dirs:
+            for e in get_memory_entries(mdir):
+                # shallow-tag origin (don't mutate cache entries)
+                if "project" not in e:
+                    e["project"] = proj_name
+                all_entries.append(e)
+        scored = []
+        for e in all_entries:
+            if not e.get("embedding"): continue
+            s = cosine(q_emb, e["embedding"])
+            if s >= COSINE_MIN:
+                scored.append((s, e))
+        scored.sort(key=lambda x: -x[0])
+        top = scored[:top_k]
+        result["recall"] = [
+            {"score": round(s, 3), "path": e["path"],
+             "project": e.get("project", ""),
+             "age_str": e["age_str"], "age_seconds": e["age_seconds"],
+             "description": e["description"]}
+            for s, e in top
+        ]
+        # fresh memories not in top
+        top_set = {(t[1]["path"], t[1].get("project", "")) for t in top}
+        fresh_extra = [
+            e for e in all_entries
+            if e["age_seconds"] < 86400
+            and (e["path"], e.get("project", "")) not in top_set
+        ]
+        result["fresh_extra"] = [
+            {"path": e["path"], "project": e.get("project", ""),
+             "age_str": e["age_str"], "description": e["description"]}
+            for e in sorted(fresh_extra, key=lambda x: x["age_seconds"])
+        ]
+
+    if action in ("drift", "both"):
+        # v0.7.2 · per-request anchor profile (gateway passes anchors_path)
+        ap = req.get("anchors_path")
+        anchors = get_anchors(Path(ap) if ap else None)
+        if anchors:
+            # v0.7.1 · Weighted top-k mean scoring
+            # 每个 anchor 一个 weight (默认 1.0 · adaptive learning 调整)
+            # weighted_cos = weight * cosine · 排序后取 top-3 加权平均
+            TOP_K_ANCHORS = 3
+            pos_w = anchors["pos_weights"]
+            neg_w = anchors["neg_weights"]
+            pos_pairs = [
+                (pos_w[i] * cosine(q_emb, e), pos_w[i])
+                for i, e in enumerate(anchors["pos_embs"])
             ]
-            # fresh memories not in top
-            top_set = {(t[1]["path"], t[1].get("project", "")) for t in top}
-            fresh_extra = [
-                e for e in all_entries
-                if e["age_seconds"] < 86400
-                and (e["path"], e.get("project", "")) not in top_set
+            pos_pairs.sort(key=lambda x: -x[0])
+            top_pos = pos_pairs[:TOP_K_ANCHORS]
+            pos_cos = (sum(s for s, _ in top_pos) / sum(w for _, w in top_pos)
+                       if top_pos else 0.0)
+            neg_pairs = [
+                (neg_w[i] * cosine(q_emb, e), neg_w[i],
+                 cosine(q_emb, e), anchors["neg_anchors"][i])
+                for i, e in enumerate(anchors["neg_embs"])
             ]
-            result["fresh_extra"] = [
-                {"path": e["path"], "project": e.get("project", ""),
-                 "age_str": e["age_str"], "description": e["description"]}
-                for e in sorted(fresh_extra, key=lambda x: x["age_seconds"])
-            ]
-
-        if action in ("drift", "both"):
-            # v0.7.2 · per-request anchor profile (gateway passes anchors_path)
-            ap = req.get("anchors_path")
-            anchors = get_anchors(Path(ap) if ap else None)
-            if anchors:
-                # v0.7.1 · Weighted top-k mean scoring
-                # 每个 anchor 一个 weight (默认 1.0 · adaptive learning 调整)
-                # weighted_cos = weight * cosine · 排序后取 top-3 加权平均
-                TOP_K_ANCHORS = 3
-                pos_w = anchors["pos_weights"]
-                neg_w = anchors["neg_weights"]
-                pos_pairs = [
-                    (pos_w[i] * cosine(q_emb, e), pos_w[i])
-                    for i, e in enumerate(anchors["pos_embs"])
-                ]
-                pos_pairs.sort(key=lambda x: -x[0])
-                top_pos = pos_pairs[:TOP_K_ANCHORS]
-                pos_cos = (sum(s for s, _ in top_pos) / sum(w for _, w in top_pos)
-                           if top_pos else 0.0)
-                neg_pairs = [
-                    (neg_w[i] * cosine(q_emb, e), neg_w[i],
-                     cosine(q_emb, e), anchors["neg_anchors"][i])
-                    for i, e in enumerate(anchors["neg_embs"])
-                ]
-                neg_pairs.sort(key=lambda x: -x[0])
-                top_neg = neg_pairs[:TOP_K_ANCHORS]
-                neg_cos = (sum(s for s, _, _, _ in top_neg) / sum(w for _, w, _, _ in top_neg)
-                           if top_neg else 0.0)
-                drift_score = round(pos_cos - neg_cos, 4)
-                # 单 anchor hits · 用 raw cosine 不用 weighted (alert text 显示真相似度)
-                neg_hits = [
-                    (round(raw_c, 3), txt) for _, _, raw_c, txt in neg_pairs
-                    if raw_c >= NEG_ANCHOR_HIT_THRESHOLD
-                ][:5]
-                should_alert = drift_score < DRIFT_ALERT_THRESHOLD or bool(neg_hits)
-                result["drift"] = {
-                    "score": drift_score,
-                    "alignment": round(pos_cos, 4),
-                    "deviation": round(neg_cos, 4),
-                    "should_alert": should_alert,
-                    "top_neg_hits": neg_hits[:3],
-                    "n_pos": anchors["n_pos"],
-                    "n_neg": anchors["n_neg"],
-                }
-
-        # ─── verification_log · 7 天对照实验数据 ───────────────
-        try:
-            log_path = CACHE_DIR / "verification_log.jsonl"
-            entry = {
-                "ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-                "session_id": os.environ.get("CLAUDE_SESSION_ID", "unknown")[:60],
-                "agent_type": agent_type,
-                "project": project[:80],
-                "action": action,
-                "query": query[:200],
-                "top5": [
-                    {"score": r["score"], "path": r["path"], "age": r["age_str"]}
-                    for r in (result.get("recall") or [])[:5]
-                ],
-                "fresh_n": len(result.get("fresh_extra") or []),
-                "drift_score": (result.get("drift") or {}).get("score"),
-                "drift_alert": (result.get("drift") or {}).get("should_alert"),
+            neg_pairs.sort(key=lambda x: -x[0])
+            top_neg = neg_pairs[:TOP_K_ANCHORS]
+            neg_cos = (sum(s for s, _, _, _ in top_neg) / sum(w for _, w, _, _ in top_neg)
+                       if top_neg else 0.0)
+            drift_score = round(pos_cos - neg_cos, 4)
+            # 单 anchor hits · 用 raw cosine 不用 weighted (alert text 显示真相似度)
+            neg_hits = [
+                (round(raw_c, 3), txt) for _, _, raw_c, txt in neg_pairs
+                if raw_c >= NEG_ANCHOR_HIT_THRESHOLD
+            ][:5]
+            should_alert = drift_score < DRIFT_ALERT_THRESHOLD or bool(neg_hits)
+            result["drift"] = {
+                "score": drift_score,
+                "alignment": round(pos_cos, 4),
+                "deviation": round(neg_cos, 4),
+                "should_alert": should_alert,
+                "top_neg_hits": neg_hits[:3],
+                "n_pos": anchors["n_pos"],
+                "n_neg": anchors["n_neg"],
             }
-            with open(log_path, "a", encoding="utf-8") as f:
-                f.write(json.dumps(entry, ensure_ascii=False) + "\n")
-        except Exception as _le:
-            log(f"verification_log write fail: {_le}")
 
-        return result
+    # ─── verification_log · 7 天对照实验数据 ───────────────
+    try:
+        log_path = CACHE_DIR / "verification_log.jsonl"
+        entry = {
+            "ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "session_id": os.environ.get("CLAUDE_SESSION_ID", "unknown")[:60],
+            "agent_type": agent_type,
+            "project": project[:80],
+            "action": action,
+            "query": query[:200],
+            "top5": [
+                {"score": r["score"], "path": r["path"], "age": r["age_str"]}
+                for r in (result.get("recall") or [])[:5]
+            ],
+            "fresh_n": len(result.get("fresh_extra") or []),
+            "drift_score": (result.get("drift") or {}).get("score"),
+            "drift_alert": (result.get("drift") or {}).get("should_alert"),
+        }
+        with open(log_path, "a", encoding="utf-8") as f:
+            f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+    except Exception as _le:
+        log(f"verification_log write fail: {_le}")
+
+    return result
 
 
 def serve():
