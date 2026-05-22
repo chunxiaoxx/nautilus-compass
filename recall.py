@@ -28,6 +28,52 @@ try:
 except Exception:
     pass
 
+
+# ===== M2 · 加载时 "真" 强调副词过滤器（v2.0.1 · 2026-05-22 入库）=====
+# 防 compass session_*.md 历史 corpus 的 "真X真Y" verbatim 强调风格
+# 通过 UserPromptSubmit hook 注入污染下游 Claude Code session.
+#
+# 设计:
+#   1. 保留合法用法: 真的/真实/真正/真心/真理/真品/真切/真相/真意/真挚/真伪/真情/真假/真名
+#   2. 保留合法前缀: 认真/成真/果真/当真/较真
+#   3. 剥离强调用法: 真已/真又/真该/真不/真没/真有/真在/真到/真完/真活/真本/真新/真要/真做
+#      真接/真切/真发/真出/真根/真融/真起/真直/真急/真好/真大/真小/真快/真慢/真等/真 X(空格)
+#
+# 默认 ENABLED. env COMPASS_NO_ZHEN_FILTER=1 可关闭（debug 用）.
+
+_ZHEN_LEGIT_NEXT = set("的实正心理品切相意挚伪情假名知谛善美感诚性")
+_ZHEN_LEGIT_PREV = set("认成果当较")
+_ZHEN_FILTER_ON = os.environ.get("COMPASS_NO_ZHEN_FILTER", "") != "1"
+
+
+def strip_zhen_emphasis(text: str) -> str:
+    """剥离 '真' 作强调副词的用法 · 保留合法 '真的/真实/真正/认真...' 等组合."""
+    if not _ZHEN_FILTER_ON or "真" not in text:
+        return text
+    out = []
+    i = 0
+    n = len(text)
+    while i < n:
+        ch = text[i]
+        if ch == "真":
+            nxt = text[i + 1] if i + 1 < n else ""
+            prev = text[i - 1] if i > 0 else ""
+            # 保留: 前一字为合法前缀 (认真/成真等) 或 后一字为合法后缀 (真的/真正等)
+            if prev in _ZHEN_LEGIT_PREV or nxt in _ZHEN_LEGIT_NEXT:
+                out.append(ch)
+                i += 1
+                continue
+            # 剥离: 真 X 强调用法 · 同时吞掉紧随空格
+            if nxt == " ":
+                i += 2
+            else:
+                i += 1
+            continue
+        out.append(ch)
+        i += 1
+    return "".join(out)
+
+
 PLUGIN_VERSION = "nautilus-compass v1.6.2"
 HOME = Path.home()
 PLUGIN_DIR = HOME / ".claude" / "plugins" / "nautilus-compass"
@@ -981,9 +1027,10 @@ def render_v02_vector_mode(entries: list, query: str, cache: dict) -> None:
         flag = "🟢" if e["age_seconds"] < 86400 else ("🟡" if e["age_seconds"] < 7*86400 else "🔴")
         print(f"  {flag} score={score:.3f} · [{e['age_str']:>5} old] {e['path']}")
         if e["description"]:
-            print(f"       {e['description'][:120]}")
+            # M2 · 剥离 "真" 强调副词 · 防 dialog 风格污染下游 context (2026-05-22)
+            print(f"       {strip_zhen_emphasis(e['description'][:120])}")
         if idx < BODY_TOP and e.get("body"):
-            body = e["body"][:BODY_CHARS].rstrip()
+            body = strip_zhen_emphasis(e["body"][:BODY_CHARS].rstrip())
             indented = "\n".join(f"       │ {ln}" for ln in body.splitlines())
             print(indented)
             if len(e.get("body","")) > BODY_CHARS:
@@ -997,7 +1044,8 @@ def render_v02_vector_mode(entries: list, query: str, cache: dict) -> None:
     if fresh_not_in_top:
         print(f"🟢 + 24h 内其他 memory ({len(fresh_not_in_top)} · 当前心智 · 即便低 cosine 也注意):")
         for e in sorted(fresh_not_in_top, key=lambda x: x["age_seconds"]):
-            print(f"  · [{e['age_str']:>5} old] {e['path']} — {e['description'][:80]}")
+            desc = strip_zhen_emphasis(e['description'][:80])
+            print(f"  · [{e['age_str']:>5} old] {e['path']} — {desc}")
 
 
 def _expand_query(query: str) -> str:
