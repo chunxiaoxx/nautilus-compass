@@ -55,6 +55,15 @@ _HANDLER_POOL = ThreadPoolExecutor(
     thread_name_prefix="bge-handler",
 )
 
+# v2.0.7 · P7 · in-flight conn guard · caps queued+running at pool×4 = 32
+# When V5/V7 retry-storms, ThreadPoolExecutor.submit() silently queues
+# unbounded → conns wait → V5 timeouts → half-closes → daemon-side fd
+# stuck in CLOSE-WAIT until handler eventually drains. Observed 2026-05-23:
+# 2191 CLOSE-WAIT after 12h with P5+P6 alone. BoundedSemaphore reject-fast
+# pattern keeps inflight under control + lets accept loop free fd promptly.
+DAEMON_INFLIGHT_LIMIT = DAEMON_MAX_HANDLER_THREADS * 4
+_INFLIGHT_SEM = threading.BoundedSemaphore(DAEMON_INFLIGHT_LIMIT)
+
 try:
     sys.stdout.reconfigure(encoding="utf-8")  # safe · no buffer aliasing
     sys.stderr.reconfigure(encoding="utf-8")  # safe · no buffer aliasing
@@ -531,18 +540,38 @@ def serve():
         except Exception as e:
             log(f"accept fail: {e}")
             continue
+        # v2.0.7 · P7 · in-flight cap via BoundedSemaphore · reject-fast when
+        # queue + running > 32 · prevents CLOSE-WAIT leak from unbounded
+        # ThreadPoolExecutor queueing under V5/V7 retry storms.
+        if not _INFLIGHT_SEM.acquire(blocking=False):
+            log(f"overload · reject conn (inflight cap {DAEMON_INFLIGHT_LIMIT})")
+            try:
+                conn.sendall(b'{"ok":false,"error":"daemon overloaded - retry"}\n')
+            except Exception:
+                pass
+            try: conn.shutdown(socket.SHUT_RDWR)
+            except Exception: pass
+            try: conn.close()
+            except Exception: pass
+            continue
         # v2.0.0 · P4 · bounded pool · was `threading.Thread(...).start()`
         # which spawned unbounded under retry storms · 288 threads leaked
         # 2026-05-22. Pool rejects via RuntimeError when shutting down · OS
         # socket backlog (listen(128) above) handles momentary overflow.
         try:
-            _HANDLER_POOL.submit(handle_conn, conn)
+            _HANDLER_POOL.submit(_safe_handle, conn)
         except RuntimeError as e:
             log(f"pool reject: {e}")
+            try:
+                _INFLIGHT_SEM.release()
+            except Exception:
+                pass
             try:
                 conn.sendall(b'{"ok":false,"error":"daemon shutting down"}\n')
             except Exception:
                 pass
+            try: conn.shutdown(socket.SHUT_RDWR)
+            except Exception: pass
             try:
                 conn.close()
             except Exception:
@@ -635,6 +664,36 @@ def handle_ingest(req: dict) -> dict:
     except Exception as e:
         return {"ok": True, "path": str(out_path), "project": project,
                 "embedded": False, "embed_warning": str(e)}
+
+
+def _safe_handle(conn: socket.socket):
+    """v2.0.7 · P7 · wraps handle_conn to guarantee fd release + sem release.
+
+    Even when handle_conn returns normally · this wrapper drains any
+    pending rx data (V5 may send retry frames after timeout), forces
+    shutdown(SHUT_RDWR) before close (so fd doesn't linger in CLOSE-WAIT
+    waiting for client FIN), then releases the in-flight sem token so
+    the accept loop can accept new conns.
+    """
+    try:
+        handle_conn(conn)
+    finally:
+        # drain any pending rx · V5 retry frames or duplicate sends
+        try: conn.settimeout(0.1)
+        except Exception: pass
+        try:
+            while True:
+                chunk = conn.recv(65536)
+                if not chunk: break
+        except Exception: pass
+        # force both-end shutdown · don't wait for client FIN
+        try: conn.shutdown(socket.SHUT_RDWR)
+        except Exception: pass
+        try: conn.close()
+        except Exception: pass
+        # release inflight slot for next accept
+        try: _INFLIGHT_SEM.release()
+        except Exception: pass
 
 
 def handle_conn(conn: socket.socket):
