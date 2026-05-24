@@ -64,6 +64,53 @@ _HANDLER_POOL = ThreadPoolExecutor(
 DAEMON_INFLIGHT_LIMIT = DAEMON_MAX_HANDLER_THREADS * 4
 _INFLIGHT_SEM = threading.BoundedSemaphore(DAEMON_INFLIGHT_LIMIT)
 
+
+# v2.0.7 · P9 · server-side recall result cache · 真 reduce CPU
+# 2026-05-24 P8 (BatchCoordinator) failed because P6 OMP_NUM_THREADS=1
+# makes batch encode have no parallelism benefit. Real CPU root cause:
+# every recall query does BGE encode (50-100ms CPU bound) regardless of
+# whether query was seen before. Cache final recall result keyed by
+# (action, query, project, top_k, scope) · hits skip both encode + scoring.
+# Expected: 60-80% cache hit rate (V5/V7/Kairos repeat same anchors) ·
+# CPU drops proportionally.
+import hashlib as _hashlib_p9
+from collections import OrderedDict as _OrderedDict_p9
+RECALL_CACHE_MAX = int(os.environ.get("COMPASS_RECALL_CACHE_MAX", "10000"))
+RECALL_CACHE_TTL = int(os.environ.get("COMPASS_RECALL_CACHE_TTL", "3600"))
+_RECALL_CACHE = _OrderedDict_p9()   # key → (timestamp, result)
+_RECALL_CACHE_LOCK = threading.Lock()
+_RECALL_CACHE_STATS = {"hit": 0, "miss": 0, "expire": 0, "evict": 0}
+
+
+def _p9_cache_key(action, query, project, top_k, scope, agent_type=""):
+    blob = f"{action}|{scope}|{project}|{top_k}|{agent_type}|{query}"
+    return _hashlib_p9.sha256(blob.encode("utf-8")).hexdigest()[:16]
+
+
+def _p9_cache_get(key):
+    with _RECALL_CACHE_LOCK:
+        entry = _RECALL_CACHE.get(key)
+        if entry is None:
+            _RECALL_CACHE_STATS["miss"] += 1
+            return None
+        ts, result = entry
+        if time.time() - ts > RECALL_CACHE_TTL:
+            del _RECALL_CACHE[key]
+            _RECALL_CACHE_STATS["expire"] += 1
+            _RECALL_CACHE_STATS["miss"] += 1
+            return None
+        _RECALL_CACHE.move_to_end(key)
+        _RECALL_CACHE_STATS["hit"] += 1
+        return result
+
+
+def _p9_cache_put(key, result):
+    with _RECALL_CACHE_LOCK:
+        if len(_RECALL_CACHE) >= RECALL_CACHE_MAX:
+            _RECALL_CACHE.popitem(last=False)
+            _RECALL_CACHE_STATS["evict"] += 1
+        _RECALL_CACHE[key] = (time.time(), result)
+
 try:
     sys.stdout.reconfigure(encoding="utf-8")  # safe · no buffer aliasing
     sys.stderr.reconfigure(encoding="utf-8")  # safe · no buffer aliasing
@@ -358,6 +405,15 @@ def handle_request(req: dict) -> dict:
     if not query:
         return {"ok": False, "error": "empty query"}
 
+    # v2.0.7 · P9 · recall result cache lookup before encode/scoring
+    _p9_key = _p9_cache_key(action, query, project, top_k, scope, agent_type)
+    _p9_cached = _p9_cache_get(_p9_key)
+    if _p9_cached is not None:
+        # shallow copy + mark · avoid mutating cached dict on subsequent hits
+        _p9_resp = dict(_p9_cached)
+        _p9_resp["from_cache"] = True
+        return _p9_resp
+
     # 找 mem_dir(s) · scope-aware
     mem_dirs: list[tuple[str, Path]] = []
     if scope == "project":
@@ -496,6 +552,19 @@ def handle_request(req: dict) -> dict:
             f.write(json.dumps(entry, ensure_ascii=False) + "\n")
     except Exception as _le:
         log(f"verification_log write fail: {_le}")
+
+    # v2.0.7 · P9 · cache successful result before return
+    try:
+        _p9_cache_put(_p9_key, result)
+        # log cache stats every 1000 ops
+        _total = sum(_RECALL_CACHE_STATS.values())
+        if _total > 0 and _total % 1000 == 0:
+            _stats = _RECALL_CACHE_STATS
+            _hit_rate = _stats["hit"] / max(_stats["hit"] + _stats["miss"], 1) * 100
+            log(f"P9 cache · {_total} ops · hit_rate={_hit_rate:.1f}% · size={len(_RECALL_CACHE)} · "
+                f"hits={_stats['hit']} misses={_stats['miss']} expires={_stats['expire']} evicts={_stats['evict']}")
+    except Exception as _ce:
+        log(f"P9 cache put fail: {_ce}")
 
     return result
 
