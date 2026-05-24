@@ -64,6 +64,97 @@ _HANDLER_POOL = ThreadPoolExecutor(
 DAEMON_INFLIGHT_LIMIT = DAEMON_MAX_HANDLER_THREADS * 4
 _INFLIGHT_SEM = threading.BoundedSemaphore(DAEMON_INFLIGHT_LIMIT)
 
+
+# v2.0.7 · P8 · BGE batch coordinator · coalesce embed requests for throughput.
+# 2026-05-24 audit: 8 worker thread each ~25% CPU sustained = serial single-text
+# encode wastes BGE-m3 batch potential (sentence-transformers encode(list) is
+# 3-5x faster per-item than single encode in batches of 8-16). This coordinator
+# queues incoming embed requests, releases them every BATCH_WINDOW_MS in
+# batches of up to BATCH_SIZE, distributes vectors back to waiting handlers
+# via threading.Event. Expected: CPU 195% → 70-100% · throughput 4x.
+# 0 client-side change · 0 protocol change · daemon-internal optimization.
+class BatchCoordinator:
+    BATCH_SIZE = int(os.environ.get("COMPASS_BATCH_SIZE", "16"))
+    BATCH_WINDOW_MS = int(os.environ.get("COMPASS_BATCH_WINDOW_MS", "50"))
+    WAITER_TIMEOUT_S = float(os.environ.get("COMPASS_BATCH_WAIT_TIMEOUT", "10.0"))
+
+    def __init__(self):
+        self._pending = []          # list of (text, event, result_box)
+        self._lock = threading.Lock()
+        self._batch_count = 0
+        self._batch_total_size = 0
+        self._batch_thread = threading.Thread(
+            target=self._run, daemon=True, name="bge-batch-coord"
+        )
+        self._batch_thread.start()
+
+    def encode(self, text):
+        """Blocking call · returns vector. Coalesces with concurrent calls."""
+        evt = threading.Event()
+        box = [None, None]   # [result, error_str]
+        with self._lock:
+            self._pending.append((text, evt, box))
+        if not evt.wait(timeout=self.WAITER_TIMEOUT_S):
+            raise RuntimeError(f"batch encode timeout after {self.WAITER_TIMEOUT_S}s")
+        if box[1] is not None:
+            raise RuntimeError(f"batch encode error: {box[1]}")
+        return box[0]
+
+    def _run(self):
+        embedder = None
+        while True:
+            time.sleep(self.BATCH_WINDOW_MS / 1000.0)
+            with self._lock:
+                if not self._pending:
+                    continue
+                batch = self._pending[:self.BATCH_SIZE]
+                self._pending = self._pending[self.BATCH_SIZE:]
+
+            # lazy embedder init · waits for eager-load if needed
+            if embedder is None:
+                try:
+                    embedder = get_embedder()
+                except Exception as e:
+                    for _, evt, box in batch:
+                        box[1] = f"embedder unavailable: {e}"
+                        evt.set()
+                    continue
+
+            self._batch_count += 1
+            self._batch_total_size += len(batch)
+            texts = [item[0] for item in batch]
+            try:
+                # sentence-transformers BGE-m3 native batch encode via list
+                vectors = embedder.encode(texts)
+            except Exception as e:
+                for _, evt, box in batch:
+                    box[1] = str(e)
+                    evt.set()
+                continue
+            for i, (_, evt, box) in enumerate(batch):
+                v = vectors[i]
+                box[0] = v.tolist() if hasattr(v, "tolist") else v
+                evt.set()
+
+            # log batch stats every 100 batches
+            if self._batch_count % 100 == 0:
+                avg = self._batch_total_size / self._batch_count
+                log(f"P8 · {self._batch_count} batches · avg size {avg:.1f}")
+
+
+_BATCH_COORD = None
+_BATCH_COORD_INIT_LOCK = threading.Lock()
+
+
+def _ensure_batch_coord():
+    """Lazy singleton · avoid circular dep with get_embedder."""
+    global _BATCH_COORD
+    if _BATCH_COORD is None:
+        with _BATCH_COORD_INIT_LOCK:
+            if _BATCH_COORD is None:
+                _BATCH_COORD = BatchCoordinator()
+    return _BATCH_COORD
+
 try:
     sys.stdout.reconfigure(encoding="utf-8")  # safe · no buffer aliasing
     sys.stderr.reconfigure(encoding="utf-8")  # safe · no buffer aliasing
@@ -377,10 +468,9 @@ def handle_request(req: dict) -> dict:
     # 串行. P4 修了 thread 数蓄积(288→8 pool)· 但全局 lock 仍把 8 worker 串
     # 行成 1 真 effective 并发 · 真 root cause 真 CLOSE_WAIT 蓄积(209 案).
     # 期望 throughput 4-8x · CLOSE_WAIT 不再爆炸.
-    embedder = get_embedder()  # eager-loaded at daemon startup · idempotent
+    # v2.0.7 · P8 · route query embed through batch coordinator (hot path)
     try:
-        v = embedder.encode(query)
-        q_emb = v.tolist() if hasattr(v, "tolist") else v
+        q_emb = _ensure_batch_coord().encode(query)
     except Exception as e:
         return {"ok": False, "error": f"query embed fail: {e}"}
 
@@ -649,10 +739,8 @@ def handle_ingest(req: dict) -> dict:
     out_path.write_text(content, encoding="utf-8")
 
     try:
-        embedder = get_embedder()
-        vec = embedder.encode(text[:5000])
-        if hasattr(vec, "tolist"):
-            vec = vec.tolist()
+        # v2.0.7 · P8 · route ingest text embed through batch coordinator
+        vec = _ensure_batch_coord().encode(text[:5000])
         proj_key = str(mem_dir)
         cache = _state["memory_caches"].setdefault(proj_key, {})
         cache[str(out_path)] = (out_path.stat().st_mtime, vec)
