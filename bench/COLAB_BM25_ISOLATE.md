@@ -99,3 +99,45 @@ def log_retrieval(query_id, bm25_top5, vec_top5, fused_top5, correct_id):
 - spec_compass_path_b_phase_plan.md (BM25 RRF 设计原理)
 - session_20260525-1400_stage1a_complete_prod_git_divergence_finding.md (BM25 代码源 finding)
 - infra_t4_gpu_server.md (T4 已死 · 必须用 Colab)
+
+## E3 教训补充 · knew_but_failed instrumentation(必加)
+
+2026-05-21 E3 ablation 实证:MEME benchmark 上 BFS graph traverse 净 -1.8pp · root cause 是 LLM `knew_but_failed = 28q`(LLM 自己 reasoning 弱 · 给再多 ctx 也救不了)· **不是 retrieval 错**。
+
+为防 LongMemEval 重蹈覆辙 · 上面 instrumentation snippet 必须扩 `llm_answered_correctly` field:
+
+```python
+def log_retrieval_full(query_id, qtype, bm25_top5, vec_top5, fused_top5,
+                       correct_id, llm_answer_judged_correct):
+    with open("retrieval_trace.jsonl", "a") as f:
+        f.write(json.dumps({
+            "qid": query_id,
+            "qtype": qtype,
+            "correct_in_bm25": correct_id in bm25_top5,
+            "correct_in_vec": correct_id in vec_top5,
+            "correct_in_fused": correct_id in fused_top5,
+            "llm_answered_correctly": llm_answer_judged_correct,  # 关键新增
+        }) + "\n")
+```
+
+### 分析必算 4 个 metric · 不只 P@5
+
+| metric | 公式 | 解读 |
+|---|---|---|
+| retrieval_recall@5 | sum(correct_in_fused) / N | retrieval 性能 |
+| answer_accuracy | sum(llm_answered_correctly) / N | 端到端 |
+| **knew_but_failed** | sum(correct_in_fused & !llm_answered_correctly) / sum(correct_in_fused) | **LLM 推理 bottleneck**(retrieval 给对但 LLM 答错的比例) |
+| missed_by_retrieval | sum(!correct_in_fused) / N | retrieval 漏召 |
+
+per-题型还要算 knew_but_failed break-down · 不只 net average(E3 教训:net 数字骗人 · per-题型方向不一致)。
+
+### Decision matrix 扩展(原 5 行基础)
+
+| 结果 | 解读 | 下一步 |
+|---|---|---|
+| **knew_but_failed > 25%** | retrieval 改善天花板低 · **LLM 自己 reasoning 是 bottleneck** | 不该再死磕 retrieval(BM25/RRF/graph)· 改 prompt(CoT)· 换更强 LLM(Gemini Pro / Sonnet)· 或加 verification pass |
+| knew_but_failed < 10% & retrieval_recall@5 < 90% | retrieval 是真 bottleneck | 继续 fusion / reranker / typed graph 改进(本 plan Sprint 1-4) |
+| 两者都低 · answer_accuracy > 92% | 接近 SOTA · 难再涨 | 转 v3.0 typed graph + I GraphRAG · 不在 fusion 死磕 |
+| single-session-user knew_but_failed 异常高 | 这一类 query LLM 不会从 user fact 推 | 加 entity-aware prompt template · 不是改 retrieval |
+
+E3 ablation -1.8pp 是 noise within sample 因为 LLM bottleneck 占主导 · retrieval 改进被 LLM 抵消。LongMemEval 上同样可能。**先看 knew_but_failed 比例 · 再决定继续哪条 sprint 路径**。
