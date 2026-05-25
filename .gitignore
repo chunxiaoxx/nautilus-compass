@@ -53,3 +53,9 @@ dist/
 *.whl
 *.tar.gz
 build/
+
+# rotating backup artifacts (work-in-progress safety nets)
+*.bak
+*.bak-*
+*.bak.*
+_backup-*/
