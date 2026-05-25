@@ -76,6 +76,7 @@ _INFLIGHT_SEM = threading.BoundedSemaphore(DAEMON_INFLIGHT_LIMIT)
 # CPU drops proportionally.
 import hashlib as _hashlib_p9
 from collections import OrderedDict as _OrderedDict_p9
+from collections import deque as _deque
 RECALL_CACHE_MAX = int(os.environ.get("COMPASS_RECALL_CACHE_MAX", "10000"))
 RECALL_CACHE_TTL = int(os.environ.get("COMPASS_RECALL_CACHE_TTL", "3600"))
 _RECALL_CACHE = _OrderedDict_p9()   # key → (timestamp, result)
@@ -159,6 +160,42 @@ def _calc_inotify_avoid_rate() -> float:
     s = _INOTIFY_STATS
     total = s["rescans_avoided"] + s["rescans_done"]
     return (s["rescans_avoided"] / total) if total > 0 else 0.0
+
+
+# Stage1a Task 2 · 5min sliding metrics
+_RECALL_TS_BUFFER = _deque(maxlen=10000)
+_OVERLOAD_TS_BUFFER = _deque(maxlen=1000)
+
+
+def _sliding_5min_stats():
+    now = time.time()
+    cutoff = now - 300
+    recent = [(t, lat) for t, lat in _RECALL_TS_BUFFER if t >= cutoff]
+    overload = sum(1 for t in _OVERLOAD_TS_BUFFER if t >= cutoff)
+    count = len(recent)
+    if count > 0:
+        latencies = sorted([lat for _, lat in recent])
+        p95_idx = min(int(count * 0.95), count - 1)
+        p95 = latencies[p95_idx]
+        avg = sum(latencies) // count
+    else:
+        p95 = 0
+        avg = 0
+    return {"count_5min": count, "p95_ms": p95, "avg_ms": avg, "overload_5min": overload}
+
+
+# Stage1a Task 3 · memory stats (drift left as stub · eval_drift_log.jsonl not found)
+def _compute_memory_stats():
+    try:
+        cache_dir = Path.home() / ".claude/plugins/nautilus-compass/.cache"
+        pkls = list(cache_dir.glob("*.pkl"))
+        total_bytes = sum(p.stat().st_size for p in pkls)
+        return {
+            "pkl_count": len(pkls),
+            "pkl_total_mb": total_bytes // (1024 * 1024),
+        }
+    except Exception:
+        return {"pkl_count": 0, "pkl_total_mb": 0}
 
 
 def _p9_cache_key(action, query, project, top_k, scope, agent_type=""):
@@ -874,6 +911,7 @@ def serve():
         # queue + running > 32 · prevents CLOSE-WAIT leak from unbounded
         # ThreadPoolExecutor queueing under V5/V7 retry storms.
         if not _INFLIGHT_SEM.acquire(blocking=False):
+            _OVERLOAD_TS_BUFFER.append(time.time())
             log(f"overload · reject conn (inflight cap {DAEMON_INFLIGHT_LIMIT})")
             try:
                 conn.sendall(b'{"ok":false,"error":"daemon overloaded - retry"}\n')
@@ -1073,7 +1111,10 @@ def handle_conn(conn: socket.socket):
                         "events": _INOTIFY_STATS["events"],
                         "avoid_rate": _calc_inotify_avoid_rate(),
                     },
+                    "sliding_5min": _sliding_5min_stats(),
                 },
+                "memory": _compute_memory_stats(),
+                "drift": {"active_anchor": None, "last_score": None, "_note": "stub · eval_drift_log.jsonl not found"},
             }
             conn.sendall(json.dumps(_status, ensure_ascii=False).encode("utf-8") + b"\n")
             return
@@ -1085,7 +1126,9 @@ def handle_conn(conn: socket.socket):
             resp_bytes = json.dumps(handle_ingest(req), ensure_ascii=False).encode("utf-8") + b"\n"
             conn.sendall(resp_bytes)
             return
+        _t_start = time.time()
         resp = handle_request(req)
+        _RECALL_TS_BUFFER.append((time.time(), int((time.time() - _t_start) * 1000)))
         conn.sendall(json.dumps(resp, ensure_ascii=False).encode("utf-8") + b"\n")
     except Exception as e:
         log(f"conn handler fail: {e}")

@@ -36,3 +36,27 @@ def test_daemon_ping_still_works():
     r = _send("ping")
     assert r.get("ok") is True
     assert r.get("pong") is True
+
+
+# Stage1a Task 2+3 · sliding metrics + memory + drift stub
+
+
+def test_daemon_status_has_sliding_metrics():
+    r = _send("status")
+    assert "sliding_5min" in r["recall"], f"missing recall.sliding_5min: {r}"
+    s5 = r["recall"]["sliding_5min"]
+    for k in ("count_5min", "p95_ms", "avg_ms", "overload_5min"):
+        assert k in s5, f"missing sliding_5min.{k}: {s5}"
+
+
+def test_daemon_status_has_memory_stats():
+    r = _send("status")
+    assert "memory" in r, f"missing memory: {r}"
+    for k in ("pkl_count", "pkl_total_mb"):
+        assert k in r["memory"], f"missing memory.{k}: {r['memory']}"
+
+
+def test_daemon_status_has_drift_stub():
+    r = _send("status")
+    assert "drift" in r, f"missing drift: {r}"
+    assert "active_anchor" in r["drift"]
