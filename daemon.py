@@ -34,6 +34,7 @@ import socket
 import sys
 import threading
 import time
+import psutil  # Stage1a /status endpoint
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -149,6 +150,15 @@ _DIR_DIRTY = set()   # proj_keys flagged for re-scan by inotify watcher
 _DIR_DIRTY_LOCK = threading.Lock()
 _INOTIFY_STATS = {"events": 0, "rescans_avoided": 0, "rescans_done": 0, "watch_count": 0, "errors": 0}
 _INOTIFY_LAST_LOG = 0.0
+
+# Stage1a /status state
+_DAEMON_START_TS = 0.0
+
+
+def _calc_inotify_avoid_rate() -> float:
+    s = _INOTIFY_STATS
+    total = s["rescans_avoided"] + s["rescans_done"]
+    return (s["rescans_avoided"] / total) if total > 0 else 0.0
 
 
 def _p9_cache_key(action, query, project, top_k, scope, agent_type=""):
@@ -801,6 +811,8 @@ def _load_pkl_caches():
 
 
 def serve():
+    global _DAEMON_START_TS
+    _DAEMON_START_TS = time.time()
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     PID_FILE.write_text(str(os.getpid()), encoding="utf-8")
     log(f"daemon starting PID={os.getpid()} port={PORT}")
@@ -1032,6 +1044,38 @@ def handle_conn(conn: socket.socket):
             return
         if req.get("action") == "ping":
             conn.sendall(json.dumps({"ok":True,"pong":True}).encode("utf-8") + b"\n")
+            return
+        if req.get("action") == "status":
+            from datetime import datetime, timezone
+            try:
+                _proc = psutil.Process()
+                _cpu_pct = _proc.cpu_percent(interval=None)
+                _rss_mb = _proc.memory_info().rss // (1024 * 1024)
+            except Exception:
+                _cpu_pct = 0.0
+                _rss_mb = 0
+            try:
+                _load_avg = list(os.getloadavg())
+            except Exception:
+                _load_avg = [0.0, 0.0, 0.0]
+            _status = {
+                "ok": True,
+                "ts": datetime.now(timezone.utc).isoformat(),
+                "uptime_s": int(time.time() - _DAEMON_START_TS) if _DAEMON_START_TS else 0,
+                "pid": os.getpid(),
+                "cpu_pct": _cpu_pct,
+                "rss_mb": _rss_mb,
+                "load_avg": _load_avg,
+                "recall": {
+                    "p9_cache": dict(_RECALL_CACHE_STATS),
+                    "inotify": {
+                        "watches": _INOTIFY_STATS["watch_count"],
+                        "events": _INOTIFY_STATS["events"],
+                        "avoid_rate": _calc_inotify_avoid_rate(),
+                    },
+                },
+            }
+            conn.sendall(json.dumps(_status, ensure_ascii=False).encode("utf-8") + b"\n")
             return
         if req.get("action") == "shutdown":
             conn.sendall(b'{"ok":true,"shutdown":true}\n')
