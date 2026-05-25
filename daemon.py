@@ -177,7 +177,7 @@ def _sliding_5min_stats():
         latencies = sorted([lat for _, lat in recent])
         p95_idx = min(int(count * 0.95), count - 1)
         p95 = latencies[p95_idx]
-        avg = sum(latencies) // count
+        avg = round(sum(latencies) / count, 2)
     else:
         p95 = 0
         avg = 0
@@ -1087,7 +1087,7 @@ def handle_conn(conn: socket.socket):
             from datetime import datetime, timezone
             try:
                 _proc = psutil.Process()
-                _cpu_pct = _proc.cpu_percent(interval=None)
+                _cpu_pct = _proc.cpu_percent(interval=0.1)
                 _rss_mb = _proc.memory_info().rss // (1024 * 1024)
             except Exception:
                 _cpu_pct = 0.0
@@ -1128,7 +1128,7 @@ def handle_conn(conn: socket.socket):
             return
         _t_start = time.time()
         resp = handle_request(req)
-        _RECALL_TS_BUFFER.append((time.time(), int((time.time() - _t_start) * 1000)))
+        _RECALL_TS_BUFFER.append((time.time(), round((time.time() - _t_start) * 1000, 3)))
         conn.sendall(json.dumps(resp, ensure_ascii=False).encode("utf-8") + b"\n")
     except Exception as e:
         log(f"conn handler fail: {e}")
