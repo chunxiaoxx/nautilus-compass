@@ -50,7 +50,10 @@ TOKEN = os.environ.get("COMPASS_CLOUD_TOKEN")
 AGENT_TYPE = os.environ.get("COMPASS_AGENT_TYPE", "claude-code-cloud-proxy")
 # v1.6 · local-first recall via GPU BGE daemon
 LOCAL_PORT = int(os.environ.get("COMPASS_LOCAL_PORT", "9876"))
-LOCAL_TIMEOUT = float(os.environ.get("COMPASS_LOCAL_TIMEOUT", "5"))
+# v1.7.2 · raise 5→20 + retry: recall 稳态 <1s,但 daemon 与 prompt-hook 并发时偶发
+# 突发延迟会超 5s → 误判不可达。20s + 1 retry 吸收瞬时阻塞(2026-05-27 实证 transient,非稳态慢)。
+LOCAL_TIMEOUT = float(os.environ.get("COMPASS_LOCAL_TIMEOUT", "20"))
+LOCAL_RETRIES = int(os.environ.get("COMPASS_LOCAL_RETRIES", "2"))
 # Tools that can be served locally (recall/drift only · ingest always goes cloud)
 _LOCAL_TOOLS = {"recall", "drift_check", "thread_recall"}
 # Debug · set COMPASS_BRIDGE_LOG=/path/to/file to trace every line in/out
@@ -267,27 +270,37 @@ def _try_local_daemon(line: str):
     if not daemon_req.get("query"):
         return None
 
-    # TCP call to local daemon
-    try:
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.settimeout(LOCAL_TIMEOUT)
-        s.connect(("127.0.0.1", LOCAL_PORT))
-        s.sendall((json.dumps(daemon_req) + "\n").encode("utf-8"))
-        buf = b""
-        while True:
-            chunk = s.recv(65536)
-            if not chunk:
-                break
-            buf += chunk
-            if b"\n" in buf:
-                break
-        s.close()
-    except Exception as e:
-        _trace("LOCAL_FAIL", f"connect/io error: {e!r}")
+    # TCP call to local daemon · v1.7.2 · retry on transient timeout/io
+    buf = b""
+    last_err = None
+    for attempt in range(LOCAL_RETRIES):
+        s = None
         try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.settimeout(LOCAL_TIMEOUT)
+            s.connect(("127.0.0.1", LOCAL_PORT))
+            s.sendall((json.dumps(daemon_req) + "\n").encode("utf-8"))
+            buf = b""
+            while True:
+                chunk = s.recv(65536)
+                if not chunk:
+                    break
+                buf += chunk
+                if b"\n" in buf:
+                    break
             s.close()
-        except Exception:
-            pass
+            break  # success
+        except Exception as e:
+            last_err = e
+            _trace("LOCAL_RETRY", f"attempt {attempt + 1}/{LOCAL_RETRIES}: {e!r}")
+            try:
+                if s:
+                    s.close()
+            except Exception:
+                pass
+            buf = b""
+    else:
+        _trace("LOCAL_FAIL", f"connect/io error after {LOCAL_RETRIES} tries: {last_err!r}")
         return None
 
     # Parse daemon response
