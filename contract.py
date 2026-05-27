@@ -66,12 +66,17 @@ class Contract:
 
     def matches_consume_hint(self, text: str) -> bool:
         """Loose match · does `text` look like it's fulfilling this contract?"""
+        hits, tot = self.consume_overlap(text)
+        return tot > 0 and hits >= max(1, tot // 2)
+
+    def consume_overlap(self, text: str) -> tuple[int, int]:
+        """v1.7.1 · 返回 (distinctive 关键词命中数, 总关键词数) · 供 1:1 贪心打分。"""
         keywords = _extract_keywords(self.deliverable)
         if not keywords:
-            return False
+            return (0, 0)
         t = text.lower()
         hits = sum(1 for k in keywords if k in t)
-        return hits >= max(1, len(keywords) // 2)
+        return (hits, len(keywords))
 
 
 def _parse_iso(s: str) -> Optional[datetime]:
@@ -399,8 +404,11 @@ def auto_detect_consumption(contracts: list[Contract], memory_roots: list[Path],
     if not pend:
         return 0
     cutoff = time.time() - within_hours * 3600
-    best: dict[str, tuple[float, str]] = {}  # contract_id → (earliest mtime, filename)
+    best: dict[str, tuple[float, str]] = {}  # contract_id → (mtime, filename)
     known_parties = {"nautilus-core", "v5", "v7", "compass", "main"}
+    # v1.7.1 · 收集候选 (overlap_ratio, hits, mtime, contract_id, filename) · 再做 1:1 贪心分配,
+    # 避免一个大 session 同时"闭环"多个合约(实证 FP:plan_v3_3 配到 3 个 deliverable)。
+    cands = []
     for root in memory_roots:
         if not root.exists():
             continue
@@ -428,10 +436,17 @@ def auto_detect_consumption(contracts: list[Contract], memory_roots: list[Path],
                         text = f.read_text(encoding="utf-8", errors="replace")
                     except Exception:
                         text = ""
-                if c.matches_consume_hint(text):
-                    prev = best.get(c.id)
-                    if prev is None or mt < prev[0]:
-                        best[c.id] = (mt, f.name)
+                hits, tot = c.consume_overlap(text)
+                if tot > 0 and hits >= max(1, tot // 2):
+                    cands.append((hits / tot, hits, mt, c.id, f.name))
+    # 1:1 贪心:overlap 高优先(tie:hits 高 → mtime 早)· 每文件每合约各只用一次
+    cands.sort(key=lambda x: (-x[0], -x[1], x[2]))
+    used_files: set[str] = set()
+    for ratio, hits, mt, cid, fname in cands:
+        if cid in best or fname in used_files:
+            continue
+        best[cid] = (mt, fname)
+        used_files.add(fname)
     n = 0
     for c in pend:
         if c.id in best:
