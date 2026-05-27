@@ -48,6 +48,7 @@ class Contract:
     source_session: str = ""  # session_*.md filename that issued
     consumed_by: str = ""  # session_*.md filename that consumed
     consumed_at: str = ""
+    consume_method: str = ""  # "" = 显式 frontmatter · "auto_keyword" = scanner 自动检测(v1.7.1)
 
     def to_yaml_dict(self) -> dict:
         d = {k: v for k, v in asdict(self).items() if v}
@@ -112,7 +113,10 @@ def _extract_keywords(text: str) -> list[str]:
     """Crude keyword extraction · lowercase tokens of length >=4."""
     tokens = re.findall(r"[a-zA-Z_一-鿿]{2,}", (text or "").lower())
     stop = {"the", "and", "for", "with", "from", "into", "this", "that",
-            "你", "我", "的", "了", "是", "在", "和"}
+            "你", "我", "的", "了", "是", "在", "和",
+            # v1.7.1 · 领域 boilerplate(几乎每个 session 都有 · 不过滤会造假闭环 · cnt_ncore FP 实证)
+            "session", "session_", "compass", "mcp", "claude", "json", "nautilus",
+            "dialog", "memory", "agent", "ship", "md", "py"}
     seen, out = set(), []
     for t in tokens:
         if len(t) < 3:
@@ -291,10 +295,164 @@ def already_alerted(contract_id: str, reason: str) -> bool:
     return False
 
 
+# ─── implicit contracts from inbound_/outbound_ files (v1.7.1) ────
+# 解 adoption:dialogs 一直在写 inbound_/outbound_ session 文件(就是交接)· 只是没带 contract
+# frontmatter。教 scanner 把它们当隐式合约 → 不要求行为改变,立刻从 2 个变 ~N 个。
+
+_PARTY_NORM = {"nautilus_core": "nautilus-core", "core": "nautilus-core",
+               "nautiluscore": "nautilus-core"}
+
+
+def _norm_party(name: str) -> str:
+    """归一化 party 名:剥 -dialog/_dialog 后缀 + 别名映射。
+    'compass-dialog'→'compass' · 'nautilus-core-dialog'→'nautilus-core' · 'nautilus_core'→'nautilus-core'。"""
+    p = (name or "").strip().lower()
+    p = re.sub(r"[-_]dialog$", "", p)
+    return _PARTY_NORM.get(p, p)
+
+
+def _owner_from_root(root: Path) -> str:
+    """memory root → 拥有该 root 的 dialog 名(用于隐式合约方向)。"""
+    n = root.parent.name  # e.g. C--Users-chunx-Projects-nautilus-core
+    for suf, name in (("nautilus-core", "nautilus-core"), ("nautilus-v5", "v5"),
+                      ("nautilus-compass", "compass")):
+        if n.endswith(suf):
+            return name
+    if n == "C--Users-chunx":
+        return "main"
+    return n
+
+
+def _parse_handoff_filename(fname: str, owner: str):
+    """inbound_from_<X>/inbound_to_<X>/outbound_to_<X> → (giver, receiver) or None。"""
+    base = fname[:-3] if fname.endswith(".md") else fname
+    m = re.match(r"(inbound|outbound)_(from|to)_(.+)", base)
+    if not m:
+        return None
+    _, direction, rest = m.groups()
+    if "_dialog" in rest:
+        party = rest.split("_dialog")[0]
+    else:
+        dm = re.search(r"_(\d{8})", rest)
+        party = rest[:dm.start()] if dm else rest
+    party = party.strip("_")
+    party = _PARTY_NORM.get(party, party)
+    if direction == "from":
+        return party, owner   # X 发给 owner
+    return owner, party       # owner 发/留给 X
+
+
+def derive_implicit_contracts(memory_roots: list[Path], within_hours: float = 720.0) -> list[Contract]:
+    """v1.7.1 · 从 inbound_/outbound_ session 文件派生隐式合约。
+    deliverable=description frontmatter · issued_at=file mtime · id 前缀 imp_ · status outstanding。
+    """
+    cutoff = time.time() - within_hours * 3600
+    out = []
+    for root in memory_roots:
+        if not root.exists():
+            continue
+        owner = _owner_from_root(root)
+        for f in list(root.glob("inbound_*.md")) + list(root.glob("outbound_*.md")):
+            try:
+                mt = f.stat().st_mtime
+            except Exception:
+                continue
+            if mt < cutoff:
+                continue
+            gr = _parse_handoff_filename(f.name, owner)
+            if not gr:
+                continue
+            giver, receiver = gr
+            try:
+                text = f.read_text(encoding="utf-8", errors="replace")
+            except Exception:
+                text = ""
+            dm = re.search(r"^description:\s*(.+)$", text, re.M)
+            deliverable = (dm.group(1).strip() if dm else "")[:200] or f.name
+            issued = datetime.fromtimestamp(mt, timezone.utc).strftime("%Y-%m-%dT%H:%M:%S%z")
+            cid = "imp_" + hashlib.blake2b(f.name.encode(), digest_size=4).hexdigest()
+            out.append(Contract(
+                id=cid, giver=giver, receiver=receiver, deadline="",
+                deliverable=deliverable, status="outstanding",
+                issued_at=issued, source_session=f.name,
+            ))
+    return out
+
+
+# ─── auto consume detection (v1.7.1) ─────────────────────────────
+
+
+def auto_detect_consumption(contracts: list[Contract], memory_roots: list[Path],
+                            within_hours: float = 168.0,
+                            receiver_authorship: bool = False) -> int:
+    """v1.7.1 · 自动闭环检测 · 把死代码 matches_consume_hint 接入 scanner。
+
+    consumed=0 根因:消费只认下游显式写的 `status: consumed`,dialogs 不可靠这么做。
+    兜底:对每个 outstanding 合约,扫 issued_at 之后的 session(非 source_session),
+    deliverable 关键词松匹配 → auto-mark consumed(consume_method=auto_keyword · 可审计)。
+    返回 auto-consumed 数。显式 status:consumed 优先(本函数只补 outstanding 的)。
+
+    caveat:matches_consume_hint 是关键词松匹配(≥半数命中)· 有 FP 风险 · 故标 auto +
+    记 consumed_by 供人工核 · close_loop 时间是 consumed_at(匹配文件 mtime)− issued_at 的代理。
+    """
+    pend = [c for c in contracts if c.status == "outstanding"]
+    if not pend:
+        return 0
+    cutoff = time.time() - within_hours * 3600
+    best: dict[str, tuple[float, str]] = {}  # contract_id → (earliest mtime, filename)
+    known_parties = {"nautilus-core", "v5", "v7", "compass", "main"}
+    for root in memory_roots:
+        if not root.exists():
+            continue
+        owner = _owner_from_root(root)
+        for f in root.glob("session_*.md"):
+            try:
+                mt = f.stat().st_mtime
+            except Exception:
+                continue
+            if mt < cutoff:
+                continue
+            text = None
+            for c in pend:
+                if f.name == c.source_session:
+                    continue
+                # v1.7.1 · receiver-authorship:消费须在 receiver 自己的 root(杀跨 context FP)
+                _rcv = _norm_party(c.receiver)
+                if receiver_authorship and _rcv in known_parties and owner != _rcv:
+                    continue
+                iss = _parse_iso(c.issued_at)
+                if iss and mt < iss.timestamp():  # 消费必须在发起之后
+                    continue
+                if text is None:
+                    try:
+                        text = f.read_text(encoding="utf-8", errors="replace")
+                    except Exception:
+                        text = ""
+                if c.matches_consume_hint(text):
+                    prev = best.get(c.id)
+                    if prev is None or mt < prev[0]:
+                        best[c.id] = (mt, f.name)
+    n = 0
+    for c in pend:
+        if c.id in best:
+            mt, fname = best[c.id]
+            c.status = "consumed"
+            c.consumed_by = fname
+            c.consumed_at = datetime.fromtimestamp(mt, timezone.utc).strftime("%Y-%m-%dT%H:%M:%S%z")
+            c.consume_method = "auto_keyword"
+            n += 1
+    return n
+
+
 # ─── scanner ─────────────────────────────────────────────────────
 
 
-def scan_sessions_for_contracts(memory_roots: list[Path], within_hours: float = 168.0) -> dict:
+def scan_sessions_for_contracts(memory_roots: list[Path], within_hours: float = 168.0,
+                                auto_detect: bool = False, include_implicit: bool = False,
+                                receiver_authorship: bool = False) -> dict:
+    # v1.7.1 · auto_detect 默认 False:keyword 匹配仍有 FP(cnt_ncore 实证 · 生成假闭环比 consumed=0 更糟)。
+    # 显式 status:consumed 始终生效。auto_detect=True 是 opt-in 实验工具(标 consume_method=auto_keyword 供审计)。
+    # 可信自动闭环需更强 matcher:receiver-authorship 约束 + 语义/LLM 验证(见 design_cross_agent_handoff.md)。
     """Walk recent session_*.md files · build outstanding-contract index.
 
     Returns {
@@ -333,6 +491,16 @@ def scan_sessions_for_contracts(memory_roots: list[Path], within_hours: float = 
                     rank = {"outstanding": 0, "consumed": 1, "expired": 2, "cancelled": 3}
                     if rank.get(c.status, 0) > rank.get(prior.status, 0):
                         all_contracts[c.id] = c
+
+    # v1.7.1 · 隐式合约:从 inbound_/outbound_ 文件派生(解 adoption · 不覆盖已有显式合约)
+    if include_implicit:
+        for c in derive_implicit_contracts(memory_roots, within_hours):
+            all_contracts.setdefault(c.id, c)
+
+    # v1.7.1 · 自动闭环检测(补显式 status:consumed 之外的)· consume_method=auto_keyword
+    if auto_detect:
+        auto_detect_consumption(list(all_contracts.values()), memory_roots, within_hours,
+                                receiver_authorship=receiver_authorship)
 
     now = datetime.now(timezone.utc)
     outstanding, consumed, expired = [], [], []
