@@ -413,7 +413,8 @@ def auto_detect_consumption(contracts: list[Contract], memory_roots: list[Path],
         if not root.exists():
             continue
         owner = _owner_from_root(root)
-        for f in root.glob("session_*.md"):
+        # v1.7.3 · 也拾 contract_close_*.md(显式 close-loop 文件约定)
+        for f in list(root.glob("session_*.md")) + list(root.glob("contract_close_*.md")):
             try:
                 mt = f.stat().st_mtime
             except Exception:
@@ -484,7 +485,8 @@ def scan_sessions_for_contracts(memory_roots: list[Path], within_hours: float = 
     for root in memory_roots:
         if not root.exists():
             continue
-        for f in root.glob("session_*.md"):
+        # v1.7.3 · 也拾 contract_close_*.md(显式 close-loop 文件约定)
+        for f in list(root.glob("session_*.md")) + list(root.glob("contract_close_*.md")):
             try:
                 if f.stat().st_mtime < cutoff:
                     continue
