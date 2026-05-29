@@ -1,0 +1,42 @@
+{
+  "pipeline": "m3-rerank",
+  "subject_model": "gemini-2.5-flash",
+  "judge_model": "gemini-2.5-pro",
+  "subject_temperature": 0.1,
+  "vote_n": 1,
+  "n": 500,
+  "accuracy": 0.364,
+  "by_type": {
+    "single-session-user": {
+      "n": 70,
+      "correct": 14,
+      "acc": 0.2
+    },
+    "multi-session": {
+      "n": 133,
+      "correct": 58,
+      "acc": 0.43609022556390975
+    },
+    "single-session-preference": {
+      "n": 30,
+      "correct": 14,
+      "acc": 0.4666666666666667
+    },
+    "temporal-reasoning": {
+      "n": 133,
+      "correct": 48,
+      "acc": 0.3609022556390977
+    },
+    "knowledge-update": {
+      "n": 78,
+      "correct": 36,
+      "acc": 0.46153846153846156
+    },
+    "single-session-assistant": {
+      "n": 56,
+      "correct": 12,
+      "acc": 0.21428571428571427
+    }
+  },
+  "out_jsonl": "/home/ubuntu/.claude/plugins/nautilus-compass/.cache/longmemeval_acc_m3_rerank_full_1780056202.jsonl"
+}
