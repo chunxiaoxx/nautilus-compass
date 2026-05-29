@@ -123,6 +123,51 @@ a stance on what *not* to include:
 
 ---
 
+## What's coming · v3.0 / v3.5 fusion (dev branch preview)
+
+Active development on the [`v3-full-fusion`](https://github.com/chunxiaoxx/nautilus-compass/tree/v3-full-fusion)
+branch · not in any release. Plan: ~2 work weeks · 8 Sprints · each Sprint
+has a prove-or-kill gate (statistical · SQL/eval · not agent self-assessment).
+
+**Default-off byte-equal promise**: with no opt-in env set, v3.0 / v3.5
+behavior is byte-equal to v2.0.1. Verified by
+[`tests/test_llm_opt_in.py`](tests/test_llm_opt_in.py) ·
+the `test_default_off_invariant_*` family gates every PR into `main`.
+
+### v3.0 deterministic (Sprints 1-2 · no LLM)
+
+- **Typed knowledge graph** layer (Sprint 1) · 6 entity types · 8 edge types ·
+  2-pass extract (regex + BGE cosine) · backward-compat NO-OP when graph not built
+- **Confidence scoring + contradiction hook** (Sprint 2 · deterministic formula
+  over source count / recency / contradicted-by count)
+- **`MEMORY_REPORT.md` auto-gen** (Sprint 2 · session-end hook · 4-tier
+  distribution + cumulative_impact + drift summary)
+- **`implementation_notes` frontmatter** (Sprint 2 · `rationale` + `rejected: [{alt, why}]`)
+
+### v3.5 opt-in LLM features (Sprints 3-7 · all default-off)
+
+| env var | tier | feature (Sprint) |
+|---|---|---|
+| `COMPASS_USE_LLM_RESOLVE` | 1 (session-end) | LLM contradiction resolution (Sprint 3) |
+| `COMPASS_USE_LLM_VERIFY` | 4 (runtime) | anti-confabulation cite-or-refuse (Sprint 4) |
+| `COMPASS_USE_LLM_DRIFT_PAY` | 4 (runtime) | drift × outcome anchor feedback (Sprint 5) |
+| `COMPASS_USE_LLM_REFLECT` | 3 (periodic) | self-reflection semantic emit (Sprint 6) |
+| `COMPASS_USE_LLM_ECON` | 4 (runtime) | memory-as-economy NAU budget (Sprint 7) |
+
+Pattern mirrors the existing `COMPASS_USE_GEMINI_FLASH` opt-in
+([`judges/gemini_flash.py`](judges/gemini_flash.py)) — env truthy
+(`1`/`true`/`yes`/`on`) activates · anything else disables. Registry: [`llm_opt_in.py`](llm_opt_in.py).
+
+### Kill-gate semantics
+
+Per-Sprint gates are pre-registered. If a Sprint's gate metric does not
+pass (e.g. Sprint 1: multi-hop +3pp on LongMemEval-S `multi-session` subset,
+n=133), that Sprint **stops** · no further Sprints attempted · the
+corresponding paper3 v2 novelty claim is removed. This protects against
+post-hoc rationalization of negative results.
+
+---
+
 ## What problem does this solve
 
 ### A. Long sessions drift
