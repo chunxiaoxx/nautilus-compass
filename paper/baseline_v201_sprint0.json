@@ -1,0 +1,112 @@
+{
+  "_meta": {
+    "schema_version": 1,
+    "plan": "plan_compass_v35_full_fusion",
+    "sprint": 0,
+    "deliverable": "#3 baseline metric snapshot (plan §2.0)",
+    "snapshot_date": "2026-05-28",
+    "branch": "v3-full-fusion",
+    "base_commit": "5258c45",
+    "sprint0_commit": "abce22f",
+    "purpose": "v2.0.1 reference values for Sprint 1-7 delta gates · paper3 v2 §6 audit reconciliation",
+    "completeness": "3/5 metrics from existing data · 2/5 (LongMemEval / MEME) require external rerun (deferred to next session per user 2026-05-28)",
+    "next_session_pending": [
+      "longmemeval_s · T4 server 43.155.195.48 · ~8h · ~$3.5",
+      "meme_cas_del_abs · find harness · ~30-60min · ~$1"
+    ]
+  },
+
+  "longmemeval_s": {
+    "status": "placeholder · v0.8 last-full-run · v2.0.1 rerun pending next session",
+    "pipeline_at_measurement": "m3-rerank · DeepSeek-V3.2-thinking judge",
+    "n": 500,
+    "overall_accuracy": 0.566,
+    "P_at_1": 0.576,
+    "P_at_3": 0.726,
+    "P_at_5": 0.86,
+    "MRR": 0.6846,
+    "by_type": {
+      "single-session-user":      {"n": 70,  "P_at_1": 0.243, "P_at_5": 0.586, "MRR": 0.398},
+      "multi-session":            {"n": 133, "P_at_1": 0.639, "P_at_5": 0.940, "MRR": 0.741},
+      "single-session-preference":{"n": 30,  "P_at_1": 0.367, "P_at_5": 0.733, "MRR": 0.537},
+      "temporal-reasoning":       {"n": 133, "P_at_1": 0.639, "P_at_5": 0.917, "MRR": 0.730},
+      "knowledge-update":         {"n": 78,  "P_at_1": 0.487, "P_at_5": 0.846, "MRR": 0.635},
+      "single-session-assistant": {"n": 56,  "P_at_1": 0.929, "P_at_5": 0.964, "MRR": 0.950}
+    },
+    "source_file": "paper/results/longmemeval_results_1777566243.json",
+    "subset_for_sprint1_gate": {
+      "name": "multi-session",
+      "n": 133,
+      "noise_floor_pp_at_95ci": 2.5,
+      "sprint1_target_delta_pp": 3.0,
+      "judgeable": true,
+      "comment": "Sprint 0 #5 verdict · n=133 > 50 · +3pp gate is statistically resolvable"
+    },
+    "rerun_target_for_v201": {
+      "pipeline": "m3-rerank · v2.0.1 (post-M2-filter + L3-session-writer-fix)",
+      "expected_delta_vs_v08_pp": "near-zero · M2/L3 fixes are ingest-side · LongMemEval-S is recall-side",
+      "eta_hours": 8,
+      "estimated_cost_usd": 3.5,
+      "infrastructure": "T4 GPU on 43.155.195.48 (memory: 5/26 confirmed alive · old 43.173.164.32 dead)"
+    }
+  },
+
+  "meme_cas_del_abs": {
+    "status": "placeholder · last-known-value · v2.0.1 rerun pending next session",
+    "last_value_e2e_at_30": 0.444,
+    "last_value_n": 500,
+    "last_run": "memory · evermembench_compass_44pct.md · 2026-05-07",
+    "comparison_at_measurement": {
+      "memos": 0.4255,
+      "delta_vs_memos_pp": 1.85,
+      "claim": "table-4 best in reported baselines · paper2 v2 §6.5"
+    },
+    "rerun_target_for_v201": {
+      "harness_location": "unknown · grep `meme_e2e` or `evermembench` next session",
+      "eta_minutes": "30-60",
+      "estimated_cost_usd": 1.0
+    }
+  },
+
+  "drift_fp_rate": {
+    "status": "known · post-v2-fix",
+    "fire_rate": 0.004,
+    "fire_rate_pct": 0.4,
+    "n_alerts": 457,
+    "n_marked_false_positive": 2,
+    "n_total_traffic_observed": 25000,
+    "measurement_window": "30d ending 2026-05-27",
+    "source": "memory · session_20260527_drift_loop_open_tuneout.md",
+    "sprint5_relevance": {
+      "gate_target_precision": 0.5,
+      "current_precision_marked": "0.4% fire rate · only 2/457 marked FP · most unmarked",
+      "open_question": "intervention rate (act-on after detect) unknown · plan §5 risk #8 · gate 1 measures detect-precision · gate 4 measures intervention-rate"
+    }
+  },
+
+  "poi_consumption_rate": {
+    "status": "known · audit 5/28 baseline",
+    "consumed_sessions": 7,
+    "available_pois": 1389,
+    "rate": 0.005,
+    "rate_pct": 0.5,
+    "source": "audit 5/28 §6 🟠 over-claimed · #11 anti-confab dependency",
+    "sprint4_relevance": {
+      "gate_target_rate": 0.20,
+      "required_multiplier_vs_baseline": 40.0,
+      "gate_kill_if_below": 0.20
+    }
+  },
+
+  "cross_agent_contract_adoption": {
+    "status": "known · audit 5/28 baseline",
+    "adopters_count": 0,
+    "contracts_issued_count": "see contract_audit · ≥1 cnt_ncore_a4b5 referenced",
+    "consumed_count": 0,
+    "source": "audit 5/28 §6 🟡 dormant · cross-dialog contract adoption=0",
+    "sprint7_relevance": {
+      "gate_target": "platform_nau_ledger gains N new memory_access reason rows",
+      "kill_if": "no cross-agent NAU interactions detected"
+    }
+  }
+}
