@@ -241,3 +241,84 @@ def test_scanner_default_window_at_least_30d():
     assert default >= 720.0, (
         f"expected default within_hours >= 720 (30d) · got {default}"
     )
+
+
+# ─── D.fix-4: singular metadata.contract_id protocol ─────────────
+
+
+def test_parse_metadata_contract_id_singular():
+    """D.fix-4 · V5 dialog 2026-05-19 inbound uses singular `metadata.contract_id: cnt_xxx`
+    (not list) · scanner must recognise it · otherwise contract is invisible.
+
+    Real example: inbound_from_v5_dialog_20260519_compass_session_id_bug.md
+    """
+    text = (
+        "---\n"
+        "name: inbound-from-v5\n"
+        "metadata:\n"
+        "  type: project\n"
+        "  contract_id: cnt_singular_test\n"
+        "  close_loop: true\n"
+        "  from: v5-dialog\n"
+        "  to: compass-dialog\n"
+        "  due: 2026-06-01T08:00:00+08:00\n"
+        "---\n\nbody\n"
+    )
+    cs = parse_contracts_from_frontmatter(text)
+    assert len(cs) == 1, f"singular protocol not detected · got {len(cs)} contracts"
+    c = cs[0]
+    assert c.id == "cnt_singular_test"
+    assert c.giver == "v5-dialog"
+    assert c.receiver == "compass-dialog"
+    # pyyaml parses ISO 8601 datetime · re-stringifies with space instead of T · accept both
+    assert c.deadline in {"2026-06-01T08:00:00+08:00", "2026-06-01 08:00:00+08:00"}
+    assert c.status == "outstanding"  # singular protocol has no explicit status · default outstanding
+
+
+def test_singular_protocol_close_loop_field_marks_consumed():
+    """D.fix-4 · when singular metadata has `close_loop: true` + `consumed_by:` ·
+    treat as consumed (inbound-style close convention)."""
+    text = (
+        "---\n"
+        "name: inbound-close-loop\n"
+        "metadata:\n"
+        "  contract_id: cnt_singular_closed\n"
+        "  close_loop: true\n"
+        "  from: a-dialog\n"
+        "  to: b-dialog\n"
+        "  due: 2026-06-01\n"
+        "  consumed_by: this_file.md\n"
+        "  consumed_at: 2026-05-30T12:00+0800\n"
+        "---\n"
+    )
+    cs = parse_contracts_from_frontmatter(text)
+    assert len(cs) == 1
+    assert cs[0].id == "cnt_singular_closed"
+    assert cs[0].status == "consumed"
+    assert cs[0].consumed_by == "this_file.md"
+
+
+def test_singular_and_list_both_present(tmp_path):
+    """D.fix-4 · file with both singular contract_id AND contracts list should yield both.
+    Scanner dedups by id with status rank."""
+    close_file = tmp_path / "session_20260530_both.md"
+    close_file.write_text(
+        "---\n"
+        "metadata:\n"
+        "  contract_id: cnt_singular_x\n"
+        "  from: a\n"
+        "  to: b\n"
+        "  due: 2026-06-01\n"
+        "  contracts:\n"
+        "    - id: cnt_list_y\n"
+        "      giver: c\n"
+        "      receiver: d\n"
+        "      deadline: 2026-06-01\n"
+        "      deliverable: list entry\n"
+        "      status: outstanding\n"
+        "---\n",
+        encoding="utf-8",
+    )
+    cs = parse_contracts_from_frontmatter(close_file.read_text(encoding="utf-8"))
+    ids = sorted(c.id for c in cs)
+    assert ids == ["cnt_list_y", "cnt_singular_x"], f"expected both ids · got {ids}"
