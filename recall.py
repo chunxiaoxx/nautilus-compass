@@ -1006,6 +1006,19 @@ def render_v02_vector_mode(entries: list, query: str, cache: dict) -> None:
             # Graceful · L0 path stays intact even if overlay misbehaves
             sys.stderr.write(f"[L1 overlay] skipped: {_e!r}\n")
 
+    # v3 · B.5 · PoI candidate emission · record which memories were surfaced
+    # to the actor at high confidence (no outcome yet · reconciled later when a
+    # downstream PoI event lands). Distinct from emit_nau_records: candidates
+    # do NOT fabricate action_outcome. Sidecar: poi_candidates.jsonl. Guarded by
+    # COMPASS_NO_POI_CANDIDATE=1 for opt-out. Graceful skip on error.
+    if top and os.environ.get("COMPASS_NO_POI_CANDIDATE") != "1":
+        try:
+            from proof.poi_emitter import emit_poi_candidate
+            _actor = os.environ.get("COMPASS_AGENT_ID") or os.environ.get("CLAUDE_AGENT_ID")
+            emit_poi_candidate(top, query=query, agent_id=_actor)
+        except Exception as _e:
+            sys.stderr.write(f"[PoI candidate] skipped: {_e!r}\n")
+
     # v1.7 · MEME-extension · transitive_close via depends_on BFS · staged rollout
     # Enable with COMPASS_CHAIN_RECALL=1 · ancestors pinned with synthetic score -depth-1
     if os.environ.get("COMPASS_CHAIN_RECALL") == "1":
