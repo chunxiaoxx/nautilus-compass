@@ -449,13 +449,18 @@ def test_drift_only_fires_when_neg_hit_above_065_and_score_below_minus_002():
 
 **Step 3-5:** Implement · test · commit `fix(L1): drift specificity · stricter threshold combo`
 
-#### Task C.3: Add false-positive feedback ingestion
+#### Task C.3: ✅ SHIPPED · false-positive feedback ingestion (root `feedback.py`)
 
-**Files:**
-- Create: `drift/fp_feedback.py`
-- Test: `tests/drift/test_fp_feedback.py`
+**Status:** Already implemented in root `feedback.py` (300 LOC) prior to this sprint.
+Audit closed by `tests/test_feedback_core.py` (commit `f62e2b8`).
 
-TDD: when user runs `nautilus-compass feedback <alert_id> fp`, the FP marker should adjust future similar-vector thresholds (online learning). Commit.
+**Files (actual):**
+- Production: `feedback.py` (CLI: `feedback list | log <id> fp|tp | stats | retrain`)
+- Test: `tests/test_feedback_core.py` (21 tests · flat layout to avoid the package-shadow trap that bit C.1+C.2 with `tests/drift/`)
+
+**Online learning** (line 209-216, now extracted to `_apply_weight_update` helper): per neg anchor weight `×0.7` per FP / `×1.1` per TP · clamp `[0.05, 2.0]` · 5 consecutive FP → weight `0.168` (effectively deprecated below user-facing `0.17` semantic gate). FP prompts add to `positive_anchors` · TP prompts add to `negative_anchors`. Eval gate (line 248-272) compares baseline vs adapted AUC · rejects on regression · promotes on Δ ≥ 0.005.
+
+**Original plan misroute:** plan wrote `drift/fp_feedback.py` (never existed). Audit caught the dup before any new implementation. C.3 close-loop = unit test backfill, not new ingestion logic.
 
 ### Component D · L4 Cross-agent Contract Consumer-side Fix
 
