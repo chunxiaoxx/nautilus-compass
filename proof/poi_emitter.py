@@ -178,32 +178,28 @@ def emit_poi_candidate(top, query: str, agent_id: Optional[str] = None,
     q_hash = hashlib.sha1((query or "").encode("utf-8")).hexdigest()[:16]
 
     count = 0
-    lines = []
-    for rank, (score, entry) in enumerate(top):
-        path = _resolve_entry_path(entry)
-        if path is None:
-            continue
-        # Self-cite suppression · mirrors emit_nau_records · skip when the
-        # memory was created by the same agent making the recall.
-        if SUPPRESS_SELFCITE and agent_id:
-            front = parse_session_frontmatter_safe(path)
-            creator = front.get("agent_type", "") or front.get("agent_id", "")
-            if creator == agent_id:
+    with sidecar.open("a", encoding="utf-8") as f:
+        for rank, (score, entry) in enumerate(top):
+            path = _resolve_entry_path(entry)
+            if path is None:
                 continue
-        lines.append(json.dumps({
-            "ts": ts,
-            "kind": "candidate",
-            "actor": actor,
-            "memory": path.name,
-            "query_hash": q_hash,
-            "rank": rank,
-            "score": round(float(score), 4),
-        }, ensure_ascii=False))
-        count += 1
-
-    if lines:
-        with sidecar.open("a", encoding="utf-8") as f:
-            f.write("\n".join(lines) + "\n")
+            # Self-cite suppression · mirrors emit_nau_records · skip when the
+            # memory was created by the same agent making the recall.
+            if SUPPRESS_SELFCITE and agent_id:
+                front = parse_session_frontmatter_safe(path)
+                creator = front.get("agent_type", "") or front.get("agent_id", "")
+                if creator == agent_id:
+                    continue
+            f.write(json.dumps({
+                "ts": ts,
+                "kind": "candidate",
+                "actor": actor,
+                "memory": path.name,
+                "query_hash": q_hash,
+                "rank": rank,
+                "score": round(float(score), 4),
+            }, ensure_ascii=False) + "\n")
+            count += 1
     return count
 
 
