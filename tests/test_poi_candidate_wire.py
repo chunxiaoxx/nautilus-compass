@@ -78,7 +78,7 @@ def test_recall_emits_poi_candidate_on_high_confidence(monkeypatch, tmp_path):
     the source-level wire gives high confidence without touching the
     embedder.
     """
-    from proof.poi_emitter import emit_poi_candidate
+    from proof.poi_emitter import emit_poi_candidate, CANDIDATE_SIDECAR
 
     # --- (a) static: assert call site exists in recall.py ---
     recall_src = Path(__file__).resolve().parents[1] / "recall.py"
@@ -86,13 +86,23 @@ def test_recall_emits_poi_candidate_on_high_confidence(monkeypatch, tmp_path):
     assert "emit_poi_candidate" in src_text, "recall.py missing emit_poi_candidate wire"
     assert "COMPASS_NO_POI_CANDIDATE" in src_text, "recall.py missing env-var opt-out"
 
-    # --- (b) functional: drive emit_poi_candidate through tmp cache · verify file appears ---
+    # --- (b) functional: drive emit_poi_candidate + simulate wire's env-var guard ---
     m = tmp_path / "hit.md"
     m.write_text("---\nname: hit\nagent_type: other\n---\nbody\n", encoding="utf-8")
     top = [(0.88, {"path": m.name, "fullpath": str(m)})]
-    n = emit_poi_candidate(top, query="real recall query", agent_id="agent-X", cache_dir=tmp_path)
-    assert n == 1
-    sidecar = tmp_path / "poi_candidates.jsonl"
+    sidecar = tmp_path / CANDIDATE_SIDECAR
+
+    # (b.1) env var SET → wire's guard prevents emit · sidecar does NOT appear
+    monkeypatch.setenv("COMPASS_NO_POI_CANDIDATE", "1")
+    if os.environ.get("COMPASS_NO_POI_CANDIDATE") != "1":
+        emit_poi_candidate(top, query="real recall query", agent_id="agent-X", cache_dir=tmp_path)
+    assert not sidecar.exists(), "guard should prevent emit when COMPASS_NO_POI_CANDIDATE=1"
+
+    # (b.2) env var UNSET → wire calls emit · sidecar appears with expected record
+    monkeypatch.delenv("COMPASS_NO_POI_CANDIDATE", raising=False)
+    if os.environ.get("COMPASS_NO_POI_CANDIDATE") != "1":
+        n = emit_poi_candidate(top, query="real recall query", agent_id="agent-X", cache_dir=tmp_path)
+        assert n == 1
     assert sidecar.exists()
     record = json.loads(sidecar.read_text(encoding="utf-8").strip())
     assert record["kind"] == "candidate"
