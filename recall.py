@@ -23,6 +23,10 @@ import sys
 import time
 from pathlib import Path
 
+# C.2 · multi-signal drift firing vote · supersedes inline OR-vote at L1429.
+# See drift/firing.py docstring for the rationale (5/27 cry-wolf finding).
+from drift.firing import should_fire_drift
+
 # Force UTF-8 stdout (Windows GBK)
 try:
     sys.stdout.reconfigure(encoding="utf-8")  # safe · no buffer aliasing
@@ -1426,7 +1430,9 @@ def main():
                     top_neg_hits.append((cosine(q_emb, a_emb), s))
                 top_neg_hits.sort(reverse=True)
             max_neg_hit = top_neg_hits[0][0] if top_neg_hits else 0.0
-            should_alert = sig < DRIFT_ALERT_THRESHOLD or max_neg_hit >= NEG_ANCHOR_HIT_THRESHOLD
+            # C.2 · multi-signal vote (strong score OR strong hit OR weak+weak corroboration)
+            # Legacy OR-vote available via COMPASS_DRIFT_LEGACY_OR=1.
+            should_alert = should_fire_drift(score=sig, max_neg_hit=max_neg_hit)
             tag = "✅ 在锚点内" if sig > 0.05 and not should_alert else ("⚠️ 偏向反锚点" if should_alert else "≈ 中性")
             print(f"[Persona drift · {anchors['n_pos']}+{anchors['n_neg']} 锚点 · BGE]")
             print(f"  score={sig:+.3f} (alignment={d['alignment']:.3f} · deviation={d['deviation']:.3f}) · {tag}")
