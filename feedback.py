@@ -151,6 +151,31 @@ def _normalize_anchor(item):
     }
 
 
+def _apply_weight_update(neg_anchors, fp_anchor_count, tp_anchor_count):
+    """Apply v0.7.1 weighted update rule to negative anchors.
+
+    For each anchor (keyed by text[:60]):
+      - new_weight = weight × (0.7 ** fp_count) × (1.1 ** tp_count)
+      - clamp to [0.05, 2.0]
+      - round to 3 decimals
+      - increment fp/tp tallies on the anchor dict
+
+    Mutates `neg_anchors` in place and returns the same list (for chaining).
+
+    Note: 5 consecutive FP yields 1.0 × 0.7^5 = 0.16807 → ~0.168, which is
+    below the user-facing 0.17 deprecation gate but above the 0.05 hard clamp.
+    """
+    for n in neg_anchors:
+        key = n["text"][:60]
+        fp_n = fp_anchor_count.get(key, 0)
+        tp_n = tp_anchor_count.get(key, 0)
+        n["fp"] += fp_n
+        n["tp"] += tp_n
+        new_w = n["weight"] * (0.7 ** fp_n) * (1.1 ** tp_n)
+        n["weight"] = round(max(0.05, min(2.0, new_w)), 3)
+    return neg_anchors
+
+
 def _run_eval_drift(anchors_path: Path) -> float | None:
     """Run eval_drift.py with given anchors · return ROC AUC, or None if fail."""
     import subprocess as sp
@@ -206,14 +231,7 @@ def cmd_retrain(args):
     # === v0.7.1 weighted update ===
     # neg anchor weight 调整: 每条 FP -> weight ×= 0.7, 每条 TP -> weight ×= 1.1 (cap [0.05, 2.0])
     # 连续 5 次 FP 后 weight ≤ 0.17 → 实际 deprecated (cosine 系数太低无影响)
-    for n in neg:
-        key = n["text"][:60]
-        fp_n = fp_anchor_count.get(key, 0)
-        tp_n = tp_anchor_count.get(key, 0)
-        n["fp"] += fp_n
-        n["tp"] += tp_n
-        new_w = n["weight"] * (0.7 ** fp_n) * (1.1 ** tp_n)
-        n["weight"] = round(max(0.05, min(2.0, new_w)), 3)
+    _apply_weight_update(neg, fp_anchor_count, tp_anchor_count)
 
     # FP prompts → 加 positive_anchors (reinforce 它们是 aligned)
     existing_pos_text = {p["text"] for p in pos}
