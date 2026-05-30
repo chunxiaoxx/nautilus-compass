@@ -693,58 +693,122 @@ TDD: read all session_*.md frontmatter · compute promotion per file · in-place
 
 ## Phase 3 · Week 3 · Measurement & N=20 Controlled Experiment
 
-### Component J · N=20 Controlled Harness Extension
+### Component J · Controlled Harness Extension
 
-#### Task J.1: Extend compass-value-study harness with 4 H-dim tasks
+> ⚠️ **Refactored 2026-05-30** · align design_c_differentiator_tasks.md (2026-05-27 lock).
+> Original §J H1/H2/H3/H5 four-dim framework superseded · design_c had already
+> 锁定 Type 1 (drift) + Type 2 (recency) + 暂缓 (cross-agent + PoI) framework
+> 2 days before plan v3 was written. 13th plan-dup audit signal · `design_c`
+> + 7 existing task jsonl files (drift_tasks 24 · recency_tasks 7 · ~107 more)
+> represented unattributed prior work. See commit
+> `docs(plan): align §J with design_c 5/27 framework` for full rationale.
+>
+> Refactor highlights:
+> - **No new task curation** · reuse `drift_tasks.jsonl` (Type 1) + `recency_tasks.jsonl` (Type 2)
+> - Arm naming: `a3_compass_drift` + `a3_compass_recency` (was: `a4_compass_v3`)
+> - Drop H3 cross-agent (design_c 暂缓 · consumed=0 dataset) and H5 metamemory
+>   (no extant data · design_c didn't cover) from N=20 ship · revisit after Type 1+2 ship
+> - Gate 2 split per type · honest negative path explicit (design_c 铁律 #3 · 输/平照报)
 
-**Files:**
-- Modify: `C:/Users/chunx/Projects/compass-value-study/tasks/pilot0_tasks.jsonl` (add tasks)
-- Create: `C:/Users/chunx/Projects/compass-value-study/tasks/v3_h_dim_tasks.jsonl`
+#### Task J.1 (refactored): Reuse existing differentiator task sets
 
-**Step 1:** Curate 20 tasks · 5 per H dimension:
-- H1 (predictive): tasks where compass's drift detection should catch contradiction
-- H2 (economic): tasks where PoI signal should rank one memory above naive recency
-- H3 (shared): tasks requiring cross-session info from V5 outcome_ledger
-- H5 (metamemory): tasks where naive recall would hallucinate absence (ssa-like)
+**Files (no new task file · annotate existing if needed):**
+- Existing: `compass-value-study/tasks/drift_tasks.jsonl` (24 tasks · design_c Type 1 主力)
+- Existing: `compass-value-study/tasks/recency_tasks.jsonl` (7 tasks · design_c Type 2 次力)
+- Optional: add `differentiator_type: "drift"` or `"recency"` field if downstream analysis needs an explicit label (currently inferable from filename)
 
-**Step 2: Failing test (task set valid)**
+**Step 1: Validation test** (lightweight · counts and shape only)
 
 ```python
-def test_v3_tasks_valid():
-    with open("tasks/v3_h_dim_tasks.jsonl") as f:
-        tasks = [json.loads(l) for l in f]
-    assert len(tasks) == 20
-    h_counts = collections.Counter(t["h_dim"] for t in tasks)
-    assert all(h_counts[h] == 5 for h in ["H1", "H2", "H3", "H5"])
+def test_differentiator_task_counts():
+    with open("tasks/drift_tasks.jsonl") as f:
+        drift = [json.loads(l) for l in f]
+    with open("tasks/recency_tasks.jsonl") as f:
+        recency = [json.loads(l) for l in f]
+    # design_c §Type 1: target ~15-20 + 5-8 干扰项 → current 24 ≥ 20 ✓
+    assert len(drift) >= 20
+    # design_c §Type 2: target ~10 but mining 难 → current 7 acceptable
+    assert len(recency) >= 5
+    # Shape sanity per design_c spec
+    for t in drift:
+        assert "action_prompt" in t
+        assert "mistake_memory" in t
+        assert "matched_neg_anchor" in t
+        assert "anti_pattern" in t
+    for t in recency:
+        assert "current" in t
+        assert "stale" in t
+        assert "current_file" in t
+        assert "stale_file" in t
 ```
 
-**Step 3-5:** Curate + commit `test(measurement): v3 H-dim task set`
+**Step 2: Commit** `test(measurement): differentiator task shape gate (no curation)`
 
-#### Task J.2: Add compass-v3 arm to harness
+#### Task J.2 (refactored): Add per-type compass arms to harness
 
 **Files:**
-- Modify: `compass-value-study/run_pilot.py` — add `a4_compass_v3` condition
+- Modify: `compass-value-study/run_pilot.py` — add **two** arms (not one):
+  - `a3_compass_drift`: faithful replay of daemon drift evaluator
+    (`DRIFT_ALERT_THRESHOLD=-0.032` · `NEG_ANCHOR_HIT_THRESHOLD=0.538`
+    · `pos_cos − neg_cos` per design_c §drift 评分复刻规格 line 98-105)
+  - `a3_compass_recency`: faithful replay of recency reranker
+    (fresh_extra/age weighting · same window as production recall.py)
 
-TDD: when arm=a4_compass_v3, use L1+L2+H5 active path. Commit.
+TDD: per-arm tests covering threshold edge cases and known fairness rule:
+**action_prompt must paraphrase neg_anchor, not copy verbatim**
+(design_c 公平铁律 line 93-96 · else A3-drift cosine ≈ 1 self-comparison cheat).
 
-#### Task J.3: Run N=20 controlled · A2 vs A3 vs A4
+#### Task J.3 (refactored): Run controlled per-type · A0 vs A2 vs A3
 
-Run: `python run_pilot.py --tasks tasks/v3_h_dim_tasks.jsonl --arms a2,a3,a4_compass_v3 --output results/v3_controlled_$(date +%Y%m%d).jsonl`
+Run Type 1 (drift):
 
-Expected: 60 rows (20 tasks × 3 arms). Commit results file `data(measurement): v3 controlled run N=20`
+```bash
+python run_pilot.py \
+    --tasks tasks/drift_tasks.jsonl \
+    --arms a0,a2,a3_compass_drift \
+    --output results/v3_drift_$(date +%Y%m%d).jsonl
+```
 
-#### Task J.4: Analysis script · compute gate metrics
+Run Type 2 (recency):
+
+```bash
+python run_pilot.py \
+    --tasks tasks/recency_tasks.jsonl \
+    --arms a0,a2,a3_compass_recency \
+    --output results/v3_recency_$(date +%Y%m%d).jsonl
+```
+
+Expected: (24 + 7) × 3 arms = **93 rows total** (was 60).
+
+Commit results file `data(measurement): v3 controlled run per-type`.
+
+#### Task J.4 (refactored): Per-type gate metrics
 
 **Files:**
 - Create: `compass-value-study/analyze_v3_gates.py`
 
-Compute:
-- Gate 1: act-on rate from act_on_log
-- Gate 2: A4 - A2 delta on N=20 (should be ≥+10pp)
-- Gate 3: consumed contract count
-- Output: `results/v3_gate_report_<date>.md`
+Compute per design_c locked metrics (§锁定决策 line 87-91):
 
-Commit `feat(measurement): v3 gate analysis script`
+- **Gate 1** (sprint-independent · act-on rate from `drift_mitigation_log.jsonl`)
+  · target ≥ 0.70 · 7d window
+- **Gate 2-drift**: A3-drift warning-hit rate vs A2 top-k 命中 (judge yes/no
+  per design_c §锁定决策 #1) · target Δ ≥ +10pp = compass drift 真差异化优势
+- **Gate 2-recency**: A3-recency current-hit rate vs A2 cosine top · target
+  Δ ≥ +10pp · **honest caveat**: design_c §Type 2 admits both may fail
+  (compass recency 窗口 <24h 太窄 · 暴露设计弱点 · 照报 per 铁律 #3)
+- **Gate 3** (sprint-independent · consumed contract count from
+  `contract_ledger.jsonl`) · trend monitoring
+
+Output: `results/v3_gate_report_<date>.md`.
+
+Commit `feat(measurement): per-type gate analysis script`.
+
+**Decision rule** (per design_c §出口 line 85):
+
+- Any one Gate 2 ≥ +10pp → 首个差异化价值证据 → enter Component K (measurement
+  doc) · 触发 80h v3.5 fusion Sprint 1+ start gate
+- All Gate 2 < +10pp → honest negative report · revisit main thesis · consider
+  暂缓 cross-agent/PoI/metamemory revival in next sprint
 
 ### Component K · Measurement Doc + Decision
 
