@@ -147,7 +147,8 @@ def parse_contracts_from_frontmatter(md_text: str) -> list[Contract]:
     if not m:
         return []
     fm = m.group(1)
-    if "contracts:" not in fm:
+    # D.fix-4: also accept singular `contract_id:` protocol (V5 inbound convention).
+    if "contracts:" not in fm and "contract_id:" not in fm:
         return []
 
     try:
@@ -174,6 +175,39 @@ def parse_contracts_from_frontmatter(md_text: str) -> list[Contract]:
         nested_list = md.get("contracts")
         if isinstance(nested_list, list):
             raw_lists.append(nested_list)
+
+    # D.fix-4 (2026-05-30): singular `metadata.contract_id: cnt_xxx` (string · not list).
+    # V5 dialog 2026-05-19 inbound uses this shape (see
+    # inbound_from_v5_dialog_20260519_compass_session_id_bug.md). Earlier parser missed
+    # it → contract invisible to scanner for ~11 days → V5 dialog F4 close_loop request
+    # could not be auto-tracked.
+    singular: list = []
+    if isinstance(md, dict):
+        sid = md.get("contract_id")
+        if isinstance(sid, str) and sid.strip():
+            synth = {
+                "id": sid.strip(),
+                "giver": str(md.get("from") or md.get("giver") or ""),
+                "receiver": str(md.get("to") or md.get("receiver") or ""),
+                "deadline": str(md.get("due") or md.get("deadline") or ""),
+                "deliverable": str(md.get("deliverable") or md.get("description") or ""),
+                "issued_at": str(md.get("issued_at") or ""),
+                "consumed_by": str(md.get("consumed_by") or ""),
+                "consumed_at": str(md.get("consumed_at") or ""),
+            }
+            # Status inference: explicit `status` wins; else `close_loop: true` + consumed_by
+            # implies consumed; otherwise outstanding.
+            explicit_status = md.get("status")
+            if isinstance(explicit_status, str) and explicit_status.strip():
+                synth["status"] = explicit_status.strip()
+            elif md.get("close_loop") is True and synth["consumed_by"]:
+                synth["status"] = "consumed"
+            else:
+                synth["status"] = "outstanding"
+            singular.append(synth)
+    if singular:
+        raw_lists.append(singular)
+
     if not raw_lists:
         return []
 
@@ -358,7 +392,14 @@ def scan_sessions_for_contracts(memory_roots: list[Path], within_hours: float = 
         if not root.exists():
             continue
         # D.fix-3 (2026-05-30): include contract_close_*.md (some close-loop files use this prefix)
-        files = list(root.glob("session_*.md")) + list(root.glob("contract_close_*.md"))
+        # D.fix-4 (2026-05-30): include inbound_*.md + outbound_*.md (cross-dialog naming
+        # used by V5 inbound and similar conventions; otherwise V5 F4 contract was invisible)
+        files = (
+            list(root.glob("session_*.md"))
+            + list(root.glob("contract_close_*.md"))
+            + list(root.glob("inbound_*.md"))
+            + list(root.glob("outbound_*.md"))
+        )
         for f in files:
             try:
                 if f.stat().st_mtime < cutoff:
