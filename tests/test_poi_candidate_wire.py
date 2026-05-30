@@ -110,6 +110,71 @@ def test_recall_emits_poi_candidate_on_high_confidence(monkeypatch, tmp_path):
     assert record["memory"] == "hit.md"
 
 
+# =============================================================================
+# B.5 follow-up · deterministic actor fallback
+# =============================================================================
+# When COMPASS_AGENT_ID and CLAUDE_AGENT_ID are both unset, the wire site
+# falls back to a stable anonymous ID derived from `git config user.email`
+# + cwd via sha256[:8]. Identity persists across sessions on same user+cwd,
+# enabling future PoI reconciliation. Falls back to literal "unknown" when
+# git is unavailable.
+
+
+def test_resolve_default_actor_prefers_compass_agent_id(monkeypatch):
+    """COMPASS_AGENT_ID takes precedence · CLAUDE_AGENT_ID does not override."""
+    from recall import _resolve_default_actor
+
+    monkeypatch.setenv("COMPASS_AGENT_ID", "agent-x")
+    monkeypatch.setenv("CLAUDE_AGENT_ID", "agent-y")  # should be ignored
+    assert _resolve_default_actor() == "agent-x"
+
+    # Confirm CLAUDE_AGENT_ID alone is also used when COMPASS_AGENT_ID is unset
+    monkeypatch.delenv("COMPASS_AGENT_ID", raising=False)
+    assert _resolve_default_actor() == "agent-y"
+
+
+def test_resolve_default_actor_uses_git_email_and_cwd_hash(monkeypatch, tmp_path):
+    """Both env vars unset · git email + cwd → stable anon-<8hex>."""
+    import hashlib
+    import subprocess
+    from recall import _resolve_default_actor
+
+    monkeypatch.delenv("COMPASS_AGENT_ID", raising=False)
+    monkeypatch.delenv("CLAUDE_AGENT_ID", raising=False)
+
+    def fake_check_output(*args, **kwargs):
+        return "test@example.com\n"
+
+    monkeypatch.setattr(subprocess, "check_output", fake_check_output)
+    monkeypatch.chdir(tmp_path)
+
+    result = _resolve_default_actor()
+    expected_hash = hashlib.sha256(
+        f"test@example.com|{tmp_path}".encode("utf-8")
+    ).hexdigest()[:8]
+    expected = f"anon-{expected_hash}"
+
+    assert result == expected, f"expected {expected!r}, got {result!r}"
+    assert result.startswith("anon-")
+    assert len(result) == 13  # "anon-" (5) + 8 hex
+
+
+def test_resolve_default_actor_falls_back_to_unknown_when_git_missing(monkeypatch):
+    """Both env vars unset · git not installed → literal "unknown"."""
+    import subprocess
+    from recall import _resolve_default_actor
+
+    monkeypatch.delenv("COMPASS_AGENT_ID", raising=False)
+    monkeypatch.delenv("CLAUDE_AGENT_ID", raising=False)
+
+    def fake_check_output(*args, **kwargs):
+        raise FileNotFoundError("git not found")
+
+    monkeypatch.setattr(subprocess, "check_output", fake_check_output)
+
+    assert _resolve_default_actor() == "unknown"
+
+
 if __name__ == "__main__":
     tests = [
         test_emit_poi_candidate_writes_sidecar,

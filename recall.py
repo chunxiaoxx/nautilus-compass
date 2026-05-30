@@ -18,6 +18,7 @@ import json
 import os
 import pickle
 import re
+import subprocess
 import sys
 import time
 from pathlib import Path
@@ -188,6 +189,31 @@ EMBEDDER_MODEL = os.environ.get(
 
 _embedder = None    # lazy global
 _anchor_cache = None   # lazy · {pos_vec, neg_vec, mtime, raw}
+
+
+def _resolve_default_actor() -> str:
+    """Deterministic actor ID for PoI candidate attribution.
+
+    Order: COMPASS_AGENT_ID > CLAUDE_AGENT_ID > anon-<sha256(email|cwd)[:8]> > "unknown".
+    Stable across sessions on the same user+cwd, enabling later PoI reconciliation.
+    """
+    env_actor = os.environ.get("COMPASS_AGENT_ID") or os.environ.get("CLAUDE_AGENT_ID")
+    if env_actor:
+        return env_actor
+    try:
+        email = subprocess.check_output(
+            ["git", "config", "--get", "user.email"],
+            text=True,
+            stderr=subprocess.DEVNULL,
+            timeout=2,
+        ).strip()
+    except (subprocess.SubprocessError, OSError, FileNotFoundError):
+        return "unknown"
+    if not email:
+        return "unknown"
+    cwd = os.getcwd()
+    digest = hashlib.sha256(f"{email}|{cwd}".encode("utf-8")).hexdigest()[:8]
+    return f"anon-{digest}"
 
 
 def find_active_project_memory_dir() -> Path | None:
@@ -1014,7 +1040,7 @@ def render_v02_vector_mode(entries: list, query: str, cache: dict) -> None:
     if top and os.environ.get("COMPASS_NO_POI_CANDIDATE") != "1":
         try:
             from proof.poi_emitter import emit_poi_candidate
-            _actor = os.environ.get("COMPASS_AGENT_ID") or os.environ.get("CLAUDE_AGENT_ID")
+            _actor = _resolve_default_actor()
             emit_poi_candidate(top, query=query, agent_id=_actor)
         except Exception as _e:
             sys.stderr.write(f"[PoI candidate] skipped: {_e!r}\n")
