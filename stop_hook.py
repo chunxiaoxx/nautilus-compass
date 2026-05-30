@@ -175,6 +175,11 @@ def parse_session_summary(path: Path) -> str:
 
 def main():
     sys.path.insert(0, str(PLUGIN_DIR))
+    # Plan A (2026-05-30) · let repo-resident H.1 / D.fix / E.fix modules win
+    # over plugin install when settings.json hook redirects Stop here. Script
+    # dir goes in last → sits at sys.path[0] → Python finds drift/auto_ack.py
+    # before plugin install's drift/ (which only has gate_act.py + routing.py).
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
     from strategy_store import StrategyStore
 
     # v0.8 · session_writer (替代 claude-mem 的 writer)
