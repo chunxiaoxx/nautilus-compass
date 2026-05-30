@@ -31,6 +31,12 @@ from pathlib import Path
 
 os.environ.setdefault("PYTHONIOENCODING", "utf-8")
 os.environ.setdefault("PYTHONUTF8", "1")
+try:
+    # E.fix-3 follow-up (2026-05-30): Windows console GBK cannot encode ✅ ·
+    # ack-write succeeds but trailing print crashes (see reference_compass_dev_gotchas).
+    sys.stdout.reconfigure(encoding="utf-8")  # type: ignore[attr-defined]
+except Exception:
+    pass
 
 _PLUGIN_USER = Path.home() / ".claude" / "plugins" / "nautilus-compass"
 # CI / pip-install fallback · use the script's own dir when user-level path absent
@@ -107,6 +113,15 @@ def cmd_log(args):
     FEEDBACK_LOG.parent.mkdir(parents=True, exist_ok=True)
     with open(FEEDBACK_LOG, "a", encoding="utf-8") as f:
         f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+    # E.fix-3 (2026-05-30): also write ack record to drift_mitigation_log so
+    # audit_kpi.act_on_rate sees user-labeled alerts as acked · closes the
+    # 5/27 finding's open loop (detection vs intervention).
+    try:
+        from drift.act_log import log_drift_ack
+        log_drift_ack(args.alert_id, args.verdict, source="feedback_cli")
+    except Exception:
+        # observability wire · never break the primary CLI path
+        pass
     print(f"✅ logged {args.alert_id} = {args.verdict}")
 
 
