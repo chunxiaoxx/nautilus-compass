@@ -227,6 +227,52 @@ p95 hook latency.
 
 ---
 
+## Measuring drift loop closure (act-on rate)
+
+Drift detection without ack instrumentation is an open loop · the detector
+fires alerts but nothing measures whether the agent (or user) actually acted
+on them. v3 closes this loop with a single rate metric.
+
+**The signal**: every fired drift alert gets a stable `alert_id` and lands
+in `.cache/drift_mitigation_log.jsonl`. When the user acknowledges the alert
+via the feedback CLI
+
+```bash
+python ~/.claude/plugins/nautilus-compass/feedback.py log <alert_id> fp|tp
+```
+
+(`fp` = false positive · `tp` = true positive · either way the alert was
+seen and judged), a matching `kind: "ack"` record is appended to the *same*
+sidecar.
+
+**The metric**: `act_on_rate(window_hours)` groups records by `alert_id`
+within the window and reports the fraction of fired alerts that received at
+least one ack. The legacy KPI script prints it alongside everything else:
+
+```bash
+python ~/.claude/plugins/nautilus-compass/audit_kpi.py
+```
+
+```
+=== act-on rate (drift alert closure · target ≥0.70) ===
+  · 24h: fires=81   acked=1    rate=0.012
+  ·  7d: fires=294  acked=1    rate=0.003
+```
+
+**Target**: ≥0.70 over rolling 7d. Below 0.30 indicates the agent is tuning
+out alerts (cry-wolf · cf. the [open-loop write-up](https://github.com/chunxiaoxx/nautilus-compass/blob/v3-full-fusion/docs/plans/2026-05-29-compass-comprehensive-uplift-design.md))
+· raise the firing threshold (`drift/firing.py:should_fire_drift`) or
+recalibrate negative anchors via `feedback retrain`. Programmatic API for
+CI / cron monitors:
+
+```python
+from audit_kpi import act_on_rate
+m = act_on_rate(window_hours=168)
+assert m["rate"] >= 0.70, f"drift loop open · rate={m['rate']:.3f} fires={m['fires']}"
+```
+
+---
+
 ## Headline numbers
 
 | Benchmark | Score | Honest compare |
