@@ -216,7 +216,7 @@ land · cross-project asks tied to flop'd Show HN look opportunistic.
 |---|---|
 | LICENSE clean | already done (MIT · README footer) |
 | README rewrite (or hook for case study) | done (Case study section · +23 lines) |
-| CLI v0 (nautilus-compass installable + functional) | already done (PyPI v1.7.x) · CLI command broken in current PATH · noted as separate fix |
+| CLI v0 (nautilus-compass installable + functional) | fixed in repo (fab5f84 · umbrella dispatcher · 6 TDD tests · end-to-end `nautilus-compass --version` → 2.0.1 verified) · PyPI release pending for `pip install` reproduce |
 | dev.to article | draft ready (paper/promo/dev_to_4dialog_case_study_DRAFT.md) · awaiting user publish |
 | Show HN | submission text ready (this file) · awaiting user submit T+4-6h |
 | GitHub issue cross-project thread | T+24h conditional on HN landing |
