@@ -168,6 +168,29 @@ post-hoc rationalization of negative results.
 
 ---
 
+## Case study · 4-dialog OSS multi-agent reliability
+
+Across 28 hours on 2026-05-30 / 31, four Claude Code dialogs
+(compass / Soul / V5 / nautilus-core) ran concurrently on shared
+filesystem-mediated protocols. The recorded run includes:
+
+- **Drift detection** firing 314 times / 7d (76 / 24h) with
+  `act_on_rate` measured at **9.87% / 7d · 40.79% / 24h**
+- **Cross-dialog contract** `cnt_compass_soul_sub_a1` closing in
+  **17.92h** (vs 6d 21h budget · 5.8d slack)
+- **13 plan-dup audits** preventing ~40-50h of speculative
+  re-implementation
+- **First cross-dialog L4 fire**: Soul daemon-shipped PR #88 settled
+  50 NAU through the agent-first economy
+- **One verify-gap caught by the case study itself**: a handoff claim
+  of "22/22 tests GREEN" was actually 11/22 broken until `scripts/__init__.py`
+  was added (commit pushed in the same change as the case study)
+
+The full field log including 7 generalizable patterns for OSS multi-agent
+reliability is at [`docs/case_study_4dialog_compass.md`](docs/case_study_4dialog_compass.md).
+
+---
+
 ## What problem does this solve
 
 ### A. Long sessions drift
