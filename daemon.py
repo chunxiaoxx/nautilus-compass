@@ -16,12 +16,188 @@ Protocol (JSON over TCP localhost:9876):
 """
 import json
 import os
+
+# v2.0.2 · P6 · BLAS internal thread limit · CRITICAL: must set BEFORE importing
+# any numpy/torch/sentence-transformers downstream. Each BGE encode call would
+# otherwise spawn 4-8 BLAS/OMP threads internally. With ThreadPoolExecutor(8)
+# worker threads concurrently encoding, 8×4=32 internal threads thrash on a
+# 4-core CPU. 2026-05-22 observed: 206% CPU sustained · 24 CLOSE_WAIT after
+# 19min · ingest timeout under V5/V7/Kairos concurrent load. Limiting BLAS
+# to 1 thread per encode (8 workers × 1 internal = 8 threads on 4 cores · OK).
+os.environ.setdefault("OMP_NUM_THREADS", "1")
+os.environ.setdefault("MKL_NUM_THREADS", "1")
+os.environ.setdefault("OPENBLAS_NUM_THREADS", "1")
+os.environ.setdefault("NUMEXPR_NUM_THREADS", "1")
+
 import pickle
 import socket
 import sys
 import threading
 import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+
+# P6 (companion) · torch single-thread per encode · applied after import
+try:
+    import torch as _torch_for_threadcap
+    _torch_for_threadcap.set_num_threads(1)
+    _torch_for_threadcap.set_num_interop_threads(1)
+except Exception:
+    pass
+
+# v2.0.0 · P4 fix · bounded handler pool prevents unbounded thread spawn
+# under V5/V7 retry storms (root cause of 288-thread leak observed
+# 2026-05-22). 8 workers matches the 4-core CPU's effective concurrency
+# for BGE-m3 inference; further requests queue at the OS socket backlog.
+DAEMON_MAX_HANDLER_THREADS = int(os.environ.get("COMPASS_DAEMON_POOL", "8"))
+_HANDLER_POOL = ThreadPoolExecutor(
+    max_workers=DAEMON_MAX_HANDLER_THREADS,
+    thread_name_prefix="bge-handler",
+)
+
+# v2.0.7 · P7 · in-flight conn guard · caps queued+running at pool×4 = 32
+# When V5/V7 retry-storms, ThreadPoolExecutor.submit() silently queues
+# unbounded → conns wait → V5 timeouts → half-closes → daemon-side fd
+# stuck in CLOSE-WAIT until handler eventually drains. Observed 2026-05-23:
+# 2191 CLOSE-WAIT after 12h with P5+P6 alone. BoundedSemaphore reject-fast
+# pattern keeps inflight under control + lets accept loop free fd promptly.
+DAEMON_INFLIGHT_LIMIT = DAEMON_MAX_HANDLER_THREADS * 4
+_INFLIGHT_SEM = threading.BoundedSemaphore(DAEMON_INFLIGHT_LIMIT)
+
+
+# v2.0.7 · P9 · server-side recall result cache · 真 reduce CPU
+# 2026-05-24 P8 (BatchCoordinator) failed because P6 OMP_NUM_THREADS=1
+# makes batch encode have no parallelism benefit. Real CPU root cause:
+# every recall query does BGE encode (50-100ms CPU bound) regardless of
+# whether query was seen before. Cache final recall result keyed by
+# (action, query, project, top_k, scope) · hits skip both encode + scoring.
+# Expected: 60-80% cache hit rate (V5/V7/Kairos repeat same anchors) ·
+# CPU drops proportionally.
+import hashlib as _hashlib_p9
+from collections import OrderedDict as _OrderedDict_p9
+RECALL_CACHE_MAX = int(os.environ.get("COMPASS_RECALL_CACHE_MAX", "10000"))
+RECALL_CACHE_TTL = int(os.environ.get("COMPASS_RECALL_CACHE_TTL", "3600"))
+_RECALL_CACHE = _OrderedDict_p9()   # key → (timestamp, result)
+_RECALL_CACHE_LOCK = threading.Lock()
+_RECALL_CACHE_STATS = {"hit": 0, "miss": 0, "expire": 0, "evict": 0}
+_RECALL_CACHE_LAST_LOG = 0.0  # P9-instr: throttled stats log timestamp
+_RECALL_CACHE_LOG_INTERVAL = 60.0
+
+# v2.1.0 · Phase 2 · BM25 + vec RRF fusion · opt-in via env
+_BM25_RRF_USE = os.environ.get("COMPASS_USE_BM25_RRF", "0") == "1"
+_BM25_RRF_K = int(os.environ.get("COMPASS_BM25_RRF_K", "60"))
+_BM25_RRF_TOP_K = int(os.environ.get("COMPASS_BM25_RRF_TOP_K", "30"))
+
+
+def _tokenize_for_bm25(text: str) -> list:
+    """v2.1.0 · Whitespace + lowercase + CJK char tokenizer for BM25."""
+    if not text:
+        return []
+    tokens = text.lower().split()
+    cjk_chars = [c for c in text if "一" <= c <= "鿿"]
+    return tokens + cjk_chars
+
+
+def _build_bm25_retriever(entries):
+    """v2.1.0 · BM25 keyword retriever · feeds rrf_fusion as 2nd stream."""
+    try:
+        from rank_bm25 import BM25Okapi
+    except ImportError:
+        return None
+    if not entries:
+        return None
+    corpus = [_tokenize_for_bm25(e.get("embed_text", "")) for e in entries]
+    if not any(corpus):
+        return None
+    return BM25Okapi(corpus)
+
+
+def _bm25_score_to_ranked(bm25, entries, query, top_k=30):
+    """v2.1.0 · BM25 query → ranked list compatible with rrf_fusion."""
+    if bm25 is None or not entries:
+        return []
+    tokens = _tokenize_for_bm25(query)
+    if not tokens:
+        return []
+    scores = bm25.get_scores(tokens)
+    paired = sorted(zip(scores, entries), key=lambda x: x[0], reverse=True)
+    return [(float(score), entry) for score, entry in paired[:top_k] if score > 0]
+
+
+def _rrf_fusion(ranked_lists, k=60, top_k=10):
+    """v2.1.0 · Reciprocal Rank Fusion · combine vec + BM25 rank lists.
+    Each list = [(score, entry), ...] · output = [(fused_score, entry), ...] top_k."""
+    fused_scores = {}
+    entry_by_path = {}
+    for ranked in ranked_lists:
+        if not ranked:
+            continue
+        for rank, (score, entry) in enumerate(ranked):
+            path = entry.get("path")
+            if not path:
+                continue
+            entry_by_path[path] = entry
+            fused_scores[path] = fused_scores.get(path, 0.0) + 1.0 / (k + rank + 1)
+    sorted_paths = sorted(fused_scores.items(), key=lambda x: x[1], reverse=True)
+    return [(score, entry_by_path[path]) for path, score in sorted_paths[:top_k]]
+
+# v2.0.9 · inotify-based cache invalidation · Layer 2 cure for 23k-file dir scan
+_INOTIFY_USE = os.environ.get("COMPASS_USE_INOTIFY", "1") == "1"
+_ENTRIES_CACHE = {}  # proj_key -> list of entries (with embeddings) · last scan
+_ENTRIES_CACHE_LOCK = threading.Lock()
+_DIR_DIRTY = set()   # proj_keys flagged for re-scan by inotify watcher
+_DIR_DIRTY_LOCK = threading.Lock()
+_INOTIFY_STATS = {"events": 0, "rescans_avoided": 0, "rescans_done": 0, "watch_count": 0, "errors": 0}
+_INOTIFY_LAST_LOG = 0.0
+
+
+def _p9_cache_key(action, query, project, top_k, scope, agent_type=""):
+    blob = f"{action}|{scope}|{project}|{top_k}|{agent_type}|{query}"
+    return _hashlib_p9.sha256(blob.encode("utf-8")).hexdigest()[:16]
+
+
+def _p9_cache_get(key):
+    with _RECALL_CACHE_LOCK:
+        entry = _RECALL_CACHE.get(key)
+        if entry is None:
+            _RECALL_CACHE_STATS["miss"] += 1
+            _result = None
+        else:
+            ts, result = entry
+            if time.time() - ts > RECALL_CACHE_TTL:
+                del _RECALL_CACHE[key]
+                _RECALL_CACHE_STATS["expire"] += 1
+                _RECALL_CACHE_STATS["miss"] += 1
+                _result = None
+            else:
+                _RECALL_CACHE.move_to_end(key)
+                _RECALL_CACHE_STATS["hit"] += 1
+                _result = result
+    _p9_maybe_log_stats()
+    return _result
+
+
+def _p9_cache_put(key, result):
+    with _RECALL_CACHE_LOCK:
+        if len(_RECALL_CACHE) >= RECALL_CACHE_MAX:
+            _RECALL_CACHE.popitem(last=False)
+            _RECALL_CACHE_STATS["evict"] += 1
+        _RECALL_CACHE[key] = (time.time(), result)
+
+
+def _p9_maybe_log_stats():
+    # P9-instr: throttled — call from get path on every request
+    global _RECALL_CACHE_LAST_LOG
+    now = time.time()
+    if now - _RECALL_CACHE_LAST_LOG < _RECALL_CACHE_LOG_INTERVAL:
+        return
+    _RECALL_CACHE_LAST_LOG = now
+    s = _RECALL_CACHE_STATS
+    total = s['hit'] + s['miss']
+    if total == 0:
+        return
+    hit_rate = s['hit'] / total * 100
+    log(f"P9 cache · {total} ops · hit_rate={hit_rate:.1f}% · size={len(_RECALL_CACHE)} · hits={s['hit']} misses={s['miss']} expires={s['expire']} evicts={s['evict']}")
 
 try:
     sys.stdout.reconfigure(encoding="utf-8")  # safe · no buffer aliasing
@@ -62,6 +238,47 @@ TOP_K = 5
 COSINE_MIN = float(os.environ.get("ZMM_COSINE_MIN", "0.35"))
 DRIFT_ALERT_THRESHOLD = float(os.environ.get("ZMM_DRIFT_THRESHOLD", "-0.032"))  # m3+hard 后 best Youden J
 NEG_ANCHOR_HIT_THRESHOLD = float(os.environ.get("ZMM_NEG_HIT_THRESHOLD", "0.538"))
+
+# ─── v2 shadow drift detector (2026-05-27 · study-validated · SHADOW ONLY · 不 enforce · R1 护栏不变) ───
+# 研究 compass-value-study 证:生产 should_alert(neg_cos≥0.538 OR)在工具调用流 29% alert / ~10% precision
+# (90% 误报)。v2 = rule_alert(危险命令正则) OR drift_score < V2_THRESH · 全量 alert ~0.4% · 仅记 log 供比对,
+# 不改实际 should_alert(R1-R5 护栏不变)。清理在途重构后可据真实流量比对决定是否 enforce。
+ZMM_DRIFT_V2_THRESH = float(os.environ.get("ZMM_DRIFT_V2_THRESH", "-0.07"))
+import re as _re_v2
+_V2_RULES = [
+    _re_v2.compile(r"\brm\s+-[a-z]*r[a-z]*\b"),                                   # 0 rm -r* 递归删除
+    _re_v2.compile(r"git\s+push\b.*(--force\b|\s-f\b)"),                          # 1 force push
+    _re_v2.compile(r"git\s+reset\s+--hard"),                                      # 2
+    _re_v2.compile(r"git\s+clean\s+-[a-z]*[fdx]"),                                # 3
+    _re_v2.compile(r"taskkill\b.*/IM\b", _re_v2.I),                               # 4 无差别杀
+    _re_v2.compile(r"\b(killall|pkill)\b"),                                       # 5
+    _re_v2.compile(r"\b(DROP\s+(DATABASE|TABLE)|TRUNCATE\s+TABLE?)\b", _re_v2.I), # 6
+    _re_v2.compile(r"DELETE\s+FROM\b(?!.*\bWHERE\b)", _re_v2.I | _re_v2.S),       # 7 DELETE 无 WHERE
+    _re_v2.compile(r"chmod\s+(-R\s+)?777\b"),                                     # 8
+    _re_v2.compile(r"\bsk-[A-Za-z0-9]{16,}"),                                     # 9 硬编码 key
+    _re_v2.compile(r"(api[_-]?key|password|secret|token)\s*[=:]\s*[\"'][^\"'\s]{12,}[\"']", _re_v2.I),  # 10
+]
+_V2_SAFE_RM = _re_v2.compile(
+    r"(node_modules|/dist\b|\bdist\b|/build\b|\.cache|__pycache__|\.tmp\b|/tmp/|\.swc\b|\.tgz|\.tar|"
+    r"\.zip|\.log\b|\.lock\b|package-lock|\.npmrc|hf_stage|\.next\b|\.turbo|coverage|\.pytest_cache|\.mypy_cache)",
+    _re_v2.I)
+_V2_SAFE_KILL = _re_v2.compile(r"(killall|pkill)\b[^\n;|&]*?-f\s+\S*(/|\.py|\.js|\.sh|\.cjs)\S*", _re_v2.I)
+_V2_META = _re_v2.compile(r"^(Edit|Write|Read|MultiEdit):.*(rule_drift|dangerous-commands|_V2_RULES|_RULES)", _re_v2.I)
+
+
+def _shadow_rule_alert(query: str) -> bool:
+    """SHADOW · rule-based 危险动作检测(faithful to compass-value-study/lib/rule_drift.py)。"""
+    q = query or ""
+    if _V2_META.search(q):
+        return False
+    for i, rx in enumerate(_V2_RULES):
+        if rx.search(q):
+            if i == 0 and _V2_SAFE_RM.search(q):    # rm -r* 删构建/临时 · 低危
+                continue
+            if i == 5 and _V2_SAFE_KILL.search(q):  # pkill -f 具体脚本 · 非无差别
+                continue
+            return True
+    return False
 
 
 def log(msg: str) -> None:
@@ -182,6 +399,21 @@ def parse_memory_file(path: Path) -> dict:
 
 
 def get_memory_entries(mem_dir: Path):
+    proj_key = str(mem_dir)
+    # v2.0.9 · inotify fast path · skip O(N) glob+stat+parse if dir not dirty
+    if _INOTIFY_USE:
+        with _DIR_DIRTY_LOCK:
+            is_dirty = proj_key in _DIR_DIRTY
+            if is_dirty:
+                _DIR_DIRTY.discard(proj_key)
+        with _ENTRIES_CACHE_LOCK:
+            cached = _ENTRIES_CACHE.get(proj_key)
+        if cached is not None and not is_dirty:
+            _INOTIFY_STATS["rescans_avoided"] += 1
+            _inotify_maybe_log_stats()
+            return cached
+        if is_dirty:
+            _INOTIFY_STATS["rescans_done"] += 1
     embedder = get_embedder()
     files = sorted(mem_dir.glob("*.md"))
     entries = []
@@ -214,7 +446,79 @@ def get_memory_entries(mem_dir: Path):
         proj_hash = hashlib.sha256(proj_key.encode()).hexdigest()[:12]
         with open(CACHE_DIR / f"{proj_hash}.pkl", "wb") as f:
             pickle.dump({"embeddings": cache}, f)
+    # v2.0.9 · cache full entries for next recall · invalidated by inotify watcher
+    if _INOTIFY_USE:
+        with _ENTRIES_CACHE_LOCK:
+            _ENTRIES_CACHE[proj_key] = entries
     return entries
+
+
+def _inotify_maybe_log_stats():
+    """v2.0.9 · throttled inotify stats log · every 60s"""
+    global _INOTIFY_LAST_LOG
+    now = time.time()
+    if now - _INOTIFY_LAST_LOG < 60.0:
+        return
+    _INOTIFY_LAST_LOG = now
+    s = _INOTIFY_STATS
+    total = s["rescans_avoided"] + s["rescans_done"]
+    if total == 0:
+        return
+    avoid_pct = s["rescans_avoided"] / total * 100
+    log(f"inotify · watches={s['watch_count']} events={s['events']} "
+        f"rescans_avoided={s['rescans_avoided']} done={s['rescans_done']} "
+        f"avoid_rate={avoid_pct:.1f}% errors={s['errors']}")
+
+
+def _inotify_watcher_thread():
+    """v2.0.9 · Background watcher for memory dir changes.
+
+    Watches all 75+ project memory dirs · sets dirty flag on file events ·
+    get_memory_entries reads flag to decide if O(N) re-scan needed.
+    Drops Layer 2 CPU burn from per-recall O(23k) to O(1) on warm hit.
+    Falls back gracefully if inotify_simple missing or watch fails.
+    """
+    try:
+        from inotify_simple import INotify, flags as _iflags
+    except Exception as _e:
+        log(f"inotify_simple import fail · entries cache disabled: {_e}")
+        return
+    try:
+        inotify = INotify()
+    except Exception as _e:
+        log(f"INotify() init fail: {_e}")
+        return
+    watch_flags = (_iflags.CREATE | _iflags.DELETE | _iflags.MODIFY
+                   | _iflags.MOVED_TO | _iflags.MOVED_FROM | _iflags.CLOSE_WRITE)
+    wd_to_proj = {}
+    watched = 0
+    failed = 0
+    for _name, mem_dir in _list_user_project_dirs():
+        try:
+            _wd = inotify.add_watch(str(mem_dir), watch_flags)
+            wd_to_proj[_wd] = str(mem_dir)
+            watched += 1
+        except Exception as _e:
+            failed += 1
+            if failed <= 3:
+                log(f"inotify watch fail {mem_dir.name}: {_e}")
+    _INOTIFY_STATS["watch_count"] = watched
+    log(f"inotify watcher · watching {watched} dirs · failed={failed}")
+    while True:
+        try:
+            for _ev in inotify.read(timeout=None):
+                _pk = wd_to_proj.get(_ev.wd)
+                if not _pk:
+                    continue
+                if _ev.name and not _ev.name.endswith(".md"):
+                    continue
+                with _DIR_DIRTY_LOCK:
+                    _DIR_DIRTY.add(_pk)
+                _INOTIFY_STATS["events"] += 1
+        except Exception as _e:
+            _INOTIFY_STATS["errors"] += 1
+            log(f"inotify read fail: {_e}")
+            time.sleep(2)
 
 
 def get_anchors(anchors_path: Path | None = None):
@@ -317,6 +621,15 @@ def handle_request(req: dict) -> dict:
     if not query:
         return {"ok": False, "error": "empty query"}
 
+    # v2.0.7 · P9 · recall result cache lookup before encode/scoring
+    _p9_key = _p9_cache_key(action, query, project, top_k, scope, agent_type)
+    _p9_cached = _p9_cache_get(_p9_key)
+    if _p9_cached is not None:
+        # shallow copy + mark · avoid mutating cached dict on subsequent hits
+        _p9_resp = dict(_p9_cached)
+        _p9_resp["from_cache"] = True
+        return _p9_resp
+
     # 找 mem_dir(s) · scope-aware
     mem_dirs: list[tuple[str, Path]] = []
     if scope == "project":
@@ -331,128 +644,211 @@ def handle_request(req: dict) -> dict:
         if not mem_dirs:
             return {"ok": False, "error": "no project memory dirs found under ~/.claude/projects/"}
 
-    with _state["lock"]:
-        embedder = get_embedder()
-        try:
-            v = embedder.encode(query)
-            q_emb = v.tolist() if hasattr(v, "tolist") else v
-        except Exception as e:
-            return {"ok": False, "error": f"query embed fail: {e}"}
+    # v2.0.2 · P5 · 移除 global lock 包 embed · BGE-m3 + sentence-transformers
+    # + torch 真 thread-safe(GIL 保护 dict ops · torch.no_grad 内置)· 不需手动
+    # 串行. P4 修了 thread 数蓄积(288→8 pool)· 但全局 lock 仍把 8 worker 串
+    # 行成 1 真 effective 并发 · 真 root cause 真 CLOSE_WAIT 蓄积(209 案).
+    # 期望 throughput 4-8x · CLOSE_WAIT 不再爆炸.
+    embedder = get_embedder()  # eager-loaded at daemon startup · idempotent
+    try:
+        v = embedder.encode(query)
+        q_emb = v.tolist() if hasattr(v, "tolist") else v
+    except Exception as e:
+        return {"ok": False, "error": f"query embed fail: {e}"}
 
-        result = {
-            "ok": True,
-            "project": project or (mem_dirs[0][0] if mem_dirs else ""),
-            "scope": scope,
-            "projects_scanned": [p for p, _ in mem_dirs],
-            "query": query[:80],
-        }
+    result = {
+        "ok": True,
+        "project": project or (mem_dirs[0][0] if mem_dirs else ""),
+        "scope": scope,
+        "projects_scanned": [p for p, _ in mem_dirs],
+        "query": query[:80],
+    }
 
-        if action in ("recall", "both"):
-            # Union entries across all mem_dirs · tag each with its origin project
-            all_entries: list[dict] = []
-            for proj_name, mdir in mem_dirs:
-                for e in get_memory_entries(mdir):
-                    # shallow-tag origin (don't mutate cache entries)
-                    if "project" not in e:
-                        e["project"] = proj_name
-                    all_entries.append(e)
-            scored = []
-            for e in all_entries:
-                if not e.get("embedding"): continue
-                s = cosine(q_emb, e["embedding"])
-                if s >= COSINE_MIN:
-                    scored.append((s, e))
-            scored.sort(key=lambda x: -x[0])
+    if action in ("recall", "both"):
+        # Union entries across all mem_dirs · tag each with its origin project
+        all_entries: list[dict] = []
+        for proj_name, mdir in mem_dirs:
+            for e in get_memory_entries(mdir):
+                # shallow-tag origin (don't mutate cache entries)
+                if "project" not in e:
+                    e["project"] = proj_name
+                all_entries.append(e)
+        scored = []
+        for e in all_entries:
+            if not e.get("embedding"): continue
+            s = cosine(q_emb, e["embedding"])
+            if s >= COSINE_MIN:
+                scored.append((s, e))
+        scored.sort(key=lambda x: -x[0])
+
+        # v2.1.0 · Phase 2 · BM25 + vec RRF fusion · opt-in via COMPASS_USE_BM25_RRF=1
+        if _BM25_RRF_USE:
+            try:
+                _bm25 = _build_bm25_retriever(all_entries)
+                _bm25_ranked = _bm25_score_to_ranked(_bm25, all_entries, query, top_k=_BM25_RRF_TOP_K)
+                _vec_top_for_rrf = scored[:_BM25_RRF_TOP_K]  # top-30 vec → RRF input
+                fused = _rrf_fusion([_vec_top_for_rrf, _bm25_ranked],
+                                    k=_BM25_RRF_K, top_k=top_k)
+                top = fused  # replace vec-only top with fused
+                result["_v210_fused"] = True
+                result["_v210_bm25_n"] = len(_bm25_ranked)
+            except Exception as _be:
+                log(f"BM25 RRF fail · fallback to vec only: {_be}")
+                top = scored[:top_k]
+        else:
             top = scored[:top_k]
-            result["recall"] = [
-                {"score": round(s, 3), "path": e["path"],
-                 "project": e.get("project", ""),
-                 "age_str": e["age_str"], "age_seconds": e["age_seconds"],
-                 "description": e["description"]}
-                for s, e in top
-            ]
-            # fresh memories not in top
-            top_set = {(t[1]["path"], t[1].get("project", "")) for t in top}
-            fresh_extra = [
-                e for e in all_entries
-                if e["age_seconds"] < 86400
-                and (e["path"], e.get("project", "")) not in top_set
-            ]
-            result["fresh_extra"] = [
-                {"path": e["path"], "project": e.get("project", ""),
-                 "age_str": e["age_str"], "description": e["description"]}
-                for e in sorted(fresh_extra, key=lambda x: x["age_seconds"])
-            ]
 
-        if action in ("drift", "both"):
-            # v0.7.2 · per-request anchor profile (gateway passes anchors_path)
-            ap = req.get("anchors_path")
-            anchors = get_anchors(Path(ap) if ap else None)
-            if anchors:
-                # v0.7.1 · Weighted top-k mean scoring
-                # 每个 anchor 一个 weight (默认 1.0 · adaptive learning 调整)
-                # weighted_cos = weight * cosine · 排序后取 top-3 加权平均
-                TOP_K_ANCHORS = 3
-                pos_w = anchors["pos_weights"]
-                neg_w = anchors["neg_weights"]
-                pos_pairs = [
-                    (pos_w[i] * cosine(q_emb, e), pos_w[i])
-                    for i, e in enumerate(anchors["pos_embs"])
-                ]
-                pos_pairs.sort(key=lambda x: -x[0])
-                top_pos = pos_pairs[:TOP_K_ANCHORS]
-                pos_cos = (sum(s for s, _ in top_pos) / sum(w for _, w in top_pos)
-                           if top_pos else 0.0)
-                neg_pairs = [
-                    (neg_w[i] * cosine(q_emb, e), neg_w[i],
-                     cosine(q_emb, e), anchors["neg_anchors"][i])
-                    for i, e in enumerate(anchors["neg_embs"])
-                ]
-                neg_pairs.sort(key=lambda x: -x[0])
-                top_neg = neg_pairs[:TOP_K_ANCHORS]
-                neg_cos = (sum(s for s, _, _, _ in top_neg) / sum(w for _, w, _, _ in top_neg)
-                           if top_neg else 0.0)
-                drift_score = round(pos_cos - neg_cos, 4)
-                # 单 anchor hits · 用 raw cosine 不用 weighted (alert text 显示真相似度)
-                neg_hits = [
-                    (round(raw_c, 3), txt) for _, _, raw_c, txt in neg_pairs
-                    if raw_c >= NEG_ANCHOR_HIT_THRESHOLD
-                ][:5]
-                should_alert = drift_score < DRIFT_ALERT_THRESHOLD or bool(neg_hits)
-                result["drift"] = {
-                    "score": drift_score,
-                    "alignment": round(pos_cos, 4),
-                    "deviation": round(neg_cos, 4),
-                    "should_alert": should_alert,
-                    "top_neg_hits": neg_hits[:3],
-                    "n_pos": anchors["n_pos"],
-                    "n_neg": anchors["n_neg"],
-                }
+        result["recall"] = [
+            {"score": round(s, 3), "path": e["path"],
+             "project": e.get("project", ""),
+             "age_str": e["age_str"], "age_seconds": e["age_seconds"],
+             "description": e["description"]}
+            for s, e in top
+        ]
+        # fresh memories not in top
+        top_set = {(t[1]["path"], t[1].get("project", "")) for t in top}
+        fresh_extra = [
+            e for e in all_entries
+            if e["age_seconds"] < 86400
+            and (e["path"], e.get("project", "")) not in top_set
+        ]
+        result["fresh_extra"] = [
+            {"path": e["path"], "project": e.get("project", ""),
+             "age_str": e["age_str"], "description": e["description"]}
+            for e in sorted(fresh_extra, key=lambda x: x["age_seconds"])
+        ]
 
-        # ─── verification_log · 7 天对照实验数据 ───────────────
-        try:
-            log_path = CACHE_DIR / "verification_log.jsonl"
-            entry = {
-                "ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-                "session_id": os.environ.get("CLAUDE_SESSION_ID", "unknown")[:60],
-                "agent_type": agent_type,
-                "project": project[:80],
-                "action": action,
-                "query": query[:200],
-                "top5": [
-                    {"score": r["score"], "path": r["path"], "age": r["age_str"]}
-                    for r in (result.get("recall") or [])[:5]
-                ],
-                "fresh_n": len(result.get("fresh_extra") or []),
-                "drift_score": (result.get("drift") or {}).get("score"),
-                "drift_alert": (result.get("drift") or {}).get("should_alert"),
+    if action in ("drift", "both"):
+        # v0.7.2 · per-request anchor profile (gateway passes anchors_path)
+        ap = req.get("anchors_path")
+        anchors = get_anchors(Path(ap) if ap else None)
+        if anchors:
+            # v0.7.1 · Weighted top-k mean scoring
+            # 每个 anchor 一个 weight (默认 1.0 · adaptive learning 调整)
+            # weighted_cos = weight * cosine · 排序后取 top-3 加权平均
+            TOP_K_ANCHORS = 3
+            pos_w = anchors["pos_weights"]
+            neg_w = anchors["neg_weights"]
+            pos_pairs = [
+                (pos_w[i] * cosine(q_emb, e), pos_w[i])
+                for i, e in enumerate(anchors["pos_embs"])
+            ]
+            pos_pairs.sort(key=lambda x: -x[0])
+            top_pos = pos_pairs[:TOP_K_ANCHORS]
+            pos_cos = (sum(s for s, _ in top_pos) / sum(w for _, w in top_pos)
+                       if top_pos else 0.0)
+            neg_pairs = [
+                (neg_w[i] * cosine(q_emb, e), neg_w[i],
+                 cosine(q_emb, e), anchors["neg_anchors"][i])
+                for i, e in enumerate(anchors["neg_embs"])
+            ]
+            neg_pairs.sort(key=lambda x: -x[0])
+            top_neg = neg_pairs[:TOP_K_ANCHORS]
+            neg_cos = (sum(s for s, _, _, _ in top_neg) / sum(w for _, w, _, _ in top_neg)
+                       if top_neg else 0.0)
+            drift_score = round(pos_cos - neg_cos, 4)
+            # 单 anchor hits · 用 raw cosine 不用 weighted (alert text 显示真相似度)
+            neg_hits = [
+                (round(raw_c, 3), txt) for _, _, raw_c, txt in neg_pairs
+                if raw_c >= NEG_ANCHOR_HIT_THRESHOLD
+            ][:5]
+            # v2 cutover (2026-06-01) · 弃 neg_cos≥0.538 OR 分支 —— 11.5k 条真实流量证它
+            # 64.5% 逢触必报(benign neg_cos 0.60-0.69 与 drift 完全重叠)· 致 act_on 仅 9.87%。
+            # 改 rule_alert(危险命令正则) OR drift_score<V2_THRESH · 实测 0.5% alert · 高精度。
+            rule_hit = _shadow_rule_alert(query)
+            should_alert = rule_hit or drift_score < ZMM_DRIFT_V2_THRESH
+            result["drift"] = {
+                "score": drift_score,
+                "alignment": round(pos_cos, 4),
+                "deviation": round(neg_cos, 4),
+                "should_alert": should_alert,
+                "rule_hit": rule_hit,
+                "top_neg_hits": neg_hits[:3],
+                "n_pos": anchors["n_pos"],
+                "n_neg": anchors["n_neg"],
             }
-            with open(log_path, "a", encoding="utf-8") as f:
-                f.write(json.dumps(entry, ensure_ascii=False) + "\n")
-        except Exception as _le:
-            log(f"verification_log write fail: {_le}")
 
-        return result
+    # ─── verification_log · 7 天对照实验数据 ───────────────
+    try:
+        log_path = CACHE_DIR / "verification_log.jsonl"
+        entry = {
+            "ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "session_id": os.environ.get("CLAUDE_SESSION_ID", "unknown")[:60],
+            "agent_type": agent_type,
+            "project": project[:80],
+            "action": action,
+            "query": query[:200],
+            "top5": [
+                {"score": r["score"], "path": r["path"], "age": r["age_str"]}
+                for r in (result.get("recall") or [])[:5]
+            ],
+            "fresh_n": len(result.get("fresh_extra") or []),
+            "drift_score": (result.get("drift") or {}).get("score"),
+            "drift_alert": (result.get("drift") or {}).get("should_alert"),
+            # v2 shadow (SHADOW ONLY · 不 enforce · 比对用 · 详见 _shadow_rule_alert)
+            "rule_hit": _shadow_rule_alert(query),
+            "drift_alert_v2": bool(
+                _shadow_rule_alert(query)
+                or (((result.get("drift") or {}).get("score") or 0) < ZMM_DRIFT_V2_THRESH)),
+        }
+        with open(log_path, "a", encoding="utf-8") as f:
+            f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+    except Exception as _le:
+        log(f"verification_log write fail: {_le}")
+
+    # v2.0.7 · P9 · cache successful result before return
+    try:
+        _p9_cache_put(_p9_key, result)
+        # log cache stats every 1000 ops
+        _total = sum(_RECALL_CACHE_STATS.values())
+        if _total > 0 and _total % 1000 == 0:
+            _stats = _RECALL_CACHE_STATS
+            _hit_rate = _stats["hit"] / max(_stats["hit"] + _stats["miss"], 1) * 100
+            log(f"P9 cache · {_total} ops · hit_rate={_hit_rate:.1f}% · size={len(_RECALL_CACHE)} · "
+                f"hits={_stats['hit']} misses={_stats['miss']} expires={_stats['expire']} evicts={_stats['evict']}")
+    except Exception as _ce:
+        log(f"P9 cache put fail: {_ce}")
+
+    return result
+
+
+def _load_pkl_caches():
+    """v2.0.8 · pkl warmup · root-cure for cold-start CPU spike.
+
+    memory_caches pkl files were written (line 324/750) but never loaded.
+    Every daemon restart triggered full re-embed of every memory file in
+    every project on first recall. py-spy showed 2 bge-handlers stuck in
+    encode() on memory entries · CPU 198% sustained. This loads persisted
+    embeddings so warm cache survives restart. Stale entries (mtime changed)
+    will still be re-embedded per-file in get_memory_entries.
+    """
+    import pickle as _pickle_w
+    import hashlib as _hashlib_w
+    if not CACHE_DIR.exists():
+        return
+    loaded = 0
+    skipped = 0
+    failed = 0
+    for _name, mem_dir in _list_user_project_dirs():
+        proj_key = str(mem_dir)
+        proj_hash = _hashlib_w.sha256(proj_key.encode()).hexdigest()[:12]
+        pkl_path = CACHE_DIR / f"{proj_hash}.pkl"
+        if not pkl_path.exists():
+            skipped += 1
+            continue
+        try:
+            with open(pkl_path, "rb") as _f:
+                data = _pickle_w.load(_f)
+            cache = data.get("embeddings", {}) if isinstance(data, dict) else {}
+            if cache:
+                _state["memory_caches"][proj_key] = cache
+                loaded += 1
+            else:
+                skipped += 1
+        except Exception as _le:
+            log(f"pkl warmup fail {proj_hash}: {_le}")
+            failed += 1
+    log(f"pkl warmup · loaded={loaded} skipped={skipped} failed={failed}")
 
 
 def serve():
@@ -474,6 +870,24 @@ def serve():
     except Exception as _e:
         log(f"eager-load fail (will retry lazy): {_e}")
 
+    # v2.0.8 · pkl warmup · avoid cold-start re-embed CPU spike
+    try:
+        _t2 = time.time()
+        _load_pkl_caches()
+        log(f"  pkl warmup done · {time.time()-_t2:.1f}s")
+    except Exception as _we:
+        log(f"pkl warmup fail (cold start): {_we}")
+
+    # v2.0.9 · inotify watcher thread · Layer 2 cure
+    if _INOTIFY_USE:
+        try:
+            _wt = threading.Thread(target=_inotify_watcher_thread,
+                                   name="inotify-watcher", daemon=True)
+            _wt.start()
+            log("inotify watcher thread started")
+        except Exception as _ie:
+            log(f"inotify watcher start fail · fallback to per-recall scan: {_ie}")
+
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     try:
@@ -481,7 +895,10 @@ def serve():
     except OSError as e:
         log(f"bind fail · already running? {e}")
         sys.exit(2)
-    sock.listen(8)
+    # v2.0.0 · P4 · increased backlog from 8 → 128 so overflow during burst
+    # waits at OS level instead of being refused (which retry-stormed callers
+    # would only amplify). Pool of 8 workers drains the queue.
+    sock.listen(128)
     log(f"listening {HOST}:{PORT}")
 
     while True:
@@ -492,12 +909,160 @@ def serve():
         except Exception as e:
             log(f"accept fail: {e}")
             continue
-        threading.Thread(target=handle_conn, args=(conn,), daemon=True).start()
+        # v2.0.7 · P7 · in-flight cap via BoundedSemaphore · reject-fast when
+        # queue + running > 32 · prevents CLOSE-WAIT leak from unbounded
+        # ThreadPoolExecutor queueing under V5/V7 retry storms.
+        if not _INFLIGHT_SEM.acquire(blocking=False):
+            log(f"overload · reject conn (inflight cap {DAEMON_INFLIGHT_LIMIT})")
+            try:
+                conn.sendall(b'{"ok":false,"error":"daemon overloaded - retry"}\n')
+            except Exception:
+                pass
+            try: conn.shutdown(socket.SHUT_RDWR)
+            except Exception: pass
+            try: conn.close()
+            except Exception: pass
+            continue
+        # v2.0.0 · P4 · bounded pool · was `threading.Thread(...).start()`
+        # which spawned unbounded under retry storms · 288 threads leaked
+        # 2026-05-22. Pool rejects via RuntimeError when shutting down · OS
+        # socket backlog (listen(128) above) handles momentary overflow.
+        try:
+            _HANDLER_POOL.submit(_safe_handle, conn)
+        except RuntimeError as e:
+            log(f"pool reject: {e}")
+            try:
+                _INFLIGHT_SEM.release()
+            except Exception:
+                pass
+            try:
+                conn.sendall(b'{"ok":false,"error":"daemon shutting down"}\n')
+            except Exception:
+                pass
+            try: conn.shutdown(socket.SHUT_RDWR)
+            except Exception: pass
+            try:
+                conn.close()
+            except Exception:
+                pass
 
     sock.close()
     if PID_FILE.exists():
         PID_FILE.unlink(missing_ok=True)
     log("daemon stopped")
+
+
+def handle_ingest(req: dict) -> dict:
+    """v2.0.0 · S5 · ingest text -> compass memory .md + embed + cache.
+
+    Lets platform agents (V5/V6/V7) feed text into compass without going
+    through session_writer + LLM summarize. Use case: ingest task outputs,
+    agent observations, audit logs.
+
+    Required:
+      text (str): session content
+      project (str): project name (encoded cwd or platform tenant id)
+    Optional lifecycle frontmatter (v1.7.1 · LLM_WIKI2 paradigm):
+      tier (working|episodic|semantic|procedural)
+      decay_rate (float 0-1)
+      forget_at (ISO8601)
+      promote_after (e.g., "7d" or "5_access")
+    Optional metadata:
+      filename (override default timestamp-based name)
+      agent_type, agent_id, tags, source
+
+    Returns:
+      {ok: true, path: "<written .md>", embedded: true, embed_dim: 1024, project: "..."}
+    """
+    import hashlib as _hashlib
+    import pickle as _pickle
+    from datetime import datetime, timezone
+
+    text = (req.get("text") or "").strip()
+    project = (req.get("project") or "").strip()
+    if not text:
+        return {"ok": False, "error": "empty text"}
+    if not project:
+        return {"ok": False, "error": "project required for ingest"}
+    if len(text) > 500_000:
+        return {"ok": False, "error": "text too large (>500KB) · split before ingest"}
+
+    mem_dir = Path.home() / ".claude" / "projects" / project / "memory"
+    mem_dir.mkdir(parents=True, exist_ok=True)
+
+    fname = (req.get("filename") or "").strip()
+    if not fname:
+        ts = time.strftime("%Y%m%d_%H%M%S")
+        hsh = abs(hash(text)) % 100000
+        fname = f"ingest_{ts}_{hsh}.md"
+    if not fname.endswith(".md"):
+        fname += ".md"
+    fname = fname.replace("/", "_").replace("\\", "_")
+
+    fm = ["---", f"name: {fname[:-3]}",
+          f"created: {datetime.now(timezone.utc).isoformat()}",
+          "type: ingest", "source: bge-daemon-ingest"]
+    for k in ("tier", "decay_rate", "forget_at", "promote_after",
+              "agent_type", "agent_id", "tags"):
+        v = req.get(k)
+        if v is not None and v != "":
+            if isinstance(v, list):
+                fm.append(f"{k}: [{', '.join(repr(x) for x in v)}]")
+            else:
+                fm.append(f"{k}: {v}")
+    fm.append("---")
+    fm.append("")
+    content = "\n".join(fm) + text.rstrip() + "\n"
+
+    out_path = mem_dir / fname
+    out_path.write_text(content, encoding="utf-8")
+
+    try:
+        embedder = get_embedder()
+        vec = embedder.encode(text[:5000])
+        if hasattr(vec, "tolist"):
+            vec = vec.tolist()
+        proj_key = str(mem_dir)
+        cache = _state["memory_caches"].setdefault(proj_key, {})
+        cache[str(out_path)] = (out_path.stat().st_mtime, vec)
+        proj_hash = _hashlib.sha256(proj_key.encode()).hexdigest()[:12]
+        with open(CACHE_DIR / f"{proj_hash}.pkl", "wb") as f:
+            _pickle.dump({"embeddings": cache}, f)
+        return {"ok": True, "path": str(out_path), "project": project,
+                "embedded": True, "embed_dim": len(vec)}
+    except Exception as e:
+        return {"ok": True, "path": str(out_path), "project": project,
+                "embedded": False, "embed_warning": str(e)}
+
+
+def _safe_handle(conn: socket.socket):
+    """v2.0.7 · P7 · wraps handle_conn to guarantee fd release + sem release.
+
+    Even when handle_conn returns normally · this wrapper drains any
+    pending rx data (V5 may send retry frames after timeout), forces
+    shutdown(SHUT_RDWR) before close (so fd doesn't linger in CLOSE-WAIT
+    waiting for client FIN), then releases the in-flight sem token so
+    the accept loop can accept new conns.
+    """
+    try:
+        handle_conn(conn)
+    finally:
+        # drain any pending rx · V5 retry frames or duplicate sends
+        try: conn.settimeout(0.1)
+        except Exception: pass
+        try:
+            while True:
+                chunk = conn.recv(65536)
+                if not chunk: break
+        except Exception: pass
+        # force both-end shutdown · don't wait for client FIN
+        try: conn.shutdown(socket.SHUT_RDWR)
+        except Exception: pass
+        try: conn.close()
+        except Exception: pass
+        # release inflight slot for next accept
+        try: _INFLIGHT_SEM.release()
+        except Exception: pass
 
 
 def handle_conn(conn: socket.socket):
@@ -523,6 +1088,10 @@ def handle_conn(conn: socket.socket):
             conn.sendall(b'{"ok":true,"shutdown":true}\n')
             log("shutdown requested")
             os._exit(0)
+        if req.get("action") == "ingest":
+            resp_bytes = json.dumps(handle_ingest(req), ensure_ascii=False).encode("utf-8") + b"\n"
+            conn.sendall(resp_bytes)
+            return
         resp = handle_request(req)
         conn.sendall(json.dumps(resp, ensure_ascii=False).encode("utf-8") + b"\n")
     except Exception as e:
