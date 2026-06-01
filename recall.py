@@ -75,7 +75,7 @@ def strip_zhen_emphasis(text: str) -> str:
     return "".join(out)
 
 
-PLUGIN_VERSION = "nautilus-compass v1.6.2"
+PLUGIN_VERSION = "nautilus-compass v2.0.2"
 HOME = Path.home()
 PLUGIN_DIR = HOME / ".claude" / "plugins" / "nautilus-compass"
 CACHE_DIR = PLUGIN_DIR / ".cache"
@@ -1377,7 +1377,8 @@ def main():
             scan_sessions_for_contracts, _default_memory_roots,
             format_for_prompt_injection,
         )
-        _c_scan = scan_sessions_for_contracts(_default_memory_roots(), within_hours=168.0)
+        # 5/31 reconcile: 168→720h · 兑现 D.fix-3 意图(历史 close-loop 文件 >7d 也 resolve)
+        _c_scan = scan_sessions_for_contracts(_default_memory_roots(), within_hours=720.0)
         _c_block = format_for_prompt_injection(_c_scan, max_show=5)
         if _c_block:
             print()
