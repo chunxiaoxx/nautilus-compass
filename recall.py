@@ -18,9 +18,14 @@ import json
 import os
 import pickle
 import re
+import subprocess
 import sys
 import time
 from pathlib import Path
+
+# C.2 · multi-signal drift firing vote · supersedes inline OR-vote at L1429.
+# See drift/firing.py docstring for the rationale (5/27 cry-wolf finding).
+from drift.firing import should_fire_drift
 
 # Force UTF-8 stdout (Windows GBK)
 try:
@@ -188,6 +193,31 @@ EMBEDDER_MODEL = os.environ.get(
 
 _embedder = None    # lazy global
 _anchor_cache = None   # lazy · {pos_vec, neg_vec, mtime, raw}
+
+
+def _resolve_default_actor() -> str:
+    """Deterministic actor ID for PoI candidate attribution.
+
+    Order: COMPASS_AGENT_ID > CLAUDE_AGENT_ID > anon-<sha256(email|cwd)[:8]> > "unknown".
+    Stable across sessions on the same user+cwd, enabling later PoI reconciliation.
+    """
+    env_actor = os.environ.get("COMPASS_AGENT_ID") or os.environ.get("CLAUDE_AGENT_ID")
+    if env_actor:
+        return env_actor
+    try:
+        email = subprocess.check_output(
+            ["git", "config", "--get", "user.email"],
+            text=True,
+            stderr=subprocess.DEVNULL,
+            timeout=2,
+        ).strip()
+    except (subprocess.SubprocessError, OSError, FileNotFoundError):
+        return "unknown"
+    if not email:
+        return "unknown"
+    cwd = os.getcwd()
+    digest = hashlib.sha256(f"{email}|{cwd}".encode("utf-8")).hexdigest()[:8]
+    return f"anon-{digest}"
 
 
 def find_active_project_memory_dir() -> Path | None:
@@ -1006,6 +1036,19 @@ def render_v02_vector_mode(entries: list, query: str, cache: dict) -> None:
             # Graceful · L0 path stays intact even if overlay misbehaves
             sys.stderr.write(f"[L1 overlay] skipped: {_e!r}\n")
 
+    # v3 · B.5 · PoI candidate emission · record which memories were surfaced
+    # to the actor at high confidence (no outcome yet · reconciled later when a
+    # downstream PoI event lands). Distinct from emit_nau_records: candidates
+    # do NOT fabricate action_outcome. Sidecar: poi_candidates.jsonl. Guarded by
+    # COMPASS_NO_POI_CANDIDATE=1 for opt-out. Graceful skip on error.
+    if top and os.environ.get("COMPASS_NO_POI_CANDIDATE") != "1":
+        try:
+            from proof.poi_emitter import emit_poi_candidate
+            _actor = _resolve_default_actor()
+            emit_poi_candidate(top, query=query, agent_id=_actor)
+        except Exception as _e:
+            sys.stderr.write(f"[PoI candidate] skipped: {_e!r}\n")
+
     # v1.7 · MEME-extension · transitive_close via depends_on BFS · staged rollout
     # Enable with COMPASS_CHAIN_RECALL=1 · ancestors pinned with synthetic score -depth-1
     if os.environ.get("COMPASS_CHAIN_RECALL") == "1":
@@ -1387,7 +1430,9 @@ def main():
                     top_neg_hits.append((cosine(q_emb, a_emb), s))
                 top_neg_hits.sort(reverse=True)
             max_neg_hit = top_neg_hits[0][0] if top_neg_hits else 0.0
-            should_alert = sig < DRIFT_ALERT_THRESHOLD or max_neg_hit >= NEG_ANCHOR_HIT_THRESHOLD
+            # C.2 · multi-signal vote (strong score OR strong hit OR weak+weak corroboration)
+            # Legacy OR-vote available via COMPASS_DRIFT_LEGACY_OR=1.
+            should_alert = should_fire_drift(score=sig, max_neg_hit=max_neg_hit)
             tag = "✅ 在锚点内" if sig > 0.05 and not should_alert else ("⚠️ 偏向反锚点" if should_alert else "≈ 中性")
             print(f"[Persona drift · {anchors['n_pos']}+{anchors['n_neg']} 锚点 · BGE]")
             print(f"  score={sig:+.3f} (alignment={d['alignment']:.3f} · deviation={d['deviation']:.3f}) · {tag}")

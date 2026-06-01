@@ -1,0 +1,152 @@
+{
+  "_meta": {
+    "schema_version": 1,
+    "plan": "plan_compass_v35_full_fusion",
+    "sprint": 0,
+    "deliverable": "#3 baseline metric snapshot (plan §2.0)",
+    "snapshot_date": "2026-05-28",
+    "rerun_date": "2026-05-29",
+    "branch": "v3-full-fusion",
+    "base_commit": "5258c45",
+    "sprint0_commit": "abce22f",
+    "sprint0_snapshot_commit": "6f93acb",
+    "purpose": "v2.0.1 reference values for Sprint 1-7 delta gates · paper3 v2 §6 audit reconciliation",
+    "completeness": "5/5 metrics measured · 3/5 from existing data + 2/5 from 2026-05-29 T4 rerun (LongMemEval + MEME)",
+    "rerun_2026_05_29": {
+      "infrastructure": "T4 GPU 43.155.195.48 · py3.10 venv · BGE-m3 + bge-reranker-v2-m3 + DeepSeek-V4-pro + Vertex Gemini-2.5-pro/flash",
+      "longmemeval_elapsed_s": 8641,
+      "meme_elapsed_s": 13528,
+      "total_wall_clock_h": 6.16,
+      "total_cost_usd_est": 4.3,
+      "first_attempt_failed": "MEME first launch 50q OK then DeepSeek HTTP 402 Insufficient Balance · killed at q116 (66 skips) · user topup → relaunch successful · lesson: smoke-test API path with 1 QA before full launch (anti-pattern: deploy-without-verify)"
+    }
+  },
+
+  "longmemeval_s": {
+    "status": "measured · v2.0.1 baseline (post-M2-filter + L3-session-writer-fix) · 2026-05-29 T4 rerun",
+    "pipeline_at_measurement": "m3-rerank · subject=gemini-2.5-flash · judge=gemini-2.5-pro · vote_n=1 · temporal=enabled · default-off byte-equal (no COMPASS_USE_LLM_*)",
+    "n": 500,
+    "overall_accuracy": 0.364,
+    "P_at_1": 0.808,
+    "P_at_3": 0.900,
+    "P_at_5": 0.932,
+    "MRR": 0.8585,
+    "by_type": {
+      "single-session-user":      {"n": 70,  "acc": 0.200, "P_at_1": 0.486, "P_at_3": 0.671, "P_at_5": 0.757, "MRR": 0.595},
+      "multi-session":            {"n": 133, "acc": 0.436, "P_at_1": 0.880, "P_at_3": 0.970, "P_at_5": 0.977, "MRR": 0.925},
+      "single-session-preference":{"n": 30,  "acc": 0.467, "P_at_1": 0.733, "P_at_3": 0.867, "P_at_5": 0.933, "MRR": 0.802},
+      "temporal-reasoning":       {"n": 133, "acc": 0.361, "P_at_1": 0.872, "P_at_3": 0.947, "P_at_5": 0.970, "MRR": 0.913},
+      "knowledge-update":         {"n": 78,  "acc": 0.462, "P_at_1": 0.821, "P_at_3": 0.872, "P_at_5": 0.910, "MRR": 0.853},
+      "single-session-assistant": {"n": 56,  "acc": 0.214, "P_at_1": 0.911, "P_at_3": 0.964, "P_at_5": 0.982, "MRR": 0.938}
+    },
+    "source_file_summary": "paper/results/longmemeval_v201_summary_1780056202.json",
+    "source_file_per_question": "T4:~/.claude/plugins/nautilus-compass/.cache/longmemeval_acc_m3_rerank_full_1780056202.jsonl",
+    "subset_for_sprint1_gate": {
+      "name": "multi-session",
+      "n": 133,
+      "noise_floor_pp_at_95ci": 2.5,
+      "sprint1_target_delta_pp": 3.0,
+      "judgeable": true,
+      "comment": "Sprint 0 #5 verdict · n=133 > 50 · +3pp gate is statistically resolvable"
+    },
+    "judge_model_drift_note": {
+      "historical_56_6_pct_judge": "GPT-4o-mini (per paper/BLACKBOX_VS_WHITEBOX.md and announce_hf_dataset.md)",
+      "v201_judge": "Vertex Gemini-2.5-pro (eval script tests/eval_longmemeval_accuracy.py hardcoded · ZMM_JUDGE_MODEL env override possible but not used)",
+      "comparability": "overall_accuracy 0.364 NOT directly comparable to historical 0.566 · Gemini-pro is markedly stricter than GPT-4o-mini · ±5-15pp judge bias plausible · use retrieval P@k for clean cross-version comparison (judge-independent)",
+      "sprint1plus_delta_protocol": "compare deltas vs THIS v2.0.1 measurement (same judge) · not vs v0.8 0.566 · retrieval P@k OK to cross-compare freely"
+    },
+    "delta_vs_v08_observed_retrieval_pp": {
+      "P_at_1": 23.2,
+      "P_at_3": 17.4,
+      "P_at_5": 7.2,
+      "MRR": 17.4,
+      "verdict": "v0.8 prediction 'near-zero delta (ingest fix doesn't move recall)' is REFUTED · M2 filter + L3 session-writer-fix moved retrieval substantially · most pronounced on single-session-user P@5 0.586→0.757 (+17.1pp)"
+    },
+    "elapsed_seconds": 8641,
+    "measurement_completed_at": "2026-05-29T22:27:24+08:00"
+  },
+
+  "meme_cas_del_abs": {
+    "status": "measured · v2.0.1 baseline · 2026-05-29 T4 rerun",
+    "harness": "scripts/evermembench_bge.py · BGE-m3 dense + bge-reranker-v2-m3 + DeepSeek V4-pro answer/judge · EM_REWRITE=1 EM_DAY_BUCKET=1 (v2 config matching historical 44.4%)",
+    "pipeline_config": {
+      "topics": ["01", "02", "03", "04", "05"],
+      "n_questions_per_topic": 100,
+      "top_k_recall": 100,
+      "top_k_rerank": 30,
+      "ctx_char_limit": 2500,
+      "answer_model": "deepseek-v4-pro",
+      "judge_model": "deepseek-v4-pro",
+      "rewrite_enabled": true,
+      "day_bucket_max": 2
+    },
+    "n": 500,
+    "overall_acc_at_30": 0.456,
+    "overall_recall_at_30": 0.974,
+    "by_topic": {
+      "01": {"n": 100, "acc": 0.440, "recall_at_30": 0.970},
+      "02": {"n": 100, "acc": 0.460, "recall_at_30": 0.940},
+      "03": {"n": 100, "acc": 0.420, "recall_at_30": 0.980},
+      "04": {"n": 100, "acc": 0.500, "recall_at_30": 0.990},
+      "05": {"n": 100, "acc": 0.460, "recall_at_30": 0.990}
+    },
+    "historical_v2_value": 0.444,
+    "delta_vs_historical_v2_pp": 1.2,
+    "comparison_paper_table4": {
+      "Full Context": 0.3744,
+      "MemoBase": 0.3427,
+      "Mem0": 0.3709,
+      "Zep": 0.3997,
+      "MemOS": 0.4255,
+      "compass_v201": 0.456,
+      "delta_vs_memos_pp": 3.05,
+      "claim": "compass v2.0.1 still SOTA in reported Table 4 baselines (paper2 v2 §6.5 holds)"
+    },
+    "first_attempt_failure": "MEME first launch reached q50 in topic 01 with acc=78%/recall=100% then HTTP 402 Insufficient Balance cascade (q51-116 all skipped · 66 fails) · killed · user topup DeepSeek → relaunch succeeded · lesson: 1-QA smoke probe before full launch (anti-pattern hit: PID-alive ≠ run-healthy)",
+    "source_file_log": "T4:~/nautilus-compass/logs/meme_v201_1780042573.log",
+    "elapsed_seconds": 13528,
+    "measurement_completed_at": "2026-05-29T20:02:59+08:00"
+  },
+
+  "drift_fp_rate": {
+    "status": "known · post-v2-fix",
+    "fire_rate": 0.004,
+    "fire_rate_pct": 0.4,
+    "n_alerts": 457,
+    "n_marked_false_positive": 2,
+    "n_total_traffic_observed": 25000,
+    "measurement_window": "30d ending 2026-05-27",
+    "source": "memory · session_20260527_drift_loop_open_tuneout.md",
+    "sprint5_relevance": {
+      "gate_target_precision": 0.5,
+      "current_precision_marked": "0.4% fire rate · only 2/457 marked FP · most unmarked",
+      "open_question": "intervention rate (act-on after detect) unknown · plan §5 risk #8 · gate 1 measures detect-precision · gate 4 measures intervention-rate"
+    }
+  },
+
+  "poi_consumption_rate": {
+    "status": "known · audit 5/28 baseline",
+    "consumed_sessions": 7,
+    "available_pois": 1389,
+    "rate": 0.005,
+    "rate_pct": 0.5,
+    "source": "audit 5/28 §6 🟠 over-claimed · #11 anti-confab dependency",
+    "sprint4_relevance": {
+      "gate_target_rate": 0.20,
+      "required_multiplier_vs_baseline": 40.0,
+      "gate_kill_if_below": 0.20
+    }
+  },
+
+  "cross_agent_contract_adoption": {
+    "status": "known · audit 5/28 baseline",
+    "adopters_count": 0,
+    "contracts_issued_count": "see contract_audit · ≥1 cnt_ncore_a4b5 referenced",
+    "consumed_count": 0,
+    "source": "audit 5/28 §6 🟡 dormant · cross-dialog contract adoption=0",
+    "sprint7_relevance": {
+      "gate_target": "platform_nau_ledger gains N new memory_access reason rows",
+      "kill_if": "no cross-agent NAU interactions detected"
+    }
+  }
+}
