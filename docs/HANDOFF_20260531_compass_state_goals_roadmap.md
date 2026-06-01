@@ -61,22 +61,40 @@ dev.to 文章同时讲了 B+C,所以读者抓不住重点。**2026-05-31 用户�
 
 ---
 
-## 3. 接下来的工作(怎么去 · 按优先级)
+## 3. 未闭环清单 / 接下来的工作(2026-06-01 更新 · 按 owner 分类)
 
-### 近期(Path B Week 1 收尾 · 无 blocker)
-1. **Show HN 提交**(dev.to 已发表 → 隔 4-6h · 8am-12pm PT · 物料 `paper/promo/show_hn_*.md` ready · title #2)
-2. **GitHub issue cross-project thread**(若 HN 上首页 · T+24h)
-3. **重写对外表述**(回应"不够提炼"):§5 选定 #1 定位后,提炼 README 首屏 + dev.to 重发/置顶段 + 一句话 pitch
+> 🔴 **最该看见:Path B 真 metric = 0**。本轮 ship 多(CLI/PyPI/dev.to/README/desc/定位 C)都只是"准备好让外部能验证",成功标志(1 OSS team verified integration + 1 SaaS pilot inquiry)还没开始。anchor #3:ship 件数 ≠ 价值,外部回应才是 0→1。
 
-### 中期(产品闭环 · 部分 blocked)
-4. **F.2 Soul subscriber poller**:等 `cnt_compass_soul_sub_a2` credential(platform secure channel)→ poll `engine_cycle_outcomes` → surface soul outcomes 给用户(回应"如何让 soul/平台/agent/compass 互动迭代")
-5. **drift act_on_rate 9.87% → 70%**:闭环已通,缺的是减少误报(cry-wolf)让 agent 真采纳。这是递归自我提升闭环的核心 KPI。
-6. **controlled study 主研究**:证明差异化能力(drift/cross-agent)的真实价值 · 不再刷 benchmark
+### A · 待用户动作(outward · agent 不能代做)
+- **Show HN 提交**(dev.to 已 live 且 crisp · 隔 4-6h · 8am-12pm PT · 物料 `paper/promo/show_hn_*.md` ready · title #2)— 触发外部回应的扳机
+- GitHub issue cross-project thread(HN 上首页才发 · conditional)
 
-### 技术债 / findings(低优先 · 不阻塞)
-7. `nautilus-compass` umbrella 没 wire `feedback` 子命令(mitigation hint 期望它)
-8. `release.yml` 只匹配 `v1.*`,v2 tag 不建 GitHub release(只发 PyPI)
-9. scanner cross-dir consumed-detection gap(`cnt_compass_soul_sub_a1` 已 consumed 却误显 outstanding)
+### B · blocked(等外部 unblock · cross-dialog)
+- **F.2 Soul subscriber poller**:等 `cnt_compass_soul_sub_a2` credential(6/7 · platform secure channel)+ 本地 daemon 连 cloud DB 需 ssh tunnel · **unblock 后最高杠杆**(poll `engine_cycle_outcomes` → 喂递归闭环 + L4 PoI + surface soul outcomes 给用户)
+- `cnt_compass_v5_outcome_b2`:等 V5 dialog ack(6/5)
+- L4 cross-agent substrate(soul outcomes surface + PoI):依赖 F.2 unblock
+
+### C · 可独立推进(无 blocker · fresh session 能直接做)
+- **drift act_on_rate 9.87% → 70%**:闭环已通,缺减少误报(cry-wolf · 从 specificity 入手不是加 alert)· 递归自我提升核心 KPI(本会话多次 drift 误报正说明此痛点真实)
+- **受控研究**证差异化能力(drift/cross-agent)真实价值 · 不刷 benchmark(诚实结论:单事实检索 A2≈A3 无增量)
+
+### D · 技术债 findings(低优先 · 不阻塞)
+- `nautilus-compass` umbrella 没 wire `feedback` 子命令(现用 `feedback log <id> fp`)
+- `release.yml` 只匹配 `v1.*`,v2 tag 只发 PyPI 不建 GitHub release
+- **scanner cross-dir bug**:daemon recall plugin 误显 `cnt_compass_soul_sub_a1` outstanding(repo 端 `contract.py` scan 已对 · daemon 是老 plugin lineage)· 修它减 cry-wolf → 直接服务 drift act_on
+
+### ✅ 已闭环(本轮 · 不再是 TODO)
+- 对外表述 reframe 统一 #1=C(README 首屏+30s-pitch / dev.to live PUT / GitHub repo desc)
+- CLI v0 修复 + PyPI 2.0.2 live(`nautilus-compass` 命令之前 crash)
+- #1 定位 C 拍板 + 固化(memory + 本文档)
+
+### 非 compass scope(不漏 · 不 owner)
+- `cnt_family_taxonomy_ack_2026_05_18`(V5→nautilus-core · 等 nautilus-core confirm · 非 compass action)
+
+### fresh session 第一件事(判断树)
+1. Show HN 已发且有回应 → 跟进 inquiry(Path B 真 metric · 压倒一切)
+2. credential 到 → F.2(unblock 后最高杠杆)
+3. 都没 → **C 类直接做**(drift act_on specificity / 受控研究)· 其中修 scanner cross-dir + drift specificity 服务递归闭环(anchor #2)
 
 ---
 
