@@ -147,7 +147,8 @@ def parse_contracts_from_frontmatter(md_text: str) -> list[Contract]:
     if not m:
         return []
     fm = m.group(1)
-    if "contracts:" not in fm:
+    # D.fix-4: also accept singular `contract_id:` protocol (V5 inbound convention).
+    if "contracts:" not in fm and "contract_id:" not in fm:
         return []
 
     try:
@@ -161,32 +162,78 @@ def parse_contracts_from_frontmatter(md_text: str) -> list[Contract]:
     except ImportError:
         return _parse_contracts_naive(fm)
 
-    raw_list = data.get("contracts")
-    if not isinstance(raw_list, list):
+    # D.fix-1 (2026-05-30): read contracts from both top-level and metadata.contracts.
+    # Real close_loop files (3/3 audited) nest contracts under metadata · earlier code
+    # only saw top-level → close_loop status:consumed was never observed → contracts
+    # stayed outstanding forever. Outbound files use top-level shape; both supported now.
+    raw_lists: list[list] = []
+    top_list = data.get("contracts")
+    if isinstance(top_list, list):
+        raw_lists.append(top_list)
+    md = data.get("metadata")
+    if isinstance(md, dict):
+        nested_list = md.get("contracts")
+        if isinstance(nested_list, list):
+            raw_lists.append(nested_list)
+
+    # D.fix-4 (2026-05-30): singular `metadata.contract_id: cnt_xxx` (string · not list).
+    # V5 dialog 2026-05-19 inbound uses this shape (see
+    # inbound_from_v5_dialog_20260519_compass_session_id_bug.md). Earlier parser missed
+    # it → contract invisible to scanner for ~11 days → V5 dialog F4 close_loop request
+    # could not be auto-tracked.
+    singular: list = []
+    if isinstance(md, dict):
+        sid = md.get("contract_id")
+        if isinstance(sid, str) and sid.strip():
+            synth = {
+                "id": sid.strip(),
+                "giver": str(md.get("from") or md.get("giver") or ""),
+                "receiver": str(md.get("to") or md.get("receiver") or ""),
+                "deadline": str(md.get("due") or md.get("deadline") or ""),
+                "deliverable": str(md.get("deliverable") or md.get("description") or ""),
+                "issued_at": str(md.get("issued_at") or ""),
+                "consumed_by": str(md.get("consumed_by") or ""),
+                "consumed_at": str(md.get("consumed_at") or ""),
+            }
+            # Status inference: explicit `status` wins; else `close_loop: true` + consumed_by
+            # implies consumed; otherwise outstanding.
+            explicit_status = md.get("status")
+            if isinstance(explicit_status, str) and explicit_status.strip():
+                synth["status"] = explicit_status.strip()
+            elif md.get("close_loop") is True and synth["consumed_by"]:
+                synth["status"] = "consumed"
+            else:
+                synth["status"] = "outstanding"
+            singular.append(synth)
+    if singular:
+        raw_lists.append(singular)
+
+    if not raw_lists:
         return []
 
     out = []
-    for item in raw_list:
-        if not isinstance(item, dict):
-            continue
-        try:
-            c = Contract(
-                id=str(item.get("id") or ""),
-                giver=str(item.get("giver") or ""),
-                receiver=str(item.get("receiver") or ""),
-                deadline=str(item.get("deadline") or ""),
-                deliverable=str(item.get("deliverable") or ""),
-                status=str(item.get("status") or "outstanding"),
-                issued_at=str(item.get("issued_at") or ""),
-                source_session=str(item.get("source_session") or ""),
-                consumed_by=str(item.get("consumed_by") or ""),
-                consumed_at=str(item.get("consumed_at") or ""),
-            )
-        except Exception:
-            continue
-        if not c.id or not c.giver or not c.receiver:
-            continue
-        out.append(c)
+    for raw_list in raw_lists:
+        for item in raw_list:
+            if not isinstance(item, dict):
+                continue
+            try:
+                c = Contract(
+                    id=str(item.get("id") or ""),
+                    giver=str(item.get("giver") or ""),
+                    receiver=str(item.get("receiver") or ""),
+                    deadline=str(item.get("deadline") or ""),
+                    deliverable=str(item.get("deliverable") or ""),
+                    status=str(item.get("status") or "outstanding"),
+                    issued_at=str(item.get("issued_at") or ""),
+                    source_session=str(item.get("source_session") or ""),
+                    consumed_by=str(item.get("consumed_by") or ""),
+                    consumed_at=str(item.get("consumed_at") or ""),
+                )
+            except Exception:
+                continue
+            if not c.id or not c.giver or not c.receiver:
+                continue
+            out.append(c)
     return out
 
 
@@ -291,11 +338,44 @@ def already_alerted(contract_id: str, reason: str) -> bool:
     return False
 
 
+def _ledger_has_event(contract_id: str, action: str, consumed_at: str = "") -> bool:
+    """Idempotency check for D.fix-2 · skip append_to_ledger if same event already logged.
+
+    Match on (id, action). If consumed_at is provided, additionally require timestamp match
+    so two genuine consume-events at different timestamps both log.
+    """
+    if not LEDGER.exists():
+        return False
+    try:
+        for line in LEDGER.read_text(encoding="utf-8", errors="replace").splitlines():
+            if not line.strip():
+                continue
+            try:
+                obj = json.loads(line)
+            except Exception:
+                continue
+            if obj.get("action") != action or obj.get("id") != contract_id:
+                continue
+            if consumed_at and obj.get("consumed_at") and obj.get("consumed_at") != consumed_at:
+                continue
+            return True
+    except Exception:
+        pass
+    return False
+
+
 # ─── scanner ─────────────────────────────────────────────────────
 
 
-def scan_sessions_for_contracts(memory_roots: list[Path], within_hours: float = 168.0) -> dict:
-    """Walk recent session_*.md files · build outstanding-contract index.
+def scan_sessions_for_contracts(memory_roots: list[Path], within_hours: float = 720.0) -> dict:
+    """Walk recent session_*.md + contract_close_*.md files · build outstanding-contract index.
+
+    D.fix-3 (2026-05-30): default window bumped 168h (7d) → 720h (30d) so historic close_loop
+    files (e.g. 5/19 pypi clean ~11 days old) still resolve. Also globs `contract_close_*.md`
+    in addition to `session_*.md` since some close-loop files use the `contract_close_` prefix.
+
+    D.fix-2 (2026-05-30): each freshly observed consumed contract is also appended to
+    `contract_ledger.jsonl` (idempotent · `_ledger_has_event` blocks dup on rescan).
 
     Returns {
         "outstanding": [Contract, ...],
@@ -311,7 +391,16 @@ def scan_sessions_for_contracts(memory_roots: list[Path], within_hours: float = 
     for root in memory_roots:
         if not root.exists():
             continue
-        for f in root.glob("session_*.md"):
+        # D.fix-3 (2026-05-30): include contract_close_*.md (some close-loop files use this prefix)
+        # D.fix-4 (2026-05-30): include inbound_*.md + outbound_*.md (cross-dialog naming
+        # used by V5 inbound and similar conventions; otherwise V5 F4 contract was invisible)
+        files = (
+            list(root.glob("session_*.md"))
+            + list(root.glob("contract_close_*.md"))
+            + list(root.glob("inbound_*.md"))
+            + list(root.glob("outbound_*.md"))
+        )
+        for f in files:
             try:
                 if f.stat().st_mtime < cutoff:
                     continue
@@ -345,6 +434,13 @@ def scan_sessions_for_contracts(memory_roots: list[Path], within_hours: float = 
             else:
                 outstanding.append(c)
         # cancelled / expired status from file: just skip
+
+    # D.fix-2 (2026-05-30): persist consumed events to ledger · idempotent on rescan.
+    # `append_to_ledger` + `LEDGER` were defined since v1.7.0 but had zero callers
+    # → contract_ledger.jsonl never materialised. Wire it now.
+    for c in consumed:
+        if not _ledger_has_event(c.id, "consumed", c.consumed_at):
+            append_to_ledger(c, "consumed")
 
     return {
         "outstanding": outstanding,
@@ -418,8 +514,17 @@ if __name__ == "__main__":
     import sys
     if len(sys.argv) > 1 and sys.argv[1] == "scan":
         roots = _default_memory_roots()
-        scan = scan_sessions_for_contracts(roots, within_hours=168)
-        print(f"scanned {scan['files_scanned']} files in {len(roots)} roots")
+        # D.fix-3 (2026-05-30): drop hardcoded within_hours=168 override · use function
+        # default (720h = 30d) so historic close_loop files resolve. CLI accepts optional
+        # `--hours N` to override (e.g. for tight diagnostic windows).
+        within_hours = 720.0
+        if "--hours" in sys.argv:
+            try:
+                within_hours = float(sys.argv[sys.argv.index("--hours") + 1])
+            except (ValueError, IndexError):
+                pass
+        scan = scan_sessions_for_contracts(roots, within_hours=within_hours)
+        print(f"scanned {scan['files_scanned']} files in {len(roots)} roots (window {within_hours}h)")
         print(f"  outstanding: {len(scan['outstanding'])}")
         print(f"  consumed:    {len(scan['consumed'])}")
         print(f"  expired:     {len(scan['expired'])}")

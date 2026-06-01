@@ -175,6 +175,11 @@ def parse_session_summary(path: Path) -> str:
 
 def main():
     sys.path.insert(0, str(PLUGIN_DIR))
+    # Plan A (2026-05-30) · let repo-resident H.1 / D.fix / E.fix modules win
+    # over plugin install when settings.json hook redirects Stop here. Script
+    # dir goes in last → sits at sys.path[0] → Python finds drift/auto_ack.py
+    # before plugin install's drift/ (which only has gate_act.py + routing.py).
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
     from strategy_store import StrategyStore
 
     # v0.8 · session_writer (替代 claude-mem 的 writer)
@@ -293,6 +298,27 @@ def main():
             print(_msg)
     except Exception as _coe:
         sys.stderr.write(f"[stop_hook] contract scan fail: {_coe}\n")
+
+    # H.1 (2026-05-30) · agent self-ack auto-detection · closes the 5/27
+    # drift loop's last unmeasured side. Reads the just-written latest session
+    # memory body · scans for `a-XXXXXXXX` alert_id literals with nearby ack
+    # signal (fp/tp/acknowledged) · writes acks to drift_mitigation_log via
+    # log_drift_ack. Rule-based · no LLM · paragraph-bounded window prevents
+    # cross-talk between distinct alerts. Idempotency: each session memory
+    # processed at most once per stop_hook run · re-scans on subsequent runs
+    # are harmless because log_drift_ack appends rather than dedups (act_on_rate
+    # naturally dedups by alert_id on read).
+    try:
+        from drift.auto_ack import extract_acks_from_text, emit_acks_to_sidecar
+        if latest and latest.exists():
+            _body_text = latest.read_text(encoding="utf-8", errors="replace")
+            _acks = extract_acks_from_text(_body_text)
+            _n_emitted = emit_acks_to_sidecar(_acks, source="stop_hook_auto")
+            if _n_emitted:
+                _summary = ", ".join(f"{a['alert_id']}={a['status']}" for a in _acks[:5])
+                print(f"[stop_hook auto_ack] emitted {_n_emitted} drift ack(s) · {_summary}")
+    except Exception as _aae:
+        sys.stderr.write(f"[stop_hook] auto_ack fail: {_aae}\n")
 
     age_s = time.time() - latest.stat().st_mtime
     if age_s > 3600:

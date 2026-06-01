@@ -37,6 +37,10 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
+# C.2 · multi-signal drift firing vote · supersedes inline OR-vote at L457.
+# See drift/firing.py docstring for the rationale (5/27 cry-wolf finding).
+from drift.firing import should_fire_drift
+
 # P6 (companion) · torch single-thread per encode · applied after import
 try:
     import torch as _torch_for_threadcap
@@ -454,7 +458,11 @@ def handle_request(req: dict) -> dict:
                 (round(raw_c, 3), txt) for _, _, raw_c, txt in neg_pairs
                 if raw_c >= NEG_ANCHOR_HIT_THRESHOLD
             ][:5]
-            should_alert = drift_score < DRIFT_ALERT_THRESHOLD or bool(neg_hits)
+            # C.2 · multi-signal vote (strong score OR strong hit OR weak+weak corroboration).
+            # neg_pairs is sorted by weighted_score · max raw cosine may not be at index 0.
+            # Legacy OR-vote available via COMPASS_DRIFT_LEGACY_OR=1.
+            max_neg_hit_value = max((raw_c for _, _, raw_c, _ in neg_pairs), default=0.0)
+            should_alert = should_fire_drift(score=drift_score, max_neg_hit=max_neg_hit_value)
             result["drift"] = {
                 "score": drift_score,
                 "alignment": round(pos_cos, 4),
