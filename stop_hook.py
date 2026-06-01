@@ -276,7 +276,8 @@ def main():
             _default_memory_roots, _parse_iso,
         )
         from datetime import timezone
-        _scan = scan_sessions_for_contracts(_default_memory_roots(), within_hours=168.0)
+        # 5/31 reconcile: 168→720h · 兑现 D.fix-3 意图(历史 close-loop 文件 >7d 也 resolve)
+        _scan = scan_sessions_for_contracts(_default_memory_roots(), within_hours=720.0)
         _fired = fire_alerts_for_expired(_scan["expired"])
         # Compute mean close_loop time for consumed contracts (north-star metric)
         _cl_times = []
