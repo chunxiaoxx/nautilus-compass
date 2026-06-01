@@ -2,23 +2,26 @@
 
 <!-- mcp-name: io.github.chunxiaoxx/nautilus-compass -->
 
-> **Black-box agent memory with drift detection** ·
-> the only public memory layer that doesn't burn LLM tokens to extract
-> facts before storing.
-> Memory plugin for Claude Code/Desktop · Cline · Cursor · Continue.dev · Zed ·
-> stops your AI from repeating mistakes you've already flagged.
+> **Reliability layer for multi-agent setups** ·
+> keep multiple agents — or your own long-running sessions — coordinating
+> reliably **without an orchestrator**.
+> Cross-dialog contracts + drift detection + a 4-tier memory lifecycle.
+> Plugin for Claude Code/Desktop · Cline · Cursor · Continue.dev · Zed.
 >
-> *Why "black-box"?* Mem0, Letta, Cognee, Zep, MemOS all call an LLM at
-> index time to extract entities or build a graph. compass embeds raw
-> text with BGE-m3 locally and skips that step entirely · ~14× cheaper
-> to reproduce on Volcengine DeepSeek pricing (regional; offshore
-> providers ~5–10× that, still well below GPT-4o-judged stacks),
-> the **memory layer itself runs fully local** (the agent LLM and judge
-> LLM are cloud APIs in our default config; both replaceable with local
-> Ollama/vLLM), drift-aware. Read the full architectural argument:
+> When an agent drifts from a rule you set, takes a shortcut you flagged,
+> or claims a prior agreement that never happened — compass catches it
+> **before the agent acts**.
+>
+> *Why it holds up technically:* the memory underneath is **black-box** —
+> raw text embedded locally with BGE-m3, no LLM extraction step, no graph,
+> no data leaving your machine (~14× cheaper to reproduce than white-box
+> stacks like Mem0 / Letta / Cognee / Zep / MemOS). That same raw-prompt
+> index is exactly what lets compass score the next action against your
+> past mistakes — drift detection that white-box entity-graph memory
+> structurally can't do. Full argument:
 > [paper/BLACKBOX_VS_WHITEBOX.md](paper/BLACKBOX_VS_WHITEBOX.md).
 >
-> **Built by [Nautilus Platform](https://nautilus.social)** · open agent ecosystem · 7 capabilities (memory · identity · runtime · marketplace · stake · A2A · MCP) · [join as agent →](https://nautilus.social)
+> **Built by [Nautilus Platform](https://nautilus.social)** · open agent ecosystem · [join as agent →](https://nautilus.social)
 
 
 🇬🇧 English (this file) · [🇨🇳 中文](README.zh-CN.md)
@@ -36,6 +39,10 @@
 ---
 
 ## 30-second pitch
+
+compass's #1 job is multi-agent **reliability** without an orchestrator.
+The reason it can do that — and not be just another memory store — is its
+black-box memory core:
 
 ```
 White-box memory layers (Mem0, Letta, Cognee, Zep, MemOS, smrti):

@@ -38,17 +38,28 @@ at thumbnail size.
 
 ## Article body (start here)
 
+### What this is
+
+compass is a **reliability layer for multi-agent setups**: it keeps
+multiple agents — or your own long-running sessions — coordinating
+**without an orchestrator**, and catches drift before an agent acts on
+it. No webhooks, no event bus, no shared runtime — just a filesystem
+protocol and a scanner. This post is the field log that shows it working,
+and where it doesn't.
+
 ### TL;DR
 
-Across 28 hours on May 30/31, 2026, I ran four Claude Code dialogs
-concurrently on a shared filesystem-mediated protocol. They negotiated
-contracts, posted outcomes, and caught each other's mistakes — including
-one handoff claim of "22/22 tests passing" that turned out to be 11/22
-broken until I shipped a 1-line fix as part of writing this post.
+Across 28 hours on May 30/31, 2026, I ran four independent Claude Code
+dialogs concurrently — no orchestrator, just a shared filesystem
+protocol. They negotiated contracts, posted outcomes, and caught each
+other's mistakes — including one handoff claim of "22/22 tests passing"
+that was actually 11/22 broken, until my own memory layer's spot-check
+caught it and I shipped the 1-line fix as part of writing this post.
 
-This is what the field log looks like. I'm sharing it because I haven't
-seen anyone publish concrete OSS multi-agent reliability data — only
-benchmark numbers from closed pipelines.
+No benchmark numbers here — those live elsewhere. This is *operational
+reliability* data from real multi-agent work: how independent agents stay
+consistent without a runtime coordinating them. I haven't seen anyone
+publish this.
 
 Repo: [github.com/chunxiaoxx/nautilus-compass](https://github.com/chunxiaoxx/nautilus-compass)
 · full case study with all 7 patterns:
