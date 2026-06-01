@@ -28,6 +28,55 @@ try:
 except Exception:
     pass
 
+
+# ===== M2 · 加载时 "真" 强调副词过滤器（2026-05-22 入库）=====
+# 防 compass session_*.md 历史 corpus 的 "真X真Y" verbatim 强调风格
+# 通过 hook 注入污染下游 Claude Code session.
+#
+# 设计:
+#   1. 保留合法用法: 真的/真实/真正/真心/真理/真品/真切/真相/真意/真挚/真伪/真情/真假/真名/真知
+#   2. 剥离强调用法: 真已/真又/真该/真不/真没/真有/真在/真到/真完/真活/真本/真新/真要/真做
+#      真接/真切/真发/真出/真根/真融/真起/真直/真急/真好/真大/真小/真快/真慢/真等
+#   3. 删除独立的 "真 " (后跟空格)
+#
+# 默认 ENABLED. 可用 env COMPASS_NO_ZHEN_FILTER=1 临时关闭（debug）.
+
+_ZHEN_LEGIT_NEXT = set("的实正心理品切相意挚伪情假名知挚谛善美感诚知性")
+_ZHEN_FILTER_ON = os.environ.get("COMPASS_NO_ZHEN_FILTER", "") != "1"
+
+
+def strip_zhen_emphasis(text: str) -> str:
+    """剥离 '真' 作强调副词的用法 · 保留合法 '真的/真实/真正...' 等组合."""
+    if not _ZHEN_FILTER_ON or "真" not in text:
+        return text
+    out = []
+    i = 0
+    n = len(text)
+    while i < n:
+        ch = text[i]
+        if ch == "真" and i + 1 < n:
+            nxt = text[i + 1]
+            if nxt in _ZHEN_LEGIT_NEXT:
+                # 合法组合: 真的/真实/真正/真心/真理/...
+                out.append(ch)
+                i += 1
+                continue
+            # 检查前一个字符是否构成合法后缀 (认真/成真/果真/当真/较真)
+            prev = text[i - 1] if i > 0 else ""
+            if prev in set("认成果当较",):
+                out.append(ch)
+                i += 1
+                continue
+            # 否则视为强调副词 · 删除 (也吞掉紧随的空格)
+            if i + 1 < n and text[i + 1] == " ":
+                i += 2  # 跳过 "真 "
+            else:
+                i += 1  # 跳过 "真"
+            continue
+        out.append(ch)
+        i += 1
+    return "".join(out)
+
 PLUGIN_VERSION = "nautilus-compass v1.6.2"
 HOME = Path.home()
 PLUGIN_DIR = HOME / ".claude" / "plugins" / "nautilus-compass"
@@ -133,6 +182,8 @@ TOP_K = 5
 COSINE_MIN = float(os.environ.get("ZMM_COSINE_MIN", "0.25"))
 DRIFT_ALERT_THRESHOLD = float(os.environ.get("ZMM_DRIFT_THRESHOLD", "-0.032"))  # m3+hard 后 best Youden J
 NEG_ANCHOR_HIT_THRESHOLD = float(os.environ.get("ZMM_NEG_HIT_THRESHOLD", "0.538"))
+# v2 cutover (2026-06-01) · 弃 neg_cos≥0.538 OR 分支 · 11.5k 真流量证 64.5%→0.5%
+ZMM_DRIFT_V2_THRESH = float(os.environ.get("ZMM_DRIFT_V2_THRESH", "-0.07"))
 # 默认 bge-m3 · 实测 LongMemEval MRR 0.760 / Drift AUC 0.92 · ZMM_EMBEDDER_MODEL 可覆盖
 _M3_LOCAL = HOME / ".cache/modelscope/hub/models/BAAI/bge-m3"
 EMBEDDER_MODEL = os.environ.get(
@@ -183,10 +234,35 @@ def parse_memory_file(path: Path) -> dict:
     if text.startswith("---"):
         end = text.find("\n---", 4)
         if end > 0:
+            # v1.7 · list-aware parser: empty scalar value `key:` followed by
+            # indented `- item` lines accumulates into fm[key] = [...]. Plain
+            # `key: value` stays scalar. Nested mappings (`- id: x`) reset state.
+            cur_list_key = None
             for line in text[4:end].split("\n"):
+                stripped = line.strip()
+                if cur_list_key and stripped.startswith("- "):
+                    item = stripped[2:].strip()
+                    if ":" in item:
+                        # nested mapping (e.g. contracts:) · do not treat as
+                        # string list · drop out of list mode
+                        cur_list_key = None
+                        continue
+                    item = item.strip('"').strip("'")
+                    if item:
+                        fm[cur_list_key].append(item)
+                    continue
                 if ":" in line:
                     k, _, v = line.partition(":")
-                    fm[k.strip()] = v.strip()
+                    key = k.strip()
+                    val = v.strip()
+                    if val == "":
+                        fm[key] = []
+                        cur_list_key = key
+                    else:
+                        fm[key] = val
+                        cur_list_key = None
+                else:
+                    cur_list_key = None
             body = text[end + 4:].strip()
     age_seconds = time.time() - path.stat().st_mtime
     age_days = age_seconds / 86400
@@ -196,17 +272,24 @@ def parse_memory_file(path: Path) -> dict:
         age_str = f"{int(age_days)}d"
     else:
         age_str = f"{int(age_days/30)}mo"
+    # v1.7 · MEME-extension · expose new frontmatter fields for chain recall
+    _dep = fm.get("depends_on", [])
+    _sup = fm.get("supersedes", [])
     return {
-        "name": fm.get("name", path.stem),
-        "description": fm.get("description", "")[:120],
-        "type": fm.get("type", "?"),
+        "name": fm.get("name", path.stem) if isinstance(fm.get("name"), str) else path.stem,
+        "description": (fm.get("description", "") if isinstance(fm.get("description"), str) else "")[:120],
+        "type": fm.get("type", "?") if isinstance(fm.get("type"), str) else "?",
         "age_seconds": age_seconds,
         "age_str": age_str,
         "path": path.name,
         "body": body[:1500],          # v1.0+ · for body-embed render · v0
-        "embed_text": (fm.get("description", "") + "\n" + body)[:EMBED_MAX_CHARS],
+        "embed_text": ((fm.get("description", "") if isinstance(fm.get("description"), str) else "") + "\n" + body)[:EMBED_MAX_CHARS],
         "mtime": path.stat().st_mtime,
         "fullpath": str(path),
+        # v1.7 · MEME-extension fields (chain recall)
+        "depends_on": _dep if isinstance(_dep, list) else [],
+        "declaration_type": fm.get("declaration_type", "none") if isinstance(fm.get("declaration_type"), str) else "none",
+        "supersedes": _sup if isinstance(_sup, list) else [],
     }
 
 
@@ -600,6 +683,260 @@ def render_v01_metadata_mode(entries: list) -> None:
             print(f"  ... +{len(older)-6} 条更老")
 
 
+def transitive_close(top: list, all_entries: list, max_depth: int = 3) -> list:
+    """v1.7 · MEME-extension · expand top-K with depends_on ancestors via BFS.
+
+    Args:
+        top: list of (score, entry_dict) tuples · BGE top-K cosine seeds
+        all_entries: full entries list · index target for ancestor lookup
+        max_depth: BFS cap (default 3 · Seokwon 32k-filler avg chain depth ~2.4)
+
+    Returns:
+        list of (score, entry) · seeds preserved + ancestors appended.
+        Ancestors are NOT re-cosined · they are pinned because the seed declared
+        them via `depends_on:` frontmatter field. Synthetic score = -(depth+1)
+        sorts ancestors below cosine top but above fresh fallback.
+
+    See paper/SPEC_DECLARATION_FIELD.md §3b for design rationale.
+    """
+    index = {e["path"]: e for e in all_entries}
+    seen = {e["path"] for _, e in top}
+    out = list(top)
+    frontier = [(0, e) for _, e in top]
+    while frontier:
+        depth, e = frontier.pop(0)
+        if depth >= max_depth:
+            continue
+        for parent_name in (e.get("depends_on") or []):
+            parent = index.get(parent_name)
+            if parent is None or parent["path"] in seen:
+                continue
+            seen.add(parent["path"])
+            out.append((-(depth + 1.0), parent))
+            frontier.append((depth + 1, parent))
+    return out
+
+
+def verify_cascade_closure(top: list, query: str = "") -> dict:
+    """v1.7 · MEME-extension · MEME bench harness helper.
+
+    Given recall top-K, verify that every `declaration_type=cascade` hit has
+    all its `depends_on` ancestors also present in top. For MEME Cas scoring.
+
+    Args:
+        top: list of (score, entry_dict) tuples · recall output
+        query: optional original query string (unused · reserved for logging)
+
+    Returns:
+        {"complete": bool, "missing": list[dict], "cascade_hits": int}
+        · complete = True iff no missing ancestors
+        · missing = [{"cascade": <path>, "missing_ancestor": <name>}, ...]
+        · cascade_hits = count of cascade-typed entries in top
+
+    Used by MEME eval harness only · not production recall path.
+    See paper/SPEC_DECLARATION_FIELD.md §3c.
+    """
+    top_paths = {e["path"] for _, e in top}
+    cascade_hits = 0
+    missing = []
+    for _score, e in top:
+        if e.get("declaration_type") != "cascade":
+            continue
+        cascade_hits += 1
+        for parent_name in (e.get("depends_on") or []):
+            if parent_name not in top_paths:
+                missing.append({
+                    "cascade": e["path"],
+                    "missing_ancestor": parent_name,
+                })
+    return {
+        "complete": len(missing) == 0,
+        "missing": missing,
+        "cascade_hits": cascade_hits,
+    }
+
+
+def promote_lifecycle_tier(entry: dict, now=None) -> dict:
+    """v1.7.1 · llm-wiki2 fuse · deterministic LLM-free tier promotion + forget check.
+
+    Args:
+        entry: dict with frontmatter fields · tier / decay_rate / forget_at /
+               promote_after / reinforce_count / created_at (or timestamp)
+        now: optional datetime (default datetime.now()) · for deterministic testing
+
+    Returns:
+        {"tier": <possibly-promoted tier>, "promoted": bool, "archived": bool,
+         "reinforce_count": int}
+
+    Rules (verbatim from paper/LLM_WIKI2_FUSE_DESIGN.md §4):
+        - Rule A (access event · caller-driven): reinforce_count++ · decay_rate reset
+        - Rule B (promote check):
+            · promote_after "Nd"      → (now - created_at) >= N days → tier++
+            · promote_after "N_access" → reinforce_count >= N → tier++
+            · procedural tier (top) does NOT promote
+        - Rule C (forget check):
+            · forget_at != None AND now >= forget_at → archive flag
+
+    No LLM calls. Pure schema-driven arithmetic.
+
+    Default promote_after by tier (when entry omits explicit value):
+        working    → "1_access"
+        episodic   → "5_access"
+        semantic   → "20_access"
+        procedural → None (top)
+    """
+    from datetime import datetime, timedelta
+    import re
+
+    TIERS = ("working", "episodic", "semantic", "procedural")
+    TIER_DEFAULTS = {
+        "working": "1_access",
+        "episodic": "5_access",
+        "semantic": "20_access",
+        "procedural": None,
+    }
+
+    if now is None:
+        now = datetime.now()
+
+    tier = entry.get("tier", "working")
+    if tier not in TIERS:
+        tier = "working"
+    try:
+        reinforce_count = int(entry.get("reinforce_count", 0) or 0)
+    except (TypeError, ValueError):
+        reinforce_count = 0
+    promote_after = entry.get("promote_after") or TIER_DEFAULTS.get(tier)
+    forget_at_str = entry.get("forget_at")
+    created_at_str = entry.get("created_at") or entry.get("timestamp")
+
+    def _parse_iso(s):
+        """Parse ISO8601 · drop tz for naive comparison with `now`."""
+        if not s:
+            return None
+        try:
+            s = str(s).replace("Z", "+00:00").replace(" ", "T", 1)
+            dt = datetime.fromisoformat(s)
+            if dt.tzinfo is not None:
+                dt = dt.replace(tzinfo=None)
+            return dt
+        except (ValueError, TypeError):
+            return None
+
+    # Rule C · forget check
+    archived = False
+    forget_dt = _parse_iso(forget_at_str)
+    if forget_dt is not None and now >= forget_dt:
+        archived = True
+
+    # Rule B · promote check
+    promoted = False
+    if promote_after and tier != "procedural":
+        m_count = re.match(r"^(\d+)_access$", str(promote_after))
+        m_dur = re.match(r"^(\d+)d$", str(promote_after))
+        should_promote = False
+        if m_count:
+            threshold = int(m_count.group(1))
+            if reinforce_count >= threshold:
+                should_promote = True
+        elif m_dur:
+            days = int(m_dur.group(1))
+            created_dt = _parse_iso(created_at_str)
+            if created_dt is not None and (now - created_dt) >= timedelta(days=days):
+                should_promote = True
+        if should_promote:
+            idx = TIERS.index(tier)
+            if idx < len(TIERS) - 1:
+                tier = TIERS[idx + 1]
+                promoted = True
+
+    return {
+        "tier": tier,
+        "promoted": promoted,
+        "archived": archived,
+        "reinforce_count": reinforce_count,
+    }
+
+
+def rrf_fusion(*ranked_lists, k: int = 60, top_k: int = 10,
+               session_diversify: bool = True, max_per_session: int = 3) -> list:
+    """v1.7.1 · Phase 2.C · Reciprocal Rank Fusion · agentmemory paradigm.
+
+    Combine multiple ranked retrieval lists (e.g. BM25 + vector + graph) into a
+    single fused ranking. Each list contributes 1/(k + rank_i + 1) to each
+    item's cumulative RRF score · agentmemory verbatim default k=60.
+
+    Args:
+        *ranked_lists: each list = [(score, entry), ...] · order matters (rank = index)
+                       · entry must be a dict with "path" key (unique identifier)
+        k: RRF damping constant (default 60 · agentmemory verbatim)
+        top_k: max items in fused output
+        session_diversify: if True · cap max_per_session hits per session group
+                          (agentmemory verbatim · default max=3)
+        max_per_session: cap per session group when session_diversify=True
+
+    Returns:
+        [(fused_score, entry), ...] · top_k limited · session-diversified if requested
+
+    Reference · agentmemory README (rohitg00 · 15.3K stars · LongMemEval-S 95.2% R@5)
+    · "Reciprocal Rank Fusion (RRF, k=60) · session-diversified (max 3 results per session)".
+
+    No LLM · pure rank-based arithmetic · deterministic.
+    """
+    from pathlib import Path as _Path
+
+    # Identify each entry by path (unique key)
+    fused_scores: dict = {}  # path → cumulative RRF score
+    entry_by_path: dict = {}
+
+    for ranked in ranked_lists:
+        if not ranked:
+            continue
+        for rank, item in enumerate(ranked):
+            # Item shape · (score, entry) tuple · or bare entry dict
+            if isinstance(item, tuple) and len(item) >= 2:
+                entry = item[1]
+            elif isinstance(item, dict):
+                entry = item
+            else:
+                continue
+            if not isinstance(entry, dict):
+                continue
+            path = entry.get("path")
+            if not path:
+                continue
+            entry_by_path[path] = entry
+            # RRF formula · 1 / (k + rank + 1) · rank 0-indexed → 1-indexed for fairness
+            fused_scores[path] = fused_scores.get(path, 0.0) + 1.0 / (k + rank + 1)
+
+    # Sort by fused score desc
+    sorted_paths = sorted(fused_scores.items(), key=lambda x: x[1], reverse=True)
+
+    if not session_diversify:
+        return [(score, entry_by_path[path]) for path, score in sorted_paths[:top_k]]
+
+    # Session-diversified · cap max_per_session per session group
+    session_counts: dict = {}
+    output: list = []
+    for path, score in sorted_paths:
+        entry = entry_by_path[path]
+        # Session id · prefer explicit · fallback to parent directory
+        session_id = entry.get("session_id") or entry.get("thread_id")
+        if not session_id:
+            try:
+                session_id = _Path(path).parent.name
+            except Exception:
+                session_id = "unknown"
+        if session_counts.get(session_id, 0) >= max_per_session:
+            continue
+        session_counts[session_id] = session_counts.get(session_id, 0) + 1
+        output.append((score, entry))
+        if len(output) >= top_k:
+            break
+
+    return output
+
+
 def render_v02_vector_mode(entries: list, query: str, cache: dict) -> None:
     """v0.2 真 BGE 向量召回 · 没装 BGE 时直接回 metadata 模式 (n-gram 中文召回不准)."""
     embedder = get_embedder()
@@ -639,6 +976,11 @@ def render_v02_vector_mode(entries: list, query: str, cache: dict) -> None:
     scored.sort(key=lambda x: -x[0])
     top = scored[:TOP_K]
 
+    # v1.7 · MEME-extension · transitive_close via depends_on BFS · staged rollout
+    # Enable with COMPASS_CHAIN_RECALL=1 · ancestors pinned with synthetic score -depth-1
+    if os.environ.get("COMPASS_CHAIN_RECALL") == "1":
+        top = transitive_close(top, entries)
+
     if not top:
         print(f"⚠️ 无 score ≥ {threshold} 的相关 memory ({scoring_method}) · 降级 metadata")
         render_v01_metadata_mode(entries)
@@ -655,9 +997,10 @@ def render_v02_vector_mode(entries: list, query: str, cache: dict) -> None:
         flag = "🟢" if e["age_seconds"] < 86400 else ("🟡" if e["age_seconds"] < 7*86400 else "🔴")
         print(f"  {flag} score={score:.3f} · [{e['age_str']:>5} old] {e['path']}")
         if e["description"]:
-            print(f"       {e['description'][:120]}")
+            # M2 · 剥离 "真" 强调副词 · 防 dialog 风格污染下游 context
+            print(f"       {strip_zhen_emphasis(e['description'][:120])}")
         if idx < BODY_TOP and e.get("body"):
-            body = e["body"][:BODY_CHARS].rstrip()
+            body = strip_zhen_emphasis(e["body"][:BODY_CHARS].rstrip())
             indented = "\n".join(f"       │ {ln}" for ln in body.splitlines())
             print(indented)
             if len(e.get("body","")) > BODY_CHARS:
@@ -671,7 +1014,8 @@ def render_v02_vector_mode(entries: list, query: str, cache: dict) -> None:
     if fresh_not_in_top:
         print(f"🟢 + 24h 内其他 memory ({len(fresh_not_in_top)} · 当前心智 · 即便低 cosine 也注意):")
         for e in sorted(fresh_not_in_top, key=lambda x: x["age_seconds"]):
-            print(f"  · [{e['age_str']:>5} old] {e['path']} — {e['description'][:80]}")
+            desc = strip_zhen_emphasis(e['description'][:80])
+            print(f"  · [{e['age_str']:>5} old] {e['path']} — {desc}")
 
 
 def _expand_query(query: str) -> str:
@@ -749,7 +1093,18 @@ def try_daemon_recall(mem_dir: Path, user_prompt: str) -> bool:
                 _alert_id = "a-" + _h.sha256(
                     f"{user_prompt[:200]}{time.time()}".encode("utf-8")
                 ).hexdigest()[:8]
-                if d["top_neg_hits"]:
+                if d.get("rule_hit"):
+                    print(f"  🔴 alert [{_alert_id}]: 危险动作 rule 命中 "
+                          f"(rm -rf / force push / reset --hard / DROP / 硬编码 key 等)")
+                    print(f"  ↑ 确认这是有意操作再继续 · 误报标 FP: nautilus-compass feedback {_alert_id} fp")
+                    log_usage("drift_alert", {
+                        "alert_id": _alert_id,
+                        "score": d["score"], "max_neg_hit": 0,
+                        "neg_anchor": "",
+                        "kind": "rule_hit",
+                        "user_prompt": user_prompt[:300],
+                    })
+                elif d["top_neg_hits"]:
                     print(f"  🔴 alert [{_alert_id}]: 最匹配的反锚点 (你历史犯过的错):")
                     for sc, txt in d["top_neg_hits"]:
                         print(f"    · cos={sc:.3f}  '{txt}'")
@@ -1013,7 +1368,8 @@ def main():
                     top_neg_hits.append((cosine(q_emb, a_emb), s))
                 top_neg_hits.sort(reverse=True)
             max_neg_hit = top_neg_hits[0][0] if top_neg_hits else 0.0
-            should_alert = sig < DRIFT_ALERT_THRESHOLD or max_neg_hit >= NEG_ANCHOR_HIT_THRESHOLD
+            # v2 cutover · 弃 max_neg_hit≥0.538 OR(逢触必报)· daemon-dead fallback 用 V2 阈值
+            should_alert = sig < ZMM_DRIFT_V2_THRESH
             tag = "✅ 在锚点内" if sig > 0.05 and not should_alert else ("⚠️ 偏向反锚点" if should_alert else "≈ 中性")
             print(f"[Persona drift · {anchors['n_pos']}+{anchors['n_neg']} 锚点 · BGE]")
             print(f"  score={sig:+.3f} (alignment={d['alignment']:.3f} · deviation={d['deviation']:.3f}) · {tag}")
