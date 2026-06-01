@@ -23,10 +23,6 @@ import sys
 import time
 from pathlib import Path
 
-# C.2 · multi-signal drift firing vote · supersedes inline OR-vote at L1429.
-# See drift/firing.py docstring for the rationale (5/27 cry-wolf finding).
-from drift.firing import should_fire_drift
-
 # Force UTF-8 stdout (Windows GBK)
 try:
     sys.stdout.reconfigure(encoding="utf-8")  # safe · no buffer aliasing
@@ -184,6 +180,8 @@ TOP_K = 5
 COSINE_MIN = float(os.environ.get("ZMM_COSINE_MIN", "0.25"))
 DRIFT_ALERT_THRESHOLD = float(os.environ.get("ZMM_DRIFT_THRESHOLD", "-0.032"))  # m3+hard 后 best Youden J
 NEG_ANCHOR_HIT_THRESHOLD = float(os.environ.get("ZMM_NEG_HIT_THRESHOLD", "0.538"))
+# v2 cutover (2026-06-01) · 弃 neg_cos≥0.538 OR 分支 · 11.5k 真流量证 64.5%→0.5%
+ZMM_DRIFT_V2_THRESH = float(os.environ.get("ZMM_DRIFT_V2_THRESH", "-0.07"))
 # 默认 bge-m3 · 实测 LongMemEval MRR 0.760 / Drift AUC 0.92 · ZMM_EMBEDDER_MODEL 可覆盖
 _M3_LOCAL = HOME / ".cache/modelscope/hub/models/BAAI/bge-m3"
 EMBEDDER_MODEL = os.environ.get(
@@ -1166,7 +1164,18 @@ def try_daemon_recall(mem_dir: Path, user_prompt: str) -> bool:
                 _alert_id = "a-" + _h.sha256(
                     f"{user_prompt[:200]}{time.time()}".encode("utf-8")
                 ).hexdigest()[:8]
-                if d["top_neg_hits"]:
+                if d.get("rule_hit"):
+                    print(f"  🔴 alert [{_alert_id}]: 危险动作 rule 命中 "
+                          f"(rm -rf / force push / reset --hard / DROP / 硬编码 key 等)")
+                    print(f"  ↑ 确认这是有意操作再继续 · 误报标 FP: nautilus-compass feedback {_alert_id} fp")
+                    log_usage("drift_alert", {
+                        "alert_id": _alert_id,
+                        "score": d["score"], "max_neg_hit": 0,
+                        "neg_anchor": "",
+                        "kind": "rule_hit",
+                        "user_prompt": user_prompt[:300],
+                    })
+                elif d["top_neg_hits"]:
                     print(f"  🔴 alert [{_alert_id}]: 最匹配的反锚点 (你历史犯过的错):")
                     for sc, txt in d["top_neg_hits"]:
                         print(f"    · cos={sc:.3f}  '{txt}'")
@@ -1430,9 +1439,9 @@ def main():
                     top_neg_hits.append((cosine(q_emb, a_emb), s))
                 top_neg_hits.sort(reverse=True)
             max_neg_hit = top_neg_hits[0][0] if top_neg_hits else 0.0
-            # C.2 · multi-signal vote (strong score OR strong hit OR weak+weak corroboration)
-            # Legacy OR-vote available via COMPASS_DRIFT_LEGACY_OR=1.
-            should_alert = should_fire_drift(score=sig, max_neg_hit=max_neg_hit)
+            # v2 cutover · 弃 max_neg_hit≥0.538 OR(逢触必报)· daemon-dead fallback 用 V2 阈值
+            # (5/31 reconcile: active firing 统一 v2 · should_fire_drift 模块保留作未来 A/B)
+            should_alert = sig < ZMM_DRIFT_V2_THRESH
             tag = "✅ 在锚点内" if sig > 0.05 and not should_alert else ("⚠️ 偏向反锚点" if should_alert else "≈ 中性")
             print(f"[Persona drift · {anchors['n_pos']}+{anchors['n_neg']} 锚点 · BGE]")
             print(f"  score={sig:+.3f} (alignment={d['alignment']:.3f} · deviation={d['deviation']:.3f}) · {tag}")
