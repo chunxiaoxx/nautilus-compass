@@ -69,6 +69,46 @@ by its own history of failure patterns.
 
 ---
 
+## What's new in v2.1.0 · drift v2 + line reconciliation
+
+v2.1.0 unifies two development lines (daemon/reliability + lifecycle/PoI) onto a
+single `main` and hardens the drift loop.
+
+### Drift v2 cutover (cry-wolf fix)
+
+The old OR-vote firing (`neg_cos ≥ 0.538`) fired on **64.5%** of events in 11.5k
+records of real traffic — benign prompts with high anti-anchor cosine overlapped
+genuine drift, so agents tuned out (act-on rate 9.87%). v2.1.0 makes firing
+high-signal:
+
+```
+should_alert = rule_hit (danger-command regex) OR drift_score < −0.07
+```
+
+Production-measured fire rate **0.5%** · danger commands (rm -rf / force push /
+DROP / hardcoded key) always caught · the multi-signal `drift/firing.py` vote is
+retained behind an env flag for A/B.
+
+### Cross-agent contract scanner (L4 substrate)
+
+- implicit contracts derived from `inbound_/outbound_` handoff files
+- auto-consume detection (1:1 greedy · receiver-authorship guarded · opt-in)
+- idempotent contract ledger · 720h close-loop window
+
+### L3 tier promotion + Proof-of-Impact
+
+- daily idempotent tier-promotion driver (impact-based · LLM-free)
+- PoI candidate emission at recall time + impact-weighted ranking boost
+- L1 session-summary overlay
+
+### Daemon hardening (P4–P9)
+
+bounded handler pool · in-flight semaphore (CLOSE_WAIT cure) · server-side recall
+cache · pkl warmup (cold-start CPU cure) · BM25 + vector RRF fusion (opt-in) ·
+inotify cache invalidation.
+
+---
+
 ## What's new in v2.0.0 · Opinionated EvoMap
 
 v2.0.0 ships a deterministic **lifecycle layer** on top of the black-box
