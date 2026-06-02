@@ -75,7 +75,7 @@ def strip_zhen_emphasis(text: str) -> str:
     return "".join(out)
 
 
-PLUGIN_VERSION = "nautilus-compass v2.0.2"
+PLUGIN_VERSION = "nautilus-compass v2.1.0"
 HOME = Path.home()
 PLUGIN_DIR = HOME / ".claude" / "plugins" / "nautilus-compass"
 CACHE_DIR = PLUGIN_DIR / ".cache"
