@@ -355,9 +355,157 @@ def main():
     return 0
 
 
+# ============================================================================
+# v1.7.1 · agentmemory fuse · 9 lifecycle hooks (Phase 2 partial · plan §4)
+#
+# Emit declaration_field-schema'd entries to .cache/hook_events.jsonl for each
+# agent runtime hook. Pure deterministic · no LLM. Future-ready for Claude Code
+# hook registration via settings.json `--hook <name>` CLI dispatch.
+#
+# Verbatim 9 hook names from agentmemory README (rohitg00 · 15.3K stars).
+# See paper/LLM_WIKI2_FUSE_DESIGN.md §3 for tier/promote_after schema rationale.
+# ============================================================================
+
+HOOK_EVENTS_FILE = CACHE_DIR / "hook_events.jsonl"
+
+_TIER_DEFAULT_PROMOTE = {
+    "working": "1_access",
+    "episodic": "5_access",
+    "semantic": "20_access",
+    "procedural": None,
+}
+
+
+def _emit_lifecycle_event(hook_name: str, payload: dict,
+                          tier: str = "working",
+                          promote_after: str | None = None,
+                          drift: str = "green") -> dict:
+    """v1.7.1 · emit declaration_field-schema'd lifecycle event entry.
+
+    Returns dict with frontmatter fields. Caller appends to .jsonl sidecar
+    or passes to compass MCP ingest_obs. No LLM. Deterministic.
+    """
+    ts = datetime.now(timezone.utc).isoformat()
+    summary = ""
+    if isinstance(payload, dict):
+        summary = (payload.get("summary") or payload.get("text")
+                   or payload.get("description") or "")
+    return {
+        "hook": hook_name,
+        "ts": ts,
+        "name": f"hook-{hook_name.lower()}-{ts[:19]}",
+        "type": "discovery",
+        "concept": "how-it-works",
+        "drift": drift,
+        "tier": tier,
+        "decay_rate": 0.5,
+        "promote_after": promote_after or _TIER_DEFAULT_PROMOTE.get(tier),
+        "reinforce_count": 0,
+        "agent_type": (payload.get("agent_type") if isinstance(payload, dict) else "") or "claude-code",
+        "thread_id": (payload.get("thread_id") if isinstance(payload, dict) else "") or "",
+        "thread_role": "self_note",
+        "declaration_type": "none",
+        "payload_summary": str(summary)[:200],
+    }
+
+
+def hook_session_start(payload: dict) -> dict:
+    """SessionStart · capture project path, session ID. tier=working."""
+    return _emit_lifecycle_event("SessionStart", payload, tier="working")
+
+
+def hook_user_prompt_submit(payload: dict) -> dict:
+    """UserPromptSubmit · user input recorded (privacy-filtered)."""
+    return _emit_lifecycle_event("UserPromptSubmit", payload, tier="working")
+
+
+def hook_pre_tool_use(payload: dict) -> dict:
+    """PreToolUse · before tool executes · capture file access pattern."""
+    return _emit_lifecycle_event("PreToolUse", payload, tier="working")
+
+
+def hook_post_tool_use(payload: dict) -> dict:
+    """PostToolUse · after tool completes · log tool name, input, output."""
+    return _emit_lifecycle_event("PostToolUse", payload, tier="working")
+
+
+def hook_post_tool_use_failure(payload: dict) -> dict:
+    """PostToolUseFailure · tool errors · drift=yellow (failure signal)."""
+    return _emit_lifecycle_event("PostToolUseFailure", payload, tier="working", drift="yellow")
+
+
+def hook_pre_compact(payload: dict) -> dict:
+    """PreCompact · before compaction · re-inject memory. tier=episodic."""
+    return _emit_lifecycle_event("PreCompact", payload, tier="episodic")
+
+
+def hook_subagent_start(payload: dict) -> dict:
+    """SubagentStart · sub-agent lifecycle · track delegation."""
+    return _emit_lifecycle_event("SubagentStart", payload, tier="working")
+
+
+def hook_subagent_stop(payload: dict) -> dict:
+    """SubagentStop · sub-agent stop · episodic promotion candidate."""
+    return _emit_lifecycle_event("SubagentStop", payload, tier="episodic")
+
+
+def hook_session_end(payload: dict) -> dict:
+    """SessionEnd · session complete · mark completion. tier=episodic."""
+    return _emit_lifecycle_event("SessionEnd", payload, tier="episodic")
+
+
+def _write_hook_event(event: dict) -> None:
+    """Append event to .cache/hook_events.jsonl sidecar."""
+    HOOK_EVENTS_FILE.parent.mkdir(parents=True, exist_ok=True)
+    with HOOK_EVENTS_FILE.open("a", encoding="utf-8") as f:
+        f.write(json.dumps(event, ensure_ascii=False) + "\n")
+
+
+HOOK_DISPATCH = {
+    "SessionStart": hook_session_start,
+    "UserPromptSubmit": hook_user_prompt_submit,
+    "PreToolUse": hook_pre_tool_use,
+    "PostToolUse": hook_post_tool_use,
+    "PostToolUseFailure": hook_post_tool_use_failure,
+    "PreCompact": hook_pre_compact,
+    "SubagentStart": hook_subagent_start,
+    "SubagentStop": hook_subagent_stop,
+    "SessionEnd": hook_session_end,
+}
+
+
+def dispatch_hook(hook_name: str, payload: dict | None = None) -> int:
+    """v1.7.1 · CLI dispatch for non-Stop hooks. Returns exit code 0 on success."""
+    handler = HOOK_DISPATCH.get(hook_name)
+    if handler is None:
+        sys.stderr.write(f"unknown hook: {hook_name}\n")
+        return 0  # fail-soft · unknown hook never blocks Claude Code
+    payload = payload or {}
+    event = handler(payload)
+    if event:
+        _write_hook_event(event)
+    return 0
+
+
 if __name__ == "__main__":
+    # v1.7.1 · dispatch by --hook <name> CLI flag · backward-compat: no flag → Stop
+    hook_name = "Stop"
+    payload: dict = {}
+    if len(sys.argv) >= 3 and sys.argv[1] == "--hook":
+        hook_name = sys.argv[2]
+        # Optional payload from stdin (JSON)
+        if not sys.stdin.isatty():
+            try:
+                raw = sys.stdin.read()
+                if raw.strip():
+                    payload = json.loads(raw)
+            except Exception:
+                payload = {}
     try:
-        sys.exit(main())
+        if hook_name == "Stop":
+            sys.exit(main())
+        else:
+            sys.exit(dispatch_hook(hook_name, payload))
     except Exception as e:
         sys.stderr.write(f"stop_hook fail: {e}\n")
         sys.exit(0)

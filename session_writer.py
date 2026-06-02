@@ -42,6 +42,15 @@ SYSTEM_PROMPT = """你是 Claude Code session 蒸馏器 + AI 漂移审计员.
 输入: 一段 Claude Code session 的 user/assistant 对话片段.
 输出: 严格 markdown · 描述这次 session 干了什么 · 学到什么 · 后续做什么 · 并审计 AI 是否偏离用户意图.
 
+🚫 写作禁令（v2.0.1 · 2026-05-22 入库 · 防 dialog 风格传染）:
+- 不要用 "真" 作强调副词。"真" 只可作 "真的/真实/真品" 的语义形容词或动词使用.
+- 错误示范: "真 ship 完了" / "真根源" / "真已 done" / "真本 session"
+- 正确写法: "ship 完了" / "根源" 或 "根本原因" / "已完成" / "本 session"
+- 原因: 历史 compass session_*.md 大量用 "真 X 真 Y" verbatim 强调,
+  下游 Claude Code session 加载后会内化此风格,1 session 内复发率高.
+  从源头禁用避免传染.
+- 1 段输出内 "真X真Y" 模式 ≥ 3 次 = 违规 · 必须重写.
+
 格式 (必须严格 · 字段全填):
 ---
 name: <8-15 字总结 · 中文优先>
@@ -50,6 +59,14 @@ type: <bugfix | feature | refactor | discovery | decision | change>
 concept: <gotcha | pattern | trade-off | how-it-works | why-it-exists | problem-solution | what-changed>
 drift: <green | yellow | red>
 drift_signals: [<0-3 条具体证据 · 每条 ≤30 字 · 引号包裹 · 空数组写 []>]
+depends_on: [<0-5 file basenames of session_*.md this entry causally depends on · empty list if standalone · v1.7 MEME-extension>]
+declaration_type: <cascade | absence | deletion | none · default none · v1.7 MEME-extension>
+supersedes: [<only when declaration_type=deletion · file basenames being retracted · v1.7 MEME-extension>]
+tier: <working | episodic | semantic | procedural · default working · v1.7.1 lifecycle (llm-wiki2 fuse)>
+decay_rate: <0.0-1.0 float · default 0.5 · Ebbinghaus exponential decay · v1.7.1 lifecycle>
+forget_at: <ISO8601 timestamp or null=never · v1.7.1 lifecycle · soft-archive when reached>
+promote_after: <"Nd" duration OR "N_access" count · default by tier · v1.7.1 lifecycle>
+reinforce_count: <int · default 0 · access event 累计 · v1.7.1 lifecycle · resets decay on each access>
 contracts: <可选 · 仅在 session 真发了跨 agent 承诺 / 真消费了一个旧承诺时填>
   - id: cnt_xxxxxxxx              # 8 hex · 新承诺 fresh · 消费旧承诺时用对方的 id
     giver: <谁发出承诺 · agent/dialog 名>

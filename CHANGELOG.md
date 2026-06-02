@@ -1,5 +1,50 @@
 # Changelog
 
+## [1.7.1] · 2026-05-19 — "cross-dialog notifier 真治 5+ days perm-denied + scp-gap"
+
+Patch over v1.6.2 (no version bump for pkg — runtime config / hook only).
+Real impact: previously broken cross-dialog Telegram notification (cloud cron
+perm denied 2026-05-12 → 2026-05-19) replaced by local Stop hook ·
+event-driven · no scp · no cron.
+
+### #1 · `stop_hook.py:notify_cross_dialog_handoffs()` (NEW · 110 LOC)
+
+Ports cloud-side `ops/cross_dialog_notifier.py` into local Stop hook.
+- Scans `~/.claude/projects/*/memory/session_*.md` within 24h
+- Filters by `thread_id in WATCH_THREADS` + `thread_role == outbound`
+- State dedup: `.cache/cross-dialog-notifier-state-local.json` (MAX 500 seen)
+- Fires Telegram via `TELEGRAM_BOT_TOKEN`/`CHAT_ID` from plugin `.env`
+- fail-safe: telegram send fail → state NOT marked → next session-end retries
+
+Seeded state with cloud's 28 prior entries to prevent first-run flood.
+
+### #2 · Cloud cron entry removed
+
+`crontab -l` on cloud no longer contains the cross_dialog_notifier line.
+Old `ops/cross_dialog_notifier.{sh,py}` retained for manual backfill
+(e.g. `CROSS_DIALOG_LOOKBACK_H=720 ops/cross_dialog_notifier.sh` to
+replay stale outbound from past 30 days).
+
+### Root cause audit (5 days false-closure 2026-05-12 → 2026-05-19)
+
+- Cloud cron `*/5 * * * * cross_dialog_notifier.sh` failed silently
+  with `/bin/sh: ...: Permission denied` (script `0644` missing +x)
+- Even if perms fixed, local writes never scp'd to cloud → `MEM_BASE
+  = Path.home() / ".claude" / "projects"` on cloud saw nothing
+- Combined: 5 days, all "I wrote outbound · counterpart should see"
+  assumptions silently broken across compass / nautilus-core / v5 dialogs
+
+### Bonus: V7 daemon 5 patches (out-of-band, not in this package)
+
+Live patches to `/usr/local/bin/v7-telegram-daemon.py`:
+- F4 body_fallback (defense)
+- F5 mcp_exec tool_name alias `compass_ingest` → `compass_ingest_obs`
+- F6 LLM prompt: verbatim-quote-server-error rule
+- F7 **real root cause fix** · payload field `body` → `content` (v14 server
+  reads `content`, not `body` — V7 had 5 days of `0 obs` from 1 dict key typo)
+- 5 patches end-to-end curl PROVEN ok:true. Awaits next V7 cron tick to
+  observe `compass_ingest` `ok: True` in `~/.v7/audit.jsonl`.
+
 ## [1.5.2] · 2026-05-13 — "self-verify caught fake-closure · 3 gates"
 
 Patch over v1.5.1. Self-verifying v1.5.1 surfaced one fake-closure
