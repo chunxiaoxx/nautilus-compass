@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nautilus-compass"
-version = "1.6.2"
+version = "2.0.1"
 description = "Cross-agent memory layer for the Nautilus platform · MCP/A2A protocol · drift-aware writer · LongMemEval-S benchmark · E2EE-ready"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -55,11 +55,10 @@ compass-session-search = "nautilus_compass.session_search:main"
 compass-session-writer = "nautilus_compass.session_writer:main"
 
 [tool.setuptools]
-# Map package "nautilus_compass" to repo root · all top-level .py files
-# become submodules. Explicit `packages` (not `find`) avoids setuptools
-# also treating tests/, scripts/, etc as packages.
-packages = ["nautilus_compass"]
-package-dir = {"nautilus_compass" = "."}
+# v1.7.1 fix: must include all v2 subpackages (storage/proof/drift/recall_pkg/skills_pkg/judges + sdk/middleware).
+# Explicit list (not `find`) avoids setuptools treating tests/, scripts/, etc as packages.
+packages = ["nautilus_compass", "nautilus_compass.sdk", "nautilus_compass.middleware", "nautilus_compass.storage", "nautilus_compass.proof", "nautilus_compass.drift", "nautilus_compass.recall_pkg", "nautilus_compass.skills_pkg", "nautilus_compass.judges"]
+package-dir = {"nautilus_compass" = ".", "nautilus_compass.sdk" = "sdk", "nautilus_compass.middleware" = "middleware", "nautilus_compass.storage" = "storage", "nautilus_compass.proof" = "proof", "nautilus_compass.drift" = "drift", "nautilus_compass.recall_pkg" = "recall_pkg", "nautilus_compass.skills_pkg" = "skills_pkg", "nautilus_compass.judges" = "judges"}
 
 [tool.setuptools.package-data]
 "nautilus_compass" = ["anchors*.json", "*.sh"]

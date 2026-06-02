@@ -434,6 +434,47 @@ def tool_ingest_obs(args: dict) -> dict:
         proof_of_recall = "not_attempted"
         proof_reason = ""
 
+    # v1.7 · MEME-extension · declaration_field (depends_on / declaration_type / supersedes)
+    # See paper/SPEC_DECLARATION_FIELD.md §2 for design rationale.
+    depends_on = args.get("depends_on") or []
+    if not isinstance(depends_on, list):
+        depends_on = []
+    declaration_type = (args.get("declaration_type") or "none").strip()
+    if declaration_type not in ("cascade", "absence", "deletion", "none"):
+        declaration_type = "none"
+    supersedes = args.get("supersedes") or []
+    if not isinstance(supersedes, list):
+        supersedes = []
+    if declaration_type != "deletion":
+        supersedes = []  # only meaningful when declaration_type=deletion
+
+    # v1.7.1 · lifecycle extension (llm-wiki2 fuse) · tier/decay_rate/forget_at/promote_after/reinforce_count
+    # See paper/LLM_WIKI2_FUSE_DESIGN.md §3 for schema rationale.
+    LIFECYCLE_TIERS = ("working", "episodic", "semantic", "procedural")
+    TIER_DEFAULT_PROMOTE = {
+        "working": "1_access",
+        "episodic": "5_access",
+        "semantic": "20_access",
+        "procedural": None,
+    }
+    tier = (args.get("tier") or "working").strip()
+    if tier not in LIFECYCLE_TIERS:
+        tier = "working"
+    try:
+        decay_rate = float(args.get("decay_rate", 0.5))
+        if not (0.0 <= decay_rate <= 1.0):
+            decay_rate = 0.5
+    except (TypeError, ValueError):
+        decay_rate = 0.5
+    forget_at = (args.get("forget_at") or "").strip() or None
+    promote_after = (args.get("promote_after") or "").strip() or TIER_DEFAULT_PROMOTE.get(tier)
+    try:
+        reinforce_count = int(args.get("reinforce_count", 0))
+        if reinforce_count < 0:
+            reinforce_count = 0
+    except (TypeError, ValueError):
+        reinforce_count = 0
+
     # Format as v0.8 session_*.md frontmatter
     from datetime import datetime
     ts = datetime.now().strftime("%Y%m%d-%H%M")
@@ -451,6 +492,23 @@ def tool_ingest_obs(args: dict) -> dict:
     proof_lines = f"\nproof_of_recall: {proof_of_recall}"
     if proof_reason:
         proof_lines += f"\nproof_of_recall_reason: {proof_reason}"
+    # v1.7 · MEME-extension · emit depends_on/declaration_type/supersedes
+    dep_lines = ""
+    if depends_on:
+        dep_lines += "\ndepends_on:\n  - " + "\n  - ".join(depends_on)
+    dep_lines += f"\ndeclaration_type: {declaration_type}"
+    if supersedes:
+        dep_lines += "\nsupersedes:\n  - " + "\n  - ".join(supersedes)
+
+    # v1.7.1 · lifecycle extension · emit tier/decay_rate/forget_at/promote_after/reinforce_count
+    # See paper/LLM_WIKI2_FUSE_DESIGN.md §3.
+    lifecycle_lines = f"\ntier: {tier}"
+    lifecycle_lines += f"\ndecay_rate: {decay_rate}"
+    if forget_at:
+        lifecycle_lines += f"\nforget_at: {forget_at}"
+    if promote_after:
+        lifecycle_lines += f"\npromote_after: {promote_after}"
+    lifecycle_lines += f"\nreinforce_count: {reinforce_count}"
     md = f"""---
 name: {name}
 description: {description[:200]}
@@ -460,7 +518,7 @@ drift: {drift}
 drift_signals: {signals_yaml}
 agent_type: {agent_type}
 user_id: {user_id}
-ingested_via: mcp{thread_lines}{proof_lines}
+ingested_via: mcp{thread_lines}{proof_lines}{dep_lines}{lifecycle_lines}
 ---
 
 # {name}
@@ -1181,6 +1239,115 @@ def tool_governance_plan(args: dict) -> dict:
     return _ok(msg)
 
 
+def tool_add_worker(args: dict) -> dict:
+    """v1.7.1 · Phase 2.B · agentmemory iii worker plug paradigm.
+
+    Narrow scope · register a deterministic worker spec for super-agent
+    self-evolving runtime. No code execution · just spec persisted to
+    .cache/workers.jsonl for inspection by upstream runtime (V5 / V7).
+
+    Use case · super-agent declares "I want a `iii-cron-daily` worker that
+    fires at 09:00 daily" · this tool records the spec deterministically.
+
+    Reference · agentmemory README (rohitg00 · 15.3K stars) iii worker add
+    paradigm verbatim · paper/LLM_WIKI2_FUSE_DESIGN.md §3 for schema fit.
+    """
+    import json as _json
+    from datetime import datetime, timezone
+
+    name = (args.get("name") or "").strip()
+    if not name:
+        return _err("name required")
+    spec_type = (args.get("spec_type") or "custom").strip()
+    if spec_type not in ("cron", "pubsub", "queue", "http", "custom"):
+        spec_type = "custom"
+    description = (args.get("description") or "").strip()
+    config = args.get("config") or {}
+    if not isinstance(config, dict):
+        config = {}
+    agent_type = (args.get("agent_type")
+                  or os.environ.get("COMPASS_AGENT_TYPE")
+                  or "custom").strip()
+
+    ts = datetime.now(timezone.utc).isoformat()
+    record = {
+        "name": name,
+        "spec_type": spec_type,
+        "description": description[:200],
+        "config": config,
+        "registered_at": ts,
+        "agent_type": agent_type,
+        "registered_by": "compass_mcp",
+    }
+
+    cache_dir = Path.home() / ".claude" / "plugins" / "nautilus-compass" / ".cache"
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    workers_file = cache_dir / "workers.jsonl"
+    with workers_file.open("a", encoding="utf-8") as f:
+        f.write(_json.dumps(record, ensure_ascii=False) + "\n")
+
+    return _ok(f"Worker '{name}' (type={spec_type}) registered · {workers_file.name}")
+
+
+def tool_proof_of_impact(args: dict) -> dict:
+    """v1.7.1 · S4 · Proof-of-Impact MCP tool · trace agent action to cited memory.
+
+    Records PoI event via proof/poi_emitter.emit_full · which:
+      1. Writes NAU records to .cache/poi_emit.jsonl (suppressing self-cite)
+      2. Appends full event to .cache/poi_events.jsonl audit log
+      3. Updates cited memory frontmatter (cumulative_impact / event_count / last_at)
+
+    Caller computes impact_score via proof.poi_calculator beforehand or passes
+    explicit value. drift_penalty applied via memory frontmatter scan.
+
+    Reference: paper/SPEC_PROOF_OF_IMPACT.md sections 3-5.
+    """
+    try:
+        from proof.poi_schema import ProofOfImpact
+        from proof.poi_calculator import compute_with_drift
+        from proof.poi_emitter import emit_full
+    except ImportError as e:
+        return _err(f"proof subpackage not importable: {e}")
+
+    action_id = (args.get("action_id") or "").strip()
+    if not action_id:
+        return _err("action_id required")
+    agent_id = (args.get("agent_id") or "").strip()
+    if not agent_id:
+        return _err("agent_id required")
+    cited = args.get("cited_memory_paths") or []
+    if not isinstance(cited, list) or not cited:
+        return _err("cited_memory_paths (list) required · cannot be empty")
+    outcome = (args.get("action_outcome") or "pending").strip()
+    if outcome not in ("success", "failure", "partial", "pending"):
+        return _err(f"action_outcome must be one of success/failure/partial/pending · got {outcome!r}")
+    from datetime import datetime, timezone
+    now_iso = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    timestamp_action = (args.get("timestamp_action") or now_iso).strip()
+    timestamp_outcome = (args.get("timestamp_outcome") or now_iso).strip()
+
+    try:
+        poi = ProofOfImpact(
+            action_id=action_id,
+            agent_id=agent_id,
+            cited_memory_paths=cited,
+            action_outcome=outcome,
+            timestamp_action=timestamp_action,
+            timestamp_outcome=timestamp_outcome,
+            declaration_type=(args.get("declaration_type") or "supports").strip(),
+            notes=(args.get("notes") or "").strip(),
+        )
+    except ValueError as e:
+        return _err(f"PoI validation: {e}")
+
+    score = compute_with_drift(poi)
+    result = emit_full(poi)
+    return _ok(
+        f"PoI recorded · action={action_id} · score={score} · "
+        f"nau_records={result['nau_records']} · frontmatter_updated={result['frontmatter_updated']}"
+    )
+
+
 TOOLS = {
     "ingest_obs": {
         "fn": tool_ingest_obs,
@@ -1203,6 +1370,14 @@ TOOLS = {
                     "thread_role": {"type": "string", "enum": ["outbound","inbound","self_note"], "description": "v1.1 · Role of this message in the thread. Required if thread_id is set."},
                     "recall_token": {"type": "string", "description": "v1.5 · proof-of-recall · token from a prior recall call (30 min TTL). Pair with cited_snippets to prove you actually consumed the recall hits. Omit if no recall preceded this ingest."},
                     "cited_snippets": {"type": "array", "items": {"type": "string"}, "default": [], "description": "v1.5 · proof-of-recall · list of snippet quotes (file basenames or description fragments ≥20 chars). At least one must overlap a top-3 entry from the recall_token. Failure marks proof_of_recall=fail in frontmatter (still writes · advisory)."},
+                    "depends_on": {"type": "array", "items": {"type": "string"}, "default": [], "description": "v1.7 · MEME-extension · 0-5 file basenames of session_*.md this entry causally depends on. Empty list if standalone. Powers cascade-closure recall via transitive BFS (depth ≤ 3) when COMPASS_CHAIN_RECALL=1."},
+                    "declaration_type": {"type": "string", "enum": ["cascade", "absence", "deletion", "none"], "default": "none", "description": "v1.7 · MEME-extension · cascade=needs ancestors to interpret / absence=asserts X did NOT happen (MEME Abs) / deletion=supersedes earlier obs (MEME Del) / none=standalone."},
+                    "supersedes": {"type": "array", "items": {"type": "string"}, "default": [], "description": "v1.7 · MEME-extension · only meaningful when declaration_type=deletion · file basenames being retracted. Recall down-weights superseded entries."},
+                    "tier": {"type": "string", "enum": ["working", "episodic", "semantic", "procedural"], "default": "working", "description": "v1.7.1 · lifecycle (llm-wiki2 fuse) · llm-wiki2 4-tier names verbatim. Default working."},
+                    "decay_rate": {"type": "number", "minimum": 0.0, "maximum": 1.0, "default": 0.5, "description": "v1.7.1 · lifecycle · Ebbinghaus exponential decay rate (0.0-1.0). Resets on access event."},
+                    "forget_at": {"type": "string", "description": "v1.7.1 · lifecycle · ISO8601 timestamp · soft-archive when reached. Null/omit = never forget."},
+                    "promote_after": {"type": "string", "description": "v1.7.1 · lifecycle · '<N>d' duration OR '<N>_access' count for tier promotion. Default by tier (working=1_access · episodic=5_access · semantic=20_access · procedural=null)."},
+                    "reinforce_count": {"type": "integer", "minimum": 0, "default": 0, "description": "v1.7.1 · lifecycle · access event 累计. Each recall hit increments. Resets decay timer."},
                 },
                 "required": ["name"],
             },
@@ -1429,6 +1604,45 @@ TOOLS = {
                     "dry_run": {"type": "boolean", "default": False, "description": "Compute the plan and return it without writing queue files · for inspection"},
                 },
                 "required": ["goal"],
+            },
+        },
+    },
+    "proof_of_impact": {
+        "fn": tool_proof_of_impact,
+        "schema": {
+            "name": "proof_of_impact",
+            "description": "v1.7.1 · S4 · Proof-of-Impact · trace agent action to cited memory · deterministic impact score (LLM-free formula) · emits NAU records to .cache/poi_emit.jsonl + full event log + frontmatter cumulative_impact update. Suppresses self-cite by default. action_outcome enum: success/failure/partial/pending. See paper/SPEC_PROOF_OF_IMPACT.md.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "action_id": {"type": "string", "description": "External action ID (V5 bounty_id, V7 task_id, etc.)"},
+                    "agent_id": {"type": "string", "description": "Acting agent identifier"},
+                    "cited_memory_paths": {"type": "array", "items": {"type": "string"}, "description": "Memory paths cited during action (from prior recall_token + cited_snippets)"},
+                    "action_outcome": {"type": "string", "enum": ["success", "failure", "partial", "pending"], "default": "pending"},
+                    "timestamp_action": {"type": "string", "description": "ISO8601 when action started (defaults to now)"},
+                    "timestamp_outcome": {"type": "string", "description": "ISO8601 when outcome observed (defaults to now)"},
+                    "declaration_type": {"type": "string", "enum": ["supports", "contradicts", "neutral"], "default": "supports"},
+                    "notes": {"type": "string", "description": "≤200 char optional narrative"},
+                },
+                "required": ["action_id", "agent_id", "cited_memory_paths"],
+            },
+        },
+    },
+    "add_worker": {
+        "fn": tool_add_worker,
+        "schema": {
+            "name": "add_worker",
+            "description": "v1.7.1 · Phase 2.B · agentmemory iii worker plug paradigm · register deterministic worker spec for super-agent self-evolving runtime. Records to .cache/workers.jsonl · no code execution · narrow scope (cron/pubsub/queue/http/custom). Super-agent declares 'I want a iii-cron-daily worker' and this tool persists the spec.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "name": {"type": "string", "description": "Worker name · unique identifier"},
+                    "spec_type": {"type": "string", "enum": ["cron", "pubsub", "queue", "http", "custom"], "default": "custom", "description": "Worker primitive type (agentmemory iii-* family)"},
+                    "description": {"type": "string", "description": "≤200 char what this worker does"},
+                    "config": {"type": "object", "description": "Free-form config dict (cron schedule, topic, queue name, http endpoint, etc.)"},
+                    "agent_type": {"type": "string", "description": "Registering agent type · defaults to env COMPASS_AGENT_TYPE"},
+                },
+                "required": ["name"],
             },
         },
     },
