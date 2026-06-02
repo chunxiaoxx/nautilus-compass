@@ -2,23 +2,26 @@
 
 <!-- mcp-name: io.github.chunxiaoxx/nautilus-compass -->
 
-> **Black-box agent memory with drift detection** ·
-> the only public memory layer that doesn't burn LLM tokens to extract
-> facts before storing.
-> Memory plugin for Claude Code/Desktop · Cline · Cursor · Continue.dev · Zed ·
-> stops your AI from repeating mistakes you've already flagged.
+> **Reliability layer for multi-agent setups** ·
+> keep multiple agents — or your own long-running sessions — coordinating
+> reliably **without an orchestrator**.
+> Cross-dialog contracts + drift detection + a 4-tier memory lifecycle.
+> Plugin for Claude Code/Desktop · Cline · Cursor · Continue.dev · Zed.
 >
-> *Why "black-box"?* Mem0, Letta, Cognee, Zep, MemOS all call an LLM at
-> index time to extract entities or build a graph. compass embeds raw
-> text with BGE-m3 locally and skips that step entirely · ~14× cheaper
-> to reproduce on Volcengine DeepSeek pricing (regional; offshore
-> providers ~5–10× that, still well below GPT-4o-judged stacks),
-> the **memory layer itself runs fully local** (the agent LLM and judge
-> LLM are cloud APIs in our default config; both replaceable with local
-> Ollama/vLLM), drift-aware. Read the full architectural argument:
+> When an agent drifts from a rule you set, takes a shortcut you flagged,
+> or claims a prior agreement that never happened — compass catches it
+> **before the agent acts**.
+>
+> *Why it holds up technically:* the memory underneath is **black-box** —
+> raw text embedded locally with BGE-m3, no LLM extraction step, no graph,
+> no data leaving your machine (~14× cheaper to reproduce than white-box
+> stacks like Mem0 / Letta / Cognee / Zep / MemOS). That same raw-prompt
+> index is exactly what lets compass score the next action against your
+> past mistakes — drift detection that white-box entity-graph memory
+> structurally can't do. Full argument:
 > [paper/BLACKBOX_VS_WHITEBOX.md](paper/BLACKBOX_VS_WHITEBOX.md).
 >
-> **Built by [Nautilus Platform](https://nautilus.social)** · open agent ecosystem · 7 capabilities (memory · identity · runtime · marketplace · stake · A2A · MCP) · [join as agent →](https://nautilus.social)
+> **Built by [Nautilus Platform](https://nautilus.social)** · open agent ecosystem · [join as agent →](https://nautilus.social)
 
 
 🇬🇧 English (this file) · [🇨🇳 中文](README.zh-CN.md)
@@ -36,6 +39,10 @@
 ---
 
 ## 30-second pitch
+
+compass's #1 job is multi-agent **reliability** without an orchestrator.
+The reason it can do that — and not be just another memory store — is its
+black-box memory core:
 
 ```
 White-box memory layers (Mem0, Letta, Cognee, Zep, MemOS, smrti):
@@ -123,6 +130,74 @@ a stance on what *not* to include:
 
 ---
 
+## What's coming · v3.0 / v3.5 fusion (dev branch preview)
+
+Active development on the [`v3-full-fusion`](https://github.com/chunxiaoxx/nautilus-compass/tree/v3-full-fusion)
+branch · not in any release. Plan: ~2 work weeks · 8 Sprints · each Sprint
+has a prove-or-kill gate (statistical · SQL/eval · not agent self-assessment).
+
+**Default-off byte-equal promise**: with no opt-in env set, v3.0 / v3.5
+behavior is byte-equal to v2.0.1. Verified by
+[`tests/test_llm_opt_in.py`](tests/test_llm_opt_in.py) ·
+the `test_default_off_invariant_*` family gates every PR into `main`.
+
+### v3.0 deterministic (Sprints 1-2 · no LLM)
+
+- **Typed knowledge graph** layer (Sprint 1) · 6 entity types · 8 edge types ·
+  2-pass extract (regex + BGE cosine) · backward-compat NO-OP when graph not built
+- **Confidence scoring + contradiction hook** (Sprint 2 · deterministic formula
+  over source count / recency / contradicted-by count)
+- **`MEMORY_REPORT.md` auto-gen** (Sprint 2 · session-end hook · 4-tier
+  distribution + cumulative_impact + drift summary)
+- **`implementation_notes` frontmatter** (Sprint 2 · `rationale` + `rejected: [{alt, why}]`)
+
+### v3.5 opt-in LLM features (Sprints 3-7 · all default-off)
+
+| env var | tier | feature (Sprint) |
+|---|---|---|
+| `COMPASS_USE_LLM_RESOLVE` | 1 (session-end) | LLM contradiction resolution (Sprint 3) |
+| `COMPASS_USE_LLM_VERIFY` | 4 (runtime) | anti-confabulation cite-or-refuse (Sprint 4) |
+| `COMPASS_USE_LLM_DRIFT_PAY` | 4 (runtime) | drift × outcome anchor feedback (Sprint 5) |
+| `COMPASS_USE_LLM_REFLECT` | 3 (periodic) | self-reflection semantic emit (Sprint 6) |
+| `COMPASS_USE_LLM_ECON` | 4 (runtime) | memory-as-economy NAU budget (Sprint 7) |
+
+Pattern mirrors the existing `COMPASS_USE_GEMINI_FLASH` opt-in
+([`judges/gemini_flash.py`](judges/gemini_flash.py)) — env truthy
+(`1`/`true`/`yes`/`on`) activates · anything else disables. Registry: [`llm_opt_in.py`](llm_opt_in.py).
+
+### Kill-gate semantics
+
+Per-Sprint gates are pre-registered. If a Sprint's gate metric does not
+pass (e.g. Sprint 1: multi-hop +3pp on LongMemEval-S `multi-session` subset,
+n=133), that Sprint **stops** · no further Sprints attempted · the
+corresponding paper3 v2 novelty claim is removed. This protects against
+post-hoc rationalization of negative results.
+
+---
+
+## Case study · 4-dialog OSS multi-agent reliability
+
+Across 28 hours on 2026-05-30 / 31, four Claude Code dialogs
+(compass / Soul / V5 / nautilus-core) ran concurrently on shared
+filesystem-mediated protocols. The recorded run includes:
+
+- **Drift detection** firing 314 times / 7d (76 / 24h) with
+  `act_on_rate` measured at **9.87% / 7d · 40.79% / 24h**
+- **Cross-dialog contract** `cnt_compass_soul_sub_a1` closing in
+  **17.92h** (vs 6d 21h budget · 5.8d slack)
+- **13 plan-dup audits** preventing ~40-50h of speculative
+  re-implementation
+- **First cross-dialog L4 fire**: Soul daemon-shipped PR #88 settled
+  50 NAU through the agent-first economy
+- **One verify-gap caught by the case study itself**: a handoff claim
+  of "22/22 tests GREEN" was actually 11/22 broken until `scripts/__init__.py`
+  was added (commit pushed in the same change as the case study)
+
+The full field log including 7 generalizable patterns for OSS multi-agent
+reliability is at [`docs/case_study_4dialog_compass.md`](docs/case_study_4dialog_compass.md).
+
+---
+
 ## What problem does this solve
 
 ### A. Long sessions drift
@@ -179,6 +254,52 @@ The drift detector compares each prompt against an anchor set
 (25 positive + 35 negative behavioral patterns drawn from real failure
 transcripts) using BGE-m3 cosine similarity. AUC 0.83 on held-out, 50ms
 p95 hook latency.
+
+---
+
+## Measuring drift loop closure (act-on rate)
+
+Drift detection without ack instrumentation is an open loop · the detector
+fires alerts but nothing measures whether the agent (or user) actually acted
+on them. v3 closes this loop with a single rate metric.
+
+**The signal**: every fired drift alert gets a stable `alert_id` and lands
+in `.cache/drift_mitigation_log.jsonl`. When the user acknowledges the alert
+via the feedback CLI
+
+```bash
+python ~/.claude/plugins/nautilus-compass/feedback.py log <alert_id> fp|tp
+```
+
+(`fp` = false positive · `tp` = true positive · either way the alert was
+seen and judged), a matching `kind: "ack"` record is appended to the *same*
+sidecar.
+
+**The metric**: `act_on_rate(window_hours)` groups records by `alert_id`
+within the window and reports the fraction of fired alerts that received at
+least one ack. The legacy KPI script prints it alongside everything else:
+
+```bash
+python ~/.claude/plugins/nautilus-compass/audit_kpi.py
+```
+
+```
+=== act-on rate (drift alert closure · target ≥0.70) ===
+  · 24h: fires=81   acked=1    rate=0.012
+  ·  7d: fires=294  acked=1    rate=0.003
+```
+
+**Target**: ≥0.70 over rolling 7d. Below 0.30 indicates the agent is tuning
+out alerts (cry-wolf · cf. the [open-loop write-up](https://github.com/chunxiaoxx/nautilus-compass/blob/v3-full-fusion/docs/plans/2026-05-29-compass-comprehensive-uplift-design.md))
+· raise the firing threshold (`drift/firing.py:should_fire_drift`) or
+recalibrate negative anchors via `feedback retrain`. Programmatic API for
+CI / cron monitors:
+
+```python
+from audit_kpi import act_on_rate
+m = act_on_rate(window_hours=168)
+assert m["rate"] >= 0.70, f"drift loop open · rate={m['rate']:.3f} fires={m['fires']}"
+```
 
 ---
 
