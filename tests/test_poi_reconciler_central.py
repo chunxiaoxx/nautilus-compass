@@ -38,3 +38,14 @@ def test_selfcite_dropped():
     outcomes = [{"agent_id": "a1", "success": True, "ts": "2026-06-03T00:10:00+00:00"}]
     r = reconcile_central([_cand(creator="a1")], outcomes, conn=conn, settled_keys=settled, placeholder="?")
     assert r["settled"] == 0 and r.get("skipped_selfcite") == 1
+
+
+def test_dry_run_does_not_write_db():
+    # dry_run=True counts what WOULD settle but writes nothing to the DB
+    conn = _conn()
+    outcomes = [{"agent_id": "a1", "success": True, "ts": "2026-06-03T00:10:00+00:00"}]
+    r = reconcile_central([_cand()], outcomes, conn=conn, settled_keys=set(),
+                          placeholder="?", dry_run=True)
+    assert r["settled"] == 1
+    cnt = conn.execute("SELECT COUNT(*) FROM poi_credit").fetchone()[0]
+    assert cnt == 0

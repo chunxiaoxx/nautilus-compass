@@ -45,12 +45,18 @@ SNAPSHOT_PATH = Path(os.environ.get(
 
 
 def settle_and_snapshot(conn, pending, outcomes, settled_keys, *, snapshot_path,
-                        window_s=WINDOW_S, placeholder="%s"):
+                        window_s=WINDOW_S, placeholder="%s", dry_run=False):
     """Settle pending candidates into the central poi_credit table, then export
     the full credit table as an atomic snapshot the daemon reads for boost.
-    Returns the reconcile_central result dict."""
+    Returns the reconcile_central result dict.
+
+    dry_run=True · reconcile counts what WOULD settle but writes nothing to the DB;
+    the snapshot write is skipped entirely (truly read-only)."""
     res = R.reconcile_central(pending, outcomes, conn=conn, settled_keys=settled_keys,
-                              window_seconds=window_s, placeholder=placeholder)
+                              window_seconds=window_s, placeholder=placeholder,
+                              dry_run=dry_run)
+    if dry_run:
+        return res
     credits = CS.fetch_all_credits(conn)
     CS.write_snapshot_atomic(snapshot_path, credits)
     return res
@@ -129,11 +135,9 @@ def main() -> int:
                 return 0
 
             work_keys = set(settled_keys) if dry_run else settled_keys
-            snap_path = (SNAPSHOT_PATH.with_suffix(".dryrun.tmp")
-                         if dry_run else SNAPSHOT_PATH)
             res = settle_and_snapshot(conn, pending, outcomes, work_keys,
-                                      snapshot_path=snap_path, window_s=WINDOW_S,
-                                      placeholder="%s")
+                                      snapshot_path=SNAPSHOT_PATH, window_s=WINDOW_S,
+                                      placeholder="%s", dry_run=dry_run)
     except (FileNotFoundError, ValueError) as e:
         sys.stderr.write(
             f"reconcile skipped · DB connect failed · central credit needs the "

@@ -177,10 +177,14 @@ def reconcile(candidates: list, outcomes: list, *, settled_keys: Optional[set] =
 
 
 def reconcile_central(candidates, outcomes, *, conn, settled_keys=None,
-                      window_seconds=DEFAULT_WINDOW_S, placeholder="%s"):
+                      window_seconds=DEFAULT_WINDOW_S, placeholder="%s", dry_run=False):
     """Settle candidates into the central poi_credit table (not frontmatter).
     No local-file requirement (M1 relaxed) · DB-side self-cite filter via creator.
-    Mutates settled_keys in place (idempotent re-run)."""
+    Mutates settled_keys in place (idempotent re-run).
+
+    dry_run=True · do everything EXCEPT the DB write: skip upsert_credit, but still
+    count it as settled and add the key to settled_keys (caller passes a throwaway
+    copy in dry-run) so the report shows what WOULD have settled. Truly read-only."""
     if settled_keys is None:
         settled_keys = set()
     settled = skipped_no_match = skipped_already = skipped_selfcite = 0
@@ -203,8 +207,9 @@ def reconcile_central(candidates, outcomes, *, conn, settled_keys=None,
             timestamp_action=str(cand.get("ts", "")), timestamp_outcome=str(outcome.get("ts", "")),
             notes=f"central reconcile {cand['actor']}")
         compute_with_drift(poi, memory_root=None)
-        now_iso = datetime.now(timezone.utc).isoformat(timespec="seconds")
-        upsert_credit(conn, mk, poi.impact_score, now_iso, placeholder=placeholder)
+        if not dry_run:
+            now_iso = datetime.now(timezone.utc).isoformat(timespec="seconds")
+            upsert_credit(conn, mk, poi.impact_score, now_iso, placeholder=placeholder)
         settled_keys.add(key)
         settled += 1
     return {"settled": settled, "skipped_no_match": skipped_no_match,

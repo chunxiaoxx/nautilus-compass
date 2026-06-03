@@ -43,3 +43,17 @@ def test_settle_and_snapshot_no_match_writes_empty_snapshot(tmp_path):
     assert res["skipped_no_match"] == 1
     data = json.loads(snap.read_text(encoding="utf-8"))
     assert data == {}
+
+
+def test_dry_run_skips_snapshot(tmp_path):
+    cron = _load_cron()
+    conn = sqlite3.connect(":memory:"); conn.execute(CREATE)
+    snap = tmp_path / "poi_credit_cache.json"
+    outcomes = [{"agent_id": "a1", "success": True, "ts": "2026-06-03T00:10:00+00:00"}]
+    res = cron.settle_and_snapshot(conn, [_cand()], outcomes, set(),
+                                   snapshot_path=snap, placeholder="?", dry_run=True)
+    assert res["settled"] == 1
+    # dry-run writes no snapshot and no DB rows
+    assert not snap.exists()
+    cnt = conn.execute("SELECT COUNT(*) FROM poi_credit").fetchone()[0]
+    assert cnt == 0
