@@ -19,7 +19,6 @@ from __future__ import annotations
 from typing import Any, Callable, Dict, List, Optional
 
 from metamemory.confidence import ConfidenceVector
-from metamemory.gap import GapStatement
 from metamemory.gap_detector import detect_gaps
 from metamemory.calibration import calibration_score
 from metamemory.result import RecallResult

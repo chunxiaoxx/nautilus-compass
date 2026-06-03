@@ -68,6 +68,26 @@ def test_empty_hits_writes_nothing(tmp_path, monkeypatch):
     assert not (tmp_path / "poi_candidates.jsonl").exists()
 
 
+def test_carries_per_hit_project(tmp_path, monkeypatch):
+    """3-arg signature · project derived PER HIT from each hit's own `project`
+    field (scope=user correctness: one recall returns hits from different
+    projects; daemon already tags each hit with its project). Each written
+    candidate carries its hit's project, normalized to encoded_cwd form."""
+    monkeypatch.setenv("COMPASS_POI_CACHE_DIR", str(tmp_path))
+    emit = _load_emit()
+    hits = [
+        {"path": "a.md", "project": "cycle-59717-auto", "score": 0.9},
+        {"path": "b.md", "project": "C:\\Users\\chunx", "score": 0.8},
+    ]
+    n = emit(hits, "q", "actor-1")
+    assert n == 2
+    lines = (tmp_path / "poi_candidates.jsonl").read_text(encoding="utf-8").strip().splitlines()
+    r0 = json.loads(lines[0])
+    r1 = json.loads(lines[1])
+    assert r0["project"] == "cycle-59717-auto"   # already plain · unchanged
+    assert r1["project"] == "C--Users-chunx"      # windows path · normalized
+
+
 # ---- patch application (against a synthetic copy of the live route) -----------
 
 # Faithful copy of the live cloud route (compass_http_v09.py, v1.5.8 shape:
@@ -144,12 +164,22 @@ def test_patched_route_emits_on_real_call(tmp_path, monkeypatch):
     def _Header(default=None, alias=None):
         return default
 
+    daemon_hits = [
+        {"path": "m.md", "project": "cycle-59717-auto", "score": 0.7},
+        {"path": "n.md", "project": "C:\\Users\\chunx", "score": 0.6},
+    ]
     ns = {"app": _App(), "Header": _Header,
-          "_call_v14_daemon": lambda req, timeout=None: {"ok": True, "recall": [{"path": "m.md", "score": 0.7}]},
+          "_call_v14_daemon": lambda req, timeout=None: {"ok": True, "recall": daemon_hits},
           "_v14_os": os, "_v14_json": json}
     exec(compile(target.read_text(encoding="utf-8"), "patched", "exec"), ns)
-    res = ns["v14_recall"]("hello", agent_id="nautilus-prime-001")
+    # scope=user: requester's project context is irrelevant; each hit carries its own.
+    res = ns["v14_recall"]("hello", scope="user", agent_id="nautilus-prime-001")
     assert res["ok"] is True
-    line = json.loads((tmp_path / "poi" / "poi_candidates.jsonl").read_text(encoding="utf-8").strip())
-    assert line["actor"] == "nautilus-prime-001"
-    assert line["memory"] == "m.md"
+    lines = (tmp_path / "poi" / "poi_candidates.jsonl").read_text(encoding="utf-8").strip().splitlines()
+    r0 = json.loads(lines[0])
+    r1 = json.loads(lines[1])
+    assert r0["actor"] == "nautilus-prime-001"
+    assert r0["memory"] == "m.md"
+    assert r0["project"] == "cycle-59717-auto"   # per-hit · already plain
+    assert r1["memory"] == "n.md"
+    assert r1["project"] == "C--Users-chunx"      # per-hit · normalized

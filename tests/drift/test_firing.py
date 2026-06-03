@@ -7,7 +7,6 @@ Verifies the new firing logic raises specificity over the old OR-vote:
   - legacy=True kwarg restores OR-vote semantics
 """
 import sys
-import os
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))

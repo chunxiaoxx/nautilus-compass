@@ -17,7 +17,12 @@ GUARD = "_v14_emit_poi_candidate"
 EMIT_HELPER = '''def _v14_emit_poi_candidate(hits, query, agent_id):
     """Self-contained PoI candidate emission for the v14 recall path.
     One JSONL line per hit -> poi_candidates.jsonl (schema matches
-    proof/poi_emitter: ts/kind/actor/memory/query_hash/rank/score).
+    proof/poi_emitter: ts/kind/actor/project/memory/query_hash/rank/score).
+    `project` is derived PER HIT from each hit's own `project` field — under
+    scope=user one recall returns hits from DIFFERENT projects, and the daemon
+    already tags each hit with its source project. A single query-param project
+    (the requester's context) would mislabel cross-project hits. Mirrors the
+    local emitter (project from the memory file path).
     No proof import (not on this server path) · no self-cite suppression
     (cited memory files are not local to this cloud host). Never raises."""
     if not hits:
@@ -39,10 +44,16 @@ EMIT_HELPER = '''def _v14_emit_poi_candidate(hits, query, agent_id):
             mem = h.get("path") or h.get("memory")
             if not mem:
                 continue
+            # normalize each hit's own project to encoded_cwd form · mirrors
+            # proof/poi_memory_key._normalize_project (inline · no proof import).
+            proj = (h.get("project") or "").strip()
+            if ":" in proj or "\\\\" in proj:
+                proj = proj.replace(":\\\\", "--").replace(":/", "--").replace("\\\\", "-").replace("/", "-")
             f.write(_v14_json.dumps({
                 "ts": ts,
                 "kind": "candidate",
                 "actor": actor,
+                "project": proj,
                 "memory": mem,
                 "query_hash": q_hash,
                 "rank": rank,

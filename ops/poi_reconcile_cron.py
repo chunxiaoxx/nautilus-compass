@@ -31,13 +31,35 @@ _spec.loader.exec_module(_poller)
 
 sys.path.insert(0, str(_HERE.parent))
 from proof import poi_reconciler as R  # noqa: E402
+from proof import poi_credit_store as CS  # noqa: E402
 
 CANDIDATE_DIR = Path(os.environ.get(
     "COMPASS_POI_CACHE_DIR",
     str(Path.home() / ".claude" / "plugins" / "nautilus-compass" / ".cache")))
 WINDOW_S = int(os.environ.get("COMPASS_POI_RECONCILE_WINDOW_S", str(R.DEFAULT_WINDOW_S)))
-# memory_root: where cited memory files live (to update their frontmatter)
+# memory_root: where cited memory files live (legacy frontmatter path · unused by main)
 MEMORY_ROOT = os.environ.get("COMPASS_POI_MEMORY_ROOT", "")
+# atomic snapshot of the central poi_credit table · the daemon reads this for boost
+SNAPSHOT_PATH = Path(os.environ.get(
+    "COMPASS_POI_CREDIT_SNAPSHOT", str(CANDIDATE_DIR / "poi_credit_cache.json")))
+
+
+def settle_and_snapshot(conn, pending, outcomes, settled_keys, *, snapshot_path,
+                        window_s=WINDOW_S, placeholder="%s", dry_run=False):
+    """Settle pending candidates into the central poi_credit table, then export
+    the full credit table as an atomic snapshot the daemon reads for boost.
+    Returns the reconcile_central result dict.
+
+    dry_run=True · reconcile counts what WOULD settle but writes nothing to the DB;
+    the snapshot write is skipped entirely (truly read-only)."""
+    res = R.reconcile_central(pending, outcomes, conn=conn, settled_keys=settled_keys,
+                              window_seconds=window_s, placeholder=placeholder,
+                              dry_run=dry_run)
+    if dry_run:
+        return res
+    credits = CS.fetch_all_credits(conn)
+    CS.write_snapshot_atomic(snapshot_path, credits)
+    return res
 
 
 def _fetch_outcomes_for(conn, actors: list, since_iso: str, window_s: int) -> list:
@@ -66,7 +88,7 @@ def main() -> int:
         return 0
 
     settled_keys = R.load_settled(settled_path)
-    pending = [c for c in candidates if R.candidate_key(c) not in settled_keys]
+    pending = [c for c in candidates if R.central_candidate_key(c) not in settled_keys]
     if not pending:
         print(f"all {len(candidates)} candidates already settled")
         return 0
@@ -75,41 +97,59 @@ def main() -> int:
     since = min(str(c.get("ts", "")) for c in pending)
     memory_root = Path(MEMORY_ROOT) if MEMORY_ROOT else None
 
-    outcomes: list = []
-
-    # Platform outcomes (agent_tool_calls) · credits platform agents · graceful
-    # skip when the DB secret is not provisioned (path B works without it).
+    # Phase 1 central credit REQUIRES the cloud DB · reconcile_central writes to
+    # the poi_credit table (not frontmatter). No secret → no settle, honest skip.
     try:
         cfg = _poller.parse_secret(_poller.SECRET_FILE)
-        with _poller.db_connection(cfg) as conn:
-            outcomes += _fetch_outcomes_for(conn, actors, since, WINDOW_S)
     except (FileNotFoundError, ValueError) as e:
-        sys.stderr.write(f"platform outcomes skipped · secret unavailable · {e}\n")
-    except Exception as e:
-        sys.stderr.write(f"platform outcome fetch failed · {type(e).__name__}: {str(e)[:200]}\n")
-
-    # Path B · local outcomes from the user's own session_*.md drift signal ·
-    # lets local (anon/unknown) recalls self-settle without any platform agent.
-    n_local = 0
-    if memory_root and os.environ.get("COMPASS_POI_LOCAL_OUTCOMES", "1") != "0":
-        try:
-            from proof import local_outcomes as _LO
-            for actor in actors:
-                lo = _LO.local_outcomes(memory_root, actor, since_iso=since)
-                outcomes += lo
-                n_local += len(lo)
-        except Exception as e:
-            sys.stderr.write(f"local outcomes skipped · {type(e).__name__}: {str(e)[:160]}\n")
-
-    if not outcomes:
-        print("no outcomes (platform + local) · nothing to settle yet")
+        sys.stderr.write(
+            f"reconcile skipped · DB secret unavailable · central credit needs the "
+            f"cloud DB · {e}\n")
         return 0
 
-    work_keys = set() if dry_run else settled_keys
+    res = None
+    n_local = 0
+    n_outcomes = 0
     try:
-        res = R.reconcile(pending, outcomes, settled_keys=work_keys,
-                          window_seconds=WINDOW_S, memory_root=memory_root,
-                          cache_dir=(CANDIDATE_DIR if not dry_run else Path(os.devnull).parent))
+        # readonly=dry_run · a real run needs write (UPSERT poi_credit); a
+        # dry-run stays read-only so it physically cannot mutate the cloud.
+        with _poller.db_connection(cfg, readonly=dry_run) as conn:
+            # compass.poi_credit lives in the compass schema · compass_sub's default
+            # search_path excludes it. Set it so the store's unqualified `poi_credit`
+            # resolves (keeps the store SQL backend-agnostic for the sqlite tests).
+            # public stays on path so agent_tool_calls still resolves.
+            conn.cursor().execute("SET search_path TO compass, public")
+            # Platform outcomes (agent_tool_calls) · credits platform agents.
+            outcomes: list = list(_fetch_outcomes_for(conn, actors, since, WINDOW_S))
+
+            # Path B · local outcomes from the user's own session_*.md drift
+            # signal · lets local (anon/unknown) recalls self-settle. Gathered
+            # BEFORE the settle so they credit via the same conn.
+            if memory_root and os.environ.get("COMPASS_POI_LOCAL_OUTCOMES", "1") != "0":
+                try:
+                    from proof import local_outcomes as _LO
+                    for actor in actors:
+                        lo = _LO.local_outcomes(memory_root, actor, since_iso=since)
+                        outcomes += lo
+                        n_local += len(lo)
+                except Exception as e:
+                    sys.stderr.write(
+                        f"local outcomes skipped · {type(e).__name__}: {str(e)[:160]}\n")
+
+            n_outcomes = len(outcomes)
+            if not outcomes:
+                print("no outcomes (platform + local) · nothing to settle yet")
+                return 0
+
+            work_keys = set(settled_keys) if dry_run else settled_keys
+            res = settle_and_snapshot(conn, pending, outcomes, work_keys,
+                                      snapshot_path=SNAPSHOT_PATH, window_s=WINDOW_S,
+                                      placeholder="%s", dry_run=dry_run)
+    except (FileNotFoundError, ValueError) as e:
+        sys.stderr.write(
+            f"reconcile skipped · DB connect failed · central credit needs the "
+            f"cloud DB · {e}\n")
+        return 0
     except Exception as e:
         sys.stderr.write(f"reconcile failed · {type(e).__name__}: {str(e)[:200]}\n")
         return 1
@@ -119,8 +159,9 @@ def main() -> int:
 
     print(f"{datetime.now(timezone.utc).isoformat(timespec='seconds')} · "
           f"candidates={len(candidates)} pending={len(pending)} "
-          f"actors={len(actors)} outcomes={len(outcomes)} (local={n_local}) "
-          f"settled={res['settled']} no_match={res['skipped_no_match']}"
+          f"actors={len(actors)} outcomes={n_outcomes} (local={n_local}) "
+          f"settled={res['settled']} no_match={res['skipped_no_match']} "
+          f"selfcite={res['skipped_selfcite']}"
           + (" · DRY-RUN" if dry_run else ""))
     return 0
 
