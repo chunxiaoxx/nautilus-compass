@@ -35,7 +35,7 @@
 | # | 决策 | 选择 | 理由 |
 |---|------|------|------|
 | D1 | emission 代码放哪 | inline 自包含(不 import proof) | 匹配既有 `_call_v14_daemon` 自包含风格 · 无跨目录耦合 · repo 移动不影响 live · candidate schema 极简稳定 |
-| D2 | cache dir | `/home/ubuntu/compass/.cache/poi`(env `COMPASS_POI_CACHE_DIR`) | server WorkingDir 下 · ubuntu 可写 · server 与 reconciler 读同一处 |
+| D2 | cache dir | **`/var/lib/compass/poi`**(env `COMPASS_POI_CACHE_DIR`) | 🔴 修正:compass.service `ProtectHome=read-only` + `ProtectSystem=strict` · `ReadWritePaths=/var/lib/compass /tmp /home/ubuntu/.claude` · 写 /home/ubuntu/compass 被静默拒。/var/lib/compass 是 RW + 持久 |
 | D3 | reconciler placement | 本地拉云 | credit 必须落本地 memory 文件 · 云端碰不到本地文件会永远 settle=0 |
 
 ## Component 1 · candidate emission(云端 gating)
@@ -72,6 +72,18 @@
 
 - settle 在 V5 加 `agent_id=nautilus-prime-001` 前**恒为 0**(本地/test candidate 的 actor join 不到平台 agent_tool_calls outcome)。本 session 交付 = **emission live + reconciler 待命**;V5 一行 + e2e 即闭环。
 - 给 V5 的 signal 要讲清:`cumulative_impact` credit 落**本地**(非"8770 侧"),outcome 一致,落点不同。
+
+## 部署实测发现(2026-06-03 · verification 中挖出)
+
+1. **🔴 systemd 沙箱 = emission 静默不落的真根因**:`ProtectHome=read-only` 让写 `/home/ubuntu/compass/.cache/poi` 失败,被 emit 的 try/except 吞 → 无 candidate 无报错。修 = cache 移 `/var/lib/compass/poi`(ReadWritePath)。debug 时 `PrivateTmp=true` 也让我的 /tmp trace 进了私有 /tmp(看不到)· 误导良久。
+2. **云端 BGE daemon 内存页抖动**:`compass-bge-daemon.service`(serves V5 v14 recall)在 majflt 986/s · 160MB/s re-fault mmap 的 bge-m3 模型 → load 10.75 → inflight 占满 → 拒所有 recall(V5 生产降级)。根因 = 15GB 机内存超额无 swap。**修 = 加 8GB swapfile** → load 10.75→5.22 · majflt→0 · recall 15s→0.85s。
+3. **live v14_recall v1.5.8 drift**:加了第二个 `if not d.get("ok")` early-return → emit anchor 改 success-return signature。
+4. **pull Windows gotchas**:cloud SSH(port 24860)负载下 rc 255/timeout → pull 加 3x 重试;`subprocess(text=True)` 默认 GBK 解码 UTF-8 中文 memory 名 → `encoding=utf-8`。
+
+## e2e 验证证据
+- Component 1:真 GET `/v1/v14/recall?agent_id=finalverify-2` → 3 candidate 行落 `/var/lib/compass/poi/poi_candidates.jsonl`(actor/memory/score 齐)
+- Component 2:pull 27 candidates(finalverify-2×3 + unknown×24 真 V5 流量)→ reconcile DB 隧道连上 → settled=0(test/unknown actor 无平台 outcome · 正确)→ scheduled task `compass-poi-reconcile` Last Result 0
+- 待 V5 加 `agent_id=nautilus-prime-001` → 那批 candidate join 平台 outcome → settle → cumulative_impact credit
 
 ## 关联
 - [[session_20260603_compass_confirm_v5_path_A_v14recall_closeloop]]
