@@ -59,6 +59,9 @@ DEFAULT_PROJECT = os.environ.get("COMPASS_SOUL_INGEST_PROJECT", "C--Users-chunx"
 # drift aggregation
 DRIFT_MIN_SAMPLES = int(os.environ.get("COMPASS_SOUL_DRIFT_MIN_SAMPLES", "5"))
 DRIFT_SUCCESS_FLOOR = float(os.environ.get("COMPASS_SOUL_DRIFT_FLOOR", "0.5"))
+# b2 (agent_tool_calls · 125k rows) is aggregated over a recent window into ONE
+# rollup file · never per-row (would flood recall).
+B2_WINDOW_HOURS = int(os.environ.get("COMPASS_SOUL_B2_WINDOW_HOURS", "24"))
 
 
 # ---------------------------------------------------------------- secret parse
@@ -209,6 +212,54 @@ thread_id: l4-cycle-outcomes
 
 
 # -------------------------------------------------------- drift aggregation
+def build_b2_rollup_session_md(signals: list, window_label: str = "24h") -> tuple:
+    """Per-agent drift rollup -> ONE session_*.md (anti-flooding).
+
+    agent_tool_calls is 125k+ rows · writing per-row files would drown recall.
+    Instead we summarise per-agent success rates for a recent window into a
+    single, stable-named file that is overwritten each run (always current; no
+    accumulation). Empty signals => an explicit stall marker (silence is signal).
+    """
+    filename = f"session_xrollup_agent_drift_{_slug(window_label, 12)}.md"
+    any_alert = any(s.get("alert") for s in signals)
+    drift = "yellow" if any_alert else "green"
+
+    if signals:
+        lines = []
+        for s in sorted(signals, key=lambda x: x.get("success_rate", 1.0)):
+            flag = "🔴" if s.get("alert") else "🟢"
+            lines.append(f"- {flag} `{s['agent_id']}` · success_rate "
+                         f"{s.get('success_rate', 0):.2f} · n={s.get('n', 0)}"
+                         + (" · **DRIFT**" if s.get("alert") else ""))
+        body_rows = "\n".join(lines)
+        desc = (f"{len(signals)} agents · "
+                f"{sum(1 for s in signals if s.get('alert'))} drift").replace("\n", " ")
+    else:
+        body_rows = "_(no agent tool activity in window · possible daemon stall)_"
+        desc = f"0 agents active in {window_label} · possible stall"
+
+    body = f"""---
+name: cross-agent drift rollup · {window_label}
+description: {desc[:200]}
+type: cross-agent-drift-rollup
+concept: l4-cross-agent-substrate
+drift: {drift}
+agent_type: platform-multi-agent
+window: {window_label}
+ingested_via: cross_agent_outcome_poller (L4 b2 rollup · anti-flood)
+thread_role: observation
+thread_id: l4-agent-drift-rollup
+---
+
+# Cross-agent drift rollup · last {window_label}
+
+Per-agent tool-call success rate (rolling window · low rate = persona/drift signal).
+
+{body_rows}
+"""
+    return filename, body
+
+
 def compute_drift_signal(agent_id: str, rows: list) -> dict:
     """Rolling success-rate signal for one agent across recent tool calls.
 
@@ -303,6 +354,30 @@ def _fetch_b2(conn, last_id: int, batch: int = BATCH) -> list:
     return [dict(zip(cols, r)) for r in cur.fetchall()]
 
 
+def _fetch_b2_signals(conn, hours: int = B2_WINDOW_HOURS) -> list:
+    """DB-side GROUP BY · per-agent success rate over a recent window.
+
+    Aggregates server-side (no 125k rows pulled into Python) · returns one signal
+    dict per active agent. This is the persona/drift fuel, not per-call files.
+    """
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT agent_id, count(*), count(*) FILTER (WHERE success) "
+        "FROM agent_tool_calls WHERE ts > now() - make_interval(hours => %s) "
+        "GROUP BY agent_id ORDER BY 2 DESC", (hours,))
+    out = []
+    for agent_id, n, succ in cur.fetchall():
+        n = int(n or 0)
+        succ = int(succ or 0)
+        rate = (succ / n) if n else 1.0
+        out.append({
+            "agent_id": agent_id or "unknown", "n": n, "successes": succ,
+            "success_rate": rate,
+            "alert": (n >= DRIFT_MIN_SAMPLES and rate < DRIFT_SUCCESS_FLOOR),
+        })
+    return out
+
+
 def _fetch_a2(conn, last_ts, batch: int = BATCH) -> list:
     cols = ["cycle_id", "spec", "ship_status", "semantic_pass", "tests_pass",
             "actual_lines_added", "actual_lines_removed", "drift_ratio",
@@ -332,28 +407,20 @@ def main() -> int:
     mem_dir = PROJECTS_BASE / DEFAULT_PROJECT / "memory"
 
     written = 0
-    new_b2_id = wm["last_b2_id"]
     new_a2_ts = wm["last_a2_ts"]
-    by_agent: dict = {}
 
     try:
         with db_connection(cfg) as conn:
-            b2_rows = _fetch_b2(conn, wm["last_b2_id"])
+            # a2 · per-cycle (low volume · high value · watermark by created_at)
             a2_rows = _fetch_a2(conn, wm["last_a2_ts"])
+            # b2 · aggregated recent window -> ONE rollup (anti-flood)
+            signals = _fetch_b2_signals(conn, B2_WINDOW_HOURS)
     except Exception as e:
         sys.stderr.write(f"db poll failed · {type(e).__name__}: {str(e)[:200]}\n")
         return 1
 
     if not dry_run:
         mem_dir.mkdir(parents=True, exist_ok=True)
-
-    for row in b2_rows:
-        fn, content = build_b2_session_md(row)
-        if not dry_run:
-            (mem_dir / fn).write_text(content, encoding="utf-8")
-        written += 1
-        new_b2_id = max(new_b2_id, int(row["id"]))
-        by_agent.setdefault(row.get("agent_id") or "unknown", []).append(row)
 
     for row in a2_rows:
         fn, content = build_a2_session_md(row)
@@ -365,18 +432,20 @@ def main() -> int:
         if new_a2_ts is None or ca_iso > new_a2_ts:
             new_a2_ts = ca_iso
 
-    signals = [compute_drift_signal(a, rows) for a, rows in by_agent.items()]
+    # b2 rollup · single stable-named file overwritten each run (no accumulation)
+    roll_fn, roll_md = build_b2_rollup_session_md(signals, window_label=f"{B2_WINDOW_HOURS}h")
+    if not dry_run:
+        (mem_dir / roll_fn).write_text(roll_md, encoding="utf-8")
     alerts = [s for s in signals if s["alert"]]
 
     if not dry_run:
-        wm["last_b2_id"] = new_b2_id
         wm["last_a2_ts"] = new_a2_ts
         wm["ingested"] = int(wm.get("ingested", 0)) + written
         save_watermark(str(STATE_FILE), wm)
 
     print(f"{datetime.now(timezone.utc).isoformat(timespec='seconds')} · "
-          f"b2={len(b2_rows)} a2={len(a2_rows)} written={written} "
-          f"last_b2_id={new_b2_id} drift_alerts={len(alerts)}"
+          f"a2_new={len(a2_rows)} b2_agents={len(signals)} written={written} "
+          f"rollup={roll_fn} drift_alerts={len(alerts)}"
           + (" · DRY-RUN" if dry_run else ""))
     for s in alerts:
         print(f"  DRIFT ALERT · agent={s['agent_id']} "
