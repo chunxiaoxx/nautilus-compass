@@ -43,16 +43,29 @@ def merge_candidate_lines(existing, incoming):
     return out
 
 
-def fetch_cloud_lines() -> list:
-    """ssh cat the cloud candidate file · returns [] if absent/unreachable."""
-    try:
-        out = subprocess.run(
-            ["ssh", SSH_HOST, f"cat {CLOUD_FILE} 2>/dev/null || true"],
-            capture_output=True, text=True, timeout=30)
-        return out.stdout.splitlines()
-    except Exception as e:
-        sys.stderr.write(f"cloud pull failed · {type(e).__name__}: {str(e)[:160]}\n")
-        return []
+def fetch_cloud_lines(retries: int = 3) -> list:
+    """ssh cat the cloud candidate file · returns [] if absent/unreachable.
+
+    The cloud SSH endpoint can transiently reset under load (rc 255), so retry a
+    few times before giving up. Only a clean rc 0 with content is trusted."""
+    for attempt in range(retries):
+        try:
+            out = subprocess.run(
+                ["ssh", "-o", "ConnectTimeout=15", SSH_HOST,
+                 f"cat {CLOUD_FILE} 2>/dev/null || true"],
+                capture_output=True, text=True,
+                encoding="utf-8", errors="replace",  # cloud JSONL is UTF-8 · avoid Windows GBK
+                timeout=40)
+            if out.returncode == 0:
+                return (out.stdout or "").splitlines()
+            sys.stderr.write(
+                f"cloud pull attempt {attempt + 1}/{retries} rc={out.returncode}: "
+                f"{(out.stderr or '').strip()[:120]}\n")
+        except Exception as e:
+            sys.stderr.write(
+                f"cloud pull attempt {attempt + 1}/{retries} · "
+                f"{type(e).__name__}: {str(e)[:120]}\n")
+    return []
 
 
 def main() -> int:
