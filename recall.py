@@ -1237,6 +1237,20 @@ def try_daemon_recall(mem_dir: Path, user_prompt: str) -> bool:
                 print(f"🟢 + 24h 内其他 memory ({len(fresh_extra)} · 当前心智 · 即便低 cosine 也注意):")
                 for e in fresh_extra:
                     print(f"  · [{e['age_str']:>5} old] {e['path']} — {e['description'][:80]}")
+
+        # L2 metamemory · 自知层:fires on empty OR weak recall · the
+        # hallucinate-absence cure — tells the subject LLM when compass has no
+        # reliable evidence so it does not fabricate a "prior finding".
+        # Deterministic by default (no LLM · black-box moat). Never breaks recall.
+        try:
+            from metamemory import build_recall_result, format_metamemory_notice
+            _rr = build_recall_result(user_prompt, recall or [])
+            _notice = format_metamemory_notice(_rr)
+            if _notice:
+                print()
+                print(_notice)
+        except Exception:
+            pass
         return True
     except Exception as e:
         sys.stderr.write(f"[nautilus-compass daemon] unreachable ({e}) · fallback inline\n")
