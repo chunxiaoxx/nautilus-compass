@@ -10,4 +10,4 @@ Provides:
 Submodules are exposed lazily; import only what you need to keep startup fast.
 """
 
-__version__ = "2.1.0"
+__version__ = "2.2.0"

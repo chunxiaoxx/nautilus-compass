@@ -1,5 +1,35 @@
 # Changelog
 
+## [2.2.0] · 2026-06-03 — "PoI central ledger (L3 recursive loop)"
+
+Closes the L3 Proof-of-Impact recursive loop across hosts: memory now
+self-weights by *proven* downstream impact via a shared cloud ledger, so the
+loop holds for every compass-installed agent, not just whichever host wrote the
+memory file.
+
+### PoI central ledger (Option C · single table)
+
+- New `compass.poi_credit(memory_key PK, cumulative_impact, event_count,
+  last_impact_at)` · key = `project/filename` derived from one source
+  (`proof/poi_memory_key`) · replaces host-bound frontmatter credit.
+- Loop: recall → emit candidate (per-hit project) → reconcile vs outcomes →
+  UPSERT central table → atomic snapshot → daemon reranks recall by accrued
+  impact. Cloud-verified end to end (credited memory 0.7830 → 0.8091).
+- `recall_pkg/poi_snapshot_cache` (mtime lazy-load · corrupt-file fallback),
+  `poi_weighting.boost_top_k_with_snapshot` (NaN/clamp guards · never raises),
+  `proof/poi_credit_store` (atomic UPSERT + snapshot), cron `settle_and_snapshot`.
+- Cloud patches (`ops/patch_v14_recall_poi_*`) inject emission + env-gated boost
+  (`COMPASS_CLOUD_POI_BOOST`, default off) · boost never crashes recall.
+
+### Hardening (PR #35 review follow-up)
+
+- `memory_key_from_path` anchors on the literal `memory` segment (returns `None`
+  on non-standard paths) instead of blindly indexing `parts[-3]` — no silent
+  mislabel; callers fall back safely.
+- Cross-copy normalization drift guard: byte-for-byte equivalence test across the
+  three `_normalize_project` copies (local + 2 cloud inline) so drift fails CI.
+- Repo-wide ruff cleanup (unused imports) · notebooks excluded from lint.
+
 ## [2.1.0] · 2026-06-01 — "drift v2 + line reconciliation"
 
 Unifies two divergent development lines (daemon/reliability `plugin/main` +

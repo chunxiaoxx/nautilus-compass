@@ -1,6 +1,6 @@
 {
   "name": "nautilus-compass",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Opinionated EvoMap · cross-agent memory with schema-declared lifecycle (4-tier · Ebbinghaus decay · LLM-free promotion) · MCP + A2A · drift-aware · LongMemEval-S 56.6% · EverMemBench 44.4-47.3% · Claude Code/Desktop/Cursor/Cline/Continue/Zed",
   "keywords": [
     "mcp",
