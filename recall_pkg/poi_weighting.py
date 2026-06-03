@@ -10,10 +10,17 @@ Reference: paper/SPEC_PROOF_OF_IMPACT.md section 7.
 """
 from __future__ import annotations
 
+import math
+
 try:
     from ..proof.l1_grouper_compat import parse_session_frontmatter_safe
 except (ImportError, ValueError):
     from proof.l1_grouper_compat import parse_session_frontmatter_safe  # type: ignore
+
+try:
+    from ..proof.poi_memory_key import memory_key_from_path
+except (ImportError, ValueError):
+    from proof.poi_memory_key import memory_key_from_path  # type: ignore
 
 BOOST_FACTOR_DEFAULT = 0.1
 BOOST_CAP = 1.0  # max +1.0 → result = base × 2.0
@@ -65,6 +72,37 @@ def boost_top_k(top_entries: list, boost_factor: float = BOOST_FACTOR_DEFAULT) -
             continue
         front = parse_session_frontmatter_safe(path)
         new_score = apply_poi_boost(score, front, boost_factor=boost_factor)
+        boosted.append((new_score, entry))
+    boosted.sort(key=lambda x: x[0], reverse=True)
+    return boosted
+
+
+def apply_poi_boost_value(cosine_score: float, cumulative: float,
+                          boost_factor: float = BOOST_FACTOR_DEFAULT) -> float:
+    """Boost from a raw cumulative value (snapshot path). NaN/inf-safe."""
+    if not math.isfinite(cumulative):
+        return cosine_score
+    boost = max(BOOST_FLOOR, min(BOOST_CAP, cumulative * boost_factor))
+    out = cosine_score * (1.0 + boost)
+    return out if math.isfinite(out) else cosine_score
+
+
+def boost_top_k_with_snapshot(top_entries: list, snapshot: dict,
+                              boost_factor: float = BOOST_FACTOR_DEFAULT) -> list:
+    """Re-rank using central-credit snapshot dict (memory_key -> cumulative).
+    Miss → fall back to frontmatter read (transition). Never raises."""
+    boosted = []
+    for score, entry in top_entries:
+        if not isinstance(entry, dict):
+            boosted.append((score, entry))
+            continue
+        path = entry.get("fullpath") or entry.get("path") or ""
+        mk = memory_key_from_path(path) if path else None
+        if mk is not None and mk in snapshot:
+            new_score = apply_poi_boost_value(score, snapshot[mk], boost_factor)
+        else:
+            front = parse_session_frontmatter_safe(path) if path else {}
+            new_score = apply_poi_boost(score, front, boost_factor=boost_factor)
         boosted.append((new_score, entry))
     boosted.sort(key=lambda x: x[0], reverse=True)
     return boosted
