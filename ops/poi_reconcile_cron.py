@@ -73,21 +73,38 @@ def main() -> int:
 
     actors = sorted({c.get("actor") for c in pending if c.get("actor")})
     since = min(str(c.get("ts", "")) for c in pending)
+    memory_root = Path(MEMORY_ROOT) if MEMORY_ROOT else None
 
+    outcomes: list = []
+
+    # Platform outcomes (agent_tool_calls) · credits platform agents · graceful
+    # skip when the DB secret is not provisioned (path B works without it).
     try:
         cfg = _poller.parse_secret(_poller.SECRET_FILE)
+        with _poller.db_connection(cfg) as conn:
+            outcomes += _fetch_outcomes_for(conn, actors, since, WINDOW_S)
     except (FileNotFoundError, ValueError) as e:
-        sys.stderr.write(f"secret unavailable · {e}\n")
+        sys.stderr.write(f"platform outcomes skipped · secret unavailable · {e}\n")
+    except Exception as e:
+        sys.stderr.write(f"platform outcome fetch failed · {type(e).__name__}: {str(e)[:200]}\n")
+
+    # Path B · local outcomes from the user's own session_*.md drift signal ·
+    # lets local (anon/unknown) recalls self-settle without any platform agent.
+    n_local = 0
+    if memory_root and os.environ.get("COMPASS_POI_LOCAL_OUTCOMES", "1") != "0":
+        try:
+            from proof import local_outcomes as _LO
+            for actor in actors:
+                lo = _LO.local_outcomes(memory_root, actor, since_iso=since)
+                outcomes += lo
+                n_local += len(lo)
+        except Exception as e:
+            sys.stderr.write(f"local outcomes skipped · {type(e).__name__}: {str(e)[:160]}\n")
+
+    if not outcomes:
+        print("no outcomes (platform + local) · nothing to settle yet")
         return 0
 
-    try:
-        with _poller.db_connection(cfg) as conn:
-            outcomes = _fetch_outcomes_for(conn, actors, since, WINDOW_S)
-    except Exception as e:
-        sys.stderr.write(f"outcome fetch failed · {type(e).__name__}: {str(e)[:200]}\n")
-        return 1
-
-    memory_root = Path(MEMORY_ROOT) if MEMORY_ROOT else None
     work_keys = set() if dry_run else settled_keys
     res = R.reconcile(pending, outcomes, settled_keys=work_keys,
                       window_seconds=WINDOW_S, memory_root=memory_root,
@@ -98,7 +115,7 @@ def main() -> int:
 
     print(f"{datetime.now(timezone.utc).isoformat(timespec='seconds')} · "
           f"candidates={len(candidates)} pending={len(pending)} "
-          f"actors={len(actors)} outcomes={len(outcomes)} "
+          f"actors={len(actors)} outcomes={len(outcomes)} (local={n_local}) "
           f"settled={res['settled']} no_match={res['skipped_no_match']}"
           + (" · DRY-RUN" if dry_run else ""))
     return 0
