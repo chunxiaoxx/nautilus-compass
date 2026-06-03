@@ -1249,8 +1249,8 @@ def try_daemon_recall(mem_dir: Path, user_prompt: str) -> bool:
             if _notice:
                 print()
                 print(_notice)
-        except Exception:
-            pass
+        except Exception as _e:
+            sys.stderr.write(f"[L2 metamemory] skipped: {_e!r}\n")
 
         # L3 PoI candidate emission · ALSO fire on the daemon recall path. The
         # inline path (render_v02_vector_mode) already emits, but production

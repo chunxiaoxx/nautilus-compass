@@ -106,9 +106,13 @@ def main() -> int:
         return 0
 
     work_keys = set() if dry_run else settled_keys
-    res = R.reconcile(pending, outcomes, settled_keys=work_keys,
-                      window_seconds=WINDOW_S, memory_root=memory_root,
-                      cache_dir=(CANDIDATE_DIR if not dry_run else Path(os.devnull).parent))
+    try:
+        res = R.reconcile(pending, outcomes, settled_keys=work_keys,
+                          window_seconds=WINDOW_S, memory_root=memory_root,
+                          cache_dir=(CANDIDATE_DIR if not dry_run else Path(os.devnull).parent))
+    except Exception as e:
+        sys.stderr.write(f"reconcile failed · {type(e).__name__}: {str(e)[:200]}\n")
+        return 1
 
     if not dry_run:
         R.save_settled(settled_path, settled_keys)

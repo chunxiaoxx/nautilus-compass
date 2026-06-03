@@ -127,6 +127,57 @@ def test_reconcile_no_match_does_not_settle(tmp_path):
     assert res["skipped_no_match"] == 1
 
 
+def test_match_handles_naive_outcome_ts_without_crashing():
+    # H1: a platform outcome may carry a naive ts (no tz). Must not raise
+    # "can't compare offset-naive and offset-aware".
+    cand = _cand(ts="2026-06-02T10:00:00+00:00")
+    outcomes = [{"agent_id": "kairos", "success": True,
+                 "ts": "2026-06-02T10:05:00"}]  # naive, no +00:00
+    m = R.match_outcome(cand, outcomes, window_seconds=86400)
+    assert m is not None  # treated as UTC, matches in-window
+
+
+def test_reconcile_with_naive_outcome_does_not_crash(tmp_path):
+    _write_memory(tmp_path, name="m.md")
+    cands = [_cand(memory="m.md", actor="kairos", ts="2026-06-02T10:00:00+00:00")]
+    outs = [{"agent_id": "kairos", "success": True, "ts": "2026-06-02T10:05:00"}]
+    res = R.reconcile(cands, outs, settled_keys=set(), window_seconds=86400,
+                      memory_root=tmp_path, cache_dir=tmp_path)
+    assert res["settled"] == 1
+
+
+def test_reconcile_missing_memory_file_not_settled(tmp_path):
+    # M1: if the cited memory file doesn't exist, emit_full updates nothing →
+    # must NOT count as settled (no fake closed loop) and stay retryable.
+    cands = [_cand(memory="does_not_exist.md", actor="kairos")]
+    outs = [_out(agent_id="kairos", success=True)]
+    seen = set()
+    res = R.reconcile(cands, outs, settled_keys=seen, window_seconds=86400,
+                      memory_root=tmp_path, cache_dir=tmp_path)
+    assert res["settled"] == 0
+    assert len(seen) == 0  # key not burned → retryable later
+
+
+def test_candidate_key_ignores_second_level_ts(tmp_path):
+    # M2: same (actor, memory, query) recalled in different seconds must share a
+    # key so one outcome can't double-credit the memory.
+    a = R.candidate_key(_cand(ts="2026-06-02T10:00:00+00:00", memory="m.md"))
+    b = R.candidate_key(_cand(ts="2026-06-02T10:00:05+00:00", memory="m.md"))
+    assert a == b
+
+
+def test_reconcile_no_double_count_across_seconds(tmp_path):
+    mem = _write_memory(tmp_path, name="m.md")
+    cands = [
+        _cand(memory="m.md", actor="kairos", ts="2026-06-02T10:00:00+00:00"),
+        _cand(memory="m.md", actor="kairos", ts="2026-06-02T10:00:05+00:00"),
+    ]
+    outs = [_out(agent_id="kairos", success=True, ts="2026-06-02T10:30:00+00:00")]
+    res = R.reconcile(cands, outs, settled_keys=set(), window_seconds=86400,
+                      memory_root=tmp_path, cache_dir=tmp_path)
+    assert res["settled"] == 1  # not 2
+
+
 def test_reconcile_failure_outcome_gives_negative_impact(tmp_path):
     mem = _write_memory(tmp_path, name="m.md")
     cands = [_cand(memory="m.md", actor="kairos")]

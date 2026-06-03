@@ -28,12 +28,39 @@ if (-not (Test-Path $PyScript)) {
     exit 1
 }
 
+# Resolve a python that actually has psycopg2 — `py -3` may pick a different
+# interpreter (e.g. 3.14) WITHOUT psycopg2. Prefer $COMPASS_PYTHON, else the
+# `python` on PATH that imports psycopg2, else fall back to a full path. Task
+# Scheduler has a minimal PATH, so we bake the absolute exe into the task.
+$Python = $env:COMPASS_PYTHON
+if (-not $Python) {
+    foreach ($cand in @((Get-Command python -ErrorAction SilentlyContinue).Source,
+                        "$env:LOCALAPPDATA\Programs\Python\Python313\python.exe",
+                        "$env:LOCALAPPDATA\Programs\Python\Python312\python.exe")) {
+        if ($cand -and (Test-Path $cand)) {
+            & $cand -c "import psycopg2" 2>$null
+            if ($LASTEXITCODE -eq 0) { $Python = $cand; break }
+        }
+    }
+}
+if (-not $Python) {
+    Write-Error "no python with psycopg2 found; set `$env:COMPASS_PYTHON to a python.exe that has psycopg2"
+    exit 1
+}
+Write-Output "[compass-l4] using python: $Python"
+
 $null = New-Item -ItemType Directory -Path (Split-Path $LogPath) -Force
 
 # /SC MINUTE /MO 30 · runs as the registering (current) user · /F overwrites.
-# Redirect both streams to the log; the poller itself never prints secrets.
-$cmd = "py -3 `"$PyScript`" >> `"$LogPath`" 2>&1"
+# schtasks runs /TR directly (no shell), so `>>` redirection must go through
+# `cmd /c`. Inner quotes are doubled for the schtasks arg parser. The poller
+# never prints secrets, so logging both streams is safe.
+$cmd = "cmd /c `"`"`"$Python`"`" `"`"$PyScript`"`" >> `"`"$LogPath`"`" 2>&1`""
 & schtasks.exe /Create /TN $TaskName /TR $cmd /SC MINUTE /MO $IntervalMinutes /F | Out-Null
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "schtasks /Create failed (exit $LASTEXITCODE) · run this in a normal (non-sandboxed) PowerShell, as the current user"
+    exit $LASTEXITCODE
+}
 
 Write-Output "[compass-l4] registered scheduled task"
 Write-Output "  task:   $TaskName"
