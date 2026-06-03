@@ -5,7 +5,7 @@
 > **Reliability layer for multi-agent setups** ·
 > keep multiple agents — or your own long-running sessions — coordinating
 > reliably **without an orchestrator**.
-> Cross-dialog contracts + drift detection + a 4-tier memory lifecycle.
+> Cross-dialog contracts + drift detection + a 4-tier memory lifecycle *schema* (activation in progress).
 > Plugin for Claude Code/Desktop · Cline · Cursor · Continue.dev · Zed.
 >
 > When an agent drifts from a rule you set, takes a shortcut you flagged,
@@ -97,9 +97,17 @@ retained behind an env flag for A/B.
 
 ### L3 tier promotion + Proof-of-Impact
 
-- daily idempotent tier-promotion driver (impact-based · LLM-free)
+- daily idempotent tier-promotion driver (impact-based · LLM-free) — *shipped + unit-tested; not yet scheduled in production*
 - PoI candidate emission at recall time + impact-weighted ranking boost
 - L1 session-summary overlay
+
+> **Activation status (honest):** the L3 lifecycle machinery — tier promotion,
+> `forget_at` archival, the promotion driver — is shipped and unit-tested, but
+> the production recall path does **not** yet promote tiers or apply `forget_at`
+> at query time (query ranking currently uses file-age `archived_at` decay + an
+> importance gate). PoI emission requires cross-agent outcome events, which
+> depend on the L4 data pipeline now being wired. Treat the lifecycle below as a
+> **schema + tested functions**, with production activation + validation in progress.
 
 ### Daemon hardening (P4–P9)
 
@@ -140,6 +148,11 @@ reinforce_count: 0                                  # access event counter
 
 Full design rationale in [`paper/LLM_WIKI2_FUSE_DESIGN.md`](paper/LLM_WIKI2_FUSE_DESIGN.md);
 implementation at [`recall.py:708+`](recall.py).
+
+> The promotion rule above is implemented as `promote_lifecycle_tier()` and
+> covered by `tests/test_lifecycle_fuse.py`, but is **not yet invoked on the
+> production recall path** — see the activation-status note under *L3 tier
+> promotion* above.
 
 ### Other v2.0.0 additions
 
