@@ -31,7 +31,7 @@ def test_emits_one_line_per_hit(tmp_path, monkeypatch):
     monkeypatch.setenv("COMPASS_POI_CACHE_DIR", str(tmp_path))
     emit = _load_emit()
     hits = [{"path": "a.md", "score": 0.91}, {"path": "b.md", "score": 0.5}]
-    n = emit(hits, "some query", "nautilus-prime-001")
+    n = emit(hits, "some query", "nautilus-prime-001", "proj")
     assert n == 2
     lines = (tmp_path / "poi_candidates.jsonl").read_text(encoding="utf-8").strip().splitlines()
     assert len(lines) == 2
@@ -47,7 +47,7 @@ def test_emits_one_line_per_hit(tmp_path, monkeypatch):
 def test_none_agent_id_becomes_unknown(tmp_path, monkeypatch):
     monkeypatch.setenv("COMPASS_POI_CACHE_DIR", str(tmp_path))
     emit = _load_emit()
-    n = emit([{"path": "a.md", "score": 0.1}], "q", None)
+    n = emit([{"path": "a.md", "score": 0.1}], "q", None, "proj")
     assert n == 1
     r = json.loads((tmp_path / "poi_candidates.jsonl").read_text(encoding="utf-8").strip())
     assert r["actor"] == "unknown"
@@ -56,16 +56,27 @@ def test_none_agent_id_becomes_unknown(tmp_path, monkeypatch):
 def test_skips_hits_without_path(tmp_path, monkeypatch):
     monkeypatch.setenv("COMPASS_POI_CACHE_DIR", str(tmp_path))
     emit = _load_emit()
-    n = emit([{"score": 0.1}, {"path": "b.md", "score": 0.2}], "q", "x")
+    n = emit([{"score": 0.1}, {"path": "b.md", "score": 0.2}], "q", "x", "proj")
     assert n == 1
 
 
 def test_empty_hits_writes_nothing(tmp_path, monkeypatch):
     monkeypatch.setenv("COMPASS_POI_CACHE_DIR", str(tmp_path))
     emit = _load_emit()
-    n = emit([], "q", "x")
+    n = emit([], "q", "x", "proj")
     assert n == 0
     assert not (tmp_path / "poi_candidates.jsonl").exists()
+
+
+def test_carries_normalized_project(tmp_path, monkeypatch):
+    """4-arg signature · project normalized to encoded_cwd form (P0-1 contract:
+    cloud inline emit must match proof/poi_memory_key._normalize_project)."""
+    monkeypatch.setenv("COMPASS_POI_CACHE_DIR", str(tmp_path))
+    emit = _load_emit()
+    n = emit([{"path": "a.md", "score": 0.5}], "q", "actor-1", "C:\\Users\\chunx")
+    assert n == 1
+    r = json.loads((tmp_path / "poi_candidates.jsonl").read_text(encoding="utf-8").strip())
+    assert r["project"] == "C--Users-chunx"
 
 
 # ---- patch application (against a synthetic copy of the live route) -----------
@@ -122,7 +133,7 @@ def test_patch_adds_agent_id_param_and_emit_and_helper(tmp_path):
     out = target.read_text(encoding="utf-8")
     assert "agent_id: Optional[str] = None" in out
     assert "def _v14_emit_poi_candidate(" in out
-    assert "_v14_emit_poi_candidate(_h, q, agent_id)" in out
+    assert "_v14_emit_poi_candidate(_h, q, agent_id, project)" in out
     # patched module must still be importable Python
     compile(out, "patched", "exec")
 
@@ -148,8 +159,9 @@ def test_patched_route_emits_on_real_call(tmp_path, monkeypatch):
           "_call_v14_daemon": lambda req, timeout=None: {"ok": True, "recall": [{"path": "m.md", "score": 0.7}]},
           "_v14_os": os, "_v14_json": json}
     exec(compile(target.read_text(encoding="utf-8"), "patched", "exec"), ns)
-    res = ns["v14_recall"]("hello", agent_id="nautilus-prime-001")
+    res = ns["v14_recall"]("hello", agent_id="nautilus-prime-001", project="C:\\Users\\chunx")
     assert res["ok"] is True
     line = json.loads((tmp_path / "poi" / "poi_candidates.jsonl").read_text(encoding="utf-8").strip())
     assert line["actor"] == "nautilus-prime-001"
     assert line["memory"] == "m.md"
+    assert line["project"] == "C--Users-chunx"

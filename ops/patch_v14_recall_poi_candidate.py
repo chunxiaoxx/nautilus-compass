@@ -14,10 +14,10 @@ GUARD = "_v14_emit_poi_candidate"
 
 # The exact helper deployed into the server. Tested verbatim via exec in
 # tests/test_v14_poi_emission_patch.py (namespace supplies _v14_os, _v14_json).
-EMIT_HELPER = '''def _v14_emit_poi_candidate(hits, query, agent_id):
+EMIT_HELPER = '''def _v14_emit_poi_candidate(hits, query, agent_id, project):
     """Self-contained PoI candidate emission for the v14 recall path.
     One JSONL line per hit -> poi_candidates.jsonl (schema matches
-    proof/poi_emitter: ts/kind/actor/memory/query_hash/rank/score).
+    proof/poi_emitter: ts/kind/actor/project/memory/query_hash/rank/score).
     No proof import (not on this server path) · no self-cite suppression
     (cited memory files are not local to this cloud host). Never raises."""
     if not hits:
@@ -31,6 +31,11 @@ EMIT_HELPER = '''def _v14_emit_poi_candidate(hits, query, agent_id):
     _v14_os.makedirs(cache_dir, exist_ok=True)
     sidecar = _v14_os.path.join(cache_dir, "poi_candidates.jsonl")
     actor = agent_id or "unknown"
+    # normalize project to encoded_cwd form · mirrors
+    # proof/poi_memory_key._normalize_project (inline · no proof import here).
+    proj = (project or "").strip()
+    if ":" in proj or "\\\\" in proj:
+        proj = proj.replace(":\\\\", "--").replace(":/", "--").replace("\\\\", "-").replace("/", "-")
     ts = _dt.now(_tz.utc).isoformat(timespec="seconds")
     q_hash = _hl.sha1((query or "").encode("utf-8")).hexdigest()[:16]
     n = 0
@@ -43,6 +48,7 @@ EMIT_HELPER = '''def _v14_emit_poi_candidate(hits, query, agent_id):
                 "ts": ts,
                 "kind": "candidate",
                 "actor": actor,
+                "project": proj,
                 "memory": mem,
                 "query_hash": q_hash,
                 "rank": rank,
@@ -86,7 +92,7 @@ def apply_patch(target: Path) -> bool:
         '    try:\n'
         '        _h = d.get("recall", [])\n'
         '        if _h and _v14_os.environ.get("COMPASS_NO_POI_CANDIDATE") != "1":\n'
-        '            _v14_emit_poi_candidate(_h, q, agent_id)\n'
+        '            _v14_emit_poi_candidate(_h, q, agent_id, project)\n'
         '    except Exception:\n'
         '        pass\n')
     src = src[:sidx] + emit_block + src[sidx:]
