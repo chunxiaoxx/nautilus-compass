@@ -15,4 +15,7 @@ CREATE TABLE IF NOT EXISTS compass.poi_credit (
 
 -- Phase 1: reuse the existing writable account. Phase 2 introduces a dedicated
 -- poi_writer role and tightens this grant. TODO(Phase 2): move write to poi_writer.
+-- compass_sub needs USAGE on the schema to reference objects in it · table-level
+-- grants alone are insufficient (compass_sub did not previously touch compass.*).
+GRANT USAGE ON SCHEMA compass TO compass_sub;
 GRANT SELECT, INSERT, UPDATE ON compass.poi_credit TO compass_sub;

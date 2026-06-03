@@ -111,7 +111,14 @@ def main() -> int:
     n_local = 0
     n_outcomes = 0
     try:
-        with _poller.db_connection(cfg) as conn:
+        # readonly=dry_run · a real run needs write (UPSERT poi_credit); a
+        # dry-run stays read-only so it physically cannot mutate the cloud.
+        with _poller.db_connection(cfg, readonly=dry_run) as conn:
+            # compass.poi_credit lives in the compass schema · compass_sub's default
+            # search_path excludes it. Set it so the store's unqualified `poi_credit`
+            # resolves (keeps the store SQL backend-agnostic for the sqlite tests).
+            # public stays on path so agent_tool_calls still resolves.
+            conn.cursor().execute("SET search_path TO compass, public")
             # Platform outcomes (agent_tool_calls) · credits platform agents.
             outcomes: list = list(_fetch_outcomes_for(conn, actors, since, WINDOW_S))
 
