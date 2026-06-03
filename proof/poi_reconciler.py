@@ -195,8 +195,14 @@ def reconcile_central(candidates, outcomes, *, conn, settled_keys=None,
     copy in dry-run) so the report shows what WOULD have settled. Truly read-only."""
     if settled_keys is None:
         settled_keys = set()
-    settled = skipped_no_match = skipped_already = skipped_selfcite = 0
+    settled = skipped_no_match = skipped_already = skipped_selfcite = skipped_no_project = 0
     for cand in candidates:
+        # Defensive · a candidate without project derives a degenerate "/file" key
+        # (boost computes "project/file" from the path, so it would never match).
+        # Skip · old pre-project candidates must not pollute the central table.
+        if not (cand.get("project") or "").strip():
+            skipped_no_project += 1
+            continue
         mk = derive_memory_key(cand.get("project", ""), cand.get("memory", ""))  # for upsert_credit
         key = central_candidate_key(cand)  # single definition of the central settled-key
         if key in settled_keys:
@@ -221,4 +227,5 @@ def reconcile_central(candidates, outcomes, *, conn, settled_keys=None,
         settled_keys.add(key)
         settled += 1
     return {"settled": settled, "skipped_no_match": skipped_no_match,
-            "skipped_already": skipped_already, "skipped_selfcite": skipped_selfcite}
+            "skipped_already": skipped_already, "skipped_selfcite": skipped_selfcite,
+            "skipped_no_project": skipped_no_project}

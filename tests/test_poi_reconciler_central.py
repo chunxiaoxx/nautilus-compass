@@ -64,3 +64,14 @@ def test_dry_run_does_not_write_db():
     assert r["settled"] == 1
     cnt = conn.execute("SELECT COUNT(*) FROM poi_credit").fetchone()[0]
     assert cnt == 0
+
+
+def test_empty_project_skipped_no_degenerate_key():
+    # a candidate without project would derive a degenerate "/file" key · must skip
+    conn = _conn()
+    outcomes = [{"agent_id": "a1", "success": True, "ts": "2026-06-03T00:10:00+00:00"}]
+    r = reconcile_central([_cand(project="")], outcomes, conn=conn, settled_keys=set(),
+                          placeholder="?")
+    assert r["settled"] == 0 and r["skipped_no_project"] == 1
+    cnt = conn.execute("SELECT COUNT(*) FROM poi_credit").fetchone()[0]
+    assert cnt == 0  # no degenerate "/m.md" row written
