@@ -300,8 +300,11 @@ def save_watermark(path: str, wm: dict) -> None:
 
 # ------------------------------------------------------------------ db layer
 @contextmanager
-def db_connection(cfg: dict, local_port: int = LOCAL_PORT):
-    """Open ssh tunnel + psycopg2 read-only connection · tear both down."""
+def db_connection(cfg: dict, local_port: int = LOCAL_PORT, readonly: bool = True):
+    """Open ssh tunnel + psycopg2 connection · tear both down.
+
+    readonly defaults True (the poller only reads). The PoI reconcile writer
+    passes readonly=False to UPSERT into compass.poi_credit on the same tunnel."""
     import psycopg2  # local import · pure functions importable without driver
 
     remote_host = cfg.get("host", "localhost")
@@ -331,7 +334,7 @@ def db_connection(cfg: dict, local_port: int = LOCAL_PORT):
             host="127.0.0.1", port=local_port, dbname=dbname,
             user=DB_USER, password=cfg["password"],
             connect_timeout=10, client_encoding="UTF8")
-        conn.set_session(readonly=True, autocommit=True)
+        conn.set_session(readonly=readonly, autocommit=True)
         yield conn
     finally:
         if conn is not None:

@@ -20,6 +20,7 @@ from typing import Optional
 
 from .poi_schema import ProofOfImpact
 from .l1_grouper_compat import parse_session_frontmatter_safe
+from .poi_memory_key import memory_key_from_path
 
 BASE_NAU_PER_ACTION = float(os.environ.get("COMPASS_POI_BASE_NAU", "1.0"))
 SUPPRESS_SELFCITE = os.environ.get("COMPASS_POI_SUPPRESS_SELFCITE", "true").lower() == "true"
@@ -185,16 +186,19 @@ def emit_poi_candidate(top, query: str, agent_id: Optional[str] = None,
                 continue
             # Self-cite suppression · mirrors emit_nau_records · skip when the
             # memory was created by the same agent making the recall.
-            if SUPPRESS_SELFCITE and agent_id:
-                front = parse_session_frontmatter_safe(path)
-                creator = front.get("agent_type", "") or front.get("agent_id", "")
-                if creator == agent_id:
-                    continue
+            front = parse_session_frontmatter_safe(path)
+            creator = front.get("agent_type", "") or front.get("agent_id", "")
+            if SUPPRESS_SELFCITE and agent_id and creator == agent_id:
+                continue
+            mk = memory_key_from_path(path)
+            project = mk.split("/", 1)[0] if mk else os.environ.get("COMPASS_PROJECT_NS", "")
             f.write(json.dumps({
                 "ts": ts,
                 "kind": "candidate",
                 "actor": actor,
+                "project": project,
                 "memory": path.name,
+                "creator": creator,
                 "query_hash": q_hash,
                 "rank": rank,
                 "score": round(float(score), 4),

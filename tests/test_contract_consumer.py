@@ -26,7 +26,6 @@ import json
 import sys
 from pathlib import Path
 
-import pytest
 
 # Ensure repo root on sys.path so `import contract` resolves the project module
 _REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -35,7 +34,6 @@ if str(_REPO_ROOT) not in sys.path:
 
 import contract as contract_mod  # noqa: E402
 from contract import (  # noqa: E402
-    Contract,
     parse_contracts_from_frontmatter,
     scan_sessions_for_contracts,
 )

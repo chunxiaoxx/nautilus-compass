@@ -14,7 +14,6 @@ Exit code 0 if any project was evolved, else 2.
 from __future__ import annotations
 
 import argparse
-import os
 import sys
 from pathlib import Path
 

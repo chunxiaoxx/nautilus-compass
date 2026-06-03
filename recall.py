@@ -1005,9 +1005,9 @@ def render_v02_vector_mode(entries: list, query: str, cache: dict) -> None:
     # equivalent to v0.8). Set COMPASS_NO_POI_BOOST=1 to opt out.
     if os.environ.get("COMPASS_NO_POI_BOOST") != "1":
         try:
-            from recall_pkg.poi_weighting import boost_top_k
-            _before_top = top
-            top = boost_top_k(top)
+            from recall_pkg.poi_weighting import boost_top_k_with_snapshot
+            from recall_pkg.poi_snapshot_cache import get_credit_snapshot
+            top = boost_top_k_with_snapshot(top, get_credit_snapshot())
             # Truncate back to TOP_K after potential re-rank
             top = top[:TOP_K]
         except Exception as _e:
