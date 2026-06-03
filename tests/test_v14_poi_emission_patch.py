@@ -70,6 +70,8 @@ def test_empty_hits_writes_nothing(tmp_path, monkeypatch):
 
 # ---- patch application (against a synthetic copy of the live route) -----------
 
+# Faithful copy of the live cloud route (compass_http_v09.py, v1.5.8 shape:
+# two early-return guards + scope/projects_scanned/fresh_extra success return).
 _LIVE_ROUTE = '''import os
 from typing import Optional
 from fastapi import Header
@@ -88,11 +90,17 @@ def v14_recall(
         req["project"] = project
     d = _call_v14_daemon(req, timeout=15.0)
     if not d:
-        return {"ok": False, "error": "v14 daemon unreachable",
+        return {"ok": False, "error": "v14 daemon unreachable · all ports transport-failed",
+                "backend": "v1.4-bge-m3"}
+    if not d.get("ok"):
+        return {"ok": False, "error": d.get("error", "daemon returned ok=false"),
                 "backend": "v1.4-bge-m3"}
     return {
         "ok": True,
+        "scope": d.get("scope", scope),
+        "projects_scanned": d.get("projects_scanned", []),
         "hits": d.get("recall", []),
+        "fresh_extra": d.get("fresh_extra", []),
         "backend": "v1.4-bge-m3",
     }
 '''
@@ -137,7 +145,7 @@ def test_patched_route_emits_on_real_call(tmp_path, monkeypatch):
         return default
 
     ns = {"app": _App(), "Header": _Header,
-          "_call_v14_daemon": lambda req, timeout=None: {"recall": [{"path": "m.md", "score": 0.7}]},
+          "_call_v14_daemon": lambda req, timeout=None: {"ok": True, "recall": [{"path": "m.md", "score": 0.7}]},
           "_v14_os": os, "_v14_json": json}
     exec(compile(target.read_text(encoding="utf-8"), "patched", "exec"), ns)
     res = ns["v14_recall"]("hello", agent_id="nautilus-prime-001")

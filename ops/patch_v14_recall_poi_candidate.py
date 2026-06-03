@@ -69,13 +69,16 @@ def apply_patch(target: Path) -> bool:
         raise RuntimeError("anchor not found: v14_recall x_tenant_id param")
     src = src[:pidx] + "agent_id: Optional[str] = None,\n    " + src[pidx:]
 
-    # edit 2 · insert emit block after the `if not d:` early-return (within route)
-    ret_anchor = ('    if not d:\n'
-                  '        return {"ok": False, "error": "v14 daemon unreachable",\n'
-                  '                "backend": "v1.4-bge-m3"}\n')
-    ridx = src.find(ret_anchor, didx)
-    if ridx < 0:
-        raise RuntimeError("anchor not found: v14_recall daemon-unreachable return")
+    # edit 2 · insert emit block immediately before the SUCCESS return. Anchored
+    # on the success-return signature (ok:True + scope) rather than the
+    # daemon-unreachable text, which has drifted across versions. At this point
+    # both early-return guards have passed, so `d` holds real hits.
+    success_anchor = ('    return {\n'
+                      '        "ok": True,\n'
+                      '        "scope": d.get("scope", scope),\n')
+    sidx = src.find(success_anchor, didx)
+    if sidx < 0:
+        raise RuntimeError("anchor not found: v14_recall success return")
     emit_block = (
         '    try:\n'
         '        _h = d.get("recall", [])\n'
@@ -83,8 +86,7 @@ def apply_patch(target: Path) -> bool:
         '            _v14_emit_poi_candidate(_h, q, agent_id)\n'
         '    except Exception:\n'
         '        pass\n')
-    insert_at = ridx + len(ret_anchor)
-    src = src[:insert_at] + emit_block + src[insert_at:]
+    src = src[:sidx] + emit_block + src[sidx:]
 
     # edit 3 · prepend the self-contained helper just before the route decorator
     route_anchor = '@app.get("/v1/v14/recall")'
