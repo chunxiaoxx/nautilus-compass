@@ -54,7 +54,9 @@ STATE_FILE = Path(os.environ.get(
     str(Path.home() / ".cache" / "compass" / "cross-agent-outcome-watermark.json"),
 ))
 PROJECTS_BASE = Path.home() / ".claude" / "projects"
-DEFAULT_PROJECT = os.environ.get("COMPASS_SOUL_INGEST_PROJECT", "C--Users-chunx")
+# Dedicated project dir by default · keeps platform cross-agent observations out
+# of the user's personal recall · L3 PoI emitter (P5) reads from here.
+DEFAULT_PROJECT = os.environ.get("COMPASS_SOUL_INGEST_PROJECT", "_l4_cross_agent")
 
 # drift aggregation
 DRIFT_MIN_SAMPLES = int(os.environ.get("COMPASS_SOUL_DRIFT_MIN_SAMPLES", "5"))
