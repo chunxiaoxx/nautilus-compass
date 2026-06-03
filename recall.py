@@ -1237,6 +1237,34 @@ def try_daemon_recall(mem_dir: Path, user_prompt: str) -> bool:
                 print(f"🟢 + 24h 内其他 memory ({len(fresh_extra)} · 当前心智 · 即便低 cosine 也注意):")
                 for e in fresh_extra:
                     print(f"  · [{e['age_str']:>5} old] {e['path']} — {e['description'][:80]}")
+
+        # L2 metamemory · 自知层:fires on empty OR weak recall · the
+        # hallucinate-absence cure — tells the subject LLM when compass has no
+        # reliable evidence so it does not fabricate a "prior finding".
+        # Deterministic by default (no LLM · black-box moat). Never breaks recall.
+        try:
+            from metamemory import build_recall_result, format_metamemory_notice
+            _rr = build_recall_result(user_prompt, recall or [])
+            _notice = format_metamemory_notice(_rr)
+            if _notice:
+                print()
+                print(_notice)
+        except Exception as _e:
+            sys.stderr.write(f"[L2 metamemory] skipped: {_e!r}\n")
+
+        # L3 PoI candidate emission · ALSO fire on the daemon recall path. The
+        # inline path (render_v02_vector_mode) already emits, but production
+        # recall goes through the daemon, so without this candidates never land
+        # → poi_candidates.jsonl stays empty → L3 has 0 events to reconcile.
+        # Adapts the daemon recall dict-list to the (score, entry) shape.
+        # Guarded by COMPASS_NO_POI_CANDIDATE=1. Never breaks recall.
+        try:
+            if recall and os.environ.get("COMPASS_NO_POI_CANDIDATE") != "1":
+                from proof.poi_emitter import emit_poi_candidate
+                _top = [(r.get("score", 0.0), r) for r in recall]
+                emit_poi_candidate(_top, query=user_prompt, agent_id=_resolve_default_actor())
+        except Exception as _e:
+            sys.stderr.write(f"[PoI candidate · daemon] skipped: {_e!r}\n")
         return True
     except Exception as e:
         sys.stderr.write(f"[nautilus-compass daemon] unreachable ({e}) · fallback inline\n")
