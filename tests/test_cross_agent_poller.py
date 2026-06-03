@@ -183,6 +183,36 @@ def test_drift_signal_too_few_samples_no_alert():
     assert sig["n"] == 1
 
 
+# -------------------------------------------------- b2 rollup (anti-flooding)
+def test_b2_rollup_single_file_for_many_agents():
+    # b2 is 125k rows · MUST NOT write per-row files · one rollup summarises all
+    signals = [
+        {"agent_id": "v5", "n": 100, "successes": 95, "success_rate": 0.95, "alert": False},
+        {"agent_id": "kairos", "n": 20, "successes": 6, "success_rate": 0.30, "alert": True},
+    ]
+    fn, md = poller.build_b2_rollup_session_md(signals, window_label="24h")
+    assert fn.startswith("session_") and fn.endswith(".md")
+    assert "xrollup" in fn  # distinct from per-call xacall files
+    assert "v5" in md and "kairos" in md
+    assert "type: cross-agent-drift-rollup" in md
+
+
+def test_b2_rollup_drift_yellow_when_any_alert():
+    sig_ok = [{"agent_id": "v5", "n": 100, "successes": 99, "success_rate": 0.99, "alert": False}]
+    sig_bad = [{"agent_id": "k", "n": 20, "successes": 5, "success_rate": 0.25, "alert": True}]
+    _, ok = poller.build_b2_rollup_session_md(sig_ok, window_label="24h")
+    _, bad = poller.build_b2_rollup_session_md(sig_bad, window_label="24h")
+    assert "drift: green" in ok
+    assert "drift: yellow" in bad
+
+
+def test_b2_rollup_empty_signals_is_stall_marker():
+    # no rows in window -> still emit a marker (daemon-stall / silence is signal)
+    fn, md = poller.build_b2_rollup_session_md([], window_label="24h")
+    assert fn.endswith(".md")
+    assert "no agent tool activity" in md.lower() or "0 agent" in md.lower()
+
+
 # ------------------------------------------------------ watermark state
 def test_watermark_roundtrip(tmp_path: Path):
     p = tmp_path / "wm.json"
