@@ -24,11 +24,19 @@ def derive_memory_key(project: str, filename: str) -> str:
 
 
 def memory_key_from_path(path) -> Optional[str]:
-    """Derive key from a memory file path .../projects/<project>/memory/<file>.
-    Returns None if path is just a filename (project undeterminable)."""
-    s = str(path).replace("\\", "/")
-    parts = s.split("/")
+    """Derive key from a memory file path .../<project>/memory/<file>.
+    Anchors on the literal 'memory' directory segment: project is the segment
+    immediately before it, filename is the last segment. Returns None when the
+    layout doesn't match (bare filename, no 'memory' dir, nothing before it, or
+    'memory' is the last segment) so callers fall back to frontmatter / env NS —
+    never silently mislabel an unrelated path segment as the project."""
+    parts = [p for p in str(path).replace("\\", "/").split("/") if p]
     if len(parts) < 3:
         return None  # filename only or too shallow
-    # <project>/memory/<file>  → project = parts[-3]
-    return derive_memory_key(parts[-3], parts[-1])
+    try:
+        midx = len(parts) - 1 - parts[::-1].index("memory")  # last 'memory' segment
+    except ValueError:
+        return None  # no 'memory' dir → project undeterminable
+    if midx == 0 or midx == len(parts) - 1:
+        return None  # nothing before 'memory' (no project) or it IS the last part
+    return derive_memory_key(parts[midx - 1], parts[-1])
