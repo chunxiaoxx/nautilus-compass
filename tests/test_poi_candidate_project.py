@@ -1,5 +1,4 @@
 import json
-from pathlib import Path
 from proof.poi_emitter import emit_poi_candidate
 
 def test_candidate_carries_project_and_creator(tmp_path):

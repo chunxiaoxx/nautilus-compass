@@ -1,5 +1,4 @@
 import json, time
-from pathlib import Path
 import recall_pkg.poi_snapshot_cache as C
 
 def _write(p, d):

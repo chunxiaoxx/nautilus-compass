@@ -1,5 +1,4 @@
-import json, sqlite3
-from pathlib import Path
+import sqlite3
 from proof.poi_credit_store import (
     upsert_credit, fetch_all_credits, write_snapshot_atomic, load_snapshot,
 )

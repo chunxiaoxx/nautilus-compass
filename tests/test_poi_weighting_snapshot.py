@@ -1,4 +1,3 @@
-import math
 from recall_pkg.poi_weighting import apply_poi_boost_value, boost_top_k_with_snapshot
 
 

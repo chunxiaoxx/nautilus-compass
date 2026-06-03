@@ -3,7 +3,6 @@ compass_http_v09.py). Mirrors the emission patch test: exec the helper into a
 namespace supplying _v14_os, then assert rerank behavior. NO daemon needed."""
 import os
 import json
-import pytest
 
 from ops.patch_v14_recall_poi_boost import BOOST_HELPER
 
