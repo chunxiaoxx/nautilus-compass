@@ -19,7 +19,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
@@ -44,18 +44,26 @@ def outcome_to_action_outcome(outcome: dict) -> str:
 
 def _parse_ts(ts) -> Optional[datetime]:
     if isinstance(ts, datetime):
-        return ts
-    if not ts:
+        dt = ts
+    elif not ts:
         return None
-    try:
-        return datetime.fromisoformat(str(ts).replace("Z", "+00:00"))
-    except ValueError:
-        return None
+    else:
+        try:
+            dt = datetime.fromisoformat(str(ts).replace("Z", "+00:00"))
+        except ValueError:
+            return None
+    # H1 · normalize naive timestamps to UTC so candidate (always aware) and
+    # platform outcomes (may be naive) compare without TypeError.
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt
 
 
 def candidate_key(cand: dict) -> str:
-    """Stable idempotency key for one candidate line."""
-    raw = "|".join(str(cand.get(k, "")) for k in ("ts", "actor", "memory", "query_hash"))
+    """Stable idempotency key · (actor, memory, query) WITHOUT second-level ts,
+    so the same memory recalled for the same query in different seconds shares a
+    key and a single outcome cannot double-credit it (M2)."""
+    raw = "|".join(str(cand.get(k, "")) for k in ("actor", "memory", "query_hash"))
     return hashlib.sha1(raw.encode("utf-8")).hexdigest()[:20]
 
 
@@ -140,6 +148,14 @@ def reconcile(candidates: list, outcomes: list, *, settled_keys: Optional[set] =
         if not memory:
             skipped_no_match += 1
             continue
+        # M1 · only settle if the cited memory file actually exists · otherwise
+        # emit_full would update no frontmatter = a fake closed loop. Skip
+        # WITHOUT burning the key (retryable once the file shows up).
+        root = Path(memory_root) if memory_root else None
+        mem_path = root / memory if (root and not Path(memory).is_absolute()) else Path(memory)
+        if not mem_path.exists():
+            skipped_no_match += 1
+            continue
         poi = ProofOfImpact(
             action_id=f"recon-{key}",
             agent_id=cand["actor"],
@@ -149,7 +165,6 @@ def reconcile(candidates: list, outcomes: list, *, settled_keys: Optional[set] =
             timestamp_outcome=str(outcome.get("ts", "")),
             notes=f"reconciled from L4 outcome of {cand['actor']}",
         )
-        root = Path(memory_root) if memory_root else None
         compute_with_drift(poi, memory_root=root)
         emit_full(poi, cache_dir=Path(cache_dir) if cache_dir else None, memory_root=root)
         settled_keys.add(key)
