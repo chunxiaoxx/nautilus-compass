@@ -24,7 +24,10 @@ EMIT_HELPER = '''def _v14_emit_poi_candidate(hits, query, agent_id):
         return 0
     import hashlib as _hl
     from datetime import datetime as _dt, timezone as _tz
-    cache_dir = _v14_os.environ.get("COMPASS_POI_CACHE_DIR", "/home/ubuntu/compass/.cache/poi")
+    # NOTE default MUST be a systemd ReadWritePaths dir · the service runs with
+    # ProtectHome=read-only + ProtectSystem=strict, so /home/ubuntu/compass is
+    # read-only · writes there fail silently. /var/lib/compass is RW + persistent.
+    cache_dir = _v14_os.environ.get("COMPASS_POI_CACHE_DIR", "/var/lib/compass/poi")
     _v14_os.makedirs(cache_dir, exist_ok=True)
     sidecar = _v14_os.path.join(cache_dir, "poi_candidates.jsonl")
     actor = agent_id or "unknown"
