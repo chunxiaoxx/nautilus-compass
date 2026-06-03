@@ -88,7 +88,7 @@ def main() -> int:
         return 0
 
     settled_keys = R.load_settled(settled_path)
-    pending = [c for c in candidates if R.candidate_key(c) not in settled_keys]
+    pending = [c for c in candidates if R.central_candidate_key(c) not in settled_keys]
     if not pending:
         print(f"all {len(candidates)} candidates already settled")
         return 0

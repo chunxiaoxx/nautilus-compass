@@ -69,6 +69,14 @@ def candidate_key(cand: dict) -> str:
     return hashlib.sha1(raw.encode("utf-8")).hexdigest()[:20]
 
 
+def central_candidate_key(cand: dict) -> str:
+    """The idempotency key reconcile_central settles on · uses the project-derived
+    memory_key so the same memory under different projects doesn't collide and the
+    cron pre-filter matches what reconcile_central persists."""
+    mk = derive_memory_key(cand.get("project", ""), cand.get("memory", ""))
+    return candidate_key({**cand, "memory": mk})
+
+
 def match_outcome(cand: dict, outcomes: list, window_seconds: int = DEFAULT_WINDOW_S) -> Optional[dict]:
     """Earliest outcome by the same actor strictly after the candidate, in window."""
     c_ts = _parse_ts(cand.get("ts"))
@@ -189,8 +197,8 @@ def reconcile_central(candidates, outcomes, *, conn, settled_keys=None,
         settled_keys = set()
     settled = skipped_no_match = skipped_already = skipped_selfcite = 0
     for cand in candidates:
-        mk = derive_memory_key(cand.get("project", ""), cand.get("memory", ""))
-        key = candidate_key({**cand, "memory": mk})  # key includes project
+        mk = derive_memory_key(cand.get("project", ""), cand.get("memory", ""))  # for upsert_credit
+        key = central_candidate_key(cand)  # single definition of the central settled-key
         if key in settled_keys:
             skipped_already += 1
             continue

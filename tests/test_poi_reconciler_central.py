@@ -1,5 +1,5 @@
 import sqlite3
-from proof.poi_reconciler import reconcile_central
+from proof.poi_reconciler import reconcile_central, central_candidate_key, candidate_key
 
 CREATE = ("CREATE TABLE poi_credit (memory_key TEXT PRIMARY KEY, cumulative_impact REAL "
           "NOT NULL DEFAULT 0, event_count INTEGER NOT NULL DEFAULT 0, last_impact_at TEXT)")
@@ -38,6 +38,21 @@ def test_selfcite_dropped():
     outcomes = [{"agent_id": "a1", "success": True, "ts": "2026-06-03T00:10:00+00:00"}]
     r = reconcile_central([_cand(creator="a1")], outcomes, conn=conn, settled_keys=settled, placeholder="?")
     assert r["settled"] == 0 and r.get("skipped_selfcite") == 1
+
+
+def test_central_key_matches_what_settle_persists():
+    # The key the cron pre-filter computes (central_candidate_key on the RAW
+    # candidate) must equal the key reconcile_central actually persists into
+    # settled_keys. Otherwise the pre-filter never matches → unbounded re-work.
+    conn = _conn(); settled = set()
+    raw = _cand()
+    outcomes = [{"agent_id": "a1", "success": True, "ts": "2026-06-03T00:10:00+00:00"}]
+    r = reconcile_central([raw], outcomes, conn=conn, settled_keys=settled, placeholder="?")
+    assert r["settled"] == 1
+    # what the cron pre-filter would compute IS in the persisted set
+    assert central_candidate_key(raw) in settled
+    # and it differs from the raw key (proves the original bug: raw != central)
+    assert central_candidate_key(raw) != candidate_key(raw)
 
 
 def test_dry_run_does_not_write_db():
