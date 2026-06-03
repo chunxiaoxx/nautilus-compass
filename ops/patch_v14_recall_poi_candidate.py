@@ -14,10 +14,15 @@ GUARD = "_v14_emit_poi_candidate"
 
 # The exact helper deployed into the server. Tested verbatim via exec in
 # tests/test_v14_poi_emission_patch.py (namespace supplies _v14_os, _v14_json).
-EMIT_HELPER = '''def _v14_emit_poi_candidate(hits, query, agent_id, project):
+EMIT_HELPER = '''def _v14_emit_poi_candidate(hits, query, agent_id):
     """Self-contained PoI candidate emission for the v14 recall path.
     One JSONL line per hit -> poi_candidates.jsonl (schema matches
     proof/poi_emitter: ts/kind/actor/project/memory/query_hash/rank/score).
+    `project` is derived PER HIT from each hit's own `project` field — under
+    scope=user one recall returns hits from DIFFERENT projects, and the daemon
+    already tags each hit with its source project. A single query-param project
+    (the requester's context) would mislabel cross-project hits. Mirrors the
+    local emitter (project from the memory file path).
     No proof import (not on this server path) · no self-cite suppression
     (cited memory files are not local to this cloud host). Never raises."""
     if not hits:
@@ -31,11 +36,6 @@ EMIT_HELPER = '''def _v14_emit_poi_candidate(hits, query, agent_id, project):
     _v14_os.makedirs(cache_dir, exist_ok=True)
     sidecar = _v14_os.path.join(cache_dir, "poi_candidates.jsonl")
     actor = agent_id or "unknown"
-    # normalize project to encoded_cwd form · mirrors
-    # proof/poi_memory_key._normalize_project (inline · no proof import here).
-    proj = (project or "").strip()
-    if ":" in proj or "\\\\" in proj:
-        proj = proj.replace(":\\\\", "--").replace(":/", "--").replace("\\\\", "-").replace("/", "-")
     ts = _dt.now(_tz.utc).isoformat(timespec="seconds")
     q_hash = _hl.sha1((query or "").encode("utf-8")).hexdigest()[:16]
     n = 0
@@ -44,6 +44,11 @@ EMIT_HELPER = '''def _v14_emit_poi_candidate(hits, query, agent_id, project):
             mem = h.get("path") or h.get("memory")
             if not mem:
                 continue
+            # normalize each hit's own project to encoded_cwd form · mirrors
+            # proof/poi_memory_key._normalize_project (inline · no proof import).
+            proj = (h.get("project") or "").strip()
+            if ":" in proj or "\\\\" in proj:
+                proj = proj.replace(":\\\\", "--").replace(":/", "--").replace("\\\\", "-").replace("/", "-")
             f.write(_v14_json.dumps({
                 "ts": ts,
                 "kind": "candidate",
@@ -92,7 +97,7 @@ def apply_patch(target: Path) -> bool:
         '    try:\n'
         '        _h = d.get("recall", [])\n'
         '        if _h and _v14_os.environ.get("COMPASS_NO_POI_CANDIDATE") != "1":\n'
-        '            _v14_emit_poi_candidate(_h, q, agent_id, project)\n'
+        '            _v14_emit_poi_candidate(_h, q, agent_id)\n'
         '    except Exception:\n'
         '        pass\n')
     src = src[:sidx] + emit_block + src[sidx:]
