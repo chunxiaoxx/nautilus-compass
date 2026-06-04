@@ -239,6 +239,47 @@ COSINE_MIN = float(os.environ.get("ZMM_COSINE_MIN", "0.35"))
 DRIFT_ALERT_THRESHOLD = float(os.environ.get("ZMM_DRIFT_THRESHOLD", "-0.032"))  # m3+hard 后 best Youden J
 NEG_ANCHOR_HIT_THRESHOLD = float(os.environ.get("ZMM_NEG_HIT_THRESHOLD", "0.538"))
 
+# ─── v2 shadow drift detector (2026-05-27 · study-validated · SHADOW ONLY · 不 enforce · R1 护栏不变) ───
+# 研究 compass-value-study 证:生产 should_alert(neg_cos≥0.538 OR)在工具调用流 29% alert / ~10% precision
+# (90% 误报)。v2 = rule_alert(危险命令正则) OR drift_score < V2_THRESH · 全量 alert ~0.4% · 仅记 log 供比对,
+# 不改实际 should_alert(R1-R5 护栏不变)。清理在途重构后可据真实流量比对决定是否 enforce。
+ZMM_DRIFT_V2_THRESH = float(os.environ.get("ZMM_DRIFT_V2_THRESH", "-0.07"))
+import re as _re_v2
+_V2_RULES = [
+    _re_v2.compile(r"\brm\s+-[a-z]*r[a-z]*\b"),                                   # 0 rm -r* 递归删除
+    _re_v2.compile(r"git\s+push\b.*(--force\b|\s-f\b)"),                          # 1 force push
+    _re_v2.compile(r"git\s+reset\s+--hard"),                                      # 2
+    _re_v2.compile(r"git\s+clean\s+-[a-z]*[fdx]"),                                # 3
+    _re_v2.compile(r"taskkill\b.*/IM\b", _re_v2.I),                               # 4 无差别杀
+    _re_v2.compile(r"\b(killall|pkill)\b"),                                       # 5
+    _re_v2.compile(r"\b(DROP\s+(DATABASE|TABLE)|TRUNCATE\s+TABLE?)\b", _re_v2.I), # 6
+    _re_v2.compile(r"DELETE\s+FROM\b(?!.*\bWHERE\b)", _re_v2.I | _re_v2.S),       # 7 DELETE 无 WHERE
+    _re_v2.compile(r"chmod\s+(-R\s+)?777\b"),                                     # 8
+    _re_v2.compile(r"\bsk-[A-Za-z0-9]{16,}"),                                     # 9 硬编码 key
+    _re_v2.compile(r"(api[_-]?key|password|secret|token)\s*[=:]\s*[\"'][^\"'\s]{12,}[\"']", _re_v2.I),  # 10
+]
+_V2_SAFE_RM = _re_v2.compile(
+    r"(node_modules|/dist\b|\bdist\b|/build\b|\.cache|__pycache__|\.tmp\b|/tmp/|\.swc\b|\.tgz|\.tar|"
+    r"\.zip|\.log\b|\.lock\b|package-lock|\.npmrc|hf_stage|\.next\b|\.turbo|coverage|\.pytest_cache|\.mypy_cache)",
+    _re_v2.I)
+_V2_SAFE_KILL = _re_v2.compile(r"(killall|pkill)\b[^\n;|&]*?-f\s+\S*(/|\.py|\.js|\.sh|\.cjs)\S*", _re_v2.I)
+_V2_META = _re_v2.compile(r"^(Edit|Write|Read|MultiEdit):.*(rule_drift|dangerous-commands|_V2_RULES|_RULES)", _re_v2.I)
+
+
+def _shadow_rule_alert(query: str) -> bool:
+    """SHADOW · rule-based 危险动作检测(faithful to compass-value-study/lib/rule_drift.py)。"""
+    q = query or ""
+    if _V2_META.search(q):
+        return False
+    for i, rx in enumerate(_V2_RULES):
+        if rx.search(q):
+            if i == 0 and _V2_SAFE_RM.search(q):    # rm -r* 删构建/临时 · 低危
+                continue
+            if i == 5 and _V2_SAFE_KILL.search(q):  # pkill -f 具体脚本 · 非无差别
+                continue
+            return True
+    return False
+
 
 def log(msg: str) -> None:
     LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
@@ -711,12 +752,18 @@ def handle_request(req: dict) -> dict:
                 (round(raw_c, 3), txt) for _, _, raw_c, txt in neg_pairs
                 if raw_c >= NEG_ANCHOR_HIT_THRESHOLD
             ][:5]
-            should_alert = drift_score < DRIFT_ALERT_THRESHOLD or bool(neg_hits)
+            # v2 cutover (2026-06-01) · 弃 neg_cos≥0.538 OR 分支 —— 11.5k 条真实流量证它
+            # 64.5% 逢触必报(benign neg_cos 0.60-0.69 与 drift 完全重叠)· 致 act_on 仅 9.87%。
+            # 改 rule_alert(危险命令正则) OR drift_score<V2_THRESH · 实测 0.5% alert · 高精度。
+            # (5/31 reconcile: Projects 线 drift/firing.py::should_fire_drift 保留作未来 A/B · 当前 active=v2)
+            rule_hit = _shadow_rule_alert(query)
+            should_alert = rule_hit or drift_score < ZMM_DRIFT_V2_THRESH
             result["drift"] = {
                 "score": drift_score,
                 "alignment": round(pos_cos, 4),
                 "deviation": round(neg_cos, 4),
                 "should_alert": should_alert,
+                "rule_hit": rule_hit,
                 "top_neg_hits": neg_hits[:3],
                 "n_pos": anchors["n_pos"],
                 "n_neg": anchors["n_neg"],
@@ -739,6 +786,11 @@ def handle_request(req: dict) -> dict:
             "fresh_n": len(result.get("fresh_extra") or []),
             "drift_score": (result.get("drift") or {}).get("score"),
             "drift_alert": (result.get("drift") or {}).get("should_alert"),
+            # v2 是 active firing 路径(reconcile 后)· 保留 rule_hit + drift_alert_v2 供 log 连续性
+            "rule_hit": _shadow_rule_alert(query),
+            "drift_alert_v2": bool(
+                _shadow_rule_alert(query)
+                or (((result.get("drift") or {}).get("score") or 0) < ZMM_DRIFT_V2_THRESH)),
         }
         with open(log_path, "a", encoding="utf-8") as f:
             f.write(json.dumps(entry, ensure_ascii=False) + "\n")
