@@ -8,13 +8,13 @@
     "url": "https://github.com/chunxiaoxx/nautilus-compass",
     "source": "github"
   },
-  "version": "1.6.2",
+  "version": "2.1.0",
   "packages": [
     {
       "registryType": "pypi",
       "registryBaseUrl": "https://pypi.org",
       "identifier": "nautilus-compass",
-      "version": "1.6.2",
+      "version": "2.1.0",
       "transport": {
         "type": "stdio"
       },
