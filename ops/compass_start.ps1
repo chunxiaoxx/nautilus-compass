@@ -32,6 +32,7 @@ $script:CompassProjectPaths = @{
     "zenmind"    = "C:\Users\chunx\quantum-buddha-project"
     "chunx"      = "C:\Users\chunx"
     "compass"    = "C:\Users\chunx"
+    "hr"         = "C:\Users\chunx"
     "agent"      = "C:\Users\chunx\Projects\nautilus-v5"
     "superagent" = "C:\Users\chunx\Projects\nautilus-v5"
 }
@@ -163,5 +164,6 @@ function nautilus { cstart nautilus }
 function venture  { cstart vdr      }
 function zen      { cstart zen      }
 function chunx    { cstart chunx    }
+function hr       { cstart hr       }
 function agent    { cstart agent    }
 
