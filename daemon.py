@@ -109,6 +109,12 @@ _RERANKER_LOCK = threading.Lock()
 # Default OFF: no memory is ever hidden until explicitly enabled.
 _PROD_LIFECYCLE_USE = os.environ.get("COMPASS_PROD_LIFECYCLE", "0") == "1"
 
+# v2.3.0 · opt-in gemini query rewrite before recall · COMPASS_PROD_QUERY_REWRITE=1
+# (also needs COMPASS_USE_GEMINI_FLASH). LLM contact isolated in query_rewrite.py;
+# any failure falls back to the original query. Default OFF: daemon recall is
+# byte-identical, zero LLM (black-box hot path preserved).
+_PROD_QUERY_REWRITE_USE = os.environ.get("COMPASS_PROD_QUERY_REWRITE", "0") == "1"
+
 
 def _tokenize_for_bm25(text: str) -> list:
     """v2.1.0 · Whitespace + lowercase + CJK char tokenizer for BM25."""
@@ -719,6 +725,16 @@ def handle_request(req: dict) -> dict:
         return {"ok": False, "error": f"scope must be 'project' or 'user', got {scope!r}"}
     if not query:
         return {"ok": False, "error": "empty query"}
+
+    # v2.3.0 · opt-in gemini query rewrite (recall actions only) · default off =
+    # no LLM, query unchanged. LLM contact + all failure-handling isolated in
+    # query_rewrite.rewrite_query (returns the original query on any fault).
+    if _PROD_QUERY_REWRITE_USE and action in ("recall", "both"):
+        try:
+            import query_rewrite as _qr
+            query = _qr.rewrite_query(query)
+        except Exception as _qe:
+            log(f"query rewrite failed · using original: {_qe}")
 
     # v2.0.7 · P9 · recall result cache lookup before encode/scoring
     _p9_key = _p9_cache_key(action, query, project, top_k, scope, agent_type)
