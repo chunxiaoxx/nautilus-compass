@@ -340,6 +340,19 @@ def _make_rpc_error(msg_id, code: int, message: str) -> bytes:
     return (json.dumps(resp) + "\n").encode("utf-8")
 
 
+def _decode_line(raw: bytes) -> str:
+    """Decode one stdin line as UTF-8 — the MCP JSON-RPC stream is ALWAYS UTF-8.
+
+    Do NOT rely on text-mode sys.stdin: on a Chinese Windows host it defaults to
+    gbk + surrogateescape, which turns a CJK obs name's UTF-8 bytes into lone
+    surrogates (\\udcXX). Those survive json.dumps (as \\uXXXX escapes) and then
+    detonate cloud-side on strict utf-8 re-encode → "tool ingest_obs failed:
+    surrogates not allowed" (the 跨设备 obs ingest bug, 2026-06-05). errors=
+    'replace' keeps the bridge crash-proof on a stray non-utf8 byte without ever
+    producing a surrogate."""
+    return raw.decode("utf-8", errors="replace")
+
+
 def _pump_in_to_cloud(cloud) -> None:
     """stdin → (local stub | local daemon | inject auth → cloud TCP) / stdout.
 
@@ -348,7 +361,10 @@ def _pump_in_to_cloud(cloud) -> None:
     return a JSON-RPC error to the caller.
     """
     cloud_available = cloud is not None
-    for raw in sys.stdin:
+    # read BINARY stdin and decode UTF-8 ourselves · text-mode sys.stdin uses the
+    # Windows console code page (gbk) which corrupts CJK into lone surrogates.
+    for raw_bytes in sys.stdin.buffer:
+        raw = _decode_line(raw_bytes)
         if not raw.strip():
             continue
         line = raw.rstrip("\n")
