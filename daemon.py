@@ -103,6 +103,12 @@ _RERANK_CANDIDATES = int(os.environ.get("COMPASS_RERANK_CANDIDATES", "30"))
 _RERANKER_SINGLETON = None  # lazy in-process singleton (loaded on first use)
 _RERANKER_LOCK = threading.Lock()
 
+# v2.3.0 · production lifecycle forget-filter · opt-in via COMPASS_PROD_LIFECYCLE=1
+# Activates the dormant LLM-WIKI2 Ebbinghaus forgetting (README:104) in recall:
+# drops entries whose forget_at has passed. Pure schema arithmetic (no LLM).
+# Default OFF: no memory is ever hidden until explicitly enabled.
+_PROD_LIFECYCLE_USE = os.environ.get("COMPASS_PROD_LIFECYCLE", "0") == "1"
+
 
 def _tokenize_for_bm25(text: str) -> list:
     """v2.1.0 · Whitespace + lowercase + CJK char tokenizer for BM25."""
@@ -205,6 +211,32 @@ def _rerank_top(query, top, top_k):
     except Exception as e:
         log(f"reranker failed · fallback to dense order: {e}")
         return top[:top_k]
+
+
+def _apply_lifecycle_filter(entries):
+    """v2.3.0 · production lifecycle forget-filter (opt-in COMPASS_PROD_LIFECYCLE).
+
+    Drops entries whose forget_at has passed (LLM-WIKI2 Ebbinghaus Rule C),
+    reusing recall.promote_lifecycle_tier()'s archived flag. Pure arithmetic, no
+    LLM. Flag off → passthrough. A malformed / unparseable forget_at is never
+    treated as forgotten (fail-safe: a memory is only hidden when the daemon is
+    certain its forget time has passed)."""
+    if not _PROD_LIFECYCLE_USE:
+        return entries
+    try:
+        from recall import promote_lifecycle_tier
+    except Exception as e:
+        log(f"lifecycle filter import failed · passthrough: {e}")
+        return entries
+    kept = []
+    for e in entries:
+        try:
+            if promote_lifecycle_tier(e).get("archived"):
+                continue
+        except Exception:
+            pass  # fail-safe: keep on any error
+        kept.append(e)
+    return kept
 
 # v2.0.9 · inotify-based cache invalidation · Layer 2 cure for 23k-file dir scan
 _INOTIFY_USE = os.environ.get("COMPASS_USE_INOTIFY", "1") == "1"
@@ -460,6 +492,8 @@ def parse_memory_file(path: Path) -> dict:
         "age_seconds": age_s, "age_str": age_str,
         "embed_text": (fm.get("description","") + "\n" + body)[:EMBED_MAX_CHARS],
         "mtime": path.stat().st_mtime,
+        # v2.3.0 · lifecycle · surface forget_at for production forget-filter
+        "forget_at": fm.get("forget_at", ""),
     }
 
 
@@ -738,6 +772,9 @@ def handle_request(req: dict) -> dict:
                 if "project" not in e:
                     e["project"] = proj_name
                 all_entries.append(e)
+        # v2.3.0 · lifecycle forget-filter (opt-in COMPASS_PROD_LIFECYCLE=1) ·
+        # drop forgotten memories before scoring; default off = no-op.
+        all_entries = _apply_lifecycle_filter(all_entries)
         scored = []
         for e in all_entries:
             if not e.get("embedding"): continue
