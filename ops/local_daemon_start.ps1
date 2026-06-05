@@ -21,7 +21,9 @@ param(
     [switch]$Status
 )
 
-$script:DaemonScript = "C:\Users\chunx\.claude\plugins\nautilus-compass\.cache\cloud-daemon.py"
+# 2026-06-01 · v1 回归雷修复 · 从 .cache/cloud-daemon.py (584 行 v1) 重指到 daemon.py (v2 · drift cutover)
+# 之前 watchdog respawn 拉的是 cutover 前的 v1 · 注释一直写 daemon.py 但变量指向 cloud-daemon.py
+$script:DaemonScript = "C:\Users\chunx\.claude\plugins\nautilus-compass\daemon.py"
 $script:CacheDir     = "C:\Users\chunx\.claude\plugins\nautilus-compass\.cache"
 $script:LogFile      = Join-Path $script:CacheDir "local-daemon.log"
 $script:PidFile      = Join-Path $script:CacheDir "local-daemon.pid"

@@ -3,6 +3,7 @@
 Writes PoI events to:
   - ~/.claude/plugins/nautilus-compass/.cache/poi_emit.jsonl (NAU sidecar)
   - ~/.claude/plugins/nautilus-compass/.cache/poi_events.jsonl (full event log)
+  - ~/.claude/plugins/nautilus-compass/.cache/poi_candidates.jsonl (B.5 · recall-time candidates · no outcome)
   - frontmatter cumulative_impact / impact_event_count / last_impact_at (in-place update on cited memory files)
 
 NO LLM. Pure file I/O + frontmatter mutation.
@@ -10,6 +11,7 @@ Reference: paper/SPEC_PROOF_OF_IMPACT.md section 5.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 from datetime import datetime, timezone
@@ -18,6 +20,7 @@ from typing import Optional
 
 from .poi_schema import ProofOfImpact
 from .l1_grouper_compat import parse_session_frontmatter_safe
+from .poi_memory_key import memory_key_from_path
 
 BASE_NAU_PER_ACTION = float(os.environ.get("COMPASS_POI_BASE_NAU", "1.0"))
 SUPPRESS_SELFCITE = os.environ.get("COMPASS_POI_SUPPRESS_SELFCITE", "true").lower() == "true"
@@ -25,6 +28,7 @@ SUPPRESS_SELFCITE = os.environ.get("COMPASS_POI_SUPPRESS_SELFCITE", "true").lowe
 DEFAULT_CACHE_DIR = Path.home() / ".claude" / "plugins" / "nautilus-compass" / ".cache"
 NAU_SIDECAR = "poi_emit.jsonl"
 EVENT_LOG = "poi_events.jsonl"
+CANDIDATE_SIDECAR = "poi_candidates.jsonl"
 
 
 def emit_nau_records(poi: ProofOfImpact, cache_dir: Optional[Path] = None) -> int:
@@ -130,6 +134,77 @@ def update_frontmatter_cumulative(memory_path: Path, impact_delta: float,
     new_text = "---\n" + "\n".join(new_lines) + body
     memory_path.write_text(new_text, encoding="utf-8")
     return True
+
+
+def _resolve_entry_path(entry: dict) -> Optional[Path]:
+    """Pull a Path out of an entry dict · prefer 'fullpath' (production
+    recall.py shape) over 'path' (which is filename only in production but
+    may be a full Path in tests). Returns None if neither field present."""
+    full = entry.get("fullpath")
+    if full:
+        return Path(full)
+    raw = entry.get("path")
+    if raw is None:
+        return None
+    return raw if isinstance(raw, Path) else Path(raw)
+
+
+def emit_poi_candidate(top, query: str, agent_id: Optional[str] = None,
+                       cache_dir: Optional[Path] = None) -> int:
+    """Emit recall-time PoI *candidates* (no outcome yet) · one JSONL line per
+    non-self-cited memory in ``top`` to ``poi_candidates.jsonl``.
+
+    Distinct from ``emit_nau_records``: a candidate captures "these memories
+    were surfaced to the actor at recall time" · the downstream action
+    outcome is not yet known. Reconciled later when a real PoI event lands.
+
+    Args:
+        top: list of ``(score, entry_dict)`` tuples as produced by
+             ``render_v02_vector_mode`` · ``entry_dict`` must carry a path
+             (preferred field: ``fullpath`` · fallback: ``path``).
+        query: the user query that produced ``top`` · hashed (not stored raw).
+        agent_id: actor who made the recall · ``None`` → ``"unknown"``.
+        cache_dir: target dir · ``None`` → ``DEFAULT_CACHE_DIR``.
+
+    Returns:
+        int · number of candidate lines written (after self-cite suppression).
+    """
+    if cache_dir is None:
+        cache_dir = DEFAULT_CACHE_DIR
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    sidecar = cache_dir / CANDIDATE_SIDECAR
+
+    actor = agent_id or "unknown"
+    ts = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    q_hash = hashlib.sha1((query or "").encode("utf-8")).hexdigest()[:16]
+
+    count = 0
+    with sidecar.open("a", encoding="utf-8") as f:
+        for rank, (score, entry) in enumerate(top):
+            path = _resolve_entry_path(entry)
+            if path is None:
+                continue
+            # Self-cite suppression · mirrors emit_nau_records · skip when the
+            # memory was created by the same agent making the recall.
+            front = parse_session_frontmatter_safe(path)
+            creator = front.get("agent_type", "") or front.get("agent_id", "")
+            if SUPPRESS_SELFCITE and agent_id and creator == agent_id:
+                continue
+            mk = memory_key_from_path(path)
+            project = mk.split("/", 1)[0] if mk else os.environ.get("COMPASS_PROJECT_NS", "")
+            f.write(json.dumps({
+                "ts": ts,
+                "kind": "candidate",
+                "actor": actor,
+                "project": project,
+                "memory": path.name,
+                "creator": creator,
+                "query_hash": q_hash,
+                "rank": rank,
+                "score": round(float(score), 4),
+            }, ensure_ascii=False) + "\n")
+            count += 1
+    return count
 
 
 def emit_full(poi: ProofOfImpact, cache_dir: Optional[Path] = None,
