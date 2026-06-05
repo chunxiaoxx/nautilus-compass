@@ -57,6 +57,23 @@ not the field-mismatch the v14 adapter has. Testing the actual v14 route, and
 the field-alignment fix (Task 2.2), needs the v14 endpoint reachable from here
 or cloud access (**G-cloud**).
 
+### Update · 3rd recall after ~25 min (lag largely ruled out)
+A third recall ~25 min after the ingest (elapsed across T1.4 eval + T1.5 + T2
+docs + T3 adapter + T4 demo) STILL shows the probe absent from both top-k and
+`fresh_extra` (newest fresh_extra entry unchanged at 3.4h old). Other ~3.4h
+memories ARE indexed, so the cloud daemon did rescan in this window — yet the
+19:07 xdev-probe never appears. Three recalls over ~25 min ⇒ this is NOT
+sub-minute indexing lag. **Verdict: a genuine cross-device round-trip gap** —
+the obs the v0.9 `ingest_obs` reported as written does not land in (or is not
+indexed from) the dir the cloud recall daemon scans. This confirms the
+diagnosis's "跨设备 ingest 疑似静默失败" hypothesis to the extent reachable
+without cloud access. The decisive ROOT CAUSE (wrong landing dir vs unwatched
+dir vs rescan-never vs different host's ~/.claude) needs cloud FS/log inspection
+= **G-cloud**.
+
+Orphan note: the probe `session_20260605-1907_xdev-probe-9173.md` may be sitting
+un-indexed on the cloud host; cleanup needs G-cloud.
+
 ## Status / next
 - Finding 1 (CJK surrogate): actionable; fix side (client vs server) TBD.
 - Finding 2 (round-trip gap): strong preliminary evidence; final verdict gated
