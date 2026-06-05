@@ -19,15 +19,20 @@ from typing import Optional
 import llm_opt_in
 from judges import gemini_flash
 
-# one-line, low-temperature rewrite · the model gets only the transient query
+# one-line, low-temperature expansion · AUGMENT (not replace): the model returns
+# EXTRA synonym terms; we append them to the original query so domain jargon is
+# never lost. Live evidence (2026-06-05): a replace-style rewrite turned "PoI"
+# (Proof of Impact) into "Point" — a wrong expansion that would hurt recall.
+# Augmenting keeps the original "PoI" token, so the expansion can only add signal.
 _PROMPT = (
-    "Rewrite this memory-search query to maximize retrieval recall: expand "
-    "abbreviations, add 2-3 synonyms, keep it to ONE line. Return ONLY the "
-    "rewritten query with no preamble or quotes.\n\nQuery: {query}"
+    "Given this memory-search query, list 3-6 ADDITIONAL keywords or synonyms "
+    "that would help retrieve relevant memories. Do NOT repeat the original "
+    "words, do NOT rewrite or explain — output ONLY extra terms, one line, "
+    "space-separated, no preamble or quotes.\n\nQuery: {query}"
 )
 
-# sanity cap · a rewrite far longer than the input is almost certainly the model
-# rambling (preamble / explanation) → reject and fall back.
+# sanity cap · an expansion far longer than a keyword list is almost certainly
+# the model rambling (preamble / explanation) → reject and fall back.
 _MAX_OUT_CHARS = 600
 
 
@@ -47,8 +52,10 @@ def rewrite_query(query: str, judge: Optional[object] = None) -> str:
         return query
     if not out or not out.strip():
         return query
-    # take the first non-empty line, strip quotes/space
-    first = out.strip().splitlines()[0].strip().strip('"').strip("'").strip()
-    if not first or len(first) > _MAX_OUT_CHARS:
+    # take the first non-empty line of extra terms, strip quotes/space
+    expansion = out.strip().splitlines()[0].strip().strip('"').strip("'").strip()
+    if not expansion or len(expansion) > _MAX_OUT_CHARS:
         return query
-    return first
+    # AUGMENT: original query always preserved · expansion only adds signal,
+    # so a wrong expansion (e.g. PoI→Point) can't drop the original token.
+    return f"{query} {expansion}"

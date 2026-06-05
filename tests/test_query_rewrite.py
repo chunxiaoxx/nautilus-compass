@@ -50,12 +50,21 @@ def test_provider_off_is_identity(monkeypatch):
     assert qr.rewrite_query("foo", judge=_FakeJudge("X")) == "foo"
 
 
-def test_on_rewrites(monkeypatch):
+def test_on_augments_keeping_original(monkeypatch):
     _on(monkeypatch)
-    fake = _FakeJudge("residual insurance levy 残保金 disability employment quota")
+    fake = _FakeJudge("residual insurance levy disability employment quota")
     out = qr.rewrite_query("残保金", judge=fake)
-    assert out == "residual insurance levy 残保金 disability employment quota"
+    # AUGMENT: original query is ALWAYS preserved, expansion appended
+    assert out == "残保金 residual insurance levy disability employment quota"
+    assert out.startswith("残保金 ")
     assert fake.calls and "残保金" in fake.calls[0]  # query passed into prompt
+
+
+def test_domain_jargon_preserved_even_on_bad_expansion(monkeypatch):
+    # the live PoI->Point regression: with augment, the original token survives
+    _on(monkeypatch)
+    out = qr.rewrite_query("PoI", judge=_FakeJudge("Point"))
+    assert "PoI" in out and out.startswith("PoI ")  # PoI signal retained
 
 
 def test_gemini_none_falls_back(monkeypatch):
@@ -80,8 +89,8 @@ def test_overlong_output_falls_back(monkeypatch):
 
 def test_takes_first_line_and_strips(monkeypatch):
     _on(monkeypatch)
-    out = qr.rewrite_query("q", judge=_FakeJudge("  expanded q terms  \nignored second line"))
-    assert out == "expanded q terms"
+    out = qr.rewrite_query("q", judge=_FakeJudge("  expanded terms  \nignored second line"))
+    assert out == "q expanded terms"  # original + first-line expansion
 
 
 def test_empty_query_identity(monkeypatch):
