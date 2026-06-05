@@ -87,3 +87,44 @@ def credit_from_verdict(conn, verdict: dict, memory_key: str, now_iso: str,
     if delta != 0.0:
         upsert_credit(conn, memory_key, delta, now_iso, placeholder)
     return {"action_outcome": action, "delta": delta, "memory_key": memory_key}
+
+
+# ─── soul checklist_scorer real format ───────────────────────────────────────
+# soul emits {score, passed, total, veto_failed, overall_pass, items:[...]}
+# (the actual verdict stream / fde_verdicts table shape) — NOT the mock
+# 复核状态/分项分. These consume that real format directly.
+
+def checklist_verdict_to_outcome(verdict: dict) -> dict:
+    """soul checklist verdict → {success: bool}. veto_failed forces failure."""
+    if verdict.get("veto_failed"):
+        return {"success": False}
+    return {"success": bool(verdict.get("overall_pass"))}
+
+
+def checklist_verdict_delta(verdict: dict, reject_delta: float = DEFAULT_REJECT_DELTA) -> float:
+    """Pass → `score` (= passed/total · the checklist pass rate, GOAL's
+    "checklist 通过率"). Fail / veto_failed → reject_delta (negative)."""
+    if not checklist_verdict_to_outcome(verdict)["success"]:
+        return reject_delta
+    score = verdict.get("score")
+    if score is None:
+        total = verdict.get("total") or 0
+        score = (verdict.get("passed", 0) / total) if total else 1.0
+    return round(float(score), 4)
+
+
+def credit_from_checklist_verdict(conn, verdict: dict, task_id: str, now_iso: str,
+                                  placeholder: str = "%s",
+                                  reject_delta: float = DEFAULT_REJECT_DELTA) -> dict:
+    """Upsert a PoI credit from a soul checklist_scorer verdict for task_id.
+
+    memory_key = fde-capsule-<task_id> (same as the capsule pipeline). Pending is
+    not a checklist outcome (a scored verdict is always pass or fail), so this
+    always writes. placeholder='%s' psycopg2 / '?' sqlite."""
+    memory_key = verdict_memory_key({"task_uid": task_id})
+    outcome = checklist_verdict_to_outcome(verdict)
+    action = outcome_to_action_outcome(outcome)
+    delta = checklist_verdict_delta(verdict, reject_delta)
+    if delta != 0.0:
+        upsert_credit(conn, memory_key, delta, now_iso, placeholder)
+    return {"action_outcome": action, "delta": delta, "memory_key": memory_key}
