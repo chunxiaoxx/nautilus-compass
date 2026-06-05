@@ -91,6 +91,16 @@ _FLAGS: Dict[str, OptInFlag] = {
         description="Benchmark/paper judge only (v1.7.1+) · NOT for runtime recall",
         paper_claim="paper1/paper2 cross-LLM ablation",
     ),
+    # v2.3.0 · opt-in gemini query rewrite before recall · owned by query_rewrite.py
+    "query_rewrite": OptInFlag(
+        name="query_rewrite",
+        env_var="COMPASS_PROD_QUERY_REWRITE",
+        sprint=0,
+        tier=4,
+        description="Rewrite recall query via Gemini Flash before retrieval · "
+                    "also requires COMPASS_USE_GEMINI_FLASH · fails back to original query",
+        paper_claim="recall-quality wiring (not a paper3 claim)",
+    ),
 }
 
 
@@ -101,6 +111,7 @@ DRIFT_PAY = "llm_drift_pay"
 REFLECT = "llm_reflect"
 ECON = "llm_econ"
 GEMINI_FLASH_JUDGE = "gemini_flash_judge"
+QUERY_REWRITE = "query_rewrite"
 
 
 _TRUTHY = ("1", "true", "yes", "on")
