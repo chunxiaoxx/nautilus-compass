@@ -88,6 +88,21 @@ _BM25_RRF_USE = os.environ.get("COMPASS_USE_BM25_RRF", "0") == "1"
 _BM25_RRF_K = int(os.environ.get("COMPASS_BM25_RRF_K", "60"))
 _BM25_RRF_TOP_K = int(os.environ.get("COMPASS_BM25_RRF_TOP_K", "30"))
 
+# v2.3.0 · production cross-encoder reranker · opt-in via COMPASS_PROD_RERANK=1
+# benchmark: bge-m3 + bge-reranker-v2-m3 → P@5 0.86→0.92, MRR 0.685→0.855
+# (RESULTS.md:54-56). Local cross-encoder (non-LLM) → does NOT break the
+# black-box hot-path constraint. Default OFF: behavior unchanged until enabled.
+_PROD_RERANK_USE = os.environ.get("COMPASS_PROD_RERANK", "0") == "1"
+_RERANKER_MODEL = os.environ.get(
+    "ZMM_RERANKER_MODEL",
+    str(Path.home() / ".cache/modelscope/hub/models/BAAI/bge-reranker-v2-m3"),
+)
+# how many top candidates to feed the cross-encoder before truncating to top_k.
+# benchmark used full haystack (50); production keeps it bounded for latency.
+_RERANK_CANDIDATES = int(os.environ.get("COMPASS_RERANK_CANDIDATES", "30"))
+_RERANKER_SINGLETON = None  # lazy in-process singleton (loaded on first use)
+_RERANKER_LOCK = threading.Lock()
+
 
 def _tokenize_for_bm25(text: str) -> list:
     """v2.1.0 · Whitespace + lowercase + CJK char tokenizer for BM25."""
@@ -140,6 +155,56 @@ def _rrf_fusion(ranked_lists, k=60, top_k=10):
             fused_scores[path] = fused_scores.get(path, 0.0) + 1.0 / (k + rank + 1)
     sorted_paths = sorted(fused_scores.items(), key=lambda x: x[1], reverse=True)
     return [(score, entry_by_path[path]) for path, score in sorted_paths[:top_k]]
+
+
+def _get_reranker():
+    """v2.3.0 · lazy in-process singleton CrossEncoder (bge-reranker-v2-m3).
+
+    Loaded only on first reranked recall (when COMPASS_PROD_RERANK=1). ~2GB
+    model + tens-of-seconds load → pay only when the flag is on. Thread-safe
+    double-checked init. Raises if load fails (caller falls back to dense)."""
+    global _RERANKER_SINGLETON
+    if _RERANKER_SINGLETON is not None:
+        return _RERANKER_SINGLETON
+    with _RERANKER_LOCK:
+        if _RERANKER_SINGLETON is not None:
+            return _RERANKER_SINGLETON
+        from sentence_transformers import CrossEncoder  # lazy import
+        try:
+            import torch
+            device = os.environ.get(
+                "ZMM_DEVICE", "cuda" if torch.cuda.is_available() else "cpu")
+        except Exception:
+            device = os.environ.get("ZMM_DEVICE", "cpu")
+        t0 = time.time()
+        _RERANKER_SINGLETON = CrossEncoder(_RERANKER_MODEL, device=device)
+        log(f"reranker loaded · {_RERANKER_MODEL} on {device} · {time.time()-t0:.1f}s")
+        return _RERANKER_SINGLETON
+
+
+def _rerank_top(query, top, top_k):
+    """v2.3.0 · production reranker hook · reorder `top` by cross-encoder.
+
+    `top` = [(dense_score, entry), ...] already in dense/fused order.
+    · flag off → return top[:top_k] unchanged (default behavior preserved).
+    · flag on  → cross-encoder rerank up to _RERANK_CANDIDATES then take top_k.
+    Any model-load / predict failure is swallowed → fall back to dense order
+    (recall must never crash on a reranker fault). Original dense_score kept in
+    the returned tuples (downstream surfaces the dense score, not rerank score).
+    """
+    if not _PROD_RERANK_USE or not top:
+        return top[:top_k]
+    candidates = top[:_RERANK_CANDIDATES]
+    try:
+        reranker = _get_reranker()
+        pairs = [(query, (e.get("embed_text") or e.get("description") or ""))
+                 for _s, e in candidates]
+        scores = reranker.predict(pairs)
+        reordered = sorted(zip(candidates, scores), key=lambda x: -float(x[1]))
+        return [item for item, _rscore in reordered][:top_k]
+    except Exception as e:
+        log(f"reranker failed · fallback to dense order: {e}")
+        return top[:top_k]
 
 # v2.0.9 · inotify-based cache invalidation · Layer 2 cure for 23k-file dir scan
 _INOTIFY_USE = os.environ.get("COMPASS_USE_INOTIFY", "1") == "1"
@@ -681,6 +746,10 @@ def handle_request(req: dict) -> dict:
                 scored.append((s, e))
         scored.sort(key=lambda x: -x[0])
 
+        # v2.3.0 · when prod reranker is on, retrieve a wider candidate set so the
+        # cross-encoder can pull a deep truth up; otherwise keep top_k width.
+        _retrieve_n = max(top_k, _RERANK_CANDIDATES) if _PROD_RERANK_USE else top_k
+
         # v2.1.0 · Phase 2 · BM25 + vec RRF fusion · opt-in via COMPASS_USE_BM25_RRF=1
         if _BM25_RRF_USE:
             try:
@@ -688,15 +757,21 @@ def handle_request(req: dict) -> dict:
                 _bm25_ranked = _bm25_score_to_ranked(_bm25, all_entries, query, top_k=_BM25_RRF_TOP_K)
                 _vec_top_for_rrf = scored[:_BM25_RRF_TOP_K]  # top-30 vec → RRF input
                 fused = _rrf_fusion([_vec_top_for_rrf, _bm25_ranked],
-                                    k=_BM25_RRF_K, top_k=top_k)
+                                    k=_BM25_RRF_K, top_k=_retrieve_n)
                 top = fused  # replace vec-only top with fused
                 result["_v210_fused"] = True
                 result["_v210_bm25_n"] = len(_bm25_ranked)
             except Exception as _be:
                 log(f"BM25 RRF fail · fallback to vec only: {_be}")
-                top = scored[:top_k]
+                top = scored[:_retrieve_n]
         else:
-            top = scored[:top_k]
+            top = scored[:_retrieve_n]
+
+        # v2.3.0 · production cross-encoder rerank (opt-in COMPASS_PROD_RERANK=1).
+        # flag off → returns top[:top_k] unchanged; flag on → reorder then truncate.
+        top = _rerank_top(query, top, top_k)
+        if _PROD_RERANK_USE:
+            result["_v230_reranked"] = True
 
         result["recall"] = [
             {"score": round(s, 3), "path": e["path"],
