@@ -74,6 +74,41 @@ dir vs rescan-never vs different host's ~/.claude) needs cloud FS/log inspection
 Orphan note: the probe `session_20260605-1907_xdev-probe-9173.md` may be sitting
 un-indexed on the cloud host; cleanup needs G-cloud.
 
+### ROOT CAUSE FOUND (SSH cloud · 2026-06-05 · overturns the diagnosis)
+SSH `cloud` (43.160.239.61 · ubuntu@VM-0-8-ubuntu) evidence:
+1. The obs **IS on cloud**: `/home/ubuntu/.claude/projects/C--Users-chunx/memory/
+   session_20260605-1907_xdev-probe-9173.md` exists. **ingest_obs worked perfectly**
+   — no silent failure, no field mismatch.
+2. MCP routing (`ops/mcp_stdio_to_cloud.py`): `_LOCAL_TOOLS = {recall, drift_check,
+   thread_recall}` → served by the LOCAL GPU BGE daemon (127.0.0.1:9876, scans
+   LOCAL `~/.claude/projects/`). `ingest_obs` and all others → CLOUD (9877 tunnel).
+3. Corpora are disjoint & unsynced: local `C--Users-chunx/memory` = **958** .md,
+   cloud = **5500** .md (cloud is the shared cross-agent superset; every cloud-side
+   agent ingests there).
+
+**∴ Root cause = architectural local/cloud corpus split, NOT ingest silent-failure.**
+ingest writes the cloud corpus; recall is local-first and reads the local corpus.
+The two never meet on one machine. The diagnosis's `ingest_obs+content` vs daemon
+`ingest+text` field-mismatch hypothesis is **wrong** — disproven by the file
+existing intact on cloud. (`/v1/v14/ingest_obs` field alignment is a non-issue
+for this gap.)
+
+### Fix = a design decision (NOT a mechanical bug · surfaced to user)
+Cross-device "memory emergence" needs the ingest corpus and the recall corpus
+unified. Options (tradeoffs real → user owns this call · anchor #3):
+- **(A) cloud→local memory sync**: periodic rsync cloud `C--Users-chunx/memory`
+  → local. Keeps local-first GPU recall (fast, black-box-local). Cost: ongoing
+  sync of a 5500-file growing corpus; pick canonical direction; disk.
+- **(B) recall cloud-union/fallback**: local recall also queries the cloud
+  corpus (cloud CPU BGE daemon). Gains freshness; costs latency + breaks
+  "black-box local" purity (recall now hits cloud).
+- **(C) per-project routing**: cross-agent/shared projects recall from cloud;
+  local-only projects stay local. Most surgical; needs a project→tier map.
+- **(D) document the tiers as intentional**: MCP ingest = cloud cross-agent
+  store; local recall = local memory; accept they're separate, no cross-device.
+CJK surrogate (Finding 1) is orthogonal and still a real fixable bug (in the
+cloud HTTP obs-write or bridge JSON encoding path).
+
 ## Status / next
 - Finding 1 (CJK surrogate): actionable; fix side (client vs server) TBD.
 - Finding 2 (round-trip gap): strong preliminary evidence; final verdict gated
