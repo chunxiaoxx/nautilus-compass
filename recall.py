@@ -18,6 +18,7 @@ import json
 import os
 import pickle
 import re
+import subprocess
 import sys
 import time
 from pathlib import Path
@@ -74,7 +75,7 @@ def strip_zhen_emphasis(text: str) -> str:
     return "".join(out)
 
 
-PLUGIN_VERSION = "nautilus-compass v1.6.2"
+PLUGIN_VERSION = "nautilus-compass v2.2.0"
 HOME = Path.home()
 PLUGIN_DIR = HOME / ".claude" / "plugins" / "nautilus-compass"
 CACHE_DIR = PLUGIN_DIR / ".cache"
@@ -179,6 +180,8 @@ TOP_K = 5
 COSINE_MIN = float(os.environ.get("ZMM_COSINE_MIN", "0.25"))
 DRIFT_ALERT_THRESHOLD = float(os.environ.get("ZMM_DRIFT_THRESHOLD", "-0.032"))  # m3+hard 后 best Youden J
 NEG_ANCHOR_HIT_THRESHOLD = float(os.environ.get("ZMM_NEG_HIT_THRESHOLD", "0.538"))
+# v2 cutover (2026-06-01) · 弃 neg_cos≥0.538 OR 分支 · 11.5k 真流量证 64.5%→0.5%
+ZMM_DRIFT_V2_THRESH = float(os.environ.get("ZMM_DRIFT_V2_THRESH", "-0.07"))
 # 默认 bge-m3 · 实测 LongMemEval MRR 0.760 / Drift AUC 0.92 · ZMM_EMBEDDER_MODEL 可覆盖
 _M3_LOCAL = HOME / ".cache/modelscope/hub/models/BAAI/bge-m3"
 EMBEDDER_MODEL = os.environ.get(
@@ -188,6 +191,31 @@ EMBEDDER_MODEL = os.environ.get(
 
 _embedder = None    # lazy global
 _anchor_cache = None   # lazy · {pos_vec, neg_vec, mtime, raw}
+
+
+def _resolve_default_actor() -> str:
+    """Deterministic actor ID for PoI candidate attribution.
+
+    Order: COMPASS_AGENT_ID > CLAUDE_AGENT_ID > anon-<sha256(email|cwd)[:8]> > "unknown".
+    Stable across sessions on the same user+cwd, enabling later PoI reconciliation.
+    """
+    env_actor = os.environ.get("COMPASS_AGENT_ID") or os.environ.get("CLAUDE_AGENT_ID")
+    if env_actor:
+        return env_actor
+    try:
+        email = subprocess.check_output(
+            ["git", "config", "--get", "user.email"],
+            text=True,
+            stderr=subprocess.DEVNULL,
+            timeout=2,
+        ).strip()
+    except (subprocess.SubprocessError, OSError, FileNotFoundError):
+        return "unknown"
+    if not email:
+        return "unknown"
+    cwd = os.getcwd()
+    digest = hashlib.sha256(f"{email}|{cwd}".encode("utf-8")).hexdigest()[:8]
+    return f"anon-{digest}"
 
 
 def find_active_project_memory_dir() -> Path | None:
@@ -977,9 +1005,9 @@ def render_v02_vector_mode(entries: list, query: str, cache: dict) -> None:
     # equivalent to v0.8). Set COMPASS_NO_POI_BOOST=1 to opt out.
     if os.environ.get("COMPASS_NO_POI_BOOST") != "1":
         try:
-            from recall_pkg.poi_weighting import boost_top_k
-            _before_top = top
-            top = boost_top_k(top)
+            from recall_pkg.poi_weighting import boost_top_k_with_snapshot
+            from recall_pkg.poi_snapshot_cache import get_credit_snapshot
+            top = boost_top_k_with_snapshot(top, get_credit_snapshot())
             # Truncate back to TOP_K after potential re-rank
             top = top[:TOP_K]
         except Exception as _e:
@@ -1005,6 +1033,19 @@ def render_v02_vector_mode(entries: list, query: str, cache: dict) -> None:
         except Exception as _e:
             # Graceful · L0 path stays intact even if overlay misbehaves
             sys.stderr.write(f"[L1 overlay] skipped: {_e!r}\n")
+
+    # v3 · B.5 · PoI candidate emission · record which memories were surfaced
+    # to the actor at high confidence (no outcome yet · reconciled later when a
+    # downstream PoI event lands). Distinct from emit_nau_records: candidates
+    # do NOT fabricate action_outcome. Sidecar: poi_candidates.jsonl. Guarded by
+    # COMPASS_NO_POI_CANDIDATE=1 for opt-out. Graceful skip on error.
+    if top and os.environ.get("COMPASS_NO_POI_CANDIDATE") != "1":
+        try:
+            from proof.poi_emitter import emit_poi_candidate
+            _actor = _resolve_default_actor()
+            emit_poi_candidate(top, query=query, agent_id=_actor)
+        except Exception as _e:
+            sys.stderr.write(f"[PoI candidate] skipped: {_e!r}\n")
 
     # v1.7 · MEME-extension · transitive_close via depends_on BFS · staged rollout
     # Enable with COMPASS_CHAIN_RECALL=1 · ancestors pinned with synthetic score -depth-1
@@ -1123,7 +1164,18 @@ def try_daemon_recall(mem_dir: Path, user_prompt: str) -> bool:
                 _alert_id = "a-" + _h.sha256(
                     f"{user_prompt[:200]}{time.time()}".encode("utf-8")
                 ).hexdigest()[:8]
-                if d["top_neg_hits"]:
+                if d.get("rule_hit"):
+                    print(f"  🔴 alert [{_alert_id}]: 危险动作 rule 命中 "
+                          f"(rm -rf / force push / reset --hard / DROP / 硬编码 key 等)")
+                    print(f"  ↑ 确认这是有意操作再继续 · 误报标 FP: nautilus-compass feedback {_alert_id} fp")
+                    log_usage("drift_alert", {
+                        "alert_id": _alert_id,
+                        "score": d["score"], "max_neg_hit": 0,
+                        "neg_anchor": "",
+                        "kind": "rule_hit",
+                        "user_prompt": user_prompt[:300],
+                    })
+                elif d["top_neg_hits"]:
                     print(f"  🔴 alert [{_alert_id}]: 最匹配的反锚点 (你历史犯过的错):")
                     for sc, txt in d["top_neg_hits"]:
                         print(f"    · cos={sc:.3f}  '{txt}'")
@@ -1185,6 +1237,34 @@ def try_daemon_recall(mem_dir: Path, user_prompt: str) -> bool:
                 print(f"🟢 + 24h 内其他 memory ({len(fresh_extra)} · 当前心智 · 即便低 cosine 也注意):")
                 for e in fresh_extra:
                     print(f"  · [{e['age_str']:>5} old] {e['path']} — {e['description'][:80]}")
+
+        # L2 metamemory · 自知层:fires on empty OR weak recall · the
+        # hallucinate-absence cure — tells the subject LLM when compass has no
+        # reliable evidence so it does not fabricate a "prior finding".
+        # Deterministic by default (no LLM · black-box moat). Never breaks recall.
+        try:
+            from metamemory import build_recall_result, format_metamemory_notice
+            _rr = build_recall_result(user_prompt, recall or [])
+            _notice = format_metamemory_notice(_rr)
+            if _notice:
+                print()
+                print(_notice)
+        except Exception as _e:
+            sys.stderr.write(f"[L2 metamemory] skipped: {_e!r}\n")
+
+        # L3 PoI candidate emission · ALSO fire on the daemon recall path. The
+        # inline path (render_v02_vector_mode) already emits, but production
+        # recall goes through the daemon, so without this candidates never land
+        # → poi_candidates.jsonl stays empty → L3 has 0 events to reconcile.
+        # Adapts the daemon recall dict-list to the (score, entry) shape.
+        # Guarded by COMPASS_NO_POI_CANDIDATE=1. Never breaks recall.
+        try:
+            if recall and os.environ.get("COMPASS_NO_POI_CANDIDATE") != "1":
+                from proof.poi_emitter import emit_poi_candidate
+                _top = [(r.get("score", 0.0), r) for r in recall]
+                emit_poi_candidate(_top, query=user_prompt, agent_id=_resolve_default_actor())
+        except Exception as _e:
+            sys.stderr.write(f"[PoI candidate · daemon] skipped: {_e!r}\n")
         return True
     except Exception as e:
         sys.stderr.write(f"[nautilus-compass daemon] unreachable ({e}) · fallback inline\n")
@@ -1325,7 +1405,8 @@ def main():
             scan_sessions_for_contracts, _default_memory_roots,
             format_for_prompt_injection,
         )
-        _c_scan = scan_sessions_for_contracts(_default_memory_roots(), within_hours=168.0)
+        # 5/31 reconcile: 168→720h · 兑现 D.fix-3 意图(历史 close-loop 文件 >7d 也 resolve)
+        _c_scan = scan_sessions_for_contracts(_default_memory_roots(), within_hours=720.0)
         _c_block = format_for_prompt_injection(_c_scan, max_show=5)
         if _c_block:
             print()
@@ -1387,7 +1468,9 @@ def main():
                     top_neg_hits.append((cosine(q_emb, a_emb), s))
                 top_neg_hits.sort(reverse=True)
             max_neg_hit = top_neg_hits[0][0] if top_neg_hits else 0.0
-            should_alert = sig < DRIFT_ALERT_THRESHOLD or max_neg_hit >= NEG_ANCHOR_HIT_THRESHOLD
+            # v2 cutover · 弃 max_neg_hit≥0.538 OR(逢触必报)· daemon-dead fallback 用 V2 阈值
+            # (5/31 reconcile: active firing 统一 v2 · should_fire_drift 模块保留作未来 A/B)
+            should_alert = sig < ZMM_DRIFT_V2_THRESH
             tag = "✅ 在锚点内" if sig > 0.05 and not should_alert else ("⚠️ 偏向反锚点" if should_alert else "≈ 中性")
             print(f"[Persona drift · {anchors['n_pos']}+{anchors['n_neg']} 锚点 · BGE]")
             print(f"  score={sig:+.3f} (alignment={d['alignment']:.3f} · deviation={d['deviation']:.3f}) · {tag}")

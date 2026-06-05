@@ -31,6 +31,12 @@ from pathlib import Path
 
 os.environ.setdefault("PYTHONIOENCODING", "utf-8")
 os.environ.setdefault("PYTHONUTF8", "1")
+try:
+    # E.fix-3 follow-up (2026-05-30): Windows console GBK cannot encode ✅ ·
+    # ack-write succeeds but trailing print crashes (see reference_compass_dev_gotchas).
+    sys.stdout.reconfigure(encoding="utf-8")  # type: ignore[attr-defined]
+except Exception:
+    pass
 
 _PLUGIN_USER = Path.home() / ".claude" / "plugins" / "nautilus-compass"
 # CI / pip-install fallback · use the script's own dir when user-level path absent
@@ -107,6 +113,15 @@ def cmd_log(args):
     FEEDBACK_LOG.parent.mkdir(parents=True, exist_ok=True)
     with open(FEEDBACK_LOG, "a", encoding="utf-8") as f:
         f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+    # E.fix-3 (2026-05-30): also write ack record to drift_mitigation_log so
+    # audit_kpi.act_on_rate sees user-labeled alerts as acked · closes the
+    # 5/27 finding's open loop (detection vs intervention).
+    try:
+        from drift.act_log import log_drift_ack
+        log_drift_ack(args.alert_id, args.verdict, source="feedback_cli")
+    except Exception:
+        # observability wire · never break the primary CLI path
+        pass
     print(f"✅ logged {args.alert_id} = {args.verdict}")
 
 
@@ -149,6 +164,31 @@ def _normalize_anchor(item):
         "tp": int(item.get("tp", 0)),
         "fp": int(item.get("fp", 0)),
     }
+
+
+def _apply_weight_update(neg_anchors, fp_anchor_count, tp_anchor_count):
+    """Apply v0.7.1 weighted update rule to negative anchors.
+
+    For each anchor (keyed by text[:60]):
+      - new_weight = weight × (0.7 ** fp_count) × (1.1 ** tp_count)
+      - clamp to [0.05, 2.0]
+      - round to 3 decimals
+      - increment fp/tp tallies on the anchor dict
+
+    Mutates `neg_anchors` in place and returns the same list (for chaining).
+
+    Note: 5 consecutive FP yields 1.0 × 0.7^5 = 0.16807 → ~0.168, which is
+    below the user-facing 0.17 deprecation gate but above the 0.05 hard clamp.
+    """
+    for n in neg_anchors:
+        key = n["text"][:60]
+        fp_n = fp_anchor_count.get(key, 0)
+        tp_n = tp_anchor_count.get(key, 0)
+        n["fp"] += fp_n
+        n["tp"] += tp_n
+        new_w = n["weight"] * (0.7 ** fp_n) * (1.1 ** tp_n)
+        n["weight"] = round(max(0.05, min(2.0, new_w)), 3)
+    return neg_anchors
 
 
 def _run_eval_drift(anchors_path: Path) -> float | None:
@@ -206,14 +246,7 @@ def cmd_retrain(args):
     # === v0.7.1 weighted update ===
     # neg anchor weight 调整: 每条 FP -> weight ×= 0.7, 每条 TP -> weight ×= 1.1 (cap [0.05, 2.0])
     # 连续 5 次 FP 后 weight ≤ 0.17 → 实际 deprecated (cosine 系数太低无影响)
-    for n in neg:
-        key = n["text"][:60]
-        fp_n = fp_anchor_count.get(key, 0)
-        tp_n = tp_anchor_count.get(key, 0)
-        n["fp"] += fp_n
-        n["tp"] += tp_n
-        new_w = n["weight"] * (0.7 ** fp_n) * (1.1 ** tp_n)
-        n["weight"] = round(max(0.05, min(2.0, new_w)), 3)
+    _apply_weight_update(neg, fp_anchor_count, tp_anchor_count)
 
     # FP prompts → 加 positive_anchors (reinforce 它们是 aligned)
     existing_pos_text = {p["text"] for p in pos}

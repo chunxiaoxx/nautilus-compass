@@ -1,6 +1,6 @@
 {
   "name": "nautilus-compass",
-  "version": "1.6.2",
+  "version": "2.2.0",
   "description": "Cross-agent memory layer with drift detection, Merkle integrity, semantic recall, and MCP A2A protocol. Surfaces user-facing slash commands for direct inspection of session memory.",
   "author": {
     "name": "Nautilus team",

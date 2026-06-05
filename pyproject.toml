@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nautilus-compass"
-version = "2.0.1"
+version = "2.2.0"
 description = "Opinionated EvoMap · cross-agent memory with schema-declared 4-tier lifecycle + Ebbinghaus decay + LLM-free promotion · MCP/A2A · drift-aware · LongMemEval-S 56.6%"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -73,6 +73,7 @@ extend-exclude = [
     "scripts/_archive",
     ".cache",
     "__pycache__",
+    "*.ipynb",  # bench/colab notebooks are not linted as source
 ]
 
 [tool.ruff.lint]

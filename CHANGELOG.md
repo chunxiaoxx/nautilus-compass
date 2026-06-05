@@ -1,5 +1,73 @@
 # Changelog
 
+## [2.2.0] · 2026-06-03 — "PoI central ledger (L3 recursive loop)"
+
+Closes the L3 Proof-of-Impact recursive loop across hosts: memory now
+self-weights by *proven* downstream impact via a shared cloud ledger, so the
+loop holds for every compass-installed agent, not just whichever host wrote the
+memory file.
+
+### PoI central ledger (Option C · single table)
+
+- New `compass.poi_credit(memory_key PK, cumulative_impact, event_count,
+  last_impact_at)` · key = `project/filename` derived from one source
+  (`proof/poi_memory_key`) · replaces host-bound frontmatter credit.
+- Loop: recall → emit candidate (per-hit project) → reconcile vs outcomes →
+  UPSERT central table → atomic snapshot → daemon reranks recall by accrued
+  impact. Cloud-verified end to end (credited memory 0.7830 → 0.8091).
+- `recall_pkg/poi_snapshot_cache` (mtime lazy-load · corrupt-file fallback),
+  `poi_weighting.boost_top_k_with_snapshot` (NaN/clamp guards · never raises),
+  `proof/poi_credit_store` (atomic UPSERT + snapshot), cron `settle_and_snapshot`.
+- Cloud patches (`ops/patch_v14_recall_poi_*`) inject emission + env-gated boost
+  (`COMPASS_CLOUD_POI_BOOST`, default off) · boost never crashes recall.
+
+### Hardening (PR #35 review follow-up)
+
+- `memory_key_from_path` anchors on the literal `memory` segment (returns `None`
+  on non-standard paths) instead of blindly indexing `parts[-3]` — no silent
+  mislabel; callers fall back safely.
+- Cross-copy normalization drift guard: byte-for-byte equivalence test across the
+  three `_normalize_project` copies (local + 2 cloud inline) so drift fails CI.
+- Repo-wide ruff cleanup (unused imports) · notebooks excluded from lint.
+
+## [2.1.0] · 2026-06-01 — "drift v2 + line reconciliation"
+
+Unifies two divergent development lines (daemon/reliability `plugin/main` +
+lifecycle/PoI `v3-full-fusion`) onto a single `main`, and hardens the drift loop.
+
+### Drift v2 cutover (cry-wolf fix)
+
+- Firing changed to `should_alert = rule_hit (danger-command regex) OR
+  drift_score < −0.07`. Old OR-vote (`neg_cos ≥ 0.538`) fired on 64.5% of 11.5k
+  real-traffic events (benign↔drift overlap) → act-on 9.87%. New rule:
+  production-measured 0.5% fire rate · danger commands always caught.
+- `drift/firing.py::should_fire_drift` multi-signal vote retained behind
+  `COMPASS_DRIFT_LEGACY_OR` / module for A/B (not active path).
+- New regression tests `tests/drift/test_v2_firing.py` covering the **active**
+  v2 path (rule_hit detection + benign-no-fire + threshold constant).
+
+### Cross-agent contract scanner (L4 substrate)
+
+- Union of both lines: `derive_implicit_contracts` + `auto_detect_consumption`
+  (1:1 greedy · receiver-authorship guarded) + `_ledger_has_event` idempotency.
+- Close-loop window 168h → 720h (callers updated · realizes D.fix-3 intent).
+
+### L3 tier promotion + Proof-of-Impact
+
+- Daily idempotent impact-based tier-promotion driver (LLM-free).
+- PoI candidate emission at recall + impact-weighted ranking boost · L1 overlay.
+
+### Daemon hardening (P4–P9)
+
+- Bounded handler pool · in-flight semaphore (CLOSE_WAIT cure) · server-side
+  recall cache · pkl warmup (cold-start CPU cure) · BM25+vec RRF fusion (opt-in) ·
+  inotify cache invalidation.
+
+### Housekeeping
+
+- Version strings synced to 2.1.0 across pyproject / package.json / mcp_server /
+  recall / .claude-plugin / npm / server.json.
+
 ## [1.6.3] · 2026-05-20 — "packaging fix · v1.6.2 was broken"
 
 Critical packaging fix. v1.6.2 wheel only included top-level files;

@@ -48,6 +48,7 @@ class Contract:
     source_session: str = ""  # session_*.md filename that issued
     consumed_by: str = ""  # session_*.md filename that consumed
     consumed_at: str = ""
+    consume_method: str = ""  # "" = 显式 frontmatter · "auto_keyword" = scanner 自动检测(v1.7.1)
 
     def to_yaml_dict(self) -> dict:
         d = {k: v for k, v in asdict(self).items() if v}
@@ -65,12 +66,17 @@ class Contract:
 
     def matches_consume_hint(self, text: str) -> bool:
         """Loose match · does `text` look like it's fulfilling this contract?"""
+        hits, tot = self.consume_overlap(text)
+        return tot > 0 and hits >= max(1, tot // 2)
+
+    def consume_overlap(self, text: str) -> tuple[int, int]:
+        """v1.7.1 · 返回 (distinctive 关键词命中数, 总关键词数) · 供 1:1 贪心打分。"""
         keywords = _extract_keywords(self.deliverable)
         if not keywords:
-            return False
+            return (0, 0)
         t = text.lower()
         hits = sum(1 for k in keywords if k in t)
-        return hits >= max(1, len(keywords) // 2)
+        return (hits, len(keywords))
 
 
 def _parse_iso(s: str) -> Optional[datetime]:
@@ -112,7 +118,10 @@ def _extract_keywords(text: str) -> list[str]:
     """Crude keyword extraction · lowercase tokens of length >=4."""
     tokens = re.findall(r"[a-zA-Z_一-鿿]{2,}", (text or "").lower())
     stop = {"the", "and", "for", "with", "from", "into", "this", "that",
-            "你", "我", "的", "了", "是", "在", "和"}
+            "你", "我", "的", "了", "是", "在", "和",
+            # v1.7.1 · 领域 boilerplate(几乎每个 session 都有 · 不过滤会造假闭环 · cnt_ncore FP 实证)
+            "session", "session_", "compass", "mcp", "claude", "json", "nautilus",
+            "dialog", "memory", "agent", "ship", "md", "py"}
     seen, out = set(), []
     for t in tokens:
         if len(t) < 3:
@@ -147,7 +156,8 @@ def parse_contracts_from_frontmatter(md_text: str) -> list[Contract]:
     if not m:
         return []
     fm = m.group(1)
-    if "contracts:" not in fm:
+    # D.fix-4: also accept singular `contract_id:` protocol (V5 inbound convention).
+    if "contracts:" not in fm and "contract_id:" not in fm:
         return []
 
     try:
@@ -161,32 +171,78 @@ def parse_contracts_from_frontmatter(md_text: str) -> list[Contract]:
     except ImportError:
         return _parse_contracts_naive(fm)
 
-    raw_list = data.get("contracts")
-    if not isinstance(raw_list, list):
+    # D.fix-1 (2026-05-30): read contracts from both top-level and metadata.contracts.
+    # Real close_loop files (3/3 audited) nest contracts under metadata · earlier code
+    # only saw top-level → close_loop status:consumed was never observed → contracts
+    # stayed outstanding forever. Outbound files use top-level shape; both supported now.
+    raw_lists: list[list] = []
+    top_list = data.get("contracts")
+    if isinstance(top_list, list):
+        raw_lists.append(top_list)
+    md = data.get("metadata")
+    if isinstance(md, dict):
+        nested_list = md.get("contracts")
+        if isinstance(nested_list, list):
+            raw_lists.append(nested_list)
+
+    # D.fix-4 (2026-05-30): singular `metadata.contract_id: cnt_xxx` (string · not list).
+    # V5 dialog 2026-05-19 inbound uses this shape (see
+    # inbound_from_v5_dialog_20260519_compass_session_id_bug.md). Earlier parser missed
+    # it → contract invisible to scanner for ~11 days → V5 dialog F4 close_loop request
+    # could not be auto-tracked.
+    singular: list = []
+    if isinstance(md, dict):
+        sid = md.get("contract_id")
+        if isinstance(sid, str) and sid.strip():
+            synth = {
+                "id": sid.strip(),
+                "giver": str(md.get("from") or md.get("giver") or ""),
+                "receiver": str(md.get("to") or md.get("receiver") or ""),
+                "deadline": str(md.get("due") or md.get("deadline") or ""),
+                "deliverable": str(md.get("deliverable") or md.get("description") or ""),
+                "issued_at": str(md.get("issued_at") or ""),
+                "consumed_by": str(md.get("consumed_by") or ""),
+                "consumed_at": str(md.get("consumed_at") or ""),
+            }
+            # Status inference: explicit `status` wins; else `close_loop: true` + consumed_by
+            # implies consumed; otherwise outstanding.
+            explicit_status = md.get("status")
+            if isinstance(explicit_status, str) and explicit_status.strip():
+                synth["status"] = explicit_status.strip()
+            elif md.get("close_loop") is True and synth["consumed_by"]:
+                synth["status"] = "consumed"
+            else:
+                synth["status"] = "outstanding"
+            singular.append(synth)
+    if singular:
+        raw_lists.append(singular)
+
+    if not raw_lists:
         return []
 
     out = []
-    for item in raw_list:
-        if not isinstance(item, dict):
-            continue
-        try:
-            c = Contract(
-                id=str(item.get("id") or ""),
-                giver=str(item.get("giver") or ""),
-                receiver=str(item.get("receiver") or ""),
-                deadline=str(item.get("deadline") or ""),
-                deliverable=str(item.get("deliverable") or ""),
-                status=str(item.get("status") or "outstanding"),
-                issued_at=str(item.get("issued_at") or ""),
-                source_session=str(item.get("source_session") or ""),
-                consumed_by=str(item.get("consumed_by") or ""),
-                consumed_at=str(item.get("consumed_at") or ""),
-            )
-        except Exception:
-            continue
-        if not c.id or not c.giver or not c.receiver:
-            continue
-        out.append(c)
+    for raw_list in raw_lists:
+        for item in raw_list:
+            if not isinstance(item, dict):
+                continue
+            try:
+                c = Contract(
+                    id=str(item.get("id") or ""),
+                    giver=str(item.get("giver") or ""),
+                    receiver=str(item.get("receiver") or ""),
+                    deadline=str(item.get("deadline") or ""),
+                    deliverable=str(item.get("deliverable") or ""),
+                    status=str(item.get("status") or "outstanding"),
+                    issued_at=str(item.get("issued_at") or ""),
+                    source_session=str(item.get("source_session") or ""),
+                    consumed_by=str(item.get("consumed_by") or ""),
+                    consumed_at=str(item.get("consumed_at") or ""),
+                )
+            except Exception:
+                continue
+            if not c.id or not c.giver or not c.receiver:
+                continue
+            out.append(c)
     return out
 
 
@@ -291,11 +347,209 @@ def already_alerted(contract_id: str, reason: str) -> bool:
     return False
 
 
+def _ledger_has_event(contract_id: str, action: str, consumed_at: str = "") -> bool:
+    """Idempotency check for D.fix-2 · skip append_to_ledger if same event already logged.
+
+    Match on (id, action). If consumed_at is provided, additionally require timestamp match
+    so two genuine consume-events at different timestamps both log.
+    """
+    if not LEDGER.exists():
+        return False
+    try:
+        for line in LEDGER.read_text(encoding="utf-8", errors="replace").splitlines():
+            if not line.strip():
+                continue
+            try:
+                obj = json.loads(line)
+            except Exception:
+                continue
+            if obj.get("action") != action or obj.get("id") != contract_id:
+                continue
+            if consumed_at and obj.get("consumed_at") and obj.get("consumed_at") != consumed_at:
+                continue
+            return True
+    except Exception:
+        pass
+    return False
+
+
+# ─── implicit contracts from inbound_/outbound_ files (v1.7.1) ────
+# 解 adoption:dialogs 一直在写 inbound_/outbound_ session 文件(就是交接)· 只是没带 contract
+# frontmatter。教 scanner 把它们当隐式合约 → 不要求行为改变,立刻从 2 个变 ~N 个。
+
+_PARTY_NORM = {"nautilus_core": "nautilus-core", "core": "nautilus-core",
+               "nautiluscore": "nautilus-core"}
+
+
+def _norm_party(name: str) -> str:
+    """归一化 party 名:剥 -dialog/_dialog 后缀 + 别名映射。
+    'compass-dialog'→'compass' · 'nautilus-core-dialog'→'nautilus-core' · 'nautilus_core'→'nautilus-core'。"""
+    p = (name or "").strip().lower()
+    p = re.sub(r"[-_]dialog$", "", p)
+    return _PARTY_NORM.get(p, p)
+
+
+def _owner_from_root(root: Path) -> str:
+    """memory root → 拥有该 root 的 dialog 名(用于隐式合约方向)。"""
+    n = root.parent.name  # e.g. C--Users-chunx-Projects-nautilus-core
+    for suf, name in (("nautilus-core", "nautilus-core"), ("nautilus-v5", "v5"),
+                      ("nautilus-compass", "compass")):
+        if n.endswith(suf):
+            return name
+    if n == "C--Users-chunx":
+        return "main"
+    return n
+
+
+def _parse_handoff_filename(fname: str, owner: str):
+    """inbound_from_<X>/inbound_to_<X>/outbound_to_<X> → (giver, receiver) or None。"""
+    base = fname[:-3] if fname.endswith(".md") else fname
+    m = re.match(r"(inbound|outbound)_(from|to)_(.+)", base)
+    if not m:
+        return None
+    _, direction, rest = m.groups()
+    if "_dialog" in rest:
+        party = rest.split("_dialog")[0]
+    else:
+        dm = re.search(r"_(\d{8})", rest)
+        party = rest[:dm.start()] if dm else rest
+    party = party.strip("_")
+    party = _PARTY_NORM.get(party, party)
+    if direction == "from":
+        return party, owner   # X 发给 owner
+    return owner, party       # owner 发/留给 X
+
+
+def derive_implicit_contracts(memory_roots: list[Path], within_hours: float = 720.0) -> list[Contract]:
+    """v1.7.1 · 从 inbound_/outbound_ session 文件派生隐式合约。
+    deliverable=description frontmatter · issued_at=file mtime · id 前缀 imp_ · status outstanding。
+    """
+    cutoff = time.time() - within_hours * 3600
+    out = []
+    for root in memory_roots:
+        if not root.exists():
+            continue
+        owner = _owner_from_root(root)
+        for f in list(root.glob("inbound_*.md")) + list(root.glob("outbound_*.md")):
+            try:
+                mt = f.stat().st_mtime
+            except Exception:
+                continue
+            if mt < cutoff:
+                continue
+            gr = _parse_handoff_filename(f.name, owner)
+            if not gr:
+                continue
+            giver, receiver = gr
+            try:
+                text = f.read_text(encoding="utf-8", errors="replace")
+            except Exception:
+                text = ""
+            dm = re.search(r"^description:\s*(.+)$", text, re.M)
+            deliverable = (dm.group(1).strip() if dm else "")[:200] or f.name
+            issued = datetime.fromtimestamp(mt, timezone.utc).strftime("%Y-%m-%dT%H:%M:%S%z")
+            cid = "imp_" + hashlib.blake2b(f.name.encode(), digest_size=4).hexdigest()
+            out.append(Contract(
+                id=cid, giver=giver, receiver=receiver, deadline="",
+                deliverable=deliverable, status="outstanding",
+                issued_at=issued, source_session=f.name,
+            ))
+    return out
+
+
+# ─── auto consume detection (v1.7.1) ─────────────────────────────
+
+
+def auto_detect_consumption(contracts: list[Contract], memory_roots: list[Path],
+                            within_hours: float = 168.0,
+                            receiver_authorship: bool = False) -> int:
+    """v1.7.1 · 自动闭环检测 · 把死代码 matches_consume_hint 接入 scanner。
+
+    consumed=0 根因:消费只认下游显式写的 `status: consumed`,dialogs 不可靠这么做。
+    兜底:对每个 outstanding 合约,扫 issued_at 之后的 session(非 source_session),
+    deliverable 关键词松匹配 → auto-mark consumed(consume_method=auto_keyword · 可审计)。
+    返回 auto-consumed 数。显式 status:consumed 优先(本函数只补 outstanding 的)。
+
+    caveat:matches_consume_hint 是关键词松匹配(≥半数命中)· 有 FP 风险 · 故标 auto +
+    记 consumed_by 供人工核 · close_loop 时间是 consumed_at(匹配文件 mtime)− issued_at 的代理。
+    """
+    pend = [c for c in contracts if c.status == "outstanding"]
+    if not pend:
+        return 0
+    cutoff = time.time() - within_hours * 3600
+    best: dict[str, tuple[float, str]] = {}  # contract_id → (mtime, filename)
+    known_parties = {"nautilus-core", "v5", "v7", "compass", "main"}
+    # v1.7.1 · 收集候选 (overlap_ratio, hits, mtime, contract_id, filename) · 再做 1:1 贪心分配,
+    # 避免一个大 session 同时"闭环"多个合约(实证 FP:plan_v3_3 配到 3 个 deliverable)。
+    cands = []
+    for root in memory_roots:
+        if not root.exists():
+            continue
+        owner = _owner_from_root(root)
+        # v1.7.3 · 也拾 contract_close_*.md(显式 close-loop 文件约定)
+        for f in list(root.glob("session_*.md")) + list(root.glob("contract_close_*.md")):
+            try:
+                mt = f.stat().st_mtime
+            except Exception:
+                continue
+            if mt < cutoff:
+                continue
+            text = None
+            for c in pend:
+                if f.name == c.source_session:
+                    continue
+                # v1.7.1 · receiver-authorship:消费须在 receiver 自己的 root(杀跨 context FP)
+                _rcv = _norm_party(c.receiver)
+                if receiver_authorship and _rcv in known_parties and owner != _rcv:
+                    continue
+                iss = _parse_iso(c.issued_at)
+                if iss and mt < iss.timestamp():  # 消费必须在发起之后
+                    continue
+                if text is None:
+                    try:
+                        text = f.read_text(encoding="utf-8", errors="replace")
+                    except Exception:
+                        text = ""
+                hits, tot = c.consume_overlap(text)
+                if tot > 0 and hits >= max(1, tot // 2):
+                    cands.append((hits / tot, hits, mt, c.id, f.name))
+    # 1:1 贪心:overlap 高优先(tie:hits 高 → mtime 早)· 每文件每合约各只用一次
+    cands.sort(key=lambda x: (-x[0], -x[1], x[2]))
+    used_files: set[str] = set()
+    for ratio, hits, mt, cid, fname in cands:
+        if cid in best or fname in used_files:
+            continue
+        best[cid] = (mt, fname)
+        used_files.add(fname)
+    n = 0
+    for c in pend:
+        if c.id in best:
+            mt, fname = best[c.id]
+            c.status = "consumed"
+            c.consumed_by = fname
+            c.consumed_at = datetime.fromtimestamp(mt, timezone.utc).strftime("%Y-%m-%dT%H:%M:%S%z")
+            c.consume_method = "auto_keyword"
+            n += 1
+    return n
+
+
 # ─── scanner ─────────────────────────────────────────────────────
 
 
-def scan_sessions_for_contracts(memory_roots: list[Path], within_hours: float = 168.0) -> dict:
-    """Walk recent session_*.md files · build outstanding-contract index.
+def scan_sessions_for_contracts(memory_roots: list[Path], within_hours: float = 720.0,
+                                auto_detect: bool = False, include_implicit: bool = False,
+                                receiver_authorship: bool = False) -> dict:
+    # v1.7.1 · auto_detect 默认 False:keyword 匹配仍有 FP(cnt_ncore 实证 · 生成假闭环比 consumed=0 更糟)。
+    # 显式 status:consumed 始终生效。auto_detect=True 是 opt-in 实验工具(标 consume_method=auto_keyword 供审计)。
+    # 可信自动闭环需更强 matcher:receiver-authorship 约束 + 语义/LLM 验证(见 design_cross_agent_handoff.md)。
+    """Walk recent session_*.md + contract_close_*.md files · build outstanding-contract index.
+
+    D.fix-3 (2026-05-30): default window bumped 168h (7d) → 720h (30d) so historic close_loop
+    files (e.g. 5/19 pypi clean ~11 days old) still resolve. Also globs `contract_close_*.md`
+    in addition to `session_*.md` since some close-loop files use the `contract_close_` prefix.
+
+    D.fix-2 (2026-05-30): each freshly observed consumed contract is also appended to
+    `contract_ledger.jsonl` (idempotent · `_ledger_has_event` blocks dup on rescan).
 
     Returns {
         "outstanding": [Contract, ...],
@@ -311,7 +565,17 @@ def scan_sessions_for_contracts(memory_roots: list[Path], within_hours: float = 
     for root in memory_roots:
         if not root.exists():
             continue
-        for f in root.glob("session_*.md"):
+        # D.fix-3 (2026-05-30): include contract_close_*.md (some close-loop files use this prefix)
+        # D.fix-4 (2026-05-30): include inbound_*.md + outbound_*.md (cross-dialog naming
+        # used by V5 inbound and similar conventions; otherwise V5 F4 contract was invisible)
+        # v1.7.3 (plugin line): 同样拾 contract_close_*.md(显式 close-loop 文件约定)
+        files = (
+            list(root.glob("session_*.md"))
+            + list(root.glob("contract_close_*.md"))
+            + list(root.glob("inbound_*.md"))
+            + list(root.glob("outbound_*.md"))
+        )
+        for f in files:
             try:
                 if f.stat().st_mtime < cutoff:
                     continue
@@ -334,6 +598,16 @@ def scan_sessions_for_contracts(memory_roots: list[Path], within_hours: float = 
                     if rank.get(c.status, 0) > rank.get(prior.status, 0):
                         all_contracts[c.id] = c
 
+    # v1.7.1 · 隐式合约:从 inbound_/outbound_ 文件派生(解 adoption · 不覆盖已有显式合约)
+    if include_implicit:
+        for c in derive_implicit_contracts(memory_roots, within_hours):
+            all_contracts.setdefault(c.id, c)
+
+    # v1.7.1 · 自动闭环检测(补显式 status:consumed 之外的)· consume_method=auto_keyword
+    if auto_detect:
+        auto_detect_consumption(list(all_contracts.values()), memory_roots, within_hours,
+                                receiver_authorship=receiver_authorship)
+
     now = datetime.now(timezone.utc)
     outstanding, consumed, expired = [], [], []
     for c in all_contracts.values():
@@ -345,6 +619,13 @@ def scan_sessions_for_contracts(memory_roots: list[Path], within_hours: float = 
             else:
                 outstanding.append(c)
         # cancelled / expired status from file: just skip
+
+    # D.fix-2 (2026-05-30): persist consumed events to ledger · idempotent on rescan.
+    # `append_to_ledger` + `LEDGER` were defined since v1.7.0 but had zero callers
+    # → contract_ledger.jsonl never materialised. Wire it now.
+    for c in consumed:
+        if not _ledger_has_event(c.id, "consumed", c.consumed_at):
+            append_to_ledger(c, "consumed")
 
     return {
         "outstanding": outstanding,
@@ -418,8 +699,17 @@ if __name__ == "__main__":
     import sys
     if len(sys.argv) > 1 and sys.argv[1] == "scan":
         roots = _default_memory_roots()
-        scan = scan_sessions_for_contracts(roots, within_hours=168)
-        print(f"scanned {scan['files_scanned']} files in {len(roots)} roots")
+        # D.fix-3 (2026-05-30): drop hardcoded within_hours=168 override · use function
+        # default (720h = 30d) so historic close_loop files resolve. CLI accepts optional
+        # `--hours N` to override (e.g. for tight diagnostic windows).
+        within_hours = 720.0
+        if "--hours" in sys.argv:
+            try:
+                within_hours = float(sys.argv[sys.argv.index("--hours") + 1])
+            except (ValueError, IndexError):
+                pass
+        scan = scan_sessions_for_contracts(roots, within_hours=within_hours)
+        print(f"scanned {scan['files_scanned']} files in {len(roots)} roots (window {within_hours}h)")
         print(f"  outstanding: {len(scan['outstanding'])}")
         print(f"  consumed:    {len(scan['consumed'])}")
         print(f"  expired:     {len(scan['expired'])}")
