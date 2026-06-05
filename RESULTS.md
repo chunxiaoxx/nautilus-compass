@@ -57,6 +57,29 @@ This is on a small in-domain Chinese corpus. The numbers are correspondingly hig
 
 Runtime: 169 min CPU bi-encoder · 67 min GPU (GTX 1060 6GB) reranker.
 
+### Production recall path validation (v2.3.0 · `COMPASS_PROD_RERANK=1`)
+
+The full-500 row above was measured by `tests/eval_rerank.py` (a standalone
+inline CrossEncoder). v2.3.0 wires the reranker into the **production recall hot
+path** (`daemon._rerank_top` + `_get_reranker`, called from `handle_request`).
+`tests/eval_rerank_prod.py` routes candidates through those exact production
+functions to prove the wired code — not a parallel benchmark impl — delivers the
+lift.
+
+| System (subset12 · n=12 · routed through prod `_rerank_top`) | P@1 | P@5 | MRR |
+|---|---|---|---|
+| bge-m3 dense (flag off) | 0.667 | 0.750 | 0.732 |
+| **+ prod reranker (`COMPASS_PROD_RERANK=1`)** | **0.750** | **0.917** | **0.833** |
+| **Δ from prod path** | **+0.083** | **+0.167** | **+0.102** |
+
+Production path P@5 0.917 (n=12) tracks the full-500 reranker P@5 0.920 above.
+Per-type pattern holds: multi-session 0.50→1.00, single-session-user 0.00→0.50
+(rescued q dense rank 7→1; the dense-rank-26 case still falls outside the top-30
+candidate window — the known single-session-user weak class). Reproduce:
+`ZMM_DEVICE=cuda python tests/eval_rerank_prod.py`. Full-500 prod-path rerun is
+the standing CPU-bound bi-encoder cost (169 min) and is deferred; subset12
+confirms the wiring is faithful to the documented reranker lift.
+
 ### Per-question-type breakdown · full 500
 
 | Question type | n | bi-encoder P@5 | bi-encoder MRR | + reranker P@5 | + reranker MRR | Δ MRR |
