@@ -37,7 +37,7 @@ def _ins(conn, verdict_id, task_uid, overall_pass, veto_failed, score, items, cr
     conn.execute(
         "INSERT INTO fde_verdicts (verdict_id, task_uid, source, overall_pass, "
         "veto_failed, score, items, created_at) VALUES (?,?,?,?,?,?,?,?)",
-        (verdict_id, task_uid, "v5", int(overall_pass), int(veto_failed), score,
+        (verdict_id, task_uid, "soul", int(overall_pass), int(veto_failed), score,
          json.dumps(items), created_at))
     conn.commit()
 
