@@ -87,3 +87,39 @@ def test_since_watermark_filters():
     assert _credit(conn, "data_003") is None       # already settled (at watermark)
     assert _credit(conn, "data_004") is not None
     assert res["last_review_at"] == "2026-06-06T10:00:00Z"
+
+
+# ── RED 5 · map a feishu Bitable record → review dict (分项分 from score columns)
+def test_bitable_record_to_review():
+    record = {"record_id": "rec1", "fields": {
+        "task_uid": "data_004", "复核状态": "通过",
+        "引用准确性": 8, "覆盖完整性": 7, "防编造(幻觉)": 10,
+        "复核理由": "归因成立", "复核人": "张三", "复核时间": "2026-06-06T14:00:00Z"}}
+
+    r = ers.bitable_record_to_review(record)
+
+    assert r["task_uid"] == "data_004"
+    assert r["复核状态"] == "通过"
+    assert r["分项分"] == {"引用准确性": 8, "覆盖完整性": 7, "防编造(幻觉)": 10}
+    assert r["复核时间"] == "2026-06-06T14:00:00Z"
+
+
+# ── RED 6 · a record with no 复核状态 maps to pending (skipped on settle) ─────
+def test_bitable_record_missing_status_is_pending():
+    record = {"fields": {"task_uid": "data_005"}}
+    r = ers.bitable_record_to_review(record)
+    assert ers._is_pending(r)
+
+
+# ── RED 7 · settle a list of bitable records end-to-end ──────────────────────
+def test_settle_from_bitable_records():
+    conn = _db()
+    records = [
+        {"fields": {"task_uid": "data_004", "复核状态": "通过", "引用准确性": 10,
+                    "复核时间": "2026-06-06T14:00:00Z"}},
+        {"fields": {"task_uid": "data_005", "复核状态": "待复核",
+                    "复核时间": "2026-06-06T14:01:00Z"}}]
+    reviews = [ers.bitable_record_to_review(rec) for rec in records]
+    res = ers.settle_expert_reviews(conn, reviews, NOW, placeholder="?")
+    assert _credit(conn, "data_004") == pytest.approx((1.0, 1))
+    assert res["skipped_pending"] == ["data_005"]
