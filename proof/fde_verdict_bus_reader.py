@@ -19,8 +19,12 @@ local checklist+verdict pair. This reader is the task-level spine.
 from __future__ import annotations
 
 import json
+import os
+import sys
 
-from .fde_poi_adapter import credit_from_checklist_verdict
+from .fde_poi_adapter import (
+    DEFAULT_DIM_PROJECT, credit_dimensions_from_verdict,
+    credit_from_checklist_verdict)
 
 # contract columns compass depends on (drift-guarded platform-side by
 # tests/test_fde_verdict_contract.py)
@@ -101,4 +105,74 @@ def from_fde_verdicts(bus_conn, credit_conn, since=None, placeholder="%s",
         last_created_at = created_at
 
     return {"processed": len(rows), "credited": credited,
+            "last_created_at": last_created_at}
+
+
+def _load_local_checklist(checklist_dir, task_uid):
+    """Read `<checklist_dir>/<task_uid>_checklist.json` (UTF-8 · the files are
+    CJK). Returns the checklist dict, or None when absent/unreadable so the caller
+    can skip the dimension credit without stalling the verdict stream."""
+    path = os.path.join(checklist_dir, f"{task_uid}_checklist.json")
+    if not os.path.exists(path):
+        return None
+    try:
+        with open(path, encoding="utf-8") as f:
+            return json.load(f)
+    except (OSError, ValueError) as e:
+        print(f"[bus] unreadable checklist {path}: {e}", file=sys.stderr)
+        return None
+
+
+def credit_dimensions_from_bus(bus_conn, credit_conn, checklist_dir, since=None,
+                               placeholder="%s", dimension_for=None,
+                               project=DEFAULT_DIM_PROJECT, pass_score=None):
+    """Credit DIMENSION-level PoI from the verdict-bus (Option C · design §45).
+
+    The bus row carries the verdict items but not the checklist content (only
+    checklist_uid), so dimension granularity needs the checklist. This joins each
+    bus verdict to its LOCAL `<task_uid>_checklist.json` by task_uid and runs the
+    existing credit_dimensions_from_verdict (passed item → +score on its mapped
+    dimension key; failed item → 0). A verdict whose local checklist is missing is
+    skipped for dimension crediting (recorded · the task-level spine
+    `from_fde_verdicts` still covers it) but the watermark still advances so a
+    missing checklist never stalls the stream. `dimension_for` is injected (compass
+    core stays decoupled from vtf); production wires map_to_rubric_dimension.
+
+    `since` is an exclusive created_at watermark. Returns {processed,
+    credited:[{task_uid, verdict_id, credited:{dim:delta}, events}],
+    skipped_no_checklist:[task_uid...], last_created_at}."""
+    sql = _SELECT
+    params: tuple = ()
+    if since is not None:
+        sql += f" WHERE created_at > {placeholder}"
+        params = (since,)
+    sql += " ORDER BY created_at ASC"
+
+    cur = bus_conn.cursor()
+    cur.execute(sql, params)
+    rows = cur.fetchall()
+
+    credited = []
+    skipped_no_checklist = []
+    last_created_at = since
+    for verdict_id, task_uid, overall_pass, veto_failed, score, items, created_at in rows:
+        last_created_at = created_at
+        checklist = _load_local_checklist(checklist_dir, task_uid)
+        if checklist is None:
+            skipped_no_checklist.append(task_uid)
+            continue
+        verdict = {
+            "overall_pass": bool(overall_pass),
+            "veto_failed": bool(veto_failed),
+            "score": float(score),
+            "items": _coerce_items(items),
+        }
+        summary = credit_dimensions_from_verdict(
+            credit_conn, task_uid, checklist, verdict, created_at, placeholder,
+            dimension_for=dimension_for, pass_score=pass_score, project=project)
+        credited.append({"task_uid": task_uid, "verdict_id": verdict_id,
+                         "credited": summary["credited"], "events": summary["events"]})
+
+    return {"processed": len(rows), "credited": credited,
+            "skipped_no_checklist": skipped_no_checklist,
             "last_created_at": last_created_at}
