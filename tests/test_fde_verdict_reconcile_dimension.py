@@ -46,7 +46,7 @@ def _mk_db():
 def _ins(conn, vid, uid, op, vf, score, items, created_at):
     conn.execute("INSERT INTO fde_verdicts (verdict_id, task_uid, source, overall_pass, "
                  "veto_failed, score, items, created_at) VALUES (?,?,?,?,?,?,?,?)",
-                 (vid, uid, "v5", int(op), int(vf), score, json.dumps(items), created_at))
+                 (vid, uid, "soul", int(op), int(vf), score, json.dumps(items), created_at))
     conn.commit()
 
 
