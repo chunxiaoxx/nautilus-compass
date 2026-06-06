@@ -12,7 +12,6 @@ reuses recall.promote_lifecycle_tier()'s Rule C forget check. Default OFF.
 from __future__ import annotations
 
 import sys
-import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
