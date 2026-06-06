@@ -106,6 +106,23 @@ def test_veto_failed_negative_credit():
     assert row[0] == pytest.approx(-0.5)
 
 
+# ── peek · read-only dry-run lists rows WITHOUT crediting ────────────────────
+def test_peek_is_readonly_and_lists_rows():
+    busc = _mk_bus()
+    _ins(busc, "v-1", "data_001", True, False, 1.0, ITEMS, "2026-06-05T02:47:00Z")
+    _ins(busc, "v-2", "data_002", True, False, 0.8333, ITEMS, "2026-06-05T11:22:00Z")
+    creditc = _mk_credit()
+
+    rows = bus.peek_fde_verdicts(busc, placeholder="?")
+    assert [r["task_uid"] for r in rows] == ["data_001", "data_002"]
+    assert rows[1]["score"] == pytest.approx(0.8333)
+    # nothing credited (read-only)
+    assert _credit(creditc, "fde-capsule-data_001") is None
+    # since filter
+    assert len(bus.peek_fde_verdicts(busc, since="2026-06-05T02:47:00Z",
+                                     placeholder="?")) == 1
+
+
 # ── RED 4 · items already a list (postgres JSONB) is accepted ────────────────
 def test_items_as_list_accepted():
     # simulate psycopg2 returning JSONB as a python list (not a json str)

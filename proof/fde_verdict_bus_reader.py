@@ -40,6 +40,27 @@ def _coerce_items(raw):
         return []
 
 
+def peek_fde_verdicts(bus_conn, since=None, placeholder="%s"):
+    """Read-only dry-run · list the verdicts that WOULD settle (created_at >
+    since, ascending) WITHOUT crediting anything. Lets a caller verify the GRANT
+    SELECT is live on a strictly read-only connection before any write.
+
+    Returns [{verdict_id, task_uid, overall_pass, veto_failed, score,
+    created_at}]."""
+    sql = ("SELECT verdict_id, task_uid, overall_pass, veto_failed, score, "
+           "created_at FROM fde_verdicts")
+    params: tuple = ()
+    if since is not None:
+        sql += f" WHERE created_at > {placeholder}"
+        params = (since,)
+    sql += " ORDER BY created_at ASC"
+    cur = bus_conn.cursor()
+    cur.execute(sql, params)
+    return [{"verdict_id": r[0], "task_uid": r[1], "overall_pass": bool(r[2]),
+             "veto_failed": bool(r[3]), "score": float(r[4]), "created_at": r[5]}
+            for r in cur.fetchall()]
+
+
 def from_fde_verdicts(bus_conn, credit_conn, since=None, placeholder="%s",
                       reject_delta=None):
     """Read `fde_verdicts` rows (created_at > since, ascending) and credit
