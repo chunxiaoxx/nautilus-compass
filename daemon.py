@@ -1081,6 +1081,23 @@ def serve():
     log("daemon stopped")
 
 
+def _recover_surrogates(s: str) -> str:
+    """Sanitize lone surrogates (\\udc80-\\udcff) that crash write_text(utf-8).
+
+    They come from an upstream gbk-decode-as-UTF-8/surrogateescape (the Windows MCP
+    client · session_20260605 Finding 1: Chinese obs all crash, ASCII passes). The
+    single cloud-substrate ingest path must never die on one bad-encoded obs:
+    re-encode to the original bytes + decode as gbk (the Windows default ·
+    round-trips the CJK); on failure 'replace' so it degrades gracefully. Valid
+    input (ASCII / real CJK · no surrogates) is returned untouched."""
+    if not any("\ud800" <= c <= "\udfff" for c in s):
+        return s
+    try:
+        return s.encode("utf-8", "surrogateescape").decode("gbk")
+    except UnicodeError:
+        return s.encode("utf-8", "replace").decode("utf-8")
+
+
 def handle_ingest(req: dict) -> dict:
     """v2.0.0 · S5 · ingest text -> compass memory .md + embed + cache.
 
@@ -1107,7 +1124,7 @@ def handle_ingest(req: dict) -> dict:
     import pickle as _pickle
     from datetime import datetime, timezone
 
-    text = (req.get("text") or "").strip()
+    text = _recover_surrogates((req.get("text") or "").strip())
     project = (req.get("project") or "").strip()
     if not text:
         return {"ok": False, "error": "empty text"}
@@ -1119,7 +1136,7 @@ def handle_ingest(req: dict) -> dict:
     mem_dir = Path.home() / ".claude" / "projects" / project / "memory"
     mem_dir.mkdir(parents=True, exist_ok=True)
 
-    fname = (req.get("filename") or "").strip()
+    fname = _recover_surrogates((req.get("filename") or "").strip())
     if not fname:
         ts = time.strftime("%Y%m%d_%H%M%S")
         hsh = abs(hash(text)) % 100000
