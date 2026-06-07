@@ -123,21 +123,21 @@ def test_peek_is_readonly_and_lists_rows():
                                      placeholder="?")) == 1
 
 
-# ── RED · only authoritative source ('soul') settles; kairos-opus二审 excluded ─
-# (platform-soul 2026-06-06: V5 adds Kairos Opus adversarial 二审 as
-# source='kairos-opus'; settling those double-counts the same task's PoI — the
-# reader must settle only the soul 一审 fitness signal.)
+# ── RED · only authoritative source settles; kairos-deepseek 二审 excluded ────
+# (platform-soul/V5 2026-06-06: V5 adds an adversarial 二审 to the bus; the real
+# tag is source='kairos-deepseek' — V5 ran DeepSeek/MiniMax-M3, not Opus. Settling
+# the 二审 double-counts the task's PoI, so the allowlist excludes ANY 二审 source.)
 def test_only_soul_source_settles_kairos_excluded():
     busc = _mk_bus()
     _ins(busc, "v-soul", "data_001", True, False, 1.0, ITEMS, "2026-06-06T01:00:00Z",
          source="soul")
     _ins(busc, "v-kairos", "data_001", True, False, 0.9, ITEMS, "2026-06-06T02:00:00Z",
-         source="kairos-opus")
+         source="kairos-deepseek")  # the actual production 二审 tag
     creditc = _mk_credit()
 
     res = bus.from_fde_verdicts(busc, creditc, placeholder="?")
 
-    # only the soul 一审 settled (kairos-opus 二审 skipped → no double-count)
+    # only the soul 一审 settled (kairos-deepseek 二审 skipped → no double-count)
     assert res["processed"] == 1
     assert _credit(creditc, "fde-capsule-data_001") == pytest.approx((1.0, 1))
     # watermark advances only past the settled (soul) row, not the skipped kairos row
@@ -161,10 +161,10 @@ def test_peek_also_filters_to_settling_sources():
     _ins(busc, "v-soul", "data_001", True, False, 1.0, ITEMS, "2026-06-06T01:00:00Z",
          source="soul")
     _ins(busc, "v-kairos", "data_001", True, False, 0.9, ITEMS, "2026-06-06T02:00:00Z",
-         source="kairos-opus")
+         source="kairos-deepseek")
     rows = bus.peek_fde_verdicts(busc, placeholder="?")
     assert [r["task_uid"] for r in rows] == ["data_001"]
-    assert len(rows) == 1  # kairos-opus not listed as a would-settle row
+    assert len(rows) == 1  # kairos-deepseek 二审 not listed as a would-settle row
 
 
 # ── RED 4 · items already a list (postgres JSONB) is accepted ────────────────

@@ -32,16 +32,21 @@ _SELECT = ("SELECT verdict_id, task_uid, overall_pass, veto_failed, score, "
            "items, created_at FROM fde_verdicts")
 
 # Authoritative PoI fitness sources (allowlist). The 一审 soul checklist verdict
-# is the ONLY PoI source; from 2026-06-06 V5 also writes a Kairos Opus adversarial
-# 二审 as source='kairos-opus' — settling that double-counts the same task's PoI,
-# so it MUST be excluded.
+# is the ONLY PoI source; from 2026-06-06 V5 also writes an adversarial 二审 to
+# the same bus — settling that would double-count the task's PoI, so it MUST be
+# excluded. NOTE the 二审 tag is source='kairos-deepseek' (V5 ran DeepSeek/
+# MiniMax-M3, not Opus — Kairos had no quota), NOT 'kairos-opus' as first assumed.
+# Because this is an ALLOWLIST (settle only the tags below), ANY 二审 source —
+# kairos-deepseek, kairos-opus, or a future judge — is excluded automatically; the
+# exact 二审 tag does not matter. (This robustness is why an allowlist beats a
+# denylist of one specific tag.)
 #
 # Tag reality (verified against production fde_verdicts 2026-06-06): the live 一审
 # rows are tagged source='fde-capsule-v5' (V5 relays soul's checklist_scorer
 # verdict), NOT 'soul' as the platform's WHERE source='soul' request literally
 # stated — an allowlist of just 'soul' would settle NOTHING and break the live
 # loop. So this allows BOTH the real live tag and 'soul' (in case the platform
-# re-tags the 一审 to 'soul' later); either settles, kairos-opus never does.
+# re-tags the 一审 to 'soul' later); either settles, no 二审 ever does.
 # Append the 真人专家 (expert) source HERE when that 飞书 review path lands
 # (anchor #3 north-star fuel). Reverses the original rule A "don't filter source"
 # (FDE_VERDICT_BUS_CONTRACT.md) at the platform's request.
