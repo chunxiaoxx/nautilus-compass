@@ -95,7 +95,13 @@ _BM25_RRF_TOP_K = int(os.environ.get("COMPASS_BM25_RRF_TOP_K", "30"))
 _PROD_RERANK_USE = os.environ.get("COMPASS_PROD_RERANK", "0") == "1"
 _RERANKER_MODEL = os.environ.get(
     "ZMM_RERANKER_MODEL",
-    str(Path.home() / ".cache/modelscope/hub/models/BAAI/bge-reranker-v2-m3"),
+    # local ModelScope path preferred · else HF repo id (mirrors EMBEDDER_MODEL).
+    # 2026-06-07: without the HF fallback, HF-cache-only hosts (e.g. fresh GPU
+    # server) hit "reranker failed · Path .../modelscope/... not found" and
+    # silently fell back to dense order. The exists()-guard fixes that.
+    str(Path.home() / ".cache/modelscope/hub/models/BAAI/bge-reranker-v2-m3")
+    if (Path.home() / ".cache/modelscope/hub/models/BAAI/bge-reranker-v2-m3").exists()
+    else "BAAI/bge-reranker-v2-m3",
 )
 # how many top candidates to feed the cross-encoder before truncating to top_k.
 # benchmark used full haystack (50); production keeps it bounded for latency.
