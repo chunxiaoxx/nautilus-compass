@@ -1,0 +1,31 @@
+[Unit]
+# compass memory daemon (bge-m3 embeddings + bge-reranker-v2-m3) on a GPU host.
+# Persistent deploy: starts on boot, restarts on failure. Listens 127.0.0.1:9876.
+# Install:
+#   sudo cp compass-daemon.service /etc/systemd/system/
+#   sudo systemctl daemon-reload && sudo systemctl enable --now compass-daemon
+# Verify: systemctl status compass-daemon ; ss -tln | grep 9876
+Description=compass memory daemon (GPU · bge-m3 + reranker)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/compass
+# HF cache on the data disk (models live there); GPU device; reranker on.
+# reranker model resolves to HF id via the daemon's exists()-fallback (no
+# ZMM_RERANKER_MODEL workaround needed since the 2026-06-07 daemon fix).
+Environment=HF_HOME=/mnt/datadisk0/hf-cache
+Environment=ZMM_DEVICE=cuda
+Environment=COMPASS_PROD_RERANK=1
+Environment=COMPASS_USE_INOTIFY=0
+Environment=PATH=/home/ubuntu/.local/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/usr/bin/python3 /home/ubuntu/compass/daemon.py
+Restart=always
+RestartSec=5
+# give the model load room before considering it failed
+TimeoutStartSec=120
+
+[Install]
+WantedBy=multi-user.target
