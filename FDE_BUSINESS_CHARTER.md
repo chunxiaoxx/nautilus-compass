@@ -26,9 +26,11 @@ metadata:
    - 二期重点:**不把信息全喂题目→要求大模型自行判断**;真实场景出发;不堆附件凑数。**9 个固定一级类目**(互联网与平台业务 / 科技软件与 AI 工作流 / 游戏与互动内容 / 品牌市场与电商零售 / 投资战略专业服务与企业经营 / 金融服务与财富投研 / 教育科研与生命科学 / 法律政务与公共服务 / 房地产与大宗资产)**不可改**(与 `harness/rubric_check.py` VALID_L1_CATEGORIES 一致);二三级可拓展。
    - L1 探索型(短·检索汇总·附件少)/ L2 流程型(真实业务流·多步·附件读取分析产物)/ L3 系统性(知识库+企业系统工具·环境检查+工具调用+权限)。
    - 出题/提交表(v5 建)= base `EOVhbQwA0a1HEOsgmxecgkBVnwh` / table `tblhD4O4f0esTyXc`。
-2. **第2类 · agent 知识任务提炼(知识教案)** = 专家把领域知识沉淀成 **4 段教案**训大模型。
-   - 📄 格式(权威样例)= `~/Downloads/_行业评测萃取/本原-行业数据集样例/编程自动化/编程自动化.md`:①Instruction ②Knowledge Points(逐条带局限/边界)③Background Knowledge(多段·每段含权衡/局限)④Task 示例(任务要求+code+执行过程+答案)。🔴红线:Background 靠真人专家亲写(买方查 AI 检测)。
-   - 📄 买方需求 wiki node `BN9twdJhIiODavk7mVSco1LMnON`(2026-06-09 探测 **not found** · 需用户复核 token/权限)。
+2. **第2类 · agent 知识任务提炼(知识教案)** = 各领域专家把**自己梳理提炼的领域知识**沉淀成 **4 段教案**(训大模型 pre-train/instruction tuning)。
+   - 📄 买方需求(权威)= 飞书 wiki docx「Agent领域知识任务-数据集采购需求」· wiki node `X0eQwlc1UikyCUkwJBzcfHnQnsc`(空间 `qcn43eh6peiv`)· obj_token `NBOLdjfAsoJGltxUx3vcqrpVnKg` · **落地副本 `vtf/BUYER_SPEC_T2_Agent领域知识任务需求.txt`**(旧 node `BN9twdJhIiODavk7mVSco1LMnON` not found 已弃)。
+   - 领域+期望量级:金融/法律/医疗/工程 各 200-500 条 · 农业/其他 各 100-300 条。**一级领域=金融/法律/医疗/工程/农业/其他(6 个 · 与第1类 9 类目不同!)** · 二级自由撰写。
+   - 📄 格式(权威样例)= `~/Downloads/_行业评测萃取/本原-行业数据集样例/编程自动化/编程自动化.md` + wiki 内置「FreeCad CLI 建模」示例:任务标题/领域 tag/①Instruction ②Knowledge Points(列知识点)③Background Knowledge(多段展开·每段含权衡/局限)④Task 示例(任务要求+精简正确执行+结果)。
+   - 🔴🔴 红线:知识点正文 1k-30k 字 · 知识密度每条 ≥5 知识点 · **不能纯网络搜索/AI 生成 · 须专家自己梳理提炼 · 网上搜不到(防已训练)· 买方跑 AI 检测**。
    - 工具 = `knowledge-tutorial-assembler` skill。教案表(统一裁定)= soul base `Y7ZFbMbJqaWSxHs27chcC706nZb` / table `tblZKcpcSYeACj5J`(soul 已写首篇《CPU饥饿诊断》);agent `tbl9c6mvPRTuq9sD` **弃用**。
 3. **第3类 · 基准测试样例** = 大模型/agent benchmark · 11 前沿 benchmark · 王春晓基于自身开发+基准测试经验做(较开放)。脚手架 `vtf/fde-toolbox/出题脚手架_前沿AIeng_11benchmark.md` · A 簇 env GPU `/mnt/datadisk0` · B 腿候选 daemon-cpu/capstone/blas · 算力:A 簇 T4 够 · B/C 簇需 H100(王泽协调)。
 - 📄 培训纪要(权威背景)= `~/Downloads/智能纪要：伊洛科技 培训交流会 2026年6月8日.md`(6/8 · 王泽/王彦鹏/王春晓 · 定方向+字段+定价+算力)。
