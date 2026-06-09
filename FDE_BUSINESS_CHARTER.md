@@ -32,13 +32,16 @@ metadata:
    - 📄 格式(权威样例)= `~/Downloads/_行业评测萃取/本原-行业数据集样例/编程自动化/编程自动化.md` + wiki 内置「FreeCad CLI 建模」示例:任务标题/领域 tag/①Instruction ②Knowledge Points(列知识点)③Background Knowledge(多段展开·每段含权衡/局限)④Task 示例(任务要求+精简正确执行+结果)。
    - 🔴🔴 红线:知识点正文 1k-30k 字 · 知识密度每条 ≥5 知识点 · **不能纯网络搜索/AI 生成 · 须专家自己梳理提炼 · 网上搜不到(防已训练)· 买方跑 AI 检测**。
    - 工具 = `knowledge-tutorial-assembler` skill。教案表(统一裁定)= soul base `Y7ZFbMbJqaWSxHs27chcC706nZb` / table `tblZKcpcSYeACj5J`(soul 已写首篇《CPU饥饿诊断》);agent `tbl9c6mvPRTuq9sD` **弃用**。
-3. **第3类 · 基准测试样例** = 大模型/agent benchmark · 11 前沿 benchmark · 王春晓基于自身开发+基准测试经验做(较开放)。脚手架 `vtf/fde-toolbox/出题脚手架_前沿AIeng_11benchmark.md` · A 簇 env GPU `/mnt/datadisk0` · B 腿候选 daemon-cpu/capstone/blas · 算力:A 簇 T4 够 · B/C 簇需 H100(王泽协调)。
+3. **第3类 · 基准测试样例(复现现成基准·非造新)** = 复现 11 类前沿 AI-eng benchmark · 交付**复现数据+轨迹+pass@k**(核心资产=验证器+可执行环境)。📄 权威需求 = **`vtf/BUYER_SPEC_T3_基准测试复现需求.md`**(2026-06-09 买方 Q&A 澄清 · 无独立 wiki)。
+   - 质量标准 = **难倒模型:pass@5 ≤ 0.6 on doubao 2.0**(锁定该模型·5 次正确≤3 次·越难越好)· 验收双维:① 复现质量 ② 成品量级。
+   - **不涉及算力**(Token 成本进报价)· coding 类买方已自采 swe-bench pro/terminal bench 2.0(3 月需求·可能已结束·**别重复**)。
+   - 脚手架 `vtf/fde-toolbox/出题脚手架_前沿AIeng_11benchmark.md` · A 簇 env GPU `/mnt/datadisk0`(`autolab_eval --task`)· B 腿候选 daemon-cpu/capstone/blas · 我方复现大 bench 实需 H100(王泽协调)· turf:soul `benchmark_verifier`(pass@k/escapes=难倒)+ v5 产候选轨迹。
 - 📄 培训纪要(权威背景)= `~/Downloads/智能纪要：伊洛科技 培训交流会 2026年6月8日.md`(6/8 · 王泽/王彦鹏/王春晓 · 定方向+字段+定价+算力)。
 - **素材来源 = 我们自身**:平台/soul/compass/各 agent 开发过程的问题 + 用 Claude Code 的经验教训 → 自身总结反思 → 产成样例(真实经历非编造)。
 - **过程中打通 RSI+FDE 整链** → 对外招募各专家开展 FDE 知识沉淀 + agent 工作流训练业务。
 
 ## 2. 甲方需求 / 红线(铁律)
-- **难度 = ≥8h 人类专家复杂度**(不是 pass@5≤0.6 · 那是内部 proxy · pass@k 仅附加证据)。
+- **难度标准按业务线分**(此前把两者混为一谈·已纠):第1/2 类(专家题/教案)= **≥8h 人类专家复杂度**(pass@k 仅附加证据);**第3 类(基准复现)= 难倒模型 pass@5 ≤ 0.6 on doubao 2.0**(买方明确口径·见 §1.3)。
 - **🔴 专家亲写 · 甲方跑 AI 检测 · 不能 LLM 批量生产 · 附件真实**(脱敏/减英文附件)。AI 框只能结构化/搭环境/验证,**叙述内容靠真人专家**,AI 文字需真人润色过检测。
 - L1/L2/L3 分级(L3=系统性·环境检查+工具调用+权限)。
 - 算力:A 簇 T4 够 · B/C 簇需 H100(王泽协调)。
