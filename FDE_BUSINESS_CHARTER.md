@@ -16,12 +16,23 @@ metadata:
 - **真甲方 = 保密大厂**(用户私下告知 · **任何对外/交付/呈现/outbound 绝不提名**)。
 - 我们(伊洛)给甲方提供下面三类业务的样例/交付物。
 
-## 1. 三类业务(都同一个甲方)· 🔴 类号以甲方/用户为准(用户 6/9 校正 · compass 不自拍业务定义 · 之前编号是从 reference 自编、错了)
-1. **行业专家 / 专家复现**(L1/L2/L3 分级 · 16 列出题格式)— **6 样例** = `vtf/data_001~006_task.txt` + `data_00N_checklist.json` · 买方官方示例 = `~/Downloads/行业高难题目项目 示例.xlsx`(16 列锚)。
-2. **知识教案**(FDE 知识任务沉淀 · 四段:任务标题/一Instruction/二KnowledgePoints/三BackgroundKnowledge/四Task示例)— 黄金样例 = `~/Downloads/_行业评测萃取/本原-行业数据集样例/编程自动化/编程自动化.md`。
-3. **基准测试样例**(大模型/agent benchmark · 11 前沿 benchmark)— 脚手架 = `vtf/fde-toolbox/出题脚手架_前沿AIeng_11benchmark.md` · A 簇 env(GPU `/mnt/datadisk0`)· B 腿候选 daemon-cpu/capstone/blas。
-- ⚠️ **资料散在 `vtf/` + `~/Downloads/`,不在平台/各 repo** → 这是平台"找不到/不知道"的直接原因。fresh session 要把这些位置纳入宪章 + 考虑集中。
-- **素材来源 = 我们自身**:平台/soul/compass/各 agent 开发过程的问题 + 用 Claude Code 的经验教训 → 自身总结反思 → 产成样例(B 腿 daemon-cpu/capstone/blas = 真实经历非编造)。
+## 1. 三类业务(都同一个甲方)· 🔴 权威口径(2026-06-09 第二轮校正 · 基于读 wiki docx「垂域高难度题目项目--二期要求」+ 培训纪要 6/8 · 此前 §1 分类不准已纠)
+> 🔴🧺 **防丢失契约(治"狗熊掰玉米")**:本节钉死所有买方权威材料的位置(wiki token + obj_token + 本地路径 + 落地副本)。任何 session 接到"这是买方材料/需求/样例"→ **先查本节是否已钉:已钉=直接用,未钉=钉进来再开工**。绝不重新发现、不当新素材、不重复问用户。材料"丢了"= 本节没维护(违约)。
+
+1. **第1类 · 行业高难题目 / 垂域高难度题目(专家复现)** = 专家从真实工作场景出发设计 ≥8h 高难度题 · **16 列出题格式**。
+   - 📄 买方需求(权威)= 飞书 wiki docx「垂域高难度题目项目--二期要求」· wiki node `F2ZqwOpzKiST4PkNtDOcHdgSnCc` · obj_token(docx)`Eg8zdrq7toXLggxrgBecC3donLf` · **落地副本 `vtf/BUYER_SPEC_T1_垂域高难度二期要求.txt`**(18975B · 含 9 固定一级类目 + 10 维打分口径)。
+   - 📄 买方样例(权威)= 飞书 wiki sheet「行业高难题目示例」· wiki node `SDgTwqTt5i3YSfkVoeBccEKHnZG` · obj_token(sheet)`GMdosqbZuhTbxqtqxzPcTAUznxf` · 本地 `~/Downloads/行业高难题目项目 示例.xlsx`(16 列锚)。
+   - 我方样例 = `vtf/data_001~006_task.txt`+checklist · `vtf/_data007_out/`(CPU 饥饿事故 · compass 产)。
+   - 二期重点:**不把信息全喂题目→要求大模型自行判断**;真实场景出发;不堆附件凑数。**9 个固定一级类目**(互联网与平台业务 / 科技软件与 AI 工作流 / 游戏与互动内容 / 品牌市场与电商零售 / 投资战略专业服务与企业经营 / 金融服务与财富投研 / 教育科研与生命科学 / 法律政务与公共服务 / 房地产与大宗资产)**不可改**(与 `harness/rubric_check.py` VALID_L1_CATEGORIES 一致);二三级可拓展。
+   - L1 探索型(短·检索汇总·附件少)/ L2 流程型(真实业务流·多步·附件读取分析产物)/ L3 系统性(知识库+企业系统工具·环境检查+工具调用+权限)。
+   - 出题/提交表(v5 建)= base `EOVhbQwA0a1HEOsgmxecgkBVnwh` / table `tblhD4O4f0esTyXc`。
+2. **第2类 · agent 知识任务提炼(知识教案)** = 专家把领域知识沉淀成 **4 段教案**训大模型。
+   - 📄 格式(权威样例)= `~/Downloads/_行业评测萃取/本原-行业数据集样例/编程自动化/编程自动化.md`:①Instruction ②Knowledge Points(逐条带局限/边界)③Background Knowledge(多段·每段含权衡/局限)④Task 示例(任务要求+code+执行过程+答案)。🔴红线:Background 靠真人专家亲写(买方查 AI 检测)。
+   - 📄 买方需求 wiki node `BN9twdJhIiODavk7mVSco1LMnON`(2026-06-09 探测 **not found** · 需用户复核 token/权限)。
+   - 工具 = `knowledge-tutorial-assembler` skill。教案表(统一裁定)= soul base `Y7ZFbMbJqaWSxHs27chcC706nZb` / table `tblZKcpcSYeACj5J`(soul 已写首篇《CPU饥饿诊断》);agent `tbl9c6mvPRTuq9sD` **弃用**。
+3. **第3类 · 基准测试样例** = 大模型/agent benchmark · 11 前沿 benchmark · 王春晓基于自身开发+基准测试经验做(较开放)。脚手架 `vtf/fde-toolbox/出题脚手架_前沿AIeng_11benchmark.md` · A 簇 env GPU `/mnt/datadisk0` · B 腿候选 daemon-cpu/capstone/blas · 算力:A 簇 T4 够 · B/C 簇需 H100(王泽协调)。
+- 📄 培训纪要(权威背景)= `~/Downloads/智能纪要：伊洛科技 培训交流会 2026年6月8日.md`(6/8 · 王泽/王彦鹏/王春晓 · 定方向+字段+定价+算力)。
+- **素材来源 = 我们自身**:平台/soul/compass/各 agent 开发过程的问题 + 用 Claude Code 的经验教训 → 自身总结反思 → 产成样例(真实经历非编造)。
 - **过程中打通 RSI+FDE 整链** → 对外招募各专家开展 FDE 知识沉淀 + agent 工作流训练业务。
 
 ## 2. 甲方需求 / 红线(铁律)
@@ -36,7 +47,7 @@ metadata:
 - **soul**:escapes 终判(radix=TRUE / bvh=FALSE·model confound)· 难度指纹折 RUBRIC · 教案表(base Y7ZFbMbJqaWSxHs27chcC706nZb / table tblZKcpcSYeACj5J)+ 第一篇《CPU饥饿诊断》。
 - **agent(v5)**:bvh 2-arm(deepseek 复跑定泛化)· 提交出题表(base EOVhbQwA0a1HEOsgmxecgkBVnwh / table tblhD4O4f0esTyXc 14列)。
 - **RSI 飞轮**:radix 单题 escapes=TRUE(护城河)· bvh 待 deepseek 复跑定性 · c3(ΔReward→PoI)defer 到泛化定性。
-- 🔴 **未决撞车**:教案表两张(soul tblZKcpcSYeACj5J vs agent tbl9c6mvPRTuq9sD)需统一。
+- ✅ **教案表撞车已裁定(2026-06-09)**:统一用 soul `tblZKcpcSYeACj5J`(已写首篇),agent `tbl9c6mvPRTuq9sD` 弃用 · 待 v5/soul 经协调通道确认。
 
 ## 4. 各对话框 turf(不越界)
 - **compass**:记忆/recall/drift/PoI/governance/metamemory · FDE benchmark env/eval · feishu 读写函数 · 工具栈。
