@@ -35,7 +35,9 @@ metadata:
 3. **第3类 · 基准测试样例(复现现成基准·非造新)** = 复现 11 类前沿 AI-eng benchmark · 交付**复现数据+轨迹+pass@k**(核心资产=验证器+可执行环境)。📄 权威需求 = **`vtf/BUYER_SPEC_T3_基准测试复现需求.md`**(2026-06-09 买方 Q&A 澄清 · 无独立 wiki)。
    - 质量标准 = **难倒模型:pass@5 ≤ 0.6 on doubao 2.0**(锁定该模型·5 次正确≤3 次·越难越好)· 验收双维:① 复现质量 ② 成品量级。
    - **不涉及算力**(Token 成本进报价)· coding 类买方已自采 swe-bench pro/terminal bench 2.0(3 月需求·可能已结束·**别重复**)。
-   - 脚手架 `vtf/fde-toolbox/出题脚手架_前沿AIeng_11benchmark.md` · A 簇 env GPU `/mnt/datadisk0`(`autolab_eval --task`)· B 腿候选 daemon-cpu/capstone/blas · 我方复现大 bench 实需 H100(王泽协调)· turf:soul `benchmark_verifier`(pass@k/escapes=难倒)+ v5 产候选轨迹。
+   - **🔴 11 类(权威·分类=「前沿 AI 研发自动化·AI 做 AI」·全文见 BUYER_SPEC_T3)**:MLS-Bench / Frontier-Eng / ResearchGym / PostTrainBench / InferenceBench / FrontierSWE / MLRC-Bench / RE-Bench / KernelBench / EXP-Bench / AutoLab。⚠️ 记忆/RAG 检索(LongMemEval 等)**不属此列**,别误塞第3类。
+   - 覆盖/分工(实证):AutoLab=✅soul/v5 已 8 条 · **KernelBench=compass 主攻**(官方 env+attention+重标定 1.727x 过门·`vtf/fde_benchmarks/a_cluster/kernelbench_attention`)· **FrontierSWE=compass 主攻**(resolve env+flask-4045 pass@1=0.6 hard)· MLRC/ResearchGym=compass 次批 · MLS/Frontier-Eng/PostTrain/Inference/RE/EXP=需 H100 待王泽。
+   - 脚手架 `vtf/fde-toolbox/出题脚手架_前沿AIeng_11benchmark.md` · A 簇 env GPU `/mnt/datadisk0`(`autolab_eval --task`)· turf:soul `benchmark_verifier`(pass@k/escapes=难倒)+ v5 产候选轨迹 + compass env/eval。
 - 📄 培训纪要(权威背景)= `~/Downloads/智能纪要：伊洛科技 培训交流会 2026年6月8日.md`(6/8 · 王泽/王彦鹏/王春晓 · 定方向+字段+定价+算力)。
 - **素材来源 = 我们自身**:平台/soul/compass/各 agent 开发过程的问题 + 用 Claude Code 的经验教训 → 自身总结反思 → 产成样例(真实经历非编造)。
 - **过程中打通 RSI+FDE 整链** → 对外招募各专家开展 FDE 知识沉淀 + agent 工作流训练业务。
