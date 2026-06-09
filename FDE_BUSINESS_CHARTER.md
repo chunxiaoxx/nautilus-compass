@@ -51,7 +51,7 @@ metadata:
 
 ## 3. 当前产出清单(2026-06-09)
 - **compass**:检索 CLI(f004223)· PoI consumer(4c6640c)· feishu create_bitable_record(f2de04b)· 凭据参数化(4d1fb51)· A 簇 env(KernelBench/AutoLab)· 工具栈(fde-row-assembler/checklist-from-task/knowledge-tutorial-assembler/build-html-dashboard)· B 腿候选(daemon-cpu/capstone/blas)。
-  - 🆕 **第3类复现交付物(2026-06-09·真实数据·`vtf/_compass_t3_out/`)**:① KernelBench/AutoLab 难倒题网页(8 官方难倒题 best<0.5 + harness 本地实测通过)② FrontierSWE/SWE-bench 网页(官方 harness 复现·bare vs 避坑·resolve 真数据)。commit 50a9a2b。**待用户拍后写飞书 L3基准样例表**。
+  - 🆕 **第3类复现交付物(2026-06-09·真实数据·`vtf/_compass_t3_out/`)**:① KernelBench/AutoLab 难倒题(8 官方难倒题 best<0.5 + harness 本地实测过)② FrontierSWE/SWE-bench(官方 harness 复现·bare vs 避坑·resolve 真数据)。网页 commit 50a9a2b。**已写飞书 L3基准样例表**(rid recvm5L3iFlatJ / recvm5L3TUx4kS·含脱敏附件·读回验证)。**compass 认领 KernelBench+FrontierSWE turf**。data_007 已删(冗余+错位)。MLRC/ResearchGym 次批排期中。
   - ⚠️ LongMemEval rerank 网页(commit 52e4e98)= **记忆/检索类,不属第3类 11 benchmark**,归第1类/内部参考,勿当第3类交付。
 - **soul**:escapes 终判(radix=TRUE / bvh=FALSE·model confound)· 难度指纹折 RUBRIC · 教案表(base Y7ZFbMbJqaWSxHs27chcC706nZb / table tblZKcpcSYeACj5J)+ 第一篇《CPU饥饿诊断》。
 - **agent(v5)**:bvh 2-arm(deepseek 复跑定泛化)· 提交出题表(base EOVhbQwA0a1HEOsgmxecgkBVnwh / table tblhD4O4f0esTyXc 14列)。
