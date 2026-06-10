@@ -19,6 +19,7 @@ metadata:
 ## 1. 三类业务(都同一个甲方)· 🔴 权威口径(2026-06-09 第二轮校正 · 基于读 wiki docx「垂域高难度题目项目--二期要求」+ 培训纪要 6/8 · 此前 §1 分类不准已纠)
 > 🔴🧺 **防丢失契约(治"狗熊掰玉米")**:本节钉死所有买方权威材料的位置(wiki token + obj_token + 本地路径 + 落地副本)。任何 session 接到"这是买方材料/需求/样例"→ **先查本节是否已钉:已钉=直接用,未钉=钉进来再开工**。绝不重新发现、不当新素材、不重复问用户。材料"丢了"= 本节没维护(违约)。
 > 🗂️ **FDE 飞书表全清单(防表 proliferation 反复丢失)= memory `reference_fde_feishu_tables_inventory_20260610`**。决策(用户 6/10):第1类生产表=`SZNlbPHvVab8MSs1gDrc1AEBnLd`/`tbll8ISZdHEfhfrO`「专家复核表」(data_001~006·买方列+内部隐藏复核列+附件)· 第3类 canonical=L3基准样例(EOVh·有附件)· 任务提交(Y7ZF·无附件)待补 env 并入 · daemon_cpu/capstone 迁第1类复核表。**找 FDE 表先读清单 memory,别重扫重问。**
+> 🏭 **第3类量产管线 + working LLM 配置 = memory `reference_fde_t3_candidate_pipeline_20260610`**。架构铁律(用户 6/10):**出题/整理/编排=Opus 子 agent · doubao-2.0-pro=唯一难倒测试对象 · 并行一题一 agent**。doubao=火山 ARK 网关(端点 `https://ark.cn-beijing.volces.com/api/plan/v3/chat/completions`·key=`ARK_API_KEY` in `~/.claude/.cache/.fde_api_secrets.env`·模型 doubao-seed-2.0-pro)。复用 `nautilus-v5/fde_capsule/_run_bvh_2arm.py` ARK completer。T4-doable 题池 + 候选盘点见 memory。**做量产/找 LLM key/模型先读本条,别再当 gated。**
 
 1. **第1类 · 行业高难题目 / 垂域高难度题目(专家复现)** = 专家从真实工作场景出发设计 ≥8h 高难度题 · **16 列出题格式**。
    - 📄 买方需求(权威)= 飞书 wiki docx「垂域高难度题目项目--二期要求」· wiki node `F2ZqwOpzKiST4PkNtDOcHdgSnCc` · obj_token(docx)`Eg8zdrq7toXLggxrgBecC3donLf` · **落地副本 `vtf/BUYER_SPEC_T1_垂域高难度二期要求.txt`**(18975B · 含 9 固定一级类目 + 10 维打分口径)。
