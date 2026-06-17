@@ -77,10 +77,56 @@ def test_5_full_flow_with_isolation():
     print("OK 5 full flow recorded")
 
 
+def test_6_import_works_without_plugin_dir_on_path():
+    """Regression (2026-06-17): MCP server runs with PLUGIN_DIR NOT on sys.path
+    (other handlers insert it per-call; proof_of_impact missed it → live tool
+    returned 'proof subpackage not importable: No module named proof').
+    Simulate production: purge plugin dir from sys.path + proof.* from sys.modules
+    + chdir to a foreign cwd, then call tool. Must NOT return the import error.
+    """
+    import proof.poi_emitter as emitter  # ensure module file resolvable before purge
+    tool, _ = _import_tool()
+    plugin_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    saved_path = list(sys.path)
+    saved_modules = {k: v for k, v in sys.modules.items() if k == "proof" or k.startswith("proof.")}
+    saved_cwd = os.getcwd()
+    with tempfile.TemporaryDirectory() as t:
+        tmp = Path(t)
+        m = tmp / "memory.md"
+        m.write_text("---\nname: m\nagent_type: other\ndrift: green\n---\nbody\n", encoding="utf-8")
+        original_cache = emitter.DEFAULT_CACHE_DIR
+        try:
+            # production condition: plugin dir absent + proof not cached + foreign cwd
+            sys.path[:] = [p for p in sys.path if os.path.abspath(p or ".") != plugin_dir]
+            for k in list(sys.modules):
+                if k == "proof" or k.startswith("proof."):
+                    del sys.modules[k]
+            os.chdir(tmp)
+            emitter.DEFAULT_CACHE_DIR = tmp / "_cache"  # may be stale ref; reset in finally
+            r = tool({
+                "action_id": "b-noplugindir", "agent_id": "acting",
+                "cited_memory_paths": [str(m)], "action_outcome": "success",
+            })
+            txt = r.get("content", [{}])[0].get("text", "") if r.get("content") else str(r)
+            assert "not importable" not in txt, f"import still fails without plugin dir on path: {txt}"
+            assert r.get("isError") is not True, f"tool errored: {txt}"
+        finally:
+            os.chdir(saved_cwd)
+            sys.path[:] = saved_path
+            sys.modules.update(saved_modules)
+            try:
+                import proof.poi_emitter as e2
+                e2.DEFAULT_CACHE_DIR = original_cache
+            except Exception:
+                pass
+    print("OK 6 proof import resilient to missing plugin dir on path")
+
+
 if __name__ == "__main__":
     tests = [test_1_tool_registered, test_2_missing_action_id_errors,
              test_3_empty_cited_paths_errors, test_4_invalid_outcome_errors,
-             test_5_full_flow_with_isolation]
+             test_5_full_flow_with_isolation,
+             test_6_import_works_without_plugin_dir_on_path]
     failures = []
     for t in tests:
         try:

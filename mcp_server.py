@@ -1302,6 +1302,7 @@ def tool_proof_of_impact(args: dict) -> dict:
 
     Reference: paper/SPEC_PROOF_OF_IMPACT.md sections 3-5.
     """
+    sys.path.insert(0, str(PLUGIN_DIR))  # server may run with cwd≠plugin (other handlers do same)
     try:
         from proof.poi_schema import ProofOfImpact
         from proof.poi_calculator import compute_with_drift
