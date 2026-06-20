@@ -27,6 +27,7 @@ from __future__ import annotations
 
 import json
 import os
+import socket
 import sqlite3
 import sys
 import time
@@ -49,6 +50,37 @@ JWT_SECRET = os.environ.get("NAUTILUS_JWT_SECRET", "dev-secret-rotate-in-prod")
 REGION = os.environ.get("COMPASS_REGION", "cn-shanghai")
 DAEMON_HOST = os.environ.get("COMPASS_DAEMON_HOST", "127.0.0.1:9876")
 SERVER_VERSION = "0.9.5"
+
+
+def _daemon_score(query, candidates, timeout=5.0):
+    """Score candidates against query via the bge-m3 daemon (TCP JSON line proto).
+
+    Returns the list of cosine scores on success, or None on ANY failure
+    (empty candidates / unreachable / timeout / bad response / parse error).
+    Never raises — callers degrade to keyword recall when this returns None.
+    """
+    if not candidates:
+        return None
+    host, _, port = DAEMON_HOST.partition(":")
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.settimeout(timeout)
+        s.connect((host, int(port or "9876")))
+        s.sendall(
+            (json.dumps({"action": "score", "query": query,
+                         "candidates": candidates}) + "\n").encode("utf-8")
+        )
+        buf = b""
+        while b"\n" not in buf:
+            c = s.recv(65536)
+            if not c:
+                break
+            buf += c
+        s.close()
+        resp = json.loads(buf.decode("utf-8").strip())
+        return resp.get("scores") if resp.get("ok") else None
+    except Exception:
+        return None
 
 @asynccontextmanager
 async def _lifespan(_app):
@@ -537,12 +569,21 @@ def recall(q: str = Query(...), top_k: int = 5, cross_agent: bool = True,
         params.append(top_k * 4)  # over-fetch for keyword filter
         rows = conn.execute(sql, params).fetchall()
 
-    # primitive keyword score
+    # v0.9.5: bge-m3 cosine via daemon · keyword fallback (zero regression) when
+    # the daemon is unreachable / returns None / returns a misaligned vector.
+    cand_texts = [(r["content_plain"] or "") for r in rows]
+    sem = _daemon_score(q, cand_texts)  # bge-m3 cosine · None on any failure
+    if sem is not None and len(sem) != len(rows):
+        sem = None  # length mismatch · degrade rather than risk an index error
+
     q_lower = q.lower()
     hits = []
-    for r in rows:
+    for i, r in enumerate(rows):
         content = r["content_plain"] or ""
-        score = 1.0 if q_lower in content.lower() else 0.5
+        if sem is not None:
+            score = float(sem[i])  # semantic cosine
+        else:
+            score = 1.0 if q_lower in content.lower() else 0.5  # keyword (original behavior)
         hits.append({
             "obs_id": r["obs_id"],
             "agent_id": r["agent_id"],
@@ -553,7 +594,8 @@ def recall(q: str = Query(...), top_k: int = 5, cross_agent: bool = True,
             "content_or_encrypted": json.loads(content) if content else None,
         })
     hits = sorted(hits, key=lambda h: -h["score"])[:top_k]
-    return {"user_id": user_id, "query": q, "hits": hits}
+    return {"user_id": user_id, "query": q, "hits": hits,
+            "ranker": "bge-m3" if sem is not None else "keyword"}
 
 
 @app.get("/v1/agents")
