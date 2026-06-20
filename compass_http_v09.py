@@ -62,6 +62,7 @@ def _daemon_score(query, candidates, timeout=5.0):
     if not candidates:
         return None
     host, _, port = DAEMON_HOST.partition(":")
+    s = None
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.settimeout(timeout)
@@ -76,11 +77,16 @@ def _daemon_score(query, candidates, timeout=5.0):
             if not c:
                 break
             buf += c
-        s.close()
         resp = json.loads(buf.decode("utf-8").strip())
         return resp.get("scores") if resp.get("ok") else None
     except Exception:
         return None
+    finally:
+        if s is not None:
+            try:
+                s.close()
+            except Exception:
+                pass
 
 @asynccontextmanager
 async def _lifespan(_app):

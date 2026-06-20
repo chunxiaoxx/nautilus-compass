@@ -284,6 +284,30 @@ git commit -m "feat(serving): recall ranks by bge-m3 cosine (keyword fallback pr
 - 重排序器(cross-encoder)二段:bge-m3 cosine 够 v1·reranker 是后续。
 - 不碰 daemon 的文件记忆 recall 路径(那是另一 store·本 plan 只加 score action 复用模型)。
 
+## 拓扑实测(Task 0 · 2026-06-20 实测·后续 Task 据此填真值)
+
+**实测结论:serving 与 daemon 是两台机,经 SSH 隧道相连。部署=双端 scp + 重启,且发现 2 个必修陷阱。**
+
+| 项 | 实测值 |
+|---|---|
+| **serving 机** | `cloud` = `43.160.239.61` · `/home/ubuntu/compass`(**非 git repo**·deploy=scp) · `uvicorn compass_http_v09:app --host 0.0.0.0 --port 8770 --workers 4` · PID 289407 · healthz `version:1.0.0` `users:1` `observations:348` |
+| **daemon 机** | T4 = **`43.166.8.20`**(⚠️ ≠ ssh config `t4`=43.163.80.46)· `/home/ubuntu/compass/daemon.py` · PID 674936 · bind `127.0.0.1:9876` · `compass-daemon.service` · 显存 4817/16384 MiB(瘦身后·余量足) |
+| **隧道** | `compass-t4-tunnel.service`(cloud 上)· `ssh -N -L 127.0.0.1:9876:127.0.0.1:9876 -L 127.0.0.1:9877:127.0.0.1:9877 -i /home/ubuntu/.ssh/id_ed25519_qb ubuntu@43.166.8.20` · cloud:9876 → T4 daemon:9876 ✅ 实测通(score 请求经隧道返 daemon JSON) |
+| **T4 跳板** | 本地无 43.166.8.20 直连;经 `ssh cloud "ssh -i /home/ubuntu/.ssh/id_ed25519_qb ubuntu@43.166.8.20 '...'"` 跳 |
+| **daemon 协议** | JSON 行协议(`\n` 分帧)· `{"action":...}` → `{"ok":...}` · 过载时返 `{"ok":false,"error":"daemon overloaded - retry"}`(load-shed·非 action 错) |
+
+**🔴 部署必修陷阱 2 个(plan 原 Task 5 未含·实测新增):**
+1. **serving env 端口错**:serving 进程 `COMPASS_DAEMON_HOST=127.0.0.1:**9886**`,但隧道在 **9876**,9886 无监听。→ 不改 env,新 `_daemon_score` 连 9886 失败→静默降级关键词→**bge-m3 永不生效**。**部署必须把 serving systemd env 改 `COMPASS_DAEMON_HOST=127.0.0.1:9876`**(并核为何曾设 9886·防别处依赖)。
+2. **box 文件版本漂移**:box `compass_http_v09.py` healthz=`1.0.0` 但 repo `SERVER_VERSION=0.9.5` 且 box 无 `_daemon_score`(grep=0)→ **box 文件被改过、未入 repo**。盲 scp 会覆盖 box 上未入 repo 的生产改动。**部署前必须:scp box 文件下来 → CRLF 归一化 → diff repo → 把 box 的真实改动 merge 进待部署文件,再 scp 回**(不盲覆盖)。daemon.py 同样先 diff(box=瘦身版 5840ebf·无 score action)。
+
+**修订 Task 5 部署序(据实测):**
+1. 双端先 `cp 文件 文件.bak.20260620`。
+2. **box↔repo diff**:scp box `compass_http_v09.py`+`daemon.py` 到本地 tmp → `dos2unix`/`sed` 归一化 → `diff` repo 版 → 人工核对 box 独有改动(尤其 version=1.0.0 那段及任何热修)→ 合成最终待部署文件。
+3. 先部署 **daemon**(加性改动·只加 score action 不碰 recall/drift):scp daemon.py → T4 → `systemctl restart compass-daemon.service`(recall 短暂离线 ~30-60s·MCP 桥 v1.8 自动重连兜底·协调窗口)。验:cloud:9876 发 score socket 返 scores + nvidia-smi 显存未暴涨 + 普通 recall 仍命中。
+4. 改 serving systemd env `COMPASS_DAEMON_HOST=127.0.0.1:9876`(drop-in 或主 unit)→ scp compass_http_v09.py → cloud → `systemctl restart compass.service`(或 uvicorn unit)。验:curl `/v1/recall?cross_agent=true&q=...` 返 `ranker:bge-m3`。
+5. Task 4 端到端(A 写措辞 X→B 措辞 Y 语义召回)生产/staging 复现。
+6. 收尾 memory 登记部署态 + box-vs-repo 对账。
+
 ## 关联
 memory `session_20260620_C_memory_capsule_serving_recall_keyword_gap_audit`(审计源)· `canonical_memory_capsule_equals_compass_crossagent_mcp_collective_learning`(定义)· `session_20260619_compass_fleet_obs_id_sanitize_fix`(W1 写端·已修)· `session_20260620_crossdialog_convergence_sync_swe_pathB_gpu_unblock`(W2 被 live RSI 用)。
 ```
