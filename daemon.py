@@ -485,6 +485,15 @@ def get_embedder():
     return _state["embedder"]
 
 
+def _get_embedder():
+    """Thin alias for the embedder singleton accessor.
+
+    Exists so the score path (and tests) have a single, monkeypatch-able seam
+    that returns the loaded embedder without binding to get_embedder's name.
+    """
+    return get_embedder()
+
+
 def cosine(a, b):
     import math
     if not a or not b: return 0.0
@@ -492,6 +501,36 @@ def cosine(a, b):
     na = math.sqrt(sum(x*x for x in a))
     nb = math.sqrt(sum(y*y for y in b))
     return dot/(na*nb) if na>0 and nb>0 else 0.0
+
+
+def _handle_score(req: dict) -> dict:
+    """score action · cosine(query, candidate) for each candidate (bge-m3).
+
+    request:  {"action":"score","query":"<str>","candidates":["<text>", ...]}
+    response: {"ok":true,"scores":[<float cosine>, ...]}  # order aligns candidates
+              {"ok":false,"error":"..."}                   # empty / embedder fault
+
+    Serves the serving-side semantic recall: rank a caller-supplied candidate
+    set against a query using the already-loaded embedder (no haystack scan).
+    """
+    candidates = req.get("candidates") or []
+    if not candidates:
+        return {"ok": False, "error": "no candidates"}
+    query = req.get("query") or ""
+    try:
+        embedder = _get_embedder()
+        q_vec = embedder.encode(query)
+        if hasattr(q_vec, "tolist"):
+            q_vec = q_vec.tolist()
+        scores = []
+        for c in candidates:
+            c_vec = embedder.encode(c)
+            if hasattr(c_vec, "tolist"):
+                c_vec = c_vec.tolist()
+            scores.append(cosine(q_vec, c_vec))
+        return {"ok": True, "scores": scores}
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
 
 
 def parse_memory_file(path: Path) -> dict:
@@ -1259,6 +1298,10 @@ def handle_conn(conn: socket.socket):
             os._exit(0)
         if req.get("action") == "ingest":
             resp_bytes = json.dumps(handle_ingest(req), ensure_ascii=False).encode("utf-8") + b"\n"
+            conn.sendall(resp_bytes)
+            return
+        if req.get("action") == "score":
+            resp_bytes = json.dumps(_handle_score(req), ensure_ascii=False).encode("utf-8") + b"\n"
             conn.sendall(resp_bytes)
             return
         resp = handle_request(req)
