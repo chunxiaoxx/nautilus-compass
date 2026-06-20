@@ -122,6 +122,113 @@ def _inject_auth(line: str) -> str:
     return json.dumps(msg)
 
 
+def _recv_one_line(sock, timeout: float = 10.0) -> bytes:
+    """Read one newline-terminated frame · used to swallow the duplicate
+    initialize reply after a reconnect handshake so it never reaches stdout."""
+    try:
+        sock.settimeout(timeout)
+    except Exception:
+        pass
+    buf = b""
+    while b"\n" not in buf:
+        chunk = sock.recv(65536)
+        if not chunk:
+            break
+        buf += chunk
+    try:
+        sock.settimeout(None)
+    except Exception:
+        pass
+    return buf
+
+
+class _CloudLink:
+    """Owns the cloud socket with auto-reconnect + initialize replay (v1.8).
+
+    Why: the bridge used to connect once in main() and exit the whole process
+    the instant the cloud socket dropped (SSH tunnel death / VM hiccup) — which
+    is why only this MCP server "disconnects" and needs a manual /mcp. The
+    forward watchdog (compass_forward_watchdog.ps1) heals the tunnel/service
+    within 5min but can't resurrect the bridge subprocess. This class lets the
+    bridge survive a drop and reconnect once the tunnel is back.
+
+    Cloud constraint (mcp_server.py _serve): every NEW connection's FIRST
+    message must be `initialize` + authToken, else -32001 + close. So on
+    reconnect we replay the cached initialize and swallow its duplicate reply.
+    """
+
+    def __init__(self, opener=None) -> None:
+        self._opener = opener or _open_cloud
+        self._sock = None
+        self._lock = threading.Lock()
+        self._init_line = None
+        self._closed = False
+
+    @property
+    def init_line(self):
+        return self._init_line
+
+    @property
+    def is_closed(self) -> bool:
+        return self._closed
+
+    def note_outgoing(self, line: str) -> None:
+        """Cache the first `initialize` request so reconnect can replay it.
+        First initialize wins · later ones never clobber the cached handshake."""
+        if self._init_line is not None:
+            return
+        try:
+            msg = json.loads(line)
+        except (json.JSONDecodeError, TypeError):
+            return
+        if isinstance(msg, dict) and msg.get("method") == "initialize":
+            self._init_line = line
+
+    def connect(self, replay: bool = True):
+        """(Re)open the cloud socket. On reconnect (replay=True) re-auth by
+        replaying the cached initialize and discarding its reply. The very
+        first connect uses replay=False — Claude's real initialize authenticates
+        it as it flows through normally."""
+        s = self._opener()
+        if replay and self._init_line:
+            try:
+                s.sendall((_inject_auth(self._init_line) + "\n").encode("utf-8"))
+                _recv_one_line(s)  # swallow duplicate initialize reply
+            except Exception:
+                try:
+                    s.close()
+                except Exception:
+                    pass
+                raise
+        with self._lock:
+            self._sock = s
+        return s
+
+    def current(self):
+        with self._lock:
+            return self._sock
+
+    def send(self, line: str) -> None:
+        with self._lock:
+            s = self._sock
+        if s is None:
+            raise ConnectionError("cloud link down")
+        s.sendall((line + "\n").encode("utf-8"))
+
+    def mark_down(self) -> None:
+        with self._lock:
+            s, self._sock = self._sock, None
+        if s is not None:
+            try:
+                s.close()
+            except Exception:
+                pass
+
+    def close(self) -> None:
+        self._closed = True
+        self.mark_down()
+
+
 # v1.5.2 · Claude Code calls these MCP standard methods after initialize.
 # Cloud server doesn't implement them (returns -32601 method not found) which
 # Claude treats as fatal connection failure. We short-circuit locally with
@@ -353,14 +460,13 @@ def _decode_line(raw: bytes) -> str:
     return raw.decode("utf-8", errors="replace")
 
 
-def _pump_in_to_cloud(cloud) -> None:
-    """stdin → (local stub | local daemon | inject auth → cloud TCP) / stdout.
+def _pump_in_to_cloud(link: "_CloudLink") -> None:
+    """stdin → (local stub | local daemon | inject auth → cloud link) / stdout.
 
-    v1.6: cloud may be None (cloud-optional mode). If local handles the
-    request, cloud is never needed. If local fails and cloud is None,
-    return a JSON-RPC error to the caller.
+    v1.8: forwards via _CloudLink. A transient cloud drop no longer kills the
+    process — link.send() raises, we error that one request with -32603, and the
+    cloud→out pump reconnects in the background. Process exits on stdin EOF.
     """
-    cloud_available = cloud is not None
     # read BINARY stdin and decode UTF-8 ourselves · text-mode sys.stdin uses the
     # Windows console code page (gbk) which corrupts CJK into lone surrogates.
     for raw_bytes in sys.stdin.buffer:
@@ -369,7 +475,9 @@ def _pump_in_to_cloud(cloud) -> None:
             continue
         line = raw.rstrip("\n")
         _trace("STDIN", line)
-        stub = _try_local_stub(line, cloud_available)
+        link.note_outgoing(line)  # cache initialize so reconnect can replay it
+        cloud_up = link.current() is not None
+        stub = _try_local_stub(line, cloud_up)
         if stub is not None:
             if stub:
                 _trace("STUB", stub)
@@ -380,107 +488,113 @@ def _pump_in_to_cloud(cloud) -> None:
         if local_resp is not None:
             _write_stdout(local_resp)
             continue
-        # Local didn't handle it · forward to cloud
-        if cloud is None:
-            # Cloud unavailable · return error for requests with id
+        # Local didn't handle it · forward to cloud via the link
+        out = _inject_auth(line)
+        try:
+            link.send(out)
+            _trace("→CLOUD", out)
+        except Exception as e:
+            # cloud down or mid-reconnect · do NOT exit · error this one request
+            _trace("NO_CLOUD", f"send fail: {e!r}")
             try:
                 msg = json.loads(line)
                 if isinstance(msg, dict) and "id" in msg:
-                    err = _make_rpc_error(
+                    _write_stdout(_make_rpc_error(
                         msg["id"], -32603,
-                        "cloud compass unreachable and local daemon did not handle this request"
-                    )
-                    _write_stdout(err)
-                    _trace("NO_CLOUD", f"id={msg['id']} method={msg.get('method')}")
+                        "cloud compass unreachable (reconnecting) and local daemon did not handle this request"))
             except json.JSONDecodeError:
                 pass
             continue
-        out = _inject_auth(line)
-        try:
-            cloud.sendall((out + "\n").encode("utf-8"))
-            _trace("→CLOUD", out)
-        except Exception as e:
-            sys.stderr.write(f"send fail: {e!r}\n")
-            _trace("ERR", f"send fail: {e!r}")
-            return
     _trace("STDIN", "<eof>")
-    if cloud:
-        try:
-            cloud.shutdown(socket.SHUT_WR)
-        except Exception:
-            pass
+    link.close()  # stops the reconnect pump + closes the socket
 
 
-def _pump_cloud_to_out(cloud: socket.socket) -> None:
-    """cloud TCP → stdout (line-buffered, raw bytes · bypass platform encoding)."""
-    buf = b""
-    while True:
-        try:
-            chunk = cloud.recv(65536)
-        except Exception as e:
-            sys.stderr.write(f"recv fail: {e!r}\n")
-            _trace("ERR", f"recv fail: {e!r}")
-            return
-        if not chunk:
-            _trace("CLOUD", "<eof>")
-            return
-        buf += chunk
-        while b"\n" in buf:
-            line, buf = buf.split(b"\n", 1)
-            if not line.strip():
-                continue
-            _trace("CLOUD→", line)
-            _write_stdout(line + b"\n")
+def _pump_cloud_to_out(link: "_CloudLink") -> None:
+    """cloud link → stdout with auto-reconnect (v1.8).
 
-
-def _heartbeat(cloud: socket.socket) -> None:
-    """v1.5.5 · send empty newline every 60s when idle · prevents TCP middlebox
-    or sshd channel timeout from killing 2-5 min idle connection.
-    mcp_server.py accept-loop skips empty/non-JSON lines safely."""
+    Reads the current cloud socket; on EOF/error marks the link down and
+    reconnects with exponential backoff (capped 30s), replaying the cached
+    initialize. Only exits when the link is closed (stdin EOF). This is what
+    lets the bridge survive a tunnel/VM blip without a manual /mcp."""
     import time as _t
-    while True:
+    backoff = 1.0
+    while not link.is_closed:
+        s = link.current()
+        if s is None:
+            try:
+                s = link.connect(replay=True)
+                backoff = 1.0
+                _trace("RECONNECT", "ok")
+                sys.stderr.write(f"mcp_stdio_to_cloud · reconnected {HOST}:{PORT}\n")
+            except Exception as e:
+                _trace("RECONNECT", f"fail: {e!r} · sleep {backoff}s")
+                _t.sleep(backoff)
+                backoff = min(backoff * 2, 30.0)
+                continue
+        buf = b""
+        while not link.is_closed:
+            try:
+                chunk = s.recv(65536)
+            except Exception as e:
+                _trace("ERR", f"recv fail: {e!r}")
+                break
+            if not chunk:
+                _trace("CLOUD", "<eof>")
+                break
+            buf += chunk
+            while b"\n" in buf:
+                cl, buf = buf.split(b"\n", 1)
+                if not cl.strip():
+                    continue
+                _trace("CLOUD→", cl)
+                _write_stdout(cl + b"\n")
+        link.mark_down()  # socket dead · outer loop reconnects unless closed
+
+
+def _heartbeat(link: "_CloudLink") -> None:
+    """v1.5.5/v1.8 · send empty newline every 60s when idle · prevents TCP
+    middlebox or sshd channel timeout from killing a 2-5min idle connection.
+    On send failure it just logs — the cloud→out pump owns reconnect."""
+    import time as _t
+    while not link.is_closed:
         _t.sleep(60)
+        s = link.current()
+        if s is None:
+            continue
         try:
-            cloud.sendall(b"\n")
+            s.sendall(b"\n")
             _trace("HEARTBEAT", "tick")
         except Exception as e:
             _trace("ERR", f"heartbeat send fail: {e!r}")
-            return
 
 
 def main() -> int:
-    # v1.6 · cloud connection is optional · local daemon can serve independently
-    cloud = None
+    # v1.8 · cloud connection is optional AND auto-reconnecting. The bridge no
+    # longer exits when the cloud socket drops — the cloud→out pump reconnects in
+    # the background (the forward watchdog heals the tunnel within ~5min), so the
+    # user no longer needs a manual /mcp after a transient drop.
+    link = _CloudLink()
     try:
-        cloud = _open_cloud()
+        link.connect(replay=False)  # first connect · Claude's real initialize authenticates it
         sys.stderr.write(
             f"mcp_stdio_to_cloud · connected {HOST}:{PORT} "
-            f"· agent_type={AGENT_TYPE} · mode=local+cloud\n"
+            f"· agent_type={AGENT_TYPE} · mode=local+cloud · auto-reconnect on\n"
         )
     except Exception as e:
         sys.stderr.write(
             f"mcp_stdio_to_cloud · cloud {HOST}:{PORT} unreachable ({e!r})\n"
-            f"  · running in LOCAL-ONLY mode (GPU daemon on :{LOCAL_PORT})\n"
-            f"  · recall/drift_check/thread_recall served locally\n"
-            f"  · ingest_obs will fail until cloud is restored\n"
+            f"  · LOCAL-ONLY for now (GPU daemon on :{LOCAL_PORT}) · will auto-reconnect\n"
+            f"  · recall/drift_check/thread_recall served locally · cloud tools retry on reconnect\n"
         )
 
-    t_in = threading.Thread(target=_pump_in_to_cloud, args=(cloud,), daemon=True)
+    t_in = threading.Thread(target=_pump_in_to_cloud, args=(link,), daemon=True)
+    t_out = threading.Thread(target=_pump_cloud_to_out, args=(link,), daemon=True)
+    t_hb = threading.Thread(target=_heartbeat, args=(link,), daemon=True)
     t_in.start()
-
-    if cloud:
-        t_out = threading.Thread(target=_pump_cloud_to_out, args=(cloud,), daemon=True)
-        t_hb = threading.Thread(target=_heartbeat, args=(cloud,), daemon=True)
-        t_out.start()
-        t_hb.start()
-        t_out.join()  # exit when cloud closes
-        try:
-            cloud.close()
-        except Exception:
-            pass
-    else:
-        # Local-only mode · keep alive until stdin closes
-        t_in.join()
+    t_out.start()
+    t_hb.start()
+    t_in.join()  # exit when STDIN closes (Claude done) · NOT when cloud drops
+    link.close()
     return 0
 
 
