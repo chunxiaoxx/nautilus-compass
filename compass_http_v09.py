@@ -27,6 +27,7 @@ from __future__ import annotations
 
 import json
 import os
+import socket
 import sqlite3
 import sys
 import time
@@ -49,6 +50,37 @@ JWT_SECRET = os.environ.get("NAUTILUS_JWT_SECRET", "dev-secret-rotate-in-prod")
 REGION = os.environ.get("COMPASS_REGION", "cn-shanghai")
 DAEMON_HOST = os.environ.get("COMPASS_DAEMON_HOST", "127.0.0.1:9876")
 SERVER_VERSION = "0.9.5"
+
+
+def _daemon_score(query, candidates, timeout=5.0):
+    """Score candidates against query via the bge-m3 daemon (TCP JSON line proto).
+
+    Returns the list of cosine scores on success, or None on ANY failure
+    (empty candidates / unreachable / timeout / bad response / parse error).
+    Never raises — callers degrade to keyword recall when this returns None.
+    """
+    if not candidates:
+        return None
+    host, _, port = DAEMON_HOST.partition(":")
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.settimeout(timeout)
+        s.connect((host, int(port or "9876")))
+        s.sendall(
+            (json.dumps({"action": "score", "query": query,
+                         "candidates": candidates}) + "\n").encode("utf-8")
+        )
+        buf = b""
+        while b"\n" not in buf:
+            c = s.recv(65536)
+            if not c:
+                break
+            buf += c
+        s.close()
+        resp = json.loads(buf.decode("utf-8").strip())
+        return resp.get("scores") if resp.get("ok") else None
+    except Exception:
+        return None
 
 @asynccontextmanager
 async def _lifespan(_app):
