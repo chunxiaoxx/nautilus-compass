@@ -569,12 +569,21 @@ def recall(q: str = Query(...), top_k: int = 5, cross_agent: bool = True,
         params.append(top_k * 4)  # over-fetch for keyword filter
         rows = conn.execute(sql, params).fetchall()
 
-    # primitive keyword score
+    # v0.9.5: bge-m3 cosine via daemon · keyword fallback (zero regression) when
+    # the daemon is unreachable / returns None / returns a misaligned vector.
+    cand_texts = [(r["content_plain"] or "") for r in rows]
+    sem = _daemon_score(q, cand_texts)  # bge-m3 cosine · None on any failure
+    if sem is not None and len(sem) != len(rows):
+        sem = None  # length mismatch · degrade rather than risk an index error
+
     q_lower = q.lower()
     hits = []
-    for r in rows:
+    for i, r in enumerate(rows):
         content = r["content_plain"] or ""
-        score = 1.0 if q_lower in content.lower() else 0.5
+        if sem is not None:
+            score = float(sem[i])  # semantic cosine
+        else:
+            score = 1.0 if q_lower in content.lower() else 0.5  # keyword (original behavior)
         hits.append({
             "obs_id": r["obs_id"],
             "agent_id": r["agent_id"],
@@ -585,7 +594,8 @@ def recall(q: str = Query(...), top_k: int = 5, cross_agent: bool = True,
             "content_or_encrypted": json.loads(content) if content else None,
         })
     hits = sorted(hits, key=lambda h: -h["score"])[:top_k]
-    return {"user_id": user_id, "query": q, "hits": hits}
+    return {"user_id": user_id, "query": q, "hits": hits,
+            "ranker": "bge-m3" if sem is not None else "keyword"}
 
 
 @app.get("/v1/agents")
