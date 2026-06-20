@@ -219,6 +219,14 @@ def _rerank_top(query, top, top_k):
                  for _s, e in candidates]
         scores = reranker.predict(pairs)
         reordered = sorted(zip(candidates, scores), key=lambda x: -float(x[1]))
+        # 2026-06-20 · rerank burst 后释放 reserved 缓存 → 降 nvidia-smi 稳态占用,
+        # 让共置的 gate B GPU eval 不被间歇 OOM(soul 报的根因)。可 env 关。
+        if os.environ.get("COMPASS_EMPTY_CACHE", "1") == "1":
+            try:
+                import torch
+                torch.cuda.empty_cache()
+            except Exception:
+                pass
         return [item for item, _rscore in reordered][:top_k]
     except Exception as e:
         log(f"reranker failed · fallback to dense order: {e}")
@@ -459,6 +467,15 @@ def get_embedder():
         device = "cpu"
     log(f"BGE device: {device}")
     model = SentenceTransformer(EMBEDDER_MODEL, device=device)
+    # 2026-06-20 · GPU 显存瘦身:bge-m3 默认 max_seq_len=8192,memory 条目短,
+    # 8192 的激活 buffer 是 T4 上 ~13GB 占用的大头(权重才 2.3GB)。封到 512
+    # 砍激活 buffer(可 env 覆盖)。释放显存给共置的 gate B eval(soul 收敛路径)。
+    try:
+        _max_seq = int(os.environ.get("COMPASS_BGE_MAX_SEQ", "512"))
+        model.max_seq_length = _max_seq
+        log(f"BGE max_seq_length capped → {_max_seq} (GPU 瘦身)")
+    except Exception as _e:
+        log(f"BGE max_seq cap skipped: {_e}")
     # 包一个 wrapper · encode 返 list 兼容 _APIEmbedder
     class _BGEWrapper:
         def encode(self, text, **kwargs):
