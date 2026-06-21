@@ -60,10 +60,12 @@ function Start-CompassTunnel {
         Write-Host "[compass] tunnel already up on 127.0.0.1:$($script:CompassCloudPort)" -ForegroundColor DarkGray
         return $true
     }
-    Write-Host "[compass] starting SSH tunnel to $($script:CompassCloudHost) (-L 9877 + -R 9876 BGE)" -ForegroundColor Cyan
-    # Bidirectional tunnel:
+    Write-Host "[compass] starting SSH tunnel to $($script:CompassCloudHost) (-L 9877 MCP · canonical daemon=T4)" -ForegroundColor Cyan
     #   -L 9877 · local→cloud  · MCP TCP transport (Claude Code uses)
-    #   -R 9876 · cloud→local  · cloud agents call local GPU BGE daemon
+    # (2026-06-20) removed -R 9876: canonical BGE daemon is now T4, not this box
+    #   (this box has no GPU — CPU daemon only). cloud-facing recall goes
+    #   cloud→T4 via compass-t4-tunnel; exposing this box's daemon on cloud:9876
+    #   caused an IPv6 split-brain with the T4 forward.
     # keepalive · prevents NAT/firewall from killing idle tunnel
     # ExitOnForwardFailure · die fast if port already bound rather than silent zombie
     $args = @(
@@ -72,7 +74,6 @@ function Start-CompassTunnel {
         "-o", "ServerAliveCountMax=3",
         "-o", "ExitOnForwardFailure=yes",
         "-L", "$($script:CompassCloudPort):127.0.0.1:9877",
-        "-R", "9876:127.0.0.1:9876",
         $script:CompassCloudHost
     )
     Start-Process -WindowStyle Hidden -FilePath "ssh" -ArgumentList $args -Wait

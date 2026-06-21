@@ -41,12 +41,14 @@ if (Test-Forward) { Write-Log 'forward UP after remote service start'; exit 0 }
 
 Write-Log 'still down after remote start · respawning tunnel'
 Get-CimInstance Win32_Process -Filter "Name='ssh.exe'" -ErrorAction SilentlyContinue |
-    Where-Object { $_.CommandLine -match '-R\s+9876:' } |
+    Where-Object { $_.CommandLine -match '9877:127\.0\.0\.1:9877' } |
     ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }
 Start-Sleep -Seconds 2
+# (2026-06-20) dropped -R 9876: canonical BGE daemon is T4 (this box has no GPU).
+# Exposing this box's daemon on cloud:9876 caused an IPv6 split-brain with the T4 forward.
 Start-Process -FilePath 'ssh' -WindowStyle Hidden -ArgumentList @(
     '-fN', '-o', 'ServerAliveInterval=30', '-o', 'ServerAliveCountMax=3',
-    '-o', 'ExitOnForwardFailure=yes', '-L', '9877:127.0.0.1:9877', '-R', '9876:127.0.0.1:9876', 'cloud'
+    '-o', 'ExitOnForwardFailure=yes', '-L', '9877:127.0.0.1:9877', 'cloud'
 )
 Start-Sleep -Seconds 3
 if (Test-Forward) { Write-Log 'forward UP after tunnel respawn' } else { Write-Log 'STILL DOWN after all heals · needs manual check' }
