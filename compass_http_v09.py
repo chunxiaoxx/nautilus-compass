@@ -32,7 +32,7 @@ import sqlite3
 import sys
 import time
 import uuid
-from contextlib import asynccontextmanager, contextmanager
+from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
@@ -49,7 +49,7 @@ DB_PATH = Path(os.environ.get("COMPASS_DB_PATH", "/var/lib/compass/compass.db"))
 JWT_SECRET = os.environ.get("NAUTILUS_JWT_SECRET", "dev-secret-rotate-in-prod")
 REGION = os.environ.get("COMPASS_REGION", "cn-shanghai")
 DAEMON_HOST = os.environ.get("COMPASS_DAEMON_HOST", "127.0.0.1:9876")
-SERVER_VERSION = "0.9.5"
+SERVER_VERSION = "1.0.1"
 
 
 def _daemon_score(query, candidates, timeout=5.0):
@@ -88,24 +88,48 @@ def _daemon_score(query, candidates, timeout=5.0):
             except Exception:
                 pass
 
-@asynccontextmanager
-async def _lifespan(_app):
-    # Startup · these names are resolved at call time (app startup), not at
-    # import time, so forward references to init_db / init_audit_table /
-    # _start_audit_thread defined further down in the module are fine.
-    init_db()
-    init_audit_table()
-    _start_audit_thread()
-    yield
-    # Shutdown · audit thread is daemonized so it exits with the process;
-    # nothing else to clean up here.
+
+# v1.5.3-access-log-injected
+import threading as _alog_threading
+from pathlib import Path as _alog_Path
+_ALOG_FILE = _alog_Path(os.environ.get(
+    "COMPASS_ACCESS_LOG_PATH",
+    "/var/lib/compass/gateway_access.jsonl"
+))
+_ALOG_LOCK = _alog_threading.Lock()
+try:
+    _ALOG_FILE.parent.mkdir(parents=True, exist_ok=True)
+except Exception:
+    pass  # if dir not writable, _log_access will fail-soft anyway
+
+
+def _log_access(method, path, status, latency_ms, client_host, rate_key,
+                request_id, user_agent=""):
+    """fail-soft access log · one jsonl line per request."""
+    try:
+        rec = {
+            "ts": time.time(),
+            "method": method,
+            "path": path,
+            "status": status,
+            "latency_ms": latency_ms,
+            "client": client_host,
+            "rate_key": (rate_key or "")[:40],
+            "rid": request_id,
+            "ua": (user_agent or "")[:80],
+        }
+        line = json.dumps(rec, ensure_ascii=False) + "\n"
+        with _ALOG_LOCK:
+            with open(_ALOG_FILE, "a", encoding="utf-8") as fp:
+                fp.write(line)
+    except Exception:
+        pass  # never block on logging failure
 
 
 app = FastAPI(
     title="compass-gateway",
     version=SERVER_VERSION,
     description="Cross-agent memory layer for Nautilus platform · multi-user · multi-region",
-    lifespan=_lifespan,
 )
 
 app.add_middleware(
@@ -116,6 +140,83 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+
+# ─── v1.4 BGE-m3 adapter · injected 2026-05-11 ─────────────────────
+import socket as _v14_socket
+import json as _v14_json
+import os as _v14_os
+
+_V14_HOST = _v14_os.environ.get("COMPASS_BGE_HOST", "127.0.0.1")
+_V14_PORT = int(_v14_os.environ.get("COMPASS_BGE_PORT", "9876"))
+# v1.5.3 · 3-tier fallback · local GPU 9876 first · cloud CPU 9886 fallback
+_V14_PORTS = [_V14_PORT, 9886] if _V14_PORT == 9876 else [_V14_PORT]
+_V14_ANCHORS = _v14_os.environ.get(
+    "COMPASS_V14_ANCHORS",
+    "/home/ubuntu/nautilus-compass/anchors_compass_marketing.json"
+)
+_V14_DEFAULT_PROJECT = _v14_os.environ.get("COMPASS_V14_PROJECT", "C--Users-chunx")
+_V14_TIMEOUT_S = float(_v14_os.environ.get("COMPASS_V14_TIMEOUT_S", "8.0"))
+
+
+def _call_v14_daemon(req, timeout=None):
+    """v1.5.8 · Forward request to v1.4 BGE daemon · 3-tier fallback ladder.
+    Try 9876 (local GPU via reverse tunnel) then 9886 (cloud CPU). Returns
+    first ok=true. If all ports answered ok=false · return last daemon error
+    (so caller can show real reason · not laundered 'unreachable'). Only
+    returns None when EVERY port failed at transport layer (true unreachable)."""
+    t = timeout if timeout is not None else _V14_TIMEOUT_S
+    last_daemon_err = None
+    for port in _V14_PORTS:
+        try:
+            s = _v14_socket.socket()
+            s.settimeout(t)
+            s.connect((_V14_HOST, port))
+            s.sendall((_v14_json.dumps(req) + "\n").encode("utf-8"))
+            buf = b""
+            while True:
+                c = s.recv(65536)
+                if not c: break
+                buf += c
+                if buf.endswith(b"\n"): break
+            s.close()
+            d = _v14_json.loads(buf.decode("utf-8", errors="replace").strip())
+            if d.get("ok"):
+                return d
+            # daemon answered but ok=false · stash · try next port
+            last_daemon_err = d
+        except Exception:
+            continue
+    return last_daemon_err  # may be None if every port failed at transport
+
+
+def _v14_drift_check(prompt, tenant):
+    """v1.4 BGE-m3 + real anchors. Returns v0.9-compatible response shape or None."""
+    req = {
+        "action": "drift",
+        "query": (prompt or "")[:2000],
+        "project": _V14_DEFAULT_PROJECT,
+        "agent_type": tenant or "unknown",
+        "anchors_path": _V14_ANCHORS,
+    }
+    d = _call_v14_daemon(req)
+    if not d:
+        return None
+    drift = d.get("drift") or {}
+    return {
+        "score": round(float(drift.get("deviation", 0.0)), 3),
+        "alignment": round(float(drift.get("alignment", 1.0)), 3),
+        "deviation": round(float(drift.get("deviation", 0.0)), 3),
+        "should_alert": bool(drift.get("should_alert", False)),
+        "top_neg_hits": [
+            {"text": txt, "cos": cos}
+            for cos, txt in (drift.get("top_neg_hits") or [])
+        ],
+        "note": "v1.4 BGE-m3 · " + _V14_ANCHORS.rsplit("/", 1)[-1],
+        "backend": "v1.4-bge-m3",
+    }
+# ─── end v1.4 adapter ─────────────────────────────────────────────
 
 
 # ---- Rate limiting middleware (v0.9.5 · per-user-id token bucket · in-memory) ----
@@ -138,6 +239,7 @@ async def rate_limit_and_request_id(request, call_next):
     # 1. Inject request_id (audit + debug)
     rid = request.headers.get("X-Request-Id") or f"req_{uuid.uuid4().hex[:12]}"
     request.state.request_id = rid
+    _alog_t0 = _time.time()  # v1.5.3 access log timer
 
     # 2. Rate limit (only for /v1/* · skip /healthz · /metrics · /a2a)
     path = request.url.path
@@ -163,6 +265,24 @@ async def rate_limit_and_request_id(request, call_next):
         bucket.append(now)
 
     response = await call_next(request)
+    # v15 · Connection: close for low-freq /v1/v14/* paths · prevents
+    # 10-15min idle race between V5 httpx pool and uvicorn keep-alive
+    if path.startswith("/v1/v14/"):
+        response.headers["Connection"] = "close"
+    # v1.5.3 access log · idempotent · fail-soft
+    try:
+        _log_access(
+            method=request.method,
+            path=path,
+            status=response.status_code,
+            latency_ms=int((_time.time() - _alog_t0) * 1000),
+            client_host=request.client.host if request.client else "",
+            rate_key=str(rate_key) if "rate_key" in dir() else "",
+            request_id=rid,
+            user_agent=request.headers.get("user-agent", ""),
+        )
+    except Exception:
+        pass
     response.headers["X-Request-Id"] = rid
     return response
 
@@ -284,8 +404,15 @@ class AgentRegisterIn(BaseModel):
 
 @app.get("/healthz")
 def healthz():
+    # v1.6.3 · honest count · exclude unverified signups + test domain
+    # (5/9 audit confirmed 305 raw users count was load-test residue;
+    # only signups with a real login + non-test email count as customers.)
     with db() as conn:
-        users = conn.execute("SELECT COUNT(*) FROM users").fetchone()[0]
+        users = conn.execute(
+            "SELECT COUNT(*) FROM users "
+            "WHERE last_login_at IS NOT NULL "
+            "AND email NOT LIKE '%@nautilus.local'"
+        ).fetchone()[0]
         obs = conn.execute("SELECT COUNT(*) FROM observations").fetchone()[0]
     return {
         "status": "ok",
@@ -295,6 +422,124 @@ def healthz():
         "users": users,
         "observations": obs,
     }
+
+@app.get("/compass/health")
+def compass_health():
+    """v1.5.6 · observability endpoint · daemon + load + recent errors + agent calls.
+    Probes each tier of the BGE daemon fallback ladder + cloud resource state.
+    Cron consumer: ops/compass_health_cron.sh · Telegram alert on degraded."""
+    import socket as _sk
+    import time as _t
+    import subprocess as _sp
+    import psycopg2 as _pg
+
+    def _probe_daemon(host, port, timeout=2.0):
+        s = _sk.socket()
+        s.settimeout(timeout)
+        t0 = _t.time()
+        try:
+            s.connect((host, port))
+            s.sendall(b'{"action":"healthcheck"}\n')
+            try:
+                r = s.recv(4096)
+            except Exception:
+                r = b""
+            # v1.5.7 · require >=1 byte response · sshd reverse tunnel
+            # accepts connect but local-end-dead returns recv=0 · this
+            # distinguishes "TCP reachable" from "daemon actually answering"
+            if not r:
+                return {"reachable": False,
+                        "latency_ms": int((_t.time()-t0)*1000),
+                        "error": "connected but no response (local end down?)"}
+            return {"reachable": True,
+                    "latency_ms": int((_t.time()-t0)*1000),
+                    "resp_bytes": len(r)}
+        except Exception as e:
+            return {"reachable": False, "error": repr(e)[:120]}
+        finally:
+            try: s.close()
+            except Exception: pass
+
+    components = {
+        "local_gpu_9876":   _probe_daemon("127.0.0.1", 9876),
+        "cloud_cpu_9886":   _probe_daemon("127.0.0.1", 9886),
+        "mcp_tcp_9877":     _probe_daemon("127.0.0.1", 9877),
+        "http_gateway":     {"reachable": True, "self": True},
+    }
+
+    # load + memory
+    load_avg = list(os.getloadavg())
+    try:
+        with open("/proc/meminfo") as f:
+            mi = {ln.split(":")[0]: int(ln.split()[1]) for ln in f if ":" in ln}
+        mem_avail_mb = mi.get("MemAvailable", 0) // 1024
+    except Exception:
+        mem_avail_mb = -1
+
+    # agent_tool_calls last hour
+    agent_calls = {}
+    try:
+        with _pg.connect(
+            host="localhost", user="nautilus_user",
+            password="nautilus2024", dbname="nautilus_production"
+        ) as conn, conn.cursor() as cur:
+            cur.execute("""
+                SELECT tool_name, count(*)
+                FROM agent_tool_calls
+                WHERE ts > NOW() - INTERVAL '1 hour'
+                  AND tool_name LIKE 'compass%'
+                GROUP BY 1 ORDER BY 2 DESC
+            """)
+            for tool, n in cur.fetchall():
+                agent_calls[tool] = n
+    except Exception as e:
+        agent_calls = {"error": repr(e)[:120]}
+
+    # recent errors from compass.service journal · last 5min
+    recent_errors = []
+    try:
+        r = _sp.run(
+            ["journalctl", "-u", "compass.service",
+             "--since", "5 min ago", "--no-pager", "-p", "warning"],
+            capture_output=True, text=True, timeout=3,
+        )
+        if r.stdout:
+            lines = [ln for ln in r.stdout.splitlines() if ln.strip()][-10:]
+            recent_errors = lines
+    except Exception:
+        pass
+
+    # degraded reasons
+    degraded = []
+    if not components["local_gpu_9876"]["reachable"] and not components["cloud_cpu_9886"]["reachable"]:
+        degraded.append("both BGE daemons down · only jaccard fallback remains")
+    elif not components["local_gpu_9876"]["reachable"]:
+        degraded.append("local GPU unreachable · fallback to cloud CPU (slower)")
+    if not components["mcp_tcp_9877"]["reachable"]:
+        degraded.append("MCP TCP server down · Claude Code dialogs cannot connect")
+    if load_avg[0] > 8.0:
+        degraded.append(f"load avg high: {load_avg[0]:.2f}")
+    if 0 <= mem_avail_mb < 500:
+        degraded.append(f"memory low: {mem_avail_mb} MB available")
+
+    tier = "primary"
+    if not components["local_gpu_9876"]["reachable"]:
+        tier = "fallback" if components["cloud_cpu_9886"]["reachable"] else "jaccard-only"
+    if not components["mcp_tcp_9877"]["reachable"]:
+        tier = "down"
+
+    return {
+        "ok": len(degraded) == 0,
+        "tier": tier,
+        "ts": int(_t.time()),
+        "components": components,
+        "load_avg": load_avg,
+        "memory_available_mb": mem_avail_mb,
+        "agent_calls_last_hour": agent_calls,
+        "recent_errors": recent_errors,
+        "degraded_reasons": degraded,
+    }
+
 
 
 @app.post("/v1/auth/signup", status_code=201)
@@ -602,6 +847,96 @@ def recall(q: str = Query(...), top_k: int = 5, cross_agent: bool = True,
     hits = sorted(hits, key=lambda h: -h["score"])[:top_k]
     return {"user_id": user_id, "query": q, "hits": hits,
             "ranker": "bge-m3" if sem is not None else "keyword"}
+
+
+
+
+# ---- v0.9.6 · /v1/drift_check · prehook for V5/V6/Kairos · 2026-05-07 V7-M5 ----
+@app.post("/v1/drift_check")
+def drift_check(
+    body: dict,
+    x_tenant_id: Optional[str] = Header(None, alias="X-Tenant-ID"),
+    x_user_id: Optional[str] = Header(None, alias="X-User-ID"),
+    authorization: Optional[str] = Header(None),
+):
+    """v1.4 adapter (2026-05-11) · BGE-m3 daemon primary · jaccard fallback.
+
+    Wire-compatible with V5/V6/Kairos compass_client.py. Returns same shape:
+    {score, alignment, deviation, should_alert, top_neg_hits, note}.
+    """
+    prompt = (body or {}).get("prompt", "")
+    if not isinstance(prompt, str) or len(prompt.strip()) < 5:
+        return {"score": 0.0, "alignment": 1.0, "deviation": 0.0,
+                "should_alert": False, "top_neg_hits": []}
+
+    user_id = x_tenant_id or x_user_id
+    if authorization and authorization.startswith("Bearer "):
+        try:
+            from jose import jwt
+            payload = jwt.decode(authorization[7:], JWT_SECRET, algorithms=["HS256"])
+            user_id = payload.get("user_id") or user_id
+        except Exception:
+            pass
+
+    # PRIMARY · v1.4 BGE-m3 + real anchors
+    v14 = _v14_drift_check(prompt, user_id or "unknown")
+    if v14 is not None:
+        return v14
+
+    # FALLBACK · legacy jaccard (resilience if daemon down or cold-loading)
+    if not user_id:
+        raise HTTPException(401, "auth required (X-Tenant-ID or X-User-ID or Bearer)")
+
+    # Pull last 50 red obs for this tenant
+    with db() as conn:
+        rows = conn.execute(
+            "SELECT obs_id, content_plain FROM observations "
+            "WHERE user_id = ? AND drift = 'red' "
+            "ORDER BY ts DESC LIMIT 50",
+            (user_id,)
+        ).fetchall()
+
+    if not rows:
+        return {"score": 0.0, "alignment": 1.0, "deviation": 0.0,
+                "should_alert": False, "top_neg_hits": [],
+                "note": "no red anchor obs · cold start"}
+
+    # Token bag for prompt
+    import re as _re
+    p_tokens = set(_re.findall(r"[\w一-鿿]+", prompt.lower()))
+    if len(p_tokens) < 2:
+        return {"score": 0.0, "alignment": 1.0, "deviation": 0.0,
+                "should_alert": False, "top_neg_hits": []}
+
+    hits = []
+    for r in rows:
+        text = (r["content_plain"] or "")[:500]
+        t_tokens = set(_re.findall(r"[\w一-鿿]+", text.lower()))
+        if not t_tokens:
+            continue
+        overlap = len(p_tokens & t_tokens)
+        if overlap == 0:
+            continue
+        # jaccard
+        union = len(p_tokens | t_tokens)
+        cos = overlap / max(union, 1)
+        hits.append({"anchor_id": r["obs_id"], "text": text[:120], "cos": round(cos, 3)})
+
+    hits.sort(key=lambda h: -h["cos"])
+    top = hits[:3]
+    score = top[0]["cos"] if top else 0.0
+    alignment = 1.0 - score
+    deviation = score
+    should_alert = score > 0.35
+
+    return {
+        "score": round(score, 3),
+        "alignment": round(alignment, 3),
+        "deviation": round(deviation, 3),
+        "should_alert": should_alert,
+        "top_neg_hits": top,
+        "corpus_size": len(rows),
+    }
 
 
 @app.get("/v1/agents")
@@ -992,9 +1327,9 @@ def a2a_dispatch(envelope: dict):
     msg_type = envelope.get("type")
     cap_map = {
         "STORE_OBS":             ("/v1/observations",        "POST"),
-        "RETRIEVE_MEMORY":       ("/v1/recall",              "POST"),
+        "RETRIEVE_MEMORY":       ("/v1/recall",              "GET"),
         "QUERY_PROFILE":         ("/v1/profile",             "GET"),
-        "QUERY_DRIFT":           ("/v1/drift",               "GET"),
+        "QUERY_DRIFT":           ("/v1/drift_check",         "POST"),
         "DISCOVER_CAPABILITIES": ("/.well-known/agent.json", "GET"),
     }
     if msg_type not in cap_map:
@@ -1011,7 +1346,7 @@ def a2a_dispatch(envelope: dict):
         "status":       "redirect",
         "use_endpoint": ep,
         "use_method":   method,
-        "note":         "A2A v1 = REST dispatch · call use_endpoint with bearer token from /v1/oauth/token",
+        "note":         "A2A v1 = REST dispatch · call use_endpoint with bearer token from /v1/auth/oauth/token",
     }
 
 
@@ -1025,23 +1360,23 @@ def a2a_well_known():
         "agent": {
             "id": "compass.nautilus.social",
             "name": "Nautilus Compass",
-            "description": "Cross-agent memory layer · MCP + A2A · drift-aware · LongMemEval-S 56.6% (validated)",
-            "version": "0.9.0",
+            "description": "Cross-agent memory layer · MCP A2A v1.0 (TLS/mTLS, RBAC, rate-limit) · drift-aware (AUC 0.83 held-out) · LongMemEval-S 56.6% · EverMemBench-Dynamic 44.4-47.3% (n=500, 2 runs)",
+            "version": "1.0.0",
             "homepage": "https://github.com/chunxiaoxx/nautilus-compass",
             "capabilities": [
                 {"name": "STORE_OBS", "endpoint": "/v1/observations", "method": "POST",
                  "description": "Write a single observation (with drift signal) to user memory"},
-                {"name": "RETRIEVE_MEMORY", "endpoint": "/v1/recall", "method": "POST",
+                {"name": "RETRIEVE_MEMORY", "endpoint": "/v1/recall", "method": "GET",
                  "description": "Cross-agent semantic + keyword recall"},
                 {"name": "QUERY_PROFILE", "endpoint": "/v1/profile", "method": "GET",
                  "description": "User work profile aggregate"},
-                {"name": "QUERY_DRIFT", "endpoint": "/v1/drift", "method": "GET",
+                {"name": "QUERY_DRIFT", "endpoint": "/v1/drift_check", "method": "POST",
                  "description": "AI drift timeline (compass-exclusive feature)"}
             ],
             "auth": {
                 "type": "oauth2",
-                "authorization_endpoint": "/v1/oauth/authorize",
-                "token_endpoint": "/v1/oauth/token",
+                "authorization_endpoint": "/v1/auth/oauth/authorize",
+                "token_endpoint": "/v1/auth/oauth/token",
                 "scopes": ["read:memory", "write:memory"]
             },
             "mcp_alternative": {
@@ -1056,11 +1391,264 @@ def a2a_well_known():
 
 # ---- Init ----
 
-# Startup is handled by the lifespan context manager declared near the top
-# of the module (see _lifespan). We keep this section as an anchor for any
-# future shutdown hooks.
+@app.on_event("startup")
+def on_startup():
+    init_db()
+    init_audit_table()
+    _start_audit_thread()
 
 
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("compass_http_v09:app", host="0.0.0.0", port=8765, reload=False)
+
+
+# ─── A2 · v1.4 BGE direct routes (recall + ingest_obs) · 2026-05-11 ──
+_V14_POI_SNAP = {"data": {}, "mtime": None}
+
+
+def _v14_poi_boost(hits):
+    """Rerank recall hits in place by central PoI credit snapshot. Env-gated
+    (COMPASS_CLOUD_POI_BOOST=1) · mtime-cached · NEVER raises. Boost is an
+    enhancement; recall must never fail because of it. key = project/basename,
+    project normalized to encoded_cwd form (mirrors proof/poi_memory_key)."""
+    if _v14_os.environ.get("COMPASS_CLOUD_POI_BOOST") != "1" or not hits:
+        return hits
+    try:
+        import json as _bj, math as _bm
+        p = _v14_os.environ.get("COMPASS_POI_CREDIT_SNAPSHOT",
+                                "/var/lib/compass/poi/poi_credit_snapshot.json")
+        st = _V14_POI_SNAP
+        if _v14_os.path.exists(p):
+            m = _v14_os.path.getmtime(p)
+            if m != st.get("mtime"):
+                with open(p, encoding="utf-8") as f:
+                    loaded = _bj.load(f)
+                if isinstance(loaded, dict):
+                    st["data"], st["mtime"] = loaded, m
+        snap = st.get("data") or {}
+        if not snap:
+            return hits
+        for h in hits:
+            proj = (h.get("project") or "").strip()
+            if ":" in proj or "\\" in proj:
+                proj = proj.replace(":\\", "--").replace(":/", "--").replace("\\", "-").replace("/", "-")
+            mem = (h.get("path") or h.get("memory") or "").replace("\\", "/").rsplit("/", 1)[-1]
+            cum = snap.get(proj + "/" + mem)
+            if cum is None or not _bm.isfinite(cum):
+                continue
+            boost = max(-0.5, min(1.0, cum * 0.1))
+            new = h.get("score", 0.0) * (1.0 + boost)
+            if _bm.isfinite(new):
+                h["score"] = round(new, 4)
+        hits.sort(key=lambda x: -x.get("score", 0.0))
+    except Exception:
+        pass
+    return hits
+
+
+def _v14_emit_poi_candidate(hits, query, agent_id):
+    """Self-contained PoI candidate emission for the v14 recall path.
+    One JSONL line per hit -> poi_candidates.jsonl (schema matches
+    proof/poi_emitter: ts/kind/actor/project/memory/query_hash/rank/score).
+    `project` is derived PER HIT from each hit's own `project` field — under
+    scope=user one recall returns hits from DIFFERENT projects, and the daemon
+    already tags each hit with its source project. A single query-param project
+    (the requester's context) would mislabel cross-project hits. Mirrors the
+    local emitter (project from the memory file path).
+    No proof import (not on this server path) · no self-cite suppression
+    (cited memory files are not local to this cloud host). Never raises."""
+    if not hits:
+        return 0
+    import hashlib as _hl
+    from datetime import datetime as _dt, timezone as _tz
+    # NOTE default MUST be a systemd ReadWritePaths dir · the service runs with
+    # ProtectHome=read-only + ProtectSystem=strict, so /home/ubuntu/compass is
+    # read-only · writes there fail silently. /var/lib/compass is RW + persistent.
+    cache_dir = _v14_os.environ.get("COMPASS_POI_CACHE_DIR", "/var/lib/compass/poi")
+    _v14_os.makedirs(cache_dir, exist_ok=True)
+    sidecar = _v14_os.path.join(cache_dir, "poi_candidates.jsonl")
+    actor = agent_id or "unknown"
+    ts = _dt.now(_tz.utc).isoformat(timespec="seconds")
+    q_hash = _hl.sha1((query or "").encode("utf-8")).hexdigest()[:16]
+    n = 0
+    with open(sidecar, "a", encoding="utf-8") as f:
+        for rank, h in enumerate(hits):
+            mem = h.get("path") or h.get("memory")
+            if not mem:
+                continue
+            # normalize each hit's own project to encoded_cwd form · mirrors
+            # proof/poi_memory_key._normalize_project (inline · no proof import).
+            proj = (h.get("project") or "").strip()
+            if ":" in proj or "\\" in proj:
+                proj = proj.replace(":\\", "--").replace(":/", "--").replace("\\", "-").replace("/", "-")
+            f.write(_v14_json.dumps({
+                "ts": ts,
+                "kind": "candidate",
+                "actor": actor,
+                "project": proj,
+                "memory": mem,
+                "query_hash": q_hash,
+                "rank": rank,
+                "score": round(float(h.get("score", 0.0)), 4),
+            }, ensure_ascii=False) + "\n")
+            n += 1
+    return n
+
+
+@app.get("/v1/v14/recall")
+def v14_recall(
+    q: str,
+    top_k: int = 5,
+    scope: str = "project",
+    project: Optional[str] = None,
+    agent_id: Optional[str] = None,
+    x_tenant_id: Optional[str] = Header(None, alias="X-Tenant-ID"),
+):
+    """v1.4 BGE-m3 recall · scope=project (default) or scope=user (cross-project)."""
+    req = {
+        "action": "recall",
+        "query": (q or "")[:2000],
+        "top_k": int(top_k),
+        "scope": scope,
+        "agent_type": x_tenant_id or "unknown",
+    }
+    if project:
+        req["project"] = project
+    d = _call_v14_daemon(req, timeout=15.0)
+    if not d:
+        # v1.5.8 · only true transport fail · daemon never answered
+        return {"ok": False, "error": "v14 daemon unreachable · all ports transport-failed",
+                "backend": "v1.4-bge-m3"}
+    if not d.get("ok"):
+        # v1.5.8 · daemon answered but rejected request · pass through real reason
+        return {"ok": False, "error": d.get("error", "daemon returned ok=false"),
+                "backend": "v1.4-bge-m3"}
+    try:
+        _h = d.get("recall", [])
+        _v14_poi_boost(_h)  # rerank in place by PoI credit snapshot (env-gated)
+        if _h and _v14_os.environ.get("COMPASS_NO_POI_CANDIDATE") != "1":
+            _v14_emit_poi_candidate(_h, q, agent_id)
+    except Exception:
+        pass
+    return {
+        "ok": True,
+        "scope": d.get("scope", scope),
+        "projects_scanned": d.get("projects_scanned", []),
+        "hits": d.get("recall", []),
+        "fresh_extra": d.get("fresh_extra", []),
+        "backend": "v1.4-bge-m3",
+    }
+
+
+# ─── v14_ingest_obs · session_*.md writer · 2026-05-11 ──────────────
+# Previous version forwarded to daemon · daemon has no ingest_obs action.
+# Now writes session_*.md directly to ~/.claude/projects/<project>/memory/.
+@app.post("/v1/v14/ingest_obs")
+def v14_ingest_obs(
+    body: dict,
+    x_tenant_id: Optional[str] = Header(None, alias="X-Tenant-ID"),
+    x_user_id: Optional[str] = Header(None, alias="X-User-ID"),
+):
+    """v1.4 ingest observation · writes session_*.md directly.
+
+    Body fields (all str unless noted):
+      content (required, ≥10 char)    · main body text
+      name (optional, default first 30 chars of content)
+      description (optional)
+      drift (optional · green/yellow/red · default green)
+      thread_id (optional)            · for thread_recall pairing
+      thread_role (optional · outbound/inbound/self_note)
+      project (optional · default C--Users-chunx)
+      tags (optional list[str])
+      recall_id (optional)            · self-reported proof-of-recall claim
+      cited_snippets (optional list)  · self-reported snippet citations
+    """
+    import re as _re_v14
+    from datetime import datetime as _dt_v14
+    from pathlib import Path as _P_v14
+
+    content = (body or {}).get("content", "")
+    if not isinstance(content, str) or len(content.strip()) < 10:
+        return {"ok": False, "error": "content too short (min 10 chars)"}
+
+    agent_type = (x_tenant_id or x_user_id or "unknown")[:60]
+    project = (body or {}).get("project") or _V14_DEFAULT_PROJECT
+    name = ((body or {}).get("name") or content[:30].strip())[:80]
+    description = ((body or {}).get("description") or content[:200])[:200]
+    drift = (body or {}).get("drift") or "green"
+    if drift not in ("green", "yellow", "red"):
+        drift = "green"
+    thread_id = ((body or {}).get("thread_id") or "").strip()
+    thread_role = ((body or {}).get("thread_role") or "").strip()
+    if thread_role and thread_role not in ("outbound", "inbound", "self_note"):
+        thread_role = "self_note"
+    tags = (body or {}).get("tags") or []
+    if not isinstance(tags, list):
+        tags = []
+
+    # self-reported proof-of-recall (v1.5)
+    recall_id = ((body or {}).get("recall_id") or "").strip()
+    cited_snippets = (body or {}).get("cited_snippets") or []
+    if not isinstance(cited_snippets, list):
+        cited_snippets = []
+    if recall_id or cited_snippets:
+        proof_of_recall = "self_reported_pass" if cited_snippets else "self_reported_no_cite"
+    else:
+        proof_of_recall = "not_attempted"
+
+    # write session_*.md
+    ts = _dt_v14.now().strftime("%Y%m%d-%H%M")
+    slug = _re_v14.sub(r"[^\w一-鿿]+", "-", name).strip("-")[:30] or "obs"
+    home = _P_v14(_v14_os.path.expanduser("~ubuntu"))
+    out_dir = home / ".claude" / "projects" / project / "memory"
+    try:
+        out_dir.mkdir(parents=True, exist_ok=True)
+    except Exception as e:
+        return {"ok": False, "error": f"cannot create memory dir: {e}",
+                "backend": "v1.4-http-adapter"}
+
+    fname = f"session_{ts}_{slug}.md"
+    out_file = out_dir / fname
+
+    tags_yaml = "[]" if not tags else "[" + ", ".join(f'"{t}"' for t in tags) + "]"
+    thread_lines = ""
+    if thread_id:
+        thread_lines = f"\nthread_id: {thread_id}\nthread_role: {thread_role or 'self_note'}"
+    proof_lines = f"\nproof_of_recall: {proof_of_recall}"
+    if recall_id:
+        proof_lines += f"\nrecall_id: {recall_id}"
+    if cited_snippets:
+        cited_yaml = "[" + ", ".join(f'"{c[:100]}"' for c in cited_snippets[:5]) + "]"
+        proof_lines += f"\ncited_snippets: {cited_yaml}"
+
+    md = f"""---
+name: {name}
+description: {description}
+type: discovery
+drift: {drift}
+agent_type: {agent_type}
+ingested_via: v14_http_adapter
+tags: {tags_yaml}{thread_lines}{proof_lines}
+---
+
+# {name}
+
+{content[:8000]}
+"""
+    try:
+        out_file.write_text(md, encoding="utf-8")
+    except Exception as e:
+        return {"ok": False, "error": f"write fail: {e}",
+                "backend": "v1.4-http-adapter"}
+
+    return {
+        "ok": True,
+        "session_path": str(out_file),
+        "session_name": fname,
+        "agent_type": agent_type,
+        "proof_of_recall": proof_of_recall,
+        "backend": "v1.4-http-adapter",
+    }
+# ─── end v1.4 routes ───────────────────────────────────────────────
+
