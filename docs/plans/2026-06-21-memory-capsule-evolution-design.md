@@ -80,6 +80,19 @@ soul:verdict(reward/overall_pass/bucket)= 胶囊的 validate/promote 门 ──�
 | **P3 · 进化/衰减** | 打通路 B 的 tier/forget/PoI 到 serving observations(复用 `poi_calculator`/`tier_promotion`)+ 可逆时间衰减 | 借鉴3·打通两条路 | compass |
 | **对外 MCP** | 内部 A2A + 生命周期成熟后,再评估对外开放(数据自治前提·内部先跑通) | — | compass + 用户决策 |
 
+## 5b. 协作分工 + 推进序(谁做 · 能借 soul/agent 吗 = 能且必须)
+
+| 阶段 | compass(实现层·主力) | agent/V5(写端) | soul(质量信号) | 用户 |
+|---|---|---|---|---|
+| **P0 防退化** | serving:质量分进 recall 排序 + 单条 revoke API | W1 写回**带 verdict 元数据**(reward/bucket/score/source) | 提供 verdict(**已产·只需被带上**) | — |
+| **P1 精度** | serving schema 支持结构化字段 + recall 返回 | **产结构化经验**(triggers/env/失败边界·agent 最懂解题边界) | — | — |
+| **P2 自然选择** | serving 加 report 端点 + 质量分更新 | **用完回写 report**(B 解题 reward 挂回胶囊) | — | — |
+| **P3 进化** | 把路 B 的 PoI/tier/forget 接到 serving observations(复用 `poi_calculator`/`tier_promotion`) | — | — | — |
+| **对外 MCP** | serving + OKF 格式导出 + 内部 A2A | — | — | 对外开放**时机决策** |
+
+**关键:soul 和 agent 不只能借,是必须** —— ① soul 的 verdict/reward/bucket 信号**已成体系**(`fde_bench_runner`/`fde_scorer_poll`/`fde_triage`),P0 直接用,soul 几乎不用改;② V5 是写端,P0/P1/P2 都要它配合(带元数据 / 产结构化 / 回写 report);③ compass 是实现层主力(召回/排序/生命周期/对外)。
+**推进纪律**:每阶段先 writing-plans + 跨框 outbound 协调(V5 写端 + soul 信号契约)+ TDD + 实测。**P0 先做(最高危·错经验复利成毒)**。
+
 ## 6. 最小改动接线点(soul agent 实证·2-3 处·都在 compass 客户端)
 1. **`compass_fleet_memory.py:write_learning`** — W1 写回附 verdict 元数据(reward/score/bucket/source)作质量等级标签。已只在 reward=1.0 触发,加标签即可。**= 晋升门。**
 2. **`compass_fleet_memory.py:compass_recall_pits`** — recall 加质量过滤(只召回高质胶囊)+ **family 键统一为 `bench_family`**(顺带修今天发现的不一致)。**= 喂高质胶囊 + 键对齐。**
