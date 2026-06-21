@@ -57,7 +57,7 @@ def test_full_e2e_flow():
         assert r.status_code == 200, f"healthz: {r.status_code} · {r.text}"
         h = r.json()
         assert h["status"] == "ok"
-        assert h["version"].startswith("0.9")
+        assert h["version"]  # present (not pinned to a minor — box reconciled to 1.0.x)
         print(f"  [PASS] healthz · region={h['region']}")
 
         # Step 2: signup
@@ -117,7 +117,9 @@ def test_full_e2e_flow():
         print(f"  [PASS] recall · {len(hits)} hits")
 
         # Step 6: profile
-        r = client.get("/v1/profile", headers=auth_headers, params={"days": 30})
+        # wide window: box 1.0.1 profile counts obs within `days` (fixture ts is fixed
+        # at 2026-05-05, so a narrow window ages out over time — query all).
+        r = client.get("/v1/profile", headers=auth_headers, params={"days": 100000})
         assert r.status_code == 200
         prof = r.json()
         assert prof["user_id"] == user_id
