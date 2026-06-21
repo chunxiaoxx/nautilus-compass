@@ -1515,7 +1515,15 @@ def v14_recall(
     }
     if project:
         req["project"] = project
-    d = _call_v14_daemon(req, timeout=15.0)
+    # v1.5.9 · scope=user is a cross-project UNION scan over ALL ~/.claude/projects
+    # dirs (37k+ episodic cycle dirs · cold scan ~14s steady). The default 15s
+    # timeout RACES that scan → any jitter pushes it over → _call_v14_daemon raises
+    # → laundered as "daemon unreachable" → caller sees empty (the V5 "user-scope
+    # union returns empty" report · 2026-06-21). The union is NOT broken; the
+    # serving timeout was just too tight. Give the union path real headroom.
+    # (Perf root = 37k-dir scan · fixed by consolidation/胶囊化 · tracked separately.)
+    _timeout = 45.0 if scope == "user" else 15.0
+    d = _call_v14_daemon(req, timeout=_timeout)
     if not d:
         # v1.5.8 · only true transport fail · daemon never answered
         return {"ok": False, "error": "v14 daemon unreachable · all ports transport-failed",
@@ -1531,10 +1539,16 @@ def v14_recall(
             _v14_emit_poi_candidate(_h, q, agent_id)
     except Exception:
         pass
+    # v1.5.9 · scope=user returns the full 37k+ project-name list (~793KB · 95% of
+    # the response) · pure noise to the caller (each hit already carries its own
+    # `project`). Cap to a count + small sample so the per-cycle daemon loop isn't
+    # shipping ~800KB every recall over the tunnel.
+    _ps = d.get("projects_scanned", []) or []
     return {
         "ok": True,
         "scope": d.get("scope", scope),
-        "projects_scanned": d.get("projects_scanned", []),
+        "projects_scanned_count": len(_ps),
+        "projects_scanned": _ps[:20],
         "hits": d.get("recall", []),
         "fresh_extra": d.get("fresh_extra", []),
         "backend": "v1.4-bge-m3",
