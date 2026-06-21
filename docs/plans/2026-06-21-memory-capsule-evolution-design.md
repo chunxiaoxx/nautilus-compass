@@ -20,6 +20,21 @@
 - ❌ 不要 GDI 的 social signals(20% 点赞维度)— 我们用**确定性 verifier reward** 替代(比点赞硬)。质量分 = reward + usage + freshness 三维。
 - ❌ 不要 evolver 的 self-modifying-code 引擎(mutate/solidify 自动改源码)— 与 R1/R4 护栏冲突。只借数据模型+生命周期,不借自动代码变异。
 
+## 1b. OKF(Google 开放知识格式)= 我们的「格式层」标准(2026-06-21 补)
+
+**OKF v0.1**(Google Cloud 2026-06-12 发布·`github.com/GoogleCloudPlatform/knowledge-catalog/okf`):知识 = 一目录 `.md` + YAML frontmatter;唯一必需字段 `type`(可选 title/description/resource/tags/timestamp);markdown 链接 `[..](/path.md)` 构成有向知识图谱 + "cited by" 反链;**厂商中立·无 schema registry·无中央权威**("能 cat 就能读·能 git clone 就能 ship");Knowledge Bundle = 分发单元,Concept = 单个 md 文档。
+
+**🎯 关键:我们的 compass memory 本来就几乎是 OKF** — `.md` + YAML frontmatter(`name`/`description`/`metadata.type`)+ `[[name]]` 交叉链接 + `MEMORY.md` 索引 + daemon 算 link graph。**对齐成本极低**。
+
+**三层架构定位(OKF / GEP / compass 互补不冲突)**:
+| 层 | 是什么 | 我们怎么用 |
+|---|---|---|
+| **格式层 = OKF** | 知识怎么**存/交换**(静态·互操作·厂商中立) | **采用 OKF 作对外格式标准** → 我们的记忆 bundle 能被任何 OKF agent/工具读,也能继承别人的 OKF bundle = 发扬光大的开放接口(比 EvoMap 私有 Hub 更开放·更合数据自治) |
+| **进化层 = GEP(借鉴)** | 知识怎么**进化**(动态·质量·生命周期) | 借 3 件(结构化边界/report 回流/可逆衰减)·不接其网络 |
+| **实现层 = compass** | 存储 + 语义召回 + 质量门 + 对外 MCP | 已 LIVE·把上两层叠上去 |
+
+→ **战略正路**:compass 实现 + 对齐 OKF 格式(对外互操作)+ 借鉴 GEP 进化机制。三者各司其职。OKF 让我们的记忆胶囊「对外发扬光大」有了厂商中立的标准接口,GEP 让它「对内自我提升」,compass 是落地。
+
 ## 2. 关键发现(现状盘点)
 
 **🔴 系统性根因:能力分两条路,未打通。**
