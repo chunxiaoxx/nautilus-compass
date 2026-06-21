@@ -37,7 +37,8 @@ metadata:
 3. **第3类 · 基准测试样例(复现现成基准·非造新)** = 复现 11 类前沿 AI-eng benchmark · 交付**复现数据+轨迹+pass@k**(核心资产=验证器+可执行环境)。📄 权威需求 = **`vtf/BUYER_SPEC_T3_基准测试复现需求.md`**(2026-06-09 买方 Q&A 澄清 · 无独立 wiki)。
    - 质量标准 = **难倒模型:pass@5 ≤ 0.6 on doubao 2.0**(锁定该模型·5 次正确≤3 次·越难越好)· 验收双维:① 复现质量 ② 成品量级。
    - **不涉及算力**(Token 成本进报价)· coding 类买方已自采 swe-bench pro/terminal bench 2.0(3 月需求·可能已结束·**别重复**)。
-   - **🔴 11 类(权威·分类=「前沿 AI 研发自动化·AI 做 AI」·全文见 BUYER_SPEC_T3)**:MLS-Bench / Frontier-Eng / ResearchGym / PostTrainBench / InferenceBench / FrontierSWE / MLRC-Bench / RE-Bench / KernelBench / EXP-Bench / AutoLab。⚠️ 记忆/RAG 检索(LongMemEval 等)**不属此列**,别误塞第3类。
+   - **🔴 11 类(买方权威·分类=「前沿 AI 研发自动化·AI 做 AI」·全文见 BUYER_SPEC_T3)**:MLS-Bench / Frontier-Eng / ResearchGym / PostTrainBench / InferenceBench / FrontierSWE / MLRC-Bench / RE-Bench / KernelBench / EXP-Bench / AutoLab。⚠️ 记忆/RAG 检索(LongMemEval 等)**不属此列**,别误塞第3类。
+   - **🆕 第 12 类 · ALE-Bench(我方纳入·2026-06-17 双轨定案)**:AHC 启发式优化题。**口径=score-regime(连续分数·非 pass@k 二元)→ 走独立环(rsi_two_arm+fleet)·不 retrofit pass@k marketplace**。一鱼两吃:RSI reward-uplift 燃料(score 连续=真梯度·补 pass@k 缺的梯度)+ 买方第 12 类交付。turf=compass env/scorer · V5 producer · 裁判=ALE scorer 系统外。📄 `fde_t3_scratch/DESIGN_ale_bench_dual_track_20260617.md` + `PLAN_ale_bench_phase1_20260617.md`。
    - 覆盖/分工(实证):AutoLab=✅soul/v5 已 8 条 · **KernelBench=compass 主攻**(官方 env+attention+重标定 1.727x 过门·`vtf/fde_benchmarks/a_cluster/kernelbench_attention`)· **FrontierSWE=compass 主攻**(resolve env+flask-4045 pass@1=0.6 hard)· MLRC/ResearchGym=compass 次批 · MLS/Frontier-Eng/PostTrain/Inference/RE/EXP=需 H100 待王泽。
    - 脚手架 `vtf/fde-toolbox/出题脚手架_前沿AIeng_11benchmark.md` · A 簇 env GPU `/mnt/datadisk0`(`autolab_eval --task`)· turf:soul `benchmark_verifier`(pass@k/escapes=难倒)+ v5 产候选轨迹 + compass env/eval。
 - 📄 培训纪要(权威背景)= `~/Downloads/智能纪要：伊洛科技 培训交流会 2026年6月8日.md`(6/8 · 王泽/王彦鹏/王春晓 · 定方向+字段+定价+算力)。
