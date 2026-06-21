@@ -16,6 +16,14 @@
 - **目标形态 = A2A+MCP 融合服务**:MCP(工具发现层·agent 发现"记忆胶囊"服务)+ A2A(agent 间·发布/继承/report 胶囊),compass serving 担内部 Hub(不接 evomap 外网)。
 - ⚠️ **战线提示**:两条并行雄心大,R3 下深度打折 → 今天只探清需求 + 记方向,**完整设计细化 + writing-plans + 分阶段实施留下个 fresh session**。
 
+## 0c. anchor#5 复用盘点(别从零造 · 2026-06-21)
+
+- 🔴 **平台已有(烂尾)A2A+MCP 服务端**(用户提示·实测定位):git worktree `agent-a2152bb850d8d40bc`(**未合主干 = 烂尾**·最后活动 2026-05-03 ~7 周前)。
+  - 代码 ~1021 行:`phase3/backend/api/a2a.py`(227)+ `a2a_relay.py`(145)+ `services/a2a_protocol.py`(309)+ `nautilus_agent/connectors/mcp_connector.py`(340)。
+  - 文档:`docs/a2a-mcp-architecture-analysis.md`(A2A=协调层:能力广告/任务分解/状态同步/结果聚合;MCP=上下文层:工具定义/发现/注入;production 架构图 Control Plane + A2A Relay;基于 Nautilus↔Kairos 真实交互的运营洞察)+ A2A_PROTOCOL/A2A_VS_MCP 等多份。
+  - → **对外 A2A+MCP 不从零造**。下个 session 设计先评估:① 这资产能否接续/复用(代码 7 周新鲜度)② 烂尾根因(优先级转 FDE/RSI?技术债?未接通?)是否可解 ③ 与 compass serving 现有 A2A(`/a2a/messages`+agent.json·**LIVE**)的关系 —— 很可能**互补**:平台的是 agent 协调层(任务分发),compass 的是记忆胶囊层。两层叠加正好是目标"A2A+MCP 融合"。
+- **soul auto-mint 飞轮**(2026-06-21 入站):soul 正建 auto-mint timer(自动 mint→produce→verify→settle→W1·**无对话框介入**)= 用户 reframe"运行时自治"的燃料侧落地。→ 记忆胶囊 P0-P3 应同样设计成**运行时 agent 自动触发**(解题后自动写/claim 前自动读/soul verdict 自动质量门),而非脚本/对话框手动。
+
 ## 1. 调研结论:借什么 / 不借什么
 
 **借(evomap GEP 三个最值钱件)**:
