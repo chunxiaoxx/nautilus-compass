@@ -18,12 +18,17 @@ from typing import Any, Callable
 # rejected/invalid 解的 reward。two_arm 同题内比较·越高越好·AHC 有效输出绝对分 > 0。
 REJECTED_REWARD: float = 0.0
 
+# 🔴 判题镜像版本。public_eval 不传则默认 202301·会去 pull `ale-bench:cpp23-202301`
+# (我们只建了 202510)→ ImageNotFound。必须显式传匹配已建镜像的版本(live 实测)。
+DEFAULT_JUDGE_VERSION: str = "202510"
+
 
 def score_solution(
     code: str,
     problem_id: str,
     *,
     language: str = "cpp23",
+    judge_version: str = DEFAULT_JUDGE_VERSION,
     start_fn: Callable[..., Any] | None = None,
     lite_version: bool = False,
     num_workers: int = 2,
@@ -32,6 +37,7 @@ def score_solution(
 
     start_fn 注入(默认 ale_bench.start)· 单测注 fake。session 必 close(资源)。
     lite_version=False:ahc 题 lite 子集多缺(实测 ahc001 lite not found·full 可用)。
+    judge_version=202510:匹配已建判题镜像(不传 public_eval 默认 202301 会 ImageNotFound)。
     """
     if start_fn is None:  # pragma: no cover - live path (T4 only)
         import ale_bench
@@ -39,7 +45,7 @@ def score_solution(
         start_fn = ale_bench.start
     session = start_fn(problem_id, lite_version=lite_version, num_workers=num_workers)
     try:
-        result = session.public_eval(code, language)
+        result = session.public_eval(code, language, judge_version=judge_version)
         score = float(getattr(result, "overall_absolute_score", 0.0) or 0.0)
         # AHC 有效输出绝对分 > 0;<= 0 视作 rejected/WA/RE(live 标定 REJECTED 哨兵后可精化)。
         rejected = score <= 0.0
@@ -58,6 +64,7 @@ def eval_fn(
     problem_id: str,
     *,
     language: str = "cpp23",
+    judge_version: str = DEFAULT_JUDGE_VERSION,
     start_fn: Callable[..., Any] | None = None,
     lite_version: bool = False,
     num_workers: int = 2,
@@ -67,6 +74,7 @@ def eval_fn(
         candidate,
         problem_id,
         language=language,
+        judge_version=judge_version,
         start_fn=start_fn,
         lite_version=lite_version,
         num_workers=num_workers,
