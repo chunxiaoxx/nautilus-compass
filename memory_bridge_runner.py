@@ -13,9 +13,15 @@ import json
 import os
 import sqlite3
 import subprocess
+import time
+import urllib.error
 import urllib.request
 
 import memory_bridge as mb
+
+# serving 有速率限制(429)。节流 + 429 退避重试(注入式 effect·consolidate 保持纯净)。
+INGEST_THROTTLE_S = 0.4
+INGEST_MAX_RETRY = 4
 
 DB = "/var/lib/compass/compass.db"
 SERVING_INGEST = "http://127.0.0.1:8770/v1/v14/ingest_obs"
@@ -47,13 +53,22 @@ def read_flywheel_obs() -> list[dict]:
 
 
 def _ingest(body: dict) -> None:
-    req = urllib.request.Request(
-        SERVING_INGEST,
-        data=json.dumps(body, ensure_ascii=False).encode("utf-8"),
-        headers={"Content-Type": "application/json"},
-        method="POST",
-    )
-    urllib.request.urlopen(req, timeout=20).read()
+    """POST 一条胶囊·节流 + 429 指数退避重试。"""
+    time.sleep(INGEST_THROTTLE_S)
+    data = json.dumps(body, ensure_ascii=False).encode("utf-8")
+    for attempt in range(INGEST_MAX_RETRY):
+        req = urllib.request.Request(
+            SERVING_INGEST, data=data,
+            headers={"Content-Type": "application/json"}, method="POST",
+        )
+        try:
+            urllib.request.urlopen(req, timeout=20).read()
+            return
+        except urllib.error.HTTPError as e:
+            if e.code == 429 and attempt < INGEST_MAX_RETRY - 1:
+                time.sleep(2 ** attempt)  # 1s,2s,4s 退避
+                continue
+            raise
 
 
 def _load_seen() -> set:
@@ -83,8 +98,10 @@ def _rsync_cloud_to_t4() -> int:
 def main() -> None:
     obs = read_flywheel_obs()
     seen = _load_seen()
-    stats = mb.consolidate(obs, _ingest, seen=seen)
-    _save_seen(seen)
+    try:
+        stats = mb.consolidate(obs, _ingest, seen=seen)
+    finally:
+        _save_seen(seen)  # 部分失败也持久化已成功键·防重跑重 POST
     rc = _rsync_cloud_to_t4() if stats["written"] else 0
     print(json.dumps({
         "total_ob_fw": len(obs),
