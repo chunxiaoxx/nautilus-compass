@@ -51,3 +51,14 @@ def test_a_class_false_not_verified():
 def test_a_class_false_margin_too_small():
     s = kb_fuel.build_kb_fuel_sample("t", "p", {"solution": "x", "speedup": 1.05, "verified": True}, 1.0)
     assert kb_fuel.is_a_class(s) is False
+
+
+def test_accumulate_dedup_keeps_higher_speedup():
+    a = kb_fuel.build_kb_fuel_sample("t1", "p", {"solution": "v1", "speedup": 1.2, "verified": True}, 0.5)
+    b = kb_fuel.build_kb_fuel_sample("t1", "p", {"solution": "v2", "speedup": 1.8, "verified": True}, 0.5)
+    c = kb_fuel.build_kb_fuel_sample("t2", "p", {"solution": "x", "speedup": 1.0, "verified": True}, 0.5)
+    out = kb_fuel.accumulate_kb_fuel([b, c], existing=[a])
+    by = {s["task_id"]: s for s in out}
+    assert by["t1"]["strong_score"] == 1.8
+    assert by["t2"]["strong_score"] == 1.0
+    assert len(out) == 2
