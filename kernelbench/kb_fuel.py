@@ -34,3 +34,16 @@ def is_a_class(sample: dict, rel_margin: float = 0.1) -> bool:
     if strong == doubao:
         return False
     return strong > 0 and strong >= doubao * (1.0 + rel_margin)
+
+
+def accumulate_kb_fuel(samples: list, existing: list) -> list:
+    """纯·幂等:按 task_id dedup(同 id 取 strong_score 更高者)。不改入参。"""
+    by, order = {}, []
+    for s in list(existing) + list(samples):
+        tid = s["task_id"]
+        if tid not in by:
+            by[tid] = s
+            order.append(tid)
+        elif float(s["strong_score"]) > float(by[tid]["strong_score"]):
+            by[tid] = s
+    return [by[tid] for tid in order]
