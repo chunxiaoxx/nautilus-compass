@@ -21,3 +21,16 @@ def build_kb_fuel_sample(task_id, problem_statement, strong_result, doubao_speed
         "score_type": "maximize",
         "judge_version": str(judge_version) if judge_version else "",
     }
+
+
+def is_a_class(sample: dict, rel_margin: float = 0.1) -> bool:
+    """A 类(maximize·镜像 V5 ale_fuel_batch.is_a_class 语义):
+    strong_verified ∧ strong>0 ∧ strong != doubao ∧ strong >= doubao*(1+rel_margin)。
+    退化守卫:同分(双败)/ strong=0(没真解出)= 非 A 类(防毒燃料)。"""
+    if not sample.get("strong_verified"):
+        return False
+    strong = float(sample["strong_score"])
+    doubao = float(sample["doubao_score"])
+    if strong == doubao:
+        return False
+    return strong > 0 and strong >= doubao * (1.0 + rel_margin)

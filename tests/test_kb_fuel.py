@@ -26,3 +26,28 @@ def test_build_sample_has_6_keys_and_maps_speedup():
     assert s["strong_solution"].startswith("class ModelNew")
     for k in ("task_id", "problem_statement", "strong_solution", "strong_score", "doubao_score", "strong_verified"):
         assert k in s
+
+
+def test_a_class_true_when_strong_beats_doubao():
+    s = kb_fuel.build_kb_fuel_sample("t", "p", {"solution": "x", "speedup": 1.727, "verified": True}, 0.747)
+    assert kb_fuel.is_a_class(s) is True
+
+
+def test_a_class_false_double_fail_same_score():
+    s = kb_fuel.build_kb_fuel_sample("t", "p", {"solution": "x", "speedup": 0.0, "verified": True}, 0.0)
+    assert kb_fuel.is_a_class(s) is False
+
+
+def test_a_class_false_strong_zero():
+    s = kb_fuel.build_kb_fuel_sample("t", "p", {"solution": "x", "speedup": 0.0, "verified": True}, -1.0)
+    assert kb_fuel.is_a_class(s) is False
+
+
+def test_a_class_false_not_verified():
+    s = kb_fuel.build_kb_fuel_sample("t", "p", {"solution": "x", "speedup": 2.0, "verified": False}, 0.5)
+    assert kb_fuel.is_a_class(s) is False
+
+
+def test_a_class_false_margin_too_small():
+    s = kb_fuel.build_kb_fuel_sample("t", "p", {"solution": "x", "speedup": 1.05, "verified": True}, 1.0)
+    assert kb_fuel.is_a_class(s) is False
