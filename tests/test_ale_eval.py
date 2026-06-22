@@ -22,6 +22,7 @@ class _FakeSession:
 
     def public_eval(self, code, language, **kw):
         self.eval_calls += 1
+        self.last_judge_version = kw.get("judge_version")
         return _FakeResult(self._score)
 
     def close(self):
@@ -86,3 +87,12 @@ def test_score_solution_returns_raw():
 def test_task_family():
     assert ale_eval.task_family("ahc001") == "ale_ahc_ahc001"
     assert ale_eval.task_family("ahc007") == "ale_ahc_ahc007"
+
+
+def test_judge_version_defaults_to_built_image():
+    # live bug guard: public_eval default judge_version=202301 → pulls nonexistent
+    # ale-bench:cpp23-202301. Must pass 202510 (the built image).
+    sink = []
+    ale_eval.eval_fn("c", "ahc001", start_fn=_start_returning(50.0, sink=sink))
+    assert sink[0].last_judge_version == "202510"
+    assert ale_eval.DEFAULT_JUDGE_VERSION == "202510"
