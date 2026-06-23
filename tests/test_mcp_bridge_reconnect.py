@@ -153,3 +153,18 @@ def test_note_request_ignores_notification_without_id():
     link = bridge._CloudLink(opener=_opener_factory([]))
     link.note_request('{"jsonrpc":"2.0","method":"notifications/initialized"}')
     assert link.pending_lines() == []
+
+
+def test_note_reply_clears_pending():
+    link = bridge._CloudLink(opener=_opener_factory([]))
+    link.note_request('{"jsonrpc":"2.0","id":5,"method":"tools/call","params":{}}')
+    assert link.pending_lines()
+    link.note_reply('{"jsonrpc":"2.0","id":5,"result":{"ok":true}}')
+    assert link.pending_lines() == []  # cleared on reply
+
+
+def test_note_reply_ignores_non_reply():
+    link = bridge._CloudLink(opener=_opener_factory([]))
+    link.note_request('{"jsonrpc":"2.0","id":5,"method":"tools/call"}')
+    link.note_reply('{"jsonrpc":"2.0","id":5,"method":"x"}')  # no result/error
+    assert link.pending_lines()  # still in-flight

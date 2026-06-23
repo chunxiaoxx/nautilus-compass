@@ -202,6 +202,18 @@ class _CloudLink:
             with self._lock:
                 self._pending[msg["id"]] = line
 
+    def note_reply(self, line: str) -> None:
+        """v1.9 · a reply (has id + result/error) clears its pending request."""
+        try:
+            msg = json.loads(line)
+        except (json.JSONDecodeError, TypeError):
+            return
+        if not isinstance(msg, dict):
+            return
+        if "id" in msg and ("result" in msg or "error" in msg):
+            with self._lock:
+                self._pending.pop(msg["id"], None)
+
     def pending_lines(self):
         """v1.9 · snapshot of in-flight request lines (auth already injected)."""
         with self._lock:
