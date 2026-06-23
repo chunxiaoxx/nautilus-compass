@@ -170,6 +170,49 @@ def test_note_reply_ignores_non_reply():
     assert link.pending_lines()  # still in-flight
 
 
+def test_pump_in_to_cloud_tracks_forwarded_request(monkeypatch):
+    """Integration: the real _pump_in_to_cloud must call note_request on a
+    cloud-forwarded request, so it lands in pending. Covers the pump wiring
+    (the unit tests only exercise _CloudLink methods directly)."""
+    import io
+    req = b'{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"ingest_obs"}}\n'
+    fake_stdin = type("_Stdin", (), {"buffer": io.BytesIO(req)})()
+    monkeypatch.setattr(bridge.sys, "stdin", fake_stdin)
+    s = _FakeSock()
+    link = bridge._CloudLink(opener=_opener_factory([s]))
+    link.connect(replay=False)
+    bridge._pump_in_to_cloud(link)            # runs to stdin EOF
+    assert any('"id": 3' in pl or '"id":3' in pl for pl in link.pending_lines()), \
+        "forwarded request not tracked as in-flight (note_request wiring missing)"
+    assert any(b"ingest_obs" in sent for sent in s.sent), "request not actually sent to cloud"
+
+
+def test_pump_cloud_to_out_clears_pending_on_reply(monkeypatch):
+    """Integration: the real _pump_cloud_to_out must call note_reply on an
+    incoming reply, clearing pending. Covers the pump wiring."""
+    import io
+    fake_out = type("_Out", (), {"buffer": io.BytesIO()})()
+    monkeypatch.setattr(bridge.sys, "stdout", fake_out)
+    reply = (json.dumps({"jsonrpc": "2.0", "id": 4, "result": {"ok": True}}) + "\n").encode()
+    link = bridge._CloudLink(opener=_opener_factory([]))
+    link.note_request('{"jsonrpc":"2.0","id":4,"method":"tools/call"}')   # pre-load pending
+    assert link.pending_lines()
+
+    class _ReplyThenEofSock(_FakeSock):
+        def recv(self, n):
+            data = _FakeSock.recv(self, n)
+            if not data:
+                link.close()                  # EOF → close so the pump exits
+            return data
+
+    with link._lock:
+        link._sock = _ReplyThenEofSock(replies=[reply])
+    bridge._pump_cloud_to_out(link)
+    assert link.pending_lines() == [], "reply did not clear pending (note_reply wiring missing)"
+    out = fake_out.buffer.getvalue()
+    assert b'"id": 4' in out or b'"id":4' in out, "reply not forwarded to stdout"
+
+
 def test_reconnect_resends_pending_after_init_replay():
     """On reconnect: replay initialize (swallow its reply), THEN re-send the
     in-flight requests lost across the drop."""

@@ -229,9 +229,17 @@ class _CloudLink:
             try:
                 s.sendall((_inject_auth(self._init_line) + "\n").encode("utf-8"))
                 _recv_one_line(s)  # swallow duplicate initialize reply
-                # v1.9 · re-send in-flight requests lost across the drop. recall/
-                # drift are idempotent; ingest_obs uses an idempotency key (incl
-                # source) → re-send is safe. Lines already have authToken injected.
+                # v1.9 · re-send in-flight requests lost across the drop. Lines
+                # already have authToken injected.
+                # ⚠️ UNVERIFIED ASSUMPTION (TODO before serving-layer rollout):
+                # re-send is only duplicate-safe if the cloud handler is idempotent.
+                # recall/drift/thread_recall are read-only AND served locally (never
+                # become pending), so the pending set is cloud-only methods that
+                # INCLUDE writes (ingest_obs / feedback_log / submit_platform_task /
+                # governance_*). Whether those de-dupe a re-sent request on the cloud
+                # (mcp_server.py) is NOT verified here — if not, a reconnect can
+                # double-write. Verify cloud idempotency, or gate re-send to
+                # read-only methods, before relying on this in production.
                 for pl in self.pending_lines():
                     s.sendall((pl + "\n").encode("utf-8"))
             except Exception:
