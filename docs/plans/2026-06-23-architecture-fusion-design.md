@@ -141,6 +141,16 @@ step-0 身份收口(最高杠杆·写端已 LIVE·载体 conductor + V5 daemon �
 3. 闭环(2)见证的成功阈值定量(方差收敛到多少算"见证转一圈")。
 4. GEP canonical 映射需与 V5 skill loop(L0/L1/L2)owner 对齐,避免第四套碎片——需平台/V5 确认。
 
+## 10. 审计核验(2026-06-23 · 用户"全盘验证审计"后一手核)
+
+平台侧 load-bearing 论断**一手核验成立**(此前为子 agent 二手):
+- `fde_dispatch.py` docstring = "DMAS #3 · dispatch substrate" · pull 模型 · `capability|reputation` 零命中 = dumb pull 无声誉排序 ✅
+- `capability_evolution.py` = `agent_id: int`(integer-keyed)· promote>70%/≥5 · demote<30%/≥10 · expert≥4.5 ✅
+- `conductor_core.py` 存在 ✅
+- 🔴 **路径订正**:本 doc 多处写 `api/...` `services/...`,真实路径在 **`phase3/backend/`** 前缀下(`phase3/backend/api/fde_dispatch.py` · `phase3/backend/services/capability_evolution.py` · `phase3/backend/services/conductor_core.py`)。实质论断不变。
+
+仍未验(需 SSH/cloud 或用户):cloud `mcp_server.py` 写端幂等性 · 真 cloud 掉线行为 · `/mcp` 激活。
+
 ## 关键 arXiv/repo(供深挖)
 
 MemCollab 2603.23234 · SSGM 2603.11768 · Audited Skill-Graph 2512.23760 · SAGE 2512.17102 · R-Zero 2508.05004 · "Self-Play Only Evolves" 2603.02218 · MemOS · SkillClaw · agentgateway · DeepVerifier 2601.15808 · DGM 2505.22954 · DMAS 2512.02410 · Epiplexity 2601.03220 · OKF SPEC: GoogleCloudPlatform/knowledge-catalog/okf。
