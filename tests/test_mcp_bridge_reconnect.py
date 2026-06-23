@@ -128,3 +128,59 @@ def test_close_marks_closed():
     assert not link.is_closed
     link.close()
     assert link.is_closed
+
+
+# ── v1.9 · in-flight request durability ───────────────────────────────
+# Gap: link.send() puts a request on the wire; if cloud drops AFTER receiving
+# but BEFORE replying, v1.8 only replays initialize on reconnect → that
+# request's reply is lost forever and Claude waits on a dead id. v1.9 tracks
+# pending requests and re-sends them after the initialize replay.
+
+def test_note_request_tracks_method_with_id():
+    link = bridge._CloudLink(opener=_opener_factory([]))
+    link.note_request('{"jsonrpc":"2.0","id":5,"method":"tools/call","params":{}}')
+    assert link.pending_lines()  # one in-flight
+
+
+def test_note_request_ignores_initialize():
+    # initialize is replayed via _init_line, not pending (else double-sent on reconnect)
+    link = bridge._CloudLink(opener=_opener_factory([]))
+    link.note_request('{"jsonrpc":"2.0","id":0,"method":"initialize","params":{}}')
+    assert link.pending_lines() == []
+
+
+def test_note_request_ignores_notification_without_id():
+    link = bridge._CloudLink(opener=_opener_factory([]))
+    link.note_request('{"jsonrpc":"2.0","method":"notifications/initialized"}')
+    assert link.pending_lines() == []
+
+
+def test_note_reply_clears_pending():
+    link = bridge._CloudLink(opener=_opener_factory([]))
+    link.note_request('{"jsonrpc":"2.0","id":5,"method":"tools/call","params":{}}')
+    assert link.pending_lines()
+    link.note_reply('{"jsonrpc":"2.0","id":5,"result":{"ok":true}}')
+    assert link.pending_lines() == []  # cleared on reply
+
+
+def test_note_reply_ignores_non_reply():
+    link = bridge._CloudLink(opener=_opener_factory([]))
+    link.note_request('{"jsonrpc":"2.0","id":5,"method":"tools/call"}')
+    link.note_reply('{"jsonrpc":"2.0","id":5,"method":"x"}')  # no result/error
+    assert link.pending_lines()  # still in-flight
+
+
+def test_reconnect_resends_pending_after_init_replay():
+    """On reconnect: replay initialize (swallow its reply), THEN re-send the
+    in-flight requests lost across the drop."""
+    init = '{"jsonrpc":"2.0","id":7,"method":"initialize","params":{}}'
+    init_reply = (json.dumps({"jsonrpc": "2.0", "id": 7, "result": {}}) + "\n").encode()
+    s = _FakeSock(replies=[init_reply])
+    link = bridge._CloudLink(opener=_opener_factory([s]))
+    link.note_outgoing(init)
+    link.note_request('{"jsonrpc":"2.0","id":9,"method":"tools/call","params":{"authToken":"t"}}')
+    link.connect(replay=True)
+    # 2 frames sent: [0] replayed initialize, [1] re-sent in-flight request
+    assert len(s.sent) == 2
+    resent = json.loads(s.sent[1].decode().strip())
+    assert resent.get("id") == 9 and resent.get("method") == "tools/call"

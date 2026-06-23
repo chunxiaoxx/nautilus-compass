@@ -163,6 +163,10 @@ class _CloudLink:
         self._lock = threading.Lock()
         self._init_line = None
         self._closed = False
+        # v1.9 · in-flight requests awaiting a cloud reply, keyed by json-rpc id.
+        # Re-sent after the initialize replay on reconnect so a request the cloud
+        # received-but-never-answered (dropped mid-flight) is not lost forever.
+        self._pending = {}
 
     @property
     def init_line(self):
@@ -184,6 +188,37 @@ class _CloudLink:
         if isinstance(msg, dict) and msg.get("method") == "initialize":
             self._init_line = line
 
+    def note_request(self, line: str) -> None:
+        """v1.9 · track a request expecting a reply (has method + id, not
+        initialize) so reconnect can re-send it. initialize is replayed via
+        _init_line; tracking it here would double-send it on reconnect."""
+        try:
+            msg = json.loads(line)
+        except (json.JSONDecodeError, TypeError):
+            return
+        if not isinstance(msg, dict) or msg.get("method") == "initialize":
+            return
+        if msg.get("method") is not None and "id" in msg:
+            with self._lock:
+                self._pending[msg["id"]] = line
+
+    def note_reply(self, line: str) -> None:
+        """v1.9 · a reply (has id + result/error) clears its pending request."""
+        try:
+            msg = json.loads(line)
+        except (json.JSONDecodeError, TypeError):
+            return
+        if not isinstance(msg, dict):
+            return
+        if "id" in msg and ("result" in msg or "error" in msg):
+            with self._lock:
+                self._pending.pop(msg["id"], None)
+
+    def pending_lines(self):
+        """v1.9 · snapshot of in-flight request lines (auth already injected)."""
+        with self._lock:
+            return list(self._pending.values())
+
     def connect(self, replay: bool = True):
         """(Re)open the cloud socket. On reconnect (replay=True) re-auth by
         replaying the cached initialize and discarding its reply. The very
@@ -194,6 +229,11 @@ class _CloudLink:
             try:
                 s.sendall((_inject_auth(self._init_line) + "\n").encode("utf-8"))
                 _recv_one_line(s)  # swallow duplicate initialize reply
+                # v1.9 · re-send in-flight requests lost across the drop. recall/
+                # drift are idempotent; ingest_obs uses an idempotency key (incl
+                # source) → re-send is safe. Lines already have authToken injected.
+                for pl in self.pending_lines():
+                    s.sendall((pl + "\n").encode("utf-8"))
             except Exception:
                 try:
                     s.close()
@@ -492,6 +532,7 @@ def _pump_in_to_cloud(link: "_CloudLink") -> None:
         out = _inject_auth(line)
         try:
             link.send(out)
+            link.note_request(out)  # v1.9 · track in-flight so reconnect re-sends
             _trace("→CLOUD", out)
         except Exception as e:
             # cloud down or mid-reconnect · do NOT exit · error this one request
@@ -547,6 +588,7 @@ def _pump_cloud_to_out(link: "_CloudLink") -> None:
                 if not cl.strip():
                     continue
                 _trace("CLOUD→", cl)
+                link.note_reply(cl.decode("utf-8", errors="replace"))  # v1.9 · clear pending
                 _write_stdout(cl + b"\n")
         link.mark_down()  # socket dead · outer loop reconnects unless closed
 
