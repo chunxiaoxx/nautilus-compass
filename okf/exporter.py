@@ -15,7 +15,6 @@ tolerant of malformed input (never raises on bad frontmatter).
 
 from __future__ import annotations
 
-import os
 import re
 from pathlib import Path
 
@@ -137,18 +136,27 @@ def build_okf_bundle(memory_root):
     ``{"name", "type", "description"}``. Non-``.md`` files and files without a
     ``name`` are skipped.
 
+    Duplicate ``name`` across files (compass memory occasionally has demo/short
+    frontmatter sharing a name) is handled losslessly: concepts are
+    **de-duplicated by name** (one concept per name, first-seen order, last file
+    wins on type/description) and outgoing links are **unioned** across all files
+    sharing the name (so no file's links are dropped). Without this, a later
+    file would overwrite an earlier file's ``link_graph`` entry while its
+    backlinks survived — a silent asymmetry.
+
     Returns ``{"concepts": [...], "link_graph": {name: [targets]},
     "backlinks": {name: [sources]}}``. Backlinks are symmetric to links
     (A->B implies A in backlinks[B]) and are order-preserving + de-duplicated.
     """
     root = Path(memory_root)
 
-    concepts = []
+    concepts_by_name: dict = {}   # name -> concept dict (dedup; last file wins)
+    concept_order: list = []      # first-seen name order (stable output)
     link_graph: dict = {}
     backlinks: dict = {}
 
     if not root.is_dir():
-        return {"concepts": concepts, "link_graph": link_graph, "backlinks": backlinks}
+        return {"concepts": [], "link_graph": link_graph, "backlinks": backlinks}
 
     # Deterministic order so output is stable across runs.
     md_paths = sorted(
@@ -170,20 +178,24 @@ def build_okf_bundle(memory_root):
         if not name:
             continue
 
-        concepts.append({
+        if name not in concepts_by_name:
+            concept_order.append(name)
+        concepts_by_name[name] = {
             "name": name,
             "type": fm.get("type", ""),
             "description": fm.get("description", ""),
-        })
+        }
 
-        targets = extract_wikilinks(body)
-        link_graph[name] = targets
-
-        for target in targets:
+        # Union outgoing links across duplicate names (never overwrite/drop).
+        existing = link_graph.setdefault(name, [])
+        for target in extract_wikilinks(body):
+            if target not in existing:
+                existing.append(target)
             sources = backlinks.setdefault(target, [])
             if name not in sources:
                 sources.append(name)
 
+    concepts = [concepts_by_name[n] for n in concept_order]
     return {
         "concepts": concepts,
         "link_graph": link_graph,
