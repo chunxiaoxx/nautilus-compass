@@ -1,24 +1,29 @@
 """OKF validator — check an OKF bundle for self-consistency.
 
-An OKF bundle (as produced by :func:`okf.exporter.build_okf_bundle`) is the
-serialised form of the compass memory capsule: a list of typed concepts plus a
-directed link graph and its symmetric backlink ("cited by") index. Downstream
-consumers — e.g. recall / semantic-search index builders — rely on three
-invariants:
+An OKF bundle (from :func:`okf.exporter.build_okf_bundle`) is the serialised
+compass memory capsule: typed concepts + a directed link graph + a symmetric
+backlink ("cited by") index. Two *hard* invariants must hold for downstream
+consumers (recall / semantic-search index builders):
 
 1. every concept carries a non-empty ``type`` (the one OKF-required field);
-2. every link target resolves to a known concept (no dangling links);
-3. the backlink index is symmetric to the link graph (A->B implies A in
+2. the backlink index is symmetric to the link graph (A->B implies A in
    ``backlinks[B]``), so a recall index can be rebuilt from either direction.
 
-:func:`validate_okf_bundle` returns a list of human-readable error strings — an
-empty list means the bundle is valid. Pure stdlib; tolerant of missing keys so
-it never raises on a malformed/partial bundle.
+:func:`validate_okf_bundle` returns those *hard* errors only — an empty list
+means the bundle is valid.
+
+Dangling links (a ``[[name]]`` whose target has no concept) are **not** errors:
+per compass memory convention a ``[[name]]`` that doesn't match an existing
+memory yet is a legitimate *forward reference* ("marks something worth writing
+later, not an error"). :func:`find_dangling_links` reports them separately as an
+informational knowledge-graph-completeness signal.
+
+Pure stdlib; tolerant of missing keys so it never raises on a partial bundle.
 """
 
 from __future__ import annotations
 
-__all__ = ["validate_okf_bundle"]
+__all__ = ["validate_okf_bundle", "find_dangling_links"]
 
 
 def _as_list(value):
@@ -35,11 +40,28 @@ def _as_dict(value):
     return {}
 
 
-def validate_okf_bundle(bundle):
-    """Validate an OKF bundle dict, returning a list of error strings.
+def _known_names(concepts):
+    """Set of concept ``name`` strings (skips unnamed)."""
+    names = set()
+    for concept in concepts:
+        concept = _as_dict(concept)
+        name = concept.get("name")
+        if name is not None:
+            names.add(str(name))
+    return names
 
-    An empty list means the bundle is valid. Missing ``concepts`` /
-    ``link_graph`` / ``backlinks`` keys default to empty and never raise.
+
+def validate_okf_bundle(bundle):
+    """Validate an OKF bundle dict, returning a list of HARD error strings.
+
+    Empty list means valid. Hard errors:
+    (1) a concept missing its required ``type`` field;
+    (2) an asymmetric backlink (``link_graph[A]`` has B but ``backlinks[B]``
+        lacks A).
+
+    Dangling links are NOT hard errors (legitimate forward references) — use
+    :func:`find_dangling_links` for those. Missing ``concepts`` / ``link_graph``
+    / ``backlinks`` keys default to empty and never raise.
     """
     errors = []
 
@@ -47,14 +69,6 @@ def validate_okf_bundle(bundle):
     concepts = _as_list(bundle.get("concepts"))
     link_graph = _as_dict(bundle.get("link_graph"))
     backlinks = _as_dict(bundle.get("backlinks"))
-
-    # Set of known concept names (used for dangling-link detection).
-    known_names = set()
-    for concept in concepts:
-        concept = _as_dict(concept)
-        name = concept.get("name")
-        if name is not None:
-            known_names.add(str(name))
 
     # Rule 1: every concept must have a non-empty `type`.
     for concept in concepts:
@@ -64,16 +78,7 @@ def validate_okf_bundle(bundle):
         if ctype is None or str(ctype).strip() == "":
             errors.append(f"concept '{name}' is missing required 'type' field")
 
-    # Rule 2: every link target must be a known concept.
-    for source, targets in link_graph.items():
-        for target in _as_list(targets):
-            if str(target) not in known_names:
-                errors.append(
-                    f"dangling link: '{source}' -> '{target}' "
-                    f"(target is not a known concept)"
-                )
-
-    # Rule 3: backlink symmetry — link_graph[A] contains B implies
+    # Rule 2: backlink symmetry — link_graph[A] contains B implies
     # backlinks[B] contains A.
     for source, targets in link_graph.items():
         for target in _as_list(targets):
@@ -85,3 +90,26 @@ def validate_okf_bundle(bundle):
                 )
 
     return errors
+
+
+def find_dangling_links(bundle):
+    """Return informational descriptions of dangling links (forward references).
+
+    A dangling link is a ``link_graph`` target with no matching concept. Per
+    compass memory convention these are legitimate forward references, NOT
+    validation errors — a knowledge-graph-completeness signal. Empty list means
+    every link resolves to a known concept. Never raises on a partial bundle.
+    """
+    bundle = _as_dict(bundle)
+    concepts = _as_list(bundle.get("concepts"))
+    link_graph = _as_dict(bundle.get("link_graph"))
+    known = _known_names(concepts)
+
+    dangling = []
+    for source, targets in link_graph.items():
+        for target in _as_list(targets):
+            if str(target) not in known:
+                dangling.append(
+                    f"forward-ref: '{source}' -> '{target}' (no concept yet)"
+                )
+    return dangling
