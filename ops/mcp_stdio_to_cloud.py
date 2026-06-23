@@ -56,6 +56,29 @@ LOCAL_TIMEOUT = float(os.environ.get("COMPASS_LOCAL_TIMEOUT", "20"))
 LOCAL_RETRIES = int(os.environ.get("COMPASS_LOCAL_RETRIES", "2"))
 # Tools that can be served locally (recall/drift only · ingest always goes cloud)
 _LOCAL_TOOLS = {"recall", "drift_check", "thread_recall"}
+# v1.9 · tools whose re-send on reconnect is duplicate-SAFE (read-only). Writes are
+# NOT here: cloud mcp_server.tool_ingest_obs does a timestamped direct file write
+# with NO idempotency key (verified 2026-06-23) → a re-send across a minute boundary
+# would write a 2nd obs file. So only read-only tools are silently re-sent; pending
+# writes are errored back to the client on reconnect (no silent duplicate, no silent loss).
+_IDEMPOTENT_TOOLS = {
+    "recall", "drift_check", "thread_recall",
+    "drift_history", "session_search", "profile",
+    "governance_audit", "governance_lock_check",
+}
+
+
+def _line_is_idempotent(line: str) -> bool:
+    """v1.9 · True only for requests safe to silently re-send on reconnect.
+    Only read-only tools/call (name in _IDEMPOTENT_TOOLS) qualify; everything
+    else (writes, unknown tools, non-tools/call requests) is treated as unsafe."""
+    try:
+        msg = json.loads(line)
+    except (json.JSONDecodeError, TypeError):
+        return False
+    if not isinstance(msg, dict) or msg.get("method") != "tools/call":
+        return False
+    return ((msg.get("params") or {}).get("name")) in _IDEMPOTENT_TOOLS
 # Debug · set COMPASS_BRIDGE_LOG=/path/to/file to trace every line in/out
 LOG_PATH = os.environ.get("COMPASS_BRIDGE_LOG", "")
 _log_fh = None
@@ -229,19 +252,29 @@ class _CloudLink:
             try:
                 s.sendall((_inject_auth(self._init_line) + "\n").encode("utf-8"))
                 _recv_one_line(s)  # swallow duplicate initialize reply
-                # v1.9 · re-send in-flight requests lost across the drop. Lines
-                # already have authToken injected.
-                # ⚠️ UNVERIFIED ASSUMPTION (TODO before serving-layer rollout):
-                # re-send is only duplicate-safe if the cloud handler is idempotent.
-                # recall/drift/thread_recall are read-only AND served locally (never
-                # become pending), so the pending set is cloud-only methods that
-                # INCLUDE writes (ingest_obs / feedback_log / submit_platform_task /
-                # governance_*). Whether those de-dupe a re-sent request on the cloud
-                # (mcp_server.py) is NOT verified here — if not, a reconnect can
-                # double-write. Verify cloud idempotency, or gate re-send to
-                # read-only methods, before relying on this in production.
-                for pl in self.pending_lines():
-                    s.sendall((pl + "\n").encode("utf-8"))
+                # v1.9 · handle in-flight requests lost across the drop. Read-only
+                # tools are duplicate-safe → silently re-sent (auth already injected).
+                # Writes (ingest_obs etc.) have NO cloud-side idempotency (verified
+                # 2026-06-23: mcp_server.tool_ingest_obs = timestamped direct file
+                # write) → re-sending could duplicate, so we DON'T silently re-send
+                # them; we error them back so the client can consciously retry.
+                with self._lock:
+                    pend = list(self._pending.items())
+                lost = []
+                for mid, pl in pend:
+                    if _line_is_idempotent(pl):
+                        s.sendall((pl + "\n").encode("utf-8"))
+                    else:
+                        lost.append(mid)
+                if lost:
+                    with self._lock:
+                        for mid in lost:
+                            self._pending.pop(mid, None)
+                    for mid in lost:
+                        _write_stdout(_make_rpc_error(
+                            mid, -32603,
+                            "compass cloud dropped mid-request; non-idempotent write "
+                            "not auto-retried on reconnect — re-issue if it did not take effect"))
             except Exception:
                 try:
                     s.close()
