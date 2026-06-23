@@ -22,13 +22,20 @@
 - `scripts/tier_promotion_driver.py` → `proof.tier_promotion.calculate_new_tier(tier, delta)`,delta 来自 **`cumulative_impact`**(PoI 影响力)。
 - `recall.promote_lifecycle_tier(entry)` → 用 **`reinforce_count` + `promote_after` + `forget_at`**(LLM-WIKI2 fuse · access-driven)。
 
-**Step 1:** 读两者 + `proof/tier_promotion.py` + `paper/LLM_WIKI2_FUSE_DESIGN.md`,判定:
-- 推荐口径(待执行者确认):**两者互补不冲突** —— driver(cumulative_impact)= 价值驱动晋升(被引用/PoI 高→升);fuse(reinforce_count)= 访问驱动晋升(被召回多→升)+ decay/forget。**合一**:driver 批量跑时同时读两信号取 max tier;或 driver 负责 cumulative_impact 轴、reinforce 轴由 recall-hit 即时 +1 累积后下次 driver 也纳入。
-- 若冲突无法合 → 选 access-driven(reinforce)为主(更贴"用进废退"长期记忆语义),cumulative_impact 为辅。
+**Step 1:** 读两者 + `proof/tier_promotion.py` + `paper/LLM_WIKI2_FUSE_DESIGN.md`,判定。
 
-**Step 2:** 确认拓扑:`ssh cloud "ssh t4 'ls ~/.claude/projects | head'"` 看记忆文件是否在 T4。tier driver 原地改写 → 跑在 T4(文件所在),或 cloud 跑后 rsync。**决策写进本 plan 再继续。**
+**✅ DECISION(2026-06-23 · grounded·读码实证):两轴互补合一,无需定主从。**
+- 关键证据:`proof/tier_promotion.py` 顶部 docstring 自述 *"Companion to the access-based promote_after schema"* —— 两套是**设计时就规划好的 companion**,不是冲突的两实现。
+- impact 轴(`tier_promotion_driver` + `calculate_new_tier`·daily cron):读 `cumulative_impact`(PoI 价值),delta = `cumulative_impact - tier_last_changed_at_impact`,>1.0 升 / <-0.5 降。有升有降。
+- access 轴(`recall.promote_lifecycle_tier`·LLM-WIKI2 fuse·recall-hit 即时):读 `reinforce_count` vs `promote_after`(`N_access`/`Nd`),只升不降,带 `forget_at` 归档 + decay reset。
+- **不打架的证明**:access 升级不写 `cumulative_impact` → driver 下次看到 delta=0,不会回撤 access 的晋升;driver 降级只在 PoI 转负(`cumulative_impact < -0.5`)时触发,与访问轴正交。两者都只把同一 `tier:` 字段沿同一 `TIERS` ladder 移动。
+- **落地**:两轴都跑。Task 1 的 reinforce-on-recall 复用 driver 的 `_rewrite_tier_in_frontmatter` 同款 frontmatter 改写(DRY),只多写 `reinforce_count`/`tier`(经 fuse 算)。driver 保持 daily 跑 impact 轴。**无核心逻辑改动。**
 
-**产出:** 一段口径决策(注释进 driver + 本 plan),无代码改动或最小 reconcile 改动 + 测试。
+**Step 2 拓扑(2026-06-23 部分确认):** 一次只读 SSH 双跳确认失败 —— cloud 上 `ssh -i id_ed25519_qb ...` key 相对路径未解析(回落密码被拒),**未重试(fail2ban)**。
+- 决策规则(不阻塞 Task 0):tier driver 原地改写 `session_*.md` → 必须跑在 **daemon 索引的文件所在盒**。canonical 拓扑(`canonical_memory_capsule...`):bge-m3 file 语义库在 **T4 43.166.8.20**(经 `compass-t4-tunnel`),serving sqlite 在 cloud。→ **driver 部署在 T4**(文件原地),或 cloud 跑后 rsync 到 T4(成本更高,不选)。
+- 🔴 fresh session 部署第一步:在 cloud 解析正确 key 路径(试 `~/id_ed25519_qb` / `~/.ssh/id_ed25519_qb`),`ls -d ~/.claude/projects/*/memory` 确认 T4 上记忆文件真在,再挂 timer。**一次成功,不在 fail2ban 下盲试。**
+
+**产出:** Task 0 决策已落本 plan(上 DECISION 块)。无代码改动。fresh session 从 Task 1 起步。
 
 ---
 
