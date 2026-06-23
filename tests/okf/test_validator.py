@@ -1,11 +1,11 @@
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 from okf.exporter import build_okf_bundle
-from okf.validator import validate_okf_bundle
+from okf.validator import validate_okf_bundle, find_dangling_links
 
 
 # ---------------------------------------------------------------------------
-# Rule 1: every concept must have a non-empty `type`
+# Hard rule 1: every concept must have a non-empty `type`
 # ---------------------------------------------------------------------------
 
 def test_validate_flags_missing_type():
@@ -36,24 +36,50 @@ def test_validate_flags_missing_type_key_entirely():
 
 
 # ---------------------------------------------------------------------------
-# Rule 2: dangling links (target not a known concept)
+# Dangling links = legitimate forward references (compass memory convention:
+# "a [[name]] that doesn't match an existing memory yet is fine; it marks
+# something worth writing later, not an error"). validate() ignores them;
+# find_dangling_links() reports them as informational signal.
 # ---------------------------------------------------------------------------
 
-def test_validate_flags_dangling_link():
+def test_validate_ignores_dangling_link():
     bundle = {
         "concepts": [
             {"name": "a", "type": "project", "description": ""},
         ],
-        "link_graph": {"a": ["ghost"]},  # ghost is not a known concept
+        "link_graph": {"a": ["ghost"]},          # ghost = forward ref (no concept yet)
+        "backlinks": {"ghost": ["a"]},           # exporter keeps backlink symmetric even for forward-refs
+    }
+    assert validate_okf_bundle(bundle) == []     # forward ref is NOT a hard error
+
+
+def test_find_dangling_links_reports_forward_refs():
+    bundle = {
+        "concepts": [
+            {"name": "a", "type": "project", "description": ""},
+        ],
+        "link_graph": {"a": ["ghost"]},
         "backlinks": {"ghost": ["a"]},
     }
-    errors = validate_okf_bundle(bundle)
-    assert any("ghost" in e for e in errors)
-    assert any("a" in e for e in errors)
+    dangling = find_dangling_links(bundle)
+    assert any("ghost" in d for d in dangling)
+    assert any("a" in d for d in dangling)
+
+
+def test_find_dangling_links_empty_when_all_resolve():
+    bundle = {
+        "concepts": [
+            {"name": "a", "type": "project", "description": ""},
+            {"name": "b", "type": "reference", "description": ""},
+        ],
+        "link_graph": {"a": ["b"]},
+        "backlinks": {"b": ["a"]},
+    }
+    assert find_dangling_links(bundle) == []
 
 
 # ---------------------------------------------------------------------------
-# Rule 3: backlink symmetry
+# Hard rule 2: backlink symmetry
 # ---------------------------------------------------------------------------
 
 def test_validate_flags_asymmetric_backlink():
@@ -92,6 +118,7 @@ def test_validate_clean_bundle_passes():
 
 def test_validate_empty_bundle_does_not_crash():
     assert validate_okf_bundle({}) == []
+    assert find_dangling_links({}) == []
 
 
 # ---------------------------------------------------------------------------
@@ -109,4 +136,5 @@ def test_export_then_validate_roundtrip(tmp_path):
     )
     bundle = build_okf_bundle(tmp_path)
     assert validate_okf_bundle(bundle) == []        # exported bundle is self-consistent
+    assert find_dangling_links(bundle) == []         # all links resolve within the export
     assert bundle["backlinks"]["b"] == ["a"]         # consumer: backlink index rebuildable
