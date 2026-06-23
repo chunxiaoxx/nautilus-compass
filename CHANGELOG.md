@@ -1,5 +1,41 @@
 # Changelog
 
+## [2.3.0] · 2026-06-22 — "记忆胶囊语义 recall 成熟 + OKF/GEP 三层架构"
+
+主轴:记忆胶囊从"关键词召回"成熟为 **bge-m3 语义召回 + 跨 agent 集体学习 + 防退化**,
+并叠上 OKF 格式层(对外互操作)与 GEP 进化机制(质量自然选择)。
+
+### 记忆胶囊语义 recall(主轴)
+
+- `/v1/recall` cross-agent 排序升级为 **bge-m3 cosine**(daemon score · 关键词降级保留),
+  接进刚闭合的 SWE/ALE 飞轮 W2 —— 一个 agent 学会的经验,其他 agent 语义召回继承。
+- **P0 防退化**:W1 `write_learning` 晋升门(reward<1.0 拒写,错经验不入库)+ verdict
+  元数据(reward/bucket/score/source);W2 质量过滤 + 单条 `revoke_learning` tombstone。
+
+### OKF 格式层(对外互操作)
+
+- `okf/exporter.py`:memory 目录 → 标准 OKF bundle(`metadata.type` 提升为顶层 `type`,
+  `[[name]]` wikilink 构成有向图 + cited-by 反链)。
+- `okf/validator.py`:type 必需 / dangling link / 反链对称校验 + round-trip 自洽。
+  使记忆胶囊可被任何 OKF 工具读 = 厂商中立的对外互操作接口。
+
+### GEP 进化(质量自然选择)
+
+- `gep/poi_rerank.py`:P3 客户端 PoI 重排(复用 `proof/poi_calculator` 体系,
+  高已证影响胶囊排前)。
+- `gep/capsule_schema.py`:P1/P2 结构化胶囊字段(triggers/env/confidence/when_not_to_use,
+  对齐开源 GEP Capsule 模型)—— **预备态**,端到端生效待 V5 写端配合。
+
+### 燃料合池(多基准蒸馏)
+
+- `kernelbench/kb_fuel.py`:KernelBench 加速比 → 6-key 契约的分数臂(进多基准蒸馏合池)。
+- ALE-Bench eval_fn wrapper + judge_version 默认修复(202301→ImageNotFound bug)。
+
+### 修复
+
+- `v14-recall` scope=user union:45s timeout + slim projects_scanned(P0 冷查超时 race)。
+- gear5 memory_bridge:飞轮 sqlite learning 沉淀成胶囊并入文件语义库(治 split-brain)。
+
 ## [2.2.0] · 2026-06-03 — "PoI central ledger (L3 recursive loop)"
 
 Closes the L3 Proof-of-Impact recursive loop across hosts: memory now
