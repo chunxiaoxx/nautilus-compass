@@ -221,9 +221,31 @@ def test_reconnect_resends_pending_after_init_replay():
     s = _FakeSock(replies=[init_reply])
     link = bridge._CloudLink(opener=_opener_factory([s]))
     link.note_outgoing(init)
-    link.note_request('{"jsonrpc":"2.0","id":9,"method":"tools/call","params":{"authToken":"t"}}')
+    # read-only tool (session_search) → idempotent → re-sent on reconnect
+    link.note_request('{"jsonrpc":"2.0","id":9,"method":"tools/call","params":{"name":"session_search","authToken":"t"}}')
     link.connect(replay=True)
     # 2 frames sent: [0] replayed initialize, [1] re-sent in-flight request
     assert len(s.sent) == 2
     resent = json.loads(s.sent[1].decode().strip())
     assert resent.get("id") == 9 and resent.get("method") == "tools/call"
+
+
+def test_reconnect_errors_nonidempotent_write_instead_of_resending(monkeypatch):
+    """A pending WRITE (ingest_obs) must NOT be silently re-sent on reconnect —
+    cloud tool_ingest_obs has no idempotency key, so re-send would duplicate.
+    It is errored back to the client (-32603) and dropped from pending."""
+    import io
+    fake_out = type("_Out", (), {"buffer": io.BytesIO()})()
+    monkeypatch.setattr(bridge.sys, "stdout", fake_out)
+    init = '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}'
+    init_reply = (json.dumps({"jsonrpc": "2.0", "id": 1, "result": {}}) + "\n").encode()
+    s = _FakeSock(replies=[init_reply])
+    link = bridge._CloudLink(opener=_opener_factory([s]))
+    link.note_outgoing(init)
+    link.note_request('{"jsonrpc":"2.0","id":9,"method":"tools/call","params":{"name":"ingest_obs"}}')
+    link.connect(replay=True)
+    assert len(s.sent) == 1                       # only initialize replayed · write NOT re-sent
+    assert link.pending_lines() == []             # write dropped from pending
+    out = fake_out.buffer.getvalue()
+    assert b"-32603" in out                        # errored back to client
+    assert b'"id": 9' in out or b'"id":9' in out
