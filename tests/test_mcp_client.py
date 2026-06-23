@@ -40,13 +40,25 @@ def _spawn_server(port: int, token: str | None = None) -> subprocess.Popen:
         cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
         env={**os.environ, "PYTHONUTF8": "1"},
     )
-    deadline = time.time() + 3.0
+    # Generous readiness deadline. Idle cold-start is ~0.7-1.2s, but under full-suite
+    # load / cold import cache the first spawn can take several seconds — a tight 3s
+    # deadline flaked (~50% on a loaded run). 15s only waits longer in the slow case;
+    # the happy path returns immediately on "listening on". readline() blocks until a
+    # line or EOF, so a server that dies before announcing breaks out via EOF below.
+    deadline = time.time() + 15.0
+    captured: list[bytes] = []
     while time.time() < deadline:
         line = proc.stderr.readline() if proc.stderr else b""
+        if not line:  # EOF → server exited before announcing readiness
+            break
+        captured.append(line)
         if b"listening on" in line:
             return proc
     proc.kill()
-    raise RuntimeError("server never announced readiness")
+    rc = proc.poll()
+    tail = b"".join(captured[-10:]).decode("utf-8", "replace")
+    raise RuntimeError(
+        f"server never announced readiness within 15s (exit={rc}); stderr tail:\n{tail}")
 
 
 @contextlib.contextmanager
