@@ -128,3 +128,28 @@ def test_close_marks_closed():
     assert not link.is_closed
     link.close()
     assert link.is_closed
+
+
+# ── v1.9 · in-flight request durability ───────────────────────────────
+# Gap: link.send() puts a request on the wire; if cloud drops AFTER receiving
+# but BEFORE replying, v1.8 only replays initialize on reconnect → that
+# request's reply is lost forever and Claude waits on a dead id. v1.9 tracks
+# pending requests and re-sends them after the initialize replay.
+
+def test_note_request_tracks_method_with_id():
+    link = bridge._CloudLink(opener=_opener_factory([]))
+    link.note_request('{"jsonrpc":"2.0","id":5,"method":"tools/call","params":{}}')
+    assert link.pending_lines()  # one in-flight
+
+
+def test_note_request_ignores_initialize():
+    # initialize is replayed via _init_line, not pending (else double-sent on reconnect)
+    link = bridge._CloudLink(opener=_opener_factory([]))
+    link.note_request('{"jsonrpc":"2.0","id":0,"method":"initialize","params":{}}')
+    assert link.pending_lines() == []
+
+
+def test_note_request_ignores_notification_without_id():
+    link = bridge._CloudLink(opener=_opener_factory([]))
+    link.note_request('{"jsonrpc":"2.0","method":"notifications/initialized"}')
+    assert link.pending_lines() == []

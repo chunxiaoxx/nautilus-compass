@@ -163,6 +163,10 @@ class _CloudLink:
         self._lock = threading.Lock()
         self._init_line = None
         self._closed = False
+        # v1.9 · in-flight requests awaiting a cloud reply, keyed by json-rpc id.
+        # Re-sent after the initialize replay on reconnect so a request the cloud
+        # received-but-never-answered (dropped mid-flight) is not lost forever.
+        self._pending = {}
 
     @property
     def init_line(self):
@@ -183,6 +187,25 @@ class _CloudLink:
             return
         if isinstance(msg, dict) and msg.get("method") == "initialize":
             self._init_line = line
+
+    def note_request(self, line: str) -> None:
+        """v1.9 · track a request expecting a reply (has method + id, not
+        initialize) so reconnect can re-send it. initialize is replayed via
+        _init_line; tracking it here would double-send it on reconnect."""
+        try:
+            msg = json.loads(line)
+        except (json.JSONDecodeError, TypeError):
+            return
+        if not isinstance(msg, dict) or msg.get("method") == "initialize":
+            return
+        if msg.get("method") is not None and "id" in msg:
+            with self._lock:
+                self._pending[msg["id"]] = line
+
+    def pending_lines(self):
+        """v1.9 · snapshot of in-flight request lines (auth already injected)."""
+        with self._lock:
+            return list(self._pending.values())
 
     def connect(self, replay: bool = True):
         """(Re)open the cloud socket. On reconnect (replay=True) re-auth by
