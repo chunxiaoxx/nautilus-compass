@@ -149,7 +149,9 @@ step-0 身份收口(最高杠杆·写端已 LIVE·载体 conductor + V5 daemon �
 - `conductor_core.py` 存在 ✅
 - 🔴 **路径订正**:本 doc 多处写 `api/...` `services/...`,真实路径在 **`phase3/backend/`** 前缀下(`phase3/backend/api/fde_dispatch.py` · `phase3/backend/services/capability_evolution.py` · `phase3/backend/services/conductor_core.py`)。实质论断不变。
 
-仍未验(需 SSH/cloud 或用户):cloud `mcp_server.py` 写端幂等性 · 真 cloud 掉线行为 · `/mcp` 激活。
+**GAP 2 已 SSH 核验 + 修复(2026-06-23)**:live MCP handler = **`/home/ubuntu/nautilus-compass/mcp_server.py`**(pid 7010 监听 127.0.0.1:9877 · `--transport tcp --token-file /etc/compass/tokens.json`·**非** `/home/ubuntu/compass/mcp_server.py`,我一度读错被审计抓出)。其 `tool_ingest_obs` = 时间戳 `session_{ts}_{slug}.md` 直写、**无幂等键**(submit_platform_task / ingest_platform_task_result 同)→ 无差别重发跨分钟重连会重复写。修:v1.9 重发只限 `_IDEMPOTENT_TOOLS`(只读)·写类回 -32603 让 client 自觉重试(commit b2711fb)。`--token-file` 存在 = 印证 initialize+authToken 重放前提成立。
+
+仍未验(需用户 `/mcp` 或 live 生产观察):真 cloud 掉线后 v1.9 自愈的端到端行为(本地 fake-socket 已验逻辑,真隧道掉线需激活后产线观察)。
 
 ## 关键 arXiv/repo(供深挖)
 
