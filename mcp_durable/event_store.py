@@ -30,6 +30,10 @@ class EventStore:
         ttl_seconds: float,
         now_fn: Optional[Callable[[], float]] = None,
     ) -> None:
+        if max_events < 0:
+            raise ValueError(
+                f"max_events must be >= 0 (0 = retain nothing), got {max_events}"
+            )
         self._max_events = max_events
         self._ttl_seconds = ttl_seconds
         # The ONLY place real time is read. Injectable for deterministic tests.
@@ -50,14 +54,27 @@ class EventStore:
 
     def _evict(self) -> None:
         """Drop oldest entries beyond the size cap or past the ttl window."""
-        # Size bound: keep at most max_events.
-        if self._max_events >= 0:
-            while len(self._events) > self._max_events:
-                self._events.pop(0)
+        # Size bound: keep at most max_events (max_events >= 0 guaranteed).
+        while len(self._events) > self._max_events:
+            self._events.pop(0)
         # TTL bound: drop anything older than now - ttl_seconds.
         cutoff = self._now_fn() - self._ttl_seconds
         while self._events and self._events[0]["ts"] < cutoff:
             self._events.pop(0)
+
+    @staticmethod
+    def _copy_event(event: dict) -> dict:
+        """Shallow-copy an event so callers can't mutate the internal store.
+
+        Copies the event dict and its ``frame`` dict; reassigning keys on the
+        returned value (incl. ``frame`` contents) leaves ``_events`` untouched.
+        """
+        frame = event["frame"]
+        return {
+            "id": event["id"],
+            "ts": event["ts"],
+            "frame": dict(frame) if isinstance(frame, dict) else frame,
+        }
 
     def replay_since(self, last_id: int) -> Optional[list]:
         """Return retained events with id > ``last_id``.
@@ -65,9 +82,11 @@ class EventStore:
         · last_id == 0          → all retained events (fresh client).
         · gap below window      → None (events evicted, caller must resync).
         · otherwise             → ascending list of newer events (maybe empty).
+
+        Returned events are copies — mutating them does not affect the store.
         """
         if last_id == 0:
-            return list(self._events)
+            return [self._copy_event(e) for e in self._events]
 
         if not self._events:
             # Nothing retained. If the client already saw everything we ever
@@ -84,4 +103,4 @@ class EventStore:
         if last_id + 1 < oldest_id:
             return None
 
-        return [e for e in self._events if e["id"] > last_id]
+        return [self._copy_event(e) for e in self._events if e["id"] > last_id]
