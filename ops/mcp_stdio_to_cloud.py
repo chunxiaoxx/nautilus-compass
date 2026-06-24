@@ -165,7 +165,9 @@ def _strip_eid_and_track(line, link: "_CloudLink") -> bytes:
         link.note_high_eid(int(eid))
     except (TypeError, ValueError):
         pass
-    return json.dumps(msg).encode("utf-8")
+    # ensure_ascii=False · keep CJK/emoji recall frames byte-faithful (the real
+    # workload is Chinese memory recall) and consistent with the rest of the file.
+    return json.dumps(msg, ensure_ascii=False).encode("utf-8")
 
 
 def _recv_one_line(sock, timeout: float = 10.0) -> bytes:

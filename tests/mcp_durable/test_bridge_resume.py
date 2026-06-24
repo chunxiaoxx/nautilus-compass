@@ -94,6 +94,22 @@ def test_strip_eid_handles_bytes_input():
     assert link.high_eid == 7
 
 
+def test_strip_eid_preserves_cjk_bytes():
+    """The real workload is Chinese memory recall · forwarded bytes must keep
+    literal CJK chars (ensure_ascii=False), not \\uXXXX escapes (~6x larger)."""
+    link = bridge._CloudLink(opener=lambda: None)
+    line = json.dumps({"_eid": 1, "result": {"text": "CPU饥饿诊断"}},
+                      ensure_ascii=False)
+    out = bridge._strip_eid_and_track(line, link)
+    # Literal UTF-8 CJK bytes present, no \uXXXX escape sequences.
+    assert "CPU饥饿诊断".encode("utf-8") in out
+    assert b"\\u" not in out
+    decoded = json.loads(out.decode("utf-8"))
+    assert decoded["result"]["text"] == "CPU饥饿诊断"
+    assert "_eid" not in decoded
+    assert link.high_eid == 1
+
+
 # --------------------------------------------------------------------------
 # Helper (b): inject lastEventId into a cached initialize line.
 # --------------------------------------------------------------------------
