@@ -28,6 +28,7 @@ separate, gated ops step (see those files' header comments).
 from __future__ import annotations
 
 import logging
+import pathlib
 import socket
 import subprocess
 from typing import Callable, List, Optional
@@ -157,48 +158,57 @@ def systemd_restart(unit: str, user: bool = False) -> None:
 # Deploy entry point (impure; wires the adapters from env). NOT run in tests.
 # ---------------------------------------------------------------------------
 
+def _load_miss(path) -> int:
+    """Read the persisted consecutive-miss count. Missing / corrupt / unreadable
+    file → 0 (never raises): a lost state file must mean "start clean", not crash
+    the watchdog.
+    """
+    try:
+        return int(pathlib.Path(path).read_text().strip())
+    except (OSError, ValueError) as exc:
+        logger.warning("watchdog could not read miss state, defaulting 0: %s", exc)
+        return 0
+
+
+def _store_miss(path, n: int) -> None:
+    """Persist the consecutive-miss count for the next fire. Write failure is
+    logged, never raised — a watchdog that can't persist still must not crash.
+    """
+    try:
+        p = pathlib.Path(path)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(str(n))
+    except OSError as exc:
+        logger.warning("watchdog could not persist miss state: %s", exc)
+
+
 def _run_from_env() -> bool:
     """One-fire watchdog wiring for the systemd unit (``python -m``).
 
-    Each timer fire is a single ``tick()``: probe the configured endpoint and,
-    because this short-lived unit holds no cross-fire state, treat any single
-    confirmed-down probe with threshold=1 ... but the cross-fire miss count is
-    what matters, so we honour COMPASS_MCP_WATCHDOG_THRESHOLD by persisting the
-    miss count in a tiny state file between fires. Returns the probe result.
+    Reads the prior miss count from the state file, runs one ``tick()``, then
+    persists the new count. K accumulates across timer fires. Returns the
+    (effective) probe result.
     """
     import os
-    import pathlib
 
     host = os.environ.get("COMPASS_MCP_WATCHDOG_HOST", "127.0.0.1")
     port = int(os.environ.get("COMPASS_MCP_WATCHDOG_PORT", "9877"))
     unit = os.environ.get("COMPASS_MCP_WATCHDOG_UNIT", "compass-mcp-tcp.service")
     threshold = int(os.environ.get("COMPASS_MCP_WATCHDOG_THRESHOLD", "3"))
     user = os.environ.get("COMPASS_MCP_WATCHDOG_USER", "0") == "1"
-    state_path = pathlib.Path(
-        os.environ.get(
-            "COMPASS_MCP_WATCHDOG_STATE",
-            "/home/ubuntu/nautilus-compass/.cache/mcp-watchdog.state",
-        )
+    state_path = os.environ.get(
+        "COMPASS_MCP_WATCHDOG_STATE",
+        "/home/ubuntu/nautilus-compass/.cache/mcp-watchdog.state",
     )
-
-    try:
-        prior = int(state_path.read_text().strip())
-    except (OSError, ValueError):
-        prior = 0
 
     mon = HeartbeatMonitor(
         probe_fn=lambda: tcp_probe(host, port),
         restart_fn=lambda: systemd_restart(unit, user=user),
         threshold=threshold,
     )
-    mon.miss_count = prior
+    mon.miss_count = _load_miss(state_path)
     healthy = mon.tick()
-
-    try:
-        state_path.parent.mkdir(parents=True, exist_ok=True)
-        state_path.write_text(str(mon.miss_count))
-    except OSError as exc:
-        logger.warning("watchdog could not persist state: %s", exc)
+    _store_miss(state_path, mon.miss_count)
     return healthy
 
 
