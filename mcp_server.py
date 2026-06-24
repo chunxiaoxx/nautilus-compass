@@ -2339,7 +2339,8 @@ def _tcp_loop(host: str, port: int,
         # and can replay what it missed (Last-Event-ID · Task 3). `store_ref` is
         # a 1-element holder so the rebind is visible to the `send` closure.
         # stdio is a single process with no drop surface, so it stays untagged.
-        store_ref = [EventStore(max_events=512, ttl_seconds=300)]
+        store_ref = [EventStore(max_events=_SESSION_STORE_MAX_EVENTS,
+                                ttl_seconds=_SESSION_STORE_TTL_S)]
 
         def send(frame: dict) -> None:
             """Tag `frame` with a monotonic `_eid`, record it, write the line.
@@ -2380,6 +2381,12 @@ def _tcp_loop(host: str, port: int,
             if token_table is not None and session_token:
                 session_key = f"tok:{session_token}"
             else:
+                # dev/no-auth: key by client-supplied sessionId. NOTE · on a
+                # network-exposed no-auth port any client knowing a peer's
+                # sessionId could resume that peer's frame history. Acceptable
+                # only under the localhost-dev trust boundary the server already
+                # warns about at startup (no --token). Auth mode keys by token,
+                # which is unguessable, so this exposure is dev-mode only.
                 sid = params.get("sessionId")
                 if isinstance(sid, str) and sid:
                     session_key = f"sid:{sid}"

@@ -13,10 +13,13 @@ the frames it missed, or ``None`` when those frames have already been evicted
 (the gap is unfillable → caller must full-resync).
 
 This module is self-contained: no sockets, no I/O, never raises on bad input.
+It is also thread-safe — a single store is shared across the OS threads of
+parallel connections that resolve to the same session key.
 """
 
 from __future__ import annotations
 
+import threading
 import time
 from typing import Callable, Optional
 
@@ -41,19 +44,32 @@ class EventStore:
         # Each entry: {"id": int, "ts": float, "frame": dict}, ascending id.
         self._events: list[dict] = []
         self._next_id = 1  # first append() returns 1
+        # A session-scoped store is shared across OS threads (the same
+        # session_key driving parallel connections). The id read-modify-write
+        # in append() and the list iteration in replay_since() vs the pop(0)s
+        # in _evict() are not atomic across GIL release points, so guard the
+        # full public-method bodies with this lock to keep the
+        # strictly-ascending-unique-id invariant that resume relies on.
+        self._lock = threading.Lock()
 
     def append(self, frame: dict) -> int:
-        """Store ``frame``, return its assigned global id."""
-        event_id = self._next_id
-        self._next_id += 1
-        self._events.append(
-            {"id": event_id, "ts": self._now_fn(), "frame": frame}
-        )
-        self._evict()
-        return event_id
+        """Store ``frame``, return its assigned global id. Thread-safe."""
+        with self._lock:
+            event_id = self._next_id
+            self._next_id += 1
+            self._events.append(
+                {"id": event_id, "ts": self._now_fn(), "frame": frame}
+            )
+            self._evict()
+            return event_id
 
     def _evict(self) -> None:
-        """Drop oldest entries beyond the size cap or past the ttl window."""
+        """Drop oldest entries beyond the size cap or past the ttl window.
+
+        Caller MUST already hold ``self._lock`` (invoked only from within
+        ``append``'s locked body) — it does not acquire the lock itself, so it
+        never double-acquires / deadlocks.
+        """
         # Size bound: keep at most max_events (max_events >= 0 guaranteed).
         while len(self._events) > self._max_events:
             self._events.pop(0)
@@ -84,23 +100,26 @@ class EventStore:
         · otherwise             → ascending list of newer events (maybe empty).
 
         Returned events are copies — mutating them does not affect the store.
+        Thread-safe: the whole snapshot is taken under the lock so a concurrent
+        ``append``/``_evict`` can't mutate ``_events`` mid-iteration.
         """
-        if last_id == 0:
-            return [self._copy_event(e) for e in self._events]
+        with self._lock:
+            if last_id == 0:
+                return [self._copy_event(e) for e in self._events]
 
-        if not self._events:
-            # Nothing retained. If the client already saw everything we ever
-            # had (last_id >= high-water mark), nothing newer exists → []. If
-            # it lags behind ids we once held but evicted → unfillable gap.
-            highest_seen = self._next_id - 1
-            if last_id >= highest_seen:
-                return []
-            return None
+            if not self._events:
+                # Nothing retained. If the client already saw everything we ever
+                # had (last_id >= high-water mark), nothing newer exists → []. If
+                # it lags behind ids we once held but evicted → unfillable gap.
+                highest_seen = self._next_id - 1
+                if last_id >= highest_seen:
+                    return []
+                return None
 
-        oldest_id = self._events[0]["id"]
-        # The gap is fillable only if the next id the client needs
-        # (last_id + 1) is still retained, i.e. last_id + 1 >= oldest_id.
-        if last_id + 1 < oldest_id:
-            return None
+            oldest_id = self._events[0]["id"]
+            # The gap is fillable only if the next id the client needs
+            # (last_id + 1) is still retained, i.e. last_id + 1 >= oldest_id.
+            if last_id + 1 < oldest_id:
+                return None
 
-        return [self._copy_event(e) for e in self._events if e["id"] > last_id]
+            return [self._copy_event(e) for e in self._events if e["id"] > last_id]
