@@ -6,10 +6,16 @@
 # this is it. The watchdog probes the MCP TCP endpoint (127.0.0.1:9877) and,
 # after K consecutive failed probes, restarts compass-mcp-tcp.service.
 #
-# Oneshot unit driven by compass-mcp-watchdog.timer (one probe per fire). State
-# (consecutive-miss count) is intentionally NOT held in this short-lived unit;
-# the threshold/restart decision is exercised per-fire by the watchdog entry
-# point, which restarts only on a confirmed-down endpoint.
+# By design there is NO backoff/escalation: if the endpoint stays down the
+# miss counter re-accumulates and another restart fires roughly every
+# K*interval (~90s at the default 30s timer × K=3). This re-restart-while-down
+# is intentional and bounded — a thin "kick it again until it comes back" loop,
+# not a missing exponential backoff or alerting layer.
+#
+# Oneshot unit driven by compass-mcp-watchdog.timer (one probe per fire). The
+# consecutive-miss count persists across fires in a tiny state file
+# (COMPASS_MCP_WATCHDOG_STATE) since the unit itself is short-lived; the entry
+# point restarts only after the threshold of confirmed-down probes.
 #
 # 🔴 DEPLOY IS A SEPARATE, GATED OPS STEP — do NOT run systemctl from a dev
 # session. Template only. Install (on the box, when approved):

@@ -7,6 +7,8 @@ from mcp_durable.watchdog import (
     should_restart,
     tcp_probe,
     systemd_restart_cmd,
+    _load_miss,
+    _store_miss,
 )
 
 
@@ -184,3 +186,62 @@ def test_systemd_restart_cmd_user_scope():
         "restart",
         "compass-mcp-tcp",
     ]
+
+
+# ---------------------------------------------------------------------------
+# Cross-fire state I/O (_load_miss / _store_miss) — the correctness-sensitive
+# part of the systemd one-fire wiring. Inject a tmp_path state file.
+# ---------------------------------------------------------------------------
+
+def test_store_load_round_trip_accumulates(tmp_path):
+    p = tmp_path / "miss.state"
+    _store_miss(p, 1)
+    assert _load_miss(p) == 1
+    _store_miss(p, 2)
+    assert _load_miss(p) == 2
+
+
+def test_load_miss_corrupt_content_returns_zero(tmp_path):
+    p = tmp_path / "miss.state"
+    p.write_text("garbage")
+    assert _load_miss(p) == 0
+
+
+def test_load_miss_missing_file_returns_zero(tmp_path):
+    assert _load_miss(tmp_path / "does-not-exist.state") == 0
+
+
+def test_store_miss_healthy_persists_zero(tmp_path):
+    # A healthy fire writes 0 so the next fire starts clean (no stale-counter
+    # spurious restart).
+    p = tmp_path / "miss.state"
+    _store_miss(p, 3)
+    assert _load_miss(p) == 3
+    _store_miss(p, 0)
+    assert _load_miss(p) == 0
+
+
+def test_store_miss_creates_parent_dirs(tmp_path):
+    p = tmp_path / "nested" / "dir" / "miss.state"
+    _store_miss(p, 2)
+    assert _load_miss(p) == 2
+
+
+def test_store_miss_write_failure_never_raises(tmp_path):
+    # Point at a path whose "parent" is a regular file -> mkdir/write fails.
+    blocker = tmp_path / "blocker"
+    blocker.write_text("i am a file")
+    bad = blocker / "miss.state"
+    # Must not raise even though the write is impossible.
+    _store_miss(bad, 1)
+
+
+def test_load_miss_never_raises_on_permission_error(monkeypatch, tmp_path):
+    p = tmp_path / "miss.state"
+    p.write_text("2")
+
+    def boom(*a, **k):
+        raise PermissionError("denied")
+
+    monkeypatch.setattr("pathlib.Path.read_text", boom)
+    assert _load_miss(p) == 0
