@@ -9,12 +9,19 @@ Run:
 """
 import sys
 import os
+import tempfile
+import shutil
 from datetime import datetime, timedelta
+from pathlib import Path
 
 # Make repo root importable (tests/ → parent)
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from recall import promote_lifecycle_tier, verify_cascade_closure
+from recall import (
+    promote_lifecycle_tier,
+    verify_cascade_closure,
+    reinforce_on_recall_hit,
+)
 
 
 def test_1_tier_promotion_by_access():
@@ -123,6 +130,86 @@ def test_8_default_promote_after_by_tier():
     print("✅ Case 8 (edge) · default promote_after by tier")
 
 
+# ──────────────────────────────────────────────────────────────────────────
+# Task 1 (Phase 1 · 2026-06-23) · access-event closure:
+# reinforce_count +1 on recall hit · feeds promote_lifecycle_tier Rule A.
+# ──────────────────────────────────────────────────────────────────────────
+
+_SESSION_TPL = """---
+name: {name}
+tier: working
+reinforce_count: {rc}
+---
+
+body text
+"""
+
+_NO_RC_TPL = """---
+name: {name}
+tier: working
+---
+
+body text
+"""
+
+
+def _mk_mem_dir():
+    d = Path(tempfile.mkdtemp(prefix="compass_reinforce_test_"))
+    return d
+
+
+def test_9_reinforce_bump_on_hit():
+    """Recall hit → that file's reinforce_count goes 0 → 1 in frontmatter."""
+    d = _mk_mem_dir()
+    try:
+        f = d / "session_hit.md"
+        f.write_text(_SESSION_TPL.format(name="session_hit", rc=0), encoding="utf-8")
+        recall = [{"path": "session_hit.md", "score": 0.9}]
+        bumped = reinforce_on_recall_hit(d, recall)
+        text = f.read_text(encoding="utf-8")
+        assert "reinforce_count: 1" in text, f"expected reinforce_count: 1 · got:\n{text}"
+        assert any("session_hit.md" in str(p) for p, _ in bumped), "expected file in bumped list"
+        print("✅ Case 9 · reinforce_count +1 on recall hit")
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+
+
+def test_10_reinforce_accumulates_and_inserts_missing():
+    """Two hits → 2; field absent in frontmatter → inserted as 1 then 2."""
+    d = _mk_mem_dir()
+    try:
+        f = d / "session_norc.md"
+        f.write_text(_NO_RC_TPL.format(name="session_norc"), encoding="utf-8")
+        recall = [{"path": "session_norc.md", "score": 0.8}]
+        reinforce_on_recall_hit(d, recall)
+        assert "reinforce_count: 1" in f.read_text(encoding="utf-8"), "missing field should insert as 1"
+        reinforce_on_recall_hit(d, recall)
+        text = f.read_text(encoding="utf-8")
+        assert "reinforce_count: 2" in text, f"expected accumulate to 2 · got:\n{text}"
+        print("✅ Case 10 · reinforce accumulates + inserts missing field")
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+
+
+def test_11_reinforce_safe_on_bad_input():
+    """No raise on: nonexistent path · file without frontmatter · string-form hit."""
+    d = _mk_mem_dir()
+    try:
+        # nonexistent path → skipped, no raise
+        reinforce_on_recall_hit(d, [{"path": "session_ghost.md"}])
+        # file without frontmatter → skipped, no raise
+        nofront = d / "session_nofront.md"
+        nofront.write_text("just body, no frontmatter\n", encoding="utf-8")
+        reinforce_on_recall_hit(d, [{"path": "session_nofront.md"}])
+        assert "reinforce_count" not in nofront.read_text(encoding="utf-8"), \
+            "no-frontmatter file must NOT be mutated"
+        # string-form hit (defensive) → no raise
+        reinforce_on_recall_hit(d, ["session_ghost.md"])
+        print("✅ Case 11 · reinforce safe on bad input (never raises)")
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+
+
 if __name__ == "__main__":
     tests = [
         test_1_tier_promotion_by_access,
@@ -133,6 +220,9 @@ if __name__ == "__main__":
         test_6_duration_promotion,
         test_7_cascade_closure_unaffected,
         test_8_default_promote_after_by_tier,
+        test_9_reinforce_bump_on_hit,
+        test_10_reinforce_accumulates_and_inserts_missing,
+        test_11_reinforce_safe_on_bad_input,
     ]
     failures = []
     for t in tests:
