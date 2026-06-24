@@ -26,6 +26,8 @@ import time
 from pathlib import Path
 from typing import Any
 
+from mcp_durable.event_store import EventStore
+
 PROTOCOL_VERSION = "2024-11-05"
 SERVER_NAME = "nautilus-compass"
 SERVER_VERSION = "2.3.0"
@@ -2266,6 +2268,25 @@ def _tcp_loop(host: str, port: int,
         # updated via logging/setLevel. Isolated per socket so one
         # client's verbose level never leaks into another's session.
         logging_state: dict = {"level": DEFAULT_LOG_LEVEL}
+        # Per-connection durable event log. Every post-session server frame is
+        # tagged with a monotonic `_eid` and recorded here so a reconnecting
+        # client can replay what it missed (Last-Event-ID · Task 3). stdio is
+        # a single process with no drop surface, so it stays untagged.
+        es = EventStore(max_events=512, ttl_seconds=300)
+
+        def send(frame: dict) -> None:
+            """Tag `frame` with a monotonic `_eid`, record it, write the line.
+
+            Tagging must never crash the connection: if append ever raised we
+            still send the frame (untagged is better than a dropped reply).
+            """
+            try:
+                frame["_eid"] = es.append(frame)
+            except Exception:
+                pass
+            conn.sendall(
+                (json.dumps(frame, ensure_ascii=False) + "\n").encode("utf-8"))
+
         _metrics_inc("total_connections")
         _metrics_inc("active_connections")
         try:
@@ -2303,13 +2324,12 @@ def _tcp_loop(host: str, port: int,
                                 msg["params"].pop("authToken", None)
                         reply = handle_message(
                             msg, scopes=scopes, token=session_token,
-                            emit_notification=lambda f: conn.sendall(
-                                (json.dumps(f, ensure_ascii=False) + "\n").encode("utf-8")),
+                            emit_notification=send,
                             logging_state=logging_state,
                         )
                         _metrics_inc("messages_handled")
                         if reply is not None:
-                            conn.sendall((json.dumps(reply, ensure_ascii=False) + "\n").encode("utf-8"))
+                            send(reply)
         except (ConnectionResetError, BrokenPipeError, OSError):
             return
         finally:
