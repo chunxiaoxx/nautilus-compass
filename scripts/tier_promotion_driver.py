@@ -159,12 +159,41 @@ def _rewrite_tier_in_frontmatter(
     return "---\n" + "\n".join(new_lines) + body
 
 
+def _access_promote(cur_tier: str, fields: dict[str, str]) -> str:
+    """access axis · reuse canonical recall.promote_lifecycle_tier (LLM-WIKI2 §4).
+
+    reinforce_count drives promotion via the rising 1/5/20_access thresholds.
+    Promote-ONLY (never demote on access · demotion is the impact axis's job).
+    Rising thresholds make the absolute-count check idempotent (no baseline
+    stamp needed). Never raises → returns cur_tier on any error.
+    """
+    try:
+        from recall import promote_lifecycle_tier
+    except Exception:
+        return cur_tier
+    entry = {
+        "tier": cur_tier,
+        "reinforce_count": fields.get("reinforce_count", "0"),
+        "promote_after": fields.get("promote_after"),
+        "created_at": fields.get("created_at") or fields.get("timestamp"),
+    }
+    try:
+        res = promote_lifecycle_tier(entry)
+    except Exception:
+        return cur_tier
+    nt = res.get("tier", cur_tier)
+    if nt in TIERS and TIERS.index(nt) > TIERS.index(cur_tier):
+        return nt
+    return cur_tier
+
+
 def process_session_file(path: Path) -> Optional[dict]:
-    """Read · compute new tier · rewrite if changed · return mutation record.
+    """Read · compute new tier (impact axis, then access axis fallback) · rewrite
+    if changed · return mutation record.
 
     Returns None on: file unreadable · no frontmatter · tier unchanged ·
-    write failure. Returns dict with file/old_tier/new_tier/cumulative_impact
-    on successful mutation.
+    write failure. Returns dict with file/old_tier/new_tier/cumulative_impact/
+    axis on successful mutation. axis ∈ {"impact","access"}.
     """
     try:
         text = path.read_text(encoding="utf-8")
@@ -175,6 +204,12 @@ def process_session_file(path: Path) -> Optional[dict]:
         return None
     cur_tier, cur_impact, delta = _read_tier_state(fields)
     new_tier = calculate_new_tier(cur_tier, delta)
+    axis = "impact"
+    if new_tier == cur_tier:
+        # impact axis neutral → let the access (reinforce) axis try
+        access_tier = _access_promote(cur_tier, fields)
+        if access_tier != cur_tier:
+            new_tier, axis = access_tier, "access"
     if new_tier == cur_tier:
         return None
     rewritten = _rewrite_tier_in_frontmatter(text, new_tier, cur_impact)
@@ -190,6 +225,7 @@ def process_session_file(path: Path) -> Optional[dict]:
         "new_tier": new_tier,
         "cumulative_impact": cur_impact,
         "delta": round(delta, 4),
+        "axis": axis,
     }
 
 
