@@ -6,7 +6,7 @@
 
 | 功能 | helps_whom | on_task | measured_by | 状态 |
 |---|---|---|---|---|
-| reinforce_on_recall_hit | tier ladder | 让常被召回的胶囊晋升 | reinforce_count 累积→tier mutation | ✅ access 事件 LIVE(daemon bumped=3 实证)·tier 晋升 wire 未接 |
+| reinforce_on_recall_hit | tier ladder | 让常被召回的胶囊晋升 | reinforce_count 累积→tier mutation | ✅ access 事件 LIVE(daemon bumped=3)·access→tier wire 本地建+TDD(53dce44)·**未部署盒**(gated) |
 | apply_tier_weight | recall consumer | 跨 agent peer learning 召回质量 | leave-one-out MRR delta(eval_recall --mode tier) | 📊 **本地实测 Δ MRR +0.000**(2026-06-24·语料 tier 99% working 无信号)·待盒 9720 重测 |
 | tier_promotion_driver | 召回排序 | 高价值胶囊优先 | tier mutation count + recall-hit 命中前移 | ✅ 部署 LIVE(盒 timer·2 真 mutation)·但 9720 中仅 2 过门=信号稀疏 |
 | l2_distiller | 召回压缩/降噪 | 多碎片→高密度摘要 | recall-hit on L2 摘要 | ⚠️ 待部署+实测 |
