@@ -2226,6 +2226,69 @@ def _build_server_ssl_context(cert: str, key: str,
     return ctx
 
 
+# ─── Task 3 · session-scoped EventStore registry ──────────────────
+#
+# A per-CONNECTION EventStore dies when the connection drops, leaving nothing
+# to replay on reconnect. For durable resume the store must SURVIVE the drop,
+# so it is SESSION-scoped: held in this process-global registry keyed by
+# session identity, resolved at `initialize` time, and reused by a reconnecting
+# client presenting the same key. This supersedes Task 2's per-connection
+# granularity (store creation moves from connection-open to initialize-time).
+#
+# Keying:
+#   · auth mode (token_table not None) → the connection's authed token.
+#   · dev/no-auth mode → params.sessionId if the client supplied one; else a
+#     per-connection ephemeral store (resume simply isn't possible — fine).
+#
+# Bounded: a small opportunistic TTL sweep drops sessions idle past
+# _SESSION_STORE_TTL_S on each access. The sweep never raises.
+
+_SESSION_STORE_MAX_EVENTS = 512
+_SESSION_STORE_TTL_S = 300          # per-event retention inside each store
+_SESSION_IDLE_TTL_S = 600           # drop a whole session idle longer than this
+
+# session_key → {"store": EventStore, "last_used": float}
+_session_stores: dict[str, dict] = {}
+_session_stores_lock = _threading.Lock()
+
+
+def _sweep_idle_sessions(now: float) -> None:
+    """Drop sessions idle > _SESSION_IDLE_TTL_S. Bounded · never raises.
+
+    Caller holds _session_stores_lock.
+    """
+    try:
+        stale = [k for k, v in _session_stores.items()
+                 if now - v.get("last_used", 0.0) > _SESSION_IDLE_TTL_S]
+        for k in stale:
+            _session_stores.pop(k, None)
+    except Exception:
+        pass
+
+
+def _get_or_create_session_store(session_key: str) -> tuple[EventStore, bool]:
+    """Return (store, created) for ``session_key``, creating on first use.
+
+    ``created`` is True only when this call allocated a brand-new store (the
+    server has no prior history for this key) — the resume handshake uses it to
+    tell a stale/identity-mismatched resume apart from a genuine replay.
+    Thread-safe · runs an opportunistic idle-session sweep on each access.
+    """
+    now = time.monotonic()
+    with _session_stores_lock:
+        _sweep_idle_sessions(now)
+        entry = _session_stores.get(session_key)
+        if entry is None:
+            store = EventStore(
+                max_events=_SESSION_STORE_MAX_EVENTS,
+                ttl_seconds=_SESSION_STORE_TTL_S,
+            )
+            _session_stores[session_key] = {"store": store, "last_used": now}
+            return store, True
+        entry["last_used"] = now
+        return entry["store"], False
+
+
 def _tcp_loop(host: str, port: int,
               token_table: dict[str, set[str]] | None,
               ssl_ctx=None) -> int:
@@ -2268,11 +2331,15 @@ def _tcp_loop(host: str, port: int,
         # updated via logging/setLevel. Isolated per socket so one
         # client's verbose level never leaks into another's session.
         logging_state: dict = {"level": DEFAULT_LOG_LEVEL}
-        # Per-connection durable event log. Every post-session server frame is
-        # tagged with a monotonic `_eid` and recorded here so a reconnecting
-        # client can replay what it missed (Last-Event-ID · Task 3). stdio is
-        # a single process with no drop surface, so it stays untagged.
-        es = EventStore(max_events=512, ttl_seconds=300)
+        # Durable event log. Each connection STARTS with an ephemeral
+        # per-connection store (used when no session key is resolvable, e.g.
+        # dev mode with no sessionId — resume isn't possible, that's fine). At
+        # `initialize` the store is REBOUND to the session-scoped store from the
+        # registry so a reconnecting client with the same key reuses its history
+        # and can replay what it missed (Last-Event-ID · Task 3). `store_ref` is
+        # a 1-element holder so the rebind is visible to the `send` closure.
+        # stdio is a single process with no drop surface, so it stays untagged.
+        store_ref = [EventStore(max_events=512, ttl_seconds=300)]
 
         def send(frame: dict) -> None:
             """Tag `frame` with a monotonic `_eid`, record it, write the line.
@@ -2281,11 +2348,92 @@ def _tcp_loop(host: str, port: int,
             still send the frame (untagged is better than a dropped reply).
             """
             try:
-                frame["_eid"] = es.append(frame)
+                frame["_eid"] = store_ref[0].append(frame)
             except Exception:
                 pass
             conn.sendall(
                 (json.dumps(frame, ensure_ascii=False) + "\n").encode("utf-8"))
+
+        def send_raw(frame: dict) -> None:
+            """Write a frame VERBATIM — no _eid (re)assignment, no append.
+
+            Used to replay already-tagged missed frames on resume: they carry
+            their original `_eid` and must NOT be re-numbered or re-recorded.
+            """
+            conn.sendall(
+                (json.dumps(frame, ensure_ascii=False) + "\n").encode("utf-8"))
+
+        def _resume_init(msg: dict) -> bool:
+            """Handle the `initialize` resume handshake for this connection.
+
+            Resolves the session key, rebinds `store_ref` to the session store,
+            and — if the client supplied `params.lastEventId` — replays missed
+            frames RAW then sends the `initialize` reply with `result.resumed`
+            set. Returns True if it fully handled the message (caller must NOT
+            also dispatch it), False to fall through to normal handling.
+            """
+            params = msg.get("params") or {}
+            if not isinstance(params, dict):
+                params = {}
+            # Key resolution: authed token (auth mode) > sessionId (dev mode).
+            session_key = None
+            if token_table is not None and session_token:
+                session_key = f"tok:{session_token}"
+            else:
+                sid = params.get("sessionId")
+                if isinstance(sid, str) and sid:
+                    session_key = f"sid:{sid}"
+            if session_key is None:
+                # No durable identity · keep the ephemeral store · normal init.
+                return False
+
+            store, created = _get_or_create_session_store(session_key)
+            store_ref[0] = store
+
+            last_event_id = params.get("lastEventId")
+            if not isinstance(last_event_id, int) or isinstance(last_event_id, bool):
+                # Fresh session (no resume marker) · today's behavior.
+                return False
+
+            # Build the base initialize reply (mirrors handle_message).
+            reply = handle_message(
+                msg, scopes=scopes, token=session_token,
+                emit_notification=send, logging_state=logging_state,
+            )
+            if reply is None or "result" not in reply:
+                # Shouldn't happen for initialize, but never crash the resume.
+                if reply is not None:
+                    send(reply)
+                return True
+
+            if last_event_id <= 0:
+                # last_id == 0 means "fresh client" in EventStore terms ·
+                # treat as a non-resume init (no resumed flag).
+                send(reply)
+                return True
+
+            if created:
+                # Brand-new key the server never emitted into · the client
+                # claims a high-water mark we have no record of → identity
+                # mismatch → full resync.
+                reply["result"]["resumed"] = False
+                send(reply)
+                return True
+
+            missed = store.replay_since(last_event_id)
+            if missed is None:
+                # Gap too old (evicted) → client must full-resync.
+                reply["result"]["resumed"] = False
+                send(reply)
+                return True
+
+            # Replay missed frames RAW (original _eid, ascending), THEN the
+            # initialize reply with resumed=true.
+            for ev in missed:
+                send_raw(ev["frame"])
+            reply["result"]["resumed"] = True
+            send(reply)
+            return True
 
         _metrics_inc("total_connections")
         _metrics_inc("active_connections")
@@ -2322,6 +2470,13 @@ def _tcp_loop(host: str, port: int,
                             # never shows up in logs or downstream
                             if isinstance(msg.get("params"), dict):
                                 msg["params"].pop("authToken", None)
+                        # Task 3 · session-scoped store + Last-Event-ID resume.
+                        # Intercept `initialize` to bind the durable session
+                        # store and run the resume handshake. If fully handled
+                        # (reply + any replay already sent), skip normal dispatch.
+                        if msg.get("method") == "initialize" and _resume_init(msg):
+                            _metrics_inc("messages_handled")
+                            continue
                         reply = handle_message(
                             msg, scopes=scopes, token=session_token,
                             emit_notification=send,
