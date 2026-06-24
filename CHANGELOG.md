@@ -31,6 +31,22 @@
 - `kernelbench/kb_fuel.py`:KernelBench 加速比 → 6-key 契约的分数臂(进多基准蒸馏合池)。
 - ALE-Bench eval_fn wrapper + judge_version 默认修复(202301→ImageNotFound bug)。
 
+### MCP 传输持久化(治"MCP 总断"用户痛点)
+
+- **v1.8 自动重连**(`ops/mcp_stdio_to_cloud.py`):stdio↔云 daemon SSH 隧道掉线时
+  自动重连并 replay `initialize` 握手 —— 降级永不崩(connection 抖动不再让 MCP 死)。
+- **durable 传输层**(`mcp_durable/` · 闭合 v1.8 只 replay initialize 的缺口 = 重连丢
+  in-flight 消息):
+  - `event_store.py` EventStore 环形缓冲(线程安全 · 单调 `_eid`),server 出站帧
+    打 `_eid` 标(`mcp_server.py` `_tcp_loop`)。
+  - session 级 EventStore 注册表(按 token/sessionId scope · TTL 清扫)+ **Last-Event-ID
+    resume**:重连带 `lastEventId` → server replay 缺口帧(gap 被淘汰则 `resumed=false`)。
+  - bridge 跟踪 high-water `_eid` + 重连请求 replay(`ensure_ascii=False` 保 CJK 字节)。
+  - `watchdog.py` 心跳监控(`tcp_probe` + systemd `compass-mcp-watchdog.{service,timer}`
+    OnUnitActiveSec=30s · 探死口自愈 restart)。
+  - **E2E 零丢证明**(`tests/mcp_durable/test_e2e_no_loss.py`):N=8 突发 + K=4 丢包,
+    断言无 gap + 无 dup + v1.8 对比(确证 v1.8 会丢 K+1..N)+ 4 mutation 检查。
+
 ### 修复
 
 - `v14-recall` scope=user union:45s timeout + slim projects_scanned(P0 冷查超时 race)。
