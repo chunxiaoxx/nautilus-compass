@@ -115,6 +115,14 @@ _RERANKER_LOCK = threading.Lock()
 # Default OFF: no memory is ever hidden until explicitly enabled.
 _PROD_LIFECYCLE_USE = os.environ.get("COMPASS_PROD_LIFECYCLE", "0") == "1"
 
+# Phase 1 Task 4 · production tier-aware re-rank · opt-in via COMPASS_PROD_TIER_WEIGHT=1
+# Among near-equal cosine hits, prefers the more-consolidated (higher-tier)
+# capsule via a tiny additive bonus (recall.apply_tier_weight · ranking-only).
+# Skipped when cross-encoder rerank is active (rerank order must win · the dense
+# scores are non-monotonic there, so a score-sort would corrupt rerank order).
+# Default OFF: daemon ranking is byte-identical until explicitly enabled.
+_PROD_TIER_WEIGHT_USE = os.environ.get("COMPASS_PROD_TIER_WEIGHT", "0") == "1"
+
 # v2.3.0 · opt-in gemini query rewrite before recall · COMPASS_PROD_QUERY_REWRITE=1
 # (also needs COMPASS_USE_GEMINI_FLASH). LLM contact isolated in query_rewrite.py;
 # any failure falls back to the original query. Default OFF: daemon recall is
@@ -257,6 +265,25 @@ def _apply_lifecycle_filter(entries):
             pass  # fail-safe: keep on any error
         kept.append(e)
     return kept
+
+
+def _apply_tier_weight_prod(top, top_k):
+    """Phase 1 Task 4 · production tier-aware re-rank (opt-in COMPASS_PROD_TIER_WEIGHT).
+
+    Reuses recall.apply_tier_weight (small additive tier bonus · ranking-only ·
+    output scores unchanged). Skipped when:
+      · flag off (default) → passthrough top[:top_k]
+      · cross-encoder rerank active → rerank order must win (its tuples keep the
+        non-monotonic dense score, so a score-sort here would corrupt that order)
+    Any failure → fall back to the incoming order (recall must never crash)."""
+    if not _PROD_TIER_WEIGHT_USE or _PROD_RERANK_USE or not top:
+        return top[:top_k]
+    try:
+        from recall import apply_tier_weight
+        return apply_tier_weight(top)[:top_k]
+    except Exception as e:
+        log(f"tier weight failed · passthrough: {e}")
+        return top[:top_k]
 
 # v2.0.9 · inotify-based cache invalidation · Layer 2 cure for 23k-file dir scan
 _INOTIFY_USE = os.environ.get("COMPASS_USE_INOTIFY", "1") == "1"
@@ -887,6 +914,12 @@ def handle_request(req: dict) -> dict:
         top = _rerank_top(query, top, top_k)
         if _PROD_RERANK_USE:
             result["_v230_reranked"] = True
+
+        # Phase 1 Task 4 · tier-aware re-rank (opt-in COMPASS_PROD_TIER_WEIGHT=1).
+        # No-op by default · mutually exclusive with rerank (see fn docstring).
+        top = _apply_tier_weight_prod(top, top_k)
+        if _PROD_TIER_WEIGHT_USE and not _PROD_RERANK_USE:
+            result["_task4_tier_weighted"] = True
 
         result["recall"] = [
             {"score": round(s, 3), "path": e["path"],
