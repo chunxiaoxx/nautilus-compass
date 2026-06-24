@@ -21,6 +21,7 @@ from recall import (
     promote_lifecycle_tier,
     verify_cascade_closure,
     reinforce_on_recall_hit,
+    apply_tier_weight,
 )
 
 
@@ -210,6 +211,30 @@ def test_11_reinforce_safe_on_bad_input():
         shutil.rmtree(d, ignore_errors=True)
 
 
+def test_12_tier_weight_reranks_ties_only():
+    """Task 4 · tier weight: higher tier wins ties · but never flips a real cosine gap."""
+    # tie on cosine → semantic outranks working
+    top = [
+        (0.5, {"path": "w.md", "tier": "working"}),
+        (0.5, {"path": "s.md", "tier": "semantic"}),
+    ]
+    out = apply_tier_weight(top)
+    assert out[0][1]["path"] == "s.md", f"semantic should win tie · got {out[0][1]['path']}"
+    # output score is the ORIGINAL cosine (bonus is ranking-only, not written)
+    assert out[0][0] == 0.5, f"output score must stay original cosine · got {out[0][0]}"
+    # a real 0.4 cosine gap must NOT be flipped by the small tier bonus
+    top2 = [
+        (0.9, {"path": "w.md", "tier": "working"}),
+        (0.5, {"path": "p.md", "tier": "procedural"}),
+    ]
+    out2 = apply_tier_weight(top2)
+    assert out2[0][1]["path"] == "w.md", "0.4 cosine gap must not be flipped by tier bonus"
+    # missing tier defaults to working (no raise)
+    out3 = apply_tier_weight([(0.5, {"path": "x.md"}), (0.5, {"path": "e.md", "tier": "episodic"})])
+    assert out3[0][1]["path"] == "e.md", "episodic should outrank tier-less (working) on tie"
+    print("✅ Case 12 · tier-weight re-rank (ties only · gap-preserving)")
+
+
 if __name__ == "__main__":
     tests = [
         test_1_tier_promotion_by_access,
@@ -223,6 +248,7 @@ if __name__ == "__main__":
         test_9_reinforce_bump_on_hit,
         test_10_reinforce_accumulates_and_inserts_missing,
         test_11_reinforce_safe_on_bad_input,
+        test_12_tier_weight_reranks_ties_only,
     ]
     failures = []
     for t in tests:

@@ -971,6 +971,45 @@ def reinforce_on_recall_hit(mem_dir, recall, max_files: int = 20):
     return bumped
 
 
+# Phase 1 Task 4 · tier-aware recall re-rank · additive bonus by lifecycle tier.
+# Capped small so it breaks ties / near-ties (more-consolidated capsule wins)
+# WITHOUT overriding a meaningful cosine gap. Mirrors the LLM-WIKI2 ladder
+# (working < episodic < semantic < procedural).
+_TIER_RANK_BONUS = {
+    "working": 0.0,
+    "episodic": 0.01,
+    "semantic": 0.02,
+    "procedural": 0.03,
+}
+
+
+def apply_tier_weight(top):
+    """v2.3.0 · Phase 1 Task 4 · re-rank recall top-K by lifecycle tier.
+
+    Add a small additive bonus (≤0.03) by each entry's `tier` so that among
+    near-equal cosine scores the higher-tier (more consolidated) capsule wins.
+    The bonus is ranking-ONLY — output scores stay the original cosine. Ties
+    fall back to original order (stable). Never raises (returns input on error).
+
+    Args:
+        top: list of (score, entry) · entry dict may carry a "tier" field.
+    Returns:
+        re-sorted list of (orig_score, entry).
+    """
+    try:
+        decorated = []
+        for i, item in enumerate(top):
+            score, entry = item[0], item[1]
+            tier = (entry.get("tier") if isinstance(entry, dict) else None) or "working"
+            bonus = _TIER_RANK_BONUS.get(tier, 0.0)
+            decorated.append((score + bonus, i, score, entry))
+        # sort by boosted score desc · stable tie-break on original index
+        decorated.sort(key=lambda x: (-x[0], x[1]))
+        return [(orig_score, entry) for _, _, orig_score, entry in decorated]
+    except Exception:
+        return top
+
+
 def rrf_fusion(*ranked_lists, k: int = 60, top_k: int = 10,
                session_diversify: bool = True, max_per_session: int = 3) -> list:
     """v1.7.1 · Phase 2.C · Reciprocal Rank Fusion · agentmemory paradigm.
@@ -1102,6 +1141,17 @@ def render_v02_vector_mode(entries: list, query: str, cache: dict) -> None:
             top = top[:TOP_K]
         except Exception as _e:
             sys.stderr.write(f"[PoI boost] skipped: {_e!r}\n")
+
+    # v2.3.0 · Phase 1 Task 4 · tier-aware re-rank · among near-equal cosine
+    # scores, prefer the more-consolidated (higher-tier) capsule. Ranking-only
+    # (output scores unchanged) · tiny bonus never flips a real cosine gap ·
+    # NO-OP when no memory carries a tier field yet. Set COMPASS_NO_TIER_WEIGHT=1
+    # to opt out. apply_tier_weight never raises; this guard is belt-and-suspenders.
+    if os.environ.get("COMPASS_NO_TIER_WEIGHT") != "1":
+        try:
+            top = apply_tier_weight(top)[:TOP_K]
+        except Exception as _e:
+            sys.stderr.write(f"[tier weight] skipped: {_e!r}\n")
 
     # v2.0.0 · #1b · Layer 2 L1 overlay · collapse member L0 sessions to their
     # L1 summary entry when {mem_dir}/_l1/_l1_index.json exists. Graceful
