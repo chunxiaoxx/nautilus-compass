@@ -75,7 +75,7 @@ def strip_zhen_emphasis(text: str) -> str:
     return "".join(out)
 
 
-PLUGIN_VERSION = "nautilus-compass v2.2.0"
+PLUGIN_VERSION = "nautilus-compass v2.3.0"
 HOME = Path.home()
 PLUGIN_DIR = HOME / ".claude" / "plugins" / "nautilus-compass"
 CACHE_DIR = PLUGIN_DIR / ".cache"
@@ -881,6 +881,135 @@ def promote_lifecycle_tier(entry: dict, now=None) -> dict:
     }
 
 
+def _bump_reinforce_in_frontmatter(text: str):
+    """Return (new_text, new_count) with frontmatter reinforce_count +1.
+
+    Field inserted as 1 when absent. Mirrors
+    tier_promotion_driver._rewrite_tier_in_frontmatter (DRY · same flat-YAML
+    line rewrite). Returns (None, None) if text has no frontmatter delimiters.
+    """
+    import re as _re
+    if not text.startswith("---"):
+        return None, None
+    end = text.find("\n---", 4)
+    if end < 0:
+        return None, None
+    front_block = text[4:end]
+    body = text[end:]
+    new_lines = []
+    seen = False
+    new_count = None
+    for line in front_block.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("reinforce_count:"):
+            m = _re.match(r"reinforce_count:\s*(-?\d+)", stripped)
+            cur = int(m.group(1)) if m else 0
+            new_count = cur + 1
+            new_lines.append(f"reinforce_count: {new_count}")
+            seen = True
+        else:
+            new_lines.append(line)
+    if not seen:
+        new_count = 1
+        new_lines.append(f"reinforce_count: {new_count}")
+    return "---\n" + "\n".join(new_lines) + body, new_count
+
+
+def reinforce_on_recall_hit(mem_dir, recall, max_files: int = 20):
+    """v2.3.0 · Phase 1 Task 1 · access-event closure for the LLM-WIKI2 lifecycle.
+
+    For each recalled file, bump its frontmatter reinforce_count by 1 (Rule A ·
+    access event · the input promote_lifecycle_tier reads to promote a capsule
+    working→episodic→…). This closes the access loop: recall hits now feed the
+    tier ladder instead of being read-only.
+
+    Defensive by contract — NEVER raises · skips files that are missing / have
+    no frontmatter / are unwritable. Designed to run as a guarded block on the
+    recall path so a failure can never break recall (same posture as the
+    emit_poi_candidate / metamemory blocks in try_daemon_recall).
+
+    Args:
+        mem_dir: project memory dir · recall paths are basenames under it.
+        recall:  list of hit dicts (each with "path") · or bare path strings.
+        max_files: safety cap on files mutated per call (bounded hot-path I/O).
+
+    Returns:
+        list of (abs_path, new_count) for files actually bumped.
+    """
+    from pathlib import Path as _Path
+    bumped = []
+    try:
+        base = _Path(mem_dir)
+        seen = set()
+        for hit in (recall or []):
+            if len(bumped) >= max_files:
+                break
+            if isinstance(hit, dict):
+                name = hit.get("path")
+            elif isinstance(hit, str):
+                name = hit
+            else:
+                name = None
+            if not name or name in seen:
+                continue
+            seen.add(name)
+            try:
+                # basename only · keep writes inside mem_dir (no traversal)
+                fp = base / _Path(name).name
+                if not fp.is_file():
+                    continue
+                text = fp.read_text(encoding="utf-8")
+                new_text, new_count = _bump_reinforce_in_frontmatter(text)
+                if new_text is None:
+                    continue
+                fp.write_text(new_text, encoding="utf-8")
+                bumped.append((str(fp), new_count))
+            except (OSError, UnicodeDecodeError):
+                continue
+    except Exception:
+        pass
+    return bumped
+
+
+# Phase 1 Task 4 · tier-aware recall re-rank · additive bonus by lifecycle tier.
+# Capped small so it breaks ties / near-ties (more-consolidated capsule wins)
+# WITHOUT overriding a meaningful cosine gap. Mirrors the LLM-WIKI2 ladder
+# (working < episodic < semantic < procedural).
+_TIER_RANK_BONUS = {
+    "working": 0.0,
+    "episodic": 0.01,
+    "semantic": 0.02,
+    "procedural": 0.03,
+}
+
+
+def apply_tier_weight(top):
+    """v2.3.0 · Phase 1 Task 4 · re-rank recall top-K by lifecycle tier.
+
+    Add a small additive bonus (≤0.03) by each entry's `tier` so that among
+    near-equal cosine scores the higher-tier (more consolidated) capsule wins.
+    The bonus is ranking-ONLY — output scores stay the original cosine. Ties
+    fall back to original order (stable). Never raises (returns input on error).
+
+    Args:
+        top: list of (score, entry) · entry dict may carry a "tier" field.
+    Returns:
+        re-sorted list of (orig_score, entry).
+    """
+    try:
+        decorated = []
+        for i, item in enumerate(top):
+            score, entry = item[0], item[1]
+            tier = (entry.get("tier") if isinstance(entry, dict) else None) or "working"
+            bonus = _TIER_RANK_BONUS.get(tier, 0.0)
+            decorated.append((score + bonus, i, score, entry))
+        # sort by boosted score desc · stable tie-break on original index
+        decorated.sort(key=lambda x: (-x[0], x[1]))
+        return [(orig_score, entry) for _, _, orig_score, entry in decorated]
+    except Exception:
+        return top
+
+
 def rrf_fusion(*ranked_lists, k: int = 60, top_k: int = 10,
                session_diversify: bool = True, max_per_session: int = 3) -> list:
     """v1.7.1 · Phase 2.C · Reciprocal Rank Fusion · agentmemory paradigm.
@@ -1012,6 +1141,17 @@ def render_v02_vector_mode(entries: list, query: str, cache: dict) -> None:
             top = top[:TOP_K]
         except Exception as _e:
             sys.stderr.write(f"[PoI boost] skipped: {_e!r}\n")
+
+    # v2.3.0 · Phase 1 Task 4 · tier-aware re-rank · among near-equal cosine
+    # scores, prefer the more-consolidated (higher-tier) capsule. Ranking-only
+    # (output scores unchanged) · tiny bonus never flips a real cosine gap ·
+    # NO-OP when no memory carries a tier field yet. Set COMPASS_NO_TIER_WEIGHT=1
+    # to opt out. apply_tier_weight never raises; this guard is belt-and-suspenders.
+    if os.environ.get("COMPASS_NO_TIER_WEIGHT") != "1":
+        try:
+            top = apply_tier_weight(top)[:TOP_K]
+        except Exception as _e:
+            sys.stderr.write(f"[tier weight] skipped: {_e!r}\n")
 
     # v2.0.0 · #1b · Layer 2 L1 overlay · collapse member L0 sessions to their
     # L1 summary entry when {mem_dir}/_l1/_l1_index.json exists. Graceful
@@ -1265,6 +1405,18 @@ def try_daemon_recall(mem_dir: Path, user_prompt: str) -> bool:
                 emit_poi_candidate(_top, query=user_prompt, agent_id=_resolve_default_actor())
         except Exception as _e:
             sys.stderr.write(f"[PoI candidate · daemon] skipped: {_e!r}\n")
+
+        # v2.3.0 · Phase 1 Task 1 · access-event closure · bump reinforce_count
+        # on each recalled file so recall hits feed the LLM-WIKI2 tier ladder
+        # (promote_lifecycle_tier Rule A). Production recall goes through the
+        # daemon, so without this the access axis never advances. Guarded by
+        # COMPASS_NO_REINFORCE=1. reinforce_on_recall_hit never raises · this
+        # try/except is belt-and-suspenders so it can NEVER break recall.
+        try:
+            if recall and os.environ.get("COMPASS_NO_REINFORCE") != "1":
+                reinforce_on_recall_hit(mem_dir, recall)
+        except Exception as _e:
+            sys.stderr.write(f"[reinforce · daemon] skipped: {_e!r}\n")
         return True
     except Exception as e:
         sys.stderr.write(f"[nautilus-compass daemon] unreachable ({e}) · fallback inline\n")

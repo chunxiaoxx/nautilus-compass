@@ -122,6 +122,54 @@ def _inject_auth(line: str) -> str:
     return json.dumps(msg)
 
 
+def _inject_last_event_id(init_line: str, last_eid: int) -> str:
+    """Inject params.lastEventId into a cached initialize so the server replays
+    the frames we missed across a drop (durable MCP · Task 4).
+
+    Only injects when last_eid > 0 (0 = nothing seen yet → no replay needed).
+    v1.8 invariant: any parse failure → return the line UNCHANGED (never crash,
+    never corrupt the handshake)."""
+    if not isinstance(last_eid, int) or last_eid <= 0:
+        return init_line
+    try:
+        msg = json.loads(init_line)
+    except (json.JSONDecodeError, TypeError):
+        return init_line
+    if not isinstance(msg, dict) or msg.get("method") != "initialize":
+        return init_line
+    params = msg.get("params")
+    if not isinstance(params, dict):
+        params = {}
+    params["lastEventId"] = last_eid
+    msg["params"] = params
+    return json.dumps(msg)
+
+
+def _strip_eid_and_track(line, link: "_CloudLink") -> bytes:
+    """Process one cloud→stdout frame for Claude Code (durable MCP · Task 4).
+
+    1. Track the high-water mark: advance link.high_eid to max(seen, _eid).
+    2. Strip the internal `_eid` field — Claude Code must never see it.
+    Returns the bytes to forward to stdout (WITHOUT a trailing newline; caller
+    adds it). v1.8 invariant: if the line isn't valid JSON or carries no _eid,
+    forward it UNCHANGED — never drop a frame, never crash."""
+    raw = line if isinstance(line, (bytes, bytearray)) else line.encode("utf-8")
+    try:
+        msg = json.loads(raw.decode("utf-8"))
+    except (json.JSONDecodeError, UnicodeDecodeError, ValueError):
+        return bytes(raw)
+    if not isinstance(msg, dict) or "_eid" not in msg:
+        return bytes(raw)
+    eid = msg.pop("_eid")
+    try:
+        link.note_high_eid(int(eid))
+    except (TypeError, ValueError):
+        pass
+    # ensure_ascii=False · keep CJK/emoji recall frames byte-faithful (the real
+    # workload is Chinese memory recall) and consistent with the rest of the file.
+    return json.dumps(msg, ensure_ascii=False).encode("utf-8")
+
+
 def _recv_one_line(sock, timeout: float = 10.0) -> bytes:
     """Read one newline-terminated frame · used to swallow the duplicate
     initialize reply after a reconnect handshake so it never reaches stdout."""
@@ -163,10 +211,23 @@ class _CloudLink:
         self._lock = threading.Lock()
         self._init_line = None
         self._closed = False
+        # v1.9 (Task 4) · highest cloud→stdout _eid forwarded · drives the
+        # Last-Event-ID replay request on reconnect. 0 = nothing seen yet.
+        self._high_eid = 0
 
     @property
     def init_line(self):
         return self._init_line
+
+    @property
+    def high_eid(self) -> int:
+        return self._high_eid
+
+    def note_high_eid(self, eid: int) -> None:
+        """Advance the high-water mark · monotonic, never goes backwards."""
+        with self._lock:
+            if isinstance(eid, int) and eid > self._high_eid:
+                self._high_eid = eid
 
     @property
     def is_closed(self) -> bool:
@@ -192,7 +253,11 @@ class _CloudLink:
         s = self._opener()
         if replay and self._init_line:
             try:
-                s.sendall((_inject_auth(self._init_line) + "\n").encode("utf-8"))
+                # v1.9 (Task 4) · request the server replay any frames we missed
+                # during the drop by injecting params.lastEventId = high-water.
+                # Only on RECONNECT (replay=True) and only when we've seen >0.
+                replay_init = _inject_last_event_id(self._init_line, self._high_eid)
+                s.sendall((_inject_auth(replay_init) + "\n").encode("utf-8"))
                 _recv_one_line(s)  # swallow duplicate initialize reply
             except Exception:
                 try:
@@ -547,7 +612,14 @@ def _pump_cloud_to_out(link: "_CloudLink") -> None:
                 if not cl.strip():
                     continue
                 _trace("CLOUD→", cl)
-                _write_stdout(cl + b"\n")
+                # v1.9 (Task 4) · track highest _eid + strip it before Claude
+                # Code sees it. Failure-proof: forwards unchanged on any error.
+                try:
+                    out_bytes = _strip_eid_and_track(cl, link)
+                except Exception as e:  # never drop a frame on a bug here
+                    _trace("ERR", f"strip _eid fail: {e!r}")
+                    out_bytes = cl
+                _write_stdout(out_bytes + b"\n")
         link.mark_down()  # socket dead · outer loop reconnects unless closed
 
 
