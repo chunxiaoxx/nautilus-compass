@@ -1,0 +1,27 @@
+[Unit]
+# Timer that fires the durable-MCP watchdog probe (Task 5).
+#
+# Cadence: every 30s after the previous run finishes (OnUnitActiveSec=30s),
+# starting 60s after boot (OnBootSec=60s — let compass-mcp-tcp.service settle
+# its model load first; compass-daemon allows TimeoutStartSec=120). At a 30s
+# interval the default K=3 consecutive misses == ~90s of confirmed-down before
+# a restart fires: fast enough to bound message-loss exposure, slow enough to
+# not thrash on a single transient hiccup.
+#
+# OnUnitActiveSec (interval since the unit last ACTIVATED) is preferred over
+# OnCalendar here because the work is a relative-cadence health poll, not a
+# wall-clock schedule — same convention as a service-driven heartbeat.
+#
+# 🔴 DEPLOY IS A SEPARATE, GATED OPS STEP — template only. See the .service
+# header for install instructions. Enable: systemctl enable --now this .timer.
+Description=Fire the compass durable-MCP watchdog every 30s
+Requires=compass-mcp-watchdog.service
+
+[Timer]
+OnBootSec=60s
+OnUnitActiveSec=30s
+AccuracySec=5s
+Unit=compass-mcp-watchdog.service
+
+[Install]
+WantedBy=timers.target

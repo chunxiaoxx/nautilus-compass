@@ -1,0 +1,48 @@
+[Unit]
+# Nautilus Compass · durable-MCP WATCHDOG (Task 5).
+#
+# checkpoint != durable: the EventStore replay (Tasks 1-4) only saves messages
+# while the server PROCESS is alive. A dead daemon needs EXTERNAL detection —
+# this is it. The watchdog probes the MCP TCP endpoint (127.0.0.1:9877) and,
+# after K consecutive failed probes, restarts compass-mcp-tcp.service.
+#
+# By design there is NO backoff/escalation: if the endpoint stays down the
+# miss counter re-accumulates and another restart fires roughly every
+# K*interval (~90s at the default 30s timer × K=3). This re-restart-while-down
+# is intentional and bounded — a thin "kick it again until it comes back" loop,
+# not a missing exponential backoff or alerting layer.
+#
+# Oneshot unit driven by compass-mcp-watchdog.timer (one probe per fire). The
+# consecutive-miss count persists across fires in a tiny state file
+# (COMPASS_MCP_WATCHDOG_STATE) since the unit itself is short-lived; the entry
+# point restarts only after the threshold of confirmed-down probes.
+#
+# 🔴 DEPLOY IS A SEPARATE, GATED OPS STEP — do NOT run systemctl from a dev
+# session. Template only. Install (on the box, when approved):
+#   sudo cp compass-mcp-watchdog.service compass-mcp-watchdog.timer \
+#       /etc/systemd/system/
+#   sudo systemctl daemon-reload && sudo systemctl enable --now compass-mcp-watchdog.timer
+# Verify: systemctl status compass-mcp-watchdog.timer ; journalctl -u compass-mcp-watchdog
+Description=Nautilus Compass · durable-MCP watchdog (probe + restart on K misses)
+After=network-online.target compass-mcp-tcp.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=ubuntu
+WorkingDirectory=/home/ubuntu/nautilus-compass
+Environment=PYTHONUNBUFFERED=1
+# Probe 127.0.0.1:9877 (the compass-mcp-tcp endpoint); restart that unit after
+# COMPASS_MCP_WATCHDOG_THRESHOLD consecutive misses. The watchdog uses the
+# system manager (these are system units, User=ubuntu) to restart.
+Environment=COMPASS_MCP_WATCHDOG_HOST=127.0.0.1
+Environment=COMPASS_MCP_WATCHDOG_PORT=9877
+Environment=COMPASS_MCP_WATCHDOG_UNIT=compass-mcp-tcp.service
+Environment=COMPASS_MCP_WATCHDOG_THRESHOLD=3
+ExecStart=/usr/bin/python3 -m mcp_durable.watchdog
+StandardOutput=append:/home/ubuntu/nautilus-compass/.cache/mcp-watchdog.log
+StandardError=append:/home/ubuntu/nautilus-compass/.cache/mcp-watchdog.log
+
+# systemctl restart requires privilege to manage the target system unit.
+# Grant narrowly via a polkit rule or AmbientCapabilities at deploy time;
+# do NOT widen this template blindly.
