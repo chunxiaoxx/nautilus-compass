@@ -10,14 +10,21 @@
 
 | 字段 | 值 |
 |---|---|
-| **当前闭环目标** | **证或杀蒸馏(维①)**:用够的料(n≥12)+ 非易燃料重跑 SWE 同质料 LOO·对比 ALE 0.0833·出 PROVEN/INCONCLUSIVE/KILLED(正确 unblock·非 n=2 whipsaw) |
-| **下一动作** | ① V5 续产 SWE 同质料到 **n≥12**(优先非易 django 换真难燃料·避 over-fit confound)② soul canonical verify 每道 ③ 借 compass GPU 跑 distill_loo --kind swe |
-| **负责框** | V5(①批产)/ soul-verify(②verify+归一化+跑LOO)/ compass(借GPU+三方verify)· 三框协同 |
-| **卡在** | (a) V5 批产到 n≥12(human-driven·当前 n=2)(b) 选非易燃料避 over-fit confound(易 django 套路化=四根之一)(c) 借 compass GPU 走同流程 |
+| **当前闭环目标** | **证或杀蒸馏(维①)**=北极星 forcing function。V5 产→compass verify→soul LOO→verdict。**一条线·其余 parking(守教训1反搭建≠闭环)** |
+| **下一动作** | ① V5 产够 n≥12 候选就停(别无限产 GLM·反 D)→ 交 compass ② compass 官方 harness verify 出 A 类数 ③ soul canonical 复核+归一化+借 GPU 跑 distill_loo --kind swe→verdict |
+| **负责框** | V5(①)/ compass(②verify+借GPU)/ soul(③复核+LOO)· FDE 仅同步切飞书多维表格进 SSOT |
+| **卡在** | (a) V5 候选产完未 verify(当前 12+ 候选·produce_glm 15:00 还在产) ① compass verify 待启动 |
 
-## 🟢 维② PoI 飞轮(6/29 闭环·非 forcing-function 阻塞)
-- 账本恢复增长(1299→1507 行·3天+335·liveness GREEN)·daemon 耐久复活 ✅。
-- 仍 open(非阻塞):credit 是否"真干活"vs 自循环累积(口径)+ 结算腿(`flush_pending_nau`)liveness。distill verdict 出后回头收。
+## 🛡️ 守教训护栏(防 5 坑·6/29 用户拍"蒸馏一条线+守教训")
+1. **n≥12 才跑 LOO**(verdict-gate commit 210e0fd24 拦 n<12·防 whipsaw 教训2)
+2. **易 django PROVEN → 须非易料复证**(排 over-fit 假迁移·教训3)
+3. **confound 先核再下结论**(教训3·本 session 两次找错 FDE 路径=戒)
+4. **SSOT 钉死+广播四框**(治精神分裂·教训4)
+5. **ship 了必验活**(教训5·FDE cloud runners/compass 探针都得验)
+
+## 🅿️ Parking Lot(冻结·蒸馏 verdict 出前不碰)
+- 维②经济环(credit 口径/结算腿 liveness)· compass MCP 耦合(Phase 1-4)· 平台 mint_mcp_token · FDE 招募/RBAC/4 skill 发版 · content-engine 命名合约 · 维① KILL 资产保留(未来上 H800/换真难料重启)
+- **FDE 切飞书多维表格**:执行路径已变(飞书→多维表格→「ECC-三类业务生产管理」base 14 表)·非 cloud systemd runners。FDE 下次同步进 SSOT 细节。
 
 ## ✅ binding-DONE 判据(外部可证·任一框可查·治目标无限膨胀)
 闭环 = 下面三条**全 grounded 成立**:
