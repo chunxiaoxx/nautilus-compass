@@ -26,6 +26,14 @@
 - 维②经济环(credit 口径/结算腿 liveness)· compass MCP 耦合(Phase 1-4)· 平台 mint_mcp_token · FDE 招募/RBAC/4 skill 发版 · content-engine 命名合约 · 维① KILL 资产保留(未来上 H800/换真难料重启)
 - **FDE 切飞书多维表格**:执行路径已变(飞书→多维表格→「ECC-三类业务生产管理」base 14 表)·非 cloud systemd runners。FDE 下次同步进 SSOT 细节。
 
+### 🛠️ 破自循环通道(锚点③ 预备·scope 严格)
+- **实证**(6/29 grounded DB):fde_verdicts 今日 190 全 `compass/bench_eval` source·task_uid 全 `compass_exp_*_automint_<ts>`·engine_cycle_outcomes 今日 0·`soul_alive=True` 靠自循环刷的剧场。
+- **scope**(用户 6/29 拍 B·微破):仅为**蒸馏 verdict 留通道**,不变成通用维②清理(踩教训1)。
+  - 加 1 列:`fde_verdicts.external_verified bool`(默认 false·仅 soul canonical verify 标 True)。
+  - 改 1 判据:`control_plane.soul_alive` 按 `MAX(external_verified_at)` 新鲜度算(非 cycle stale_hours)。
+  - 内循环(auto-mint / bench_eval)继续跑·只是不再"算活/入账"——**不改 compass 内部逻辑**(V5/compass turf 不动)。
+  - 不写新服务/不写新 runner/不写新 webhook——复用现有 soul canonical verify 加 1 行 UPDATE。
+
 ## ✅ binding-DONE 判据(外部可证·任一框可查·治目标无限膨胀)
 闭环 = 下面三条**全 grounded 成立**:
 1. `agent_survival.total_income` 因真外部验证产出(soul-canonical / held-out)增长
