@@ -4,6 +4,9 @@ published: true
 description: "Recall != consumption. Same anti-pattern reproduced across sessions despite recall hitting the right files. Three layers of fix and a capability-driven governance plan that scales without templates."
 tags: llm, memory, mcp, agents
 canonical_url: https://github.com/chunxiaoxx/nautilus-compass
+cumulative_impact: 4.0
+impact_event_count: 4
+last_impact_at: 2026-06-30T08:25:38+00:00
 ---
 
 # Compass v1.1.0 · the recall consumption fix
