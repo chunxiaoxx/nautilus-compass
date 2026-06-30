@@ -1,0 +1,26 @@
+{
+  "benchmark": "ALE-Bench",
+  "problem_id": "ahc001",
+  "score": 0.0,
+  "rejected": true,
+  "candidate": "int main(){return 0;}",
+  "judge_version": "202510",
+  "lite_version": false,
+  "language": "cpp23",
+  "run_at": "2026-06-30T00:30:00+08:00",
+  "runner": "compass dialog T4 43.166.8.20 /mnt/datadisk0/ale-bench/.venv",
+  "judge_image": "ale-bench:cpp23-202510",
+  "notes": "trivial baseline · 0.0 score 正常 · rejected=True 符合 AHC 启发式竞赛 0 分判据 · framework 真跑通(已 import ale_eval + score_solution + judge docker · end-to-end pipeline 真值落地)",
+  "framework_validation": {
+    "ale_bench_module": "OK · /mnt/datadisk0/ale-bench/.venv/lib/python3.12/site-packages/ale_bench-1.5.0.dist-info",
+    "judge_docker_image": "OK · ale-bench:cpp23-202510 (5.51GB) pre-pulled",
+    "wrapper_scp": "OK · /tmp/ale_eval.py from compass repo ale_bench/ale_eval.py",
+    "end_to_end": "OK · import → score_solution → judge → return score+rejected 真值"
+  },
+  "next_steps": [
+    "用 V5 产 A-class 候选 candidate code 替换 trivial baseline · 跑真 score",
+    "对比 base 7B vs distilled 7B 在 ahc001 上 score delta(RSI 闭环 binding-DONE 第 1 条)",
+    "扩展到 ahc002-012 多题跑分(binding-DONE 第 1 条 grounded 验证)"
+  ],
+  "audit_trail": "paper/audit_bench_run_20260629.md"
+}
