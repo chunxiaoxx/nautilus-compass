@@ -61,8 +61,30 @@ def test_probe_snapshot_freshness_green_recent(tmp_path):
     assert r["status"] == "GREEN"
 
 
+def test_probe_snapshot_freshness_green_within_dev_tolerance(tmp_path):
+    """dev 机器默认 168h 容差:1 天老文件 → GREEN(用默认阈值跑)。"""
+    from ops import liveness_audit as LA
+    fake = tmp_path / "old.json"
+    fake.write_text("{}")
+    old_time = time.time() - 86400  # 1 day ago
+    os.utime(fake, (old_time, old_time))
+    r = probe_snapshot_freshness(fake, max_age_hours=LA.DEFAULT_FRESHNESS_HOURS)
+    assert r["status"] == "GREEN"
+    assert "168" in r["detail"] or "week" in r["detail"].lower() or "h" in r["detail"]
+
+
 def test_probe_snapshot_freshness_red_old(tmp_path):
-    """老 fake 文件(mtime 1 天前)→ RED。"""
+    """老 fake 文件(超过 max_age_hours)→ RED。"""
+    fake = tmp_path / "old.json"
+    fake.write_text("{}")
+    very_old = time.time() - (200 * 3600)  # 200 小时前
+    os.utime(fake, (very_old, very_old))
+    r = probe_snapshot_freshness(fake, max_age_hours=168.0)
+    assert r["status"] == "RED"
+
+
+def test_probe_snapshot_freshness_red_strict_2h(tmp_path):
+    """production 严格 2h 阈值:1 天老文件 → RED(显式传 2h)。"""
     fake = tmp_path / "old.json"
     fake.write_text("{}")
     old_time = time.time() - 86400  # 1 day ago
@@ -80,16 +102,28 @@ def test_probe_snapshot_freshness_red_missing(tmp_path):
 # ---- probe_impact_axis ----
 
 def test_probe_impact_axis_green_with_wiring(tmp_path):
-    """fake patch 含 'poi_impact' 字符串 → GREEN。"""
+    """fake patch 含 2 个真 wiring 标记 → GREEN。"""
     fake = tmp_path / "patch.py"
-    fake.write_text("# fake patch\npoi_impact = 0.5\n")
+    fake.write_text(
+        "def _v14_poi_boost(hits): pass\n"
+        "x = _v14_poi_boost(_h)\n"
+    )
     r = probe_impact_axis(fake)
     assert r["status"] == "GREEN"
-    assert "True" in r["detail"]
+    assert "wiring ok" in r["detail"]
+
+
+def test_probe_impact_axis_red_partial_wiring(tmp_path):
+    """fake patch 只含部分标记 → RED(明确报缺哪个)。"""
+    fake = tmp_path / "patch.py"
+    fake.write_text("def _v14_poi_boost(hits): pass\n")  # 只 fn_def
+    r = probe_impact_axis(fake)
+    assert r["status"] == "RED"
+    assert "call_site" in r["detail"]
 
 
 def test_probe_impact_axis_red_no_wiring(tmp_path):
-    """fake patch 不含 'poi_impact' → RED。"""
+    """fake patch 不含任何标记 → RED。"""
     fake = tmp_path / "patch.py"
     fake.write_text("# no wiring here\n")
     r = probe_impact_axis(fake)
@@ -109,7 +143,7 @@ def test_run_all_returns_3_probes(tmp_path):
     fake_snap = tmp_path / "snap.json"
     fake_snap.write_text("{}")  # 0 lines → RED
     fake_patch = tmp_path / "patch.py"
-    fake_patch.write_text("poi_impact = 0.5")  # GREEN
+    fake_patch.write_text("def _v14_poi_boost(hits): pass\n_v14_poi_boost(_h)")  # GREEN
     r = run_all(snapshot_path=fake_snap, patch_file=fake_patch)
     assert PROBE_LEDGER in r
     assert PROBE_FRESHNESS in r

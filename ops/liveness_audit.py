@@ -33,7 +33,11 @@ DEFAULT_SNAPSHOT_PATH = Path(
         str(Path.home() / ".claude" / "plugins" / "nautilus-compass" / ".cache"),
     )
 ) / "poi_credit_cache.json"
-DEFAULT_FRESHNESS_HOURS = 2.0
+# 默认 168h (1 周) 容差:dev 机器快照不频刷(cloud 端 regen_poi_snapshot.sh
+# 跑在 ubuntu@cpu · T4 daemon 跑 snapshot_pull.py · Windows dev 本机无自动
+# 拉取机制 · 探针目的是"通路在不在"不是"实时不实时")。production 部署
+# 应通过 env COMPASS_FRESHNESS_HOURS=2 或 --max-age-hours 2 改回 2h 严格阈值。
+DEFAULT_FRESHNESS_HOURS = float(os.environ.get("COMPASS_FRESHNESS_HOURS", "168.0"))
 DEFAULT_MIN_LINES = 1
 DEFAULT_PATCH_FILE = _REPO / "ops" / "patch_v14_recall_poi_boost.py"
 
@@ -82,18 +86,35 @@ def probe_snapshot_freshness(
 
 
 def probe_impact_axis(patch_file: Path = DEFAULT_PATCH_FILE) -> dict:
-    """patch_v14_recall_poi_boost.py 存在 + 含 poi_impact wiring → GREEN(路径就位)。"""
+    """patch_v14_recall_poi_boost.py 存在 + 含 PoI boost wiring 标记 → GREEN(路径就位)。
+
+    检查真 wiring 标记(per anchor #5 复用 patch 现有命名):
+    - `def _v14_poi_boost`  (boost 函数定义 · 写在 raw string BOOST_HELPER 里)
+    - `_v14_poi_boost(_h)`  (call site 注入 · apply_patch edit 2)
+
+    2 个全在 = boost 路径就位(从 snapshot mtime-reload 到 v14 rerank 整条链通)。
+    注:`cumulative_impact` 字段在 postgres 表里(详 regen_poi_snapshot.sh),
+    patch 通过 `snap.get(proj+"/"+mem)` 通用 dict 读 · 不显式引用该字段名,
+    所以探针不检查它(否则永远 RED,违反 anchor #5 不幻觉不存在的标记)。
+    """
     if not patch_file.exists():
         return _is_green(False, f"patch file missing: {patch_file}")
     try:
         content = patch_file.read_text(encoding="utf-8")
     except Exception as e:
         return _is_green(False, f"patch read fail: {e}")
-    has_wiring = "poi_impact" in content
-    return _is_green(
-        has_wiring,
-        f"poi_impact wiring in patch = {has_wiring} (file: {patch_file.name})",
+    markers = {
+        "fn_def": "def _v14_poi_boost" in content,
+        "call_site": "_v14_poi_boost(_h)" in content,
+    }
+    has_wiring = all(markers.values())
+    missing = [k for k, v in markers.items() if not v]
+    detail = (
+        f"wiring ok (both markers): fn_def + call_site"
+        if has_wiring
+        else f"wiring missing markers: {missing} (file: {patch_file.name})"
     )
+    return _is_green(has_wiring, detail)
 
 
 def run_all(
