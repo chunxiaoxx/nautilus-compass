@@ -28,8 +28,7 @@ def gen_session_start(dialog_name: str, dialog_root: str) -> str:
         "import json\n"
         "import os\n"
         "import sys\n\n"
-        f'EXPECTED_CWD = "{project_name}"\n'
-        f"PROJECT_ROOT = Path(r\"{dialog_root}\")\n\n"
+        f'EXPECTED_CWD = "{project_name}"\n\n'
         "ALERTS_RED = [\n"
         f'    "超红: 越界写非 {dialog_name} 项目文件",\n'
         '    "超红: 不写 .claude/memory/session_*.md 就 Stop",\n'
