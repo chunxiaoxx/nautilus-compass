@@ -1,0 +1,1 @@
+Pure Python 3 standard library only (no numpy/scipy/numba/torch/jax/tensorflow). matmul(A, B) -> {"C": [[float]], "elapsed_s": float}. C must be M×N where M=len(A), N=len(B[0]). max_abs_diff vs naive reference must be ≤ 1e-3 to score > 0.

@@ -1,0 +1,13 @@
+import time
+
+def matmul(A, B):
+    M, K = len(A), len(A[0])
+    N = len(B[0])
+    t0 = time.perf_counter()
+    C = [[0.0] * N for _ in range(M)]
+    for i in range(M):
+        for k in range(K):
+            aik = A[i][k]
+            for j in range(N):
+                C[i][j] += aik * B[k][j]
+    return {"C": C, "elapsed_s": time.perf_counter() - t0}

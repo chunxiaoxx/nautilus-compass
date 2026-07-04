@@ -1,0 +1,1 @@
+Pure Python stdlib + numpy only. align_lens_pair must return dict with keys z_a,z_b,x_a,x_b,y_a,y_b. Hard constraint: z_b > z_a + 1e-6. Range [-50,250] mm. n_rays parameter unused (verifier uses fixed 64).

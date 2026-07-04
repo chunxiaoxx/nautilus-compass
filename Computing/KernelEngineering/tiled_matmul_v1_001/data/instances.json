@@ -1,0 +1,8 @@
+[
+  {"instance_id": "gemm_001_small_square", "M": 32, "K": 32, "N": 32, "seed": 1},
+  {"instance_id": "gemm_002_medium_square", "M": 64, "K": 64, "N": 64, "seed": 2},
+  {"instance_id": "gemm_003_large_square", "M": 96, "K": 96, "N": 96, "seed": 3},
+  {"instance_id": "gemm_004_skinny_a", "M": 64, "K": 96, "N": 32, "seed": 4},
+  {"instance_id": "gemm_005_skinny_b", "M": 32, "K": 96, "N": 64, "seed": 5},
+  {"instance_id": "gemm_006_long_k", "M": 64, "K": 128, "N": 64, "seed": 6}
+]
