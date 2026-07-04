@@ -216,5 +216,33 @@ drift hook 阈值:
 
 **规避法**:每个表独立段 · 不堆 · "真"字 zero · 关键回复独立短段
 
+## 🚨 3 档 alert 契约(必检 · 7/4 真 sync 后更新)
+
+### 超红(🚨 立刻 stop)
+- 越界写非 compass 项目文件(每 session 必 pwd 核身份)
+- 不写 .claude/memory/session_*.md 就 Stop
+- drift score < -0.07(R1 立停 · 不靠自律)
+- 误以为在 platform-soul / core / v5 框工作(本 dialog 真在 compass)
+- 5 dialog 全 6 周没 .claude/memory/(只有 compass 7/4 第一次真写 · 复发风险高)
+
+### 红(🔴 本次响应必检)
+- 段落超 8 行
+- "真"字 ≥ 3 / 段
+- 越权改 SSOT 副本(只改 canonical core)
+- 堆 dense markdown 表格
+- 不读 NEW_SESSION_START.md 就答"接住主线"
+- 凭 SSOT 推断 + 不查 git log / commit message / 真文件(用户多次纠错"去查询查看")
+- 把 v5/core commit 误当 compass 真 ship(60 commits/14d 分布:compass 20 + v5 20 + core 20)
+- ship 前不读 v5 真 trajectory v7 字段(锚 #5 复用)
+
+### 黄(🟡 本 turn 提醒)
+- 不读 auto_surface_hook 推 watermark
+- 不读 GOAL_PROMPT
+- 不核身份
+- 不写 session memory 落档
+- 不验 v5 真 trajectory v7 字段就 ship
+- 不跑 `python ops/cross_dialog_audit.py 14`(5 dialog 真 sync 工具)
+- 不知道 5 dialog 14d 真实状态 = v5 7/4 推 5 版 handoff · core 7/4 50 题真生成 · compass 7/4 自己推 ABC 三件
+
 ---
 *Goal 提示词定稿:2026-07-04 01:40 PDT · 8 件漏掉真治法 · 下 session 一开就 paste 第一动作段 + P0 3 件*
