@@ -27,7 +27,9 @@ metadata:
 
 ## 关联
 
-- compass/.claude/memory/session_20260704_compass_genopt_main_loop_handoff_continuation.md
-- GOAL_PROMPT_20260704.md · 3 档 alert 契约
+> 提示:下面 4 行中,line 1 是 compass 真档路径示例,line 2-4 是 compass 域代码 · Task 3 bootstrap.py 处理其他 dialog 时按需替换 / 删去
+
+- <DIALOG_NAME>/.claude/memory/session_<DATE>_<DIALOG_NAME>_main_loop_handoff.md
+- GOAL_PROMPT_<DATE>.md · 3 档 alert 契约
 - auto_surface_hook.py · 76 条 inbound 真消费
 - cross_dialog_audit.py · 5 dialog 14d 60 commits 真扫
