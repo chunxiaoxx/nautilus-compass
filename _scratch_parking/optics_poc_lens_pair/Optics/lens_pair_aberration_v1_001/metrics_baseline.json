@@ -1,0 +1,54 @@
+{
+  "task_id": "lens_pair_aberration_v1_001",
+  "domain": "Optics and Communication Systems",
+  "sub_domain": "Optics",
+  "valid": 1,
+  "combined_score": 5.450141686440831,
+  "per_instance": [
+    {
+      "instance_id": "bench_001_on_axis",
+      "valid": 1,
+      "achieved_rms": 17.041753402954868,
+      "score": 5.867940794323489
+    },
+    {
+      "instance_id": "bench_002_off_axis_low",
+      "valid": 1,
+      "achieved_rms": 16.074720455116047,
+      "score": 6.220947995905791
+    },
+    {
+      "instance_id": "bench_003_off_axis_high",
+      "valid": 1,
+      "achieved_rms": 14.46619750353457,
+      "score": 6.912666578454131
+    },
+    {
+      "instance_id": "bench_004_wide_aperture",
+      "valid": 1,
+      "achieved_rms": 21.829097249065498,
+      "score": 4.581041481423653
+    },
+    {
+      "instance_id": "bench_005_long_bench",
+      "valid": 1,
+      "achieved_rms": 29.14555333484343,
+      "score": 3.4310551201802117
+    },
+    {
+      "instance_id": "bench_006_close_object",
+      "valid": 1,
+      "achieved_rms": 12.700652642594596,
+      "score": 7.873611129606577
+    },
+    {
+      "instance_id": "bench_007_microscopy_tube",
+      "valid": 1,
+      "achieved_rms": 30.639801598986864,
+      "score": 3.2637287051919617
+    }
+  ],
+  "n_instances": 7,
+  "baseline_failures": 0,
+  "target_rms_oracle": 1.0
+}

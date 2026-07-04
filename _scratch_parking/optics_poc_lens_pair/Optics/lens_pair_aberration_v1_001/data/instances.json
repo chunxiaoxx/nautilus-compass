@@ -1,0 +1,51 @@
+[
+  {
+    "instance_id": "bench_001_on_axis",
+    "source": {"z": -60.0, "dy": 0.0, "dz": 0.0},
+    "lens_a": {"f": 30.0, "aperture_radius": 8.0},
+    "lens_b": {"f": 20.0, "aperture_radius": 6.0},
+    "target_z": 95.0
+  },
+  {
+    "instance_id": "bench_002_off_axis_low",
+    "source": {"z": -75.0, "dy": 0.5, "dz": 0.2},
+    "lens_a": {"f": 35.0, "aperture_radius": 10.0},
+    "lens_b": {"f": 25.0, "aperture_radius": 8.0},
+    "target_z": 110.0
+  },
+  {
+    "instance_id": "bench_003_off_axis_high",
+    "source": {"z": -90.0, "dy": 1.2, "dz": 0.6},
+    "lens_a": {"f": 40.0, "aperture_radius": 12.0},
+    "lens_b": {"f": 30.0, "aperture_radius": 10.0},
+    "target_z": 130.0
+  },
+  {
+    "instance_id": "bench_004_wide_aperture",
+    "source": {"z": -50.0, "dy": 0.0, "dz": 0.0},
+    "lens_a": {"f": 25.0, "aperture_radius": 15.0},
+    "lens_b": {"f": 18.0, "aperture_radius": 12.0},
+    "target_z": 75.0
+  },
+  {
+    "instance_id": "bench_005_long_bench",
+    "source": {"z": -120.0, "dy": 0.3, "dz": 0.4},
+    "lens_a": {"f": 50.0, "aperture_radius": 14.0},
+    "lens_b": {"f": 35.0, "aperture_radius": 11.0},
+    "target_z": 180.0
+  },
+  {
+    "instance_id": "bench_006_close_object",
+    "source": {"z": -40.0, "dy": 1.0, "dz": 0.8},
+    "lens_a": {"f": 22.0, "aperture_radius": 9.0},
+    "lens_b": {"f": 16.0, "aperture_radius": 7.0},
+    "target_z": 65.0
+  },
+  {
+    "instance_id": "bench_007_microscopy_tube",
+    "source": {"z": -180.0, "dy": 0.1, "dz": 0.05},
+    "lens_a": {"f": 60.0, "aperture_radius": 18.0},
+    "lens_b": {"f": 45.0, "aperture_radius": 15.0},
+    "target_z": 240.0
+  }
+]

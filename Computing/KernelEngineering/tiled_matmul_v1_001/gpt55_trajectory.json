@@ -1,0 +1,273 @@
+{
+  "task_id": "tiled_matmul_v1_001",
+  "model": "gpt-5.5",
+  "rounds": [
+    {
+      "round": 0,
+      "kind": "baseline",
+      "score": 1.7402220267344592,
+      "metrics": {
+        "task_id": "tiled_matmul_v1_001",
+        "domain": "Computing and Quantum Information",
+        "sub_domain": "KernelEngineering",
+        "valid": 1,
+        "combined_score": 1.7402220267344592,
+        "per_instance": [
+          {
+            "instance_id": "gemm_001_small_square",
+            "valid": 1,
+            "achieved_gflops": 0.024125160995101667,
+            "elapsed_s": 0.0027165000064997002,
+            "max_abs_diff": 0.0,
+            "score": 1.6083440663401112
+          },
+          {
+            "instance_id": "gemm_002_medium_square",
+            "valid": 1,
+            "achieved_gflops": 0.025450997331593145,
+            "elapsed_s": 0.020599900002707727,
+            "max_abs_diff": 0.0,
+            "score": 1.696733155439543
+          },
+          {
+            "instance_id": "gemm_003_large_square",
+            "valid": 1,
+            "achieved_gflops": 0.029133345410838393,
+            "elapsed_s": 0.06073699999251403,
+            "max_abs_diff": 0.0,
+            "score": 1.9422230273892263
+          },
+          {
+            "instance_id": "gemm_004_skinny_a",
+            "valid": 1,
+            "achieved_gflops": 0.024731188213048032,
+            "elapsed_s": 0.015899599995464087,
+            "max_abs_diff": 0.0,
+            "score": 1.6487458808698687
+          },
+          {
+            "instance_id": "gemm_005_skinny_b",
+            "valid": 1,
+            "achieved_gflops": 0.027223860759043303,
+            "elapsed_s": 0.014443799998844042,
+            "max_abs_diff": 0.0,
+            "score": 1.8149240506028868
+          },
+          {
+            "instance_id": "gemm_006_long_k",
+            "valid": 1,
+            "achieved_gflops": 0.02595542969647679,
+            "elapsed_s": 0.040399100005743094,
+            "max_abs_diff": 0.0,
+            "score": 1.7303619797651193
+          }
+        ],
+        "n_instances": 6,
+        "baseline_failures": 0,
+        "target_gflops_oracle": 1.5
+      }
+    },
+    {
+      "round": 1,
+      "kind": "gpt55",
+      "score": 1.4229355261960965,
+      "model_response_tail": "B[0])\n    t0 = time.perf_counter()\n    C = [[0.0] * N for _ in range(M)]\n    for i in range(M):\n        for k in range(K):\n            aik = A[i][k]\n            Bk = B[k]\n            for j in range(N):\n                C[i][j] += aik * Bk[j]\n    return {\"C\": C, \"elapsed_s\": time.perf_counter() - t0}\n",
+      "metrics": {
+        "task_id": "tiled_matmul_v1_001",
+        "domain": "Computing and Quantum Information",
+        "sub_domain": "KernelEngineering",
+        "valid": 1,
+        "combined_score": 1.4229355261960965,
+        "per_instance": [
+          {
+            "instance_id": "gemm_001_small_square",
+            "valid": 1,
+            "achieved_gflops": 0.021359754957976287,
+            "elapsed_s": 0.0030681999924127012,
+            "max_abs_diff": 0.0,
+            "score": 1.4239836638650856
+          },
+          {
+            "instance_id": "gemm_002_medium_square",
+            "valid": 1,
+            "achieved_gflops": 0.021646545891316128,
+            "elapsed_s": 0.024220399995101616,
+            "max_abs_diff": 0.0,
+            "score": 1.4431030594210752
+          },
+          {
+            "instance_id": "gemm_003_large_square",
+            "valid": 1,
+            "achieved_gflops": 0.023243868096600503,
+            "elapsed_s": 0.07612639998842496,
+            "max_abs_diff": 0.0,
+            "score": 1.5495912064400335
+          },
+          {
+            "instance_id": "gemm_004_skinny_a",
+            "valid": 1,
+            "achieved_gflops": 0.02177926954337845,
+            "elapsed_s": 0.018054600004688837,
+            "max_abs_diff": 0.0,
+            "score": 1.4519513028918967
+          },
+          {
+            "instance_id": "gemm_005_skinny_b",
+            "valid": 1,
+            "achieved_gflops": 0.022781263582565686,
+            "elapsed_s": 0.01726049999706447,
+            "max_abs_diff": 0.0,
+            "score": 1.518750905504379
+          },
+          {
+            "instance_id": "gemm_006_long_k",
+            "valid": 1,
+            "achieved_gflops": 0.017253495285811642,
+            "elapsed_s": 0.06077470000309404,
+            "max_abs_diff": 0.0,
+            "score": 1.1502330190541095
+          }
+        ],
+        "n_instances": 6,
+        "baseline_failures": 0,
+        "target_gflops_oracle": 1.5
+      }
+    },
+    {
+      "round": 2,
+      "kind": "gpt55",
+      "score": 1.594701940760455,
+      "model_response_tail": "B[0])\n    t0 = time.perf_counter()\n    C = [[0.0] * N for _ in range(M)]\n    for i in range(M):\n        for k in range(K):\n            aik = A[i][k]\n            Bk = B[k]\n            for j in range(N):\n                C[i][j] += aik * Bk[j]\n    return {\"C\": C, \"elapsed_s\": time.perf_counter() - t0}\n",
+      "metrics": {
+        "task_id": "tiled_matmul_v1_001",
+        "domain": "Computing and Quantum Information",
+        "sub_domain": "KernelEngineering",
+        "valid": 1,
+        "combined_score": 1.594701940760455,
+        "per_instance": [
+          {
+            "instance_id": "gemm_001_small_square",
+            "valid": 1,
+            "achieved_gflops": 0.021456259795567582,
+            "elapsed_s": 0.0030544000037480146,
+            "max_abs_diff": 0.0,
+            "score": 1.4304173197045056
+          },
+          {
+            "instance_id": "gemm_002_medium_square",
+            "valid": 1,
+            "achieved_gflops": 0.029178984861798384,
+            "elapsed_s": 0.017968000000109896,
+            "max_abs_diff": 0.0,
+            "score": 1.9452656574532254
+          },
+          {
+            "instance_id": "gemm_003_large_square",
+            "valid": 1,
+            "achieved_gflops": 0.02013596400573304,
+            "elapsed_s": 0.08787619999202434,
+            "max_abs_diff": 0.0,
+            "score": 1.3423976003822027
+          },
+          {
+            "instance_id": "gemm_004_skinny_a",
+            "valid": 1,
+            "achieved_gflops": 0.021637850388980563,
+            "elapsed_s": 0.01817260000098031,
+            "max_abs_diff": 0.0,
+            "score": 1.4425233592653708
+          },
+          {
+            "instance_id": "gemm_005_skinny_b",
+            "valid": 1,
+            "achieved_gflops": 0.02208433491664182,
+            "elapsed_s": 0.01780519999738317,
+            "max_abs_diff": 0.0,
+            "score": 1.4722889944427877
+          },
+          {
+            "instance_id": "gemm_006_long_k",
+            "valid": 1,
+            "achieved_gflops": 0.029029780699719558,
+            "elapsed_s": 0.036120700009632856,
+            "max_abs_diff": 0.0,
+            "score": 1.9353187133146372
+          }
+        ],
+        "n_instances": 6,
+        "baseline_failures": 0,
+        "target_gflops_oracle": 1.5
+      }
+    },
+    {
+      "round": 3,
+      "kind": "gpt55",
+      "score": 1.49511215273204,
+      "model_response_tail": "B[0])\n    t0 = time.perf_counter()\n    C = [[0.0] * N for _ in range(M)]\n    for i in range(M):\n        for k in range(K):\n            aik = A[i][k]\n            Bk = B[k]\n            for j in range(N):\n                C[i][j] += aik * Bk[j]\n    return {\"C\": C, \"elapsed_s\": time.perf_counter() - t0}\n",
+      "metrics": {
+        "task_id": "tiled_matmul_v1_001",
+        "domain": "Computing and Quantum Information",
+        "sub_domain": "KernelEngineering",
+        "valid": 1,
+        "combined_score": 1.49511215273204,
+        "per_instance": [
+          {
+            "instance_id": "gemm_001_small_square",
+            "valid": 1,
+            "achieved_gflops": 0.022112153332990277,
+            "elapsed_s": 0.002963799997814931,
+            "max_abs_diff": 0.0,
+            "score": 1.4741435555326852
+          },
+          {
+            "instance_id": "gemm_002_medium_square",
+            "valid": 1,
+            "achieved_gflops": 0.023895791368296067,
+            "elapsed_s": 0.021940599996014498,
+            "max_abs_diff": 0.0,
+            "score": 1.5930527578864044
+          },
+          {
+            "instance_id": "gemm_003_large_square",
+            "valid": 1,
+            "achieved_gflops": 0.02247059854393092,
+            "elapsed_s": 0.07874609999998938,
+            "max_abs_diff": 0.0,
+            "score": 1.498039902928728
+          },
+          {
+            "instance_id": "gemm_004_skinny_a",
+            "valid": 1,
+            "achieved_gflops": 0.021082950414955677,
+            "elapsed_s": 0.018650900005013682,
+            "max_abs_diff": 0.0,
+            "score": 1.405530027663712
+          },
+          {
+            "instance_id": "gemm_005_skinny_b",
+            "valid": 1,
+            "achieved_gflops": 0.02258369466923766,
+            "elapsed_s": 0.017411500011803582,
+            "max_abs_diff": 0.0,
+            "score": 1.505579644615844
+          },
+          {
+            "instance_id": "gemm_006_long_k",
+            "valid": 1,
+            "achieved_gflops": 0.022414905416472973,
+            "elapsed_s": 0.04678030000650324,
+            "max_abs_diff": 0.0,
+            "score": 1.494327027764865
+          }
+        ],
+        "n_instances": 6,
+        "baseline_failures": 0,
+        "target_gflops_oracle": 1.5
+      }
+    }
+  ],
+  "best_score": 1.594701940760455,
+  "best_round": 2,
+  "gap_closed": -0.0014552008597400424,
+  "difficulty": "Rejected"
+}
