@@ -40,6 +40,8 @@
 - platform-soul(nautilus-core): da7eebd50 50 题真 generate(只 dir 无 trajectory)
 - agent(nautilus-v5): 6f6fe2c 14 buyer rows + 8 真 ship + 6 Rejected 诚实
 - FDE: v5 子模块 · 共 14 行真在 NEW base
+- **soul-verify**: mode='score' APPROVE · 难度指纹 ready(已落 SSOT)
+- **跨 dialog 协调**: 静态基线 FDE_BUSINESS_CHARTER.md 三方 + 动态合约 close_loop + 语义 ingest_obs · MCP 时断已部分治(auto_surface_hook 76 条 inbound 真消费)
 
 ## 第一刀 · P0(治根 + 真闭环)
 1. baseline 数字修剩余 4 题: cloud update_bitable_record 4 题真 record_id
@@ -71,6 +73,7 @@
 - auto_surface_hook: compass/ops/auto_surface_hook.py
 - ALE eval: compass/ale_bench/ale_eval.py
 - liveness: compass/ops/liveness_audit.py
+- **FDE 业务宪章(本目录根 · FDE_BUSINESS_CHARTER.md)**:三类业务 / 11+1 benchmark / 各 dialog 真 turf / 协调机制 · session-start 真必读
 - canonical SSOT: nautilus-core/LOOP_STATE_SSOT.md
 - v5 flywheel v3: nautilus-v5/docs/plans/2026-07-03-genopt-flywheel-v3-design.md
 - 6/17 rootcause memory: reference_crossdialog_sync_rootcause_autosurface_hook_20260617.md
@@ -78,6 +81,20 @@
 - v5 NEW genopt base: KY9ZbC2Qqa6ZZXsKrWyc5VGRnXe/tblQAW4aNM99nva6
 - cloud VM: ssh cloud (43.160.239.61:24860)
 - H800: ssh -p 34467 root@connect.westc.seetacloud.com
+
+## compass 真 turf(按 FDE 业务宪章 §4)
+- 记忆 / recall / drift / PoI / governance / metamemory
+- **FDE benchmark env/eval**(第 3 类 · 11+1 类)
+- **KernelBench 主攻**(已 attention + 重标定 1.727x 过门)
+- **FrontierSWE 主攻**(resolve env · flask-4045 pass@1=0.6 hard)
+- MLRC/ResearchGym 次批
+- feishu 读写函数
+- 工具栈(fde-row-assembler / checklist-from-task / knowledge-tutorial-assembler / build-html-dashboard)
+
+## 真三类业务口径(7/4 真读 FDE_BUSINESS_CHARTER.md 后补)
+- **第1类 · 行业高难题目**:专家亲写 ≥8h · 16 列 · 9 个一级类目不可改
+- **第2类 · 知识教案**:1k-30k 字 · 6 领域 · 知识密度 ≥5 知识点 · 跑 AI 检测
+- **第3类 · 基准复现**:11+1 类(MLS/Frontier-Eng/ResearchGym/PostTrain/InferenceBench/FrontierSWE/MLRC/RE/KernelBench/EXP/AutoLab + ALE-Bench)· pass@5 ≤ 0.6 on doubao 2.0 = 难倒
 
 ## 不复发契约(8 件狗熊掰玉米漏掉的事)
 1. session-end 必写 compass/.claude/memory/session_*.md
