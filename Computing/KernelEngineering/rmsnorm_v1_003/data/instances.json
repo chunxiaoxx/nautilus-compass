@@ -1,0 +1,7 @@
+[
+  {"instance_id": "rms_001_small",     "N": 64,   "D": 64,   "eps": 1e-6, "seed": 1},
+  {"instance_id": "rms_002_medium",    "N": 128,  "D": 256,  "eps": 1e-6, "seed": 2},
+  {"instance_id": "rms_003_long",      "N": 512,  "D": 512,  "eps": 1e-6, "seed": 3},
+  {"instance_id": "rms_004_thin",      "N": 1024, "D": 128,  "eps": 1e-6, "seed": 4},
+  {"instance_id": "rms_005_wide",      "N": 64,   "D": 2048, "eps": 1e-6, "seed": 5}
+]

@@ -1,0 +1,1 @@
+Pure Python 3 stdlib only (no numpy/scipy/numba/torch/jax/tensorflow). rmsnorm(x, weight, eps=1e-6) -> {"output": [[float]], "elapsed_s": float}. output[i][j] = x[i][j] * weight[j] / sqrt(mean(x[i][k]^2) + eps). max_abs_diff vs naive reference must be ≤ 1e-3 to score > 0.
