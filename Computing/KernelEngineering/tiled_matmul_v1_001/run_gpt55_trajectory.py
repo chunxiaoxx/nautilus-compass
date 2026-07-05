@@ -12,16 +12,12 @@ import time
 import urllib.request
 from pathlib import Path
 
-KEY = "sk-c16301d1475dc595011320892cac17cd23d58d92d19a308668bf04b1878c84c8"
-BASE = "https://v2.qixuw.com"
+KEY = ""  # local CC Switch injects
+BASE = "http://127.0.0.1:52999"  # CC Switch local proxy (matches agent dialog path)
 MODEL = "gpt-5.5"
 ROOT = Path(__file__).resolve().parent
 TASK_MD = (ROOT / "Task.md").read_text(encoding="utf-8")
 INSTANCES = json.loads((ROOT / "data" / "instances.json").read_text(encoding="utf-8"))
-
-ctx = ssl.create_default_context()
-ctx.check_hostname = False
-ctx.verify_mode = ssl.CERT_NONE
 
 
 def call_gpt55(prompt: str, timeout: int = 180) -> str:
@@ -38,10 +34,11 @@ def call_gpt55(prompt: str, timeout: int = 180) -> str:
         method="POST",
         headers={
             "Content-Type": "application/json",
-            "Authorization": f"Bearer {KEY}",
+            "x-api-key": "PROXY_MANAGED",
+            "anthropic-version": "2023-06-01",
         },
     )
-    with urllib.request.urlopen(req, timeout=timeout, context=ctx) as r:
+    with urllib.request.urlopen(req, timeout=timeout) as r:
         data = json.loads(r.read())
     return data["choices"][0]["message"]["content"]
 
