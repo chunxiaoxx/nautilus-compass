@@ -1,0 +1,7 @@
+verification/evaluate.py
+verification/_core.py
+reference/reference.py
+data/instances.json
+Task.md
+README.md
+requirements.txt
