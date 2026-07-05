@@ -1,0 +1,7 @@
+[
+  {"instance_id": "conv_001_small",     "C_in": 1,  "C_out": 4,  "H": 16,  "W": 16,  "K_h": 3,  "K_w": 3,  "stride": 1, "padding": 0, "seed": 1},
+  {"instance_id": "conv_002_medium",    "C_in": 3,  "C_out": 8,  "H": 24,  "W": 24,  "K_h": 3,  "K_w": 3,  "stride": 1, "padding": 1, "seed": 2},
+  {"instance_id": "conv_003_dense_ic",  "C_in": 8,  "C_out": 16, "H": 16,  "W": 16,  "K_h": 3,  "K_w": 3,  "stride": 1, "padding": 1, "seed": 3},
+  {"instance_id": "conv_004_tall_out",  "C_in": 4,  "C_out": 32, "H": 12,  "W": 12,  "K_h": 3,  "K_w": 3,  "stride": 1, "padding": 0, "seed": 4},
+  {"instance_id": "conv_005_strided",   "C_in": 2,  "C_out": 6,  "H": 20,  "W": 20,  "K_h": 3,  "K_w": 3,  "stride": 2, "padding": 1, "seed": 5}
+]

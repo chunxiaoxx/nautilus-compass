@@ -1,0 +1,27 @@
+import time
+
+def conv2d(input, kernel, stride=1, padding=0):
+    C_in = len(input)
+    H = len(input[0]); W = len(input[0][0]) if H > 0 else 0
+    C_out = len(kernel)
+    K_h = len(kernel[0][0]); K_w = len(kernel[0][0][0]) if K_h > 0 else 0
+    H_p = H + 2 * padding; W_p = W + 2 * padding
+    padded = [[[0.0]*W_p for _ in range(H_p)] for _ in range(C_in)]
+    for c in range(C_in):
+        for y in range(H):
+            for x in range(W):
+                padded[c][padding+y][padding+x] = input[c][y][x]
+    H_out = (H_p - K_h)//stride + 1; W_out = (W_p - K_w)//stride + 1
+    t0 = time.perf_counter()
+    output = [[[0.0]*W_out for _ in range(H_out)] for _ in range(C_out)]
+    for out_c in range(C_out):
+        for in_c in range(C_in):
+            for oy in range(H_out):
+                for ox in range(W_out):
+                    acc = 0.0
+                    for ky in range(K_h):
+                        for kx in range(K_w):
+                            iy = oy*stride + ky; ix = ox*stride + kx
+                            acc += padded[in_c][iy][ix] * kernel[out_c][in_c][ky][kx]
+                    output[out_c][oy][ox] = acc
+    return {"output": output, "elapsed_s": time.perf_counter() - t0}

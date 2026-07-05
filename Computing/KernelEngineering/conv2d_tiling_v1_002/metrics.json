@@ -1,0 +1,62 @@
+{
+  "task_id": "conv2d_tiling_v1_002",
+  "domain": "Computing and Quantum Information",
+  "sub_domain": "KernelEngineering",
+  "valid": 1,
+  "combined_score": 1.7156008684665978,
+  "per_instance": [
+    {
+      "instance_id": "conv_001_small",
+      "valid": 1,
+      "achieved_gflops": 0.013492685484580049,
+      "elapsed_s": 0.001045900018652901,
+      "H_out": 14,
+      "W_out": 14,
+      "max_abs_diff": 0.0,
+      "score": 1.686585685572506
+    },
+    {
+      "instance_id": "conv_002_medium",
+      "valid": 1,
+      "achieved_gflops": 0.0143650848634331,
+      "elapsed_s": 0.017321999999694526,
+      "H_out": 24,
+      "W_out": 24,
+      "max_abs_diff": 0.0,
+      "score": 1.7956356079291373
+    },
+    {
+      "instance_id": "conv_003_dense_ic",
+      "valid": 1,
+      "achieved_gflops": 0.012224280937124854,
+      "elapsed_s": 0.04825019999407232,
+      "H_out": 16,
+      "W_out": 16,
+      "max_abs_diff": 0.0,
+      "score": 1.5280351171406066
+    },
+    {
+      "instance_id": "conv_004_tall_out",
+      "valid": 1,
+      "achieved_gflops": 0.014219325685206717,
+      "elapsed_s": 0.016203300008783117,
+      "H_out": 10,
+      "W_out": 10,
+      "max_abs_diff": 0.0,
+      "score": 1.7774157106508397
+    },
+    {
+      "instance_id": "conv_005_strided",
+      "valid": 1,
+      "achieved_gflops": 0.014322657768319187,
+      "elapsed_s": 0.001508099987404421,
+      "H_out": 10,
+      "W_out": 10,
+      "max_abs_diff": 0.0,
+      "score": 1.7903322210398982
+    }
+  ],
+  "n_instances": 5,
+  "baseline_failures": 0,
+  "target_gflops_oracle": 0.8
+}

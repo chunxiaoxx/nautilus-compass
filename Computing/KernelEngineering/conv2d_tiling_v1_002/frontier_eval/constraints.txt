@@ -1,0 +1,1 @@
+Pure Python 3 stdlib only (no numpy/scipy/numba/torch/jax/tensorflow). conv2d(input, kernel, stride=1, padding=0) -> {"output": [[float]], "elapsed_s": float}. Output shape: (C_out, H_out, W_out) where H_out = (H + 2*padding - K_h)//stride + 1 etc. max_abs_diff vs naive reference must be ≤ 1e-3 to score > 0.
