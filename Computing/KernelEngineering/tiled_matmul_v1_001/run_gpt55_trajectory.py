@@ -33,7 +33,7 @@ KEY_QIXUW = os.environ.get(
 )
 KEY_MINIMAX = os.environ.get("MINIMAX_API_KEY", "")
 QIXUW_BASE = "https://v2.qixuw.com"  # user-provided base_url
-QIXUW_WIRE = "responses"             # user-provided wire_api (not chat/completions)
+QIXUW_WIRE = "chat/completions"     # 7/5 cloud probe confirmed: /v1/responses returns 502, /v1/chat/completions is the live endpoint
 MODEL = "gpt-5.5"                    # user-provided model
 REASONING_EFFORT = "xhigh"           # user-provided effort
 MINIMAX_BASE = "https://api.minimax.chat/v1/text/chatcompletion_v2"
@@ -44,20 +44,27 @@ INSTANCES = json.loads((ROOT / "data" / "instances.json").read_text(encoding="ut
 
 
 def _post_json(url: str, body: dict, headers: dict, timeout: int = 60) -> dict:
+    import certifi
+    import ssl
+    ctx = ssl.create_default_context(cafile=certifi.where())
+    # 7/5 root-cause: Windows cert pool CRYPTO_E_REVOKED on qixuw chain (legacy
+    # Comodo AAA root deprecated in Win 2023). certifi bundle ships fresh root
+    # chain incl. Sectigo R46 — sidesteps Windows revocation fail.
     req = urllib.request.Request(
         url,
         data=json.dumps(body).encode(),
         method="POST",
         headers=headers,
     )
-    with urllib.request.urlopen(req, timeout=timeout) as r:
+    with urllib.request.urlopen(req, timeout=timeout, context=ctx) as r:
         return json.loads(r.read())
 
 
 def call_qixuw_gpt55(prompt: str, timeout: int = 180) -> str:
-    """Hit qixuw /v1/responses per user-provided wire_api setting.
+    """Hit qixuw /v1/chat/completions + reasoning_effort=xhigh.
 
-    Headers include x-no-store: true (disable_response_storage).
+    7/5 cloud SSH probe confirmed: /v1/responses returns 502; chat/completions is the
+    live endpoint. x-no-store: true is forwarded (disable_response_storage=true).
     """
     base = QIXUW_BASE.rstrip("/")
     path = f"/{QIXUW_WIRE}"
@@ -66,8 +73,9 @@ def call_qixuw_gpt55(prompt: str, timeout: int = 180) -> str:
         url,
         {
             "model": MODEL,
-            "input": prompt,
+            "messages": [{"role": "user", "content": prompt}],
             "reasoning_effort": REASONING_EFFORT,
+            "max_tokens": 4000,
         },
         {
             "Content-Type": "application/json",
@@ -76,22 +84,18 @@ def call_qixuw_gpt55(prompt: str, timeout: int = 180) -> str:
         },
         timeout,
     )
-    # /v1/responses schema: output array with content[].text
-    if "output" in data and data["output"]:
-        out = data["output"]
-        if isinstance(out, list):
-            for item in out:
-                if item.get("type") == "message":
-                    for c in item.get("content", []):
-                        if c.get("type") == "output_text":
-                            return c.get("text", "")
-        elif isinstance(out, dict):
-            return out.get("text", "") or out.get("content", "")
+    # /v1/chat/completions schema: choices[0].message.content
+    if "choices" in data and data["choices"]:
+        choice = data["choices"][0]
+        msg = choice.get("message", {})
+        content = msg.get("content", "")
+        if content:
+            return content
     # Fallback: scan for any text field
     if "text" in data:
         return data["text"]
-    if "output_text" in data:
-        return data["output_text"]
+    if "content" in data and isinstance(data["content"], str):
+        return data["content"]
     return json.dumps(data)
 
 
