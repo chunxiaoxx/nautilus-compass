@@ -183,37 +183,12 @@ def matmul(A, B):
 
 
 def build_prompt(round_idx: int, prev: dict = None) -> str:
-    base = f"""You are optimizing Tiled Matrix Multiplication in pure Python stdlib.
-
-Task spec:
-{TASK_MD}
-
-Instances:
-{json.dumps(INSTANCES, indent=2)}
-
-Scoring: _score = min(100, 100 * achieved_gflops / 1.5).  Baseline ~0.024 GFLOPS → score ~1.6.
-
-Constraints: pure stdlib only. matmul(A, B) -> {{"C": [[float]], "elapsed_s": float}}. M=len(A), N=len(B[0]). Numerically equivalent within 1e-3 vs naive reference.
-
-CRITICAL: the function MUST be named exactly `def matmul(A, B)`. Do NOT rename to matmul_blocked / matmul_tiled / multiply. The verifier imports `candidate.matmul` by exact name. If you write a helper, also add at the end of your code: `matmul = <your_function_name>` so the verifier finds it.
-"""
+    # MiniMax-M3 (the model running this session, per user 7/4 disclosure)
+    # returns empty content for verbose/long prompts; keep this ULTRA short.
+    # ~200 chars max so the model reliably returns code.
+    base = "Write Python: def matmul(A, B) returning {\"C\": [[float]], \"elapsed_s\": float}. Pure stdlib, beats naive triple-loop. Function name MUST be exactly `matmul`. Return ONLY a python code block."
     if prev:
-        base += f"""
-Previous round score: {prev['score']:.4f}
-
-Improve over previous version. Strategies to try:
-- block tiling (32x32 blocks for cache locality)
-- register-blocked innermost loop
-- pre-flattened lists to avoid attribute lookups
-- ikj loop reorder (cache-friendly vs naive ijk)
-- micro-opts like local-variable hoisting
-
-Return ONLY a python code block. Function name MUST be exactly `def matmul(A, B)`.
-"""
-    else:
-        base += """
-Provide a Python implementation of `def matmul(A, B)` using block tiling. Return ONLY a python code block. Function name MUST be exactly `matmul`.
-"""
+        base += f" Previous score {prev['score']:.2f}; improve with block tiling or ikj reorder."
     return base
 
 
@@ -221,6 +196,20 @@ def main():
     trajectory = {
         "task_id": "tiled_matmul_v1_001",
         "model": MODEL,
+        # B9 fix: honest metadata (was: "model": "gpt-5.5 | minimax-m3 (fallback)" string)
+        "provider_chain": ["qixuw", "minimax-m3"],
+        "provider_status": {
+            "qixuw": {
+                "base_url": QIXUW_BASE,
+                "wire_api": QIXUW_WIRE,
+                "status": "unreachable (HTTP 502 Upstream access forbidden — provider dead, out of compass tur per commit 0042245 RED test 2026-07-04T11:15)",
+            },
+            "minimax-m3": {
+                "base_url": MINIMAX_BASE,
+                "status": "live; returns empty content for prompts >1KB (per direct probe 2026-07-04)",
+            },
+        },
+        "valid_gpt55_run": False,  # 0/3 rounds actually ran on qixuw GPT-5.5
         "rounds": [],
         "best_score": 0.0,
         "best_round": None,
@@ -259,24 +248,20 @@ def main():
                 code = code + f"\nmatmul = {m.group(1)}\n"
                 print(f"[round {k}] {source}: aliased {m.group(1)} -> matmul")
             else:
-                print(f"[round {k}] {source}: response lacks `def matmul(` and no alias found, using baseline (no overwrite)")
-                eval_res = evaluate_candidate(
-                    (ROOT / "baseline" / "init.py").read_text(encoding="utf-8"),
-                    f"r{k}",
-                )
-                score = eval_res["metrics"].get("combined_score", 0.0)
+                print(f"[round {k}] {source}: response lacks `def matmul(`; using init_score (no overwrite, no re-eval)")
+                # B6 fix: no-matmul baseline must use init_score directly, not re-evaluate
+                # (re-evaluate introduces elapsed_s noise that fakes improvement)
+                score = init_score
                 trajectory["rounds"].append({
                     "round": k,
                     "kind": source + "-no-matmul",
                     "score": score,
-                    "model_response_tail": response[-300:],
-                    "metrics": eval_res["metrics"],
+                    "model_response_tail": response[-300:] or "(empty response)",
+                    "metrics": {},  # empty = honest (no real evaluation happened)
                 })
-                print(f"[round {k}] {source}-no-matmul score={score:.4f}")
-                if score > trajectory["best_score"]:
-                    trajectory["best_score"] = score
-                    trajectory["best_round"] = k
-                    prev = {"score": score}
+                print(f"[round {k}] {source}-no-matmul score={score:.4f} (=init, honest)")
+                # NOTE: do NOT update best_score from no-matmul round (would shadow real model round)
+                prev = {"score": score}
                 continue
         eval_res = evaluate_candidate(code, f"r{k}")
         score = eval_res["metrics"].get("combined_score", 0.0)
@@ -294,10 +279,11 @@ def main():
             prev = {"score": score}
         time.sleep(1)
 
-    trajectory["gap_closed"] = (trajectory["best_score"] - init_score) / 100.0
+    # B5 fix: gap_closed ratio uses init_score as denominator (combined_score ~2 is not 0-100 scale)
+    trajectory["gap_closed"] = (trajectory["best_score"] - init_score) / max(init_score, 0.1)
     trajectory["difficulty"] = (
-        "Easy" if trajectory["gap_closed"] >= 0.6 else
-        "Medium" if trajectory["gap_closed"] >= 0.3 else
+        "Easy" if trajectory["gap_closed"] >= 0.5 else
+        "Medium" if trajectory["gap_closed"] >= 0.2 else
         "Hard" if trajectory["gap_closed"] >= 0.1 else "Rejected"
     )
 
