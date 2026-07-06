@@ -6,7 +6,20 @@
 
 ---
 
-## 📍 当前活状态(四行·last-updated 2026-07-03 · sync from nautilus-core 双主线)
+## 🔴 7/5 收口(用户拍 · 暂停扩张)· 覆盖下方 7/2-7/3 四行 · 2026-07-06 sync from core canonical
+
+用户 7/5 反馈"过往一周工作比较混乱"→ 拍 **D 暂停扩张,清点收口**:
+- **不产新 GenOpt 题 · 不碰蒸馏 · 不开新战线**
+- 锁 **11 题交付甲方(M1+M2)= 最小可闭环**(11 题全 OR JobShop Easy · ship 5/5 + frontier_eval 9/9 + GPT5.5 valid · 缺 doubao 验证 10 题 + user_access_token)
+- 完整规划 = `nautilus-core/docs/plans/2026-07-06-genopt-rl-eng-delivery-convergence.md`
+- 混乱根因 = 一周 60+ commit / 0 binding-DONE / 417 散落 outbound
+- 🔴 **本框(compass)收口活 = 该 plan 的 Task 1.4:Conductor 扫 inbound 恢复 4 框通信**(compass 被点名"沉默 34h+")· 其余(GenOpt 扩量 / MCP 标准远程迁移)= **收口期 park,不开新战线**
+  - MCP 标准远程迁移 Task 0-3 已 done+本地验证(branch `feat/mcp-standard-remote-http` @ plugin repo)· Task 4-6(部署)按 7/5 冻结,收口后再解冻
+- **下方 7/2-7/3 四行 = 收口期冻结**(收口完再解冻)
+
+---
+
+## 📍 当前活状态(四行·last-updated 2026-07-03 · 收口期冻结 · 见上方 7/5 收口 · sync from nautilus-core 双主线)
 
 > 🔴 **7/3 同步变更**:本框 6/29 SSOT 单线「证或杀蒸馏」= 子目标 B · 7/2 用户在 core 加双主线 A (GenOpt 1000 题交付)。compass 单线= B 子集不矛盾 · 但下读需知 A 也在转。本框不改"负责框/turf"——compass 仍只管 env + feishu + benchmark harness(详见下方 sync 段)。
 
