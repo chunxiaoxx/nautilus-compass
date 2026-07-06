@@ -1,0 +1,18 @@
+[Unit]
+Description=Nautilus Compass · standard-remote MCP (streamable-http · public HTTPS via nginx /compass-mcp/)
+After=network.target compass.service
+
+[Service]
+User=ubuntu
+WorkingDirectory=/home/ubuntu/nautilus-compass
+Environment=COMPASS_TOKENS_FILE=/etc/compass/tokens.json
+Environment=COMPASS_AGENT_TYPE=claude-code-compass-dialog
+# daemon host/port mirror compass-mcp-tcp.service so tool fns reach the same BGE daemon
+Environment=COMPASS_DAEMON_HOST=127.0.0.1
+Environment=COMPASS_DAEMON_PORT=9876
+ExecStart=/usr/bin/python3 -m uvicorn mcp_http_server:app --host 127.0.0.1 --port 8097 --log-level warning
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

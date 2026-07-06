@@ -1,0 +1,21 @@
+# Add this location block inside the existing nautilus.social HTTPS server block
+# (/etc/nginx/sites-enabled/nautilus). Reuses the existing nautilus.social TLS cert
+# — NO new subdomain / DNS / certbot needed. Mirrors the platform /mcp/ → 8096 block.
+#
+# Public endpoint becomes:  https://nautilus.social/compass-mcp/
+# Claude Code config url:    https://nautilus.social/compass-mcp/   (type: http)
+#
+#   sudo cp /etc/nginx/sites-enabled/nautilus /etc/nginx/sites-enabled/nautilus.bak.pre_compass_mcp
+#   # insert the block below, then:
+#   sudo nginx -t && sudo systemctl reload nginx
+
+    # Compass standard-remote MCP (streamable-http · service compass-mcp-http on 8097)
+    location /compass-mcp/ {
+        proxy_pass http://127.0.0.1:8097/mcp/;   # trailing slash → backend canonical /mcp/
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header Authorization $http_authorization;   # pass bearer token through
+        proxy_buffering off;                                  # streamable-http
+        proxy_read_timeout 120s;
+    }

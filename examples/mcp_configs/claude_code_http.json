@@ -1,0 +1,12 @@
+{
+  "_doc": "Standard-remote compass MCP over public HTTPS (no stdio bridge, no SSH tunnel). Replace the 'nautilus-compass-cloud' stdio entry in ~/.claude.json with this once the cloud deploy (compass-mcp-http.service + nginx /compass-mcp/) is verified. Token = a value from cloud /etc/compass/tokens.json.",
+  "mcpServers": {
+    "nautilus-compass": {
+      "type": "http",
+      "url": "https://nautilus.social/compass-mcp/",
+      "headers": {
+        "Authorization": "Bearer cmp_claude_code_compass_dialog_58f2e85353fa90b0500e84d6880a1fc0"
+      }
+    }
+  }
+}
