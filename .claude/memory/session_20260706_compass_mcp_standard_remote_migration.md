@@ -41,7 +41,14 @@ metadata:
 - 本地真 socket 验证:init(serverInfo=nautilus-compass 2.3.0)+ tools/list=17 + **tools/call recall 真 daemon(9876)往返 isError=False** + auth 无token→401/有token→放行。
 - 端点 canonical = `/mcp/`(Mount);SDK=mcp 1.16.0;工具 fn 同步→`anyio.to_thread.run_sync` 包(不堵事件循环)。
 
-**待办**:Task4(systemd unit draft)· Task5(nginx+Claude Code config sample)· Task6(**平台 handoff:DNS compass.nautilus.social + certbot + 部署 8097**)· Task7(切 `type:http` + 退役桥/隧道)· Task8(PR/记录)。Task2 Step3(Claude Code 原生连 verify)留到 cloud 部署后做。
+**7/6 续 · 用户破例 un-park 部署(隧道本 session flap 2 次实证在咬)· Task 4-6 已 DONE + 公网验证**:
+- 简化路径(anchor #5):不建子域/证书,复用 nautilus.social 现有 TLS → nginx 加 `location /compass-mcp/ → 127.0.0.1:8097/mcp/`(紧挨平台 `/mcp/`→8096)。
+- cloud `compass-mcp-http.service`(systemd·uvicorn mcp_http_server:app·8097·复用 mcp_server.TOOLS 17 工具·bearer auth /etc/compass/tokens.json)active。
+- ✅ 公网验证(Windows 无隧道):`https://nautilus.social/compass-mcp/` init OK(2.3.0)· tools/list=17 · 无 token→401。
+- shared nginx 触碰已透明报平台(备份 nautilus.bak.pre_compass_mcp_*·nginx -t 通过·outbound thread_compass_to_platform_7done_sync_20260706)。
+- 旧 `compass-mcp-tcp.service`(9877)保留不动(V5/kairos/v7 仍用 TCP)。
+
+**待办 Task 7(用户手动·收尾)**:改 `~/.claude.json` 的 `nautilus-compass-cloud` 为 `type:http` + `url=https://nautilus.social/compass-mcp/` + bearer header(样例 `plugin/examples/mcp_configs/claude_code_http.json`)→ 重启 Claude Code 验证原生连 → 稳定后退役本地 `ssh -L 9877` 隧道 + stdio 桥(从 compass_start.ps1 移除)。**未动 = 本 session 仍走旧桥/隧道,重启才切。** branch feat/mcp-standard-remote-http 未 push(public 仓·待用户拍)。
 
 ## 关联
 [[session_20260706_compass_ssot_drift_qixuw_cstart_orphan_mcp_restore]] · [[session_20260704_compass_mcp_local_repaired]]
