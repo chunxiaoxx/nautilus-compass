@@ -6,14 +6,19 @@
 
 ---
 
-## 📍 当前活状态(四行·last-updated 2026-06-29)
+## 📍 当前活状态(四行·last-updated 2026-07-03 · sync from nautilus-core 双主线)
+
+> 🔴 **7/3 同步变更**:本框 6/29 SSOT 单线「证或杀蒸馏」= 子目标 B · 7/2 用户在 core 加双主线 A (GenOpt 1000 题交付)。compass 单线= B 子集不矛盾 · 但下读需知 A 也在转。本框不改"负责框/turf"——compass 仍只管 env + feishu + benchmark harness(详见下方 sync 段)。
 
 | 字段 | 值 |
 |---|---|
-| **当前闭环目标** | **证或杀蒸馏(维①)**=北极星 forcing function。V5 产→compass verify→soul LOO→verdict。**一条线·其余 parking(守教训1反搭建≠闭环)** |
-| **下一动作** | ① V5 产够 n≥12 候选就停(别无限产 GLM·反 D)→ 交 compass ② compass 官方 harness verify 出 A 类数 ③ soul canonical 复核+归一化+借 GPU 跑 distill_loo --kind swe→verdict |
-| **负责框** | V5(①)/ compass(②verify+借GPU)/ soul(③复核+LOO)· FDE 仅同步切飞书多维表格进 SSOT |
-| **卡在** | (a) V5 候选产完未 verify(当前 12+ 候选·produce_glm 15:00 还在产) ① compass verify 待启动 |
+| **当前闭环目标** | **双主线(用户 7/2 拍)**:(A) 🆕 **GenOpt RL 1000 题交付**(买方新单 · Frontier-Eng generative optimization 范式 · SPEC 同步 `nautilus-core/vtf/BUYER_SPEC_GenOpt_RL_20260702.md`)· (B) 证或杀蒸馏(维①)· **本框对 A 的贡献 = compass 认领 KernelEngineering + ComputerSystems 域生产 + env 审查**;**本框对 B 的贡献不变 = compass verify 路径(等 A800 GPU)· 等 V5 产够 n≥12 → compass 官方 harness verify 出 A 类数 → 交 soul LOO** |
+| **下一动作** | ① V5 7/3 JS-SP 已 ship 飞书(recvojPszE0XoJ)→ 本框 7/2 卡点「V5 候选 12+ 等 verify」实际已解封 · 仍等 V5 给 n≥12 · **不再单卡 a 字段**(因为 v5 已 ship,后续 n 增只是节奏)② **本框 7/3 新动作:扫 GenOpt 工厂 4 题模板哪些落到本框 turf(KernelEng + ComputerSys)· 把 Attention/Cache 两题 owner 同步给 v5** ③ soul canonical 复核+借 A800 跑 distill_loo --kind swe→verdict(等 GPU) |
+| **负责框** | **本框(compass)**:对 A = KernelEngineering + ComputerSystems 域生产(env + Attention/Cache 模板已就绪)· 对 B = verify 路径(等 A800)· 仍按 FDE_BUSINESS_CHARTER §4 turf 不越界 |
+| **卡在** | (a) 等 A800(GPU 部署)→ verify_pathA_one 真跑 n=4 复证 = compass 下一步第一刀(SSOT core 已锁候选 A)· 不撞 GenOpt 工厂(本框 factory 资产 = 4 题模板 + verifier_qc + gapclosed_batch_runner · 与 v5 flywheel 各走各路) |
+
+> 📌 **Sync 来源**:`nautilus-core/LOOP_STATE_SSOT.md` last-updated 2026-07-03 14:00 后 · 5 题真 grounded + 第 6 题 QAOA + 4 框催球 outbound · 详 core SSOT | 本框变更协议:不重写,只增量同步 | 下次变化先改 core canonical 再同步本框 | 完整 sync 历史见 `compass/vtf/_inbound_from_core_sync_20260703.md` | 7/3 14:00 用户已 Edit compass 本档
+> 📌 **7/6 sync**:从 core canonical 同步 binding-DONE grounded 实测(见下方「当前实测状态」块)· 纠正 compass 副本过时值 `balance=8 被冻` → `income=0` 口径 · PoI 账本 `DORMANT` → 实测 `+1250 GREEN` · 起因 = qixuw 精神分裂教训(compass 7/4-5 重查 core/v5 7/2-4 已知的 qixuw reasoning_effort 根因,3 天重复劳动 = SSOT 未同步的代价)
 
 ## 🛡️ 守教训护栏(防 5 坑·6/29 用户拍"蒸馏一条线+守教训")
 1. **n≥12 才跑 LOO**(verdict-gate commit 210e0fd24 拦 n<12·防 whipsaw 教训2)
@@ -41,6 +46,13 @@
 3. PoI 账本恢复增长(compass `probe_ledger_growth` 从 DORMANT → GREEN)
 
 **判据成立前不算闭·不开新战线。** 不是"我觉得行了",是这三条 SQL/探针返回真值。
+
+### 📊 当前实测状态(sync from core canonical · 实测 2026-06-29 23:30 · compass 7/6 同步,非本框重测)
+> 🔴 grounded 纠正 compass 副本两处过时值(治精神分裂):
+> 1. ❌ `total_income` 24h delta = **0**(213 rows · 无外部验证驱动的收入增长)— 判据 #1 **未成立 = 当前唯一缺口**
+> 2. ⚠️ Kairos = `alive / GROWING / income=0` — **"balance=8 被冻"是过时推断**(core 6/29 实测纠正:schema 无 balance 字段,当前不 critical),判据 #2 口径改看 income
+> 3. ✅ `platform_nau_ledger` 24h delta = **+1250**(71 行新增 · last_entry 6/29 23:30)— 账本活跃增长,判据 #3 **实际已 GREEN**(非 DORMANT)
+> 📌 净:3 条判据里 #3 已成立、#2 口径修正、**#1(外部验证收入)仍是唯一未闭缺口**。下一步不扩题,把已产题走 soul canonical verify → 外部 reward 入账。
 
 ## 🅿️ Parking Lot(冻结·闭上面环之前不碰)
 - ~~维①蒸馏 KILLED~~ → **6/29 推翻 KILL·正确 unblock**(用 n≥12+非易料重跑·非 n=2 whipsaw)。
