@@ -65,5 +65,19 @@ compass 7/4-5 从零重诊 qixuw 连不通(CC Switch 代理 `1780e4d` → 推翻
 4. **cloud 有孤儿吗**:`ssh cloud "ps aux|grep -E 'daemon.py|tmp.*\.py'|grep -v grep"` 查手动 nohup orphan
 5. **MCP 在吗**:`/mcp` 空 → 从备份恢复 `mcpServers`,重启加载
 
+## 🔄 重启序列(本 session 7/6 交接 · 防 MCP clobber)
+
+新 session 由 `cstart compass`(已修 `7c7572e` → 进 nautilus-compass)启动。MCP 只在启动时加载,且**旧 session 退出可能把内存里的空 mcpServers 刷回 `~/.claude.json` 覆盖恢复**。稳序:
+1. 退出旧 session
+2. 普通 PowerShell(非 Claude Code)跑 re-apply,保证磁盘有 3 server:
+   `python -c "import json;p=r'C:\Users\chunx\.claude.json';e=r'C:\Users\chunx\.claude\mcp_servers_extracted_20260705.json';d=json.load(open(p,encoding='utf-8'));d['mcpServers']=json.load(open(e,encoding='utf-8'));json.dump(d,open(p,'w',encoding='utf-8'),ensure_ascii=False,indent=2);print('MCP restored',list(d['mcpServers']))"`
+3. `cstart compass` → 新 session 读到好配置加载 MCP
+4. 新 session `/mcp` 确认 3 个(尤其 `nautilus-compass-cloud`);若空=被 clobber,重跑步骤 2 再重启
+- 备份:`~/.claude.json.bak-pre-mcp-restore-20260706-084156` + 提取 `~/.claude/mcp_servers_extracted_20260705.json`
+
+## 🎯 主线唯一未闭:B = total_income=0
+
+三条 binding-DONE(见 SSOT)里 #3 PoI 账本已 GREEN(+1250)、#2 Kairos 口径修正,**#1 `agent_survival.total_income` 因外部验证增长 = 唯一未闭缺口**。现状:GenOpt ~15 题入飞书(core 5 + v5 ~14),但没一条走完 soul canonical verify → 外部 reward 入账。新 session 起手 = grounded 查"已产题为何没转成外部验证收入"(compass turf 只读:fde_verdicts / ledger)· 不扩题(反 D)。
+
 ## 关联
 [[session_20260705_compass_stop_hook_strategic_decision_pending]] · [[session_20260704_compass_qixuw_real_config_disclosed]] · [[session_20260704_compass_cc_switch_proxy_path_fix]] · [[session_20260704_compass_mcp_local_repaired]] · [[reference_compass_plugin_inventory]]
