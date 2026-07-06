@@ -27,7 +27,7 @@ from starlette.responses import JSONResponse
 from starlette.routing import Mount
 from starlette.types import Receive, Scope, Send
 
-server: Server = Server("nautilus-compass")
+server: Server = Server("nautilus-compass", version="2.3.0")
 
 
 @server.list_tools()
@@ -107,6 +107,9 @@ async def _lifespan(_app):
         yield
 
 
+# Mounted at /mcp → canonical endpoint is /mcp/ (Starlette adds the slash;
+# bare /mcp 307-redirects to it, which real MCP/httpx clients follow). nginx
+# should proxy_pass to the backend's /mcp/ so no redirect crosses the wire.
 app = Starlette(
     routes=[Mount("/mcp", app=_handle)],
     middleware=[Middleware(_BearerAuth)],
