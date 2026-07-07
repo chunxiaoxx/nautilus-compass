@@ -49,6 +49,8 @@
   - income **188 独立复现**(不信自报):fde_verdicts 里 external_verified∧overall_pass 的 sum(round(score)) = JobShop 98 + QAOA 90 = 188。TSP 97.63 verified 但 overall_pass=False 未铸、gate-probe 未铸 —— canonical C 口径全对上。
   - "剧场"独立坐实:engine_cycle_outcomes last_cycle=**33.8d 前**、24h=**0**(总 49)= 引擎自循环停摆一个月属实;agent_tool_calls 却 last=now/329k = agent 空转但不落 cycle/income。⇒ **binding-DONE #2 自持仍开**(income 冻在 188 · 无自产增长),V5 修管道先行。
   - 唯一剩缺口 = `agent_survival.total_income` 权威值无 grant(permission denied)→ 已发合约请求 platform GRANT SELECT(`cnt_compass_platform_grant_survival` · scanner surfaced · verdict-derived 兜底不阻塞)。
+- ✅ **7/7 compass ③ DONE**(commit 67f1788 · `--watch` income growth watch):live 两跑 = FIRST(记 188)→ **FLAT**(188→188)。**grounded 信号给各框:income 当前冻在 188 · 无自产增长**(引擎停摆坐实)· V5 修好管道 producer 自产入账后,watch 才会显 GROW = binding-DONE #2 达成的可观测判据。
+- 🅿️ compass ②(feishu 写 11 题 submit)= **等用户 OAuth user_access_token**(goal 定为用户一次性动作)· 未阻塞其它。
 
 ---
 
