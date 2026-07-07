@@ -90,7 +90,8 @@ def _run(op: str, base: str | None = None, table_id: str | None = None,
     )
     proc = subprocess.run(
         ["ssh", "-o", "ConnectTimeout=15", "-o", "BatchMode=yes", SSH_HOST, remote_cmd],
-        input=payload, capture_output=True, text=True, timeout=90)
+        input=payload, capture_output=True, text=True,
+        encoding="utf-8", errors="replace", timeout=90)
     if proc.returncode != 0:
         sys.exit(f"[err] ssh/remote fail rc={proc.returncode}: {proc.stderr[:300]}")
     try:
@@ -118,6 +119,10 @@ def read_records(table_id: str, limit: int = 10, base: str | None = None) -> dic
 
 
 def main(argv=None) -> int:
+    try:  # Windows 控制台默认 GBK · 飞书内容含 emoji/中文 → 强制 UTF-8 输出(errors=replace 兜底)
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:  # noqa: BLE001
+        pass
     ap = argparse.ArgumentParser(description="经 cloud 白名单 IP 读飞书(治 99991401)")
     ap.add_argument("op", choices=["list-tables", "count", "rows"])
     ap.add_argument("table_id", nargs="?")
