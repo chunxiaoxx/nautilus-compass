@@ -15,8 +15,11 @@ from ops.economy_liveness_probe import (  # noqa: E402
     probe_verified_income,
     probe_engine_cycle_liveness,
     probe_income_ground_truth,
+    probe_income_growth,
+    diff_income,
     run_all,
     GREEN, STALE, GAP, RED,
+    GROW, FLAT, DROP, FIRST,
     PROBE_INCOME, PROBE_CYCLE, PROBE_GROUND_TRUTH,
 )
 
@@ -127,6 +130,60 @@ def test_ground_truth_red_on_other_error():
 def test_ground_truth_stale_when_agent_absent():
     r = probe_income_ground_truth(_conn(row=None))
     assert r["status"] == STALE
+
+
+# ---- diff_income / probe_income_growth (③ 盯 income 持续涨) ----
+
+def test_diff_income_first_when_no_watermark(tmp_path):
+    wm = tmp_path / "wm.json"
+    r = diff_income(188, wm)
+    assert r["status"] == FIRST
+    assert r["current"] == 188
+    assert wm.exists()  # 首次也记录
+
+
+def test_diff_income_grow(tmp_path):
+    wm = tmp_path / "wm.json"
+    diff_income(188, wm)                 # 先记 188
+    r = diff_income(286, wm)             # 涨到 286
+    assert r["status"] == GROW
+    assert r["delta"] == 98
+
+
+def test_diff_income_flat_frozen_at_188(tmp_path):
+    """当前真态:income 冻在 188(引擎停摆)→ FLAT。"""
+    wm = tmp_path / "wm.json"
+    diff_income(188, wm)
+    r = diff_income(188, wm)
+    assert r["status"] == FLAT
+    assert r["delta"] == 0
+
+
+def test_diff_income_drop_flags_rollback(tmp_path):
+    wm = tmp_path / "wm.json"
+    diff_income(286, wm)
+    r = diff_income(188, wm)             # 账修正回滚(SSOT 有此实例)
+    assert r["status"] == DROP
+    assert r["delta"] == -98
+
+
+def test_diff_income_record_false_does_not_write(tmp_path):
+    wm = tmp_path / "wm.json"
+    diff_income(188, wm, record=False)
+    assert not wm.exists()
+
+
+def test_probe_income_growth_reads_conn_then_diffs(tmp_path):
+    wm = tmp_path / "wm.json"
+    r = probe_income_growth(_conn(row=(188, 2, _RECENT)), watermark_path=wm)
+    assert r["status"] == FIRST
+    assert r["current"] == 188
+
+
+def test_probe_income_growth_red_when_income_unreadable(tmp_path):
+    wm = tmp_path / "wm.json"
+    r = probe_income_growth(_conn(raise_exc=RuntimeError("boom")), watermark_path=wm)
+    assert r["status"] == RED
 
 
 # ---- run_all ----
