@@ -125,6 +125,8 @@
   - 🅿️ **SWE 链 verify(候选 A verify_pathA_one)仍等 A800**:与 GenOpt canonical verify 是两条链,不混
   - 🏀 **球→V5(7/6)**:cloud `~/genopt_delivery/` runner 轨迹没存完整解(582B)→ 过不了 canonical verify → 不可入账。修 runner(cloud `~/genopt_live/tools/gpt55_local_runner.py` 可直接用)后 7/7 凌晨 7 条 jssp 产能接上 income 链。详 V5 repo 根 `_INBOUND_FROM_PLATFORM_20260706_trajectory_reproducibility_ball.md`(untracked·V5 gitignore 拦 inbound 文件)
   - ✅ **7/7 方案②③落地(用户拍"同意建议"·收敛七方案前三件)**:① compass 探针 GRANT 已执行(survival/transactions/verdicts 三真值表 → compass_sub·合约 cnt_…grant_survival 兑现)② **镜子端点** `GET /api/platform/fde/my-status?agent_id&claimed_by` live(agent 可见自身 verdicts/income/dispatch 真值·settle 不设自报动词·合约 cnt_…settle_routes_404 的实现)③ **auto-verify daemon** `genopt-auto-verify.timer`(10min·扫未验证 verdict→有产物才跑 canonical verify→MATCH 才 PATCH·首轮 200 扫 2 跑双 NOT_REPRODUCIBLE 终态=拒绝盖章·平台框退出手摇位)。**镜子首日照出**:prime-001 名下 dispatch settled=1658(自循环 verdict 时代刷的)vs external_verified=4 — 两本账都不可信,唯一不可刷数字=income 188。TDD 14/14。
+  - ✅ **7/7 方案④落地 · 收敛记分牌 live**:`GET /api/platform/convergence` = 5 数字(verified 4 / income 188 / **producer_autonomy 0%**=北极星指标 / **settle_integrity 0/3617**=自循环时代全部结算零外部背书 / delivery null·feishu turf 诚实空)。协议:自治管道 verdict 必须带 `artifacts.autonomous=true`,手摇不带 → 自治率造不了假。"有效收敛"从叙事变曲线。
+  - 🏃 **M1 · 10 题 doubao 难倒测试批量跑中(7/7 本机后台)**:`m1_doubao_batch.py` = 每题 data 再生→baseline 对账 v7 seed(不一致自动跳过)→doubao 5 轮(完整解契约)。完成后按 pass@5≤0.6 汇总判难倒。
   - 🔧 **backend 部署规程(7/6 事故后钉死)**:cloud backend = `nautilus-backend.service`(systemd 管 · 自动重启)。**部署 = scp + `sudo systemctl restart nautilus-backend`,禁手工 kill/nohup**(7/6 两次手工重启制造双进程打架 → 旧代码抢答 → TSP 误铸;广谱 pkill 还差点误杀他框服务,systemd 自愈救回)。pgrep/pkill -f 会自匹配 ssh 命令行,用 systemctl 或精确 pid。
 
 ### 🛠️🆕 Producer 注册化(锚点③ 真根 · 7/2 用户点破 · 必须执行)
