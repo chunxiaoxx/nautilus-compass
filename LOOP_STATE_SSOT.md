@@ -50,7 +50,9 @@
   - "剧场"独立坐实:engine_cycle_outcomes last_cycle=**33.8d 前**、24h=**0**(总 49)= 引擎自循环停摆一个月属实;agent_tool_calls 却 last=now/329k = agent 空转但不落 cycle/income。⇒ **binding-DONE #2 自持仍开**(income 冻在 188 · 无自产增长),V5 修管道先行。
   - 唯一剩缺口 = `agent_survival.total_income` 权威值无 grant(permission denied)→ 已发合约请求 platform GRANT SELECT(`cnt_compass_platform_grant_survival` · scanner surfaced · verdict-derived 兜底不阻塞)。
 - ✅ **7/7 compass ③ DONE**(commit 67f1788 · `--watch` income growth watch):live 两跑 = FIRST(记 188)→ **FLAT**(188→188)。**grounded 信号给各框:income 当前冻在 188 · 无自产增长**(引擎停摆坐实)· V5 修好管道 producer 自产入账后,watch 才会显 GROW = binding-DONE #2 达成的可观测判据。
-- 🅿️ compass ②(feishu 写 11 题 submit)= **等用户 OAuth user_access_token**(goal 定为用户一次性动作)· 未阻塞其它。
+- ✅ **7/7 compass ② 假依赖解除(confound 核出 · 守则"confound 先核")**:goal 说"等用户 OAuth user_access_token"是**假依赖**。实证:`feishu_client.py`(cloud `/home/ubuntu/fde-toolbox`)用 **`tenant_access_token`(app 级 FEISHU_APP_ID/SECRET · 金库已有)**,**不需用户 OAuth**;`create_bitable_record`/`update_bitable_record` 写函数齐全;FDE_CHARTER §3 证 compass 已写过飞书(L3表 recvm5L3iFlatJ)。
+  - 原"写不了"真根因 = **金库 CRLF 行尾 + feishu_client ENV 默认硬编码 Windows 路径**(跨机同步残留)→ `\r` 污染 secret(len 33 而非 32)→ auth 10003。**已修**(ENV→`expanduser` portable + `_env()` strip · cloud 备份)· **端到端验证 tenant_token LIVE + 读出题表 tblhD4O4f0esTyXc 43 行**。
+  - ⇒ **compass ② 写路径现在完全 LIVE**。binding-DONE #3 的 compass 部分**不再等用户**;真剩余依赖 = **FDE 定 11 题内容 + 确认目标派活表 id**(FDE 轻 turf),compass 拿到即写+GET 回读。
 - 🔴 **7/7 compass 独立诊断 binding-DONE #1 根因(守则"不信自报"· 发 V5+platform 合约)**:用新 DB 读能力核 agent 自审"1233/0 settled / cron 0 执行",发现**方向对但表述误导 + 定位可执行病灶**:
   - agent 循环**猛跑不是 0 执行**:nautilus-prime-001 = 240k tool calls · 24h 8154/93.8% success/last=now。
   - **fde_claim_produce = 假成功工厂 DB 坐实**:24h 1268/1268 success 但 output `claim_id=None`(只吐 hint 从不真 claim)。
