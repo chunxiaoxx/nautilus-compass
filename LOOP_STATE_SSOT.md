@@ -64,7 +64,7 @@
 | **卡在** | (a) **GPT5.5 中转站不稳=真阻塞**(本机 b2xwto5km/b0urzez29 三轮 502/close 全断;**H800 端 qixuw OPENAI_BASE_URL 直连稳定** ⇒ 真工作路径走 H800,本机 driver 仅备援)· 备援口径=Minimax M3(7/2 用户说额度充足,本 session 暂未压测)(b) **难度旋钮实证**(JobShop Easy 0.7022 / TSP Hard 0.1048 / Attention Medium-Hard 漂移 / Cache Hard 0.1087 / BinPack Easy 0.6667 / QAOA 待测)⇒ **baseline 写法决定难度可控**;GPT5.5 N=3 seed 漂移 ⇒ **多跑取众数**真必要(v7 二次标定验证可重现性)(c) **5 → 6 题扩量**· 5 域覆盖(OR 3 题 / KernelEng 1 题 / ComputerSys 1 题 / Quantum 1 题 · 第 5 域 Robotics 待出)· 真生产应 50+ 题入表(d) **破自循环 Step 2/3 pending** · 等 A800 真 verified verdict(GenOpt Easy/Hard 不算 — 走 soul canonical verify 链才真) |
 
 ## ✅ close_loop 判据(6/29 23:30 grounded 实测 · 纠正之前推断)
-1. ✅ **7/6 首次成立**:`agent_survival.total_income`(agent 9000009)0→**98**,因外部验证产出入账 — GenOpt JobShop 新轨迹(完整解+sha256)→ persist verdict → `soul_canonical_verify.py` 独立复现 97.6047 分毫不差 → PATCH external-verify(income 唯一入账门·4 护栏)→ INCOME 行 category=fde_external_verified · 幂等重跑不重复入账。**平台历史第一行外部 gate 的 income。** <br>*旧(6/29):24h delta=0(213 rows 不涨)。*
+1. ✅ **7/6 首次成立 · 现值 188**:`agent_survival.total_income`(agent 9000009)0→98(JobShop)→**188**(+QAOA Hard 档 90 · C 口径下第一笔)。链 = 完整解轨迹 → persist → `soul_canonical_verify.py` 独立复现(JobShop 97.6047 / QAOA 90.3195 / TSP 97.6311 全 exact)→ PATCH external-verify。**🔴 C 口径(7/6 用户拍)**:验证与经济解耦——external_verified 只看复现;income 加双门 = ① overall_pass(难度档合格·Rejected/too-easy 不铸)② 同 (task_uid×producer) 只铸一次(堵同题重跑刷钱)。TSP(Rejected 档)只翻验证标不铸;部署竞态误铸的 98 已删账修正(286→188 · 有痕)。⚠️ 诚实:188 仍是平台框手摇链产出,自持(producer cycle 自产)+ compass 独立探针复核 = v3 binding-DONE 仍开。<br>*旧(6/29):24h delta=0。*
 2. ⚠️ Kairos `agent_status=alive` · `survival_level=GROWING` · `survival_income=0`(schema 没 `balance` 字段 · 之前"balance=8 被冻"是过时推断 · 当前不 critical 但 income=0 是另一回事)
 3. ✅ `platform_nau_ledger` 24h delta=**+1250** · 71 行新增 · last_entry **2026-06-29 23:30:51**(1 分钟前)· PoI 账本**活跃增长** · 不只 6/29 续23 报的"1299→1507" · 持续
 
@@ -118,6 +118,7 @@
   - ✅ **Step 2 已完成**(7/6):`control_plane.py` soul_alive 判据改按 `MAX(external_verified_at) WHERE external_verified=true` 新鲜度算(<48h)· cycle 降级为 metadata · TDD 3/3 + 部署 cloud 实测(soul_alive=True 由外部验证撑 · last_cycle_at=6/3 暴露引擎自循环停摆一个月 · 老判据靠 verdict 刷屏遮着)· 顺修 PATCH 端点 naive-utcnow 进 timestamptz 偏 -8h 时区根因
   - 🅿️ **SWE 链 verify(候选 A verify_pathA_one)仍等 A800**:与 GenOpt canonical verify 是两条链,不混
   - 🏀 **球→V5(7/6)**:cloud `~/genopt_delivery/` runner 轨迹没存完整解(582B)→ 过不了 canonical verify → 不可入账。修 runner(cloud `~/genopt_live/tools/gpt55_local_runner.py` 可直接用)后 7/7 凌晨 7 条 jssp 产能接上 income 链。详 V5 repo 根 `_INBOUND_FROM_PLATFORM_20260706_trajectory_reproducibility_ball.md`(untracked·V5 gitignore 拦 inbound 文件)
+  - 🔧 **backend 部署规程(7/6 事故后钉死)**:cloud backend = `nautilus-backend.service`(systemd 管 · 自动重启)。**部署 = scp + `sudo systemctl restart nautilus-backend`,禁手工 kill/nohup**(7/6 两次手工重启制造双进程打架 → 旧代码抢答 → TSP 误铸;广谱 pkill 还差点误杀他框服务,systemd 自愈救回)。pgrep/pkill -f 会自匹配 ssh 命令行,用 systemctl 或精确 pid。
 
 ### 🛠️🆕 Producer 注册化(锚点③ 真根 · 7/2 用户点破 · 必须执行)
 
