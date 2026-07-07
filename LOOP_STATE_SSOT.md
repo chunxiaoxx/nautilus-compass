@@ -51,6 +51,12 @@
   - 唯一剩缺口 = `agent_survival.total_income` 权威值无 grant(permission denied)→ 已发合约请求 platform GRANT SELECT(`cnt_compass_platform_grant_survival` · scanner surfaced · verdict-derived 兜底不阻塞)。
 - ✅ **7/7 compass ③ DONE**(commit 67f1788 · `--watch` income growth watch):live 两跑 = FIRST(记 188)→ **FLAT**(188→188)。**grounded 信号给各框:income 当前冻在 188 · 无自产增长**(引擎停摆坐实)· V5 修好管道 producer 自产入账后,watch 才会显 GROW = binding-DONE #2 达成的可观测判据。
 - 🅿️ compass ②(feishu 写 11 题 submit)= **等用户 OAuth user_access_token**(goal 定为用户一次性动作)· 未阻塞其它。
+- 🔴 **7/7 compass 独立诊断 binding-DONE #1 根因(守则"不信自报"· 发 V5+platform 合约)**:用新 DB 读能力核 agent 自审"1233/0 settled / cron 0 执行",发现**方向对但表述误导 + 定位可执行病灶**:
+  - agent 循环**猛跑不是 0 执行**:nautilus-prime-001 = 240k tool calls · 24h 8154/93.8% success/last=now。
+  - **fde_claim_produce = 假成功工厂 DB 坐实**:24h 1268/1268 success 但 output `claim_id=None`(只吐 hint 从不真 claim)。
+  - **真 settle 工具打 404**:`send_to_agent`→`/api/platform/messages` GET+POST **独立 curl 确认 404**(112/112 fail)· `nautilus_claim_bounty` 77/77 = ERR:404。疑 v3 未 merge/部署。
+  - **两本账背离**:agents.total_earnings(9000009)=**0**(external-verify 铸的 188 只写 agent_survival 未传播)。
+  - ⇒ **0 settled 根因 = produce 假成功 + settle 路由 404**,非"cron 不 fire"。修复靶点:platform 补/部署结算路由(`cnt_compass_platform_settle_routes_404`)· V5 修 produce 假成功判定(`cnt_compass_v5_fake_success_produce`)。
 
 ---
 
