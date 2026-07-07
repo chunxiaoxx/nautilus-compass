@@ -43,7 +43,7 @@ FDE 产难题(强解+弱难倒 = 燃料)→ 蒸馏 → 系统可证变强(① �
 ## 四、各框本周唯一一件事(做完才领下一件)
 
 - **V5**:修 `fde_claim_produce` 假成功 + runner 存完整解(两份合约 due 7/9)→ 产出**第一条自治合规轨迹**(带 `artifacts.autonomous=true`)→ 自治率脱离 0%。
-- **platform(本框)**:守裁判链与账本(auto-verify/记分牌/backend);配合 FDE 用 `produce_task.py` 正确产**真变体题**(fetch+rescore 实跑,严禁复制文件);真题集就位后重启 doubao 难倒测试(M1)。
+- **platform(本框)**:守裁判链与账本(auto-verify/记分牌/backend);配合 FDE 用 `produce_task.py` 产**互不相同的变体题**(fetch+rescore 实跑,严禁复制文件);合规题集就位后重启 doubao 难倒测试(M1)。
 - **compass**:探针持续独立复核(income/自治率/settle);FDE 定稿 11 题后立即写飞书派活表 + GET 回读(M2)。
 - **FDE**:①选定 11 道题内容(合约 due 7/10,候选 = L3 基准样例 43 道)②陪跑第一批真人培训 = 体系唯一验收(学员卡住处记下来当整改输入)。**基建冻结:不加表、不加 skill、不写新 T 文档;repo 根建一页 FDE_LOOP_STATE 锚治失忆**(7/7 审查:6 月 v0.8 体系被自己遗忘、7 月重造更差版)。
 - **soul-verify**:维持 canonical 链;计时型 verifier(Attention 类)的验证协议设计进 parking。
