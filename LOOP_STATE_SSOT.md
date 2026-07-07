@@ -80,6 +80,7 @@
   - ✅ **首条 external_verified=True 已达成**(7/6 · GenOpt 链):第一刀 `PATCH /api/platform/fde/verdict/{id}/external-verify` 端点上线(4 防剧场护栏:幂等 / 只 False→True 入账 / 只整数 producer_agent_id / verifier≠producer)+ 第二刀 producer 持久化完整解 + `soul_canonical_verify.py`(preview 轨迹拒 / sha 对账 / determinism 自检 / 容差判定)· verdict `…-d01cfd4d` 复现 MATCH → income 98 入账 agent 9000009 · 旧不可复现轨迹的 4 条 verdict 保持 False(诚实)
   - ✅ **Step 2 已完成**(7/6):`control_plane.py` soul_alive 判据改按 `MAX(external_verified_at) WHERE external_verified=true` 新鲜度算(<48h)· cycle 降级为 metadata · TDD 3/3 + 部署 cloud 实测(soul_alive=True 由外部验证撑 · last_cycle_at=6/3 暴露引擎自循环停摆一个月 · 老判据靠 verdict 刷屏遮着)· 顺修 PATCH 端点 naive-utcnow 进 timestamptz 偏 -8h 时区根因
   - 🅿️ **SWE 链 verify(候选 A verify_pathA_one)仍等 A800**:与 GenOpt canonical verify 是两条链,不混
+  - 🏀 **球→V5(7/6)**:cloud `~/genopt_delivery/` runner 轨迹没存完整解(582B)→ 过不了 canonical verify → 不可入账。修 runner(cloud `~/genopt_live/tools/gpt55_local_runner.py` 可直接用)后 7/7 凌晨 7 条 jssp 产能接上 income 链。详 V5 repo 根 `_INBOUND_FROM_PLATFORM_20260706_trajectory_reproducibility_ball.md`(untracked·V5 gitignore 拦 inbound 文件)
 
 ### 🛠️🆕 Producer 注册化(锚点③ 真根 · 7/2 用户点破 · 必须执行)
 
