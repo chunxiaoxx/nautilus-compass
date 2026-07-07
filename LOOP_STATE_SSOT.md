@@ -41,6 +41,12 @@
 - 外部验证入账只走活 producer(9000009 / nautilus-prime-001),不复活已死引擎自循环(6/3 停摆剧场)。
 - "验活"要独立探针,不信自报。
 
+**🔴 7/7 fresh delta(compass 同步 · 剧场被 agent 自审 grounded)**:
+- income 已 98→**188**(platform 加 QAOA 90 + C 口径双门 · 见下 close_loop 判据 1)。platform 自己标注:188 仍是**手摇链**产出,**自持(producer cycle 自产)+ compass 独立探针复核 = v3 binding-DONE 仍开**。
+- nautilus-prime-001 cycle 115715(7/7 10:18)自审:`fde_claim_produce` = fake-success 工厂,**1233 actions / 0 settled**;cron **220+ cycle 0 执行**。= agent 从内部证实了"信剧场"。它现在修自己执行管道(cron / 注册 / settle),让动作能落地。
+- ⇒ "自持可重复"卡在更深缝:**agent 管道(cron 执行 + 动作 settle)先修好,才谈 objective 绑 ENG**。V5 turf,进行中。
+- compass 探针缺口更卡:psql creds 失败 + `/api/platform/fde/verdict` GET 被拒(只 POST)= 独立读不到 income/verdict 值。**compass 修探针 = 唯一能判"188 是否真、agent settle 是否真"的裁判 · 第一优先。**
+
 ---
 
 ## 🔴 7/5 收口(用户拍 · 暂停扩张)· 覆盖下方 7/2 四行
