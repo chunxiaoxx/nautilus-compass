@@ -181,6 +181,66 @@ def _fmt_age(age_h) -> str:
     return f"{age_h / 24:.1f}d"
 
 
+# ---------------------------------------------------- income growth watch (③)
+# 默认 watermark 路径(与 PoI cache 同目录 · cron/监控可 env 覆盖)
+DEFAULT_WATERMARK_PATH = Path(os.environ.get(
+    "COMPASS_INCOME_WATERMARK",
+    str(Path.home() / ".claude" / "plugins" / "nautilus-compass" / ".cache"
+        / "income_watermark.json")))
+
+# 增长状态词汇
+GROW = "GROW"    # income 比上次高(自持增长信号 · binding-DONE #2 想看到的)
+FLAT = "FLAT"    # 无变化(当前真态:income 冻在 188 · 引擎停摆)
+DROP = "DROP"    # 下降(误铸回滚 / 账修正 · 需查)
+FIRST = "FIRST"  # 首次记录 · 无上次可比
+
+
+def diff_income(current: int, watermark_path: Path = DEFAULT_WATERMARK_PATH,
+                record: bool = True) -> dict:
+    """比对本次 derived_income 与上次 watermark → 报增长 delta(③ 盯 income 持续涨)。
+
+    record=True 才写 watermark(dry-run/测试传 False)。这是"盯...持续涨"的能力本体:
+    快照回答"现在多少",本函数回答"比上次涨没涨"。V5 修好管道、producer 自产入账后,
+    连续跑本函数就能独立看到 income 越 188 持续涨(而非停在手摇的 188)。
+    """
+    previous = None
+    try:
+        if watermark_path.exists():
+            previous = int(json.loads(watermark_path.read_text(encoding="utf-8"))
+                           .get("derived_income"))
+    except Exception:  # noqa: BLE001 — 坏 watermark 当首次 · 不崩
+        previous = None
+
+    if previous is None:
+        status, delta = FIRST, 0
+    elif current > previous:
+        status, delta = GROW, current - previous
+    elif current < previous:
+        status, delta = DROP, current - previous
+    else:
+        status, delta = FLAT, 0
+
+    if record:
+        try:
+            watermark_path.parent.mkdir(parents=True, exist_ok=True)
+            watermark_path.write_text(
+                json.dumps({"derived_income": current}, indent=2), encoding="utf-8")
+        except Exception:  # noqa: BLE001 — 写失败不影响读出的 delta 判断
+            pass
+
+    return {"status": status, "previous": previous, "current": current, "delta": delta,
+            "detail": f"income {previous}→{current} · delta={delta:+d} ({status})"}
+
+
+def probe_income_growth(conn, watermark_path: Path = DEFAULT_WATERMARK_PATH,
+                        record: bool = True) -> dict:
+    """③ 盯 income 持续涨:读当前 verdict-derived income → 比上次 watermark。"""
+    inc = probe_verified_income(conn)
+    if inc["status"] == RED:
+        return {"status": RED, "detail": f"cannot read income: {inc['detail']}"}
+    return diff_income(int(inc.get("derived_income", 0)), watermark_path, record=record)
+
+
 # ------------------------------------------------------------------ runner
 def run_all(conn, producer_agent_id: int = PRODUCER_AGENT_ID) -> dict:
     return {
@@ -208,12 +268,16 @@ def main(argv=None) -> int:
         description="compass economy liveness probe · 读生产 DB 真值验闭环")
     ap.add_argument("--probe", choices=ALL_PROBES, help="单探针(默认全部)")
     ap.add_argument("--producer", type=int, default=PRODUCER_AGENT_ID)
+    ap.add_argument("--watch", action="store_true",
+                    help="③ 盯 income 持续涨:读当前 income 比上次 watermark 报 delta")
     ap.add_argument("--json", action="store_true", help="JSON 输出(给 cron/监控)")
     args = ap.parse_args(argv)
 
     try:
         with open_live_conn() as conn:
-            if args.probe == PROBE_INCOME:
+            if args.watch:
+                result = {"income_growth": probe_income_growth(conn)}
+            elif args.probe == PROBE_INCOME:
                 result = {PROBE_INCOME: probe_verified_income(conn)}
             elif args.probe == PROBE_CYCLE:
                 result = {PROBE_CYCLE: probe_engine_cycle_liveness(conn)}
@@ -230,8 +294,9 @@ def main(argv=None) -> int:
         for name, r in result.items():
             print(f"[{r['status']}] {name}: {r['detail']}")
 
-    # 全 GREEN → 0 · 任一非 GREEN(含 STALE/GAP/RED)→ 1(给 cron 告警 · 诚实)
-    return 0 if all(r["status"] == GREEN for r in result.values()) else 1
+    # 健康态:GREEN(探针)+ GROW/FLAT/FIRST(watch · income 未降)→ 0 · 其余(STALE/GAP/RED/DROP)→ 1
+    healthy = {GREEN, GROW, FLAT, FIRST}
+    return 0 if all(r["status"] in healthy for r in result.values()) else 1
 
 
 if __name__ == "__main__":
