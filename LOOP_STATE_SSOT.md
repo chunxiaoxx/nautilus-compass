@@ -6,6 +6,43 @@
 
 ---
 
+## 🔴 7/6 v3 · /goal 落地(用户拍 · 细化 7/5 收口 · 当前最高权威目标)
+
+**唯一目标**:把已跑通一次的收敛闭环(ENG 基准 × RSI × FDE · 一鱼两吃)从 **one-off** 变成
+**(a) 活 producer 自持产出(income 自动越 98 持续涨)+ (b) 已交付甲方(11 题入飞书派活表)**。
+不扩到 1000,不开新战线(守 7/5 收口)。
+
+**已落地一次(7/6)· 带诚实标注**:GenOpt JobShop trajectory → producer 9000009 persist
+→ `soul_canonical_verify.py` 复现 97.6047 MATCH → PATCH external-verify → `total_income` 0→98
+(平台史上第一行外部 gate income)。判据1 ✅(SSOT 声称)/ 判据3 ✅ / 判据2(Kairos income=0)⚠️。
+⚠️ income=98 / 1 条 verified 是 SSOT 声称值,**compass 探针 creds 失效未独立复核** —— 与"引擎自循环
+停摆一个月被 verdict 刷屏遮"同类病(无独立探针 = 信剧场)。
+
+**下一 binding-DONE(外部可证 · 全成立才算闭)**:
+1. **自持可重复**:活 producer(nautilus-prime-001 / 9000009)cycle 产【可复现完整解】GenOpt
+   trajectory → soul_canonical_verify MATCH → external_verified=True → total_income 越 98 持续涨,
+   **且 compass 探针独立复核到**(查 DB 真值,不信 SSOT 散文)。
+2. **已交付**:11 题达 buyer §2 三条(ship 5/5 + frontier_eval 9/9 + GPT5.5 valid + doubao pass@5 ≤ 0.6)
+   + 入飞书派活表(GET 回读)。
+
+**各框下一动作(FDE 只做业务不背 infra)**:
+- **V5**:🔴 把 nautilus-prime-001 cycle objective 从"改自己内务"(stake/recovery/audit)扭到
+  "产可复现 ENG trajectory → persist → 入账";续跑自治但产出绑中心环。勿停 PID 884064(=活 agent)。
+- **soul-verify**:新 trajectory 跑 soul_canonical_verify → external_verified=True(唯一入账门)。
+- **platform**:doubao 难倒 10 题(ARK 本机已通)→ M1 · 维护 backend/PATCH 端点。
+- **compass**:🔴 ① 先修 liveness 探针 DB creds,拿回独立验闭环真态能力 ② feishu 写函数做 11 题 submit
+  ③ 探针盯 income 持续涨 + ledger GREEN。
+- **用户(一次性)**:飞书 OAuth user_access_token → 交 compass 写。
+- **FDE(轻)**:只定 11 题业务/派活表内容,不背 token/infra 阻塞。
+
+**新增守则(叠加下方 5 坑护栏)**:
+- 🆕 **agent 层反 D**:自治 agent 的 cycle 只改自己不产外部价值 = agent 层维护陷阱;objective 必须绑
+  中心环产出(V5 定,compass/platform 独立探针观测,不信自报 soul_alive)。
+- 外部验证入账只走活 producer(9000009 / nautilus-prime-001),不复活已死引擎自循环(6/3 停摆剧场)。
+- "验活"要独立探针,不信自报。
+
+---
+
 ## 🔴 7/5 收口(用户拍 · 暂停扩张)· 覆盖下方 7/2 四行
 
 用户 7/5 反馈"过往一周工作比较混乱"→ 拍 **D 暂停扩张,清点收口**:
