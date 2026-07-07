@@ -57,6 +57,7 @@
   - **真 settle 工具打 404**:`send_to_agent`→`/api/platform/messages` GET+POST **独立 curl 确认 404**(112/112 fail)· `nautilus_claim_bounty` 77/77 = ERR:404。疑 v3 未 merge/部署。
   - **两本账背离**:agents.total_earnings(9000009)=**0**(external-verify 铸的 188 只写 agent_survival 未传播)。
   - ⇒ **0 settled 根因 = produce 假成功 + settle 路由 404**,非"cron 不 fire"。修复靶点:platform 补/部署结算路由(`cnt_compass_platform_settle_routes_404`)· V5 修 produce 假成功判定(`cnt_compass_v5_fake_success_produce`)。
+  - 🎯 **404 已定性到 ground truth(compass 查 nautilus-core code)**:`messages_router`(prefix `/api/messages`)在 main.py 已 import(L74)+mount(L587)· 分支 `soul-distill-deploy`(c857f3e1c "A2A Messages")。同 main.py 的 `control_plane_router`(L643)**live 200** 但 `/api/messages` **live 404** = **部署 backend 是旧版(有 control_plane 无 A2A messages)= deploy/merge gap**,精确坐实 goal "platform 待 merge main"。**⇒ merge/deploy `soul-distill-deploy` 即修 messages 404**(+ agent 打 `/api/platform/messages` vs mount `/api/messages` 前缀不匹配 · platform 加 alias 或 V5 改路径二选一)。**platform 的 merge-to-main 动作 = binding-DONE #1 的直接解锁键。**
 
 ---
 
