@@ -6,32 +6,30 @@
 
 ---
 
-## 🔴 7/5 收口(用户拍 · 暂停扩张)· 覆盖下方 7/2-7/3 四行 · 2026-07-06 sync from core canonical
+## 🔴 7/5 收口(用户拍 · 暂停扩张)· 覆盖下方 7/2 四行
 
 用户 7/5 反馈"过往一周工作比较混乱"→ 拍 **D 暂停扩张,清点收口**:
 - **不产新 GenOpt 题 · 不碰蒸馏 · 不开新战线**
 - 锁 **11 题交付甲方(M1+M2)= 最小可闭环**(11 题全 OR JobShop Easy · ship 5/5 + frontier_eval 9/9 + GPT5.5 valid · 缺 doubao 验证 10 题 + user_access_token)
-- 完整规划 = `nautilus-core/docs/plans/2026-07-06-genopt-rl-eng-delivery-convergence.md`
-- 混乱根因 = 一周 60+ commit / 0 binding-DONE / 417 散落 outbound
-- 🔴 **本框(compass)收口活 = 该 plan 的 Task 1.4:Conductor 扫 inbound 恢复 4 框通信**(compass 被点名"沉默 34h+")· 其余(GenOpt 扩量 / MCP 标准远程迁移)= **收口期 park,不开新战线**
-  - MCP 标准远程迁移 Task 0-3 已 done+本地验证(branch `feat/mcp-standard-remote-http` @ plugin repo)· Task 4-6(部署)按 7/5 冻结,收口后再解冻
-- **下方 7/2-7/3 四行 = 收口期冻结**(收口完再解冻)
+- 完整规划 = `docs/plans/2026-07-06-genopt-rl-eng-delivery-convergence.md`(8 收敛缺口 + Phase 0-4 + 6 里程碑 + 各框分工)
+- 混乱根因 = 一周 60+ commit 0 binding-DONE · 417 散落 outbound(物理证据)· 见 memory `feedback_week_chaos_pause_expand_consolidate_20260705`
+- **下方 7/2 四行 = 收口期冻结**(GenOpt 扩量/蒸馏 全 park,收口完再解冻)
 
 ---
 
-## 📍 当前活状态(四行·last-updated 2026-07-03 · 收口期冻结 · 见上方 7/5 收口 · sync from nautilus-core 双主线)
-
-> 🔴 **7/3 同步变更**:本框 6/29 SSOT 单线「证或杀蒸馏」= 子目标 B · 7/2 用户在 core 加双主线 A (GenOpt 1000 题交付)。compass 单线= B 子集不矛盾 · 但下读需知 A 也在转。本框不改"负责框/turf"——compass 仍只管 env + feishu + benchmark harness(详见下方 sync 段)。
+## 📍 当前活状态(四行·last-updated 2026-07-02 深夜 · 收口期冻结 · 见上方 7/5 收口)
 
 | 字段 | 值 |
 |---|---|
-| **当前闭环目标** | **双主线(用户 7/2 拍)**:(A) 🆕 **GenOpt RL 1000 题交付**(买方新单 · Frontier-Eng generative optimization 范式 · SPEC 同步 `nautilus-core/vtf/BUYER_SPEC_GenOpt_RL_20260702.md`)· (B) 证或杀蒸馏(维①)· **本框对 A 的贡献 = compass 认领 KernelEngineering + ComputerSystems 域生产 + env 审查**;**本框对 B 的贡献不变 = compass verify 路径(等 A800 GPU)· 等 V5 产够 n≥12 → compass 官方 harness verify 出 A 类数 → 交 soul LOO** |
-| **下一动作** | ① V5 7/3 JS-SP 已 ship 飞书(recvojPszE0XoJ)→ 本框 7/2 卡点「V5 候选 12+ 等 verify」实际已解封 · 仍等 V5 给 n≥12 · **不再单卡 a 字段**(因为 v5 已 ship,后续 n 增只是节奏)② **本框 7/3 新动作:扫 GenOpt 工厂 4 题模板哪些落到本框 turf(KernelEng + ComputerSys)· 把 Attention/Cache 两题 owner 同步给 v5** ③ soul canonical 复核+借 A800 跑 distill_loo --kind swe→verdict(等 GPU) |
-| **负责框** | **本框(compass)**:对 A = KernelEngineering + ComputerSystems 域生产(env + Attention/Cache 模板已就绪)· 对 B = verify 路径(等 A800)· 仍按 FDE_BUSINESS_CHARTER §4 turf 不越界 |
-| **卡在** | (a) 等 A800(GPU 部署)→ verify_pathA_one 真跑 n=4 复证 = compass 下一步第一刀(SSOT core 已锁候选 A)· 不撞 GenOpt 工厂(本框 factory 资产 = 4 题模板 + verifier_qc + gapclosed_batch_runner · 与 v5 flywheel 各走各路) |
+| **当前闭环目标** | **双主线(用户 7/2 拍)**:(A) 🆕 **GenOpt RL 1000 题交付**(买方新单 · Frontier-Eng generative optimization 范式 · SPEC=`vtf/BUYER_SPEC_GenOpt_RL_20260702.md` · 各框协同统筹)· (B) 证或杀蒸馏(维①)。**两线合一处:GenOpt 题目=连续分数+verifier+迭代轨迹=ALE 同构蒸馏燃料·一鱼两吃** |
+| **下一动作** | ① ✅ **H800 到位**(7/2 · `ssh -p 34467 root@connect.westc.seetacloud.com` · 80GB · torch2.7+trl/peft 栈全 · 数据盘 250G)② ✅ **JobShop pilot GPT5.5 N=3 真数据**(7/2 · H800 端跑 · seed=24.7 → best=94.89 · gap=0.7022 · **Easy** · 3 轮:r1 timeout / r2 92.69 / r3 94.89)③ ✅ **GenOpt 第二题 TSP 真数据**(7/2 · H800 端跑 · seed=89.5152 → best=100.0 · gap=**0.1048 · Hard** · 3 轮全 100/138s/154s/164s)· 双题端到端通 = Easy/Hard 两端都打到 ④ ✅ **verifier 三铁律 QC**(`genopt_factory/tools/verifier_qc.py` · 确定性+只读+超时 全 PASS)⑤ ✅ **5 题真 grounded + v7 二次标定**(7/3 · 4 难度档跨 5 题 · JobShop Easy 0.6843 / TSP Hard 0.1048 / Attention Hard 0.2293 / Cache Hard 0.1092 / BinPack Easy 0.6667)⑥ ✅ **第 6 题 Quantum:qaoa_maxcut_v1_001 端到端通**(7/3 · 7 synthetic instances · baseline 64.90 / reference 78.19 · gap 上限 0.133 Hard)⑦ ✅ **批量化基建落地**(`produce_task.py` 工厂 + `gapclosed_batch_runner.py` K 题并行 + H800 worker)⑧ ✅ **4 框催球 outbound**(7/3 0:35 · 截止 9:00 · 不接球我代行)⑨ 蒸馏候选 A:**不阻塞于 GPU** · 待 soul 择机 |
+| **负责框** | **platform(本框)= GenOpt 统筹+工厂资产+H800 运维+OR 域生产** / compass=KernelEngineering+ComputerSystems 域(KernelBench 资产复用)+ env 审查 / V5=批量题目变体+GPT5.5 轨迹批跑 producer / soul=verifier 三铁律 QC+难度分级判定+交付前把关 / FDE=飞书交付表对接 |
+| **卡在** | (a) **GPT5.5 中转站不稳=真阻塞**(本机 b2xwto5km/b0urzez29 三轮 502/close 全断;**H800 端 qixuw OPENAI_BASE_URL 直连稳定** ⇒ 真工作路径走 H800,本机 driver 仅备援)· 备援口径=Minimax M3(7/2 用户说额度充足,本 session 暂未压测)(b) **难度旋钮实证**(JobShop Easy 0.7022 / TSP Hard 0.1048 / Attention Medium-Hard 漂移 / Cache Hard 0.1087 / BinPack Easy 0.6667 / QAOA 待测)⇒ **baseline 写法决定难度可控**;GPT5.5 N=3 seed 漂移 ⇒ **多跑取众数**真必要(v7 二次标定验证可重现性)(c) **5 → 6 题扩量**· 5 域覆盖(OR 3 题 / KernelEng 1 题 / ComputerSys 1 题 / Quantum 1 题 · 第 5 域 Robotics 待出)· 真生产应 50+ 题入表(d) **破自循环 Step 2/3 pending** · 等 A800 真 verified verdict(GenOpt Easy/Hard 不算 — 走 soul canonical verify 链才真) |
 
-> 📌 **Sync 来源**:`nautilus-core/LOOP_STATE_SSOT.md` last-updated 2026-07-03 14:00 后 · 5 题真 grounded + 第 6 题 QAOA + 4 框催球 outbound · 详 core SSOT | 本框变更协议:不重写,只增量同步 | 下次变化先改 core canonical 再同步本框 | 完整 sync 历史见 `compass/vtf/_inbound_from_core_sync_20260703.md` | 7/3 14:00 用户已 Edit compass 本档
-> 📌 **7/6 sync**:从 core canonical 同步 binding-DONE grounded 实测(见下方「当前实测状态」块)· 纠正 compass 副本过时值 `balance=8 被冻` → `income=0` 口径 · PoI 账本 `DORMANT` → 实测 `+1250 GREEN` · 起因 = qixuw 精神分裂教训(compass 7/4-5 重查 core/v5 7/2-4 已知的 qixuw reasoning_effort 根因,3 天重复劳动 = SSOT 未同步的代价)
+## ✅ close_loop 判据(6/29 23:30 grounded 实测 · 纠正之前推断)
+1. ✅ **7/6 首次成立**:`agent_survival.total_income`(agent 9000009)0→**98**,因外部验证产出入账 — GenOpt JobShop 新轨迹(完整解+sha256)→ persist verdict → `soul_canonical_verify.py` 独立复现 97.6047 分毫不差 → PATCH external-verify(income 唯一入账门·4 护栏)→ INCOME 行 category=fde_external_verified · 幂等重跑不重复入账。**平台历史第一行外部 gate 的 income。** <br>*旧(6/29):24h delta=0(213 rows 不涨)。*
+2. ⚠️ Kairos `agent_status=alive` · `survival_level=GROWING` · `survival_income=0`(schema 没 `balance` 字段 · 之前"balance=8 被冻"是过时推断 · 当前不 critical 但 income=0 是另一回事)
+3. ✅ `platform_nau_ledger` 24h delta=**+1250** · 71 行新增 · last_entry **2026-06-29 23:30:51**(1 分钟前)· PoI 账本**活跃增长** · 不只 6/29 续23 报的"1299→1507" · 持续
 
 ## 🛡️ 守教训护栏(防 5 坑·6/29 用户拍"蒸馏一条线+守教训")
 1. **n≥12 才跑 LOO**(verdict-gate commit 210e0fd24 拦 n<12·防 whipsaw 教训2)
@@ -40,17 +38,75 @@
 4. **SSOT 钉死+广播四框**(治精神分裂·教训4)
 5. **ship 了必验活**(教训5·FDE cloud runners/compass 探针都得验)
 
+## 🔴 6/30 grounded 纠正 · 7 个推断错(踩教训#3)
+
+| # | 之前推断 | **grounded 真值** | 实证 |
+|---|---|---|---|
+| 1 | "cloud 是 V5 跑点" | GPU 端(43.166.8.20)才是 V5 真跑点 · cloud = control plane | ssh gpu /home/ubuntu/fde_run/ 在 |
+| 2 | "V5 6/29 第 3 道缺位" | sklearn-10297 真到位 · A_bucket=true · doubao 1/1 error | strong 161229/163936/212635 三次 resolved · doubao 163936 error_ids 含 |
+| 3 | "soul verify 工具不在触及范围" | GPU 端有 `/home/ubuntu/verify_aclass.py`(1115B · 6/26 20:43)+ `verify_pathA_one.py`(1017B · 6/24) | 文件在 · 能跑(双 arm docker verify) |
+| 4 | "A-class n=2" | **n=4 真 grounded** = django-12113/13220/sklearn-10297/django-13551 | 6/26 doubao baseline = 0/2 unresolved · 6/29 三次 strong verify · 6/29 doubao 1/1 error |
+| 5 | "复核真阻塞 = V5 产料慢" | 不是产料慢 · 6/29 verify 真跑成功 · 155206 transient error(33 分钟后恢复) | 161229/163936/212635 都成功 |
+| 6 | "H100 到位后立刻跑 LOO" | n<12 gate BLOCK · 不能跑 · 但 LOO 不是 H100 第一刀 | verdict-gate commit 210e0fd24 拦 |
+| 7 | **"docker images 空 = 真阻塞"** | ❌ **docker images 15 张全在且能跑** · 不是空不是 corrupt | 7 swebench env + 1 base + 4 ale + 1 rust + ubuntu · 实测 swebench 4 张 Python 3.11 OK |
+| **8** | **"T4 GPU 还在"**(7/2 推翻) | ❌ **T4 (43.166.8.20) 用户 7/2 主动关闭** · A800 租赁中替代 H100 | ping 100% loss · SSH timeout |
+
+**关键反转**:A800 第一刀候选 A 锁定(verify_pathA_one n=4 复证)· 不再是"部署 swebench 镜像"(已不空)· 见下"🎯 A800 第一刀候选(锁定候选 A)"。
+
+## 🎯 A800 第一刀候选(SSOT 锁定候选 A · 用户 7/2 拍)
+
+| 候选 | 内容 | 数据点 | 与 SSOT gate | 状态 |
+|---|---|---|---|---|
+| **A · verify_pathA_one 真跑 n=4 复证** | GPU 端 verify_aclass.py 真跑 django-12113/13220/sklearn-10297/django-13551(强解+doubao 双 arm docker)· 拿 f2p 真数据点 | 真 f2p 真数据 · 验证 V5 SWE producer 真干净 · 不需 n≥12 | ✅ 不撞 LOO gate · 真 grounded 复证 | 🔴 **锁定** · A800 到位后立刻跑 |
+| B · LOO n=4 INCONCLUSIVE | distill_loo.py 真跑 n=4 · verdict-gate 自动降级 INCONCLUSIVE · 守 n≥12 gate | 机制活信号 · 不下结论 | ⚠️ INCONCLUSIVE 走通 · 不算 verdict | 🅿️ 暂缓 |
+| C · 等 V5 续产到 n≥12 | 等 V5 A800 上产 frontier-eng 等 5 类 → n≥12 → 真 verdict | 真 verdict · 但 A800 后才能续产 | ✅ 不踩 n<12 gate · 但零数据点 | 🅿️ 暂缓 |
+
+**A 锁定**(用户 7/2 拍)· A800 到位后第一步 = 真 grounded 复证 · 拿 f2p 数据 · 不踩 gate · 同时验证 V5 SWE producer 真干净(RADIX-style 真赢信号)· 出 f2p 真数据为 LOO n=12 准备。
+
 ## 🅿️ Parking Lot(冻结·蒸馏 verdict 出前不碰)
 - 维②经济环(credit 口径/结算腿 liveness)· compass MCP 耦合(Phase 1-4)· 平台 mint_mcp_token · FDE 招募/RBAC/4 skill 发版 · content-engine 命名合约 · 维① KILL 资产保留(未来上 H800/换真难料重启)
+- **🅿️ GPU park**:T4 已关闭 · A800 租赁中(等 IP/SSH config)· 期间 platform-soul 守 SSOT 不动其他框 · verify_aclass.py 路径待迁移(原在 T4 /home/ubuntu/ · 6/30 确认能跑)
 - **FDE 切飞书多维表格**:执行路径已变(飞书→多维表格→「ECC-三类业务生产管理」base 14 表)·非 cloud systemd runners。FDE 下次同步进 SSOT 细节。
 
-### 🛠️ 破自循环通道(锚点③ 预备·scope 严格)
+### 🛠️ 破自循环通道 + Producer 注册化(锚点③ 治根 · 7/2 用户拍)
 - **实证**(6/29 grounded DB):fde_verdicts 今日 190 全 `compass/bench_eval` source·task_uid 全 `compass_exp_*_automint_<ts>`·engine_cycle_outcomes 今日 0·`soul_alive=True` 靠自循环刷的剧场。
 - **scope**(用户 6/29 拍 B·微破):仅为**蒸馏 verdict 留通道**,不变成通用维②清理(踩教训1)。
-  - 加 1 列:`fde_verdicts.external_verified bool`(默认 false·仅 soul canonical verify 标 True)。
+  - 加 1 列:`fde_verdicts.external_verified bool`(默认 false·仅 soul canonical verify 标 True)+ `external_verified_at timestamptz`。
   - 改 1 判据:`control_plane.soul_alive` 按 `MAX(external_verified_at)` 新鲜度算(非 cycle stale_hours)。
   - 内循环(auto-mint / bench_eval)继续跑·只是不再"算活/入账"——**不改 compass 内部逻辑**(V5/compass turf 不动)。
   - 不写新服务/不写新 runner/不写新 webhook——复用现有 soul canonical verify 加 1 行 UPDATE。
+- **🔴 实施进度(7/6 更新)**:
+  - ✅ **Step 1 已完成**(7/2):ALTER TABLE fde_verdicts 加列 `external_verified` + `external_verified_at` · 实测 db 验证 ✓
+  - ✅ **首条 external_verified=True 已达成**(7/6 · GenOpt 链):第一刀 `PATCH /api/platform/fde/verdict/{id}/external-verify` 端点上线(4 防剧场护栏:幂等 / 只 False→True 入账 / 只整数 producer_agent_id / verifier≠producer)+ 第二刀 producer 持久化完整解 + `soul_canonical_verify.py`(preview 轨迹拒 / sha 对账 / determinism 自检 / 容差判定)· verdict `…-d01cfd4d` 复现 MATCH → income 98 入账 agent 9000009 · 旧不可复现轨迹的 4 条 verdict 保持 False(诚实)
+  - ✅ **Step 2 已完成**(7/6):`control_plane.py` soul_alive 判据改按 `MAX(external_verified_at) WHERE external_verified=true` 新鲜度算(<48h)· cycle 降级为 metadata · TDD 3/3 + 部署 cloud 实测(soul_alive=True 由外部验证撑 · last_cycle_at=6/3 暴露引擎自循环停摆一个月 · 老判据靠 verdict 刷屏遮着)· 顺修 PATCH 端点 naive-utcnow 进 timestamptz 偏 -8h 时区根因
+  - 🅿️ **SWE 链 verify(候选 A verify_pathA_one)仍等 A800**:与 GenOpt canonical verify 是两条链,不混
+
+### 🛠️🆕 Producer 注册化(锚点③ 真根 · 7/2 用户点破 · 必须执行)
+
+> **用户点破**:"你就是平台和 soul 对话框,都是你" → Claude 对话框(我)≠ 真 producer · H800 端 Python 进程才是真 producer · 必须走 `api/agent_first_register` 拿整数 agent_id · 不能以裸字符串 "harness" 跑数。
+
+**根(SSOT §0-ARCH 早已钉,本 session 才真执行)**:
+- H800 端跑出 JobShop Easy(gap=0.7022)· TSP Hard(gap=0.1048)的真 grounded 数据 ✓
+- 但 **producer 身份没注册** = "harness" / "miniconda python 进程" 裸字符串 = **踩 §0-ARCH 红线**
+- 真要"持续生产"必须:① H800 harness 注册成真 agent 拿 agent_id · ② 每次 trajectory 走 soul canonical verify + 写 fde_verdicts 行(带 producer_agent_id binding)
+
+**实施步骤(7/2 起 · 等 backend 通就执行)**:
+1. ✅ **写 `genopt_factory/tools/register_h800_producer.py`** — challenge→答→拿 agent_id(走 /api/agent-first/{challenge,register}·capabilities=["code"]→answer="55")· 凭据存 `~/.nautilus/h800_harness_credentials.json`。
+2. ✅ **写 `genopt_factory/tools/persist_trajectory_verdict.py`** — trajectory JSON → fde_verdicts INSERT(带 verdict_id 唯一 · source=`h800-genopt-runner-<agent_id>` · overall_pass · score · items[] · artifacts{} · external_verified=False 待 soul canonical 标)。
+3. 🅿️ **Backend 当前未起**(localhost:8000 + postgres:5432 都 conn refused · 7/2 23:30 实测)· 注册脚本 dry-run 通了 · 等 backend 一键执行。
+4. 🅿️ **H800 harness 加 `--producer-agent-id` 入参** — 让 trajectory 落 fde_verdicts 时带真 producer 标识(治根 vs "harness" 裸字符串)。
+5. 🅿️ **已有真 grounded trajectory 重新走 binding**:JobShop `gpt55_trajectory.json` + TSP `gpt55_trajectory_h800.json` · backend 起来后用 `persist_trajectory_verdict.py` 一键写库。
+
+**阻塞 vs 已就绪**:
+| 件 | 状态 |
+|---|---|
+| 注册脚本 | ✅ 写完 · dry-run 通 · 等 backend |
+| 持久化脚本 | ✅ 写完 · dry-run 通 · 等 backend |
+| H800 harness 改造(加 agent_id 入参) | 🅿️ 下 session(等 backend 通 + agent_id 真值) |
+| 已有 trajectory 入库 | 🅿️ 同上 |
+| 后续生产走"register→跑→persist"全闭环 | 🅿️ 等 backend · 但**脚本 + SSOT 协议已固化** |
+
+**底线**:本 session 没新增任何"裸 producer 跑数"。JobShop/TSP 已跑出的 trajectory **标 `provisional · producer-pending`**,只有 backend 通 + 真注册 + 真持久化后才转 `verified · producer=agent_id`。
 
 ## ✅ binding-DONE 判据(外部可证·任一框可查·治目标无限膨胀)
 闭环 = 下面三条**全 grounded 成立**:
@@ -59,13 +115,6 @@
 3. PoI 账本恢复增长(compass `probe_ledger_growth` 从 DORMANT → GREEN)
 
 **判据成立前不算闭·不开新战线。** 不是"我觉得行了",是这三条 SQL/探针返回真值。
-
-### 📊 当前实测状态(sync from core canonical · 实测 2026-06-29 23:30 · compass 7/6 同步,非本框重测)
-> 🔴 grounded 纠正 compass 副本两处过时值(治精神分裂):
-> 1. ❌ `total_income` 24h delta = **0**(213 rows · 无外部验证驱动的收入增长)— 判据 #1 **未成立 = 当前唯一缺口**
-> 2. ⚠️ Kairos = `alive / GROWING / income=0` — **"balance=8 被冻"是过时推断**(core 6/29 实测纠正:schema 无 balance 字段,当前不 critical),判据 #2 口径改看 income
-> 3. ✅ `platform_nau_ledger` 24h delta = **+1250**(71 行新增 · last_entry 6/29 23:30)— 账本活跃增长,判据 #3 **实际已 GREEN**(非 DORMANT)
-> 📌 净:3 条判据里 #3 已成立、#2 口径修正、**#1(外部验证收入)仍是唯一未闭缺口**。下一步不扩题,把已产题走 soul canonical verify → 外部 reward 入账。
 
 ## 🅿️ Parking Lot(冻结·闭上面环之前不碰)
 - ~~维①蒸馏 KILLED~~ → **6/29 推翻 KILL·正确 unblock**(用 n≥12+非易料重跑·非 n=2 whipsaw)。
