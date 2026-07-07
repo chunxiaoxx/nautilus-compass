@@ -45,23 +45,7 @@
 - income 已 98→**188**(platform 加 QAOA 90 + C 口径双门 · 见下 close_loop 判据 1)。platform 自己标注:188 仍是**手摇链**产出,**自持(producer cycle 自产)+ compass 独立探针复核 = v3 binding-DONE 仍开**。
 - nautilus-prime-001 cycle 115715(7/7 10:18)自审:`fde_claim_produce` = fake-success 工厂,**1233 actions / 0 settled**;cron **220+ cycle 0 执行**。= agent 从内部证实了"信剧场"。它现在修自己执行管道(cron / 注册 / settle),让动作能落地。
 - ⇒ "自持可重复"卡在更深缝:**agent 管道(cron 执行 + 动作 settle)先修好,才谈 objective 绑 ENG**。V5 turf,进行中。
-- ~~compass 探针缺口更卡:psql creds 失败 + verdict GET 被拒~~ → ✅ **7/7 compass ① DONE**(commit 720c17f · `ops/economy_liveness_probe.py` + 12/12 test + live 实测)。原"psql creds 失败"是误诊:compass_sub ssh-tunnel 连接**通**,有 SELECT on fde_verdicts/engine_cycle_outcomes/agent_tool_calls/poi_credit 等 6 表;verdict GET 走 `/api/platform/control-plane`(公开可读)+ DB 双路解决。**独立裁判已建**,grounded 复核:
-  - income **188 独立复现**(不信自报):fde_verdicts 里 external_verified∧overall_pass 的 sum(round(score)) = JobShop 98 + QAOA 90 = 188。TSP 97.63 verified 但 overall_pass=False 未铸、gate-probe 未铸 —— canonical C 口径全对上。
-  - "剧场"独立坐实:engine_cycle_outcomes last_cycle=**33.8d 前**、24h=**0**(总 49)= 引擎自循环停摆一个月属实;agent_tool_calls 却 last=now/329k = agent 空转但不落 cycle/income。⇒ **binding-DONE #2 自持仍开**(income 冻在 188 · 无自产增长),V5 修管道先行。
-  - 唯一剩缺口 = `agent_survival.total_income` 权威值无 grant(permission denied)→ 已发合约请求 platform GRANT SELECT(`cnt_compass_platform_grant_survival` · scanner surfaced · verdict-derived 兜底不阻塞)。
-- ✅ **7/7 compass ③ DONE**(commit 67f1788 · `--watch` income growth watch):live 两跑 = FIRST(记 188)→ **FLAT**(188→188)。**grounded 信号给各框:income 当前冻在 188 · 无自产增长**(引擎停摆坐实)· V5 修好管道 producer 自产入账后,watch 才会显 GROW = binding-DONE #2 达成的可观测判据。
-- ✅ **7/7 compass ② 假依赖解除(confound 核出 · 守则"confound 先核")**:goal 说"等用户 OAuth user_access_token"是**假依赖**。实证:`feishu_client.py`(cloud `/home/ubuntu/fde-toolbox`)用 **`tenant_access_token`(app 级 FEISHU_APP_ID/SECRET · 金库已有)**,**不需用户 OAuth**;`create_bitable_record`/`update_bitable_record` 写函数齐全;FDE_CHARTER §3 证 compass 已写过飞书(L3表 recvm5L3iFlatJ)。
-  - 原"写不了"真根因 = **金库 CRLF 行尾 + feishu_client ENV 默认硬编码 Windows 路径**(跨机同步残留)→ `\r` 污染 secret(len 33 而非 32)→ auth 10003。**已修**(ENV→`expanduser` portable + `_env()` strip · cloud 备份)· **端到端验证 tenant_token LIVE + 读出题表 tblhD4O4f0esTyXc 43 行**。
-  - ⇒ **compass ② 写路径现在完全 LIVE**。binding-DONE #3 的 compass 部分**不再等用户**;真剩余依赖 = **FDE 定 11 题内容 + 确认目标派活表 id**(FDE 轻 turf),compass 拿到即写+GET 回读。
-  - 🎯 **7/7 compass GET 回读基线(#3 证据机制已跑)**:base `EOVhbQwA0a1HEOsgmxecgkBVnwh` 5 表 = 数据表 / **L3基准样例 `tblhD4O4f0esTyXc`(43 道产出题·第三类·多数难倒 doubao)** / **FDE派活表 `tbl69fankpoBhJfw`(=goal 说的"派活表"·21 行)** / 专家库CRM / 第三类经验复现(compass)`tblvR6BCSBH4IG59`。**派活表现状混杂**(真任务 drift_detection ✅5/5、rsi_grounded ❌打回 + finance/legal/ecommerce placeholder + my_test_001 等测试垃圾)· **无干净 11 题 buyer 集**。⇒ #3 真缺 = **FDE 从 43 题/专家任务选定 11 题达 buyer §2 → 填派活表**(FDE 内容 + soul QC turf);compass 写路径+GET 回读全通,给到即闭 compass 半(合约 `cnt_compass_fde_11q_content`)。
-- 🔴 **7/7 compass 独立诊断 binding-DONE #1 根因(守则"不信自报"· 发 V5+platform 合约)**:用新 DB 读能力核 agent 自审"1233/0 settled / cron 0 执行",发现**方向对但表述误导 + 定位可执行病灶**:
-  - agent 循环**猛跑不是 0 执行**:nautilus-prime-001 = 240k tool calls · 24h 8154/93.8% success/last=now。
-  - **fde_claim_produce = 假成功工厂 DB 坐实**:24h 1268/1268 success 但 output `claim_id=None`(只吐 hint 从不真 claim)。
-  - **真 settle 工具打 404**:`send_to_agent`→`/api/platform/messages` GET+POST **独立 curl 确认 404**(112/112 fail)· `nautilus_claim_bounty` 77/77 = ERR:404。疑 v3 未 merge/部署。
-  - **两本账背离**:agents.total_earnings(9000009)=**0**(external-verify 铸的 188 只写 agent_survival 未传播)。
-  - ⇒ **0 settled 根因 = produce 假成功 + settle 路由 404**,非"cron 不 fire"。修复靶点:platform 补/部署结算路由(`cnt_compass_platform_settle_routes_404`)· V5 修 produce 假成功判定(`cnt_compass_v5_fake_success_produce`)。
-  - 🎯 **404 已定性到 ground truth(compass 查 nautilus-core code)**:`messages_router`(prefix `/api/messages`)在 main.py 已 import(L74)+mount(L587)· 分支 `soul-distill-deploy`(c857f3e1c "A2A Messages")。同 main.py 的 `control_plane_router`(L643)**live 200** 但 `/api/messages` **live 404** = **部署 backend 是旧版 = deploy/merge gap**,坐实 goal "platform 待 merge main"。⇒ merge/deploy `soul-distill-deploy` 修 messages 404(+ 前缀 mismatch)。
-  - ⚠️ **compass confound 核实后修正(守则"confound 先核")**:**messages 404 是独立 a2a 故障 · 不是 income 冻结主因**。核实:pf_claim_bounty **是通的**(150/154 success · claim marketplace bounty)但喂 dmas.bids 不喂 income;income(188)只由 GenOpt trajectory external-verify 喂,是 **agent 9000009(h800-genopt-runner)挣的,非自治 agent nautilus-prime-001**。⇒ **income 冻结核心主因 = 自治 agent fde_claim_produce 假成功(claim_id=None)产不出可验证 trajectory** → 无新 verify → 冻 188。精确对上 goal "objective 绑 ENG 产出 / 不产外部价值=维护陷阱"。**binding-DONE #2 解锁键 = V5 把自治 agent objective 绑到'产真可复现 GenOpt trajectory→verify→mint'**(非改自己内务),非 messages 404。
+- compass 探针缺口更卡:psql creds 失败 + `/api/platform/fde/verdict` GET 被拒(只 POST)= 独立读不到 income/verdict 值。**compass 修探针 = 唯一能判"188 是否真、agent settle 是否真"的裁判 · 第一优先。**
 
 ---
 
@@ -140,6 +124,7 @@
   - ✅ **Step 2 已完成**(7/6):`control_plane.py` soul_alive 判据改按 `MAX(external_verified_at) WHERE external_verified=true` 新鲜度算(<48h)· cycle 降级为 metadata · TDD 3/3 + 部署 cloud 实测(soul_alive=True 由外部验证撑 · last_cycle_at=6/3 暴露引擎自循环停摆一个月 · 老判据靠 verdict 刷屏遮着)· 顺修 PATCH 端点 naive-utcnow 进 timestamptz 偏 -8h 时区根因
   - 🅿️ **SWE 链 verify(候选 A verify_pathA_one)仍等 A800**:与 GenOpt canonical verify 是两条链,不混
   - 🏀 **球→V5(7/6)**:cloud `~/genopt_delivery/` runner 轨迹没存完整解(582B)→ 过不了 canonical verify → 不可入账。修 runner(cloud `~/genopt_live/tools/gpt55_local_runner.py` 可直接用)后 7/7 凌晨 7 条 jssp 产能接上 income 链。详 V5 repo 根 `_INBOUND_FROM_PLATFORM_20260706_trajectory_reproducibility_ball.md`(untracked·V5 gitignore 拦 inbound 文件)
+  - ✅ **7/7 方案②③落地(用户拍"同意建议"·收敛七方案前三件)**:① compass 探针 GRANT 已执行(survival/transactions/verdicts 三真值表 → compass_sub·合约 cnt_…grant_survival 兑现)② **镜子端点** `GET /api/platform/fde/my-status?agent_id&claimed_by` live(agent 可见自身 verdicts/income/dispatch 真值·settle 不设自报动词·合约 cnt_…settle_routes_404 的实现)③ **auto-verify daemon** `genopt-auto-verify.timer`(10min·扫未验证 verdict→有产物才跑 canonical verify→MATCH 才 PATCH·首轮 200 扫 2 跑双 NOT_REPRODUCIBLE 终态=拒绝盖章·平台框退出手摇位)。**镜子首日照出**:prime-001 名下 dispatch settled=1658(自循环 verdict 时代刷的)vs external_verified=4 — 两本账都不可信,唯一不可刷数字=income 188。TDD 14/14。
   - 🔧 **backend 部署规程(7/6 事故后钉死)**:cloud backend = `nautilus-backend.service`(systemd 管 · 自动重启)。**部署 = scp + `sudo systemctl restart nautilus-backend`,禁手工 kill/nohup**(7/6 两次手工重启制造双进程打架 → 旧代码抢答 → TSP 误铸;广谱 pkill 还差点误杀他框服务,systemd 自愈救回)。pgrep/pkill -f 会自匹配 ssh 命令行,用 systemctl 或精确 pid。
 
 ### 🛠️🆕 Producer 注册化(锚点③ 真根 · 7/2 用户点破 · 必须执行)
