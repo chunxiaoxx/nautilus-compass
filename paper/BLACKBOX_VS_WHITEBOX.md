@@ -176,7 +176,7 @@ property, we'll update this post. We'd rather be corrected than wrong.
 ## Try it · short version
 
 ```bash
-pip install nautilus-compass==1.1.0
+pip install nautilus-compass
 bash daemon_start.sh    # downloads BGE-m3 (~2GB), CPU is fine
 npx -y nautilus-compass  # MCP mode for Claude Code / Cursor / Cline / etc
 ```
