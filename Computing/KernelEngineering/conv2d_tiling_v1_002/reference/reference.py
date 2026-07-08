@@ -38,6 +38,8 @@ def conv2d_naive(input, kernel, stride=1, padding=0):
                             iy = oy * stride + ky
                             ix = ox * stride + kx
                             acc += p_ch[iy][ix] * k_ch[ky][kx]
-                    output[out_c][oy][ox] = acc
+                    # 累加跨输入通道(C_in>1):此前是 `= acc` 在 in_c 循环内覆盖,
+                    # 只留最后一个通道的贡献 → 多通道参考答案全错。改 += 累加。
+                    output[out_c][oy][ox] += acc
 
     return output
