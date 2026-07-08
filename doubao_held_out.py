@@ -10,7 +10,7 @@ Per row:
   5. pass@5 = count(passes)/5 · hard_flag = pass@5 ≤ 0.6
   6. 输出 jsonl + memory md
 """
-import json, os, sys, time, re, subprocess, tempfile, importlib.util, traceback
+import json, os, sys, time, re, subprocess, tempfile, importlib.util
 from pathlib import Path
 from datetime import datetime, timezone
 

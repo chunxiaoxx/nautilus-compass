@@ -4,7 +4,7 @@ so we can see exactly which piece fails (header? path? base? key?).
 
 User config:
   ANTHROPIC_BASE_URL = https://v2.qixuw.com
-  ANTHROPIC_AUTH_TOKEN = sk-c16301d1475dc595011320892cac17cd23d58d92d19a308668bf04b1878c84c8
+  ANTHROPIC_AUTH_TOKEN = <redacted · 经 OPENAI_API_KEY env 传入>
   model_provider = OpenAI
   model = gpt-5.5
   review_model = gpt-5.5
@@ -13,20 +13,15 @@ User config:
   base_url = https://v2.qixuw.com
   wire_api = responses
   requires_openai_auth = true
-  OPENAI_API_KEY = sk-c16301d1475dc595011320892cac17cd23d58d92d19a308668bf04b1878c84c8
+  OPENAI_API_KEY = <redacted · 经 env 传入>
 """
 
 from __future__ import annotations
 
 import json
 import os
-import ssl
-import subprocess
-import sys
-import time
 import urllib.error
 import urllib.request
-from pathlib import Path
 
 BASE = "https://v2.qixuw.com"
 WIRE = "responses"

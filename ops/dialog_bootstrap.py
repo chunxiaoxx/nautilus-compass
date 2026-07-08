@@ -9,7 +9,6 @@
 
 复用 anchor #5(不动其他 dialog 的 hook · 只增不替)。
 """
-import shutil
 from pathlib import Path
 
 DIALOGS = {
