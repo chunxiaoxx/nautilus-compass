@@ -3,7 +3,6 @@
 
 复用 compass/ops/auto_surface_hook.py 的模式
 """
-import os
 import sys
 from pathlib import Path
 

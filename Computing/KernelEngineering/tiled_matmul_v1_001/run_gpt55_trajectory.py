@@ -23,14 +23,9 @@ import os
 import subprocess
 import sys
 import time
-import urllib.error
-import urllib.request
 from pathlib import Path
 
-KEY_QIXUW = os.environ.get(
-    "OPENAI_API_KEY",
-    "sk-c16301d1475dc595011320892cac17cd23d58d92d19a308668bf04b1878c84c8",
-)
+KEY_QIXUW = os.environ.get("OPENAI_API_KEY", "")  # 必须经 env 传入 · 不硬编码(空则回退 MiniMax/stub)
 KEY_MINIMAX = os.environ.get("MINIMAX_API_KEY", "")
 QIXUW_BASE = "https://v2.qixuw.com"  # user-provided base_url
 QIXUW_WIRE = "chat/completions"     # 7/5 cloud probe confirmed: /v1/responses returns 502, /v1/chat/completions is the live endpoint
@@ -44,20 +39,14 @@ INSTANCES = json.loads((ROOT / "data" / "instances.json").read_text(encoding="ut
 
 
 def _post_json(url: str, body: dict, headers: dict, timeout: int = 60) -> dict:
-    import certifi
-    import ssl
-    ctx = ssl.create_default_context(cafile=certifi.where())
-    # 7/5 root-cause: Windows cert pool CRYPTO_E_REVOKED on qixuw chain (legacy
-    # Comodo AAA root deprecated in Win 2023). certifi bundle ships fresh root
-    # chain incl. Sectigo R46 — sidesteps Windows revocation fail.
-    req = urllib.request.Request(
-        url,
-        data=json.dumps(body).encode(),
-        method="POST",
-        headers=headers,
-    )
-    with urllib.request.urlopen(req, timeout=timeout, context=ctx) as r:
-        return json.loads(r.read())
+    # 7/5 fix: use requests library (certifi bundle bundled automatically) to
+    # bypass Windows CRYPTO_E_REVOKED on qixuw chain. certifi ships fresh
+    # Sectigo R46 root; urllib's ssl.create_default_context pulls from Windows
+    # cert pool which retains revoked Comodo AAA root → handshake fails.
+    import requests
+    r = requests.post(url, headers=headers, json=body, timeout=timeout)
+    r.raise_for_status()
+    return r.json()
 
 
 def call_qixuw_gpt55(prompt: str, timeout: int = 180) -> str:

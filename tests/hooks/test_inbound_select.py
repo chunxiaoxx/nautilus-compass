@@ -5,7 +5,6 @@ surface-once 丢失)。纯函数 select_inbound 把"近期未消费"的也二次
 导入全局 hook 文件(~/.claude/hooks/inbound_outbound_surface.py)测其 select_inbound。
 """
 import sys
-import os
 import importlib.util
 from pathlib import Path
 

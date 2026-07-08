@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import time
 
 
 def max_abs_diff_3d(C, C_ref):

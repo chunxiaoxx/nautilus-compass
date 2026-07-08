@@ -2,7 +2,6 @@
 # cross_dialog_audit.py - 真扫 5 dialog 本地仓库(不靠 MCP)
 # 治 6/17 rootcause 钉死的 用户当人肉 relay 病
 
-import json
 import subprocess
 import sys
 from datetime import datetime, timedelta
