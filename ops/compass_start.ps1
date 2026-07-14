@@ -60,26 +60,36 @@ function Start-CompassTunnel {
         Write-Host "[compass] tunnel already up on 127.0.0.1:$($script:CompassCloudPort)" -ForegroundColor DarkGray
         return $true
     }
-    Write-Host "[compass] starting SSH tunnel to $($script:CompassCloudHost) (-L 9877 + -R 9876 BGE)" -ForegroundColor Cyan
-    # Bidirectional tunnel:
+    Write-Host "[compass] starting SSH tunnel to $($script:CompassCloudHost) (-L 9877 MCP · daemon on cloud CPU box)" -ForegroundColor Cyan
     #   -L 9877 · local→cloud  · MCP TCP transport (Claude Code uses)
-    #   -R 9876 · cloud→local  · cloud agents call local GPU BGE daemon
+    # (2026-07-14) compass daemon now runs on the `cloud` CPU server itself
+    #   (T4 GPU box retired). Reverse tunnel -R 9876 removed: there is no local
+    #   GPU BGE daemon to expose, and with ExitOnForwardFailure=yes that stale
+    #   reverse forward also killed the tunnel outright.
     # keepalive · prevents NAT/firewall from killing idle tunnel
     # ExitOnForwardFailure · die fast if port already bound rather than silent zombie
+    #
+    # NOTE (2026-07-14): launch WITHOUT -Wait and WITHOUT -f. On Windows,
+    #   `Start-Process ssh -f... -Wait` never returns — Start-Process keeps
+    #   waiting on the backgrounded ssh and cstart hangs forever right after
+    #   printing the line above. We run `-N` as a hidden background process and
+    #   poll Test-CompassTunnel to confirm the forward bound.
     $args = @(
-        "-fN",
+        "-N",
         "-o", "ServerAliveInterval=30",
         "-o", "ServerAliveCountMax=3",
         "-o", "ExitOnForwardFailure=yes",
         "-L", "$($script:CompassCloudPort):127.0.0.1:9877",
-        "-R", "9876:127.0.0.1:9876",
         $script:CompassCloudHost
     )
-    Start-Process -WindowStyle Hidden -FilePath "ssh" -ArgumentList $args -Wait
-    Start-Sleep -Milliseconds 800
-    if (Test-CompassTunnel) {
-        Write-Host "[compass] tunnel up · MCP wire OK · BGE reverse tunnel cloud→local 9876 also UP" -ForegroundColor Green
-        return $true
+    Start-Process -WindowStyle Hidden -FilePath "ssh" -ArgumentList $args | Out-Null
+    # poll up to ~6s for the local forward to come up
+    for ($i = 0; $i -lt 12; $i++) {
+        Start-Sleep -Milliseconds 500
+        if (Test-CompassTunnel) {
+            Write-Host "[compass] tunnel up on 127.0.0.1:$($script:CompassCloudPort) · MCP wire OK" -ForegroundColor Green
+            return $true
+        }
     }
     Write-Warning "[compass] tunnel did not come up · Claude Code will still launch but MCP will fail"
     return $false
