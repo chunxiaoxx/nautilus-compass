@@ -14,16 +14,18 @@ FDE 产难题(强解+弱难倒 = 燃料)→ 蒸馏 → 系统可证变强(① �
 **(a) 活 producer 自持产出(income 自动持续涨)+ (b) 甲方可交付(11 道合规题入飞书表)**。
 不扩 1000 题,不碰蒸馏(A800 到位再解冻),不开新战线。
 
-## 二、当前真值(7/7 · 全部可独立复核,出处 = 记分牌/探针/DB)
+## 二、当前真值(7/15 live 复核 · 全部可独立复核,出处 = 记分牌/探针/DB)
+
+> 🔴 7/15 纠偏:live `GET /api/platform/convergence`(16:06 UTC)吐出的数字**推翻了 7/8 自报 + 召回 memory(income 188/"停摆一月")**。真相:引擎 7/8→7/15 一直健康在涨,只是 **7/15 20:11 被兄弟框一次未完成的 nautilus-core-live 迁移写坏 systemd override 打成 502 约 4h**,已修复(见 memory `session_20260715_backend_502_coreLive_override_incident`)。下表值列已更新为 7/15 live,说明列保留 7/8 历史脉络。
 
 | 指标 | 值 | 说明 |
 |---|---|---|
-| income(agent 9000009) | **188** | 平台史上仅有的两笔干净收入:JobShop 98 + QAOA 90(C 口径双门:难度合格 + 每题一次)|
-| 外部验证 verdict | **4** | 复现全部分毫不差;旧的不可复现 verdict 一律保持未验证 |
-| **producer 自治率** | **0%** | 北极星指标。目前全部产出是平台框手摇;V5 修完假成功后脱 0 |
-| settle 含金量 | **0/3617** | 自循环时代的全部"结算"零外部背书(剧场规模的量化)|
-| 甲方交付 | **0/11** | 原"11 题"实为 1 题复制 11 份(7/7 实锤),内容需重定 |
-| 记分牌 | `GET /api/platform/convergence` | 收敛 = 这 5 个数字的走向,不是叙事 |
+| income(agent 9000009) | **703**(7/15 live · 近7d +100) | 🎯 **目标(a)"自持产出"字面达成**:平台 7/8 产 2 道新变体(bin_v3+cache_v2,数据全新 seed 20260708)放进 mint glob 路径 → daemon 自动拾取/解题/canonical verify/铸币(+86/+13,与产题 QC 预测分毫不差),全程零人工。**模式已证:income 斜率 = 产题速度,题目供给是唯一手动环节**。TSP 97.63 不铸维持原判(overall_pass=false 非交付档)|
+| 外部验证 verdict | **65**(7/15 live · 近7d 41) | auto-verify daemon 自动验证在持续;7/7 深夜后新增 6 条全 autonomous **但全是同题重跑**(cache×3/bin×3),幂等门全拦零铸币 = 门有牙齿 + **题池枯竭信号**:genopt-mint 无新题可选在重刷旧题(浪费 LLM 成本,V5 宜让 mint 跳过已铸题)|
+| **producer 自治率** | **89%(58/65)**(7/15 live) | 7/7 晚脱 0(V5 修假成功 a3795c2 → 3 条 autonomous 铸币);此后新增全 autonomous 但系同题重复,含金量看 income 不看该比率。**真瓶颈回到题目供给(变体题/11 题)**,非 producer |
+| settle 含金量 | **0/3617** | 旧自循环账,维持原判 |
+| 甲方交付 | **0/11** | 11 题内容仍卡 FDE 选题(合约 7/10);候选=L3 样例 43 道 |
+| 记分牌 | `GET /api/platform/convergence` | 收敛 = 这 5 个数字的走向,不是叙事。⚠️ prime-001 旧 PID 884064 已不在,但自治轨迹在产 = V5 侧有新进程,身份确认球在 V5,平台不动进程 |
 
 基础设施:cloud backend = systemd 管(nautilus-backend.service · 8000)· auto-verify daemon 10min 轮 · prime-001(PID 884064)连续跑 7 天勿动 · GPT5.5 cloud 直连稳 · doubao ARK 本机通(偶发代理抖动)· T4/H800 已关 · A800 租赁中。
 
@@ -43,8 +45,8 @@ FDE 产难题(强解+弱难倒 = 燃料)→ 蒸馏 → 系统可证变强(① �
 ## 四、各框本周唯一一件事(做完才领下一件)
 
 - **V5**:修 `fde_claim_produce` 假成功 + runner 存完整解(两份合约 due 7/9)→ 产出**第一条自治合规轨迹**(带 `artifacts.autonomous=true`)→ 自治率脱离 0%。
-- **platform(本框)**:守裁判链与账本(auto-verify/记分牌/backend);配合 FDE 用 `produce_task.py` 产**互不相同的变体题**(fetch+rescore 实跑,严禁复制文件);合规题集就位后重启 doubao 难倒测试(M1)。
-- **compass**:探针持续独立复核(income/自治率/settle);FDE 定稿 11 题后立即写飞书派活表 + GET 回读(M2)。
+- **platform(本框)**:主线定位(用户 7/7 拍)= **为整套业务体系(LLM 后训练 FDE + RSI + ENG 基准 + 具身智能数据采集)做减法和闭环**——守裁判链与账本(auto-verify/记分牌/backend);配合 FDE 用 `produce_task.py` 产**互不相同的变体题**;题集就位后跑 checklist 盲点测试(M1 修正口径:T1 开放题无"难倒",测的是 checklist 可判性 + 模型盲点密度;pass@5 难倒门只适用 T3 基准)。
+- **compass**:三角色(用户 7/7 问分工后定)= ① **收敛执法**:5 记分牌数字 + FDE 培训链(学员/题目/派活行数)每日独立读数,自报与探针不符即亮牌;② **合约管家**:活合约到期核销(读 DB/表验收,不闭标红);③ **记忆守门**:四代资产台账 recall 前置(任何框"我先写个"之前先查),产"减法清单"(15 表/13 SOP/50 脚本标 活/死/冻结,给用户拍砍)。**不做**:生产、内容、新架构。
 - **FDE**:①选定 11 道题内容(合约 due 7/10,候选 = L3 基准样例 43 道)②陪跑第一批真人培训 = 体系唯一验收(学员卡住处记下来当整改输入)。**基建冻结:不加表、不加 skill、不写新 T 文档;repo 根建一页 FDE_LOOP_STATE 锚治失忆**(7/7 审查:6 月 v0.8 体系被自己遗忘、7 月重造更差版)。
 - **soul-verify**:维持 canonical 链;计时型 verifier(Attention 类)的验证协议设计进 parking。
 - **用户**:带第一批真人培训(入口 https://fde.nautilus.social/start/ 已开放);A800 到位说一声。
@@ -73,7 +75,7 @@ FDE 产难题(强解+弱难倒 = 燃料)→ 蒸馏 → 系统可证变强(① �
 
 ## 七、Parking Lot(冻结 · 解冻条件写明)
 
-蒸馏维①(等 A800 + n≥12)· SWE 链 verify 候选 A(等 A800)· 1000 题扩量(等 11 题交付)· Attention 计时型验证协议(等 GenOpt 主链稳)· 新陈代谢/income 花销(等自治率>0)· FDE 4 skill 发版 / RBAC / mkdocs 新增(等真人 gate 过)· compass MCP 耦合 Phase 1-4 · content-engine 命名合约。
+蒸馏维①(等 A800 + n≥12)· SWE 链 verify 候选 A(等 A800)· 1000 题扩量(等 11 题交付)· Attention 计时型验证协议(等 GenOpt 主链稳)· 新陈代谢/income 花销(等自治率>0)· FDE 4 skill 发版 / RBAC / mkdocs 新增(等真人 gate 过)· compass MCP 耦合 Phase 1-4 · content-engine 命名合约 · **具身智能数据采集线**(用户 7/7 首提:先进 FDE_BUSINESS_CHARTER 立业务锚(甲方/口径/turf)再动一行代码,防再走散落失忆老路)· 专家进 agent 经济账本(等自治率>0 + 首批学员跑通)· 导师多轮会话态 + 注册整数 agent(等出题 Copilot 单消息版跑通)。
 
 ## 八、各框 turf(一行版)
 
