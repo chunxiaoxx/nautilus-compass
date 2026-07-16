@@ -80,6 +80,8 @@ function Start-CompassTunnel {
         "-o", "ServerAliveCountMax=3",
         "-o", "ExitOnForwardFailure=yes",
         "-L", "$($script:CompassCloudPort):127.0.0.1:9877",
+        # 2026-07-16 · DB 转发:local 15432 → cloud 127.0.0.1:5432(nautilus-db MCP 用 · 旧库 115.159.62.192 已搬)
+        "-L", "15432:127.0.0.1:5432",
         $script:CompassCloudHost
     )
     Start-Process -WindowStyle Hidden -FilePath "ssh" -ArgumentList $args | Out-Null
