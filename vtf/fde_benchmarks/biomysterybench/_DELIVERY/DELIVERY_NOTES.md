@@ -7,8 +7,8 @@
 
 | id | 模板 | 数据 | 隐藏答案(内部) |
 |---|---|---|---|
-| bmb_vendor_000001 | VCF→变异临床意义 | 30 变异匿名 VCF | PAH \| Phenylketonuria |
-| bmb_vendor_000002 | VCF→变异临床意义 | 30 变异匿名 VCF | ATP7B \| Wilson disease |
+| bmb_vendor_000001 | VCF→变异临床意义 | 3001 变异匿名 VCF(真实 exome 子集·99KB) | PAH \| Phenylketonuria |
+| bmb_vendor_000002 | VCF→变异临床意义 | 3001 变异匿名 VCF(真实 exome 子集·99KB) | ATP7B \| Wilson disease |
 | bmb_vendor_000003 | 序列→基因/病(序列比对) | 10 条匿名蛋白 FASTA | HEXA \| Tay-Sachs disease |
 
 买方格式 = `problems.csv`(id/question/answer_rubric/allowed_domains/human_solvable)+ `data/<ID>.zip`(纯数据,解压即工作空间)。
@@ -40,8 +40,8 @@
 
 | id | 盲解答案 | 唯一性 | 工具交互 | 难度 |
 |---|---|---|---|---|
-| 000001 | PAH\|Phenylketonuria | 致病唯一=1 | 30 变异×(注释+查库)≈60 | 模型侧 20-30min |
-| 000002 | ATP7B\|Wilson disease | 致病唯一=1 | ≈60 | 模型侧 20-30min |
+| 000001 | PAH\|Phenylketonuria | 致病唯一=1(本地 ClinVar 全扫 3001 变异复核) | 3001 变异需批量注释+筛选 | 模型侧 20-30min(brute-force 不可行→逼真工作流) |
+| 000002 | ATP7B\|Wilson disease | 致病唯一=1(同上) | 同上 | 同上 |
 | 000003 | HEXA\|Tay-Sachs disease | 溶酶体酶唯一=1 | 10 次序列比对 | 墙钟 1204s(供应商已知解法) |
 
 - 难度守恒:VCF 答案为 missense,藏在多个良性 missense 干扰里 → 不能靠后果类型蒙,须逐个查库。

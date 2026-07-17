@@ -3,5 +3,5 @@
   "gene": "ATP7B",
   "condition": "Wilson disease",
   "spdi": "NC_000013.11:51974215:C:T",
-  "n_variants": 30
+  "n_variants": 3001
 }
