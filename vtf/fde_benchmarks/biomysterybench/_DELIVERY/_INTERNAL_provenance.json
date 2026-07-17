@@ -1,0 +1,50 @@
+{
+  "note": "内部溯源+答案,勿投递买方",
+  "problems": [
+    {
+      "id": "bmb_vendor_000001",
+      "src": "_P1_out",
+      "answer_key": {
+        "id": "bmb_vendor_000001",
+        "gene": "PAH",
+        "condition": "Phenylketonuria",
+        "spdi": "NC_000012.12:102846898:G:T",
+        "n_variants": 18
+      }
+    },
+    {
+      "id": "bmb_vendor_000002",
+      "src": "_P2_out",
+      "answer_key": {
+        "id": "bmb_vendor_000002",
+        "gene": "ATP7B",
+        "condition": "Wilson disease",
+        "spdi": "NC_000013.11:51974215:C:T",
+        "n_variants": 18
+      }
+    },
+    {
+      "id": "bmb_vendor_000003",
+      "src": "_SEQ_out",
+      "answer_key": {
+        "id": "bmb_vendor_000003",
+        "gene": "HEXA",
+        "condition": "Tay-Sachs disease",
+        "answer_label": "seq_02",
+        "labelmap": {
+          "seq_01": "ALDOA",
+          "seq_02": "HEXA",
+          "seq_03": "TUBA1B",
+          "seq_04": "PKM",
+          "seq_05": "PGK1",
+          "seq_06": "TPI1",
+          "seq_07": "ACTB",
+          "seq_08": "GAPDH",
+          "seq_09": "ENO1",
+          "seq_10": "LDHB"
+        },
+        "n_sequences": 10
+      }
+    }
+  ]
+}
