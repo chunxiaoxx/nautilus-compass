@@ -49,11 +49,34 @@ ensembl.org · ftp.ensembl.org · hgdownload.soe.ucsc.edu · uniprot.org ·
 bioconductor.org · pypi.org · bioconda.github.io · cran.r-project.org ·
 cran.rstudio.com · ftp.ebi.ac.uk
 
-## 状态 / 下一步(诚实)
+## P1 管线(VCF→变异临床意义 · 2026-07-16 端到端跑通)
 
-- ✅ **已做**:格式规范 + 验证器(自检过 + 买方真实样例 qes1 实测过)。
-- ⏳ **待做(需你拍优先级)**:
-  1. 搭本机 bio 工具环境(WSL/conda + bioconda:BLAST/samtools/bcftools…)——**真解题验证的前提**。
-  2. 端到端产+解+验 1 道题(复现 qes1 或基于公开 SRA 造新题),证明管线过买方验收档。
-  3. 跑通后再定批量 + 是否设为主线(vs 现有 11 题 / GenOpt 新题供给)。
-- ⚠️ 验证器的 WARN 启发式偏严:买方自己的 qes1 也触发 2 个 WARN(题干简短没点明工具/格式)。WARN 只是复核提示、不拦交付;后续可按真实批次校准。
+一道题 = 1 个隐藏 ClinVar **Pathogenic** 变异(答案)+ N 个 Benign/VUS 干扰变异,
+全部真实 ClinVar 记录 + 真实 GRCh38 坐标(`canonical_spdi`),组装成匿名 VCF
+(剥 rsID/INFO/基因名/致病性)→ 反向推理"哪个基因 + 什么病"。
+
+```bash
+python build_problem.py    # 建题:拉真干扰项(缓存溯源)+ 组装匿名 VCF → _P1_out/
+python bmb_validator.py _P1_out/problems.csv --data-dir _P1_out/data   # 格式/泄露门
+python solve_problem.py _P1_out/data/bmb_vendor_000001.zip             # 盲解:只读 zip,VEP+ClinVar 独立解 + 验唯一性
+```
+
+- `build_problem.py` — 建题管线。`_source_manifest.json` = 每变异 ClinVar accession 溯源(审计);`answer_key.json` = 本地答案(不进 zip)。
+- `solve_problem.py` — 盲解 QC:模拟买方 bmb-infer,只读交付 zip,坐实答案可推+唯一+工具数。
+
+**P1 实测(bmb_vendor_000001 · PAH/Phenylketonuria · 独立验证非自报)**:
+- ① 1 行 problems.csv + data/*.zip(18 变异,答案埋中间,全剥注释)
+- ② bmb_validator **0 REJECT / 0 WARN / exit 0**
+- ③ 盲解 → `PAH|Phenylketonuria`,致病命中**唯一 =1**,工具调用 **36 次**(VEP 18 + ClinVar 18,门 ≥10),无泄露
+- **难度守恒**:答案是 missense,9 个干扰项也是 missense → 不能"挑 impactful 的"蒙,必须逐个查 ClinVar → 模型侧真 20-30min/多工具(我们知解法所以 131s,模型不知所以慢)
+
+## 解题工具链(供应商已验通)
+- **Ensembl VEP REST**(`rest.ensembl.org/vep/human/region/...`):坐标 → 基因 + 最重后果。
+- **NCBI ClinVar E-utilities**(`{chr}[chr] AND {pos}[chrpos38]`):GRCh38 坐标 → 临床分类 + 疾病。
+- 本机 Windows Python 3.13 + Biopython 1.87,两通道实连(WSL 网坏不用;小数据无需本地重工具)。
+
+## 下一步(P2/P3 · 需拍优先级)
+1. **P2 建模板库**:把 VCF 模板扩到 8-12 模板(表达谱→癌型、序列→基因…),每模板配真数据集库。
+2. **P3 自动化**:build/solve 已是雏形;补限速+断点+跨模板配额 → 单模板可批产。
+3. 跑通再定是否设主线(vs 11 题 / GenOpt 供给)。
+- ⚠️ 验证器 WARN 启发式偏严:买方 qes1 也触发 2 WARN。WARN 只复核不拦交付。
