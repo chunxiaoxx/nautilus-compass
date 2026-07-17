@@ -180,14 +180,10 @@ def validate_row(row: dict, data_dir: Path | None) -> list[Finding]:
     if any(h in ql for h in _LOW_DIFFICULTY_HINTS):
         out.append(Finding(rid, "WARN", "maybe_low_difficulty",
                            "问题含'计数/求和/平均'类措辞,疑一次简单聚合可解(买方 §4 拒<5min)"))
-    if question and not any(s in ql for s in _TOOL_SIGNALS):
-        out.append(Finding(rid, "WARN", "maybe_no_tool",
-                           "问题无明显'需外部工具'信号(BLAST/比对/查库等),核 §4 工具要求"))
-
-    # --- §3 提示词自洽(应提到文件/答案格式)---
-    if question and "answer" not in ql and "format" not in ql and "格式" not in question:
-        out.append(Finding(rid, "WARN", "no_answer_format",
-                           "问题未说明答案格式(买方 §3 要求明确 answer 格式)"))
+    # 注:题干"需工具/答案格式"不再从题面关键词判(买方 2026-07-17 反馈:题目要自然简洁、
+    # 像样例 qes1 那样一句直问,不写工具说明/答案格式模板 —— 那些属 AI 感)。工具需求靠供应商
+    # 真解一遍坐实(solve_*.py),答案格式靠 rubric 的标准答案(下方 extract_reference_answer)。
+    # 只在"疑似难度过低"时提示;不再对自然题干误报 no_tool / no_answer_format。
 
     return out
 

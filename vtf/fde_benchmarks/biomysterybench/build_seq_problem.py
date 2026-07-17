@@ -121,24 +121,17 @@ def main() -> int:
     with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
         z.writestr("sequences.fasta", fasta_text)  # 纯数据 zip(对齐买方 qes1;任务全在 question)
 
+    # 自然简洁题干(对齐买方 qes1 风格:一句直问,无背景铺垫/无工具说明/无格式模板)
     question = (
-        "The file data/{id}.zip contains sequences.fasta with 10 human protein sequences whose "
-        "identifiers have been removed. Exactly one of them is a lysosomal enzyme whose inherited "
-        "deficiency causes a lysosomal storage disorder; the other nine are cytosolic housekeeping "
-        "proteins. Investigate the sequences using sequence-similarity search over the public "
-        "protein databases listed in allowed_domains, identify which sequence is the lysosomal "
-        "enzyme, then report its gene and the disorder caused by its deficiency. Answer strictly in "
-        "the format GENE|Condition (HGNC gene symbol, then the disorder name), e.g. XXXX|Some condition."
-    ).format(id=PROBLEM_ID)
+        "One of these protein sequences is a lysosomal enzyme — which gene encodes it, "
+        "and what disorder does its deficiency cause?"
+    )
 
     rubric = (
-        "Scoring is all-or-nothing (1.0 or 0.0, no partial credit). "
-        f"The answer is {ANSWER_GENE}|{ANSWER_CONDITION}. "
-        f"Score 1.0 only if the response identifies BOTH the gene {ANSWER_GENE} AND the disorder "
-        f"(any of: {', '.join(ANSWER_ALIASES)}). The lysosomal enzyme is beta-hexosaminidase "
-        "subunit alpha; the other nine sequences are cytosolic proteins (glycolytic enzymes / "
-        "cytoskeleton) and are not lysosomal. Score 0.0 otherwise, including if the model names any "
-        "other gene or reaches the answer without sequence-similarity search."
+        f"The answer is {ANSWER_GENE} / {ANSWER_CONDITION}. "
+        f"Accept the gene {ANSWER_GENE} and the disorder named as any of: {', '.join(ANSWER_ALIASES)}. "
+        "Score 1.0 only if the response gives both the correct gene and the correct disorder; "
+        "score 0.0 otherwise (all-or-nothing, no partial credit)."
     )
     allowed_domains = (
         "conda.anaconda.org, repo.anaconda.com, ncbi.nlm.nih.gov, ftp.ncbi.nlm.nih.gov, "

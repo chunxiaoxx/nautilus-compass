@@ -54,6 +54,13 @@ CONDITION_ALIASES = {
     "Alpha-1-antitrypsin deficiency": ["Alpha-1-antitrypsin deficiency", "AATD", "A1AT deficiency"],
 }
 
+# 自然题干池(qes1 风格 · 一句话直问 · 跨题轮换治"模板化" · 均含 "variant" 自然点出数据类型)
+_VCF_QUESTIONS = [
+    "Which gene carries the pathogenic variant in this sample, and what disorder does it cause?",
+    "One variant in this VCF is pathogenic for a Mendelian disorder — which gene is it in, and what is the disorder?",
+    "This sample has a single variant that is pathogenic for an inherited disorder. Name the affected gene and the disorder it causes.",
+]
+
 # 买方 §3 全 14 白名单(qes1 即列全 14,给模型足够自由度,避免卡在没列的资源)
 ALLOWED_DOMAINS_14 = (
     "conda.anaconda.org, repo.anaconda.com, ncbi.nlm.nih.gov, ftp.ncbi.nlm.nih.gov, "
@@ -322,28 +329,16 @@ def main() -> int:
     with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
         z.writestr("variants.vcf", vcf_text)  # 纯数据 zip(对齐买方 qes1;任务全在 question)
 
-    # problems.csv 一行
-    question = (
-        "The file data/{id}.zip contains variants.vcf — variant calls from one individual's "
-        "targeted sequencing panel (reference genome stated in the VCF header). Exactly one "
-        "variant is a well-established pathogenic variant that causes a single-gene Mendelian "
-        "condition; all others are benign or of uncertain significance. Investigate the variants "
-        "using variant-annotation and database-lookup workflows over the public resources listed in "
-        "allowed_domains, and determine which gene carries that pathogenic variant and the condition "
-        "it causes. Answer strictly in the format GENE|Condition (HGNC gene symbol, then the "
-        "condition name), e.g. XXXX|Some condition."
-    ).format(id=args.id)
+    # problems.csv 一行 · 自然简洁题干(对齐买方 qes1 风格:无背景铺垫/无工具说明/无格式模板)
+    idn = int("".join(c for c in args.id if c.isdigit()) or "0")
+    question = _VCF_QUESTIONS[idn % len(_VCF_QUESTIONS)]
 
     aliases = CONDITION_ALIASES.get(answer["condition"], [answer["condition"]])
     rubric = (
-        "Scoring is all-or-nothing (1.0 or 0.0, no partial credit). "
-        f"The answer is {answer['gene']}|{answer['condition']}. "
-        f"Score 1.0 only if the response identifies BOTH the gene {answer['gene']} AND the disease "
-        f"(any of: {', '.join(aliases)}); the causal variant is the missense change at GRCh38 "
-        f"chr{answer['chrom']}:{answer['pos']} {answer['ref']}>{answer['alt']} "
-        f"({answer['hgvs']}, ClinVar Pathogenic). Score 0.0 otherwise, including if the "
-        "model reports any other gene or reaches the answer by inspecting file metadata rather than "
-        "annotating the variants."
+        f"The answer is {answer['gene']} / {answer['condition']}. "
+        f"Accept the gene {answer['gene']} and the disorder named as any of: {', '.join(aliases)}. "
+        "Score 1.0 only if the response gives both the correct gene and the correct disorder and did "
+        "not shortcut by reading file metadata; score 0.0 otherwise (all-or-nothing, no partial credit)."
     )
     allowed_domains = ALLOWED_DOMAINS_14
 
