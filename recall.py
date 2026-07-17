@@ -1566,6 +1566,18 @@ def main():
             print(_c_block)
     except Exception:
         pass
+
+    # v2.3 · SSOT 副本一致性探针(2026-07-17 用户拍板)· 承重锚(CHARTER/LOOP_STATE)
+    # 跨 repo 正文哈希对比 · 漂移即对每个框亮牌 · fail-soft 不阻塞 recall
+    try:
+        from ssot_consistency import format_for_prompt_injection as _ssot_fmt
+        _s_block = _ssot_fmt()
+        if _s_block:
+            print()
+            print("[SSOT 副本一致性 · anchor drift probe]")
+            print(_s_block)
+    except Exception:
+        pass
     print()
 
     # v0.4 · Strategy lookup (hook 默认就跑 · 0 BGE · 关键词命中即可)
