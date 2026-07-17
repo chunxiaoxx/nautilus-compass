@@ -9,7 +9,7 @@
         "gene": "PAH",
         "condition": "Phenylketonuria",
         "spdi": "NC_000012.12:102846898:G:T",
-        "n_variants": 18
+        "n_variants": 30
       }
     },
     {
@@ -20,7 +20,7 @@
         "gene": "ATP7B",
         "condition": "Wilson disease",
         "spdi": "NC_000013.11:51974215:C:T",
-        "n_variants": 18
+        "n_variants": 30
       }
     },
     {

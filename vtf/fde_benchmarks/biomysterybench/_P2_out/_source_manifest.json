@@ -197,6 +197,138 @@
       "clinvar_cls": "Likely benign",
       "accession": "VCV004843538",
       "title": "NM_000038.6(APC):c.198T>A (p.Ile66=)"
+    },
+    {
+      "chrom": "16",
+      "pos": 2111182,
+      "ref": "T",
+      "alt": "G",
+      "spdi": "NC_000016.10:2111181:T:G",
+      "gene": "PKD1",
+      "clinvar_cls": "Uncertain significance",
+      "accession": "VCV004855741",
+      "title": "NM_001009944.3(PKD1):c.3985A>C (p.Thr1329Pro)"
+    },
+    {
+      "chrom": "11",
+      "pos": 2778031,
+      "ref": "A",
+      "alt": "G",
+      "spdi": "NC_000011.10:2778030:A:G",
+      "gene": "KCNQ1",
+      "clinvar_cls": "Likely benign",
+      "accession": "VCV004843730",
+      "title": "NM_000218.3(KCNQ1):c.1788A>G (p.Glu596=)"
+    },
+    {
+      "chrom": "7",
+      "pos": 150952736,
+      "ref": "G",
+      "alt": "A",
+      "spdi": "NC_000007.14:150952735:G:A",
+      "gene": "KCNH2",
+      "clinvar_cls": "Likely benign",
+      "accession": "VCV004825157",
+      "title": "NM_000238.4(KCNH2):c.1246C>T (p.Leu416=)"
+    },
+    {
+      "chrom": "12",
+      "pos": 32821422,
+      "ref": "A",
+      "alt": "G",
+      "spdi": "NC_000012.12:32821421:A:G",
+      "gene": "PKP2",
+      "clinvar_cls": "Likely benign",
+      "accession": "VCV004845112",
+      "title": "NM_001005242.3(PKP2):c.1947T>C (p.Ser649=)"
+    },
+    {
+      "chrom": "6",
+      "pos": 7585822,
+      "ref": "G",
+      "alt": "C",
+      "spdi": "NC_000006.12:7585821:G:C",
+      "gene": "DSP",
+      "clinvar_cls": "Uncertain significance",
+      "accession": "VCV004853676",
+      "title": "NM_004415.4(DSP):c.8560G>C (p.Gly2854Arg)"
+    },
+    {
+      "chrom": "1",
+      "pos": 156139088,
+      "ref": "G",
+      "alt": "C",
+      "spdi": "NC_000001.11:156139087:G:C",
+      "gene": "LMNA",
+      "clinvar_cls": "Likely benign",
+      "accession": "VCV004799975",
+      "title": "NM_170707.4(LMNA):c.1977G>C (p.Gln659His)"
+    },
+    {
+      "chrom": "11",
+      "pos": 108223247,
+      "ref": "A",
+      "alt": "G",
+      "spdi": "NC_000011.10:108223246:A:G",
+      "gene": "ATM",
+      "clinvar_cls": "Benign",
+      "accession": "VCV004856943",
+      "title": "NM_000051.4(ATM):c.-31+61A>G"
+    },
+    {
+      "chrom": "22",
+      "pos": 28688513,
+      "ref": "T",
+      "alt": "A",
+      "spdi": "NC_000022.11:28688512:T:A",
+      "gene": "CHEK2",
+      "clinvar_cls": "Likely benign",
+      "accession": "VCV004856947",
+      "title": "NM_007194.4(CHEK2):c.1543-527A>T"
+    },
+    {
+      "chrom": "7",
+      "pos": 5982996,
+      "ref": "A",
+      "alt": "C",
+      "spdi": "NC_000007.14:5982995:A:C",
+      "gene": "PMS2",
+      "clinvar_cls": "Likely benign",
+      "accession": "VCV004853256",
+      "title": "NM_000535.7(PMS2):c.2007-5T>G"
+    },
+    {
+      "chrom": "10",
+      "pos": 87945709,
+      "ref": "G",
+      "alt": "C",
+      "spdi": "NC_000010.11:87945708:G:C",
+      "gene": "PTEN",
+      "clinvar_cls": "Benign",
+      "accession": "VCV004856922",
+      "title": "NM_000314.8(PTEN):c.493-6409G>C"
+    },
+    {
+      "chrom": "16",
+      "pos": 2057463,
+      "ref": "G",
+      "alt": "T",
+      "spdi": "NC_000016.10:2057462:G:T",
+      "gene": "TSC2",
+      "clinvar_cls": "Uncertain significance",
+      "accession": "VCV004855963",
+      "title": "NM_000548.5(TSC2):c.848+285G>T"
+    },
+    {
+      "chrom": "3",
+      "pos": 10146548,
+      "ref": "C",
+      "alt": "G",
+      "spdi": "NC_000003.12:10146547:C:G",
+      "gene": "VHL",
+      "clinvar_cls": "Benign",
+      "accession": "VCV004827068",
+      "title": "NM_000551.4(VHL):c.375C>G (p.His125Gln)"
     }
   ],
   "note": "全部变异均为真实 ClinVar 记录 + 真实 GRCh38 坐标(canonical_spdi)"
