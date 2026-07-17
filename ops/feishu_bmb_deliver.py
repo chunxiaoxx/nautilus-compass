@@ -22,7 +22,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from ops.feishu_read_via_cloud import _load_creds, _shq, SSH_HOST, DEFAULT_BASE  # noqa: E402
 
 DELIVERY = Path(__file__).resolve().parent.parent / "vtf/fde_benchmarks/biomysterybench/_DELIVERY"
-TABLE_NAME = "BioMysteryBench_投递_试点_20260717_v2自然题干"
+TABLE_NAME = "BioMysteryBench_投递_试点_20260717_v3_4题"
 
 # 远端写 payload:stdin 收 {op, base, ...};纯 stdlib;凭据走 env。
 _REMOTE_WRITE = r'''
