@@ -119,22 +119,16 @@ def main() -> int:
 
     zip_path = args.outdir / "data" / f"{PROBLEM_ID}.zip"
     with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
-        z.writestr("sequences.fasta", fasta_text)
-        z.writestr("README.md",
-                   "# 序列身份挑战 · 工作空间\n\n"
-                   "`sequences.fasta` 含 10 条人类蛋白序列(标识符已抹去)。\n"
-                   "其中**恰好一条**是溶酶体酶,其遗传性缺陷导致一种溶酶体贮积病;其余为胞质管家蛋白。\n\n"
-                   "任务:识别该溶酶体酶的**基因**及其缺陷所致**疾病**。\n"
-                   "提交格式:`GENE|Disorder`。\n")
+        z.writestr("sequences.fasta", fasta_text)  # 纯数据 zip(对齐买方 qes1;任务全在 question)
 
     question = (
         "The file data/{id}.zip contains sequences.fasta with 10 human protein sequences whose "
         "identifiers have been removed. Exactly one of them is a lysosomal enzyme whose inherited "
         "deficiency causes a lysosomal storage disorder; the other nine are cytosolic housekeeping "
-        "proteins. Using sequence-similarity search against public protein databases (e.g. NCBI "
-        "BLAST over ncbi.nlm.nih.gov), identify which sequence is the lysosomal enzyme, then report "
-        "its gene and the disorder caused by its deficiency. Answer strictly in the format "
-        "GENE|Disorder (HGNC gene symbol, then the disorder name), e.g. XXXX|Some disorder."
+        "proteins. Investigate the sequences using sequence-similarity search over the public "
+        "protein databases listed in allowed_domains, identify which sequence is the lysosomal "
+        "enzyme, then report its gene and the disorder caused by its deficiency. Answer strictly in "
+        "the format GENE|Condition (HGNC gene symbol, then the disorder name), e.g. XXXX|Some condition."
     ).format(id=PROBLEM_ID)
 
     rubric = (
@@ -146,7 +140,11 @@ def main() -> int:
         "cytoskeleton) and are not lysosomal. Score 0.0 otherwise, including if the model names any "
         "other gene or reaches the answer without sequence-similarity search."
     )
-    allowed_domains = "ncbi.nlm.nih.gov, uniprot.org, pypi.org, bioconda.github.io"
+    allowed_domains = (
+        "conda.anaconda.org, repo.anaconda.com, ncbi.nlm.nih.gov, ftp.ncbi.nlm.nih.gov, "
+        "ensembl.org, ftp.ensembl.org, hgdownload.soe.ucsc.edu, uniprot.org, bioconductor.org, "
+        "pypi.org, bioconda.github.io, cran.r-project.org, cran.rstudio.com, ftp.ebi.ac.uk"
+    )
 
     # 建题期泄露断言(镜像 bmb_validator)
     from bmb_validator import _answer_tokens

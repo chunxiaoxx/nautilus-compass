@@ -53,7 +53,14 @@ CONDITION_ALIASES = {
     "Alpha-1-antitrypsin deficiency": ["Alpha-1-antitrypsin deficiency", "AATD", "A1AT deficiency"],
 }
 
-# 干扰项来源基因(真实 panel 常见基因)· 取其 Benign/Likely benign/VUS SNV
+# 买方 §3 全 14 白名单(qes1 即列全 14,给模型足够自由度,避免卡在没列的资源)
+ALLOWED_DOMAINS_14 = (
+    "conda.anaconda.org, repo.anaconda.com, ncbi.nlm.nih.gov, ftp.ncbi.nlm.nih.gov, "
+    "ensembl.org, ftp.ensembl.org, hgdownload.soe.ucsc.edu, uniprot.org, bioconductor.org, "
+    "pypi.org, bioconda.github.io, cran.r-project.org, cran.rstudio.com, ftp.ebi.ac.uk"
+)
+
+# 干扰项来源基因(真实 panel 常见基因)· 取其 Benign/Likely benign/VUS SNV · 数量上调消 F2 难度风险
 DISTRACTOR_GENES = [
     ("BRCA2", "benign"), ("BRCA1", "benign"), ("CFTR", "benign"),
     ("MYH7", "benign"), ("SCN5A", "benign"), ("LDLR", "benign"),
@@ -61,6 +68,12 @@ DISTRACTOR_GENES = [
     ("TTN", "benign"), ("PALB2", "benign"), ("RYR1", "benign"),
     ("COL1A1", "benign"), ("FBN1", "benign"), ("GJB2", "benign"),
     ("TP53", "benign"), ("APC", "benign"), ("PKD1", "benign"),
+    ("KCNQ1", "benign"), ("KCNH2", "benign"), ("PKP2", "benign"),
+    ("DSP", "benign"), ("LMNA", "benign"), ("ATM", "benign"),
+    ("CHEK2", "benign"), ("PMS2", "benign"), ("PTEN", "benign"),
+    ("TSC2", "benign"), ("VHL", "benign"), ("RET", "benign"),
+    ("NF1", "benign"), ("SMAD4", "benign"), ("STK11", "benign"),
+    ("RAD51C", "benign"), ("NBN", "benign"), ("DSG2", "benign"),
 ]
 
 # 绝不能进干扰池的分类(保证答案唯一)
@@ -205,22 +218,11 @@ def build_vcf(variants, sample="SAMPLE_01") -> str:
     return "\n".join(lines) + "\n"
 
 
-SOLVER_README = """\
-# 变异解读挑战 · 工作空间
-
-`variants.vcf` 是某个体一次靶向测序 panel 的变异结果(参考基因组见 VCF 头)。
-其中**恰好一个**变异是已确立的致病变异,导致一种单基因遗传病;其余为良性或意义未明。
-
-任务:识别该致病变异所在的**基因**及其**关联疾病**。
-提交格式:`GENE|Disease`(例:`XXXX|Some disease`)。
-"""
-
-
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--outdir", type=Path, default=Path("_P1_out"))
     ap.add_argument("--refresh", action="store_true", help="强制重拉干扰项(否则用缓存 manifest)")
-    ap.add_argument("--n-distractors", type=int, default=17)
+    ap.add_argument("--n-distractors", type=int, default=29)
     ap.add_argument("--id", default="bmb_vendor_000001", help="题 id(= data/<ID>.zip)")
     ap.add_argument("--answer-gene", default=None,
                     help="答案基因(自动挑 Pathogenic missense);缺省用已验证的 PAH")
@@ -275,18 +277,17 @@ def main() -> int:
     # 打包 data/<ID>.zip
     zip_path = args.outdir / "data" / f"{args.id}.zip"
     with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
-        z.writestr("variants.vcf", vcf_text)
-        z.writestr("README.md", SOLVER_README)
+        z.writestr("variants.vcf", vcf_text)  # 纯数据 zip(对齐买方 qes1;任务全在 question)
 
     # problems.csv 一行
     question = (
         "The file data/{id}.zip contains variants.vcf — variant calls from one individual's "
         "targeted sequencing panel (reference genome stated in the VCF header). Exactly one "
         "variant is a well-established pathogenic variant that causes a single-gene Mendelian "
-        "condition; all others are benign or of uncertain significance. Using variant-annotation "
-        "tooling and public variant databases (Ensembl VEP, NCBI ClinVar/dbSNP over the allowed "
-        "domains), determine which gene carries that pathogenic variant and the condition it "
-        "causes. Answer strictly in the format GENE|Condition (HGNC gene symbol, then the "
+        "condition; all others are benign or of uncertain significance. Investigate the variants "
+        "using variant-annotation and database-lookup workflows over the public resources listed in "
+        "allowed_domains, and determine which gene carries that pathogenic variant and the condition "
+        "it causes. Answer strictly in the format GENE|Condition (HGNC gene symbol, then the "
         "condition name), e.g. XXXX|Some condition."
     ).format(id=args.id)
 
@@ -301,7 +302,7 @@ def main() -> int:
         "model reports any other gene or reaches the answer by inspecting file metadata rather than "
         "annotating the variants."
     )
-    allowed_domains = "ncbi.nlm.nih.gov, ensembl.org, pypi.org, bioconda.github.io"
+    allowed_domains = ALLOWED_DOMAINS_14
 
     # 建题期泄露断言(镜像 bmb_validator:答案 token 不得出现在 question/id)
     import re as _re

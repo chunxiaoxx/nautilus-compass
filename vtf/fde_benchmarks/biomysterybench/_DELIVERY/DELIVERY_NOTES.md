@@ -1,50 +1,67 @@
-# BioMysteryBench 投递说明(试点批 · 2026-07-17)
+# BioMysteryBench 投递说明(试点批 · 2026-07-17 · 已过买方文档对照审查)
 
-> 试点交付:**3 道题 / 2 模板**,证两条生产线端到端可行 + 过买方验收档。非 500 全量(全量计划见下)。
+> 试点交付:**3 道题 / 2 模板**,证两条生产线端到端可行 + 逐条对照买方《BioMysteryBench 数据要求【外部】》审查通过。非 500 全量(全量计划见 §四)。
 > 🔴 **投递给买方 = 仅 `problems.csv` + `data/*.zip`**。`_INTERNAL_provenance.json`(含答案+溯源)**留内部,勿投递**。
 
 ## 一、投递内容
 
-| id | 模板 | 数据 | 隐藏答案(内部) | 大小 |
+| id | 模板 | 数据 | 隐藏答案(内部) |
+|---|---|---|---|
+| bmb_vendor_000001 | VCF→变异临床意义 | 30 变异匿名 VCF | PAH \| Phenylketonuria |
+| bmb_vendor_000002 | VCF→变异临床意义 | 30 变异匿名 VCF | ATP7B \| Wilson disease |
+| bmb_vendor_000003 | 序列→基因/病(序列比对) | 10 条匿名蛋白 FASTA | HEXA \| Tay-Sachs disease |
+
+买方格式 = `problems.csv`(id/question/answer_rubric/allowed_domains/human_solvable)+ `data/<ID>.zip`(纯数据,解压即工作空间)。
+
+## 二、逐条对照买方需求文档(审查通过)
+
+| 买方条款 | 交付符合情况 |
+|---|---|
+| §2 任务来源:真实**或构建**的生物数据 | ✅ ClinVar 真变异构建 VCF / RefSeq 真蛋白;买方明确接受"构建的" |
+| §2 反向推演(非纯查询/描述统计) | ✅ 从匿名证据反推隐藏基因+病/蛋白身份 |
+| §2 必须借助外部工具 | ✅ 变异注释/数据库检索/序列比对 |
+| §2 唯一答案+列出变体 | ✅ 均唯一,rubric 列别名 |
+| §3 ID 与 zip 名匹配 | ✅ |
+| §3 不在文件名/列名/元数据/提示词泄露答案 | ✅ 建题期泄露断言(镜像验证器)+ 匿名剥注释;盲解只读 zip 独立解出 |
+| §3 问题独立完整英文+说明任务/文件/参考/答案格式 | ✅ 英文,GENE\|Condition 格式;**不点名具体工具产品**(让模型自主选工具链,合 §4 与 qes1 风格) |
+| §3 全对全错 rubric 含标准答案 | ✅ "1.0 or 0.0, no partial credit. The answer is …" |
+| §3 allowed_domains ⊆ 14 白名单 | ✅ 均列全 14(对齐 qes1,给模型足够自由度) |
+| §4 难度 20-30min / 约 10+ 工具交互 | ✅ VCF 30 变异(需逐个注释+查库,远程盲解 ~60 次交互);序列题 10 次比对/墙钟 1204s |
+| §4 唯一答案+等效拼写/别名 | ✅ rubric 明列别名 |
+| §4 全有或全无 | ✅ 仅 1.0/0.0 |
+| §5 拒收项(难度低/无需工具/泄露/无法加载/答案模糊/不符风格) | ✅ 逐项规避;风格贴买方 qes1(身份/变体反推 + 允许工具) |
+
+**审查发现并已修的 5 处**(见 commit 记录):F1 问题去具体工具产品名(保 autonomous 工具选择难度)· F2 VCF 变异数 18→30 消"难度过低"风险 · F3 domains 补全 14 · F4 答案格式统一 GENE\|Condition · F5 data zip 改纯数据(对齐 qes1)。
+
+## 三、验收证据(独立验证,非自报)
+
+- **供应商门** `bmb_validator.py`:合并 3 题 → **0 REJECT / 0 WARN / exit 0**。
+- **真解(盲解:只读交付 zip,公共工具链独立解出)**:
+
+| id | 盲解答案 | 唯一性 | 工具交互 | 难度 |
 |---|---|---|---|---|
-| bmb_vendor_000001 | VCF→变异临床意义 | 18 变异匿名 VCF | PAH \| Phenylketonuria | 1.0KB |
-| bmb_vendor_000002 | VCF→变异临床意义 | 18 变异匿名 VCF | ATP7B \| Wilson disease | 1.0KB |
-| bmb_vendor_000003 | 序列→基因/病(BLAST) | 10 条匿名蛋白 FASTA | HEXA \| Tay-Sachs disease | 2.9KB |
+| 000001 | PAH\|Phenylketonuria | 致病唯一=1 | 30 变异×(注释+查库)≈60 | 模型侧 20-30min |
+| 000002 | ATP7B\|Wilson disease | 致病唯一=1 | ≈60 | 模型侧 20-30min |
+| 000003 | HEXA\|Tay-Sachs disease | 溶酶体酶唯一=1 | 10 次序列比对 | 墙钟 1204s(供应商已知解法) |
 
-买方格式 = `problems.csv`(列 id/question/answer_rubric/allowed_domains/human_solvable)+ `data/<ID>.zip`。
+- 难度守恒:VCF 答案为 missense,藏在多个良性 missense 干扰里 → 不能靠后果类型蒙,须逐个查库。
+- 本地 QC(本地 ClinVar 镜像):#1/#2 各 ~3ms 复核致病唯一=1。
 
-## 二、验收证据(独立验证,非自报)
+## 四、数据真实性(买方跑 AI 检测的红线)
 
-**① 供应商门(`bmb_validator.py` · 买方 §3/§4/§5 译码)**:合并 3 题 → **0 REJECT / 0 WARN / exit 0**。
+**全部真实数据,零 AI 凭空造**,每条可溯源(见 `_INTERNAL_provenance.json`):
+- VCF 变异 = 真实 ClinVar 记录 + 真实 GRCh38 坐标(`canonical_spdi`),每条有 VCV accession。
+- 蛋白序列 = 真实 NCBI RefSeq,每条有 NP_ accession。
+- 匿名化 = 剥 rsID/INFO/基因名/致病性/FASTA 头 → 中性标签;答案不出现在任何交付文本/元数据。
 
-**② 真解验证(盲解:只读交付 zip,公共工具链独立解出)**:
+## 五、扩到 500 的生产环境(不需要 GPU)
 
-| id | 盲解答案 | 唯一性 | 工具调用 | 难度(墙钟) |
-|---|---|---|---|---|
-| 000001 | PAH\|Phenylketonuria | 致病命中唯一=1 | 36(VEP 18+ClinVar 18) | 模型侧 20-30min |
-| 000002 | ATP7B\|Wilson disease | 致病命中唯一=1 | 36 | 模型侧 20-30min |
-| 000003 | HEXA\|Tay-Sachs disease | 溶酶体酶唯一=1 | 10 blastp | 1204s(供应商已知解法) |
+- 重计算全在 NCBI/Ensembl 服务器,本机只 Python;任何阶段零 GPU。
+- 生产机 = 1 台普通 CPU 机 + 本地镜像库消限速:本地 ClinVar(已建 SQLite 420万/413MB,查询 ~13583× 提速、结果一致)· 待补本地 VEP cache + SwissProt 比对库。
+- 500 唯一性 QC 本地 ~1.5s(远程 16+h)。门槛在策展(~10-12 模板×数据集库)+ QC,不在算力。详见 `../DESIGN_500_scale.md` + `../README.md`。
 
-- 难度守恒:VCF 题答案为 missense,藏在多个良性 missense 干扰里 → 不能靠"挑 impactful"蒙,必须逐个查库。
-- 无泄露:盲解只读 zip 独立推出答案;建题期泄露断言(镜像验证器)+ 通用词(disease→condition/disorder)措辞规避。
+## 六、给买方的话(建议随交付)
 
-## 三、数据真实性(买方跑 AI 检测的红线)
-
-**全部真实数据,零 AI 凭空造**,每条可溯源:
-- VCF 变异 = 真实 ClinVar 记录 + 真实 GRCh38 坐标(`canonical_spdi`),每条有 ClinVar VCV accession(见 `_INTERNAL_provenance.json`)。
-- 蛋白序列 = 真实 NCBI RefSeq(Entrez efetch),每条有 NP_ accession。
-- 匿名化 = 剥 rsID/INFO/基因名/致病性/FASTA 头 → 中性标签,答案不出现在任何交付文本/元数据。
-- allowed_domains 全在买方 14 白名单内。
-
-## 四、扩到 500 的生产环境(结论:不需要 GPU)
-
-- 重计算全在 NCBI/Ensembl 服务器,本机只 Python;**任何阶段零 GPU**。
-- 生产机 = 1 台普通 CPU 机 + 本地镜像库消限速:本地 ClinVar(已建 SQLite 420万/413MB,查询 **~13583× 提速**、结果一致)· 待补本地 VEP cache + SwissProt BLAST。
-- 500 唯一性 QC:本地 ~1.5s(远程 16+h)。门槛在策展(~10-12 模板×数据集库)+ QC,不在算力。
-- 详见 `../DESIGN_500_scale.md` + `../README.md`。
-
-## 五、给买方的话(建议随交付)
-
-- 这是 2 模板的试点批;两模板均过 bmb-infer 前置自检(格式/泄露/唯一/难度),请抽检。
+- 2 模板试点批,均过 bmb-infer 前置自检(格式/泄露/唯一/难度),请抽检。
 - 全量 500 走"模板 × 真数据集库 × 自动化产-验管线",跨买方 8 类型铺开、反单调批次。
 - 交付载体最终可上飞书多维表格 + 网页(本目录为文件形态源)。
