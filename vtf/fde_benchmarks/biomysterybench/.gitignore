@@ -1,0 +1,4 @@
+# 本地镜像库(可复现:build_local_clinvar.py + 下载)· 太大不入 git
+_localdb/
+# scratch 对照脚本
+_bench_clinvar.py

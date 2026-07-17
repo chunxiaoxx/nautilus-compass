@@ -1,0 +1,203 @@
+{
+  "answer": {
+    "chrom": "13",
+    "pos": 51974216,
+    "ref": "C",
+    "alt": "T",
+    "spdi": "NC_000013.11:51974215:C:T",
+    "gene": "ATP7B",
+    "condition": "Wilson disease",
+    "clinvar_cls": "Pathogenic",
+    "hgvs": "NM_000053.4(ATP7B):c.1004G>A (p.Gly335Glu)"
+  },
+  "distractors": [
+    {
+      "chrom": "13",
+      "pos": 32340797,
+      "ref": "T",
+      "alt": "C",
+      "spdi": "NC_000013.11:32340796:T:C",
+      "gene": "BRCA2",
+      "clinvar_cls": "Likely benign",
+      "accession": "VCV004856600",
+      "title": "NM_000059.4(BRCA2):c.6442T>C (p.Ser2148Pro)"
+    },
+    {
+      "chrom": "17",
+      "pos": 43047443,
+      "ref": "C",
+      "alt": "T",
+      "spdi": "NC_000017.11:43047442:C:T",
+      "gene": "BRCA1",
+      "clinvar_cls": "Likely benign",
+      "accession": "VCV004856951",
+      "title": "NM_007294.4(BRCA1):c.5467+200G>A"
+    },
+    {
+      "chrom": "7",
+      "pos": 117509048,
+      "ref": "A",
+      "alt": "T",
+      "spdi": "NC_000007.14:117509047:A:T",
+      "gene": "CFTR",
+      "clinvar_cls": "Uncertain significance",
+      "accession": "VCV004853576",
+      "title": "NM_000492.4(CFTR):c.179A>T (p.Glu60Val)"
+    },
+    {
+      "chrom": "14",
+      "pos": 23417720,
+      "ref": "A",
+      "alt": "C",
+      "spdi": "NC_000014.9:23417719:A:C",
+      "gene": "MYH7",
+      "clinvar_cls": "Uncertain significance",
+      "accession": "VCV004857668",
+      "title": "NM_000257.4(MYH7):c.4170-34T>G"
+    },
+    {
+      "chrom": "3",
+      "pos": 38551567,
+      "ref": "A",
+      "alt": "G",
+      "spdi": "NC_000003.12:38551566:A:G",
+      "gene": "SCN5A",
+      "clinvar_cls": "Likely benign",
+      "accession": "VCV004852976",
+      "title": "NM_000335.5(SCN5A):c.4811-9T>C"
+    },
+    {
+      "chrom": "19",
+      "pos": 11111557,
+      "ref": "C",
+      "alt": "G",
+      "spdi": "NC_000019.10:11111556:C:G",
+      "gene": "LDLR",
+      "clinvar_cls": "Uncertain significance",
+      "accession": "VCV004853490",
+      "title": "NM_000527.5(LDLR):c.1104C>G (p.Cys368Trp)"
+    },
+    {
+      "chrom": "2",
+      "pos": 47480697,
+      "ref": "T",
+      "alt": "A",
+      "spdi": "NC_000002.12:47480696:T:A",
+      "gene": "MSH2",
+      "clinvar_cls": "Likely benign",
+      "accession": "VCV004851842",
+      "title": "NM_000251.3(MSH2):c.2460T>A (p.Gly820=)"
+    },
+    {
+      "chrom": "3",
+      "pos": 37024624,
+      "ref": "G",
+      "alt": "A",
+      "spdi": "NC_000003.12:37024623:G:A",
+      "gene": "MLH1",
+      "clinvar_cls": "Uncertain significance",
+      "accession": "VCV004856878",
+      "title": "NM_000249.4(MLH1):c.1039-1013G>A"
+    },
+    {
+      "chrom": "2",
+      "pos": 21014561,
+      "ref": "C",
+      "alt": "T",
+      "spdi": "NC_000002.12:21014560:C:T",
+      "gene": "APOB",
+      "clinvar_cls": "Likely benign",
+      "accession": "VCV004853613",
+      "title": "NM_000384.3(APOB):c.3729G>A (p.Gly1243=)"
+    },
+    {
+      "chrom": "2",
+      "pos": 178576830,
+      "ref": "A",
+      "alt": "T",
+      "spdi": "NC_000002.12:178576829:A:T",
+      "gene": "TTN",
+      "clinvar_cls": "Likely benign",
+      "accession": "VCV004856955",
+      "title": "NM_001267550.2(TTN):c.69414T>A (p.Gly23138=)"
+    },
+    {
+      "chrom": "16",
+      "pos": 23621683,
+      "ref": "G",
+      "alt": "A",
+      "spdi": "NC_000016.10:23621682:G:A",
+      "gene": "PALB2",
+      "clinvar_cls": "Benign",
+      "accession": "VCV004850679",
+      "title": "NM_024675.4(PALB2):c.2997-205C>T"
+    },
+    {
+      "chrom": "19",
+      "pos": 38473513,
+      "ref": "G",
+      "alt": "C",
+      "spdi": "NC_000019.10:38473512:G:C",
+      "gene": "RYR1",
+      "clinvar_cls": "Uncertain significance",
+      "accession": "VCV004856787",
+      "title": "NM_000540.3(RYR1):c.3902G>C (p.Arg1301Pro)"
+    },
+    {
+      "chrom": "17",
+      "pos": 50195644,
+      "ref": "G",
+      "alt": "A",
+      "spdi": "NC_000017.11:50195643:G:A",
+      "gene": "COL1A1",
+      "clinvar_cls": "Uncertain significance",
+      "accession": "VCV004853724",
+      "title": "NM_000088.4(COL1A1):c.1078C>T (p.Pro360Ser)"
+    },
+    {
+      "chrom": "15",
+      "pos": 48613065,
+      "ref": "A",
+      "alt": "C",
+      "spdi": "NC_000015.10:48613064:A:C",
+      "gene": "FBN1",
+      "clinvar_cls": "Uncertain significance",
+      "accession": "VCV004856894",
+      "title": "NM_000138.5(FBN1):c.192T>G (p.Asn64Lys)"
+    },
+    {
+      "chrom": "13",
+      "pos": 20189205,
+      "ref": "A",
+      "alt": "G",
+      "spdi": "NC_000013.11:20189204:A:G",
+      "gene": "GJB2",
+      "clinvar_cls": "Uncertain significance",
+      "accession": "VCV004854639",
+      "title": "NM_004004.6(GJB2):c.377T>C (p.Val126Ala)"
+    },
+    {
+      "chrom": "17",
+      "pos": 7669778,
+      "ref": "C",
+      "alt": "T",
+      "spdi": "NC_000017.11:7669777:C:T",
+      "gene": "TP53",
+      "clinvar_cls": "Benign",
+      "accession": "VCV004852755",
+      "title": "NM_000546.6(TP53):c.1101-88G>A"
+    },
+    {
+      "chrom": "5",
+      "pos": 112766388,
+      "ref": "T",
+      "alt": "A",
+      "spdi": "NC_000005.10:112766387:T:A",
+      "gene": "APC",
+      "clinvar_cls": "Likely benign",
+      "accession": "VCV004843538",
+      "title": "NM_000038.6(APC):c.198T>A (p.Ile66=)"
+    }
+  ],
+  "note": "全部变异均为真实 ClinVar 记录 + 真实 GRCh38 坐标(canonical_spdi)"
+}
