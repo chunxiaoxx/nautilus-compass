@@ -1,0 +1,7 @@
+{
+  "id": "bmb_vendor_000004",
+  "gene": "GALT",
+  "condition": "Galactosemia",
+  "spdi": "NC_000009.12:34647849:C:G",
+  "n_variants": 3001
+}

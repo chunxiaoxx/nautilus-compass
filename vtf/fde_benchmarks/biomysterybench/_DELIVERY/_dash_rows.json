@@ -34,5 +34,17 @@
     "唯一性": "致病命中=1",
     "数据包": "data/bmb_vendor_000003.zip",
     "难度": "20-30min"
+  },
+  {
+    "id": "bmb_vendor_000004",
+    "模板": "VCF→变异临床意义",
+    "数据条目": 3001,
+    "白名单域名": 14,
+    "内部答案": "GALT|Galactosemia",
+    "human_solvable": "yes",
+    "验证器": "0 REJECT",
+    "唯一性": "致病命中=1",
+    "数据包": "data/bmb_vendor_000004.zip",
+    "难度": "20-30min"
   }
 ]

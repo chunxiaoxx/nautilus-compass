@@ -1,6 +1,6 @@
 # BioMysteryBench 投递说明(试点批 · 2026-07-17 · 已过买方文档对照审查)
 
-> 试点交付:**3 道题 / 2 模板**,证两条生产线端到端可行 + 逐条对照买方《BioMysteryBench 数据要求【外部】》审查通过。非 500 全量(全量计划见 §四)。
+> 试点交付:**4 道题 / 2 模板**,证两条生产线端到端可行 + 逐条对照买方《BioMysteryBench 数据要求【外部】》审查通过。非 500 全量(全量计划见 §四)。
 > 🔴 **投递给买方 = 仅 `problems.csv` + `data/*.zip`**。`_INTERNAL_provenance.json`(含答案+溯源)**留内部,勿投递**。
 
 ## 一、投递内容
@@ -10,6 +10,7 @@
 | bmb_vendor_000001 | VCF→变异临床意义 | 3001 变异匿名 VCF(真实 exome 子集·99KB) | PAH \| Phenylketonuria |
 | bmb_vendor_000002 | VCF→变异临床意义 | 3001 变异匿名 VCF(真实 exome 子集·99KB) | ATP7B \| Wilson disease |
 | bmb_vendor_000003 | 序列→基因/病(序列比对) | 10 条匿名蛋白 FASTA | HEXA \| Tay-Sachs disease |
+| bmb_vendor_000004 | VCF→变异临床意义 | 3001 变异匿名 VCF(真实 exome 子集·99KB) | GALT \| Galactosemia |
 
 买方格式 = `problems.csv`(id/question/answer_rubric/allowed_domains/human_solvable)+ `data/<ID>.zip`(纯数据,解压即工作空间)。
 
@@ -37,13 +38,14 @@
 
 ## 三、验收证据(独立验证,非自报)
 
-- **供应商门** `bmb_validator.py`:合并 3 题 → **0 REJECT / 0 WARN / exit 0**。
+- **供应商门** `bmb_validator.py`:合并 4 题 → **0 REJECT / 0 WARN / exit 0**。
 - **真解(盲解:只读交付 zip,公共工具链独立解出)**:
 
 | id | 盲解答案 | 唯一性 | 工具交互 | 难度 |
 |---|---|---|---|---|
 | 000001 | PAH\|Phenylketonuria | 致病唯一=1(本地 ClinVar 全扫 3001 变异复核) | 3001 变异需批量注释+筛选 | 模型侧 20-30min(brute-force 不可行→逼真工作流) |
 | 000002 | ATP7B\|Wilson disease | 致病唯一=1(同上) | 同上 | 同上 |
+| 000004 | GALT\|Galactosemia | 致病唯一=1(本地全扫 3001)+ 远程 VEP/ClinVar 坐实答案变异 c.396C>G Pathogenic | 同上 | 同上 |
 | 000003 | HEXA\|Tay-Sachs disease | 溶酶体酶唯一=1 | 10 次序列比对 | 墙钟 1204s(供应商已知解法) |
 
 - 难度守恒:VCF 答案为 missense,藏在多个良性 missense 干扰里 → 不能靠后果类型蒙,须逐个查库。

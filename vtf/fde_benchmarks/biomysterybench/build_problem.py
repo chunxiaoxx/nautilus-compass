@@ -58,7 +58,10 @@ CONDITION_ALIASES = {
 _VCF_QUESTIONS = [
     "Which gene carries the pathogenic variant in this sample, and what disorder does it cause?",
     "One variant in this VCF is pathogenic for a Mendelian disorder — which gene is it in, and what is the disorder?",
-    "This sample has a single variant that is pathogenic for an inherited disorder. Name the affected gene and the disorder it causes.",
+    "Which gene in this sample carries the variant that is pathogenic for an inherited disorder, and what is that disorder?",
+    "A single variant here is responsible for a genetic disorder. Which gene is affected, and what is the disorder?",
+    "Identify the gene bearing the pathogenic variant in this sample and the inherited disorder it causes.",
+    "This individual carries one pathogenic variant behind a Mendelian condition — which gene, and which condition?",
 ]
 
 # 买方 §3 全 14 白名单(qes1 即列全 14,给模型足够自由度,避免卡在没列的资源)
