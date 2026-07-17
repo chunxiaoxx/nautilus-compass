@@ -75,8 +75,34 @@ python solve_problem.py _P1_out/data/bmb_vendor_000001.zip             # 盲解:
 - **NCBI ClinVar E-utilities**(`{chr}[chr] AND {pos}[chrpos38]`):GRCh38 坐标 → 临床分类 + 疾病。
 - 本机 Windows Python 3.13 + Biopython 1.87,两通道实连(WSL 网坏不用;小数据无需本地重工具)。
 
-## 下一步(P2/P3 · 需拍优先级)
-1. **P2 建模板库**:把 VCF 模板扩到 8-12 模板(表达谱→癌型、序列→基因…),每模板配真数据集库。
-2. **P3 自动化**:build/solve 已是雏形;补限速+断点+跨模板配额 → 单模板可批产。
-3. 跑通再定是否设主线(vs 11 题 / GenOpt 供给)。
+## 进展(2026-07-17 · 3 题 / 2 模板 / 批产地基 / 本地镜像)
+
+**模板 1 · VCF→变异临床意义**(`build_problem.py` 已参数化 `--answer-gene`,自动挑 Pathogenic missense + 排除同基因干扰 → 可批产):
+- #1 `bmb_vendor_000001` PAH/Phenylketonuria · #2 `bmb_vendor_000002` ATP7B/Wilson disease
+- 各 18 变异,0 REJECT,盲解致病唯一=1,36 工具调用。
+
+**模板 2 · 序列→基因/病(BLAST)**(`build_seq_problem.py` / `solve_seq_problem.py`,对齐买方 qes1 的 BLAST 范式,小数据):
+- #3 `bmb_vendor_000003` HEXA/Tay-Sachs:10 条真 RefSeq 蛋白剥头,恰好 1 条溶酶体酶(判别子=定位,可核查唯一)。
+- 0 REJECT,盲解 10 blastp 全干净,溶酶体酶唯一=1,**墙钟 1204s(压中 20-30min 难度档)**。远程 BLAST 会瞬时 SSL 抖动 → solve 已加退避重试。
+
+**本地镜像(Windows 原生 · 零 GPU/WSL · 消 Entrez 限速)**:
+```bash
+python build_local_clinvar.py _localdb/clinvar_grch38.vcf.gz  # clinvar.vcf.gz→SQLite(420万/413MB/67s)
+python qc_vcf_local.py _P1_out/data/bmb_vendor_000001.zip     # 本地批量 QC(唯一性)· 毫秒级
+```
+- 实测:本地 **0.20ms/查** vs 远程 **2715ms/查** = **~13583× 提速**,结果 **5/5 一致**。
+- #1/#2 本地 QC 各 3ms,致病唯一=1 → 500 题唯一性 QC ≈ 1.5s(远程要 16+h)。
+
+## 500 题生产环境(结论:不需要 GPU)
+- **重计算都在 NCBI/Ensembl 服务器**(API/远程 BLAST),本机只 Python;任何阶段零 GPU。
+- 生产机 = 1 台普通 CPU Linux/Windows + 本地镜像库(消限速):
+  - ✅ 本地 ClinVar(clinvar.vcf.gz→SQLite,已建)· ⏳ 本地 VEP offline cache(~25GB,GRCh38)· ⏳ 本地 BLAST+ SwissProt(~90MB,序列题那半)。
+  - `nr` 大库(~200GB)仅个别模板需;死守小数据模板(KB-MB),避 qes1 那种 721MB FASTA(500× = TB 级)。
+- WSL 网坏根因 = `.wslconfig` mirrored 模式 + docker-desktop 冲突;**用不着 WSL**(BLAST+ 有 win64、ClinVar Python 解析、snpEff Java)。真要 Linux 环境走 NAT 一条配置改,别重建。
+- 门槛在**策展(~10-12 模板×数据集库)+ QC 时间**,不在算力;本地镜像后 QC 从小时级降到秒级。
+
+## 下一步(需拍优先级)
+1. 镜像本地 SwissProt BLAST + VEP cache → 序列/VCF 题 QC 全本地秒级。
+2. P2 扩模板库(表达谱→癌型、峰→TF…)覆盖买方 8 类型 + 反单调。
+3. P3 编排(断点+跨模板配额)→ P4 批产 + 抽样真解 QC。
 - ⚠️ 验证器 WARN 启发式偏严:买方 qes1 也触发 2 WARN。WARN 只复核不拦交付。
