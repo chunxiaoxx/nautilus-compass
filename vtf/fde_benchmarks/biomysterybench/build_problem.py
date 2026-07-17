@@ -25,6 +25,7 @@ import csv
 import json
 import random
 import time
+import urllib.request
 import zipfile
 from pathlib import Path
 
@@ -32,14 +33,24 @@ from Bio import Entrez
 
 Entrez.email = "fde-compass@nautilus.social"
 
-PROBLEM_ID = "bmb_vendor_000001"
-
-# 答案变异(已独立验证:VEP→PAH/missense · ClinVar 坐标查→Pathogenic/Phenylketonuria)
-ANSWER = {
+# 默认答案变异(已独立验证:VEP→PAH/missense · ClinVar 坐标查→Pathogenic/Phenylketonuria)
+DEFAULT_ANSWER = {
     "chrom": "12", "pos": 102846899, "ref": "G", "alt": "T",
     "spdi": "NC_000012.12:102846898:G:T",
     "gene": "PAH", "condition": "Phenylketonuria",
     "clinvar_cls": "Pathogenic",
+    "hgvs": "NM_000277.3(PAH):c.965C>A, p.Ala322Asp",
+}
+
+# 疾病别名(all-or-nothing rubric 接受的等价答案)· 无条目则只用 ClinVar 病名
+CONDITION_ALIASES = {
+    "Phenylketonuria": ["Phenylketonuria", "PKU", "phenylalanine hydroxylase deficiency",
+                        "hyperphenylalaninemia"],
+    "Wilson disease": ["Wilson disease", "Wilson's disease", "hepatolenticular degeneration"],
+    "Tay-Sachs disease": ["Tay-Sachs disease", "Tay Sachs", "GM2 gangliosidosis",
+                          "hexosaminidase A deficiency"],
+    "Galactosemia": ["Galactosemia", "classic galactosemia", "GALT deficiency"],
+    "Alpha-1-antitrypsin deficiency": ["Alpha-1-antitrypsin deficiency", "AATD", "A1AT deficiency"],
 }
 
 # 干扰项来源基因(真实 panel 常见基因)· 取其 Benign/Likely benign/VUS SNV
@@ -56,16 +67,69 @@ DISTRACTOR_GENES = [
 PATHOGENIC_CLS = {"Pathogenic", "Likely pathogenic", "Pathogenic/Likely pathogenic"}
 
 CONTIG_LEN = {  # GRCh38 染色体长度(用于 ##contig 头)
-    "1": 248956422, "2": 242193529, "3": 198295559, "6": 170805979,
-    "7": 159345973, "11": 135086622, "12": 133275309, "13": 114364328,
-    "14": 107043718, "15": 101991189, "16": 90338345, "17": 83257441,
-    "19": 58617616, "2L": 0,
+    "1": 248956422, "2": 242193529, "3": 198295559, "4": 190214555,
+    "5": 181538259, "6": 170805979, "7": 159345973, "8": 145138636,
+    "9": 138394717, "10": 133797422, "11": 135086622, "12": 133275309,
+    "13": 114364328, "14": 107043718, "15": 101991189, "16": 90338345,
+    "17": 83257441, "18": 80373285, "19": 58617616, "20": 64444167,
+    "21": 46709983, "22": 50818468, "X": 156040895, "Y": 57227415,
 }
 
 
 def _spdi_to_vcf(spdi: str):
     seq, p0, ref, alt = spdi.split(":")
     return int(p0) + 1, ref, alt  # SPDI 0-based → VCF 1-based
+
+
+def _vep_consequence(chrom, pos, alt, sleep=0.2):
+    """Ensembl VEP:坐标 → (基因集, 最重后果)。用于建题时确认答案变异是 missense。"""
+    url = (f"https://rest.ensembl.org/vep/human/region/"
+           f"{chrom}:{pos}-{pos}:1/{alt}?content-type=application/json")
+    req = urllib.request.Request(url, headers={"User-Agent": "compass-bmb-build"})
+    v = json.load(urllib.request.urlopen(req, timeout=30))[0]
+    time.sleep(sleep)
+    genes = sorted({t.get("gene_symbol") for t in v.get("transcript_consequences", [])
+                    if t.get("gene_symbol")})
+    return genes, v.get("most_severe_consequence")
+
+
+def resolve_answer(gene: str, sleep=0.45) -> dict:
+    """为答案基因挑一个 Pathogenic **missense** SNV(单一清晰病名)。
+    missense = 难度守恒(藏在良性 missense 干扰里,模型不能靠后果类型蒙)。"""
+    h = Entrez.esearch(db="clinvar", term=f"{gene}[gene] AND pathogenic[clinsig]", retmax=40)
+    ids = Entrez.read(h)["IdList"]
+    time.sleep(sleep)
+    if not ids:
+        raise SystemExit(f"🔴 {gene} 无 Pathogenic 记录")
+    for chunk in [ids[i:i + 20] for i in range(0, len(ids), 20)]:
+        h = Entrez.esummary(db="clinvar", id=",".join(chunk), retmode="json")
+        d = json.load(h)["result"]
+        time.sleep(sleep)
+        for uid in d.get("uids", []):
+            res = d[uid]
+            vs = (res.get("variation_set") or [{}])[0]
+            spdi = vs.get("canonical_spdi", "")
+            if spdi.count(":") != 3:
+                continue
+            seq, p0, ref, alt = spdi.split(":")
+            if not (seq.startswith("NC_0000") and len(ref) == 1 == len(alt) and ref and alt):
+                continue
+            gc = res.get("germline_classification", {})
+            if gc.get("description") != "Pathogenic":
+                continue
+            conds = [t.get("trait_name") for t in gc.get("trait_set", [])
+                     if t.get("trait_name") not in (None, "not specified", "not provided")]
+            if len(conds) != 1:
+                continue
+            chrom = _seq_to_chrom(seq)
+            pos, r, a = _spdi_to_vcf(spdi)
+            genes, cons = _vep_consequence(chrom, pos, a)
+            if cons != "missense_variant" or gene not in genes:
+                continue
+            return {"chrom": chrom, "pos": pos, "ref": r, "alt": a, "spdi": spdi,
+                    "gene": gene, "condition": conds[0], "clinvar_cls": "Pathogenic",
+                    "hgvs": res.get("title", "")}
+    raise SystemExit(f"🔴 {gene} 未找到合适的 Pathogenic missense SNV(换基因)")
 
 
 def fetch_distractors(genes, need, sleep=0.45):
@@ -157,11 +221,23 @@ def main() -> int:
     ap.add_argument("--outdir", type=Path, default=Path("_P1_out"))
     ap.add_argument("--refresh", action="store_true", help="强制重拉干扰项(否则用缓存 manifest)")
     ap.add_argument("--n-distractors", type=int, default=17)
+    ap.add_argument("--id", default="bmb_vendor_000001", help="题 id(= data/<ID>.zip)")
+    ap.add_argument("--answer-gene", default=None,
+                    help="答案基因(自动挑 Pathogenic missense);缺省用已验证的 PAH")
     args = ap.parse_args()
 
     args.outdir.mkdir(parents=True, exist_ok=True)
     (args.outdir / "data").mkdir(exist_ok=True)
     manifest_path = args.outdir / "_source_manifest.json"
+
+    # 解析答案变异
+    if args.answer_gene:
+        print(f"解析答案基因 {args.answer_gene}(挑 Pathogenic missense)...")
+        answer = resolve_answer(args.answer_gene)
+        print(f"  → {answer['gene']} {answer['condition']} @ chr{answer['chrom']}:{answer['pos']} "
+              f"({answer['hgvs']})")
+    else:
+        answer = dict(DEFAULT_ANSWER)
 
     if manifest_path.exists() and not args.refresh:
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -169,35 +245,35 @@ def main() -> int:
         print(f"用缓存 manifest:{len(distractors)} 个干扰项")
     else:
         print(f"从 ClinVar 拉 {args.n_distractors} 个真实干扰项 ...")
-        distractors = fetch_distractors(DISTRACTOR_GENES, args.n_distractors)
-        manifest = {"answer": ANSWER, "distractors": distractors,
+        # 干扰项排除与答案同基因(避免同基因致病/良性混淆)
+        genes = [(g, s) for g, s in DISTRACTOR_GENES if g != answer["gene"]]
+        distractors = fetch_distractors(genes, args.n_distractors)
+        manifest = {"answer": answer, "distractors": distractors,
                     "note": "全部变异均为真实 ClinVar 记录 + 真实 GRCh38 坐标(canonical_spdi)"}
         manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
         print(f"  拉到 {len(distractors)} 个;溯源写入 {manifest_path.name}")
 
-    # 唯一性硬校验:干扰池内不得有致病变异
-    bad = [d for d in distractors if d["clinvar_cls"] in PATHOGENIC_CLS]
+    # 唯一性硬校验:干扰池内不得有致病变异 / 不得与答案同基因
+    bad = [d for d in distractors if d["clinvar_cls"] in PATHOGENIC_CLS or d["gene"] == answer["gene"]]
     if bad:
-        print(f"🔴 干扰池含致病变异,答案不唯一:{[b['gene'] for b in bad]}")
+        print(f"🔴 干扰池含致病变异或与答案同基因,答案不唯一:{[b['gene'] for b in bad]}")
         return 1
 
     # 组装变异集(答案 het,干扰项确定性混合基因型)
     rng = random.Random(20260716)
-    answer_v = dict(ANSWER, gt="0/1")
-    dvars = []
-    for d in distractors:
-        dvars.append(dict(d, gt=rng.choice(["0/1", "1/1", "0/1"])))
+    answer_v = dict(answer, gt="0/1")
+    dvars = [dict(d, gt=rng.choice(["0/1", "1/1", "0/1"])) for d in distractors]
     all_variants = [answer_v] + dvars
 
     vcf_text = build_vcf(all_variants)
 
     # 泄露自检:答案基因/病名绝不能出现在 VCF 文本
     low = vcf_text.lower()
-    for leak in (ANSWER["gene"].lower(), ANSWER["condition"].lower()):
+    for leak in (answer["gene"].lower(), answer["condition"].lower()):
         assert leak not in low, f"VCF 泄露答案 token: {leak}"
 
     # 打包 data/<ID>.zip
-    zip_path = args.outdir / "data" / f"{PROBLEM_ID}.zip"
+    zip_path = args.outdir / "data" / f"{args.id}.zip"
     with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
         z.writestr("variants.vcf", vcf_text)
         z.writestr("README.md", SOLVER_README)
@@ -207,41 +283,51 @@ def main() -> int:
         "The file data/{id}.zip contains variants.vcf — variant calls from one individual's "
         "targeted sequencing panel (reference genome stated in the VCF header). Exactly one "
         "variant is a well-established pathogenic variant that causes a single-gene Mendelian "
-        "disorder; all others are benign or of uncertain significance. Using variant-annotation "
+        "condition; all others are benign or of uncertain significance. Using variant-annotation "
         "tooling and public variant databases (Ensembl VEP, NCBI ClinVar/dbSNP over the allowed "
-        "domains), determine which gene carries that pathogenic variant and the associated "
-        "disease. Answer strictly in the format GENE|Disease (HGNC gene symbol, then the disease "
-        "name), e.g. XXXX|Some disease."
-    ).format(id=PROBLEM_ID)
+        "domains), determine which gene carries that pathogenic variant and the condition it "
+        "causes. Answer strictly in the format GENE|Condition (HGNC gene symbol, then the "
+        "condition name), e.g. XXXX|Some condition."
+    ).format(id=args.id)
 
+    aliases = CONDITION_ALIASES.get(answer["condition"], [answer["condition"]])
     rubric = (
         "Scoring is all-or-nothing (1.0 or 0.0, no partial credit). "
-        "The answer is PAH|Phenylketonuria. "
-        "Score 1.0 only if the response identifies BOTH the gene PAH AND the disease "
-        "(any of: Phenylketonuria, PKU, phenylalanine hydroxylase deficiency, hyperphenylalaninemia); "
-        "the causal variant is the missense change at GRCh38 chr12:102846899 G>T "
-        "(NM_000277.3(PAH):c.965C>A, p.Ala322Asp, ClinVar Pathogenic). Score 0.0 otherwise, including if the "
+        f"The answer is {answer['gene']}|{answer['condition']}. "
+        f"Score 1.0 only if the response identifies BOTH the gene {answer['gene']} AND the disease "
+        f"(any of: {', '.join(aliases)}); the causal variant is the missense change at GRCh38 "
+        f"chr{answer['chrom']}:{answer['pos']} {answer['ref']}>{answer['alt']} "
+        f"({answer['hgvs']}, ClinVar Pathogenic). Score 0.0 otherwise, including if the "
         "model reports any other gene or reaches the answer by inspecting file metadata rather than "
         "annotating the variants."
     )
     allowed_domains = "ncbi.nlm.nih.gov, ensembl.org, pypi.org, bioconda.github.io"
 
+    # 建题期泄露断言(镜像 bmb_validator:答案 token 不得出现在 question/id)
+    import re as _re
+    from bmb_validator import _answer_tokens
+    for tok in _answer_tokens(f"{answer['gene']}|{answer['condition']}"):
+        assert not _re.search(r"\b" + _re.escape(tok) + r"\b", question.lower()), \
+            f"答案 token '{tok}' 泄露在 question(先修措辞)"
+        assert not _re.search(r"\b" + _re.escape(tok) + r"\b", args.id.lower()), \
+            f"答案 token '{tok}' 泄露在 id"
+
     csv_path = args.outdir / "problems.csv"
     with open(csv_path, "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
         w.writerow(["id", "question", "answer_rubric", "allowed_domains", "human_solvable"])
-        w.writerow([PROBLEM_ID, question, rubric, allowed_domains, "yes"])
+        w.writerow([args.id, question, rubric, allowed_domains, "yes"])
 
     # answer_key.json(仅本地验证,不进 zip)
     (args.outdir / "answer_key.json").write_text(
-        json.dumps({"id": PROBLEM_ID, "gene": ANSWER["gene"], "condition": ANSWER["condition"],
-                    "spdi": ANSWER["spdi"], "n_variants": len(all_variants)},
+        json.dumps({"id": args.id, "gene": answer["gene"], "condition": answer["condition"],
+                    "spdi": answer["spdi"], "n_variants": len(all_variants)},
                    ensure_ascii=False, indent=2), encoding="utf-8")
 
-    print(f"\n✅ 建题完成:{len(all_variants)} 变异(1 致病 + {len(dvars)} 干扰)")
+    print(f"\n✅ 建题完成:{len(all_variants)} 变异(1 致病 {answer['gene']}/{answer['condition']} + {len(dvars)} 干扰)")
     print(f"   {csv_path}")
     print(f"   {zip_path}  ({zip_path.stat().st_size} B)")
-    print(f"   泄露自检通过(VCF 不含 '{ANSWER['gene']}' / '{ANSWER['condition']}')")
+    print(f"   泄露自检通过(VCF 不含 '{answer['gene']}' / '{answer['condition']}')")
     return 0
 
 

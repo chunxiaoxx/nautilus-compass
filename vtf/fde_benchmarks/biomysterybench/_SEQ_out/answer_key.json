@@ -1,0 +1,19 @@
+{
+  "id": "bmb_vendor_000003",
+  "gene": "HEXA",
+  "condition": "Tay-Sachs disease",
+  "answer_label": "seq_02",
+  "labelmap": {
+    "seq_01": "ALDOA",
+    "seq_02": "HEXA",
+    "seq_03": "TUBA1B",
+    "seq_04": "PKM",
+    "seq_05": "PGK1",
+    "seq_06": "TPI1",
+    "seq_07": "ACTB",
+    "seq_08": "GAPDH",
+    "seq_09": "ENO1",
+    "seq_10": "LDHB"
+  },
+  "n_sequences": 10
+}
