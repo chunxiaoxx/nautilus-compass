@@ -26,9 +26,10 @@ def main() -> int:
     ap.add_argument("--out", type=Path, default=Path("_DELIVERY"))
     args = ap.parse_args()
 
-    if args.out.exists():
-        shutil.rmtree(args.out)
-    (args.out / "data").mkdir(parents=True)
+    # 只清生成物(data/*.zip),保留同目录的 DELIVERY_NOTES.md / 网页等手写交付件
+    (args.out / "data").mkdir(parents=True, exist_ok=True)
+    for old in (args.out / "data").glob("*.zip"):
+        old.unlink()
 
     rows, provenance = [], []
     for src in args.src:

@@ -2,8 +2,7 @@
   {
     "id": "bmb_vendor_000001",
     "模板": "VCF→变异临床意义",
-    "数据条目": 30,
-    "工具交互": 60,
+    "数据条目": 3001,
     "白名单域名": 14,
     "内部答案": "PAH|Phenylketonuria",
     "human_solvable": "yes",
@@ -15,8 +14,7 @@
   {
     "id": "bmb_vendor_000002",
     "模板": "VCF→变异临床意义",
-    "数据条目": 30,
-    "工具交互": 60,
+    "数据条目": 3001,
     "白名单域名": 14,
     "内部答案": "ATP7B|Wilson disease",
     "human_solvable": "yes",
@@ -29,7 +27,6 @@
     "id": "bmb_vendor_000003",
     "模板": "序列→基因/病(BLAST)",
     "数据条目": 10,
-    "工具交互": 10,
     "白名单域名": 14,
     "内部答案": "HEXA|Tay-Sachs disease",
     "human_solvable": "yes",

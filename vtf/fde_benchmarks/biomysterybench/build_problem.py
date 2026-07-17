@@ -24,6 +24,7 @@ import argparse
 import csv
 import json
 import random
+import sqlite3
 import time
 import urllib.request
 import zipfile
@@ -104,6 +105,41 @@ def _vep_consequence(chrom, pos, alt, sleep=0.2):
     genes = sorted({t.get("gene_symbol") for t in v.get("transcript_consequences", [])
                     if t.get("gene_symbol")})
     return genes, v.get("most_severe_consequence")
+
+
+_LOCAL_DB = Path(__file__).parent / "_localdb" / "clinvar_grch38.sqlite"
+
+
+def fetch_background_local(need: int, exclude_gene: str, exclude_pos=None):
+    """从**本地 ClinVar 镜像**拉大量真实 Benign/Likely benign/VUS SNV 当背景变异
+    (致病变异埋其中)→ 真实 panel/exome 体量 + 更难筛。瞬时、零 NCBI 限速、真数据。
+    需先 build_local_clinvar.py 建库;无库返回 None(main 回退 NCBI 逐基因拉)。"""
+    if not _LOCAL_DB.exists():
+        return None
+    autos = tuple(str(i) for i in range(1, 23))
+    q = (
+        "SELECT chrom,pos,ref,alt,clnsig,gene FROM clinvar "
+        "WHERE length(ref)=1 AND length(alt)=1 AND pos>0 AND gene!='' AND gene!=? "
+        f"AND chrom IN ({','.join('?' * len(autos))}) "
+        "AND clnsig NOT LIKE '%athogenic%' AND clnsig NOT LIKE '%onflicting%' "
+        "AND (clnsig LIKE 'Benign%' OR clnsig LIKE 'Likely benign%' OR clnsig LIKE 'Uncertain%') "
+        "ORDER BY RANDOM() LIMIT ?"
+    )
+    con = sqlite3.connect(f"file:{_LOCAL_DB}?mode=ro", uri=True)
+    rows = con.execute(q, (exclude_gene, *autos, need * 2)).fetchall()  # 多取,dedup 后截断
+    con.close()
+    out, seen = [], set()
+    for chrom, pos, ref, alt, clnsig, gene in rows:
+        key = (chrom, int(pos), ref, alt)
+        if key in seen or (exclude_pos and (chrom, int(pos)) == exclude_pos):
+            continue
+        seen.add(key)
+        out.append({"chrom": chrom, "pos": int(pos), "ref": ref, "alt": alt,
+                    "spdi": f"local:NC_{chrom}:{pos}", "gene": gene,
+                    "clinvar_cls": clnsig, "accession": "ClinVar(local mirror)"})
+        if len(out) >= need:
+            break
+    return out
 
 
 def resolve_answer(gene: str, sleep=0.45) -> dict:
@@ -222,7 +258,9 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--outdir", type=Path, default=Path("_P1_out"))
     ap.add_argument("--refresh", action="store_true", help="强制重拉干扰项(否则用缓存 manifest)")
-    ap.add_argument("--n-distractors", type=int, default=29)
+    ap.add_argument("--n-distractors", type=int, default=29, help="无本地库时 NCBI 回退拉取数")
+    ap.add_argument("--n-background", type=int, default=3000,
+                    help="本地镜像拉的真实背景变异数(致病埋其中)· 真实 exome 子集体量")
     ap.add_argument("--id", default="bmb_vendor_000001", help="题 id(= data/<ID>.zip)")
     ap.add_argument("--answer-gene", default=None,
                     help="答案基因(自动挑 Pathogenic missense);缺省用已验证的 PAH")
@@ -244,16 +282,21 @@ def main() -> int:
     if manifest_path.exists() and not args.refresh:
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         distractors = manifest["distractors"]
-        print(f"用缓存 manifest:{len(distractors)} 个干扰项")
+        print(f"用缓存 manifest:{len(distractors)} 个背景变异")
     else:
-        print(f"从 ClinVar 拉 {args.n_distractors} 个真实干扰项 ...")
-        # 干扰项排除与答案同基因(避免同基因致病/良性混淆)
-        genes = [(g, s) for g, s in DISTRACTOR_GENES if g != answer["gene"]]
-        distractors = fetch_distractors(genes, args.n_distractors)
-        manifest = {"answer": answer, "distractors": distractors,
-                    "note": "全部变异均为真实 ClinVar 记录 + 真实 GRCh38 坐标(canonical_spdi)"}
+        exclude_pos = (answer["chrom"], answer["pos"])
+        distractors = fetch_background_local(args.n_background, answer["gene"], exclude_pos)
+        if distractors is not None:
+            print(f"从本地 ClinVar 镜像拉 {len(distractors)} 个真实背景变异(致病埋其中)")
+            src = "本地 ClinVar 镜像(真实记录 · GRCh38)"
+        else:  # 无本地库 → 回退 NCBI 逐基因(小量)
+            print(f"无本地库,回退 NCBI 拉 {args.n_distractors} 个干扰项 ...")
+            genes = [(g, s) for g, s in DISTRACTOR_GENES if g != answer["gene"]]
+            distractors = fetch_distractors(genes, args.n_distractors)
+            src = "NCBI ClinVar(真实记录 · canonical_spdi)"
+        manifest = {"answer": answer, "distractors": distractors, "note": f"全部真实变异 · 来源 {src}"}
         manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
-        print(f"  拉到 {len(distractors)} 个;溯源写入 {manifest_path.name}")
+        print(f"  溯源写入 {manifest_path.name}")
 
     # 唯一性硬校验:干扰池内不得有致病变异 / 不得与答案同基因
     bad = [d for d in distractors if d["clinvar_cls"] in PATHOGENIC_CLS or d["gene"] == answer["gene"]]
