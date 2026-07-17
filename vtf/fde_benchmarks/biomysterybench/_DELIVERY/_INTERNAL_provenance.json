@@ -45,6 +45,17 @@
         },
         "n_sequences": 10
       }
+    },
+    {
+      "id": "bmb_vendor_000004",
+      "src": "_P4_out",
+      "answer_key": {
+        "id": "bmb_vendor_000004",
+        "gene": "GALT",
+        "condition": "Galactosemia",
+        "spdi": "NC_000009.12:34647849:C:G",
+        "n_variants": 3001
+      }
     }
   ]
 }

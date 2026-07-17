@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0"><title>BioMysteryBench 试点投递(3 题/2 模板)</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"><title>BioMysteryBench 试点投递(4 题/2 模板)</title>
 <style>:root{--blue:#2f5496;--green:#2e7d32;--amber:#ed6c02;--red:#c62828;--bg:#f5f6fa}
 *{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:#222;padding:24px}
 h1{font-size:22px;color:var(--blue)}.sub{color:#666;font-size:13px;margin:4px 0 18px}
@@ -13,12 +13,12 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:8px 10px;
 th{cursor:pointer;user-select:none;color:#555}th:hover{color:var(--blue)}
 .badge{padding:2px 8px;border-radius:10px;font-size:12px;color:#fff;font-weight:600}.A{background:var(--green)}.B{background:var(--amber)}.C{background:var(--red)}
 .empty{color:#999;text-align:center;padding:30px}canvas{width:100%;height:auto}</style></head><body>
-<h1>BioMysteryBench 试点投递(3 题/2 模板)</h1><div class="sub">compass lane · 单文件离线可开 · 双击即用</div>
+<h1>BioMysteryBench 试点投递(4 题/2 模板)</h1><div class="sub">compass lane · 单文件离线可开 · 双击即用</div>
 <div class="cards" id="cards"></div><div class="filters" id="filters"></div>
 <div class="grid"><div class="panel"><canvas id="chart" width="480" height="300"></canvas></div>
 <div class="panel"><table id="tbl"><thead></thead><tbody></tbody></table></div></div>
 <script>
-const DATA=[{"id": "bmb_vendor_000001", "模板": "VCF→变异临床意义", "数据条目": 3001, "白名单域名": 14, "内部答案": "PAH|Phenylketonuria", "human_solvable": "yes", "验证器": "0 REJECT", "唯一性": "致病命中=1", "数据包": "data/bmb_vendor_000001.zip", "难度": "20-30min"}, {"id": "bmb_vendor_000002", "模板": "VCF→变异临床意义", "数据条目": 3001, "白名单域名": 14, "内部答案": "ATP7B|Wilson disease", "human_solvable": "yes", "验证器": "0 REJECT", "唯一性": "致病命中=1", "数据包": "data/bmb_vendor_000002.zip", "难度": "20-30min"}, {"id": "bmb_vendor_000003", "模板": "序列→基因/病(BLAST)", "数据条目": 10, "白名单域名": 14, "内部答案": "HEXA|Tay-Sachs disease", "human_solvable": "yes", "验证器": "0 REJECT", "唯一性": "致病命中=1", "数据包": "data/bmb_vendor_000003.zip", "难度": "20-30min"}],CHART_COL="数据条目",CAT_COL="模板",NUMCOLS=["\u6570\u636e\u6761\u76ee", "\u767d\u540d\u5355\u57df\u540d"];
+const DATA=[{"id": "bmb_vendor_000001", "模板": "VCF→变异临床意义", "数据条目": 3001, "白名单域名": 14, "内部答案": "PAH|Phenylketonuria", "human_solvable": "yes", "验证器": "0 REJECT", "唯一性": "致病命中=1", "数据包": "data/bmb_vendor_000001.zip", "难度": "20-30min"}, {"id": "bmb_vendor_000002", "模板": "VCF→变异临床意义", "数据条目": 3001, "白名单域名": 14, "内部答案": "ATP7B|Wilson disease", "human_solvable": "yes", "验证器": "0 REJECT", "唯一性": "致病命中=1", "数据包": "data/bmb_vendor_000002.zip", "难度": "20-30min"}, {"id": "bmb_vendor_000003", "模板": "序列→基因/病(BLAST)", "数据条目": 10, "白名单域名": 14, "内部答案": "HEXA|Tay-Sachs disease", "human_solvable": "yes", "验证器": "0 REJECT", "唯一性": "致病命中=1", "数据包": "data/bmb_vendor_000003.zip", "难度": "20-30min"}, {"id": "bmb_vendor_000004", "模板": "VCF→变异临床意义", "数据条目": 3001, "白名单域名": 14, "内部答案": "GALT|Galactosemia", "human_solvable": "yes", "验证器": "0 REJECT", "唯一性": "致病命中=1", "数据包": "data/bmb_vendor_000004.zip", "难度": "20-30min"}],CHART_COL="数据条目",CAT_COL="模板",NUMCOLS=["\u6570\u636e\u6761\u76ee", "\u767d\u540d\u5355\u57df\u540d"];
 let filter="ALL",sortKey=CHART_COL,sortDir=-1;
 const RC={A:"#2e7d32",B:"#ed6c02",C:"#c62828"},cats=["ALL",...[...new Set(DATA.map(d=>d[CAT_COL]))]];
 function view(){return filter==="ALL"?DATA:DATA.filter(d=>String(d[CAT_COL])===filter)}
