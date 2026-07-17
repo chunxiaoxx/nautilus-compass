@@ -1,0 +1,2 @@
+id,question,answer_rubric,allowed_domains,human_solvable
+bmb_vendor_000001,"<英文提示词:清晰说明任务 + 可用文件(data/bmb_vendor_000001.zip 内) + 允许参考(见 allowed_domains)+ 确切答案格式。信息反向推理风格。切勿在此透露答案。>","Scoring is all-or-nothing (1.0 or 0, no partial credit). The expected answer is [标准参考答案]. Score 1.0 if the response matches the expected answer or an explicitly listed variant, else 0.0.","ncbi.nlm.nih.gov, ensembl.org, uniprot.org, pypi.org, bioconda.github.io",yes
