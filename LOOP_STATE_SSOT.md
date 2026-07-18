@@ -14,17 +14,15 @@ FDE 产难题(强解+弱难倒 = 燃料)→ 蒸馏 → 系统可证变强(① �
 **(a) 活 producer 自持产出(income 自动持续涨)+ (b) 甲方可交付(11 道合规题入飞书表)**。
 不扩 1000 题,不碰蒸馏(A800 到位再解冻),不开新战线。
 
-## 二、当前真值(7/15 live 复核 · 全部可独立复核,出处 = 记分牌/探针/DB)
-
-> 🔴 7/15 纠偏:live `GET /api/platform/convergence`(16:06 UTC)吐出的数字**推翻了 7/8 自报 + 召回 memory(income 188/"停摆一月")**。真相:引擎 7/8→7/15 一直健康在涨,只是 **7/15 20:11 被兄弟框一次未完成的 nautilus-core-live 迁移写坏 systemd override 打成 502 约 4h**,已修复(见 memory `session_20260715_backend_502_coreLive_override_incident`)。下表值列已更新为 7/15 live,说明列保留 7/8 历史脉络。
+## 二、当前真值(7/7 · 全部可独立复核,出处 = 记分牌/探针/DB)
 
 | 指标 | 值 | 说明 |
 |---|---|---|
-| income(agent 9000009) | **703**(7/15 live · 近7d +100) | 🎯 **目标(a)"自持产出"字面达成**:平台 7/8 产 2 道新变体(bin_v3+cache_v2,数据全新 seed 20260708)放进 mint glob 路径 → daemon 自动拾取/解题/canonical verify/铸币(+86/+13,与产题 QC 预测分毫不差),全程零人工。**模式已证:income 斜率 = 产题速度,题目供给是唯一手动环节**。TSP 97.63 不铸维持原判(overall_pass=false 非交付档)|
-| 外部验证 verdict | **65**(7/15 live · 近7d 41) | auto-verify daemon 自动验证在持续;7/7 深夜后新增 6 条全 autonomous **但全是同题重跑**(cache×3/bin×3),幂等门全拦零铸币 = 门有牙齿 + **题池枯竭信号**:genopt-mint 无新题可选在重刷旧题(浪费 LLM 成本,V5 宜让 mint 跳过已铸题)|
-| **producer 自治率** | **89%(58/65)**(7/15 live) | 7/7 晚脱 0(V5 修假成功 a3795c2 → 3 条 autonomous 铸币);此后新增全 autonomous 但系同题重复,含金量看 income 不看该比率。**真瓶颈回到题目供给(变体题/11 题)**,非 producer |
+| income(agent 9000009) | **703**(7/16 探针,7/15 起持平)| ⚠️ 7/15→7/16 零增长 = 题池枯竭信号仍在(mint 重刷旧题被幂等门全拦),产题供给是唯一瓶颈。历史注(7/8):| 🎯 **目标(a)"自持产出"字面达成**:平台 7/8 产 2 道新变体(bin_v3+cache_v2,数据全新 seed 20260708)放进 mint glob 路径 → daemon 自动拾取/解题/canonical verify/铸币(+86/+13,与产题 QC 预测分毫不差),全程零人工。**模式已证:income 斜率 = 产题速度,题目供给是唯一手动环节**。TSP 97.63 不铸维持原判(overall_pass=false 非交付档)|
+| 外部验证 verdict | **65**(7/16 探针,7d 内 +33)| 历史注(7/8,时值 16):| auto-verify daemon 自动验证在持续;7/7 深夜后新增 6 条全 autonomous **但全是同题重跑**(cache×3/bin×3),幂等门全拦零铸币 = 门有牙齿 + **题池枯竭信号**:genopt-mint 无新题可选在重刷旧题(浪费 LLM 成本,V5 宜让 mint 跳过已铸题)|
+| **producer 自治率** | **89.2%(58/65)**(7/16 探针)| 历史注(7/8,时值 56%):| 7/7 晚脱 0(V5 修假成功 a3795c2 → 3 条 autonomous 铸币);此后新增全 autonomous 但系同题重复,含金量看 income 不看该比率。**真瓶颈回到题目供给(变体题/11 题)**,非 producer |
 | settle 含金量 | **0/3617** | 旧自循环账,维持原判 |
-| 甲方交付 | **0/11** | 11 题内容仍卡 FDE 选题(合约 7/10);候选=L3 样例 43 道 |
+| 甲方交付 | **11 题需求已作废(用户 7/18:"现在没有这个需求")** | 接棒:垂域高难度出题仍有大量需求;用户手上有第一批题目待交接,生产走 ecc-fde-vertcase 流水线;交付物继续一鱼两吃(买方件+蒸馏燃料) |
 | 记分牌 | `GET /api/platform/convergence` | 收敛 = 这 5 个数字的走向,不是叙事。⚠️ prime-001 旧 PID 884064 已不在,但自治轨迹在产 = V5 侧有新进程,身份确认球在 V5,平台不动进程 |
 
 基础设施:cloud backend = systemd 管(nautilus-backend.service · 8000)· auto-verify daemon 10min 轮 · prime-001(PID 884064)连续跑 7 天勿动 · GPT5.5 cloud 直连稳 · doubao ARK 本机通(偶发代理抖动)· T4/H800 已关 · A800 租赁中。
@@ -60,14 +58,14 @@ FDE 产难题(强解+弱难倒 = 燃料)→ 蒸馏 → 系统可证变强(① �
 | fake_success_produce | V5 | 7/9 | 🔴 进行中(自治率脱 0 的钥匙)|
 | evaluate_artifacts_fix(甲方 7/7 反馈)| V5 | 7/9 | compass 已代修一版,V5 收口 |
 | cache_income_finding 集成 | V5 | 7/10 | 待接 |
-| 11 题内容 | FDE | 7/10 | 🔴 最高优先(原 11 题已证伪)|
+| 11 题内容 | FDE | 7/10 | ⚫ 作废核销(7/18 用户确认需求已无;接棒合约=垂域出题第一批,等用户交题) |
 
 ## 六、硬护栏(压缩版 · 全文见归档)
 
 1. **外部 gate 经济学(C 口径)**:external_verified 只看独立复现;income 再加两门 = 难度档合格 + 每题每 producer 只铸一次。
 2. **producer 必须是注册整数 agent**(§0-ARCH);Claude 对话框是脚手架,不算系统组件。
 3. **自报不算,探针才算**:任何 alive/done/income 声明以 compass 读 DB 为准。
-4. **部署规程**:cloud backend 只走 `scp + systemctl restart nautilus-backend`;禁手工 kill/nohup;pkill/pgrep -f 会自匹配 ssh 命令行。
+4. **部署规程(7/16 换轨,用户拍板)**:以 `ops/DEPLOY_DISCIPLINE.md`(main 分支)为准——单一主干 main、禁 VM 直改、部署 = git pull --ff-only 禁 scp 覆盖代码、禁手工改 systemd unit、部署后必验记分牌。过渡期若确需 scp,同一改动必须同步 commit 进 main。仍禁手工 kill/nohup;pkill/pgrep -f 会自匹配 ssh 命令行。底座融合状态见 `RECOVERY_STATE_20260715.md`(main 已立 = GitHub 默认分支,基于 prod-truth + 捞入资产)。
 5. **可复现契约**:轨迹必须带完整解 + sha256;preview 一律拒。
 6. **不重复造轮子**:动手前先查已有资产(7/7 教训:fde.nautilus.social 整套 v0.8 被遗忘重造)。
 7. **confound 先核再下结论**;n≥12 才跑 LOO;买方名绝不出现在对外内容;"真"只作真实义,不作强调副词。
