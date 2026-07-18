@@ -220,6 +220,24 @@ def tool_recall(args: dict) -> dict:
     if not res.get("ok"):
         return _err(res.get("error", "daemon error"))
     hits = res.get("recall", [])
+    # v2.3.2 · access-event closure · bump reinforce_count on each recalled file
+    # so REAL MCP recalls feed the tier ladder (promote_lifecycle_tier Rule A).
+    # Prior gap (diagnosed 2026-07-18): reinforce_on_recall_hit was only wired
+    # into recall.py's CLI try_daemon_recall, never the MCP/daemon serving path
+    # that production recall actually uses → reinforce_count stayed 0 corpus-wide
+    # → tier layer measured +0.000 on a signal-less corpus. Guarded · never raises.
+    try:
+        if hits and os.environ.get("COMPASS_NO_REINFORCE") != "1":
+            from recall import reinforce_on_recall_hit
+            by_proj: dict = {}
+            for _h in hits:
+                _p = _h.get("project") or project
+                if _p:
+                    by_proj.setdefault(_p, []).append(_h)
+            for _p, _phits in by_proj.items():
+                reinforce_on_recall_hit(PROJECTS_DIR / _p / "memory", _phits)
+    except Exception as _e:  # noqa: BLE001
+        sys.stderr.write(f"[reinforce · mcp] skipped: {_e!r}\n")
     scope_label = f"scope={scope}" + (f", project={project}" if scope == "project" else " (all projects)")
     if not hits:
         text = f"No memories matched for query: {query!r} ({scope_label})"
