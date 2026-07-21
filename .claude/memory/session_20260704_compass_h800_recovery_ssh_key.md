@@ -44,7 +44,7 @@ metadata:
 - base_url = `https://v2.qixuw.com/v2`
 - wire_api = `responses`
 - requires_openai_auth = true
-- OPENAI_API_KEY = `sk-c16301d1475dc595011320892cac17cd23d58d92d19a308668bf04b1878c84c8`
+- OPENAI_API_KEY = `<redacted_key_last4=c84c8>`
 
 注:此 key 7/2 已知 · 7/2 真用过跑 JobShop 0.7022 · 7/2 之后未复用 = anchor #6 复发
 

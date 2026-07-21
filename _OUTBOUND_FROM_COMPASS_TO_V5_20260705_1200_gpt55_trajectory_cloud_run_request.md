@@ -39,7 +39,7 @@ V5 在 cloud 端有完整的环境(git clone + 工具栈)能跑通 trajectory。
 
 ```bash
 cd /path/to/Computing/KernelEngineering/tiled_matmul_v1_001
-OPENAI_API_KEY=sk-c16301d1475dc595011320892cac17cd23d58d92d19a308668bf04b1878c84c8 \
+OPENAI_API_KEY=<redacted_key_last4=c84c8> \
   python run_gpt55_trajectory.py
 ```
 

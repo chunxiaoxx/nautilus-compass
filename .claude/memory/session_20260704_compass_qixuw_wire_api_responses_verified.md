@@ -23,7 +23,7 @@ metadata:
 - [model_providers.OpenAI] base_url = "https://v2.qixuw.com"
 - wire_api = "responses"
 - requires_openai_auth = true
-- OPENAI_API_KEY = `sk-c16301d1475dc595011320892cac17cd23d58d92d19a308668bf04b1878c84c8`
+- OPENAI_API_KEY = `<redacted_key_last4=c84c8>`
 
 ### 真测 3 路径全 200 OK
 
@@ -70,7 +70,7 @@ metadata:
 ## 关联
 
 - 真 qixuw 配置:TOML `model_provider=OpenAI` + `wire_api=responses` + `reasoning_effort=xhigh`
-- 真 OPENAI_API_KEY:`sk-c16301d1475dc595011320892cac17cd23d58d92d19a308668bf04b1878c84c8`
+- 真 OPENAI_API_KEY:`<redacted_key_last4=c84c8>`
 - 真 .env:已 7/4 改 ARK_BASE_URL(从 /api/plan/v3 → /api/v3)= ARK 治根
 - 真 buyer 表:`KY9ZbC2Qqa6ZZXsKrWyc5VGRnXe/tblQAW4aNM99nva6`
 - 真 memory 落档:本档
