@@ -62,7 +62,7 @@
   },
   "source": {
     "profile_dir": ".cache/bench-profile-20260721-080758-(default in daemon.py)",
-    "commit": "pending-c5",
+    "commit": "fb1321a",
     "generated_by": "C5 dev outcome capsules + tests/bench_profile.ps1"
   }
 }
