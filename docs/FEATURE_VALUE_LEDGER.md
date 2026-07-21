@@ -109,6 +109,29 @@ C0 的轻微负 delta 被门控消除, tuning hint 现在明确输出:
 而是继续 dogfood 真实执行结果, 积累至少 3 条以上 impact/tier 支持信号后做
 raw-vs-guarded 配对复测。
 
+## 📊 Route C2 paired policy gate(2026-07-21 · raw vs guarded)
+
+动作: `tests/bench_profile.ps1` / `tests/bench_profile.sh` 在原 `run_all`
+raw recall 后追加 guarded recall, 再通过 `ops/recall_policy_gate.py` 生成
+机器可读晋升门。该 gate 不让诊断性 raw 负反馈使 smoke 失败, 但会阻止 raw
+lifecycle 成为默认策略。
+
+复测命令: `powershell -ExecutionPolicy Bypass -File tests\bench_profile.ps1 -Suite smoke -Python "C:\Users\chunx\AppData\Local\Programs\Python\Python313\python.exe"`
+
+复测产物: `.cache/bench-profile-20260721-035112-(default in daemon.py)/`
+
+关键结果:
+- Raw: poi `-0.0006265664160400863`, tier/gemini `-0.0006835269993165083`
+- Guarded: poi/tier/gemini `+0.000`
+- Policy gate: `block_raw_lifecycle_promotion`
+- Recommended default: `guarded`
+- `raw_lifecycle_allowed: false`
+
+**判读**: benchmark 主链已具备“评测结果驱动架构默认值”的闭环能力。
+当前不是宣称 compass lifecycle 已 SOTA, 而是明确给出: raw 加权在信号稀疏时有害,
+guarded 是安全默认; 只有当后续真实执行胶囊带来 ≥+0.005 MRR uplift 且无负 delta,
+raw lifecycle 才能进入默认候选。
+
 ## 纪律
 - 新功能 PR 前:跑 `admit_feature` 自检,空/含糊 claim 直接 defer。
 - ⚠️ 行:要么补可测下游价值,要么 defer(不因"已写了代码"就上线=沉没成本陷阱)。
