@@ -31,7 +31,7 @@ user 7/4 反复发 settings.json + env 真配置 = **agent dialog 走 qixuw 直�
 {
   "env": {
     "ANTHROPIC_BASE_URL": "https://v2.qixuw.com",
-    "ANTHROPIC_AUTH_TOKEN": "sk-c16301d1475dc595011320892cac17cd23d58d92d19a308668bf04b1878c84c8",
+    "ANTHROPIC_AUTH_TOKEN": "<redacted_key_last4=c84c8>",
     "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
     "CLAUDE_CODE_ATTRIBUTION_HEADER": "0"
   }
