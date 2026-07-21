@@ -28,6 +28,18 @@ Scope: first 10 candidates from the scorecard Top20 list, in source order. This 
 - `payload_hash` is SHA-256 over a stable string containing `trace_id`, `source_row`, `action_tag`, type, score, short problem phrase, and feedback phrase.
 - This artifact is ready for a later compass recall replay task that is allowed to query cloud recall or local recall fixtures.
 
+## Platform Local Verify Result Consumed
+
+Platform local file/table verification has now run for the same trace:
+
+- local verify passed: 1 item.
+- local verify failed: 9 items.
+- production scoreboard `external_verified_delta`: 0.
+- accepted-fuel priority: row 12 / 成鑫.
+- repair-pattern priority: rows 14, 27, 19, 18, 5, 30, 28, 24, 13.
+
+Compass should not treat all 10 rows as accepted fuel. The replay runner should separate accepted fuel recall from failed-item repair memory.
+
 ## Next Execution Gate
 
 The next compass-side runner should update each row to one of:
