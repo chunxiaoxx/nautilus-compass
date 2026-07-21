@@ -27,12 +27,15 @@ def build_preflight(*, policy_gate: dict, target_policy: str) -> dict:
     raw_allowed = bool(policy_gate.get("promotion", {}).get("raw_lifecycle_allowed", False))
     recommended = policy_gate.get("promotion", {}).get("recommended_default", "guarded")
 
-    if target == "raw" and not raw_allowed:
-        status = "reject"
-        reason = "raw_lifecycle_not_allowed_by_policy_gate"
-    elif target not in ("raw", "guarded"):
+    if target not in ("flat", "raw", "guarded"):
         status = "reject"
         reason = "unknown_target_policy"
+    elif target == "raw" and not raw_allowed:
+        status = "reject"
+        reason = "raw_lifecycle_not_allowed_by_policy_gate"
+    elif target != recommended:
+        status = "reject"
+        reason = "target_policy_not_recommended_by_policy_gate"
     else:
         status = "accept"
         reason = "policy_allowed"

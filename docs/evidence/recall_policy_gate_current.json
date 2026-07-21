@@ -1,17 +1,17 @@
 {
   "version": "1.0",
-  "generated_at": "2026-07-21T08:05:22Z",
-  "gate": "block_raw_lifecycle_promotion",
+  "generated_at": "2026-07-21T12:11:36Z",
+  "gate": "block_all_lifecycle_promotion",
   "promotion": {
     "raw_lifecycle_allowed": false,
-    "recommended_default": "guarded",
+    "recommended_default": "flat",
     "positive_delta_min": 0.005,
     "negative_delta_min": -0.0005
   },
   "corpus": {
-    "n_memories": 133,
-    "n_impact": 2,
-    "n_tier_nonworking": 1
+    "n_memories": 136,
+    "n_impact": 5,
+    "n_tier_nonworking": 4
   },
   "policies": {
     "raw": "raw",
@@ -19,37 +19,50 @@
   },
   "deltas": {
     "raw": {
-      "poi": -0.0006265664160400863,
-      "tier": -0.0006835269993165083,
-      "gemini": -0.0006835269993165083
+      "poi": -0.0006684491978610207,
+      "tier": -0.0007909982174688635,
+      "gemini": -0.0007909982174688635
     },
     "guarded": {
-      "poi": 0.0,
-      "tier": 0.0,
-      "gemini": 0.0
+      "poi": -0.0006684491978610207,
+      "tier": -0.0007909982174688635,
+      "gemini": -0.0007909982174688635
     }
   },
   "evidence": {
     "raw_negative_modes": [
       {
         "mode": "poi",
-        "delta_mrr_vs_flat": -0.0006265664160400863
+        "delta_mrr_vs_flat": -0.0006684491978610207
       },
       {
         "mode": "tier",
-        "delta_mrr_vs_flat": -0.0006835269993165083
+        "delta_mrr_vs_flat": -0.0007909982174688635
       },
       {
         "mode": "gemini",
-        "delta_mrr_vs_flat": -0.0006835269993165083
+        "delta_mrr_vs_flat": -0.0007909982174688635
       }
     ],
-    "guarded_negative_modes": [],
-    "raw_best_delta_mrr_vs_flat": -0.0006265664160400863
+    "guarded_negative_modes": [
+      {
+        "mode": "poi",
+        "delta_mrr_vs_flat": -0.0006684491978610207
+      },
+      {
+        "mode": "tier",
+        "delta_mrr_vs_flat": -0.0007909982174688635
+      },
+      {
+        "mode": "gemini",
+        "delta_mrr_vs_flat": -0.0007909982174688635
+      }
+    ],
+    "raw_best_delta_mrr_vs_flat": -0.0006684491978610207
   },
   "source": {
-    "profile_dir": ".cache/bench-profile-20260721-040249-(default in daemon.py)",
-    "commit": "9632954",
-    "generated_by": "tests/bench_profile.ps1 + ops/recall_policy_gate.py"
+    "profile_dir": ".cache/bench-profile-20260721-080758-(default in daemon.py)",
+    "commit": "pending-c5",
+    "generated_by": "C5 dev outcome capsules + tests/bench_profile.ps1"
   }
 }

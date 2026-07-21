@@ -1,0 +1,41 @@
+[
+  {
+    "id": "c2",
+    "title": "paired recall policy gate",
+    "commit": "666c0cb",
+    "kind": "benchmark_gate",
+    "impact": 1.0,
+    "tier": "semantic",
+    "evidence": [
+      "python -m pytest tests/test_bench_profile_contract.py tests/test_recall_policy_gate.py -q",
+      ".cache/bench-profile-20260721-035112-(default in daemon.py)/recall_policy_gate.json"
+    ],
+    "result": "raw lifecycle promotion is blocked when raw recall delta is negative; guarded remains the safe default candidate"
+  },
+  {
+    "id": "c3",
+    "title": "guarded lifecycle recall default",
+    "commit": "9632954",
+    "kind": "runtime_default",
+    "impact": 1.0,
+    "tier": "semantic",
+    "evidence": [
+      "python -m pytest tests/test_lifecycle_policy.py tests/test_recall_policy_preflight.py -q",
+      ".cache/bench-profile-20260721-040249-(default in daemon.py)/summary.json"
+    ],
+    "result": "runtime recall default moved to guarded and release/default preflight accepts guarded while rejecting raw"
+  },
+  {
+    "id": "c4",
+    "title": "release recall policy preflight",
+    "commit": "a523020",
+    "kind": "release_gate",
+    "impact": 1.0,
+    "tier": "semantic",
+    "evidence": [
+      "python -m pytest tests/test_release_recall_policy_gate_contract.py -q",
+      "docs/evidence/recall_policy_gate_current.json"
+    ],
+    "result": "GitHub release workflow now consumes current policy gate evidence before release tests run"
+  }
+]

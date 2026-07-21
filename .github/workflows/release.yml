@@ -32,7 +32,7 @@ jobs:
         run: |
           python ops/recall_policy_preflight.py \
             --policy-gate docs/evidence/recall_policy_gate_current.json \
-            --target-policy guarded \
+            --target-policy flat \
             --out recall_policy_preflight.json
 
       - name: Full pytest sweep (release gate)

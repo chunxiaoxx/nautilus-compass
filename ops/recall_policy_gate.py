@@ -52,14 +52,14 @@ def build_policy_gate(
     guarded_negative = _negative_modes(guarded_deltas, negative_delta_min)
     raw_best = max(raw_deltas.values()) if raw_deltas else 0.0
 
-    if raw_negative:
-        gate = "block_raw_lifecycle_promotion"
-        raw_allowed = False
-        recommended = "guarded"
-    elif guarded_negative:
+    if guarded_negative:
         gate = "block_all_lifecycle_promotion"
         raw_allowed = False
         recommended = "flat"
+    elif raw_negative:
+        gate = "block_raw_lifecycle_promotion"
+        raw_allowed = False
+        recommended = "guarded"
     elif raw_best >= positive_delta_min:
         gate = "raw_lifecycle_candidate"
         raw_allowed = True
