@@ -40,6 +40,25 @@
 
 **判读**:地基 bge-m3 更强(P@1 0.969/MRR 0.980,语料 131 更干净故绝对值高于 6/24);**poi/tier/gemini 仍全 +0.000**——语料诊断 **cumulative_impact!=0 = 0 条 · tier!=working = 0 条 · Gemini off**,三层数学上无信号可作用(非逻辑坏)。第 3 次独立坐实(设计→6/24→今)。**结论不变:lifecycle 三层可测下游 uplift 未证,盒(有真分层信号语料)重测前保持 📊·不美化。**
 
+## 📊 Route A smoke baseline(2026-07-20 · v2.3 · Windows-native Python)
+
+验收口径: 每次提交前至少跑 smoke profile, 产出 `eval-manifest.json`,
+`eval_recall.json`, `eval_recall_tuning_hint.json`, `summary.json` 四件套;
+full profile 用于长跑分, 不作为每次提交的阻塞项。
+
+- Command: `powershell -ExecutionPolicy Bypass -File tests/bench_profile.ps1 -Suite smoke -Python "C:\Users\chunx\AppData\Local\Programs\Python\Python313\python.exe"`
+- Output dir: `.cache/bench-profile-20260720-231150-(default in daemon.py)`
+- Python: `Python 3.13.12`
+- Corpus: `132` memories
+- Recall: flat `P@1=0.970`, `P@3=0.992`, `P@5=0.992`, `MRR=0.9804866850321395`
+- Delta: poi/tier/gemini all `+0.000 MRR`
+- Tuning risk: `medium`
+
+**判读**: 评测主链已从“单脚本输出”升级为可复现产物链。
+当前差异化层仍没有可测 uplift, 主要原因是 tier 信号缺失(`n_tier_nonworking=0`)
+和 PoI impact 信号稀疏(`n_impact=1`)。下一轮优化优先级应是写端信号和 tier 晋升,
+不是继续堆召回包装。
+
 ## 纪律
 - 新功能 PR 前:跑 `admit_feature` 自检,空/含糊 claim 直接 defer。
 - ⚠️ 行:要么补可测下游价值,要么 defer(不因"已写了代码"就上线=沉没成本陷阱)。

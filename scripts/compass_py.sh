@@ -41,15 +41,14 @@ resolver_path() {
   return 1
 }
 
-if [ "${1:-}" = "--help" ]; then
+VERSION_MODE=0
+if [ "${1:-}" = "--help" ] || [ "${1:-}" = "-h" ]; then
   print_help
   exit 0
 fi
 
 if [ "${1:-}" = "--version" ]; then
   VERSION_MODE=1
-else
-  VERSION_MODE=0
 fi
 
 cands=()
@@ -57,6 +56,12 @@ if [ -n "${PYTHON:-}" ]; then
   cands+=("$PYTHON")
 fi
 cands+=(python3.13 python3.12 python3.11 python3.10 python3 python)
+
+if [ "$#" -gt 1 ]; then
+  echo "[compass_py] Error: unexpected argument(s)."
+  print_help
+  exit 2
+fi
 
 PYTHON_PATH="$(resolver_path "${cands[@]}")" || {
   echo "[compass_py] Error: need Python >= 3.10 for Compass eval stack (daemon.py uses Path | None)." >&2
