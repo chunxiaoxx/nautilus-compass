@@ -71,7 +71,7 @@
   },
   "source": {
     "profile_dir": ".cache/bench-profile-20260721-082906-(default in daemon.py)",
-    "commit": "pending-c6",
+    "commit": "4e329f0",
     "generated_by": "C6 routed policy + tests/bench_profile.ps1"
   }
 }
