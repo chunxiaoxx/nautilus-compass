@@ -10,6 +10,9 @@ mkdir -p "$RESULTS"
 LOG_DIR=/c/tmp/nc-eval/ab
 mkdir -p "$LOG_DIR"
 
+bash "$PLUGIN/scripts/bootstrap_compass_env.sh"
+RUN_PYTHON="${PYTHON}"
+
 # === Keys ===
 export ARK_API_KEY="b8ed1f14-660b-4422-8da5-f8e2f4af85da"
 export GOOGLE_APPLICATION_CREDENTIALS="$HOME/Downloads/chunxiao-vm-260414-de9e73f4697d.json"
@@ -34,7 +37,7 @@ run_subject() {
     echo "  log: $log"
     echo "============================================="
     ZMM_SUBJECT_PROVIDER="$provider" ZMM_SUBJECT_MODEL="$model" \
-        python3 "$PLUGIN/tests/eval_behavior_ab.py" --n "$n" 2>&1 | tee "$log"
+        "$RUN_PYTHON" "$PLUGIN/tests/eval_behavior_ab.py" --n "$n" 2>&1 | tee "$log"
     # archive cache JSON to results/
     latest=$(ls -t "$PLUGIN/.cache/eval_behavior_ab_${provider}"_*.json 2>/dev/null | head -1)
     if [ -n "$latest" ]; then
