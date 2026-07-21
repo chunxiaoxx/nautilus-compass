@@ -19,7 +19,10 @@ def test_windows_bench_profile_runs_guarded_recall_and_policy_gate():
     assert "guarded" in text
     assert "ops/recall_policy_gate.py" in text
     assert "recall_policy_gate.json" in text
+    assert "ops/recall_policy_preflight.py" in text
+    assert "recall_policy_preflight.json" in text
     assert "policy_gate" in text
+    assert "policy_preflight" in text
 
 
 def test_linux_bench_profile_runs_guarded_recall_and_policy_gate():
@@ -29,4 +32,7 @@ def test_linux_bench_profile_runs_guarded_recall_and_policy_gate():
     assert "guarded" in text
     assert "ops/recall_policy_gate.py" in text
     assert "recall_policy_gate.json" in text
+    assert "ops/recall_policy_preflight.py" in text
+    assert "recall_policy_preflight.json" in text
     assert "policy_gate" in text
+    assert "policy_preflight" in text
