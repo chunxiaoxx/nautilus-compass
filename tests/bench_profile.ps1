@@ -6,6 +6,28 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+function Invoke-ProfilePythonLog {
+    param(
+        [string]$PythonBin,
+        [string[]]$ScriptArgs,
+        [string]$Log,
+        [string]$FailureMessage
+    )
+
+    $oldErrorActionPreference = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    $output = & $PythonBin @ScriptArgs 2>&1
+    $rc = $LASTEXITCODE
+    $ErrorActionPreference = $oldErrorActionPreference
+
+    $outputText = $output | ForEach-Object { "$_" }
+    $outputText | Set-Content -Path $Log -Encoding UTF8
+
+    if ($rc -ne 0) {
+        throw $FailureMessage
+    }
+}
+
 $RepoDir = Split-Path -Parent $PSScriptRoot
 Set-Location $RepoDir
 
@@ -45,13 +67,33 @@ if (-not (Test-Path $recallStep.artifact) -or -not (Test-Path $hintStep.artifact
 }
 
 $profileHint = Join-Path $ProfileDir "eval_recall_tuning_hint_profile.json"
-& $manifest.python "ops/eval_recall_tuning_hint.py" --artifact $recallStep.artifact --out $profileHint > (Join-Path $ProfileDir "tuning_hint_profile.log") 2>&1
-if ($LASTEXITCODE -ne 0) {
-    throw "profile tuning hint generation failed"
-}
+Invoke-ProfilePythonLog -PythonBin $manifest.python `
+    -ScriptArgs @("ops/eval_recall_tuning_hint.py", "--artifact", $recallStep.artifact, "--out", $profileHint) `
+    -Log (Join-Path $ProfileDir "tuning_hint_profile.log") `
+    -FailureMessage "profile tuning hint generation failed"
+
+$guardedRecall = Join-Path $ProfileDir "eval_recall_guarded.json"
+Invoke-ProfilePythonLog -PythonBin $manifest.python `
+    -ScriptArgs @("tests/eval_recall.py", "--mode", "all", "--signal-policy", "guarded", "--out", $guardedRecall) `
+    -Log (Join-Path $ProfileDir "eval_recall_guarded.log") `
+    -FailureMessage "guarded recall evaluation failed"
+
+$guardedHint = Join-Path $ProfileDir "eval_recall_guarded_tuning_hint.json"
+Invoke-ProfilePythonLog -PythonBin $manifest.python `
+    -ScriptArgs @("ops/eval_recall_tuning_hint.py", "--artifact", $guardedRecall, "--out", $guardedHint) `
+    -Log (Join-Path $ProfileDir "eval_recall_guarded_tuning_hint.log") `
+    -FailureMessage "guarded tuning hint generation failed"
+
+$policyGatePath = Join-Path $ProfileDir "recall_policy_gate.json"
+Invoke-ProfilePythonLog -PythonBin $manifest.python `
+    -ScriptArgs @("ops/recall_policy_gate.py", "--raw", $recallStep.artifact, "--guarded", $guardedRecall, "--out", $policyGatePath) `
+    -Log (Join-Path $ProfileDir "recall_policy_gate.log") `
+    -FailureMessage "recall policy gate generation failed"
 
 $recall = Get-Content -Path $recallStep.artifact -Raw | ConvertFrom-Json
+$guarded = Get-Content -Path $guardedRecall -Raw | ConvertFrom-Json
 $hint = Get-Content -Path $profileHint -Raw | ConvertFrom-Json
+$policyGate = Get-Content -Path $policyGatePath -Raw | ConvertFrom-Json
 $summary = [ordered]@{
     run_at = $manifest.run_at
     python = $manifest.python
@@ -61,9 +103,16 @@ $summary = [ordered]@{
     out_dir = $manifest.out_dir
     n_memories = $recall.meta.n_memories
     result_summary = $recall.result_summary
+    raw_recall_artifact = $recallStep.artifact
+    guarded_recall_artifact = $guardedRecall
+    guarded_result_summary = $guarded.result_summary
     recommendations_count = @($recall.recommendations).Count
     tuning_risk = $hint.risk
     tuning_next_actions = @($hint.next_actions).Count
+    policy_gate_artifact = $policyGatePath
+    policy_gate = $policyGate.gate
+    policy_recommended_default = $policyGate.promotion.recommended_default
+    raw_lifecycle_allowed = $policyGate.promotion.raw_lifecycle_allowed
 }
 
 $summaryPath = Join-Path $ProfileDir "summary.json"

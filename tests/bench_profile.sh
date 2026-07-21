@@ -88,15 +88,35 @@ PY
 PROFILE_HINT_PATH="$PROFILE_DIR/eval_recall_tuning_hint_profile.json"
 python ops/eval_recall_tuning_hint.py --artifact "$RECALL_ARTIFACT" --out "$PROFILE_HINT_PATH" > "$PROFILE_DIR/tuning_hint_profile.log" 2>&1
 
-python - <<'PY' "$RECALL_ARTIFACT" "$TUNING_ARTIFACT" "$PROFILE_HINT_PATH" "$MANIFEST_PATH" "$PROFILE_DIR/summary.json"
+GUARDED_RECALL_ARTIFACT="$PROFILE_DIR/eval_recall_guarded.json"
+python tests/eval_recall.py --mode all --signal-policy guarded --out "$GUARDED_RECALL_ARTIFACT" > "$PROFILE_DIR/eval_recall_guarded.log" 2>&1
+
+GUARDED_HINT_ARTIFACT="$PROFILE_DIR/eval_recall_guarded_tuning_hint.json"
+python ops/eval_recall_tuning_hint.py --artifact "$GUARDED_RECALL_ARTIFACT" --out "$GUARDED_HINT_ARTIFACT" > "$PROFILE_DIR/eval_recall_guarded_tuning_hint.log" 2>&1
+
+POLICY_GATE_ARTIFACT="$PROFILE_DIR/recall_policy_gate.json"
+python ops/recall_policy_gate.py --raw "$RECALL_ARTIFACT" --guarded "$GUARDED_RECALL_ARTIFACT" --out "$POLICY_GATE_ARTIFACT" > "$PROFILE_DIR/recall_policy_gate.log" 2>&1
+
+python - <<'PY' "$RECALL_ARTIFACT" "$TUNING_ARTIFACT" "$PROFILE_HINT_PATH" "$GUARDED_RECALL_ARTIFACT" "$GUARDED_HINT_ARTIFACT" "$POLICY_GATE_ARTIFACT" "$MANIFEST_PATH" "$PROFILE_DIR/summary.json"
 import json
 import sys
 from pathlib import Path
 
-recall_artifact, tuning_artifact, hint_artifact, manifest_path, summary_path = map(Path, sys.argv[1:])
+(
+    recall_artifact,
+    tuning_artifact,
+    hint_artifact,
+    guarded_recall_artifact,
+    guarded_hint_artifact,
+    policy_gate_artifact,
+    manifest_path,
+    summary_path,
+) = map(Path, sys.argv[1:])
 
 rec = json.loads(recall_artifact.read_text(encoding="utf-8"))
 hint = json.loads(hint_artifact.read_text(encoding="utf-8"))
+guarded = json.loads(guarded_recall_artifact.read_text(encoding="utf-8"))
+policy_gate = json.loads(policy_gate_artifact.read_text(encoding="utf-8"))
 manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
 
 summary = {
@@ -105,9 +125,16 @@ summary = {
     "out_dir": manifest.get("out_dir"),
     "n_memories": rec.get("meta", {}).get("n_memories"),
     "result_summary": rec.get("result_summary", {}),
+    "raw_recall_artifact": str(recall_artifact),
+    "guarded_recall_artifact": str(guarded_recall_artifact),
+    "guarded_result_summary": guarded.get("result_summary", {}),
     "recommendations_count": len(rec.get("recommendations", [])),
     "tuning_risk": hint.get("risk"),
     "tuning_next_actions": len(hint.get("next_actions", [])),
+    "policy_gate_artifact": str(policy_gate_artifact),
+    "policy_gate": policy_gate.get("gate"),
+    "policy_recommended_default": policy_gate.get("promotion", {}).get("recommended_default"),
+    "raw_lifecycle_allowed": policy_gate.get("promotion", {}).get("raw_lifecycle_allowed"),
 }
 summary_path.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
 print("summary_written", summary_path)
