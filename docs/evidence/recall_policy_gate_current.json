@@ -1,0 +1,55 @@
+{
+  "version": "1.0",
+  "generated_at": "2026-07-21T08:05:22Z",
+  "gate": "block_raw_lifecycle_promotion",
+  "promotion": {
+    "raw_lifecycle_allowed": false,
+    "recommended_default": "guarded",
+    "positive_delta_min": 0.005,
+    "negative_delta_min": -0.0005
+  },
+  "corpus": {
+    "n_memories": 133,
+    "n_impact": 2,
+    "n_tier_nonworking": 1
+  },
+  "policies": {
+    "raw": "raw",
+    "guarded": "guarded"
+  },
+  "deltas": {
+    "raw": {
+      "poi": -0.0006265664160400863,
+      "tier": -0.0006835269993165083,
+      "gemini": -0.0006835269993165083
+    },
+    "guarded": {
+      "poi": 0.0,
+      "tier": 0.0,
+      "gemini": 0.0
+    }
+  },
+  "evidence": {
+    "raw_negative_modes": [
+      {
+        "mode": "poi",
+        "delta_mrr_vs_flat": -0.0006265664160400863
+      },
+      {
+        "mode": "tier",
+        "delta_mrr_vs_flat": -0.0006835269993165083
+      },
+      {
+        "mode": "gemini",
+        "delta_mrr_vs_flat": -0.0006835269993165083
+      }
+    ],
+    "guarded_negative_modes": [],
+    "raw_best_delta_mrr_vs_flat": -0.0006265664160400863
+  },
+  "source": {
+    "profile_dir": ".cache/bench-profile-20260721-040249-(default in daemon.py)",
+    "commit": "9632954",
+    "generated_by": "tests/bench_profile.ps1 + ops/recall_policy_gate.py"
+  }
+}

@@ -157,6 +157,31 @@ runtime recall 默认策略从 raw 改为 `guarded`; `COMPASS_RECALL_SIGNAL_POLI
 raw 仍可作为诊断/候选评测模式存在, 但不能在当前证据下成为默认召回策略。
 这把“输出变输入”从报告推进到了 runtime 配置和发布前检查。
 
+## 📊 Route C4 release preflight evidence(2026-07-21 · default -> release gate)
+
+动作: 将 C3 profile 生成的 policy gate 证据登记为
+`docs/evidence/recall_policy_gate_current.json`, 并在 `.github/workflows/release.yml`
+中加入轻量 release preflight:
+`python ops/recall_policy_preflight.py --policy-gate docs/evidence/recall_policy_gate_current.json --target-policy guarded`。
+
+该 release gate 不跑重型 BGE, 只消费已登记证据, 因此适合 GitHub runner。
+证据文件包含来源:
+- profile: `.cache/bench-profile-20260721-040249-(default in daemon.py)`
+- commit: `9632954`
+- gate: `block_raw_lifecycle_promotion`
+
+复测命令:
+- `python -m pytest tests/test_release_recall_policy_gate_contract.py -q`
+- `python ops\recall_policy_preflight.py --policy-gate docs\evidence\recall_policy_gate_current.json --target-policy guarded`
+
+复测结果:
+- release contract: `2 passed`
+- preflight: `status=accept`, `target_policy=guarded`, `raw_lifecycle_allowed=false`
+
+**判读**: 默认策略保护现在进入 release workflow。后续如果有人把 release 目标改成
+raw 或替换证据导致 raw 不被允许, 发布门会失败; 重型 benchmark 仍保留在本机
+profile, release 只消费其结论。
+
 ## 纪律
 - 新功能 PR 前:跑 `admit_feature` 自检,空/含糊 claim 直接 defer。
 - ⚠️ 行:要么补可测下游价值,要么 defer(不因"已写了代码"就上线=沉没成本陷阱)。
