@@ -46,7 +46,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 PROJECT_MEM = Path.home() / ".claude/projects/C--Users-chunx/memory"
 
 MODES = ("flat", "poi", "tier", "gemini")
-SIGNAL_POLICIES = ("raw", "guarded")
+SIGNAL_POLICIES = ("raw", "guarded", "routed")
 OUT_VERSION = "1.0"
 MAX_FAILED_TO_KEEP = 20
 MRR_DELTA_MIN = 0.005
@@ -90,6 +90,7 @@ def rerank(
     entries: list,
     *,
     signal_policy: str = "raw",
+    query_text: str = "",
     min_signal_count: int = DEFAULT_MIN_SIGNAL_COUNT,
     min_signal_fraction: float = DEFAULT_MIN_SIGNAL_FRACTION,
 ) -> list:
@@ -115,18 +116,23 @@ def rerank(
         return sorted(entries, key=lambda x: -x[0])
 
     support = signal_support(entries)
-    use_poi = signal_policy == "raw" or _has_signal_support(
+    route_allowed = True
+    if signal_policy == "routed":
+        from recall_pkg.lifecycle_policy import is_lifecycle_query
+        route_allowed = is_lifecycle_query(query_text)
+
+    use_poi = signal_policy == "raw" or (route_allowed and _has_signal_support(
         support["n_impact"],
         support["n"],
         min_signal_count,
         min_signal_fraction,
-    )
-    use_tier = signal_policy == "raw" or _has_signal_support(
+    ))
+    use_tier = signal_policy == "raw" or (route_allowed and _has_signal_support(
         support["n_tier_nonworking"],
         support["n"],
         min_signal_count,
         min_signal_fraction,
-    )
+    ))
 
     from recall_pkg.poi_weighting import apply_poi_boost_value
 
@@ -242,6 +248,7 @@ def evaluate(
             mode,
             entries,
             signal_policy=signal_policy,
+            query_text=mems[i]["query"],
             min_signal_count=min_signal_count,
             min_signal_fraction=min_signal_fraction,
         )

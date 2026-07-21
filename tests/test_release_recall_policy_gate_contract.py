@@ -25,8 +25,9 @@ def test_current_policy_gate_evidence_allows_flat_and_blocks_lifecycle_defaults(
     guarded = build_preflight(policy_gate=gate, target_policy="guarded")
     raw = build_preflight(policy_gate=gate, target_policy="raw")
 
-    assert gate["source"]["profile_dir"] == ".cache/bench-profile-20260721-080758-(default in daemon.py)"
-    assert gate["source"]["commit"] == "fb1321a"
+    assert gate["source"]["profile_dir"] == ".cache/bench-profile-20260721-082906-(default in daemon.py)"
+    assert gate["source"]["commit"] == "pending-c6"
+    assert gate["deltas"]["routed"]["poi"] == 0.0
     assert flat["status"] == "accept"
     assert guarded["status"] == "reject"
     assert raw["status"] == "reject"

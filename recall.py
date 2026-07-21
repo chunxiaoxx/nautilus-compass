@@ -1150,7 +1150,7 @@ def render_v02_vector_mode(entries: list, query: str, cache: dict) -> None:
             from recall_pkg.poi_weighting import boost_top_k_with_snapshot
             from recall_pkg.poi_snapshot_cache import get_credit_snapshot
             _poi_snapshot = get_credit_snapshot()
-            if should_apply_poi_weight is None or should_apply_poi_weight(_signal_policy, top, _poi_snapshot):
+            if should_apply_poi_weight is None or should_apply_poi_weight(_signal_policy, top, _poi_snapshot, query=q_str):
                 top = boost_top_k_with_snapshot(top, _poi_snapshot)
                 # Truncate back to TOP_K after potential re-rank
                 top = top[:TOP_K]
@@ -1165,7 +1165,7 @@ def render_v02_vector_mode(entries: list, query: str, cache: dict) -> None:
     # Set COMPASS_NO_TIER_WEIGHT=1 to opt out.
     if os.environ.get("COMPASS_NO_TIER_WEIGHT") != "1":
         try:
-            if should_apply_tier_weight is None or should_apply_tier_weight(_signal_policy, top):
+            if should_apply_tier_weight is None or should_apply_tier_weight(_signal_policy, top, query=q_str):
                 top = apply_tier_weight(top)[:TOP_K]
         except Exception as _e:
             sys.stderr.write(f"[tier weight] skipped: {_e!r}\n")
