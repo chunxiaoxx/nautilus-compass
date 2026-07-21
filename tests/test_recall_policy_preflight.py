@@ -37,6 +37,22 @@ def _block_all_gate() -> dict:
     }
 
 
+def _routed_gate() -> dict:
+    return {
+        "gate": "routed_lifecycle_candidate",
+        "promotion": {
+            "raw_lifecycle_allowed": False,
+            "routed_lifecycle_allowed": True,
+            "recommended_default": "routed",
+        },
+        "deltas": {
+            "raw": {"poi": -0.001, "tier": -0.001, "gemini": -0.001},
+            "guarded": {"poi": -0.001, "tier": -0.001, "gemini": -0.001},
+            "routed": {"poi": 0.006, "tier": 0.006, "gemini": 0.006},
+        },
+    }
+
+
 def test_preflight_blocks_raw_default_when_policy_gate_disallows_raw():
     out = build_preflight(policy_gate=_gate(raw_allowed=False), target_policy="raw")
     assert out["status"] == "reject"
@@ -67,6 +83,18 @@ def test_preflight_allows_raw_only_when_policy_gate_allows_raw():
     out = build_preflight(policy_gate=_gate(raw_allowed=True, recommended="raw"), target_policy="raw")
     assert out["status"] == "accept"
     assert out["target_policy"] == "raw"
+
+
+def test_preflight_allows_routed_when_policy_gate_recommends_routed():
+    out = build_preflight(policy_gate=_routed_gate(), target_policy="routed")
+    assert out["status"] == "accept"
+    assert out["target_policy"] == "routed"
+
+
+def test_preflight_rejects_guarded_when_policy_gate_recommends_routed():
+    out = build_preflight(policy_gate=_routed_gate(), target_policy="guarded")
+    assert out["status"] == "reject"
+    assert out["reason"] == "target_policy_not_recommended_by_policy_gate"
 
 
 def test_preflight_cli_runs_from_repo_root(tmp_path):

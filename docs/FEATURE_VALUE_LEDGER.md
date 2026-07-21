@@ -216,6 +216,31 @@ profile, release 只消费其结论。
 guarded 成功, 而是把 runtime/release 默认退回 `flat`, 保留 raw/guarded 作为
 候选实验模式。下一步应做权重学习/按查询类型路由, 不能继续用固定全局 boost。
 
+## 📊 Route C6 routed lifecycle candidate(2026-07-21 · query-conditional routing)
+
+动作: 新增 `routed` lifecycle policy。只有查询本身属于 recall / benchmark /
+policy gate / preflight / release / execution outcome 等 lifecycle 意图时, 才允许
+PoI/tier 加权进入候选排序。`tests/bench_profile.*` 现在同时产出 raw、guarded、
+routed 三份 recall artifact, 再交给 `ops/recall_policy_gate.py` 比较。
+
+复测命令:
+- `python tests\eval_recall.py --mode all --signal-policy routed --out .cache\eval_recall_after_c6_routed.json`
+- `python ops\recall_policy_gate.py --raw .cache\eval_recall_after_c5_outcomes_raw.json --guarded .cache\eval_recall_after_c5_outcomes_guarded.json --routed .cache\eval_recall_after_c6_routed.json --out .cache\recall_policy_gate_after_c6_routed.json`
+- `powershell -ExecutionPolicy Bypass -File tests\bench_profile.ps1 -Suite smoke -Python "C:\Users\chunx\AppData\Local\Programs\Python\Python313\python.exe"`
+
+关键结果:
+- 最新 profile: `.cache/bench-profile-20260721-082906-(default in daemon.py)`
+- Raw delta: poi `-0.0006684491978610207`, tier/gemini `-0.0007909982174688635`
+- Guarded delta: 同 raw, 仍为负
+- Routed delta: poi/tier/gemini `+0.000`
+- Policy gate: `block_all_lifecycle_promotion`
+- Recommended default: `flat`
+- Routed allowed: `false`
+
+**判读**: routed 成功消除了 C5 的负 delta, 但没有带来可测正增益。它是更安全的
+候选实验路径, 不是默认策略。当前默认继续 `flat`; 下一步如果要追求 uplift,
+应做 query type 标注和按查询类型/胶囊类型学习权重, 而不是继续放大全局 boost。
+
 ## 纪律
 - 新功能 PR 前:跑 `admit_feature` 自检,空/含糊 claim 直接 defer。
 - ⚠️ 行:要么补可测下游价值,要么 defer(不因"已写了代码"就上线=沉没成本陷阱)。

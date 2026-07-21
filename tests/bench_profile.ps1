@@ -84,9 +84,21 @@ Invoke-ProfilePythonLog -PythonBin $manifest.python `
     -Log (Join-Path $ProfileDir "eval_recall_guarded_tuning_hint.log") `
     -FailureMessage "guarded tuning hint generation failed"
 
+$routedRecall = Join-Path $ProfileDir "eval_recall_routed.json"
+Invoke-ProfilePythonLog -PythonBin $manifest.python `
+    -ScriptArgs @("tests/eval_recall.py", "--mode", "all", "--signal-policy", "routed", "--out", $routedRecall) `
+    -Log (Join-Path $ProfileDir "eval_recall_routed.log") `
+    -FailureMessage "routed recall evaluation failed"
+
+$routedHint = Join-Path $ProfileDir "eval_recall_routed_tuning_hint.json"
+Invoke-ProfilePythonLog -PythonBin $manifest.python `
+    -ScriptArgs @("ops/eval_recall_tuning_hint.py", "--artifact", $routedRecall, "--out", $routedHint) `
+    -Log (Join-Path $ProfileDir "eval_recall_routed_tuning_hint.log") `
+    -FailureMessage "routed tuning hint generation failed"
+
 $policyGatePath = Join-Path $ProfileDir "recall_policy_gate.json"
 Invoke-ProfilePythonLog -PythonBin $manifest.python `
-    -ScriptArgs @("ops/recall_policy_gate.py", "--raw", $recallStep.artifact, "--guarded", $guardedRecall, "--out", $policyGatePath) `
+    -ScriptArgs @("ops/recall_policy_gate.py", "--raw", $recallStep.artifact, "--guarded", $guardedRecall, "--routed", $routedRecall, "--out", $policyGatePath) `
     -Log (Join-Path $ProfileDir "recall_policy_gate.log") `
     -FailureMessage "recall policy gate generation failed"
 
@@ -100,6 +112,7 @@ Invoke-ProfilePythonLog -PythonBin $manifest.python `
 
 $recall = Get-Content -Path $recallStep.artifact -Raw | ConvertFrom-Json
 $guarded = Get-Content -Path $guardedRecall -Raw | ConvertFrom-Json
+$routed = Get-Content -Path $routedRecall -Raw | ConvertFrom-Json
 $hint = Get-Content -Path $profileHint -Raw | ConvertFrom-Json
 $policyPreflight = Get-Content -Path $policyPreflightPath -Raw | ConvertFrom-Json
 $summary = [ordered]@{
@@ -113,7 +126,9 @@ $summary = [ordered]@{
     result_summary = $recall.result_summary
     raw_recall_artifact = $recallStep.artifact
     guarded_recall_artifact = $guardedRecall
+    routed_recall_artifact = $routedRecall
     guarded_result_summary = $guarded.result_summary
+    routed_result_summary = $routed.result_summary
     recommendations_count = @($recall.recommendations).Count
     tuning_risk = $hint.risk
     tuning_next_actions = @($hint.next_actions).Count

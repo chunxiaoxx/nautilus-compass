@@ -76,6 +76,31 @@ def test_keeps_default_neutral_when_no_policy_has_measurable_uplift():
     assert gate["promotion"]["recommended_default"] == "guarded"
 
 
+def test_recommends_routed_when_routed_has_positive_uplift_without_negative_delta():
+    gate = build_policy_gate(
+        raw=_artifact("raw", d1=-0.001, d2=-0.001),
+        guarded=_artifact("guarded", d1=-0.001, d2=-0.001),
+        routed=_artifact("routed", d1=0.006, d2=0.006),
+    )
+
+    assert gate["gate"] == "routed_lifecycle_candidate"
+    assert gate["promotion"]["recommended_default"] == "routed"
+    assert gate["promotion"]["routed_lifecycle_allowed"] is True
+    assert gate["deltas"]["routed"]["poi"] == 0.006
+
+
+def test_does_not_recommend_routed_when_routed_is_negative():
+    gate = build_policy_gate(
+        raw=_artifact("raw", d1=-0.001, d2=-0.001),
+        guarded=_artifact("guarded", d1=-0.001, d2=-0.001),
+        routed=_artifact("routed", d1=-0.001, d2=0.0),
+    )
+
+    assert gate["gate"] == "block_all_lifecycle_promotion"
+    assert gate["promotion"]["recommended_default"] == "flat"
+    assert gate["evidence"]["routed_negative_modes"]
+
+
 def test_policy_gate_payload_is_json_serializable():
     gate = build_policy_gate(
         raw=_artifact("raw", d1=-0.001, d2=0.0),

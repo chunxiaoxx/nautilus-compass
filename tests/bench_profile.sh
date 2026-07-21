@@ -94,8 +94,14 @@ python tests/eval_recall.py --mode all --signal-policy guarded --out "$GUARDED_R
 GUARDED_HINT_ARTIFACT="$PROFILE_DIR/eval_recall_guarded_tuning_hint.json"
 python ops/eval_recall_tuning_hint.py --artifact "$GUARDED_RECALL_ARTIFACT" --out "$GUARDED_HINT_ARTIFACT" > "$PROFILE_DIR/eval_recall_guarded_tuning_hint.log" 2>&1
 
+ROUTED_RECALL_ARTIFACT="$PROFILE_DIR/eval_recall_routed.json"
+python tests/eval_recall.py --mode all --signal-policy routed --out "$ROUTED_RECALL_ARTIFACT" > "$PROFILE_DIR/eval_recall_routed.log" 2>&1
+
+ROUTED_HINT_ARTIFACT="$PROFILE_DIR/eval_recall_routed_tuning_hint.json"
+python ops/eval_recall_tuning_hint.py --artifact "$ROUTED_RECALL_ARTIFACT" --out "$ROUTED_HINT_ARTIFACT" > "$PROFILE_DIR/eval_recall_routed_tuning_hint.log" 2>&1
+
 POLICY_GATE_ARTIFACT="$PROFILE_DIR/recall_policy_gate.json"
-python ops/recall_policy_gate.py --raw "$RECALL_ARTIFACT" --guarded "$GUARDED_RECALL_ARTIFACT" --out "$POLICY_GATE_ARTIFACT" > "$PROFILE_DIR/recall_policy_gate.log" 2>&1
+python ops/recall_policy_gate.py --raw "$RECALL_ARTIFACT" --guarded "$GUARDED_RECALL_ARTIFACT" --routed "$ROUTED_RECALL_ARTIFACT" --out "$POLICY_GATE_ARTIFACT" > "$PROFILE_DIR/recall_policy_gate.log" 2>&1
 
 POLICY_PREFLIGHT_ARTIFACT="$PROFILE_DIR/recall_policy_preflight.json"
 POLICY_RECOMMENDED_DEFAULT="$(python - <<'PY' "$POLICY_GATE_ARTIFACT"
@@ -105,7 +111,7 @@ PY
 )"
 python ops/recall_policy_preflight.py --policy-gate "$POLICY_GATE_ARTIFACT" --target-policy "$POLICY_RECOMMENDED_DEFAULT" --out "$POLICY_PREFLIGHT_ARTIFACT" > "$PROFILE_DIR/recall_policy_preflight.log" 2>&1
 
-python - <<'PY' "$RECALL_ARTIFACT" "$TUNING_ARTIFACT" "$PROFILE_HINT_PATH" "$GUARDED_RECALL_ARTIFACT" "$GUARDED_HINT_ARTIFACT" "$POLICY_GATE_ARTIFACT" "$POLICY_PREFLIGHT_ARTIFACT" "$MANIFEST_PATH" "$PROFILE_DIR/summary.json"
+python - <<'PY' "$RECALL_ARTIFACT" "$TUNING_ARTIFACT" "$PROFILE_HINT_PATH" "$GUARDED_RECALL_ARTIFACT" "$GUARDED_HINT_ARTIFACT" "$ROUTED_RECALL_ARTIFACT" "$ROUTED_HINT_ARTIFACT" "$POLICY_GATE_ARTIFACT" "$POLICY_PREFLIGHT_ARTIFACT" "$MANIFEST_PATH" "$PROFILE_DIR/summary.json"
 import json
 import sys
 from pathlib import Path
@@ -116,6 +122,8 @@ from pathlib import Path
     hint_artifact,
     guarded_recall_artifact,
     guarded_hint_artifact,
+    routed_recall_artifact,
+    routed_hint_artifact,
     policy_gate_artifact,
     policy_preflight_artifact,
     manifest_path,
@@ -125,6 +133,7 @@ from pathlib import Path
 rec = json.loads(recall_artifact.read_text(encoding="utf-8"))
 hint = json.loads(hint_artifact.read_text(encoding="utf-8"))
 guarded = json.loads(guarded_recall_artifact.read_text(encoding="utf-8"))
+routed = json.loads(routed_recall_artifact.read_text(encoding="utf-8"))
 policy_gate = json.loads(policy_gate_artifact.read_text(encoding="utf-8"))
 policy_preflight = json.loads(policy_preflight_artifact.read_text(encoding="utf-8"))
 manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -137,7 +146,9 @@ summary = {
     "result_summary": rec.get("result_summary", {}),
     "raw_recall_artifact": str(recall_artifact),
     "guarded_recall_artifact": str(guarded_recall_artifact),
+    "routed_recall_artifact": str(routed_recall_artifact),
     "guarded_result_summary": guarded.get("result_summary", {}),
+    "routed_result_summary": routed.get("result_summary", {}),
     "recommendations_count": len(rec.get("recommendations", [])),
     "tuning_risk": hint.get("risk"),
     "tuning_next_actions": len(hint.get("next_actions", [])),

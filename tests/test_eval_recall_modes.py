@@ -98,3 +98,14 @@ def test_guarded_policy_skips_sparse_tier_boost():
     entries = [(0.50, _e(0, tier="working")), (0.50, _e(1, tier="procedural"))]
     assert _order(rerank("tier", entries))[0] == 1
     assert _order(rerank("tier", entries, signal_policy="guarded", min_signal_count=3)) == [0, 1]
+
+
+def test_routed_policy_applies_poi_only_for_lifecycle_query():
+    entries = [
+        (0.50, _e(0, impact=10.0)),
+        (0.55, _e(1, impact=0.0)),
+        (0.10, _e(2, impact=1.0)),
+        (0.09, _e(3, impact=1.0)),
+    ]
+    assert _order(rerank("poi", entries, signal_policy="routed", query_text="recall policy gate"))[0] == 0
+    assert _order(rerank("poi", entries, signal_policy="routed", query_text="ordinary question")) == [1, 0, 2, 3]

@@ -1,9 +1,10 @@
 {
   "version": "1.0",
-  "generated_at": "2026-07-21T12:11:36Z",
+  "generated_at": "2026-07-21T12:32:27Z",
   "gate": "block_all_lifecycle_promotion",
   "promotion": {
     "raw_lifecycle_allowed": false,
+    "routed_lifecycle_allowed": false,
     "recommended_default": "flat",
     "positive_delta_min": 0.005,
     "negative_delta_min": -0.0005
@@ -15,7 +16,8 @@
   },
   "policies": {
     "raw": "raw",
-    "guarded": "guarded"
+    "guarded": "guarded",
+    "routed": "routed"
   },
   "deltas": {
     "raw": {
@@ -27,6 +29,11 @@
       "poi": -0.0006684491978610207,
       "tier": -0.0007909982174688635,
       "gemini": -0.0007909982174688635
+    },
+    "routed": {
+      "poi": 0.0,
+      "tier": 0.0,
+      "gemini": 0.0
     }
   },
   "evidence": {
@@ -58,11 +65,13 @@
         "delta_mrr_vs_flat": -0.0007909982174688635
       }
     ],
-    "raw_best_delta_mrr_vs_flat": -0.0006684491978610207
+    "routed_negative_modes": [],
+    "raw_best_delta_mrr_vs_flat": -0.0006684491978610207,
+    "routed_best_delta_mrr_vs_flat": 0.0
   },
   "source": {
-    "profile_dir": ".cache/bench-profile-20260721-080758-(default in daemon.py)",
-    "commit": "fb1321a",
-    "generated_by": "C5 dev outcome capsules + tests/bench_profile.ps1"
+    "profile_dir": ".cache/bench-profile-20260721-082906-(default in daemon.py)",
+    "commit": "pending-c6",
+    "generated_by": "C6 routed policy + tests/bench_profile.ps1"
   }
 }

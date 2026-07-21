@@ -43,30 +43,43 @@ def build_policy_gate(
     *,
     raw: dict,
     guarded: dict,
+    routed: dict | None = None,
     negative_delta_min: float = NEGATIVE_DELTA_MIN,
     positive_delta_min: float = POSITIVE_DELTA_MIN,
 ) -> dict:
     raw_deltas = _collect_deltas(raw)
     guarded_deltas = _collect_deltas(guarded)
+    routed_deltas = _collect_deltas(routed) if routed else {}
     raw_negative = _negative_modes(raw_deltas, negative_delta_min)
     guarded_negative = _negative_modes(guarded_deltas, negative_delta_min)
+    routed_negative = _negative_modes(routed_deltas, negative_delta_min) if routed else []
     raw_best = max(raw_deltas.values()) if raw_deltas else 0.0
+    routed_best = max(routed_deltas.values()) if routed_deltas else 0.0
 
-    if guarded_negative:
+    if routed and not routed_negative and routed_best >= positive_delta_min:
+        gate = "routed_lifecycle_candidate"
+        raw_allowed = False
+        routed_allowed = True
+        recommended = "routed"
+    elif guarded_negative:
         gate = "block_all_lifecycle_promotion"
         raw_allowed = False
+        routed_allowed = False
         recommended = "flat"
     elif raw_negative:
         gate = "block_raw_lifecycle_promotion"
         raw_allowed = False
+        routed_allowed = False
         recommended = "guarded"
     elif raw_best >= positive_delta_min:
         gate = "raw_lifecycle_candidate"
         raw_allowed = True
+        routed_allowed = False
         recommended = "raw"
     else:
         gate = "no_measurable_lifecycle_uplift"
         raw_allowed = False
+        routed_allowed = False
         recommended = "guarded"
 
     return {
@@ -75,6 +88,7 @@ def build_policy_gate(
         "gate": gate,
         "promotion": {
             "raw_lifecycle_allowed": raw_allowed,
+            "routed_lifecycle_allowed": routed_allowed,
             "recommended_default": recommended,
             "positive_delta_min": positive_delta_min,
             "negative_delta_min": negative_delta_min,
@@ -87,15 +101,19 @@ def build_policy_gate(
         "policies": {
             "raw": raw.get("meta", {}).get("signal_policy", "raw"),
             "guarded": guarded.get("meta", {}).get("signal_policy", "guarded"),
+            "routed": routed.get("meta", {}).get("signal_policy", "routed") if routed else None,
         },
         "deltas": {
             "raw": raw_deltas,
             "guarded": guarded_deltas,
+            "routed": routed_deltas,
         },
         "evidence": {
             "raw_negative_modes": raw_negative,
             "guarded_negative_modes": guarded_negative,
+            "routed_negative_modes": routed_negative,
             "raw_best_delta_mrr_vs_flat": raw_best,
+            "routed_best_delta_mrr_vs_flat": routed_best if routed else None,
         },
     }
 
@@ -104,6 +122,7 @@ def parse_args() -> argparse.Namespace:
     ap = argparse.ArgumentParser()
     ap.add_argument("--raw", required=True, help="raw eval_recall artifact")
     ap.add_argument("--guarded", required=True, help="guarded eval_recall artifact")
+    ap.add_argument("--routed", help="optional routed eval_recall artifact")
     ap.add_argument("--out", help="optional output JSON path")
     ap.add_argument("--negative-delta-min", type=float, default=NEGATIVE_DELTA_MIN)
     ap.add_argument("--positive-delta-min", type=float, default=POSITIVE_DELTA_MIN)
@@ -115,6 +134,7 @@ def main() -> int:
     gate = build_policy_gate(
         raw=read_json(Path(args.raw)),
         guarded=read_json(Path(args.guarded)),
+        routed=read_json(Path(args.routed)) if args.routed else None,
         negative_delta_min=args.negative_delta_min,
         positive_delta_min=args.positive_delta_min,
     )
