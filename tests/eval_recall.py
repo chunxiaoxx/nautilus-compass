@@ -46,16 +46,53 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 PROJECT_MEM = Path.home() / ".claude/projects/C--Users-chunx/memory"
 
 MODES = ("flat", "poi", "tier", "gemini")
+SIGNAL_POLICIES = ("raw", "guarded")
 OUT_VERSION = "1.0"
 MAX_FAILED_TO_KEEP = 20
 MRR_DELTA_MIN = 0.005
 MRR_NEGATIVE_DELTA_MIN = -0.0005
+DEFAULT_MIN_SIGNAL_COUNT = 3
+DEFAULT_MIN_SIGNAL_FRACTION = 0.02
 
 
 # ---------------------------------------------------------------------------
 # Pure re-rank (testable without embedder / disk)
 # ---------------------------------------------------------------------------
-def rerank(mode: str, entries: list) -> list:
+def signal_support(entries: list) -> dict:
+    """Count lifecycle signals present in a candidate set."""
+    n = len(entries)
+    n_impact = 0
+    n_tier_nonworking = 0
+    for _, entry in entries:
+        if not isinstance(entry, dict):
+            continue
+        if entry.get("impact", 0.0) != 0.0:
+            n_impact += 1
+        if entry.get("tier", "working") != "working":
+            n_tier_nonworking += 1
+    return {
+        "n": n,
+        "n_impact": n_impact,
+        "n_tier_nonworking": n_tier_nonworking,
+        "impact_fraction": (n_impact / n) if n else 0.0,
+        "tier_nonworking_fraction": (n_tier_nonworking / n) if n else 0.0,
+    }
+
+
+def _has_signal_support(count: int, total: int, min_count: int, min_fraction: float) -> bool:
+    if total <= 0:
+        return False
+    return count >= min_count and (count / total) >= min_fraction
+
+
+def rerank(
+    mode: str,
+    entries: list,
+    *,
+    signal_policy: str = "raw",
+    min_signal_count: int = DEFAULT_MIN_SIGNAL_COUNT,
+    min_signal_fraction: float = DEFAULT_MIN_SIGNAL_FRACTION,
+) -> list:
     """Re-rank candidate list per benchmark mode.
 
     Args:
@@ -72,18 +109,35 @@ def rerank(mode: str, entries: list) -> list:
     """
     if mode not in MODES:
         raise ValueError(f"unknown mode: {mode}")
+    if signal_policy not in SIGNAL_POLICIES:
+        raise ValueError(f"unknown signal_policy: {signal_policy}")
     if mode == "flat":
         return sorted(entries, key=lambda x: -x[0])
+
+    support = signal_support(entries)
+    use_poi = signal_policy == "raw" or _has_signal_support(
+        support["n_impact"],
+        support["n"],
+        min_signal_count,
+        min_signal_fraction,
+    )
+    use_tier = signal_policy == "raw" or _has_signal_support(
+        support["n_tier_nonworking"],
+        support["n"],
+        min_signal_count,
+        min_signal_fraction,
+    )
 
     from recall_pkg.poi_weighting import apply_poi_boost_value
 
     boosted = []
     for score, entry in entries:
         impact = entry.get("impact", 0.0) if isinstance(entry, dict) else 0.0
-        boosted.append((apply_poi_boost_value(score, impact), entry))
+        rerank_score = apply_poi_boost_value(score, impact) if use_poi else score
+        boosted.append((rerank_score, entry))
     boosted.sort(key=lambda x: -x[0])
 
-    if mode in ("tier", "gemini"):
+    if mode in ("tier", "gemini") and use_tier:
         from recall import apply_tier_weight
         boosted = apply_tier_weight(boosted)
 
@@ -149,7 +203,17 @@ def load_memories():
 # ---------------------------------------------------------------------------
 # Evaluation
 # ---------------------------------------------------------------------------
-def evaluate(mems, body_emb, query_emb, mode, cosine):
+def evaluate(
+    mems,
+    body_emb,
+    query_emb,
+    mode,
+    cosine,
+    *,
+    signal_policy="raw",
+    min_signal_count=DEFAULT_MIN_SIGNAL_COUNT,
+    min_signal_fraction=DEFAULT_MIN_SIGNAL_FRACTION,
+):
     """Leave-one-out retrieval metrics for one mode. Returns dict."""
     n = len(mems)
     if n == 0:
@@ -174,7 +238,13 @@ def evaluate(mems, body_emb, query_emb, mode, cosine):
             (cosine(q, body_emb[j]), {"idx": j, "impact": mems[j]["impact"], "tier": mems[j]["tier"]})
             for j in range(n)
         ]
-        ranked = rerank(mode, entries)
+        ranked = rerank(
+            mode,
+            entries,
+            signal_policy=signal_policy,
+            min_signal_count=min_signal_count,
+            min_signal_fraction=min_signal_fraction,
+        )
         ranks = [e["idx"] for _, e in ranked]
         rank_of_truth = ranks.index(i) + 1
         rrs.append(1.0 / rank_of_truth)
@@ -198,7 +268,16 @@ def evaluate(mems, body_emb, query_emb, mode, cosine):
     }
 
 
-def build_recommendations(mode_results, n_memories: int, n_impact: int, n_nonworking: int):
+def build_recommendations(
+    mode_results,
+    n_memories: int,
+    n_impact: int,
+    n_nonworking: int,
+    *,
+    signal_policy: str = "raw",
+    min_signal_count: int = DEFAULT_MIN_SIGNAL_COUNT,
+    min_signal_fraction: float = DEFAULT_MIN_SIGNAL_FRACTION,
+):
     """Turn eval outputs into next-step suggestions for the next tuning loop."""
     recs = []
 
@@ -235,6 +314,46 @@ def build_recommendations(mode_results, n_memories: int, n_impact: int, n_nonwor
             ),
             "evidence": {"tier_nonworking": n_nonworking, "total_memories": n_memories},
         })
+
+    if signal_policy == "guarded" and n_memories:
+        poi_supported = _has_signal_support(
+            n_impact,
+            n_memories,
+            min_signal_count,
+            min_signal_fraction,
+        )
+        tier_supported = _has_signal_support(
+            n_nonworking,
+            n_memories,
+            min_signal_count,
+            min_signal_fraction,
+        )
+        if n_impact and not poi_supported:
+            recs.append({
+                "priority": "medium",
+                "action": "collect_poi_support_before_enabling_weight",
+                "reason": "Guarded policy skipped PoI weighting because cumulative_impact signal is present but too sparse.",
+                "next_step": "Ingest more execution-outcome capsules, then rerun with paired raw-vs-guarded ablation.",
+                "evidence": {
+                    "cumulative_impact_nonzero": n_impact,
+                    "total_memories": n_memories,
+                    "min_signal_count": min_signal_count,
+                    "min_signal_fraction": min_signal_fraction,
+                },
+            })
+        if n_nonworking and not tier_supported:
+            recs.append({
+                "priority": "medium",
+                "action": "collect_tier_support_before_enabling_weight",
+                "reason": "Guarded policy skipped tier weighting because promoted-tier signal is present but too sparse.",
+                "next_step": "Promote or reinforce more memory capsules only from validated outcomes, then rerun recall eval.",
+                "evidence": {
+                    "tier_nonworking": n_nonworking,
+                    "total_memories": n_memories,
+                    "min_signal_count": min_signal_count,
+                    "min_signal_fraction": min_signal_fraction,
+                },
+            })
 
     flat = next((r for r in mode_results if r["mode"] == "flat"), None)
     d1 = next((r for r in mode_results if r["mode"] == "poi"), None)
@@ -327,6 +446,9 @@ def add_delta_vs_flat(results):
 def build_recall_payload(args, mems, results, n_impact, n_nonworking, out_path, embedder=None, command=None):
     """Build JSON payload for downstream tuning scripts."""
     mode_order = [r["mode"] for r in results]
+    signal_policy = getattr(args, "signal_policy", "raw")
+    min_signal_count = getattr(args, "min_signal_count", DEFAULT_MIN_SIGNAL_COUNT)
+    min_signal_fraction = getattr(args, "min_signal_fraction", DEFAULT_MIN_SIGNAL_FRACTION)
     return {
         "version": OUT_VERSION,
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
@@ -337,6 +459,9 @@ def build_recall_payload(args, mems, results, n_impact, n_nonworking, out_path, 
             "n_memories": len(mems),
             "n_impact": n_impact,
             "n_tier_nonworking": n_nonworking,
+            "signal_policy": signal_policy,
+            "min_signal_count": min_signal_count,
+            "min_signal_fraction": min_signal_fraction,
             "embedder": embedder,
             "command": command,
             "out_file": str(out_path) if out_path else None,
@@ -356,7 +481,15 @@ def build_recall_payload(args, mems, results, n_impact, n_nonworking, out_path, 
             }
             for r in results
         },
-        "recommendations": build_recommendations(results, len(mems), n_impact, n_nonworking),
+        "recommendations": build_recommendations(
+            results,
+            len(mems),
+            n_impact,
+            n_nonworking,
+            signal_policy=signal_policy,
+            min_signal_count=min_signal_count,
+            min_signal_fraction=min_signal_fraction,
+        ),
     }
 
 
@@ -408,6 +541,14 @@ def main():
         help="recall mode (flat/poi/tier/gemini) or 'all' for delta table",
     )
     ap.add_argument("--out", help="optional JSON artifact path (default .cache/eval_recall_<timestamp>.json)")
+    ap.add_argument(
+        "--signal-policy",
+        default="raw",
+        choices=list(SIGNAL_POLICIES),
+        help="raw applies lifecycle signals unconditionally; guarded skips sparse signals",
+    )
+    ap.add_argument("--min-signal-count", type=int, default=DEFAULT_MIN_SIGNAL_COUNT)
+    ap.add_argument("--min-signal-fraction", type=float, default=DEFAULT_MIN_SIGNAL_FRACTION)
     args = ap.parse_args()
 
     import daemon as zmd  # local import · heavy embedder lib
@@ -448,7 +589,16 @@ def main():
                   f"({time.time()-t0:.1f}s)" + ("" if n_changed else " → Gemini off · D3 == D2"))
         else:
             qe = query_emb_flat
-        results.append(evaluate(mems, body_emb, qe, mode, zmd.cosine))
+        results.append(evaluate(
+            mems,
+            body_emb,
+            qe,
+            mode,
+            zmd.cosine,
+            signal_policy=args.signal_policy,
+            min_signal_count=args.min_signal_count,
+            min_signal_fraction=args.min_signal_fraction,
+        ))
 
     add_delta_vs_flat(results)
 

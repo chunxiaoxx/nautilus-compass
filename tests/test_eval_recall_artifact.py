@@ -47,6 +47,9 @@ def test_build_recall_payload_shape_and_truncation():
     assert payload["meta"]["payload_version"] == "1.0"
     assert payload["meta"]["n_memories"] == len(mems)
     assert payload["meta"]["n_tier_nonworking"] == 0
+    assert payload["meta"]["signal_policy"] == "raw"
+    assert payload["meta"]["min_signal_count"] == 3
+    assert payload["meta"]["min_signal_fraction"] == 0.02
     assert payload["meta"]["embedder"] == "mock-embedder"
     assert payload["meta"]["out_file"] == str(out_path)
     assert payload["meta"]["command"] == "python tests/eval_recall.py --mode all"
