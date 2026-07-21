@@ -85,6 +85,30 @@ full profile 用于长跑分, 不作为每次提交的阻塞项。
 负 delta 不再被泛化为“没测出”, 而是输出 `retune_lifecycle_weight`。下一步应做
 PoI/tier 权重门控与 paired ablation, 而不是继续增加 capsule 数量。
 
+## 📊 Route C1 sparse-signal gate(2026-07-21 · eval output -> tuning input)
+
+动作: 在 `tests/eval_recall.py` 增加 `--signal-policy guarded`。当
+`cumulative_impact` 或 promoted-tier 信号低于最小支持量时, 评测主链不让该信号参与
+排序加权, 避免单个高层 capsule 把局部查询排序拉偏。默认策略仍为 `raw`, 便于做
+paired ablation。
+
+复测命令: `python tests/eval_recall.py --mode all --signal-policy guarded --out .cache/eval_recall_after_capsule_guarded.json`
+
+复测结果:
+- Corpus: `133` memories
+- Signal counts: `n_impact=2`, `n_tier_nonworking=1`
+- Guard threshold: `min_signal_count=3`, `min_signal_fraction=0.02`
+- flat MRR: `0.981`
+- poi/tier/gemini delta MRR: `+0.000`
+- tuning artifact: `.cache/eval_recall_after_capsule_guarded_tuning_hint.json`
+
+**判读**: C1 没有证明 lifecycle 已带来正增益; 它证明了负反馈能进入架构调优闭环。
+C0 的轻微负 delta 被门控消除, tuning hint 现在明确输出:
+`collect_poi_support_before_enabling_weight` 和
+`collect_tier_support_before_enabling_weight`。下一步不是把 guarded 当胜利,
+而是继续 dogfood 真实执行结果, 积累至少 3 条以上 impact/tier 支持信号后做
+raw-vs-guarded 配对复测。
+
 ## 纪律
 - 新功能 PR 前:跑 `admit_feature` 自检,空/含糊 claim 直接 defer。
 - ⚠️ 行:要么补可测下游价值,要么 defer(不因"已写了代码"就上线=沉没成本陷阱)。
