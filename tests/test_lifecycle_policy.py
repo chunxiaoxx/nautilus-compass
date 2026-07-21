@@ -15,12 +15,19 @@ def _hit(name: str, tier: str = "working") -> tuple:
 
 
 def test_default_recall_signal_policy_is_guarded():
-    assert DEFAULT_SIGNAL_POLICY == "guarded"
-    assert get_recall_signal_policy({}) == "guarded"
+    assert DEFAULT_SIGNAL_POLICY == "flat"
+    assert get_recall_signal_policy({}) == "flat"
 
 
 def test_invalid_policy_falls_back_to_guarded():
-    assert get_recall_signal_policy({"COMPASS_RECALL_SIGNAL_POLICY": "unsafe"}) == "guarded"
+    assert get_recall_signal_policy({"COMPASS_RECALL_SIGNAL_POLICY": "unsafe"}) == "flat"
+
+
+def test_flat_policy_disables_lifecycle_weights():
+    top = [_hit("a.md", tier="semantic"), _hit("b.md", tier="episodic"), _hit("c.md", tier="procedural")]
+    snapshot = {"proj/a.md": 1.0, "proj/b.md": 1.0, "proj/c.md": 1.0}
+    assert should_apply_poi_weight("flat", top, snapshot) is False
+    assert should_apply_tier_weight("flat", top) is False
 
 
 def test_raw_policy_applies_lifecycle_weights_without_support_gate():

@@ -1,8 +1,7 @@
 """Runtime policy for lifecycle recall signals.
 
-Default is guarded: PoI/tier signals must have enough support before they are
-allowed to affect ranking. Set COMPASS_RECALL_SIGNAL_POLICY=raw only when a
-fresh policy gate permits raw lifecycle promotion.
+Default is flat: PoI/tier signals are recorded but do not affect ranking until
+a fresh policy gate recommends guarded or raw.
 """
 from __future__ import annotations
 
@@ -14,8 +13,8 @@ try:
 except (ImportError, ValueError):
     from proof.poi_memory_key import memory_key_from_path  # type: ignore
 
-SIGNAL_POLICIES = ("raw", "guarded")
-DEFAULT_SIGNAL_POLICY = "guarded"
+SIGNAL_POLICIES = ("flat", "raw", "guarded")
+DEFAULT_SIGNAL_POLICY = "flat"
 DEFAULT_MIN_SIGNAL_COUNT = 3
 DEFAULT_MIN_SIGNAL_FRACTION = 0.02
 
@@ -68,6 +67,8 @@ def should_apply_poi_weight(
     min_signal_count: int = DEFAULT_MIN_SIGNAL_COUNT,
     min_signal_fraction: float = DEFAULT_MIN_SIGNAL_FRACTION,
 ) -> bool:
+    if policy == "flat":
+        return False
     if policy == "raw":
         return True
     count = count_poi_support(top_entries, snapshot)
@@ -81,6 +82,8 @@ def should_apply_tier_weight(
     min_signal_count: int = DEFAULT_MIN_SIGNAL_COUNT,
     min_signal_fraction: float = DEFAULT_MIN_SIGNAL_FRACTION,
 ) -> bool:
+    if policy == "flat":
+        return False
     if policy == "raw":
         return True
     count = count_tier_support(top_entries)

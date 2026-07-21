@@ -23,6 +23,20 @@ def _gate(raw_allowed: bool, recommended: str = "guarded") -> dict:
     }
 
 
+def _block_all_gate() -> dict:
+    return {
+        "gate": "block_all_lifecycle_promotion",
+        "promotion": {
+            "raw_lifecycle_allowed": False,
+            "recommended_default": "flat",
+        },
+        "deltas": {
+            "raw": {"poi": -0.001, "tier": -0.001, "gemini": -0.001},
+            "guarded": {"poi": -0.001, "tier": -0.001, "gemini": -0.001},
+        },
+    }
+
+
 def test_preflight_blocks_raw_default_when_policy_gate_disallows_raw():
     out = build_preflight(policy_gate=_gate(raw_allowed=False), target_policy="raw")
     assert out["status"] == "reject"
@@ -34,6 +48,19 @@ def test_preflight_allows_guarded_default_when_raw_is_blocked():
     out = build_preflight(policy_gate=_gate(raw_allowed=False), target_policy="guarded")
     assert out["status"] == "accept"
     assert out["target_policy"] == "guarded"
+
+
+def test_preflight_rejects_guarded_when_gate_recommends_flat():
+    out = build_preflight(policy_gate=_block_all_gate(), target_policy="guarded")
+    assert out["status"] == "reject"
+    assert out["reason"] == "target_policy_not_recommended_by_policy_gate"
+    assert out["recommended_default"] == "flat"
+
+
+def test_preflight_allows_flat_when_gate_recommends_flat():
+    out = build_preflight(policy_gate=_block_all_gate(), target_policy="flat")
+    assert out["status"] == "accept"
+    assert out["target_policy"] == "flat"
 
 
 def test_preflight_allows_raw_only_when_policy_gate_allows_raw():

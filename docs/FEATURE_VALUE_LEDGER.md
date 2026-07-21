@@ -182,6 +182,40 @@ raw 仍可作为诊断/候选评测模式存在, 但不能在当前证据下成�
 raw 或替换证据导致 raw 不被允许, 发布门会失败; 重型 benchmark 仍保留在本机
 profile, release 只消费其结论。
 
+## 📊 Route C5 dev outcome capsules(2026-07-21 · execution -> memory -> gate)
+
+动作: 新增 `ops/dev_outcome_to_memory_capsules.py`, 将已验证的 C2/C3/C4 开发结果写成
+3 条 execution-outcome memory capsules:
+- `session_dev_outcome_c2_715b00ead0.md`
+- `session_dev_outcome_c3_f05b28c234.md`
+- `session_dev_outcome_c4_0931dec504.md`
+
+写端支持量:
+- 新增 capsules: `3`
+- capsule impact support: `3`
+- capsule tier support: `3`
+- 全语料复测后: `n_memories=136`, `n_impact=5`, `n_tier_nonworking=4`
+
+复测命令:
+- `python ops\dev_outcome_to_memory_capsules.py --outcomes .cache\dev_outcomes_c5.json --write-default-memory`
+- `python tests\eval_recall.py --mode all --out .cache\eval_recall_after_c5_outcomes_raw.json`
+- `python tests\eval_recall.py --mode all --signal-policy guarded --out .cache\eval_recall_after_c5_outcomes_guarded.json`
+- `powershell -ExecutionPolicy Bypass -File tests\bench_profile.ps1 -Suite smoke -Python "C:\Users\chunx\AppData\Local\Programs\Python\Python313\python.exe"`
+
+关键结果:
+- Support threshold 已满足: `n_impact=5`, `n_tier_nonworking=4`
+- Raw delta: poi `-0.0006684491978610207`, tier/gemini `-0.0007909982174688635`
+- Guarded delta: 同 raw, 仍为负
+- Policy gate: `block_all_lifecycle_promotion`
+- Recommended default: `flat`
+- Profile preflight: `accept`, `target_policy=flat`
+- 最新 profile: `.cache/bench-profile-20260721-080758-(default in daemon.py)`
+
+**判读**: C5 证明“信号稀疏”不是唯一问题。即使支持量达到 guarded 门槛,
+当前 PoI/tier 排序权重仍会轻微伤害 leave-one-out recall。正确动作不是美化为
+guarded 成功, 而是把 runtime/release 默认退回 `flat`, 保留 raw/guarded 作为
+候选实验模式。下一步应做权重学习/按查询类型路由, 不能继续用固定全局 boost。
+
 ## 纪律
 - 新功能 PR 前:跑 `admit_feature` 自检,空/含糊 claim 直接 defer。
 - ⚠️ 行:要么补可测下游价值,要么 defer(不因"已写了代码"就上线=沉没成本陷阱)。

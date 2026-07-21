@@ -1142,8 +1142,8 @@ def render_v02_vector_mode(entries: list, query: str, cache: dict) -> None:
 
     # v2.0.0 · #1a · PoI ranking boost · re-rank top-K by each entry's
     # cumulative_impact frontmatter (positive → boost, negative → demote).
-    # v2.3 C3 default policy is guarded: sparse PoI signals do not affect rank.
-    # Set COMPASS_RECALL_SIGNAL_POLICY=raw only after policy-gate promotion.
+    # v2.3 C5 default policy is flat: lifecycle signals are recorded but do not
+    # affect rank until a fresh policy gate recommends guarded/raw.
     # Set COMPASS_NO_POI_BOOST=1 to opt out.
     if os.environ.get("COMPASS_NO_POI_BOOST") != "1":
         try:
@@ -1160,8 +1160,8 @@ def render_v02_vector_mode(entries: list, query: str, cache: dict) -> None:
     # v2.3.0 · Phase 1 Task 4 · tier-aware re-rank · among near-equal cosine
     # scores, prefer the more-consolidated (higher-tier) capsule. Ranking-only
     # (output scores unchanged) · tiny bonus never flips a real cosine gap ·
-    # v2.3 C3 default policy is guarded: sparse tier signals do not affect rank.
-    # Set COMPASS_RECALL_SIGNAL_POLICY=raw only after policy-gate promotion.
+    # v2.3 C5 default policy is flat: lifecycle signals are recorded but do not
+    # affect rank until a fresh policy gate recommends guarded/raw.
     # Set COMPASS_NO_TIER_WEIGHT=1 to opt out.
     if os.environ.get("COMPASS_NO_TIER_WEIGHT") != "1":
         try:

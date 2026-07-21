@@ -42,6 +42,18 @@ def test_blocks_raw_lifecycle_promotion_when_raw_has_negative_delta():
     assert any("poi" in item["mode"] for item in gate["evidence"]["raw_negative_modes"])
 
 
+def test_blocks_all_lifecycle_promotion_when_raw_and_guarded_are_negative():
+    gate = build_policy_gate(
+        raw=_artifact("raw", d1=-0.001, d2=-0.0008),
+        guarded=_artifact("guarded", d1=-0.001, d2=-0.0008),
+    )
+
+    assert gate["gate"] == "block_all_lifecycle_promotion"
+    assert gate["promotion"]["raw_lifecycle_allowed"] is False
+    assert gate["promotion"]["recommended_default"] == "flat"
+    assert gate["evidence"]["guarded_negative_modes"]
+
+
 def test_allows_raw_candidate_only_with_positive_supported_uplift():
     gate = build_policy_gate(
         raw=_artifact("raw", d1=0.006, d2=0.007),

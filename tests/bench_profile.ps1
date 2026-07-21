@@ -90,16 +90,17 @@ Invoke-ProfilePythonLog -PythonBin $manifest.python `
     -Log (Join-Path $ProfileDir "recall_policy_gate.log") `
     -FailureMessage "recall policy gate generation failed"
 
+$policyGate = Get-Content -Path $policyGatePath -Raw | ConvertFrom-Json
+$policyRecommended = $policyGate.promotion.recommended_default
 $policyPreflightPath = Join-Path $ProfileDir "recall_policy_preflight.json"
 Invoke-ProfilePythonLog -PythonBin $manifest.python `
-    -ScriptArgs @("ops/recall_policy_preflight.py", "--policy-gate", $policyGatePath, "--target-policy", "guarded", "--out", $policyPreflightPath) `
+    -ScriptArgs @("ops/recall_policy_preflight.py", "--policy-gate", $policyGatePath, "--target-policy", $policyRecommended, "--out", $policyPreflightPath) `
     -Log (Join-Path $ProfileDir "recall_policy_preflight.log") `
     -FailureMessage "recall policy preflight failed"
 
 $recall = Get-Content -Path $recallStep.artifact -Raw | ConvertFrom-Json
 $guarded = Get-Content -Path $guardedRecall -Raw | ConvertFrom-Json
 $hint = Get-Content -Path $profileHint -Raw | ConvertFrom-Json
-$policyGate = Get-Content -Path $policyGatePath -Raw | ConvertFrom-Json
 $policyPreflight = Get-Content -Path $policyPreflightPath -Raw | ConvertFrom-Json
 $summary = [ordered]@{
     run_at = $manifest.run_at

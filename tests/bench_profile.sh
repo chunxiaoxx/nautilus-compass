@@ -98,7 +98,12 @@ POLICY_GATE_ARTIFACT="$PROFILE_DIR/recall_policy_gate.json"
 python ops/recall_policy_gate.py --raw "$RECALL_ARTIFACT" --guarded "$GUARDED_RECALL_ARTIFACT" --out "$POLICY_GATE_ARTIFACT" > "$PROFILE_DIR/recall_policy_gate.log" 2>&1
 
 POLICY_PREFLIGHT_ARTIFACT="$PROFILE_DIR/recall_policy_preflight.json"
-python ops/recall_policy_preflight.py --policy-gate "$POLICY_GATE_ARTIFACT" --target-policy guarded --out "$POLICY_PREFLIGHT_ARTIFACT" > "$PROFILE_DIR/recall_policy_preflight.log" 2>&1
+POLICY_RECOMMENDED_DEFAULT="$(python - <<'PY' "$POLICY_GATE_ARTIFACT"
+import json, sys
+print(json.load(open(sys.argv[1], encoding="utf-8")).get("promotion", {}).get("recommended_default", "flat"))
+PY
+)"
+python ops/recall_policy_preflight.py --policy-gate "$POLICY_GATE_ARTIFACT" --target-policy "$POLICY_RECOMMENDED_DEFAULT" --out "$POLICY_PREFLIGHT_ARTIFACT" > "$PROFILE_DIR/recall_policy_preflight.log" 2>&1
 
 python - <<'PY' "$RECALL_ARTIFACT" "$TUNING_ARTIFACT" "$PROFILE_HINT_PATH" "$GUARDED_RECALL_ARTIFACT" "$GUARDED_HINT_ARTIFACT" "$POLICY_GATE_ARTIFACT" "$POLICY_PREFLIGHT_ARTIFACT" "$MANIFEST_PATH" "$PROFILE_DIR/summary.json"
 import json
