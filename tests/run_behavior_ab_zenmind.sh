@@ -14,7 +14,10 @@ set -e
 N="${1:-10}"
 RUN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPT="$RUN_DIR/../scripts/bootstrap_compass_env.sh"
-PLUGIN="$HOME/.claude/plugins/zenmind-mem"
+PLUGIN="${PLUGIN:-$HOME/.claude/plugins/nautilus-compass}"
+if [ ! -d "$PLUGIN" ]; then
+  PLUGIN="$RUN_DIR/../"
+fi
 # .env (production) has real MiniMax key (len=125) ·
 # .env.development has stale 20-char placeholders, don't use.
 ZENMIND_ENV="$HOME/quantum-buddha-project/.env"
@@ -26,7 +29,7 @@ if [ ! -f "$ZENMIND_ENV" ]; then
 fi
 
 # Use Python to parse .env safely · never echo to stdout · pass via env to subprocess
-bash "$SCRIPT"
+source "$SCRIPT"
 RUN_PYTHON="$PYTHON"
 
 PYTHONIOENCODING=utf-8 PYTHONUTF8=1 "$RUN_PYTHON" -c "

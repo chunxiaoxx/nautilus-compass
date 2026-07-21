@@ -4,13 +4,17 @@
 # n=20 chosen as balance between paired-t-test power and 6-subject CPU budget
 
 # NOTE: NOT using set -e · per-subject failures must not kill remaining subjects
-PLUGIN=~/.claude/plugins/nautilus-compass
+PLUGIN="${PLUGIN:-$HOME/.claude/plugins/nautilus-compass}"
+if [ ! -d "$PLUGIN" ]; then
+  # allow running from local repo when plugin checkout is absent
+  PLUGIN="$(cd "$(dirname "$0")/.."; pwd)"
+fi
 RESULTS=$PLUGIN/paper/results
 mkdir -p "$RESULTS"
 LOG_DIR=/c/tmp/nc-eval/ab
 mkdir -p "$LOG_DIR"
 
-bash "$PLUGIN/scripts/bootstrap_compass_env.sh"
+source "$PLUGIN/scripts/bootstrap_compass_env.sh"
 RUN_PYTHON="${PYTHON}"
 
 # === Keys ===
