@@ -80,3 +80,18 @@ def test_build_recommendations_nodata_and_low_delta():
     assert "bootstrap_poi_signals" in actions
     assert "bootstrap_tier_signals" in actions
     assert "freeze_or_rewrite" in actions
+
+
+def test_build_recommendations_negative_delta_flags_retune():
+    mode_results = [
+        {"mode": "flat", "MRR": 0.981, "delta_vs_flat": None},
+        {"mode": "poi", "MRR": 0.9803, "delta_vs_flat": {"MRR": -0.0007}},
+        {"mode": "tier", "MRR": 0.9802, "delta_vs_flat": {"MRR": -0.0008}},
+    ]
+
+    recs = build_recommendations(mode_results, n_memories=133, n_impact=2, n_nonworking=1)
+    actions = {r["action"] for r in recs}
+
+    assert "retune_lifecycle_weight" in actions
+    retune = [r for r in recs if r["action"] == "retune_lifecycle_weight"]
+    assert all(r["priority"] == "medium" for r in retune)

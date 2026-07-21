@@ -49,6 +49,7 @@ MODES = ("flat", "poi", "tier", "gemini")
 OUT_VERSION = "1.0"
 MAX_FAILED_TO_KEEP = 20
 MRR_DELTA_MIN = 0.005
+MRR_NEGATIVE_DELTA_MIN = -0.0005
 
 
 # ---------------------------------------------------------------------------
@@ -240,22 +241,41 @@ def build_recommendations(mode_results, n_memories: int, n_impact: int, n_nonwor
     d2 = next((r for r in mode_results if r["mode"] == "tier"), None)
     d3 = next((r for r in mode_results if r["mode"] == "gemini"), None)
 
-    if d1 and flat and d1.get("delta_vs_flat", {}).get("MRR", 0.0) < MRR_DELTA_MIN:
+    d1_delta = d1.get("delta_vs_flat", {}).get("MRR", 0.0) if d1 and flat else None
+    d2_delta = d2.get("delta_vs_flat", {}).get("MRR", 0.0) if d2 and flat else None
+
+    if d1_delta is not None and d1_delta < MRR_NEGATIVE_DELTA_MIN:
+        recs.append({
+            "priority": "medium",
+            "action": "retune_lifecycle_weight",
+            "reason": "D1(MRR delta) is negative after signal injection; PoI weight may be over-applied or too sparse.",
+            "next_step": "Run paired ablation and reduce/gate PoI boost until positive on held-out smoke corpus.",
+            "evidence": {"d1_delta_mrr": d1_delta},
+        })
+    elif d1_delta is not None and d1_delta < MRR_DELTA_MIN:
         recs.append({
             "priority": "low",
             "action": "freeze_or_rewrite",
             "reason": "D1(MRR delta) < +0.005; PoI change is not measurable on this corpus.",
             "next_step": "Prefer external signal experiments for D1 before changing default deployment flags.",
-            "evidence": {"d1_delta_mrr": d1["delta_vs_flat"]["MRR"]},
+            "evidence": {"d1_delta_mrr": d1_delta},
         })
 
-    if d2 and flat and d2.get("delta_vs_flat", {}).get("MRR", 0.0) < MRR_DELTA_MIN:
+    if d2_delta is not None and d2_delta < MRR_NEGATIVE_DELTA_MIN:
+        recs.append({
+            "priority": "medium",
+            "action": "retune_lifecycle_weight",
+            "reason": "D2(MRR delta) is negative after tier signal injection; tier bonus may be too blunt for sparse signals.",
+            "next_step": "Gate tier weighting behind minimum support or reduce additive bonus before default use.",
+            "evidence": {"d2_delta_mrr": d2_delta},
+        })
+    elif d2_delta is not None and d2_delta < MRR_DELTA_MIN:
         recs.append({
             "priority": "low",
             "action": "freeze_or_rewrite",
             "reason": "D2(MRR delta) < +0.005; tier gain is not measurable on this corpus.",
             "next_step": "Keep tier weighting behind explicit flag until tier signal is sufficiently populated.",
-            "evidence": {"d2_delta_mrr": d2["delta_vs_flat"]["MRR"]},
+            "evidence": {"d2_delta_mrr": d2_delta},
         })
 
     if d3 and d3.get("delta_vs_flat", {}).get("MRR", 0.0) < MRR_DELTA_MIN:

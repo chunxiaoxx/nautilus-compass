@@ -59,6 +59,32 @@ full profile 用于长跑分, 不作为每次提交的阻塞项。
 和 PoI impact 信号稀疏(`n_impact=1`)。下一轮优化优先级应是写端信号和 tier 晋升,
 不是继续堆召回包装。
 
+## 📊 Route C0 dogfood loop(2026-07-21 · eval output -> memory input)
+
+动作: `ops/eval_artifact_to_memory_capsule.py` 将 Route A smoke artifact 写回
+`~/.claude/projects/C--Users-chunx/memory`，生成可召回 capsule:
+`session_eval_capsule_a1de8859df15_route_a_benchmark.md`。
+
+写端信号:
+- `tier: semantic`
+- `cumulative_impact: 1.0`
+- `impact_event_count: 1`
+
+复测命令: `python tests/eval_recall.py --mode all --out .cache/eval_recall_after_capsule_v2.json`
+
+复测结果:
+- Corpus: `133` memories
+- Signal counts: `n_impact=2`, `n_tier_nonworking=1`
+- flat MRR: `0.981`
+- poi delta MRR: `-0.0006265664160400863`
+- tier/gemini delta MRR: `-0.0006835269993165083`
+- tuning artifact: `.cache/eval_recall_after_capsule_tuning_hint_v2.json`
+
+**判读**: 闭环已从报告进入写端, 差异化层第一次产生可测信号; 但单个
+高层 benchmark capsule 对 leave-one-out 排序是轻微负增益。代码解释逻辑已调整:
+负 delta 不再被泛化为“没测出”, 而是输出 `retune_lifecycle_weight`。下一步应做
+PoI/tier 权重门控与 paired ablation, 而不是继续增加 capsule 数量。
+
 ## 纪律
 - 新功能 PR 前:跑 `admit_feature` 自检,空/含糊 claim 直接 defer。
 - ⚠️ 行:要么补可测下游价值,要么 defer(不因"已写了代码"就上线=沉没成本陷阱)。
