@@ -97,7 +97,10 @@ python ops/eval_recall_tuning_hint.py --artifact "$GUARDED_RECALL_ARTIFACT" --ou
 POLICY_GATE_ARTIFACT="$PROFILE_DIR/recall_policy_gate.json"
 python ops/recall_policy_gate.py --raw "$RECALL_ARTIFACT" --guarded "$GUARDED_RECALL_ARTIFACT" --out "$POLICY_GATE_ARTIFACT" > "$PROFILE_DIR/recall_policy_gate.log" 2>&1
 
-python - <<'PY' "$RECALL_ARTIFACT" "$TUNING_ARTIFACT" "$PROFILE_HINT_PATH" "$GUARDED_RECALL_ARTIFACT" "$GUARDED_HINT_ARTIFACT" "$POLICY_GATE_ARTIFACT" "$MANIFEST_PATH" "$PROFILE_DIR/summary.json"
+POLICY_PREFLIGHT_ARTIFACT="$PROFILE_DIR/recall_policy_preflight.json"
+python ops/recall_policy_preflight.py --policy-gate "$POLICY_GATE_ARTIFACT" --target-policy guarded --out "$POLICY_PREFLIGHT_ARTIFACT" > "$PROFILE_DIR/recall_policy_preflight.log" 2>&1
+
+python - <<'PY' "$RECALL_ARTIFACT" "$TUNING_ARTIFACT" "$PROFILE_HINT_PATH" "$GUARDED_RECALL_ARTIFACT" "$GUARDED_HINT_ARTIFACT" "$POLICY_GATE_ARTIFACT" "$POLICY_PREFLIGHT_ARTIFACT" "$MANIFEST_PATH" "$PROFILE_DIR/summary.json"
 import json
 import sys
 from pathlib import Path
@@ -109,6 +112,7 @@ from pathlib import Path
     guarded_recall_artifact,
     guarded_hint_artifact,
     policy_gate_artifact,
+    policy_preflight_artifact,
     manifest_path,
     summary_path,
 ) = map(Path, sys.argv[1:])
@@ -117,6 +121,7 @@ rec = json.loads(recall_artifact.read_text(encoding="utf-8"))
 hint = json.loads(hint_artifact.read_text(encoding="utf-8"))
 guarded = json.loads(guarded_recall_artifact.read_text(encoding="utf-8"))
 policy_gate = json.loads(policy_gate_artifact.read_text(encoding="utf-8"))
+policy_preflight = json.loads(policy_preflight_artifact.read_text(encoding="utf-8"))
 manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
 
 summary = {
@@ -135,6 +140,9 @@ summary = {
     "policy_gate": policy_gate.get("gate"),
     "policy_recommended_default": policy_gate.get("promotion", {}).get("recommended_default"),
     "raw_lifecycle_allowed": policy_gate.get("promotion", {}).get("raw_lifecycle_allowed"),
+    "policy_preflight_artifact": str(policy_preflight_artifact),
+    "policy_preflight": policy_preflight.get("status"),
+    "policy_preflight_target": policy_preflight.get("target_policy"),
 }
 summary_path.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
 print("summary_written", summary_path)

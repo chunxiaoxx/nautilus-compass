@@ -132,6 +132,31 @@ lifecycle 成为默认策略。
 guarded 是安全默认; 只有当后续真实执行胶囊带来 ≥+0.005 MRR uplift 且无负 delta,
 raw lifecycle 才能进入默认候选。
 
+## 📊 Route C3 runtime/default preflight(2026-07-21 · gate -> default)
+
+动作: 新增 `recall_pkg/lifecycle_policy.py` 和 `ops/recall_policy_preflight.py`。
+runtime recall 默认策略从 raw 改为 `guarded`; `COMPASS_RECALL_SIGNAL_POLICY=raw`
+只作为显式候选开关, 且应先通过 `recall_policy_preflight.py`。`tests/bench_profile.*`
+现在在 policy gate 后追加生成 `recall_policy_preflight.json`。
+
+复测命令:
+- Raw 拒绝: `python ops\recall_policy_preflight.py --policy-gate ".cache\bench-profile-20260721-035112-(default in daemon.py)\recall_policy_gate.json" --target-policy raw`
+- Guarded 接受: `python ops\recall_policy_preflight.py --policy-gate ".cache\bench-profile-20260721-035112-(default in daemon.py)\recall_policy_gate.json" --target-policy guarded`
+- Profile: `powershell -ExecutionPolicy Bypass -File tests\bench_profile.ps1 -Suite smoke -Python "C:\Users\chunx\AppData\Local\Programs\Python\Python313\python.exe"`
+
+复测产物: `.cache/bench-profile-20260721-040249-(default in daemon.py)/`
+
+关键结果:
+- `policy_gate: block_raw_lifecycle_promotion`
+- `policy_recommended_default: guarded`
+- `raw_lifecycle_allowed: false`
+- `policy_preflight: accept`
+- `policy_preflight_target: guarded`
+
+**判读**: C2 的评测结论已经进入默认策略层。现在的安全状态是:
+raw 仍可作为诊断/候选评测模式存在, 但不能在当前证据下成为默认召回策略。
+这把“输出变输入”从报告推进到了 runtime 配置和发布前检查。
+
 ## 纪律
 - 新功能 PR 前:跑 `admit_feature` 自检,空/含糊 claim 直接 defer。
 - ⚠️ 行:要么补可测下游价值,要么 defer(不因"已写了代码"就上线=沉没成本陷阱)。
