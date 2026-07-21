@@ -15,6 +15,7 @@ from datetime import datetime
 from pathlib import Path
 
 ANCHOR_FILES = ("FDE_BUSINESS_CHARTER.md", "LOOP_STATE_SSOT.md")
+EVENT_PREFIXES = ("_OUTBOUND", "_BROADCAST", "INBOUND", "_INBOUND")
 
 _FRONTMATTER_RE = re.compile(r"\A---\s*\n.*?\n---\s*\n", re.S)
 
@@ -57,13 +58,69 @@ def check_ssot_consistency(repo_roots: list[Path] | None = None) -> dict:
     return report
 
 
+def check_event_freshness(repo_roots: list[Path] | None = None) -> dict:
+    """返回每个 repo 最新跨框事件文件与 stale 状态."""
+    roots = repo_roots if repo_roots is not None else _default_repo_roots()
+    threshold_h = float(os.environ.get("COMPASS_EVENT_STALE_HOURS", "24"))
+    now = datetime.now().timestamp()
+    report: dict = {"threshold_h": threshold_h, "repos": {}}
+    for root in roots:
+        latest = None
+        try:
+            for p in root.iterdir():
+                if not p.is_file():
+                    continue
+                if not any(p.name.startswith(prefix) for prefix in EVENT_PREFIXES):
+                    continue
+                mtime = p.stat().st_mtime
+                if latest is None or mtime > latest[1]:
+                    latest = (p.name, mtime)
+        except OSError:
+            report["repos"][root.name] = {"missing": True, "stale": True}
+            continue
+        if latest is None:
+            report["repos"][root.name] = {"missing": False, "latest": None, "stale": True}
+            continue
+        age_h = (now - latest[1]) / 3600.0
+        report["repos"][root.name] = {
+            "missing": False,
+            "latest": latest[0],
+            "mtime": datetime.fromtimestamp(latest[1]).strftime("%m-%d %H:%M"),
+            "age_h": round(age_h, 1),
+            "stale": age_h > threshold_h,
+        }
+    return report
+
+
+def _format_event_freshness(report: dict | None = None) -> str:
+    rep = report if report is not None else check_event_freshness()
+    repos = rep.get("repos", {})
+    stale = {k: v for k, v in repos.items() if v.get("stale")}
+    cells = []
+    for repo, data in repos.items():
+        if data.get("missing"):
+            cells.append(f"{repo}=缺repo")
+        elif not data.get("latest"):
+            cells.append(f"{repo}=无事件")
+        else:
+            cells.append(f"{repo}={data['mtime']}({data['age_h']}h)")
+    if stale:
+        names = ", ".join(stale.keys())
+        return (
+            f"🔴 跨框事件协议 stale({names}; 阈值 {rep.get('threshold_h')}h): "
+            + " | ".join(cells)
+        )
+    return "✅ 跨框事件协议活跃: " + " | ".join(cells)
+
+
 def format_for_prompt_injection(report: dict | None = None) -> str:
     """一致 → 单行 ✅;漂移 → 🔴 亮牌 + 各副本 哈希/mtime,提示最新副本。"""
     try:
         rep = report if report is not None else check_ssot_consistency()
         drifted = {f: d for f, d in rep.items() if not d.get("consistent", True)}
+        event_line = _format_event_freshness()
         if not drifted:
-            return "✅ 承重锚副本一致(" + "/".join(ANCHOR_FILES) + ")"
+            return "✅ 承重锚副本一致(" + "/".join(ANCHOR_FILES) + ")\n" + event_line
         lines = ["🔴 SSOT 副本漂移 · 各框读到的不是同一份真相(先对齐再引用):"]
         for fname, data in drifted.items():
             cells = []
@@ -80,6 +137,7 @@ def format_for_prompt_injection(report: dict | None = None) -> str:
             hint = f" · 最新副本={newest[0]}" if newest else ""
             lines.append(f"  · {fname}: " + " | ".join(cells) + hint)
         lines.append("  → 协议:改 canonical → 同步全部副本 → 各自 commit(CHARTER §6)")
+        lines.append(event_line)
         return "\n".join(lines)
     except Exception:
         return ""
