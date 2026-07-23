@@ -6,6 +6,52 @@
 
 ---
 
+## 零、Phase 3 单链 RACI（2026-07-22 覆盖条款）
+
+本节覆盖本文件及各 repo 副本中与第三期交互式标注相冲突的旧职责表述。
+它是职责和放行门，不等同于已经实施、已接入线上飞书，或首条记录已经闭环。
+
+### 唯一权威与单链
+
+飞书多维表格的 **read-back** 是第三期任务状态、审核结果和
+`revision_of` 返修血缘的唯一权威。Agent 文字、截图、文件名、本地缓存、
+V5 manifest 和 Compass 回执都不能代替 Bitable read-back。
+
+```text
+Bitable read-back
+  -> V5 最小 v3 脱敏事件 + manifest
+  -> Compass 独立校验 + 受控回执
+  -> Bitable read-back
+```
+
+### 职责、输入与输出
+
+| 责任方 | 只负责 | 允许输入 | 唯一输出 | 当前阻断与下一步 |
+|---|---|---|---|---|
+| Core / FDE | 状态机、字段映射审批、外部表单入口、受控 Bitable 写回门 | Bitable schema 元数据、已批准字段映射、受控 Evidence Pack 引用 | Bitable read-back 的任务/尝试/审核/导出记录及 eligible 判定 | 阻断于目标 Base schema 与字段映射未获批准；下一步仅在用户明确授权后做只读 schema probe |
+| V5 | 消费 eligible Bitable 记录，生成最小 v3 脱敏事件和 manifest | Core 提供的 eligible read-back 锚、受控派生 `task_id`、批准字段白名单 | v3 JSONL、manifest、事件标识和哈希 | 阻断于没有 eligible 首条记录；等待 Core 放行，不能自行取数或导出 |
+| Compass | 独立校验 V5 v3 事件与 manifest，并生成受控回执 | V5 的正式脱敏 v3 JSONL 与匹配 manifest | `canonical_verified` 或 `canonical_blocked` 及回执 | 阻断于没有正式 v3 输入；等待 V5 输出，不能自行导入任务或裁决 |
+
+### 禁止项
+
+- 不得建立平行任务、审核、返修或最终判定账本。
+- 不得由自动化、V5 或 Compass 替代人工 P0、`feedback_class` 或甲方
+  `verdict`。
+- 不得读取、转发或导出原始对话、截图、附件、个人信息、联系方式、银行卡
+  或甲方原始验收材料。
+- 不得在 schema probe、字段映射审批和首条记录门槛完成前创建表单、记录、
+  自动化、买方同步或线上导出。
+
+### 放行与同步协议
+
+首条闭环的顺序固定为：目标 Base 只读 schema probe -> 字段映射批准 ->
+外部提交与人工审核均有 Bitable read-back -> V5 脱敏导出 -> Compass 校验回执
+-> Bitable read-back。任一步失败，停在该步并记录阻断原因。
+
+变更顺序固定为：先修改 `nautilus-core/LOOP_STATE_SSOT.md` 并单独提交，
+再由 V5 和 Compass 在各自 repo 根副本同步同一 RACI；副本不得自行扩写职责或
+覆盖 canonical。
+
 ## 一、北极星(不变)
 
 FDE 产难题(强解+弱难倒 = 燃料)→ 蒸馏 → 系统可证变强(① 模型权重 ② agent 群体自治)→ 产更难更值钱的题 → 每圈外部 benchmark 证明。**分叉过滤器:一件事不直接推进这条链,默认不做。**
