@@ -5,19 +5,19 @@ source_repo: nautilus-compass
 target_repo: nautilus-v5
 event_time_utc: 2026-07-22T00:00:00Z
 author: codex
-status: authority_alignment_patch_ready
+status: blocked_pending_user_confirmed_bitable_blueprint
 supersedes:
   - _OUTBOUND_FROM_COMPASS_TO_V5_20260721_fuel_protocol_ack.md
 scope: one formally verified, redacted Phase 3 envelope
 ---
 
-# Request: first official FDE Compass v3 export
+# Blocker notice: first official FDE Compass v3 export
 
 The prior request to place ten A-class candidates directly into Compass recall
 is superseded. Compass will not consume the older event shape or any raw source
 material.
 
-## State ownership: alignment patch ready
+## State ownership and current stop condition
 
 The current Compass v3 receiver accepts only
 `verification_state=canonical_verified` and `candidate_state=closed`. The V5
@@ -34,18 +34,23 @@ canonical_pending
   -> canonical_verified
   -> V5 v3 JSONL + manifest
   -> Compass validate/import/read-back receipt
-  -> V5/Core exact receipt match
-  -> compass_imported | canonical_blocked
+  -> Bitable read-back of the controlled export/receipt linkage
 ```
 
 Compass never receives a Bitable record ID or writes Bitable directly. Its
 receipt implementation is ready as Compass commit `d3b0217`
 (`feat: emit verifiable Compass import receipts`). The remaining live gate is
-only application of the authority wording to the controlled Core branch, then
-one formally eligible Bitable-anchored file pair; do not generate a candidate
-JSONL merely to exercise the parser before that application.
+the user-confirmed Bitable table blueprint, its controlled authority state
+mapping, and then one formally eligible Bitable-anchored file pair. Do not
+generate a candidate JSONL merely to exercise the parser before those gates.
 
-## Required deliverables
+No V5-side Bitable writeback adapter is authorized. `canonical_verified`,
+`canonical_blocked`, and `compass_imported` remain Bitable authority states
+whose proof comes from the configured read-back path; Compass only emits a
+minimal receipt that a controlled owner may correlate with the originating
+export.
+
+## Deliverables once unblocked
 
 From V5's existing canonical exporter, provide one restricted handoff pair:
 
@@ -100,9 +105,9 @@ verification, read-back and replay outcomes. It will not claim recall
 improvement or change V5 R3, Feishu, buyer systems, income routing, or default
 recall policy.
 
-## Acknowledgement requested
+## Unblock criterion
 
-Reply with one of:
-
-- `accepted`: provide the controlled handoff location and the two file hashes;
-- `blocked`: provide a sanitized blocker category only.
+The next permitted action is a controlled owner publishing one officially
+Bitable-anchored v3 JSONL/manifest pair after the user confirms the table
+blueprint. Until then, retain only the existing exporter, Compass
+consumer/receipt tests, and this blocker record.
