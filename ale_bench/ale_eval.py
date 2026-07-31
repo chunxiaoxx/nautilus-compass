@@ -99,3 +99,17 @@ def eval_fn(
 def task_family(problem_id: str) -> str:
     """fleet 记忆 family 键(W1/W2 grounding 按 family 分组)。"""
     return f"ale_ahc_{problem_id}"
+
+
+# V5 rsi_two_arm 注入接口(anchor #5 复用现有 contract,不改 eval 逻辑)
+# 用法(V5 端):from compass.ale_bench.ale_eval import eval_fn as ale_eval_fn
+# 或:RUN.eval_fn_factory("ale_bench")(problem_id="ahc001") 拿带 problem_id 闭包
+def eval_fn_factory(problem_id: str, **kwargs) -> Callable[[str], dict]:
+    """返 rsi_two_arm 兼容 eval_fn(candidate_code) -> {"reward","feedback"}。
+
+    把 problem_id 绑进闭包,让 V5 端按 problem_id 分题跑(同 process 多题)。
+    复用上面的 eval_fn · 不重写 score 逻辑。
+    """
+    def _fn(candidate_code: str) -> dict:
+        return eval_fn(candidate_code, problem_id=problem_id, **kwargs)
+    return _fn

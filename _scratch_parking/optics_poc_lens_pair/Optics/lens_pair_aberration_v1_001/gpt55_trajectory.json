@@ -1,0 +1,249 @@
+{
+  "task_id": "lens_pair_aberration_v1_001",
+  "model": "gpt-5.5",
+  "rounds": [
+    {
+      "round": 0,
+      "kind": "baseline",
+      "score": 5.450141686440831,
+      "metrics": {
+        "task_id": "lens_pair_aberration_v1_001",
+        "domain": "Optics and Communication Systems",
+        "sub_domain": "Optics",
+        "valid": 1,
+        "combined_score": 5.450141686440831,
+        "per_instance": [
+          {
+            "instance_id": "bench_001_on_axis",
+            "valid": 1,
+            "achieved_rms": 17.041753402954868,
+            "score": 5.867940794323489
+          },
+          {
+            "instance_id": "bench_002_off_axis_low",
+            "valid": 1,
+            "achieved_rms": 16.074720455116047,
+            "score": 6.220947995905791
+          },
+          {
+            "instance_id": "bench_003_off_axis_high",
+            "valid": 1,
+            "achieved_rms": 14.46619750353457,
+            "score": 6.912666578454131
+          },
+          {
+            "instance_id": "bench_004_wide_aperture",
+            "valid": 1,
+            "achieved_rms": 21.829097249065498,
+            "score": 4.581041481423653
+          },
+          {
+            "instance_id": "bench_005_long_bench",
+            "valid": 1,
+            "achieved_rms": 29.14555333484343,
+            "score": 3.4310551201802117
+          },
+          {
+            "instance_id": "bench_006_close_object",
+            "valid": 1,
+            "achieved_rms": 12.700652642594596,
+            "score": 7.873611129606577
+          },
+          {
+            "instance_id": "bench_007_microscopy_tube",
+            "valid": 1,
+            "achieved_rms": 30.639801598986864,
+            "score": 3.2637287051919617
+          }
+        ],
+        "n_instances": 7,
+        "baseline_failures": 0,
+        "target_rms_oracle": 1.0
+      }
+    },
+    {
+      "round": 1,
+      "kind": "gpt55",
+      "score": 5.109277156775304,
+      "model_response_tail": "def align_lens_pair(source, lens_a, lens_b, target_z, n_rays=64):\n    return {'z_a':0.0,'z_b':lens_b['f']+1e-3,'x_a':0.0,'x_b':0.0,'y_a':0.0,'y_b':0.0}\n",
+      "metrics": {
+        "task_id": "lens_pair_aberration_v1_001",
+        "domain": "Optics and Communication Systems",
+        "sub_domain": "Optics",
+        "valid": 1,
+        "combined_score": 5.109277156775304,
+        "per_instance": [
+          {
+            "instance_id": "bench_001_on_axis",
+            "valid": 1,
+            "achieved_rms": 14.479456679939446,
+            "score": 6.906336488339713
+          },
+          {
+            "instance_id": "bench_002_off_axis_low",
+            "valid": 1,
+            "achieved_rms": 16.608697079952325,
+            "score": 6.0209418907823835
+          },
+          {
+            "instance_id": "bench_003_off_axis_high",
+            "valid": 1,
+            "achieved_rms": 19.59105854756301,
+            "score": 5.104369412057078
+          },
+          {
+            "instance_id": "bench_004_wide_aperture",
+            "valid": 1,
+            "achieved_rms": 25.49604301928585,
+            "score": 3.922177254107921
+          },
+          {
+            "instance_id": "bench_005_long_bench",
+            "valid": 1,
+            "achieved_rms": 24.210166234219393,
+            "score": 4.130496215208011
+          },
+          {
+            "instance_id": "bench_006_close_object",
+            "valid": 1,
+            "achieved_rms": 16.450684494668316,
+            "score": 6.07877441406223
+          },
+          {
+            "instance_id": "bench_007_microscopy_tube",
+            "valid": 1,
+            "achieved_rms": 27.763553407541263,
+            "score": 3.6018444228697883
+          }
+        ],
+        "n_instances": 7,
+        "baseline_failures": 0,
+        "target_rms_oracle": 1.0
+      }
+    },
+    {
+      "round": 2,
+      "kind": "gpt55",
+      "score": 5.109277156775304,
+      "model_response_tail": "def align_lens_pair(source, lens_a, lens_b, target_z, n_rays=64):\n    return {'z_a':0.0,'z_b':lens_b['f']+1e-3,'x_a':0.0,'x_b':0.0,'y_a':0.0,'y_b':0.0}\n",
+      "metrics": {
+        "task_id": "lens_pair_aberration_v1_001",
+        "domain": "Optics and Communication Systems",
+        "sub_domain": "Optics",
+        "valid": 1,
+        "combined_score": 5.109277156775304,
+        "per_instance": [
+          {
+            "instance_id": "bench_001_on_axis",
+            "valid": 1,
+            "achieved_rms": 14.479456679939446,
+            "score": 6.906336488339713
+          },
+          {
+            "instance_id": "bench_002_off_axis_low",
+            "valid": 1,
+            "achieved_rms": 16.608697079952325,
+            "score": 6.0209418907823835
+          },
+          {
+            "instance_id": "bench_003_off_axis_high",
+            "valid": 1,
+            "achieved_rms": 19.59105854756301,
+            "score": 5.104369412057078
+          },
+          {
+            "instance_id": "bench_004_wide_aperture",
+            "valid": 1,
+            "achieved_rms": 25.49604301928585,
+            "score": 3.922177254107921
+          },
+          {
+            "instance_id": "bench_005_long_bench",
+            "valid": 1,
+            "achieved_rms": 24.210166234219393,
+            "score": 4.130496215208011
+          },
+          {
+            "instance_id": "bench_006_close_object",
+            "valid": 1,
+            "achieved_rms": 16.450684494668316,
+            "score": 6.07877441406223
+          },
+          {
+            "instance_id": "bench_007_microscopy_tube",
+            "valid": 1,
+            "achieved_rms": 27.763553407541263,
+            "score": 3.6018444228697883
+          }
+        ],
+        "n_instances": 7,
+        "baseline_failures": 0,
+        "target_rms_oracle": 1.0
+      }
+    },
+    {
+      "round": 3,
+      "kind": "gpt55",
+      "score": 5.109277156775304,
+      "model_response_tail": "def align_lens_pair(source, lens_a, lens_b, target_z, n_rays=64):\n    return {'z_a':0.0,'z_b':lens_b['f']+1e-3,'x_a':0.0,'x_b':0.0,'y_a':0.0,'y_b':0.0}\n",
+      "metrics": {
+        "task_id": "lens_pair_aberration_v1_001",
+        "domain": "Optics and Communication Systems",
+        "sub_domain": "Optics",
+        "valid": 1,
+        "combined_score": 5.109277156775304,
+        "per_instance": [
+          {
+            "instance_id": "bench_001_on_axis",
+            "valid": 1,
+            "achieved_rms": 14.479456679939446,
+            "score": 6.906336488339713
+          },
+          {
+            "instance_id": "bench_002_off_axis_low",
+            "valid": 1,
+            "achieved_rms": 16.608697079952325,
+            "score": 6.0209418907823835
+          },
+          {
+            "instance_id": "bench_003_off_axis_high",
+            "valid": 1,
+            "achieved_rms": 19.59105854756301,
+            "score": 5.104369412057078
+          },
+          {
+            "instance_id": "bench_004_wide_aperture",
+            "valid": 1,
+            "achieved_rms": 25.49604301928585,
+            "score": 3.922177254107921
+          },
+          {
+            "instance_id": "bench_005_long_bench",
+            "valid": 1,
+            "achieved_rms": 24.210166234219393,
+            "score": 4.130496215208011
+          },
+          {
+            "instance_id": "bench_006_close_object",
+            "valid": 1,
+            "achieved_rms": 16.450684494668316,
+            "score": 6.07877441406223
+          },
+          {
+            "instance_id": "bench_007_microscopy_tube",
+            "valid": 1,
+            "achieved_rms": 27.763553407541263,
+            "score": 3.6018444228697883
+          }
+        ],
+        "n_instances": 7,
+        "baseline_failures": 0,
+        "target_rms_oracle": 1.0
+      }
+    }
+  ],
+  "best_score": 5.109277156775304,
+  "best_round": 1,
+  "gap_closed": -0.003408645296655264,
+  "difficulty": "Rejected"
+}

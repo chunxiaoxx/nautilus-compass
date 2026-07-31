@@ -25,6 +25,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install pytest fastapi httpx uvicorn cryptography pyjwt 'python-jose[cryptography]'
 
+      - name: Recall lifecycle policy preflight
+        env:
+          PYTHONIOENCODING: utf-8
+          PYTHONUTF8: "1"
+        run: |
+          python ops/recall_policy_preflight.py \
+            --policy-gate docs/evidence/recall_policy_gate_current.json \
+            --target-policy flat \
+            --out recall_policy_preflight.json
+
       - name: Full pytest sweep (release gate)
         env:
           PYTHONIOENCODING: utf-8

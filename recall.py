@@ -1128,28 +1128,45 @@ def render_v02_vector_mode(entries: list, query: str, cache: dict) -> None:
     scored.sort(key=lambda x: -x[0])
     top = scored[:TOP_K]
 
+    try:
+        from recall_pkg.lifecycle_policy import (
+            get_recall_signal_policy,
+            should_apply_poi_weight,
+            should_apply_tier_weight,
+        )
+        _signal_policy = get_recall_signal_policy()
+    except Exception:
+        _signal_policy = "guarded"
+        should_apply_poi_weight = None
+        should_apply_tier_weight = None
+
     # v2.0.0 · #1a · PoI ranking boost · re-rank top-K by each entry's
     # cumulative_impact frontmatter (positive → boost, negative → demote).
-    # NO-OP if no memory has cumulative_impact yet (cold start fully
-    # equivalent to v0.8). Set COMPASS_NO_POI_BOOST=1 to opt out.
+    # v2.3 C5 default policy is flat: lifecycle signals are recorded but do not
+    # affect rank until a fresh policy gate recommends guarded/raw.
+    # Set COMPASS_NO_POI_BOOST=1 to opt out.
     if os.environ.get("COMPASS_NO_POI_BOOST") != "1":
         try:
             from recall_pkg.poi_weighting import boost_top_k_with_snapshot
             from recall_pkg.poi_snapshot_cache import get_credit_snapshot
-            top = boost_top_k_with_snapshot(top, get_credit_snapshot())
-            # Truncate back to TOP_K after potential re-rank
-            top = top[:TOP_K]
+            _poi_snapshot = get_credit_snapshot()
+            if should_apply_poi_weight is None or should_apply_poi_weight(_signal_policy, top, _poi_snapshot, query=q_str):
+                top = boost_top_k_with_snapshot(top, _poi_snapshot)
+                # Truncate back to TOP_K after potential re-rank
+                top = top[:TOP_K]
         except Exception as _e:
             sys.stderr.write(f"[PoI boost] skipped: {_e!r}\n")
 
     # v2.3.0 · Phase 1 Task 4 · tier-aware re-rank · among near-equal cosine
     # scores, prefer the more-consolidated (higher-tier) capsule. Ranking-only
     # (output scores unchanged) · tiny bonus never flips a real cosine gap ·
-    # NO-OP when no memory carries a tier field yet. Set COMPASS_NO_TIER_WEIGHT=1
-    # to opt out. apply_tier_weight never raises; this guard is belt-and-suspenders.
+    # v2.3 C5 default policy is flat: lifecycle signals are recorded but do not
+    # affect rank until a fresh policy gate recommends guarded/raw.
+    # Set COMPASS_NO_TIER_WEIGHT=1 to opt out.
     if os.environ.get("COMPASS_NO_TIER_WEIGHT") != "1":
         try:
-            top = apply_tier_weight(top)[:TOP_K]
+            if should_apply_tier_weight is None or should_apply_tier_weight(_signal_policy, top, query=q_str):
+                top = apply_tier_weight(top)[:TOP_K]
         except Exception as _e:
             sys.stderr.write(f"[tier weight] skipped: {_e!r}\n")
 
@@ -1564,6 +1581,18 @@ def main():
             print()
             print("[Cross-agent contracts · close_loop hook]")
             print(_c_block)
+    except Exception:
+        pass
+
+    # v2.3 · SSOT 副本一致性探针(2026-07-17 用户拍板)· 承重锚(CHARTER/LOOP_STATE)
+    # 跨 repo 正文哈希对比 · 漂移即对每个框亮牌 · fail-soft 不阻塞 recall
+    try:
+        from ssot_consistency import format_for_prompt_injection as _ssot_fmt
+        _s_block = _ssot_fmt()
+        if _s_block:
+            print()
+            print("[SSOT 副本一致性 · anchor drift probe]")
+            print(_s_block)
     except Exception:
         pass
     print()

@@ -1,0 +1,15 @@
+import math, time
+
+def rmsnorm(x, weight, eps=1e-6):
+    N = len(x); D = len(weight)
+    t0 = time.perf_counter()
+    out = []
+    for i in range(N):
+        row = x[i]
+        s = 0.0
+        for k in range(D):
+            v = row[k]; s += v*v
+        inv = 1.0 / math.sqrt(s/D + eps)
+        out_row = [row[k] * weight[k] * inv for k in range(D)]
+        out.append(out_row)
+    return {"output": out, "elapsed_s": time.perf_counter() - t0}

@@ -17,7 +17,7 @@ import pathlib
 os.environ.setdefault("PYTHONUTF8", "1")
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 
-from tests.eval_recall import rerank  # noqa: E402
+from tests.eval_recall import rerank, signal_support  # noqa: E402
 
 
 def _e(idx, impact=0.0, tier="working"):
@@ -62,3 +62,50 @@ def test_unknown_mode_raises():
     except ValueError:
         return
     raise AssertionError("expected ValueError for unknown mode")
+
+
+def test_signal_support_counts_impact_and_tier_sparse_features():
+    entries = [
+        (0.60, _e(0)),
+        (0.59, _e(1, impact=1.0)),
+        (0.58, _e(2, tier="semantic")),
+    ]
+    support = signal_support(entries)
+    assert support["n"] == 3
+    assert support["n_impact"] == 1
+    assert support["n_tier_nonworking"] == 1
+
+
+def test_guarded_policy_skips_sparse_poi_boost():
+    # Raw PoI would lift idx0 above idx1; guarded policy should treat one impact
+    # signal as too sparse and keep flat cosine order.
+    entries = [(0.50, _e(0, impact=10.0)), (0.55, _e(1, impact=0.0))]
+    assert _order(rerank("poi", entries))[0] == 0
+    assert _order(rerank("poi", entries, signal_policy="guarded", min_signal_count=3)) == [1, 0]
+
+
+def test_guarded_policy_applies_poi_when_support_is_sufficient():
+    entries = [
+        (0.50, _e(0, impact=10.0)),
+        (0.55, _e(1, impact=0.0)),
+        (0.10, _e(2, impact=1.0)),
+        (0.09, _e(3, impact=1.0)),
+    ]
+    assert _order(rerank("poi", entries, signal_policy="guarded", min_signal_count=3))[0] == 0
+
+
+def test_guarded_policy_skips_sparse_tier_boost():
+    entries = [(0.50, _e(0, tier="working")), (0.50, _e(1, tier="procedural"))]
+    assert _order(rerank("tier", entries))[0] == 1
+    assert _order(rerank("tier", entries, signal_policy="guarded", min_signal_count=3)) == [0, 1]
+
+
+def test_routed_policy_applies_poi_only_for_lifecycle_query():
+    entries = [
+        (0.50, _e(0, impact=10.0)),
+        (0.55, _e(1, impact=0.0)),
+        (0.10, _e(2, impact=1.0)),
+        (0.09, _e(3, impact=1.0)),
+    ]
+    assert _order(rerank("poi", entries, signal_policy="routed", query_text="recall policy gate"))[0] == 0
+    assert _order(rerank("poi", entries, signal_policy="routed", query_text="ordinary question")) == [1, 0, 2, 3]

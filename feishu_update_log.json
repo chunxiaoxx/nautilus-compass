@@ -1,0 +1,128 @@
+[
+  {
+    "rec": "recvomjgHmFlJD",
+    "task": "jssp_min_makespan_0001",
+    "verdict": "PROVEN",
+    "pass5": 0.8,
+    "hard": false,
+    "code": 0,
+    "msg": "success"
+  },
+  {
+    "rec": "recvomlgEOT0yR",
+    "task": "docker_disk_placement_0001",
+    "verdict": "PROVEN",
+    "pass5": 1.0,
+    "hard": false,
+    "code": 0,
+    "msg": "success"
+  },
+  {
+    "rec": "recvon8NLl5Cus",
+    "task": "producer_token_cap_0001",
+    "verdict": "PROVEN",
+    "pass5": 1.0,
+    "hard": false,
+    "code": 0,
+    "msg": "success"
+  },
+  {
+    "rec": "recvonK0VOaWmU",
+    "task": "idempotent_task_claim_0001",
+    "verdict": "PROVEN",
+    "pass5": 0.8,
+    "hard": false,
+    "code": 0,
+    "msg": "success"
+  },
+  {
+    "rec": "recvonL4Jvg0Zf",
+    "task": "loofold_select_0001",
+    "verdict": "PROVEN",
+    "pass5": 1.0,
+    "hard": false,
+    "code": 0,
+    "msg": "success"
+  },
+  {
+    "rec": "recvonMeuu9UhS",
+    "task": "student_capacity_fuel_0001",
+    "verdict": "PROVEN",
+    "pass5": 1.0,
+    "hard": false,
+    "code": 0,
+    "msg": "success"
+  },
+  {
+    "rec": "recvonNrPWNZm1",
+    "task": "patch_diff_apply_0001",
+    "verdict": "PROVEN",
+    "pass5": 0.8,
+    "hard": false,
+    "code": 0,
+    "msg": "success"
+  },
+  {
+    "rec": "recvonOzNsvg6q",
+    "task": "external_verifier_whitelist_0001",
+    "verdict": "KILLED",
+    "pass5": 0.6,
+    "hard": true,
+    "code": 0,
+    "msg": "success"
+  },
+  {
+    "rec": "recvonPzzEe8TS",
+    "task": "real_trajectory_publish_0001",
+    "verdict": "PROVEN",
+    "pass5": 1.0,
+    "hard": false,
+    "code": 0,
+    "msg": "success"
+  },
+  {
+    "rec": "recvonYFKs6U4x",
+    "task": "tsp_tsplib_v1_001",
+    "verdict": "PROVEN",
+    "pass5": 1.0,
+    "hard": false,
+    "code": 0,
+    "msg": "success"
+  },
+  {
+    "rec": "recvonYGbsVKc9",
+    "task": "bin_packing_ffd_v1_001",
+    "verdict": "PROVEN",
+    "pass5": 0.8,
+    "hard": false,
+    "code": 0,
+    "msg": "success"
+  },
+  {
+    "rec": "recvonYGBYYSMR",
+    "task": "attention_flash_v1_001",
+    "verdict": "PROVEN",
+    "pass5": 0.8,
+    "hard": false,
+    "code": 0,
+    "msg": "success"
+  },
+  {
+    "rec": "recvonYH6gNea7",
+    "task": "cache_lru_v1_001",
+    "verdict": "PROVEN",
+    "pass5": 0.8,
+    "hard": false,
+    "code": 0,
+    "msg": "success"
+  },
+  {
+    "rec": "recvonZLVVZUna",
+    "task": "jobshop_orlib_v1_001",
+    "verdict": "KILLED",
+    "pass5": 0.0,
+    "hard": true,
+    "code": 0,
+    "msg": "success"
+  }
+]

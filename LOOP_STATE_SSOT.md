@@ -1,68 +1,129 @@
-# 🎯 LOOP STATE · 单一真相源(SSOT)· 所有对话框 session-start 必读
+# 🎯 LOOP STATE · 单一真相源 v4(2026-07-07 重写 · 用户拍"过于混乱,重新梳理")
 
-> **这一份是当前闭环状态的唯一权威。** goal 命令 / FRESH_SESSION_PROMPT / 各框记忆与此冲突时,**以此为准**。
-> 🔴 **变更协议(治精神分裂·anchor #4)**:任一框改了"当前闭环目标 / 下一动作 / 卡在" → **先改这四行,再开工**。不先改这里 = 各框拿过期框架 = 精神分裂(本 session 的病根)。
-> canonical 在 `nautilus-core/LOOP_STATE_SSOT.md` · 副本同步各 repo 根(同 FDE_BUSINESS_CHARTER 机制)。
+> 当前状态唯一权威。各框 session-start 必读;与任何 goal/memory/文档冲突,以此为准。
+> 变更协议:先改这里(canonical = nautilus-core),再开工,再同步各 repo 根副本。
+> 7/7 前的全部历史层(推断纠正/实施日志/A800 候选/蒸馏条件)原文在 `docs/LOOP_STATE_ARCHIVE_20260707.md`,这里不再重复。
 
 ---
 
-## 📍 当前活状态(四行·last-updated 2026-06-29)
+## 零、Phase 3 单链 RACI（2026-07-22 覆盖条款）
 
-| 字段 | 值 |
+本节覆盖本文件及各 repo 副本中与第三期交互式标注相冲突的旧职责表述。
+它是职责和放行门，不等同于已经实施、已接入线上飞书，或首条记录已经闭环。
+
+### 唯一权威与单链
+
+飞书多维表格的 **read-back** 是第三期任务状态、审核结果和
+`revision_of` 返修血缘的唯一权威。Agent 文字、截图、文件名、本地缓存、
+V5 manifest 和 Compass 回执都不能代替 Bitable read-back。
+
+```text
+Bitable read-back
+  -> V5 最小 v3 脱敏事件 + manifest
+  -> Compass 独立校验 + 受控回执
+  -> Bitable read-back
+```
+
+### 职责、输入与输出
+
+| 责任方 | 只负责 | 允许输入 | 唯一输出 | 当前阻断与下一步 |
+|---|---|---|---|---|
+| Core / FDE | 状态机、字段映射审批、外部表单入口、受控 Bitable 写回门 | Bitable schema 元数据、已批准字段映射、受控 Evidence Pack 引用 | Bitable read-back 的任务/尝试/审核/导出记录及 eligible 判定 | 阻断于目标 Base schema 与字段映射未获批准；下一步仅在用户明确授权后做只读 schema probe |
+| V5 | 消费 eligible Bitable 记录，生成最小 v3 脱敏事件和 manifest | Core 提供的 eligible read-back 锚、受控派生 `task_id`、批准字段白名单 | v3 JSONL、manifest、事件标识和哈希 | 阻断于没有 eligible 首条记录；等待 Core 放行，不能自行取数或导出 |
+| Compass | 独立校验 V5 v3 事件与 manifest，并生成受控回执 | V5 的正式脱敏 v3 JSONL 与匹配 manifest | `canonical_verified` 或 `canonical_blocked` 及回执 | 阻断于没有正式 v3 输入；等待 V5 输出，不能自行导入任务或裁决 |
+
+### 禁止项
+
+- 不得建立平行任务、审核、返修或最终判定账本。
+- 不得由自动化、V5 或 Compass 替代人工 P0、`feedback_class` 或甲方
+  `verdict`。
+- 不得读取、转发或导出原始对话、截图、附件、个人信息、联系方式、银行卡
+  或甲方原始验收材料。
+- 不得在 schema probe、字段映射审批和首条记录门槛完成前创建表单、记录、
+  自动化、买方同步或线上导出。
+
+### 放行与同步协议
+
+首条闭环的顺序固定为：目标 Base 只读 schema probe -> 字段映射批准 ->
+外部提交与人工审核均有 Bitable read-back -> V5 脱敏导出 -> Compass 校验回执
+-> Bitable read-back。任一步失败，停在该步并记录阻断原因。
+
+变更顺序固定为：先修改 `nautilus-core/LOOP_STATE_SSOT.md` 并单独提交，
+再由 V5 和 Compass 在各自 repo 根副本同步同一 RACI；副本不得自行扩写职责或
+覆盖 canonical。
+
+## 一、北极星(不变)
+
+FDE 产难题(强解+弱难倒 = 燃料)→ 蒸馏 → 系统可证变强(① 模型权重 ② agent 群体自治)→ 产更难更值钱的题 → 每圈外部 benchmark 证明。**分叉过滤器:一件事不直接推进这条链,默认不做。**
+
+当前阶段目标(7/6 /goal · 用户拍):把已走通一次的闭环从 one-off 变成
+**(a) 活 producer 自持产出(income 自动持续涨)+ (b) 甲方可交付(11 道合规题入飞书表)**。
+不扩 1000 题,不碰蒸馏(A800 到位再解冻),不开新战线。
+
+## 二、当前真值(7/7 · 全部可独立复核,出处 = 记分牌/探针/DB)
+
+| 指标 | 值 | 说明 |
+|---|---|---|
+| income(agent 9000009) | **703**(7/16 探针,7/15 起持平)| ⚠️ 7/15→7/16 零增长 = 题池枯竭信号仍在(mint 重刷旧题被幂等门全拦),产题供给是唯一瓶颈。历史注(7/8):| 🎯 **目标(a)"自持产出"字面达成**:平台 7/8 产 2 道新变体(bin_v3+cache_v2,数据全新 seed 20260708)放进 mint glob 路径 → daemon 自动拾取/解题/canonical verify/铸币(+86/+13,与产题 QC 预测分毫不差),全程零人工。**模式已证:income 斜率 = 产题速度,题目供给是唯一手动环节**。TSP 97.63 不铸维持原判(overall_pass=false 非交付档)|
+| 外部验证 verdict | **67**(7/18 记分牌直读,7d 内 +26;income 703 · 7d +100 · 自治率 89.55%)· 历史:65(7/16)| 历史注(7/8,时值 16):| auto-verify daemon 自动验证在持续;7/7 深夜后新增 6 条全 autonomous **但全是同题重跑**(cache×3/bin×3),幂等门全拦零铸币 = 门有牙齿 + **题池枯竭信号**:genopt-mint 无新题可选在重刷旧题(浪费 LLM 成本,V5 宜让 mint 跳过已铸题)|
+| **producer 自治率** | **89.2%(58/65)**(7/16 探针)| 历史注(7/8,时值 56%):| 7/7 晚脱 0(V5 修假成功 a3795c2 → 3 条 autonomous 铸币);此后新增全 autonomous 但系同题重复,含金量看 income 不看该比率。**真瓶颈回到题目供给(变体题/11 题)**,非 producer |
+| settle 含金量 | **0/3617** | 旧自循环账,维持原判 |
+| 甲方交付 | **11 题需求已作废(用户 7/18:"现在没有这个需求")** | 接棒:垂域批次已接手(国曙22人23题·台账+整改单+机械QC done)。**7/18 燃料链首闭:薛美雪题成为第一道完整 A 类蒸馏燃料(doubao 2.0-pro 难倒 0/5 · GLM-5.2 强解 3/3 带 CoT · 确定性验证器,入池 vtf/batch_guoshu_202607/fuel_pool/)**;张欢题 10/10 未难倒判非燃料——实证:燃料分布外性=概念边界密度(时点/口径之争)非算术难度。待办:5 人缺题补交 · 整改单下发 · 全批附件机械脱敏(PII 扫描 82 文件违规) |
+| 记分牌 | `GET /api/platform/convergence` | 收敛 = 这 5 个数字的走向,不是叙事。⚠️ prime-001 旧 PID 884064 已不在,但自治轨迹在产 = V5 侧有新进程,身份确认球在 V5,平台不动进程 |
+
+基础设施:cloud backend = systemd 管(nautilus-backend.service · 8000)· auto-verify daemon 10min 轮 · prime-001(PID 884064)连续跑 7 天勿动 · GPT5.5 cloud 直连稳 · doubao ARK 本机通(偶发代理抖动)· T4/H800 已关 · A800 租赁中。
+
+## 三、系统职责一句话(谁是什么 · 治重复造轮子)
+
+| 系统 | 唯一职责 |
 |---|---|
-| **当前闭环目标** | **证或杀蒸馏(维①)**=北极星 forcing function。V5 产→compass verify→soul LOO→verdict。**一条线·其余 parking(守教训1反搭建≠闭环)** |
-| **下一动作** | ① V5 产够 n≥12 候选就停(别无限产 GLM·反 D)→ 交 compass ② compass 官方 harness verify 出 A 类数 ③ soul canonical 复核+归一化+借 GPU 跑 distill_loo --kind swe→verdict |
-| **负责框** | V5(①)/ compass(②verify+借GPU)/ soul(③复核+LOO)· FDE 仅同步切飞书多维表格进 SSOT |
-| **卡在** | (a) V5 候选产完未 verify(当前 12+ 候选·produce_glm 15:00 还在产) ① compass verify 待启动 |
+| 平台 backend | 经济与验证的账本:verdict / external-verify(income 唯一门)/ 镜子 / 记分牌 |
+| genopt_factory | 题目工厂:出题 + runner(存完整解)+ verifier |
+| soul canonical verify | 独立裁判:复现一致才盖章(已由 daemon 自动化) |
+| compass | 记忆 + 独立审计探针(自报不算,它读 DB 才算)+ feishu 读写 |
+| V5 / prime-001 | 生产 agent:产可复现轨迹 → persist → 被验证 → 挣 income |
+| FDE | 人的业务:选题内容 / 招募培训 / 甲方交付内容(不背 infra) |
+| fde.nautilus.social | 教材层(只读,已开放,学员入口 /start/) |
+| 飞书多维表格 | 操作台(领题/提交/评分/结算;培训期只用 3 张表) |
 
-## 🛡️ 守教训护栏(防 5 坑·6/29 用户拍"蒸馏一条线+守教训")
-1. **n≥12 才跑 LOO**(verdict-gate commit 210e0fd24 拦 n<12·防 whipsaw 教训2)
-2. **易 django PROVEN → 须非易料复证**(排 over-fit 假迁移·教训3)
-3. **confound 先核再下结论**(教训3·本 session 两次找错 FDE 路径=戒)
-4. **SSOT 钉死+广播四框**(治精神分裂·教训4)
-5. **ship 了必验活**(教训5·FDE cloud runners/compass 探针都得验)
+## 四、各框本周唯一一件事(做完才领下一件)
 
-## 🅿️ Parking Lot(冻结·蒸馏 verdict 出前不碰)
-- 维②经济环(credit 口径/结算腿 liveness)· compass MCP 耦合(Phase 1-4)· 平台 mint_mcp_token · FDE 招募/RBAC/4 skill 发版 · content-engine 命名合约 · 维① KILL 资产保留(未来上 H800/换真难料重启)
-- **FDE 切飞书多维表格**:执行路径已变(飞书→多维表格→「ECC-三类业务生产管理」base 14 表)·非 cloud systemd runners。FDE 下次同步进 SSOT 细节。
+- **V5**:修 `fde_claim_produce` 假成功 + runner 存完整解(两份合约 due 7/9)→ 产出**第一条自治合规轨迹**(带 `artifacts.autonomous=true`)→ 自治率脱离 0%。
+- **platform(本框)**:主线定位(用户 7/7 拍)= **为整套业务体系(LLM 后训练 FDE + RSI + ENG 基准 + 具身智能数据采集)做减法和闭环**——守裁判链与账本(auto-verify/记分牌/backend);配合 FDE 用 `produce_task.py` 产**互不相同的变体题**;题集就位后跑 checklist 盲点测试(M1 修正口径:T1 开放题无"难倒",测的是 checklist 可判性 + 模型盲点密度;pass@5 难倒门只适用 T3 基准)。
+- **compass**:三角色(用户 7/7 问分工后定)= ① **收敛执法**:5 记分牌数字 + FDE 培训链(学员/题目/派活行数)每日独立读数,自报与探针不符即亮牌;② **合约管家**:活合约到期核销(读 DB/表验收,不闭标红);③ **记忆守门**:四代资产台账 recall 前置(任何框"我先写个"之前先查),产"减法清单"(15 表/13 SOP/50 脚本标 活/死/冻结,给用户拍砍)。**不做**:生产、内容、新架构。
+- **FDE**:①选定 11 道题内容(合约 due 7/10,候选 = L3 基准样例 43 道)②陪跑第一批真人培训 = 体系唯一验收(学员卡住处记下来当整改输入)。**基建冻结:不加表、不加 skill、不写新 T 文档;repo 根建一页 FDE_LOOP_STATE 锚治失忆**(7/7 审查:6 月 v0.8 体系被自己遗忘、7 月重造更差版)。
+- **soul-verify**:维持 canonical 链;计时型 verifier(Attention 类)的验证协议设计进 parking。
+- **用户**:带第一批真人培训(入口 https://fde.nautilus.social/start/ 已开放);A800 到位说一声。
 
-### 🛠️ 破自循环通道(锚点③ 预备·scope 严格)
-- **实证**(6/29 grounded DB):fde_verdicts 今日 190 全 `compass/bench_eval` source·task_uid 全 `compass_exp_*_automint_<ts>`·engine_cycle_outcomes 今日 0·`soul_alive=True` 靠自循环刷的剧场。
-- **scope**(用户 6/29 拍 B·微破):仅为**蒸馏 verdict 留通道**,不变成通用维②清理(踩教训1)。
-  - 加 1 列:`fde_verdicts.external_verified bool`(默认 false·仅 soul canonical verify 标 True)。
-  - 改 1 判据:`control_plane.soul_alive` 按 `MAX(external_verified_at)` 新鲜度算(非 cycle stale_hours)。
-  - 内循环(auto-mint / bench_eval)继续跑·只是不再"算活/入账"——**不改 compass 内部逻辑**(V5/compass turf 不动)。
-  - 不写新服务/不写新 runner/不写新 webhook——复用现有 soul canonical verify 加 1 行 UPDATE。
+## 五、活合约(compass 派 · 到期必须有交代)
 
-## ✅ binding-DONE 判据(外部可证·任一框可查·治目标无限膨胀)
-闭环 = 下面三条**全 grounded 成立**:
-1. `agent_survival.total_income` 因真外部验证产出(soul-canonical / held-out)增长
-2. Kairos 脱离 critical(balance ≥ min 20·当前 8 被冻)
-3. PoI 账本恢复增长(compass `probe_ledger_growth` 从 DORMANT → GREEN)
+| 合约 | 给谁 | due | 状态 |
+|---|---|---|---|
+| grant_survival(探针读权)| platform | 7/9 | ✅ 7/7 兑现(三张真值表 GRANT)|
+| settle_routes_404 | platform | 7/9 | ✅ 7/7 兑现(messages 双前缀 + 镜子端点)|
+| fake_success_produce | V5 | 7/9 | 🔴 进行中(自治率脱 0 的钥匙)|
+| evaluate_artifacts_fix(甲方 7/7 反馈)| V5 | 7/9 | compass 已代修一版,V5 收口 |
+| cache_income_finding 集成 | V5 | 7/10 | 待接 |
+| 11 题内容 | FDE | 7/10 | ⚫ 作废核销(7/18 用户确认需求已无;接棒合约=垂域出题第一批,等用户交题) |
 
-**判据成立前不算闭·不开新战线。** 不是"我觉得行了",是这三条 SQL/探针返回真值。
+## 六、硬护栏(压缩版 · 全文见归档)
 
-## 🅿️ Parking Lot(冻结·闭上面环之前不碰)
-- ~~维①蒸馏 KILLED~~ → **6/29 推翻 KILL·正确 unblock**(用 n≥12+非易料重跑·非 n=2 whipsaw)。
-- **SWE 批产到 n≈12**:进行中·V5 turf·优先非易 django 避 over-fit confound。
-- FDE 三类业务线 / content-engine 命名合约 / 其它 → parking。
+1. **外部 gate 经济学(C 口径)**:external_verified 只看独立复现;income 再加两门 = 难度档合格 + 每题每 producer 只铸一次。
+2. **producer 必须是注册整数 agent**(§0-ARCH);Claude 对话框是脚手架,不算系统组件。
+3. **自报不算,探针才算**:任何 alive/done/income 声明以 compass 读 DB 为准。
+4. **部署规程(7/16 换轨,用户拍板)**:以 `ops/DEPLOY_DISCIPLINE.md`(main 分支)为准——单一主干 main、禁 VM 直改、部署 = git pull --ff-only 禁 scp 覆盖代码、禁手工改 systemd unit、部署后必验记分牌。过渡期若确需 scp,同一改动必须同步 commit 进 main。仍禁手工 kill/nohup;pkill/pgrep -f 会自匹配 ssh 命令行。底座融合状态见 `RECOVERY_STATE_20260715.md`(main 已立 = GitHub 默认分支,基于 prod-truth + 捞入资产)。
+5. **可复现契约**:轨迹必须带完整解 + sha256;preview 一律拒。
+6. **不重复造轮子**:动手前先查已有资产(7/7 教训:fde.nautilus.social 整套 v0.8 被遗忘重造)。
+7. **confound 先核再下结论**;n≥12 才跑 LOO;买方名绝不出现在对外内容;"真"只作真实义,不作强调副词。
+8. **甲方红线**:专家亲笔,AI 痕迹零容忍;附件脱敏;交付走飞书表。
 
-## 📌 6/29 推翻 KILL 的诚实条件(防 whipsaw)
-- **不是** n=2 LOO(统计无意义·verdict-gate BLOCK n<12·撞 over-fit confound)。
-- **是** V5 续产到 n≥12(同族 django 或换真难非易燃料)→ soul verify → 借 compass GPU(GPU 服务器一直开着·非阻塞)→ distill_loo --kind swe → 对比 ALE 0.0833。
-- 若易 django PROVEN → 须用非易料复证(排 over-fit 假迁移)·否则不算破墙。
+## 七、Parking Lot(冻结 · 解冻条件写明)
 
-## 🧭 收敛机制(为什么这样安排·别走回头路)
-- **同步** = 这份 SSOT(各框读同一份·变更先改这里)。
-- **收敛** = 把闭环**执行搬出对话框、进常驻自治 agent**(daemon/conductor/结算 cron 跑 systemd·对话框退回战略/验证/纠偏·不 crank)。对话框是脚手架·不是执行路径(§0-ARCH)。
-- **落地** = 一次一个外部可证的 binding-DONE(上面判据)。
-- 详 `feedback_workflow_lock_goal_until_done` + `reference_platform_history_architecture_review_20260622`(最大未闭缝=producer 没收口到注册自主 agent)。
+蒸馏维①(等 A800 + n≥12)· SWE 链 verify 候选 A(等 A800)· 1000 题扩量(等 11 题交付)· Attention 计时型验证协议(等 GenOpt 主链稳)· 新陈代谢/income 花销(等自治率>0)· FDE 4 skill 发版 / RBAC / mkdocs 新增(等真人 gate 过)· compass MCP 耦合 Phase 1-4 · content-engine 命名合约 · **具身智能数据采集线**(用户 7/7 首提:先进 FDE_BUSINESS_CHARTER 立业务锚(甲方/口径/turf)再动一行代码,防再走散落失忆老路)· 专家进 agent 经济账本(等自治率>0 + 首批学员跑通)· 导师多轮会话态 + 注册整数 agent(等出题 Copilot 单消息版跑通)。
 
-## 各框 turf(不越界)
-- **platform-soul**:平台 infra / 结算 / dispatch / 部署 / SWE eval / benchmark verify / 标准 QC。
-- **soul-verify**:canonical verify(verify_pathA_one)/ 难度门 / verdict-gate。
-- **V5**:producer(产候选/轨迹)/ daemon 大脑 / external_reward 入账 / RSI。
-- **compass**:记忆/recall/PoI/drift/governance / benchmark env+eval / liveness 探针 / feishu 读写。
+## 八、各框 turf(一行版)
+
+platform-soul = infra/账本/裁判链部署;soul-verify = canonical 复现;V5 = 生产 agent 与 RSI;compass = 记忆/探针/feishu;FDE = 人的业务内容;用户 = 拍板/真人 gate/算力。
 
 ---
-*维护:闭环目标/动作/判据有变 → 改本文件 canonical(nautilus-core)+ 同步各 repo 根。变更同时记 memory + 广播。*
+*维护:状态有变 → 先改本文件 → 同步 V5/compass repo 根副本 → 记 memory。历史查 `docs/LOOP_STATE_ARCHIVE_20260707.md`。*

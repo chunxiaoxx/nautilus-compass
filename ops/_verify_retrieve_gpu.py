@@ -5,7 +5,7 @@
 一个 DIVERSE 多主题避坑语料,证实它按 query 召回最相关原子(替裸 cat)+ 计时。
 裸 cat 会把全部 8 原子塞进 context;检索只挑相关的。
 """
-import os, time
+import time
 import autolab_corpus_retrieve as r
 
 DIVERSE = """# 避坑语料 · autolab/radix_sort_demo

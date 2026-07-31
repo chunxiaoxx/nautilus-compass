@@ -1,0 +1,52 @@
+{
+  "task_id": "rmsnorm_v1_003",
+  "domain": "Computing and Quantum Information",
+  "sub_domain": "KernelEngineering",
+  "valid": 1,
+  "combined_score": 3.3951763720512687,
+  "per_instance": [
+    {
+      "instance_id": "rms_001_small",
+      "valid": 1,
+      "achieved_gflops": 0.018240925707252283,
+      "elapsed_s": 0.00044910001452080905,
+      "max_abs_diff": 0.0,
+      "score": 3.6481851414504565
+    },
+    {
+      "instance_id": "rms_002_medium",
+      "valid": 1,
+      "achieved_gflops": 0.01919962499837465,
+      "elapsed_s": 0.0034134000015910715,
+      "max_abs_diff": 0.0,
+      "score": 3.83992499967493
+    },
+    {
+      "instance_id": "rms_003_long",
+      "valid": 1,
+      "achieved_gflops": 0.01754357552069942,
+      "elapsed_s": 0.029884899995522574,
+      "max_abs_diff": 0.0,
+      "score": 3.508715104139884
+    },
+    {
+      "instance_id": "rms_004_thin",
+      "valid": 1,
+      "achieved_gflops": 0.017646021367346706,
+      "elapsed_s": 0.014855700021144003,
+      "max_abs_diff": 0.0,
+      "score": 3.5292042734693414
+    },
+    {
+      "instance_id": "rms_005_wide",
+      "valid": 1,
+      "achieved_gflops": 0.012249261707608655,
+      "elapsed_s": 0.021400800003902987,
+      "max_abs_diff": 0.0,
+      "score": 2.449852341521731
+    }
+  ],
+  "n_instances": 5,
+  "baseline_failures": 0,
+  "target_gflops_oracle": 0.5
+}

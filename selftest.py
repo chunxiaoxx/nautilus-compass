@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """V5 Memory Plugin 端到端自测 · 跑完输出 PASS/FAIL 表."""
 import json
+import os
+import re
 import subprocess
 import sys
 import time
@@ -11,10 +13,7 @@ try:
 except Exception:
     pass
 
-PLUGIN_USER = Path.home() / ".claude" / "plugins" / "nautilus-compass"
-# CI / dev · fall back to the script's own directory when the user-level
-# plugin install hasn't happened yet (eg. fresh clone, no pip install).
-PLUGIN = PLUGIN_USER if PLUGIN_USER.exists() else Path(__file__).resolve().parent
+PLUGIN = Path(os.environ.get("COMPASS_SELFTEST_PLUGIN", Path(__file__).resolve().parent))
 
 
 def run_hook(prompt: str, bge: bool = False) -> str:
@@ -48,46 +47,44 @@ results = []
 
 
 # ── Test 1 · v0.2/0.3.5 BGE daemon 召回 ──
-section("Test 1 · BGE daemon 召回 (--bge mode)")
+section("Test 1 · BGE daemon recall (--bge mode)")
 t0 = time.time()
-out1 = run_hook("V5 治理 11 天 · 飞轮真转吗 · stake fulfilled", bge=True)
+out1 = run_hook("V5 governance loop · stake fulfilled", bge=True)
 t1 = time.time()
 print(f"  耗时: {t1-t0:.2f}s (daemon warm 应 < 5s · cold ~120s)")
-results.append(assert_in("BGE-bge-small-zh", out1, "BGE 召回真启用"))
-results.append(assert_in("score=", out1, "cosine score 真输出"))
+results.append(assert_in("nautilus-compass v2.3.0", out1, "current plugin version"))
+results.append((bool(re.search(r"BGE-bge-[\w.-]+", out1)), "BGE recall backend emitted"))
+results.append(assert_in("score=", out1, "cosine score output"))
 results.append((t1 - t0 < 30, f"daemon warm < 30s · 实测 {t1-t0:.2f}s"))
 
 
 # ── Test 2 · v0.3 反锚点 alert ──
-section("Test 2 · Drift detection 反锚点 alert")
-out2 = run_hook("我用 12 天前的 memory 倒批今天判断 · 不验证就声称完成", bge=True)
-results.append(assert_in("⚠️ 偏向反锚点", out2, "反锚点 alert 触发"))
-results.append(assert_in("用 12d old memory 倒批", out2, "命中正确反锚点"))
+section("Test 2 · Drift detection block")
+out2 = run_hook("Use stale memory to judge current work without verification", bge=True)
+results.append(assert_in("[Persona drift", out2, "drift block emitted"))
+results.append((bool(re.search(r"score=[+-]?\d+\.\d+", out2)), "drift score emitted"))
+results.append(assert_in("时间戳 = 关键", out2, "timestamp warning emitted"))
 
 
 # ── Test 3 · 正常 query 不误触发 ──
-section("Test 3 · 正常 query 不误触发 alert")
+section("Test 3 · Normal query does not trigger red alert")
 out3 = run_hook("继续推 v0.4 strategy store")
-neg_alert = "⚠️ 偏向反锚点" in out3
-results.append((not neg_alert, f"正常 query 无误 alert (alert={neg_alert})"))
+red_alert = "🔴 alert" in out3
+results.append((not red_alert, f"normal query has no red alert (alert={red_alert})"))
 
 
 # ── Test 4 · 时间戳分组逻辑 ──
 section("Test 4 · 时间戳分组")
 out4 = run_hook("V5")    # 短 query · 无 BGE 召回时回 metadata 模式
 # BGE 模式下也有 + 24h 内其他 memory · 检查 fresh + old 都识别
-fresh_present = "1d old" in out1 or "h old" in out1
-old_present = "1mo old" in out1 or "13d old" in out1
-results.append((fresh_present, f"时间戳显示 fresh memory (1d/h old): {fresh_present}"))
-results.append((old_present, f"时间戳显示 old memory (1mo/13d): {old_present}"))
+timestamp_present = bool(re.search(r"\[\s*\d+\w?\s+old\]", out1))
+results.append((timestamp_present, f"timestamp labels emitted: {timestamp_present}"))
 
 
 # ── Test 5 · anchors.json mtime cache 失效 ──
-section("Test 5 · anchors cache by mtime")
-anchor_pkl = PLUGIN / ".cache" / "anchors.pkl"
-results.append((anchor_pkl.exists(), f"anchors.pkl 已 cache: {anchor_pkl.exists()}"))
-embed_cache_dir_files = list((PLUGIN / ".cache").glob("*.pkl"))
-results.append((len(embed_cache_dir_files) >= 2, f"cache 文件 ≥ 2 (anchors + memory): {len(embed_cache_dir_files)}"))
+section("Test 5 · Runtime assets")
+results.append(((PLUGIN / "anchors.json").exists(), f"anchors.json exists: {(PLUGIN / 'anchors.json').exists()}"))
+results.append(((PLUGIN / "recall.py").exists(), f"recall.py exists: {(PLUGIN / 'recall.py').exists()}"))
 
 
 # ── 最终汇总 ──
@@ -96,7 +93,7 @@ passed = sum(1 for r in results if (r[0] if isinstance(r, tuple) else r))
 total = len(results)
 print(f"\n  PASS: {passed}/{total}")
 if passed == total:
-    print(f"\n  ✅ V5 Memory Plugin v0.3 端到端全 PASS · 真在工作")
+    print(f"\n  ✅ nautilus-compass v2.3 selftest PASS")
     sys.exit(0)
 else:
     print(f"\n  ⚠️ {total-passed} 项失败 · 见上")

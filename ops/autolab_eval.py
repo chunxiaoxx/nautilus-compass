@@ -10,7 +10,7 @@
   python3 autolab_eval.py --task radix_sort --candidate path/to/solve.c [--trials 3] [--json out.json]
 约束:v1 支持 runtime_seconds 类(系统优化·候选=solve.c)。其他 metric 类(comparator/cycles/params)TODO。
 """
-import argparse, json, math, os, shutil, subprocess, sys, tempfile, tomllib
+import argparse, json, math, os, shutil, subprocess, tempfile, tomllib
 
 AUTOLAB = os.environ.get("AUTOLAB_DIR", "/mnt/datadisk0/autolab")
 

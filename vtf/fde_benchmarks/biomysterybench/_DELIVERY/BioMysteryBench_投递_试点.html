@@ -1,0 +1,44 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0"><title>BioMysteryBench 试点投递(4 题/2 模板)</title>
+<style>:root{--blue:#2f5496;--green:#2e7d32;--amber:#ed6c02;--red:#c62828;--bg:#f5f6fa}
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:#222;padding:24px}
+h1{font-size:22px;color:var(--blue)}.sub{color:#666;font-size:13px;margin:4px 0 18px}
+.cards{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:18px}.card{background:#fff;border-radius:10px;padding:14px 18px;box-shadow:0 1px 4px rgba(0,0,0,.08);min-width:130px}
+.card .n{font-size:26px;font-weight:700;color:var(--blue)}.card .l{font-size:12px;color:#777}
+.filters{margin-bottom:14px}.filters button{border:1px solid #ccc;background:#fff;border-radius:20px;padding:6px 15px;margin-right:8px;cursor:pointer;font-size:13px}
+.filters button.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.panel{background:#fff;border-radius:10px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:8px 10px;text-align:left;border-bottom:1px solid #eee}
+th{cursor:pointer;user-select:none;color:#555}th:hover{color:var(--blue)}
+.badge{padding:2px 8px;border-radius:10px;font-size:12px;color:#fff;font-weight:600}.A{background:var(--green)}.B{background:var(--amber)}.C{background:var(--red)}
+.empty{color:#999;text-align:center;padding:30px}canvas{width:100%;height:auto}</style></head><body>
+<h1>BioMysteryBench 试点投递(4 题/2 模板)</h1><div class="sub">compass lane · 单文件离线可开 · 双击即用</div>
+<div class="cards" id="cards"></div><div class="filters" id="filters"></div>
+<div class="grid"><div class="panel"><canvas id="chart" width="480" height="300"></canvas></div>
+<div class="panel"><table id="tbl"><thead></thead><tbody></tbody></table></div></div>
+<script>
+const DATA=[{"id": "bmb_vendor_000001", "模板": "VCF→变异临床意义", "数据条目": 3001, "白名单域名": 14, "内部答案": "PAH|Phenylketonuria", "human_solvable": "yes", "验证器": "0 REJECT", "唯一性": "致病命中=1", "数据包": "data/bmb_vendor_000001.zip", "难度": "20-30min"}, {"id": "bmb_vendor_000002", "模板": "VCF→变异临床意义", "数据条目": 3001, "白名单域名": 14, "内部答案": "ATP7B|Wilson disease", "human_solvable": "yes", "验证器": "0 REJECT", "唯一性": "致病命中=1", "数据包": "data/bmb_vendor_000002.zip", "难度": "20-30min"}, {"id": "bmb_vendor_000003", "模板": "序列→基因/病(BLAST)", "数据条目": 10, "白名单域名": 14, "内部答案": "HEXA|Tay-Sachs disease", "human_solvable": "yes", "验证器": "0 REJECT", "唯一性": "致病命中=1", "数据包": "data/bmb_vendor_000003.zip", "难度": "20-30min"}, {"id": "bmb_vendor_000004", "模板": "VCF→变异临床意义", "数据条目": 3001, "白名单域名": 14, "内部答案": "GALT|Galactosemia", "human_solvable": "yes", "验证器": "0 REJECT", "唯一性": "致病命中=1", "数据包": "data/bmb_vendor_000004.zip", "难度": "20-30min"}],CHART_COL="数据条目",CAT_COL="模板",NUMCOLS=["\u6570\u636e\u6761\u76ee", "\u767d\u540d\u5355\u57df\u540d"];
+let filter="ALL",sortKey=CHART_COL,sortDir=-1;
+const RC={A:"#2e7d32",B:"#ed6c02",C:"#c62828"},cats=["ALL",...[...new Set(DATA.map(d=>d[CAT_COL]))]];
+function view(){return filter==="ALL"?DATA:DATA.filter(d=>String(d[CAT_COL])===filter)}
+function cards(){const v=view();const avg=k=>v.length?Math.round(v.reduce((s,d)=>s+(+d[k]||0),0)/v.length):0;
+ const c=[["条目",v.length]].concat(NUMCOLS.slice(0,3).map(k=>[k+"均值",avg(k)]));
+ document.getElementById("cards").innerHTML=c.map(([l,n])=>`<div class="card"><div class="n">${n}</div><div class="l">${l}</div></div>`).join("")}
+function filters(){document.getElementById("filters").innerHTML=cats.map(o=>`<button class="${o===filter?'active':''}" onclick="setF('${o}')">${o==="ALL"?"全部":o}</button>`).join("")}
+function setF(f){filter=f;all()}
+function table(){const v=[...view()].sort((a,b)=>((a[sortKey]>b[sortKey])?1:-1)*sortDir);
+ if(!v.length){document.querySelector("#tbl thead").innerHTML="";document.querySelector("#tbl tbody").innerHTML='<tr><td class="empty">无数据(空状态)</td></tr>';return}
+ const cols=Object.keys(v[0]);
+ document.querySelector("#tbl thead").innerHTML="<tr>"+cols.map(k=>`<th onclick="setS('${k}')">${k}${sortKey===k?(sortDir<0?" ▼":" ▲"):""}</th>`).join("")+"</tr>";
+ document.querySelector("#tbl tbody").innerHTML=v.map(d=>"<tr>"+cols.map(k=>k==="rating"?`<td><span class="badge ${d[k]}">${d[k]}</span></td>`:`<td>${d[k]}</td>`).join("")+"</tr>").join("")}
+function setS(k){if(sortKey===k)sortDir*=-1;else{sortKey=k;sortDir=-1}table()}
+function chart(){const c=document.getElementById("chart"),x=c.getContext("2d");x.clearRect(0,0,c.width,c.height);
+ const v=view(),pad=40,w=c.width-pad*2,h=c.height-pad*2;if(!v.length){x.fillStyle="#999";x.fillText("无数据",pad,pad+h/2);return}
+ const gap=w/v.length,bw=gap*0.6,mx=Math.max(...v.map(d=>+d[CHART_COL]||0),1);
+ x.strokeStyle="#ddd";x.beginPath();x.moveTo(pad,pad);x.lineTo(pad,pad+h);x.lineTo(pad+w,pad+h);x.stroke();
+ [0,.25,.5,.75,1].forEach(t=>{const y=pad+h-t*h;x.fillStyle="#999";x.font="10px sans-serif";x.fillText(Math.round(t*mx),pad-26,y+3);x.strokeStyle="#f0f0f0";x.beginPath();x.moveTo(pad,y);x.lineTo(pad+w,y);x.stroke()});
+ v.forEach((d,i)=>{const bh=((+d[CHART_COL]||0)/mx)*h,xx=pad+gap*i+gap*.2,y=pad+h-bh;x.fillStyle=RC[d.rating]||"#2f5496";x.fillRect(xx,y,bw,bh);x.fillStyle="#444";x.fillText(d.id||i,xx,pad+h+14)});
+ x.fillStyle="#333";x.font="bold 12px sans-serif";x.fillText(CHART_COL+"(按评级着色)",pad,pad-12)}
+function all(){cards();filters();table();chart()}all();
+</script></body></html>

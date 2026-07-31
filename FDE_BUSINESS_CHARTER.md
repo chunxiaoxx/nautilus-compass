@@ -11,6 +11,40 @@ metadata:
 
 > 解决"平台/各对话框不知道三类业务/甲方需求/产出"的根因 = 缺一份所有对话框都读的权威业务锚。本文是那份锚。canonical 在 compass memory,副本在各 repo 根(`FDE_BUSINESS_CHARTER.md`)。**所有对话框 session-start 必读。** 变更走此文件,不另起炉灶。
 
+## 🎯🎯 §0-GOAL · 北极星 · 唯一要闭的环(2026-06-22 用户确认 · 收敛锚 · 所有对话框必守)
+> 全文 = `docs/NORTH_STAR_20260622.md`。解"搭建太多、一直分叉、从不收敛"= 缺钉死的中心目标。
+
+**唯一要闭的中心环**:FDE 产难题(强解+弱难倒=A 类燃料)→ 当蒸馏燃料 → **系统可证变强(两维度:① 模型权重变强=蒸馏破能力墙 ② agent 群体自治变强=注册自主 agent + survival/能力进化/marketplace/A2A 真接进来)** → 更强系统产更难/更值钱题 → **每圈外部 benchmark 证明** → 循环。
+
+**现状(诚实·6/26 更新)**:蒸馏**已真跑过**(6/23-26 多轮 ALE LOO)→ 三框 grounded 对齐锚 = **INCONCLUSIVE**(弱信号活·非 KILLED 非 PROVEN):distilled 四测一致解出 base 全 0 的 held-out(机制活)·但 win 0.08-0.22 从没近 0.6(没证成)。clean12 valid=0 是 fold-starvation artifact 非能力缺失(V5 confound·soul 接受撤回 KILLED);soul verdict-gate 连两次拦过早结论防 whipsaw。真瓶颈 = 燃料质量/可迁移性(非数量非 producer·SWE producer 已证干净)。两活杠杆:(a) 模型大小(3B 在核 confound·valid=0<1.5B 可疑) (b) SWE 同质料(V5 turf·卡 qwen 硬题解对率)。**中心环仍开·但从"没跑过"进到"弱信号活待证强"。** agent 自治端 producer 仍对话框没收口。详 thread thread_distill_confound_20260625。<br>*历史(旧):蒸馏一次没真跑过·内外飞轮管道合非因果耦合。*
+
+**🔪 分叉过滤器(每件提案必过)**:"这件直接推进中心环因果链(产燃料/跑蒸馏/证提升/收口注册 agent)吗?"0 贡献=默认不做(parking lot)。
+
+**收敛 forcing function(用户确认)**:**先证或先杀「蒸馏那一步」**(小批真 A 类燃料→QLoRA→外部 benchmark 对比 base)。出结果前其它不算进展。赢=放大;平/输=诚实杀假设回护城河副产品。
+
+**🔋 A 类燃料供给 = 充足(2026-06-22 用户纠正·非稀缺)**:甲方 11 类基准(§1.3)本身就是供给——"弱模型难倒"这半=买方口径自带(pass@5 ≤ 0.6 on doubao 2.0)·基准自带验证器(compass env)。A 类 = 在供给上跑「强模型先解+验证」minting pass(强解+doubao 败+验证器确认=trace·**一鱼两吃**:买方交付物+蒸馏燃料)。**T4 可产(QLoRA PoC 燃料)= FrontierSWE(最高产率·首选)/AutoLab/KernelBench**;H100-gated(王泽)=MLS/Frontier-Eng/PostTrain/Inference/RE/EXP。诚实:A 类产率=强模型解出率·真前沿(RE/MLRC)强模型也败=多落 B 类(护城河非燃料)。**之前"3 道"是已 minted 数·非供给。1287 饱和是因喂内部易题非买方基准。**
+
+## §0-B · 真值带宽 B · 统一裁决层(2026-07-17 沉淀 · 全文 `nautilus-v5/docs/EPIPHANY_TRUTH_BANDWIDTH_20260717.md` + `CORE_COGNITION_CARRIER_LADDER_20260717.md`)
+> 从四框几个月 grounded 复盘顿悟出的统一理论,自今日起为所有业务线共同裁决层。**B = 单位成本获得的不可伪造外部差异信号比特数**:量子化(最小单位=一次验证事件)· 不可自产(内部信号=噪声,V5 telemetry 双向造假铁证)· 有制造成本故有市场(FDE 生意的物理原因)。统一方程:**能力增长 = B × 时间 ÷ 载体写入成本**(载体阶梯 L0 context→L1 记忆/文件→L2 代码→L3 权重;L0-L2 只压缩重分配,抬天花板唯有分布外新模式写进 L3)。
+
+- 🔴 **裁决问句(所有框所有提案第一问)**:它**增加 B / 搬运 B / 消耗 B?** 增B(新 verifier/新外部信号源/更硬的门)默认做;搬B(检索/记忆/同步/交接)按复用效率排;耗B不获取(纯规划/编目式调研/自报仪表盘)默认不做。
+- **四尺度定位(我们=真值带宽公司)**:FDE=造B卖B(卖选择压非卖题)· agent=挣B(income 双门)· compass=存B(proof-of-recall/探针)· 四框协作=同步B(SSOT/合约)。蒸馏中心环=把攒下的 B 兑换成 L3 权重资本。
+- **LLM 后训练生效点(对 §0-GOAL 直接生效)**:A 类燃料 QC 从"难度"升级为"**分布外性**"——弱模型难倒=必要条件,强模型解法含 base 分布外新模式=充分条件。**A800 复跑协议:① on-policy 蒸馏 ② CoT-Pass@K 口径(答案+推理链都对)③ 同难度档×不同分布外性对照组(=预言 P1 实测)**。
+- **具身数据采集线业务锚(立此为锚 · 满足 LOOP_STATE parking"先进 CHARTER 立锚"前置)**:定位=真值带宽公司从数字 B 延伸到物理 B,非新战线。4D 域唯一裁决者=物理(贵/有损/墙钟锁死→fleet=唯一带宽并联);内部信号=伪随机数,世界模型=PRNG,保真度天花板=吞过的真实熵总量。**QC=不可仿真性(熵含量)×保真度,非小时数——卖种子不是卖录像**(采仿真器造不出的模式:接触丰富/形变/摩擦突变/长时程动力学)。定价预言 P4:市场价与仿真不可复现度强相关、与体量弱相关。
+- **平台/agent 生效点**:R3/R4 起每项改动标注 增B/搬B/耗B 并做 income 斜率归因(=预言 P2);R4 self_modify=Karpathy 三要素最小实现(单可改面+外部指标+硬时限·L2 不破墙);L1-L2 基建(编排/身份/marketplace)对接现成(ERC-8004/MCP/A2A)不自建。
+- **compass 生效点**:记分牌 5 数字=公司级 B 台账;proof-of-recall/轨迹核验=B 保管防腐;探针=B 计量权威(自报不算)。
+- **可证伪预言 P1-P4 = 理论还债日**(P1 燃料分布外性预测蒸馏成败@A800 · P2 不增B改动 income 斜率不变@R3/R4 · P3 verifier 强度↑买方付费↑ · P4 具身价与不可复现度相关):任一证伪→修理论不修数据。
+
+## 🔴🔴 §0-ARCH · 平台架构铁律 · agent 身份(2026-06-22 · 北极星的 agent 自治端 · 所有对话框必守)
+> 与业务并列的**架构 SSOT**。放此处保证所有对话框 session-start 读到。变更走此节。
+
+- **系统的 producer / agent 必须是「注册的自主 agent」**:走 `api/agent_first_register.py`(challenge→钱包→链上身份→生存记录→**整数 agent_id**)。能力/生存/市场/路由全挂在这个身份上。
+- **🔴 Claude Code 对话框(platform-soul / V5 / compass / FDE 这些对话框本身 · 及 kairos / v7-telegram 这类裸字符串 claim)不可计入系统、不可依赖**:每次 fresh session、无连贯记忆/稳定身份、人驱动、随时不在 = 它们是**脚手架 / 工具**,不是系统组件。用户原话:"不应该把 Claude code 对话框计入系统中,这个是不连贯的不靠谱的,我们不能依赖"。
+- **真常驻 producer(如 V5 的 qwen daemon nautilus-prime-001)→ 必须注册成真 agent**(agent_first_register),不再用裸字符串 claim。
+- **能力 / 生存 / 协作复用现成机制,不另造并行台账**(anchor #5):`capability_evolution.py`(integer-keyed 能力进化·promote/demote/expert·已接 marketplace/survival/a2a/academic)· `a2a.py`(任务拆分/worker claim)· `raid.py`(多 agent 共识)· `agent_marketplace`/`agent_hub` · survival。
+- **反例(2026-06-22 soul 踩坑·已纠)**:给对话框字符串身份造 string-keyed `platform_agent_capability_stats` 回写 = 迁就"对话框当 producer"反模式 + 在整数键生态外另起炉灶。该套已标非依赖(`api/fde_capability.py` docstring)·正道 = producer 注册化 + 复用 capability_evolution。
+- **落地次序(正道·推进中)**:① V5 把 daemon 注册成真 agent(拿 agent_id)② 平台 FDE claim 认注册身份 ③ FDE verdict → 现成 capability_evolution(整数 agent_id)。注册前不抢先写 wiring(无真 agent_id 可验=facade)。
+
 ## 0. 我方 / 甲方(🔴 保密)
 - **我方 = 伊洛科技**(用户的公司)。
 - **真甲方 = 保密大厂**(用户私下告知 · **任何对外/交付/呈现/outbound 绝不提名**)。
@@ -20,6 +54,9 @@ metadata:
 > 🔴🧺 **防丢失契约(治"狗熊掰玉米")**:本节钉死所有买方权威材料的位置(wiki token + obj_token + 本地路径 + 落地副本)。任何 session 接到"这是买方材料/需求/样例"→ **先查本节是否已钉:已钉=直接用,未钉=钉进来再开工**。绝不重新发现、不当新素材、不重复问用户。材料"丢了"= 本节没维护(违约)。
 > 🗂️ **FDE 飞书表全清单(防表 proliferation 反复丢失)= memory `reference_fde_feishu_tables_inventory_20260610`**。决策(用户 6/10):第1类生产表=`SZNlbPHvVab8MSs1gDrc1AEBnLd`/`tbll8ISZdHEfhfrO`「专家复核表」(data_001~006·买方列+内部隐藏复核列+附件)· 第3类 canonical=L3基准样例(EOVh·有附件)· 任务提交(Y7ZF·无附件)待补 env 并入 · daemon_cpu/capstone 迁第1类复核表。**找 FDE 表先读清单 memory,别重扫重问。**
 > 🏭 **第3类量产管线 + working LLM 配置 = memory `reference_fde_t3_candidate_pipeline_20260610`**。架构铁律(用户 6/10):**出题/整理/编排=Opus 子 agent · doubao-2.0-pro=唯一难倒测试对象 · 并行一题一 agent**。doubao=火山 ARK 网关(端点 `https://ark.cn-beijing.volces.com/api/plan/v3/chat/completions`·key=`ARK_API_KEY` in `~/.claude/.cache/.fde_api_secrets.env`·模型 doubao-seed-2.0-pro)。复用 `nautilus-v5/fde_capsule/_run_bvh_2arm.py` ARK completer。T4-doable 题池 + 候选盘点见 memory。**做量产/找 LLM key/模型先读本条,别再当 gated。**
+> 📥 **派单唯一入口(S1·2026-06-11 引擎侧 binding-DONE)= 飞书「FDE派活表」base `EOVhbQwA0a1HEOsgmxecgkBVnwh` / table `tbl69fankpoBhJfw`**(10列:task_uid/标题/业务线/一级类目/三级领域/L级/指派专家/验收标准/状态/备注)。流程:PM 填行(状态=待派单·**验收标准前置**)→ 平台 poller `services/fde_assignment_runner.py` 读「待派单」→ dispatch+具名 `expert:<专家>` claim(防 kairos 抢)→ 写回「已派单」。**human-author 路径(线1出题/线2教案·专家=作者)task_uid 命名 `expert_<line>_<slug>_<date>`(防 verdict-join 遮蔽)**。🔴 **老路径废弃:第3类名册 md + 手工 curl /dispatch 自此不再是派单入口**(走派活表)。设计 `docs/plans/2026-06-11-fde-org-production-engine-design.md` + plan `docs/plans/2026-06-11-s1-assignment-acceptance-plan.md`。
+> 📤 **S2 提交+QC 唯一通道(2026-06-12 引擎侧 binding-DONE)= 同派活表「提交内容/QC反馈」列**。流程:专家在行内「提交内容」粘亲笔稿+状态=已提交 → QC poller `services/fde_qc_feedback_runner.py`(并进 fde-assignment.timer 每5min)→ QC 判(线2=`knowledge-tutorial-assembler` validate 完整性+反AI advisory·线1=checklist_scorer LLM judge)→ 逐项 ✓/✗+reason 写回「QC反馈」+状态(已通过/已打回)→ 专家按 ✗ 改后状态改回「已提交」重判。引擎侧:**verdict(soul|qc|uid|稿hash)先于 report POST**(verdict-join 遮蔽反用·防 soul-scorer 用 T1 checklist 双判教案)·改稿留痕(每版新 verdict)。🔴 **老路径废弃:专家稿件走微信/文件/CLI 自 2026-06-12 不再是提交通道**(只走派活表「提交内容」)。plan `docs/plans/2026-06-12-s2-submission-qc-feedback-plan.md`。⚠️ 飞书 gotcha:单选字段改 options 必须原对象带 id 透传,只给 name 会重建选项清空既有行值(6/12 实证踩坑)。
+> 📦 **S3 交付+结算唯一通道(2026-06-14 引擎侧 binding-DONE)= 独立机密交付 base `Dx2qb1fjhaJadSs0ZeMc0teVn49`(交付表 `tblFkmEKTk4LIWJM` / 结算表 `tblFL7y3DejBQUvm`)≠ 派活 base(§E 物理隔离)**。流程:派活表「状态=已通过」行 → S3 poller `services/fde_delivery_runner.py`(待上云挂 timer)→ verdict-bus 只读门控(仅 overall_pass=True)→ `assemble_buyer_payload` 组装买方格式(line2=4 段结构列复用 `parse_tutorial_md`·line1=元数据透传·16 列 fde-row-assembler 后续片)写交付表 + `build_settlement_record`(任务/专家/verdict_score/token 成本/**应付=None pending 不臆造金额**/状态)写结算表 → 派活行状态→「已交付」。逻辑核 `services/fde_delivery.py`(10 TDD green·commit f0f73afba)。🔴 交付样本标 `provisional`:正文须专家过买方 AI 检测后才是终品(§2·引擎只组装专家原稿不改写)。首道实测:expert_t2_drift_detection(平台一手·线2)S1→S2→S3 全程流完=≥5 道第 1 道。🔴 **老路径废弃:手工填飞书买方表自 2026-06-14 不再是交付通道**(只走 S3 引擎)。
 
 1. **第1类 · 行业高难题目 / 垂域高难度题目(专家复现)** = 专家从真实工作场景出发设计 ≥8h 高难度题 · **16 列出题格式**。
    - 📄 买方需求(权威)= 飞书 wiki docx「垂域高难度题目项目--二期要求」· wiki node `F2ZqwOpzKiST4PkNtDOcHdgSnCc` · obj_token(docx)`Eg8zdrq7toXLggxrgBecC3donLf` · **落地副本 `vtf/BUYER_SPEC_T1_垂域高难度二期要求.txt`**(18975B · 含 9 固定一级类目 + 10 维打分口径)。
@@ -37,8 +74,8 @@ metadata:
 3. **第3类 · 基准测试样例(复现现成基准·非造新)** = 复现 11 类前沿 AI-eng benchmark · 交付**复现数据+轨迹+pass@k**(核心资产=验证器+可执行环境)。📄 权威需求 = **`vtf/BUYER_SPEC_T3_基准测试复现需求.md`**(2026-06-09 买方 Q&A 澄清 · 无独立 wiki)。
    - 质量标准 = **难倒模型:pass@5 ≤ 0.6 on doubao 2.0**(锁定该模型·5 次正确≤3 次·越难越好)· 验收双维:① 复现质量 ② 成品量级。
    - **不涉及算力**(Token 成本进报价)· coding 类买方已自采 swe-bench pro/terminal bench 2.0(3 月需求·可能已结束·**别重复**)。
-   - **🔴 11 类(买方权威·分类=「前沿 AI 研发自动化·AI 做 AI」·全文见 BUYER_SPEC_T3)**:MLS-Bench / Frontier-Eng / ResearchGym / PostTrainBench / InferenceBench / FrontierSWE / MLRC-Bench / RE-Bench / KernelBench / EXP-Bench / AutoLab。⚠️ 记忆/RAG 检索(LongMemEval 等)**不属此列**,别误塞第3类。
-   - **🆕 第 12 类 · ALE-Bench(我方纳入·2026-06-17 双轨定案)**:AHC 启发式优化题。**口径=score-regime(连续分数·非 pass@k 二元)→ 走独立环(rsi_two_arm+fleet)·不 retrofit pass@k marketplace**。一鱼两吃:RSI reward-uplift 燃料(score 连续=真梯度·补 pass@k 缺的梯度)+ 买方第 12 类交付。turf=compass env/scorer · V5 producer · 裁判=ALE scorer 系统外。📄 `fde_t3_scratch/DESIGN_ale_bench_dual_track_20260617.md` + `PLAN_ale_bench_phase1_20260617.md`。
+   - **🔴 12 类(权威·2026-06-22 加 ALE·分类=「前沿 AI 研发自动化·AI 做 AI」·全文见 BUYER_SPEC_T3)**:MLS-Bench / Frontier-Eng / ResearchGym / PostTrainBench / InferenceBench / FrontierSWE / MLRC-Bench / RE-Bench / KernelBench / EXP-Bench / AutoLab / **ALE-Bench**。⚠️ 记忆/RAG 检索(LongMemEval 等)**不属此列**,别误塞第3类。
+   - 🎯🎯 **ALE-Bench = RSI+FDE 双需求最契合的 workhorse(2026-06-22 用户指出·中心环首选燃料源)**:arXiv 2506.09050「Long-Horizon Objective-Driven Algorithm Engineering」·基于 AtCoder Heuristic Contests·**优化题·无已知精确解·连续打分(非二元)·长时程迭代**。为何契合:① 连续分数=**不饱和**(解 reward 饱和瓶颈·SWE 二元会饱和)② 原生迭代 RSI(连续题上 turn2>turn1 有真 headroom·修正 6/14 天花板结论=那只对二元任务成立)③ 蒸馏测量从二元 pass@k 变连续分数 delta(更干净易证伪)④ 难倒+headroom 并存(前沿 LLM 一致性/长时程有 gap)⑤ infra 轻(跑解算分·非 docker 仓)。
    - 覆盖/分工(实证):AutoLab=✅soul/v5 已 8 条 · **KernelBench=compass 主攻**(官方 env+attention+重标定 1.727x 过门·`vtf/fde_benchmarks/a_cluster/kernelbench_attention`)· **FrontierSWE=compass 主攻**(resolve env+flask-4045 pass@1=0.6 hard)· MLRC/ResearchGym=compass 次批 · MLS/Frontier-Eng/PostTrain/Inference/RE/EXP=需 H100 待王泽。
    - 脚手架 `vtf/fde-toolbox/出题脚手架_前沿AIeng_11benchmark.md` · A 簇 env GPU `/mnt/datadisk0`(`autolab_eval --task`)· turf:soul `benchmark_verifier`(pass@k/escapes=难倒)+ v5 产候选轨迹 + compass env/eval。
 - 📄 培训纪要(权威背景)= `~/Downloads/智能纪要：伊洛科技 培训交流会 2026年6月8日.md`(6/8 · 王泽/王彦鹏/王春晓 · 定方向+字段+定价+算力)。
@@ -72,6 +109,12 @@ metadata:
 - **静态基线(本宪章)**:放各 repo 根 `FDE_BUSINESS_CHARTER.md` + ingest 到各 project → 各对话框 session-start 必读。
 - **动态协调**:① 合约通道 `contract.py` close_loop(session_*.md frontmatter `contracts:` block · scanner 跨 project surface)② 语义通道 `ingest_obs(project=对方)`→recall(per-project)。
 - 🔴 **当前不便根因**:MCP 时断(语义通道挂)+ 散落 outbound md 靠对方碰巧读 + 本宪章之前不存在。**修复=本宪章 + MCP 稳定 + 未来统一控制面(平台看板 W-A)。**
+
+## 7. 🩻 跨框经验教训(2026-06-24 V5 加 · 所有框 session-start 读)
+三条高频跨框复发的根(机制 > 文字 · 写进 ≠ 生效):
+1. **confound-check 铁律**:任何「死/失败/0/撞墙/done/产出/已修」判断 → 先 grounded 实测排 confound 再下结论。不查别假设 · 产出 ≠ 解对 · 读对方封前别下结论 · 单点 ≠ 综合 · 字段名先验 · 过早下结论(过乐观/过悲观)都复发 · **外部 verify > 自说 done · 跨框 confound 互纠 > 自审**。(6/24 实证:soul verify 出 V5 SWE diff=0A · 纠正 glm≠qwen · 抓 6+ 个假失败。)
+2. **反掰玉米交接**:fresh session = 单焦点 + 起手必验 + parking lot 不准碰 + 完成判据=grounded 证据。长 handoff/列全 = 元级掰玉米。
+3. **三 agent 根因诊断**:走错在经济模型(无外部 reward → 棘轮空转)+ 节奏(规划替代落地)· 非版本号。先接外部 reward 源 + 对齐 daemon 大脑。
 
 ## 6. 维护
 - 业务/甲方/产出有变 → 改本文件(canonical compass memory)+ 同步各 repo 副本 + ingest 各 project。
