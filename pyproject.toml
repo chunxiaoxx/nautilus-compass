@@ -80,6 +80,7 @@ extend-exclude = [
 # Default ruff = pyflakes (F) + pycodestyle errors (E)
 # We disable the legacy-style E rules that conflict with the project's
 # compact one-line style; we keep the bug-catching F rules.
+select = ["E4", "E7", "E9", "F"]
 ignore = [
     "E701",  # multiple statements on one line (colon) · used in compact one-liners
     "E702",  # multiple statements on one line (semicolon) · same

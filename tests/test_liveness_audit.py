@@ -8,8 +8,6 @@ import sys
 import time
 from pathlib import Path
 
-import pytest
-
 # 加 worktree root 到 sys.path · 方便 import ops.liveness_audit
 _HERE = Path(__file__).resolve().parent
 _ROOT = _HERE.parent

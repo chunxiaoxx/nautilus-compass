@@ -13,7 +13,6 @@ the real bge-m3 + reranker path is verified on the GPU separately.
 """
 from __future__ import annotations
 
-import math
 import sys
 from pathlib import Path
 
