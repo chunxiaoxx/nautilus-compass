@@ -8,6 +8,7 @@ defines the packet boundary; it does not perform any of those later-stage action
 
 from __future__ import annotations
 
+import math
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, fields
 from typing import Any
@@ -31,10 +32,54 @@ class ExperiencePacket:
     policy_hint: str | None = None
 
     def __post_init__(self) -> None:
-        object.__setattr__(self, "tool_chain", _normalize_tool_chain(self.tool_chain))
+        for field_name in _STRING_FIELD_NAMES:
+            _validate_optional_string(field_name, getattr(self, field_name))
+        _validate_capsule_candidate(self.capsule_candidate)
+
+        normalized_tool_chain = _normalize_tool_chain(self.tool_chain)
+        normalized_reward_delta = _normalize_metric("reward_delta", self.reward_delta)
+        normalized_impact = _normalize_metric("impact", self.impact)
+
+        object.__setattr__(self, "tool_chain", normalized_tool_chain)
+        object.__setattr__(self, "reward_delta", normalized_reward_delta)
+        object.__setattr__(self, "impact", normalized_impact)
 
 
 _FIELD_NAMES = tuple(field.name for field in fields(ExperiencePacket))
+_STRING_FIELD_NAMES = (
+    "episode_id",
+    "parent_episode_id",
+    "task",
+    "action_kind",
+    "outcome",
+    "failure_mode",
+    "route_key",
+    "policy_hint",
+)
+
+
+def _validate_optional_string(field_name: str, value: Any) -> None:
+    if value is not None and not isinstance(value, str):
+        raise TypeError(f"{field_name} must be a string or None")
+
+
+def _validate_capsule_candidate(value: Any) -> None:
+    if value is not None and not isinstance(value, bool):
+        raise TypeError("capsule_candidate must be a bool or None")
+
+
+def _normalize_metric(field_name: str, value: Any) -> float | None:
+    if value is None:
+        return None
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise TypeError(f"{field_name} must be an int, float, or None")
+    try:
+        normalized = float(value)
+    except OverflowError as exc:
+        raise ValueError(f"{field_name} must be finite") from exc
+    if not math.isfinite(normalized):
+        raise ValueError(f"{field_name} must be finite")
+    return normalized
 
 
 def _normalize_tool_chain(value: Any) -> tuple[str, ...] | None:
