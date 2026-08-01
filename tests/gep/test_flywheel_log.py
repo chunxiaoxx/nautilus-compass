@@ -1,9 +1,12 @@
+import ast
 import re
 import sqlite3
 from dataclasses import FrozenInstanceError, fields
+from pathlib import Path
 
 import pytest
 
+import gep.flywheel_log as flywheel_log_module
 from gep.flywheel_event import canonical_event_bytes, event_from_mapping, hash_payload
 from gep.flywheel_log import AppendReceipt, FlywheelEventLog
 
@@ -416,3 +419,126 @@ def test_sqlite_write_failure_raises_and_rolls_back_instead_of_accepting(log_and
 
     assert event_log.count_events() == 0
     assert event_log.list_quarantine() == ()
+
+
+def test_harness_record_delegates_the_original_mapping_and_returns_frozen_receipt():
+    expected = AppendReceipt(
+        status="accepted",
+        source_event_id="source-1",
+        episode_id="episode-1",
+        event_hash="sha256:" + "0" * 64,
+        reason_code=None,
+    )
+
+    class RecordingLog:
+        def __init__(self):
+            self.recorded = None
+
+        def append(self, raw_event):
+            self.recorded = raw_event
+            return expected
+
+    raw = valid_mapping()
+    event_log = RecordingLog()
+    harness = flywheel_log_module.CompassS4AgentHarness(event_log)
+
+    receipt = harness.record(raw)
+
+    assert event_log.recorded is raw
+    assert receipt is expected
+    with pytest.raises(FrozenInstanceError):
+        receipt.status = "duplicate"
+
+
+@pytest.fixture
+def one_shot_harness(tmp_path):
+    event_log = FlywheelEventLog(
+        tmp_path / "one-shot.sqlite3",
+        registered_agent_ids={7},
+    )
+    try:
+        yield flywheel_log_module.CompassS4AgentHarness(event_log), event_log
+    finally:
+        event_log.close()
+
+
+def test_one_shot_harness_records_and_reads_episode_without_chat_runtime_imports(
+    one_shot_harness,
+):
+    harness, event_log = one_shot_harness
+    raw = valid_mapping()
+    expected = event_from_mapping(raw)
+
+    receipt = harness.record(raw)
+
+    assert receipt.status == "accepted"
+    assert event_log.get("source-1") == expected
+
+    source = Path(flywheel_log_module.__file__).read_text(encoding="utf-8")
+    imported_roots = set()
+    for node in ast.walk(ast.parse(source)):
+        if isinstance(node, ast.Import):
+            imported_roots.update(alias.name.split(".", 1)[0] for alias in node.names)
+        elif isinstance(node, ast.ImportFrom) and node.module:
+            imported_roots.add(node.module.split(".", 1)[0])
+    assert imported_roots.isdisjoint(
+        {"anthropic", "claude", "codex", "langchain", "langgraph", "openai"}
+    )
+
+
+def test_reducer_returns_frozen_awaiting_verdict_states_with_lineage():
+    first = event_from_mapping(valid_mapping())
+    second_raw = valid_mapping(
+        source_event_id="source-2",
+        episode_id="episode-2",
+        payload={"episode_id": "episode-2", "task": "verify another fix"},
+    )
+    second = event_from_mapping(second_raw)
+
+    states = flywheel_log_module.reduce_episode_states((second, first))
+
+    assert tuple(states) == ("episode-1", "episode-2")
+    assert states["episode-1"] == flywheel_log_module.EpisodeState(
+        episode_id="episode-1",
+        state="awaiting_verdict",
+        source_event_id="source-1",
+        event_hash=first.event_hash,
+    )
+    assert states["episode-2"].source_event_id == "source-2"
+    assert states["episode-2"].event_hash == second.event_hash
+    with pytest.raises(FrozenInstanceError):
+        states["episode-1"].state = "changed"
+
+
+def test_reducer_is_deterministic_and_does_not_modify_its_input():
+    first = event_from_mapping(valid_mapping())
+    second = event_from_mapping(
+        valid_mapping(
+            source_event_id="source-2",
+            episode_id="episode-2",
+            payload={"episode_id": "episode-2", "task": "second task"},
+        )
+    )
+    events = [second, first]
+    before = tuple(events)
+
+    first_result = flywheel_log_module.reduce_episode_states(events)
+    second_result = flywheel_log_module.reduce_episode_states(reversed(events))
+
+    assert first_result == second_result
+    assert tuple(first_result) == tuple(second_result) == ("episode-1", "episode-2")
+    assert tuple(events) == before
+
+
+def test_reducer_returns_empty_mapping_for_empty_input():
+    assert flywheel_log_module.reduce_episode_states(()) == {}
+
+
+def test_reducer_rejects_duplicate_episode_ids_without_silent_overwrite():
+    first = event_from_mapping(valid_mapping())
+    competing = event_from_mapping(valid_mapping(source_event_id="source-2"))
+
+    with pytest.raises(ValueError, match=r"duplicate episode_id: episode-1"):
+        flywheel_log_module.reduce_episode_states((first, competing))
+    with pytest.raises(ValueError, match=r"duplicate episode_id: episode-1"):
+        flywheel_log_module.reduce_episode_states((competing, first))
