@@ -34,7 +34,7 @@ jobs:
 
       - name: Install
         run: |
-          pip install -e .[modelscope,fast-download]
+          pip install -e .[modelscope,fast-download] pytest
           # 用 small-zh 跑 CI · 比 m3 快 20x · 内存 < 200MB
           python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('BAAI/bge-small-zh-v1.5')"
 
@@ -53,6 +53,9 @@ jobs:
           assert auc >= 0.65, f'AUC regression: {auc}'
           print(f'AUC OK: {auc}')
           "
+
+      - name: GEP flywheel tests
+        run: python -m pytest -q tests/gep
 
   lint:
     name: Lint
