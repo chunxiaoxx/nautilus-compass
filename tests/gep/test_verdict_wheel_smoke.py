@@ -1,11 +1,16 @@
 from __future__ import annotations
 
+import ast
 import json
 import os
+import re
 import shutil
 import subprocess
 import venv
+import zipfile
 from pathlib import Path
+
+import pytest
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -40,6 +45,20 @@ SNAPSHOT_EXCLUDED_NAMES = frozenset(
         "venv",
     }
 )
+SENSITIVE_NAME = re.compile(
+    r"(?:password|passwd|pwd|secret|token|api_?key|credential)",
+    re.IGNORECASE,
+)
+PRIVATE_KEY_MARKER = re.compile(r"-----BEGIN [A-Z0-9 ]*PRIVATE KEY-----")
+DATABASE_CREDENTIAL_URL = re.compile(
+    r"(?:postgres(?:ql)?|mysql|mariadb|mongodb(?:\+srv)?|redis)://"
+    r"[^\s/:@]+:[^\s/@]+@",
+    re.IGNORECASE,
+)
+GIT_TIMEOUT_SECONDS = 30
+BUILD_TIMEOUT_SECONDS = 300
+INSTALL_TIMEOUT_SECONDS = 180
+SMOKE_TIMEOUT_SECONDS = 30
 
 SMOKE_SCRIPT = r"""
 import json
@@ -171,18 +190,133 @@ print(
 """
 
 
-def run(command: list[str], *, cwd: Path) -> subprocess.CompletedProcess[str]:
-    result = subprocess.run(
-        command,
-        cwd=cwd,
-        capture_output=True,
-        text=True,
-        check=False,
-    )
+def run(
+    command: list[str],
+    *,
+    cwd: Path,
+    timeout_seconds: int,
+) -> subprocess.CompletedProcess[str]:
+    try:
+        result = subprocess.run(
+            command,
+            cwd=cwd,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=timeout_seconds,
+        )
+    except subprocess.TimeoutExpired as exc:
+        raise AssertionError(
+            f"command timed out after {timeout_seconds} seconds: {command!r}"
+        ) from exc
     assert result.returncode == 0, (
-        f"command failed: {command!r}\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}"
+        f"command failed with exit code {result.returncode}: {command!r}; "
+        "captured output omitted by the packaging security boundary"
     )
     return result
+
+
+def assert_packaging_inputs_clean(status_output: str) -> None:
+    dirty_paths = tuple(
+        line[3:] if len(line) > 3 else line
+        for line in status_output.splitlines()
+        if line.strip()
+    )
+    assert not dirty_paths, (
+        "packaging inputs are dirty; git archive HEAD would ignore these changes: "
+        + ", ".join(dirty_paths)
+    )
+
+
+def _assigned_names(node: object) -> tuple[str, ...]:
+    if isinstance(node, ast.Assign):
+        targets = node.targets
+    elif isinstance(node, ast.AnnAssign):
+        targets = (node.target,)
+    else:
+        return ()
+    return tuple(target.id for target in targets if isinstance(target, ast.Name))
+
+
+def plaintext_secret_findings(label: str, source: str) -> tuple[str, ...]:
+    findings: list[str] = []
+    if PRIVATE_KEY_MARKER.search(source):
+        findings.append(f"{label}: private-key marker")
+    if DATABASE_CREDENTIAL_URL.search(source):
+        findings.append(f"{label}: credential-bearing database URL")
+
+    try:
+        tree = ast.parse(source, filename=label)
+    except SyntaxError as exc:
+        findings.append(f"{label}:{exc.lineno or 1}: invalid Python source")
+        return tuple(findings)
+
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.Assign, ast.AnnAssign)):
+            value = node.value
+            if (
+                isinstance(value, ast.Constant)
+                and isinstance(value.value, str)
+                and value.value
+                and any(SENSITIVE_NAME.search(name) for name in _assigned_names(node))
+            ):
+                findings.append(
+                    f"{label}:{node.lineno}: plaintext sensitive assignment"
+                )
+        elif isinstance(node, ast.Call):
+            for keyword in node.keywords:
+                value = keyword.value
+                if (
+                    keyword.arg
+                    and SENSITIVE_NAME.search(keyword.arg)
+                    and isinstance(value, ast.Constant)
+                    and isinstance(value.value, str)
+                    and value.value
+                ):
+                    findings.append(
+                        f"{label}:{value.lineno}: plaintext sensitive call argument"
+                    )
+    return tuple(findings)
+
+
+def assert_no_plaintext_secrets_in_tree(root: Path) -> None:
+    findings: list[str] = []
+    for path in sorted(root.rglob("*")):
+        if not path.is_file():
+            continue
+        try:
+            source = path.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            continue
+        label = path.relative_to(root).as_posix()
+        if path.suffix == ".py":
+            findings.extend(plaintext_secret_findings(label, source))
+        else:
+            if PRIVATE_KEY_MARKER.search(source):
+                findings.append(f"{label}: private-key marker")
+            if DATABASE_CREDENTIAL_URL.search(source):
+                findings.append(f"{label}: credential-bearing database URL")
+    assert findings == [], "packaging source contains secret markers: " + ", ".join(findings)
+
+
+def assert_no_plaintext_secrets_in_wheel(wheel: Path) -> None:
+    findings: list[str] = []
+    with zipfile.ZipFile(wheel) as archive:
+        for name in sorted(archive.namelist()):
+            if name.endswith("/"):
+                continue
+            try:
+                source = archive.read(name).decode("utf-8")
+            except UnicodeDecodeError:
+                continue
+            if name.endswith(".py"):
+                findings.extend(plaintext_secret_findings(name, source))
+            else:
+                if PRIVATE_KEY_MARKER.search(source):
+                    findings.append(f"{name}: private-key marker")
+                if DATABASE_CREDENTIAL_URL.search(source):
+                    findings.append(f"{name}: credential-bearing database URL")
+    assert findings == [], "wheel contains secret markers: " + ", ".join(findings)
 
 
 def venv_python(venv_path: Path) -> Path:
@@ -195,6 +329,21 @@ def source_snapshot(tmp_path: Path) -> Path:
     archive_path = tmp_path / "source.zip"
     source_path = tmp_path / "source"
     source_path.mkdir()
+    status = run(
+        [
+            "git",
+            "-C",
+            str(REPO_ROOT),
+            "status",
+            "--porcelain=v1",
+            "--untracked-files=all",
+            "--",
+            *PACKAGING_INPUT_PATHS,
+        ],
+        cwd=tmp_path,
+        timeout_seconds=GIT_TIMEOUT_SECONDS,
+    )
+    assert_packaging_inputs_clean(status.stdout)
     run(
         [
             "git",
@@ -208,6 +357,7 @@ def source_snapshot(tmp_path: Path) -> Path:
             *PACKAGING_INPUT_PATHS,
         ],
         cwd=tmp_path,
+        timeout_seconds=GIT_TIMEOUT_SECONDS,
     )
     shutil.unpack_archive(archive_path, source_path, format="zip")
 
@@ -218,6 +368,7 @@ def source_snapshot(tmp_path: Path) -> Path:
         path.name == ".env" or path.name.startswith(".env.")
         for path in snapshot_members
     )
+    assert_no_plaintext_secrets_in_tree(source_path)
     return source_path
 
 
@@ -242,9 +393,11 @@ def build_wheel(tmp_path: Path) -> Path:
             str(source_path),
         ],
         cwd=tmp_path,
+        timeout_seconds=BUILD_TIMEOUT_SECONDS,
     )
     wheels = tuple(wheelhouse.glob("nautilus_compass-*.whl"))
     assert len(wheels) == 1, wheels
+    assert_no_plaintext_secrets_in_wheel(wheels[0])
     return wheels[0]
 
 
@@ -263,6 +416,7 @@ def install_wheel(tmp_path: Path, wheel: Path) -> Path:
             str(wheel),
         ],
         cwd=tmp_path,
+        timeout_seconds=INSTALL_TIMEOUT_SECONDS,
     )
     return python
 
@@ -282,6 +436,7 @@ def run_smoke(tmp_path: Path, python: Path) -> subprocess.CompletedProcess[str]:
             str(REPO_ROOT),
         ],
         cwd=outside_repo,
+        timeout_seconds=SMOKE_TIMEOUT_SECONDS,
     )
 
 
@@ -295,3 +450,45 @@ def test_installed_wheel_runs_verified_verdict_flow_outside_repo(tmp_path: Path)
         "state": "verified",
         "verified_outcome": "success",
     }
+
+
+def test_packaging_input_guard_rejects_dirty_rows_without_file_contents() -> None:
+    status_output = " M gep/flywheel_event.py\n?? middleware/local_override.py\n"
+
+    with pytest.raises(AssertionError, match="packaging inputs are dirty") as exc_info:
+        assert_packaging_inputs_clean(status_output)
+
+    message = str(exc_info.value)
+    assert "gep/flywheel_event.py" in message
+    assert "local_override.py" in message
+    assert "payload" not in message
+
+
+def test_secret_scanner_reports_location_without_secret_value(tmp_path: Path) -> None:
+    unsafe = tmp_path / "unsafe.py"
+    fake_secret = "not-a-real-secret-value"
+    unsafe.write_text(f'DATABASE_PASSWORD = "{fake_secret}"\n', encoding="utf-8")
+
+    findings = plaintext_secret_findings("unsafe.py", unsafe.read_text(encoding="utf-8"))
+
+    assert findings == ("unsafe.py:1: plaintext sensitive assignment",)
+    assert fake_secret not in "\n".join(findings)
+
+
+def test_run_reports_bounded_timeout_without_subprocess_output(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    def raise_timeout(*args: object, **kwargs: object) -> None:
+        raise subprocess.TimeoutExpired(
+            cmd=["python", "-m", "build"],
+            timeout=kwargs["timeout"],
+            output="not-a-real-secret-output",
+        )
+
+    monkeypatch.setattr(subprocess, "run", raise_timeout)
+
+    with pytest.raises(AssertionError, match="timed out after 7 seconds") as exc_info:
+        run(["python", "-m", "build"], cwd=tmp_path, timeout_seconds=7)
+
+    assert "not-a-real-secret-output" not in str(exc_info.value)
