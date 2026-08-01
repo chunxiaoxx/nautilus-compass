@@ -287,6 +287,25 @@ def test_flywheel_event_errors_supply_quarantine_reason_codes(log_and_path):
     }
 
 
+def test_quarantine_fingerprints_preserve_heterogeneous_mapping_key_types(tmp_path):
+    path = tmp_path / "typed-fingerprint.sqlite3"
+    event_log = FlywheelEventLog(path, registered_agent_ids={7})
+    first = valid_mapping()
+    first["unknown_input"] = {1: "second", "1": "first"}
+    second = valid_mapping()
+    second["unknown_input"] = {1: "second", "1": "second"}
+
+    event_log.append(first)
+    event_log.append(second)
+
+    rows = event_log.list_quarantine()
+    event_log.close()
+
+    assert len(rows) == 2
+    assert {row["reason_code"] for row in rows} == {"invalid_schema"}
+    assert len({row["fingerprint"] for row in rows}) == 2
+
+
 def test_quarantine_schema_and_rows_never_persist_raw_sensitive_input(tmp_path):
     path = tmp_path / "safe-quarantine.sqlite3"
     event_log = FlywheelEventLog(path, registered_agent_ids={7})
