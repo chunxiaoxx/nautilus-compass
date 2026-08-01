@@ -153,6 +153,26 @@ def test_accepted_rows_are_immutable_at_the_database_boundary(log_and_path):
     assert event_log.get("source-1") == event_from_mapping(valid_mapping())
 
 
+def test_quarantine_rows_are_immutable_at_the_database_boundary(log_and_path):
+    event_log, path = log_and_path
+    event_log.append(valid_mapping(agent_id=8))
+    original_rows = event_log.list_quarantine()
+
+    assert len(original_rows) == 1
+
+    for statement in (
+        "UPDATE flywheel_quarantine SET reason_code = 'tampered'",
+        "DELETE FROM flywheel_quarantine",
+    ):
+        with sqlite3.connect(path) as connection:
+            with pytest.raises(sqlite3.IntegrityError, match="immutable"):
+                connection.execute(statement)
+
+    rows = event_log.list_quarantine()
+    assert len(rows) == 1
+    assert rows == original_rows
+
+
 def test_replaying_the_same_event_100_times_is_idempotent(log_and_path):
     event_log, _ = log_and_path
     raw = valid_mapping()
