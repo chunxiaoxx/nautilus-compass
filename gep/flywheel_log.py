@@ -289,35 +289,59 @@ def _safe_id(value: Any) -> str | None:
 
 
 def _fingerprint(value: Any) -> str:
-    try:
-        normalized = _fingerprint_value(value)
-        encoded = json.dumps(
-            normalized,
-            sort_keys=True,
-            separators=(",", ":"),
-            ensure_ascii=False,
-            allow_nan=False,
-        ).encode("utf-8")
-    except (TypeError, ValueError, OverflowError):
-        encoded = repr(type(value)).encode("utf-8")
+    normalized = _fingerprint_value(value)
+    encoded = _fingerprint_json(normalized)
     return f"sha256:{hashlib.sha256(encoded).hexdigest()}"
 
 
 def _fingerprint_value(value: Any) -> Any:
     if isinstance(value, Mapping):
-        return {
-            str(key): _fingerprint_value(item)
-            for key, item in sorted(value.items(), key=lambda pair: repr(pair[0]))
-        }
-    if isinstance(value, (list, tuple)):
-        return [_fingerprint_value(item) for item in value]
-    if isinstance(value, (str, int, bool)) or value is None:
-        return value
+        entries = [
+            [_fingerprint_value(key), _fingerprint_value(item)]
+            for key, item in value.items()
+        ]
+        entries.sort(key=_fingerprint_json)
+        return {"type": "mapping", "entries": entries}
+    if isinstance(value, list):
+        return {"type": "list", "items": [_fingerprint_value(item) for item in value]}
+    if isinstance(value, tuple):
+        return {"type": "tuple", "items": [_fingerprint_value(item) for item in value]}
+    if value is None:
+        return {"type": "none"}
+    if isinstance(value, bool):
+        return {"type": "bool", "value": value}
+    if isinstance(value, int):
+        return {"type": "int", "value": str(value)}
+    if isinstance(value, str):
+        return {"type": "str", "value": value}
     if isinstance(value, float):
-        if value != value or value in (float("inf"), float("-inf")):
-            return repr(value)
-        return value
-    return {"type": f"{type(value).__module__}.{type(value).__qualname__}"}
+        return {"type": "float", "value": repr(value)}
+    if isinstance(value, bytes):
+        return {"type": "bytes", "value": value.hex()}
+    if isinstance(value, bytearray):
+        return {"type": "bytearray", "value": bytes(value).hex()}
+    if isinstance(value, set):
+        items = [_fingerprint_value(item) for item in value]
+        items.sort(key=_fingerprint_json)
+        return {"type": "set", "items": items}
+    if isinstance(value, frozenset):
+        items = [_fingerprint_value(item) for item in value]
+        items.sort(key=_fingerprint_json)
+        return {"type": "frozenset", "items": items}
+    return {
+        "type": f"{type(value).__module__}.{type(value).__qualname__}",
+        "repr": repr(value),
+    }
+
+
+def _fingerprint_json(value: Any) -> bytes:
+    return json.dumps(
+        value,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=False,
+        allow_nan=False,
+    ).encode("utf-8")
 
 
 def _timestamp() -> str:
