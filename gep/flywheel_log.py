@@ -25,29 +25,67 @@ from gep.flywheel_event import (
 _SAFE_ID_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$")
 _T = TypeVar("_T")
 _LEGACY_EVENT_SCHEMA = (
-    ("source_event_id", "TEXT", 1, None, 0),
-    ("episode_id", "TEXT", 1, None, 0),
-    ("event_hash", "TEXT", 1, None, 0),
-    ("envelope_json", "BLOB", 1, None, 0),
-    ("accepted_at", "TEXT", 1, None, 0),
+    ("source_event_id", "TEXT", 1, None, 0, 0),
+    ("episode_id", "TEXT", 1, None, 0, 0),
+    ("event_hash", "TEXT", 1, None, 0, 0),
+    ("envelope_json", "BLOB", 1, None, 0, 0),
+    ("accepted_at", "TEXT", 1, None, 0, 0),
 )
 _V2_EVENT_SCHEMA = (
-    ("source_event_id", "TEXT", 1, None, 0),
-    ("event_kind", "TEXT", 1, None, 0),
-    ("episode_id", "TEXT", 1, None, 0),
-    ("parent_event_id", "TEXT", 0, None, 0),
-    ("agent_id", "INTEGER", 1, None, 0),
-    ("event_hash", "TEXT", 1, None, 0),
-    ("envelope_json", "BLOB", 1, None, 0),
-    ("accepted_at", "TEXT", 1, None, 0),
+    ("source_event_id", "TEXT", 1, None, 0, 0),
+    ("event_kind", "TEXT", 1, None, 0, 0),
+    ("episode_id", "TEXT", 1, None, 0, 0),
+    ("parent_event_id", "TEXT", 0, None, 0, 0),
+    ("agent_id", "INTEGER", 1, None, 0, 0),
+    ("event_hash", "TEXT", 1, None, 0, 0),
+    ("envelope_json", "BLOB", 1, None, 0, 0),
+    ("accepted_at", "TEXT", 1, None, 0, 0),
 )
 _QUARANTINE_SCHEMA = (
-    ("source_event_id", "TEXT", 0, None, 0),
-    ("episode_id", "TEXT", 0, None, 0),
-    ("reason_code", "TEXT", 1, None, 0),
-    ("fingerprint", "TEXT", 1, None, 0),
-    ("quarantined_at", "TEXT", 1, None, 0),
+    ("source_event_id", "TEXT", 0, None, 0, 0),
+    ("episode_id", "TEXT", 0, None, 0, 0),
+    ("reason_code", "TEXT", 1, None, 0, 0),
+    ("fingerprint", "TEXT", 1, None, 0, 0),
+    ("quarantined_at", "TEXT", 1, None, 0, 0),
 )
+_V2_DUPLICATED_EVENT_FIELDS = (
+    "source_event_id",
+    "event_kind",
+    "episode_id",
+    "parent_event_id",
+    "agent_id",
+    "event_hash",
+)
+_LEGACY_EVENT_TABLE_SQL = """
+    CREATE TABLE flywheel_events (
+        source_event_id TEXT NOT NULL UNIQUE,
+        episode_id TEXT NOT NULL UNIQUE,
+        event_hash TEXT NOT NULL,
+        envelope_json BLOB NOT NULL,
+        accepted_at TEXT NOT NULL
+    )
+"""
+_V2_EVENT_TABLE_SQL = """
+    CREATE TABLE flywheel_events (
+        source_event_id TEXT NOT NULL UNIQUE,
+        event_kind TEXT NOT NULL,
+        episode_id TEXT NOT NULL,
+        parent_event_id TEXT,
+        agent_id INTEGER NOT NULL,
+        event_hash TEXT NOT NULL UNIQUE,
+        envelope_json BLOB NOT NULL,
+        accepted_at TEXT NOT NULL
+    )
+"""
+_QUARANTINE_TABLE_SQL = """
+    CREATE TABLE flywheel_quarantine (
+        source_event_id TEXT,
+        episode_id TEXT,
+        reason_code TEXT NOT NULL,
+        fingerprint TEXT NOT NULL,
+        quarantined_at TEXT NOT NULL
+    )
+"""
 _EVENT_TRIGGER_NAMES = frozenset(
     {
         "flywheel_events_immutable_update",
@@ -342,18 +380,7 @@ class FlywheelEventLog:
 
     def _create_event_schema(self) -> None:
         statements = (
-            """
-            CREATE TABLE flywheel_events (
-                source_event_id TEXT NOT NULL UNIQUE,
-                event_kind TEXT NOT NULL,
-                episode_id TEXT NOT NULL,
-                parent_event_id TEXT,
-                agent_id INTEGER NOT NULL,
-                event_hash TEXT NOT NULL UNIQUE,
-                envelope_json BLOB NOT NULL,
-                accepted_at TEXT NOT NULL
-            )
-            """,
+            _V2_EVENT_TABLE_SQL,
             """
             CREATE INDEX flywheel_events_episode_kind
                 ON flywheel_events (episode_id, event_kind)
@@ -388,15 +415,7 @@ class FlywheelEventLog:
 
     def _create_quarantine_schema(self) -> None:
         statements = (
-            """
-            CREATE TABLE flywheel_quarantine (
-                source_event_id TEXT,
-                episode_id TEXT,
-                reason_code TEXT NOT NULL,
-                fingerprint TEXT NOT NULL,
-                quarantined_at TEXT NOT NULL
-            )
-            """,
+            _QUARANTINE_TABLE_SQL,
             """
             CREATE UNIQUE INDEX flywheel_quarantine_dedup
                 ON flywheel_quarantine (reason_code, fingerprint)
@@ -464,6 +483,7 @@ class FlywheelEventLog:
     def _validate_legacy_schema(self) -> None:
         if self._user_version() != 0:
             raise ValueError("legacy flywheel schema has an unexpected user_version")
+        self._validate_table_sql("flywheel_events", _LEGACY_EVENT_TABLE_SQL)
         self._validate_quarantine_schema()
         self._validate_trigger_names("flywheel_events", _EVENT_TRIGGER_NAMES)
         expected_indexes = {
@@ -478,6 +498,7 @@ class FlywheelEventLog:
             raise ValueError("v2 flywheel schema requires user_version 2")
         if self._table_schema("flywheel_events") != _V2_EVENT_SCHEMA:
             raise ValueError("unknown or partial v2 flywheel_events schema")
+        self._validate_table_sql("flywheel_events", _V2_EVENT_TABLE_SQL)
         self._validate_quarantine_schema()
         self._validate_trigger_names("flywheel_events", _EVENT_TRIGGER_NAMES)
         expected_indexes = {
@@ -494,10 +515,12 @@ class FlywheelEventLog:
         if self._index_specs("flywheel_events") != expected_indexes:
             raise ValueError("v2 flywheel_events indexes are incomplete")
         self._validate_named_sql(_V2_INDEX_SQL_BY_NAME)
+        self._validate_v2_rows()
 
     def _validate_quarantine_schema(self) -> None:
         if self._table_schema("flywheel_quarantine") != _QUARANTINE_SCHEMA:
             raise ValueError("unknown or partial flywheel_quarantine schema")
+        self._validate_table_sql("flywheel_quarantine", _QUARANTINE_TABLE_SQL)
         self._validate_trigger_names(
             "flywheel_quarantine",
             _QUARANTINE_TRIGGER_NAMES,
@@ -512,6 +535,23 @@ class FlywheelEventLog:
         if self._index_specs("flywheel_quarantine") != expected_indexes:
             raise ValueError("flywheel_quarantine indexes are incomplete")
         self._validate_named_sql(_QUARANTINE_INDEX_SQL_BY_NAME)
+
+    def _validate_v2_rows(self) -> None:
+        rows = self._connection.execute(
+            "SELECT * FROM flywheel_events ORDER BY rowid"
+        ).fetchall()
+        for position, row in enumerate(rows, start=1):
+            event, _ = _canonical_event_from_row(
+                row,
+                position,
+                "v2 flywheel_events",
+            )
+            for field_name in _V2_DUPLICATED_EVENT_FIELDS:
+                if row[field_name] != getattr(event, field_name):
+                    raise ValueError(
+                        f"v2 flywheel_events row {position} "
+                        f"has a {field_name} mismatch"
+                    )
 
     def _validate_trigger_names(
         self,
@@ -557,6 +597,19 @@ class FlywheelEventLog:
         ):
             raise ValueError("named flywheel index schema is invalid")
 
+    def _validate_table_sql(self, table_name: str, expected_sql: str) -> None:
+        row = self._connection.execute(
+            """
+            SELECT sql FROM sqlite_master
+            WHERE type = 'table' AND name = ?
+            """,
+            (table_name,),
+        ).fetchone()
+        actual = {} if row is None else {table_name: row[0]}
+        expected = {table_name: expected_sql}
+        if _normalized_schema_sql_map(actual) != _normalized_schema_sql_map(expected):
+            raise ValueError(f"{table_name} table schema is invalid")
+
     def _table_exists(self, table_name: str) -> bool:
         return (
             self._connection.execute(
@@ -572,7 +625,7 @@ class FlywheelEventLog:
     def _table_schema(self, table_name: str) -> tuple[tuple[Any, ...], ...]:
         return tuple(
             tuple(row[1:])
-            for row in self._connection.execute(f"PRAGMA table_info({table_name})")
+            for row in self._connection.execute(f"PRAGMA table_xinfo({table_name})")
         )
 
     def _index_specs(
@@ -616,23 +669,32 @@ def _normalized_schema_sql_map(
     return normalized
 
 
-def _validated_legacy_row(
+def _canonical_event_from_row(
     row: sqlite3.Row,
     position: int,
-) -> tuple[Any, ...]:
+    label: str,
+) -> tuple[FlywheelEvent, bytes]:
     try:
         envelope_bytes = bytes(row["envelope_json"])
         raw_event = json.loads(envelope_bytes)
         event = event_from_mapping(raw_event)
     except (FlywheelEventError, TypeError, ValueError, UnicodeError) as exc:
-        raise ValueError(
-            f"legacy flywheel_events row {position} has an invalid envelope"
-        ) from exc
+        raise ValueError(f"{label} row {position} has an invalid envelope") from exc
 
     if canonical_event_bytes(event) != envelope_bytes:
-        raise ValueError(
-            f"legacy flywheel_events row {position} is not canonical"
-        )
+        raise ValueError(f"{label} row {position} is not canonical")
+    return event, envelope_bytes
+
+
+def _validated_legacy_row(
+    row: sqlite3.Row,
+    position: int,
+) -> tuple[Any, ...]:
+    event, envelope_bytes = _canonical_event_from_row(
+        row,
+        position,
+        "legacy flywheel_events",
+    )
     if event.event_kind != EVENT_KIND_EPISODE:
         raise ValueError(
             f"legacy flywheel_events row {position} is not an episode"

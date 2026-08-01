@@ -217,6 +217,204 @@ def database_snapshot(path):
         }
 
 
+def create_v2_database(path):
+    episode = event_from_mapping(valid_mapping())
+    verdict = event_from_mapping(valid_verdict_mapping())
+    event_log = FlywheelEventLog(path, registered_agent_ids={7, 8})
+    try:
+        assert event_log.append(episode.to_mapping()).status == "accepted"
+        assert event_log.append(verdict.to_mapping()).status == "accepted"
+    finally:
+        event_log.close()
+    return episode, verdict
+
+
+def tamper_v2_event_row(path, corruption):
+    with sqlite3.connect(path) as connection:
+        connection.execute("DROP TRIGGER flywheel_events_immutable_update")
+        if corruption == "invalid_envelope":
+            connection.execute(
+                "UPDATE flywheel_events SET envelope_json = ? WHERE source_event_id = ?",
+                (sqlite3.Binary(b"{not-json"), "source-1"),
+            )
+        elif corruption == "noncanonical_envelope":
+            canonical = connection.execute(
+                "SELECT envelope_json FROM flywheel_events WHERE source_event_id = ?",
+                ("source-1",),
+            ).fetchone()[0]
+            noncanonical = canonical.replace(b'","', b'", "', 1)
+            connection.execute(
+                "UPDATE flywheel_events SET envelope_json = ? WHERE source_event_id = ?",
+                (sqlite3.Binary(noncanonical), "source-1"),
+            )
+        elif corruption == "event_hash":
+            connection.execute(
+                "UPDATE flywheel_events SET event_hash = ? WHERE source_event_id = ?",
+                ("sha256:" + "0" * 64, "source-1"),
+            )
+        elif corruption == "source_event_id":
+            connection.execute(
+                "UPDATE flywheel_events SET source_event_id = ? WHERE source_event_id = ?",
+                ("tampered-source", "source-1"),
+            )
+        elif corruption == "event_kind":
+            connection.execute(
+                "UPDATE flywheel_events SET event_kind = ? WHERE source_event_id = ?",
+                ("verdict", "source-1"),
+            )
+        elif corruption == "episode_id":
+            connection.execute(
+                "UPDATE flywheel_events SET episode_id = ? WHERE source_event_id = ?",
+                ("tampered-episode", "source-1"),
+            )
+        elif corruption == "parent_event_id":
+            connection.execute(
+                """
+                UPDATE flywheel_events
+                SET parent_event_id = ?
+                WHERE source_event_id = ?
+                """,
+                ("tampered-parent", "verdict-source-1"),
+            )
+        elif corruption == "agent_id":
+            connection.execute(
+                "UPDATE flywheel_events SET agent_id = ? WHERE source_event_id = ?",
+                (99, "source-1"),
+            )
+        else:
+            raise AssertionError(f"unsupported corruption: {corruption}")
+        connection.execute(
+            """
+            CREATE TRIGGER flywheel_events_immutable_update
+            BEFORE UPDATE ON flywheel_events
+            BEGIN
+                SELECT RAISE(ABORT, 'flywheel_events rows are immutable');
+            END
+            """
+        )
+
+
+def replace_v2_table_with_tampered_ddl(path, table_name, tamper):
+    if table_name == "flywheel_events":
+        regular_columns = (
+            "source_event_id, event_kind, episode_id, parent_event_id, "
+            "agent_id, event_hash, envelope_json, accepted_at"
+        )
+        generated_expression = "event_kind"
+        base_ddl = """
+            CREATE TABLE flywheel_events (
+                source_event_id TEXT NOT NULL UNIQUE,
+                event_kind TEXT NOT NULL,
+                episode_id TEXT NOT NULL,
+                parent_event_id TEXT,
+                agent_id INTEGER NOT NULL,
+                event_hash TEXT NOT NULL UNIQUE,
+                envelope_json BLOB NOT NULL,
+                accepted_at TEXT NOT NULL{suffix}
+            )
+        """
+        drop_objects = (
+            "DROP TRIGGER flywheel_events_immutable_update",
+            "DROP TRIGGER flywheel_events_immutable_delete",
+            "DROP INDEX flywheel_events_episode_kind",
+            "DROP INDEX flywheel_events_one_episode",
+            "DROP INDEX flywheel_events_one_verdict_per_agent",
+        )
+        create_objects = (
+            """
+            CREATE INDEX flywheel_events_episode_kind
+                ON flywheel_events (episode_id, event_kind)
+            """,
+            """
+            CREATE UNIQUE INDEX flywheel_events_one_episode
+                ON flywheel_events (episode_id)
+                WHERE event_kind = 'episode'
+            """,
+            """
+            CREATE UNIQUE INDEX flywheel_events_one_verdict_per_agent
+                ON flywheel_events (episode_id, agent_id)
+                WHERE event_kind = 'verdict'
+            """,
+            """
+            CREATE TRIGGER flywheel_events_immutable_update
+            BEFORE UPDATE ON flywheel_events
+            BEGIN
+                SELECT RAISE(ABORT, 'flywheel_events rows are immutable');
+            END
+            """,
+            """
+            CREATE TRIGGER flywheel_events_immutable_delete
+            BEFORE DELETE ON flywheel_events
+            BEGIN
+                SELECT RAISE(ABORT, 'flywheel_events rows are immutable');
+            END
+            """,
+        )
+    else:
+        regular_columns = (
+            "source_event_id, episode_id, reason_code, fingerprint, quarantined_at"
+        )
+        generated_expression = "reason_code"
+        base_ddl = """
+            CREATE TABLE flywheel_quarantine (
+                source_event_id TEXT,
+                episode_id TEXT,
+                reason_code TEXT NOT NULL,
+                fingerprint TEXT NOT NULL,
+                quarantined_at TEXT NOT NULL{suffix}
+            )
+        """
+        drop_objects = (
+            "DROP TRIGGER flywheel_quarantine_immutable_update",
+            "DROP TRIGGER flywheel_quarantine_immutable_delete",
+            "DROP INDEX flywheel_quarantine_dedup",
+        )
+        create_objects = (
+            """
+            CREATE UNIQUE INDEX flywheel_quarantine_dedup
+                ON flywheel_quarantine (reason_code, fingerprint)
+            """,
+            """
+            CREATE TRIGGER flywheel_quarantine_immutable_update
+            BEFORE UPDATE ON flywheel_quarantine
+            BEGIN
+                SELECT RAISE(ABORT, 'flywheel_quarantine rows are immutable');
+            END
+            """,
+            """
+            CREATE TRIGGER flywheel_quarantine_immutable_delete
+            BEFORE DELETE ON flywheel_quarantine
+            BEGIN
+                SELECT RAISE(ABORT, 'flywheel_quarantine rows are immutable');
+            END
+            """,
+        )
+
+    suffix = (
+        ", CHECK (length(source_event_id) > 0)"
+        if tamper == "extra_check"
+        else (
+            ", tamper_marker TEXT GENERATED ALWAYS AS "
+            f"({generated_expression}) VIRTUAL"
+        )
+    )
+    backup_name = f"{table_name}_backup"
+    with sqlite3.connect(path) as connection:
+        for statement in drop_objects:
+            connection.execute(statement)
+        connection.execute(f"ALTER TABLE {table_name} RENAME TO {backup_name}")
+        connection.execute(base_ddl.format(suffix=suffix))
+        connection.execute(
+            f"""
+            INSERT INTO {table_name} ({regular_columns})
+            SELECT {regular_columns} FROM {backup_name}
+            """
+        )
+        connection.execute(f"DROP TABLE {backup_name}")
+        for statement in create_objects:
+            connection.execute(statement)
+
+
 def table_columns(path, table):
     with sqlite3.connect(path) as connection:
         return tuple(row[1] for row in connection.execute(f"PRAGMA table_info({table})"))
@@ -328,6 +526,7 @@ def test_first_valid_append_is_committed_and_readable(log_and_path):
 
 def test_fresh_database_has_exact_v2_schema_indexes_triggers_and_version(tmp_path):
     path = tmp_path / "fresh-v2.sqlite3"
+    episode = event_from_mapping(valid_mapping())
     event_log = FlywheelEventLog(path, registered_agent_ids={7, 8})
     event_log.close()
 
@@ -351,6 +550,66 @@ def test_fresh_database_has_exact_v2_schema_indexes_triggers_and_version(tmp_pat
                 "SELECT name FROM sqlite_master WHERE type = 'trigger'"
             )
         }
+        connection.execute(
+            """
+            INSERT INTO flywheel_events
+                (source_event_id, event_kind, episode_id, parent_event_id,
+                 agent_id, event_hash, envelope_json, accepted_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                episode.source_event_id,
+                episode.event_kind,
+                episode.episode_id,
+                episode.parent_event_id,
+                episode.agent_id,
+                episode.event_hash,
+                sqlite3.Binary(canonical_event_bytes(episode)),
+                LEGACY_ACCEPTED_AT,
+            ),
+        )
+        with pytest.raises(
+            sqlite3.IntegrityError,
+            match="UNIQUE constraint failed: flywheel_events.source_event_id",
+        ):
+            connection.execute(
+                """
+                INSERT INTO flywheel_events
+                    (source_event_id, event_kind, episode_id, parent_event_id,
+                     agent_id, event_hash, envelope_json, accepted_at)
+                VALUES (?, 'verdict', ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    episode.source_event_id,
+                    "unique-source-check",
+                    episode.source_event_id,
+                    8,
+                    "sha256:" + "a" * 64,
+                    sqlite3.Binary(b"{}"),
+                    LEGACY_ACCEPTED_AT,
+                ),
+            )
+        with pytest.raises(
+            sqlite3.IntegrityError,
+            match="UNIQUE constraint failed: flywheel_events.event_hash",
+        ):
+            connection.execute(
+                """
+                INSERT INTO flywheel_events
+                    (source_event_id, event_kind, episode_id, parent_event_id,
+                     agent_id, event_hash, envelope_json, accepted_at)
+                VALUES (?, 'verdict', ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    "unique-hash-source",
+                    "unique-hash-check",
+                    episode.source_event_id,
+                    9,
+                    episode.event_hash,
+                    sqlite3.Binary(b"{}"),
+                    LEGACY_ACCEPTED_AT,
+                ),
+            )
 
     assert version == 2
     assert table_columns(path, "flywheel_events") == (
@@ -379,7 +638,11 @@ def test_fresh_database_has_exact_v2_schema_indexes_triggers_and_version(tmp_pat
     }
 
     reopened = FlywheelEventLog(path, registered_agent_ids={7, 8})
-    reopened.close()
+    try:
+        assert reopened.get(episode.source_event_id) == episode
+        assert reopened.count_events() == 1
+    finally:
+        reopened.close()
 
 
 def test_accepted_rows_are_immutable_at_the_database_boundary(log_and_path):
@@ -465,6 +728,50 @@ def test_reopen_preserves_canonical_envelope_bytes_and_event_hash(tmp_path):
         reopened.close()
 
 
+def test_untouched_v2_episode_and_verdict_rows_reopen_without_mutation(tmp_path):
+    path = tmp_path / "valid-v2-restart.sqlite3"
+    episode, verdict = create_v2_database(path)
+    before_snapshot = database_snapshot(path)
+    before_bytes = path.read_bytes()
+
+    reopened = FlywheelEventLog(path, registered_agent_ids={7, 8})
+    try:
+        assert reopened.list_events() == (episode, verdict)
+        assert reopened.count_events() == 2
+    finally:
+        reopened.close()
+
+    assert database_snapshot(path) == before_snapshot
+    assert path.read_bytes() == before_bytes
+
+
+@pytest.mark.parametrize(
+    "corruption",
+    (
+        "invalid_envelope",
+        "noncanonical_envelope",
+        "event_hash",
+        "source_event_id",
+        "event_kind",
+        "episode_id",
+        "parent_event_id",
+        "agent_id",
+    ),
+)
+def test_tampered_v2_event_row_fails_reopen_without_mutation(corruption, tmp_path):
+    path = tmp_path / f"tampered-v2-row-{corruption}.sqlite3"
+    create_v2_database(path)
+    tamper_v2_event_row(path, corruption)
+    before_snapshot = database_snapshot(path)
+    before_bytes = path.read_bytes()
+
+    with pytest.raises(ValueError, match="v2 flywheel_events row"):
+        FlywheelEventLog(path, registered_agent_ids={7, 8})
+
+    assert database_snapshot(path) == before_snapshot
+    assert path.read_bytes() == before_bytes
+
+
 def test_exact_s4_2_legacy_database_migrates_transactionally_without_rewriting(tmp_path):
     path = tmp_path / "legacy.sqlite3"
     expected, envelope_bytes = create_legacy_database(path)
@@ -528,6 +835,35 @@ def test_exact_s4_2_legacy_database_migrates_transactionally_without_rewriting(t
         "flywheel_quarantine_immutable_update",
         "flywheel_quarantine_immutable_delete",
     }
+
+    reopened = FlywheelEventLog(path, registered_agent_ids={7})
+    try:
+        restored = reopened.get(expected.source_event_id)
+        assert restored == expected
+        assert restored.source_event_id == expected.source_event_id
+        assert restored.episode_id == expected.episode_id
+        assert restored.event_hash == expected.event_hash
+        assert canonical_event_bytes(restored) == envelope_bytes
+        assert reopened.count_events() == 1
+        with sqlite3.connect(path) as connection:
+            persisted = connection.execute(
+                """
+                SELECT source_event_id, episode_id, event_hash,
+                       envelope_json, accepted_at
+                FROM flywheel_events
+                """
+            ).fetchone()
+            version = connection.execute("PRAGMA user_version").fetchone()[0]
+        assert persisted == (
+            expected.source_event_id,
+            expected.episode_id,
+            expected.event_hash,
+            envelope_bytes,
+            LEGACY_ACCEPTED_AT,
+        )
+        assert version == 2
+    finally:
+        reopened.close()
 
     with sqlite3.connect(path) as connection:
         with pytest.raises(sqlite3.IntegrityError, match="immutable"):
@@ -678,6 +1014,34 @@ def test_same_shape_but_tampered_v2_schema_raises_without_mutation(
         FlywheelEventLog(path, registered_agent_ids={7})
 
     assert database_snapshot(path) == before
+
+
+@pytest.mark.parametrize(
+    ("table_name", "tamper"),
+    (
+        ("flywheel_events", "extra_check"),
+        ("flywheel_events", "generated_column"),
+        ("flywheel_quarantine", "extra_check"),
+        ("flywheel_quarantine", "generated_column"),
+    ),
+)
+def test_noncanonical_table_ddl_or_hidden_column_fails_without_mutation(
+    table_name,
+    tamper,
+    tmp_path,
+):
+    path = tmp_path / f"tampered-ddl-{table_name}-{tamper}.sqlite3"
+    event_log = FlywheelEventLog(path, registered_agent_ids={7})
+    event_log.close()
+    replace_v2_table_with_tampered_ddl(path, table_name, tamper)
+    before_snapshot = database_snapshot(path)
+    before_bytes = path.read_bytes()
+
+    with pytest.raises(ValueError, match="schema"):
+        FlywheelEventLog(path, registered_agent_ids={7})
+
+    assert database_snapshot(path) == before_snapshot
+    assert path.read_bytes() == before_bytes
 
 
 def test_same_source_with_changed_content_conflicts_without_overwrite(log_and_path):
