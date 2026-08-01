@@ -295,42 +295,46 @@ def _fingerprint(value: Any) -> str:
 
 
 def _fingerprint_value(value: Any) -> Any:
-    if isinstance(value, Mapping):
+    if type(value) is dict:
         entries = [
             [_fingerprint_value(key), _fingerprint_value(item)]
             for key, item in value.items()
         ]
         entries.sort(key=_fingerprint_json)
         return {"type": "mapping", "entries": entries}
-    if isinstance(value, list):
+    if type(value) is list:
         return {"type": "list", "items": [_fingerprint_value(item) for item in value]}
-    if isinstance(value, tuple):
+    if type(value) is tuple:
         return {"type": "tuple", "items": [_fingerprint_value(item) for item in value]}
     if value is None:
         return {"type": "none"}
-    if isinstance(value, bool):
+    if type(value) is bool:
         return {"type": "bool", "value": value}
-    if isinstance(value, int):
+    if type(value) is int:
         return {"type": "int", "value": str(value)}
-    if isinstance(value, str):
+    if type(value) is str:
         return {"type": "str", "value": value}
-    if isinstance(value, float):
-        return {"type": "float", "value": repr(value)}
-    if isinstance(value, bytes):
+    if type(value) is float:
+        return {"type": "float", "value": float.hex(value)}
+    if type(value) is bytes:
         return {"type": "bytes", "value": value.hex()}
-    if isinstance(value, bytearray):
+    if type(value) is bytearray:
         return {"type": "bytearray", "value": bytes(value).hex()}
-    if isinstance(value, set):
+    if type(value) is set:
         items = [_fingerprint_value(item) for item in value]
         items.sort(key=_fingerprint_json)
         return {"type": "set", "items": items}
-    if isinstance(value, frozenset):
+    if type(value) is frozenset:
         items = [_fingerprint_value(item) for item in value]
         items.sort(key=_fingerprint_json)
         return {"type": "frozenset", "items": items}
+    value_type = type(value)
+    module = type.__getattribute__(value_type, "__module__")
+    qualname = type.__getattribute__(value_type, "__qualname__")
     return {
-        "type": f"{type(value).__module__}.{type(value).__qualname__}",
-        "repr": repr(value),
+        "type": "opaque",
+        "class": f"{module}.{qualname}",
+        "value": "<opaque>",
     }
 
 

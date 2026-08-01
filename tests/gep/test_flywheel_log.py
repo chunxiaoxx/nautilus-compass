@@ -8,6 +8,15 @@ from gep.flywheel_event import canonical_event_bytes, event_from_mapping, hash_p
 from gep.flywheel_log import AppendReceipt, FlywheelEventLog
 
 
+class UnknownFingerprintValue:
+    pass
+
+
+class ExplosiveReprValue:
+    def __repr__(self):
+        raise RuntimeError("repr must not run")
+
+
 def valid_mapping(**overrides):
     payload = overrides.pop(
         "payload",
@@ -304,6 +313,42 @@ def test_quarantine_fingerprints_preserve_heterogeneous_mapping_key_types(tmp_pa
     assert len(rows) == 2
     assert {row["reason_code"] for row in rows} == {"invalid_schema"}
     assert len({row["fingerprint"] for row in rows}) == 2
+
+
+def test_unknown_class_instances_have_stable_quarantine_fingerprint(tmp_path):
+    path = tmp_path / "opaque-fingerprint.sqlite3"
+    event_log = FlywheelEventLog(path, registered_agent_ids={7})
+    first = valid_mapping()
+    first["unknown_input"] = UnknownFingerprintValue()
+    second = valid_mapping()
+    second["unknown_input"] = UnknownFingerprintValue()
+
+    try:
+        first_receipt = event_log.append(first)
+        second_receipt = event_log.append(second)
+        rows = event_log.list_quarantine()
+    finally:
+        event_log.close()
+
+    assert first_receipt.status == second_receipt.status == "quarantined"
+    assert second_receipt == first_receipt
+    assert len(rows) == 1
+    assert re.fullmatch(r"sha256:[0-9a-f]{64}", rows[0]["fingerprint"])
+
+
+def test_unknown_object_with_failing_repr_is_quarantined(tmp_path):
+    path = tmp_path / "explosive-repr.sqlite3"
+    event_log = FlywheelEventLog(path, registered_agent_ids={7})
+    raw = valid_mapping()
+    raw["unknown_input"] = ExplosiveReprValue()
+
+    try:
+        receipt = event_log.append(raw)
+    finally:
+        event_log.close()
+
+    assert receipt.status == "quarantined"
+    assert receipt.reason_code == "invalid_schema"
 
 
 def test_quarantine_schema_and_rows_never_persist_raw_sensitive_input(tmp_path):
