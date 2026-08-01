@@ -89,3 +89,15 @@ def test_reconcile_with_local_outcomes_settles(tmp_path: Path):
                       memory_root=tmp_path, cache_dir=tmp_path)
     assert res["settled"] == 1
     assert "cumulative_impact:" in mem.read_text(encoding="utf-8")
+
+
+def test_hash_name_session_falls_back_to_frontmatter_date(tmp_path: Path):
+    # session filenames changed to hash form; local outcome still recovers from frontmatter date
+    p = tmp_path / "session_abcd1234.md"
+    p.write_text(
+        "---\nname: hash session\ndate: 2026-06-02\ndrift: green\n---\nbody\n",
+        encoding="utf-8",
+    )
+    outs = LO.local_outcomes(tmp_path, actor="unknown")
+    assert len(outs) == 1
+    assert outs[0]["ts"] == "2026-06-02T00:00:00+00:00"
