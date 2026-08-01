@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
 import subprocess
 import sys
 import venv
@@ -9,6 +10,37 @@ from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+PACKAGING_INPUT_PATHS = (
+    "pyproject.toml",
+    "README.md",
+    "LICENSE",
+    "LICENSE-ANCHORS",
+    ":(top,glob)*.py",
+    ":(top,glob)anchors*.json",
+    ":(top,glob)*.sh",
+    "gep",
+    "sdk",
+    "middleware",
+    "storage",
+    "proof",
+    "drift",
+    "recall_pkg",
+    "skills_pkg",
+    "judges",
+)
+SNAPSHOT_EXCLUDED_NAMES = frozenset(
+    {
+        ".cache",
+        ".git",
+        ".pytest_cache",
+        ".venv",
+        "__pycache__",
+        "build",
+        "dist",
+        "tests",
+        "venv",
+    }
+)
 
 SMOKE_SCRIPT = r"""
 import json
@@ -160,7 +192,38 @@ def venv_python(venv_path: Path) -> Path:
     return venv_path / "bin" / "python"
 
 
+def source_snapshot(tmp_path: Path) -> Path:
+    archive_path = tmp_path / "source.zip"
+    source_path = tmp_path / "source"
+    source_path.mkdir()
+    run(
+        [
+            "git",
+            "-C",
+            str(REPO_ROOT),
+            "archive",
+            "--format=zip",
+            f"--output={archive_path}",
+            "HEAD",
+            "--",
+            *PACKAGING_INPUT_PATHS,
+        ],
+        cwd=tmp_path,
+    )
+    shutil.unpack_archive(archive_path, source_path, format="zip")
+
+    snapshot_members = tuple(source_path.rglob("*"))
+    assert not any(path.name in SNAPSHOT_EXCLUDED_NAMES for path in snapshot_members)
+    assert not any(path.name.endswith(".egg-info") for path in snapshot_members)
+    assert not any(
+        path.name == ".env" or path.name.startswith(".env.")
+        for path in snapshot_members
+    )
+    return source_path
+
+
 def build_wheel(tmp_path: Path) -> Path:
+    source_path = source_snapshot(tmp_path)
     wheelhouse = tmp_path / "wheelhouse"
     wheelhouse.mkdir()
     run(
@@ -174,7 +237,7 @@ def build_wheel(tmp_path: Path) -> Path:
             "--no-deps",
             "--wheel-dir",
             str(wheelhouse),
-            str(REPO_ROOT),
+            str(source_path),
         ],
         cwd=tmp_path,
     )
