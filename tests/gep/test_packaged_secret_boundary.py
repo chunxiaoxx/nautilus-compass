@@ -16,6 +16,7 @@ PACKAGE_DIRS = (
     "recall_pkg",
     "skills_pkg",
     "judges",
+    "mcp_durable",
 )
 SENSITIVE_NAME = re.compile(
     r"(?:password|passwd|pwd|secret|token|api_?key|credential)",

@@ -31,6 +31,7 @@ PACKAGING_INPUT_PATHS = (
     "recall_pkg",
     "skills_pkg",
     "judges",
+    "mcp_durable",
 )
 SNAPSHOT_EXCLUDED_NAMES = frozenset(
     {
@@ -66,6 +67,7 @@ import sys
 from pathlib import Path
 
 import gep
+import mcp_durable.event_store
 from gep.flywheel_event import (
     EVENT_KIND_EPISODE,
     EVENT_KIND_VERDICT,
