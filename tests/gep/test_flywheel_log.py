@@ -52,7 +52,7 @@ def valid_verdict_mapping(**overrides):
         "payload",
         {
             "episode_id": "episode-1",
-            "episode_event_hash": "sha256:" + "1" * 64,
+            "episode_event_hash": event_from_mapping(valid_mapping()).event_hash,
             "outcome": "success",
             "verifier_kind": "software_test",
             "verifier_version": "pytest-8.4",
@@ -220,7 +220,11 @@ def database_snapshot(path):
 def create_v2_database(path):
     episode = event_from_mapping(valid_mapping())
     verdict = event_from_mapping(valid_verdict_mapping())
-    event_log = FlywheelEventLog(path, registered_agent_ids={7, 8})
+    event_log = FlywheelEventLog(
+        path,
+        registered_agent_ids={7, 8},
+        registered_verifier_ids={8},
+    )
     try:
         assert event_log.append(episode.to_mapping()).status == "accepted"
         assert event_log.append(verdict.to_mapping()).status == "accepted"
@@ -459,6 +463,41 @@ def test_registered_agent_ids_must_be_positive_non_bool_integers(
 
     with pytest.raises(ValueError, match="positive non-bool integers"):
         FlywheelEventLog(path, registered_agent_ids)
+
+    assert not path.exists()
+
+
+@pytest.mark.parametrize(
+    "registered_verifier_ids",
+    [(True,), (False,), (0,), (-1,), (1.5,), ("8",), (8, True)],
+)
+def test_registered_verifier_ids_must_be_positive_non_bool_integers(
+    tmp_path, registered_verifier_ids
+):
+    path = tmp_path / "invalid-verifier-registry.sqlite3"
+
+    with pytest.raises(ValueError, match="positive non-bool integers"):
+        FlywheelEventLog(
+            path,
+            registered_agent_ids={7, 8},
+            registered_verifier_ids=registered_verifier_ids,
+        )
+
+    assert not path.exists()
+
+
+def test_registered_verifier_ids_must_be_a_subset_of_registered_agents(tmp_path):
+    path = tmp_path / "non-agent-verifier.sqlite3"
+
+    with pytest.raises(
+        ValueError,
+        match="registered_verifier_ids must be a subset of registered_agent_ids",
+    ):
+        FlywheelEventLog(
+            path,
+            registered_agent_ids={7},
+            registered_verifier_ids={8},
+        )
 
     assert not path.exists()
 
@@ -1095,7 +1134,11 @@ def test_same_episode_under_another_source_conflicts_and_is_quarantined(log_and_
 
 def test_episode_and_linked_verdict_append_to_one_generic_journal(tmp_path):
     path = tmp_path / "linked-events.sqlite3"
-    event_log = FlywheelEventLog(path, registered_agent_ids={7, 8})
+    event_log = FlywheelEventLog(
+        path,
+        registered_agent_ids={7, 8},
+        registered_verifier_ids={8},
+    )
     episode_raw = valid_mapping()
     verdict_raw = valid_verdict_mapping()
     episode = event_from_mapping(episode_raw)
@@ -1146,24 +1189,33 @@ def test_episode_and_linked_verdict_append_to_one_generic_journal(tmp_path):
     ]
 
 
-def test_verdict_before_episode_does_not_claim_the_episode_slot(tmp_path):
+def test_orphan_verdict_before_episode_does_not_claim_the_episode_slot(tmp_path):
     path = tmp_path / "verdict-first.sqlite3"
-    event_log = FlywheelEventLog(path, registered_agent_ids={7, 8})
+    event_log = FlywheelEventLog(
+        path,
+        registered_agent_ids={7, 8},
+        registered_verifier_ids={8},
+    )
     try:
         verdict_receipt = event_log.append(valid_verdict_mapping())
         episode_receipt = event_log.append(valid_mapping())
 
-        assert verdict_receipt.status == "accepted"
+        assert verdict_receipt.status == "conflict"
+        assert verdict_receipt.reason_code == "orphan_parent"
         assert episode_receipt.status == "accepted"
-        assert event_log.count_events() == 2
-        assert event_log.list_quarantine() == ()
+        assert event_log.count_events() == 1
+        assert event_log.list_quarantine()[0]["reason_code"] == "orphan_parent"
     finally:
         event_log.close()
 
 
 def test_partial_unique_indexes_enforce_episode_and_verdict_cardinality(tmp_path):
     path = tmp_path / "partial-uniques.sqlite3"
-    event_log = FlywheelEventLog(path, registered_agent_ids={7, 8, 9})
+    event_log = FlywheelEventLog(
+        path,
+        registered_agent_ids={7, 8, 9},
+        registered_verifier_ids={8, 9},
+    )
     episode = event_from_mapping(valid_mapping())
     first_verdict = event_from_mapping(valid_verdict_mapping())
     second_verdict = event_from_mapping(
