@@ -29,6 +29,7 @@ _SUBCOMMANDS: dict[str, tuple[str, str]] = {
     "session-writer": ("session_writer", "main"),
     "mcp": ("mcp_server", "main"),
     "a2a": ("sdk.a2a_adapter", "serve"),
+    "doctor": ("runtime_doctor", "main"),
 }
 
 _DESCRIPTIONS = {
@@ -37,6 +38,7 @@ _DESCRIPTIONS = {
     "session-writer": "distill + write a session memory file",
     "mcp": "run the MCP stdio server (Claude Code/Desktop)",
     "a2a": "serve the A2A HTTP adapter",
+    "doctor": "read-only active release and process diagnostics",
 }
 
 
