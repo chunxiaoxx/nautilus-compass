@@ -20,12 +20,15 @@ from pathlib import Path
 
 import psycopg
 
-PG_DSN = os.environ.get(
-    "COMPASS_PG_DSN",
-    "postgresql://v5:v5_local_password_change_me@127.0.0.1:5432/v5",
-)
+PG_DSN = os.environ.get("COMPASS_PG_DSN", "").strip()
 PLUGIN_DIR = Path(__file__).resolve().parent.parent
 PROFILES = ["general", "finance", "legal", "medical", "vc", "zenmind", "adapted"]
+
+
+def _require_dsn(value: str, variable_name: str) -> str:
+    if not value:
+        raise RuntimeError(f"{variable_name} is required")
+    return value
 
 
 def load_bge():
@@ -93,10 +96,11 @@ def ingest_one(conn, model, profile: str) -> int:
 
 
 def main():
-    print(f"[pg] {PG_DSN.split('@')[1] if '@' in PG_DSN else PG_DSN}")
+    dsn = _require_dsn(PG_DSN, "COMPASS_PG_DSN")
+    print("[pg] connecting via COMPASS_PG_DSN")
     model = load_bge()
     total = 0
-    with psycopg.connect(PG_DSN) as conn:
+    with psycopg.connect(dsn) as conn:
         for profile in PROFILES:
             try:
                 total += ingest_one(conn, model, profile)

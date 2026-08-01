@@ -31,10 +31,7 @@ except ImportError:
     sys.exit(1)
 
 
-DSN = os.environ.get(
-    "NAUTILUS_DSN",
-    "postgresql://nautilus_user:nautilus2024@127.0.0.1:5432/nautilus_production",
-)
+DSN = os.environ.get("NAUTILUS_DSN", "").strip()
 STATE_FILE = Path(os.environ.get(
     "ENGAGEMENT_FOLLOWUP_STATE",
     str(Path.home() / ".cache" / "compass" / "engagement-followup-state.json"),
@@ -42,6 +39,12 @@ STATE_FILE = Path(os.environ.get(
 MAX_FOLLOWUPS_PER_RUN = int(os.environ.get("ENGAGEMENT_MAX_FOLLOWUPS", "5"))
 FOLLOWUP_AGE_MIN_DAYS = int(os.environ.get("ENGAGEMENT_FOLLOWUP_AGE_MIN", "7"))
 FOLLOWUP_AGE_MAX_DAYS = int(os.environ.get("ENGAGEMENT_FOLLOWUP_AGE_MAX", "21"))
+
+
+def _require_dsn(value: str, variable_name: str) -> str:
+    if not value:
+        raise RuntimeError(f"{variable_name} is required")
+    return value
 
 
 def _load_state() -> dict:
@@ -173,9 +176,12 @@ def main() -> int:
     errors = 0
 
     try:
-        conn = psycopg.connect(DSN, autocommit=True)
+        conn = psycopg.connect(
+            _require_dsn(DSN, "NAUTILUS_DSN"),
+            autocommit=True,
+        )
     except Exception as e:
-        sys.stderr.write(f"PG connect fail: {e!r}\n")
+        sys.stderr.write(f"PG connect fail: {type(e).__name__}\n")
         return 1
 
     try:
