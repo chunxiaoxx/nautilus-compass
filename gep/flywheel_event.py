@@ -1,4 +1,4 @@
-"""Strict, canonical episode envelope for the Compass S4 flywheel."""
+"""Strict, canonical event envelope for the Compass S4 flywheel."""
 
 from __future__ import annotations
 
@@ -13,17 +13,27 @@ from types import MappingProxyType
 from typing import Any
 
 from gep.experience_packet import ExperiencePacket, to_frontmatter
+from gep.verdict_packet import VerdictPacket, to_payload as verdict_to_payload
 
 
 SCHEMA_VERSION = "compass.flywheel.event.v1"
 EVENT_KIND_EPISODE = "episode"
+EVENT_KIND_VERDICT = "verdict"
 PAYLOAD_SCHEMA = "compass.experience_packet.v0"
+VERDICT_PAYLOAD_SCHEMA = "compass.verdict_packet.v0"
 
 _HASH_PATTERN = re.compile(r"sha256:[0-9a-f]{64}")
 _UTC_RFC3339_PATTERN = re.compile(
     r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z"
 )
-_PAYLOAD_KEYS = frozenset(field.name for field in fields(ExperiencePacket))
+_EXPERIENCE_PAYLOAD_KEYS = frozenset(
+    field.name for field in fields(ExperiencePacket)
+)
+_VERDICT_PAYLOAD_KEYS = frozenset(field.name for field in fields(VerdictPacket))
+_PAYLOAD_SCHEMA_BY_KIND = {
+    EVENT_KIND_EPISODE: PAYLOAD_SCHEMA,
+    EVENT_KIND_VERDICT: VERDICT_PAYLOAD_SCHEMA,
+}
 
 
 class FlywheelEventError(ValueError):
@@ -36,7 +46,7 @@ class FlywheelEventError(ValueError):
 
 @dataclass(frozen=True)
 class FlywheelEvent:
-    """One normalized and immutable episode event."""
+    """One normalized and immutable flywheel event."""
 
     schema_version: str
     event_kind: str
@@ -53,13 +63,22 @@ class FlywheelEvent:
         _validate_constants(self)
         _validate_id(self.source_event_id, "source_event_id")
         _validate_id(self.episode_id, "episode_id")
+        if self.event_kind == EVENT_KIND_VERDICT and self.parent_event_id is None:
+            raise FlywheelEventError(
+                "invalid_id",
+                "parent_event_id must be present for verdict events",
+            )
         if self.parent_event_id is not None:
             _validate_id(self.parent_event_id, "parent_event_id")
         _validate_agent_id(self.agent_id)
         _validate_occurred_at(self.occurred_at)
         _validate_payload_hash(self.payload_hash)
 
-        normalized_payload = _normalize_payload(self.payload)
+        normalized_payload = _normalize_payload(
+            self.event_kind,
+            self.payload_schema,
+            self.payload,
+        )
         if normalized_payload.get("episode_id") != self.episode_id:
             raise FlywheelEventError(
                 "episode_id_mismatch",
@@ -94,7 +113,7 @@ _ENVELOPE_KEY_SET = frozenset(_ENVELOPE_KEYS)
 def canonical_payload_bytes(payload: Mapping[str, Any]) -> bytes:
     """Serialize a strict, normalized ExperiencePacket payload canonically."""
 
-    normalized = _normalize_payload(payload)
+    normalized = _normalize_experience_payload(payload)
     return _canonical_json_bytes(normalized, "invalid_payload")
 
 
@@ -102,6 +121,17 @@ def hash_payload(payload: Mapping[str, Any]) -> str:
     """Hash a strict ExperiencePacket payload in canonical normalized form."""
 
     return _hash_bytes(canonical_payload_bytes(payload))
+
+
+def hash_payload_for_kind(event_kind: str, payload: Mapping[str, Any]) -> str:
+    """Hash a payload using the normalizer registered for an event kind."""
+
+    try:
+        payload_schema = _PAYLOAD_SCHEMA_BY_KIND[event_kind]
+    except (KeyError, TypeError) as exc:
+        raise FlywheelEventError("invalid_schema", "unsupported event_kind") from exc
+    normalized = _normalize_payload(event_kind, payload_schema, payload)
+    return _hash_bytes(_canonical_json_bytes(normalized, "invalid_payload"))
 
 
 def canonical_event_bytes(event: FlywheelEvent | Mapping[str, Any]) -> bytes:
@@ -112,7 +142,7 @@ def canonical_event_bytes(event: FlywheelEvent | Mapping[str, Any]) -> bytes:
 
 
 def event_from_mapping(raw_event: Mapping[str, Any]) -> FlywheelEvent:
-    """Validate and detach an exact v1 episode envelope mapping."""
+    """Validate and detach an exact v1 flywheel envelope mapping."""
 
     if not isinstance(raw_event, Mapping):
         raise FlywheelEventError("invalid_schema", "event must be a mapping")
@@ -161,10 +191,7 @@ def to_mapping(event: FlywheelEvent) -> dict[str, Any]:
 def _validate_constants(event: FlywheelEvent) -> None:
     if event.schema_version != SCHEMA_VERSION:
         raise FlywheelEventError("invalid_schema", "unsupported schema_version")
-    if event.event_kind != EVENT_KIND_EPISODE:
-        raise FlywheelEventError("invalid_schema", "unsupported event_kind")
-    if event.payload_schema != PAYLOAD_SCHEMA:
-        raise FlywheelEventError("invalid_schema", "unsupported payload_schema")
+    _payload_normalizer(event.event_kind, event.payload_schema)
 
 
 def _validate_id(value: Any, field_name: str) -> None:
@@ -200,7 +227,26 @@ def _validate_payload_hash(payload_hash: Any) -> None:
         )
 
 
-def _normalize_payload(payload: Any) -> dict[str, Any]:
+def _normalize_payload(
+    event_kind: Any,
+    payload_schema: Any,
+    payload: Any,
+) -> dict[str, Any]:
+    normalizer = _payload_normalizer(event_kind, payload_schema)
+    return normalizer(payload)
+
+
+def _payload_normalizer(event_kind: Any, payload_schema: Any) -> Any:
+    try:
+        return _PAYLOAD_NORMALIZERS[(event_kind, payload_schema)]
+    except (KeyError, TypeError) as exc:
+        raise FlywheelEventError(
+            "invalid_schema",
+            "unsupported event_kind and payload_schema pair",
+        ) from exc
+
+
+def _copy_exact_payload(payload: Any, allowed_keys: frozenset[str]) -> dict[str, Any]:
     if not isinstance(payload, Mapping):
         raise FlywheelEventError("invalid_payload", "payload must be a mapping")
 
@@ -209,13 +255,20 @@ def _normalize_payload(payload: Any) -> dict[str, Any]:
     except (TypeError, ValueError) as exc:
         raise FlywheelEventError("invalid_payload", "payload keys are invalid") from exc
 
-    unknown_keys = supplied_keys - _PAYLOAD_KEYS
+    unknown_keys = supplied_keys - allowed_keys
     if unknown_keys:
         names = ", ".join(map(str, sorted(unknown_keys, key=repr)))
         raise FlywheelEventError("invalid_schema", f"unknown payload keys: {names}")
 
     try:
-        copied_payload = copy.deepcopy(dict(payload))
+        return copy.deepcopy(dict(payload))
+    except (TypeError, ValueError) as exc:
+        raise FlywheelEventError("invalid_payload", "payload could not be copied") from exc
+
+
+def _normalize_experience_payload(payload: Any) -> dict[str, Any]:
+    copied_payload = _copy_exact_payload(payload, _EXPERIENCE_PAYLOAD_KEYS)
+    try:
         packet = ExperiencePacket(**copied_payload)
         normalized = to_frontmatter(packet)
     except (TypeError, ValueError) as exc:
@@ -223,6 +276,29 @@ def _normalize_payload(payload: Any) -> dict[str, Any]:
 
     encoded = _canonical_json_bytes(normalized, "invalid_payload")
     return json.loads(encoded)
+
+
+def _normalize_verdict_payload(payload: Any) -> dict[str, Any]:
+    copied_payload = _copy_exact_payload(payload, _VERDICT_PAYLOAD_KEYS)
+    try:
+        packet = VerdictPacket(**copied_payload)
+        normalized = verdict_to_payload(packet)
+    except (TypeError, ValueError) as exc:
+        raise FlywheelEventError(
+            "invalid_payload",
+            "payload is not a valid VerdictPacket",
+        ) from exc
+
+    encoded = _canonical_json_bytes(normalized, "invalid_payload")
+    return json.loads(encoded)
+
+
+_PAYLOAD_NORMALIZERS = MappingProxyType(
+    {
+        (EVENT_KIND_EPISODE, PAYLOAD_SCHEMA): _normalize_experience_payload,
+        (EVENT_KIND_VERDICT, VERDICT_PAYLOAD_SCHEMA): _normalize_verdict_payload,
+    }
+)
 
 
 def _canonical_json_bytes(value: Any, reason_code: str) -> bytes:
@@ -260,13 +336,16 @@ def _thaw_json(value: Any) -> Any:
 
 __all__ = [
     "EVENT_KIND_EPISODE",
+    "EVENT_KIND_VERDICT",
     "PAYLOAD_SCHEMA",
     "SCHEMA_VERSION",
+    "VERDICT_PAYLOAD_SCHEMA",
     "FlywheelEvent",
     "FlywheelEventError",
     "canonical_event_bytes",
     "canonical_payload_bytes",
     "event_from_mapping",
     "hash_payload",
+    "hash_payload_for_kind",
     "to_mapping",
 ]
