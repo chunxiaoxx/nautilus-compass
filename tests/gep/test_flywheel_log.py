@@ -1532,6 +1532,32 @@ def test_reducer_returns_frozen_awaiting_verdict_states_with_lineage():
         states["episode-1"].state = "changed"
 
 
+def test_episode_state_preserves_original_construction_with_verdict_defaults():
+    expected = flywheel_log_module.EpisodeState(
+        episode_id="episode-1",
+        state="awaiting_verdict",
+        source_event_id="source-1",
+        event_hash="sha256:" + "1" * 64,
+    )
+
+    assert flywheel_log_module.EpisodeState(
+        "episode-1",
+        "awaiting_verdict",
+        "source-1",
+        "sha256:" + "1" * 64,
+    ) == expected
+    assert [field.name for field in fields(flywheel_log_module.EpisodeState)] == [
+        "episode_id",
+        "state",
+        "source_event_id",
+        "event_hash",
+        "verified_outcome",
+        "verdict_event_hashes",
+    ]
+    assert expected.verified_outcome is None
+    assert expected.verdict_event_hashes == ()
+
+
 def test_reducer_is_deterministic_and_does_not_modify_its_input():
     first = event_from_mapping(valid_mapping())
     second = event_from_mapping(
