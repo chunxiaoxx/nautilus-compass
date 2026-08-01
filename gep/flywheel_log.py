@@ -261,6 +261,22 @@ class FlywheelEventLog:
                 SELECT RAISE(ABORT, 'flywheel_events rows are immutable');
             END;
             """,
+
+            """
+            CREATE TRIGGER IF NOT EXISTS flywheel_quarantine_immutable_update
+            BEFORE UPDATE ON flywheel_quarantine
+            BEGIN
+                SELECT RAISE(ABORT, 'flywheel_quarantine rows are immutable');
+            END;
+            """,
+
+            """
+            CREATE TRIGGER IF NOT EXISTS flywheel_quarantine_immutable_delete
+            BEFORE DELETE ON flywheel_quarantine
+            BEGIN
+                SELECT RAISE(ABORT, 'flywheel_quarantine rows are immutable');
+            END;
+            """,
         )
         for statement in statements:
             self._connection.execute(statement)
