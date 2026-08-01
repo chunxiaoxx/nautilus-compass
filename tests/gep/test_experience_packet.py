@@ -28,6 +28,47 @@ def test_all_fields_are_optional():
     assert all(getattr(packet, name) is None for name in EXPECTED_FIELDS)
 
 
+@pytest.mark.parametrize(
+    ("field_name", "value"),
+    [
+        ("episode_id", 1),
+        ("parent_episode_id", 1),
+        ("task", 123),
+        ("action_kind", ()),
+        ("outcome", False),
+        ("failure_mode", {}),
+        ("route_key", []),
+        ("policy_hint", 1.5),
+        ("capsule_candidate", "yes"),
+        ("capsule_candidate", 1),
+        ("reward_delta", True),
+        ("reward_delta", "1.0"),
+        ("impact", False),
+        ("impact", "high"),
+    ],
+)
+def test_scalar_fields_reject_wrong_runtime_types(field_name, value):
+    with pytest.raises(TypeError, match=rf"{field_name} must"):
+        ExperiencePacket(**{field_name: value})
+
+
+@pytest.mark.parametrize("field_name", ["reward_delta", "impact"])
+@pytest.mark.parametrize("value", [float("nan"), float("inf"), float("-inf")])
+def test_numeric_fields_reject_non_finite_values(field_name, value):
+    with pytest.raises(ValueError, match=rf"{field_name} must be finite"):
+        ExperiencePacket(**{field_name: value})
+
+
+@pytest.mark.parametrize("field_name", ["reward_delta", "impact"])
+@pytest.mark.parametrize("value", [2, -0.5])
+def test_numeric_fields_normalize_ints_and_floats(field_name, value):
+    packet = ExperiencePacket(**{field_name: value})
+    normalized = getattr(packet, field_name)
+
+    assert normalized == float(value)
+    assert type(normalized) is float
+
+
 def test_packet_is_immutable():
     packet = ExperiencePacket(episode_id="episode-1")
 
@@ -121,6 +162,8 @@ def test_from_args_accepts_mapping_and_explicit_overrides():
         outcome="succeeded",
         impact=2,
     )
+    assert packet.impact == 2.0
+    assert type(packet.impact) is float
 
 
 def test_from_args_treats_a_string_tool_as_one_tool():

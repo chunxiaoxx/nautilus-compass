@@ -260,6 +260,25 @@ def test_payload_must_be_a_mapping():
     )
 
 
+@pytest.mark.parametrize(
+    ("field_name", "value"),
+    [
+        ("task", 123),
+        ("capsule_candidate", "yes"),
+        ("reward_delta", True),
+        ("impact", "high"),
+        ("route_key", []),
+    ],
+)
+def test_invalid_experience_packet_field_types_map_to_invalid_payload(field_name, value):
+    payload = {"episode_id": "episode-1", field_name: value}
+
+    assert_rejected(
+        valid_mapping(payload=payload, payload_hash="sha256:" + "0" * 64),
+        "invalid_payload",
+    )
+
+
 def test_payload_must_include_episode_id():
     payload = {"task": "verify a fix"}
 
