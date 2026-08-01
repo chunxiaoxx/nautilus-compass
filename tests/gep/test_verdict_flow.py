@@ -1,5 +1,6 @@
 import json
 import sqlite3
+from itertools import permutations
 
 import pytest
 
@@ -9,7 +10,12 @@ from gep.flywheel_event import (
     hash_payload,
     hash_payload_for_kind,
 )
-from gep.flywheel_log import AppendReceipt, FlywheelEventLog
+from gep.flywheel_log import (
+    AppendReceipt,
+    EpisodeState,
+    FlywheelEventLog,
+    reduce_episode_states,
+)
 
 
 SECRET = "s4secret-x9"
@@ -611,3 +617,175 @@ def test_partial_unique_index_race_returns_verifier_episode_conflict(tmp_path):
         assert_secret_is_absent(path, event_log)
     finally:
         event_log.close()
+
+
+def reducer_verdict(episode, outcome, position):
+    hash_digit = format(position + 5, "x")
+    return event_from_mapping(
+        verdict_mapping(
+            episode.event_hash,
+            source_event_id=f"verdict-source-{position}",
+            agent_id=7 + position,
+            occurred_at=f"2026-08-01T01:01:{position:02d}Z",
+            payload_overrides={
+                "outcome": outcome,
+                "evidence_hash": "sha256:" + hash_digit * 64,
+            },
+        )
+    )
+
+
+@pytest.mark.parametrize(
+    ("outcomes", "expected_state", "expected_outcome"),
+    [
+        pytest.param((), "awaiting_verdict", None, id="episode-only"),
+        pytest.param(
+            ("inconclusive", "inconclusive"),
+            "awaiting_verdict",
+            None,
+            id="only-inconclusive",
+        ),
+        pytest.param(("success",), "verified", "success", id="one-success"),
+        pytest.param(("failure",), "verified", "failure", id="one-failure"),
+        pytest.param(("partial",), "verified", "partial", id="one-partial"),
+        pytest.param(
+            ("success", "success"),
+            "verified",
+            "success",
+            id="independent-successes",
+        ),
+        pytest.param(
+            ("success", "inconclusive"),
+            "verified",
+            "success",
+            id="success-and-inconclusive",
+        ),
+        pytest.param(
+            ("success", "failure"),
+            "verdict_conflict",
+            None,
+            id="success-and-failure",
+        ),
+    ],
+)
+def test_reducer_derives_verdict_backed_episode_state(
+    outcomes,
+    expected_state,
+    expected_outcome,
+):
+    episode = event_from_mapping(episode_mapping())
+    verdicts = tuple(
+        reducer_verdict(episode, outcome, position)
+        for position, outcome in enumerate(outcomes, start=1)
+    )
+
+    state = reduce_episode_states((episode, *verdicts))[episode.episode_id]
+
+    assert state == EpisodeState(
+        episode_id=episode.episode_id,
+        state=expected_state,
+        source_event_id=episode.source_event_id,
+        event_hash=episode.event_hash,
+        verified_outcome=expected_outcome,
+        verdict_event_hashes=tuple(sorted(verdict.event_hash for verdict in verdicts)),
+    )
+
+
+def test_reducer_is_order_independent_for_every_event_permutation():
+    episode = event_from_mapping(episode_mapping())
+    verdicts = (
+        reducer_verdict(episode, "success", 1),
+        reducer_verdict(episode, "failure", 2),
+        reducer_verdict(episode, "inconclusive", 3),
+    )
+    events = (episode, *verdicts)
+    expected = EpisodeState(
+        episode_id=episode.episode_id,
+        state="verdict_conflict",
+        source_event_id=episode.source_event_id,
+        event_hash=episode.event_hash,
+        verified_outcome=None,
+        verdict_event_hashes=tuple(sorted(verdict.event_hash for verdict in verdicts)),
+    )
+
+    results = tuple(reduce_episode_states(order) for order in permutations(events))
+
+    assert all(result == {episode.episode_id: expected} for result in results)
+
+
+def test_reducer_materializes_a_single_pass_iterable_once():
+    episode = event_from_mapping(episode_mapping())
+    verdict = reducer_verdict(episode, "success", 1)
+
+    class SinglePassEvents:
+        def __init__(self):
+            self.iterations = 0
+
+        def __iter__(self):
+            self.iterations += 1
+            if self.iterations > 1:
+                raise AssertionError("events were iterated more than once")
+            yield verdict
+            yield episode
+
+    events = SinglePassEvents()
+
+    state = reduce_episode_states(events)[episode.episode_id]
+
+    assert events.iterations == 1
+    assert state.state == "verified"
+    assert state.verified_outcome == "success"
+
+
+def test_reducer_rejects_orphan_verdict():
+    episode = event_from_mapping(episode_mapping())
+    orphan = event_from_mapping(
+        verdict_mapping(
+            episode.event_hash,
+            parent_event_id="missing-episode-source",
+        )
+    )
+
+    with pytest.raises(ValueError, match="orphan verdict"):
+        reduce_episode_states((episode, orphan))
+
+
+def test_reducer_rejects_verdict_whose_parent_is_not_an_episode():
+    episode = event_from_mapping(episode_mapping())
+    first_verdict = reducer_verdict(episode, "success", 1)
+    wrong_kind_parent = event_from_mapping(
+        verdict_mapping(
+            episode.event_hash,
+            source_event_id="verdict-source-2",
+            parent_event_id=first_verdict.source_event_id,
+            agent_id=9,
+            occurred_at="2026-08-01T01:01:02Z",
+            payload_overrides={"evidence_hash": "sha256:" + "7" * 64},
+        )
+    )
+
+    with pytest.raises(ValueError, match="parent is not an episode"):
+        reduce_episode_states((episode, first_verdict, wrong_kind_parent))
+
+
+def test_reducer_rejects_verdict_for_wrong_episode_id():
+    episode = event_from_mapping(episode_mapping())
+    wrong_episode = event_from_mapping(
+        verdict_mapping(
+            episode.event_hash,
+            episode_id="episode-2",
+        )
+    )
+
+    with pytest.raises(ValueError, match="episode_id does not match parent"):
+        reduce_episode_states((episode, wrong_episode))
+
+
+def test_reducer_rejects_verdict_with_wrong_episode_event_hash():
+    episode = event_from_mapping(episode_mapping())
+    wrong_hash = event_from_mapping(
+        verdict_mapping("sha256:" + "0" * 64)
+    )
+
+    with pytest.raises(ValueError, match="episode_event_hash does not match parent"):
+        reduce_episode_states((episode, wrong_hash))
