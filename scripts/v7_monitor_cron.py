@@ -64,10 +64,7 @@ except ImportError:
     sys.stderr.write("ERROR: psycopg2 required · pip install psycopg2-binary\n")
     sys.exit(2)
 
-PG_DSN = os.environ.get(
-    "COMPASS_PG_DSN",
-    "postgresql://nautilus_user:nautilus2024@localhost:5432/nautilus_production",
-)
+PG_DSN = os.environ.get("COMPASS_PG_DSN", "").strip()
 COMPASS_MCP_HOST = os.environ.get("COMPASS_MCP_HOST", "127.0.0.1")
 COMPASS_MCP_PORT = int(os.environ.get("COMPASS_MCP_PORT", "0"))   # 0 = skip
 COMPASS_MCP_TOKEN = os.environ.get("COMPASS_MCP_TOKEN", "")
@@ -83,6 +80,12 @@ THRESH = {
     "failed":      int(os.environ.get("V7_THRESH_FAILED", "3")),
     "settle_pct":  int(os.environ.get("V7_THRESH_SETTLE", "30")),
 }
+
+
+def _require_dsn(value: str, variable_name: str) -> str:
+    if not value:
+        raise RuntimeError(f"{variable_name} is required")
+    return value
 
 
 def query_funnel(conn) -> dict:
@@ -255,9 +258,9 @@ def telegram_post(text: str) -> None:
 def main() -> int:
     REPORT_DIR.mkdir(parents=True, exist_ok=True)
     try:
-        conn = psycopg2.connect(PG_DSN)
+        conn = psycopg2.connect(_require_dsn(PG_DSN, "COMPASS_PG_DSN"))
     except Exception as e:
-        sys.stderr.write(f"PG connect failed: {e}\n")
+        sys.stderr.write(f"PG connect failed: {type(e).__name__}\n")
         return 1
 
     try:

@@ -8,7 +8,8 @@ Type=simple
 User=ubuntu
 WorkingDirectory=/home/ubuntu/nautilus-compass
 Environment=PYTHONUNBUFFERED=1
-Environment=COMPASS_PG_DSN=postgresql://nautilus_user:nautilus2024@localhost:5432/nautilus_production
+# COMPASS_PG_DSN must be supplied by the deployment-owned environment file.
+EnvironmentFile=-/etc/nautilus/compass-gateway.env
 Environment=COMPASS_AUTH_BACKEND=pg
 Environment=COMPASS_TRUST_TENANT_HEADER=0
 Environment=COMPASS_DEMO_RPH=20
