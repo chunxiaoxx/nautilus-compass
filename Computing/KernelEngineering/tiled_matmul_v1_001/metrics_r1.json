@@ -1,0 +1,60 @@
+{
+  "task_id": "tiled_matmul_v1_001",
+  "domain": "Computing and Quantum Information",
+  "sub_domain": "KernelEngineering",
+  "valid": 1,
+  "combined_score": 1.6953023125320446,
+  "per_instance": [
+    {
+      "instance_id": "gemm_001_small_square",
+      "valid": 1,
+      "achieved_gflops": 0.03107738967191418,
+      "elapsed_s": 0.002108800021233037,
+      "max_abs_diff": 0.0,
+      "score": 2.071825978127612
+    },
+    {
+      "instance_id": "gemm_002_medium_square",
+      "valid": 1,
+      "achieved_gflops": 0.03010554118395055,
+      "elapsed_s": 0.01741500000935048,
+      "max_abs_diff": 0.0,
+      "score": 2.0070360789300365
+    },
+    {
+      "instance_id": "gemm_003_large_square",
+      "valid": 1,
+      "achieved_gflops": 0.020378015578519593,
+      "elapsed_s": 0.08683240000391379,
+      "max_abs_diff": 0.0,
+      "score": 1.358534371901306
+    },
+    {
+      "instance_id": "gemm_004_skinny_a",
+      "valid": 1,
+      "achieved_gflops": 0.018991263019038057,
+      "elapsed_s": 0.020705100003397092,
+      "max_abs_diff": 0.0,
+      "score": 1.266084201269204
+    },
+    {
+      "instance_id": "gemm_005_skinny_b",
+      "valid": 1,
+      "achieved_gflops": 0.021100486184102242,
+      "elapsed_s": 0.01863539998885244,
+      "max_abs_diff": 0.0,
+      "score": 1.4066990789401494
+    },
+    {
+      "instance_id": "gemm_006_long_k",
+      "valid": 1,
+      "achieved_gflops": 0.030924512490359397,
+      "elapsed_s": 0.03390760000911541,
+      "max_abs_diff": 0.0,
+      "score": 2.0616341660239597
+    }
+  ],
+  "n_instances": 6,
+  "baseline_failures": 0,
+  "target_gflops_oracle": 1.5
+}

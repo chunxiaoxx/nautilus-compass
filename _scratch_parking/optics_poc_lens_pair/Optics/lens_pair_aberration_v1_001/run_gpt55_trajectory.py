@@ -4,6 +4,7 @@ better lens-pair placements, evaluate after each round, persist trajectory."""
 from __future__ import annotations
 
 import json
+import os
 import ssl
 import subprocess
 import sys
@@ -11,7 +12,7 @@ import time
 import urllib.request
 from pathlib import Path
 
-KEY = "sk-c16301d1475dc595011320892cac17cd23d58d92d19a308668bf04b1878c84c8"
+KEY = os.environ.get("OPENAI_API_KEY", "")  # 必须经 env 传入 · 不硬编码
 BASE = "https://v2.qixuw.com"
 MODEL = "gpt-5.5"
 ROOT = Path(__file__).resolve().parent
