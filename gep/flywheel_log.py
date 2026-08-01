@@ -15,6 +15,7 @@ from typing import Any, Callable, Literal, TypeVar
 
 from gep.flywheel_event import (
     EVENT_KIND_EPISODE,
+    EVENT_KIND_VERDICT,
     FlywheelEvent,
     FlywheelEventError,
     canonical_event_bytes,
@@ -180,8 +181,16 @@ class FlywheelEventLog:
         self,
         path: str | PathLike[str],
         registered_agent_ids: Iterable[int],
+        registered_verifier_ids: Iterable[int] = (),
     ) -> None:
-        self._registered_agent_ids = _validate_registered_agent_ids(registered_agent_ids)
+        agent_ids = _validate_registered_agent_ids(registered_agent_ids)
+        verifier_ids = _validate_registered_verifier_ids(registered_verifier_ids)
+        if not verifier_ids.issubset(agent_ids):
+            raise ValueError(
+                "registered_verifier_ids must be a subset of registered_agent_ids"
+            )
+        self._registered_agent_ids = agent_ids
+        self._registered_verifier_ids = verifier_ids
         self._connection = sqlite3.connect(Path(path))
         self._connection.row_factory = sqlite3.Row
         try:
@@ -303,24 +312,44 @@ class FlywheelEventLog:
                 self._insert_quarantine(receipt, event.event_hash)
                 return receipt
 
-        self._connection.execute(
-            """
-            INSERT INTO flywheel_events
-                (source_event_id, event_kind, episode_id, parent_event_id,
-                 agent_id, event_hash, envelope_json, accepted_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            """,
-            (
-                event.source_event_id,
-                event.event_kind,
-                event.episode_id,
-                event.parent_event_id,
-                event.agent_id,
-                event.event_hash,
-                sqlite3.Binary(event_bytes),
-                _timestamp(),
-            ),
-        )
+        if event.event_kind == EVENT_KIND_VERDICT:
+            reason_code = self._verdict_rejection_reason(event)
+            if reason_code is not None:
+                receipt = self._quarantine_event(event, reason_code)
+                self._insert_quarantine(receipt, event.event_hash)
+                return receipt
+
+        try:
+            self._connection.execute(
+                """
+                INSERT INTO flywheel_events
+                    (source_event_id, event_kind, episode_id, parent_event_id,
+                     agent_id, event_hash, envelope_json, accepted_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    event.source_event_id,
+                    event.event_kind,
+                    event.episode_id,
+                    event.parent_event_id,
+                    event.agent_id,
+                    event.event_hash,
+                    sqlite3.Binary(event_bytes),
+                    _timestamp(),
+                ),
+            )
+        except sqlite3.IntegrityError:
+            if (
+                event.event_kind == EVENT_KIND_VERDICT
+                and self._verifier_episode_exists(event)
+            ):
+                receipt = self._quarantine_event(
+                    event,
+                    "verifier_episode_conflict",
+                )
+                self._insert_quarantine(receipt, event.event_hash)
+                return receipt
+            raise
         return AppendReceipt(
             status="accepted",
             source_event_id=event.source_event_id,
@@ -329,9 +358,54 @@ class FlywheelEventLog:
             reason_code=None,
         )
 
+    def _verdict_rejection_reason(self, event: FlywheelEvent) -> str | None:
+        if event.agent_id not in self._registered_verifier_ids:
+            return "unregistered_verifier"
+
+        parent_row = self._connection.execute(
+            """
+            SELECT event_kind, episode_id, agent_id, event_hash
+            FROM flywheel_events
+            WHERE source_event_id = ?
+            """,
+            (event.parent_event_id,),
+        ).fetchone()
+        if parent_row is None:
+            return "orphan_parent"
+        if parent_row["event_kind"] != EVENT_KIND_EPISODE:
+            return "invalid_parent_kind"
+        if parent_row["episode_id"] != event.episode_id:
+            return "parent_episode_mismatch"
+        if parent_row["event_hash"] != event.payload["episode_event_hash"]:
+            return "episode_event_hash_mismatch"
+        if parent_row["agent_id"] == event.agent_id:
+            return "self_verdict"
+        if self._verifier_episode_exists(event):
+            return "verifier_episode_conflict"
+        return None
+
+    def _verifier_episode_exists(self, event: FlywheelEvent) -> bool:
+        return (
+            self._connection.execute(
+                """
+                SELECT 1
+                FROM flywheel_events
+                WHERE event_kind = 'verdict'
+                  AND episode_id = ?
+                  AND agent_id = ?
+                """,
+                (event.episode_id, event.agent_id),
+            ).fetchone()
+            is not None
+        )
+
     def _quarantine_event(self, event: FlywheelEvent, reason_code: str) -> AppendReceipt:
         return AppendReceipt(
-            status="quarantined" if reason_code == "unregistered_agent" else "conflict",
+            status=(
+                "quarantined"
+                if reason_code in {"unregistered_agent", "unregistered_verifier"}
+                else "conflict"
+            ),
             source_event_id=event.source_event_id,
             episode_id=event.episode_id,
             event_hash=event.event_hash,
@@ -752,12 +826,32 @@ def reduce_episode_states(events: Iterable[FlywheelEvent]) -> dict[str, EpisodeS
 
 
 def _validate_registered_agent_ids(registered_agent_ids: Iterable[int]) -> frozenset[int]:
+    return _validate_registered_ids(registered_agent_ids, "registered_agent_ids")
+
+
+def _validate_registered_verifier_ids(
+    registered_verifier_ids: Iterable[int],
+) -> frozenset[int]:
+    return _validate_registered_ids(registered_verifier_ids, "registered_verifier_ids")
+
+
+def _validate_registered_ids(
+    registered_ids: Iterable[int],
+    field_name: str,
+) -> frozenset[int]:
     try:
-        ids = tuple(registered_agent_ids)
+        ids = tuple(registered_ids)
     except TypeError as exc:
-        raise ValueError("registered_agent_ids must contain positive non-bool integers") from exc
-    if any(isinstance(agent_id, bool) or not isinstance(agent_id, int) or agent_id <= 0 for agent_id in ids):
-        raise ValueError("registered_agent_ids must contain positive non-bool integers")
+        raise ValueError(
+            f"{field_name} must contain positive non-bool integers"
+        ) from exc
+    if any(
+        isinstance(agent_id, bool)
+        or not isinstance(agent_id, int)
+        or agent_id <= 0
+        for agent_id in ids
+    ):
+        raise ValueError(f"{field_name} must contain positive non-bool integers")
     return frozenset(ids)
 
 
