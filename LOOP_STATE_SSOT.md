@@ -127,3 +127,70 @@ platform-soul = infra/账本/裁判链部署;soul-verify = canonical 复现;V5 =
 
 ---
 *维护:状态有变 → 先改本文件 → 同步 V5/compass repo 根副本 → 记 memory。历史查 `docs/LOOP_STATE_ARCHIVE_20260707.md`。*
+<!-- FDE_T1_LOOP_STATE_VERSION: t1-constitution-v1.0-20260730 -->
+# 第三期 T1 闭环状态（当前唯一生效）
+
+- constitution_version: t1-constitution-v1.0-20260730
+- as_of: 2026-07-30
+- business_state: S0_NOT_ACCEPTED
+- external_state: FROZEN
+- claim: 尚未跑通，尚不可邀请专家开始任务
+- supersedes: 本文件下方所有冲突的旧状态、旧下一动作和旧 DONE 声明
+
+> 规范性边界：本区块是当前状态单一真相源。区块结束后的原正文仅为历史记录，不得据其发送通知、公开入口、部署、写业务数据或宣称完成。
+
+## 已确认的基础
+
+- 当前专家权威表为 tblxRjSYEkdKxpVT；历史“20260723 第三期专家信息”不是当前准入入口。
+- 五张 Bitable 的业务结构已建立。
+- 题目预审与交互成果在结构上已分表，并具备关联规则。
+- platform-t1-interface-v1 已定义专家状态、字段边界和两道运营发布闸门。
+- 培训 microguides 只是本地内容源，不代表专家端已上线。
+- 旧一次性公开 Form 不是 Agent 工作流入口；继续对外发送已冻结。
+- ecc-fde-external 属于二期遗留，当前 T1 禁用。
+
+## 尚未验收
+
+- S0 OAuth redirect 的生产配置与发布探针。
+- 飞书身份与权威专家记录的绑定。
+- 新人/已有专家的条件化报名。
+- UID 一次绑定及不可静默覆盖。
+- 智涌Nautilus 生产导师卡片与阶段工作台。
+- 锁题/开放交互闸门与提交甲方闸门。
+- 甲方 Sheet GXZrwAIHLi2H7Okk7L6cqIxfnZf?sheet=3fEOVf 的字段适配、去标识化写入和独立读回。
+- 一位真实专家首题的端到端证据。
+
+## 当前唯一下一动作
+
+平台侧只实现并验收 S0 身份与准入纵切：
+
+受控邀请
+→ 本人OAuth
+→ 权威专家表精确匹配
+→ 条件化报名或补缺
+→ UID一次绑定
+→ Bitable写入并独立读回
+→ 仅向该专家返回S0 continuation
+
+培训侧保持冻结，只校验宪法版本和准备既有内容接入，不新增材料、入口或状态。
+
+## S0 的硬阻塞条件
+
+任一条件不满足均不得联系专家或发送任务入口：
+
+- OAuth redirect URI 已在生产飞书应用精确配置并发布。
+- 应用拥有权威 Base 所需读写权限与 IM 所需权限。
+- 目标专家存在正式记录或通过条件化报名形成记录。
+- 姓名、飞书身份和 UID 校验无冲突。
+- Bitable 写入后独立读回成功。
+- 邀请一次性、可过期、不可二次使用。
+- 失败提示不泄露 UID、记录 ID 或内部状态。
+
+## 角色锁
+
+- 平台对话框：身份、状态机、权限、接口、Bitable、部署、读回和审计。
+- 培训对话框：既有招募/运营训练和专家微指引内容；不得改 Bitable、状态机、身份、接口或部署。
+- 跨对话框消息必须携带 constitution_version；缺失或不一致时停止实施。
+- 未经用户明确授权，不得改变本区块的范围、权威顺序或唯一下一动作。
+
+<!-- END FDE_T1_LOOP_STATE_VERSION: t1-constitution-v1.0-20260730 -->
