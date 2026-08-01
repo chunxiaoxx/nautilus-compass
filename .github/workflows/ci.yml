@@ -68,6 +68,16 @@ jobs:
           "$RUNNER_TEMP/gep-wheel-smoke/bin/python" -I -c \
             "import gep.experience_packet, gep.flywheel_event, gep.flywheel_log"
 
+  s4-gep-py39:
+    name: S4 GEP minimum Python (3.9)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.9" }
+      - run: pip install pytest
+      - run: python -m pytest -q tests/gep
+
   lint:
     name: Lint
     runs-on: ubuntu-latest
