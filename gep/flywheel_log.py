@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from os import PathLike
 from pathlib import Path
-from typing import Any, Callable, TypeVar
+from typing import Any, Callable, Literal, TypeVar
 
 from gep.flywheel_event import (
     FlywheelEvent,
@@ -34,6 +34,16 @@ class AppendReceipt:
     episode_id: str | None
     event_hash: str | None
     reason_code: str | None
+
+
+@dataclass(frozen=True)
+class EpisodeState:
+    """Derived state for one admitted episode event."""
+
+    episode_id: str
+    state: Literal["awaiting_verdict"]
+    source_event_id: str
+    event_hash: str
 
 
 class FlywheelEventLog:
@@ -266,6 +276,34 @@ class FlywheelEventLog:
             raise
 
 
+class CompassS4AgentHarness:
+    """Thin adapter from a structured runtime event to the durable log."""
+
+    def __init__(self, event_log: FlywheelEventLog) -> None:
+        self._event_log = event_log
+
+    def record(self, raw_event: Mapping[str, Any]) -> AppendReceipt:
+        """Delegate one structured event to the configured append-only log."""
+
+        return self._event_log.append(raw_event)
+
+
+def reduce_episode_states(events: Iterable[FlywheelEvent]) -> dict[str, EpisodeState]:
+    """Derive deterministic awaiting-verdict states without mutating events."""
+
+    states: dict[str, EpisodeState] = {}
+    for event in events:
+        if event.episode_id in states:
+            raise ValueError(f"duplicate episode_id: {event.episode_id}")
+        states[event.episode_id] = EpisodeState(
+            episode_id=event.episode_id,
+            state="awaiting_verdict",
+            source_event_id=event.source_event_id,
+            event_hash=event.event_hash,
+        )
+    return dict(sorted(states.items()))
+
+
 def _validate_registered_agent_ids(registered_agent_ids: Iterable[int]) -> frozenset[int]:
     try:
         ids = tuple(registered_agent_ids)
@@ -352,4 +390,10 @@ def _timestamp() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="microseconds").replace("+00:00", "Z")
 
 
-__all__ = ["AppendReceipt", "FlywheelEventLog"]
+__all__ = [
+    "AppendReceipt",
+    "CompassS4AgentHarness",
+    "EpisodeState",
+    "FlywheelEventLog",
+    "reduce_episode_states",
+]
