@@ -13,6 +13,7 @@ NO LLM · pure filename + frontmatter parse. Feeds proof.poi_reconciler.reconcil
 from __future__ import annotations
 
 import re
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
@@ -27,10 +28,40 @@ def ts_from_filename(name: str) -> Optional[str]:
     if not m:
         return None
     ymd, hm = m.group(1), m.group(2)
-    y, mo, d = ymd[0:4], ymd[4:6], ymd[6:8]
     if hm:
-        return f"{y}-{mo}-{d}T{hm[0:2]}:{hm[2:4]}:00+00:00"
-    return f"{y}-{mo}-{d}T00:00:00+00:00"
+        candidate = f"{ymd[0:4]}-{ymd[4:6]}-{ymd[6:8]}T{hm[0:2]}:{hm[2:4]}:00+00:00"
+    else:
+        candidate = f"{ymd[0:4]}-{ymd[4:6]}-{ymd[6:8]}T00:00:00+00:00"
+    try:
+        datetime.fromisoformat(candidate)
+    except ValueError:
+        return None
+    return candidate
+
+
+def _fallback_ts(path: Path, frontmatter: dict) -> Optional[str]:
+    """Use frontmatter date or file mtime when filename timestamp is invalid."""
+    date = str(frontmatter.get("date", "")).strip()
+    if date:
+        for raw in (date, date.replace(" ", "T")):
+            candidate = raw
+            if "T" not in candidate:
+                candidate = f"{candidate}T00:00:00+00:00"
+            elif candidate.endswith("Z"):
+                candidate = candidate[:-1] + "+00:00"
+            elif "+" not in candidate and "-" not in candidate[-6:]:
+                candidate = f"{candidate}+00:00"
+            try:
+                dt = datetime.fromisoformat(candidate)
+            except ValueError:
+                continue
+            if dt.tzinfo is None:
+                dt = dt.replace(tzinfo=timezone.utc)
+            return dt.isoformat(timespec="seconds")
+    try:
+        return datetime.fromtimestamp(path.stat().st_mtime, tz=timezone.utc).isoformat(timespec="seconds")
+    except OSError:
+        return None
 
 
 def _drift_to_success(drift: str) -> Optional[bool]:
@@ -52,15 +83,18 @@ def local_outcomes(memory_dir, actor: str, since_iso: Optional[str] = None) -> l
     if not mem.exists():
         return []
     out = []
-    for p in sorted(mem.glob("session_*.md")):
+    for p in mem.glob("session_*.md"):
+        front = parse_session_frontmatter_safe(p)
         ts = ts_from_filename(p.name)
+        if ts is None:
+            ts = _fallback_ts(p, front)
         if ts is None:
             continue
         if since_iso and ts < since_iso:
             continue
-        front = parse_session_frontmatter_safe(p)
         success = _drift_to_success(front.get("drift", ""))
         if success is None:
             continue
         out.append({"agent_id": actor, "success": success, "ts": ts})
+    out.sort(key=lambda x: x["ts"])
     return out

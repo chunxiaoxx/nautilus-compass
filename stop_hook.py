@@ -550,9 +550,17 @@ if __name__ == "__main__":
                 payload = {}
     try:
         if hook_name == "Stop":
-            sys.exit(main())
+            rc = main()
         else:
-            sys.exit(dispatch_hook(hook_name, payload))
+            rc = dispatch_hook(hook_name, payload)
+        # v2.0.0 · 7/4 fix · harness contract: stdout JSON {continue: bool, stopReason: str}
+        # 之前只写 stderr 不写 stdout JSON → harness "JSON validation failed"
+        sys.stdout.write(json.dumps({"continue": True, "stopReason": "stop_hook audit complete"}, ensure_ascii=False))
+        sys.stdout.flush()
+        sys.exit(rc)
     except Exception as e:
         sys.stderr.write(f"stop_hook fail: {e}\n")
+        # 异常也返合法 JSON · fail-soft
+        sys.stdout.write(json.dumps({"continue": True, "stopReason": "stop_hook fail-safe"}, ensure_ascii=False))
+        sys.stdout.flush()
         sys.exit(0)
