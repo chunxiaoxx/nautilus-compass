@@ -476,24 +476,28 @@ def compass_health():
     except Exception:
         mem_avail_mb = -1
 
-    # agent_tool_calls last hour
+    # agent_tool_calls last hour · credentials must be injected by the service.
+    health_pg_dsn = os.environ.get("COMPASS_PG_DSN")
     agent_calls = {}
-    try:
-        with _pg.connect(
-            host="localhost", user="nautilus_user",
-            password="nautilus2024", dbname="nautilus_production"
-        ) as conn, conn.cursor() as cur:
-            cur.execute("""
-                SELECT tool_name, count(*)
-                FROM agent_tool_calls
-                WHERE ts > NOW() - INTERVAL '1 hour'
-                  AND tool_name LIKE 'compass%'
-                GROUP BY 1 ORDER BY 2 DESC
-            """)
-            for tool, n in cur.fetchall():
-                agent_calls[tool] = n
-    except Exception as e:
-        agent_calls = {"error": repr(e)[:120]}
+    if not health_pg_dsn:
+        agent_calls = {"status": "not_configured"}
+    else:
+        try:
+            with (
+                _pg.connect(health_pg_dsn, connect_timeout=3) as conn,
+                conn.cursor() as cur,
+            ):
+                cur.execute("""
+                    SELECT tool_name, count(*)
+                    FROM agent_tool_calls
+                    WHERE ts > NOW() - INTERVAL '1 hour'
+                      AND tool_name LIKE 'compass%'
+                    GROUP BY 1 ORDER BY 2 DESC
+                """)
+                for tool, n in cur.fetchall():
+                    agent_calls[tool] = n
+        except Exception as exc:
+            agent_calls = {"error": type(exc).__name__}
 
     # recent errors from compass.service journal · last 5min
     recent_errors = []
