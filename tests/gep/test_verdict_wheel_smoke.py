@@ -4,7 +4,6 @@ import json
 import os
 import shutil
 import subprocess
-import sys
 import venv
 from pathlib import Path
 
@@ -224,11 +223,14 @@ def source_snapshot(tmp_path: Path) -> Path:
 
 def build_wheel(tmp_path: Path) -> Path:
     source_path = source_snapshot(tmp_path)
+    builder_path = tmp_path / "builder-venv"
+    venv.EnvBuilder(with_pip=True).create(builder_path)
+    builder_python = venv_python(builder_path)
     wheelhouse = tmp_path / "wheelhouse"
     wheelhouse.mkdir()
     run(
         [
-            sys.executable,
+            str(builder_python),
             "-m",
             "pip",
             "--disable-pip-version-check",
