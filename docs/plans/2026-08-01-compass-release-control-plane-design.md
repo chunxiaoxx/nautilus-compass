@@ -1,7 +1,7 @@
 # Compass Release Control Plane Design
 
-**Date:** 2026-08-01  
-**Status:** Approved for P0-P1 implementation  
+**Date:** 2026-08-01
+**Status:** Approved for P0-P1 implementation
 **Base:** `codex/pr-s4-3-verdict-attestation` at `26174d6`
 
 ## 1. Goal
@@ -257,4 +257,3 @@ Failed candidates are retained as evidence but never become default behavior.
 - S4-4 shadow policy and benchmark promotion;
 - capsule generation, PoI ranking changes, or model-weight training;
 - public SOTA claims or paper results.
-
