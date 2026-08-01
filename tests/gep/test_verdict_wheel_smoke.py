@@ -319,6 +319,22 @@ def assert_no_plaintext_secrets_in_wheel(wheel: Path) -> None:
     assert findings == [], "wheel contains secret markers: " + ", ".join(findings)
 
 
+def assert_wheel_metadata_is_clean(wheel: Path) -> None:
+    with zipfile.ZipFile(wheel) as archive:
+        top_level_names = {
+            name.split("/", 1)[0]
+            for name in archive.namelist()
+            if name and not name.startswith("/")
+        }
+    egg_info = sorted(name for name in top_level_names if name.endswith(".egg-info"))
+    dist_info = sorted(name for name in top_level_names if name.endswith(".dist-info"))
+    assert not egg_info, "wheel contains stale egg-info directories: " + ", ".join(egg_info)
+    assert len(dist_info) == 1, (
+        "wheel must contain exactly one dist-info directory, found: "
+        + ", ".join(dist_info)
+    )
+
+
 def venv_python(venv_path: Path) -> Path:
     if os.name == "nt":
         return venv_path / "Scripts" / "python.exe"
@@ -397,6 +413,7 @@ def build_wheel(tmp_path: Path) -> Path:
     )
     wheels = tuple(wheelhouse.glob("nautilus_compass-*.whl"))
     assert len(wheels) == 1, wheels
+    assert_wheel_metadata_is_clean(wheels[0])
     assert_no_plaintext_secrets_in_wheel(wheels[0])
     return wheels[0]
 
@@ -492,3 +509,14 @@ def test_run_reports_bounded_timeout_without_subprocess_output(
         run(["python", "-m", "build"], cwd=tmp_path, timeout_seconds=7)
 
     assert "not-a-real-secret-output" not in str(exc_info.value)
+
+
+def test_wheel_metadata_guard_rejects_stale_egg_info(tmp_path: Path) -> None:
+    wheel = tmp_path / "contaminated.whl"
+    with zipfile.ZipFile(wheel, "w") as archive:
+        archive.writestr("gep/__init__.py", "")
+        archive.writestr("nautilus_compass-2.3.0.dist-info/METADATA", "")
+        archive.writestr("nautilus_compass-2.3.0-py3.9.egg-info/PKG-INFO", "")
+
+    with pytest.raises(AssertionError, match="egg-info"):
+        assert_wheel_metadata_is_clean(wheel)
