@@ -76,22 +76,27 @@ def test_c1_evidence_is_bound_to_manifest_and_recomputed_learning_summary() -> N
 def test_c1_evidence_keeps_claim_classes_separate() -> None:
     evidence = json.loads(EVIDENCE_PATH.read_text(encoding="utf-8"))
 
-    assert evidence["verification"]["source_test_count"] == 541
+    assert evidence["verification"]["source_test_count"] == 552
     assert evidence["verification"]["installed_wheel_e2e_count"] == 1
-    assert evidence["verification"]["combined_test_count"] == 542
+    assert evidence["verification"]["combined_test_count"] == 553
     assert evidence["verification"]["source_security_findings"] == 0
     assert evidence["verification"]["wheel_security_findings"] == 0
     assert evidence["release_rehearsal"] == {
         "doctor_daemon_port_aligned": True,
         "doctor_provenance_read_back": True,
         "installed_code_wheel_bound": True,
+        "installed_extra_code_rejected": True,
         "installed_import_isolated": True,
         "installed_learning_kernel": True,
+        "installed_python_bound": True,
         "launcher_isolated": True,
         "mcp_tool_count": 17,
         "recall_backend_isolated": True,
+        "reproducible_wheel": True,
         "rollback_without_reinstall": True,
+        "runtime_bytecode_write_disabled": True,
         "slots_exercised": ["a", "b"],
+        "structured_secret_scan": True,
         "switch_generation": 2,
         "rollback_generation": 3,
         "transition_locked": True,
