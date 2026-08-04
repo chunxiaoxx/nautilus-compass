@@ -171,6 +171,10 @@ def build_memory_views(
     intervention: str,
     query_class: str,
     now_iso: str,
+    packet_hashes: Mapping[str, str],
+    source_query_classes: Mapping[str, str],
+    semantic_scores: Mapping[str, float],
+    independent_verdicts: Mapping[str, VerdictPacket],
 ) -> tuple[MemoryView, ...]:
     ...
 ```
@@ -178,7 +182,10 @@ def build_memory_views(
 Use `dataclasses.replace` only on evaluation views, never on source packets.
 Derive view IDs and hashes from canonical content. Redact suspicious key names
 using the existing packaged-secret boundary vocabulary; do not invent a new
-secret store.
+secret store. All four mappings must contain exact `episode_id` keys. A packet
+must never become `independent_verified` by interpreting its own `outcome`;
+only a separately supplied, hash-valid `VerdictPacket` may set that state and
+verdict. Missing or mismatched evidence fails closed.
 
 **Step 4: Run focused tests and Ruff**
 
