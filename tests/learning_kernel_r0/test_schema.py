@@ -160,4 +160,3 @@ def test_contracts_are_immutable_and_normalize_sequences() -> None:
 
     with pytest.raises(FrozenInstanceError):
         manifest.selector = "semantic"  # type: ignore[misc]
-
