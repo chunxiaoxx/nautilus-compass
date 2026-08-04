@@ -238,8 +238,8 @@ class UtilityObservation:
     view_id: str
     reward: float
     result_hash: str
-    verification_state: str
-    verdict_hash: str
+    signed_verdict: SignedVerdictBinding
+    verdict_hash: str = field(init=False)
 
 def rebuild_utility(
     observations: tuple[UtilityObservation, ...],
@@ -249,9 +249,11 @@ def rebuild_utility(
 
 The value is the deterministic arithmetic mean of independently verified
 rewards for the exact key. Duplicate `result_hash` entries are idempotent only
-when their full canonical observations match. The rebuild function itself
-rejects non-`independent_verified` observations, missing/bare verdict hashes,
-and conflicting duplicate result hashes; it must not trust callers to prefilter.
+when their full canonical observations match. Each verdict must bind the exact
+result hash and reward outcome. `SignedVerdictBinding` verifies a
+domain-separated Ed25519 signature against an R0 public key pinned in the
+kernel. The private key never enters the repository, and callers cannot supply
+their own key or verifier-policy registry to self-authenticate an observation.
 
 **Step 3: Run tests and verify RED**
 
@@ -291,7 +293,8 @@ Test state values `active`, `cooling`, and `archived`. Require:
 - source packets remain present and hash-identical;
 - verified harm can archive a view;
 - low support cools rather than deletes;
-- new independent support can restore an archived view;
+- new independent support can restore a cooling view, while archived remains
+  terminal for R0;
 - protected-class harm cannot be overridden by aggregate benefit;
 - an oracle replay computes forgetting regret without changing selection state.
 
@@ -316,11 +319,13 @@ def reduce_lifecycle(
     ...
 ```
 
-`ForgettingPolicy` is an immutable value containing `min_active_support`,
-`archive_harm_threshold`, and `recovery_support`. Keep those values in the
-frozen benchmark manifest and pass them explicitly; do not use hidden module
-globals. Also expose a pure `apply_lifecycle` helper that returns a replaced
-`MemoryView`, plus `forgetting_regret` over matched selected/oracle outcomes.
+`ForgettingPolicy` is an immutable value containing `min_active_support` and
+`archive_harm_threshold`. Keep those values in the frozen benchmark manifest
+and pass them explicitly; do not use hidden module globals. Cooling is
+reversible with new independent support, while archived is terminal in R0
+until a future signed recovery contract exists. Also expose a pure
+`apply_lifecycle` helper that returns a replaced `MemoryView`, plus
+`forgetting_regret` over matched selected/oracle outcomes.
 
 **Step 4: Run tests and Ruff**
 

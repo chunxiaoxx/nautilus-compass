@@ -39,7 +39,7 @@ dependencies = [
 modelscope = ["modelscope>=1.10"]
 rerank = ["sentence-transformers>=2.7"]   # CrossEncoder included
 fast-download = ["hf_transfer>=0.1"]
-dev = ["pytest>=7", "pytest-cov", "ruff"]
+dev = ["pytest>=7", "pytest-cov", "ruff", "pynacl>=1.5"]
 e2ee = ["pynacl>=1.5"]                    # libsodium · v1.0 default
 nautilus = ["nautilus-agent>=0.5"]        # platform SDK · v0.9.3 fusion
 

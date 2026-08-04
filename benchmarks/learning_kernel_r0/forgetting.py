@@ -11,14 +11,10 @@ from .schema import LIFECYCLE_STATES, MemoryView
 class ForgettingPolicy:
     min_active_support: int
     archive_harm_threshold: int
-    recovery_support: int
 
     def __post_init__(self) -> None:
         _positive_int("min_active_support", self.min_active_support)
         _positive_int("archive_harm_threshold", self.archive_harm_threshold)
-        _positive_int("recovery_support", self.recovery_support)
-        if self.recovery_support < self.min_active_support:
-            raise ValueError("recovery_support must be at least min_active_support")
 
 
 def reduce_lifecycle(
@@ -44,9 +40,7 @@ def reduce_lifecycle(
     if protected_harm or verified_harm >= policy.archive_harm_threshold:
         return "archived"
     if current == "archived":
-        if expired or independent_support < policy.recovery_support:
-            return "archived"
-        return "active"
+        return "archived"
     if expired or independent_support < policy.min_active_support:
         return "cooling"
     return "active"

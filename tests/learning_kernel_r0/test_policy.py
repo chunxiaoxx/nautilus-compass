@@ -15,6 +15,7 @@ def _evaluate(**overrides) -> CandidateDecision:
     values = {
         "aggregate_delta": 0.10,
         "permutation_p95": 0.05,
+        "candidate_selector": "governed",
         "protected_deltas": {"protected": 0.0},
         "protected_query_classes": ("protected",),
         "required_query_classes": ("ordinary", "protected"),
@@ -95,6 +96,14 @@ def test_all_green_is_candidate_only_but_runtime_remains_flat() -> None:
     assert decision.failed_metric is None
     assert decision.runtime_recommendation == "flat"
     assert decision.improvement_claim is False
+
+
+def test_diagnostic_selector_cannot_enter_candidate_gate() -> None:
+    decision = _evaluate(candidate_selector="semantic")
+
+    assert decision.candidate_state == "blocked"
+    assert decision.reason_code == "diagnostic_selector_not_eligible"
+    assert decision.failed_metric == "candidate_selector"
 
 
 @pytest.mark.parametrize(

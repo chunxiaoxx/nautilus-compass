@@ -15,7 +15,6 @@ HASH_A = "sha256:" + "a" * 64
 POLICY = ForgettingPolicy(
     min_active_support=2,
     archive_harm_threshold=2,
-    recovery_support=3,
 )
 
 
@@ -72,9 +71,13 @@ def test_expired_active_view_cools() -> None:
     assert transition(expired=True) == "cooling"
 
 
-def test_archived_view_requires_new_independent_recovery_support() -> None:
+def test_archived_view_is_terminal_until_signed_recovery_exists() -> None:
     assert transition("archived", independent_support=2) == "archived"
-    assert transition("archived", independent_support=3) == "active"
+    assert transition("archived", independent_support=100) == "archived"
+
+
+def test_cooled_view_can_recover_with_independent_support() -> None:
+    assert transition("cooling", independent_support=3) == "active"
 
 
 def test_apply_lifecycle_changes_only_reversible_view_state() -> None:
@@ -130,10 +133,9 @@ def test_reducer_rejects_ambiguous_inputs(field: str, value: object) -> None:
         reduce_lifecycle("active", **kwargs)
 
 
-def test_policy_rejects_incoherent_thresholds() -> None:
-    with pytest.raises(ValueError, match="recovery_support"):
+def test_policy_rejects_nonpositive_thresholds() -> None:
+    with pytest.raises(ValueError, match="min_active_support"):
         ForgettingPolicy(
-            min_active_support=3,
+            min_active_support=0,
             archive_harm_threshold=2,
-            recovery_support=2,
         )

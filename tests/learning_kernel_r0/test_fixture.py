@@ -20,7 +20,7 @@ def test_fixture_manifest_binds_every_source_and_verifier() -> None:
     bundle = load_fixture(FIXTURE_DIR)
 
     assert bundle.schema_version == "compass.learning_kernel.fixture.v1"
-    assert set(bundle.file_hashes) == {"tasks.json", "experiences.json", "verifiers.py"}
+    assert set(bundle.file_hashes) == {"tasks.json", "experiences.json", "verifier.json"}
     for name, expected_hash in bundle.file_hashes.items():
         assert hash_bytes((FIXTURE_DIR / name).read_bytes()) == expected_hash
     assert bundle.runtime_recommendation == "flat"
