@@ -77,9 +77,11 @@ class MemoryView:
 class LearningRunResult:
     run_id: str
     task_id: str
+    task_hash: str
     query_class: str
     selector: str
     intervention: str
+    replica: int
     selected_view_ids: tuple[str, ...]
     success: bool
     first_pass_success: bool
@@ -163,9 +165,11 @@ def run_result_from_mapping(raw: Mapping[str, Any]) -> LearningRunResult:
     values = _exact_mapping("LearningRunResult", raw, LearningRunResult)
     _validate_id("run_id", values["run_id"], "lkr0_run_")
     _validate_id("task_id", values["task_id"], "lkr0_task_")
+    _validate_hash("task_hash", values["task_hash"])
     _validate_token("query_class", values["query_class"])
     _validate_enum("selector", values["selector"], frozenset(SELECTORS))
     _validate_enum("intervention", values["intervention"], frozenset(INTERVENTIONS))
+    replica = _nonnegative_int("replica", values["replica"])
     selected_view_ids = _id_sequence(
         "selected_view_ids",
         values["selected_view_ids"],
@@ -190,9 +194,11 @@ def run_result_from_mapping(raw: Mapping[str, Any]) -> LearningRunResult:
     return LearningRunResult(
         run_id=values["run_id"],
         task_id=values["task_id"],
+        task_hash=values["task_hash"],
         query_class=values["query_class"],
         selector=values["selector"],
         intervention=values["intervention"],
+        replica=replica,
         selected_view_ids=selected_view_ids,
         success=success,
         first_pass_success=first_pass_success,
