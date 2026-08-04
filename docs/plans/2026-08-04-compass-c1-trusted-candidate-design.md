@@ -91,6 +91,7 @@ windows, generated history, or any Platform/Super Agent adapter.
 
 - the 137-commit branch as a whole;
 - provider probes as positive learning evidence;
+- the donor live-agent dogfood projection and donor-commit-bound R0 evidence;
 - live-agent credentials, model routing, or API spend;
 - automatic capsule generation or policy promotion;
 - FDE-specific envelopes, receipts, or business state;
