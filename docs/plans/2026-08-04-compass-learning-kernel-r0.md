@@ -236,6 +236,8 @@ class UtilityObservation:
     view_id: str
     reward: float
     result_hash: str
+    verification_state: str
+    verdict_hash: str
 
 def rebuild_utility(
     observations: tuple[UtilityObservation, ...],
@@ -244,8 +246,10 @@ def rebuild_utility(
 ```
 
 The value is the deterministic arithmetic mean of independently verified
-rewards for the exact key. Duplicate `result_hash` entries are idempotent.
-Unverified rewards are rejected before this function.
+rewards for the exact key. Duplicate `result_hash` entries are idempotent only
+when their full canonical observations match. The rebuild function itself
+rejects non-`independent_verified` observations, missing/bare verdict hashes,
+and conflicting duplicate result hashes; it must not trust callers to prefilter.
 
 **Step 3: Run tests and verify RED**
 
