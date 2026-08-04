@@ -32,6 +32,7 @@ PACKAGING_INPUT_PATHS = (
     "skills_pkg",
     "judges",
     "mcp_durable",
+    "benchmarks",
 )
 SNAPSHOT_EXCLUDED_NAMES = frozenset(
     {

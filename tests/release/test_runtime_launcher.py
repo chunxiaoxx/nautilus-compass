@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
 import pytest
 
@@ -13,24 +12,21 @@ from runtime_launcher import (
     resolve_active_command,
 )
 from runtime_release import activate_release, stage_release
+from tests.release.wheel_fixture import extract_test_wheel, write_test_wheel
 
 
 BUILT_AT = "2026-08-01T14:00:00Z"
 
 
 def fake_installer(stage_dir, _wheel_path):
-    relative = Path("venv") / "Scripts" / "python.exe"
-    executable = stage_dir / relative
-    executable.parent.mkdir(parents=True)
-    executable.write_bytes(b"fake-python")
-    return executable
+    return extract_test_wheel(stage_dir, _wheel_path)
 
 
 def active_runtime(tmp_path):
     candidate = tmp_path / "candidate"
     candidate.mkdir()
     wheel = candidate / "nautilus_compass-2.3.0-py3-none-any.whl"
-    wheel.write_bytes(b"wheel")
+    write_test_wheel(wheel, b"wheel")
     manifest = ReleaseManifest.build(
         version="2.3.0",
         git_sha="a" * 40,
@@ -60,6 +56,7 @@ def test_valid_runtime_resolves_only_active_slot(tmp_path):
     assert resolved.executable == staged.path / "venv" / "Scripts" / "python.exe"
     assert resolved.arguments == (
         str(resolved.executable),
+        "-I",
         "-m",
         "nautilus_compass.mcp_server",
     )
@@ -128,7 +125,7 @@ def test_dry_run_json_reports_binding_without_starting_process(tmp_path, capsys)
     output = json.loads(capsys.readouterr().out)
     assert result == 0
     assert output["release_id"] == manifest.release_id
-    assert output["arguments"][1:] == ["-m", "nautilus_compass.mcp_server"]
+    assert output["arguments"][1:] == ["-I", "-m", "nautilus_compass.mcp_server"]
     assert set(output) == {
         "schema_version",
         "release_id",

@@ -14,6 +14,17 @@ from typing import List, Tuple
 _SENSITIVE_NAME = re.compile(
     r"(?:password|passwd|pwd|secret|token|api_?key|credential)", re.IGNORECASE
 )
+_NON_SECRET_NAME_SUFFIXES = (
+    "_count",
+    "_endpoint",
+    "_hash",
+    "_id",
+    "_limit",
+    "_port",
+    "_ttl",
+    "_type",
+    "_url",
+)
 _PRIVATE_KEY_MARKER = re.compile(r"-----BEGIN [A-Z0-9 ]*PRIVATE KEY-----")
 _DATABASE_CREDENTIAL_URL = re.compile(
     r"(?:postgres(?:ql)?|mysql|mariadb|mongodb(?:\+srv)?|redis)://"
@@ -70,6 +81,20 @@ class SecurityFinding:
     rule_code: str
 
 
+def _target_names(target: ast.AST) -> Tuple[str, ...]:
+    if isinstance(target, ast.Name):
+        return (target.id,)
+    if isinstance(target, ast.Attribute):
+        return (target.attr,)
+    if isinstance(target, ast.Subscript):
+        key = target.slice
+        if isinstance(key, ast.Constant) and isinstance(key.value, str):
+            return (key.value,)
+    if isinstance(target, (ast.Tuple, ast.List)):
+        return tuple(name for item in target.elts for name in _target_names(item))
+    return ()
+
+
 def _assigned_names(node: ast.AST) -> Tuple[str, ...]:
     if isinstance(node, ast.Assign):
         targets = node.targets
@@ -77,18 +102,29 @@ def _assigned_names(node: ast.AST) -> Tuple[str, ...]:
         targets = (node.target,)
     else:
         return ()
-    return tuple(target.id for target in targets if isinstance(target, ast.Name))
+    return tuple(name for target in targets for name in _target_names(target))
 
 
 def _is_literal_secret(value: str) -> bool:
     stripped = value.strip()
     if not stripped:
         return False
+    lowered = stripped.casefold()
     return not (
         stripped.startswith("$")
         or stripped.startswith("${")
         or stripped.startswith("%")
-        or stripped.lower().startswith("<redacted")
+        or lowered.startswith("<redacted")
+        or lowered.startswith("change_me")
+        or lowered.startswith("your_")
+        or lowered in {"example", "placeholder", "dummy"}
+    )
+
+
+def _is_secret_name(value: str) -> bool:
+    lowered = value.casefold()
+    return _SENSITIVE_NAME.search(value) is not None and not lowered.endswith(
+        _NON_SECRET_NAME_SUFFIXES
     )
 
 
@@ -110,6 +146,12 @@ def _scan_text(display_path: str, text: str, is_python: bool) -> Tuple[SecurityF
                         "plaintext_service_environment",
                     )
                 )
+        if Path(display_path).name.startswith(".env") and "=" in line:
+            name, value = line.split("=", 1)
+            if _is_secret_name(name) and _is_literal_secret(value):
+                findings.add(
+                    SecurityFinding(display_path, index, "plaintext_env_assignment")
+                )
 
     if not is_python:
         return tuple(sorted(findings))
@@ -130,8 +172,8 @@ def _scan_text(display_path: str, text: str, is_python: bool) -> Tuple[SecurityF
             if (
                 isinstance(value, ast.Constant)
                 and isinstance(value.value, str)
-                and value.value
-                and any(_SENSITIVE_NAME.search(name) for name in names)
+                and _is_literal_secret(value.value)
+                and any(_is_secret_name(name) for name in names)
             ):
                 findings.add(
                     SecurityFinding(
@@ -140,15 +182,32 @@ def _scan_text(display_path: str, text: str, is_python: bool) -> Tuple[SecurityF
                         "plaintext_sensitive_assignment",
                     )
                 )
+        elif isinstance(node, ast.Dict):
+            for key, value in zip(node.keys, node.values):
+                if (
+                    isinstance(key, ast.Constant)
+                    and isinstance(key.value, str)
+                    and _is_secret_name(key.value)
+                    and isinstance(value, ast.Constant)
+                    and isinstance(value.value, str)
+                    and _is_literal_secret(value.value)
+                ):
+                    findings.add(
+                        SecurityFinding(
+                            display_path,
+                            value.lineno,
+                            "plaintext_sensitive_mapping_value",
+                        )
+                    )
         elif isinstance(node, ast.Call):
             for keyword in node.keywords:
                 value = keyword.value
                 if (
                     keyword.arg
-                    and _SENSITIVE_NAME.search(keyword.arg)
+                    and _is_secret_name(keyword.arg)
                     and isinstance(value, ast.Constant)
                     and isinstance(value.value, str)
-                    and value.value
+                    and _is_literal_secret(value.value)
                 ):
                     findings.add(
                         SecurityFinding(

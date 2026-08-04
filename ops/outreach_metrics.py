@@ -46,7 +46,10 @@ def pg_compass_recall_24h() -> dict:
     Earlier today this was 0 · we want to see it climb if Anthropic alignment / etc
     actually consume our outreach AND register tokens to use the compass cloud."""
     try:
-        env = {**os.environ, "PGPASSWORD": "nautilus2024"}
+        password = os.environ.get("COMPASS_PG_PASSWORD", "").strip()
+        if not password:
+            return {"error": "COMPASS_PG_PASSWORD is required"}
+        env = {**os.environ, "PGPASSWORD": password}
         r = subprocess.run(
             ["psql", "-h", "localhost", "-U", "nautilus_user", "-d", "nautilus_production",
              "-tA", "-c",

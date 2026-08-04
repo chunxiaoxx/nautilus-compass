@@ -70,7 +70,7 @@ def resolve_active_command(runtime_root: Path) -> ResolvedCommand:
     except OSError as exc:
         raise RuntimeLauncherError("slot_manifest_invalid") from exc
 
-    arguments = (str(binding.python_executable), "-m", MCP_MODULE)
+    arguments = (str(binding.python_executable), "-I", "-m", MCP_MODULE)
     return ResolvedCommand(
         schema_version=RESOLVED_SCHEMA_VERSION,
         release_id=binding.release_id,

@@ -9,8 +9,12 @@ import re
 import shutil
 import subprocess
 import tempfile
+import threading
+import time
 import venv
+import zipfile
 from collections.abc import Mapping
+from contextlib import contextmanager
 from dataclasses import dataclass, replace
 from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
@@ -59,6 +63,8 @@ _SLOT_KEYS = frozenset(
 )
 _OPERATIONS = frozenset({"stage", "activate", "rollback", "blocked"})
 _STATUSES = frozenset({"verified", "active", "rolled_back", "blocked"})
+_PROCESS_LOCKS: Dict[str, threading.Lock] = {}
+_PROCESS_LOCKS_GUARD = threading.Lock()
 
 Installer = Callable[[Path, Path], Path]
 
@@ -159,6 +165,62 @@ def _safe_remove_tree(path: Path, parent: Path) -> None:
         raise RuntimeReleaseError("unsafe_cleanup_path") from exc
     if resolved_path != resolved_parent and resolved_path.exists():
         shutil.rmtree(resolved_path)
+
+
+def _process_lock(path: Path) -> threading.Lock:
+    key = os.path.normcase(os.path.abspath(str(path)))
+    with _PROCESS_LOCKS_GUARD:
+        return _PROCESS_LOCKS.setdefault(key, threading.Lock())
+
+
+@contextmanager
+def _transition_lock(runtime_root: Path, timeout_seconds: float = 10.0):
+    root = Path(runtime_root)
+    root.mkdir(parents=True, exist_ok=True)
+    lock_path = root / ".transition.lock"
+    local_lock = _process_lock(lock_path)
+    if not local_lock.acquire(timeout=timeout_seconds):
+        raise RuntimeReleaseError("transition_lock_timeout")
+    handle = None
+    locked = False
+    try:
+        handle = lock_path.open("a+b")
+        if handle.tell() == 0:
+            handle.write(b"0")
+            handle.flush()
+        handle.seek(0)
+        deadline = time.monotonic() + timeout_seconds
+        while True:
+            try:
+                if os.name == "nt":
+                    import msvcrt
+
+                    msvcrt.locking(handle.fileno(), msvcrt.LK_NBLCK, 1)
+                else:
+                    import fcntl
+
+                    fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+                locked = True
+                break
+            except OSError as exc:
+                if time.monotonic() >= deadline:
+                    raise RuntimeReleaseError("transition_lock_timeout") from exc
+                time.sleep(0.01)
+        yield
+    finally:
+        if handle is not None and locked:
+            handle.seek(0)
+            if os.name == "nt":
+                import msvcrt
+
+                msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
+            else:
+                import fcntl
+
+                fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+        if handle is not None:
+            handle.close()
+        local_lock.release()
 
 
 @dataclass(frozen=True)
@@ -396,6 +458,46 @@ def _default_installer(stage_dir: Path, wheel_path: Path) -> Path:
     return python
 
 
+def _site_packages_for_python(python_executable: Path) -> Path:
+    venv_root = python_executable.parent.parent
+    windows_path = venv_root / "Lib" / "site-packages"
+    if windows_path.is_dir():
+        return windows_path
+    candidates = tuple(sorted((venv_root / "lib").glob("python*/site-packages")))
+    if len(candidates) != 1 or not candidates[0].is_dir():
+        raise RuntimeReleaseError("slot_install_missing")
+    return candidates[0]
+
+
+def _verify_installed_wheel(wheel_path: Path, python_executable: Path) -> None:
+    site_packages = _site_packages_for_python(python_executable)
+    verified_runtime_member = False
+    try:
+        with zipfile.ZipFile(wheel_path) as archive:
+            for member in archive.infolist():
+                normalized = PurePosixPath(member.filename.replace("\\", "/"))
+                if normalized.is_absolute() or ".." in normalized.parts:
+                    raise RuntimeReleaseError("slot_install_mismatch")
+                if member.is_dir() or member.filename.endswith(".dist-info/RECORD"):
+                    continue
+                if ".data" in normalized.parts:
+                    raise RuntimeReleaseError("slot_install_layout_unsupported")
+                installed_path = site_packages.joinpath(*normalized.parts)
+                try:
+                    installed_bytes = installed_path.read_bytes()
+                    wheel_bytes = archive.read(member)
+                except (KeyError, OSError) as exc:
+                    raise RuntimeReleaseError("slot_install_mismatch") from exc
+                if installed_bytes != wheel_bytes:
+                    raise RuntimeReleaseError("slot_install_mismatch")
+                if normalized.parts and normalized.parts[0] == "nautilus_compass":
+                    verified_runtime_member = True
+    except zipfile.BadZipFile as exc:
+        raise RuntimeReleaseError("slot_wheel_invalid") from exc
+    if not verified_runtime_member:
+        raise RuntimeReleaseError("slot_install_mismatch")
+
+
 def _stage_record(
     stage_dir: Path,
     manifest: ReleaseManifest,
@@ -443,6 +545,7 @@ def verify_slot(runtime_root: Path, slot: str, release_id: str) -> SlotBinding:
     python_executable = path / Path(record.python_executable)
     if not python_executable.is_file():
         raise RuntimeReleaseError("slot_python_missing")
+    _verify_installed_wheel(wheel_path, python_executable)
     return SlotBinding(
         slot=slot,
         release_id=release_id,
@@ -510,6 +613,8 @@ def stage_release(
     try:
         staged_wheel = stage_path / manifest.wheel_filename
         shutil.copyfile(wheel_path, staged_wheel)
+        if _sha256_file(staged_wheel) != manifest.wheel_sha256:
+            raise RuntimeReleaseError("wheel_copy_mismatch")
         (stage_path / "release-manifest.json").write_bytes(manifest_bytes)
         try:
             python_executable = Path(install(stage_path, staged_wheel))
@@ -572,6 +677,15 @@ def activate_release(
 ) -> RuntimePointer:
     root = Path(runtime_root)
     timestamp = _validate_timestamp(created_at or _now())
+    with _transition_lock(root):
+        return _activate_release_locked(root, release_id, timestamp)
+
+
+def _activate_release_locked(
+    root: Path,
+    release_id: str,
+    timestamp: str,
+) -> RuntimePointer:
     current = load_pointer(root)
     if current and current.release_id == release_id:
         binding = verify_slot(root, current.active_slot, release_id)
@@ -614,6 +728,11 @@ def rollback_release(
 ) -> RuntimePointer:
     root = Path(runtime_root)
     timestamp = _validate_timestamp(created_at or _now())
+    with _transition_lock(root):
+        return _rollback_release_locked(root, timestamp)
+
+
+def _rollback_release_locked(root: Path, timestamp: str) -> RuntimePointer:
     current = load_pointer(root)
     previous = load_pointer(root, "previous.json")
     if current is None or previous is None:
@@ -661,4 +780,5 @@ __all__ = [
     "rollback_release",
     "stage_release",
     "verify_slot",
+    "_transition_lock",
 ]
