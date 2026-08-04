@@ -174,7 +174,7 @@ def build_memory_views(
     packet_hashes: Mapping[str, str],
     source_query_classes: Mapping[str, str],
     semantic_scores: Mapping[str, float],
-    independent_verdicts: Mapping[str, VerdictPacket],
+    independent_verdicts: Mapping[str, VerdictPacket | None],
 ) -> tuple[MemoryView, ...]:
     ...
 ```
@@ -185,7 +185,8 @@ using the existing packaged-secret boundary vocabulary; do not invent a new
 secret store. All four mappings must contain exact `episode_id` keys. A packet
 must never become `independent_verified` by interpreting its own `outcome`;
 only a separately supplied, hash-valid `VerdictPacket` may set that state and
-verdict. Missing or mismatched evidence fails closed.
+verdict. An explicit `None` creates a blocked view for poison/admission tests;
+a missing key or mismatched evidence fails closed.
 
 **Step 4: Run focused tests and Ruff**
 
