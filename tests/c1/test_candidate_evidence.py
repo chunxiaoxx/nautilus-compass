@@ -3,6 +3,8 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import subprocess
+from datetime import datetime
 from pathlib import Path
 
 from benchmarks.learning_kernel_r0.cli import load_fixture, run_fixture, summarize_results
@@ -44,6 +46,19 @@ def test_c1_evidence_is_bound_to_manifest_and_recomputed_learning_summary() -> N
     assert manifest.release_id == evidence["release"]["release_id"]
     assert manifest.wheel_sha256 == evidence["release"]["wheel_sha256"]
     assert manifest.default_policy == "flat"
+    assert evidence["release"]["manifest_filename"] == "release-manifest.json"
+    source_committed_at = subprocess.run(
+        ["git", "show", "-s", "--format=%cI", evidence["candidate_source_commit"]],
+        cwd=REPO_ROOT,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        timeout=10,
+        check=True,
+    ).stdout.strip()
+    assert datetime.fromisoformat(manifest.built_at.replace("Z", "+00:00")) >= datetime.fromisoformat(
+        source_committed_at
+    )
 
     bundle = load_fixture(FIXTURE_DIR)
     summary = summarize_results(bundle, run_fixture(bundle))
@@ -61,20 +76,25 @@ def test_c1_evidence_is_bound_to_manifest_and_recomputed_learning_summary() -> N
 def test_c1_evidence_keeps_claim_classes_separate() -> None:
     evidence = json.loads(EVIDENCE_PATH.read_text(encoding="utf-8"))
 
-    assert evidence["verification"]["source_test_count"] == 535
+    assert evidence["verification"]["source_test_count"] == 541
     assert evidence["verification"]["installed_wheel_e2e_count"] == 1
-    assert evidence["verification"]["combined_test_count"] == 536
+    assert evidence["verification"]["combined_test_count"] == 542
     assert evidence["verification"]["source_security_findings"] == 0
     assert evidence["verification"]["wheel_security_findings"] == 0
     assert evidence["release_rehearsal"] == {
+        "doctor_daemon_port_aligned": True,
         "doctor_provenance_read_back": True,
+        "installed_code_wheel_bound": True,
         "installed_import_isolated": True,
+        "installed_learning_kernel": True,
+        "launcher_isolated": True,
         "mcp_tool_count": 17,
         "recall_backend_isolated": True,
         "rollback_without_reinstall": True,
         "slots_exercised": ["a", "b"],
         "switch_generation": 2,
         "rollback_generation": 3,
+        "transition_locked": True,
     }
     assert evidence["claim_boundary"]["external_baseline_run"] is False
     assert evidence["claim_boundary"]["real_agent_uplift_proven"] is False
