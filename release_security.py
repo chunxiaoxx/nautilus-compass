@@ -23,6 +23,7 @@ _NON_SECRET_NAME_SUFFIXES = (
     "_name",
     "_port",
     "_ttl",
+    "_tokens",
     "_type",
     "_url",
     "name",
@@ -124,6 +125,7 @@ def _is_literal_secret(value: str) -> bool:
         or stripped.startswith("%")
         or lowered.startswith("<redacted")
         or lowered.startswith("change_me")
+        or lowered.startswith("action_")
         or lowered.startswith("replace_")
         or lowered.startswith("your_")
         or lowered in {"example", "placeholder", "dummy", "null", "none", "~"}

@@ -122,6 +122,10 @@ def test_scanner_allows_environment_backed_values(tmp_path):
     ("filename", "body"),
     (
         ("settings.json", '{"api_key":"${COMPASS_API_KEY}"}\n'),
+        (
+            "verifier.json",
+            '{"output_tokens":2,"memory_token":"ACTION_ALPHA"}\n',
+        ),
         ("settings.toml", 'api_token = "$COMPASS_API_TOKEN"\n'),
         ("settings.yaml", "password: <redacted>\n"),
     ),
