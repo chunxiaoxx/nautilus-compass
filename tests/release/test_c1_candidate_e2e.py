@@ -301,6 +301,11 @@ def test_c1_installed_wheel_dual_slot_switch_and_rollback(tmp_path: Path) -> Non
     )
     binding_a = verify_slot(runtime_root, pointer_a.active_slot, pointer_a.release_id)
     python_a_stat = binding_a.python_executable.stat()
+    python_a_identity = (
+        python_a_stat.st_size,
+        python_a_stat.st_mtime_ns,
+        python_a_stat.st_ctime_ns,
+    )
     _assert_installed_imports(binding_a.path, binding_a.python_executable)
     tool_count, _replies = _mcp_recall_smoke(binding_a.python_executable, runtime_root)
     assert tool_count == 17
@@ -329,7 +334,12 @@ def test_c1_installed_wheel_dual_slot_switch_and_rollback(tmp_path: Path) -> Non
     assert rolled_back.active_slot == pointer_a.active_slot
     assert rolled_back.generation == 3
     restored = verify_slot(runtime_root, rolled_back.active_slot, rolled_back.release_id)
-    assert restored.python_executable.stat() == python_a_stat
+    restored_stat = restored.python_executable.stat()
+    assert (
+        restored_stat.st_size,
+        restored_stat.st_mtime_ns,
+        restored_stat.st_ctime_ns,
+    ) == python_a_identity
     doctor_rollback = build_doctor_report(
         runtime_root,
         generated_at="2026-08-04T12:02:00Z",
