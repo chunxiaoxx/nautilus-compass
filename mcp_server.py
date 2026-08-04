@@ -32,7 +32,20 @@ PROTOCOL_VERSION = "2024-11-05"
 SERVER_NAME = "nautilus-compass"
 SERVER_VERSION = "2.3.0"
 DAEMON_HOST = "127.0.0.1"
-DAEMON_PORT = 9876
+
+
+def _daemon_port_from_environment() -> int:
+    raw = os.environ.get("COMPASS_DAEMON_PORT", "9876").strip()
+    try:
+        port = int(raw)
+    except ValueError as exc:
+        raise ValueError("invalid COMPASS_DAEMON_PORT") from exc
+    if not 1 <= port <= 65535:
+        raise ValueError("invalid COMPASS_DAEMON_PORT")
+    return port
+
+
+DAEMON_PORT = _daemon_port_from_environment()
 DAEMON_TIMEOUT = 30.0
 
 # v1.5 · S2 proof-of-recall · in-memory token store · 30 min TTL · LRU evict at 1000
