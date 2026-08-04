@@ -366,6 +366,53 @@ def test_verify_slot_rejects_tampered_installed_package(tmp_path):
         verify_slot(runtime_root, "a", staged.release_id)
 
 
+@pytest.mark.parametrize(
+    "relative_path",
+    (
+        "venv/Lib/site-packages/compass-shadow.pth",
+        "venv/Lib/site-packages/sitecustomize.py",
+        "venv/Lib/site-packages/nautilus_compass/shadow.py",
+    ),
+)
+def test_verify_slot_rejects_untracked_executable_install_files(tmp_path, relative_path):
+    runtime_root = tmp_path / "runtime"
+    candidate = make_candidate(
+        tmp_path, "one", "2.3.0", GIT_SHA_1, b"wheel-one", BUILT_AT_1
+    )
+    staged = stage_release(
+        runtime_root,
+        candidate[1],
+        candidate[2],
+        installer=fake_installer,
+        created_at=BUILT_AT_1,
+    )
+    injected = staged.path / relative_path
+    injected.parent.mkdir(parents=True, exist_ok=True)
+    injected.write_text("raise RuntimeError('shadowed')\n", encoding="utf-8")
+
+    with pytest.raises(RuntimeReleaseError, match="slot_install_mismatch"):
+        verify_slot(runtime_root, "a", staged.release_id)
+
+
+def test_verify_slot_rejects_tampered_python_executable(tmp_path):
+    runtime_root = tmp_path / "runtime"
+    candidate = make_candidate(
+        tmp_path, "one", "2.3.0", GIT_SHA_1, b"wheel-one", BUILT_AT_1
+    )
+    staged = stage_release(
+        runtime_root,
+        candidate[1],
+        candidate[2],
+        installer=fake_installer,
+        created_at=BUILT_AT_1,
+    )
+    executable = staged.path / "venv" / "Scripts" / "python.exe"
+    executable.write_bytes(b"tampered-python")
+
+    with pytest.raises(RuntimeReleaseError, match="slot_python_mismatch"):
+        verify_slot(runtime_root, "a", staged.release_id)
+
+
 def test_transition_lock_serializes_release_mutations(tmp_path):
     from runtime_release import _transition_lock
 

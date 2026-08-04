@@ -20,10 +20,12 @@ _NON_SECRET_NAME_SUFFIXES = (
     "_hash",
     "_id",
     "_limit",
+    "_name",
     "_port",
     "_ttl",
     "_type",
     "_url",
+    "name",
 )
 _PRIVATE_KEY_MARKER = re.compile(r"-----BEGIN [A-Z0-9 ]*PRIVATE KEY-----")
 _DATABASE_CREDENTIAL_URL = re.compile(
@@ -34,6 +36,12 @@ _DATABASE_CREDENTIAL_URL = re.compile(
 _SERVICE_ENVIRONMENT = re.compile(
     r"^\s*Environment=(?:\"?)([A-Za-z_][A-Za-z0-9_]*)=([^\s\"]+)"
 )
+_STRUCTURED_SECRET_ASSIGNMENT = re.compile(
+    r'''(?:^|[{,]|-\s+)\s*'''
+    r'''(?:"([^"]+)"|'([^']+)'|([A-Za-z_][A-Za-z0-9_.-]*))\s*[:=]\s*'''
+    r'''(?:"([^"]*)"|'([^']*)'|([^,}\]#\r\n]+))'''
+)
+_STRUCTURED_SUFFIXES = frozenset({".json", ".toml", ".yml", ".yaml"})
 _TEXT_SUFFIXES = frozenset(
     {".py", ".service", ".sh", ".ps1", ".txt", ".json", ".toml", ".yml", ".yaml"}
 )
@@ -116,8 +124,9 @@ def _is_literal_secret(value: str) -> bool:
         or stripped.startswith("%")
         or lowered.startswith("<redacted")
         or lowered.startswith("change_me")
+        or lowered.startswith("replace_")
         or lowered.startswith("your_")
-        or lowered in {"example", "placeholder", "dummy"}
+        or lowered in {"example", "placeholder", "dummy", "null", "none", "~"}
     )
 
 
@@ -152,6 +161,22 @@ def _scan_text(display_path: str, text: str, is_python: bool) -> Tuple[SecurityF
                 findings.add(
                     SecurityFinding(display_path, index, "plaintext_env_assignment")
                 )
+        if Path(display_path).suffix.casefold() in _STRUCTURED_SUFFIXES:
+            for match in _STRUCTURED_SECRET_ASSIGNMENT.finditer(line):
+                key = next(value for value in match.groups()[:3] if value is not None)
+                value = next(value for value in match.groups()[3:] if value is not None).strip()
+                if (
+                    _is_secret_name(key)
+                    and not value.startswith(("{", "["))
+                    and _is_literal_secret(value)
+                ):
+                    findings.add(
+                        SecurityFinding(
+                            display_path,
+                            index,
+                            "plaintext_structured_secret",
+                        )
+                    )
 
     if not is_python:
         return tuple(sorted(findings))

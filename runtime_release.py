@@ -25,7 +25,7 @@ from release_manifest import ReleaseManifest, ReleaseManifestError
 
 POINTER_SCHEMA_VERSION = "compass.runtime.pointer.v1"
 RECEIPT_SCHEMA_VERSION = "compass.runtime.receipt.v1"
-SLOT_SCHEMA_VERSION = "compass.runtime.slot.v1"
+SLOT_SCHEMA_VERSION = "compass.runtime.slot.v2"
 
 _HASH_PATTERN = re.compile(r"sha256:[0-9a-f]{64}")
 _RELEASE_ID_PATTERN = re.compile(
@@ -58,6 +58,7 @@ _SLOT_KEYS = frozenset(
         "wheel_sha256",
         "wheel_filename",
         "python_executable",
+        "python_sha256",
         "status",
     }
 )
@@ -320,6 +321,7 @@ class SlotRecord:
     wheel_sha256: str
     wheel_filename: str
     python_executable: str
+    python_sha256: str
     status: str
 
     @classmethod
@@ -334,6 +336,7 @@ class SlotRecord:
         _validate_release_id(mapping["release_id"], "invalid_slot_record")
         _validate_hash(mapping["manifest_sha256"], "invalid_slot_record")
         _validate_hash(mapping["wheel_sha256"], "invalid_slot_record")
+        _validate_hash(mapping["python_sha256"], "invalid_slot_record")
         wheel_name = mapping["wheel_filename"]
         if "/" in wheel_name or "\\" in wheel_name or not wheel_name.endswith(".whl"):
             raise RuntimeReleaseError("invalid_slot_record")
@@ -347,6 +350,7 @@ class SlotRecord:
             wheel_sha256=mapping["wheel_sha256"],
             wheel_filename=wheel_name,
             python_executable=mapping["python_executable"],
+            python_sha256=mapping["python_sha256"],
             status="verified",
         )
 
@@ -358,6 +362,7 @@ class SlotRecord:
             "wheel_sha256": self.wheel_sha256,
             "wheel_filename": self.wheel_filename,
             "python_executable": self.python_executable,
+            "python_sha256": self.python_sha256,
             "status": self.status,
         }
 
@@ -444,7 +449,15 @@ def _default_installer(stage_dir: Path, wheel_path: Path) -> Path:
         else:
             python = venv_path / "bin" / "python"
         completed = subprocess.run(
-            [str(python), "-m", "pip", "install", "--no-deps", str(wheel_path)],
+            [
+                str(python),
+                "-m",
+                "pip",
+                "install",
+                "--no-deps",
+                "--no-compile",
+                str(wheel_path),
+            ],
             stdin=subprocess.DEVNULL,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -472,6 +485,8 @@ def _site_packages_for_python(python_executable: Path) -> Path:
 def _verify_installed_wheel(wheel_path: Path, python_executable: Path) -> None:
     site_packages = _site_packages_for_python(python_executable)
     verified_runtime_member = False
+    expected_files = set()
+    owned_roots = set()
     try:
         with zipfile.ZipFile(wheel_path) as archive:
             for member in archive.infolist():
@@ -482,6 +497,9 @@ def _verify_installed_wheel(wheel_path: Path, python_executable: Path) -> None:
                     continue
                 if ".data" in normalized.parts:
                     raise RuntimeReleaseError("slot_install_layout_unsupported")
+                expected_files.add(normalized.as_posix())
+                if normalized.parts and not normalized.parts[0].endswith(".dist-info"):
+                    owned_roots.add(normalized.parts[0])
                 installed_path = site_packages.joinpath(*normalized.parts)
                 try:
                     installed_bytes = installed_path.read_bytes()
@@ -496,6 +514,22 @@ def _verify_installed_wheel(wheel_path: Path, python_executable: Path) -> None:
         raise RuntimeReleaseError("slot_wheel_invalid") from exc
     if not verified_runtime_member:
         raise RuntimeReleaseError("slot_install_mismatch")
+
+    for installed_path in site_packages.rglob("*"):
+        if not installed_path.is_file():
+            continue
+        relative = installed_path.relative_to(site_packages).as_posix()
+        parts = PurePosixPath(relative).parts
+        if relative in expected_files:
+            continue
+        root_name = parts[0] if parts else ""
+        executable_root_file = len(parts) == 1 and (
+            installed_path.suffix.casefold() == ".pth"
+            or installed_path.name.casefold()
+            in {"sitecustomize.py", "sitecustomize.pyc", "usercustomize.py", "usercustomize.pyc"}
+        )
+        if executable_root_file or root_name in owned_roots:
+            raise RuntimeReleaseError("slot_install_mismatch")
 
 
 def _stage_record(
@@ -517,6 +551,7 @@ def _stage_record(
         wheel_sha256=manifest.wheel_sha256,
         wheel_filename=manifest.wheel_filename,
         python_executable=relative_python.as_posix(),
+        python_sha256=_sha256_file(python_executable),
         status="verified",
     )
 
@@ -545,6 +580,8 @@ def verify_slot(runtime_root: Path, slot: str, release_id: str) -> SlotBinding:
     python_executable = path / Path(record.python_executable)
     if not python_executable.is_file():
         raise RuntimeReleaseError("slot_python_missing")
+    if _sha256_file(python_executable) != record.python_sha256:
+        raise RuntimeReleaseError("slot_python_mismatch")
     _verify_installed_wheel(wheel_path, python_executable)
     return SlotBinding(
         slot=slot,

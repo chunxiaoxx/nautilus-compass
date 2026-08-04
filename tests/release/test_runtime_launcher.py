@@ -57,6 +57,7 @@ def test_valid_runtime_resolves_only_active_slot(tmp_path):
     assert resolved.arguments == (
         str(resolved.executable),
         "-I",
+        "-B",
         "-m",
         "nautilus_compass.mcp_server",
     )
@@ -125,7 +126,12 @@ def test_dry_run_json_reports_binding_without_starting_process(tmp_path, capsys)
     output = json.loads(capsys.readouterr().out)
     assert result == 0
     assert output["release_id"] == manifest.release_id
-    assert output["arguments"][1:] == ["-I", "-m", "nautilus_compass.mcp_server"]
+    assert output["arguments"][1:] == [
+        "-I",
+        "-B",
+        "-m",
+        "nautilus_compass.mcp_server",
+    ]
     assert set(output) == {
         "schema_version",
         "release_id",
