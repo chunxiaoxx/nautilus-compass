@@ -38,6 +38,29 @@
 
 ---
 
+## C1 · Compass 2.3 trusted-candidate status
+
+C1 is a **candidate-only; not installed or deployed** assembly built from a
+fresh `origin/main` base. It combines the reviewed S4 verdict substrate,
+release control, and the provider-free Learning Kernel R0 without importing the
+unrelated 137-commit development branch. The current 2.2 plugin remains
+untouched.
+
+| Evidence class | C1 result | Boundary |
+|---|---|---|
+| Release integrity | Clean wheel, canonical manifest, isolated A/B slots, doctor provenance read-back, MCP/recall smoke, switch and rollback | Local candidate proof; not production adoption |
+| Learning-kernel mechanism | Frozen 336-run matrix: candidate delta `+0.25`, protected delta `0`, poisoned admission `0` | Deterministic mechanism fixture; not real-agent uplift |
+| Runtime policy | `candidate_only`, `improvement_claim=false` | Runtime policy remains `flat` |
+| External benchmark | Not run in C1 | Historical end-to-end QA accuracy; not rerun on C1 |
+
+No C1 SOTA claim is made. The machine-readable evidence and immutable release
+manifest are in
+[`docs/evidence/compass_c1_candidate_v1.json`](docs/evidence/compass_c1_candidate_v1.json)
+and
+[`docs/evidence/compass_c1_release_manifest_v1.json`](docs/evidence/compass_c1_release_manifest_v1.json).
+
+---
+
 ## 30-second pitch
 
 compass's #1 job is multi-agent **reliability** without an orchestrator.
@@ -358,13 +381,18 @@ assert m["rate"] >= 0.70, f"drift loop open · rate={m['rate']:.3f} fires={m['fi
 
 ## Headline numbers
 
-| Benchmark | Score | Honest compare |
-|---|---|---|
-| **LongMemEval-S** (n=500) | **56.6%** (locked at v0.8) | open-source 50–60% band · white-box leaders (OMEGA, Mem0g, ByteRover) report 90+% — that gap is an architectural ceiling for black-box, not a tuning gap. See [BLACKBOX_VS_WHITEBOX](paper/BLACKBOX_VS_WHITEBOX.md). |
-| **EverMemBench-Dynamic** (n=500) | **44.4% (Run 1) / 47.3% (Run 2)** | tops the four published Table 4 baselines (Mem0 37.09, Zep 39.97, MemOS 42.55, MemoBase 34.27). Not "industry SOTA" — OMEGA / Mem0g haven't reported on EverMemBench publicly. |
-| **Drift detector AUC** | **0.83 held-out / 0.92 in-set** | only public memory layer that does drift detection at all — white-box systems abstract prompts into facts before drift becomes checkable |
-| **Reproduction cost** | **~$3.50** for 500 LongMemEval questions | ~14× cheaper than GPT-4o-judged stacks ($50+) |
-| **p95 hook latency** | **<50 ms** | safe for every-prompt invocation |
+These are deliberately separated by measurement class. Historical benchmark
+rows remain useful context, but they are not evidence that the C1 candidate
+improves agent behavior.
+
+| Evidence class | Benchmark | Score | Honest compare |
+|---|---|---|---|
+| End-to-end QA accuracy | **LongMemEval-S** (n=500) | **56.6%** (v0.8 historical) | Historical end-to-end QA accuracy; not rerun on C1. White-box leaders report 90+%. See [BLACKBOX_VS_WHITEBOX](paper/BLACKBOX_VS_WHITEBOX.md). |
+| End-to-end QA accuracy | **EverMemBench-Dynamic** (n=500) | **44.4% (Run 1) / 47.3% (Run 2)** (historical) | Tops the four Table 4 baselines cited in the historical report; not an industry-wide or C1 SOTA claim. |
+| Retrieval-only | **LongMemEval-S retrieval** (n=500) | P@5 **0.920**, MRR **0.855** (historical) | Retrieval ranking only; not answer accuracy and not a C1 rerun. |
+| Runtime/mechanism | **Drift detector** | AUC **0.83 held-out / 0.92 in-set** (historical) | Detector discrimination, not memory QA or agent-task uplift. |
+| Runtime/mechanism | **Hook latency** | p95 **<50 ms** (historical) | Hook-path timing, not the installed-wheel C1 rehearsal latency. |
+| Learning-kernel mechanism | **R0 frozen fixture** | candidate delta **+0.25**, protected delta **0** | Deterministic mechanism fixture; not real-agent uplift. Runtime stays `flat`. |
 
 We deliberately report Run 1 (44.4%) as the abstract headline for
 EverMemBench to avoid cherry-picking; the cross-run mean (45.84%) clears
@@ -556,8 +584,8 @@ If you use this work, please cite:
 ```bibtex
 @misc{nautiluscompass-memrecall-2026,
   title  = {Closing the Memory Recall Gap with Chinese LLMs:
-            A Multi-Stage Retrieval Pipeline Achieving Zep-SOTA Performance
-            on LongMemEval-S at 1/15 Cost},
+            A Cost-Aware Multi-Stage Retrieval Pipeline
+            on LongMemEval-S},
   author = {Chunxiao Wang},
   year   = {2026},
   note   = {Yiluo Technology Co., Ltd.},

@@ -1,13 +1,31 @@
 # Evaluation Results
 
-> **Reproducibility checkpoint**:  
-> All numbers below are from the same execution dates (2026-04-29).  
-> Drift detection AUC re-verified on commit 247b056 with weighted top-k scoring (v0.7.1 schema): AUC = 0.9232 (identical to original).  
-> Full pipeline re-verification scheduled before arXiv submission (target 2026-05-04).
+> **Evidence boundary**: Historical benchmark results are not C1 reruns. The
+> legacy drift/recall checkpoint below began on 2026-04-29; later sections retain
+> their own measurement context. C1 release and Learning Kernel evidence is
+> separately bound to its candidate commit and manifest.
 
-All numbers are **self-reproducible** by running the eval scripts in `tests/`. See [`tests/run_all.sh`](tests/run_all.sh).
+Each historical row lists its reproduction entry point, but some runs require
+provider credentials or model artifacts and have not been repeated for C1. See
+[`tests/run_all.sh`](tests/run_all.sh) for the legacy suite and the C1 evidence
+files for the provider-free candidate gate.
 
-Date of measurements: **2026-04-29**
+---
+
+## C1 · 2.3 candidate verification
+
+| Evidence class | What was measured | Current result | What it does not prove |
+|---|---|---|---|
+| Release integrity | Source/wheel scan, immutable manifest, installed imports, dual-slot switch/rollback, doctor and MCP/recall smoke | Passed in an isolated temporary runtime | Production adoption or live-agent uplift |
+| Learning-kernel mechanism | 336 deterministic selector/intervention runs | `candidate_delta=0.25`, protected delta `0`, poisoned admission `0` | Generalization to a model, user, or external task distribution |
+| Runtime/mechanism | Candidate policy gate | `candidate_only`, runtime `flat`, `improvement_claim=false` | Automatic promotion or model-weight training |
+| End-to-end QA accuracy | LongMemEval-S / EverMemBench | Not rerun for C1 | Any 2.3 accuracy or SOTA claim |
+| Retrieval-only | Historical P@5/MRR rows below | Preserved as historical evidence | End-to-end answer correctness |
+
+Canonical evidence:
+[`docs/evidence/compass_c1_candidate_v1.json`](docs/evidence/compass_c1_candidate_v1.json).
+
+Date of the legacy drift/recall checkpoint: **2026-04-29**
 
 ---
 
