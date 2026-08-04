@@ -23,10 +23,7 @@ from psycopg.rows import dict_row
 
 logger = logging.getLogger(__name__)
 
-PG_DSN = os.environ.get(
-    "COMPASS_PG_DSN",
-    "postgresql://v5:v5_local_password_change_me@127.0.0.1:5432/v5",
-)
+PG_DSN = os.environ.get("COMPASS_PG_DSN", "")
 PLATFORM_JWT_SECRET = os.environ.get("V5_JWT_SECRET", "")
 
 
@@ -53,6 +50,8 @@ def _verify_platform_jwt(token: str) -> Optional[str]:
 
 def _lookup_tenant(tenant_id: str) -> Optional[dict]:
     """Look up compass.tenants_view · creates row on first call (idempotent)."""
+    if not PG_DSN:
+        return None
     try:
         with psycopg.connect(PG_DSN, connect_timeout=3) as conn:
             with conn.cursor(row_factory=dict_row) as cur:
@@ -68,13 +67,15 @@ def _lookup_tenant(tenant_id: str) -> Optional[dict]:
                 )
                 conn.commit()
                 return cur.fetchone()
-    except Exception as e:
-        logger.debug(f"tenant lookup fail: {e}")
+    except Exception as exc:
+        logger.debug("tenant lookup fail: %s", type(exc).__name__)
         return None
 
 
 def _log_call(tenant_id: str, endpoint: str, ip: str) -> None:
     """Log usage · update last_drift_check_at on the tenant row."""
+    if not PG_DSN:
+        return
     try:
         with psycopg.connect(PG_DSN, connect_timeout=3) as conn:
             with conn.cursor() as cur:
@@ -103,6 +104,8 @@ def _check_quota(tenant_id: str, monthly_quota: int) -> None:
                         "Visit nautilus.social to reactivate (post / bid / vote).",
             },
         )
+    if not PG_DSN:
+        return
     try:
         with psycopg.connect(PG_DSN, connect_timeout=3) as conn:
             with conn.cursor() as cur:
