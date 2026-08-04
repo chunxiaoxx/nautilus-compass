@@ -309,11 +309,16 @@ def reduce_lifecycle(
     verified_harm: int,
     protected_harm: bool,
     expired: bool,
+    policy: ForgettingPolicy,
 ) -> str:
     ...
 ```
 
-Keep thresholds in the frozen benchmark manifest, not hidden module globals.
+`ForgettingPolicy` is an immutable value containing `min_active_support`,
+`archive_harm_threshold`, and `recovery_support`. Keep those values in the
+frozen benchmark manifest and pass them explicitly; do not use hidden module
+globals. Also expose a pure `apply_lifecycle` helper that returns a replaced
+`MemoryView`, plus `forgetting_regret` over matched selected/oracle outcomes.
 
 **Step 4: Run tests and Ruff**
 
