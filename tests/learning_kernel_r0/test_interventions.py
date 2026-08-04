@@ -169,9 +169,14 @@ def test_stale_sets_expiry_without_deleting_source() -> None:
 
 def test_contradictory_preserves_original_and_incompatible_views() -> None:
     views = build("contradictory")
+    contradictions = tuple(
+        view for view in views if view.rendered_text.startswith("DO_NOT_USE: ")
+    )
 
     assert len(views) == 4
-    assert sum(view.rendered_text.startswith("DO_NOT_USE: ") for view in views) == 2
+    assert len(contradictions) == 2
+    assert {view.verification_state for view in contradictions} == {"blocked"}
+    assert {view.verdict for view in contradictions} == {None}
     assert len({view.view_id for view in views}) == 4
 
 

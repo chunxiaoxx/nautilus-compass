@@ -201,6 +201,8 @@ def _contradictory_view(view: MemoryView) -> MemoryView:
         view,
         view_id=f"{view.view_id.rsplit('_', 1)[0]}_{digest.removeprefix('sha256:')[:12]}",
         rendered_text=rendered_text,
+        verification_state="blocked",
+        verdict=None,
     )
 
 

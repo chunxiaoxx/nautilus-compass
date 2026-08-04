@@ -30,6 +30,7 @@ def evaluate_candidate_policy(
     *,
     aggregate_delta: float,
     permutation_p95: float,
+    candidate_selector: str,
     protected_deltas: Mapping[str, float],
     protected_query_classes: tuple[str, ...],
     required_query_classes: tuple[str, ...],
@@ -42,6 +43,7 @@ def evaluate_candidate_policy(
 
     aggregate_delta = _finite_number("aggregate_delta", aggregate_delta)
     permutation_p95 = _finite_number("permutation_p95", permutation_p95)
+    _validate_token("candidate_selector", candidate_selector)
     required = _token_tuple("required_query_classes", required_query_classes)
     observed = _token_tuple("observed_query_classes", observed_query_classes)
     protected = _token_tuple("protected_query_classes", protected_query_classes)
@@ -59,6 +61,14 @@ def evaluate_candidate_policy(
             "replay_hash",
             actual_replay_hash,
             expected_replay_hash,
+        )
+    if candidate_selector != "governed":
+        return _decision(
+            "blocked",
+            "diagnostic_selector_not_eligible",
+            "candidate_selector",
+            candidate_selector,
+            "governed",
         )
     if poisoned:
         return _decision(

@@ -11,6 +11,10 @@ from .utility import ContextKey, UtilityKey
 
 
 PoiScore = tuple[float, float]
+DIAGNOSTIC_SELECTORS = frozenset(
+    {"semantic", "distilled", "contextual_utility", "current_poi"}
+)
+RUNTIME_ELIGIBLE_SELECTORS = frozenset({"flat", "governed"})
 
 
 def select_views(
@@ -24,7 +28,12 @@ def select_views(
     semantic_candidate_limit: int | None = None,
     limit: int = 1,
 ) -> tuple[MemoryView, ...]:
-    """Select views under one frozen policy, returning exact flat on no support."""
+    """Select views under one frozen evaluation policy.
+
+    Diagnostic selectors intentionally expose unsafe controls so the benchmark can
+    measure poison and lifecycle failures. Only ``flat`` and ``governed`` may enter
+    the candidate policy gate; the gate enforces that boundary independently.
+    """
 
     _validate_inputs(selector, views, context_key, semantic_candidate_limit, limit)
     if selector == "flat" or not views:
@@ -159,4 +168,9 @@ def _validate_limit(name: str, value: object) -> None:
         raise ValueError(f"{name} must be positive")
 
 
-__all__ = ["PoiScore", "select_views"]
+__all__ = [
+    "DIAGNOSTIC_SELECTORS",
+    "RUNTIME_ELIGIBLE_SELECTORS",
+    "PoiScore",
+    "select_views",
+]
