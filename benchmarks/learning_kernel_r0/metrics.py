@@ -7,7 +7,7 @@ from collections import defaultdict
 from dataclasses import dataclass
 from statistics import median
 
-from benchmarks.poi_gate2.action_metrics import percentile_95
+from benchmarks.common_statistics import percentile_95
 
 from .forgetting import forgetting_regret
 from .runner import validate_result_hash

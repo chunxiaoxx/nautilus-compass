@@ -142,6 +142,10 @@ commits and reject any path outside:
 **Step 2:** Cherry-pick the R0 commits one by one in original order, omitting
 `9f40760`. Stop on any dependency outside the allowlist instead of widening it.
 
+Remove the donor live-agent dogfood projection and donor-commit-bound protocol
+artifacts; C1 keeps the blocked-admission primitive and regenerates evidence
+against its own candidate in Task 6.
+
 **Step 3:** Run the complete Learning Kernel suite plus GEP and release tests.
 
 ```powershell

@@ -12,7 +12,7 @@ from pathlib import Path
 from types import MappingProxyType
 from typing import Any
 
-from benchmarks.poi_gate2.action_metrics import percentile_95
+from benchmarks.common_statistics import percentile_95
 from benchmarks.poi_gate2.canonical import canonical_json_bytes, hash_bytes, hash_json
 from gep.experience_packet import ExperiencePacket, from_args as experience_from_args
 from gep.verdict_packet import VerdictPacket, from_args as verdict_from_args
