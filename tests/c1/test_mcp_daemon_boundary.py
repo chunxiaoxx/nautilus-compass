@@ -3,6 +3,7 @@ from __future__ import annotations
 import pytest
 
 from mcp_server import _daemon_port_from_environment
+from runtime_doctor import _daemon_port_from_environment as doctor_daemon_port
 
 
 def test_daemon_port_defaults_to_existing_runtime(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -17,6 +18,7 @@ def test_daemon_port_can_be_isolated_without_changing_host(
     monkeypatch.setenv("COMPASS_DAEMON_PORT", "43123")
 
     assert _daemon_port_from_environment() == 43123
+    assert doctor_daemon_port() == 43123
 
 
 @pytest.mark.parametrize("value", ["", "0", "65536", "not-a-port"])

@@ -60,12 +60,13 @@ compass-session-writer = "nautilus_compass.session_writer:main"
 # v1.6.2 was broken — only top-level was packaged, so `nautilus_compass.sdk`
 # and `nautilus_compass.middleware` imports failed at install time.
 # Explicit list (not `find`) avoids setuptools treating tests/, scripts/, etc as packages.
-packages = ["nautilus_compass", "nautilus_compass.sdk", "nautilus_compass.middleware", "nautilus_compass.storage", "nautilus_compass.proof", "nautilus_compass.drift", "nautilus_compass.recall_pkg", "nautilus_compass.skills_pkg", "nautilus_compass.judges", "mcp_durable", "gep"]
-package-dir = {"nautilus_compass" = ".", "nautilus_compass.sdk" = "sdk", "nautilus_compass.middleware" = "middleware", "nautilus_compass.storage" = "storage", "nautilus_compass.proof" = "proof", "nautilus_compass.drift" = "drift", "nautilus_compass.recall_pkg" = "recall_pkg", "nautilus_compass.skills_pkg" = "skills_pkg", "nautilus_compass.judges" = "judges", "mcp_durable" = "mcp_durable", "gep" = "gep"}
+packages = ["nautilus_compass", "nautilus_compass.sdk", "nautilus_compass.middleware", "nautilus_compass.storage", "nautilus_compass.proof", "nautilus_compass.drift", "nautilus_compass.recall_pkg", "nautilus_compass.skills_pkg", "nautilus_compass.judges", "mcp_durable", "gep", "benchmarks", "benchmarks.poi_gate2", "benchmarks.learning_kernel_r0"]
+package-dir = {"nautilus_compass" = ".", "nautilus_compass.sdk" = "sdk", "nautilus_compass.middleware" = "middleware", "nautilus_compass.storage" = "storage", "nautilus_compass.proof" = "proof", "nautilus_compass.drift" = "drift", "nautilus_compass.recall_pkg" = "recall_pkg", "nautilus_compass.skills_pkg" = "skills_pkg", "nautilus_compass.judges" = "judges", "mcp_durable" = "mcp_durable", "gep" = "gep", "benchmarks" = "benchmarks", "benchmarks.poi_gate2" = "benchmarks/poi_gate2", "benchmarks.learning_kernel_r0" = "benchmarks/learning_kernel_r0"}
 
 [tool.setuptools.package-data]
 "nautilus_compass" = ["anchors*.json", "*.sh"]
 "nautilus_compass.sdk" = ["*.md"]
+"benchmarks.learning_kernel_r0" = ["fixtures/r0/*.json"]
 
 [tool.ruff]
 line-length = 100

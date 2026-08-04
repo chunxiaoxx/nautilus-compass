@@ -9,9 +9,6 @@ from collections.abc import Mapping
 from dataclasses import dataclass, field
 from types import MappingProxyType
 
-from nacl.exceptions import BadSignatureError
-from nacl.signing import VerifyKey
-
 from benchmarks.poi_gate2.canonical import canonical_json_bytes, hash_json
 from gep.verdict_packet import VerdictPacket, to_payload
 
@@ -70,10 +67,17 @@ class SignedVerdictBinding:
             }
         )
         try:
+            from nacl.exceptions import BadSignatureError
+            from nacl.signing import VerifyKey
+
             VerifyKey(bytes.fromhex(public_key)).verify(
                 payload,
                 bytes.fromhex(self.signature),
             )
+        except ModuleNotFoundError as exc:
+            raise RuntimeError(
+                "signed utility verification requires the nautilus-compass[e2ee] extra"
+            ) from exc
         except BadSignatureError as exc:
             raise ValueError("verdict signature does not match the pinned trust anchor") from exc
         object.__setattr__(self, "verdict_hash", hash_json(to_payload(self.verdict)))

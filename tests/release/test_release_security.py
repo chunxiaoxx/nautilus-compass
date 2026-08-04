@@ -54,6 +54,26 @@ def finding_codes(path):
             "plaintext_sensitive_call_argument",
         ),
         (
+            "attribute.py",
+            'settings.API_TOKEN = "synthetic-token-value"\n',
+            "plaintext_sensitive_assignment",
+        ),
+        (
+            "subscript.py",
+            'settings["api_key"] = "synthetic-key-value"\n',
+            "plaintext_sensitive_assignment",
+        ),
+        (
+            "mapping.py",
+            'CONFIG = {"api_key": "synthetic-key-value"}\n',
+            "plaintext_sensitive_mapping_value",
+        ),
+        (
+            ".env.example",
+            "COMPASS_API_TOKEN=synthetic-token-value\n",
+            "plaintext_env_assignment",
+        ),
+        (
             "compass.service",
             "Environment=COMPASS_API_TOKEN=synthetic-token-value\n",
             "plaintext_service_environment",

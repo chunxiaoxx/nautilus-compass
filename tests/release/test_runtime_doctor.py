@@ -15,23 +15,21 @@ from runtime_doctor import (
     main,
 )
 from runtime_release import activate_release, stage_release
+from tests.release.wheel_fixture import extract_test_wheel, write_test_wheel
 
 
 BUILT_AT = "2026-08-01T16:00:00Z"
 
 
 def fake_installer(stage_dir, _wheel_path):
-    executable = stage_dir / "venv" / "Scripts" / "python.exe"
-    executable.parent.mkdir(parents=True)
-    executable.write_bytes(b"fake-python")
-    return executable
+    return extract_test_wheel(stage_dir, _wheel_path)
 
 
 def active_runtime(tmp_path):
     candidate = tmp_path / "candidate"
     candidate.mkdir()
     wheel = candidate / "nautilus_compass-2.3.0-py3-none-any.whl"
-    wheel.write_bytes(b"wheel")
+    write_test_wheel(wheel, b"wheel")
     manifest = ReleaseManifest.build(
         version="2.3.0",
         git_sha="a" * 40,

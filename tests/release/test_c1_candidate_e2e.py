@@ -40,6 +40,7 @@ PACKAGING_INPUT_PATHS = (
     "skills_pkg",
     "judges",
     "mcp_durable",
+    "benchmarks",
 )
 BUILT_AT_1 = "2026-08-04T12:00:00Z"
 BUILT_AT_2 = "2026-08-04T12:01:00Z"
@@ -159,21 +160,31 @@ def _write_manifest(
     return manifest, path
 
 
-def _assert_installed_imports(binding_path: Path, python: Path) -> dict[str, str]:
+def _assert_installed_imports(binding_path: Path, python: Path) -> dict[str, object]:
     outside = binding_path.parent.parent.parent / "outside"
     outside.mkdir(exist_ok=True)
     script = (
         "import json,gep,nautilus_compass.mcp_server as m;"
-        "print(json.dumps({'gep':gep.__file__,'mcp':m.__file__,'version':m.SERVER_VERSION}))"
+        "import benchmarks.learning_kernel_r0.cli as l;"
+        "from pathlib import Path;"
+        "bundle=l.load_fixture(Path(l.__file__).resolve().parent/'fixtures'/'r0');"
+        "summary=l.summarize_results(bundle,l.run_fixture(bundle));"
+        "print(json.dumps({'gep':gep.__file__,'mcp':m.__file__,'r0':l.__file__,"
+        "'version':m.SERVER_VERSION,'candidate_state':summary['decision']['candidate_state'],"
+        "'runtime':summary['runtime_recommendation'],"
+        "'improvement_claim':summary['improvement_claim']}))"
     )
     result = _run([str(python), "-I", "-c", script], cwd=outside, timeout=30)
     paths = json.loads(result.stdout)
-    for key in ("gep", "mcp"):
+    for key in ("gep", "mcp", "r0"):
         resolved = Path(paths[key]).resolve()
         resolved.relative_to(binding_path.resolve())
         assert REPO_ROOT.resolve() not in resolved.parents
         assert INSTALLED_PLUGIN.resolve() not in resolved.parents
     assert paths["version"] == "2.3.0"
+    assert paths["candidate_state"] == "candidate_only"
+    assert paths["runtime"] == "flat"
+    assert paths["improvement_claim"] is False
     return paths
 
 
@@ -219,7 +230,7 @@ def _serve_one_recall(requests: list[dict]) -> tuple[socket.socket, int, threadi
     return server, port, thread
 
 
-def _mcp_recall_smoke(python: Path, cwd: Path) -> tuple[int, list[dict]]:
+def _mcp_recall_smoke(arguments: tuple[str, ...], cwd: Path) -> tuple[int, list[dict]]:
     requests: list[dict] = []
     server, port, thread = _serve_one_recall(requests)
     messages = (
@@ -248,7 +259,7 @@ def _mcp_recall_smoke(python: Path, cwd: Path) -> tuple[int, list[dict]]:
     env["COMPASS_DAEMON_PORT"] = str(port)
     try:
         result = _run(
-            [str(python), "-I", "-m", "nautilus_compass.mcp_server"],
+            list(arguments),
             cwd=cwd,
             timeout=20,
             input_text="".join(json.dumps(message) + "\n" for message in messages),
@@ -307,7 +318,12 @@ def test_c1_installed_wheel_dual_slot_switch_and_rollback(tmp_path: Path) -> Non
         python_a_stat.st_ctime_ns,
     )
     _assert_installed_imports(binding_a.path, binding_a.python_executable)
-    tool_count, _replies = _mcp_recall_smoke(binding_a.python_executable, runtime_root)
+    from runtime_launcher import resolve_active_command
+
+    tool_count, _replies = _mcp_recall_smoke(
+        resolve_active_command(runtime_root).arguments,
+        runtime_root,
+    )
     assert tool_count == 17
 
     doctor_a = build_doctor_report(

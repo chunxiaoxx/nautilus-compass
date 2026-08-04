@@ -16,7 +16,7 @@ ENV = {
     **os.environ,
     "COMPASS_CLOUD_HOST": "127.0.0.1",
     "COMPASS_CLOUD_PORT": "9877",
-    "COMPASS_CLOUD_TOKEN": "cmp_claude_code_compass_dialog_58f2e85353fa90b0500e84d6880a1fc0",
+    "COMPASS_CLOUD_TOKEN": os.environ.get("COMPASS_CLOUD_TOKEN", ""),
     "COMPASS_AGENT_TYPE": "claude-code-compass-dialog",
     "PYTHONIOENCODING": "utf-8",
 }

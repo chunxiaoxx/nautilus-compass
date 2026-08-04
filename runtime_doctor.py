@@ -218,15 +218,27 @@ def _windows_listener_pids(port: int) -> Tuple[int, ...]:
     return tuple(sorted(pids))
 
 
-def default_daemon_probe(host: str = "127.0.0.1", port: int = 9876) -> DaemonProbe:
+def _daemon_port_from_environment() -> int:
+    raw = os.environ.get("COMPASS_DAEMON_PORT", "9876").strip()
+    try:
+        port = int(raw)
+    except ValueError as exc:
+        raise ValueError("invalid COMPASS_DAEMON_PORT") from exc
+    if not 1 <= port <= 65535:
+        raise ValueError("invalid COMPASS_DAEMON_PORT")
+    return port
+
+
+def default_daemon_probe(host: str = "127.0.0.1", port: Optional[int] = None) -> DaemonProbe:
+    selected_port = _daemon_port_from_environment() if port is None else port
     started = time.perf_counter()
     try:
-        with socket.create_connection((host, port), timeout=0.75):
+        with socket.create_connection((host, selected_port), timeout=0.75):
             reachable = True
     except OSError:
         reachable = False
     latency = round((time.perf_counter() - started) * 1000, 3)
-    owners = _windows_listener_pids(port) if os.name == "nt" else ()
+    owners = _windows_listener_pids(selected_port) if os.name == "nt" else ()
     return DaemonProbe(reachable, owners, latency)
 
 

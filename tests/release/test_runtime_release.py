@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
+import threading
+import time
 
 import pytest
 
@@ -17,6 +18,7 @@ from runtime_release import (
     stage_release,
     verify_slot,
 )
+from tests.release.wheel_fixture import extract_test_wheel, write_test_wheel
 
 
 GIT_SHA_1 = "1" * 40
@@ -29,7 +31,7 @@ def make_candidate(tmp_path, name, version, git_sha, payload, built_at):
     candidate = tmp_path / name
     candidate.mkdir()
     wheel = candidate / f"nautilus_compass-{version}-py3-none-any.whl"
-    wheel.write_bytes(payload)
+    write_test_wheel(wheel, payload)
     manifest = ReleaseManifest.build(
         version=version,
         git_sha=git_sha,
@@ -42,11 +44,7 @@ def make_candidate(tmp_path, name, version, git_sha, payload, built_at):
 
 
 def fake_installer(stage_dir, _wheel_path):
-    relative = Path("venv") / "Scripts" / "python.exe"
-    executable = stage_dir / relative
-    executable.parent.mkdir(parents=True)
-    executable.write_bytes(b"fake-python")
-    return executable
+    return extract_test_wheel(stage_dir, _wheel_path)
 
 
 def receipt_mappings(runtime_root):
@@ -100,7 +98,7 @@ def test_initial_stage_uses_slot_a_and_is_idempotent(tmp_path):
     assert first.idempotent is False
     assert second == first.as_idempotent()
     assert (first.path / "release-manifest.json").read_bytes() == manifest.canonical_bytes()
-    assert (first.path / manifest.wheel_filename).read_bytes() == b"wheel-one"
+    assert (first.path / manifest.wheel_filename).read_bytes() == wheel.read_bytes()
     assert (first.path / "venv" / "Scripts" / "python.exe").is_file()
     assert load_pointer(runtime_root) is None
     assert [item["status"] for item in receipt_mappings(runtime_root)] == ["verified"]
@@ -345,3 +343,46 @@ def test_verify_slot_rejects_unknown_slot_record_keys(tmp_path):
 
     with pytest.raises(RuntimeReleaseError, match="invalid_slot_record_keys"):
         verify_slot(runtime_root, "a", staged.release_id)
+
+
+def test_verify_slot_rejects_tampered_installed_package(tmp_path):
+    runtime_root = tmp_path / "runtime"
+    candidate = make_candidate(
+        tmp_path, "one", "2.3.0", GIT_SHA_1, b"wheel-one", BUILT_AT_1
+    )
+    staged = stage_release(
+        runtime_root,
+        candidate[1],
+        candidate[2],
+        installer=fake_installer,
+        created_at=BUILT_AT_1,
+    )
+    installed = (
+        staged.path / "venv" / "Lib" / "site-packages" / "nautilus_compass" / "__init__.py"
+    )
+    installed.write_text("PAYLOAD = b'tampered'\n", encoding="utf-8")
+
+    with pytest.raises(RuntimeReleaseError, match="slot_install_mismatch"):
+        verify_slot(runtime_root, "a", staged.release_id)
+
+
+def test_transition_lock_serializes_release_mutations(tmp_path):
+    from runtime_release import _transition_lock
+
+    observed = []
+
+    def worker(name):
+        with _transition_lock(tmp_path / "runtime"):
+            observed.append(f"{name}:start")
+            time.sleep(0.05)
+            observed.append(f"{name}:end")
+
+    first = threading.Thread(target=worker, args=("first",))
+    second = threading.Thread(target=worker, args=("second",))
+    first.start()
+    time.sleep(0.01)
+    second.start()
+    first.join(timeout=2)
+    second.join(timeout=2)
+
+    assert observed == ["first:start", "first:end", "second:start", "second:end"]
