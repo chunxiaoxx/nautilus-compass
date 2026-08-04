@@ -84,6 +84,16 @@ def finding_codes(path):
             "plaintext_structured_secret",
         ),
         (
+            "nested-settings.json",
+            '{"auth":{"api_key":"synthetic-key-value"}}\n',
+            "plaintext_structured_secret",
+        ),
+        (
+            "nested-array-settings.json",
+            '{"providers":[{"token":"synthetic-token-value"}]}\n',
+            "plaintext_structured_secret",
+        ),
+        (
             "settings.toml",
             'api_token = "synthetic-token-value"\n',
             "plaintext_structured_secret",

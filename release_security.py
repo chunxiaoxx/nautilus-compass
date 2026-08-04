@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ast
+import json
 import re
 import warnings
 import zipfile
@@ -90,6 +91,51 @@ class SecurityFinding:
     rule_code: str
 
 
+class _JsonObject(list):
+    """Ordered JSON object pairs, including duplicate keys."""
+
+
+def _json_key_line(text: str, key: str) -> int:
+    marker = json.dumps(key, ensure_ascii=False)
+    offset = text.find(marker)
+    return 0 if offset < 0 else text.count("\n", 0, offset) + 1
+
+
+def _scan_json_values(
+    display_path: str,
+    text: str,
+    findings: set[SecurityFinding],
+) -> None:
+    try:
+        parsed = json.loads(text, object_pairs_hook=_JsonObject)
+    except json.JSONDecodeError:
+        findings.add(SecurityFinding(display_path, 0, "invalid_structured_source"))
+        return
+
+    def visit(value: object) -> None:
+        if isinstance(value, _JsonObject):
+            for key, child in value:
+                if (
+                    isinstance(key, str)
+                    and _is_secret_name(key)
+                    and isinstance(child, str)
+                    and _is_literal_secret(child)
+                ):
+                    findings.add(
+                        SecurityFinding(
+                            display_path,
+                            _json_key_line(text, key),
+                            "plaintext_structured_secret",
+                        )
+                    )
+                visit(child)
+        elif isinstance(value, list):
+            for child in value:
+                visit(child)
+
+    visit(parsed)
+
+
 def _target_names(target: ast.AST) -> Tuple[str, ...]:
     if isinstance(target, ast.Name):
         return (target.id,)
@@ -141,6 +187,9 @@ def _is_secret_name(value: str) -> bool:
 
 def _scan_text(display_path: str, text: str, is_python: bool) -> Tuple[SecurityFinding, ...]:
     findings = set()
+    suffix = Path(display_path).suffix.casefold()
+    if suffix == ".json":
+        _scan_json_values(display_path, text, findings)
     lines = text.splitlines()
     for index, line in enumerate(lines, start=1):
         if _PRIVATE_KEY_MARKER.search(line):
@@ -163,7 +212,7 @@ def _scan_text(display_path: str, text: str, is_python: bool) -> Tuple[SecurityF
                 findings.add(
                     SecurityFinding(display_path, index, "plaintext_env_assignment")
                 )
-        if Path(display_path).suffix.casefold() in _STRUCTURED_SUFFIXES:
+        if suffix in _STRUCTURED_SUFFIXES:
             for match in _STRUCTURED_SECRET_ASSIGNMENT.finditer(line):
                 key = next(value for value in match.groups()[:3] if value is not None)
                 value = next(value for value in match.groups()[3:] if value is not None).strip()

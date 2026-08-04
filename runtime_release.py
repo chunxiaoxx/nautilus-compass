@@ -523,12 +523,15 @@ def _verify_installed_wheel(wheel_path: Path, python_executable: Path) -> None:
         if relative in expected_files:
             continue
         root_name = parts[0] if parts else ""
+        lowered_root = root_name.casefold()
+        customization_module = lowered_root in {"sitecustomize", "usercustomize"} or (
+            len(parts) == 1
+            and lowered_root.startswith(("sitecustomize.", "usercustomize."))
+        )
         executable_root_file = len(parts) == 1 and (
             installed_path.suffix.casefold() == ".pth"
-            or installed_path.name.casefold()
-            in {"sitecustomize.py", "sitecustomize.pyc", "usercustomize.py", "usercustomize.pyc"}
         )
-        if executable_root_file or root_name in owned_roots:
+        if customization_module or executable_root_file or root_name in owned_roots:
             raise RuntimeReleaseError("slot_install_mismatch")
 
 
