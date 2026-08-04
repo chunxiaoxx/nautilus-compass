@@ -4,7 +4,7 @@
 
 **Goal:** Assemble and independently verify one clean, reproducible Compass 2.3 candidate with S4 independent verdicts, the evaluation-only Learning Kernel, immutable release provenance, temporary dual-slot cutover, and exact rollback while runtime policy remains flat.
 
-**Architecture:** Start from the clean `origin/main` worktree. Preserve the 25-commit linear S4/release donor history, then add only the three PoI support modules required by R0 and port the R0-only commit group. Extend the release tests with a real temporary-runtime E2E that builds and installs the wheel outside the checkout, launches only the temporary slot, records doctor/MCP/recall read-back, and rolls back without touching the installed plugin.
+**Architecture:** Start from the clean `origin/main` worktree. Preserve the 25-commit linear S4/release donor history, then add only canonical hashing, blocked dogfood evidence, and a dependency-free shared percentile helper required by R0 before porting the R0-only commit group. Extend the release tests with a real temporary-runtime E2E that builds and installs the wheel outside the checkout, launches only the temporary slot, records doctor/MCP/recall read-back, and rolls back without touching the installed plugin.
 
 **Tech Stack:** Python 3.13, frozen dataclasses, PyNaCl Ed25519 verification, pytest, Ruff, setuptools/build, standard-library venv/subprocess/socket/filesystem primitives.
 
@@ -91,14 +91,14 @@ Expected: all pass; the release manifest keeps `default_policy=flat`.
 **Files:**
 - Create: `benchmarks/poi_gate2/__init__.py`
 - Create: `benchmarks/poi_gate2/canonical.py`
-- Create: `benchmarks/poi_gate2/action_metrics.py`
 - Create: `benchmarks/poi_gate2/dogfood_evidence.py`
+- Create: `benchmarks/common_statistics.py`
 - Test: `tests/c1/test_r0_support_boundary.py`
 
 **Step 1: Write the failing boundary test.**
 
 Require canonical JSON/hash determinism, finite percentile behavior, blocked
-dogfood authority, exact dependency allowlist, and absence of live-agent,
+dogfood authority, exact dependency allowlist, and absence of action-projection, live-agent,
 provider, repair-window, Platform, V5, or FDE modules.
 
 **Step 2: Run RED.**
@@ -109,10 +109,11 @@ python -m pytest tests\c1\test_r0_support_boundary.py -q
 
 Expected: import failure because the support package is absent.
 
-**Step 3: Port only the four allowlisted files from `3e7aa17`.**
+**Step 3: Port only canonical hashing and dogfood evidence from `3e7aa17`, and
+add the dependency-free shared percentile helper.**
 
-Use `git show`/`git restore --source` for those exact paths; do not copy the
-`benchmarks/poi_gate2` directory.
+Do not copy the `benchmarks/poi_gate2` directory or its `action_metrics`
+dependency graph.
 
 **Step 4: Run GREEN and Ruff.**
 
@@ -135,6 +136,8 @@ commits and reject any path outside:
 - R0 evidence files
 - `.gitattributes`
 - the PyNaCl dependency in `pyproject.toml`
+- import rewrites from donor `benchmarks.poi_gate2.action_metrics` to
+  `benchmarks.common_statistics`
 
 **Step 2:** Cherry-pick the R0 commits one by one in original order, omitting
 `9f40760`. Stop on any dependency outside the allowlist instead of widening it.

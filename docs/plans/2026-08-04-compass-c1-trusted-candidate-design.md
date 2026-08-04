@@ -75,12 +75,15 @@ The R0 package itself has a narrow runtime dependency surface:
 - `gep.experience_packet` and `gep.poi_rerank`, already on main;
 - `gep.verdict_packet`, supplied by the 16-commit S4 group;
 - `benchmarks.poi_gate2.canonical`;
-- `benchmarks.poi_gate2.action_metrics`;
+- one dependency-free shared `percentile_95` helper;
 - `benchmarks.poi_gate2.dogfood_evidence` only for blocked dogfood projection;
 - PyNaCl for pinned Ed25519 verdict verification.
 
 C1 therefore ports the R0 commits from `816df5c` through `3e7aa17` only after
-supplying and testing those three small PoI support modules. It does not import
+supplying and testing canonical hashing, blocked dogfood evidence, and the
+shared statistics helper. It does not import the donor `action_metrics` module
+because that would pull in the complete action-projection dependency graph. It
+also does not import
 the live-agent provider harness, D0/D1 experimental orchestration, repair
 windows, generated history, or any Platform/Super Agent adapter.
 
@@ -101,7 +104,7 @@ windows, generated history, or any Platform/Super Agent adapter.
 clean origin/main
   -> reviewed S4 verdict stack
   -> reviewed release-control stack
-  -> minimal PoI canonical/metric support
+  -> minimal canonical/statistics/dogfood support
   -> R0 evaluation-only kernel
   -> clean wheel + strict manifest
   -> temporary inactive slot
