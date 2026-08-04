@@ -1,0 +1,10 @@
+.gitattributes text eol=lf
+docs/evidence/*.json text eol=lf
+benchmarks/poi_gate2/*.py text eol=lf
+benchmarks/common_statistics.py text eol=lf
+gep/*.py text eol=lf
+benchmarks/learning_kernel_r0/*.py text eol=lf
+benchmarks/learning_kernel_r0/fixtures/r0/*.json text eol=lf
+benchmarks/learning_kernel_r0/fixtures/r0/*.py text eol=lf
+tests/c1/*.py text eol=lf
+tests/learning_kernel_r0/*.py text eol=lf
