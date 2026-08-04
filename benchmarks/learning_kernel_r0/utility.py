@@ -88,6 +88,7 @@ class UtilityObservation:
     context_key: ContextKey
     view_id: str
     reward: float
+    episode_event_hash: str
     result_hash: str
     signed_verdict: SignedVerdictBinding
     verdict_hash: str = field(init=False)
@@ -101,12 +102,15 @@ class UtilityObservation:
         if not math.isfinite(normalized_reward):
             raise ValueError("reward must be finite")
         object.__setattr__(self, "reward", normalized_reward)
+        _validate_hash("episode_event_hash", self.episode_event_hash)
         _validate_hash("result_hash", self.result_hash)
         if not isinstance(self.signed_verdict, SignedVerdictBinding):
             raise TypeError("signed_verdict must be a SignedVerdictBinding")
         verdict = self.signed_verdict.verdict
-        if verdict.episode_event_hash != self.result_hash:
-            raise ValueError("verdict episode_event_hash must bind the exact result_hash")
+        if verdict.episode_event_hash != self.episode_event_hash:
+            raise ValueError(
+                "verdict episode_event_hash must bind the exact episode_event_hash"
+            )
         reward_by_outcome = {"success": 1.0, "partial": 0.0, "failure": -1.0}
         expected_reward = reward_by_outcome.get(verdict.outcome)
         if expected_reward is None:

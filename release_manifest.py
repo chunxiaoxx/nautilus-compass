@@ -21,7 +21,7 @@ RELEASE_SCHEMA_VERSIONS = MappingProxyType(
     {
         "experience_packet": "compass.experience_packet.v0",
         "flywheel_event": "compass.flywheel.event.v1",
-        "verdict_packet": "compass.verdict.packet.v0",
+        "verdict_packet": "compass.verdict_packet.v0",
     }
 )
 
