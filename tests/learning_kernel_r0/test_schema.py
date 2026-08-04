@@ -56,9 +56,11 @@ def run_result_mapping() -> dict[str, object]:
     return {
         "run_id": "lkr0_run_baseline",
         "task_id": "lkr0_task_repair",
+        "task_hash": HASH_A,
         "query_class": "project_recall",
         "selector": "governed",
         "intervention": "distilled",
+        "replica": 0,
         "selected_view_ids": ["lkr0_view_repair"],
         "success": True,
         "first_pass_success": True,
@@ -133,6 +135,23 @@ def test_run_result_rejects_boolean_integer_fields(field: str) -> None:
     raw[field] = True
     with pytest.raises(TypeError, match=field):
         run_result_from_mapping(raw)
+
+
+def test_run_result_requires_task_hash_and_nonnegative_replica() -> None:
+    bare_hash = run_result_mapping()
+    bare_hash["task_hash"] = "a" * 64
+    with pytest.raises(ValueError, match="task_hash must be sha256"):
+        run_result_from_mapping(bare_hash)
+
+    boolean_replica = run_result_mapping()
+    boolean_replica["replica"] = True
+    with pytest.raises(TypeError, match="replica"):
+        run_result_from_mapping(boolean_replica)
+
+    negative_replica = run_result_mapping()
+    negative_replica["replica"] = -1
+    with pytest.raises(ValueError, match="replica"):
+        run_result_from_mapping(negative_replica)
 
 
 def test_unknown_keys_fail_closed() -> None:

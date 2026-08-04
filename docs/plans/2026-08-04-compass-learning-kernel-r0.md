@@ -83,9 +83,11 @@ class MemoryView:
 class LearningRunResult:
     run_id: str
     task_id: str
+    task_hash: str
     query_class: str
     selector: str
     intervention: str
+    replica: int
     selected_view_ids: tuple[str, ...]
     success: bool
     first_pass_success: bool
