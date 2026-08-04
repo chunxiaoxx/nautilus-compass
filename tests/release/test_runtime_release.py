@@ -371,6 +371,8 @@ def test_verify_slot_rejects_tampered_installed_package(tmp_path):
     (
         "venv/Lib/site-packages/compass-shadow.pth",
         "venv/Lib/site-packages/sitecustomize.py",
+        "venv/Lib/site-packages/sitecustomize/__init__.py",
+        "venv/Lib/site-packages/usercustomize/__init__.py",
         "venv/Lib/site-packages/nautilus_compass/shadow.py",
     ),
 )
