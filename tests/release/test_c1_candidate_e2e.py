@@ -174,7 +174,7 @@ def _assert_installed_imports(binding_path: Path, python: Path) -> dict[str, obj
         "'runtime':summary['runtime_recommendation'],"
         "'improvement_claim':summary['improvement_claim']}))"
     )
-    result = _run([str(python), "-I", "-c", script], cwd=outside, timeout=30)
+    result = _run([str(python), "-I", "-B", "-c", script], cwd=outside, timeout=30)
     paths = json.loads(result.stdout)
     for key in ("gep", "mcp", "r0"):
         resolved = Path(paths[key]).resolve()

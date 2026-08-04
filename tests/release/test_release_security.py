@@ -78,6 +78,21 @@ def finding_codes(path):
             "Environment=COMPASS_API_TOKEN=synthetic-token-value\n",
             "plaintext_service_environment",
         ),
+        (
+            "settings.json",
+            '{"api_key":"synthetic-key-value"}\n',
+            "plaintext_structured_secret",
+        ),
+        (
+            "settings.toml",
+            'api_token = "synthetic-token-value"\n',
+            "plaintext_structured_secret",
+        ),
+        (
+            "settings.yaml",
+            "password: synthetic-password\n",
+            "plaintext_structured_secret",
+        ),
     ],
 )
 def test_scanner_detects_synthetic_release_secrets(tmp_path, filename, body, expected):
@@ -99,6 +114,21 @@ def test_scanner_allows_environment_backed_values(tmp_path):
         'import os\nDSN = os.environ.get("COMPASS_PG_DSN", "").strip()\n',
         encoding="utf-8",
     )
+
+    assert scan_source_file(path) == ()
+
+
+@pytest.mark.parametrize(
+    ("filename", "body"),
+    (
+        ("settings.json", '{"api_key":"${COMPASS_API_KEY}"}\n'),
+        ("settings.toml", 'api_token = "$COMPASS_API_TOKEN"\n'),
+        ("settings.yaml", "password: <redacted>\n"),
+    ),
+)
+def test_structured_scanner_allows_indirect_or_redacted_values(tmp_path, filename, body):
+    path = tmp_path / filename
+    path.write_text(body, encoding="utf-8")
 
     assert scan_source_file(path) == ()
 
