@@ -20,6 +20,10 @@ WHEEL_DIGEST = "sha256:" + "b" * 64
 BUILT_AT = "2026-08-01T12:34:56Z"
 
 
+def test_manifest_uses_canonical_verdict_packet_schema():
+    assert RELEASE_SCHEMA_VERSIONS["verdict_packet"] == "compass.verdict_packet.v0"
+
+
 def valid_mapping(**overrides):
     mapping = {
         "schema_version": MANIFEST_SCHEMA_VERSION,
