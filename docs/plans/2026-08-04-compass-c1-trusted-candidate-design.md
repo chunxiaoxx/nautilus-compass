@@ -142,4 +142,3 @@ Stop and report instead of widening scope when:
   authentication can be caller-supplied;
 - verification requires modifying Platform, Super Agent, FDE, or the installed
   2.2 plugin.
-

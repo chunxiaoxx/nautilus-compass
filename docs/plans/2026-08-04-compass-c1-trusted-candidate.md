@@ -215,4 +215,3 @@ C1 completion proves a trustworthy local candidate and reversible release
 substrate. It does not prove real-agent uplift, authorize a Super Agent adapter,
 promote a learning policy, create capsules, change model weights, or justify a
 SOTA claim.
-
