@@ -76,9 +76,9 @@ def test_c1_evidence_is_bound_to_manifest_and_recomputed_learning_summary() -> N
 def test_c1_evidence_keeps_claim_classes_separate() -> None:
     evidence = json.loads(EVIDENCE_PATH.read_text(encoding="utf-8"))
 
-    assert evidence["verification"]["source_test_count"] == 552
+    assert evidence["verification"]["source_test_count"] == 556
     assert evidence["verification"]["installed_wheel_e2e_count"] == 1
-    assert evidence["verification"]["combined_test_count"] == 553
+    assert evidence["verification"]["combined_test_count"] == 557
     assert evidence["verification"]["source_security_findings"] == 0
     assert evidence["verification"]["wheel_security_findings"] == 0
     assert evidence["release_rehearsal"] == {
