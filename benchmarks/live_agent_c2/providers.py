@@ -21,8 +21,10 @@ from .schema import ProviderIdentity
 
 _ADMISSIBLE_ISOLATION = frozenset({"disabled", "read_only"})
 _ALL_ISOLATION = frozenset({"disabled", "read_only", "unverified"})
-LIVE_PROVIDER_NAMES = ("minimax-claude", "volcengine-ark")
-_MINIMAX_COMMAND_MODEL = "MiniMax-M3[1m]"
+LIVE_PROVIDER_NAMES = ("glm-claude", "volcengine-ark")
+_GLM_COMMAND_MODEL = "glm-5.2[1M]"
+_GLM_REPORTED_MODEL = "glm-5.2[1m]"
+_CLAUDE_EXECUTABLE = "claude.cmd" if os.name == "nt" else "claude"
 
 
 class ProviderCallError(RuntimeError):
@@ -284,9 +286,9 @@ def parse_claude_json(encoded: str) -> ParsedProviderOutput:
     )
 
 
-def parse_minimax_claude_json(encoded: str) -> ParsedProviderOutput:
+def parse_glm_claude_json(encoded: str) -> ParsedProviderOutput:
     parsed = parse_claude_json(encoded)
-    if parsed.reported_model_id != _MINIMAX_COMMAND_MODEL:
+    if parsed.reported_model_id != _GLM_REPORTED_MODEL:
         raise ProviderCallError("provider_identity_mismatch")
     return parsed
 
@@ -376,19 +378,19 @@ def build_live_adapters(
 
 
 def _live_adapter(name: str) -> SubprocessCliAdapter | OpenAICompatibleAdapter:
-    if name == "minimax-claude":
+    if name == "glm-claude":
         identity = ProviderIdentity(
-            provider_id="minimax",
-            model_id="minimax-m3-1m",
+            provider_id="custom-anthropic-proxy",
+            model_id="glm-5.2-1m",
             adapter_kind="cli",
             adapter_version="2.1.220",
         )
         return SubprocessCliAdapter(
             identity=identity,
             command_builder=lambda prompt, workspace: build_claude_command(
-                _MINIMAX_COMMAND_MODEL, prompt, workspace
+                _GLM_COMMAND_MODEL, prompt, workspace
             ),
-            output_parser=parse_minimax_claude_json,
+            output_parser=parse_glm_claude_json,
             tool_isolation="disabled",
         )
     if name == "volcengine-ark":
@@ -411,7 +413,7 @@ def build_claude_command(model_id: str, prompt: str, workspace: Path) -> Provide
     _command_inputs(model_id, prompt, workspace)
     return ProviderCommand(
         (
-            "claude",
+            _CLAUDE_EXECUTABLE,
             "-p",
             "--output-format",
             "json",
@@ -632,6 +634,6 @@ __all__ = [
     "parse_claude_json",
     "parse_codex_jsonl",
     "parse_kimi_jsonl",
-    "parse_minimax_claude_json",
+    "parse_glm_claude_json",
     "parse_openai_compatible_json",
 ]

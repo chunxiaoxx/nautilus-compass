@@ -54,7 +54,7 @@ class LiveOracleAdapter:
 
 def live_oracles(_names=None):
     return (
-        LiveOracleAdapter("minimax", "minimax-m3-1m", "cli"),
+        LiveOracleAdapter("custom-anthropic-proxy", "glm-5.2-1m", "cli"),
         LiveOracleAdapter(
             "volcengine", "doubao-seed-2-0-pro-260215", "openai_compatible"
         ),
@@ -140,6 +140,22 @@ def test_local_raw_run_directory_is_gitignored():
     root = Path(__file__).resolve().parents[2]
     ignored = (root / ".gitignore").read_text(encoding="utf-8")
     assert ".c2_runs/" in ignored
+
+
+def test_committed_provider_probe_summary_is_deidentified_and_fail_closed():
+    root = Path(__file__).resolve().parents[2]
+    path = root / "docs" / "evidence" / "c2" / "provider_probe_summary.json"
+    encoded = path.read_text(encoding="utf-8")
+    summary = json.loads(encoded)
+
+    assert summary["schema_version"] == "compass.live_agent_c2.provider_probe_summary.v1"
+    assert summary["admissible_provider_count"] == 2
+    assert summary["credential_source"] == "environment_only"
+    assert summary["raw_response_present"] is False
+    assert summary["formal_evidence"] is False
+    assert summary["improvement_claim"] is False
+    assert all(item["verified"] for item in summary["providers"])
+    assert "API_KEY" not in encoded
 
 
 def test_live_probe_is_metered_deidentified_and_does_not_write_raw(monkeypatch, tmp_path, capsys):
