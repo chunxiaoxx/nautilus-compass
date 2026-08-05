@@ -158,6 +158,31 @@ def test_committed_provider_probe_summary_is_deidentified_and_fail_closed():
     assert "API_KEY" not in encoded
 
 
+def test_committed_pilot_evidence_keeps_failed_gate_and_replay_binding():
+    root = Path(__file__).resolve().parents[2]
+    evidence = root / "docs" / "evidence" / "c2"
+    summary_encoded = (evidence / "pilot_summary.json").read_text(encoding="utf-8")
+    summary = json.loads(summary_encoded)
+    replay = read_json(evidence / "pilot_replay_manifest.json")
+
+    assert summary["valid_pairs"] == 7
+    assert summary["scheduled_pairs"] == 8
+    assert summary["promote_recommended"] is False
+    assert summary["improvement_claim"] is False
+    assert summary["runtime_recommendation"] == "flat"
+    assert summary["policy_reasons"] == [
+        "insufficient_pairs",
+        "missing_provider_query_coverage",
+    ]
+    assert replay["bundle_count"] == 2 * replay["outcome_count"] == 14
+    assert replay["event_count"] == 2 * replay["bundle_count"] == 28
+    assert replay["quarantine_count"] == 0
+    assert replay["replay_verified"] is True
+    assert summary["raw_response_committed"] is False
+    assert replay["raw_response_committed"] is False
+    assert "API_KEY" not in summary_encoded
+
+
 def test_live_probe_is_metered_deidentified_and_does_not_write_raw(monkeypatch, tmp_path, capsys):
     monkeypatch.setattr(cli_module, "build_live_adapters", live_oracles)
     output = tmp_path / "probe"
