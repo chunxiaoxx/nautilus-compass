@@ -1,0 +1,16 @@
+{
+  "bundle_count": 14,
+  "bundle_set_hash": "sha256:b82c09eb624aa0d1c8e1e2a08cae42295e19c2eb805fbb6232f0c000e35d8d57",
+  "config_hash": "sha256:fb290c867cb2f423891a2e5d7a3788528d0269c398dc4e70dc900edbb261750c",
+  "event_count": 28,
+  "manifest_hash": "sha256:bd6ab52ae6168dce18d809ff7eb60dbe3160a75f333cc692ffe58e82494e0a5e",
+  "outcome_count": 7,
+  "outcome_set_hash": "sha256:eecab9edcc6865c75b2bc1f67785230af187c0adfc6e55f71637c5a4ebcf8696",
+  "progress_set_hash": "sha256:16faacc0d932ce87943a91b39d0ea01baa6052b9af5f12bd1e29e7145a5eb586",
+  "quarantine_count": 0,
+  "raw_response_committed": false,
+  "replay_verified": true,
+  "schema_version": "compass.live_agent_c2.pilot_replay_manifest.v1",
+  "summary_hash": "sha256:b2fbb7158fd9f5a1c3ade42fb7b9ff8e380b3a6846f0aa8f6d1151be9c8fd77b",
+  "verifier_public_key": "f700bf7f0b99097852d348c5094c971a09148b025326b52433702aca749a379a"
+}

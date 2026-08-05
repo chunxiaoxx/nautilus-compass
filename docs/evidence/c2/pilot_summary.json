@@ -1,0 +1,86 @@
+{
+  "candidate_state": "candidate_only",
+  "evidence_tier": "live_pilot",
+  "improvement_claim": false,
+  "incomplete_pairs": [
+    {
+      "failure_codes": [
+        "provider_transport_failed",
+        "provider_transport_failed"
+      ],
+      "invalid_attempt_count": 2,
+      "provider_key": "volcengine/doubao-seed-2-0-pro-260215",
+      "query_class": "episodic_lookup",
+      "retry_count": 1
+    }
+  ],
+  "invalid_attempt_count": 2,
+  "observed_on": "2026-08-04",
+  "overall": {
+    "ci_high": 1.0,
+    "ci_low": 0.42857142857142855,
+    "delta": 0.7142857142857143,
+    "flat_success_rate": 0.14285714285714285,
+    "governed_success_rate": 0.8571428571428571,
+    "known_cost_usd": 0.119795,
+    "latency_p95_ms": 34105.0,
+    "pair_count": 7,
+    "poison_admissions": 0,
+    "replay_failures": 0,
+    "unknown_cost_arms": 6
+  },
+  "pairs_hash": "sha256:26d6ed209816000b43e4950c7a008fbd5beb1822f0813e867b011d53d2b1491e",
+  "policy_reasons": [
+    "insufficient_pairs",
+    "missing_provider_query_coverage"
+  ],
+  "promote_recommended": false,
+  "providers": [
+    {
+      "ci_high": 1.0,
+      "ci_low": 0.25,
+      "delta": 0.75,
+      "flat_input_tokens": 4150,
+      "flat_output_tokens": 1761,
+      "governed_input_tokens": 4076,
+      "governed_output_tokens": 1360,
+      "known_cost_usd": 0.119795,
+      "pair_count": 4,
+      "provider_key": "custom-anthropic-proxy/glm-5.2-1m",
+      "query_classes": [
+        "conflict_resolution",
+        "episodic_lookup",
+        "procedural_route",
+        "protected_noop"
+      ],
+      "unknown_cost_arms": 0
+    },
+    {
+      "ci_high": 1.0,
+      "ci_low": 0.0,
+      "delta": 0.6666666666666666,
+      "flat_input_tokens": 272,
+      "flat_output_tokens": 2154,
+      "governed_input_tokens": 320,
+      "governed_output_tokens": 167,
+      "known_cost_usd": 0.0,
+      "pair_count": 3,
+      "provider_key": "volcengine/doubao-seed-2-0-pro-260215",
+      "query_classes": [
+        "conflict_resolution",
+        "procedural_route",
+        "protected_noop"
+      ],
+      "unknown_cost_arms": 6
+    }
+  ],
+  "raw_response_committed": false,
+  "replay_verified": true,
+  "retry_count": 1,
+  "runtime_recommendation": "flat",
+  "scheduled_pairs": 8,
+  "schema_version": "compass.live_agent_c2.pilot_summary.v1",
+  "task_pack_hash": "sha256:faa129d7c26eb96b1b29403a48286167a6f2060b4df48c76ed5252f7ea09bfcb",
+  "usage_cap_observation": "ARK reported output-token usage exceeded the requested visible-output cap; cause not inferred",
+  "valid_pairs": 7
+}
