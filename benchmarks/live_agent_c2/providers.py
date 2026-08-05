@@ -25,6 +25,7 @@ LIVE_PROVIDER_NAMES = ("glm-claude", "volcengine-ark")
 _GLM_COMMAND_MODEL = "glm-5.2[1M]"
 _GLM_REPORTED_MODEL = "glm-5.2[1m]"
 _CLAUDE_EXECUTABLE = "claude.cmd" if os.name == "nt" else "claude"
+_ARK_ENV_NAME = "ARK_API_KEY"
 _RUNTIME_ENVIRONMENT = frozenset(
     {
         "ALL_PROXY",
@@ -457,7 +458,7 @@ def _live_adapter(name: str) -> SubprocessCliAdapter | OpenAICompatibleAdapter:
         return OpenAICompatibleAdapter(
             identity=identity,
             base_url="https://ark.cn-beijing.volces.com/api/v3",
-            credential_env="ARK_API_KEY",
+            credential_env=_ARK_ENV_NAME,
             max_tokens=64,
         )
     raise ValueError("unsupported live provider")
