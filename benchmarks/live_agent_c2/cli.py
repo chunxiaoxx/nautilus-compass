@@ -8,7 +8,7 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Callable, Optional, Sequence
 
-from benchmarks.poi_gate2.canonical import hash_json
+from benchmarks.poi_gate2.canonical import canonical_json_bytes, hash_json
 from gep.flywheel_log import FlywheelEventLog
 
 from .checkpoints import CheckpointStore
@@ -34,14 +34,47 @@ from .providers import (
     build_live_adapters,
 )
 from .runner import PairAssignment, PairExecution, ProviderAdapter, run_pair, schedule_pairs
-from .schema import LiveTask, ProviderIdentity, provider_from_mapping
+from .schema import (
+    LiveTask,
+    ProviderIdentity,
+    provider_from_mapping,
+    provider_to_mapping,
+)
 from .task_pack import C2TaskPack, read_task_pack
 from .verifier import response_hash, verify_output
 
 
 ACTION_AGENT_ID = 4101
 VERIFIER_AGENT_ID = 4201
-RUN_MANIFEST_SCHEMA = "compass.live_agent_c2.run_manifest.v2"
+RUN_MANIFEST_SCHEMA = "compass.live_agent_c2.run_manifest.v3"
+PROVIDER_PROTOCOL_VERSION = "compass.live_agent_c2.provider.v2"
+RUN_RECEIPT_SCHEMA = "compass.live_agent_c2.run_receipt.v1"
+RUN_CONFIG_FIELDS = (
+    "bootstrap_samples",
+    "mode",
+    "provider_protocol_version",
+    "providers",
+    "replicas",
+    "scheduled_pairs",
+    "seed",
+    "task_pack_hash",
+)
+RUN_MANIFEST_FIELDS = frozenset(
+    (*RUN_CONFIG_FIELDS, "config_hash", "evidence_tier", "schema_version", "verifier_public_key")
+)
+RUN_RECEIPT_FIELDS = frozenset(
+    {
+        "bundle_set_hash",
+        "invalid_attempt_count",
+        "manifest_hash",
+        "pairs_hash",
+        "retry_count",
+        "schema_version",
+        "signature",
+        "summary_hash",
+        "verifier_public_key",
+    }
+)
 FAKE_PROVIDERS = ("fake-alpha", "fake-beta")
 ALL_PROVIDER_NAMES = (*FAKE_PROVIDERS, *LIVE_PROVIDER_NAMES)
 AdapterResolver = Callable[[PairAssignment, LiveTask], ProviderAdapter]
@@ -128,10 +161,14 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     if args.output.exists() and any(args.output.iterdir()):
         if not args.resume:
             raise ValueError("output directory must be absent or empty unless --resume is used")
-        manifest = _read_json(args.output / "run_manifest.json")
+        manifest = _validate_run_manifest(_read_json(args.output / "run_manifest.json"))
         if manifest.get("config_hash") != config["config_hash"]:
-            raise ValueError("resume configuration does not match existing run")
+            raise ValueError("run manifest does not match resume configuration")
         if args.mode == "fake":
+            report = replay_run(args.output)
+            _print_json(report)
+            return 0
+        if not (args.output / ".verifier_signing_key").exists():
             report = replay_run(args.output)
             _print_json(report)
             return 0
@@ -159,9 +196,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
 def replay_run(output: Path) -> dict[str, object]:
     root = Path(output)
-    manifest = _read_json(root / "run_manifest.json")
-    if manifest.get("schema_version") != RUN_MANIFEST_SCHEMA:
-        raise ValueError("unsupported run manifest schema")
+    manifest = _validate_run_manifest(_read_json(root / "run_manifest.json"))
     pack = read_task_pack()
     if manifest.get("task_pack_hash") != pack.pack_hash:
         raise ValueError("run manifest task pack mismatch")
@@ -171,10 +206,17 @@ def replay_run(output: Path) -> dict[str, object]:
     outcomes = tuple(
         outcome_from_mapping(item) for item in _read_jsonl(root / "outcomes.jsonl")
     )
+    manifest_providers = {
+        provider.provider_key: provider
+        for provider in (
+            provider_from_mapping(item) for item in manifest["providers"]
+        )
+    }
     tasks_by_hash = {task.task_hash: task for task in pack.tasks}
     event_log = _event_log(root / "flywheel.sqlite")
     try:
         for bundle in bundles:
+            _verify_manifest_provider_binding(bundle, manifest_providers)
             if bundle.verifier_public_key != manifest.get("verifier_public_key"):
                 raise ValueError("bundle verifier key does not match run manifest")
             task = tasks_by_hash.get(bundle.task_hash)
@@ -186,21 +228,286 @@ def replay_run(output: Path) -> dict[str, object]:
             verify_episode_bundle(bundle, event_log=event_log)
     finally:
         event_log.close()
+    _verify_outcome_evidence_binding(outcomes, bundles, tasks_by_hash)
+    receipt = _validate_run_receipt(
+        _read_json(root / "run_receipt.json"),
+        manifest=manifest,
+        bundles=bundles,
+    )
     stored_summary = _read_json(root / "summary.json")
     metrics = compute_metrics(
         outcomes,
         seed=int(manifest["seed"]),
         bootstrap_samples=int(manifest["bootstrap_samples"]),
-        invalid_attempt_count=int(stored_summary["invalid_attempt_count"]),
-        retry_count=int(stored_summary["retry_count"]),
+        invalid_attempt_count=receipt["invalid_attempt_count"],
+        retry_count=receipt["retry_count"],
     )
-    if metrics.pairs_hash != stored_summary.get("pairs_hash"):
+    if metrics.pairs_hash != receipt["pairs_hash"]:
         raise ValueError("outcome replay hash mismatch")
-    if len(bundles) != 2 * len(outcomes):
-        raise ValueError("every complete pair must have two evidence bundles")
-    report = dict(stored_summary)
-    report["replay_verified"] = True
-    return report
+    expected_summary = _summary(
+        metrics,
+        evidence_tier=manifest["evidence_tier"],
+        task_pack_hash=pack.pack_hash,
+    )
+    if stored_summary != expected_summary:
+        raise ValueError("run summary replay mismatch")
+    if receipt["summary_hash"] != _summary_hash(expected_summary):
+        raise ValueError("run summary replay mismatch")
+    return expected_summary
+
+
+def _verify_manifest_provider_binding(
+    bundle: EpisodeEvidenceBundle,
+    manifest_providers: dict[str, ProviderIdentity],
+) -> None:
+    tool_chain = bundle.packet.tool_chain
+    if len(tool_chain) != 1 or not tool_chain[0].startswith("provider:"):
+        raise ValueError("run manifest provider binding mismatch")
+    provider = manifest_providers.get(tool_chain[0].removeprefix("provider:"))
+    if provider is None:
+        raise ValueError("run manifest provider binding mismatch")
+    if bundle.attempt.provider_identity != provider:
+        raise ValueError("run manifest provider binding mismatch")
+    expected_environment = hash_json(
+        {
+            "domain": "compass.live_agent_c2.provider_environment.v1",
+            "provider": provider_to_mapping(provider),
+        }
+    )
+    if bundle.verdict.environment_fingerprint_hash != expected_environment:
+        raise ValueError("run manifest provider binding mismatch")
+
+
+def _verify_outcome_evidence_binding(
+    outcomes: tuple[PairOutcome, ...],
+    bundles: tuple[EpisodeEvidenceBundle, ...],
+    tasks_by_hash: dict[str, LiveTask],
+) -> None:
+    bundles_by_pair: dict[str, list[EpisodeEvidenceBundle]] = {}
+    for bundle in bundles:
+        bundles_by_pair.setdefault(bundle.attempt.pair_id, []).append(bundle)
+    if len({outcome.pair_id for outcome in outcomes}) != len(outcomes):
+        raise ValueError("outcome evidence binding mismatch")
+    if set(bundles_by_pair) != {outcome.pair_id for outcome in outcomes}:
+        raise ValueError("outcome evidence binding mismatch")
+    for outcome in outcomes:
+        pair_bundles = bundles_by_pair[outcome.pair_id]
+        if len(pair_bundles) != 2:
+            raise ValueError("outcome evidence binding mismatch")
+        by_arm = {bundle.attempt.arm: bundle for bundle in pair_bundles}
+        if set(by_arm) != {"flat", "governed"}:
+            raise ValueError("outcome evidence binding mismatch")
+        flat = by_arm["flat"]
+        governed = by_arm["governed"]
+        if flat.attempt.order_index == governed.attempt.order_index:
+            raise ValueError("outcome evidence binding mismatch")
+        if flat.attempt.provider_identity != governed.attempt.provider_identity:
+            raise ValueError("outcome evidence binding mismatch")
+        if flat.task_hash != governed.task_hash:
+            raise ValueError("outcome evidence binding mismatch")
+        task = tasks_by_hash.get(flat.task_hash)
+        if task is None or any(
+            bundle.attempt.task_id != task.task_id
+            or bundle.packet.task != f"{task.task_id}@{task.task_hash}"
+            for bundle in pair_bundles
+        ):
+            raise ValueError("outcome evidence binding mismatch")
+        expected = _outcome_from_verified_bundles(task, flat, governed)
+        if outcome_to_mapping(outcome) != outcome_to_mapping(expected):
+            raise ValueError("outcome evidence binding mismatch")
+
+
+def _outcome_from_verified_bundles(
+    task: LiveTask,
+    flat: EpisodeEvidenceBundle,
+    governed: EpisodeEvidenceBundle,
+) -> PairOutcome:
+    poison_admissions = len(flat.selected_view_ids)
+    if task.protected:
+        poison_admissions += len(governed.selected_view_ids)
+    elif len(governed.selected_view_ids) != 1:
+        poison_admissions += 1
+    return PairOutcome(
+        pair_id=flat.attempt.pair_id,
+        provider_key=flat.attempt.provider_identity.provider_key,
+        query_class=task.query_class,
+        protected=task.protected,
+        flat_success=flat.verdict.outcome == "success",
+        governed_success=governed.verdict.outcome == "success",
+        flat_latency_ms=flat.attempt.latency_ms,
+        governed_latency_ms=governed.attempt.latency_ms,
+        flat_input_tokens=flat.attempt.input_tokens,
+        flat_output_tokens=flat.attempt.output_tokens,
+        governed_input_tokens=governed.attempt.input_tokens,
+        governed_output_tokens=governed.attempt.output_tokens,
+        flat_cost_usd=flat.attempt.estimated_cost_usd,
+        governed_cost_usd=governed.attempt.estimated_cost_usd,
+        flat_bundle_hash=flat.bundle_hash,
+        governed_bundle_hash=governed.bundle_hash,
+        replay_verified=True,
+        poison_admissions=poison_admissions,
+    )
+
+
+def _validate_run_manifest(raw: object) -> dict[str, object]:
+    if not isinstance(raw, dict) or set(raw) != RUN_MANIFEST_FIELDS:
+        raise ValueError("run manifest fields are invalid")
+    if raw["schema_version"] != RUN_MANIFEST_SCHEMA:
+        raise ValueError("run manifest schema is unsupported")
+    if raw["provider_protocol_version"] != PROVIDER_PROTOCOL_VERSION:
+        raise ValueError("run manifest provider protocol is unsupported")
+    providers_raw = raw["providers"]
+    if not isinstance(providers_raw, list) or len(providers_raw) < 2:
+        raise ValueError("run manifest providers are invalid")
+    try:
+        providers = tuple(provider_from_mapping(item) for item in providers_raw)
+    except (TypeError, ValueError) as error:
+        raise ValueError("run manifest providers are invalid") from error
+    if [provider_to_mapping(provider) for provider in providers] != providers_raw:
+        raise ValueError("run manifest providers are not canonical")
+    if len({provider.provider_key for provider in providers}) != len(providers):
+        raise ValueError("run manifest providers must be unique")
+    mode = raw["mode"]
+    if mode not in {"fake", "pilot", "formal"}:
+        raise ValueError("run manifest mode is invalid")
+    expected_tier = "live" if mode in {"pilot", "formal"} else "synthetic"
+    if raw["evidence_tier"] != expected_tier:
+        raise ValueError("run manifest evidence tier is invalid")
+    for field, minimum in (
+        ("bootstrap_samples", 100),
+        ("replicas", 1),
+        ("scheduled_pairs", 1),
+    ):
+        value = raw[field]
+        if isinstance(value, bool) or not isinstance(value, int) or value < minimum:
+            raise ValueError(f"run manifest {field} is invalid")
+    if isinstance(raw["seed"], bool) or not isinstance(raw["seed"], int):
+        raise ValueError("run manifest seed is invalid")
+    verifier_key = raw["verifier_public_key"]
+    try:
+        verifier_key_bytes = bytes.fromhex(verifier_key) if isinstance(verifier_key, str) else b""
+    except ValueError as error:
+        raise ValueError("run manifest verifier key is invalid") from error
+    if len(verifier_key_bytes) != 32:
+        raise ValueError("run manifest verifier key is invalid")
+    config = {field: raw[field] for field in RUN_CONFIG_FIELDS}
+    if raw["config_hash"] != hash_json(config):
+        raise ValueError("run manifest config hash mismatch")
+    return dict(raw)
+
+
+def _validate_run_receipt(
+    raw: object,
+    *,
+    manifest: dict[str, object],
+    bundles: tuple[EpisodeEvidenceBundle, ...],
+) -> dict[str, object]:
+    if not isinstance(raw, dict) or set(raw) != RUN_RECEIPT_FIELDS:
+        raise ValueError("run receipt fields are invalid")
+    if raw["schema_version"] != RUN_RECEIPT_SCHEMA:
+        raise ValueError("run receipt schema is unsupported")
+    for field in (
+        "bundle_set_hash",
+        "manifest_hash",
+        "pairs_hash",
+        "summary_hash",
+    ):
+        if not _is_sha256(raw[field]):
+            raise ValueError(f"run receipt {field} is invalid")
+    for field in ("invalid_attempt_count", "retry_count"):
+        value = raw[field]
+        if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+            raise ValueError(f"run receipt {field} is invalid")
+    if raw["verifier_public_key"] != manifest["verifier_public_key"]:
+        raise ValueError("run receipt verifier key mismatch")
+    signature = raw["signature"]
+    if (
+        not isinstance(signature, str)
+        or len(signature) != 128
+        or any(character not in "0123456789abcdef" for character in signature)
+    ):
+        raise ValueError("run receipt signature is invalid")
+    try:
+        from nacl.exceptions import BadSignatureError
+        from nacl.signing import VerifyKey
+
+        VerifyKey(bytes.fromhex(raw["verifier_public_key"])).verify(
+            _run_receipt_signature_payload(_receipt_unsigned(raw)),
+            bytes.fromhex(signature),
+        )
+    except (BadSignatureError, ValueError) as error:
+        raise ValueError("run receipt signature verification failed") from error
+    if raw["manifest_hash"] != _manifest_hash(manifest):
+        raise ValueError("run receipt manifest binding mismatch")
+    if raw["bundle_set_hash"] != _bundle_set_hash(bundles):
+        raise ValueError("run receipt bundle binding mismatch")
+    return dict(raw)
+
+
+def _write_run_receipt(
+    output: Path,
+    *,
+    manifest: dict[str, object],
+    bundles: tuple[EpisodeEvidenceBundle, ...],
+    metrics: C2Metrics,
+    summary: dict[str, object],
+    signing_key,
+) -> None:
+    unsigned = {
+        "bundle_set_hash": _bundle_set_hash(bundles),
+        "invalid_attempt_count": metrics.invalid_attempt_count,
+        "manifest_hash": _manifest_hash(manifest),
+        "pairs_hash": metrics.pairs_hash,
+        "retry_count": metrics.retry_count,
+        "schema_version": RUN_RECEIPT_SCHEMA,
+        "summary_hash": _summary_hash(summary),
+        "verifier_public_key": signing_key.verify_key.encode().hex(),
+    }
+    signature = signing_key.sign(_run_receipt_signature_payload(unsigned)).signature.hex()
+    _write_json(output / "run_receipt.json", {**unsigned, "signature": signature})
+
+
+def _receipt_unsigned(receipt: dict[str, object]) -> dict[str, object]:
+    return {field: receipt[field] for field in RUN_RECEIPT_FIELDS if field != "signature"}
+
+
+def _run_receipt_signature_payload(unsigned: dict[str, object]) -> bytes:
+    return canonical_json_bytes(
+        {
+            "domain": "compass.live_agent_c2.run_receipt_signature.v1",
+            "receipt": unsigned,
+        }
+    )
+
+
+def _manifest_hash(manifest: dict[str, object]) -> str:
+    return hash_json(
+        {"domain": "compass.live_agent_c2.manifest_binding.v1", "manifest": manifest}
+    )
+
+
+def _bundle_set_hash(bundles: tuple[EpisodeEvidenceBundle, ...]) -> str:
+    return hash_json(
+        {
+            "bundle_hashes": sorted(bundle.bundle_hash for bundle in bundles),
+            "domain": "compass.live_agent_c2.bundle_set.v1",
+        }
+    )
+
+
+def _summary_hash(summary: dict[str, object]) -> str:
+    return hash_json(
+        {"domain": "compass.live_agent_c2.summary.v1", "summary": summary}
+    )
+
+
+def _is_sha256(value: object) -> bool:
+    return (
+        isinstance(value, str)
+        and len(value) == 71
+        and value.startswith("sha256:")
+        and all(character in "0123456789abcdef" for character in value[7:])
+    )
 
 
 def _probe_live(output: Path, adapters, timeout_seconds: float) -> dict[str, object]:
@@ -287,11 +594,18 @@ def _run_live(
     by_provider = {adapter.identity.provider_key: adapter for adapter in adapters}
     if len(by_provider) != len(adapters):
         raise ValueError("live adapters must have unique provider identities")
-    signing_key = (
-        SigningKey(bytes.fromhex((output / ".verifier_signing_key").read_text("ascii")))
-        if resume
-        else SigningKey.generate()
-    )
+    if resume:
+        manifest = _validate_run_manifest(_read_json(output / "run_manifest.json"))
+        try:
+            signing_key = SigningKey(
+                bytes.fromhex((output / ".verifier_signing_key").read_text("ascii"))
+            )
+        except (OSError, ValueError) as error:
+            raise ValueError("resume verifier signing key is invalid") from error
+        if signing_key.verify_key.encode().hex() != manifest["verifier_public_key"]:
+            raise ValueError("resume verifier signing key mismatch")
+    else:
+        signing_key = SigningKey.generate()
     return _run_experiment(
         output,
         pack,
@@ -401,6 +715,7 @@ def _run_experiment(
         store,
         evidence_tier=evidence_tier,
         bootstrap_samples=bootstrap_samples,
+        signing_key=signing_key,
     )
 
 
@@ -411,6 +726,7 @@ def _finalize_run(
     *,
     evidence_tier: str,
     bootstrap_samples: int,
+    signing_key,
 ) -> dict[str, object]:
     checkpoints = store.checkpoints()
     bundle_rows = tuple(
@@ -444,7 +760,20 @@ def _finalize_run(
     )
     summary = _summary(metrics, evidence_tier=evidence_tier, task_pack_hash=pack.pack_hash)
     _write_json(output / "summary.json", summary)
-    return replay_run(output)
+    manifest = _validate_run_manifest(_read_json(output / "run_manifest.json"))
+    _write_run_receipt(
+        output,
+        manifest=manifest,
+        bundles=bundles,
+        metrics=metrics,
+        summary=summary,
+        signing_key=signing_key,
+    )
+    report = replay_run(output)
+    signing_key_path = output / ".verifier_signing_key"
+    if signing_key_path.exists():
+        signing_key_path.unlink()
+    return report
 
 
 def _rebuild_event_log(
@@ -573,7 +902,8 @@ def _run_config(
     values = {
         "bootstrap_samples": args.bootstrap_samples,
         "mode": args.mode,
-        "providers": [provider.provider_key for provider in providers],
+        "provider_protocol_version": PROVIDER_PROTOCOL_VERSION,
+        "providers": [provider_to_mapping(provider) for provider in providers],
         "replicas": replicas,
         "scheduled_pairs": scheduled_pairs,
         "seed": pack.seed,
@@ -605,7 +935,7 @@ def _pilot_assignments(
 
 def _effective_replicas(args) -> int:
     if args.mode == "formal":
-        return 4
+        return 5
     return 1 if args.replicas is None else args.replicas
 
 
@@ -645,8 +975,8 @@ def _validate_args(args) -> None:
         raise ValueError("timeout_seconds must be positive")
     if args.mode == "pilot" and args.replicas not in (None, 1):
         raise ValueError("pilot mode fixes replicas at 1")
-    if args.mode == "formal" and args.replicas not in (None, 4):
-        raise ValueError("formal mode fixes replicas at 4")
+    if args.mode == "formal" and args.replicas not in (None, 5):
+        raise ValueError("formal mode fixes replicas at 5")
     if args.mode in {"pilot", "formal", "probe"} and args.limit_pairs is not None:
         raise ValueError("--limit-pairs is unavailable for live modes")
     if args.mode in {"pilot", "formal", "probe"} and args.provider is not None:

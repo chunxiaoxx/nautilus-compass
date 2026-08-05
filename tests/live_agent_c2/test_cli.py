@@ -15,6 +15,28 @@ def read_json(path: Path):
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def write_json(path: Path, value) -> None:
+    path.write_text(
+        json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
+
+def read_jsonl(path: Path):
+    return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()]
+
+
+def write_jsonl(path: Path, values) -> None:
+    path.write_text(
+        "".join(
+            json.dumps(value, ensure_ascii=False, separators=(",", ":"), sort_keys=True)
+            + "\n"
+            for value in values
+        ),
+        encoding="utf-8",
+    )
+
+
 class LiveOracleAdapter:
     def __init__(self, provider_id: str, model_id: str, adapter_kind: str) -> None:
         self.identity = provider_from_mapping(
@@ -94,6 +116,7 @@ def test_fake_e2e_writes_replayable_local_evidence_without_claim(tmp_path, capsy
     capsys.readouterr()
 
     summary = read_json(output / "summary.json")
+    receipt = read_json(output / "run_receipt.json")
     assert summary["evidence_tier"] == "synthetic"
     assert summary["total_pairs"] == 4
     assert summary["runtime_recommendation"] == "flat"
@@ -104,6 +127,9 @@ def test_fake_e2e_writes_replayable_local_evidence_without_claim(tmp_path, capsy
     assert len((output / "bundles.jsonl").read_text(encoding="utf-8").splitlines()) == 8
     assert len((output / "outcomes.jsonl").read_text(encoding="utf-8").splitlines()) == 4
     assert len(tuple((output / "raw").glob("*.txt"))) == 8
+    assert receipt["schema_version"] == "compass.live_agent_c2.run_receipt.v1"
+    assert len(receipt["signature"]) == 128
+    assert not (output / ".verifier_signing_key").exists()
 
     before = (output / "bundles.jsonl").read_bytes()
     assert main(args + ["--resume"]) == 0
@@ -114,6 +140,119 @@ def test_fake_e2e_writes_replayable_local_evidence_without_claim(tmp_path, capsy
     replay = json.loads(capsys.readouterr().out)
     assert replay["replay_verified"] is True
     assert replay["pairs_hash"] == summary["pairs_hash"]
+
+
+@pytest.mark.parametrize("mutation", ("provider", "bundle_hash"))
+def test_replay_rejects_rehashed_outcome_evidence_binding_tamper(
+    tmp_path, capsys, mutation
+):
+    output = tmp_path / "tampered-outcome"
+    args = [
+        "--mode",
+        "fake",
+        "--output",
+        str(output),
+        "--replicas",
+        "1",
+        "--limit-pairs",
+        "4",
+        "--bootstrap-samples",
+        "200",
+    ]
+    assert main(args) == 0
+    capsys.readouterr()
+
+    outcomes = read_jsonl(output / "outcomes.jsonl")
+    bundles = read_jsonl(output / "bundles.jsonl")
+    manifest = read_json(output / "run_manifest.json")
+    summary = read_json(output / "summary.json")
+    if mutation == "provider":
+        providers = [item["provider_id"] + "/" + item["model_id"] for item in manifest["providers"]]
+        outcomes[0]["provider_key"] = next(
+            provider for provider in providers if provider != outcomes[0]["provider_key"]
+        )
+    else:
+        outcomes[0]["flat_bundle_hash"] = next(
+            item["bundle_hash"]
+            for item in bundles
+            if item["bundle_hash"] != outcomes[0]["flat_bundle_hash"]
+        )
+    parsed = tuple(cli_module.outcome_from_mapping(item) for item in outcomes)
+    metrics = cli_module.compute_metrics(
+        parsed,
+        seed=manifest["seed"],
+        bootstrap_samples=manifest["bootstrap_samples"],
+        invalid_attempt_count=summary["invalid_attempt_count"],
+        retry_count=summary["retry_count"],
+    )
+    summary["pairs_hash"] = metrics.pairs_hash
+    write_jsonl(output / "outcomes.jsonl", outcomes)
+    write_json(output / "summary.json", summary)
+
+    with pytest.raises(ValueError, match="outcome evidence binding"):
+        cli_module.replay_run(output)
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    (("improvement_claim", True), ("runtime_recommendation", "governed"), ("invalid_attempt_count", 99)),
+)
+def test_replay_rejects_mutable_summary_and_counter_tamper(
+    tmp_path, capsys, field, value
+):
+    output = tmp_path / f"tampered-summary-{field}"
+    assert (
+        main(
+            [
+                "--mode",
+                "fake",
+                "--output",
+                str(output),
+                "--replicas",
+                "1",
+                "--limit-pairs",
+                "4",
+                "--bootstrap-samples",
+                "200",
+            ]
+        )
+        == 0
+    )
+    capsys.readouterr()
+    summary = read_json(output / "summary.json")
+    summary[field] = value
+    write_json(output / "summary.json", summary)
+
+    with pytest.raises(ValueError, match="run summary replay mismatch"):
+        cli_module.replay_run(output)
+
+
+def test_replay_rejects_tampered_signed_run_receipt(tmp_path, capsys):
+    output = tmp_path / "tampered-receipt"
+    assert (
+        main(
+            [
+                "--mode",
+                "fake",
+                "--output",
+                str(output),
+                "--replicas",
+                "1",
+                "--limit-pairs",
+                "4",
+                "--bootstrap-samples",
+                "200",
+            ]
+        )
+        == 0
+    )
+    capsys.readouterr()
+    receipt = read_json(output / "run_receipt.json")
+    receipt["retry_count"] += 1
+    write_json(output / "run_receipt.json", receipt)
+
+    with pytest.raises(ValueError, match="run receipt signature"):
+        cli_module.replay_run(output)
 
 
 def test_cli_refuses_unknown_provider_nonempty_output_and_wrong_resume(tmp_path):
@@ -221,6 +360,7 @@ def test_live_pilot_covers_each_query_class_per_provider_and_replays(
     capsys.readouterr()
 
     summary = read_json(output / "summary.json")
+    manifest = read_json(output / "run_manifest.json")
     assert summary["evidence_tier"] == "live"
     assert summary["total_pairs"] == 8
     assert summary["provider_count"] == 2
@@ -229,13 +369,107 @@ def test_live_pilot_covers_each_query_class_per_provider_and_replays(
     assert summary["improvement_claim"] is False
     assert summary["promote_recommended"] is False
     assert summary["replay_verified"] is True
+    assert manifest["schema_version"] == "compass.live_agent_c2.run_manifest.v3"
+    assert manifest["provider_protocol_version"] == "compass.live_agent_c2.provider.v2"
+    assert manifest["providers"] == [
+        {
+            "adapter_kind": "cli",
+            "adapter_version": "test-v1",
+            "model_id": "glm-5.2-1m",
+            "provider_id": "custom-anthropic-proxy",
+        },
+        {
+            "adapter_kind": "openai_compatible",
+            "adapter_version": "test-v1",
+            "model_id": "doubao-seed-2-0-pro-260215",
+            "provider_id": "volcengine",
+        },
+    ]
 
 
-def test_formal_mode_is_fixed_to_64_pairs_and_rejects_shape_overrides(
+@pytest.mark.parametrize(
+    "mutation",
+    (
+        "provider_protocol_version",
+        "model_id",
+        "model_id_rehashed",
+        "adapter_version",
+        "unknown_field",
+        "missing_field",
+    ),
+)
+def test_replay_and_resume_reject_tampered_provider_manifest(
+    monkeypatch, tmp_path, mutation
+):
+    monkeypatch.setattr(cli_module, "build_live_adapters", live_oracles)
+    output = tmp_path / "pilot"
+    assert (
+        main(
+            [
+                "--mode",
+                "pilot",
+                "--output",
+                str(output),
+                "--bootstrap-samples",
+                "200",
+            ]
+        )
+        == 0
+    )
+    manifest_path = output / "run_manifest.json"
+    manifest = read_json(manifest_path)
+    if mutation == "provider_protocol_version":
+        manifest["provider_protocol_version"] = "compass.live_agent_c2.provider.tampered"
+    elif mutation in {"model_id", "model_id_rehashed"}:
+        manifest["providers"][0]["model_id"] = "tampered-model"
+    elif mutation == "adapter_version":
+        manifest["providers"][0]["adapter_version"] = "tampered-adapter"
+    elif mutation == "unknown_field":
+        manifest["unknown"] = "forbidden"
+    else:
+        manifest.pop("mode")
+    if mutation == "model_id_rehashed":
+        manifest["config_hash"] = cli_module.hash_json(
+            {field: manifest[field] for field in cli_module.RUN_CONFIG_FIELDS}
+        )
+    manifest_path.write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="run manifest"):
+        cli_module.replay_run(output)
+    with pytest.raises(ValueError, match="run manifest"):
+        main(
+            [
+                "--mode",
+                "pilot",
+                "--output",
+                str(output),
+                "--bootstrap-samples",
+                "200",
+                "--resume",
+            ]
+        )
+
+
+def test_formal_mode_is_fixed_to_80_pairs_and_rejects_shape_overrides(
     monkeypatch, tmp_path
 ):
     monkeypatch.setattr(cli_module, "build_live_adapters", live_oracles)
-    with pytest.raises(ValueError, match="formal mode fixes replicas at 4"):
+    args = cli_module.build_parser().parse_args(
+        ["--mode", "formal", "--output", str(tmp_path / "formal")]
+    )
+    providers = tuple(adapter.identity for adapter in live_oracles())
+    replicas = cli_module._effective_replicas(args)
+    assignments = cli_module.schedule_pairs(
+        cli_module.read_task_pack(), providers, replicas=replicas
+    )
+
+    assert replicas == 5
+    assert len(assignments) == 80
+
+    with pytest.raises(ValueError, match="formal mode fixes replicas at 5"):
         main(
             [
                 "--mode",
@@ -243,7 +477,7 @@ def test_formal_mode_is_fixed_to_64_pairs_and_rejects_shape_overrides(
                 "--output",
                 str(tmp_path / "formal"),
                 "--replicas",
-                "1",
+                "4",
             ]
         )
     with pytest.raises(ValueError, match="limit-pairs"):
@@ -338,3 +572,78 @@ def test_live_resume_skips_completed_and_interrupted_pairs_without_double_callin
     assert summary["replay_verified"] is True
     assert any(item["status"] == "interrupted" for item in progress)
     assert len(tuple((output / "checkpoints").glob("*.json"))) == 8
+
+
+def test_live_resume_rejects_mismatched_signing_key_before_calls_or_checkpoint_writes(
+    monkeypatch, tmp_path
+):
+    output = tmp_path / "resume-key-mismatch"
+    first_calls = {"count": 0}
+
+    class InterruptingOracle(LiveOracleAdapter):
+        def invoke(self, prompt: str, *, timeout_seconds: float) -> ProviderCallResult:
+            first_calls["count"] += 1
+            if first_calls["count"] == 3:
+                raise KeyboardInterrupt
+            return super().invoke(prompt, timeout_seconds=timeout_seconds)
+
+    monkeypatch.setattr(
+        cli_module,
+        "build_live_adapters",
+        lambda _names=None: (
+            InterruptingOracle("custom-anthropic-proxy", "glm-5.2-1m", "cli"),
+            LiveOracleAdapter(
+                "volcengine", "doubao-seed-2-0-pro-260215", "openai_compatible"
+            ),
+        ),
+    )
+    with pytest.raises(KeyboardInterrupt):
+        main(
+            [
+                "--mode",
+                "pilot",
+                "--output",
+                str(output),
+                "--bootstrap-samples",
+                "200",
+            ]
+        )
+
+    durable_paths = tuple(sorted((output / "checkpoints").glob("*.json"))) + (
+        output / "progress.jsonl",
+    )
+    before = {path: path.read_bytes() for path in durable_paths}
+    (output / ".verifier_signing_key").write_text("00" * 32, encoding="ascii")
+    resumed_calls = {"count": 0}
+
+    class CountingOracle(LiveOracleAdapter):
+        def invoke(self, prompt: str, *, timeout_seconds: float) -> ProviderCallResult:
+            resumed_calls["count"] += 1
+            return super().invoke(prompt, timeout_seconds=timeout_seconds)
+
+    monkeypatch.setattr(
+        cli_module,
+        "build_live_adapters",
+        lambda _names=None: (
+            CountingOracle("custom-anthropic-proxy", "glm-5.2-1m", "cli"),
+            CountingOracle(
+                "volcengine", "doubao-seed-2-0-pro-260215", "openai_compatible"
+            ),
+        ),
+    )
+
+    with pytest.raises(ValueError, match="resume verifier signing key mismatch"):
+        main(
+            [
+                "--mode",
+                "pilot",
+                "--output",
+                str(output),
+                "--bootstrap-samples",
+                "200",
+                "--resume",
+            ]
+        )
+
+    assert resumed_calls["count"] == 0
+    assert {path: path.read_bytes() for path in durable_paths} == before

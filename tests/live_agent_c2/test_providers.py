@@ -3,10 +3,12 @@ from __future__ import annotations
 import json
 import os
 import sys
+import urllib.error
 from pathlib import Path
 
 import pytest
 
+import benchmarks.live_agent_c2.providers as providers_module
 from benchmarks.live_agent_c2.providers import (
     LIVE_PROVIDER_NAMES,
     OpenAICompatibleAdapter,
@@ -65,6 +67,31 @@ def test_subprocess_adapter_uses_stdin_isolated_cwd_and_structured_usage():
     assert result.estimated_cost_usd == 0.002
     assert result.latency_ms >= 0
     assert result.provider_identity == identity()
+
+
+def test_subprocess_adapter_passes_only_provider_scoped_credentials(monkeypatch):
+    monkeypatch.setenv("GLM_TEST_KEY", "provider-scoped")
+    monkeypatch.setenv("ARK_API_KEY", "must-not-cross-provider-boundary")
+    script = (
+        "import json, os; "
+        "scoped=os.environ.get('GLM_TEST_KEY') == 'provider-scoped'; "
+        "isolated='ARK_API_KEY' not in os.environ; "
+        "print(json.dumps({'type':'result','result':'isolated' if scoped and isolated else 'leaked',"
+        "'usage':{'input_tokens':1,'output_tokens':1},'total_cost_usd':0.0}))"
+    )
+    adapter = SubprocessCliAdapter(
+        identity=identity(),
+        command_builder=lambda _prompt, _workspace: ProviderCommand(
+            (sys.executable, "-c", script), None
+        ),
+        output_parser=parse_claude_json,
+        tool_isolation="disabled",
+        credential_envs=("GLM_TEST_KEY",),
+    )
+
+    result = adapter.invoke("safe", timeout_seconds=10)
+
+    assert result.output_text == "isolated"
 
 
 def test_provider_errors_never_echo_secret_stdout_stderr_or_command(monkeypatch):
@@ -166,6 +193,8 @@ def test_real_cli_command_builders_preserve_isolation_boundaries(tmp_path):
     assert '{"mcpServers":{}}' in claude.argv
     assert "--max-budget-usd" in claude.argv
     assert "--system-prompt" in claude.argv
+    assert "--effort" in claude.argv
+    assert claude.argv[claude.argv.index("--effort") + 1] == "low"
     assert "prompt" not in claude.argv
     assert claude.argv[0] == ("claude.cmd" if os.name == "nt" else "claude")
 
@@ -257,6 +286,9 @@ def test_openai_compatible_adapter_uses_environment_secret_and_standard_usage(mo
     assert captured["url"].endswith("/chat/completions")
     assert captured["authorization_present"] is True
     assert captured["body"]["temperature"] == 0
+    assert captured["body"]["max_completion_tokens"] == 64
+    assert captured["body"]["thinking"] == {"type": "disabled"}
+    assert "max_tokens" not in captured["body"]
     assert "unit-test-secret" not in repr(adapter)
     assert "unit-test-secret" not in repr(result)
 
@@ -320,6 +352,54 @@ def test_openai_adapter_rejects_response_from_a_different_model(monkeypatch):
     )
 
     with pytest.raises(ProviderCallError, match="provider_identity_mismatch"):
+        adapter.invoke("safe", timeout_seconds=10)
+
+
+def test_openai_adapter_classifies_transport_timeout_separately(monkeypatch):
+    monkeypatch.setenv("ARK_API_KEY", "unit-test-secret")
+
+    def transport(*_args):
+        raise TimeoutError
+
+    adapter = OpenAICompatibleAdapter(
+        identity=provider_from_mapping(
+            {
+                "provider_id": "volcengine",
+                "model_id": "doubao-seed-2-0-pro-260215",
+                "adapter_kind": "openai_compatible",
+                "adapter_version": "ark-v3",
+            }
+        ),
+        base_url="https://ark.cn-beijing.volces.com/api/v3",
+        credential_env="ARK_API_KEY",
+        transport=transport,
+    )
+
+    with pytest.raises(ProviderCallError, match="provider_timeout"):
+        adapter.invoke("safe", timeout_seconds=10)
+
+
+def test_openai_adapter_classifies_urllib_wrapped_timeout_separately(monkeypatch):
+    monkeypatch.setenv("ARK_API_KEY", "unit-test-secret")
+
+    def urlopen(*_args, **_kwargs):
+        raise urllib.error.URLError(TimeoutError("timed out"))
+
+    monkeypatch.setattr(providers_module.urllib.request, "urlopen", urlopen)
+    adapter = OpenAICompatibleAdapter(
+        identity=provider_from_mapping(
+            {
+                "provider_id": "volcengine",
+                "model_id": "doubao-seed-2-0-pro-260215",
+                "adapter_kind": "openai_compatible",
+                "adapter_version": "ark-v3",
+            }
+        ),
+        base_url="https://ark.cn-beijing.volces.com/api/v3",
+        credential_env="ARK_API_KEY",
+    )
+
+    with pytest.raises(ProviderCallError, match="provider_timeout"):
         adapter.invoke("safe", timeout_seconds=10)
 
 

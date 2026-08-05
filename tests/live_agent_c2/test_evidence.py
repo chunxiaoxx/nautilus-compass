@@ -15,6 +15,7 @@ from benchmarks.live_agent_c2.evidence import (
 from benchmarks.live_agent_c2.providers import ProviderCallResult
 from benchmarks.live_agent_c2.runner import run_pair, schedule_pairs
 from benchmarks.live_agent_c2.schema import provider_from_mapping
+from benchmarks.live_agent_c2.schema import attempt_to_mapping
 from benchmarks.live_agent_c2.task_pack import read_task_pack
 from gep.flywheel_log import FlywheelEventLog
 
@@ -110,6 +111,9 @@ def test_each_arm_projects_packet_independent_verdict_signature_and_poi(tmp_path
         assert governed.poi_signal.impact == 1.0
         assert verify_episode_bundle(flat, event_log=log) is True
         assert verify_episode_bundle(governed, event_log=log) is True
+        assert bundle_to_mapping(flat)["attempt"] == attempt_to_mapping(
+            execution.flat.attempt
+        )
         assert "output_text" not in repr(flat)
     finally:
         log.close()
@@ -145,6 +149,10 @@ def test_projection_is_idempotent_and_replay_detects_signature_tampering(tmp_pat
         invalid["raw_output"] = "forbidden"
         with pytest.raises(TypeError, match="unknown EpisodeEvidenceBundle fields"):
             bundle_from_mapping(invalid)
+        tampered_attempt = bundle_to_mapping(first)
+        tampered_attempt["attempt"]["latency_ms"] += 1
+        with pytest.raises(ValueError, match="attempt"):
+            bundle_from_mapping(tampered_attempt)
         tampered = replace(first, verdict_signature="0" * 128)
         with pytest.raises(ValueError, match="signature"):
             verify_episode_bundle(tampered, event_log=log)

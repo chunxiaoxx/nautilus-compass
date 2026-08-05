@@ -23,7 +23,13 @@ from gep.flywheel_log import FlywheelEventLog
 from gep.verdict_packet import VerdictPacket, to_payload as verdict_to_payload
 
 from .runner import ExecutedArm
-from .schema import LiveTask, provider_to_mapping
+from .schema import (
+    AttemptEvidence,
+    LiveTask,
+    attempt_from_mapping,
+    attempt_to_mapping,
+    provider_to_mapping,
+)
 from .verifier import VerificationResult, verify_output
 
 
@@ -59,6 +65,7 @@ class EpisodeEvidenceBundle:
     task_pack_hash: str
     attempt_id: str
     attempt_hash: str
+    attempt: AttemptEvidence
     selected_view_ids: tuple[str, ...]
     packet: ExperiencePacket
     episode_event: FlywheelEvent
@@ -71,6 +78,12 @@ class EpisodeEvidenceBundle:
     bundle_hash: str = field(init=False)
 
     def __post_init__(self) -> None:
+        if not isinstance(self.attempt, AttemptEvidence):
+            raise TypeError("attempt must be AttemptEvidence")
+        if self.attempt_id != self.attempt.attempt_id:
+            raise ValueError("bundle attempt_id does not match attempt evidence")
+        if self.attempt_hash != self.attempt.attempt_hash:
+            raise ValueError("bundle attempt_hash does not match attempt evidence")
         if _PUBLIC_KEY_PATTERN.fullmatch(self.verifier_public_key) is None:
             raise ValueError("verifier_public_key must be 64 lowercase hex characters")
         if _SIGNATURE_PATTERN.fullmatch(self.verdict_signature) is None:
@@ -115,6 +128,7 @@ def project_episode(
         task_pack_hash=task_pack_hash,
         attempt_id=arm.attempt.attempt_id,
         attempt_hash=arm.attempt.attempt_hash,
+        attempt=arm.attempt,
         selected_view_ids=arm.selected_view_ids,
         packet=packet,
         episode_event=episode_event,
@@ -150,6 +164,22 @@ def verify_episode_bundle(
         raise ValueError("verdict payload replay mismatch")
     if bundle.verdict.episode_event_hash != episode.event_hash:
         raise ValueError("verdict episode event binding mismatch")
+    if not bundle.attempt.valid or bundle.attempt.error_code is not None:
+        raise ValueError("bundle attempt evidence is not a valid completed attempt")
+    if bundle.attempt.response_hash != bundle.verification.response_hash:
+        raise ValueError("bundle attempt response hash mismatch")
+    if _packet_arm(bundle.packet) != bundle.attempt.arm:
+        raise ValueError("bundle attempt arm mismatch")
+    expected_outcome = "success" if bundle.verification.success else "failure"
+    if bundle.verdict.outcome != expected_outcome or bundle.packet.outcome != expected_outcome:
+        raise ValueError("bundle verification outcome mismatch")
+    expected_evidence_hash = _verdict_evidence_hash(
+        bundle.attempt_hash,
+        bundle.task_pack_hash,
+        bundle.verification.evidence_hash,
+    )
+    if bundle.verdict.evidence_hash != expected_evidence_hash:
+        raise ValueError("verdict attempt evidence binding mismatch")
     _verify_signature(bundle)
     if bundle.poi_signal != _poi_signal_from_values(
         arm=_packet_arm(bundle.packet),
@@ -170,6 +200,7 @@ def bundle_to_mapping(bundle: EpisodeEvidenceBundle) -> dict[str, Any]:
         "task_pack_hash": bundle.task_pack_hash,
         "attempt_id": bundle.attempt_id,
         "attempt_hash": bundle.attempt_hash,
+        "attempt": attempt_to_mapping(bundle.attempt),
         "selected_view_ids": list(bundle.selected_view_ids),
         "packet": to_frontmatter(bundle.packet),
         "episode_event": bundle.episode_event.to_mapping(),
@@ -201,6 +232,7 @@ def bundle_from_mapping(raw: Mapping[str, Any]) -> EpisodeEvidenceBundle:
         "task_pack_hash",
         "attempt_id",
         "attempt_hash",
+        "attempt",
         "selected_view_ids",
         "packet",
         "episode_event",
@@ -240,6 +272,7 @@ def bundle_from_mapping(raw: Mapping[str, Any]) -> EpisodeEvidenceBundle:
         task_pack_hash=values["task_pack_hash"],
         attempt_id=values["attempt_id"],
         attempt_hash=values["attempt_hash"],
+        attempt=attempt_from_mapping(_mapping("attempt", values["attempt"])),
         selected_view_ids=selected_view_ids,
         packet=ExperiencePacket(**_mapping("packet", values["packet"])),
         episode_event=event_from_mapping(_mapping("episode_event", values["episode_event"])),
@@ -310,13 +343,10 @@ def _verdict(
     episode_event: FlywheelEvent,
     task_pack_hash: str,
 ) -> VerdictPacket:
-    evidence_hash = hash_json(
-        {
-            "attempt_hash": arm.attempt.attempt_hash,
-            "domain": "compass.live_agent_c2.verdict_evidence.v1",
-            "task_pack_hash": task_pack_hash,
-            "verification_evidence_hash": verification.evidence_hash,
-        }
+    evidence_hash = _verdict_evidence_hash(
+        arm.attempt.attempt_hash,
+        task_pack_hash,
+        verification.evidence_hash,
     )
     return VerdictPacket(
         episode_id=episode_event.episode_id,
@@ -355,6 +385,21 @@ def _verdict_event(
             "payload_schema": VERDICT_PAYLOAD_SCHEMA,
             "payload": payload,
             "payload_hash": hash_payload_for_kind(EVENT_KIND_VERDICT, payload),
+        }
+    )
+
+
+def _verdict_evidence_hash(
+    attempt_hash: str,
+    task_pack_hash: str,
+    verification_evidence_hash: str,
+) -> str:
+    return hash_json(
+        {
+            "attempt_hash": attempt_hash,
+            "domain": "compass.live_agent_c2.verdict_evidence.v1",
+            "task_pack_hash": task_pack_hash,
+            "verification_evidence_hash": verification_evidence_hash,
         }
     )
 

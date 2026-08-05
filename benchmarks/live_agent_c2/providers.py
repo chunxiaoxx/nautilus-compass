@@ -25,6 +25,37 @@ LIVE_PROVIDER_NAMES = ("glm-claude", "volcengine-ark")
 _GLM_COMMAND_MODEL = "glm-5.2[1M]"
 _GLM_REPORTED_MODEL = "glm-5.2[1m]"
 _CLAUDE_EXECUTABLE = "claude.cmd" if os.name == "nt" else "claude"
+_RUNTIME_ENVIRONMENT = frozenset(
+    {
+        "ALL_PROXY",
+        "APPDATA",
+        "COMSPEC",
+        "HOME",
+        "HOMEDRIVE",
+        "HOMEPATH",
+        "HTTP_PROXY",
+        "HTTPS_PROXY",
+        "LOCALAPPDATA",
+        "NODE_EXTRA_CA_CERTS",
+        "NO_PROXY",
+        "OS",
+        "PATH",
+        "PATHEXT",
+        "PROGRAMDATA",
+        "PROGRAMFILES",
+        "PROGRAMFILES(X86)",
+        "PROGRAMW6432",
+        "REQUESTS_CA_BUNDLE",
+        "SSL_CERT_DIR",
+        "SSL_CERT_FILE",
+        "SYSTEMDRIVE",
+        "SYSTEMROOT",
+        "TEMP",
+        "TMP",
+        "USERPROFILE",
+        "WINDIR",
+    }
+)
 
 
 class ProviderCallError(RuntimeError):
@@ -97,6 +128,7 @@ class SubprocessCliAdapter:
         command_builder: CommandBuilder,
         output_parser: OutputParser,
         tool_isolation: str,
+        credential_envs: Sequence[str] = (),
         max_output_bytes: int = 1024 * 1024,
     ) -> None:
         if not isinstance(identity, ProviderIdentity) or identity.adapter_kind != "cli":
@@ -109,10 +141,17 @@ class SubprocessCliAdapter:
             raise TypeError("max_output_bytes must be an integer")
         if max_output_bytes < 256:
             raise ValueError("max_output_bytes must be at least 256")
+        credential_envs = tuple(credential_envs)
+        if len(set(credential_envs)) != len(credential_envs) or any(
+            not isinstance(name, str) or not name.isidentifier()
+            for name in credential_envs
+        ):
+            raise ValueError("credential_envs must contain unique safe names")
         self.identity = identity
         self._command_builder = command_builder
         self._output_parser = output_parser
         self.tool_isolation = tool_isolation
+        self.credential_envs = credential_envs
         self.max_output_bytes = max_output_bytes
 
     @property
@@ -125,7 +164,12 @@ class SubprocessCliAdapter:
             workspace = Path(directory)
             command = self._build_command(prompt, workspace)
             started = time.perf_counter()
-            completed = _run_command(command, workspace, timeout_seconds)
+            completed = _run_command(
+                command,
+                workspace,
+                timeout_seconds,
+                credential_envs=self.credential_envs,
+            )
             latency_ms = max(0, int(round((time.perf_counter() - started) * 1000)))
         encoded = _validated_stdout(completed, self.max_output_bytes)
         try:
@@ -213,7 +257,8 @@ class OpenAICompatibleAdapter:
                     {"role": "user", "content": prompt},
                 ],
                 "temperature": 0,
-                "max_tokens": self.max_tokens,
+                "max_completion_tokens": self.max_tokens,
+                "thinking": {"type": "disabled"},
                 "stream": False,
             },
             ensure_ascii=False,
@@ -234,6 +279,8 @@ class OpenAICompatibleAdapter:
             )
         except ProviderCallError:
             raise
+        except TimeoutError as exc:
+            raise ProviderCallError("provider_timeout") from exc
         except Exception as exc:
             raise ProviderCallError("provider_transport_failed") from exc
         latency_ms = max(0, int(round((time.perf_counter() - started) * 1000)))
@@ -383,7 +430,7 @@ def _live_adapter(name: str) -> SubprocessCliAdapter | OpenAICompatibleAdapter:
             provider_id="custom-anthropic-proxy",
             model_id="glm-5.2-1m",
             adapter_kind="cli",
-            adapter_version="2.1.220",
+            adapter_version="2.1.220-low",
         )
         return SubprocessCliAdapter(
             identity=identity,
@@ -392,13 +439,20 @@ def _live_adapter(name: str) -> SubprocessCliAdapter | OpenAICompatibleAdapter:
             ),
             output_parser=parse_glm_claude_json,
             tool_isolation="disabled",
+            credential_envs=(
+                "ANTHROPIC_API_KEY",
+                "ANTHROPIC_AUTH_TOKEN",
+                "ANTHROPIC_BASE_URL",
+                "CLAUDE_CODE_OAUTH_TOKEN",
+                "CLAUDE_CONFIG_DIR",
+            ),
         )
     if name == "volcengine-ark":
         identity = ProviderIdentity(
             provider_id="volcengine",
             model_id="doubao-seed-2-0-pro-260215",
             adapter_kind="openai_compatible",
-            adapter_version="ark-v3",
+            adapter_version="ark-v3-thinking-off",
         )
         return OpenAICompatibleAdapter(
             identity=identity,
@@ -431,6 +485,8 @@ def build_claude_command(model_id: str, prompt: str, workspace: Path) -> Provide
             "plan",
             "--max-budget-usd",
             "0.03",
+            "--effort",
+            "low",
             "--system-prompt",
             (
                 "You are a benchmark subject. Follow the user task and return only the "
@@ -489,6 +545,8 @@ def _run_command(
     command: ProviderCommand,
     workspace: Path,
     timeout_seconds: float,
+    *,
+    credential_envs: Sequence[str],
 ) -> subprocess.CompletedProcess[bytes]:
     try:
         return subprocess.run(
@@ -498,7 +556,7 @@ def _run_command(
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             shell=False,
-            env=_provider_environment(),
+            env=_provider_environment(credential_envs),
             timeout=timeout_seconds,
             check=False,
             creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
@@ -526,8 +584,13 @@ def _validated_stdout(
         raise ProviderCallError("provider_output_invalid") from exc
 
 
-def _provider_environment() -> dict[str, str]:
-    environment = os.environ.copy()
+def _provider_environment(credential_envs: Sequence[str]) -> dict[str, str]:
+    allowed = _RUNTIME_ENVIRONMENT | frozenset(credential_envs)
+    environment = {
+        name: value
+        for name in allowed
+        if (value := os.environ.get(name)) is not None
+    }
     environment.update(
         {
             "NO_COLOR": "1",
@@ -552,7 +615,11 @@ def _urllib_post(
     except urllib.error.HTTPError as exc:
         reason = "provider_http_client_error" if 400 <= exc.code < 500 else "provider_http_server_error"
         raise ProviderCallError(reason) from exc
-    except (urllib.error.URLError, TimeoutError) as exc:
+    except TimeoutError as exc:
+        raise ProviderCallError("provider_timeout") from exc
+    except urllib.error.URLError as exc:
+        if isinstance(exc.reason, TimeoutError):
+            raise ProviderCallError("provider_timeout") from exc
         raise ProviderCallError("provider_transport_failed") from exc
     if len(encoded) > max_output_bytes:
         raise ProviderCallError("provider_output_oversize")
