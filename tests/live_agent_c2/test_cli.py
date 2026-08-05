@@ -322,6 +322,49 @@ def test_committed_pilot_evidence_keeps_failed_gate_and_replay_binding():
     assert "API_KEY" not in summary_encoded
 
 
+def test_committed_formal_evidence_is_deidentified_replay_bound_and_not_promoted():
+    root = Path(__file__).resolve().parents[2]
+    evidence = root / "docs" / "evidence" / "c2"
+    summary_path = evidence / "formal_summary.json"
+    replay_path = evidence / "formal_replay_manifest.json"
+    decision_path = evidence / "decision.md"
+    summary_encoded = summary_path.read_text(encoding="utf-8")
+    replay_encoded = replay_path.read_text(encoding="utf-8")
+    decision = decision_path.read_text(encoding="utf-8")
+    summary = json.loads(summary_encoded)
+    replay = json.loads(replay_encoded)
+
+    assert summary["schema_version"] == "compass.live_agent_c2.formal_summary.v1"
+    assert summary["scheduled_pairs"] == 80
+    assert summary["valid_pairs"] == 73
+    assert summary["valid_pairs"] >= 60
+    assert summary["provider_count"] == 2
+    assert len(summary["by_provider_query_class"]) == 8
+    assert summary["overall"]["ci_low"] > 0
+    assert summary["protected_delta"] == 0
+    assert summary["overall"]["poison_admissions"] == 0
+    assert summary["promote_recommended"] is True
+    assert summary["candidate_state"] == "candidate_only"
+    assert summary["runtime_recommendation"] == "flat"
+    assert summary["improvement_claim"] is False
+    assert summary["raw_response_committed"] is False
+
+    assert replay["schema_version"] == "compass.live_agent_c2.formal_replay_manifest.v1"
+    assert replay["outcome_count"] == 73
+    assert replay["bundle_count"] == replay["raw_response_count"] == 146
+    assert replay["event_count"] == 292
+    assert replay["checkpoint_count"] == 80
+    assert replay["private_signing_key_present"] is False
+    assert replay["replay_verified"] is True
+    assert replay["raw_response_committed"] is False
+
+    encoded = summary_encoded + replay_encoded + decision
+    assert "API_KEY" not in encoded
+    assert ".verifier_signing_key" not in encoded
+    assert "output_text" not in encoded
+    assert "runtime remains flat" in decision
+
+
 def test_live_probe_is_metered_deidentified_and_does_not_write_raw(monkeypatch, tmp_path, capsys):
     monkeypatch.setattr(cli_module, "build_live_adapters", live_oracles)
     output = tmp_path / "probe"
