@@ -20,7 +20,7 @@ from benchmarks.live_agent_c2.providers import (
     parse_claude_json,
     parse_codex_jsonl,
     parse_kimi_jsonl,
-    parse_minimax_claude_json,
+    parse_glm_claude_json,
     parse_openai_compatible_json,
 )
 from benchmarks.live_agent_c2.schema import provider_from_mapping
@@ -167,6 +167,7 @@ def test_real_cli_command_builders_preserve_isolation_boundaries(tmp_path):
     assert "--max-budget-usd" in claude.argv
     assert "--system-prompt" in claude.argv
     assert "prompt" not in claude.argv
+    assert claude.argv[0] == ("claude.cmd" if os.name == "nt" else "claude")
 
     assert codex.stdin_text == "prompt"
     assert "--sandbox" in codex.argv and "read-only" in codex.argv
@@ -322,16 +323,16 @@ def test_openai_adapter_rejects_response_from_a_different_model(monkeypatch):
         adapter.invoke("safe", timeout_seconds=10)
 
 
-def test_minimax_parser_requires_the_probed_model_identity():
+def test_glm_parser_requires_the_probed_model_identity():
     valid = json.dumps(
         {
             "result": "42",
             "usage": {"input_tokens": 12, "output_tokens": 1},
             "total_cost_usd": 0.001,
-            "modelUsage": {"MiniMax-M3[1m]": {"inputTokens": 12, "outputTokens": 1}},
+            "modelUsage": {"glm-5.2[1m]": {"inputTokens": 12, "outputTokens": 1}},
         }
     )
-    assert parse_minimax_claude_json(valid).output_text == "42"
+    assert parse_glm_claude_json(valid).output_text == "42"
 
     wrong = json.dumps(
         {
@@ -341,21 +342,21 @@ def test_minimax_parser_requires_the_probed_model_identity():
         }
     )
     with pytest.raises(ProviderCallError, match="provider_identity_mismatch"):
-        parse_minimax_claude_json(wrong)
+        parse_glm_claude_json(wrong)
 
 
 def test_live_provider_factories_are_fixed_metered_and_admissible():
     adapters = build_live_adapters()
 
-    assert LIVE_PROVIDER_NAMES == ("minimax-claude", "volcengine-ark")
+    assert LIVE_PROVIDER_NAMES == ("glm-claude", "volcengine-ark")
     assert tuple(adapter.identity.provider_key for adapter in adapters) == (
-        "minimax/minimax-m3-1m",
+        "custom-anthropic-proxy/glm-5.2-1m",
         "volcengine/doubao-seed-2-0-pro-260215",
     )
     assert all(adapter.admissible for adapter in adapters)
 
-    minimax_command = adapters[0]._build_command("safe", Path.cwd())
-    assert "MiniMax-M3[1m]" in minimax_command.argv
+    glm_command = adapters[0]._build_command("safe", Path.cwd())
+    assert "glm-5.2[1M]" in glm_command.argv
 
 
 def test_adapter_diagnostics_do_not_copy_environment(monkeypatch):
