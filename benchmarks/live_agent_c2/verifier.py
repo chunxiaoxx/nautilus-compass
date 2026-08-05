@@ -31,12 +31,10 @@ def verify_output(task: LiveTask, output_text: str) -> VerificationResult:
     if not isinstance(output_text, str):
         raise TypeError("output_text must be a string")
 
-    response_hash = hash_json(
-        {"domain": "compass.live_agent_c2.provider_response.v1", "text": output_text}
-    )
+    output_hash = response_hash(output_text)
     malformed_code = _malformed_code(output_text)
     if malformed_code is not None:
-        return _result(task, response_hash, malformed_code, False, malformed_code)
+        return _result(task, output_hash, malformed_code, False, malformed_code)
 
     verifier = _VERIFIERS[task.verifier_kind]
     actual, expected = verifier(output_text, task.expected_answer)
@@ -50,7 +48,15 @@ def verify_output(task: LiveTask, output_text: str) -> VerificationResult:
         code = success_codes[task.verifier_kind]
     else:
         code = "answer_mismatch"
-    return _result(task, response_hash, actual, success, code)
+    return _result(task, output_hash, actual, success, code)
+
+
+def response_hash(output_text: str) -> str:
+    if not isinstance(output_text, str):
+        raise TypeError("output_text must be a string")
+    return hash_json(
+        {"domain": "compass.live_agent_c2.provider_response.v1", "text": output_text}
+    )
 
 
 def _result(
@@ -124,4 +130,9 @@ _VERIFIERS: dict[str, Callable[[str, str], tuple[str, str]]] = {
 }
 
 
-__all__ = ["MAX_OUTPUT_CHARACTERS", "VerificationResult", "verify_output"]
+__all__ = [
+    "MAX_OUTPUT_CHARACTERS",
+    "VerificationResult",
+    "response_hash",
+    "verify_output",
+]

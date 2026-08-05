@@ -119,7 +119,7 @@ class AttemptEvidence:
     latency_ms: int
     input_tokens: int
     output_tokens: int
-    estimated_cost_usd: float
+    estimated_cost_usd: Optional[float]
     valid: bool
     error_code: Optional[str]
     attempt_hash: str = field(init=False)
@@ -138,10 +138,11 @@ class AttemptEvidence:
         _validate_nonnegative_int("latency_ms", self.latency_ms)
         _validate_nonnegative_int("input_tokens", self.input_tokens)
         _validate_nonnegative_int("output_tokens", self.output_tokens)
-        normalized_cost = _validate_nonnegative_number(
-            "estimated_cost_usd", self.estimated_cost_usd
-        )
-        object.__setattr__(self, "estimated_cost_usd", normalized_cost)
+        if self.estimated_cost_usd is not None:
+            normalized_cost = _validate_nonnegative_number(
+                "estimated_cost_usd", self.estimated_cost_usd
+            )
+            object.__setattr__(self, "estimated_cost_usd", normalized_cost)
         _validate_attempt_state(self)
         object.__setattr__(self, "attempt_hash", hash_json(attempt_to_mapping(self)))
 

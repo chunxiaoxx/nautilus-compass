@@ -149,6 +149,9 @@ def test_provider_attempt_and_pair_schemas_are_strict_and_hashable():
 
 
 def test_attempt_validity_and_pair_identity_fail_closed():
+    unknown_cost = attempt_from_mapping(attempt_mapping(estimated_cost_usd=None))
+    assert unknown_cost.estimated_cost_usd is None
+
     with pytest.raises(ValueError, match="valid attempt"):
         attempt_from_mapping(attempt_mapping(error_code="timeout"))
     with pytest.raises(ValueError, match="invalid attempt"):
@@ -164,4 +167,3 @@ def test_attempt_validity_and_pair_identity_fail_closed():
                 governed_attempt_id="c2_attempt_same_0001",
             )
         )
-
