@@ -11,6 +11,7 @@ from typing import Callable, Optional, Sequence
 from benchmarks.poi_gate2.canonical import hash_json
 from gep.flywheel_log import FlywheelEventLog
 
+from .checkpoints import CheckpointStore
 from .evidence import (
     EpisodeEvidenceBundle,
     bundle_from_mapping,
@@ -40,7 +41,7 @@ from .verifier import response_hash, verify_output
 
 ACTION_AGENT_ID = 4101
 VERIFIER_AGENT_ID = 4201
-RUN_MANIFEST_SCHEMA = "compass.live_agent_c2.run_manifest.v1"
+RUN_MANIFEST_SCHEMA = "compass.live_agent_c2.run_manifest.v2"
 FAKE_PROVIDERS = ("fake-alpha", "fake-beta")
 ALL_PROVIDER_NAMES = (*FAKE_PROVIDERS, *LIVE_PROVIDER_NAMES)
 AdapterResolver = Callable[[PairAssignment, LiveTask], ProviderAdapter]
@@ -123,15 +124,20 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         )
         return 0
     config = _run_config(args, pack, providers, len(assignments), replicas)
+    resume_existing = False
     if args.output.exists() and any(args.output.iterdir()):
         if not args.resume:
             raise ValueError("output directory must be absent or empty unless --resume is used")
         manifest = _read_json(args.output / "run_manifest.json")
         if manifest.get("config_hash") != config["config_hash"]:
             raise ValueError("resume configuration does not match existing run")
-        report = replay_run(args.output)
-        _print_json(report)
-        return 0
+        if args.mode == "fake":
+            report = replay_run(args.output)
+            _print_json(report)
+            return 0
+        resume_existing = True
+    elif args.resume:
+        raise ValueError("resume requires an existing non-empty run directory")
     if args.mode in {"pilot", "formal"}:
         report = _run_live(
             args.output,
@@ -141,6 +147,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             args.bootstrap_samples,
             adapters,
             args.timeout_seconds,
+            resume=resume_existing,
         )
     else:
         report = _run_synthetic(
@@ -272,12 +279,19 @@ def _run_live(
     bootstrap_samples: int,
     adapters,
     timeout_seconds: float,
+    *,
+    resume: bool,
 ) -> dict[str, object]:
     from nacl.signing import SigningKey
 
     by_provider = {adapter.identity.provider_key: adapter for adapter in adapters}
     if len(by_provider) != len(adapters):
         raise ValueError("live adapters must have unique provider identities")
+    signing_key = (
+        SigningKey(bytes.fromhex((output / ".verifier_signing_key").read_text("ascii")))
+        if resume
+        else SigningKey.generate()
+    )
     return _run_experiment(
         output,
         pack,
@@ -285,11 +299,12 @@ def _run_live(
         config,
         bootstrap_samples,
         evidence_tier="live",
-        signing_key=SigningKey.generate(),
+        signing_key=signing_key,
         adapter_resolver=lambda assignment, _task: by_provider[
             assignment.provider_identity.provider_key
         ],
         timeout_seconds=timeout_seconds,
+        resume=resume,
     )
 
 
@@ -304,56 +319,124 @@ def _run_experiment(
     signing_key,
     adapter_resolver: AdapterResolver,
     timeout_seconds: float,
+    resume: bool = False,
 ) -> dict[str, object]:
     output.mkdir(parents=True, exist_ok=True)
     raw_directory = output / "raw"
-    raw_directory.mkdir()
-    (output / ".verifier_signing_key").write_text(
-        signing_key.encode().hex(), encoding="ascii"
-    )
-    manifest = {
-        **config,
-        "schema_version": RUN_MANIFEST_SCHEMA,
-        "evidence_tier": evidence_tier,
-        "verifier_public_key": signing_key.verify_key.encode().hex(),
-    }
-    _write_json(output / "run_manifest.json", manifest)
+    raw_directory.mkdir(exist_ok=resume)
+    pair_log_directory = output / ".pair_event_logs"
+    pair_log_directory.mkdir(exist_ok=resume)
+    if not resume:
+        (output / ".verifier_signing_key").write_text(
+            signing_key.encode().hex(), encoding="ascii"
+        )
+        manifest = {
+            **config,
+            "schema_version": RUN_MANIFEST_SCHEMA,
+            "evidence_tier": evidence_tier,
+            "verifier_public_key": signing_key.verify_key.encode().hex(),
+        }
+        _write_json(output / "run_manifest.json", manifest)
+    store = CheckpointStore(output)
+    store.initialize()
+    if resume:
+        store.prepare_resume()
     tasks = {task.task_id: task for task in pack.tasks}
-    bundles: list[EpisodeEvidenceBundle] = []
-    outcomes: list[PairOutcome] = []
-    invalid_attempt_count = 0
-    retry_count = 0
-    event_log = _event_log(output / "flywheel.sqlite")
-    try:
-        for assignment in assignments:
-            task = tasks[assignment.task_id]
-            execution = run_pair(
-                assignment,
-                task,
-                adapter_resolver(assignment, task),
-                timeout_seconds=timeout_seconds,
-                max_retries=1,
+    terminal = set(store.terminal_pair_ids())
+    for assignment in assignments:
+        if assignment.pair_id in terminal:
+            continue
+        task = tasks[assignment.task_id]
+        store.mark_started(assignment.pair_id)
+        execution = run_pair(
+            assignment,
+            task,
+            adapter_resolver(assignment, task),
+            timeout_seconds=timeout_seconds,
+            max_retries=1,
+        )
+        invalid_count = len(execution.invalid_attempts)
+        retries = execution.flat.retry_count + execution.governed.retry_count
+        failure_codes = tuple(
+            attempt.error_code
+            for attempt in execution.invalid_attempts
+            if attempt.error_code is not None
+        )
+        if execution.pair is None:
+            store.write_checkpoint(
+                pair_id=assignment.pair_id,
+                status="incomplete",
+                bundles=(),
+                outcome=None,
+                invalid_attempt_count=invalid_count,
+                retry_count=retries,
+                failure_codes=failure_codes,
             )
-            invalid_attempt_count += len(execution.invalid_attempts)
-            retry_count += execution.flat.retry_count + execution.governed.retry_count
-            if execution.pair is None:
-                continue
+            terminal.add(assignment.pair_id)
+            continue
+        pair_log = _event_log(pair_log_directory / f"{assignment.pair_id}.sqlite")
+        try:
             flat = _project_and_write_raw(
-                execution.flat, task, pack, event_log, signing_key, raw_directory
+                execution.flat, task, pack, pair_log, signing_key, raw_directory
             )
             governed = _project_and_write_raw(
-                execution.governed, task, pack, event_log, signing_key, raw_directory
+                execution.governed, task, pack, pair_log, signing_key, raw_directory
             )
-            bundles.extend((flat, governed))
-            outcomes.append(_pair_outcome(execution, task, flat, governed))
-    finally:
-        event_log.close()
+        finally:
+            pair_log.close()
+        outcome = _pair_outcome(execution, task, flat, governed)
+        store.write_checkpoint(
+            pair_id=assignment.pair_id,
+            status="complete",
+            bundles=(bundle_to_mapping(flat), bundle_to_mapping(governed)),
+            outcome=outcome_to_mapping(outcome),
+            invalid_attempt_count=invalid_count,
+            retry_count=retries,
+            failure_codes=failure_codes,
+        )
+        terminal.add(assignment.pair_id)
+    return _finalize_run(
+        output,
+        pack,
+        store,
+        evidence_tier=evidence_tier,
+        bootstrap_samples=bootstrap_samples,
+    )
+
+
+def _finalize_run(
+    output: Path,
+    pack: C2TaskPack,
+    store: CheckpointStore,
+    *,
+    evidence_tier: str,
+    bootstrap_samples: int,
+) -> dict[str, object]:
+    checkpoints = store.checkpoints()
+    bundle_rows = tuple(
+        bundle
+        for checkpoint in checkpoints
+        if checkpoint["status"] == "complete"
+        for bundle in checkpoint["bundles"]
+    )
+    outcome_rows = tuple(
+        checkpoint["outcome"]
+        for checkpoint in checkpoints
+        if checkpoint["status"] == "complete"
+    )
+    bundles = tuple(bundle_from_mapping(item) for item in bundle_rows)
+    outcomes = tuple(outcome_from_mapping(item) for item in outcome_rows)
     if not outcomes:
         raise ValueError("experiment produced no complete pairs")
-    _write_jsonl(output / "bundles.jsonl", (bundle_to_mapping(item) for item in bundles))
-    _write_jsonl(output / "outcomes.jsonl", (outcome_to_mapping(item) for item in outcomes))
+    if len(bundles) != 2 * len(outcomes):
+        raise ValueError("complete checkpoints must contain exactly two bundles per pair")
+    _rebuild_event_log(output, bundles)
+    _write_jsonl(output / "bundles.jsonl", bundle_rows)
+    _write_jsonl(output / "outcomes.jsonl", outcome_rows)
+    invalid_attempt_count = sum(item["invalid_attempt_count"] for item in checkpoints)
+    retry_count = sum(item["retry_count"] for item in checkpoints)
     metrics = compute_metrics(
-        tuple(outcomes),
+        outcomes,
         seed=pack.seed,
         bootstrap_samples=bootstrap_samples,
         invalid_attempt_count=invalid_attempt_count,
@@ -362,6 +445,25 @@ def _run_experiment(
     summary = _summary(metrics, evidence_tier=evidence_tier, task_pack_hash=pack.pack_hash)
     _write_json(output / "summary.json", summary)
     return replay_run(output)
+
+
+def _rebuild_event_log(
+    output: Path, bundles: Sequence[EpisodeEvidenceBundle]
+) -> None:
+    temporary = output / ".flywheel.sqlite.tmp"
+    if temporary.exists():
+        temporary.unlink()
+    event_log = _event_log(temporary)
+    try:
+        for bundle in bundles:
+            for event in (bundle.episode_event, bundle.verdict_event):
+                receipt = event_log.append(event.to_mapping())
+                if receipt.status != "accepted" or receipt.event_hash != event.event_hash:
+                    raise ValueError("checkpoint event admission failed")
+            verify_episode_bundle(bundle, event_log=event_log)
+    finally:
+        event_log.close()
+    temporary.replace(output / "flywheel.sqlite")
 
 
 def _project_and_write_raw(
@@ -553,8 +655,8 @@ def _validate_args(args) -> None:
     if args.mode in {"fake", "dry-run"} and args.provider is not None:
         if any(provider not in FAKE_PROVIDERS for provider in args.provider):
             raise ValueError("fake modes accept only fake providers")
-    if args.resume and args.mode != "fake":
-        raise ValueError("--resume is supported only for fake mode")
+    if args.resume and args.mode not in {"fake", "pilot", "formal"}:
+        raise ValueError("--resume is supported only for experiment modes")
 
 
 def _write_json(path: Path, value: object) -> None:

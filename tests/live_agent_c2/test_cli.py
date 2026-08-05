@@ -232,3 +232,84 @@ def test_formal_mode_is_fixed_to_64_pairs_and_rejects_shape_overrides(
                 "8",
             ]
         )
+
+
+def test_live_resume_skips_completed_and_interrupted_pairs_without_double_calling(
+    monkeypatch, tmp_path, capsys
+):
+    output = tmp_path / "resumable-pilot"
+    interrupted_calls = {"count": 0}
+
+    class InterruptingOracle(LiveOracleAdapter):
+        def invoke(self, prompt: str, *, timeout_seconds: float) -> ProviderCallResult:
+            interrupted_calls["count"] += 1
+            if interrupted_calls["count"] == 3:
+                raise KeyboardInterrupt
+            return super().invoke(prompt, timeout_seconds=timeout_seconds)
+
+    def interrupted_oracles(_names=None):
+        return (
+            InterruptingOracle("custom-anthropic-proxy", "glm-5.2-1m", "cli"),
+            LiveOracleAdapter(
+                "volcengine", "doubao-seed-2-0-pro-260215", "openai_compatible"
+            ),
+        )
+
+    monkeypatch.setattr(cli_module, "build_live_adapters", interrupted_oracles)
+    with pytest.raises(KeyboardInterrupt):
+        main(
+            [
+                "--mode",
+                "pilot",
+                "--output",
+                str(output),
+                "--bootstrap-samples",
+                "200",
+            ]
+        )
+
+    assert len(tuple((output / "checkpoints").glob("*.json"))) == 1
+
+    resumed_calls = {"count": 0}
+
+    class CountingOracle(LiveOracleAdapter):
+        def invoke(self, prompt: str, *, timeout_seconds: float) -> ProviderCallResult:
+            resumed_calls["count"] += 1
+            return super().invoke(prompt, timeout_seconds=timeout_seconds)
+
+    def resumed_oracles(_names=None):
+        return (
+            CountingOracle("custom-anthropic-proxy", "glm-5.2-1m", "cli"),
+            CountingOracle(
+                "volcengine", "doubao-seed-2-0-pro-260215", "openai_compatible"
+            ),
+        )
+
+    monkeypatch.setattr(cli_module, "build_live_adapters", resumed_oracles)
+    assert (
+        main(
+            [
+                "--mode",
+                "pilot",
+                "--output",
+                str(output),
+                "--bootstrap-samples",
+                "200",
+                "--resume",
+            ]
+        )
+        == 0
+    )
+    capsys.readouterr()
+
+    summary = read_json(output / "summary.json")
+    progress = [
+        json.loads(line)
+        for line in (output / "progress.jsonl").read_text(encoding="utf-8").splitlines()
+    ]
+    assert resumed_calls["count"] == 12
+    assert summary["total_pairs"] == 7
+    assert summary["invalid_attempt_count"] == 1
+    assert summary["replay_verified"] is True
+    assert any(item["status"] == "interrupted" for item in progress)
+    assert len(tuple((output / "checkpoints").glob("*.json"))) == 8
