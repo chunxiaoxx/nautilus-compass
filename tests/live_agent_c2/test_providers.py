@@ -7,6 +7,7 @@ import sys
 import pytest
 
 from benchmarks.live_agent_c2.providers import (
+    OpenAICompatibleAdapter,
     ProviderCallError,
     ProviderCommand,
     SubprocessCliAdapter,
@@ -15,6 +16,8 @@ from benchmarks.live_agent_c2.providers import (
     build_kimi_command,
     parse_claude_json,
     parse_codex_jsonl,
+    parse_kimi_jsonl,
+    parse_openai_compatible_json,
 )
 from benchmarks.live_agent_c2.schema import provider_from_mapping
 
@@ -156,6 +159,9 @@ def test_real_cli_command_builders_preserve_isolation_boundaries(tmp_path):
     assert "--safe-mode" in claude.argv
     assert "--tools" in claude.argv and "" in claude.argv
     assert "--no-session-persistence" in claude.argv
+    assert '{"mcpServers":{}}' in claude.argv
+    assert "--max-budget-usd" in claude.argv
+    assert "--system-prompt" in claude.argv
     assert "prompt" not in claude.argv
 
     assert codex.stdin_text == "prompt"
@@ -180,6 +186,104 @@ def test_unverified_tool_isolation_is_pilot_only():
     )
 
     assert adapter.admissible is False
+
+
+def test_kimi_parser_extracts_answer_but_fails_closed_without_usage():
+    output = "\n".join(
+        [
+            json.dumps({"role": "assistant", "content": "42"}),
+            json.dumps(
+                {
+                    "role": "meta",
+                    "type": "session.resume_hint",
+                    "session_id": "redacted-runtime-id",
+                }
+            ),
+        ]
+    )
+    with pytest.raises(ProviderCallError, match="provider_usage_missing"):
+        parse_kimi_jsonl(output)
+
+
+def test_openai_compatible_adapter_uses_environment_secret_and_standard_usage(monkeypatch):
+    monkeypatch.setenv("ARK_API_KEY", "unit-test-secret")
+    captured = {}
+
+    def transport(url, headers, body, timeout_seconds, max_output_bytes):
+        captured.update(
+            {
+                "url": url,
+                "authorization_present": headers.get("Authorization") == "Bearer unit-test-secret",
+                "body": json.loads(body),
+                "timeout": timeout_seconds,
+                "limit": max_output_bytes,
+            }
+        )
+        return json.dumps(
+            {
+                "choices": [{"message": {"content": "42"}}],
+                "usage": {"prompt_tokens": 15, "completion_tokens": 1},
+            }
+        ).encode("utf-8")
+
+    adapter = OpenAICompatibleAdapter(
+        identity=provider_from_mapping(
+            {
+                "provider_id": "volcengine",
+                "model_id": "doubao-seed-2-0-pro-260215",
+                "adapter_kind": "openai_compatible",
+                "adapter_version": "ark-v3",
+            }
+        ),
+        base_url="https://ark.cn-beijing.volces.com/api/v3",
+        credential_env="ARK_API_KEY",
+        transport=transport,
+        max_tokens=64,
+    )
+
+    result = adapter.invoke("Return only 42.", timeout_seconds=30)
+
+    assert adapter.admissible is True
+    assert result.output_text == "42"
+    assert result.input_tokens == 15
+    assert result.output_tokens == 1
+    assert result.estimated_cost_usd is None
+    assert captured["url"].endswith("/chat/completions")
+    assert captured["authorization_present"] is True
+    assert captured["body"]["temperature"] == 0
+    assert "unit-test-secret" not in repr(adapter)
+    assert "unit-test-secret" not in repr(result)
+
+
+def test_openai_compatible_parser_and_missing_credential_fail_closed(monkeypatch):
+    parsed = parse_openai_compatible_json(
+        json.dumps(
+            {
+                "choices": [{"message": {"content": "north"}}],
+                "usage": {"input_tokens": 7, "output_tokens": 1},
+            }
+        )
+    )
+    assert parsed.output_text == "north"
+    assert parsed.input_tokens == 7
+    assert parsed.output_tokens == 1
+
+    monkeypatch.delenv("ARK_API_KEY", raising=False)
+    adapter = OpenAICompatibleAdapter(
+        identity=provider_from_mapping(
+            {
+                "provider_id": "volcengine",
+                "model_id": "doubao-seed-2-0-pro-260215",
+                "adapter_kind": "openai_compatible",
+                "adapter_version": "ark-v3",
+            }
+        ),
+        base_url="https://ark.cn-beijing.volces.com/api/v3",
+        credential_env="ARK_API_KEY",
+        transport=lambda *_args: b"{}",
+    )
+    with pytest.raises(ProviderCallError, match="provider_credential_missing"):
+        adapter.invoke("safe", timeout_seconds=10)
 
 
 def test_adapter_diagnostics_do_not_copy_environment(monkeypatch):
