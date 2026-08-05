@@ -8,10 +8,13 @@ import os
 import subprocess
 import tempfile
 import time
+import urllib.error
+import urllib.request
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Optional
+from urllib.parse import urlparse
 
 from .schema import ProviderIdentity
 
@@ -72,6 +75,7 @@ class ProviderCallResult:
 
 CommandBuilder = Callable[[str, Path], ProviderCommand]
 OutputParser = Callable[[str], ParsedProviderOutput]
+HttpTransport = Callable[[str, Mapping[str, str], bytes, float, int], bytes]
 
 
 class SubprocessCliAdapter:
@@ -142,6 +146,104 @@ class SubprocessCliAdapter:
         return command
 
 
+class OpenAICompatibleAdapter:
+    """Call one fixed HTTPS chat-completions endpoint using an environment credential."""
+
+    def __init__(
+        self,
+        *,
+        identity: ProviderIdentity,
+        base_url: str,
+        credential_env: str,
+        transport: HttpTransport = None,
+        max_tokens: int = 64,
+        max_output_bytes: int = 1024 * 1024,
+    ) -> None:
+        if not isinstance(identity, ProviderIdentity) or identity.adapter_kind != "openai_compatible":
+            raise TypeError("identity must describe an openai_compatible ProviderIdentity")
+        parsed = urlparse(base_url)
+        if parsed.scheme != "https" or not parsed.netloc or parsed.username or parsed.password:
+            raise ValueError("base_url must be an HTTPS origin without credentials")
+        if parsed.query or parsed.fragment:
+            raise ValueError("base_url must not contain query or fragment components")
+        if not isinstance(credential_env, str) or not credential_env.isidentifier():
+            raise ValueError("credential_env must be a safe environment variable name")
+        if isinstance(max_tokens, bool) or not isinstance(max_tokens, int) or not 1 <= max_tokens <= 4096:
+            raise ValueError("max_tokens must be between 1 and 4096")
+        if isinstance(max_output_bytes, bool) or not isinstance(max_output_bytes, int):
+            raise TypeError("max_output_bytes must be an integer")
+        if max_output_bytes < 256:
+            raise ValueError("max_output_bytes must be at least 256")
+        self.identity = identity
+        self.base_url = base_url.rstrip("/")
+        self.credential_env = credential_env
+        self.max_tokens = max_tokens
+        self.max_output_bytes = max_output_bytes
+        self._transport = _urllib_post if transport is None else transport
+
+    @property
+    def admissible(self) -> bool:
+        return True
+
+    def invoke(self, prompt: str, *, timeout_seconds: float) -> ProviderCallResult:
+        _validate_invocation(prompt, timeout_seconds)
+        credential = os.environ.get(self.credential_env)
+        if not credential:
+            raise ProviderCallError("provider_credential_missing")
+        body = json.dumps(
+            {
+                "model": self.identity.model_id,
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": (
+                            "You are a benchmark subject. Follow the user task and return only "
+                            "the requested value. Do not use tools."
+                        ),
+                    },
+                    {"role": "user", "content": prompt},
+                ],
+                "temperature": 0,
+                "max_tokens": self.max_tokens,
+                "stream": False,
+            },
+            ensure_ascii=False,
+            separators=(",", ":"),
+        ).encode("utf-8")
+        headers = {
+            "Authorization": f"Bearer {credential}",
+            "Content-Type": "application/json",
+        }
+        started = time.perf_counter()
+        try:
+            encoded = self._transport(
+                self.base_url + "/chat/completions",
+                headers,
+                body,
+                timeout_seconds,
+                self.max_output_bytes,
+            )
+        except ProviderCallError:
+            raise
+        except Exception as exc:
+            raise ProviderCallError("provider_transport_failed") from exc
+        latency_ms = max(0, int(round((time.perf_counter() - started) * 1000)))
+        if not isinstance(encoded, bytes) or len(encoded) > self.max_output_bytes:
+            raise ProviderCallError("provider_output_oversize")
+        try:
+            parsed = parse_openai_compatible_json(encoded.decode("utf-8"))
+        except UnicodeDecodeError as exc:
+            raise ProviderCallError("provider_output_invalid") from exc
+        return ProviderCallResult(
+            provider_identity=self.identity,
+            output_text=parsed.output_text,
+            input_tokens=parsed.input_tokens,
+            output_tokens=parsed.output_tokens,
+            estimated_cost_usd=parsed.estimated_cost_usd,
+            latency_ms=latency_ms,
+        )
+
+
 def parse_claude_json(encoded: str) -> ParsedProviderOutput:
     try:
         payload = json.loads(encoded)
@@ -184,6 +286,53 @@ def parse_codex_jsonl(encoded: str) -> ParsedProviderOutput:
     return ParsedProviderOutput(messages[-1], input_tokens, output_tokens, None)
 
 
+def parse_kimi_jsonl(encoded: str) -> ParsedProviderOutput:
+    events = _json_lines(encoded)
+    messages = [
+        event.get("content")
+        for event in events
+        if event.get("role") == "assistant" and isinstance(event.get("content"), str)
+    ]
+    if not messages:
+        raise ProviderCallError("provider_output_missing")
+    usage = next(
+        (event.get("usage") for event in reversed(events) if isinstance(event.get("usage"), Mapping)),
+        None,
+    )
+    if usage is None:
+        raise ProviderCallError("provider_usage_missing")
+    input_tokens, output_tokens = _usage_tokens(usage)
+    return ParsedProviderOutput(messages[-1], input_tokens, output_tokens, None)
+
+
+def parse_openai_compatible_json(encoded: str) -> ParsedProviderOutput:
+    try:
+        payload = json.loads(encoded)
+    except (json.JSONDecodeError, TypeError) as exc:
+        raise ProviderCallError("provider_output_invalid") from exc
+    if not isinstance(payload, Mapping):
+        raise ProviderCallError("provider_output_invalid")
+    choices = payload.get("choices")
+    usage = payload.get("usage")
+    if not isinstance(choices, list) or not choices or not isinstance(usage, Mapping):
+        reason = "provider_usage_missing" if not isinstance(usage, Mapping) else "provider_output_missing"
+        raise ProviderCallError(reason)
+    first = choices[0]
+    if not isinstance(first, Mapping) or not isinstance(first.get("message"), Mapping):
+        raise ProviderCallError("provider_output_missing")
+    content = first["message"].get("content")
+    if not isinstance(content, str) or not content.strip():
+        raise ProviderCallError("provider_output_missing")
+    input_tokens = usage.get("prompt_tokens", usage.get("input_tokens"))
+    output_tokens = usage.get("completion_tokens", usage.get("output_tokens"))
+    return ParsedProviderOutput(
+        content,
+        _token_count("input_tokens", input_tokens),
+        _token_count("output_tokens", output_tokens),
+        None,
+    )
+
+
 def build_claude_command(model_id: str, prompt: str, workspace: Path) -> ProviderCommand:
     _command_inputs(model_id, prompt, workspace)
     return ProviderCommand(
@@ -199,11 +348,18 @@ def build_claude_command(model_id: str, prompt: str, workspace: Path) -> Provide
             "",
             "--strict-mcp-config",
             "--mcp-config",
-            "{}",
+            '{"mcpServers":{}}',
             "--disable-slash-commands",
             "--no-session-persistence",
             "--permission-mode",
             "plan",
+            "--max-budget-usd",
+            "0.03",
+            "--system-prompt",
+            (
+                "You are a benchmark subject. Follow the user task and return only the "
+                "requested value. Do not use tools."
+            ),
         ),
         prompt,
     )
@@ -306,6 +462,27 @@ def _provider_environment() -> dict[str, str]:
     return environment
 
 
+def _urllib_post(
+    url: str,
+    headers: Mapping[str, str],
+    body: bytes,
+    timeout_seconds: float,
+    max_output_bytes: int,
+) -> bytes:
+    request = urllib.request.Request(url, data=body, headers=dict(headers), method="POST")
+    try:
+        with urllib.request.urlopen(request, timeout=timeout_seconds) as response:
+            encoded = response.read(max_output_bytes + 1)
+    except urllib.error.HTTPError as exc:
+        reason = "provider_http_client_error" if 400 <= exc.code < 500 else "provider_http_server_error"
+        raise ProviderCallError(reason) from exc
+    except (urllib.error.URLError, TimeoutError) as exc:
+        raise ProviderCallError("provider_transport_failed") from exc
+    if len(encoded) > max_output_bytes:
+        raise ProviderCallError("provider_output_oversize")
+    return encoded
+
+
 def _usage_tokens(usage: Mapping[str, Any]) -> tuple[int, int]:
     if "input_tokens" not in usage or "output_tokens" not in usage:
         raise ProviderCallError("provider_usage_missing")
@@ -368,6 +545,7 @@ def _command_inputs(model_id: str, prompt: str, workspace: Path) -> None:
 
 __all__ = [
     "ParsedProviderOutput",
+    "OpenAICompatibleAdapter",
     "ProviderCallError",
     "ProviderCallResult",
     "ProviderCommand",
@@ -377,4 +555,6 @@ __all__ = [
     "build_kimi_command",
     "parse_claude_json",
     "parse_codex_jsonl",
+    "parse_kimi_jsonl",
+    "parse_openai_compatible_json",
 ]
