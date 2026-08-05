@@ -5,11 +5,60 @@ from pathlib import Path
 
 import pytest
 
+import benchmarks.live_agent_c2.cli as cli_module
 from benchmarks.live_agent_c2.cli import main
+from benchmarks.live_agent_c2.providers import ProviderCallResult
+from benchmarks.live_agent_c2.schema import provider_from_mapping
 
 
 def read_json(path: Path):
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+class LiveOracleAdapter:
+    def __init__(self, provider_id: str, model_id: str, adapter_kind: str) -> None:
+        self.identity = provider_from_mapping(
+            {
+                "provider_id": provider_id,
+                "model_id": model_id,
+                "adapter_kind": adapter_kind,
+                "adapter_version": "test-v1",
+            }
+        )
+
+    @property
+    def admissible(self) -> bool:
+        return True
+
+    def invoke(self, prompt: str, *, timeout_seconds: float) -> ProviderCallResult:
+        answers = {
+            "route color is amber": "amber",
+            "direction is north": "north",
+            "codename was KESTREL-17": "KESTREL-17",
+            "label was MOSAIC-42": "MOSAIC-42",
+            "inspect, then isolate, then retry": "inspect > isolate > retry",
+            "observe, then compare, then commit": "observe > compare > commit",
+            "17 plus 25": "42",
+            "Sort C, A, B": "A,B,C",
+        }
+        output = next((value for marker, value in answers.items() if marker in prompt), "unknown")
+        return ProviderCallResult(
+            provider_identity=self.identity,
+            output_text=output,
+            input_tokens=20,
+            output_tokens=3,
+            estimated_cost_usd=0.001,
+            latency_ms=5,
+        )
+
+
+def live_oracles(_names=None):
+    return (
+        LiveOracleAdapter("minimax", "minimax-m3-1m", "cli"),
+        LiveOracleAdapter(
+            "volcengine", "doubao-seed-2-0-pro-260215", "openai_compatible"
+        ),
+    )
 
 
 def test_dry_run_is_read_only_and_reports_frozen_schedule(tmp_path, capsys):
@@ -91,3 +140,79 @@ def test_local_raw_run_directory_is_gitignored():
     root = Path(__file__).resolve().parents[2]
     ignored = (root / ".gitignore").read_text(encoding="utf-8")
     assert ".c2_runs/" in ignored
+
+
+def test_live_probe_is_metered_deidentified_and_does_not_write_raw(monkeypatch, tmp_path, capsys):
+    monkeypatch.setattr(cli_module, "build_live_adapters", live_oracles)
+    output = tmp_path / "probe"
+
+    assert main(["--mode", "probe", "--output", str(output)]) == 0
+
+    report = json.loads(capsys.readouterr().out)
+    assert report["mode"] == "probe"
+    assert report["admissible_provider_count"] == 2
+    assert report["improvement_claim"] is False
+    assert all(item["verified"] for item in report["providers"])
+    assert all("output_text" not in item for item in report["providers"])
+    assert not (output / "raw").exists()
+    assert read_json(output / "provider_probe.json") == report
+
+
+def test_live_pilot_covers_each_query_class_per_provider_and_replays(
+    monkeypatch, tmp_path, capsys
+):
+    monkeypatch.setattr(cli_module, "build_live_adapters", live_oracles)
+    output = tmp_path / "pilot"
+
+    assert (
+        main(
+            [
+                "--mode",
+                "pilot",
+                "--output",
+                str(output),
+                "--bootstrap-samples",
+                "200",
+            ]
+        )
+        == 0
+    )
+    capsys.readouterr()
+
+    summary = read_json(output / "summary.json")
+    assert summary["evidence_tier"] == "live"
+    assert summary["total_pairs"] == 8
+    assert summary["provider_count"] == 2
+    assert len(summary["by_provider_query_class"]) == 8
+    assert summary["candidate_state"] == "candidate_only"
+    assert summary["improvement_claim"] is False
+    assert summary["promote_recommended"] is False
+    assert summary["replay_verified"] is True
+
+
+def test_formal_mode_is_fixed_to_64_pairs_and_rejects_shape_overrides(
+    monkeypatch, tmp_path
+):
+    monkeypatch.setattr(cli_module, "build_live_adapters", live_oracles)
+    with pytest.raises(ValueError, match="formal mode fixes replicas at 4"):
+        main(
+            [
+                "--mode",
+                "formal",
+                "--output",
+                str(tmp_path / "formal"),
+                "--replicas",
+                "1",
+            ]
+        )
+    with pytest.raises(ValueError, match="limit-pairs"):
+        main(
+            [
+                "--mode",
+                "formal",
+                "--output",
+                str(tmp_path / "formal"),
+                "--limit-pairs",
+                "8",
+            ]
+        )

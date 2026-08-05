@@ -6,7 +6,7 @@ import argparse
 import json
 from dataclasses import asdict
 from pathlib import Path
-from typing import Optional, Sequence
+from typing import Callable, Optional, Sequence
 
 from benchmarks.poi_gate2.canonical import hash_json
 from gep.flywheel_log import FlywheelEventLog
@@ -26,17 +26,24 @@ from .metrics import (
     outcome_to_mapping,
 )
 from .policy import evaluate_c2_policy
-from .providers import ProviderCallResult
-from .runner import PairExecution, run_pair, schedule_pairs
+from .providers import (
+    LIVE_PROVIDER_NAMES,
+    ProviderCallError,
+    ProviderCallResult,
+    build_live_adapters,
+)
+from .runner import PairAssignment, PairExecution, ProviderAdapter, run_pair, schedule_pairs
 from .schema import LiveTask, ProviderIdentity, provider_from_mapping
 from .task_pack import C2TaskPack, read_task_pack
-from .verifier import verify_output
+from .verifier import response_hash, verify_output
 
 
 ACTION_AGENT_ID = 4101
 VERIFIER_AGENT_ID = 4201
 RUN_MANIFEST_SCHEMA = "compass.live_agent_c2.run_manifest.v1"
 FAKE_PROVIDERS = ("fake-alpha", "fake-beta")
+ALL_PROVIDER_NAMES = (*FAKE_PROVIDERS, *LIVE_PROVIDER_NAMES)
+AdapterResolver = Callable[[PairAssignment, LiveTask], ProviderAdapter]
 
 
 class _SyntheticAdapter:
@@ -59,12 +66,17 @@ class _SyntheticAdapter:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="python -m benchmarks.live_agent_c2")
-    parser.add_argument("--mode", choices=("dry-run", "fake", "replay"), required=True)
+    parser.add_argument(
+        "--mode",
+        choices=("dry-run", "fake", "probe", "pilot", "formal", "replay"),
+        required=True,
+    )
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--provider", action="append", choices=FAKE_PROVIDERS)
-    parser.add_argument("--replicas", type=int, default=1)
+    parser.add_argument("--provider", action="append", choices=ALL_PROVIDER_NAMES)
+    parser.add_argument("--replicas", type=int)
     parser.add_argument("--limit-pairs", type=int)
     parser.add_argument("--bootstrap-samples", type=int, default=1000)
+    parser.add_argument("--timeout-seconds", type=float, default=90.0)
     parser.add_argument("--resume", action="store_true")
     return parser
 
@@ -77,8 +89,24 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         return 0
     _validate_args(args)
     pack = read_task_pack()
-    providers = _fake_provider_identities(args.provider)
-    assignments = schedule_pairs(pack, providers, replicas=args.replicas)
+    if args.mode in {"probe", "pilot", "formal"}:
+        adapters = build_live_adapters(args.provider)
+        if len(adapters) < 2:
+            raise ValueError("live runs require at least two admissible providers")
+        if any(not adapter.admissible for adapter in adapters):
+            raise ValueError("live runs require admissible provider isolation")
+        if args.mode == "probe":
+            report = _probe_live(args.output, adapters, args.timeout_seconds)
+            _print_json(report)
+            return 0 if report["admissible_provider_count"] == len(adapters) else 2
+        providers = tuple(adapter.identity for adapter in adapters)
+    else:
+        providers = _fake_provider_identities(args.provider)
+        adapters = ()
+    replicas = _effective_replicas(args)
+    assignments = schedule_pairs(pack, providers, replicas=replicas)
+    if args.mode == "pilot":
+        assignments = _pilot_assignments(assignments, pack)
     if args.limit_pairs is not None:
         assignments = assignments[: args.limit_pairs]
     if args.mode == "dry-run":
@@ -94,7 +122,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             }
         )
         return 0
-    config = _run_config(args, pack, providers, len(assignments))
+    config = _run_config(args, pack, providers, len(assignments), replicas)
     if args.output.exists() and any(args.output.iterdir()):
         if not args.resume:
             raise ValueError("output directory must be absent or empty unless --resume is used")
@@ -104,7 +132,20 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         report = replay_run(args.output)
         _print_json(report)
         return 0
-    report = _run_synthetic(args.output, pack, assignments, config, args.bootstrap_samples)
+    if args.mode in {"pilot", "formal"}:
+        report = _run_live(
+            args.output,
+            pack,
+            assignments,
+            config,
+            args.bootstrap_samples,
+            adapters,
+            args.timeout_seconds,
+        )
+    else:
+        report = _run_synthetic(
+            args.output, pack, assignments, config, args.bootstrap_samples
+        )
     _print_json(report)
     return 0
 
@@ -155,6 +196,49 @@ def replay_run(output: Path) -> dict[str, object]:
     return report
 
 
+def _probe_live(output: Path, adapters, timeout_seconds: float) -> dict[str, object]:
+    if output.exists() and any(output.iterdir()):
+        raise ValueError("output directory must be absent or empty")
+    output.mkdir(parents=True, exist_ok=True)
+    providers = []
+    for adapter in adapters:
+        try:
+            result = adapter.invoke(
+                "Compute 17 plus 25 and return only the integer.",
+                timeout_seconds=timeout_seconds,
+            )
+            verified = result.output_text.strip() == "42"
+            providers.append(
+                {
+                    "cost_known": result.estimated_cost_usd is not None,
+                    "estimated_cost_usd": result.estimated_cost_usd,
+                    "input_tokens": result.input_tokens,
+                    "latency_ms": result.latency_ms,
+                    "output_tokens": result.output_tokens,
+                    "provider_key": result.provider_identity.provider_key,
+                    "response_hash": response_hash(result.output_text),
+                    "verified": verified,
+                }
+            )
+        except ProviderCallError as error:
+            providers.append(
+                {
+                    "error_code": error.reason_code,
+                    "provider_key": adapter.identity.provider_key,
+                    "verified": False,
+                }
+            )
+    report = {
+        "admissible_provider_count": sum(item["verified"] for item in providers),
+        "improvement_claim": False,
+        "mode": "probe",
+        "providers": providers,
+        "runtime_recommendation": "flat",
+    }
+    _write_json(output / "provider_probe.json", report)
+    return report
+
+
 def _run_synthetic(
     output: Path,
     pack: C2TaskPack,
@@ -164,17 +248,73 @@ def _run_synthetic(
 ) -> dict[str, object]:
     from nacl.signing import SigningKey
 
+    signing_key = SigningKey(bytes(range(32)))
+    return _run_experiment(
+        output,
+        pack,
+        assignments,
+        config,
+        bootstrap_samples,
+        evidence_tier="synthetic",
+        signing_key=signing_key,
+        adapter_resolver=lambda assignment, task: _SyntheticAdapter(
+            assignment.provider_identity, task
+        ),
+        timeout_seconds=10,
+    )
+
+
+def _run_live(
+    output: Path,
+    pack: C2TaskPack,
+    assignments: Sequence[PairAssignment],
+    config: dict[str, object],
+    bootstrap_samples: int,
+    adapters,
+    timeout_seconds: float,
+) -> dict[str, object]:
+    from nacl.signing import SigningKey
+
+    by_provider = {adapter.identity.provider_key: adapter for adapter in adapters}
+    if len(by_provider) != len(adapters):
+        raise ValueError("live adapters must have unique provider identities")
+    return _run_experiment(
+        output,
+        pack,
+        assignments,
+        config,
+        bootstrap_samples,
+        evidence_tier="live",
+        signing_key=SigningKey.generate(),
+        adapter_resolver=lambda assignment, _task: by_provider[
+            assignment.provider_identity.provider_key
+        ],
+        timeout_seconds=timeout_seconds,
+    )
+
+
+def _run_experiment(
+    output: Path,
+    pack: C2TaskPack,
+    assignments: Sequence[PairAssignment],
+    config: dict[str, object],
+    bootstrap_samples: int,
+    *,
+    evidence_tier: str,
+    signing_key,
+    adapter_resolver: AdapterResolver,
+    timeout_seconds: float,
+) -> dict[str, object]:
     output.mkdir(parents=True, exist_ok=True)
     raw_directory = output / "raw"
     raw_directory.mkdir()
-    signing_key = SigningKey(bytes(range(32)))
     (output / ".verifier_signing_key").write_text(
         signing_key.encode().hex(), encoding="ascii"
     )
     manifest = {
         **config,
         "schema_version": RUN_MANIFEST_SCHEMA,
-        "evidence_tier": "synthetic",
+        "evidence_tier": evidence_tier,
         "verifier_public_key": signing_key.verify_key.encode().hex(),
     }
     _write_json(output / "run_manifest.json", manifest)
@@ -190,8 +330,8 @@ def _run_synthetic(
             execution = run_pair(
                 assignment,
                 task,
-                _SyntheticAdapter(assignment.provider_identity, task),
-                timeout_seconds=10,
+                adapter_resolver(assignment, task),
+                timeout_seconds=timeout_seconds,
                 max_retries=1,
             )
             invalid_attempt_count += len(execution.invalid_attempts)
@@ -209,7 +349,7 @@ def _run_synthetic(
     finally:
         event_log.close()
     if not outcomes:
-        raise ValueError("synthetic run produced no complete pairs")
+        raise ValueError("experiment produced no complete pairs")
     _write_jsonl(output / "bundles.jsonl", (bundle_to_mapping(item) for item in bundles))
     _write_jsonl(output / "outcomes.jsonl", (outcome_to_mapping(item) for item in outcomes))
     metrics = compute_metrics(
@@ -219,7 +359,7 @@ def _run_synthetic(
         invalid_attempt_count=invalid_attempt_count,
         retry_count=retry_count,
     )
-    summary = _summary(metrics, evidence_tier="synthetic", task_pack_hash=pack.pack_hash)
+    summary = _summary(metrics, evidence_tier=evidence_tier, task_pack_hash=pack.pack_hash)
     _write_json(output / "summary.json", summary)
     return replay_run(output)
 
@@ -326,17 +466,45 @@ def _run_config(
     pack: C2TaskPack,
     providers: tuple[ProviderIdentity, ...],
     scheduled_pairs: int,
+    replicas: int,
 ) -> dict[str, object]:
     values = {
         "bootstrap_samples": args.bootstrap_samples,
         "mode": args.mode,
         "providers": [provider.provider_key for provider in providers],
-        "replicas": args.replicas,
+        "replicas": replicas,
         "scheduled_pairs": scheduled_pairs,
         "seed": pack.seed,
         "task_pack_hash": pack.pack_hash,
     }
     return {**values, "config_hash": hash_json(values)}
+
+
+def _pilot_assignments(
+    assignments: Sequence[PairAssignment], pack: C2TaskPack
+) -> tuple[PairAssignment, ...]:
+    query_class_by_task = {task.task_id: task.query_class for task in pack.tasks}
+    selected = []
+    seen = set()
+    for assignment in assignments:
+        coordinate = (
+            assignment.provider_identity.provider_key,
+            query_class_by_task[assignment.task_id],
+        )
+        if coordinate in seen:
+            continue
+        seen.add(coordinate)
+        selected.append(assignment)
+    expected = len({item.provider_identity.provider_key for item in assignments}) * 4
+    if len(selected) != expected:
+        raise ValueError("pilot schedule must cover every query class per provider")
+    return tuple(selected)
+
+
+def _effective_replicas(args) -> int:
+    if args.mode == "formal":
+        return 4
+    return 1 if args.replicas is None else args.replicas
 
 
 def _fake_provider_identities(names) -> tuple[ProviderIdentity, ...]:
@@ -365,12 +533,26 @@ def _event_log(path: Path) -> FlywheelEventLog:
 
 
 def _validate_args(args) -> None:
-    if args.replicas <= 0:
+    if args.replicas is not None and args.replicas <= 0:
         raise ValueError("replicas must be positive")
     if args.limit_pairs is not None and args.limit_pairs <= 0:
         raise ValueError("limit_pairs must be positive")
     if args.bootstrap_samples < 100:
         raise ValueError("bootstrap_samples must be at least 100")
+    if args.timeout_seconds <= 0:
+        raise ValueError("timeout_seconds must be positive")
+    if args.mode == "pilot" and args.replicas not in (None, 1):
+        raise ValueError("pilot mode fixes replicas at 1")
+    if args.mode == "formal" and args.replicas not in (None, 4):
+        raise ValueError("formal mode fixes replicas at 4")
+    if args.mode in {"pilot", "formal", "probe"} and args.limit_pairs is not None:
+        raise ValueError("--limit-pairs is unavailable for live modes")
+    if args.mode in {"pilot", "formal", "probe"} and args.provider is not None:
+        if any(provider not in LIVE_PROVIDER_NAMES for provider in args.provider):
+            raise ValueError("live modes accept only live providers")
+    if args.mode in {"fake", "dry-run"} and args.provider is not None:
+        if any(provider not in FAKE_PROVIDERS for provider in args.provider):
+            raise ValueError("fake modes accept only fake providers")
     if args.resume and args.mode != "fake":
         raise ValueError("--resume is supported only for fake mode")
 
