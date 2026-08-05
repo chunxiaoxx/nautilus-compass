@@ -10,7 +10,7 @@ import tempfile
 import time
 import urllib.error
 import urllib.request
-from collections.abc import Callable, Mapping
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Optional
@@ -21,6 +21,8 @@ from .schema import ProviderIdentity
 
 _ADMISSIBLE_ISOLATION = frozenset({"disabled", "read_only"})
 _ALL_ISOLATION = frozenset({"disabled", "read_only", "unverified"})
+LIVE_PROVIDER_NAMES = ("minimax-claude", "volcengine-ark")
+_MINIMAX_COMMAND_MODEL = "MiniMax-M3[1m]"
 
 
 class ProviderCallError(RuntimeError):
@@ -53,6 +55,7 @@ class ParsedProviderOutput:
     input_tokens: int
     output_tokens: int
     estimated_cost_usd: Optional[float]
+    reported_model_id: Optional[str] = None
 
     def __post_init__(self) -> None:
         if not isinstance(self.output_text, str) or not self.output_text.strip():
@@ -61,6 +64,10 @@ class ParsedProviderOutput:
         _token_count("output_tokens", self.output_tokens)
         if self.estimated_cost_usd is not None:
             _cost(self.estimated_cost_usd)
+        if self.reported_model_id is not None and (
+            not isinstance(self.reported_model_id, str) or not self.reported_model_id.strip()
+        ):
+            raise ProviderCallError("provider_identity_missing")
 
 
 @dataclass(frozen=True, slots=True)
@@ -234,6 +241,8 @@ class OpenAICompatibleAdapter:
             parsed = parse_openai_compatible_json(encoded.decode("utf-8"))
         except UnicodeDecodeError as exc:
             raise ProviderCallError("provider_output_invalid") from exc
+        if parsed.reported_model_id != self.identity.model_id:
+            raise ProviderCallError("provider_identity_mismatch")
         return ProviderCallResult(
             provider_identity=self.identity,
             output_text=parsed.output_text,
@@ -262,7 +271,24 @@ def parse_claude_json(encoded: str) -> ParsedProviderOutput:
     cost = payload.get("total_cost_usd")
     if cost is not None:
         cost = _cost(cost)
-    return ParsedProviderOutput(output_text, input_tokens, output_tokens, cost)
+    model_usage = payload.get("modelUsage")
+    reported_model_id = None
+    if isinstance(model_usage, Mapping) and len(model_usage) == 1:
+        reported_model_id = next(iter(model_usage))
+    return ParsedProviderOutput(
+        output_text,
+        input_tokens,
+        output_tokens,
+        cost,
+        reported_model_id,
+    )
+
+
+def parse_minimax_claude_json(encoded: str) -> ParsedProviderOutput:
+    parsed = parse_claude_json(encoded)
+    if parsed.reported_model_id != _MINIMAX_COMMAND_MODEL:
+        raise ProviderCallError("provider_identity_mismatch")
+    return parsed
 
 
 def parse_codex_jsonl(encoded: str) -> ParsedProviderOutput:
@@ -314,6 +340,9 @@ def parse_openai_compatible_json(encoded: str) -> ParsedProviderOutput:
         raise ProviderCallError("provider_output_invalid")
     choices = payload.get("choices")
     usage = payload.get("usage")
+    reported_model_id = payload.get("model")
+    if not isinstance(reported_model_id, str) or not reported_model_id.strip():
+        raise ProviderCallError("provider_identity_missing")
     if not isinstance(choices, list) or not choices or not isinstance(usage, Mapping):
         reason = "provider_usage_missing" if not isinstance(usage, Mapping) else "provider_output_missing"
         raise ProviderCallError(reason)
@@ -330,7 +359,52 @@ def parse_openai_compatible_json(encoded: str) -> ParsedProviderOutput:
         _token_count("input_tokens", input_tokens),
         _token_count("output_tokens", output_tokens),
         None,
+        reported_model_id,
     )
+
+
+def build_live_adapters(
+    names: Optional[Sequence[str]] = None,
+) -> tuple[SubprocessCliAdapter | OpenAICompatibleAdapter, ...]:
+    selected = LIVE_PROVIDER_NAMES if names is None else tuple(names)
+    if len(selected) != len(set(selected)):
+        raise ValueError("providers must not contain duplicates")
+    unknown = set(selected) - set(LIVE_PROVIDER_NAMES)
+    if unknown:
+        raise ValueError(f"unsupported live provider: {', '.join(sorted(unknown))}")
+    return tuple(_live_adapter(name) for name in selected)
+
+
+def _live_adapter(name: str) -> SubprocessCliAdapter | OpenAICompatibleAdapter:
+    if name == "minimax-claude":
+        identity = ProviderIdentity(
+            provider_id="minimax",
+            model_id="minimax-m3-1m",
+            adapter_kind="cli",
+            adapter_version="2.1.220",
+        )
+        return SubprocessCliAdapter(
+            identity=identity,
+            command_builder=lambda prompt, workspace: build_claude_command(
+                _MINIMAX_COMMAND_MODEL, prompt, workspace
+            ),
+            output_parser=parse_minimax_claude_json,
+            tool_isolation="disabled",
+        )
+    if name == "volcengine-ark":
+        identity = ProviderIdentity(
+            provider_id="volcengine",
+            model_id="doubao-seed-2-0-pro-260215",
+            adapter_kind="openai_compatible",
+            adapter_version="ark-v3",
+        )
+        return OpenAICompatibleAdapter(
+            identity=identity,
+            base_url="https://ark.cn-beijing.volces.com/api/v3",
+            credential_env="ARK_API_KEY",
+            max_tokens=64,
+        )
+    raise ValueError("unsupported live provider")
 
 
 def build_claude_command(model_id: str, prompt: str, workspace: Path) -> ProviderCommand:
@@ -544,6 +618,7 @@ def _command_inputs(model_id: str, prompt: str, workspace: Path) -> None:
 
 
 __all__ = [
+    "LIVE_PROVIDER_NAMES",
     "ParsedProviderOutput",
     "OpenAICompatibleAdapter",
     "ProviderCallError",
@@ -553,8 +628,10 @@ __all__ = [
     "build_claude_command",
     "build_codex_command",
     "build_kimi_command",
+    "build_live_adapters",
     "parse_claude_json",
     "parse_codex_jsonl",
     "parse_kimi_jsonl",
+    "parse_minimax_claude_json",
     "parse_openai_compatible_json",
 ]
