@@ -1,5 +1,6 @@
 .cache/
 .cache.*/
+.c2_runs/
 __pycache__/
 *.pyc
 *.pkl

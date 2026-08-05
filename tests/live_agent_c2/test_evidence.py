@@ -7,6 +7,8 @@ import pytest
 from nacl.signing import SigningKey
 
 from benchmarks.live_agent_c2.evidence import (
+    bundle_from_mapping,
+    bundle_to_mapping,
     project_episode,
     verify_episode_bundle,
 )
@@ -138,6 +140,11 @@ def test_projection_is_idempotent_and_replay_detects_signature_tampering(tmp_pat
 
         assert first.bundle_hash == second.bundle_hash
         assert log.count_events() == 2
+        assert bundle_from_mapping(bundle_to_mapping(first)) == first
+        invalid = bundle_to_mapping(first)
+        invalid["raw_output"] = "forbidden"
+        with pytest.raises(TypeError, match="unknown EpisodeEvidenceBundle fields"):
+            bundle_from_mapping(invalid)
         tampered = replace(first, verdict_signature="0" * 128)
         with pytest.raises(ValueError, match="signature"):
             verify_episode_bundle(tampered, event_log=log)

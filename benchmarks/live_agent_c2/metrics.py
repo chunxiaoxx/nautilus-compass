@@ -7,7 +7,7 @@ import random
 import re
 from collections import defaultdict
 from collections.abc import Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, fields
 from types import MappingProxyType
 from typing import Optional
 
@@ -171,6 +171,25 @@ def compute_metrics(
     )
 
 
+def outcome_to_mapping(outcome: PairOutcome) -> dict[str, object]:
+    if not isinstance(outcome, PairOutcome):
+        raise TypeError("outcome must be a PairOutcome")
+    return _outcome_mapping(outcome)
+
+
+def outcome_from_mapping(raw: Mapping[str, object]) -> PairOutcome:
+    if not isinstance(raw, Mapping):
+        raise TypeError("PairOutcome must be a mapping")
+    expected = tuple(item.name for item in fields(PairOutcome))
+    unknown = set(raw) - set(expected)
+    missing = set(expected) - set(raw)
+    if unknown:
+        raise TypeError(f"unknown PairOutcome fields: {', '.join(sorted(unknown))}")
+    if missing:
+        raise TypeError(f"missing PairOutcome fields: {', '.join(sorted(missing))}")
+    return PairOutcome(**{name: raw[name] for name in expected})
+
+
 def _metric_slice(
     rows: tuple[PairOutcome, ...],
     *,
@@ -314,4 +333,11 @@ def _hash(name: str, value: object) -> None:
         raise ValueError(f"{name} must be a lowercase prefixed SHA-256 hash")
 
 
-__all__ = ["C2Metrics", "MetricSlice", "PairOutcome", "compute_metrics"]
+__all__ = [
+    "C2Metrics",
+    "MetricSlice",
+    "PairOutcome",
+    "compute_metrics",
+    "outcome_from_mapping",
+    "outcome_to_mapping",
+]
