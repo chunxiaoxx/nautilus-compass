@@ -1,0 +1,98 @@
+{
+  "schema_version": "compass.live_agent_c2.task_pack.v1",
+  "pack_id": "c2_pack_core_v1",
+  "seed": 2486,
+  "protected_query_classes": [
+    "protected_noop"
+  ],
+  "tasks": [
+    {
+      "task_id": "c2_task_conflict_01",
+      "query_class": "conflict_resolution",
+      "route_key": "compass/c2/conflict",
+      "action_kind": "resolve",
+      "prompt": "Return only the active route color for the fictional Atlas queue.",
+      "memory_text": "Independently verified active rule: the Atlas queue route color is amber; older blue notes are stale.",
+      "expected_answer": "amber",
+      "verifier_kind": "exact_text",
+      "protected": false
+    },
+    {
+      "task_id": "c2_task_conflict_02",
+      "query_class": "conflict_resolution",
+      "route_key": "compass/c2/conflict",
+      "action_kind": "resolve",
+      "prompt": "Return only the active handoff direction for the fictional Cedar queue.",
+      "memory_text": "Independently verified active rule: the Cedar queue handoff direction is north; the previous east rule is retired.",
+      "expected_answer": "north",
+      "verifier_kind": "exact_text",
+      "protected": false
+    },
+    {
+      "task_id": "c2_task_episodic_01",
+      "query_class": "episodic_lookup",
+      "route_key": "compass/c2/episodic",
+      "action_kind": "recall",
+      "prompt": "What temporary codename was assigned to the fictional run? Return the codename only.",
+      "memory_text": "Verified run note: the temporary codename was KESTREL-17.",
+      "expected_answer": "kestrel-17",
+      "verifier_kind": "exact_text",
+      "protected": false
+    },
+    {
+      "task_id": "c2_task_episodic_02",
+      "query_class": "episodic_lookup",
+      "route_key": "compass/c2/episodic",
+      "action_kind": "recall",
+      "prompt": "What temporary label was assigned to the fictional sample? Return the label only.",
+      "memory_text": "Verified sample note: the temporary label was MOSAIC-42.",
+      "expected_answer": "mosaic-42",
+      "verifier_kind": "exact_text",
+      "protected": false
+    },
+    {
+      "task_id": "c2_task_procedural_01",
+      "query_class": "procedural_route",
+      "route_key": "compass/c2/procedure",
+      "action_kind": "route",
+      "prompt": "Return the three-stage fictional Quill recovery route separated by greater-than signs.",
+      "memory_text": "Verified Quill recovery route: inspect, then isolate, then retry.",
+      "expected_answer": "inspect > isolate > retry",
+      "verifier_kind": "ordered_steps",
+      "protected": false
+    },
+    {
+      "task_id": "c2_task_procedural_02",
+      "query_class": "procedural_route",
+      "route_key": "compass/c2/procedure",
+      "action_kind": "route",
+      "prompt": "Return the three-stage fictional Birch review route separated by greater-than signs.",
+      "memory_text": "Verified Birch review route: observe, then compare, then commit.",
+      "expected_answer": "observe > compare > commit",
+      "verifier_kind": "ordered_steps",
+      "protected": false
+    },
+    {
+      "task_id": "c2_task_protected_01",
+      "query_class": "protected_noop",
+      "route_key": "compass/c2/protected",
+      "action_kind": "answer",
+      "prompt": "Compute 17 plus 25 and return only the integer.",
+      "memory_text": null,
+      "expected_answer": "42",
+      "verifier_kind": "exact_text",
+      "protected": true
+    },
+    {
+      "task_id": "c2_task_protected_02",
+      "query_class": "protected_noop",
+      "route_key": "compass/c2/protected",
+      "action_kind": "answer",
+      "prompt": "Sort C, A, B alphabetically and return the letters separated by commas.",
+      "memory_text": null,
+      "expected_answer": "A,B,C",
+      "verifier_kind": "exact_text",
+      "protected": true
+    }
+  ]
+}
