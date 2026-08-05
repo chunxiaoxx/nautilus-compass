@@ -40,18 +40,20 @@ def observation(
     *,
     reward: float,
     result_hash: str,
+    episode_event_hash: str | None = None,
     view_id: str = "lkr0_view_alpha_aaaaaaaaaaaa",
-    verdict_result_hash: str | None = None,
+    verdict_episode_event_hash: str | None = None,
     verdict_outcome: str | None = None,
     signature: str | None = None,
     signer_key_id: str = R0_SIGNER_KEY_ID,
     verifier_policy_hash: str = R0_VERIFIER_POLICY_HASH,
 ) -> UtilityObservation:
     outcome = verdict_outcome or ("success" if reward == 1.0 else "partial")
-    signed_result_hash = verdict_result_hash or result_hash
+    bound_episode_event_hash = episode_event_hash or result_hash
+    signed_episode_event_hash = verdict_episode_event_hash or bound_episode_event_hash
     verdict = VerdictPacket(
         episode_id="utility_result",
-        episode_event_hash=signed_result_hash,
+        episode_event_hash=signed_episode_event_hash,
         outcome=outcome,  # type: ignore[arg-type]
         verifier_kind="software_test",
         verifier_version="lkr0-verifier-v1",
@@ -61,12 +63,13 @@ def observation(
     binding = SignedVerdictBinding(
         verdict=verdict,
         signer_key_id=signer_key_id,
-        signature=signature or SIGNATURES[(signed_result_hash, outcome)],
+        signature=signature or SIGNATURES[(signed_episode_event_hash, outcome)],
     )
     return UtilityObservation(
         context_key=("compass/s4/provider_boundary", "project_recall", "repair"),
         view_id=view_id,
         reward=reward,
+        episode_event_hash=bound_episode_event_hash,
         result_hash=result_hash,
         signed_verdict=binding,
     )
@@ -109,9 +112,41 @@ def test_duplicate_result_hash_with_conflicting_content_is_rejected() -> None:
         )
 
 
-def test_verdict_must_bind_exact_result_hash() -> None:
-    with pytest.raises(ValueError, match="verdict.*result_hash"):
-        observation(reward=1.0, result_hash=HASH_A, verdict_result_hash=HASH_B)
+def test_verdict_binds_episode_event_independently_from_result() -> None:
+    item = observation(
+        reward=1.0,
+        episode_event_hash=HASH_A,
+        result_hash=HASH_C,
+    )
+
+    assert item.episode_event_hash == HASH_A
+    assert item.result_hash == HASH_C
+
+
+def test_verdict_must_bind_exact_episode_event_hash() -> None:
+    with pytest.raises(ValueError, match="verdict.*episode_event_hash"):
+        observation(
+            reward=1.0,
+            episode_event_hash=HASH_A,
+            result_hash=HASH_C,
+            verdict_episode_event_hash=HASH_B,
+        )
+
+
+def test_episode_event_hash_and_result_hash_are_validated_separately() -> None:
+    with pytest.raises(ValueError, match="episode_event_hash"):
+        observation(
+            reward=1.0,
+            episode_event_hash="not-a-hash",
+            result_hash=HASH_C,
+            signature="0" * 128,
+        )
+    with pytest.raises(ValueError, match="result_hash"):
+        observation(
+            reward=1.0,
+            episode_event_hash=HASH_A,
+            result_hash="not-a-hash",
+        )
 
 
 def test_reward_must_match_verdict_and_be_finite() -> None:

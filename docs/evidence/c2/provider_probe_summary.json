@@ -1,0 +1,38 @@
+{
+  "admissible_provider_count": 2,
+  "credential_source": "environment_only",
+  "evidence_tier": "live_probe",
+  "fail_closed_observations": [
+    "provider_executable_missing",
+    "provider_identity_mismatch"
+  ],
+  "formal_evidence": false,
+  "improvement_claim": false,
+  "observed_on": "2026-08-04",
+  "probe_attempt_count": 3,
+  "providers": [
+    {
+      "cost_known": true,
+      "estimated_cost_usd": 0.009236000000000001,
+      "input_tokens": 973,
+      "latency_ms": 8572,
+      "output_tokens": 171,
+      "provider_key": "custom-anthropic-proxy/glm-5.2-1m",
+      "response_hash": "sha256:eea3259fc9f18a47ab986f859422277752b70cbb41a55f8b5523582129080e97",
+      "verified": true
+    },
+    {
+      "cost_known": false,
+      "estimated_cost_usd": null,
+      "input_tokens": 73,
+      "latency_ms": 3451,
+      "output_tokens": 57,
+      "provider_key": "volcengine/doubao-seed-2-0-pro-260215",
+      "response_hash": "sha256:eea3259fc9f18a47ab986f859422277752b70cbb41a55f8b5523582129080e97",
+      "verified": true
+    }
+  ],
+  "raw_response_present": false,
+  "runtime_recommendation": "flat",
+  "schema_version": "compass.live_agent_c2.provider_probe_summary.v1"
+}
