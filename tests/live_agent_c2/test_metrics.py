@@ -4,7 +4,12 @@ from dataclasses import replace
 
 import pytest
 
-from benchmarks.live_agent_c2.metrics import PairOutcome, compute_metrics
+from benchmarks.live_agent_c2.metrics import (
+    PairOutcome,
+    compute_metrics,
+    outcome_from_mapping,
+    outcome_to_mapping,
+)
 
 
 HASH_A = "sha256:" + "a" * 64
@@ -109,6 +114,11 @@ def test_metrics_keep_replay_and_poison_failures_visible():
 
 def test_metrics_reject_duplicate_pairs_and_invalid_types():
     row = outcome(0)
+    assert outcome_from_mapping(outcome_to_mapping(row)) == row
+    unknown = outcome_to_mapping(row)
+    unknown["raw_output"] = "forbidden"
+    with pytest.raises(TypeError, match="unknown PairOutcome fields"):
+        outcome_from_mapping(unknown)
     with pytest.raises(ValueError, match="unique pair_id"):
         compute_metrics((row, row), seed=1, bootstrap_samples=200)
     with pytest.raises(TypeError, match="PairOutcome"):

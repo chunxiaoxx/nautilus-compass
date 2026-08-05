@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -56,6 +57,7 @@ class PoiSignal:
 class EpisodeEvidenceBundle:
     task_hash: str
     task_pack_hash: str
+    attempt_id: str
     attempt_hash: str
     selected_view_ids: tuple[str, ...]
     packet: ExperiencePacket
@@ -111,6 +113,7 @@ def project_episode(
     bundle = EpisodeEvidenceBundle(
         task_hash=task.task_hash,
         task_pack_hash=task_pack_hash,
+        attempt_id=arm.attempt.attempt_id,
         attempt_hash=arm.attempt.attempt_hash,
         selected_view_ids=arm.selected_view_ids,
         packet=packet,
@@ -157,6 +160,99 @@ def verify_episode_bundle(
     if bundle.bundle_hash != _bundle_hash(bundle):
         raise ValueError("bundle hash replay mismatch")
     return True
+
+
+def bundle_to_mapping(bundle: EpisodeEvidenceBundle) -> dict[str, Any]:
+    if not isinstance(bundle, EpisodeEvidenceBundle):
+        raise TypeError("bundle must be an EpisodeEvidenceBundle")
+    return {
+        "task_hash": bundle.task_hash,
+        "task_pack_hash": bundle.task_pack_hash,
+        "attempt_id": bundle.attempt_id,
+        "attempt_hash": bundle.attempt_hash,
+        "selected_view_ids": list(bundle.selected_view_ids),
+        "packet": to_frontmatter(bundle.packet),
+        "episode_event": bundle.episode_event.to_mapping(),
+        "verification": {
+            "success": bundle.verification.success,
+            "verifier_code": bundle.verification.verifier_code,
+            "response_hash": bundle.verification.response_hash,
+            "normalized_answer_hash": bundle.verification.normalized_answer_hash,
+            "verifier_policy_hash": bundle.verification.verifier_policy_hash,
+            "evidence_hash": bundle.verification.evidence_hash,
+        },
+        "verdict": verdict_to_payload(bundle.verdict),
+        "verdict_event": bundle.verdict_event.to_mapping(),
+        "verifier_public_key": bundle.verifier_public_key,
+        "verdict_signature": bundle.verdict_signature,
+        "poi_signal": {
+            "reward_delta": bundle.poi_signal.reward_delta,
+            "impact": bundle.poi_signal.impact,
+            "verdict_hash": bundle.poi_signal.verdict_hash,
+            "signal_hash": bundle.poi_signal.signal_hash,
+        },
+        "bundle_hash": bundle.bundle_hash,
+    }
+
+
+def bundle_from_mapping(raw: Mapping[str, Any]) -> EpisodeEvidenceBundle:
+    expected = {
+        "task_hash",
+        "task_pack_hash",
+        "attempt_id",
+        "attempt_hash",
+        "selected_view_ids",
+        "packet",
+        "episode_event",
+        "verification",
+        "verdict",
+        "verdict_event",
+        "verifier_public_key",
+        "verdict_signature",
+        "poi_signal",
+        "bundle_hash",
+    }
+    values = _exact_mapping("EpisodeEvidenceBundle", raw, expected)
+    verification_values = _exact_mapping(
+        "VerificationResult",
+        values["verification"],
+        {
+            "success",
+            "verifier_code",
+            "response_hash",
+            "normalized_answer_hash",
+            "verifier_policy_hash",
+            "evidence_hash",
+        },
+    )
+    poi_values = _exact_mapping(
+        "PoiSignal",
+        values["poi_signal"],
+        {"reward_delta", "impact", "verdict_hash", "signal_hash"},
+    )
+    supplied_signal_hash = poi_values.pop("signal_hash")
+    poi_signal = PoiSignal(**poi_values)
+    if poi_signal.signal_hash != supplied_signal_hash:
+        raise ValueError("PoiSignal signal_hash mismatch")
+    selected_view_ids = _string_sequence("selected_view_ids", values["selected_view_ids"])
+    bundle = EpisodeEvidenceBundle(
+        task_hash=values["task_hash"],
+        task_pack_hash=values["task_pack_hash"],
+        attempt_id=values["attempt_id"],
+        attempt_hash=values["attempt_hash"],
+        selected_view_ids=selected_view_ids,
+        packet=ExperiencePacket(**_mapping("packet", values["packet"])),
+        episode_event=event_from_mapping(_mapping("episode_event", values["episode_event"])),
+        verification=VerificationResult(**verification_values),
+        verdict=VerdictPacket(**_mapping("verdict", values["verdict"])),
+        verdict_event=event_from_mapping(_mapping("verdict_event", values["verdict_event"])),
+        verifier_public_key=values["verifier_public_key"],
+        verdict_signature=values["verdict_signature"],
+        poi_signal=poi_signal,
+    )
+    if bundle.bundle_hash != values["bundle_hash"]:
+        raise ValueError("EpisodeEvidenceBundle bundle_hash mismatch")
+    return bundle
 
 
 def _experience_packet(
@@ -312,6 +408,7 @@ def _bundle_hash(bundle: EpisodeEvidenceBundle) -> str:
     return hash_json(
         {
             "attempt_hash": bundle.attempt_hash,
+            "attempt_id": bundle.attempt_id,
             "domain": "compass.live_agent_c2.episode_bundle.v1",
             "episode_event_hash": bundle.episode_event.event_hash,
             "poi_signal_hash": bundle.poi_signal.signal_hash,
@@ -363,9 +460,45 @@ def _validate_projection_inputs(
         raise TypeError("signing_key must be an Ed25519 SigningKey")
 
 
+def _exact_mapping(
+    label: str,
+    raw: Mapping[str, Any],
+    expected: set[str],
+) -> dict[str, Any]:
+    values = _mapping(label, raw)
+    unknown = set(values) - expected
+    missing = expected - set(values)
+    if unknown:
+        raise TypeError(f"unknown {label} fields: {', '.join(sorted(unknown))}")
+    if missing:
+        raise TypeError(f"missing {label} fields: {', '.join(sorted(missing))}")
+    return {name: values[name] for name in expected}
+
+
+def _mapping(label: str, raw: Any) -> dict[str, Any]:
+    if not isinstance(raw, Mapping):
+        raise TypeError(f"{label} must be a mapping")
+    if any(not isinstance(key, str) for key in raw):
+        raise TypeError(f"{label} field names must be strings")
+    return dict(raw)
+
+
+def _string_sequence(label: str, raw: Any) -> tuple[str, ...]:
+    if not isinstance(raw, Sequence) or isinstance(raw, (str, bytes, bytearray)):
+        raise TypeError(f"{label} must be a sequence")
+    values = tuple(raw)
+    if any(not isinstance(value, str) for value in values):
+        raise TypeError(f"{label} must contain strings")
+    if len(values) != len(set(values)):
+        raise ValueError(f"{label} must not contain duplicates")
+    return values
+
+
 __all__ = [
     "EpisodeEvidenceBundle",
     "PoiSignal",
+    "bundle_from_mapping",
+    "bundle_to_mapping",
     "project_episode",
     "verify_episode_bundle",
 ]

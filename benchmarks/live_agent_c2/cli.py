@@ -1,0 +1,408 @@
+"""One-command dry-run, synthetic E2E, and replay entry point for Compass C2."""
+
+from __future__ import annotations
+
+import argparse
+import json
+from dataclasses import asdict
+from pathlib import Path
+from typing import Optional, Sequence
+
+from benchmarks.poi_gate2.canonical import hash_json
+from gep.flywheel_log import FlywheelEventLog
+
+from .evidence import (
+    EpisodeEvidenceBundle,
+    bundle_from_mapping,
+    bundle_to_mapping,
+    project_episode,
+    verify_episode_bundle,
+)
+from .metrics import (
+    C2Metrics,
+    PairOutcome,
+    compute_metrics,
+    outcome_from_mapping,
+    outcome_to_mapping,
+)
+from .policy import evaluate_c2_policy
+from .providers import ProviderCallResult
+from .runner import PairExecution, run_pair, schedule_pairs
+from .schema import LiveTask, ProviderIdentity, provider_from_mapping
+from .task_pack import C2TaskPack, read_task_pack
+from .verifier import verify_output
+
+
+ACTION_AGENT_ID = 4101
+VERIFIER_AGENT_ID = 4201
+RUN_MANIFEST_SCHEMA = "compass.live_agent_c2.run_manifest.v1"
+FAKE_PROVIDERS = ("fake-alpha", "fake-beta")
+
+
+class _SyntheticAdapter:
+    def __init__(self, identity: ProviderIdentity, task: LiveTask) -> None:
+        self.identity = identity
+        self._task = task
+
+    def invoke(self, prompt: str, *, timeout_seconds: float) -> ProviderCallResult:
+        has_context = self._task.memory_text is not None and self._task.memory_text in prompt
+        output = self._task.expected_answer if self._task.protected or has_context else "unknown"
+        return ProviderCallResult(
+            provider_identity=self.identity,
+            output_text=output,
+            input_tokens=max(1, len(prompt.split())),
+            output_tokens=max(1, len(output.split())),
+            estimated_cost_usd=None,
+            latency_ms=1,
+        )
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(prog="python -m benchmarks.live_agent_c2")
+    parser.add_argument("--mode", choices=("dry-run", "fake", "replay"), required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--provider", action="append", choices=FAKE_PROVIDERS)
+    parser.add_argument("--replicas", type=int, default=1)
+    parser.add_argument("--limit-pairs", type=int)
+    parser.add_argument("--bootstrap-samples", type=int, default=1000)
+    parser.add_argument("--resume", action="store_true")
+    return parser
+
+
+def main(argv: Optional[Sequence[str]] = None) -> int:
+    args = build_parser().parse_args(argv)
+    if args.mode == "replay":
+        report = replay_run(args.output)
+        _print_json(report)
+        return 0
+    _validate_args(args)
+    pack = read_task_pack()
+    providers = _fake_provider_identities(args.provider)
+    assignments = schedule_pairs(pack, providers, replicas=args.replicas)
+    if args.limit_pairs is not None:
+        assignments = assignments[: args.limit_pairs]
+    if args.mode == "dry-run":
+        _print_json(
+            {
+                "improvement_claim": False,
+                "mode": "dry-run",
+                "provider_count": len(providers),
+                "runtime_recommendation": "flat",
+                "scheduled_pairs": len(assignments),
+                "task_count": len(pack.tasks),
+                "task_pack_hash": pack.pack_hash,
+            }
+        )
+        return 0
+    config = _run_config(args, pack, providers, len(assignments))
+    if args.output.exists() and any(args.output.iterdir()):
+        if not args.resume:
+            raise ValueError("output directory must be absent or empty unless --resume is used")
+        manifest = _read_json(args.output / "run_manifest.json")
+        if manifest.get("config_hash") != config["config_hash"]:
+            raise ValueError("resume configuration does not match existing run")
+        report = replay_run(args.output)
+        _print_json(report)
+        return 0
+    report = _run_synthetic(args.output, pack, assignments, config, args.bootstrap_samples)
+    _print_json(report)
+    return 0
+
+
+def replay_run(output: Path) -> dict[str, object]:
+    root = Path(output)
+    manifest = _read_json(root / "run_manifest.json")
+    if manifest.get("schema_version") != RUN_MANIFEST_SCHEMA:
+        raise ValueError("unsupported run manifest schema")
+    pack = read_task_pack()
+    if manifest.get("task_pack_hash") != pack.pack_hash:
+        raise ValueError("run manifest task pack mismatch")
+    bundles = tuple(
+        bundle_from_mapping(item) for item in _read_jsonl(root / "bundles.jsonl")
+    )
+    outcomes = tuple(
+        outcome_from_mapping(item) for item in _read_jsonl(root / "outcomes.jsonl")
+    )
+    tasks_by_hash = {task.task_hash: task for task in pack.tasks}
+    event_log = _event_log(root / "flywheel.sqlite")
+    try:
+        for bundle in bundles:
+            if bundle.verifier_public_key != manifest.get("verifier_public_key"):
+                raise ValueError("bundle verifier key does not match run manifest")
+            task = tasks_by_hash.get(bundle.task_hash)
+            if task is None:
+                raise ValueError("bundle task hash is not in frozen task pack")
+            raw = (root / "raw" / f"{bundle.attempt_id}.txt").read_text(encoding="utf-8")
+            if verify_output(task, raw) != bundle.verification:
+                raise ValueError("raw response does not replay to stored verification")
+            verify_episode_bundle(bundle, event_log=event_log)
+    finally:
+        event_log.close()
+    stored_summary = _read_json(root / "summary.json")
+    metrics = compute_metrics(
+        outcomes,
+        seed=int(manifest["seed"]),
+        bootstrap_samples=int(manifest["bootstrap_samples"]),
+        invalid_attempt_count=int(stored_summary["invalid_attempt_count"]),
+        retry_count=int(stored_summary["retry_count"]),
+    )
+    if metrics.pairs_hash != stored_summary.get("pairs_hash"):
+        raise ValueError("outcome replay hash mismatch")
+    if len(bundles) != 2 * len(outcomes):
+        raise ValueError("every complete pair must have two evidence bundles")
+    report = dict(stored_summary)
+    report["replay_verified"] = True
+    return report
+
+
+def _run_synthetic(
+    output: Path,
+    pack: C2TaskPack,
+    assignments,
+    config: dict[str, object],
+    bootstrap_samples: int,
+) -> dict[str, object]:
+    from nacl.signing import SigningKey
+
+    output.mkdir(parents=True, exist_ok=True)
+    raw_directory = output / "raw"
+    raw_directory.mkdir()
+    signing_key = SigningKey(bytes(range(32)))
+    (output / ".verifier_signing_key").write_text(
+        signing_key.encode().hex(), encoding="ascii"
+    )
+    manifest = {
+        **config,
+        "schema_version": RUN_MANIFEST_SCHEMA,
+        "evidence_tier": "synthetic",
+        "verifier_public_key": signing_key.verify_key.encode().hex(),
+    }
+    _write_json(output / "run_manifest.json", manifest)
+    tasks = {task.task_id: task for task in pack.tasks}
+    bundles: list[EpisodeEvidenceBundle] = []
+    outcomes: list[PairOutcome] = []
+    invalid_attempt_count = 0
+    retry_count = 0
+    event_log = _event_log(output / "flywheel.sqlite")
+    try:
+        for assignment in assignments:
+            task = tasks[assignment.task_id]
+            execution = run_pair(
+                assignment,
+                task,
+                _SyntheticAdapter(assignment.provider_identity, task),
+                timeout_seconds=10,
+                max_retries=1,
+            )
+            invalid_attempt_count += len(execution.invalid_attempts)
+            retry_count += execution.flat.retry_count + execution.governed.retry_count
+            if execution.pair is None:
+                continue
+            flat = _project_and_write_raw(
+                execution.flat, task, pack, event_log, signing_key, raw_directory
+            )
+            governed = _project_and_write_raw(
+                execution.governed, task, pack, event_log, signing_key, raw_directory
+            )
+            bundles.extend((flat, governed))
+            outcomes.append(_pair_outcome(execution, task, flat, governed))
+    finally:
+        event_log.close()
+    if not outcomes:
+        raise ValueError("synthetic run produced no complete pairs")
+    _write_jsonl(output / "bundles.jsonl", (bundle_to_mapping(item) for item in bundles))
+    _write_jsonl(output / "outcomes.jsonl", (outcome_to_mapping(item) for item in outcomes))
+    metrics = compute_metrics(
+        tuple(outcomes),
+        seed=pack.seed,
+        bootstrap_samples=bootstrap_samples,
+        invalid_attempt_count=invalid_attempt_count,
+        retry_count=retry_count,
+    )
+    summary = _summary(metrics, evidence_tier="synthetic", task_pack_hash=pack.pack_hash)
+    _write_json(output / "summary.json", summary)
+    return replay_run(output)
+
+
+def _project_and_write_raw(
+    arm,
+    task: LiveTask,
+    pack: C2TaskPack,
+    event_log: FlywheelEventLog,
+    signing_key,
+    raw_directory: Path,
+) -> EpisodeEvidenceBundle:
+    if arm.output_text is None:
+        raise ValueError("cannot project an incomplete arm")
+    (raw_directory / f"{arm.attempt.attempt_id}.txt").write_text(
+        arm.output_text, encoding="utf-8"
+    )
+    return project_episode(
+        arm,
+        task=task,
+        task_pack_hash=pack.pack_hash,
+        event_log=event_log,
+        action_agent_id=ACTION_AGENT_ID,
+        verifier_agent_id=VERIFIER_AGENT_ID,
+        signing_key=signing_key,
+    )
+
+
+def _pair_outcome(
+    execution: PairExecution,
+    task: LiveTask,
+    flat: EpisodeEvidenceBundle,
+    governed: EpisodeEvidenceBundle,
+) -> PairOutcome:
+    if execution.pair is None:
+        raise ValueError("pair outcome requires a complete pair")
+    poison_admissions = len(execution.flat.selected_view_ids)
+    if task.protected:
+        poison_admissions += len(execution.governed.selected_view_ids)
+    elif len(execution.governed.selected_view_ids) != 1:
+        poison_admissions += 1
+    return PairOutcome(
+        pair_id=execution.pair.pair_id,
+        provider_key=execution.pair.provider_identity.provider_key,
+        query_class=task.query_class,
+        protected=task.protected,
+        flat_success=flat.verdict.outcome == "success",
+        governed_success=governed.verdict.outcome == "success",
+        flat_latency_ms=execution.flat.attempt.latency_ms,
+        governed_latency_ms=execution.governed.attempt.latency_ms,
+        flat_input_tokens=execution.flat.attempt.input_tokens,
+        flat_output_tokens=execution.flat.attempt.output_tokens,
+        governed_input_tokens=execution.governed.attempt.input_tokens,
+        governed_output_tokens=execution.governed.attempt.output_tokens,
+        flat_cost_usd=execution.flat.attempt.estimated_cost_usd,
+        governed_cost_usd=execution.governed.attempt.estimated_cost_usd,
+        flat_bundle_hash=flat.bundle_hash,
+        governed_bundle_hash=governed.bundle_hash,
+        replay_verified=True,
+        poison_admissions=poison_admissions,
+    )
+
+
+def _summary(
+    metrics: C2Metrics,
+    *,
+    evidence_tier: str,
+    task_pack_hash: str,
+) -> dict[str, object]:
+    decision = evaluate_c2_policy(metrics)
+    reasons = tuple(decision.reasons)
+    promote_recommended = decision.promote_recommended
+    if evidence_tier != "live":
+        reasons = tuple(dict.fromkeys((*reasons, "synthetic_evidence_only")))
+        promote_recommended = False
+    return {
+        "by_provider": {key: asdict(value) for key, value in metrics.by_provider.items()},
+        "by_provider_query_class": {
+            f"{provider}|{query_class}": asdict(value)
+            for (provider, query_class), value in metrics.by_provider_query_class.items()
+        },
+        "by_query_class": {
+            key: asdict(value) for key, value in metrics.by_query_class.items()
+        },
+        "candidate_state": decision.candidate_state,
+        "evidence_tier": evidence_tier,
+        "improvement_claim": False,
+        "invalid_attempt_count": metrics.invalid_attempt_count,
+        "overall": asdict(metrics.overall),
+        "pairs_hash": metrics.pairs_hash,
+        "promote_recommended": promote_recommended,
+        "provider_count": metrics.provider_count,
+        "reasons": list(reasons),
+        "replay_verified": metrics.overall.replay_failures == 0,
+        "retry_count": metrics.retry_count,
+        "runtime_recommendation": "flat",
+        "task_pack_hash": task_pack_hash,
+        "total_pairs": metrics.total_pairs,
+    }
+
+
+def _run_config(
+    args,
+    pack: C2TaskPack,
+    providers: tuple[ProviderIdentity, ...],
+    scheduled_pairs: int,
+) -> dict[str, object]:
+    values = {
+        "bootstrap_samples": args.bootstrap_samples,
+        "mode": args.mode,
+        "providers": [provider.provider_key for provider in providers],
+        "replicas": args.replicas,
+        "scheduled_pairs": scheduled_pairs,
+        "seed": pack.seed,
+        "task_pack_hash": pack.pack_hash,
+    }
+    return {**values, "config_hash": hash_json(values)}
+
+
+def _fake_provider_identities(names) -> tuple[ProviderIdentity, ...]:
+    selected = FAKE_PROVIDERS if names is None else tuple(names)
+    if len(selected) != len(set(selected)):
+        raise ValueError("providers must not contain duplicates")
+    return tuple(
+        provider_from_mapping(
+            {
+                "provider_id": name,
+                "model_id": "synthetic-v1",
+                "adapter_kind": "cli",
+                "adapter_version": "1.0.0",
+            }
+        )
+        for name in selected
+    )
+
+
+def _event_log(path: Path) -> FlywheelEventLog:
+    return FlywheelEventLog(
+        path,
+        registered_agent_ids=(ACTION_AGENT_ID, VERIFIER_AGENT_ID),
+        registered_verifier_ids=(VERIFIER_AGENT_ID,),
+    )
+
+
+def _validate_args(args) -> None:
+    if args.replicas <= 0:
+        raise ValueError("replicas must be positive")
+    if args.limit_pairs is not None and args.limit_pairs <= 0:
+        raise ValueError("limit_pairs must be positive")
+    if args.bootstrap_samples < 100:
+        raise ValueError("bootstrap_samples must be at least 100")
+    if args.resume and args.mode != "fake":
+        raise ValueError("--resume is supported only for fake mode")
+
+
+def _write_json(path: Path, value: object) -> None:
+    path.write_text(
+        json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
+
+def _write_jsonl(path: Path, values) -> None:
+    path.write_text(
+        "".join(
+            json.dumps(value, ensure_ascii=False, separators=(",", ":"), sort_keys=True)
+            + "\n"
+            for value in values
+        ),
+        encoding="utf-8",
+    )
+
+
+def _read_json(path: Path):
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _read_jsonl(path: Path) -> tuple[dict[str, object], ...]:
+    return tuple(json.loads(line) for line in path.read_text(encoding="utf-8").splitlines())
+
+
+def _print_json(value: object) -> None:
+    print(json.dumps(value, ensure_ascii=False, separators=(",", ":"), sort_keys=True))
+
+
+__all__ = ["build_parser", "main", "replay_run"]
