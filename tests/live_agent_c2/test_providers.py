@@ -3,10 +3,12 @@ from __future__ import annotations
 import json
 import os
 import sys
+from pathlib import Path
 
 import pytest
 
 from benchmarks.live_agent_c2.providers import (
+    LIVE_PROVIDER_NAMES,
     OpenAICompatibleAdapter,
     ProviderCallError,
     ProviderCommand,
@@ -14,9 +16,11 @@ from benchmarks.live_agent_c2.providers import (
     build_claude_command,
     build_codex_command,
     build_kimi_command,
+    build_live_adapters,
     parse_claude_json,
     parse_codex_jsonl,
     parse_kimi_jsonl,
+    parse_minimax_claude_json,
     parse_openai_compatible_json,
 )
 from benchmarks.live_agent_c2.schema import provider_from_mapping
@@ -221,6 +225,7 @@ def test_openai_compatible_adapter_uses_environment_secret_and_standard_usage(mo
         )
         return json.dumps(
             {
+                "model": "doubao-seed-2-0-pro-260215",
                 "choices": [{"message": {"content": "42"}}],
                 "usage": {"prompt_tokens": 15, "completion_tokens": 1},
             }
@@ -259,6 +264,7 @@ def test_openai_compatible_parser_and_missing_credential_fail_closed(monkeypatch
     parsed = parse_openai_compatible_json(
         json.dumps(
             {
+                "model": "doubao-seed-2-0-pro-260215",
                 "choices": [{"message": {"content": "north"}}],
                 "usage": {"input_tokens": 7, "output_tokens": 1},
             }
@@ -284,6 +290,72 @@ def test_openai_compatible_parser_and_missing_credential_fail_closed(monkeypatch
     )
     with pytest.raises(ProviderCallError, match="provider_credential_missing"):
         adapter.invoke("safe", timeout_seconds=10)
+
+
+def test_openai_adapter_rejects_response_from_a_different_model(monkeypatch):
+    monkeypatch.setenv("ARK_API_KEY", "unit-test-secret")
+
+    def transport(*_args):
+        return json.dumps(
+            {
+                "model": "unexpected-model",
+                "choices": [{"message": {"content": "42"}}],
+                "usage": {"prompt_tokens": 8, "completion_tokens": 1},
+            }
+        ).encode("utf-8")
+
+    adapter = OpenAICompatibleAdapter(
+        identity=provider_from_mapping(
+            {
+                "provider_id": "volcengine",
+                "model_id": "doubao-seed-2-0-pro-260215",
+                "adapter_kind": "openai_compatible",
+                "adapter_version": "ark-v3",
+            }
+        ),
+        base_url="https://ark.cn-beijing.volces.com/api/v3",
+        credential_env="ARK_API_KEY",
+        transport=transport,
+    )
+
+    with pytest.raises(ProviderCallError, match="provider_identity_mismatch"):
+        adapter.invoke("safe", timeout_seconds=10)
+
+
+def test_minimax_parser_requires_the_probed_model_identity():
+    valid = json.dumps(
+        {
+            "result": "42",
+            "usage": {"input_tokens": 12, "output_tokens": 1},
+            "total_cost_usd": 0.001,
+            "modelUsage": {"MiniMax-M3[1m]": {"inputTokens": 12, "outputTokens": 1}},
+        }
+    )
+    assert parse_minimax_claude_json(valid).output_text == "42"
+
+    wrong = json.dumps(
+        {
+            "result": "42",
+            "usage": {"input_tokens": 12, "output_tokens": 1},
+            "modelUsage": {"different-model": {"inputTokens": 12, "outputTokens": 1}},
+        }
+    )
+    with pytest.raises(ProviderCallError, match="provider_identity_mismatch"):
+        parse_minimax_claude_json(wrong)
+
+
+def test_live_provider_factories_are_fixed_metered_and_admissible():
+    adapters = build_live_adapters()
+
+    assert LIVE_PROVIDER_NAMES == ("minimax-claude", "volcengine-ark")
+    assert tuple(adapter.identity.provider_key for adapter in adapters) == (
+        "minimax/minimax-m3-1m",
+        "volcengine/doubao-seed-2-0-pro-260215",
+    )
+    assert all(adapter.admissible for adapter in adapters)
+
+    minimax_command = adapters[0]._build_command("safe", Path.cwd())
+    assert "MiniMax-M3[1m]" in minimax_command.argv
 
 
 def test_adapter_diagnostics_do_not_copy_environment(monkeypatch):
