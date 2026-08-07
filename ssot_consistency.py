@@ -30,7 +30,7 @@ def _default_repo_roots() -> list[Path]:
     if env:
         return [Path(p) for p in env.split(os.pathsep) if p.strip()]
     base = Path.home() / "Projects"
-    return [base / name for name in ("nautilus-v5", "nautilus-core", "nautilus-compass")]
+    return [base / name for name in ("nautilus-v5", "nautilus-core", "nautilus-compass", "nautilus-fde-phase3")]
 
 
 def _body_hash(path: Path) -> tuple[str, str] | None:
