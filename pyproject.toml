@@ -59,8 +59,8 @@ compass-session-writer = "nautilus_compass.session_writer:main"
 # v1.6.2 was broken — only top-level was packaged, so `nautilus_compass.sdk`
 # and `nautilus_compass.middleware` imports failed at install time.
 # Explicit list (not `find`) avoids setuptools treating tests/, scripts/, etc as packages.
-packages = ["nautilus_compass", "nautilus_compass.sdk", "nautilus_compass.middleware", "nautilus_compass.storage", "nautilus_compass.proof", "nautilus_compass.drift", "nautilus_compass.recall_pkg", "nautilus_compass.skills_pkg", "nautilus_compass.judges"]
-package-dir = {"nautilus_compass" = ".", "nautilus_compass.sdk" = "sdk", "nautilus_compass.middleware" = "middleware", "nautilus_compass.storage" = "storage", "nautilus_compass.proof" = "proof", "nautilus_compass.drift" = "drift", "nautilus_compass.recall_pkg" = "recall_pkg", "nautilus_compass.skills_pkg" = "skills_pkg", "nautilus_compass.judges" = "judges"}
+packages = ["nautilus_compass", "nautilus_compass.sdk", "nautilus_compass.middleware", "nautilus_compass.storage", "nautilus_compass.proof", "nautilus_compass.drift", "nautilus_compass.recall_pkg", "nautilus_compass.skills_pkg", "nautilus_compass.judges", "gep"]
+package-dir = {"nautilus_compass" = ".", "nautilus_compass.sdk" = "sdk", "nautilus_compass.middleware" = "middleware", "nautilus_compass.storage" = "storage", "nautilus_compass.proof" = "proof", "nautilus_compass.drift" = "drift", "nautilus_compass.recall_pkg" = "recall_pkg", "nautilus_compass.skills_pkg" = "skills_pkg", "nautilus_compass.judges" = "judges", "gep" = "gep"}
 
 [tool.setuptools.package-data]
 "nautilus_compass" = ["anchors*.json", "*.sh"]
@@ -80,6 +80,7 @@ extend-exclude = [
 # Default ruff = pyflakes (F) + pycodestyle errors (E)
 # We disable the legacy-style E rules that conflict with the project's
 # compact one-line style; we keep the bug-catching F rules.
+select = ["E4", "E7", "E9", "F"]
 ignore = [
     "E701",  # multiple statements on one line (colon) · used in compact one-liners
     "E702",  # multiple statements on one line (semicolon) · same
