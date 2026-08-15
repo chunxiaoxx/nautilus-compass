@@ -259,18 +259,23 @@ def _execute_arm(
     verifier: IndependentVerifier,
 ) -> None:
     action_task = _action_task(plan, arm)
-    try:
-        advice = _advice_for_arm(plan, arm, out, log)
-    except _DependencyUnavailable as exc:
+    dependency_reason = _gate_b_source_blocker(plan, arm, out, log)
+    if dependency_reason is not None:
         advice = None
-        artifact = _failure_artifact(arm, exc.reason_code, "dependency_skip")
+        artifact = _failure_artifact(arm, dependency_reason, "dependency_skip")
     else:
         try:
-            artifact = action_adapter.execute(
-                action_task, advice, out / "artifacts" / arm.episode_id
-            )
-        except ActionExecutionFailure as exc:
-            artifact = _failure_artifact(arm, exc.reason_code, "action_failure")
+            advice = _advice_for_arm(plan, arm, out, log)
+        except _DependencyUnavailable as exc:
+            advice = None
+            artifact = _failure_artifact(arm, exc.reason_code, "dependency_skip")
+        else:
+            try:
+                artifact = action_adapter.execute(
+                    action_task, advice, out / "artifacts" / arm.episode_id
+                )
+            except ActionExecutionFailure as exc:
+                artifact = _failure_artifact(arm, exc.reason_code, "action_failure")
     if not isinstance(artifact, ActionArtifact):
         raise LoopRunError("action adapter must return ActionArtifact")
     if artifact.episode_id != arm.episode_id:
@@ -317,17 +322,36 @@ def _advice_for_arm(
         return arm.advice
     if arm.advice_from_episode_id is None:
         return None
-    states = reduce_episode_states(log.list_events())
-    source_state = states.get(arm.advice_from_episode_id)
-    if source_state is None or source_state.state != "verified":
-        raise _DependencyUnavailable("dependency.source_not_verified")
-    if source_state.verified_outcome != "success":
-        raise _DependencyUnavailable("dependency.source_not_successful")
     source_artifact = _read_artifact(out / "artifacts" / f"{arm.advice_from_episode_id}.json")
     advice = source_artifact.content.get("reuse_advice")
     if not isinstance(advice, str) or not advice.strip():
         raise _DependencyUnavailable("dependency.reuse_advice_missing")
     return advice
+
+
+def _gate_b_source_blocker(
+    plan: _Plan,
+    arm: _Arm,
+    out: Path,
+    log: FlywheelEventLog,
+) -> str | None:
+    if plan.schema_version != PLAN_SCHEMA_V2 or arm.label == "source":
+        return None
+    source = plan.arms[0]
+    states = reduce_episode_states(log.list_events())
+    source_state = states.get(source.episode_id)
+    if source_state is None or source_state.state != "verified":
+        return "dependency.source_not_verified"
+    if source_state.verified_outcome != "success":
+        return "dependency.source_not_successful"
+    try:
+        source_artifact = _read_artifact(out / "artifacts" / f"{source.episode_id}.json")
+    except LoopRunError:
+        return "dependency.source_artifact_unavailable"
+    advice = source_artifact.content.get("reuse_advice")
+    if not isinstance(advice, str) or not advice.strip():
+        return "dependency.reuse_advice_missing"
+    return None
 
 
 def _failure_artifact(arm: _Arm, reason_code: str, tool_name: str) -> ActionArtifact:
