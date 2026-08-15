@@ -157,11 +157,13 @@ def test_gate_b_binds_a_verified_source_experience_to_an_unseen_transfer_compari
 def test_gate_b_records_repair_when_a_source_action_has_no_reusable_experience(
     tmp_path: Path,
 ) -> None:
-    report = run_loop(_plan(), tmp_path / "run", _Action(include_reuse_advice=False), _Verifier())
+    action = _Action(include_reuse_advice=False)
+    report = run_loop(_plan(), tmp_path / "run", action, _Verifier())
 
     assert report["decision"] == "Repair"
     assert report["reason_code"] == "gate_b_delta_not_positive"
     assert report["arms"]["treatment"]["outcome"] == "failure"
+    assert [task["task_case_id"] for task, _advice in action.calls] == ["source"]
     assert verify_run(tmp_path / "run") == report
 
 
@@ -192,7 +194,7 @@ def test_gate_b_preserves_a_terminal_source_failure_as_replayable_repair_evidenc
     action = _SourceFailureAction()
     report = run_loop(_plan(), tmp_path / "run", action, _Verifier())
 
-    assert [task["task_case_id"] for task, _advice in action.calls] == ["source", "transfer"]
+    assert [task["task_case_id"] for task, _advice in action.calls] == ["source"]
     assert report["decision"] == "Repair"
     assert report["reason_code"] == "gate_b_source_not_verified_success"
     assert report["arms"]["source"]["outcome"] == "failure"
