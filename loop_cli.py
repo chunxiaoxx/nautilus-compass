@@ -9,6 +9,14 @@ from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
+from gep.live_coding_adapter import (
+    ClaudeCliProvider,
+    GateBSoftwareVerifier,
+    LiveCodingAdapter,
+    LiveCodingError,
+    load_value_suite,
+    preflight_value_suite,
+)
 from gep.loop_run import ActionArtifact, LoopRunError, run_loop, verify_run
 from gep.verdict_packet import VerdictPacket
 
@@ -73,9 +81,30 @@ def main(argv: list[str] | None = None) -> int:
                 plan.get("environment_fingerprint_hash"),
             )
             report = run_loop(plan, args.out, _GateAAction(), verifier)
-        else:
+        elif args.command == "verify":
             report = verify_run(args.out)
-    except (LoopRunError, OSError, TypeError, ValueError, json.JSONDecodeError) as exc:
+        elif args.command == "preflight":
+            receipt = preflight_value_suite(load_value_suite(args.suite))
+            _print_preflight(receipt)
+            return 0
+        else:
+            suite = load_value_suite(args.suite)
+            preflight_value_suite(suite)
+            _prepare_output(args.out)
+            report = run_loop(
+                suite.loop_plan,
+                args.out,
+                LiveCodingAdapter(suite, ClaudeCliProvider(suite)),
+                GateBSoftwareVerifier(suite),
+            )
+    except (
+        LiveCodingError,
+        LoopRunError,
+        OSError,
+        TypeError,
+        ValueError,
+        json.JSONDecodeError,
+    ) as exc:
         print(f"nautilus-compass loop: {exc}", file=sys.stderr)
         return 2
     _print_summary(report)
@@ -93,6 +122,17 @@ def _parser() -> argparse.ArgumentParser:
     run.add_argument("--out", type=Path, required=True, help="new or empty evidence directory")
     verify = commands.add_parser("verify", help="replay an existing evidence directory")
     verify.add_argument("out", type=Path, help="evidence directory")
+    preflight = commands.add_parser(
+        "preflight",
+        help="bind a Gate B provider request set without calling the provider",
+    )
+    preflight.add_argument("suite", type=Path, help="frozen Gate B value suite")
+    live_run = commands.add_parser(
+        "live-run",
+        help="run one bounded Gate B live provider comparison after preflight",
+    )
+    live_run.add_argument("suite", type=Path, help="frozen Gate B value suite")
+    live_run.add_argument("--out", type=Path, required=True, help="new or empty evidence directory")
     return parser
 
 
@@ -127,6 +167,14 @@ def _print_summary(report: Mapping[str, object]) -> None:
             raise LoopRunError(f"report is missing {label} arm")
         print(f"{label}: {arm.get('outcome')}")
     print(f"automatic promotion: {str(promotion.get('automatic_promotion_authorized')).lower()}")
+
+
+def _print_preflight(receipt: Mapping[str, object]) -> None:
+    print("Compass live preflight: ready")
+    print(f"expected provider calls: {receipt.get('expected_calls')}")
+    print(f"zero provider calls: {str(receipt.get('zero_provider_calls')).lower()}")
+    print(f"zero writes: {str(receipt.get('zero_writes')).lower()}")
+    print(f"automatic promotion: {str(receipt.get('automatic_promotion_authorized')).lower()}")
 
 
 if __name__ == "__main__":

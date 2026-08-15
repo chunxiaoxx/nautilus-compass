@@ -31,7 +31,10 @@ from gep.flywheel_state import EpisodeState, reduce_episode_states
 from gep.verdict_packet import VerdictPacket, to_payload as verdict_to_payload
 
 
-PLAN_SCHEMA_VERSION = "compass.loop.plan.v1"
+PLAN_SCHEMA_V1 = "compass.loop.plan.v1"
+PLAN_SCHEMA_V2 = "compass.loop.plan.v2"
+# Retained as the public name for the original two-arm operational fixture.
+PLAN_SCHEMA_VERSION = PLAN_SCHEMA_V1
 ARTIFACT_SCHEMA_VERSION = "compass.loop.artifact.v1"
 RECEIPT_SCHEMA_VERSION = "compass.loop.independent_receipt.v1"
 REPORT_SCHEMA_VERSION = "compass.loop.report.v1"
@@ -58,6 +61,25 @@ _PLAN_KEYS = frozenset(
     }
 )
 _ARM_KEYS = frozenset({"label", "episode_id", "advice", "occurred_at"})
+_V2_ARM_KEYS = frozenset(
+    {
+        "label",
+        "episode_id",
+        "task_case_id",
+        "advice_from_episode_id",
+        "occurred_at",
+    }
+)
+_V2_TASK_KEYS = frozenset({"cases"})
+_V2_TASK_CASE_KEYS = frozenset({"id", "prompt"})
+_V2_ORACLE_KEYS = frozenset(
+    {
+        "cases",
+        "primary_metric",
+        "minimum_utility_delta",
+        "protected_failure_classes",
+    }
+)
 _ARTIFACT_KEYS = frozenset(
     {
         "schema_version",
@@ -72,6 +94,20 @@ _ARTIFACT_KEYS = frozenset(
 
 class LoopRunError(ValueError):
     """A run directory cannot provide trustworthy loop evidence."""
+
+
+class ActionExecutionFailure(LoopRunError):
+    """A bounded action failed with a redacted, replayable reason code."""
+
+    def __init__(self, reason_code: str) -> None:
+        if not isinstance(reason_code, str) or not reason_code:
+            raise TypeError("action failure reason_code must be a non-empty string")
+        self.reason_code = reason_code
+        super().__init__(reason_code)
+
+
+class _DependencyUnavailable(ActionExecutionFailure):
+    """The source evidence required for a dependent action is unavailable."""
 
 
 @dataclass(frozen=True)
@@ -127,11 +163,14 @@ class _Arm:
     episode_id: str
     advice: str | None
     occurred_at: str
+    task_case_id: str | None = None
+    advice_from_episode_id: str | None = None
 
 
 @dataclass(frozen=True)
 class _Plan:
     raw: dict[str, object]
+    schema_version: str
     run_id: str
     task: dict[str, object]
     oracle: dict[str, object]
@@ -140,6 +179,8 @@ class _Plan:
     verifier_policy_hash: str
     environment_fingerprint_hash: str
     arms: tuple[_Arm, ...]
+    minimum_utility_delta: int | None = None
+    protected_failure_classes: tuple[str, ...] = ()
 
 
 def run_loop(
@@ -217,8 +258,19 @@ def _execute_arm(
     action_adapter: ActionAdapter,
     verifier: IndependentVerifier,
 ) -> None:
-    task = dict(plan.task) | {"episode_id": arm.episode_id, "arm": arm.label}
-    artifact = action_adapter.execute(task, arm.advice, out / "artifacts" / arm.episode_id)
+    action_task = _action_task(plan, arm)
+    try:
+        advice = _advice_for_arm(plan, arm, out, log)
+    except _DependencyUnavailable as exc:
+        advice = None
+        artifact = _failure_artifact(arm, exc.reason_code, "dependency_skip")
+    else:
+        try:
+            artifact = action_adapter.execute(
+                action_task, advice, out / "artifacts" / arm.episode_id
+            )
+        except ActionExecutionFailure as exc:
+            artifact = _failure_artifact(arm, exc.reason_code, "action_failure")
     if not isinstance(artifact, ActionArtifact):
         raise LoopRunError("action adapter must return ActionArtifact")
     if artifact.episode_id != arm.episode_id:
@@ -226,28 +278,88 @@ def _execute_arm(
     if artifact.episode_event_hash is not None:
         raise LoopRunError("action artifact must not predeclare an episode event hash")
 
-    episode = _episode_event(plan, arm, artifact)
+    episode = _episode_event(plan, arm, artifact, advice)
     _require_accepted(log.append(episode.to_mapping()), "episode")
     bound_artifact = replace(artifact, episode_event_hash=episode.event_hash)
     _write_artifact(out / "artifacts" / f"{arm.episode_id}.json", bound_artifact)
 
-    verdict = verifier.verify(task, bound_artifact, dict(plan.oracle))
+    verdict = verifier.verify(_verifier_task(plan, arm), bound_artifact, dict(plan.oracle))
     _validate_verdict(plan, arm, episode, bound_artifact, verdict)
     verdict_event = _verdict_event(plan, arm, episode, verdict)
     _require_accepted(log.append(verdict_event.to_mapping()), "verdict")
 
 
-def _episode_event(plan: _Plan, arm: _Arm, artifact: ActionArtifact) -> FlywheelEvent:
+def _action_task(plan: _Plan, arm: _Arm) -> dict[str, object]:
+    task = dict(plan.task) | {"episode_id": arm.episode_id}
+    if plan.schema_version == PLAN_SCHEMA_V1:
+        return task | {"arm": arm.label}
+    assert arm.task_case_id is not None
+    return task | {"task_case_id": arm.task_case_id}
+
+
+def _verifier_task(plan: _Plan, arm: _Arm) -> dict[str, object]:
+    """Project a task without the experimental arm label for independent verification."""
+
+    task = dict(plan.task) | {"episode_id": arm.episode_id}
+    if plan.schema_version == PLAN_SCHEMA_V2:
+        assert arm.task_case_id is not None
+        task["task_case_id"] = arm.task_case_id
+    return task
+
+
+def _advice_for_arm(
+    plan: _Plan,
+    arm: _Arm,
+    out: Path,
+    log: FlywheelEventLog,
+) -> str | None:
+    if plan.schema_version == PLAN_SCHEMA_V1:
+        return arm.advice
+    if arm.advice_from_episode_id is None:
+        return None
+    states = reduce_episode_states(log.list_events())
+    source_state = states.get(arm.advice_from_episode_id)
+    if source_state is None or source_state.state != "verified":
+        raise _DependencyUnavailable("dependency.source_not_verified")
+    if source_state.verified_outcome != "success":
+        raise _DependencyUnavailable("dependency.source_not_successful")
+    source_artifact = _read_artifact(out / "artifacts" / f"{arm.advice_from_episode_id}.json")
+    advice = source_artifact.content.get("reuse_advice")
+    if not isinstance(advice, str) or not advice.strip():
+        raise _DependencyUnavailable("dependency.reuse_advice_missing")
+    return advice
+
+
+def _failure_artifact(arm: _Arm, reason_code: str, tool_name: str) -> ActionArtifact:
+    return ActionArtifact(
+        episode_id=arm.episode_id,
+        content={"failure_reason": reason_code},
+        tool_chain=(tool_name,),
+    )
+
+
+def _episode_event(
+    plan: _Plan,
+    arm: _Arm,
+    artifact: ActionArtifact,
+    advice: str | None,
+) -> FlywheelEvent:
     payload = to_frontmatter(
         ExperiencePacket(
             episode_id=arm.episode_id,
+            parent_episode_id=arm.advice_from_episode_id,
             task=str(plan.task.get("description", plan.task.get("id", "bounded task"))),
             action_kind="bounded_action",
             tool_chain=artifact.tool_chain,
-            outcome="executed",
+            outcome="failed" if "failure_reason" in artifact.content else "executed",
+            failure_mode=(
+                str(artifact.content["failure_reason"])
+                if "failure_reason" in artifact.content
+                else None
+            ),
             route_key=f"{plan.run_id}/{arm.label}",
             capsule_candidate=False,
-            policy_hint=arm.advice,
+            policy_hint=advice,
         )
     )
     return FlywheelEvent(
@@ -358,7 +470,10 @@ def _derive_outputs(
         "environment_fingerprint_hash": plan.environment_fingerprint_hash,
         "independent_verdicts_verified": True,
     }
-    report = {
+    decision, reason_code, candidate, reuse_evaluation = _decision_for(
+        plan, arm_report, event_by_source
+    )
+    report: dict[str, object] = {
         "schema_version": REPORT_SCHEMA_VERSION,
         "run_id": plan.run_id,
         "plan_hash": plan_hash,
@@ -367,13 +482,55 @@ def _derive_outputs(
         "experience_candidate": {
             "source_episode_id": plan.arms[0].episode_id,
             "candidate_state": "candidate_only",
-            "capsule_candidate": False,
+            "capsule_candidate": candidate,
         },
-        "decision": "Repair",
-        "reason_code": "gate_a_operational_only",
+        "decision": decision,
+        "reason_code": reason_code,
         "promotion": dict(_PROMOTION),
     }
+    if reuse_evaluation is not None:
+        report["reuse_evaluation"] = reuse_evaluation
     return receipt, report
+
+
+def _decision_for(
+    plan: _Plan,
+    arm_report: Mapping[str, object],
+    event_by_source: Mapping[str, FlywheelEvent],
+) -> tuple[str, str, bool, dict[str, object] | None]:
+    if plan.schema_version == PLAN_SCHEMA_V1:
+        return "Repair", "gate_a_operational_only", False, None
+
+    source = _arm_outcome(arm_report, "source")
+    control = _arm_outcome(arm_report, "control")
+    treatment = _arm_outcome(arm_report, "treatment")
+    treatment_verdict = event_by_source[f"{plan.run_id}.treatment.verdict"]
+    failure_class = treatment_verdict.payload.get("failure_class")
+    protected = []
+    if failure_class in plan.protected_failure_classes:
+        protected.append(str(failure_class))
+    evaluation: dict[str, object] = {
+        "source_outcome": source,
+        "control_success": int(control == "success"),
+        "treatment_success": int(treatment == "success"),
+        "utility_delta": int(treatment == "success") - int(control == "success"),
+        "minimum_utility_delta": plan.minimum_utility_delta,
+        "protected_regressions": protected,
+    }
+    if source != "success":
+        return "Repair", "gate_b_source_not_verified_success", False, evaluation
+    if protected:
+        return "Repair", "gate_b_protected_regression", False, evaluation
+    if evaluation["utility_delta"] < plan.minimum_utility_delta:
+        return "Repair", "gate_b_delta_not_positive", False, evaluation
+    return "Gold", "gate_b_positive_reuse_delta", True, evaluation
+
+
+def _arm_outcome(arm_report: Mapping[str, object], label: str) -> str:
+    arm = arm_report.get(label)
+    if not isinstance(arm, Mapping) or not isinstance(arm.get("outcome"), str):
+        raise LoopRunError(f"missing {label} outcome in derived evidence")
+    return str(arm["outcome"])
 
 
 def _read_events(path: Path, plan: _Plan) -> tuple[FlywheelEvent, ...]:
@@ -426,7 +583,8 @@ def _parse_plan(raw: Mapping[str, Any]) -> _Plan:
     copied = _json_mapping(raw, "plan")
     if frozenset(copied) != _PLAN_KEYS:
         raise LoopRunError("plan keys are invalid")
-    if copied["schema_version"] != PLAN_SCHEMA_VERSION:
+    schema_version = copied["schema_version"]
+    if schema_version not in {PLAN_SCHEMA_V1, PLAN_SCHEMA_V2}:
         raise LoopRunError("unsupported plan schema")
     run_id = _require_id(copied["run_id"], "run_id")
     task = _json_mapping(copied["task"], "task")
@@ -439,9 +597,17 @@ def _parse_plan(raw: Mapping[str, Any]) -> _Plan:
     environment_hash = _require_hash(
         copied["environment_fingerprint_hash"], "environment_fingerprint_hash"
     )
-    arms = _parse_arms(copied["arms"])
+    if schema_version == PLAN_SCHEMA_V1:
+        arms = _parse_arms_v1(copied["arms"])
+        minimum_utility_delta = None
+        protected_failure_classes: tuple[str, ...] = ()
+    else:
+        _validate_v2_task(task)
+        minimum_utility_delta, protected_failure_classes = _validate_v2_oracle(oracle)
+        arms = _parse_arms_v2(copied["arms"])
     return _Plan(
         raw=copied,
+        schema_version=str(schema_version),
         run_id=run_id,
         task=task,
         oracle=oracle,
@@ -450,10 +616,12 @@ def _parse_plan(raw: Mapping[str, Any]) -> _Plan:
         verifier_policy_hash=policy_hash,
         environment_fingerprint_hash=environment_hash,
         arms=arms,
+        minimum_utility_delta=minimum_utility_delta,
+        protected_failure_classes=protected_failure_classes,
     )
 
 
-def _parse_arms(value: object) -> tuple[_Arm, ...]:
+def _parse_arms_v1(value: object) -> tuple[_Arm, ...]:
     if not isinstance(value, list) or len(value) != 2:
         raise LoopRunError("plan must contain exactly two arms")
     arms = []
@@ -474,6 +642,91 @@ def _parse_arms(value: object) -> tuple[_Arm, ...]:
         raise LoopRunError("plan arms must be control then treatment")
     if len({arm.episode_id for arm in arms}) != len(arms):
         raise LoopRunError("duplicate episode_id in plan")
+    return tuple(arms)
+
+
+def _validate_v2_task(task: Mapping[str, object]) -> None:
+    if frozenset(task) != _V2_TASK_KEYS:
+        raise LoopRunError("gate b task keys are invalid")
+    cases = _json_mapping(task["cases"], "gate b task cases")
+    if frozenset(cases) != {"source", "transfer"}:
+        raise LoopRunError("gate b task cases must be source and transfer")
+    case_ids: set[str] = set()
+    for name in ("source", "transfer"):
+        case = _json_mapping(cases[name], f"gate b {name} task")
+        if frozenset(case) != _V2_TASK_CASE_KEYS:
+            raise LoopRunError("gate b task case keys are invalid")
+        case_id = _require_id(case["id"], "gate b task case id")
+        if not isinstance(case["prompt"], str) or not case["prompt"].strip():
+            raise LoopRunError("gate b task prompt must be a non-empty string")
+        case_ids.add(case_id)
+    if len(case_ids) != 2:
+        raise LoopRunError("gate b task case ids must be unique")
+
+
+def _validate_v2_oracle(oracle: Mapping[str, object]) -> tuple[int, tuple[str, ...]]:
+    if frozenset(oracle) != _V2_ORACLE_KEYS:
+        raise LoopRunError("gate b oracle keys are invalid")
+    cases = _json_mapping(oracle["cases"], "gate b oracle cases")
+    if frozenset(cases) != {"source", "transfer"}:
+        raise LoopRunError("gate b oracle cases must be source and transfer")
+    if oracle["primary_metric"] != "verified_success":
+        raise LoopRunError("gate b primary metric is unsupported")
+    delta = oracle["minimum_utility_delta"]
+    if isinstance(delta, bool) or not isinstance(delta, int) or delta != 1:
+        raise LoopRunError("gate b minimum utility delta must be one")
+    protected = oracle["protected_failure_classes"]
+    if not isinstance(protected, list) or not protected:
+        raise LoopRunError("gate b protected failure classes are required")
+    normalized = tuple(protected)
+    if len(set(normalized)) != len(normalized) or any(
+        not isinstance(value, str) or not value for value in normalized
+    ):
+        raise LoopRunError("gate b protected failure classes are invalid")
+    return delta, normalized
+
+
+def _parse_arms_v2(value: object) -> tuple[_Arm, ...]:
+    if not isinstance(value, list) or len(value) != 3:
+        raise LoopRunError("gate b plan must contain source, control, and treatment arms")
+    arms: list[_Arm] = []
+    for raw in value:
+        arm = _json_mapping(raw, "gate b arm")
+        if frozenset(arm) != _V2_ARM_KEYS:
+            raise LoopRunError("arm keys are invalid")
+        label = _require_id(arm["label"], "arm label")
+        episode_id = _require_id(arm["episode_id"], "episode_id")
+        task_case_id = _require_id(arm["task_case_id"], "task_case_id")
+        parent = arm["advice_from_episode_id"]
+        if parent is not None:
+            parent = _require_id(parent, "advice_from_episode_id")
+        occurred_at = arm["occurred_at"]
+        if not isinstance(occurred_at, str) or not occurred_at.endswith("Z"):
+            raise LoopRunError("arm occurred_at must be an RFC3339 UTC timestamp")
+        arms.append(
+            _Arm(
+                label=label,
+                episode_id=episode_id,
+                advice=None,
+                occurred_at=occurred_at,
+                task_case_id=task_case_id,
+                advice_from_episode_id=parent,
+            )
+        )
+    if tuple(arm.label for arm in arms) != ("source", "control", "treatment"):
+        raise LoopRunError("gate b plan arms must be source, control, then treatment")
+    if len({arm.episode_id for arm in arms}) != len(arms):
+        raise LoopRunError("duplicate episode_id in plan")
+    source, control, treatment = arms
+    if source.task_case_id != "source" or source.advice_from_episode_id is not None:
+        raise LoopRunError("gate b source arm is invalid")
+    if control.task_case_id != "transfer" or control.advice_from_episode_id is not None:
+        raise LoopRunError("gate b control arm is invalid")
+    if (
+        treatment.task_case_id != "transfer"
+        or treatment.advice_from_episode_id != source.episode_id
+    ):
+        raise LoopRunError("gate b treatment must reuse the verified source episode")
     return tuple(arms)
 
 
@@ -621,6 +874,7 @@ def _hash_bytes(value: bytes) -> str:
 __all__ = [
     "ActionAdapter",
     "ActionArtifact",
+    "ActionExecutionFailure",
     "IndependentVerifier",
     "LoopRunError",
     "run_loop",

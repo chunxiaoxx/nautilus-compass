@@ -5,11 +5,15 @@ import subprocess
 import sys
 from pathlib import Path
 
+import gep.live_coding_adapter as live_adapter_module
+import loop_cli
+
 from cli import main
 
 
 H2 = "sha256:" + "2" * 64
 H3 = "sha256:" + "3" * 64
+ROOT = Path(__file__).resolve().parents[1]
 
 
 def _suite(path: Path) -> Path:
@@ -89,3 +93,71 @@ def test_loop_verify_replays_from_a_fresh_console_process(tmp_path: Path) -> Non
     )
     assert "Compass learning loop: Repair" in completed.stdout
     assert "automatic promotion: false" in completed.stdout
+
+
+def test_loop_preflight_binds_live_value_suite_without_calling_a_provider(
+    monkeypatch, capsys
+) -> None:
+    monkeypatch.setenv("ARK_API_KEY", "test-only-secret")
+
+    assert (
+        main(
+            [
+                "loop",
+                "preflight",
+                str(ROOT / "benchmarks" / "dogfood_mvp_v1" / "value_suite.json"),
+            ]
+        )
+        == 0
+    )
+
+    output = capsys.readouterr().out
+    assert "Compass live preflight: ready" in output
+    assert "zero provider calls: true" in output
+    assert "test-only-secret" not in output
+
+
+def test_loop_live_run_uses_a_bounded_fake_provider_and_independent_oracle(
+    tmp_path: Path, monkeypatch, capsys
+) -> None:
+    class FakeProvider:
+        def __init__(self, _suite) -> None:
+            self.outputs = [
+                '{"answer":"Reject bool before accepting int.","reuse_advice":"Reject bool before accepting int in related validators."}',
+                '{"answer":"isinstance(value, int)"}',
+                '{"answer":"not isinstance(value, bool) and isinstance(value, int) and 1 <= value <= 65535"}',
+            ]
+
+        def invoke(self, prompt: str, *, timeout_seconds: int):
+            del prompt
+            assert timeout_seconds == 30
+            return live_adapter_module.ProviderResult(
+                output_text=self.outputs.pop(0),
+                reported_model_id="glm-5.2[1m]",
+                input_tokens=10,
+                output_tokens=4,
+                estimated_cost_usd=0.001,
+                latency_ms=1,
+            )
+
+    monkeypatch.setattr(live_adapter_module.shutil, "which", lambda command: command)
+    monkeypatch.setattr(loop_cli, "ClaudeCliProvider", FakeProvider)
+    out = tmp_path / "live"
+
+    assert (
+        loop_cli.main(
+            [
+                "live-run",
+                str(ROOT / "benchmarks" / "dogfood_mvp_v1" / "value_suite.json"),
+                "--out",
+                str(out),
+            ]
+        )
+        == 0
+    )
+
+    report = json.loads((out / "report.json").read_text(encoding="utf-8"))
+    assert report["decision"] == "Gold"
+    assert report["experience_candidate"]["capsule_candidate"] is True
+    assert all(value is False for value in report["promotion"].values())
+    assert "Compass learning loop: Gold" in capsys.readouterr().out
