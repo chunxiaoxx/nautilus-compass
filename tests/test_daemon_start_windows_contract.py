@@ -13,6 +13,8 @@ def test_windows_launcher_prefers_explicit_compass_python() -> None:
     text = _script()
 
     assert "$env:COMPASS_PYTHON" in text
+    assert "$env:USERPROFILE" in text
+    assert '".venvs\\nautilus-compass\\Scripts\\python.exe"' in text
     assert "Resolve-Path" in text
     assert "Get-Command python" in text
 
@@ -39,3 +41,19 @@ def test_windows_launcher_requires_functional_doctor_not_only_ping() -> None:
     assert "doctor.py" in text
     assert "--json" in text
     assert "daemon pinged but functional doctor failed" in text
+
+
+def test_windows_launcher_cleans_up_only_the_process_it_started() -> None:
+    text = _script()
+
+    assert "Stop-StartedCompassProcess" in text
+    assert "Get-Process -Id $Process.Id" in text
+    assert "$Running.StartTime -eq $Process.StartTime" in text
+    assert "Stop-Process -Id $Process.Id" in text
+
+
+def test_windows_launcher_quotes_daemon_path_for_start_process() -> None:
+    text = _script()
+
+    assert "$DaemonArgument = '\"' + $DaemonPath + '\"'" in text
+    assert "-ArgumentList @($DaemonArgument)" in text

@@ -4,7 +4,8 @@
 #   powershell -ExecutionPolicy Bypass -File daemon_start.ps1
 #
 # Set COMPASS_PYTHON to pin the interpreter. Otherwise the launcher prefers
-# the repository-local .venv before falling back to python on PATH.
+# a short user-level virtualenv path, then a repository-local .venv,
+# then PATH.
 
 $ErrorActionPreference = "Stop"
 
@@ -17,6 +18,13 @@ function Resolve-CompassPython {
         return (Resolve-Path -LiteralPath $env:COMPASS_PYTHON -ErrorAction Stop).Path
     }
 
+    if ($env:USERPROFILE) {
+        $UserRuntimePython = Join-Path $env:USERPROFILE ".venvs\nautilus-compass\Scripts\python.exe"
+        if (Test-Path -LiteralPath $UserRuntimePython) {
+            return (Resolve-Path -LiteralPath $UserRuntimePython).Path
+        }
+    }
+
     $LocalPython = Join-Path $PluginDir ".venv\Scripts\python.exe"
     if (Test-Path -LiteralPath $LocalPython) {
         return (Resolve-Path -LiteralPath $LocalPython).Path
@@ -27,7 +35,7 @@ function Resolve-CompassPython {
         return $PathPython.Source
     }
 
-    throw "no python found; set COMPASS_PYTHON or create $PluginDir\.venv"
+    throw "no python found; set COMPASS_PYTHON or create the Compass user runtime"
 }
 
 function Test-DaemonPing([string]$Python) {
@@ -44,6 +52,19 @@ function Test-FunctionalDoctor([string]$Python) {
     }
     finally {
         $env:COMPASS_PLUGIN_DIR = $PreviousPluginDir
+    }
+}
+
+function Stop-StartedCompassProcess([System.Diagnostics.Process]$Process) {
+    try {
+        $Running = Get-Process -Id $Process.Id -ErrorAction SilentlyContinue
+        if ($Running -and $Running.StartTime -eq $Process.StartTime) {
+            Stop-Process -Id $Process.Id -ErrorAction Stop
+            $Running.WaitForExit(5000) | Out-Null
+        }
+    }
+    catch {
+        Write-Warning "could not clean up started Compass process $($Process.Id): $($_.Exception.Message)"
     }
 }
 
@@ -76,9 +97,10 @@ $StdoutPath = Join-Path $CacheDir "daemon.stdout.log"
 $StderrPath = Join-Path $CacheDir "daemon.stderr.log"
 
 Write-Host "Starting Compass daemon with $Python"
+$DaemonArgument = '"' + $DaemonPath + '"'
 $Process = Start-Process `
     -FilePath $Python `
-    -ArgumentList @($DaemonPath) `
+    -ArgumentList @($DaemonArgument) `
     -WorkingDirectory $PluginDir `
     -WindowStyle Hidden `
     -RedirectStandardOutput $StdoutPath `
@@ -103,8 +125,10 @@ for ($Attempt = 1; $Attempt -le 60; $Attempt++) {
     }
 
     Write-Host "daemon pinged but functional doctor failed; see $StderrPath" -ForegroundColor Red
+    Stop-StartedCompassProcess $Process
     exit 1
 }
 
+Stop-StartedCompassProcess $Process
 Write-Host "daemon did not become functionally ready within 60s; see $StderrPath" -ForegroundColor Red
 exit 1
