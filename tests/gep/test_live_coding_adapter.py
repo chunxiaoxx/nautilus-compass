@@ -139,6 +139,26 @@ def _glm_suite() -> dict[str, object]:
     return suite
 
 
+def _reserve_glm_suite() -> dict[str, object]:
+    suite = _glm_suite()
+    suite["suite_id"] = "gate-b-live-coding-reserve-v1"
+    suite["loop_plan"]["run_id"] = "gate-b-live-coding-reserve-1"
+    suite["loop_plan"]["task"]["cases"]["transfer"] = {
+        "id": "python-bool-status-transfer",
+        "prompt": (
+            "For this Python predicate, return the corrected expression as answer. It must accept "
+            "integer HTTP status codes 100 through 599 and reject booleans: "
+            "isinstance(value, int) and 100 <= value <= 599"
+        ),
+    }
+    suite["loop_plan"]["oracle"]["cases"]["transfer"] = {
+        "expected": "not isinstance(value, bool) and isinstance(value, int) and 100 <= value <= 599"
+    }
+    suite.pop("suite_hash")
+    suite["suite_hash"] = _hash(suite)
+    return suite
+
+
 def test_preflight_binds_all_three_frozen_requests_without_provider_calls(tmp_path: Path) -> None:
     suite = load_value_suite(_write_suite(tmp_path / "suite.json", _suite()))
 
@@ -177,6 +197,16 @@ def test_committed_value_suite_is_sealed_and_preflightable() -> None:
     receipt = preflight_value_suite(suite, environment={"ARK_API_KEY": "present-only"})
 
     assert receipt["suite_id"] == "gate-b-live-coding-v1"
+    assert receipt["expected_calls"] == 3
+    assert receipt["zero_provider_calls"] is True
+
+
+def test_committed_reserve_suite_is_sealed_and_preflightable() -> None:
+    suite = load_value_suite(ROOT / "benchmarks" / "dogfood_mvp_v1" / "value_suite_reserve.json")
+
+    receipt = preflight_value_suite(suite, environment={})
+
+    assert receipt["suite_id"] == "gate-b-live-coding-reserve-v1"
     assert receipt["expected_calls"] == 3
     assert receipt["zero_provider_calls"] is True
 
@@ -446,3 +476,26 @@ def test_independent_software_verifier_rejects_a_suite_with_a_substituted_oracle
 
     with pytest.raises(LiveCodingError, match="gate_b_oracle_unsupported"):
         GateBSoftwareVerifier(suite)
+
+
+def test_independent_software_verifier_keeps_the_reserve_status_range_separate(
+    tmp_path: Path,
+) -> None:
+    suite = load_value_suite(_write_suite(tmp_path / "reserve.json", _reserve_glm_suite()))
+    verifier = GateBSoftwareVerifier(suite)
+    artifact = ActionArtifact(
+        episode_id="reserve",
+        episode_event_hash="sha256:" + "d" * 64,
+        content={
+            "answer": "not isinstance(value, bool) and isinstance(value, int) and 100 <= value <= 599"
+        },
+        tool_chain=("model",),
+    )
+
+    verdict = verifier.verify(
+        {"episode_id": "reserve", "task_case_id": "transfer"},
+        artifact,
+        suite.loop_plan["oracle"],
+    )
+
+    assert verdict.outcome == "success"
