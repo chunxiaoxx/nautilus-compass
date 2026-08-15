@@ -98,15 +98,17 @@ Every run writes:
 ```text
 <run-directory>/
   plan.json
-  events.jsonl
+  events.sqlite3
   artifacts/
   independent_receipt.json
   report.json
 ```
 
-`events.jsonl` is the only state history. `ExperiencePacket`, receipt, and
-report are deterministic projections from bound artifacts and events. No
-parallel status file, database, or second journal is introduced.
+`events.sqlite3` is the only state history and directly uses the existing
+`FlywheelEventLog` immutable tables. `ExperiencePacket`, receipt, and report
+are deterministic projections from bound artifacts and events. The run-local
+database is the self-contained flight recorder; no global database, parallel
+status file, or second journal is introduced.
 
 The reducer must be able to recreate `report.json` from a clean process. A
 report that cannot be reproduced is invalid.
