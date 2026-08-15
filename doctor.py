@@ -16,14 +16,14 @@ from pathlib import Path
 from typing import Any
 
 
-SCHEMA_VERSION = "compass.doctor.v1"
+SCHEMA_VERSION = "compass.doctor.v2"
 _PACKAGE_NAME = "nautilus-compass"
 _DAEMON_FILE = "daemon.py"
 
 PackageProbe = Callable[[], tuple[bool, str, str]]
 DependencyProbe = Callable[[str], tuple[bool, str | None]]
 RepositoryProbe = Callable[[Path], str | None]
-DaemonProbe = Callable[[str], tuple[bool, str | None]]
+DaemonProbe = Callable[[str], dict[str, object]]
 
 
 def collect_doctor_report(
@@ -55,12 +55,32 @@ def collect_doctor_report(
     repository_commit = (repository_probe or _probe_repository)(repository)
     repository_hash = _hash_file(repository / _DAEMON_FILE)
     plugin_hash = _hash_file(plugin / _DAEMON_FILE)
-    authority_match = (
+    source_authority_match = (
         repository_hash is not None and plugin_hash is not None and repository_hash == plugin_hash
     )
     probe = daemon_probe or _probe_daemon
-    ping_ok, _ping_error = probe("ping")
-    recall_ok, _recall_error = probe("recall") if ping_ok else (False, None)
+    ping_response = probe("ping")
+    ping_ok = ping_response.get("ok") is True and ping_response.get("pong") is True
+    model_response = probe("score") if ping_ok else {}
+    scores = model_response.get("scores")
+    model_ok = (
+        model_response.get("ok") is True
+        and isinstance(scores, list)
+        and len(scores) == 1
+        and isinstance(scores[0], (int, float))
+    )
+    runtime_hash = _optional_string(ping_response.get("daemon_hash"))
+    runtime_python = _optional_string(ping_response.get("python_executable"))
+    runtime_source_root = _optional_string(ping_response.get("source_root"))
+    runtime_pid = ping_response.get("pid") if isinstance(ping_response.get("pid"), int) else None
+    runtime_authority_match = (
+        ping_ok
+        and plugin_hash is not None
+        and runtime_hash == plugin_hash
+        and _same_path(runtime_python, interpreter)
+        and _same_path(runtime_source_root, str(plugin))
+    )
+    authority_match = source_authority_match and runtime_authority_match
 
     reasons = []
     if not installed:
@@ -71,12 +91,12 @@ def collect_doctor_report(
         reasons.append("repository_unavailable")
     if plugin_hash is None:
         reasons.append("plugin_runtime_missing")
-    elif not authority_match:
+    elif not source_authority_match or (ping_ok and not runtime_authority_match):
         reasons.append("runtime_authority_mismatch")
     if not ping_ok:
         reasons.append("daemon_ping_failed")
-    elif not recall_ok:
-        reasons.append("functional_recall_failed")
+    elif not model_ok:
+        reasons.append("functional_model_failed")
 
     return {
         "schema_version": SCHEMA_VERSION,
@@ -89,11 +109,28 @@ def collect_doctor_report(
         "repository_commit": repository_commit,
         "repository_daemon_hash": repository_hash,
         "plugin_daemon_hash": plugin_hash,
+        "runtime_daemon_hash": runtime_hash,
+        "runtime_python_executable": runtime_python,
+        "runtime_pid": runtime_pid,
+        "runtime_source_root": runtime_source_root,
         "authority_match": authority_match,
         "daemon_ping_ok": ping_ok,
-        "functional_recall_ok": recall_ok,
+        "functional_model_ok": model_ok,
         "reason_codes": reasons,
     }
+
+
+def _optional_string(value: object) -> str | None:
+    return value if isinstance(value, str) and value else None
+
+
+def _same_path(left: str | None, right: str | None) -> bool:
+    if not left or not right:
+        return False
+    try:
+        return os.path.normcase(os.path.realpath(left)) == os.path.normcase(os.path.realpath(right))
+    except OSError:
+        return False
 
 
 def _probe_package() -> tuple[bool, str, str]:
@@ -159,13 +196,13 @@ def _hash_file(path: Path) -> str | None:
         return None
 
 
-def _probe_daemon(action: str) -> tuple[bool, str | None]:
+def _probe_daemon(action: str) -> dict[str, object]:
     payload: dict[str, Any] = {"action": action}
-    if action == "recall":
+    if action == "score":
         payload.update(
             {
-                "query": "compass doctor functional recall",
-                "top_k": 1,
+                "query": "compass doctor functional model probe",
+                "candidates": ["compass doctor functional model probe"],
             }
         )
     try:
@@ -180,12 +217,8 @@ def _probe_daemon(action: str) -> tuple[bool, str | None]:
                 response += chunk
         decoded = json.loads(response.partition(b"\n")[0].decode("utf-8"))
     except (OSError, UnicodeError, ValueError, json.JSONDecodeError) as exc:
-        return False, type(exc).__name__
-    if decoded.get("ok") is not True:
-        return False, str(decoded.get("error") or "daemon_request_failed")
-    if action == "ping":
-        return decoded.get("pong") is True, None
-    return isinstance(decoded.get("recall"), list), None
+        return {"ok": False, "error": type(exc).__name__}
+    return decoded if isinstance(decoded, dict) else {"ok": False, "error": "invalid_response"}
 
 
 def _print_human(report: dict[str, object]) -> None:
@@ -193,7 +226,7 @@ def _print_human(report: dict[str, object]) -> None:
     print(f"Compass doctor: {state}")
     print(f"  package: {report['package_version']} installed={report['package_installed']}")
     print(f"  python: {report['python_executable']}")
-    print(f"  daemon: ping={report['daemon_ping_ok']} recall={report['functional_recall_ok']}")
+    print(f"  daemon: ping={report['daemon_ping_ok']} model={report['functional_model_ok']}")
     print(f"  authority_match: {report['authority_match']}")
     if report["reason_codes"]:
         print(f"  blockers: {', '.join(report['reason_codes'])}")
