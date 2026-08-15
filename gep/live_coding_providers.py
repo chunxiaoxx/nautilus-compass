@@ -140,6 +140,76 @@ class OpenAICompatibleProvider:
         return _parse_openai_response(raw, latency_ms)
 
 
+class AnthropicCompatibleProvider:
+    """One fixed HTTPS messages client, used only after preflight."""
+
+    def __init__(
+        self,
+        suite: ValueSuite,
+        *,
+        environment: Mapping[str, str] | None = None,
+        transport: Callable[[str, Mapping[str, str], bytes, int, int], bytes] | None = None,
+    ) -> None:
+        if suite.provider.get("adapter_kind") != "anthropic_compatible":
+            raise LiveCodingError("provider_adapter_kind_invalid")
+        self._suite = suite
+        self._environment = os.environ if environment is None else environment
+        self._transport = _urllib_post if transport is None else transport
+        base_url = self._environment.get(str(suite.provider["base_url_env"]))
+        if not base_url:
+            raise LiveCodingError("provider_base_url_missing")
+        parsed = urlparse(base_url)
+        if (
+            parsed.scheme != "https"
+            or not parsed.netloc
+            or parsed.username
+            or parsed.password
+            or parsed.query
+            or parsed.fragment
+        ):
+            raise LiveCodingError("provider_base_url_invalid")
+        self._base_url = base_url.rstrip("/")
+
+    def invoke(self, prompt: str, *, timeout_seconds: int) -> ProviderResult:
+        if timeout_seconds != self._suite.execution["timeout_seconds"]:
+            raise ProviderCallError("provider_timeout_mismatch")
+        credential = self._environment.get(str(self._suite.provider["credential_env"]))
+        if not credential:
+            raise ProviderCallError("provider_credential_missing")
+        body = json.dumps(
+            {
+                "model": self._suite.provider["model_id"],
+                "max_tokens": self._suite.execution["max_completion_tokens"],
+                "messages": [{"role": "user", "content": prompt}],
+                "system": self._suite.execution["system_prompt"],
+                "temperature": 0,
+            },
+            ensure_ascii=False,
+            separators=(",", ":"),
+        ).encode("utf-8")
+        started = time.perf_counter()
+        try:
+            raw = self._transport(
+                self._base_url + "/v1/messages",
+                {
+                    "Content-Type": "application/json",
+                    "x-api-key": credential,
+                    "anthropic-version": str(self._suite.provider["api_version"]),
+                },
+                body,
+                timeout_seconds,
+                int(self._suite.execution["max_output_bytes"]),
+            )
+        except ProviderCallError:
+            raise
+        except TimeoutError as exc:
+            raise ProviderCallError("provider_timeout") from exc
+        except Exception as exc:
+            raise ProviderCallError("provider_transport_failed") from exc
+        latency_ms = max(0, int(round((time.perf_counter() - started) * 1000)))
+        return _parse_anthropic_response(raw, latency_ms)
+
+
 class ClaudeCliProvider:
     """Run one configured GLM-backed Claude CLI turn without tools or persistence."""
 
@@ -207,6 +277,30 @@ def _parse_openai_response(raw: bytes, latency_ms: int) -> ProviderResult:
             reported_model_id=value["model"],
             input_tokens=usage["prompt_tokens"],
             output_tokens=usage["completion_tokens"],
+            estimated_cost_usd=None,
+            latency_ms=latency_ms,
+        )
+    except (KeyError, IndexError, TypeError, ValueError, json.JSONDecodeError) as exc:
+        raise ProviderCallError("provider_output_invalid") from exc
+
+
+def _parse_anthropic_response(raw: bytes, latency_ms: int) -> ProviderResult:
+    try:
+        if len(raw) > 1024 * 1024:
+            raise ValueError("response too large")
+        value = json.loads(raw)
+        content = value["content"]
+        if not isinstance(content, list) or len(content) != 1:
+            raise ValueError("ambiguous content")
+        block = content[0]
+        if not isinstance(block, Mapping) or block.get("type") != "text":
+            raise ValueError("non-text content")
+        usage = value["usage"]
+        return ProviderResult(
+            output_text=block["text"],
+            reported_model_id=value["model"],
+            input_tokens=usage["input_tokens"],
+            output_tokens=usage["output_tokens"],
             estimated_cost_usd=None,
             latency_ms=latency_ms,
         )

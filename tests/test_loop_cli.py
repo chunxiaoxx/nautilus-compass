@@ -161,3 +161,50 @@ def test_loop_live_run_uses_a_bounded_fake_provider_and_independent_oracle(
     assert report["experience_candidate"]["capsule_candidate"] is True
     assert all(value is False for value in report["promotion"].values())
     assert "Compass learning loop: Gold" in capsys.readouterr().out
+
+
+def test_loop_live_run_dispatches_anthropic_compatible_suite_without_cli(
+    tmp_path: Path, monkeypatch, capsys
+) -> None:
+    class FakeProvider:
+        def __init__(self, _suite) -> None:
+            self.outputs = [
+                '{"answer":"Reject bool before accepting int.","reuse_advice":"Reject bool before accepting int in related validators."}',
+                '{"answer":"isinstance(value, int)"}',
+                '{"answer":"not isinstance(value, bool) and isinstance(value, int) and 0 <= value <= 255"}',
+            ]
+
+        def invoke(self, prompt: str, *, timeout_seconds: int):
+            del prompt
+            assert timeout_seconds == 60
+            return live_adapter_module.ProviderResult(
+                output_text=self.outputs.pop(0),
+                reported_model_id="glm-5.2[1m]",
+                input_tokens=10,
+                output_tokens=4,
+                estimated_cost_usd=0.001,
+                latency_ms=1,
+            )
+
+    monkeypatch.setenv("ANTHROPIC_BASE_URL", "https://example.invalid/anthropic")
+    monkeypatch.setenv("ANTHROPIC_AUTH_TOKEN", "test-only-secret")
+    monkeypatch.setattr(loop_cli, "AnthropicCompatibleProvider", FakeProvider)
+    out = tmp_path / "live-direct"
+
+    assert (
+        loop_cli.main(
+            [
+                "live-run",
+                str(ROOT / "benchmarks" / "dogfood_mvp_v1" / "value_suite_direct.json"),
+                "--out",
+                str(out),
+            ]
+        )
+        == 0
+    )
+
+    report = json.loads((out / "report.json").read_text(encoding="utf-8"))
+    assert report["decision"] == "Gold"
+    assert report["experience_candidate"]["capsule_candidate"] is True
+    assert all(value is False for value in report["promotion"].values())
+    assert "test-only-secret" not in capsys.readouterr().out

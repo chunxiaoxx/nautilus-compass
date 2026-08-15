@@ -10,6 +10,7 @@ import gep.live_coding_adapter as live_adapter_module
 from gep.loop_run import ActionArtifact, ActionExecutionFailure
 
 from gep.live_coding_adapter import (
+    AnthropicCompatibleProvider,
     ClaudeCliProvider,
     GateBSoftwareVerifier,
     LiveCodingAdapter,
@@ -159,6 +160,34 @@ def _reserve_glm_suite() -> dict[str, object]:
     return suite
 
 
+def _direct_glm_suite() -> dict[str, object]:
+    suite = _glm_suite()
+    suite["suite_id"] = "gate-b-live-coding-direct-v1"
+    suite["loop_plan"]["run_id"] = "gate-b-live-coding-direct-1"
+    suite["loop_plan"]["task"]["cases"]["transfer"] = {
+        "id": "python-bool-exit-code-transfer",
+        "prompt": (
+            "For this Python predicate, return the corrected expression as answer. It must accept "
+            "integer process exit codes 0 through 255 and reject booleans."
+        ),
+    }
+    suite["loop_plan"]["oracle"]["cases"]["transfer"] = {
+        "expected": "not isinstance(value, bool) and isinstance(value, int) and 0 <= value <= 255"
+    }
+    suite["provider"] = {
+        "adapter_kind": "anthropic_compatible",
+        "adapter_version": "anthropic-messages-v1",
+        "base_url_env": "ANTHROPIC_BASE_URL",
+        "credential_env": "ANTHROPIC_AUTH_TOKEN",
+        "api_version": "2023-06-01",
+        "model_id": "glm-5.2[1m]",
+        "provider_id": "custom-anthropic-proxy",
+    }
+    suite.pop("suite_hash")
+    suite["suite_hash"] = _hash(suite)
+    return suite
+
+
 def test_preflight_binds_all_three_frozen_requests_without_provider_calls(tmp_path: Path) -> None:
     suite = load_value_suite(_write_suite(tmp_path / "suite.json", _suite()))
 
@@ -209,6 +238,36 @@ def test_committed_reserve_suite_is_sealed_and_preflightable() -> None:
     assert receipt["suite_id"] == "gate-b-live-coding-reserve-v1"
     assert receipt["expected_calls"] == 3
     assert receipt["zero_provider_calls"] is True
+
+
+def test_committed_direct_suite_is_sealed_and_uses_its_own_transfer_oracle() -> None:
+    suite = load_value_suite(ROOT / "benchmarks" / "dogfood_mvp_v1" / "value_suite_direct.json")
+    receipt = preflight_value_suite(
+        suite,
+        environment={
+            "ANTHROPIC_BASE_URL": "https://example.invalid/anthropic",
+            "ANTHROPIC_AUTH_TOKEN": "present-only",
+        },
+    )
+    verifier = GateBSoftwareVerifier(suite)
+    artifact = ActionArtifact(
+        episode_id="direct-transfer",
+        episode_event_hash="sha256:" + "e" * 64,
+        content={
+            "answer": "not isinstance(value, bool) and isinstance(value, int) and 0 <= value <= 255"
+        },
+        tool_chain=("model",),
+    )
+
+    verdict = verifier.verify(
+        {"episode_id": "direct-transfer", "task_case_id": "transfer"},
+        artifact,
+        suite.loop_plan["oracle"],
+    )
+
+    assert receipt["suite_id"] == "gate-b-live-coding-direct-v1"
+    assert receipt["zero_provider_calls"] is True
+    assert verdict.outcome == "success"
 
 
 class _FakeProvider:
@@ -373,6 +432,65 @@ def test_provider_boundary_fails_closed_for_missing_credential_timeout_and_parti
             tmp_path,
         )
     assert sorted(path.name for path in tmp_path.glob("*.json")) == ["suite.json"]
+
+
+def test_anthropic_compatible_provider_binds_one_messages_request_without_exposing_credentials(
+    tmp_path: Path,
+) -> None:
+    suite = load_value_suite(_write_suite(tmp_path / "suite.json", _direct_glm_suite()))
+    observed: dict[str, object] = {}
+
+    def transport(
+        url: str,
+        headers: dict[str, str],
+        body: bytes,
+        timeout_seconds: int,
+        max_output_bytes: int,
+    ) -> bytes:
+        observed.update(
+            url=url,
+            headers=headers,
+            body=json.loads(body),
+            timeout_seconds=timeout_seconds,
+            max_output_bytes=max_output_bytes,
+        )
+        return json.dumps(
+            {
+                "model": "glm-5.2[1m]",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": '{"answer":"source-fixed","reuse_advice":"reject bool before int"}',
+                    }
+                ],
+                "usage": {"input_tokens": 10, "output_tokens": 4},
+            }
+        ).encode()
+
+    environment = {
+        "ANTHROPIC_BASE_URL": "https://example.invalid/anthropic",
+        "ANTHROPIC_AUTH_TOKEN": "present-only",
+    }
+    receipt = preflight_value_suite(suite, environment=environment)
+    provider = AnthropicCompatibleProvider(suite, environment=environment, transport=transport)
+    result = provider.invoke("safe", timeout_seconds=30)
+
+    assert receipt["provider_access_mode"] == "environment_credential"
+    assert result.reported_model_id == "glm-5.2[1m]"
+    assert observed["url"] == "https://example.invalid/anthropic/v1/messages"
+    assert observed["headers"] == {
+        "Content-Type": "application/json",
+        "x-api-key": "present-only",
+        "anthropic-version": "2023-06-01",
+    }
+    assert observed["body"] == {
+        "model": "glm-5.2[1m]",
+        "max_tokens": 128,
+        "messages": [{"role": "user", "content": "safe"}],
+        "system": "Return one JSON object and do not use tools.",
+        "temperature": 0,
+    }
+    assert "present-only" not in json.dumps(receipt)
 
 
 def test_claude_cli_provider_is_fixed_tool_free_and_parses_the_reported_glm_identity(
