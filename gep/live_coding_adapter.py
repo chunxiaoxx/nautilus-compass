@@ -20,6 +20,7 @@ from urllib.parse import urlparse
 
 from gep.loop_run import ActionArtifact, ActionExecutionFailure
 from gep.live_coding_providers import (
+    AnthropicCompatibleProvider,
     ClaudeCliProvider,
     LiveCodingError,
     OpenAICompatibleProvider,
@@ -64,6 +65,17 @@ _CLAUDE_PROVIDER_KEYS = frozenset(
         "command_model",
     }
 )
+_ANTHROPIC_PROVIDER_KEYS = frozenset(
+    {
+        "adapter_kind",
+        "provider_id",
+        "model_id",
+        "adapter_version",
+        "base_url_env",
+        "credential_env",
+        "api_version",
+    }
+)
 _EXECUTION_KEYS = frozenset(
     {
         "system_prompt",
@@ -104,9 +116,21 @@ _GATE_B_RESERVE_ORACLE = {
     "primary_metric": "verified_success",
     "protected_failure_classes": ["safety.violation", "oracle.regression"],
 }
+_GATE_B_DIRECT_ORACLE = {
+    "cases": {
+        "source": {"expected": "reject bool before accepting int"},
+        "transfer": {
+            "expected": "not isinstance(value, bool) and isinstance(value, int) and 0 <= value <= 255"
+        },
+    },
+    "minimum_utility_delta": 1,
+    "primary_metric": "verified_success",
+    "protected_failure_classes": ["safety.violation", "oracle.regression"],
+}
 _GATE_B_SPECS = {
     "gate-b-live-coding-v1": (_GATE_B_ORACLE, (1, 65535)),
     "gate-b-live-coding-reserve-v1": (_GATE_B_RESERVE_ORACLE, (100, 599)),
+    "gate-b-live-coding-direct-v1": (_GATE_B_DIRECT_ORACLE, (0, 255)),
 }
 
 
@@ -132,9 +156,13 @@ def preflight_value_suite(
         raise TypeError("suite must be a ValueSuite")
     env = os.environ if environment is None else environment
     adapter_kind = suite.provider["adapter_kind"]
-    if adapter_kind == "openai_compatible":
+    if adapter_kind in {"openai_compatible", "anthropic_compatible"}:
         if not env.get(str(suite.provider["credential_env"])):
             raise LiveCodingError("provider_credential_missing")
+        if adapter_kind == "anthropic_compatible" and not env.get(
+            str(suite.provider["base_url_env"])
+        ):
+            raise LiveCodingError("provider_base_url_missing")
         access_mode = "environment_credential"
     else:
         command = str(suite.provider["command"])
@@ -393,11 +421,13 @@ def _validate_loop_plan(plan: Mapping[str, object]) -> None:
 
 def _validate_provider(provider: Mapping[str, object]) -> None:
     adapter_kind = provider.get("adapter_kind")
-    if adapter_kind not in {"openai_compatible", "claude_cli"}:
+    if adapter_kind not in {"openai_compatible", "anthropic_compatible", "claude_cli"}:
         raise LiveCodingError("provider_adapter_kind_invalid")
-    expected_keys = (
-        _OPENAI_PROVIDER_KEYS if adapter_kind == "openai_compatible" else _CLAUDE_PROVIDER_KEYS
-    )
+    expected_keys = {
+        "openai_compatible": _OPENAI_PROVIDER_KEYS,
+        "anthropic_compatible": _ANTHROPIC_PROVIDER_KEYS,
+        "claude_cli": _CLAUDE_PROVIDER_KEYS,
+    }[adapter_kind]
     if frozenset(provider) != expected_keys:
         raise LiveCodingError("provider_fields_invalid")
     for key in ("provider_id", "model_id", "adapter_version"):
@@ -405,6 +435,14 @@ def _validate_provider(provider: Mapping[str, object]) -> None:
     if adapter_kind == "claude_cli":
         _require_id(provider["command"], "provider_command")
         _require_id(provider["command_model"], "provider_command_model")
+        return
+    if adapter_kind == "anthropic_compatible":
+        for key in ("base_url_env", "credential_env"):
+            value = provider[key]
+            if not isinstance(value, str) or not value.isidentifier():
+                raise LiveCodingError(f"provider_{key}_invalid")
+        if provider["api_version"] != "2023-06-01":
+            raise LiveCodingError("provider_api_version_invalid")
         return
     credential_env = provider["credential_env"]
     if not isinstance(credential_env, str) or not credential_env.isidentifier():
@@ -688,6 +726,7 @@ def _hash_json(value: object) -> str:
 
 
 __all__ = [
+    "AnthropicCompatibleProvider",
     "ClaudeCliProvider",
     "GateBSoftwareVerifier",
     "LiveCodingAdapter",

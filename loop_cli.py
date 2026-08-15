@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from gep.live_coding_adapter import (
+    AnthropicCompatibleProvider,
     ClaudeCliProvider,
     GateBSoftwareVerifier,
     LiveCodingAdapter,
@@ -94,7 +95,7 @@ def main(argv: list[str] | None = None) -> int:
             report = run_loop(
                 suite.loop_plan,
                 args.out,
-                LiveCodingAdapter(suite, ClaudeCliProvider(suite)),
+                LiveCodingAdapter(suite, _live_provider(suite)),
                 GateBSoftwareVerifier(suite),
             )
     except (
@@ -152,6 +153,18 @@ def _prepare_output(path: Path) -> None:
     if not path.is_dir() or any(path.iterdir()):
         raise LoopRunError("output directory must be new or empty")
     path.rmdir()
+
+
+def _live_provider(suite: object):
+    provider = getattr(suite, "provider", None)
+    if not isinstance(provider, Mapping):
+        raise LiveCodingError("provider_config_invalid")
+    adapter_kind = provider.get("adapter_kind")
+    if adapter_kind == "claude_cli":
+        return ClaudeCliProvider(suite)
+    if adapter_kind == "anthropic_compatible":
+        return AnthropicCompatibleProvider(suite)
+    raise LiveCodingError("provider_adapter_not_runnable")
 
 
 def _print_summary(report: Mapping[str, object]) -> None:
