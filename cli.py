@@ -26,6 +26,7 @@ __all__ = ["main"]
 # subcommand name → (module suffix, callable name)
 _SUBCOMMANDS: dict[str, tuple[str, str]] = {
     "doctor": ("doctor", "main"),
+    "loop": ("loop_cli", "main"),
     "drift-history": ("drift_history", "main"),
     "session-search": ("session_search", "main"),
     "session-writer": ("session_writer", "main"),
@@ -35,6 +36,7 @@ _SUBCOMMANDS: dict[str, tuple[str, str]] = {
 
 _DESCRIPTIONS = {
     "doctor": "verify the installed package, daemon, dependencies, and recall",
+    "loop": "run or replay deterministic local learning-loop evidence",
     "drift-history": "persona-drift trend across all projects",
     "session-search": "semantic search over session memory",
     "session-writer": "distill + write a session memory file",

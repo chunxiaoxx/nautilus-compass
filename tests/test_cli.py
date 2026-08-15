@@ -28,7 +28,15 @@ def test_help_lists_all_subcommands(capsys):
     rc = main(["--help"])
     out = capsys.readouterr().out
     assert rc == 0
-    for sub in ("doctor", "drift-history", "session-search", "session-writer", "mcp", "a2a"):
+    for sub in (
+        "doctor",
+        "loop",
+        "drift-history",
+        "session-search",
+        "session-writer",
+        "mcp",
+        "a2a",
+    ):
         assert sub in out
 
 
