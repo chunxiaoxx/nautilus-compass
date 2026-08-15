@@ -61,6 +61,24 @@ still valid for non-Python clients and sits further down the page.
 - `compass` daemon running on `127.0.0.1:9876` (started by
   `daemon_start.sh`, or lazy-spawned on first `recall` call)
 
+### Windows runtime authority
+
+Use one explicit interpreter for dependency checks, daemon startup, and the
+functional readiness probe. The launcher first reads `COMPASS_PYTHON`, then
+tries the repository-local `.venv\Scripts\python.exe`, and only then falls
+back to `python` on `PATH`:
+
+```powershell
+$env:COMPASS_PYTHON = "C:\path\to\nautilus-compass\.venv\Scripts\python.exe"
+powershell -ExecutionPolicy Bypass -File .\daemon_start.ps1
+python .\doctor.py --json
+```
+
+The launcher fails closed when model dependencies cannot import, when another
+daemon only answers `ping` but cannot complete `recall`, or when the running
+daemon does not match the selected source tree. It never replaces or stops an
+unknown process automatically.
+
 ## Register in Claude Code
 
 Add to `~/.claude/.mcp.json` (or the project-scoped `.mcp.json`):
