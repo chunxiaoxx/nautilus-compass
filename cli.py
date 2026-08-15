@@ -13,6 +13,7 @@ umbrella was missing, so the installed `nautilus-compass` crashed at
 import. Lightweight on purpose — heavy subcommand imports happen only
 on dispatch.
 """
+
 from __future__ import annotations
 
 import importlib
@@ -24,6 +25,7 @@ __all__ = ["main"]
 
 # subcommand name → (module suffix, callable name)
 _SUBCOMMANDS: dict[str, tuple[str, str]] = {
+    "doctor": ("doctor", "main"),
     "drift-history": ("drift_history", "main"),
     "session-search": ("session_search", "main"),
     "session-writer": ("session_writer", "main"),
@@ -32,6 +34,7 @@ _SUBCOMMANDS: dict[str, tuple[str, str]] = {
 }
 
 _DESCRIPTIONS = {
+    "doctor": "verify the installed package, daemon, dependencies, and recall",
     "drift-history": "persona-drift trend across all projects",
     "session-search": "semantic search over session memory",
     "session-writer": "distill + write a session memory file",
@@ -53,9 +56,7 @@ def _read_version() -> str:
     # repo-root fallback · parse sibling __init__.py without importing it
     init = Path(__file__).resolve().parent / "__init__.py"
     try:
-        m = re.search(
-            r'__version__\s*=\s*["\']([^"\']+)', init.read_text(encoding="utf-8")
-        )
+        m = re.search(r'__version__\s*=\s*["\']([^"\']+)', init.read_text(encoding="utf-8"))
         if m:
             return m.group(1)
     except Exception:
@@ -67,8 +68,7 @@ def _print_usage(stream=None) -> None:
     stream = stream or sys.stdout
     width = max(len(s) for s in _SUBCOMMANDS)
     lines = [
-        f"nautilus-compass {_read_version()} · "
-        "black-box agent memory with drift detection",
+        f"nautilus-compass {_read_version()} · black-box agent memory with drift detection",
         "",
         "usage: nautilus-compass <subcommand> [args...]",
         "",
