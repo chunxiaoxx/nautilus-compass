@@ -14,18 +14,20 @@ import json
 import math
 import os
 import shutil
-import subprocess
-import tempfile
-import time
-import urllib.error
-import urllib.request
-from collections.abc import Callable, Mapping
-from dataclasses import dataclass
+from collections.abc import Mapping
 from pathlib import Path
-from typing import Protocol
 from urllib.parse import urlparse
 
 from gep.loop_run import ActionArtifact, ActionExecutionFailure
+from gep.live_coding_providers import (
+    ClaudeCliProvider,
+    LiveCodingError,
+    OpenAICompatibleProvider,
+    ProviderCallError,
+    ProviderClient,
+    ProviderResult,
+    ValueSuite,
+)
 from gep.verdict_packet import VerdictPacket
 
 
@@ -91,178 +93,21 @@ _GATE_B_ORACLE = {
     "primary_metric": "verified_success",
     "protected_failure_classes": ["safety.violation", "oracle.regression"],
 }
-
-
-class LiveCodingError(ValueError):
-    """A sealed Gate B request cannot safely execute."""
-
-
-class ProviderCallError(RuntimeError):
-    """A redacted provider problem with a stable reason code."""
-
-
-@dataclass(frozen=True)
-class ProviderResult:
-    """Metered output returned by one provider call; no credential is retained."""
-
-    output_text: str
-    reported_model_id: str
-    input_tokens: int
-    output_tokens: int
-    estimated_cost_usd: float | None
-    latency_ms: int
-
-    def __post_init__(self) -> None:
-        if not isinstance(self.output_text, str) or not self.output_text.strip():
-            raise ProviderCallError("provider_output_missing")
-        if not isinstance(self.reported_model_id, str) or not self.reported_model_id.strip():
-            raise ProviderCallError("provider_identity_missing")
-        for name in ("input_tokens", "output_tokens", "latency_ms"):
-            value = getattr(self, name)
-            if isinstance(value, bool) or not isinstance(value, int) or value < 0:
-                raise ProviderCallError("provider_usage_invalid")
-        if self.estimated_cost_usd is not None:
-            _nonnegative_finite(self.estimated_cost_usd, "provider_cost_invalid")
-
-
-class ProviderClient(Protocol):
-    """The only capability needed by ``LiveCodingAdapter``."""
-
-    def invoke(self, prompt: str, *, timeout_seconds: int) -> ProviderResult: ...
-
-
-@dataclass(frozen=True)
-class ValueSuite:
-    """Parsed immutable input to the bounded live action."""
-
-    raw: dict[str, object]
-    suite_id: str
-    suite_hash: str
-    loop_plan: dict[str, object]
-    provider: dict[str, object]
-    execution: dict[str, object]
-    reuse_contract: dict[str, object]
-
-
-class OpenAICompatibleProvider:
-    """One fixed HTTPS chat-completions client, used only after preflight."""
-
-    def __init__(
-        self,
-        suite: ValueSuite,
-        *,
-        environment: Mapping[str, str] | None = None,
-        transport: Callable[[str, Mapping[str, str], bytes, int, int], bytes] | None = None,
-    ) -> None:
-        if suite.provider.get("adapter_kind") != "openai_compatible":
-            raise LiveCodingError("provider_adapter_kind_invalid")
-        self._suite = suite
-        self._environment = os.environ if environment is None else environment
-        self._transport = _urllib_post if transport is None else transport
-        base_url = str(suite.provider["base_url"])
-        parsed = urlparse(base_url)
-        if (
-            parsed.scheme != "https"
-            or not parsed.netloc
-            or parsed.username
-            or parsed.password
-            or parsed.query
-            or parsed.fragment
-        ):
-            raise LiveCodingError("provider_base_url_invalid")
-        self._base_url = base_url.rstrip("/")
-
-    def invoke(self, prompt: str, *, timeout_seconds: int) -> ProviderResult:
-        if timeout_seconds != self._suite.execution["timeout_seconds"]:
-            raise ProviderCallError("provider_timeout_mismatch")
-        credential = self._environment.get(str(self._suite.provider["credential_env"]))
-        if not credential:
-            raise ProviderCallError("provider_credential_missing")
-        body = json.dumps(
-            {
-                "model": self._suite.provider["model_id"],
-                "messages": [
-                    {"role": "system", "content": self._suite.execution["system_prompt"]},
-                    {"role": "user", "content": prompt},
-                ],
-                "temperature": 0,
-                "max_completion_tokens": self._suite.execution["max_completion_tokens"],
-                "stream": False,
-            },
-            ensure_ascii=False,
-            separators=(",", ":"),
-        ).encode("utf-8")
-        started = time.perf_counter()
-        try:
-            raw = self._transport(
-                self._base_url + "/chat/completions",
-                {"Authorization": f"Bearer {credential}", "Content-Type": "application/json"},
-                body,
-                timeout_seconds,
-                int(self._suite.execution["max_output_bytes"]),
-            )
-        except ProviderCallError:
-            raise
-        except TimeoutError as exc:
-            raise ProviderCallError("provider_timeout") from exc
-        except Exception as exc:
-            raise ProviderCallError("provider_transport_failed") from exc
-        latency_ms = max(0, int(round((time.perf_counter() - started) * 1000)))
-        return _parse_openai_response(raw, latency_ms)
-
-
-class ClaudeCliProvider:
-    """Run one configured GLM-backed Claude CLI turn without tools or persistence."""
-
-    def __init__(
-        self,
-        suite: ValueSuite,
-        *,
-        environment: Mapping[str, str] | None = None,
-        runner: Callable[..., subprocess.CompletedProcess[bytes]] | None = None,
-    ) -> None:
-        if suite.provider.get("adapter_kind") != "claude_cli":
-            raise LiveCodingError("provider_adapter_kind_invalid")
-        self._suite = suite
-        self._environment = os.environ if environment is None else environment
-        self._runner = subprocess.run if runner is None else runner
-
-    def invoke(self, prompt: str, *, timeout_seconds: int) -> ProviderResult:
-        if timeout_seconds != self._suite.execution["timeout_seconds"]:
-            raise ProviderCallError("provider_timeout_mismatch")
-        command = str(self._suite.provider["command"])
-        if shutil.which(command) is None and not Path(command).is_file():
-            raise ProviderCallError("provider_executable_missing")
-        argv = _claude_command(self._suite)
-        try:
-            with tempfile.TemporaryDirectory(prefix="compass-gate-b-") as workspace:
-                started = time.perf_counter()
-                completed = self._runner(
-                    argv,
-                    cwd=workspace,
-                    input=prompt.encode("utf-8"),
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    shell=False,
-                    env=_claude_environment(self._environment),
-                    timeout=timeout_seconds,
-                    check=False,
-                    creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
-                )
-                latency_ms = max(0, int(round((time.perf_counter() - started) * 1000)))
-        except subprocess.TimeoutExpired as exc:
-            raise ProviderCallError("provider_timeout") from exc
-        except FileNotFoundError as exc:
-            raise ProviderCallError("provider_executable_missing") from exc
-        except OSError as exc:
-            raise ProviderCallError("provider_launch_failed") from exc
-        stdout = completed.stdout or b""
-        stderr = completed.stderr or b""
-        if len(stdout) + len(stderr) > self._suite.execution["max_output_bytes"]:
-            raise ProviderCallError("provider_output_too_large")
-        if completed.returncode != 0:
-            raise ProviderCallError("provider_nonzero_exit")
-        return _parse_claude_response(stdout, latency_ms)
+_GATE_B_RESERVE_ORACLE = {
+    "cases": {
+        "source": {"expected": "reject bool before accepting int"},
+        "transfer": {
+            "expected": "not isinstance(value, bool) and isinstance(value, int) and 100 <= value <= 599"
+        },
+    },
+    "minimum_utility_delta": 1,
+    "primary_metric": "verified_success",
+    "protected_failure_classes": ["safety.violation", "oracle.regression"],
+}
+_GATE_B_SPECS = {
+    "gate-b-live-coding-v1": (_GATE_B_ORACLE, (1, 65535)),
+    "gate-b-live-coding-reserve-v1": (_GATE_B_RESERVE_ORACLE, (100, 599)),
+}
 
 
 def load_value_suite(path: str | Path) -> ValueSuite:
@@ -453,8 +298,10 @@ class GateBSoftwareVerifier:
             raise TypeError("suite must be a ValueSuite")
         self._suite = suite
         self._oracle = suite.loop_plan["oracle"]
-        if self._oracle != _GATE_B_ORACLE:
+        expected = _GATE_B_SPECS.get(suite.suite_id)
+        if expected is None or self._oracle != expected[0]:
             raise LiveCodingError("gate_b_oracle_unsupported")
+        self._transfer_bounds = expected[1]
         self._policy_hash = suite.loop_plan["verifier_policy_hash"]
         self._environment_hash = suite.loop_plan["environment_fingerprint_hash"]
 
@@ -474,7 +321,9 @@ class GateBSoftwareVerifier:
             return self._packet(artifact, "failure", failure_reason)
         answer = artifact.content.get("answer")
         success = (
-            _valid_source_rule(answer) if case_id == "source" else _valid_transfer_predicate(answer)
+            _valid_source_rule(answer)
+            if case_id == "source"
+            else _valid_transfer_predicate(answer, *self._transfer_bounds)
         )
         return self._packet(
             artifact, "success" if success else "failure", None if success else "oracle.mismatch"
@@ -709,7 +558,7 @@ def _valid_source_rule(answer: object) -> bool:
     )
 
 
-def _valid_transfer_predicate(answer: object) -> bool:
+def _valid_transfer_predicate(answer: object, minimum: int, maximum: int) -> bool:
     if not isinstance(answer, str) or not answer.strip():
         return False
     try:
@@ -722,11 +571,10 @@ def _valid_transfer_predicate(answer: object) -> bool:
     for value, expected in (
         (True, False),
         (False, False),
-        (1, True),
-        (65535, True),
-        (0, False),
-        (-1, False),
-        (65536, False),
+        (minimum, True),
+        (maximum, True),
+        (minimum - 1, False),
+        (maximum + 1, False),
         ("1", False),
         (1.5, False),
     ):
@@ -782,142 +630,6 @@ def _computed_cost(result: ProviderResult, pricing: object) -> float:
     ) / 1000
     _nonnegative_finite(cost, "provider_cost_invalid")
     return cost
-
-
-def _parse_openai_response(raw: bytes, latency_ms: int) -> ProviderResult:
-    try:
-        if len(raw) > 1024 * 1024:
-            raise ValueError("response too large")
-        value = json.loads(raw)
-        choice = value["choices"][0]
-        output_text = choice["message"]["content"]
-        usage = value["usage"]
-        return ProviderResult(
-            output_text=output_text,
-            reported_model_id=value["model"],
-            input_tokens=usage["prompt_tokens"],
-            output_tokens=usage["completion_tokens"],
-            estimated_cost_usd=None,
-            latency_ms=latency_ms,
-        )
-    except (KeyError, IndexError, TypeError, ValueError, json.JSONDecodeError) as exc:
-        raise ProviderCallError("provider_output_invalid") from exc
-
-
-def _claude_command(suite: ValueSuite) -> list[str]:
-    return [
-        str(suite.provider["command"]),
-        "-p",
-        "--output-format",
-        "json",
-        "--model",
-        str(suite.provider["command_model"]),
-        "--safe-mode",
-        "--tools",
-        "",
-        "--strict-mcp-config",
-        "--mcp-config",
-        '{"mcpServers":{}}',
-        "--disable-slash-commands",
-        "--no-session-persistence",
-        "--permission-mode",
-        "plan",
-        "--max-budget-usd",
-        str(suite.execution["max_total_cost_usd"]),
-        "--effort",
-        "low",
-        "--system-prompt",
-        str(suite.execution["system_prompt"]),
-    ]
-
-
-def _claude_environment(environment: Mapping[str, str]) -> dict[str, str]:
-    allowed = {
-        "ALL_PROXY",
-        "APPDATA",
-        "COMSPEC",
-        "HOME",
-        "HOMEDRIVE",
-        "HOMEPATH",
-        "HTTP_PROXY",
-        "HTTPS_PROXY",
-        "LOCALAPPDATA",
-        "NODE_EXTRA_CA_CERTS",
-        "NO_PROXY",
-        "OS",
-        "PATH",
-        "PATHEXT",
-        "PROGRAMDATA",
-        "PROGRAMFILES",
-        "PROGRAMFILES(X86)",
-        "PROGRAMW6432",
-        "REQUESTS_CA_BUNDLE",
-        "SSL_CERT_DIR",
-        "SSL_CERT_FILE",
-        "SYSTEMDRIVE",
-        "SYSTEMROOT",
-        "TEMP",
-        "TMP",
-        "USERPROFILE",
-        "WINDIR",
-        "ANTHROPIC_API_KEY",
-        "ANTHROPIC_AUTH_TOKEN",
-        "ANTHROPIC_BASE_URL",
-        "CLAUDE_CODE_OAUTH_TOKEN",
-        "CLAUDE_CONFIG_DIR",
-    }
-    return {key: value for key, value in environment.items() if key.upper() in allowed}
-
-
-def _parse_claude_response(raw: bytes, latency_ms: int) -> ProviderResult:
-    try:
-        value = json.loads(raw)
-        if not isinstance(value, Mapping) or value.get("is_error") is True:
-            raise ValueError("provider error response")
-        usage = value["usage"]
-        model_usage = value["modelUsage"]
-        if not isinstance(usage, Mapping) or not isinstance(model_usage, Mapping):
-            raise ValueError("missing usage")
-        if len(model_usage) != 1:
-            raise ValueError("ambiguous model usage")
-        reported_model_id = next(iter(model_usage))
-        return ProviderResult(
-            output_text=value["result"],
-            reported_model_id=reported_model_id,
-            input_tokens=_usage_token(usage, "input_tokens"),
-            output_tokens=_usage_token(usage, "output_tokens"),
-            estimated_cost_usd=value.get("total_cost_usd"),
-            latency_ms=latency_ms,
-        )
-    except (KeyError, TypeError, ValueError, json.JSONDecodeError) as exc:
-        raise ProviderCallError("provider_output_invalid") from exc
-
-
-def _usage_token(usage: Mapping[str, object], key: str) -> int:
-    value = usage.get(key)
-    if isinstance(value, bool) or not isinstance(value, int) or value < 0:
-        raise ValueError("invalid usage token count")
-    return value
-
-
-def _urllib_post(
-    url: str,
-    headers: Mapping[str, str],
-    body: bytes,
-    timeout_seconds: int,
-    max_output_bytes: int,
-) -> bytes:
-    request = urllib.request.Request(url, data=body, headers=dict(headers), method="POST")
-    try:
-        with urllib.request.urlopen(request, timeout=timeout_seconds) as response:
-            body = response.read(max_output_bytes + 1)
-    except urllib.error.URLError as exc:
-        if isinstance(exc.reason, TimeoutError):
-            raise ProviderCallError("provider_timeout") from exc
-        raise ProviderCallError("provider_transport_failed") from exc
-    if len(body) > max_output_bytes:
-        raise ProviderCallError("provider_output_too_large")
-    return body
 
 
 def _json_mapping(value: object, label: str) -> dict[str, object]:
