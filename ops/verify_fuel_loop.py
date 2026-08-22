@@ -1,4 +1,4 @@
-"""compass · fuel-loop 部署验证探针。
+"""compass · fuel-loop 部署验证探针(2026-08-22 grounded 修订:见各检查项注释)。
 
 codex 部署 fuel-loop 到 cloud 后，compass 用此脚本独立验证端到端。
 
@@ -20,10 +20,12 @@ from pathlib import Path
 
 def check_files():
     """检查 fuel-loop 三个核心文件是否部署。"""
+    # 2026-08-22 grounded:实际部署仓 = /home/ubuntu/nautilus-v5(cloud 真实布局,
+    # 原 /opt/nautilus 是旧 phase3 平台 repo · 8/9 写探针时的假设未 grounding)
     expected = [
-        "/opt/nautilus/nautilus-v5/fde_capsule/fuel_admission_receipt.py",
-        "/opt/nautilus/nautilus-v5/fde_capsule/feishu/fuel_intake.py",
-        "/opt/nautilus/nautilus-v5/nautilus_v5/platform/fde_admission.py",
+        "/home/ubuntu/nautilus-v5/fde_capsule/fuel_admission_receipt.py",
+        "/home/ubuntu/nautilus-v5/fde_capsule/feishu/fuel_intake.py",
+        "/home/ubuntu/nautilus-v5/nautilus_v5/platform/fde_admission.py",
     ]
     results = {}
     for path in expected:
@@ -35,8 +37,19 @@ def check_files():
 def check_db_table():
     """检查 fde_admission_ledger 表是否创建。"""
     try:
+        import os
+        import re as _re
         import psycopg2
-        conn = psycopg2.connect("dbname=nautilus user=nautilus host=localhost")
+        # grounded: 直接用 v5 daemon 的真实 DSN(/home/ubuntu/nautilus-v5/.env 的
+        # POSTGRES_DSN · 库=nautilus_production · 密码在该文件)
+        dsn = ""
+        env_path = "/home/ubuntu/nautilus-v5/.env"
+        if os.path.exists(env_path):
+            m = _re.search(r'^(?:V5_)?POSTGRES_DSN="?([^"\r\n]+)"?',
+                           open(env_path, encoding="utf-8").read(), _re.M)
+            if m:
+                dsn = m.group(1).strip()
+        conn = psycopg2.connect(dsn)
         cur = conn.cursor()
         cur.execute(
             "SELECT EXISTS(SELECT 1 FROM information_schema.tables "
@@ -54,7 +67,7 @@ def check_endpoint():
     try:
         import urllib.request
         req = urllib.request.Request(
-            "http://localhost:8000/api/platform/fde/admissions/test/consume",
+            "http://localhost:8001/api/platform/fde/admissions/test/consume",
             method="POST",
             data=b"{}",
             headers={"Content-Type": "application/json"},
