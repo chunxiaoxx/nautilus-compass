@@ -1,0 +1,29 @@
+{
+  "schema_version": "compass.loop.plan.v1",
+  "run_id": "gate-a-1",
+  "task": {
+    "id": "gate-a-repair",
+    "description": "repair the fixed fixture"
+  },
+  "oracle": {
+    "expected": "fixed"
+  },
+  "action_agent_id": 7,
+  "verifier_agent_id": 8,
+  "verifier_policy_hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+  "environment_fingerprint_hash": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+  "arms": [
+    {
+      "label": "control",
+      "episode_id": "gate-a-control",
+      "advice": null,
+      "occurred_at": "2026-08-15T00:00:00Z"
+    },
+    {
+      "label": "treatment",
+      "episode_id": "gate-a-treatment",
+      "advice": "apply the checked fix",
+      "occurred_at": "2026-08-15T00:01:00Z"
+    }
+  ]
+}

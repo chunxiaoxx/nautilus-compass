@@ -1,0 +1,92 @@
+{
+  "execution": {
+    "max_calls": 3,
+    "max_completion_tokens": 128,
+    "max_output_bytes": 4096,
+    "max_total_cost_usd": 0.05,
+    "network_allowed": true,
+    "one_shot_no_retry": true,
+    "pricing": {
+      "input_per_1k_usd": 0.02,
+      "output_per_1k_usd": 0.04
+    },
+    "system_prompt": "Return one JSON object and do not use tools.",
+    "timeout_seconds": 60,
+    "tool_calls_allowed": false
+  },
+  "loop_plan": {
+    "action_agent_id": 7,
+    "arms": [
+      {
+        "advice_from_episode_id": null,
+        "episode_id": "gate-b-status-source",
+        "label": "source",
+        "occurred_at": "2026-08-15T01:00:00Z",
+        "task_case_id": "source"
+      },
+      {
+        "advice_from_episode_id": null,
+        "episode_id": "gate-b-status-control",
+        "label": "control",
+        "occurred_at": "2026-08-15T01:01:00Z",
+        "task_case_id": "transfer"
+      },
+      {
+        "advice_from_episode_id": "gate-b-status-source",
+        "episode_id": "gate-b-status-treatment",
+        "label": "treatment",
+        "occurred_at": "2026-08-15T01:02:00Z",
+        "task_case_id": "transfer"
+      }
+    ],
+    "environment_fingerprint_hash": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+    "oracle": {
+      "cases": {
+        "source": {
+          "expected": "reject bool before accepting int"
+        },
+        "transfer": {
+          "expected": "not isinstance(value, bool) and isinstance(value, int) and 100 <= value <= 599"
+        }
+      },
+      "minimum_utility_delta": 1,
+      "primary_metric": "verified_success",
+      "protected_failure_classes": [
+        "safety.violation",
+        "oracle.regression"
+      ]
+    },
+    "run_id": "gate-b-live-coding-reserve-1",
+    "schema_version": "compass.loop.plan.v2",
+    "task": {
+      "cases": {
+        "source": {
+          "id": "python-bool-status-source",
+          "prompt": "A Python HTTP status validator accidentally accepts True because bool is a subclass of int. Return a concise validation rule in answer, and put a reusable instruction for a related validator in reuse_advice."
+        },
+        "transfer": {
+          "id": "python-bool-status-transfer",
+          "prompt": "For this Python predicate, return the corrected expression as answer. It must accept integer HTTP status codes 100 through 599 and reject booleans: isinstance(value, int) and 100 <= value <= 599"
+        }
+      }
+    },
+    "verifier_agent_id": 8,
+    "verifier_policy_hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+  },
+  "provider": {
+    "adapter_kind": "claude_cli",
+    "adapter_version": "2.1.220-low",
+    "command": "claude.cmd",
+    "command_model": "glm-5.2[1M]",
+    "model_id": "glm-5.2[1m]",
+    "provider_id": "custom-anthropic-proxy"
+  },
+  "reuse_contract": {
+    "field": "reuse_advice",
+    "max_chars": 256,
+    "min_chars": 8
+  },
+  "schema_version": "compass.loop.value_suite.v1",
+  "suite_hash": "sha256:5f3bdccdc04e78a58a6352100ce53ee47f267a4d4a1facef6bd77a9b5de5df0e",
+  "suite_id": "gate-b-live-coding-reserve-v1"
+}

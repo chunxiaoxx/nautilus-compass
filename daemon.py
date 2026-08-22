@@ -14,6 +14,7 @@ Protocol (JSON over TCP localhost:9876):
   · Anchors cache: similarly
   · 多客户端并发 OK · single threaded GIL 但 BGE encode 快 (~50ms/句)
 """
+import hashlib
 import json
 import os
 
@@ -1323,7 +1324,7 @@ def handle_conn(conn: socket.socket):
             conn.sendall(json.dumps({"ok":False,"error":f"json parse: {e}"}).encode("utf-8") + b"\n")
             return
         if req.get("action") == "ping":
-            conn.sendall(json.dumps({"ok":True,"pong":True}).encode("utf-8") + b"\n")
+            conn.sendall(json.dumps(_runtime_identity_payload()).encode("utf-8") + b"\n")
             return
         if req.get("action") == "shutdown":
             conn.sendall(b'{"ok":true,"shutdown":true}\n')
@@ -1348,6 +1349,20 @@ def handle_conn(conn: socket.socket):
     finally:
         try: conn.close()
         except Exception: pass
+
+
+def _runtime_identity_payload() -> dict:
+    """Return immutable facts about the process answering on the daemon port."""
+
+    daemon_path = Path(__file__).resolve()
+    return {
+        "ok": True,
+        "pong": True,
+        "pid": os.getpid(),
+        "python_executable": str(Path(sys.executable).resolve()),
+        "source_root": str(daemon_path.parent),
+        "daemon_hash": f"sha256:{hashlib.sha256(daemon_path.read_bytes()).hexdigest()}",
+    }
 
 
 def client(action: str, query: str, project: str, top_k: int = 5,
