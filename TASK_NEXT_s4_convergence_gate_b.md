@@ -47,3 +47,9 @@ memory: session-contract-dogfood-bridge-20260822 · convergence-state-snapshot-2
 ### 下一步(待批)
 1. suite 标定修正:prompt 显式写明"answer 须为以 value 为变量的谓词表达式"+source 措辞契约 → 预期 Gold 概率大增(这是把隐含约定变显式,非放宽 oracle)。
 2. 用 ledger 真燃料(compass_exp_c2e)构造真经验 suite 跑 Gate B。
+
+### 🏆 追记(同夜):首次 Gold 达成
+- 排障中发现并修复 adapter 中臂失败序号死锁(c093f98);标定 suite(prompt 显式化)后**第 6 次尝试 Gold**:
+  outputs/gate_b_cal2_20260822 · source✓ control✗ treatment✓ · delta=1 · verify 重放 rc=0 · promotion 全 false。
+- 标定 suite 已归档 benchmarks/dogfood_mvp_v1/value_suite_direct_calibrated_glm53.json。
+- 递归闭环第③④环首次叩门成功。下一目标:ledger 真燃料 suite + Gold 可复制性(n≥3)。
