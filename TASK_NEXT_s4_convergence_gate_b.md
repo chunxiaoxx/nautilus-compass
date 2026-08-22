@@ -23,3 +23,27 @@
 
 ## 关联
 memory: session-contract-dogfood-bridge-20260822 · convergence-state-snapshot-20260821
+
+---
+
+## ✅ 执行结果(2026-08-22 · 本 session 完成)
+
+### 任务 1 · S4 收敛:完成
+- `codex/compass-dogfood-mvp` 合入主线(59dad03,零冲突),393 测试绿。
+- tag **v2.4.0** 已推(7/2 v2.3.1 之后首个)。
+- worktree 65→55(直清 10 个 detached 碎片;dogfood-mvp 合并后清,分支保留作 PR 安全网)。
+- 附带修复:安装冒烟测试环境前提显式化(115b746)。
+
+### 任务 2 · Gate B 解封:机制实证完成,Gold 未达成(诚实 Repair)
+- **Live 全链路首次真跑通**:真实 glm-5.3 provider + 独立语义 oracle + append-only journal + 事件哈希。
+- 排障链(全部实锤):Cloudflare 拒 urllib UA(403/1010)→ 修 UA 头(66266dd 已推);代理无 glm-5.2[1m] 权限且映射到 glm-5.3 → suite 钉真实 identity;30s CLI 超时 → 改直连;防重放门(duplicate_attempt)与空目录门均正确拦截。
+- **4 次真实尝试 0 Gold**:
+  - source 2/4 过(oracle 要求 "bool" 先于 "int" 且含 "before" 的措辞序,模型自由散文常不满足——语义对但措辞序不符);
+  - control 一次语义正确但写成 lambda(隐含约定:谓词须以 `value` 为变量,prompt 未明说);
+  - 1 次 provider_output_invalid。
+- **判:机制 ✅(fail-closed 全程无假 Gold),suite 契约标定 ❌**——fixture 是为完全合规 provider 设计的,真 LLM 接不住隐含约定。
+- 运行档案:outputs/gate_b_live_*/gate_b_glm53_try*(report.json+artifacts+receipt 俱全)。
+
+### 下一步(待批)
+1. suite 标定修正:prompt 显式写明"answer 须为以 value 为变量的谓词表达式"+source 措辞契约 → 预期 Gold 概率大增(这是把隐含约定变显式,非放宽 oracle)。
+2. 用 ledger 真燃料(compass_exp_c2e)构造真经验 suite 跑 Gate B。
