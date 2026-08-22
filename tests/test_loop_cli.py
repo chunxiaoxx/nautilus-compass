@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+
+import pytest
 import subprocess
 import sys
 from pathlib import Path
@@ -80,11 +82,13 @@ def test_loop_run_rejects_nonempty_output_directory(tmp_path: Path, capsys) -> N
 
 
 def test_loop_verify_replays_from_a_fresh_console_process(tmp_path: Path) -> None:
+    console = Path(sys.executable).with_name("nautilus-compass.exe")
+    if not console.exists():
+        pytest.skip("installed nautilus-compass console not present (install smoke test)")
     suite = _suite(tmp_path / "suite.json")
     out = tmp_path / "run"
     assert main(["loop", "run", str(suite), "--out", str(out)]) == 0
 
-    console = Path(sys.executable).with_name("nautilus-compass.exe")
     completed = subprocess.run(
         [str(console), "loop", "verify", str(out)],
         check=True,
