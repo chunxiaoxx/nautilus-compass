@@ -412,6 +412,9 @@ def _urllib_post(
     max_output_bytes: int,
 ) -> bytes:
     request = urllib.request.Request(url, data=body, headers=dict(headers), method="POST")
+    # 2026-08-22: GLM 代理前置 Cloudflare 会拒 python-urllib 默认 UA(HTTP 403 code 1010);
+    # 显式 UA 后放行(curl 同源实证)。非伪造:只补身份标识。
+    request.add_header("User-Agent", "nautilus-compass/2.4")
     try:
         with urllib.request.urlopen(request, timeout=timeout_seconds) as response:
             response_body = response.read(max_output_bytes + 1)
