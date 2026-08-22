@@ -1,0 +1,93 @@
+{
+ "execution": {
+  "max_calls": 3,
+  "max_completion_tokens": 320,
+  "max_output_bytes": 4096,
+  "max_total_cost_usd": 0.05,
+  "network_allowed": true,
+  "one_shot_no_retry": true,
+  "pricing": {
+   "input_per_1k_usd": 0.02,
+   "output_per_1k_usd": 0.04
+  },
+  "system_prompt": "Return one JSON object and do not use tools.",
+  "timeout_seconds": 60,
+  "tool_calls_allowed": false
+ },
+ "loop_plan": {
+  "action_agent_id": 7,
+  "arms": [
+   {
+    "advice_from_episode_id": null,
+    "episode_id": "c2e-fuel-source",
+    "label": "source",
+    "occurred_at": "2026-08-22T20:00:00Z",
+    "task_case_id": "source"
+   },
+   {
+    "advice_from_episode_id": null,
+    "episode_id": "c2e-fuel-control",
+    "label": "control",
+    "occurred_at": "2026-08-22T20:01:00Z",
+    "task_case_id": "transfer"
+   },
+   {
+    "advice_from_episode_id": "c2e-fuel-source",
+    "episode_id": "c2e-fuel-treatment",
+    "label": "treatment",
+    "occurred_at": "2026-08-22T20:02:00Z",
+    "task_case_id": "transfer"
+   }
+  ],
+  "environment_fingerprint_hash": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+  "oracle": {
+   "cases": {
+    "source": {
+     "expected": "lock explicit encoding='utf-8'; never rely on platform default encoding"
+    },
+    "transfer": {
+     "expected": "open(path, encoding='utf-8')"
+    }
+   },
+   "minimum_utility_delta": 1,
+   "primary_metric": "verified_success",
+   "protected_failure_classes": [
+    "safety.violation",
+    "oracle.regression"
+   ]
+  },
+  "run_id": "c2e-fuel-20260822-r4",
+  "schema_version": "compass.loop.plan.v2",
+  "task": {
+   "cases": {
+    "source": {
+     "prompt": "A tool reads a contractually UTF-8 config file with open(path).read() and no encoding argument. It works on the dev machine but crashes with UnicodeDecodeError or silently mojibakes CJK/emoji once deployed under a non-UTF-8 locale (C locale=ASCII, Chinese Windows=GBK). Return the one-line fix rule in answer: it must say to pass encoding='utf-8' explicitly (or decode bytes as utf-8) and never rely on the platform default encoding. Put a reusable instruction for any text-input boundary in reuse_advice.",
+     "id": "c2e-source"
+    },
+    "transfer": {
+     "prompt": "Return the corrected expression as answer to read the whole UTF-8 config file whose path is in the variable `path`. It must decode correctly on any platform locale. ONE plain Python expression in terms of `path` (no lambda, no def), using an explicitly locked utf-8 encoding, e.g. via open(...), bytes .decode(...), or read_text(...).",
+     "id": "c2e-transfer"
+    }
+   }
+  },
+  "verifier_agent_id": 8,
+  "verifier_policy_hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+ },
+ "provider": {
+  "adapter_kind": "anthropic_compatible",
+  "adapter_version": "anthropic-messages-v1",
+  "api_version": "2023-06-01",
+  "base_url_env": "ANTHROPIC_BASE_URL",
+  "credential_env": "ANTHROPIC_AUTH_TOKEN",
+  "model_id": "glm-5.3",
+  "provider_id": "custom-anthropic-proxy"
+ },
+ "reuse_contract": {
+  "field": "reuse_advice",
+  "max_chars": 500,
+  "min_chars": 8
+ },
+ "schema_version": "compass.loop.value_suite.v1",
+ "suite_hash": "sha256:d7034a53852f0ac6cda0f4deb719cbb840b6f155c39692599eb41aecd5c30707",
+ "suite_id": "compass-exp-c2e-encoding-v1"
+}
