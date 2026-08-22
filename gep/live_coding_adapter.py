@@ -266,6 +266,10 @@ class LiveCodingAdapter:
             if label == "source":
                 self._capture_source_advice(content, response_hash)
         except (LiveCodingError, ProviderCallError) as exc:
+            # 2026-08-22: 失败臂也要推进序号,否则 run_loop 记 failure 后继续下一臂,
+            # adapter 仍停在失败臂 → 下一臂被判 duplicate_attempt(中臂失败即死锁)。
+            # 仍是 no-retry:重复同 episode 会命中 "in values" → duplicate_attempt。
+            self._next_ordinal += 1
             raise ActionExecutionFailure(str(exc)) from exc
         self._spent_cost_usd += cost
         self._next_ordinal += 1
