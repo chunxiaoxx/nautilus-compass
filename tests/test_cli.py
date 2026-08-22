@@ -8,6 +8,7 @@ in current PATH · noted as separate fix"). The 5 compass-* subcommand
 modules already exist and read sys.argv[1:] themselves; the dispatcher
 routes `nautilus-compass <sub> [args]` to them and restores sys.argv.
 """
+
 import re
 import sys
 import types
@@ -27,7 +28,15 @@ def test_help_lists_all_subcommands(capsys):
     rc = main(["--help"])
     out = capsys.readouterr().out
     assert rc == 0
-    for sub in ("drift-history", "session-search", "session-writer", "mcp", "a2a"):
+    for sub in (
+        "doctor",
+        "loop",
+        "drift-history",
+        "session-search",
+        "session-writer",
+        "mcp",
+        "a2a",
+    ):
         assert sub in out
 
 
@@ -72,3 +81,19 @@ def test_dispatch_propagates_nonzero_exit(monkeypatch):
     monkeypatch.setitem(sys.modules, "session_search", fake)
     monkeypatch.setitem(sys.modules, "nautilus_compass.session_search", fake)
     assert main(["session-search", "query"]) == 3
+
+
+def test_dispatches_doctor_and_propagates_status(monkeypatch):
+    calls = {}
+    fake = types.ModuleType("doctor")
+
+    def fake_main():
+        calls["argv"] = list(sys.argv)
+        return 1
+
+    fake.main = fake_main
+    monkeypatch.setitem(sys.modules, "doctor", fake)
+    monkeypatch.setitem(sys.modules, "nautilus_compass.doctor", fake)
+
+    assert main(["doctor", "--json"]) == 1
+    assert calls["argv"][1:] == ["--json"]
