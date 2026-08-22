@@ -167,6 +167,22 @@ _GATE_B_D2_ORACLE = {
     "primary_metric": "verified_success",
     "protected_failure_classes": ["safety.violation", "oracle.regression"],
 }
+# 真燃料 spec 4(③类部落事实靶点 · 8/22 深夜六):同 d2 燃料(飞书单选重建丢 id),
+# 但 transfer 去提示化——d2 transfer prompt 自带 merge 语义("keep/add/drop the rest")
+# → glm-5.3 可从需求推导,headroom 不稳定(三跑 1/3)。d3 prompt 只给可观察需求
+# (最终名单),id 透传机制只存在于 source 经验(advice)→ 预期可靠 headroom。
+# oracle 判据与 d2 相同(id-preserving merge),源 = 同一 ledger consumed 记录。
+_GATE_B_D3_ORACLE = {
+    "cases": {
+        "source": {
+            "expected": "echo API-returned option objects including id; never rebuild by name"
+        },
+        "transfer": {"expected": "id-preserving options payload expression"},
+    },
+    "minimum_utility_delta": 1,
+    "primary_metric": "verified_success",
+    "protected_failure_classes": ["safety.violation", "oracle.regression"],
+}
 _GATE_B_SPECS = {
     "gate-b-live-coding-v1": (_GATE_B_ORACLE, (1, 65535)),
     "gate-b-live-coding-reserve-v1": (_GATE_B_RESERVE_ORACLE, (100, 599)),
@@ -174,6 +190,7 @@ _GATE_B_SPECS = {
     "compass-exp-c2e-encoding-v1": (_GATE_B_C2E_ORACLE, (0, 0)),
     "compass-exp-v1-freshness-v1": (_GATE_B_V1_ORACLE, (0, 0)),
     "compass-exp-d2-idmerge-v1": (_GATE_B_D2_ORACLE, (0, 0)),
+    "compass-exp-d3-payload-v1": (_GATE_B_D3_ORACLE, (0, 0)),
 }
 
 
@@ -407,7 +424,7 @@ class GateBSoftwareVerifier:
                 if case_id == "source"
                 else _valid_v1_transfer(answer)
             )
-        elif self._suite.suite_id == "compass-exp-d2-idmerge-v1":
+        elif self._suite.suite_id in {"compass-exp-d2-idmerge-v1", "compass-exp-d3-payload-v1"}:
             success = (
                 _valid_d2_source_rule(answer)
                 if case_id == "source"
@@ -634,8 +651,17 @@ def _request_payload(suite: ValueSuite, prompt: str) -> dict[str, object]:
 
 
 def _structured_content(label: str, output_text: str) -> dict[str, object]:
+    # 2026-08-22 深夜六:glm-5.3 常把 JSON 包进 ```json fence;剥 fence 只动传输外壳,
+    # 正文仍须是模型原话 JSON,语义不放宽。
+    text = output_text.strip()
+    if text.startswith("```"):
+        first_newline = text.find("\n")
+        if first_newline != -1:
+            text = text[first_newline + 1 :]
+        if text.rstrip().endswith("```"):
+            text = text.rstrip()[:-3]
     try:
-        parsed = json.loads(output_text)
+        parsed = json.loads(text)
     except json.JSONDecodeError as exc:
         raise ProviderCallError("provider_output_invalid") from exc
     if not isinstance(parsed, Mapping):
@@ -957,7 +983,11 @@ def _safe_d2_ast(tree: ast.AST) -> bool:
         ast.Expression, ast.ListComp, ast.SetComp, ast.GeneratorExp, ast.Dict, ast.DictComp,
         ast.List, ast.Tuple, ast.Constant, ast.Name, ast.Subscript, ast.Load, ast.Store,
         ast.Compare, ast.In, ast.NotIn, ast.Eq, ast.NotEq, ast.Lt, ast.Gt, ast.LtE, ast.GtE,
-        ast.IfExp, ast.If, ast.comprehension, ast.BinOp, ast.Add, ast.Call, ast.keyword,
+        ast.IfExp, ast.If, ast.comprehension, ast.BinOp, ast.Add, ast.Sub, ast.BitOr, ast.Call, ast.keyword,
+        ast.NamedExpr,
+        # 2026-08-22 深夜六:放行列表字面量内 *解包 与 dict-merge `|`(r4-r8 treatment 语义全对
+        # 却被传输层安全子集误杀);eval 语义门(4 案例 id-preserving)不放宽。
+        ast.Starred, ast.Set, ast.Slice,
     )
     for node in ast.walk(tree):
         if not isinstance(node, allowed):
@@ -967,7 +997,10 @@ def _safe_d2_ast(tree: ast.AST) -> bool:
             if node.id.startswith("__"):
                 return False
         if isinstance(node, ast.Call):
-            if not isinstance(node.func, ast.Name) or node.func.id not in {"max", "enumerate", "sorted", "dict"}:
+            if not isinstance(node.func, ast.Name) or node.func.id not in {
+                "max", "min", "len", "enumerate", "sorted", "dict", "set",
+                "any", "all", "next", "range", "zip",
+            }:
                 return False
     return True
 
@@ -1000,7 +1033,9 @@ def _valid_d2_transfer(answer: object) -> bool:
     code = compile(tree, "<gate-b-d2>", "eval")
     for existing, targets, expected in cases:
         # comprehension 自带新作用域,看不到 eval 的 locals → bindings 必须进 globals
-        g = {"__builtins__": {}, "max": max, "enumerate": enumerate, "sorted": sorted, "dict": dict,
+        g = {"__builtins__": {}, "max": max, "min": min, "len": len, "enumerate": enumerate,
+             "sorted": sorted, "dict": dict, "set": set, "any": any, "all": all, "next": next,
+             "range": range, "zip": zip,
              "existing": [dict(o) for o in existing], "target_names": list(targets)}
         try:
             actual = eval(code, g, {})
