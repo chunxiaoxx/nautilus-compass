@@ -141,11 +141,25 @@ _GATE_B_C2E_ORACLE = {
     "primary_metric": "verified_success",
     "protected_failure_classes": ["safety.violation", "oracle.regression"],
 }
+# 真燃料 spec 2:cloud auto-mint v1_data_freshness_staleness(ledger 第 2 行 consumed)。
+# headroom 设计:边界口径(恰好到龄=新鲜)只在 source 经验里,transfer prompt 不给。
+_GATE_B_V1_ORACLE = {
+    "cases": {
+        "source": {
+            "expected": "compare now - ts vs max_age; exactly-at-age is fresh; strictly older is stale; payload presence is not freshness"
+        },
+        "transfer": {"expected": "now - ts <= max_age"},
+    },
+    "minimum_utility_delta": 1,
+    "primary_metric": "verified_success",
+    "protected_failure_classes": ["safety.violation", "oracle.regression"],
+}
 _GATE_B_SPECS = {
     "gate-b-live-coding-v1": (_GATE_B_ORACLE, (1, 65535)),
     "gate-b-live-coding-reserve-v1": (_GATE_B_RESERVE_ORACLE, (100, 599)),
     "gate-b-live-coding-direct-v1": (_GATE_B_DIRECT_ORACLE, (0, 255)),
     "compass-exp-c2e-encoding-v1": (_GATE_B_C2E_ORACLE, (0, 0)),
+    "compass-exp-v1-freshness-v1": (_GATE_B_V1_ORACLE, (0, 0)),
 }
 
 
@@ -372,6 +386,12 @@ class GateBSoftwareVerifier:
                 _valid_c2e_source_rule(answer)
                 if case_id == "source"
                 else _valid_c2e_transfer_fix(answer)
+            )
+        elif self._suite.suite_id == "compass-exp-v1-freshness-v1":
+            success = (
+                _valid_v1_source_rule(answer)
+                if case_id == "source"
+                else _valid_v1_transfer(answer)
             )
         else:
             success = (
@@ -817,3 +837,83 @@ def _valid_c2e_transfer_fix(answer: object) -> bool:
                 if kw.arg == "encoding" and _is_utf8_const(kw.value):
                     found = True
     return found
+
+
+def _valid_v1_source_rule(answer: object) -> bool:
+    """Deterministic check for the v1 source rule: freshness by now-ts vs max_age with the
+    boundary caliber (exactly-at-age fresh, strictly older stale) made explicit."""
+    if not isinstance(answer, str):
+        return False
+    n = answer.lower()
+    if "max_age" not in n and "max age" not in n and "maxage" not in n:
+        return False
+    if not ("now" in n and "ts" in n):
+        return False
+    has_boundary = (
+        any(t in n for t in ("exactly", "恰好", "at the age", "at max_age", "equal to max_age"))
+        or ("<=" in n and "> max_age" in n)          # 数值式口径:<=max_age 新鲜 / >max_age 陈旧
+        or ("≤" in n and ">" in n)
+    )
+    has_strict = any(t in n for t in ("strictly", "严格", "older than", "> max_age", "greater"))
+    has_stale_reject = any(t in n for t in ("stale", "陈旧", "reject", "拒"))
+    return has_boundary and has_strict and has_stale_reject
+
+
+def _valid_v1_transfer(answer: object) -> bool:
+    """Semantic eval of the freshness predicate over fixed cases (bench_eval boundary caliber).
+
+    Fresh iff now - ts <= max_age (boundary equality = fresh; strictly older = stale).
+    Rejects the off-by-one (<), reversed (ts - now), and abs() mojibake variants.
+    """
+    if not isinstance(answer, str) or not answer.strip():
+        return False
+    try:
+        tree = ast.parse(answer, mode="eval")
+    except SyntaxError:
+        return False
+    if not _safe_v1_ast(tree):
+        return False
+    globals_scope = {"__builtins__": {}}
+    cases = [
+        ({"now": 1000, "ts": 1000, "max_age": 100}, True),   # delta 0
+        ({"now": 1100, "ts": 1000, "max_age": 100}, True),   # exactly at age -> fresh
+        ({"now": 1101, "ts": 1000, "max_age": 100}, False),  # strictly older -> stale
+        ({"now": 2000, "ts": 1000, "max_age": 100}, False),  # far stale
+        ({"now": 1000, "ts": 1050, "max_age": 100}, True),   # future ts -> fresh
+        ({"now": 500, "ts": 1000, "max_age": 100}, True),    # far future -> fresh
+    ]
+    for bindings, expected in cases:
+        try:
+            actual = eval(compile(tree, "<gate-b-v1>", "eval"), dict(globals_scope), dict(bindings))
+        except Exception:
+            return False
+        if actual is not expected:
+            return False
+    return True
+
+
+def _safe_v1_ast(tree: ast.AST) -> bool:
+    """v1 freshness predicate safety: pure comparison over now/ts/max_age arithmetic.
+
+    No calls, no attribute access, no boolops needed; names restricted to the three inputs.
+    """
+    allowed = (
+        ast.Expression,
+        ast.Compare,
+        ast.BinOp,
+        ast.Sub,
+        ast.Add,
+        ast.Constant,
+        ast.Name,
+        ast.LtE,
+        ast.Lt,
+        ast.GtE,
+        ast.Gt,
+        ast.Load,
+    )
+    for node in ast.walk(tree):
+        if not isinstance(node, allowed):
+            return False
+        if isinstance(node, ast.Name) and node.id not in {"now", "ts", "max_age"}:
+            return False
+    return True

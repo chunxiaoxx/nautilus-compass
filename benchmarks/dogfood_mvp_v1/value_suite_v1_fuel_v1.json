@@ -1,0 +1,93 @@
+{
+ "execution": {
+  "max_calls": 3,
+  "max_completion_tokens": 320,
+  "max_output_bytes": 4096,
+  "max_total_cost_usd": 0.05,
+  "network_allowed": true,
+  "one_shot_no_retry": true,
+  "pricing": {
+   "input_per_1k_usd": 0.02,
+   "output_per_1k_usd": 0.04
+  },
+  "system_prompt": "Return one JSON object and do not use tools.",
+  "timeout_seconds": 60,
+  "tool_calls_allowed": false
+ },
+ "loop_plan": {
+  "action_agent_id": 7,
+  "arms": [
+   {
+    "advice_from_episode_id": null,
+    "episode_id": "v1-fuel-source",
+    "label": "source",
+    "occurred_at": "2026-08-22T21:00:00Z",
+    "task_case_id": "source"
+   },
+   {
+    "advice_from_episode_id": null,
+    "episode_id": "v1-fuel-control",
+    "label": "control",
+    "occurred_at": "2026-08-22T21:01:00Z",
+    "task_case_id": "transfer"
+   },
+   {
+    "advice_from_episode_id": "v1-fuel-source",
+    "episode_id": "v1-fuel-treatment",
+    "label": "treatment",
+    "occurred_at": "2026-08-22T21:02:00Z",
+    "task_case_id": "transfer"
+   }
+  ],
+  "environment_fingerprint_hash": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+  "oracle": {
+   "cases": {
+    "source": {
+     "expected": "compare now - ts vs max_age; exactly-at-age is fresh; strictly older is stale; payload presence is not freshness"
+    },
+    "transfer": {
+     "expected": "now - ts <= max_age"
+    }
+   },
+   "minimum_utility_delta": 1,
+   "primary_metric": "verified_success",
+   "protected_failure_classes": [
+    "safety.violation",
+    "oracle.regression"
+   ]
+  },
+  "run_id": "v1-fuel-20260822-r4",
+  "schema_version": "compass.loop.plan.v2",
+  "task": {
+   "cases": {
+    "source": {
+     "id": "v1-source",
+     "prompt": "A data ingestion service accepted stale records because it only checked that the payload was non-empty — it never compared the record timestamp against the current reference time. Old cached data kept flowing in while dashboards stayed green. Return the one-line fix rule in answer: it must say to compare now - ts against max_age, must state the boundary caliber explicitly (a record exactly at max_age is still fresh; strictly older than max_age is stale and must be rejected), and must say payload presence is not freshness. Put a reusable instruction for any ingestion/validation boundary in reuse_advice."
+    },
+    "transfer": {
+     "prompt": "A pipeline receives records each carrying epoch timestamp ts. Given current reference epoch now and max freshness age max_age in seconds, return ONE plain boolean expression in terms of now, ts, max_age that is True exactly when the record is fresh enough to accept. Choose the staleness convention yourself; no lambda, no function definition.",
+     "id": "v1-transfer"
+    }
+   }
+  },
+  "verifier_agent_id": 8,
+  "verifier_policy_hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+ },
+ "provider": {
+  "adapter_kind": "anthropic_compatible",
+  "adapter_version": "anthropic-messages-v1",
+  "api_version": "2023-06-01",
+  "base_url_env": "ANTHROPIC_BASE_URL",
+  "credential_env": "ANTHROPIC_AUTH_TOKEN",
+  "model_id": "glm-5.3",
+  "provider_id": "custom-anthropic-proxy"
+ },
+ "reuse_contract": {
+  "field": "reuse_advice",
+  "max_chars": 500,
+  "min_chars": 8
+ },
+ "schema_version": "compass.loop.value_suite.v1",
+ "suite_hash": "sha256:1cf23bfd4ed87e02fb6f0de6e49c26ffbef3ecc0080234d7529619834b08f705",
+ "suite_id": "compass-exp-v1-freshness-v1"
+}

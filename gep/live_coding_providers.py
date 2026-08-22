@@ -290,14 +290,20 @@ def _parse_anthropic_response(raw: bytes, latency_ms: int) -> ProviderResult:
             raise ValueError("response too large")
         value = json.loads(raw)
         content = value["content"]
-        if not isinstance(content, list) or len(content) != 1:
-            raise ValueError("ambiguous content")
-        block = content[0]
-        if not isinstance(block, Mapping) or block.get("type") != "text":
+        if not isinstance(content, list) or not content:
+            raise ValueError("empty content")
+        # 2026-08-22: glm-5.3 有时先吐 thinking block 再吐 text;拼接全部 text block,
+        # thinking/redacted 块跳过(非伪造:正文仍是模型原话,thinking 本就不属 answer)。
+        texts = [
+            block["text"]
+            for block in content
+            if isinstance(block, Mapping) and block.get("type") == "text" and "text" in block
+        ]
+        if not texts:
             raise ValueError("non-text content")
         usage = value["usage"]
         return ProviderResult(
-            output_text=block["text"],
+            output_text="".join(texts),
             reported_model_id=value["model"],
             input_tokens=usage["input_tokens"],
             output_tokens=usage["output_tokens"],
