@@ -127,10 +127,25 @@ _GATE_B_DIRECT_ORACLE = {
     "primary_metric": "verified_success",
     "protected_failure_classes": ["safety.violation", "oracle.regression"],
 }
+# 真燃料 spec(2026-08-22):源 = cloud auto-mint c2e_read_encoding_default_codepage
+# (task_spec + 确定性 bench_eval G1/G2/G3),ledger grant e6fb8a43 首条 consumed。
+# oracle 语义从 bench_eval 三门派生:G1 不崩/G2 round-trip ⇒ 显式 utf-8;G3 反作弊 ⇒ AST 判据拒绝硬编码。
+_GATE_B_C2E_ORACLE = {
+    "cases": {
+        "source": {
+            "expected": "lock explicit encoding='utf-8'; never rely on platform default encoding"
+        },
+        "transfer": {"expected": "open(path, encoding='utf-8')"},
+    },
+    "minimum_utility_delta": 1,
+    "primary_metric": "verified_success",
+    "protected_failure_classes": ["safety.violation", "oracle.regression"],
+}
 _GATE_B_SPECS = {
     "gate-b-live-coding-v1": (_GATE_B_ORACLE, (1, 65535)),
     "gate-b-live-coding-reserve-v1": (_GATE_B_RESERVE_ORACLE, (100, 599)),
     "gate-b-live-coding-direct-v1": (_GATE_B_DIRECT_ORACLE, (0, 255)),
+    "compass-exp-c2e-encoding-v1": (_GATE_B_C2E_ORACLE, (0, 0)),
 }
 
 
@@ -352,11 +367,18 @@ class GateBSoftwareVerifier:
         if isinstance(failure_reason, str):
             return self._packet(artifact, "failure", failure_reason)
         answer = artifact.content.get("answer")
-        success = (
-            _valid_source_rule(answer)
-            if case_id == "source"
-            else _valid_transfer_predicate(answer, *self._transfer_bounds)
-        )
+        if self._suite.suite_id == "compass-exp-c2e-encoding-v1":
+            success = (
+                _valid_c2e_source_rule(answer)
+                if case_id == "source"
+                else _valid_c2e_transfer_fix(answer)
+            )
+        else:
+            success = (
+                _valid_source_rule(answer)
+                if case_id == "source"
+                else _valid_transfer_predicate(answer, *self._transfer_bounds)
+            )
         return self._packet(
             artifact, "success" if success else "failure", None if success else "oracle.mismatch"
         )
@@ -742,3 +764,56 @@ __all__ = [
     "load_value_suite",
     "preflight_value_suite",
 ]
+
+
+def _valid_c2e_source_rule(answer: object) -> bool:
+    """Deterministic check for the c2e source rule: lock explicit UTF-8.
+
+    Mirrors bench_eval G1+G2: the rule must name utf-8 (or utf8), name the
+    encoding mechanism (encoding=/decode), and reject reliance on the
+    platform/locale default.
+    """
+    if not isinstance(answer, str):
+        return False
+    normalized = answer.lower()
+    if "utf-8" not in normalized and "utf8" not in normalized:
+        return False
+    if "encoding" not in normalized and "decode" not in normalized:
+        return False
+    return any(token in normalized for token in ("default", "locale", "platform", "never rely"))
+
+
+def _valid_c2e_transfer_fix(answer: object) -> bool:
+    """Deterministic AST check for the c2e transfer fix (bench_eval G3: no hardcoding).
+
+    Accepts exactly one expression that reads via an explicitly locked utf-8
+    path: open(..., encoding='utf-8'), <bytes>.decode('utf-8'), or
+    read_text(encoding='utf-8'). Bare open() or any other encoding fails.
+    """
+    if not isinstance(answer, str) or not answer.strip():
+        return False
+    try:
+        tree = ast.parse(answer, mode="eval")
+    except SyntaxError:
+        return False
+
+    def _is_utf8_const(node: object) -> bool:
+        return isinstance(node, ast.Constant) and isinstance(node.value, str) and node.value.lower() in ("utf-8", "utf8")
+
+    found = False
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Call):
+            continue
+        func = node.func
+        if isinstance(func, ast.Name) and func.id == "open":
+            for kw in node.keywords:
+                if kw.arg == "encoding" and _is_utf8_const(kw.value):
+                    found = True
+        elif isinstance(func, ast.Attribute) and func.attr == "decode":
+            if node.args and _is_utf8_const(node.args[0]):
+                found = True
+        elif isinstance(func, ast.Attribute) and func.attr == "read_text":
+            for kw in node.keywords:
+                if kw.arg == "encoding" and _is_utf8_const(kw.value):
+                    found = True
+    return found
