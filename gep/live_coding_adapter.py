@@ -154,12 +154,26 @@ _GATE_B_V1_ORACLE = {
     "primary_metric": "verified_success",
     "protected_failure_classes": ["safety.violation", "oracle.regression"],
 }
+# 真燃料 spec 3:cloud auto-mint d2_enum_rebuild_loses_id(飞书单选重建丢 id · 6/12 实证私有坑)。
+# 项目特异知识 → 预期真 headroom(c2e/v1 通用常识双杀后)。
+_GATE_B_D2_ORACLE = {
+    "cases": {
+        "source": {
+            "expected": "merge by stable id: existing names keep old ids; new names get max(id)+1; never rebuild by name"
+        },
+        "transfer": {"expected": "id-preserving merge expression"},
+    },
+    "minimum_utility_delta": 1,
+    "primary_metric": "verified_success",
+    "protected_failure_classes": ["safety.violation", "oracle.regression"],
+}
 _GATE_B_SPECS = {
     "gate-b-live-coding-v1": (_GATE_B_ORACLE, (1, 65535)),
     "gate-b-live-coding-reserve-v1": (_GATE_B_RESERVE_ORACLE, (100, 599)),
     "gate-b-live-coding-direct-v1": (_GATE_B_DIRECT_ORACLE, (0, 255)),
     "compass-exp-c2e-encoding-v1": (_GATE_B_C2E_ORACLE, (0, 0)),
     "compass-exp-v1-freshness-v1": (_GATE_B_V1_ORACLE, (0, 0)),
+    "compass-exp-d2-idmerge-v1": (_GATE_B_D2_ORACLE, (0, 0)),
 }
 
 
@@ -392,6 +406,12 @@ class GateBSoftwareVerifier:
                 _valid_v1_source_rule(answer)
                 if case_id == "source"
                 else _valid_v1_transfer(answer)
+            )
+        elif self._suite.suite_id == "compass-exp-d2-idmerge-v1":
+            success = (
+                _valid_d2_source_rule(answer)
+                if case_id == "source"
+                else _valid_d2_transfer(answer)
             )
         else:
             success = (
@@ -915,5 +935,92 @@ def _safe_v1_ast(tree: ast.AST) -> bool:
         if not isinstance(node, allowed):
             return False
         if isinstance(node, ast.Name) and node.id not in {"now", "ts", "max_age"}:
+            return False
+    return True
+
+
+def _valid_d2_source_rule(answer: object) -> bool:
+    """Deterministic check for the d2 source rule: merge by stable id, never rebuild by name."""
+    if not isinstance(answer, str):
+        return False
+    n = answer.lower()
+    has_id = "id" in n
+    has_merge = any(t in n for t in ("merge", "keep", "preserve", "保留", "透传", "carry"))
+    has_rebuild_warn = any(t in n for t in ("rebuild", "regenerate", "重建", "never rebuild", "new ids for existing"))
+    has_new_rule = any(t in n for t in ("max", "next id", "新 id", "increment"))
+    return has_id and has_merge and (has_rebuild_warn or has_new_rule)
+
+
+def _safe_d2_ast(tree: ast.AST) -> bool:
+    """Safety subset for the options-merge expression: comprehensions, dicts, max/enumerate/sorted."""
+    allowed = (
+        ast.Expression, ast.ListComp, ast.SetComp, ast.GeneratorExp, ast.Dict, ast.DictComp,
+        ast.List, ast.Tuple, ast.Constant, ast.Name, ast.Subscript, ast.Load, ast.Store,
+        ast.Compare, ast.In, ast.NotIn, ast.Eq, ast.NotEq, ast.Lt, ast.Gt, ast.LtE, ast.GtE,
+        ast.IfExp, ast.If, ast.comprehension, ast.BinOp, ast.Add, ast.Call, ast.keyword,
+    )
+    for node in ast.walk(tree):
+        if not isinstance(node, allowed):
+            return False
+        if isinstance(node, ast.Name):
+            # 任意局部变量名均可(未绑定的会 NameError → 判 False);函数名白名单在 Call 检查
+            if node.id.startswith("__"):
+                return False
+        if isinstance(node, ast.Call):
+            if not isinstance(node.func, ast.Name) or node.func.id not in {"max", "enumerate", "sorted", "dict"}:
+                return False
+    return True
+
+
+def _valid_d2_transfer(answer: object) -> bool:
+    """Semantic eval: the expression must compute the id-preserving merge on fixed cases.
+
+    Cases exercise: keep+add, pure keep (idempotence), keep+drop, and multiple new names
+    (ids must continue from max+1 without colliding). Ordering-insensitive by id sort.
+    """
+    if not isinstance(answer, str) or not answer.strip():
+        return False
+    try:
+        tree = ast.parse(answer, mode="eval")
+    except SyntaxError:
+        return False
+    if not _safe_d2_ast(tree):
+        return False
+    E = [{"id": 1, "name": "A"}, {"id": 2, "name": "B"}, {"id": 10, "name": "C"}]
+    cases = [
+        # keep A, add D,E (new ids from 11), drop B,C
+        (E, ["A", "D", "E"], [{"id": 1, "name": "A"}, {"id": 11, "name": "D"}, {"id": 12, "name": "E"}]),
+        # pure keep = idempotent, ids unchanged
+        (E, ["A", "B", "C"], E),
+        # drop all but B
+        (E, ["B"], [{"id": 2, "name": "B"}]),
+        # one new name
+        (E, ["B", "Z"], [{"id": 2, "name": "B"}, {"id": 11, "name": "Z"}]),
+    ]
+    code = compile(tree, "<gate-b-d2>", "eval")
+    for existing, targets, expected in cases:
+        # comprehension 自带新作用域,看不到 eval 的 locals → bindings 必须进 globals
+        g = {"__builtins__": {}, "max": max, "enumerate": enumerate, "sorted": sorted, "dict": dict,
+             "existing": [dict(o) for o in existing], "target_names": list(targets)}
+        try:
+            actual = eval(code, g, {})
+        except Exception:
+            return False
+        if not isinstance(actual, list):
+            return False
+        norm = sorted(
+            ({"id": item["id"], "name": item["name"]} for item in actual if isinstance(item, dict) and "id" in item and "name" in item),
+            key=lambda d: d["id"],
+        )
+        if norm != sorted(expected, key=lambda d: d["id"]):
+            return False
+        # every kept existing name must retain its ORIGINAL id (the incident's core)
+        orig = {o["name"]: o["id"] for o in existing}
+        for item in norm:
+            if item["name"] in orig and item["id"] != orig[item["name"]]:
+                return False
+        # new names must not reuse existing ids
+        used = {o["id"] for o in existing}
+        if any(item["id"] in used for item in norm if item["name"] not in orig):
             return False
     return True
