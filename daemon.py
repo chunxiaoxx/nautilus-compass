@@ -584,6 +584,8 @@ def parse_memory_file(path: Path) -> dict:
         "path": path.name, "fullpath": str(path),
         "name": fm.get("name", path.stem),
         "description": fm.get("description","")[:120],
+        # v2.3.1 · recall 直交付正文摘录(此前只回 path+常空的 description,消费方须二跳读文件)
+        "body": body[:500],
         "type": fm.get("type","?"),
         "age_seconds": age_s, "age_str": age_str,
         "embed_text": (fm.get("description","") + "\n" + body)[:EMBED_MAX_CHARS],
@@ -926,7 +928,8 @@ def handle_request(req: dict) -> dict:
             {"score": round(s, 3), "path": e["path"],
              "project": e.get("project", ""),
              "age_str": e["age_str"], "age_seconds": e["age_seconds"],
-             "description": e["description"]}
+             "description": e["description"],
+             "body": e.get("body", "")}
             for s, e in top
         ]
         # fresh memories not in top
