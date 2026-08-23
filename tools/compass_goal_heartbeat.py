@@ -94,6 +94,15 @@ def ingest_obs(name: str, body: str) -> None:
 def main() -> None:
     now = datetime.now(CST).strftime("%Y-%m-%d %H:%M")
     ok, secs, err = probe_recall()
+    if not ok and "ConnectionRefused" in (err or ""):
+        # 自愈:daemon 死了就拉起(ops/daemon_start_compass.bat:短路径 torch + 新版代码)
+        try:
+            bat = ROOT / "ops" / "daemon_start_compass.bat"
+            subprocess.Popen(["cmd", "/c", "start", "compassd", "/min", str(bat)], shell=False)
+            time.sleep(120)
+            ok, secs, err = probe_recall()
+        except Exception as heal_err:
+            err = f"self-heal failed: {heal_err}"[:120]
     overdue = scan_contracts()
     status = "OK" if ok else "🔴FAIL"
     line = f"[{now}] recall={status} {secs:.1f}s" + (f" err={err}" if err else "")
