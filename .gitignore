@@ -59,3 +59,4 @@ build/
 *.bak-*
 *.bak.*
 _backup-*/
+.mcp.json
