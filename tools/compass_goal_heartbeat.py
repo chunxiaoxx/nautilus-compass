@@ -99,6 +99,11 @@ def main() -> None:
     line = f"[{now}] recall={status} {secs:.1f}s" + (f" err={err}" if err else "")
     if overdue:
         line += " | overdue_contracts=" + ";".join(overdue)
+    # GOAL SSOT N2 · 周五催燃料 QC 批
+    if datetime.now(CST).weekday() == 4:
+        import subprocess as _sp
+        _sp.run([sys.executable, str(ROOT / "tools" / "fuel_qc_batch.py")],
+                capture_output=True, timeout=120)
     LOG.parent.mkdir(exist_ok=True)
     with LOG.open("a", encoding="utf-8") as f:
         f.write(line + "\n")
