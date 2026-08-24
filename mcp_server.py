@@ -2361,8 +2361,14 @@ def _tcp_loop(host: str, port: int,
                                 ttl_seconds=_SESSION_STORE_TTL_S)]
 
         def send(frame: dict) -> None:
-            """Tag `frame` with a monotonic `_eid`, record it, write the line.
+            """Record `frame` with a monotonic `_eid`, write it WITHOUT the tag.
 
+            v2.3.1 (2026-08-25): the wire frame is a strict JSON-RPC message;
+            top-level `_eid` is protocol-foreign and strict clients (Claude Code
+            2.1.x) abort the handshake on it (root cause of the 8/24 bridge
+            incident). The resume store still keeps the tagged copy for replay
+            ordering; clients that want resume pass `params.lastEventId` from
+            their own tracking, so nothing on the wire needs the tag.
             Tagging must never crash the connection: if append ever raised we
             still send the frame (untagged is better than a dropped reply).
             """
@@ -2370,8 +2376,9 @@ def _tcp_loop(host: str, port: int,
                 frame["_eid"] = store_ref[0].append(frame)
             except Exception:
                 pass
+            wire = {k: v for k, v in frame.items() if k != "_eid"}
             conn.sendall(
-                (json.dumps(frame, ensure_ascii=False) + "\n").encode("utf-8"))
+                (json.dumps(wire, ensure_ascii=False) + "\n").encode("utf-8"))
 
         def send_raw(frame: dict) -> None:
             """Write a frame VERBATIM — no _eid (re)assignment, no append.
