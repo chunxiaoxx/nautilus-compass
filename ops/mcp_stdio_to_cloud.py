@@ -56,6 +56,29 @@ LOCAL_TIMEOUT = float(os.environ.get("COMPASS_LOCAL_TIMEOUT", "20"))
 LOCAL_RETRIES = int(os.environ.get("COMPASS_LOCAL_RETRIES", "2"))
 # Tools that can be served locally (recall/drift only · ingest always goes cloud)
 _LOCAL_TOOLS = {"recall", "drift_check", "thread_recall"}
+# v1.9 · tools whose re-send on reconnect is duplicate-SAFE (read-only). Writes are
+# NOT here: cloud mcp_server.tool_ingest_obs does a timestamped direct file write
+# with NO idempotency key (verified 2026-06-23) → a re-send across a minute boundary
+# would write a 2nd obs file. So only read-only tools are silently re-sent; pending
+# writes are errored back to the client on reconnect (no silent duplicate, no silent loss).
+_IDEMPOTENT_TOOLS = {
+    "recall", "drift_check", "thread_recall",
+    "drift_history", "session_search", "profile",
+    "governance_audit", "governance_lock_check",
+}
+
+
+def _line_is_idempotent(line: str) -> bool:
+    """v1.9 · True only for requests safe to silently re-send on reconnect.
+    Only read-only tools/call (name in _IDEMPOTENT_TOOLS) qualify; everything
+    else (writes, unknown tools, non-tools/call requests) is treated as unsafe."""
+    try:
+        msg = json.loads(line)
+    except (json.JSONDecodeError, TypeError):
+        return False
+    if not isinstance(msg, dict) or msg.get("method") != "tools/call":
+        return False
+    return ((msg.get("params") or {}).get("name")) in _IDEMPOTENT_TOOLS
 # Debug · set COMPASS_BRIDGE_LOG=/path/to/file to trace every line in/out
 LOG_PATH = os.environ.get("COMPASS_BRIDGE_LOG", "")
 _log_fh = None
@@ -122,54 +145,6 @@ def _inject_auth(line: str) -> str:
     return json.dumps(msg)
 
 
-def _inject_last_event_id(init_line: str, last_eid: int) -> str:
-    """Inject params.lastEventId into a cached initialize so the server replays
-    the frames we missed across a drop (durable MCP · Task 4).
-
-    Only injects when last_eid > 0 (0 = nothing seen yet → no replay needed).
-    v1.8 invariant: any parse failure → return the line UNCHANGED (never crash,
-    never corrupt the handshake)."""
-    if not isinstance(last_eid, int) or last_eid <= 0:
-        return init_line
-    try:
-        msg = json.loads(init_line)
-    except (json.JSONDecodeError, TypeError):
-        return init_line
-    if not isinstance(msg, dict) or msg.get("method") != "initialize":
-        return init_line
-    params = msg.get("params")
-    if not isinstance(params, dict):
-        params = {}
-    params["lastEventId"] = last_eid
-    msg["params"] = params
-    return json.dumps(msg)
-
-
-def _strip_eid_and_track(line, link: "_CloudLink") -> bytes:
-    """Process one cloud→stdout frame for Claude Code (durable MCP · Task 4).
-
-    1. Track the high-water mark: advance link.high_eid to max(seen, _eid).
-    2. Strip the internal `_eid` field — Claude Code must never see it.
-    Returns the bytes to forward to stdout (WITHOUT a trailing newline; caller
-    adds it). v1.8 invariant: if the line isn't valid JSON or carries no _eid,
-    forward it UNCHANGED — never drop a frame, never crash."""
-    raw = line if isinstance(line, (bytes, bytearray)) else line.encode("utf-8")
-    try:
-        msg = json.loads(raw.decode("utf-8"))
-    except (json.JSONDecodeError, UnicodeDecodeError, ValueError):
-        return bytes(raw)
-    if not isinstance(msg, dict) or "_eid" not in msg:
-        return bytes(raw)
-    eid = msg.pop("_eid")
-    try:
-        link.note_high_eid(int(eid))
-    except (TypeError, ValueError):
-        pass
-    # ensure_ascii=False · keep CJK/emoji recall frames byte-faithful (the real
-    # workload is Chinese memory recall) and consistent with the rest of the file.
-    return json.dumps(msg, ensure_ascii=False).encode("utf-8")
-
-
 def _recv_one_line(sock, timeout: float = 10.0) -> bytes:
     """Read one newline-terminated frame · used to swallow the duplicate
     initialize reply after a reconnect handshake so it never reaches stdout."""
@@ -211,23 +186,14 @@ class _CloudLink:
         self._lock = threading.Lock()
         self._init_line = None
         self._closed = False
-        # v1.9 (Task 4) · highest cloud→stdout _eid forwarded · drives the
-        # Last-Event-ID replay request on reconnect. 0 = nothing seen yet.
-        self._high_eid = 0
+        # v1.9 · in-flight requests awaiting a cloud reply, keyed by json-rpc id.
+        # Re-sent after the initialize replay on reconnect so a request the cloud
+        # received-but-never-answered (dropped mid-flight) is not lost forever.
+        self._pending = {}
 
     @property
     def init_line(self):
         return self._init_line
-
-    @property
-    def high_eid(self) -> int:
-        return self._high_eid
-
-    def note_high_eid(self, eid: int) -> None:
-        """Advance the high-water mark · monotonic, never goes backwards."""
-        with self._lock:
-            if isinstance(eid, int) and eid > self._high_eid:
-                self._high_eid = eid
 
     @property
     def is_closed(self) -> bool:
@@ -245,6 +211,37 @@ class _CloudLink:
         if isinstance(msg, dict) and msg.get("method") == "initialize":
             self._init_line = line
 
+    def note_request(self, line: str) -> None:
+        """v1.9 · track a request expecting a reply (has method + id, not
+        initialize) so reconnect can re-send it. initialize is replayed via
+        _init_line; tracking it here would double-send it on reconnect."""
+        try:
+            msg = json.loads(line)
+        except (json.JSONDecodeError, TypeError):
+            return
+        if not isinstance(msg, dict) or msg.get("method") == "initialize":
+            return
+        if msg.get("method") is not None and "id" in msg:
+            with self._lock:
+                self._pending[msg["id"]] = line
+
+    def note_reply(self, line: str) -> None:
+        """v1.9 · a reply (has id + result/error) clears its pending request."""
+        try:
+            msg = json.loads(line)
+        except (json.JSONDecodeError, TypeError):
+            return
+        if not isinstance(msg, dict):
+            return
+        if "id" in msg and ("result" in msg or "error" in msg):
+            with self._lock:
+                self._pending.pop(msg["id"], None)
+
+    def pending_lines(self):
+        """v1.9 · snapshot of in-flight request lines (auth already injected)."""
+        with self._lock:
+            return list(self._pending.values())
+
     def connect(self, replay: bool = True):
         """(Re)open the cloud socket. On reconnect (replay=True) re-auth by
         replaying the cached initialize and discarding its reply. The very
@@ -253,12 +250,31 @@ class _CloudLink:
         s = self._opener()
         if replay and self._init_line:
             try:
-                # v1.9 (Task 4) · request the server replay any frames we missed
-                # during the drop by injecting params.lastEventId = high-water.
-                # Only on RECONNECT (replay=True) and only when we've seen >0.
-                replay_init = _inject_last_event_id(self._init_line, self._high_eid)
-                s.sendall((_inject_auth(replay_init) + "\n").encode("utf-8"))
+                s.sendall((_inject_auth(self._init_line) + "\n").encode("utf-8"))
                 _recv_one_line(s)  # swallow duplicate initialize reply
+                # v1.9 · handle in-flight requests lost across the drop. Read-only
+                # tools are duplicate-safe → silently re-sent (auth already injected).
+                # Writes (ingest_obs etc.) have NO cloud-side idempotency (verified
+                # 2026-06-23: mcp_server.tool_ingest_obs = timestamped direct file
+                # write) → re-sending could duplicate, so we DON'T silently re-send
+                # them; we error them back so the client can consciously retry.
+                with self._lock:
+                    pend = list(self._pending.items())
+                lost = []
+                for mid, pl in pend:
+                    if _line_is_idempotent(pl):
+                        s.sendall((pl + "\n").encode("utf-8"))
+                    else:
+                        lost.append(mid)
+                if lost:
+                    with self._lock:
+                        for mid in lost:
+                            self._pending.pop(mid, None)
+                    for mid in lost:
+                        _write_stdout(_make_rpc_error(
+                            mid, -32603,
+                            "compass cloud dropped mid-request; non-idempotent write "
+                            "not auto-retried on reconnect — re-issue if it did not take effect"))
             except Exception:
                 try:
                     s.close()
@@ -498,6 +514,62 @@ def _try_local_daemon(line: str):
     return (json.dumps(rpc_resp, ensure_ascii=False) + "\n").encode("utf-8")
 
 
+def _rewrite_init_version(line: str) -> str:
+    """v2.0 · Claude Code 2.1.x requests protocolVersion 2025-11-25; cloud answers
+    2024-11-05 and the client then aborts the connection right after the initialize
+    reply (2026-08-24 bridge_cloud.log: no follow-up request, EOF+10053 ~16s later).
+    Echo the client-requested version in the initialize RESULT so the client accepts
+    the handshake. Cloud still speaks 2024-11-05 semantics; JSON-RPC wire format is
+    identical (line-delimited), so this version-string patch is the only divergence."""
+    try:
+        msg = json.loads(line)
+    except (json.JSONDecodeError, TypeError):
+        return line
+    # v2.2 · id-agnostic: Claude Code's initialize request id is not guaranteed 0
+    # (2.1.x may use other ids); keying the rewrite on id==0 let the raw cloud
+    # reply (2024-11-05 + _eid) through for non-zero ids → client aborts after
+    # handshake (2026-08-24 platform report). Detect the initialize RESULT by
+    # shape (result.serverInfo), not by id.
+    if (isinstance(msg, dict) and "result" in msg
+            and isinstance(msg.get("result"), dict)
+            and "serverInfo" in msg["result"]):
+        # v2.1 · rebuild a spec-clean InitializeResult: client 2.1.239 still aborts
+        # with the raw cloud reply even after the version echo (2026-08-24), so
+        # besides the version patch we also drop unknown fields (_eid etc.).
+        if isinstance(msg["result"], dict):
+            cleaned = {
+                "protocolVersion": _client_init_version or msg["result"].get("protocolVersion", "2024-11-05"),
+                "capabilities": msg["result"].get("capabilities", {"tools": {}}),
+                "serverInfo": msg["result"].get("serverInfo", {"name": "nautilus-compass", "version": "2.3.0"}),
+            }
+            msg["result"] = cleaned
+            # v2.2 · ALSO strip protocol-foreign TOP-LEVEL fields (cloud adds
+            # "_eid": N beside jsonrpc/id/result). CC 2.1.x is a strict JSON-RPC
+            # client and aborts the handshake on unknown top-level members —
+            # this, not the version string, is why v2.1 still failed (8/24).
+            return json.dumps({"jsonrpc": msg.get("jsonrpc", "2.0"),
+                               "id": msg.get("id"),
+                               "result": msg["result"]}, ensure_ascii=False)
+    return line
+
+
+# v2.0 · protocolVersion the CLIENT asked for in initialize (parsed by
+# note_outgoing; used to patch the cloud's initialize reply — see above).
+_client_init_version = None
+
+
+def _parse_client_init_version(line: str) -> None:
+    global _client_init_version
+    try:
+        msg = json.loads(line)
+    except (json.JSONDecodeError, TypeError):
+        return
+    if isinstance(msg, dict) and msg.get("method") == "initialize":
+        v = (msg.get("params") or {}).get("protocolVersion")
+        if isinstance(v, str):
+            _client_init_version = v
+
+
 def _write_stdout(payload: bytes) -> None:
     """Single point for writing to stdout · serialized so stub responses and
     cloud forwards never interleave bytes mid-frame."""
@@ -540,6 +612,7 @@ def _pump_in_to_cloud(link: "_CloudLink") -> None:
             continue
         line = raw.rstrip("\n")
         _trace("STDIN", line)
+        _parse_client_init_version(line)  # v2.0 · capture for init-reply version patch
         link.note_outgoing(line)  # cache initialize so reconnect can replay it
         cloud_up = link.current() is not None
         stub = _try_local_stub(line, cloud_up)
@@ -557,6 +630,7 @@ def _pump_in_to_cloud(link: "_CloudLink") -> None:
         out = _inject_auth(line)
         try:
             link.send(out)
+            link.note_request(out)  # v1.9 · track in-flight so reconnect re-sends
             _trace("→CLOUD", out)
         except Exception as e:
             # cloud down or mid-reconnect · do NOT exit · error this one request
@@ -612,14 +686,19 @@ def _pump_cloud_to_out(link: "_CloudLink") -> None:
                 if not cl.strip():
                     continue
                 _trace("CLOUD→", cl)
-                # v1.9 (Task 4) · track highest _eid + strip it before Claude
-                # Code sees it. Failure-proof: forwards unchanged on any error.
-                try:
-                    out_bytes = _strip_eid_and_track(cl, link)
-                except Exception as e:  # never drop a frame on a bug here
-                    _trace("ERR", f"strip _eid fail: {e!r}")
-                    out_bytes = cl
-                _write_stdout(out_bytes + b"\n")
+                link.note_reply(cl.decode("utf-8", errors="replace"))  # v1.9 · clear pending
+                out_line = _rewrite_init_version(cl.decode("utf-8", errors="replace"))
+                # v2.2 · belt-and-braces: strip protocol-foreign top-level "_eid"
+                # from ANY cloud line (observed on initialize; be safe for all).
+                if '"_eid"' in out_line:
+                    try:
+                        _m = json.loads(out_line)
+                        if isinstance(_m, dict):
+                            _m.pop("_eid", None)
+                            out_line = json.dumps(_m, ensure_ascii=False)
+                    except Exception:
+                        pass
+                _write_stdout((out_line + "\n").encode("utf-8"))
         link.mark_down()  # socket dead · outer loop reconnects unless closed
 
 
