@@ -1,0 +1,1 @@
+{"content":{"failure_reason":"provider_timeout"},"episode_event_hash":"sha256:7dc0b823631e257334c87ff84f0fce05db6f97f37e873ab4a5519cb822147c7f","episode_id":"gate-b-bool-source","evidence_hash":"sha256:3f68df7c0954944affe6ff4592bfe2f6ccabab28ea9035183ea8cf235b6300f4","schema_version":"compass.loop.artifact.v1","tool_chain":["action_failure"]}

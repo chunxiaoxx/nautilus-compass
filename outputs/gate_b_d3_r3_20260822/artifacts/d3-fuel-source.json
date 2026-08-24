@@ -1,0 +1,1 @@
+{"content":{"failure_reason":"source_reuse_advice_out_of_bounds"},"episode_event_hash":"sha256:4e58f0b203939f838ebdec5d0dc026e4af88f6117fb9eaf6ff6d5fd1fba60973","episode_id":"d3-fuel-source","evidence_hash":"sha256:fa4f43251b26535efde099e0e4e465de8ed50bfc9dbb576da479d0576b985a1e","schema_version":"compass.loop.artifact.v1","tool_chain":["action_failure"]}

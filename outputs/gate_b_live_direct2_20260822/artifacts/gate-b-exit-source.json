@@ -1,0 +1,1 @@
+{"content":{"failure_reason":"provider_transport_failed"},"episode_event_hash":"sha256:fa11707b5079f15bdf8c53668e4fc10d8eaaf6b468deaa48136042c4820edec6","episode_id":"gate-b-exit-source","evidence_hash":"sha256:b2ce397f0b2e6570282d69e2854514bbf4683c616258415ea6d5c186d8e7897e","schema_version":"compass.loop.artifact.v1","tool_chain":["action_failure"]}

@@ -1,0 +1,1 @@
+{"content":{"failure_reason":"dependency.source_not_successful"},"episode_event_hash":"sha256:cb7c5c0ab9d453b501a634f0dff9ee060f5820861391beac649a247a4333d4b1","episode_id":"gate-b-bool-control","evidence_hash":"sha256:afb2e5fd27647a2210ab2d2250c09b0b95295b1b68321d48eff36e1a0ec24144","schema_version":"compass.loop.artifact.v1","tool_chain":["dependency_skip"]}

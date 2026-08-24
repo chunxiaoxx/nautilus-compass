@@ -1,0 +1,1 @@
+{"content":{"failure_reason":"dependency.source_not_successful"},"episode_event_hash":"sha256:2bcfa028dbe4766c98e9969c527e46b91f5d0a6d0f474221acb9bc15cb31f418","episode_id":"d3-fuel-control","evidence_hash":"sha256:aea2a8dbb3d3085cc130c3b6a91838ddb11c971e7028ec1dc24c1c56ff931821","schema_version":"compass.loop.artifact.v1","tool_chain":["dependency_skip"]}

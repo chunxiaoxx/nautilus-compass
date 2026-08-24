@@ -1,0 +1,1 @@
+{"content":{"failure_reason":"provider_output_invalid"},"episode_event_hash":"sha256:9348d4b789644f5328238e0a02f9d561fd95869cdf583fb15e066637344e0b6c","episode_id":"d2-fuel-treatment","evidence_hash":"sha256:b6401225ffc3f0566dbd618b13017ffaceb83b6815d3e6ec75b53cfb93c0fbea","schema_version":"compass.loop.artifact.v1","tool_chain":["action_failure"]}

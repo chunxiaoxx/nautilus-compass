@@ -1,0 +1,1 @@
+{"content":{"failure_reason":"provider_output_invalid"},"episode_event_hash":"sha256:676538555fbbf41000c143f1f4419d943fb20714e225596d43c698b73ce6b76d","episode_id":"gate-b-exit-control","evidence_hash":"sha256:f7cf67339278b1c49bfe3a195772a0cdebb524a48afbb65ec5d645c12e9a752a","schema_version":"compass.loop.artifact.v1","tool_chain":["action_failure"]}
