@@ -1,0 +1,16 @@
+{
+ "pass_at_least_1": 9,
+ "total": 10,
+ "per": {
+  "compass_exp_c2b_chunked_utf8_split_automint_1784292024": 2,
+  "compass_exp_c2_stdin_jsonrpc_cjk_automint_1784149376": 4,
+  "compass_exp_v1_data_freshness_staleness_automint_1784148770": 5,
+  "compass_exp_f2_rate_unit_caliber_automint_1784148168": 0,
+  "compass_exp_f1_money_half_up_rounding_automint_1784145731": 4,
+  "compass_exp_d2_enum_rebuild_loses_id_automint_1784145122": 2,
+  "compass_exp_d1_version_key_join_shadowing_automint_1784144822": 5,
+  "compass_exp_c3_ndjson_bom_crlf_automint_1784144520": 3,
+  "compass_exp_c2e_read_encoding_default_codepage_automint_1784142070": 4,
+  "compass_exp_c2d_utf8_byte_truncation_automint_1784141462": 2
+ }
+}

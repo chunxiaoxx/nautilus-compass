@@ -1,0 +1,26 @@
+{
+ "train": {
+  "pass_at_least_1": 0,
+  "total": 4,
+  "per": {
+   "agen_p3_c2c_v1_20260822": 0,
+   "agen_p3_c2c_v2_20260822": 0,
+   "agen_p4_A16_20260822": 0,
+   "agen_p4_B1_20260822": 0
+  }
+ },
+ "holdout": {
+  "pass_at_least_1": 0,
+  "total": 8,
+  "per": {
+   "agen_holdout_0_20260823": 0,
+   "agen_holdout_1_20260823": 0,
+   "agen_holdout_2_20260823": 0,
+   "agen_holdout_3_20260823": 0,
+   "agen_holdout_4_20260823": 0,
+   "agen_holdout_5_20260823": 0,
+   "agen_holdout_6_20260823": 0,
+   "agen_holdout_7_20260823": 0
+  }
+ }
+}
