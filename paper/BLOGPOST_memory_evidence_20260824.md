@@ -1,5 +1,5 @@
 ---
-title: "Does agent memory actually help? We ran the experiment nobody runs"
+title: "Benchmarks can't tell you if agent memory helps your team. A paired control can — here's ours"
 published: false
 description: "Every memory layer claims it helps. We built a paired control experiment with deterministic oracles to test ours — including the results that hurt."
 tags: llm, ai, memory, agents
@@ -11,10 +11,14 @@ canonical_url: https://github.com/chunxiaoxx/nautilus-compass
 We maintain [nautilus-compass](https://github.com/chunxiaoxx/nautilus-compass), an
 open-source memory layer for coding agents (MCP tools: recall, ingest, drift
 detection). Like everyone in this space, we *claimed* memory makes agents
-better. Unlike everyone, we couldn't find a single memory product that had
-published a controlled experiment for that claim. So we ran one on ourselves.
+better. Public benchmarks (LongMemEval and friends) measure QA over
+conversation transcripts — but as the MEM-α authors note, with/without-memory
+comparisons are noisy precisely because models often answer from internal
+knowledge anyway. What was missing, for our own product, was a *product-side*
+paired control: deterministic task validators, facts a model has no channel to
+know, retrieval scored separately from knowledge. So we ran one on ourselves.
 
-This post is the full result — including two findings that hurt.
+This post is the full result — including two findings that hurt. (Ablation studies exist in the literature; what we add is the operator's view: what broke, what the fuel taxonomy should be, and what we now run hourly to keep memory honest.)
 
 ## The setup
 
