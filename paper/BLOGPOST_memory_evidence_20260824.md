@@ -6,7 +6,7 @@ tags: llm, ai, memory, agents
 canonical_url: https://github.com/chunxiaoxx/nautilus-compass
 ---
 
-# Does agent memory actually help? We ran the experiment nobody runs
+# Benchmarks can't tell you if agent memory helps *your team*. A paired control can
 
 We maintain [nautilus-compass](https://github.com/chunxiaoxx/nautilus-compass), an
 open-source memory layer for coding agents (MCP tools: recall, ingest, drift
@@ -114,5 +114,5 @@ benchmark?) is running now; pre-registered, honest either way.
 The experiment harness, the fuel-pool QC gates (a memory must fail a
 cold-model control before it's worth keeping), and the heartbeat are all in
 the repo. If you run an agent memory layer — yours or someone else's — we'd
-genuinely love to see your numbers. The field has too many demos and too few
-controls.
+genuinely love to see your numbers — especially on tribal knowledge, where the
+internal-knowledge noise MEM-α warns about finally goes away.
