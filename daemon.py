@@ -595,6 +595,33 @@ def parse_memory_file(path: Path) -> dict:
     }
 
 
+# v3.0.1 · atomic pkl writes + periodic flush · 2026-08-24 cloud incident:
+# corrupt half-written 74MB pkl ("Ran out of input" on every warmup) → full
+# project re-embed on each restart → slow recall → caller retry storm → 32
+# in-flight cap = overloaded livelock. Non-atomic writes could truncate the
+# file at any kill; embed progress mid-scan was never persisted at all.
+_PKL_FLUSH_EVERY = int(os.environ.get("COMPASS_PKL_FLUSH_EVERY", "50"))
+
+
+def _pkl_write_atomic(path, obj) -> None:
+    """v3.0.1 · write pkl via tmp + os.replace so a kill never leaves a
+    truncated (permanently corrupt) cache file behind."""
+    tmp = path.with_suffix(".pkl.tmp")
+    with open(tmp, "wb") as f:
+        pickle.dump(obj, f)
+    os.replace(tmp, path)
+
+
+def _flush_memory_pkl(proj_key: str, cache: dict) -> None:
+    """v3.0.1 · persist one project's embedding cache (atomic)."""
+    import hashlib
+    proj_hash = hashlib.sha256(proj_key.encode()).hexdigest()[:12]
+    try:
+        _pkl_write_atomic(CACHE_DIR / f"{proj_hash}.pkl", {"embeddings": cache})
+    except Exception as _e:
+        log(f"pkl flush fail {proj_hash}: {_e}")
+
+
 def get_memory_entries(mem_dir: Path):
     proj_key = str(mem_dir)
     # v2.0.9 · inotify fast path · skip O(N) glob+stat+parse if dir not dirty
@@ -621,7 +648,7 @@ def get_memory_entries(mem_dir: Path):
     # cache lookup
     proj_key = str(mem_dir)
     cache = _state["memory_caches"].setdefault(proj_key, {})
-    updated = False
+    updated = 0
     for e in entries:
         cached = cache.get(e["fullpath"])
         if cached and cached[0] == e["mtime"]:
@@ -633,16 +660,16 @@ def get_memory_entries(mem_dir: Path):
                     vec = vec.tolist()
                 cache[e["fullpath"]] = (e["mtime"], vec)
                 e["embedding"] = vec
-                updated = True
+                updated += 1
+                # v3.0.1 · periodic flush · 大项目(数千文件)re-embed 中途被
+                # kill/重启不再全丢进度(2026-08-24 云 74MB pkl 卡死根因之一)
+                if updated % _PKL_FLUSH_EVERY == 0:
+                    _flush_memory_pkl(proj_key, cache)
             except Exception as ex:
                 log(f"embed file fail {e['path']}: {ex}")
                 e["embedding"] = None
     if updated:
-        # 持久化
-        import hashlib
-        proj_hash = hashlib.sha256(proj_key.encode()).hexdigest()[:12]
-        with open(CACHE_DIR / f"{proj_hash}.pkl", "wb") as f:
-            pickle.dump({"embeddings": cache}, f)
+        _flush_memory_pkl(proj_key, cache)
     # v2.0.9 · cache full entries for next recall · invalidated by inotify watcher
     if _INOTIFY_USE:
         with _ENTRIES_CACHE_LOCK:
@@ -774,8 +801,7 @@ def get_anchors(anchors_path: Path | None = None):
         # only persist the default anchors.json profile; per-tenant profiles
         # stay in-memory to avoid cross-tenant leakage to disk
         if p == ANCHORS_PATH:
-            with open(CACHE_DIR / "anchors.pkl", "wb") as f:
-                pickle.dump(result, f)
+            _pkl_write_atomic(CACHE_DIR / "anchors.pkl", result)
         return result
     except Exception as e:
         log(f"anchor build fail for {p.name}: {e}")
@@ -1270,9 +1296,7 @@ def handle_ingest(req: dict) -> dict:
         proj_key = str(mem_dir)
         cache = _state["memory_caches"].setdefault(proj_key, {})
         cache[str(out_path)] = (out_path.stat().st_mtime, vec)
-        proj_hash = _hashlib.sha256(proj_key.encode()).hexdigest()[:12]
-        with open(CACHE_DIR / f"{proj_hash}.pkl", "wb") as f:
-            _pickle.dump({"embeddings": cache}, f)
+        _flush_memory_pkl(proj_key, cache)
         return {"ok": True, "path": str(out_path), "project": project,
                 "embedded": True, "embed_dim": len(vec)}
     except Exception as e:
