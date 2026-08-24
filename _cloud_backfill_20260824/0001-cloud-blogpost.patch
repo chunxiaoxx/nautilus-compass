@@ -1,0 +1,31 @@
+From d13ba206decc29d6b4ae636cd55224e5c3d83f92 Mon Sep 17 00:00:00 2001
+From: chunxiaoxx <chunxiaoxx@users.noreply.github.com>
+Date: Tue, 30 Jun 2026 19:29:44 +0800
+Subject: [PATCH] =?UTF-8?q?publish:=20Self-hosted=20agent=20memory=201/15?=
+ =?UTF-8?q?=20Zep=20cost=20=C2=B7=20v1.1.0=20BLOGPOST=20for=20bounty=20mkt?=
+ =?UTF-8?q?-3060de07?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ paper/BLOGPOST.md | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/paper/BLOGPOST.md b/paper/BLOGPOST.md
+index 6807bb5..95f5a56 100644
+--- a/paper/BLOGPOST.md
++++ b/paper/BLOGPOST.md
+@@ -4,6 +4,9 @@ published: true
+ description: "Recall != consumption. Same anti-pattern reproduced across sessions despite recall hitting the right files. Three layers of fix and a capability-driven governance plan that scales without templates."
+ tags: llm, memory, mcp, agents
+ canonical_url: https://github.com/chunxiaoxx/nautilus-compass
++cumulative_impact: 4.0
++impact_event_count: 4
++last_impact_at: 2026-06-30T08:25:38+00:00
+ ---
+ 
+ # Compass v1.1.0 · the recall consumption fix
+-- 
+2.34.1
+
