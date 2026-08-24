@@ -1,0 +1,18 @@
+[OK] g2b1:724533e03be3 | g1rc=1 g2rc=0 | 4 passed in 2.54s
+[OK] g2b1:998842b4568a | g1rc=1 g2rc=0 | 55 passed in 1.78s
+[OK] g2b1:2ab23b6415f8 | g1rc=1 g2rc=0 | 39 passed in 0.17s
+[OK] g2b1:9d3dfd31b334 | g1rc=1 g2rc=0 | 28 passed in 0.51s
+[OK] g2b1:71f0de23a4a1 | g1rc=1 g2rc=0 | 21 passed in 0.50s
+[OK] g2b1:a91e9a8f038d | g1rc=1 g2rc=0 | 19 passed in 0.45s
+[OK] g2b1:3ea02a08f2ab | g1rc=1 g2rc=0 | 10 passed in 0.45s
+[GATE2_PASS_MISSING(正解也不过=verifier坏)] g2b1:f2a99a682dd0 | g1rc=2 g2rc=2 | 1 error in 0.43s
+[GATE2_PASS_MISSING(正解也不过=verifier坏)] g2b1:52ce1f1dd624 | g1rc=2 g2rc=2 | 1 error in 0.38s
+[OK] g2b1:0c2c60c7a115 | g1rc=1 g2rc=0 | 13 passed in 0.32s
+[OK] g2b1:555a2e84f0da | g1rc=2 g2rc=0 | 22 passed in 0.76s
+[OK] g2b1:94b002a33806 | g1rc=1 g2rc=0 | 11 passed in 0.20s
+[OK] g2b1:767fb5d55337 | g1rc=1 g2rc=0 | 11 passed in 0.37s
+[OK] g2b1:09ce1172fa35 | g1rc=1 g2rc=0 | 10 passed in 0.18s
+[GATE1_FAIL_MISSING(starter 也过=题太易)] g2b1:ff6588868655 | g1rc=0 g2rc=0 | 6 passed in 2.54s
+[OK] g2b1:1da8acd4a634 | g1rc=1 g2rc=0 | 9 passed in 0.15s
+[GATE1_FAIL_MISSING(starter 也过=题太易)] g2b1:49cc01737ede | g1rc=0 g2rc=0 | 10 passed in 0.12s
+SUMMARY: {'OK': 13, 'GATE2_PASS_MISSING(正解也不过=verifier坏)': 2, 'GATE1_FAIL_MISSING(starter 也过=题太易)': 2}
