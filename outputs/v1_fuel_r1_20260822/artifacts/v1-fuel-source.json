@@ -1,0 +1,1 @@
+{"content":{"failure_reason":"provider_output_invalid"},"episode_event_hash":"sha256:dc9d743555ae14effd66964b2746723a65fff85cfa071487d5492f3c81e5bc4d","episode_id":"v1-fuel-source","evidence_hash":"sha256:8d1c7f0c2c41dbfe62c7a1a15c7f5d2113442b06627958150e79d45269fa9e40","schema_version":"compass.loop.artifact.v1","tool_chain":["action_failure"]}

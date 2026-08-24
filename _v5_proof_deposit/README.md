@@ -1,4 +1,4 @@
-# V5 证据押送(2026-08-25)
+# V5 证据押送(2026-08-25·已并入 main)
 
 来源仓:`github.com/chunxiaoxx/nautilus-v5` · 分支 `session/agent-self-improve-20260526` · commit `a950aa8`/`f7e9b0b`/`dedc3a4`/`a2225e5`
 误会根因:compass 侧 fetch 的是 nautilus-compass 仓的同名分支;V5 证据在 nautilus-v5 仓。

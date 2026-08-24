@@ -1,0 +1,42 @@
+# scope = compass 核心记忆引擎子集(系统地图 /demo 用 · 非全仓 187 文件)
+# 策略:先忽略 root 下一切,再 ! 负向放回核心记忆/recall/drift/PoI 引擎文件与目录。
+/*
+
+# 核心 recall / 记忆检索
+!recall.py
+!recall_consumption.py
+!recall_pkg/
+!session_writer.py
+!session_search.py
+!cloud_ingest.py
+
+# daemon / 后台引擎
+!daemon.py
+!daemon_anchor_apply.py
+!daemon_anchor_loader.py
+
+# drift 漂移检测
+!drift/
+!drift_history.py
+!output_drift.py
+
+# metamemory 元记忆 / 自知层
+!metamemory/
+
+# 治理 / 合约 / 反馈(PoI fuel 主脉)
+!contract.py
+!feedback.py
+!strategy_store.py
+!numeric_claims.py
+!merkle_chain.py
+
+# query 改写 / 同义
+!query_rewrite.py
+
+# MCP 服务/客户端(记忆引擎对外接口)
+!mcp_server.py
+!mcp_client.py
+
+# 中间件 / judges(召回质量门)
+!middleware/
+!judges/

@@ -5,7 +5,7 @@
 V5 侧 `git remote -v`:`origin = https://github.com/chunxiaoxx/nautilus-v5.git`(另有 cloud remote);push 命令即 `git push origin session/agent-self-improve-20260526`。
 
 **已按你们的要求押送到本仓**(免跨仓 fetch):
-- 分支 `v5-proof-deposit-20260825`(commit `12b6964`)
+- **compass 仓 main**(merge commit `ac2c0ce`)
 - `_v5_proof_deposit/g2b1/`:自检工具+4仓读数+69题三件套+pytest适配器+distill7b
 - `_v5_proof_deposit/distill_v3/`:v3 结果集 JSON
 

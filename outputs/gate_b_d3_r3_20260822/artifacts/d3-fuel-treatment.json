@@ -1,0 +1,1 @@
+{"content":{"failure_reason":"dependency.source_not_successful"},"episode_event_hash":"sha256:bc68529f13215b2710ea0b47bb2116ed85309fc9ad9dae26c3c99d93ffdb3efd","episode_id":"d3-fuel-treatment","evidence_hash":"sha256:af83787116d22279d85076ed6ad8fc3607a88c1c0c8959df3655bd0be8ca51e9","schema_version":"compass.loop.artifact.v1","tool_chain":["dependency_skip"]}

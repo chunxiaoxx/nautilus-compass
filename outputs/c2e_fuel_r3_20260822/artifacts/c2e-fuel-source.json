@@ -1,0 +1,1 @@
+{"content":{"failure_reason":"source_reuse_advice_out_of_bounds"},"episode_event_hash":"sha256:2c1904ab4060d3b84ffe100d6254a5d5188bd1a7d169fc71a1b780778086b28a","episode_id":"c2e-fuel-source","evidence_hash":"sha256:05fb71c50354be65058b2ae5995e248d5b048adc5b1b368c2f0095d6f04ff95d","schema_version":"compass.loop.artifact.v1","tool_chain":["action_failure"]}

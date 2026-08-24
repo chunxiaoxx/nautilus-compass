@@ -1,0 +1,1 @@
+{"content":{"failure_reason":"provider_output_invalid"},"episode_event_hash":"sha256:81693ed63e17474fd37a1673a90757814335b93682dce1a48f204f7ae3876dc9","episode_id":"d2-fuel-control","evidence_hash":"sha256:f3f08529641bfaa3bd6a4b941b83e4d177058ab805fd66947bd25e7369c721eb","schema_version":"compass.loop.artifact.v1","tool_chain":["action_failure"]}

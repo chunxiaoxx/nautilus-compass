@@ -1,0 +1,876 @@
+{
+  "version": "1.0.0",
+  "project": {
+    "name": "nautilus-compass",
+    "languages": [
+      "python"
+    ],
+    "frameworks": [
+      "fastapi",
+      "psycopg",
+      "sentence-transformers"
+    ],
+    "description": "Nautilus Compass core memory engine: BGE-m3 vector recall, drift detection, metamemory self-knowledge, session memory + integrity, governance/feedback, and an MCP interface.",
+    "analyzedAt": "2026-06-11T06:18:56Z",
+    "gitCommitHash": "81f37b42dde8bbeb23bde9ac22b935f0b345d1ab"
+  },
+  "nodes": [
+    {
+      "id": "file:recall.py",
+      "type": "file",
+      "name": "recall.py",
+      "summary": "UserPromptSubmit hook · real BGE-m3 vector recall: embed prompt, top-k cosine memory hits + age grouping; pkl embedding cache. Core memory retrieval entrypoint.",
+      "tags": [
+        "recall",
+        "bge",
+        "hook",
+        "retrieval",
+        "cache"
+      ]
+    },
+    {
+      "id": "file:recall_consumption.py",
+      "type": "file",
+      "name": "recall_consumption.py",
+      "summary": "Detects 'recall fired but not consumed' drift: a path surfaced in a recall block but never read; emits a consumption warning.",
+      "tags": [
+        "recall",
+        "drift",
+        "consumption",
+        "audit"
+      ]
+    },
+    {
+      "id": "file:session_writer.py",
+      "type": "file",
+      "name": "session_writer.py",
+      "summary": "Stop-hook session writer (replaces claude-mem): parses last turns, distills to markdown obs via LLM, writes session_*.md, updates merkle chain + strategy store.",
+      "tags": [
+        "session",
+        "writer",
+        "stop-hook",
+        "memory",
+        "distill"
+      ]
+    },
+    {
+      "id": "file:session_search.py",
+      "type": "file",
+      "name": "session_search.py",
+      "summary": "Cross-project session memory search over session_*.md: keyword + drift + type filter, ranked by mtime.",
+      "tags": [
+        "session",
+        "search",
+        "cross-project",
+        "filter"
+      ]
+    },
+    {
+      "id": "file:cloud_ingest.py",
+      "type": "file",
+      "name": "cloud_ingest.py",
+      "summary": "Pushes local session_*.md to cloud /v1/v14/ingest_obs over SSH for cross-dialog recall visibility (BGE index on cloud).",
+      "tags": [
+        "cloud",
+        "ingest",
+        "sync",
+        "cross-dialog"
+      ]
+    },
+    {
+      "id": "file:daemon.py",
+      "type": "file",
+      "name": "daemon.py",
+      "summary": "BGE daemon: keeps the embedding model hot, serves recall/drift over TCP JSON IPC (127.0.0.1:9876); lifecycle tier promotion + query rewrite.",
+      "tags": [
+        "daemon",
+        "bge",
+        "tcp",
+        "ipc",
+        "drift",
+        "recall"
+      ]
+    },
+    {
+      "id": "file:daemon_anchor_apply.py",
+      "type": "file",
+      "name": "daemon_anchor_apply.py",
+      "summary": "Applies layered anchors (platform_base + domain + tenant) to the daemon BGE index via patch mode without editing daemon core.",
+      "tags": [
+        "daemon",
+        "anchor",
+        "fusion",
+        "patch"
+      ]
+    },
+    {
+      "id": "file:daemon_anchor_loader.py",
+      "type": "file",
+      "name": "daemon_anchor_loader.py",
+      "summary": "Loads & merges 3 anchor layers (platform_base / domain / tenant) into positive+negative anchor lists for the BGE index.",
+      "tags": [
+        "anchor",
+        "loader",
+        "layered",
+        "fusion"
+      ]
+    },
+    {
+      "id": "file:drift_history.py",
+      "type": "file",
+      "name": "drift_history.py",
+      "summary": "Drift timeline: ASCII visualization of AI drift history across sessions (which session began deviating from intent).",
+      "tags": [
+        "drift",
+        "timeline",
+        "visualization",
+        "sessions"
+      ]
+    },
+    {
+      "id": "file:output_drift.py",
+      "type": "file",
+      "name": "output_drift.py",
+      "summary": "Assistant-output-side drift detection: language/style/persona drift over the session's assistant reply sequence (black-box, embedding-based).",
+      "tags": [
+        "drift",
+        "output",
+        "persona",
+        "language"
+      ]
+    },
+    {
+      "id": "file:contract.py",
+      "type": "file",
+      "name": "contract.py",
+      "summary": "Cross-agent contract schema + scanner: parse contracts from session frontmatter, ledger append, alert on overdue handoffs (close_loop).",
+      "tags": [
+        "contract",
+        "governance",
+        "handoff",
+        "scanner",
+        "ledger"
+      ]
+    },
+    {
+      "id": "file:feedback.py",
+      "type": "file",
+      "name": "feedback.py",
+      "summary": "Adaptive anchor learning CLI: list/log/stats/retrain — consumes feedback.jsonl (tp/fp signals) to regenerate adapted drift anchors.",
+      "tags": [
+        "feedback",
+        "anchor",
+        "retrain",
+        "adaptive",
+        "cli"
+      ]
+    },
+    {
+      "id": "file:strategy_store.py",
+      "type": "file",
+      "name": "strategy_store.py",
+      "summary": "Strategy store: DPT-Agent distilled reasoning paths persisted across sessions (strategies.jsonl).",
+      "tags": [
+        "strategy",
+        "store",
+        "reasoning",
+        "persistence"
+      ]
+    },
+    {
+      "id": "file:numeric_claims.py",
+      "type": "file",
+      "name": "numeric_claims.py",
+      "summary": "Anti-hallucination numeric-claims hook: extract numeric claims on write, cross-ref on recall to surface conflicting old vs new numbers.",
+      "tags": [
+        "numeric",
+        "anti-hallucination",
+        "cross-ref",
+        "hook"
+      ]
+    },
+    {
+      "id": "file:merkle_chain.py",
+      "type": "file",
+      "name": "merkle_chain.py",
+      "summary": "Local stdlib Merkle hash chain over session_*.md for tamper-evidence; verify_chain detects edits/deletions/additions.",
+      "tags": [
+        "merkle",
+        "integrity",
+        "tamper-evidence",
+        "chain"
+      ]
+    },
+    {
+      "id": "file:query_rewrite.py",
+      "type": "file",
+      "name": "query_rewrite.py",
+      "summary": "Opt-in Gemini query rewrite before retrieval (expand abbreviations/synonyms); all LLM contact isolated here; falls back to original query.",
+      "tags": [
+        "query-rewrite",
+        "llm",
+        "opt-in",
+        "retrieval"
+      ]
+    },
+    {
+      "id": "file:mcp_server.py",
+      "type": "file",
+      "name": "mcp_server.py",
+      "summary": "MCP JSON-RPC server (stdio) exposing recall / drift_check / feedback_log to MCP clients; backed by the TCP BGE daemon.",
+      "tags": [
+        "mcp",
+        "server",
+        "json-rpc",
+        "interface",
+        "recall",
+        "drift"
+      ]
+    },
+    {
+      "id": "file:mcp_client.py",
+      "type": "file",
+      "name": "mcp_client.py",
+      "summary": "MCP JSON-RPC client with automatic reconnect for long-lived A2A sessions (transparent retry on link drop).",
+      "tags": [
+        "mcp",
+        "client",
+        "reconnect",
+        "a2a"
+      ]
+    },
+    {
+      "id": "file:recall_pkg/poi_snapshot_cache.py",
+      "type": "file",
+      "name": "poi_snapshot_cache.py",
+      "summary": "Lazy mtime-cached PoI credit snapshot for the daemon boost path; never raises, degrades to last-good dict.",
+      "tags": [
+        "poi",
+        "cache",
+        "snapshot",
+        "recall-boost"
+      ]
+    },
+    {
+      "id": "file:recall_pkg/poi_weighting.py",
+      "type": "file",
+      "name": "poi_weighting.py",
+      "summary": "PoI weighting: boosts/demotes recall rank by cumulative_impact (asymptotic, capped, pure arithmetic, no LLM).",
+      "tags": [
+        "poi",
+        "weighting",
+        "ranking",
+        "recall-boost"
+      ]
+    },
+    {
+      "id": "file:drift/act_log.py",
+      "type": "file",
+      "name": "act_log.py",
+      "summary": "Drift alert ack writer+reader: records acks against daemon alert_ids so act-on rate becomes computable (closes drift loop).",
+      "tags": [
+        "drift",
+        "ack",
+        "act-log",
+        "telemetry"
+      ]
+    },
+    {
+      "id": "file:drift/auto_ack.py",
+      "type": "file",
+      "name": "auto_ack.py",
+      "summary": "Stop-hook auto-detection of drift-alert acknowledgements in session text (rule-based, no LLM); writes acks via act_log.",
+      "tags": [
+        "drift",
+        "auto-ack",
+        "stop-hook",
+        "rule-based"
+      ]
+    },
+    {
+      "id": "file:drift/firing.py",
+      "type": "file",
+      "name": "firing.py",
+      "summary": "Drift firing decision: multi-signal vote (strong/weak score + neg-anchor hit) replacing the old high-FP OR-vote.",
+      "tags": [
+        "drift",
+        "firing",
+        "multi-signal",
+        "vote"
+      ]
+    },
+    {
+      "id": "file:drift/gate_act.py",
+      "type": "file",
+      "name": "gate_act.py",
+      "summary": "Act-stage drift gate: analyzes PoI events post-action for drift/stale-memory signals (logged-only).",
+      "tags": [
+        "drift",
+        "gate",
+        "poi",
+        "act-stage"
+      ]
+    },
+    {
+      "id": "file:drift/routing.py",
+      "type": "file",
+      "name": "routing.py",
+      "summary": "Drift-as-routing: classify ingest tier (green canonical / yellow caveat / red quarantine) by drift score.",
+      "tags": [
+        "drift",
+        "routing",
+        "ingest",
+        "tiering"
+      ]
+    },
+    {
+      "id": "file:metamemory/builder.py",
+      "type": "file",
+      "name": "builder.py",
+      "summary": "build_recall_result: glue turning recall match dicts into a metamemory RecallResult (confidence + source trail + gaps); pluggable LLM backend.",
+      "tags": [
+        "metamemory",
+        "builder",
+        "recall-result",
+        "glue"
+      ]
+    },
+    {
+      "id": "file:metamemory/calibration.py",
+      "type": "file",
+      "name": "calibration.py",
+      "summary": "Calibration scoring: how well reported confidence matches actual correctness (2-bucket).",
+      "tags": [
+        "metamemory",
+        "calibration",
+        "confidence"
+      ]
+    },
+    {
+      "id": "file:metamemory/confidence.py",
+      "type": "file",
+      "name": "confidence.py",
+      "summary": "ConfidenceVector primitive: per-match confidence with deterministic monotonic composite scoring.",
+      "tags": [
+        "metamemory",
+        "confidence",
+        "primitive"
+      ]
+    },
+    {
+      "id": "file:metamemory/gap.py",
+      "type": "file",
+      "name": "gap.py",
+      "summary": "GapStatement primitive: compass surfacing 'I do not have evidence for X'.",
+      "tags": [
+        "metamemory",
+        "gap",
+        "primitive"
+      ]
+    },
+    {
+      "id": "file:metamemory/gap_detector.py",
+      "type": "file",
+      "name": "gap_detector.py",
+      "summary": "Gap detection: emits GapStatement when no match exceeds confidence threshold (anti hallucinate-absence).",
+      "tags": [
+        "metamemory",
+        "gap",
+        "detector"
+      ]
+    },
+    {
+      "id": "file:metamemory/result.py",
+      "type": "file",
+      "name": "result.py",
+      "summary": "RecallResult: upgraded recall API returning matches + confidence + gaps + source trail.",
+      "tags": [
+        "metamemory",
+        "recall-result",
+        "api"
+      ]
+    },
+    {
+      "id": "file:middleware/auth.py",
+      "type": "file",
+      "name": "auth.py",
+      "summary": "Auth + quota middleware: X-Agent-Key (platform JWT) authentication, FastAPI dependency, psycopg tenant lookup.",
+      "tags": [
+        "middleware",
+        "auth",
+        "quota",
+        "fastapi"
+      ]
+    },
+    {
+      "id": "file:judges/gemini_flash.py",
+      "type": "file",
+      "name": "gemini_flash.py",
+      "summary": "Opt-in Gemini 2.5 Flash judge (COMPASS_USE_GEMINI_FLASH=1); preserves no-LLM-at-ingest default; used by query rewrite + benchmark judging.",
+      "tags": [
+        "judge",
+        "gemini",
+        "llm",
+        "opt-in"
+      ]
+    },
+    {
+      "id": "function:recall.py:recall",
+      "type": "function",
+      "name": "recall",
+      "summary": "Core recall function: embeds the prompt, returns top-k cosine memory hits with age grouping.",
+      "tags": [
+        "recall",
+        "retrieval",
+        "core"
+      ]
+    },
+    {
+      "id": "function:recall.py:promote_lifecycle_tier",
+      "type": "function",
+      "name": "promote_lifecycle_tier",
+      "summary": "Promotes a memory's lifecycle tier (archived flag); reused by daemon for arithmetic tiering.",
+      "tags": [
+        "lifecycle",
+        "tier",
+        "recall"
+      ]
+    },
+    {
+      "id": "function:drift/firing.py:should_fire_drift",
+      "type": "function",
+      "name": "should_fire_drift",
+      "summary": "Multi-signal drift firing vote returning whether to raise a drift alert.",
+      "tags": [
+        "drift",
+        "firing",
+        "vote"
+      ]
+    },
+    {
+      "id": "class:contract.py:Contract",
+      "type": "class",
+      "name": "Contract",
+      "summary": "Cross-agent contract dataclass (id, giver, deliverable, deadline) parsed from session frontmatter.",
+      "tags": [
+        "contract",
+        "schema",
+        "dataclass"
+      ]
+    },
+    {
+      "id": "class:metamemory/result.py:RecallResult",
+      "type": "class",
+      "name": "RecallResult",
+      "summary": "Upgraded recall result carrying matches, confidence, gaps and source trail.",
+      "tags": [
+        "metamemory",
+        "recall-result"
+      ]
+    },
+    {
+      "id": "class:metamemory/confidence.py:ConfidenceVector",
+      "type": "class",
+      "name": "ConfidenceVector",
+      "summary": "Per-match confidence vector with monotonic composite scoring.",
+      "tags": [
+        "metamemory",
+        "confidence"
+      ]
+    },
+    {
+      "id": "class:metamemory/gap.py:GapStatement",
+      "type": "class",
+      "name": "GapStatement",
+      "summary": "Statement that compass lacks evidence for a query (anti hallucinate-absence).",
+      "tags": [
+        "metamemory",
+        "gap"
+      ]
+    },
+    {
+      "id": "class:middleware/auth.py:Tenant",
+      "type": "class",
+      "name": "Tenant",
+      "summary": "Authenticated tenant context (agent identity + quota) resolved from X-Agent-Key.",
+      "tags": [
+        "auth",
+        "tenant"
+      ]
+    },
+    {
+      "id": "function:query_rewrite.py:rewrite_query",
+      "type": "function",
+      "name": "rewrite_query",
+      "summary": "Opt-in query rewrite via Gemini Flash judge; returns original query on any fault.",
+      "tags": [
+        "query-rewrite",
+        "llm"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:recall.py",
+      "target": "function:recall.py:recall",
+      "type": "contains",
+      "weight": 1.0
+    },
+    {
+      "source": "file:recall.py",
+      "target": "function:recall.py:promote_lifecycle_tier",
+      "type": "contains",
+      "weight": 1.0
+    },
+    {
+      "source": "file:drift/firing.py",
+      "target": "function:drift/firing.py:should_fire_drift",
+      "type": "contains",
+      "weight": 1.0
+    },
+    {
+      "source": "file:contract.py",
+      "target": "class:contract.py:Contract",
+      "type": "contains",
+      "weight": 1.0
+    },
+    {
+      "source": "file:metamemory/result.py",
+      "target": "class:metamemory/result.py:RecallResult",
+      "type": "contains",
+      "weight": 1.0
+    },
+    {
+      "source": "file:metamemory/confidence.py",
+      "target": "class:metamemory/confidence.py:ConfidenceVector",
+      "type": "contains",
+      "weight": 1.0
+    },
+    {
+      "source": "file:metamemory/gap.py",
+      "target": "class:metamemory/gap.py:GapStatement",
+      "type": "contains",
+      "weight": 1.0
+    },
+    {
+      "source": "file:middleware/auth.py",
+      "target": "class:middleware/auth.py:Tenant",
+      "type": "contains",
+      "weight": 1.0
+    },
+    {
+      "source": "file:query_rewrite.py",
+      "target": "function:query_rewrite.py:rewrite_query",
+      "type": "contains",
+      "weight": 1.0
+    },
+    {
+      "source": "file:daemon.py",
+      "target": "file:recall.py",
+      "type": "imports",
+      "weight": 0.7
+    },
+    {
+      "source": "file:daemon.py",
+      "target": "file:query_rewrite.py",
+      "type": "imports",
+      "weight": 0.7
+    },
+    {
+      "source": "file:daemon_anchor_apply.py",
+      "target": "file:daemon_anchor_loader.py",
+      "type": "imports",
+      "weight": 0.7
+    },
+    {
+      "source": "file:daemon_anchor_apply.py",
+      "target": "file:daemon.py",
+      "type": "imports",
+      "weight": 0.7
+    },
+    {
+      "source": "file:recall.py",
+      "target": "file:recall_pkg/poi_weighting.py",
+      "type": "imports",
+      "weight": 0.7
+    },
+    {
+      "source": "file:recall.py",
+      "target": "file:recall_pkg/poi_snapshot_cache.py",
+      "type": "imports",
+      "weight": 0.7
+    },
+    {
+      "source": "file:recall.py",
+      "target": "file:numeric_claims.py",
+      "type": "imports",
+      "weight": 0.7
+    },
+    {
+      "source": "file:recall.py",
+      "target": "file:strategy_store.py",
+      "type": "imports",
+      "weight": 0.7
+    },
+    {
+      "source": "file:recall.py",
+      "target": "file:contract.py",
+      "type": "imports",
+      "weight": 0.7
+    },
+    {
+      "source": "file:mcp_server.py",
+      "target": "file:recall_consumption.py",
+      "type": "imports",
+      "weight": 0.7
+    },
+    {
+      "source": "file:mcp_server.py",
+      "target": "file:drift_history.py",
+      "type": "imports",
+      "weight": 0.7
+    },
+    {
+      "source": "file:mcp_server.py",
+      "target": "file:session_search.py",
+      "type": "imports",
+      "weight": 0.7
+    },
+    {
+      "source": "file:session_writer.py",
+      "target": "file:merkle_chain.py",
+      "type": "imports",
+      "weight": 0.7
+    },
+    {
+      "source": "file:session_writer.py",
+      "target": "file:strategy_store.py",
+      "type": "imports",
+      "weight": 0.7
+    },
+    {
+      "source": "file:query_rewrite.py",
+      "target": "file:judges/gemini_flash.py",
+      "type": "imports",
+      "weight": 0.7
+    },
+    {
+      "source": "file:drift/auto_ack.py",
+      "target": "file:drift/act_log.py",
+      "type": "imports",
+      "weight": 0.7
+    },
+    {
+      "source": "file:metamemory/builder.py",
+      "target": "file:metamemory/confidence.py",
+      "type": "imports",
+      "weight": 0.7
+    },
+    {
+      "source": "file:metamemory/builder.py",
+      "target": "file:metamemory/gap_detector.py",
+      "type": "imports",
+      "weight": 0.7
+    },
+    {
+      "source": "file:metamemory/builder.py",
+      "target": "file:metamemory/calibration.py",
+      "type": "imports",
+      "weight": 0.7
+    },
+    {
+      "source": "file:metamemory/builder.py",
+      "target": "file:metamemory/result.py",
+      "type": "imports",
+      "weight": 0.7
+    },
+    {
+      "source": "file:metamemory/gap_detector.py",
+      "target": "file:metamemory/confidence.py",
+      "type": "imports",
+      "weight": 0.7
+    },
+    {
+      "source": "file:metamemory/gap_detector.py",
+      "target": "file:metamemory/gap.py",
+      "type": "imports",
+      "weight": 0.7
+    },
+    {
+      "source": "file:metamemory/result.py",
+      "target": "file:metamemory/confidence.py",
+      "type": "imports",
+      "weight": 0.7
+    },
+    {
+      "source": "file:metamemory/result.py",
+      "target": "file:metamemory/gap.py",
+      "type": "imports",
+      "weight": 0.7
+    },
+    {
+      "source": "file:recall.py",
+      "target": "file:metamemory/builder.py",
+      "type": "imports",
+      "weight": 0.7
+    },
+    {
+      "source": "file:daemon.py",
+      "target": "function:recall.py:promote_lifecycle_tier",
+      "type": "calls",
+      "weight": 0.8
+    },
+    {
+      "source": "file:recall_consumption.py",
+      "target": "file:recall.py",
+      "type": "related",
+      "weight": 0.5
+    },
+    {
+      "source": "file:feedback.py",
+      "target": "file:output_drift.py",
+      "type": "related",
+      "weight": 0.5
+    },
+    {
+      "source": "file:feedback.py",
+      "target": "file:drift_history.py",
+      "type": "related",
+      "weight": 0.5
+    },
+    {
+      "source": "file:output_drift.py",
+      "target": "file:drift/firing.py",
+      "type": "related",
+      "weight": 0.5
+    },
+    {
+      "source": "file:cloud_ingest.py",
+      "target": "file:session_writer.py",
+      "type": "related",
+      "weight": 0.5
+    },
+    {
+      "source": "file:mcp_client.py",
+      "target": "file:mcp_server.py",
+      "type": "related",
+      "weight": 0.5
+    },
+    {
+      "source": "file:drift/routing.py",
+      "target": "file:drift/firing.py",
+      "type": "related",
+      "weight": 0.5
+    },
+    {
+      "source": "file:drift/gate_act.py",
+      "target": "file:drift/routing.py",
+      "type": "related",
+      "weight": 0.5
+    },
+    {
+      "source": "file:daemon_anchor_loader.py",
+      "target": "file:feedback.py",
+      "type": "related",
+      "weight": 0.5
+    },
+    {
+      "source": "file:recall.py",
+      "target": "file:query_rewrite.py",
+      "type": "related",
+      "weight": 0.5
+    }
+  ],
+  "layers": [
+    {
+      "id": "layer:memory-recall",
+      "name": "Memory Recall",
+      "description": "BGE-m3 vector recall, query rewrite, PoI rank boosting and recall consumption auditing — the core retrieval path.",
+      "nodeIds": [
+        "file:recall.py",
+        "file:recall_consumption.py",
+        "file:query_rewrite.py",
+        "file:recall_pkg/poi_weighting.py",
+        "file:recall_pkg/poi_snapshot_cache.py"
+      ]
+    },
+    {
+      "id": "layer:session-memory",
+      "name": "Session Memory & Sync",
+      "description": "Writing, searching, integrity-chaining and cloud-syncing of session memory files.",
+      "nodeIds": [
+        "file:session_writer.py",
+        "file:session_search.py",
+        "file:cloud_ingest.py",
+        "file:merkle_chain.py",
+        "file:strategy_store.py"
+      ]
+    },
+    {
+      "id": "layer:daemon-runtime",
+      "name": "Daemon Runtime & Anchors",
+      "description": "Hot BGE daemon TCP service and the layered-anchor loader/applier that configure its index.",
+      "nodeIds": [
+        "file:daemon.py",
+        "file:daemon_anchor_apply.py",
+        "file:daemon_anchor_loader.py"
+      ]
+    },
+    {
+      "id": "layer:drift-detection",
+      "name": "Drift Detection",
+      "description": "Input/output/persona drift detection, firing vote, routing, act-stage gating, ack telemetry and history.",
+      "nodeIds": [
+        "file:drift_history.py",
+        "file:output_drift.py",
+        "file:numeric_claims.py",
+        "file:drift/firing.py",
+        "file:drift/routing.py",
+        "file:drift/gate_act.py",
+        "file:drift/act_log.py",
+        "file:drift/auto_ack.py"
+      ]
+    },
+    {
+      "id": "layer:metamemory",
+      "name": "Metamemory / Self-Knowledge",
+      "description": "Confidence vectors, gap detection, calibration and RecallResult assembly so the subject LLM knows what compass does/doesn't know.",
+      "nodeIds": [
+        "file:metamemory/builder.py",
+        "file:metamemory/calibration.py",
+        "file:metamemory/confidence.py",
+        "file:metamemory/gap.py",
+        "file:metamemory/gap_detector.py",
+        "file:metamemory/result.py"
+      ]
+    },
+    {
+      "id": "layer:governance-poi",
+      "name": "Governance, Contracts & Feedback",
+      "description": "Cross-agent contracts/handoff ledger and the adaptive anchor feedback (PoI) learning loop.",
+      "nodeIds": [
+        "file:contract.py",
+        "file:feedback.py"
+      ]
+    },
+    {
+      "id": "layer:mcp-interface",
+      "name": "MCP Interface",
+      "description": "JSON-RPC MCP server/client exposing recall, drift and feedback to external agents.",
+      "nodeIds": [
+        "file:mcp_server.py",
+        "file:mcp_client.py"
+      ]
+    },
+    {
+      "id": "layer:recall-quality-gate",
+      "name": "Recall Quality Gate",
+      "description": "Auth/quota middleware and the opt-in LLM judge guarding recall/retrieval quality.",
+      "nodeIds": [
+        "file:middleware/auth.py",
+        "file:judges/gemini_flash.py"
+      ]
+    }
+  ],
+  "tour": []
+}

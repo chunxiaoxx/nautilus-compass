@@ -1,0 +1,1 @@
+{"content":{"failure_reason":"dependency.source_not_successful"},"episode_event_hash":"sha256:994a281f01526722c3fdbc5ffba3b4ea418001bce0a220bec38826e2c6bb9701","episode_id":"c2e-fuel-treatment","evidence_hash":"sha256:530b2ba59221c8fa74f5c1766df91c810c4b5c5ef420c0acd057c6a940449140","schema_version":"compass.loop.artifact.v1","tool_chain":["dependency_skip"]}

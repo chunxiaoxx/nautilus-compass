@@ -1,0 +1,1 @@
+{"content":{"failure_reason":"provider_identity_mismatch"},"episode_event_hash":"sha256:0ff5cb3d1bb991dfa1a786d3607b9178c05e50c7db8bbd28c00b0b2325415407","episode_id":"gate-b-exit-source","evidence_hash":"sha256:b0cc2aba31de9522f44b30c54409fa18ee49caba49e03a9c1827d251355c74e6","schema_version":"compass.loop.artifact.v1","tool_chain":["action_failure"]}
