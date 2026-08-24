@@ -37,3 +37,15 @@
 - drift 深度分析、judges → 保留观察
 - ops 一次性脚本 → 下批清理
 - OKF/论文/SDK → 不是砍,是"待发布资产",进产品线排期
+
+## 附录 A · 失落大陆收编记录(2026-08-24 深夜)
+
+| 遗址 | 处置 | 判定 |
+|---|---|---|
+| 云 /home/ubuntu/nautilus-compass 分叉(ahead1/behind22) | 孤本 mcp_http_server.py 已入 repo(commit 见 git log);BLOGPOST patch+dirty diff 存档 _cloud_backfill_20260824/ | **已收编**;待部署规程让云仓 ff 对齐 |
+| codex r15 王冠链(608 文件/10 万行) | tag `codex-archive/r15-crown-20260824` | **接**(证据资产;d3 suite 主分支已复现 Gold,不盲合) |
+| codex 孤本 12+(c7/c9 系列/a0-security/release-control-plane…) | tag `codex-archive/orphans-20260824` 指针+分支保留 | **眠**(7/20-8/5 codex 战线,需时 cherry-pick) |
+| ~/.claude-backup-0714(1.7GB) | 顶层目录索引 → _cloud_backfill_20260824/backup0714_manifest.txt | 冷档案(只读,不覆盖回) |
+| 当前分支 vs dogfood-mvp | dogfood-mvp 已含于当前分支,当前分支另有 164 commit 进化 | 血统连续 ✓ |
+
+**结论:没有真丢——王冠已 tag、孤本已指针、生产孤本已入 repo。**
