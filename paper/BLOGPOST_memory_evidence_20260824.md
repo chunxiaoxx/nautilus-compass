@@ -1,9 +1,9 @@
 ---
 title: "Benchmarks can't tell you if agent memory helps your team. A paired control can — here's ours"
-published: false
+published: true
 description: "Every memory layer claims it helps. We built a paired control experiment with deterministic oracles to test ours — including the results that hurt."
 tags: llm, ai, memory, agents
-canonical_url: https://github.com/chunxiaoxx/nautilus-compass
+canonical_url: https://dev.to/chunxiaoxx/benchmarks-cant-tell-you-if-agent-memory-helps-your-team-a-paired-control-can-1igm
 ---
 
 # Benchmarks can't tell you if agent memory helps *your team*. A paired control can
