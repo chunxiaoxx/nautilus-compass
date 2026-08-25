@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.0.1] · 2026-08-25 — 诚实口径校准
+
+- LongMemEval-S 30 题在 v3.0 全链重测(m3-rerank + gemini-flash subject):**检索命中 80%**(24/30),端到端 26.7%。
+  对外声明从单一 "56.6%"(v0.8 口径,不同 subject/judge 配置,存档保留)改为两段式:retrieval-hit 80% / e2e 26.7%。
+  端到端短板定位在 subject LLM 长上下文使用,非检索层。
+- eval_recall 回归:P@1 0.972 / MRR 0.982(基线 0.969/0.980,daemon 大改零退化)。
+- daemon:Stage1a /status 端点并入(uptime/CPU/5min 滑窗延迟/overload 计数/pkl 体积)。
+- package.json 版本对齐(2.3.0 → 3.0.1;npm 非活跃渠道,仅防误导)。
+
+
 ## [3.0.0] · 2026-08-24 — "从记忆库到进化引擎"
 
 > 承 v2.4.0(8/22 S4 收敛)。3.0 不是新功能堆叠,是同一系统的代际合拢:

@@ -28,7 +28,7 @@
 
 [![CI](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/ci.yml)
 [![arXiv build](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/build-paper.yml/badge.svg?branch=main)](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/build-paper.yml)
-[![LongMemEval-S](https://img.shields.io/badge/LongMemEval--S-56.6%25-brightgreen)](paper/RESULTS_v0.8.md)
+[![LongMemEval-S](https://img.shields.io/badge/LongMemEval--S-retrieval--hit%2080%25%20%C2%B7%20e2e%2026.7%25-blue)](paper/RESULTS_v0.8.md)
 [![EverMemBench](https://img.shields.io/badge/EverMemBench-44.4%E2%80%9347.3%25-brightgreen)](paper/sections/paper2_06_5_evermembench.tex)
 [![drift-AUC](https://img.shields.io/badge/drift_AUC-0.83_held--out-brightgreen)](#how-it-works)
 [![PyPI](https://img.shields.io/pypi/v/nautilus-compass?label=PyPI&color=blue)](https://pypi.org/project/nautilus-compass/)
@@ -360,7 +360,7 @@ assert m["rate"] >= 0.70, f"drift loop open · rate={m['rate']:.3f} fires={m['fi
 
 | Benchmark | Score | Honest compare |
 |---|---|---|
-| **LongMemEval-S** (n=500) | **56.6%** (locked at v0.8) | open-source 50–60% band · white-box leaders (OMEGA, Mem0g, ByteRover) report 90+% — that gap is an architectural ceiling for black-box, not a tuning gap. See [BLACKBOX_VS_WHITEBOX](paper/BLACKBOX_VS_WHITEBOX.md). |
+| **LongMemEval-S** 30q re-run (v3.0.1) | LongMemEval-S 30q re-run (v3.0.1, m3-rerank, gemini-flash subject): **retrieval-hit 80%** (24/30 gold-in-context) · end-to-end 26.7% — the e2e gap is the subject LLM over long context, not retrieval. Historical: v0.8 n=500 e2e 56.6% (locked, different subject/judge config). |
 | **EverMemBench-Dynamic** (n=500) | **44.4% (Run 1) / 47.3% (Run 2)** | tops the four published Table 4 baselines (Mem0 37.09, Zep 39.97, MemOS 42.55, MemoBase 34.27). Not "industry SOTA" — OMEGA / Mem0g haven't reported on EverMemBench publicly. |
 | **Drift detector AUC** | **0.83 held-out / 0.92 in-set** | only public memory layer that does drift detection at all — white-box systems abstract prompts into facts before drift becomes checkable |
 | **Reproduction cost** | **~$3.50** for 500 LongMemEval questions | ~14× cheaper than GPT-4o-judged stacks ($50+) |
@@ -458,7 +458,7 @@ streaming are all spec-complete.
 | MCP A2A protocol native | ✅ TLS+mTLS+RBAC | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | Drift detection | ✅ AUC 0.83 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | Merkle integrity audit log | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| LongMemEval-S verified | ✅ 56.6% (locked) | n/r | n/r | n/r | ❌ | n/r | ❌ |
+| LongMemEval-S verified | ✅ v0.8 e2e 56.6% (locked) · v3.0.1 retrieval-hit 80% / e2e 26.7% | n/r | n/r | n/r | ❌ | n/r | ❌ |
 | EverMemBench verified | ✅ 44.4-47.3% | 37.09 | n/r | 39.97 | n/r | 42.55 | ❌ |
 | Self-host + hosted both | ✅ | ☁ only | ✅ | ☁ only | ✅ | OSS only | OSS only |
 | License | MIT | Apache | Apache | proprietary | MIT | Apache | MIT |
