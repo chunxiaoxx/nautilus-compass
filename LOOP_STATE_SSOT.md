@@ -151,6 +151,8 @@ FDE 产难题(强解+弱难倒 = 燃料)→ 蒸馏 → 系统可证变强(① �
 
 > **🔴 8/24 增量(用户拍板 · compass 框落笔)**:**genopt 自产变体族铸币已停(约 8/22 起)**——该管道 income = B(外部真值)0 的自印发空转,与北极星无关,故主动关闸。**income/自治率/settle 等自铸口径指标自此废弃,不再作为收敛指标**;8/16-8/21 该管道曾恒定 7-10 铸/日(详 compass memory session_income_flatline_rootcause_20260824),停后记分牌 income 不再增长属预期非故障。**接棒生产端 = V5 g2b1 真燃料线**(双门:starter 必败/fix 必过;8/24 四仓 86 题自检 71 OK,见 `_OUTBOUND_FROM_V5_TO_PLATFORM_20260825_g2b1_qc_full86.md`)+ gold-replication 3 Gold。中心环唯一裁决点仍是 **L4a 蒸馏判据(due 8/29,预注册决策树)**,出结果前其它不算进展。
 
+> **🔴 8/25 增量(platform A1 loop 监督 · 3 轮读数)**:① income 7d +2220 已归因消解——全是 gmint genopt 停闸前最后一波(gmint-deterministic 156 + gmint-minimax 21,最后铸 8/22 11:05 后平线),与"自铸停"一致,非故障。② **g2b1 真燃料线在跑**:云 DB `g2-b1-repair-executor` verdict 8/24 17时→21时 11→25 条(全不同 task_uid,幂等纪律在守),但 external_verified 全 false,**双门/独立复核 25 条积压未消化**(平台下轮抽验)。③ `/api/health` 已 200(502 已被修好,8/1 记录过时)。④ **L4a 催办已发**(platform→V5 `20260825_l4a_urgent` + 云端 memory):已知阻塞全解除(薛美雪燃料=`vtf/batch_guoshu_202607/fuel_pool/xuemeixue_001`·GPU=智星云 CLI 一键管·协议判据齐),但 V5 执行侧零起跑痕迹。**升级线:8/26 22:00 +0800 前无回执/无起跑证据 → 记"L4a 大概率跳票"并升级用户。**
+
 > **8/1-2 增量(平台框实测,详 memory s0-merge-deploy-20260801)**:S0 admission **v3**(生产 VM 手放版,对齐 7/30 宪法)已回收入库并上生产(`77652fccb`·合并 fde-phase3 worktree 77 提交)·部署前后记分牌逐字不变=账本无损·**income 703 自 7/15 零增长第 17 天,题池枯竭未解(球在 V5/FDE 产题侧)**·`/api/health` 502 根因坐实(nginx 指死端口 8001 + backend 无路由,未修)·云上残留 dirty worktree `distill-deploy` 与分支名 soul-audit-increment1 待正名。记分牌 8/1 直读:verdict **76**(7d +5)·income **703**(7d +0)·自治率 **90.8%**(69/76)·settle 0/3618。
 
 | 指标 | 值 | 说明 |
