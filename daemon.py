@@ -671,11 +671,28 @@ def parse_memory_file(path: Path) -> dict:
 # file at any kill; embed progress mid-scan was never persisted at all.
 _PKL_FLUSH_EVERY = int(os.environ.get("COMPASS_PKL_FLUSH_EVERY", "50"))
 
+# v3.0.3 · per-project embed/flush lock · 2026-08-25 cloud incident: concurrent
+# get_memory_entries calls raced (setdefault → two divergent cache dicts; the
+# later flush overwrote the richer pkl with a sparse one → entries lost →
+# perpetual re-embed at 347% CPU; plus same-tmp collisions between periodic
+# flushes → os.replace ENOENT ×33). Serializing per project fixes both; projects
+# still parallelize against each other.
+_MEM_LOCKS = {}
+_MEM_LOCKS_GUARD = threading.Lock()
+
+
+def _mem_lock(proj_key: str) -> threading.Lock:
+    with _MEM_LOCKS_GUARD:
+        lk = _MEM_LOCKS.get(proj_key)
+        if lk is None:
+            lk = _MEM_LOCKS[proj_key] = threading.Lock()
+        return lk
+
 
 def _pkl_write_atomic(path, obj) -> None:
     """v3.0.1 · write pkl via tmp + os.replace so a kill never leaves a
     truncated (permanently corrupt) cache file behind."""
-    tmp = path.with_suffix(".pkl.tmp")
+    tmp = path.with_name(f"{path.name}.{os.getpid()}.{threading.get_ident()}.tmp")
     with open(tmp, "wb") as f:
         pickle.dump(obj, f)
     os.replace(tmp, path)
@@ -717,28 +734,29 @@ def get_memory_entries(mem_dir: Path):
     # cache lookup
     proj_key = str(mem_dir)
     cache = _state["memory_caches"].setdefault(proj_key, {})
-    updated = 0
-    for e in entries:
-        cached = cache.get(e["fullpath"])
-        if cached and cached[0] == e["mtime"]:
-            e["embedding"] = cached[1]
-        else:
-            try:
-                vec = embedder.encode(e["embed_text"])
-                if hasattr(vec, "tolist"):
-                    vec = vec.tolist()
-                cache[e["fullpath"]] = (e["mtime"], vec)
-                e["embedding"] = vec
-                updated += 1
-                # v3.0.1 · periodic flush · 大项目(数千文件)re-embed 中途被
-                # kill/重启不再全丢进度(2026-08-24 云 74MB pkl 卡死根因之一)
-                if updated % _PKL_FLUSH_EVERY == 0:
-                    _flush_memory_pkl(proj_key, cache)
-            except Exception as ex:
-                log(f"embed file fail {e['path']}: {ex}")
-                e["embedding"] = None
-    if updated:
-        _flush_memory_pkl(proj_key, cache)
+    with _mem_lock(proj_key):  # v3.0.3 · serialize fill+flush per project
+        updated = 0
+        for e in entries:
+            cached = cache.get(e["fullpath"])
+            if cached and cached[0] == e["mtime"]:
+                e["embedding"] = cached[1]
+            else:
+                try:
+                    vec = embedder.encode(e["embed_text"])
+                    if hasattr(vec, "tolist"):
+                        vec = vec.tolist()
+                    cache[e["fullpath"]] = (e["mtime"], vec)
+                    e["embedding"] = vec
+                    updated += 1
+                    # v3.0.1 · periodic flush · 大项目(数千文件)re-embed 中途被
+                    # kill/重启不再全丢进度(2026-08-24 云 74MB pkl 卡死根因之一)
+                    if updated % _PKL_FLUSH_EVERY == 0:
+                        _flush_memory_pkl(proj_key, cache)
+                except Exception as ex:
+                    log(f"embed file fail {e['path']}: {ex}")
+                    e["embedding"] = None
+        if updated:
+            _flush_memory_pkl(proj_key, cache)
     # v2.0.9 · cache full entries for next recall · invalidated by inotify watcher
     if _INOTIFY_USE:
         with _ENTRIES_CACHE_LOCK:
