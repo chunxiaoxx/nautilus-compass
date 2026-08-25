@@ -35,8 +35,17 @@ import socket
 import sys
 import threading
 import time
+from collections import deque as _deque
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+
+# v3.0.2 · Stage1a /status endpoint (ported from cloud /opt fork 2026-08-25 to
+# end the repo-vs-/opt daemon divergence; psutil optional so local Windows
+# runs without it still work).
+try:
+    import psutil  # noqa: F401 · /status process metrics
+except ImportError:
+    psutil = None
 
 # P6 (companion) · torch single-thread per encode · applied after import
 try:
@@ -294,6 +303,66 @@ _DIR_DIRTY = set()   # proj_keys flagged for re-scan by inotify watcher
 _DIR_DIRTY_LOCK = threading.Lock()
 _INOTIFY_STATS = {"events": 0, "rescans_avoided": 0, "rescans_done": 0, "watch_count": 0, "errors": 0}
 _INOTIFY_LAST_LOG = 0.0
+
+# ── Stage1a /status state (ported from cloud /opt fork · 2026-08-25) ──
+_DAEMON_START_TS = 0.0
+_RECALL_TS_BUFFER = _deque(maxlen=10000)   # (ts, latency_ms)
+_OVERLOAD_TS_BUFFER = _deque(maxlen=1000)
+
+
+def _sliding_5min_stats():
+    now = time.time()
+    cutoff = now - 300
+    recent = [(t, lat) for t, lat in _RECALL_TS_BUFFER if t >= cutoff]
+    overload = sum(1 for t in _OVERLOAD_TS_BUFFER if t >= cutoff)
+    count = len(recent)
+    if count > 0:
+        latencies = sorted(lat for _, lat in recent)
+        p95 = latencies[min(int(count * 0.95), count - 1)]
+        avg = round(sum(latencies) / count, 2)
+    else:
+        p95 = 0
+        avg = 0
+    return {"count_5min": count, "p95_ms": p95, "avg_ms": avg, "overload_5min": overload}
+
+
+def _compute_memory_stats():
+    try:
+        pkls = list(CACHE_DIR.glob("*.pkl"))
+        return {"pkl_count": len(pkls),
+                "pkl_total_mb": sum(p.stat().st_size for p in pkls) // (1024 * 1024)}
+    except Exception:
+        return {"pkl_count": 0, "pkl_total_mb": 0}
+
+
+def _status_payload() -> dict:
+    from datetime import datetime, timezone
+    try:
+        proc = psutil.Process()
+        cpu_pct = proc.cpu_percent(interval=0.1)
+        rss_mb = proc.memory_info().rss // (1024 * 1024)
+    except Exception:
+        cpu_pct, rss_mb = 0.0, 0
+    try:
+        load_avg = list(os.getloadavg())
+    except Exception:
+        load_avg = [0.0, 0.0, 0.0]
+    return {
+        "ok": True,
+        "ts": datetime.now(timezone.utc).isoformat(),
+        "uptime_s": int(time.time() - _DAEMON_START_TS) if _DAEMON_START_TS else 0,
+        "pid": os.getpid(),
+        "cpu_pct": cpu_pct,
+        "rss_mb": rss_mb,
+        "load_avg": load_avg,
+        "recall": {"p9_cache": dict(_RECALL_CACHE_STATS), "sliding_5min": _sliding_5min_stats(),
+                   "inotify": {"watches": _INOTIFY_STATS["watch_count"],
+                               "events": _INOTIFY_STATS["events"],
+                               "avoid_rate": round(
+                                   (_INOTIFY_STATS["rescans_avoided"] /
+                                    max(_INOTIFY_STATS["rescans_avoided"] + _INOTIFY_STATS["rescans_done"], 1)) * 100, 1)}},
+        "memory": _compute_memory_stats(),
+    }
 
 
 def _p9_cache_key(action, query, project, top_k, scope, agent_type=""):
@@ -1108,6 +1177,8 @@ def _load_pkl_caches():
 def serve():
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     PID_FILE.write_text(str(os.getpid()), encoding="utf-8")
+    global _DAEMON_START_TS
+    _DAEMON_START_TS = time.time()
     log(f"daemon starting PID={os.getpid()} port={PORT}")
 
     # v0.7.2 fix · eager-load bge-m3 + anchors at startup. Lazy load caused
@@ -1168,6 +1239,7 @@ def serve():
         # ThreadPoolExecutor queueing under V5/V7 retry storms.
         if not _INFLIGHT_SEM.acquire(blocking=False):
             log(f"overload · reject conn (inflight cap {DAEMON_INFLIGHT_LIMIT})")
+            _OVERLOAD_TS_BUFFER.append(time.time())
             try:
                 conn.sendall(b'{"ok":false,"error":"daemon overloaded - retry"}\n')
             except Exception:
@@ -1353,6 +1425,10 @@ def handle_conn(conn: socket.socket):
         if req.get("action") == "ping":
             conn.sendall(json.dumps(_runtime_identity_payload()).encode("utf-8") + b"\n")
             return
+        if req.get("action") == "status":
+            # v3.0.2 · Stage1a /status (ported from cloud /opt fork)
+            conn.sendall(json.dumps(_status_payload(), ensure_ascii=False).encode("utf-8") + b"\n")
+            return
         if req.get("action") == "shutdown":
             conn.sendall(b'{"ok":true,"shutdown":true}\n')
             log("shutdown requested")
@@ -1365,7 +1441,11 @@ def handle_conn(conn: socket.socket):
             resp_bytes = json.dumps(_handle_score(req), ensure_ascii=False).encode("utf-8") + b"\n"
             conn.sendall(resp_bytes)
             return
+        _t0 = time.time()
         resp = handle_request(req)
+        # v3.0.2 · record recall/drift latency for /status sliding window
+        if req.get("action") in ("recall", "drift", "both"):
+            _RECALL_TS_BUFFER.append((time.time(), round((time.time() - _t0) * 1000, 1)))
         conn.sendall(json.dumps(resp, ensure_ascii=False).encode("utf-8") + b"\n")
     except Exception as e:
         log(f"conn handler fail: {e}")
