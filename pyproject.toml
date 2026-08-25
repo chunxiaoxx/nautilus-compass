@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nautilus-compass"
-version = "3.0.0"
-description = "Opinionated EvoMap · cross-agent memory with schema-declared 4-tier lifecycle + Ebbinghaus decay + LLM-free promotion · MCP/A2A · drift-aware · LongMemEval-S 56.6%"
+version = "3.0.1"
+description = "Opinionated EvoMap · cross-agent memory with schema-declared 4-tier lifecycle + Ebbinghaus decay + LLM-free promotion · MCP/A2A · drift-aware · LongMemEval-S retrieval-hit 80% / e2e 26.7% (gemini-flash subject)"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
