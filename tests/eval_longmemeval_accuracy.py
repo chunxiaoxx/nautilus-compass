@@ -48,9 +48,12 @@ DATASET_PATH = Path(os.environ.get(
     str(Path.home() / ".cache/huggingface/hub/datasets--xiaowu0162--longmemeval"
                      "/snapshots/2ec2a557f339b6c0369619b1ed5793734cc87533/longmemeval_s"),
 ))
+_ms_reranker = Path.home() / ".cache/modelscope/hub/models/BAAI/bge-reranker-v2-m3"
 RERANKER_PATH = os.environ.get(
     "ZMM_RERANKER_MODEL",
-    str(Path.home() / ".cache/modelscope/hub/models/BAAI/bge-reranker-v2-m3"),
+    # local ModelScope path preferred · HF repo id fallback (mirrors daemon.py:
+    # HF-cache-only hosts must not crash on the modelscope path being absent)
+    str(_ms_reranker) if _ms_reranker.exists() else "BAAI/bge-reranker-v2-m3",
 )
 
 SUBJECT_MODEL = os.environ.get("ZMM_SUBJECT_MODEL", "gemini-2.5-flash")
