@@ -1,0 +1,7 @@
+Agent memory layers all claim they help. We tested ours with a paired control:
+
+- tribal fact the model can't know: 0/3 → 3/3 with memory (retrieval 9/9)
+- general eng knowledge: delta = 0, repeatedly — worthless fuel
+- uncomfortable: our semantic recall had been silently 100% dead and nothing noticed it, until an hourly probe
+
+Full data incl. the findings that hurt: https://dev.to/chunxiaoxx/benchmarks-cant-tell-you-if-agent-memory-helps-your-team-a-paired-control-can-1igm
