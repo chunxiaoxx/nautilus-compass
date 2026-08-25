@@ -1,0 +1,13 @@
+Show HN: We tested our own agent-memory layer with a paired control experiment (results that hurt included)
+
+We maintain nautilus-compass, an open-source memory layer for coding agents (MCP: recall/ingest/drift). Everyone in this space claims memory makes agents better; benchmarks like LongMemEval can't separate retrieval from what the model already knows.
+
+So we ran a product-side paired control on ourselves: 3 facts classified by type (tribal API gotcha / internal infra fact / general engineering knowledge as negative control), cold-answer arm vs natural-language-recall-then-answer arm, deterministic validators, n=3 per cell.
+
+Results: retrieval 9/9; on the fact the model could not possibly know (undocumented API behavior), memory flipped 0/3 → 3/3. On general engineering knowledge: delta 0, repeatedly — most of what auto-summarization pipelines store is worthless fuel.
+
+The uncomfortable finding: while building the experiment we discovered our semantic recall had been 100% silently dead on the main dev machine (Windows path-length crash masked by keyword fallback) for an unknown time. Nobody noticed because nothing measured recall health. We now run an hourly heartbeat probe; its first night it caught the daemon dying.
+
+Harness + fuel QC gates + heartbeat are in the repo. We'd love to see your numbers on tribal knowledge.
+
+https://github.com/chunxiaoxx/nautilus-compass
