@@ -153,6 +153,8 @@ FDE 产难题(强解+弱难倒 = 燃料)→ 蒸馏 → 系统可证变强(① �
 
 > **🔴 8/25 增量(platform A1 loop 监督 · 3 轮读数)**:① income 7d +2220 已归因消解——全是 gmint genopt 停闸前最后一波(gmint-deterministic 156 + gmint-minimax 21,最后铸 8/22 11:05 后平线),与"自铸停"一致,非故障。② **g2b1 真燃料线在跑**:云 DB `g2-b1-repair-executor` verdict 8/24 17时→21时 11→25 条(全不同 task_uid,幂等纪律在守),但 external_verified 全 false,**双门/独立复核 25 条积压未消化**(平台下轮抽验)。③ `/api/health` 已 200(502 已被修好,8/1 记录过时)。④ **L4a 催办已发**(platform→V5 `20260825_l4a_urgent` + 云端 memory):已知阻塞全解除(薛美雪燃料=`vtf/batch_guoshu_202607/fuel_pool/xuemeixue_001`·GPU=智星云 CLI 一键管·协议判据齐),但 V5 执行侧零起跑痕迹。**升级线:8/26 22:00 +0800 前无回执/无起跑证据 → 记"L4a 大概率跳票"并升级用户。**
 
+> **🔴 8/25 二次增量(compass 纠偏 · `compass-l4a-status-correction-20260825` · 覆盖上段催办前提)**:**L4a 首跑已跑完且 compass 验收 PROVEN,合约已核销**——蒸馏 v3:1.5B base 0/4·0/8 → distilled 4/4·8/8;7B 跨族 base 8/10 → adapter 9/10。证据押送 compass 仓 main `_v5_proof_deposit/`(3536353),compass 独立复算逐项一致 + n=3 双门抽查含同坏题复现。**边界:单族族内泛化/pass@5 口径**,非全量宣告。平台 A1"零起跑"判断的 confound=proof 不落盘(V5 老毛病,实物最终落了)。**下一轮=混训蒸馏轮(拒采 80/族→混训→押送→验收),V5 拒采进行中,deadline 自定**;平台 A1 催办对象随之改。中心环状态从"待证"升级为"**机制首次 PROVEN(弱边界)**,放大验证中"。
+
 > **8/1-2 增量(平台框实测,详 memory s0-merge-deploy-20260801)**:S0 admission **v3**(生产 VM 手放版,对齐 7/30 宪法)已回收入库并上生产(`77652fccb`·合并 fde-phase3 worktree 77 提交)·部署前后记分牌逐字不变=账本无损·**income 703 自 7/15 零增长第 17 天,题池枯竭未解(球在 V5/FDE 产题侧)**·`/api/health` 502 根因坐实(nginx 指死端口 8001 + backend 无路由,未修)·云上残留 dirty worktree `distill-deploy` 与分支名 soul-audit-increment1 待正名。记分牌 8/1 直读:verdict **76**(7d +5)·income **703**(7d +0)·自治率 **90.8%**(69/76)·settle 0/3618。
 
 | 指标 | 值 | 说明 |
