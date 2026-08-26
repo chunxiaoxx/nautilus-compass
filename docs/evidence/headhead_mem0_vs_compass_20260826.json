@@ -1,0 +1,9 @@
+{
+  "ts": "2026-08-26",
+  "protocol": "LongMemEval-S subset 12 (all single-session-user) · raw-retrieval-only, no LLM extraction both sides (mem0 infer=False; compass m3-rerank). Same 12 questions, join by question_id.",
+  "mem0": {"version": "2.0.19", "embedder": "vertexai text-embedding-005", "store": "qdrant local", "P@1": 0.500, "P@5": 0.667, "MRR": 0.590},
+  "compass": {"version": "3.0.x", "embedder": "bge-m3 + bge-reranker-v2-m3", "P@1": 0.667, "P@5": 0.833, "MRR": 0.750},
+  "verdict": "compass +16.7pt P@1 / +16.7pt P@5 / +0.16 MRR head-to-head on identical questions",
+  "caveats": "n=12, single question type (ssu); rerun on 500q before public claim",
+  "logs": {".": "/tmp/bench (cloud jsonl 1787750853; local /c/tmp/mem0_run.log)"}
+}
