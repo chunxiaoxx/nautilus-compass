@@ -85,3 +85,17 @@ r = call({"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"ingest_
 assert "result" in r, f"ingest 失败: {r}"
 print("  ingest_obs ✓ (云端 C--Users-chunx 落盘)")
 EOF
+
+# ── 可选:--hud · 一键装融合 HUD(claude-hud 基座 + 实时 compass 段) ──
+if [ "${2:-}" = "--hud" ]; then
+  python3 - <<'PYH'
+import json, os
+p = os.path.join(os.getcwd(), ".claude", "settings.json")
+os.makedirs(os.path.dirname(p), exist_ok=True)
+d = json.load(open(p, encoding="utf-8")) if os.path.exists(p) else {}
+wrapper = os.path.expanduser("~/.claude/plugins/nautilus-compass/compass_hud_wrapper.py").replace("\\", "/")
+d["statusLine"] = {"type": "command", "command": f'python "{wrapper}"'}
+json.dump(d, open(p, "w", encoding="utf-8"), indent=2, ensure_ascii=False)
+print("HUD 已装:重启 CLI 后状态栏显示 📡compass 段(5min 流量/延迟/记忆数/drift)")
+PYH
+fi
