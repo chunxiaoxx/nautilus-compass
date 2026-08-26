@@ -1,0 +1,35 @@
+{
+  "ts": "2026-08-27T03:30+08:00",
+  "protocol": "LongMemEval-S · mem0 500q full vs compass (same-question join by question_id) · retrieval-only both sides (mem0 infer=False, vertexai text-embedding-005 + qdrant local 2.0.19)",
+  "mem0_full500": {
+    "P@1": 0.774, "P@5": 0.916, "MRR": 0.834,
+    "by_type": {
+      "single-session-user":       {"n": 70,  "P@1": 0.49, "P@5": 0.76},
+      "single-session-preference": {"n": 30,  "P@1": 0.47, "P@5": 0.87},
+      "single-session-assistant":  {"n": 56,  "P@1": 0.89, "P@5": 0.96},
+      "knowledge-update":          {"n": 78,  "P@1": 0.82, "P@5": 0.86},
+      "multi-session":             {"n": 133, "P@1": 0.88, "P@5": 0.99},
+      "temporal-reasoning":        {"n": 133, "P@1": 0.81, "P@5": 0.95}
+    },
+    "rows": "cloud ~/.claude/plugins/nautilus-compass/.cache/eval_mem0_headhead_rows.jsonl (local /c/tmp/mem0_rows_500.jsonl)"
+  },
+  "same30_join": {
+    "compass_k50_dense": {"P@1": 0.633, "P@5": 0.800, "MRR": 0.717},
+    "compass_k20_hybrid": {"P@5": 0.833},
+    "mem0": {"P@1": 0.633, "P@5": 0.867, "MRR": 0.739},
+    "by_type_losers": {
+      "single-session-user": "compass 0.40 vs mem0 0.80 (main gap)",
+      "knowledge-update": "compass 0.60 vs mem0 1.00"
+    }
+  },
+  "correction_of_earlier_claim": "12-question headhead (+16.7pt compass win, commit b9c5f5a) was TYPE-BIASED: the 12q subset was all single-session-user, mem0's weakest type. On balanced 30q mem0 P@5 edges ahead (0.867 vs 0.800). The +16.7pt claim must NOT be used publicly.",
+  "hypotheses_for_gap": [
+    "embedder: vertex text-embedding-005 vs bge-m3 on detail queries",
+    "cross-encoder reranker may hurt ssu (semantic neighbors promoted over truth)",
+    "GRANULARITY RULED OUT: both sides truncate sessions at 600 chars (same session_to_text)"
+  ],
+  "in_flight": {
+    "discriminator": "m3-only (no-rerank) 30q arm on cloud K20+hybrid config, /tmp/lme_norank30.log — separates embedder-vs-reranker hypothesis",
+    "compass_full500": "K20+hybrid config running (~10h, unique sessions 19195/23867 slots so ZMM_EMBED_CACHE saves only ~20%)"
+  }
+}
