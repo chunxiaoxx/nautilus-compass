@@ -58,7 +58,11 @@ RERANKER_PATH = os.environ.get(
 
 SUBJECT_MODEL = os.environ.get("ZMM_SUBJECT_MODEL", "gemini-2.5-flash")
 JUDGE_MODEL = os.environ.get("ZMM_JUDGE_MODEL", "gemini-2.5-pro")
-TOP_K_RETRIEVE = 50
+# ZMM_RETRIEVE_K caps the candidate pool fed to the reranker. Hardcoded 50 was
+# a no-op on LongMemEval-S (haystack ≈40 sessions/Q → dense/BM25 pools are both
+# the full corpus, RRF can only reshuffle, rerank erases order). 20 lets BM25
+# actually swap in candidates dense missed.
+TOP_K_RETRIEVE = int(os.environ.get("ZMM_RETRIEVE_K", "50"))
 # Tier B #7 · Context window expansion. Default 5 preserves the v0.8 baseline.
 # ZMM_TOPK=10 doubles the evidence given to the subject LLM. DeepSeek-V3.2 has
 # 128K ctx so truncation isn't a risk. Expected +1~2 pts on ms/temporal.
