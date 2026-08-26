@@ -123,7 +123,7 @@ _RERANKER_LOCK = threading.Lock()
 # Activates the dormant LLM-WIKI2 Ebbinghaus forgetting (README:104) in recall:
 # drops entries whose forget_at has passed. Pure schema arithmetic (no LLM).
 # Default OFF: no memory is ever hidden until explicitly enabled.
-_PROD_LIFECYCLE_USE = os.environ.get("COMPASS_PROD_LIFECYCLE", "0") == "1"
+_PROD_LIFECYCLE_USE = os.environ.get("COMPASS_PROD_LIFECYCLE", "1") == "1"  # v3.0.5 default ON(池瘦身):只影响带 forget_at 的条目,无该字段 fail-safe 保留
 
 # Phase 1 Task 4 · production tier-aware re-rank · opt-in via COMPASS_PROD_TIER_WEIGHT=1
 # Among near-equal cosine hits, prefers the more-consolidated (higher-tier)

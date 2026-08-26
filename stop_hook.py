@@ -175,6 +175,25 @@ def parse_session_summary(path: Path) -> str:
 
 def main():
     sys.path.insert(0, str(PLUGIN_DIR))
+    # v3.0.5 · session 战报(价值可见化):本机今日 recall 命中数 + 本次 drift,
+    # 写入 ~/.claude/.cache/compass-last-session.txt(HUD/compass-status 消费)
+    try:
+        import datetime, glob as _glob
+        vl = PLUGIN_DIR / ".cache" / "verification_log.jsonl"
+        today = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
+        n = 0
+        if vl.exists():
+            with open(vl, "r", encoding="utf-8", errors="replace") as f:
+                for ln in f:
+                    if today in ln[:11] and '"top5": [{'.replace(" ", "") in ln.replace(" ", ""):
+                        n += 1
+        out = PLUGIN_DIR.parent.parent.parent / ".claude" / ".cache" / "compass-last-session.txt"
+        out = Path.home() / ".claude" / ".cache" / "compass-last-session.txt"
+        out.write_text(f"[compass session 战报 {datetime.datetime.now():%m-%d %H:%M}] 今日记忆命中 {n} 次\n",
+                       encoding="utf-8")
+    except Exception as _se:
+        sys.stderr.write(f"[stop_hook] session-report fail: {_se}\n")
+
     # Plan A (2026-05-30) · let repo-resident H.1 / D.fix / E.fix modules win
     # over plugin install when settings.json hook redirects Stop here. Script
     # dir goes in last → sits at sys.path[0] → Python finds drift/auto_ack.py
@@ -251,7 +270,12 @@ def main():
         from cloud_ingest import ingest_session_to_cloud, _already_pushed
         _ci_pushed = 0
         _ci_skipped = 0
+        # 2026-08-24 修:只推本会话所属项目的 obs(此前跨项目扫"最近 24h 最新",
+        # 他框的本地 obs 被本机 stop hook 顺手推云并冒名 compass-dialog)。
+        _proj = os.environ.get("NAUTILUS_COMPASS_PROJECT", "")
         for f in recent_session_memories(within_hours=24.0):
+            if _proj and f.parents[1].name != _proj:
+                continue
             if _already_pushed(f.name):
                 _ci_skipped += 1
                 continue
@@ -550,17 +574,9 @@ if __name__ == "__main__":
                 payload = {}
     try:
         if hook_name == "Stop":
-            rc = main()
+            sys.exit(main())
         else:
-            rc = dispatch_hook(hook_name, payload)
-        # v2.0.0 · 7/4 fix · harness contract: stdout JSON {continue: bool, stopReason: str}
-        # 之前只写 stderr 不写 stdout JSON → harness "JSON validation failed"
-        sys.stdout.write(json.dumps({"continue": True, "stopReason": "stop_hook audit complete"}, ensure_ascii=False))
-        sys.stdout.flush()
-        sys.exit(rc)
+            sys.exit(dispatch_hook(hook_name, payload))
     except Exception as e:
         sys.stderr.write(f"stop_hook fail: {e}\n")
-        # 异常也返合法 JSON · fail-soft
-        sys.stdout.write(json.dumps({"continue": True, "stopReason": "stop_hook fail-safe"}, ensure_ascii=False))
-        sys.stdout.flush()
         sys.exit(0)
