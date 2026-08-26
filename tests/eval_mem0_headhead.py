@@ -49,7 +49,7 @@ def main():
         "vector_store": {
             "provider": "qdrant",
             "config": {
-                "path": "C:/tmp/mem0_qdrant_eval",
+                "path": os.environ.get("ZMM_MEM0_QDRANT_PATH", "C:/tmp/mem0_qdrant_eval"),
                 "on_disk": True,
                 "embedding_model_dims": 768,   # 必填 · 跟 Vertex text-embedding-005 同
             },
