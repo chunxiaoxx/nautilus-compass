@@ -1,0 +1,1 @@
+{"ts":"2026-08-26T06:13:05-0600","layer":"l0","results":[{"name":"recall","status":"FAIL","log":"/tmp/bench_recall.log"},{"name":"drift","status":"FAIL","log":"/tmp/bench_drift.log"}]}
