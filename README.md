@@ -69,7 +69,33 @@ by its own history of failure patterns.
 
 ---
 
-## What's new in v2.1.0 · drift v2 + line reconciliation
+## What's new in v3.0.0 · "from memory library to evolution engine"
+
+3.0 is not a feature pile — it's the same system closing the loop:
+memories are no longer just stored & recalled; they feed a
+**extract fuel → external verdict → distill** cycle. Full notes in
+[`CHANGELOG.md`](CHANGELOG.md) · release: [`v3.0.0`](https://github.com/chunxiaoxx/nautilus-compass/releases/tag/v3.0.0)
+
+- **Engine**: semantic-recall revival (Windows torch long-path fix), GOAL-SSOT
+  ledger + hourly heartbeat enforcement (self-healing), cloud capacity triple
+  root-cause fixes (load 10-14 → 1.x), daemon atomic pkl + per-project locks.
+- **Evidence, not claims**: paired-control experiment — tribal-fact retrieval
+  flips 0/3 → 3/3 (retrieval 9/9); general-knowledge fuel = delta 0 (dropped
+  by policy). Blog with all data incl. the findings that hurt:
+  [Benchmarks can't tell you if agent memory helps your team](https://dev.to/chunxiaoxx/benchmarks-cant-tell-you-if-agent-memory-helps-your-team-a-paired-control-can-1igm)
+- **Perception layer**: fused HUD (live hit-counter 🧠, drift, 5-min traffic),
+  mid-session recall refresh, 30-second agent quickstart
+  (`ops/agent_quickstart.sh`).
+- **Honest numbers**: LongMemEval-S (v3.0.1, m3-rerank, gemini-flash subject):
+  **retrieval-hit 80%**, e2e 26.7% — the e2e gap is the subject LLM, not
+  retrieval. Internal recall eval: P@1 0.972 / MRR 0.982.
+
+Historic: v2.1.0 (drift v2 + line reconciliation), v2.0.0 (Opinionated EvoMap
+lifecycle) — see CHANGELOG.
+
+### Historic release notes
+
+<details><summary>v2.1.0 · drift v2 + line reconciliation</summary>
 
 v2.1.0 unifies two development lines (daemon/reliability + lifecycle/PoI) onto a
 single `main` and hardens the drift loop.
@@ -116,6 +142,10 @@ cache · pkl warmup (cold-start CPU cure) · BM25 + vector RRF fusion (opt-in) �
 inotify cache invalidation.
 
 ---
+
+</details>
+
+<details><summary>v2.0.0 · Opinionated EvoMap</summary>
 
 ## What's new in v2.0.0 · Opinionated EvoMap
 
@@ -183,11 +213,12 @@ a stance on what *not* to include:
 
 ---
 
-## What's coming · v3.0 / v3.5 fusion (dev branch preview)
+## Opt-in production switches (the shipped v3 feature surface)
 
-Active development on the [`v3-full-fusion`](https://github.com/chunxiaoxx/nautilus-compass/tree/v3-full-fusion)
-branch · not in any release. Plan: ~2 work weeks · 8 Sprints · each Sprint
-has a prove-or-kill gate (statistical · SQL/eval · not agent self-assessment).
+Every switch below ships in `main` and is **default-off**: with no opt-in env
+set, daemon behavior is byte-equal to the prior major. (Lifecycle
+forget-filter defaulted ON in v3.0.5 — it only affects entries that carry an
+explicit `forget_at`, so un-tagged memories are never hidden.)
 
 **Default-off byte-equal promise**: with no opt-in env set, v3.0 / v3.5
 behavior is byte-equal to v2.0.1. Verified by
