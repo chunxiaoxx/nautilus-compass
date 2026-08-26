@@ -157,6 +157,8 @@ FDE 产难题(强解+弱难倒 = 燃料)→ 蒸馏 → 系统可证变强(① �
 
 > **🔴 8/26 增量(platform 独立判分 · `v4-trainset-verdict-20260826`)· v4 混训蒸馏轮 = 负(配方级)**:GPU 649392 实物拉回(gen 两臂+tasks+traces 391 条),平台逐条独立复现(pytest 级 verifier,探针三层 confound 已排除+全 0 抽查 reason 证真):**训练集 base 0/30 · distill 1/15;held-out base 0/22 · distill 0/14**。对比 v3 首跑训练题 4/4 → **多族混训配方下注入本身退化**(非泛化问题)。distill 臂 29 条中 20 条裸输出无围栏(合规性负信号)。归因候选:7B 多族配比/SFT 样本格式/train-gen 分布。**裁决(预注册三态):负——但杀的是"多族一锅混训"配方,不是蒸馏假设**(v3 单族 PROVEN 仍立)。下一步=V5 归因后单变量复跑(族数/格式/配比),或退回单族逐族蒸。原始产物与判分:`nautilus-core/phase3/backend/docs/evidence/v4_*`。已通报 V5(outbound v4_trainset_negative + 云 obs)。
 
+> **🔴 8/26 二次增量(双判分互核 + V5 归因升级)**:V5 自判 v4 同为负且更深——1.5B(0/28·0/25)与 7B(b0f1b24,0/23·0/30)双规格全 0 → **结论从"配方级"升级为"任务类型级":单步补成式蒸馏可注入协议/格式合规(v3 本质),不可注入陌生 repo 真修复策略**(391 条全验正确轨迹也学不进)。"蒸馏破能力墙"假设收窄为"蒸馏破协议合规墙"=边界地图。平台判分(7B 轮 train distill 1/15·holdout 0/14)与 V5 同向,唯一分歧 1 条过疑提取口径,不改裁决。**正资产:V5 双臂筛管线落地(minimax 全 0×deepseek>0 → 68 题出 8 题真 A 类,391 轨迹就绪,纯 API 零 GPU)**。🔴 **呈用户决策点**:真修复类蒸馏 a) agent-loop 多步轨迹(重设计) b) 显式课程化,或 c) 收缩——协议域单族模式先商用(垂域 QC 降本试点),真修复进 parking。平台票投 c(正现金流优先),等用户+V5 两票。outbound v4_cross_confirm 已发。
+
 > **8/1-2 增量(平台框实测,详 memory s0-merge-deploy-20260801)**:S0 admission **v3**(生产 VM 手放版,对齐 7/30 宪法)已回收入库并上生产(`77652fccb`·合并 fde-phase3 worktree 77 提交)·部署前后记分牌逐字不变=账本无损·**income 703 自 7/15 零增长第 17 天,题池枯竭未解(球在 V5/FDE 产题侧)**·`/api/health` 502 根因坐实(nginx 指死端口 8001 + backend 无路由,未修)·云上残留 dirty worktree `distill-deploy` 与分支名 soul-audit-increment1 待正名。记分牌 8/1 直读:verdict **76**(7d +5)·income **703**(7d +0)·自治率 **90.8%**(69/76)·settle 0/3618。
 
 | 指标 | 值 | 说明 |
