@@ -79,6 +79,7 @@ def main():
     type_metrics = defaultdict(lambda: {"n": 0, "p1": 0, "p5": 0, "rrs": []})
 
     t_start = time.time()
+    rows = []  # per-question rows · join-by-question_id(防顺序陷阱复发)
     for i, q in enumerate(data):
         question = q["question"]
         truth_ids = set(q["answer_session_ids"])
@@ -140,9 +141,14 @@ def main():
         else:
             rrs.append(0.0)
 
+        rows.append({
+            "question_id": q["question_id"], "question_type": qt,
+            "rank": rank, "n_sessions": len(sessions),
+            "top5": [((h.get("metadata") or {}).get("session_id")) for h in results[:5]],
+        })
         elapsed = time.time() - t_start
         eta = elapsed / (i + 1) * (len(data) - i - 1)
-        print(f"  [{i+1}/{len(data)}] {qt:30s} rank={rank or 'N/A':>4}  "
+        print(f"  [{i+1}/{len(data)}] {q['question_id'][:20]:22s} {qt:22s} rank={rank or 'N/A':>4}  "
               f"({len(sessions)} sess · {elapsed:.0f}s · ETA {eta:.0f}s · MRR {statistics.mean(rrs):.3f})", flush=True)
 
     n = len(data)
@@ -164,7 +170,11 @@ def main():
     out = Path.home() / ".claude/plugins/nautilus-compass/.cache/eval_mem0_headhead.json"
     with open(out, "w", encoding="utf-8") as f:
         json.dump(summary, f, ensure_ascii=False, indent=2)
-    print(f"\n  详细: {out}")
+    out_rows = out.with_name(out.stem + "_rows.jsonl")
+    with open(out_rows, "w", encoding="utf-8") as f:
+        for r in rows:
+            f.write(json.dumps(r, ensure_ascii=False) + "\n")
+    print(f"\n  详细: {out} · per-question: {out_rows}")
 
 
 if __name__ == "__main__":
