@@ -75,6 +75,9 @@ SUBJECT_TEMPERATURE = float(os.environ.get("ZMM_SUBJECT_TEMPERATURE", "0.1"))
 # RRF (k=60), then feed fused top-TOP_K_RETRIEVE into the existing cross-encoder
 # reranker. Target: single-session-user 58.6% → ~70%, overall P@5 86% → 90%.
 ZMM_HYBRID = os.environ.get("ZMM_HYBRID", "0") == "1"
+# v3.1 · retrieval-only loop: skip subject+judge entirely (fast iteration on
+# retrieval levers — hit-rate is logged, no LLM calls, ~10s/q vs ~250s/q)
+ZMM_RETRIEVAL_ONLY = os.environ.get("ZMM_RETRIEVAL_ONLY", "0") == "1"
 RRF_K = 60
 
 # Tier S #2 · ssu utterance-pair retrieval.
@@ -484,11 +487,14 @@ def main():
             # ZMM_VOTE=1: single call (baseline, byte-identical to pre-vote).
             # ZMM_VOTE=3: self-consistency · 3 independent subject calls, each
             # judged independently, majority vote wins (tie impossible at n=3).
-            prompt_tmpl = pick_subject_prompt(qt)
-            votes = []
-            for _ in range(ZMM_VOTE):
-                ans, raw, jraw, ok = _run_one_vote(qt, prompt_tmpl, context, question, truth)
-                votes.append({"answer": ans, "raw_answer": raw, "judge_raw": jraw, "is_correct": ok})
+            if ZMM_RETRIEVAL_ONLY:
+                votes = [{"answer": "", "raw_answer": "", "judge_raw": "", "is_correct": False}]
+            else:
+                prompt_tmpl = pick_subject_prompt(qt)
+                votes = []
+                for _ in range(ZMM_VOTE):
+                    ans, raw, jraw, ok = _run_one_vote(qt, prompt_tmpl, context, question, truth)
+                    votes.append({"answer": ans, "raw_answer": raw, "judge_raw": jraw, "is_correct": ok})
 
             if ZMM_VOTE == 1:
                 # Preserve exact baseline field shape
