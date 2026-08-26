@@ -2,21 +2,57 @@
   "ts": "2026-08-27T03:30+08:00",
   "protocol": "LongMemEval-S · mem0 500q full vs compass (same-question join by question_id) · retrieval-only both sides (mem0 infer=False, vertexai text-embedding-005 + qdrant local 2.0.19)",
   "mem0_full500": {
-    "P@1": 0.774, "P@5": 0.916, "MRR": 0.834,
+    "P@1": 0.774,
+    "P@5": 0.916,
+    "MRR": 0.834,
     "by_type": {
-      "single-session-user":       {"n": 70,  "P@1": 0.49, "P@5": 0.76},
-      "single-session-preference": {"n": 30,  "P@1": 0.47, "P@5": 0.87},
-      "single-session-assistant":  {"n": 56,  "P@1": 0.89, "P@5": 0.96},
-      "knowledge-update":          {"n": 78,  "P@1": 0.82, "P@5": 0.86},
-      "multi-session":             {"n": 133, "P@1": 0.88, "P@5": 0.99},
-      "temporal-reasoning":        {"n": 133, "P@1": 0.81, "P@5": 0.95}
+      "single-session-user": {
+        "n": 70,
+        "P@1": 0.49,
+        "P@5": 0.76
+      },
+      "single-session-preference": {
+        "n": 30,
+        "P@1": 0.47,
+        "P@5": 0.87
+      },
+      "single-session-assistant": {
+        "n": 56,
+        "P@1": 0.89,
+        "P@5": 0.96
+      },
+      "knowledge-update": {
+        "n": 78,
+        "P@1": 0.82,
+        "P@5": 0.86
+      },
+      "multi-session": {
+        "n": 133,
+        "P@1": 0.88,
+        "P@5": 0.99
+      },
+      "temporal-reasoning": {
+        "n": 133,
+        "P@1": 0.81,
+        "P@5": 0.95
+      }
     },
     "rows": "cloud ~/.claude/plugins/nautilus-compass/.cache/eval_mem0_headhead_rows.jsonl (local /c/tmp/mem0_rows_500.jsonl)"
   },
   "same30_join": {
-    "compass_k50_dense": {"P@1": 0.633, "P@5": 0.800, "MRR": 0.717},
-    "compass_k20_hybrid": {"P@5": 0.833},
-    "mem0": {"P@1": 0.633, "P@5": 0.867, "MRR": 0.739},
+    "compass_k50_dense": {
+      "P@1": 0.633,
+      "P@5": 0.8,
+      "MRR": 0.717
+    },
+    "compass_k20_hybrid": {
+      "P@5": 0.833
+    },
+    "mem0": {
+      "P@1": 0.633,
+      "P@5": 0.867,
+      "MRR": 0.739
+    },
     "by_type_losers": {
       "single-session-user": "compass 0.40 vs mem0 0.80 (main gap)",
       "knowledge-update": "compass 0.60 vs mem0 1.00"
@@ -31,5 +67,18 @@
   "in_flight": {
     "discriminator": "m3-only (no-rerank) 30q arm on cloud K20+hybrid config, /tmp/lme_norank30.log — separates embedder-vs-reranker hypothesis",
     "compass_full500": "K20+hybrid config running (~10h, unique sessions 19195/23867 slots so ZMM_EMBED_CACHE saves only ~20%)"
+  },
+  "discriminator_result": {
+    "verdict": "RERANKER IS THE CULPRIT on LongMemEval-S",
+    "m3_only_norank_k20_hybrid": {
+      "P@5_overall": 0.867,
+      "ssu": 0.6
+    },
+    "m3_rerank_k20_hybrid": {
+      "P@5_overall": 0.833,
+      "ssu": 0.4
+    },
+    "reading": "only ssu flips (0.60 vs 0.40), other 5 types identical; no-rerank 0.867 == mem0 same-30q 0.867; second independent evidence (after K50 null experiment) that cross-encoder rerank adds nothing on S-scale haystacks and hurts ssu; remaining ssu gap (0.60 vs mem0 0.80) points to embedder (bge-m3 vs text-embedding-005)",
+    "action": "full500 relaunched as m3-only (PID 2382896, /tmp/lme_500_norank.log, ~10h); M-scale rerank decision deferred to M experiments (501-sess haystack may genuinely need rerank)"
   }
 }
