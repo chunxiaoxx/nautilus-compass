@@ -82,6 +82,8 @@ ZMM_HYBRID = os.environ.get("ZMM_HYBRID", "0") == "1"
 # v3.1 · retrieval-only loop: skip subject+judge entirely (fast iteration on
 # retrieval levers — hit-rate is logged, no LLM calls, ~10s/q vs ~250s/q)
 ZMM_RETRIEVAL_ONLY = os.environ.get("ZMM_RETRIEVAL_ONLY", "0") == "1"
+# Text-addressed embed cache for full-corpus runs (see wiring at get_embedder)
+ZMM_EMBED_CACHE = os.environ.get("ZMM_EMBED_CACHE", "1") == "1"
 RRF_K = 60
 
 # Tier S #2 · ssu utterance-pair retrieval.
@@ -375,6 +377,27 @@ def main():
     # Load embedder
     t0 = time.time()
     emb = zmd.get_embedder()
+    # Text-addressed embed cache (ZMM_EMBED_CACHE=1 default). LongMemEval's 500
+    # questions share one session pool: without the cache every question
+    # re-embeds its ~40-session haystack (~160s/q on cloud CPU → 500q ≈ 22h);
+    # with it each unique text is embedded once (~3h total). Same text → same
+    # cached vector → results identical to no-cache.
+    embed_cache: dict = {}
+    embed_stats = {"hit": 0, "miss": 0}
+    if ZMM_EMBED_CACHE:
+        import hashlib as _hl
+        _orig_encode = emb.encode
+        def _cached_encode(text):
+            key = _hl.sha1(text.encode("utf-8")).hexdigest()
+            v = embed_cache.get(key)
+            if v is None:
+                embed_stats["miss"] += 1
+                v = _orig_encode(text)
+                embed_cache[key] = v
+            else:
+                embed_stats["hit"] += 1
+            return v
+        emb.encode = _cached_encode
     print(f"bi-encoder ready: {time.time()-t0:.1f}s")
 
     # Load reranker if needed
@@ -560,6 +583,10 @@ def main():
     n = n_evaluated
     print(f"\n=== LongMemEval-S accuracy ({args.pipeline} · n={n}) ===")
     print(f"  overall accuracy = {correct}/{n} = {correct/n:.3f}")
+    if ZMM_EMBED_CACHE:
+        total = embed_stats["hit"] + embed_stats["miss"]
+        print(f"  embed cache: hit={embed_stats['hit']} miss={embed_stats['miss']}"
+              f" ({embed_stats['hit']/total:.0%} hit)" if total else "  embed cache: idle")
     print(f"\n=== by question_type ===")
     for qt in sorted(by_type_stats):
         s = by_type_stats[qt]
