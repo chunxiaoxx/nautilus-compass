@@ -25,7 +25,7 @@ if HUD:
 # 2. compass daemon 健康
 def daemon_ok():
     try:
-        s = socket.socket(); s.settimeout(1.5); s.connect(("127.0.0.1", 9876))
+        s = socket.socket(); s.settimeout(4.0); s.connect(("127.0.0.1", 9876))
         s.sendall((json.dumps({"action": "recall", "query": "ping", "top_k": 1, "scope": "project", "project": "C--Users-chunx"}) + "\n").encode())
         buf = b""
         while True:
@@ -71,7 +71,7 @@ try:
 except Exception:
     pass
 try:
-    s2 = socket.socket(); s2.settimeout(1.5); s2.connect(("127.0.0.1", 9876))
+    s2 = socket.socket(); s2.settimeout(4.0); s2.connect(("127.0.0.1", 9876))
     s2.sendall(b'{"action":"status"}\n')
     b2 = s2.recv(65536); s2.close()
     st = json.loads(b2.decode())
@@ -88,11 +88,37 @@ try:
 except Exception:
     pass
 
+# 5. v3.0.5 · 命中计数(价值可见化):今日/1h recall 命中数,来自 verification_log
+hit_seg = ""
+try:
+    vl2 = os.path.join(os.path.expanduser("~"), ".claude", "plugins", "nautilus-compass", ".cache", "verification_log.jsonl")
+    if os.path.exists(vl2):
+        with open(vl2, "rb") as f:
+            f.seek(0, 2); sz2 = f.tell(); f.seek(max(0, sz2 - 400000))
+            lines2 = f.read().decode("utf-8", "replace").strip().splitlines()
+        today = time.strftime("%Y-%m-%d", time.gmtime())
+        n_today = n_1h = 0
+        cutoff = time.time() - 3600
+        for ln in lines2:
+            try:
+                r2 = json.loads(ln)
+                if not (r2.get("top5")): continue
+                ts = r2.get("ts", "")
+                if ts[:10] == today: n_today += 1
+                t2 = time.mktime(time.strptime(ts[:19], "%Y-%m-%dT%H:%M:%S")) if len(ts) >= 19 else 0
+                if t2 and t2 >= cutoff: n_1h += 1
+            except Exception:
+                continue
+        if n_today or n_1h:
+            hit_seg = f" \x1b[35m🧠{n_today}hit\x1b[0m\x1b[2m/{n_1h}h\x1b[0m"
+except Exception:
+    pass
+
 status = "\x1b[32m✓\x1b[0m" if ok else "\x1b[31m✗daemon\x1b[0m"
 compass_seg = ("\x1b[36m📡compass\x1b[0m " + status
                + f" \x1b[2m{mem_n}mem\x1b[0m" + dyn
                + (f" \x1b[2m·最新{last_age}\x1b[0m" if last_age else "")
-               + drift_seg)
+               + drift_seg + hit_seg)
 
 if hud_out:
     print(hud_out + "  \x1b[2m│\x1b[0m  " + compass_seg)
