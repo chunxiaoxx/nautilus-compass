@@ -66,7 +66,8 @@
   ],
   "in_flight": {
     "discriminator": "m3-only (no-rerank) 30q arm on cloud K20+hybrid config, /tmp/lme_norank30.log — separates embedder-vs-reranker hypothesis",
-    "compass_full500": "K20+hybrid config running (~10h, unique sessions 19195/23867 slots so ZMM_EMBED_CACHE saves only ~20%)"
+    "compass_full500": "K20+hybrid config running (~10h, unique sessions 19195/23867 slots so ZMM_EMBED_CACHE saves only ~20%)",
+    "s500_3type": "ssu+ssp+ku routing full500 on GPU, expect P@5 >0.962 and P@1 >0.848"
   },
   "discriminator_result": {
     "verdict": "RERANKER IS THE CULPRIT on LongMemEval-S",
@@ -177,5 +178,31 @@
       "note": "0.800 == utt-only; hybrid neutral on M-scale"
     },
     "rows": "local /c/tmp/utt2_b.jsonl"
+  },
+  "ku_routing_30q": {
+    "config": "utt types = ssu+ssp+knowledge-update",
+    "P@5": 0.967,
+    "vs_2type": 0.933,
+    "ku": "0.80 -> 1.00 (+1); only miss left is ssp (0.80)"
+  },
+  "LOCOMO_utt_result": {
+    "compass_utt_dual_speaker_chunks": {
+      "P@1": 0.644,
+      "P@5": 0.89,
+      "MRR": 0.74
+    },
+    "mem0_home_benchmark": {
+      "P@1": 0.592,
+      "P@5": 0.802,
+      "MRR": 0.677
+    },
+    "session_level_before": {
+      "P@1": 0.419,
+      "P@5": 0.694
+    },
+    "verdict": "AWAY-GAME FLIP: utterance chunk retrieval overtakes mem0 on its home benchmark (+5.2pt P@1 / +8.8pt P@5, n=1986); temporal nearly doubles (0.24->0.42) but stays weakest; single-hop 0.55 vs mem0 0.52",
+    "cross_dataset_conclusion": "utterance ammo generalizes: all three fronts won (LME-S sweep / M ssu fix / LOCOMO away flip)",
+    "runtime": "4 min on GPU (n=1986)",
+    "log": "GPU /root/locomo_utt.log (summary-file write crashed after printing, numbers intact)"
   }
 }
