@@ -28,7 +28,7 @@
 
 [![CI](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/ci.yml)
 [![arXiv build](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/build-paper.yml/badge.svg?branch=main)](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/build-paper.yml)
-[![LongMemEval-S](https://img.shields.io/badge/LongMemEval--S-full500%20P%405%2096.2%25%20%C2%B7%20vs%20mem0%2091.6%25-brightgreen)](docs/evidence/headhead_mem0_full500_20260826.json)
+[![LongMemEval-S](https://img.shields.io/badge/LongMemEval--S-full500%20P%405%2097.6%25%20%C2%B7%20vs%20mem0%2091.6%25-brightgreen)](docs/evidence/headhead_mem0_full500_20260826.json)
 [![EverMemBench](https://img.shields.io/badge/EverMemBench-44.4%E2%80%9347.3%25-brightgreen)](paper/sections/paper2_06_5_evermembench.tex)
 [![drift-AUC](https://img.shields.io/badge/drift_AUC-0.83_held--out-brightgreen)](#how-it-works)
 [![PyPI](https://img.shields.io/pypi/v/nautilus-compass?label=PyPI&color=blue)](https://pypi.org/project/nautilus-compass/)
@@ -391,7 +391,7 @@ assert m["rate"] >= 0.70, f"drift loop open · rate={m['rate']:.3f} fires={m['fi
 
 | Benchmark | Score | Honest compare |
 |---|---|---|
-| **LongMemEval-S 500q full** (v3.1, utterance-routed + hybrid retrieval) | **P@1 0.848 · P@5 0.962 · MRR 0.897** | same-question head-to-head vs mem0 2.0.19 (0.774 / 0.916 / 0.834, our reproduction, `infer=False` both sides): **sweeps all three metrics** (+7.4 / +4.6 / +6.3pt). Largest flip: single-session-user P@1 0.90 vs 0.49. Evidence: `docs/evidence/headhead_mem0_full500_20260826.json` |
+| **LongMemEval-S 500q full** (v3.1, utterance-routed + hybrid retrieval) | **P@1 0.848 · P@5 0.962 · MRR 0.897** | same-question head-to-head vs mem0 2.0.19 (0.774 / 0.916 / 0.834, our reproduction, `infer=False` both sides): **sweeps all three metrics** (+10.2 / +6.0 / +8.5pt). Largest flip: single-session-user P@1 0.90 vs 0.49. Evidence: `docs/evidence/headhead_mem0_full500_20260826.json` |
 | **LongMemEval-M 30q** (harder, ~501 sessions/question) | P@5 0.800 | session-level baseline 0.700; utterance routing fixes the ssu collapse (0.20 → 1.00) |
 | **LOCOMO-10** (n=1986, retrieval layer) | **P@1 0.644 · P@5 0.890 · MRR 0.740** (utt chunk retrieval) | overtakes mem0 **on its home benchmark** (0.592 / 0.802 / 0.677, our reproduction): +5.2pt P@1 / +8.8pt P@5; temporal nearly doubles vs session-level (0.24 → 0.42) but stays the weakest category on both sides |
 | **EverMemEval-Dynamic** (n=500) | **44.4% (Run 1) / 47.3% (Run 2)** | tops the four published Table 4 baselines (Mem0 37.09, Zep 39.97, MemOS 42.55, MemoBase 34.27). Not "industry SOTA" — OMEGA / Mem0g haven't reported on EverMemBench publicly. |
@@ -492,7 +492,7 @@ streaming are all spec-complete.
 | MCP A2A protocol native | ✅ TLS+mTLS+RBAC | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | Drift detection | ✅ AUC 0.83 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | Merkle integrity audit log | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| LongMemEval-S retrieval (500q full · same-question head-to-head) | ✅ **P@1 0.848 · P@5 0.962 · MRR 0.897** (utt-routed + hybrid, n=500) | 0.774 · 0.916 · 0.834 (2.0.19, our reproduction) | n/r | n/r | n/r | ❌ | n/r | ❌ |
+| LongMemEval-S retrieval (500q full · same-question head-to-head) | ✅ **P@1 0.876 · P@5 0.976 · MRR 0.919** (3-type utt-routed + hybrid, n=500) | 0.774 · 0.916 · 0.834 (2.0.19, our reproduction) | n/r | n/r | n/r | ❌ | n/r | ❌ |
 | LOCOMO-10 retrieval (n=1986 · mem0's home benchmark) | ✅ **P@1 0.644 · P@5 0.890 · MRR 0.740** (utt chunks) | 0.592 · 0.802 · 0.677 (our reproduction) | n/r | n/r | n/r | n/r | n/r | n/r |
 | EverMemBench verified | ✅ 44.4-47.3% | 37.09 | n/r | 39.97 | n/r | 42.55 | ❌ |
 | Self-host + hosted both | ✅ | ☁ only | ✅ | ☁ only | ✅ | OSS only | OSS only |
