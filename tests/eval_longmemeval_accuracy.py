@@ -87,6 +87,11 @@ ZMM_RETRIEVAL_ONLY = os.environ.get("ZMM_RETRIEVAL_ONLY", "0") == "1"
 # Tier S #3 · utterance-window chunk retrieval (see Step 1 branch). Pure dense
 # over user-anchored chunks; sessions ranked by best chunk, top5 dedup'd.
 ZMM_UTTERANCE_RETRIEVE = os.environ.get("ZMM_UTTERANCE_RETRIEVE", "0") == "1"
+# Optional type routing (comma-separated question_type). Empty = all types.
+# CPU budget saver: chunk embedding is ~15x session embedding, so on CPU
+# route only the weak types (ssu/ssp) and leave 1.00-types at session level.
+UTTERANCE_TYPES = {t.strip() for t in os.environ.get(
+    "ZMM_UTTERANCE_TYPES", "").split(",") if t.strip()}
 # Text-addressed embed cache for full-corpus runs (see wiring at get_embedder)
 ZMM_EMBED_CACHE = os.environ.get("ZMM_EMBED_CACHE", "1") == "1"
 # Query-side instruction prefix (embedder-dependent). bge-m3 needs none.
@@ -476,7 +481,7 @@ def main():
 
             # Step 1: bi-encoder retrieve
             q_emb = emb.encode(QUERY_INSTRUCT + question)
-            if ZMM_UTTERANCE_RETRIEVE:
+            if ZMM_UTTERANCE_RETRIEVE and (not UTTERANCE_TYPES or qt in UTTERANCE_TYPES):
                 # Tier S #3 · utterance-window chunk retrieval. The answer for
                 # ssu/ssp questions lives in ONE user turn; session-level text
                 # dilutes it (ssu hit@5: 0.60 on S, 0.20 on M). Rank sessions
