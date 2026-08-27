@@ -80,5 +80,32 @@
     },
     "reading": "only ssu flips (0.60 vs 0.40), other 5 types identical; no-rerank 0.867 == mem0 same-30q 0.867; second independent evidence (after K50 null experiment) that cross-encoder rerank adds nothing on S-scale haystacks and hurts ssu; remaining ssu gap (0.60 vs mem0 0.80) points to embedder (bge-m3 vs text-embedding-005)",
     "action": "full500 relaunched as m3-only (PID 2382896, /tmp/lme_500_norank.log, ~10h); M-scale rerank decision deferred to M experiments (501-sess haystack may genuinely need rerank)"
+  },
+  "final_verdict_full500": {
+    "compass_m3_only_k20_hybrid": {
+      "P@1": 0.784,
+      "P@5": 0.9,
+      "MRR": 0.83
+    },
+    "mem0_2.0.19": {
+      "P@1": 0.774,
+      "P@5": 0.916,
+      "MRR": 0.834
+    },
+    "reading": "statistical tie, each wins one metric: compass P@1 +1.0pt, mem0 P@5 +1.6pt; the 6.7pt mem0 edge on 30q converged to 1.6pt at n=500. compass P@5 deficit is entirely ssu (0.66 vs 0.87) + ssp (0.67 vs 0.97) while P@1 ties everywhere -> truth sessions stuck at rank 6-20.",
+    "next_hypothesis": "K=20 candidate-pool truncation caps deep recall (mem0 searches full store, no truncation); K50+no-rerank 30q arm running to decouple rerank-harm vs truncation-harm",
+    "compass500_rows": "cloud longmemeval_acc_m3_only_full_1787769395.jsonl"
+  },
+  "qwen3_result": {
+    "verdict": "no upgrade at 0.6B scale",
+    "qwen3_0_6b_k20_hybrid_norank_30q": {
+      "P@5": 0.833,
+      "ku": 1.0,
+      "ssa": 0.6
+    },
+    "bge_m3_same_cfg": {
+      "P@5": 0.867
+    },
+    "reading": "ku +1 but ssa -2 net wash; ssu gap needs utterance-level retrieval or Qwen3-4B (GPU-scale), not small-model swap"
   }
 }
