@@ -94,7 +94,8 @@
     },
     "reading": "statistical tie, each wins one metric: compass P@1 +1.0pt, mem0 P@5 +1.6pt; the 6.7pt mem0 edge on 30q converged to 1.6pt at n=500. compass P@5 deficit is entirely ssu (0.66 vs 0.87) + ssp (0.67 vs 0.97) while P@1 ties everywhere -> truth sessions stuck at rank 6-20.",
     "next_hypothesis": "K=20 candidate-pool truncation caps deep recall (mem0 searches full store, no truncation); K50+no-rerank 30q arm running to decouple rerank-harm vs truncation-harm",
-    "compass500_rows": "cloud longmemeval_acc_m3_only_full_1787769395.jsonl"
+    "compass500_rows": "cloud longmemeval_acc_m3_only_full_1787769395.jsonl",
+    "truncation_hypothesis": "FALSIFIED: K50+hybrid+no-rerank == K20 same cfg == 0.867 (identical per-type); with no reranker K only widens the RRF fusion window, top5 unchanged. Remaining explanation: bge-m3 ranking quality itself (truth at cosine rank 6-20). Next ammo: Qwen3-4B (GPU) / utterance-level retrieval / dual-embedder RRF."
   },
   "qwen3_result": {
     "verdict": "no upgrade at 0.6B scale",
@@ -107,5 +108,15 @@
       "P@5": 0.867
     },
     "reading": "ku +1 but ssa -2 net wash; ssu gap needs utterance-level retrieval or Qwen3-4B (GPU-scale), not small-model swap"
+  },
+  "locomo_baseline": {
+    "n": 1986,
+    "pipeline": "m3-only (K n/a, 19 sess/conv)",
+    "P@1": 0.419,
+    "P@5": 0.694,
+    "MRR": 0.522,
+    "by_category": "temporal 0.24 weakest, single-hop 0.80 strongest",
+    "note": "retrieval-layer baseline; mem0 paper reports e2e LLM-judge 66.9% (different metric, not comparable yet); mem0 LOCOMO retrieval head-to-head is a later step",
+    "rows": "cloud eval_locomo_retrieval_rows.jsonl"
   }
 }
