@@ -84,6 +84,14 @@ ZMM_HYBRID = os.environ.get("ZMM_HYBRID", "0") == "1"
 ZMM_RETRIEVAL_ONLY = os.environ.get("ZMM_RETRIEVAL_ONLY", "0") == "1"
 # Text-addressed embed cache for full-corpus runs (see wiring at get_embedder)
 ZMM_EMBED_CACHE = os.environ.get("ZMM_EMBED_CACHE", "1") == "1"
+# Query-side instruction prefix (embedder-dependent). bge-m3 needs none.
+# Qwen3-Embedding official usage for retrieval:
+#   "Instruct: Given a web search query, retrieve relevant passages that answer the query\nQuery: "
+QUERY_INSTRUCT = os.environ.get("ZMM_QUERY_INSTRUCT", "")
+if not QUERY_INSTRUCT and "qwen3" in os.environ.get("ZMM_EMBEDDER_MODEL", "").lower():
+    # Qwen3-Embedding official retrieval template (docs side stays unprefixed)
+    QUERY_INSTRUCT = ("Instruct: Given a web search query, retrieve relevant "
+                      "passages that answer the query\nQuery: ")
 RRF_K = 60
 
 # Tier S #2 · ssu utterance-pair retrieval.
@@ -462,7 +470,7 @@ def main():
             sess_texts = [session_to_text(s) for s in sessions]
 
             # Step 1: bi-encoder retrieve
-            q_emb = emb.encode(question)
+            q_emb = emb.encode(QUERY_INSTRUCT + question)
             sess_embs = [emb.encode(t) for t in sess_texts]
             sims = [(j, zmd.cosine(q_emb, sess_embs[j])) for j in range(len(sess_ids))]
             sims.sort(key=lambda x: -x[1])
