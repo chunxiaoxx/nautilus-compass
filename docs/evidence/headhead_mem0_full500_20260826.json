@@ -118,5 +118,20 @@
     "by_category": "temporal 0.24 weakest, single-hop 0.80 strongest",
     "note": "retrieval-layer baseline; mem0 paper reports e2e LLM-judge 66.9% (different metric, not comparable yet); mem0 LOCOMO retrieval head-to-head is a later step",
     "rows": "cloud eval_locomo_retrieval_rows.jsonl"
+  },
+  "utterance_result_S30": {
+    "config": "ZMM_UTTERANCE_RETRIEVE=1 routed to ssu+ssp only, dense chunk (user turn window=2, 500c), sessions ranked by best chunk",
+    "overall": {
+      "P@5": 0.933,
+      "baseline": 0.867
+    },
+    "by_type": {
+      "ssu": "0.60 -> 1.00 (+2, all hit)",
+      "ssp": "0.80 -> 0.80 (no harm)",
+      "others": "unchanged (session-level routed out)"
+    },
+    "first_time_beats_mem0_same30q": "0.933 vs mem0 0.867",
+    "projection_full500": "ssu 0.66 -> ~0.9 would lift P@5 0.900 -> ~0.93 vs mem0 0.916; full rerun queued to confirm",
+    "rows": "cloud longmemeval_acc_m3_only_subset30_1787828788.jsonl"
   }
 }
