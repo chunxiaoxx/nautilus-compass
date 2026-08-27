@@ -28,7 +28,7 @@
 
 [![CI](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/ci.yml)
 [![arXiv build](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/build-paper.yml/badge.svg?branch=main)](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/build-paper.yml)
-[![LongMemEval-S](https://img.shields.io/badge/LongMemEval--S-retrieval--hit%2080%25%20%C2%B7%20e2e%2026.7%25-blue)](paper/RESULTS_v0.8.md)
+[![LongMemEval-S](https://img.shields.io/badge/LongMemEval--S-full500%20P%405%2096.2%25%20%C2%B7%20vs%20mem0%2091.6%25-brightgreen)](docs/evidence/headhead_mem0_full500_20260826.json)
 [![EverMemBench](https://img.shields.io/badge/EverMemBench-44.4%E2%80%9347.3%25-brightgreen)](paper/sections/paper2_06_5_evermembench.tex)
 [![drift-AUC](https://img.shields.io/badge/drift_AUC-0.83_held--out-brightgreen)](#how-it-works)
 [![PyPI](https://img.shields.io/pypi/v/nautilus-compass?label=PyPI&color=blue)](https://pypi.org/project/nautilus-compass/)
@@ -391,8 +391,11 @@ assert m["rate"] >= 0.70, f"drift loop open · rate={m['rate']:.3f} fires={m['fi
 
 | Benchmark | Score | Honest compare |
 |---|---|---|
-| **LongMemEval-S** 30q re-run (v3.0.1) | LongMemEval-S 30q re-run (v3.0.1, m3-rerank, gemini-flash subject): **retrieval-hit 80%** (24/30 gold-in-context) · end-to-end 26.7% — the e2e gap is the subject LLM over long context, not retrieval. Historical: v0.8 n=500 e2e 56.6% (locked, different subject/judge config). |
-| **EverMemBench-Dynamic** (n=500) | **44.4% (Run 1) / 47.3% (Run 2)** | tops the four published Table 4 baselines (Mem0 37.09, Zep 39.97, MemOS 42.55, MemoBase 34.27). Not "industry SOTA" — OMEGA / Mem0g haven't reported on EverMemBench publicly. |
+| **LongMemEval-S 500q full** (v3.1, utterance-routed + hybrid retrieval) | **P@1 0.848 · P@5 0.962 · MRR 0.897** | same-question head-to-head vs mem0 2.0.19 (0.774 / 0.916 / 0.834, our reproduction, `infer=False` both sides): **sweeps all three metrics** (+7.4 / +4.6 / +6.3pt). Largest flip: single-session-user P@1 0.90 vs 0.49. Evidence: `docs/evidence/headhead_mem0_full500_20260826.json` |
+| **LongMemEval-M 30q** (harder, ~501 sessions/question) | P@5 0.800 | session-level baseline 0.700; utterance routing fixes the ssu collapse (0.20 → 1.00) |
+| **LOCOMO-10** (n=1986, retrieval layer) | P@1 0.419 · P@5 0.694 | **mem0 leads on its home benchmark** (0.592 / 0.802, our reproduction) — utterance routing not yet ported to LOCOMO's dual-speaker format; temporal is weak on both sides (0.24 P@1) |
+| **EverMemEval-Dynamic** (n=500) | **44.4% (Run 1) / 47.3% (Run 2)** | tops the four published Table 4 baselines (Mem0 37.09, Zep 39.97, MemOS 42.55, MemoBase 34.27). Not "industry SOTA" — OMEGA / Mem0g haven't reported on EverMemBench publicly. |
+| **LongMemEval-S e2e** | 30q: 26.7% (v3.0.1) · historical v0.8 full500: 56.6% (locked, deepseek subject) | e2e re-run with the new retrieval stack pending — the e2e gap is the subject LLM over long context, not retrieval |
 | **Drift detector AUC** | **0.83 held-out / 0.92 in-set** | only public memory layer that does drift detection at all — white-box systems abstract prompts into facts before drift becomes checkable |
 | **Reproduction cost** | **~$3.50** for 500 LongMemEval questions | ~14× cheaper than GPT-4o-judged stacks ($50+) |
 | **p95 hook latency** | **<50 ms** | safe for every-prompt invocation |
@@ -489,7 +492,7 @@ streaming are all spec-complete.
 | MCP A2A protocol native | ✅ TLS+mTLS+RBAC | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | Drift detection | ✅ AUC 0.83 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | Merkle integrity audit log | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| LongMemEval-S verified | ✅ v0.8 e2e 56.6% (locked) · v3.0.1 retrieval-hit 80% / e2e 26.7% | n/r | n/r | n/r | ❌ | n/r | ❌ |
+| LongMemEval-S retrieval (500q full · same-question head-to-head) | ✅ **P@1 0.848 · P@5 0.962 · MRR 0.897** (utt-routed + hybrid, n=500) | 0.774 · 0.916 · 0.834 (2.0.19, our reproduction) | n/r | n/r | n/r | ❌ | n/r | ❌ |
 | EverMemBench verified | ✅ 44.4-47.3% | 37.09 | n/r | 39.97 | n/r | 42.55 | ❌ |
 | Self-host + hosted both | ✅ | ☁ only | ✅ | ☁ only | ✅ | OSS only | OSS only |
 | License | MIT | Apache | Apache | proprietary | MIT | Apache | MIT |
