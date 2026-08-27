@@ -393,7 +393,7 @@ assert m["rate"] >= 0.70, f"drift loop open · rate={m['rate']:.3f} fires={m['fi
 |---|---|---|
 | **LongMemEval-S 500q full** (v3.1, utterance-routed + hybrid retrieval) | **P@1 0.848 · P@5 0.962 · MRR 0.897** | same-question head-to-head vs mem0 2.0.19 (0.774 / 0.916 / 0.834, our reproduction, `infer=False` both sides): **sweeps all three metrics** (+7.4 / +4.6 / +6.3pt). Largest flip: single-session-user P@1 0.90 vs 0.49. Evidence: `docs/evidence/headhead_mem0_full500_20260826.json` |
 | **LongMemEval-M 30q** (harder, ~501 sessions/question) | P@5 0.800 | session-level baseline 0.700; utterance routing fixes the ssu collapse (0.20 → 1.00) |
-| **LOCOMO-10** (n=1986, retrieval layer) | P@1 0.419 · P@5 0.694 | **mem0 leads on its home benchmark** (0.592 / 0.802, our reproduction) — utterance routing not yet ported to LOCOMO's dual-speaker format; temporal is weak on both sides (0.24 P@1) |
+| **LOCOMO-10** (n=1986, retrieval layer) | **P@1 0.644 · P@5 0.890 · MRR 0.740** (utt chunk retrieval) | overtakes mem0 **on its home benchmark** (0.592 / 0.802 / 0.677, our reproduction): +5.2pt P@1 / +8.8pt P@5; temporal nearly doubles vs session-level (0.24 → 0.42) but stays the weakest category on both sides |
 | **EverMemEval-Dynamic** (n=500) | **44.4% (Run 1) / 47.3% (Run 2)** | tops the four published Table 4 baselines (Mem0 37.09, Zep 39.97, MemOS 42.55, MemoBase 34.27). Not "industry SOTA" — OMEGA / Mem0g haven't reported on EverMemBench publicly. |
 | **LongMemEval-S e2e** | 30q: 26.7% (v3.0.1) · historical v0.8 full500: 56.6% (locked, deepseek subject) | e2e re-run with the new retrieval stack pending — the e2e gap is the subject LLM over long context, not retrieval |
 | **Drift detector AUC** | **0.83 held-out / 0.92 in-set** | only public memory layer that does drift detection at all — white-box systems abstract prompts into facts before drift becomes checkable |
@@ -493,6 +493,7 @@ streaming are all spec-complete.
 | Drift detection | ✅ AUC 0.83 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | Merkle integrity audit log | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | LongMemEval-S retrieval (500q full · same-question head-to-head) | ✅ **P@1 0.848 · P@5 0.962 · MRR 0.897** (utt-routed + hybrid, n=500) | 0.774 · 0.916 · 0.834 (2.0.19, our reproduction) | n/r | n/r | n/r | ❌ | n/r | ❌ |
+| LOCOMO-10 retrieval (n=1986 · mem0's home benchmark) | ✅ **P@1 0.644 · P@5 0.890 · MRR 0.740** (utt chunks) | 0.592 · 0.802 · 0.677 (our reproduction) | n/r | n/r | n/r | n/r | n/r | n/r |
 | EverMemBench verified | ✅ 44.4-47.3% | 37.09 | n/r | 39.97 | n/r | 42.55 | ❌ |
 | Self-host + hosted both | ✅ | ☁ only | ✅ | ☁ only | ✅ | OSS only | OSS only |
 | License | MIT | Apache | Apache | proprietary | MIT | Apache | MIT |
