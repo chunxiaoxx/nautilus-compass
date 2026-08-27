@@ -248,5 +248,13 @@
     "verdict": "widest sweep yet: +11.6/+6.2/+9.5pt; date anchor delivers at n=500 (tr P@1 0.83->0.88, ms 0.89->0.91, overall P@1 0.876->0.890)",
     "type_notes": "ssp P@1 0.60 (below 3-type's 0.67 — date anchor is a mild double-edged sword for ssp at n=500, though its P@5 rises to 0.97); remaining tails: ssa P@5 0.95 vs 1.00, tr P@5 0.96 vs 0.98",
     "rows": "local /c/tmp/s500_v4.jsonl (GPU full_1787858624)"
+  },
+  "e2e_30q_new_stack": {
+    "config": "4-type + date-anchor retrieval (P@5 0.978 same questions) + gemini-2.5-flash subject + judge",
+    "accuracy": 0.233,
+    "vs_old_stack": "26.7% (v3.0.1, m3-rerank retrieval 80% hit, same gemini-flash subject)",
+    "verdict": "DECOUPLING CONFIRMED: retrieval P@5 80%->97.8% does NOT move e2e (23.3% vs 26.7%, n=30 noise ±8pt). Bottleneck is the subject LLM over packed context, not retrieval. by-type: ms 0.60 the only bright spot; ssa/tr 0.00",
+    "next": "deepseek-v3.2 subject rerun queued (v0.8 historical: deepseek subject scored 56.6% on full500) — strong-subject already proven; this isolates the subject variable",
+    "rows": "cloud longmemeval_acc_m3_only_subset30_1787855557.jsonl"
   }
 }
