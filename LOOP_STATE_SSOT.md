@@ -167,6 +167,8 @@ FDE 产难题(强解+弱难倒 = 燃料)→ 蒸馏 → 系统可证变强(① �
 
 > **🔴 8/26 六次增量(agent-loop 解冻 · 用户拍板 `v5-agentloop-unfreeze-20260826`)· 部分修订三次增量**:V5 提 agent-loop 轨迹蒸馏方案(不教答案教解题循环:出代码→verifier→失败喂回→修正,≤4 轮;P1 采样器纯 API 半天 + P2 compass 记忆增强 + P3 多轮 SFT mask 一次 GPU ~2h,成本 v4 的 1/3;判据预注册:P3 训练题>0→形态正确,仍全 0→SFT 关闭只剩 RL)。**用户拍板解冻(解冻条件"新方法灵感"触发)**,前置门=**三臂对账**:V5 须先交代 1.5B×391/7B×391/mask+CoT×131 各 eval 哪个生成批次,eval 旧生成故障批次的臂须重生成再判(v4 翻案同款纪律),对账前 P3 不上 GPU。平台照 v4 模式独立判分互核。**边界不变:训练题>0 也不改商用叙事(协议域);主线 QC 降本试点照跑,v0 门已上岗**(23 行判读与人工 QC 完全一致零漏判零误伤,`vtf/batch_guoshu_202607/verifiers/qc_gate_v0.py`·判据预注册 v0/v1/v2 见 `docs/plans/2026-08-26-qc-pilot-protocol.md`,v1/v2 阻塞于附件包定位)。另:git 单点风险已消(soul-distill-deploy 已推 GitHub 至 22163f211);main↔sdd 真分叉 1509/119 需专场合并。
 
+> **🔴 8/26 七次增量(拓扑债收口 · `main-archive-cutover-20260826`)· 销账六次增量遗留的"main↔sdd 专场合并"**:合并专场勘察(merge-tree 干跑):64,716 冲突文件(4.1 万 = `_dead_code_backup` 垃圾目录互斗 · 141 content · ~2.1 万 add/add,含全仓 LF 规整 commit 放大)= **true-merge 负 ROI,弃**。用户拍板"捞资产+归档+换轨":① main 独有活资产 29 文件捞入 sdd(ops/16 含部署纪律 DEPLOY_DISCIPLINE 回家+drift/a2a/sot systemd 套件 · 具身 PPT plans 8+presentations 5,commit 4641568b9;其余 985 文件 = 死代码/历史文物,留归档);② main 打归档 tag `archive/main-legacy-20260826`(119 独有 commits 历史完整);③ **GitHub 默认分支已换轨 soul-distill-deploy**(gh api 读回验证);④ DEPLOY_DISCIPLINE + 本文件护栏#4 主干名同步更新。**单一主干达成,git 拓扑债清零**(六次增量末"需专场合并"待办就此关闭,处置=弃 merge 换轨)。
+
 > **8/1-2 增量(平台框实测,详 memory s0-merge-deploy-20260801)**:S0 admission **v3**(生产 VM 手放版,对齐 7/30 宪法)已回收入库并上生产(`77652fccb`·合并 fde-phase3 worktree 77 提交)·部署前后记分牌逐字不变=账本无损·**income 703 自 7/15 零增长第 17 天,题池枯竭未解(球在 V5/FDE 产题侧)**·`/api/health` 502 根因坐实(nginx 指死端口 8001 + backend 无路由,未修)·云上残留 dirty worktree `distill-deploy` 与分支名 soul-audit-increment1 待正名。记分牌 8/1 直读:verdict **76**(7d +5)·income **703**(7d +0)·自治率 **90.8%**(69/76)·settle 0/3618。
 
 | 指标 | 值 | 说明 |
@@ -218,7 +220,7 @@ FDE 产难题(强解+弱难倒 = 燃料)→ 蒸馏 → 系统可证变强(① �
 1. **外部 gate 经济学(C 口径)**:external_verified 只看独立复现;income 再加两门 = 难度档合格 + 每题每 producer 只铸一次。
 2. **producer 必须是注册整数 agent**(§0-ARCH);Claude 对话框是脚手架,不算系统组件。
 3. **自报不算,探针才算**:任何 alive/done/income 声明以 compass 读 DB 为准。
-4. **部署规程(7/16 换轨,用户拍板)**:以 `ops/DEPLOY_DISCIPLINE.md`(main 分支)为准——单一主干 main、禁 VM 直改、部署 = git pull --ff-only 禁 scp 覆盖代码、禁手工改 systemd unit、部署后必验记分牌。过渡期若确需 scp,同一改动必须同步 commit 进 main。仍禁手工 kill/nohup;pkill/pgrep -f 会自匹配 ssh 命令行。底座融合状态见 `RECOVERY_STATE_20260715.md`(main 已立 = GitHub 默认分支,基于 prod-truth + 捞入资产)。
+4. **部署规程(7/16 换轨,用户拍板 · 8/26 主干更名)**:以 `ops/DEPLOY_DISCIPLINE.md` 为准——**单一主干 = `soul-distill-deploy`(2026-08-26 起,GitHub 默认分支已换轨;旧主干 main 归档于 tag `archive/main-legacy-20260826`,活资产已捞入 4641568b9)**、禁 VM 直改、部署 = git pull --ff-only 禁 scp 覆盖代码、禁手工改 systemd unit、部署后必验记分牌。过渡期若确需 scp,同一改动必须同步 commit 进主干。仍禁手工 kill/nohup;pkill/pgrep -f 会自匹配 ssh 命令行。底座融合状态见 `RECOVERY_STATE_20260715.md`。
 5. **可复现契约**:轨迹必须带完整解 + sha256;preview 一律拒。
 6. **不重复造轮子**:动手前先查已有资产(7/7 教训:fde.nautilus.social 整套 v0.8 被遗忘重造)。
 7. **confound 先核再下结论**;n≥12 才跑 LOO;买方名绝不出现在对外内容;"真"只作真实义,不作强调副词。
