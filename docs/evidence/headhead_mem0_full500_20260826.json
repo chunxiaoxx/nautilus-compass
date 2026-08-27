@@ -149,5 +149,33 @@
     "by_category_notable": "temporal equally bad on both (0.24 vs 0.24 P@1 — embedder-common weakness, not ours alone); compass LOCOMO has NOT yet tried utterance routing (single-hop 0.44 vs 0.52 is the utterance-shaped gap)",
     "narrative_discipline": "three-front honest story: LME-S retrieval tie/overtake (utt pending full500), LOCOMO retrieval -10pt, e2e untested",
     "rows": "cloud eval_mem0_locomo_rows.jsonl · script tests/eval_mem0_locomo.py (7535ae5)"
+  },
+  "S500_FINAL_verdict": {
+    "config": "utt-routed (ssu+ssp) + hybrid BM25/RRF + m3-only, no reranker, GPU 4090 run",
+    "compass": {
+      "P@1": 0.848,
+      "P@5": 0.962,
+      "MRR": 0.897
+    },
+    "mem0_2_0_19": {
+      "P@1": 0.774,
+      "P@5": 0.916,
+      "MRR": 0.834
+    },
+    "verdict": "COMPASS SWEEPS ALL THREE METRICS on LongMemEval-S full500: +7.4pt P@1 / +4.6pt P@5 / +6.3pt MRR",
+    "headline_type_flips": "ssu P@1 0.90 vs 0.49 (+41pt), ssp P@1 0.67 vs 0.47 (+20pt); 5/6 types P@1 win-or-tie; remaining weak spots ku (0.79 vs 0.82, P@5 0.91 vs 1.00) and ssa P@5 (0.96 vs 1.00)",
+    "interim_note": "first GPU run missed ZMM_HYBRID (P@1 dropped to 0.686 on non-routed types) — hybrid's BM25 carries ms/tr/ku P@1; rerun with hybrid fixed it. Config completeness matters.",
+    "rows": "local /c/tmp/utt2_a.jsonl (GPU full_1787846667)"
+  },
+  "M30_utt_hybrid": {
+    "compass": {
+      "P@5": 0.8
+    },
+    "baseline_session_level": 0.7,
+    "by_type": {
+      "ssu": "0.20 -> 1.00 (utterance fixes the collapse)",
+      "note": "0.800 == utt-only; hybrid neutral on M-scale"
+    },
+    "rows": "local /c/tmp/utt2_b.jsonl"
   }
 }
