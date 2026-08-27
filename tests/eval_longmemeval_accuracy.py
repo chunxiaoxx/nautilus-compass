@@ -84,6 +84,9 @@ ZMM_HYBRID = os.environ.get("ZMM_HYBRID", "0") == "1"
 # v3.1 · retrieval-only loop: skip subject+judge entirely (fast iteration on
 # retrieval levers — hit-rate is logged, no LLM calls, ~10s/q vs ~250s/q)
 ZMM_RETRIEVAL_ONLY = os.environ.get("ZMM_RETRIEVAL_ONLY", "0") == "1"
+# Tier S #3 · utterance-window chunk retrieval (see Step 1 branch). Pure dense
+# over user-anchored chunks; sessions ranked by best chunk, top5 dedup'd.
+ZMM_UTTERANCE_RETRIEVE = os.environ.get("ZMM_UTTERANCE_RETRIEVE", "0") == "1"
 # Text-addressed embed cache for full-corpus runs (see wiring at get_embedder)
 ZMM_EMBED_CACHE = os.environ.get("ZMM_EMBED_CACHE", "1") == "1"
 # Query-side instruction prefix (embedder-dependent). bge-m3 needs none.
@@ -473,46 +476,66 @@ def main():
 
             # Step 1: bi-encoder retrieve
             q_emb = emb.encode(QUERY_INSTRUCT + question)
-            sess_embs = [emb.encode(t) for t in sess_texts]
-            sims = [(j, zmd.cosine(q_emb, sess_embs[j])) for j in range(len(sess_ids))]
-            sims.sort(key=lambda x: -x[1])
-
-            # Step 1b (optional): BM25 retrieve + RRF fuse into dense ranking.
-            # Baseline path (ZMM_HYBRID off) skips this entirely so top_indices
-            # flow is byte-identical to the pre-hybrid code.
-            if ZMM_HYBRID:
-                # Per-question BM25 index · the haystack is different per
-                # question, matching how sess_embs is built per question.
-                bm25_corpus = [_bm25_tokenize(t) for t in sess_texts]
-                bm25 = BM25Okapi(bm25_corpus)
-                bm25_scores = bm25.get_scores(_bm25_tokenize(question))
-                bm25_ranked = sorted(
-                    range(len(sess_ids)), key=lambda j: -bm25_scores[j]
-                )
-
-                # RRF fusion across dense ranking and BM25 ranking, each
-                # truncated to TOP_K_RETRIEVE. Fused score = sum 1/(k + rank).
-                dense_top = [idx for idx, _ in sims[:TOP_K_RETRIEVE]]
-                bm25_top = bm25_ranked[:TOP_K_RETRIEVE]
-                rrf = defaultdict(float)
-                for r, idx in enumerate(dense_top):
-                    rrf[idx] += 1.0 / (RRF_K + r + 1)
-                for r, idx in enumerate(bm25_top):
-                    rrf[idx] += 1.0 / (RRF_K + r + 1)
-                fused = sorted(rrf.items(), key=lambda kv: -kv[1])
-                # Replace sims with fused ranking so the downstream reranker
-                # / no-rerank branch reuses the same code path.
-                sims = [(idx, score) for idx, score in fused]
-
-            if reranker:
-                # Step 2: cross-encoder rerank top-K
-                topk = sims[:TOP_K_RETRIEVE]
-                pairs = [(question, sess_texts[idx]) for idx, _ in topk]
-                rerank_scores = reranker.predict(pairs)
-                reranked = sorted(zip(topk, rerank_scores), key=lambda x: -x[1])
-                top_indices = [idx for (idx, _), _ in reranked[:TOP_K_CONTEXT]]
+            if ZMM_UTTERANCE_RETRIEVE:
+                # Tier S #3 · utterance-window chunk retrieval. The answer for
+                # ssu/ssp questions lives in ONE user turn; session-level text
+                # dilutes it (ssu hit@5: 0.60 on S, 0.20 on M). Rank sessions
+                # by their best chunk, skipping session-level sims entirely.
+                chunks: list = []
+                for j, sess in enumerate(sessions):
+                    for txt in extract_user_utterances(sess, window=2):
+                        chunks.append((j, txt))
+                chunk_sims = sorted(
+                    range(len(chunks)),
+                    key=lambda x: -zmd.cosine(q_emb, emb.encode(chunks[x][1])))
+                top_indices = []
+                for x in chunk_sims:
+                    j = chunks[x][0]
+                    if j not in top_indices:
+                        top_indices.append(j)
+                    if len(top_indices) >= TOP_K_CONTEXT:
+                        break
             else:
-                top_indices = [idx for idx, _ in sims[:TOP_K_CONTEXT]]
+                sess_embs = [emb.encode(t) for t in sess_texts]
+                sims = [(j, zmd.cosine(q_emb, sess_embs[j])) for j in range(len(sess_ids))]
+                sims.sort(key=lambda x: -x[1])
+
+                # Step 1b (optional): BM25 retrieve + RRF fuse into dense ranking.
+                # Baseline path (ZMM_HYBRID off) skips this entirely so top_indices
+                # flow is byte-identical to the pre-hybrid code.
+                if ZMM_HYBRID:
+                    # Per-question BM25 index · the haystack is different per
+                    # question, matching how sess_embs is built per question.
+                    bm25_corpus = [_bm25_tokenize(t) for t in sess_texts]
+                    bm25 = BM25Okapi(bm25_corpus)
+                    bm25_scores = bm25.get_scores(_bm25_tokenize(question))
+                    bm25_ranked = sorted(
+                        range(len(sess_ids)), key=lambda j: -bm25_scores[j]
+                    )
+
+                    # RRF fusion across dense ranking and BM25 ranking, each
+                    # truncated to TOP_K_RETRIEVE. Fused score = sum 1/(k + rank).
+                    dense_top = [idx for idx, _ in sims[:TOP_K_RETRIEVE]]
+                    bm25_top = bm25_ranked[:TOP_K_RETRIEVE]
+                    rrf = defaultdict(float)
+                    for r, idx in enumerate(dense_top):
+                        rrf[idx] += 1.0 / (RRF_K + r + 1)
+                    for r, idx in enumerate(bm25_top):
+                        rrf[idx] += 1.0 / (RRF_K + r + 1)
+                    fused = sorted(rrf.items(), key=lambda kv: -kv[1])
+                    # Replace sims with fused ranking so the downstream reranker
+                    # / no-rerank branch reuses the same code path.
+                    sims = [(idx, score) for idx, score in fused]
+
+                if reranker:
+                    # Step 2: cross-encoder rerank top-K
+                    topk = sims[:TOP_K_RETRIEVE]
+                    pairs = [(question, sess_texts[idx]) for idx, _ in topk]
+                    rerank_scores = reranker.predict(pairs)
+                    reranked = sorted(zip(topk, rerank_scores), key=lambda x: -x[1])
+                    top_indices = [idx for (idx, _), _ in reranked[:TOP_K_CONTEXT]]
+                else:
+                    top_indices = [idx for idx, _ in sims[:TOP_K_CONTEXT]]
 
             top_sessions = [sessions[j] for j in top_indices]
             if ZMM_SSU_UTTERANCE and qt == "single-session-user":
