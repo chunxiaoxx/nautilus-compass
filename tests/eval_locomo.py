@@ -98,7 +98,7 @@ def main():
             rank = next((i + 1 for i, s in enumerate(top5) if s in truth), None)
             rows.append({
                 "conv": ci, "category": str(qa["category"]),
-                "question": qa["question"][:120], "answer": qa["answer"],
+                "question": qa["question"][:120], "answer": qa.get("answer", ""),
                 "top5": top5, "truth": sorted(truth), "rank": rank,
             })
         print(f"  conv {ci+1}/{len(data)} · {len(rows)} qs · {time.time()-t0:.0f}s", flush=True)
