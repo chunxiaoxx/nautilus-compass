@@ -204,5 +204,10 @@
     "cross_dataset_conclusion": "utterance ammo generalizes: all three fronts won (LME-S sweep / M ssu fix / LOCOMO away flip)",
     "runtime": "4 min on GPU (n=1986)",
     "log": "GPU /root/locomo_utt.log (summary-file write crashed after printing, numbers intact)"
+  },
+  "mem0_version_check": {
+    "checked": "2026-08-27 pip index versions mem0ai",
+    "pypi_latest": "2.0.19 — exactly what we benchmarked",
+    "note": "'V3 memory pipeline' and Aug-2026 'major release' in docs.mem0.ai changelog refer to the hosted mem0 platform, not the PyPI SDK; open-source head-to-head is against the latest available version. Hosted version is closed-source, not same-machine reproducible — cite with that caveat."
   }
 }
