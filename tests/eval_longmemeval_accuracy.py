@@ -230,9 +230,13 @@ Model's answer: {answer}
 Reply with ONLY one word: CORRECT or INCORRECT."""
 
 
-def session_to_text(session, max_chars=600):
+def session_to_text(session, max_chars=600, date=None):
+    # Tier S #4 · temporal anchor: prefix the session date (haystack_dates)
+    # so chunk/session embeddings + the e2e subject both carry time signal.
+    # temporal-reasoning is the weakest type on both LongMemEval and LOCOMO.
+    prefix = f"[{date}] " if date and os.environ.get("ZMM_DATE_ANCHOR", "0") == "1" else ""
     parts = [f"[{t.get('role', '?')}] {t.get('content', '')}" for t in session]
-    return "\n".join(parts)[:max_chars]
+    return (prefix + "\n".join(parts))[:max_chars]
 
 
 def build_context(top_sessions: list[dict]) -> str:
@@ -477,7 +481,8 @@ def main():
             qt = q["question_type"]
             sess_ids = q["haystack_session_ids"]
             sessions = q["haystack_sessions"]
-            sess_texts = [session_to_text(s) for s in sessions]
+            sess_texts = [session_to_text(s, date=dd) for s, dd in
+                          zip(sessions, q.get("haystack_dates", [None] * len(sessions)))]
 
             # Step 1: bi-encoder retrieve
             q_emb = emb.encode(QUERY_INSTRUCT + question)
@@ -487,8 +492,11 @@ def main():
                 # dilutes it (ssu hit@5: 0.60 on S, 0.20 on M). Rank sessions
                 # by their best chunk, skipping session-level sims entirely.
                 chunks: list = []
+                _dates = q.get("haystack_dates", [None] * len(sessions))
                 for j, sess in enumerate(sessions):
                     for txt in extract_user_utterances(sess, window=2):
+                        if os.environ.get("ZMM_DATE_ANCHOR", "0") == "1" and _dates[j]:
+                            txt = f"[{_dates[j]}] " + txt
                         chunks.append((j, txt))
                 chunk_sims = sorted(
                     range(len(chunks)),
