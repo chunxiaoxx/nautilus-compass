@@ -256,5 +256,20 @@
     "verdict": "DECOUPLING CONFIRMED: retrieval P@5 80%->97.8% does NOT move e2e (23.3% vs 26.7%, n=30 noise ±8pt). Bottleneck is the subject LLM over packed context, not retrieval. by-type: ms 0.60 the only bright spot; ssa/tr 0.00",
     "next": "deepseek-v3.2 subject rerun queued (v0.8 historical: deepseek subject scored 56.6% on full500) — strong-subject already proven; this isolates the subject variable",
     "rows": "cloud longmemeval_acc_m3_only_subset30_1787855557.jsonl"
+  },
+  "M500_full_verdict": {
+    "config": "3-type routing (ssu+ssp+ku) + hybrid, no reranker, GPU 4090",
+    "compass_P@5": 0.888,
+    "by_type": {
+      "ku": 0.99,
+      "ssu": 0.93,
+      "ms": 0.9,
+      "ssa": 0.89,
+      "tr": 0.87,
+      "ssp": 0.53
+    },
+    "reading": "hard-corpus generalization holds: 12x larger session pools cost only 9pt vs S500 (0.978); ssu fixed from 0.20 session-level collapse to 0.93 at n=500; ssp 0.53 is the newly-exposed weak spot on M (candidate: date-anchor already helps ssp on S, not enabled in this M run)",
+    "note": "no mem0 M-corpus head-to-head yet (cost: 500q x 501 sessions add) — queue for next round",
+    "rows": "local /c/tmp/m500.jsonl (GPU full_1787858052)"
   }
 }

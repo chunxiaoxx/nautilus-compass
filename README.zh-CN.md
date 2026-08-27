@@ -132,7 +132,7 @@ curl https://compass.nautilus.social/.well-known/agent.json   # A2A 发现
 |---|---|---|
 | **LongMemEval-S 500 题全量**(utt 路由 + 混合检索) | **P@1 0.890 · P@5 0.978 · MRR 0.929** | 对 mem0 2.0.19 三项全胜(0.774/0.916/0.834,我方复现):+11.6/+6.2/+9.5pt。最大翻转:single-session-user P@1 0.90 vs 0.49 |
 | **LOCOMO-10**(n=1986 · mem0 主场) | **P@1 0.644 · P@5 0.890 · MRR 0.740** | 反超 mem0(0.592/0.802/0.677,我方复现)+5.2/+8.8pt |
-| **LongMemEval-M 30 题**(每题 ~501 session) | P@5 0.800 | session 级基线 0.700;utt 路由修复单会话崩盘(0.20→1.00);M-500 全量排队中 |
+| **LongMemEval-M 500 题全量**(每题 ~501 session) | **P@5 0.888** | 比 S500 只掉 9pt(12 倍语料);ssu 崩盘在全量修复(0.20→0.93);ssp 0.53 新暴露短板;M 尚无 mem0 对照 |
 | **EverMemBench-Dynamic**(n=500) | **44.4%(Run1)/ 47.3%(Run2)** | 超过 Table 4 四个公开基线(Mem0 37.09 · Zep 39.97 · MemOS 42.55 · MemoBase 34.27)。不宣称"业界 SOTA"——OMEGA / Mem0g 未公开报数 |
 | **LongMemEval-S e2e** | 30 题:26.7%(v3.0.1)· v0.8 全量 56.6%(锁定,deepseek subject) | 新检索栈的 e2e 重跑进行中 |
 | **Drift 检测 AUC** | **0.83 held-out / 0.92 in-set** | 公开记忆层里唯一做 drift 检测的 |

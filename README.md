@@ -134,7 +134,7 @@ multi-user sync, audit log, and managed BGE-m3.
 |---|---|---|
 | **LongMemEval-S 500q full** (utt-routed + hybrid, n=500) | **P@1 0.890 · P@5 0.978 · MRR 0.929** | sweeps mem0 2.0.19 (0.774/0.916/0.834, our reproduction): +11.6/+6.2/+9.5pt. Largest flip: single-session-user P@1 0.90 vs 0.49 |
 | **LOCOMO-10** (n=1986 · mem0's home benchmark) | **P@1 0.644 · P@5 0.890 · MRR 0.740** | overtakes mem0 (0.592/0.802/0.677, our reproduction) +5.2/+8.8pt |
-| **LongMemEval-M 30q** (~501 sessions/question) | P@5 0.800 | baseline 0.700; utt routing fixes ssu collapse (0.20 → 1.00); M-500 full run queued |
+| **LongMemEval-M 500q full** (~501 sessions/question) | **P@5 0.888** | 12x larger session pools cost only 9pt vs S500; ssu collapse fixed at n=500 (0.20 → 0.93); ssp 0.53 newly exposed; no mem0 M head-to-head yet |
 | **EverMemBench-Dynamic** (n=500) | **44.4% (Run 1) / 47.3% (Run 2)** | tops the four published Table 4 baselines (Mem0 37.09, Zep 39.97, MemOS 42.55, MemoBase 34.27). Not claiming "industry SOTA" — OMEGA / Mem0g haven't reported publicly |
 | **LongMemEval-S e2e** | 30q: 26.7% (v3.0.1) · v0.8 full500: 56.6% (locked, deepseek subject) | e2e re-run with the new retrieval stack in progress |
 | **Drift detector AUC** | **0.83 held-out / 0.92 in-set** | only public memory layer doing drift detection at all |
