@@ -230,12 +230,13 @@ AUC 0.83 held-out。
 | LongMemEval-S 检索(500 题对照) | ✅ **0.890 / 0.978 / 0.929** | 0.774 / 0.916 / 0.834(我方复现) | n/r | n/r | n/r | ❌ | ❌ |
 | LOCOMO-10 检索(n=1986) | ✅ **0.644 / 0.890 / 0.740** | 0.592 / 0.802 / 0.677(我方复现) | n/r | n/r | n/r | n/r | n/r |
 | EverMemBench 实测 | ✅ 44.4-47.3% | 37.09 | n/r | 39.97 | n/r | 42.55 | ❌ |
+| LongMemEval-S e2e(各家自家 harness) | 我方 e2e 重跑待出(见真账面) | 94.4%(自报) | n/r | n/r | n/r | n/r | n/r |
+
+*2026 新玩家尚未同机复测:Hindsight、Supermemory(自称 LongMemEval SOTA)、Cognee、LangMem、Membase——行位待补;其公开数字出自各家自家 harness,与我方同题对照协议不可直比。*
 | 自托管 + 托管双形态 | ✅ | 仅云 | ✅ | 仅云 | ✅ | 仅开源 | 仅开源 |
 | 许可证 | MIT | Apache | Apache | 专有 | MIT | Apache | MIT |
 
-`n/r` = 对方公开评测未报。2026 新玩家(Hindsight / Supermemory / Cognee /
-LangMem)尚未同机复测——行位待补。Smriti 是团队对话归档工具,范围不同,
-列上仅为完整。
+`n/r` = 对方公开评测未报。Smriti 是团队对话归档工具,范围不同,列上仅为完整。
 
 ---
 

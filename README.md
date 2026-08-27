@@ -233,13 +233,14 @@ spec-complete. Full guide: [`docs/mcp-usage.md`](docs/mcp-usage.md).
 | LongMemEval-S retrieval (500q head-to-head) | ✅ **0.890 / 0.978 / 0.929** | 0.774 / 0.916 / 0.834 (our reproduction) | n/r | n/r | n/r | ❌ | ❌ |
 | LOCOMO-10 retrieval (n=1986) | ✅ **0.644 / 0.890 / 0.740** | 0.592 / 0.802 / 0.677 (our reproduction) | n/r | n/r | n/r | n/r | n/r |
 | EverMemBench verified | ✅ 44.4-47.3% | 37.09 | n/r | 39.97 | n/r | 42.55 | ❌ |
+| LongMemEval-S e2e (their own harness) | e2e re-run pending (see Headline) | 94.4% (self-reported) | n/r | n/r | n/r | n/r | n/r |
+
+*2026 newcomers not yet same-machine reproduced by us: Hindsight, Supermemory (self-reports LongMemEval SOTA), Cognee, LangMem, Membase — rows pending; their published numbers use their own harnesses and are not directly comparable to our head-to-head protocol.*
 | Self-host + hosted both | ✅ | ☁ only | ✅ | ☁ only | ✅ | OSS only | OSS only |
 | License | MIT | Apache | Apache | proprietary | MIT | Apache | MIT |
 
-`n/r` = not reported in their published evaluations. 2026 newcomers
-(Hindsight, Supermemory, Cognee, LangMem) not yet same-machine reproduced —
-rows pending. Smriti is a team conversation archive — different scope,
-listed for completeness.
+`n/r` = not reported in their published evaluations. Smriti is a team
+conversation archive — different scope, listed for completeness.
 
 ---
 
