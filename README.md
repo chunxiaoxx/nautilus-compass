@@ -57,11 +57,13 @@ Black-box memory (compass · this project):
    prompt against your past mistakes before the agent acts."
 ```
 
-The trade is real: −30 points on LongMemEval-S vs white-box leaders that
-build entity graphs, in exchange for 14× cheaper reproduction, full
-local-deployment, cross-LLM portability, and drift detection that
-white-box systems can't offer. Full argument:
-[paper/BLACKBOX_VS_WHITEBOX.md](paper/BLACKBOX_VS_WHITEBOX.md).
+The trade has flipped: as of 2026-08, utterance-routed black-box retrieval
+**sweeps mem0 on all three LongMemEval-S metrics** (P@1 0.876 / P@5 0.976 /
+MRR 0.919 vs 0.774 / 0.916 / 0.834, same-question n=500) while keeping the
+14× cheaper reproduction, full local deployment, cross-LLM portability, and
+drift detection that white-box systems can't offer. Full argument:
+[paper/BLACKBOX_VS_WHITEBOX.md](paper/BLACKBOX_VS_WHITEBOX.md) ·
+[evidence](docs/evidence/headhead_mem0_full500_20260826.json).
 
 **In one line**: when the AI is about to forget a rule you set, take a
 shortcut you flagged, or fabricate a prior agreement, it gets stopped
