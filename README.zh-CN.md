@@ -14,7 +14,7 @@
 
 [![CI](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/ci.yml)
 [![arXiv build](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/build-paper.yml/badge.svg?branch=main)](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/build-paper.yml)
-[![LongMemEval-S](https://img.shields.io/badge/LongMemEval--S-full500%20P%405%2097.6%25%20%C2%B7%20vs%20mem0%2091.6%25-brightgreen)](docs/evidence/headhead_mem0_full500_20260826.json)
+[![LongMemEval-S](https://img.shields.io/badge/LongMemEval--S-full500%20P%405%2097.8%25%20%C2%B7%20vs%20mem0%2091.6%25-brightgreen)](docs/evidence/headhead_mem0_full500_20260826.json)
 [![EverMemBench](https://img.shields.io/badge/EverMemBench-44.4%E2%80%9347.3%25-brightgreen)](paper/sections/paper2_06_5_evermembench.tex)
 [![drift-AUC](https://img.shields.io/badge/drift_AUC-0.83_held--out-brightgreen)](#工作原理)
 [![PyPI](https://img.shields.io/pypi/v/nautilus-compass?label=PyPI&color=blue)](https://pypi.org/project/nautilus-compass/)
@@ -37,7 +37,7 @@
 
 | LongMemEval-S · n=500 | P@1 | P@5 | MRR |
 |---|---|---|---|
-| **compass** | **0.876** | **0.976** | **0.919** |
+| **compass** | **0.890** | **0.978** | **0.929** |
 | mem0 2.0.19 | 0.774 | 0.916 | 0.834 |
 
 同一套 utterance 弹药在 **mem0 的主场**也完成反超
@@ -130,7 +130,7 @@ curl https://compass.nautilus.social/.well-known/agent.json   # A2A 发现
 
 | 基准 | 分数 | 诚实对照 |
 |---|---|---|
-| **LongMemEval-S 500 题全量**(utt 路由 + 混合检索) | **P@1 0.876 · P@5 0.976 · MRR 0.919** | 对 mem0 2.0.19 三项全胜(0.774/0.916/0.834,我方复现):+10.2/+6.0/+8.5pt。最大翻转:single-session-user P@1 0.90 vs 0.49 |
+| **LongMemEval-S 500 题全量**(utt 路由 + 混合检索) | **P@1 0.876 · P@5 0.976 · MRR 0.919** | 对 mem0 2.0.19 三项全胜(0.774/0.916/0.834,我方复现):+11.6/+6.2/+9.5pt。最大翻转:single-session-user P@1 0.90 vs 0.49 |
 | **LOCOMO-10**(n=1986 · mem0 主场) | **P@1 0.644 · P@5 0.890 · MRR 0.740** | 反超 mem0(0.592/0.802/0.677,我方复现)+5.2/+8.8pt |
 | **LongMemEval-M 30 题**(每题 ~501 session) | P@5 0.800 | session 级基线 0.700;utt 路由修复单会话崩盘(0.20→1.00);M-500 全量排队中 |
 | **EverMemBench-Dynamic**(n=500) | **44.4%(Run1)/ 47.3%(Run2)** | 超过 Table 4 四个公开基线(Mem0 37.09 · Zep 39.97 · MemOS 42.55 · MemoBase 34.27)。不宣称"业界 SOTA"——OMEGA / Mem0g 未公开报数 |
@@ -227,7 +227,7 @@ AUC 0.83 held-out。
 | 原生 MCP A2A 协议 | ✅ TLS+mTLS+RBAC | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | Drift 检测 | ✅ AUC 0.83 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | Merkle 完整性审计日志 | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| LongMemEval-S 检索(500 题对照) | ✅ **0.876 / 0.976 / 0.919** | 0.774 / 0.916 / 0.834(我方复现) | n/r | n/r | n/r | ❌ | ❌ |
+| LongMemEval-S 检索(500 题对照) | ✅ **0.890 / 0.978 / 0.929** | 0.774 / 0.916 / 0.834(我方复现) | n/r | n/r | n/r | ❌ | ❌ |
 | LOCOMO-10 检索(n=1986) | ✅ **0.644 / 0.890 / 0.740** | 0.592 / 0.802 / 0.677(我方复现) | n/r | n/r | n/r | n/r | n/r |
 | EverMemBench 实测 | ✅ 44.4-47.3% | 37.09 | n/r | 39.97 | n/r | 42.55 | ❌ |
 | 自托管 + 托管双形态 | ✅ | 仅云 | ✅ | 仅云 | ✅ | 仅开源 | 仅开源 |

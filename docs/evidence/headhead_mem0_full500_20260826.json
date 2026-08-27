@@ -232,5 +232,21 @@
     "vs_3type_no_date": 0.967,
     "reading": "date anchor rescues the last miss (ssp 0.80 -> 1.00) and tr routing hits all 5; n=30 caveat — S500 full with 4-type+date queued on GPU to verify at n=500",
     "rows": "local /c/tmp/tr_anchor.jsonl"
+  },
+  "S500_FINAL_v3_4type_dateanchor": {
+    "config": "4-type routing (ssu+ssp+ku+tr) + ZMM_DATE_ANCHOR=1 + hybrid, no reranker, GPU",
+    "compass": {
+      "P@1": 0.89,
+      "P@5": 0.978,
+      "MRR": 0.929
+    },
+    "mem0_2_0_19": {
+      "P@1": 0.774,
+      "P@5": 0.916,
+      "MRR": 0.834
+    },
+    "verdict": "widest sweep yet: +11.6/+6.2/+9.5pt; date anchor delivers at n=500 (tr P@1 0.83->0.88, ms 0.89->0.91, overall P@1 0.876->0.890)",
+    "type_notes": "ssp P@1 0.60 (below 3-type's 0.67 — date anchor is a mild double-edged sword for ssp at n=500, though its P@5 rises to 0.97); remaining tails: ssa P@5 0.95 vs 1.00, tr P@5 0.96 vs 0.98",
+    "rows": "local /c/tmp/s500_v4.jsonl (GPU full_1787858624)"
   }
 }
