@@ -16,7 +16,7 @@
 
 [![CI](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/ci.yml)
 [![arXiv build](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/build-paper.yml/badge.svg?branch=main)](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/build-paper.yml)
-[![LongMemEval-S](https://img.shields.io/badge/LongMemEval--S-full500%20P%405%2097.6%25%20%C2%B7%20vs%20mem0%2091.6%25-brightgreen)](docs/evidence/headhead_mem0_full500_20260826.json)
+[![LongMemEval-S](https://img.shields.io/badge/LongMemEval--S-full500%20P%405%2097.8%25%20%C2%B7%20vs%20mem0%2091.6%25-brightgreen)](docs/evidence/headhead_mem0_full500_20260826.json)
 [![EverMemBench](https://img.shields.io/badge/EverMemBench-44.4%E2%80%9347.3%25-brightgreen)](paper/sections/paper2_06_5_evermembench.tex)
 [![drift-AUC](https://img.shields.io/badge/drift_AUC-0.83_held--out-brightgreen)](#how-it-works)
 [![PyPI](https://img.shields.io/pypi/v/nautilus-compass?label=PyPI&color=blue)](https://pypi.org/project/nautilus-compass/)
@@ -42,7 +42,7 @@ our reproduction):
 
 | LongMemEval-S · n=500 | P@1 | P@5 | MRR |
 |---|---|---|---|
-| **compass** | **0.876** | **0.976** | **0.919** |
+| **compass** | **0.890** | **0.978** | **0.929** |
 | mem0 2.0.19 | 0.774 | 0.916 | 0.834 |
 
 The same utterance ammo overtakes mem0 **on its own home benchmark**
@@ -132,7 +132,7 @@ multi-user sync, audit log, and managed BGE-m3.
 
 | Benchmark | Score | Honest compare |
 |---|---|---|
-| **LongMemEval-S 500q full** (utt-routed + hybrid, n=500) | **P@1 0.876 · P@5 0.976 · MRR 0.919** | sweeps mem0 2.0.19 (0.774/0.916/0.834, our reproduction): +10.2/+6.0/+8.5pt. Largest flip: single-session-user P@1 0.90 vs 0.49 |
+| **LongMemEval-S 500q full** (utt-routed + hybrid, n=500) | **P@1 0.876 · P@5 0.976 · MRR 0.919** | sweeps mem0 2.0.19 (0.774/0.916/0.834, our reproduction): +11.6/+6.2/+9.5pt. Largest flip: single-session-user P@1 0.90 vs 0.49 |
 | **LOCOMO-10** (n=1986 · mem0's home benchmark) | **P@1 0.644 · P@5 0.890 · MRR 0.740** | overtakes mem0 (0.592/0.802/0.677, our reproduction) +5.2/+8.8pt |
 | **LongMemEval-M 30q** (~501 sessions/question) | P@5 0.800 | baseline 0.700; utt routing fixes ssu collapse (0.20 → 1.00); M-500 full run queued |
 | **EverMemBench-Dynamic** (n=500) | **44.4% (Run 1) / 47.3% (Run 2)** | tops the four published Table 4 baselines (Mem0 37.09, Zep 39.97, MemOS 42.55, MemoBase 34.27). Not claiming "industry SOTA" — OMEGA / Mem0g haven't reported publicly |
@@ -230,7 +230,7 @@ spec-complete. Full guide: [`docs/mcp-usage.md`](docs/mcp-usage.md).
 | MCP A2A protocol native | ✅ TLS+mTLS+RBAC | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | Drift detection | ✅ AUC 0.83 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 | Merkle integrity audit log | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| LongMemEval-S retrieval (500q head-to-head) | ✅ **0.876 / 0.976 / 0.919** | 0.774 / 0.916 / 0.834 (our reproduction) | n/r | n/r | n/r | ❌ | ❌ |
+| LongMemEval-S retrieval (500q head-to-head) | ✅ **0.890 / 0.978 / 0.929** | 0.774 / 0.916 / 0.834 (our reproduction) | n/r | n/r | n/r | ❌ | ❌ |
 | LOCOMO-10 retrieval (n=1986) | ✅ **0.644 / 0.890 / 0.740** | 0.592 / 0.802 / 0.677 (our reproduction) | n/r | n/r | n/r | n/r | n/r |
 | EverMemBench verified | ✅ 44.4-47.3% | 37.09 | n/r | 39.97 | n/r | 42.55 | ❌ |
 | Self-host + hosted both | ✅ | ☁ only | ✅ | ☁ only | ✅ | OSS only | OSS only |
