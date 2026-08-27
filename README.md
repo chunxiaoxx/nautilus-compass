@@ -132,7 +132,7 @@ multi-user sync, audit log, and managed BGE-m3.
 
 | Benchmark | Score | Honest compare |
 |---|---|---|
-| **LongMemEval-S 500q full** (utt-routed + hybrid, n=500) | **P@1 0.876 · P@5 0.976 · MRR 0.919** | sweeps mem0 2.0.19 (0.774/0.916/0.834, our reproduction): +11.6/+6.2/+9.5pt. Largest flip: single-session-user P@1 0.90 vs 0.49 |
+| **LongMemEval-S 500q full** (utt-routed + hybrid, n=500) | **P@1 0.890 · P@5 0.978 · MRR 0.929** | sweeps mem0 2.0.19 (0.774/0.916/0.834, our reproduction): +11.6/+6.2/+9.5pt. Largest flip: single-session-user P@1 0.90 vs 0.49 |
 | **LOCOMO-10** (n=1986 · mem0's home benchmark) | **P@1 0.644 · P@5 0.890 · MRR 0.740** | overtakes mem0 (0.592/0.802/0.677, our reproduction) +5.2/+8.8pt |
 | **LongMemEval-M 30q** (~501 sessions/question) | P@5 0.800 | baseline 0.700; utt routing fixes ssu collapse (0.20 → 1.00); M-500 full run queued |
 | **EverMemBench-Dynamic** (n=500) | **44.4% (Run 1) / 47.3% (Run 2)** | tops the four published Table 4 baselines (Mem0 37.09, Zep 39.97, MemOS 42.55, MemoBase 34.27). Not claiming "industry SOTA" — OMEGA / Mem0g haven't reported publicly |
