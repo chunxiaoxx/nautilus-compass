@@ -40,7 +40,9 @@ os.environ.setdefault("PYTHONIOENCODING", "utf-8")
 os.environ.setdefault("PYTHONUTF8", "1")
 
 PLUGIN = Path.home() / ".claude" / "plugins" / "nautilus-compass"
-sys.path.insert(0, str(PLUGIN))
+# bare-clone fallback: a fresh git clone (e.g. rented GPU box) has no plugin
+# dir — import the repo's own daemon.py instead
+sys.path.insert(0, str(PLUGIN if PLUGIN.exists() else Path(__file__).resolve().parent.parent))
 import daemon as zmd  # noqa: E402
 
 DATASET_PATH = Path(os.environ.get(
