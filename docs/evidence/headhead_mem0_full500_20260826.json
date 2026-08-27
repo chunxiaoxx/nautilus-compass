@@ -225,5 +225,12 @@
     "verdict": "sweep widens to +10.2/+6.0/+8.5pt; ku P@1 0.79->0.97 (+18pt) full-corpus realization of the 30q finding; four types at/near-perfect P@5",
     "remaining_tails": "ssp P@1 0.67 (still beats mem0 0.47), ssa P@5 0.96 vs 1.00, tr P@5 0.94 vs 0.98 — temporal is next ammo",
     "rows": "local /c/tmp/s500_3type.jsonl (GPU full_1787854406)"
+  },
+  "date_anchor_result_30q": {
+    "config": "4-type routing (ssu+ssp+ku+tr) + ZMM_DATE_ANCHOR=1 (session date prefixed to chunks/sessions)",
+    "P@5": "30/30 = 1.000 (PERFECT on S-30)",
+    "vs_3type_no_date": 0.967,
+    "reading": "date anchor rescues the last miss (ssp 0.80 -> 1.00) and tr routing hits all 5; n=30 caveat — S500 full with 4-type+date queued on GPU to verify at n=500",
+    "rows": "local /c/tmp/tr_anchor.jsonl"
   }
 }
