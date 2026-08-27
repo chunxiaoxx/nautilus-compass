@@ -133,5 +133,21 @@
     "first_time_beats_mem0_same30q": "0.933 vs mem0 0.867",
     "projection_full500": "ssu 0.66 -> ~0.9 would lift P@5 0.900 -> ~0.93 vs mem0 0.916; full rerun queued to confirm",
     "rows": "cloud longmemeval_acc_m3_only_subset30_1787828788.jsonl"
+  },
+  "locomo_mem0_headhead": {
+    "mem0_2_0_19": {
+      "P@1": 0.592,
+      "P@5": 0.802,
+      "MRR": 0.677
+    },
+    "compass_bge_m3_session_level": {
+      "P@1": 0.419,
+      "P@5": 0.694,
+      "MRR": 0.522
+    },
+    "verdict": "mem0 leads on its home benchmark by +17.3pt P@1 / +10.8pt P@5 (retrieval layer, n=1986)",
+    "by_category_notable": "temporal equally bad on both (0.24 vs 0.24 P@1 — embedder-common weakness, not ours alone); compass LOCOMO has NOT yet tried utterance routing (single-hop 0.44 vs 0.52 is the utterance-shaped gap)",
+    "narrative_discipline": "three-front honest story: LME-S retrieval tie/overtake (utt pending full500), LOCOMO retrieval -10pt, e2e untested",
+    "rows": "cloud eval_mem0_locomo_rows.jsonl · script tests/eval_mem0_locomo.py (7535ae5)"
   }
 }
