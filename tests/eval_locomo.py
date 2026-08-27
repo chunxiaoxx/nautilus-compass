@@ -32,7 +32,12 @@ import daemon as zmd  # noqa: E402  (embedder + cosine, same as LongMemEval eval
 
 LOCOMO_PATH = Path(os.environ.get("ZMM_LOCOMO_PATH", ".cache/locomo10.json"))
 USE_RERANK = os.environ.get("ZMM_LOCOMO_RERANK", "0") == "1"
+# Tier S #3 port: utterance-window chunk retrieval. LOCOMO is dual-speaker
+# (no user/assistant roles), so every turn anchors a 2-turn chunk. Same
+# best-chunk-ranks-session logic that fixed ssu 0.20->1.00 on LongMemEval-M.
+USE_UTT = os.environ.get("ZMM_LOCOMO_UTTERANCE", "0") == "1"
 MAX_SESS_CHARS = 2000
+MAX_CHUNK_CHARS = 500
 
 CATEGORY = {"1": "single-hop", "2": "multi-hop", "3": "temporal",
             "4": "open-domain", "5": "adversarial"}
@@ -41,6 +46,18 @@ CATEGORY = {"1": "single-hop", "2": "multi-hop", "3": "temporal",
 def session_text(turns, max_chars=MAX_SESS_CHARS):
     parts = [f"[{t.get('speaker', '?')}] {t.get('text', '')}" for t in turns]
     return "\n".join(parts)[:max_chars]
+
+
+def utterance_chunks(turns, window=2, max_chars=MAX_CHUNK_CHARS):
+    """Every turn anchors a window-2 chunk (dual-speaker: both sides anchor)."""
+    out = []
+    for i in range(len(turns)):
+        end = min(len(turns), i + window)
+        parts = [f"[{t.get('speaker', '?')}] {t.get('text', '')}" for t in turns[i:end]]
+        chunk = "\n".join(parts)[:max_chars]
+        if chunk.strip():
+            out.append(chunk)
+    return out
 
 
 def evidence_sessions(qa):
@@ -86,14 +103,34 @@ def main():
                             key=lambda s: int(s.split("_")[1]))
         sess_texts = [session_text(c[n]) for n in sess_names]
         sess_embs = [cached(t) for t in sess_texts]
+        # utterance chunks (optional): every session's turn-window chunks,
+        # chunk rank -> session rank via dedup (see USE_UTT note above)
+        utt_chunks = []  # (sess_idx, chunk_text)
+        if USE_UTT:
+            for j, n in enumerate(sess_names):
+                for txt in utterance_chunks(c[n]):
+                    utt_chunks.append((j, txt))
+            utt_embs = [cached(t) for _, t in utt_chunks]
         for qa in conv["qa"]:
             q_emb = cached(qa["question"])
-            sims = sorted(range(len(sess_names)), key=lambda j: -zmd.cosine(q_emb, sess_embs[j]))
-            if reranker is not None:
-                pairs = [(qa["question"], sess_texts[j]) for j in sims]
-                scores = reranker.predict(pairs)
-                sims = [j for j, _ in sorted(zip(sims, scores), key=lambda x: -x[1])]
-            top5 = [sess_names[j] for j in sims[:5]]
+            if USE_UTT:
+                sims = sorted(range(len(utt_chunks)),
+                              key=lambda x: -zmd.cosine(q_emb, utt_embs[x]))
+                top5, seen = [], set()
+                for x in sims:
+                    j = utt_chunks[x][0]
+                    if j not in seen:
+                        seen.add(j)
+                        top5.append(sess_names[j])
+                    if len(top5) >= 5:
+                        break
+            else:
+                sims = sorted(range(len(sess_names)), key=lambda j: -zmd.cosine(q_emb, sess_embs[j]))
+                if reranker is not None:
+                    pairs = [(qa["question"], sess_texts[j]) for j in sims]
+                    scores = reranker.predict(pairs)
+                    sims = [j for j, _ in sorted(zip(sims, scores), key=lambda x: -x[1])]
+                top5 = [sess_names[j] for j in sims[:5]]
             truth = evidence_sessions(qa)
             rank = next((i + 1 for i, s in enumerate(top5) if s in truth), None)
             rows.append({
