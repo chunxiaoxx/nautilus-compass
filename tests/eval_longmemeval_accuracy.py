@@ -284,7 +284,8 @@ def extract_user_utterances(session: list[dict], window: int = 2, anchor_all: bo
 
 def build_ssu_context(top_sessions: list[dict], question: str,
                       reranker=None, max_utterances: int = 3,
-                      anchor_all: bool = False) -> str:
+                      anchor_all: bool = False,
+                      dates: list | None = None) -> str:
     """Utterance-level rerank within top sessions. Falls back to session-level
     if reranker absent or no user utterances found (e.g. sessions with only
     assistant turns — should not happen in LongMemEval but defensive).
@@ -309,7 +310,12 @@ def build_ssu_context(top_sessions: list[dict], question: str,
 
     chunks = []
     for idx, (si, txt) in enumerate(kept, 1):
-        chunks.append(f"--- Utterance {idx} (from Session {si}) ---\n{txt}")
+        # tr-type e2e fix: sessions carry no dates in context -> subject can't
+        # answer "how many days ago" (diagnosed 2026-08-28: tr 0/5, model says
+        # "no record of the date" while retrieval hit the right sessions)
+        _d = dates[si - 1] if dates and si - 1 < len(dates) else None
+        _dp = f", {_d}" if _d else ""
+        chunks.append(f"--- Utterance {idx} (from Session {si}{_dp}) ---\n{txt}")
     return "\n\n".join(chunks)
 
 
@@ -592,7 +598,8 @@ def main():
             top_sessions = [sessions[j] for j in top_indices]
             if ZMM_SSU_UTTERANCE and qt in SSU_UTT_TYPES:
                 context = build_ssu_context(top_sessions, question, reranker=reranker,
-                                        anchor_all=qt in ("single-session-assistant", "knowledge-update"))
+                                        anchor_all=qt in ("single-session-assistant", "knowledge-update"),
+                                        dates=[_dates[j] if j < len(_dates) else None for j in top_indices])
             else:
                 context = build_context(top_sessions)
 
