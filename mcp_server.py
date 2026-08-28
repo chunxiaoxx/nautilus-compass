@@ -30,7 +30,7 @@ from mcp_durable.event_store import EventStore
 
 PROTOCOL_VERSION = "2024-11-05"
 SERVER_NAME = "nautilus-compass"
-SERVER_VERSION = "2.3.0"
+SERVER_VERSION = "2.3.1"
 DAEMON_HOST = "127.0.0.1"
 DAEMON_PORT = 9876
 DAEMON_TIMEOUT = 30.0

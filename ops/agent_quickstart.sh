@@ -22,18 +22,22 @@ fi
 
 step(){ echo -e "\n[$1/5] $2"; }
 
-step 1 "云端签发 token($AGENT)"
-TOKEN="cmp_${AGENT}_$(openssl rand -hex 16 2>/dev/null || python3 -c 'import secrets;print(secrets.token_hex(16))')"
+step 1 "云端签发 token($AGENT · 默认只读当前项目,写权限用 token_admin 手动加)"
+# 2026-08-28 安全修复: 旧版这里自动签发全库读写 token(任何能 ssh cloud 的进程
+# 都能自签全权=权限边界退化为 ssh 边界)。改为默认 read:<project> scoped 签发;
+# 需要写权限/全域读时用 ops/compass_token_admin.py 显式加。
+PROJECT_SLUG=$(basename "$(git rev-parse --show-toplevel 2>/dev/null || echo "$PWD")" | tr -c 'a-zA-Z0-9_-' '-' | sed 's/-$//')
+TOKEN="cmp_${AGENT}__$(openssl rand -hex 16 2>/dev/null || python3 -c 'import secrets;print(secrets.token_hex(16))')"
 ssh "$CLOUD_HOST" "sudo python3 - <<EOF
 import json
 p='/etc/compass/tokens.json'
 d=json.load(open(p))
-d['$TOKEN']=['tools.read','tools.write']
+d['$TOKEN']={'scopes':['read:$PROJECT_SLUG'],'granted_at':'$(date -u +%Y-%m-%dT%H:%M:%SZ)'}
 json.dump(d,open(p,'w'),indent=1)
-print('token registered')
+print('token registered (read:$PROJECT_SLUG)')
 EOF
-sudo systemctl restart compass-mcp-tcp"
-echo "token: ${TOKEN:0:20}..."
+sudo systemctl restart compass-mcp-http compass-mcp-tcp"
+echo "token: ${TOKEN:0:20}... (scope=read:$PROJECT_SLUG · 全权请用 ops/compass_token_admin.py grant)"
 
 step 2 "确认 9877 隧道"
 if ! (exec 3<>/dev/tcp/127.0.0.1/9877) 2>/dev/null; then
@@ -95,11 +99,12 @@ assert "result" in init, f"auth 失败: {init}"
 tools = call({"jsonrpc":"2.0","id":2,"method":"tools/list"})
 print(f"  initialize ✓ · tools={len(tools['result']['tools'])} ✓")
 # 2026-08-28 fix(workbuddy 实测): v2.3.0 ingest_obs schema 必填 name(8-15 字),
-# text 不是合法参数(旧脚本过期入参)。
-r = call({"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"ingest_obs","arguments":{
-    "project":"C--Users-chunx","name":"quickstart自检","agent_type":"quickstart"}}})
-assert "result" in r, f"ingest 失败: {r}"
-print("  ingest_obs ✓ (云端 C--Users-chunx 落盘)")
+# text 不是合法参数(旧脚本过期入参)。且 scoped token 默认只读——自检改走
+# recall(read scope 内),写入路径由有 write scope 的 token 另测。
+r = call({"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"recall","arguments":{
+    "query":"project overview","project":"__selfcheck__","top_k":1}}})
+assert "result" in r, f"recall 失败: {r}"
+print("  recall ✓ (read scope 生效;写权限用 ops/compass_token_admin.py 加)")
 s.close()
 EOF
 
