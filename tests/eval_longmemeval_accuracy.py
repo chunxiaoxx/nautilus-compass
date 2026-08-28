@@ -337,14 +337,25 @@ def call_vertex_gemini(model: str, prompt: str, max_out_tok: int = 2048,
         else:
             url = os.environ["ZMM_LLM_BASE_URL"].rstrip("/") + "/chat/completions"
             key = os.environ["ZMM_LLM_API_KEY"]
-        resp = requests.post(url, timeout=180, headers={
-            "Authorization": f"Bearer {key}", "Content-Type": "application/json",
-        }, json={
+        payload = {
             "model": model,
             "messages": [{"role": "user", "content": prompt}],
             "max_tokens": max_out_tok,
             "temperature": temperature,
-        })
+        }
+        headers = {"Authorization": f"Bearer {key}",
+                   "Content-Type": "application/json"}
+        # 2026-08-28 · GPU 8-shard run: 47% of judge calls hit newapi 429 and
+        # were scored INCORRECT by the outer except. Retry 429/5xx with
+        # exponential backoff before giving up (subject too, when it rides
+        # the same gateway).
+        resp = None
+        for attempt, backoff in enumerate([0, 5, 15, 30]):
+            if backoff:
+                time.sleep(backoff)
+            resp = requests.post(url, timeout=180, headers=headers, json=payload)
+            if resp.status_code not in (429, 500, 502, 503, 504):
+                break
         resp.raise_for_status()
         data = resp.json()
         return data["choices"][0]["message"]["content"] or ""
