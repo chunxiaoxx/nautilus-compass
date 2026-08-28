@@ -458,7 +458,10 @@ def main():
 
     # Load reranker if needed
     reranker = None
-    if args.pipeline == "m3-rerank":
+    if args.pipeline == "m3-rerank" or (ZMM_SSU_UTTERANCE and os.environ.get("ZMM_LOAD_RERANKER", "0") == "1"):
+        # ZMM_LOAD_RERANKER=1: load the cross-encoder for utterance-context
+        # reranking WITHOUT letting it reorder session retrieval (rerank is
+        # harmful on LongMemEval-S retrieval; it's useful inside build_ssu_context)
         from sentence_transformers import CrossEncoder
         try:
             import torch
