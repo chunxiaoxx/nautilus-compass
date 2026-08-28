@@ -149,6 +149,9 @@ metadata:
 - **落地次序(正道·推进中)**:① V5 把 daemon 注册成真 agent(拿 agent_id)② 平台 FDE claim 认注册身份 ③ FDE verdict → 现成 capability_evolution(整数 agent_id)。注册前不抢先写 wiring(无真 agent_id 可验=facade)。
 
 ## 0. 我方 / 甲方(🔴 保密)
+
+> **§0-PLATFORM 平台定位(2026-08-28 用户拍板 · 组织层锚,与 T1 业务宪法并行不悖)**
+> **平台 = AI 原生组织的操作系统**:各对话框(agent/compass/曾FDE/飞轮)的集合体与基础设施。第一个客户是我们自己——治组织病(失忆/分叉/保守瘫痪/混乱),吃狗粮,先治好自己再对外。对内六服务(记忆/验证/账本/派单/身份/监督,实物见 `nautilus-core/docs/ASSET_LEDGER_20260828.md`),对外 MCP 输出(workbuddy 首个门面)。RSI=组织级自我迭代。目标演化:学术原型→agent-first(5月)→FDE 业务支撑(6月)→回归 agent 服务层(8/28 本次,非转向是升维)。FDE 出题训练业务暂停,其评测管道资产并入数据飞轮管道吃狗粮。全量表述见 LOOP_STATE_SSOT §⓪。
 - **我方 = 伊洛科技**(用户的公司)。
 - **真甲方 = 保密大厂**(用户私下告知 · **任何对外/交付/呈现/outbound 绝不提名**)。
 - 我们(伊洛)给甲方提供下面三类业务的样例/交付物。
