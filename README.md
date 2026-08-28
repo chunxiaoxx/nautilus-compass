@@ -136,7 +136,7 @@ multi-user sync, audit log, and managed BGE-m3.
 | **LOCOMO-10** (n=1986 · mem0's home benchmark) | **P@1 0.644 · P@5 0.890 · MRR 0.740** | overtakes mem0 (0.592/0.802/0.677, our reproduction) +5.2/+8.8pt |
 | **LongMemEval-M 500q full** (~501 sessions/question) | **P@5 0.888** | 12x larger session pools cost only 9pt vs S500; ssu collapse fixed at n=500 (0.20 → 0.93); ssp 0.53 newly exposed; no mem0 M head-to-head yet |
 | **EverMemBench-Dynamic** (n=500) | **44.4% (Run 1) / 47.3% (Run 2)** | tops the four published Table 4 baselines (Mem0 37.09, Zep 39.97, MemOS 42.55, MemoBase 34.27). Not claiming "industry SOTA" — OMEGA / Mem0g haven't reported publicly |
-| **LongMemEval-S e2e** | 30q: 26.7% (v3.0.1) · v0.8 full500: 56.6% (locked, deepseek subject) | e2e re-run with the new retrieval stack in progress |
+| **LongMemEval-S e2e** | 30q paired: **56.7% vs 26.7% baseline (+30pt, 2.13x)** — context fix (typed utterance context + anchor_all); v0.8 full500: 56.6% (locked, deepseek subject) | retrieval P@5 97.8%; remaining gap = reader LLM, tr-type e2e still 0 (next lever) |
 | **Drift detector AUC** | **0.83 held-out / 0.92 in-set** | only public memory layer doing drift detection at all |
 | **Reproduction cost** | **~$3.50** / 500 questions | ~14× cheaper than GPT-4o-judged stacks |
 | **p95 hook latency** | **<50 ms** | safe for every-prompt invocation |
@@ -233,7 +233,7 @@ spec-complete. Full guide: [`docs/mcp-usage.md`](docs/mcp-usage.md).
 | LongMemEval-S retrieval (500q head-to-head) | ✅ **0.890 / 0.978 / 0.929** | 0.774 / 0.916 / 0.834 (our reproduction) | n/r | n/r | n/r | ❌ | ❌ |
 | LOCOMO-10 retrieval (n=1986) | ✅ **0.644 / 0.890 / 0.740** | 0.592 / 0.802 / 0.677 (our reproduction) | n/r | n/r | n/r | n/r | n/r |
 | EverMemBench verified | ✅ 44.4-47.3% | 37.09 | n/r | 39.97 | n/r | 42.55 | ❌ |
-| LongMemEval-S e2e (their own harness) | e2e re-run pending (see Headline) | 94.4% (self-reported) | n/r | n/r | n/r | n/r | n/r |
+| LongMemEval-S e2e (their own harness) | 30q paired 56.7% (+30pt after context fix; 500q re-run queued) | 94.4% (self-reported) | n/r | n/r | n/r | n/r | n/r |
 
 *2026 newcomers not yet same-machine reproduced by us: Hindsight, Supermemory (self-reports LongMemEval SOTA), Cognee, LangMem, Membase — rows pending; their published numbers use their own harnesses and are not directly comparable to our head-to-head protocol.*
 | Self-host + hosted both | ✅ | ☁ only | ✅ | ☁ only | ✅ | OSS only | OSS only |

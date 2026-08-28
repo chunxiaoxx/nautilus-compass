@@ -43,7 +43,7 @@ compass stores session text verbatim, embedded locally with BGE-m3. No LLM extra
 
 Every experiment above has its full run log in `docs/evidence/` in the repo — including the 12-question subset that initially showed +16.7pt (sampling bias, all one question type; we re-ran at 30 mixed questions before believing it).
 
-**Honest e2e caveat:** end-to-end QA with a doubao-2.0 subject model scores 0.267 — retrieval P@5 is 97.8%, so the remaining gap is the reader LLM, not recall. We publish both numbers because "retrieval SOTA" claims without the reader context are how this field gets burned.
+**Honest e2e story (with the fix):** end-to-end QA pairs, same questions/same judge: baseline 0.267 → **0.567 (+30pt, 2.13x)** after we found the real bottleneck — a 600-char context truncation that cut off the answer turn. The fix (question-type-routed utterance context + anchoring all turns for assistant-type questions) took single-session-user from 0.00 → 1.00 and single-session-assistant from 0.00 → 0.80. Retrieval P@5 was already 97.8% — the gap was never recall. Remaining: temporal-reasoning e2e still 0 (diagnosis queued). We publish both numbers because "retrieval SOTA" claims without the reader context are how this field gets burned.
 
 It also does two things beyond recall: pre-action **drift detection** (checks agent actions against failure-mode anchors, AUC 0.83, p95 <50ms) and **cross-agent contracts** (tracks implicit obligations when multiple agents share files).
 
@@ -67,7 +67,7 @@ Happy to answer questions on the retrieval routing design or the failure experim
 3. 读侧三武器:①utterance 分型路由(单会话用户型问题检索 turn 级块,该型 P@1 0.20→1.00)②BM25+dense RRF 混合③日期锚定。
 4. 失败实验同样公开:rerank 有害(-2pt)、K=50 无效、小模型无效。12 题 +16.7pt 的初读是抽样偏差,30 题混合后修正。全部证据在 repo docs/evidence/。
 5. 客场也赢:LOCOMO(mem0 主场)n=1986,P@1 0.644 vs 0.592。大语料(12×)泛化 P@5 0.888。EverMemBench 超 Mem0/Zep/MemOS。
-6. 诚实披露:e2e(带 reader LLM)0.267——检索 P@5 97.8%,剩余差距在 reader 不在召回。两个数都发,不藏。
+6. e2e 翻倍故事:同题同判据配对 0.267→0.567(+30pt)。根因是 600 字符 context 截断把答案 turn 切掉,分型 utterance context 修复后单会话用户型 0→满分。检索 P@5 本来就 97.8%——差距从来不在召回。
 7. 附赠:drift 检测 AUC 0.83(动作前对照失败模式锚点)+ 跨 agent 合约审计。MCP 30 秒接入 Claude Code/Cursor/Cline。MIT。github.com/chunxiaoxx/nautilus-compass
 
 ---
@@ -77,4 +77,4 @@ Happy to answer questions on the retrieval routing design or the failure experim
 1. r/LocalLLaMA 周二-周四 9-11am ET(技术帖黄金窗)
 2. X thread 帖发后 2h 内(互相导流)
 3. r/LocalLLaMA 评论区 24h 内必回(算法权重)
-4. 第二帖(e2e 专题)等 context 臂出数后发
+4. 第二帖(e2e 修复专题/LongMemEval-V2 上榜)素材已就绪:e2e +30pt 配对定案已可并入首帖;V2 数字等 GPU 跑完
