@@ -112,6 +112,14 @@ RRF_K = 60
 # full sessions. Target: ssu P@5 58.6% → ~70%+, overall +1~2 pts.
 # Other question types are UNAFFECTED (ssa 83.9%, ms 94% P@5 stay identical).
 ZMM_SSU_UTTERANCE = os.environ.get("ZMM_SSU_UTTERANCE", "0") == "1"
+# Which question types get utterance-level context when ZMM_SSU_UTTERANCE=1.
+# Default keeps the historical ssu-only byte-identical behavior; set
+# ZMM_SSU_UTT_TYPES to widen (comma-separated). e2e finding 2026-08-28:
+# retrieval P@5 97.8% but subject answers "not listed" — the answer turn
+# falls OUTSIDE the 600-char truncated session text handed to the subject.
+# Utterance-level context puts the matched turn directly in front of it.
+SSU_UTT_TYPES = {t.strip() for t in os.environ.get(
+    "ZMM_SSU_UTT_TYPES", "single-session-user").split(",") if t.strip()}
 
 # Ablation gate for the temporal-reasoning specialization.
 # ZMM_TEMPORAL=1 (default): use the timeline scratch-pad prompt + extract_temporal_answer.
@@ -249,17 +257,19 @@ def build_context(top_sessions: list[dict]) -> str:
 
 # === Tier S #2 · ssu utterance-pair retrieval ===
 # See ZMM_SSU_UTTERANCE docstring above for rationale.
-def extract_user_utterances(session: list[dict], window: int = 2) -> list[str]:
+def extract_user_utterances(session: list[dict], window: int = 2, anchor_all: bool = False) -> list[str]:
     """Sliding window of user-anchored utterance pairs.
 
     Each pair = [user_turn, next_turn] joined to 500 chars. ssu questions are
     phrased 'what did I say about X' — answer lives in one user turn plus its
     immediate assistant acknowledgment, so window=2 gives the right shape.
+    anchor_all=True anchors EVERY turn (assistant-type questions: the answer
+    lives in an assistant turn).
     """
     pairs = []
     n = len(session)
     for i, t in enumerate(session):
-        if t.get("role") != "user":
+        if not anchor_all and t.get("role") != "user":
             continue
         end = min(n, i + window)
         chunk_parts = []
@@ -273,14 +283,15 @@ def extract_user_utterances(session: list[dict], window: int = 2) -> list[str]:
 
 
 def build_ssu_context(top_sessions: list[dict], question: str,
-                      reranker=None, max_utterances: int = 3) -> str:
+                      reranker=None, max_utterances: int = 3,
+                      anchor_all: bool = False) -> str:
     """Utterance-level rerank within top sessions. Falls back to session-level
     if reranker absent or no user utterances found (e.g. sessions with only
     assistant turns — should not happen in LongMemEval but defensive).
     """
     all_pairs = []  # list[(session_idx, pair_text)]
     for si, s in enumerate(top_sessions, 1):
-        for p in extract_user_utterances(s, window=2):
+        for p in extract_user_utterances(s, window=2, anchor_all=anchor_all):
             all_pairs.append((si, p))
     if not all_pairs:
         return build_context(top_sessions)
@@ -574,8 +585,9 @@ def main():
                     top_indices = [idx for idx, _ in sims[:TOP_K_CONTEXT]]
 
             top_sessions = [sessions[j] for j in top_indices]
-            if ZMM_SSU_UTTERANCE and qt == "single-session-user":
-                context = build_ssu_context(top_sessions, question, reranker=reranker)
+            if ZMM_SSU_UTTERANCE and qt in SSU_UTT_TYPES:
+                context = build_ssu_context(top_sessions, question, reranker=reranker,
+                                        anchor_all=qt in ("single-session-assistant", "knowledge-update"))
             else:
                 context = build_context(top_sessions)
 
