@@ -201,9 +201,9 @@ BGE-m3 cosine. AUC 0.83 held-out.
 
 ## What's exposed (MCP tools)
 
-Core seven:
+**17 tools** — core seven:
 
-| Tool | Purpose | Latency |
+| Tool | Purpose | Latency (local daemon) |
 |---|---|---|
 | `ingest_obs(name, body, agent_id?)` | Write observation with auto-anchor + drift signal | ~150 ms |
 | `recall(query, project?, top_k?)` | BGE-m3 semantic + keyword hybrid search | ~200 ms |
@@ -213,12 +213,25 @@ Core seven:
 | `drift_history(since?, agent_id?)` | Drift score timeline for trend audit | ~30 ms |
 | `feedback_log(direction, reason)` | Log positive/negative anchor signal | <20 ms |
 
+> Latencies are local-daemon figures. Over the public HTTPS MCP endpoint
+> (`https://compass.nautilus.social/mcp/`) add TLS + WAN round-trip:
+> measured p50 ≈ 0.9–1.7 s per call (2026-08-28 field test).
+
 Plus: `thread_recall` · `proof_of_impact` · `long_task` · platform bridge
 (`submit_platform_task` / `ingest_platform_task_result`) · governance
-(`governance_dispatch` / `governance_audit` / `governance_lock_check`) ·
-`add_worker`. JSON-RPC 2.0 over stdio / TCP / TLS / mTLS; per-token RBAC and
-rate limiting; `notifications/*`, `logging/setLevel`, `resources/*`
-spec-complete. Full guide: [`docs/mcp-usage.md`](docs/mcp-usage.md).
+(`governance_dispatch` / `governance_audit` / `governance_lock_check` ·
+`governance_plan`) · `add_worker`. JSON-RPC 2.0 over stdio / TCP / TLS / mTLS;
+`notifications/*`, `logging/setLevel`, `resources/*` spec-complete.
+Full guide: [`docs/mcp-usage.md`](docs/mcp-usage.md).
+
+### Token scopes (v2.3.1)
+
+Tokens are scoped, not global. `ops/compass_token_admin.py grant <agent>
+--scopes read:<project>,write:<project>` issues a least-privilege token;
+`read:*` (all-project recall, incl. `scope=user`) requires an explicit
+`--yes-i-want-star`. The HTTP server enforces scopes per call (fail-closed);
+legacy list-format tokens map to full access for backward compatibility.
+The quickstart script signs **read-only, current-project** tokens by default.
 
 ---
 
