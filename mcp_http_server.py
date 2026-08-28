@@ -27,7 +27,7 @@ from starlette.responses import JSONResponse
 from starlette.routing import Mount
 from starlette.types import Receive, Scope, Send
 
-server: Server = Server("nautilus-compass", version="2.3.0")
+server: Server = Server("nautilus-compass", version="2.3.1")
 
 
 @server.list_tools()
@@ -48,6 +48,14 @@ async def _call_tool(name: str, arguments: dict) -> list[types.TextContent]:
     meta = cmp.TOOLS.get(name)
     if not meta:
         raise ValueError(f"unknown tool: {name}")
+    # 2026-08-28 · scoped-token 强制执行（fail-closed）
+    deny = _check_scope(_current_scopes.get(), name, arguments)
+    if deny:
+        return [types.TextContent(
+            type="text",
+            text=json.dumps({"ok": False, "error": f"forbidden: {deny}"},
+                            ensure_ascii=False),
+        )]
     # compass fns are SYNC and do blocking socket I/O to the BGE daemon —
     # never run them directly on the event loop.
     result = await anyio.to_thread.run_sync(meta["fn"], arguments or {})
@@ -58,25 +66,91 @@ async def _call_tool(name: str, arguments: dict) -> list[types.TextContent]:
 
 
 # ─── auth ───────────────────────────────────────────────────────────
+#
+# 2026-08-28 · scoped tokens（workbuddy 接入暴露的安全模型洞）：
+#   旧模型 = token 只查存在性，'tools.read'/'tools.write' 声明是摆设，
+#   任何持 token 者（而 quickstart 曾允许任何能 ssh cloud 的进程自签 token）
+#   可 recall/ingest 任意 project 甚至 scope=user 全域。
+#   新模型 = tokens.json 值可带 scopes：
+#     {"cmp_x": {"scopes": ["read:Proj", "write:Proj"]}}   → 只列出的项目
+#     {"cmp_y": ["tools.read", "tools.write"]}             → 旧格式 = read:*+write:*（兼容过渡）
+#   缺省新签 token 应由 ops/compass_token_admin.py 按 scope 签发。
 
-def _load_tokens() -> set[str]:
-    """Reuse the same tokens the TCP service already trusts."""
+import contextvars
+
+# set by auth middleware; read by _call_tool for scope enforcement
+_current_scopes: contextvars.ContextVar[frozenset] = contextvars.ContextVar(
+    "compass_scopes", default=frozenset())
+
+READ_TOOLS = {
+    "recall", "session_search", "thread_recall", "drift_check", "drift_history",
+    "profile", "proof_of_impact", "governance_audit", "governance_lock_check",
+}
+WRITE_TOOLS = {
+    "ingest_obs", "feedback_log", "long_task", "submit_platform_task",
+    "ingest_platform_task_result", "add_worker",
+    "governance_plan", "governance_dispatch",
+}
+# 其余工具（若有）默认视为 write 级——fail-closed。
+
+
+def _scopes_from_value(val) -> frozenset:
+    """tokens.json 值 → scope 集合。旧格式(list)与 dict 均支持。"""
+    if isinstance(val, dict):
+        return frozenset(str(s) for s in val.get("scopes", []))
+    if isinstance(val, list):
+        # 旧格式: 非空 list = 旧的全权语义（read:* + write:*）
+        return frozenset({"read:*", "write:*"}) if val else frozenset()
+    return frozenset()
+
+
+def _load_tokens() -> dict[str, frozenset]:
+    """token → scopes。复用 TCP 服务同一 tokens.json。"""
     path = os.environ.get("COMPASS_TOKENS_FILE", "/etc/compass/tokens.json")
     try:
         with open(path, encoding="utf-8") as f:
             data = json.load(f)
         if isinstance(data, dict) and "tokens" not in data:
-            return set(data.keys())
+            return {str(k): _scopes_from_value(v) for k, v in data.items()}
         if isinstance(data, dict):
-            return set(data.get("tokens", []))
+            return {str(k): frozenset({"read:*", "write:*"})
+                    for k in data.get("tokens", [])}
         if isinstance(data, list):
-            return set(data)
+            return {str(k): frozenset({"read:*", "write:*"}) for k in data}
     except Exception:
         pass
-    return set(filter(None, os.environ.get("COMPASS_MCP_TOKENS", "").split(",")))
+    return {t: frozenset({"read:*", "write:*"})
+            for t in filter(None, os.environ.get("COMPASS_MCP_TOKENS", "").split(","))}
 
 
-VALID_TOKENS: set[str] = _load_tokens()
+VALID_TOKENS: dict[str, frozenset] = _load_tokens()
+
+
+def _check_scope(scopes: frozenset, tool_name: str, arguments: dict) -> str | None:
+    """返回 None=放行；否则拒绝原因。未列项目一律 fail-closed。"""
+    want_read = tool_name in READ_TOOLS
+    want_write = tool_name not in READ_TOOLS  # write 类 + 未知工具
+    if tool_name in WRITE_TOOLS:
+        want_read, want_write = False, True
+    if "admin" in scopes:
+        return None
+    project = str((arguments or {}).get("project") or "")
+    if want_read:
+        if "read:*" in scopes:
+            return None
+        # scope=user 跨项目全域读 → 需 read:*（普通 scoped token 不给）
+        if str((arguments or {}).get("scope") or "") == "user":
+            return "scope=user requires read:*"
+        if f"read:{project}" in scopes:
+            return None
+        return f"token lacks read scope for project '{project}'"
+    if want_write:
+        if "write:*" in scopes:
+            return None
+        if f"write:{project}" in scopes:
+            return None
+        return f"token lacks write scope for project '{project}'"
+    return None
 
 
 class _BearerAuth(BaseHTTPMiddleware):
@@ -85,8 +159,10 @@ class _BearerAuth(BaseHTTPMiddleware):
             auth = request.headers.get("authorization", "")
             tok = auth[7:] if auth.lower().startswith("bearer ") \
                 else request.headers.get("x-agent-key", "")
-            if not VALID_TOKENS or tok not in VALID_TOKENS:
+            scopes = VALID_TOKENS.get(tok)
+            if not scopes:
                 return JSONResponse({"error": "unauthorized"}, status_code=401)
+            _current_scopes.set(scopes)
         return await call_next(request)
 
 
