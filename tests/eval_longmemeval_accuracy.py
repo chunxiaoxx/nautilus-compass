@@ -303,17 +303,23 @@ def build_ssu_context(top_sessions: list[dict], question: str,
 
 
 def call_vertex_gemini(model: str, prompt: str, max_out_tok: int = 2048,
-                       temperature: float = 0.1) -> str:
+                       temperature: float = 0.1, is_judge: bool = False) -> str:
     """LLM call. ZMM_LLM_PROVIDER dispatch:
     - "vertex" (default): Google Vertex gemini via service account (legacy path)
-    - "openai": any OpenAI-compatible gateway (ARK deepseek / newapi glm /
-      kimi / minimax ...) via ZMM_LLM_BASE_URL + ZMM_LLM_API_KEY
+    - "openai": any OpenAI-compatible gateway (ARK doubao/deepseek / newapi glm
+      / kimi / minimax ...) via ZMM_LLM_BASE_URL + ZMM_LLM_API_KEY.
+      Judge may ride a separate gateway (subject=doubao via ARK, judge=glm via
+      newapi): set ZMM_JUDGE_PROVIDER=openai + ZMM_JUDGE_BASE_URL/_API_KEY.
     """
     provider = os.environ.get("ZMM_LLM_PROVIDER", "vertex")
     if provider == "openai":
         import requests
-        url = os.environ["ZMM_LLM_BASE_URL"].rstrip("/") + "/chat/completions"
-        key = os.environ["ZMM_LLM_API_KEY"]
+        if is_judge and os.environ.get("ZMM_JUDGE_PROVIDER") == "openai":
+            url = os.environ["ZMM_JUDGE_BASE_URL"].rstrip("/") + "/chat/completions"
+            key = os.environ["ZMM_JUDGE_API_KEY"]
+        else:
+            url = os.environ["ZMM_LLM_BASE_URL"].rstrip("/") + "/chat/completions"
+            key = os.environ["ZMM_LLM_API_KEY"]
         resp = requests.post(url, timeout=180, headers={
             "Authorization": f"Bearer {key}", "Content-Type": "application/json",
         }, json={
@@ -386,6 +392,7 @@ def _run_one_vote(qt: str, prompt_tmpl: str, context: str, question: str, truth:
             JUDGE_MODEL,
             JUDGE_PROMPT_TMPL.format(question=question, truth=truth, answer=model_answer),
             max_out_tok=2048,
+            is_judge=True,
         ).strip().upper()
         is_correct = _parse_judge(judge_raw)
     except Exception as e:
