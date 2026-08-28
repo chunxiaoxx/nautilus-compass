@@ -502,6 +502,10 @@ _V2_RULES = [
     _re_v2.compile(r"chmod\s+(-R\s+)?777\b"),                                     # 8
     _re_v2.compile(r"\bsk-[A-Za-z0-9]{16,}"),                                     # 9 硬编码 key
     _re_v2.compile(r"(api[_-]?key|password|secret|token)\s*[=:]\s*[\"'][^\"'\s]{12,}[\"']", _re_v2.I),  # 10
+    # 2026-08-28(workbuddy 实测反馈): 纯中文意图不触发 rule_hit。保守补高频两条,
+    # 模糊语义(如"删除一些文件")故意不加——误报会滥用 R1 drift 自停。
+    _re_v2.compile(r"删库|清空(全部|整个|生产)?(数据库|数据表)"),                   # 11 中文删库
+    _re_v2.compile(r"(强制|强行|强)推(送|上去)"),                                   # 12 中文强推
 ]
 _V2_SAFE_RM = _re_v2.compile(
     r"(node_modules|/dist\b|\bdist\b|/build\b|\.cache|__pycache__|\.tmp\b|/tmp/|\.swc\b|\.tgz|\.tar|"
@@ -1214,8 +1218,11 @@ def handle_request(req: dict) -> dict:
         log(f"verification_log write fail: {_le}")
 
     # v2.0.7 · P9 · cache successful result before return
+    # 2026-08-28 fix(workbuddy 实测): 缓存曾把错误/异常响应也存下——底层修好后
+    # 同 query 在 TTL 内仍命中旧的错误结果(无法自愈)。只缓存 ok 响应。
     try:
-        _p9_cache_put(_p9_key, result)
+        if result.get("ok", True) and not result.get("error"):
+            _p9_cache_put(_p9_key, result)
         # log cache stats every 1000 ops
         _total = sum(_RECALL_CACHE_STATS.values())
         if _total > 0 and _total % 1000 == 0:
