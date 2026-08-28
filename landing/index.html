@@ -54,7 +54,7 @@
 </header>
 
 <section class="wrap">
-  <h2>📊 四基准战绩(2026-08 · 全部同题同判据可复算)</h2>
+  <h2>📊 五基准战绩(2026-08 · 全部同题同判据可复算)</h2>
   <div class="score-grid">
     <div class="card">
       <h3>LongMemEval-S · 500 题全量</h3>
@@ -75,6 +75,11 @@
       <h3>EverMemBench-Dynamic · n=500</h3>
       <div class="big">44.4% / 47.3%</div>
       <p class="vs">超 Mem0(37.09) · Zep(39.97) · MemOS(42.55)</p>
+    </div>
+    <div class="card">
+      <h3>端到端 QA · 同题同判据配对</h3>
+      <div class="big">0.267 → 0.567(+30pt)</div>
+      <p class="vs">根因是 context 截断切掉答案 turn,修复后单会话用户型 0→满分:<span class="win">2.13×</span> · 检索 P@5 本就 97.8%,差距从来不在召回</p>
     </div>
   </div>
   <p class="dim" style="margin-top:14px;font-size:.85rem">检索层武器:utterance 分型路由块检索 + BM25/dense 混合 + 时间锚。失败实验(rerank 有害 / K 截断无效 / 小模型换装无效)同样公开:<a href="https://github.com/chunxiaoxx/nautilus-compass/blob/main/docs/evidence/headhead_mem0_full500_20260826.json">完整证据链</a></p>
