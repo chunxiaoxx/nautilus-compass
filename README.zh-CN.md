@@ -134,7 +134,7 @@ curl https://compass.nautilus.social/.well-known/agent.json   # A2A 发现
 | **LOCOMO-10**(n=1986 · mem0 主场) | **P@1 0.644 · P@5 0.890 · MRR 0.740** | 反超 mem0(0.592/0.802/0.677,我方复现)+5.2/+8.8pt |
 | **LongMemEval-M 500 题全量**(每题 ~501 session) | **P@5 0.888** | 比 S500 只掉 9pt(12 倍语料);ssu 崩盘在全量修复(0.20→0.93);ssp 0.53 新暴露短板;M 尚无 mem0 对照 |
 | **EverMemBench-Dynamic**(n=500) | **44.4%(Run1)/ 47.3%(Run2)** | 超过 Table 4 四个公开基线(Mem0 37.09 · Zep 39.97 · MemOS 42.55 · MemoBase 34.27)。不宣称"业界 SOTA"——OMEGA / Mem0g 未公开报数 |
-| **LongMemEval-S e2e** | 30 题:26.7%(v3.0.1)· v0.8 全量 56.6%(锁定,deepseek subject) | 新检索栈的 e2e 重跑进行中 |
+| **LongMemEval-S e2e** | 30 题配对:**56.7% vs 26.7% 基线(+30pt,2.13 倍)**——context 修复(分型 utterance context + anchor_all);v0.8 全量 56.6%(锁定,deepseek subject) | 检索 P@5 97.8%;剩余差距 = reader LLM,tr 型 e2e 仍 0(下一杠杆) |
 | **Drift 检测 AUC** | **0.83 held-out / 0.92 in-set** | 公开记忆层里唯一做 drift 检测的 |
 | **复现成本** | **~$3.50** / 500 题 | 比 GPT-4o-judged 栈(~$50+)便宜 ~14× |
 | **hook p95 延迟** | **<50 ms** | 可安全挂在每个 prompt 上 |
@@ -230,7 +230,7 @@ AUC 0.83 held-out。
 | LongMemEval-S 检索(500 题对照) | ✅ **0.890 / 0.978 / 0.929** | 0.774 / 0.916 / 0.834(我方复现) | n/r | n/r | n/r | ❌ | ❌ |
 | LOCOMO-10 检索(n=1986) | ✅ **0.644 / 0.890 / 0.740** | 0.592 / 0.802 / 0.677(我方复现) | n/r | n/r | n/r | n/r | n/r |
 | EverMemBench 实测 | ✅ 44.4-47.3% | 37.09 | n/r | 39.97 | n/r | 42.55 | ❌ |
-| LongMemEval-S e2e(各家自家 harness) | 我方 e2e 重跑待出(见真账面) | 94.4%(自报) | n/r | n/r | n/r | n/r | n/r |
+| LongMemEval-S e2e(各家自家 harness) | 30 题配对 56.7%(context 修复 +30pt;500 题重跑排队中) | 94.4%(自报) | n/r | n/r | n/r | n/r | n/r |
 
 *2026 新玩家尚未同机复测:Hindsight、Supermemory(自称 LongMemEval SOTA)、Cognee、LangMem、Membase——行位待补;其公开数字出自各家自家 harness,与我方同题对照协议不可直比。*
 | 自托管 + 托管双形态 | ✅ | 仅云 | ✅ | 仅云 | ✅ | 仅开源 | 仅开源 |
