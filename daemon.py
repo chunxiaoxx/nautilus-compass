@@ -149,6 +149,37 @@ def _tokenize_for_bm25(text: str) -> list:
     return tokens + cjk_chars
 
 
+# v3.2 · utterance-routing production port (COMPASS_CHUNK_RECALL=1, default off).
+# LongMemEval-S head-to-head finding: the answer to detail queries usually
+# lives in ONE turn/paragraph; whole-entry embedding dilutes it. Chunk-level
+# retrieval lifted ssu 0.20→1.00 (M) / ssu P@1 +41pt (S) vs session-level.
+# Production port: per-entry paragraph-window chunks, chunk-best score fused
+# with the entry-level dense rank via RRF — classifier-free, safe for all
+# query shapes (eval showed no harm on aggregate-type queries).
+_CHUNK_RECALL_USE = os.environ.get("COMPASS_CHUNK_RECALL", "0") == "1"
+_CHUNK_MAX_CHARS = int(os.environ.get("COMPASS_CHUNK_MAX_CHARS", "500"))
+_CHUNK_PER_ENTRY_CAP = 24
+
+
+def _entry_chunks(body: str, max_chars=_CHUNK_MAX_CHARS) -> list:
+    """Sliding window of paragraph pairs (para i + i+1), truncated to
+    max_chars — mirrors the eval-side user-turn window=2 that lifted ssu
+    0.20→1.00. Greedy packing was tried and rejected: it merges unrelated
+    paragraphs and re-dilutes the very signal chunking recovers."""
+    if not body:
+        return []
+    paras = [p.strip() for p in body.split("\n\n") if p.strip()]
+    out = []
+    for i in range(len(paras)):
+        chunk = paras[i]
+        if i + 1 < len(paras) and len(chunk) + len(paras[i + 1]) + 1 <= max_chars:
+            chunk = chunk + "\n" + paras[i + 1]
+        elif i + 1 < len(paras):
+            chunk = (chunk + "\n" + paras[i + 1])[:max_chars]
+        out.append(chunk[:max_chars])
+    return out[:_CHUNK_PER_ENTRY_CAP]
+
+
 def _build_bm25_retriever(entries):
     """v2.1.0 · BM25 keyword retriever · feeds rrf_fusion as 2nd stream."""
     try:
@@ -755,6 +786,27 @@ def get_memory_entries(mem_dir: Path):
                 except Exception as ex:
                     log(f"embed file fail {e['path']}: {ex}")
                     e["embedding"] = None
+            # v3.2 · chunk embeddings (COMPASS_CHUNK_RECALL) · parallel pkl key
+            # "fullpath|chunks" = (mtime, [vec,...]) · same re-embed-on-mtime
+            # discipline as the entry vector. Text is not persisted (chunk count
+            # + order is deterministic from body, recomputed on cache miss).
+            if _CHUNK_RECALL_USE:
+                ck = e["fullpath"] + "|chunks"
+                cch = cache.get(ck)
+                if cch and cch[0] == e["mtime"]:
+                    e["chunk_embs"] = cch[1]
+                else:
+                    try:
+                        vecs = []
+                        for c in _entry_chunks(e.get("body", "")):
+                            cv = embedder.encode(c)
+                            vecs.append(cv.tolist() if hasattr(cv, "tolist") else cv)
+                        cache[ck] = (e["mtime"], vecs)
+                        e["chunk_embs"] = vecs
+                        updated += 1
+                    except Exception as ex:
+                        log(f"embed chunks fail {e['path']}: {ex}")
+                        e["chunk_embs"] = []
         if updated:
             _flush_memory_pkl(proj_key, cache)
     # v2.0.9 · cache full entries for next recall · invalidated by inotify watcher
@@ -1024,6 +1076,30 @@ def handle_request(req: dict) -> dict:
                 top = scored[:_retrieve_n]
         else:
             top = scored[:_retrieve_n]
+
+        # v3.2 · chunk-level recall fusion (COMPASS_CHUNK_RECALL=1). Reranks the
+        # dense(±BM25) list by RRF with a chunk-best-score list: entries whose
+        # ONE paragraph matches the query get pulled up (utterance-routing port).
+        if _CHUNK_RECALL_USE:
+            try:
+                chunk_scored = []
+                for e in all_entries:
+                    best = -1.0
+                    for cv in e.get("chunk_embs") or ():
+                        s = cosine(q_emb, cv)
+                        if s > best:
+                            best = s
+                    if best >= COSINE_MIN:
+                        chunk_scored.append((best, e))
+                chunk_scored.sort(key=lambda x: -x[0])
+                if chunk_scored:
+                    top = _rrf_fusion(
+                        [top, chunk_scored[:_BM25_RRF_TOP_K]],
+                        k=_BM25_RRF_K, top_k=_retrieve_n)
+                    result["_v32_chunk_fused"] = True
+                    result["_v32_chunk_n"] = len(chunk_scored)
+            except Exception as _ce:
+                log(f"chunk recall fusion fail · fallback to pre-fusion top: {_ce}")
 
         # v2.3.0 · production cross-encoder rerank (opt-in COMPASS_PROD_RERANK=1).
         # flag off → returns top[:top_k] unchanged; flag on → reorder then truncate.
