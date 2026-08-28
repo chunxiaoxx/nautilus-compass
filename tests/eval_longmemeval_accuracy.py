@@ -304,12 +304,28 @@ def build_ssu_context(top_sessions: list[dict], question: str,
 
 def call_vertex_gemini(model: str, prompt: str, max_out_tok: int = 2048,
                        temperature: float = 0.1) -> str:
-    """Vertex AI Gemini call · uses GOOGLE_APPLICATION_CREDENTIALS service account.
-
-    NOTE: gemini-2.5-pro/flash are thinking models · the 'thinking budget' is
-    counted against max_output_tokens. 512 was too low: thinking ate it all
-    before the actual answer. Default 2048 leaves room for both.
+    """LLM call. ZMM_LLM_PROVIDER dispatch:
+    - "vertex" (default): Google Vertex gemini via service account (legacy path)
+    - "openai": any OpenAI-compatible gateway (ARK deepseek / newapi glm /
+      kimi / minimax ...) via ZMM_LLM_BASE_URL + ZMM_LLM_API_KEY
     """
+    provider = os.environ.get("ZMM_LLM_PROVIDER", "vertex")
+    if provider == "openai":
+        import requests
+        url = os.environ["ZMM_LLM_BASE_URL"].rstrip("/") + "/chat/completions"
+        key = os.environ["ZMM_LLM_API_KEY"]
+        resp = requests.post(url, timeout=180, headers={
+            "Authorization": f"Bearer {key}", "Content-Type": "application/json",
+        }, json={
+            "model": model,
+            "messages": [{"role": "user", "content": prompt}],
+            "max_tokens": max_out_tok,
+            "temperature": temperature,
+        })
+        resp.raise_for_status()
+        data = resp.json()
+        return data["choices"][0]["message"]["content"] or ""
+    # legacy vertex path
     from google import genai
     gcp = json.load(open(os.environ["GOOGLE_APPLICATION_CREDENTIALS"], encoding="utf-8"))
     project = gcp["project_id"]
