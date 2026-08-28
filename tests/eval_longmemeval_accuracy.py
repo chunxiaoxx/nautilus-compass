@@ -419,6 +419,7 @@ def main():
     ap.add_argument("--full", action="store_true")
     ap.add_argument("--subset", type=int, default=30)
     ap.add_argument("--start", type=int, default=0, help="resume from question N")
+    ap.add_argument("--end", type=int, default=0, help="stop before question N (0=all; enables sharding)")
     args = ap.parse_args()
 
     print(f"pipeline:       {args.pipeline}")
@@ -512,7 +513,8 @@ def main():
 
     t_start = time.time()
     with open(out_jsonl, "w", encoding="utf-8") as f_out:
-        for i, q in enumerate(data[args.start:], start=args.start):
+        _stop = args.end if args.end else len(data)
+        for i, q in enumerate(data[args.start:_stop], start=args.start):
             question = q["question"]
             truth = q.get("answer", "")
             qt = q["question_type"]
