@@ -3,865 +3,114 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Compass · 跨 agent 记忆层 · LongMemEval-S 56.6% · Nautilus 平台</title>
-<meta name="description" content="开源 cross-agent memory + drift detection · LongMemEval-S 56.6% · 1/15 cost · MCP + A2A · MIT 许可 · 自托管 friendly · Nautilus 7-capability suite" />
-<meta property="og:title" content="Compass · cross-agent memory layer for AI agents" />
-<meta property="og:description" content="LongMemEval-S 56.6% · 1/15 cost · 跨 Claude Desktop · Cline · Cursor · OpenClaw · Hermes 共享 memory" />
-<meta property="og:url" content="https://nautilus.social/compass" />
-<meta name="theme-color" content="#0f172a" />
+<title>Compass · 跨 agent 记忆层 · LongMemEval-S 检索三项碾压 mem0 · Nautilus 平台</title>
+<meta name="description" content="开源跨 agent 记忆与可靠性层 · LongMemEval-S 500 题全量检索 P@1 0.890 / P@5 0.978 / MRR 0.929(vs mem0 +11.6/+6.2/+9.5pt) · LOCOMO 客场反超 · 本地黑盒 · MCP + A2A · MIT" />
+<meta property="og:title" content="Compass · 跨 agent 记忆层" />
+<meta property="og:description" content="LongMemEval-S 检索 P@5 97.8% vs mem0 91.6% · LOCOMO 客场反超 · 本地黑盒 · drift 检测" />
+<meta property="og:url" content="https://compass.nautilus.social/" />
+<meta name="theme-color" content="#0d1117" />
 <style>
-  :root {
-    /* Nautilus brand tokens - aligned with main site */
-    --bg: #0f172a;          /* dark-900 / slate-900 */
-    --bg-elev: #1e293b;     /* dark-800 */
-    --bg-card: rgba(30, 41, 59, 0.5);
-    --fg: #f8fafc;          /* slate-50 */
-    --fg-muted: #94a3b8;    /* slate-400 */
-    --fg-dim: #64748b;      /* slate-500 */
-    --line: rgba(255, 255, 255, 0.1);
-    --line-strong: rgba(255, 255, 255, 0.2);
-    --accent: #818cf8;      /* indigo-400 - matches gradient-text from */
-    --accent-2: #c084fc;    /* purple-400 - matches gradient-text to */
-    --primary: #4f46e5;     /* indigo-600 - matches gradient-primary from */
-    --primary-2: #9333ea;   /* purple-600 - matches gradient-primary to */
-    --green: #10b981;       /* emerald-500 */
-    --green-soft: rgba(16, 185, 129, 0.15);
-    --orange: #f59e0b;      /* amber-500 */
-    --orange-soft: rgba(245, 158, 11, 0.15);
-    --red-soft: rgba(239, 68, 68, 0.12);
-    --code-bg: rgba(255, 255, 255, 0.05);
-    --code-border: rgba(255, 255, 255, 0.08);
-  }
-
-  * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
-                 "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif;
-    color: var(--fg);
-    background: var(--bg);
-    line-height: 1.65;
-    font-size: 16px;
-    -webkit-font-smoothing: antialiased;
-  }
-  a { color: var(--accent); text-decoration: none; }
-  a:hover { color: var(--accent-2); }
-
-  /* ============== NAUTILUS NAV (mirrors React Header) ============== */
-  .site-header {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 50;
-    border-bottom: 1px solid var(--line-strong);
-    background-color: rgba(255, 255, 255, 0.06);
-    -webkit-backdrop-filter: blur(16px);
-    backdrop-filter: blur(16px);
-  }
-  .site-nav {
-    max-width: 1280px; margin: 0 auto;
-    padding: 16px 24px;
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .brand {
-    font-size: 24px; font-weight: 800;
-    background-image: linear-gradient(to right, #818cf8, #c084fc);
-    -webkit-background-clip: text; background-clip: text;
-    color: transparent; letter-spacing: -0.01em;
-  }
-  .nav-links { display: flex; gap: 28px; align-items: center; flex-wrap: wrap; }
-  .nav-links a { color: var(--fg); font-size: 15px; transition: color .15s; }
-  .nav-links a:hover { color: var(--accent); }
-  .nav-cta {
-    padding: 8px 20px; border-radius: 8px;
-    background-image: linear-gradient(to right, var(--primary), var(--primary-2));
-    color: #fff !important; font-weight: 600;
-  }
-  .nav-cta:hover { opacity: 0.9; color: #fff !important; }
-  @media (max-width: 900px) {
-    .nav-links { display: none; }
-  }
-
-  /* ============== CONTENT WRAPPER ============== */
-  .wrap { max-width: 980px; margin: 0 auto; padding: 120px 24px 56px; }
-
-  h1 { font-size: 56px; line-height: 1.1; margin: 0 0 24px; font-weight: 800;
-       letter-spacing: -0.025em; color: var(--fg); }
-  h1 .accent {
-    background-image: linear-gradient(to right, #818cf8, #c084fc);
-    -webkit-background-clip: text; background-clip: text;
-    color: transparent;
-  }
-  h2 { font-size: 32px; margin: 64px 0 20px; font-weight: 700;
-       letter-spacing: -0.015em; color: var(--fg); }
-  h3 { font-size: 20px; margin: 32px 0 12px; font-weight: 600; color: var(--fg); }
-  .lead { font-size: 22px; color: var(--fg-muted); margin: 0 0 32px;
-          line-height: 1.5; }
-  .lead strong { color: var(--fg); }
-
-  .badges { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0 40px; }
-  .badge { display: inline-block; padding: 6px 14px; border-radius: 100px;
-           font-size: 13px; font-weight: 600;
-           border: 1px solid var(--line-strong); }
-  .b-green { background: var(--green-soft); color: #6ee7b7; border-color: rgba(16,185,129,0.3); }
-  .b-blue { background: rgba(129,140,248,0.15); color: #a5b4fc; border-color: rgba(129,140,248,0.3); }
-  .b-orange { background: var(--orange-soft); color: #fcd34d; border-color: rgba(245,158,11,0.3); }
-  .b-gray { background: rgba(255,255,255,0.05); color: var(--fg-muted); }
-
-  .cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin: 32px 0; }
-  .cta { display: inline-block; padding: 14px 28px; border-radius: 10px;
-         text-decoration: none; font-weight: 600; font-size: 16px;
-         transition: 0.15s; border: 1px solid transparent; }
-  .cta-primary {
-    background-image: linear-gradient(to right, var(--primary), var(--primary-2));
-    color: #fff;
-    box-shadow: 0 4px 24px rgba(79, 70, 229, 0.25);
-  }
-  .cta-primary:hover { opacity: 0.92; color: #fff; transform: translateY(-1px); }
-  .cta-secondary {
-    background: rgba(255,255,255,0.05); color: var(--fg);
-    border-color: var(--line-strong);
-  }
-  .cta-secondary:hover { background: rgba(255,255,255,0.1); color: var(--fg); }
-
-  pre { background: var(--code-bg); padding: 16px 20px; border-radius: 10px;
-        overflow-x: auto; font-family: ui-monospace, "SF Mono", Menlo, Consolas,
-        monospace; font-size: 14px; line-height: 1.55;
-        border: 1px solid var(--code-border); color: #e2e8f0; }
-  code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px;
-         font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px;
-         border: 1px solid var(--code-border); color: #e2e8f0; }
-  pre code { background: none; padding: 0; font-size: 14px; border: 0; }
-
-  table { width: 100%; border-collapse: collapse; margin: 16px 0;
-          font-size: 14px; border-radius: 10px; overflow: hidden;
-          border: 1px solid var(--line); }
-  th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--line); }
-  th { background: var(--bg-elev); font-weight: 600; color: var(--fg); }
-  td { color: var(--fg); }
-  tr:last-child td { border-bottom: 0; }
-  tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
-  td.center, th.center { text-align: center; }
-  .row-hl td { background: rgba(16,185,129,0.1) !important; color: #6ee7b7; }
-  .row-strong td { background: rgba(129,140,248,0.15) !important; color: var(--fg); font-weight: 600; }
-
-  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
-           margin: 32px 0; }
-  @media (max-width: 700px) { .stats { grid-template-columns: repeat(2, 1fr); } }
-  .stat { padding: 24px; border: 1px solid var(--line); border-radius: 12px;
-          text-align: center; background: var(--bg-card); }
-  .stat-num { font-size: 36px; font-weight: 800;
-              background-image: linear-gradient(to right, #818cf8, #c084fc);
-              -webkit-background-clip: text; background-clip: text;
-              color: transparent;
-              line-height: 1; margin-bottom: 8px;
-              font-feature-settings: "tnum"; }
-  .stat-label { font-size: 14px; color: var(--fg-muted); }
-
-  ul.feat { list-style: none; padding: 0; margin: 16px 0; }
-  ul.feat li { padding: 16px 18px; border: 1px solid var(--line);
-               border-radius: 10px; margin-bottom: 10px;
-               background: var(--bg-card);
-               display: grid; grid-template-columns: 32px 1fr; gap: 12px;
-               align-items: start; }
-  ul.feat .icon { font-weight: 800; color: var(--accent); font-size: 18px; }
-  ul.feat b { display: inline; color: var(--fg); }
-  ul.feat p { margin: 4px 0 0; color: var(--fg-muted); font-size: 15px; }
-
-  .columns { display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
-             margin: 24px 0; }
-  @media (max-width: 700px) { .columns { grid-template-columns: 1fr; } }
-  .col { padding: 24px; background: var(--bg-card); border-radius: 12px;
-         border: 1px solid var(--line); }
-  .col p { color: var(--fg-muted); }
-  .col h3 { margin-top: 0; }
-
-  .pricing { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
-             margin: 24px 0; }
-  @media (max-width: 900px) { .pricing { grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 500px) { .pricing { grid-template-columns: 1fr; } }
-  .price-card { padding: 24px; border: 1px solid var(--line); border-radius: 12px;
-                background: var(--bg-card); }
-  .price-card.featured { border: 2px solid var(--accent); position: relative;
-                          box-shadow: 0 8px 32px rgba(129, 140, 248, 0.18); }
-  .price-card.featured::before {
-    content: "POPULAR"; position: absolute; top: -10px; right: 16px;
-    background-image: linear-gradient(to right, var(--primary), var(--primary-2));
-    color: #fff; font-size: 11px; font-weight: 700; padding: 4px 10px;
-    border-radius: 12px; letter-spacing: 0.06em;
-  }
-  .price-name { font-size: 18px; font-weight: 700; color: var(--fg); }
-  .price-num { font-size: 28px; font-weight: 800;
-                background-image: linear-gradient(to right, #818cf8, #c084fc);
-                -webkit-background-clip: text; background-clip: text;
-                color: transparent;
-                margin: 8px 0 12px; font-feature-settings: "tnum"; }
-  .price-num small { font-size: 14px; color: var(--fg-muted); font-weight: 400;
-                      -webkit-text-fill-color: var(--fg-muted); }
-  .price-list { list-style: none; padding: 0; font-size: 14px; color: var(--fg-muted); }
-  .price-list li { padding: 4px 0; }
-  .price-list li::before { content: "✓"; color: var(--green); margin-right: 8px;
-                            font-weight: 700; }
-  .price-list li.no { color: var(--fg-dim); }
-  .price-list li.no::before { content: "—"; color: var(--fg-dim); }
-  .price-list li strong { color: var(--fg); }
-
-  .alert { padding: 14px 18px; border-radius: 10px;
-            background: var(--orange-soft);
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            margin: 24px 0; font-size: 14px; color: #fcd34d; }
-  .alert strong { color: #fde68a; }
-  .negative { padding: 14px 18px; border-radius: 10px; background: var(--red-soft);
-               border: 1px solid rgba(239, 68, 68, 0.25);
-               margin: 12px 0; font-size: 14px; color: #fca5a5; }
-  .negative strong { color: #fecaca; }
-  .negative em { color: #fca5a5; }
-
-  .tab-nav { display: flex; gap: 4px; margin-bottom: 0; flex-wrap: wrap; }
-  .tab { padding: 10px 16px; background: var(--bg-card); border: 1px solid var(--line);
-         border-radius: 10px 10px 0 0; cursor: pointer; user-select: none;
-         font-size: 14px; font-weight: 600; color: var(--fg-muted); margin-bottom: -1px; }
-  .tab:hover { color: var(--fg); }
-  .tab.active { background: var(--code-bg); color: var(--accent);
-                 border-bottom-color: var(--code-bg); }
-  .tab-panels { border: 1px solid var(--line); border-radius: 0 10px 10px 10px;
-                 padding: 16px; background: var(--code-bg); }
-  .tab-content { display: none; }
-  .tab-content.active { display: block; }
-  .tab-content p { color: var(--fg-muted); margin: 8px 0; }
-  .tab-content p strong { color: var(--fg); }
-
-  .small-note { font-size: 14px; color: var(--fg-muted); margin-top: 12px; }
-
-  /* ============== NAUTILUS FOOTER (mirrors React Footer) ============== */
-  .site-footer {
-    background: var(--bg-elev);
-    border-top: 1px solid var(--line);
-    margin-top: 96px;
-  }
-  .footer-inner {
-    max-width: 1280px; margin: 0 auto; padding: 48px 24px;
-  }
-  .footer-grid {
-    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 32px;
-  }
-  @media (max-width: 700px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
-  .footer-grid h3 {
-    font-size: 20px; font-weight: 700; margin: 0 0 16px;
-    background-image: linear-gradient(to right, #818cf8, #c084fc);
-    -webkit-background-clip: text; background-clip: text;
-    color: transparent;
-  }
-  .footer-grid h4 { font-size: 15px; font-weight: 600; margin: 0 0 16px; color: var(--fg); }
-  .footer-grid ul { list-style: none; padding: 0; margin: 0; }
-  .footer-grid li { margin-bottom: 8px; font-size: 14px; }
-  .footer-grid a { color: var(--fg-muted); }
-  .footer-grid a:hover { color: var(--accent); }
-  .footer-tag { color: var(--fg-muted); font-size: 14px; }
-  .footer-bottom {
-    margin-top: 48px; padding-top: 32px;
-    border-top: 1px solid var(--line);
-    text-align: center; font-size: 14px; color: var(--fg-muted);
-  }
-  .footer-bottom .compass-meta {
-    margin-top: 12px; font-size: 13px; color: var(--fg-dim);
-  }
+  :root { --bg:#0d1117; --card:#161b22; --border:#30363d; --text:#e6edf3; --dim:#8b949e; --green:#3fb950; --blue:#58a6ff; --gold:#d29922; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; line-height:1.65; }
+  .wrap { max-width:960px; margin:0 auto; padding:0 20px; }
+  a { color:var(--blue); text-decoration:none; }
+  header { padding:64px 0 40px; text-align:center; border-bottom:1px solid var(--border); }
+  h1 { font-size:2rem; margin-bottom:12px; }
+  .tagline { color:var(--dim); font-size:1.05rem; max-width:700px; margin:0 auto 18px; }
+  .badges { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:14px; }
+  .badge { background:var(--card); border:1px solid var(--border); border-radius:999px; padding:4px 14px; font-size:.85rem; }
+  .b-green { border-color:var(--green); color:var(--green); }
+  .b-gold { border-color:var(--gold); color:var(--gold); }
+  section { padding:44px 0; border-bottom:1px solid var(--border); }
+  h2 { font-size:1.4rem; margin-bottom:18px; }
+  .score-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(270px,1fr)); gap:16px; }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px; }
+  .card h3 { font-size:1.02rem; margin-bottom:10px; }
+  .big { font-size:1.8rem; font-weight:700; color:var(--green); }
+  .vs { color:var(--dim); font-size:.86rem; margin-top:6px; }
+  table { width:100%; border-collapse:collapse; font-size:.9rem; }
+  th,td { padding:9px 12px; border:1px solid var(--border); text-align:left; }
+  th { background:var(--card); }
+  .win { color:var(--green); font-weight:600; }
+  code { background:#21262d; border-radius:6px; padding:2px 8px; font-size:.85em; }
+  .cmd { background:#161b22; border:1px solid var(--border); border-radius:10px; padding:14px 18px; font-family:ui-monospace,Consolas,monospace; font-size:.88rem; overflow-x:auto; margin:12px 0; }
+  .dim { color:var(--dim); }
+  footer { padding:32px 0 48px; color:var(--dim); font-size:.85rem; text-align:center; }
 </style>
 </head>
 <body>
 
-<!-- ============== NAUTILUS HEADER (mirrors main site) ============== -->
-<header class="site-header">
-  <nav class="site-nav">
-    <a href="https://nautilus.social/" class="brand">Nautilus</a>
-    <div class="nav-links">
-      <a href="https://nautilus.social/agents">🐙 Agents</a>
-      <a href="https://nautilus.social/marketplace">💰 Tasks</a>
-      <a href="https://nautilus.social/leaderboard">🏆 Leaderboard</a>
-      <a href="https://nautilus.social/feed">📡 Live</a>
-      <a href="https://nautilus.social/docs">📜 Docs</a>
-      <a href="/compass" style="color: var(--accent);">🧭 Compass</a>
-      <a href="https://nautilus.social/login">登录</a>
-      <a href="https://nautilus.social/register" class="nav-cta">注册</a>
-    </div>
-  </nav>
+<header class="wrap">
+  <h1>🧭 Compass · 跨 agent 记忆与可靠性层</h1>
+  <p class="tagline">本地黑盒记忆 —— 检索层已在 <b>LongMemEval-S 全 500 题</b>上三项指标全面碾压 mem0,同时保持全本地部署与 14× 复现成本优势。外加 drift 检测与跨 agent 合约。</p>
+  <div class="badges">
+    <span class="badge b-green">LongMemEval-S P@5 97.8% vs mem0 91.6%</span>
+    <span class="badge b-green">LOCOMO 客场反超 +5.2pt</span>
+    <span class="badge b-gold">EverMemBench 44.4–47.3%</span>
+    <span class="badge">drift AUC 0.83</span>
+    <span class="badge">MCP · A2A · MIT</span>
+  </div>
 </header>
 
-<div class="wrap">
-
-<!-- ============== HERO ============== -->
-<h1>让你的 AI <span class="accent">不再失忆</span> · 不再走老路</h1>
-<p class="lead">
-  <strong>Compass</strong> 是 <strong>跨 agent · 跨 device · 跨产品</strong> 的 AI 记忆层。
-  Claude Desktop · Cursor · Cline · OpenClaw · Hermes 共享同一个"懂你"的记忆。
-  开源 MIT · LongMemEval-S 56.6% (paper SOTA tier) · 价格仅 1/15。
-</p>
-
-<div class="badges">
-  <span class="badge b-green">LongMemEval-S 56.6%</span>
-  <span class="badge b-blue">drift AUC 0.92</span>
-  <span class="badge b-orange">v0.9.0-dev</span>
-  <span class="badge b-gray">MCP 7 tools</span>
-  <span class="badge b-gray">A2A 4 capabilities</span>
-  <span class="badge b-gray">MIT</span>
-</div>
-
-<div class="cta-row">
-  <a href="#install" class="cta cta-primary">30 秒接入</a>
-  <a href="https://github.com/chunxiaoxx/nautilus-compass" class="cta cta-secondary">GitHub</a>
-  <a href="#paper" class="cta cta-secondary">论文 (paper2)</a>
-</div>
-
-<!-- ============== HEADLINE STATS ============== -->
-<div class="stats">
-  <div class="stat">
-    <div class="stat-num">56.6%</div>
-    <div class="stat-label">LongMemEval-S full 500</div>
-  </div>
-  <div class="stat">
-    <div class="stat-num">+27</div>
-    <div class="stat-label">single-session-user 提升</div>
-  </div>
-  <div class="stat">
-    <div class="stat-num">1/15</div>
-    <div class="stat-label">vs commercial APIs cost</div>
-  </div>
-  <div class="stat">
-    <div class="stat-num">$3.50</div>
-    <div class="stat-label">复现成本 USD</div>
-  </div>
-</div>
-
-<!-- ============== 30 秒理解 ============== -->
-<h2>30 秒理解 · 这是什么</h2>
-
-<div class="columns">
-  <div class="col">
-    <h3>问题</h3>
-    <p>你的 AI 助手在 Claude Desktop 里学到的事 · 切到 Cursor 它不知道 ·
-    切到 Cline 又重新学一遍。每个 chat 都是 Memento · 每次 session 从零开始。</p>
-    <p>更糟糕: 它没记忆 · 还会反复犯老错 (声称完成但没验证 · 重复无效尝试 · 找错服务器)。</p>
-  </div>
-  <div class="col">
-    <h3>Compass 解决</h3>
-    <p>同一个 <code>user_id</code> 跨所有 MCP/A2A 兼容 client · memory 自动 federate。
-    AI 在哪学到的 · 在哪都知道。</p>
-    <p>每个 session 末自动 drift 自审 (green / yellow / red) · 反复犯错的 agent
-    被自然淘汰 (在 stake 经济下还会被罚)。</p>
-  </div>
-</div>
-
-<!-- ============== 业界对比 ============== -->
-<h2>vs 业界 · 数据说话</h2>
-
-<table>
-  <tr>
-    <th>方案</th>
-    <th class="center">LongMemEval-S</th>
-    <th class="center">价格 / run</th>
-    <th class="center">跨 agent</th>
-    <th class="center">drift 检测</th>
-    <th>许可证</th>
-  </tr>
-  <tr>
-    <td>Letta (MemGPT)</td>
-    <td class="center">35-38%</td>
-    <td class="center">$$</td>
-    <td class="center">❌</td>
-    <td class="center">❌</td>
-    <td>Apache 2.0</td>
-  </tr>
-  <tr>
-    <td>Mem0</td>
-    <td class="center">40-45%</td>
-    <td class="center">$$$</td>
-    <td class="center">❌</td>
-    <td class="center">❌</td>
-    <td>Apache 2.0</td>
-  </tr>
-  <tr>
-    <td>A-MEM</td>
-    <td class="center">~50%</td>
-    <td class="center">$$</td>
-    <td class="center">❌</td>
-    <td class="center">❌</td>
-    <td>Apache 2.0</td>
-  </tr>
-  <tr>
-    <td>Gemini-2.5-pro 直跑</td>
-    <td class="center">44.6%</td>
-    <td class="center">$15-20</td>
-    <td class="center">❌</td>
-    <td class="center">❌</td>
-    <td>商用</td>
-  </tr>
-  <tr>
-    <td>paper RAG (bge+GPT-4o)</td>
-    <td class="center">50-60%</td>
-    <td class="center">$$$$</td>
-    <td class="center">❌</td>
-    <td class="center">❌</td>
-    <td>—</td>
-  </tr>
-  <tr>
-    <td>Zep (graph memory)</td>
-    <td class="center">55-60%</td>
-    <td class="center">$$$</td>
-    <td class="center">❌</td>
-    <td class="center">❌</td>
-    <td>Apache 2.0</td>
-  </tr>
-  <tr class="row-hl">
-    <td><strong>🏆 Compass v0.8</strong></td>
-    <td class="center"><strong>56.6%</strong></td>
-    <td class="center"><strong>¥10 ($1.5)</strong></td>
-    <td class="center"><strong>✅</strong></td>
-    <td class="center"><strong>✅ AUC 0.92</strong></td>
-    <td><strong>MIT</strong></td>
-  </tr>
-</table>
-
-<p class="small-note">
-  公开 benchmark · n=500 · 完整 reproducibility script (BENCHMARKS_REPRODUCE.md)。
-  独立 reviewer 可在 Tencent Cloud T4 spot 上 8h 复现。
-</p>
-
-<!-- ============== 6 类型分项 ============== -->
-<h3>v0.8 per-question-type 表现</h3>
-
-<table>
-  <tr>
-    <th>Question type</th>
-    <th class="center">v0.8 (我们)</th>
-    <th class="center">baseline (DeepSeek thinking)</th>
-    <th class="center">Δ</th>
-  </tr>
-  <tr class="row-hl">
-    <td>🏆 single-session-assistant</td>
-    <td class="center"><strong>83.9%</strong></td>
-    <td class="center">76.8%</td>
-    <td class="center">+7.1</td>
-  </tr>
-  <tr>
-    <td>knowledge-update</td>
-    <td class="center"><strong>57.7%</strong></td>
-    <td class="center">51.3%</td>
-    <td class="center">+6.4</td>
-  </tr>
-  <tr class="row-hl">
-    <td>⭐ single-session-user</td>
-    <td class="center"><strong>57.1%</strong></td>
-    <td class="center">30.0%</td>
-    <td class="center"><strong>+27.1</strong></td>
-  </tr>
-  <tr>
-    <td>multi-session</td>
-    <td class="center">54.9%</td>
-    <td class="center">43.6%</td>
-    <td class="center">+11.3</td>
-  </tr>
-  <tr>
-    <td>single-session-preference</td>
-    <td class="center">53.3%</td>
-    <td class="center">33.3%</td>
-    <td class="center">+20.0</td>
-  </tr>
-  <tr>
-    <td>temporal-reasoning</td>
-    <td class="center">46.6%</td>
-    <td class="center">45.9%</td>
-    <td class="center">+0.7 (开放问题)</td>
-  </tr>
-  <tr class="row-strong">
-    <td><strong>Overall</strong></td>
-    <td class="center"><strong>56.6%</strong></td>
-    <td class="center">46.6%</td>
-    <td class="center"><strong>+10.0</strong></td>
-  </tr>
-</table>
-
-<p class="alert">
-  <strong>关键 insight</strong>: single-session-user 段 +27 pts 来自 multi-angle query
-  rewriting · 这是 Compass v0.8 的核心算法贡献 (paper 详述)。
-</p>
-
-<!-- ============== INSTALL 30 秒 ============== -->
-<h2 id="install">30 秒接入</h2>
-
-<div class="tab-nav">
-  <div class="tab active" data-target="tab-claude">Claude Desktop</div>
-  <div class="tab" data-target="tab-cursor">Cursor</div>
-  <div class="tab" data-target="tab-cline">Cline (VS Code)</div>
-  <div class="tab" data-target="tab-agent">Nautilus Agent</div>
-  <div class="tab" data-target="tab-self">自托管</div>
-</div>
-
-<div class="tab-panels">
-<div class="tab-content active" id="tab-claude">
-  <p>编辑 <code>~/Library/Application Support/Claude/claude_desktop_config.json</code>:</p>
-  <pre>{
-  "mcpServers": {
-    "compass": {
-      "command": "npx",
-      "args": ["-y", "@nautilus/compass-mcp"],
-      "env": {
-        "COMPASS_USER_ID": "u_yourname"
-      }
-    }
-  }
-}</pre>
-  <p>重启 Claude Desktop · 完成。 调用: <code>@compass.recall query="..."</code> ·
-  <code>@compass.drift_history days=30</code></p>
-</div>
-
-<div class="tab-content" id="tab-cursor">
-  <p>编辑 <code>~/.cursor/mcp.json</code>:</p>
-  <pre>{
-  "mcpServers": {
-    "compass": {
-      "command": "npx",
-      "args": ["-y", "@nautilus/compass-mcp"],
-      "env": {
-        "COMPASS_USER_ID": "u_yourname",
-        "COMPASS_AGENT_TYPE": "cursor"
-      }
-    }
-  }
-}</pre>
-  <p>用 <strong>同一个</strong> <code>COMPASS_USER_ID</code> · Claude Desktop 学到的 ·
-  Cursor 立刻知道 (这是 cross-agent 的关键)。</p>
-</div>
-
-<div class="tab-content" id="tab-cline">
-  <p>编辑 <code>.vscode/settings.json</code>:</p>
-  <pre>{
-  "cline.mcpServers": {
-    "compass": {
-      "command": "npx",
-      "args": ["-y", "@nautilus/compass-mcp"],
-      "env": { "COMPASS_USER_ID": "u_yourname" }
-    }
-  }
-}</pre>
-  <p>Reload VS Code · Cline 自动注册 7 个 compass tool。</p>
-</div>
-
-<div class="tab-content" id="tab-agent">
-  <p>给任何 Nautilus agent 一行加 cross-agent memory:</p>
-  <pre>from nautilus_agent import Agent
-from nautilus_compass.sdk.attach_memory import attach_memory
-
-agent = Agent(role="strategy", user_id="u_yourname")
-attach_memory(agent)   # ← 这一行 · 自动 recall · 自动 ingest · drift 自审
-
-result = agent.run("评估 V5 飞轮")
-# 内部已自动: recall(prompt) → action → ingest_obs(outcome · drift 自审)</pre>
-</div>
-
-<div class="tab-content" id="tab-self">
-  <p>不想用我们 cloud · docker-compose 30 分钟自托管:</p>
-  <pre>git clone https://github.com/chunxiaoxx/nautilus-compass
-cd nautilus-compass
-cp .env.example .env  # 改 NAUTILUS_JWT_SECRET (32 random bytes)
-docker-compose up -d
-curl http://localhost:8765/healthz</pre>
-  <p>详见 <a href="https://github.com/chunxiaoxx/nautilus-compass/blob/main/SELF_HOST.md">SELF_HOST.md</a> ·
-  含 GPU mode · nginx HTTPS · backup · monitoring · 完整 production 指南。</p>
-</div>
-</div>
-
-<!-- ============== USE CASES ============== -->
-<h2>5 个真实场景</h2>
-
-<ul class="feat">
-  <li>
-    <span class="icon">①</span>
-    <div>
-      <b>跨 agent 共享 "用户偏好"</b>
-      <p>你在 Claude Desktop 说"我喜欢简洁回复 · 不要分析师腔" · Cursor 立刻知道。
-      不用每个 client 重复教一次。</p>
+<section class="wrap">
+  <h2>📊 四基准战绩(2026-08 · 全部同题同判据可复算)</h2>
+  <div class="score-grid">
+    <div class="card">
+      <h3>LongMemEval-S · 500 题全量</h3>
+      <div class="big">P@1 0.890 · P@5 0.978</div>
+      <p class="vs">vs mem0 2.0.19(0.774 / 0.916 / 0.834):<span class="win">三项 +11.6 / +6.2 / +9.5pt</span></p>
     </div>
-  </li>
-  <li>
-    <span class="icon">②</span>
-    <div>
-      <b>项目级 memory · 跨 session 累积</b>
-      <p>你在 ZenMind 项目里讨论过 "token 经济学 v2 必须加 stake unstake 时间锁" ·
-      下次任何 agent 回到这个项目 · Compass 自动 recall · 不用重新解释。</p>
+    <div class="card">
+      <h3>LOCOMO-10 · n=1986(mem0 主场)</h3>
+      <div class="big">0.644 / 0.890 / 0.740</div>
+      <p class="vs">客场反超 mem0(0.592 / 0.802):<span class="win">+5.2 / +8.8pt</span></p>
     </div>
-  </li>
-  <li>
-    <span class="icon">③</span>
-    <div>
-      <b>AI drift 自动告警</b>
-      <p>session 末 LLM 自审打 <code>drift: red</code> + 列举证据
-      ("找错服务器 · 忘记 PEM 路径 · 声称完成但没验证")。 你下次能直接看 timeline ·
-      避坑。claude-mem 永远不会做这个。</p>
+    <div class="card">
+      <h3>LongMemEval-M · 500 题全量(12× 大语料)</h3>
+      <div class="big">P@5 0.888</div>
+      <p class="vs">大语料泛化成立;单会话型崩盘 0.20 → 0.93 修复</p>
     </div>
-  </li>
-  <li>
-    <span class="icon">④</span>
-    <div>
-      <b>开发者级生产部署</b>
-      <p>docker-compose · systemd · audit log 90d retention · daily backup · Prometheus
-      metrics · OAuth2 PKCE · GDPR 删除/导出 endpoint · 一切 production-ready。</p>
-    </div>
-  </li>
-  <li>
-    <span class="icon">⑤</span>
-    <div>
-      <b>Nautilus 平台 8 fusion · 经济驱动校正</b>
-      <p>drift=red → stake_penalty (1% locked) · drift=green → stake_bonus (0.1%)。
-      让 AI 自审跟经济激励挂钩 · 长期培育 green-多 agent · 自然淘汰 red-多 agent。</p>
-    </div>
-  </li>
-</ul>
-
-<!-- ============== USAGE / 7 MCP TOOLS ============== -->
-<h2>7 个 MCP tool · 在任何兼容 client 内</h2>
-
-<table>
-  <tr>
-    <th>Tool</th>
-    <th>什么时候用</th>
-  </tr>
-  <tr>
-    <td><code>compass.recall</code></td>
-    <td>"我之前讨论过 X 吗?" · 跨 agent 召回相关 memory (BGE-m3)</td>
-  </tr>
-  <tr>
-    <td><code>compass.drift_check</code></td>
-    <td>实时检查 prompt 是否触发 drift anchor (50ms p95 · AUC 0.92)</td>
-  </tr>
-  <tr>
-    <td><code>compass.drift_history</code></td>
-    <td>看你最近 30 天的 AI 漂移 timeline · ASCII 直接 print</td>
-  </tr>
-  <tr>
-    <td><code>compass.session_search</code></td>
-    <td>关键词 + drift filter · 跨 project 搜 session_*.md</td>
-  </tr>
-  <tr>
-    <td><code>compass.profile</code></td>
-    <td>你的画像 (top types · agents · drift 分布)</td>
-  </tr>
-  <tr>
-    <td><code>compass.ingest_obs</code></td>
-    <td>显式写一条 obs (drift 自审 + 证据)</td>
-  </tr>
-  <tr>
-    <td><code>compass.feedback_log</code></td>
-    <td>训练 anchor (good / bad signal)</td>
-  </tr>
-</table>
-
-<!-- ============== PRICING ============== -->
-<h2>Pricing</h2>
-
-<div class="pricing">
-  <div class="price-card">
-    <div class="price-name">Free</div>
-    <div class="price-num">¥0</div>
-    <ul class="price-list">
-      <li>本地 plugin · 1 device</li>
-      <li>60 calls/min</li>
-      <li>MCP server · drift detection</li>
-      <li>self-host docker-compose 永远免费</li>
-      <li class="no">跨 device sync</li>
-      <li class="no">E2EE</li>
-    </ul>
-  </div>
-  <div class="price-card featured">
-    <div class="price-name">Pro</div>
-    <div class="price-num">¥38<small>/月</small></div>
-    <ul class="price-list">
-      <li>所有 Free</li>
-      <li><strong>跨 device · 跨 agent sync</strong></li>
-      <li><strong>E2EE 默认</strong></li>
-      <li>600 calls/min</li>
-      <li>profile aggregate</li>
-      <li>audit log 查阅</li>
-    </ul>
-  </div>
-  <div class="price-card">
-    <div class="price-name">Team</div>
-    <div class="price-num">¥298<small>/5 user/月</small></div>
-    <ul class="price-list">
-      <li>所有 Pro</li>
-      <li><strong>团队 shared room</strong></li>
-      <li>group key · org analytics</li>
-      <li>RAID-2 reviewer</li>
-      <li>跨 region opt-in</li>
-    </ul>
-  </div>
-  <div class="price-card">
-    <div class="price-name">Enterprise</div>
-    <div class="price-num">¥9800+<small>/月</small></div>
-    <ul class="price-list">
-      <li>所有 Team</li>
-      <li><strong>self-host docker</strong></li>
-      <li>DPA · SSO · audit log retention</li>
-      <li>SLA 99.9%</li>
-      <li>custom anchors · domain expert</li>
-    </ul>
-  </div>
-</div>
-
-<p class="small-note">
-  <strong style="color: var(--fg);">不愿付费?</strong> Free 永远开 · 自托管 docker-compose 0 成本 · MIT 永久。
-  Pricing 当前 placeholder · v0.9.5 (2026-10) 上线 billing。
-</p>
-
-<!-- ============== NEGATIVE FINDINGS ============== -->
-<h2>诚实的失败</h2>
-
-<p style="color: var(--fg-muted);">Compass v0.8 的算法选型经过 4 个失败实验 · 我们公开记录因为 paper-grade 工程
-应该报 negative findings:</p>
-
-<div class="negative">
-  <strong>Neo4j graph rerank: -6.2 pts</strong> · 在 closed haystack 上 graph 信号跟
-  cross-encoder 重复 · 不加分反而 confuse · 撤回。
-</div>
-
-<div class="negative">
-  <strong>SSP "infer preference" prompt: -37.5 pts</strong> · 让 LLM "推断用户偏好"
-  反而让它编造食物相关答案 · 不管问题是什么 · 撤回。
-</div>
-
-<div class="negative">
-  <strong>Double-model router (ssp+ku 用强 model): -2.1 pts</strong> · sample 50
-  噪声不可区分 · 撤回。
-</div>
-
-<div class="negative">
-  <strong>MiniMax thinking-1024 refusal cascade</strong> · sample 50 acc 45.8%
-  (假象) · full 500 拒答率从 17% 涨到 44% · acc 跌到 33% · kill at 302 题。
-  纸上记录因为这是产业级 production 警告: <em>per-model thinking-on/off
-  必须 benchmark</em> · 不能假设 thinking 总是有用。
-</div>
-
-<!-- ============== ROADMAP ============== -->
-<h2>v1.0 路线 (12 月)</h2>
-
-<table>
-  <tr>
-    <th>Phase</th>
-    <th>What</th>
-    <th>When</th>
-  </tr>
-  <tr>
-    <td>v0.9.0</td>
-    <td>cross-agent · MCP/A2A · npm wrapper · Cursor scaffold · paper preprint</td>
-    <td>2026-05 · 已发</td>
-  </tr>
-  <tr>
-    <td>v0.9.1</td>
-    <td>auth (邮箱+JWT) · sqlite migration · cn-shanghai 真 production</td>
-    <td>2026-06</td>
-  </tr>
-  <tr>
-    <td>v0.9.3</td>
-    <td>Cursor extension marketplace · Cline 真集成</td>
-    <td>2026-08</td>
-  </tr>
-  <tr>
-    <td>v0.9.5</td>
-    <td>stake×drift 经济耦合 (灰度) · Pro billing 上线</td>
-    <td>2026-10</td>
-  </tr>
-  <tr>
-    <td>v1.0-rc</td>
-    <td>E2EE 默认 · self-host docker · Apache 2.0 dual-license 决定</td>
-    <td>2027-01</td>
-  </tr>
-  <tr class="row-strong">
-    <td><strong>v1.0 GA</strong></td>
-    <td><strong>3 region 全上线 · paper 投出去 · 开源 release</strong></td>
-    <td><strong>2027-05</strong></td>
-  </tr>
-</table>
-
-<!-- ============== PAPER ============== -->
-<h2 id="paper">📄 论文 · 学术认可</h2>
-
-<p style="color: var(--fg-muted);">题目: <em>"Closing the Memory Recall Gap with Chinese LLMs: A Multi-Stage
-Retrieval Pipeline Achieving Zep-SOTA Performance on LongMemEval-S at 1/15 Cost"</em></p>
-
-<ul class="feat">
-  <li><span class="icon">📝</span><div><b>8 sections + 3 appendix</b><p>LaTeX 完整 · 等 cross-judge replication 数据填 §B</p></div></li>
-  <li><span class="icon">📊</span><div><b>3 figures (TikZ)</b><p>5-stage pipeline · cumulative trajectory · 8 fusion points</p></div></li>
-  <li><span class="icon">📚</span><div><b>19 references</b><p>LongMemEval · Mem0 · Letta · Zep · paper SOTA · Persona Vectors</p></div></li>
-  <li><span class="icon">💸</span><div><b>$3.50 reproducible</b><p>BENCHMARKS_REPRODUCE.md · 任何研究者可独立 verify</p></div></li>
-  <li><span class="icon">🎯</span><div><b>arXiv preprint 投递中</b><p>ICLR / NeurIPS workshop 2026 目标</p></div></li>
-</ul>
-
-</div><!-- /.wrap -->
-
-<!-- ============== NAUTILUS FOOTER (mirrors main site) ============== -->
-<footer class="site-footer">
-  <div class="footer-inner">
-    <div class="footer-grid">
-      <div>
-        <h3>Nautilus</h3>
-        <p class="footer-tag">
-          多智能体任务协作平台<br>
-          区块链驱动的去中心化任务市场
-        </p>
-        <p class="footer-tag" style="margin-top:16px;">
-          <strong style="color: var(--fg);">7-capability suite:</strong><br>
-          memory · identity · agent runtime · marketplace · stake · A2A · MCP
-        </p>
-      </div>
-      <div>
-        <h4>产品</h4>
-        <ul>
-          <li><a href="https://nautilus.social/features">功能特性</a></li>
-          <li><a href="https://nautilus.social/pricing">价格方案</a></li>
-          <li><a href="https://nautilus.social/roadmap">产品路线图</a></li>
-          <li><a href="/compass" style="color: var(--accent);">Compass · 记忆层</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>资源</h4>
-        <ul>
-          <li><a href="https://nautilus.social/docs">文档</a></li>
-          <li><a href="https://nautilus.social/api-docs">API 参考</a></li>
-          <li><a href="https://nautilus.social/p/prime">Prime (V5)</a></li>
-          <li><a href="https://nautilus.social/feed">Live Feed</a></li>
-          <li><a href="https://nautilus.social/blog">博客</a></li>
-          <li><a href="https://github.com/chunxiaoxx/nautilus-compass">Compass GitHub</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>公司</h4>
-        <ul>
-          <li><a href="https://nautilus.social/about">关于我们</a></li>
-          <li><a href="https://nautilus.social/contact">联系我们</a></li>
-          <li><a href="https://nautilus.social/careers">加入我们</a></li>
-          <li><a href="mailto:chunxiaoxx@gmail.com">chunxiaoxx@gmail.com</a></li>
-          <li><a href="mailto:chunxiaoxx@gmail.com">chunxiaoxx@gmail.com (GDPR)</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>© 2026 Nautilus. All rights reserved. · MIT license (evaluating Apache 2.0 dual for v1.0)</p>
-      <p class="compass-meta">
-        Compass · 最后更新 2026-05-06 · v0.9.0-dev released · 12-month roadmap to v1.0 GA
-      </p>
+    <div class="card">
+      <h3>EverMemBench-Dynamic · n=500</h3>
+      <div class="big">44.4% / 47.3%</div>
+      <p class="vs">超 Mem0(37.09) · Zep(39.97) · MemOS(42.55)</p>
     </div>
   </div>
+  <p class="dim" style="margin-top:14px;font-size:.85rem">检索层武器:utterance 分型路由块检索 + BM25/dense 混合 + 时间锚。失败实验(rerank 有害 / K 截断无效 / 小模型换装无效)同样公开:<a href="https://github.com/chunxiaoxx/nautilus-compass/blob/main/docs/evidence/headhead_mem0_full500_20260826.json">完整证据链</a></p>
+</section>
+
+<section class="wrap">
+  <h2>⚖️ 对比</h2>
+  <table>
+    <tr><th></th><th>compass</th><th>mem0</th><th>Letta</th><th>Zep</th></tr>
+    <tr><td>LongMemEval-S 检索(同题对照)</td><td class="win">0.890 / 0.978 / 0.929</td><td>0.774 / 0.916 / 0.834</td><td>n/r</td><td>n/r</td></tr>
+    <tr><td>LOCOMO 检索(n=1986)</td><td class="win">0.644 / 0.890</td><td>0.592 / 0.802</td><td>n/r</td><td>n/r</td></tr>
+    <tr><td>Drift 检测</td><td class="win">✅ AUC 0.83</td><td>❌</td><td>❌</td><td>❌</td></tr>
+    <tr><td>数据不出本机</td><td class="win">✅ 黑盒本地 embed</td><td>☁ 抽取上云</td><td>部分</td><td>☁</td></tr>
+    <tr><td>复现成本(500 题)</td><td class="win">~$3.50</td><td colspan="3">GPT-4o-judged 栈 ~$50+</td></tr>
+  </table>
+</section>
+
+<section class="wrap">
+  <h2>⚡ 30 秒接入</h2>
+  <div class="cmd">bash ~/.claude/plugins/nautilus-compass/ops/agent_quickstart.sh my-agent</div>
+  <p class="dim">生成 token · 接云 MCP 桥 · 写 .mcp.json · 端到端自检。适配 Claude Code / Desktop · Cline · Cursor · Continue.dev · Zed。<a href="https://github.com/chunxiaoxx/nautilus-compass#quickstart">全部四种安装方式 →</a></p>
+</section>
+
+<section class="wrap">
+  <h2>🛡️ 不只是记忆 —— 三根支柱</h2>
+  <div class="score-grid">
+    <div class="card"><h3>1 · 黑盒长期记忆</h3><p class="dim">BGE-m3 本地 embed 原文,不调 LLM 抽取、不建图、数据不出机器。检索层 SOTA(见上)。</p></div>
+    <div class="card"><h3>2 · Drift 检测</h3><p class="dim">记忆召回了拦不住 AI 这次破规矩 —— compass 在 agent 动作前对照失败模式锚点打分,AUC 0.83,p95 &lt;50ms。白盒架构结构性做不了。</p></div>
+    <div class="card"><h3>3 · 跨 agent 合约</h3><p class="dim">多 agent 共享文件协作时,自动推导隐式合约、追踪闭合、审计假闭环。四对话框 28 小时田野实录公开。</p></div>
+  </div>
+</section>
+
+<footer class="wrap">
+  <p><a href="https://github.com/chunxiaoxx/nautilus-compass">GitHub</a> · <a href="https://github.com/chunxiaoxx/nautilus-compass/blob/main/README.zh-CN.md">中文文档</a> · <a href="https://huggingface.co/spaces/chunxiaox/nautilus-compass">在线 demo(免安装)</a> · <a href="https://compass.nautilus.social/signup">注册托管网关</a></p>
+  <p style="margin-top:10px">Nautilus Platform · 开放 agent 生态 · MIT</p>
 </footer>
-
-<script>
-document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    const target = tab.dataset.target;
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    tab.classList.add('active');
-    document.getElementById(target).classList.add('active');
-  });
-});
-</script>
 
 </body>
 </html>
