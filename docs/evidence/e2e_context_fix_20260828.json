@@ -1,35 +1,36 @@
 {
-  "experiment": "e2e_context_fix_20260828",
-  "claim": "LongMemEval-S e2e 瓶颈=context 600 字符截断(答案 turn 被切掉)。修复=四型 utterance context(ZMM_SSU_UTT_TYPES)+anchor_all(ssa/ku 锚全部 turn)+cross-encoder context 重排(ZMM_LOAD_RERANKER 解耦,不进检索排序)。同题同判据同 subject/judge 配对对比,唯一变量=context 构造。",
-  "config": {
-    "subject": "doubao-seed-2-0-pro-260215 (ARK)",
-    "judge": "glm-5.3-flash (newapi)",
-    "n": 30,
-    "temperature": 0.1,
-    "retrieval": "utt 路由四型 + hybrid + date anchor (两臂相同)",
-    "baseline_context": "session 级 600 字符截断",
-    "treatment_context": "utterance 级四型滑窗 + anchor_all + reranker 重排"
+  "experiment": "e2e_context_fix",
+  "date": "2026-08-28",
+  "claim": "600-char context truncation was the e2e bottleneck; type-routed utterance context + anchor_all fixed it",
+  "setup": {
+    "benchmark": "LongMemEval-S subset 30 (5 q x 6 types)",
+    "retrieval": "utterance-routing + hybrid BM25/dense + date-anchor (ZMM_UTTERANCE_RETRIEVE=1 ZMM_HYBRID=1 ZMM_DATE_ANCHOR=1, 4-type routing)",
+    "context_arm": "ZMM_SSU_UTTERANCE=1 with types ssu,ssa,ssp,ku + anchor_all for ssa/ku + ZMM_LOAD_RERANKER=1 (context rerank only, not retrieval order)",
+    "subject": "doubao-seed-2-0-pro-260215 (temp 0.1, vote_n=1)",
+    "judge": "glm-5.3-flash via newapi",
+    "baseline_run": "longmemeval_acc_m3_only_subset30_1787882776",
+    "fixed_run": "longmemeval_acc_m3_only_subset30_1787890826",
+    "host": "cloud VM /home/ubuntu/nautilus-compass"
   },
-  "result": {
-    "baseline_acc": 0.267,
-    "treatment_acc": 0.567,
-    "delta": 0.300,
-    "ratio": 2.13,
-    "by_type": {
-      "single-session-user": {"base": 0.0, "ctx": 1.0, "delta": 1.0},
-      "single-session-assistant": {"base": 0.0, "ctx": 0.8, "delta": 0.8},
-      "multi-session": {"base": 0.6, "ctx": 0.8, "delta": 0.2},
-      "single-session-preference": {"base": 0.6, "ctx": 0.6, "delta": 0.0},
-      "knowledge-update": {"base": 0.4, "ctx": 0.2, "delta": -0.2},
-      "temporal-reasoning": {"base": 0.0, "ctx": 0.0, "delta": 0.0}
-    }
+  "headline": {
+    "baseline_acc": 0.2667,
+    "fixed_acc": 0.5667,
+    "delta_pt": 30.0,
+    "ratio": 2.13
   },
-  "artifacts": {
-    "baseline_jsonl": "cloud:~/.claude/plugins/nautilus-compass/.cache/longmemeval_acc_m3_only_subset30_1787882776.jsonl",
-    "treatment_jsonl": "cloud:~/.claude/plugins/nautilus-compass/.cache/longmemeval_acc_m3_only_subset30_1787890826.jsonl",
-    "treatment_summary": "cloud:...1787890826_summary.json",
-    "verdict_script": "vtf/e2e_verdict.py"
+  "by_type": {
+    "single-session-user":      {"base": 0.0, "fixed": 1.0},
+    "single-session-assistant": {"base": 0.0, "fixed": 0.8},
+    "multi-session":            {"base": 0.6, "fixed": 0.8},
+    "single-session-preference":{"base": 0.6, "fixed": 0.6},
+    "knowledge-update":         {"base": 0.4, "fixed": 0.2},
+    "temporal-reasoning":       {"base": 0.0, "fixed": 0.0}
   },
-  "next_lever": "temporal-reasoning e2e 0.00(检索层 tr P@1 0.88 但 e2e 0)——检索找得到但答案不在 context/reader 答不对,需逐题诊断;ku -0.2 为 n=5 噪声级,复跑再判",
-  "date": "2026-08-28"
+  "paired_midpoint_check": {"n_overlap": 18, "base": 0.444, "fixed": 0.667, "delta_pt": 22.2},
+  "remaining_gaps": [
+    "temporal-reasoning e2e 0.000 despite retrieval P@1 0.88 on tr-type — diagnosis queued (context may still lack event-time ordering cues)",
+    "knowledge-update 0.4 -> 0.2 (n=5, within noise; watch on 500-question run)"
+  ],
+  "honesty_note": "retrieval P@5 was already 0.978 before this fix; the e2e gap was never recall. Subject LLM (doubao) still caps absolute e2e; numbers are paired same-question same-judge.",
+  "next": "500-question full e2e with fixed context (4 shards) or glm-subject arm; LME-V2 adaptation runs in parallel"
 }
