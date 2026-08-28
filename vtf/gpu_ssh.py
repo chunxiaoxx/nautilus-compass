@@ -3,7 +3,9 @@ import sys
 
 import paramiko
 
-HOST, PORT, USER, PW = "js3.blockelite.cn", 10516, "root", "ieco7Xah"
+HOST, PORT, USER, PW = "223.109.239.32", 10516, "root", "ieco7Xah"
+# 2026-08-29 · js3.blockelite.cn 域名解析不稳(180.127.11.1 拒连),改用户提供的
+# 移动线直连 IP;备用:电信 180.127.11.166:10516 · vipuser/ieco7Xah
 
 
 def client():
