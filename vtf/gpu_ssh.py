@@ -3,7 +3,7 @@ import sys
 
 import paramiko
 
-HOST, PORT, USER, PW = "js4.blockelite.cn", 12924, "root", "Ahrupu3e"
+HOST, PORT, USER, PW = "js3.blockelite.cn", 10516, "root", "ieco7Xah"
 
 
 def client():
