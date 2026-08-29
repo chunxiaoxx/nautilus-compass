@@ -328,6 +328,11 @@ def _apply_tier_weight_prod(top, top_k):
 
 # v2.0.9 · inotify-based cache invalidation · Layer 2 cure for 23k-file dir scan
 _INOTIFY_USE = os.environ.get("COMPASS_USE_INOTIFY", "1") == "1"
+if not _INOTIFY_USE:
+    # 2026-08-28(workbuddy 反馈 P1·2.2): 关闭 inotify = 新写入不被 recall 索引,
+    # 曾完全静默。启动时大声说一遍。
+    print("⚠️ COMPASS_USE_INOTIFY=0 · new-file discovery DISABLED — fresh writes "
+          "won't appear in recall until a manual rescan", file=sys.stderr)
 _ENTRIES_CACHE = {}  # proj_key -> list of entries (with embeddings) · last scan
 _ENTRIES_CACHE_LOCK = threading.Lock()
 _DIR_DIRTY = set()   # proj_keys flagged for re-scan by inotify watcher
@@ -1142,6 +1147,16 @@ def handle_request(req: dict) -> dict:
         # v0.7.2 · per-request anchor profile (gateway passes anchors_path)
         ap = req.get("anchors_path")
         anchors = get_anchors(Path(ap) if ap else None)
+        # 2026-08-28 fix(workbuddy 实测 P0·1.1): anchors 缺失曾静默跳过——
+        # 安全防线(危险命令检测)形同虚设且用户毫不知情。fail loudly:
+        # 结果带 anchors_error,日志亮牌。运维动作=把 anchors.json 放进
+        # PLUGIN_DIR(云端空壳目录那次=拷贝即修)。
+        if not anchors:
+            _msg = (f"anchors.json not found at {ANCHORS_PATH} — drift DISABLED "
+                    f"(fail-loudly, was silent before 2026-08-28)")
+            result["drift"] = {"score": None, "should_alert": True,
+                               "anchors_error": _msg}
+            log(f"⚠️ DRIFT DISABLED · {_msg}")
         if anchors:
             # v0.7.1 · Weighted top-k mean scoring
             # 每个 anchor 一个 weight (默认 1.0 · adaptive learning 调整)

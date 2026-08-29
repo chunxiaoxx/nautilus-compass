@@ -30,7 +30,7 @@ from mcp_durable.event_store import EventStore
 
 PROTOCOL_VERSION = "2024-11-05"
 SERVER_NAME = "nautilus-compass"
-SERVER_VERSION = "2.3.1"
+SERVER_VERSION = "3.1.0"  # 2026-08-29 对齐 git tag v3.0.0 之后的增量(scoped-token 安全体系+daemon 修复),终结"仓 tag 3.0 服务报 2.3"的双轨困惑
 DAEMON_HOST = "127.0.0.1"
 DAEMON_PORT = 9876
 DAEMON_TIMEOUT = 30.0
@@ -54,6 +54,9 @@ V7_DEFAULT_PHASES = PLUGIN_DIR / "examples" / "v7_default_phases.json"
 
 # ─── daemon I/O ────────────────────────────────────────────────────
 
+DAEMON_COLD_TIMEOUT = 90.0  # model cold-load after idle can exceed 30s (workbuddy 反馈 P0·1.3)
+
+
 def daemon_call(req: dict, timeout: float = DAEMON_TIMEOUT) -> dict:
     """Send JSON request to BGE daemon · return parsed reply.
 
@@ -61,11 +64,23 @@ def daemon_call(req: dict, timeout: float = DAEMON_TIMEOUT) -> dict:
 
     v1.3 · forwards COMPASS_AGENT_TYPE env to daemon for per-agent L2
     evidence in verification_log.jsonl (#104).
+
+    2026-08-28(workbuddy 反馈 P0·1.3): 冷查询(daemon 空闲后首批)可能超 30s
+    DEFAULT——超时自动重试一次,放宽到 90s(等模型冷加载完成)。热查询路径
+    不受影响(第一次就回)。
     """
     if "agent_type" not in req:
         env_agent = os.environ.get("COMPASS_AGENT_TYPE")
         if env_agent:
             req = {**req, "agent_type": env_agent}
+    try:
+        return _daemon_call_once(req, timeout)
+    except (socket.timeout, TimeoutError):
+        pass  # fall through to cold-retry
+    return _daemon_call_once(req, DAEMON_COLD_TIMEOUT)
+
+
+def _daemon_call_once(req: dict, timeout: float) -> dict:
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.settimeout(timeout)
     try:
