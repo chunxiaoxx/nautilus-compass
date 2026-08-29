@@ -97,6 +97,18 @@ bash ~/.claude/plugins/nautilus-compass/install.sh
 bash ~/.claude/plugins/nautilus-compass/daemon_start.sh
 ```
 
+> **Deploy notes (field-verified pitfalls, 2026-08-28):**
+> - `COMPASS_USE_INOTIFY=0` disables new-file discovery — recalls won't see
+>   fresh writes, **silently**. Only set it if you know why; the daemon logs a
+>   WARNING when it's off.
+> - `drift` fails loudly now: if `anchors.json` is missing from the plugin dir,
+>   responses carry `drift.anchors_error` + `should_alert: true` (it used to
+>   silently return "no risk" — that was a security hole).
+> - Token changes to `tokens.json` hot-reload via mtime check (no systemd
+>   restart needed since v3.1.0).
+> - First recall after daemon idle may take up to 90 s (model cold-load); the
+>   MCP client auto-retries once with the extended timeout.
+
 The installer wires three hooks into `~/.claude/settings.json`:
 - `UserPromptSubmit` → time-bucketed memory recall + drift check
 - `PostToolUse` → mid-session writer

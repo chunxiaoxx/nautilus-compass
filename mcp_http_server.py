@@ -27,7 +27,7 @@ from starlette.responses import JSONResponse
 from starlette.routing import Mount
 from starlette.types import Receive, Scope, Send
 
-server: Server = Server("nautilus-compass", version="2.3.1")
+server: Server = Server("nautilus-compass", version="3.1.0")
 
 
 @server.list_tools()
@@ -124,6 +124,26 @@ def _load_tokens() -> dict[str, frozenset]:
 
 
 VALID_TOKENS: dict[str, frozenset] = _load_tokens()
+_tokens_mtime: float = 0.0
+try:
+    _tokens_path = os.environ.get("COMPASS_TOKENS_FILE", "/etc/compass/tokens.json")
+    _tokens_mtime = os.path.getmtime(_tokens_path)
+except OSError:
+    pass
+
+
+def _tokens_reload_if_stale() -> None:
+    """2026-08-28(workbuddy 反馈 P1·2.1): tokens.json 曾不热加载,新签 token
+    必须重启服务。改 mtime 懒重载——每请求 O(1) stat,变更即重读,无需 systemd
+    restart(也无需 inotify 依赖)。"""
+    global VALID_TOKENS, _tokens_mtime
+    try:
+        m = os.path.getmtime(_tokens_path)
+    except OSError:
+        return
+    if m != _tokens_mtime:
+        VALID_TOKENS = _load_tokens()
+        _tokens_mtime = m
 
 
 def _check_scope(scopes: frozenset, tool_name: str, arguments: dict) -> str | None:
@@ -156,6 +176,7 @@ def _check_scope(scopes: frozenset, tool_name: str, arguments: dict) -> str | No
 class _BearerAuth(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
         if request.url.path.startswith("/mcp"):
+            _tokens_reload_if_stale()
             auth = request.headers.get("authorization", "")
             tok = auth[7:] if auth.lower().startswith("bearer ") \
                 else request.headers.get("x-agent-key", "")
