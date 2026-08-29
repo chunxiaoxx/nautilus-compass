@@ -1,0 +1,37 @@
+{
+  "title": "e2e 500 全量 · LongMemEval-S 端到端(检索→作答→判分) · GPU 修复版定案",
+  "date": "2026-08-29",
+  "headline": "213/500 = 0.426",
+  "headline_context": "端到端口径(检索+subject 作答+judge 判分),非检索 P@1。修复前 cloud 同判据 ~0.27(被 429+漏 env 污染),30 题配对轮 0.567(小样本 n=30)。",
+  "by_question_type": {
+    "single-session-user":       {"acc": 0.957, "n": "67/70"},
+    "single-session-preference": {"acc": 0.800, "n": "24/30"},
+    "knowledge-update":          {"acc": 0.731, "n": "57/78"},
+    "single-session-assistant":  {"acc": 0.250, "n": "14/56"},
+    "multi-session":             {"acc": 0.226, "n": "30/133"},
+    "temporal-reasoning":        {"acc": 0.158, "n": "21/133"}
+  },
+  "honest_reading": {
+    "strength": "单 session 型(ssu/ssp)0.96/0.80 接近天花板——检索+作答+判分链在单跳场景已收敛",
+    "known_gaps": "跨 session 聚合(ms 0.226/ssa 0.250/tr 0.158)是真实短板:答案分散在 3+ session,utterance context 上限 3 条导致 evidence 不全(错误模式=数漏/选错事件,非空答)。30 题轮的 ms 0.8/ssa 0.8 是 n=5 小样本噪声,500 全量现出真实水位",
+    "tr_note": "tr 0.158 是 date-anchor 修复(utterance context 注入 session 日期)首次大样本生效——修复前该型为 0.000(模型明说 no record of the date)"
+  },
+  "config": {
+    "pipeline": "m3-only",
+    "subject": "doubao-seed-2-0-pro-260215 (ARK)",
+    "judge": "glm-5.3-flash (newapi, 429/5xx 指数退避重试)",
+    "retrieval": "bge-m3 dense + BM25 RRF(k=60) + date-anchor + 四型 utterance context(reranker 挑 3 utterance, bge-reranker-v2-m3)",
+    "sharding": "GPU 4090PLUS 4 分片 × 125 题,~30-60s/题(vs cloud 4 核 660s/题)",
+    "env_fixes": [
+      "ZMM_SSU_UTTERANCE=1 (此前抄 env 漏掉→utterance 修复链全旁路)",
+      "ZMM_EMBEDDER_MODEL=/root/models/bge-m3 + ZMM_RERANKER_MODEL=modelscope 路径(免 HF 匿名限速)",
+      "干净 reranker 权重(sftp 覆盖损坏文件,score 区分度验证)"
+    ]
+  },
+  "raw_files": "e2e_500_gpu_20260829.tar.gz (4 分片 jsonl + summaries)",
+  "related": [
+    "docs/evidence/e2e_context_fix_20260828.json (30 题配对轮 0.267→0.567)",
+    "commit ce848f5 (judge 退避) · d33f7fe (tr 日期注入)",
+    "memory: gpu-e2e-rootcause-chain-20260829"
+  ]
+}
