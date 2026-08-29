@@ -30,6 +30,11 @@ if ($LASTEXITCODE -eq 0) {
 Write-Host "Starting V5 Memory Daemon..."
 
 # Spawn detached. Output discarded; daemon writes its own log under .cache/
+# 2026-08-30: 移除 PYTHONPATH=C:\pylibs 注入。8/23 的 torch 短路径方案已过时——
+# Store Python site-packages 现有完整 torch 2.11.0+cpu + transformers 5.16.1 + st 6.0.0
+# (实测 BGE-m3 LOAD_OK)。C:\pylibs 是 2026-07 时代的旧库快照,注入后 daemon 反而加载
+# 旧库组合 → `Could not import module 'PreTrainedModel'`(lazy import 炸),
+# 1322 次 conn handler fail 即此根因。C:\pylibs 目录保留不删(可回滚)。
 $startInfo = New-Object System.Diagnostics.ProcessStartInfo
 $startInfo.FileName = "cmd.exe"
 $startInfo.Arguments = "/c $Python `"$PluginDir\daemon.py`" > NUL 2>&1"

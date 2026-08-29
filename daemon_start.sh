@@ -18,7 +18,7 @@ fi
 
 # 后台启动 · nohup + disown
 echo "启动 V5 Memory Daemon ..."
-nohup "$PYTHON" "$PLUGIN_DIR/daemon.py" > /dev/null 2>&1 &
+nohup "$PYTHON" "$PLUGIN_DIR/daemon.py" > /dev/null 2>&1 &  # 2026-08-23 torch shortpath fix
 DAEMON_PID=$!
 disown $DAEMON_PID 2>/dev/null
 echo "PID: $DAEMON_PID · 等 BGE load (~30s) ..."
