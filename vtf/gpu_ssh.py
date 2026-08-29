@@ -3,9 +3,10 @@ import sys
 
 import paramiko
 
-HOST, PORT, USER, PW = "223.109.239.32", 10516, "root", "ieco7Xah"
-# 2026-08-29 · js3.blockelite.cn 域名解析不稳(180.127.11.1 拒连),改用户提供的
-# 移动线直连 IP;备用:电信 180.127.11.166:10516 · vipuser/ieco7Xah
+HOST, PORT, USER, PW = "223.109.239.32", 10516, "root", "no7aej4z"
+# 2026-08-29 · 新实例 651448(自定义镜像 v2608291059 开机+外挂 100G 数据盘 /root/data)
+# 镜像验证通过:vllm 0.8.5/Qwen 断点/reranker 干净版/LME-V2 数据/e2e 全套秒级就位
+# 备用:电信 180.127.11.166:10516 · Qwen 模型在 /root/data/models/qwen35-9b(软链)
 
 
 def client():
