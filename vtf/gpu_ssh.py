@@ -31,6 +31,43 @@ def main():
             sftp.put(sys.argv[2], sys.argv[3])
             print(f"UPLOADED {sys.argv[2]} -> {sys.argv[3]}")
             return
+        if sys.argv[1] == "writefile":
+            # blockelite SFTP stat/open 怪癖绕法:exec 通道 base64 流写文件
+            import base64
+            from pathlib import Path
+
+            data = Path(sys.argv[2]).read_bytes()
+            b64 = base64.b64encode(data).decode()
+            remote = sys.argv[3]
+            _, out, err = c.exec_command(
+                f"base64 -d > {remote} && echo WROTE $(wc -c < {remote})"
+            )
+            out.channel.sendall(b64.encode())
+            out.channel.shutdown_write()
+            o = out.read().decode("utf-8", "replace")
+            e = err.read().decode("utf-8", "replace")
+            print(o, end="")
+            if e.strip():
+                print("[stderr]", e[:1000], end="")
+            sys.exit(0 if "WROTE" in o else 1)
+        if sys.argv[1] == "readfile":
+            # SFTP download 怪癖的 exec 通道绕法:远端 base64 输出流,本地解码
+            import base64
+
+            _, out, err = c.exec_command(f"base64 {sys.argv[2]} && echo B64_DONE")
+            b64 = out.read().decode("ascii", "replace")
+            e = err.read().decode("utf-8", "replace")
+            ok = "B64_DONE" in b64
+            body = b64.replace("B64_DONE", "") if ok else ""
+            data = base64.b64decode(body) if ok else b""
+            if data:
+                from pathlib import Path
+
+                Path(sys.argv[3]).write_bytes(data)
+            print(f"READ {len(data)} bytes -> {sys.argv[3]}")
+            if e.strip():
+                print("[stderr]", e[:1000], end="")
+            sys.exit(0 if ok else 1)
         if sys.argv[1] == "download":
             sftp = c.open_sftp()
             sftp.get(sys.argv[2], sys.argv[3])
