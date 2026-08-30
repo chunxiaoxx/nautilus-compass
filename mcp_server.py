@@ -1829,6 +1829,19 @@ TOOL_SCOPE_MAP = {
 
 ALL_SCOPES = {"*", "tools.read", "tools.write", "resources.read"}
 
+# v3.2 · project-grade scopes (2026-08-30 · workbuddy 跨框记忆暴露修复):
+#   `read:<project>` / `write:<project>` / `read:*` / `write:*` / `admin`。
+#   语法与 mcp_http_server tokens.json 一致,共用 /etc/compass/tokens.json。
+#   token 携带至少一个 project 级 scope → 进入强制模式(fail-closed,
+#   未列项目一律拒);旧工具级 token(tools.read/…)与 '*' 保持全 project 语义。
+_PROJECT_SCOPE_PREFIXES = ("read:", "write:")
+
+
+def _scope_is_known(s: str) -> bool:
+    if s in ALL_SCOPES or s == "admin":
+        return True
+    return any(s.startswith(p) and len(s) > len(p) for p in _PROJECT_SCOPE_PREFIXES)
+
 
 def _parse_token_spec(spec: str) -> tuple[str, set[str]]:
     """`foo` → (foo, {*}). `foo:a,b` → (foo, {a, b})."""
@@ -1840,7 +1853,7 @@ def _parse_token_spec(spec: str) -> tuple[str, set[str]]:
     token = token.strip()
     if not token:
         raise ValueError("empty token in spec")
-    bad = scopes - ALL_SCOPES
+    bad = {s for s in scopes if not _scope_is_known(s)}
     if bad:
         raise ValueError(f"unknown scopes {sorted(bad)} · known={sorted(ALL_SCOPES)}")
     return token, scopes
@@ -1869,12 +1882,12 @@ def _load_token_table(specs: list[str] | None, token_file: str | None) -> dict[s
                 scopes = set(v)
                 rl = None
             elif isinstance(v, dict):
-                scopes = set(v.get("scopes") or ["*"])
+                scopes = set(v.get("scopes") or [])  # 空 scopes = 全拒(fail-closed)
                 rl = v.get("rate_limit")
             else:
                 scopes = {"*"}
                 rl = None
-            bad = scopes - ALL_SCOPES
+            bad = {s for s in scopes if not _scope_is_known(s)}
             if bad:
                 raise ValueError(f"token {t!r}: unknown scopes {sorted(bad)}")
             table[t] = scopes
@@ -1891,7 +1904,49 @@ def _load_token_table(specs: list[str] | None, token_file: str | None) -> dict[s
 def _has_scope(scopes: set[str] | None, required: str) -> bool:
     if scopes is None:
         return True  # stdio / no-auth mode
-    return "*" in scopes or required in scopes
+    if "*" in scopes or required in scopes:
+        return True
+    # v3.2 · project 级 token:工具级门槛放行,读写边界由 _check_project_scope 接管
+    return _has_project_scopes(scopes)
+
+
+# v3.2 · project-grade enforcement(与 mcp_http_server._check_scope 同构)。
+# READ_TOOLS 派生自 TOOL_SCOPE_MAP,写类+未知工具一律按写级 fail-closed。
+_READ_TOOLS = {n for n, r in TOOL_SCOPE_MAP.items() if r == "tools.read"}
+
+
+def _has_project_scopes(scopes: set[str] | None) -> bool:
+    """token 是否进入 project 强制模式:含任一 project 级 scope(或 admin)。
+    旧工具级 token 与 '*' 维持全 project 语义,不受影响。"""
+    if not scopes:
+        return False
+    if "admin" in scopes:
+        return True
+    return any(s.startswith(_PROJECT_SCOPE_PREFIXES[0])
+               or s.startswith(_PROJECT_SCOPE_PREFIXES[1]) for s in scopes)
+
+
+def _check_project_scope(scopes: set[str] | None, tool_name: str,
+                         arguments: dict) -> str | None:
+    """返回 None=放行;否则拒绝原因。仅对携带 project 级 scope 的 token 生效。"""
+    if not _has_project_scopes(scopes):
+        return None
+    if "admin" in scopes or "*" in scopes:
+        return None
+    project = str((arguments or {}).get("project") or "")
+    if tool_name in _READ_TOOLS or TOOL_SCOPE_MAP.get(tool_name, "tools.write") != "tools.write":
+        if "read:*" in scopes:
+            return None
+        if str((arguments or {}).get("scope") or "") == "user":
+            return "scope=user requires read:*"
+        if f"read:{project}" in scopes:
+            return None
+        return f"token lacks read scope for project '{project}'"
+    if "write:*" in scopes:
+        return None
+    if f"write:{project}" in scopes:
+        return None
+    return f"token lacks write scope for project '{project}'"
 
 
 # ─── per-token rate limit (Task #51) ───────────────────────────────
@@ -2128,6 +2183,10 @@ def handle_message(msg: dict, scopes: set[str] | None = None,
         req = TOOL_SCOPE_MAP.get(name, "tools.read")
         if not _has_scope(scopes, req):
             return _reply_err(msg_id, -32001, f"scope required: {req}")
+        # v3.2 · project-grade fail-closed(scoped token 未列项目一律拒)
+        deny = _check_project_scope(scopes, name, args)
+        if deny:
+            return _reply_err(msg_id, -32001, f"forbidden: {deny}")
         try:
             # Progress-aware tools: when the client included
             # `_meta.progressToken`, wire an emit callback that pushes
