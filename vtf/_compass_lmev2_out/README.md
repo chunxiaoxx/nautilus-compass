@@ -33,6 +33,7 @@
 
 1. **absolut 数不可与 e2e 500 直接比**：LME-V2 是多 session 长对话 haystack，与 e2e 500（LME-M 单 haystack）任务结构不同；此批为 compass 在 V2 上的**首次未调优基线**。
 2. **短板画像与 V1 一致**：procedure/gotchas（可检索的明确规则）显著强于 static/dynamic；static/dynamic 的 unknown 率 55-67% 指向**检索未召回相关上下文**（多 session 切分/路由适配未调优），非 reader 拒答癖。
+3. **实答失分构成（加权）**：unknown 为第一大失分——web 42.9% / enterprise 54.2%；wrong 两域接近（30.4% / 28.4%）。即 enterprise 更难难在"更找不着"（召回更差），不是"答错更多"。调优第一杠杆 = 多 session 检索适配，其次才是 reader context。V1 单 haystack 下检索 P@5 97.8%、此短板测不出来——这正是 LME-V2 作为新基准的价值。
 3. **1.5B smoke 前置验证**：全量前用 Qwen2.5-1.5B 本地 vLLM 烟测 3 题全链路绿（0% 分数=模型弱属预期），管线六坑定案见 `vtf/TRANSFER_RUNBOOK.md`。
 
 ## 复跑
