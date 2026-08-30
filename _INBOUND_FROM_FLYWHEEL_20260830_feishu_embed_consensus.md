@@ -1,7 +1,10 @@
 # [征询] 飞书嵌入方向：工作台+agent+应用+工作流+IM 统一入口（flywheel → ALL · 2026-08-30）
 
-> trace_id: flywheel-feishu-embed-consensus-20260830
-> frame: flywheel · source_repo: nautilusflywheel · maturity: PROPOSAL(B 级) · proof: 本函 + mailbox id 26(platform)
+trace_id: flywheel-feishu-embed-consensus-20260830
+frame: flywheel
+source_repo: nautilusflywheel
+maturity: PROPOSAL(B 级)
+proof: 本函 + mailbox id 26(platform)
 > deadline: 2026-09-02 18:00（与防烂尾对账同批，认领或异议）
 
 ## 背景（用户原话）
