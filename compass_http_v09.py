@@ -1374,25 +1374,25 @@ def a2a_well_known():
             "version": "1.0.0",
             "homepage": "https://github.com/chunxiaoxx/nautilus-compass",
             "capabilities": [
-                {"name": "STORE_OBS", "endpoint": "/v1/observations", "method": "POST",
+                {"name": "STORE_OBS", "endpoint": "/mcp/", "method": "MCP tool: ingest_obs",
                  "description": "Write a single observation (with drift signal) to user memory"},
-                {"name": "RETRIEVE_MEMORY", "endpoint": "/v1/recall", "method": "GET",
+                {"name": "RETRIEVE_MEMORY", "endpoint": "/mcp/", "method": "MCP tool: recall",
                  "description": "Cross-agent semantic + keyword recall"},
-                {"name": "QUERY_PROFILE", "endpoint": "/v1/profile", "method": "GET",
+                {"name": "QUERY_PROFILE", "endpoint": "/mcp/", "method": "MCP tool: profile",
                  "description": "User work profile aggregate"},
-                {"name": "QUERY_DRIFT", "endpoint": "/v1/drift_check", "method": "POST",
+                {"name": "QUERY_DRIFT", "endpoint": "/mcp/", "method": "MCP tool: drift_check",
                  "description": "AI drift timeline (compass-exclusive feature)"}
             ],
             "auth": {
-                "type": "oauth2",
-                "authorization_endpoint": "/v1/auth/oauth/authorize",
-                "token_endpoint": "/v1/auth/oauth/token",
-                "scopes": ["read:memory", "write:memory"]
+                "type": "bearer-token",
+                "transport": "Authorization: Bearer <token> on https://compass.nautilus.social/mcp/",
+                "acquisition": "invitation-only beta - open a GitHub issue at the homepage repo",
+                "scopes": ["read:<project>", "write:<project>", "read:*", "write:*"]
             },
             "mcp_alternative": {
-                "server": "@nautilus/compass-mcp",
-                "registry": "https://www.npmjs.com/package/@nautilus/compass-mcp",
-                "command": "compass-mcp"
+                "transport": "streamable-http",
+                "server_url": "https://compass.nautilus.social/mcp/",
+                "note": "any MCP-compatible client; self-serve signup in progress"
             },
             "documentation": "https://github.com/chunxiaoxx/nautilus-compass#a2a-protocol"
         }

@@ -119,14 +119,16 @@ their MCP config. Per-agent copy-paste configs:
 [`docs/AGENT_ONBOARDING.md`](docs/AGENT_ONBOARDING.md) · raw protocol:
 [`docs/mcp-usage.md`](docs/mcp-usage.md).
 
-### Cloud-hosted (no local install)
+### Cloud-hosted (invitation-only during review period)
 
-```bash
-curl https://compass.nautilus.social/.well-known/agent.json   # A2A discovery
-```
+The hosted gateway — MCP over HTTPS with scoped tokens and per-user memory
+isolation — is in invitation-only beta while self-serve signup is being built
+(design locked: [`docs/plans/2026-08-30-multi-tenant-memory-design.md`](docs/plans/2026-08-30-multi-tenant-memory-design.md)).
+To request a token during the beta, open a GitHub issue on this repo.
 
-Sign up at `compass.nautilus.social/signup` for a hosted gateway with
-multi-user sync, audit log, and managed BGE-m3.
+MCP endpoint: `https://compass.nautilus.social/mcp/` (Bearer token ·
+streamable-http). A2A discovery:
+`curl https://compass.nautilus.social/.well-known/agent.json`
 
 ### Nautilus platform agents (cloud ssh quickstart)
 
