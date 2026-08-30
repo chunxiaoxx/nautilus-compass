@@ -350,18 +350,24 @@ def db():
 
 def auth_user(authorization: Optional[str] = Header(None),
               x_user_id: Optional[str] = Header(None)) -> str:
-    """Resolve user_id from Bearer JWT (preferred) or X-User-ID (legacy compat for tools that haven't auth-ed yet)."""
+    """Resolve user_id from Bearer JWT.
+
+    2026-08-30 security fix: X-User-ID header-only 身份已关闭——公网 443
+    (compass.nautilus.social/v1/* 全量代理 8770)曾可凭任意 X-User-ID 冒充
+    任意用户读记忆(u_probe_nonexist 实测 200)。现仅接受 Bearer JWT;
+    携带 X-User-ID 时只作与 token 身份的一致性校验。
+    """
     if authorization and authorization.startswith("Bearer "):
         try:
             from jose import jwt
             payload = jwt.decode(authorization[7:], JWT_SECRET, algorithms=["HS256"])
-            return payload["user_id"]
+            uid = payload["user_id"]
         except Exception as e:
             raise HTTPException(401, f"invalid JWT: {e}")
-    if x_user_id:
-        # legacy · v0.7.2 兼容期 · only allow if user exists OR auto-create as 'demo' tier
-        return x_user_id
-    raise HTTPException(401, "auth required (Bearer or X-User-ID)")
+        if x_user_id and x_user_id != uid:
+            raise HTTPException(401, "X-User-ID does not match token identity")
+        return uid
+    raise HTTPException(401, "auth required (Bearer JWT)")
 
 
 # ---- Pydantic models ----
@@ -869,14 +875,18 @@ def drift_check(
         return {"score": 0.0, "alignment": 1.0, "deviation": 0.0,
                 "should_alert": False, "top_neg_hits": []}
 
-    user_id = x_tenant_id or x_user_id
+    # 2026-08-30 security fix: 身份只认 Bearer JWT——X-Tenant-ID/X-User-ID
+    # header 曾可单独冒充任意租户读 drift(与 auth_user 同款洞)。
+    user_id = x_tenant_id or x_user_id  # 仅为一致性校验保留,不再单独授权
     if authorization and authorization.startswith("Bearer "):
         try:
             from jose import jwt
             payload = jwt.decode(authorization[7:], JWT_SECRET, algorithms=["HS256"])
             user_id = payload.get("user_id") or user_id
         except Exception:
-            pass
+            raise HTTPException(401, "invalid JWT")
+    else:
+        raise HTTPException(401, "auth required (Bearer JWT)")
 
     # PRIMARY · v1.4 BGE-m3 + real anchors
     v14 = _v14_drift_check(prompt, user_id or "unknown")
@@ -1563,6 +1573,7 @@ def v14_ingest_obs(
     body: dict,
     x_tenant_id: Optional[str] = Header(None, alias="X-Tenant-ID"),
     x_user_id: Optional[str] = Header(None, alias="X-User-ID"),
+    authorization: Optional[str] = Header(None),
 ):
     """v1.4 ingest observation · writes session_*.md directly.
 
@@ -1586,7 +1597,18 @@ def v14_ingest_obs(
     if not isinstance(content, str) or len(content.strip()) < 10:
         return {"ok": False, "error": "content too short (min 10 chars)"}
 
-    agent_type = (x_tenant_id or x_user_id or "unknown")[:60]
+    # 2026-08-30 security fix: ingest 需 Bearer JWT——此端点可直接写记忆目录
+    # (session_*.md),header-only 身份曾在公网 443 可被任意伪造(记忆投毒面)。
+    uid = None
+    if authorization and authorization.startswith("Bearer "):
+        try:
+            from jose import jwt
+            uid = jwt.decode(authorization[7:], JWT_SECRET, algorithms=["HS256"]).get("user_id")
+        except Exception:
+            raise HTTPException(401, "invalid JWT")
+    if not uid:
+        raise HTTPException(401, "auth required (Bearer JWT)")
+    agent_type = uid[:60]
     project = (body or {}).get("project") or _V14_DEFAULT_PROJECT
     name = ((body or {}).get("name") or content[:30].strip())[:80]
     description = ((body or {}).get("description") or content[:200])[:200]
