@@ -136,7 +136,7 @@ bash ~/.claude/plugins/nautilus-compass/ops/agent_quickstart.sh my-agent
 | **LongMemEval-M 500 题全量**(每题 ~501 session) | **P@5 0.888** | 比 S500 只掉 9pt(12 倍语料);ssu 崩盘在全量修复(0.20→0.93);ssp 0.53 新暴露短板;M 尚无 mem0 对照 |
 | **EverMemBench-Dynamic**(n=500) | **44.4%(Run1)/ 47.3%(Run2)** | 超过 Table 4 四个公开基线(Mem0 37.09 · Zep 39.97 · MemOS 42.55 · MemoBase 34.27)。不宣称"业界 SOTA"——OMEGA / Mem0g 未公开报数 |
 | **LongMemEval-S e2e 500 题全量**(doubao subject × glm judge · 2026-08-29) | **42.6%**(213/500)分型:ssu **95.7%** · ssp **80.0%** · ku **73.1%** · ssa 25.0% · ms 22.6% · tr 15.8%(修复前 **0%**——日期锚定修复) | 诚实双层:单会话型近天花板;跨会话聚合(ms/ssa/tr)是公开的下一杠杆(答案散在 3+ 个 session,超出 3 句 context 窗)。30 题配对:56.7%(+30pt context 修复,小样本)。全量 JSON:[`docs/evidence/e2e_500_full_20260829.json`](docs/evidence/e2e_500_full_20260829.json) |
-| **LongMemEval-V2 small tier**(451 题首条基线·未调优 · 2026-08-30) | **web 19.6% / enterprise 12.8%**(实答口径 26.8% / 17.4%) | 新一代多 session 基准,首条未调优基线如实公布。失分构成在检索不在 reader:实答中 unknown 占 43-54%(procedure 型 52.4% 说明设计可迁移);多 session 检索适配 = 公开的下一杠杆。证据:[`vtf/_compass_lmev2_out/`](vtf/_compass_lmev2_out/) |
+| **LongMemEval-V2 small tier**(451 题 · 调优 v2 · 2026-08-30) | **web 36.7% / enterprise 40.3%**(同日首条未调优基线:19.6% / 12.8%) | 新一代多 session 基准(webarena agent 轨迹),未调优基线与调优 v2 双口径公布。两个杠杆:① abstention 判分口径对齐(裸 UNKNOWN 121→0;快照不可验证题 2.8%→45.8%,走 rubric 两条合法路线)② 检索单元升级(a11y 空结构剪枝 + traj 内 dense 重排 + 预算 12k→24k;procedure +16.6pt)。诚实注记:abstention 路线依赖 judge 主观判别(同款措辞抽验有 1 分也有 0 分);web dynamic 型 -3.9pt 小滑。证据:[`vtf/_compass_lmev2_out/`](vtf/_compass_lmev2_out/) |
 | **Drift 检测 AUC** | **0.83 held-out / 0.92 in-set** | 公开记忆层里唯一做 drift 检测的 |
 | **复现成本** | **~$3.50** / 500 题 | 比 GPT-4o-judged 栈(~$50+)便宜 ~14× |
 | **hook p95 延迟** | **<50 ms** | 可安全挂在每个 prompt 上 |
