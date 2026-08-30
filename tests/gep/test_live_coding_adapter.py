@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import subprocess
 from pathlib import Path
 
@@ -114,6 +115,16 @@ def _write_suite(path: Path, suite: dict[str, object]) -> Path:
     return path
 
 
+def _install_dummy_provider_on_path(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """claude_cli suite 的 command(如 claude.cmd)依赖本机安装的 CLI;CI(ubuntu)无此可执行文件。
+    造一个 dummy 可执行文件并前置 PATH,让 preflight/invoke 的 shutil.which 检查通过——生产检查逻辑不动。"""
+    dummy = tmp_path / "claude.cmd"
+    dummy.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+    if os.name != "nt":
+        dummy.chmod(0o755)
+    monkeypatch.setenv("PATH", os.pathsep.join([str(tmp_path), os.environ.get("PATH", "")]))
+
+
 def _glm_suite() -> dict[str, object]:
     suite = _suite()
     suite["loop_plan"]["oracle"] = {
@@ -220,7 +231,10 @@ def test_preflight_fails_closed_for_missing_credential_or_tampered_suite(tmp_pat
         load_value_suite(_write_suite(tmp_path / "tampered.json", tampered))
 
 
-def test_committed_value_suite_is_sealed_and_preflightable() -> None:
+def test_committed_value_suite_is_sealed_and_preflightable(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _install_dummy_provider_on_path(monkeypatch, tmp_path)
     suite = load_value_suite(ROOT / "benchmarks" / "dogfood_mvp_v1" / "value_suite.json")
 
     receipt = preflight_value_suite(suite, environment={"ARK_API_KEY": "present-only"})
@@ -230,7 +244,10 @@ def test_committed_value_suite_is_sealed_and_preflightable() -> None:
     assert receipt["zero_provider_calls"] is True
 
 
-def test_committed_reserve_suite_is_sealed_and_preflightable() -> None:
+def test_committed_reserve_suite_is_sealed_and_preflightable(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _install_dummy_provider_on_path(monkeypatch, tmp_path)
     suite = load_value_suite(ROOT / "benchmarks" / "dogfood_mvp_v1" / "value_suite_reserve.json")
 
     receipt = preflight_value_suite(suite, environment={})
@@ -494,8 +511,9 @@ def test_anthropic_compatible_provider_binds_one_messages_request_without_exposi
 
 
 def test_claude_cli_provider_is_fixed_tool_free_and_parses_the_reported_glm_identity(
-    tmp_path: Path,
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
+    _install_dummy_provider_on_path(monkeypatch, tmp_path)
     suite = load_value_suite(_write_suite(tmp_path / "suite.json", _glm_suite()))
     observed: dict[str, object] = {}
 
