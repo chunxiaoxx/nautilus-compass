@@ -77,17 +77,7 @@ $50+ for GPT-4o-judged stacks). Full argument:
 
 ## Quickstart
 
-### 30 seconds (any machine with ssh access to your dev box)
-
-```bash
-bash ~/.claude/plugins/nautilus-compass/ops/agent_quickstart.sh my-agent
-```
-
-Generates a scoped token, wires the cloud MCP bridge, writes `.mcp.json`,
-and runs an end-to-end self-check. Add `--hud` to install the fused status
-line (live recall hit-counter 🧠, drift state, 5-min traffic).
-
-### Claude Code / Desktop (manual, local daemon)
+### 30 seconds (Claude Code / Desktop · local daemon)
 
 ```bash
 git clone https://github.com/chunxiaoxx/nautilus-compass ~/.claude/plugins/nautilus-compass
@@ -137,6 +127,17 @@ curl https://compass.nautilus.social/.well-known/agent.json   # A2A discovery
 
 Sign up at `compass.nautilus.social/signup` for a hosted gateway with
 multi-user sync, audit log, and managed BGE-m3.
+
+### Nautilus platform agents (cloud ssh quickstart)
+
+For agents on machines with ssh access to your Nautilus cloud box —
+generates a scoped token, wires the cloud MCP bridge, writes `.mcp.json`,
+and runs an end-to-end self-check. Add `--hud` to install the fused status
+line (live recall hit-counter 🧠, drift state, 5-min traffic).
+
+```bash
+bash ~/.claude/plugins/nautilus-compass/ops/agent_quickstart.sh my-agent
+```
 
 ---
 

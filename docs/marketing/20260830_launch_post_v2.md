@@ -48,11 +48,16 @@ Every experiment above has its full run log in `docs/evidence/` in the repo — 
 
 It also does two things beyond recall: pre-action **drift detection** (checks agent actions against failure-mode anchors, AUC 0.83, p95 <50ms) and **cross-agent contracts** (tracks implicit obligations when multiple agents share files).
 
-30-second hookup for Claude Code / Cline / Cursor / Continue.dev / Zed via MCP:
+30-second hookup (Claude Code, local daemon — everything stays on your machine):
 
+```bash
+git clone https://github.com/chunxiaoxx/nautilus-compass ~/.claude/plugins/nautilus-compass
+bash ~/.claude/plugins/nautilus-compass/install.sh
+bash ~/.claude/plugins/nautilus-compass/daemon_start.sh
 ```
-bash ~/.claude/plugins/nautilus-compass/ops/agent_quickstart.sh my-agent
-```
+
+Cursor / Cline / Continue.dev / Zed: `python scripts/install_to_agent.py`.
+No local install: hosted gateway at compass.nautilus.social.
 
 Repo (MIT, bilingual README): https://github.com/chunxiaoxx/nautilus-compass
 Landing: https://compass.nautilus.social
@@ -69,7 +74,7 @@ Happy to answer questions on the retrieval routing design or the failure experim
 4. 失败实验同样公开:rerank 有害(-2pt)、K=50 无效、小模型无效。12 题 +16.7pt 的初读是抽样偏差,30 题混合后修正。全部证据在 repo docs/evidence/。
 5. 客场也赢:LOCOMO(mem0 主场)n=1986,P@1 0.644 vs 0.592。大语料(12×)泛化 P@5 0.888。EverMemBench 超 Mem0/Zep/MemOS。
 6. e2e 全量 500 题定案 42.6%:单会话型近满分(ssu 95.7/ssp 80.0/ku 73.1),跨会话聚合型是短板(ms 22.6/ssa 25.0/tr 15.8,tr 曾为 0,日期锚定修复后翻盘)。检索 P@5 本来就 97.8%——差距从来不在召回,在 reader context 装不下跨会话答案。两个数都公布。
-7. 附赠:drift 检测 AUC 0.83(动作前对照失败模式锚点)+ 跨 agent 合约审计。MCP 30 秒接入 Claude Code/Cursor/Cline。MIT。github.com/chunxiaoxx/nautilus-compass
+7. 附赠:drift 检测 AUC 0.83(动作前对照失败模式锚点)+ 跨 agent 合约审计。三条命令接入 Claude Code,Cursor/Cline 一条脚本。MIT。github.com/chunxiaoxx/nautilus-compass
 
 ---
 
