@@ -25,6 +25,13 @@ import numpy as np
 from .memory import Memory, MemoryContextItem, register_memory
 
 _WORD_RE = re.compile(r"[\w:]+")
+# 刀2 · UI 树剪枝:丢无文本的结构行("[20] navigation ''"),保留带内容的行
+_A11Y_NOISE_RE = re.compile(r"\[\d+\] \w+ ''")
+
+
+def _prune_a11y(a11y: str, max_chars: int) -> str:
+    lines = [ln for ln in a11y.splitlines() if not _A11Y_NOISE_RE.search(ln)]
+    return "\n".join(lines)[:max_chars]
 
 
 def _tokenize(text: str) -> list[str]:
@@ -35,7 +42,7 @@ def _state_text(state: dict[str, Any], max_chars: int) -> str:
     url = str(state.get("url") or "")
     action = str(state.get("action") or "")
     thought = str(state.get("thought") or "")
-    a11y = str(state.get("accessibility_tree") or "")
+    a11y = _prune_a11y(str(state.get("accessibility_tree") or ""), 500)
     parts = []
     if url:
         parts.append(f"url: {url}")
@@ -64,7 +71,8 @@ class CompassMemory(Memory):
         self._window = max(1, int(p.get("window", 2)))
         self._max_state_chars = int(p.get("max_state_chars", 1200))
         self._max_screenshots = int(p.get("max_screenshots", 4))
-        self._text_budget = int(p.get("text_budget_chars", 12000))
+        self._text_budget = int(p.get("text_budget_chars", 24000))
+        self._per_traj_extra = int(p.get("per_traj_extra", 4))
         self._rrf_k = int(p.get("rrf_k", 60))
         self._model_name = str(p.get("model_name", "BAAI/bge-m3"))
         self._device = str(p.get("device", "cpu"))
@@ -208,6 +216,24 @@ class CompassMemory(Memory):
         by_traj: dict[str, list[dict[str, Any]]] = {}
         for c in picked:
             by_traj.setdefault(c["traj_id"], []).append(c)
+
+        # 刀2 · traj 内 dense 重排扩展:命中轨迹再拉同轨迹语义最相关的 states,
+        # 修"检回正确轨迹、错误片段"(逐题对齐:88% unknown 题答案段不在窗口)
+        if self._per_traj_extra > 0:
+            expanded: dict[str, list[dict[str, Any]]] = {}
+            for traj_id, chunks in by_traj.items():
+                picked_ids = {id(c) for c in chunks}
+                traj_chunk_idx = [
+                    i for i, c in enumerate(self._chunks) if c["traj_id"] == traj_id
+                ]
+                scored = sorted(traj_chunk_idx, key=lambda i: -dense[i])
+                extra = [
+                    self._chunks[i]
+                    for i in scored
+                    if id(self._chunks[i]) not in picked_ids
+                ]
+                expanded[traj_id] = chunks + extra[: self._per_traj_extra]
+            by_traj = expanded
 
         items: list[MemoryContextItem] = []
         used = 0
