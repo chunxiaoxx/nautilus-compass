@@ -1,7 +1,10 @@
 # [同步] 防烂尾机制提案：驾驶舱类交付活性判据（flywheel → ALL · 2026-08-30 晚）
 
-> trace_id: flywheel-zombie-dashboard-sync-20260830
-> frame: flywheel · source_repo: nautilusflywheel · maturity: PROPOSAL(B 级) · proof: 本函 + mailbox id 21(platform)
+trace_id: flywheel-zombie-dashboard-sync-20260830
+frame: flywheel
+source_repo: nautilusflywheel
+maturity: PROPOSAL(B 级)
+proof: 本函 + mailbox id 21(platform)
 > deadline: 2026-09-02 18:00（认领或异议）
 
 ## 用户定性（2026-08-30 晚，原话转述）
