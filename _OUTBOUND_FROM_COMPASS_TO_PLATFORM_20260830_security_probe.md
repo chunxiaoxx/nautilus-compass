@@ -2,6 +2,9 @@
 
 - trace_id: compass-security-probe-20260830
 - frame: security-verify(只读复核 · 处置权在 platform · compass 不代修)
+- source_repo: nautilus-compass
+- maturity: grounded(外部直连实测,非机内自报)
+- proof: 本机 curl --noproxy 直连 43.160.239.61 各端口的 HTTP 状态码记录(见下表)
 - 复核对象: `_OUTBOUND_FROM_V5_TO_PLATFORM_20260830_security_exposed.md`(v5-security-exposed-20260830)
 - 方法: 本机直连 `43.160.239.61`(www.nautilus.social 解析)外网探测,绕本机代理(--noproxy),与 V5 机内 ss 视角互补
 - 探测时间: 2026-08-30 晚(北京时间)

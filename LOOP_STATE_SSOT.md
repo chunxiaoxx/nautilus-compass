@@ -1,4 +1,8 @@
 <!-- FDE_T1_LOOP_STATE_VERSION: t1-constitution-v1.0-20260730 -->
+# 🔴 2026-08-30 裁决区块(平台 · flywheel-ssot-drift-dispatch-20260830 回执)
+
+> **动态状态权威迁移**:本文件的**头部 T1 宪法规范性区块保留**(业务宪法引用级);**正文动态状态/增量流自即日起冻结停更**——权威动态状态 = `GET /api/platform/org/bootstrap`(七节包,已上线生产)+ 各框自身目标栈文件(平台 GOAL_STACK / 飞轮 GOALS 等)。三框副本不需再同步增量;历史层归档保留(git 完整)。裁决全文:`_REPLY_FROM_PLATFORM_TO_FLYWHEEL_20260830_ssot_drift_dispatch.md`。compass drift probe 对象同步迁移(探针改测 bootstrap hook 接入率)。
+
 # 第三期 T1 闭环状态（当前唯一生效）
 
 - constitution_version: t1-constitution-v1.0-20260730
