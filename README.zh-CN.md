@@ -76,16 +76,7 @@ GPT-4o-judged 栈要 $50+)。完整论证:
 
 ## 快速开始
 
-### 30 秒接入(任何能 ssh 到开发机的机器)
-
-```bash
-bash ~/.claude/plugins/nautilus-compass/ops/agent_quickstart.sh my-agent
-```
-
-生成 scope 受限 token、接通云 MCP 桥、写好 `.mcp.json`、跑端到端自检。
-加 `--hud` 顺装融合状态栏(实时召回命中计数 🧠 · drift 状态 · 5 分钟流量)。
-
-### Claude Code / Desktop(手动,本地 daemon)
+### 30 秒接入(Claude Code / Desktop · 本地 daemon)
 
 ```bash
 git clone https://github.com/chunxiaoxx/nautilus-compass ~/.claude/plugins/nautilus-compass
@@ -123,6 +114,16 @@ curl https://compass.nautilus.social/.well-known/agent.json   # A2A 发现
 
 `compass.nautilus.social/signup` 注册托管网关:多用户同步、审计日志、
 托管 BGE-m3。
+
+### Nautilus 平台 agent(云端 ssh 快捷接入)
+
+适用于能 ssh 到你 Nautilus 云机的机器——生成 scope 受限 token、接通云
+MCP 桥、写好 `.mcp.json`、跑端到端自检。加 `--hud` 顺装融合状态栏
+(实时召回命中计数 🧠 · drift 状态 · 5 分钟流量)。
+
+```bash
+bash ~/.claude/plugins/nautilus-compass/ops/agent_quickstart.sh my-agent
+```
 
 ---
 
