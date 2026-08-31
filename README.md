@@ -45,6 +45,14 @@ our reproduction):
 | **compass** | **0.890** | **0.978** | **0.929** |
 | mem0 2.0.19 | 0.774 | 0.916 | 0.834 |
 
+One-command reproduction (retrieval-only, no LLM calls, CPU works / GPU
+recommended for the full 500):
+
+```bash
+bash scripts/reproduce_lmes_retrieval.sh            # full 500
+SUBSET=12 bash scripts/reproduce_lmes_retrieval.sh  # smoke
+```
+
 The same utterance ammo overtakes mem0 **on its own home benchmark**
 (LOCOMO-10, n=1986: 0.644 / 0.890 vs 0.592 / 0.802) and fixes the
 single-session collapse on LongMemEval-M (0.20 → 1.00). Full evidence chain

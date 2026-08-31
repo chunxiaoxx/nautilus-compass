@@ -1,5 +1,10 @@
 # Reproducing Compass v0.8 LongMemEval-S 56.6%
 
+> ⚠️ **此文为 v0.8 旧版口径**(2026-05 e2e 56.6%,m3-rerank + reader)。
+> 当前主口径(检索三指标 P@1/P@5/MRR,4-type routing + date-anchor + hybrid,
+> vs mem0 同题对打)的一键复算入口:
+> `bash scripts/reproduce_lmes_retrieval.sh` — 见 README 对应节。
+
 > Total cost: ~$3.50 USD · Time: ~8 hours wall-clock
 > Tested 2026-05-04 ~ 2026-05-05 on Tencent Cloud T4 spot instance
 
