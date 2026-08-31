@@ -1,0 +1,39 @@
+{
+ "domains": {
+  "ent": {
+   "n": 211,
+   "expected_total": 211,
+   "raw": 0.3081,
+   "fixed": 0.4076,
+   "d12": 0.403,
+   "gate_line": 0.453,
+   "pass_gate": false,
+   "flipped_up": 21,
+   "retry_failed_kept_zero": 0,
+   "llm_zero_not_in_retry_list": 0
+  },
+  "web": {
+   "n": 240,
+   "expected_total": 240,
+   "raw": 0.2875,
+   "fixed": 0.3667,
+   "d12": 0.367,
+   "gate_line": 0.417,
+   "pass_gate": false,
+   "flipped_up": 19,
+   "retry_failed_kept_zero": 0,
+   "llm_zero_not_in_retry_list": 0
+  }
+ },
+ "judge_retry": {
+  "total_rows": 100,
+  "unique_questions": 100,
+  "dup_rejudged": 0,
+  "dup_agreement": "0/0",
+  "ok": 100,
+  "failed": 0,
+  "fail_rate": 0.0,
+  "inconclusive_if_fail_rate_gt": 0.2
+ },
+ "verdict": "双域均未过门 → 刀3 全量验证路线关闭定案"
+}
