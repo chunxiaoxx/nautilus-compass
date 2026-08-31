@@ -169,7 +169,9 @@ def run_hook() -> int:
             h = hashlib.sha256(body.encode("utf-8")).hexdigest()[:16]
             if h in seen:
                 continue
-            slug = re.sub(r"[^a-z0-9]+", "-", path.parent.name.lower()[:24])[:40] or "verdict"
+            # slug 用全相对路径:同名气 run 目录(d12/compass_web_small vs compass_web_small)不可同 slug,防同名覆盖
+            rel_parent = path.parent.relative_to(REPO).as_posix().lower()
+            slug = re.sub(r"[^a-z0-9]+", "-", rel_parent)[:60] or "verdict"
             doc = (
                 "---\n"
                 "status: pending_qc\n"
