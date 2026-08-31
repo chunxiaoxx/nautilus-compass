@@ -23,3 +23,12 @@
 - smoke:patch 后先 10 题混合冒烟(含 dynamic 型 ≥3 道)确认无崩溃再全量。
 - 输出:`/root/lmev2_runs_d14/`,judge/subject 与 d13 同款(doubao plan 端点)。
 - 判分互核:d14 与 d12/d13 同 judge 同口径,掉分题逐题对齐 evidence 后才允许归因。
+
+## 执行口径更正(2026-08-31 22:30 跑前落盘 · 用户拍板 d14→s250 后)
+
+- **执行环境**:652957(lyg1024/4090PLUS 48G,652509 保留盘恢复,老环境原样)。embedder 已从刀3 merged(`/root/knife3/bge-m3-lmev2`,d13 残留)切回基线 `/root/models/bge-m3` —— d14 锚=d12 栈+刀4 单变量(刀3 已因 d13 定案关闭,不叠加)。cfg 改前备份 `compass_cfg.json.d13-bak`。
+- **刀4 patch 已应用**:PATCH_OK 64493→65358B(import 语法门过,备份 harness.py.orig-d4)。smoke 10 题 reader 侧无崩溃(patch 不破坏生成)。
+- **judge 口径更正:medium/4096 → low/16384**。原因:d14 smoke 复现 d13 风暴——smoke 判分 attempt 1/2/3 全空 + 外层重试也空(结构性 token 预算故障,重试无效)。沿用污染口径 = d13 事故重演。
+- **d12 锚同步重判**:为避免"两把尺子"(d12 的 0.367/0.403 含 medium/4096 系统性压 0 偏置,而 d14 用 low/16384 会口径性虚高),d12 全部 451 题(web 240+ent 211)将用 low/16384 同口径离线重判(d13 retry 工具链复用),判据中所有 d12 锚数值(abstention 得分率/overall 门线)以重判版为准。定案文档同时给污染版/重判版两行,判据结构(上述 5 条)不变。
+- **questions/haystack 复用 d13 runtime**(240/211 同题同序,与 d12/d13 可比)。serial 链 web→ent(BGE 竞态禁并行进程),reader 16 并发与 d12 一致。
+- 时间线:8/31 22:20 web 启动,预计 9/1 凌晨全程完成;完成后 s250(vLLM qwen1.5b 8023)接续。
