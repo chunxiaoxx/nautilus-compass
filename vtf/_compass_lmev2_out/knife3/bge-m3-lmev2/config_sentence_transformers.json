@@ -1,0 +1,14 @@
+{
+  "__version__": {
+    "pytorch": "2.10.0+cu128",
+    "sentence_transformers": "6.0.0",
+    "transformers": "4.57.6"
+  },
+  "default_prompt_name": null,
+  "model_type": "SentenceTransformer",
+  "prompts": {
+    "document": "",
+    "query": ""
+  },
+  "similarity_fn_name": "cosine"
+}
