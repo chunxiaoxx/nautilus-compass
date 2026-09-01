@@ -716,6 +716,10 @@ def parse_memory_file(path: Path) -> dict:
 # in-flight cap = overloaded livelock. Non-atomic writes could truncate the
 # file at any kill; embed progress mid-scan was never persisted at all.
 _PKL_FLUSH_EVERY = int(os.environ.get("COMPASS_PKL_FLUSH_EVERY", "50"))
+# v3.0.9 · 单请求 embed 预算:积压渐进消化(新文件优先),防大批 encode 独占
+# bge-handler 数分钟 → 后续 recall 排队饿死(2026-09-01 云上实测 60s 超时)。
+_EMBED_BUDGET = int(os.environ.get("COMPASS_EMBED_BUDGET", "24"))
+_EMBED_CHUNK_BUDGET = int(os.environ.get("COMPASS_EMBED_CHUNK_BUDGET", "12"))
 
 # v3.0.3 · per-project embed/flush lock · 2026-08-25 cloud incident: concurrent
 # get_memory_entries calls raced (setdefault → two divergent cache dicts; the
@@ -799,6 +803,13 @@ def get_memory_entries(mem_dir: Path):
                 e["embedding"] = cached[1]
             else:
                 misses.append(e)
+        if len(misses) > _EMBED_BUDGET:
+            # v3.0.9 · 超预算 → 新文件优先渐进消化,其余本轮 embedding=None
+            #(不写 cache,下轮继续补);recall 响应时间从此与积压量解耦
+            misses.sort(key=lambda e: e.get("mtime") or 0, reverse=True)
+            for e in misses[_EMBED_BUDGET:]:
+                e["embedding"] = None
+            misses = misses[:_EMBED_BUDGET]
         if misses:
             _t0e = time.time()
             _vecs = None
@@ -847,6 +858,8 @@ def get_memory_entries(mem_dir: Path):
                 cch = cache.get(ck)
                 if cch and cch[0] == e["mtime"]:
                     e["chunk_embs"] = cch[1]
+                elif updated >= _EMBED_CHUNK_BUDGET:
+                    e["chunk_embs"] = []  # v3.0.9 · chunk 预算:本轮跳过,下轮补
                 else:
                     try:
                         vecs = []
