@@ -33,6 +33,12 @@ def probe_recall() -> tuple[bool, float, str]:
         s = socket.create_connection(("127.0.0.1", 9876), timeout=120)
         req = {"action": "recall", "query": PROBE_QUERY, "top_k": 1,
                "scope": "project", "project": "C--Users-chunx-Projects-nautilus-compass"}
+        # daemon v3.0.10: 9876 requires token — attach from cache file.
+        try:
+            req["token"] = (Path.home() / ".claude" / ".cache"
+                            / "compass_daemon_token").read_text(encoding="utf-8").strip()
+        except OSError:
+            pass
         s.sendall((json.dumps(req) + "\n").encode("utf-8"))
         buf = b""
         while not buf.endswith(b"\n"):

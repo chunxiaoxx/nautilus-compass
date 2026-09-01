@@ -198,6 +198,13 @@ def _hash_file(path: Path) -> str | None:
 
 def _probe_daemon(action: str) -> dict[str, object]:
     payload: dict[str, Any] = {"action": action}
+    if action != "ping":  # v3.0.10 · daemon 9876 token auth (ping exempt)
+        try:
+            with open(os.path.expanduser("~/.claude/.cache/compass_daemon_token"),
+                      encoding="utf-8") as _tf:
+                payload["token"] = _tf.read().strip()
+        except OSError:
+            pass
     if action == "score":
         payload.update(
             {

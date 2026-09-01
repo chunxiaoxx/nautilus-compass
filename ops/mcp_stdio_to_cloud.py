@@ -458,6 +458,15 @@ def _try_local_daemon(line: str):
     if not daemon_req.get("query"):
         return None
 
+    # v3.0.10 · local daemon 9876 requires token (ping exempt)
+    if "token" not in daemon_req:
+        try:
+            with open(os.path.expanduser("~/.claude/.cache/compass_daemon_token"),
+                      encoding="utf-8") as _f:
+                daemon_req["token"] = _f.read().strip()
+        except OSError:
+            pass
+
     # TCP call to local daemon · v1.7.2 · retry on transient timeout/io
     buf = b""
     last_err = None
