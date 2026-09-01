@@ -15,8 +15,10 @@ Protocol (JSON over TCP localhost:9876):
   · 多客户端并发 OK · single threaded GIL 但 BGE encode 快 (~50ms/句)
 """
 import hashlib
+import hmac
 import json
 import os
+import secrets
 
 # v2.0.2 · P6 · BLAS internal thread limit · CRITICAL: must set BEFORE importing
 # any numpy/torch/sentence-transformers downstream. Each BGE encode call would
@@ -29,6 +31,11 @@ os.environ.setdefault("OMP_NUM_THREADS", "1")
 os.environ.setdefault("MKL_NUM_THREADS", "1")
 os.environ.setdefault("OPENBLAS_NUM_THREADS", "1")
 os.environ.setdefault("NUMEXPR_NUM_THREADS", "1")
+# v3.0.10 · SentenceTransformer 初始化的 hub 在线检查走系统代理;本机代理断流时
+# 卡 ~42s 后抛 "client has been closed" 并无限重试(2026-09-01 实测 18:35-18:39)。
+# 模型已缓存本地,默认强制离线加载;需下载新模型时外部设 HF_HUB_OFFLINE=0 覆盖。
+os.environ.setdefault("HF_HUB_OFFLINE", "1")
+os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
 
 import pickle
 import socket
@@ -1593,6 +1600,57 @@ def handle_ingest(req: dict) -> dict:
                 "embedded": False, "embed_warning": str(e)}
 
 
+# v3.0.10 · 9876 token 鉴权:经 -R 反向隧道时云端进程可触达本地 daemon,
+# 原零鉴权 = 隧道域内任何进程可 recall/ingest/shutdown。
+# 规则:ping 免鉴权(探活依赖:daemon_start.ps1/sh 判定走 ping),其余 action 一律
+# 比对 token;token 文件 ~/.claude/.cache/compass_daemon_token 首次启动自动生成
+# (64 hex · 0600),本机客户端(hud_wrapper/stop_hook/compass_status/CLI stop)
+# 从同一路径读。COMPASS_DAEMON_TOKEN_FILE 可覆盖(测试/多实例)。
+_DAEMON_TOKEN_CACHE: str | None = None
+
+
+def _daemon_token_file() -> Path:
+    return Path(os.environ.get("COMPASS_DAEMON_TOKEN_FILE") or
+                (Path.home() / ".claude" / ".cache" / "compass_daemon_token"))
+
+
+def _daemon_token() -> str:
+    global _DAEMON_TOKEN_CACHE
+    if _DAEMON_TOKEN_CACHE:
+        return _DAEMON_TOKEN_CACHE
+    p = _daemon_token_file()
+    try:
+        tok = p.read_text(encoding="utf-8").strip()
+        if tok:
+            _DAEMON_TOKEN_CACHE = tok
+            return tok
+    except Exception:
+        pass
+    tok = secrets.token_hex(32)
+    try:
+        p.parent.mkdir(parents=True, exist_ok=True)
+        fd = os.open(str(p), os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            f.write(tok)
+    except FileExistsError:
+        pass  # 并发启动竞态:另一进程已写入,下面读它的
+    except Exception:
+        pass  # 文件不可写:token 仅存内存,客户端读不到=全拒(fail-closed 侧)
+    try:
+        tok = p.read_text(encoding="utf-8").strip() or tok
+    except Exception:
+        pass
+    _DAEMON_TOKEN_CACHE = tok
+    return tok
+
+
+def _auth_ok(req: dict) -> bool:
+    try:
+        return hmac.compare_digest(str(req.get("token", "")), _daemon_token())
+    except Exception:
+        return False
+
+
 def _safe_handle(conn: socket.socket):
     """v2.0.7 · P7 · wraps handle_conn to guarantee fd release + sem release.
 
@@ -1641,6 +1699,11 @@ def handle_conn(conn: socket.socket):
             return
         if req.get("action") == "ping":
             conn.sendall(json.dumps(_runtime_identity_payload()).encode("utf-8") + b"\n")
+            return
+        # v3.0.10 · ping 之外全部 action 先过 token 门
+        if not _auth_ok(req):
+            log(f"auth_failed action={req.get('action')}")
+            conn.sendall(json.dumps({"ok": False, "error": "auth_failed"}).encode("utf-8") + b"\n")
             return
         if req.get("action") == "status":
             # v3.0.2 · Stage1a /status (ported from cloud /opt fork)
@@ -1697,7 +1760,8 @@ def client(action: str, query: str, project: str, top_k: int = 5,
             s.settimeout(timeout)
             s.connect((HOST, PORT))
             req = {"action": action, "query": query,
-                   "project": project, "top_k": top_k}
+                   "project": project, "top_k": top_k,
+                   "token": _daemon_token()}  # v3.0.10 · 库函数自带鉴权
             s.sendall(json.dumps(req, ensure_ascii=False).encode("utf-8") + b"\n")
             buf = b""
             while b"\n" not in buf:
@@ -1730,7 +1794,10 @@ if __name__ == "__main__":
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 s.settimeout(2)
                 s.connect((HOST, PORT))
-                s.sendall(b'{"action":"shutdown"}\n')
+                # v3.0.10 · shutdown 是远程杀进程,必须带 token
+                s.sendall(json.dumps({"action": "shutdown",
+                                      "token": _daemon_token()},
+                                     ensure_ascii=False).encode("utf-8") + b"\n")
         except Exception as e:
             log(f"stop fail: {e}")
         sys.exit(0)

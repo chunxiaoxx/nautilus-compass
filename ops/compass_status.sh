@@ -10,9 +10,14 @@ echo "═══ nautilus-compass status ═══"
 
 # 1. 本地 daemon
 L=$(python3 - <<'EOF' 2>/dev/null || echo '{"ok":false}'
-import socket, json
-s=socket.create_connection(("127.0.0.1",9876),timeout=3)
-s.sendall(b'{"action":"status"}\n')
+import socket, json, os
+try:
+    tok = open(os.path.expanduser('~/.claude/.cache/compass_daemon_token'),
+               encoding='utf-8').read().strip()
+except Exception:
+    tok = ''
+s = socket.create_connection(("127.0.0.1", 9876), timeout=3)
+s.sendall(json.dumps({"action": "status", "token": tok}).encode() + b"\n")
 print(s.recv(65536).decode())
 EOF
 )
