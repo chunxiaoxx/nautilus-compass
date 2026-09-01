@@ -74,6 +74,12 @@ def daemon_recall(query: str, top_k: int = 3) -> list[dict]:
         "action": "recall", "query": query, "top_k": top_k,
         "scope": "project", "project": "C--Users-chunx-Projects-nautilus-compass",
     }
+    try:  # v3.0.10 · daemon 9876 token auth
+        with open(os.path.expanduser("~/.claude/.cache/compass_daemon_token"),
+                  encoding="utf-8") as _tf:
+            req["token"] = _tf.read().strip()
+    except OSError:
+        pass
     s = socket.create_connection(DAEMON, timeout=180)
     try:
         s.sendall((json.dumps(req) + "\n").encode("utf-8"))

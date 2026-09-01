@@ -13,6 +13,7 @@ the daemon's (host, 9876).
 from __future__ import annotations
 
 import json
+import os
 import socket
 
 # exceptions that mean "this endpoint is down / unreachable" -> try the next one
@@ -25,6 +26,13 @@ def call_endpoint(host, port, query, project, top_k=8, action="recall", timeout=
         s.settimeout(timeout)
         s.connect((host, port))
         req = {"action": action, "query": query[:2000], "project": project, "top_k": top_k}
+        if action != "ping":  # v3.0.10 · daemon 9876 token auth (ping exempt)
+            try:
+                with open(os.path.expanduser("~/.claude/.cache/compass_daemon_token"),
+                          encoding="utf-8") as _tf:
+                    req["token"] = _tf.read().strip()
+            except OSError:
+                pass
         s.sendall(json.dumps(req, ensure_ascii=False).encode("utf-8") + b"\n")
         buf = b""
         while b"\n" not in buf:

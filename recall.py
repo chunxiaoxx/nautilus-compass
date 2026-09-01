@@ -1291,6 +1291,11 @@ def try_daemon_recall(mem_dir: Path, user_prompt: str) -> bool:
             s.connect(("127.0.0.1", 9876))
             req = {"action": "both", "query": expanded_prompt[:2000],
                    "project": project, "top_k": TOP_K}
+            try:  # v3.0.10 · daemon 9876 token auth
+                req["token"] = (Path.home() / ".claude" / ".cache"
+                                / "compass_daemon_token").read_text(encoding="utf-8").strip()
+            except OSError:
+                pass
             s.sendall(json.dumps(req, ensure_ascii=False).encode("utf-8") + b"\n")
             buf = b""
             while b"\n" not in buf:
