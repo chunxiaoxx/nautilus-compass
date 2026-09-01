@@ -646,6 +646,34 @@ def cosine(a, b):
     return dot/(na*nb) if na>0 and nb>0 else 0.0
 
 
+try:
+    import numpy as _np
+except Exception:
+    _np = None
+
+
+def cosine_batch(q_emb, vecs):
+    """v3.0.9 · 向量化批量 cosine,等价逐条 cosine(q, v)。
+
+    原主打分+chunk 打分是 1024 维纯 Python 逐元素循环 × 数千 entries =
+    数千万次 Python 运算(py-spy 实测两 handler 同烧打分段,recall 稳态
+    CPU 大头);numpy 矩阵乘 ~100x。numpy 不可用/异常回退逐条(原行为)。
+    """
+    if _np is not None and vecs:
+        try:
+            qv = _np.asarray(q_emb, dtype=_np.float32)
+            M = _np.asarray(vecs, dtype=_np.float32)
+            qn = float(_np.linalg.norm(qv))
+            if qn <= 0:
+                return [0.0] * len(vecs)
+            nrm = _np.linalg.norm(M, axis=1)
+            nrm[nrm == 0] = 1e-9
+            return (M @ qv / (nrm * qn)).tolist()
+        except Exception:
+            pass
+    return [cosine(q_emb, v) for v in vecs]
+
+
 def _handle_score(req: dict) -> dict:
     """score action · cosine(query, candidate) for each candidate (bge-m3).
 
@@ -1116,11 +1144,13 @@ def handle_request(req: dict) -> dict:
         # drop forgotten memories before scoring; default off = no-op.
         all_entries = _apply_lifecycle_filter(all_entries)
         scored = []
-        for e in all_entries:
-            if not e.get("embedding"): continue
-            s = cosine(q_emb, e["embedding"])
-            if s >= COSINE_MIN:
-                scored.append((s, e))
+        # v3.0.9 · 主打分向量化(原逐条 cosine 为 recall 稳态 CPU 大头之一)
+        _hits = [e for e in all_entries if e.get("embedding")]
+        if _hits:
+            _sims = cosine_batch(q_emb, [e["embedding"] for e in _hits])
+            for e, s in zip(_hits, _sims):
+                if s >= COSINE_MIN:
+                    scored.append((s, e))
         scored.sort(key=lambda x: -x[0])
 
         # v2.3.0 · when prod reranker is on, retrieve a wider candidate set so the
@@ -1149,15 +1179,25 @@ def handle_request(req: dict) -> dict:
         # ONE paragraph matches the query get pulled up (utterance-routing port).
         if _CHUNK_RECALL_USE:
             try:
-                chunk_scored = []
-                for e in all_entries:
-                    best = -1.0
+                # v3.0.9 · chunk 打分向量化:平铺全部 chunk 向量一次算,按 entry
+                # 归并取 best(原逐条 cosine 循环为 recall 稳态 CPU 另一大头)
+                _cv, _ci = [], []
+                for i, e in enumerate(all_entries):
                     for cv in e.get("chunk_embs") or ():
-                        s = cosine(q_emb, cv)
-                        if s > best:
-                            best = s
-                    if best >= COSINE_MIN:
-                        chunk_scored.append((best, e))
+                        _cv.append(cv)
+                        _ci.append(i)
+                best_per = {}
+                if _cv:
+                    _sims = cosine_batch(q_emb, _cv)
+                    for j, i in enumerate(_ci):
+                        s = _sims[j]
+                        if s > best_per.get(i, -1.0):
+                            best_per[i] = s
+                chunk_scored = []
+                for i, e in enumerate(all_entries):
+                    b = best_per.get(i, -1.0)
+                    if b >= COSINE_MIN:
+                        chunk_scored.append((b, e))
                 chunk_scored.sort(key=lambda x: -x[0])
                 if chunk_scored:
                     top = _rrf_fusion(
