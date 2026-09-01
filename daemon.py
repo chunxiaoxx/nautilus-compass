@@ -539,6 +539,12 @@ def log(msg: str) -> None:
     LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
     line = f"[{time.strftime('%H:%M:%S')}] {msg}\n"
     try:
+        # v3.0.9 · size-rotate · daemon.log append-only 曾无上限(12.6MB+)
+        try:
+            if LOG_FILE.exists() and LOG_FILE.stat().st_size > 20 * 1024 * 1024:
+                LOG_FILE.replace(LOG_FILE.with_suffix(LOG_FILE.suffix + ".1"))
+        except Exception:
+            pass
         with open(LOG_FILE, "a", encoding="utf-8") as f:
             f.write(line)
     except Exception:
@@ -739,13 +745,19 @@ def _pkl_write_atomic(path, obj) -> None:
 
 
 def _flush_memory_pkl(proj_key: str, cache: dict) -> None:
-    """v3.0.1 · persist one project's embedding cache (atomic)."""
+    """v3.0.1 · persist one project's embedding cache (atomic).
+    v3.0.9 · fail 重试一次(历史 34 条 flush fail 全有消化价值)。"""
     import hashlib
     proj_hash = hashlib.sha256(proj_key.encode()).hexdigest()[:12]
-    try:
-        _pkl_write_atomic(CACHE_DIR / f"{proj_hash}.pkl", {"embeddings": cache})
-    except Exception as _e:
-        log(f"pkl flush fail {proj_hash}: {_e}")
+    for _attempt in (1, 2):
+        try:
+            _pkl_write_atomic(CACHE_DIR / f"{proj_hash}.pkl", {"embeddings": cache})
+            return
+        except Exception as _e:
+            if _attempt == 2:
+                log(f"pkl flush fail {proj_hash}: {_e}")
+            else:
+                time.sleep(0.2)
 
 
 def get_memory_entries(mem_dir: Path):
@@ -776,29 +788,60 @@ def get_memory_entries(mem_dir: Path):
     cache = _state["memory_caches"].setdefault(proj_key, {})
     with _mem_lock(proj_key):  # v3.0.3 · serialize fill+flush per project
         updated = 0
+        # v3.0.9 · batch encode · misses 先收集再一次 encode。逐条 encode 是云
+        # daemon CPU 满载主因(792 条重 embed 逐条前向 ~4min;批量 2-5x),
+        # py-spy 两轮独立实锤 forward 64.7% + get_memory_entries 25%。
+        # _APIEmbedder 等单条 embedder 走 except 退回逐条(旧行为)。
+        misses = []
         for e in entries:
             cached = cache.get(e["fullpath"])
             if cached and cached[0] == e["mtime"]:
                 e["embedding"] = cached[1]
             else:
-                try:
-                    vec = embedder.encode(e["embed_text"])
+                misses.append(e)
+        if misses:
+            _t0e = time.time()
+            _vecs = None
+            try:
+                _vecs = embedder.encode([e["embed_text"] for e in misses])
+            except Exception as ex:
+                log(f"batch encode fail, fallback to per-file: {ex}")
+            if _vecs is not None:
+                for e, vec in zip(misses, _vecs):
                     if hasattr(vec, "tolist"):
                         vec = vec.tolist()
                     cache[e["fullpath"]] = (e["mtime"], vec)
                     e["embedding"] = vec
                     updated += 1
-                    # v3.0.1 · periodic flush · 大项目(数千文件)re-embed 中途被
+                    # v3.0.1 · periodic flush · 大项目 re-embed 中途被
                     # kill/重启不再全丢进度(2026-08-24 云 74MB pkl 卡死根因之一)
                     if updated % _PKL_FLUSH_EVERY == 0:
                         _flush_memory_pkl(proj_key, cache)
-                except Exception as ex:
-                    log(f"embed file fail {e['path']}: {ex}")
-                    e["embedding"] = None
-            # v3.2 · chunk embeddings (COMPASS_CHUNK_RECALL) · parallel pkl key
-            # "fullpath|chunks" = (mtime, [vec,...]) · same re-embed-on-mtime
-            # discipline as the entry vector. Text is not persisted (chunk count
-            # + order is deterministic from body, recomputed on cache miss).
+            else:
+                for e in misses:
+                    try:
+                        vec = embedder.encode(e["embed_text"])
+                        if hasattr(vec, "tolist"):
+                            vec = vec.tolist()
+                        cache[e["fullpath"]] = (e["mtime"], vec)
+                        e["embedding"] = vec
+                        updated += 1
+                        if updated % _PKL_FLUSH_EVERY == 0:
+                            _flush_memory_pkl(proj_key, cache)
+                    except Exception as ex:
+                        log(f"embed file fail {e['path']}: {ex}")
+                        e["embedding"] = None
+            # v3.0.9 · re-embed 观测 · 哪个 project 在大量重 embed(此前盲区,
+            # 全靠 py-spy 事后抓);proj_hash 与 pkl 文件名一致,可对账
+            if updated:
+                import hashlib as _hl
+                log(f"re-embed {updated} files · {time.time()-_t0e:.1f}s · "
+                    f"proj {_hl.sha256(proj_key.encode()).hexdigest()[:12]}")
+        # v3.2 · chunk embeddings (COMPASS_CHUNK_RECALL) · parallel pkl key
+        # "fullpath|chunks" = (mtime, [vec,...]) · same re-embed-on-mtime
+        # discipline as the entry vector. Text is not persisted (chunk count
+        # + order is deterministic from body, recomputed on cache miss).
+        for e in entries:
             if _CHUNK_RECALL_USE:
                 ck = e["fullpath"] + "|chunks"
                 cch = cache.get(ck)
@@ -860,8 +903,10 @@ def _inotify_watcher_thread():
     except Exception as _e:
         log(f"INotify() init fail: {_e}")
         return
-    watch_flags = (_iflags.CREATE | _iflags.DELETE | _iflags.MODIFY
-                   | _iflags.MOVED_TO | _iflags.MOVED_FROM | _iflags.CLOSE_WRITE)
+    # v3.0.9 · 收窄事件:CREATE/MODIFY/MOVED_FROM 冗余(一次文件写入原产生
+    # 3-4 个事件;云上 20min 打了 3509 个)。CLOSE_WRITE=写完成 · 原子写
+    # (tmp+rename)落 MOVED_TO · 删除留 DELETE,dirty 标记幂等不漏。
+    watch_flags = (_iflags.CLOSE_WRITE | _iflags.MOVED_TO | _iflags.DELETE)
     wd_to_proj = {}
     watched = 0
     failed = 0
@@ -1483,8 +1528,11 @@ def handle_ingest(req: dict) -> dict:
             vec = vec.tolist()
         proj_key = str(mem_dir)
         cache = _state["memory_caches"].setdefault(proj_key, {})
-        cache[str(out_path)] = (out_path.stat().st_mtime, vec)
-        _flush_memory_pkl(proj_key, cache)
+        # v3.0.9 · ingest flush 与 recall 线程的 flush/cache 写互斥
+        # (此前无锁:与 _mem_lock 内的 recall flush 并发是历史 flush fail 源之一)
+        with _mem_lock(proj_key):
+            cache[str(out_path)] = (out_path.stat().st_mtime, vec)
+            _flush_memory_pkl(proj_key, cache)
         return {"ok": True, "path": str(out_path), "project": project,
                 "embedded": True, "embed_dim": len(vec)}
     except Exception as e:
