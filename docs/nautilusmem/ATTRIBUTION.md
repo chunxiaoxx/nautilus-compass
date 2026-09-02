@@ -36,3 +36,26 @@
 - **run 目录须含 runtime_inputs/**(questions.json 等)+ per_question 全覆盖验证;本地 d12 瘦身版无 runtime_inputs → 官方榜需完整重跑(reader 可用 API 端点,不必自部署)
 - 提交包=两步构建(operating_points 双域合并→LAFS 打包)+SYSTEM_DESCRIPTION+单代码文件→tar.gz→submission form
 - LAFS=accuracy(overall_full_set×100)×latency(memory_query_avg_seconds)对固定 reference frontier 增益,支持多延迟操作点
+
+## 2026-09-03 LOOP 轮二:论文全文核实——license 落定 + 战略定位纠偏
+
+### License 结论(终)
+论文 E.2:"release our code and derived benchmark artifacts under **Apache-2.0**"。→ patch/造题/分发全通(NOTICE 归属义务保留);GitHub LICENSE 文件待最后核对一次。
+
+### 官方 baseline 坐标(LME-V2-Small Overall,gpt-5.2 judge 口径)
+| 方法 | Small | Medium | 延迟/query |
+|---|---|---|---|
+| No retrieval | 1.3% | 1.3% | 0s |
+| RAG query→slice | **42.8%** | 38.1% | 0.1s |
+| RAG slice+notes | 51.0% | 45.9% | 0.2s |
+| AgentRunbook-R | 58.6% | 57.0% | 26.9s |
+| Codex | 69.9% | 68.7% | 177s |
+| AgentRunbook-C | **74.9%** | 70.1% | 108s |
+| **compass(d12 tuned, doubao judge)** | **≈39.3%**(web 40.0/ent 38.4 合并) | — | 待测(应<1s,无 LLM controller) |
+
+### 🔴 定位纠偏(第二次)
+40.0/38.4 在我们自己的纵向比较里是大胜,放进官方坐标系=**与最弱 RAG 基线相当,非优势**。上官方 leaderboard 提交 39.3% vs 官方 RAG 42.8% = 自曝其短,无意义。
+**T0 leaderboard 提交撤下优先级**;成绩册改为"诚实定位"(坐标如实+判分卫生学贡献+轻量差异化——无 LLM controller 的检索延迟应远低于 26.9s,待实测)。**真正的攻坚=三池设计移植**(官方 raw state/event/note pools vs 我们单流 dense+BM25;A 臂摘要卡≈note pool 原型)——目标 Small 55-60%(超 AgentRunbook-R),有竞争力后再上 leaderboard。
+
+### 附:官方 judge 结构
+多数题程序化判分(normalized/ordered/choice matching),仅 gotchas+abstention 走 gpt-5.2 judge;官方 abstention rubric 明确给"lacks access to live environment"判 1(与我们 d12 刀1 摸出的口径一致=方向没错过)。
