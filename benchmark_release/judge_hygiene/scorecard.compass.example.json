@@ -1,0 +1,59 @@
+{
+ "system": {
+  "name": "compass",
+  "version": "d12-tuned (nautilus-compass)",
+  "code_url": "https://github.com/chunxiaoxx/nautilus-compass"
+ },
+ "benchmark": {
+  "name": "LongMemEval-V2",
+  "tier": "small",
+  "domains": [
+   "web",
+   "enterprise"
+  ]
+ },
+ "calibers": {
+  "full": {
+   "overall": 0.393,
+   "n": 451,
+   "by_type": {
+    "web": 0.4,
+    "enterprise": 0.384
+   }
+  },
+  "non_abstention": {
+   "overall": 0.29,
+   "n": 323,
+   "by_type": {
+    "web": 0.327,
+    "enterprise": 0.252
+   }
+  }
+ },
+ "judge": {
+  "model": "doubao-seed-2-0-pro-260215",
+  "max_completion_tokens": 16384,
+  "reasoning_effort": "low",
+  "structure": "all_llm"
+ },
+ "subject": {
+  "reader_model": "Qwen/Qwen3.5-9B",
+  "temperature": 0.6,
+  "context_budget_tokens": 24000,
+  "votes": 1
+ },
+ "retrieval": {
+  "embedder": "BAAI/bge-m3",
+  "reranker": null,
+  "unit": "state_slice",
+  "top_k": 5,
+  "controller_llm": null
+ },
+ "latency": {
+  "memory_query_avg_seconds": null
+ },
+ "rejudge_verified": true,
+ "evaluated_at": "2026-09-02",
+ "contamination_declaration": "none known; trajectories from public WebArena/WorkArena runs",
+ "protocol_version": "1.0"
+}
