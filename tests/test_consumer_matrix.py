@@ -46,6 +46,7 @@ CONSUMERS_HTTP = [
     "cloud_ingest.py",                # POSTs to cloud 8770 /v1/v14/ingest_obs
     "examples/compass_client_v15.py", # v1.5 client, default base 8770
     "ops/compass_health_cron.py",     # polls 8770 /compass/health
+    "ops/smoke_keepalive_fix.py",     # smokes 8770 /v1/v14/recall keepalive
 ]
 
 TOKEN_MARKERS = ("token", "TOKEN")  # auth discipline markers
