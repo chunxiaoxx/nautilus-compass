@@ -73,6 +73,16 @@ def daemon_call(req: dict, timeout: float = DAEMON_TIMEOUT) -> dict:
         env_agent = os.environ.get("COMPASS_AGENT_TYPE")
         if env_agent:
             req = {**req, "agent_type": env_agent}
+    # v3.0.12: daemon 9876 requires token (ping exempt) · 9/1 漏网客户端 #8,
+    # 由 pytest 全量的 auth_failed 探测器抓出(实证人工 grep 清单不可靠)。
+    if "token" not in req:
+        try:
+            tok = (Path.home() / ".claude" / ".cache"
+                   / "compass_daemon_token").read_text(encoding="utf-8").strip()
+        except OSError:
+            tok = ""
+        if tok:
+            req = {**req, "token": tok}
     try:
         return _daemon_call_once(req, timeout)
     except (socket.timeout, TimeoutError):
