@@ -1,13 +1,11 @@
-"""Task 2 · TCP server outbound frames carry a monotonic EventStore `_eid`.
+"""Task 2(2026-09-02 契约迁移版)· TCP server wire 帧剥除顶层 `_eid`。
 
 Boots a real mcp_server subprocess on a loopback port in dev/no-auth mode
 (``token_table=None``), drives a raw socket through ``initialize`` + a couple
-of simple methods, and asserts every server→client frame is tagged with an
-integer ``_eid`` that strictly increases across frames.
-
-The stdio path stays untagged (covered by existing tests not seeing `_eid`);
-this test only pins the TCP wire contract that Last-Event-ID replay (Task 3)
-will build on.
+of simple methods, and asserts every server→client frame carries **no**
+top-level ``_eid`` —— f01f9f0(8/24)把"带 _eid"改为"剥除":协议外顶层字段
+会让 CC 2.1 严格客户端握手即弃连。EventStore 内部仍记单调 eid,
+resume 回放的帧带原 _eid(test_resume_handshake 覆盖)。
 """
 from __future__ import annotations
 
@@ -77,7 +75,10 @@ def _tcp_server():
             proc.kill()
 
 
-def test_tcp_server_frames_carry_strictly_increasing_eid():
+def test_tcp_server_wire_frames_strip_eid():
+    """2026-09-02 契约迁移:wire 帧**不带**顶层 `_eid`(f01f9f0,防 CC 2.1 严格
+    客户端握手弃连——这是 8/24 弃连 bug 的根因)。内部 EventStore 仍记单调 eid
+    供 resume 回放(由 test_resume_handshake 覆盖:replay 帧带原 _eid 升序)。"""
     with _tcp_server() as port:
         s = socket.socket(); s.connect(("127.0.0.1", port))
         try:
@@ -92,14 +93,11 @@ def test_tcp_server_frames_carry_strictly_increasing_eid():
         finally:
             s.close()
 
-        # Every server frame must carry an integer _eid.
+        # 防弃连防线:任何 wire 帧都不得携带协议外顶层 `_eid`。
         for fr in frames:
-            assert "_eid" in fr, f"frame missing _eid: {fr}"
-            assert isinstance(fr["_eid"], int), f"_eid not int: {fr['_eid']!r}"
-            assert not isinstance(fr["_eid"], bool)
+            assert "_eid" not in fr, f"protocol-foreign _eid leaked to wire: {fr}"
 
-        eids = [fr["_eid"] for fr in frames]
-        # Strictly increasing across frames (EventStore assigns 1,2,3,...).
-        assert eids == sorted(eids)
-        assert len(set(eids)) == len(eids), f"duplicate _eids: {eids}"
-        assert all(b > a for a, b in zip(eids, eids[1:])), f"not strictly increasing: {eids}"
+        # 基本健全:JSON-RPC id 原样回、initialize 有 result。
+        assert frames[0].get("id") == 1 and "result" in frames[0]
+        assert frames[1].get("id") == 2
+        assert frames[2].get("id") == 3

@@ -579,6 +579,23 @@ def _parse_client_init_version(line: str) -> None:
             _client_init_version = v
 
 
+def _strip_top_level_eid(line: str) -> str:
+    """v3.0.12 · belt-and-braces 剥离顶层 `_eid`(自 8/24 b29d0f7 主循环内联段提取,
+    供测试直接钉契约)。协议外顶层字段会让 CC 2.1 严格客户端弃连(f01f9f0 根因)。
+    非 JSON / 非对象 / 无 `_eid` 的行原样返回;CJK 用 ensure_ascii=False 保字节。
+    """
+    if '"_eid"' not in line:
+        return line
+    try:
+        m = json.loads(line)
+    except (json.JSONDecodeError, TypeError):
+        return line
+    if not isinstance(m, dict):
+        return line
+    m.pop("_eid", None)
+    return json.dumps(m, ensure_ascii=False)
+
+
 def _write_stdout(payload: bytes) -> None:
     """Single point for writing to stdout · serialized so stub responses and
     cloud forwards never interleave bytes mid-frame."""
@@ -699,14 +716,7 @@ def _pump_cloud_to_out(link: "_CloudLink") -> None:
                 out_line = _rewrite_init_version(cl.decode("utf-8", errors="replace"))
                 # v2.2 · belt-and-braces: strip protocol-foreign top-level "_eid"
                 # from ANY cloud line (observed on initialize; be safe for all).
-                if '"_eid"' in out_line:
-                    try:
-                        _m = json.loads(out_line)
-                        if isinstance(_m, dict):
-                            _m.pop("_eid", None)
-                            out_line = json.dumps(_m, ensure_ascii=False)
-                    except Exception:
-                        pass
+                out_line = _strip_top_level_eid(out_line)
                 _write_stdout((out_line + "\n").encode("utf-8"))
         link.mark_down()  # socket dead · outer loop reconnects unless closed
 
