@@ -47,6 +47,9 @@ CONSUMERS_HTTP = [
     "examples/compass_client_v15.py", # v1.5 client, default base 8770
     "ops/compass_health_cron.py",     # polls 8770 /compass/health
     "ops/smoke_keepalive_fix.py",     # smokes 8770 /v1/v14/recall keepalive
+    "ops/smoke_long_idle.py",         # smokes 8770 recall after long idle
+    "ops/v0.9_to_v14_adapter_patch.py",  # v0.9->v14 adapter patch tooling
+    "examples/full_capability_demo.py",
 ]
 
 TOKEN_MARKERS = ("token", "TOKEN")  # auth discipline markers
