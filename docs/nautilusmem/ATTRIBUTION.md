@@ -28,3 +28,11 @@
 - [ ] HF dataset license 字段(代理稳时用 python huggingface_hub.HfApi().dataset_info 拉)
 - [ ] 上游 leaderboard 现有 baseline 数字(RAG/AgentRunbook 的公开成绩)——成绩册对比表的原料
 - [ ] 上游 leaderboard 提交格式的具体要求(leaderboard/README.md,需进 repo 看)
+
+## 2026-09-03 LOOP 轮补:leaderboard 提交格式核实(README 全文已读)
+
+- **judge 硬门**:build_submission_step_1 验证 `judge model contains gpt-5.2` → "声明差异"路线堵死
+- reader 硬门:`reader model contains qwen3.5-9b`(我们一致,任意兼容端点可)
+- **run 目录须含 runtime_inputs/**(questions.json 等)+ per_question 全覆盖验证;本地 d12 瘦身版无 runtime_inputs → 官方榜需完整重跑(reader 可用 API 端点,不必自部署)
+- 提交包=两步构建(operating_points 双域合并→LAFS 打包)+SYSTEM_DESCRIPTION+单代码文件→tar.gz→submission form
+- LAFS=accuracy(overall_full_set×100)×latency(memory_query_avg_seconds)对固定 reference frontier 增益,支持多延迟操作点
