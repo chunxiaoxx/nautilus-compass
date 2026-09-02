@@ -8,7 +8,7 @@
 
 ## 故事线(技术社区最吃的"我们搞砸了然后修好了"叙事)
 
-**开头钩子**:First post we showed retrieval wins. This one is about what happened when we ran a harder benchmark and scored **19.6%** — and the three fixes that took it to ⟦d12: 36.7%⟧ (web) and **12.8% → ⟦d12: 40.3%⟧** (enterprise), with ⟦d13/d14 终值⟧ after domain-adapting the embedder.
+**开头钩子**:First post we showed retrieval wins. This one is about what happened when we ran a harder benchmark and scored **19.6%** — and the fixes that took it to **40.0%** (web) and **12.8% → 38.4%** (enterprise). Honest epilogue: a third of the lift came from finding our own judge was broken (4096-token budget silently eaten by reasoning, systematically zeroing answers — full re-judge moved web 36.7→40.0, ent 40.3→38.4); the LoRA embedder adaptation closed at parity and was NOT adopted; an abstention-gate patch was rejected by preregistered criteria. Tuned-v2 stack is the one that ships.
 
 ### Act 1 · 崩盘(不藏丑)
 - LongMemEval-V2: 451 questions, real agent-trajectory haystacks (web browsing / ServiceNow), open benchmark with published baselines
