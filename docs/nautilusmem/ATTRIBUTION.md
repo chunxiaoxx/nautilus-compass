@@ -59,3 +59,11 @@
 
 ### 附:官方 judge 结构
 多数题程序化判分(normalized/ordered/choice matching),仅 gotchas+abstention 走 gpt-5.2 judge;官方 abstention rubric 明确给"lacks access to live environment"判 1(与我们 d12 刀1 摸出的口径一致=方向没错过)。
+
+## 2026-09-03 论文细节补(影响差距归因)
+
+- **官方 memory context 预算=200k tokens,我们 d12=24k(8 倍差)**——官方允许塞远多证据;这是可解释的差距来源+我们的现成调参杠杆
+- 官方 reader 采样 temp 0.6/top_p 0.95/top_k 20(非贪心),与 d12 部署默认可能不同,口径注记项
+- **官方判分结构:多数 structured 题程序化判分,仅 gotchas+abstention 走 gpt-5.2 judge**——与我们"全题 LLM judge"管道结构不同;我们的 PROTOCOL 1.4(程序化优先)与官方同向
+- 官方 abstention rubric(Table 5):"lacks access to live environment"明确判 1、裸 UNKNOWN 判 0——与我们 d12 刀1 摸出的口径一致(对齐方向被官方文本确认)
+- AgentRunbook-R 三池细节(C.2):raw state pool(radius-1 窗+截图)/event pool(LLM 生成转移描述)/note pool(procedure+hint)——A 臂摘要卡≈note pool 简化版
