@@ -1,7 +1,10 @@
 # nautilus-compass · 项目指令
 
-> 🔴 方向锚(2026-09-02 用户拍,与仓内任何文档冲突时以此为准):当前唯一业务 = **具身智能数据采集 + 数据飞轮 + 第三方数据有效性验证平台**;垂域出题/交付业务已死不再做。
-> `FDE_BUSINESS_CHARTER.md` / `LOOP_STATE_SSOT.md` 已停止自动注入(业务已死 / 正文 8/30 冻结):考古时手动读,读时牢记历史层 ≠ 现状;SSOT 副本探针 9/2 已改 env 门控默认关(COMPASS_SSOT_PROBE=1 临时开)。
+> 🔴 跨对话框业务基线(所有对话框的 single source of truth · session-start 必读):FDE 三类业务 / 我方-甲方 / 红线 / 产出 / 各框 turf / 协调机制。
+@FDE_BUSINESS_CHARTER.md
+
+> 🎯 跨对话框**闭环状态**单一真相源(治精神分裂 · session-start 必读 · 与 goal/FRESH_PROMPT 冲突以此为准):当前闭环目标 / 下一动作 / 负责框 / 卡在 / binding-DONE 判据 / parking lot。
+@LOOP_STATE_SSOT.md
 
 
 <!-- COMPASS-KG-NODE · 2026-07-14 从 4 个历史会话提炼 · 完整见 ~/.claude/projects/<proj>/memory/session_NODE_nautilus-compass.md -->
