@@ -127,6 +127,71 @@ SSU_UTT_TYPES = {t.strip() for t in os.environ.get(
 # extraction) so we can measure the lift from the temporal specialization alone.
 TEMPORAL_ENABLED = os.environ.get("ZMM_TEMPORAL", "1") == "1"
 
+# === Cross-session aggregation layer (2026-09-02 preregistration) ===
+# Diagnosis on the 8/29 full-500 raw: 250/257 wrong ms/ssa/tr answers had gold
+# sessions ALREADY in top5 — the bottleneck is context assembly (3 utterances
+# cannot cover evidence spread over 3+ sessions; 44% of ms misses are
+# "counted fewer than truth"). ZMM_SUMMARY_LAYER=1 routes the weak types to
+# "summary timeline (all top5 cards, dated) + utterance extracts (cap 6)".
+# Cards come from vtf/build_session_summaries.py cache. Default off keeps the
+# baseline byte-identical.
+ZMM_SUMMARY_LAYER = os.environ.get("ZMM_SUMMARY_LAYER", "0") == "1"
+SUMMARY_TYPES = {t.strip() for t in os.environ.get(
+    "ZMM_SUMMARY_TYPES",
+    "multi-session,temporal-reasoning,single-session-assistant").split(",") if t.strip()}
+SUMMARY_CACHE_PATH = Path(os.environ.get(
+    "ZMM_SUMMARY_CACHE",
+    str(Path(__file__).parent / "vtf" / "_e2e_diag" / "session_summaries.json")))
+SUMMARY_UTTERANCE_CAP = int(os.environ.get("ZMM_SUMMARY_UTT_CAP", "6"))
+_SUMMARY_CARDS: dict | None = None  # lazy singleton · loaded on first use
+
+
+def _load_summary_cards() -> dict:
+    """session_id -> card text (lazy, fail-closed: missing file = empty)."""
+    global _SUMMARY_CARDS
+    if _SUMMARY_CARDS is None:
+        if SUMMARY_CACHE_PATH.exists():
+            raw = json.loads(SUMMARY_CACHE_PATH.read_text(encoding="utf-8"))
+            _SUMMARY_CARDS = {sid: v["card"] for sid, v in raw.items()}
+        else:
+            print(f"WARN: summary cache missing at {SUMMARY_CACHE_PATH} "
+                  f"-> summary layer falls back to baseline context")
+            _SUMMARY_CARDS = {}
+    return _SUMMARY_CARDS
+
+
+def build_summary_context(top_sessions: list[dict],
+                          top_session_ids: list[str],
+                          top_dates: list | None,
+                          question: str, reranker=None) -> str:
+    """Summary timeline (every top5 session, dated) + wider utterance extracts.
+
+    Fails soft to the utterance/session path when cards are missing so an
+    incomplete cache degrades instead of crashing a shard run.
+    """
+    cards = _load_summary_cards()
+    entries = []
+    for k, sid in enumerate(top_session_ids):
+        card = cards.get(sid)
+        if not card:
+            continue
+        d = top_dates[k] if top_dates and k < len(top_dates) else None
+        entries.append((d or "????-??-??", sid, card))
+    if not entries:
+        return build_ssu_context(top_sessions, question, reranker=reranker,
+                                 anchor_all=True, dates=top_dates,
+                                 max_utterances=SUMMARY_UTTERANCE_CAP)
+    entries.sort(key=lambda e: e[0])  # chronological · ms/tr need time order
+    timeline = "\n\n".join(
+        f"--- Session {sid} (date {d}) ---\n{card}" for d, sid, card in entries)
+    evidence = build_ssu_context(top_sessions, question, reranker=reranker,
+                                 anchor_all=True, dates=top_dates,
+                                 max_utterances=SUMMARY_UTTERANCE_CAP)
+    return (f"=== Session Timeline (summary of every retrieved session, "
+            f"chronological) ===\n{timeline}\n\n=== Evidence Extracts "
+            f"(verbatim utterances) ===\n{evidence}")
+
+
 
 def _bm25_tokenize(text: str) -> list[str]:
     """Whitespace + punctuation split, lowercased. Keeps alphanumeric runs.
@@ -607,10 +672,18 @@ def main():
                     top_indices = [idx for idx, _ in sims[:TOP_K_CONTEXT]]
 
             top_sessions = [sessions[j] for j in top_indices]
-            if ZMM_SSU_UTTERANCE and qt in SSU_UTT_TYPES:
+            _top_dates = [_dates[j] if j < len(_dates) else None
+                          for j in top_indices]
+            if ZMM_SUMMARY_LAYER and qt in SUMMARY_TYPES:
+                # Cross-session aggregation layer (preregistration 2026-09-02):
+                # summary timeline for ALL top5 sessions + utterance extracts.
+                context = build_summary_context(
+                    top_sessions, [sess_ids[j] for j in top_indices],
+                    _top_dates, question, reranker=reranker)
+            elif ZMM_SSU_UTTERANCE and qt in SSU_UTT_TYPES:
                 context = build_ssu_context(top_sessions, question, reranker=reranker,
                                         anchor_all=qt in ("single-session-assistant", "knowledge-update"),
-                                        dates=[_dates[j] if j < len(_dates) else None for j in top_indices])
+                                        dates=_top_dates)
             else:
                 context = build_context(top_sessions)
 
