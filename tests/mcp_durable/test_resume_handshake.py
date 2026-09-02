@@ -125,18 +125,19 @@ def test_resume_replays_missed_frames():
                 "sessionId": "s1",
             }))
             # Drive a few methods so the store accumulates frames.
-            f2 = _send_recv(s1, _req(2, "ping"))
-            f3 = _send_recv(s1, _req(3, "tools/list"))
-            f4 = _send_recv(s1, _req(4, "ping"))
-            seen = [init, f2, f3, f4]
-            eids = [fr["_eid"] for fr in seen]
-            assert eids == sorted(eids) and len(set(eids)) == len(eids)
+            # 2026-09-02 契约迁移:wire 帧不再携带 _eid(f01f9f0),客户端无法从
+            # wire 观察水位——改用推断:4 个响应(init+ping+list+ping)依次进
+            # store,内部 eid 应为 1..4。replay 行为若坏(store 没记),下面
+            # 的 replay 断言自然挂。
+            _send_recv(s1, _req(2, "ping"))
+            _send_recv(s1, _req(3, "tools/list"))
+            _send_recv(s1, _req(4, "ping"))
         finally:
             s1.close()
 
-        # k = second-to-last observed id · expect frames with _eid > k replayed.
-        k = eids[-2]
-        expected_replay = [e for e in eids if e > k]
+        # k = second-to-last inferred eid · expect frames with _eid > k replayed.
+        k = 3
+        expected_replay = [4]
         assert expected_replay, "test needs at least one frame past k"
 
         s2 = _connect(port)
@@ -206,7 +207,8 @@ def test_no_last_event_id_is_fresh():
             s.close()
         assert reply.get("id") == 1
         assert "resumed" not in reply["result"]
-        assert "_eid" in reply  # still tagged
+        # 2026-09-02 契约迁移:wire 帧剥除 _eid(防 CC 2.1 严格客户端弃连)
+        assert "_eid" not in reply
 
 
 def test_different_session_is_isolated():

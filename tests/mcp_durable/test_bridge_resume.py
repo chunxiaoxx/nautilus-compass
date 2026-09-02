@@ -1,32 +1,17 @@
-"""Task 4 · bridge tracks _eid + requests Last-Event-ID replay on reconnect.
+"""Task 4(2026-09-02 迁移版)· 桥的断线不丢消息契约 · v1.9 pending 重发模型。
 
-Durable MCP = zero message loss across a cloud-link drop. Tasks 1-3 gave the
-SERVER side: it tags every outbound frame with a monotonic `_eid`, keeps a
-session-scoped EventStore, and on `initialize` with `params.lastEventId=k`
-replays the missed frames (original _eid, ascending) then replies resumed=true.
+契约沿革(考古:f01f9f0 → b29d0f7 → v1.9):
+  旧模型(Task 2/3/4 原版):server 帧带单调 `_eid` → 桥剥 `_eid` 转发 + 记
+  high-water → 重连时向 initialize 注入 `params.lastEventId` → server replay。
+  8/24 双实锤后废弃:①顶层 `_eid` 是协议外字段,CC 2.1 严格客户端握手即弃连
+  (f01f9f0 根因);②云桥重构(b29d0f7)改为 v1.9 模型。
 
-Task 4 = the CLIENT side: the bridge `ops/mcp_stdio_to_cloud.py` must
-  1. track the highest `_eid` it has forwarded from cloud→stdout,
-  2. STRIP `_eid` before forwarding to Claude Code (internal durability field),
-  3. on reconnect inject `params.lastEventId = <highest seen>` into the
-     replayed cached initialize (only when > 0; never into the first init),
-  4. preserve the v1.8 invariant: any failure → forward as-is / degrade to
-     local-only, never crash, never block stdin, never drop a frame.
-
-Approach (documented per Task 4 spec): helpers + one integration test.
-  - `test_strip_eid_*` / `test_high_water_*` unit-test the pure cloud-line
-    handler (`_strip_eid_and_track`) directly.
-  - `test_inject_last_event_id_*` unit-test the cached-initialize injector.
-  - `test_reconnect_requests_replay_over_fake_socket` drives a real
-    `_CloudLink` over an in-process fake socket pair: emit _eid 1..N, drop,
-    reconnect, assert the replayed initialize carried lastEventId == N and the
-    stdout-facing stream is contiguous, _eid-free, no gap, no dup.
-We went helpers + 1 integration because the full bridge wires three daemon
-threads (stdin pump / cloud→out pump / heartbeat) around real sys.stdin and a
-shared stdout lock; driving only the cloud→out reconnect seam against a fake
-socket is hermetic and pins exactly the Task-4 behaviour without that thread
-soup. The helpers are the load-bearing pure logic; the integration test proves
-they compose over the real reconnect handshake.
+现行 v1.9 契约(本文件钉的就是它):
+  1. 转发给 Claude Code 的任何行**不带顶层 `_eid`**(belt-and-braces 剥离)。
+  2. 断线不丢=按 json-rpc id 追踪:note_request 记录未答请求,note_reply 清除。
+  3. 重连(connect(replay=True)):重放缓存的 initialize(带 authToken 重注);
+     pending 里**只读幂等**工具静默重发;**非幂等写**(ingest_obs 等云端无幂等键)
+     不盲重发,回 -32603 让客户端有意识地重试——不静默丢,也不静默重。
 """
 from __future__ import annotations
 
@@ -34,8 +19,6 @@ import importlib
 import json
 import os
 import sys
-import threading
-import time
 from pathlib import Path
 
 PLUGIN = Path(__file__).resolve().parent.parent.parent
@@ -46,224 +29,159 @@ bridge = importlib.import_module("ops.mcp_stdio_to_cloud")
 
 
 # --------------------------------------------------------------------------
-# Helper (a): strip _eid + track high-water from a single cloud line.
+# (a) 顶层 _eid 剥离 · 纯函数 _strip_top_level_eid
 # --------------------------------------------------------------------------
 
-def test_strip_eid_removes_internal_field_and_forwards():
-    link = bridge._CloudLink(opener=lambda: None)
+def test_strip_top_level_eid_removes_internal_field():
     line = json.dumps({"jsonrpc": "2.0", "id": 5, "result": {"ok": 1}, "_eid": 3})
-    out = bridge._strip_eid_and_track(line, link)
-    decoded = json.loads(out.decode("utf-8"))
+    out = bridge._strip_top_level_eid(line)
+    decoded = json.loads(out)
     assert "_eid" not in decoded
     assert decoded["id"] == 5
     assert decoded["result"] == {"ok": 1}
 
 
-def test_strip_eid_advances_high_water():
-    link = bridge._CloudLink(opener=lambda: None)
-    assert link.high_eid == 0
-    bridge._strip_eid_and_track(json.dumps({"id": 1, "_eid": 1}), link)
-    assert link.high_eid == 1
-    bridge._strip_eid_and_track(json.dumps({"id": 2, "_eid": 5}), link)
-    assert link.high_eid == 5
-    # never goes backwards (out-of-order / stale frame)
-    bridge._strip_eid_and_track(json.dumps({"id": 3, "_eid": 2}), link)
-    assert link.high_eid == 5
-
-
-def test_strip_eid_forwards_line_without_eid_unchanged():
-    link = bridge._CloudLink(opener=lambda: None)
+def test_strip_line_without_eid_unchanged():
     line = json.dumps({"jsonrpc": "2.0", "id": 9, "result": {}})
-    out = bridge._strip_eid_and_track(line, link)
-    assert json.loads(out.decode("utf-8")) == json.loads(line)
-    assert link.high_eid == 0  # nothing to track
+    assert bridge._strip_top_level_eid(line) == line
 
 
-def test_strip_eid_forwards_non_json_unchanged_and_never_crashes():
-    link = bridge._CloudLink(opener=lambda: None)
-    out = bridge._strip_eid_and_track("not-json-at-all", link)
-    assert out == b"not-json-at-all"
-    assert link.high_eid == 0
+def test_strip_non_json_unchanged_and_never_crashes():
+    assert bridge._strip_top_level_eid("not-json-at-all") == "not-json-at-all"
+    assert bridge._strip_top_level_eid("") == ""
+    # 非对象 JSON(数组/数字)也不崩、不加戏
+    assert bridge._strip_top_level_eid("[1,2]") == "[1,2]"
 
 
-def test_strip_eid_handles_bytes_input():
-    link = bridge._CloudLink(opener=lambda: None)
-    raw = json.dumps({"id": 1, "_eid": 7}).encode("utf-8")
-    out = bridge._strip_eid_and_track(raw, link)
-    assert b"_eid" not in out
-    assert link.high_eid == 7
-
-
-def test_strip_eid_preserves_cjk_bytes():
-    """The real workload is Chinese memory recall · forwarded bytes must keep
-    literal CJK chars (ensure_ascii=False), not \\uXXXX escapes (~6x larger)."""
-    link = bridge._CloudLink(opener=lambda: None)
+def test_strip_preserves_cjk_bytes():
+    """中文 recall 是主负载 · 转发行必须保留字面 CJK(ensure_ascii=False),
+    不能变成 \\uXXXX 转义(体积 ~6x,94b002a 的原教训)。"""
     line = json.dumps({"_eid": 1, "result": {"text": "CPU饥饿诊断"}},
                       ensure_ascii=False)
-    out = bridge._strip_eid_and_track(line, link)
-    # Literal UTF-8 CJK bytes present, no \uXXXX escape sequences.
-    assert "CPU饥饿诊断".encode("utf-8") in out
-    assert b"\\u" not in out
-    decoded = json.loads(out.decode("utf-8"))
+    out = bridge._strip_top_level_eid(line)
+    assert "CPU饥饿诊断" in out
+    assert "\\u" not in out
+    decoded = json.loads(out)
     assert decoded["result"]["text"] == "CPU饥饿诊断"
     assert "_eid" not in decoded
-    assert link.high_eid == 1
 
 
 # --------------------------------------------------------------------------
-# Helper (b): inject lastEventId into a cached initialize line.
+# (b) pending 生命周期 · note_request / note_reply / pending_lines
 # --------------------------------------------------------------------------
 
-def test_inject_last_event_id_sets_param():
-    init = json.dumps({"jsonrpc": "2.0", "id": 1, "method": "initialize",
-                       "params": {"protocolVersion": "2024-11-05"}})
-    out = bridge._inject_last_event_id(init, 4)
-    msg = json.loads(out)
-    assert msg["params"]["lastEventId"] == 4
-    assert msg["params"]["protocolVersion"] == "2024-11-05"
+def _req(mid: int, tool: str) -> str:
+    return json.dumps({"jsonrpc": "2.0", "id": mid, "method": "tools/call",
+                       "params": {"name": tool, "arguments": {"query": "q"}}})
 
 
-def test_inject_last_event_id_creates_params_if_missing():
-    init = json.dumps({"jsonrpc": "2.0", "id": 1, "method": "initialize"})
-    out = bridge._inject_last_event_id(init, 2)
-    assert json.loads(out)["params"]["lastEventId"] == 2
+def test_note_request_tracks_pending():
+    link = bridge._CloudLink(opener=lambda: None)
+    link.note_request(_req(1, "recall"))
+    link.note_request(_req(2, "drift_check"))
+    pend = link.pending_lines()
+    assert len(pend) == 2
+    assert json.loads(pend[0])["id"] == 1
+    assert json.loads(pend[1])["id"] == 2
 
 
-def test_inject_last_event_id_noop_on_non_json():
-    assert bridge._inject_last_event_id("garbage", 4) == "garbage"
+def test_note_reply_clears_pending():
+    link = bridge._CloudLink(opener=lambda: None)
+    link.note_request(_req(7, "recall"))
+    assert len(link.pending_lines()) == 1
+    link.note_reply(json.dumps({"jsonrpc": "2.0", "id": 7, "result": {}}))
+    assert link.pending_lines() == []
+    # error 回复同样清除(失败也是"已答",不该在重连时重发)
+    link.note_request(_req(8, "recall"))
+    link.note_reply(json.dumps({"jsonrpc": "2.0", "id": 8, "error": {"code": -1}}))
+    assert link.pending_lines() == []
 
 
-def test_inject_last_event_id_zero_is_noop():
-    """Highest==0 means nothing seen yet → don't request a replay."""
-    init = json.dumps({"jsonrpc": "2.0", "id": 1, "method": "initialize",
-                       "params": {}})
-    out = bridge._inject_last_event_id(init, 0)
-    assert "lastEventId" not in json.loads(out).get("params", {})
+def test_note_request_ignores_initialize_and_garbage():
+    """initialize 走 note_outgoing 的缓存通道,进 pending 会在重连时双发。"""
+    link = bridge._CloudLink(opener=lambda: None)
+    link.note_request(json.dumps({"jsonrpc": "2.0", "id": 0, "method": "initialize",
+                                  "params": {}}))
+    link.note_request("garbage-not-json")
+    link.note_request(json.dumps([1, 2, 3]))
+    # 通知(method 无 id)不期待回复,不追踪
+    link.note_request(json.dumps({"jsonrpc": "2.0", "method": "notifications/initialized"}))
+    assert link.pending_lines() == []
+
+
+def test_pending_lines_snapshot_is_copy():
+    link = bridge._CloudLink(opener=lambda: None)
+    link.note_request(_req(1, "recall"))
+    snap = link.pending_lines()
+    snap.clear()
+    assert len(link.pending_lines()) == 1  # 内部不受快照篡改影响
 
 
 # --------------------------------------------------------------------------
-# Integration: real _CloudLink over an in-process fake cloud socket.
-# Emit _eid 1..N, drop, reconnect, assert replay requested + contiguous stdout.
+# (c) 重连重放集成 · connect(replay=True) over fake socket
 # --------------------------------------------------------------------------
 
-class _FakeCloud:
-    """In-process fake cloud socket. Phase 1: accept first init, emit _eid 1..N,
-    then drop (recv→b''). Phase 2 (reconnect): accept the replayed init, record
-    its lastEventId, emit _eid N+1..M, then idle (block until closed)."""
+class _FakeSock:
+    """记录 sendall 全部行;recv 只供 _recv_one_line 吞 duplicate init reply。"""
 
-    def __init__(self, n_before: int, n_after: int) -> None:
-        self.n_before = n_before
-        self.n_after = n_after
-        self.phase = 0
-        self.received_inits: list[dict] = []
-        self._outbox: list[bytes] = []
-        self._cv = threading.Condition()
-        self.closed = False
-        self.connect_count = 0
-        self._load_phase()
-
-    def _frame(self, eid: int) -> bytes:
-        return (json.dumps({"jsonrpc": "2.0", "method": "notifications/message",
-                            "params": {"n": eid}, "_eid": eid}) + "\n").encode()
-
-    def _load_phase(self) -> None:
-        if self.phase == 0:
-            self._outbox = [self._frame(e) for e in range(1, self.n_before + 1)]
-        else:
-            start = self.n_before + 1
-            end = self.n_before + self.n_after
-            self._outbox = [self._frame(e) for e in range(start, end + 1)]
-
-    # The opener hands back `self` as the "socket".
-    def __call__(self):
-        self.connect_count += 1
-        return self
+    def __init__(self) -> None:
+        self.sent: list[bytes] = []
+        self._one_reply = b'{"jsonrpc":"2.0","id":0,"result":{"ok":1}}\n'
 
     def sendall(self, data: bytes) -> None:
-        # The bridge replays the cached initialize on reconnect.
-        try:
-            msg = json.loads(data.decode("utf-8").strip())
-        except Exception:
-            return
-        if isinstance(msg, dict) and msg.get("method") == "initialize":
-            self.received_inits.append(msg)
+        self.sent.append(data)
 
     def recv(self, n: int) -> bytes:
-        with self._cv:
-            if self._outbox:
-                return self._outbox.pop(0)
-            if self.phase == 0:
-                # Drop: signal EOF so the pump reconnects.
-                self.phase = 1
-                self._load_phase()
-                return b""
-            # Phase 1 exhausted: idle until closed.
-            while not self.closed and not self._outbox:
-                self._cv.wait(timeout=0.1)
-                if self._outbox:
-                    return self._outbox.pop(0)
-            return b""
+        if self._one_reply:
+            r, self._one_reply = self._one_reply, b""
+            return r
+        return b""
 
     def settimeout(self, *_a, **_k) -> None:
         pass
 
     def close(self) -> None:
-        with self._cv:
-            self.closed = True
-            self._cv.notify_all()
+        pass
 
 
-def _recv_one_line_stub(sock, timeout: float = 10.0):
-    """The real _recv_one_line swallows the reconnect init reply. Our fake
-    doesn't emit a reply for the replayed init, so return immediately."""
-    return b""
-
-
-def test_reconnect_requests_replay_over_fake_socket(monkeypatch):
-    fake = _FakeCloud(n_before=3, n_after=2)
-    link = bridge._CloudLink(opener=fake)
-    # Cache an initialize so reconnect has something to replay.
+def test_connect_replay_auth_and_idempotent_resend(monkeypatch):
+    fake = _FakeSock()
+    link = bridge._CloudLink(opener=lambda: fake)
     init_line = json.dumps({"jsonrpc": "2.0", "id": 1, "method": "initialize",
                             "params": {"protocolVersion": "2024-11-05"}})
     link.note_outgoing(init_line)
-    link.connect(replay=False)  # phase-0 socket installed
 
-    # Capture what the bridge writes to Claude-Code-facing stdout.
-    written: list[bytes] = []
-    monkeypatch.setattr(bridge, "_write_stdout", lambda payload: written.append(payload))
-    # Don't block on the duplicate-init-reply swallow (fake emits none).
-    monkeypatch.setattr(bridge, "_recv_one_line", _recv_one_line_stub)
+    # 断线前在途:一个幂等只读 + 一个非幂等写
+    link.note_request(_req(11, "recall"))
+    link.note_request(_req(12, "ingest_obs"))
 
-    pump = threading.Thread(target=bridge._pump_cloud_to_out, args=(link,), daemon=True)
-    pump.start()
+    monkeypatch.setattr(bridge, "_recv_one_line", lambda s, timeout=10.0: b"{}\n")
+    errors_emitted: list[bytes] = []
+    monkeypatch.setattr(bridge, "_write_stdout", errors_emitted.append)
 
-    # Wait until all before+after frames have been forwarded.
-    deadline = time.time() + 5.0
-    want = fake.n_before + fake.n_after
-    while time.time() < deadline:
-        if len(written) >= want and len(fake.received_inits) >= 1:
-            break
-        time.sleep(0.02)
+    link.connect(replay=True)
 
-    link.close()
-    pump.join(timeout=2.0)
+    sent_lines = [json.loads(d.decode("utf-8").strip()) for d in fake.sent
+                  if d.strip()]
 
-    # 1) The FIRST reconnect's replayed initialize carried lastEventId ==
-    #    n_before (the high-water captured before the drop). Auth replayed too.
-    assert fake.received_inits, "bridge never replayed initialize on reconnect"
-    replay_init = fake.received_inits[0]
-    assert replay_init.get("params", {}).get("lastEventId") == fake.n_before, (
-        f"first replay init lastEventId="
-        f"{replay_init.get('params', {}).get('lastEventId')} != {fake.n_before}")
-    assert replay_init.get("params", {}).get("authToken"), "auth not replayed"
+    # 1) 缓存的 initialize 被重放,且 authToken 重新注入(真实 token 来自 env)
+    inits = [m for m in sent_lines if m.get("method") == "initialize"]
+    assert len(inits) == 1, f"initialize 应恰好重放一次,实际 {len(inits)}"
+    assert inits[0]["params"].get("authToken") == "test-dummy-token"
 
-    # 2) Stdout stream is contiguous, _eid-free, no gap / no dup across the drop.
-    eids_seen = []
-    for payload in written:
-        msg = json.loads(payload.decode("utf-8"))
-        assert "_eid" not in msg, "internal _eid leaked to Claude Code"
-        eids_seen.append(msg["params"]["n"])
-    assert eids_seen == list(range(1, want + 1)), (
-        f"non-contiguous stdout stream: {eids_seen}")
-    # high-water advanced all the way.
-    assert link.high_eid == want
+    # 2) 幂等只读请求被静默重发(auth 已注入)
+    resent_ids = [m["id"] for m in sent_lines
+                  if m.get("method") == "tools/call" and m.get("id") in (11, 12)]
+    assert resent_ids == [11], (
+        f"只应重发幂等 id=11;非幂等 id=12 不得盲发,实际 {resent_ids}")
+
+    # 3) 非幂等写不静默丢:回 -32603 让客户端有意识重试;且它被移出 pending。
+    #    幂等重发(id=11)仍留在 pending——重发≠已答,等真回复到达才清除。
+    pend_ids = [json.loads(l)["id"] for l in link.pending_lines()]
+    assert 11 in pend_ids, "幂等重发后应仍在 pending 等回复"
+    assert 12 not in pend_ids, "非幂等写处理后应移出 pending"
+    err_msgs = [json.loads(d.decode("utf-8")) for d in errors_emitted if d.strip()]
+    err_ids = [m.get("id") for m in err_msgs if m.get("error")]
+    assert 12 in err_ids, f"id=12 应收到 -32603 错误回执,实际 stdout: {err_msgs}"
+    the_err = next(m for m in err_msgs if m.get("id") == 12)
+    assert the_err["error"]["code"] == -32603
