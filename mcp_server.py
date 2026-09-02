@@ -30,7 +30,7 @@ from mcp_durable.event_store import EventStore
 
 PROTOCOL_VERSION = "2024-11-05"
 SERVER_NAME = "nautilus-compass"
-SERVER_VERSION = "3.1.0"  # 2026-08-29 对齐 git tag v3.0.0 之后的增量(scoped-token 安全体系+daemon 修复),终结"仓 tag 3.0 服务报 2.3"的双轨困惑
+SERVER_VERSION = "3.1.1"  # 2026-09-02 四处版本一次对齐(pyproject/package.json/plugin.json/server,此前 3.0.1/3.1.0/2.3.0 三轨漂移);3.1.1 = test+security+stability 专项(mcp_durable 契约迁移+漏网客户端#8+watchdog v3)
 DAEMON_HOST = "127.0.0.1"
 DAEMON_PORT = 9876
 DAEMON_TIMEOUT = 30.0
