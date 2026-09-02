@@ -1,4 +1,4 @@
-# NautilusMem · 判分卫生学协议 v0.1 草案
+# NautilusMem · 判分卫生学协议 v1.0
 
 > 为什么一个新基准要带"判分协议"?因为我们自己踩满了这些坑:基准发布后,
 > 别人复现不出你的数字,九成不是他的错,是你的判分口径没写清。
@@ -69,5 +69,4 @@ retrieval: embedder / reranker / top_k / 检索单元(session/utterance/轨迹�
 
 ## 4. 版本
 
-v0.1 草案 2026-09-02。T0 发布时定版 v1.0;判分协议变更必须升版本号并在
-成绩卡注明协议版本——协议本身也受预注册纪律约束。
+v1.0 · 2026-09-03 定版(变更自 v0.1 草案:新增成绩卡 JSON schema `judge_hygiene/scorecard.schema.json` + 样例 `scorecard.compass.example.json`;§1.4 程序化优先获上游官方判分结构互证——官方即多数题程序化+仅 gotchas/abstention 走 LLM judge;§1.1 预算下限字段进 schema 硬校验 minimum 16384)。判分协议变更必须升版本号并在成绩卡注明协议版本——协议本身也受预注册纪律约束。
