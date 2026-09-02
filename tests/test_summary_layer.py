@@ -36,7 +36,7 @@ def test_timeline_chronological_and_sections():
         ["2023-01-22", "2023-01-15"], "what errands?", reranker=None)
     assert ctx.startswith("=== Session Timeline")
     assert ctx.find("sA") < ctx.find("sB"), "older session must come first"
-    assert "=== Evidence Extracts ===" in ctx
+    assert "=== Evidence Extracts (verbatim utterances) ===" in ctx
 
 
 def test_fallback_when_no_cards():

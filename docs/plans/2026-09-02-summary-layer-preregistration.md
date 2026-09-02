@@ -102,7 +102,29 @@ n 说明:ms/tr n=133、ssa n=56,±5pt 内视为平(二项 CI);门都设在 +12pt
 5. ⏳ A 臂 322 题(资源待拍板)
 6. ⏳ 判定 → PASS/PARTIAL 则 500 全量;GOAL_SSOT 修正(e2e500 早已完成 42.6%,N5 行"375/500"系过时中间态)
 
-## 附录(待补)
+## 附录(2026-09-02 实测补全)
 
-- unique session 数 / 摘要生成调用量 / token 成本(数据集下载 join 后填)
-- gold 全覆盖率(evidence_session_ids ⊆ top5 的精确比例,`any()` vs 全包含)
+### 数据集事实
+- longmemeval_s = 278MB 单文件,500 题,**unique sessions = 19829**(每题独立 haystack,基本不跨题共享)→ 摘要按需生成(322 弱点题 top5+gold = **1663 张卡**,非全量)
+- evidence session 数分布:1 个=176 / 2 个=250 / 3 个=41 / 4-6 个=33
+
+### 精确 gold 全覆盖率(join answer_session_ids vs 8/29 top5)
+
+| 型 | 错题 | gold 全在 top5 | 部分在 | 全漏 |
+|---|---|---|---|---|
+| ssa | 42 | **41(98%)** | 0 | 1 |
+| ms | 103 | **72(70%)** | 30 | 1 |
+| tr | 112 | **93(83%)** | 14 | 5 |
+
+对照组(对题)gold 全在率:ssa 100% / ms 83% / tr 100%——组装层责任进一步坐实。
+
+### smoke 单题(q70 · 0a995998 · "取退几件衣服" · truth=3)
+- 8/29 基线:答 1(数漏);摘要层:答 2(数出两双 Zara 靴,漏干洗 blazer)——方向性改善,evidence 全在卡中,残余瓶颈=模型聚合数数
+- 检索 top5 与 8/29 完全一致(本地 CPU bge-m3 复现性 ✅)
+
+### 过程中修掉的三个坑(已 commit)
+1. **`_dates` 作用域 bug(8/29 就存在)**:只在 utterance 分支赋值,session 级题型读到同分片前一题的日期数组(错位污染)/或 UnboundLocalError。修复=定义提到分支外。
+2. **ARK base url 漂移**:本机 env 的 `ARK_BASE_URL` 指向 `/api/v3`(按量端点,红线禁用)——runner 硬编码 coding plan 端点 `/api/coding/v3`。
+3. **newapi 网关 UA 过滤**:python-requests UA 被 403,curl UA 放行(实测 UA=curl/8.9.1 → 200)。harness 请求头统一加 UA。
+- 另发现安全问题:vtf/e2e500_shards.sh(8/29 已入库)硬编码 judge newapi key,待用户轮换。
+

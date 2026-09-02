@@ -409,7 +409,10 @@ def call_vertex_gemini(model: str, prompt: str, max_out_tok: int = 2048,
             "temperature": temperature,
         }
         headers = {"Authorization": f"Bearer {key}",
-                   "Content-Type": "application/json"}
+                   "Content-Type": "application/json",
+                   # newapi gateway WAF filters by UA: python-requests gets 403
+                   # while curl passes (verified 2026-09-02). Harmless elsewhere.
+                   "User-Agent": "curl/8.9.1"}
         # 2026-08-28 · GPU 8-shard run: 47% of judge calls hit newapi 429 and
         # were scored INCORRECT by the outer except. Retry 429/5xx with
         # exponential backoff before giving up (subject too, when it rides
@@ -604,6 +607,13 @@ def main():
             sessions = q["haystack_sessions"]
             sess_texts = [session_to_text(s, date=dd) for s, dd in
                           zip(sessions, q.get("haystack_dates", [None] * len(sessions)))]
+            # Per-question date array · must be defined OUTSIDE the retrieve
+            # branches: previously only the utterance branch assigned it, so
+            # session-retrieve questions (ms/ssa) read a stale array left by
+            # the PREVIOUS question in the same shard (misaligned dates, and
+            # UnboundLocalError when a shard's first such question preceded
+            # any utterance-retrieve question). Found 2026-09-02 via smoke.
+            _dates = q.get("haystack_dates", [None] * len(sessions))
 
             # Step 1: bi-encoder retrieve
             q_emb = emb.encode(QUERY_INSTRUCT + question)
@@ -613,7 +623,6 @@ def main():
                 # dilutes it (ssu hit@5: 0.60 on S, 0.20 on M). Rank sessions
                 # by their best chunk, skipping session-level sims entirely.
                 chunks: list = []
-                _dates = q.get("haystack_dates", [None] * len(sessions))
                 for j, sess in enumerate(sessions):
                     for txt in extract_user_utterances(sess, window=2):
                         if os.environ.get("ZMM_DATE_ANCHOR", "0") == "1" and _dates[j]:
