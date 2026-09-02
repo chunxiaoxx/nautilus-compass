@@ -24,10 +24,16 @@ CANDIDATE_STATES = [
 def daemon_ping() -> str:
     try:
         s = socket.socket()
-        s.settimeout(3)
+        s.settimeout(5)
         s.connect(("127.0.0.1", 9876))
         s.sendall(json.dumps({"action": "ping"}).encode() + b"\n")
-        r = json.loads(s.recv(256).decode())
+        buf = b""
+        while b"\n" not in buf:
+            chunk = s.recv(4096)
+            if not chunk:
+                break
+            buf += chunk
+        r = json.loads(buf.decode())
         return f"UP(pid={r.get('pid', '?')})" if r.get("pong") else "UNKNOWN"
     except Exception:
         return "DOWN"
