@@ -12,42 +12,42 @@
      "hit": true,
      "hit_titles": [
       "session_20260822-1918_tribal-feishu-select-id.md",
-      "session_20260722-0853_FDE表单校准事件.md",
-      "session_b2b522dd.md"
+      "session_v3_launch_closure_20260824.md",
+      "session_20260722-0853_FDE表单校准事件.md"
      ],
      "control_ok": false,
      "treatment_ok": false,
      "class": "inject_fail",
-     "treat_answer_head": "[{\"name\": n, \"id\": idmap.get(n) if n in (idmap := {o[\"name\"]: o.get(\"id\") for o in existing}) else max([int(o[\"id\"]) for o in existing if str(o.get(\"id\", \"\")).isdigit()], default=0",
-     "secs": 22.2
+     "treat_answer_head": "",
+     "secs": 39.9
     },
     {
      "run": 2,
      "hit": true,
      "hit_titles": [
       "session_20260822-1918_tribal-feishu-select-id.md",
-      "session_20260722-0853_FDE表单校准事件.md",
-      "session_b2b522dd.md"
+      "session_v3_launch_closure_20260824.md",
+      "session_20260722-0853_FDE表单校准事件.md"
      ],
      "control_ok": false,
      "treatment_ok": false,
      "class": "inject_fail",
-     "treat_answer_head": "[{\"id\": o[\"id\"], \"name\": n} if (o := next((e for e in existing if e.get(\"name\") == n), None)) is not None else {\"id\": (s := s + 1), \"name\": n} for s in [max((e.get(\"id\", 0) for e i",
-     "secs": 27.0
+     "treat_answer_head": "",
+     "secs": 33.6
     },
     {
      "run": 3,
      "hit": true,
      "hit_titles": [
       "session_20260822-1918_tribal-feishu-select-id.md",
-      "session_20260722-0853_FDE表单校准事件.md",
-      "session_b2b522dd.md"
+      "session_v3_launch_closure_20260824.md",
+      "session_20260722-0853_FDE表单校准事件.md"
      ],
      "control_ok": false,
      "treatment_ok": false,
      "class": "inject_fail",
-     "treat_answer_head": "[{'id': d[n], 'name': n} if n in d else {'id': b + [m for m in target_names if m not in d].index(n), 'name': n} for d in [{o['name']: o['id'] for o in existing}] for b in [max([o['",
-     "secs": 29.2
+     "treat_answer_head": "",
+     "secs": 33.5
     }
    ]
   },
@@ -60,42 +60,42 @@
      "hit": true,
      "hit_titles": [
       "session_20260822-1918_tribal-compass-daemon-port.md",
-      "_NODE_nautilus-compass.md",
-      "session_20260717-0301_B理论沉淀CHARTER-0B.md"
+      "daemon-auth-and-hf-offline-20260901.md",
+      "_NODE_nautilus-compass.md"
      ],
      "control_ok": false,
      "treatment_ok": true,
      "class": "pass",
-     "treat_answer_head": "The local memory daemon listens on TCP port 9876 at 127.0.0.1.",
-     "secs": 6.1
+     "treat_answer_head": "The local memory daemon listens on port 9876 (127.0.0.1:9876).",
+     "secs": 14.7
     },
     {
      "run": 2,
      "hit": true,
      "hit_titles": [
       "session_20260822-1918_tribal-compass-daemon-port.md",
-      "_NODE_nautilus-compass.md",
-      "session_20260717-0301_B理论沉淀CHARTER-0B.md"
+      "daemon-auth-and-hf-offline-20260901.md",
+      "_NODE_nautilus-compass.md"
      ],
      "control_ok": false,
      "treatment_ok": true,
      "class": "pass",
-     "treat_answer_head": "The local memory daemon listens on TCP port 9876 at 127.0.0.1.",
-     "secs": 7.1
+     "treat_answer_head": "The local nautilus-compass memory daemon listens on TCP port 9876 at 127.0.0.1.",
+     "secs": 10.5
     },
     {
      "run": 3,
      "hit": true,
      "hit_titles": [
       "session_20260822-1918_tribal-compass-daemon-port.md",
-      "_NODE_nautilus-compass.md",
-      "session_20260717-0301_B理论沉淀CHARTER-0B.md"
+      "daemon-auth-and-hf-offline-20260901.md",
+      "_NODE_nautilus-compass.md"
      ],
      "control_ok": false,
      "treatment_ok": true,
      "class": "pass",
-     "treat_answer_head": "127.0.0.1:9876 (TCP, line-delimited JSON-RPC, MCP protocol).",
-     "secs": 6.2
+     "treat_answer_head": "The local memory daemon listens on port 9876 (TCP, line-delimited JSON-RPC on 127.0.0.1).",
+     "secs": 13.9
     }
    ]
   },
@@ -108,42 +108,42 @@
      "hit": true,
      "hit_titles": [
       "session_20260822-1918_tribal-utf8-explicit.md",
-      "session_b2b522dd.md",
-      "session_20260715_cloud_box_health_audit.md"
+      "session_20260823-1031_tribal-windows-node-rename-epe.md",
+      "session_b2b522dd.md"
      ],
      "control_ok": true,
      "treatment_ok": true,
      "class": "pass",
-     "treat_answer_head": "open() 时显式指定 encoding='utf-8'，例如 open('out.txt', 'w', encoding='utf-8')——Windows 上 open() 默认用 GBK 编码，中文会乱码。",
-     "secs": 7.8
+     "treat_answer_head": "Open the file with an explicit encoding: `open('output.txt', 'w', encoding='utf-8')` — on Windows, `open()` defaults to the locale codec (GBK), which garbles Chinese text; specifyi",
+     "secs": 6.4
     },
     {
      "run": 2,
      "hit": true,
      "hit_titles": [
       "session_20260822-1918_tribal-utf8-explicit.md",
-      "session_b2b522dd.md",
-      "session_20260715_cloud_box_health_audit.md"
+      "session_20260823-1031_tribal-windows-node-rename-epe.md",
+      "session_b2b522dd.md"
      ],
      "control_ok": true,
      "treatment_ok": true,
      "class": "pass",
-     "treat_answer_head": "Open the file with explicit encoding: open(path, 'w', encoding='utf-8') — Windows defaults to GBK otherwise.",
-     "secs": 32.2
+     "treat_answer_head": "Explicitly pass the encoding when opening the file: `with open('out.txt', 'w', encoding='utf-8') as f:` — on Windows, open() defaults to the locale codec (GBK), which mangles Chine",
+     "secs": 6.4
     },
     {
      "run": 3,
      "hit": true,
      "hit_titles": [
       "session_20260822-1918_tribal-utf8-explicit.md",
-      "session_b2b522dd.md",
-      "session_20260715_cloud_box_health_audit.md"
+      "session_20260823-1031_tribal-windows-node-rename-epe.md",
+      "session_b2b522dd.md"
      ],
      "control_ok": true,
      "treatment_ok": true,
      "class": "pass",
-     "treat_answer_head": "Open the file with an explicit encoding: open(path, 'w', encoding='utf-8') — on Windows the default is GBK, so Chinese text gets garbled without it.",
-     "secs": 12.8
+     "treat_answer_head": "Pass encoding explicitly when opening the file: `with open('out.txt', 'w', encoding='utf-8') as f:` — Windows defaults to GBK without it, garbling Chinese text.",
+     "secs": 7.7
     }
    ]
   }
