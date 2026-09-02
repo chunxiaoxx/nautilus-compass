@@ -75,7 +75,7 @@ def strip_zhen_emphasis(text: str) -> str:
     return "".join(out)
 
 
-PLUGIN_VERSION = "nautilus-compass v2.2.0"
+PLUGIN_VERSION = "nautilus-compass v2.4.0"
 HOME = Path.home()
 PLUGIN_DIR = HOME / ".claude" / "plugins" / "nautilus-compass"
 CACHE_DIR = PLUGIN_DIR / ".cache"
@@ -1134,6 +1134,11 @@ def try_daemon_recall(mem_dir: Path, user_prompt: str) -> bool:
             s.connect(("127.0.0.1", 9876))
             req = {"action": "both", "query": expanded_prompt[:2000],
                    "project": project, "top_k": TOP_K}
+            try:  # v3.0.10 · daemon 9876 token auth
+                req["token"] = (Path.home() / ".claude" / ".cache"
+                                / "compass_daemon_token").read_text(encoding="utf-8").strip()
+            except OSError:
+                pass
             s.sendall(json.dumps(req, ensure_ascii=False).encode("utf-8") + b"\n")
             buf = b""
             while b"\n" not in buf:
@@ -1357,33 +1362,18 @@ def main():
     print(f"Project memory: {mem_dir.parent.name} · {len(entries)} entries")
     print(f"⚠️ 时间戳 = 关键 · 用户心智在迭代 · 不要用 7d+ 旧 memory 倒批今天判断")
 
-    # v1.8.0 · 用户战略 anchor 强制压头 · 长 session stance 衰减唯一真解
-    # 不靠 BGE 相似度命中(可能不命中) · 任何 query 都强制 surface
-    # · anchor_user_strategic_compass.md 7 条 stance
-    # · anchor_anti_patterns_history.md 10 大复发模式
+    # v1.8.0 · 用户战略 anchor 强制压头(原设计: 防 stance 衰减)
+    # v2.4 清洗(2026-09-02 用户拍"治每轮过时告警"): 5 月版 anchor 与 9/2 业务转向冲突,
+    # 每轮压头 = 反复注入过时战略 · 压成单行指针 · 需要时手读全文
     try:
         anchor_home = Path.home() / ".claude" / "projects" / "C--Users-chunx" / "memory"
-        for anchor_name, label in [
-            ("anchor_user_strategic_compass.md", "📌 用户战略 anchor · 7 条 stance"),
-            ("anchor_anti_patterns_history.md", "🔴 anti-pattern · 10 复发模式"),
-        ]:
-            anchor_path = anchor_home / anchor_name
-            if not anchor_path.exists():
-                continue
-            text = anchor_path.read_text(encoding="utf-8", errors="replace")
-            # Extract h1 + h2 titles only · 不展开正文(避免 prompt 头臃肿)
-            titles = []
-            for ln in text.splitlines():
-                s = ln.strip()
-                if s.startswith("## ") and len(titles) < 12:
-                    titles.append(s[3:].strip())
-            print()
-            print(f"[{label}]")
-            for t in titles[:10]:
-                print(f"  · {t}")
-            print(f"  → 全文: {anchor_path.name} · 第 1 个 response 必含 'active anchor: X / Y'")
-    except Exception as _ae:
-        sys.stderr.write(f"[nautilus-compass] anchor surface fail: {_ae}\n")
+        _anchors = [n for n in (
+            "anchor_user_strategic_compass.md", "anchor_anti_patterns_history.md",
+        ) if (anchor_home / n).exists()]
+        if _anchors:
+            print(f"[锚点档案] {' · '.join(_anchors)} (5月版 · 方向以各项目 CLAUDE.md 方向锚为准 · 手读)")
+    except Exception:
+        pass
 
     # v1.7 #2 · numeric_claims cross-ref · query 含数字时检查历史冲突
     try:
@@ -1414,6 +1404,20 @@ def main():
             print(_c_block)
     except Exception:
         pass
+
+    # v2.3 · SSOT 副本一致性探针(2026-07-17 用户拍板)· 承重锚(CHARTER/LOOP_STATE)
+    # v2.4 清洗(2026-09-02): SSOT/CHARTER 9/2 起停止注入(业务转向+正文冻结),
+    # 探针每轮报退役对象 = 纯噪声 · env 门控默认关 · audit 时 COMPASS_SSOT_PROBE=1 临时开
+    if os.environ.get("COMPASS_SSOT_PROBE") == "1":
+        try:
+            from ssot_consistency import format_for_prompt_injection as _ssot_fmt
+            _s_block = _ssot_fmt()
+            if _s_block:
+                print()
+                print("[SSOT 副本一致性 · anchor drift probe]")
+                print(_s_block)
+        except Exception:
+            pass
     print()
 
     # v0.4 · Strategy lookup (hook 默认就跑 · 0 BGE · 关键词命中即可)
@@ -1436,6 +1440,12 @@ def main():
     skip_drift = is_system_injected_prompt(user_prompt)
     if skip_drift:
         log_usage("drift_skip_system_event", {"prompt_head": user_prompt[:80]})
+        # 瘦身 (platform 用户 6/18 痛点·env-gated 默认关·向后兼容): system-injected
+        # prompt (task-notification / system-reminder / Monitor 事件) 跳过整个 recall 注入,
+        # 避免每个事件重灌 2-3k token 顶满 context · 真 user prompt 仍正常注入.
+        if os.environ.get("COMPASS_SKIP_RECALL_ON_SYSTEM") == "1":
+            log_usage("recall_skip_system_event", {"prompt_head": user_prompt[:80]})
+            return 0
 
     # v0.3 · Persona drift · BGE 模式下 · daemon alive 时跳过 inline (避免双重 BGE load)
     daemon_alive = False
