@@ -48,6 +48,29 @@ if (Test-Daemon) {
     if (Test-Daemon) { Write-Log '[daemon] UP after start' } else { Write-Log '[daemon] STILL DOWN · needs manual check (BGE cold load may take longer)' }
 }
 
+# ─── 段 3 · auth_failed 探测(v3 · 2026-09-02 · 契约化支柱)──────────
+# 放段 2 之前:段 2 成功路径 exit 0 提前退出,放尾部会被跳过(12:16 实证踩坑)。
+# daemon.log auth_failed 行 = 漏网客户端探测器(9/1 实证)。增量式:与上次检查比,
+# 新增才亮牌(带最后一条的 action 名,定位是哪类客户端没带 token)。
+# ⚠️ 已知噪声:本机跑 pytest(测试套件含预期 DENY 用例)会造成短时大量增量,
+#    对照"当时是否在跑测试"再定性,勿直接当漏网客户端。
+$DLog = 'C:\Users\chunx\.claude\plugins\nautilus-compass\.cache\daemon.log'
+$StateF = 'C:\Users\chunx\.claude\plugins\nautilus-compass\.cache\wd_auth_state.txt'
+try {
+    $cnt = (Select-String -Path $DLog -Pattern 'auth_failed' -SimpleMatch -ErrorAction Stop | Measure-Object).Count
+    $prev = 0
+    if (Test-Path $StateF) { $prev = [int](Get-Content $StateF -Raw -ErrorAction SilentlyContinue) }
+    if ($cnt -gt $prev) {
+        $last = (Select-String -Path $DLog -Pattern 'auth_failed' -SimpleMatch |
+                 Select-Object -Last 1).Line
+        if ($last -match 'action=([a-z_]+)') { $act = $Matches[1] } else { $act = '?' }
+        Write-Log "[auth] +$($cnt - $prev) since last check · last_action=$act (pytest 窗口为预期噪声)"
+    } else {
+        Write-Log '[auth] 0'
+    }
+    Set-Content -Path $StateF -Value $cnt -Encoding ascii
+} catch { Write-Log '[auth] probe-error (daemon.log unreadable)' }
+
 # ─── 段 2 · 9877 forward → 云 compass-mcp-tcp ─────────────────────
 function Test-Forward {
     $c = New-Object System.Net.Sockets.TcpClient
@@ -67,6 +90,7 @@ function Test-Forward {
     } catch { return $false } finally { $c.Close() }
 }
 
+# v3 · 原 exit 0 已删:段 3 auth_failed 探测必须每轮都跑,不能被提前退出跳过
 if (Test-Forward) { Write-Log '[forward] OK'; exit 0 }
 
 Write-Log '[forward] DOWN · starting remote compass-mcp-tcp.service'
