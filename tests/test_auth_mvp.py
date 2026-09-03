@@ -109,12 +109,13 @@ def test_http_signup_login_flow(client):
 # ── MVP-3: self-service token API over JWT ───────────────────────────
 
 def test_http_token_lifecycle(client):
-    _, hdr = _mk_user(client, "t1@x.io")
+    uid, hdr = _mk_user(client, "t1@x.io")
 
     r = client.post("/tokens", json={"name": "ci"}, headers=hdr)
     assert r.status_code == 200, r.text
     body = r.json()
     assert body["token"].startswith("cmp_live_")
+    assert body["scopes"] == f"read:{uid},write:{uid}"   # own space, read+write
     assert len(body["token"]) > len(body["token_id"])   # plaintext only here
 
     r = client.get("/tokens", headers=hdr)
@@ -171,8 +172,11 @@ def test_four_probes(client):
     r = _rpc(client, tok, "ingest_obs", {"project": uid_b, "name": "x", "concept": "gotcha"})
     assert r.status_code == 200 and "forbidden" in r.text, r.text
 
-    # P3 same-user own space NOT scope-denied
+    # P3 same-user own space NOT scope-denied (read AND write)
     r = _rpc(client, tok, "recall", {"project": uid_a, "query": "q"})
+    assert r.status_code == 200 and "forbidden" not in r.text, r.text
+    r = _rpc(client, tok, "ingest_obs",
+             {"project": uid_a, "name": "probe-own", "concept": "gotcha"})
     assert r.status_code == 200 and "forbidden" not in r.text, r.text
 
     # P4 revoke → immediate 401

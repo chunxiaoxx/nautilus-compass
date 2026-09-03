@@ -69,11 +69,14 @@ def run_probes(http, base: str) -> list[tuple[str, bool, str]]:
                 r.status_code == 200 and "forbidden" in r.text,
                 f"HTTP {r.status_code}"))
 
-    # P3 same-user own space NOT scope-denied
-    r = _rpc(http, base, tok, "recall", {"project": uid_a, "query": "q"})
-    out.append(("P3 same-user own space OK",
-                r.status_code == 200 and "forbidden" not in r.text,
-                f"HTTP {r.status_code}"))
+    # P3 same-user own space NOT scope-denied (read AND write)
+    r1 = _rpc(http, base, tok, "recall", {"project": uid_a, "query": "q"})
+    r2 = _rpc(http, base, tok, "ingest_obs",
+              {"project": uid_a, "name": "probe-own", "concept": "gotcha"})
+    ok = all(r.status_code == 200 and "forbidden" not in r.text
+             for r in (r1, r2))
+    out.append(("P3 same-user own space OK", ok,
+                f"recall {r1.status_code} · write {r2.status_code}"))
 
     # P4 revoke takes effect immediately
     lst = http.get(f"{base}/tokens", headers=hdr_a, timeout=_TIMEOUT).json()["tokens"]
