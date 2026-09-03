@@ -143,3 +143,40 @@ def test_http_pages_served(client):
     r = client.get("/console")
     assert r.status_code == 200
     assert "doLogin" in r.text and "revoke" in r.text
+
+
+# ── MVP-6: four-probe auth self-check (HANDOFF_20260831 #6) ──────────
+
+def _rpc(client, token, tool, args):
+    return client.post(
+        "/mcp",
+        headers={"Authorization": f"Bearer {token}",
+                 "Accept": "application/json, text/event-stream"},
+        json={"jsonrpc": "2.0", "id": 1, "method": "tools/call",
+              "params": {"name": tool, "arguments": args}},
+    )
+
+
+def test_four_probes(client):
+    uid_a, hdr_a = _mk_user(client, "pa@x.io")
+    uid_b, _ = _mk_user(client, "pb@x.io")
+    tok = client.post("/tokens", json={"name": "probe"},
+                      headers=hdr_a).json()["token"]
+
+    # P1 cross-user read DENY
+    r = _rpc(client, tok, "recall", {"project": uid_b, "query": "q"})
+    assert r.status_code == 200 and "forbidden" in r.text, r.text
+
+    # P2 cross-user write DENY
+    r = _rpc(client, tok, "ingest_obs", {"project": uid_b, "name": "x", "concept": "gotcha"})
+    assert r.status_code == 200 and "forbidden" in r.text, r.text
+
+    # P3 same-user own space NOT scope-denied
+    r = _rpc(client, tok, "recall", {"project": uid_a, "query": "q"})
+    assert r.status_code == 200 and "forbidden" not in r.text, r.text
+
+    # P4 revoke → immediate 401
+    tid = client.get("/tokens", headers=hdr_a).json()["tokens"][0]["token_id"]
+    assert client.delete(f"/tokens/{tid}", headers=hdr_a).status_code == 200
+    r = _rpc(client, tok, "recall", {"project": uid_a, "query": "q"})
+    assert r.status_code == 401, r.status_code

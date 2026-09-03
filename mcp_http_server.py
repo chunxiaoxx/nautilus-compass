@@ -173,6 +173,26 @@ def _check_scope(scopes: frozenset, tool_name: str, arguments: dict) -> str | No
     return None
 
 
+def _scopes_for_token(tok: str) -> frozenset | None:
+    """tokens.json first (ops-issued, hot-reloaded); then SQLite self-service
+    tokens (MVP-3, sha256 lookup, revoked filtered). None = unknown token."""
+    scopes = VALID_TOKENS.get(tok)
+    if scopes is not None:
+        return scopes
+    if not tok.startswith("cmp_live_"):
+        return None
+    import hashlib
+    h = hashlib.sha256(tok.encode()).hexdigest()
+    conn = _db_conn()
+    try:
+        row = _st.find_token_by_hash(conn, h)
+    finally:
+        conn.close()
+    if row is None:
+        return None
+    return frozenset(s for s in row["scopes"].split(",") if s)
+
+
 class _BearerAuth(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
         if request.url.path.startswith("/mcp"):
@@ -180,7 +200,7 @@ class _BearerAuth(BaseHTTPMiddleware):
             auth = request.headers.get("authorization", "")
             tok = auth[7:] if auth.lower().startswith("bearer ") \
                 else request.headers.get("x-agent-key", "")
-            scopes = VALID_TOKENS.get(tok)
+            scopes = _scopes_for_token(tok) if tok else None
             if not scopes:
                 return JSONResponse({"error": "unauthorized"}, status_code=401)
             _current_scopes.set(scopes)
