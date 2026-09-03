@@ -13,6 +13,122 @@ and a Hygiene Protocol for Long-Memory Evaluation (Draft v2)}
 \begin{document}
 \maketitle
 
+\begin{abstract}
+LLM-as-judge pipelines now decide which agents improve, which data is kept,
+and which methods pass published gates, yet the reliability literature treats
+judge failures mainly as correctable biases. From a controlled perturbation
+study (2{,}600 real API calls) and two failures inside our own production
+long-memory evaluation infrastructure, we give evidence that judge breakdown
+is better described as three structurally distinct failure types:
+\emph{knowledge-boundary blindness} (judges cannot represent sub-percent
+numerical perturbations, pass rates 37--48\% at $\pm 0.1\%$, monotone in
+magnitude, invariant across judge families), \emph{budget blindness}
+(reasoning consumes the output budget before a verdict is emitted,
+silently collapsing scores), and \emph{connectivity blindness}
+(infrastructure faults recorded as wrong answers; 14.2\% of items in a
+500-question production run, distorting the headline accuracy by 5.4 points
+on an effect of 32.8). The three types differ on every axis that matters ---
+detectable signal, whether retry cures them, whether they are catchable
+before deployment --- so conflating them produces wrong responses. We
+contribute the taxonomy, the clinical evidence, and a six-item hygiene
+protocol (preregistered gates; same-judge retry backoff; three-caliber
+disclosure; deployment smoke; binomial noise bands) that resolved 31/31
+disconnect-mislabeled items in place and converts reliability from an
+aspiration into a routine.
+\end{abstract}
+
+\section{Introduction}
+\label{sec:intro}
+
+The \emph{LLM-as-judge} paradigm has become the default arbiter for
+evaluating agent outputs, filtering training data, and gating iterative
+self-improvement. A large literature documents judge \emph{biases} ---
+position, verbosity, self-enhancement, style --- and treats them as
+prompt-level artifacts that better prompts, ensembles, or scale can correct.
+This paper reports a different class of trouble, met where evaluations are
+actually run: inside production scoring pipelines, where the judge is a
+remote model reached through a metered gateway, configured with an output
+budget, and consulted thousands of times per run.
+
+We observed three failure types that are silent --- every pipeline stage
+reports success --- yet each can absorb or manufacture more score movement
+than the effects being measured. In a 500-question LongMemEval-S run,
+14.2\% of items were scored by a judge behind an intermittently failing
+gateway and recorded as wrong; the resulting 5.4-point distortion is a fifth
+of the genuine 32.8-point improvement under study, and without per-item
+audits it also fabricated a $-20$-point ``regression'' on one subtype. In a
+benchmark tuning loop, a reasoning judge consumed its 4096-token budget
+before emitting any verdict, and two consecutive iterations were accepted as
+``the method fails'' before the measurement itself was implicated. And in
+controlled perturbation experiments, judges from two families pass 37--48\%
+of sub-percent numerical contaminations --- a knowledge boundary that
+prompting and scale do not move.
+
+These are not three flavors of one bias. They live in different resources
+(the judge's knowledge; its output budget; the scoring infrastructure),
+have different detection signals, and respond to different cures --- retry
+fixes one of the three and is actively harmful as a general remedy, because
+retrying a knowledge-boundary failure or cherry-picking calibers turns
+infrastructure noise into whichever number the operator prefers. Our
+contributions:
+\begin{enumerate}\setlength{\itemsep}{-1pt}
+\item \textbf{A taxonomy} of judge failure as resource exhaustion ---
+      J-K (knowledge boundary), J-B (output budget), J-C (infrastructure)
+      --- formalized in \S\ref{sec:taxonomy} with per-type detection
+      signals and score-effect directions (Table~\ref{tab:axes});
+\item \textbf{Clinical evidence}: controlled experiments for J-K
+      (\S\ref{sec:evidence1}) and two production-pipeline cases for J-B and
+      J-C (\S\ref{sec:evidence2}), including a three-caliber account
+      ($0.700/0.754/0.816$) of one and the same run;
+\item \textbf{A hygiene protocol} (\S\ref{sec:protocol}): preregistered
+      anchors and gates, same-judge retry backoff, three-caliber disclosure,
+      deployment smoke tests, and binomial noise bands --- six routines,
+      each keyed to a failure type, adopted at negligible cost.
+\end{enumerate}
+
+\section{Related Work}
+\label{sec:related}
+
+\paragraph{Judge biases.}
+Surveys catalog position, verbosity, self-enhancement, style, and sentiment
+biases~\cite{gu2024survey,positionbias,verbositybias,selfenhancement}, and
+EVALBIASBENCH benchmarks six bias families~\cite{evalbiasbench}. These are
+\emph{directional distortions of a functioning judge}: the verdict pipeline
+runs, the judge reads the evidence, and the output tilts. Our types are
+different in kind --- in J-K the judge cannot represent the evidence, in J-B
+it never emits a verdict, in J-C it is never consulted. Bias mitigation
+(prompts, ensembles, calibration) does not touch any of the three.
+
+\paragraph{Judging the judges.}
+Meta-evaluation work measures judge agreement with human labels on fixed
+corpora; recent 2026 analyses of judge robustness and judge-specific
+benchmarks are surveyed in the appendix bibliography.
+% TODO(R7): literature-verification round — add 2025–2026 meta-eval citations
+% (judge robustness benchmarks, judge-truncation studies, eval-infrastructure
+% reliability reports) after WebSearch verification; do not cite unverified.
+Our contribution complements rather than competes: we classify \emph{how the
+judging machinery itself breaks} and attach a response to each class.
+
+\paragraph{Self-improving agents.}
+Test-time self-improvement lines~\cite{voyager,reflexion} lean on
+self-evaluation as a progress signal; correlated failure modes between
+generator and judge are a known concern~\cite{trt2026,crescent2025}. J-K
+sharpenes this: when the judge's knowledge boundary matches the generator's
+--- as it will when judge and generator share weights or data --- the blind
+spot is shared, and self-reported progress and true progress decouple. The
+present taxonomy gives that concern operational teeth: which component to
+probe, and with what signal, before trusting a self-improvement curve.
+
+\paragraph{Grounding and verification.}
+External ground-truth access is the accepted cure for knowledge-boundary
+failure~\cite{gu2024survey}. We keep that conclusion for J-K but resist its
+generalization: for J-B and J-C the cures are cheaper and local (smoke
+tests, retry with disclosure), and treating grounding as the universal
+remedy both overpays and misdiagnoses.
+
+% §7 Discussion, §8 Limitations, §9 Reproducibility, full bibliography:
+% merged at R7 per docs/papers/paper2_judge_blindspot_outline.md §5.
+
 \section{A Taxonomy of Judge Failure}
 \label{sec:taxonomy}
 
