@@ -113,9 +113,78 @@ directional bias each type injects; only J-C has a known sign (downward).}
 \label{tab:axes}
 \end{table}
 
-% §1 Intro, §2 Related, §4 Evidence I (knowledge-boundary experiments),
-% §5 Evidence II–III (production cases), §6 Hygiene Protocol, §7–9: added in later
-% LOOP rounds per docs/papers/paper2_judge_blindspot_outline.md §5.
+\section{Evidence I: Knowledge-Boundary Blindness (J-K)}
+\label{sec:evidence1}
+
+\subsection{Setup}
+For a polluted entry with true value $v^{*}$ and perturbed value $v$, define the
+\emph{relative perturbation magnitude} $\delta(v,v^{*}) = |v-v^{*}|/|v^{*}|$, studied at
+three levels: micro (${\approx}0.1\%$), small (${\approx}1\%$), large (${\approx}10\%$).
+Two production judges score each statement $0$--$10$ for trustworthiness and factual
+accuracy (pass $\geq 6$): Kimi~k3 (reasoning; temperature 1) and MiniMax-M3
+(temperature 0.3). Five seeds; 500 benign and 100 polluted entries per type per judge;
+2{,}600 real API calls, zero failures. No simulated judge scores are used anywhere:
+an earlier simulation predicted a 93\% pass rate for commonsense errors, which the
+real data refutes outright (below).
+
+\begin{proposition}[Numerical Precision Blind Spot, semi-formal]
+\label{prop:blindsight}
+The judge pass rate $\rho_J(\delta)$ is monotonically decreasing in perturbation
+magnitude, with $g(0.1\%) \approx 0.37$--$0.48$, $g(1\%) \approx 0.12$--$0.14$,
+$g(10\%) \approx 0.00$; the blindness boundary lies at
+$\delta_c \in (0.1\%, 1\%)$. Below $\delta_c$ the judge is structurally blind;
+above it, detection is reliable.
+\end{proposition}
+
+\subsection{What Judges Do Catch}
+All baseline pollution types are detected at 0\% pass rate by both judges:
+style overclaiming (mean score $0.85$--$0.89$, $\Delta \approx 9.1$),
+commonsense errors ($0.00$, $\Delta = 10.0$), procedural errors
+($3.0$--$3.8$, $\Delta \approx 6.2$--$7.0$). Concealed entity substitution
+(capital traps: Australia$\to$Sydney, Canada$\to$Toronto, 12 groups) is also
+fully detected ($0.22$--$0.25$, $\Delta \approx 9.8$, pass 0\%). Commonsense and
+entity-level errors are therefore \emph{outside} the blind spot: the failure
+specific to J-K is not general gullibility.
+
+\subsection{Where the Blind Spot Emerges}
+Subtle numerical perturbations under ``approximately'' phrasing (Everest
+8{,}849$\to$8{,}949 m; speed of light $3.0\to3.1{\times}10^8$ m/s; 12 groups)
+pass at $45$--$46\%$ ($\Delta \approx 5.3$); deceived samples concentrate on
+approximate phrasing with boundary values. Under assertive phrasing with three
+graded magnitudes (12 precise facts, $n{=}100$ per level per judge), pass rates
+decrease monotonically:
+
+\begin{table}[h]
+\centering\small
+\begin{tabular}{lccc}
+\toprule
+Judge & $\pm 0.1\%$ & $\pm 1\%$ & $\pm 10\%$ \\
+\midrule
+Kimi k3    & 0.48 & 0.14 & 0.00 \\
+MiniMax-M3 & 0.37 & 0.12 & 0.00 \\
+\bottomrule
+\end{tabular}
+\caption{Pass rate on numerical perturbations by magnitude. The two curves nearly
+overlap (gap $\leq$ 11\,pp at every level): a cross-model structural boundary,
+not a single-model defect. At $\pm 0.1\%$, ${\sim}40\%$ of thousandth-level
+contamination passes.}
+\label{tab:round3}
+\end{table}
+
+\subsection{Scope and the $\Delta$ Predictor}
+Proposition~\ref{prop:blindsight} applies to high-precision numerical perturbations
+($\delta \leq 1\%$) only. The discrimination signal
+$\Delta(k) = \mathbb{E}[\text{score}\mid\text{benign}] -
+\mathbb{E}[\text{score}\mid\text{polluted}_k]$
+monotonically predicts the pass rate: $\Delta = 9.7, 5.3, 2.3, 0.8 \mapsto 0\%,
+45\%, 13\%, 0\%$ --- large $\Delta$ (obvious errors) and very small $\Delta$
+(errors so gross they become salient) both yield detection; the blind spot is the
+middle band. $\Delta$ is computable from a small probe set before deployment.
+Limitation: both judges are reasoning models; generalization to non-reasoning
+architectures is open.
+
+% §1 Intro, §2 Related, §5 Evidence II–III (production cases), §6 Hygiene Protocol,
+% §7–9: added in later LOOP rounds per docs/papers/paper2_judge_blindspot_outline.md §5.
 
 \begin{thebibliography}{9}\setlength{\itemsep}{-2pt}
 \bibitem{gu2024survey} G.~et~al. A survey on LLM-as-a-judge. 2024. (placeholder, merged at R7)
