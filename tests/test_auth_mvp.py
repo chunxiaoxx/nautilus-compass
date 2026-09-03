@@ -132,3 +132,14 @@ def test_http_tokens_require_valid_jwt(client):
     assert client.get("/tokens",
                       headers={"Authorization": "Bearer nope"}).status_code == 401
     assert client.post("/tokens", json={}).status_code == 401
+
+
+# ── MVP-4: pages ─────────────────────────────────────────────────────
+
+def test_http_pages_served(client):
+    r = client.get("/signup")
+    assert r.status_code == 200
+    assert "<form" in r.text and "doSignup" in r.text
+    r = client.get("/console")
+    assert r.status_code == 200
+    assert "doLogin" in r.text and "revoke" in r.text

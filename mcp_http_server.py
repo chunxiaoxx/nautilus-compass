@@ -23,7 +23,7 @@ from mcp.server.streamable_http_manager import StreamableHTTPSessionManager
 from starlette.applications import Starlette
 from starlette.middleware import Middleware
 from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.responses import JSONResponse
+from starlette.responses import HTMLResponse, JSONResponse
 from starlette.routing import Mount, Route
 from starlette.types import Receive, Scope, Send
 
@@ -211,6 +211,7 @@ async def _lifespan(_app):
 # ─── MVP multitenant: signup / login (JWT) ──────────────────────────
 # Storage + auth live in mcp_storage / auth_api; DB path overridable for tests.
 import auth_api as _auth  # noqa: E402
+import mcp_pages as _pages  # noqa: E402
 import mcp_storage as _st  # noqa: E402
 
 
@@ -304,6 +305,10 @@ app = Starlette(
         Route("/tokens", _tokens_create, methods=["POST"]),
         Route("/tokens", _tokens_list, methods=["GET"]),
         Route("/tokens/{token_id}", _tokens_revoke, methods=["DELETE"]),
+        Route("/signup", lambda req: HTMLResponse(_pages.signup_page()),
+              methods=["GET"]),
+        Route("/console", lambda req: HTMLResponse(_pages.console_page()),
+              methods=["GET"]),
     ],
     middleware=[Middleware(_BearerAuth)],
     lifespan=_lifespan,
