@@ -1,0 +1,33 @@
+{
+ "knowledge-update": {
+  "acc": 0.7307692307692307,
+  "n": 78,
+  "ok": 57
+ },
+ "multi-session": {
+  "acc": 0.5294117647058824,
+  "n": 68,
+  "ok": 36
+ },
+ "single-session-assistant": {
+  "acc": 0.7321428571428571,
+  "n": 56,
+  "ok": 41
+ },
+ "single-session-preference": {
+  "acc": 0.6,
+  "n": 30,
+  "ok": 18
+ },
+ "single-session-user": {
+  "acc": 0.9,
+  "n": 70,
+  "ok": 63
+ },
+ "temporal-reasoning": {
+  "acc": 0.578125,
+  "n": 128,
+  "ok": 74
+ },
+ "overall": 0.672093023255814
+}
