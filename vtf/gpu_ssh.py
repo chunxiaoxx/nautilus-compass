@@ -5,15 +5,14 @@ import sys
 
 import paramiko
 
-HOST = os.environ.get("GPU_SSH_HOST", "js3.blockelite.cn")
-PORT = int(os.environ.get("GPU_SSH_PORT", "10536"))
+HOST = os.environ.get("GPU_SSH_HOST", "js1.blockelite.cn")
+PORT = int(os.environ.get("GPU_SSH_PORT", "11224"))
 USER = os.environ.get("GPU_SSH_USER", "root")
-PW = os.environ.get("GPU_SSH_PW", "zoh3Eich")
-# 2026-08-29 · 实例 651799(651448 重租恢复·同容器 c1·镜像 v2608291059 + 100G 数据盘 /root/data 已挂)
-# 备用 IP:移动 223.109.239.32 / 电信 180.127.11.166(同端口)· due 08-30 02:42
-# 2026-08-29 · 新实例 651448(自定义镜像 v2608291059 开机+外挂 100G 数据盘 /root/data)
-# 镜像验证通过:vllm 0.8.5/Qwen 断点/reranker 干净版/LME-V2 数据/e2e 全套秒级就位
-# 备用:电信 180.127.11.166:10516 · Qwen 模型在 /root/data/models/qwen35-9b(软链)
+PW = os.environ.get("GPU_SSH_PW", "pei9teiL")
+# 2026-09-04 · 实例 654686(lyg0002xh c4 · js1:11224)· cheap-tier 跑分现役机
+# 密码轮换从 get_connection_info 的 ssh_url query 取(base64 解码)——SSH 认证失败
+# 先查实例 status(Status=1=活着)再重取凭证,别急着判实例没了(9/4 教训)
+# 2026-08-29 · 实例 651799/651448(js3:10536 · 旧密码 zoh3Eich)已退役
 
 
 def client():
