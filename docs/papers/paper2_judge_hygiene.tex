@@ -185,8 +185,66 @@ middle band. $\Delta$ is computable from a small probe set before deployment.
 Limitation: both judges are reasoning models; generalization to non-reasoning
 architectures is open.
 
-% §1 Intro, §2 Related, §5 Evidence II–III (production cases), §6 Hygiene Protocol,
-% §7–9: added in later LOOP rounds per docs/papers/paper2_judge_blindspot_outline.md §5.
+\section{Evidence II and III: Production-Pipeline Cases}
+\label{sec:evidence2}
+
+Both cases come from our own long-memory evaluation infrastructure during
+September 2026. Neither produced any error message or failed step: pipelines
+reported success throughout, and both failures were initially misattributed ---
+to the method under test (Case~1) and to the system under test (Case~2).
+
+\subsection{Case 1 (J-B): The Budget-Starved Judge}
+\label{sec:case-budget}
+
+In a retrieval-augmented tuning loop over the LME-V2 long-memory benchmark
+(451 items, two domains), a Doubao judge was configured with
+\texttt{max\_tokens}$=4096$. The judge's reasoning mode consumed the entire
+budget on a systematic subset of items before emitting a verdict token;
+truncated outputs were parsed to a default label, collapsing domain scores
+toward zero. Two consecutive tuning iterations were scored as ``method fails
+to pass the gate'' before the actual cause was found: the \emph{measurement},
+not the method, was broken. The failure survived two pipeline revisions
+because spot checks used short items whose reasoning fit the budget; it was
+only exposed by a function-call-level smoke test that inspected the judge's
+raw output on a realistic item. The cure is deployment-time, not statistical:
+a smoke test that asserts a non-empty, parseable verdict under realistic
+prompt sizes (cf.\ \S\ref{sec:protocol}).
+
+\subsection{Case 2 (J-C): Fourteen Percent Scored by a Disconnected Judge}
+\label{sec:case-connect}
+
+In a 500-question LongMemEval-S production run, 71 items (14.2\%) were scored
+by a judge behind an intermittently failing gateway (recurring 403s and
+timeouts). The pipeline recorded each aborted scoring call as an incorrect
+answer. A full retry round did not clear them --- fresh items kept hitting
+disconnects --- showing the noise is stochastic and infrastructure-bound, not
+item-bound. Re-judging the residual 31 items with the \emph{same judge, same
+prompt, retry with exponential backoff} resolved 31/31, yielding three
+reportable accuracies for the same run: $0.700$ (conservative: disconnects
+counted as errors), $0.754$ (after re-judging), $0.816$ (disconnects
+excluded). Two properties deserve emphasis. First, the distortion (5.4 points)
+is a fifth of the genuine effect under study (+32.8 points over baseline):
+infrastructure noise of this scale can materially change accepted-vs-rejected
+decisions on preregistered gates. Second, small-subtype movements must be read
+against binomial noise: an apparent $-5$pt regression on a 30-item subtype is
+within $\pm 1$-item noise ($\pm 3.3$pt), and an interim ``$-20$pt regression''
+verdict was later shown to be disconnect mislabeling --- without per-item
+judge-output audits, infrastructure noise manufactures phantom regressions.
+
+\subsection{Cross-Case Observations}
+\label{sec:crosscase}
+
+Both failures are \emph{silent}: every pipeline stage reported success, and
+dashboards showed healthy throughput. Both were initially misattributed
+inward (``our method regressed'') rather than outward (``our judge broke''),
+consistent with an operator prior that treats scores as measurements rather
+than as outputs of another fallible model plus fallible plumbing. The taxonomy
+of \S\ref{sec:taxonomy} exists precisely to make these failure modes
+first-class: each type has a distinct detection signal (Table~\ref{tab:axes}),
+and each signal can be turned into a routine. The next section does so.
+
+% §1 Intro, §2 Related, §6 Hygiene Protocol, §7–9: added in later LOOP rounds
+% per docs/papers/paper2_judge_blindspot_outline.md §5.
 
 \begin{thebibliography}{9}\setlength{\itemsep}{-2pt}
 \bibitem{gu2024survey} G.~et~al. A survey on LLM-as-a-judge. 2024. (placeholder, merged at R7)
