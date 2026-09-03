@@ -24,7 +24,7 @@ from starlette.applications import Starlette
 from starlette.middleware import Middleware
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import JSONResponse
-from starlette.routing import Mount
+from starlette.routing import Mount, Route
 from starlette.types import Receive, Scope, Send
 
 server: Server = Server("nautilus-compass", version="3.1.0")
@@ -207,8 +207,56 @@ async def _lifespan(_app):
 # Mounted at /mcp → canonical endpoint is /mcp/ (Starlette adds the slash;
 # bare /mcp 307-redirects to it, which real MCP/httpx clients follow). nginx
 # should proxy_pass to the backend's /mcp/ so no redirect crosses the wire.
+
+# ─── MVP multitenant: signup / login (JWT) ──────────────────────────
+# Storage + auth live in mcp_storage / auth_api; DB path overridable for tests.
+import auth_api as _auth  # noqa: E402
+import mcp_storage as _st  # noqa: E402
+
+
+def _db_conn():
+    return _st.init_db(os.environ.get("COMPASS_MVP_DB", "./mvp_users.db"))
+
+
+class _JsonBody(dict):
+    pass
+
+
+async def _signup(request):
+    body = await request.json()
+    conn = _db_conn()
+    try:
+        out = _auth.signup_user(conn, email=body.get("email", ""),
+                                passphrase=body.get("passphrase", ""),
+                                region=body.get("region", ""))
+        return JSONResponse(out)
+    except _auth.ConflictError:
+        return JSONResponse({"error": "email already registered"}, status_code=409)
+    except ValueError as e:
+        return JSONResponse({"error": str(e)}, status_code=422)
+    finally:
+        conn.close()
+
+
+async def _login(request):
+    body = await request.json()
+    conn = _db_conn()
+    try:
+        out = _auth.login_user(conn, email=body.get("email", ""),
+                               passphrase=body.get("passphrase", ""))
+        return JSONResponse(out)
+    except _auth.AuthError:
+        return JSONResponse({"error": "invalid credentials"}, status_code=401)
+    finally:
+        conn.close()
+
+
 app = Starlette(
-    routes=[Mount("/mcp", app=_handle)],
+    routes=[
+        Mount("/mcp", app=_handle),
+        Route("/signup", _signup, methods=["POST"]),
+        Route("/login", _login, methods=["POST"]),
+    ],
     middleware=[Middleware(_BearerAuth)],
     lifespan=_lifespan,
 )
