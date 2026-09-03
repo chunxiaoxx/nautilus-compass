@@ -68,3 +68,33 @@ def login_user(conn: Any, *, email: str, passphrase: str) -> dict:
     if row is None or digest != row["passphrase_hash"]:
         raise AuthError("invalid credentials")
     return {"user_id": row["user_id"], "token": _issue_token(row["user_id"])}
+
+
+def require_user(authorization: str) -> str:
+    """Return user_id from 'Bearer <jwt>', or raise AuthError (→401)."""
+    if not authorization.lower().startswith("bearer "):
+        raise AuthError("missing bearer token")
+    try:
+        claims = pyjwt.decode(authorization[7:], jwt_secret(),
+                              algorithms=["HS256"])
+    except pyjwt.PyJWTError as e:
+        raise AuthError("invalid token") from e
+    return claims["sub"]
+
+
+def issue_api_token(conn: Any, *, user_id: str, name: str = "") -> dict:
+    """Create a self-service MCP token. Plaintext is returned once, only the
+    sha256 is stored. Scope is bounded to the owner: read:<user_id>."""
+    raw = "cmp_live_" + secrets.token_hex(16)
+    token_hash = hashlib.sha256(raw.encode()).hexdigest()
+    scopes = f"read:{user_id}"
+    token_id = st.create_token(conn, user_id=user_id, token_hash=token_hash,
+                               prefix=raw[:12], name=name, scopes=scopes)
+    return {"token_id": token_id, "token": raw, "scopes": scopes}
+
+
+def list_api_tokens(conn: Any, user_id: str) -> list[dict]:
+    return [{"token_id": r["token_id"], "name": r["name"],
+             "prefix": r["prefix"], "scopes": r["scopes"],
+             "created_ts": r["created_ts"], "revoked": r["revoked_ts"] is not None}
+            for r in st.list_tokens(conn, user_id)]

@@ -63,13 +63,26 @@ def test_login_wrong_passphrase_rejected(db):
 
 # ── HTTP layer (real routes on the 8097 app) ─────────────────────────
 
-@pytest.fixture()
-def client(tmp_path, monkeypatch):
-    monkeypatch.setenv("COMPASS_MVP_DB", str(tmp_path / "http.db"))
-    from mcp_http_server import app
-    from starlette.testclient import TestClient
-    with TestClient(app) as c:
-        yield c
+@pytest.fixture(scope="module")
+def client(tmp_path_factory):
+    # Module-scoped: the app's StreamableHTTPSessionManager is single-lifespan,
+    # so all HTTP tests share one client and isolate via unique emails/DB.
+    # MonkeyPatch.context() because function-scoped monkeypatch would raise
+    # ScopeMismatch inside a module fixture.
+    from _pytest.monkeypatch import MonkeyPatch
+    with MonkeyPatch.context() as mp:
+        mp.setenv("COMPASS_MVP_DB",
+                  str(tmp_path_factory.mktemp("httpdb") / "http.db"))
+        from mcp_http_server import app
+        from starlette.testclient import TestClient
+        with TestClient(app) as c:
+            yield c
+
+
+def _mk_user(client, email):
+    client.post("/signup", json={"email": email, "passphrase": "pw"})
+    r = client.post("/login", json={"email": email, "passphrase": "pw"})
+    return r.json()["user_id"], {"Authorization": f"Bearer {r.json()['token']}"}
 
 
 def test_http_signup_login_flow(client):
@@ -91,3 +104,31 @@ def test_http_signup_login_flow(client):
                        json={"email": "h@x.io", "passphrase": "bad"}).status_code == 401
     assert client.post("/login",
                        json={"email": "nobody@x.io", "passphrase": "pw"}).status_code == 401
+
+
+# ── MVP-3: self-service token API over JWT ───────────────────────────
+
+def test_http_token_lifecycle(client):
+    _, hdr = _mk_user(client, "t1@x.io")
+
+    r = client.post("/tokens", json={"name": "ci"}, headers=hdr)
+    assert r.status_code == 200, r.text
+    body = r.json()
+    assert body["token"].startswith("cmp_live_")
+    assert len(body["token"]) > len(body["token_id"])   # plaintext only here
+
+    r = client.get("/tokens", headers=hdr)
+    assert r.status_code == 200
+    rows = r.json()["tokens"]
+    assert len(rows) == 1 and rows[0]["revoked"] is False
+    assert "token" not in rows[0]                       # never echoed back
+
+    r = client.delete(f"/tokens/{rows[0]['token_id']}", headers=hdr)
+    assert r.status_code == 200
+    assert client.get("/tokens", headers=hdr).json()["tokens"][0]["revoked"] is True
+
+
+def test_http_tokens_require_valid_jwt(client):
+    assert client.get("/tokens",
+                      headers={"Authorization": "Bearer nope"}).status_code == 401
+    assert client.post("/tokens", json={}).status_code == 401

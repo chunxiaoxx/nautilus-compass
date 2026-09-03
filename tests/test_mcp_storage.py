@@ -71,3 +71,31 @@ def test_foreign_key_enforced(db):
 def test_parameterized_query_rejects_injection(db):
     st.create_user(db, email="a@b.c", passphrase_hash="x")
     assert st.get_user_by_email(db, "a@b.c' OR '1'='1") is None
+
+
+# ── MVP-3: self-service tokens ───────────────────────────────────────
+
+def test_token_table_created(db):
+    names = {r[0] for r in db.execute(
+        "SELECT name FROM sqlite_master WHERE type='table'")}
+    assert "mcp_tokens" in names
+
+
+def test_token_create_list_revoke(db):
+    uid = st.create_user(db, email="a@b.c", passphrase_hash="x")
+    tid = st.create_token(db, user_id=uid, token_hash="h" * 64,
+                          prefix="cmp_live_ab", name="ci", scopes="read:" + uid)
+    rows = st.list_tokens(db, uid)
+    assert [r["token_id"] for r in rows] == [tid]
+    assert rows[0]["revoked_ts"] is None
+    st.revoke_token(db, uid, tid)
+    rows = st.list_tokens(db, uid)
+    assert rows[0]["revoked_ts"] is not None
+
+
+def test_token_isolated_between_users(db):
+    u1 = st.create_user(db, email="a@b.c", passphrase_hash="x")
+    u2 = st.create_user(db, email="d@e.f", passphrase_hash="y")
+    st.create_token(db, user_id=u1, token_hash="h" * 64,
+                    prefix="p1", name="n", scopes="read")
+    assert st.list_tokens(db, u2) == []
