@@ -1,0 +1,4 @@
+name: compass
+status: active
+waiting_on: none(A 臂终判 PASS 已出;便宜档 web 全量 GPU 跑分明早出数)
+deliverable: 摘要层 PASS(e2e 42.6→70.0/81.6%)+ LME-V2 便宜档全量 + T0 成绩册(9/12)+ MVP 六件推进中
