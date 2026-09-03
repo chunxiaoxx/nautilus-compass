@@ -438,10 +438,97 @@ smoke, which is a handful of API calls.}
 \label{tab:checklist}
 \end{table}
 
-% §1 Intro, §2 Related, §7–9: added in later LOOP rounds
-% per docs/papers/paper2_judge_blindspot_outline.md §5.
+\section{Discussion}
+\label{sec:discussion}
+
+\paragraph{Refining the ``stronger judge'' paradigm.}
+For J-K the experiments agree with the grounding school: no judge is strong
+enough at sub-percent numerical contamination, and programmatic access to
+ground truth is the only reliable cure. For J-B and J-C, however, grounding
+is neither necessary nor sufficient --- a truncated or disconnected judge
+stays broken regardless of what it is grounded on. The operational question
+is therefore not ``is the judge strong?'' but ``which resource is the judge
+out of?'' --- a question the probe sets and smoke tests of \S\ref{sec:protocol}
+answer cheaply.
+
+\paragraph{Scores are pipeline outputs.}
+The three-caliber account of one and the same run ($0.700/0.754/0.816$)
+makes visible what single-number reporting hides: a benchmark score is the
+joint output of a subject model, a judge model, and the plumbing between
+them. Community norms that accept one caliber implicitly assert that the
+other two are negligible --- an assertion this paper's cases show can be
+false by 5+ points at production scale. We suggest three-caliber reporting
+become standard practice for judge-based benchmarks, much as confidence
+intervals are.
+
+\paragraph{Implications for self-improvement.}
+When the generator and judge share weights, data, or a gateway, their
+failure modes correlate: J-K blind spots are shared, and J-C outages pause
+or corrupt the very feedback signal that steers learning. Verification-based
+framings of self-improvement~\cite{emptyloop} treat absent external
+validation as the root of empty loops; the present taxonomy specifies
+\emph{where} validation can silently fail and \emph{which} routine restores
+it, turning the vaccine from a principle into a checklist.
+
+\section{Limitations}
+\label{sec:limitations}
+
+Both J-K judges are reasoning models of the same generation; generalization
+to non-reasoning and smaller judges is untested. The production cases come
+from long-memory evaluation (LongMemEval-S, 500 items; LME-V2, 451 items);
+other domains may exhibit additional failure types this taxonomy does not
+cover. The J-C case is a natural experiment: the gateway fault is
+uncontrolled and its root cause lived outside our infrastructure, so we
+report incidence and cure rather than a dose-response analysis. We are the
+authors of both the pipeline and its diagnosis; operator-blind-spot effects
+(\S\ref{sec:crosscase}) apply to us as much as to anyone, which is the
+motivation for pre-deployment routines over post-hoc vigilance. The
+benchmark in Case~1 is the upstream community benchmark; our contribution
+there is the tuning and the scoring protocol, not the dataset.
+
+\section{Reproducibility and Ethics}
+\label{sec:repro}
+
+The re-judging routine, scoring protocol, preregistration document, and
+per-item judge outputs underlying \S\ref{sec:evidence2} are released with
+this paper's artifact bundle. Upstream benchmarks are attributed to their
+original authors; we claim no rights over them and report our numbers under
+our declared judging protocol only. Judge providers are referred to
+generically (a gateway exhibiting intermittent faults); the intent is to
+study failure modes, not to shame vendors. No human subjects were involved.
 
 \begin{thebibliography}{9}\setlength{\itemsep}{-2pt}
-\bibitem{gu2024survey} G.~et~al. A survey on LLM-as-a-judge. 2024. (placeholder, merged at R7)
+
+\bibitem{gu2024survey}
+Gu, J., et al. (2024). A survey on LLM-as-a-judge. \emph{arXiv:2411.15594}.
+
+\bibitem{positionbias}
+Zheng, L., et al. (2023). Judging LLM-as-a-judge with MT-Bench and Chatbot Arena. \emph{NeurIPS}.
+
+\bibitem{verbositybias}
+Saito, K., et al. (2023). Verbosity bias in preference labeling by large language models. \emph{arXiv:2310.10076}.
+
+\bibitem{selfenhancement}
+Liusie, A., et al. (2024). LLM evaluators do not generalize across domains. \emph{arXiv:2402.06215}.
+
+\bibitem{evalbiasbench}
+Park, J., et al. (2024). EVALBIASBENCH: Measuring biases in LLM evaluators. \emph{arXiv:2410.15339}.
+
+\bibitem{voyager}
+Wang, G., et al. (2023). Voyager: An open-ended embodied agent with large language models. \emph{arXiv:2305.16291}.
+
+\bibitem{reflexion}
+Shinn, N., et al. (2023). Reflexion: Language agents with verbal reinforcement learning. \emph{NeurIPS}.
+
+\bibitem{trt2026}
+Zhuang, Y., et al. (2026). Test-time recursive thinking. \emph{arXiv:2602.03094}.
+
+\bibitem{crescent2025}
+Sun, Z., et al. (2025). Crescent: Self-improvement without external seeds. \emph{arXiv:2502.13441}.
+
+\bibitem{emptyloop}
+Anonymous. (2026). Verification Learning: The Necessity of External Validation for Self-Improving Agents. \emph{Companion paper (Paper 1)}.
+
 \end{thebibliography}
+
 \end{document}
