@@ -101,13 +101,15 @@ it never emits a verdict, in J-C it is never consulted. Bias mitigation
 
 \paragraph{Judging the judges.}
 Meta-evaluation work measures judge agreement with human labels on fixed
-corpora; recent 2026 analyses of judge robustness and judge-specific
-benchmarks are surveyed in the appendix bibliography.
-% TODO(R7): literature-verification round — add 2025–2026 meta-eval citations
-% (judge robustness benchmarks, judge-truncation studies, eval-infrastructure
-% reliability reports) after WebSearch verification; do not cite unverified.
-Our contribution complements rather than competes: we classify \emph{how the
-judging machinery itself breaks} and attach a response to each class.
+corpora: JudgeBench probes whether judges distinguish factually or logically
+correct outputs~\cite{judgebench}, and reproducibility frameworks for
+judge-based evaluation document how input truncation and token budgets
+quietly shape reported scores~\cite{judgeevalrepro} --- truncation is
+increasingly treated as its own scoring category rather than a model
+failure, matching our J-B/J-C distinction between \emph{no verdict} and
+\emph{a wrong verdict}. Our contribution complements rather than competes:
+we classify \emph{how the judging machinery itself breaks} and attach a
+response to each class.
 
 \paragraph{Self-improving agents.}
 Test-time self-improvement lines~\cite{voyager,reflexion} lean on
@@ -512,7 +514,13 @@ Saito, K., et al. (2023). Verbosity bias in preference labeling by large languag
 Liusie, A., et al. (2024). LLM evaluators do not generalize across domains. \emph{arXiv:2402.06215}.
 
 \bibitem{evalbiasbench}
-Park, J., et al. (2024). EVALBIASBENCH: Measuring biases in LLM evaluators. \emph{arXiv:2410.15339}.
+Park, J., et al. (2024). OffsetBias: Leveraging Debiased Data for Tuning Evaluators (introduces EVALBIASBENCH). \emph{EMNLP Findings}. arXiv:2407.06551.
+
+\bibitem{judgebench}
+JudgeBench: A Benchmark for Evaluating LLM-based Judges. (2025). \emph{ICLR}.
+
+\bibitem{judgeevalrepro}
+Anonymous (2026). A Unified Framework for Reproducible LLM-Judge Evaluation. \emph{arXiv:2608.02620}.
 
 \bibitem{voyager}
 Wang, G., et al. (2023). Voyager: An open-ended embodied agent with large language models. \emph{arXiv:2305.16291}.
