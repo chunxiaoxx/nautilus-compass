@@ -27,6 +27,11 @@ from .memory import Memory, MemoryContextItem, register_memory
 _WORD_RE = re.compile(r"[\w:]+")
 # 刀2 · UI 树剪枝:丢无文本的结构行("[20] navigation ''"),保留带内容的行
 _A11Y_NOISE_RE = re.compile(r"\[\d+\] \w+ ''")
+# T1 便宜档 · 规则式查询分解:按并列/对比/介词结构切段,每段一条子查询,
+# 与原问题 RRF 融合(不替代)。无 LLM——保住"无 controller 低延迟"卖点。
+_QUERY_SPLIT_RE = re.compile(
+    r"\s+(?:and|or|versus|vs\.?|between|compared to|in addition to|"
+    r"other than|except for|as well as)\s+|[?;,]|\s+then\s+", re.I)
 
 
 def _prune_a11y(a11y: str, max_chars: int) -> str:
@@ -38,11 +43,11 @@ def _tokenize(text: str) -> list[str]:
     return _WORD_RE.findall(text.lower())
 
 
-def _state_text(state: dict[str, Any], max_chars: int) -> str:
+def _state_text(state: dict[str, Any], max_chars: int, a11y_chars: int = 500) -> str:
     url = str(state.get("url") or "")
     action = str(state.get("action") or "")
     thought = str(state.get("thought") or "")
-    a11y = _prune_a11y(str(state.get("accessibility_tree") or ""), 500)
+    a11y = _prune_a11y(str(state.get("accessibility_tree") or ""), a11y_chars)
     parts = []
     if url:
         parts.append(f"url: {url}")
@@ -71,6 +76,11 @@ class CompassMemory(Memory):
         self._window = max(1, int(p.get("window", 2)))
         self._max_state_chars = int(p.get("max_state_chars", 1200))
         self._max_screenshots = int(p.get("max_screenshots", 4))
+        # T1 便宜档 knobs (2026-09-03 preregistration) · defaults keep the
+        # d12 baseline byte-identical; runs flip them via memory_params.
+        self._a11y_chars = int(p.get("a11y_chars", 500))
+        self._query_decomp = bool(p.get("query_decomp", False))
+        self._shot_per_traj = int(p.get("shot_per_traj", 0))  # 0 = off
         self._text_budget = int(p.get("text_budget_chars", 24000))
         self._per_traj_extra = int(p.get("per_traj_extra", 4))
         self._rrf_k = int(p.get("rrf_k", 60))
@@ -122,7 +132,7 @@ class CompassMemory(Memory):
         for st in states:
             if not isinstance(st, dict):
                 continue
-            t = _state_text(st, self._max_state_chars)
+            t = _state_text(st, self._max_state_chars, self._a11y_chars)
             if t:
                 texts.append(t)
         # sliding-window pairing (window=2 -> s_i + s_{i+1}); a lone long
@@ -188,6 +198,18 @@ class CompassMemory(Memory):
         self._matrix = self._embed(texts)
 
     # ----------------------------------------------------------------- query
+    def _sub_queries(self, query: str) -> list[str]:
+        """Rule-based query decomposition (T1 cheap tier, no LLM).
+
+        Split on coordination/comparison/sequential structure and keep
+        content-bearing segments (>=4 words). The original query always
+        stays in the fusion; sub-queries only ADD evidence streams.
+        """
+        segments = [s.strip(" .?!") for s in _QUERY_SPLIT_RE.split(query)]
+        norm_q = query.strip(" .?!")
+        subs = [s for s in segments if s and len(s.split()) >= 4 and s != norm_q]
+        return subs[:4]
+
     def query(
         self,
         query: str,
@@ -208,7 +230,13 @@ class CompassMemory(Memory):
                     fused[idx] += 1.0 / (self._rrf_k + rank + 1)
             return fused
 
-        fused = _rrf([dense, lexical])
+        rankings = [dense, lexical]
+        if self._query_decomp:
+            for sub in self._sub_queries(query):
+                sv = self._embed([sub])[0]
+                rankings.append((self._matrix @ sv).tolist())
+                rankings.append(self._bm25_scores(sub))
+        fused = _rrf(rankings)
         order = sorted(range(len(fused)), key=lambda i: -fused[i])
         picked = [self._chunks[i] for i in order[: self._top_k]]
 
@@ -249,10 +277,17 @@ class CompassMemory(Memory):
                 break
             items.append({"type": "text", "value": block})
             used += len(block)
+            # T1 cheap tier: per-trajectory screenshot floor — static answers
+            # live in screenshots; a top-hit trajectory must never ship with
+            # zero images just because the global quota filled earlier.
+            quota = self._shot_per_traj  # 0 = legacy global-quota behavior
+            taken = 0
             for c in sorted(chunks, key=lambda c: -fused[self._chunks.index(c)]):
                 shot = c.get("screenshot")
-                if shot and shot not in shots and len(shots) < self._max_screenshots:
+                cap = quota if quota > 0 else self._max_screenshots
+                if shot and shot not in shots and len(shots) < self._max_screenshots and taken < cap:
                     shots.append(shot)
+                    taken += 1
         for shot in shots:
             p = Path(shot)
             if p.exists():
