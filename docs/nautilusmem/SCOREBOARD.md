@@ -16,7 +16,8 @@ evidence;题目/轨迹/harness 归上游,不随本成绩册分发。
 | untuned(首跑基线,doubao 口径) | 19.6% | 12.8% | 8/30 首次全量基线 |
 | **tuned d12 + 重判(现役)** | **40.0%** | **38.4%** | 三刀调优+judge 预算修正重判 |
 | cheap-tier raw-state 强化 | [待补] | [待补] | 三改(a11y_chars/query_decomp/shot_per_traj),跑分中 |
-| non-abst 口径 | [待补] | [待补] | PROTOCOL 1.2 双口径要求,判定题集后补 |
+| non-abst 口径(现役重判合并) | 32.7% | 25.2% | 可作答题 n=168/155 |
+| abstention-only 口径(现役) | 56.9% | 75.0% | 应拒答题 n=72/56;画像=拒答判别强、知识召回弱 |
 
 单域调优幅度:web +20.4pt(2.0×)· ent +25.6pt(3.0×)。
 
@@ -37,7 +38,9 @@ evidence;题目/轨迹/harness 归上游,不随本成绩册分发。
 1. context 预算:官方 200k vs 我们 24k(8.3×)
 2. 判分:官方程序化+gpt-5.2 judge vs 我们全题 LLM judge(doubao low/16384,重判修正)
 
-**差异化的实measure**:无 LLM controller——memory_query 延迟 [待补,预期 <1s vs AgentRunbook-R 26.9s]。
+**差异化的实测**:无 LLM controller——memory_query 延迟 web p50 0.165s / p95 0.339s,
+ent p50 0.328s / p95 0.798s(d12 全量实测)vs AgentRunbook-R(LLM controller)26.9s——**约 80× 差距**。
+诚实注记:max 尾部(web 23.8s/ent 50.9s)= 冷启动/索引进场,非稳态。
 
 ## 3. 判分修正故事(卫生学贡献)
 
@@ -55,8 +58,8 @@ evidence;题目/轨迹/harness 归上游,不随本成绩册分发。
 judge: doubao-seed-2-0-pro-260215 / ark coding endpoint / max_completion_tokens 16384 / low
 subject: Qwen/Qwen3.5-9B(与官方 reader 一致)/ temp 0.6 / top-p 0.95 / top-k 20
 retrieval: BGE-m3 embedder / top_k [待补] / 检索单元=轨迹段
-口径: full(现役);non-abst [待补]
-重判: 已跑(d12 现役数字=重判后)
+口径: full 40.0/38.4 + non-abst 32.7/25.2 + abst-only 56.9/75.0(web/ent)
+重判: 已跑(d12 现役数字=重判后,flips web 12/ent 16)
 ```
 
 ## 5. attribution 与许可
@@ -71,6 +74,6 @@ retrieval: BGE-m3 embedder / top_k [待补] / 检索单元=轨迹段
 
 - [ ] cheap-tier web 240 全量数字落表(GPU 跑分中)
 - [ ] ent 211 接力后同表
-- [ ] non-abst 双口径判定(d14 刀4 数据可复用?)
-- [ ] memory_query 延迟实测(P95)
+- [x] non-abst 双口径(d12 aggregated+重判 flips 合并,full 锚定 40.0/38.4 校验通过)
+- [x] memory_query 延迟实测(p95 web 0.339s / ent 0.798s)
 - [ ] 用户拍板呈现口径(DECISION B/C)→ 定稿
