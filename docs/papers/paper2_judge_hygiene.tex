@@ -1,0 +1,123 @@
+% Paper 2 v2 (fusion) — Judge Failure in the Wild
+% LOOP draft: sections added incrementally; this file currently holds §3 (theory core).
+% Compiled standalone for now; merged with kimi-May skeleton at R7.
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,url}
+\title{Judge Failure in the Wild: A Taxonomy of LLM-as-Judge Breakdown\\
+and a Hygiene Protocol for Long-Memory Evaluation (Draft v2)}
+\author{Anonymous}
+\date{September 2026}
+\begin{document}
+\maketitle
+
+\section{A Taxonomy of Judge Failure}
+\label{sec:taxonomy}
+
+\paragraph{Setup.}
+A judge pipeline is a map $J_\theta : (a, g) \mapsto v \in \{\textsc{pass}, \textsc{fail}\}$,
+where $a$ is a candidate answer, $g$ a reference, and $\theta$ the judge model.
+The pipeline is \emph{sound} when $v$ agrees with the verdict an exact comparator
+would emit under the declared answer-equivalence relation. We call any systematic
+divergence a \emph{judge failure}. Prior work treats judge failures mostly as
+\emph{biases}: directional, prompt-level distortions that better prompting, ensembles,
+or scale can correct. Deploying a long-memory evaluation suite in production over
+August--September 2026, we instead observed failures that share a signature ---
+silent, score-distorting, and invisible to the pipeline operator --- but arise from
+three mechanistically distinct sources. We model the judge as operating at the
+intersection of three finite resources and classify failures by which resource is
+exhausted:
+\[
+\underbrace{J^{*}(\theta, B, I)}_{\text{deployed judge}}
+\quad\text{fails when}\quad
+\underbrace{\theta}_{\text{knowledge boundary}},\;
+\underbrace{B}_{\text{output budget}},\;
+\underbrace{I}_{\text{scoring infrastructure}}
+\text{ is exceeded.}
+\]
+
+\subsection{Type J-K: Knowledge-Boundary Blindness}
+\label{sec:jk}
+
+The judge cannot \emph{represent} the difference between $a$ and $g$: the perturbation
+lies inside a region where the model's internal discrimination is flat.
+In controlled perturbation experiments (2{,}600 real API calls; two judge families,
+Kimi~k3 and MiniMax-M3), pass rates on injected numerical errors decrease
+monotonically with perturbation magnitude --- 37--48\% at $\pm 0.1\%$ relative
+perturbation, ${\sim}13\%$ at $\pm 1\%$, and $0\%$ at $\pm 10\%$ --- with the blindness
+boundary stable between $0.1\%$ and $1\%$ across families (within 11 percentage
+points). Entity-substitution and commonsense errors, by contrast, are detected at
+0\% pass rate. A discrimination signal $\Delta$, computable before deployment,
+monotonically predicts the pass rate ($\Delta = 9.7, 5.3, 2.3 \mapsto 0\%, 45\%, 13\%$).
+Defining property: \textbf{prompting does not help} --- judges explicitly instructed
+to verify numeric accuracy exhibit the same boundary --- and \textbf{stronger judges
+do not help}, since both families fail together. The failure is a property of the
+knowledge boundary, not of capability.
+
+\subsection{Type J-B: Budget Blindness}
+\label{sec:jb}
+
+The judge \emph{could} decide, but its output budget $B$ is exhausted before a
+verdict token is emitted. Reasoning-mode judges are especially exposed: chain-of-thought
+consumes $B$ from the same pool as the verdict. In our LME-V2 runs, a Doubao judge
+configured with \texttt{max\_tokens}=4096 produced reasoning that consumed the entire
+budget on a systematic subset of items, truncating the verdict and collapsing scores
+toward a default label. The failure mode stayed invisible through two consecutive
+pipeline revisions and was only exposed by a function-call-level smoke test of the
+judge output itself. Defining property: \textbf{deployment-time detectable} --- an
+empty-verdict or truncation-rate smoke test catches it before any score is produced
+--- yet routinely skipped because the judge ``works'' on informal spot checks.
+
+\subsection{Type J-C: Connectivity Blindness}
+\label{sec:jc}
+
+The judge is never consulted: an infrastructure fault (intermittent gateway 403s and
+timeouts) aborts the scoring call, and the pipeline records the item as incorrect.
+Unlike J-K and J-B, nothing about the \emph{model} is wrong --- the error lives in
+$I$. In our 500-question LongMemEval-S production run, 71 items (14.2\%) were scored
+by a disconnected judge; the disconnects persisted across a full retry round
+(new items kept hitting them), i.e., they are stochastic, not item-bound. Because
+disconnected items are recorded as failures, the reported score is a strict
+\emph{lower bound}: $0.700$ (conservative) vs.\ $0.754$ (after same-judge,
+same-prompt re-judging with retry backoff; 31/31 residual errors resolved) vs.\
+$0.816$ (disconnects excluded). The distortion (5.4 points) is of the same order as
+the genuine improvement being measured (+32.8 points over baseline), i.e., the
+infrastructure noise alone can consume a fifth of the effect under study. Defining
+property: \textbf{retry-curative} and \textbf{fully independent of the system under
+test} --- which is exactly why it is so easy to misattribute to the system.
+
+\subsection{Why the Classification Matters}
+\label{sec:why}
+
+The three types differ on every axis that matters for a response
+(Table~\ref{tab:axes}). Treating them as one phenomenon produces wrong cures:
+prompt engineering does not touch J-K or J-C; scaling the judge does not touch any
+of the three; and naive retry-without-disclosure silently turns $I$-noise into
+whichever score the operator prefers. This motivates the hygiene protocol
+(\S\ref{sec:protocol}), whose components are keyed to the taxonomy.
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{@{}lllll@{}}
+\toprule
+& Signal & Retry-curative? & Pre-deployable? & Score effect \\
+\midrule
+J-K (knowledge) & $\Delta$ predictor & no & yes (probe set) & silent pass of errors \\
+J-B (budget)    & truncation rate & no & yes (smoke) & collapse to default \\
+J-C (connect)   & error-label rate & yes & yes (probe) & false failures (lower bound) \\
+\bottomrule
+\end{tabular}
+\caption{The three failure types on operational axes. ``Score effect'' lists the
+directional bias each type injects; only J-C has a known sign (downward).}
+\label{tab:axes}
+\end{table}
+
+% §1 Intro, §2 Related, §4 Evidence I (knowledge-boundary experiments),
+% §5 Evidence II–III (production cases), §6 Hygiene Protocol, §7–9: added in later
+% LOOP rounds per docs/papers/paper2_judge_blindspot_outline.md §5.
+
+\begin{thebibliography}{9}\setlength{\itemsep}{-2pt}
+\bibitem{gu2024survey} G.~et~al. A survey on LLM-as-a-judge. 2024. (placeholder, merged at R7)
+\end{thebibliography}
+\end{document}
