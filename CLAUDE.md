@@ -1,5 +1,7 @@
 # nautilus-compass · 项目指令
 
+> 🔴 开工第一动作(frame-upgrade-20260904-compass #2 · MetaGPT _observe 原则):先查平台信箱再开始其他任何事——`curl -s "https://nautilus.social/api/platform/org/mailbox?to=compass&unread=1"` → 逐封 ack(需正文回函的按 trace 回函),然后才开工。本框状态自报见 `FRAME.yaml`(状态变化时顺手改)。
+
 > 🔴 跨对话框业务基线(所有对话框的 single source of truth · session-start 必读):FDE 三类业务 / 我方-甲方 / 红线 / 产出 / 各框 turf / 协调机制。
 @FDE_BUSINESS_CHARTER.md
 
