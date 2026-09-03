@@ -46,6 +46,16 @@ CREATE TABLE IF NOT EXISTS observations (
     created_ts TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_obs_user_type ON observations(user_id, type, ts);
+CREATE TABLE IF NOT EXISTS mcp_tokens (
+    token_id   TEXT PRIMARY KEY,
+    user_id    TEXT NOT NULL REFERENCES users(user_id),
+    token_hash TEXT NOT NULL UNIQUE,
+    prefix     TEXT NOT NULL,
+    name       TEXT DEFAULT '',
+    scopes     TEXT NOT NULL DEFAULT '',
+    created_ts TEXT NOT NULL,
+    revoked_ts TEXT
+);
 """
 
 
@@ -145,3 +155,40 @@ def list_observations(conn: sqlite3.Connection, user_id: str,
     sql += " ORDER BY ts DESC LIMIT ?"
     args.append(int(limit))
     return conn.execute(sql, args).fetchall()
+
+
+def create_token(conn: sqlite3.Connection, *, user_id: str, token_hash: str,
+                 prefix: str, name: str = "", scopes: str = "") -> str:
+    token_id = uuid.uuid4().hex
+    try:
+        conn.execute(
+            "INSERT INTO mcp_tokens (token_id, user_id, token_hash, prefix,"
+            " name, scopes, created_ts) VALUES (?,?,?,?,?,?,?)",
+            (token_id, user_id, token_hash, prefix, name, scopes, _now()))
+        conn.commit()
+    except sqlite3.IntegrityError as e:
+        raise StorageError(f"token insert failed: {e}") from e
+    return token_id
+
+
+def list_tokens(conn: sqlite3.Connection, user_id: str) -> list[sqlite3.Row]:
+    """All tokens owned by the user, including revoked (UI shows history)."""
+    return conn.execute(
+        "SELECT * FROM mcp_tokens WHERE user_id = ? ORDER BY created_ts",
+        (user_id,)).fetchall()
+
+
+def find_token_by_hash(conn: sqlite3.Connection, token_hash: str) -> sqlite3.Row | None:
+    cur = conn.execute(
+        "SELECT * FROM mcp_tokens WHERE token_hash = ? AND revoked_ts IS NULL",
+        (token_hash,))
+    return cur.fetchone()
+
+
+def revoke_token(conn: sqlite3.Connection, user_id: str, token_id: str) -> bool:
+    """Soft-revoke scoped to the owning user. True if a row was updated."""
+    cur = conn.execute(
+        "UPDATE mcp_tokens SET revoked_ts = ? WHERE token_id = ? AND"
+        " user_id = ? AND revoked_ts IS NULL", (_now(), token_id, user_id))
+    conn.commit()
+    return cur.rowcount > 0

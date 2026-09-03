@@ -251,11 +251,59 @@ async def _login(request):
         conn.close()
 
 
+def _require_user(request) -> str:
+    return _auth.require_user(request.headers.get("authorization", ""))
+
+
+async def _tokens_create(request):
+    try:
+        user_id = _require_user(request)
+    except _auth.AuthError:
+        return JSONResponse({"error": "unauthorized"}, status_code=401)
+    body = await request.json() if request.headers.get("content-length") else {}
+    conn = _db_conn()
+    try:
+        return JSONResponse(_auth.issue_api_token(
+            conn, user_id=user_id, name=str(body.get("name", ""))[:64]))
+    finally:
+        conn.close()
+
+
+async def _tokens_list(request):
+    try:
+        user_id = _require_user(request)
+    except _auth.AuthError:
+        return JSONResponse({"error": "unauthorized"}, status_code=401)
+    conn = _db_conn()
+    try:
+        return JSONResponse({"tokens": _auth.list_api_tokens(conn, user_id)})
+    finally:
+        conn.close()
+
+
+async def _tokens_revoke(request):
+    try:
+        user_id = _require_user(request)
+    except _auth.AuthError:
+        return JSONResponse({"error": "unauthorized"}, status_code=401)
+    token_id = request.path_params.get("token_id", "")
+    conn = _db_conn()
+    try:
+        ok = _st.revoke_token(conn, user_id, token_id)
+        return JSONResponse({"revoked": bool(ok)},
+                            status_code=200 if ok else 404)
+    finally:
+        conn.close()
+
+
 app = Starlette(
     routes=[
         Mount("/mcp", app=_handle),
         Route("/signup", _signup, methods=["POST"]),
         Route("/login", _login, methods=["POST"]),
+        Route("/tokens", _tokens_create, methods=["POST"]),
+        Route("/tokens", _tokens_list, methods=["GET"]),
+        Route("/tokens/{token_id}", _tokens_revoke, methods=["DELETE"]),
     ],
     middleware=[Middleware(_BearerAuth)],
     lifespan=_lifespan,
