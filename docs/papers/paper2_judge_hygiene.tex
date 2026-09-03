@@ -243,7 +243,86 @@ of \S\ref{sec:taxonomy} exists precisely to make these failure modes
 first-class: each type has a distinct detection signal (Table~\ref{tab:axes}),
 and each signal can be turned into a routine. The next section does so.
 
-% §1 Intro, §2 Related, §6 Hygiene Protocol, §7–9: added in later LOOP rounds
+\section{A Hygiene Protocol for Judge-Based Evaluation}
+\label{sec:protocol}
+
+Each taxonomy type yields one routine; together they form a checklist that can
+be adopted without changing what is measured --- only how reliably it is
+measured. We state the routines as we ran them; all are threshold-free unless
+noted.
+
+\subsection{P1: Preregistered Anchors and Gated Verdicts}
+Before a run, freeze per-subtype baseline anchors, improvement gates, and the
+decision rule in a versioned document. In our production run this took the
+form of preregistered three-state gates (e.g., multi-session $\geq 0.35$
+against an anchor of $0.226$), decided only after all shards landed. The
+point is not the thresholds but the \emph{sequence}: the verdict criterion
+must not be chosen after the scores are visible, because that is exactly the
+window in which silent judge failure (\S\ref{sec:evidence2}) can steer the
+choice.
+
+\subsection{P2: Same-Judge Retry Backoff (J-C cure)}
+\label{sec:p2}
+Infrastructure-labeled items (connection errors, aborted calls) are not
+evidence about the system under test. Routine:
+\begin{enumerate}\setlength{\itemsep}{-1pt}
+\item flag every item whose judge output carries an infrastructure signature
+      (HTTP 4xx/5xx, timeout, empty verdict);
+\item re-judge flagged items with the \emph{same judge, same prompt} ---
+      changing either conflates the cure with a second experiment --- adding
+      exponential backoff only;
+\item items still failing after retries are reported, never silently dropped.
+\end{enumerate}
+In our run this resolved 31/31 residual judge-disconnect items at negligible
+cost, because answers were reused verbatim and only the scoring call was
+retried. Note the asymmetry with J-K: retry cannot cure knowledge-boundary
+blindness, which is why the signature check in step~1 must distinguish
+\emph{no verdict} (J-C/J-B) from \emph{a wrong verdict} (J-K).
+
+\subsection{P3: Multi-Caliber Disclosure (norm)}
+Report at least three calibers for any run that touched infrastructure
+failure: conservative (failures counted as errors), re-judged (P2 applied),
+and clean (infrastructure items excluded). Conclusions should be stated as
+robust only if all calibers agree. In our run all three calibers
+($0.700/0.754/0.816$) support the same gate decisions; had they diverged,
+that divergence itself would be the finding.
+
+\subsection{P4: Deployment Smoke for Judges (J-B cure)}
+Before any scored run: (i) call the judge on a realistic-size item and assert
+the verdict is non-empty and parseable; (ii) record the verdict-token budget
+share under reasoning mode; (iii) re-run the smoke after any judge-side
+configuration change. Case~1 shows informal spot checks do not substitute:
+the items that break the budget are systematically the long ones, which spot
+checks under-sample.
+
+\subsection{P5: Binomial Noise Bands for Small Subtypes}
+Any per-subtype regression claim must be tested against the binomial band:
+at $n=30$, a single item is $\pm 3.3$ points. Claims of regression inside the
+band are deferred to per-item judge-output audits. This routine converts
+``the subtype dropped'' into ``the subtype dropped beyond what one flipped
+item can explain.''
+
+\subsection{The Checklist}
+\begin{table}[h]
+\centering\small
+\begin{tabular}{@{}p{0.14\textwidth}p{0.34\textwidth}p{0.14\textwidth}p{0.26\textwidth}@{}}
+\toprule
+Phase & Action & Cures & Failure caught \\
+\midrule
+Pre-deploy & $\Delta$ probe set on perturbation levels & --- & J-K susceptibility \\
+Pre-deploy & verdict smoke: realistic items, parse check, budget audit & J-B & truncation collapse \\
+Pre-run & preregister anchors, gates, decision rule & --- & post-hoc steering \\
+In-run & monitor infrastructure-signature rate per shard & J-C & silent disconnects \\
+Post-run & same-judge retry backoff on flagged items & J-C & false failures \\
+Post-run & three-caliber report + binomial noise bands & --- & cherry-picked calibers, phantom regressions \\
+\bottomrule
+\end{tabular}
+\caption{The judge hygiene checklist. Cost is dominated by the pre-deploy
+smoke, which is a handful of API calls.}
+\label{tab:checklist}
+\end{table}
+
+% §1 Intro, §2 Related, §7–9: added in later LOOP rounds
 % per docs/papers/paper2_judge_blindspot_outline.md §5.
 
 \begin{thebibliography}{9}\setlength{\itemsep}{-2pt}
