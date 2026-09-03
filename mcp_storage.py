@@ -1,0 +1,147 @@
+"""MVP-1 storage layer: users / agents / observations (SQLite).
+
+Schema mirrors the 8770 v0.9 reference design (model only, not code):
+  users        user_id, email UNIQUE, region, passphrase_hash, encryption_salt,
+               plan, created_ts
+  agents       agent_id, user_id -> users, agent_type, device_id, workspace,
+               metadata, created_ts
+  observations obs_id, user_id -> users, agent_id -> agents, ts, type,
+               concept, payload, created_ts
+
+All queries parameterized. Connection uses FK enforcement + Row factory.
+"""
+from __future__ import annotations
+
+import sqlite3
+import uuid
+from typing import Any
+
+_SCHEMA = """
+CREATE TABLE IF NOT EXISTS users (
+    user_id         TEXT PRIMARY KEY,
+    email           TEXT NOT NULL UNIQUE,
+    region          TEXT DEFAULT '',
+    passphrase_hash TEXT NOT NULL,
+    encryption_salt TEXT DEFAULT '',
+    plan            TEXT NOT NULL DEFAULT 'free',
+    created_ts      TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS agents (
+    agent_id    TEXT PRIMARY KEY,
+    user_id     TEXT NOT NULL REFERENCES users(user_id),
+    agent_type  TEXT NOT NULL,
+    device_id   TEXT DEFAULT '',
+    workspace   TEXT DEFAULT '',
+    metadata    TEXT DEFAULT '{}',
+    created_ts  TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS observations (
+    obs_id     TEXT PRIMARY KEY,
+    user_id    TEXT NOT NULL REFERENCES users(user_id),
+    agent_id   TEXT REFERENCES agents(agent_id),
+    ts         TEXT NOT NULL,
+    type       TEXT NOT NULL,
+    concept    TEXT NOT NULL,
+    payload    TEXT DEFAULT '{}',
+    created_ts TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_obs_user_type ON observations(user_id, type, ts);
+"""
+
+
+class StorageError(Exception):
+    """Base storage-layer error."""
+
+
+class UserExistsError(StorageError):
+    """Email already registered."""
+
+
+def _now() -> str:
+    from datetime import datetime, timezone
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def init_db(path: Any) -> sqlite3.Connection:
+    """Open (creating if needed) the DB and apply the schema. Returns conn."""
+    conn = sqlite3.connect(str(path))
+    conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA foreign_keys = ON")
+    conn.executescript(_SCHEMA)
+    conn.commit()
+    return conn
+
+
+def create_user(conn: sqlite3.Connection, *, email: str, passphrase_hash: str,
+                region: str = "", encryption_salt: str = "",
+                plan: str = "free") -> str:
+    user_id = uuid.uuid4().hex
+    try:
+        conn.execute(
+            "INSERT INTO users (user_id, email, region, passphrase_hash,"
+            " encryption_salt, plan, created_ts) VALUES (?,?,?,?,?,?,?)",
+            (user_id, email, region, passphrase_hash, encryption_salt,
+             plan, _now()))
+        conn.commit()
+    except sqlite3.IntegrityError as e:
+        raise UserExistsError(email) from e
+    return user_id
+
+
+def get_user_by_email(conn: sqlite3.Connection, email: str) -> sqlite3.Row | None:
+    cur = conn.execute("SELECT * FROM users WHERE email = ?", (email,))
+    return cur.fetchone()
+
+
+def register_agent(conn: sqlite3.Connection, *, user_id: str, agent_type: str,
+                   device_id: str = "", workspace: str = "",
+                   metadata: str = "{}") -> str:
+    agent_id = uuid.uuid4().hex
+    try:
+        conn.execute(
+            "INSERT INTO agents (agent_id, user_id, agent_type, device_id,"
+            " workspace, metadata, created_ts) VALUES (?,?,?,?,?,?,?)",
+            (agent_id, user_id, agent_type, device_id, workspace, metadata,
+             _now()))
+        conn.commit()
+    except sqlite3.IntegrityError as e:
+        raise StorageError(f"agent registration failed: {e}") from e
+    return agent_id
+
+
+def list_agents(conn: sqlite3.Connection, user_id: str) -> list[sqlite3.Row]:
+    return conn.execute(
+        "SELECT * FROM agents WHERE user_id = ? ORDER BY created_ts",
+        (user_id,)).fetchall()
+
+
+def add_observation(conn: sqlite3.Connection, *, user_id: str, agent_id: str,
+                    ts: str, type: str, concept: str,
+                    payload: str = "{}") -> str:
+    obs_id = uuid.uuid4().hex
+    try:
+        conn.execute(
+            "INSERT INTO observations (obs_id, user_id, agent_id, ts, type,"
+            " concept, payload, created_ts) VALUES (?,?,?,?,?,?,?,?)",
+            (obs_id, user_id, agent_id, ts, type, concept, payload, _now()))
+        conn.commit()
+    except sqlite3.IntegrityError as e:
+        raise StorageError(f"observation insert failed: {e}") from e
+    return obs_id
+
+
+def list_observations(conn: sqlite3.Connection, user_id: str,
+                      obs_type: str | None = None,
+                      since_ts: str | None = None,
+                      limit: int = 100) -> list[sqlite3.Row]:
+    sql = "SELECT * FROM observations WHERE user_id = ?"
+    args: list[Any] = [user_id]
+    if obs_type is not None:
+        sql += " AND type = ?"
+        args.append(obs_type)
+    if since_ts is not None:
+        sql += " AND ts >= ?"
+        args.append(since_ts)
+    sql += " ORDER BY ts DESC LIMIT ?"
+    args.append(int(limit))
+    return conn.execute(sql, args).fetchall()
