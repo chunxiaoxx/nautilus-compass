@@ -50,7 +50,7 @@ def watchdog_state() -> str:
 def watchdog_task() -> str:
     try:
         out = subprocess.run(
-            ["schtasks", "/Query", "/TN", "compass_forward_watchdog"],
+            ["schtasks", "/Query", "/TN", "compass-watchdog"],
             capture_output=True, text=True, timeout=15)
         return "task:OK" if out.returncode == 0 else "task:ABSENT"
     except Exception:
@@ -58,18 +58,14 @@ def watchdog_task() -> str:
 
 
 def heartbeat_recent() -> str:
-    # heartbeat writes cloud obs; local proxy = its cache dir mtime
-    cache = Path.home() / ".claude" / "plugins" / "nautilus-compass" / ".cache"
-    if not cache.exists():
-        return "UNKNOWN"
-    mt = max((f.stat().st_mtime for f in cache.glob("*.pkl")), default=0)
-    if not mt:
-        return "UNKNOWN"
-    return f"cache_active={(time.time()-mt)/3600:.1f}h_ago"
+    hb = Path.home() / ".claude" / ".cache" / "goalmode_heartbeat.log"
+    if not hb.exists():
+        return "log:ABSENT"
+    return f"last={(time.time()-hb.stat().st_mtime)/3600:.1f}h_ago"
 
 
 def recall_count_24h() -> str:
-    log = Path.home() / ".claude" / "plugins" / "nautilus-compass" / "daemon.log"
+    log = (Path.home() / ".claude" / "plugins" / "nautilus-compass" / ".cache" / "daemon.log")
     if not log.exists():
         return "UNKNOWN"
     cutoff = time.time() - 86400
