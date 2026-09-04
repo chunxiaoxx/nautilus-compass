@@ -14,7 +14,7 @@
 
 ## 提交前待办(机械项)
 
-- [ ] 标题去 "(Draft v2)" 尾巴
+- [x] 标题去 "(Draft v2)" 尾巴(9/4,重编译两遍 0 错 0 undefined,PDF 231KB)
 - [ ] tex 源码打包:单文件无 includegraphics(纯文本+表格,无图)→ 打包即 tex+bbl;
       arXiv 编译要求 bibliography 内联或附 .bbl(用 `bibtex` 生成后把 bbl 内容
       粘到 tex 尾部 thebibliography——现稿已是 thebibliography 手写,无需 bbl ✓)
