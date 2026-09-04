@@ -6,7 +6,7 @@
 > - [x] d14 刀4:未过门(2026-09-02 定案)→ 维持 d12 现役
 > - [x] d12 干净口径定案:web 40.0% / ent 38.4%(主帖正文无 LME-V2 数字,在第二帖)
 > - [x] e2e 段刷新:9/3 A 臂终判 PASS + 9/4 #40 断连重判补齐,定案 75.4%(377/500,每题有真判决)/81.6%(同口径剔除断连 71 题);42.6 为基线锚,正文双报
-> - [ ] cheap-tier raw-state 数字落地后回填(可选段,或仅成绩册链接)
+> - [x] cheap-tier 定案 36.3/36.5 双域未超现役组合关闭(9/4)→ 主帖不放,第二帖填(SCOREBOARD 已录)
 > - [ ] paper2 arXiv 链接回填(提交后)
 > - [ ] 终检:帖子数字与 README/落地页/SCOREBOARD 三处一致
 
@@ -49,7 +49,7 @@ compass stores session text verbatim, embedded locally with BGE-m3. No LLM extra
 
 Every experiment above has its full run log in `docs/evidence/` in the repo — including the 12-question subset that initially showed +16.7pt (sampling bias, all one question type; we re-ran at 30 mixed questions before believing it).
 
-**The reader-context bottleneck — fixed, with preregistered gates.** Our first full-500 e2e run scored 42.6%: single-session types near ceiling (single-session-user 95.7% · assistant 80.0% · knowledge-update 73.1%) while cross-session aggregation lagged (multi-session 22.6% · adversarial 25.0% · temporal 15.8%). Retrieval P@5 was already 97.8% — the gap was the reader's context window, not recall. So we shipped a summary layer (per-trajectory compressed summaries, routed by question type), with pass/fail gates **committed before the run**. Final full-500 verdict: overall **42.6% → 75.4%** — every question has a real judge verdict (the 71/500 = 14.2% originally lost to intermittent judge-gateway failures were re-judged with the same judge, retry-only); **81.6%** like-for-like excluding those 71. We disclose both because judge-side outages masquerading as wrong answers is exactly how this field inflates or deflates itself. All three weak types clear their preregistered gates under both accounting rules: multi-session 22.6→73.2, adversarial 25.0→85.4, temporal 15.8→83.3. High-scoring types show no real regression (one −5pt on n=24 sits inside the binomial noise band). Preregistration doc + full verdict live in the repo.
+**The reader-context bottleneck — fixed, with preregistered gates.** Our first full-500 e2e run scored 42.6%: single-session types near ceiling (single-session-user 95.7% · single-session-preference 80.0% · knowledge-update 73.1%) while cross-session types lagged (multi-session 22.6% · single-session-assistant 25.0% · temporal 15.8%). Retrieval P@5 was already 97.8% — the gap was the reader's context window, not recall. So we shipped a summary layer (per-trajectory compressed summaries, routed by question type), with pass/fail gates **committed before the run**. Final full-500 verdict: overall **42.6% → 75.4%** — every question has a real judge verdict (the 71/500 = 14.2% originally lost to intermittent judge-gateway failures were re-judged with the same judge, retry-only); **81.6%** like-for-like excluding those 71. We disclose both because judge-side outages masquerading as wrong answers is exactly how this field inflates or deflates itself. All three weak types clear their preregistered gates under both accountings (final re-judged n=500: multi-session 22.6→69.2, single-session-assistant 25.0→83.9, temporal 15.8→62.4; clean accounting excluding the 71: 73.2/85.4/83.3). High-scoring types show zero regression under the final accounting — an earlier −5pt on one type turned out to be a judge-outage artifact, not model regression. e2e judging used our own harness with a glm-5.3-flash judge (the official harness judge is GPT-4o), which is one more reason we report dual accounting and publish the full protocol. Preregistration doc + full verdict live in the repo.
 
 It also does two things beyond recall: pre-action **drift detection** (checks agent actions against failure-mode anchors, AUC 0.83, p95 <50ms) and **cross-agent contracts** (tracks implicit obligations when multiple agents share files).
 
@@ -78,7 +78,7 @@ Happy to answer questions on the retrieval routing design or the failure experim
 3. 读侧三武器:①utterance 分型路由(单会话用户型问题检索 turn 级块,该型 P@1 0.20→1.00)②BM25+dense RRF 混合③日期锚定。
 4. 失败实验同样公开:rerank 有害(-2pt)、K=50 无效、小模型无效。12 题 +16.7pt 的初读是抽样偏差,30 题混合后修正。全部证据在 repo docs/evidence/。
 5. 客场也赢:LOCOMO(mem0 主场)n=1986,P@1 0.644 vs 0.592。大语料(12×)泛化 P@5 0.888。EverMemBench 超 Mem0/Zep/MemOS。
-6. e2e 短板已修:摘要层上线(判据先于跑数预注册),全量 500 题 42.6%→75.4%(71 题 judge 断连全部重判补齐,每题有真判决)/81.6%(同口径剔除断连 71 题)。三弱型双口径全过门:ms 22.6→73.2·ssa 25.0→85.4·tr 15.8→83.3;高分型无实质回退。
+6. e2e 短板已修:摘要层上线(判据先于跑数预注册),全量 500 题 42.6%→75.4%(71 题 judge 断连全部重判补齐,每题有真判决)/81.6%(同口径剔除断连 71 题)。三弱型双口径全过门,定案重判口径:ms 22.6→69.2·ssa 25.0→83.9·tr 15.8→62.4(剔除断连干净口径 73.2/85.4/83.3);高分型零回退。
 7. 附赠:drift 检测 AUC 0.83(动作前对照失败模式锚点)+ 跨 agent 合约审计。本地三条命令接入;托管版开放自助注册(signup→控制台发 scoped token→任意 MCP 客户端直连),跨用户读写被拒+撤销即时,四探针公网验证。Modified MIT。github.com/chunxiaoxx/nautilus-compass
 
 ---
@@ -88,4 +88,4 @@ Happy to answer questions on the retrieval routing design or the failure experim
 1. r/LocalLLaMA 周二-周四 9-11am ET(技术帖黄金窗)
 2. X thread 帖发后 2h 内(互相导流)
 3. r/LocalLLaMA 评论区 24h 内必回(算法权重)
-4. 第二帖素材:骨架已就绪(docs/marketing/20260830_lmev2_post2_skeleton.md,占位符待填 d13/d14 终值已定案:LoRA 双域未过门关闭、abstention gate 预注册拒收);V2 现役干净口径 web 40.0%/ent 38.4%;cheap-tier raw-state 数字跑分中,落地后一并填。
+4. 第二帖素材:骨架已就绪(docs/marketing/20260830_lmev2_post2_skeleton.md,占位符待填 d13/d14 终值已定案:LoRA 双域未过门关闭、abstention gate 预注册拒收);V2 现役干净口径 web 40.0%/ent 38.4%;cheap-tier 已定案 36.3/36.5 未超现役组合关闭,一并填入。

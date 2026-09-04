@@ -79,4 +79,4 @@ retrieval: BGE-m3 embedder / top_k 20(d12 run_args 双域同值) / 检索单元=
 - [x] ent 211 接力后同表(9/4 定案 36.5%,重判 flips +16/−4,组合关闭)
 - [x] non-abst 双口径(d12 aggregated+重判 flips 合并,full 锚定 40.0/38.4 校验通过)
 - [x] memory_query 延迟实测(p95 web 0.339s / ent 0.798s)
-- [ ] 用户拍板呈现口径(DECISION B/C)→ 定稿
+- [x] 呈现口径用户拍板(选项 B:现役+双口径并报,官方坐标系注明判分口径差)→ 定稿(9/4)
