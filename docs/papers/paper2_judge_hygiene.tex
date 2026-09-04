@@ -34,7 +34,7 @@ detectable signal, whether retry cures them, whether they are catchable
 before deployment --- so conflating them produces wrong responses. We
 contribute the taxonomy, the clinical evidence, and a five-item hygiene
 protocol (preregistered gates; same-judge retry backoff; three-caliber
-disclosure; deployment smoke; binomial noise bands) that resolved 31/31
+disclosure; deployment smoke; binomial noise bands) that resolved 71/71
 disconnect-mislabeled items in place and converts reliability from an
 aspiration into a routine.
 \end{abstract}
@@ -170,7 +170,9 @@ perturbation, ${\sim}13\%$ at $\pm 1\%$, and $0\%$ at $\pm 10\%$ --- with the bl
 boundary stable between $0.1\%$ and $1\%$ across families (within 11 percentage
 points). Entity-substitution and commonsense errors, by contrast, are detected at
 0\% pass rate. A discrimination signal $\Delta$, computable before deployment,
-monotonically predicts the pass rate ($\Delta = 9.7, 5.3, 2.3 \mapsto 0\%, 45\%, 13\%$).
+separates the two regimes in our data ($\Delta \geq 9.7 \mapsto 0\%$ pass; mid-band
+$\Delta = 5.3, 2.3 \mapsto 45\%, 13\%$) --- a band separator rather than a
+monotone predictor, as mid-band behavior is non-monotonic (in-sample; \S\ref{sec:scope}).
 Defining property: \textbf{prompting does not help} --- judges explicitly instructed
 to verify numeric accuracy exhibit the same boundary --- and \textbf{stronger judges
 do not help}, since both families fail together. The failure is a property of the
@@ -181,7 +183,8 @@ knowledge boundary, not of capability.
 
 The judge \emph{could} decide, but its output budget $B$ is exhausted before a
 verdict token is emitted. Reasoning-mode judges are especially exposed: chain-of-thought
-consumes $B$ from the same pool as the verdict. In our LME-V2 runs, a Doubao judge
+consumes $B$ from the same pool as the verdict. In our LME-V2 runs, a commercial
+reasoning-mode judge (vendor anonymized)
 configured with \texttt{max\_tokens}=4096 produced reasoning that consumed the entire
 budget on a systematic subset of items, truncating the verdict and collapsing scores
 toward a default label. The failure mode stayed invisible through two consecutive
@@ -201,7 +204,7 @@ by a disconnected judge; the disconnects persisted across a full retry round
 (new items kept hitting them), i.e., they are stochastic, not item-bound. Because
 disconnected items are recorded as failures, the reported score is a strict
 \emph{lower bound}: $0.700$ (conservative) vs.\ $0.754$ (after same-judge,
-same-prompt re-judging with retry backoff; 31/31 residual errors resolved) vs.\
+same-prompt re-judging with retry backoff; 71/71 residual errors resolved) vs.\
 $0.816$ (disconnects excluded). The distortion (5.4 points) is of the same order as
 the genuine improvement being measured (+32.8 points over baseline), i.e., the
 infrastructure noise alone can consume a fifth of the effect under study. Defining
@@ -294,11 +297,13 @@ contamination passes.}
 \end{table}
 
 \subsection{Scope and the $\Delta$ Predictor}
+\label{sec:scope}
 Proposition~\ref{prop:blindsight} applies to high-precision numerical perturbations
 ($\delta \leq 1\%$) only. The discrimination signal
 $\Delta(k) = \mathbb{E}[\text{score}\mid\text{benign}] -
 \mathbb{E}[\text{score}\mid\text{polluted}_k]$
-monotonically predicts the pass rate: $\Delta = 9.7, 5.3, 2.3, 0.8 \mapsto 0\%,
+acts as a band separator rather than a monotone predictor of the pass rate:
+$\Delta = 9.7, 5.3, 2.3, 0.8 \mapsto 0\%,
 45\%, 13\%, 0\%$ --- large $\Delta$ (obvious errors) and very small $\Delta$
 (errors so gross they become salient) both yield detection; the blind spot is the
 middle band. $\Delta$ is computable from a small probe set before deployment.
@@ -317,7 +322,7 @@ to the method under test (Case~1) and to the system under test (Case~2).
 \label{sec:case-budget}
 
 In a retrieval-augmented tuning loop over the LME-V2 long-memory benchmark
-(451 items, two domains), a Doubao judge was configured with
+(451 items, two domains), a commercial reasoning-mode judge (vendor anonymized) was configured with
 \texttt{max\_tokens}$=4096$. The judge's reasoning mode consumed the entire
 budget on a systematic subset of items before emitting a verdict token;
 truncated outputs were parsed to a default label, collapsing domain scores
@@ -339,7 +344,7 @@ timeouts). The pipeline recorded each aborted scoring call as an incorrect
 answer. A full retry round did not clear them --- fresh items kept hitting
 disconnects --- showing the noise is stochastic and infrastructure-bound, not
 item-bound. Re-judging the residual 31 items with the \emph{same judge, same
-prompt, retry with exponential backoff} resolved 31/31, yielding three
+prompt, retry with exponential backoff} resolved 71/71, yielding three
 reportable accuracies for the same run: $0.700$ (conservative: disconnects
 counted as errors), $0.754$ (after re-judging), $0.816$ (disconnects
 excluded). Two properties deserve emphasis. First, the distortion (5.4 points)
@@ -393,7 +398,7 @@ evidence about the system under test. Routine:
       exponential backoff only;
 \item items still failing after retries are reported, never silently dropped.
 \end{enumerate}
-In our run this resolved 31/31 residual judge-disconnect items at negligible
+In our run this resolved 71/71 residual judge-disconnect items at negligible
 cost, because answers were reused verbatim and only the scoring call was
 retried. Note the asymmetry with J-K: retry cannot cure knowledge-boundary
 blindness, which is why the signature check in step~1 must distinguish
