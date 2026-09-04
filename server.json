@@ -1,20 +1,20 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.chunxiaoxx/nautilus-compass",
-  "description": "Drift-aware cross-agent memory · MCP/A2A · LongMemEval-S 56.6% · 1/15 Zep cost",
+  "description": "Local-first cross-agent memory · zero LLM calls at write · LongMemEval-S e2e 75.4% (81.6% excl. judge outage, dual accounting) · retrieval P@1 0.890 vs mem0 0.774 same-questions-same-criteria · drift AUC 0.83",
   "title": "Nautilus Compass",
   "websiteUrl": "https://github.com/chunxiaoxx/nautilus-compass",
   "repository": {
     "url": "https://github.com/chunxiaoxx/nautilus-compass",
     "source": "github"
   },
-  "version": "2.3.0",
+  "version": "3.1.1",
   "packages": [
     {
       "registryType": "pypi",
       "registryBaseUrl": "https://pypi.org",
       "identifier": "nautilus-compass",
-      "version": "2.3.0",
+      "version": "3.0.1",
       "transport": {
         "type": "stdio"
       },
@@ -43,8 +43,8 @@
         "agent-infrastructure"
       ],
       "benchmarks": {
-        "longmemeval_s": "56.6%",
-        "cost_vs_zep": "1/15"
+        "longmemeval_s_e2e": "75.4% (81.6% excluding judge-outage questions, dual accounting)",
+        "longmemeval_s_retrieval_p1": "0.890 vs mem0 0.774 (same 500 questions, same criteria, BGE-m3 both sides)"
       },
       "paper_url": "https://arxiv.org/abs/2512.02410",
       "homepage": "https://compass.nautilus.social"

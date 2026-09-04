@@ -199,7 +199,7 @@
 | 3 | chunxiaoxx Reddit karma 预热(本周起技术性评论) | 🟡 本周 | 待用户(每天 2-3 条,发帖前有历史即可) |
 | 4 | 新人全流程实测+摩擦修复 | 🟡 | ✅ 已实测(§13.1);邮箱验证已实现(commit 4fefc97:验证码门禁+存量豁免+预部署完成),等 SMTP 凭证后 restart 生效 |
 | 5 | paper2 提交 checklist 交用户 | 🟡 | ✅ 见 §13.2 |
-| 6 | MCP 目录提交(PulseMCP/Smithery/mcp.so/glama) | 🟢 发布周 | server.json/glama.json 已在仓,提交需用户账号 |
+| 6 | MCP 目录提交(PulseMCP/Smithery/mcp.so/glama) | 🟢 发布周 | ✅ 材料已核对修正(server.json 56.6%→75.4 定案口径+版本 3.1.1+packages 指 PyPI 真实 3.0.1+废弃 1/15 cost 删;npm 清单同步;anchors 防吹牛锚包 v1.3 重校准);⚠️ 发布周 TODO:PyPI 发 3.1.1(现 PyPI 3.0.1 描述停在 EvoMap 旧文案,需用户 PyPI 凭证)·目录提交动作需用户账号 |
 | 7 | 智源接触(一页纸已备) | 🟢 本周发出,不催结果 | ✅ 材料 |
 | 8 | PPT 页级大纲(Marp)→ 成品 | 🟡 并行(用户有演讲计划) | ✅ 大纲+成品双格式已渲染([pptx](pitch_deck_20260904.pptx) / [html](pitch_deck_20260904.html),12 页·讲者注内嵌);内容改动后重出:`npx @marp-team/marp-cli pitch_deck_outline_20260904.md -o pitch_deck_20260904.pptx` |
 | 9 | 一页纸(英文政企) | ⏸ 降级:有真实触达场景再做 | — |
