@@ -13,7 +13,7 @@
 ### Act 1 · 崩盘(不藏丑)
 - LongMemEval-V2: 451 questions, real agent-trajectory haystacks (web browsing / ServiceNow), open benchmark with published baselines
 - First full run: web 19.6% / ent 12.8% — far below published numbers
-- 逐题对齐 evidence(不是猜):252 answers were bare `UNKNOWN` scored 0;enterprise had an inversion — gold WAS in the retrieved window, reader scored 0.115 when it was present
+- 逐题对齐 evidence(不是猜):121 answers were bare `UNKNOWN` scored 0;enterprise had an inversion — gold WAS in the retrieved window, reader scored 0.115 when it was present
 
 ### Act 2 · 三刀(每刀一个根因,每刀一个可复算数字)
 1. **Knife 1 — scoring alignment**: 30% of the benchmark is abstention-type; judge rubric rewards "explain the contradiction" or "state you can't verify live state", not bare UNKNOWN. Rewrote the system prompt. Abstention score rate: web 2.8%→45.8%, ent 0%→83.9%. Bare UNKNOWN: 252 → 0.

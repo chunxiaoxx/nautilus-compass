@@ -5,7 +5,7 @@
 > 发布前刷新清单:
 > - [x] d14 刀4:未过门(2026-09-02 定案)→ 维持 d12 现役
 > - [x] d12 干净口径定案:web 40.0% / ent 38.4%(主帖正文无 LME-V2 数字,在第二帖)
-> - [x] e2e 段刷新:9/3 A 臂终判 PASS,全量 500 题两口径 70.0/81.6 定案(42.6 为基线锚,正文双报)
+> - [x] e2e 段刷新:9/3 A 臂终判 PASS + 9/4 #40 断连重判补齐,定案 75.4%(377/500,每题有真判决)/81.6%(同口径剔除断连 71 题);42.6 为基线锚,正文双报
 > - [ ] cheap-tier raw-state 数字落地后回填(可选段,或仅成绩册链接)
 > - [ ] paper2 arXiv 链接回填(提交后)
 > - [ ] 终检:帖子数字与 README/落地页/SCOREBOARD 三处一致
@@ -49,7 +49,7 @@ compass stores session text verbatim, embedded locally with BGE-m3. No LLM extra
 
 Every experiment above has its full run log in `docs/evidence/` in the repo — including the 12-question subset that initially showed +16.7pt (sampling bias, all one question type; we re-ran at 30 mixed questions before believing it).
 
-**The reader-context bottleneck — fixed, with preregistered gates.** Our first full-500 e2e run scored 42.6%: single-session types near ceiling (single-session-user 95.7% · assistant 80.0% · knowledge-update 73.1%) while cross-session aggregation lagged (multi-session 22.6% · adversarial 25.0% · temporal 15.8%). Retrieval P@5 was already 97.8% — the gap was the reader's context window, not recall. So we shipped a summary layer (per-trajectory compressed summaries, routed by question type), with pass/fail gates **committed before the run**. Full-500 verdict: overall **42.6% → 70.0%** conservative — every judge-disconnected question counted as wrong — and **81.6%** excluding the 71/500 (14.2%) questions lost to intermittent judge-gateway failures; we disclose both because judge-side outages masquerading as wrong answers is exactly how this field inflates or deflates itself. All three weak types pass their gates: multi-session 22.6→67.7/73.2, adversarial 25.0→73.2/85.4, temporal 15.8→60.2/83.3. High-scoring types show no real regression (one −5pt on n=24 sits inside the binomial noise band). Preregistration doc + full verdict live in the repo.
+**The reader-context bottleneck — fixed, with preregistered gates.** Our first full-500 e2e run scored 42.6%: single-session types near ceiling (single-session-user 95.7% · assistant 80.0% · knowledge-update 73.1%) while cross-session aggregation lagged (multi-session 22.6% · adversarial 25.0% · temporal 15.8%). Retrieval P@5 was already 97.8% — the gap was the reader's context window, not recall. So we shipped a summary layer (per-trajectory compressed summaries, routed by question type), with pass/fail gates **committed before the run**. Final full-500 verdict: overall **42.6% → 75.4%** — every question has a real judge verdict (the 71/500 = 14.2% originally lost to intermittent judge-gateway failures were re-judged with the same judge, retry-only); **81.6%** like-for-like excluding those 71. We disclose both because judge-side outages masquerading as wrong answers is exactly how this field inflates or deflates itself. All three weak types clear their preregistered gates under both accounting rules: multi-session 22.6→73.2, adversarial 25.0→85.4, temporal 15.8→83.3. High-scoring types show no real regression (one −5pt on n=24 sits inside the binomial noise band). Preregistration doc + full verdict live in the repo.
 
 It also does two things beyond recall: pre-action **drift detection** (checks agent actions against failure-mode anchors, AUC 0.83, p95 <50ms) and **cross-agent contracts** (tracks implicit obligations when multiple agents share files).
 
@@ -78,7 +78,7 @@ Happy to answer questions on the retrieval routing design or the failure experim
 3. 读侧三武器:①utterance 分型路由(单会话用户型问题检索 turn 级块,该型 P@1 0.20→1.00)②BM25+dense RRF 混合③日期锚定。
 4. 失败实验同样公开:rerank 有害(-2pt)、K=50 无效、小模型无效。12 题 +16.7pt 的初读是抽样偏差,30 题混合后修正。全部证据在 repo docs/evidence/。
 5. 客场也赢:LOCOMO(mem0 主场)n=1986,P@1 0.644 vs 0.592。大语料(12×)泛化 P@5 0.888。EverMemBench 超 Mem0/Zep/MemOS。
-6. e2e 短板已修:摘要层上线(判据先于跑数预注册),全量 500 题 42.6%→70.0%(保守口径,71 题 judge 断连全计错)/81.6%(剔除断连,两口径都公布)。三弱型全过门:ms 22.6→67.7/73.2·ssa 25.0→73.2/85.4·tr 15.8→60.2/83.3;高分型无实质回退。
+6. e2e 短板已修:摘要层上线(判据先于跑数预注册),全量 500 题 42.6%→75.4%(71 题 judge 断连全部重判补齐,每题有真判决)/81.6%(同口径剔除断连 71 题)。三弱型双口径全过门:ms 22.6→73.2·ssa 25.0→85.4·tr 15.8→83.3;高分型无实质回退。
 7. 附赠:drift 检测 AUC 0.83(动作前对照失败模式锚点)+ 跨 agent 合约审计。本地三条命令接入;托管版开放自助注册(signup→控制台发 scoped token→任意 MCP 客户端直连),跨用户读写被拒+撤销即时,四探针公网验证。MIT。github.com/chunxiaoxx/nautilus-compass
 
 ---
