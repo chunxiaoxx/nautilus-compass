@@ -24,14 +24,16 @@
   - license:默认(arXiv 非独占)或 CC BY 4.0(利于传播;用户拍)
 - [ ] PDF 与 tex 编译产物一致性(提交时 arXiv 重编译,以 tex 为准)
 
-## 待用户拍板(3 点)→ 9/4 已拍板
+## 待用户拍板(3 点)→ 9/4 已拍板 + 9/4 paper1 元数据已实查
 
-1. **署名**:✅ 用户拍板(9/4)——2026 年 4 月已发过 arXiv,**有账号**,署名等元数据
-   与 4 月那篇一致。待用户提供 4 月论文的 arXiv ID/署名名单以照抄(或提交时按账号
-   档案署名)。
-2. **license**:✅ 与 4 月提交一致(默认 arXiv 非独占;若前次用了 CC BY 4.0 则同)。
+1. **署名**:✅ 用户拍板(9/4)与 paper1 一致。**paper1 已定位:arXiv:2605.09863**
+   《Nautilus Compass: Black-box Persona Drift Detection for Production LLM Agents》
+   ·**单作者 Chunxiao Wang**·v1 2026-05-11(用户记忆"4 月"实为 5 月提交,不影响)。
+   paper2 照抄:Chunxiao Wang 单作者(paper/nautilus-compass.tex byline:
+   Yiluo Technology Co., Ltd. + repo URL + chunxiaoxx@gmail.com)。
+2. **license**:✅ paper1 abs 页无 CC 标记 = arXiv 默认非独占 → paper2 同(默认)。
 3. **提交时机**:材料定稿后即可提交(9/12 营销帖之前,帖子引用 arXiv 链接);提交需
-   登录账号,由用户操作或提供方式。
+   登录账号(From: Chunxiao Wang 同账号),由用户操作或提供方式。
 
 ## 提交步骤(拍板后 ~30min)
 
