@@ -231,6 +231,7 @@ async def _lifespan(_app):
 # ─── MVP multitenant: signup / login (JWT) ──────────────────────────
 # Storage + auth live in mcp_storage / auth_api; DB path overridable for tests.
 import auth_api as _auth  # noqa: E402
+import email_sender  # noqa: E402
 import mcp_pages as _pages  # noqa: E402
 import mcp_storage as _st  # noqa: E402
 
@@ -255,6 +256,14 @@ async def _signup(request):
         return JSONResponse({"error": "email already registered"}, status_code=409)
     except ValueError as e:
         return JSONResponse({"error": str(e)}, status_code=422)
+    except email_sender.EmailSendError as e:
+        return JSONResponse({"error":
+                             f"could not send verification email: {e}"},
+                            status_code=503)
+    except email_sender.EmailNotConfigured:
+        return JSONResponse({"error":
+                             "verification email unavailable — try again later"},
+                            status_code=503)
     finally:
         conn.close()
 
@@ -268,6 +277,46 @@ async def _login(request):
         return JSONResponse(out)
     except _auth.AuthError:
         return JSONResponse({"error": "invalid credentials"}, status_code=401)
+    except _auth.UnverifiedError:
+        return JSONResponse(
+            {"error": "email not verified — enter the 6-digit code we sent"
+                      " (POST /verify {email, code}, or /verify/resend)"},
+            status_code=403)
+    finally:
+        conn.close()
+
+
+async def _verify(request):
+    body = await request.json()
+    conn = _db_conn()
+    try:
+        if not _auth.email_required():
+            return JSONResponse({"verified": True})
+        _auth.verify_email(conn, email=str(body.get("email", "")),
+                           code=str(body.get("code", "")))
+        return JSONResponse({"verified": True})
+    except _auth.VerificationError as e:
+        return JSONResponse({"error": str(e)}, status_code=400)
+    finally:
+        conn.close()
+
+
+async def _verify_resend(request):
+    body = await request.json()
+    conn = _db_conn()
+    try:
+        if not _auth.email_required():
+            return JSONResponse({"error": "verification disabled"}, status_code=400)
+        # Unknown/verified emails are silent no-ops inside; rate limits are
+        # swallowed too, so this response shape never leaks account existence.
+        _auth.resend_verification(conn, email=str(body.get("email", "")))
+        return JSONResponse({"sent": True})
+    except email_sender.EmailSendError as e:
+        return JSONResponse({"error": f"could not send email: {e}"},
+                            status_code=503)
+    except email_sender.EmailNotConfigured:
+        return JSONResponse({"error": "email sending unavailable"},
+                            status_code=503)
     finally:
         conn.close()
 
@@ -322,6 +371,8 @@ app = Starlette(
         Mount("/mcp", app=_handle),
         Route("/signup", _signup, methods=["POST"]),
         Route("/login", _login, methods=["POST"]),
+        Route("/verify", _verify, methods=["POST"]),
+        Route("/verify/resend", _verify_resend, methods=["POST"]),
         Route("/tokens", _tokens_create, methods=["POST"]),
         Route("/tokens", _tokens_list, methods=["GET"]),
         Route("/tokens/{token_id}", _tokens_revoke, methods=["DELETE"]),

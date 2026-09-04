@@ -64,19 +64,10 @@ def test_login_wrong_passphrase_rejected(db):
 # ── HTTP layer (real routes on the 8097 app) ─────────────────────────
 
 @pytest.fixture(scope="module")
-def client(tmp_path_factory):
-    # Module-scoped: the app's StreamableHTTPSessionManager is single-lifespan,
-    # so all HTTP tests share one client and isolate via unique emails/DB.
-    # MonkeyPatch.context() because function-scoped monkeypatch would raise
-    # ScopeMismatch inside a module fixture.
-    from _pytest.monkeypatch import MonkeyPatch
-    with MonkeyPatch.context() as mp:
-        mp.setenv("COMPASS_MVP_DB",
-                  str(tmp_path_factory.mktemp("httpdb") / "http.db"))
-        from mcp_http_server import app
-        from starlette.testclient import TestClient
-        with TestClient(app) as c:
-            yield c
+def client(http_client):
+    """Shared session client (the app's session manager is single-lifespan);
+    isolation via unique emails. See tests/conftest.py."""
+    return http_client
 
 
 def _mk_user(client, email):
