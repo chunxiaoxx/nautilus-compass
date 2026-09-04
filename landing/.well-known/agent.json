@@ -1,0 +1,32 @@
+{
+  "schema_version": "v0.0.1-a2a",
+  "agent": {
+    "id": "compass.nautilus.social",
+    "name": "Nautilus Compass",
+    "description": "Cross-agent memory layer · MCP streamable-http · drift-aware (AUC 0.83 held-out) · Official LongMemEval-V2 small tier: tuned web 40.0% / enterprise 38.4% (untuned 19.6/12.8; doubao judge + hygiene protocol) · e2e 500-question context-engineering eval 70.0% (81.6% clean) vs 42.6% baseline · sub-second memory_query (p95 0.34-0.80s vs 26.9s LLM-controller baseline)",
+    "version": "1.1.0",
+    "homepage": "https://github.com/chunxiaoxx/nautilus-compass",
+    "capabilities": [
+      {"name": "STORE_OBS", "endpoint": "/mcp/", "method": "MCP tool: ingest_obs",
+       "description": "Write a single observation (with drift signal) to user memory"},
+      {"name": "RETRIEVE_MEMORY", "endpoint": "/mcp/", "method": "MCP tool: recall",
+       "description": "Cross-agent semantic + keyword recall"},
+      {"name": "QUERY_PROFILE", "endpoint": "/mcp/", "method": "MCP tool: profile",
+       "description": "User work profile aggregate"},
+      {"name": "QUERY_DRIFT", "endpoint": "/mcp/", "method": "MCP tool: drift_check",
+       "description": "AI drift timeline (compass-exclusive feature)"}
+    ],
+    "auth": {
+      "type": "bearer-token",
+      "transport": "Authorization: Bearer <token> on https://compass.nautilus.social/mcp/",
+      "acquisition": "self-serve open beta - sign up at https://compass.nautilus.social/signup, then create a scoped token in the console (or POST /tokens); scope is server-bound to your own space (read+write)",
+      "scopes": ["read:<project>", "write:<project>"]
+    },
+    "mcp_alternative": {
+      "transport": "streamable-http",
+      "server_url": "https://compass.nautilus.social/mcp/",
+      "note": "any MCP-compatible client; open registration - no invitation needed"
+    },
+    "documentation": "https://github.com/chunxiaoxx/nautilus-compass#a2a-protocol"
+  }
+}
