@@ -84,4 +84,20 @@ python vtf/gpu_ssh.py "cd /root/LongMemEval-V2 && export \$(cat /root/e2e/judge.
 5. **显存分配**——48G 卡:vLLM 0.70(~34G)留 ~14G 给 compass bge-m3+系统;曾 0.85 时 bge 加载期紧张。1.5B 权重仅 3.1G,KV cache 充裕。
 6. **openai SDK 过旧**——harness import `PromptCacheOptions` 需 openai≥某版,机上 2.24.0 报 ImportError。修:`pip install -U openai`(→3.6.0,纯 py 秒装;vllm 0.18.1 要求 ≥2.0.0 不冲突)。
 
-smoke 结果(8/30):3 题 0 报错,Scoring 3/3,metrics 落盘(1.5B 0% 正确=预期,smoke 只验管线)。全量 451 题(web 240+enterprise 211)reader 换正式模型后续租再跑,参数除 --model 外全部照抄上面第 3 步。
+smoke 结果(8/30):3 题 0 报错,Scoring 3/3,metrics 落盘(1.5B 0% 正确=预期,smoke 只验管线)。全量 451 题(web 240+enterprise 211)reader 换正式模型后续租再跑,参数照抄下面模板,勿再手拼。
+
+## 全量跑分启动命令模板(2026-09-04 定稿 · 两天两坑后固化,下次起评测照抄)
+
+🔴 harness 判官两个默认值都是坑,启动必带修正 flag:
+
+- **坑7 · 401 变量名**(9/4 web 轮踩):harness `--evaluator-api-key-env` 默认 `OPENAI_API_KEY`;`source /root/.ark_env` 只导出 `ARK_API_KEY` → 判官拿空 key 全 401。修:一律 `export $(cat /root/e2e/judge.env | xargs)`(judge.env 里变量名正是 OPENAI_API_KEY)。
+- **坑8 · 4096+medium 空响应风暴**(9/4 ent 轮踩):`--evaluator-max-completion-tokens` 默认 4096、`--evaluator-reasoning-effort` 默认 medium → 预算被 reasoning 吃满,空响应重试风暴(单题拖几分钟)+ 空判系统性记 0。修:必带 `--evaluator-max-completion-tokens 16384 --evaluator-reasoning-effort low`(d12 定案配置)。
+
+```bash
+# 模板:web 换 --domain web / compass_web_small / compass_web_small_runtime
+python vtf/gpu_ssh.py "cd /root/LongMemEval-V2 && export \$(cat /root/e2e/judge.env | xargs); nohup python3 -m evaluation.harness --domain enterprise --questions-path /root/lmev2_runs/compass_enterprise_small_runtime/questions.json --haystack-path /root/lmev2_runs/compass_enterprise_small_runtime/haystack.json --trajectories-path /root/LongMemEval-V2/data/longmemeval-v2/trajectories.jsonl --memory-config-path /root/compass_cfg_cheap.json --output-dir /root/lmev2_runs/compass_enterprise_small --model Qwen/Qwen3.5-9B --base-url http://localhost:8023/v1 --temperature 0.6 --top-p 0.95 --top-k 20 --reader-max-concurrent-requests 16 --prompt-build-max-workers 1 --timeout-seconds 43200.0 --evaluator-model doubao-seed-2-0-pro-260215 --evaluator-timeout-seconds 180.0 --evaluator-base-url https://ark.cn-beijing.volces.com/api/coding/v3 --evaluator-max-completion-tokens 16384 --evaluator-reasoning-effort low > /root/cheap_ent_full.log 2>&1 & echo GO"
+# 跑完自动重判(生产分数以重判后为准,rejudge 内置 low+16384):
+#   watcher 模式:nohup bash -c 'while pgrep -f evaluation.harness >/dev/null; do sleep 60; done; export $(cat /root/e2e/judge.env|xargs); python3 /root/rejudge_cheap.py <output_dir>/per_question.jsonl /root/rejudge_<域>_results.jsonl' &
+```
+
+启动后 3 分钟自检:`grep -c 401 <log>`(应=0)+ `grep -aoE '[0-9]+/[0-9]+' <log>|tail -1`(进度在走)+ `grep 'evaluator_max_completion_tokens' <output_dir>/run_args.json`(应=16384)。
