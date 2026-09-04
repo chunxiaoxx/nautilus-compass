@@ -80,6 +80,58 @@ def test_resend_unknown_or_verified_email_is_silent_noop(db, sent):
     assert sent == []
 
 
+# ── gmail API backend (urllib mocked; scope gmail.modify incl. send) ──
+
+def test_gmail_backend_refreshes_and_posts_raw(monkeypatch):
+    import io
+    import json as _json
+    calls = []
+
+    class FakeResp(io.BytesIO):
+        status = 200
+        def __enter__(self):
+            return self
+        def __exit__(self, *a):
+            return False
+
+    def fake_urlopen(url, data=None, timeout=0, **kw):
+        calls.append((url, data))
+        if "oauth2.googleapis.com/token" in str(url):
+            return FakeResp(_json.dumps({"access_token": "at123"}).encode())
+        return FakeResp(b'{"id": "msg1"}')
+
+    monkeypatch.setenv("COMPASS_GMAIL_REFRESH_TOKEN", "rt")
+    monkeypatch.setenv("COMPASS_GMAIL_CLIENT_ID", "cid")
+    monkeypatch.setenv("COMPASS_GMAIL_CLIENT_SECRET", "sec")
+    monkeypatch.setenv("COMPASS_GMAIL_FROM", "me@gmail.com")
+    monkeypatch.setattr(email_sender, "urllib_request_urlopen", fake_urlopen)
+    email_sender._send_via_gmail(email_sender.EmailMessage())
+    assert len(calls) == 2
+    assert "oauth2.googleapis.com/token" in str(calls[0][0])
+    assert b"refresh_token=rt" in calls[0][1]
+    # 2nd call goes through urllib.request.Request: URL in .full_url,
+    # payload in .data (urlopen's own data kwarg stays None)
+    second = calls[1][0]
+    assert "gmail/v1/users/me/messages/send" in str(getattr(second, "full_url", second))
+    assert getattr(second, "data", None) or calls[1][1]
+
+
+def test_gmail_backend_bad_refresh_raises_send_error(monkeypatch):
+    import io
+    import urllib.error
+
+    def refuse(url, data=None, timeout=0, **kw):
+        raise urllib.error.HTTPError(url, 400, "invalid_grant", {},
+                                     io.BytesIO(b""))
+
+    monkeypatch.setenv("COMPASS_GMAIL_REFRESH_TOKEN", "dead")
+    monkeypatch.setenv("COMPASS_GMAIL_CLIENT_ID", "cid")
+    monkeypatch.setenv("COMPASS_GMAIL_CLIENT_SECRET", "sec")
+    monkeypatch.setattr(email_sender, "urllib_request_urlopen", refuse)
+    with pytest.raises(email_sender.EmailSendError):
+        email_sender._send_via_gmail(email_sender.EmailMessage())
+
+
 def test_signup_rolls_back_when_send_fails(db, monkeypatch):
     monkeypatch.setenv("COMPASS_EMAIL_REQUIRED", "1")
     def boom(email, code):
