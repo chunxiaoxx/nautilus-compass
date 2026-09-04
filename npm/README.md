@@ -1,6 +1,6 @@
 # nautilus-compass-mcp
 
-> MCP server wrapper for **nautilus-compass** · cross-agent memory + drift-aware writer · **LongMemEval-S 56.6%** (paper SOTA tier · 1/15 price)
+> MCP server wrapper for **nautilus-compass** · local-first cross-agent memory · zero LLM calls at write · **LongMemEval-S e2e 75.4%** (81.6% excl. judge outage) · retrieval P@1 0.890 vs mem0 0.774 (same questions, same criteria)
 
 ## Quick Start
 
@@ -96,7 +96,7 @@ Mem0 / Letta / claude-mem  =  "记笔记型" 工具
 compass                     =  "AI 行为审计 + 跨 agent 记忆基建"
 
 独占能力 (claude-mem 永远不会做):
-· anchor drift detection (在 LongMemEval-S 上 56.6% · 接近 Zep SOTA)
+· anchor drift detection (AUC 0.83 · held-out evaluation)
 · 跨 agent · 跨 device · 跨 client memory federation
 · timeline · profile · 量化跑分
 · 完全离线 · 0 token 召回成本
@@ -122,7 +122,7 @@ npx -y nautilus-compass-mcp --selftest
 ## Links
 
 - [Main repo](https://github.com/chunxiaoxx/nautilus-compass)
-- [LongMemEval-S 56.6% paper](https://github.com/chunxiaoxx/nautilus-compass/blob/main/paper/RESULTS_v0.8.md)
+- [SCOREBOARD · 定案成绩册与证据链](https://github.com/chunxiaoxx/nautilus-compass/blob/main/docs/nautilusmem/SCOREBOARD.md)
 - [Platform fusion](https://github.com/chunxiaoxx/nautilus-compass/blob/main/paper/PLATFORM_FUSION.md)
 - [v1.0 roadmap](https://github.com/chunxiaoxx/nautilus-compass/blob/main/paper/V10_ROADMAP.md)
 

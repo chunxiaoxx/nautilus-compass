@@ -1,7 +1,7 @@
 {
   "name": "nautilus-compass-mcp",
-  "version": "2.3.0",
-  "description": "MCP server for compass · cross-agent memory layer · drift-aware writer · LongMemEval-S 56.6%",
+  "version": "3.1.1",
+  "description": "MCP server wrapper for compass · local-first cross-agent memory · zero LLM at write · LongMemEval-S e2e 75.4% · retrieval P@1 0.890 vs mem0 0.774",
   "keywords": [
     "mcp",
     "model-context-protocol",
