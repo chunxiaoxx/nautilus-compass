@@ -56,7 +56,7 @@ We observed three failure types that are silent --- every pipeline stage
 reports success --- yet each can absorb or manufacture more score movement
 than the effects being measured. In a 500-question LongMemEval-S run,
 14.2\% of items were scored by a judge behind an intermittently failing
-gateway and recorded as wrong; the resulting 5.4-point distortion is a fifth
+gateway and recorded as wrong; the resulting 5.4-point distortion is one-sixth (~17%)
 of the genuine 32.8-point improvement under study, and without per-item
 audits it also fabricated a $-20$-point ``regression'' on one subtype. In a
 benchmark tuning loop, a reasoning judge consumed its 4096-token budget
@@ -84,8 +84,9 @@ contributions:
       ($0.700/0.754/0.816$) of one and the same run;
 \item \textbf{A hygiene protocol} (\S\ref{sec:protocol}): preregistered
       anchors and gates, same-judge retry backoff, three-caliber disclosure,
-      deployment smoke tests, and binomial noise bands --- six routines,
-      each keyed to a failure type, adopted at negligible cost.
+      deployment smoke tests, and binomial noise bands --- five routines
+      (P1--P5) operationalized as a six-phase checklist, each keyed to a
+      failure type, adopted at negligible cost.
 \end{enumerate}
 
 \section{Related Work}
@@ -207,7 +208,7 @@ disconnected items are recorded as failures, the reported score is a strict
 same-prompt re-judging with retry backoff; 71/71 residual errors resolved) vs.\
 $0.816$ (disconnects excluded). The distortion (5.4 points) is of the same order as
 the genuine improvement being measured (+32.8 points over baseline), i.e., the
-infrastructure noise alone can consume a fifth of the effect under study. Defining
+infrastructure noise alone can consume one-sixth of the effect under study. Defining
 property: \textbf{retry-curative} and \textbf{fully independent of the system under
 test} --- which is exactly why it is so easy to misattribute to the system.
 
@@ -314,7 +315,7 @@ architectures is open.
 \label{sec:evidence2}
 
 Both cases come from our own long-memory evaluation infrastructure during
-September 2026. Neither produced any error message or failed step: pipelines
+Both cases occurred across August--September 2026. Neither produced any error message or failed step: pipelines
 reported success throughout, and both failures were initially misattributed ---
 to the method under test (Case~1) and to the system under test (Case~2).
 
@@ -348,7 +349,7 @@ prompt, retry with exponential backoff} resolved 71/71, yielding three
 reportable accuracies for the same run: $0.700$ (conservative: disconnects
 counted as errors), $0.754$ (after re-judging), $0.816$ (disconnects
 excluded). Two properties deserve emphasis. First, the distortion (5.4 points)
-is a fifth of the genuine effect under study (+32.8 points over baseline):
+is one-sixth (~17%) of the genuine effect under study (+32.8 points over baseline):
 infrastructure noise of this scale can materially change accepted-vs-rejected
 decisions on preregistered gates. Second, small-subtype movements must be read
 against binomial noise: an apparent $-5$pt regression on a 30-item subtype is
@@ -527,7 +528,8 @@ Park, J., et al. (2024). OffsetBias: Leveraging Debiased Data for Tuning Evaluat
 JudgeBench: A Benchmark for Evaluating LLM-based Judges. (2025). \emph{ICLR}.
 
 \bibitem{judgeevalrepro}
-Anonymous (2026). A Unified Framework for Reproducible LLM-Judge Evaluation. \emph{arXiv:2608.02620}.
+Lushtaku, E., et al. (2026). \emph{JudgeArena}: A Unified Framework for Reproducible
+LLM-Judge Evaluation. arXiv:2608.02620.
 
 \bibitem{voyager}
 Wang, G., et al. (2023). Voyager: An open-ended embodied agent with large language models. \emph{arXiv:2305.16291}.
