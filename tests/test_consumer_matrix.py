@@ -26,6 +26,7 @@ CONSUMERS_9876 = [
     ("mid_session_hook.py", True),
     ("stop_hook.py", True),
     ("audit_kpi.py", False),          # 9876 only in docstring example command
+    ("tools/automation_report.py", False),  # daemon_ping: ping-only socket probe (ping is token-exempt)
     ("tools/compass_goal_heartbeat.py", True),
     ("tools/recall_usefulness_exp.py", True),
     ("ops/recall_fallback.py", True),
