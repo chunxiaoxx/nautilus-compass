@@ -23,7 +23,7 @@
 | Bluesky/Mastodon/Lobsters/Newsletter/MCP 社区 | ① | **本文件 §2-§6** | ✅ |
 | 演讲 PPT(12 页+讲者注) | 材料 | pitch_deck_20260904.pptx/.html | ✅ |
 | demo 录屏脚本 | 材料 | [demo_recording_script.md](demo_recording_script.md) | ✅ 待用户录 |
-| 中文圈三件(知乎/公众号/V2EX) | ② | 🔴 下一批产出(9/12 前备齐) | — |
+| 中文圈三件(知乎/公众号/V2EX) | ② | ✅ 成品 v1:[知乎答](zh_zhihu_answer_20260905.md) / [公众号文](zh_wechat_tech_20260905.md) / [V2EX 帖](zh_v2ex_share_20260905.md),重写非搬运,发布 9/15 周 |
 | r/MachineLearning 论文贴 | ① | ⏸ 等 paper2 arXiv ID | — |
 
 ## 2. Bluesky(每条 ≤300 字符,连发)
@@ -70,10 +70,11 @@
 
 ## 7. 待产队列
 
-- 中文圈三件(知乎答/公众号技术文/V2EX)——9/12 前备齐,重写不搬运(中文社区反感翻译腔)
+- ~~中文圈三件(知乎答/公众号技术文/V2EX)~~ ✅ 已产出(见 §1)
 - r/MachineLearning 论文贴——paper2 arXiv ID 出来后 24h 内
 - Product Hunt 文案——hosted 正式定价时(第④层)
 - demo 录屏成片——用户录制后剪 75s 版+GIF
+- 中文圈配图(公众号封面/金句卡排版)——排版期做
 
 ## 8. 发布记录(执行后回填)
 
