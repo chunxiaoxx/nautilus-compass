@@ -332,7 +332,13 @@ to pass the gate'' before the actual cause was found: the \emph{measurement},
 not the method, was broken. The failure survived two pipeline revisions
 because spot checks used short items whose reasoning fit the budget; it was
 only exposed by a function-call-level smoke test that inspected the judge's
-raw output on a realistic item. The cure is deployment-time, not statistical:
+raw output on a realistic item. The magnitude is measurable: under this failure
+the raw run logged 250 ``empty response content'' events and 146 of 211
+enterprise items (69\%) scored zero; a fixed-budget re-judge of all LLM-graded
+items (reasoning effort low, budget 16384) then moved the two domains by
+$+3.3$ and $-1.9$ points respectively --- opposite directions, so the sign of
+the correction cannot be assumed without running it. The cure is
+deployment-time, not statistical:
 a smoke test that asserts a non-empty, parseable verdict under realistic
 prompt sizes (cf.\ \S\ref{sec:protocol}).
 
