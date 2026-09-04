@@ -63,7 +63,7 @@ benchmark tuning loop, a reasoning judge consumed its 4096-token budget
 before emitting any verdict, and two consecutive iterations were accepted as
 ``the method fails'' before the measurement itself was implicated. And in
 controlled perturbation experiments, judges from two families pass 37--48\%
-of sub-percent numerical contaminations --- a knowledge boundary that
+of $\pm 0.1\%$-magnitude numerical contaminations --- a knowledge boundary that
 prompting and scale do not move.
 
 These are not three flavors of one bias. They live in different resources
@@ -113,6 +113,15 @@ failure, matching our J-B/J-C distinction between \emph{no verdict} and
 \emph{a wrong verdict}. Our contribution complements rather than competes:
 we classify \emph{how the judging machinery itself breaks} and attach a
 response to each class.
+
+\paragraph{Dependability and tail behavior.}
+Our taxonomy borrows the fault/error/failure discipline of classical
+dependability engineering~\cite{avizienis2004}, and the J-C cure (monitored
+retry with backoff) is the standard response to tail-latency faults in
+distributed systems~\cite{dean2013tail}. The contribution here is not a new
+failure model but its first systematic mapping onto LLM-judge evaluation
+pipelines, where the same faults surface as \emph{score} distortion rather
+than as latency or availability loss.
 
 \paragraph{Self-improving agents.}
 Test-time self-improvement lines~\cite{voyager,reflexion} lean on
@@ -230,8 +239,8 @@ whichever score the operator prefers. This motivates the hygiene protocol
 & Signal & Retry-curative? & Pre-deployable? & Score effect \\
 \midrule
 J-K (knowledge) & $\Delta$ predictor & no & yes (probe set) & silent pass of errors \\
-J-B (budget)    & truncation rate & no & yes (smoke) & collapse to default \\
-J-C (connect)   & error-label rate & yes & yes (probe) & false failures (lower bound) \\
+J-B (budget)    & truncation rate & no & yes (smoke) & collapse to default label \\
+J-C (connect)   & error-label rate & yes & in-run only & false failures (lower bound) \\
 \bottomrule
 \end{tabular}
 \caption{The three failure types on operational axes. ``Score effect'' lists the
@@ -253,7 +262,7 @@ accuracy (pass $\geq 6$): Kimi~k3 (reasoning; temperature 1) and MiniMax-M3
 an earlier simulation predicted a 93\% pass rate for commonsense errors, which the
 real data refutes outright (below).
 
-\begin{proposition}[Numerical Precision Blind Spot, semi-formal]
+\begin{proposition}[Numerical Precision Blind Spot --- empirical finding]
 \label{prop:blindsight}
 The judge pass rate $\rho_J(\delta)$ is monotonically decreasing in perturbation
 magnitude, with $g(0.1\%) \approx 0.37$--$0.48$, $g(1\%) \approx 0.12$--$0.14$,
@@ -410,7 +419,8 @@ evidence about the system under test. Routine:
       exponential backoff only;
 \item items still failing after retries are reported, never silently dropped.
 \end{enumerate}
-In our run this resolved 71/71 residual judge-disconnect items at negligible
+In our run this resolved 71/71 residual judge-disconnect items (recovered
+infrastructure, not correct answers: 27 of the 71 flipped to correct) at negligible
 cost, because answers were reused verbatim and only the scoring call was
 retried. Note the asymmetry with J-K: retry cannot cure knowledge-boundary
 blindness, which is why the signature check in step~1 must distinguish
@@ -556,6 +566,15 @@ gateway provider referenced or alluded to funded, reviewed, or collaborated
 on this work. No human subjects were involved.
 
 \begin{thebibliography}{9}\setlength{\itemsep}{-2pt}
+
+\bibitem{avizienis2004}
+Avizienis, A., Laprie, J.-C., Randell, B., and Landwehr, C. (2004). Basic
+Concepts and Taxonomy of Dependable and Secure Computing. \emph{IEEE TDSC},
+1(1):11--33.
+
+\bibitem{dean2013tail}
+Dean, J., and Barroso, L. A. (2013). The Tail at Scale. \emph{Communications
+of the ACM}, 56(2):74--80.
 
 \bibitem{longmemeval}
 Wu, D., et al. (2024). Benchmarking Chat Assistants on Long-Term Interactive
