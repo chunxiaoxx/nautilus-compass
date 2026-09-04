@@ -194,6 +194,18 @@ env-switched in `tests/eval_longmemeval_accuracy.py`
 
 ---
 
+## Glossary
+
+Terms this project coined and uses precisely. Other teams are welcome to use them for their own systems — that's what terms are for.
+
+**Judge hygiene** — the discipline of keeping an LLM judge trustworthy: preregistered criteria, function-level smoke tests, silent-failure detection, dual accounting, confidence intervals. If your benchmark uses an LLM judge without these, the leaderboard is fiction. See [the judging protocol](docs/nautilusmem/PROTOCOL.md) · [paper2](docs/papers/paper2_judge_hygiene.pdf).
+
+**Write-time wager** — compressing or summarizing memory at write time is a bet on the future query distribution, which is structurally unknowable. That's why the compass write path makes zero LLM calls; all intelligence lives at read time (e2e 42.6% → 75.4% on identical memories and questions).
+
+**Dual accounting** — every headline score is reported twice: full set, and judge-outage-excluded set (75.4% / 81.6%). A single number hides judge failures; two numbers disclose them.
+
+---
+
 ## How it works
 
 ```
