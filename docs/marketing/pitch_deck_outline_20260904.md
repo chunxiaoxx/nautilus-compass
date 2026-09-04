@@ -3,106 +3,156 @@ marp: true
 theme: default
 paginate: true
 style: |
-  section { font-size: 26px; }
-  h1 { color: #1a3c5e; }
-  table { font-size: 21px; }
-  footer { font-size: 16px; color: #888; }
+  section { background: #0d1117; color: #e6edf3; font-size: 26px; }
+  h1 { color: #e6edf3; }
+  h2 { color: #58a6ff; }
+  strong { color: #3fb950; }
+  em { color: #d29922; font-style: normal; }
+  table { font-size: 22px; }
+  footer { font-size: 15px; color: #8b949e; }
+  blockquote { color: #d29922; border-left: 4px solid #d29922; }
+  code { background: #161b22; color: #e6edf3; }
+  section.lead { text-align: center; }
+  section.lead h1 { font-size: 1.6em; color: #3fb950; }
 ---
 
 <!-- _paginate: false -->
 
-# Don't Summarize the Past for a Future You Can't Predict
+<!-- _class: lead -->
 
-## nautilus-compass · 演讲版(30 分钟 · 三幕)
+# Don't Summarize the Past<br>for a Future You Can't Predict
 
-*Chunxiao Wang · 2026-09 · github.com/chunxiaoxx/nautilus-compass*
+## nautilus-compass · agent memory
+
+*Chunxiao Wang · 2026-09*
+*github.com/chunxiaoxx/nautilus-compass*
+
+**写入 0 LLM 调用 · e2e 42.6% → 75.4% · p95 快 80×**
 
 <!-- 讲者注:开场 30 秒停顿,让标题被读完。这句是全文论点。 -->
 
 ---
 
-# 第一幕 · 你的 agent 正在忘记你
+# 你的 agent 正在忘记你
 
-- ChatGPT 随对话推进**覆写关键信息**(ICLR 2025 LongMemEval 论文 · 人肉研究)
-- Coze 漏记间接提供的信息
-- 长上下文直读:性能掉 **30-60%**——裸读是死路
+![w:1150](deck_assets/blind_bet.png)
 
-> 现状三大策略(压缩/提炼/裸读)全部在**写入时**做有损决定
-
-<!-- 讲者注:这一幕只建立问题,不亮方案。问观众:你们的 agent 记得你上周说过什么吗? -->
+<!-- 讲者注:这一页只建立问题,不亮方案。问观众:你们的 agent 记得你上周说过什么吗?
+ChatGPT 会随对话推进覆写关键信息(ICLR 2025 LongMemEval 论文·人肉研究);长上下文直读性能掉 30-60%。 -->
 
 ---
 
-# 写入时压缩 = 对未来的盲目下注
+# 市场现状:三大策略,同一个死穴
 
-- 写入时没人知道**未来会被问什么**
-- 提炼物被冻结在当初那个模型的认知水平
-- 存储趋零、LLM 调用恒贵——把便宜的换成昂贵的
+| 策略 | 谁在做 | 何时做有损决定 |
+|---|---|---|
+| 压缩 | 多数 SaaS 记忆层 | **写入时** |
+| 提炼/摘要 | mem0 / Zep / Letta | **写入时** |
+| 裸读长上下文 | 直塞 context window | 牺牲性能(掉 30-60%) |
 
-**这个赌注在结构上就赢不了。**
+> 全部在**写入时**对未来下注 —— 没有人把宝押在读取端
+
+<!-- 讲者注:表格别逐行念,指着右列"写入时"三个字打三遍。 -->
 
 ---
 
-# 第二幕 · 反架构:写入零智能,读取全智能
+# 反架构:写入零智能,读取全智能
 
-```
-进化  跨 agent 记忆胶囊:验证后写回 → 按需继承
-治理  drift 检测(AUC 0.83)· 合约审计 · scoped 多租户 · 判分卫生学
-组装  分题型摘要卡 · 日期时间线
-召回  6 型路由 → BM25 + dense (RRF) · 日期锚定
-存储  原文 verbatim · 本地 BGE-m3 · 零 LLM 零上云
-格式  OKF 兼容
-```
+![w:1150](deck_assets/arch.png)
 
-**写入:免费、无损、永远。智能全部在读取端。**
-
-<!-- 讲者注:六层图来自 ARCHITECTURE.md,一字未改。强调"写入不调 LLM"停两秒。 -->
+<!-- 讲者注:六层结构来自 ARCHITECTURE.md。强调"写入不调 LLM"停两秒。
+进化层防毒门:reward ≥ 1.0 的经验才写回胶囊。 -->
 
 ---
 
 # 三不变量(为什么写入时压缩必输)
 
+![w:980](deck_assets/cost_curve.png)
+
 1. **未来查询分布不可知** —— 同一份记忆,分型路由让 P@1 从 0.20 → 1.00;变的不是记忆,是问题
 2. **原文是唯一可重新索引的表示** —— 更好的 embedder 明年发布?提炼物吃不到红利,原文可以
-3. **成本曲线方向反了** —— 我们 p95 **0.34-0.80s** vs LLM controller **26.9s**(~80×):把智能放对时刻的自然结果
+3. **成本曲线方向反了** —— 我们 p95 **0.34-0.80s** vs LLM controller **26.9s**(~80×)
 
 ---
 
 # 读取端四件套
 
-1. **六型分型路由**:用户陈述型 → turn 级块;跨会话型 → 摘要卡
-2. **BM25 + dense RRF 融合**:词面扛精确标识符,向量扛语义
-3. **日期锚定**:"before/after" 类问题有时序把手
-4. **摘要卡组装**:e2e 500 题 **42.6% → 75.4%**,判据先于跑数预注册
+![w:1200](deck_assets/pipeline.png)
 
-**同样公开的负结果**:rerank 有害(-2pt)· K=50 无增益 · 小 embedder 更差
+<!-- 讲者注:42.6→75.4 的全部来源就是这四步,没有其他魔法。
+负结果同样预注册:rerank 有害(-2pt)· K=50 无增益 · 小 embedder 更差。 -->
 
 ---
 
-# 第三幕 · 证据(全部可复现,≈$3.50 GPU 时)
+# 证据 ①:e2e 主战场
 
-| 战场 | compass | 对照 |
-|---|---|---|
-| LME-S 检索 P@1(500 题同题同判据) | **0.890** | mem0 0.774 |
-| LOCOMO 客场 P@1(n=1986) | **0.644** | mem0 0.592 |
-| LME-S e2e(500 题) | **75.4%**(81.6% 剔判官故障) | 口径披露双报 |
-| LME-V2 官方基准(451 题双域) | **40.0 / 38.4%** | untuned 19.6 / 12.8 |
-| EverMemBench | **44.4-47.3** | Mem0 37.09 / Zep 39.97 / MemOS 42.55 |
+![w:1050](deck_assets/e2e.png)
 
-<!-- 讲者注:如果只记一页,记这页。强调"同题同判据"四个字。 -->
+**同样的记忆,同样的题 —— 500 题,e2e 42.6% → 75.4%**
+
+<!-- 讲者注:81.6% 是剔除 71 道判官故障题的口径,双口径强制披露。
+判据先于跑数预注册,预注册文件带 hash 落仓。 -->
+
+---
+
+# 证据 ②:六分型成绩单
+
+![w:1150](deck_assets/breakdown.png)
+
+<!-- 讲者注:tr 62.4 是已知短板,主动讲 —— 不藏短板是可信度的一部分。
+ssu 97.1 说明单会话用户事实几乎全对;tr 是时序推理,检索型方案的天然硬骨头。 -->
+
+---
+
+# 证据 ③:同题同判据对打
+
+![w:1050](deck_assets/headtohead.png)
+
+**mem0 2.0.19 我方复现 · BGE-m3 双方 · 脚本开源 ≈$3.50 重跑**
+
+<!-- 讲者注:如果有人只记一页,记这页。强调"同题同判据"四个字。
+跨 harness 分数不可比 —— mem0 自报 94.4% 是他们的 harness/判官/口径,不比。 -->
+
+---
+
+# 证据 ④:客场作战
+
+![w:1050](deck_assets/evermem.png)
+
+<!-- 讲者注:EverMemBench 是第三方榜,不是我们出的卷子。
+LOCOMO n=1986:P@1 0.644 vs mem0 0.592 —— 换一张卷子,结论不掉。
+LME-M 检索 P@5 0.888,证据册里有,口头补。 -->
+
+---
+
+# 证据 ⑤:官方基准 LME-V2
+
+![w:1000](deck_assets/lmev2.png)
+
+**451 题双域 · 上游官方基准(xiaowu0162)· 归因上游,不抢功**
+
+<!-- 讲者注:主动说清 LME-V2 是上游官方基准,我们提交的是成绩+调优栈。
+untuned 19.6/12.8 → 定案 40.0/38.4。 -->
+
+---
+
+# 延迟:80× 差距从哪来
+
+![w:1100](deck_assets/latency.png)
+
+**不靠 cache,不靠捷径 —— 智能放在了不花钱的时刻**
+
+<!-- 讲者注:26.9s 是写入时压缩阵营调用 LLM controller 的 p95(同口径对比)。
+我们读取端纯检索+组装,无 LLM 调用,所以 p95 0.34-0.80s。 -->
 
 ---
 
 # 判分卫生学:我们抓了自己判官 5 次
 
-- 401(key 变量名)/ 网关断连 / 预算被 reasoning 吃满……
-- 一次断连把 **14.2%** 的题静默记成错答
-- 修正方向曾**完全相反**:web +3.3 / ent −1.9
+![w:1100](deck_assets/judge_cards.png)
 
-> **判官会静默失败;判官会静默失败,你的排行榜就是虚构的。**
-> 协议全公开:预注册锚 · 冒烟测试 · 双口径强制 · Wilson CI
-
-<!-- 讲者注:自嘲式讲,这一段最圈粉。这是 paper2(arXiv 在投)的主题。 -->
+<!-- 讲者注:自嘲式讲,这一段最圈粉。一次断连把 14.2% 的题静默记成错答,方向曾完全相反(web +3.3 / ent −1.9)。
+这是 paper2(arXiv 在投)的主题:判官盲区是这个领域的 meta-problem。 -->
 
 ---
 
@@ -110,19 +160,46 @@ style: |
 
 - LoRA 检索增强:代理指标涨,端到端平 → **关闭**
 - abstention gate:误拒答 92/89 题 → **预注册拒收**
-- cheap-tier 三改组合:双域未超 → **关闭**
+- cheap-tier 三改组合:双域未超现役 → **关闭**
 
-**拒绝噪声改进,和拿到提升一样,是结果。**
+> 拒绝噪声改进,和拿到提升一样,是结果
+
+<!-- 讲者注:每条都是真金白银跑出来的负结果,预注册锚+hash 可查。 -->
 
 ---
 
 # dogfood:我们自己的组织跑在上面
 
-- nautilus 智涌平台:多 agent 调度,compass 是吃狗粮产物
-- **130 天 · 771 commits · 603 由 agent 舰队提交**
-- 跨 agent 记忆胶囊:验证过的经验才写回(reward ≥1.0 防毒门)
+![w:1100](deck_assets/dogfood.png)
 
-**这个产品最硬的 demo:造它的组织本身就长在它上面。**
+<!-- 讲者注:nautilus 智涌平台多 agent 调度,compass 是吃狗粮产物。
+跨 agent 记忆胶囊:agent A 解题 reward 1.0 → 写胶囊 → agent B 直接继承(B 从 FAIL→PASS 的实录)。 -->
+
+---
+
+# Demo:跨会话记忆(现场 live)
+
+![w:1150](deck_assets/demo_terminal.png)
+
+**三个会话各说一件事 → 三周后新会话,只有跨会话才能答的问题 → 命中**
+
+<!-- 讲者注:现场跑真实终端;若环境故障切录屏(1080p 已备)。
+对照组:空白记忆同一 query → 空。录屏兜底按 demo_recording_script.md 分镜。 -->
+
+---
+
+# 三档接入,一个承诺
+
+| 路径 | 适合谁 | 成本 |
+|---|---|---|
+| **本地三条命令** | 隐私/成本敏感 · 单机 agent | 永久免费,数据不出机器 |
+| **Hosted beta** | 快速试用 · 团队 | compass.nautilus.social 自助 signup |
+| **私有化** | 组织部署 | 联系我们 |
+
+- 写入 **0 token** · 召回 0 上云 · BGE-m3 本地嵌入
+- Modified MIT:自部署/内部/个人**永久免费**
+
+<!-- 讲者注:价值主张一句话:把记忆从"按 token 交租"变成"一次部署,免费无限"。 -->
 
 ---
 
@@ -135,9 +212,11 @@ bash ~/.claude/plugins/nautilus-compass/install.sh
 bash ~/.claude/plugins/nautilus-compass/daemon_start.sh
 ```
 
-不想本地跑:compass.nautilus.social · 自助 signup → scoped token → 任意 MCP 客户端
+不想本地跑:**compass.nautilus.social** · 自助 signup → scoped token → 任意 MCP 客户端
 
-**One developer. 130 days. No cloud required.**
+## One developer. 130 days. No cloud required.
+
+<!-- 讲者注:结尾停在这句。130 天 771 commits,其中 603 由 agent 舰队提交 —— 产品最硬的证明。 -->
 
 ---
 
@@ -148,4 +227,5 @@ bash ~/.claude/plugins/nautilus-compass/daemon_start.sh
 - **多租户谁验证的?** 四探针脚本开源,任何人对生产端点可重跑
 - **为什么不是纯开源?** 全源码可得 + $3.50 复现全链路 + 证据链全公开——开放程度用行为定义,不用标签
 
-<!-- 15/5 分钟版裁剪:保留本页前 8 页+证据页+接入页。 -->
+<!-- 15/5 分钟版裁剪:保留前 8 页+延迟页+demo 页+接入页。
+内容改动后重出:npx @marp-team/marp-cli pitch_deck_outline_20260904.md -o pitch_deck_20260904.pptx -->
