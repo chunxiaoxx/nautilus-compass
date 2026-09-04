@@ -20,7 +20,7 @@
 | 第二帖(LME-V2 判分卫生故事) | ① | ✅ 英文成品 v1(8c5bc78),cheap-tier 数字已定案可填 |
 | paper2(判官盲区,arXiv) | ③ | 🟡 材料定稿待用户提交(账号登录是用户动作),提交后 1-2 天出 ID |
 | 中文圈三件(架构文中文版/知乎答/公众号技术文) | ② | 🔴 未写(第①层发布后启动,素材全在 ARCHITECTURE.md) |
-| HN 提交文案(标题+首评) | ① | 🔴 待写(见 §3 编排) |
+| HN 提交文案(标题+首评) | ① | ✅ 见 §14 |
 | 落地页 hero 刷新(75.4/81.6) | ④ | 🟡 待确认落地页是否已刷(e1b3e37 提过 agent.json 上云,落地页待验) |
 
 ## 2. 渠道矩阵
@@ -30,6 +30,11 @@
 | ① 英文业界 | r/LocalLLaMA | 主帖周二-周四 9-11am ET(=北京 21-24 点)技术帖黄金窗;24h 内必回评论(算法权重) |
 | ① | X/Twitter | 主帖发布 2h 内发 thread 导流;@ 无特指,靠内容自传 |
 | ① | HN | position paper 走普通提交(非 Show HN,有可跑产品才 Show);标题零营销腔,首评放技术细节+evidence 链 |
+| ① | Lobsters | 架构长文提交;强调可复现($3.50)+判分卫生学;社区小而技术浓度高,适合深度讨论 |
+| ① | Bluesky / Mastodon | X thread 同步发(开源/自托管圈在 bsky 活跃);标签 #LocalLLM #MCP #AgentMemory |
+| ① | r/MachineLearning | ⚠️ 谨慎:仅 paper2 arXiv ID 出来后以论文讨论发(遵守版规,不导流 repo 首句);Reddit 主阵地仍是 r/LocalLLaMA |
+| ① | Newsletter 投稿(TLDR AI / AlphaSignal / Interconnects 等) | 短 pitch 邮件:一句问题+一句架构+repo 链接+可复现点;第①层反响好后再投(有数据背书) |
+| ① | MCP 社区(Discord / glama / PulseMCP / mcp.so) | 目录提交见 §12#6;社区频道发集成公告(带 tools/list 一屏截图) |
 | ① | dev.to / 个人博客 | position paper 长文底座;HN 引用此链接 |
 | ② 中文圈 | 知乎 | 架构文中文版(问答形式挂"AI agent 记忆如何做"类问题)+专栏 |
 | ② | 微信公众号/掘金/V2EX | 技术文;V2EX 强调本地部署+开源可复现 |
@@ -231,3 +236,31 @@
 3. 上传 tex 主文件(PDF 已编译验证 0 错 0 undefined)
 4. 提交前自检三项(摘要字数/零 includegraphics/零 input)——已绿(71a78f1)
 5. 提交后:把 arXiv ID 回填三处(launch post/position paper/落地页)
+
+## 14. HN 提交文案(9/10-9/11 用,与 Reddit 错峰 48h)
+
+> 提交物:repo 直链(有可跑产品+全套证据在 repo,比 position paper 更硬);position paper 作评论区补充链接。
+> 账号:chunxiaoxx。提交时间:美东上午 9-11 点(北京 21-24 点),周中。
+
+### 14.1 标题(HN 风格:零营销腔、标题即内容,二选一)
+
+- **推荐**:`Nautilus-compass: Local-first agent memory – write path makes zero LLM calls`
+- 备选(判官角度,论文味):`We caught our own LLM judge silently failing five times (agent memory evals)`
+
+### 14.2 首评(OP follow-up,~180 词英文)
+
+> One of the authors here (solo dev — 130 days, 771 commits, most of them by my own agent fleet, which is itself the best demo).
+>
+> The design bet: write-time compression is a blind wager on the future — nobody knows at write time what will be asked later. So the write path stores observations verbatim with zero LLM calls (local BGE-m3 embeddings, nothing leaves the machine), and all intelligence lives at read time: query-type routing, BM25+dense fusion, date anchoring, summary-card assembly. On LongMemEval-S that routing lifts e2e accuracy from 42.6% to 75.4% (81.6% excluding 71 judge-outage questions — disclosed, not hidden).
+>
+> The head-to-head you can actually check: same 500 questions, same criteria, same embedder, our reproduction of mem0 — P@1 0.890 vs 0.774. Reproduction scripts are in the repo, ~$3.50 of GPU time.
+>
+> The part I'm most proud of is the hygiene work: we caught our own judge failing five times (a gateway outage silently recorded 14.2% of questions as wrong answers). Paper on that is on arXiv — judging failures are this field's meta-problem.
+>
+> License is Modified MIT (Kimi-style): trademark protection + a cap on hosted paying users; self-hosting stays free forever. Happy to answer anything.
+
+### 14.3 HN 纪律(与 Reddit 差异)
+
+- 不发 thread 不拉票;24h 内值守,答技术上头 3-5 条即止,不做营销回复
+- "Show HN" 不用(产品已发布+有用户=普通提交;若 moderator 建议转 Show 再转)
+- 被质疑 license/自测数字:引 §6 模板;HN 对"self-reported benchmark"敏感,先亮 reproduction $3.50 和开源 harness,再亮分数
