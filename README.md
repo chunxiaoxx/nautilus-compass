@@ -273,7 +273,7 @@ The quickstart script signs **read-only, current-project** tokens by default.
 | LongMemEval-S retrieval (500q head-to-head) | ✅ **0.890 / 0.978 / 0.929** | 0.774 / 0.916 / 0.834 (our reproduction) | n/r | n/r | n/r | ❌ | ❌ |
 | LOCOMO-10 retrieval (n=1986) | ✅ **0.644 / 0.890 / 0.740** | 0.592 / 0.802 / 0.677 (our reproduction) | n/r | n/r | n/r | n/r | n/r |
 | EverMemBench verified | ✅ 44.4-47.3% | 37.09 | n/r | 39.97 | n/r | 42.55 | ❌ |
-| LongMemEval-S e2e (their own harness) | **500q full 75.4%** with summary layer (2026-09-04, all questions judged) — by type: ssu 96.9 / ssa 85.4 / tr 83.3 / ms 73.2 / ku 79.5 / ssp 75.0. Preregistered verdict PASS ([link](vtf/_e2e_diag/arm_a_final_verdict.md)) | 94.4% (self-reported) | n/r | n/r | n/r | n/r | n/r |
+| LongMemEval-S e2e (their own harness) | **500q full 75.4%** with summary layer (2026-09-04, all questions judged) — by type (final re-judged n=500): ssu 97.1 / ssa 83.9 / tr 62.4 / ms 69.2 / ku 80.8 / ssp 80.0; clean accounting excl. 71 outage: 96.9/85.4/83.3/73.2/79.5/75.0. Preregistered verdict PASS ([link](vtf/_e2e_diag/arm_a_final_verdict.md)) | 94.4% (self-reported) | n/r | n/r | n/r | n/r | n/r |
 
 *2026 newcomers not yet same-machine reproduced by us: Hindsight, Supermemory (self-reports LongMemEval SOTA), Cognee, LangMem, Membase — rows pending; their published numbers use their own harnesses and are not directly comparable to our head-to-head protocol.*
 | Self-host + hosted both | ✅ | ☁ only | ✅ | ☁ only | ✅ | OSS only | OSS only |
