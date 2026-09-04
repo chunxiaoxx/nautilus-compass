@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Compass · 跨 agent 记忆层 · LongMemEval-S 检索三项碾压 mem0 · Nautilus 平台</title>
-<meta name="description" content="开源跨 agent 记忆与可靠性层 · LongMemEval-S 500 题全量检索 P@1 0.890 / P@5 0.978 / MRR 0.929(vs mem0 +11.6/+6.2/+9.5pt) · LOCOMO 客场反超 · 本地黑盒 · MCP + A2A · MIT" />
+<meta name="description" content="开源跨 agent 记忆与可靠性层 · LongMemEval-S 500 题全量检索 P@1 0.890 / P@5 0.978 / MRR 0.929(vs mem0 +11.6/+6.2/+9.5pt) · 端到端 42.6→75.4% · LOCOMO 客场反超 · 本地黑盒 · MCP + A2A · Modified MIT" />
 <meta property="og:title" content="Compass · 跨 agent 记忆层" />
 <meta property="og:description" content="LongMemEval-S 检索 P@5 97.8% vs mem0 91.6% · LOCOMO 客场反超 · 本地黑盒 · drift 检测" />
 <meta property="og:url" content="https://compass.nautilus.social/" />
@@ -77,9 +77,9 @@
       <p class="vs">超 Mem0(37.09) · Zep(39.97) · MemOS(42.55)</p>
     </div>
     <div class="card">
-      <h3>端到端 QA · 500 题全量 · 分型</h3>
-      <div class="big">42.6%</div>
-      <p class="vs">单会话型近天花板:ssu <span class="win">95.7%</span> · ssp 80.0% · ku 73.1%;跨会话聚合公开短板:ssa 25.0 / ms 22.6 / tr 15.8(修复前 tr=0)。检索 P@5 97.8%,差在 reader 组装不差召回 · <a href="https://github.com/chunxiaoxx/nautilus-compass/blob/main/docs/evidence/e2e_500_full_20260829.json">全量证据</a></p>
+      <h3>端到端 QA · 500 题全量(读取端路由后)</h3>
+      <div class="big">75.4%</div>
+      <p class="vs">42.6% → <span class="win">75.4%</span>(读取端分型路由,同样的记忆同样的题);剔除 71 道判官故障题为 81.6%(双口径强制披露)。分型:ssu <span class="win">97.1%</span> · ssa 83.9 · ku 80.8 · ssp 80.0 · ms 69.2 · tr 62.4 · <a href="https://github.com/chunxiaoxx/nautilus-compass/blob/main/docs/nautilusmem/SCOREBOARD.md">定案成绩册与证据链</a></p>
     </div>
   </div>
   <p class="dim" style="margin-top:14px;font-size:.85rem">检索层武器:utterance 分型路由块检索 + BM25/dense 混合 + 时间锚。失败实验(rerank 有害 / K 截断无效 / 小模型换装无效 / LoRA 检索增强全量验证持平未采用)同样公开:<a href="https://github.com/chunxiaoxx/nautilus-compass/blob/main/docs/evidence/headhead_mem0_full500_20260826.json">完整证据链</a></p>
@@ -114,8 +114,8 @@
 </section>
 
 <footer class="wrap">
-  <p><a href="https://github.com/chunxiaoxx/nautilus-compass">GitHub</a> · <a href="https://github.com/chunxiaoxx/nautilus-compass/blob/main/README.zh-CN.md">中文文档</a> · <a href="https://huggingface.co/spaces/chunxiaox/nautilus-compass">在线 demo(免安装)</a> · <a href="https://github.com/chunxiaoxx/nautilus-compass#cloud-hosted-invitation-only-during-review-period">托管网关(内测·GitHub issue 取 token)</a></p>
-  <p style="margin-top:10px">Nautilus Platform · 开放 agent 生态 · MIT</p>
+  <p><a href="https://github.com/chunxiaoxx/nautilus-compass">GitHub</a> · <a href="https://github.com/chunxiaoxx/nautilus-compass/blob/main/README.zh-CN.md">中文文档</a> · <a href="https://huggingface.co/spaces/chunxiaox/nautilus-compass">在线 demo(免安装)</a> · <a href="https://compass.nautilus.social/signup">托管版 open beta(注册即得 token)</a></p>
+  <p style="margin-top:10px">Nautilus Platform · 开放 agent 生态 · Modified MIT</p>
 </footer>
 
 </body>
