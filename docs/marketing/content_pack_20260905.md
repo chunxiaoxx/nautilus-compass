@@ -19,6 +19,7 @@
 | X thread 7 条 | ① | launch_post_v3 内嵌 | ✅ |
 | HN 标题+首评 | ① | launch_plan §14 | ✅ |
 | 架构立场长文(~1900 词) | ① | [20260904_architecture_position_paper.md](20260904_architecture_position_paper.md) | ✅ |
+| dev.to 适配版(front matter+liquid 卡) | ① | [20260905_devto_position_paper.md](20260905_devto_position_paper.md) · 正文同源不改数 | ✅ |
 | 第二篇(判分卫生) | ① | 8c5bc78 成品 | ✅ |
 | Bluesky/Mastodon/Lobsters/Newsletter/MCP 社区 | ① | **本文件 §2-§6** | ✅ |
 | 演讲 PPT(12 页+讲者注) | 材料 | pitch_deck_20260904.pptx/.html | ✅ |
