@@ -22,7 +22,7 @@
 [![PyPI](https://img.shields.io/pypi/v/nautilus-compass?label=PyPI&color=blue)](https://pypi.org/project/nautilus-compass/)
 [![MCP](https://img.shields.io/badge/MCP-17%20tools%20%C2%B7%20TLS%20%C2%B7%20RBAC-blue)](docs/mcp-usage.md)
 [![A2A](https://img.shields.io/badge/A2A-mTLS%20%C2%B7%20scoped%20peers-blue)](examples/a2a_tls_demo.py)
-[![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![license](https://img.shields.io/badge/license-Modified%20MIT-blue)](LICENSE)
 
 ---
 
@@ -277,7 +277,7 @@ The quickstart script signs **read-only, current-project** tokens by default.
 
 *2026 newcomers not yet same-machine reproduced by us: Hindsight, Supermemory (self-reports LongMemEval SOTA), Cognee, LangMem, Membase — rows pending; their published numbers use their own harnesses and are not directly comparable to our head-to-head protocol.*
 | Self-host + hosted both | ✅ | ☁ only | ✅ | ☁ only | ✅ | OSS only | OSS only |
-| License | MIT | Apache | Apache | proprietary | MIT | Apache | MIT |
+| License | Mod. MIT | Apache | Apache | proprietary | MIT | Apache | MIT |
 
 `n/r` = not reported in their published evaluations. Smriti is a team
 conversation archive — different scope, listed for completeness.
@@ -425,8 +425,9 @@ LongMemEval (Wu et al., NeurIPS 2024) · EverMemBench (Hu et al., 2026).
 
 ## License
 
-- **Code, plugin, MCP wrapper, papers, scripts** — MIT ([`LICENSE`](LICENSE))
+- **Code, plugin, MCP wrapper, papers, scripts** — Modified MIT License (MIT + trademark clause + hosted-service cap; self-hosting / internal deployment / personal use stay free forever — [`LICENSE`](LICENSE))
 - **Behavioral anchor files** (`anchors*.json`) — CC0 1.0 Universal ([`LICENSE-ANCHORS`](LICENSE-ANCHORS))
+- Historical releases before this license's introduction were pure MIT.
 
 ---
 

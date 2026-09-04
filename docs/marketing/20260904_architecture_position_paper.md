@@ -33,7 +33,7 @@ Storage asymptotes to free; LLM calls don't. Replacing the cheap thing (text) wi
 
 ## The counter-architecture: six layers
 
-nautilus-compass (MIT, one repo, ~$3.50 of GPU time reproduces every number below) is a memory system built around one discipline: **the write path does nothing smart; the read path does everything smart.**
+nautilus-compass (Modified MIT, one repo, ~$3.50 of GPU time reproduces every number below) is a memory system built around one discipline: **the write path does nothing smart; the read path does everything smart.**
 
 ```
 Evolution    cross-agent learning capsules: validated write-back → inherit on claim
@@ -107,4 +107,4 @@ Cursor / Cline / Continue.dev / Zed: `python scripts/install_to_agent.py`. No lo
 
 One developer. 130 days. No cloud required. Your agents' memory shouldn't rent your past back to you.
 
-*MIT · github.com/chunxiaoxx/nautilus-compass · compass.nautilus.social*
+*Modified MIT · github.com/chunxiaoxx/nautilus-compass · compass.nautilus.social*

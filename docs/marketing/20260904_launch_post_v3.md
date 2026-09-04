@@ -64,7 +64,7 @@ bash ~/.claude/plugins/nautilus-compass/daemon_start.sh
 Cursor / Cline / Continue.dev / Zed: `python scripts/install_to_agent.py`.
 No local install: **hosted open beta, self-serve** — sign up at https://compass.nautilus.social/signup, mint a scoped token in the console, point any MCP client at `https://compass.nautilus.social/mcp/`. Tokens are server-bound to your own space (read+write scoped per project); cross-user read/write is denied and revocation takes effect immediately — verified by a four-probe suite that runs against the public endpoint (code in repo).
 
-Repo (MIT, bilingual README): https://github.com/chunxiaoxx/nautilus-compass
+Repo (Modified MIT, bilingual README): https://github.com/chunxiaoxx/nautilus-compass
 Landing: https://compass.nautilus.social
 
 Happy to answer questions on the retrieval routing design or the failure experiments — those are the fun parts.
@@ -79,7 +79,7 @@ Happy to answer questions on the retrieval routing design or the failure experim
 4. 失败实验同样公开:rerank 有害(-2pt)、K=50 无效、小模型无效。12 题 +16.7pt 的初读是抽样偏差,30 题混合后修正。全部证据在 repo docs/evidence/。
 5. 客场也赢:LOCOMO(mem0 主场)n=1986,P@1 0.644 vs 0.592。大语料(12×)泛化 P@5 0.888。EverMemBench 超 Mem0/Zep/MemOS。
 6. e2e 短板已修:摘要层上线(判据先于跑数预注册),全量 500 题 42.6%→75.4%(71 题 judge 断连全部重判补齐,每题有真判决)/81.6%(同口径剔除断连 71 题)。三弱型双口径全过门:ms 22.6→73.2·ssa 25.0→85.4·tr 15.8→83.3;高分型无实质回退。
-7. 附赠:drift 检测 AUC 0.83(动作前对照失败模式锚点)+ 跨 agent 合约审计。本地三条命令接入;托管版开放自助注册(signup→控制台发 scoped token→任意 MCP 客户端直连),跨用户读写被拒+撤销即时,四探针公网验证。MIT。github.com/chunxiaoxx/nautilus-compass
+7. 附赠:drift 检测 AUC 0.83(动作前对照失败模式锚点)+ 跨 agent 合约审计。本地三条命令接入;托管版开放自助注册(signup→控制台发 scoped token→任意 MCP 客户端直连),跨用户读写被拒+撤销即时,四探针公网验证。Modified MIT。github.com/chunxiaoxx/nautilus-compass
 
 ---
 

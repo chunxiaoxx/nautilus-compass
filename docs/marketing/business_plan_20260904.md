@@ -76,9 +76,12 @@ MIT 已把 use/sell/sublicense 无条件授予所有人。**"MIT + 商业授权"
 
 **条款核实注**:本文按 FSL-1.1 要点撰写(竞争性使用例外 + 2 年自动 MIT + 内部使用明示允许);切换时直接采用 fsl.so 官方标准化文本,勿自拟条款。本次起草时 fsl.so 网络不可达,未逐字核对——执行前须拉原文比对(标注 ⚠)。
 
-### 2.6 决策请求
+### 2.6 决策 → ✅ 已拍板(2026-09-04):b2 Kimi 式 Modified MIT
 
-四选一:**a. 保持 MIT**(传播速度优先,放弃 license 抓手)/ **b. 切 FSL**(推荐:标准化文本零法律风险,自动宽松保传播)/ **b2. Modified MIT · Kimi 式**(折中:MIT 主体+托管规模门槛+商标,可设免费额度,⚠ 需律师把附加条款措辞过一遍)/ **c. 切 AGPL**(最强保护,牺牲部分企业采用)。
+> **执行记录(同日)**:LICENSE 已换 Modified MIT(MIT 原文全保留 + 附加条款:A1 商标保护 / A2 托管服务上限——对外托管服务月付费用户超 100 须商业授权,自部署/内部部署/个人/研究/非托管分发永久免费 / A3 版权方豁免;附历史版本纯 MIT 声明)。全链路同步完成:README(badge/竞品表/§License)、launch post ×2、position paper ×2、package.json、npm/package.json、.claude-plugin/plugin.json、pyproject.toml(license 字段 + 删 OSI classifier)、anchors_compass_marketing.json。
+> 🔴 遗留两件:①A2 措辞与 100 额度系作者起草,**对外商用执法前需律师复核**;②SPDX 无标准标识,各卡统一用 `LicenseRef-Modified-MIT`(SPDX 自定义许可规范格式)。
+
+四选一(拍板时备选,存档):**a. 保持 MIT**(传播速度优先,放弃 license 抓手)/ **b. 切 FSL**(标准化文本零法律风险,自动宽松保传播)/ **b2. Modified MIT · Kimi 式** ✅(折中:MIT 主体+托管规模门槛+商标,可设免费额度)/ **c. 切 AGPL**(最强保护,牺牲部分企业采用)。
 
 b 与 b2 的实质差异只在一点:FSL 附带"2 年自动转 MIT"信任锚且文本是律师写好的标准件;b2 语气更"MIT"、可自定义免费额度,但自拟条款有法律措辞风险。**给 b2 加上"N 年后自动转 MIT"一句,效果即与 FSL 等价——届时不如直接用 FSL。**
 
