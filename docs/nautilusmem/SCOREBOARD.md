@@ -1,8 +1,9 @@
 # NautilusMem 成绩册 · compass 记忆后端在 LongMemEval-V2 上的成绩(T0-4 · 定稿)
 
 > 状态 9/4:呈现口径已由用户拍板 = **选项 B**(现役数字+双口径并报,官方坐标系注明判分
-> 口径差,不加 gpt-5.2 折算);`[待补]` = cheap-tier raw-state 强化跑分中(web 240 生成
-> 已完,判分经 401 事故后将 rejudge 补齐;ent 211 接力跑分中)。
+> 口径差,不加 gpt-5.2 折算)。cheap-tier web 定案:**36.3%**(240 题,86 LLM 行经 401 事故
+> 重判补齐 flips +47/−0·0 失败,154 程序化行原分保留;产物固化 `vtf/_compass_lmev2_out/cheap_web/`)
+> ——三改组合未超 d12 现役(-3.75pt),d12 维持现役,归因待 ent 对照(双域落→组合关;ent 超→域特异)。
 
 ## 0. 这是什么(一句话)
 
@@ -16,7 +17,7 @@ evidence;题目/轨迹/harness 归上游,不随本成绩册分发。
 |---|---|---|---|
 | untuned(首跑基线,doubao 口径) | 19.6% | 12.8% | 8/30 首次全量基线 |
 | **tuned d12 + 重判(现役)** | **40.0%** | **38.4%** | 三刀调优+judge 预算修正重判 |
-| cheap-tier raw-state 强化 | [待补] | [待补] | 三改(a11y_chars/query_decomp/shot_per_traj),跑分中 |
+| cheap-tier raw-state 强化 | 36.3% | [待补] | 三改组合(a11y_chars1500/query_decomp/shot_per_traj)· web 定案 9/4:未超 d12(-3.75pt),维持 d12 现役;ent 跑分中 |
 | non-abst 口径(现役重判合并) | 32.7% | 25.2% | 可作答题 n=168/155 |
 | abstention-only 口径(现役) | 56.9% | 75.0% | 应拒答题 n=72/56;画像=拒答判别强、知识召回弱 |
 
@@ -73,7 +74,7 @@ retrieval: BGE-m3 embedder / top_k 20(d12 run_args 双域同值) / 检索单元=
 
 ## 6. 待办(发布前)
 
-- [ ] cheap-tier web 240 全量数字落表(GPU 跑分中)
+- [x] cheap-tier web 240 全量数字落表(9/4 定案 36.3%,判分经 rejudge 补齐+产物固化)
 - [ ] ent 211 接力后同表
 - [x] non-abst 双口径(d12 aggregated+重判 flips 合并,full 锚定 40.0/38.4 校验通过)
 - [x] memory_query 延迟实测(p95 web 0.339s / ent 0.798s)
