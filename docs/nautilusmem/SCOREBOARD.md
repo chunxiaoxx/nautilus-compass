@@ -17,7 +17,7 @@ evidence;题目/轨迹/harness 归上游,不随本成绩册分发。
 |---|---|---|---|
 | untuned(首跑基线,doubao 口径) | 19.6% | 12.8% | 8/30 首次全量基线 |
 | **tuned d12 + 重判(现役)** | **40.0%** | **38.4%** | 三刀调优+judge 预算修正重判 |
-| cheap-tier raw-state 强化 | 36.3% | [待补] | 三改组合(a11y_chars1500/query_decomp/shot_per_traj)· web 定案 9/4:未超 d12(-3.75pt),维持 d12 现役;ent 跑分中 |
+| cheap-tier raw-state 强化 | 36.3% | [待补] | 三改组合(a11y_chars1500/query_decomp/shot_per_traj)· web 定案 9/4:精度 -3.75pt + 查询 p50 8.0s(慢 d12 ~48×),双面净伤,维持 d12 现役;ent 跑分中 |
 | non-abst 口径(现役重判合并) | 32.7% | 25.2% | 可作答题 n=168/155 |
 | abstention-only 口径(现役) | 56.9% | 75.0% | 应拒答题 n=72/56;画像=拒答判别强、知识召回弱 |
 
