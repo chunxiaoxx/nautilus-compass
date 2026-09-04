@@ -64,7 +64,8 @@ before emitting any verdict, and two consecutive iterations were accepted as
 ``the method fails'' before the measurement itself was implicated. And in
 controlled perturbation experiments, judges from two families pass 37--48\%
 of $\pm 0.1\%$-magnitude numerical contaminations --- a knowledge boundary that
-prompting and scale do not move.
+persists under factuality-demanding prompts (dedicated prompt-variant
+ablations untested) and that scale did not move in our two-family tests.
 
 These are not three flavors of one bias. They live in different resources
 (the judge's knowledge; its output budget; the scoring infrastructure),
@@ -100,7 +101,9 @@ EVALBIASBENCH benchmarks six bias families~\cite{evalbiasbench}. These are
 runs, the judge reads the evidence, and the output tilts. Our types are
 different in kind --- in J-K the judge cannot represent the evidence, in J-B
 it never emits a verdict, in J-C it is never consulted. Bias mitigation
-(prompts, ensembles, calibration) does not touch any of the three.
+(prompts, ensembles, calibration) does not touch J-B or J-C, and for J-K the
+blind spot persisted under our factuality-demanding scoring prompt (variant
+prompts untested).
 
 \paragraph{Judging the judges.}
 Meta-evaluation work measures judge agreement with human labels on fixed
@@ -183,10 +186,14 @@ points). Entity-substitution and commonsense errors, by contrast, are detected a
 separates the two regimes in our data ($\Delta \geq 9.7 \mapsto 0\%$ pass; mid-band
 $\Delta = 5.3, 2.3 \mapsto 45\%, 13\%$) --- a band separator rather than a
 monotone predictor, as mid-band behavior is non-monotonic (in-sample; \S\ref{sec:scope}).
-Defining property: \textbf{prompting does not help} --- judges explicitly instructed
-to verify numeric accuracy exhibit the same boundary --- and \textbf{stronger judges
-do not help}, since both families fail together. The failure is a property of the
-knowledge boundary, not of capability.
+Defining property: the blind spot \textbf{persists under a scoring prompt that
+already demands factual accuracy} --- judges score trustworthiness and factual
+accuracy (0--10, threshold 6) and still pass $\pm 0.1\%$ contamination at
+37--48\%. Dedicated prompt-variant ablations (e.g., explicitly instructing
+digit-level verification) are untested; we state this as an open item, not
+as evidence that no prompt can help. \textbf{Stronger judges did not help}
+in our tests: both families fail together. The failure appears to be a
+property of the knowledge boundary, not of capability.
 
 \subsection{Type J-B: Budget Blindness}
 \label{sec:jb}
@@ -226,7 +233,9 @@ test} --- which is exactly why it is so easy to misattribute to the system.
 
 The three types differ on every axis that matters for a response
 (Table~\ref{tab:axes}). Treating them as one phenomenon produces wrong cures:
-prompt engineering does not touch J-K or J-C; scaling the judge does not touch any
+prompt engineering does not touch J-C, and did not close J-K under our
+factuality-demanding scoring prompt (variant prompts untested, \S\ref{sec:jk});
+scaling the judge did not separate the two families we tested
 of the three; and naive retry-without-disclosure silently turns $I$-noise into
 whichever score the operator prefers. This motivates the hygiene protocol
 (\S\ref{sec:protocol}), whose components are keyed to the taxonomy.
