@@ -16,7 +16,8 @@
 | 物料 | 层 | 状态 |
 |---|---|---|
 | launch post(r/LocalLLaMA 主帖 + X 7 条) | ① | ✅ 成品(终检修复 26e8b76),仅 paper2 arXiv 链接留回填位 |
-| 英文架构立场长文(~1900 词) | ① | ✅ 成品 v1,发布前再过一遍拼写 |
+| 英文架构立场长文(~1900 词) | ① | ✅ 成品 v1,拼写终检 9/5 通过(数字对 SCOREBOARD·OKF 术语查证 Google Cloud 官方规范) |
+| dev.to 适配版 | ① | ✅ [20260905_devto_position_paper.md](20260905_devto_position_paper.md)(front matter+liquid 仓库卡,9/10 与博客同日) |
 | 第二帖(LME-V2 判分卫生故事) | ① | ✅ 英文成品 v1(8c5bc78),cheap-tier 数字已定案可填 |
 | paper2(判官盲区,arXiv) | ③ | 🟡 材料定稿待用户提交(账号登录是用户动作),提交后 1-2 天出 ID |
 | 中文圈三件(架构文中文版/知乎答/公众号技术文) | ② | 🔴 未写(第①层发布后启动,素材全在 ARCHITECTURE.md) |
