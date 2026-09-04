@@ -67,11 +67,12 @@ npx -y nautilus-compass-mcp
 }
 ```
 
-## What you get (7 tools)
+## What you get (8 tools)
 
 | Tool | Purpose |
 |---|---|
 | `compass.recall` | Semantic recall over your project memory (BGE-m3) |
+| `compass.thread_recall` | Thread-scoped recall (single conversation lineage) |
 | `compass.drift_check` | Real-time AI drift detection (anchor-based) |
 | `compass.drift_history` | **Cross-project drift timeline** · claude-mem 没有的能力 |
 | `compass.session_search` | Keyword search · type/drift filter |
