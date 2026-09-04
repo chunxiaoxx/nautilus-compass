@@ -204,6 +204,29 @@
 | 8 | PPT 页级大纲(Marp)→ 成品 | 🟡 并行(用户有演讲计划) | ✅ 大纲+成品双格式已渲染([pptx](pitch_deck_20260904.pptx) / [html](pitch_deck_20260904.html),12 页·讲者注内嵌);内容改动后重出:`npx @marp-team/marp-cli pitch_deck_outline_20260904.md -o pitch_deck_20260904.pptx` |
 | 9 | 一页纸(英文政企) | ⏸ 降级:有真实触达场景再做 | — |
 
+## 12.1 tools/list 收敛方案(已备,拍板即执行 · 2026-09-05)
+
+改动只落 `mcp_http_server.py`(hosted 公网入口),本地 stdio/daemon 不受影响:
+
+```python
+# hosted 公网工具面:仅用户工具对外暴露(内部平台工具不进公网清单)
+PUBLIC_TOOLS = {"ingest_obs", "recall", "session_search", "thread_recall",
+                "profile", "drift_check", "drift_history", "feedback_log"}
+
+# _list_tools 循环内加一行:
+        if s["name"] not in PUBLIC_TOOLS and "admin" not in _current_scopes.get():
+            continue
+
+# _call_tool 的 deny 检查旁加同款(防知名字直调):
+    if name not in PUBLIC_TOOLS and "admin" not in _current_scopes.get():
+        return [... forbidden ...]
+```
+
+- 兼容性:ops/内部 token(tokens.json,admin scope)可见全部 17 个,内部调度零影响;自助/公开 token 只见 8 个用户工具
+- 效果:外部 tools/list 17→8;governance_×5/submit_platform_task/proof_of_impact/add_worker/long_task/ingest_platform_task_result 退出公网面
+- 部署:scp+restart,probes.py 复跑 + tools/list 计数断言
+- 待用户拍板后执行(对外可见行为变更)
+
 ## 13. 首评草稿(Reddit first comment · 发帖后立即发)
 
 > **OP here — before anyone asks: yes, mem0 self-reports 94.4% e2e on LongMemEval-S, and we report 75.4%. Those numbers are not comparable, and here's why.**
