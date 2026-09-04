@@ -197,7 +197,7 @@
 | 1 | 60-90s 终端录屏(D1 跨会话记忆),嵌 Reddit 帖 | 🔴 发布前必做 | 脚本见 [demo_recording_script.md](demo_recording_script.md),录制待用户 |
 | 2 | 首评草稿(94.4 vs 75.4 口径说破) | 🔴 发布前必做 | ✅ 见 §13 |
 | 3 | chunxiaoxx Reddit karma 预热(本周起技术性评论) | 🟡 本周 | 待用户(每天 2-3 条,发帖前有历史即可) |
-| 4 | 新人全流程实测+摩擦修复 | 🟡 | ✅ 已实测(§13.1);邮箱验证已实现(commit 4fefc97:验证码门禁+存量豁免+预部署完成),等 SMTP 凭证后 restart 生效 |
+| 4 | 新人全流程实测+摩擦修复 | 🟡 | ✅ 已实测(§13.1);邮箱验证已实现(commit 4fefc97:验证码门禁+存量豁免+预部署完成),等 SMTP 凭证后 restart 生效;🆕 9/5 抽查抓到并修复 `/mcp`(无尾斜杠)301→:8443 死路径(nginx 301 相对路径被另一 listen 8443 block 污染端口,公网新用户按 README 直连必断)——已改直 proxy,HUP reload(该 nginx 非 systemd 管,master PID 616431),公网复验 /mcp 与 /mcp/ 双路径 401(正常鉴权门)+全站三端点回归绿;备份 /home/ubuntu/compass.bak.20260905 |
 | 5 | paper2 提交 checklist 交用户 | 🟡 | ✅ 见 §13.2 |
 | 6 | MCP 目录提交(PulseMCP/Smithery/mcp.so/glama) | 🟢 发布周 | ✅ 材料已核对修正(server.json 56.6%→75.4 定案口径+版本 3.1.1+packages 指 PyPI 真实 3.0.1+废弃 1/15 cost 删;npm 清单同步;anchors 防吹牛锚包 v1.3 重校准);⚠️ 发布周 TODO:PyPI 发 3.1.1(现 PyPI 3.0.1 描述停在 EvoMap 旧文案,需用户 PyPI 凭证)·目录提交动作需用户账号 |
 | 7 | 智源接触(一页纸已备) | 🟢 本周发出,不催结果 | ✅ 材料 |
