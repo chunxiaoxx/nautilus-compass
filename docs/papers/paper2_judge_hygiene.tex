@@ -24,7 +24,7 @@ long-memory evaluation infrastructure, we give evidence that judge breakdown
 is better described as three structurally distinct failure types:
 \emph{knowledge-boundary blindness} (judges cannot represent sub-percent
 numerical perturbations, pass rates 37--48\% at $\pm 0.1\%$, monotone in
-magnitude, invariant across judge families), \emph{budget blindness}
+magnitude, stable across the two tested judge families, within 11\,pp), \emph{budget blindness}
 (reasoning consumes the output budget before a verdict is emitted,
 silently collapsing scores), and \emph{connectivity blindness}
 (infrastructure faults recorded as wrong answers; 14.2\% of items in a
@@ -32,7 +32,7 @@ silently collapsing scores), and \emph{connectivity blindness}
 on an effect of 32.8). The three types differ on every axis that matters ---
 detectable signal, whether retry cures them, whether they are catchable
 before deployment --- so conflating them produces wrong responses. We
-contribute the taxonomy, the clinical evidence, and a five-item hygiene
+contribute the taxonomy, the production evidence, and a five-item hygiene
 protocol (preregistered gates; same-judge retry backoff; three-caliber
 disclosure; deployment smoke; binomial noise bands) that resolved 71/71
 disconnect-mislabeled items in place and converts reliability from an
@@ -54,7 +54,7 @@ budget, and consulted thousands of times per run.
 
 We observed three failure types that are silent --- every pipeline stage
 reports success --- yet each can absorb or manufacture more score movement
-than the effects being measured. In a 500-question LongMemEval-S run,
+than the effects being measured. In a 500-question LongMemEval-S~\cite{longmemeval} run,
 14.2\% of items were scored by a judge behind an intermittently failing
 gateway and recorded as wrong; the resulting 5.4-point distortion is one-sixth (~17%)
 of the genuine 32.8-point improvement under study, and without per-item
@@ -69,8 +69,8 @@ prompting and scale do not move.
 These are not three flavors of one bias. They live in different resources
 (the judge's knowledge; its output budget; the scoring infrastructure),
 have different detection signals, and respond to different cures --- retry
-fixes one of the three and is actively harmful as a general remedy, because
-retrying a knowledge-boundary failure or cherry-picking calibers turns
+fixes one of the three; undisciplined retry --- retrying a knowledge-boundary
+failure, or cherry-picking calibers --- turns
 infrastructure noise into whichever number the operator prefers. Our
 contributions:
 \begin{enumerate}\setlength{\itemsep}{-1pt}
@@ -78,7 +78,7 @@ contributions:
       J-K (knowledge boundary), J-B (output budget), J-C (infrastructure)
       --- formalized in \S\ref{sec:taxonomy} with per-type detection
       signals and score-effect directions (Table~\ref{tab:axes});
-\item \textbf{Clinical evidence}: controlled experiments for J-K
+\item \textbf{Production evidence}: controlled experiments for J-K
       (\S\ref{sec:evidence1}) and two production-pipeline cases for J-B and
       J-C (\S\ref{sec:evidence2}), including a three-caliber account
       ($0.700/0.754/0.816$) of one and the same run;
@@ -292,7 +292,11 @@ MiniMax-M3 & 0.37 & 0.12 & 0.00 \\
 \end{tabular}
 \caption{Pass rate on numerical perturbations by magnitude. The two curves nearly
 overlap (gap $\leq$ 11\,pp at every level): a cross-model structural boundary,
-not a single-model defect. At $\pm 0.1\%$, ${\sim}40\%$ of thousandth-level
+not a single-model defect. Wilson 95\% CIs ($n{=}100$ per cell): 0.48
+[0.38, 0.58], 0.37 [0.28, 0.47], 0.14 [0.09, 0.22], 0.12 [0.07, 0.20],
+0.00 [0.00, 0.04]; the between-family gap at each level sits within
+overlapping intervals.
+At $\pm 0.1\%$, ${\sim}40\%$ of thousandth-level
 contamination passes.}
 \label{tab:round3}
 \end{table}
@@ -322,7 +326,8 @@ to the method under test (Case~1) and to the system under test (Case~2).
 \subsection{Case 1 (J-B): The Budget-Starved Judge}
 \label{sec:case-budget}
 
-In a retrieval-augmented tuning loop over the LME-V2 long-memory benchmark
+In a retrieval-augmented tuning loop over the LME-V2 long-memory benchmark~\cite{lmev2}
+(maintained by its upstream authors)
 (451 items, two domains), a commercial reasoning-mode judge (vendor anonymized) was configured with
 \texttt{max\_tokens}$=4096$. The judge's reasoning mode consumed the entire
 budget on a systematic subset of items before emitting a verdict token;
@@ -519,7 +524,10 @@ from long-memory evaluation (LongMemEval-S, 500 items; LME-V2, 451 items);
 other domains may exhibit additional failure types this taxonomy does not
 cover. The J-C case is a natural experiment: the gateway fault is
 uncontrolled and its root cause lived outside our infrastructure, so we
-report incidence and cure rather than a dose-response analysis. We are the
+report incidence and cure rather than a dose-response analysis. The 14.2\%
+incidence reflects one gateway over one deployment window (a single month,
+one production pipeline) and is not an estimate of any vendor's or the
+industry's failure rate. We are the
 authors of both the pipeline and its diagnosis; operator-blind-spot effects
 (\S\ref{sec:crosscase}) apply to us as much as to anyone, which is the
 motivation for pre-deployment routines over post-hoc vigilance. The
@@ -529,15 +537,34 @@ there is the tuning and the scoring protocol, not the dataset.
 \section{Reproducibility and Ethics}
 \label{sec:repro}
 
-The re-judging routine, scoring protocol, preregistration document, and
-per-item judge outputs underlying \S\ref{sec:evidence2} are released with
-this paper's artifact bundle. Upstream benchmarks are attributed to their
-original authors; we claim no rights over them and report our numbers under
-our declared judging protocol only. Judge providers are referred to
+The re-judging routine, scoring protocol, preregistration documents, and
+per-item judge outputs underlying \S\ref{sec:evidence2} are released at
+\url{github.com/chunxiaoxx/nautilus-compass} (\texttt{benchmark\_release/});
+the perturbation corpus, probe sets, and $\Delta$ computation scripts
+underlying \S\ref{sec:evidence1} are released at
+\url{github.com/chunxiaoxx/verification-learning-papers}. Upstream
+benchmarks are attributed to their original authors~\cite{longmemeval,lmev2};
+we claim no rights over them, reference rather than redistribute their items,
+and report our numbers under our declared judging protocol only. Judge
+providers are referred to
 generically (a gateway exhibiting intermittent faults); the intent is to
-study failure modes, not to shame vendors. No human subjects were involved.
+study failure modes, not to shame vendors. The production infrastructure in
+\S\ref{sec:evidence2} is operated by the authors' employer and is part of a
+commercial evaluation service; the reported failures are failures of that
+system, and the protocol was developed for and adopted in it. No judge or
+gateway provider referenced or alluded to funded, reviewed, or collaborated
+on this work. No human subjects were involved.
 
 \begin{thebibliography}{9}\setlength{\itemsep}{-2pt}
+
+\bibitem{longmemeval}
+Wu, D., et al. (2024). Benchmarking Chat Assistants on Long-Term Interactive
+Memory. arXiv:2410.10813.
+
+\bibitem{lmev2}
+Wu, D., Ji, Z., Kawatkar, A., Kwan, B., Gu, J.-C., Peng, N., and Chang, K.-W.
+(2026). LongMemEval-V2: Evaluating Long-Term Agent Memory Toward Experienced
+Colleagues. arXiv:2605.12493.
 
 \bibitem{gu2024survey}
 Gu, J., et al. (2024). A survey on LLM-as-a-judge. \emph{arXiv:2411.15594}.
