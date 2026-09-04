@@ -417,7 +417,31 @@ failure: conservative (failures counted as errors), re-judged (P2 applied),
 and clean (infrastructure items excluded). Conclusions should be stated as
 robust only if all calibers agree. In our run all three calibers
 ($0.700/0.754/0.816$) support the same gate decisions; had they diverged,
-that divergence itself would be the finding.
+that divergence itself would be the finding. Table~\ref{tab:calibers} breaks
+this down per subtype --- the level at which the phantom regression appeared:
+one subtype showed an apparent $-20$-point regression mid-run that the
+re-judged caliber attributes entirely to disconnect-mislabeled items
+(final $0.800$, equal to its anchor).
+
+\begin{table}[h]
+\centering\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+Subtype & Conservative & Re-judged & Clean & Gate \\
+\midrule
+multi-session & 0.677 & 0.692 & 0.732 & $\geq$0.35 \\
+single-session-assistant & 0.732 & 0.839 & 0.854 & $\geq$0.40 \\
+temporal-reasoning & 0.602 & 0.624 & 0.833 & $\geq$0.30 \\
+\midrule
+overall (500 items) & 0.700 & 0.754 & 0.816 & --- \\
+\bottomrule
+\end{tabular}
+\caption{Per-subtype accuracy under the three calibers (conservative:
+disconnects scored as errors, $n{=}500$; re-judged: P2 retry applied, every
+item judged; clean: 71 disconnect-prone items excluded, $n{=}429$). All three
+calibers clear every preregistered gate.}
+\label{tab:calibers}
+\end{table}
 
 \subsection{P4: Deployment Smoke for Judges (J-B cure)}
 Before any scored run: (i) call the judge on a realistic-size item and assert
