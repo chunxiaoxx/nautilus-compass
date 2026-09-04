@@ -1,7 +1,8 @@
-# NautilusMem 成绩册 · compass 记忆后端在 LongMemEval-V2 上的成绩(T0-4 · 草案)
+# NautilusMem 成绩册 · compass 记忆后端在 LongMemEval-V2 上的成绩(T0-4 · 定稿)
 
-> 状态 9/4:骨架+已定数字;`[待补]` = cheap-tier raw-state 强化跑分中(web 240 完成后填)。
-> 对外呈现口径待用户拍板(DECISION_judge_scope_20260903.md 选项 B/C)——本文按推荐 B 起草。
+> 状态 9/4:呈现口径已由用户拍板 = **选项 B**(现役数字+双口径并报,官方坐标系注明判分
+> 口径差,不加 gpt-5.2 折算);`[待补]` = cheap-tier raw-state 强化跑分中(web 240 生成
+> 已完,判分经 401 事故后将 rejudge 补齐;ent 211 接力跑分中)。
 
 ## 0. 这是什么(一句话)
 
