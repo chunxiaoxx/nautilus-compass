@@ -11,7 +11,7 @@
     "on EverMemBench-Dynamic compass scores 44.4% (Run 1) and 47.3% (Run 2) topping the four published Table 4 baselines (MemOS 42.55, Zep 39.97, Mem0 37.09, MemoBase 34.27)",
     "drift detection AUC 0.83 on held-out evaluation · 25 positive plus 35 negative anchors · weighted top-k mean cosine · drift detection is currently unique to compass among public memory layers",
     "reproduction cost is roughly 3.50 USD on Volcengine DeepSeek pricing in the China region · five to ten times that on AWS or GCP with Anthropic or OpenAI · still well below GPT-4o-judged stacks at 50+ USD",
-    "compass is MIT licensed and MCP-native · works with Claude Desktop, Cursor, Cline, Continue, Zed, and any MCP-compatible client",
+    "compass is Modified-MIT licensed and MCP-native · works with Claude Desktop, Cursor, Cline, Continue, Zed, and any MCP-compatible client",
     "black-box memory trades roughly 30 points of LongMemEval accuracy for fully-local deployment, LLM-agnostic operation, MCP portability, and drift detection capability",
     "if you need 90+ percent on LongMemEval and you can pay extraction tokens to a cloud provider, white-box memory like Mem0g or OMEGA is the right choice and we recommend it for that use case",
     "compass is the right choice if you handle regulated data that cannot leave your machine, if you are cost-bound on per-call extraction at scale, if you need cross-client portability, or if you need to catch the agent before it repeats a mistake",
