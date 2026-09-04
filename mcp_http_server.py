@@ -56,6 +56,14 @@ async def _call_tool(name: str, arguments: dict) -> list[types.TextContent]:
             text=json.dumps({"ok": False, "error": f"forbidden: {deny}"},
                             ensure_ascii=False),
         )]
+    # Self-service tokens: an unqualified project must EXECUTE against the
+    # holder's own space — otherwise the call falls through to whatever
+    # process-level default the tool/daemon side has (9/5 incident:外部
+    # token 读到 daemon 默认内部用户空间 = 跨租户读). Mirror of the
+    # _check_scope default-project resolution; immutable args copy.
+    owner = _current_user.get()
+    if owner and not (arguments or {}).get("project"):
+        arguments = {**(arguments or {}), "project": owner}
     # compass fns are SYNC and do blocking socket I/O to the BGE daemon —
     # never run them directly on the event loop.
     result = await anyio.to_thread.run_sync(meta["fn"], arguments or {})
@@ -81,6 +89,10 @@ import contextvars
 # set by auth middleware; read by _call_tool for scope enforcement
 _current_scopes: contextvars.ContextVar[frozenset] = contextvars.ContextVar(
     "compass_scopes", default=frozenset())
+# owning user of a self-service token ("" for ops-issued tokens); lets an
+# unqualified project argument resolve to the holder's own default space
+_current_user: contextvars.ContextVar[str] = contextvars.ContextVar(
+    "compass_user", default="")
 
 READ_TOOLS = {
     "recall", "session_search", "thread_recall", "drift_check", "drift_history",
@@ -154,7 +166,8 @@ def _check_scope(scopes: frozenset, tool_name: str, arguments: dict) -> str | No
         want_read, want_write = False, True
     if "admin" in scopes:
         return None
-    project = str((arguments or {}).get("project") or "")
+    project = str((arguments or {}).get("project")
+                  or _current_user.get() or "")
     if want_read:
         if "read:*" in scopes:
             return None
@@ -193,6 +206,21 @@ def _scopes_for_token(tok: str) -> frozenset | None:
     return frozenset(s for s in row["scopes"].split(",") if s)
 
 
+def _owner_for_token(tok: str) -> str:
+    """Self-service token → owning user_id (default-project fallback for
+    scope checks); ops-issued tokens.json tokens → "" (no default space)."""
+    if not tok.startswith("cmp_live_"):
+        return ""
+    import hashlib
+    h = hashlib.sha256(tok.encode()).hexdigest()
+    conn = _db_conn()
+    try:
+        row = _st.find_token_by_hash(conn, h)
+    finally:
+        conn.close()
+    return str(row["user_id"]) if row is not None else ""
+
+
 class _BearerAuth(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
         if request.url.path.startswith("/mcp"):
@@ -204,6 +232,7 @@ class _BearerAuth(BaseHTTPMiddleware):
             if not scopes:
                 return JSONResponse({"error": "unauthorized"}, status_code=401)
             _current_scopes.set(scopes)
+            _current_user.set(_owner_for_token(tok) if tok else "")
         return await call_next(request)
 
 
