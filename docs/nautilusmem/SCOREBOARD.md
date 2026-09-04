@@ -58,7 +58,7 @@ ent p50 0.328s / p95 0.798s(d12 全量实测)vs AgentRunbook-R(LLM controller)26
 ```
 judge: doubao-seed-2-0-pro-260215 / ark coding endpoint / max_completion_tokens 16384 / low
 subject: Qwen/Qwen3.5-9B(与官方 reader 一致)/ temp 0.6 / top-p 0.95 / top-k 20
-retrieval: BGE-m3 embedder / top_k [待补] / 检索单元=轨迹段
+retrieval: BGE-m3 embedder / top_k 20(d12 run_args 双域同值) / 检索单元=轨迹段
 口径: full 40.0/38.4 + non-abst 32.7/25.2 + abst-only 56.9/75.0(web/ent)
 重判: 已跑(d12 现役数字=重判后,flips web 12/ent 16)
 ```
