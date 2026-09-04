@@ -66,9 +66,9 @@
 
 ## 4. D-day runbook(9/8 发布日)
 
-1. 20:30 北京:最后检查——`git status` clean+pushed;signup/MCP 探针重跑一遍(四绿才发);落地页 200
-2. 21:00:r/LocalLLaMA 发主帖(账号:用户本人;标题照物料,勿改数字)
-3. 21:15:首评自己发一条(技术细节向:"the routing design is the fun part...")
+1. 20:30 北京:最后检查——`git status` clean+pushed;signup/MCP 探针重跑一遍(四绿才发);落地页 200;**chunxiaoxx 账号已登录 Reddit/X**
+2. 21:00:r/LocalLLaMA 发主帖(账号:chunxiaoxx;标题照物料,勿改数字;**带 60-90s 终端录屏**)
+3. 21:05:**立即抢首评(草稿见 §13)**——主动说破 mem0 自报 94.4% vs 我方 75.4% 的口径问题,不给任何人留"抓漏洞"的先手
 4. 23:00:X thread 发布(7 条,末条带 repo+signup)
 5. 23:00-24:00:守 Reddit 评论区,数字类问题直接引 evidence 文件路径
 6. 9/9 早:数据快照(star/评论/signup/MCP 调用),记入本文件 §5 表
@@ -90,6 +90,8 @@
 - **"判官是自己请的,分数不可信"**:引 position paper caliber notes+PROTOCOL.md;承认 judge 差异存在,强调双口径+同题同判据对打+71.1% 是官方自测不需我方判官
 - **"为什么不用 AGPL/为什么不是纯开源"**:Modified MIT 一句话(2-year sunset 是 FSL 的事,我们是托管规模门槛 100 付费用户);自部署永久免费是核心承诺
 - **"mem0 数字你们自己测的?"**:是,同题同判据,reproduction 脚本开源,欢迎复跑($3.50)
+- **"mem0 自报 94.4% 你们 75.4%,还是输了"**:口径不同不可比——他们的 harness/判官/subject/数据版都可能不同,这正是本领域 meta-problem(我们自己判官还挂过 5 次);真正硬的对打是同题同判据的检索层:P@1 0.890 vs 0.774,脚本开源欢迎重跑;若有人把 mem0 最新版跑进我们的 harness(或反之),发出来,这种数据才推动领域
+- **竞品员工到场(mem0/Zep 团队活跃于同社区)**:只谈自家数字与口径,零商业攻击;标准邀请句:"your latest version is welcome in our harness — scripts are in the repo"
 - **"多租户/安全谁验证的"**:四探针脚本在 repo,任何人可对生产端点重跑
 - **"一个人写的?"**:是,130 天 771 commits,其中 603 由 agent 舰队提交——这本身就是产品的证明(dogfood)
 - **面对明显嘲讽**:不接火;只补事实一条,不再跟
@@ -180,3 +182,52 @@
 **联动价值(我方视角)**:①BAAI 生态页/case study 收录=权威背书;②联合内容(中文圈第②层现成题材:"BGE-m3 驱动的本地 agent 记忆层");③后续模型(BGE 系迭代)早期合作。**对方视角**:真实生产 case+可复现跑分数据+具身智能组织场景(对方也在布局)。
 
 **我方准备物**:一页联动介绍(见 `bge_liaison_onepager_20260904.md`),数字口径与发布物料完全一致;沟通节奏放第①层发布后(拿着发布数据去谈更有分量),中文圈联动可作第②层联合内容。
+
+## 12. 发布前冲刺清单(2026-09-04 再思考后修订 · 用户全部采纳,PPT 并行)
+
+优先级判定:**9/8 成败取决于帖子质量与首日体验,不取决于材料储备量**。
+
+| # | 事项 | 优先级 | 状态 |
+|---|---|---|---|
+| 1 | 60-90s 终端录屏(D1 跨会话记忆),嵌 Reddit 帖 | 🔴 发布前必做 | 脚本见 [demo_recording_script.md](demo_recording_script.md),录制待用户 |
+| 2 | 首评草稿(94.4 vs 75.4 口径说破) | 🔴 发布前必做 | ✅ 见 §13 |
+| 3 | chunxiaoxx Reddit karma 预热(本周起技术性评论) | 🟡 本周 | 待用户(每天 2-3 条,发帖前有历史即可) |
+| 4 | 新人全流程实测+摩擦修复 | 🟡 | ✅ 已实测(§13.1);邮箱验证决策待拍板 |
+| 5 | paper2 提交 checklist 交用户 | 🟡 | ✅ 见 §13.2 |
+| 6 | MCP 目录提交(PulseMCP/Smithery/mcp.so/glama) | 🟢 发布周 | server.json/glama.json 已在仓,提交需用户账号 |
+| 7 | 智源接触(一页纸已备) | 🟢 本周发出,不催结果 | ✅ 材料 |
+| 8 | PPT 页级大纲(Marp)→ 成品 | 🟡 并行(用户有演讲计划) | ✅ [pitch_deck_outline_20260904.md](pitch_deck_outline_20260904.md) |
+| 9 | 一页纸(英文政企) | ⏸ 降级:有真实触达场景再做 | — |
+
+## 13. 首评草稿(Reddit first comment · 发帖后立即发)
+
+> **OP here — before anyone asks: yes, mem0 self-reports 94.4% e2e on LongMemEval-S, and we report 75.4%. Those numbers are not comparable, and here's why.**
+>
+> Our 75.4% comes from our own harness: original Oct-2024 release, glm-5.3-flash judge, full 500 questions, dual accounting (81.6% excluding 71 judge-outage questions, disclosed in the post). mem0's 94.4% comes from their harness — different judge, different subject model, possibly different data version. Cross-harness numbers don't compare in this field; that's literally the meta-problem we keep hitting (we caught our own judge failing 5 times — one outage silently recorded 14.2% of questions as wrong answers).
+>
+> The comparison we *can* stand behind is the retrieval head-to-head: identical questions, identical criteria, BGE-m3 on both sides, our reproduction of mem0 2.0.19 — P@1 0.890 vs 0.774. Scripts and evidence in the repo, ~$3.50 to re-run. If someone runs mem0's latest through our harness (or ours through theirs) and posts the numbers — that's the kind of argument that moves this field forward.
+>
+> Happy to answer anything on the routing design; that's the fun part.
+
+### 13.1 新人全流程实测(2026-09-04 · 生产端点)
+
+全新邮箱 signup→login(JWT)→控制台发 token→首次写入→首次 recall→tools/list,全程 200,**注册到首查 <15s**:
+
+| 步骤 | 耗时 | 结果 |
+|---|---|---|
+| signup | ~1-2s | 200 |
+| login → JWT | ~1s | 200 |
+| create token(cmp_live_ 前缀) | ~0.4s | 200 |
+| 首次写入 ingest_obs | 1.7s | 200 |
+| 首次 recall(冷路径) | 4.5s | 200(后续回到亚秒) |
+| tools/list | 1.3s | 10 个工具 |
+
+**实测发现三件待办**:①**无邮箱验证**——假邮箱可直接注册,发帖后可能被批量薅;建议发布前加简单邮箱验证或 rate limit(小改动,需拍板);②**tools/list 暴露平台内部工具**(submit_platform_task/long_task 等 nautilus 平台调度工具)——外部新用户会困惑+扩大攻击面,建议 hosted 面收敛工具白名单(发布后);③首次 recall 冷路径 4.5s——可接受,备注即可。
+
+### 13.2 paper2 提交 checklist(用户操作)
+
+1. arXiv 账号登录(paper1 同账号 2605.09863,endorsement 已有)
+2. 元数据:cs.CL 主分类;license 照 paper1(arXiv 默认非独占);作者 Chunxiao Wang 单作者
+3. 上传 tex 主文件(PDF 已编译验证 0 错 0 undefined)
+4. 提交前自检三项(摘要字数/零 includegraphics/零 input)——已绿(71a78f1)
+5. 提交后:把 arXiv ID 回填三处(launch post/position paper/落地页)
