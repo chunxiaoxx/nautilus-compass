@@ -175,3 +175,28 @@ def test_four_probes(client):
     assert client.delete(f"/tokens/{tid}", headers=hdr_a).status_code == 200
     r = _rpc(client, tok, "recall", {"project": uid_a, "query": "q"})
     assert r.status_code == 401, r.status_code
+
+
+def test_unqualified_project_resolves_to_owner(client):
+    """No project argument → resolves to the token holder's own space.
+
+    9/5 production incident: self-service tokens are issued read:{uid},
+    write:{uid}, but every unqualified recall/ingest checked read:"" /
+    write:"" and was scope-denied — new users could not read OR write at
+    all while auth itself looked healthy (forbidden hidden inside 200s)."""
+    uid, hdr = _mk_user(client, "np@x.io")
+    tok = client.post("/tokens", json={"name": "np"},
+                      headers=hdr).json()["token"]
+
+    r = _rpc(client, tok, "recall", {"query": "q"})
+    assert r.status_code == 200 and "forbidden" not in r.text, r.text
+    # executes in OWN space: the response references the holder's uid
+    # (test env: empty-dir error carries the uid; prod: "project={uid}")
+    assert uid in r.text, r.text[-400:]
+    r = _rpc(client, tok, "ingest_obs",
+             {"name": "probe-np", "concept": "gotcha"})
+    assert r.status_code == 200 and "forbidden" not in r.text, r.text
+
+    # explicit foreign project stays fail-closed
+    r = _rpc(client, tok, "recall", {"project": "someone-else", "query": "q"})
+    assert r.status_code == 200 and "forbidden" in r.text, r.text
