@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS users (
     passphrase_hash TEXT NOT NULL,
     encryption_salt TEXT DEFAULT '',
     plan            TEXT NOT NULL DEFAULT 'free',
+    verified        INTEGER NOT NULL DEFAULT 0,
     created_ts      TEXT NOT NULL
 );
 CREATE TABLE IF NOT EXISTS agents (
@@ -56,6 +57,13 @@ CREATE TABLE IF NOT EXISTS mcp_tokens (
     created_ts TEXT NOT NULL,
     revoked_ts TEXT
 );
+CREATE TABLE IF NOT EXISTS email_verifications (
+    email        TEXT PRIMARY KEY,
+    code_hash    TEXT NOT NULL,
+    expires_ts   TEXT NOT NULL,
+    attempts     INTEGER NOT NULL DEFAULT 0,
+    last_sent_ts TEXT NOT NULL
+);
 """
 
 
@@ -78,20 +86,33 @@ def init_db(path: Any) -> sqlite3.Connection:
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON")
     conn.executescript(_SCHEMA)
+    _migrate(conn)
     conn.commit()
     return conn
 
 
+def _migrate(conn: sqlite3.Connection) -> None:
+    """Add users.verified on first run after the gate ships. One-time
+    backfill marks pre-existing accounts verified (ops/probe users must
+    not be locked out; brand-new signups start at 0 via INSERT)."""
+    cols = {r[1] for r in conn.execute("PRAGMA table_info(users)")}
+    if "verified" not in cols:
+        conn.execute("ALTER TABLE users ADD COLUMN"
+                     " verified INTEGER NOT NULL DEFAULT 0")
+        conn.execute("UPDATE users SET verified = 1")
+
+
 def create_user(conn: sqlite3.Connection, *, email: str, passphrase_hash: str,
                 region: str = "", encryption_salt: str = "",
-                plan: str = "free") -> str:
+                plan: str = "free", verified: int = 0) -> str:
     user_id = uuid.uuid4().hex
     try:
         conn.execute(
             "INSERT INTO users (user_id, email, region, passphrase_hash,"
-            " encryption_salt, plan, created_ts) VALUES (?,?,?,?,?,?,?)",
+            " encryption_salt, plan, verified, created_ts)"
+            " VALUES (?,?,?,?,?,?,?,?)",
             (user_id, email, region, passphrase_hash, encryption_salt,
-             plan, _now()))
+             plan, verified, _now()))
         conn.commit()
     except sqlite3.IntegrityError as e:
         raise UserExistsError(email) from e
@@ -101,6 +122,49 @@ def create_user(conn: sqlite3.Connection, *, email: str, passphrase_hash: str,
 def get_user_by_email(conn: sqlite3.Connection, email: str) -> sqlite3.Row | None:
     cur = conn.execute("SELECT * FROM users WHERE email = ?", (email,))
     return cur.fetchone()
+
+
+# ── email verification (pre-launch gate, 2026-09-05) ────────────────
+
+def store_verification_code(conn: sqlite3.Connection, *, email: str,
+                            code_hash: str, expires_ts: str) -> None:
+    conn.execute(
+        "INSERT INTO email_verifications (email, code_hash, expires_ts,"
+        " attempts, last_sent_ts) VALUES (?,?,?,0,?)"
+        " ON CONFLICT(email) DO UPDATE SET code_hash=excluded.code_hash,"
+        " expires_ts=excluded.expires_ts, attempts=0,"
+        " last_sent_ts=excluded.last_sent_ts",
+        (email, code_hash, expires_ts, _now()))
+    conn.commit()
+
+
+def get_verification(conn: sqlite3.Connection,
+                     email: str) -> sqlite3.Row | None:
+    return conn.execute("SELECT * FROM email_verifications WHERE email = ?",
+                        (email,)).fetchone()
+
+
+def bump_verification_attempts(conn: sqlite3.Connection, email: str,
+                               attempts: int) -> None:
+    conn.execute("UPDATE email_verifications SET attempts = ? WHERE email = ?",
+                 (attempts, email))
+    conn.commit()
+
+
+def delete_verification(conn: sqlite3.Connection, email: str) -> None:
+    conn.execute("DELETE FROM email_verifications WHERE email = ?", (email,))
+    conn.commit()
+
+
+def mark_verified(conn: sqlite3.Connection, email: str) -> None:
+    conn.execute("UPDATE users SET verified = 1 WHERE email = ?", (email,))
+    conn.commit()
+
+
+def delete_user(conn: sqlite3.Connection, user_id: str) -> None:
+    """Signup rollback only: drop an account that never got verified."""
+    conn.execute("DELETE FROM users WHERE user_id = ?", (user_id,))
+    conn.commit()
 
 
 def register_agent(conn: sqlite3.Connection, *, user_id: str, agent_type: str,

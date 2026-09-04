@@ -23,18 +23,51 @@ SIGNUP_PAGE = f"""<!doctype html><html><head><meta charset="utf-8">
  <input id="pw" type="password" placeholder="passphrase (min 8 chars)" minlength="8" required>
  <button>Sign up</button>
 </form>
+<div id="verifybox" hidden>
+ <p class="muted">We emailed you a 6-digit code. Enter it to activate your account.</p>
+ <form onsubmit="return doVerify(event)">
+  <input id="vcode" inputmode="numeric" pattern="[0-9]{{6}}" placeholder="6-digit code" required>
+  <button>Verify</button>
+ </form>
+ <p class="muted">No email? <a href="#" onclick="resend();return false;">Resend code</a></p>
+</div>
 <p class="muted">Already registered? <a href="/console">Log in on the console</a>.</p>
 <pre id="msg"></pre>
 <script>
+const vemail = () => document.getElementById('email').value.trim();
 async function doSignup(ev) {{
   ev.preventDefault();
   const r = await fetch('/signup', {{method:'POST',
     headers:{{'content-type':'application/json'}},
-    body: JSON.stringify({{email: email.value, passphrase: pw.value}})}});
+    body: JSON.stringify({{email: vemail(), passphrase: pw.value}})}});
   const j = await r.json();
-  if (r.ok) {{ msg.className='ok'; msg.textContent='Account created. You can now log in on the console.'; }}
+  if (r.ok && j.verify_required) {{
+    msg.className='ok'; msg.textContent='Account created — check your inbox for the code.';
+    verifybox.hidden = false;
+  }} else if (r.ok) {{
+    msg.className='ok'; msg.textContent='Account created. You can now log in on the console.';
+  }} else {{ msg.className='err'; msg.textContent=j.error || r.status; }}
+  return false;
+}}
+async function doVerify(ev) {{
+  ev.preventDefault();
+  const r = await fetch('/verify', {{method:'POST',
+    headers:{{'content-type':'application/json'}},
+    body: JSON.stringify({{email: vemail(), code: vcode.value.trim()}})}});
+  const j = await r.json();
+  if (r.ok) {{ msg.className='ok';
+    msg.textContent='Email verified — log in on the console.';
+    verifybox.hidden = true; location.href = '/console'; }}
   else {{ msg.className='err'; msg.textContent=j.error || r.status; }}
   return false;
+}}
+async function resend() {{
+  const r = await fetch('/verify/resend', {{method:'POST',
+    headers:{{'content-type':'application/json'}},
+    body: JSON.stringify({{email: vemail()}})}});
+  const j = await r.json();
+  msg.className = r.ok ? 'ok' : 'err';
+  msg.textContent = r.ok ? 'Code sent (if the address needs one).' : (j.error || r.status);
 }}
 </script></body></html>"""
 
@@ -47,6 +80,14 @@ CONSOLE_PAGE = f"""<!doctype html><html><head><meta charset="utf-8">
   <input id="pw" type="password" placeholder="passphrase" required>
   <button>Log in</button>
  </form>
+ <div id="verifybox" hidden>
+  <p class="muted">Email not verified — enter the 6-digit code we emailed you.</p>
+  <form onsubmit="return doVerify(event)">
+   <input id="vcode" inputmode="numeric" pattern="[0-9]{{6}}" placeholder="6-digit code" required>
+   <button>Verify</button>
+  </form>
+  <p class="muted">No email? <a href="#" onclick="resend();return false;">Resend code</a></p>
+ </div>
  <p class="muted">No account? <a href="/signup">Sign up</a>.</p>
 </div>
 <div id="panel" hidden>
@@ -69,9 +110,36 @@ async function doLogin(ev) {{
   const r = await fetch('/login', {{method:'POST',
     headers:{{'content-type':'application/json'}},
     body: JSON.stringify({{email: email.value, passphrase: pw.value}})}});
-  if (!r.ok) {{ msg.textContent = (await r.json()).error; return false; }}
+  if (r.status === 403) {{
+    const j = await r.json();
+    if ((j.error || '').includes('not verified')) {{
+      verifybox.hidden = false;
+      msg.className = 'muted'; msg.textContent = 'Enter the code to activate your account.';
+      return false;
+    }}
+  }}
+  if (!r.ok) {{ msg.className='err'; msg.textContent = (await r.json()).error; return false; }}
   localStorage.cmp_jwt = (await r.json()).token;
   boot(); return false;
+}}
+async function doVerify(ev) {{
+  ev.preventDefault();
+  const r = await fetch('/verify', {{method:'POST',
+    headers:{{'content-type':'application/json'}},
+    body: JSON.stringify({{email: email.value, code: vcode.value.trim()}})}});
+  const j = await r.json();
+  if (r.ok) {{ verifybox.hidden = true; msg.className='ok';
+    msg.textContent='Email verified — log in now.'; }}
+  else {{ msg.className='err'; msg.textContent=j.error || r.status; }}
+  return false;
+}}
+async function resend() {{
+  const r = await fetch('/verify/resend', {{method:'POST',
+    headers:{{'content-type':'application/json'}},
+    body: JSON.stringify({{email: email.value}})}});
+  const j = await r.json();
+  msg.className = r.ok ? 'ok' : 'err';
+  msg.textContent = r.ok ? 'Code sent (if the address needs one).' : (j.error || r.status);
 }}
 function logout() {{ delete localStorage.cmp_jwt; location.reload(); }}
 async function mkToken() {{
