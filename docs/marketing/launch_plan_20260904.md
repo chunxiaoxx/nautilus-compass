@@ -273,8 +273,8 @@ PUBLIC_TOOLS = {"ingest_obs", "recall", "session_search", "thread_recall",
 |---|---|
 | Subjects | **cs.CL**(Computation and Language,主分类,无需交叉) |
 | License | 选 **arXiv perpetual, non-exclusive**(与 paper1 一致) |
-| Title | `Judge Failure in the Wild: A Taxonomy of LLM-as-Judge Breakdown`(照 tex L8,含副题第二行) |
-| Authors | `Chunxiao Wang`(单作者;tex \author 已一致,Submission 系统里也照填,不加机构) |
+| Title | `Judge Failure in the Wild: A Taxonomy of LLM-as-Judge Breakdown and a Hygiene Protocol for Long-Memory Evaluation`(照 tex L8-9 完整两行) |
+| Authors | `Chunxiao Wang`(arXiv 表单只收人名;tex 排版版带机构 Yiluo Technology + repo 行,提交系统不受影响) |
 | Abstract | 从 `docs/papers/paper2_judge_hygiene.tex` L18-40 `\begin{abstract}…\end{abstract}` 正文**原样复制**(注意 arXiv 纯文本框不认 LaTeX 命令,`$…$` 数学与 `\S` 引用需按 preview 调整) |
 | Comments | `10 pages. Companion repo: https://github.com/chunxiaoxx/nautilus-compass` |
 | Files → Upload | 只传 **`paper2_judge_hygiene.tex` 单文件**(自检零 includegraphics/零 input → 无需补图或 .bib;编译器让 arXiv 自动选 pdfLaTeX) |
