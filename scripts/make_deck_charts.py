@@ -68,31 +68,38 @@ def blind_bet():
     ax.set_xlim(0, 10); ax.set_ylim(0, 10)
     ax.axis("off")
 
-    ax.plot([0.7, 9.3], [5.2, 5.2], color=MUT, lw=2, ls="--", alpha=0.6)
-    ax.text(5.0, 9.3, "写入时压缩 = 对未来的盲目下注", ha="center",
-            fontsize=26, fontweight="bold")
+    ax.plot([0.7, 9.3], [4.75, 4.75], color=MUT, lw=2, ls="--", alpha=0.6)
+    ax.text(5.0, 9.55, "写入时压缩 = 对未来的盲目下注", ha="center",
+            fontsize=25, fontweight="bold")
 
-    # 左:写入时刻
-    box(ax, 0.8, 5.9, 3.4, 2.4, PANEL, GREEN)
-    ax.text(2.5, 7.75, "写入时刻", ha="center", fontsize=17, color=GREEN, fontweight="bold")
-    ax.text(2.5, 6.95, "压缩 / 提炼在此发生\n信息被冻结在当初那个\n模型的认知水平", ha="center", fontsize=14.5)
+    # 左:写入时刻(v3:框加大 + va='top' 显式定位,数学保证不重叠)
+    box(ax, 0.55, 5.05, 4.1, 3.55, PANEL, GREEN)
+    ax.text(2.6, 8.25, "写入时刻", ha="center", va="top", fontsize=18,
+            color=GREEN, fontweight="bold")
+    ax.text(2.6, 7.35, "压缩 / 提炼在此发生\n信息被冻结在当初那个\n模型的认知水平",
+            ha="center", va="top", fontsize=14)
 
     # 右:未来查询
-    box(ax, 5.8, 5.9, 3.4, 2.4, PANEL, RED)
-    ax.text(7.5, 7.75, "未来查询", ha="center", fontsize=17, color=RED, fontweight="bold")
-    ax.text(7.5, 6.95, "没人知道会被问什么\n分布不可知\n(今天赌不中明天的题)", ha="center", fontsize=14.5)
+    box(ax, 5.35, 5.05, 4.1, 3.55, PANEL, RED)
+    ax.text(7.4, 8.25, "未来查询", ha="center", va="top", fontsize=18,
+            color=RED, fontweight="bold")
+    ax.text(7.4, 7.35, "没人知道会被问什么\n分布不可知\n今天赌不中明天的题",
+            ha="center", va="top", fontsize=14)
 
-    ax.text(5.0, 4.35, "×  赌注在结构上就赢不了", ha="center", fontsize=21, color=RED, fontweight="bold")
+    ax.text(5.0, 4.15, "×  赌注在结构上就赢不了", ha="center", fontsize=21,
+            color=RED, fontweight="bold")
 
     # 成本曲线方向
-    box(ax, 0.8, 0.6, 8.4, 2.9, PANEL, MUT)
-    ax.text(5.0, 3.0, "而且成本曲线方向反了", ha="center", fontsize=16, color=YELLOW, fontweight="bold")
-    xs = np.linspace(6.6, 8.9, 100)
-    ax.plot(xs, 1.05 + 1.35 * np.exp(-2.2 * (xs - 6.6)), color=GREEN, lw=3)
-    ax.text(7.75, 2.5, "存储 → 0", color=GREEN, fontsize=13, ha="center")
-    ax.plot([0.95, 3.3], [2.05, 2.05], color=RED, lw=3)
-    ax.text(2.1, 1.35, "LLM 调用恒贵", color=RED, fontsize=13, ha="center")
-    ax.text(5.0, 1.35, "把便宜的换成昂贵的 = 双输", color=MUT, fontsize=13.5, ha="center")
+    box(ax, 0.55, 0.5, 8.9, 2.9, PANEL, MUT)
+    ax.text(1.0, 2.85, "而且成本曲线方向反了", fontsize=16, color=YELLOW,
+            fontweight="bold", va="top")
+    xs = np.linspace(6.7, 8.9, 100)
+    ax.plot(xs, 0.95 + 1.45 * np.exp(-2.2 * (xs - 6.7)), color=GREEN, lw=3)
+    ax.text(7.9, 0.55, "存储 → 0", color=GREEN, fontsize=13, ha="center")
+    ax.plot([0.95, 3.3], [1.7, 1.7], color=RED, lw=3)
+    ax.text(2.1, 1.0, "LLM 调用恒贵", color=RED, fontsize=13, ha="center")
+    ax.text(5.0, 1.15, "把便宜的(原文)换成昂贵的(提炼物)\n= 双输", color=MUT,
+            fontsize=13.5, ha="center", va="top")
     save(fig, "blind_bet.png")
 
 

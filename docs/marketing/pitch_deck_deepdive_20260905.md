@@ -8,7 +8,6 @@ style: |
     background: #ffffff; color: #1f2328; font-size: 21px;
     padding: 96px 60px 46px;
   }
-  /* 页眉品牌色带(所有内容页) */
   section::before {
     content: ''; position: absolute; top: 0; left: 0; right: 0;
     height: 62px; background: #0e4429;
@@ -23,9 +22,9 @@ style: |
   }
   h1 { color: #0e4429; font-size: 1.28em; margin-bottom: 16px; }
   h2 { color: #0969da; font-size: 1.02em; }
+  h3 { margin: 0 0 8px; }
   strong { color: #1a7f37; }
   em { color: #9a6700; font-style: normal; font-weight: 700; }
-  /* 数字卡片:实色底+深色顶边 */
   .cards { display: flex; gap: 16px; margin-top: 14px; }
   .card {
     flex: 1; background: #dafbe1; border: 1px solid #a6ddb8;
@@ -35,22 +34,19 @@ style: |
   .card.blue { background: #ddf4ff; border-color: #a5d8ff; border-top-color: #0969da; }
   .card.red { background: #ffebe9; border-color: #ffc1bd; border-top-color: #cf222e; }
   .card.gold { background: #fff8c4; border-color: #eac54f; border-top-color: #9a6700; }
-  .card .num { font-size: 40px; font-weight: 800; color: #0e4429; line-height: 1.15; }
+  .card .num { font-size: 38px; font-weight: 800; color: #0e4429; line-height: 1.15; }
   .card.blue .num { color: #0550ae; }
   .card.red .num { color: #a40e26; }
   .card.gold .num { color: #7d4e00; }
   .card .lbl { font-size: 15px; color: #424a53; margin-top: 6px; line-height: 1.4; }
-  /* 双栏 */
   .cols { display: flex; gap: 26px; align-items: flex-start; }
   .col { flex: 1; }
-  /* 面板卡(文字要点容器) */
   .panel {
     background: #f6f8fa; border: 1px solid #d0d7de; border-left: 5px solid #1a7f37;
     border-radius: 10px; padding: 12px 18px; margin-top: 10px;
   }
   .panel.blue { border-left-color: #0969da; }
   .panel.red { border-left-color: #cf222e; }
-  /* 表格:深色表头白字 */
   table { width: 100%; font-size: 17.5px; border-collapse: collapse; margin-top: 8px; }
   th { background: #1f2328; color: #ffffff; font-size: 16px; padding: 8px 12px; text-align: left; }
   td { padding: 7px 12px; text-align: left; border-bottom: 1px solid #d0d7de; }
@@ -59,10 +55,8 @@ style: |
     background: #ddf4ff; border-left: 5px solid #0969da; color: #0e2a40;
     padding: 10px 18px; border-radius: 0 10px 10px 0; font-size: 20px;
   }
-  /* 图片统一装裱(居中) */
   img { background: #f6f8fa; border: 1px solid #d0d7de; border-radius: 12px; padding: 6px; display: block; margin: 6px auto 0; }
   footer { font-size: 13px; color: #8c959f; }
-  /* ===== 封面与幕分隔:整页深色大色块 ===== */
   section.lead, section.part {
     background: linear-gradient(135deg, #0b2818 0%, #0e4429 62%, #116329 100%);
     color: #ffffff; text-align: center; padding: 80px 70px;
@@ -76,8 +70,6 @@ style: |
   section.lead .card .num { color: #ffffff; }
   section.lead .card.blue .num { color: #91d0ff; }
   section.lead .card .lbl { color: #cde8da; }
-  section.lead blockquote { background: rgba(255,255,255,0.10); color: #e6f4ec; border-left-color: #7ee2b8; }
-  section.lead img { background: transparent; border-color: rgba(255,255,255,0.25); }
   section.part .no {
     font-size: 120px; font-weight: 800; color: rgba(255,255,255,0.18);
     line-height: 1; margin-bottom: 2px;
@@ -133,21 +125,38 @@ ChatGPT 随对话推进覆写关键信息(ICLR 2025 基准论文人肉研究);�
 
 <div class="kicker">第一幕 · 问题与立场</div><div class="pageno">01 / 07</div>
 
-# 市场现状:三大策略,同一个死穴
+# 市场现状:三条路都堵了,基准作者早就说了
 
-| 策略 | 谁在做 | 有损决定发生在 |
+<div class="cols">
+<div class="col">
+
+| 策略 | 谁在做 | 有损决定在 |
 |---|---|---|
 | 压缩 | 多数 SaaS 记忆层 | **写入时** |
-| 提炼 / 摘要 | mem0 / Zep / Letta | **写入时** |
-| 裸读长上下文 | 直塞 context window | 性能掉 30-60% |
+| 提炼/摘要 | mem0 / Zep / Letta | **写入时** |
+| 裸读长上下文 | 直塞 context | 掉 30-60% |
 
-<div class="panel red" style="margin-top:22px">
+**没有人把宝押在读取端**
 
-### 三条路全部在**写入时**对未来下注 —— 没有人把宝押在读取端
+</div>
+<div class="col">
+
+<div class="panel blue">
+
+### ICLR 2025 · LongMemEval 基准论文(arXiv 2410.10813)
+
+- §5.2:LLM 提炼的摘要/facts 替代原文 → **因信息丢失损害问答**
+- 人肉研究:ChatGPT 压缩历史覆写关键信息
+- 长上下文直读掉 30-60% → 记忆层的必要性由基准作者论证
 
 </div>
 
-<!-- 讲者注:指着右列"写入时"打三遍。裸读不是候选,是基准测出的失败下限。 -->
+</div>
+</div>
+
+> 写时压缩的损害 2024 年就被量化了;我们是第一波量出**读侧路线胜绩**的团队之一
+
+<!-- 讲者注:左表指着"写入时"打两遍;右边是防"王婆卖瓜"——第三方基准作者先说的。 -->
 
 ---
 
@@ -207,26 +216,6 @@ LLM 的认知水平;原文明天
 
 ---
 
-<div class="kicker">第一幕 · 问题与立场</div><div class="pageno">01 / 07</div>
-
-# 不是我们说的:基准作者的第三方结论
-
-**ICLR 2025 · LongMemEval 基准论文(arXiv 2410.10813)**
-
-- §5.2:用 LLM 提炼的摘要 / facts 替代原文 → **因信息丢失损害问答**
-- Appendix B 人肉研究:ChatGPT 压缩历史时覆写关键信息,Coze 漏记间接提及
-- 长上下文直读掉 30-60% → 记忆层的必要性由基准作者论证
-
-<div class="panel blue">
-
-### 写时压缩的损害 2024 年就被量化了;我们是第一波量出**读侧路线胜绩**的团队之一
-
-</div>
-
-<!-- 讲者注:这页防"王婆卖瓜"。我们的贡献不是发现压缩有害,是用读取端架构把它变现成分数。 -->
-
----
-
 <!-- _class: part -->
 
 <!-- _paginate: false -->
@@ -235,7 +224,7 @@ LLM 的认知水平;原文明天
 
 # 第二幕 · 架构
 
-##### 六层 · 生态 · 决策记录
+##### 出身 · 六层 · 写入端决策 · 负结果
 
 ---
 
@@ -246,47 +235,19 @@ LLM 的认知水平;原文明天
 ![h:372](deck_assets/arch.png)
 
 <!-- 讲者注:强调"写入不调 LLM"停两秒。治理层是独有件(drift AUC 0.83+三层隔离+判分卫生学);
-进化层三次实测 uplift=0,保持"待证"标注——不冒充已验证是标注纪律。 -->
+进化层三次实测 uplift=0,保持"待证"标注。 -->
 
 ---
 
 <div class="kicker">第二幕 · 架构</div><div class="pageno">02 / 07</div>
 
-# 生态定位:从 nautilus 平台长出来的独立组件
+# 写入端:出身与四条决策
 
-<div class="cols">
-<div class="col">
+<div class="panel blue">
 
-- 起源:nautilus 智涌平台的 agent 舰队需要跨 agent 记忆层
-- 对应平台 Trinity 架构的**记忆与治理层**,开源独立化
-- **不依赖平台**:本地三条命令完整运行
-- 130 天 **771 commits**,603 由 agent 舰队提交
+**出身**:nautilus 智涌平台的 agent 舰队需要跨 agent 记忆层 → compass = 平台 Trinity 架构中**记忆与治理层**的独立开源形态,**不依赖平台即可完整运行**(本地三条命令)· 130 天 771 commits,603 由 agent 舰队提交
 
 </div>
-<div class="col">
-
-<div class="panel">
-
-**dogfood 是设计压力测试**
-
-隐私 / 本地 / 成本是硬约束——
-约束逼出正确架构:
-
-写入免费 + 读取智能,
-是站在用户一边的架构
-
-</div>
-
-</div>
-</div>
-
-<!-- 讲者注:回答"这项目哪来的"。平台理论(Epiplexity/DMAS)一句带过;dogfood 这里埋点,结尾收。 -->
-
----
-
-<div class="kicker">第二幕 · 架构</div><div class="pageno">02 / 07</div>
-
-# 写入端:四条决策
 
 | 决策 | 内容 | 理由 |
 |---|---|---|
@@ -296,6 +257,8 @@ LLM 的认知水平;原文明天
 | 质量门 | 经验胶囊写回需 reward ≥ 1.0 | 验证过的经验才入库,防跨 agent 复利成毒 |
 
 > "不做什么"比"做什么"更难被抄 —— 因为它是立场,不是功能
+
+<!-- 讲者注:出身一句带过,dogfood 结尾收。四条决策逐行过,最后一行是重点。 -->
 
 ---
 
@@ -389,7 +352,7 @@ LLM 的认知水平;原文明天
 
 <!-- 讲者注:设置逐字段——同 500 题(question_id join)/ retrieval-only 双方 / mem0 infer=False /
 各用默认嵌入(我方 BGE-m3,mem0 侧 text-embedding-005)/ 版本钉死 mem0ai 2.0.19。
-诚实披露:对方嵌入在部分单会话型更强,我们靠分型路由整体赢——开箱对打才是用户真实场景。
+诚实披露:对方嵌入在部分单会话型更强,我们靠分型路由整体赢。
 复现:scripts/reproduce_lmes_retrieval.sh,一条命令 ≈$3.50。 -->
 
 ---
@@ -408,20 +371,25 @@ LLM 的认知水平;原文明天
 
 <div class="kicker">第四幕 · 判官病理学</div><div class="pageno">04 / 07</div>
 
-# 判官失败 = 资源耗尽:三型分类
+# 三型 taxonomy + 我们吃过的两次亏
 
 部署中的判官 J\*(θ, B, I):知识边界 θ · 输出预算 B · 打分基础设施 I
 
-| 型 | 耗尽的资源 | 检测信号 | 重试可治? | 部署前可检出? | 对分数的效应 |
-|---|---|---|---|---|---|
-| **J-K** 知识边界 | θ 判别力 | Δ 探针集 | 否 | 是 | 静默放过错误 |
-| **J-B** 输出预算 | B | 截断/空响应率 | 否 | 是 | 塌缩到默认标签 |
-| **J-C** 连接 | I | 错误标签率 | **是** | 仅运行中 | 假性错答(下界) |
+| 型 | 耗尽的资源 | 检测信号 | 重试可治? | 对分数的效应 |
+|---|---|---|---|---|
+| **J-K** 知识边界 | θ 判别力 | Δ 探针集 | 否 | 静默放过错误 |
+| **J-B** 输出预算 | B | 截断/空响应率 | 否 | 塌缩到默认标签 |
+| **J-C** 连接 | I | 错误标签率 | **是** | 假性错答(下界) |
+
+<div class="cards" style="margin-top:16px">
+  <div class="card red"><div class="num" style="font-size:27px">事故① J-B</div><div class="lbl">4096 被思考吃满:ent <strong>146/211 题(69%)</strong>记 0 · 两轮调优被误判"未过门" · 重判后 web +3.3 / ent <strong>−1.9(方向相反!)</strong></div></div>
+  <div class="card gold"><div class="num" style="font-size:27px">事故② J-C</div><div class="lbl">网关断连:<strong>71/500(14.2%)</strong>被静默记错 · 失真 5.4pt = 被测效应 32.8pt 的 <strong>1/6</strong> · 重判 71/71 解决(27 题翻对)</div></div>
+</div>
 
 > 机制不同、信号不同、解药不同 —— 混为一谈必然用错药
 
-<!-- 讲者注:传统 judge bias 文献(位置/冗长偏差)是"判官在读,但读歪了";
-我们这三型是"判官没在读 / 没来得及说 / 根本没被叫到"——不同的物种。 -->
+<!-- 讲者注:传统 judge bias 文献是"判官在读,但读歪了";我们这三型是"判官没在读 / 没来得及说 / 根本没被叫到"。
+两次事故的共性:都是配置层,测量坏了方法背锅。 -->
 
 ---
 
@@ -435,55 +403,6 @@ LLM 的认知水平;原文明天
 盲区在"事实性要求已写入判分 prompt"前提下仍存在;换更强判官没用(跨族差 ≤11pp)。
 判官能抓实体替换/常识错误(0% 通过)——是数值盲区,不是普遍轻信。
 局限照讲:两判官均为 reasoning 模型,泛化未测;prompt 变体消融未做。 -->
-
----
-
-<div class="kicker">第四幕 · 判官病理学</div><div class="pageno">04 / 07</div>
-
-# 事故 ①(J-B):预算被思考吃光的判官
-
-<div class="cols">
-<div class="col">
-
-- reasoning 判官 `max_tokens=4096` 被**思考过程吃满**,截断输出解析为默认标签
-- ent 域 **146/211 题(69%)记 0 分**,日志 250 次空响应
-- 连续**两轮调优被误判"方法未过门"** —— 测量坏了,方法背锅
-
-</div>
-<div class="col">
-
-**重判(16384/low)后:**
-
-<div class="cards">
-  <div class="card"><div class="num">+3.3pt</div><div class="lbl">web 域</div></div>
-  <div class="card red"><div class="num">−1.9pt</div><div class="lbl">ent 域<br>(方向相反!)</div></div>
-</div>
-
-> 解药:部署时冒烟——真实尺寸条目上断言判官输出非空可解析
-
-</div>
-</div>
-
-<!-- 讲者注:为什么两轮都没发现?spot check 用的都是短条目,推理装得下预算;坏的是长条目,系统性的。
-方向相反这个细节要强调:修正的符号不可假设,不重判就带着错数字发布。 -->
-
----
-
-<div class="kicker">第四幕 · 判官病理学</div><div class="pageno">04 / 07</div>
-
-# 事故 ②(J-C):14.2% 的题被断连判官判分
-
-<div class="cards">
-  <div class="card red"><div class="num">71 / 500</div><div class="lbl">网关 403/超时后<br>被静默记为错答<br>(14.2%)</div></div>
-  <div class="card red"><div class="num">5.4pt</div><div class="lbl">失真 ≈ 被测真实效应<br>32.8pt 的 <strong>1/6</strong></div></div>
-  <div class="card blue"><div class="num">71/71</div><div class="lbl">同判官重判全解决<br>(27 题翻对,44 题仍错)</div></div>
-  <div class="card gold"><div class="num">−20pt</div><div class="lbl">中期"子型回归"<br>事后证实<b>全是</b>断连误标</div></div>
-</div>
-
-> 基础设施噪声可以吞掉六分之一的被测效应,还能制造幻影回归
-
-<!-- 讲者注:整轮重试未清零(新题继续命中)=随机基础设施故障,非题目绑定。
-如果你的预注册门设在 ±5pt,一次网关抖动就能翻转 accept/reject——逐题判官输出审计是必需品。 -->
 
 ---
 
@@ -552,69 +471,44 @@ attribution 红线:451 题是上游官方基准(xiaowu0162/LongMemEval-V2,Di Wu 
 
 <div class="kicker">第五幕 · 评测版图</div><div class="pageno">05 / 07</div>
 
-# 官方坐标系里的诚实定位
+# 官方坐标系:坐标、差距与攻坚路径
 
-![h:372](deck_assets/dd_official_map.png)
+![h:352](deck_assets/dd_official_map.png)
 
-<!-- 讲者注:全场信任峰值在这页——主动把自己的官方坐标位置说成"与最弱 RAG 相当"。
-差距两结构性来源:预算 24k vs 200k(8.3×);判分口径(全题 LLM judge vs 程序化为主)。
-我们的差异化在纵轴代价(亚秒 vs 26.9-108s)+判分卫生学贡献。
-主攻坚=三池设计移植,目标 Small 55-60%(超 AgentRunbook-R)后再上官方榜。 -->
+<div class="panel">
 
----
+**分数低 ≠ 输在同一场考试**:预算 24k vs 官方 200k(**1/8**)· 延迟 0.57s vs 26.9-108s(**1/47~1/188**)· 判分全题 LLM judge(更严)vs 官方程序化为主 —— **单位预算与单位时间的效率,是我们当前可守的差异化;三池移植目标 55-60% 是明确的攻坚路径**
 
-<!-- _class: part -->
+</div>
 
-<!-- _paginate: false -->
-
-<div class="no">06</div>
-
-# 第六幕 · 安全与多租户
-
-##### 隔离不是声明,是可重跑的生产事实
+<!-- 讲者注:主动把坐标位置说成"与最弱 RAG 相当"是信任投资;但立刻讲清三个口径差——
+这不是同一场考试,效率轴是我们赢的轴。攻坚目标写死在图里,不接受"以后再说"。 -->
 
 ---
 
 <div class="kicker">第六幕 · 安全与多租户</div><div class="pageno">06 / 07</div>
 
-# 三层身份模型
-
-<div class="panel blue">
+# 三层隔离 + 四探针:可重跑的生产事实
 
 ```
 user(JWT 身份) ──→ 设备 ──→ agent(scoped token: read:<project> / write:<project>)
 ```
 
-</div>
-
-- 隔离边界 = project 命名空间;header-only 身份(X-User-ID 类)**永久禁止**
-- v0.9 曾有冒充洞:公网可冒充任意用户读写 → 已改 JWT-only + 五项矩阵验证
-- 自助 token 只含持有者自己的空间;缺省 project 显式注入持有者 uid
-- 公网自助 token 只见 **8 个用户工具**(tools/list 17→8),内部工具直调 forbidden
-
-<!-- 讲者注:冒充洞主动讲——自己抓、自己修、验证矩阵公开。抓自己的洞比被别人抓便宜。 -->
-
----
-
-<div class="kicker">第六幕 · 安全与多租户</div><div class="pageno">06 / 07</div>
-
-# 四探针:任何人对生产端点可重跑
+- v0.9 曾有 X-User-ID 冒充洞(公网可冒充任意用户读写)→ 自己抓、自己修:JWT-only + 五项矩阵验证 · 公网自助 token 只见 **8 个用户工具**(内部工具直调 forbidden)
 
 | 探针 | 断言 | 结果 |
 |---|---|---|
-| P1 | A 的 token 读 B 的空间 | forbidden ✓ |
-| P2 | A 的 token 写 B 的空间 | forbidden ✓ |
-| P3 | A 的 token 读写 A 自己的空间 | 放行,不误伤 ✓ |
+| P1 / P2 | A 的 token 读 / 写 B 的空间 | forbidden ✓ |
+| P3 | A 读写 A 自己的空间 | 放行,不误伤 ✓ |
 | P4 | 撤销 token → 下一次调用 | 立即 401 ✓ |
 
-<div class="panel" style="margin-top:14px">
+<div class="panel" style="margin-top:12px">
 
-### 脚本开源(`probes.py`),对 compass.nautilus.social 可直接重跑 · 发布流程规定 FOUR-GREEN 才发帖
+**脚本开源(`probes.py`),任何人对 compass.nautilus.social 可直接重跑** · 每次生产变更后复验 FOUR-GREEN —— 隔离不是审计报告,是可持续重验的事实
 
 </div>
 
-<!-- 讲者注:9/4/9/5 两次生产变更后各复验一轮全绿——隔离属性是持续重验的事实,
-不是一次性的安全审计报告。这也是下一幕 demo D3 的内容。 -->
+<!-- 讲者注:冒充洞主动讲——自己抓比被别人抓便宜。这一页是 demo D3 的预告。 -->
 
 ---
 
@@ -624,13 +518,36 @@ user(JWT 身份) ──→ 设备 ──→ agent(scoped token: read:<project> /
 
 <div class="no">07</div>
 
-# 第七幕 · 价值与 Demo
+# 第七幕 · 市场 · 价值 · Demo
 
-##### 延迟 · 成本 · 路线图 · 四个现场演示
+##### 为什么是现在 · 延迟与成本 · 四个现场演示
 
 ---
 
-<div class="kicker">第七幕 · 价值与 Demo</div><div class="pageno">07 / 07</div>
+<div class="kicker">第七幕 · 市场 · 价值 · Demo</div><div class="pageno">07 / 07</div>
+
+# 市场空间:agent 记忆层为什么是现在
+
+<div class="cards">
+  <div class="card"><div class="num" style="font-size:24px">agent 进生产</div><div class="lbl">从对话玩具到多 agent 组织——跨会话/跨 agent 记忆成为硬瓶颈(nautilus 舰队即一例)</div></div>
+  <div class="card blue"><div class="num" style="font-size:24px">MCP 标准化</div><div class="lbl">记忆层 = 可插拔基础设施,协议层已就位,卡位正当时</div></div>
+  <div class="card gold"><div class="num" style="font-size:24px">持续学习窗口</div><div class="lbl">Ilya/SSI 首个持续学习模型 2026-08——value function 需要<strong>真值供给</strong>,记忆+验证是上游</div></div>
+</div>
+
+| 领域 | 结合点 | 我们已有的证据 |
+|---|---|---|
+| 个人 agent 助手 | 跨会话个性化记忆 | e2e **75.4%** · p95 亚秒 |
+| 企业多 agent 组织 | 组织记忆 + 治理审计 | 胶囊继承实录 · 四探针合规 |
+| **具身智能 / 机器人** | 经验胶囊 = 技能记忆,**数据飞轮** | 采集→验证→复用闭环是我们的主战场 |
+| 评测与治理 | 判分卫生学 → 第三方验证服务 | paper2 在投 · 协议 v1.0 随基准分发 |
+| hosted 平台 | compass.nautilus.social 自助注册 | 开源获客 → hosted → 私有化 |
+
+<!-- 讲者注:这页回答"然后呢"。写入 0 token = 边际成本趋零,规模越大越划算;
+具身智能是战略方向:机器人经验胶囊继承 = 技能复利,数据飞轮的第三环。 -->
+
+---
+
+<div class="kicker">第七幕 · 市场 · 价值 · Demo</div><div class="pageno">07 / 07</div>
 
 # 延迟:80× 差距从哪来
 
@@ -642,9 +559,9 @@ user(JWT 身份) ──→ 设备 ──→ agent(scoped token: read:<project> /
 
 ---
 
-<div class="kicker">第七幕 · 价值与 Demo</div><div class="pageno">07 / 07</div>
+<div class="kicker">第七幕 · 市场 · 价值 · Demo</div><div class="pageno">07 / 07</div>
 
-# 成本账:只对自己可验证的事下断言
+# 成本与接入:写入 0 token 的经济学
 
 <div class="cards">
   <div class="card"><div class="num">0</div><div class="lbl">每条记忆写入的<br>LLM 调用与 token 成本</div></div>
@@ -652,15 +569,20 @@ user(JWT 身份) ──→ 设备 ──→ agent(scoped token: read:<project> /
   <div class="card gold"><div class="num">~8h</div><div class="lbl">复现墙钟时间<br>脚本与 evidence 全开源</div></div>
 </div>
 
-> 写时提炼方案每条记忆都要过 LLM —— 按条计费的边际成本,在这里是零。
-> 竞品每条记忆的写入成本无我方实测(闭源):**我方可验证的只有"写入免费"**
+| 路径 | 适合谁 | 成本 |
+|---|---|---|
+| **本地三条命令** | 隐私 / 成本敏感 · 单机 agent | 永久免费,数据不出机器 |
+| **Hosted beta** | 快速试用 · 团队 | compass.nautilus.social 自助注册 |
+| **私有化** | 组织部署 | 联系我们 |
+
+> 竞品每条记忆的写入成本无我方实测(闭源):**我方可验证的只有"写入免费"** · Modified MIT:自部署/内部/个人永久免费
 
 <!-- 讲者注:$3.50 是 v0.8 时代实测口径,BENCHMARKS_REPRODUCE.md 有 breakdown。
 竞品成本那句是防"你们凭什么说别人贵"的先手。 -->
 
 ---
 
-<div class="kicker">第七幕 · 价值与 Demo</div><div class="pageno">07 / 07</div>
+<div class="kicker">第七幕 · 市场 · 价值 · Demo</div><div class="pageno">07 / 07</div>
 
 # 路线图与开放问题(诚实版)
 
@@ -677,37 +599,45 @@ user(JWT 身份) ──→ 设备 ──→ agent(scoped token: read:<project> /
 
 ---
 
-<div class="kicker">第七幕 · 价值与 Demo · D1</div><div class="pageno">07 / 07</div>
+<div class="kicker">第七幕 · 市场 · 价值 · Demo</div><div class="pageno">07 / 07</div>
 
-# Demo ①:跨会话记忆(现场 live)
+# Demo ①+④:跨会话记忆,现场计时
 
 <div class="cols">
 <div class="col">
 
-**分镜(≤90 秒,真实终端)**
+**D1 · 分镜(≤90 秒,真实终端)**
 
 1. 会话 A:"我在做 Rust 异步运行时的性能调优"
 2. 会话 B:"我的部署环境是 Ubuntu 24.04,单卡 4090"
 3. **三周后,全新会话**问:"结合我的项目和环境,该注意什么?" → **命中两条**
-4. 对照组:空白 profile 同一问题 → **空**
+4. 对照组:空白 profile 同一问题 → **空**(证明不是幻觉)
+
+**D4 · 同一问题现场 `time`**
+
+<div class="panel">
+
+p50 **0.165-0.328s** · 对照 LLM controller 架构 p95 **26.9s**(官方实测口径,非现场)
+
+</div>
 
 </div>
 <div class="col">
 
-![w:520](deck_assets/demo_terminal.png)
+![h:300](deck_assets/demo_terminal.png)
 
-真实性:每步都是真实 MCP 调用
+每步都是真实 MCP 调用
 (`ingest_obs` / `recall`),分镜见
 `demo_recording_script.md`,录屏兜底
 
 </div>
 </div>
 
-<!-- 讲者注:对照组是关键——空库返回空,证明不是幻觉。现场跑,环境故障切录屏。 -->
+<!-- 讲者注:D4 对照不现场跑(没装竞品),诚实说明对照是官方口径。环境故障切录屏。 -->
 
 ---
 
-<div class="kicker">第七幕 · 价值与 Demo · D2</div><div class="pageno">07 / 07</div>
+<div class="kicker">第七幕 · 市场 · 价值 · Demo</div><div class="pageno">07 / 07</div>
 
 # Demo ②:跨 agent 记忆胶囊继承
 
@@ -731,7 +661,8 @@ user(JWT 身份) ──→ 设备 ──→ agent(scoped token: read:<project> /
   不被跨 agent 复利成毒
 - 6/17 有实录:B 从 FAIL→PASS
 - 这是"组织记忆"与"聊天记录"的
-  本质区别
+  本质区别——也是具身智能
+  技能记忆的同一机制
 
 </div>
 
@@ -739,11 +670,11 @@ user(JWT 身份) ──→ 设备 ──→ agent(scoped token: read:<project> /
 </div>
 
 <!-- 讲者注:脚本 compass_fleet_memory.py;实录来自 nautilus 平台 dogfood。
-若现场环境不稳,展示胶囊台账+实录日志。 -->
+若现场环境不稳,展示胶囊台账+实录日志。最后一句是市场页具身结合点的呼应。 -->
 
 ---
 
-<div class="kicker">第七幕 · 价值与 Demo · D3</div><div class="pageno">07 / 07</div>
+<div class="kicker">第七幕 · 市场 · 价值 · Demo</div><div class="pageno">07 / 07</div>
 
 # Demo ③:四探针现场打生产端点
 
@@ -779,60 +710,6 @@ user(JWT 身份) ──→ 设备 ──→ agent(scoped token: read:<project> /
 </div>
 
 <!-- 讲者注:这一段最圈粉——安全不靠承诺靠可重跑。若网络故障,放录屏+四探针源码 5 行核心。 -->
-
----
-
-<div class="kicker">第七幕 · 价值与 Demo · D4</div><div class="pageno">07 / 07</div>
-
-# Demo ④:延迟现场计时
-
-<div class="cols">
-<div class="col">
-
-**分镜:同一问题,现场计时**
-
-1. `time` 包住一次 `memory_query`
-2. 命中含跨会话事实的完整回答
-3. 读数:**亚秒级**(p50 0.165-0.328s)
-4. 对照:LLM controller 架构同类查询
-   p95 **26.9s**(官方实测口径)
-
-</div>
-<div class="col">
-
-<div class="panel">
-
-**差异的来源不是优化奇迹**
-
-- 写入零 LLM:没有提炼队列
-- 读取纯检索+组装:无中间
-  LLM 调用链
-- 智能放在了不花钱的时刻
-
-</div>
-
-</div>
-</div>
-
-<!-- 讲者注:对照 26.9s 引官方数字(SCOREBOARD §2),不现场跑对照(没装竞品),
-诚实说明对照是官方口径而非现场测量。 -->
-
----
-
-<div class="kicker">第七幕 · 价值与 Demo</div><div class="pageno">07 / 07</div>
-
-# 三档接入,一个承诺
-
-| 路径 | 适合谁 | 成本 |
-|---|---|---|
-| **本地三条命令** | 隐私 / 成本敏感 · 单机 agent | 永久免费,数据不出机器 |
-| **Hosted beta** | 快速试用 · 团队 | compass.nautilus.social 自助注册 |
-| **私有化** | 组织部署 | 联系我们 |
-
-- 写入 **0 token** · 召回 0 上云 · BGE-m3 本地嵌入
-- Modified MIT:自部署 / 内部 / 个人**永久免费**
-
-> 开放程度用行为定义:全源码 + $3.50 复现 + evidence 链 + 四探针可重跑
 
 ---
 
@@ -876,7 +753,7 @@ user(JWT 身份) ──→ 设备 ──→ agent(scoped token: read:<project> /
 
 <div class="panel blue">
 
-**为什么不是纯开源?** Modified MIT(商标+托管规模上限);自部署永久免费;开放程度用行为定义
+**官方榜上你们名次不高?** 预算 1/8、延迟 1/47 以下、判分口径更严——效率轴是我们当前可守的差异;三池移植目标 55-60% 是明牌攻坚路径
 
 </div>
 
@@ -884,6 +761,6 @@ user(JWT 身份) ──→ 设备 ──→ agent(scoped token: read:<project> /
 
 ## 版本与裁剪
 
-- **30 分钟版** = 全部 42 页 · **15 分钟版**:幕一(4 页)+ 幕三归因链/三口径/对打(4 页)+ 幕四三型与两事故(4 页)+ 诚实定位 + D1/D3 demo + 收尾 · **5 分钟路演** = `pitch_deck_20260904.md`(19 页发布版)
-- 内容正本:`whitepaper_20260905.md`(白皮书 v1.1)· 数字口径:`docs/nautilusmem/SCOREBOARD.md` · 图表脚本:`scripts/make_deck_charts_deepdive.py`
-- 重渲染:`npx @marp-team/marp-cli pitch_deck_deepdive_20260905.md -o <out> --allow-local-files`
+- **30 分钟版** = 33 页正文+2 备用 · **15 分钟版**:幕一(3 页)+ 幕三归因链/三口径/对打(4 页)+ 幕四三型两事故与 P1-P5(3 页)+ 官方坐标系 + D1+D4/D3 demo + 收尾 · **5 分钟路演** = `pitch_deck_20260904.md`(19 页发布版)
+- 内容正本:`whitepaper_20260905.md`(白皮书 v1.1)· 数字口径:`docs/nautilusmem/SCOREBOARD.md` · 图表脚本:`scripts/make_deck_charts.py` + `make_deck_charts_deepdive.py`
+- 重渲染:用本地缓存 marp 二进制(`~/AppData/Local/npm-cache/_npx/e0d73ab2e0dfa94b/node_modules/.bin/marp`),`--allow-local-files`;npx 联网解析会卡死
