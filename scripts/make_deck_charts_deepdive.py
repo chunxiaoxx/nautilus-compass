@@ -239,9 +239,9 @@ def lmev2():
     save(fig, "dd_lmev2.png")
 
 
-# ── 8. 官方坐标系:准确率 × 延迟 散点 ─────────────────────
+# ── 8. 官方坐标系:v4 效率前沿叙事(诚实坐标+差距来源+攻坚路径)──
 def official_map():
-    fig, ax = plt.subplots(figsize=(12.2, 6.6))
+    fig, ax = plt.subplots(figsize=(12.2, 6.4))
     strip(ax)
     # (延迟秒, 准确率%, 名称, 颜色)
     pts = [
@@ -253,26 +253,39 @@ def official_map():
         (108, 74.9, "AgentRunbook-C", "#8c959f"),
         (0.57, 39.3, "compass(d12)", GREEN),
     ]
+    # 官方高预算区(右侧淡黄)
+    ax.axvspan(15, 500, color="#fff3d6", alpha=0.55, zorder=0)
+    ax.text(80, 8, "官方高预算区\n200k ctx · 108-177s/查", fontsize=12.5,
+            color=YELLOW, ha="center", fontweight="bold")
+    # 最弱 RAG 参考线(中性语言)
+    ax.axhline(42.8, color=LINE, lw=1.1, ls=":")
+    ax.text(0.062, 43.9, "最弱 RAG 基线 42.8(同为 200k 预算口径)", fontsize=11.5, color=MUT)
     for sec, acc, name, c in pts:
         big = c == GREEN
-        ax.scatter(sec, acc, s=680 if big else 300, color=c, zorder=3,
+        ax.scatter(sec, acc, s=700 if big else 300, color=c, zorder=3,
                    edgecolor="white", linewidth=2, marker="*" if big else "o")
-        dy = -6.5 if name in ("No retrieval",) else 4.2
-        ax.text(sec * 1.18, acc + dy, name, fontsize=14.5,
+        dy = -7.0 if name == "No retrieval" else 4.0
+        ax.text(sec * 1.18, acc + dy, name, fontsize=14,
                 fontweight="bold" if big else "normal",
                 color=GREEN if big else MUT)
-    ax.set_xscale("log")
+    # compass 差异化标注
+    ax.annotate("预算 24k = 官方 1/8\n延迟 0.57s = 1/47 ~ 1/188", xy=(0.62, 39.0),
+                xytext=(1.35, 17), fontsize=13.5, color=GREEN, fontweight="bold",
+                arrowprops=dict(arrowstyle="->", color=GREEN, lw=2))
+    # 主攻坚路径箭头
+    ax.annotate("", xy=(20.5, 56.2), xytext=(1.05, 43.2),
+                arrowprops=dict(arrowstyle="-|>", color=BLUE, lw=2.4, ls="--"))
+    ax.text(2.6, 51.0, "主攻坚:三池设计移植\n目标 55-60%(超 AgentRunbook-R)",
+            fontsize=13, color=BLUE, fontweight="bold")
+    # 口径差异注(为什么不是同一场考试)
+    ax.text(0.062, 83.5, "分数口径差异:compass 全题 LLM judge(更严)vs 官方程序化为主 —— 分数不可直接互比,单位预算/单位时间的效率可以",
+            fontsize=11.8, color=MUT)
     ax.set_xlim(0.05, 500)
-    ax.set_ylim(-2, 88)
+    ax.set_ylim(-2, 90)
     ax.set_xlabel("每查询延迟(秒,对数轴)", fontsize=13)
     ax.set_ylabel("LME-V2 Small Overall(%)", fontsize=13)
-    ax.axhline(42.8, color=LINE, lw=1.2, ls=":")
-    ax.text(0.06, 44.0, "最弱 RAG 基线 42.8 —— 我们在它下面,这就是诚实定位",
-            fontsize=13, color=RED)
-    ax.set_title("官方坐标系(gpt-5.2 judge 口径):准确率 × 延迟 —— 我们的差异在纵轴代价",
+    ax.set_title("官方坐标系:坐标、差距来源与攻坚路径 —— 差异化在效率轴,不靠榜单名次",
                  fontsize=16.5, fontweight="bold", pad=14)
-    ax.text(0.09, 25, "≈39.3\n亚秒级", fontsize=15, fontweight="bold", color=GREEN,
-            ha="center")
     save(fig, "dd_official_map.png")
 
 
