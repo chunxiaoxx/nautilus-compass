@@ -33,8 +33,11 @@ server: Server = Server("nautilus-compass", version="3.1.0")
 @server.list_tools()
 async def _list_tools() -> list[types.Tool]:
     out: list[types.Tool] = []
+    admin = "admin" in _current_scopes.get()
     for meta in cmp.TOOLS.values():
         s = meta["schema"]
+        if s["name"] not in PUBLIC_TOOLS and not admin:
+            continue  # platform-internal tools stay off the public surface
         out.append(types.Tool(
             name=s["name"],
             description=s.get("description", ""),
@@ -48,6 +51,14 @@ async def _call_tool(name: str, arguments: dict) -> list[types.TextContent]:
     meta = cmp.TOOLS.get(name)
     if not meta:
         raise ValueError(f"unknown tool: {name}")
+    # 2026-09-05 · public-surface guard: non-public platform tools are not
+    # callable by non-admin tokens even by known name (mirror of _list_tools)
+    if name not in PUBLIC_TOOLS and "admin" not in _current_scopes.get():
+        return [types.TextContent(
+            type="text",
+            text=json.dumps({"ok": False, "error": "forbidden: tool not public"},
+                            ensure_ascii=False),
+        )]
     # 2026-08-28 · scoped-token 强制执行（fail-closed）
     deny = _check_scope(_current_scopes.get(), name, arguments)
     if deny:
@@ -94,6 +105,13 @@ _current_scopes: contextvars.ContextVar[frozenset] = contextvars.ContextVar(
 _current_user: contextvars.ContextVar[str] = contextvars.ContextVar(
     "compass_user", default="")
 
+# hosted 公网工具面(2026-09-05,launch_plan §12.1):仅 8 个用户工具对外;
+# governance_×5/submit_platform_task/proof_of_impact/add_worker/long_task/
+# ingest_platform_task_result 等平台内部工具退出公网清单,admin scope 放行。
+PUBLIC_TOOLS = {
+    "ingest_obs", "recall", "session_search", "thread_recall",
+    "profile", "drift_check", "drift_history", "feedback_log",
+}
 READ_TOOLS = {
     "recall", "session_search", "thread_recall", "drift_check", "drift_history",
     "profile", "proof_of_impact", "governance_audit", "governance_lock_check",

@@ -200,3 +200,42 @@ def test_unqualified_project_resolves_to_owner(client):
     # explicit foreign project stays fail-closed
     r = _rpc(client, tok, "recall", {"project": "someone-else", "query": "q"})
     assert r.status_code == 200 and "forbidden" in r.text, r.text
+
+
+# ── public tool surface (launch_plan §12.1, 2026-09-05) ──────────────
+
+def test_public_tools_surface(client, monkeypatch):
+    """Self-service tokens see ONLY the 8 public user tools in tools/list;
+    platform-internal tools are hidden and denied even by known-name direct
+    calls; admin-scope (ops tokens.json) tokens still see everything."""
+    import mcp_http_server as srv
+
+    uid, hdr = _mk_user(client, "pt@x.io")
+    tok = client.post("/tokens", json={"name": "pt"},
+                      headers=hdr).json()["token"]
+
+    def _list(t):
+        return client.post(
+            "/mcp",
+            headers={"Authorization": f"Bearer {t}",
+                     "Accept": "application/json, text/event-stream"},
+            json={"jsonrpc": "2.0", "id": 1, "method": "tools/list",
+                  "params": {}},
+        )
+
+    r = _list(tok)
+    assert r.status_code == 200, r.text
+    names = {t["name"] for t in r.json()["result"]["tools"]}
+    assert names == srv.PUBLIC_TOOLS, names ^ srv.PUBLIC_TOOLS
+
+    # known-name direct call to an internal tool: denied, not executed
+    r = _rpc(client, tok, "governance_audit", {})
+    assert r.status_code == 200 and "forbidden" in r.text, r.text
+
+    # admin scope keeps the full surface (ops/内部调度零影响)
+    monkeypatch.setitem(srv.VALID_TOKENS, "cmp_admin_view",
+                        frozenset({"admin"}))
+    r = _list("cmp_admin_view")
+    names_admin = {t["name"] for t in r.json()["result"]["tools"]}
+    assert "governance_audit" in names_admin
+    assert len(names_admin) > len(srv.PUBLIC_TOOLS)
