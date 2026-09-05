@@ -1,8 +1,10 @@
 # nautilus-compass 技术白皮书(Deep-Dive)
 
-> 版本 2026-09-05 · 面向技术读者(工程师/研究者/评测从业者)的深度正本。
+> 版本 v1.1 · 2026-09-05 · 面向技术读者(工程师/研究者/评测从业者)的深度正本。
+> v1.1:参考 nautilus-core 平台白皮书(Technical Whitepaper V2,2026-03)的结构纪律,
+> 补生态定位(§3.0)/路线图与开放问题(§9.1)/研究贡献与引用(§10);版本变更随版本号记录。
 > 立场文与发布会帖讲"为什么",本文讲"是什么、怎么做、数字怎么来"。
-> 每个数字附 evidence 锚(§10 索引);口径以 [SCOREBOARD](../nautilusmem/SCOREBOARD.md) 定案为准。
+> 每个数字附 evidence 锚(§11 索引);口径以 [SCOREBOARD](../nautilusmem/SCOREBOARD.md) 定案为准。
 
 ---
 
@@ -23,6 +25,15 @@ nautilus-compass 是一个 local-first 的 agent 记忆与可靠性层:写入路
 | 全链路复现成本 | ≈ **$3.50**(GPU 租金+judge 调用),脚本与 evidence 全开源 |
 
 配套贡献:判分卫生学(judge failure taxonomy + hygiene protocol,arXiv 在投 paper2)——我们自己抓了判官 5 次事故,其中一次基础设施断连把 500 题里 14.2% 静默记成错答。
+
+### 按受众读法
+
+| 读者 | 建议路径 |
+|---|---|
+| 研究者 / 评测从业者 | §2 立场 → §5 判官病理学 → §6 评测版图 |
+| 工程师 / 架构师 | §3 架构 → §4 算法解剖 → §7 安全与多租户 |
+| 想上手的人 | §1 摘要 → §8 接入与成本 |
+| 商业 / 生态合作 | §8 价值与成本 → §9 dogfood → §10 贡献与开源 |
 
 ---
 
@@ -53,6 +64,10 @@ nautilus-compass 是一个 local-first 的 agent 记忆与可靠性层:写入路
 ---
 
 ## 3. 架构
+
+### 3.0 生态定位:与 nautilus 平台的关系
+
+compass 起源于 nautilus 智涌平台(nautilus.social):平台的 agent 舰队需要跨 agent 记忆与可靠性层,compass 从那里长出来并保持 dogfood(§9)。在平台的 Trinity 三层架构(Nexus 协议 / Orchestrator / Memory Chain)中,compass 对应记忆与治理层的独立化、开源化形态——**作为独立组件发布,不依赖平台即可完整运行**(本地三条命令,§8)。平台理论基础(Epiplexity, arXiv:2601.03220;DMAS, arXiv:2512.02410)与平台侧白皮书见 nautilus-core 仓库;本文只覆盖 compass 自身的设计、算法与证据。
 
 ### 3.1 六层总图
 
@@ -304,9 +319,55 @@ License:Modified MIT(Kimi 式)——MIT 基础 + 商标保护 + 托管 100 付�
 
 这本身是产品的证明:一个记忆层好不好,先看它的作者敢不敢把组织日常跑在上面。
 
+### 9.1 路线图与开放问题
+
+| 期 | 事项 |
+|---|---|
+| 发布窗口 | hosted beta 邮箱验证门禁上线 / PyPI 3.1.1 发版 / MCP 目录提交 |
+| 主攻坚 | LME-V2 官方三池设计移植(raw state/event/note pools;A 臂摘要卡≈note pool 简化版),目标 Small 55-60%(超 AgentRunbook-R)——当前 ≈39.3 与最弱 RAG 基线相当,这是主要差距战场(§6.3) |
+| 工程 | 嵌入 daemon 并行化(生产读吞吐 ≈5 rps 天花板的根因是 BGE-m3 串行推理) |
+| 待证 | 进化层 tier 晋升 uplift 三次实测为 0,盒语料重测前保持待证不动 |
+| 开放问题 | tr 时序推理(终局 62.4)仍是六型短板;J-K 判官盲区的 prompt 变体消融未做;判官结论对非 reasoning 架构泛化未测;hosted 侧外部真实用户案例为零(dogfood 之外) |
+
 ---
 
-## 10. 附录:evidence 索引
+## 10. 研究贡献、开源与引用
+
+### 10.1 贡献映射
+
+| 贡献 | 载体 |
+|---|---|
+| 判官失败三型 taxonomy(J-K/J-B/J-C)+ hygiene protocol(P1-P5) | paper2(arXiv 在投)+ §5;协议 v1.0 随基准分发([PROTOCOL.md](../nautilusmem/PROTOCOL.md)) |
+| 分型路由+摘要卡的 context 工程方法(+32.8pt 可复现) | §4;脚本与 evidence 开源 |
+| 负结果预注册文化(七个被拒绝/关闭方案全公开) | §3.3 / §6.2;预注册文件带 hash 落仓 |
+| 生产级多租户隔离验证方法(四探针) | §7;任何人对生产端点可重跑 |
+
+### 10.2 开源承诺
+
+全源码 + 复现脚本(检索对打一条命令 ≈$3.50)+ evidence 链全公开 + 四探针可对生产端点重跑。License:Modified MIT——自部署/内部/个人永久免费;开放程度用行为定义,不用标签。
+
+### 10.3 引用
+
+```bibtex
+@article{longmemeval2024,
+  title={Benchmarking Chat Assistants on Long-Term Interactive Memory},
+  author={Wu, D., et al.}, journal={arXiv:2410.10813}, year={2024}}
+@article{lmev22026,
+  title={LongMemEval-V2: Evaluating Long-Term Agent Memory Toward Experienced Colleagues},
+  author={Wu, D., Ji, Z., Kawatkar, A., et al.}, journal={arXiv:2605.12493}, year={2026}}
+@misc{paper2_2026,
+  title={Judge Failure in the Wild: A Taxonomy of LLM-as-Judge Breakdown and a Hygiene Protocol for Long-Memory Evaluation},
+  author={Wang, Chunxiao}, note={arXiv in submission}, year={2026}}
+@article{epiplexity2026,
+  title={From Entropy to Epiplexity}, journal={arXiv:2601.03220}, year={2026}}
+@inproceedings{dmas2025,
+  title={Decentralized Multi-Agent System with Trust-Aware Communication},
+  booktitle={IEEE ISPA 2025}, note={Best Paper Award}, year={2025}}
+```
+
+---
+
+## 11. 附录:evidence 索引
 
 | 断言 | 锚 |
 |---|---|
