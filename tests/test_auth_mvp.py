@@ -232,10 +232,18 @@ def test_public_tools_surface(client, monkeypatch):
     r = _rpc(client, tok, "governance_audit", {})
     assert r.status_code == 200 and "forbidden" in r.text, r.text
 
-    # admin scope keeps the full surface (ops/内部调度零影响)
-    monkeypatch.setitem(srv.VALID_TOKENS, "cmp_admin_view",
-                        frozenset({"admin"}))
-    r = _list("cmp_admin_view")
-    names_admin = {t["name"] for t in r.json()["result"]["tools"]}
-    assert "governance_audit" in names_admin
-    assert len(names_admin) > len(srv.PUBLIC_TOOLS)
+    # ops tokens.json tokens (legacy tools.* flags) keep the full surface
+    monkeypatch.setitem(srv.VALID_TOKENS, "cmp_ops_view",
+                        frozenset({"tools.read", "tools.write",
+                                   "read:*", "write:*"}))
+    r = _list("cmp_ops_view")
+    names_ops = {t["name"] for t in r.json()["result"]["tools"]}
+    assert "governance_audit" in names_ops
+    assert len(names_ops) > len(srv.PUBLIC_TOOLS)
+    r = client.post(
+        "/mcp",
+        headers={"Authorization": "Bearer cmp_ops_view",
+                 "Accept": "application/json, text/event-stream"},
+        json={"jsonrpc": "2.0", "id": 1, "method": "tools/call",
+              "params": {"name": "governance_audit", "arguments": {}}})
+    assert "forbidden" not in r.text, r.text
