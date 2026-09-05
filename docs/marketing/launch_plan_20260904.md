@@ -97,6 +97,7 @@
 - **"为什么不用 AGPL/为什么不是纯开源"**:Modified MIT 一句话(2-year sunset 是 FSL 的事,我们是托管规模门槛 100 付费用户);自部署永久免费是核心承诺
 - **"mem0 数字你们自己测的?"**:是,同题同判据,reproduction 脚本开源,欢迎复跑($3.50)
 - **"mem0 自报 94.4% 你们 75.4%,还是输了"**:口径不同不可比——他们的 harness/判官/subject/数据版都可能不同,这正是本领域 meta-problem(我们自己判官还挂过 5 次);真正硬的对打是同题同判据的检索层:P@1 0.890 vs 0.774,脚本开源欢迎重跑;若有人把 mem0 最新版跑进我们的 harness(或反之),发出来,这种数据才推动领域
+- **"对打的嵌入一样吗?"**:不一样,各用各的默认(我方 BGE-m3 / mem0 text-embedding-005)——比的是开箱即用的检索层;对方嵌入在部分单会话型更强,我们靠分型路由整体赢,归因数据在 evidence json(headhead_mem0_full500_20260826.json)
 - **竞品员工到场(mem0/Zep 团队活跃于同社区)**:只谈自家数字与口径,零商业攻击;标准邀请句:"your latest version is welcome in our harness — scripts are in the repo"
 - **"多租户/安全谁验证的"**:四探针脚本在 repo,任何人可对生产端点重跑
 - **"一个人写的?"**:是,130 天 771 commits,其中 603 由 agent 舰队提交——这本身就是产品的证明(dogfood)
@@ -240,7 +241,7 @@ PUBLIC_TOOLS = {"ingest_obs", "recall", "session_search", "thread_recall",
 >
 > Our 75.4% comes from our own harness: original Oct-2024 release, glm-5.3-flash judge, full 500 questions, dual accounting (81.6% excluding 71 judge-outage questions, disclosed in the post). mem0's 94.4% comes from their harness — different judge, different subject model, possibly different data version. Cross-harness numbers don't compare in this field; that's literally the meta-problem we keep hitting (we caught our own judge failing 5 times — one outage silently recorded 14.2% of questions as wrong answers).
 >
-> The comparison we *can* stand behind is the retrieval head-to-head: identical questions, identical criteria, BGE-m3 on both sides, our reproduction of mem0 2.0.19 — P@1 0.890 vs 0.774. Scripts and evidence in the repo, ~$3.50 to re-run. If someone runs mem0's latest through our harness (or ours through theirs) and posts the numbers — that's the kind of argument that moves this field forward.
+> The comparison we *can* stand behind is the retrieval head-to-head: identical questions, identical criteria, each side on its own default embedder (BGE-m3 for us, text-embedding-005 for mem0), our reproduction of mem0 2.0.19 — P@1 0.890 vs 0.774. Scripts and evidence in the repo, ~$3.50 to re-run. If someone runs mem0's latest through our harness (or ours through theirs) and posts the numbers — that's the kind of argument that moves this field forward.
 >
 > Happy to answer anything on the routing design; that's the fun part.
 
@@ -298,7 +299,7 @@ PUBLIC_TOOLS = {"ingest_obs", "recall", "session_search", "thread_recall",
 >
 > The design bet: write-time compression is a blind wager on the future — nobody knows at write time what will be asked later. So the write path stores observations verbatim with zero LLM calls (local BGE-m3 embeddings, nothing leaves the machine), and all intelligence lives at read time: query-type routing, BM25+dense fusion, date anchoring, summary-card assembly. On LongMemEval-S that routing lifts e2e accuracy from 42.6% to 75.4% (81.6% excluding 71 judge-outage questions — disclosed, not hidden).
 >
-> The head-to-head you can actually check: same 500 questions, same criteria, same embedder, our reproduction of mem0 — P@1 0.890 vs 0.774. Reproduction scripts are in the repo, ~$3.50 of GPU time.
+> The head-to-head you can actually check: same 500 questions, same criteria, each side on its own default embedder, our reproduction of mem0 — P@1 0.890 vs 0.774. Reproduction scripts are in the repo, ~$3.50 of GPU time.
 >
 > The part I'm most proud of is the hygiene work: we caught our own judge failing five times (a gateway outage silently recorded 14.2% of questions as wrong answers). Paper on that is on arXiv — judging failures are this field's meta-problem.
 >

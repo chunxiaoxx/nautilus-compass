@@ -33,7 +33,7 @@
 > Write-time compression is a blind bet on the future. Our agent memory stores verbatim — zero LLM at write, local BGE-m3 — and puts all intelligence in read-path routing. LongMemEval-S e2e: 42.6% → 75.4%. #LocalLLM #MCP #AgentMemory
 
 **P2(接 P1)**
-> Same 500 questions, same criteria, same embedder vs our mem0 reproduction: retrieval P@1 0.890 vs 0.774. ~$3.50 to re-run — scripts in repo. Modified MIT: self-host free forever. github.com/chunxiaoxx/nautilus-compass
+> Same 500 questions, same criteria, each side's default embedder, vs our mem0 reproduction: retrieval P@1 0.890 vs 0.774. ~$3.50 to re-run — scripts in repo. Modified MIT: self-host free forever. github.com/chunxiaoxx/nautilus-compass
 
 ## 3. Mastodon(单条 ≤500 字符)
 
