@@ -20,12 +20,12 @@ import numpy as np
 OUT = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "docs", "marketing", "deck_assets"))
 os.makedirs(OUT, exist_ok=True)
 
-BG, PANEL, FG, MUT = "#ffffff", "#f6f8fa", "#1f2328", "#57606a"
+BG, PANEL, FG, MUT = "#f6f8fa", "#eef1f4", "#1f2328", "#57606a"  # v3:图底非纯白,页面装裱有对比
 GREEN, BLUE, RED, YELLOW, PURPLE = "#1a7f37", "#0969da", "#cf222e", "#9a6700", "#8250df"
 LINE = "#d0d7de"
 
 plt.rcParams.update({
-    "figure.facecolor": BG, "axes.facecolor": BG, "savefig.facecolor": BG,
+    "figure.facecolor": BG, "axes.facecolor": PANEL, "savefig.facecolor": BG,
     "text.color": FG, "axes.edgecolor": LINE, "axes.labelcolor": FG,
     "xtick.color": FG, "ytick.color": FG,
     "font.family": ["Microsoft YaHei"], "font.size": 14,

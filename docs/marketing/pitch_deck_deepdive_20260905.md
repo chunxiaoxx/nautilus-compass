@@ -3,47 +3,87 @@ marp: true
 theme: default
 paginate: true
 style: |
+  /* ===== 高对比版式系统 v3:实色页眉带+实色卡片+深色表头 ===== */
   section {
-    background: #ffffff; color: #1f2328; font-size: 23px;
-    padding: 58px 62px 66px; border-top: 6px solid #1a7f37;
+    background: #ffffff; color: #1f2328; font-size: 21px;
+    padding: 96px 60px 46px;
   }
-  h1 { color: #1f2328; font-size: 1.32em; margin-bottom: 20px; }
-  h2 { color: #0969da; font-size: 1.05em; }
+  /* 页眉品牌色带(所有内容页) */
+  section::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 62px; background: #0e4429;
+  }
+  .kicker {
+    position: absolute; top: 21px; left: 60px;
+    color: #7ee2b8; font-size: 14px; font-weight: 700; letter-spacing: 0.2em;
+  }
+  .pageno {
+    position: absolute; top: 21px; right: 60px;
+    color: #7ee2b8; font-size: 13px; font-weight: 700; letter-spacing: 0.1em;
+  }
+  h1 { color: #0e4429; font-size: 1.28em; margin-bottom: 16px; }
+  h2 { color: #0969da; font-size: 1.02em; }
   strong { color: #1a7f37; }
   em { color: #9a6700; font-style: normal; font-weight: 700; }
-  .kicker {
-    position: absolute; top: 22px; left: 62px;
-    color: #1a7f37; font-size: 15px; font-weight: 700; letter-spacing: 0.18em;
-  }
+  /* 数字卡片:实色底+深色顶边 */
   .cards { display: flex; gap: 16px; margin-top: 14px; }
   .card {
-    flex: 1; background: #f6f8fa; border: 1px solid #d0d7de;
-    border-radius: 14px; padding: 16px 18px 12px; text-align: center;
+    flex: 1; background: #dafbe1; border: 1px solid #a6ddb8;
+    border-top: 5px solid #1a7f37;
+    border-radius: 12px; padding: 15px 16px 11px; text-align: center;
   }
-  .card .num { font-size: 44px; font-weight: 800; color: #1a7f37; line-height: 1.15; }
-  .card .num.blue { color: #0969da; }
-  .card .num.red { color: #cf222e; }
-  .card .lbl { font-size: 15.5px; color: #57606a; margin-top: 7px; line-height: 1.45; }
+  .card.blue { background: #ddf4ff; border-color: #a5d8ff; border-top-color: #0969da; }
+  .card.red { background: #ffebe9; border-color: #ffc1bd; border-top-color: #cf222e; }
+  .card.gold { background: #fff8c4; border-color: #eac54f; border-top-color: #9a6700; }
+  .card .num { font-size: 40px; font-weight: 800; color: #0e4429; line-height: 1.15; }
+  .card.blue .num { color: #0550ae; }
+  .card.red .num { color: #a40e26; }
+  .card.gold .num { color: #7d4e00; }
+  .card .lbl { font-size: 15px; color: #424a53; margin-top: 6px; line-height: 1.4; }
+  /* 双栏 */
   .cols { display: flex; gap: 26px; align-items: flex-start; }
   .col { flex: 1; }
-  table { width: 100%; font-size: 18.5px; border-collapse: collapse; margin-top: 6px; }
-  th { background: #f6f8fa; border-bottom: 2px solid #d0d7de; font-size: 17px; }
-  td, th { padding: 7px 12px; text-align: left; }
-  tr:nth-child(even) td { background: #fafbfc; }
+  /* 面板卡(文字要点容器) */
+  .panel {
+    background: #f6f8fa; border: 1px solid #d0d7de; border-left: 5px solid #1a7f37;
+    border-radius: 10px; padding: 12px 18px; margin-top: 10px;
+  }
+  .panel.blue { border-left-color: #0969da; }
+  .panel.red { border-left-color: #cf222e; }
+  /* 表格:深色表头白字 */
+  table { width: 100%; font-size: 17.5px; border-collapse: collapse; margin-top: 8px; }
+  th { background: #1f2328; color: #ffffff; font-size: 16px; padding: 8px 12px; text-align: left; }
+  td { padding: 7px 12px; text-align: left; border-bottom: 1px solid #d0d7de; }
+  tr:nth-child(even) td { background: #f6f8fa; }
   blockquote {
-    background: #ddf4ff; border-left: 5px solid #0969da; color: #1f2328;
-    padding: 10px 18px; border-radius: 0 10px 10px 0; font-size: 21px;
+    background: #ddf4ff; border-left: 5px solid #0969da; color: #0e2a40;
+    padding: 10px 18px; border-radius: 0 10px 10px 0; font-size: 20px;
   }
+  /* 图片统一装裱(居中) */
+  img { background: #f6f8fa; border: 1px solid #d0d7de; border-radius: 12px; padding: 6px; display: block; margin: 6px auto 0; }
   footer { font-size: 13px; color: #8c959f; }
-  section.lead { text-align: center; }
-  section.lead h1 { font-size: 1.65em; color: #1a7f37; }
-  section.part { background: #f6f8fa; border-top-color: #0969da; }
-  section.part .no {
-    font-size: 74px; font-weight: 800; color: #d0d7de; line-height: 1;
-    margin-bottom: 4px;
+  /* ===== 封面与幕分隔:整页深色大色块 ===== */
+  section.lead, section.part {
+    background: linear-gradient(135deg, #0b2818 0%, #0e4429 62%, #116329 100%);
+    color: #ffffff; text-align: center; padding: 80px 70px;
   }
-  section.part h1 { color: #0969da; font-size: 1.5em; }
-  section.part p { color: #57606a; font-size: 21px; }
+  section.lead::before, section.part::before { background: transparent; height: 8px; }
+  section.lead h1 { color: #ffffff; font-size: 1.9em; line-height: 1.3; margin-bottom: 14px; }
+  section.lead h2 { color: #7ee2b8; }
+  section.lead em { color: #ffd475; }
+  section.lead .cards { margin-top: 30px; }
+  section.lead .card { background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.22); border-top: 4px solid #7ee2b8; }
+  section.lead .card .num { color: #ffffff; }
+  section.lead .card.blue .num { color: #91d0ff; }
+  section.lead .card .lbl { color: #cde8da; }
+  section.lead blockquote { background: rgba(255,255,255,0.10); color: #e6f4ec; border-left-color: #7ee2b8; }
+  section.lead img { background: transparent; border-color: rgba(255,255,255,0.25); }
+  section.part .no {
+    font-size: 120px; font-weight: 800; color: rgba(255,255,255,0.18);
+    line-height: 1; margin-bottom: 2px;
+  }
+  section.part h1 { color: #ffffff; font-size: 1.6em; }
+  section.part h5, section.part p { color: #a8d8bd; font-size: 20px; font-weight: 400; }
 ---
 
 <!-- _paginate: false -->
@@ -58,9 +98,9 @@ style: |
 
 <div class="cards">
   <div class="card"><div class="num">0</div><div class="lbl">写入路径<br>LLM 调用数</div></div>
-  <div class="card"><div class="num blue">42.6→75.4%</div><div class="lbl">LongMemEval-S e2e<br>500 题</div></div>
+  <div class="card blue"><div class="num">42.6→75.4%</div><div class="lbl">LongMemEval-S e2e<br>500 题</div></div>
   <div class="card"><div class="num">80×</div><div class="lbl">检索延迟优势<br>p95 亚秒 vs 26.9s</div></div>
-  <div class="card"><div class="num blue">5 次</div><div class="lbl">我们自己抓出的<br>判官事故</div></div>
+  <div class="card blue"><div class="num">5 次</div><div class="lbl">我们自己抓出的<br>判官事故</div></div>
 </div>
 
 <!-- 讲者注:开场 30 秒停顿,让四个数字被读完。今天目标:听众多带走三件事——
@@ -70,6 +110,8 @@ style: |
 
 <!-- _class: part -->
 
+<!-- _paginate: false -->
+
 <div class="no">01</div>
 
 # 第一幕 · 问题与立场
@@ -78,18 +120,18 @@ style: |
 
 ---
 
-<div class="kicker">第一幕 · 问题与立场</div>
+<div class="kicker">第一幕 · 问题与立场</div><div class="pageno">01 / 07</div>
 
 # 你的 agent 正在忘记你
 
-![w:1130](deck_assets/blind_bet.png)
+![h:372](deck_assets/blind_bet.png)
 
 <!-- 讲者注:建立问题,不亮方案。问观众:你们的 agent 记得你上周说过什么吗?
 ChatGPT 随对话推进覆写关键信息(ICLR 2025 基准论文人肉研究);长上下文直读掉 30-60%。 -->
 
 ---
 
-<div class="kicker">第一幕 · 问题与立场</div>
+<div class="kicker">第一幕 · 问题与立场</div><div class="pageno">01 / 07</div>
 
 # 市场现状:三大策略,同一个死穴
 
@@ -99,20 +141,24 @@ ChatGPT 随对话推进覆写关键信息(ICLR 2025 基准论文人肉研究);�
 | 提炼 / 摘要 | mem0 / Zep / Letta | **写入时** |
 | 裸读长上下文 | 直塞 context window | 性能掉 30-60% |
 
-<br>
+<div class="panel red" style="margin-top:22px">
 
-> 三条路全部在**写入时**对未来下注 —— 没有人把宝押在读取端
+### 三条路全部在**写入时**对未来下注 —— 没有人把宝押在读取端
+
+</div>
 
 <!-- 讲者注:指着右列"写入时"打三遍。裸读不是候选,是基准测出的失败下限。 -->
 
 ---
 
-<div class="kicker">第一幕 · 问题与立场</div>
+<div class="kicker">第一幕 · 问题与立场</div><div class="pageno">01 / 07</div>
 
 # 三不变量:写时压缩必输的结构原因
 
 <div class="cols">
 <div class="col">
+
+<div class="panel">
 
 ### 1 · 未来查询不可知
 
@@ -123,7 +169,11 @@ P@1 **0.20 → 1.00**
 变的不是记忆,是问题
 
 </div>
+
+</div>
 <div class="col">
+
+<div class="panel blue">
 
 ### 2 · 原文唯一可重索引
 
@@ -134,7 +184,11 @@ LLM 的认知水平;原文明天
 写时压缩把记忆**锁死在技术现状**
 
 </div>
+
+</div>
 <div class="col">
+
+<div class="panel red">
 
 ### 3 · 成本曲线方向反了
 
@@ -145,13 +199,15 @@ LLM 的认知水平;原文明天
 写入免费是**自然结果**,非优化奇迹
 
 </div>
+
+</div>
 </div>
 
 <!-- 讲者注:不变量 2 那句"锁死在技术现状里"停两秒再翻页。 -->
 
 ---
 
-<div class="kicker">第一幕 · 问题与立场</div>
+<div class="kicker">第一幕 · 问题与立场</div><div class="pageno">01 / 07</div>
 
 # 不是我们说的:基准作者的第三方结论
 
@@ -161,13 +217,19 @@ LLM 的认知水平;原文明天
 - Appendix B 人肉研究:ChatGPT 压缩历史时覆写关键信息,Coze 漏记间接提及
 - 长上下文直读掉 30-60% → 记忆层的必要性由基准作者论证
 
-> 写时压缩的损害 2024 年就被量化了;我们是第一波量出**读侧路线胜绩**的团队之一
+<div class="panel blue">
+
+### 写时压缩的损害 2024 年就被量化了;我们是第一波量出**读侧路线胜绩**的团队之一
+
+</div>
 
 <!-- 讲者注:这页防"王婆卖瓜"。我们的贡献不是发现压缩有害,是用读取端架构把它变现成分数。 -->
 
 ---
 
 <!-- _class: part -->
+
+<!-- _paginate: false -->
 
 <div class="no">02</div>
 
@@ -177,18 +239,18 @@ LLM 的认知水平;原文明天
 
 ---
 
-<div class="kicker">第二幕 · 架构</div>
+<div class="kicker">第二幕 · 架构</div><div class="pageno">02 / 07</div>
 
 # 反架构:写入零智能,读取全智能
 
-![w:1130](deck_assets/arch.png)
+![h:372](deck_assets/arch.png)
 
 <!-- 讲者注:强调"写入不调 LLM"停两秒。治理层是独有件(drift AUC 0.83+三层隔离+判分卫生学);
 进化层三次实测 uplift=0,保持"待证"标注——不冒充已验证是标注纪律。 -->
 
 ---
 
-<div class="kicker">第二幕 · 架构</div>
+<div class="kicker">第二幕 · 架构</div><div class="pageno">02 / 07</div>
 
 # 生态定位:从 nautilus 平台长出来的独立组件
 
@@ -203,6 +265,8 @@ LLM 的认知水平;原文明天
 </div>
 <div class="col">
 
+<div class="panel">
+
 **dogfood 是设计压力测试**
 
 隐私 / 本地 / 成本是硬约束——
@@ -212,13 +276,15 @@ LLM 的认知水平;原文明天
 是站在用户一边的架构
 
 </div>
+
+</div>
 </div>
 
 <!-- 讲者注:回答"这项目哪来的"。平台理论(Epiplexity/DMAS)一句带过;dogfood 这里埋点,结尾收。 -->
 
 ---
 
-<div class="kicker">第二幕 · 架构</div>
+<div class="kicker">第二幕 · 架构</div><div class="pageno">02 / 07</div>
 
 # 写入端:四条决策
 
@@ -233,7 +299,7 @@ LLM 的认知水平;原文明天
 
 ---
 
-<div class="kicker">第二幕 · 架构</div>
+<div class="kicker">第二幕 · 架构</div><div class="pageno">02 / 07</div>
 
 # 架构决策记录:放弃过什么(负结果公开)
 
@@ -253,6 +319,8 @@ LLM 的认知水平;原文明天
 
 <!-- _class: part -->
 
+<!-- _paginate: false -->
+
 <div class="no">03</div>
 
 # 第三幕 · 算法解剖
@@ -261,11 +329,11 @@ LLM 的认知水平;原文明天
 
 ---
 
-<div class="kicker">第三幕 · 算法解剖</div>
+<div class="kicker">第三幕 · 算法解剖</div><div class="pageno">03 / 07</div>
 
 # 六型分型路由:改动集中在三弱型
 
-![w:1150](deck_assets/dd_sixtypes.png)
+![h:372](deck_assets/dd_sixtypes.png)
 
 <!-- 讲者注:设计逻辑一句话——用户陈述型答案通常在一个 user turn 里,检 turn 级;
 跨会话/助手行为/时序型需要"每场会话发生了什么"的地图,路由到逐会话摘要卡。
@@ -273,11 +341,11 @@ LLM 的认知水平;原文明天
 
 ---
 
-<div class="kicker">第三幕 · 算法解剖</div>
+<div class="kicker">第三幕 · 算法解剖</div><div class="pageno">03 / 07</div>
 
 # 归因链:42.6 → 75.4,每一步
 
-![w:1150](deck_assets/dd_waterfall.png)
+![h:372](deck_assets/dd_waterfall.png)
 
 <!-- 讲者注:全场最重要一页。把"方法带来多少"和"修测量仪带来多少"拆开报——
 5.4pt 是仪器修复,不是方法效应,混报是评测写作最常见的自我欺骗。
@@ -285,14 +353,14 @@ LLM 的认知水平;原文明天
 
 ---
 
-<div class="kicker">第三幕 · 算法解剖</div>
+<div class="kicker">第三幕 · 算法解剖</div><div class="pageno">03 / 07</div>
 
 # 三口径:同一次跑,三个数字
 
 <div class="cards">
-  <div class="card"><div class="num red">70.0%</div><div class="lbl">保守口径<br>71 题断连记为错答<br>(下界)</div></div>
+  <div class="card red"><div class="num">70.0%</div><div class="lbl">保守口径<br>71 题断连记为错答<br>(下界)</div></div>
   <div class="card"><div class="num">75.4%</div><div class="lbl">重判口径<br>同判官同 prompt 仅加重试<br>(发布口径)</div></div>
-  <div class="card"><div class="num blue">81.6%</div><div class="lbl">干净口径<br>剔除 71 断连题 n=429<br>(上界)</div></div>
+  <div class="card blue"><div class="num">81.6%</div><div class="lbl">干净口径<br>剔除 71 断连题 n=429<br>(上界)</div></div>
 </div>
 
 > 只报一个数 = 替听众做决定;三口径并报 = 把决定权还给听众
@@ -302,22 +370,22 @@ LLM 的认知水平;原文明天
 
 ---
 
-<div class="kicker">第三幕 · 算法解剖</div>
+<div class="kicker">第三幕 · 算法解剖</div><div class="pageno">03 / 07</div>
 
 # 检索层演进:赢在路由,不赢在嵌入
 
-![w:1150](deck_assets/dd_ladder.png)
+![h:372](deck_assets/dd_ladder.png)
 
 <!-- 讲者注:首版和 mem0 打平(0.784 vs 0.774)主动说——中间态如实公开是可信度的一部分。
 四步每步增量都可归因;终局 P@5 0.978 / MRR 0.929 三项全赢。 -->
 
 ---
 
-<div class="kicker">第三幕 · 算法解剖</div>
+<div class="kicker">第三幕 · 算法解剖</div><div class="pageno">03 / 07</div>
 
 # 检索对打:同题同判据,各用默认嵌入
 
-![w:1140](deck_assets/dd_head2head.png)
+![h:372](deck_assets/dd_head2head.png)
 
 <!-- 讲者注:设置逐字段——同 500 题(question_id join)/ retrieval-only 双方 / mem0 infer=False /
 各用默认嵌入(我方 BGE-m3,mem0 侧 text-embedding-005)/ 版本钉死 mem0ai 2.0.19。
@@ -328,6 +396,8 @@ LLM 的认知水平;原文明天
 
 <!-- _class: part -->
 
+<!-- _paginate: false -->
+
 <div class="no">04</div>
 
 # 第四幕 · 判官病理学
@@ -336,7 +406,7 @@ LLM 的认知水平;原文明天
 
 ---
 
-<div class="kicker">第四幕 · 判官病理学</div>
+<div class="kicker">第四幕 · 判官病理学</div><div class="pageno">04 / 07</div>
 
 # 判官失败 = 资源耗尽:三型分类
 
@@ -355,11 +425,11 @@ LLM 的认知水平;原文明天
 
 ---
 
-<div class="kicker">第四幕 · 判官病理学</div>
+<div class="kicker">第四幕 · 判官病理学</div><div class="pageno">04 / 07</div>
 
 # J-K:数值精度盲区(2,600 次真实调用)
 
-![w:1150](deck_assets/dd_jk.png)
+![h:372](deck_assets/dd_jk.png)
 
 <!-- 讲者注:珠峰 8849→8949 米、光速 3.0→3.1×10⁸——±0.1% 的污染,四成通过。
 盲区在"事实性要求已写入判分 prompt"前提下仍存在;换更强判官没用(跨族差 ≤11pp)。
@@ -368,7 +438,7 @@ LLM 的认知水平;原文明天
 
 ---
 
-<div class="kicker">第四幕 · 判官病理学</div>
+<div class="kicker">第四幕 · 判官病理学</div><div class="pageno">04 / 07</div>
 
 # 事故 ①(J-B):预算被思考吃光的判官
 
@@ -386,7 +456,7 @@ LLM 的认知水平;原文明天
 
 <div class="cards">
   <div class="card"><div class="num">+3.3pt</div><div class="lbl">web 域</div></div>
-  <div class="card"><div class="num red">−1.9pt</div><div class="lbl">ent 域<br>(方向相反!)</div></div>
+  <div class="card red"><div class="num">−1.9pt</div><div class="lbl">ent 域<br>(方向相反!)</div></div>
 </div>
 
 > 解药:部署时冒烟——真实尺寸条目上断言判官输出非空可解析
@@ -399,15 +469,15 @@ LLM 的认知水平;原文明天
 
 ---
 
-<div class="kicker">第四幕 · 判官病理学</div>
+<div class="kicker">第四幕 · 判官病理学</div><div class="pageno">04 / 07</div>
 
 # 事故 ②(J-C):14.2% 的题被断连判官判分
 
 <div class="cards">
-  <div class="card"><div class="num red">71 / 500</div><div class="lbl">网关 403/超时后<br>被静默记为错答<br>(14.2%)</div></div>
-  <div class="card"><div class="num red">5.4pt</div><div class="lbl">失真 ≈ 被测真实效应<br>32.8pt 的 <strong>1/6</strong></div></div>
-  <div class="card"><div class="num blue">71/71</div><div class="lbl">同判官重判全解决<br>(27 题翻对,44 题仍错)</div></div>
-  <div class="card"><div class="num">−20pt</div><div class="lbl">中期"子型回归"<br>事后证实<b>全是</b>断连误标</div></div>
+  <div class="card red"><div class="num">71 / 500</div><div class="lbl">网关 403/超时后<br>被静默记为错答<br>(14.2%)</div></div>
+  <div class="card red"><div class="num">5.4pt</div><div class="lbl">失真 ≈ 被测真实效应<br>32.8pt 的 <strong>1/6</strong></div></div>
+  <div class="card blue"><div class="num">71/71</div><div class="lbl">同判官重判全解决<br>(27 题翻对,44 题仍错)</div></div>
+  <div class="card gold"><div class="num">−20pt</div><div class="lbl">中期"子型回归"<br>事后证实<b>全是</b>断连误标</div></div>
 </div>
 
 > 基础设施噪声可以吞掉六分之一的被测效应,还能制造幻影回归
@@ -417,7 +487,7 @@ LLM 的认知水平;原文明天
 
 ---
 
-<div class="kicker">第四幕 · 判官病理学</div>
+<div class="kicker">第四幕 · 判官病理学</div><div class="pageno">04 / 07</div>
 
 # 判分卫生协议 P1-P5(成本 ≈ 几次 API 调用)
 
@@ -425,7 +495,7 @@ LLM 的认知水平;原文明天
 |---|---|---|
 | P1 | 跑数前冻结锚 / 门 / 裁决规则,版本化+hash | 裁决标准事后漂移 |
 | P2 | 同判官重判+指数退避,只重试打分调用 | J-C 假性错答 |
-| P3 | 保守 / 重判后 / 干净三口径并报 | 挑口径 | 
+| P3 | 保守 / 重判后 / 干净三口径并报 | 挑口径 |
 | P4 | 部署冒烟:真实条目非空断言+预算审计 | J-B 截断塌缩 |
 | P5 | n=30 上一题 = ±3.3pt,带内"回归"推迟审计 | 幻影回归 |
 
@@ -438,6 +508,8 @@ LLM 的认知水平;原文明天
 
 <!-- _class: part -->
 
+<!-- _paginate: false -->
+
 <div class="no">05</div>
 
 # 第五幕 · 评测版图
@@ -446,7 +518,7 @@ LLM 的认知水平;原文明天
 
 ---
 
-<div class="kicker">第五幕 · 评测版图</div>
+<div class="kicker">第五幕 · 评测版图</div><div class="pageno">05 / 07</div>
 
 # 五个战场各测什么
 
@@ -465,11 +537,11 @@ LLM 的认知水平;原文明天
 
 ---
 
-<div class="kicker">第五幕 · 评测版图</div>
+<div class="kicker">第五幕 · 评测版图</div><div class="pageno">05 / 07</div>
 
 # LME-V2:从 19.6/12.8 到 40.0/38.4
 
-![w:1150](deck_assets/dd_lmev2.png)
+![h:372](deck_assets/dd_lmev2.png)
 
 <!-- 讲者注:三步——刀1 abstention 判分口径(abstention 组 web 2.8→45.8 / ent 0→83.9,裸 UNKNOWN 252→0);
 刀2 检索单元升级+预算 12k→24k(gold-在场 ent 0.115→0.652 倒挂修复);d13 判分修正(4096→16384 重判)。
@@ -478,11 +550,11 @@ attribution 红线:451 题是上游官方基准(xiaowu0162/LongMemEval-V2,Di Wu 
 
 ---
 
-<div class="kicker">第五幕 · 评测版图</div>
+<div class="kicker">第五幕 · 评测版图</div><div class="pageno">05 / 07</div>
 
 # 官方坐标系里的诚实定位
 
-![w:1150](deck_assets/dd_official_map.png)
+![h:372](deck_assets/dd_official_map.png)
 
 <!-- 讲者注:全场信任峰值在这页——主动把自己的官方坐标位置说成"与最弱 RAG 相当"。
 差距两结构性来源:预算 24k vs 200k(8.3×);判分口径(全题 LLM judge vs 程序化为主)。
@@ -493,6 +565,8 @@ attribution 红线:451 题是上游官方基准(xiaowu0162/LongMemEval-V2,Di Wu 
 
 <!-- _class: part -->
 
+<!-- _paginate: false -->
+
 <div class="no">06</div>
 
 # 第六幕 · 安全与多租户
@@ -501,13 +575,17 @@ attribution 红线:451 题是上游官方基准(xiaowu0162/LongMemEval-V2,Di Wu 
 
 ---
 
-<div class="kicker">第六幕 · 安全与多租户</div>
+<div class="kicker">第六幕 · 安全与多租户</div><div class="pageno">06 / 07</div>
 
 # 三层身份模型
+
+<div class="panel blue">
 
 ```
 user(JWT 身份) ──→ 设备 ──→ agent(scoped token: read:<project> / write:<project>)
 ```
+
+</div>
 
 - 隔离边界 = project 命名空间;header-only 身份(X-User-ID 类)**永久禁止**
 - v0.9 曾有冒充洞:公网可冒充任意用户读写 → 已改 JWT-only + 五项矩阵验证
@@ -518,7 +596,7 @@ user(JWT 身份) ──→ 设备 ──→ agent(scoped token: read:<project> /
 
 ---
 
-<div class="kicker">第六幕 · 安全与多租户</div>
+<div class="kicker">第六幕 · 安全与多租户</div><div class="pageno">06 / 07</div>
 
 # 四探针:任何人对生产端点可重跑
 
@@ -529,7 +607,11 @@ user(JWT 身份) ──→ 设备 ──→ agent(scoped token: read:<project> /
 | P3 | A 的 token 读写 A 自己的空间 | 放行,不误伤 ✓ |
 | P4 | 撤销 token → 下一次调用 | 立即 401 ✓ |
 
-**脚本开源(`probes.py`),对 compass.nautilus.social 可直接重跑** · 发布流程规定 FOUR-GREEN 才发帖
+<div class="panel" style="margin-top:14px">
+
+### 脚本开源(`probes.py`),对 compass.nautilus.social 可直接重跑 · 发布流程规定 FOUR-GREEN 才发帖
+
+</div>
 
 <!-- 讲者注:9/4/9/5 两次生产变更后各复验一轮全绿——隔离属性是持续重验的事实,
 不是一次性的安全审计报告。这也是下一幕 demo D3 的内容。 -->
@@ -537,6 +619,8 @@ user(JWT 身份) ──→ 设备 ──→ agent(scoped token: read:<project> /
 ---
 
 <!-- _class: part -->
+
+<!-- _paginate: false -->
 
 <div class="no">07</div>
 
@@ -546,11 +630,11 @@ user(JWT 身份) ──→ 设备 ──→ agent(scoped token: read:<project> /
 
 ---
 
-<div class="kicker">第七幕 · 价值与 Demo</div>
+<div class="kicker">第七幕 · 价值与 Demo</div><div class="pageno">07 / 07</div>
 
 # 延迟:80× 差距从哪来
 
-![w:1140](deck_assets/dd_latency.png)
+![h:358](deck_assets/dd_latency.png)
 
 <!-- 讲者注:写入零 LLM+读取纯检索组装,所以 p95 亚秒;对照组 LLM controller 架构 26.9s。
 不靠 cache 不靠捷径——智能放在不花钱的时刻。诚实注记:冷启动尾部(23.8/50.9s)非稳态;
@@ -558,14 +642,14 @@ user(JWT 身份) ──→ 设备 ──→ agent(scoped token: read:<project> /
 
 ---
 
-<div class="kicker">第七幕 · 价值与 Demo</div>
+<div class="kicker">第七幕 · 价值与 Demo</div><div class="pageno">07 / 07</div>
 
 # 成本账:只对自己可验证的事下断言
 
 <div class="cards">
   <div class="card"><div class="num">0</div><div class="lbl">每条记忆写入的<br>LLM 调用与 token 成本</div></div>
-  <div class="card"><div class="num blue">≈$3.50</div><div class="lbl">全链路复现成本<br>(LLM ¥7 + T4 spot ¥3.2 + 网络/冷启 ≈$1)</div></div>
-  <div class="card"><div class="num">~8h</div><div class="lbl">复现墙钟时间<br>脚本与 evidence 全开源</div></div>
+  <div class="card blue"><div class="num">≈$3.50</div><div class="lbl">全链路复现成本<br>(LLM ¥7 + T4 spot ¥3.2 + 网络/冷启)</div></div>
+  <div class="card gold"><div class="num">~8h</div><div class="lbl">复现墙钟时间<br>脚本与 evidence 全开源</div></div>
 </div>
 
 > 写时提炼方案每条记忆都要过 LLM —— 按条计费的边际成本,在这里是零。
@@ -576,7 +660,7 @@ user(JWT 身份) ──→ 设备 ──→ agent(scoped token: read:<project> /
 
 ---
 
-<div class="kicker">第七幕 · 价值与 Demo</div>
+<div class="kicker">第七幕 · 价值与 Demo</div><div class="pageno">07 / 07</div>
 
 # 路线图与开放问题(诚实版)
 
@@ -586,14 +670,14 @@ user(JWT 身份) ──→ 设备 ──→ agent(scoped token: read:<project> /
 | 主攻坚 | 三池设计移植,目标 LME-V2 Small **55-60%**(当前 ≈39.3,与最弱 RAG 相当) |
 | 工程 | 嵌入 daemon 并行化(读吞吐 ≈5 rps 天花板根因) |
 | 待证 | 进化层 tier 晋升 uplift 三次实测为 0,重测前不动 |
-| 开放问题 | tr 62.4 仍是短板 · J-K prompt 变体消融未做 · 非 reasoning 判官泛化未测 · **hosted 外部真实用户案例为零** |
+| 开放问题 | tr 62.4 短板 · J-K prompt 消融未做 · 非 reasoning 判官泛化未测 · **hosted 外部案例为零** |
 
 <!-- 讲者注:最后一行故意留三秒。外部案例为零是最大未知数——我们用 dogfood 和可复现性兜底,
 但它只有经过外部用户才能证伪。 -->
 
 ---
 
-<div class="kicker">第七幕 · 价值与 Demo · D1</div>
+<div class="kicker">第七幕 · 价值与 Demo · D1</div><div class="pageno">07 / 07</div>
 
 # Demo ①:跨会话记忆(现场 live)
 
@@ -610,7 +694,7 @@ user(JWT 身份) ──→ 设备 ──→ agent(scoped token: read:<project> /
 </div>
 <div class="col">
 
-![w:560](deck_assets/demo_terminal.png)
+![w:520](deck_assets/demo_terminal.png)
 
 真实性:每步都是真实 MCP 调用
 (`ingest_obs` / `recall`),分镜见
@@ -623,7 +707,7 @@ user(JWT 身份) ──→ 设备 ──→ agent(scoped token: read:<project> /
 
 ---
 
-<div class="kicker">第七幕 · 价值与 Demo · D2</div>
+<div class="kicker">第七幕 · 价值与 Demo · D2</div><div class="pageno">07 / 07</div>
 
 # Demo ②:跨 agent 记忆胶囊继承
 
@@ -639,6 +723,8 @@ user(JWT 身份) ──→ 设备 ──→ agent(scoped token: read:<project> /
 </div>
 <div class="col">
 
+<div class="panel">
+
 **为什么值得看**
 
 - 质量门 reward ≥ 1.0:错经验不入库,
@@ -648,6 +734,8 @@ user(JWT 身份) ──→ 设备 ──→ agent(scoped token: read:<project> /
   本质区别
 
 </div>
+
+</div>
 </div>
 
 <!-- 讲者注:脚本 compass_fleet_memory.py;实录来自 nautilus 平台 dogfood。
@@ -655,7 +743,7 @@ user(JWT 身份) ──→ 设备 ──→ agent(scoped token: read:<project> /
 
 ---
 
-<div class="kicker">第七幕 · 价值与 Demo · D3</div>
+<div class="kicker">第七幕 · 价值与 Demo · D3</div><div class="pageno">07 / 07</div>
 
 # Demo ③:四探针现场打生产端点
 
@@ -675,6 +763,8 @@ user(JWT 身份) ──→ 设备 ──→ agent(scoped token: read:<project> /
 </div>
 <div class="col">
 
+<div class="panel blue">
+
 **为什么敢现场跑**
 
 - 脚本开源,任何观众会后可自己重跑
@@ -684,13 +774,15 @@ user(JWT 身份) ──→ 设备 ──→ agent(scoped token: read:<project> /
   不是一次性的审计报告
 
 </div>
+
+</div>
 </div>
 
 <!-- 讲者注:这一段最圈粉——安全不靠承诺靠可重跑。若网络故障,放录屏+四探针源码 5 行核心。 -->
 
 ---
 
-<div class="kicker">第七幕 · 价值与 Demo · D4</div>
+<div class="kicker">第七幕 · 价值与 Demo · D4</div><div class="pageno">07 / 07</div>
 
 # Demo ④:延迟现场计时
 
@@ -708,12 +800,16 @@ user(JWT 身份) ──→ 设备 ──→ agent(scoped token: read:<project> /
 </div>
 <div class="col">
 
+<div class="panel">
+
 **差异的来源不是优化奇迹**
 
 - 写入零 LLM:没有提炼队列
 - 读取纯检索+组装:无中间
   LLM 调用链
 - 智能放在了不花钱的时刻
+
+</div>
 
 </div>
 </div>
@@ -723,7 +819,7 @@ user(JWT 身份) ──→ 设备 ──→ agent(scoped token: read:<project> /
 
 ---
 
-<div class="kicker">第七幕 · 价值与 Demo</div>
+<div class="kicker">第七幕 · 价值与 Demo</div><div class="pageno">07 / 07</div>
 
 # 三档接入,一个承诺
 
@@ -742,13 +838,15 @@ user(JWT 身份) ──→ 设备 ──→ agent(scoped token: read:<project> /
 
 <!-- _class: lead -->
 
+<!-- _paginate: false -->
+
 # One developer. 130 days. No cloud required.
 
-![w:980](deck_assets/dogfood.png)
+![h:325](deck_assets/dogfood.png)
 
 <div class="cards">
   <div class="card"><div class="num">130 天</div><div class="lbl">从第一行代码到现在</div></div>
-  <div class="card"><div class="num blue">771</div><div class="lbl">commits,603 由 agent 舰队提交</div></div>
+  <div class="card blue"><div class="num">771</div><div class="lbl">commits,603 由 agent 舰队提交</div></div>
   <div class="card"><div class="num">github.com/chunxiaoxx/nautilus-compass</div><div class="lbl">本地:git clone → install.sh → daemon_start.sh</div></div>
 </div>
 
@@ -758,15 +856,34 @@ user(JWT 身份) ──→ 设备 ──→ agent(scoped token: read:<project> /
 
 # 备用页 · 常问问题
 
-- **mem0 自报 94.4% vs 你们 75.4%?** 口径不同不可比(不同 harness/判官/数据版);硬对打=同题同判据检索层 +11.6pt
-- **嵌入不一样也算对打?** 各用各的默认嵌入 = 开箱即用对打;对方嵌入部分单会话型更强,我们靠路由整体赢
-- **判官是自己请的,分数可信吗?** 正因如此才有判官病理学:三口径并报 + 重判工具开源 + 5 次事故全录
-- **为什么不是纯开源?** Modified MIT(商标+托管规模上限);自部署永久免费;开放程度用行为定义
+<div class="panel">
+
+**mem0 自报 94.4% vs 你们 75.4%?** 口径不同不可比(不同 harness/判官/数据版);硬对打=同题同判据检索层 +11.6pt
+
+</div>
+
+<div class="panel blue">
+
+**嵌入不一样也算对打?** 各用各的默认嵌入 = 开箱即用对打;对方嵌入部分单会话型更强,我们靠路由整体赢
+
+</div>
+
+<div class="panel">
+
+**判官是自己请的,分数可信吗?** 正因如此才有判官病理学:三口径并报 + 重判工具开源 + 5 次事故全录
+
+</div>
+
+<div class="panel blue">
+
+**为什么不是纯开源?** Modified MIT(商标+托管规模上限);自部署永久免费;开放程度用行为定义
+
+</div>
 
 ---
 
 ## 版本与裁剪
 
-- **30 分钟版** = 全部 43 页 · **15 分钟版**:幕一(4 页)+ 幕三归因链/三口径/对打(4 页)+ 幕四三型与两事故(4 页)+ 诚实定位 + D1/D3 demo + 收尾 · **5 分钟路演** = `pitch_deck_20260904.md`(19 页发布版)
+- **30 分钟版** = 全部 42 页 · **15 分钟版**:幕一(4 页)+ 幕三归因链/三口径/对打(4 页)+ 幕四三型与两事故(4 页)+ 诚实定位 + D1/D3 demo + 收尾 · **5 分钟路演** = `pitch_deck_20260904.md`(19 页发布版)
 - 内容正本:`whitepaper_20260905.md`(白皮书 v1.1)· 数字口径:`docs/nautilusmem/SCOREBOARD.md` · 图表脚本:`scripts/make_deck_charts_deepdive.py`
 - 重渲染:`npx @marp-team/marp-cli pitch_deck_deepdive_20260905.md -o <out> --allow-local-files`
