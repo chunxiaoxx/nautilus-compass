@@ -3,17 +3,17 @@ marp: true
 theme: default
 paginate: true
 style: |
-  section { background: #0d1117; color: #e6edf3; font-size: 26px; }
-  h1 { color: #e6edf3; }
-  h2 { color: #58a6ff; }
-  strong { color: #3fb950; }
-  em { color: #d29922; font-style: normal; }
+  section { background: #ffffff; color: #1f2328; font-size: 26px; }
+  h1 { color: #1f2328; }
+  h2 { color: #0969da; }
+  strong { color: #1a7f37; }
+  em { color: #9a6700; font-style: normal; }
   table { font-size: 22px; }
-  footer { font-size: 15px; color: #8b949e; }
-  blockquote { color: #d29922; border-left: 4px solid #d29922; }
-  code { background: #161b22; color: #e6edf3; }
+  footer { font-size: 15px; color: #57606a; }
+  blockquote { color: #9a6700; border-left: 4px solid #9a6700; }
+  code { background: #f6f8fa; color: #1f2328; }
   section.lead { text-align: center; }
-  section.lead h1 { font-size: 1.6em; color: #3fb950; }
+  section.lead h1 { font-size: 1.6em; color: #1a7f37; }
 ---
 
 <!-- _paginate: false -->

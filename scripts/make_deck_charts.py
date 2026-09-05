@@ -18,8 +18,8 @@ OUT = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "docs", "ma
 os.makedirs(OUT, exist_ok=True)
 
 # ── 深色主题(GitHub dark 系)─────────────────────────────
-BG, PANEL, FG, MUT = "#0d1117", "#161b22", "#e6edf3", "#8b949e"
-GREEN, BLUE, RED, YELLOW, PURPLE = "#3fb950", "#58a6ff", "#f85149", "#d29922", "#bc8cff"
+BG, PANEL, FG, MUT = "#ffffff", "#f6f8fa", "#1f2328", "#57606a"
+GREEN, BLUE, RED, YELLOW, PURPLE = "#1a7f37", "#0969da", "#cf222e", "#9a6700", "#8250df"
 
 plt.rcParams.update({
     "figure.facecolor": BG, "axes.facecolor": PANEL, "savefig.facecolor": BG,
@@ -116,7 +116,7 @@ def arch():
             fontsize=15, va="center")
 
     # 写入侧
-    box(ax, 0.6, 0.6, 3.6, 4.6, "#12261a", GREEN)
+    box(ax, 0.6, 0.6, 3.6, 4.6, "#dafbe1", GREEN)
     ax.text(2.4, 4.7, "写入侧 · 0 LLM 调用", ha="center", fontsize=16.5,
             color=GREEN, fontweight="bold")
     box(ax, 0.95, 3.0, 2.9, 1.2, PANEL, MUT, lw=1.2)
@@ -129,7 +129,7 @@ def arch():
     arrow(ax, 2.4, 3.0, 2.4, 2.65, GREEN)
 
     # 读取侧
-    box(ax, 5.8, 0.6, 3.6, 4.6, "#101b2c", BLUE)
+    box(ax, 5.8, 0.6, 3.6, 4.6, "#ddf4ff", BLUE)
     ax.text(7.6, 4.7, "读取侧 · 全部智能", ha="center", fontsize=16.5,
             color=BLUE, fontweight="bold")
     box(ax, 6.15, 3.0, 2.9, 1.2, PANEL, MUT, lw=1.2)
@@ -206,19 +206,19 @@ def e2e():
     bars = [
         ("routing 前\n(裸检索)", 42.6, MUT),
         ("routing 后\n(定案)", 75.4, GREEN),
-        ("剔除 71 道\n判官故障题", 81.6, "#2ea043"),
+        ("剔除 71 道\n判官故障题", 81.6, "#1a7f37"),
     ]
     x = [0, 1, 2]
     vals = [b[1] for b in bars]
     cols = [b[2] for b in bars]
     ax.bar(x, vals, width=0.52, color=cols, alpha=0.92, edgecolor=BG)
-    ax.bar([2], [100], width=0.52, color="none", edgecolor="#2ea043",
+    ax.bar([2], [100], width=0.52, color="none", edgecolor="#1a7f37",
            ls=(0, (4, 3)), lw=1.6, alpha=0.65)
     for i, v in enumerate(vals):
         ax.text(i, v + 2.2, f"{v}%", ha="center", fontsize=25, fontweight="bold", color=cols[i])
     ax.text(1, 40, "+32.8pt", ha="center", fontsize=17, color=YELLOW, fontweight="bold")
     ax.text(2, 60, "双口径强制披露\n(不是藏,是报)", ha="center", fontsize=12.5,
-            color="#7ee2a8", style="italic")
+            color="#116329", style="italic")
     ax.set_xticks(x)
     ax.set_xticklabels([b[0] for b in bars], fontsize=15)
     ax.set_ylim(0, 100)
@@ -263,7 +263,7 @@ def headtohead():
     x = np.arange(3)
     w = 0.32
     ax.bar(x - w / 2, ours, w, color=GREEN, label="nautilus-compass", alpha=0.95)
-    ax.bar(x + w / 2, theirs, w, color="#6e7681", label="mem0 2.0.19(我方复现)", alpha=0.95)
+    ax.bar(x + w / 2, theirs, w, color="#8c959f", label="mem0 2.0.19(我方复现)", alpha=0.95)
     for i, (o, t) in enumerate(zip(ours, theirs)):
         ax.text(i - w / 2, o + 0.015, f"{o:.3f}", ha="center", fontsize=15,
                 fontweight="bold", color=GREEN)
@@ -285,7 +285,7 @@ def evermem():
     strip(ax)
     names = ["nautilus-compass", "MemOS", "Zep", "Mem0"]
     vals = [45.9, 42.55, 39.97, 37.09]
-    cols = [GREEN, "#6e7681", "#6e7681", "#6e7681"]
+    cols = [GREEN, "#8c959f", "#8c959f", "#8c959f"]
     ax.bar(names, vals, width=0.5, color=cols, alpha=0.95)
     # 区间带 44.4-47.3
     ax.errorbar([0], [45.9], yerr=[[45.9 - 44.4], [47.3 - 45.9]], fmt="none",
@@ -310,7 +310,7 @@ def lmev2():
     w = 0.3
     untuned = [19.6, 12.8]
     tuned = [40.0, 38.4]
-    ax.bar(x - w / 2, untuned, w, color="#6e7681", label="untuned(首跑基线)")
+    ax.bar(x - w / 2, untuned, w, color="#8c959f", label="untuned(首跑基线)")
     ax.bar(x + w / 2, tuned, w, color=GREEN, label="三刀调优后(定案)")
     for i in range(2):
         ax.text(i - w / 2, untuned[i] + 1, f"{untuned[i]}%", ha="center", fontsize=15, color=MUT)
@@ -333,11 +333,11 @@ def latency():
     ax.set_xscale("log")
     ax.set_xlim(0.05, 200)
     ax.barh([1], [0.57], height=0.42, color=GREEN, alpha=0.95)
-    ax.barh([0], [26.9], height=0.42, color="#6e7681", alpha=0.95)
+    ax.barh([0], [26.9], height=0.42, color="#8c959f", alpha=0.95)
     ax.errorbar([0.57], [1], xerr=[[0.57 - 0.34], [0.80 - 0.57]], fmt="none",
-                ecolor="#7ee2a8", elinewidth=3, capsize=8, capthick=3)
+                ecolor="#116329", elinewidth=3, capsize=8, capthick=3)
     ax.text(0.62, 1.32, "0.34 – 0.80 s", fontsize=19, fontweight="bold", color=GREEN)
-    ax.text(29, 0.32, "26.9 s", fontsize=19, fontweight="bold", color="#c9d1d9")
+    ax.text(29, 0.32, "26.9 s", fontsize=19, fontweight="bold", color="#424a53")
     ax.set_yticks([1, 0])
     ax.set_yticklabels(["nautilus-compass\n(读取端路由,无 LLM)", "LLM-controller 型\n(写入时压缩阵营)"],
                        fontsize=14)
@@ -371,7 +371,7 @@ def judge_cards():
         ax.text(x + 0.3, y + 1.75, "× " + title, fontsize=15.5, color=RED, fontweight="bold")
         ax.text(x + 0.3, y + 0.75, body, fontsize=12.5, color=MUT)
 
-    box(ax, 3.1, 0.25, 3.8, 0.95, "#12261a", GREEN, lw=1.8)
+    box(ax, 3.1, 0.25, 3.8, 0.95, "#dafbe1", GREEN, lw=1.8)
     ax.text(5.0, 0.72, "→ 协议:预注册锚 · 冒烟测试 · 双口径 · Wilson CI",
             ha="center", fontsize=14, color=GREEN, fontweight="bold")
     save(fig, "judge_cards.png")
@@ -394,7 +394,7 @@ def dogfood():
     # 甜甜圈:78% agent 提交
     axc = fig.add_axes([0.36, 0.06, 0.28, 0.36])
     axc.set_facecolor(BG)
-    axc.pie([603, 168], colors=[PURPLE, "#30363d"], startangle=90,
+    axc.pie([603, 168], colors=[PURPLE, "#d0d7de"], startangle=90,
             wedgeprops={"width": 0.32})
     axc.text(0, 0, "78%\nagent 提交", ha="center", va="center",
              fontsize=15, fontweight="bold")
@@ -411,9 +411,9 @@ def demo_terminal():
     ax.axis("off")
 
     # 窗体
-    box(ax, 0.35, 0.35, 9.3, 9.0, "#0b0f14", "#30363d", lw=2)
+    box(ax, 0.35, 0.35, 9.3, 9.0, "#0b0f14", "#d0d7de", lw=2)
     ax.add_patch(FancyBboxPatch((0.35, 8.55), 9.3, 0.8, boxstyle="round,pad=0.015",
-                                fc="#161b22", ec="#30363d", lw=1.5))
+                                fc="#f6f8fa", ec="#d0d7de", lw=1.5))
     for i, c in enumerate([RED, YELLOW, GREEN]):
         ax.add_patch(Circle((0.85 + i * 0.38, 8.95), 0.115, fc=c, ec="none"))
     ax.text(5.0, 8.93, "terminal — nautilus-compass (fully local)", ha="center",
