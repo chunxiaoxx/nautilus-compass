@@ -267,6 +267,21 @@ PUBLIC_TOOLS = {"ingest_obs", "recall", "session_search", "thread_recall",
 4. 提交前自检三项(摘要字数/零 includegraphics/零 input)——已绿(71a78f1)
 5. 提交后:把 arXiv ID 回填三处(launch post/position paper/落地页)
 
+#### 13.2.1 逐字段操作单(照抄即提交 · 2026-09-05)
+
+| arXiv 表单字段 | 填什么 |
+|---|---|
+| Subjects | **cs.CL**(Computation and Language,主分类,无需交叉) |
+| License | 选 **arXiv perpetual, non-exclusive**(与 paper1 一致) |
+| Title | `Judge Failure in the Wild: A Taxonomy of LLM-as-Judge Breakdown`(照 tex L8,含副题第二行) |
+| Authors | `Chunxiao Wang`(单作者;tex \author 已一致,Submission 系统里也照填,不加机构) |
+| Abstract | 从 `docs/papers/paper2_judge_hygiene.tex` L18-40 `\begin{abstract}…\end{abstract}` 正文**原样复制**(注意 arXiv 纯文本框不认 LaTeX 命令,`$…$` 数学与 `\S` 引用需按 preview 调整) |
+| Comments | `10 pages. Companion repo: https://github.com/chunxiaoxx/nautilus-compass` |
+| Files → Upload | 只传 **`paper2_judge_hygiene.tex` 单文件**(自检零 includegraphics/零 input → 无需补图或 .bib;编译器让 arXiv 自动选 pdfLaTeX) |
+| Preview | 编译 preview 页数应为 **10 页**,与本地 PDF 一致再 Submit |
+
+提交后 1-2 天出 ID → ID 回填四处:[launch_post_v3](20260904_launch_post_v3.md) / [position paper](20260904_architecture_position_paper.md) / 落地页 / [r-ML 论文贴模板](rml_paper_post_template.md) 的 `{ARXIV_ID}` 占位,并同步 README paper2 链接。
+
 ## 14. HN 提交文案(9/10-9/11 用,与 Reddit 错峰 48h)
 
 > 提交物:repo 直链(有可跑产品+全套证据在 repo,比 position paper 更硬);position paper 作评论区补充链接。

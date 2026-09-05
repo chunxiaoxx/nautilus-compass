@@ -65,3 +65,4 @@ vtf/_e2e_diag/longmemeval_s
 vtf/_e2e_diag/session_summaries.json
 vtf/_e2e_diag/summary_gen.log
 vtf/_e2e_diag/summary_gen.err
+docs/papers/*.aux
