@@ -205,7 +205,13 @@
 | 8 | PPT 页级大纲(Marp)→ 成品 | 🟡 并行(用户有演讲计划) | ✅ 大纲+成品双格式已渲染([pptx](pitch_deck_20260904.pptx) / [html](pitch_deck_20260904.html),12 页·讲者注内嵌);内容改动后重出:`npx @marp-team/marp-cli pitch_deck_outline_20260904.md -o pitch_deck_20260904.pptx` |
 | 9 | 一页纸(英文政企) | ⏸ 降级:有真实触达场景再做 | — |
 
-## 12.1 tools/list 收敛方案(已备,拍板即执行 · 2026-09-05)
+## 12.1 tools/list 收敛(✅ 已上线 2026-09-05 · b812332)
+
+执行结果:公网自助 token tools/list **17→8**(恰好 PUBLIC_TOOLS 名单),`governance_audit` 知名字直调 → forbidden;ops tokens.json token 全见 17 个+内部工具可调(内部调度零影响);四探针 FOUR-GREEN。
+
+**部署时纠偏**:原方案假设 ops token 带 `admin` scope——实测 tokens.json 全部为旧格式 `tools.read/tools.write` 组合、无 admin,首版按 admin 判据部署后 ops 侧也被关进 8 个(生产破坏,ssh 本地复验当场抓到)。终版 `_is_internal_token(scopes) = scopes & {admin, tools.read, tools.write}`——ops 旧格式标志即内部凭证,自助 token(read:{uid}/write:{uid})不含标志只见公开面。
+
+原方案存档:
 
 改动只落 `mcp_http_server.py`(hosted 公网入口),本地 stdio/daemon 不受影响:
 
