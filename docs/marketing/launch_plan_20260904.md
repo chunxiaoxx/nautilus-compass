@@ -280,7 +280,7 @@ PUBLIC_TOOLS = {"ingest_obs", "recall", "session_search", "thread_recall",
 | Files → Upload | 只传 **`paper2_judge_hygiene.tex` 单文件**(自检零 includegraphics/零 input → 无需补图或 .bib;编译器让 arXiv 自动选 pdfLaTeX) |
 | Preview | 编译 preview 页数应为 **10 页**,与本地 PDF 一致再 Submit |
 
-提交后 1-2 天出 ID → ID 回填四处:[launch_post_v3](20260904_launch_post_v3.md) / [position paper](20260904_architecture_position_paper.md) / 落地页 / [r-ML 论文贴模板](rml_paper_post_template.md) 的 `{ARXIV_ID}` 占位,并同步 README paper2 链接。
+提交后 1-2 天出 ID → ID 回填四处(点位已预定位 9/5,到手即改):①[r-ML 模板](rml_paper_post_template.md) L41 `{ARXIV_ID}` + L48 回填表;②[position paper](20260904_architecture_position_paper.md) L96 "separate paper in progress" 改带 arXiv 链接(devto 版 L99 同句同步);③[launch_post_v3](20260904_launch_post_v3.md) L10 待办勾选+链接;④落地页 `landing/index.html`(服务器+本地双份,本地改后 scp)——hero 无 paper 位,可选新增,非硬项。
 
 ## 14. HN 提交文案(9/10-9/11 用,与 Reddit 错峰 48h)
 
