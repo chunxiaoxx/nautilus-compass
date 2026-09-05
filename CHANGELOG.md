@@ -1,5 +1,20 @@
 # Changelog
 
+## [3.1.1] · 2026-09-05 — 多租户收敛与发布前加固
+
+- 自助 token 缺省 project 双洞修复(读写全断 + 跨租户读;检查侧与执行侧同源 resolve,公网复验 own-space 通过)
+- tools/list 公网面收敛 17 → 8(平台内部工具退出公网面,知名字直调 forbidden;ops token 仍全见 17 个)
+- License:MIT → Modified MIT(商标保护 + 托管 100 付费用户上限;自部署/内部/个人永久免费)
+- 邮箱验证门禁代码就位(signup 6 位验证码 + login 403 门 + 存量豁免;生产行为由 mail.env 控制,当前未启用)
+- 版本四处一次对齐 3.1.1(终结 pyproject/package.json/server/plugin.json 三轨漂移;版本测试 4 红转绿)
+
+## [3.1.0] · 2026-09-01 — 安全与稳定性专项
+
+- 冒充洞修复:header-only 身份(X-User-ID 类)永久移除,JWT-only + 五项矩阵验证
+- daemon 全 action token 鉴权(ping 除外);TCP MCP 补项目级 scope;watchdog 复活(每 5min)
+- workbuddy 反馈包 P0/P1 清零:drift fail-loudly / tokens mtime 热加载 / daemon 冷启动重试 / inotify 关闭告警
+- 全量 pytest 1581 passed 基线;SERVER_VERSION 双轨终结
+
 ## [3.0.1] · 2026-08-25 — 诚实口径校准
 
 - LongMemEval-S 30 题在 v3.0 全链重测(m3-rerank + gemini-flash subject):**检索命中 80%**(24/30),端到端 26.7%。

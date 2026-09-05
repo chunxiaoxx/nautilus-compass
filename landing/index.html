@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Compass · 跨 agent 记忆层 · LongMemEval-S 检索三项碾压 mem0 · Nautilus 平台</title>
-<meta name="description" content="开源跨 agent 记忆与可靠性层 · LongMemEval-S 500 题全量检索 P@1 0.890 / P@5 0.978 / MRR 0.929(vs mem0 +11.6/+6.2/+9.5pt) · 端到端 42.6→75.4% · LOCOMO 客场反超 · 本地黑盒 · MCP + A2A · Modified MIT" />
+<meta name="description" content="开源跨 agent 记忆与可靠性层 · LongMemEval-S 500 题全量检索 P@1 0.890 / P@5 0.978 / MRR 0.929(vs mem0,同题同判据各用默认嵌入,+11.6/+6.2/+9.5pt) · 端到端 42.6→75.4% · LOCOMO 客场反超 · 本地黑盒 · MCP + A2A · Modified MIT" />
 <meta property="og:title" content="Compass · 跨 agent 记忆层" />
 <meta property="og:description" content="LongMemEval-S 检索 P@5 97.8% vs mem0 91.6% · LOCOMO 客场反超 · 本地黑盒 · drift 检测" />
 <meta property="og:url" content="https://compass.nautilus.social/" />
@@ -89,7 +89,7 @@
   <h2>⚖️ 对比</h2>
   <table>
     <tr><th></th><th>compass</th><th>mem0</th><th>Letta</th><th>Zep</th></tr>
-    <tr><td>LongMemEval-S 检索(同题对照)</td><td class="win">0.890 / 0.978 / 0.929</td><td>0.774 / 0.916 / 0.834</td><td>n/r</td><td>n/r</td></tr>
+    <tr><td>LongMemEval-S 检索(同题对照 · 各用默认嵌入)</td><td class="win">0.890 / 0.978 / 0.929</td><td>0.774 / 0.916 / 0.834</td><td>n/r</td><td>n/r</td></tr>
     <tr><td>LOCOMO 检索(n=1986)</td><td class="win">0.644 / 0.890</td><td>0.592 / 0.802</td><td>n/r</td><td>n/r</td></tr>
     <tr><td>LongMemEval-V2 官方基准(451 题 agent 轨迹记忆)</td><td class="win">web 40.0% / ent 38.4%(untuned 19.6 / 12.8;论文口径 frontier ≤14.1%;判分口径修正后 9/2)</td><td>n/r</td><td>n/r</td><td>n/r</td></tr>
     <tr><td>Drift 检测</td><td class="win">✅ AUC 0.83</td><td>❌</td><td>❌</td><td>❌</td></tr>
