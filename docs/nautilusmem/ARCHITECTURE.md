@@ -85,7 +85,7 @@
 - **已实战**:W1→W2 端到端喂 V5 grounding,B 从 FAIL→PASS(6/17 实测)
 - **已接线待证**:tier 晋升/PoI 重排/report 回流/可逆衰减(active→stale 170d→archived,
   召回即复活)——三次独立实测 uplift +0.000(语料信号稀疏,非逻辑坏;
-  见 [FEATURE_VALUE_LEDGER.md](FEATURE_VALUE_LEDGER.md),盒语料重测前保持待证)
+  见 [FEATURE_VALUE_LEDGER.md](../FEATURE_VALUE_LEDGER.md),盒语料重测前保持待证)
 - **格式愿景**:OKF 兼容 = 记忆 bundle 可被任何 OKF 工具读/继承,组织记忆可移植
 
 ## 6. 成绩锚(全部定案,详表见 SCOREBOARD)

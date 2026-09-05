@@ -278,7 +278,7 @@ section.lead h1 { font-size: 1.6em; color: #1a7f37; }
 ;" data-marpit-pagination-total="19">
 <h1 id="%E8%AF%81%E6%8D%AE-%E2%91%A2%E5%90%8C%E9%A2%98%E5%90%8C%E5%88%A4%E6%8D%AE%E5%AF%B9%E6%89%93">证据 ③:同题同判据对打</h1>
 <p><img src="deck_assets/headtohead.png" alt="" style="width:1050px;" /></p>
-<p><strong>mem0 2.0.19 我方复现 · BGE-m3 双方 · 脚本开源 ≈$3.50 重跑</strong></p>
+<p><strong>mem0 2.0.19 我方复现 · 同题同判据 · 脚本开源 ≈$3.50 重跑</strong></p>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="10" data-paginate="true" data-theme="default" data-style="section { background: #ffffff; color: #1f2328; font-size: 26px; }
 h1 { color: #1f2328; }
@@ -597,7 +597,8 @@ ChatGPT 会随对话推进覆写关键信息(ICLR 2025 LongMemEval 论文·人�
 负结果同样预注册:rerank 有害(-2pt)· K=50 无增益 · 小 embedder 更差。</p></div><div class="bespoke-marp-note" data-index="6" tabindex="0"><p>讲者注:81.6% 是剔除 71 道判官故障题的口径,双口径强制披露。
 判据先于跑数预注册,预注册文件带 hash 落仓。</p></div><div class="bespoke-marp-note" data-index="7" tabindex="0"><p>讲者注:tr 62.4 是已知短板,主动讲 —— 不藏短板是可信度的一部分。
 ssu 97.1 说明单会话用户事实几乎全对;tr 是时序推理,检索型方案的天然硬骨头。</p></div><div class="bespoke-marp-note" data-index="8" tabindex="0"><p>讲者注:如果有人只记一页,记这页。强调&quot;同题同判据&quot;四个字。
-跨 harness 分数不可比 —— mem0 自报 94.4% 是他们的 harness/判官/口径,不比。</p></div><div class="bespoke-marp-note" data-index="9" tabindex="0"><p>讲者注:EverMemBench 是第三方榜,不是我们出的卷子。
+跨 harness 分数不可比 —— mem0 自报 94.4% 是他们的 harness/判官/口径,不比。
+备询:嵌入各用各的默认(我方 BGE-m3 / mem0 text-embedding-005),对方嵌入在部分单会话型更强,我们靠分型路由整体赢。</p></div><div class="bespoke-marp-note" data-index="9" tabindex="0"><p>讲者注:EverMemBench 是第三方榜,不是我们出的卷子。
 LOCOMO n=1986:P@1 0.644 vs mem0 0.592 —— 换一张卷子,结论不掉。
 LME-M 检索 P@5 0.888,证据册里有,口头补。</p></div><div class="bespoke-marp-note" data-index="10" tabindex="0"><p>讲者注:主动说清 LME-V2 是上游官方基准,我们提交的是成绩+调优栈。
 untuned 19.6/12.8 → 定案 40.0/38.4。</p></div><div class="bespoke-marp-note" data-index="11" tabindex="0"><p>讲者注:26.9s 是写入时压缩阵营调用 LLM controller 的 p95(同口径对比)。
