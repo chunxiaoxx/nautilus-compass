@@ -26,7 +26,11 @@
 - 检索延迟 p95 0.34-0.80s(LLM controller 方案 26.9s)
 - mem0 官方自报 94.4%,口径与我们不可比(harness/判官/被测模型都不同),不拉踩,说清楚就好
 
-接入(本地三条命令):
+接入(pip 一条,或 Claude Code 插件三连):
+
+```
+pip install nautilus-compass
+```
 
 ```
 git clone https://github.com/chunxiaoxx/nautilus-compass ~/.claude/plugins/nautilus-compass
