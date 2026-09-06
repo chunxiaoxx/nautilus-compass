@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Privacy Policy · Compass</title>
+<style>
+  :root { --bg:#0d1117; --card:#161b22; --border:#30363d; --text:#e6edf3; --dim:#8b949e; --blue:#58a6ff; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; line-height:1.7; }
+  .wrap { max-width:760px; margin:0 auto; padding:48px 20px; }
+  a { color:var(--blue); text-decoration:none; }
+  h1 { font-size:1.6rem; margin-bottom:6px; }
+  .dim { color:var(--dim); font-size:.88rem; margin-bottom:28px; }
+  h2 { font-size:1.05rem; margin:26px 0 8px; color:var(--text); }
+  p, li { font-size:.92rem; color:var(--text); }
+  ul { padding-left:20px; }
+  code { background:#21262d; border-radius:6px; padding:2px 8px; font-size:.85em; }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px 20px; margin:10px 0; }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <h1>Privacy Policy</h1>
+  <p class="dim">Compass · compass.nautilus.social · Last updated: 2026-09-06</p>
+
+  <h2>1. What we collect</h2>
+  <div class="card"><ul>
+    <li><b>Account data</b> — the email address you register, and your passphrase stored only as a one-way hash (never in plaintext).</li>
+    <li><b>API tokens</b> — stored only as SHA-256 hashes; the raw token is shown once at creation.</li>
+    <li><b>Memory entries you submit</b> — the observations, notes, and metadata you explicitly ingest via the MCP API or console.</li>
+    <li><b>Service logs</b> — minimal operational logs (timestamps, request status) for reliability and abuse prevention.</li>
+  </ul></div>
+
+  <h2>2. How we use it</h2>
+  <div class="card"><ul>
+    <li>To operate your account: sign-up verification codes, login, and token authentication.</li>
+    <li>To provide the service you asked for: storing, searching, and recalling your memory entries.</li>
+    <li>Verification codes are delivered by email through Google's Gmail API (send-only, for the address you registered).</li>
+  </ul></div>
+
+  <h2>3. What we do not do</h2>
+  <div class="card"><ul>
+    <li>We do not sell your data or share it with third parties, except when required by law.</li>
+    <li>We do not use your content for advertising, profiling, or model training.</li>
+    <li>We do not read your memory entries except to run the storage/retrieval operations you request.</li>
+  </ul></div>
+
+  <h2>4. Storage, retention, deletion</h2>
+  <div class="card">
+    <p>Account and memory data live in our server-side database. You can revoke API tokens anytime from the console. To delete your account and all associated data, contact us (below); deletion requests are honored within 30 days.</p>
+  </div>
+
+  <h2>5. Contact</h2>
+  <div class="card">
+    <p>Open an issue on our GitHub repository (linked from the <a href="/">homepage</a>) for any privacy question or deletion request.</p>
+  </div>
+</main>
+</body>
+</html>
