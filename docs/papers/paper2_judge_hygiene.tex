@@ -1,5 +1,3 @@
-% Paper 2 — Judge Failure in the Wild (定稿 2026-09-04)
-% 署名/license 与 paper1(arXiv:2605.09863)一致,用户 9/4 拍板。
 \documentclass[11pt]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath,amssymb,booktabs,url}
@@ -539,9 +537,12 @@ it, turning the vaccine from a principle into a checklist.
 
 Both J-K judges are reasoning models of the same generation; generalization
 to non-reasoning and smaller judges is untested. The production cases come
-from long-memory evaluation (LongMemEval-S, 500 items; LME-V2, 451 items);
-other domains may exhibit additional failure types this taxonomy does not
-cover. The J-C case is a natural experiment: the gateway fault is
+from long-memory evaluation (LongMemEval-S, 500 items; LME-V2, 451 items),
+and the title's scope reflects that evidence base; the taxonomy itself is
+not domain-bound --- J-K should surface wherever judges score high-precision
+numerical claims, and J-B/J-C wherever an LLM judge sits behind an API
+budget or a network hop. Other domains may exhibit additional failure types
+this taxonomy does not cover. The J-C case is a natural experiment: the gateway fault is
 uncontrolled and its root cause lived outside our infrastructure, so we
 report incidence and cure rather than a dose-response analysis. The 14.2\%
 incidence reflects one gateway over one deployment window (a single month,
