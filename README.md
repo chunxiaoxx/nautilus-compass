@@ -86,6 +86,15 @@ $50+ for GPT-4o-judged stacks). Full argument:
 
 ## Quickstart
 
+### Python package (PyPI · 3.1.1)
+
+```bash
+pip install nautilus-compass
+# ships the CLI, the MCP server, the A2A adapter and session tools:
+#   nautilus-compass · compass-mcp · compass-a2a
+#   compass-drift-history · compass-session-search · compass-session-writer
+```
+
 ### 30 seconds (Claude Code / Desktop · local daemon)
 
 ```bash
