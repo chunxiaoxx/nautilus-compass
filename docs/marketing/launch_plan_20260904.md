@@ -15,7 +15,7 @@
 
 | 物料 | 层 | 状态 |
 |---|---|---|
-| launch post(r/LocalLLaMA 主帖 + X 7 条) | ① | ✅ 成品(终检修复 26e8b76),仅 paper2 arXiv 链接留回填位 |
+| launch post(r/LocalLLaMA 主帖 + X 7 条) | ① | ✅ 成品(终检修复 26e8b76;🆕 9/6:数字三处终检一致已勾+pip 安装行+signup 邮箱验证注),仅 paper2 arXiv 链接留回填位 |
 | 英文架构立场长文(~1900 词) | ① | ✅ 成品 v1,拼写终检 9/5 通过(数字对 SCOREBOARD·OKF 术语查证 Google Cloud 官方规范) |
 | dev.to 适配版 | ① | ✅ [20260905_devto_position_paper.md](20260905_devto_position_paper.md)(front matter+liquid 仓库卡,9/10 与博客同日) |
 | 第二帖(LME-V2 判分卫生故事) | ① | ✅ 英文成品 v1(8c5bc78),cheap-tier 数字已定案可填 |
@@ -72,7 +72,7 @@
 
 ## 4. D-day runbook(9/8 发布日)
 
-1. 20:30 北京:最后检查——`git status` clean+pushed;signup/MCP 探针重跑一遍(四绿才发);落地页 200;**chunxiaoxx 账号已登录 Reddit/X**
+1. 20:30 北京:最后检查——`git status` clean+pushed;四探针重跑(四绿才发;🔴 **必带 env** `PROBE_A="chunxiaoxx+probeA@gmail.com:probe-account-20260906" PROBE_B="chunxiaoxx+probeB@gmail.com:probe-account-20260906"`,EMAIL_REQUIRED=1 后裸跑 @probe.local 必 403 崩);signup 轻探 POST /signup 返回 200+verify_required:true;落地页 200;**chunxiaoxx 账号已登录 Reddit/X**
 2. 21:00:r/LocalLLaMA 发主帖(账号:chunxiaoxx;标题照物料,勿改数字;**带 60-90s 终端录屏**)
 3. 21:05:**立即抢首评(草稿见 §13)**——主动说破 mem0 自报 94.4% vs 我方 75.4% 的口径问题,不给任何人留"抓漏洞"的先手
 4. 23:00:X thread 发布(7 条,末条带 repo+signup)
@@ -113,7 +113,7 @@
 | 跑分被较真质疑 | 中 | 所有数字 evidence 链在仓;口径披露是差异化卖点,把质疑引向 PROTOCOL.md |
 | license 被喷"伪开源" | 中 | §6 标准答案;开源纯度辩护交给第三方(四探针/复现成本) |
 | 竞品恶意对比/碰瓷 | 低 | 不点名回应竞品营销;只守自家数字真实性 |
-| hosted 被刷注册/滥用 | 中 | 已有 scoped token+隔离;发现滥用可按 token 撤销;必要时注册加邮箱验证 |
+| hosted 被刷注册/滥用 | 中 | 已有 scoped token+隔离;发现滥用可按 token 撤销;✅ 邮箱验证 9/6 已上线(6 位码门禁,Gmail API production token) |
 | 发布后 bug 爆发 | 低 | 四探针绿灯才发;热点修复走 patch commit,坏消息主动披露(信任资产) |
 
 ## 8. 拍板记录(2026-09-04 用户)
@@ -201,9 +201,9 @@
 | 1 | 60-90s 终端录屏(D1 跨会话记忆),嵌 Reddit 帖 | 🔴 发布前必做 | 脚本见 [demo_recording_script.md](demo_recording_script.md),录制待用户 |
 | 2 | 首评草稿(94.4 vs 75.4 口径说破) | 🔴 发布前必做 | ✅ 见 §13 |
 | 3 | chunxiaoxx Reddit karma 预热(本周起技术性评论) | 🟡 本周 | 待用户(每天 2-3 条,发帖前有历史即可) |
-| 4 | 新人全流程实测+摩擦修复 | 🟡 | ✅ 已实测(§13.1);邮箱验证已实现(commit 4fefc97);9/5 澄清:用户已亲填 mail.env 半成品(PORT=587,HOST/USER/PASS/FROM 空缺,EMAIL_REQUIRED=0 兜底)——**生产行为与配置一致,无故障**; Gmail 方案B refresh_token 已 7 天过期死(testing 模式),解锁路径=App Password(快)或 consent screen 转 production+重新授权;**凭证先落再开 EMAIL_REQUIRED=1(顺序反了 signup 全 503)**;🆕 9/5 双洞修复:① `/mcp`(无尾斜杠)301→:8443 死路径(nginx 已改直 proxy);② **自助 token 读写全断+跨租户读**(9/4 workers 2 重启后生效的 scope 门禁把无 project 参数的调用判 `read:''` 403——且 9/4 实测的"200"实为 forbidden 包在 body 里的假绿;首修放行后又暴露执行侧落 daemon 默认内部用户空间 cycle-N-auto 的跨租户读,终修=缺省 project 显式注入持有者 uid,读写落自己空间,公网复验 own-space+四探针 FOUR-GREEN);🟡 遗留:tools/list 17 个含 10 个平台内部工具(governance_*/submit_platform_task 等)暴露给外部用户,收敛白名单建议提前到发布前拍板 |
+| 4 | 新人全流程实测+摩擦修复 | 🟡 | ✅ 已实测(§13.1);邮箱验证已实现(commit 4fefc97);9/5 澄清:用户已亲填 mail.env 半成品(PORT=587,HOST/USER/PASS/FROM 空缺,EMAIL_REQUIRED=0 兜底)——**生产行为与配置一致,无故障**; Gmail 方案B refresh_token 已 7 天过期死(testing 模式),解锁路径=App Password(快)或 consent screen 转 production+重新授权;**凭证先落再开 EMAIL_REQUIRED=1(顺序反了 signup 全 503)**;✅ **9/6 定案上线**:consent screen 已转 production+新 client 授权,refresh_token 长期,Gmail API 发码生产全绿(signup e2e:发码→收件箱读回→verify→login→cmp_live 签发+FOUR-GREEN;坑与配方见 memory gmail-verify-production-20260906);🆕 9/5 双洞修复:① `/mcp`(无尾斜杠)301→:8443 死路径(nginx 已改直 proxy);② **自助 token 读写全断+跨租户读**(9/4 workers 2 重启后生效的 scope 门禁把无 project 参数的调用判 `read:''` 403——且 9/4 实测的"200"实为 forbidden 包在 body 里的假绿;首修放行后又暴露执行侧落 daemon 默认内部用户空间 cycle-N-auto 的跨租户读,终修=缺省 project 显式注入持有者 uid,读写落自己空间,公网复验 own-space+四探针 FOUR-GREEN);🟡 遗留:tools/list 17 个含 10 个平台内部工具(governance_*/submit_platform_task 等)暴露给外部用户,收敛白名单建议提前到发布前拍板 |
 | 5 | paper2 提交 checklist 交用户 | 🟡 | ✅ 见 §13.2 |
-| 6 | MCP 目录提交(PulseMCP/Smithery/mcp.so/glama) | 🟢 发布周 | ✅ 材料已核对修正(server.json 56.6%→75.4 定案口径+版本 3.1.1+packages 指 PyPI 真实 3.0.1+废弃 1/15 cost 删;npm 清单同步;anchors 防吹牛锚包 v1.3 重校准);⚠️ 发布周 TODO:PyPI 发 3.1.1(现 PyPI 3.0.1 描述停在 EvoMap 旧文案,需用户 PyPI 凭证)·目录提交动作需用户账号 |
+| 6 | MCP 目录提交(PulseMCP/Smithery/mcp.so/glama) | 🟢 发布周 | ✅ 材料已核对修正(server.json 56.6%→75.4 定案口径+版本 3.1.1+packages 指 PyPI 真实 3.0.1+废弃 1/15 cost 删;npm 清单同步;anchors 防吹牛锚包 v1.3 重校准);✅ PyPI 3.1.1 已发布(9/6,三重验证:页面 200/JSON latest/pip download 真实拉包;403=token 截断坑见 memory pypi-311-published-20260906;3.1.2 元数据修正同日补发,description 旧 EvoMap 文案已换)·目录提交动作需用户账号 |
 | 7 | 智源接触(一页纸已备) | 🟢 本周发出,不催结果 | ✅ 材料 |
 | 8 | PPT 页级大纲(Marp)→ 成品 | 🟡 并行(用户有演讲计划) | ✅ 大纲+成品双格式已渲染([pptx](pitch_deck_20260904.pptx) / [html](pitch_deck_20260904.html),12 页·讲者注内嵌);内容改动后重出:`npx @marp-team/marp-cli pitch_deck_outline_20260904.md -o pitch_deck_20260904.pptx` |
 | 9 | 一页纸(英文政企) | ⏸ 降级:有真实触达场景再做 | — |

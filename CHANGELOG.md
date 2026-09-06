@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.1.2] · 2026-09-06 — PyPI 元数据修正
+
+- PyPI 页面 description 换掉 EvoMap 时代旧文案(旧文案仍写 retrieval-hit 80% / e2e 26.7%,与 9 月定案口径 0.890 / 75.4% 矛盾)——零代码改动,纯元数据刷新
+- README Quickstart 补 `pip install nautilus-compass` 小节(3.1.1 起发布于 PyPI)
+
 ## [3.1.1] · 2026-09-05 — 多租户收敛与发布前加固
 
 - 自助 token 缺省 project 双洞修复(读写全断 + 跨租户读;检查侧与执行侧同源 resolve,公网复验 own-space 通过)
