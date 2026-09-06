@@ -139,7 +139,16 @@ def _scopes_from_value(val) -> frozenset:
     if isinstance(val, dict):
         return frozenset(str(s) for s in val.get("scopes", []))
     if isinstance(val, list):
-        # 旧格式: 非空 list = 旧的全权语义（read:* + write:*）
+        # 2026-09-06 · list 若本身承载 scope 语义串(tools.*/admin/read:*/
+        # write:*,9/1 token 收窄后的第二代格式)则原样采用——此前一律归一
+        # read:*/write:* 把 tools.* 标志洗掉,内部 dialog token 被误判成
+        # 自助面(只 8 工具)。仅真旧格式(非语义串)才归一为全权。
+        strs = [str(s) for s in val]
+        if strs and all(
+            s.startswith(("read:", "write:", "tools.", "resources.")) or s == "admin"
+            for s in strs
+        ):
+            return frozenset(strs)
         return frozenset({"read:*", "write:*"}) if val else frozenset()
     return frozenset()
 
