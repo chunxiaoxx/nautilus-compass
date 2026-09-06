@@ -37,13 +37,23 @@ def run_probes(http, base: str) -> list[tuple[str, bool, str]]:
     (also accepts starlette TestClient, which the pytest suite uses instead)."""
     tag = uuid.uuid4().hex[:10]
     users: dict[str, tuple[str, dict]] = {}
+    # 2026-09-06 · COMPASS_EMAIL_REQUIRED=1 后 @probe.local 假域收不到验证码,
+    # login 必 403。支持注入已验证账号对:PROBE_A / PROBE_B = email:passphrase
+    # (一次性 setup 后长期复用;P4 只 revoke token,不动账号)。
+    import os
+    env_pairs = {"a": os.environ.get("PROBE_A", ""),
+                 "b": os.environ.get("PROBE_B", "")}
     for k in ("a", "b"):
-        email = f"probe-{tag}-{k}@probe.local"
-        http.post(f"{base}/signup", json={"email": email,
-                                          "passphrase": "probe-only-9ch"},
-                  timeout=_TIMEOUT)  # 409 on freak collision; login is the gate
+        if ":" in env_pairs[k]:
+            email, passphrase = env_pairs[k].split(":", 1)
+        else:
+            email = f"probe-{tag}-{k}@probe.local"
+            passphrase = "probe-only-9ch"
+            http.post(f"{base}/signup", json={"email": email,
+                                              "passphrase": passphrase},
+                      timeout=_TIMEOUT)  # 409 on freak collision; login is the gate
         r = http.post(f"{base}/login", json={"email": email,
-                                             "passphrase": "probe-only-9ch"},
+                                             "passphrase": passphrase},
                       timeout=_TIMEOUT)
         r.raise_for_status()
         j = r.json()
