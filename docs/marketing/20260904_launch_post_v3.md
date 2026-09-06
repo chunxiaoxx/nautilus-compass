@@ -8,7 +8,7 @@
 > - [x] e2e 段刷新:9/3 A 臂终判 PASS + 9/4 #40 断连重判补齐,定案 75.4%(377/500,每题有真判决)/81.6%(同口径剔除断连 71 题);42.6 为基线锚,正文双报
 > - [x] cheap-tier 定案 36.3/36.5 双域未超现役组合关闭(9/4)→ 主帖不放,第二帖填(SCOREBOARD 已录)
 > - [ ] paper2 arXiv 链接回填(提交后)
-> - [ ] 终检:帖子数字与 README/落地页/SCOREBOARD 三处一致
+> - [x] 终检 9/6:帖子数字与 README/落地页逐项对照一致(0.890/0.978/0.929 · 0.774/0.916/0.834 · 0.644/0.592 · 42.6→75.4/81.6 · 三弱型双口径 ms 69.2/73.2 · ssa 83.9/85.4 · tr 62.4/83.3)
 
 ---
 
@@ -53,7 +53,9 @@ Every experiment above has its full run log in `docs/evidence/` in the repo — 
 
 It also does two things beyond recall: pre-action **drift detection** (checks agent actions against failure-mode anchors, AUC 0.83, p95 <50ms) and **cross-agent contracts** (tracks implicit obligations when multiple agents share files).
 
-30-second hookup (Claude Code, local daemon — everything stays on your machine):
+Python users: `pip install nautilus-compass` (PyPI 3.1.1 — ships the CLI, MCP server, A2A adapter and session tools).
+
+Claude Code / Desktop (local daemon — everything stays on your machine):
 
 ```bash
 git clone https://github.com/chunxiaoxx/nautilus-compass ~/.claude/plugins/nautilus-compass
@@ -62,7 +64,7 @@ bash ~/.claude/plugins/nautilus-compass/daemon_start.sh
 ```
 
 Cursor / Cline / Continue.dev / Zed: `python scripts/install_to_agent.py`.
-No local install: **hosted open beta, self-serve** — sign up at https://compass.nautilus.social/signup, mint a scoped token in the console, point any MCP client at `https://compass.nautilus.social/mcp/`. Tokens are server-bound to your own space (read+write scoped per project); cross-user read/write is denied and revocation takes effect immediately — verified by a four-probe suite that runs against the public endpoint (code in repo).
+No local install: **hosted open beta, self-serve** — sign up at https://compass.nautilus.social/signup (6-digit email code), mint a scoped token in the console, point any MCP client at `https://compass.nautilus.social/mcp/`. Tokens are server-bound to your own space (read+write scoped per project); cross-user read/write is denied and revocation takes effect immediately — verified by a four-probe suite that runs against the public endpoint (code in repo).
 
 Repo (Modified MIT, bilingual README): https://github.com/chunxiaoxx/nautilus-compass
 Landing: https://compass.nautilus.social
