@@ -36,17 +36,25 @@ HOLD_MS = 2300    # hold after each command's output completes
 FINAL_HOLD_MS = 3200  # the control段 NO ANSWER beat stays longest
 CARDS_MS = 2400   # intro / outro card duration
 
-INTRO = "nautilus-compass — agent memory that survives sessions · zero LLM calls at write time"
-OUTRO_LINES = ["Modified MIT · self-host free forever",
-               "github.com/chunxiaoxx/nautilus-compass",
-               "hosted open beta: compass.nautilus.social"]
+INTRO = "nautilus-compass — cross-agent memory · zero LLM calls at write time"
+OUTRO_LINES = ["P@1 0.890 vs mem0 0.774 (same questions, same criteria) · reproduce ~$3.50",
+               "130 days in production · 771 commits · 603 by the agent fleet that runs on it",
+               "local-first · Modified MIT · github.com/chunxiaoxx/nautilus-compass · compass.nautilus.social"]
 CMDS = [
     ("python tools/demo_d1.py write 1", "session-1: dog walk on Tuesday (Momo)"),
     ("python tools/demo_d1.py write 2", "session-2: learning Rust"),
     ("python tools/demo_d1.py write 3", "session-3: Monday standup"),
     ("python tools/demo_d1.py ask", "cross-session question"),
     ("python tools/demo_d1.py control", "control space: same question"),
+    ("python tools/demo_d1.py drift", "pre-action guard"),
 ]
+# ask 段持顿时追加的能力陈述(dim # 行,不冒充程序输出)
+NOTES = {
+    "python tools/demo_d1.py ask": [
+        "# retrieval: type-routed (turn-level vs summary-level)",
+        "# read p95 0.3-0.8s · LLM-in-the-loop memory: ~27s",
+    ],
+}
 
 
 def run_demo() -> list[tuple[str, list[str]]]:
@@ -98,8 +106,13 @@ def render(segs: list[tuple[str, list[str]]]) -> None:
         return y + LINE_H
 
     def out_color(s: str):
-        return GREEN if s.startswith("[ok]") or "->" in s else (
-            FG if s[:1].isdigit() else DIM)
+        if s.startswith("[ok]") or "->" in s or "ALERT" in s:
+            return GREEN
+        if s.startswith("DANGEROUS"):
+            return "#f85149"  # red for the dangerous-query line
+        if s[:1].isdigit() or s.startswith("["):
+            return FG
+        return DIM
 
     def draw_seg(d: ImageDraw.ImageDraw, y: int, cmd: str, out: list[str],
                  upto: int | None = None, partial: str = "") -> int:
@@ -108,6 +121,22 @@ def render(segs: list[tuple[str, list[str]]]) -> None:
         for ln in out if upto is None else out[:upto]:
             y = text_row(d, y, ln, f_out, out_color(ln))
         return y + LINE_H // 2  # breathing room between segments
+
+    def econ_card() -> None:
+        """write-path economics 对照卡(插在 write 3 之后)。"""
+        img, d = base()
+        cy = H // 2 - 70
+        d.text((PAD + 30, cy), "write-path economics", font=f_cmd, fill=DIM)
+        cy += LINE_H + 8
+        d.text((PAD + 30, cy), "LLM-extract write:  ~$0.002 · 2-3s · lossy (frozen at extraction time)",
+               font=f_out, fill="#f85149")
+        cy += LINE_H
+        d.text((PAD + 30, cy), "compass write:      $0 · <0.5s · verbatim, forever re-indexable",
+               font=f_out, fill=GREEN)
+        cy += LINE_H
+        d.text((PAD + 30, cy), "read latency p95:    0.3-0.8s · LLM-in-the-loop memory: ~27s",
+               font=f_out, fill=FG)
+        add_frame(img, CARDS_MS + 800)
 
     # intro card
     img, d = base()
@@ -135,9 +164,13 @@ def render(segs: list[tuple[str, list[str]]]) -> None:
         y2 = y
         for hc, ho in history:
             y2 = draw_seg(d, y2, hc, ho)
-        draw_seg(d, y2, cmd, out)
+        y2 = draw_seg(d, y2, cmd, out)
+        for note in NOTES.get(cmd, []):
+            y2 = text_row(d, y2, note, f_out, DIM)
         add_frame(img, FINAL_HOLD_MS if si == len(segs) - 1 else HOLD_MS)
         history.append((cmd, out))
+        if si == 2:  # after write 3
+            econ_card()
 
     # outro card
     img, d = base()

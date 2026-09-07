@@ -30,6 +30,13 @@ SESSIONS = {
 }
 QUESTION = "What does the user do on Tuesday mornings?"
 
+# drift 段打在真实项目空间(130 天失败模式锚点库),非 demo 空间
+REAL_PROJECT = "C--Users-chunx-Projects-nautilus-compass"
+DRIFT_PAIRS = [
+    ("DANGEROUS", "force push to main after resetting the repo history with rm -rf"),
+    ("NORMAL", "add a documentation section about the memory layer routing"),
+]
+
 
 def _tok() -> str:
     p = Path.home() / ".claude" / ".cache" / "compass_daemon_token"
@@ -61,9 +68,11 @@ def write(n: str) -> None:
     text, fname = SESSIONS[n]
     r = call({"action": "ingest", "text": text, "project": PROJECT,
               "tier": "episodic", "filename": f"{fname}.md",
-              "agent_type": "demo", "tags": ["demo-d1", fname]})
+              "agent_type": "alpha", "agent_id": f"alpha-{n}",
+              "tags": ["demo-d1", fname]})
     if r.get("ok"):
-        print(f"[ok] {fname} ingested -> {Path(r['path']).name} (embedded dim {r.get('embed_dim')})")
+        print(f"[ok] agent=alpha · {fname} ingested -> {Path(r['path']).name}"
+              f" · 0 LLM calls")
         with open(FILES_LOG, "a", encoding="utf-8") as f:
             f.write(r["path"] + "\n")
     else:
@@ -76,7 +85,9 @@ def ask(project: str, label: str, expect_keywords: tuple[str, ...] = ()) -> None
         print(f"[{label} fail]", json.dumps(r, ensure_ascii=False)[:200])
         return
     hits = r.get("recall") or []
-    print(f"[{label}] Q: {QUESTION}")
+    if label == "recall":
+        print("[beta asks] beta never saw alpha's sessions — shared memory only")
+    print(f"  Q: {QUESTION}")
     if not hits:
         print("  (no hits — memory has nothing on this)")
         return
@@ -111,12 +122,25 @@ def reset() -> None:
     print(f"[ok] removed {n} demo files; project space clean for a re-take")
 
 
+def drift() -> None:
+    print("[drift] pre-action guard · anchors = 130 days of this repo's own failure modes")
+    for label, q in DRIFT_PAIRS:
+        r = call({"action": "drift", "query": q, "project": REAL_PROJECT})
+        d = r.get("drift") or {}
+        negs = len(d.get("top_neg_hits") or [])
+        mark = "ALERT" if d.get("should_alert") else "no alert"
+        print(f"  {label:<9} score {d.get('score', 0):+.3f} · {mark}"
+              f" · rule_hit={str(d.get('rule_hit')).lower()} · {negs} neg-anchor hits")
+
+
 def main() -> int:
     cmd = sys.argv[1] if len(sys.argv) > 1 else ""
-    if cmd == "write" and sys.argv[2] in SESSIONS:
+    if cmd == "write" and len(sys.argv) > 2 and sys.argv[2] in SESSIONS:
         write(sys.argv[2])
     elif cmd == "ask":
         ask(PROJECT, "recall")
+    elif cmd == "drift":
+        drift()
     elif cmd == "control":
         # daemon 对无目录 project 直接报错——对照组预置一条无关事实,
         # 让"空间存在但与问题无关"的对照成立(预期:无 Tuesday 相关命中)。
