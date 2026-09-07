@@ -131,6 +131,7 @@ def drift() -> None:
         mark = "ALERT" if d.get("should_alert") else "no alert"
         print(f"  {label:<9} score {d.get('score', 0):+.3f} · {mark}"
               f" · rule_hit={str(d.get('rule_hit')).lower()} · {negs} neg-anchor hits")
+        print(f"     -> pending action: \"{q}\"")
 
 
 def main() -> int:
