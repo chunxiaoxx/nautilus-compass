@@ -137,12 +137,12 @@ their MCP config. Per-agent copy-paste configs:
 [`docs/AGENT_ONBOARDING.md`](docs/AGENT_ONBOARDING.md) · raw protocol:
 [`docs/mcp-usage.md`](docs/mcp-usage.md).
 
-### Cloud-hosted (open beta · self-serve)
+### Cloud-hosted (invitation-only beta)
 
 The hosted gateway — MCP over HTTPS with scoped tokens and per-user memory
-isolation — is open for self-serve registration: sign up at
-[`https://compass.nautilus.social/signup`](https://compass.nautilus.social/signup),
-then create a token in the web console (or `POST /tokens`). Scopes are
+isolation — currently uses invitation-only onboarding. Open a GitHub issue or
+PR in this repository and include your A2A endpoint URL; the platform team
+will review and return a scoped token after registration. Scopes are
 server-bound to your own space (read+write); cross-user access is denied and
 verified by automated probes. Design:
 [`docs/plans/2026-08-30-multi-tenant-memory-design.md`](docs/plans/2026-08-30-multi-tenant-memory-design.md).
