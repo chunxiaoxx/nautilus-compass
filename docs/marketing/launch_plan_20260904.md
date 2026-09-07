@@ -102,6 +102,7 @@
 - **"你们也承认比最弱 RAG 基线低?"**:承认,主动说的——自我纠偏是这套材料的卖点而非破绽;同一条回复接上句三差异;诚实定位≠接受现状,攻坚目标写在路线图里
 - **竞品员工到场(mem0/Zep 团队活跃于同社区)**:只谈自家数字与口径,零商业攻击;标准邀请句:"your latest version is welcome in our harness — scripts are in the repo"
 - **"多租户/安全谁验证的"**:四探针脚本在 repo,任何人可对生产端点重跑
+- **"和 Aegis Compass 什么关系?"**(2026-09-07 发现的同名竞品 aegisplatform.ai,动作治理层 $20/mo):零关系,同名不同层——他们仲裁 agent 的**动作**(policy engine/审计/合规,企业向),我们仲裁 agent 的**记忆**(判分卫生学/QC 门/检索科学,开源+本地黑盒+跨 agent);他们零 benchmark,我们 0.890 vs mem0 全证据链开源。一句话:Aegis governs what agents do, nautilus-compass governs what agents remember.
 - **"一个人写的?"**:是,130 天 771 commits,其中 603 由 agent 舰队提交——这本身就是产品的证明(dogfood)
 - **面对明显嘲讽**:不接火;只补事实一条,不再跟
 
@@ -198,7 +199,7 @@
 
 | # | 事项 | 优先级 | 状态 |
 |---|---|---|---|
-| 1 | 60-90s 终端录屏(D1 跨会话记忆),嵌 Reddit 帖 | 🔴 发布前必做 | 脚本见 [demo_recording_script.md](demo_recording_script.md),录制待用户 |
+| 1 | 60-90s 终端录屏(D1 跨会话记忆),嵌 Reddit 帖 | 🔴 发布前必做 | 🟢 **9/7 程序化 GIF 成品**:[deck_assets/demo_d1.gif](deck_assets/demo_d1.gif)(66 帧 398KB ~24s,真实 daemon 输出,视觉验证绿;`tools/demo_d1_video.py` 可重渲,`tools/demo_d1.py` 彩排/重录驱动);真终端 mp4 版可选:Win+Alt+R 照 `demo_recording_script.md` 手录(命令包在 demo_d1.py) |
 | 2 | 首评草稿(94.4 vs 75.4 口径说破) | 🔴 发布前必做 | ✅ 见 §13 |
 | 3 | chunxiaoxx Reddit karma 预热(本周起技术性评论) | 🟡 本周 | 待用户(每天 2-3 条,发帖前有历史即可) |
 | 4 | 新人全流程实测+摩擦修复 | 🟡 | ✅ 已实测(§13.1);邮箱验证已实现(commit 4fefc97);9/5 澄清:用户已亲填 mail.env 半成品(PORT=587,HOST/USER/PASS/FROM 空缺,EMAIL_REQUIRED=0 兜底)——**生产行为与配置一致,无故障**; Gmail 方案B refresh_token 已 7 天过期死(testing 模式),解锁路径=App Password(快)或 consent screen 转 production+重新授权;**凭证先落再开 EMAIL_REQUIRED=1(顺序反了 signup 全 503)**;✅ **9/6 定案上线**:consent screen 已转 production+新 client 授权,refresh_token 长期,Gmail API 发码生产全绿(signup e2e:发码→收件箱读回→verify→login→cmp_live 签发+FOUR-GREEN;坑与配方见 memory gmail-verify-production-20260906);🆕 9/5 双洞修复:① `/mcp`(无尾斜杠)301→:8443 死路径(nginx 已改直 proxy);② **自助 token 读写全断+跨租户读**(9/4 workers 2 重启后生效的 scope 门禁把无 project 参数的调用判 `read:''` 403——且 9/4 实测的"200"实为 forbidden 包在 body 里的假绿;首修放行后又暴露执行侧落 daemon 默认内部用户空间 cycle-N-auto 的跨租户读,终修=缺省 project 显式注入持有者 uid,读写落自己空间,公网复验 own-space+四探针 FOUR-GREEN);🟡 遗留:tools/list 17 个含 10 个平台内部工具(governance_*/submit_platform_task 等)暴露给外部用户,收敛白名单建议提前到发布前拍板 |
