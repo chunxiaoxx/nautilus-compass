@@ -79,8 +79,9 @@ def _font(size: int) -> ImageFont.FreeTypeFont:
 
 
 def render(segs: list[tuple[str, list[str]]]) -> None:
-    n_lines = 1 + sum(2 + len(out) + 1 for _, out in segs) + 3
-    H = max(420, 64 + n_lines * LINE_H + PAD)
+    n_rows = sum(1 + len(out) + len(NOTES.get(cmd, [])) for cmd, out in segs) \
+        + len(segs) // 2
+    H = max(420, 64 + int(n_rows * LINE_H) + 56)
     f_cmd, f_out = _font(FS), _font(FS - 2)
     frames: list[Image.Image] = []
 
@@ -123,20 +124,18 @@ def render(segs: list[tuple[str, list[str]]]) -> None:
         return y + LINE_H // 2  # breathing room between segments
 
     def econ_card() -> None:
-        """write-path economics 对照卡(插在 write 3 之后)。"""
-        img, d = base()
-        cy = H // 2 - 70
-        d.text((PAD + 30, cy), "write-path economics", font=f_cmd, fill=DIM)
-        cy += LINE_H + 8
-        d.text((PAD + 30, cy), "LLM-extract write:  ~$0.002 · 2-3s · lossy (frozen at extraction time)",
-               font=f_out, fill="#f85149")
-        cy += LINE_H
-        d.text((PAD + 30, cy), "compass write:      $0 · <0.5s · verbatim, forever re-indexable",
-               font=f_out, fill=GREEN)
-        cy += LINE_H
-        d.text((PAD + 30, cy), "read latency p95:    0.3-0.8s · LLM-in-the-loop memory: ~27s",
-               font=f_out, fill=FG)
-        add_frame(img, CARDS_MS + 800)
+        """write-path economics 对照卡(插在 write 3 之后,逐行出现防死字)。"""
+        rows = [("write-path economics", DIM),
+                ("LLM-extract write:  ~$0.002 · 2-3s · lossy (frozen at extraction time)", "#f85149"),
+                ("compass write:      $0 · <0.5s · verbatim, forever re-indexable", GREEN)]
+        top = H // 2 - 60
+        for ri in range(1, len(rows) + 1):
+            img, d = base()
+            cy = top
+            for text, color in rows[:ri]:
+                d.text((PAD + 30, cy), text, font=f_out if ri > 1 else f_cmd, fill=color)
+                cy += LINE_H
+            add_frame(img, CARDS_MS + 800 if ri == len(rows) else LINE_MS * 2)
 
     # intro card
     img, d = base()
@@ -177,6 +176,9 @@ def render(segs: list[tuple[str, list[str]]]) -> None:
     for i, ln in enumerate(OUTRO_LINES):
         d.text((PAD + 20, H // 2 - 40 + i * LINE_H), ln, font=f_cmd,
                fill=FG if i else GREEN)
+    d.text((PAD + 20, H // 2 - 40 + len(OUTRO_LINES) * LINE_H + 6),
+           "~$3.50 reproduce · single consumer GPU · BENCHMARKS_REPRODUCE.md",
+           font=_font(FS - 5), fill=DIM)
     add_frame(img, CARDS_MS)
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
