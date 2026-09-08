@@ -88,10 +88,40 @@ GitHub: github.com/chunxiaoxx/nautilus-compass · compass.nautilus.social
 
 ## 5. 发送节奏
 
-| 时间 | 动作 |
-|---|---|
-| 9/9 | mem0 草稿补 Reddit 链接后发;机器之心+PaperWeekly 发 |
-| 9/9-10 | Letta/Cognee/Zep 走表单/GitHub(模板①) |
-| 大厂三封 | 用户自有渠道转发(火山 Ark 表单/GitHub/内推),邮件渠道不存在不硬发 |
-| KOL 私信 | 9/10 起,每天 ≤5 个 |
-| 回复跟进 | 48h 未回不追发;有回复进 seeds 名单优先维护 |
+| 时间 | 动作 | 状态 |
+|---|---|---|
+| 9/8 晚 | 机器之心/PaperWeekly/Zep/MemOS/量子位(5 封) | ✅ 已发 |
+| 9/8 深夜 | mem0(不等链接,repo 即证据源)/Datawhale(2 封) | ✅ 已发 |
+| 9/9 | Letta 表单/Cognee GitHub discussion/TLDR AI submit(§6 稿已备) | 待提交 |
+| 大厂三封 | 用户自有渠道转发(火山 Ark 表单/GitHub/内推),邮件渠道不存在不硬发 | 待用户 |
+| KOL 私信 | 9/10 起(苏剑林等知乎/公众号) | 待做 |
+| 回复跟进 | 48h 未回不追发;有回复进 seeds 名单优先维护 | 持续 |
+
+> 用户已取消「新地址每天 ≤5」上限(9/8 深夜)。实际边界=公开可核实邮箱已发尽(7 封);
+> 低置信猜测邮箱不硬发(bounce/垃圾箱会伤账号信誉,广发变白发)。剩余渠道走 §6 表单稿。
+
+## 6. 非邮件渠道提交稿(一键可贴)
+
+### 6.1 Letta 联系表单(letta.com/contact)
+
+> Business inquiry 框,英文,~80 词版:
+
+Nautilus-compass is an open-source agent memory layer (Modified MIT) — zero LLM calls at write time (verbatim local embedding), all intelligence at read time (utterance-type routing, BM25+dense RRF, date anchoring). Just published: LongMemEval-S full-500 head-to-head vs mem0, retrieval P@1 0.890 vs 0.774, everything reproducible for ~$3.50. We'd love Letta's take on read-time intelligence vs memory-as-context compilation — happy to run each other's benchmarks. github.com/chunxiaoxx/nautilus-compass
+
+### 6.2 Cognee GitHub discussion(topoteretes/cognee)
+
+> Discussion 标题: Head-to-head benchmark thread — Cognee vs nautilus-compass (LongMemEval-S, evidence open)
+
+We published a full-500 LongMemEval-S head-to-head vs mem0 (retrieval P@1 0.890 vs 0.774, identical questions/criteria, ~$3.50 to reproduce: github.com/chunxiaoxx/nautilus-compass). Our bet is no-extraction-at-write (verbatim + local embedding, graph-free); Cognee's is knowledge-graph ECL. Rather than claim victory from one benchmark, we'd like to invite a cross-run: we run Cognee through our harness, you run us through yours, publish both. Interested?
+
+### 6.3 TLDR AI 提交(tldr.tech/ai/submit)
+
+> 一句话 pitch 框:
+
+nautilus-compass (open source, Modified MIT): agent memory layer that makes zero LLM calls at write time — verbatim local embedding, intelligence at read time. Beats mem0 head-to-head on LongMemEval-S full 500 (P@1 0.890 vs 0.774), reproduces for ~$3.50, includes a judge-hygiene protocol paper (arXiv in submission). github.com/chunxiaoxx/nautilus-compass
+
+### 6.4 Latent Space(swyx)contact 表单
+
+> Pitch 框:
+
+Story pitch: a one-person + AI-agent-fleet org shipped an open-source memory layer in 130 days (771 commits, 603 by agents, audit trail public) that beats mem0 head-to-head on LongMemEval-S full 500 (P@1 0.890 vs 0.774, $3.50 to reproduce). Two angles for Latent Space: (1) the write-time-zero-LLM vs LLM-extraction architecture bet; (2) judge hygiene — we caught our own AI judge failing silently 5 times (14.2% of questions mislabeled), wrote a taxonomy + protocol paper. github.com/chunxiaoxx/nautilus-compass
