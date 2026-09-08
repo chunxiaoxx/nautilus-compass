@@ -8,15 +8,21 @@
 
 | 层 | 目标 | 渠道 | 状态 |
 |---|---|---|---|
-| 国际记忆同行 | mem0 | founders@mem0.ai(GitHub 官方) | ✅ 草稿已建 |
-| 国际记忆同行 | Letta(MemGPT) | letta.com/contact 表单+Discord(无公开邮箱) | 模板①改用 |
-| 国际记忆同行 | Cognee / Zep / MemOS | GitHub repo issue/discussion | 模板①改用 |
-| 国内媒体 | 机器之心 | content@jiqizhixin.com(投稿/报道,已验证) | ✅ 草稿已建 |
-| 国内社区 | PaperWeekly | hr@paperweekly.site(投稿,已验证) | ✅ 草稿已建 |
+| 国际记忆同行 | mem0 | founders@mem0.ai(GitHub 官方) | 📝 信已定稿,**待 Reddit 链接回填后发**(9/9) |
+| 国际记忆同行 | Zep | info@getzep.com(官方列出) | ✅ **已发 9/8 晚**(EverMemBench 39.97 钩子+邀请纠错) |
+| 国际记忆同行 | MemOS/MemTensor | contact@openmem.net(论文页官方) | ✅ **已发 9/8 晚**(EverMemBench 42.55 钩子+架构对话邀请) |
+| 国际记忆同行 | Letta(MemGPT) | letta.com/contact 表单+Discord(无公开邮箱) | 9/9 走表单 |
+| 国际记忆同行 | Cognee | GitHub topoteretes/cognee(无公开邮箱) | 9/9 走 GitHub discussion |
+| 国内媒体 | 机器之心 | content@jiqizhixin.com(投稿/报道,已验证) | ✅ **已发 9/8 晚** |
+| 国内媒体 | 量子位 | ai@qbitai.com(官方投稿/爆料,已验证) | ✅ **已发 9/8 晚**(主题带【报道】) |
+| 国内社区 | PaperWeekly | hr@paperweekly.site(投稿,已验证) | ✅ **已发 9/8 晚**(判官盲区方法向角度) |
+| 国内社区 | Datawhale | opensource@datawhale.club(官网已验证) | 9/9 发(开源社区联合推广角度) |
 | 国内大厂 | 字节(豆包/TARS/火山 Ark) | 无公开邮箱;火山 Ark 商务表单/GitHub bytedance org | 模板②(待用户自有渠道转发) |
 | 国内大厂 | DeepSeek | 无公开邮箱;GitHub deepseek-ai | 模板② |
 | 国内大厂 | 腾讯(混元/元宝) | 无公开邮箱;腾讯云合作/GitHub Tencent-Hunyuan | 模板② |
-| KOL 个体 | Datawhale/苏剑林/张俊林等 | 知乎私信/微信公众号留言(非邮件) | 模板③改短版 |
+| KOL 个体 | 苏剑林/张俊林等 | 知乎私信/微信公众号留言(非邮件) | 9/10 起,模板③压短版 |
+
+> 9/8 发送台账:5 封(机器之心/PaperWeekly/Zep/MemOS/量子位)——达到「新地址每天 ≤5」上限,mem0 与 Datawhale/Letta/Cognee 排 9/9。发送通道=飞轮 _gmail_send.py(REST 直发,Gmail message id 留档)。
 
 ## 2. 模板① · 国际记忆同行(EN,礼节通报+邀请复算)
 
