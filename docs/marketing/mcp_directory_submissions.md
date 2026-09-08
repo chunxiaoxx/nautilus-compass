@@ -40,3 +40,40 @@
 ## 提交节奏
 
 Smithery 要补配置文件=唯一有代码动作的;其余四项纯表单,用户 30min 可全部提交完。建议 9/9 白天随值守间隙做。
+
+---
+
+## B2 附录 · awesome 列表 PR 草稿(9/9 凌晨备 · 每列表一 PR 一 entry,按字母序插入)
+
+### 1. punkpeye/awesome-mcp-servers(最大列表)
+
+Entry(插 Memory 分区,按字母序):
+
+```
+- [nautilus-compass](https://github.com/chunxiaoxx/nautilus-compass) 🔒 🖥️ 🍎 🪟 🐧 - Agent memory layer. Local-first, zero LLM calls at write time; retrieval intelligence (question-type routing, BM25+dense RRF) at read time. Pre-action drift detection + cross-agent contracts. Hosted beta available.
+```
+
+PR 标题:`Add nautilus-compass (memory)`
+PR 正文:
+> Adds nautilus-compass — an open-source agent memory layer (Modified MIT). Distinguishing traits: zero LLM calls at write time (verbatim local BGE-m3 embedding; free, lossless writes), all intelligence at read time. Ships an MCP server both as local daemon (stdio/TCP) and hosted endpoint. Full head-to-head benchmark evidence vs mem0 in-repo (~$3.50 to reproduce).
+
+### 2. wong2/awesome-mcp-servers
+
+Entry:
+```
+- [nautilus-compass](https://github.com/chunxiaoxx/nautilus-compass) - 🧠 Agent memory layer — zero LLM calls at write time, local-first (BGE-m3), read-side routing/hybrid retrieval, pre-action drift detection (AUC 0.83)
+```
+
+PR 标题同上;正文两句话即可(该列表较简)。
+
+### 3. e2b-dev/awesome-ai-agents(agents 大列表,agent 工具分区)
+
+Entry:
+```
+- [nautilus-compass](https://github.com/chunxiaoxx/nautilus-compass) - Open-source memory layer for AI agents. Local-first; beats mem0 head-to-head on LongMemEval-S retrieval (P@1 0.890 vs 0.774, full 500, scripts open).
+```
+
+### PR 纪律提醒
+- 三个 PR 分三天发(9/9/9/10/9/11),同日三列表=模式相似易判 spam;账号用 chunxiaoxx
+- 若某列表 CONTRIBUTING 有格式/分区要求,按它(先读再提)
+- entry 描述与 README 首屏一致,不超额声明
