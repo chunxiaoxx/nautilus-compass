@@ -53,7 +53,7 @@ Every experiment above has its full run log in `docs/evidence/` in the repo — 
 
 It also does two things beyond recall: pre-action **drift detection** (checks agent actions against failure-mode anchors, AUC 0.83, p95 <50ms) and **cross-agent contracts** (tracks implicit obligations when multiple agents share files).
 
-Python users: `pip install nautilus-compass` (PyPI 3.1.1 — ships the CLI, MCP server, A2A adapter and session tools).
+Python users: `pip install nautilus-compass` (PyPI — ships the CLI, MCP server, A2A adapter and session tools).
 
 Claude Code / Desktop (local daemon — everything stays on your machine):
 
