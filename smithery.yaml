@@ -1,0 +1,31 @@
+# Smithery configuration file: https://smithery.ai/docs/config#smitheryyaml
+
+startCommand:
+  type: stdio
+  configSchema:
+    # JSON Schema defining the configuration options for the MCP server.
+    type: object
+    properties:
+      project_dir:
+        type: string
+        title: Project directory
+        description: >-
+          Directory whose memory space this server instance owns. Sessions are
+          stored verbatim as markdown + local BGE-m3 embeddings (zero LLM calls
+          at write time). Defaults to the current working directory.
+      hosted_url:
+        type: string
+        title: Hosted endpoint (optional)
+        description: >-
+          If set, the server proxies to the hosted instance
+          (https://compass.nautilus.social/mcp/) instead of running the local
+          daemon. Leave empty for fully-local operation.
+    required: []
+  commandFunction:
+    # Produces the CLI command to start the MCP server.
+    |-
+    (config) => ({
+      command: 'compass-mcp',
+      args: config.project_dir ? ['--project', config.project_dir] : [],
+      env: config.hosted_url ? { COMPASS_HOSTED_URL: config.hosted_url } : {}
+    })
