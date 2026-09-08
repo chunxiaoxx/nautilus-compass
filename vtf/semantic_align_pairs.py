@@ -19,9 +19,7 @@
 """
 import argparse
 import json
-import re
 import sys
-import unicodedata
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
@@ -99,7 +97,6 @@ def main() -> None:
         q_emb = model.encode([f"Question: {r.get('question_text') or ''}"],
                              normalize_embeddings=True)[0]
         g_emb = model.encode([gold], normalize_embeddings=True)[0]
-        import numpy as np
 
         cand_idx = [i for i, t in enumerate(seg_owner)
                     if t in set(r.get("haystack_ids") or [])]

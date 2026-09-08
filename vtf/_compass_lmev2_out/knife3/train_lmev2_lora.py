@@ -15,7 +15,6 @@ import argparse
 import json
 import random
 import sys
-from pathlib import Path
 
 import numpy as np
 

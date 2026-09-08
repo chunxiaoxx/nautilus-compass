@@ -14,7 +14,6 @@ Usage:
 """
 from __future__ import annotations
 
-import statistics
 import sys
 import time
 import uuid

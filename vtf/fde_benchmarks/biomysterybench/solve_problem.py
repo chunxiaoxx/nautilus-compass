@@ -15,7 +15,6 @@
 from __future__ import annotations
 
 import argparse
-import io
 import json
 import time
 import urllib.request

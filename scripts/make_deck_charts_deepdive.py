@@ -14,7 +14,6 @@ import os
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from matplotlib.patches import FancyBboxPatch
 import numpy as np
 
 OUT = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "docs", "marketing", "deck_assets"))

@@ -23,7 +23,7 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from build_lmev2_contrastive_pairs import _load_trajectories, _norm  # noqa: E402
+from build_lmev2_contrastive_pairs import _load_trajectories  # noqa: E402
 
 BASE_URL = "https://ark.cn-beijing.volces.com/api/v3"
 MODEL = "doubao-seed-2-0-pro-260215"
