@@ -242,6 +242,14 @@ AUC 0.83 held-out。
 
 ---
 
+## 复现墙 Reproducibility Wall
+
+自己跑一遍对打(约 $3.50)——你的数字就上墙,**无论对我们有利还是不利**。
+独立复现优于自报;与我们数字矛盾的条目同等显著地发布。
+→ [docs/REPRODUCIBILITY_WALL.md](docs/REPRODUCIBILITY_WALL.md)
+
+---
+
 ## 案例研究 · 四对话框开源多 agent 可靠性
 
 28 小时,四个 Claude Code 对话框在共享文件协议上并行:drift 触发

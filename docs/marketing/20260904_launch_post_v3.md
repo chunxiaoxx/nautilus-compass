@@ -77,6 +77,18 @@ Happy to answer questions on the retrieval routing design or the failure experim
 6. e2e 短板已修:摘要层上线(判据先于跑数预注册),全量 500 题 42.6%→75.4%(71 题 judge 断连全部重判补齐,每题有真判决)/81.6%(同口径剔除断连 71 题)。三弱型双口径全过门,定案重判口径:ms 22.6→69.2·ssa 25.0→83.9·tr 15.8→62.4(剔除断连干净口径 73.2/85.4/83.3);高分型零回退。
 7. 附赠:drift 检测 AUC 0.83(动作前对照失败模式锚点)+ 跨 agent 合约审计。本地三条命令接入;托管版开放自助注册(signup→控制台发 scoped token→任意 MCP 客户端直连),跨用户读写被拒+撤销即时,四探针公网验证。Modified MIT。github.com/chunxiaoxx/nautilus-compass
 
+## B2. X thread(英文,7 条 · 9/8 发布夜新增,英文侧零覆盖补位)
+
+> 发法同 §B:条 1 附 `table_headtohead_en.png`;每条 <280 字符;LinkedIn 可整条复用。
+
+1. We built an open-source memory layer for agents (nautilus-compass) and ran a head-to-head vs mem0 2.0.19 on LongMemEval-S — full 500 questions. Retrieval P@1: 0.890 vs 0.774 (+11.6pt). Same questions, same criteria, evidence open. 🧵
+2. The design bet: zero LLM calls at write time. Verbatim text, local BGE-m3 embedding — no extraction, no cloud, no write cost. All the intelligence lives at read time.
+3. Read-side weapons: ① utterance-type routing (turn-level chunks for user-utterance questions — that type went P@1 0.20→1.00) ② BM25+dense with RRF fusion ③ date anchoring.
+4. What didn't work is published too: cross-encoder reranking hurt (-2pt), K=50 didn't help, smaller embedders didn't either. A 12-question subset once read +16.7pt — sampling bias; we re-ran 30 mixed before believing it.
+5. Away games: LOCOMO (mem0's home turf), n=1986: 0.644 vs 0.592. A 12× larger corpus: P@5 0.888. EverMemBench: above Mem0/Zep/MemOS.
+6. e2e, fixed with preregistered gates: 42.6% → 75.4% on the full 500 (71 judge-outage questions re-judged — every question has a real verdict); 81.6% like-for-like excluding them. Weak types cleared gates under both accountings.
+7. And a Reproducibility Wall: run the head-to-head yourself for ~$3.50 — your numbers go on the wall, favorable or not. Prove us wrong. github.com/chunxiaoxx/nautilus-compass
+
 ---
 
 ## C. 发布节奏

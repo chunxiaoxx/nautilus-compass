@@ -306,6 +306,15 @@ conversation archive — different scope, listed for completeness.
 
 ---
 
+## Reproducibility Wall
+
+Run the head-to-head yourself (~$3.50) — your numbers go on the wall,
+**favorable or not**. Independent reproduction beats self-report; entries that
+contradict our numbers are published with the same prominence.
+→ [docs/REPRODUCIBILITY_WALL.md](docs/REPRODUCIBILITY_WALL.md)
+
+---
+
 ## Case study · 4-dialog OSS multi-agent reliability
 
 28 hours, four Claude Code dialogs on shared filesystem protocols:
