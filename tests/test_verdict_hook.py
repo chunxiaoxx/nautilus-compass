@@ -1,7 +1,6 @@
 """verdict-hook 测试:run verdict 自动提炼进燃料 pending 池(双环回流)。"""
 import json
 import sys
-import time
 from pathlib import Path
 
 import pytest

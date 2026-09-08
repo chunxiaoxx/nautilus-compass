@@ -1538,8 +1538,6 @@ def handle_ingest(req: dict) -> dict:
     Returns:
       {ok: true, path: "<written .md>", embedded: true, embed_dim: 1024, project: "..."}
     """
-    import hashlib as _hashlib
-    import pickle as _pickle
     from datetime import datetime, timezone
 
     text = _recover_surrogates((req.get("text") or "").strip())

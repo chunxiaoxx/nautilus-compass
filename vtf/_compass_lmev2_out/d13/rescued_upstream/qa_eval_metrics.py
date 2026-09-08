@@ -1,7 +1,7 @@
 import json
 import os
 import re
-from typing import Any, Callable, Iterable, List, Optional, Sequence, Tuple
+from typing import Any, Callable, Iterable, List, Sequence, Tuple
 
 
 DEFAULT_SEPARATORS: Sequence[str] = (",", ";")

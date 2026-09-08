@@ -7,10 +7,8 @@ is stated ONLY in the source experience; the transfer prompt deliberately omits 
 """
 from __future__ import annotations
 
-import json
 from pathlib import Path
 
-import pytest
 
 from gep.live_coding_adapter import (
     _valid_v1_source_rule,

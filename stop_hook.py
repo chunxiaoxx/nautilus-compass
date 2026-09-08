@@ -190,7 +190,7 @@ def main():
     # v3.0.5 · session 战报(价值可见化):本机今日 recall 命中数 + 本次 drift,
     # 写入 ~/.claude/.cache/compass-last-session.txt(HUD/compass-status 消费)
     try:
-        import datetime, glob as _glob
+        import datetime
         vl = PLUGIN_DIR / ".cache" / "verification_log.jsonl"
         today = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
         n = 0

@@ -13,7 +13,6 @@ codex 部署 fuel-loop 到 cloud 后，compass 用此脚本独立验证端到端
 """
 from __future__ import annotations
 
-import json
 import sys
 from pathlib import Path
 
