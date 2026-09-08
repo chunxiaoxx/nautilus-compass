@@ -240,6 +240,23 @@ PUBLIC_TOOLS = {"ingest_obs", "recall", "session_search", "thread_recall",
 
 ## 13. 首评草稿(Reddit first comment · 发帖后立即发)
 
+> 🔴 2026-09-08 发布夜:正文被 AutoMod 拦 URL,所有链接集中到本首评(块 0)。发完立即发,并手动 pin。
+
+**Links** (the sub filters URLs in posts, so they live here):
+- GitHub repo (Modified MIT, bilingual README): https://github.com/chunxiaoxx/nautilus-compass
+- Landing + hosted open beta signup: https://compass.nautilus.social
+- PyPI: https://pypi.org/project/nautilus-compass/
+
+Local install (Claude Code / Desktop):
+
+    git clone https://github.com/chunxiaoxx/nautilus-compass ~/.claude/plugins/nautilus-compass
+    bash ~/.claude/plugins/nautilus-compass/install.sh
+    bash ~/.claude/plugins/nautilus-compass/daemon_start.sh
+
+Cursor / Cline / Continue.dev / Zed: `python scripts/install_to_agent.py`
+
+---
+
 > **OP here — before anyone asks: yes, mem0 self-reports 94.4% e2e on LongMemEval-S, and we report 75.4%. Those numbers are not comparable, and here's why.**
 >
 > Our 75.4% comes from our own harness: original Oct-2024 release, glm-5.3-flash judge, full 500 questions, dual accounting (81.6% excluding 71 judge-outage questions, disclosed in the post). mem0's 94.4% comes from their harness — different judge, different subject model, possibly different data version. Cross-harness numbers don't compare in this field; that's literally the meta-problem we keep hitting (we caught our own judge failing 5 times — one outage silently recorded 14.2% of questions as wrong answers).

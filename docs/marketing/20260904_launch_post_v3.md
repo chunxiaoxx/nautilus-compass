@@ -53,23 +53,17 @@ Every experiment above has its full run log in `docs/evidence/` in the repo — 
 
 It also does two things beyond recall: pre-action **drift detection** (checks agent actions against failure-mode anchors, AUC 0.83, p95 <50ms) and **cross-agent contracts** (tracks implicit obligations when multiple agents share files).
 
-Python users: `pip install nautilus-compass` (PyPI — ships the CLI, MCP server, A2A adapter and session tools).
+**Getting it (the sub filters links in post bodies — every URL lives in the pinned first comment):**
+- Python users: `pip install nautilus-compass` (PyPI — ships the CLI, MCP server, A2A adapter and session tools).
+- Claude Code / Desktop (local daemon, everything stays on your machine): clone the repo into `~/.claude/plugins/nautilus-compass`, then run its `install.sh` and `daemon_start.sh` — exact commands in the pinned first comment.
+- Cursor / Cline / Continue.dev / Zed: `python scripts/install_to_agent.py` (one script).
+- No local install: **hosted open beta, self-serve** — 6-digit email-code signup, mint a scoped token in the console, point any MCP client at the hosted endpoint. Tokens are server-bound to your own space (read+write scoped per project); cross-user read/write is denied and revocation takes effect immediately — verified by a four-probe suite that runs against the public endpoint (code in repo).
 
-Claude Code / Desktop (local daemon — everything stays on your machine):
-
-```bash
-git clone https://github.com/chunxiaoxx/nautilus-compass ~/.claude/plugins/nautilus-compass
-bash ~/.claude/plugins/nautilus-compass/install.sh
-bash ~/.claude/plugins/nautilus-compass/daemon_start.sh
-```
-
-Cursor / Cline / Continue.dev / Zed: `python scripts/install_to_agent.py`.
-No local install: **hosted open beta, self-serve** — sign up at https://compass.nautilus.social/signup (6-digit email code), mint a scoped token in the console, point any MCP client at `https://compass.nautilus.social/mcp/`. Tokens are server-bound to your own space (read+write scoped per project); cross-user read/write is denied and revocation takes effect immediately — verified by a four-probe suite that runs against the public endpoint (code in repo).
-
-Repo (Modified MIT, bilingual README): https://github.com/chunxiaoxx/nautilus-compass
-Landing: https://compass.nautilus.social
+The pinned first comment carries the repo / landing / signup links, plus the answer to "why is your 75.4% lower than mem0's self-reported 94.4%".
 
 Happy to answer questions on the retrieval routing design or the failure experiments — those are the fun parts.
+
+> 🔴 2026-09-08 发布夜变更:r/LocalLLaMA AutoMod 拦新账号正文 URL。正文全部链接(git clone 块/signup/repo/landing)移入首评;首评正本=launch_plan §13(已加链接块头)。
 
 ---
 
