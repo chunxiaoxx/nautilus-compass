@@ -47,7 +47,12 @@
 - drift AUC 0.83·p95<50ms;写入零 LLM;$3.50 复现;130 天 771 commits(603 agent)
 - 叙事三句:写入时下注→地址空间决定遗忘→判分卫生学(概率世界共识)
 - 链接四件:github.com/chunxiaoxx/nautilus-compass · compass.nautilus.social · pypi:nautilus-compass(3.1.2) · arXiv paper2(待 ID)
-- 🔴 红线:不称"区块链式去信任"(只说 PKI 式信任最小化);不提组织内部件(信箱/框名);数字只引上列
+- 🔴 红线(9/8 发布前终版):
+  1. 不说 **SOTA**(全称断言不可证;合法强词=「beats mem0 head-to-head, same questions same criteria」/「first to publicly…」/「tops the four published baselines」;被问 is this SOTA → "Highest we're aware of in any published head-to-head — scripts open, $3.50, prove us wrong")
+  2. 不说「官方坐标系」→ 说「**上游坐标系/发布方坐标系**」(基准无官方;且按判分卫生学立场,上游口径也只是一种口径)
+  3. 所有成绩如实标注「官方题目+我方执行」,可信度策略=可复现(脚本/$3.50/协议),不是第三方认证
+  4. 不称"区块链式去信任"(只说 PKI 式信任最小化);不提组织内部件(信箱/框名);数字只引上列
+  5. 对外一律 nautilus-compass 全名;中文侧尺度可稍强(全面超过/碾压级数字,有数据兜底)
 
 ## 4. 创投日报素材包(交创投日报框,按其工作流生产,compass 只供料不代写)
 
