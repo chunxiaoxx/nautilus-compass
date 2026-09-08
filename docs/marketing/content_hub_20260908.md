@@ -14,7 +14,7 @@
 | X thread 7 条 | 同上 §B | ✅ | X 今晚;微博/即刻可改编 |
 | demo GIF v3.1 | deck_assets/demo_d1.gif(35s·循环) | ✅ 视觉验证 | Reddit 帖图;视频号原料;README 可嵌 |
 | position paper | 20260904_architecture_position_paper.md | ✅ v1 待发 | 9/10 博客+HN |
-| dev.to 适配版 | 20260905_devto_position_paper.md | ✅ front matter 齐 | 9/10 API 自动发 |
+| dev.to 适配版 | 20260905_devto_position_paper.md | ✅ **已发布 9/8(提前)** https://dev.to/chunxiaoxx/dont-summarize-the-past-for-a-future-you-cant-predict-34p0 | 长尾 SEO 起跑 |
 | 知乎答 | zh_zhihu_answer_20260905.md | ✅ 备料终检 | 9/15 周知乎 |
 | 公众号技术文 | zh_wechat_tech_20260905.md | ✅ 金句卡 5 张 | 9/15 周 |
 | V2EX 帖 | zh_v2ex_share_20260905.md | ✅ | 9/15 周 |
@@ -30,7 +30,7 @@
 |---|---|---|---|
 | 今晚 | Reddit/X | 主帖+首评+thread | reddit_watch 值守 |
 | 9/9-10 | 值守+复算 | 评论区 24h 回复率 100% | — |
-| **9/10** | dev.to | position paper 发布 | **API 可自动**(payload=devto 版,env key) |
+| ~~9/10~~ | dev.to | ✅ 已于 9/8 提前发布(API,用户拍板) | 博客同步 9/10 照旧 |
 | 9/10 | 个人博客 | 同文 | 手动 |
 | 9/10-11 | HN | repo 直链+§14 首评 | 手动(错峰 48h) |
 | 发布周 | MCP 目录×4+Discord | 目录提交 | 手动(用户账号) |
