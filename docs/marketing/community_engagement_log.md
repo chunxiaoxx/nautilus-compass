@@ -10,6 +10,11 @@
 | 9/8 深夜 | GitHub | mem0 #7260(rate limit 缺失) | 写侧零 LLM=架构级止血+scoped token+探针开源 | issuecomment-5587908156 |
 | 9/8 深夜 | GitHub | MemOS #2345(本地嵌入源) | HF_HUB_OFFLINE 配方+BGE-m3 vs 小模型实测 | issuecomment-5587909009 |
 | 9/8 23:3x | dev.to | 4602572(mateo_ruiz 评论) | 两层检测+反问未声明失败模式 | ⏳ 草稿待用户网页贴(API 端点 404) |
+| 9/9 凌晨 | Gmail | **Trajko 回复**(sorovince@gmail.com) | 见 seeds 段 | 1a081c3beb4e3281 |
+
+## Seeds 名单(优先维护:点名致谢/优先回复/进 issues 讨论)
+
+1. **Trajko**(sorovince@gmail.com)——9/4 主动来信,Hivemind 量化平台架构师(4 agent 团队/7471 自检/OOS Sharpe +0.87),Operator Skepticism Protocol 作者,自荐 drift/评测方向合作(附简历)。9/9 已回:数字更新(0.890 vs 0.774 反超)+试用邀请+Reproducibility Wall 首位邀请+合作口径(无席位,开源协作为先)。**跟踪:48h 内若回→深聊;quant 场景是好用例。**
 
 ## dev.to 评论草稿队列(用户批量贴,每条 20 秒)
 
