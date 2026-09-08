@@ -47,6 +47,7 @@
 
 ## 状态记录(每轮一行,倒序)
 
+- 03:4x 轮 8:daemon pong ✅·landing 200 ✅·信箱 0·**明晚第二篇全文成稿**(devto_post2_judge_hygiene.md:五失效 taxonomy+协议五条+RL 推广段+Wall 钩子·数字照口径卡·title 待用户晨起过目后 21:00 API 发——title 锁死教训)
 - 03:1x 轮 7:daemon pong ✅·landing 200 ✅·信箱 0·**B3 完成**——博客底稿 docs/marketing/blog_sync_20260910.md(front matter 含 canonical 指 dev.to·数字抽检 5/5·liquid tag 已转普通链接)。**夜间清单 B1-B3/C1-C2/D1-D2 全部轮完**(D1 手几何挂账待产物)——Loop 转纯值守模式(A 组+F 组每轮),新增推进件候补:Smithery 配置文件/2600 语料定位/明晚第二篇判分卫生学成文
 - 02:4x 轮 6:daemon pong ✅·landing 200 ✅·信箱 0·**手几何复算=blocked-on-artifact 定案**——(N,301) 中间产物本机不存在(conv_out 仅 (N,7) 终态·0953ab4d 仅 stage_tmp·全盘无 states.npy);复算器已备(tools/hand_geometry_recheck.py)+问询函投 flywheel 仓(产物路径二选一);#46:batch001✅+手几何待产物。**夜间清单 B/C/D 全部轮完或受阻项挂账,剩 B3**
 - 02:1x 轮 5:daemon pong ✅·landing 200 ✅·信箱 1(V5 U 终报 ack)·**D1 主体完成**——batch001 独立复算器跑通:**6/7 agree + 1 caveat(resource_log.csv 活文件:mtime 9/6 17:42>打包 9/5 18:11,追写 25h,协议缺陷非数据问题)**;签名回执投 flywheel 仓;VerifyPack 活文件条款入教训。剩:手几何复算(下一轮)
