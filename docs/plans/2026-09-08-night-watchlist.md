@@ -47,6 +47,7 @@
 
 ## 状态记录(每轮一行,倒序)
 
+- 04:4x 轮 10:daemon pong ✅·landing 200 ✅·信箱 0·**Smithery 配置落地**(smithery.yaml:stdio+compass-mcp 入口+project_dir/hosted_url 双模式)——MCP 目录四件最后一处代码件清,目录提交全部纯表单化。**夜间候补件全部清零**,Loop 后续轮次=纯值守(A+F 组)+等待用户晨间四件事
 - 04:1x 轮 9:daemon pong ✅·landing 200 ✅·信箱 0·**2600 语料定位完成**(承诺件清)——出处=paper2 正文实验声明;原始记录不在任何活跃仓,冷层有判官代码无数据;恢复两路(深挖冷层 jsonl/重跑存档)留用户拍板;定位报告投 flywheel 仓;VerifyPack 教训第三条=论文级素材可寻址性
 - 03:4x 轮 8:daemon pong ✅·landing 200 ✅·信箱 0·**明晚第二篇全文成稿**(devto_post2_judge_hygiene.md:五失效 taxonomy+协议五条+RL 推广段+Wall 钩子·数字照口径卡·title 待用户晨起过目后 21:00 API 发——title 锁死教训)
 - 03:1x 轮 7:daemon pong ✅·landing 200 ✅·信箱 0·**B3 完成**——博客底稿 docs/marketing/blog_sync_20260910.md(front matter 含 canonical 指 dev.to·数字抽检 5/5·liquid tag 已转普通链接)。**夜间清单 B1-B3/C1-C2/D1-D2 全部轮完**(D1 手几何挂账待产物)——Loop 转纯值守模式(A 组+F 组每轮),新增推进件候补:Smithery 配置文件/2600 语料定位/明晚第二篇判分卫生学成文
