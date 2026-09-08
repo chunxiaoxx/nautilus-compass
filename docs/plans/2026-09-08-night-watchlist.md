@@ -47,6 +47,7 @@
 
 ## 状态记录(每轮一行,倒序)
 
+- 02:1x 轮 5:daemon pong ✅·landing 200 ✅·信箱 1(V5 U 终报 ack)·**D1 主体完成**——batch001 独立复算器跑通:**6/7 agree + 1 caveat(resource_log.csv 活文件:mtime 9/6 17:42>打包 9/5 18:11,追写 25h,协议缺陷非数据问题)**;签名回执投 flywheel 仓;VerifyPack 活文件条款入教训。剩:手几何复算(下一轮)
 - 01:4x 轮 4:daemon pong ✅·landing 200 ✅·信箱 0·**C2 完成**(G1 ack 入 flywheel 仓:BGE 指纹实测 993b2248…/PROTOCOL 收录几何卫生规则/X1-lite 同意/2600 语料独立复核=不在公开仓·compass 认领定位排 9/10 前)·stars 7
 - 01:1x 轮 3:daemon pong ✅·landing 200 ✅·信箱 0·**C1 完成**(flywheel RSI 四问回函写入其仓:proposals 界面×governance 执法分层+base_commit 门+freeze_until 新语义+fact_status 映射+keeper 三刀)·stars 7
 - 00:4x 轮 2:daemon pong ✅·landing 200 ✅·信箱清零 ✅·CI success ✅·stars 7 基线·dev.to 无变化·**B2 完成**(awesome 三列表 PR 草稿,分三天发纪律)
