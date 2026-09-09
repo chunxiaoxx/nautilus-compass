@@ -47,6 +47,7 @@
 
 ## 状态记录(每轮一行,倒序)
 
+- 12:1x 轮 18:daemon pong ✅·landing 200 ✅·信箱 0·**🔴主因定位:用户反馈 r/LocalLLaMA 发帖限制(主帖未发之谜解开)**——产出破门弹药包(reddit_karma_breakthrough.md:养 karma 三评论无链接版+modmail 文案+C 路替代渠道);三路并行等用户选
 - 11:4x 轮 16(纯值守):daemon pong(12628)✅·landing 200 ✅·信箱 0·stars 7——全绿无事件
 - 11:1x 轮 15(纯值守):daemon pong(12628)✅·landing 200 ✅·信箱 0·stars 7·dev.to 持平——全绿无事件
 - 10:5x 轮 14(**睡眠-唤醒全案**):机器 06:xx-10:5x 睡眠→旧 daemon(33352)被睡眠杀→**watchdog 唤醒自愈 ✅**(10:49 拉→10:51 listening·热缓存 136s)→但残留半死实例 3016 抢连接(ping 超时=它 accept 不响应·9/7「listener 半死」活标本)→taskkill 精确清除→单实例 12628 双 ping 稳 ✅。**9/15 改进项**:daemon_start.sh 快路径处理「连上无响应」形态(netstat 查 9876 持有者杀残留再拉新)。landing 200·信箱 0·stars 7
