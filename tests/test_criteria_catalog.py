@@ -19,12 +19,15 @@ ALLOWED_KINDS = {
 
 def test_registry_nonempty_and_legal():
     cs = cat.all_criteria()
-    assert len(cs) >= 4
+    assert len(cs) >= 8
+    cids = {c.cid for c in cs}
+    assert {"A1", "A2", "A3", "B4", "D2", "D4", "C4", "X1", "M2"} <= cids  # 母版硬门槛+视频红线在册
     for c in cs:
         assert c.check_kind in ALLOWED_KINDS
         assert c.provenance, f"{c.cid} 缺实测背书引用"
         if c.gate is not None:
             assert c.gate["op"] in (">=", "<=")
+    assert cat.get("A1").layer == "hard" and cat.get("A1").gate["value"] == 200
 
 
 def test_duplicate_registration_rejected():

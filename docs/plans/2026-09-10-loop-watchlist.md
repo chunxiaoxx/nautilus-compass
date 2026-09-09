@@ -16,7 +16,7 @@
 
 - [ ] B1 🔴 **GPU 退租检查**(8/31 事故记忆:自动续费还开着,用户定策 ent 完成后退租防空扣)——查 651799/652509/654686 实例状态与计费,完成实验的实例列清单**报告用户拍板退租**(不自主退)
 - [x] B2 22:00 收口会材料:**判据库 v0 骨架**(flywheel 五族判据 D/C/L/X/U + G1 几何卫生规则;schema 设计,判据必须可执行)→ `docs/criteria/` 草案
-- [ ] B3 22:00 收口会议程清单:①4 门判定器(数据侧)× VerifyPack CLI(验证方)拼管线正本 ②X1 金标 17.5% 入包门槛 ③G1 判官进判据库当外部锚 ④batch002(200 条)全流程分工
+- [x] B3 22:00 收口会议程清单:①4 门判定器(数据侧)× VerifyPack CLI(验证方)拼管线正本 ②X1 金标 17.5% 入包门槛 ③G1 判官进判据库当外部锚 ④batch002(200 条)全流程分工
 - [ ] B4 #46 手几何复算:仍 blocked-on-artifact(等 flywheel 产物路径二选一回函);信箱有回复即续
 - [ ] B5 #33 T0-6 v3 帖起草收尾(发布等用户)
 - [ ] B6 Gmail REST 查新件(**Trajko 48h 窗口至 9/11**,9/9 已回信;gmail MCP 本 session 挂,走 REST 配方)
@@ -29,6 +29,8 @@
 - **9/28**:flywheel G1 报告归档 → 解锁 P4 paper2 成稿
 
 ## 状态记录(每轮一行,倒序)
+
+- 轮 3(01:4x):A 组全绿持平(pong 12516/landing 200/信箱 0/stars 7/dev.to 持平 views 26+cmt 2)。**B3 完成(c753d46)**:收口会议程函草稿(待用户过目后投 flywheel)——五点增量逐条对表 v0.2 实现(direction 未采纳/prompt_ref+env_fingerprint+protocol_version+not_computable 部分缺/input 脱敏哈希+level 打印已实现)+T1-T8 议题+我方预填立场(verdict 映射/L3 先作能力声明位/判据库=v0.3 第一调用方)。B4(手几何 blocked)信箱无新函;B5(v3 帖)下轮
 
 - 轮 2(01:2x):A 组全绿持平(pong 12516/landing 200/信箱 0/stars 7/dev.to 4602572 views 26+cmt 2)。**B2 完成(e1f32ba)**:判据库 v0 骨架——判据=VerifyPack claim 模板+gate 元数据,D2/D4/C4/X1/M2 五条可执行注册(引擎零改动,gate 在 build 侧,测试红→根因=引擎只吃 JSON 文档不吃 jsonl→修模板对齐非修引擎)·CATALOG_v0.md 正本(L 族 flywheel 无定义正本=22:00 议题·U 族待 batch002 复算脚本)·6 测试含端到端闭环+57 回归绿。B3(收口会议程)下轮
 
