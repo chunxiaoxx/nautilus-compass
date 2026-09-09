@@ -68,6 +68,8 @@ forget_at: <ISO8601 timestamp or null=never · v1.7.1 lifecycle · soft-archive 
 promote_after: <"Nd" duration OR "N_access" count · default by tier · v1.7.1 lifecycle>
 reinforce_count: <int · default 0 · access event 累计 · v1.7.1 lifecycle · resets decay on each access>
 contracts: <可选 · 仅在 session 真发了跨 agent 承诺 / 真消费了一个旧承诺时填>
+fact_status: <measured | inferred | heard · 必填 · v2.5 写入门: 实测过=measured / 推断=inferred / 传闻=heard>
+verified_at: <ISO8601 日期或省略 · fact_status=measured 时的最近实测日期>
   - id: cnt_xxxxxxxx              # 8 hex · 新承诺 fresh · 消费旧承诺时用对方的 id
     giver: <谁发出承诺 · agent/dialog 名>
     receiver: <谁接收 · agent/dialog 名>
@@ -295,12 +297,62 @@ def split_strategy(md: str) -> tuple[str, dict | None]:
     return body, strat
 
 
+def _dedup_probe(md: str, project_dir: Path) -> dict | None:
+    """v2.5 · #48 修复二 · 写入前 BGE 查重(daemon dedup_check)· fail-open。
+
+    daemon 不可达/任何异常 → 返回 None 照常写(门不阻塞产出,只提供判定)。
+    """
+    try:
+        import socket as _s
+        project = project_dir.name
+        token = (Path.home() / ".claude" / ".cache"
+                 / "compass_daemon_token").read_text(encoding="utf-8").strip()
+        req = {"action": "dedup_check", "project": project,
+               "text": md[:8000], "token": token}
+        with _s.socket(_s.AF_INET, _s.SOCK_STREAM) as sock:
+            sock.settimeout(30.0)
+            sock.connect(("127.0.0.1", 9876))
+            sock.sendall(json.dumps(req, ensure_ascii=False).encode("utf-8") + b"\n")
+            buf = b""
+            while b"\n" not in buf:
+                chunk = sock.recv(65536)
+                if not chunk:
+                    break
+                buf += chunk
+        line, _, _ = buf.partition(b"\n")
+        return json.loads(line.decode("utf-8"))
+    except Exception as e:
+        sys.stderr.write(f"[session_writer dedup] skipped: {e!r}\n")
+        return None
+
+
+def _inject_frontmatter_field(md: str, field: str, value: str) -> str:
+    """frontmatter 末尾追加字段;无 frontmatter 时包裹一个。纯字符串函数 · 可单测。"""
+    if md.startswith("---"):
+        end = md.find("\n---", 4)
+        if end > 0:
+            return md[:end] + f"\n{field}: {value}" + md[end:]
+    return f"---\n{field}: {value}\n---\n\n{md}"
+
+
 def write_session_md(md: str, project_dir: Path) -> Path:
     name = parse_frontmatter_name(md)
     slug = safe_slug(name)
     ts = datetime.now().strftime("%Y%m%d-%H%M")
     out = project_dir / "memory" / f"session_{ts}_{slug}.md"
     out.parent.mkdir(parents=True, exist_ok=True)
+    # v2.5 · #48 修复二 · 写前查重:merge 命中→标 merge_target 留人工/下环合并
+    # (daemon 不自动改写;此处置同样不自动删不自动合,先可观测)
+    probe = _dedup_probe(md, project_dir)
+    if probe and probe.get("verdict") == "merge" and probe.get("hits"):
+        top_hit = probe["hits"][0]
+        md = _inject_frontmatter_field(
+            md, "merge_target", f"{top_hit['path']}#{top_hit['score']}")
+        sys.stderr.write(f"[session_writer dedup] merge-candidate: {top_hit['path']} "
+                         f"score={top_hit['score']} · 已标 merge_target\n")
+    elif probe and probe.get("verdict") == "gray":
+        sys.stderr.write(f"[session_writer dedup] gray-zone: "
+                         f"{[h['path'] for h in probe.get('hits', [])[:2]]} · 照写,建议人工看\n")
     out.write_text(md, encoding="utf-8")
     return out
 

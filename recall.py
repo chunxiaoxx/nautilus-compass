@@ -1223,7 +1223,10 @@ def render_v02_vector_mode(entries: list, query: str, cache: dict) -> None:
     BODY_CHARS = 800
     for idx, (score, e) in enumerate(top):
         flag = "🟢" if e["age_seconds"] < 86400 else ("🟡" if e["age_seconds"] < 7*86400 else "🔴")
-        print(f"  {flag} score={score:.3f} · [{e['age_str']:>5} old] {e['path']}")
+        # v2.5 · #48 修复一 · fact_status 亮牌(inline 兜底路径同 daemon 路径)
+        fs = e.get("fact_status") or ""
+        fs_tag = f" · fact:{fs}" if fs else ""
+        print(f"  {flag} score={score:.3f} · [{e['age_str']:>5} old] {e['path']}{fs_tag}")
         if e["description"]:
             # M2 · 剥离 "真" 强调副词 · 防 dialog 风格污染下游 context (2026-05-22)
             print(f"       {strip_zhen_emphasis(e['description'][:120])}")
@@ -1390,7 +1393,10 @@ def try_daemon_recall(mem_dir: Path, user_prompt: str) -> bool:
             for r in recall:
                 age_s = r.get("age_seconds", 0)
                 flag = "🟢" if age_s < 86400 else ("🟡" if age_s < 7*86400 else "🔴")
-                print(f"  {flag} score={r['score']:.3f} · [{r['age_str']:>5} old] {r['path']}")
+                # v2.5 · #48 修复一 · fact_status 随条目亮牌(measured|inferred|heard)
+                fs = r.get("fact_status") or ""
+                fs_tag = f" · fact:{fs}" if fs else ""
+                print(f"  {flag} score={r['score']:.3f} · [{r['age_str']:>5} old] {r['path']}{fs_tag}")
                 if r.get("description"):
                     print(f"       {r['description'][:120]}")
             fresh_extra = data.get("fresh_extra") or []
@@ -1399,6 +1405,16 @@ def try_daemon_recall(mem_dir: Path, user_prompt: str) -> bool:
                 print(f"🟢 + 24h 内其他 memory ({len(fresh_extra)} · 当前心智 · 即便低 cosine 也注意):")
                 for e in fresh_extra:
                     print(f"  · [{e['age_str']:>5} old] {e['path']} — {e['description'][:80]}")
+            # v2.5 · #48 修复三 · [[name]] 沿链一跳展示(daemon chain_extra)
+            chain_extra = data.get("chain_extra") or []
+            if chain_extra:
+                print()
+                print(f"🔗 沿链展开 ({len(chain_extra)} · 被 top 条目 [[name]] 引用一跳):")
+                for e in chain_extra:
+                    fs = e.get("fact_status") or ""
+                    fs_tag = f" · fact:{fs}" if fs else ""
+                    print(f"  · {e['path']}{fs_tag} — via {e.get('via', '')} · "
+                          f"{(e.get('description') or '')[:80]}")
 
         # L2 metamemory · 自知层:fires on empty OR weak recall · the
         # hallucinate-absence cure — tells the subject LLM when compass has no
