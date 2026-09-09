@@ -1,0 +1,248 @@
+{
+ "pack": {
+  "pack": "verify_batch001",
+  "protocol_version": "verifypack-0.2",
+  "generated_at": "2026-09-05T18:11:37",
+  "requested_by": "nautilusflywheel",
+  "upstream_protocol": "utility-metrics-protocol-v1-frozen",
+  "inputs": [
+   {
+    "name": "video_s2_body_1",
+    "path": "C:\\Users\\chunx\\egodata\\egostandard_sample\\s2\\out\\shard1\\s2_body_1\\videos\\observation.images.cam_left\\chunk-000",
+    "files": [
+     "file-000.mp4"
+    ]
+   },
+   {
+    "name": "video_s2_body_2",
+    "path": "C:\\Users\\chunx\\egodata\\egostandard_sample\\s2\\out\\shard1\\s2_body_2\\videos\\observation.images.cam_left\\chunk-000",
+    "files": [
+     "file-000.mp4"
+    ]
+   },
+   {
+    "name": "video_s2_head_1",
+    "path": "C:\\Users\\chunx\\egodata\\egostandard_sample\\s2\\out\\shard2\\s2_head_1\\videos\\observation.images.cam_left\\chunk-000",
+    "files": [
+     "file-000.mp4"
+    ]
+   },
+   {
+    "name": "video_s2_head_2",
+    "path": "C:\\Users\\chunx\\egodata\\egostandard_sample\\s2\\out\\shard2\\s2_head_2\\videos\\observation.images.cam_left\\chunk-000",
+    "files": [
+     "file-000.mp4"
+    ]
+   },
+   {
+    "name": "video_s2_egopro_1",
+    "path": "C:\\Users\\chunx\\egodata\\egostandard_sample\\s2\\out\\shard3\\s2_egopro_1\\videos\\observation.images.cam_left\\chunk-000",
+    "files": [
+     "file-000.mp4"
+    ]
+   },
+   {
+    "name": "video_s2_egopro_2",
+    "path": "C:\\Users\\chunx\\egodata\\egostandard_sample\\s2\\out\\shard3\\s2_egopro_2\\videos\\observation.images.cam_left\\chunk-000",
+    "files": [
+     "file-000.mp4"
+    ]
+   },
+   {
+    "name": "video_s2_egosuite_1",
+    "path": "C:\\Users\\chunx\\egodata\\egostandard_sample\\s2\\out\\shard4\\s2_egosuite_1\\videos\\observation.images.cam_left\\chunk-000",
+    "files": [
+     "file-000.mp4"
+    ]
+   },
+   {
+    "name": "video_s2_egosuite_2",
+    "path": "C:\\Users\\chunx\\egodata\\egostandard_sample\\s2\\out\\shard4\\s2_egosuite_2\\videos\\observation.images.cam_left\\chunk-000",
+    "files": [
+     "file-000.mp4"
+    ]
+   },
+   {
+    "name": "logs",
+    "path": "C:\\Users\\chunx\\egodata\\egostandard_sample\\s2",
+    "files": [
+     "resource_log.csv",
+     "worker1.log",
+     "worker2.log",
+     "worker3.log",
+     "worker4.log"
+    ]
+   }
+  ],
+  "claims": [
+   {
+    "id": "D2_frame_integrity",
+    "statement": "D2 帧完整率",
+    "level": "L1",
+    "value": 1.0,
+    "checks": {
+     "primary": {
+      "kind": "aggregate",
+      "from": "payload/payload.json#episodes",
+      "num": "sum(frames_written)",
+      "den": "sum(frames_decoded)",
+      "op": "ratio_eq"
+     }
+    }
+   },
+   {
+    "id": "D3_track_integrity",
+    "statement": "D3 轨迹完整率",
+    "level": "L1",
+    "value": 1.0,
+    "checks": {
+     "primary": {
+      "kind": "aggregate",
+      "from": "payload/payload.json#episodes",
+      "filter": [
+       {
+        "field": "convert_rc",
+        "op": "==",
+        "value": 0
+       },
+       {
+        "field": "valid_ratio",
+        "op": ">=",
+        "value": 0.98
+       }
+      ],
+      "num": "count()",
+      "den": "count()",
+      "op": "ratio_eq"
+     }
+    }
+   },
+   {
+    "id": "video_hashes_8",
+    "statement": "逐条视频 sha256_16(8 条)",
+    "level": "L1",
+    "value": {
+     "s2_body_1": "a2d96674974f01c7",
+     "s2_body_2": "a2d96674974f01c7",
+     "s2_head_1": "4a28a276053e7840",
+     "s2_head_2": "4a28a276053e7840",
+     "s2_egopro_1": "5a37bacebae3be06",
+     "s2_egopro_2": "5a37bacebae3be06",
+     "s2_egosuite_1": "a65ec2503f289bee",
+     "s2_egosuite_2": "a65ec2503f289bee"
+    },
+    "checks": {
+     "primary": {
+      "kind": "file_hash_map",
+      "algo": "sha256_16",
+      "from": "payload/payload.json#episodes",
+      "key": "name",
+      "path": "qc.video"
+     }
+    }
+   },
+   {
+    "id": "repro_log_hashes_5",
+    "statement": "复现日志 sha256_16(5 个)",
+    "level": "L1",
+    "value": {
+     "worker1.log": "6b2724bff70d5622",
+     "worker2.log": "7529d5ac3a7afeaa",
+     "worker3.log": "f542e74ba13ccb04",
+     "worker4.log": "a6cc7385895b1dc1",
+     "resource_log.csv": "1f9ce5cd319db717"
+    },
+    "checks": {
+     "primary": {
+      "kind": "file_hash_map",
+      "algo": "sha256_16",
+      "names_from": "claim",
+      "dir_decl": "logs"
+     }
+    }
+   },
+   {
+    "id": "dup_conversion_determinism",
+    "statement": "同源双份转换哈希一致(转换确定性)",
+    "level": "L1",
+    "value": {
+     "a2d96674974f01c7": 2,
+     "4a28a276053e7840": 2,
+     "5a37bacebae3be06": 2,
+     "a65ec2503f289bee": 2
+    },
+    "checks": {
+     "primary": {
+      "kind": "group_count",
+      "from": "payload/payload.json#episodes",
+      "by": "video_sha16",
+      "min_group": 2,
+      "expect_groups": 4
+     }
+    }
+   },
+   {
+    "id": "face_ratio_l2",
+    "statement": "逐条人脸检出占比(QC 记录)",
+    "level": "L2",
+    "value": {
+     "s2_body_1": 0.3684,
+     "s2_body_2": 0.3684,
+     "s2_head_1": 0.0,
+     "s2_head_2": 0.0,
+     "s2_egopro_1": 0.2037,
+     "s2_egopro_2": 0.2037,
+     "s2_egosuite_1": 0.1683,
+     "s2_egosuite_2": 0.1683
+    },
+    "checks": {
+     "primary": {
+      "kind": "script",
+      "repro": "repro/qc_face_ratio.py",
+      "requires_env": "qc"
+     },
+     "fallback": {
+      "kind": "json_map_equal",
+      "file": "payload/payload.json",
+      "path": "metrics.L.原始样本人脸检出记录",
+      "map_by": "name",
+      "field": "face_ratio"
+     }
+    }
+   },
+   {
+    "id": "report_payload_consistency",
+    "statement": "payload 与 report.md 数值一致",
+    "level": "L1",
+    "value": "report.md",
+    "checks": {
+     "primary": {
+      "kind": "text_contains",
+      "file": "report.md",
+      "needles": [
+       {
+        "claim": "D2_frame_integrity"
+       },
+       {
+        "claim": "D3_track_integrity"
+       },
+       {
+        "value": "190"
+       },
+       {
+        "value": "190"
+       },
+       {
+        "value": "496"
+       }
+      ]
+     }
+    }
+   }
+  ]
+ },
+ "files": {
+  "payload/payload.json": "C:\\Users\\chunx\\Projects\\nautilusflywheel\\runtime\\verify_batch001\\payload.json",
+  "report.md": "C:\\Users\\chunx\\Projects\\nautilusflywheel\\runtime\\verify_batch001\\report.md"
+ }
+}

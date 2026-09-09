@@ -1,0 +1,66 @@
+{
+ "receipt_version": "0.2",
+ "pack": "verify_batch001",
+ "pack_manifest_hash": "2418f10cb53397633c51b8ad48352f266f3319808f7f8d430233bdafeaf4bedf",
+ "verifier": "compass",
+ "verified_at": "2026-09-09T21:31:21",
+ "environment": "Windows 11 · python 3.13.14",
+ "results": [
+  {
+   "id": "D2_frame_integrity",
+   "level": "L1",
+   "verdict": "agree",
+   "recomputed": "1.0",
+   "claimed": "1.0"
+  },
+  {
+   "id": "D3_track_integrity",
+   "level": "L1",
+   "verdict": "agree",
+   "recomputed": "1.0",
+   "claimed": "1.0"
+  },
+  {
+   "id": "video_hashes_8",
+   "level": "L1",
+   "verdict": "agree",
+   "recomputed": "{'s2_body_1': 'a2d96674974f01c7', 's2_body_2': 'a2d96674974f01c7', 's2_head_1': '4a28a276053e7840', 's2_head_2': '4a28a276053e7840', 's2_egopro_1': '5a37bacebae3be06', 's2_egopro_2': '5a37bacebae3be06', 's2_egosuite_1': 'a65ec2503f289bee', 's2_egosuite_2': 'a65ec2503f289bee'}",
+   "claimed": "{'s2_body_1': 'a2d96674974f01c7', 's2_body_2': 'a2d96674974f01c7', 's2_head_1': '4a28a276053e7840', 's2_head_2': '4a28a2"
+  },
+  {
+   "id": "repro_log_hashes_5",
+   "level": "L1",
+   "verdict": "disagree",
+   "recomputed": "{'worker1.log': '6b2724bff70d5622', 'worker2.log': '7529d5ac3a7afeaa', 'worker3.log': 'f542e74ba13ccb04', 'worker4.log': 'a6cc7385895b1dc1', 'resource_log.csv': 'e7a5989e0d1d153f'}",
+   "claimed": "{'worker1.log': '6b2724bff70d5622', 'worker2.log': '7529d5ac3a7afeaa', 'worker3.log': 'f542e74ba13ccb04', 'worker4.log':"
+  },
+  {
+   "id": "dup_conversion_determinism",
+   "level": "L1",
+   "verdict": "agree",
+   "recomputed": "{'a2d96674974f01c7': 2, '4a28a276053e7840': 2, '5a37bacebae3be06': 2, 'a65ec2503f289bee': 2}",
+   "claimed": "{'a2d96674974f01c7': 2, '4a28a276053e7840': 2, '5a37bacebae3be06': 2, 'a65ec2503f289bee': 2}"
+  },
+  {
+   "id": "face_ratio_l2",
+   "level": "L2",
+   "verdict": "degraded",
+   "recomputed": "degraded·fb:8",
+   "claimed": "{'s2_body_1': 0.3684, 's2_body_2': 0.3684, 's2_head_1': 0.0, 's2_head_2': 0.0, 's2_egopro_1': 0.2037, 's2_egopro_2': 0.2"
+  },
+  {
+   "id": "report_payload_consistency",
+   "level": "L1",
+   "verdict": "agree",
+   "recomputed": "all found",
+   "claimed": "report.md"
+  }
+ ],
+ "summary": {
+  "agree": 5,
+  "disagree": 1,
+  "degraded": 1,
+  "seal_fail": 0
+ },
+ "boundary": "独立技术验证与回执,不作客户验收或结算决定"
+}
