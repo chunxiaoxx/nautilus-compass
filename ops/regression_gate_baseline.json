@@ -1,0 +1,39 @@
+{
+ "ts": "2026-09-09T23:47:19",
+ "all_ok": true,
+ "cases": [
+  {
+   "query": "9876 daemon ping 协议要求",
+   "expect": "daemon-9876-watchdog-rootcause-20260908.md",
+   "hits": [
+    "daemon-auth-and-hf-offline-20260901.md",
+    "daemon-9876-watchdog-rootcause-20260908.md",
+    "session_20260822-1918_tribal-compass-daemon-port.md"
+   ],
+   "hit_at3": true,
+   "ms": 614.8
+  },
+  {
+   "query": "PyPI nautilus-compass 发布",
+   "expect": "pypi-311-published-20260906.md",
+   "hits": [
+    "pypi-311-published-20260906.md",
+    "session_20260822-1918_tribal-compass-daemon-port.md",
+    "benchmark-naming-licensing-20260902.md"
+   ],
+   "hit_at3": true,
+   "ms": 1496.3
+  },
+  {
+   "query": "LME-V2 451 题基准归属",
+   "expect": "lmev2-upstream-attribution-20260902.md",
+   "hits": [
+    "lmev2-upstream-attribution-20260902.md",
+    "lmev2-first-full-baseline-20260830.md",
+    "lmev2-three-knives-tuning-20260830.md"
+   ],
+   "hit_at3": true,
+   "ms": 2072.1
+  }
+ ]
+}
