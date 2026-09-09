@@ -47,6 +47,7 @@
 
 ## 状态记录(每轮一行,倒序)
 
+- 11:1x 轮 15(纯值守):daemon pong(12628)✅·landing 200 ✅·信箱 0·stars 7·dev.to 持平——全绿无事件
 - 10:5x 轮 14(**睡眠-唤醒全案**):机器 06:xx-10:5x 睡眠→旧 daemon(33352)被睡眠杀→**watchdog 唤醒自愈 ✅**(10:49 拉→10:51 listening·热缓存 136s)→但残留半死实例 3016 抢连接(ping 超时=它 accept 不响应·9/7「listener 半死」活标本)→taskkill 精确清除→单实例 12628 双 ping 稳 ✅。**9/15 改进项**:daemon_start.sh 快路径处理「连上无响应」形态(netstat 查 9876 持有者杀残留再拉新)。landing 200·信箱 0·stars 7
 - 06:1x 轮 13(纯值守):daemon pong ✅·landing 200 ✅·信箱 0·stars 7——全绿无事件
 - 05:4x 轮 12(纯值守):daemon pong ✅·landing 200 ✅·信箱 0·stars 7·dev.to 持平——全绿无事件
