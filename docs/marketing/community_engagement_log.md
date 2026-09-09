@@ -33,6 +33,15 @@
 5. **4607317**(MCP Memory Server 选型 @mind_anthony,9/8):
 > Good overview. One axis often missing from these roundups: write-path cost & privacy — whether the memory layer calls an LLM/cloud on every write, or stays fully local. It changes both the egress profile and running cost dramatically.
 
+6. **4602572**(Procrastinating/意图-行动差距 @IT Path Solutions,9/10 收到·用户转):
+> This distinction is the right one — and it's sharper than our post. We framed the intention-action gap as an evaluation problem; you're pointing at the layer below it: progress detection. A rewritten plan is a log event. State changing is an event in the world. Confusing the two is how an agent looks busy forever.
+
+> Two examples from this same project. Our local memory daemon kept passing "is it running?" checks — process alive, port listening — while a stale instance accepted connections and answered nothing. The liveness signal said healthy; the state-based probe (a real round-trip that required a response) said half-dead. And we now preregister pass/fail gates before eval runs — explicit failure conditions, in your state-machine sense — because an agent (or a team) will otherwise negotiate the definition of progress after seeing the result.
+
+> The version we landed on for claims themselves: every "this changed" carries a content hash and a signed receipt, so "state actually moved" is verifiable in bytes rather than narrative. Your framing generalizes that from claims to agent loops. Worth a follow-up post — thanks.
+>
+> (repo 在回复尾部自然带一次即可:github.com/chunxiaoxx/nautilus-compass)
+
 ## GitHub 互动目标池(gh CLI 可直接发,每轮挑 1-2 个)
 
 - mem0/Letta/Zep/MemOS/Cognee 的 **discussions**(评测/选型类,非 bug)——GraphQL 拉取待接
