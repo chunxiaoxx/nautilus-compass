@@ -47,6 +47,7 @@
 
 ## 状态记录(每轮一行,倒序)
 
+- 13:4x 轮 21:daemon pong ✅·landing 200 ✅·信箱 0·**9/15 项提前完成**——daemon_start.sh 半死残留清理段(二次 ping 确认防误杀+netstat 持有者清除);bash -n 语法绿+正常路径回归 noop 验证(未误杀活 daemon);待下次睡眠-唤醒自然实测。#48 清单减一项
 - 13:1x 轮 20(纯值守):daemon pong(12628)✅·landing 200 ✅·信箱 0·stars 7——全绿无事件
 - 12:4x 轮 19:daemon pong ✅·**landing 首现 000→三连复测 200(0.4/4.5/0.4s)+多路径+本机对照全过=瞬时网络抖动,服务健康**(探针自证伪流程执行)·信箱 0·stars 7
 - 12:1x 轮 18:daemon pong ✅·landing 200 ✅·信箱 0·**🔴主因定位:用户反馈 r/LocalLLaMA 发帖限制(主帖未发之谜解开)**——产出破门弹药包(reddit_karma_breakthrough.md:养 karma 三评论无链接版+modmail 文案+C 路替代渠道);三路并行等用户选
