@@ -77,6 +77,38 @@ def build_claim(c: Criterion, value: Any, *, claim_id: str | None = None) -> dic
 
 
 register(Criterion(
+    cid="A1", layer="hard", title="IMU 原始流采样率 >=200Hz(硬门槛)",
+    check_kind="aggregate",
+    check_template={"from": "imu_check.json#rows", "num": "min(rate)", "op": "value_eq"},
+    gate={"op": ">=", "value": 200},
+    provenance="验收判据母版-v0 A1(冻结不得改):三轴加速度+三轴角速度;任一不过=整包拒收",
+))
+
+register(Criterion(
+    cid="A2", layer="hard", title="时间戳毫秒级连续无乱序且可与视频对齐(硬门槛)",
+    check_kind="aggregate",
+    check_template={"from": "ts_check.json#rows", "num": "count(issues == 0)", "den": "count()", "op": "ratio_eq"},
+    gate={"op": ">=", "value": 1.0},
+    provenance="验收判据母版-v0 A2(冻结不得改):数据方出逐段检查行,issues=乱序/非毫秒/不可对齐计数>0 置 1",
+))
+
+register(Criterion(
+    cid="A3", layer="hard", title="对齐锚点事件存在(硬门槛)",
+    check_kind="aggregate",
+    check_template={"from": "anchor_events.json#rows", "num": "count(present == 1)", "den": "count()", "op": "ratio_eq"},
+    gate={"op": ">=", "value": 1.0},
+    provenance="验收判据母版-v0 A3(冻结不得改):开录后拍手/敲击尖峰事件;逐条记录 1 行",
+))
+
+register(Criterion(
+    cid="B4", layer="video", title="人脸未脱敏检出 =0(合规红线)",
+    check_kind="aggregate",
+    check_template={"from": "face_check.json#rows", "num": "count(detected == 0)", "den": "count()", "op": "ratio_eq"},
+    gate={"op": ">=", "value": 1.0},
+    provenance="验收判据母版-v0 B4:交付链路上脱敏后复检不得检出;检出=批次不合格。检测器自身卫生由 M2 金标校准管",
+))
+
+register(Criterion(
     cid="D2", layer="metric", title="帧完整率 >=99.9%",
     check_kind="aggregate",
     check_template={"from": "frames.json#rows", "num": "count(rc == 1)", "den": "count()", "op": "ratio_eq"},
