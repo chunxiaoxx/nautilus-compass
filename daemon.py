@@ -14,8 +14,11 @@ Protocol (JSON over TCP localhost:9876):
   · Anchors cache: similarly
   · 多客户端并发 OK · single threaded GIL 但 BGE encode 快 (~50ms/句)
 """
+import hashlib
+import hmac
 import json
 import os
+import secrets
 
 # v2.0.2 · P6 · BLAS internal thread limit · CRITICAL: must set BEFORE importing
 # any numpy/torch/sentence-transformers downstream. Each BGE encode call would
@@ -28,14 +31,28 @@ os.environ.setdefault("OMP_NUM_THREADS", "1")
 os.environ.setdefault("MKL_NUM_THREADS", "1")
 os.environ.setdefault("OPENBLAS_NUM_THREADS", "1")
 os.environ.setdefault("NUMEXPR_NUM_THREADS", "1")
+# v3.0.10 · SentenceTransformer 初始化的 hub 在线检查走系统代理;本机代理断流时
+# 卡 ~42s 后抛 "client has been closed" 并无限重试(2026-09-01 实测 18:35-18:39)。
+# 模型已缓存本地,默认强制离线加载;需下载新模型时外部设 HF_HUB_OFFLINE=0 覆盖。
+os.environ.setdefault("HF_HUB_OFFLINE", "1")
+os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
 
 import pickle
 import socket
 import sys
 import threading
 import time
+from collections import deque as _deque
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+
+# v3.0.2 · Stage1a /status endpoint (ported from cloud /opt fork 2026-08-25 to
+# end the repo-vs-/opt daemon divergence; psutil optional so local Windows
+# runs without it still work).
+try:
+    import psutil  # noqa: F401 · /status process metrics
+except ImportError:
+    psutil = None
 
 # P6 (companion) · torch single-thread per encode · applied after import
 try:
@@ -95,7 +112,13 @@ _BM25_RRF_TOP_K = int(os.environ.get("COMPASS_BM25_RRF_TOP_K", "30"))
 _PROD_RERANK_USE = os.environ.get("COMPASS_PROD_RERANK", "0") == "1"
 _RERANKER_MODEL = os.environ.get(
     "ZMM_RERANKER_MODEL",
-    str(Path.home() / ".cache/modelscope/hub/models/BAAI/bge-reranker-v2-m3"),
+    # local ModelScope path preferred · else HF repo id (mirrors EMBEDDER_MODEL).
+    # 2026-06-07: without the HF fallback, HF-cache-only hosts (e.g. fresh GPU
+    # server) hit "reranker failed · Path .../modelscope/... not found" and
+    # silently fell back to dense order. The exists()-guard fixes that.
+    str(Path.home() / ".cache/modelscope/hub/models/BAAI/bge-reranker-v2-m3")
+    if (Path.home() / ".cache/modelscope/hub/models/BAAI/bge-reranker-v2-m3").exists()
+    else "BAAI/bge-reranker-v2-m3",
 )
 # how many top candidates to feed the cross-encoder before truncating to top_k.
 # benchmark used full haystack (50); production keeps it bounded for latency.
@@ -107,7 +130,15 @@ _RERANKER_LOCK = threading.Lock()
 # Activates the dormant LLM-WIKI2 Ebbinghaus forgetting (README:104) in recall:
 # drops entries whose forget_at has passed. Pure schema arithmetic (no LLM).
 # Default OFF: no memory is ever hidden until explicitly enabled.
-_PROD_LIFECYCLE_USE = os.environ.get("COMPASS_PROD_LIFECYCLE", "0") == "1"
+_PROD_LIFECYCLE_USE = os.environ.get("COMPASS_PROD_LIFECYCLE", "1") == "1"  # v3.0.5 default ON(池瘦身):只影响带 forget_at 的条目,无该字段 fail-safe 保留
+
+# Phase 1 Task 4 · production tier-aware re-rank · opt-in via COMPASS_PROD_TIER_WEIGHT=1
+# Among near-equal cosine hits, prefers the more-consolidated (higher-tier)
+# capsule via a tiny additive bonus (recall.apply_tier_weight · ranking-only).
+# Skipped when cross-encoder rerank is active (rerank order must win · the dense
+# scores are non-monotonic there, so a score-sort would corrupt rerank order).
+# Default OFF: daemon ranking is byte-identical until explicitly enabled.
+_PROD_TIER_WEIGHT_USE = os.environ.get("COMPASS_PROD_TIER_WEIGHT", "0") == "1"
 
 # v2.3.0 · opt-in gemini query rewrite before recall · COMPASS_PROD_QUERY_REWRITE=1
 # (also needs COMPASS_USE_GEMINI_FLASH). LLM contact isolated in query_rewrite.py;
@@ -123,6 +154,37 @@ def _tokenize_for_bm25(text: str) -> list:
     tokens = text.lower().split()
     cjk_chars = [c for c in text if "一" <= c <= "鿿"]
     return tokens + cjk_chars
+
+
+# v3.2 · utterance-routing production port (COMPASS_CHUNK_RECALL=1, default off).
+# LongMemEval-S head-to-head finding: the answer to detail queries usually
+# lives in ONE turn/paragraph; whole-entry embedding dilutes it. Chunk-level
+# retrieval lifted ssu 0.20→1.00 (M) / ssu P@1 +41pt (S) vs session-level.
+# Production port: per-entry paragraph-window chunks, chunk-best score fused
+# with the entry-level dense rank via RRF — classifier-free, safe for all
+# query shapes (eval showed no harm on aggregate-type queries).
+_CHUNK_RECALL_USE = os.environ.get("COMPASS_CHUNK_RECALL", "0") == "1"
+_CHUNK_MAX_CHARS = int(os.environ.get("COMPASS_CHUNK_MAX_CHARS", "500"))
+_CHUNK_PER_ENTRY_CAP = 24
+
+
+def _entry_chunks(body: str, max_chars=_CHUNK_MAX_CHARS) -> list:
+    """Sliding window of paragraph pairs (para i + i+1), truncated to
+    max_chars — mirrors the eval-side user-turn window=2 that lifted ssu
+    0.20→1.00. Greedy packing was tried and rejected: it merges unrelated
+    paragraphs and re-dilutes the very signal chunking recovers."""
+    if not body:
+        return []
+    paras = [p.strip() for p in body.split("\n\n") if p.strip()]
+    out = []
+    for i in range(len(paras)):
+        chunk = paras[i]
+        if i + 1 < len(paras) and len(chunk) + len(paras[i + 1]) + 1 <= max_chars:
+            chunk = chunk + "\n" + paras[i + 1]
+        elif i + 1 < len(paras):
+            chunk = (chunk + "\n" + paras[i + 1])[:max_chars]
+        out.append(chunk[:max_chars])
+    return out[:_CHUNK_PER_ENTRY_CAP]
 
 
 def _build_bm25_retriever(entries):
@@ -213,6 +275,14 @@ def _rerank_top(query, top, top_k):
                  for _s, e in candidates]
         scores = reranker.predict(pairs)
         reordered = sorted(zip(candidates, scores), key=lambda x: -float(x[1]))
+        # 2026-06-20 · rerank burst 后释放 reserved 缓存 → 降 nvidia-smi 稳态占用,
+        # 让共置的 gate B GPU eval 不被间歇 OOM(soul 报的根因)。可 env 关。
+        if os.environ.get("COMPASS_EMPTY_CACHE", "1") == "1":
+            try:
+                import torch
+                torch.cuda.empty_cache()
+            except Exception:
+                pass
         return [item for item, _rscore in reordered][:top_k]
     except Exception as e:
         log(f"reranker failed · fallback to dense order: {e}")
@@ -244,14 +314,98 @@ def _apply_lifecycle_filter(entries):
         kept.append(e)
     return kept
 
+
+def _apply_tier_weight_prod(top, top_k):
+    """Phase 1 Task 4 · production tier-aware re-rank (opt-in COMPASS_PROD_TIER_WEIGHT).
+
+    Reuses recall.apply_tier_weight (small additive tier bonus · ranking-only ·
+    output scores unchanged). Skipped when:
+      · flag off (default) → passthrough top[:top_k]
+      · cross-encoder rerank active → rerank order must win (its tuples keep the
+        non-monotonic dense score, so a score-sort here would corrupt that order)
+    Any failure → fall back to the incoming order (recall must never crash)."""
+    if not _PROD_TIER_WEIGHT_USE or _PROD_RERANK_USE or not top:
+        return top[:top_k]
+    try:
+        from recall import apply_tier_weight
+        return apply_tier_weight(top)[:top_k]
+    except Exception as e:
+        log(f"tier weight failed · passthrough: {e}")
+        return top[:top_k]
+
 # v2.0.9 · inotify-based cache invalidation · Layer 2 cure for 23k-file dir scan
 _INOTIFY_USE = os.environ.get("COMPASS_USE_INOTIFY", "1") == "1"
+if not _INOTIFY_USE:
+    # 2026-08-28(workbuddy 反馈 P1·2.2): 关闭 inotify = 新写入不被 recall 索引,
+    # 曾完全静默。启动时大声说一遍。
+    print("⚠️ COMPASS_USE_INOTIFY=0 · new-file discovery DISABLED — fresh writes "
+          "won't appear in recall until a manual rescan", file=sys.stderr)
 _ENTRIES_CACHE = {}  # proj_key -> list of entries (with embeddings) · last scan
 _ENTRIES_CACHE_LOCK = threading.Lock()
 _DIR_DIRTY = set()   # proj_keys flagged for re-scan by inotify watcher
 _DIR_DIRTY_LOCK = threading.Lock()
 _INOTIFY_STATS = {"events": 0, "rescans_avoided": 0, "rescans_done": 0, "watch_count": 0, "errors": 0}
 _INOTIFY_LAST_LOG = 0.0
+
+# ── Stage1a /status state (ported from cloud /opt fork · 2026-08-25) ──
+_DAEMON_START_TS = 0.0
+_RECALL_TS_BUFFER = _deque(maxlen=10000)   # (ts, latency_ms)
+_OVERLOAD_TS_BUFFER = _deque(maxlen=1000)
+
+
+def _sliding_5min_stats():
+    now = time.time()
+    cutoff = now - 300
+    recent = [(t, lat) for t, lat in _RECALL_TS_BUFFER if t >= cutoff]
+    overload = sum(1 for t in _OVERLOAD_TS_BUFFER if t >= cutoff)
+    count = len(recent)
+    if count > 0:
+        latencies = sorted(lat for _, lat in recent)
+        p95 = latencies[min(int(count * 0.95), count - 1)]
+        avg = round(sum(latencies) / count, 2)
+    else:
+        p95 = 0
+        avg = 0
+    return {"count_5min": count, "p95_ms": p95, "avg_ms": avg, "overload_5min": overload}
+
+
+def _compute_memory_stats():
+    try:
+        pkls = list(CACHE_DIR.glob("*.pkl"))
+        return {"pkl_count": len(pkls),
+                "pkl_total_mb": sum(p.stat().st_size for p in pkls) // (1024 * 1024)}
+    except Exception:
+        return {"pkl_count": 0, "pkl_total_mb": 0}
+
+
+def _status_payload() -> dict:
+    from datetime import datetime, timezone
+    try:
+        proc = psutil.Process()
+        cpu_pct = proc.cpu_percent(interval=0.1)
+        rss_mb = proc.memory_info().rss // (1024 * 1024)
+    except Exception:
+        cpu_pct, rss_mb = 0.0, 0
+    try:
+        load_avg = list(os.getloadavg())
+    except Exception:
+        load_avg = [0.0, 0.0, 0.0]
+    return {
+        "ok": True,
+        "ts": datetime.now(timezone.utc).isoformat(),
+        "uptime_s": int(time.time() - _DAEMON_START_TS) if _DAEMON_START_TS else 0,
+        "pid": os.getpid(),
+        "cpu_pct": cpu_pct,
+        "rss_mb": rss_mb,
+        "load_avg": load_avg,
+        "recall": {"p9_cache": dict(_RECALL_CACHE_STATS), "sliding_5min": _sliding_5min_stats(),
+                   "inotify": {"watches": _INOTIFY_STATS["watch_count"],
+                               "events": _INOTIFY_STATS["events"],
+                               "avoid_rate": round(
+                                   (_INOTIFY_STATS["rescans_avoided"] /
+                                    max(_INOTIFY_STATS["rescans_avoided"] + _INOTIFY_STATS["rescans_done"], 1)) * 100, 1)}},
+        "memory": _compute_memory_stats(),
+    }
 
 
 def _p9_cache_key(action, query, project, top_k, scope, agent_type=""):
@@ -360,6 +514,10 @@ _V2_RULES = [
     _re_v2.compile(r"chmod\s+(-R\s+)?777\b"),                                     # 8
     _re_v2.compile(r"\bsk-[A-Za-z0-9]{16,}"),                                     # 9 硬编码 key
     _re_v2.compile(r"(api[_-]?key|password|secret|token)\s*[=:]\s*[\"'][^\"'\s]{12,}[\"']", _re_v2.I),  # 10
+    # 2026-08-28(workbuddy 实测反馈): 纯中文意图不触发 rule_hit。保守补高频两条,
+    # 模糊语义(如"删除一些文件")故意不加——误报会滥用 R1 drift 自停。
+    _re_v2.compile(r"删库|清空(全部|整个|生产)?(数据库|数据表)"),                   # 11 中文删库
+    _re_v2.compile(r"(强制|强行|强)推(送|上去)"),                                   # 12 中文强推
 ]
 _V2_SAFE_RM = _re_v2.compile(
     r"(node_modules|/dist\b|\bdist\b|/build\b|\.cache|__pycache__|\.tmp\b|/tmp/|\.swc\b|\.tgz|\.tar|"
@@ -388,6 +546,12 @@ def log(msg: str) -> None:
     LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
     line = f"[{time.strftime('%H:%M:%S')}] {msg}\n"
     try:
+        # v3.0.9 · size-rotate · daemon.log append-only 曾无上限(12.6MB+)
+        try:
+            if LOG_FILE.exists() and LOG_FILE.stat().st_size > 20 * 1024 * 1024:
+                LOG_FILE.replace(LOG_FILE.with_suffix(LOG_FILE.suffix + ".1"))
+        except Exception:
+            pass
         with open(LOG_FILE, "a", encoding="utf-8") as f:
             f.write(line)
     except Exception:
@@ -453,6 +617,15 @@ def get_embedder():
         device = "cpu"
     log(f"BGE device: {device}")
     model = SentenceTransformer(EMBEDDER_MODEL, device=device)
+    # 2026-06-20 · GPU 显存瘦身:bge-m3 默认 max_seq_len=8192,memory 条目短,
+    # 8192 的激活 buffer 是 T4 上 ~13GB 占用的大头(权重才 2.3GB)。封到 512
+    # 砍激活 buffer(可 env 覆盖)。释放显存给共置的 gate B eval(soul 收敛路径)。
+    try:
+        _max_seq = int(os.environ.get("COMPASS_BGE_MAX_SEQ", "512"))
+        model.max_seq_length = _max_seq
+        log(f"BGE max_seq_length capped → {_max_seq} (GPU 瘦身)")
+    except Exception as _e:
+        log(f"BGE max_seq cap skipped: {_e}")
     # 包一个 wrapper · encode 返 list 兼容 _APIEmbedder
     class _BGEWrapper:
         def encode(self, text, **kwargs):
@@ -462,6 +635,15 @@ def get_embedder():
     return _state["embedder"]
 
 
+def _get_embedder():
+    """Thin alias for the embedder singleton accessor.
+
+    Exists so the score path (and tests) have a single, monkeypatch-able seam
+    that returns the loaded embedder without binding to get_embedder's name.
+    """
+    return get_embedder()
+
+
 def cosine(a, b):
     import math
     if not a or not b: return 0.0
@@ -469,6 +651,64 @@ def cosine(a, b):
     na = math.sqrt(sum(x*x for x in a))
     nb = math.sqrt(sum(y*y for y in b))
     return dot/(na*nb) if na>0 and nb>0 else 0.0
+
+
+try:
+    import numpy as _np
+except Exception:
+    _np = None
+
+
+def cosine_batch(q_emb, vecs):
+    """v3.0.9 · 向量化批量 cosine,等价逐条 cosine(q, v)。
+
+    原主打分+chunk 打分是 1024 维纯 Python 逐元素循环 × 数千 entries =
+    数千万次 Python 运算(py-spy 实测两 handler 同烧打分段,recall 稳态
+    CPU 大头);numpy 矩阵乘 ~100x。numpy 不可用/异常回退逐条(原行为)。
+    """
+    if _np is not None and vecs:
+        try:
+            qv = _np.asarray(q_emb, dtype=_np.float32)
+            M = _np.asarray(vecs, dtype=_np.float32)
+            qn = float(_np.linalg.norm(qv))
+            if qn <= 0:
+                return [0.0] * len(vecs)
+            nrm = _np.linalg.norm(M, axis=1)
+            nrm[nrm == 0] = 1e-9
+            return (M @ qv / (nrm * qn)).tolist()
+        except Exception:
+            pass
+    return [cosine(q_emb, v) for v in vecs]
+
+
+def _handle_score(req: dict) -> dict:
+    """score action · cosine(query, candidate) for each candidate (bge-m3).
+
+    request:  {"action":"score","query":"<str>","candidates":["<text>", ...]}
+    response: {"ok":true,"scores":[<float cosine>, ...]}  # order aligns candidates
+              {"ok":false,"error":"..."}                   # empty / embedder fault
+
+    Serves the serving-side semantic recall: rank a caller-supplied candidate
+    set against a query using the already-loaded embedder (no haystack scan).
+    """
+    candidates = req.get("candidates") or []
+    if not candidates:
+        return {"ok": False, "error": "no candidates"}
+    query = req.get("query") or ""
+    try:
+        embedder = _get_embedder()
+        q_vec = embedder.encode(query)
+        if hasattr(q_vec, "tolist"):
+            q_vec = q_vec.tolist()
+        scores = []
+        for c in candidates:
+            c_vec = embedder.encode(c)
+            if hasattr(c_vec, "tolist"):
+                c_vec = c_vec.tolist()
+            scores.append(cosine(q_vec, c_vec))
+        return {"ok": True, "scores": scores}
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
 
 
 def parse_memory_file(path: Path) -> dict:
@@ -494,6 +734,8 @@ def parse_memory_file(path: Path) -> dict:
         "path": path.name, "fullpath": str(path),
         "name": fm.get("name", path.stem),
         "description": fm.get("description","")[:120],
+        # v2.3.1 · recall 直交付正文摘录(此前只回 path+常空的 description,消费方须二跳读文件)
+        "body": body[:500],
         "type": fm.get("type","?"),
         "age_seconds": age_s, "age_str": age_str,
         "embed_text": (fm.get("description","") + "\n" + body)[:EMBED_MAX_CHARS],
@@ -501,6 +743,60 @@ def parse_memory_file(path: Path) -> dict:
         # v2.3.0 · lifecycle · surface forget_at for production forget-filter
         "forget_at": fm.get("forget_at", ""),
     }
+
+
+# v3.0.1 · atomic pkl writes + periodic flush · 2026-08-24 cloud incident:
+# corrupt half-written 74MB pkl ("Ran out of input" on every warmup) → full
+# project re-embed on each restart → slow recall → caller retry storm → 32
+# in-flight cap = overloaded livelock. Non-atomic writes could truncate the
+# file at any kill; embed progress mid-scan was never persisted at all.
+_PKL_FLUSH_EVERY = int(os.environ.get("COMPASS_PKL_FLUSH_EVERY", "50"))
+# v3.0.9 · 单请求 embed 预算:积压渐进消化(新文件优先),防大批 encode 独占
+# bge-handler 数分钟 → 后续 recall 排队饿死(2026-09-01 云上实测 60s 超时)。
+_EMBED_BUDGET = int(os.environ.get("COMPASS_EMBED_BUDGET", "24"))
+_EMBED_CHUNK_BUDGET = int(os.environ.get("COMPASS_EMBED_CHUNK_BUDGET", "12"))
+
+# v3.0.3 · per-project embed/flush lock · 2026-08-25 cloud incident: concurrent
+# get_memory_entries calls raced (setdefault → two divergent cache dicts; the
+# later flush overwrote the richer pkl with a sparse one → entries lost →
+# perpetual re-embed at 347% CPU; plus same-tmp collisions between periodic
+# flushes → os.replace ENOENT ×33). Serializing per project fixes both; projects
+# still parallelize against each other.
+_MEM_LOCKS = {}
+_MEM_LOCKS_GUARD = threading.Lock()
+
+
+def _mem_lock(proj_key: str) -> threading.Lock:
+    with _MEM_LOCKS_GUARD:
+        lk = _MEM_LOCKS.get(proj_key)
+        if lk is None:
+            lk = _MEM_LOCKS[proj_key] = threading.Lock()
+        return lk
+
+
+def _pkl_write_atomic(path, obj) -> None:
+    """v3.0.1 · write pkl via tmp + os.replace so a kill never leaves a
+    truncated (permanently corrupt) cache file behind."""
+    tmp = path.with_name(f"{path.name}.{os.getpid()}.{threading.get_ident()}.tmp")
+    with open(tmp, "wb") as f:
+        pickle.dump(obj, f)
+    os.replace(tmp, path)
+
+
+def _flush_memory_pkl(proj_key: str, cache: dict) -> None:
+    """v3.0.1 · persist one project's embedding cache (atomic).
+    v3.0.9 · fail 重试一次(历史 34 条 flush fail 全有消化价值)。"""
+    import hashlib
+    proj_hash = hashlib.sha256(proj_key.encode()).hexdigest()[:12]
+    for _attempt in (1, 2):
+        try:
+            _pkl_write_atomic(CACHE_DIR / f"{proj_hash}.pkl", {"embeddings": cache})
+            return
+        except Exception as _e:
+            if _attempt == 2:
+                log(f"pkl flush fail {proj_hash}: {_e}")
+            else:
+                time.sleep(0.2)
 
 
 def get_memory_entries(mem_dir: Path):
@@ -529,28 +825,90 @@ def get_memory_entries(mem_dir: Path):
     # cache lookup
     proj_key = str(mem_dir)
     cache = _state["memory_caches"].setdefault(proj_key, {})
-    updated = False
-    for e in entries:
-        cached = cache.get(e["fullpath"])
-        if cached and cached[0] == e["mtime"]:
-            e["embedding"] = cached[1]
-        else:
-            try:
-                vec = embedder.encode(e["embed_text"])
-                if hasattr(vec, "tolist"):
-                    vec = vec.tolist()
-                cache[e["fullpath"]] = (e["mtime"], vec)
-                e["embedding"] = vec
-                updated = True
-            except Exception as ex:
-                log(f"embed file fail {e['path']}: {ex}")
+    with _mem_lock(proj_key):  # v3.0.3 · serialize fill+flush per project
+        updated = 0
+        # v3.0.9 · batch encode · misses 先收集再一次 encode。逐条 encode 是云
+        # daemon CPU 满载主因(792 条重 embed 逐条前向 ~4min;批量 2-5x),
+        # py-spy 两轮独立实锤 forward 64.7% + get_memory_entries 25%。
+        # _APIEmbedder 等单条 embedder 走 except 退回逐条(旧行为)。
+        misses = []
+        for e in entries:
+            cached = cache.get(e["fullpath"])
+            if cached and cached[0] == e["mtime"]:
+                e["embedding"] = cached[1]
+            else:
+                misses.append(e)
+        if len(misses) > _EMBED_BUDGET:
+            # v3.0.9 · 超预算 → 新文件优先渐进消化,其余本轮 embedding=None
+            #(不写 cache,下轮继续补);recall 响应时间从此与积压量解耦
+            misses.sort(key=lambda e: e.get("mtime") or 0, reverse=True)
+            for e in misses[_EMBED_BUDGET:]:
                 e["embedding"] = None
-    if updated:
-        # 持久化
-        import hashlib
-        proj_hash = hashlib.sha256(proj_key.encode()).hexdigest()[:12]
-        with open(CACHE_DIR / f"{proj_hash}.pkl", "wb") as f:
-            pickle.dump({"embeddings": cache}, f)
+            misses = misses[:_EMBED_BUDGET]
+        if misses:
+            _t0e = time.time()
+            _vecs = None
+            try:
+                _vecs = embedder.encode([e["embed_text"] for e in misses])
+            except Exception as ex:
+                log(f"batch encode fail, fallback to per-file: {ex}")
+            if _vecs is not None:
+                for e, vec in zip(misses, _vecs):
+                    if hasattr(vec, "tolist"):
+                        vec = vec.tolist()
+                    cache[e["fullpath"]] = (e["mtime"], vec)
+                    e["embedding"] = vec
+                    updated += 1
+                    # v3.0.1 · periodic flush · 大项目 re-embed 中途被
+                    # kill/重启不再全丢进度(2026-08-24 云 74MB pkl 卡死根因之一)
+                    if updated % _PKL_FLUSH_EVERY == 0:
+                        _flush_memory_pkl(proj_key, cache)
+            else:
+                for e in misses:
+                    try:
+                        vec = embedder.encode(e["embed_text"])
+                        if hasattr(vec, "tolist"):
+                            vec = vec.tolist()
+                        cache[e["fullpath"]] = (e["mtime"], vec)
+                        e["embedding"] = vec
+                        updated += 1
+                        if updated % _PKL_FLUSH_EVERY == 0:
+                            _flush_memory_pkl(proj_key, cache)
+                    except Exception as ex:
+                        log(f"embed file fail {e['path']}: {ex}")
+                        e["embedding"] = None
+            # v3.0.9 · re-embed 观测 · 哪个 project 在大量重 embed(此前盲区,
+            # 全靠 py-spy 事后抓);proj_hash 与 pkl 文件名一致,可对账
+            if updated:
+                import hashlib as _hl
+                log(f"re-embed {updated} files · {time.time()-_t0e:.1f}s · "
+                    f"proj {_hl.sha256(proj_key.encode()).hexdigest()[:12]}")
+        # v3.2 · chunk embeddings (COMPASS_CHUNK_RECALL) · parallel pkl key
+        # "fullpath|chunks" = (mtime, [vec,...]) · same re-embed-on-mtime
+        # discipline as the entry vector. Text is not persisted (chunk count
+        # + order is deterministic from body, recomputed on cache miss).
+        for e in entries:
+            if _CHUNK_RECALL_USE:
+                ck = e["fullpath"] + "|chunks"
+                cch = cache.get(ck)
+                if cch and cch[0] == e["mtime"]:
+                    e["chunk_embs"] = cch[1]
+                elif updated >= _EMBED_CHUNK_BUDGET:
+                    e["chunk_embs"] = []  # v3.0.9 · chunk 预算:本轮跳过,下轮补
+                else:
+                    try:
+                        vecs = []
+                        for c in _entry_chunks(e.get("body", "")):
+                            cv = embedder.encode(c)
+                            vecs.append(cv.tolist() if hasattr(cv, "tolist") else cv)
+                        cache[ck] = (e["mtime"], vecs)
+                        e["chunk_embs"] = vecs
+                        updated += 1
+                    except Exception as ex:
+                        log(f"embed chunks fail {e['path']}: {ex}")
+                        e["chunk_embs"] = []
+        if updated:
+            _flush_memory_pkl(proj_key, cache)
     # v2.0.9 · cache full entries for next recall · invalidated by inotify watcher
     if _INOTIFY_USE:
         with _ENTRIES_CACHE_LOCK:
@@ -593,8 +951,10 @@ def _inotify_watcher_thread():
     except Exception as _e:
         log(f"INotify() init fail: {_e}")
         return
-    watch_flags = (_iflags.CREATE | _iflags.DELETE | _iflags.MODIFY
-                   | _iflags.MOVED_TO | _iflags.MOVED_FROM | _iflags.CLOSE_WRITE)
+    # v3.0.9 · 收窄事件:CREATE/MODIFY/MOVED_FROM 冗余(一次文件写入原产生
+    # 3-4 个事件;云上 20min 打了 3509 个)。CLOSE_WRITE=写完成 · 原子写
+    # (tmp+rename)落 MOVED_TO · 删除留 DELETE,dirty 标记幂等不漏。
+    watch_flags = (_iflags.CLOSE_WRITE | _iflags.MOVED_TO | _iflags.DELETE)
     wd_to_proj = {}
     watched = 0
     failed = 0
@@ -682,8 +1042,7 @@ def get_anchors(anchors_path: Path | None = None):
         # only persist the default anchors.json profile; per-tenant profiles
         # stay in-memory to avoid cross-tenant leakage to disk
         if p == ANCHORS_PATH:
-            with open(CACHE_DIR / "anchors.pkl", "wb") as f:
-                pickle.dump(result, f)
+            _pkl_write_atomic(CACHE_DIR / "anchors.pkl", result)
         return result
     except Exception as e:
         log(f"anchor build fail for {p.name}: {e}")
@@ -792,11 +1151,13 @@ def handle_request(req: dict) -> dict:
         # drop forgotten memories before scoring; default off = no-op.
         all_entries = _apply_lifecycle_filter(all_entries)
         scored = []
-        for e in all_entries:
-            if not e.get("embedding"): continue
-            s = cosine(q_emb, e["embedding"])
-            if s >= COSINE_MIN:
-                scored.append((s, e))
+        # v3.0.9 · 主打分向量化(原逐条 cosine 为 recall 稳态 CPU 大头之一)
+        _hits = [e for e in all_entries if e.get("embedding")]
+        if _hits:
+            _sims = cosine_batch(q_emb, [e["embedding"] for e in _hits])
+            for e, s in zip(_hits, _sims):
+                if s >= COSINE_MIN:
+                    scored.append((s, e))
         scored.sort(key=lambda x: -x[0])
 
         # v2.3.0 · when prod reranker is on, retrieve a wider candidate set so the
@@ -820,17 +1181,58 @@ def handle_request(req: dict) -> dict:
         else:
             top = scored[:_retrieve_n]
 
+        # v3.2 · chunk-level recall fusion (COMPASS_CHUNK_RECALL=1). Reranks the
+        # dense(±BM25) list by RRF with a chunk-best-score list: entries whose
+        # ONE paragraph matches the query get pulled up (utterance-routing port).
+        if _CHUNK_RECALL_USE:
+            try:
+                # v3.0.9 · chunk 打分向量化:平铺全部 chunk 向量一次算,按 entry
+                # 归并取 best(原逐条 cosine 循环为 recall 稳态 CPU 另一大头)
+                _cv, _ci = [], []
+                for i, e in enumerate(all_entries):
+                    for cv in e.get("chunk_embs") or ():
+                        _cv.append(cv)
+                        _ci.append(i)
+                best_per = {}
+                if _cv:
+                    _sims = cosine_batch(q_emb, _cv)
+                    for j, i in enumerate(_ci):
+                        s = _sims[j]
+                        if s > best_per.get(i, -1.0):
+                            best_per[i] = s
+                chunk_scored = []
+                for i, e in enumerate(all_entries):
+                    b = best_per.get(i, -1.0)
+                    if b >= COSINE_MIN:
+                        chunk_scored.append((b, e))
+                chunk_scored.sort(key=lambda x: -x[0])
+                if chunk_scored:
+                    top = _rrf_fusion(
+                        [top, chunk_scored[:_BM25_RRF_TOP_K]],
+                        k=_BM25_RRF_K, top_k=_retrieve_n)
+                    result["_v32_chunk_fused"] = True
+                    result["_v32_chunk_n"] = len(chunk_scored)
+            except Exception as _ce:
+                log(f"chunk recall fusion fail · fallback to pre-fusion top: {_ce}")
+
         # v2.3.0 · production cross-encoder rerank (opt-in COMPASS_PROD_RERANK=1).
         # flag off → returns top[:top_k] unchanged; flag on → reorder then truncate.
         top = _rerank_top(query, top, top_k)
         if _PROD_RERANK_USE:
             result["_v230_reranked"] = True
 
+        # Phase 1 Task 4 · tier-aware re-rank (opt-in COMPASS_PROD_TIER_WEIGHT=1).
+        # No-op by default · mutually exclusive with rerank (see fn docstring).
+        top = _apply_tier_weight_prod(top, top_k)
+        if _PROD_TIER_WEIGHT_USE and not _PROD_RERANK_USE:
+            result["_task4_tier_weighted"] = True
+
         result["recall"] = [
             {"score": round(s, 3), "path": e["path"],
              "project": e.get("project", ""),
              "age_str": e["age_str"], "age_seconds": e["age_seconds"],
-             "description": e["description"]}
+             "description": e["description"],
+             "body": e.get("body", "")}
             for s, e in top
         ]
         # fresh memories not in top
@@ -850,6 +1252,16 @@ def handle_request(req: dict) -> dict:
         # v0.7.2 · per-request anchor profile (gateway passes anchors_path)
         ap = req.get("anchors_path")
         anchors = get_anchors(Path(ap) if ap else None)
+        # 2026-08-28 fix(workbuddy 实测 P0·1.1): anchors 缺失曾静默跳过——
+        # 安全防线(危险命令检测)形同虚设且用户毫不知情。fail loudly:
+        # 结果带 anchors_error,日志亮牌。运维动作=把 anchors.json 放进
+        # PLUGIN_DIR(云端空壳目录那次=拷贝即修)。
+        if not anchors:
+            _msg = (f"anchors.json not found at {ANCHORS_PATH} — drift DISABLED "
+                    f"(fail-loudly, was silent before 2026-08-28)")
+            result["drift"] = {"score": None, "should_alert": True,
+                               "anchors_error": _msg}
+            log(f"⚠️ DRIFT DISABLED · {_msg}")
         if anchors:
             # v0.7.1 · Weighted top-k mean scoring
             # 每个 anchor 一个 weight (默认 1.0 · adaptive learning 调整)
@@ -926,8 +1338,11 @@ def handle_request(req: dict) -> dict:
         log(f"verification_log write fail: {_le}")
 
     # v2.0.7 · P9 · cache successful result before return
+    # 2026-08-28 fix(workbuddy 实测): 缓存曾把错误/异常响应也存下——底层修好后
+    # 同 query 在 TTL 内仍命中旧的错误结果(无法自愈)。只缓存 ok 响应。
     try:
-        _p9_cache_put(_p9_key, result)
+        if result.get("ok", True) and not result.get("error"):
+            _p9_cache_put(_p9_key, result)
         # log cache stats every 1000 ops
         _total = sum(_RECALL_CACHE_STATS.values())
         if _total > 0 and _total % 1000 == 0:
@@ -983,6 +1398,8 @@ def _load_pkl_caches():
 def serve():
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     PID_FILE.write_text(str(os.getpid()), encoding="utf-8")
+    global _DAEMON_START_TS
+    _DAEMON_START_TS = time.time()
     log(f"daemon starting PID={os.getpid()} port={PORT}")
 
     # v0.7.2 fix · eager-load bge-m3 + anchors at startup. Lazy load caused
@@ -1043,6 +1460,7 @@ def serve():
         # ThreadPoolExecutor queueing under V5/V7 retry storms.
         if not _INFLIGHT_SEM.acquire(blocking=False):
             log(f"overload · reject conn (inflight cap {DAEMON_INFLIGHT_LIMIT})")
+            _OVERLOAD_TS_BUFFER.append(time.time())
             try:
                 conn.sendall(b'{"ok":false,"error":"daemon overloaded - retry"}\n')
             except Exception:
@@ -1170,15 +1588,67 @@ def handle_ingest(req: dict) -> dict:
             vec = vec.tolist()
         proj_key = str(mem_dir)
         cache = _state["memory_caches"].setdefault(proj_key, {})
-        cache[str(out_path)] = (out_path.stat().st_mtime, vec)
-        proj_hash = _hashlib.sha256(proj_key.encode()).hexdigest()[:12]
-        with open(CACHE_DIR / f"{proj_hash}.pkl", "wb") as f:
-            _pickle.dump({"embeddings": cache}, f)
+        # v3.0.9 · ingest flush 与 recall 线程的 flush/cache 写互斥
+        # (此前无锁:与 _mem_lock 内的 recall flush 并发是历史 flush fail 源之一)
+        with _mem_lock(proj_key):
+            cache[str(out_path)] = (out_path.stat().st_mtime, vec)
+            _flush_memory_pkl(proj_key, cache)
         return {"ok": True, "path": str(out_path), "project": project,
                 "embedded": True, "embed_dim": len(vec)}
     except Exception as e:
         return {"ok": True, "path": str(out_path), "project": project,
                 "embedded": False, "embed_warning": str(e)}
+
+
+# v3.0.10 · 9876 token 鉴权:经 -R 反向隧道时云端进程可触达本地 daemon,
+# 原零鉴权 = 隧道域内任何进程可 recall/ingest/shutdown。
+# 规则:ping 免鉴权(探活依赖:daemon_start.ps1/sh 判定走 ping),其余 action 一律
+# 比对 token;token 文件 ~/.claude/.cache/compass_daemon_token 首次启动自动生成
+# (64 hex · 0600),本机客户端(hud_wrapper/stop_hook/compass_status/CLI stop)
+# 从同一路径读。COMPASS_DAEMON_TOKEN_FILE 可覆盖(测试/多实例)。
+_DAEMON_TOKEN_CACHE: str | None = None
+
+
+def _daemon_token_file() -> Path:
+    return Path(os.environ.get("COMPASS_DAEMON_TOKEN_FILE") or
+                (Path.home() / ".claude" / ".cache" / "compass_daemon_token"))
+
+
+def _daemon_token() -> str:
+    global _DAEMON_TOKEN_CACHE
+    if _DAEMON_TOKEN_CACHE:
+        return _DAEMON_TOKEN_CACHE
+    p = _daemon_token_file()
+    try:
+        tok = p.read_text(encoding="utf-8").strip()
+        if tok:
+            _DAEMON_TOKEN_CACHE = tok
+            return tok
+    except Exception:
+        pass
+    tok = secrets.token_hex(32)
+    try:
+        p.parent.mkdir(parents=True, exist_ok=True)
+        fd = os.open(str(p), os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            f.write(tok)
+    except FileExistsError:
+        pass  # 并发启动竞态:另一进程已写入,下面读它的
+    except Exception:
+        pass  # 文件不可写:token 仅存内存,客户端读不到=全拒(fail-closed 侧)
+    try:
+        tok = p.read_text(encoding="utf-8").strip() or tok
+    except Exception:
+        pass
+    _DAEMON_TOKEN_CACHE = tok
+    return tok
+
+
+def _auth_ok(req: dict) -> bool:
+    try:
+        return hmac.compare_digest(str(req.get("token", "")), _daemon_token())
+    except Exception:
+        return False
 
 
 def _safe_handle(conn: socket.socket):
@@ -1228,7 +1698,16 @@ def handle_conn(conn: socket.socket):
             conn.sendall(json.dumps({"ok":False,"error":f"json parse: {e}"}).encode("utf-8") + b"\n")
             return
         if req.get("action") == "ping":
-            conn.sendall(json.dumps({"ok":True,"pong":True}).encode("utf-8") + b"\n")
+            conn.sendall(json.dumps(_runtime_identity_payload()).encode("utf-8") + b"\n")
+            return
+        # v3.0.10 · ping 之外全部 action 先过 token 门
+        if not _auth_ok(req):
+            log(f"auth_failed action={req.get('action')}")
+            conn.sendall(json.dumps({"ok": False, "error": "auth_failed"}).encode("utf-8") + b"\n")
+            return
+        if req.get("action") == "status":
+            # v3.0.2 · Stage1a /status (ported from cloud /opt fork)
+            conn.sendall(json.dumps(_status_payload(), ensure_ascii=False).encode("utf-8") + b"\n")
             return
         if req.get("action") == "shutdown":
             conn.sendall(b'{"ok":true,"shutdown":true}\n')
@@ -1238,7 +1717,15 @@ def handle_conn(conn: socket.socket):
             resp_bytes = json.dumps(handle_ingest(req), ensure_ascii=False).encode("utf-8") + b"\n"
             conn.sendall(resp_bytes)
             return
+        if req.get("action") == "score":
+            resp_bytes = json.dumps(_handle_score(req), ensure_ascii=False).encode("utf-8") + b"\n"
+            conn.sendall(resp_bytes)
+            return
+        _t0 = time.time()
         resp = handle_request(req)
+        # v3.0.2 · record recall/drift latency for /status sliding window
+        if req.get("action") in ("recall", "drift", "both"):
+            _RECALL_TS_BUFFER.append((time.time(), round((time.time() - _t0) * 1000, 1)))
         conn.sendall(json.dumps(resp, ensure_ascii=False).encode("utf-8") + b"\n")
     except Exception as e:
         log(f"conn handler fail: {e}")
@@ -1251,6 +1738,20 @@ def handle_conn(conn: socket.socket):
         except Exception: pass
 
 
+def _runtime_identity_payload() -> dict:
+    """Return immutable facts about the process answering on the daemon port."""
+
+    daemon_path = Path(__file__).resolve()
+    return {
+        "ok": True,
+        "pong": True,
+        "pid": os.getpid(),
+        "python_executable": str(Path(sys.executable).resolve()),
+        "source_root": str(daemon_path.parent),
+        "daemon_hash": f"sha256:{hashlib.sha256(daemon_path.read_bytes()).hexdigest()}",
+    }
+
+
 def client(action: str, query: str, project: str, top_k: int = 5,
            timeout: float = 5.0) -> dict:
     """同步调 daemon · 拿 JSON response."""
@@ -1259,7 +1760,8 @@ def client(action: str, query: str, project: str, top_k: int = 5,
             s.settimeout(timeout)
             s.connect((HOST, PORT))
             req = {"action": action, "query": query,
-                   "project": project, "top_k": top_k}
+                   "project": project, "top_k": top_k,
+                   "token": _daemon_token()}  # v3.0.10 · 库函数自带鉴权
             s.sendall(json.dumps(req, ensure_ascii=False).encode("utf-8") + b"\n")
             buf = b""
             while b"\n" not in buf:
@@ -1292,7 +1794,10 @@ if __name__ == "__main__":
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 s.settimeout(2)
                 s.connect((HOST, PORT))
-                s.sendall(b'{"action":"shutdown"}\n')
+                # v3.0.10 · shutdown 是远程杀进程,必须带 token
+                s.sendall(json.dumps({"action": "shutdown",
+                                      "token": _daemon_token()},
+                                     ensure_ascii=False).encode("utf-8") + b"\n")
         except Exception as e:
             log(f"stop fail: {e}")
         sys.exit(0)

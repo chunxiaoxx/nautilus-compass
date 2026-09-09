@@ -10,7 +10,11 @@
 #         ② 今日召回数移入 60s 一次的后台刷新,主流程纯读缓存
 #   内容人话:🧭 记忆正常 · 146条 · 今日召回28 · drift -0.03
 #         (砍常显的 Nq/P95ms 与"最新stale";仅 p95>5s 或过载时显示 ⚠响应慢)
-import sys, os, json, subprocess, glob, time, threading
+import sys, os, json, subprocess, glob, time, threading, hashlib
+
+def _cwd_tag():
+    # 稳定短 hash(str hash 跨进程随机化会漂移,不能做文件名)
+    return hashlib.md5(CWD.encode("utf-8", "replace")).hexdigest()[:8] if CWD else "nocwd"
 
 CACHE_P = os.path.join(os.path.expanduser("~"), ".claude", ".cache", "hud_daemon_cache.json")
 HUD_CACHE_P = os.path.join(os.path.expanduser("~"), ".claude", ".cache", "hud_out_cache.txt")
@@ -90,38 +94,51 @@ def _hud_bin():
 
 
 hud_out = ""
+_hc_fresh = False
 try:
     with open(HUD_CACHE_P, encoding="utf-8") as f:
         _hc = json.load(f)
-    if (time.time() - float(_hc.get("ts", 0))) < 30.0:
-        hud_out = (_hc.get("hud") or "").rstrip("\n")
+    # v3.0.11 · 缓存按 cwd 分桶:多窗口各自目录,全局单份缓存曾互相覆盖
+    # (B 窗口命中 A 窗口的 repo/目录 = "工作目录和仓库混乱")。
+    # 兼容旧单份格式(带 'hud' 键的 dict 视作废弃直接重建)。
+    _e = _hc.get(CWD) if isinstance(_hc.get(CWD), dict) else None
+    if _e:
+        hud_out = (_e.get("hud") or "").rstrip("\n")
+        _hc_fresh = (time.time() - float(_e.get("ts", 0))) < 30.0
 except Exception:
     pass
 _spawn_ok = True
+_spawn_f = "%s.%s.last_spawn" % (HUD_CACHE_P, _cwd_tag())
 try:
-    with open(HUD_CACHE_P + ".last_spawn", encoding="utf-8") as f:
+    with open(_spawn_f, encoding="utf-8") as f:
         _spawn_ok = (time.time() - float(f.read().strip() or 0)) > 60.0
 except Exception:
     pass
-if not hud_out and _spawn_ok:
+if not _hc_fresh and _spawn_ok:
     hud_bin = _hud_bin()
     if hud_bin:
         try:
-            with open(HUD_CACHE_P + ".last_spawn", "w", encoding="utf-8") as f:
+            with open(_spawn_f, "w", encoding="utf-8") as f:
                 f.write(str(time.time()))
-            raw_p = HUD_CACHE_P + ".in"
+            raw_p = "%s.%s.in" % (HUD_CACHE_P, _cwd_tag())
             os.makedirs(os.path.dirname(HUD_CACHE_P), exist_ok=True)
             with open(raw_p, "w", encoding="utf-8") as f:
                 f.write(raw)
-            _bg = ("import json,time,subprocess\n"
+            _bg = ("import json,time,subprocess,os\n"
                    f"raw=open({raw_p!r},encoding='utf-8').read()\n"
+                   f"CP={HUD_CACHE_P!r}\n"
                    "try:\n"
                    f"    p=subprocess.run(['node',{hud_bin!r}],input=raw,capture_output=True,"
                    "text=True,encoding='utf-8',timeout=20)\n"
                    "    out=(p.stdout or '').strip()\n"
                    "    if out:\n"
-                   "        json.dump({'ts':time.time(),'hud':out},"
-                   f"open({HUD_CACHE_P!r},'w',encoding='utf-8'),ensure_ascii=False)\n"
+                   "        try:cwd=json.loads(raw).get('cwd','')\n"
+                   "        except Exception:cwd=''\n"
+                   "        try:d=json.load(open(CP,encoding='utf-8'))\n"
+                   "        except Exception:d={}\n"
+                   "        if not isinstance(d,dict):d={}\n"
+                   "        d[cwd]={'ts':time.time(),'hud':out}\n"
+                   "        json.dump(d,open(CP,'w',encoding='utf-8'),ensure_ascii=False)\n"
                    "except Exception:\n"
                    "    pass\n")
             subprocess.Popen([sys.executable, "-c", _bg], stdin=subprocess.DEVNULL,
@@ -134,13 +151,17 @@ if not hud_out and _spawn_ok:
 #    v3.0.9 · 后台进程顺带算"今日召回"(54.8MB log 尾部解析移出主流程)。
 def _refresh_async():
     _bg = (
-        "import json,socket,time\n"
+        "import json,socket,time,os\n"
         f"C={CACHE_P!r}\nVL={VL_P!r}\n"
+        "TOK=''\n"
+        "try:TOK=open(os.path.expanduser('~/.claude/.cache/compass_daemon_token'),"
+        "encoding='utf-8').read().strip()\n"
+        "except Exception:pass\n"
         "out={'ts':time.time(),'ok':False,'p95':0,'ovl':False,'hits_today':0}\n"
         "try:\n"
         "    s=socket.socket();s.settimeout(2.0);s.connect(('127.0.0.1',9876))\n"
         "    s.sendall((json.dumps({'action':'recall','query':'ping','top_k':1,"
-        "'scope':'project','project':'C--Users-chunx'})+'\\n').encode())\n"
+        "'scope':'project','project':'C--Users-chunx','token':TOK})+'\\n').encode())\n"
         "    buf=b'';dl=time.time()+3.0\n"
         "    while True:\n"
         "        c=s.recv(65536)\n"
@@ -152,7 +173,7 @@ def _refresh_async():
         "    s.close()\n"
         "    out['ok']=json.loads(buf.decode()).get('ok',False)\n"
         "    s2=socket.socket();s2.settimeout(2.0);s2.connect(('127.0.0.1',9876))\n"
-        "    s2.sendall(b'{\"action\":\"status\"}\\n')\n"
+        "    s2.sendall((json.dumps({'action':'status','token':TOK})+'\\n').encode())\n"
         "    st=json.loads(s2.recv(65536).decode());s2.close()\n"
         "    sl=st.get('recall',{}).get('sliding_5min',{})\n"
         "    out['p95']=sl.get('p95_ms',0)\n"

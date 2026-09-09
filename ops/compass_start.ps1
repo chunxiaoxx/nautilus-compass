@@ -32,9 +32,15 @@ $script:CompassProjectPaths = @{
     "zenmind"    = "C:\Users\chunx\quantum-buddha-project"
     "chunx"      = "C:\Users\chunx"
     "compass"    = "C:\Users\chunx\Projects\nautilus-compass"
-    "hr"         = "C:\Users\chunx"
-    "agent"      = "C:\Users\chunx\Projects\nautilus-v5"
-    "superagent" = "C:\Users\chunx\Projects\nautilus-v5"
+    "fde"        = "C:\Users\chunx\Projects\nautilus-fde-phase3"
+    "hr"         = "C:\Users\chunx\Projects\caishen-ai"
+    "agent"      = "C:\Users\chunx\nautilus-v5"
+    "superagent" = "C:\Users\chunx\nautilus-v5"
+    "zhonghui"   = "C:\Users\chunx\Documents\_中汇科创维权_归档"
+    "weiquan"    = "C:\Users\chunx\Documents\_中汇科创维权_归档"
+    "yushen"     = "C:\Users\chunx\Documents\豫深资本赋能活动-202608"
+    "flywheel"   = "C:\Users\chunx\Projects\nautilusflywheel"
+    "zhìyǒng"    = "C:\Users\chunx\Projects\nautilusflywheel"
 }
 
 $script:CompassCloudPort = 9877
@@ -60,27 +66,34 @@ function Start-CompassTunnel {
         Write-Host "[compass] tunnel already up on 127.0.0.1:$($script:CompassCloudPort)" -ForegroundColor DarkGray
         return $true
     }
-    Write-Host "[compass] starting SSH tunnel to $($script:CompassCloudHost) (-L 9877 MCP · canonical daemon=T4)" -ForegroundColor Cyan
+    Write-Host "[compass] starting SSH tunnel to $($script:CompassCloudHost) (-L 9877 MCP · daemon on cloud CPU box)" -ForegroundColor Cyan
     #   -L 9877 · local→cloud  · MCP TCP transport (Claude Code uses)
-    # (2026-06-20) removed -R 9876: canonical BGE daemon is now T4, not this box
-    #   (this box has no GPU — CPU daemon only). cloud-facing recall goes
-    #   cloud→T4 via compass-t4-tunnel; exposing this box's daemon on cloud:9876
-    #   caused an IPv6 split-brain with the T4 forward.
+    # (2026-07-14) compass daemon now runs on the `cloud` CPU server itself
+    #   (T4 GPU box retired). No reverse tunnel needed — plain -L forward.
     # keepalive · prevents NAT/firewall from killing idle tunnel
     # ExitOnForwardFailure · die fast if port already bound rather than silent zombie
+    #
+    # NOTE (2026-07-14): launch WITHOUT -Wait and WITHOUT -f. On Windows,
+    #   `Start-Process ssh -f... -Wait` never returns — Start-Process keeps
+    #   waiting on the backgrounded ssh and cstart hangs forever right after
+    #   printing the line above. We run `-N` as a hidden background process and
+    #   poll Test-CompassTunnel to confirm the forward bound.
     $args = @(
-        "-fN",
+        "-N",
         "-o", "ServerAliveInterval=30",
         "-o", "ServerAliveCountMax=3",
         "-o", "ExitOnForwardFailure=yes",
         "-L", "$($script:CompassCloudPort):127.0.0.1:9877",
         $script:CompassCloudHost
     )
-    Start-Process -WindowStyle Hidden -FilePath "ssh" -ArgumentList $args -Wait
-    Start-Sleep -Milliseconds 800
-    if (Test-CompassTunnel) {
-        Write-Host "[compass] tunnel up · MCP wire OK · BGE reverse tunnel cloud→local 9876 also UP" -ForegroundColor Green
-        return $true
+    Start-Process -WindowStyle Hidden -FilePath "ssh" -ArgumentList $args | Out-Null
+    # poll up to ~6s for the local forward to come up
+    for ($i = 0; $i -lt 12; $i++) {
+        Start-Sleep -Milliseconds 500
+        if (Test-CompassTunnel) {
+            Write-Host "[compass] tunnel up on 127.0.0.1:$($script:CompassCloudPort) · MCP wire OK" -ForegroundColor Green
+            return $true
+        }
     }
     Write-Warning "[compass] tunnel did not come up · Claude Code will still launch but MCP will fail"
     return $false
@@ -114,7 +127,8 @@ function cstart {
     [CmdletBinding()]
     param(
         [Parameter(Position=0)]
-        [string]$Project = "nautilus"
+        [string]$Project = "nautilus",
+        [switch]$Happy
     )
 
     if ($Project -eq "paths" -or $Project -eq "list") {
@@ -144,8 +158,13 @@ function cstart {
     Write-Host "[compass] cd $dir" -ForegroundColor DarkGray
     Set-Location $dir
 
-    Write-Host "[compass] launching Claude Code (type /resume to continue last session)" -ForegroundColor Green
-    & claude --dangerously-skip-permissions
+    if ($Happy) {
+        Write-Host "[happy] launching Happy remote + bypass perms (type /resume to continue)" -ForegroundColor Green
+        & happy --yolo
+    } else {
+        Write-Host "[compass] launching Claude Code (type /resume to continue last session)" -ForegroundColor Green
+        & claude --dangerously-skip-permissions
+    }
 }
 
 # Optional alias if `cstart` is too generic for you
@@ -153,18 +172,32 @@ Set-Alias -Name ccc -Value cstart -Description "Compass Cloud Claude shortcut"
 
 # ────────────────────────────────────────────────────────────────────
 # Top-level shortcuts · just type the project name to launch its dialog
-#   nautilus  → C:\Users\chunx\Projects\nautilus-core\phase3
-#   venture   → C:\Users\chunx\venture_daily_report      (创投日报)
-#   zen       → C:\Users\chunx\quantum-buddha-project    (禅心)
-#   chunx     → C:\Users\chunx                           (compass + HR)
+#   nautilus  → C:\Users\chunx\Projects\nautilus-core    (happy remote)
+#   fde       → C:\Users\chunx\Projects\nautilus-fde-phase3 (happy remote)
+#   venture   → C:\Users\chunx\venture_daily_report      (happy remote)
+#   zen       → C:\Users\chunx\quantum-buddha-project    (happy remote)
+#   chunx     → C:\Users\chunx                           (happy remote)
+#   agent     → C:\Users\chunx\nautilus-v5               (happy remote)
+#   hr        → C:\Users\chunx\Projects\caishen-ai       (happy remote)
+#
+# 默认走 happy（手机远程 + bypass perms）。想要纯本地（不连手机）用:
+#   cstart nautilus        (不带 -Happy，裸 claude)
+#
 # Each one auto-ensures the SSH tunnel to cloud:9877 then launches
-# `claude --dangerously-skip-permissions`. Type /resume after launch.
+# `happy --yolo`. Type /resume after launch.
 # ────────────────────────────────────────────────────────────────────
 
-function nautilus { cstart nautilus }
-function venture  { cstart vdr      }
-function zen      { cstart zen      }
-function chunx    { cstart chunx    }
-function hr       { cstart hr       }
-function agent    { cstart agent    }
+function fde      { cstart fde      -Happy }
+function nautilus { cstart nautilus -Happy }
+function vdr      { cstart vdr      -Happy }
+function venture  { cstart vdr      -Happy }
+function zen      { cstart zen      -Happy }
+function chunx    { cstart chunx    -Happy }
+function hr       { cstart hr       -Happy }
+function agent    { cstart agent    -Happy }
+function compass  { cstart compass  -Happy }
+function zhonghui { cstart zhonghui -Happy }
+function weiquan  { cstart zhonghui -Happy }
+function yushen   { cstart yushen   -Happy }
+function flywheel { cstart flywheel -Happy }
 

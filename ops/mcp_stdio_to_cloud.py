@@ -458,6 +458,15 @@ def _try_local_daemon(line: str):
     if not daemon_req.get("query"):
         return None
 
+    # v3.0.10 · local daemon 9876 requires token (ping exempt)
+    if "token" not in daemon_req:
+        try:
+            with open(os.path.expanduser("~/.claude/.cache/compass_daemon_token"),
+                      encoding="utf-8") as _f:
+                daemon_req["token"] = _f.read().strip()
+        except OSError:
+            pass
+
     # TCP call to local daemon · v1.7.2 · retry on transient timeout/io
     buf = b""
     last_err = None
@@ -514,6 +523,62 @@ def _try_local_daemon(line: str):
     return (json.dumps(rpc_resp, ensure_ascii=False) + "\n").encode("utf-8")
 
 
+def _rewrite_init_version(line: str) -> str:
+    """v2.0 · Claude Code 2.1.x requests protocolVersion 2025-11-25; cloud answers
+    2024-11-05 and the client then aborts the connection right after the initialize
+    reply (2026-08-24 bridge_cloud.log: no follow-up request, EOF+10053 ~16s later).
+    Echo the client-requested version in the initialize RESULT so the client accepts
+    the handshake. Cloud still speaks 2024-11-05 semantics; JSON-RPC wire format is
+    identical (line-delimited), so this version-string patch is the only divergence."""
+    try:
+        msg = json.loads(line)
+    except (json.JSONDecodeError, TypeError):
+        return line
+    # v2.2 · id-agnostic: Claude Code's initialize request id is not guaranteed 0
+    # (2.1.x may use other ids); keying the rewrite on id==0 let the raw cloud
+    # reply (2024-11-05 + _eid) through for non-zero ids → client aborts after
+    # handshake (2026-08-24 platform report). Detect the initialize RESULT by
+    # shape (result.serverInfo), not by id.
+    if (isinstance(msg, dict) and "result" in msg
+            and isinstance(msg.get("result"), dict)
+            and "serverInfo" in msg["result"]):
+        # v2.1 · rebuild a spec-clean InitializeResult: client 2.1.239 still aborts
+        # with the raw cloud reply even after the version echo (2026-08-24), so
+        # besides the version patch we also drop unknown fields (_eid etc.).
+        if isinstance(msg["result"], dict):
+            cleaned = {
+                "protocolVersion": _client_init_version or msg["result"].get("protocolVersion", "2024-11-05"),
+                "capabilities": msg["result"].get("capabilities", {"tools": {}}),
+                "serverInfo": msg["result"].get("serverInfo", {"name": "nautilus-compass", "version": "2.3.0"}),
+            }
+            msg["result"] = cleaned
+            # v2.2 · ALSO strip protocol-foreign TOP-LEVEL fields (cloud adds
+            # "_eid": N beside jsonrpc/id/result). CC 2.1.x is a strict JSON-RPC
+            # client and aborts the handshake on unknown top-level members —
+            # this, not the version string, is why v2.1 still failed (8/24).
+            return json.dumps({"jsonrpc": msg.get("jsonrpc", "2.0"),
+                               "id": msg.get("id"),
+                               "result": msg["result"]}, ensure_ascii=False)
+    return line
+
+
+# v2.0 · protocolVersion the CLIENT asked for in initialize (parsed by
+# note_outgoing; used to patch the cloud's initialize reply — see above).
+_client_init_version = None
+
+
+def _parse_client_init_version(line: str) -> None:
+    global _client_init_version
+    try:
+        msg = json.loads(line)
+    except (json.JSONDecodeError, TypeError):
+        return
+    if isinstance(msg, dict) and msg.get("method") == "initialize":
+        v = (msg.get("params") or {}).get("protocolVersion")
+        if isinstance(v, str):
+            _client_init_version = v
+
+
 def _write_stdout(payload: bytes) -> None:
     """Single point for writing to stdout · serialized so stub responses and
     cloud forwards never interleave bytes mid-frame."""
@@ -556,6 +621,7 @@ def _pump_in_to_cloud(link: "_CloudLink") -> None:
             continue
         line = raw.rstrip("\n")
         _trace("STDIN", line)
+        _parse_client_init_version(line)  # v2.0 · capture for init-reply version patch
         link.note_outgoing(line)  # cache initialize so reconnect can replay it
         cloud_up = link.current() is not None
         stub = _try_local_stub(line, cloud_up)
@@ -630,7 +696,18 @@ def _pump_cloud_to_out(link: "_CloudLink") -> None:
                     continue
                 _trace("CLOUD→", cl)
                 link.note_reply(cl.decode("utf-8", errors="replace"))  # v1.9 · clear pending
-                _write_stdout(cl + b"\n")
+                out_line = _rewrite_init_version(cl.decode("utf-8", errors="replace"))
+                # v2.2 · belt-and-braces: strip protocol-foreign top-level "_eid"
+                # from ANY cloud line (observed on initialize; be safe for all).
+                if '"_eid"' in out_line:
+                    try:
+                        _m = json.loads(out_line)
+                        if isinstance(_m, dict):
+                            _m.pop("_eid", None)
+                            out_line = json.dumps(_m, ensure_ascii=False)
+                    except Exception:
+                        pass
+                _write_stdout((out_line + "\n").encode("utf-8"))
         link.mark_down()  # socket dead · outer loop reconnects unless closed
 
 

@@ -119,6 +119,20 @@ def ingest_session_to_cloud(session_path: Path) -> Optional[dict]:
     name = session_path.stem[:80]
     description = _extract_summary(body)
     drift = _read_drift_for(session_path.name)
+    # 2026-08-24 修:agent_type 从源 obs frontmatter 透传(此前硬编码 compass-dialog,
+    # 跨项目扫到他人 obs 也冒名推送)。缺省回退 env,再回退按项目名。
+    _fm_agent = None
+    for _ln in body.splitlines():
+        if _ln.startswith("agent_type:"):
+            _fm_agent = _ln.split(":", 1)[1].strip() or None
+            break
+        if _ln.startswith("#"):  # 已过 frontmatter,不再找
+            break
+    effective_agent = (
+        _fm_agent
+        or AGENT_TYPE
+        or f"local-sync:{session_path.parents[1].name}"[:60]
+    )
 
     payload = {
         "name": name,
@@ -138,8 +152,8 @@ def ingest_session_to_cloud(session_path: Path) -> Optional[dict]:
         CLOUD_HOST,
         # POST via curl on cloud localhost · trust X-Tenant-ID for auth
         f"curl -s -X POST {CLOUD_URL} "
-        f"-H 'X-Tenant-ID: {AGENT_TYPE}' "
-        f"-H 'X-User-ID: {AGENT_TYPE}' "
+        f"-H 'X-Tenant-ID: {effective_agent}' "
+        f"-H 'X-User-ID: {effective_agent}' "
         f"-H 'Content-Type: application/json' "
         f"--data-binary @- --max-time 10",
     ]

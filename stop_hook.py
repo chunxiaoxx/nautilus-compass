@@ -79,6 +79,16 @@ def recent_session_memories(within_hours: float = 24.0) -> list[Path]:
     return out
 
 
+def _dtok() -> str:
+    """v3.0.10 · 读本地 daemon 鉴权 token(与 daemon.py _daemon_token_file 同路径)."""
+    try:
+        return open(os.path.join(os.path.expanduser("~"), ".claude", ".cache",
+                                 "compass_daemon_token"),
+                    encoding="utf-8").read().strip()
+    except Exception:
+        return ""
+
+
 def _drift_check_via_daemon(query: str, project: str,
                             timeout: float = DRIFT_TIMEOUT_S) -> dict | None:
     """v1.5.3 #1 · TCP 9876 直调 daemon · 不依赖 compass_http 8765 · fail-soft.
@@ -94,7 +104,8 @@ def _drift_check_via_daemon(query: str, project: str,
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.settimeout(timeout)
         s.connect((DAEMON_HOST, DAEMON_PORT))
-        req = {"action": "drift", "query": query[:1500], "project": project}
+        req = {"action": "drift", "query": query[:1500], "project": project,
+               "token": _dtok()}
         s.sendall((json.dumps(req) + "\n").encode("utf-8"))
         buf = b""
         deadline = time.time() + timeout
