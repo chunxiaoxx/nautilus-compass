@@ -1,0 +1,415 @@
+{
+ "protocol_version": "utility-metrics-protocol-v1-frozen",
+ "protocol_ref": "docs/ip/2026-09-01-utility-metrics-protocol-v1-frozen.md",
+ "weights": {
+  "D": 0.25,
+  "T": 0.4,
+  "C": 0.15,
+  "L": 0.2
+ },
+ "batch_dir": "C:\\Users\\chunx\\egodata\\egostandard_sample\\s2\\out",
+ "batch_conclusion": {
+  "U": null,
+  "U_不可计原因": "T 未抽检（阶段 1 待执行）",
+  "D2_帧完整率": 1.0,
+  "D3_轨迹完整率": 1.0,
+  "C4_无效帧占比均值": 0.0,
+  "批次性质": "验证语料，非付费交付"
+ },
+ "episodes": [
+  {
+   "name": "s2_body_1",
+   "rel_dir": "shard1/s2_body_1",
+   "line": "body",
+   "fps": 30.0,
+   "frames_written": 190,
+   "frames_decoded": 190,
+   "valid_ratio": 1.0,
+   "convert_rc": 0,
+   "duration_s": 6.333333,
+   "video_sha16": "a2d96674974f01c7",
+   "data_sha16": [
+    "757d85dec051445f"
+   ],
+   "qc": {
+    "video": "C:\\Users\\chunx\\egodata\\egostandard_sample\\s2\\out\\shard1\\s2_body_1\\videos\\observation.images.cam_left\\chunk-000\\file-000.mp4",
+    "sha256_16": "a2d96674974f01c7",
+    "duration_s": 6.33,
+    "fps": 30.0,
+    "sample_step": 5,
+    "sampled": 38,
+    "black_frames": 0,
+    "black_ratio": 0.0,
+    "luma_min": 62.7,
+    "luma_mean": 66.6,
+    "freeze_ratio": 0.0,
+    "blur_median": 20.3,
+    "face_frames": 14,
+    "face_ratio": 0.3684,
+    "verdict": "WARN",
+    "warnings": [
+     "Laplacian 方差中位 20.3 < 50.0（整体偏糊，软警告）",
+     "检出人脸帧 14 个采样（36.8%）——脱敏后方可入数据产品（L 项硬需求）"
+    ],
+    "ts": "2026-09-05 18:10:22"
+   },
+   "meta_complete": true,
+   "integrity_notes": []
+  },
+  {
+   "name": "s2_body_2",
+   "rel_dir": "shard1/s2_body_2",
+   "line": "body",
+   "fps": 30.0,
+   "frames_written": 190,
+   "frames_decoded": 190,
+   "valid_ratio": 1.0,
+   "convert_rc": 0,
+   "duration_s": 6.333333,
+   "video_sha16": "a2d96674974f01c7",
+   "data_sha16": [
+    "757d85dec051445f"
+   ],
+   "qc": {
+    "video": "C:\\Users\\chunx\\egodata\\egostandard_sample\\s2\\out\\shard1\\s2_body_2\\videos\\observation.images.cam_left\\chunk-000\\file-000.mp4",
+    "sha256_16": "a2d96674974f01c7",
+    "duration_s": 6.33,
+    "fps": 30.0,
+    "sample_step": 5,
+    "sampled": 38,
+    "black_frames": 0,
+    "black_ratio": 0.0,
+    "luma_min": 62.7,
+    "luma_mean": 66.6,
+    "freeze_ratio": 0.0,
+    "blur_median": 20.3,
+    "face_frames": 14,
+    "face_ratio": 0.3684,
+    "verdict": "WARN",
+    "warnings": [
+     "Laplacian 方差中位 20.3 < 50.0（整体偏糊，软警告）",
+     "检出人脸帧 14 个采样（36.8%）——脱敏后方可入数据产品（L 项硬需求）"
+    ],
+    "ts": "2026-09-05 18:10:26"
+   },
+   "meta_complete": true,
+   "integrity_notes": []
+  },
+  {
+   "name": "s2_head_1",
+   "rel_dir": "shard2/s2_head_1",
+   "line": "head",
+   "fps": 30.0,
+   "frames_written": 496,
+   "frames_decoded": 496,
+   "valid_ratio": 1.0,
+   "convert_rc": 0,
+   "duration_s": 19.84,
+   "video_sha16": "4a28a276053e7840",
+   "data_sha16": [
+    "8617dc620b1b7c64"
+   ],
+   "qc": {
+    "video": "C:\\Users\\chunx\\egodata\\egostandard_sample\\s2\\out\\shard2\\s2_head_1\\videos\\observation.images.cam_left\\chunk-000\\file-000.mp4",
+    "sha256_16": "4a28a276053e7840",
+    "duration_s": 16.53,
+    "fps": 30.0,
+    "sample_step": 5,
+    "sampled": 100,
+    "black_frames": 0,
+    "black_ratio": 0.0,
+    "luma_min": 107.7,
+    "luma_mean": 114.2,
+    "freeze_ratio": 0.0,
+    "blur_median": 6.1,
+    "face_frames": 0,
+    "face_ratio": 0.0,
+    "verdict": "WARN",
+    "warnings": [
+     "Laplacian 方差中位 6.1 < 50.0（整体偏糊，软警告）"
+    ],
+    "ts": "2026-09-05 18:10:35"
+   },
+   "meta_complete": true,
+   "integrity_notes": []
+  },
+  {
+   "name": "s2_head_2",
+   "rel_dir": "shard2/s2_head_2",
+   "line": "head",
+   "fps": 30.0,
+   "frames_written": 496,
+   "frames_decoded": 496,
+   "valid_ratio": 1.0,
+   "convert_rc": 0,
+   "duration_s": 19.84,
+   "video_sha16": "4a28a276053e7840",
+   "data_sha16": [
+    "8617dc620b1b7c64"
+   ],
+   "qc": {
+    "video": "C:\\Users\\chunx\\egodata\\egostandard_sample\\s2\\out\\shard2\\s2_head_2\\videos\\observation.images.cam_left\\chunk-000\\file-000.mp4",
+    "sha256_16": "4a28a276053e7840",
+    "duration_s": 16.53,
+    "fps": 30.0,
+    "sample_step": 5,
+    "sampled": 100,
+    "black_frames": 0,
+    "black_ratio": 0.0,
+    "luma_min": 107.7,
+    "luma_mean": 114.2,
+    "freeze_ratio": 0.0,
+    "blur_median": 6.1,
+    "face_frames": 0,
+    "face_ratio": 0.0,
+    "verdict": "WARN",
+    "warnings": [
+     "Laplacian 方差中位 6.1 < 50.0（整体偏糊，软警告）"
+    ],
+    "ts": "2026-09-05 18:10:44"
+   },
+   "meta_complete": true,
+   "integrity_notes": []
+  },
+  {
+   "name": "s2_egopro_1",
+   "rel_dir": "shard3/s2_egopro_1",
+   "line": "egopro",
+   "fps": 30.0,
+   "frames_written": 268,
+   "frames_decoded": 268,
+   "valid_ratio": 1.0,
+   "convert_rc": 0,
+   "duration_s": 8.933333,
+   "video_sha16": "5a37bacebae3be06",
+   "data_sha16": [
+    "b9ce23ebe3b9fb3b"
+   ],
+   "qc": {
+    "video": "C:\\Users\\chunx\\egodata\\egostandard_sample\\s2\\out\\shard3\\s2_egopro_1\\videos\\observation.images.cam_left\\chunk-000\\file-000.mp4",
+    "sha256_16": "5a37bacebae3be06",
+    "duration_s": 8.93,
+    "fps": 30.0,
+    "sample_step": 5,
+    "sampled": 54,
+    "black_frames": 0,
+    "black_ratio": 0.0,
+    "luma_min": 88.6,
+    "luma_mean": 94.0,
+    "freeze_ratio": 0.0,
+    "blur_median": 25.4,
+    "face_frames": 11,
+    "face_ratio": 0.2037,
+    "verdict": "WARN",
+    "warnings": [
+     "Laplacian 方差中位 25.4 < 50.0（整体偏糊，软警告）",
+     "检出人脸帧 11 个采样（20.4%）——脱敏后方可入数据产品（L 项硬需求）"
+    ],
+    "ts": "2026-09-05 18:10:49"
+   },
+   "meta_complete": true,
+   "integrity_notes": []
+  },
+  {
+   "name": "s2_egopro_2",
+   "rel_dir": "shard3/s2_egopro_2",
+   "line": "egopro",
+   "fps": 30.0,
+   "frames_written": 268,
+   "frames_decoded": 268,
+   "valid_ratio": 1.0,
+   "convert_rc": 0,
+   "duration_s": 8.933333,
+   "video_sha16": "5a37bacebae3be06",
+   "data_sha16": [
+    "b9ce23ebe3b9fb3b"
+   ],
+   "qc": {
+    "video": "C:\\Users\\chunx\\egodata\\egostandard_sample\\s2\\out\\shard3\\s2_egopro_2\\videos\\observation.images.cam_left\\chunk-000\\file-000.mp4",
+    "sha256_16": "5a37bacebae3be06",
+    "duration_s": 8.93,
+    "fps": 30.0,
+    "sample_step": 5,
+    "sampled": 54,
+    "black_frames": 0,
+    "black_ratio": 0.0,
+    "luma_min": 88.6,
+    "luma_mean": 94.0,
+    "freeze_ratio": 0.0,
+    "blur_median": 25.4,
+    "face_frames": 11,
+    "face_ratio": 0.2037,
+    "verdict": "WARN",
+    "warnings": [
+     "Laplacian 方差中位 25.4 < 50.0（整体偏糊，软警告）",
+     "检出人脸帧 11 个采样（20.4%）——脱敏后方可入数据产品（L 项硬需求）"
+    ],
+    "ts": "2026-09-05 18:10:55"
+   },
+   "meta_complete": true,
+   "integrity_notes": []
+  },
+  {
+   "name": "s2_egosuite_1",
+   "rel_dir": "shard4/s2_egosuite_1",
+   "line": "egosuite",
+   "fps": 30.0,
+   "frames_written": 1038,
+   "frames_decoded": 1038,
+   "valid_ratio": 1.0,
+   "convert_rc": 0,
+   "duration_s": 34.6,
+   "video_sha16": "a65ec2503f289bee",
+   "data_sha16": [
+    "d209bb7b9f92e86a"
+   ],
+   "qc": {
+    "video": "C:\\Users\\chunx\\egodata\\egostandard_sample\\s2\\out\\shard4\\s2_egosuite_1\\videos\\observation.images.cam_left\\chunk-000\\file-000.mp4",
+    "sha256_16": "a65ec2503f289bee",
+    "duration_s": 34.6,
+    "fps": 30.0,
+    "sample_step": 5,
+    "sampled": 208,
+    "black_frames": 0,
+    "black_ratio": 0.0,
+    "luma_min": 88.6,
+    "luma_mean": 94.1,
+    "freeze_ratio": 0.0,
+    "blur_median": 11.1,
+    "face_frames": 35,
+    "face_ratio": 0.1683,
+    "verdict": "WARN",
+    "warnings": [
+     "Laplacian 方差中位 11.1 < 50.0（整体偏糊，软警告）",
+     "检出人脸帧 35 个采样（16.8%）——脱敏后方可入数据产品（L 项硬需求）"
+    ],
+    "ts": "2026-09-05 18:11:16"
+   },
+   "meta_complete": true,
+   "integrity_notes": []
+  },
+  {
+   "name": "s2_egosuite_2",
+   "rel_dir": "shard4/s2_egosuite_2",
+   "line": "egosuite",
+   "fps": 30.0,
+   "frames_written": 1038,
+   "frames_decoded": 1038,
+   "valid_ratio": 1.0,
+   "convert_rc": 0,
+   "duration_s": 34.6,
+   "video_sha16": "a65ec2503f289bee",
+   "data_sha16": [
+    "d209bb7b9f92e86a"
+   ],
+   "qc": {
+    "video": "C:\\Users\\chunx\\egodata\\egostandard_sample\\s2\\out\\shard4\\s2_egosuite_2\\videos\\observation.images.cam_left\\chunk-000\\file-000.mp4",
+    "sha256_16": "a65ec2503f289bee",
+    "duration_s": 34.6,
+    "fps": 30.0,
+    "sample_step": 5,
+    "sampled": 208,
+    "black_frames": 0,
+    "black_ratio": 0.0,
+    "luma_min": 88.6,
+    "luma_mean": 94.1,
+    "freeze_ratio": 0.0,
+    "blur_median": 11.1,
+    "face_frames": 35,
+    "face_ratio": 0.1683,
+    "verdict": "WARN",
+    "warnings": [
+     "Laplacian 方差中位 11.1 < 50.0（整体偏糊，软警告）",
+     "检出人脸帧 35 个采样（16.8%）——脱敏后方可入数据产品（L 项硬需求）"
+    ],
+    "ts": "2026-09-05 18:11:36"
+   },
+   "meta_complete": true,
+   "integrity_notes": []
+  }
+ ],
+ "metrics": {
+  "L": {
+   "人脸单独同意覆盖率": null,
+   "脱敏完整性抽检通过率": null,
+   "来源可追溯链完整度": null,
+   "原始样本人脸检出记录": [
+    {
+     "name": "s2_body_1",
+     "face_ratio": 0.3684,
+     "verdict": "WARN"
+    },
+    {
+     "name": "s2_body_2",
+     "face_ratio": 0.3684,
+     "verdict": "WARN"
+    },
+    {
+     "name": "s2_head_1",
+     "face_ratio": 0.0,
+     "verdict": "WARN"
+    },
+    {
+     "name": "s2_head_2",
+     "face_ratio": 0.0,
+     "verdict": "WARN"
+    },
+    {
+     "name": "s2_egopro_1",
+     "face_ratio": 0.2037,
+     "verdict": "WARN"
+    },
+    {
+     "name": "s2_egopro_2",
+     "face_ratio": 0.2037,
+     "verdict": "WARN"
+    },
+    {
+     "name": "s2_egosuite_1",
+     "face_ratio": 0.1683,
+     "verdict": "WARN"
+    },
+    {
+     "name": "s2_egosuite_2",
+     "face_ratio": 0.1683,
+     "verdict": "WARN"
+    }
+   ],
+   "状态": "阶段 0 未执行：脱敏复检与授权链抽检需采集者授权体系上线后运行；本批为外购池验证语料（commercial-training-no-resale-v1.0），非付费交付，L 红线结算语义不触发",
+   "法源": "个保法第 29 条+人脸信息处理规定（协议 §1.4 原文引用）"
+  },
+  "D": {
+   "独特任务数": null,
+   "独特操作物体数": null,
+   "独特环境数": null,
+   "状态": "不可计：本批 8 条 tasks.parquet 任务标签为索引（0），无语义枚举；D 需任务包 manifest 冻结清单（协议 §1.1），阶段 0.1 接标签源后可计"
+  },
+  "C": {
+   "时长变异系数CV": 0.639,
+   "池线集中度": {
+    "body": 0.25,
+    "head": 0.25,
+    "egopro": 0.25,
+    "egosuite": 0.25
+   },
+   "集中度警告": false,
+   "不可计分量": [
+    "跨采集者动作分布KL（本批无同任务多采集者样本）",
+    "视角方差（同左）"
+   ],
+   "计算口径": "协议 §1.3 部分口径：仅时长CV+集中度；C 本版无阈值只报数值"
+  },
+  "T": {
+   "状态": "待抽检（阶段 1，GPU 窗口）",
+   "冻结口径引用": "固定基座 π0.5+2000 步+LIBERO 10 任务×10 episodes，Δpp=训后−对照，≥20pp 判显著；双种子取低值；阳性对照 62% 校准跑（协议 §1.2）"
+  }
+ },
+ "repro_log_hashes": {
+  "worker1.log": "6b2724bff70d5622",
+  "worker2.log": "7529d5ac3a7afeaa",
+  "worker3.log": "f542e74ba13ccb04",
+  "worker4.log": "a6cc7385895b1dc1",
+  "resource_log.csv": "1f9ce5cd319db717"
+ },
+ "batch_name": "batch001"
+}

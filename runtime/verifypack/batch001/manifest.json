@@ -1,0 +1,92 @@
+{
+ "manifest_version": "0.2",
+ "files": {
+  "pack.json": "2778b6e22c09e112e1d27ff816532121dd712bca2daa95e024bd23b05aaf5c70",
+  "payload/payload.json": "5e86ed49baea62e88ef5378c701436227c538b533fa4c7cb66bd0f2839123df8",
+  "report.md": "a4e8d9ac42fc586450ec350a6ef62d420995fc9b3c464b384b08ee9c6663eeda"
+ },
+ "inputs": {
+  "video_s2_body_1/file-000.mp4": "a2d96674974f01c7d451e96867d2b1ea791120fa7142a59a51a798442b0cf153",
+  "video_s2_body_2/file-000.mp4": "a2d96674974f01c7d451e96867d2b1ea791120fa7142a59a51a798442b0cf153",
+  "video_s2_head_1/file-000.mp4": "4a28a276053e78406d5c4c25cfe506ea0d9dc25fe3d0d820dbb32e442fc28ee6",
+  "video_s2_head_2/file-000.mp4": "4a28a276053e78406d5c4c25cfe506ea0d9dc25fe3d0d820dbb32e442fc28ee6",
+  "video_s2_egopro_1/file-000.mp4": "5a37bacebae3be06e83063748105f3385215e82e8a386623ade5b8d48916a188",
+  "video_s2_egopro_2/file-000.mp4": "5a37bacebae3be06e83063748105f3385215e82e8a386623ade5b8d48916a188",
+  "video_s2_egosuite_1/file-000.mp4": "a65ec2503f289beea9270156a123d6955ee63e07248b8af836f3011dedcc8736",
+  "video_s2_egosuite_2/file-000.mp4": "a65ec2503f289beea9270156a123d6955ee63e07248b8af836f3011dedcc8736",
+  "logs/resource_log.csv": "e7a5989e0d1d153f69fccb2d50a1bec1ad877212be08dc73894fc47a9f83a2b0",
+  "logs/worker1.log": "6b2724bff70d5622bb15b83388078e975b145c1d941b801fdd0fde3de481e028",
+  "logs/worker2.log": "7529d5ac3a7afeaa7f37ba12428030507c0e41ad8a29b33840fa86ae823a4313",
+  "logs/worker3.log": "f542e74ba13ccb045558856922ad954e7fe0de3e38976ce666e21a5503a74f34",
+  "logs/worker4.log": "a6cc7385895b1dc14cef7111d023a99ed36c92e8d85b4bebb20c3fad03cc73fd"
+ },
+ "input_decls": [
+  {
+   "name": "video_s2_body_1",
+   "path": "C:\\Users\\chunx\\egodata\\egostandard_sample\\s2\\out\\shard1\\s2_body_1\\videos\\observation.images.cam_left\\chunk-000",
+   "files": [
+    "file-000.mp4"
+   ]
+  },
+  {
+   "name": "video_s2_body_2",
+   "path": "C:\\Users\\chunx\\egodata\\egostandard_sample\\s2\\out\\shard1\\s2_body_2\\videos\\observation.images.cam_left\\chunk-000",
+   "files": [
+    "file-000.mp4"
+   ]
+  },
+  {
+   "name": "video_s2_head_1",
+   "path": "C:\\Users\\chunx\\egodata\\egostandard_sample\\s2\\out\\shard2\\s2_head_1\\videos\\observation.images.cam_left\\chunk-000",
+   "files": [
+    "file-000.mp4"
+   ]
+  },
+  {
+   "name": "video_s2_head_2",
+   "path": "C:\\Users\\chunx\\egodata\\egostandard_sample\\s2\\out\\shard2\\s2_head_2\\videos\\observation.images.cam_left\\chunk-000",
+   "files": [
+    "file-000.mp4"
+   ]
+  },
+  {
+   "name": "video_s2_egopro_1",
+   "path": "C:\\Users\\chunx\\egodata\\egostandard_sample\\s2\\out\\shard3\\s2_egopro_1\\videos\\observation.images.cam_left\\chunk-000",
+   "files": [
+    "file-000.mp4"
+   ]
+  },
+  {
+   "name": "video_s2_egopro_2",
+   "path": "C:\\Users\\chunx\\egodata\\egostandard_sample\\s2\\out\\shard3\\s2_egopro_2\\videos\\observation.images.cam_left\\chunk-000",
+   "files": [
+    "file-000.mp4"
+   ]
+  },
+  {
+   "name": "video_s2_egosuite_1",
+   "path": "C:\\Users\\chunx\\egodata\\egostandard_sample\\s2\\out\\shard4\\s2_egosuite_1\\videos\\observation.images.cam_left\\chunk-000",
+   "files": [
+    "file-000.mp4"
+   ]
+  },
+  {
+   "name": "video_s2_egosuite_2",
+   "path": "C:\\Users\\chunx\\egodata\\egostandard_sample\\s2\\out\\shard4\\s2_egosuite_2\\videos\\observation.images.cam_left\\chunk-000",
+   "files": [
+    "file-000.mp4"
+   ]
+  },
+  {
+   "name": "logs",
+   "path": "C:\\Users\\chunx\\egodata\\egostandard_sample\\s2",
+   "files": [
+    "resource_log.csv",
+    "worker1.log",
+    "worker2.log",
+    "worker3.log",
+    "worker4.log"
+   ]
+  }
+ ]
+}

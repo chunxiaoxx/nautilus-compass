@@ -47,6 +47,7 @@
 
 ## 状态记录(每轮一行,倒序)
 
+- 21:3x 轮 22(**#47 VerifyPack v0.2 完成·用户拍板推进**):SPEC_v0.2 落档+CLI 四命令+keygen(纯 stdlib 含 ed25519 RFC 8032 自实现,与 cryptography 库交叉验证)·57 测试绿+ruff 清·**batch001 端到端四连跑通**:build seal(13 inputs)→verify(5 agree+1 disagree+1 degraded)→receipt 签名→check 验签 ok=true。🔴 disagree=repro_log 的 resource_log.csv(claim 1f9ce5cd vs 实测 e7a5989e)——**与 9/9 凌晨 v0 独立复算逐条交叉一致**(活文件缺陷显式化,协议按设计工作);C6 口径升级 agree(降级)→degraded。修复三处引擎缺陷(manifest 缺 input_decls/rglob 误扫 receipts/行映射嵌套点路径)。等 flywheel 确认回函
 - 13:4x 轮 21:daemon pong ✅·landing 200 ✅·信箱 0·**9/15 项提前完成**——daemon_start.sh 半死残留清理段(二次 ping 确认防误杀+netstat 持有者清除);bash -n 语法绿+正常路径回归 noop 验证(未误杀活 daemon);待下次睡眠-唤醒自然实测。#48 清单减一项
 - 13:1x 轮 20(纯值守):daemon pong(12628)✅·landing 200 ✅·信箱 0·stars 7——全绿无事件
 - 12:4x 轮 19:daemon pong ✅·**landing 首现 000→三连复测 200(0.4/4.5/0.4s)+多路径+本机对照全过=瞬时网络抖动,服务健康**(探针自证伪流程执行)·信箱 0·stars 7
