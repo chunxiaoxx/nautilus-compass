@@ -19,7 +19,7 @@
 - [x] B3 22:00 收口会议程清单:①4 门判定器(数据侧)× VerifyPack CLI(验证方)拼管线正本 ②X1 金标 17.5% 入包门槛 ③G1 判官进判据库当外部锚 ④batch002(200 条)全流程分工
 - [ ] B4 #46 手几何复算:仍 blocked-on-artifact(等 flywheel 产物路径二选一回函);信箱有回复即续
 - [ ] B5 #33 T0-6 v3 帖起草收尾(发布等用户)
-- [ ] B6 Gmail REST 查新件(**Trajko 48h 窗口至 9/11**,9/9 已回信;gmail MCP 本 session 挂,走 REST 配方)
+- [x] B6 Gmail REST 查新件(**Trajko 48h 窗口至 9/11**,9/9 已回信;gmail MCP 本 session 挂,走 REST 配方)
 
 ## 死线与事件
 
@@ -29,6 +29,10 @@
 - **9/28**:flywheel G1 报告归档 → 解锁 P4 paper2 成稿
 
 ## 状态记录(每轮一行,倒序)
+
+- 轮 4 补(B6 解锁):后台 grep 找到本仓 gmail REST 配方(scripts/gmail_reauth.py+email_sender.py,token 在 ~/.gmail-mcp/)→ REST 查 3 天 inbox 8 封:**Trajko 9/8 ack=台账已处理那封,非新件,线状态正常(等他复我方 9/9 长信,窗口明早)**·另记两条待跟进:V5 eastworld outreach issue 回复(V5 线)/awesome-mcp-servers PR bot 通知(推广线)·配方已存 memory。**B 组全部清零,后续轮=纯值守**
+
+- 轮 4(02:1x):A 组全绿持平。B5=v3 帖无实活(终检 9/6 已过,发布等用户,**🔴窗口 9/12 前仅剩 2 天**;paper2 链接后置回填)·B6=Gmail 检查 blocked-on-tooling(gmail MCP 本 session 挂,REST 配方定位超时,Trajko 窗口 9/11 前需查)→改推**判据库长肉(2887994)**:母版 A/B 层硬门槛 A1/A2/A3/B4 入库,注册表 9 条覆盖 batch002 验收全链,6 测试绿。B 组 A 项(值守类)全清,后续轮=纯值守+等外部输入(flywheel 函/用户拍板/21:03 发文)
 
 - 轮 3(01:4x):A 组全绿持平(pong 12516/landing 200/信箱 0/stars 7/dev.to 持平 views 26+cmt 2)。**B3 完成(c753d46)**:收口会议程函草稿(待用户过目后投 flywheel)——五点增量逐条对表 v0.2 实现(direction 未采纳/prompt_ref+env_fingerprint+protocol_version+not_computable 部分缺/input 脱敏哈希+level 打印已实现)+T1-T8 议题+我方预填立场(verdict 映射/L3 先作能力声明位/判据库=v0.3 第一调用方)。B4(手几何 blocked)信箱无新函;B5(v3 帖)下轮
 
