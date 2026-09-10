@@ -1,0 +1,178 @@
+{
+ "pack": {
+  "pack": "arma-summary-e2e-v1",
+  "protocol_version": "verifypack-0.2",
+  "generated_at": "2026-09-10T09:30:00",
+  "requested_by": "nautilus-compass",
+  "upstream_protocol": "lme-s-retrieval-e2e-protocol-d12",
+  "inputs": [],
+  "claims": [
+   {
+    "id": "ARMA-OVERALL-500",
+    "statement": "A 臂摘要层 e2e 终判,重判后全量(71 断连题已补判,#40 定案)",
+    "level": "L1",
+    "value": 0.754,
+    "checks": {
+     "primary": {
+      "kind": "aggregate",
+      "from": "payload/rows.json#rows",
+      "num": "count(rc == 1)",
+      "den": "count()",
+      "op": "ratio_eq"
+     }
+    }
+   },
+   {
+    "id": "ARMA-TYPE-single-session-user",
+    "statement": "分型 single-session-user",
+    "level": "L1",
+    "value": 0.971429,
+    "checks": {
+     "primary": {
+      "kind": "aggregate",
+      "from": "payload/rows.json#rows",
+      "num": "count(rc == 1)",
+      "den": "count()",
+      "op": "ratio_eq",
+      "filter": [
+       {
+        "field": "type",
+        "op": "==",
+        "value": "single-session-user"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "id": "ARMA-TYPE-single-session-assistant",
+    "statement": "分型 single-session-assistant",
+    "level": "L1",
+    "value": 0.839286,
+    "checks": {
+     "primary": {
+      "kind": "aggregate",
+      "from": "payload/rows.json#rows",
+      "num": "count(rc == 1)",
+      "den": "count()",
+      "op": "ratio_eq",
+      "filter": [
+       {
+        "field": "type",
+        "op": "==",
+        "value": "single-session-assistant"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "id": "ARMA-TYPE-single-session-preference",
+    "statement": "分型 single-session-preference",
+    "level": "L1",
+    "value": 0.8,
+    "checks": {
+     "primary": {
+      "kind": "aggregate",
+      "from": "payload/rows.json#rows",
+      "num": "count(rc == 1)",
+      "den": "count()",
+      "op": "ratio_eq",
+      "filter": [
+       {
+        "field": "type",
+        "op": "==",
+        "value": "single-session-preference"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "id": "ARMA-TYPE-multi-session",
+    "statement": "分型 multi-session",
+    "level": "L1",
+    "value": 0.691729,
+    "checks": {
+     "primary": {
+      "kind": "aggregate",
+      "from": "payload/rows.json#rows",
+      "num": "count(rc == 1)",
+      "den": "count()",
+      "op": "ratio_eq",
+      "filter": [
+       {
+        "field": "type",
+        "op": "==",
+        "value": "multi-session"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "id": "ARMA-TYPE-temporal-reasoning",
+    "statement": "分型 temporal-reasoning",
+    "level": "L1",
+    "value": 0.62406,
+    "checks": {
+     "primary": {
+      "kind": "aggregate",
+      "from": "payload/rows.json#rows",
+      "num": "count(rc == 1)",
+      "den": "count()",
+      "op": "ratio_eq",
+      "filter": [
+       {
+        "field": "type",
+        "op": "==",
+        "value": "temporal-reasoning"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "id": "ARMA-TYPE-knowledge-update",
+    "statement": "分型 knowledge-update",
+    "level": "L1",
+    "value": 0.807692,
+    "checks": {
+     "primary": {
+      "kind": "aggregate",
+      "from": "payload/rows.json#rows",
+      "num": "count(rc == 1)",
+      "den": "count()",
+      "op": "ratio_eq",
+      "filter": [
+       {
+        "field": "type",
+        "op": "==",
+        "value": "knowledge-update"
+       }
+      ]
+     }
+    }
+   },
+   {
+    "id": "ARMA-CONSERVATIVE-70",
+    "statement": "保守口径(断连题按错计);81.6% 剔除断连口径不可从包内复算,不进 claim",
+    "level": "L1",
+    "value": 0.7,
+    "checks": {
+     "primary": {
+      "kind": "aggregate",
+      "from": "payload/verdict_by_type.json#rows",
+      "num": "sum(ok)",
+      "den": "sum(n)",
+      "op": "ratio_eq"
+     }
+    }
+   }
+  ]
+ },
+ "files": {
+  "payload/rows.json": "C:\\Users\\chunx\\Projects\\nautilus-compass\\runtime\\verifypack\\arma_summary\\payload\\rows.json",
+  "payload/verdict_by_type.json": "C:\\Users\\chunx\\Projects\\nautilus-compass\\runtime\\verifypack\\arma_summary\\payload\\verdict_by_type.json"
+ }
+}

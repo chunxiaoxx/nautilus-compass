@@ -5,14 +5,15 @@ import sys
 
 import paramiko
 
-HOST = os.environ.get("GPU_SSH_HOST", "js1.blockelite.cn")
-PORT = int(os.environ.get("GPU_SSH_PORT", "11224"))
+HOST = os.environ.get("GPU_SSH_HOST", "223.109.239.30")
+PORT = int(os.environ.get("GPU_SSH_PORT", "21228"))
 USER = os.environ.get("GPU_SSH_USER", "root")
-PW = os.environ.get("GPU_SSH_PW", "pei9teiL")
-# 2026-09-04 · 实例 654686(lyg0002xh c4 · js1:11224)· cheap-tier 跑分现役机
+PW = os.environ.get("GPU_SSH_PW", "")
+# 2026-09-10 · 用户提供的现役机(双线:移动 223.109.239.30 / 电信 180.127.11.167,同端口 21228,
+# root/vipuser 同密码)。658779 已由用户手动退租(9/10)。
 # 密码轮换从 get_connection_info 的 ssh_url query 取(base64 解码)——SSH 认证失败
 # 先查实例 status(Status=1=活着)再重取凭证,别急着判实例没了(9/4 教训)
-# 2026-08-29 · 实例 651799/651448(js3:10536 · 旧密码 zoh3Eich)已退役
+# 2026-09-04 · 实例 654686(lyg0002xh c4 · js1:11224)已退役
 
 
 def client():

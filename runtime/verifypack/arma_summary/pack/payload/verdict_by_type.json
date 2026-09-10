@@ -1,0 +1,1 @@
+{"rows": [{"type": "single-session-user", "ok": 63, "n": 70}, {"type": "single-session-assistant", "ok": 41, "n": 56}, {"type": "single-session-preference", "ok": 18, "n": 30}, {"type": "multi-session", "ok": 90, "n": 133}, {"type": "temporal-reasoning", "ok": 80, "n": 133}, {"type": "knowledge-update", "ok": 58, "n": 78}]}
