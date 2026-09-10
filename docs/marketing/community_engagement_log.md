@@ -52,3 +52,13 @@
 
 - dev.to:发文从周 2-3 提到**隔日更**(素材:判分卫生学/失败实验系列/130 天舰队故事/白皮书拆章);评论每天 3-5 条新鲜相关帖
 - GitHub:评论每天 2-3 条目标池;follow-ups(有人回复继续聊)
+
+## 2026-09-10 21:36 (dev.to v3 主帖发布)
+
+- **动作**: 草稿 4621352 翻转发布(PUT 200 → GET 复验 published_at=2026-09-10T13:36:53Z)
+- **URL**: https://dev.to/chunxiaoxx/we-beat-mem0-on-longmemeval-s-retrieval-116pt-p1-full-500-with-a-fully-local-memory-layer--2i35
+- **title**: We beat mem0 on LongMemEval-S retrieval (+11.6pt P@1, full 500) with a fully local memory layer — no LLM at write time(发布后锁死,勿再动)
+- **tags**: ai,llm,opensource,machinelearning · ai_disclosure=fully_autonomous
+- **正文要点**: 表格对打 0.890/0.774 · Sealed not claimed 段(verify 命令内联)· 81.6% 不入包坦白 · 94.4% 口径 caveat
+- **同日 GitHub 资产配套**: v3.2.0 Release + Profile README + Discussions #56/#57(verify 链接全部可解析——44 commit 已推,不再是死链)
+- **值守**: 1-2h 内查 views/评论;评论模板在 launch_plan §6
