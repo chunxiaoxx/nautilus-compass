@@ -53,13 +53,24 @@ Every experiment above has its full run log in `docs/evidence/` in the repo — 
 
 It also does two things beyond recall: pre-action **drift detection** (checks agent actions against failure-mode anchors, AUC 0.83, p95 <50ms) and **cross-agent contracts** (tracks implicit obligations when multiple agents share files).
 
+**Sealed, not just claimed.** Every number above ships as a VerifyPack entry in the repo: `pack.json` + sha256 manifest + claims recomputable from payload bytes + an ed25519-signed receipt. `python -m tools.verifypack verify runtime/verifypack/arma_summary/pack` recomputes all eight claims (0.754 all-judged / 0.700 conservative / per-type) from bytes alone — no trusting us required (exact commands in the pinned comment). One thing we're oddly proud of: the 81.6% figure is deliberately **not** sealed, because it can't be recomputed from pack-internal bytes alone — unverifiable numbers don't get sealed, they get disclosed with the reason why. And the door swings both ways: re-run anything (~$3.50) and sign the receipt with *your own* key — contradicting results go on our Reproducibility Wall with the same prominence as confirming ones.
+
 **Getting it (the sub filters links in post bodies — every URL lives in the pinned first comment):**
 - Python users: `pip install nautilus-compass` (PyPI — ships the CLI, MCP server, A2A adapter and session tools).
 - Claude Code / Desktop (local daemon, everything stays on your machine): clone the repo into `~/.claude/plugins/nautilus-compass`, then run its `install.sh` and `daemon_start.sh` — exact commands in the pinned first comment.
 - Cursor / Cline / Continue.dev / Zed: `python scripts/install_to_agent.py` (one script).
 - No local install: **hosted open beta, self-serve** — 6-digit email-code signup, mint a scoped token in the console, point any MCP client at the hosted endpoint. Tokens are server-bound to your own space (read+write scoped per project); cross-user read/write is denied and revocation takes effect immediately — verified by a four-probe suite that runs against the public endpoint (code in repo).
 
-The pinned first comment carries the repo / landing / signup links, plus the answer to "why is your 75.4% lower than mem0's self-reported 94.4%".
+The pinned first comment carries the repo / landing / signup links, the answer to "why is your 75.4% lower than mem0's self-reported 94.4%", and the verify-it-yourself commands:
+
+```
+git clone https://github.com/chunxiaoxx/nautilus-compass && cd nautilus-compass
+python -m tools.verifypack verify runtime/verifypack/arma_summary/pack --out /tmp/r.json
+python -m tools.verifypack check runtime/verifypack/arma_summary/pack \
+  --receipt runtime/verifypack/arma_summary/pack/receipts/receipt.json \
+  --pubkey f7554b8709b7fe36f5a63e7f76cf2a31f827aee5724ff8dd4f11772d1aa3e8be
+```
+(recomputes all 8 claims from bytes; full protocol: docs/REPRODUCIBILITY_WALL.md)
 
 Happy to answer questions on the retrieval routing design or the failure experiments — those are the fun parts.
 
@@ -75,7 +86,7 @@ Happy to answer questions on the retrieval routing design or the failure experim
 4. 失败实验同样公开:rerank 有害(-2pt)、K=50 无效、小模型无效。12 题 +16.7pt 的初读是抽样偏差,30 题混合后修正。全部证据在 repo docs/evidence/。
 5. 客场也赢:LOCOMO(mem0 主场)n=1986,P@1 0.644 vs 0.592。大语料(12×)泛化 P@5 0.888。EverMemBench 超 Mem0/Zep/MemOS。
 6. e2e 短板已修:摘要层上线(判据先于跑数预注册),全量 500 题 42.6%→75.4%(71 题 judge 断连全部重判补齐,每题有真判决)/81.6%(同口径剔除断连 71 题)。三弱型双口径全过门,定案重判口径:ms 22.6→69.2·ssa 25.0→83.9·tr 15.8→62.4(剔除断连干净口径 73.2/85.4/83.3);高分型零回退。
-7. 附赠:drift 检测 AUC 0.83(动作前对照失败模式锚点)+ 跨 agent 合约审计。本地三条命令接入;托管版开放自助注册(signup→控制台发 scoped token→任意 MCP 客户端直连),跨用户读写被拒+撤销即时,四探针公网验证。Modified MIT。github.com/chunxiaoxx/nautilus-compass
+7. 附赠:drift 检测 AUC 0.83(动作前对照失败模式锚点)+ 跨 agent 合约审计。所有对外数字已 seal+ed25519 签名,两条命令从字节复算,无需信任我们。本地三条命令接入;托管版开放自助注册(signup→控制台发 scoped token→任意 MCP 客户端直连),跨用户读写被拒+撤销即时,四探针公网验证。Modified MIT。github.com/chunxiaoxx/nautilus-compass
 
 ## B2. X thread(英文,7 条 · 9/8 发布夜新增,英文侧零覆盖补位)
 
@@ -87,7 +98,7 @@ Happy to answer questions on the retrieval routing design or the failure experim
 4. What didn't work is published too: cross-encoder reranking hurt (-2pt), K=50 didn't help, smaller embedders didn't either. A 12-question subset once read +16.7pt — sampling bias; we re-ran 30 mixed before believing it.
 5. Away games: LOCOMO (mem0's home turf), n=1986: 0.644 vs 0.592. A 12× larger corpus: P@5 0.888. EverMemBench: above Mem0/Zep/MemOS.
 6. e2e, fixed with preregistered gates: 42.6% → 75.4% on the full 500 (71 judge-outage questions re-judged — every question has a real verdict); 81.6% like-for-like excluding them. Weak types cleared gates under both accountings.
-7. And a Reproducibility Wall: run the head-to-head yourself for ~$3.50 — your numbers go on the wall, favorable or not. Prove us wrong. github.com/chunxiaoxx/nautilus-compass
+7. Every number here ships sealed & ed25519-signed (VerifyPack) — two commands recompute our claims from bytes, no trust required. Plus a Reproducibility Wall: run it yourself (~$3.50), or re-run & sign with your own key. github.com/chunxiaoxx/nautilus-compass
 
 ---
 
