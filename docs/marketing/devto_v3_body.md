@@ -1,0 +1,62 @@
+We've been building an open-source memory layer for agents ([nautilus-compass](https://github.com/chunxiaoxx/nautilus-compass)) and just finished a head-to-head against mem0 2.0.19 (latest PyPI) on four benchmarks. All numbers are from identical questions, identical judge criteria, and reproducible from the evidence files in the repo.
+
+## Head-to-head results (retrieval layer)
+
+| Benchmark | compass | mem0 2.0.19 | Δ |
+|---|---|---|---|
+| LongMemEval-S · 500 q · P@1 | **0.890** | 0.774 | +11.6pt |
+| LongMemEval-S · P@5 | **0.978** | 0.916 | +6.2pt |
+| LongMemEval-S · MRR | **0.929** | 0.834 | +9.5pt |
+| LOCOMO-10 · n=1986 · P@1 (mem0's home turf) | **0.644** | 0.592 | +5.2pt |
+| LongMemEval-M · 500 q · P@5 (12× corpus) | **0.888** | — | generalizes |
+
+On EverMemBench-Dynamic (n=500), compass scores 44.4–47.3% vs Mem0 37.09 / Zep 39.97 / MemOS 42.55.
+
+## The design bet: don't call an LLM at write time
+
+compass stores session text verbatim, embedded locally with BGE-m3. No LLM extraction into "facts", no graph, no cloud calls. Memory writes are free and lossless; all the intelligence lives at read time:
+
+1. **Utterance-type routing** — questions are classified (single-session-user / multi-session / temporal / knowledge-update / ...) and each type gets a different retrieval unit. User-utterance questions retrieve *turn-level chunks* (sliding window of 2), not whole sessions. This single change took single-session-user P@1 from 0.20 → 1.00 on held-out runs.
+2. **Hybrid BM25 + dense with RRF fusion** — dense alone drops temporal/multi-session queries; lexical carries exact identifiers (dates, names, versions).
+3. **Date anchoring** — session dates are prefixed into chunk text so "before/after" queries have temporal handles.
+
+## What didn't work (also in the repo)
+
+- Cross-encoder reranking on retrieved chunks: *hurt* accuracy (-2pt). The embedder's ordering was already better.
+- Retrieval depth K=50 vs K=20: no difference. Precision matters, not recall padding.
+- Swapping in a smaller/faster embedder: no.
+
+Every experiment above has its full run log in `docs/evidence/` in the repo — including the 12-question subset that initially showed +16.7pt (sampling bias, all one question type; we re-ran at 30 mixed questions before believing it).
+
+## The reader-context bottleneck — fixed, with preregistered gates
+
+Our first full-500 e2e run scored 42.6%: single-session types near ceiling (single-session-user 95.7% · single-session-preference 80.0% · knowledge-update 73.1%) while cross-session types lagged (multi-session 22.6% · single-session-assistant 25.0% · temporal 15.8%). Retrieval P@5 was already 97.8% — the gap was the reader's context window, not recall. So we shipped a summary layer (per-trajectory compressed summaries, routed by question type), with pass/fail gates **committed before the run**.
+
+Final full-500 verdict: overall **42.6% → 75.4%** — every question has a real judge verdict (the 71/500 = 14.2% originally lost to intermittent judge-gateway failures were re-judged with the same judge, retry-only); **81.6%** like-for-like excluding those 71. We disclose both because judge-side outages masquerading as wrong answers is exactly how this field inflates or deflates itself. All three weak types clear their preregistered gates under both accountings (final re-judged n=500: multi-session 22.6→69.2, single-session-assistant 25.0→83.9, temporal 15.8→62.4; clean accounting excluding the 71: 73.2/85.4/83.3). High-scoring types show zero regression under the final accounting — an earlier −5pt on one type turned out to be a judge-outage artifact, not model regression. e2e judging used our own harness with a glm-5.3-flash judge (the official harness judge is GPT-4o), which is one more reason we report dual accounting and publish the full protocol. Preregistration doc + full verdict live in the repo.
+
+## Sealed, not just claimed
+
+Every number above ships as a [VerifyPack](https://github.com/chunxiaoxx/nautilus-compass/blob/main/docs/REPRODUCIBILITY_WALL.md) entry in the repo: `pack.json` + sha256 manifest + claims recomputable from payload bytes + an ed25519-signed receipt. Verify without trusting us:
+
+```bash
+git clone https://github.com/chunxiaoxx/nautilus-compass && cd nautilus-compass
+python -m tools.verifypack verify runtime/verifypack/arma_summary/pack --out /tmp/r.json
+# → 8/8 claims recompute from bytes (0.754 all-judged / 0.700 conservative)
+```
+
+One thing we're oddly proud of: the 81.6% figure is deliberately **not** sealed, because it can't be recomputed from pack-internal bytes alone — unverifiable numbers don't get sealed, they get disclosed with the reason why. And the door swings both ways: re-run anything (~$3.50) and sign the receipt with *your own* key — contradicting results go on our Reproducibility Wall with the same prominence as confirming ones.
+
+## Beyond recall
+
+It also does two things beyond recall: pre-action **drift detection** (checks agent actions against failure-mode anchors, AUC 0.83, p95 <50ms) and **cross-agent contracts** (tracks implicit obligations when multiple agents share files).
+
+## Getting it
+
+- Python: `pip install nautilus-compass` ([PyPI](https://pypi.org/project/nautilus-compass/) — ships the CLI, MCP server, A2A adapter and session tools).
+- Claude Code / Desktop (local daemon, everything stays on your machine): clone the repo into `~/.claude/plugins/nautilus-compass`, then run its `install.sh` and `daemon_start.sh`.
+- Cursor / Cline / Continue.dev / Zed: `python scripts/install_to_agent.py` (one script).
+- No local install: [hosted open beta, self-serve](https://compass.nautilus.social) — 6-digit email-code signup, mint a scoped token in the console, point any MCP client at the hosted endpoint. Tokens are server-bound to your own space (read+write scoped per project); cross-user read/write is denied and revocation takes effect immediately — verified by a four-probe suite that runs against the public endpoint (code in repo).
+
+One honest caveat we get asked about: our 75.4% e2e is lower than mem0's self-reported 94.4% on a related benchmark — different questions, different judge, different accounting; we publish the comparison protocol and let you judge which methodology you'd trust for procurement.
+
+Happy to answer questions on the retrieval routing design or the failure experiments — those are the fun parts.
