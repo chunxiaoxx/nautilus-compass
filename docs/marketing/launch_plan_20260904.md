@@ -247,6 +247,15 @@ PUBLIC_TOOLS = {"ingest_obs", "recall", "session_search", "thread_recall",
 - Landing + hosted open beta signup: https://compass.nautilus.social
 - PyPI: https://pypi.org/project/nautilus-compass/
 
+Verify our numbers yourself (sealed packs + ed25519-signed receipts — no trust required; full protocol in docs/REPRODUCIBILITY_WALL.md):
+
+    git clone https://github.com/chunxiaoxx/nautilus-compass && cd nautilus-compass
+    python -m tools.verifypack verify runtime/verifypack/arma_summary/pack --out /tmp/r.json
+    python -m tools.verifypack check runtime/verifypack/arma_summary/pack \
+      --receipt runtime/verifypack/arma_summary/pack/receipts/receipt.json \
+      --pubkey f7554b8709b7fe36f5a63e7f76cf2a31f827aee5724ff8dd4f11772d1aa3e8be
+    # → 8/8 claims recompute from bytes (0.754 all-judged / 0.700 conservative)
+
 Local install (Claude Code / Desktop):
 
     git clone https://github.com/chunxiaoxx/nautilus-compass ~/.claude/plugins/nautilus-compass
