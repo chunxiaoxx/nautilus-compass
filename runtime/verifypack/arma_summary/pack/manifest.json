@@ -1,0 +1,10 @@
+{
+ "manifest_version": "0.2",
+ "files": {
+  "pack.json": "1df65826b5dda83607292cdab751c8b755f9d33a5c30be368b113e838918e027",
+  "payload/rows.json": "88bab0f06554a9cd5576f5d7021bf6e1e0330cd19e3ab79c6b891cd15b08c131",
+  "payload/verdict_by_type.json": "3616e6264852b615e3ac44538f96972a0b4dda11f2f5c6622751e1c104a937d7"
+ },
+ "inputs": {},
+ "input_decls": []
+}

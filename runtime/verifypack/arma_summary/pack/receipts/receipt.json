@@ -1,0 +1,73 @@
+{
+ "receipt_version": "0.2",
+ "pack": "arma-summary-e2e-v1",
+ "pack_manifest_hash": "e7651718925a6d312ab857aeaa433c9052c866df6422f9deae7f1ffa69fe65ec",
+ "verifier": "compass",
+ "verified_at": "2026-09-10T10:02:45",
+ "environment": "Windows 11 · python 3.13.14",
+ "results": [
+  {
+   "id": "ARMA-OVERALL-500",
+   "level": "L1",
+   "verdict": "agree",
+   "recomputed": "0.754",
+   "claimed": "0.754"
+  },
+  {
+   "id": "ARMA-TYPE-single-session-user",
+   "level": "L1",
+   "verdict": "agree",
+   "recomputed": "0.971429",
+   "claimed": "0.971429"
+  },
+  {
+   "id": "ARMA-TYPE-single-session-assistant",
+   "level": "L1",
+   "verdict": "agree",
+   "recomputed": "0.839286",
+   "claimed": "0.839286"
+  },
+  {
+   "id": "ARMA-TYPE-single-session-preference",
+   "level": "L1",
+   "verdict": "agree",
+   "recomputed": "0.8",
+   "claimed": "0.8"
+  },
+  {
+   "id": "ARMA-TYPE-multi-session",
+   "level": "L1",
+   "verdict": "agree",
+   "recomputed": "0.691729",
+   "claimed": "0.691729"
+  },
+  {
+   "id": "ARMA-TYPE-temporal-reasoning",
+   "level": "L1",
+   "verdict": "agree",
+   "recomputed": "0.62406",
+   "claimed": "0.62406"
+  },
+  {
+   "id": "ARMA-TYPE-knowledge-update",
+   "level": "L1",
+   "verdict": "agree",
+   "recomputed": "0.807692",
+   "claimed": "0.807692"
+  },
+  {
+   "id": "ARMA-CONSERVATIVE-70",
+   "level": "L1",
+   "verdict": "agree",
+   "recomputed": "0.7",
+   "claimed": "0.7"
+  }
+ ],
+ "summary": {
+  "agree": 8,
+  "disagree": 0,
+  "degraded": 0,
+  "seal_fail": 0
+ },
+ "boundary": "独立技术验证与回执,不作客户验收或结算决定"
+}
