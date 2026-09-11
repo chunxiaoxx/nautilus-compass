@@ -62,3 +62,15 @@
 - **正文要点**: 表格对打 0.890/0.774 · Sealed not claimed 段(verify 命令内联)· 81.6% 不入包坦白 · 94.4% 口径 caveat
 - **同日 GitHub 资产配套**: v3.2.0 Release + Profile README + Discussions #56/#57(verify 链接全部可解析——44 commit 已推,不再是死链)
 - **值守**: 1-2h 内查 views/评论;评论模板在 launch_plan §6
+
+## 2026-09-11 巡检(Gmail/dev.to/GitHub/HN 全景)
+
+- **Gmail**:Trajko 9/10 回信=礼貌 ack 无行动(链路收尾,不再触达);「雷鸣云」vzykyv@gmx.com=推广服务推销(spam 不回);Reddit Pro 关键词追踪通知(u/Nautilus-compass 监听 "Nautilus",本周 1 条新对话可看)
+- **dev.to v3 主帖**:26 views/1 reaction/2 评论——@ahmetozel 高质量技术评论(write-time bet 论点共鸣),回复草稿见下;另一条 tinu.be spam
+- **GitHub**:stars 19;CI 连红 4 commit(根因=verify_batch001_recheck.py unused import,已修);punkpeye #14065 open 等 merge;Discussions #56/#57 无新回复
+- **HN**:49641875 仍埋,无变化
+- **API 判死两路**:dev.to POST /api/comments(V0/V1 均 404,端点已废→评论网页贴);第三方仓 PR 创建(anti-abuse 超 24h 未解→网页一键)
+
+### 回复草稿(@ahmetozel · 待用户网页贴,dev.to API 已废)
+
+@ahmetozel thanks — that's exactly the failure mode that pushed us this way. The strongest version of it we hit: even *within* "facts", what looked like the right granularity at write time turned out wrong at read time. Retrieving whole sessions for user-utterance questions capped that type's P@1 at 0.20; switching to turn-level chunks (sliding window of 2) for that question type alone took it to 1.00 — and we could only learn that by watching what readers actually asked. Read-side routing IS the schema, kept where it can still change.
