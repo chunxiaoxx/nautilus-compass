@@ -43,6 +43,15 @@ A2. Hosted services. Except under a separate commercial license from the
 A3. Carve-out. The copyright holders, their affiliates, and entities
     authorized by them in writing are not subject to Term A2.
 
+A4. Clarification of Term A2 scope (recorded 2026-09-15, per copyright
+    holder decision). Term A2's hosted-service cap applies to services
+    providing the Software's memory / retrieval functionality.
+    Independent-verification services (claim recomputation, sealed
+    evidence packs, audit reports and receipts) offered by the copyright
+    holders are a separate commercial line: they are neither restricted
+    by, nor granted through, this file's Terms, and their terms are set
+    in the applicable service agreement.
+
 Historical note: source-code releases of this project made before this
 file's introduction were distributed under the unmodified MIT License,
 and remain so.
