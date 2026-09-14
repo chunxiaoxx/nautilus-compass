@@ -81,3 +81,11 @@
 - **awesome 线收束**:wong2(PR+Issues 全关,纯手动维护→终结);appcypher(2026-08-01 已 archive 只读→终结);**主力只剩 punkpeye #14065(open/MERGEABLE/CI 绿,等 merge)**。教训:选列表先查生命体征(archived/has_issues/pushed_at),star 数会骗人
 - **dev.to**:@ahmetozel 评论回复已由用户网页贴上(API 写评论端点已废,网页是唯一路)
 - **直邮台账累计**:Trajko(9/10 发→9/10 礼貌 ack,链路闭环不再触达)+ Di Wu + Haitao Li,共 3 封全个性化
+
+## 2026-09-14 夜 · 生态嵌入线首日(两件落地)
+
+- **awesome-ai-memory PR #19 已开**(§1 聚合记忆层表格,Letta 后字母序位;API 全程自动化,反滥用窗口已过)https://github.com/XiaomingX/awesome-ai-memory/pull/19
+- **阮一峰周刊自荐 issue #11676 已发**(v2 文案:集体记忆传承定位+治理/组织记忆/胶囊三牌+克制愿景;用户过目点头)https://github.com/ruanyf/weekly/issues/11676
+- 观察:周刊每周五出,48h 无收录不追发;PR #19 等维护者(该仓 9 PR 排队,正常)
+- 方案正本:docs/marketing/ecosystem_gtm_plan_20260914.md(五层矩阵+五张牌+技能卡设计+排期)
+- 同日背景:punkpeye #14065 维护者已放行待 Glama 评分落格(badge 已 rated A,已回复通知);GLM 生态另发现 awesome-openclaw-skills-zh 渠道(技能卡投放目标)
