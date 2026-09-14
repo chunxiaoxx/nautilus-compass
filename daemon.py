@@ -1142,8 +1142,24 @@ def _stem(p: str) -> str:
     return p.removesuffix(".md")
 
 
+def _entry_link_text(e: dict) -> str:
+    """v2.5.1 · J3 复算修复:沿链扫描读条目全文,不吃 body[:500] 截断。
+
+    [[链接]]按惯例写在文件尾部,复算实证偏移>500 的链接在截断窗口内永远扫不到
+    (RSI 环 #1 复算 J3 FAIL 根因)。只对 top 命中条目逐个读盘(top_k 量级,开销
+    可忽略);读失败回退 description+body 截断窗口(旧行为)。
+    """
+    fp = e.get("fullpath") or ""
+    if fp:
+        try:
+            return Path(fp).read_text(encoding="utf-8", errors="replace")
+        except Exception:
+            pass
+    return (e.get("description") or "") + "\n" + (e.get("body") or "")
+
+
 def expand_chain_links(top: list, all_entries: list, cap: int = _CHAIN_CAP_DEFAULT) -> list:
-    """召回 top 条目 body/description 里的 [[name]] 引用展开一层(修复三)。
+    """召回 top 条目里的 [[name]] 引用展开一层(修复三 · v2.5.1 全文扫描)。
 
     不递归 · 已在 top 的不重复 · 输出 cap 条,字段含 via(来源条目)。
     """
@@ -1160,7 +1176,7 @@ def expand_chain_links(top: list, all_entries: list, cap: int = _CHAIN_CAP_DEFAU
     seen: set = set()
     out: list = []
     for _s, e in top:
-        text = (e.get("description") or "") + "\n" + (e.get("body") or "")
+        text = _entry_link_text(e)
         for m in _wiki_link_re().findall(text):
             name = m.strip()
             if not name or name in top_keys:

@@ -128,5 +128,59 @@ def test_fact_status_value_domain():
     assert FACT_STATUSES == {"measured", "inferred", "heard"}
 
 
+# ── v2.5.1 · 复算修复回归(J3 全文扫描 + J1 写入门 hook) ─────────────────
+
+def test_chain_expand_reads_fulltext_beyond_500(tmp_path):
+    """复算 FAIL 场景复现:链接在 body 偏移 >500,截断窗口扫不到;修复后走全文。"""
+    src = tmp_path / "src.md"
+    src.write_text("---\nname: src\ndescription: d\n---\n\n" + "x" * 600
+                   + "\n\n关联 [[tgt-entry]]\n", encoding="utf-8")
+    tgt = tmp_path / "tgt-entry.md"
+    tgt.write_text("---\nname: tgt-entry\n---\n\n目标\n", encoding="utf-8")
+    e_src, e_tgt = daemon.parse_memory_file(src), daemon.parse_memory_file(tgt)
+    assert len(e_src["body"]) == 500 and "tgt-entry" not in e_src["body"]  # 截断前提成立
+    out = daemon.expand_chain_links([(0.9, e_src)], [e_src, e_tgt])
+    assert [o["path"] for o in out] == ["tgt-entry.md"]
+    assert out[0]["via"] == "src.md"
+
+
+def test_chain_expand_fulltext_missing_file_falls_back(tmp_path):
+    """fullpath 指向不存在文件 → 回退截断窗口,不炸。"""
+    e = {"path": "a.md", "name": "a", "description": "", "body": "见 [[b]]",
+         "fullpath": str(tmp_path / "gone.md")}
+    b = {"path": "b.md", "name": "b", "description": "", "body": ""}
+    out = daemon.expand_chain_links([(0.9, e)], [e, b])
+    assert [o["path"] for o in out] == ["b.md"]
+
+
+def _mk_mem_file(tmp_path, name="m.md"):
+    mem = tmp_path / "proj" / "memory"
+    mem.mkdir(parents=True, exist_ok=True)
+    f = mem / name
+    f.write_text("---\nname: n\n---\n\nbody\n", encoding="utf-8")
+    return f
+
+
+def test_stamp_inserts_fact_status(tmp_path):
+    import memgate_stamp
+    f = _mk_mem_file(tmp_path)
+    assert memgate_stamp.stamp(str(f), mem_root=tmp_path) is True
+    txt = f.read_text(encoding="utf-8")
+    assert "fact_status: inferred" in txt and txt.startswith("---")
+    assert "name: n" in txt and "body\n" in txt  # 既有内容不动
+
+
+def test_stamp_idempotent_and_skips(tmp_path):
+    import memgate_stamp
+    f = _mk_mem_file(tmp_path)
+    assert memgate_stamp.stamp(str(f), mem_root=tmp_path) is True
+    assert memgate_stamp.stamp(str(f), mem_root=tmp_path) is False  # 已有不再动
+    outside = tmp_path / "other.md"
+    outside.write_text("---\nname: n\n---\n", encoding="utf-8")
+    assert memgate_stamp.stamp(str(outside), mem_root=tmp_path) is False  # 非 memory 目录
+    idx = _mk_mem_file(tmp_path, name="MEMORY.md")
+    assert memgate_stamp.stamp(str(idx), mem_root=tmp_path) is False  # 索引不动
+
+
 if __name__ == "__main__":
     raise SystemExit(pytest.main([__file__, "-q"]))
