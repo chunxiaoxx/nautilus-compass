@@ -7,6 +7,9 @@
 > 垂域出题/交付业务已死不再做——仓内 CHARTER/SSOT 等历史层的垂域/FDE 燃料内容全是 8 月历史,不是现状。
 > `FDE_BUSINESS_CHARTER.md`/`LOOP_STATE_SSOT.md` 已停止自动注入(业务已死/正文 8/30 冻结):考古时手动读,读时牢记历史层 ≠ 现状。
 
+> 🔴 报数纪律(2026-09-15 用户拍板,流程正本 `docs/soul/proposal_preregistered_recompute_20260914.md`,soul 提案 approved):
+> 对外要报数字的任务(评测/跑分/数据产出/修复验收)——**开工先落预注册判据档**(判据只许更严),**收工走非实现者复算**(新鲜会话,只信判据与自测);交接档只给坐标与命令,**不给任何预期读数**(占位句也不写,留空白)。复算红灯先证伪自己探针。
+
 
 <!-- COMPASS-KG-NODE · 2026-07-14 从 4 个历史会话提炼 · 完整见 ~/.claude/projects/<proj>/memory/session_NODE_nautilus-compass.md -->
 ## 📍 项目现状与复发陷阱(compass 记忆提炼)
