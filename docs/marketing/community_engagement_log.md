@@ -104,3 +104,10 @@
 - **前置动作**:main 推送 b62ceda..a12c08c(消除 PR 内技能卡死链——9/1 PR 提审老教训复发预防)
 - **新坑记录**:目标仓 README 实为 HTML 表格(web_reader 转 markdown 造成误判,差点按管道表插行);bash /tmp 与 Windows python /tmp 非同一目录(C:\tmp vs AppData\Temp),跨端传文件必走显式 Windows 路径
 - **待办**:ClawHub publish(等用户 2 次点击授权后随时可补,PR 里已预告"后续改条目")·讨论帖(openclaw-community/openclaw-hub → Show and tell,素材就绪未发)·WorkBuddy 案例(等真跑截图)
+
+## 2026-09-14 傍晚 · 讨论帖已发 + 跨框同步函两封(用户拍板「现在发+同步各框」)
+
+- **讨论帖 #166 已发**(已核验在线·Show and tell·by chunxiaoxx):https://github.com/openclaw-community/openclaw-hub/discussions/166——批准稿原文(3 分钟接入+VerifyPack 两命令+结尾钩子问句;OpenClaw 主仓 discussions 关闭,社区 hub 是正场地)
+- **跨框同步函**:v5(id 227,记忆门对直写路径的影响+daemon 两次死亡时间戳对表)·flywheel(id 228,RSI 闭环流程与判据库同构+投放两件+batch002 不催);platform 今早已收 RSI 闭环通报(id 220),四框信息面已齐
+- 观察:48h 无回响不追发(讨论帖/PR #43 同规)
+- **剩余队列**:ClawHub publish(用户 2 击)→PR #43 链接升级;WorkBuddy 案例(等真跑截图)
