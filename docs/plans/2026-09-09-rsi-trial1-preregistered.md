@@ -46,7 +46,7 @@
   LME-V2→lmev2-upstream(2072ms)· 基线固化 ops/regression_gate_baseline.json
 - [ ] 9/15 改后三 fact 读数:待回填
 - [x] J1-J3 读数:已回填(见下「9/14 合入执行读数」)
-- [x] 非实现者复算回执:已回填(9/14 午独立会话提前执行 · J1/J3 FAIL · J2/J4 PASS · 环 #1 不闭环,见下)
+- [x] 非实现者复算回执:已回填(9/14 午独立会话提前执行 · J1/J3 FAIL · J2/J4 PASS;同日用户拍板修复后重测全绿,环闭环,见「复算 FAIL 后修复与重测」段)
 - [x] 9/9 实现修订一条(手段非判据):session_writer 对 merge 命中**不自动改写**
   原条目,只标 `merge_target` frontmatter 留人工/下一环——自动改写污染原条目风险
   大于收益;J2 判据(零误合并)不变。
@@ -87,3 +87,41 @@ hooks/ 与 scripts/ grep `fact_status` 零命中)——「人工写入走纪律�
 
 **结论**:RSI 环 #1 第四段(非实现者复算)不通过(J1、J3 FAIL),环不闭环,不发闭环通报函。
 按预注册纪律:不改代码、不放宽判据。修复与判据处置留用户裁决(判据只许更严,任何放宽须用户拍板并记录)。
+
+### 复算 FAIL 后修复与重测(2026-09-14 午后 · 用户拍板「先修 J1/J3 → 重测闭环 → 发通报函」)
+
+**修复**(插件仓 `feat/memory-gate-trio` d9a47e1 · 判据未动):
+
+1. **J3**:`expand_chain_links` 改经 `_entry_link_text` 读条目全文(`fullpath`),
+   不再吃 `body[:500]` 截断;读盘失败回退旧行为。单测 +2(尾部链接展开/缺文件回退)。
+2. **J1**:新增 `memgate_stamp.py` PostToolUse hook(matcher `Write|Edit`,
+   settings.json 已接线)——memory/*.md 落盘缺 `fact_status` 即注入 `inferred`;
+   fail-open/幂等/不动 MEMORY.md 与既有内容;真路径 e2e 已验(注入+幂等)。
+   单测 +2(注入/幂等+跳过)。
+3. 单测 15→19 全绿;受控重启(精确 PID 杀旧→daemon_start.sh 拉新,冷启动 ~2.5min)。
+
+**数据面动作**(一次性,清单在回执 commit 与 daemon 日志):
+
+- 30 条回填 `fact_status: inferred`(9/9 后缺字段全量,跨 v5/compass/core/
+  flywheel/venture 五项目;保守默认,写者知道得更准时可改 measured/heard)。
+- 2 条层级规范化:memgate-trio-implemented / verifypack-v02-built 的
+  `fact_status: measured` 原嵌在 `metadata:` 下(实现方 9/9 手写放错层级),
+  提升为顶层级,值保留。
+- 代价:回填改 mtime 触发一次性重嵌入(24 文件 168s),期间 recall 慢/超时属预期。
+
+**重测(修复后,全部实测)**:
+
+| # | 判定 | 读数 |
+|---|---|---|
+| J1 | **PASS** | 9/9 后 34/34 带 fact_status(100%;含本日新增 2 条带 measured 的会话记忆) |
+| J2 | **PASS** | 复测三档:unique / gray 0.809 / merge 0.9184 |
+| J3 | **PASS** | 带链查询命中 arm-a(body 偏移 814 的 3 条尾部链接)→ chain_extra 全带出 ✓;6 查询批量严格验证(每条 chain 目标 ∈ via 条目全文链接 ∧ via ∈ top ∧ 不与 top 重复)ALL PASS;延迟 588-790ms 与基线同量级;无链→空由代码结构+单测保证 |
+| J4 | **PASS** | 三 fact hit@3 全对 GREEN(2/654/502ms) |
+| 单测 | PASS | 19/19 |
+
+**诚实边界**:回填值一律 `inferred`(不冒充 measured);hook 的首次会话内实弹
+要下一会话才可观测(本会话 hook 快照在其接线前);复算期间两次"无链查询 FAIL"
+均为探针选样错误(top 实际含尾部链接),经 via 溯源与批量严格验证排除。
+
+**结论**:RSI 环 #1 四段(实现→回归→复算→修复后复算全绿)闭环成立,
+通报函按用户指示发出(trace: compass-platform-rsi-loop1-closure-20260914)。
