@@ -96,3 +96,11 @@
 - **投放侦察(实拉两仓)**:awesome-openclaw-skills-zh=ClawHub 官方库下载量 Top100 中文同步(fork),行链接全指 ClawHub→**前置决策 A1 先 `npx clawhub publish`(推荐)/A2 直接 PR 坦白非同步来源**;WorkBuddyGuide=VitePress 案例投稿制七段模板,「实际效果」必须真跑截图→**前置=WorkBuddy 真跑 15 分钟**
 - **三份物料草稿**:docs/marketing/outreach_20260914_skillcard_drafts.md(表格行/PR 正文/案例七段/讨论帖全文+发放顺序建议 A1→讨论帖→案例)
 - 状态:**草拟完成,等用户过目与前置决策,未发**;发放顺序建议:ClawHub publish → 讨论帖 → WorkBuddy 案例
+
+## 2026-09-14 下午 · awesome-zh PR 已投(A2 方案拍板)
+
+- **用户拍板**:A1(ClawHub 先行)暂缓——自驱授权 6 路全撞 Chrome app-bound 反窃取墙(复制 profile/junction 均不解密会话 cookie,clawhub API 只有设备流一途);改走 **A2 直接 PR**
+- **PR #43 已开**:https://github.com/clawdbot-ai/awesome-openclaw-skills-zh/pull/43(state=open·mergeable·+7/-0 已独立核验 diff);表格行「Compass 记忆/nautilus-compass-memory」放分类 1 表尾,链接列指向 GitHub 仓,PR 正文坦白"尚未上 ClawHub,后续发布后可改条目;若口径仅限 ClawHub 同步来源关闭即可"
+- **前置动作**:main 推送 b62ceda..a12c08c(消除 PR 内技能卡死链——9/1 PR 提审老教训复发预防)
+- **新坑记录**:目标仓 README 实为 HTML 表格(web_reader 转 markdown 造成误判,差点按管道表插行);bash /tmp 与 Windows python /tmp 非同一目录(C:\tmp vs AppData\Temp),跨端传文件必走显式 Windows 路径
+- **待办**:ClawHub publish(等用户 2 次点击授权后随时可补,PR 里已预告"后续改条目")·讨论帖(openclaw-community/openclaw-hub → Show and tell,素材就绪未发)·WorkBuddy 案例(等真跑截图)
