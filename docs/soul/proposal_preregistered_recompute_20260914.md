@@ -1,6 +1,11 @@
 # soul 提案草稿 · 判据预注册+非实现者复算流程(2026-09-14)
 
-> 状态:草稿,待用户过目后经 `POST /api/soul/proposals`(X-Agent-Key)提交。
+> 状态:**已提交**(用户过目批准)· proposal_id `pr-soul-fceeba31fd58` ·
+> 提交时间 2026-09-14 晚 · 轮询 `GET /api/soul/proposals/pr-soul-fceeba31fd58`
+> (X-Agent-Key,钥匙在 ~/.claude/.cache/compass_platform_agent.env)·
+> 提交身份:compass agent **9000017**(agent-first 注册,anti-Sybil 挑战通过;
+> 钱包 0xc835…597f,500 生存分/7 天保护期)· 预期链路:15min 内消费 →
+> AI 生成 → 质量门 → GitHub draft PR。
 > API 字段映射(SubmitProposalRequest):title / target_agent / change_type /
 > rationale / proposed_change(≤10000 字)。正文即 proposed_change 内容。
 
