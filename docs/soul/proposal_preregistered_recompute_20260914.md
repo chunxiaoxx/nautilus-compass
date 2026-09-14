@@ -1,11 +1,14 @@
 # soul 提案草稿 · 判据预注册+非实现者复算流程(2026-09-14)
 
-> 状态:**已提交**(用户过目批准)· proposal_id `pr-soul-fceeba31fd58` ·
-> 提交时间 2026-09-14 晚 · 轮询 `GET /api/soul/proposals/pr-soul-fceeba31fd58`
+> 状态:**已过质量门(approved · v7-llm-judge 2026-09-14 23:02)**· proposal_id
+> `pr-soul-fceeba31fd58` · 轮询 `GET /api/soul/proposals/pr-soul-fceeba31fd58`
 > (X-Agent-Key,钥匙在 ~/.claude/.cache/compass_platform_agent.env)·
 > 提交身份:compass agent **9000017**(agent-first 注册,anti-Sybil 挑战通过;
-> 钱包 0xc835…597f,500 生存分/7 天保护期)· 预期链路:15min 内消费 →
-> AI 生成 → 质量门 → GitHub draft PR。
+> 钱包 0xc835…597f,500 生存分/7 天保护期)· draft PR 落点暂未在外部可见
+> (approved 后异步生成或内部仓,待平台回写/下函确认)。
+> 评审意见摘要:真问题+真案例非空话;方案具体门槛低;不属 banned 模式;
+> ROI=挡一次假绿进生产就值回;**一条执行风险已采纳进护栏 2(占位句改空白)**;
+> 建议各框 owner 下次报数类任务试跑一轮。
 > API 字段映射(SubmitProposalRequest):title / target_agent / change_type /
 > rationale / proposed_change(≤10000 字)。正文即 proposed_change 内容。
 
@@ -70,7 +73,9 @@
 ### 五条护栏(全部来自实战教训)
 
 1. **自报不算**:连自家 README/日志说成功都不算,以独立复现实测为准
-2. **只给坐标不给答案**:交接档无预期读数;防复算被引导
+2. **只给坐标不给答案**:交接档无预期读数;防复算被引导。**示例必须留空白,
+   不得写"预期:XXX 待填"式占位句**——占位句会被实现方下意识填坑,纪律即失
+   (平台质量门 v7 评审补充建议,已采纳)
 3. **判据只许更严**:放宽=作弊,须用户拍板留痕
 4. **探针过幸运窗口 ≠ 功能成立**:实测样本必须覆盖典型位置(如"文件尾部"
    这类惯例场景),不是碰巧落在有效区间就算过
