@@ -111,3 +111,9 @@
 - **跨框同步函**:v5(id 227,记忆门对直写路径的影响+daemon 两次死亡时间戳对表)·flywheel(id 228,RSI 闭环流程与判据库同构+投放两件+batch002 不催);platform 今早已收 RSI 闭环通报(id 220),四框信息面已齐
 - 观察:48h 无回响不追发(讨论帖/PR #43 同规)
 - **剩余队列**:ClawHub publish(用户 2 击)→PR #43 链接升级;WorkBuddy 案例(等真跑截图)
+
+## 2026-09-15 午后 · 9/8 外发线对账收口+四渠道稿处置
+
+- **对账**:9/8 七封(flywheel 线执行,机器之心/量子位/PaperWeekly/Zep/MemOS/mem0/Datawhale)与 Gmail 发件逐一吻合,零回信按 48h 纪律收束;错位 tag v3.1.2 已删远端(指向营销提交却触发 PyPI 工作流,CI 红源头)
+- **Cognee 讨论 #5070 已投**(topoteretes/cognee · General):head-to-head 互跑邀请帖(我们跑你们的 harness,你们跑我们的,双方发布)——API 直投成功
+- **TLDR/Letta/Latent Space 三表单**:Next.js/客户端渲染,程序化提交撞浏览器墙(app-bound,同 ClawHub 授权案),转交用户 30 秒×3 粘贴(稿在 kol_outreach_20260908.md §6)
