@@ -1,0 +1,19 @@
+<div style="max-width:677px;margin:0 auto;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','PingFang SC','Microsoft YaHei',sans-serif;">
+<h1 style="font-size:22px;font-weight:700;margin:8px 0 16px;line-height:1.5;color:#1a1a1a;">凭什么信你 Agent 的记忆层?——nautilus-compass 的两个架构赌注</h1>
+<p style="font-size:14px;color:#888;margin:0 0 20px;">(中文版 · 适投:知乎/掘金/公众号/即刻技术圈;英文版投 HN/r/LocalLLaMA)</p>
+<p style="font-size:16px;line-height:1.9;color:#333;margin:0 0 16px;text-align:justify;">每个 AI agent 记忆层产品都带着两样东西出厂:一张跑分表,和一句没说出口的"请相信我"。我们做 <a href="https://github.com/chunxiaoxx/nautilus-compass" style="color:#2f6fed;text-decoration:none;border-bottom:1px solid #2f6fed;">nautilus-compass</a> 的出发点正好相反:<strong style="color:#1a1a1a;">我们对外公布的每个数字,你都应该能从字节级复算出来,不需要信任我们。</strong>这篇文章讲背后的两个架构赌注。</p>
+<h2 style="font-size:18px;font-weight:700;margin:28px 0 12px;line-height:1.5;color:#1a1a1a;border-left:4px solid #2f6fed;padding-left:10px;">赌注一:写入路径零 LLM 调用("写时押注"问题)</h2>
+<p style="font-size:16px;line-height:1.9;color:#333;margin:0 0 16px;text-align:justify;">主流记忆管线在写入时就开始摘要、抽取、建图——这本质上是一场赌局:赌今天的压缩能命中明天的提问。我们反复看到这场赌局输掉:同一批语料、同一套检索,只在读取侧加了一层会话摘要,end-to-end 准确率从 42.6% 涨到 75.4%,<strong style="color:#1a1a1a;">检索一行没改</strong>——压缩不是地板,是天花板。</p>
+<p style="font-size:16px;line-height:1.9;color:#333;margin:0 0 16px;text-align:justify;">所以我们的写入路径什么都不"聪明地"做:原文、本地 BGE-m3 向量、数据不出机器。所有智能放在读取时:语义+关键词混合召回、单会话问题路由到轮次窗口分块、漂移检测(每条 prompt 先对照一组真实失败转录打分,held-out AUC 0.83)——在 agent 拿着过期记忆行动之前拦一道。</p>
+<p style="font-size:16px;line-height:1.9;color:#333;margin:0 0 16px;text-align:justify;">实测(LongMemEval-S 全 500 题、同题对打 mem0 2.0.19、双方各用默认嵌入、一条命令约 $3.50 可复现):<strong style="color:#1a1a1a;">P@1 0.890 vs 0.774,P@5 0.978 vs 0.916</strong>。复现脚本在仓里;证据链里还保留了那些*失败*的实验(交叉编码器重排在我们的语料上是负收益——照发)。</p>
+<h2 style="font-size:18px;font-weight:700;margin:28px 0 12px;line-height:1.5;color:#1a1a1a;border-left:4px solid #2f6fed;padding-left:10px;">赌注二:数字以"密封证据包"出厂,不以文章出厂</h2>
+<p style="font-size:16px;line-height:1.9;color:#333;margin:0 0 16px;text-align:justify;">跑分表是一种主张。我们的主张以 <strong style="color:#1a1a1a;">VerifyPack 证据包</strong>形式发布:sha256 清单、每条声明可从载荷字节复算、ed25519 签名回执。两条纯标准库命令即可重推任何数字——不依赖任何第三方库,不用"相信我们的 notebook"。<a href="https://github.com/chunxiaoxx/nautilus-compass/blob/main/docs/REPRODUCIBILITY_WALL.md" style="color:#2f6fed;text-decoration:none;border-bottom:1px solid #2f6fed;">复算墙</a>以同等醒目度发布与我们矛盾的数字;我们的一个密封包里就躺着一个 disagree——日志文件在封包后仍被追写,协议抓住了它,我们把这次失败原样保留。它就是干这个的。</p>
+<p style="font-size:16px;line-height:1.9;color:#333;margin:0 0 16px;text-align:justify;">这套纪律最初是自卫:我们自己的审计流程两周内两次拦下"实现方自报全绿但实测不绿"——其中一次,连实现方举的示例本身都复现不出来。经不起对自己日志的对抗性审读的 agent 记忆,不是基础设施,是日记。</p>
+<h2 style="font-size:18px;font-weight:700;margin:28px 0 12px;line-height:1.5;color:#1a1a1a;border-left:4px solid #2f6fed;padding-left:10px;">三分钟接入</h2>
+<pre style="background:#f6f8fa;border:1px solid #e1e4e8;border-radius:8px;padding:14px 16px;font-size:14px;line-height:1.7;overflow-x:auto;white-space:pre-wrap;color:#24292f;">git clone https://github.com/chunxiaoxx/nautilus-compass ~/.claude/plugins/nautilus-compass
+bash ~/.claude/plugins/nautilus-compass/install.sh
+bash ~/.claude/plugins/nautilus-compass/daemon_start.sh</pre>
+<p style="font-size:16px;line-height:1.9;color:#333;margin:0 0 16px;text-align:justify;">支持 Claude Code / Cursor / Cline / Continue / Zed / 任意 MCP 客户端;不想跑本地模型就用托管网关 `compass.nautilus.social/mcp/`。</p>
+<p style="font-size:16px;line-height:1.9;color:#333;margin:0 0 16px;text-align:justify;"><strong style="color:#1a1a1a;">以及本文开头的那个邀请:你有已发布的记忆层跑分——自己的,或你依赖的?开个 issue。我们免费独立复算,结果无论 agree 还是 disagree 都同等醒目发布,附签名回执。</strong>人肉管线,先到先得。</p>
+<p style="font-size:16px;line-height:1.9;color:#333;margin:0 0 16px;text-align:justify;">本文每个数字都有 sha256 清单+字节复算+签名的证据包背书——你的记忆层,敢过这道杠吗?</p>
+</div>
