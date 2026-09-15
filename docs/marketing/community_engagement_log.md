@@ -117,3 +117,10 @@
 - **对账**:9/8 七封(flywheel 线执行,机器之心/量子位/PaperWeekly/Zep/MemOS/mem0/Datawhale)与 Gmail 发件逐一吻合,零回信按 48h 纪律收束;错位 tag v3.1.2 已删远端(指向营销提交却触发 PyPI 工作流,CI 红源头)
 - **Cognee 讨论 #5070 已投**(topoteretes/cognee · General):head-to-head 互跑邀请帖(我们跑你们的 harness,你们跑我们的,双方发布)——API 直投成功
 - **TLDR/Letta/Latent Space 三表单**:Next.js/客户端渲染,程序化提交撞浏览器墙(app-bound,同 ClawHub 授权案),转交用户 30 秒×3 粘贴(稿在 kol_outreach_20260908.md §6)
+
+## 2026-09-15 下午 · 传播第一层第一枪:EN 架构文 dev.to 已发
+
+- **id=4660567 · published_at=2026-09-15T15:39:18Z(已验)**:https://dev.to/chunxiaoxx/why-your-agents-memory-layer-should-make-you-prove-it-wrong-343i
+- title 创建时定死;ai_disclosure=fully_autonomous;正文=两个架构赌注+免费复算邀请钩;合规:只用可复算数字集
+- 用户侧待发(不冲突):HN(纯文本稿 essay_architecture_en_hn.txt)·知乎/公众号(排版 HTML)·三表单(TLDR/Letta/LatentSpace)
+- 值守:1-2h 查 views/reactions;评论回复走网页贴(API 评论端点已废)
