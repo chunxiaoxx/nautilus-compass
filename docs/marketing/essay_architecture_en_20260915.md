@@ -1,0 +1,32 @@
+# Why Your Agent's Memory Layer Should Make You Prove It Wrong
+*— the architecture behind nautilus-compass (English edition · for HN / r/LocalLLaMA / dev.to)*
+
+Every AI-agent memory layer ships with two things: a benchmark table, and an implicit request that you trust it. We built [nautilus-compass](https://github.com/chunxiaoxx/nautilus-compass) around the opposite request: **every number we publish, you should be able to recompute from bytes, without trusting us.** This post explains the two architectural bets behind that.
+
+## Bet 1: zero LLM calls at write time (the write-time wager)
+
+Most memory pipelines summarize, extract, or graph-structure your text *as it comes in*. That's a bet: you're wagering that today's compression matches tomorrow's questions. We kept watching that bet lose — the same corpus, re-read with a summary layer added on top of identical retrieval, moved end-to-end accuracy from 42.6% to 75.4% with zero retrieval changes. The compression was the ceiling, not the floor.
+
+So the write path does nothing clever: raw text, embedded locally with BGE-m3, nothing leaves the machine. All the intelligence lives at read time — hybrid semantic + keyword recall, turn-window chunk routing for single-session questions, and drift detection that scores every prompt against an anchor set of real failure transcripts (AUC 0.83 held-out) before your agent acts on stale memory.
+
+The practical results, same-question head-to-head vs mem0 2.0.19 on LongMemEval-S full 500, each side on its own default embedder (our harness, one command to reproduce for ~$3.50): **P@1 0.890 vs 0.774, P@5 0.978 vs 0.916**. Reproduction script is in the repo; the evidence chain includes the experiments that *hurt* (cross-encoder reranking loses on this corpus; we publish that too).
+
+## Bet 2: claims ship as sealed evidence, not prose
+
+A benchmark table is a claim. We publish ours as **VerifyPack evidence packs**: a sha256 manifest, every claim recomputable from payload bytes, and an ed25519-signed receipt. Two stdlib-only commands re-derive any number — no third-party dependencies, no "trust our notebook". The [Reproducibility Wall](https://github.com/chunxiaoxx/nautilus-compass/blob/main/docs/REPRODUCIBILITY_WALL.md) publishes contradicting numbers with the same prominence as favorable ones, and one of our sealed packs contains a `disagree` — a log file kept being appended after sealing, the protocol caught it, and we kept the failure visible. That's what it's for.
+
+This discipline started as self-defense: our own audit trails caught implementer-reported "all green" that wasn't — twice in one week, once by an independent re-computation pass that the implementer's own example couldn't survive. Agent memory that can't survive adversarial reading of its own logs isn't infrastructure; it's a diary.
+
+## Try it (3 minutes)
+
+```bash
+git clone https://github.com/chunxiaoxx/nautilus-compass ~/.claude/plugins/nautilus-compass
+bash ~/.claude/plugins/nautilus-compass/install.sh
+bash ~/.claude/plugins/nautilus-compass/daemon_start.sh
+```
+
+Works with Claude Code / Cursor / Cline / Continue / Zed / any MCP client; hosted multi-tenant gateway at `compass.nautilus.social/mcp/` if you don't want a local model.
+
+**And the offer that started this post: have published memory-layer numbers — yours, or one you depend on? Open an issue. We'll recompute them independently and publish the result — agree or disagree — with signed receipts.** First come, first served while it's a manual pipeline.
+
+Every number in this post ships as a sha256-manifested, byte-recomputable, signed evidence pack. Would your memory layer survive that bar?
