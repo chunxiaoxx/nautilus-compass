@@ -43,7 +43,7 @@ CATALOG 只许更严 = 序结构约束,不是口号。判据条目 `criteria:<id
 | 1 | W 写入 | (doc,meta)→e=E(doc) 落库 | daemon ingest(verbatim+BGE-m3,写侧零 LLM) | **无投影存储**:不经过有损映射 g(doc)→摘要,信息保持(智能后置到读取,由已知查询分布决定投影) |
 | 2 | R 召回 | q→top-k | daemon.py:216 `_rrf_fusion`(k=60)+BM25 流 | RRF:score(d)=Σᵢ 1/(k+rankᵢ(d)) |
 | 3 | D 漂移 | prompt→r(p)∈ℝ,alert=r<τ ∨ rule_hit | daemon.py:1289 `drift_score=round(pos_cos−neg_cos,4)` | 加权 top-3 双原型 **margin**:s(p)=w̄₊·cos(p,A₊)−w̄₋·cos(p,A₋) |
-| 4 | X 沿链 | S→S∪N₁(S) | daemon.py `expand_chain_links`+`_entry_link_text`(全文取链,J3 教训) | 1-hop 邻域扩张,谓词=锚存在(全文级) |
+| 4 | X 沿链 | S→S∪N₁(S) | **插件仓** `~/.claude/plugins/nautilus-compass/daemon.py:1145/1161` `_entry_link_text`/`expand_chain_links`(记忆门三件套,主仓 daemon 无此符号) | 1-hop 邻域扩张,谓词=锚存在(全文级) |
 | 5 | B 封印 | dir→(manifest,claims) | tools/verifypack/seal.py | B(P)={hᵢ=SHA256(Pᵢ)}:把字节集映为哈希清单 |
 | 6 | V 复算 | (pack,env_caps)→{agree,disagree,nc}ⁿ | tools/verifypack/checks.py `run_check` 七判据 | **带能力域的偏函数求值**(见 §三) |
 | 7 | S 签署 | (verdicts,sk)→receipt | receipt.py+ed25519.py(自实现+交叉验证) | Ed25519(canonical JSON(verdicts‖h));非否认性:任何持 pk 者可验"该裁决绑定该字节" |
