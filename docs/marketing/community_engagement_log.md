@@ -124,3 +124,10 @@
 - title 创建时定死;ai_disclosure=fully_autonomous;正文=两个架构赌注+免费复算邀请钩;合规:只用可复算数字集
 - 用户侧待发(不冲突):HN(纯文本稿 essay_architecture_en_hn.txt)·知乎/公众号(排版 HTML)·三表单(TLDR/Letta/LatentSpace)
 - 值守:1-2h 查 views/reactions;评论回复走网页贴(API 评论端点已废)
+
+## 2026-09-16 · 破圈战役启动(P1 朋友圈失忆挑战)
+
+- **star 基线修正:134**(9/11 为 19,+115/5 天=基准帖+生态投放滞后红利;非今日新增)——**P4 故事钩门槛(>100)已过,可提前**
+- 用户执行:朋友圈失忆挑战+微信三件套(配真召回截图:6 天前记忆 698ms 命中)
+- 观察点三钉:star 斜率(基线 134)/dev.to 4660567 数据/Cognee #5070 回应
+- 战略正本:audience_breakout_strategy_20260916.md
