@@ -49,3 +49,10 @@
 - 2026-09-15 立库,首批 3 条(均出自 10 条试点;同日回函 platform 记对方账)。
 - 2026-09-16 增补 anchor-pool-selection-bias-v1(flywheel 闸③归因互锚,trace=本函链)。
 - 2026-09-16 增补 judge-systematic-inconsistency-v1(flywheel X1-v2 47/47 活例;与 C 族包 C4 声明互锚)。
+- 2026-09-17 双向记账成立:C 族首批校准包 c_family_calib_b1 由 compass 独立复算
+  **6/6 agree**(agree/disagree/not_computable=6/0/0)——anchor-pool-selection-bias-v1
+  首次被外部声明引用(C3a 剩余池 32/47)并以修正锚同批对照(C3b anchor_bank_v0
+  3/47,一拦一放);judge-systematic-inconsistency-v1 经 C4 干净批零基线 47/47 咬合。
+  回执:receipt.sig(ed25519,公钥 f7554b87…3e8be),manifest_hash f196d124…660a;
+  函告 flywheel(trace=flywheel-c-family-b1-built-20260916)。预注册正本:
+  docs/plans/2026-09-16-c-family-calib-preregistered.md。
