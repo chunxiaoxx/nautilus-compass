@@ -32,7 +32,9 @@ BGE-m3 向量,数据不出机器;读取时做语义+关键词混合召回,另带
 ```bash
 git clone --branch v3.2.0 --depth 1 \
   https://github.com/chunxiaoxx/nautilus-compass ~/.claude/plugins/nautilus-compass
-# 钉住发行版(commit a24563a)——审查过的代码=运行的代码
+# 钉住已审计 commit——tag 若被动过则硬失败:
+[ "$(git -C ~/.claude/plugins/nautilus-compass rev-parse HEAD)" = "344290b0bb252c4a28305d351bb18a7f177718be" ] || \
+  { echo "commit 不符:审查过的代码 != 克隆到的代码——勿跑安装脚本"; exit 1; }
 bash ~/.claude/plugins/nautilus-compass/install.sh        # 为 Claude Code 装钩子
 bash ~/.claude/plugins/nautilus-compass/daemon_start.sh   # 启动 BGE-m3 daemon(每次开机一次)
 ```
@@ -77,6 +79,7 @@ PyPI 也有: `pip install nautilus-compass==3.2.0`(CLI + MCP server + A2A adapte
 
 ```bash
 git clone --branch v3.2.0 --depth 1 https://github.com/chunxiaoxx/nautilus-compass && cd nautilus-compass
+[ "$(git rev-parse HEAD)" = "344290b0bb252c4a28305d351bb18a7f177718be" ] || { echo "commit 不符,中止"; exit 1; }
 # 1. 全量复算(每条声明从字节复算,产出你自己的回执)
 python -m tools.verifypack verify runtime/verifypack/arma_summary/pack \
   --out /tmp/my_receipt.json
