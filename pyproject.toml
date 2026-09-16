@@ -39,7 +39,11 @@ rerank = ["sentence-transformers>=2.7"]   # CrossEncoder included
 fast-download = ["hf_transfer>=0.1"]
 dev = ["pytest>=7", "pytest-cov", "ruff"]
 e2ee = ["pynacl>=1.5"]                    # libsodium · v1.0 default
-nautilus = ["nautilus-agent>=0.5"]        # platform SDK · v0.9.3 fusion
+# 2026-09-16 removed: nautilus = ["nautilus-agent>=0.5"] (platform SDK)
+# nautilus-agent is an internal wheel — not on PyPI, no public repo — and uv's
+# universal lock resolves ALL extras, so any external `uv sync` (Glama's Docker
+# build) failed resolution. Platform frames install the internal wheel directly;
+# pip users could never resolve this extra anyway.
 
 [project.urls]
 Homepage = "https://github.com/chunxiaoxx/nautilus-compass"

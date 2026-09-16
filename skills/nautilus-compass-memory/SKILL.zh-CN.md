@@ -30,7 +30,9 @@ BGE-m3 向量,数据不出机器;读取时做语义+关键词混合召回,另带
 ### 方式 A · 本地 daemon(推荐)
 
 ```bash
-git clone https://github.com/chunxiaoxx/nautilus-compass ~/.claude/plugins/nautilus-compass
+git clone --branch v3.2.0 --depth 1 \
+  https://github.com/chunxiaoxx/nautilus-compass ~/.claude/plugins/nautilus-compass
+# 钉住发行版(commit a24563a)——审查过的代码=运行的代码
 bash ~/.claude/plugins/nautilus-compass/install.sh        # 为 Claude Code 装钩子
 bash ~/.claude/plugins/nautilus-compass/daemon_start.sh   # 启动 BGE-m3 daemon(每次开机一次)
 ```
@@ -42,7 +44,11 @@ bash ~/.claude/plugins/nautilus-compass/daemon_start.sh   # 启动 BGE-m3 daemon
 python ~/.claude/plugins/nautilus-compass/scripts/install_to_agent.py
 ```
 
-PyPI 也有: `pip install nautilus-compass`(CLI + MCP server + A2A adapter)。
+脚本会做什么(执行前请知悉): 下载本地嵌入模型、在 `~/.claude/settings.json`
+注册钩子、改动各 MCP 客户端配置——每处改动前逐文件备份;卸载=删除
+`~/.claude/plugins/nautilus-compass` 并还原备份。
+
+PyPI 也有: `pip install nautilus-compass==3.2.0`(CLI + MCP server + A2A adapter)。
 
 ### 方式 B · 云托管网关(自助,免本地模型)
 
@@ -50,6 +56,9 @@ PyPI 也有: `pip install nautilus-compass`(CLI + MCP server + A2A adapter)。
 2. 控制台创建 scoped token
 3. 任意 MCP 客户端指向 `https://compass.nautilus.social/mcp/`
    (Bearer token · streamable-http · 用户级记忆隔离)
+
+> 出域提示: 云托管=记忆内容与召回查询会发送到 compass.nautilus.social
+> (用户级隔离);数据不能出本机请用本地 daemon(方式 A)。
 
 ### 装完得到什么
 
@@ -67,7 +76,7 @@ PyPI 也有: `pip install nautilus-compass`(CLI + MCP server + A2A adapter)。
 可复算、ed25519 签名回执。两条命令验证,纯标准库,零第三方依赖:
 
 ```bash
-git clone https://github.com/chunxiaoxx/nautilus-compass && cd nautilus-compass
+git clone --branch v3.2.0 --depth 1 https://github.com/chunxiaoxx/nautilus-compass && cd nautilus-compass
 # 1. 全量复算(每条声明从字节复算,产出你自己的回执)
 python -m tools.verifypack verify runtime/verifypack/arma_summary/pack \
   --out /tmp/my_receipt.json
