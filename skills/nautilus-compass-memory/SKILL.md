@@ -32,7 +32,9 @@ opts out of prior context.
 ### Option A · Local daemon (recommended)
 
 ```bash
-git clone https://github.com/chunxiaoxx/nautilus-compass ~/.claude/plugins/nautilus-compass
+git clone --branch v3.2.0 --depth 1 \
+  https://github.com/chunxiaoxx/nautilus-compass ~/.claude/plugins/nautilus-compass
+# pinned release (commit a24563a) — reviewed code is the code that runs
 bash ~/.claude/plugins/nautilus-compass/install.sh        # wires hooks for Claude Code
 bash ~/.claude/plugins/nautilus-compass/daemon_start.sh   # start BGE-m3 daemon (once per boot)
 ```
@@ -44,7 +46,12 @@ auto-detect, backup, and patch their MCP config:
 python ~/.claude/plugins/nautilus-compass/scripts/install_to_agent.py
 ```
 
-Also on PyPI: `pip install nautilus-compass` (CLI + MCP server + A2A adapter).
+What these scripts do, before you run them: download the local embedding
+model, register hooks in `~/.claude/settings.json`, and patch each MCP
+client's config — every file is backed up before writing; uninstall = remove
+`~/.claude/plugins/nautilus-compass` and restore the backups.
+
+Also on PyPI: `pip install nautilus-compass==3.2.0` (CLI + MCP server + A2A adapter).
 
 ### Option B · Hosted gateway (self-serve, no local model)
 
@@ -52,6 +59,10 @@ Also on PyPI: `pip install nautilus-compass` (CLI + MCP server + A2A adapter).
 2. Create a scoped token in the web console
 3. Point any MCP client at `https://compass.nautilus.social/mcp/`
    (Bearer token · streamable-http · per-user memory isolation)
+
+> Data-egress note: the hosted gateway means memory content and recall
+> queries are sent to compass.nautilus.social (per-user isolated). Use the
+> local daemon (Option A) if data must not leave your machine.
 
 ### What you get
 
@@ -71,7 +82,7 @@ ed25519-signed receipt. Verify with two commands, stdlib only, no third-party
 deps:
 
 ```bash
-git clone https://github.com/chunxiaoxx/nautilus-compass && cd nautilus-compass
+git clone --branch v3.2.0 --depth 1 https://github.com/chunxiaoxx/nautilus-compass && cd nautilus-compass
 # 1. full recompute (every claim recomputes from bytes — your receipt, not ours)
 python -m tools.verifypack verify runtime/verifypack/arma_summary/pack \
   --out /tmp/my_receipt.json
@@ -110,21 +121,27 @@ publishes contradicting numbers with the same prominence as favorable ones.
 本地(推荐):
 
 ```bash
-git clone https://github.com/chunxiaoxx/nautilus-compass ~/.claude/plugins/nautilus-compass
+git clone --branch v3.2.0 --depth 1 \
+  https://github.com/chunxiaoxx/nautilus-compass ~/.claude/plugins/nautilus-compass
+# 钉住发行版(commit a24563a)——审查过的代码=运行的代码
 bash ~/.claude/plugins/nautilus-compass/install.sh        # Claude Code 钩子
 bash ~/.claude/plugins/nautilus-compass/daemon_start.sh   # 启动 BGE-m3 daemon(每次开机一次)
 ```
 
 其他 MCP 客户端: `python ~/.claude/plugins/nautilus-compass/scripts/install_to_agent.py`
 (自动检测 Cursor/Cline/Continue.dev/Zed/Claude Desktop,备份后写入其 MCP 配置)。
+脚本会下载本地嵌入模型、注册 Claude Code 钩子、改动各客户端 MCP 配置——每处改动前
+逐文件备份;卸载=删除插件目录+还原备份。
 
 云托管自助: 注册 <https://compass.nautilus.social/signup> → 控制台建 scoped
 token → MCP 端点 `https://compass.nautilus.social/mcp/`(Bearer · streamable-http)。
+出域提示: 云托管=记忆内容与召回查询会发送到 compass.nautilus.social(用户级隔离);
+数据不能出本机请用本地方式。
 
 ### 如何验(不信自报)
 
 ```bash
-git clone https://github.com/chunxiaoxx/nautilus-compass && cd nautilus-compass
+git clone --branch v3.2.0 --depth 1 https://github.com/chunxiaoxx/nautilus-compass && cd nautilus-compass
 # 1. 全量复算(每条声明从字节复算,产出你自己的回执)
 python -m tools.verifypack verify runtime/verifypack/arma_summary/pack \
   --out /tmp/my_receipt.json
