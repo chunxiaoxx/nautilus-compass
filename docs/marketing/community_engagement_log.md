@@ -131,3 +131,20 @@
 - 用户执行:朋友圈失忆挑战+微信三件套(配真召回截图:6 天前记忆 698ms 命中)
 - 观察点三钉:star 斜率(基线 134)/dev.to 4660567 数据/Cognee #5070 回应
 - 战略正本:audience_breakout_strategy_20260916.md
+
+## 2026-09-16 午 · Glama 构建根因修复 + ClawHub 1.0.1 重发布(回应双审查)
+
+- **Glama Docker build 失败根因**:其自动 Dockerfile 对我们 repo 跑 `uv sync`,
+  uv 的 universal lock 解析**全部** extras,而 `nautilus` extra 依赖内部轮子
+  nautilus-agent(PyPI 无包、无公开仓,双 404 实证)→ 外部解析必败 →
+  "This server cannot be deployed" + 质量分 "?" 疑同源
+- **修复(commit 93519fc)**:pyproject 移除 nautilus extra(本地实证 uv lock
+  86 包 9.19s 成功)+ 提交 uv.lock(外部 sync 零解析歧义)
+- **ClawHub 安全审查发现**(9/15 3:46 UTC · v1.0.0 · 状态 Review):A.I.G
+  T03 Error(克隆未钉版本+pip 无版本)+ SkillSpector 4 条(缺出域/脚本/
+  配置改动警告)→ **技能卡双语升级 1.0.1**:clone 钉 v3.2.0(commit
+  a24563a)+pip ==3.2.0+脚本行为/备份/卸载说明+云托管出域提示;
+  `clawhub publish` 已受理,等安全扫描
+- **待用户**:Glama Admin 标签(chunxiaoxx 登录)→ Repository syncs →
+  Request a re-sync;认领若未生效查登录账号或用 glama.json maintainers 法。
+  质量分出字母后回帖 punkpeye 维护者复审
