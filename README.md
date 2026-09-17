@@ -20,6 +20,8 @@
 [![EverMemBench](https://img.shields.io/badge/EverMemBench-44.4%E2%80%9347.3%25-brightgreen)](paper/sections/paper2_06_5_evermembench.tex)
 [![drift-AUC](https://img.shields.io/badge/drift_AUC-0.83_held--out-brightgreen)](#how-it-works)
 [![PyPI](https://img.shields.io/pypi/v/nautilus-compass?label=PyPI&color=blue)](https://pypi.org/project/nautilus-compass/)
+[![MCP Registry](https://img.shields.io/badge/MCP_Registry-io.github.chunxiaoxx%2Fnautilus--compass-blue)](https://registry.modelcontextprotocol.io)
+[![ClawHub](https://img.shields.io/badge/ClawHub-1.0.2%20%C2%B7%20audit%20Pass-brightgreen)](https://clawhub.ai/chunxiaoxx/skills/nautilus-compass-memory)
 [![MCP](https://img.shields.io/badge/MCP-17%20tools%20%C2%B7%20TLS%20%C2%B7%20RBAC-blue)](docs/mcp-usage.md)
 [![A2A](https://img.shields.io/badge/A2A-mTLS%20%C2%B7%20scoped%20peers-blue)](examples/a2a_tls_demo.py)
 [![license](https://img.shields.io/badge/license-Modified%20MIT-blue)](LICENSE)
@@ -86,7 +88,7 @@ $50+ for GPT-4o-judged stacks). Full argument:
 
 ## Quickstart
 
-### Python package (PyPI · 3.1.1)
+### Python package (PyPI · 3.2.0)
 
 ```bash
 pip install nautilus-compass
@@ -148,7 +150,10 @@ verified by automated probes. Design:
 [`docs/plans/2026-08-30-multi-tenant-memory-design.md`](docs/plans/2026-08-30-multi-tenant-memory-design.md).
 
 MCP endpoint: `https://compass.nautilus.social/mcp/` (Bearer token ·
-streamable-http). A2A discovery:
+streamable-http). Also listed in the **official MCP Registry** as
+`io.github.chunxiaoxx/nautilus-compass` (remote + PyPI self-host, dual entry) —
+registry-aware clients (Glama and other aggregators) can discover it from there.
+A2A discovery:
 `curl https://compass.nautilus.social/.well-known/agent.json`
 
 ### Nautilus platform agents (cloud ssh quickstart)
@@ -312,6 +317,14 @@ Run the head-to-head yourself (~$3.50) — your numbers go on the wall,
 **favorable or not**. Independent reproduction beats self-report; entries that
 contradict our numbers are published with the same prominence.
 → [docs/REPRODUCIBILITY_WALL.md](docs/REPRODUCIBILITY_WALL.md)
+
+**Our own numbers are on the wall too** (self-audit log, ugly ones included):
+C-family calibration pack 6/6 agree under independent recompute (ed25519-signed
+receipt, 2026-09-17) · 10/10 legacy verdicts NOT recomputable (2026-09-15 audit
+finding, fixed forward) · X1-v2 judge batch 47/47 inconsistent → voided, never
+cited · RSI loop #1: two self-reported greens caught by fresh-session recompute
+before merge. Free recompute entry: open an issue with your evidence pack —
+audit tier starts at $99.
 
 ---
 
