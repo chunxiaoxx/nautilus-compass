@@ -1,0 +1,17 @@
+{
+ "schema": "verdict-corpus-v0",
+ "trace": "flywheel-c-family-b1-built-20260916",
+ "exported_at": "2026-09-17T10:42:22",
+ "rows_total": 6,
+ "sha256": "b8b617156171e528a025434959d9a94e6758d9c975831de8b9f680db3e74b832",
+ "packs": [
+  {
+   "pack": "c_family_calib_b1",
+   "signature_ok": true,
+   "rows": 6,
+   "orphan_claims": [],
+   "orphan_results": [],
+   "pubkey": "f7554b8709b7fe36f5a63e7f76cf2a31f827aee5724ff8dd4f11772d1aa3e8be"
+  }
+ ]
+}

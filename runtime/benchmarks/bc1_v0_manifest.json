@@ -1,0 +1,7 @@
+{
+ "public_pct": 60.0,
+ "public_n": 18,
+ "holdout_n": 12,
+ "holdout_sha256": "a0d7c01e8ac02122d7990b5a3992dd19c29e0f9f62253901421d8c03a0082f53",
+ "rule": "holdout 永不入自测"
+}
