@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Compass · 跨 agent 记忆层 · LongMemEval-S 检索三项碾压 mem0 · Nautilus 平台</title>
+<meta name="description" content="开源跨 agent 记忆与可靠性层 · LongMemEval-S 500 题全量检索 P@1 0.890 / P@5 0.978 / MRR 0.929(vs mem0 +11.6/+6.2/+9.5pt) · 端到端 42.6→75.4% · LOCOMO 客场反超 · 本地黑盒 · MCP + A2A · Modified MIT" />
+<meta property="og:title" content="Compass · 跨 agent 记忆层" />
+<meta property="og:description" content="LongMemEval-S 检索 P@5 97.8% vs mem0 91.6% · LOCOMO 客场反超 · 本地黑盒 · drift 检测" />
+<meta property="og:url" content="https://compass.nautilus.social/" />
+<meta name="theme-color" content="#0d1117" />
+<style>
+  :root { --bg:#0d1117; --card:#161b22; --border:#30363d; --text:#e6edf3; --dim:#8b949e; --green:#3fb950; --blue:#58a6ff; --gold:#d29922; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; line-height:1.65; }
+  .wrap { max-width:960px; margin:0 auto; padding:0 20px; }
+  a { color:var(--blue); text-decoration:none; }
+  header { padding:64px 0 40px; text-align:center; border-bottom:1px solid var(--border); }
+  h1 { font-size:2rem; margin-bottom:12px; }
+  .tagline { color:var(--dim); font-size:1.05rem; max-width:700px; margin:0 auto 18px; }
+  .badges { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:14px; }
+  .badge { background:var(--card); border:1px solid var(--border); border-radius:999px; padding:4px 14px; font-size:.85rem; }
+  .b-green { border-color:var(--green); color:var(--green); }
+  .b-gold { border-color:var(--gold); color:var(--gold); }
+  section { padding:44px 0; border-bottom:1px solid var(--border); }
+  h2 { font-size:1.4rem; margin-bottom:18px; }
+  .score-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(270px,1fr)); gap:16px; }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px; }
+  .card h3 { font-size:1.02rem; margin-bottom:10px; }
+  .big { font-size:1.8rem; font-weight:700; color:var(--green); }
+  .vs { color:var(--dim); font-size:.86rem; margin-top:6px; }
+  table { width:100%; border-collapse:collapse; font-size:.9rem; }
+  th,td { padding:9px 12px; border:1px solid var(--border); text-align:left; }
+  th { background:var(--card); }
+  .win { color:var(--green); font-weight:600; }
+  code { background:#21262d; border-radius:6px; padding:2px 8px; font-size:.85em; }
+  .cmd { background:#161b22; border:1px solid var(--border); border-radius:10px; padding:14px 18px; font-family:ui-monospace,Consolas,monospace; font-size:.88rem; overflow-x:auto; margin:12px 0; }
+  .dim { color:var(--dim); }
+  footer { padding:32px 0 48px; color:var(--dim); font-size:.85rem; text-align:center; }
+</style>
+</head>
+<body>
+
+<header class="wrap">
+  <h1>🧭 Compass · 跨 agent 记忆与可靠性层</h1>
+  <p class="tagline">本地黑盒记忆 —— 检索层已在 <b>LongMemEval-S 全 500 题</b>上三项指标全面碾压 mem0,同时保持全本地部署与 14× 复现成本优势。外加 drift 检测与跨 agent 合约。</p>
+  <div class="badges">
+    <span class="badge b-green">LongMemEval-S P@5 97.8% vs mem0 91.6%</span>
+    <span class="badge b-green">LOCOMO 客场反超 +5.2pt</span>
+    <span class="badge b-gold">EverMemBench 44.4–47.3%</span>
+    <span class="badge">drift AUC 0.83</span>
+    <span class="badge">MCP · A2A · MIT</span>
+  </div>
+</header>
+
+<section class="wrap">
+  <h2>📊 五基准战绩(2026-08 · 全部同题同判据可复算)</h2>
+  <div class="score-grid">
+    <div class="card">
+      <h3>LongMemEval-S · 500 题全量</h3>
+      <div class="big">P@1 0.890 · P@5 0.978</div>
+      <p class="vs">vs mem0 2.0.19(0.774 / 0.916 / 0.834):<span class="win">三项 +11.6 / +6.2 / +9.5pt</span></p>
+    </div>
+    <div class="card">
+      <h3>LOCOMO-10 · n=1986(mem0 主场)</h3>
+      <div class="big">0.644 / 0.890 / 0.740</div>
+      <p class="vs">客场反超 mem0(0.592 / 0.802):<span class="win">+5.2 / +8.8pt</span></p>
+    </div>
+    <div class="card">
+      <h3>LongMemEval-M · 500 题全量(12× 大语料)</h3>
+      <div class="big">P@5 0.888</div>
+      <p class="vs">大语料泛化成立;单会话型崩盘 0.20 → 0.93 修复</p>
+    </div>
+    <div class="card">
+      <h3>EverMemBench-Dynamic · n=500</h3>
+      <div class="big">44.4% / 47.3%</div>
+      <p class="vs">超 Mem0(37.09) · Zep(39.97) · MemOS(42.55)</p>
+    </div>
+    <div class="card">
+      <h3>端到端 QA · 500 题全量(读取端路由后)</h3>
+      <div class="big">75.4%</div>
+      <p class="vs">42.6% → <span class="win">75.4%</span>(读取端分型路由,同样的记忆同样的题);剔除 71 道判官故障题为 81.6%(双口径强制披露)。分型:ssu <span class="win">97.1%</span> · ssa 83.9 · ku 80.8 · ssp 80.0 · ms 69.2 · tr 62.4 · <a href="https://github.com/chunxiaoxx/nautilus-compass/blob/main/docs/nautilusmem/SCOREBOARD.md">定案成绩册与证据链</a></p>
+    </div>
+  </div>
+  <p class="dim" style="margin-top:14px;font-size:.85rem">检索层武器:utterance 分型路由块检索 + BM25/dense 混合 + 时间锚。失败实验(rerank 有害 / K 截断无效 / 小模型换装无效 / LoRA 检索增强全量验证持平未采用)同样公开:<a href="https://github.com/chunxiaoxx/nautilus-compass/blob/main/docs/evidence/headhead_mem0_full500_20260826.json">完整证据链</a></p>
+</section>
+
+<section class="wrap">
+  <h2>⚖️ 对比</h2>
+  <table>
+    <tr><th></th><th>compass</th><th>mem0</th><th>Letta</th><th>Zep</th></tr>
+    <tr><td>LongMemEval-S 检索(同题对照)</td><td class="win">0.890 / 0.978 / 0.929</td><td>0.774 / 0.916 / 0.834</td><td>n/r</td><td>n/r</td></tr>
+    <tr><td>LOCOMO 检索(n=1986)</td><td class="win">0.644 / 0.890</td><td>0.592 / 0.802</td><td>n/r</td><td>n/r</td></tr>
+    <tr><td>LongMemEval-V2 官方基准(451 题 agent 轨迹记忆)</td><td class="win">web 40.0% / ent 38.4%(untuned 19.6 / 12.8;论文口径 frontier ≤14.1%;判分口径修正后 9/2)</td><td>n/r</td><td>n/r</td><td>n/r</td></tr>
+    <tr><td>Drift 检测</td><td class="win">✅ AUC 0.83</td><td>❌</td><td>❌</td><td>❌</td></tr>
+    <tr><td>数据不出本机</td><td class="win">✅ 黑盒本地 embed</td><td>☁ 抽取上云</td><td>部分</td><td>☁</td></tr>
+    <tr><td>复现成本(500 题)</td><td class="win">~$3.50</td><td colspan="3">GPT-4o-judged 栈 ~$50+</td></tr>
+  </table>
+</section>
+
+<section class="wrap">
+  <h2>⚡ 30 秒接入</h2>
+  <div class="cmd">bash ~/.claude/plugins/nautilus-compass/ops/agent_quickstart.sh my-agent</div>
+  <p class="dim">生成 token · 接云 MCP 桥 · 写 .mcp.json · 端到端自检。适配 Claude Code / Desktop · Cline · Cursor · Continue.dev · Zed。<a href="https://github.com/chunxiaoxx/nautilus-compass#quickstart">全部四种安装方式 →</a></p>
+</section>
+
+<section class="wrap">
+  <h2>🛡️ 不只是记忆 —— 三根支柱</h2>
+  <div class="score-grid">
+    <div class="card"><h3>1 · 黑盒长期记忆</h3><p class="dim">BGE-m3 本地 embed 原文,不调 LLM 抽取、不建图、数据不出机器。检索层 SOTA(见上)。</p></div>
+    <div class="card"><h3>2 · Drift 检测</h3><p class="dim">记忆召回了拦不住 AI 这次破规矩 —— compass 在 agent 动作前对照失败模式锚点打分,AUC 0.83,p95 &lt;50ms。白盒架构结构性做不了。</p></div>
+    <div class="card"><h3>3 · 跨 agent 合约</h3><p class="dim">多 agent 共享文件协作时,自动推导隐式合约、追踪闭合、审计假闭环。四对话框 28 小时田野实录公开。</p></div>
+  </div>
+</section>
+
+<section class="wrap" id="commercial">
+  <h2>💰 商业版 · Nautilus Assay</h2>
+  <p class="dim" style="margin-bottom:18px">compass 验证,Assay 让验证值钱 —— 同一套三态复算 + 判据库引擎,对外是<b>认证轨</b>产品:给 agent 的成绩打戳记。名字取自 Assay Office(试金局):历史上给金银器打纯度戳的法定机构,我们的戳记是 ed25519 签名回执。</p>
+  <div class="score-grid">
+    <div class="card">
+      <h3>Free · 免费复算</h3>
+      <div class="big">¥0</div>
+      <p class="vs">提交证据包,独立复算 + 签名回执。自报与已认证分区同墙,不可复算声明永久标注 UNVERIFIABLE。<a href="https://github.com/chunxiaoxx/nautilus-compass/issues">提交入口 →</a></p>
+    </div>
+    <div class="card" style="border-color:var(--gold)">
+      <h3>Certified · 单次认证运行</h3>
+      <div class="big">$99–299</div>
+      <p class="vs">发布前独立审计:字节级复算 + ed25519 回执 + 三态读数。认证溢价 —— 带回执的名次在采购与融资场景比自报值钱。<b>受理中</b>(issue 注明 certification)。</p>
+    </div>
+    <div class="card">
+      <h3>Airworthy · 持续适航</h3>
+      <div class="big">订阅 · M2 后</div>
+      <p class="vs">程序在变,认证必须持续(航空/医疗百年范式):每次变更重认证,月费认次不认座。</p>
+    </div>
+    <div class="card">
+      <h3>Evidence · 合规证据包</h3>
+      <div class="big">€500–2000 · M2 后</div>
+      <p class="vs">EU AI Act 高风险义务已生效(2026-08):给审计所与准备度咨询的可复核证据层,国内算法备案同构 —— 同一 evidence layer 卖两次。</p>
+    </div>
+  </div>
+  <p class="dim" style="margin-top:14px;font-size:.85rem"><b>谁在买</b>:被测方买认证溢价 · 采购方买鉴别与免责 · 基准社区借轨合作(他们出题,我们出可信度) · 开发者免费自托管。<b>定价逻辑</b>:不卖小时,卖铸币 —— 回执发行一次、验证 N 次,边际成本趋零,低价高频订阅优于高价低频报告。</p>
+  <p class="dim" style="font-size:.85rem"><b>诚信自带</b>:我们自己的成绩单含难看数字上墙 —— 10/10 不可复算审计发现、X1 判定 47/47 全不一致整批判废不引用、两次自报绿被新鲜会话复算纠正,全部公开(<a href="https://github.com/chunxiaoxx/nautilus-compass#reproducibility-wall">自家成绩单</a>)。榜单即漏斗:每一次「想要正式名次」,就是一次复算请求。</p>
+</section>
+
+<footer class="wrap">
+  <p><a href="https://github.com/chunxiaoxx/nautilus-compass">GitHub</a> · <a href="https://github.com/chunxiaoxx/nautilus-compass/blob/main/README.zh-CN.md">中文文档</a> · <a href="https://huggingface.co/spaces/chunxiaox/nautilus-compass">在线 demo(免安装)</a> · <a href="https://compass.nautilus.social/signup">托管版 open beta(注册即得 token)</a></p>
+  <p style="margin-top:10px">Nautilus Platform · 开放 agent 生态 · Modified MIT</p>
+</footer>
+
+</body>
+</html>
