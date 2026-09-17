@@ -91,6 +91,14 @@
 
 四条共同原则(对抗库第一性):**判分器独立重算,不信被测方自带的状态/结论字段。**
 
+### criteria:skip-label-fidelity@catalog-v0
+- **定义**:verdict 行携带的 skip/fail 病因标签必须可被独立重跑复现(结局与病因
+  双保真);结局一致但病因标签不复现(如标 fixture_broken_red 实为无红)=标签失真,
+  记 degrade 不记 agree。
+- **来源活例**:10 verdict 复算(2026-09-18,agent 执行主会话审定):f08c/d821
+  两行标签不复现(结局同向);x8f1d 精确复现。
+- **测量法**:worktree 重跑复现标签描述的故障形态,比对结局+病因。
+
 ## Updates
 - 2026-09-15 立库,首批 3 条(均出自 10 条试点;同日回函 platform 记对方账)。
 - 2026-09-16 增补 anchor-pool-selection-bias-v1(flywheel 闸③归因互锚,trace=本函链)。
@@ -107,3 +115,8 @@
   同日 v5 359 函:被测材料规格=ticket 四件套(进 charter v1)、四类判分器盲区入
   对抗样例库(共建启动)、首被测=Sprint1(9/14-17)转录含失败三条;金标 provenance
   裁定=披露+seed 托管后**继续但永久标「半自证」不入认证名次**,外部题源并行。
+- 2026-09-18 10 verdict 复算收账:agree 5/disagree 5/not_computable 0(score 声称
+  10/10 独立复算吻合;disagree 全因 ev=true 无外部来源 5 行+total_tokens 聚合失效
+  2 行——生产者自置实锤续案)。增严两处:新注册 skip-label-fidelity-v1;
+  evidence-schema-v1 显式收紧(turn usage 非零 ⇒ total_tokens 必非零,子句化)。
+  正本:docs/plans/2026-09-18-10verdict-recompute.md(agent a64017c,零改数)。
