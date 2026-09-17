@@ -1,0 +1,43 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.chunxiaoxx/nautilus-compass",
+  "title": "Nautilus Compass Memory",
+  "description": "Local-first long-term memory for AI agents, with byte-recomputable signed verification receipts.",
+  "version": "3.2.0",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://compass.nautilus.social/mcp/",
+      "headers": [
+        {
+          "name": "Authorization",
+          "description": "Bearer token — create a free account at https://compass.nautilus.social/signup, then generate a token in the console. Each token is user-scoped.",
+          "isRequired": true,
+          "isSecret": true
+        }
+      ]
+    }
+  ],
+  "packages": [
+    {
+      "registryType": "pypi",
+      "identifier": "nautilus-compass",
+      "version": "3.2.0",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ],
+  "tools": [
+    {"name": "recall", "description": "Semantic + keyword hybrid recall over long-term session memory (BGE-m3 local embeddings)."},
+    {"name": "session_search", "description": "Full-text search across archived session digests."},
+    {"name": "thread_recall", "description": "Recall one hop along linked memory chains (decisions, corrections, pitfalls)."},
+    {"name": "drift_check", "description": "Score current behavior against stored failure anchors — warns before repeating past mistakes."},
+    {"name": "drift_history", "description": "History of drift scores and anchor hits per project."},
+    {"name": "feedback_log", "description": "Append verified user feedback as durable memory facts."}
+  ],
+  "repository": {
+    "source": "github",
+    "url": "https://github.com/chunxiaoxx/nautilus-compass"
+  }
+}

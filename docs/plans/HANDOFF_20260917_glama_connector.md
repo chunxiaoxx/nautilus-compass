@@ -1,4 +1,14 @@
-# HANDOFF 2026-09-17 · Glama hosted connector 提交(用户侧 2 击件)
+# HANDOFF 2026-09-17 · Glama hosted connector 提交
+
+> **9/17 11:3x 更新:官方 MCP Registry 路已走通**——`mcp-publisher v1.8.1`
+> (GitHub release 二进制,unscoped npm `mcp-publisher` 是无关的俄语社媒机器人,
+> 勿用)PAT 登录后发布成功:
+> `io.github.chunxiaoxx/nautilus-compass` v3.2.0(remotes=streamable-http+
+> Authorization isSecret header;packages=pypi 3.2.0 stdio 双列)。
+> 发布回执=CLI `✓ Successfully published`;注:Registry 公开 GET 端点对含斜杠
+> serverName 有坑(官方示例也 404),以 CLI 201 为凭。
+> Glama connectors 目录源自官方 Registry——**列表会异步同步过来**;下面的表单
+> 路仅作加速器(想立刻上榜才走)。
 
 > 背景:A 路=切 hosted connector(零构建)。自建 server 构建在 Glama 侧终态
 > 失败(镜像/内省段),hosted 列表页不吃我们 Dockerfile——只吃端点。
