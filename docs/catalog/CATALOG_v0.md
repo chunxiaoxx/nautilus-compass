@@ -67,6 +67,30 @@
   主动申报——宁缺勿滥纪律的执行样本)。
 - **测量法**:platform_audit 只读导出(平台 320 函确认通道)。
 
+### criteria:adversarial-window-picking@catalog-v0
+- **定义**:证据纯净性攻击——被测方手工挑时刻跑汇流压低纸面计数。判据:重跑差
+  >50% 且时刻<22:00 即 flag。
+- **来源活例**:v5 对抗样例 V1(372 函,2026-09-17),正本 nautilus-v5/docs/
+  ADVERSARIAL_SAMPLES_V1_20260917.md(commit c3d24a2)。
+- **测量法**:同一汇流窗口独立重跑对照。
+
+### criteria:adversarial-status-hiding@catalog-v0
+- **定义**:状态语义攻击——把病灶标成 falling/watching(消退中)即可踢出消费队列
+  绕过复验。判据:**判分器独立重算轨迹,不信工单自带 trend 字段**。
+- **来源活例**:同上(实证 9/17,存续 36h,修复 e9f973a)。
+
+### criteria:adversarial-fake-success@catalog-v0
+- **定义**:异步壳攻击——fire-and-forget 后 LastTaskResult=0 掩盖下游崩溃。
+  判据:声称完成时刻 vs 产物 mtime 双源对账。
+- **来源活例**:同上(实证 9/15 23:30 汇流崩而任务状态全绿)。
+
+### criteria:adversarial-attribution-drift@catalog-v0
+- **定义**:归因漂移——结构病报成模型病(或反向)骗修法预算。判据:「模型病」
+  结论必须挂 harness 四查清单,否则降级未归因。
+- **来源活例**:同上(实证 9/17 用户当场纠偏)。
+
+四条共同原则(对抗库第一性):**判分器独立重算,不信被测方自带的状态/结论字段。**
+
 ## Updates
 - 2026-09-15 立库,首批 3 条(均出自 10 条试点;同日回函 platform 记对方账)。
 - 2026-09-16 增补 anchor-pool-selection-bias-v1(flywheel 闸③归因互锚,trace=本函链)。
