@@ -172,6 +172,42 @@ def cmd_keygen(a: argparse.Namespace) -> int:
     return 0
 
 
+# ── export(燃料层:pack 回执 → verdict 语料 JSONL) ─────────────────────
+
+def cmd_export(a: argparse.Namespace) -> int:
+    from . import exporter
+    pub = a.pubkey
+    if not pub:  # 与 check 同款:签名 key 同目录的 .pub 作缺省公钥
+        try:
+            kp = keys.load_key(None)
+            pp = kp.with_suffix(".pub")
+            if pp.is_file():
+                pub = pp.read_text(encoding="utf-8").strip()
+        except FileNotFoundError:
+            pp = Path(".verifypack") / "compass.pub"  # keygen 缺省名;公钥可公开
+            if pp.is_file():
+                pub = pp.read_text(encoding="utf-8").strip()
+
+    rows: list[dict] = []
+    metas: list[dict] = []
+    for p in a.packs:
+        try:
+            r, meta = exporter.export_pack(Path(p), a.trace, pub)
+        except (OSError, ValueError, KeyError) as e:  # 无回执/包坏/JSON 坏
+            print(f"[export][FAIL] {p}: {e}")
+            return 1
+        rows += r
+        metas.append(meta)
+        print(f"[OK] export {meta['pack']}: rows {meta['rows']} · sig "
+              f"{'✓' if meta['signature_ok'] else '✗(未验签)'}"
+              + (f" · orphans {meta['orphan_claims']}" if meta["orphan_claims"] else ""))
+
+    manifest = exporter.write_corpus(rows, Path(a.out), a.trace, metas)
+    print(f"[OK] corpus: {a.out} · rows {manifest['rows_total']} · "
+          f"sha256 {manifest['sha256'][:16]}…")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(prog="verifypack", description=__doc__)
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -205,6 +241,13 @@ def main(argv: list[str] | None = None) -> int:
     k.add_argument("--out-dir", default=".verifypack")
     k.add_argument("--name", default="compass")
     k.set_defaults(fn=cmd_keygen)
+
+    x = sub.add_parser("export", help="燃料层:pack 回执 → verdict 语料 JSONL")
+    x.add_argument("packs", nargs="+", help="pack 目录(可多个)")
+    x.add_argument("--out", required=True, help="语料输出路径(.jsonl)")
+    x.add_argument("--trace", help="批次 trace id(回函链)")
+    x.add_argument("--pubkey", help="验签公钥 hex(缺省 .verifypack 同名 .pub)")
+    x.set_defaults(fn=cmd_export)
 
     a = p.parse_args(argv)
     return a.fn(a)
