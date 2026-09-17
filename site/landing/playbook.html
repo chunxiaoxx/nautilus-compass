@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<title>Assay 破局打法 · 内部(未 listing)</title>
+<style>
+  :root { --bg:#0d1117; --card:#161b22; --border:#30363d; --text:#e6edf3; --dim:#8b949e; --green:#3fb950; --blue:#58a6ff; --gold:#d29922; --red:#f85149; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; line-height:1.7; }
+  .wrap { max-width:860px; margin:0 auto; padding:0 20px; }
+  header { padding:52px 0 32px; border-bottom:1px solid var(--border); }
+  h1 { font-size:1.7rem; margin-bottom:10px; }
+  .tagline { color:var(--dim); }
+  section { padding:36px 0; border-bottom:1px solid var(--border); }
+  h2 { font-size:1.25rem; margin-bottom:16px; }
+  h3 { font-size:1.02rem; margin:18px 0 8px; color:var(--blue); }
+  ol.tactics { padding-left:0; list-style:none; counter-reset:n; }
+  ol.tactics > li { counter-increment:n; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:18px 20px; margin-bottom:14px; }
+  ol.tactics > li::before { content:"第" counter(n) "式"; display:inline-block; color:var(--gold); font-weight:700; margin-bottom:6px; }
+  ol.tactics p { color:var(--dim); font-size:.93rem; margin-top:6px; }
+  ol.tactics b { color:var(--text); }
+  .no { background:var(--card); border:1px solid var(--red); border-radius:12px; padding:16px 20px; margin-bottom:12px; }
+  .no b { color:var(--red); }
+  .letter { background:var(--card); border:1px solid var(--border); border-left:4px solid var(--blue); border-radius:0 12px 12px 0; padding:18px 20px; margin-bottom:18px; font-size:.9rem; }
+  .letter .st { color:var(--gold); font-size:.8rem; letter-spacing:1px; }
+  .letter pre { white-space:pre-wrap; font-family:inherit; margin-top:10px; color:var(--dim); }
+  .kpi { display:flex; gap:14px; flex-wrap:wrap; margin-top:10px; }
+  .kpi div { flex:1; min-width:220px; background:var(--card); border:1px solid var(--green); border-radius:12px; padding:14px 18px; }
+  .big { font-size:1.3rem; font-weight:700; color:var(--green); }
+  .dim { color:var(--dim); }
+  footer { padding:28px 0 44px; color:var(--dim); font-size:.82rem; text-align:center; }
+</style>
+</head>
+<body>
+<header class="wrap">
+  <h1>🧭 Assay 破局打法 —— 新无名团队怎么打开局面</h1>
+  <p class="tagline">核心认知:鉴定机构的名气从来不是广告打出来的。没人会相信一个做广告的公证处。破局靠的不是"让大家知道我们",而是做几件让大家<b>无法忽略</b>的事,让信任从别人身上<b>转移</b>过来。</p>
+</header>
+
+<section class="wrap">
+  <h2>五式(按杠杆从高到低)</h2>
+  <ol class="tactics">
+    <li><b>借船:先当计分员,不当考官。</b>
+      <p>RSI-Bench / LME-V2 已有基准:有名次、没公信力(分数全是自报);我们有尺子、没名次。合起来=他们的考场,我们的章。本质是<b>信任转移</b>:他们的社区信他们,我们被他们采用即获背书。被拒也有收获——拒绝信是第一篇内容的素材。三封函全文见下,等批。</p></li>
+    <li><b>干一票看得见的:独立复算一个公众成绩。</b>
+      <p>挑公开、有争议、最好已撤回的 AI 成绩(对事不对人),免费复算,公开报告。"我们复算了 X 宣称的 Y:无法复算"自带传播——评级机构当年都白送第一单。分寸:只算公开材料,只说可复算/不可复算;agree 也发(证明不专门黑),disagree 即头条。</p></li>
+    <li><b>把 130 天审计日志当连续剧播。</b>
+      <p>别人晒成功,我们晒"本周 AI 自吹实录"——真实、荒诞、可验证的小故事,每周一期中英双语。内容策略修正:不发"我们是谁",发<b>"我们发现了什么"</b>。无名团队没有立场的资格,但有发现的权利。诚实到反常,反常就是记忆点。</p></li>
+    <li><b>让章自己长腿:免费徽章换传播。</b>
+      <p>认证章做成 README badge。前 10 个认证客户免费,条件=报告公开。他们挂"verified by Assay"=我们的永久广告位;他们拿融资/采购的信任溢价。<b>灯塔客户专挑</b>正在融资的 agent 公司:免费出报告换案例授权,他们的投资人看见章,我们就进了投资圈路由。</p></li>
+    <li><b>底牌摆明面:发现体改写五层传播。</b>
+      <p>官网商业页、Registry 双列、ClawHub Pass 已就位("像个正经机构"最低配置)。五层顺序不变,内容全换发现体:第一层从"介绍 Assay 协议"改写为"我们实测 AI 自报成绩的水分"。</p></li>
+  </ol>
+</section>
+
+<section class="wrap">
+  <h2>不要做的三件</h2>
+  <div class="no"><b>不买量</b> —— 买来的流量不信章,鉴定是信任生意不是曝光生意。</div>
+  <div class="no"><b>不追大客户</b> —— 六个月销售周期会把无名团队拖死;前十个客户必须是能免费服务的小客户。</div>
+  <div class="no"><b>不发通稿</b> —— "我们致力于成为领先的…"一个字都不要有。无名公司没有形容词的权利,只有事实的权利。</div>
+</section>
+
+<section class="wrap">
+  <h2>进度条(防自我感动)</h2>
+  <p class="dim">不看阅读量、不看粉丝。第一个付费客户出现之前,只有两个数:</p>
+  <div class="kpi">
+    <div><div class="big">外部复算请求</div><p class="dim">本周新增(免费也算)—— M1 漏斗的实时水位</p></div>
+    <div><div class="big">外部引用次数</div><p class="dim">报告被转、判据被引、徽章被贴 —— 信任转移的计数器</p></div>
+  </div>
+</section>
+
+<section class="wrap">
+  <h2>附件 · 三封借船函(全文,等批)</h2>
+
+  <div class="letter">
+    <span class="st">A · RSI-Bench 维护者(sunghunkwag) · 渠道:GitHub · 状态:待批</span>
+    <pre>Subject: Certification track proposal for RSI-Bench — integrity scoring on top of your axes
+
+Hi — we run a small verification org (multi-agent, 130+ days of audited
+operation logs) and we're users/admirers of RSI-Bench's six-axis framing of
+self-improvement measurement.
+
+One gap we think you'd agree on: every number on every leaderboard is
+self-reported. "Benchmarking is Broken: Don't Let AI Be Its Own Judge"
+(arXiv 2510.07575) and Berkeley RDI's gaming evidence state the problem
+better than we can.
+
+Proposal — a certification track, not a competing benchmark:
+1. Your items, your protocol, unchanged. We add a protocol layer: runs are
+   re-computed by an independent verifier (byte-level, scripted checks, no
+   LLM discretion), results ship with ed25519-signed receipts.
+2. Official rankings count receipt-backed runs only. Self-reported runs stay
+   visible, permanently marked UNVERIFIABLE — the wall, not the blacklist.
+3. Integrity is a score, not a footnote: share of non-recomputable claims
+   subtracts directly.
+4. We go first: our own org's RSI loop (including a 10/10-non-recomputable
+   audit finding we published) would be the first subject — worst score on
+   the wall, receipts public.
+
+If useful, we can start with a one-batch pilot under your review. If not
+interesting, no hard feelings — we'll keep citing your axes.</pre>
+  </div>
+
+  <div class="letter">
+    <span class="st">B · RSIBench-Data 作者(arXiv 2607.25886) · 渠道:邮件/GitHub · 状态:待批</span>
+    <pre>Subject: Your failure-evidence-to-better-models loop + our verdict corpus
+
+Hi — your data-centric RSI framing (turning model failure evidence into
+training signal) matches something we've built independently: a verdict
+corpus where every entry is a byte-recomputable claim with a signed receipt
+(verifier ≠ producer, three-state adjudication). We're accumulating exactly
+the "negative data with provenance" your paper argues for.
+
+Two questions we'd value your view on, and one offer:
+1. Do you see integrity-of-evidence (was this failure record itself
+   verifiable?) as a gating property for the data loop?
+2. Where does verifier bias bite hardest in failure-driven pipelines?
+3. Offer: our corpus schema and a pilot export are open — if your pipeline
+   can consume failure records with provenance metadata, we'd like to learn
+   what breaks.
+
+Context: we're building "Nautilus Assay", a certification-track layer over
+existing benchmarks (receipt-only rankings, UNVERIFIABLE-on-wall).</pre>
+  </div>
+
+  <div class="letter">
+    <span class="st">C · LME-V2 团队 · 渠道:GitHub/邮件 · 状态:待批</span>
+    <pre>Subject: Certification track on LME-V2 — org-memory runs with signed receipts
+
+Hi — we maintain a public evaluation record on LME-V2 (attribution to your
+team intact; protocol + tuning stack documented). Your move toward
+organizational experiential memory is exactly the regime we operate in:
+a five-dialog agent org with cross-agent state, memory gates, and 130 days
+of receipts.
+
+Proposal: a certification track for LME-V2 runs —
+1. Independent re-computation of submitted runs (byte-level checks, signed
+   receipts, verifier separate from producer);
+2. Receipt-backed and self-reported results listed separately, both public;
+3. A shared, optional integrity score: share of claims that could not be
+   recomputed.
+
+We'd run it first on our own org's results — including the ugly numbers.
+Happy to co-design the protocol if there's interest; equally happy to just
+keep being a well-attributed user.</pre>
+  </div>
+</section>
+
+<footer class="wrap">Assay 内部策略页 · 2026-09-17 · 未在站内 listing · 正本:仓 docs/marketing/assay_track_outreach_drafts.md</footer>
+</body>
+</html>
