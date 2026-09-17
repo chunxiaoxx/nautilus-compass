@@ -323,8 +323,10 @@ C-family calibration pack 6/6 agree under independent recompute (ed25519-signed
 receipt, 2026-09-17) · 10/10 legacy verdicts NOT recomputable (2026-09-15 audit
 finding, fixed forward) · X1-v2 judge batch 47/47 inconsistent → voided, never
 cited · RSI loop #1: two self-reported greens caught by fresh-session recompute
-before merge. Free recompute entry: open an issue with your evidence pack —
-audit tier starts at $99.
+before merge · **first exam under our own certification track (2026-09-18):
+1/5 agree** — our own agent org's submitted fixes, judged by the same three-gate
+protocol, ugly numbers and all (signed scorecard in docs/wall/). Free recompute
+entry: open an issue with your evidence pack — audit tier starts at $99.
 
 ---
 
