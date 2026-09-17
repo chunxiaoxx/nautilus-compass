@@ -119,3 +119,22 @@ python -m tools.verifypack check    PACK --receipt R [--pubkey PK]  # 结算方:
 - [ ] **batch001 端到端**:build(v0 包升格)→ verify(7 条)→ receipt 签名 → check 验签通过
 - [ ] flywheel 确认协议可用(回执形式投函,等对方回)
 - 手几何第二包:产物缺失(见 #46),产物到位后补第二个样本。
+
+## 11. export(verdict 语料导出 · 燃料层 · 2026-09-17 增)
+
+`python -m tools.verifypack export <pack>... --out <corpus.jsonl> [--trace <id>] [--pubkey <hex>]`
+
+- **一行 = 一条 claim-verdict**,来源只有 pack.json 声明 + receipts/receipt.json:
+  `schema / trace / pack / claim_id / level / criteria_ref / payload_hash / verdict /
+  recomputed / claimed / verifier / signed_at / pubkey_fp`。
+- **criteria_ref 从 statement 正文提取**(`criteria:<id>@<catalog-vN>` 显式 +
+  `<id>@catalog-vN` 裸锚引用)——声明文本是判据引用的唯一来源(锚引用纪律)。
+- **payload_hash = pack_manifest_hash**(整包字节锚);pubkey_fp = 前8…后6,
+  仅在 sig 存在且验签通过时非空(未验签语料仍可导,如实标 None)。
+- **行内零时间戳**(signed_at 取回执)⇒ 同输入同输出;sidecar
+  `<out>.manifest.json` 记 exported_at/rows_total/sha256/packs[]/orphan 计数。
+- 语料 jsonl 不入仓(gitignore *.jsonl):可从 pack+回执逐字节再生,
+  sha256 即防篡改锚(首份:c_family_b1_20260917.jsonl,6 行,
+  sha256 b8b617156171e528…,trace=flywheel-c-family-b1-built-20260916)。
+- 训练侧红线(T7 反自指)不变:语料只喂字节级复算类判分器,升级走
+  AUC(hold-out)≥0.87 且 FPR 不升门,挂语料≥2000+M2。
