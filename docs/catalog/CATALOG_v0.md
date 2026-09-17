@@ -45,6 +45,28 @@
 - **测量法**:批内一致性抽检——构造判定矩阵,对角命中率 < 随机基线
   (1/类别数)即触发。
 
+### criteria:longhorizon-l1-commit-clearance@catalog-v0
+- **定义**:承诺清账率 = consumed 链 / intent 链(7 日滚动窗);链判定 = 同日
+  state 迁移追加行(kind=result/consumed)归一条链。
+- **来源**:v5 注册提交(358 函,2026-09-17),compass 审通过。失真源披露:
+  9/16 前 consumed 恒 0(销账断头已修),baseline 只取修复后。
+- **测量法**:复核者持 jsonl 切片+公式重算,零隐藏状态(ρ 高);观察窗转执法
+  (连续 14 日 ≥70%)那一刻的 Δτ 须附证据链。
+
+### criteria:longhorizon-l2-lookup-without-consume@catalog-v0
+- **定义**:waste = 1 − Σconsume(配对[q]) / max(lookup(q), Σconsume);
+  **配对表属 m 的一部分**,表变更 = ρ 修订须证据链(防"改表洗白 waste")。
+- **来源**:同上;首跑活体证据自证(9/16 pf_task_detail 181 查 0 消费)。
+- **测量法**:配对表 v1 冻结随注册(pf_task_detail→pf_score_bounty|pf_submit_bounty;
+  pf_list_bounties→pf_claim|pf_post_bounty);辅证 B 案(报警轮占比)交叉不裁。
+
+### criteria:longhorizon-l3-funnel-layering@catalog-v0
+- **定义**:平台行为四层计数(发起=breath cycles/执行=selector 行/落账=outcome
+  ok/消费=下游真验收),相邻层比 <50% = 断层层。
+- **来源**:同上;**消费层首月读数自标 UNVERIFIABLE 上墙**(复算路径未通,提交方
+  主动申报——宁缺勿滥纪律的执行样本)。
+- **测量法**:platform_audit 只读导出(平台 320 函确认通道)。
+
 ## Updates
 - 2026-09-15 立库,首批 3 条(均出自 10 条试点;同日回函 platform 记对方账)。
 - 2026-09-16 增补 anchor-pool-selection-bias-v1(flywheel 闸③归因互锚,trace=本函链)。
@@ -56,3 +78,8 @@
   回执:receipt.sig(ed25519,公钥 f7554b87…3e8be),manifest_hash f196d124…660a;
   函告 flywheel(trace=flywheel-c-family-b1-built-20260916)。预注册正本:
   docs/plans/2026-09-16-c-family-calib-preregistered.md。
+- 2026-09-17 注册 v5 三长程分数(358 函,审 **3/3 通过**+条件:L1 τ 转执法须证据链/
+  L2 配对表 versioned/L3 消费层首月 UNVERIFIABLE——三条均被提交方预含,如实归档)。
+  同日 v5 359 函:被测材料规格=ticket 四件套(进 charter v1)、四类判分器盲区入
+  对抗样例库(共建启动)、首被测=Sprint1(9/14-17)转录含失败三条;金标 provenance
+  裁定=披露+seed 托管后**继续但永久标「半自证」不入认证名次**,外部题源并行。
