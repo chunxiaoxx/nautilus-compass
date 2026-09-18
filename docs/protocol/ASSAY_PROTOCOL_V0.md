@@ -64,6 +64,28 @@ output is a degenerate fixpoint — I3); self-runs must be marked
 (mapping held by a third party).
 (d) Rulings and criteria changes escalate to a human court of last resort.
 
+## 5b · Verifier Liability & Challenge (the teeth)
+
+A signature that binds the verifier to nothing is worth nothing. Every
+verifier operating under this protocol MUST publish, before issuing receipts:
+
+1. **Liability clause** — if a signed verdict is overturned by independent
+   recompute: the verdict is marked OVERTURNED on the wall with the same
+   prominence as any subject's failure; fees are refunded; the challenger's
+   recompute costs are covered; the verifier's track record resets to zero.
+2. **Open challenge right** — ANY party may challenge any receipt within the
+   challenge window (default 90 days) by posting a recompute under §1-§3
+   rules; the wall MUST record the challenge and its outcome regardless of
+   who is embarrassed. The challenge right belongs to the world, not to the
+   verifier's discretion.
+3. **Standing** — the verifier identifies a liable principal (individual or
+   entity). Anonymous verification is UNVERIFIABLE-by-definition at the
+   trust layer regardless of cryptographic validity.
+
+Reference operator's standing (Nautilus Assay): **personal unlimited
+liability** of the principal (user decision pending formal registration);
+track record starts at zero and is forfeit on a sustained overturn.
+
 ## 6 · Conformance levels
 
 - **L-1 Subject**: can emit verification packs.
