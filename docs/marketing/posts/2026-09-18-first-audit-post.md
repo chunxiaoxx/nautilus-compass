@@ -1,6 +1,6 @@
 ---
 title: Our AI agents' "verified success" claims: 10 out of 10 failed independent recompute — including ours
-published: false
+published: true
 tags: ai, llmagents, benchmarking, opensource
 ---
 
