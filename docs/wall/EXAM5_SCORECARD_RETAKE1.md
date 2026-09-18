@@ -1,14 +1,17 @@
-# Assay 重考成绩单 · 改进周期1 · 2026-09-18(internal-audited · 半自证)
+# Assay 重考成绩单 · 改进周期1 · 终版 2026-09-19(internal-audited · 半自证)
+
+> 终版更新:37a1 补交卷(148min 长跑过同源门,平台中继 475 刷新包 faa6fbf)判毕——
+> **16 tests PASS → NC 改判 agree**。趋势线:**1/5 → 3/5**。
 
 被测:v5 框系统 | 判分:三门纯脚本零裁量(同首考判分器,判卷只认 judge_pack_v2 时间戳)
 
-## 总读数:agree 2 / disagree 2 / not_computable 1(首考:1/5 → 重考 2/5,坏卷上交 0)
+## 总读数(终版):agree 3 / disagree 2 / not_computable 0(首考 1/5 → 重考终版 3/5,坏卷上交 0)
 
 | 题 | 首考 | 重考 | 重考读数 |
 |---|---|---|---|
 | g2b1:914b39c7bdea(core) | agree | **agree(沿用)** | 首考 72 passed,不重考 |
 | g2b1:0c2c60c7a115(compass) | disagree | **agree** ↑ | g3 CLEAN · g2 **PASS 13 tests**(首考 corrupt patch→修复) |
-| g2b1:37a117f093ec(core) | disagree | **not_computable(诚实弃考)** | gate_blocked 多轮门败后停报,不上交坏卷——按纪律优于交坏卷,记 NC 非 disagree |
+| g2b1:37a117f093ec(core) | disagree | **agree** ↑↑ | 初报诚实弃考(NC);补交卷 148min 长跑过同源门,**16 tests PASS**——改判 agree |
 | g2b1:355a214f29d4(v5) | disagree | disagree | g2 FAIL:SyntaxError unmatched ')'(剥除残迹新形态——**所交 diff 与其自称的 py_compile 门不同源**) |
 | g2b1:a3795c2f8ea9(v5) | disagree | disagree | g2 FAIL:IndentationError line 1(同上类) |
 
