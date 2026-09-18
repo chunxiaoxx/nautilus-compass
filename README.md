@@ -313,6 +313,19 @@ conversation archive — different scope, listed for completeness.
 
 ## Reproducibility Wall
 
+**Verify our scorecards yourself** — no trust in us required, one command,
+stdlib only:
+
+```bash
+python scripts/verify_receipt.py docs/wall/EXAM5_SCORECARD.md \
+  docs/wall/EXAM5_SCORECARD.sig \
+  f7554b8709b7fe36f5a63e7f76cf2a31f827aee5724ff8dd4f11772d1aa3e8be
+```
+
+Protocol: [Assay Protocol v0](docs/protocol/ASSAY_PROTOCOL_V0.md) — criteria
+registration, verification packs, signed receipts, wall discipline. Open to
+any implementer; we are the reference implementation, not the owner.
+
 Run the head-to-head yourself (~$3.50) — your numbers go on the wall,
 **favorable or not**. Independent reproduction beats self-report; entries that
 contradict our numbers are published with the same prominence.
