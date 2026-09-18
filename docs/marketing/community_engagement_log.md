@@ -157,3 +157,14 @@
 - 同骨架:承认对方题目层权威 → 引 2510.07575+Berkeley RDI 共同痛点 → 认证轨提案(题目他们的,可信度我们的)→ 我们先坐第一排(含 10/10 不可复算自曝)
 - 观察纪律:48-72h 无回不做第二次触达;任何回复→trace 记档;若 A/C 同意试点→升 BC2 优先级
 - 破局打法页(内部):compass.nautilus.social/playbook.html(未 listing)
+
+## 2026-09-18 · 主动出击轮(用户令"解决不回信")
+
+- **RSIBench-Data#14 承诺物化**:真语料样本(6 行带签名+schema+manifest sha)挂 issue
+  [comment-5724696493](https://github.com/evolvent-ai/RSIBench-Data/issues/14#issuecomment-5724696493)
+  ——offer 从口头变文件,回信成本降到"看完即回"
+- **LME-V2 正门发现**:成绩提交走官方 Google Form(明文禁 issue 提交)——
+  LAFS 成绩包(用 T0 跑分读数)排为明日工作件,先贡献再谈认证轨
+- **rsi-bench**:无可自然贡献物,持守 72h 纪律,9/20 12:00 带签名成绩单跟进一次
+- 发现体博文 dev.to 草稿 4680783 今晚 21:03 自动发布
+- 期望校准修正:三函实发 23h(非 40h+,先前误报),含一个美国工作日,仍在正常窗口
