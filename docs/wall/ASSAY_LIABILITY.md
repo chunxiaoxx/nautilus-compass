@@ -9,5 +9,6 @@
 我方核验命令(挑战者无需信任我们):
 python scripts/verify_receipt.py <成绩单> <sig> f7554b8709b7fe36f5a63e7f76cf2a31f827aee5724ff8dd4f11772d1aa3e8be
 
-匿名验证在信任层按定义属 UNVERIFIABLE(Protocol §5b.3)。我方责任主体:
-个人无限责任(正式注册待用户拍板)。
+匿名验证在信任层按定义属 UNVERIFIABLE(Protocol §5b.3)。我方责任主体:**伊洛科技有限公司**(用户 2026-09-19 拍板,org-verdict 函)。
+牙齿条款不变:误判=同规格 OVERTURNED+全额退款+承担挑战成本+track record 清零;
+责任形态按公司主体口径。对外材料统一署伊洛科技。
