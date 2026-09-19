@@ -1708,6 +1708,24 @@ def handle_ingest(req: dict) -> dict:
                 fm.append(f"{k}: [{', '.join(repr(x) for x in v)}]")
             else:
                 fm.append(f"{k}: {v}")
+    # v3.3.0 Assay verification gate (pillar 2: verify-on-consume)
+    assay_verification = 'self-reported'
+    assay_detail = ''
+    _a_t = req.get('assay_target')
+    _a_s = req.get('assay_sig')
+    _a_k = req.get('assay_pubkey')
+    if _a_t and _a_s and _a_k:
+        try:
+            from assay_verify import verify as _assay_verify
+            _r = _assay_verify(_a_t, _a_s, _a_k)
+            assay_verification = 'verified' if _r.ok else 'invalid'
+            assay_detail = ' | ' + _r.detail
+            if _r.sha256:
+                assay_detail += ' | sha256=' + _r.sha256[:16]
+        except Exception as _e:
+            assay_verification = 'verify-error'
+            assay_detail = ' | ' + str(_e)[:120]
+    fm.append('verification: ' + assay_verification + assay_detail)
     fm.append("---")
     fm.append("")
     content = "\n".join(fm) + text.rstrip() + "\n"
