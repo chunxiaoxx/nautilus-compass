@@ -82,9 +82,13 @@ verifier operating under this protocol MUST publish, before issuing receipts:
    entity). Anonymous verification is UNVERIFIABLE-by-definition at the
    trust layer regardless of cryptographic validity.
 
-Reference operator's standing (Nautilus Assay): **personal unlimited
-liability** of the principal (user decision pending formal registration);
-track record starts at zero and is forfeit on a sustained overturn.
+Reference operator's standing (Nautilus Assay): **伊洛科技有限公司
+(Yiluo Technology Co., Ltd.)** — user ruling 2026-09-19 (org-verdict
+letter). Liability shape follows corporate terms; the teeth are unchanged:
+overturned verdict = same-prominence OVERTURNED on the wall + full refund +
+challenger's costs covered + verifier track record reset to zero. Public
+materials carry the entity name; transition clauses (if any) are logged in
+docs/wall/ASSAY_LIABILITY.md.
 
 ## 6 · Conformance levels
 
