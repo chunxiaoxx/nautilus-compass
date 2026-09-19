@@ -113,6 +113,15 @@
 adversarial 四件(c3d24a2)同族——"字面 vs 意图"族(毒题自噬=字面理解毛边咬剥除
 器的实证,与 status-hiding 同族);窗口挑选=window-picking 直对应。
 
+### criteria:calibration-claim-verify-v1@catalog-v0
+- **定义**:概率输出型决策模型(判分器/控制器)声称的校准水平(Brier/ECE/可靠
+  图)必须可在公开 holdout 上独立重算;重算值与声称值的偏差超过披露容差即
+  disagree。校准=控制代码按阈值消费概率时的安全裕度,校准声明是安全声明。
+- **来源**:Jev 进具身范式(3.2Hz 决策,概率即安全层)+ NanoJev 开源校准训练
+  (CE/Brier)与 holdout 发布格式;Genesis #2 Tier-2 实审(轨迹重放)。
+- **测量法**:持公开 holdout 数据集+模型输出文件,重算 Brier/ECE,对声称值;
+  陪审件:可靠图区间。**判据库现 15 条。**
+
 ## Updates
 - 2026-09-15 立库,首批 3 条(均出自 10 条试点;同日回函 platform 记对方账)。
 - 2026-09-16 增补 anchor-pool-selection-bias-v1(flywheel 闸③归因互锚,trace=本函链)。
@@ -136,3 +145,5 @@ adversarial 四件(c3d24a2)同族——"字面 vs 意图"族(毒题自噬=字面
   正本:docs/plans/2026-09-18-10verdict-recompute.md(agent a64017c,零改数)。
 - 2026-09-19 注册 paradigm-corroboration-chain-v1(五链外部印证+自家第六证;
   v5 485 请求,归因纪律正本)+对抗库 Jev 映射注。主体=伊洛科技落 §5b(用户拍板)。
+- 2026-09-20 注册 calibration-claim-verify-v1(Jev 吸收线 B 第一件;概率输出型
+  模型的校准声明可复算——概率即安全层)。
