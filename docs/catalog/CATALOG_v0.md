@@ -99,6 +99,20 @@
   两行标签不复现(结局同向);x8f1d 精确复现。
 - **测量法**:worktree 重跑复现标签描述的故障形态,比对结局+病因。
 
+### criteria:paradigm-corroboration-chain-v1@catalog-v0
+- **定义**:归因纪律——当独立外部范式文献 ≥5 次收敛于同一命题(当前命题:
+  "瓶颈在标注数据与阈值调校,不在模型能力")时,组织内归因分析应**优先检查
+  数据层与判据层**,模型层假设排最后。ρ 高:印证次数与出处可复算。
+- **来源**:五链印证——奇绩 RSI 四阶段(9/16)/MGM ΦCH 生产版/arXiv 评测量级
+  五级/RSI-Bench 六轴(9/16 调研)/**Jev(TypeSafe)分层范式(9/19,v5 485 函
+  对表,"难的从来不是模型,是标数据和调那根线"=与 9/14 拍板同构)**;第六证=
+  自家趋势线 1/5→3/5 全部来自 harness 层修复(模型未换)。
+- **测量法**:归因报告若在印证链成立时仍先归因模型层,判 drift(违反归因纪律)。
+
+对抗库交叉引用(Updates 注,判据本体不动):Jev 1.13 官方九失败模式 ↔ 我方
+adversarial 四件(c3d24a2)同族——"字面 vs 意图"族(毒题自噬=字面理解毛边咬剥除
+器的实证,与 status-hiding 同族);窗口挑选=window-picking 直对应。
+
 ## Updates
 - 2026-09-15 立库,首批 3 条(均出自 10 条试点;同日回函 platform 记对方账)。
 - 2026-09-16 增补 anchor-pool-selection-bias-v1(flywheel 闸③归因互锚,trace=本函链)。
@@ -120,3 +134,5 @@
   2 行——生产者自置实锤续案)。增严两处:新注册 skip-label-fidelity-v1;
   evidence-schema-v1 显式收紧(turn usage 非零 ⇒ total_tokens 必非零,子句化)。
   正本:docs/plans/2026-09-18-10verdict-recompute.md(agent a64017c,零改数)。
+- 2026-09-19 注册 paradigm-corroboration-chain-v1(五链外部印证+自家第六证;
+  v5 485 请求,归因纪律正本)+对抗库 Jev 映射注。主体=伊洛科技落 §5b(用户拍板)。
