@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "assay-verify"
+version = "0.1.0"
+description = "Verification SDK for AI agent outputs - attest-at-generation, verify-on-consume. Pure stdlib, zero dependencies."
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+keywords = ["ai", "agents", "verification", "provenance", "ed25519", "receipts", "benchmark", "trust"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Security :: Cryptography",
+]
+
+[project.urls]
+Homepage = "https://github.com/chunxiaoxx/nautilus-compass"
+Protocol = "https://github.com/chunxiaoxx/nautilus-compass/blob/main/docs/protocol/ASSAY_PROTOCOL_V0.md"
+
+[tool.setuptools]
+packages = ["assay_verify"]
