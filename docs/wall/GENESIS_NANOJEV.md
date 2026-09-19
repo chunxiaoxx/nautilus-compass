@@ -35,3 +35,21 @@ explicit controller rules — the best public evidence hygiene we have audited t
 ---
 Protocol: Assay Protocol v0 · Verifier: 伊洛科技有限公司 (Nautilus Assay) · SDK assay-verify 0.1.0
 Liability: docs/wall/ASSAY_LIABILITY.md (challenge window 90d)
+
+## Tier-2 Addendum (2026-09-20): rule-level replay verification — PASS
+
+Deepened beyond Tier-1 (hashes + claim-results): replayed recorded trajectories
+against published controller rules, without model weights:
+
+1. **Frame-level collision reconciliation**: collision flags in frames exactly match
+   claimed collisions — Jev 1044/1044, NanoJev 36/36, Untuned Qwen 2044/2044 (3/3
+   systems, zero discrepancy).
+2. **Step accounting**: frames = claimed steps + 1 across all 6 systems (initial-state
+   frame convention, structurally consistent).
+3. **Kinematic legality**: every position change is a legal adjacent move or a stay
+   (consistent with published collision rule "nonfatal; preserve position") — zero
+   illegal jumps in NanoJev's 245-frame maze trajectory.
+
+Verdict unchanged: **agree**, now at integrity + consistency + rule-replay level.
+Remaining deeper tier: physics-exact replay with model weights (HF checkpoint; feasible
+given published initial-state hashes).
