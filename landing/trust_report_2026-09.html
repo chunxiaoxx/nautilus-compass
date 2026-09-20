@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nautilus Assay — Trust Report #1 (2026-09)</title>
+<style>
+  body { font-family: Georgia, "Times New Roman", "Noto Serif SC", serif;
+         max-width: 46rem; margin: 2rem auto; padding: 0 1.2rem;
+         line-height: 1.65; font-size: 17px; color: #1a1a1a; background: #faf9f6; }
+  h1 { font-size: 1.6rem; } h2 { font-size: 1.2rem; color: #7c2d12;
+       border-bottom: 2px solid #b45309; padding-bottom: .25rem; margin-top: 2rem; }
+  table { border-collapse: collapse; width: 100%; font-size: .95rem; margin: .8rem 0; }
+  th, td { border: 1px solid #d6d3d1; padding: .45rem .6rem; text-align: left; }
+  th { background: #f5f5f4; }
+  code { font-family: Consolas, Menlo, monospace; font-size: .85em; background: #f5f5f4; }
+  .agree { color: #15803d; font-weight: bold; }
+  .muted { color: #57534e; font-size: .9rem; }
+  a { color: #9a3412; }
+</style>
+</head>
+<body>
+<h1>Monthly Trust Report #1 <span class="muted">· 2026-09</span></h1>
+<p class="muted">Every number is machine-recomputed or signature-verifiable; where we
+could not verify, we say so. The markdown original of this report is signed —
+<code>docs/reports/TRUST_REPORT_2026-09_EN.md(.sig)</code> in our
+<a href="https://github.com/chunxiaoxx/nautilus-compass">repository</a>.</p>
+
+<h2>1 · Who we are</h2>
+<p>Nautilus Assay independently recomputes published AI-agent performance claims from
+public artifacts, issues three-state verdicts (agree / disagree / not_computable), and
+signs every receipt with ed25519. Protocol published CC-BY — anyone can implement it or
+verify our receipts without trusting us. Operator: 伊洛科技有限公司.</p>
+
+<h2>2 · External claims verified this month</h2>
+<table>
+<tr><th>Target</th><th>Claim</th><th>Recompute</th><th>Verdict</th></tr>
+<tr><td>Aider — SWE-bench Lite</td><td>26.3%</td><td>79/300, subset relations verified</td><td class="agree">AGREE</td></tr>
+<tr><td>Terminal-Bench v1 — OpenHands</td><td>41.25% ± 0.69pp</td><td>165/400 = 0.4125 exact</td><td class="agree">AGREE</td></tr>
+<tr><td>NanoJev (embodied)</td><td>6 claims</td><td>incl. trajectory replay</td><td class="agree">AGREE</td></tr>
+</table>
+<p>Disclosures: Terminal-Bench's leaderboard excludes 5 incomplete trials from the
+denominator (defensible, undocumented until now); the OpenHands row was self-flagged
+<code>verified: false</code> — third-party recompute is what such flags await.</p>
+
+<h2>3 · Our own house</h2>
+<ul>
+<li>verdict-bus pilot: <b>10/10 NOT recomputable</b> — inputs only in session logs,
+producer-set flags, zero token counts. This started our criteria catalog.</li>
+<li>Judge incident: <b>47/47 self-inconsistent → batch voided</b>.</li>
+<li>First-party exam trend: <b>1/5 → 2/5 → 3/5 → 3.5/5 → 3.5/5</b>, published at
+measurement time, failures included. Latest datapoint a <b>disagree</b> (wiring-class
+failure; directional hints only).</li>
+</ul>
+
+<h2>4 · Criteria catalog (open)</h2>
+<p>15 registered criteria, ratcheted (tighten-only with evidence chains): verdict
+recomputability, external-verified provenance, four adversarial gaming classes,
+paradigm corroboration chains, and calibration-claim verification — calibration claims
+of probability-output controllers are <b>safety claims</b>, recomputable on public
+holdouts.</p>
+
+<h2>5 · Tooling released (free layer, permanent)</h2>
+<ul>
+<li><b>assay-verify</b> on PyPI — keygen/attest/verify in three lines, zero dependencies,
+with a built-in MCP stdio server.</li>
+<li><b>VerifyPack v0.3</b> — sealed evidence packs, episode/trajectory checks
+(frame-level invariants), receipts with subject fingerprints and <b>TTL</b>: expired =
+UNVERIFIABLE until re-verified. Continuous trust, like certificate renewal.</li>
+</ul>
+
+<h2>6 · BC1 cohort preview</h2>
+<p>30 items · 4 dimensions · public/holdout 18/12 · seed committed before generation.
+Release 2026-09-27 on <a href="/wall.html">the wall</a>.</p>
+
+<h2>7 · Liability</h2>
+<p>Misjudgment = OVERTURNED verdict of the same rigor + refund + challenge costs +
+track-record reset; 90-day window; anonymous verifications treated as UNVERIFIABLE
+(<a href="https://github.com/chunxiaoxx/nautilus-compass/blob/main/docs/protocol/ASSAY_PROTOCOL_V0.md">protocol §5b</a>).</p>
+
+<h2>8 · Get verified (free)</h2>
+<p><a href="https://github.com/chunxiaoxx/nautilus-compass/issues/new?template=recompute_request.md">Open a recompute request</a>
+(EN/中文). Self-attestation free forever; independent verification is what we sell.</p>
+
+<p class="muted">Signing pubkey f7554b8709b7fe36f5a63e7f76cf2a31f827aee5724ff8dd4f11772d1aa3e8be ·
+Next report: 2026-10 · <a href="/wall.html">← The Wall</a></p>
+</body>
+</html>

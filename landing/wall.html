@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nautilus Assay — The Wall</title>
+<style>
+  :root { color-scheme: light; }
+  body { font-family: Georgia, "Times New Roman", "Noto Serif SC", serif;
+         max-width: 46rem; margin: 2rem auto; padding: 0 1.2rem;
+         line-height: 1.65; font-size: 17px; color: #1a1a1a; background: #faf9f6; }
+  h1 { font-size: 1.7rem; letter-spacing: .5px; }
+  h2 { font-size: 1.25rem; border-bottom: 2px solid #b45309; padding-bottom: .3rem;
+       margin-top: 2.2rem; color: #7c2d12; }
+  table { border-collapse: collapse; width: 100%; font-size: .95rem; margin: .8rem 0; }
+  th, td { border: 1px solid #d6d3d1; padding: .45rem .6rem; text-align: left; }
+  th { background: #f5f5f4; }
+  code, pre { font-family: Consolas, Menlo, monospace; font-size: .85em;
+              background: #f5f5f4; border-radius: 4px; }
+  pre { padding: .8rem; overflow-x: auto; }
+  .verdict { font-weight: bold; }
+  .agree { color: #15803d; } .dis { color: #b91c1c; } .nc { color: #a16207; }
+  .muted { color: #57534e; font-size: .9rem; }
+  a { color: #9a3412; }
+  .badge { display: inline-block; border: 1px solid #b45309; border-radius: 999px;
+           padding: 0 .7rem; font-size: .8rem; color: #7c2d12; vertical-align: middle; }
+</style>
+</head>
+<body>
+<h1>Nautilus Assay <span class="badge">The Wall</span></h1>
+<p>Independent verification of AI-agent performance claims. Every entry below is
+machine-recomputed from public artifacts and signed (ed25519). Our own bad numbers go on
+the same wall — that is the product.</p>
+
+<h2>External receipts (Genesis campaign, 3/10)</h2>
+<table>
+<tr><th>Target</th><th>Claim</th><th>Our recompute</th><th>Verdict</th></tr>
+<tr><td>Aider — SWE-bench Lite</td><td>26.3%</td><td>79/300, subset relations verified</td>
+    <td class="verdict agree">AGREE</td></tr>
+<tr><td>Terminal-Bench v1 — OpenHands row</td><td>41.25% ± 0.69pp</td>
+    <td>165/400 = 0.4125 exact (5 incomplete trials disclosed)</td>
+    <td class="verdict agree">AGREE</td></tr>
+<tr><td>NanoJev — embodied controller</td><td>6 claims</td>
+    <td>incl. frame-level trajectory replay</td><td class="verdict agree">AGREE</td></tr>
+</table>
+<p class="muted">Receipts (with detached signatures):
+<a href="https://github.com/chunxiaoxx/nautilus-compass/tree/main/docs/wall">docs/wall/</a>.
+Verify any of them yourself:</p>
+<pre>pip install assay-verify
+python -c "from assay_verify import verify; from pathlib import Path; \
+print(verify(Path('GENESIS_AIDER_SWEBENCH.md'), Path('GENESIS_AIDER_SWEBENCH.md.sig'), \
+'f7554b8709b7fe36f5a63e7f76cf2a31f827aee574ff8dd4f11772d1aa3e8be'))"</pre>
+
+<h2>First-party exam — the honest-numbers trend line</h2>
+<table>
+<tr><th>Point</th><th>Score</th><th>What changed</th></tr>
+<tr><td>Exam 1</td><td><b>1/5</b></td><td>4 malformed submissions, 1 clean pass</td></tr>
+<tr><td>Retake</td><td>2/5</td><td>zero malformed submissions; 1 honest abstention</td></tr>
+<tr><td>Cycle 1 final</td><td>3/5</td><td>long-run same-source gate pass</td></tr>
+<tr><td>Cycle 2</td><td>3.5/5</td><td>function-level pipeline wins, one regression</td></tr>
+<tr><td>355a pass@2</td><td>3.5/5</td><td class="verdict dis">disagree — wiring-class failure (import scope + arity), hints returned, no answers</td></tr>
+</table>
+<p class="muted">Same model, same tasks throughout. All score movement came from
+harness-layer fixes — the reproducible kind of progress.</p>
+
+<h2>Our ugly numbers (same rules, inward)</h2>
+<ul>
+<li><span class="verdict dis">10/10</span> verdicts in our own pilot were <b>not
+recomputable</b> (inputs only in session logs; producer-set flags). This finding started
+our criteria catalog.</li>
+<li>Judge incident: <span class="verdict dis">47/47</span> self-inconsistent → entire
+batch voided. No "partially usable" lane.</li>
+<li>Three-arm organizational experiment: v5 arm 1/1/1 (agree / disagree /
+not-computable), published as-is.</li>
+</ul>
+
+<h2>BC1 — first benchmark cohort (2026-09-27)</h2>
+<p>30 items, 4 dimensions (criteria-catalog reasoning, provenance discipline, gaming
+detection); public/holdout split 18/12; generation seed committed before creation.</p>
+
+<h2>Liability (§5b — our teeth)</h2>
+<p>Misjudgment by us = an <b>OVERTURNED</b> verdict of the same rigor + refund + challenge
+costs + our track-record counter resets. 90-day challenge window, open to the world.
+Operator: 伊洛科技有限公司 (Yiluo Technology).</p>
+
+<h2>Get verified</h2>
+<p>Free recompute requests:
+<a href="https://github.com/chunxiaoxx/nautilus-compass/issues/new?template=recompute_request.md">open an issue</a>
+(EN/中文). Self-attestation is free forever via
+<a href="https://pypi.org/project/assay-verify/">assay-verify</a>; independent
+verification is what we sell. Monthly digest:
+<a href="/trust_report_2026-09.html">Trust Report #1 (2026-09)</a>.</p>
+
+<p class="muted">Assay signing pubkey:
+f7554b8709b7fe36f5a63e7f76cf2a31f827aee5724ff8dd4f11772d1aa3e8be ·
+Protocol (CC-BY): <a href="https://github.com/chunxiaoxx/nautilus-compass/blob/main/docs/protocol/ASSAY_PROTOCOL_V0.md">ASSAY_PROTOCOL_V0</a></p>
+</body>
+</html>
