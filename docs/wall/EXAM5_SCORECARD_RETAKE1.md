@@ -42,3 +42,25 @@
 
 **趋势线四点全图:1/5 → 3/5(周期1终) → 3.5/5(周期2)**。函数级管线(0/60→两题两卷)
 为大文件病首个实证解;355a 修复点回归已定位(mt 32000 题眼),下周期靶点明确。
+
+## 周期3·趋势线第五点·355a pass@2(2026-09-20 16:3x):disagree(新形态·接线错)
+
+判材=fde_dispatch #4252(claimed 06:10/reported 06:14,diff 3393 字节,md5 69e61aae…,
+云侧 psql 直取+MCP 双通道 md5 一致)。三门:g3 CLEAN(diff 未触测试✓,唯一通过的检查);
+g2 **FAIL 1 passed / 4 failed**——`NameError: fragment_version is not defined`
+(import 只加在 `_resolve_llm_endpoint` 函数体内,`_codefix_llm_budget` 内调用未 import,
+函数局部 import 不跨函数可见),波及全部 4 个 budget/stamp 测试在断言前崩溃;
+**mt 32000 题眼未及测**(先崩在接线)。结构性看还有第二层:diff 将 budget 函数改为
+返回三元组,而判据测试按二元组解包(`to, mt = …`、`== (900, 12000)`)——即便修好
+import,arity 亦不匹配;version stamp 的正确落点判据明示为 result["metrics"]
+(`produce_prompt_version`),diff 在 `_cf_producer` 处的 metrics stamping 方向对、
+budget 处放错位。
+
+**同题三连 disagree 的形态演变:SyntaxError(首考·装配)→ 值回归 mt 8000(周期2·题眼)
+→ 函数级组装接线错(pass@2)**。函数级管线的"缝合层"(import 作用域/返回签名契约)
+成为新靶点;diff 本身语法好、可应用、不触测试——管线质量三连升,但本题仍未过门。
+趋势线第五点=disagree,**四点定格 3.5/5 不变**(1/5→3/5→3.5/5→3.5/5)。
+
+判分反馈(方向性,不含答案值,承 615 预注册条款):失败类=接线非数值;两段式组装后
+需加①跨函数一致性自检(被改函数的调用方按原签名解包)②import 归属检查(函数级
+替换时 import 随宿主函数走)。
