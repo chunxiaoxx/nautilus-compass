@@ -5,9 +5,17 @@ from typing import Any
 
 RECEIPT_VERSION = "0.2"
 PROTOCOL = "verifypack-0.2"
+PROTOCOL_V03 = "verifypack-0.3"  # v0.3:pack 可声明 subject(T8 指纹)
 
 CHECK_KINDS = {"aggregate", "file_hash", "file_hash_map", "group_count",
-               "json_map_equal", "text_contains", "script"}
+               "json_map_equal", "text_contains", "script", "episode"}
+
+# episode 不变量(SPEC v0.3 §E):pair 类=相邻帧谓词;frame 类=单帧谓词
+EPISODE_PAIR_OPS = {"same", "incr_eq", "incr_ge", "incr_le",
+                    "abs_delta_le", "abs_delta_ge", "delta_le", "delta_ge"}
+EPISODE_FRAME_OPS = {"ge_const", "le_const", "eq_const"}
+EPISODE_OPS = EPISODE_PAIR_OPS | EPISODE_FRAME_OPS
+SUBJECT_KEYS = {"pubkey_fp", "code_hash", "config_hash"}  # T8 身份三元组
 LEVELS = {"L1", "L2"}
 VERDICTS = {"agree", "disagree", "degraded", "seal_fail"}
 AGG_OPS = {"ratio_eq", "value_eq"}
@@ -54,19 +62,50 @@ def validate_check(check: dict[str, Any], where: str = "check") -> None:
         "json_map_equal": ("file", "path", "map_by", "field"),
         "text_contains": ("file", "needles"),
         "script": ("repro",),
+        "episode": ("from", "invariants"),
     }[kind]
     for f in needs:
         if f not in check:
             raise SpecError(f"{where}({kind}): field {f!r} required")
     if kind == "aggregate" and check["op"] not in AGG_OPS:
         raise SpecError(f"{where}: op must be one of {sorted(AGG_OPS)}")
+    if kind == "episode":
+        _validate_invariants(check["invariants"], where)
+
+
+def _validate_invariants(invariants, where: str) -> None:
+    if not isinstance(invariants, list) or not invariants:
+        raise SpecError(f"{where}/episode: invariants must be a non-empty list")
+    for i, inv in enumerate(invariants):
+        if not isinstance(inv, dict) or not isinstance(inv.get("field"), str)                 or inv.get("op") not in EPISODE_OPS:
+            raise SpecError(f"{where}/episode/invariants[{i}]: "
+                            f"need str field + op in {sorted(EPISODE_OPS)}")
+        if inv.get("name") is not None and not isinstance(inv["name"], str):
+            raise SpecError(f"{where}/episode/invariants[{i}]: name must be str")
+        if inv["op"] != "same":  # same 外全部需要数值 rhs
+            rhs = inv.get("rhs")
+            if not isinstance(rhs, (int, float)) or isinstance(rhs, bool):
+                raise SpecError(f"{where}/episode/invariants[{i}]: "
+                                f"op {inv['op']!r} needs numeric rhs")
+
+
+def validate_subject(subject: Any) -> None:
+    """pack.subject:T8 三元组(pubkey_fp/code_hash/config_hash),至少一员,值皆 str。"""
+    if not isinstance(subject, dict):
+        raise SpecError("pack.subject must be an object")
+    if not (set(subject) & SUBJECT_KEYS):
+        raise SpecError(f"pack.subject needs at least one of {sorted(SUBJECT_KEYS)}")
+    for k, v in subject.items():
+        if k not in SUBJECT_KEYS or not isinstance(v, str) or not v:
+            raise SpecError(f"pack.subject[{k!r}]: unknown key or non-str value")
 
 
 def validate_pack(pack: dict[str, Any]) -> None:
     _req(pack, "pack", (str,), "pack")
     _req(pack, "protocol_version", (str,), "pack")
-    if pack["protocol_version"] != PROTOCOL:
-        raise SpecError(f"pack: protocol_version must be {PROTOCOL!r}, got {pack['protocol_version']!r}")
+    if pack["protocol_version"] not in (PROTOCOL, PROTOCOL_V03):
+        raise SpecError(f"pack: protocol_version must be {PROTOCOL!r}/{PROTOCOL_V03!r}, "
+                        f"got {pack['protocol_version']!r}")
     _req(pack, "claims", (list,), "pack")
     if not pack["claims"]:
         raise SpecError("pack: claims empty")
@@ -76,3 +115,5 @@ def validate_pack(pack: dict[str, Any]) -> None:
         if c["id"] in ids:
             raise SpecError(f"pack: duplicate claim id {c['id']!r}")
         ids.add(c["id"])
+    if "subject" in pack:
+        validate_subject(pack["subject"])

@@ -118,7 +118,10 @@ def cmd_verify(a: argparse.Namespace) -> int:
 def _emit_receipt(a: argparse.Namespace, pack_dir: Path, pack: dict,
                   results: list[dict], seal_fail: bool = False) -> int:
     env = (f"{platform.system()} {platform.release()} · python {platform.python_version()}")
-    rec = receipt.build_receipt(pack["pack"], pack_dir, a.verifier, results, env)
+    rec = receipt.build_receipt(pack["pack"], pack_dir, a.verifier, results, env,
+                                subject=pack.get("subject"), ttl_days=getattr(a, "ttl_days", None))
+    if rec.get("valid_until"):
+        print(f"[OK] ttl: valid_until {rec['valid_until']} (LE 式续期;到期=UNVERIFIABLE 直至续验)")
     out = Path(a.out) if a.out else pack_dir / "receipts" / "receipt.json"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(rec, ensure_ascii=False, indent=1), encoding="utf-8", newline="\n")
@@ -134,8 +137,17 @@ def _emit_receipt(a: argparse.Namespace, pack_dir: Path, pack: dict,
 # ── receipt(对已有回执补签) ────────────────────────────────────────────
 
 def cmd_receipt(a: argparse.Namespace) -> int:
+    rp = Path(a.receipt)
+    if a.replaces:  # 续验链:前驱回执 sha256 入 chain.replaces
+        import hashlib
+        rh = hashlib.sha256(Path(a.replaces).read_bytes()).hexdigest()
+        rec = json.loads(rp.read_text(encoding="utf-8"))
+        rec["chain"] = {"replaces": rh}
+        rec["receipt_version"] = "0.3"
+        rp.write_text(json.dumps(rec, ensure_ascii=False, indent=1), encoding="utf-8", newline="\n")
+        print(f"[OK] chain: replaces {rh[:16]}…")
     kp = keys.load_key(a.key)
-    sig = receipt.sign_receipt(Path(a.receipt), kp)
+    sig = receipt.sign_receipt(rp, kp)
     print(f"[OK] signed: {sig} (key {kp.name})")
     return 0
 
@@ -223,11 +235,14 @@ def main(argv: list[str] | None = None) -> int:
     v.add_argument("--key", help="签名私钥路径(或 VERIFYPACK_KEY)")
     v.add_argument("--verifier", default="compass")
     v.add_argument("--out", help="receipt 输出路径")
+    v.add_argument("--ttl-days", type=int, dest="ttl_days",
+                   help="回执有效期天数(LE 式 90 天续期↔持续适航订阅;pack 带 subject 时建议 90)")
     v.set_defaults(fn=cmd_verify)
 
     r = sub.add_parser("receipt", help="对已有 receipt.json 签名")
     r.add_argument("--receipt", required=True)
     r.add_argument("--key")
+    r.add_argument("--replaces", help="续验链:被本回执替代的旧 receipt 路径")
     r.set_defaults(fn=cmd_receipt)
 
     c = sub.add_parser("check", help="结算方:验签+摘要核对(不重算)")

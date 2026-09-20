@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 
 from . import expr
-from .spec import SpecError
+from .spec import EPISODE_FRAME_OPS, SpecError
 
 JSON_SUFFIX = ".json"
 
@@ -151,6 +151,13 @@ def run_check(pack: dict, claim: dict, check: dict, pack_dir: Path,
                 missing.append(s)
         return {"ok": not missing, "recomputed": f"missing={missing}" if missing else "all found"}
 
+    if kind == "episode":
+        rows = _rows(pack_dir, check["from"])
+        got = _run_episode(rows, check.get("episode_by"), check["invariants"])
+        # 不变量=有效性谓词:违规数必须为零,声称"吻合的违规"不构成 agree
+        ok = got == claim["value"] and not any(got["violations"].values())
+        return {"ok": ok, "recomputed": got}
+
     if kind == "script":
         if env_caps is not None and check.get("requires_env") and \
                 check["requires_env"] not in env_caps:
@@ -166,6 +173,68 @@ def run_check(pack: dict, claim: dict, check: dict, pack_dir: Path,
         return {"ok": val == claim["value"], "recomputed": val}
 
     raise SpecError(f"unknown kind {kind!r}")  # pragma: no cover
+
+
+_EPS = 1e-9
+
+
+def _frame_field(frame: dict, field: str):
+    if field not in frame:
+        raise CheckError(f"frame missing field {field!r}")
+    return frame[field]
+
+
+def _frame_ok(frame: dict, inv: dict) -> bool:
+    v, rhs = _frame_field(frame, inv["field"]), inv["rhs"]
+    return {"ge_const": v >= rhs, "le_const": v <= rhs,
+            "eq_const": abs(v - rhs) <= _EPS}[inv["op"]]
+
+
+def _pair_ok(prev: dict, cur: dict, inv: dict) -> bool:
+    f = inv["field"]
+    a, b = _frame_field(prev, f), _frame_field(cur, f)
+    op = inv["op"]
+    if op == "same":
+        return cur[f] == prev[f]
+    if not isinstance(a, (int, float)) or not isinstance(b, (int, float)):
+        raise CheckError(f"invariant {inv.get('name', f)!r}: field {f!r} non-numeric")
+    d = b - a
+    return {"incr_eq": abs(d - inv["rhs"]) <= _EPS,
+            "incr_ge": d >= inv["rhs"], "incr_le": d <= inv["rhs"],
+            "abs_delta_le": abs(d) <= inv["rhs"], "abs_delta_ge": abs(d) >= inv["rhs"],
+            "delta_le": d <= inv["rhs"], "delta_ge": d >= inv["rhs"]}[op]
+
+
+def _run_episode(rows: list[dict], by: str | None, invariants: list[dict]) -> dict:
+    """帧数组 → 转移不变量核查。返回 {transitions, violations{名:数}}。"""
+    groups: list[list[dict]] = []
+    if by:
+        buf: list[dict] = []
+        for r in rows:
+            if buf and _frame_field(r, by) != _frame_field(buf[-1], by):
+                groups.append(buf)
+                buf = []
+            buf.append(r)
+        if buf:
+            groups.append(buf)
+    else:
+        groups = [rows]
+    named = [(inv.get("name", f"inv{i}"), inv) for i, inv in enumerate(invariants)]
+    violations = {name: 0 for name, _ in named}
+    transitions = 0
+    for g in groups:
+        transitions += max(len(g) - 1, 0)
+        for i, cur in enumerate(g):
+            for name, inv in named:
+                if inv["op"] in EPISODE_FRAME_OPS:
+                    bad = not _frame_ok(cur, inv)
+                elif i > 0:
+                    bad = not _pair_ok(g[i - 1], cur, inv)
+                else:
+                    bad = False
+                if bad:
+                    violations[name] += 1
+    return {"transitions": transitions, "violations": violations}
 
 
 class EnvRequired(RuntimeError):
