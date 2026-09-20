@@ -86,3 +86,20 @@ budget 处放错位。
 
 判分器:cloud /tmp/djudge2.py;seed 原文随本单披露(对 661 承诺 8f7788bbeef1db1f 验讫):
 seed=见上行原文(sha256 前 16 = 8f7788bbeef1db1f,与 661 承诺一致)
+
+## 🔄 改判·6f1e(2026-09-21 07:0x):disagree → **agree**(28 tests)——判分侧错案,被测方申诉成立
+
+v5 申诉(#689):其卷在 API description/题面提取/git 原字节三源全等,其 diff 对题面
+starter apply rc=0。判卷方复现:**判分侧 starter 提取与 git 原字节差 1 字节(6561 vs
+6560,题面段提取的尾部差异),git 原字节 apply OK + 28 tests 全过**。错在判卷方字节源,
+不在被测方。
+
+**改判:agree(28 tests PASS)。**扩量轮更正为 **agree 2/disagree 1/NC 1**(九点序列
+相应更新:扩量 +2 agree)。
+
+**判卷器修正(即日生效)**:dispatch 判卷的 starter/tests 一律以仓内 git commit
+原字节为正本;题面提取仅作索引,与 git 版对账不等即用 git 版并披露——题面组装路径
+的字节变形不再进入判分管线。
+
+**披露:这是挑战机制(协议 §5b 精神)的首次组织内运转**——被测方行权申诉→判卷方
+自查→坐实→改判,全程留痕。判卷方不是不可错的,可错且可被挑战才是这套判据的本意。
