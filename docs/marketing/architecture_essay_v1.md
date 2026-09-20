@@ -77,7 +77,31 @@ particular — the procurement step where a batch of episodes must be shown to b
 vendor says it is. Verification as a *consumption prerequisite* doesn't need to be
 preached; it needs to be embedded where the money moves.
 
-## 4. What can actually be verified (be honest about the subset)
+## 4. The decision-model wave just multiplied the problem
+
+Five days before this writing, TypeSafe AI launched Jev — a "System One" decision model
+that returns *typed decisions with calibrated probabilities* instead of text, 40–200×
+faster and 40–400× cheaper than frontier LLMs, trained via RL for *Calibrated* Decisions
+(RLCD), and demonstrated playing Doom as an embodied controller. Coverage is everywhere;
+third-party gateways already resell it.
+
+Notice what this does to claims. When a model's entire product narrative is
+"calibrated," every downstream product built on it inherits the obligation to say
+"our decisions are calibrated" to *their* customers. Calibration is precisely the kind
+of claim that is mechanically checkable — Brier scores, reliability diagrams, on a
+public holdout — and precisely the kind almost nobody re-derives. The decision-model
+wave doesn't create the verification gap; it industrializes the supply of claims that
+fall into it. (Our criteria catalog has an entry for exactly this; it was written
+before Jev's launch week made it urgent.)
+
+There's a regulatory bookend, too: the EU Machinery Regulation (2023/1230) takes effect
+**January 20, 2027**, pulling AI safety components — software explicitly included —
+into notified-body third-party conformity assessment. Third-party verification as a
+*precondition of sale* is not a startup thesis there; it is statute with a date. The
+question for everyone shipping embodied AI between now and then is whether their
+verification story is built when the deadline arrives, or before.
+
+## 5. What can actually be verified (be honest about the subset)
 
 Semantic claims ("this agent reasons well") are not mechanically checkable. A
 verification institution survives only by confessing this and then being ruthless about
@@ -100,7 +124,7 @@ Three-state output (agree / disagree / not_computable) matters more than any sin
 score. An institution that can say "I cannot check this" is the only one whose "yes"
 means anything.
 
-## 5. Verification must be checkable
+## 6. Verification must be checkable
 
 Our receipts are detached ed25519 signatures over canonical bytes. Anyone can verify
 them with a zero-dependency pip package. This is not about cryptography worship — it's
@@ -113,7 +137,7 @@ config hash — change the brain, new agent) and a TTL. Expired means *unverifia
 re-verified*, structurally identical to certificate renewal. Continuous trust isn't a
 subscription gimmick; it's what renewal semantics *are*.
 
-## 6. What "teeth" means, and our current honesty about ours
+## 7. What "teeth" means, and our current honesty about ours
 
 A verifier with no downside is noise. Our protocol's liability clause: a misjudgment
 earns the claimant an OVERTURNED verdict of the same rigor, a refund, challenge costs,
@@ -124,7 +148,7 @@ We'll be honest where we stand: zero challenges, zero overturns so far. The teet
 never been used. An institution's real track record begins the first time it is bitten
 and survives. We're pre-first-bite, and we say so.
 
-## 7. How to use this today
+## 8. How to use this today
 
 - **Have a published claim with public artifacts?** Open a free recompute request
   (template in our repo). Agree/disagree results come back signed; disagreements go to
