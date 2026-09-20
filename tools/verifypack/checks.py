@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 
 from . import expr
-from .spec import EPISODE_FRAME_OPS, SpecError
+from .spec import CALIB_METRICS, EPISODE_FRAME_OPS, SpecError
 
 JSON_SUFFIX = ".json"
 
@@ -158,6 +158,15 @@ def run_check(pack: dict, claim: dict, check: dict, pack_dir: Path,
         ok = got == claim["value"] and not any(got["violations"].values())
         return {"ok": ok, "recomputed": got}
 
+    if kind == "calibration":
+        rows = _rows(pack_dir, check["from"])
+        got = _run_calibration(rows, check)
+        claimed = claim["value"] if isinstance(claim["value"], dict) else {}
+        tol = check.get("tol", 1e-4)
+        ok = set(claimed) <= set(got) and all(
+            abs(claimed[k] - got[k]) <= tol for k in claimed)
+        return {"ok": ok, "recomputed": got}
+
     if kind == "script":
         if env_caps is not None and check.get("requires_env") and \
                 check["requires_env"] not in env_caps:
@@ -235,6 +244,66 @@ def _run_episode(rows: list[dict], by: str | None, invariants: list[dict]) -> di
                 if bad:
                     violations[name] += 1
     return {"transitions": transitions, "violations": violations}
+
+
+def _calib_row(row: dict, check: dict) -> tuple[float, float]:
+    """行 → (outcome, p_top)。二分类返回 (y, p);多类返回 (y, max_prob) 并校验和≈1。"""
+    o = row.get(check["outcome_field"])
+    if not isinstance(o, (int, float)) or isinstance(o, bool):
+        raise CheckError("calibration: outcome must be numeric label")
+    if check.get("probs_field"):
+        ps = row.get(check["probs_field"])
+        if not isinstance(ps, list) or not ps:
+            raise CheckError("calibration: probs must be non-empty list")
+        if any(not isinstance(x, (int, float)) or not 0 <= x <= 1 for x in ps):
+            raise CheckError("calibration: probs out of [0,1]")
+        if abs(sum(ps) - 1.0) > 1e-6:
+            raise CheckError("calibration: probs do not sum to 1")
+        if not (0 <= o < len(ps)):
+            raise CheckError("calibration: outcome index out of range")
+        return int(o), max(ps)
+    p = row.get(check["prob_field"])
+    if not isinstance(p, (int, float)) or not 0 <= p <= 1 or o not in (0, 1):
+        raise CheckError("calibration: p out of [0,1] or outcome not 0/1")
+    return int(o), float(p)
+
+
+def _run_calibration(rows: list[dict], check: dict) -> dict:
+    """逐样本预测 → {brier?, ece?, n}。二分类 Brier=mean(p-y)^2;多类=行内类和再均;
+    ECE=等宽分箱 top-label(二分类即 p 本身)。"""
+    if not rows:
+        raise CheckError("calibration: empty predictions")
+    pairs = [_calib_row(r, check) for r in rows]
+    multi = bool(check.get("probs_field"))
+    got: dict = {"n": len(rows)}
+    if check["metrics"].get("brier"):
+        if multi:
+            tot = 0.0
+            for r in rows:
+                ps = r[check["probs_field"]]
+                y = int(r[check["outcome_field"]])
+                tot += sum((ps[k] - (1.0 if k == y else 0.0)) ** 2 for k in range(len(ps)))
+            got["brier"] = round(tot / len(rows), 8)
+        else:
+            got["brier"] = round(sum((p - y) ** 2 for y, p in pairs) / len(rows), 8)
+    if check["metrics"].get("ece"):
+        nb = int(check.get("ece_bins", 15))
+        # top-label 正确性:二分类 y==(p>=0.5);多类 y==argmax(ps)
+        bins = {}
+        for r in rows:
+            y, p = _calib_row(r, check)
+            correct = (p >= 0.5 and y == 1) or (p < 0.5 and y == 0) if not multi else None
+            if multi:
+                ps = r[check["probs_field"]]
+                correct = ps.index(p) == y
+            b = min(int(p * nb), nb - 1)
+            cur = bins.setdefault(b, [0.0, 0.0, 0])  # acc_sum, conf_sum, count
+            cur[0] += 1.0 if correct else 0.0
+            cur[1] += p
+            cur[2] += 1
+        ece = sum((c / len(rows)) * abs(a / c - f / c) for a, f, c in bins.values())
+        got["ece"] = round(ece, 8)
+    return got
 
 
 class EnvRequired(RuntimeError):

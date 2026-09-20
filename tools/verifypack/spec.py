@@ -8,7 +8,10 @@ PROTOCOL = "verifypack-0.2"
 PROTOCOL_V03 = "verifypack-0.3"  # v0.3:pack 可声明 subject(T8 指纹)
 
 CHECK_KINDS = {"aggregate", "file_hash", "file_hash_map", "group_count",
-               "json_map_equal", "text_contains", "script", "episode"}
+               "json_map_equal", "text_contains", "script", "episode", "calibration"}
+
+# calibration kind(SPEC v0.3 §C):Jev 生态校准声明验证
+CALIB_METRICS = {"brier", "ece"}
 
 # episode 不变量(SPEC v0.3 §E):pair 类=相邻帧谓词;frame 类=单帧谓词
 EPISODE_PAIR_OPS = {"same", "incr_eq", "incr_ge", "incr_le",
@@ -63,6 +66,7 @@ def validate_check(check: dict[str, Any], where: str = "check") -> None:
         "text_contains": ("file", "needles"),
         "script": ("repro",),
         "episode": ("from", "invariants"),
+        "calibration": ("from", "outcome_field", "metrics"),
     }[kind]
     for f in needs:
         if f not in check:
@@ -71,6 +75,14 @@ def validate_check(check: dict[str, Any], where: str = "check") -> None:
         raise SpecError(f"{where}: op must be one of {sorted(AGG_OPS)}")
     if kind == "episode":
         _validate_invariants(check["invariants"], where)
+    if kind == "calibration":
+        metrics = check["metrics"]
+        if not isinstance(metrics, dict) or not metrics                 or not set(metrics) <= CALIB_METRICS:
+            raise SpecError(f"{where}/calibration: metrics must be a non-empty "
+                            f"subset of {sorted(CALIB_METRICS)}")
+        if not (check.get("prob_field") or check.get("probs_field")):
+            raise SpecError(f"{where}/calibration: prob_field(二分类)或 "
+                            f"probs_field(多分类)必填其一")
 
 
 def _validate_invariants(invariants, where: str) -> None:

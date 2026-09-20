@@ -1,0 +1,11 @@
+{
+ "manifest_version": "0.2",
+ "files": {
+  "pack.json": "6c24cf5765eb081143a30ced19daac01b96e54b6f7c0fa502054b63a5df6cf63",
+  "payload/benchmark_claimed.json": "b42482f75eb67cb5a469b78babb4cbe95e9aed91881a6533094c5f2c01309a71",
+  "payload/benchmark_replay.json": "efb990d5ab742b76af43a20ada9c38c4c2a8479366c5bdae2f338b637ca68b44",
+  "repro/verify_calib.py": "e718b75fb12fb0f244c549a5deb5a4efa3228baefa548e20f131e8ecaf160ff6"
+ },
+ "inputs": {},
+ "input_decls": []
+}

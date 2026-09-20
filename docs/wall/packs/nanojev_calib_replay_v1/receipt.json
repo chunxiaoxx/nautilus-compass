@@ -1,0 +1,51 @@
+{
+ "receipt_version": "0.3",
+ "pack": "nanojev_calib_replay_v1",
+ "pack_manifest_hash": "ad581818fbd4d3f4470b8468a2d7932c5ab586cdc83a4e7380b1d1bac29163da",
+ "verifier": "compass",
+ "verified_at": "2026-09-20T23:58:15",
+ "environment": "Windows 11 · python 3.13.14",
+ "results": [
+  {
+   "id": "D_claimed_bytes",
+   "level": "L1",
+   "verdict": "agree",
+   "recomputed": "b42482f75eb67cb5a469b78babb4cbe95e9aed91881a6533094c5f2c01309a71",
+   "claimed": "b42482f75eb67cb5a469b78babb4cbe95e9aed91881a6533094c5f2c01309a71"
+  },
+  {
+   "id": "D_replay_bytes",
+   "level": "L1",
+   "verdict": "agree",
+   "recomputed": "efb990d5ab742b76af43a20ada9c38c4c2a8479366c5bdae2f338b637ca68b44",
+   "claimed": "efb990d5ab742b76af43a20ada9c38c4c2a8479366c5bdae2f338b637ca68b44"
+  },
+  {
+   "id": "R_replay_consistency",
+   "level": "L1",
+   "verdict": "agree",
+   "recomputed": "2e-08",
+   "claimed": "2e-08"
+  },
+  {
+   "id": "P_seed_protocol",
+   "level": "L1",
+   "verdict": "agree",
+   "recomputed": "all found",
+   "claimed": "data_seed=20260918"
+  }
+ ],
+ "summary": {
+  "agree": 4,
+  "disagree": 0,
+  "degraded": 0,
+  "seal_fail": 0
+ },
+ "boundary": "独立技术验证与回执,不作客户验收或结算决定",
+ "subject": {
+  "code_hash": "b063fcd0701a8c8c7474497dbc9b700d15ca07982902823d3a5e77a59291b921",
+  "config_hash": "data_seed=20260918;seeds=17,18,19;steps=600"
+ },
+ "subject_fp": "55f1322aff77da30",
+ "valid_until": "2026-12-19"
+}
