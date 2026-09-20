@@ -64,3 +64,25 @@ budget 处放错位。
 判分反馈(方向性,不含答案值,承 615 预注册条款):失败类=接线非数值;两段式组装后
 需加①跨函数一致性自检(被改函数的调用方按原签名解包)②import 归属检查(函数级
 替换时 import 随宿主函数走)。
+
+## 周考扩量·趋势线第 6-9 点(2026-09-21 05:5x 判毕,判材=dispatch 内嵌题面+DB produced)
+
+判法=题面 starter/tests 解析(sanitize 剥尾部说明块)+门0 基线+产出双形态(diff 头重写
+对齐/full-file 覆盖)+py_compile 预检+pytest。四卷:
+
+| 点 | 题 | 门0 基线 | 产出 | 判定 |
+|---|---|---|---|---|
+| 6 | g2b1:061623c7f9c1(v5) | RED_OK | diff 应用·**5 tests PASS** | **agree** |
+| 7 | g2b1:6f1eb3fb6bf0(v5) | collect_err(合法:tests 导入修复后新增符号) | **APPLY_FAIL**(diff 与题面 starter 不同源:154 行 hunk 上下文漂移) | **disagree**(首考 37a1/0c2c「patch 不可应用」同判例) |
+| 8 | g2b1:28c2473f60ac(core) | RED_OK | 18 failed / 79 passed(产出未完成修复) | **disagree** |
+| 9 | g2b1:71f0de23a4a1(compass) | **判材 collect_err:tests 导入 gep.flywheel_event 不在题面** | — | **not_computable**(judge_pack 自含性缺陷同三臂判例;依赖缺失≠卷坏) |
+
+**扩量轮 4 点=agree 1/disagree 2/NC 1。九点全序列:1/5→3/5→3.5/5→3.5/5(pass@2)→
+扩量 +1 agree。**0616 即 v5 披露的 difflib 裸尾行 bug 修复(d35b84c)后重交卷——**管线
+自愈首次在趋势线上得分**(门拦坏 diff 非坏修复的佐证成立)。6f1 的 apply 失败是
+「门验字节≠交卷字节」病的新形态(上下文漂移,非尾行粘连);28c 为产出侧真实
+未完成(题面 97 测试,通过 79)。71f0 判材缺口计入 judge_pack 规范 v2 实证清单
+(第 4 例:内嵌题面须含全部被导入依赖)。
+
+判分器:cloud /tmp/djudge2.py;seed 原文随本单披露(对 661 承诺 8f7788bbeef1db1f 验讫):
+seed=见上行原文(sha256 前 16 = 8f7788bbeef1db1f,与 661 承诺一致)
