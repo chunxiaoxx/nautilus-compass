@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Domain Calibration Report — Nautilus Assay(试金局)</title>
+<style>
+  body { font-family: Georgia, "Times New Roman", "Noto Serif SC", serif;
+         max-width: 46rem; margin: 2rem auto; padding: 0 1.2rem;
+         line-height: 1.65; font-size: 17px; color: #1a1a1a; background: #faf9f6; }
+  h1 { font-size: 1.6rem; } h2 { font-size: 1.2rem; color: #7c2d12;
+       border-bottom: 2px solid #b45309; padding-bottom: .25rem; margin-top: 2rem; }
+  table { border-collapse: collapse; width: 100%; font-size: .95rem; margin: .8rem 0; }
+  th, td { border: 1px solid #d6d3d1; padding: .45rem .6rem; text-align: left; }
+  th { background: #f5f5f4; }
+  .card { border: 1px solid #d6d3d1; border-radius: 8px; padding: 1rem 1.2rem;
+          margin: 1rem 0; background: #fff; }
+  .price { font-size: 1.4rem; font-weight: bold; color: #7c2d12; }
+  .muted { color: #57534e; font-size: .9rem; }
+  a { color: #9a3412; }
+  .cta { display: inline-block; background: #7c2d12; color: #fff; padding: .6rem 1.4rem;
+         border-radius: 6px; text-decoration: none; font-weight: bold; margin-top: .5rem; }
+  .q { font-style: italic; border-left: 3px solid #b45309; padding-left: 1rem; margin: 1rem 0; }
+</style>
+</head>
+<body>
+<h1>Domain Calibration Report</h1>
+<p class="muted">Nautilus Assay(试金局)· independent verification · signed reports ·
+<a href="/wall.html">our receipts</a></p>
+
+<div class="q"><b>Jev says its decisions are calibrated. On whose data? Not yours.</b></div>
+
+<p>You're routing real decisions through Jev — email triage, ticket routing, content
+moderation, risk flags. The calibration TypeSafe advertises was measured on their
+benchmarks, not on your traffic. Before you trust a 0.9 confidence at face value,
+know what it's actually worth <em>on your domain</em>.</p>
+
+<h2>How it works</h2>
+<ol>
+<li><b>You send 20–50 examples</b> of your actual decisions — anonymized (nothing
+sensitive leaves your side; we generate a domain-matched test set), field-masked,
+or real under NDA.</li>
+<li><b>We test Jev on your domain</b> — 200–600 seeded questions built from your
+examples' pattern, one full run, no cherry-picking, every raw response archived.</li>
+<li><b>You get a signed report in 48h</b>: accuracy, Brier, ECE on your domain;
+drift vs. Jev's public baseline (we hold the <a href="https://github.com/chunxiaoxx/nautilus-compass/blob/main/docs/wall/GENESIS_HOSTED_JEV_CALIBRATION.md">independent baseline data</a>);
+an <b>actionable confidence threshold</b> ("discount 0.9-confidence to 0.77 in your
+domain"); full artifacts so anyone can recompute our numbers.</li>
+</ol>
+<p>Backed by our public liability terms: if we get it wrong, we re-run at the same
+rigor free, refund, and publish the overturn. <a href="https://github.com/chunxiaoxx/nautilus-compass/blob/main/docs/protocol/ASSAY_PROTOCOL_V0.md">Protocol §5b</a>.</p>
+
+<h2>Pricing</h2>
+<div class="card"><span class="price">$99</span> · <b>DCR-1 Quick</b><br>
+Anonymous mode · 200 questions · one model version · 48h turnaround</div>
+<div class="card"><span class="price">$249</span> · <b>DCR-2 Standard</b><br>
+Field-masked samples · 400 questions · difficulty layers + adversarial cells · 48h</div>
+<div class="card"><span class="price">$499</span> · <b>DCR-3 Deep</b><br>
+Real samples under NDA · 600 questions · full adversarial battery + rerun stability · 72h</div>
+<p class="muted">Add monthly re-test on Jev version updates: +40%/tier/month
+(calibration is a moving target; so is the trust).</p>
+
+<h2>Order (beta — we're manual for now)</h2>
+<p>Email <b>order@nautilus.social</b> with: tier, input mode (anonymous / masked / NDA),
+one line about your decision domain. We reply with next steps and payment link
+within one business day.</p>
+<p><a class="cta" href="mailto:order@nautilus.social?subject=DCR%20order">Start: email your order</a></p>
+
+<p class="muted">Also works for any probability-outputting decision model, not just Jev.
+Why we do this: <a href="https://compass.nautilus.social/wall.html">the wall</a> ·
+Our Jev study #1 (baseline): accuracy 92.2% / ECE 0.041 on a synthetic closed domain —
+your domain's number is the one that matters.</p>
+</body>
+</html>
