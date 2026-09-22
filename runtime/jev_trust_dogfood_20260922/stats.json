@@ -1,0 +1,17 @@
+{
+ "domain": "python-exception-prediction",
+ "n_calls": 120,
+ "n_outcomes": 120,
+ "accuracy": 1.0,
+ "brier": 0.00545917,
+ "ece": 0.04658333,
+ "C": 0.9534,
+ "verdict": "FACE_VALUE",
+ "assay_reference": null,
+ "decision_set_sha256": "9652aa7428959181520682471795d7e8a8dfa51d913ed191a673bcaf0170074c",
+ "errors": 0,
+ "log": "session.jsonl",
+ "sig": "session.jsonl.sig",
+ "pubkey": "04ff69346fee288397903293dccc20ba7d230ea7c0b84a4e0356fe0bd8a32621",
+ "verify": "VALID"
+}

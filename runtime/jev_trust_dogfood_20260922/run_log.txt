@@ -1,0 +1,13 @@
+decision set: n=120 positive=46 patterns=6 seed=20260922 sha256=9652aa7428959181
+  1/120 zd000 said=no conf=0.96
+  2/120 zd001 said=no conf=0.95
+  3/120 zd002 said=no conf=0.96
+  20/120 zd019 said=no conf=0.96
+  40/120 ix019 said=yes conf=0.98
+  60/120 ke019 said=no conf=0.97
+  80/120 te019 said=yes conf=0.97
+  100/120 ve019 said=yes conf=0.96
+  120/120 ae019 said=no conf=0.67
+calls done in 132s errors=0
+verify: VALID
+stats: {"domain": "python-exception-prediction", "n_calls": 120, "n_outcomes": 120, "accuracy": 1.0, "brier": 0.00545917, "ece": 0.04658333, "C": 0.9534, "verdict": "FACE_VALUE", "assay_reference": null}
