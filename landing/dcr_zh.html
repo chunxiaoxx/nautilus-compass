@@ -67,12 +67,37 @@
 </table>
 <p class="muted">同一个模型,换一个任务,可信度差了 40 个百分点。没有域报告,你根本不知道要打几折。</p>
 
-<h2>下单(内测中,人工处理)</h2>
-<p>以下任一方式:</p>
-<p><a class="cta" href="https://github.com/chunxiaoxx/nautilus-compass/issues/new?template=dcr-order.md">GitHub 下单(推荐,2 分钟)</a></p>
+<h2>下单</h2>
+<p><b>微信支付(推荐,扫码即付)</b>:</p>
+<div id="wxpay-section" style="text-align:center; padding:1rem; border:1px solid #d6d3d1; border-radius:8px; margin:1rem 0; background:#fff;">
+<p style="margin-bottom:.5rem; font-weight:bold;">点击「微信支付」生成二维码,扫码付款</p>
+<button onclick="createDcrOrder('dcr_quick')" style="background:#07c160; color:#fff; border:none; padding:.7rem 1.5rem; border-radius:6px; font-size:1.05rem; cursor:pointer; margin:.3rem;">¥699 快速版</button>
+<button onclick="createDcrOrder('dcr_standard')" style="background:#07c160; color:#fff; border:none; padding:.7rem 1.5rem; border-radius:6px; font-size:1.05rem; cursor:pointer; margin:.3rem;">¥1,799 标准版</button>
+<button onclick="createDcrOrder('dcr_deep')" style="background:#07c160; color:#fff; border:none; padding:.7rem 1.5rem; border-radius:6px; font-size:1.05rem; cursor:pointer; margin:.3rem;">¥3,499 深度版</button>
+<div id="qr-area" style="margin-top:1rem; display:none;">
+<div id="qr-box" style="display:inline-block; padding:1rem; border:2px solid #07c160; border-radius:8px;"></div>
+<p style="margin-top:.5rem; font-size:.9rem; color:#57534e;">扫码完成后,订单自动确认</p>
+</div>
+</div>
+<p>或 <a class="cta" href="https://github.com/chunxiaoxx/nautilus-compass/issues/new?template=dcr-order.md">GitHub 下单</a></p>
 <p>或邮件 chunxiaoxx@gmail.com(标题「AI 质检」)</p>
-<p>或微信扫码(备注「AI 质检」):</p>
-<p style="font-size: .95rem; color: #57534e;">[微信收款码待贴]</p>
+<script>
+const ACCT_API = 'https://hr.chunxiao.wang/accounts';
+const DCR_USER = '550a91f6bdd540c1';
+async function createDcrOrder(plan) {
+  try {
+    const r1 = await fetch(ACCT_API + '/api/order/create', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({user_id: DCR_USER, plan: plan})});
+    const o = await r1.json();
+    if (o.error) { alert('下单失败:' + o.error); return; }
+    const r2 = await fetch(ACCT_API + '/api/order/wxpay', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({order_id: o.order_id})});
+    const w = await r2.json();
+    if (w.code_url) {
+      document.getElementById('qr-area').style.display = 'block';
+      document.getElementById('qr-box').innerHTML = '<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=' + encodeURIComponent(w.code_url) + '" alt="微信支付二维码" style="width:220px;height:220px;">';
+    } else { alert('支付发起失败:' + (w.error || JSON.stringify(w))); }
+  } catch(e) { alert('网络错误:' + e.message); }
+}
+</script>
 
 <p class="muted">不限 Jev——任何输出置信度的 AI 模型都能测。
 为什么做这件事:<a href="/wall.html">我们的验证墙</a> ·
