@@ -1,0 +1,302 @@
+[
+ {
+  "qid": "sp000",
+  "pattern": "spike",
+  "truth": 1,
+  "group": "spike-missed"
+ },
+ {
+  "qid": "sp001",
+  "pattern": "spike",
+  "truth": 1,
+  "group": "spike-missed"
+ },
+ {
+  "qid": "sp002",
+  "pattern": "spike",
+  "truth": 1,
+  "group": "spike-missed"
+ },
+ {
+  "qid": "sp003",
+  "pattern": "spike",
+  "truth": 1,
+  "group": "spike-missed"
+ },
+ {
+  "qid": "sp004",
+  "pattern": "spike",
+  "truth": 1,
+  "group": "spike-missed"
+ },
+ {
+  "qid": "sp005",
+  "pattern": "spike",
+  "truth": 1,
+  "group": "spike-missed"
+ },
+ {
+  "qid": "sp006",
+  "pattern": "spike",
+  "truth": 1,
+  "group": "spike-missed"
+ },
+ {
+  "qid": "sp007",
+  "pattern": "spike",
+  "truth": 1,
+  "group": "spike-missed"
+ },
+ {
+  "qid": "sp008",
+  "pattern": "spike",
+  "truth": 1,
+  "group": "spike-missed"
+ },
+ {
+  "qid": "sp009",
+  "pattern": "spike",
+  "truth": 1,
+  "group": "spike-missed"
+ },
+ {
+  "qid": "sp010",
+  "pattern": "spike",
+  "truth": 1,
+  "group": "spike-missed"
+ },
+ {
+  "qid": "sp012",
+  "pattern": "spike",
+  "truth": 1,
+  "group": "spike-missed"
+ },
+ {
+  "qid": "sp013",
+  "pattern": "spike",
+  "truth": 1,
+  "group": "spike-missed"
+ },
+ {
+  "qid": "sp014",
+  "pattern": "spike",
+  "truth": 1,
+  "group": "spike-missed"
+ },
+ {
+  "qid": "sp011",
+  "pattern": "spike",
+  "truth": 1,
+  "group": "spike-caught"
+ },
+ {
+  "qid": "st000",
+  "pattern": "stuck",
+  "truth": 1,
+  "group": "stuck-missed"
+ },
+ {
+  "qid": "st001",
+  "pattern": "stuck",
+  "truth": 1,
+  "group": "stuck-missed"
+ },
+ {
+  "qid": "st003",
+  "pattern": "stuck",
+  "truth": 1,
+  "group": "stuck-missed"
+ },
+ {
+  "qid": "st004",
+  "pattern": "stuck",
+  "truth": 1,
+  "group": "stuck-missed"
+ },
+ {
+  "qid": "st006",
+  "pattern": "stuck",
+  "truth": 1,
+  "group": "stuck-missed"
+ },
+ {
+  "qid": "st007",
+  "pattern": "stuck",
+  "truth": 1,
+  "group": "stuck-missed"
+ },
+ {
+  "qid": "st008",
+  "pattern": "stuck",
+  "truth": 1,
+  "group": "stuck-missed"
+ },
+ {
+  "qid": "st009",
+  "pattern": "stuck",
+  "truth": 1,
+  "group": "stuck-missed"
+ },
+ {
+  "qid": "st010",
+  "pattern": "stuck",
+  "truth": 1,
+  "group": "stuck-missed"
+ },
+ {
+  "qid": "st011",
+  "pattern": "stuck",
+  "truth": 1,
+  "group": "stuck-missed"
+ },
+ {
+  "qid": "st012",
+  "pattern": "stuck",
+  "truth": 1,
+  "group": "stuck-missed"
+ },
+ {
+  "qid": "st013",
+  "pattern": "stuck",
+  "truth": 1,
+  "group": "stuck-missed"
+ },
+ {
+  "qid": "st014",
+  "pattern": "stuck",
+  "truth": 1,
+  "group": "stuck-missed"
+ },
+ {
+  "qid": "st002",
+  "pattern": "stuck",
+  "truth": 1,
+  "group": "stuck-caught"
+ },
+ {
+  "qid": "st005",
+  "pattern": "stuck",
+  "truth": 1,
+  "group": "stuck-caught"
+ },
+ {
+  "qid": "sm000",
+  "pattern": "smooth",
+  "truth": 0,
+  "group": "clean"
+ },
+ {
+  "qid": "sm001",
+  "pattern": "smooth",
+  "truth": 0,
+  "group": "clean"
+ },
+ {
+  "qid": "sm002",
+  "pattern": "smooth",
+  "truth": 0,
+  "group": "clean"
+ },
+ {
+  "qid": "sm003",
+  "pattern": "smooth",
+  "truth": 0,
+  "group": "clean"
+ },
+ {
+  "qid": "sm004",
+  "pattern": "smooth",
+  "truth": 0,
+  "group": "clean"
+ },
+ {
+  "qid": "sm005",
+  "pattern": "smooth",
+  "truth": 0,
+  "group": "clean"
+ },
+ {
+  "qid": "sm006",
+  "pattern": "smooth",
+  "truth": 0,
+  "group": "clean"
+ },
+ {
+  "qid": "sm007",
+  "pattern": "smooth",
+  "truth": 0,
+  "group": "clean"
+ },
+ {
+  "qid": "sm008",
+  "pattern": "smooth",
+  "truth": 0,
+  "group": "clean"
+ },
+ {
+  "qid": "sm009",
+  "pattern": "smooth",
+  "truth": 0,
+  "group": "clean"
+ },
+ {
+  "qid": "sm010",
+  "pattern": "smooth",
+  "truth": 0,
+  "group": "clean"
+ },
+ {
+  "qid": "sm011",
+  "pattern": "smooth",
+  "truth": 0,
+  "group": "clean"
+ },
+ {
+  "qid": "sm012",
+  "pattern": "smooth",
+  "truth": 0,
+  "group": "clean"
+ },
+ {
+  "qid": "sm013",
+  "pattern": "smooth",
+  "truth": 0,
+  "group": "clean"
+ },
+ {
+  "qid": "sm014",
+  "pattern": "smooth",
+  "truth": 0,
+  "group": "clean"
+ },
+ {
+  "qid": "sm015",
+  "pattern": "smooth",
+  "truth": 0,
+  "group": "clean"
+ },
+ {
+  "qid": "sm016",
+  "pattern": "smooth",
+  "truth": 0,
+  "group": "clean"
+ },
+ {
+  "qid": "sm017",
+  "pattern": "smooth",
+  "truth": 0,
+  "group": "clean"
+ },
+ {
+  "qid": "sm018",
+  "pattern": "smooth",
+  "truth": 0,
+  "group": "clean"
+ },
+ {
+  "qid": "sm019",
+  "pattern": "smooth",
+  "truth": 0,
+  "group": "clean"
+ }
+]

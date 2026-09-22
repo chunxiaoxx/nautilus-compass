@@ -1,0 +1,452 @@
+[
+ {
+  "qid": "sp000",
+  "pattern": "spike",
+  "group": "spike-missed",
+  "truth": 1,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "sp001",
+  "pattern": "spike",
+  "group": "spike-missed",
+  "truth": 1,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "sp002",
+  "pattern": "spike",
+  "group": "spike-missed",
+  "truth": 1,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "sp003",
+  "pattern": "spike",
+  "group": "spike-missed",
+  "truth": 1,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "sp004",
+  "pattern": "spike",
+  "group": "spike-missed",
+  "truth": 1,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "sp005",
+  "pattern": "spike",
+  "group": "spike-missed",
+  "truth": 1,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "sp006",
+  "pattern": "spike",
+  "group": "spike-missed",
+  "truth": 1,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "sp007",
+  "pattern": "spike",
+  "group": "spike-missed",
+  "truth": 1,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "sp008",
+  "pattern": "spike",
+  "group": "spike-missed",
+  "truth": 1,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "sp009",
+  "pattern": "spike",
+  "group": "spike-missed",
+  "truth": 1,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "sp010",
+  "pattern": "spike",
+  "group": "spike-missed",
+  "truth": 1,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "sp012",
+  "pattern": "spike",
+  "group": "spike-missed",
+  "truth": 1,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "sp013",
+  "pattern": "spike",
+  "group": "spike-missed",
+  "truth": 1,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "sp014",
+  "pattern": "spike",
+  "group": "spike-missed",
+  "truth": 1,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "sp011",
+  "pattern": "spike",
+  "group": "spike-caught",
+  "truth": 1,
+  "polarity_consistent": true,
+  "sym_decision_says_defect": true,
+  "conflict": false
+ },
+ {
+  "qid": "st000",
+  "pattern": "stuck",
+  "group": "stuck-missed",
+  "truth": 1,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "st001",
+  "pattern": "stuck",
+  "group": "stuck-missed",
+  "truth": 1,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "st003",
+  "pattern": "stuck",
+  "group": "stuck-missed",
+  "truth": 1,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "st004",
+  "pattern": "stuck",
+  "group": "stuck-missed",
+  "truth": 1,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "st006",
+  "pattern": "stuck",
+  "group": "stuck-missed",
+  "truth": 1,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "st007",
+  "pattern": "stuck",
+  "group": "stuck-missed",
+  "truth": 1,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "st008",
+  "pattern": "stuck",
+  "group": "stuck-missed",
+  "truth": 1,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "st009",
+  "pattern": "stuck",
+  "group": "stuck-missed",
+  "truth": 1,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "st010",
+  "pattern": "stuck",
+  "group": "stuck-missed",
+  "truth": 1,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "st011",
+  "pattern": "stuck",
+  "group": "stuck-missed",
+  "truth": 1,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "st012",
+  "pattern": "stuck",
+  "group": "stuck-missed",
+  "truth": 1,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "st013",
+  "pattern": "stuck",
+  "group": "stuck-missed",
+  "truth": 1,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "st014",
+  "pattern": "stuck",
+  "group": "stuck-missed",
+  "truth": 1,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "st002",
+  "pattern": "stuck",
+  "group": "stuck-caught",
+  "truth": 1,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "st005",
+  "pattern": "stuck",
+  "group": "stuck-caught",
+  "truth": 1,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "sm000",
+  "pattern": "smooth",
+  "group": "clean",
+  "truth": 0,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "sm001",
+  "pattern": "smooth",
+  "group": "clean",
+  "truth": 0,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "sm002",
+  "pattern": "smooth",
+  "group": "clean",
+  "truth": 0,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "sm003",
+  "pattern": "smooth",
+  "group": "clean",
+  "truth": 0,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "sm004",
+  "pattern": "smooth",
+  "group": "clean",
+  "truth": 0,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "sm005",
+  "pattern": "smooth",
+  "group": "clean",
+  "truth": 0,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "sm006",
+  "pattern": "smooth",
+  "group": "clean",
+  "truth": 0,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "sm007",
+  "pattern": "smooth",
+  "group": "clean",
+  "truth": 0,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "sm008",
+  "pattern": "smooth",
+  "group": "clean",
+  "truth": 0,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "sm009",
+  "pattern": "smooth",
+  "group": "clean",
+  "truth": 0,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "sm010",
+  "pattern": "smooth",
+  "group": "clean",
+  "truth": 0,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "sm011",
+  "pattern": "smooth",
+  "group": "clean",
+  "truth": 0,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "sm012",
+  "pattern": "smooth",
+  "group": "clean",
+  "truth": 0,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "sm013",
+  "pattern": "smooth",
+  "group": "clean",
+  "truth": 0,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "sm014",
+  "pattern": "smooth",
+  "group": "clean",
+  "truth": 0,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "sm015",
+  "pattern": "smooth",
+  "group": "clean",
+  "truth": 0,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "sm016",
+  "pattern": "smooth",
+  "group": "clean",
+  "truth": 0,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "sm017",
+  "pattern": "smooth",
+  "group": "clean",
+  "truth": 0,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "sm018",
+  "pattern": "smooth",
+  "group": "clean",
+  "truth": 0,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ },
+ {
+  "qid": "sm019",
+  "pattern": "smooth",
+  "group": "clean",
+  "truth": 0,
+  "polarity_consistent": false,
+  "sym_decision_says_defect": true,
+  "conflict": true
+ }
+]

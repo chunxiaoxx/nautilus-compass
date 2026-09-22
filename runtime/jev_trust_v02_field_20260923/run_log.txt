@@ -1,0 +1,11 @@
+  10/50 done
+  20/50 done
+  30/50 done
+  40/50 done
+  50/50 done
+calls done in 55s
+ALL: n=50 conflicts=49 (98%) | consistent-decision acc=1/1
+HARD (spike+stuck defects): n=30 conflicts=29 (97%) | consistent-decision acc=1/1
+  missed-in-d4: n=27 conflicts=27 (100%) | consistent-decision acc=0/0
+  caught-in-d4: n=3 conflicts=2 (67%) | consistent-decision acc=1/1
+CLEAN control: n=20 conflicts=20 (100%) | consistent-decision acc=0/0
