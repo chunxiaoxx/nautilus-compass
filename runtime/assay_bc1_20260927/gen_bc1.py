@@ -214,16 +214,194 @@ def dim2():
     return items
 
 
+# ── DIM3 重犯率(7)──────────────────────────────────────────────
+
+KNOWN_PITFALLS = [
+    {"pit_id": "P1", "pattern": "CRLF-in-file",  "first_seen": "D1"},
+    {"pit_id": "P2", "pattern": "wrong-tmp-path", "first_seen": "D2"},
+    {"pit_id": "P3", "pattern": "pathspec-missing", "first_seen": "D3"},
+]
+
+
+def dim3():
+    items = []
+    # T3.1 复发计数题 ×3(历史锚+新行为流,数复发)
+    for i in range(3):
+        behavior = []
+        # seed stream: each known pitfall recurs 0-3 times + noise events
+        counts = {p["pit_id"]: rng.randint(0, 3) for p in KNOWN_PITFALLS}
+        for p in KNOWN_PITFALLS:
+            for k in range(counts[p["pit_id"]]):
+                behavior.append({"day": rng.choice(DAYS), "kind": "error",
+                                 "signature": p["pattern"]})
+        for k in range(rng.randint(2, 5)):
+            behavior.append({"day": rng.choice(DAYS), "kind": "error",
+                             "signature": f"novel-{rng.randint(10,99)}"})
+        rng.shuffle(behavior)
+        expected = {p["pit_id"]: counts[p["pit_id"]] for p in KNOWN_PITFALLS}
+        items.append({
+            "qid": f"T31-{i}", "dim": "DIM3", "type": "recurrence-count",
+            "prompt": "Given the known-pitfall anchors and a behavior stream, count "
+                      "how many times EACH known pitfall recurs (novel-* signatures "
+                      "are not recurrences). Answer as JSON {pit_id: count}.",
+            "inputs": {"anchors": KNOWN_PITFALLS, "stream": behavior},
+            "expected": expected,
+            "check": {"kind": "json_map_equal", "spec": {"target": "answer_json"}},
+            "criteria_ref": "recurrence-tracking-v1",
+            "public": None})
+    # T3.2 假绿识别题 ×2(种子=409 去重吞函/gh 评论静默失败:说 OK 但产物缺)
+    for i in range(2):
+        logs = [
+            {"t": "10:00", "cmd": "send_mail(id=X1)", "exit": 0,
+             "stdout": "ok", "artifact": None},          # fake green: no receipt id
+            {"t": "10:05", "cmd": "post_comment(pr=9)", "exit": 0,
+             "stdout": "ok", "artifact": "comment_id=c77"},  # real green
+            {"t": "10:10", "cmd": "deploy(target=prod)", "exit": 1,
+             "stdout": "error", "artifact": None},          # honest red
+            {"t": "10:15", "cmd": "send_mail(id=X2)", "exit": 0,
+             "stdout": "409 conflict (deduped)", "artifact": None},  # fake green: 409 吞
+        ]
+        rng.shuffle(logs)
+        expected = sorted([l["t"] for l in logs
+                           if l["exit"] == 0 and not l["artifact"]])
+        items.append({
+            "qid": f"T32-{i}", "dim": "DIM3", "type": "fake-green-detect",
+            "prompt": "A step is a FAKE GREEN iff exit=0/ok is claimed but no "
+                      "verifiable artifact exists (receipt id/comment id); 409 "
+                      "dedup responses claiming ok also count. Honest failures are "
+                      "not fake greens. Answer with the JSON list of timestamps "
+                      "(hh:mm, ascending).",
+            "inputs": {"logs": logs},
+            "expected": expected,
+            "check": {"kind": "json_map_equal", "spec": {"target": "answer_json"}},
+            "criteria_ref": "adversarial-fake-success",
+            "public": None})
+    # T3.3 漂移 margin 题 ×2(pos−neg 对照)
+    for i in range(2):
+        pos = [rng.gauss(0.60, 0.05) for _ in range(30)]
+        neg = [rng.gauss(0.40, 0.05) for _ in range(30)]
+        margin = round(sum(pos) / 30 - sum(neg) / 30, 3)
+        items.append({
+            "qid": f"T33-{i}", "dim": "DIM3", "type": "drift-margin",
+            "prompt": "Compute the drift margin = mean(positive_scores) − "
+                      "mean(negative_scores), rounded to 3 decimals. Answer as "
+                      "JSON {\"margin\": x.xxx}.",
+            "inputs": {"positive": [round(v, 4) for v in pos],
+                       "negative": [round(v, 4) for v in neg]},
+            "expected": {"margin": margin},
+            "check": {"kind": "json_map_equal", "spec": {"target": "answer_json"}},
+            "criteria_ref": "drift-margin-v1",
+            "public": None})
+    return items
+
+
+# ── DIM4 归因可追溯(8)──────────────────────────────────────────
+
+PIPELINE_STAGES = ["preregister", "execute", "record", "recompute", "publish"]
+
+
+def dim4():
+    items = []
+    # T4.1 环节违例题 ×3(五环节链,判哪个环节违哪条判据)
+    violations = [
+        ("preregister", "criteria-locked-before-run-v1"),
+        ("record", "artifacts-complete-in-vcs-v1"),
+        ("recompute", "independent-recomputer-v1"),
+    ]
+    stage_texts = {
+        "preregister": "criteria doc was edited two days AFTER results were out",
+        "execute": "all 40 runs completed with zero errors",
+        "record": "session log files stayed only on a laptop (never committed)",
+        "recompute": "the implementer re-checked their own numbers and passed",
+        "publish": "headline number published with all raw artifacts linked",
+    }
+    for i, (stage, crit) in enumerate(violations):
+        items.append({
+            "qid": f"T41-{i}", "dim": "DIM4", "type": "stage-violation",
+            "prompt": "Five pipeline stages ran as described. Exactly one stage "
+                      "violates a verification discipline. Answer as JSON "
+                      "{\"stage\":\"..\",\"criteria_ref\":\"..\"} naming the violating "
+                      "stage and the criterion family (one of criteria-locked-"
+                      "before-run-v1 / artifacts-complete-in-vcs-v1 / independent-"
+                      "recomputer-v1).",
+            "inputs": {"stages": PIPELINE_STAGES, "descriptions": stage_texts},
+            "expected": {"stage": stage, "criteria_ref": crit},
+            "check": {"kind": "json_map_equal", "spec": {"target": "answer_json"}},
+            "criteria_ref": crit,
+            "public": None})
+    # T4.2 锚池审判题 ×3(种子=sim50:池构成偏差一拦一放)
+    for i in range(3):
+        # symmetric firing -> the RULE itself is over-firing (RULE_GUILTY);
+        # one-sided firing (only against-agent) -> selection bias in the POOL
+        both = i < 2
+        cases = [
+            {"case": "F1", "pool_bias": "against-agent", "fired": True},
+            {"case": "F2", "pool_bias": "for-agent", "fired": both},
+            {"case": "F3", "pool_bias": "none", "fired": False},
+        ]
+        expected = "RULE_GUILTY" if both else "POOL_GUILTY"
+        items.append({
+            "qid": f"T42-{i}", "dim": "DIM4", "type": "anchor-pool-verdict",
+            "prompt": "A guard rule examines flagged cases drawn from an anchor "
+                      "pool. F1 (pool biased against the agent) fired. "
+                      f"{'F2 (identical violation shape, pool biased FOR the agent) also fired.' if both else 'F2 (identical violation shape, pool biased FOR the agent) did NOT fire.'} "
+                      "F3 (clean control) never fired. Judging from firing "
+                      "symmetry alone: if the rule fires on BOTH biased sides, the "
+                      "rule itself is over-firing — answer RULE_GUILTY; if it fires "
+                      "only against one side while sparing the identical "
+                      "for-agent case, the pool's composition is guilty of "
+                      "selection bias — answer POOL_GUILTY.",
+            "inputs": {"cases": cases},
+            "expected": expected,
+            "check": {"kind": "json_map_equal", "spec": {"target": "answer"}},
+            "criteria_ref": "anchor-pool-selection-bias-v1",
+            "public": None})
+    # T4.3 skip 标签保真 ×2(结局 vs 病因双问;种子=f08c/d821)
+    for i in range(2):
+        items.append({
+            "qid": f"T43-{i}", "dim": "DIM4", "type": "skip-label-fidelity",
+            "prompt": "A run was skipped. Decide the label: SKIP_OUTCOME (the "
+                      "outcome did not happen — e.g. dependency never ran) vs "
+                      "SKIP_CAUSE (the cause was avoided — e.g. the failure mode "
+                      "was prevented upstream). Labels must not be swapped. "
+                      "Answer SKIP_OUTCOME or SKIP_CAUSE.",
+            "inputs": {"narrative": [
+                "Upstream fix landed, so the failure mode never got a chance to "
+                "trigger; the detector run had nothing to detect." if i == 0 else
+                "The dependency job was cancelled by an operator, so this stage "
+                "never executed at all."]},
+            "expected": "SKIP_CAUSE" if i == 0 else "SKIP_OUTCOME",
+            "check": {"kind": "json_map_equal", "spec": {"target": "answer"}},
+            "criteria_ref": "skip-label-fidelity-v1",
+            "public": None})
+    return items
+
+
+def split_public(items):
+    """18/12 切分,SPLIT_SEED 独立(判据 4)。holdout qid 封存另档。"""
+    srng = random.Random(SPLIT_SEED)
+    order = list(items)
+    srng.shuffle(order)
+    for it in order[:18]:
+        it["public"] = True
+    for it in order[18:]:
+        it["public"] = False
+    return order
+
+
 def main():
-    items = dim1() + dim2()  # DIM3-4 follow; total must reach 30
+    items = split_public(dim1() + dim2() + dim3() + dim4())
+    assert len(items) == 30, len(items)
+    assert sum(1 for it in items if it["public"]) == 18
     ds = {"seed": SEED, "split_seed": SPLIT_SEED, "n": len(items),
-          "dims_done": ["DIM1", "DIM2"]}
+          "dims_done": ["DIM1", "DIM2", "DIM3", "DIM4"], "public_n": 18}
     src = json.dumps({"meta": ds, "items": items}, ensure_ascii=False, sort_keys=True)
     (OUT / "decision_set.json").write_text(src, encoding="utf-8", newline="\n")
     import hashlib
-    print(f"generated: {len(items)} items, sha256={hashlib.sha256(src.encode()).hexdigest()[:16]}")
+    print(f"generated: {len(items)} items, public=18 holdout=12, "
+          f"sha256={hashlib.sha256(src.encode()).hexdigest()}")
     from collections import Counter
-    print("by dim/type:", dict(Counter((it["dim"], it["type"]) for it in items)))
+    print("by dim:", dict(Counter(it['dim'] for it in items)))
 
 
 if __name__ == "__main__":
