@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jev-trust"
+version = "0.1.0"
+description = "Trust middleware for Jev decision APIs - log every call, measure calibration in YOUR domain, spend confidence at its verified exchange rate."
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+keywords = ["jev", "calibration", "trust", "ai", "agents", "decision-making", "verification", "ece", "brier"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Quality Assurance",
+]
+
+[project.urls]
+Homepage = "https://github.com/chunxiaoxx/nautilus-compass"
+Research = "https://github.com/chunxiaoxx/nautilus-compass/discussions/59"
+Wall = "https://compass.nautilus.social/wall.html"
+
+[tool.setuptools]
+packages = ["jev_trust"]
