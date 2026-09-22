@@ -7,7 +7,7 @@
 
 | # | 任务 | Owner | 判据(可验收) | Deadline | 状态 |
 |---|---|---|---|---|---|
-| L1 | BC1 生成器+判分管线 | compass | decision_set sha 入库+VerifyPack claim 编译 30/30 | 9/25 | 🔄 |
+| L1 | BC1 生成器+判分管线 | compass | decision_set sha 入库+VerifyPack claim 编译 30/30 | 9/25 | 🔄 15/30(DIM1+2 完成) |
 | L2 | BC1 自测成绩单+上墙 | compass | 签名成绩单+非实现者复算 GREEN | 9/26 | ⬜ |
 | L3 | BC1 发布链(GH/Discord/中文) | compass+日报 | 外网可达+公告链+试考入口 | 9/27 | ⬜ |
 | L4 | v0.2 实测非实现者复算 | compass | 复算报告 GREEN | 9/24 | ⬜ |
