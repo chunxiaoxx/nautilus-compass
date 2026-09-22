@@ -43,3 +43,31 @@ GENESIS_MEMTENSOR_OMNIMEMEVAL.md)——**验的是其自洽性与溯源,不是�
   不同榜单/口径的分数禁止混读。
 - judge=gpt-4o-mini 的 LLM-as-judge 依赖是方法固有局限(生产者已自披露)。
 - 本目录不构成采购建议;买方尽调走 SKU-A(L1 算术/L2 轨迹/L3 全栈)。
+
+---
+
+## 汇率牌格式 v1(2026-09-22 · 承校准货币立项 · C=1−ECE)
+
+> 校准货币定义:C(agent, domain, t) = 1 − ECE_t。做市方只对「此 C 值在 TTL 内
+> 经过独立复算」背书,不对分数本身背书。C 不可自报;自家同尺照登。
+
+| 系统 | 域 | C(校准货币) | TTL | 趋势 | 做市方 | 来源 |
+|---|---|---|---|---|---|---|
+| Jev 1.13.0(hosted) | 闭合确定性任务 | **0.959** | 2026-12-21 | ▬ 新上市 | Assay | 研究#1 ECE 0.041 |
+| Jev 1.13.0(hosted) | 对抗压测 | **0.988** | 2026-12-21 | ▬ 新上市 | Assay | 研究#2 ECE 0.012 |
+| Jev 1.13.0(hosted) | 合成邮件分诊(mini) | **0.831**(spam 布尔) | 2026-09-22 | ▼ 单次 | Assay | mini-DCR dry-run ECE 0.169 |
+| Jev 1.13.0(hosted) | 合成邮件三分类 | **0.086**(choice) | 2026-09-22 | ▼ 单次 | Assay | mini-DCR choice acc 50%@conf 91% |
+| NanoJev 0.6B(local) | 轨迹重放 | **≈1.000** | 2026-12-19 | ▬ 新上市 | Assay | Tier-3 四锚全 exact |
+| NanoJev 0.6B(local) | 校准基准重放 | **≈1.000** | 2026-12-19 | ▬ 新上市 | Assay | Tier-2 15 指标 Δ1.99e-08 |
+| MemOS(MemTensor) | OmniMemEval 自报 | ⚪ UNVERIFIED | — | — | —(Tier-1 溯源已验,评测本身未复算) | README 溯源 10/10 |
+| Mem0 | OmniMemEval 自报 | ⚪ UNVERIFIED | — | — | — | 同 |
+| EverOS | OmniMemEval 自报 | ⚪ UNVERIFIED | — | — | — | 同 |
+| …其余 12 系统 | | ⚪ UNVERIFIED | — | — | — | 见上方 v0 目录 |
+| NautilusMem(自家) | LME-V2 | ⚪ UNVERIFIED | — | — | —(**同尺照登**) | 自报 web 40.0/ent 38.4 |
+
+**读法**:C≥0.80=可信任面值;0.50-0.79=按 C 折扣信任;C<0.50=降级(人工复核);
+UNVERIFIED=未验(非差评)。**趋势列**:▲=最新复算高于上次;▬=持平;▼=低于上次。
+mini-DCR 的 choice C=0.086 就是活教材:Jev 在邮件三分类域的 0.9 置信当 0.5 用。
+
+**上榜通道**:DCR 订单(免费首 10/付费)→ 独立复算出 C 值 → 挂牌(客户可选匿名
+域名,但 C 值与 TTL 公开)。**贬值通道**:§5b 挑战成功 → C 硬着陆 0 + 赔偿。
