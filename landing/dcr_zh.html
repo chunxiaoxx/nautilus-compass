@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI 质检报告 — 试金局 Nautilus Assay</title>
+<style>
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+         max-width: 42rem; margin: 2rem auto; padding: 0 1.2rem;
+         line-height: 1.8; font-size: 17px; color: #1a1a1a; background: #faf9f6; }
+  h1 { font-size: 1.6rem; } h2 { font-size: 1.2rem; color: #7c2d12;
+       border-bottom: 2px solid #b45309; padding-bottom: .25rem; margin-top: 2rem; }
+  .card { border: 1px solid #d6d3d1; border-radius: 8px; padding: 1rem 1.2rem;
+          margin: 1rem 0; background: #fff; }
+  .price { font-size: 1.5rem; font-weight: bold; color: #7c2d12; }
+  .q { background: #fef3c7; border-radius: 8px; padding: 1rem 1.2rem; margin: 1rem 0;
+       font-size: 1.05rem; }
+  .muted { color: #57534e; font-size: .9rem; }
+  a { color: #9a3412; }
+  .cta { display: inline-block; background: #7c2d12; color: #fff; padding: .7rem 1.5rem;
+         border-radius: 6px; text-decoration: none; font-weight: bold; margin-top: .5rem;
+         font-size: 1.05rem; }
+  .teeth { background: #fee2e2; border-radius: 8px; padding: .8rem 1rem; margin: 1rem 0;
+           font-size: .95rem; }
+</style>
+</head>
+<body>
+<h1>AI 质检报告</h1>
+<p class="muted">试金局(Nautilus Assay)· 独立第三方 · 报告带签名 · <a href="/wall.html">我们的验证记录</a></p>
+
+<div class="q"><b>你的 AI 说自己的判断 90% 可信——在谁的数据上?不在你的。</b></div>
+
+<p>你正在用 AI 做邮件分拣、工单分类、内容审核、风控标记。AI 厂商宣传的准确率
+是他们在自己的测试集上测的,不是在你的业务数据上。在把你产品的安全阈值设成
+0.9 之前,你应该知道 0.9 的置信度<b>在你的领域</b>到底值多少。</p>
+
+<h2>我们怎么测</h2>
+<ol>
+<li><b>你给 20-50 条业务判断样本</b>(匿名化——敏感数据不出你的服务器;或脱敏上传;或签保密协议)</li>
+<li><b>我们用 AI 在你的域上全量测试</b>(200-600 道按你的业务模式生成的判断题,一次性全跑,不挑不选,每次调用原始记录全部存档)</li>
+<li><b>48 小时给你一份带签名的报告</b>:你的领域的准确率、校准误差(Brier/ECE)、
+与 AI 厂商通用基线的偏差、以及<b>可操作的使用阈值建议</b>(「你的领域里 0.9 的
+置信度当 0.77 用」);全部原始数据随附——任何人可以重算我们的数字。</li>
+</ol>
+
+<div class="teeth">
+<b>出了事我们赔:</b>如果我们验错了——同规格免费重测 + 全额退款 + 承担挑战成本 +
+我们的错误记录清零。<a href="https://github.com/chunxiaoxx/nautilus-compass/blob/main/docs/protocol/ASSAY_PROTOCOL_V0.md">赔付条款(公开)</a>。
+这是国内第一份敢写赔付的 AI 质检。
+</div>
+
+<h2>定价</h2>
+<div class="card"><span class="price">¥699</span> · <b>快速版</b><br>
+匿名模式 · 200 道题 · 单模型版本 · 48 小时出报告</div>
+<div class="card"><span class="price">¥1,799</span> · <b>标准版</b><br>
+脱敏样本 · 400 道题 · 含难度分层+对抗测试 · 48 小时</div>
+<div class="card"><span class="price">¥3,499</span> · <b>深度版</b><br>
+真实样本+保密协议 · 600 道题 · 全对抗测试组+复跑稳定性 · 72 小时</div>
+<p class="muted">加购月度重测(模型版本更新时触发):各档 +40%/月</p>
+
+<h2>真实案例(我们测的)</h2>
+<p>我们拿合成的邮件分诊任务测了 Jev(刚发布的决策模型):</p>
+<table style="width:100%; border-collapse: collapse; font-size: .95rem;">
+<tr style="border-bottom: 1px solid #d6d3d1;"><td style="padding: .4rem;"><b>任务</b></td><td><b>Jev 自称置信度</b></td><td><b>实际准确率</b></td><td><b>该打几折</b></td></tr>
+<tr style="border-bottom: 1px solid #e5e5e5;"><td style="padding: .4rem;">判断是否垃圾邮件</td><td>85%</td><td>90%</td><td>✅ 基本可信</td></tr>
+<tr><td style="padding: .4rem;">三分类(紧急/普通/归档)</td><td>91%</td><td style="color: #b91c1c; font-weight: bold;">50%</td><td style="color: #b91c1c; font-weight: bold;">打对折!</td></td></tr>
+</table>
+<p class="muted">同一个模型,换一个任务,可信度差了 40 个百分点。没有域报告,你根本不知道要打几折。</p>
+
+<h2>下单(内测中,人工处理)</h2>
+<p>以下任一方式:</p>
+<p><a class="cta" href="https://github.com/chunxiaoxx/nautilus-compass/issues/new?template=dcr-order.md">GitHub 下单(推荐,2 分钟)</a></p>
+<p>或邮件 chunxiaoxx@gmail.com(标题「AI 质检」)</p>
+<p>或微信扫码(备注「AI 质检」):</p>
+<p style="font-size: .95rem; color: #57534e;">[微信收款码待贴]</p>
+
+<p class="muted">不限 Jev——任何输出置信度的 AI 模型都能测。
+为什么做这件事:<a href="/wall.html">我们的验证墙</a> ·
+已发布的研究:<a href="https://github.com/chunxiaoxx/nautilus-compass/discussions/59">Jev 校准研究 #1+#2</a></p>
+</body>
+</html>
