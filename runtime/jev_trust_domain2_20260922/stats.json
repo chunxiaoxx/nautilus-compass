@@ -1,0 +1,17 @@
+{
+ "domain": "code-patch-behavior",
+ "n_calls": 120,
+ "n_outcomes": 120,
+ "accuracy": 0.925,
+ "brier": 0.05750417,
+ "ece": 0.13425,
+ "C": 0.8658,
+ "verdict": "FACE_VALUE",
+ "assay_reference": null,
+ "decision_set_sha256": "6fd6294808c995b3601394ce35681173b22aeb515ced7b5919c74eb1a06db3b0",
+ "errors": 0,
+ "log": "session.jsonl",
+ "sig": "session.jsonl.sig",
+ "pubkey": "bae21bd4e830fdc9c77ff804a32a5ade987cd24024aeff148b8a683091333cab",
+ "verify": "VALID"
+}

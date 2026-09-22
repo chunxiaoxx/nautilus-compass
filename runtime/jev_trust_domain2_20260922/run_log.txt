@@ -1,0 +1,13 @@
+decision set: n=120 positive=37 sha256=6fd6294808c995b3
+  1/120 ob000 said=yes conf=0.81
+  2/120 ob001 said=yes conf=0.81
+  3/120 ob002 said=yes conf=0.76
+  20/120 ob019 said=no conf=0.9
+  40/120 bd019 said=yes conf=0.87
+  60/120 nc019 said=no conf=0.74
+  80/120 df019 said=no conf=0.9
+  100/120 tc019 said=yes conf=0.73
+  120/120 rn019 said=no conf=0.89
+calls done in 133s errors=0
+verify: VALID
+stats: {"domain": "code-patch-behavior", "n_calls": 120, "n_outcomes": 120, "accuracy": 0.925, "brier": 0.05750417, "ece": 0.13425, "C": 0.8658, "verdict": "FACE_VALUE", "assay_reference": null}
