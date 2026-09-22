@@ -1,0 +1,13 @@
+decision set: n=120 positive=60 sha256=4af6c5a80ce5328e verifier=clean
+  1/120 sp000 said=yes conf=0.73
+  2/120 sp001 said=yes conf=0.61
+  3/120 sp002 said=yes conf=0.67
+  20/120 sp019 said=yes conf=0.61
+  40/120 st019 said=yes conf=0.53
+  60/120 lm019 said=yes conf=0.6
+  80/120 dr019 said=yes conf=0.6
+  100/120 sm019 said=yes conf=0.57
+  120/120 nz019 said=yes conf=0.64
+calls done in 136s errors=0
+verify: VALID
+stats: {"domain": "embodied-qc-labeling", "n_calls": 120, "n_outcomes": 120, "accuracy": 0.5, "brier": 0.2061925, "ece": 0.31075, "C": 0.6892, "verdict": "DISCOUNT", "assay_reference": null}

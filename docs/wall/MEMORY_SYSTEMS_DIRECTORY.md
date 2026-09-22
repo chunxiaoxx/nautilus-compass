@@ -57,6 +57,7 @@ GENESIS_MEMTENSOR_OMNIMEMEVAL.md)——**验的是其自洽性与溯源,不是�
 | Jev 1.13.0(hosted) | 对抗压测 | **0.988** | 2026-12-21 | ▬ 新上市 | Assay | 研究#2 ECE 0.012 |
 | Jev 1.13.0(hosted) | python 异常预测(jev-trust 首跑) | **0.953** | 2026-12-21 | ▬ 新上市 | Assay | n=120 acc 100% ECE 0.0466(待非实现者复算) |
 | Jev 1.13.0(hosted) | 代码 patch 行为判定(jev-trust 域2) | **0.866** | 2026-12-21 | ▼ 较域1 | Assay | n=120 acc 92.5% ECE 0.1343(待非实现者复算) |
+| Jev 1.13.0(hosted) | 具身数据 QC 标注(jev-trust 域3) | **0.689** | 2026-12-21 | ▼ 较域2 | Assay | n=120 acc 50%(全 yes 策略:召回 100%/精确 50%)ECE 0.3108(待非实现者复算) |
 | Jev 1.13.0(hosted) | 合成邮件分诊(mini) | **0.831**(spam 布尔) | 2026-09-22 | ▼ 单次 | Assay | mini-DCR dry-run ECE 0.169 |
 | Jev 1.13.0(hosted) | 合成邮件三分类 | **0.086**(choice) | 2026-09-22 | ▼ 单次 | Assay | mini-DCR choice acc 50%@conf 91% |
 | NanoJev 0.6B(local) | 轨迹重放 | **≈1.000** | 2026-12-19 | ▬ 新上市 | Assay | Tier-3 四锚全 exact |

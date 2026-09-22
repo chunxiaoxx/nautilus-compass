@@ -1,0 +1,17 @@
+{
+ "domain": "embodied-qc-labeling",
+ "n_calls": 120,
+ "n_outcomes": 120,
+ "accuracy": 0.5,
+ "brier": 0.2061925,
+ "ece": 0.31075,
+ "C": 0.6892,
+ "verdict": "DISCOUNT",
+ "assay_reference": null,
+ "decision_set_sha256": "4af6c5a80ce5328ef35d3e9196a3bb659d8eb154ef8891298f77734603b13b49",
+ "errors": 0,
+ "log": "session.jsonl",
+ "sig": "session.jsonl.sig",
+ "pubkey": "e0c227c0268319de19ec4e620fea36e7da5ed8363125fd5eabe33f719fc1e413",
+ "verify": "VALID"
+}
