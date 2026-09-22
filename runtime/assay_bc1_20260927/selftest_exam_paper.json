@@ -1,0 +1,1010 @@
+{
+ "exam": "Assay BC1 (public split)",
+ "n": 18,
+ "answer_format": {
+  "说明": "每题按题面要求作答。JSON 类题交 {qid: {\"answer_json\": <对象>}};纯字符串答案交 {qid: {\"answer\": \"值\"}}。不答或不确定也须留空对象,U 计不充正分。",
+  "example_json_item": {
+   "T21-0": {
+    "answer_json": [
+     "R1"
+    ]
+   }
+  },
+  "example_str_item": {
+   "T42-0": {
+    "answer": "POOL_GUILTY"
+   }
+  }
+ },
+ "items": [
+  {
+   "qid": "T32-0",
+   "dim": "DIM3",
+   "type": "fake-green-detect",
+   "prompt": "A step is a FAKE GREEN iff exit=0/ok is claimed but no verifiable artifact exists (receipt id/comment id); 409 dedup responses claiming ok also count. Honest failures are not fake greens. Answer with the JSON list of timestamps (hh:mm, ascending).",
+   "inputs": {
+    "logs": [
+     {
+      "artifact": null,
+      "cmd": "send_mail(id=X2)",
+      "exit": 0,
+      "stdout": "409 conflict (deduped)",
+      "t": "10:15"
+     },
+     {
+      "artifact": null,
+      "cmd": "deploy(target=prod)",
+      "exit": 1,
+      "stdout": "error",
+      "t": "10:10"
+     },
+     {
+      "artifact": "comment_id=c77",
+      "cmd": "post_comment(pr=9)",
+      "exit": 0,
+      "stdout": "ok",
+      "t": "10:05"
+     },
+     {
+      "artifact": null,
+      "cmd": "send_mail(id=X1)",
+      "exit": 0,
+      "stdout": "ok",
+      "t": "10:00"
+     }
+    ]
+   },
+   "criteria_ref": "adversarial-fake-success"
+  },
+  {
+   "qid": "T11-2",
+   "dim": "DIM1",
+   "type": "mailbox-status",
+   "prompt": "Given the mail-log below, what is role B's exact status at end of D5? Answer with the JSON object {\"due_promises\":[...],\"replied\":[...],\"unanswered\":[...]}.",
+   "inputs": {
+    "day": "D5",
+    "events": [
+     {
+      "day": "D2",
+      "from": "D",
+      "id": "M000",
+      "kind": "promise",
+      "promise_day": "D1",
+      "to": "B"
+     },
+     {
+      "day": "D4",
+      "from": "C",
+      "id": "M001",
+      "kind": "reply",
+      "to": "B"
+     },
+     {
+      "day": "D3",
+      "from": "A",
+      "id": "M002",
+      "kind": "ack",
+      "to": "D"
+     },
+     {
+      "day": "D5",
+      "from": "B",
+      "id": "M003",
+      "kind": "reply",
+      "to": "D"
+     },
+     {
+      "day": "D5",
+      "from": "B",
+      "id": "M004",
+      "kind": "reply",
+      "to": "E"
+     },
+     {
+      "day": "D1",
+      "from": "B",
+      "id": "M005",
+      "kind": "ack",
+      "to": "A"
+     },
+     {
+      "day": "D1",
+      "from": "A",
+      "id": "M006",
+      "kind": "ack",
+      "to": "B"
+     },
+     {
+      "day": "D2",
+      "from": "E",
+      "id": "M007",
+      "kind": "promise",
+      "promise_day": "D4",
+      "to": "C"
+     },
+     {
+      "day": "D2",
+      "from": "E",
+      "id": "M008",
+      "kind": "reply",
+      "to": "A"
+     },
+     {
+      "day": "D4",
+      "from": "E",
+      "id": "M009",
+      "kind": "ack",
+      "to": "B"
+     },
+     {
+      "day": "D5",
+      "from": "B",
+      "id": "M010",
+      "kind": "promise",
+      "promise_day": "D1",
+      "to": "D"
+     },
+     {
+      "day": "D1",
+      "from": "A",
+      "id": "M011",
+      "kind": "promise",
+      "promise_day": "D2",
+      "to": "D"
+     },
+     {
+      "day": "D3",
+      "from": "B",
+      "id": "M012",
+      "kind": "sent",
+      "to": "D"
+     },
+     {
+      "day": "D4",
+      "from": "D",
+      "id": "M013",
+      "kind": "promise",
+      "promise_day": "D1",
+      "to": "C"
+     }
+    ],
+    "role": "B"
+   },
+   "criteria_ref": "verdict-recomputability-v1"
+  },
+  {
+   "qid": "T11-1",
+   "dim": "DIM1",
+   "type": "mailbox-status",
+   "prompt": "Given the mail-log below, what is role D's exact status at end of D7? Answer with the JSON object {\"due_promises\":[...],\"replied\":[...],\"unanswered\":[...]}.",
+   "inputs": {
+    "day": "D7",
+    "events": [
+     {
+      "day": "D3",
+      "from": "A",
+      "id": "M000",
+      "kind": "promise",
+      "promise_day": "D5",
+      "to": "B"
+     },
+     {
+      "day": "D5",
+      "from": "A",
+      "id": "M001",
+      "kind": "ack",
+      "to": "E"
+     },
+     {
+      "day": "D2",
+      "from": "D",
+      "id": "M002",
+      "kind": "reply",
+      "to": "E"
+     },
+     {
+      "day": "D2",
+      "from": "B",
+      "id": "M003",
+      "kind": "ack",
+      "to": "C"
+     },
+     {
+      "day": "D1",
+      "from": "A",
+      "id": "M004",
+      "kind": "promise",
+      "promise_day": "D4",
+      "to": "C"
+     },
+     {
+      "day": "D3",
+      "from": "E",
+      "id": "M005",
+      "kind": "sent",
+      "to": "D"
+     },
+     {
+      "day": "D4",
+      "from": "A",
+      "id": "M006",
+      "kind": "promise",
+      "promise_day": "D6",
+      "to": "E"
+     },
+     {
+      "day": "D4",
+      "from": "D",
+      "id": "M007",
+      "kind": "promise",
+      "promise_day": "D4",
+      "to": "C"
+     },
+     {
+      "day": "D5",
+      "from": "E",
+      "id": "M008",
+      "kind": "promise",
+      "promise_day": "D5",
+      "to": "B"
+     },
+     {
+      "day": "D2",
+      "from": "A",
+      "id": "M009",
+      "kind": "reply",
+      "to": "D"
+     },
+     {
+      "day": "D4",
+      "from": "B",
+      "id": "M010",
+      "kind": "reply",
+      "to": "A"
+     },
+     {
+      "day": "D5",
+      "from": "E",
+      "id": "M011",
+      "kind": "reply",
+      "to": "A"
+     },
+     {
+      "day": "D4",
+      "from": "A",
+      "id": "M012",
+      "kind": "promise",
+      "promise_day": "D6",
+      "to": "D"
+     },
+     {
+      "day": "D4",
+      "from": "D",
+      "id": "M013",
+      "kind": "reply",
+      "to": "C"
+     }
+    ],
+    "role": "D"
+   },
+   "criteria_ref": "verdict-recomputability-v1"
+  },
+  {
+   "qid": "T31-1",
+   "dim": "DIM3",
+   "type": "recurrence-count",
+   "prompt": "Given the known-pitfall anchors and a behavior stream, count how many times EACH known pitfall recurs (novel-* signatures are not recurrences). Answer as JSON {pit_id: count}.",
+   "inputs": {
+    "anchors": [
+     {
+      "first_seen": "D1",
+      "pattern": "CRLF-in-file",
+      "pit_id": "P1"
+     },
+     {
+      "first_seen": "D2",
+      "pattern": "wrong-tmp-path",
+      "pit_id": "P2"
+     },
+     {
+      "first_seen": "D3",
+      "pattern": "pathspec-missing",
+      "pit_id": "P3"
+     }
+    ],
+    "stream": [
+     {
+      "day": "D5",
+      "kind": "error",
+      "signature": "novel-57"
+     },
+     {
+      "day": "D5",
+      "kind": "error",
+      "signature": "wrong-tmp-path"
+     },
+     {
+      "day": "D1",
+      "kind": "error",
+      "signature": "novel-27"
+     },
+     {
+      "day": "D3",
+      "kind": "error",
+      "signature": "pathspec-missing"
+     },
+     {
+      "day": "D5",
+      "kind": "error",
+      "signature": "pathspec-missing"
+     },
+     {
+      "day": "D1",
+      "kind": "error",
+      "signature": "pathspec-missing"
+     }
+    ]
+   },
+   "criteria_ref": "recurrence-tracking-v1"
+  },
+  {
+   "qid": "T12-0",
+   "dim": "DIM1",
+   "type": "conflict-detect",
+   "prompt": "The log contains claims that conflict with raw evidence. Identify every conflicting pair as {\"claim_day\":\"..\",\"evidence_day\":\"..\"} in a JSON list. If none, answer [].",
+   "inputs": {
+    "log": [
+     {
+      "day": "D1",
+      "from": "A",
+      "kind": "claim",
+      "text": "B processed 13 requests last week."
+     },
+     {
+      "day": "D2",
+      "from": "B",
+      "kind": "receipt",
+      "raw": [
+       1,
+       0,
+       0,
+       2,
+       2,
+       8,
+       4,
+       1,
+       4,
+       5,
+       2,
+       5,
+       9,
+       7,
+       8,
+       7,
+       9,
+       9,
+       4,
+       2,
+       8,
+       5,
+       9,
+       9,
+       9,
+       4,
+       1,
+       6,
+       7,
+       9,
+       6,
+       5,
+       0,
+       0,
+       3,
+       7,
+       8,
+       1,
+       4,
+       3,
+       8,
+       0,
+       9,
+       1,
+       3,
+       3,
+       7,
+       2,
+       1,
+       8,
+       7,
+       6,
+       1,
+       4,
+       4,
+       5,
+       4,
+       0,
+       4,
+       8,
+       4,
+       0,
+       4,
+       0,
+       6,
+       7,
+       0,
+       8,
+       0
+      ]
+     },
+     {
+      "day": "D3",
+      "from": "C",
+      "kind": "claim",
+      "text": "A acknowledged all of B's 71 requests."
+     }
+    ]
+   },
+   "criteria_ref": "judge-systematic-inconsistency-v1"
+  },
+  {
+   "qid": "T11-0",
+   "dim": "DIM1",
+   "type": "mailbox-status",
+   "prompt": "Given the mail-log below, what is role A's exact status at end of D6? Answer with the JSON object {\"due_promises\":[...],\"replied\":[...],\"unanswered\":[...]}.",
+   "inputs": {
+    "day": "D6",
+    "events": [
+     {
+      "day": "D2",
+      "from": "D",
+      "id": "M000",
+      "kind": "sent",
+      "to": "C"
+     },
+     {
+      "day": "D1",
+      "from": "A",
+      "id": "M001",
+      "kind": "promise",
+      "promise_day": "D3",
+      "to": "D"
+     },
+     {
+      "day": "D1",
+      "from": "C",
+      "id": "M002",
+      "kind": "ack",
+      "to": "A"
+     },
+     {
+      "day": "D4",
+      "from": "C",
+      "id": "M003",
+      "kind": "sent",
+      "to": "E"
+     },
+     {
+      "day": "D2",
+      "from": "C",
+      "id": "M004",
+      "kind": "sent",
+      "to": "B"
+     },
+     {
+      "day": "D5",
+      "from": "B",
+      "id": "M005",
+      "kind": "reply",
+      "to": "A"
+     },
+     {
+      "day": "D2",
+      "from": "E",
+      "id": "M006",
+      "kind": "sent",
+      "to": "D"
+     },
+     {
+      "day": "D4",
+      "from": "A",
+      "id": "M007",
+      "kind": "sent",
+      "to": "E"
+     },
+     {
+      "day": "D4",
+      "from": "A",
+      "id": "M008",
+      "kind": "reply",
+      "to": "B"
+     },
+     {
+      "day": "D5",
+      "from": "C",
+      "id": "M009",
+      "kind": "ack",
+      "to": "A"
+     },
+     {
+      "day": "D4",
+      "from": "B",
+      "id": "M010",
+      "kind": "ack",
+      "to": "E"
+     },
+     {
+      "day": "D1",
+      "from": "B",
+      "id": "M011",
+      "kind": "sent",
+      "to": "A"
+     },
+     {
+      "day": "D2",
+      "from": "E",
+      "id": "M012",
+      "kind": "sent",
+      "to": "A"
+     },
+     {
+      "day": "D5",
+      "from": "D",
+      "id": "M013",
+      "kind": "promise",
+      "promise_day": "D6",
+      "to": "A"
+     }
+    ],
+    "role": "A"
+   },
+   "criteria_ref": "verdict-recomputability-v1"
+  },
+  {
+   "qid": "T13-1",
+   "dim": "DIM1",
+   "type": "derivation-check",
+   "prompt": "Role A claims the aggregate success rate is 0.47. Recompute from the raw rows and answer derivable=true or false plus your recomputed value, as JSON {\"derivable\":bool,\"recomputed\":x.xx}.",
+   "inputs": {
+    "claimed": 0.47,
+    "rows": [
+     {
+      "date": "D1",
+      "fail": 0,
+      "ok": 1
+     },
+     {
+      "date": "D2",
+      "fail": 1,
+      "ok": 2
+     },
+     {
+      "date": "D3",
+      "fail": 2,
+      "ok": 2
+     },
+     {
+      "date": "D4",
+      "fail": 0,
+      "ok": 4
+     },
+     {
+      "date": "D5",
+      "fail": 3,
+      "ok": 1
+     },
+     {
+      "date": "D6",
+      "fail": 0,
+      "ok": 0
+     }
+    ]
+   },
+   "criteria_ref": "evidence-schema-v1"
+  },
+  {
+   "qid": "T12-1",
+   "dim": "DIM1",
+   "type": "conflict-detect",
+   "prompt": "The log contains claims that conflict with raw evidence. Identify every conflicting pair as {\"claim_day\":\"..\",\"evidence_day\":\"..\"} in a JSON list. If none, answer [].",
+   "inputs": {
+    "log": [
+     {
+      "day": "D1",
+      "from": "A",
+      "kind": "claim",
+      "text": "B processed 74 requests last week."
+     },
+     {
+      "day": "D2",
+      "from": "B",
+      "kind": "receipt",
+      "raw": [
+       3,
+       4,
+       2,
+       8,
+       7,
+       2,
+       0,
+       9,
+       6,
+       3,
+       8,
+       8,
+       2,
+       1,
+       3,
+       6,
+       2,
+       9,
+       5,
+       2,
+       7,
+       4,
+       4,
+       9,
+       5,
+       8,
+       5,
+       1,
+       7,
+       9,
+       7,
+       4,
+       9,
+       2,
+       5,
+       4,
+       3,
+       5,
+       6,
+       3,
+       3,
+       9,
+       2,
+       4,
+       1,
+       9,
+       0,
+       3,
+       8,
+       4,
+       3,
+       3,
+       9,
+       8,
+       4,
+       0,
+       6,
+       9,
+       3,
+       2,
+       8,
+       2
+      ]
+     },
+     {
+      "day": "D3",
+      "from": "C",
+      "kind": "claim",
+      "text": "A acknowledged all of B's 67 requests."
+     }
+    ]
+   },
+   "criteria_ref": "judge-systematic-inconsistency-v1"
+  },
+  {
+   "qid": "T21-2",
+   "dim": "DIM2",
+   "type": "gate-admit",
+   "prompt": "Gate rule: admit a row only if (fact_status=verified implies external evidence exists that is NOT self-produced) AND (external_verified=true implies evidence is non-empty). Answer with the JSON list of ADMITTED row_ids.",
+   "inputs": {
+    "rows": [
+     {
+      "claim": "Agent D achieved 99% accuracy",
+      "evidence": {
+       "source": "self-report"
+      },
+      "external_verified": false,
+      "fact_status": "verified",
+      "row_id": "R4"
+     },
+     {
+      "claim": "Agent B plans migration on D5",
+      "evidence": {
+       "mail_id": "M042"
+      },
+      "external_verified": false,
+      "fact_status": "planned",
+      "row_id": "R2"
+     },
+     {
+      "claim": "Agent A deployed version 2.1 on D2",
+      "evidence": {
+       "commit": "aa11",
+       "url": "https://git.example/r1"
+      },
+      "external_verified": true,
+      "fact_status": "verified",
+      "row_id": "R1"
+     },
+     {
+      "claim": "Agent C fixed the payment bug",
+      "evidence": {},
+      "external_verified": true,
+      "fact_status": "verified",
+      "row_id": "R3"
+     }
+    ]
+   },
+   "criteria_ref": "external-verified-provenance-v1"
+  },
+  {
+   "qid": "T32-1",
+   "dim": "DIM3",
+   "type": "fake-green-detect",
+   "prompt": "A step is a FAKE GREEN iff exit=0/ok is claimed but no verifiable artifact exists (receipt id/comment id); 409 dedup responses claiming ok also count. Honest failures are not fake greens. Answer with the JSON list of timestamps (hh:mm, ascending).",
+   "inputs": {
+    "logs": [
+     {
+      "artifact": "comment_id=c77",
+      "cmd": "post_comment(pr=9)",
+      "exit": 0,
+      "stdout": "ok",
+      "t": "10:05"
+     },
+     {
+      "artifact": null,
+      "cmd": "send_mail(id=X2)",
+      "exit": 0,
+      "stdout": "409 conflict (deduped)",
+      "t": "10:15"
+     },
+     {
+      "artifact": null,
+      "cmd": "deploy(target=prod)",
+      "exit": 1,
+      "stdout": "error",
+      "t": "10:10"
+     },
+     {
+      "artifact": null,
+      "cmd": "send_mail(id=X1)",
+      "exit": 0,
+      "stdout": "ok",
+      "t": "10:00"
+     }
+    ]
+   },
+   "criteria_ref": "adversarial-fake-success"
+  },
+  {
+   "qid": "T31-2",
+   "dim": "DIM3",
+   "type": "recurrence-count",
+   "prompt": "Given the known-pitfall anchors and a behavior stream, count how many times EACH known pitfall recurs (novel-* signatures are not recurrences). Answer as JSON {pit_id: count}.",
+   "inputs": {
+    "anchors": [
+     {
+      "first_seen": "D1",
+      "pattern": "CRLF-in-file",
+      "pit_id": "P1"
+     },
+     {
+      "first_seen": "D2",
+      "pattern": "wrong-tmp-path",
+      "pit_id": "P2"
+     },
+     {
+      "first_seen": "D3",
+      "pattern": "pathspec-missing",
+      "pit_id": "P3"
+     }
+    ],
+    "stream": [
+     {
+      "day": "D1",
+      "kind": "error",
+      "signature": "novel-40"
+     },
+     {
+      "day": "D3",
+      "kind": "error",
+      "signature": "pathspec-missing"
+     },
+     {
+      "day": "D4",
+      "kind": "error",
+      "signature": "novel-38"
+     },
+     {
+      "day": "D5",
+      "kind": "error",
+      "signature": "novel-37"
+     },
+     {
+      "day": "D1",
+      "kind": "error",
+      "signature": "novel-24"
+     },
+     {
+      "day": "D3",
+      "kind": "error",
+      "signature": "novel-94"
+     }
+    ]
+   },
+   "criteria_ref": "recurrence-tracking-v1"
+  },
+  {
+   "qid": "T42-2",
+   "dim": "DIM4",
+   "type": "anchor-pool-verdict",
+   "prompt": "A guard rule examines flagged cases drawn from an anchor pool. F1 (pool biased against the agent) fired. F2 (identical violation shape, pool biased FOR the agent) did NOT fire. F3 (clean control) never fired. Judging from firing symmetry alone: if the rule fires on BOTH biased sides, the rule itself is over-firing — answer RULE_GUILTY; if it fires only against one side while sparing the identical for-agent case, the pool's composition is guilty of selection bias — answer POOL_GUILTY.",
+   "inputs": {
+    "cases": [
+     {
+      "case": "F1",
+      "fired": true,
+      "pool_bias": "against-agent"
+     },
+     {
+      "case": "F2",
+      "fired": false,
+      "pool_bias": "for-agent"
+     },
+     {
+      "case": "F3",
+      "fired": false,
+      "pool_bias": "none"
+     }
+    ]
+   },
+   "criteria_ref": "anchor-pool-selection-bias-v1"
+  },
+  {
+   "qid": "T41-2",
+   "dim": "DIM4",
+   "type": "stage-violation",
+   "prompt": "Five pipeline stages ran as described. Exactly one stage violates a verification discipline. Answer as JSON {\"stage\":\"..\",\"criteria_ref\":\"..\"} naming the violating stage and the criterion family (one of criteria-locked-before-run-v1 / artifacts-complete-in-vcs-v1 / independent-recomputer-v1).",
+   "inputs": {
+    "descriptions": {
+     "execute": "all 40 runs completed with zero errors",
+     "preregister": "criteria doc was edited two days AFTER results were out",
+     "publish": "headline number published with all raw artifacts linked",
+     "recompute": "the implementer re-checked their own numbers and passed",
+     "record": "session log files stayed only on a laptop (never committed)"
+    },
+    "stages": [
+     "preregister",
+     "execute",
+     "record",
+     "recompute",
+     "publish"
+    ]
+   },
+   "criteria_ref": "independent-recomputer-v1"
+  },
+  {
+   "qid": "T22-1",
+   "dim": "DIM2",
+   "type": "dedup-threshold",
+   "prompt": "Rows enter a dedup gate: two rows are duplicates iff their word-set Jaccard similarity >= 0.85. Answer with the JSON list of duplicate PAIRS [row_x, row_y] (x before y), else [].",
+   "inputs": {
+    "rows": [
+     {
+      "row_id": "R1",
+      "text": "Service X restarted after config push on D3"
+     },
+     {
+      "row_id": "R2",
+      "text": "Service X restarted after the config push on D3"
+     },
+     {
+      "row_id": "R3",
+      "text": "Service Y restarted after config push on D3"
+     },
+     {
+      "row_id": "R4",
+      "text": "Service X halted before config push on D3"
+     }
+    ],
+    "threshold": 0.85
+   },
+   "criteria_ref": "memory-dedup-v1"
+  },
+  {
+   "qid": "T43-1",
+   "dim": "DIM4",
+   "type": "skip-label-fidelity",
+   "prompt": "A run was skipped. Decide the label: SKIP_OUTCOME (the outcome did not happen — e.g. dependency never ran) vs SKIP_CAUSE (the cause was avoided — e.g. the failure mode was prevented upstream). Labels must not be swapped. Answer SKIP_OUTCOME or SKIP_CAUSE.",
+   "inputs": {
+    "narrative": [
+     "The dependency job was cancelled by an operator, so this stage never executed at all."
+    ]
+   },
+   "criteria_ref": "skip-label-fidelity-v1"
+  },
+  {
+   "qid": "T21-1",
+   "dim": "DIM2",
+   "type": "gate-admit",
+   "prompt": "Gate rule: admit a row only if (fact_status=verified implies external evidence exists that is NOT self-produced) AND (external_verified=true implies evidence is non-empty). Answer with the JSON list of ADMITTED row_ids.",
+   "inputs": {
+    "rows": [
+     {
+      "claim": "Agent B plans migration on D5",
+      "evidence": {
+       "mail_id": "M042"
+      },
+      "external_verified": false,
+      "fact_status": "planned",
+      "row_id": "R2"
+     },
+     {
+      "claim": "Agent D achieved 99% accuracy",
+      "evidence": {
+       "source": "self-report"
+      },
+      "external_verified": false,
+      "fact_status": "verified",
+      "row_id": "R4"
+     },
+     {
+      "claim": "Agent A deployed version 2.1 on D2",
+      "evidence": {
+       "commit": "aa11",
+       "url": "https://git.example/r1"
+      },
+      "external_verified": true,
+      "fact_status": "verified",
+      "row_id": "R1"
+     },
+     {
+      "claim": "Agent C fixed the payment bug",
+      "evidence": {},
+      "external_verified": true,
+      "fact_status": "verified",
+      "row_id": "R3"
+     }
+    ]
+   },
+   "criteria_ref": "external-verified-provenance-v1"
+  },
+  {
+   "qid": "T43-0",
+   "dim": "DIM4",
+   "type": "skip-label-fidelity",
+   "prompt": "A run was skipped. Decide the label: SKIP_OUTCOME (the outcome did not happen — e.g. dependency never ran) vs SKIP_CAUSE (the cause was avoided — e.g. the failure mode was prevented upstream). Labels must not be swapped. Answer SKIP_OUTCOME or SKIP_CAUSE.",
+   "inputs": {
+    "narrative": [
+     "Upstream fix landed, so the failure mode never got a chance to trigger; the detector run had nothing to detect."
+    ]
+   },
+   "criteria_ref": "skip-label-fidelity-v1"
+  },
+  {
+   "qid": "T41-0",
+   "dim": "DIM4",
+   "type": "stage-violation",
+   "prompt": "Five pipeline stages ran as described. Exactly one stage violates a verification discipline. Answer as JSON {\"stage\":\"..\",\"criteria_ref\":\"..\"} naming the violating stage and the criterion family (one of criteria-locked-before-run-v1 / artifacts-complete-in-vcs-v1 / independent-recomputer-v1).",
+   "inputs": {
+    "descriptions": {
+     "execute": "all 40 runs completed with zero errors",
+     "preregister": "criteria doc was edited two days AFTER results were out",
+     "publish": "headline number published with all raw artifacts linked",
+     "recompute": "the implementer re-checked their own numbers and passed",
+     "record": "session log files stayed only on a laptop (never committed)"
+    },
+    "stages": [
+     "preregister",
+     "execute",
+     "record",
+     "recompute",
+     "publish"
+    ]
+   },
+   "criteria_ref": "criteria-locked-before-run-v1"
+  }
+ ]
+}
