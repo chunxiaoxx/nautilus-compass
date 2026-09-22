@@ -109,3 +109,88 @@
 
 - 脚本:`runtime/_indep_recompute_20260922.py`(六步全流程,stats.json 隔离在后置对拍)
 - 独立结果:`runtime/_indep_results_20260922.json`(打开 stats.json 之前落盘)
+
+---
+
+# 域 4 复算:OK-first 措辞对照(2026-09-22 · 第二批复算)
+
+> 复算员:另一新鲜会话,未参与域 4 生成/调用/统计/对照计算。判据正本 =
+> `runtime/jev_trust_domain4_20260922/PROTOCOL.md`;流程按交接档「域 4 专项」。
+> 纪律执行:先独立完成全部计算并记录(此节落笔前未打开域 4 stats.json/RESULTS.md),
+> 之后才对拍。纯本地,零外部 API。
+
+## 域4 embodied-qc-labeling-okfirst(`runtime/jev_trust_domain4_20260922/`)
+
+| 步骤 | 复算结果 |
+|---|---|
+| 1 验签(三态) | jev_trust.verify_log → `ok=True, detail='VALID'`(日志 sha256=aab9a385…cf09);域 3 日志顺带复验 VALID(d8ebbb47…f05d,判据 6-8 依赖其可信)。stats.json `verify:'VALID'`、`pubkey` 字段=pubkey.txt 内容(20ea8950…d5cd)一致 |
+| 2 sha 链 | 域 4 无独立决策集(PROTOCOL 写死引用域 3 原件 `../jev_trust_domain3_20260922/decision_set.json`,单一文件无副本漂移)。我算其 sha256=`4af6c5a80ce5328ef35d3e9196a3bb659d8eb154ef8891298f77734603b13b49` = stats.json `decision_set_sha256` **一致**(且与域 3 复算节同值交叉印证);n=120,正例(缺陷)60/负例(OK)60 平衡 |
+| 3 真值重推+映射落账 | ①按域 4 PROTOCOL 的 OK-first 通过条件列表(四规则的否定式)独立实现 verifier,重推 120 条 vs decision_set truth:**失配 0**;②映射落账:域 4 outcome 行 truth = 1−(域3 ds 同 qid truth) **全量 120 条,失配 0/120**;③域 3 outcome truth = ds truth 0 失配;④行内恒等式(p_true = 对 decision 方向置信按真值方向换算;correct = 决策方向==真值方向)120/120 零违反 |
+| 4 四指标 | 见下表,**对拍一致(含一次复算员自纠,见后)** |
+| 5 无选择性报告 | 两域 session.jsonl 各 240 行 = call 120 + outcome 120;无 error 行(= stats errors:0);qid 集合 {ds,d3,d4} 三向一致;域 4 全部 8 件工件含 session.jsonl 已入 git(前次 *.jsonl 入库缺口已闭合,无复发) |
+
+| 指标 | 我的独立值 | stats.json | 对拍 |
+|---|---|---|---|
+| accuracy | 0.766667(92/120;由 decision 单独重推同值) | 0.7667 | 一致 |
+| Brier | 0.176410 | 0.17641 | 一致 |
+| ECE | 0.137000 | 0.137 | 一致(经自纠,见下) |
+| C=1−ECE | 0.863000 | 0.863 | 一致(经自纠,见下) |
+
+**复算员自纠记录(红灯先证伪自己,本轮唯一一次探针错)**:初算 ECE=0.3505/C=0.6495,
+与 stats 失配;探针复验证伪自身——我把 stated_confidence 误读为「对 yes 方向的置信」,
+对 no 答案错翻 1−sc。数据坐实其语义为「对 decision 方向的置信」(域4 sp001:decision=yes/
+sc=0.71/truth=0/p_true=0.29=1−0.71),top-label 分桶键即 stated_confidence 原值,
+与 jev_trust.calib 库 `Prediction.stated_confidence` 语义一致。四个候选口径探针中
+stated 原值口径精确复现 0.137 → **0.137/0.863 为判据正本口径下的正确读数,实现者对**。
+(域 3 全 yes 120/120,两口径无分叉,故前次域 3 复算未暴露此歧义;域 4 出现 32 个 no 后分叉。)
+
+## 判据 6/7/8 对照复算(核心专项)
+
+| 判据 | 我的独立值 | 实现者(stats.json/RESULTS) | 对拍 |
+|---|---|---|---|
+| 6 负例误报(OK 题答「不 OK」) | **0/60**;域 3 基线(OK 题答 yes=NEEDS_REVIEW)**60/60**(域 3 decision 计数 yes=120/no=0 独立核) | `criterion6_fp_on_clean:"0/60"`,基线 60/60 | 一致 |
+| 7 缺陷漏检(缺陷题答 yes=OK) | **28/60**;域 3 侧漏检 0/60 | `criterion7_missed_defects:"28/60"` | 一致 |
+| 8 翻转(双口径) | ①逐题 decision 翻转按真值分组:负例 **0**/正例 **32**/总 32;②McNemar 不一致格:负例修复 **60**(d3错→d4对)/正例新漏 **28**(d3对→d4错) | `criterion8_flips={clean_fixed:60, defect_newly_missed:32}` | **不一致(见下)** |
+
+**判据 8 不符细节(证伪自己探针后坐实)**:
+- stats 字段 `defect_newly_missed:32` **名实不符**:32 = 缺陷题 decision 翻转数
+  (域3 yes→域4 no),这 32 题在域 4 答「不 OK」= **正确检出**;真正新漏(被说成 OK)
+  是 **28** 题——与同一 stats.json 里判据 7 的 28/60 直接自相矛盾。
+- RESULTS.md 判据 8 行括号注释「域 3 全抓的缺陷题中 **32 题在域 4 被说成 OK**」为
+  事实错误(被说成 OK 的是 28 题),与同文两行之上的判据 7(28/60)矛盾。
+- 60 与 32 混用了两种口径:60 是「对错互换」数(OK 题两域都答 yes 字面未翻转,因语义
+  反转由误报变全对),32 是「decision 字面翻转」数;PROTOCOL 判据 8 要求的 McNemar
+  discordant cells 应为 **60/28**,按 60/32 手工核会把新漏高估 4 题。
+- 次要:RESULTS 边界节「28 漏检集中在哪类缺陷未分层」与正文「漏检分层」表自相矛盾
+  (分层表数字本身我已独立复算为正确,见下);「144s」实测首末 ts 差 143s(秒精度,不计)。
+
+**漏检分层独立核**(RESULTS 分层表逐格一致,总数 28 吻合):
+spike 14/15 · stuck 13/15 · drift 1/15 · limit 0/15(域 4 decision 计数 yes 88/no 32;
+32 个 no 全落在缺陷题,OK 题 60 全 yes——accuracy=(60+32)/120=0.7667 自洽)。
+
+## 判定线复核(预注册)
+
+- 判据 6:0/60 **≤ 45 线** → H1 成立区;实现者结论「H1 强成立」与线一致(0 为远穿线的
+  极端值,从域 3 基线 60/60 降到 0/60,措辞方向的效应量成立)。
+- 判据 7:28/60 **> 18 线(30%)** → 红旗触发;实现者结论「红旗触发」与线一致
+  (漏检率 46.7%,「把偏差反了个面」的定性成立)。
+- 判据 8:按预注册要求「按真值分组列出翻转数,供 McNemar 手工核」——正确落账应为
+  {neg_flips:0, pos_flips:32}(decision 口径)或 {clean_fixed:60, defect_newly_missed:28}
+  (对错口径);实现者现行 60/32 混编且标签错,**不满足判据 8 的字面要求**。
+
+## 域4 终判:RED(单点·表述层)
+
+- **全过项**:验签 VALID、sha 链一致、四规则重推 0 失配、映射落账 0/120 失配、
+  全量无剔除 errors=0、四指标(经复算员自纠后)逐位一致、判据 6/7 读数与判定线
+  复核全部一致、漏检分层表独立复算正确、工件含日志已全入库。
+- **不符项(唯一)**:预注册判据 8 落账口径混编+标签错误——stats `defect_newly_missed:32`
+  应为 28(或改名为 decision_flips),RESULTS 判据 8 括号注释与自身判据 7 矛盾。
+- **影响面**:不动摇 H1/红旗主结论(其依据是判据 6/7,均复核无误);但判据 8 是
+  预注册判据,按「任何一处不符即 RED」纪律判 RED。一行修复(字段值 32→28 或改名,
+  RESULTS 注释同步)后复核可转 GREEN。
+
+## 域4 复算证据档
+
+- 独立复算脚本(未 import 实现者任何代码):`%TEMP%\recompute_d4_20260922.py`
+  (六项全流程 + stats 隔离对拍)+ `%TEMP%\probe_d4_ece.py`(四候选口径探针+分层独立核)
+- 全部独立读数已在上文先行记录,stats.json/RESULTS.md 于独立计算完成后才首次打开
