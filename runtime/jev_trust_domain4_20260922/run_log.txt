@@ -1,0 +1,16 @@
+domain3 decision set reused: n=120 defects=60 sha256=4af6c5a80ce5328e
+  1/120 sp000 said=yes conf=0.91
+  2/120 sp001 said=yes conf=0.71
+  3/120 sp002 said=yes conf=0.92
+  20/120 sp019 said=yes conf=0.95
+  40/120 st019 said=yes conf=0.81
+  60/120 lm019 said=yes conf=0.96
+  80/120 dr019 said=yes conf=0.94
+  100/120 sm019 said=yes conf=0.9
+  120/120 nz019 said=yes conf=0.93
+calls done in 144s errors=0
+verify: VALID
+stats: {"domain": "embodied-qc-labeling-okfirst", "n_calls": 120, "n_outcomes": 120, "accuracy": 0.7667, "brier": 0.17641, "ece": 0.137, "C": 0.863, "verdict": "FACE_VALUE", "assay_reference": null}
+criterion6 false-positives(OK misjudged): 0/60 [<=45 H1 | >=55 H0]
+criterion7 missed defects: 28/60 [red flag >18]
+paired flips: neg-fixed=60 pos-flipped-to-miss=32

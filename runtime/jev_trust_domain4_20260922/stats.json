@@ -1,0 +1,24 @@
+{
+ "domain": "embodied-qc-labeling-okfirst",
+ "n_calls": 120,
+ "n_outcomes": 120,
+ "accuracy": 0.7667,
+ "brier": 0.17641,
+ "ece": 0.137,
+ "C": 0.863,
+ "verdict": "FACE_VALUE",
+ "assay_reference": null,
+ "decision_set": "../jev_trust_domain3_20260922/decision_set.json",
+ "decision_set_sha256": "4af6c5a80ce5328ef35d3e9196a3bb659d8eb154ef8891298f77734603b13b49",
+ "errors": 0,
+ "log": "session.jsonl",
+ "sig": "session.jsonl.sig",
+ "pubkey": "20ea8950c189af288f00c5101c0d8f0168cff8b64ba45e6959b9a86e0e57d5cd",
+ "verify": "VALID",
+ "criterion6_fp_on_clean": "0/60",
+ "criterion7_missed_defects": "28/60",
+ "criterion8_flips": {
+  "clean_fixed": 60,
+  "defect_newly_missed": 32
+ }
+}
