@@ -21,7 +21,7 @@ from .client import JevClient, JevAPIError, top_label, correctness
 from .receipt import KeyPair, ReceiptResult, verify_log
 from .trust import TrustedJev, TrustResult, ASSAY_REFERENCE_RATES
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 __all__ = [
     "TrustedJev", "TrustResult", "ASSAY_REFERENCE_RATES",
     "CalibrationState", "Prediction", "ece_toplabel", "brier",

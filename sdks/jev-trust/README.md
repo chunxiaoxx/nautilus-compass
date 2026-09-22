@@ -63,6 +63,33 @@ jev = TrustedJev(api_key=API_KEY, domain="fraud-flag",
                  alert_confidence=0.90, on_overconfidence=on_overconfidence)
 ```
 
+## Bipolarity self-check (v0.2) — ask both ways, or don't ask
+
+We measured Jev answering yes/no questions whose required computation was too
+expensive for it: the answer collapsed onto the **question's polarity** rather
+than the data (both directions — reword the question the other way and the
+verdict flips with it; [study artifacts](https://github.com/chunxiaoxx/nautilus-compass/tree/main/runtime/jev_trust_domain4_20260922)).
+Stated confidence does not warn you — the two wrong halves each look confident.
+
+`decide_symmetric` asks every question in both polarities inside ONE API call
+(you write the flipped wording — the library never rewrites your semantics):
+
+```python
+r = jev.decide_symmetric(state, {"q": {
+    "question":     {"type": "noul", "instructions": "Is this transaction fraudulent?"},
+    "opposite":     {"type": "noul", "instructions": "Is this transaction legitimate?"},
+}})["q"]
+
+r.decision              # answer from the original polarity
+r.polarity_consistent   # False -> the two wordings disagree
+r.trust_flag            # "POLARITY_CONFLICT" — do not act without review
+r.effective_confidence  # None on conflict, regardless of stated confidence
+r.stated_confidence     # min of the two cross-polarity confidences (conservative)
+```
+
+Conflicting items fire `on_polarity_conflict` and are force-degraded: the
+question the model can't actually compute is exactly the one this catches.
+
 ## Verdicts (Assay calibration-currency reading levels)
 
 | Verdict | Condition | Reading |

@@ -45,6 +45,10 @@ class TrustResult:
     rid: int                                # call sequence number in this session
     ts: str
     usage: dict = field(default_factory=dict)
+    # v0.2 bipolarity check (decide_symmetric only)
+    polarity_consistent: Optional[bool] = None
+    opposite_decision: Optional[str] = None  # flipped answer mapped onto original polarity
+    trust_flag: str = ""                     # "POLARITY_CONFLICT" when the two disagree
 
     @property
     def overconfident(self) -> bool:
@@ -72,6 +76,7 @@ class TrustedJev:
                  min_verdict_n: int = 20,
                  alert_confidence: float = 0.90,
                  on_overconfidence: Optional[Alert] = None,
+                 on_polarity_conflict: Optional[Alert] = None,
                  keys: Optional[KeyPair] = None):
         self.domain = domain
         self.client = JevClient(api_key, endpoint=endpoint, model=model,
@@ -80,6 +85,7 @@ class TrustedJev:
         self.min_verdict_n = min_verdict_n
         self.alert_confidence = alert_confidence
         self.on_overconfidence = on_overconfidence
+        self.on_polarity_conflict = on_polarity_conflict
         self.keys = keys
         self._rid = 0
         self._pending: Dict[str, dict] = {}
@@ -116,6 +122,83 @@ class TrustedJev:
             if self.on_overconfidence and r.stated_confidence >= self.alert_confidence \
                     and verdict != calib.FACE_VALUE:
                 self.on_overconfidence(r)
+        return out
+
+    # ── v0.2: bipolarity self-check ───────────────────────────────────────
+
+    FLIP_SUFFIX = "~flip"
+
+    def decide_symmetric(self, state: dict, questions: dict) -> Dict[str, TrustResult]:
+        """Ask every noul question in BOTH polarities and compare.
+
+        questions = {qid: {"question": noul_q, "opposite": noul_q_flipped}}
+        where `opposite` asks the complementary proposition (you write the
+        flip — the library never rewrites your semantics).
+
+        Both go out in ONE API call. The flipped answer is mapped back onto
+        the original polarity space: opposite said "no" == original "yes".
+        If the two disagree -> POLARITY_CONFLICT: effective_confidence is
+        forced to None (never act on it without review), stated_confidence
+        becomes the lower of the two cross-polarity confidences, and the
+        on_polarity_conflict callback fires.
+
+        Rationale (Assay domain-4 finding, 2026-09-22): when a judgement is
+        computationally too expensive for the model, answers collapse onto
+        the question's polarity rather than the data. Asking both ways
+        catches exactly those items."""
+        batch = {}
+        for qid, pair in questions.items():
+            batch[qid] = pair["question"]
+            batch[qid + self.FLIP_SUFFIX] = pair["opposite"]
+        raw = self.client.decide(state, batch)
+        out: Dict[str, TrustResult] = {}
+        for qid, pair in questions.items():
+            a_n = raw["answers"].get(qid)
+            a_f = raw["answers"].get(qid + self.FLIP_SUFFIX)
+            if a_n is None or a_f is None:
+                raise ValueError(f"missing answer(s) for {qid!r} "
+                                 f"(normal={a_n is not None}, flip={a_f is not None})")
+            top_n, top_f = top_label(a_n), top_label(a_f)
+            if top_n["decision"] not in ("yes", "no") or top_f["decision"] not in ("yes", "no"):
+                raise ValueError("decide_symmetric requires noul (yes/no) questions")
+            mapped = "yes" if top_f["decision"] == "no" else "no"
+            consistent = (top_n["decision"] == mapped)
+            conf = round(min(top_n["stated_confidence"],
+                             top_f["stated_confidence"]), 4)
+            verdict = verdict_for(self.state.C, self.state.n, self.min_verdict_n)
+            if consistent:
+                eff, basis = effective_confidence(self.state, conf)
+            else:
+                eff, basis = None, "polarity_conflict"
+            self._rid += 1
+            r = TrustResult(qid=qid, decision=top_n["decision"],
+                            stated_confidence=conf,
+                            effective_confidence=eff, basis=basis,
+                            domain_verdict=verdict, answer=a_n, rid=self._rid,
+                            ts=_now(), usage=raw.get("usage", {}),
+                            polarity_consistent=consistent,
+                            opposite_decision=mapped,
+                            trust_flag="" if consistent else "POLARITY_CONFLICT")
+            # calibration bookkeeping uses the ORIGINAL-polarity question;
+            # p_yes from the original answer, stated conf = conservative min.
+            p_yes = top_n["probabilities"]["yes"] if top_n.get("probabilities") \
+                else (conf if top_n["decision"] == "yes" else 1.0 - conf)
+            self._pending[qid] = {"answer": {
+                "decision": top_n["decision"], "stated_confidence": conf,
+                "probabilities": {"yes": p_yes, "no": 1.0 - p_yes}},
+                "ts": r.ts, "rid": r.rid}
+            self._log({"kind": "call", "rid": r.rid, "qid": qid, "ts": r.ts,
+                       "domain": self.domain, "polarity": "normal",
+                       "decision": top_n["decision"], "stated_confidence": conf,
+                       "opposite_decision_raw": top_f["decision"],
+                       "opposite_mapped": mapped,
+                       "polarity_consistent": consistent,
+                       "effective_confidence": eff, "basis": basis,
+                       "domain_verdict": verdict,
+                       "usage": raw.get("usage", {})})
+            out[qid] = r
+            if not consistent and self.on_polarity_conflict:
+                self.on_polarity_conflict(r)
         return out
 
     # ── outcomes: feed ground truth back ─────────────────────────────────
