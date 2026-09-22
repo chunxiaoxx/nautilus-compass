@@ -194,3 +194,26 @@ spike 14/15 · stuck 13/15 · drift 1/15 · limit 0/15(域 4 decision 计数 yes
 - 独立复算脚本(未 import 实现者任何代码):`%TEMP%\recompute_d4_20260922.py`
   (六项全流程 + stats 隔离对拍)+ `%TEMP%\probe_d4_ece.py`(四候选口径探针+分层独立核)
 - 全部独立读数已在上文先行记录,stats.json/RESULTS.md 于独立计算完成后才首次打开
+
+## 域4 复核(修复后 · 2026-09-22 当日)
+
+协调者按本报告修复方案处理了三处,复算员独立复核(不凭自报,重跑探针):
+
+1. **stats.json**:criterion8_flips 改为 `{clean_fixed:60, defect_newly_missed:28,
+   defect_decision_flips_detected_in_d4:32}` + `_criterion8_note` 纠错说明。
+   git diff 证实数字字段(四指标/sha/verify/pubkey/errors/判据6/7)零触碰;
+   从 session.jsonl 独立重推三值 = **60/28/32,逐位一致**;内部代数自洽
+   (32+28=60 缺陷题;McNemar 不一致格 = 60/28)。
+2. **RESULTS.md 判据 8 行**:32 标注为 decision 翻转(=域 4 正确检出),新漏 28
+   与判据 7 一致,补 McNemar 格 60/28 与复算纠错注释——**名实不符与同文自相矛盾
+   均消除**。(「其中新漏 28」的「其中」措辞略别扭,但数字与方向全部正确,不构成
+   口径错误。)
+3. **domain4_run.py**:flip_pos→flip_dec,stats 产出改为三字段正确语义
+   (defect_newly_missed 直接取 fn4=判据 7 同源),防重跑复现——语义核对无误。
+4. **数据未动坐实**:session.jsonl/.sig 不在任何 diff 中;重跑 verify_log 仍 VALID,
+   日志 sha256=**aab9a385…cf09 与首轮复算完全一致**。
+
+**域4 终判改判:GREEN**(原 RED 单点已修复并经独立复核闭合;判据 1-8 全过,
+H1 强成立 + 红旗触发的预注册结论维持)。遗留非判据项(不阻塞):RESULTS 边界节
+「漏检未分层」一句与正文分层表措辞矛盾(分层数字本身已独立验证正确)、
+「144s」实测 143s,均为文档级小瑕疵,下次顺手修。

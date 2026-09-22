@@ -74,8 +74,7 @@ def main():
         r = json.loads(line)
         if r["kind"] == "call":
             dec4[r["qid"]] = r["decision"]
-    flip_neg = flip_pos = 0          # neg (OK items): d3=review-wrong, d4 correct; pos: d3 correct, d4=ok-wrong
-    fp4 = fn4 = 0
+    flip_neg = flip_dec = fn4 = fp4 = 0
     for d in ds:
         qid, t = d["qid"], d["truth"]
         said3 = dec3[qid] == "yes"          # domain3 yes = NEEDS_REVIEW
@@ -87,13 +86,13 @@ def main():
                 flip_neg += 1
         else:       # defect item
             if said4_ok:
-                fn4 += 1
+                fn4 += 1                    # newly missed: d4 said OK on a defect
             if said3 and not said4_ok:
-                flip_pos += 1
+                flip_dec += 1               # decision flipped AND correctly detected in d4
     print(f"criterion6 false-positives(OK misjudged): {fp4}/60 "
           f"[<=45 H1 | >=55 H0]")
     print(f"criterion7 missed defects: {fn4}/60 [red flag >18]")
-    print(f"paired flips: neg-fixed={flip_neg} pos-flipped-to-miss={flip_pos}")
+    print(f"paired flips: neg-fixed={flip_neg} defect-decision-flips-detected={flip_dec} (newly missed = criterion7 = {fn4})")
 
     (OUT / "stats.json").write_text(
         json.dumps({**stats, "decision_set": "../jev_trust_domain3_20260922/decision_set.json",
@@ -102,7 +101,9 @@ def main():
                     "pubkey": jev.keys.pub_hex, "verify": v.detail,
                     "criterion6_fp_on_clean": f"{fp4}/60",
                     "criterion7_missed_defects": f"{fn4}/60",
-                    "criterion8_flips": {"clean_fixed": flip_neg, "defect_newly_missed": flip_pos}},
+                    "criterion8_flips": {"clean_fixed": flip_neg,
+                                         "defect_newly_missed": fn4,
+                                         "defect_decision_flips_detected_in_d4": flip_dec}},
                    ensure_ascii=False, indent=1),
         encoding="utf-8", newline="\n")
 

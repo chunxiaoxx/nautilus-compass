@@ -19,6 +19,8 @@
  "criterion7_missed_defects": "28/60",
  "criterion8_flips": {
   "clean_fixed": 60,
-  "defect_newly_missed": 32
- }
+  "defect_newly_missed": 28,
+  "defect_decision_flips_detected_in_d4": 32
+ },
+ "_criterion8_note": "复算纠错(2026-09-22):原字段 defect_newly_missed 误标为 32——32 是缺陷题 decision 翻转数(域4 答 not-OK=正确检出),真正新漏(域4 答 OK)=28,与判据 7 一致。数据未动,仅语义标注修正。"
 }
