@@ -4,13 +4,32 @@
 > 后对拍)。判据正本 = 各域 PROTOCOL.md(只许更严)。
 > 复算者:新鲜会话/独立上下文,未参与三域任何生成、调用或统计实现。
 
-## 被复算对象(三域)
+## 被复算对象(三域 + 域 4 对照实验)
 
 | 域 | 工件目录 | 判据正本 |
 |---|---|---|
 | python-exception-prediction | `runtime/jev_trust_dogfood_20260922/` | 同目录 PROTOCOL.md |
 | code-patch-behavior | `runtime/jev_trust_domain2_20260922/` | 同目录 PROTOCOL.md |
 | embodied-qc-labeling | `runtime/jev_trust_domain3_20260922/` | 同目录 PROTOCOL.md |
+| OK-first 措辞对照(域 4) | `runtime/jev_trust_domain4_20260922/` | 同目录 PROTOCOL.md |
+
+## 域 4 专项(判据 6/7/8 对照复算)
+
+域 4 复用域 3 的 decision_set(单一变量=措辞)。复算要点:
+- 决策集 sha256 应与域 3 decision_set.json 完全一致(先各算哈希对拍)
+- 真值重推:域 3 部分已验过(前次复算 0/120 失配);域 4 侧只需
+  复核其 PROTOCOL.md 的真值映射(yes=OK → record 1−truth)在
+  session.jsonl 的 outcome 行是否如此落账(逐条抽验或全量验)
+- **判据 6/7/8 独立重算**:同时解析域 3 与域 4 的 session.jsonl,
+  按域 4 PROTOCOL.md 第 6/7/8 条定义,独立计算:
+  ① 域 4 负例(OK 题)误报数(域 4 中 yes=OK,误报=OK 题答「no」)
+  ② 域 4 正例(缺陷题)漏检数(缺陷题答 yes=OK)
+  ③ 两域逐题决策翻转数(按真值分组)
+  先记录你的独立结果,再与 domain4 目录 stats.json 的
+  criterion6/7/8 字段对拍
+- 四指标(accuracy/Brier/ECE/C)独立重算流程同三域,注意域 4 的
+  truth 方向已按映射翻转(record 的 truth 即 OK 与否,call 行 decision
+  yes=OK——四指标直接用 session.jsonl 行内数据即可,无需再翻转)
 
 每域五件套:decision_set.json / session.jsonl / session.jsonl.sig /
 pubkey.txt / stats.json(实现者输出,仅作最后对拍用,**先别打开**)。
