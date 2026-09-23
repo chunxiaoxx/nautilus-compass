@@ -1,5 +1,7 @@
 # jev-trust
 
+[![Downloads](https://static.pepy.tech/badge/jev-trust)](https://pepy.tech/project/jev-trust/) [![PyPI](https://img.shields.io/pypi/v/jev-trust)](https://pypi.org/project/jev-trust/)
+
 **Trust middleware for Jev decision APIs — spend confidence at its verified exchange rate.**
 
 Jev gives you calibrated-looking probabilities. But calibration is a property of
