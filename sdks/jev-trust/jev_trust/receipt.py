@@ -9,7 +9,7 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 
-from .ed25519 import keypair, sign, verify
+from .ed25519 import keypair, pub_from_seed, sign, verify
 
 
 def canonical_json(obj) -> str:
@@ -43,6 +43,8 @@ class KeyPair:
     def __init__(self, seed: bytes = None, pub: bytes = None):
         if seed is None and pub is None:
             seed, pub = keypair()
+        if pub is None and seed is not None:
+            pub = pub_from_seed(seed)
         self.seed = seed
         self.pub = pub
 
