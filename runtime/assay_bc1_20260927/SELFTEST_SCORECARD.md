@@ -40,3 +40,5 @@ transcript 可审计;7 题主动标注不确定)
 
 判分可独立复算:verify_bc1.py + answers.json(Downloads/bc1_exam 随
 本档一并归档)+ decision_set.json。**待非实现者复算**。
+
+> 签名记录:初版签名密钥使用错误(pub 文件误作 seed,自签自验同错路未暴露),经非实现者复算(2026-09-23)抓出;已用专用密钥重签(新公钥见bc1_selftest.key.pub),外部视角直验 VALID。此事件本身留档不删。
