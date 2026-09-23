@@ -171,4 +171,60 @@ D3 claim 66=66。两题 expected=[(D1,D2)] 独立重推逐位一致——v1「�
    同一坑,建议发 0.2.1 并重装。
 
 **数字汇总:验签 INVALID / 判分 18-0-0 逐位复现 / version=v2·public=18·
-sha=3b9def7d 一致 / T12 抽查 2/2 修复成立。终判 RED(仅验签)。**
+sha=3b9def7d 一致 / T12 抽查 2/2 修复成立。终判 RED(仅验签)。
+(此为 10:1x 阶段判;修复后复核见 V2-6,终判以 V2-6 为准。)**
+
+## V2-6. 修复复核(同日 10:30 工件 = bdff7f90 提交字节,独立复核)
+
+**复核终判:GREEN(验签腿——双三元组外部直验 VALID + 根因法证闭环);
+另记 v1 披露段一处事实错误(必修小修,不阻塞 V2 上墙)。**
+
+### 1. 新三元组外部视角直验:2/2 VALID
+
+不走 from_hex、不碰 seed,直填 pub bytes → ed25519 verify
+(pub=be070105…ed102):
+
+- SELFTEST_SCORECARD_V2.md:**VALID**,sha=03e42491…eb6feb21,n_records=38
+- SELFTEST_SCORECARD.md:**VALID**,sha=22a70b20…4fd60d13,n_records=44
+- 交叉:新签在旧 pub(8cf767…)下均不通过 → 密钥确已轮换,非换标签
+- 私钥卫生:seed 在 ~/.claude/.cache/bc1_scorecard_seed.hex(32B,
+  pub_from_seed(seed)==published pub 实测);git grep 证 be070105 仅出现于
+  .pub 文件,seed 未入仓
+- 所验字节 = bdff7f90 HEAD 字节(worktree clean),签名链已冻结在提交
+
+### 2. 根因法证确认(独立重现,不采信自报)
+
+- **V2 根因实锤**:旧 V2 签名(f65feb9d…)在 pub_from_seed(旧pub
+  8cf767…)下对旧 md(75900f1 字节)payload **验过**,在旧 pub 下不验
+  →「from_hex(pub 文件误作 seed)」成立;签字自验走同一错 KeyPair
+  (其 pub 由错 seed 派生)→ 假 VALID 机制成立。V2-1 假说「签字侧密钥
+  不对」方向正确,机制修正为 from_hex(pub-as-seed),非 ctor 重生成路径。
+- **v1 初版签名密钥无误(法证)**:旧 v1 签名(125903e5…)在旧 pub 下
+  对改前字节(41c135b4…)验过、在 pub_from_seed(旧pub) 下不验 →
+  v1 断链根因确为 09:41 改 sha 行未重签(V2-1 连带发现记录无误)。
+
+### 3. 披露段核对:V2 一致;v1 一处事实错误(RED 点)
+
+- V2 末「签名记录」段与事实逐点一致:根因(已法证)/复算抓出属实/
+  专用密钥重签+外部直验 VALID 属实/「留档不删」实践到位。
+- **v1 披露段照抄 V2 根因**:「初版签名密钥使用错误(pub 文件误作
+  seed,自签自验同错路未暴露)」对 v1 与法证相反(v1 初版密钥正确),
+  且 v1 真实根因(09:41 改 sha 行未重签)只字未提——与 bdff7f90
+  commit message 自身表述("v1 系改 sha 行未重签")矛盾。建议:改
+  v1 披露段一行 → 第三次重签 v1(改文必破现签)→ 本节快验一次收口。
+
+### 4. 装版确认
+
+jev-trust 0.2.1 已装,`KeyPair(pub=…)` pub 保留实测通过——V2-1
+探针自纠所踩的装版坑已消除。
+
+### 5. 不受影响项
+
+修复仅触 5 个签名相关文件;decision_set.json/答卷/判分器未动,
+V2-2(18/18 逐位复现)/V2-3(version=v2·public=18·sha=3b9def7d)/
+V2-4(T12 抽查 2/2)全部维持。
+
+**复核数字汇总:双三元组外部直验 2/2 VALID(03e42491…/22a70b20…)/
+根因法证 2/2 闭环(V2=pub-as-seed 实锤;v1=初版密钥无误)/ 披露段
+V2 一致·v1 一处事实错误 / 装版 0.2.1 pub 保留实测通过。
+终判:GREEN(带 1 处 v1 披露修正待办:改行+末次重签)。**
