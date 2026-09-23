@@ -20,7 +20,23 @@
 
 ## 二 · Issue 模板(骨架+每家个性化一段)
 
-标题:`[offer] Free mini domain-calibration report for your Jev use case — independent, signed, no strings`
+> ⚠️ **v2 修订(2026-09-23 晚,T1 实弹反馈)**:T1(is-malicious)被关,
+> 维护者评论「please work on your absolute slop writing」——D1 版的
+> AI 营销结构(粗体 offer/**Free offer, no strings**/破折号排比/长段)
+> 被开源维护者识别为 slop 并打 signal。**D3 批次一律用人味版**:
+> - ≤120 词,无粗体无营销短语,工程师同行口吻
+> - 第一句=对方用例的具体事实;第二句=我们的一条硬读数(带链接)
+> - offer 一句话带过,不展开免责式尾注
+> - 参考改写(以 T1 场景为例):
+>   > I run an independent lab that measures Jev's calibration. Public
+>   > data: on closed tasks C=0.953, but on synthetic email triage it
+>   > claimed 91% confidence and was right 50% of the time (artifacts:
+>   > <link>). Your domain — scanning source for malicious behavior —
+>   > hasn't been measured by anyone. Send 5-10 example decisions and
+>   > I'll run the same measurement for your domain, free, signed report.
+>   > If not, ignore this.
+
+标题(v2):`Question about Jev's calibration on your use case (free measurement offer)`
 
 ```
 Hi — we noticed {项目名} uses Jev to {一句话复述他们的用例,从 README 引}。
