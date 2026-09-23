@@ -100,3 +100,75 @@ D3 声明「acknowledged all of B's N requests」与唯一证据(D2 回执)条�
 2. jev_trust 0.2.0 `KeyPair(pub=…)` 构造器覆盖 pub 的 API 坑,
    建议上游修(seed=None 且 pub 显式传入时不应重生成)。
 3. T31 锚点前出现(T31-1 D1 案例)未在 v2 修复清单中提及,建议并入。
+
+---
+
+# v2 成绩单复算(2026-09-23 · 独立会话)
+
+**复算员**:独立会话,未参与 v2 出题/应考/判分。**对象**:SELFTEST_SCORECARD_V2.md
+(+.sig/+pubkey)、scorecard_public.json、selftest_answers_v2.json、decision_set.json、
+verify_bc1.py。
+
+## 终判:RED(验签一腿;判分与口径两腿全绿,成绩单数字本身成立)
+
+成绩单自设门为「待非实现者复算后上墙」+commit 自称「v2 成绩单签名 VALID
+待复算上墙」——验签被复算证伪,不得上墙,修复重签后再走本节复验。
+
+## V2-1. 验签:INVALID(红灯,探针先尽证伪)
+
+- **探针自纠**:交接提示「新版已修复 pub 保留 bug」在本机不成立——site-packages
+  装的 0.2.0 构造器仍 `if seed is None: seed,pub=keypair()`,实测传入
+  8cf767a6… 被覆盖为 76c35782…;修复只落在仓内 sdks/jev-trust(75900f1),
+  未发布未安装。两种方式均验:装版绕过构造器直填 pub + 仓内修复版
+  KeyPair(pub=)(pub preserved=True)——结论一致。
+- **探针链路自证(关键对照)**:v1 成绩单重写前字节(sha=41c135b4…bab9f52,
+  n=42,取自 75900f1^)+ 原 v1 sig(自 b09e586 未变)→ **VALID**,与首轮
+  复算记录逐位一致 → 验签方法与 pubkey 均可靠,红灯不是探针病。
+- **V2 原地验签(文件名正确)→ INVALID**,证伪穷尽:schema payload
+  {log,sha256,n_records} / 裸文件字节 / sha-hex / sha-digest / 去尾换行×2 /
+  n_records=0..59 全扫 / 无 n_records / 9 个错文件 payload(v1 md、
+  decision_set、answers、考卷等)/ CRLF / BOM——全部不通过。
+- **结论**:SELFTEST_SCORECARD_V2.md.sig 不是由 bc1_selftest.key.pub
+  对应私钥对当前 md 字节产生。时间线(md mtime 09:47 < sig 09:48)排除
+  「签后改文」,指向**签字侧密钥不对**;最可能成因(假说,无私钥不可终证):
+  签字时撞装版 0.2.0 同款构造器 bug(重新生成密钥对后签字)——即仓内修了
+  bug、签字却仍用 bug 版。
+- **连带发现**:v1 三元组现亦断链——SELFTEST_SCORECARD.md 于 09:41
+  (75900f1)改 sha 行未重签,v1 sig 只覆盖改前字节 41c135b4…;当前挂着的
+  v1 md+sig 对不上。目录内两件签名物双双名不副实。
+
+## V2-2. 判分重跑:逐位复现(GREEN)
+
+仓内执行 `cd runtime/assay_bc1_20260927 && python verify_bc1.py
+selftest_answers_v2.json`:
+
+- 输出 **PASS=18 FAIL=0 U=0 / 18**;DIM1 6/6 · DIM2 3/3 · DIM3 4/4 ·
+  DIM4 5/5——与成绩单 18/18 主张及 scorecard_public.json 逐位一致
+- 重生成的 scorecard_public.json 与已提交版 byte-identical,git 工作树
+  该文件保持 clean(判分器确定性复现)
+- 答卷恰好覆盖 public 18 题,holdout 12 题零泄漏(封存未破)
+
+## V2-3. 口径核对:GREEN
+
+- decision_set.json meta.version = "v2 (post-selftest fixes)" ✓
+- public=18 / total=30 / holdout=12 ✓
+- sha256(decision_set.json)=3b9def7d…(=decision_set_v2.json)与成绩单
+  考卷 sha 行一致 ✓
+
+## V2-4. 抽查:T12 真值修复成立
+
+独立数回执行数+独立解 claim:T12-0 raw=68,D1 claim 73(冲突,expected
+含 ✓),D3 claim 68=68(不再冲突);T12-1 raw=66,D1 claim 71(冲突 ✓),
+D3 claim 66=66。两题 expected=[(D1,D2)] 独立重推逐位一致——v1「第二处
+真矛盾漏埋」缺陷确认已修(修法=D3 claim 对齐回执行数)。
+
+## V2-5. 处置建议(数字不阻塞,上墙阻塞)
+
+1. 用正确私钥重签 SELFTEST_SCORECARD_V2.md(仓内修复版 sdk 或
+   KeyPair.from_hex(seed)),按 V2-1 方法复验 VALID 后再上墙。
+2. v1 md 09:41 的 sha 行改动补重签或回滚,恢复 v1 三元组自洽。
+3. 装版 jev-trust 仍为 bug 版——仓内修复未发布,后续验签者会继续踩
+   同一坑,建议发 0.2.1 并重装。
+
+**数字汇总:验签 INVALID / 判分 18-0-0 逐位复现 / version=v2·public=18·
+sha=3b9def7d 一致 / T12 抽查 2/2 修复成立。终判 RED(仅验签)。**
