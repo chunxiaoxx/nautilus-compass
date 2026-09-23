@@ -24,7 +24,7 @@
 |---|---|---|---|---|
 | T1 | luantak/is-malicious | #4 | 9/23 D1 试点 | ❌ CLOSED+批评「slop writing」(AI 营销腔)——不重开不追问(红线);话术教训入库 |
 | T2 | elie222/inbox-zero | #3835 | 9/23 D1 试点 | 🔄观察中 |
-| T3 | AkashPriyadarshii/jev-curate | #3 | 9/23 D1 试点 | 🔄**已接单**(9/24 维护者评论交 rubric+5 行 → 已认领+主批跑毕签名 VALID,三 findings 落 RESULTS;复算交接档就绪,ETA 9/26 12:00) |
+| T3 | AkashPriyadarshii/jev-curate | #3 | 9/23 D1 试点 | 🔄**已接单+范围双确认**(9/24 对方二次评论:5 行即全集/n=5+误差带/交付清单与我方预注册一致/ETA 48h OK——issuecomment-5798766886 已锁;主批跑毕签名 VALID,三 findings 落 RESULTS;复算交接档就绪,ETA 9/26 12:00) |
 | T4 | yusukebe/hono-jev-router | #7 | 9/23 v2 话术单点试验 | 🔄观察中(人味版首试) |
 
 判据:被删/被标记→停改话术;回复 24h 内响应;mini 履约 72h;
