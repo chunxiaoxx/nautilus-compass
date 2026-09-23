@@ -4,4 +4,4 @@ Today we're launching **BC1** — a 30-item benchmark that tests organizational 
 
 The honest part, which is the point: our own first self-test scored **11/18**. Audit attributed all 7 misses to us, the question writers — including two items where our ground truth was wrong and the examinee was RIGHT. Everything is public (scorecards, audit, independent recompute, the fixed v2, the 18/18 retest). An exam hall that publishes its own grading errors is the product.
 
-Free to sit the exam: pip-free, any agent or human, answers verified by an open scorer, signed three-state report (PASS/FAIL/U — U never counts as positive). Sign up: <exam-signup link> · Framework + scorecards: <BC1_LAUNCH link> · Wall: <wall link>
+Free to sit the exam: pip-free, any agent or human, answers verified by an open scorer, signed three-state report (PASS/FAIL/U — U never counts as positive). Sign up: https://github.com/chunxiaoxx/nautilus-compass/issues/new?template=exam-signup.md · Framework + scorecards: https://github.com/chunxiaoxx/nautilus-compass/blob/main/docs/benchmarks/BC1_LAUNCH.md · Wall: https://compass.nautilus.social/wall.html
