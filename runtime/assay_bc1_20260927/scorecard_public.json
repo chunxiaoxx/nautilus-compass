@@ -2,20 +2,20 @@
  "split": "public",
  "n": 18,
  "counts": {
-  "PASS": 11,
-  "FAIL": 7,
+  "PASS": 18,
+  "FAIL": 0,
   "U": 0
  },
  "by_dim": {
   "DIM3": {
-   "PASS": 2,
-   "FAIL": 2,
+   "PASS": 4,
+   "FAIL": 0,
    "U": 0,
    "n": 4
   },
   "DIM1": {
-   "PASS": 1,
-   "FAIL": 5,
+   "PASS": 6,
+   "FAIL": 0,
    "U": 0,
    "n": 6
   },
@@ -34,16 +34,16 @@
  },
  "results": {
   "T32-0": "PASS",
-  "T11-2": "FAIL",
-  "T11-1": "FAIL",
-  "T31-1": "FAIL",
-  "T12-0": "FAIL",
-  "T11-0": "FAIL",
+  "T11-2": "PASS",
+  "T11-1": "PASS",
+  "T31-1": "PASS",
+  "T12-0": "PASS",
+  "T11-0": "PASS",
   "T13-1": "PASS",
-  "T12-1": "FAIL",
+  "T12-1": "PASS",
   "T21-2": "PASS",
   "T32-1": "PASS",
-  "T31-2": "FAIL",
+  "T31-2": "PASS",
   "T42-2": "PASS",
   "T41-2": "PASS",
   "T22-1": "PASS",
@@ -52,6 +52,6 @@
   "T43-0": "PASS",
   "T41-0": "PASS"
  },
- "score": 11,
+ "score": 18,
  "max": 18
 }

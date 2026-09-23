@@ -41,7 +41,7 @@ class KeyPair:
     seed private, publish the pubkey hex next to any log you share."""
 
     def __init__(self, seed: bytes = None, pub: bytes = None):
-        if seed is None:
+        if seed is None and pub is None:
             seed, pub = keypair()
         self.seed = seed
         self.pub = pub
