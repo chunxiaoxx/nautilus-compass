@@ -119,11 +119,16 @@ def verify(public: bytes, msg: bytes, signature: bytes) -> bool:
         and (sB[0] * RhA[2] - RhA[0] * sB[2]) % _p == 0
 
 
-def keypair() -> tuple:
-    seed = secrets.token_bytes(32)
+def pub_from_seed(seed: bytes) -> bytes:
+    if len(seed) != 32:
+        raise ValueError("seed must be 32 bytes")
     h = _sha512(seed)
     a = int.from_bytes(h[:32], "little")
     a &= (1 << 254) - 8
     a |= 1 << 254
-    pub = _encode_point(_scalarmult(_B, a))
-    return seed, pub
+    return _encode_point(_scalarmult(_B, a))
+
+
+def keypair() -> tuple:
+    seed = secrets.token_bytes(32)
+    return seed, pub_from_seed(seed)
