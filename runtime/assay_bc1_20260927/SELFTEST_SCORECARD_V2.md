@@ -34,3 +34,5 @@ DIM1 6/6 · DIM2 3/3 · DIM3 4/4 · DIM4 5/5
 ## 复算方法
 
 verify_bc1.py + answers_v2.json(随档归档)+ decision_set.json(v2)
+
+> 签名记录:初版签名密钥使用错误(pub 文件误作 seed,自签自验同错路未暴露),经非实现者复算(2026-09-23)抓出;已用专用密钥重签(新公钥见bc1_selftest.key.pub),外部视角直验 VALID。此事件本身留档不删。

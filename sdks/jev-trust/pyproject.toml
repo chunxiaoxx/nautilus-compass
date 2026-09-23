@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "jev-trust"
-version = "0.2.0"
+version = "0.2.1"
 description = "Trust middleware for Jev decision APIs - log every call, measure calibration in YOUR domain, spend confidence at its verified exchange rate."
 readme = "README.md"
 requires-python = ">=3.8"
