@@ -4,7 +4,7 @@
 transcript 可审计;7 题主动标注不确定)
 **考卷**:public 18/30(holdout 12 封存未考)
 **判分**:verify_bc1.py 三态,U 不充正分
-**sha**:decision_set=16de925e…(bc62576)
+**sha**:decision_set=16de925e…(v1 入库提交=重写前 bc62576,现 ddbe913)
 
 ## 总分(原样判分,不因任何理由调整)
 
