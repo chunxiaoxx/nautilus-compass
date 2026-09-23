@@ -11,7 +11,7 @@ LOG_DIR=/c/tmp/nc-eval/ab
 mkdir -p "$LOG_DIR"
 
 # === Keys ===
-export ARK_API_KEY="b8ed1f14-660b-4422-8da5-f8e2f4af85da"
+export ARK_API_KEY="${ARK_API_KEY:?Set ARK_API_KEY in environment}"
 export GOOGLE_APPLICATION_CREDENTIALS="$HOME/Downloads/chunxiao-vm-260414-de9e73f4697d.json"
 export GEMINI_API_KEY=$(grep '^GEMINI_API_KEY=' /c/Users/chunx/Projects/nautilus-v3/.env 2>/dev/null | cut -d= -f2-)
 export MINIMAX_API_KEY=$(grep '^MINIMAX_API_KEY=' /c/Users/chunx/quantum-buddha-project/.env | cut -d= -f2-)
