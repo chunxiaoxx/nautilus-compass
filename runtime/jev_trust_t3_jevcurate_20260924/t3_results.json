@@ -1,0 +1,422 @@
+{
+ "protocol": "PROTOCOL.md",
+ "main_model": "jev-1.13.0",
+ "latest_model": "jev-latest",
+ "raw_main": [
+  {
+   "rid": "R1",
+   "y_circ": 0,
+   "d_depth": 4,
+   "noul_p": 0.05,
+   "noul_conf": null,
+   "depth_score_0based": 1.05,
+   "depth_score": 2.05,
+   "depth_conf": 0.89,
+   "depth_legend": {
+    "0": "Superficial, hand-wavy, or incorrect calculations",
+    "1": "Basic answer with missing intermediate steps",
+    "2": "Sound derivation with standard detail",
+    "3": "Clear, comprehensive step-by-step logic",
+    "4": "Flawless, formal, and pedagogical mathematical rigor"
+   },
+   "depth_probabilities": {
+    "0": 0.04,
+    "1": 0.87,
+    "2": 0.09,
+    "3": 0.0,
+    "4": 0.0
+   },
+   "noul_decision": "no",
+   "depth_decision": 1.05
+  },
+  {
+   "rid": "R2",
+   "y_circ": 1,
+   "d_depth": 1,
+   "noul_p": 0.84,
+   "noul_conf": null,
+   "depth_score_0based": 0.75,
+   "depth_score": 1.75,
+   "depth_conf": 0.37,
+   "depth_legend": {
+    "0": "Superficial, hand-wavy, or incorrect calculations",
+    "1": "Basic answer with missing intermediate steps",
+    "2": "Sound derivation with standard detail",
+    "3": "Clear, comprehensive step-by-step logic",
+    "4": "Flawless, formal, and pedagogical mathematical rigor"
+   },
+   "depth_probabilities": {
+    "0": 0.45,
+    "1": 0.37,
+    "2": 0.16,
+    "3": 0.02,
+    "4": 0.0
+   },
+   "noul_decision": "yes",
+   "depth_decision": 0.75
+  },
+  {
+   "rid": "R3",
+   "y_circ": 0,
+   "d_depth": 1,
+   "noul_p": 0.78,
+   "noul_conf": null,
+   "depth_score_0based": 0.0,
+   "depth_score": 1.0,
+   "depth_conf": 1.0,
+   "depth_legend": {
+    "0": "Superficial, hand-wavy, or incorrect calculations",
+    "1": "Basic answer with missing intermediate steps",
+    "2": "Sound derivation with standard detail",
+    "3": "Clear, comprehensive step-by-step logic",
+    "4": "Flawless, formal, and pedagogical mathematical rigor"
+   },
+   "depth_probabilities": {
+    "0": 1.0,
+    "1": 0.0,
+    "2": 0.0,
+    "3": 0.0,
+    "4": 0.0
+   },
+   "noul_decision": "yes",
+   "depth_decision": 0.0
+  },
+  {
+   "rid": "R4",
+   "y_circ": 0,
+   "d_depth": 2,
+   "noul_p": 0.09,
+   "noul_conf": null,
+   "depth_score_0based": 0.65,
+   "depth_score": 1.65,
+   "depth_conf": 0.7,
+   "depth_legend": {
+    "0": "Superficial, hand-wavy, or incorrect calculations",
+    "1": "Basic answer with missing intermediate steps",
+    "2": "Sound derivation with standard detail",
+    "3": "Clear, comprehensive step-by-step logic",
+    "4": "Flawless, formal, and pedagogical mathematical rigor"
+   },
+   "depth_probabilities": {
+    "0": 0.35,
+    "1": 0.65,
+    "2": 0.0,
+    "3": 0.0,
+    "4": 0.0
+   },
+   "noul_decision": "no",
+   "depth_decision": 0.65
+  },
+  {
+   "rid": "R5",
+   "y_circ": 0,
+   "d_depth": 2,
+   "noul_p": 0.04,
+   "noul_conf": null,
+   "depth_score_0based": 1.4,
+   "depth_score": 2.4,
+   "depth_conf": 0.64,
+   "depth_legend": {
+    "0": "Superficial, hand-wavy, or incorrect calculations",
+    "1": "Basic answer with missing intermediate steps",
+    "2": "Sound derivation with standard detail",
+    "3": "Clear, comprehensive step-by-step logic",
+    "4": "Flawless, formal, and pedagogical mathematical rigor"
+   },
+   "depth_probabilities": {
+    "0": 0.02,
+    "1": 0.59,
+    "2": 0.37,
+    "3": 0.02,
+    "4": 0.0
+   },
+   "noul_decision": "no",
+   "depth_decision": 1.4
+  }
+ ],
+ "raw_latest": [
+  {
+   "rid": "R1",
+   "y_circ": 0,
+   "d_depth": 4,
+   "noul_p": 0.05,
+   "noul_conf": null,
+   "depth_score_0based": 1.02,
+   "depth_score": 2.02,
+   "depth_conf": 0.9,
+   "depth_legend": {
+    "0": "Superficial, hand-wavy, or incorrect calculations",
+    "1": "Basic answer with missing intermediate steps",
+    "2": "Sound derivation with standard detail",
+    "3": "Clear, comprehensive step-by-step logic",
+    "4": "Flawless, formal, and pedagogical mathematical rigor"
+   },
+   "depth_probabilities": {
+    "0": 0.05,
+    "1": 0.88,
+    "2": 0.07,
+    "3": 0.0,
+    "4": 0.0
+   },
+   "noul_decision": "no",
+   "depth_decision": 1.02
+  },
+  {
+   "rid": "R2",
+   "y_circ": 1,
+   "d_depth": 1,
+   "noul_p": 0.86,
+   "noul_conf": null,
+   "depth_score_0based": 0.72,
+   "depth_score": 1.72,
+   "depth_conf": 0.4,
+   "depth_legend": {
+    "0": "Superficial, hand-wavy, or incorrect calculations",
+    "1": "Basic answer with missing intermediate steps",
+    "2": "Sound derivation with standard detail",
+    "3": "Clear, comprehensive step-by-step logic",
+    "4": "Flawless, formal, and pedagogical mathematical rigor"
+   },
+   "depth_probabilities": {
+    "0": 0.47,
+    "1": 0.36,
+    "2": 0.15,
+    "3": 0.02,
+    "4": 0.0
+   },
+   "noul_decision": "yes",
+   "depth_decision": 0.72
+  },
+  {
+   "rid": "R3",
+   "y_circ": 0,
+   "d_depth": 1,
+   "noul_p": 0.73,
+   "noul_conf": null,
+   "depth_score_0based": 0.0,
+   "depth_score": 1.0,
+   "depth_conf": 1.0,
+   "depth_legend": {
+    "0": "Superficial, hand-wavy, or incorrect calculations",
+    "1": "Basic answer with missing intermediate steps",
+    "2": "Sound derivation with standard detail",
+    "3": "Clear, comprehensive step-by-step logic",
+    "4": "Flawless, formal, and pedagogical mathematical rigor"
+   },
+   "depth_probabilities": {
+    "0": 1.0,
+    "1": 0.0,
+    "2": 0.0,
+    "3": 0.0,
+    "4": 0.0
+   },
+   "noul_decision": "yes",
+   "depth_decision": 0.0
+  },
+  {
+   "rid": "R4",
+   "y_circ": 0,
+   "d_depth": 2,
+   "noul_p": 0.09,
+   "noul_conf": null,
+   "depth_score_0based": 0.68,
+   "depth_score": 1.6800000000000002,
+   "depth_conf": 0.72,
+   "depth_legend": {
+    "0": "Superficial, hand-wavy, or incorrect calculations",
+    "1": "Basic answer with missing intermediate steps",
+    "2": "Sound derivation with standard detail",
+    "3": "Clear, comprehensive step-by-step logic",
+    "4": "Flawless, formal, and pedagogical mathematical rigor"
+   },
+   "depth_probabilities": {
+    "0": 0.32,
+    "1": 0.68,
+    "2": 0.0,
+    "3": 0.0,
+    "4": 0.0
+   },
+   "noul_decision": "no",
+   "depth_decision": 0.68
+  },
+  {
+   "rid": "R5",
+   "y_circ": 0,
+   "d_depth": 2,
+   "noul_p": 0.04,
+   "noul_conf": null,
+   "depth_score_0based": 1.45,
+   "depth_score": 2.45,
+   "depth_conf": 0.6,
+   "depth_legend": {
+    "0": "Superficial, hand-wavy, or incorrect calculations",
+    "1": "Basic answer with missing intermediate steps",
+    "2": "Sound derivation with standard detail",
+    "3": "Clear, comprehensive step-by-step logic",
+    "4": "Flawless, formal, and pedagogical mathematical rigor"
+   },
+   "depth_probabilities": {
+    "0": 0.02,
+    "1": 0.54,
+    "2": 0.42,
+    "3": 0.02,
+    "4": 0.0
+   },
+   "noul_decision": "no",
+   "depth_decision": 1.45
+  }
+ ],
+ "metrics_main": {
+  "n_evaluated": 5,
+  "n_errors": 0,
+  "noul": {
+   "n": 5,
+   "accuracy@0.70": 0.8,
+   "brier": 0.12924000000000002,
+   "ece10": 0.22400000000000003,
+   "per_row": {
+    "R1": {
+     "p": 0.05,
+     "y": 0
+    },
+    "R2": {
+     "p": 0.84,
+     "y": 1
+    },
+    "R3": {
+     "p": 0.78,
+     "y": 0
+    },
+    "R4": {
+     "p": 0.09,
+     "y": 0
+    },
+    "R5": {
+     "p": 0.04,
+     "y": 0
+    }
+   }
+  },
+  "depth": {
+   "n": 5,
+   "mae": 0.6900000000000001,
+   "accuracy@3.0": 0.8,
+   "low_conf_rows": [
+    "R2"
+   ],
+   "per_row": {
+    "R1": {
+     "s": 2.05,
+     "d": 4,
+     "conf": 0.89
+    },
+    "R2": {
+     "s": 1.75,
+     "d": 1,
+     "conf": 0.37
+    },
+    "R3": {
+     "s": 1.0,
+     "d": 1,
+     "conf": 1.0
+    },
+    "R4": {
+     "s": 1.65,
+     "d": 2,
+     "conf": 0.7
+    },
+    "R5": {
+     "s": 2.4,
+     "d": 2,
+     "conf": 0.64
+    }
+   }
+  }
+ },
+ "metrics_latest": {
+  "n_evaluated": 5,
+  "n_errors": 0,
+  "noul": {
+   "n": 5,
+   "accuracy@0.70": 0.8,
+   "brier": 0.11294,
+   "ece10": 0.21,
+   "per_row": {
+    "R1": {
+     "p": 0.05,
+     "y": 0
+    },
+    "R2": {
+     "p": 0.86,
+     "y": 1
+    },
+    "R3": {
+     "p": 0.73,
+     "y": 0
+    },
+    "R4": {
+     "p": 0.09,
+     "y": 0
+    },
+    "R5": {
+     "p": 0.04,
+     "y": 0
+    }
+   }
+  },
+  "depth": {
+   "n": 5,
+   "mae": 0.694,
+   "accuracy@3.0": 0.8,
+   "low_conf_rows": [
+    "R2"
+   ],
+   "per_row": {
+    "R1": {
+     "s": 2.02,
+     "d": 4,
+     "conf": 0.9
+    },
+    "R2": {
+     "s": 1.72,
+     "d": 1,
+     "conf": 0.4
+    },
+    "R3": {
+     "s": 1.0,
+     "d": 1,
+     "conf": 1.0
+    },
+    "R4": {
+     "s": 1.6800000000000002,
+     "d": 2,
+     "conf": 0.72
+    },
+    "R5": {
+     "s": 2.45,
+     "d": 2,
+     "conf": 0.6
+    }
+   }
+  }
+ },
+ "mock_handwritten": {
+  "noul": {
+   "n": 4,
+   "accuracy@0.70": 1.0,
+   "brier": 0.006250000000000002
+  },
+  "depth": {
+   "n": 4,
+   "mae": 1.825,
+   "accuracy@3.0": 0.5,
+   "low_conf_rows": [
+    "R4"
+   ]
+  }
+ },
+ "verify": {
+  "main": "VALID",
+  "latest": "VALID"
+ }
+}

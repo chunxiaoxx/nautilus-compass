@@ -24,7 +24,7 @@
 |---|---|---|---|---|
 | T1 | luantak/is-malicious | #4 | 9/23 D1 试点 | ❌ CLOSED+批评「slop writing」(AI 营销腔)——不重开不追问(红线);话术教训入库 |
 | T2 | elie222/inbox-zero | #3835 | 9/23 D1 试点 | 🔄观察中 |
-| T3 | AkashPriyadarshii/jev-curate | #3 | 9/23 D1 试点 | 🔄观察中 |
+| T3 | AkashPriyadarshii/jev-curate | #3 | 9/23 D1 试点 | 🔄**已接单**(9/24 维护者评论交 rubric+5 行 → 已认领+主批跑毕签名 VALID,三 findings 落 RESULTS;复算交接档就绪,ETA 9/26 12:00) |
 | T4 | yusukebe/hono-jev-router | #7 | 9/23 v2 话术单点试验 | 🔄观察中(人味版首试) |
 
 判据:被删/被标记→停改话术;回复 24h 内响应;mini 履约 72h;
@@ -33,14 +33,20 @@
 ## 函件两列(每轮步 3 检查)
 
 **我发未验收**:
-- 818/819/820(v5/flywheel/日报 Loop V1 正本函):待各方 ack(或一处异议)——deadline 9/24 12:00
+- 818/819/820(v5/flywheel/日报 Loop V1 正本函):待各方 ack(或一处异议)——deadline 9/24 12:00(信箱读故障,无法检查,以 platform 修复后补查为准)
 - 814(platform 启动函):同上
+- 893(信箱读取故障通报,trace=mbx-outage-0924):判据=platform 修复+积压可读——deadline 9/26 12:00
 
 **我收未关闭**:
 - #809 三件套:已回 811/812/813,待 platform 验收(判据:URL/SQL/验证状态确认)
 
 ## 轮次日志
 
+### 轮 12 · 2026-09-24
+- 进展:信箱带 key 复查仍空(故障未自愈,实锤 platform 读路径)→通报函 893(判据+deadline 9/26 12:00);**T3 接单**(AkashPriyadarshii 评论交 reasoning-math rubric+5 mock 行)→issue 回复认领(24h 判据✓)→预注册档(含开工修正:score criteria 真 API 要求数组+0-4 标尺→+1 换算写死)→主批 jev-1.13.0(生产同构)/对照批 latest 各 5/5 全通,签名 VALID;三 findings:①score 腿 criteria dict 真 API 必 422→jev-curate 生产 fail-closed 全拒 ②标尺 0-4 vs 阈值 1-5 语义错位(换算后 3.0 线本批 0/5 通过)③R3 断言行 noul 误拒(真值边界已披露);T2/T4 OPEN 零评论(窗内)
+- 阻塞:信箱读路径坏(platform 域);T3 复算需新鲜会话(RECOMPUTE.md 交接档就绪:盲标→验签→重算→比对,零预期读数)
+- M1:+0(基建·**M1 前置信号首现**:首个外部 mini 接单——完成+交付后才计 +1)
+- 下轮第一件:T3 复算(新会话按 RECOMPUTE.md)→复算 GREEN 则 issue 交付
 ### 轮 11 补 · 2026-09-23 晚
 - 进展:信箱查询故障实测(主站 200/写入成功 887-890 有回执 id,但 to=compass 查询空——platform 域问题,非我域不擅动,待其自愈或对方发现);Discord 快查:双频道活跃、无对我帖直接回复
 - M1:不变
@@ -106,5 +112,7 @@
 
 ## 【等你拍板/操作】(用户面板)
 
-1. 无阻塞待办——商户验证已完成+¥0.01 已扫码,L5 全链闭环
-2. 下一里程碑 BC1 发布 9/27(P1 日报接单 9/26 12:00 前唯一外部依赖)
+1. 无阻塞待办——T3 mini 履约按承诺推进中(无需操作)
+2. T3 复算需**新开会话**执行(交接档 `runtime/jev_trust_t3_jevcurate_20260924/RECOMPUTE.md`,9/26 12:00 前完成)
+3. 信箱故障已通报 platform(函 893);9/26 12:00 未复=升级处理
+4. 下一里程碑 BC1 发布 9/27(P1 日报接单 9/26 12:00 前唯一外部依赖)

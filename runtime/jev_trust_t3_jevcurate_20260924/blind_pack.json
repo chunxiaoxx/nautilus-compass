@@ -1,0 +1,40 @@
+{
+ "batch": "main (model=jev-1.13.0)",
+ "rows": [
+  {
+   "rid": "R1",
+   "text": "Let f(x) = x^2. By taking the derivative with respect to x, f'(x) = 2x.",
+   "noul_p": 0.05,
+   "depth_score_0based": 1.05,
+   "depth_conf": 0.89
+  },
+  {
+   "rid": "R2",
+   "text": "P is true because P is valid, therefore P is established.",
+   "noul_p": 0.84,
+   "depth_score_0based": 0.75,
+   "depth_conf": 0.37
+  },
+  {
+   "rid": "R3",
+   "text": "The answer is obviously 42, trust me on this.",
+   "noul_p": 0.78,
+   "depth_score_0based": 0.0,
+   "depth_conf": 1.0
+  },
+  {
+   "rid": "R4",
+   "text": "Step 1: Compute matrix determinant. Step 2: Invert matrix.",
+   "noul_p": 0.09,
+   "depth_score_0based": 0.65,
+   "depth_conf": 0.7
+  },
+  {
+   "rid": "R5",
+   "text": "Let a = 1 and b = 2. Then a + b = 3.",
+   "noul_p": 0.04,
+   "depth_score_0based": 1.4,
+   "depth_conf": 0.64
+  }
+ ]
+}
