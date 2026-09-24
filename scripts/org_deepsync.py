@@ -141,6 +141,32 @@ def diff_prev(snapshot: dict, prev: dict | None) -> list[str]:
     return notes
 
 
+def mailbox_view() -> list[str]:
+    """断点 1 接线:拉各框 bootstrap mailbox 段,自动投影跨框未读/逾期。
+
+    平台已生成 unread/due_12h,此前无框消费——本视图替代手工函件两列。
+    """
+    lines = []
+    for name in FRAMES:
+        try:
+            req = urllib.request.Request(
+                f"https://nautilus.social/api/platform/org/bootstrap?agent={name}")
+            with urllib.request.urlopen(req, timeout=12) as r:
+                d = json.loads(r.read(20000)).get("data", {})
+            mb = d.get("mailbox", {})
+            unread = mb.get("unread", [])
+            if unread or mb.get("due_12h"):
+                for m in unread[:4]:
+                    lines.append(f"{name} 未读 id={m.get('id')} "
+                                 f"from={m.get('from_agent')} · "
+                                 f"{str(m.get('title', ''))[:60]}")
+                if mb.get("due_12h"):
+                    lines.append(f"{name} ⚠️ due_12h={mb['due_12h']}")
+        except Exception as e:  # noqa: BLE001
+            lines.append(f"{name} mailbox ERR({str(e)[:50]})")
+    return lines
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=str(REPO / "runtime" / "deepsync"))
@@ -175,6 +201,14 @@ def main() -> None:
             print(f"  mail: {', '.join(f['mail_latest'])}")
         if f.get("bootstrap"):
             print(f"  bootstrap: {f['bootstrap']}")
+    print("\n== 跨框 mailbox 全局投影(自动两列替代手工登记)==")
+    mb_lines = mailbox_view()
+    snap["mailbox"] = mb_lines
+    path.write_text(json.dumps(snap, ensure_ascii=False, indent=1),
+                    encoding="utf-8", newline="\n")
+    for ln in mb_lines or ["  (全部清空)"]:
+        print(f"  {ln}")
+
     print("\n== 对比上一快照 ==")
     for n in snap["diff_notes"]:
         print(f"  {n}")
