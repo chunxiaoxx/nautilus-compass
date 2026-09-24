@@ -1,0 +1,60 @@
+{
+ "cohort": "nanojev-genesis-v1",
+ "spec": "VerifyPack v0.3 §E(episode check kind)",
+ "episodes": 6,
+ "total_frames": 8437,
+ "per_episode": [
+  {
+   "episode_id": "maze-jev",
+   "frames": 2739,
+   "collisions": 1044,
+   "final_score": 1
+  },
+  {
+   "episode_id": "maze-nanojev",
+   "frames": 245,
+   "collisions": 36,
+   "final_score": 1
+  },
+  {
+   "episode_id": "maze-base",
+   "frames": 4727,
+   "collisions": 2044,
+   "final_score": 1
+  },
+  {
+   "episode_id": "snake-jev",
+   "frames": 257,
+   "collisions": 0,
+   "final_score": 30
+  },
+  {
+   "episode_id": "snake-nanojev",
+   "frames": 257,
+   "collisions": 0,
+   "final_score": 27
+  },
+  {
+   "episode_id": "snake-base",
+   "frames": 212,
+   "collisions": 0,
+   "final_score": 25
+  }
+ ],
+ "max_step_displacement": {
+  "maze-jev": 1,
+  "maze-nanojev": 1,
+  "maze-base": 1,
+  "snake-jev": 1,
+  "snake-nanojev": 1,
+  "snake-base": 1
+ },
+ "subject": {
+  "repo": "TianyuCodings/NanoJev",
+  "commit": "76fdfc9ecdca45a9bcef17991a07d3041a87685a",
+  "source_manifest_sha256": "cd26cee8c0cfb8cdc98a06a14577f73c9c468c5c0741a54adffc26be0ae30c70",
+  "frames_source_sha256": "33b0ef7d3224d98b7b608a7a4a20577ba01a5311874658e4f474cba11f343168"
+ },
+ "byte_convention": "LF, autocrlf=false clone",
+ "extraction": "scripts: extract_cohort.py(本目录);maze position[x,y]→x/y;snake body[0](蛇头)→x/y(贪食蛇蛇头每步恰动1格,不变量同构);collision bool→1/0;注入 episode_id/t"
+}
