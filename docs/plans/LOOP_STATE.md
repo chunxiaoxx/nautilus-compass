@@ -26,6 +26,7 @@
 | T2 | elie222/inbox-zero | #3835 | 9/23 D1 试点 | 🔄观察中 |
 | T3 | AkashPriyadarshii/jev-curate | #3 | 9/23 D1 试点 | 🔄**已接单+范围双确认**(9/24 对方二次评论:5 行即全集/n=5+误差带/交付清单与我方预注册一致/ETA 48h OK——issuecomment-5798766886 已锁;主批跑毕签名 VALID,三 findings 落 RESULTS;复算交接档就绪,ETA 9/26 12:00) |
 | T4 | yusukebe/hono-jev-router | #7 | 9/23 v2 话术单点试验 | 🔄观察中(人味版首试) |
+| T5 | Discord jev-compaction(David) | show-and-tell 帖 1552587963529961533 | 9/24 草稿就绪(v2 话术第 2 试,含 422 坑技术钩子+免费 mini offer) | ⏳ 观察窗后随 D3 批次(9/26)发;发帖后 lastid 存直链 |
 
 判据:被删/被标记→停改话术;回复 24h 内响应;mini 履约 72h;
 首个 mini 完成=M1 前置信号即刻通报。D3 发 4 家/D5 发 3 家(视 48h)。
