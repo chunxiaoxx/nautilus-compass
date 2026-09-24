@@ -20,10 +20,10 @@
 |---|---|---|
 | 09:00 | ①GitHub:README 预告改「Launched」+挂成绩单链接 | curl 200+链接活 |
 | 09:10 | ②墙页:wall.html BC1 段改已发布+成绩单条目;服务器 landing 同步 | 外网 wall 含新条目 |
-| 09:20 | ③Discord #show-and-tell 发 BC1 帖(定稿稿) | DOM 读回+截图;builders-chat 视首小时反应决定 follow-up |
+| 09:20 | ③Discord #show-and-tell 发 BC1 帖(定稿稿) | DOM 读回+截图;**发帖后立即 `python scripts/cdp_tool.py lastid` 存消息直链**(值守翻帖唯一可靠路径,见下);builders-chat 视首小时反应决定 follow-up |
 | 09:30 | ④中文稿发布(日报框渠道或降级渠道) | 链接可达+文末入口活 |
 | 09:40 | ⑤轮摘要函(platform+日报):发布完成通报 | 函 id 回执 |
-| 10:00-22:00 | ⑥值守:Discord 回复(≤2h)/报名 issue 响应(≤12h 发卷)/首考生判分(verify_bc1+签名回执) | 每次响应留档 |
+| 10:00-22:00 | ⑥值守:Discord 回复(≤2h)/报名 issue 响应(≤12h 发卷)/首考生判分(verify_bc1+签名回执) | 每次响应留档。**盯帖=nav 帖子直链(③存的 lastid 链接)读上下文+徽标/提及按钮快查**;勿试图程序化翻历史(Chrome153 CDP mouseWheel 无响应,见 scripts/cdp_tool.py 头注) |
 | 22:00 | ⑦首日读数:Discord 反应数/报名数/考卷请求数/判分数 → 记 LOOP_STATE+记忆 | 四个计数器落账 |
 
 ## 三 · 明确不做(当日)
