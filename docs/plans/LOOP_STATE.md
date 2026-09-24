@@ -42,6 +42,12 @@
 
 ## 轮次日志
 
+### 轮 12 补 · 2026-09-24 深同步(用户拷问触发)
+- 进展:用户拷问「卖组织记忆却找不到 flywheel」→ 实测纠错:flywheel 当日 7 commit 全速(灵初六家/RoboChallenge 提案 v1 外发/官网 P0/seed3 用户 9/22 已拍挂)——compass 此前「静默/数据线悬置」判断全错(仅凭自身记忆索引断言他框=自报复发);**深同步探查器上线** scripts/org_deepsync.py(五框快照+diff,首跑即纠错):compass/flywheel ACTIVE,v5 仓 8/27 归档(现役=函件+bootstrap 200),daily 无本地仓但 bootstrap 200 可查(盲区消除);信箱故障面收窄(to=compass 读取域,flywheel 9/24 SENT 911/914 正常);五框探查法+教训入 memory(org-frames-probe-runbook);机制 6 增补建议函已发 platform(893 补充+第四方探查,deadline 10/1)
+- 阻塞:无新增
+- M1:+0(基建·组织真值通道补盲,防跨框误判间接护 M1)
+- 下轮:不变(T3 复算→交付;BC1 9/27)
+
 ### 轮 12 · 2026-09-24
 - 进展:信箱带 key 复查仍空(故障未自愈,实锤 platform 读路径)→通报函 893(判据+deadline 9/26 12:00);**T3 接单**(AkashPriyadarshii 评论交 reasoning-math rubric+5 mock 行)→issue 回复认领(24h 判据✓)→预注册档(含开工修正:score criteria 真 API 要求数组+0-4 标尺→+1 换算写死)→主批 jev-1.13.0(生产同构)/对照批 latest 各 5/5 全通,签名 VALID;三 findings:①score 腿 criteria dict 真 API 必 422→jev-curate 生产 fail-closed 全拒 ②标尺 0-4 vs 阈值 1-5 语义错位(换算后 3.0 线本批 0/5 通过)③R3 断言行 noul 误拒(真值边界已披露);T2/T4 OPEN 零评论(窗内)
 - 阻塞:信箱读路径坏(platform 域);T3 复算需新鲜会话(RECOMPUTE.md 交接档就绪:盲标→验签→重算→比对,零预期读数)
