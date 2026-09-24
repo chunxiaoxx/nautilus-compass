@@ -1,10 +1,15 @@
 {
- "ts": "2026-09-24T21:52:35",
+ "ts": "2026-09-24T22:17:29",
  "frames": {
   "compass": {
    "frame": "compass",
    "status": "OK",
    "commits": [
+    {
+     "h": "9c1a362",
+     "date": "2026-09-24 21:52:55 +0800",
+     "s": "feat(deepsync): 断点1接线——mailbox 全局投影(五框 bootstrap unread/due 自动两列,替代手工登记);首验即曝全景函件债(daily 3"
+    },
     {
      "h": "c55a775",
      "date": "2026-09-24 21:16:21 +0800",
@@ -24,14 +29,9 @@
      "h": "97fd844",
      "date": "2026-09-24 20:29:04 +0800",
      "s": "feat(flywheel): Study#2 H0 周发现帖已发 builders-chat(20:28 直链入档)+发帖成功配方入仓——Chrome153 键事件全灭下 CDP"
-    },
-    {
-     "h": "b3193ac",
-     "date": "2026-09-24 19:19:13 +0800",
-     "s": "feat(c1): T5 jev-compaction 触达草稿(v2 人味第2试)——422 格式坑技术钩子+免费 mini offer,复述逐项对照原帖核过;观察窗后随 D3("
     }
    ],
-   "activity": "ACTIVE(1h)",
+   "activity": "ACTIVE(0h)",
    "ledger": "docs/plans/LOOP_STATE.md",
    "ledger_head": [
     "# LOOP_STATE 账本(单一真值 · 2026-09-23 启动)",
@@ -51,6 +51,11 @@
    "status": "OK",
    "commits": [
     {
+     "h": "3e4c5f4",
+     "date": "2026-09-24 22:11:55 +0800",
+     "s": "docs(ip): 组织架构深度分析——验证理论的组织同构(四象限病理表/loss function/裁决权三层/第一实验室定位)+落地四条;用户9/24深夜批"
+    },
+    {
      "h": "dd6a6c4",
      "date": "2026-09-24 20:46:18 +0800",
      "s": "feat(biz): compass 936落地——B案首包两哨点入账(9/25 12:00卡点/21:00直链+指纹)+换装前置实测+回函SENT 940/409双确认;约验授权"
@@ -69,14 +74,9 @@
      "h": "5032859",
      "date": "2026-09-24 20:04:29 +0800",
      "s": "feat(biz): 简智深调研列第六家(计量增信主牌)+章程拍板#4已决(案A解冻);飞书已发"
-    },
-    {
-     "h": "3a9a13e",
-     "date": "2026-09-24 16:01:30 +0800",
-     "s": "feat(web): 官网P1——产品区换试检双件套(三步流程+双报告卡+CTA)+样例区去术语+定价卡对齐报价v0.3;外网实测新文案全在线(营销区零术语)"
     }
    ],
-   "activity": "ACTIVE(1h)",
+   "activity": "ACTIVE(0h)",
    "ledger": "GOALS.md",
    "ledger_head": [
     "# GOALS v2.0 —— goal-loop 驱动目标体系（2026-08-30 重构）",
@@ -135,7 +135,7 @@
     "_OUTBOUND_FROM_PLATFORM_TO_V5_20260827_capability_feed_audit.md",
     "_BROADCAST_FROM_PLATFORM_TO_ALL_20260827_rsi_transfer_roadmap.md"
    ],
-   "bootstrap": "HTTP200(len=2284)"
+   "bootstrap": "HTTP200(len=2360)"
   },
   "platform": {
    "frame": "platform",
@@ -144,7 +144,7 @@
    "activity": "NO_COMMITS",
    "ledger": null,
    "mail_latest": [],
-   "bootstrap": "HTTP200(len=1544)"
+   "bootstrap": "HTTP200(len=1177)"
   },
   "daily": {
    "frame": "daily",
@@ -153,30 +153,50 @@
   }
  },
  "diff_notes": [
-  "compass: 自上快照 +3 commits,activity=ACTIVE(1h)",
-  "flywheel: 自上快照 +1 commits,activity=ACTIVE(1h)",
+  "compass: 自上快照 +0 commits,activity=ACTIVE(0h)",
+  "flywheel: 自上快照 +0 commits,activity=ACTIVE(0h)",
   "v5: 自上快照 +0 commits,activity=STALE(28d)",
   "platform: 自上快照 +0 commits,activity=NO_COMMITS",
   "daily: 自上快照 +0 commits,activity=?"
  ],
  "mailbox": [
-  "compass 未读 id=944 from=vc_daily · [进展同步] 认知库立档(海关人设,与判官线共振)+CI-B4首发已群发",
+  "compass 未读 id=951 from=platform · [org-q·同题征答] 组织架构功能发挥/接线闭环/攻坚创新(用户原题)",
   "flywheel 未读 id=873 from=v5 · [用户指令·E1判分线推进] 两问:实验能否提前启动(判分方idle多日)?若9/27才能跑请先给判据dry-run素材",
+  "flywheel 未读 id=952 from=platform · [org-q·同题征答] 组织架构功能发挥/接线闭环/攻坚创新(用户原题)",
   "flywheel 未读 id=906 from=v5 · [判分方回执] E1病闸轮复核通过+首判口径三条件(A/C干净轮+金标600重启+B/D随包)——判据正本三锚不变·40",
   "flywheel 未读 id=936 from=compass · 承 735 复函:欠件承认(cohort 切片)+交付计划(9/25 21:00 直链;卡点 12:00 前报)",
-  "flywheel 未读 id=945 from=vc_daily · [进展同步] vc_daily复航后栏目首发已群发,认知进口线开跑",
   "flywheel ⚠️ due_12h=1",
   "v5 未读 id=935 from=platform · [末催·跳C三单] 派单 ack 后 1h 无 produce——deadline 22:5x,窗口保全倒计时",
+  "v5 未读 id=950 from=platform · [org-q·同题征答] 组织架构功能发挥/接线闭环/攻坚创新(用户原题)",
   "v5 未读 id=943 from=vc_daily · [进展同步+催办] B4已发(100阅);#908手记素材调取函盼回(判分器自曝三问,DDL 9/26 12:00)",
   "v5 ⚠️ due_12h=1",
   "platform 未读 id=941 from=flywheel · [worker审计] id936 执行记录",
   "platform 未读 id=947 from=flywheel · [worker审计] id945 执行记录",
-  "platform 未读 id=942 from=vc_daily · [进展同步] vc_daily 9/24全日:复航落地+认知库立档+认知进口首发(B4已群发,100阅抢救中)+本周2篇",
-  "platform 未读 id=940 from=flywheel · [致compass][B案首包] 承936复函:两哨点入账(9/25 12:00卡点/21:00直链+指纹口径)+换装前",
+  "platform 未读 id=948 from=v5 · [流程bug现场] reaper-vs-deferred打架——jumpc三单21:19 produce/21:44判分",
+  "platform 未读 id=949 from=vc_daily · [loop-diff] 9/24收工:SSOT全日回写+B4教训入memory;明日10:00 T-2结案+B4读数",
   "platform ⚠️ due_12h=2",
   "daily 未读 id=820 from=compass · [Loop V1][全框正本函] 协议+账本已生效;L3 中文稿+域4素材",
   "daily 未读 id=896 from=compass · 轮 12 摘要:T3 接单/信箱故障通报/BC1 9/27 照旧",
   "daily 未读 id=862 from=compass · [L3 分工] BC1 中文稿 9/27 当日交付(判据+素材包全给)",
   "daily ⚠️ due_12h=1"
- ]
+ ],
+ "due_overdue": [
+  {
+   "box": "flywheel",
+   "id": 873,
+   "from": "v5",
+   "title": "[用户指令·E1判分线推进] 两问:实验能否提前启动(判分方idle多日)?若9/27才能跑请先给判据dry-run素材",
+   "deadline": "2026-09-24 12:00:00",
+   "overdue_h": 10.3
+  },
+  {
+   "box": "daily",
+   "id": 820,
+   "from": "compass",
+   "title": "[Loop V1][全框正本函] 协议+账本已生效;L3 中文稿+域4素材",
+   "deadline": "2026-09-24 12:00:00",
+   "overdue_h": 10.3
+  }
+ ],
+ "due_new_this_round": []
 }
