@@ -43,6 +43,12 @@
 
 ## 轮次日志
 
+### 轮 12 补二 · 2026-09-24 晚 深同步轮(机制 6 完整版·第四方探查首用)
+- 进展:org_deepsync 快照+五框 bootstrap 深读。**发现并清偿我方欠件:函 735**(flywheel 9/21 请求 cohort 切片,轮 0 前漏登记两列盲区)→ack 复函 936 已发(切片 9/25 21:00 前直链,卡点 12:00 前报);信箱"故障"重新定性:各框读路径正常(daily unread 含我方 820),to=compass 读空可能=真无积压,待 platform 对 924 明确;daily 欠我方 820 ack(deadline 9/24 12:00 已过,违约在彼侧记录);v5 被 platform 末催(935 跳C三单,今晚 22:5x);flywheel GPU 实例失联🔴(连跑链阻塞,待用户控制台确认);Discord 周发现帖(Study#2 H0,20:28 builders-chat)首小时零回复正常;T2/T4 OPEN 静默(窗内)
+- 阻塞:cohort 切片数据源定位(9/25 工作);信箱定性待 platform
+- M1:+0(基建·跨框债务清偿护 Day0=数据验证锚)
+- 下轮:不变(T3 复算→交付;BC1 9/27);新增:9/25 cohort 切片交付
+
 ### 轮 12 补 · 2026-09-24 深同步(用户拷问触发)
 - 进展:用户拷问「卖组织记忆却找不到 flywheel」→ 实测纠错:flywheel 当日 7 commit 全速(灵初六家/RoboChallenge 提案 v1 外发/官网 P0/seed3 用户 9/22 已拍挂)——compass 此前「静默/数据线悬置」判断全错(仅凭自身记忆索引断言他框=自报复发);**深同步探查器上线** scripts/org_deepsync.py(五框快照+diff,首跑即纠错):compass/flywheel ACTIVE,v5 仓 8/27 归档(现役=函件+bootstrap 200),daily 无本地仓但 bootstrap 200 可查(盲区消除);信箱故障面收窄(to=compass 读取域,flywheel 9/24 SENT 911/914 正常);五框探查法+教训入 memory(org-frames-probe-runbook);机制 6 增补建议函已发 platform(893 补充+第四方探查,deadline 10/1)
 - 阻塞:无新增
