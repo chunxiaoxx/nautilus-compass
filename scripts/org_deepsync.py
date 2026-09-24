@@ -14,6 +14,7 @@ from __future__ import annotations
 import argparse
 import json
 import subprocess
+import sys
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
@@ -141,6 +142,41 @@ def diff_prev(snapshot: dict, prev: dict | None) -> list[str]:
     return notes
 
 
+def due_enforcer() -> tuple[list[dict], list[str]]:
+    """断点 2 接线:due 执法器——机械判逾期,替代人工末催。
+
+    职权边界:只亮牌+汇总,不直接催他框(跨框追办=platform 主责,
+    五框分工矩阵);--notify 时向 platform 发逾期汇总表。
+    返回 (逾期明细 rows, 亮牌行 lines)。
+    """
+    from datetime import datetime as _dt
+    now = _dt.now()
+    rows: list[dict] = []
+    lines: list[str] = []
+    for name in FRAMES:
+        try:
+            req = urllib.request.Request(
+                f"https://nautilus.social/api/platform/org/bootstrap?agent={name}")
+            with urllib.request.urlopen(req, timeout=12) as r:
+                d = json.loads(r.read(60000)).get("data", {})
+            for m in d.get("mailbox", {}).get("unread", []):
+                dl = m.get("deadline")
+                if not dl or m.get("ack_at"):
+                    continue
+                t = _dt.strptime(dl.split(".")[0], "%Y-%m-%d %H:%M:%S")
+                if t < now:
+                    hours = (now - t).total_seconds() / 3600
+                    rows.append({"box": name, "id": m["id"],
+                                 "from": m.get("from_agent"),
+                                 "title": str(m.get("title", ""))[:60],
+                                 "deadline": dl, "overdue_h": round(hours, 1)})
+                    lines.append(f"🔴 {name} 欠 id={m['id']}(from={m.get('from_agent')})"
+                                 f" 已逾期 {hours:.1f}h · {str(m.get('title', ''))[:50]}")
+        except Exception as e:  # noqa: BLE001
+            lines.append(f"{name} due-scan ERR({str(e)[:50]})")
+    return rows, lines
+
+
 def mailbox_view() -> list[str]:
     """断点 1 接线:拉各框 bootstrap mailbox 段,自动投影跨框未读/逾期。
 
@@ -170,6 +206,10 @@ def mailbox_view() -> list[str]:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=str(REPO / "runtime" / "deepsync"))
+    ap.add_argument("--notify", action="store_true",
+                    help="新增逾期时写 due_report(发送人工触发)")
+    ap.add_argument("--notify-all", action="store_true",
+                    help="强制写当前全量逾期报告(首跑/周汇总用)")
     a = ap.parse_args()
     outdir = Path(a.out)
     outdir.mkdir(parents=True, exist_ok=True)
@@ -204,10 +244,36 @@ def main() -> None:
     print("\n== 跨框 mailbox 全局投影(自动两列替代手工登记)==")
     mb_lines = mailbox_view()
     snap["mailbox"] = mb_lines
+
+    print("\n== due 执法器(逾期亮牌,职权:只亮牌+汇总,追办权在 platform)==")
+    due_rows, due_lines = due_enforcer()
+    snap["due_overdue"] = due_rows
+    # 只对新增逾期亮牌(对比上次快照,防每轮重复噪声)
+    prev_due = {r["id"] for r in (prev or {}).get("due_overdue", [])}
+    new_due = [r for r in due_rows if r["id"] not in prev_due]
+    snap["due_new_this_round"] = [r["id"] for r in new_due]
+    for ln in due_lines or ["  (无逾期)"]:
+        print(f"  {ln}")
+
     path.write_text(json.dumps(snap, ensure_ascii=False, indent=1),
                     encoding="utf-8", newline="\n")
     for ln in mb_lines or ["  (全部清空)"]:
         print(f"  {ln}")
+
+    notify_all = "--notify-all" in sys.argv
+    if (new_due or (notify_all and due_rows)) and (
+            "--notify" in sys.argv or notify_all):
+        body = ["跨框逾期汇总(深同步轮自动生成,职权边界:只报不催,追办由你方执行)\n"]
+        for r in due_rows:
+            body.append(f"- {r['box']} 欠 id={r['id']}(from={r['from']}) "
+                        f"逾期 {r['overdue_h']}h(deadline {r['deadline']}):"
+                        f"{r['title']}")
+        body.append(f"\n本轮新增逾期:{', '.join(str(r['id']) for r in new_due)}。"
+                    "数据源:各框 bootstrap mailbox(deadline+ack_at 机械判定)。")
+        out = outdir / f"due_report_{ts}.md"
+        out.write_text("\n".join(body), encoding="utf-8", newline="\n")
+        print(f"\n[notify] 新增逾期 {len(new_due)} 条,报告已写 {out.name}"
+              "(发送用 platform_mail.py,人工触发)")
 
     print("\n== 对比上一快照 ==")
     for n in snap["diff_notes"]:
