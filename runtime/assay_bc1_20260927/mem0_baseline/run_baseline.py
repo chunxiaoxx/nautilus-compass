@@ -23,6 +23,7 @@
 """
 import argparse
 import json
+import os
 import re
 import subprocess
 import sys
@@ -30,12 +31,14 @@ import time
 import urllib.request
 from pathlib import Path
 
+os.environ.setdefault("MEM0_TELEMETRY", "false")  # mem0 默认回传,关掉
+
 HERE = Path(__file__).parent
 EXAM = HERE.parent / "selftest_exam_paper_v2.json"
 DECISION_SET = HERE.parent / "decision_set.json"
 GRADER = HERE.parent / "verify_bc1.py"
 ARK_BASE = "https://ark.cn-beijing.volces.com/api/coding/v3"
-MINIMAX_BASE = "https://agent.minimax.cn/mavis/api/v1/llm/v1"
+MINIMAX_BASE = "https://api.minimaxi.com/v1"  # 开放平台(sk-cp key 实测有效 9/25)
 MINIMAX_AUTH = (Path.home() /
                 ".minimax/auth/prod/cn/mcode-public/auth.json")
 DEFAULT_MODEL = "doubao-seed-2-1-pro-260915"
@@ -102,8 +105,9 @@ def ark_post(base: str, path: str, payload: dict, key: str, tries: int = 3):
 
 
 def chat(base: str, key: str, model: str, user: str) -> str:
+    # MiniMax-M3=推理模型,思考占 token;8k 防答案被截断
     r = ark_post(base, "/chat/completions", {
-        "model": model, "temperature": 0, "max_tokens": 4096,
+        "model": model, "temperature": 0, "max_tokens": 8192,
         "messages": [{"role": "system", "content": SYS},
                      {"role": "user", "content": user}]}, key)
     return r["choices"][0]["message"]["content"]
@@ -117,8 +121,9 @@ def local_emb_dims() -> int:
 
 
 def parse_answer(text: str, target: str):
-    """模型输出 → (slot 值, 是否弃答)。剥围栏/抓首个 JSON 对象。"""
-    t = re.sub(r"^```(json)?|```$", "", text.strip(), flags=re.M).strip()
+    """模型输出 → (slot 值, 是否弃答)。剥 think/围栏/抓首个 JSON 对象。"""
+    t = re.sub(r"<think>.*?</think>", "", text, flags=re.S)
+    t = re.sub(r"^```(json)?|```$", "", t.strip(), flags=re.M).strip()
     m = re.search(r"\{.*\}", t, flags=re.S)
     if not m:
         return None, True
@@ -176,13 +181,13 @@ def run_direct(item, base, key, model, raw_log):
 
 
 def run_mem0(item, base, key, model, dims, raw_log):
-    mem = make_memory(dims, item["qid"], key, model)
+    mem = make_memory(dims, item["qid"], base, key, model)
     payload = json.dumps(item["inputs"], ensure_ascii=False)
     # 写入:mem0 自带抽取管线(infer=True=其写入门本体被测)
     chunks = [payload[i:i + 6000] for i in range(0, len(payload), 6000)]
     for c in chunks:
         mem.add(c, user_id="exam")
-    hits = mem.search(item["prompt"][:2000], user_id="exam")
+    hits = mem.search(item["prompt"][:2000], filters={"user_id": "exam"})
     hits = hits.get("results", hits) if isinstance(hits, dict) else hits
     mems = [h.get("memory", str(h)) if isinstance(h, dict) else str(h)
             for h in hits]
