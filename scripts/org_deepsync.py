@@ -177,6 +177,58 @@ def due_enforcer() -> tuple[list[dict], list[str]]:
     return rows, lines
 
 
+def deep_read() -> list[str]:
+    """全框深读(2026-09-25 教训:切片验收通过藏在账本正文,机械快照漏一夜)。
+
+    有本地仓的框 → 读账本「最近进度行」(grep 当日日期标记)+ 最新提交;
+    无本地仓的框 → 组织正本 git(nautilus-core soul-distill-deploy)+ bootstrap
+    state/goals 段。返回人读行。
+    """
+    import re
+    from datetime import datetime as _dt
+    today = _dt.now().strftime("%Y-%m-%d")
+    lines: list[str] = []
+
+    # ① flywheel:本地仓,账本进度行(日期标记:2026-09-2x 或 9/2x)
+    fw = Path("C:/Users/chunx/Projects/nautilusflywheel")
+    if fw.is_dir():
+        for doc in ("docs/plans/2026-09-21-B案首包执行方案.md", "docs/plans/LOOP_FW_20260921.md"):
+            p = fw / doc
+            if not p.is_file():
+                continue
+            hits = [ln.strip()[:160] for ln in p.read_text(
+                encoding="utf-8", errors="replace").splitlines()
+                if re.search(rf"{today}|9/2[4-9]", ln)][:3]
+            for h in hits:
+                lines.append(f"[flywheel·{doc.split('/')[-1][:20]}] {h}")
+        log = _git(fw, "log", "-3", "--pretty=%h %ad %s", "--date=format:%d %H:%M")
+        for ln in log.splitlines()[:3]:
+            lines.append(f"[flywheel·git] {ln[:150]}")
+
+    # ② 组织正本(platform/v5/soul 层真值):nautilus-core soul-distill-deploy
+    core = Path("C:/Users/chunx/Projects/nautilus-core")
+    if core.is_dir():
+        _git(core, "fetch", "origin", "soul-distill-deploy", "--quiet")
+        log = _git(core, "log", "-5", "--pretty=%h %ad %s",
+                   "--date=format:%d %H:%M", "origin/soul-distill-deploy")
+        for ln in log.splitlines()[:5]:
+            lines.append(f"[org-ssot·git] {ln[:150]}")
+
+    # ③ 无本地仓框:v5/platform/daily 的 bootstrap state/goals 段截取
+    for name in ("v5", "platform", "daily"):
+        try:
+            req = urllib.request.Request(
+                f"https://nautilus.social/api/platform/org/bootstrap?agent={name}")
+            with urllib.request.urlopen(req, timeout=12) as r:
+                d = json.loads(r.read(60000)).get("data", {})
+            seg = {k: d.get(k) for k in ("identity", "state", "goals") if d.get(k)}
+            s = json.dumps(seg, ensure_ascii=False)
+            lines.append(f"[{name}·bootstrap] {s[:260]}")
+        except Exception as e:  # noqa: BLE001
+            lines.append(f"[{name}·bootstrap] ERR({str(e)[:40]})")
+    return lines
+
+
 def mailbox_view() -> list[str]:
     """断点 1 接线:拉各框 bootstrap mailbox 段,自动投影跨框未读/逾期。
 
@@ -210,6 +262,8 @@ def main() -> None:
                     help="新增逾期时写 due_report(发送人工触发)")
     ap.add_argument("--notify-all", action="store_true",
                     help="强制写当前全量逾期报告(首跑/周汇总用)")
+    ap.add_argument("--deep", action="store_true",
+                    help="全框深读:账本进度行+组织正本 git+bootstrap 正文段")
     a = ap.parse_args()
     outdir = Path(a.out)
     outdir.mkdir(parents=True, exist_ok=True)
@@ -274,6 +328,15 @@ def main() -> None:
         out.write_text("\n".join(body), encoding="utf-8", newline="\n")
         print(f"\n[notify] 新增逾期 {len(new_due)} 条,报告已写 {out.name}"
               "(发送用 platform_mail.py,人工触发)")
+
+    if a.deep:
+        print("\n== 全框深读(账本正文+组织正本+bootstrap 段)==")
+        deep_lines = deep_read()
+        snap["deep"] = deep_lines
+        path.write_text(json.dumps(snap, ensure_ascii=False, indent=1),
+                        encoding="utf-8", newline="\n")
+        for ln in deep_lines:
+            print(f"  {ln}")
 
     print("\n== 对比上一快照 ==")
     for n in snap["diff_notes"]:
