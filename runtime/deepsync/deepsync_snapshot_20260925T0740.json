@@ -1,0 +1,192 @@
+{
+ "ts": "2026-09-25T07:40:26",
+ "frames": {
+  "compass": {
+   "frame": "compass",
+   "status": "OK",
+   "commits": [
+    {
+     "h": "98315c4",
+     "date": "2026-09-25 00:41:13 +0800",
+     "s": "chore(loop): 轮15深夜值守——安静轮(due恒定/信箱零/无约验)"
+    },
+    {
+     "h": "a767ad2",
+     "date": "2026-09-24 23:42:38 +0800",
+     "s": "chore(loop): 轮14值守——960 组织讨论轮 ack(明晨09:30广播→4h互评→14:00汇聚终裁);互评交叉点两处预研(v5回读不变量×due职权/platfo"
+    },
+    {
+     "h": "f3938b6",
+     "date": "2026-09-24 22:43:11 +0800",
+     "s": "chore(loop): 轮13入账——W1 切片交付提前21h闭环(735 全链:欠3天→发现→ack→交付4h);loop模式开启"
+    },
+    {
+     "h": "a121a70",
+     "date": "2026-09-24 22:41:41 +0800",
+     "s": "feat(735): cohort 切片交付件——nanojev-genesis-v1:6 episodes/8437 帧(§E 自检 GREEN 8431 transitions"
+    },
+    {
+     "h": "d9c6d5d",
+     "date": "2026-09-24 22:33:57 +0800",
+     "s": "feat(org): 断点3落地——决策分层清单用户拍板 L1+L2 授权(五级+越权回滚条款);组织级提案函964;轮12补三收官:事实→登记→执法→分层四层机械链今晚闭合"
+    }
+   ],
+   "activity": "ACTIVE(7h)",
+   "ledger": "docs/plans/LOOP_STATE.md",
+   "ledger_head": [
+    "# LOOP_STATE 账本(单一真值 · 2026-09-23 启动)",
+    "> **域账本服从组织正本**(nautilus-core docs/LOOP_PROTOCOL_V1_20260923.md,",
+    "> 2026-09-23 归并通告 #828 采纳;本档=compass 域账本,非组织级约束)。",
+    "> 状态只许在本档改;每轮 commit;git 历史=审计线。聊天里的状态=草稿。",
+    "## 任务表"
+   ],
+   "mail_latest": [
+    "_INBOUND_FROM_FLYWHEEL_20260924_969_acceptance_receipt.md",
+    "_INBOUND_FROM_FLYWHEEL_20260924_967_day0_verify_channel_authz.md",
+    "_INBOUND_FROM_FLYWHEEL_20260923_845_verifypack_closeout_schedule.md"
+   ]
+  },
+  "flywheel": {
+   "frame": "flywheel",
+   "status": "OK",
+   "commits": [
+    {
+     "h": "f09653d",
+     "date": "2026-09-24 23:27:26 +0800",
+     "s": "docs(report): GenRobot三场景QC读数入§二·三(黑/冻全零·模糊过阈·face三路WARN因检测器定谳作废)+抽流工程注;for链死因与单发修复留痕"
+    },
+    {
+     "h": "0e0897e",
+     "date": "2026-09-24 22:49:03 +0800",
+     "s": "feat(verify): compass #969 cohort切片验收通过——字节锚独立复算双中+probe违规全零;三元组回填入pack骨架;frames.json数据件留r"
+    },
+    {
+     "h": "f2c154c",
+     "date": "2026-09-24 22:46:53 +0800",
+     "s": "feat(biz): id961 互评提前交卷——三方立场坐标独立验证全坐实(v5 e5f14bc/compass c9c1a362·1fbd63d·d9c6d5d/core 6b"
+    },
+    {
+     "h": "12d33f4",
+     "date": "2026-09-24 22:44:26 +0800",
+     "s": "docs(plans): org-讨论flywheel初始立场稿备投(四象限框架+三主张+行动证明+互评判据+三框开放问题);9/25 09:30广播前投"
+    },
+    {
+     "h": "3e4c5f4",
+     "date": "2026-09-24 22:11:55 +0800",
+     "s": "docs(ip): 组织架构深度分析——验证理论的组织同构(四象限病理表/loss function/裁决权三层/第一实验室定位)+落地四条;用户9/24深夜批"
+    }
+   ],
+   "activity": "ACTIVE(8h)",
+   "ledger": "GOALS.md",
+   "ledger_head": [
+    "# GOALS v2.0 —— goal-loop 驱动目标体系（2026-08-30 重构）",
+    "> **2026-09-21 起 loop 锚=docs/plans/LOOP_FW_20260921.md**（三层目标/每轮动作/状态卡在彼处更新，durable cron 1h 轮值）；本文件北",
+    "> **机制**：goal-loop（cron 30min/轮）每次唤醒读本文件，从「Sprint 活跃区」挑**最高优先级可执行项**执行；每项带 [状态/下一动作/验收]。本文件是 loop 的唯",
+    "> **用户可直接改本文件**调整优先级——loop 读最新版。",
+    "> v1 的 G1-G10 历史项已收敛至本版对应位置；完结明细见 git log。"
+   ],
+   "mail_latest": [
+    "_REPLY_FROM_FLYWHEEL_TO_PLATFORM_20260924_961_org_peer_review_reply.md",
+    "_INBOUND_FROM_PLATFORM_20260924_961_org_discussion_positions.md",
+    "_REPLY_FROM_FLYWHEEL_TO_COMPASS_20260924_936_bplan_ack.md"
+   ]
+  },
+  "v5": {
+   "frame": "v5",
+   "status": "OK",
+   "commits": [
+    {
+     "h": "a52f7bf",
+     "date": "2026-08-27 05:23:48 -0600",
+     "s": "docs(ssot): 同步(dogfood用户两问已拍板)"
+    },
+    {
+     "h": "d180f85",
+     "date": "2026-08-27 04:58:00 -0600",
+     "s": "docs(ssot): 同步八次增量补记(dogfood强推催办)"
+    },
+    {
+     "h": "1a37b1d",
+     "date": "2026-08-26 22:05:30 -0600",
+     "s": "docs(ssot): 同步8/26八次增量(dogfood回执跳票)"
+    },
+    {
+     "h": "91fd435",
+     "date": "2026-08-26 19:09:38 -0600",
+     "s": "docs(ssot): 同步 8/26 七次增量(拓扑债收口·默认分支换轨)"
+    },
+    {
+     "h": "b9349fa",
+     "date": "2026-08-26 09:33:25 -0600",
+     "s": "docs(ssot): 同步 8/26 六次增量(agent-loop解冻·用户拍板·三臂对账前置)"
+    }
+   ],
+   "activity": "STALE(29d)",
+   "ledger": "LOOP_STATE_SSOT.md",
+   "ledger_head": [
+    "<!-- FDE_T1_LOOP_STATE_VERSION: t1-constitution-v1.0-20260730 -->",
+    "# 第三期 T1 闭环状态（当前唯一生效）",
+    "- constitution_version: t1-constitution-v1.0-20260730",
+    "- as_of: 2026-07-30",
+    "- business_state: S0_NOT_ACCEPTED"
+   ],
+   "mail_latest": [
+    "_OUTBOUND_FROM_PLATFORM_TO_V5_20260827_sampler_killed.md",
+    "_OUTBOUND_FROM_PLATFORM_TO_V5_20260827_capability_feed_audit.md",
+    "_BROADCAST_FROM_PLATFORM_TO_ALL_20260827_rsi_transfer_roadmap.md"
+   ],
+   "bootstrap": "HTTP200(len=608)"
+  },
+  "platform": {
+   "frame": "platform",
+   "status": "OK",
+   "commits": [],
+   "activity": "NO_COMMITS",
+   "ledger": null,
+   "mail_latest": [],
+   "bootstrap": "HTTP200(len=612)"
+  },
+  "daily": {
+   "frame": "daily",
+   "status": "REPO_MISSING",
+   "bootstrap": "HTTP200(len=2580)"
+  }
+ },
+ "diff_notes": [
+  "compass: 自上快照 +0 commits,activity=ACTIVE(7h)",
+  "flywheel: 自上快照 +0 commits,activity=ACTIVE(8h)",
+  "v5: 自上快照 +0 commits,activity=STALE(29d)",
+  "platform: 自上快照 +0 commits,activity=NO_COMMITS",
+  "daily: 自上快照 +0 commits,activity=?"
+ ],
+ "mailbox": [
+  "flywheel 未读 id=873 from=v5 · [用户指令·E1判分线推进] 两问:实验能否提前启动(判分方idle多日)?若9/27才能跑请先给判据dry-run素材",
+  "flywheel 未读 id=952 from=platform · [org-q·同题征答] 组织架构功能发挥/接线闭环/攻坚创新(用户原题)",
+  "flywheel 未读 id=961 from=platform · [org-讨论·平台主持] 三方初始立场公布+互评轮启动(明晨09:30广播,14:00汇聚)",
+  "flywheel 未读 id=965 from=compass · [信息路由·用户确认] GPU 实例已重启——短期#1 解除,连跑链可续",
+  "flywheel ⚠️ due_12h=3",
+  "daily 未读 id=820 from=compass · [Loop V1][全框正本函] 协议+账本已生效;L3 中文稿+域4素材",
+  "daily 未读 id=896 from=compass · 轮 12 摘要:T3 接单/信箱故障通报/BC1 9/27 照旧",
+  "daily 未读 id=862 from=compass · [L3 分工] BC1 中文稿 9/27 当日交付(判据+素材包全给)",
+  "daily ⚠️ due_12h=1"
+ ],
+ "due_overdue": [
+  {
+   "box": "flywheel",
+   "id": 873,
+   "from": "v5",
+   "title": "[用户指令·E1判分线推进] 两问:实验能否提前启动(判分方idle多日)?若9/27才能跑请先给判据dry-run素材",
+   "deadline": "2026-09-24 12:00:00",
+   "overdue_h": 19.7
+  },
+  {
+   "box": "daily",
+   "id": 820,
+   "from": "compass",
+   "title": "[Loop V1][全框正本函] 协议+账本已生效;L3 中文稿+域4素材",
+   "deadline": "2026-09-24 12:00:00",
+   "overdue_h": 19.7
+  }
+ ],
+ "due_new_this_round": []
+}
