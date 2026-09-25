@@ -177,6 +177,69 @@ def due_enforcer() -> tuple[list[dict], list[str]]:
     return rows, lines
 
 
+def due_ledger(rows: list[dict], now_iso: str) -> dict:
+    """误报双计数(汇聚2.0 修正层施工 · 2026-09-26):逾期三态账。
+
+    每条逾期 id 状态机:active(本轮在列)→ flare(消失 1 轮=疑似误报或
+    已处理,待复轮)→ cleared(消失 ≥2 轮)。计数:persist/flare/cleared
+    +历史误报率=flare_total/(flare_total+cleared_total)——执法器自身
+    漂移可被复算(自报复发防线)。
+    """
+    import os
+    p = Path(__file__).parent.parent / "runtime/deepsync/due_ledger.json"
+    book: dict[str, dict] = {}
+    if p.exists():
+        try:
+            book = json.loads(p.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            book = {}
+    seen = {f"{r['box']}#{r['id']}" for r in rows}
+    for k in seen:  # 本轮在列:active 记 first_seen(新)/last_seen(旧)
+        e = book.setdefault(k, {"first_seen": now_iso, "misses": 0,
+                                "status": "active"})
+        e["last_seen"] = now_iso
+        e["misses"] = 0
+        e["status"] = "active"
+    for k, e in book.items():  # 不在列:misses+1,两轮即清
+        if k in seen:
+            continue
+        e["misses"] = int(e.get("misses", 0)) + 1
+        e["status"] = "flare" if e["misses"] == 1 else "cleared"
+    hist = {}
+    for e in book.values():
+        if e["status"] in ("flare", "cleared"):
+            hist[e["status"]] = hist.get(e["status"], 0) + 1
+    fp, cl = hist.get("flare", 0), hist.get("cleared", 0)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(json.dumps(book, ensure_ascii=False, indent=1),
+                 encoding="utf-8")
+    err_rate = round(fp / (fp + cl), 3) if (fp + cl) else 0.0
+    return {"persist": len(seen), "flare": fp, "cleared": cl,
+            "false_alarm_rate": err_rate}
+
+
+def due_signer():
+    """执法器报告自签名(自报复发防线:报告生产者标志必须可验源)。
+
+    密钥:~/.claude/.cache/deepsync_due/due_signer_seed.hex(首次生成,
+    永不入仓);pubkey 归档 runtime/deepsync/due_signer.pub。
+    """
+    import os
+    from jev_trust.receipt import KeyPair
+    d = Path.home() / ".claude/.cache/deepsync_due"
+    d.mkdir(parents=True, exist_ok=True)
+    sp = d / "due_signer_seed.hex"
+    if sp.exists():
+        kp = KeyPair.from_hex(sp.read_text(encoding="utf-8").strip())
+    else:
+        kp = KeyPair(seed=os.urandom(32))
+        sp.write_text(kp.seed.hex(), encoding="utf-8")
+    pub = Path(__file__).parent.parent / "runtime/deepsync/due_signer.pub"
+    if not pub.exists():
+        pub.write_text(kp.pub_hex, encoding="utf-8")  # property,无括号
+    return kp
+
+
 def deep_read() -> list[str]:
     """全框深读(2026-09-25 教训:切片验收通过藏在账本正文,机械快照漏一夜)。
 
@@ -302,6 +365,12 @@ def main() -> None:
     print("\n== due 执法器(逾期亮牌,职权:只亮牌+汇总,追办权在 platform)==")
     due_rows, due_lines = due_enforcer()
     snap["due_overdue"] = due_rows
+    # 误报双计数(三态账):persist/flare/cleared + 历史误报率
+    dl = due_ledger(due_rows, ts)
+    snap["due_ledger_counts"] = dl
+    due_lines.append(f"  双计数:persist={dl['persist']} flare={dl['flare']}"
+                     f" cleared={dl['cleared']}"
+                     f" 历史误报率={dl['false_alarm_rate']}")
     # 只对新增逾期亮牌(对比上次快照,防每轮重复噪声)
     prev_due = {r["id"] for r in (prev or {}).get("due_overdue", [])}
     new_due = [r for r in due_rows if r["id"] not in prev_due]
@@ -324,8 +393,24 @@ def main() -> None:
                         f"{r['title']}")
         body.append(f"\n本轮新增逾期:{', '.join(str(r['id']) for r in new_due)}。"
                     "数据源:各框 bootstrap mailbox(deadline+ack_at 机械判定)。")
+        body.append(f"执法器双计数(误报自检):persist={dl['persist']}"
+                    f" flare={dl['flare']} cleared={dl['cleared']}"
+                    f" 历史误报率={dl['false_alarm_rate']}")
         out = outdir / f"due_report_{ts}.md"
+        # 自签名:先写终版(含 pubkey 验证头),一次签;sig 在旁文件
+        try:
+            kp = due_signer()
+            body.append(f"\n验证:jev_trust KeyPair.verify_log(本报告,"
+                        f"旁 .sig 文件)+pubkey={kp.pub_hex[:16]}…"
+                        "(全量见 runtime/deepsync/due_signer.pub)")
+        except Exception as e:  # noqa: BLE001
+            print(f"[sign] 密钥 FAIL {str(e)[:80]}(报告不带签名头)")
         out.write_text("\n".join(body), encoding="utf-8", newline="\n")
+        try:
+            sig = kp.sign_log(out)
+            print(f"[sign] {sig.name}")
+        except Exception as e:  # noqa: BLE001
+            print(f"[sign] FAIL {str(e)[:80]}(报告未签名)")
         print(f"\n[notify] 新增逾期 {len(new_due)} 条,报告已写 {out.name}"
               "(发送用 platform_mail.py,人工触发)")
 
