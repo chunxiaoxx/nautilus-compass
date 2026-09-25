@@ -1,0 +1,5 @@
+BC1 scorecard [public]: PASS=16 FAIL=1 U=1 / 18
+  DIM1: 5/6 (U=0)
+  DIM2: 3/3 (U=0)
+  DIM3: 4/4 (U=0)
+  DIM4: 4/5 (U=1)

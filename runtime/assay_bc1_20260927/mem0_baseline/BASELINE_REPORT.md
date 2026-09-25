@@ -1,0 +1,69 @@
+# BC1 外部基线报告 · mem0 双臂预跑(2026-09-25 · 发布前)
+
+> 判据纪律:本跑只读公开考卷+判分器;答案槽位取自 decision_set 的
+> check.spec.target,真值字段全程未被测试管线读取;判分=公开 verify_bc1.py
+> 原样执行。原始应答全量落 `raw_responses.jsonl` 供第三方复算。
+
+## 设置
+
+| 项 | 值 |
+|---|---|
+| 考生 backbone | MiniMax-M3(temperature=0,两臂同一模型) |
+| 记忆系统 | mem0 2.2.0(默认配置,零调参;其自带写入时事实抽取=写入门本体被测) |
+| 向量 | bge-m3 本地(HF 缓存)+ qdrant 本地库,**每题独立实例隔离** |
+| 臂 A direct | 题面+原始材料全给,直接作答 |
+| 臂 B mem0 | 材料写入 mem0 → 以题面检索 → 仅凭检索结果作答;检索不足=弃答(U) |
+| 判分 | verify_bc1.py(public 18 题,三态,U 不充正分) |
+
+## 结果
+
+| 臂 | PASS | FAIL | U | 分 |
+|---|---|---|---|---|
+| direct(全数据在场) | 16 | 1 | 1 | **16/18** |
+| mem0(过记忆管线) | 11 | 4 | 3 | **11/18** |
+
+分差 **-5**(-28%)。维度拆解:
+
+| 维度 | direct | mem0 |
+|---|---|---|
+| DIM1 跨框状态一致 | 5/6 | 4/6(U=2) |
+| DIM2 写入门质量 | 3/3 | 2/3 |
+| DIM3 重犯率 | 4/4 | **1/4** ← 塌点 |
+| DIM4 归因可追溯 | 4/5(U=1) | 4/5(U=1) |
+
+逐题翻转:PASS→FAIL:T21-1、T31-2、T32-0、T32-1;PASS→U:T11-2、T43-0;
+FAIL→U:T11-1;反向 U→PASS:T41-0(记忆臂答出了直连弃答的题)。
+
+## 失败解剖(raw 实证)
+
+- **T32-0/T32-1(假绿识别)**:判题关键=日志行 `artifact: null`(无回执
+  凭证)。mem0 写入时把结构化日志压缩成自然语言事实("deduplicated,
+  returning a 409 conflict"),**null 字段在抽取中消失**,考生再也看不到
+  "无凭证"这个决定性证据。
+- **T21-1(写入门)**:门规则依赖 fact_status/external_verified 两字段的
+  精确对齐;mem0 抽取把表格行改写为叙述句,字段对应关系断裂。
+
+**规律**:记忆系统的写入时语义压缩,丢的恰好是审计要查的机器可检字段
+(null 标记、精确状态值)。BC1 四维量的就是这种损耗。
+
+## 诚实边界
+
+- n=1 单次跑、单 backbone;mem0 默认配置未调参(调优是它用户的功课,
+  我们测的是"开箱即用的记忆管线保真度")
+- M3 为推理模型,temperature=0 下仍可能有微小不确定性;raw 全公开可复跑
+- 直连臂 16/18 说明题目对强模型+全上下文不算刁;记忆臂的掉分才是本实验
+  要量的东西
+- U=诚实弃答(检索不足),不充正分——与 BC1 计分规则一致
+
+## 复算
+
+```
+pip install mem0ai sentence-transformers socksio
+MINIMAX_API_KEY=... python runtime/assay_bc1_20260927/mem0_baseline/run_baseline.py
+# 判分:python runtime/assay_bc1_20260927/verify_bc1.py \
+#   runtime/assay_bc1_20260927/mem0_baseline/answers_mem0.json
+```
+
+注:判分器每次运行会重写 scorecard_public.json(正本=自测 18/18 份),
+本管线已加快照恢复防护;手工复算后请 `git checkout -- scorecard_public.json`
+还原。
