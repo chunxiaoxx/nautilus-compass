@@ -1,0 +1,552 @@
+{
+ "corpus_sha256": "01134c14727a2bb3bb66accdca4c5716b8dba2b1effab6320f2f026cb3e6c591",
+ "n_docs": 109,
+ "failed": [],
+ "queries": [
+  {
+   "doc": "_NODE_nautilus-compass.md",
+   "q_cn": "上次MCP一直502超时还以为是服务挂了 最后根因查到是啥来着",
+   "q_en": "MCP 502 root cause host overload not service dead probe misdiagnosis"
+  },
+  {
+   "doc": "aegis-compass-competitor-20260907.md",
+   "q_cn": "之前发主帖前临时挖出来的那个竞品,搞coding agent记忆加治理的,叫什么aegis什么compass来着,二十刀一个月,好像定位撞到咱们仲裁那一条上去了",
+   "q_en": "aegis compass competitor $20/mo coding agent memory governance arbitration positioning collision"
+  },
+  {
+   "doc": "arm-a-summary-layer-pass-20260903.md",
+   "q_cn": "之前那个 A 臂摘要层评估最后到底过没过啊?好像是 9 月 3 号那次终判,500 题从四十多点涨到七十多的,说是上下文组装层的问题不是检索的事,还有什么 judge 断连重跑的事记得吗",
+   "q_en": "arm a summary layer final verdict pass 2026-09-03 longmemeval 500q 42.6 to 70 judge disconnection newapi 403 context engineering no retrieval change"
+  },
+  {
+   "doc": "assay_gate_test.md",
+   "q_cn": "之前那个assay gate的live test做了没,关于pillar 2和throat tagging那次测试",
+   "q_en": "assay gate live test pillar 2 throat tagging ingest"
+  },
+  {
+   "doc": "bc1-and-loop-day-20260923.md",
+   "q_cn": "就那天那个一分钱微信支付端到端四回执全通的 还有bc1那个戏剧性自测 全判题侧缺陷的 后来信箱写入成功但查询返回空那个故障 排查思路是怎么走的来着",
+   "q_en": "bc1 benchmark 18/18 re-exam audit attribution question defects wechat 0.01 yuan four receipts end-to-end mailbox read empty write success root cause 2026-09-23"
+  },
+  {
+   "doc": "benchmark-naming-licensing-20260902.md",
+   "q_cn": "咱那个自建评测基准最后定叫什么名字来着 之前撞了一堆compass开头的还有那个李飞飞的atlas 后来拍板了啥",
+   "q_en": "self-built benchmark naming collision CompassBench ATLAS CompassMem final decision NautilusMem license T0 publish roadmap"
+  },
+  {
+   "doc": "c-family-verify-closure-20260917.md",
+   "q_cn": "信箱那个去重假绿的坑后来怎么填的？之前发函被静默吞掉那个case，还有T4棘轮重写成判据三元组的正文放哪了来着",
+   "q_en": "clawhub 1.0.2 publish --source-commit --source-repo provenance supply chain T03"
+  },
+  {
+   "doc": "cheap-tier-close-and-watcher-20260904.md",
+   "q_cn": "cheap-tier 那两个域(web 和 ent)后来定下来没？好像比 d12 还低？还有判官那个 4096 token 坑到底咋堵上的，watcher 自动重判是啥时候定型的来着",
+   "q_en": "cheap-tier web ent closeout below d12 watcher auto-rejudge pipeline judge 4096 fix TRANSFER_RUNBOOK"
+  },
+  {
+   "doc": "clawhub-glama-audit-20260916.md",
+   "q_cn": "之前 Glama 上 docker 构建一直过不了那个,好像是 uv 的 universal lock 把什么私有依赖一起解析了来着?nautilus extra 还是啥的,最后怎么修的",
+   "q_en": "glama docker build fail uv universal lock nautilus extra private wheel cannot deploy"
+  },
+  {
+   "doc": "commit-attribution-rule-20260923.md",
+   "q_cn": "之前那个GitHub上提交署名显示成claude不显示我名字的事最后怎么搞的来着 好像还把历史全重写了?",
+   "q_en": "commit attribution claude chunxiaoxx history rewrite filter-repo mailmap 20260923 nautilus-compass mirror backup"
+  },
+  {
+   "doc": "compass-daemon-pylibs-rootcause-20260830.md",
+   "q_cn": "之前那个 compass daemon 一直在报错、HUD 还总丢失的问题最后是怎么修好的来着？是不是动了什么 PYTHONPATH 之类的环境变量？",
+   "q_en": "compass daemon recall fail 1322 PreTrainedModel import PYTHONPATH pylibs root cause fix HUD"
+  },
+  {
+   "doc": "compass-roadmap-20260907.md",
+   "q_cn": "之前那个compass路线图拍板的,仲裁器那个四层同心圆的设计,VerifyPack立项了没来着?还有个什么忘=共识函数的洞见",
+   "q_en": "compass roadmap arbitration stack VerifyPack v0.2 #47 seven operators forgetting consensus function flywheel batch001"
+  },
+  {
+   "doc": "compass-strategy-four-priorities-20260910.md",
+   "q_cn": "之前跟用户聊的那个 compass 战略四优先级的事，最后拍板的是什么来着？好像是跟 flywheel 有协同关系的，记得还有什么反剧场的验收标准",
+   "q_en": "compass four priorities 2026-09-10 user approved flywheel collaboration arbitration layer anti-theater recalculation criterion library batch002"
+  },
+  {
+   "doc": "convergence-state-snapshot-20260809.md",
+   "q_cn": "之前8月初那个收入突然飙到1707但全自产、外部原料全是0的那个状态快照在哪来着，fuel-loop好像一直没部署卡着",
+   "q_en": "fuel-loop deployment blocker income 1707 externally_backed zero self-produced gmint convergence snapshot 8/9"
+  },
+  {
+   "doc": "convergence-state-snapshot-20260821.md",
+   "q_cn": "8月21那次收入冲到7551但全是自己造变体、外部真值信号一个都没有的收敛快照 就是自循环账 那个SSH隧道和secret配方在哪",
+   "q_en": "convergence snapshot 20260821 income 7551 genopt self-variants B=0 fuel-loop gate systemd mint tunnel 15433"
+  },
+  {
+   "doc": "d13-judge-retry-verdict-20260831.md",
+   "q_cn": "之前 doubao judge 那个 reasoning 把 4096 token 吃满导致内容全空全打零分的问题,最后怎么解的来着?好像还跟 LoRA 检索增强那条路线没过门一起定案的",
+   "q_en": "doubao judge reasoning_effort max_completion_tokens 4096 content empty length finish_reason systematic zero bias retry fix; LoRA retrieval augmentation dual domain threshold not passed route closed; concurrent process duplicate judgment results file merge"
+  },
+  {
+   "doc": "d14-abstention-verdict-20260902.md",
+   "q_cn": "之前那个d14刀4拒答门没过门的事最后怎么定案来着?什么92题误拒答那个",
+   "q_en": "d14 abstention gate fail 92 false refusals d12 rejudge clean 40 percent contamination"
+  },
+  {
+   "doc": "daemon-9876-watchdog-rootcause-20260908.md",
+   "q_cn": "之前那个 9876 daemon 反复挂掉的事到底怎么定位的来着?好像冷启动要 349 秒但只给了 120 秒豁免,最后用 schtasks 搞了个 watchdog。还有那个 ping 必须带换行才行的坑是啥情况?",
+   "q_en": "daemon 9876 repeated death root cause watchdog schtasks cold start 349s grace 120s double instance race ping newline protocol BGE anchors nautilus_compass"
+  },
+  {
+   "doc": "daemon-auth-and-hf-offline-20260901.md",
+   "q_cn": "之前那次给本地 9876 daemon 加 token 鉴权 漏改了哪个 stdio 桥 MCP 报 Connection closed 后来 9/1 晚上批量补了 7 处那个 怎么修的来着 还有 BGE 那个 client has been closed 死循环跟代理断流那个",
+   "q_en": "daemon 9876 v3.0.10 token auth HMAC mcp_server.py nautilus-compass Connection closed 7 places fix BGE loading infinite loop client has been closed HF_HUB_OFFLINE proxy"
+  },
+  {
+   "doc": "devto-operations-20260908.md",
+   "q_cn": "之前那次在dev.to发文结果一篇流量都没有是怎么回事来着，好像跟什么AI披露新政策还有标题改不了有关",
+   "q_en": "dev.to zero views ai disclosure policy unpublish curl user-agent 403 forbidden bots"
+  },
+  {
+   "doc": "e2e-context-fix-and-tr-diagnosis-20260828.md",
+   "q_cn": "之前那个 e2e 跑分从 0.2 几一路拉到 0.567 的事记得吧?后来 tr 型为啥一直是零分,跟 context 里没带日期有关系对吧?还有 GPU 智星云那台机器网络折腾半天,最后到底是哪条路最快来着?huggingface 直连?",
+   "q_en": "e2e context fix 0.267 to 0.567 tr type zero score no date context GPU network huggingface direct connection fastest"
+  },
+  {
+   "doc": "examhall-charter-20260916.md",
+   "q_cn": "之前开会说要搞的那个考场立项 后来落地了吗 就是compass加第五层那个 叫什么草案v0来着 还想搞诚信扣分和回执名次 314那几封函发出去有没有回音 BC0做完了没有",
+   "q_en": "examhall charter v0 RSI benchmark authentication track compass five-layer integrity scoring receipt UNVERIFIABLE M1 milestone BC0 BC1"
+  },
+  {
+   "doc": "feedback-ark-coding-plan-not-metered-api.md",
+   "q_cn": "之前调 doubao 那个 ARK 不是一直走错端点把账户余额烧光了嘛，最后到底用哪个 endpoint 才不烧钱来着？是 coding plan 的那个吗",
+   "q_en": "volcengine ark coding plan endpoint /api/coding/v3 not /api/v3 metered account_overdue 403 key 36-char"
+  },
+  {
+   "doc": "gmail-rest-fallback-recipe-20260910.md",
+   "q_cn": "之前gmail那个mcp连不上的时候是怎么读inbox的来着 好像是用rest api自己刷token那种方案,还有个脚本叫什么reauth来着...Trajko那封9/8的ack是不是当时用这个看的",
+   "q_en": "gmail MCP down REST fallback oauth refresh_token ~/.gmail-mcp inbox read recipe"
+  },
+  {
+   "doc": "gmail-verify-production-20260906.md",
+   "q_cn": "之前 Gmail 邮箱验证生产链上线最后怎么过的来着？踩了一堆坑——Windows 上传 env 带 CRLF 401、nginx 漏配 verify 路由、probes 假账号必 403——最后是按什么顺序解的，记得 signup e2e 全绿了",
+   "q_en": "gmail verify production refresh_token CRLF 401 nginx verify route 404 probe env signup e2e green consent screen testing"
+  },
+  {
+   "doc": "gpu-651799-expiry-incident-20260831.md",
+   "q_cn": "之前那个GPU半夜到期停机的事故,4090那个,余额差十几块没续上,后来用renew API怎么救的来着?新开的实例是2080Ti那个吧",
+   "q_en": "GPU 651799 overnight expiry renew_instance API Container_name not Id 2080Ti replacement d13 ent rerun"
+  },
+  {
+   "doc": "gpu-e2e-rootcause-chain-20260829.md",
+   "q_cn": "之前那次把 e2e 500 搬到 GPU 4090PLUS 上跑出 500 错，好像排查出好几层根因来着？reranker 权重坏了还变成 2.27G 的怪物，env 还漏抄了个变量，bge 路径 daemon 也不认，最后都是怎么修的？",
+   "q_en": "gpu e2e 500 four-layer root cause reranker 2.27G corrupted weights ZMM_SSU_UTTERANCE env missing bge-m3 daemon path"
+  },
+  {
+   "doc": "gpu-instance-reuse-not-rent.md",
+   "q_cn": "之前在智星云租gpu那次 ssh连不上我是不是乱新租了好几台 后来用户纠正我说本来提供的就有 那个教训来着 还浪费了九十多块",
+   "q_en": "GPU instance SSH failure dont rent new check status first ZhiXingYun disk preserve no custom image A100 4090 pricing"
+  },
+  {
+   "doc": "gpu-old-disk-restart-20260903.md",
+   "q_cn": "之前那个GPU实例到底该不该租新的来着?旧盘重启好像环境都在,24G卡跑vllm还OOM过,加了啥参数才好的?pip缺失那次怎么解决的",
+   "q_en": "GPU preserve disk reuse vs rent new instance vllm 24G cudagraph OOM enforce-eager pip missing base64 binary transfer corruption blockelite"
+  },
+  {
+   "doc": "hn-submit-pipeline-20260910.md",
+   "q_cn": "之前用curl发HN首帖秒被flag那次来着，零karma账号自推的，后来是留帖等复审还是直接删号了？",
+   "q_en": "HN curl submit pipeline first post flagged zero karma account self-promotion handling"
+  },
+  {
+   "doc": "hud-multiview-crosstalk-fix-20260901.md",
+   "q_cn": "记得之前同时开好几个 claude 窗口，底部那条 HUD 状态栏显示的目录跟仓库会互相串、还会缺段，那个 bug 后来怎么改好的来着",
+   "q_en": "claude-hud multi-window cwd cache overwrite per-cwd bucketing throttling fix v3.0.11"
+  },
+  {
+   "doc": "inbox-agent-round-20260831.md",
+   "q_cn": "8月底那次收函轮后来清了没 承诺的那个daemon日轮部署回执9月2号交了没 还剩几个待办来着",
+   "q_en": "inbox agent round 20260831 10 letters ack cleared SSOT faedfd6 daemon deployment 9/2 22:00 hook injection d13 pullback"
+  },
+  {
+   "doc": "industry-ilya-ssi-continual-learning-20260822.md",
+   "q_cn": "之前看到那个SSI还是Ilya的项目来着 说不冻结权重搞持续学习的 跟我们B理论还有真值供给那块有啥关系来着 好像是2026年要发模型",
+   "q_en": "SSI Ilya continual learning digital value function 2026 model release upstream truth"
+  },
+  {
+   "doc": "jev-trust-launch-20260922.md",
+   "q_cn": "jev-trust 0.1.0那次发版,PyPI双PR三发落地,后面跑的dogfood多域验证,记得有python异常预测、code patch行为、还有QC标注那几个域,三域C值从0.95掉到0.69那个梯度实验,还有非实现者复算时发现session.jsonl被.gitignore静默吞掉的坑,加上OK-first极性翻转那组对照——整套记录和复算报告在哪来着?",
+   "q_en": "jev-trust 0.1.0 PyPI release dogfood multi-domain calibration FACE_VALUE DISCOUNT jsonl gitignore silent exclusion git add -f independent recompute polarity flip OK-first wording"
+  },
+  {
+   "doc": "launch-sprint-status-20260905.md",
+   "q_cn": "9月初发布冲刺那个nginx坑后来咋处理的来着 就是systemctl说没active但443还活着那个 真身是啥进程 还有/mcp不带斜杠直连8443死掉那个301污染 最后是用啥命令重启的",
+   "q_en": "nginx not managed by systemd kill -HUP /mcp 8443 301 trailing slash trap cross-tenant token scope 200 forbidden body false green probe"
+  },
+  {
+   "doc": "license-modified-mit-20260904.md",
+   "q_cn": "之前咱们那个 nautilus 项目 license 到底最后拍板改成啥了?好像从 MIT 切到一种 Kimi 式的 modified MIT,还带商标保护和托管 100 个付费用户的上限,律师复核那个遗留动作做了没?",
+   "q_en": "nautilus compass license switched from MIT to modified MIT Kimi-style trademark hosting cap 100 paying users window period decision 2026-09-04"
+  },
+  {
+   "doc": "lmev2-first-full-baseline-20260830.md",
+   "q_cn": "之前那个LME-V2新基准的全量基线跑过没来着 451题那个 web好像才十几个点 enterprise更拉 静态动态unknown率特别高是不是检索没调好",
+   "q_en": "LME-V2 451 baseline web 19.6 enterprise 12.8 static dynamic unknown retrieval unoptimized 2026-08-30"
+  },
+  {
+   "doc": "lmev2-judge-401-envvar-pitfall.md",
+   "q_cn": "之前那个LME-V2判分全401的事还记得吗，好像是环境变量搞错了吧？judge.env和.ark_env两套key那个，最后怎么补救的能rejudge不",
+   "q_en": "LME-V2 judge 401 OPENAI_API_KEY ARK_API_KEY envvar mismatch rejudge recovery"
+  },
+  {
+   "doc": "lmev2-pipeline-smoke-proven-20260830.md",
+   "q_cn": "LME-V2 评测管线不是烟测打通了吗？当时 GPU 机上那个 BGE 多线程 meta tensor 报错最后怎么破的来着，newapi 拦 judge 题干那事儿也一起定了吗",
+   "q_en": "LME-V2 pipeline smoke proven BGE meta tensor race single worker newapi content blocked ARK judge count_non_abstention fake completion 451 questions"
+  },
+  {
+   "doc": "lmev2-three-knives-tuning-20260830.md",
+   "q_cn": "之前 lmev2 那个三刀调优的事 web 涨到 36 多了吧 ent 也涨了不少 最后 abstention 口径那块怎么定的 我记得还有个 judge patch 改崩了",
+   "q_en": "lmev2 three knives abstention web 36.7 ent 40.3 d12 judge patch f-string NameError smoke test lesson"
+  },
+  {
+   "doc": "lmev2-upstream-attribution-20260902.md",
+   "q_cn": "之前那个lmev2基准归属的事最后怎么搞的 好像差点改名成NautilusMem要出事来着",
+   "q_en": "LME-V2 xiaowu0162 attribution upstream benchmark 451 questions NautilusMem rename IP"
+  },
+  {
+   "doc": "memgate-trio-implemented-20260909.md",
+   "q_cn": "9/14 那次记忆门三件套的合并预演后来怎么改的方案来着？直接 merge 不行好像是走 cherry-pick",
+   "q_en": "memory gate trio cherry-pick merge rehearsal conftest conflict 9878 merge-ready-0915"
+  },
+  {
+   "doc": "memory-audit-seven-operators-20260907.md",
+   "q_cn": "那个compass记忆系统的七算子审计 9月7号那篇 写没gate读介质乱七八糟的 后面定了哪几个修复啥时候跟daemon一起动",
+   "q_en": "compass memory seven operators audit write gate fact_status BGE dedup recall link sept 15 freeze arbitration layer"
+  },
+  {
+   "doc": "minimax-coding-plan-provider.md",
+   "q_cn": "之前用国内那个什么 coding plan 给 BC1 mem0 评测当 LLM 基线供给来着，端点是哪个、key 要不要落仓、那个推理模型返回带标签的坑是怎么处理的",
+   "q_en": "minimax coding plan provider endpoint sk-cp key reasoning model think tag stripping max_tokens 8192 mem0 baseline"
+  },
+  {
+   "doc": "no-jargon-user-correction-20260829.md",
+   "q_cn": "之前用户不是骂过我说'收棺'这种黑话不该写进对外文档里吗，还说要禁用同类俚语来着，那个反馈教训存哪来着",
+   "q_en": "user feedback banned jargon slang plain language rule external docs compass"
+  },
+  {
+   "doc": "org-frames-probe-runbook.md",
+   "q_cn": "之前那次用 compass 死活搜不到 flywheel、还误判人家静默的事,是哪天的教训来着?好像说要做什么'物理探查'还是'跨框探查',具体三件套是什么来着我忘了",
+   "q_en": "cross-frame probe compass flywheel silent wrong judgment git log GOALS INBOUND OUTBOUND mailbox 9/24"
+  },
+  {
+   "doc": "outreach-channels-20260911.md",
+   "q_cn": "9月份那次推广渠道选型,wong2和appcypher那两个awesome列表踩坑的事最后咋定的来着?PR发不出去还是仓库归档了,主力换成哪个了",
+   "q_en": "awesome-mcp-servers wong2 appcypher archived closed PR vital signs; gho_token contents write no pulls write FORBIDDEN; dev.to comments API deprecated 404; chrome 136 CDP disabled default profile"
+  },
+  {
+   "doc": "p1-host-migration-http-20260906.md",
+   "q_cn": "上个月那次MCP宿主切HTTP直连的大迁移记得吧 9/6做的9/15要停隧道那天 当时踩了个坑 tokens.json里那个semantic scopes列表被_scopes_from_value洗成read:*/write:*了 tools.*那个标志全没了 导致compass和platform被误判成自助面 tools/list从17掉到8 后来怎么补回来的是给两个dialog补了read:*+write:这个特定的path对吧",
+   "q_en": "mcp host migration http 9/6 9/15 tunnel retirement semantic scopes list normalization tools.* flag stripped resources.read colon check tools/list 8 vs 17 dialog token read:* write:scope backfill"
+  },
+  {
+   "doc": "p2-submission-terms-review-20260830.md",
+   "q_cn": "之前 8 月底那次 P2 提审，陌生人终审不是抓出来几条死链吗，什么 README /signup 404、agent.json 端点全死、还有个 npm 包 Not Found，最后咋修的来着？8/31 提交前 GitHub README push 了没",
+   "q_en": "P2 submission stranger review 3 dead links README signup 404 agent.json endpoints npm @nautilus/compass-mcp Not Found path B 8/31 GitHub push before submit"
+  },
+  {
+   "doc": "paper-roadmap-history-20260904.md",
+   "q_cn": "旧的那个paper2是不是被arxiv拒了来着 就是那个56.6的chinese llm记忆召回的 现在现役的paper2是哪篇来着 别搞混了",
+   "q_en": "paper2 arxiv rejected 56.6 chinese LLMs recall gap vs judge failure wild current roadmap kimi three papers"
+  },
+  {
+   "doc": "pilot-verdicts-unverifiable-20260915.md",
+   "q_cn": "之前那个verdict试点10条全判不出来的案子后来怎么收的口来着?好像说写入器有问题items都被清零了,还有个什么CATALOG立库的",
+   "q_en": "verdict-bus pilot 10/10 unverifiable writer regression items zeroed external_verified self-set CATALOG_v0 criteria"
+  },
+  {
+   "doc": "platform-verifypack-integration-20260914.md",
+   "q_cn": "之前那个平台迁移引导的事,verify那个包最后选了啥方案来着?好像是异步走mailbox,还回了个函229",
+   "q_en": "verifypack mailbox async verdict-bus integration platform migration fde_verdicts pilot reply 229"
+  },
+  {
+   "doc": "propagation-layer-order-20260904.md",
+   "q_cn": "之前拍板的那个五层传播顺序来着？好像说先发英文架构文、故事类的要放最末——nautilus compass 当时咋定的",
+   "q_en": "nautilus-compass propagation layer order five tiers architecture-first story-last 20260904"
+  },
+  {
+   "doc": "pypi-311-published-20260906.md",
+   "q_cn": "之前往PyPI发nautilus-compass包那次不是撞了403报错嘛，后来怎么搞定的？是不是token有啥坑被截断了来着？还有build命令要加个什么参数对吧",
+   "q_en": "nautilus-compass pypi 3.1.1 403 truncated token --no-isolation release checklist five-step"
+  },
+  {
+   "doc": "rsi-deep-implications-20260916.md",
+   "q_cn": "之前那个 Ilya 动态模型讲完我们定的护城河结论到底怎么写的来着 验证机构那条",
+   "q_en": "RSI deep implications verdict corpus SFT RL verification moat dynamic weight 2026-09"
+  },
+  {
+   "doc": "rsi-loop1-merged-20260914.md",
+   "q_cn": "之前那个RSI环一的三件套是不是9月14号就提前合到生产里了？main那条cherry-pick分支是不是踩过坑弃用了？后面那个非实现者复算是不是要9/15新开会话单独做来着",
+   "q_en": "RSI loop1 merged 2026-09-14 ahead of 9/15 feat/memory-gate-trio production merge-ready-0915 deprecated J1-J4 readings backfill recalculation new session awesome-ai-memory PR#19 ruanyifeng weekly #11676 punkpeye Glama A"
+  },
+  {
+   "doc": "rsi-loop1-recompute-verdict-20260914.md",
+   "q_cn": "之前那个记忆门 fact_status 探针的事,独立复算发现 hook 没装对导致假绿,后来拍板修了 hook 写入门之后四条都绿闭环那个,哪天来着?",
+   "q_en": "RSI loop1 closure fact_status memgate hook injection all green PR#43 mailbox 220"
+  },
+  {
+   "doc": "security-v09-xuserid-impersonation-20260830.md",
+   "q_cn": "哎之前那个compass的安全漏洞来着，用X-User-ID header就能冒充任意用户读记忆和投毒的那个，8770端口的，最后怎么修的来着？好像还踩了个部署路径的坑",
+   "q_en": "8770 X-User-ID impersonation compass v0.9 JWT fix nginx proxy deployment workingdirectory trap"
+  },
+  {
+   "doc": "security-workbuddy-token-scoping-20260830.md",
+   "q_cn": "之前 workbuddy 能读到别的对话框的记忆那个安全问题怎么修的来着?好像 8 月底的事,MCP 加了 project 什么 scope,还涉及一堆旧 token 要换",
+   "q_en": "workbuddy cross-frame memory exposure TCP 9877 project scope token scoping fix legacy revoke"
+  },
+  {
+   "doc": "session-contract-dogfood-bridge-20260822.md",
+   "q_cn": "之前那个四框信息靠用户人肉搬运来搬运去的毛病 最后怎么治的来着?好像搞了个云端 compass MCP 共享实例 还给每个框 mint 了 token 挂 agent_type 标签 那套基建 做完了吗",
+   "q_en": "dogfood bridge cloud compass MCP four-frame agent_type token 9877 tunnel stop_hook sync ghost cross-frame ingest closure"
+  },
+  {
+   "doc": "session-contract-fuel-loop-deploy-20260822.md",
+   "q_cn": "之前那个 fuel-loop 部署到 cloud 的合约通过了吧?就是 compass 派的那个要跑 0775c2c 探针验证的,记得好像 8 月底前要交付来着",
+   "q_en": "fuel-loop cloud deploy nautilus-v5 compass probe 0775c2c verification contract 20260822"
+  },
+  {
+   "doc": "session-contract-fuel-loop-live-20260822.md",
+   "q_cn": "之前v5自动认领fuel那道题最后怎么算核销的?就说ledger要出第一条真记录那个部署闸的活合约,过了没?",
+   "q_en": "compass fuel-loop contract ledger first true record admission nautilus-prime consumed e6fb8a43 genopt"
+  },
+  {
+   "doc": "session-contract-gold-replication-20260822.md",
+   "q_cn": "之前8月份那个真燃料复制Gold的合约搞完了吗 好像结论说通用常识对glm-5.3没headroom了 得用项目私有的坑(飞书传id那种)当燃料 还有那个headroom三级分类是啥来着",
+   "q_en": "real fuel Gold replication contract cnt_gold_replication_20260822 headroom three-tier classification tribal knowledge glm-5.3 ledger fuel_evidence due 2026-08-27"
+  },
+  {
+   "doc": "session-contract-l4a-distill-20260822.md",
+   "q_cn": "那个T4上蒸馏qwen小模型的首跑合约最后验收了吗?用户八月底拍板解除A800守势那个,带前后对照表的那次,1.5B和7B的成绩是?",
+   "q_en": "L4a distillation v3 first run T4 qwen QLoRA distill_v3 proof_deposit commit 3536353 compass independent verification 1.5B 7B single-family weak boundary"
+  },
+  {
+   "doc": "session-contract-recall-usefulness-20260823.md",
+   "q_cn": "那次用户说从没见过recall有啥用让证明有用，最后对照实验跑出来结论是啥来着？好像还顺手修了个本地torch长路径炸了的bug",
+   "q_en": "recall usefulness controlled experiment torch WinError 206 long path pycache cache miss fix F2 delta hit@3 daemon 9876"
+  },
+  {
+   "doc": "session_00b61b64.md",
+   "q_cn": "之前那个 psql 凭据连不上生产库说是误诊这事后来怎么平反的来着?好像还从判决行里独立复现出 income 188",
+   "q_en": "compass probe independent verdict reproduce income 188 psql creds false myth ssh-tunnel engine halt cycle zero"
+  },
+  {
+   "doc": "session_20260715_backend_502_coreLive_override_incident.md",
+   "q_cn": "之前那次backend公网502的事故是咋回事来着?好像是有兄弟框手工写了systemd的override,把WorkingDirectory切到nautilus-core-live那个不存在的目录去了,跟LOOP_STATE硬护栏冲突那次",
+   "q_en": "backend 502 systemd override WorkingDirectory nautilus-core-live missing path manual sudo tee 2026-07-15"
+  },
+  {
+   "doc": "session_20260715_cloud_box_health_audit.md",
+   "q_cn": "cloud 那个 box 七月十五的健康审计后来结论是啥来着?certbot 续期到底是 apt 那个挂了还是 snap 兜住了?BGE daemon 烧满 CPU 那个 systemd drop-in 加 OMP_NUM_THREADS=1 + CPUQuota 怎么写的来着",
+   "q_en": "certbot pyOpenSSL cryptography apt conflict snap renew ok BGE daemon 309% CPU CPUQuota BLAS OMP_NUM_THREADS systemd drop-in OOM env"
+  },
+  {
+   "doc": "session_20260716_biomysterybench_P1_pipeline.md",
+   "q_cn": "之前那个生物方向的bench题来着，VCF格式的，要查变异临床意义那个，最后用PAH做的对吧？那个build和solve脚本最后跑通了没",
+   "q_en": "BioMysteryBench P1 VCF variant clinical significance PAH phenylketonuria build solve pipeline ClinVar missense"
+  },
+  {
+   "doc": "session_20260716_biomysterybench_scaffold.md",
+   "q_cn": "之前那个生物信息学反向推理的benchmark来着 叫什么bio什么的 咱搭了个脚手架和验证器 甲方要500题 WSL网络还挂了那次 最后怎么走的路",
+   "q_en": "BioMysteryBench scaffold validator reverse reasoning benchmark 500 scale WSL network NCBI Biopython GBM Glioblastoma"
+  },
+  {
+   "doc": "session_20260716_eval_recall_v230_rerun.md",
+   "q_cn": "之前compass v2.3.0那次跑分来着 bge-m3召回挺猛但poi tier gemini三层全是零增量 是不是语料没信号不是逻辑坏",
+   "q_en": "compass v2.3.0 eval_recall bge-m3 P@1 0.969 poi tier gemini delta zero corpus no metadata signal"
+  },
+  {
+   "doc": "session_20260717-0301_B理论沉淀CHARTER-0B.md",
+   "q_cn": "之前那个真值带宽B理论塞进CHARTER第0-B节的活儿,后来发现compass repo根里那份是6/9旧版还没同步是吧?那个算不算同步B失效的典型例子",
+   "q_en": "truth bandwidth B theory FDE_BUSINESS_CHARTER section 0-B nautilus-compass outdated repo sync drift"
+  },
+  {
+   "doc": "session_20260717-0313_合约兑现SSOT同步V5.md",
+   "q_cn": "之前那个SSOT同步V5的合约最后怎么核销的来着?7月17号好像实测过记分牌,数字是703/66/89.4%那个?还有mint跳过已铸题逻辑,我记得一开始说没找到,后来到底有没有啊?commit好像是e86b055",
+   "q_en": "SSOT V5 repo sync contract cnt_ssot_mint_v5 scoreboard 703 89.4% mint already_minted skip committed task e86b055 fulfillment"
+  },
+  {
+   "doc": "session_20260717-0335_SSOT副本探针已上线.md",
+   "q_cn": "之前那个SSOT副本一致性探针上线之后怎么样了？三个repo的CHARTER和LOOP_STATE漂移收敛了没",
+   "q_en": "ssot_consistency probe cross-repo hash drift CHARTER LOOP_STATE replica alignment"
+  },
+  {
+   "doc": "session_20260717-1259_cloud-BGE过载召回全拒.md",
+   "q_cn": "之前 cloud 上那个 compass-bge-daemon 一直 CPU 打满 127% 那个事,recall 接口全回 overloaded 报错,reborn 271 个影子全记忆盲 hits=0,后来 V5 框实测定位到根因了没?",
+   "q_en": "cloud compass-bge-daemon cpu overload 127% recall daemon overloaded retry reborn 271 hits zero agent memory blind v1.4-bge-m3"
+  },
+  {
+   "doc": "session_20260718-0925_compass价值实测-SSOT三方矛盾.md",
+   "q_cn": "之前用 compass 八探针实测那次,三份真值段(v5/core/live-DB)互相打架那个发现,后来收敛执法日报怎么写的来着",
+   "q_en": "compass eight-probe self-value SSOT three sources contradiction v5 core live-DB drift_check hallucinated anchors 141040c"
+  },
+  {
+   "doc": "session_20260718-1132_reinforce修复-合约核销0718.md",
+   "q_cn": "之前那个 reinforce 接不进 MCP 召回导致闭环断的事后来怎么修的来着?还有 7 月中旬一并核销掉的两条 SSOT 到期合约,以及 V5 impact 写端那条新合约",
+   "q_en": "reinforce MCP recall access loop fix commit 5b1520b convergence-enforcement cnt_ssot_plat cnt_ssot_mint_v5 expired V5 impact writeside contract"
+  },
+  {
+   "doc": "session_20260718-1142_差异化层-0-000是错尺子非无信号.md",
+   "q_cn": "之前那个差异化层一直停在 +0.000 的事,后来受控实验跑下来结论是啥来着?是真没信号还是尺子量错了? poi boost 那块好像还反噬翻车了, 想不起来最终怎么定性",
+   "q_en": "poi tier boost retrieval rerank MRR zero delta footgun bge-m3 cosine ceiling controlled experiment differentiation layer signal starvation"
+  },
+  {
+   "doc": "session_20260718-1201_drift护城河实测0-92-不需ARK.md",
+   "q_cn": "之前测那个drift护城河到底硬不硬的实测还在不在?好像anchor集AUC有0.9几来着,还有冻结held-out本机丢的事要用LLM重造是吧",
+   "q_en": "drift moat AUC 0.9232 anchor set held-out missing LLM-judge regenerate ARK legitimate use"
+  },
+  {
+   "doc": "session_20260722-0853_FDE表单校准事件.md",
+   "q_cn": "之前那个飞书表单校准的事情后来咋样了来着，就是24个业务字段保留、内部UID不外露、Compass那边只收脱敏摘要的那个",
+   "q_en": "FDE form calibration V5 source-bound blueprint hash OAuth desensitization Compass gating learning"
+  },
+  {
+   "doc": "session_20260722-1251_client-auto-reconnect-shipped.md",
+   "q_cn": "之前 MCP 客户端那个自动重连的逻辑最后是怎么实现的来着，断线重试还要重跑 initialize 那个？",
+   "q_en": "MCPClient transparent reconnect exponential backoff I/O error wrap initialize replay"
+  },
+  {
+   "doc": "session_20260722-1251_MCP-TCP-auth-landed.md",
+   "q_cn": "之前那个mcp走tcp跨机器通信的token鉴权是咋搞的来着 好像坏token会返回一个-32001的错误码 还顺带把token剥掉防泄漏",
+   "q_en": "mcp tcp transport token auth json-rpc concurrent -32001 strip authToken cross-machine A2A"
+  },
+  {
+   "doc": "session_20260722-1251_server-status-endpoint-added.md",
+   "q_cn": "之前加的那个服务器状态查询接口来着，不用登录就能看连接数和消息计数的那种，用了锁保证线程安全的",
+   "q_en": "server status endpoint unauthenticated thread-safe counters active connections uptime auth_failures"
+  },
+  {
+   "doc": "session_20260722-1251_TLS-demo-observation-one.md",
+   "q_cn": "之前做那个TLS双向认证demo的时候,两边节点互相写,证书都是同一个什么compass的CA签的来着,那个观察笔记放哪了",
+   "q_en": "mTLS mutual TLS cross-peer write compass-demo-ca cert observer note"
+  },
+  {
+   "doc": "session_20260722-1251_TLS-demo-observation-two.md",
+   "q_cn": "之前那个TLS的demo第二篇笔记在哪里来着，好像是测mcp的tools.write写进去再resources/read读出来，走的mTLS还要验CA证书那个端到端的",
+   "q_en": "TLS demo mcp tools.write resources.read mTLS CA peer identity observation two"
+  },
+  {
+   "doc": "session_20260722-1257_client-auto-reconnect-shipped.md",
+   "q_cn": "之前那个 MCPClient 断了会自动重连的功能,好像是对网络超时和连接重置那种 IO 错误做的处理,用了指数退避?那个上线了没",
+   "q_en": "MCPClient auto reconnect exponential backoff initialize replay I/O error shipped"
+  },
+  {
+   "doc": "session_20260722-1257_MCP-TCP-auth-landed.md",
+   "q_cn": "之前那个MCP支持跨机器通信的方案怎么搞的来着？好像是用token鉴权的TCP传输，错误码是-32001，还要防token泄露到日志里",
+   "q_en": "MCP TCP token auth cross-machine A2A -32001 authToken strip handle_message concurrent JSON-RPC"
+  },
+  {
+   "doc": "session_20260722-1257_server-status-endpoint-added.md",
+   "q_cn": "之前给运营面板加的那个查询状态的接口来着 不用登录就能看的那种 统计连接数和消息处理量的 线程安全的",
+   "q_en": "server status endpoint thread-safe counters operator dashboard unauthenticated aggregates connections uptime"
+  },
+  {
+   "doc": "session_20260722-1257_TLS-demo-observation-one.md",
+   "q_cn": "之前那个用双向TLS的demo来着,两边互相写,证书好像是compass那个CA签的",
+   "q_en": "mTLS cross-peer write observer peer compass-demo-ca mutual cert"
+  },
+  {
+   "doc": "session_20260722-1257_TLS-demo-observation-two.md",
+   "q_cn": "之前做的那个TLS双向认证的测试好像有个第二条记录来着,说是要证明同一套连接既能写又能读,顺便验了下CA证书那个...结果跑通了没?",
+   "q_en": "mTLS demo observation two tools.write resources.read same socket CA peer identity end-to-end"
+  },
+  {
+   "doc": "session_20260807-0050_fde三期独立仓结构性变更.md",
+   "q_cn": "之前 FDE 三期不是单独搬出去搞了个独立仓吗,后来跟 compass 那边审查怎么协调来着?好像说不能混在一起评两条线,有个什么脱敏的东西",
+   "q_en": "FDE phase3 independent repo nautilus-fde-phase3 separate workspace AGENTS.md governance desensitized verdict compass turf review line mixing 7-day cross-frame drift"
+  },
+  {
+   "doc": "session_20260807-2111_闭环收敛状态-fuel-loop唯一闸门.md",
+   "q_cn": "就是之前讨论那个闭环收敛状态,收入涨到1067那次,但唯一卡点不是fuel-loop没部署到cloud吗?agent到compass那条管道物理断的,codex那个merge推上去了没?",
+   "q_en": "fuel-loop deployment gate agent compass pipeline broken codex merge cloud v5 learning kernel R0 20 combinations income 1067"
+  },
+  {
+   "doc": "session_20260822-1918_tribal-compass-daemon-port.md",
+   "q_cn": "之前那个本地记忆 daemon 跑在 9876 端口来着,MCP 协议 TCP 的,还有个 9877 云端和 8770 公网网关,三套入口并存那个收敛债问题最后咋整的",
+   "q_en": "tribal compass daemon 9876 9877 8770 three entry points MCP local port convergence debt"
+  },
+  {
+   "doc": "session_20260822-1918_tribal-feishu-select-id.md",
+   "q_cn": "飞书多维表格改单选字段那次事故 好像id全被重建了 之前的引用全丢了 options到底该怎么传才对",
+   "q_en": "feishu bitable single select field options must preserve server id avoid rebuild lost row references incident"
+  },
+  {
+   "doc": "session_20260822-1918_tribal-utf8-explicit.md",
+   "q_cn": "之前 Windows 上 Python 写文件那个编码默认不是 utf-8 的问题来着,后来怎么处理的",
+   "q_en": "Python Windows open file encoding utf-8 explicit GBK default"
+  },
+  {
+   "doc": "session_20260823-0912_goalmode-heartbeat-alert.md",
+   "q_cn": "之前那个goal模式心跳报警啥情况来着，就是那个连接被拒绝的红色告警，自动巡检脚本报的",
+   "q_en": "goalmode heartbeat red alert ConnectionRefusedError WinError 10061 compass_goal_heartbeat"
+  },
+  {
+   "doc": "session_20260823-0935_goalmode-heartbeat-alert.md",
+   "q_cn": "之前goal心跳那个红灯报警是咋回事来着，好像是连接被拒了，win那个10061错误",
+   "q_en": "goal heartbeat alert connection refused winerror 10061 compass_goal_heartbeat recall fail"
+  },
+  {
+   "doc": "session_20260823-1031_tribal-windows-node-rename-epe.md",
+   "q_cn": "之前在 Windows 上跑 Node 的 rename 报 EPERM -4048 那事儿最后怎么搞定的来着，好像是被 Defender 还是什么监控进程占了句柄？还有一个 execSync 弹黑窗的问题也一起处理的",
+   "q_en": "windows node fs.rename EPERM -4048 ERROR_SHARING_VIOLATION MoveFileExW defender handle execSync conhost popup settings write storm"
+  },
+  {
+   "doc": "session_20260824-1047_云桥MCP接不上求诊.md",
+   "q_cn": "之前那个云桥MCP在Claude Code上一直连不上的问题，握手完客户端啥都不发就断开那个，后来怎么解决的来着？是不是让compass那边帮忙查的？",
+   "q_en": "compass-cloud MCP handshake EOF 10053 zero requests Claude Code 2.1.239 stdio disconnect after initialize"
+  },
+  {
+   "doc": "session_20260824_N4云容量体检三连根因.md",
+   "q_cn": "之前那次云容量体检,负载从十几降到个位数那个三连根因,有个 sshd 进程空转烧 CPU 还有 openclaw systemd 互杀,最后怎么收的口来着?好像还搬了一堆冷归档目录",
+   "q_en": "cloud load 14 to 1 root cause sshd leak openclaw systemd restart loop BGE daemon semaphore 37k directory bloat cold archive"
+  },
+  {
+   "doc": "session_9c3b69dc.md",
+   "q_cn": "之前那个compass的MCP一直连不上老是timeout的问题最后咋解决的来着 好像不是服务挂了是cloud那台机器太卡了？还搞了个远程MCP迁移上线",
+   "q_en": "MCP timeout sshd leaked fd cloud overload fastmcp streamable-http nginx SSOT drift canonical"
+  },
+  {
+   "doc": "session_b2b522dd.md",
+   "q_cn": "就是那次 compass 审计执法挖出来一堆东西的那回 记得 GitHub PR 里扫出来一个公网泄露的 sk 开头的 API key 还有 conv2d 那个 oracle 是赋值不是累加的 bug 顺便发现 ruff 一堆 F401 把 dependabot PR 卡了一个月 而且好几次拿旧 README 当现状 误判说工具只有7个实际17个 drift 拦截率也差了十好几倍 那次到底怎么收的尾",
+   "q_en": "compass audit leaked API key sk-c16301 public repo conv2d oracle accumulation bug ruff F401 dependabot blocked stale README MCP tools count drift act-on rate feishu ip whitelist cloud proxy"
+  },
+  {
+   "doc": "session_income_flatline_rootcause_20260824.md",
+   "q_cn": "之前 8 月底那次 income 停摆深挖根因的记录在哪来着？就是 8/22 起不再铸币、g2b1 新 producer 写的 verdict 里没有 trajectory 路径指针、auto-verify 一直 runnable=0 那次，后来 8/26 用户说其实是他自己主动关闸不是断链的",
+   "q_en": "income flatline root cause 8/22 g2b1 producer 9000010 verdict no trajectory pointer auto-verify runnable=0 external_verified gate closed"
+  },
+  {
+   "doc": "session_v3_launch_closure_20260824.md",
+   "q_cn": "之前那个pkl总是写坏然后主项目重建的事最后查出来根因是啥来着?我记得好像不是缓存没落盘的问题,还有什么写一半被截断的,然后daemon那边还有个并发的bug搞出347%的CPU",
+   "q_en": "pkl non-atomic write truncation 74MB ran out of input daemon /opt fork unification setdefault race ENOENT 347 CPU v3.0.3"
+  },
+  {
+   "doc": "sota-eval-day-20260827.md",
+   "q_cn": "之前那次跟mem0头对头跑500题哪个赢了来着 好像抽样出了个假胜的坑 还有那个rerank抹平顺序是个无效设计 后来归因一串排查步骤的总结 GPU 4090配的那个速跑配方笔记里应该有",
+   "q_en": "compass mem0 S500 head-to-head P@1 bge-m3 rerank invalid attribution chain falsification GPU 4090 12min recipe LOCOMO baseline sampling bias"
+  },
+  {
+   "doc": "t3-miniclaim-20260924.md",
+   "q_cn": "之前 Akash 接的那个 jev-curate 免费校准的 mini 单子,三个 findings 后来怎么处理的来着?那个信箱带 key 写入正常但读不到东西的故障报上去了没,是不是发的 893",
+   "q_en": "jev-curate mini Akash three findings score dict vs string array 0-4 scale threshold mailbox read path outage report 893 deadline"
+  },
+  {
+   "doc": "test-security-stability-20260902.md",
+   "q_cn": "之前那次全量pytest从四个月没跑到1581全绿的那天,顺带还一起搞了mcp_durable那15个契约迁移失败和漏网客户端#8的auth_failed探测器是不是?探针那个scopes键名写错的bug也是同一天修的吧",
+   "q_en": "pytest revival 1581 green tests __init__ missing mcp_durable 15 contract migration not regression auth_failed false alarm pytest noise missed client #8 scopes probe bug watchdog exit 0 order"
+  },
+  {
+   "doc": "verification-commercialization-20260915.md",
+   "q_cn": "咱之前那个验证业务怎么商业化来着?好像讨论帖里开了个免费复算的口子,然后第一档付费SKU是分三档的发布前独立审计,99/199/299美元那种?还有个里程碑是M1看到首个外部请求才往下走,M1之前不让动付费基建,这条红线是哪天定的来着",
+   "q_en": "verification commercialization SKU pre-launch audit $99 $199 $299 tiers recompute free entry discussion #166 milestone M1 M2 M3 license A4 amendment daemon stability risk conversion kit"
+  },
+  {
+   "doc": "verifypack-v02-built-20260909.md",
+   "q_cn": "之前做那个验证打包工具的事后来怎么样了来着?好像是纯标准库写的,有几个命令行子命令,跑端到端批处理的时候有个文件claim对不上,说打包完了还在被改,后来怎么收尾的?",
+   "q_en": "verifypack v0.2 batch001 end-to-end disagree resource_log.csv claim ed25519 stdlib seal fail engine defects"
+  }
+ ]
+}
