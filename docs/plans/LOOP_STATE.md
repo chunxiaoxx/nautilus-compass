@@ -44,6 +44,12 @@
 
 ## 轮次日志
 
+### 轮 18 · 2026-09-25 17:00-18:3x(用户新令×2:发布前外部基线+小额投流)
+- 进展:①**mem0 双臂基线管线建成**(runtime/assay_bc1_20260927/mem0_baseline/run_baseline.py:18 题×记忆臂/对照臂,backbone=doubao,判分纪律=只读槽位不读真值,判分器污染正本副作用已堵:快照恢复)②**发布日机械腿** scripts/bc1_launch_day.py(check-links 5/5 绿+预告块置换干跑 1 匹配+幂等;③Discord④中文稿仍人工)③投流预注册档(docs/strategy/paid_promo_preregister_20260927.md:¥2000 上限/成功判据=可归因报名数非曝光/止损 ¥500·48h/物料两件)④墙页发布块+通报函物料备好
+- 问题分析:**coding plan 月额度耗尽**(429 AccountQuotaExceeded,9/28 23:59 重置)——mem0 全量跑卡在 LLM 供给,三条路线待用户拍(按量一次 ¥1-5/SSO 重登找席位/弃发布前基线);墙页拓扑查明:正本墙=compass.nautilus.social/wall.html(apex /wall=platform 试金局页,BC1 上 apex 依赖 platform);服务器仓因 9/23 重写分叉(ahead535/behind1139),部署只走 scp;arkcli SSO refresh_token 失效(plans 查询不可用);9/25 函件归档断档(993 经姐妹函 994 恢复)——归档纪律漏洞待堵
+- M1:0 不变
+- 下轮:9/26 T3 复算新会话(12:00)→mem0 全量(LLM 路线定后)→执法器自签名+误报双计数施工(18:00 判据)
+
 ### 轮 17 补 · 2026-09-25 14:3x(用户终裁三件·路由完成)
 - 进展:**用户终裁三件全批**→路由函 998 已发 platform(边界:①V-Sign2.0 文本 platform/v5 把关防自产自批;②状态函 P0 分级+被动介入观察;③组织史入正档);compass 施工项=执法器自签名+误报双计数(9/26);判据=9/26 18:00 三件落地+首日读数
 - M1:0 不变
@@ -167,7 +173,9 @@
 
 ## 【等你拍板/操作】(用户面板)
 
-1. 无阻塞待办——T3 mini 履约按承诺推进中(无需操作)
-2. T3 复算需**新开会话**执行(交接档 `runtime/jev_trust_t3_jevcurate_20260924/RECOMPUTE.md`,9/26 12:00 前完成)
-3. 信箱故障已通报 platform(函 893);9/26 12:00 未复=升级处理
-4. 下一里程碑 BC1 发布 9/27(P1 日报接单 9/26 12:00 前唯一外部依赖)
+1. 🔴 **LLM 路线抉择**(mem0 基线卡在额度:coding plan 月额度耗尽,9/28 23:59 才重置):
+   A=按量平台账号跑一次(估 ¥1-5,今日小额经费口径内) B=`arkcli auth login volc-sso` 重登后查企业席位有无新鲜额度 C=弃发布前基线(发布页加注 48h 内补)
+2. **广告开户两件**:X 广告+知乎知+(预注册档/物料/UTM 已备于 docs/strategy/paid_promo_preregister_20260927.md,只差你开户充值点确认;9/27 前开户可赶上发布日同投)
+3. T3 复算需**新开会话**执行(交接档 `runtime/jev_trust_t3_jevcurate_20260924/RECOMPUTE.md`,9/26 12:00 前完成)
+4. Discord 登录态 9/26 复验(Runbook P3;失效需扫码)
+5. 下一里程碑 BC1 发布 9/27(P1 日报接单 9/26 12:00 前唯一外部依赖)
