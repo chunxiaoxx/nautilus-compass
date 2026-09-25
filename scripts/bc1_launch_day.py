@@ -126,7 +126,7 @@ def deploy_wall() -> bool:
 
 def letter() -> bool:
     ok = True
-    for to in ("platform", "daily"):
+    for to in ("platform", "vc_daily"):  # 1033 正名:daily→vc_daily(旧地址沉底)
         rc = subprocess.run([
             sys.executable, str(ROOT / "scripts/platform_mail.py"), "send",
             to, f"bc1-launch-20260927-{to}",
