@@ -10,7 +10,7 @@
 |---|---|---|---|---|---|
 | L1 | BC1 生成器+判分管线 | compass | decision_set sha 入库+判分器 30 题可跑 | 9/25 | ✅ 30/30+切分+判分器自检过(bc62576) |
 | L2 | BC1 自测成绩单+上墙 | compass | 签名成绩单+非实现者复算 GREEN | 9/26 | ✅ v1 复算 GREEN+v2 重考 18/18+签名 VALID(75900f1);墙页挂条目随 L3 |
-| L3 | BC1 发布链(GH/Discord/中文) | compass+日报 | 外网可达+公告链+试考入口 | 9/27 | 🔄 物料齐(发布页 f1612fa+Discord 稿+README 预告+日报协调函 862);9/27 当天执行 |
+| L3 | BC1 发布链(GH/Discord/中文) | compass+日报 | 外网可达+公告链+试考入口 | 9/27 | ✅ 9/26 晚全链:机械腿 ALL GREEN(0e8bbff9)·Discord 帖上墙(1553355737218945064)·中文稿终稿就绪待用户知乎 |
 | L4 | v0.2 实测非实现者复算 | compass | 复算报告 GREEN | 9/24 | ✅ GREEN 六步全复现(RECOMPUTE ad74767:双库验签/五档冲突率 50-50 对拍/对照域 0%+20-20/三源交叉;两文档小瑕已修) |
 | L10 | cohort 切片交付(735) | compass | flywheel 验收通过 | 9/25 21:00 | ✅ **提前 21h 交付(969)→ 22:49 验收通过**(flywheel 0e0897e:字节锚独立复算双中+probe 零违规+三元组回填 pack);B 案我方腿闭环 |
 | L5 | ¥0.01 端到端→DCR 上墙 | 用户+compass | paid+回调+退款三回执 | 9/23 | ✅ 四回执全通+卡2 正本侧上墙(墙页主 CTA 卡 56a69ae,外网已验);www 入口卡素材已交 platform(函 9xx) |
@@ -78,6 +78,11 @@
 - 进展:**三臂对照定案**——direct 16/18 / mem0 默认 11/18 / mem0 关压缩(infer=False 唯一变量) **18/18**:写入时语义压缩=丢分元凶的直接因果证据(+7 分);核查干净(raw 臂检索=inputs 原文片段,无真值泄漏;反超 direct 2 分在推理模型单跑波动内,n=1 已披露);发布页+中文稿同步升级为三臂对照;给社区修复建议=审计场景写入关压缩;顺手清出误入仓的 qdrant 二进制(4399726c)
 - M1:0 不变
 - 下轮:11:07 常规轮;12:00 双节点=P1 日报接单检查+T3 复算 deadline(新会话)
+
+### 轮 26(市场化loop R8) · 2026-09-26 19:14(BC1 发布日提前全链落地)
+- 进展:**BC1 发布完成**——机械腿 ALL GREEN(0e8bbff9:README/墙页翻发布态+5 链接 200+外网回读发布块+通报函 1120/1121 签名✓);Discord 帖上墙 show-and-tell(msgId 1553355737218945064,正文 1306 字全,直链+前后截图存档 fc2c1311 已 push);发帖配方 Chrome154 四坑勘误回写 scripts/post_discord.py(placeholder 撞类名→选择器 role=textbox/Enter 唯一有效=CDP text="\r"/nav 废 execution context 勿内嵌/f-string 拼 JS 大括号翻车×2),CDP 窗口被关过已按配方重启(profile Temp+socks10808);中文稿终稿就绪(BC1_LAUNCH_CN_DRAFT)待用户知乎一键发;首小时盯帖:0 reactions/0 replies(静默期),builders-chat follow-up 未发(视 1h 反应);T2/T4 观察窗无回应,T3 等对方
+- M1:0 不变(报名 issue 0,exam-signup label)
+- 下轮:盯帖+首考生响应(首外部考生=M1 级即刻通报);22:00 首日读数(bc1_launch_day.py counters 四计数器落 launch_day_report)
 
 ### 轮 25(市场化loop R7) · 2026-09-26 07:1x(执法器两件施工完成·提前 11h)
 - 进展:**执法器自签名+误报双计数落地**(18:00 判据提前达成)——①三态账 due_ledger.json(persist/flare/cleared+历史误报率,flare=消失 1 轮=疑似误报,执法器自身漂移可复算)②报告自签名(jev-trust ed25519,专用 seed 在 ~/.claude/.cache 不入仓,pubkey 入仓 runtime/deepsync/due_signer.pub);实弹验证:首跑 1 逾期(daily#820,43.3h)入账+--notify-all 强制生成报告+签名 VALID(sha256 86bda261)往返闭环;坑:jev_trust pub_hex 是 property 无括号(T3 同坑复发)
