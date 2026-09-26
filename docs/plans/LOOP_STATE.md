@@ -79,6 +79,11 @@
 - M1:0 不变
 - 下轮:11:07 常规轮;12:00 双节点=P1 日报接单检查+T3 复算 deadline(新会话)
 
+### 轮 27(市场化loop R9) · 2026-09-26 20:13(值守静默期·G4 架构文起稿)
+- 进展:值守读数:follow-up(20:09 发)4 分钟 0 反应(正常)、主帖仍 0/0、报名 0、信箱 0、T2/T4 无回应、T3 等对方——无外部事件,推 G4 最高优先未完件;**英文架构文《验证即协议》大纲骨架落档**(docs/essays/verification_as_protocol_outline.md:六段结构+四协议原语+素材坐标表全部指向仓内工件,数字 11/18·16/11/18 三臂·勘误链零新事实;含 Latent Space 风格摸底待办)
+- M1:0 不变
+- 下轮:21:0x 盯 follow-up 首小时反应;22:00 首日读数(counters);架构文下一步=风格摸底
+
 ### 轮 26(市场化loop R8) · 2026-09-26 19:14(BC1 发布日提前全链落地)
 - 进展:**BC1 发布完成**——机械腿 ALL GREEN(0e8bbff9:README/墙页翻发布态+5 链接 200+外网回读发布块+通报函 1120/1121 签名✓);Discord 帖上墙 show-and-tell(msgId 1553355737218945064,正文 1306 字全,直链+前后截图存档 fc2c1311 已 push);发帖配方 Chrome154 四坑勘误回写 scripts/post_discord.py(placeholder 撞类名→选择器 role=textbox/Enter 唯一有效=CDP text="\r"/nav 废 execution context 勿内嵌/f-string 拼 JS 大括号翻车×2),CDP 窗口被关过已按配方重启(profile Temp+socks10808);中文稿终稿就绪(BC1_LAUNCH_CN_DRAFT)待用户知乎一键发;首小时盯帖:0 reactions/0 replies(静默期),builders-chat follow-up 未发(视 1h 反应);T2/T4 观察窗无回应,T3 等对方
 - M1:0 不变(报名 issue 0,exam-signup label)
