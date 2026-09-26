@@ -69,3 +69,4 @@ docs/papers/*.aux
 
 # VerifyPack signing keys · NEVER commit
 .verifypack/
+runtime/assay_bc1_20260927/mem0_baseline/qdrant_local/
