@@ -102,11 +102,17 @@ async def _ev(cdp, expr):
 
 async def nav(cdp, url, wait=6):
     """nav 后重连 ws —— navigate 会废掉旧 execution context(Chrome154 实测)。
-    Discord 脚本靠「外部先 nav」绕开;这里内置重连。"""
+    Discord 脚本靠「外部先 nav」绕开;这里内置重连。
+    bringToFront 必带:Ctrl+V 的粘贴默认动作要求页面为前台激活 tab
+    (insertText 无此要求——标题能填而正文粘贴全灭的根因)。"""
     await cdp.send("Page.navigate", {"url": url})
     await cdp.close()
     await asyncio.sleep(wait)
     await cdp.connect()
+    try:
+        await cdp.send("Page.bringToFront")
+    except RuntimeError:
+        pass
 
 
 async def insert_text(cdp, text):
@@ -237,6 +243,153 @@ def md_to_html(md):
     return "".join(out)
 
 
+# ---------- 知乎行内格式施加(Draft.js 三步流,2026-09-26 实验定谳) ----------
+# Draft.js 不同步 JS 设置的 DOM 选区;唯一有效序列 =
+# CDP 点击首字定位光标 → Shift+ArrowRight 键盘扩选(带首字校正)→
+# 粗体=真鼠标点工具栏「加粗」(click() 跳过 mousedown 无效;Ctrl+B 被禁);
+# 链接=CDP Ctrl+K 弹窗(文本预填选区文字,地址框 insertText URL 后点确认)。
+
+async def _sel_text(cdp, target, from_idx):
+    """键盘流选中编辑器中的 target 文字。返回 (ok, end_idx)。
+    from_idx = 编辑器全文坐标下界(单调推进):粗体子串会在前文重复出现
+    (如裸「11/18」的前文命中点在「首考 11/18」「v1 首考 11/18」内部),
+    不带下界会选中已加粗的前文 occurrence → 工具栏点击= Toggle OFF。"""
+    pos = await _ev(cdp,
+        '(function(minOff){var e=document.querySelector("[contenteditable=true]");'
+        'if(!e)return "null";var w=document.createTreeWalker('
+        'e,NodeFilter.SHOW_TEXT);var n,off=0;while(n=w.nextNode()){'
+        'var t=n.textContent;'
+        'var i=t.indexOf(' + json.dumps(target) + ',Math.max(0,minOff-off));'
+        'if(i>=0&&off+i>=minOff){var r=document.createRange();r.setStart(n,i);'
+        'r.setEnd(n,i+1);(n.parentElement||e).scrollIntoView('
+        '{block:"center"});var b=r.getBoundingClientRect();'
+        'var pe=n.parentElement;'
+        'return JSON.stringify({x:b.x+1,y:b.y+b.height/2,g:off+i,'
+        'ab:pe&&pe.closest("span[style*=bold],strong,b")?1:0,'
+        'al:pe&&pe.closest("a")?1:0})}'
+        'off+=t.length}return "null"})(' + str(from_idx) + ')')
+    if not isinstance(pos, str) or not pos.startswith("{"):
+        return False, from_idx, 0, 0
+    p = json.loads(pos)
+    end_idx = p["g"] + len(target)
+    await cdp.send("Input.dispatchMouseEvent", {
+        "type": "mousePressed", "x": p["x"], "y": p["y"],
+        "button": "left", "clickCount": 1})
+    await cdp.send("Input.dispatchMouseEvent", {
+        "type": "mouseReleased", "x": p["x"], "y": p["y"],
+        "button": "left", "clickCount": 1})
+    await asyncio.sleep(0.7)
+    for _ in range(len(target)):
+        for t in ("keyDown", "keyUp"):
+            await cdp.send("Input.dispatchKeyEvent", {
+                "type": t, "key": "ArrowRight", "code": "ArrowRight",
+                "windowsVirtualKeyCode": 39, "modifiers": 8})
+        await asyncio.sleep(0.03)
+    await asyncio.sleep(0.4)
+    sel = await _ev(cdp, 'window.getSelection().toString()')
+    if sel and sel[0] != target[0]:  # 光标落在首字后 → 选区右移一格
+        for t in ("keyDown", "keyUp"):
+            await cdp.send("Input.dispatchKeyEvent", {
+                "type": t, "key": "ArrowRight", "code": "ArrowRight",
+                "windowsVirtualKeyCode": 39, "modifiers": 8})
+            await cdp.send("Input.dispatchKeyEvent", {
+                "type": t, "key": "ArrowLeft", "code": "ArrowLeft",
+                "windowsVirtualKeyCode": 37, "modifiers": 8})
+        await asyncio.sleep(0.3)
+        sel = await _ev(cdp, 'window.getSelection().toString()')
+    ok = sel == target
+    # 失败也推进 end_idx:该 target 真位置已确知,防后续级联错位
+    return ok, end_idx, p.get("ab", 0), p.get("al", 0)
+
+
+async def _click_toolbar(cdp, label):
+    rect = await _ev(cdp,
+        '(function(){var bs=Array.from(document.querySelectorAll('
+        '"button,[role=button]")).filter(function(b){return '
+        'new RegExp(' + json.dumps(label) + ').test(b.title+" "+'
+        '(b.getAttribute("aria-label")||""))});if(!bs.length)return "null";'
+        'var r=bs[0].getBoundingClientRect();return JSON.stringify('
+        '{x:r.x+r.width/2,y:r.y+r.height/2})})()')
+    if not isinstance(rect, str) or not rect.startswith("{"):
+        return False
+    d = json.loads(rect)
+    await cdp.send("Input.dispatchMouseEvent", {
+        "type": "mousePressed", "x": d["x"], "y": d["y"],
+        "button": "left", "clickCount": 1})
+    await cdp.send("Input.dispatchMouseEvent", {
+        "type": "mouseReleased", "x": d["x"], "y": d["y"],
+        "button": "left", "clickCount": 1})
+    await asyncio.sleep(0.8)
+    return True
+
+
+async def _apply_bold(cdp):
+    return await _click_toolbar(cdp, "加粗")
+
+
+async def _apply_link(cdp, url):
+    for t in ("keyDown", "keyUp"):
+        await cdp.send("Input.dispatchKeyEvent", {
+            "type": t, "key": "k", "code": "KeyK",
+            "windowsVirtualKeyCode": 75, "modifiers": 2})
+    await asyncio.sleep(1.2)
+    await _ev(cdp,
+        '(function(){var i=Array.from(document.querySelectorAll("input"))'
+        '.filter(function(x){return x.offsetParent!==null&&'
+        '/地址/.test(x.placeholder||"")})[0];if(!i)return "no-input";'
+        'i.focus();i.select();return 1})()')
+    await cdp.send("Input.insertText", {"text": url})
+    await asyncio.sleep(0.5)
+    r = await _ev(cdp,
+        '(function(){var bs=Array.from(document.querySelectorAll("button"))'
+        '.filter(function(b){return b.offsetParent!==null&&'
+        '/^(确认|插入链接)$/.test(b.textContent.trim())});'
+        'if(!bs.length)return "no-btn";bs[0].click();return "ok"})()')
+    await asyncio.sleep(1.2)
+    return r == "ok"
+
+
+def parse_inline_spans(body_md):
+    """[(pos, kind, text, url)] 按出现位置排序。粗体来自 **…**,
+    链接来自裸 URL(中文稿形态:文字=URL)。"""
+    spans = []
+    for m in re.finditer(r"\*\*(.+?)\*\*", body_md):
+        spans.append((m.start(), "bold", m.group(1), None))
+    for m in re.finditer(r"https?://[^\s)】》\]]+", body_md):
+        spans.append((m.start(), "link", m.group(0), m.group(0)))
+    spans.sort()
+    return spans
+
+
+async def apply_inline_styles(cdp, body_md):
+    spans = parse_inline_spans(body_md)
+    print(f"inline spans: {len(spans)} "
+          f"(bold={sum(1 for s in spans if s[1] == 'bold')}, "
+          f"link={sum(1 for s in spans if s[1] == 'link')})")
+    ok_n = 0
+    from_idx = 0
+    for _, kind, text, url in spans:
+        ok, from_idx, ab, al = await _sel_text(cdp, text, from_idx)
+        if not ok:
+            print(f"  [skip] select failed: {kind} {text[:30]}")
+            continue
+        # 粘贴已保真(strong→styled span)的不重复点——工具栏加粗是 toggle,
+        # 点了反而取消;链接同理
+        if kind == "bold" and ab:
+            print(f"  [keep] already bold: {text[:40]}")
+            ok_n += 1
+            continue
+        if kind == "link" and al:
+            print(f"  [keep] already link: {text[:40]}")
+            ok_n += 1
+            continue
+        r = (await _apply_bold(cdp)) if kind == "bold" \
+            else (await _apply_link(cdp, url))
+        print(f"  [{'ok' if r else 'FAIL'}] {kind}: {text[:40]}")
+        ok_n += 1 if r else 0
+    return ok_n, len(spans)
+
+
 # ---------- 平台适配 ----------
 
 async def zhihu_login_check(cdp):
@@ -251,7 +404,8 @@ async def zhihu_login_check(cdp):
 async def zhihu_publish(cdp, md, publish):
     title = re.match(r"^#\s+(.+)", md)
     title = title.group(1).strip() if title else md.splitlines()[0][:40]
-    body = md_to_html(re.sub(r"^#\s+.+\n?", "", md, count=1))
+    body_md = re.sub(r"^#\s+.+\n?", "", md, count=1).strip()
+    body = md_to_html(body_md)
 
     await nav(cdp, "https://zhuanlan.zhihu.com/write", wait=8)
     # 标题框(placeholder「请输入标题(2 到 100 个字符)」)
@@ -285,29 +439,68 @@ async def zhihu_publish(cdp, md, publish):
         "windowsVirtualKeyCode": 8})
     await asyncio.sleep(1)
 
-    # 正文:真剪贴板 CF_HTML + CDP Ctrl+V(实测三通道中最稳:块级结构保真)
+    # 正文:真剪贴板 CF_HTML + CDP Ctrl+V(实测三通道中最稳:块级结构保真)。
+    # nav 后 Draft.js 挂载有延迟,首个 Ctrl+V 可能被丢 → 重试循环。
+    # 判据门槛=纯文本期望长度(不是 HTML 字节数——旧版拿 6129 字节当尺子,
+    # 2386 字永远不达标→重复粘贴正文翻倍);重试前必须清空防叠加。
+    expect = len(re.sub(r"<[^>]+>", "", body))
     n = set_cf_html(body)
-    print("cf_html bytes:", n)
-    await _ev(cdp,
-        '(function(){var e=document.querySelector("[contenteditable=true]");'
-        'if(!e)return "no-editor";e.focus();return 1})()')
-    await asyncio.sleep(0.3)
-    await cdp.send("Input.dispatchKeyEvent", {
-        "type": "keyDown", "key": "v", "code": "KeyV",
-        "windowsVirtualKeyCode": 86, "modifiers": 2})
-    await cdp.send("Input.dispatchKeyEvent", {
-        "type": "keyUp", "key": "v", "code": "KeyV",
-        "windowsVirtualKeyCode": 86, "modifiers": 2})
-    await asyncio.sleep(2)
+    print("cf_html bytes:", n, "| expect text len:", expect)
+    got = 0
+    for attempt in range(3):
+        if got:  # 重试前清空(防双份正文)
+            await _ev(cdp,
+                '(function(){var e=document.querySelector('
+                '"[contenteditable=true]");if(e){e.focus();return 1}})()')
+            await asyncio.sleep(0.3)
+            for t in ("keyDown", "keyUp"):
+                await cdp.send("Input.dispatchKeyEvent", {
+                    "type": t, "key": "a", "code": "KeyA",
+                    "windowsVirtualKeyCode": 65, "modifiers": 2})
+            await asyncio.sleep(0.3)
+            for t in ("keyDown", "keyUp"):
+                await cdp.send("Input.dispatchKeyEvent", {
+                    "type": t, "key": "Backspace", "code": "Backspace",
+                    "windowsVirtualKeyCode": 8})
+            await asyncio.sleep(1)
+        fr = await _ev(cdp,
+            '(function(){var e=document.querySelector('
+            '"[contenteditable=true]");if(!e)return "no-editor";'
+            'e.focus();return JSON.stringify({f:document.hasFocus(),'
+            'ae:document.activeElement.className.slice(0,40)})})()')
+        print(f"focus[{attempt}]:", fr)
+        await asyncio.sleep(0.3)
+        await cdp.send("Input.dispatchKeyEvent", {
+            "type": "keyDown", "key": "v", "code": "KeyV",
+            "windowsVirtualKeyCode": 86, "modifiers": 2})
+        await cdp.send("Input.dispatchKeyEvent", {
+            "type": "keyUp", "key": "v", "code": "KeyV",
+            "windowsVirtualKeyCode": 86, "modifiers": 2})
+        await asyncio.sleep(2)
+        v = await _ev(cdp,
+            '(document.querySelector("[contenteditable=true]")||'
+            '{textContent:""}).textContent.length')
+        got = v if isinstance(v, int) else 0
+        print(f"paste attempt {attempt}: len={got}")
+        if got >= expect * 0.8:
+            break
+        await asyncio.sleep(2)
+    # 行内格式施加(Draft.js 三步流)
+    ok_n, total = await apply_inline_styles(cdp, body_md)
     probe = await _ev(cdp,
         'JSON.stringify({len:(document.querySelector("[contenteditable=true]")||'
         '{textContent:"?"}).textContent.length,'
         'h3:(document.querySelector("[contenteditable=true]")||'
         '{querySelectorAll:function(){return[]}}).querySelectorAll("h3").length,'
+        'bold:(document.querySelector("[contenteditable=true]")||'
+        '{querySelectorAll:function(){return[]}})'
+        '.querySelectorAll("span[style*=bold]").length,'
+        'a:(document.querySelector("[contenteditable=true]")||'
+        '{querySelectorAll:function(){return[]}}).querySelectorAll("a").length,'
         'url:(document.querySelector("[contenteditable=true]")||'
         '{textContent:""}).textContent.includes("github.com"),'
         'title:(document.querySelector("textarea")||{value:"?"}).value.slice(0,60)})')
-    print("after-fill:", probe)
+    print("after-fill:", probe, f"| inline applied {ok_n}/{total}")
     await shot(cdp, "runtime/zhihu_dryrun.png")
     if not publish:
         print("DRY-RUN: 已填好未发布(截图 runtime/zhihu_dryrun.png),"
