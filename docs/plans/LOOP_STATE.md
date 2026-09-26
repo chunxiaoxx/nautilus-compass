@@ -44,6 +44,11 @@
 
 ## 轮次日志
 
+### 轮 35(市场化loop R16) · 2026-09-27 01:1x(G4 全文初稿 v1 落)
+- 进展:**《Verification as Protocol》英文全文初稿 v1**(docs/essays/verification_as_protocol_v1.md,cae68843)——六段断言句标题+四协议原语段+「We failed our own exam first」证据链段(11/18→审计→复算 GREEN 抓 69/62vs71/67→签名事故→v2 18/18 反证)+3 条自我披露(n=1/18vs16 波动/独立性悖论代价)+CTA 含 recompute desk;**全部数字逐项回工件核对**(BC1_LAUNCH+SCORECARD_V2);~2400 词短于范文 6300(修订轮决定扩段,不注水)
+- M1:0 不变
+- 下轮:初稿对面 3 质疑自审(真反对意见非稻草人);白天 BC1 值守;用户两件=知乎发布+投流开户
+
 ### 轮 34(市场化loop R15) · 2026-09-27 00:5x(G4 风格摸底完成)
 - 进展:信箱清零;T2/T4 观察窗无动静(OPEN 无评论),T3 等对方(最后评论=我方交付);推 P1 级未完件:**G4《验证即协议》Latent Space 风格摸底完成**(f5d728d6)——双范文实抓(当期 guest post《Foundries vs Navigators》9/24+经典《The Rise of the AI Engineer》):6300-6400 词/5-7 节/小节题=断言句/guest post 通道实证存在;语境注=Jev 9/21 已上 Latent Space 播客,四协议原语语汇可直接借用;大纲六段标题动笔时逐条转写断言句
 - M1:0 不变(报名 0/UTM 0/wall 9/Discord 主帖 0 反应)
