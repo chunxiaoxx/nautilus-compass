@@ -44,6 +44,11 @@
 
 ## 轮次日志
 
+### 轮 34(市场化loop R15) · 2026-09-27 00:5x(G4 风格摸底完成)
+- 进展:信箱清零;T2/T4 观察窗无动静(OPEN 无评论),T3 等对方(最后评论=我方交付);推 P1 级未完件:**G4《验证即协议》Latent Space 风格摸底完成**(f5d728d6)——双范文实抓(当期 guest post《Foundries vs Navigators》9/24+经典《The Rise of the AI Engineer》):6300-6400 词/5-7 节/小节题=断言句/guest post 通道实证存在;语境注=Jev 9/21 已上 Latent Space 播客,四协议原语语汇可直接借用;大纲六段标题动笔时逐条转写断言句
+- M1:0 不变(报名 0/UTM 0/wall 9/Discord 主帖 0 反应)
+- 下轮:G4 全文初稿动工(断言句标题+逐节挂数,素材坐标表已齐);用户点发布知乎稿
+
 ### 轮 33(发布日序列续) · 2026-09-27 00:2x(**知乎发布器收口·dry-run 18/18 全绿**)
 - 进展:**中文稿发布链最后一块落地**——cn_publisher 四修(2e42f732):①_sel_text 编辑器全文坐标下界(裸「11/18」误中前文「首考 11/18」内部=加粗 toggle-off 风险)②点击前 scrollIntoView(视口外坐标必落空,旧版 18/18 全 skip 根因)③ab/al 旗标:**paste 实测保 strong**(与昨日 commit「行内全被剥」结论相反,以今日实测为准),已粗体跳过(toggle 会取消)④重试门槛 HTML 字节数→纯文本期望长(6129 当尺永不达标→双份正文)+重试前清空。dry-run:单次粘贴 2386 字+h3×6+链接 a=2+18/18 行内,截图存档。**编辑器里草稿已就绪,用户点「发布」即发**(或 --publish 重跑)
 - 事故录:9225 Chrome 键盘输入管道实例级死亡(insertText 活/按键全灭/pasteEvent 0;对拍 9224 keydown=1 坐实实例级);Browser.close 被 Chrome154 静默无视;精确 PID(命令行锚 remote-debugging-port=9225)重启复活,登录态随 profile 持久
