@@ -95,7 +95,7 @@ $50+ for GPT-4o-judged stacks). Full argument:
 | [`nautilus-compass`](https://pypi.org/project/nautilus-compass/) | this repo — CLI, MCP server, A2A adapter (3.2.0) |
 | [`assay-verify`](https://pypi.org/project/assay-verify/) | ed25519 signed receipts for AI outputs — attest-at-generation, verify-on-consume (Let's Encrypt for AI claims) |
 | [`jev-trust`](https://pypi.org/project/jev-trust/) | trust middleware for the Jev decision API — logs every call, measures calibration in *your* domain, signs the evidence |
-| **BC1 benchmark** | 30-item organizational-memory exam — honest scoring (U never counts), machine-scored, our own 11/18 first self-test published in full — [launching 9/27](docs/benchmarks/BC1_LAUNCH.md) |
+| **BC1 benchmark** | 30-item organizational-memory exam — honest scoring (U never counts), machine-scored, our own 11/18 first self-test published in full — [LAUNCHED 9/27](docs/benchmarks/BC1_LAUNCH.md) |
 
 ### Python package (PyPI · 3.2.0)
 
