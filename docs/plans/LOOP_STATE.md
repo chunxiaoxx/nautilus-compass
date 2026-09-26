@@ -44,6 +44,11 @@
 
 ## 轮次日志
 
+### 轮 40(市场化loop R21) · 2026-09-27 02:3x(**TypeSafe proof 预备轮:工件坐标全抓·口径眉目现**)
+- 进展:①信箱:platform zenmind 状态答(1172:台式机静默6h云上无病,卡点=本地定时任务列用户待办,compass 无配合件)ack 闭环②**TypeSafe proof 预备轮实抓**(d5472e8e):(proof) 链=blog 正文;**evals.typesafe.ai 全数字公开**(Jev 67.8%/$0.0004/0.4s vs terra 67.9%/0.0304/10.1s vs opus5 73.1%/0.1761/37.8s 等 9 模型×3 指标);adapter-python repo 可跑;playground 直测口;**口径推算**:444.6x≈opus5 成本比(440x)/193.6x 疑锚 sonnet5 时间(78.1/0.4=195x);「Jev 与 terra 准确率持平、opus5/sol 更高」=复算报告要如实呈现的完整图景;快照 3 html 入仓供复算引用;9/28 开工清单就绪
+- M1:0 不变(exam-signup 0;Discord 直链 200)
+- 下轮:G4 扩段决策;今晚 21:00 UniPat 汇聚/22:00 VB 窗
+
 ### 轮 39(市场化loop R20) · 2026-09-27 02:0x(**awesome-jev 双 PR MERGED·VB 前置全齐**)
 - 进展:①**G5 生态实锤:awesome-jev 双 PR 已 MERGED**(cobanov#71+yibie#137,gh 实查)——jev-trust 曝光触点+2(PyPI/Discord 之外两个列表在册);NanoJev PR#12(仓定位=TianyuCodings/NanoJev)仍 OPEN 未催(9/21 投,距上次催 4 天)②**v5 patch 坐标答复(1166)ack+物理坐实**:bench 侧 vb_bench_side.patch(87 行 3757B ✓)+v5 侧 899f2d1(零工具病根因=tool_calls 非空 content 必 None)已在 HEAD c309d73 ✓+起跑脚本在 ✓③**VB 批1预注册判据档落地**(ee8bb9d2):冻结口径+J1-J5(零工具红灯先证伪 patch 链)+执行坐标,今晚 22:00 窗,不给预期读数
 - M1:0 不变(exam-signup 0)
