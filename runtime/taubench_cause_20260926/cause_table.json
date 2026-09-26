@@ -1,0 +1,292 @@
+[
+ {
+  "task_id": 4,
+  "prelim": "动作齐但结果不符(db不符/参数细节)",
+  "cause": "评测器嫌疑(写全同+无报错)",
+  "policy_hint": "",
+  "n_gold_writes": 2,
+  "n_agent_writes": 2,
+  "tool_errors": 0,
+  "reward": 0.0
+ },
+ {
+  "task_id": 7,
+  "prelim": "动作齐但结果不符(db不符/参数细节)",
+  "cause": "参数错(值级)",
+  "policy_hint": "",
+  "n_gold_writes": 1,
+  "n_agent_writes": 1,
+  "tool_errors": 0,
+  "reward": 0.0
+ },
+ {
+  "task_id": 15,
+  "prelim": "动作齐但结果不符(db不符/参数细节)",
+  "cause": "参数错(值级)",
+  "policy_hint": "支付方式异(['\"gift_card_1675628\"'])",
+  "n_gold_writes": 1,
+  "n_agent_writes": 1,
+  "tool_errors": 0,
+  "reward": 0.0
+ },
+ {
+  "task_id": 18,
+  "prelim": "漏+错混合",
+  "cause": "混合(漏写+多写)",
+  "policy_hint": "",
+  "n_gold_writes": 1,
+  "n_agent_writes": 1,
+  "tool_errors": 0,
+  "reward": 0.0
+ },
+ {
+  "task_id": 27,
+  "prelim": "多动作/参数错(写)",
+  "cause": "多写(工具选择错)",
+  "policy_hint": "",
+  "n_gold_writes": 1,
+  "n_agent_writes": 2,
+  "tool_errors": 1,
+  "reward": 0.0
+ },
+ {
+  "task_id": 29,
+  "prelim": "多动作/参数错(写)",
+  "cause": "多写(工具选择错)",
+  "policy_hint": "",
+  "n_gold_writes": 2,
+  "n_agent_writes": 3,
+  "tool_errors": 0,
+  "reward": 0.0
+ },
+ {
+  "task_id": 30,
+  "prelim": "动作齐但结果不符(db不符/参数细节)",
+  "cause": "评测器嫌疑(写全同+无报错)",
+  "policy_hint": "",
+  "n_gold_writes": 3,
+  "n_agent_writes": 3,
+  "tool_errors": 0,
+  "reward": 0.0
+ },
+ {
+  "task_id": 34,
+  "prelim": "动作齐但结果不符(db不符/参数细节)",
+  "cause": "评测器嫌疑(写全同+无报错)",
+  "policy_hint": "",
+  "n_gold_writes": 1,
+  "n_agent_writes": 1,
+  "tool_errors": 0,
+  "reward": 0.0
+ },
+ {
+  "task_id": 38,
+  "prelim": "收集不全/漏动作",
+  "cause": "参数错(值级)",
+  "policy_hint": "",
+  "n_gold_writes": 1,
+  "n_agent_writes": 1,
+  "tool_errors": 1,
+  "reward": 0.0
+ },
+ {
+  "task_id": 41,
+  "prelim": "动作齐但结果不符(db不符/参数细节)",
+  "cause": "漏动作(写缺失)",
+  "policy_hint": "",
+  "n_gold_writes": 3,
+  "n_agent_writes": 2,
+  "tool_errors": 0,
+  "reward": 0.0
+ },
+ {
+  "task_id": 43,
+  "prelim": "动作齐但结果不符(db不符/参数细节)",
+  "cause": "评测器嫌疑(写全同+无报错)",
+  "policy_hint": "",
+  "n_gold_writes": 0,
+  "n_agent_writes": 0,
+  "tool_errors": 0,
+  "reward": 0.0
+ },
+ {
+  "task_id": 54,
+  "prelim": "动作齐但结果不符(db不符/参数细节)",
+  "cause": "评测器嫌疑(写全同+无报错)",
+  "policy_hint": "",
+  "n_gold_writes": 3,
+  "n_agent_writes": 3,
+  "tool_errors": 0,
+  "reward": 0.0
+ },
+ {
+  "task_id": 59,
+  "prelim": "收集不全/漏动作",
+  "cause": "参数错(值级)",
+  "policy_hint": "",
+  "n_gold_writes": 2,
+  "n_agent_writes": 2,
+  "tool_errors": 0,
+  "reward": 0.0
+ },
+ {
+  "task_id": 60,
+  "prelim": "动作齐但结果不符(db不符/参数细节)",
+  "cause": "参数错(值级)",
+  "policy_hint": "支付方式异(['\"gift_card_3406421\"'])",
+  "n_gold_writes": 1,
+  "n_agent_writes": 1,
+  "tool_errors": 0,
+  "reward": 0.0
+ },
+ {
+  "task_id": 64,
+  "prelim": "收集不全/漏动作",
+  "cause": "参数错(值级)",
+  "policy_hint": "",
+  "n_gold_writes": 2,
+  "n_agent_writes": 1,
+  "tool_errors": 0,
+  "reward": 0.0
+ },
+ {
+  "task_id": 70,
+  "prelim": "动作齐但结果不符(db不符/参数细节)",
+  "cause": "参数错(值级)",
+  "policy_hint": "",
+  "n_gold_writes": 1,
+  "n_agent_writes": 1,
+  "tool_errors": 0,
+  "reward": 0.0
+ },
+ {
+  "task_id": 72,
+  "prelim": "动作齐但结果不符(db不符/参数细节)",
+  "cause": "参数错(值级)",
+  "policy_hint": "支付方式异(['\"gift_card_1711656\"'])",
+  "n_gold_writes": 2,
+  "n_agent_writes": 2,
+  "tool_errors": 0,
+  "reward": 0.0
+ },
+ {
+  "task_id": 74,
+  "prelim": "动作齐但结果不符(db不符/参数细节)",
+  "cause": "参数错(值级)",
+  "policy_hint": "支付方式异(['\"paypal_5914760\"'])",
+  "n_gold_writes": 2,
+  "n_agent_writes": 2,
+  "tool_errors": 0,
+  "reward": 0.0
+ },
+ {
+  "task_id": 76,
+  "prelim": "动作齐但结果不符(db不符/参数细节)",
+  "cause": "参数错(值级)",
+  "policy_hint": "",
+  "n_gold_writes": 2,
+  "n_agent_writes": 2,
+  "tool_errors": 0,
+  "reward": 0.0
+ },
+ {
+  "task_id": 91,
+  "prelim": "收集不全/漏动作",
+  "cause": "混合(漏写+多写)",
+  "policy_hint": "",
+  "n_gold_writes": 2,
+  "n_agent_writes": 2,
+  "tool_errors": 0,
+  "reward": 0.0
+ },
+ {
+  "task_id": 93,
+  "prelim": "动作齐但结果不符(db不符/参数细节)",
+  "cause": "参数错(值级)",
+  "policy_hint": "",
+  "n_gold_writes": 1,
+  "n_agent_writes": 1,
+  "tool_errors": 0,
+  "reward": 0.0
+ },
+ {
+  "task_id": 95,
+  "prelim": "动作齐但结果不符(db不符/参数细节)",
+  "cause": "参数错(值级)",
+  "policy_hint": "",
+  "n_gold_writes": 1,
+  "n_agent_writes": 1,
+  "tool_errors": 0,
+  "reward": 0.0
+ },
+ {
+  "task_id": 98,
+  "prelim": "多动作/参数错(写)",
+  "cause": "执行失败(参数同但 env 拒)",
+  "policy_hint": "",
+  "n_gold_writes": 2,
+  "n_agent_writes": 2,
+  "tool_errors": 1,
+  "reward": 0.0
+ },
+ {
+  "task_id": 99,
+  "prelim": "动作齐但结果不符(db不符/参数细节)",
+  "cause": "参数错(值级)",
+  "policy_hint": "",
+  "n_gold_writes": 3,
+  "n_agent_writes": 3,
+  "tool_errors": 0,
+  "reward": 0.0
+ },
+ {
+  "task_id": 101,
+  "prelim": "动作齐但结果不符(db不符/参数细节)",
+  "cause": "参数错(值级)",
+  "policy_hint": "",
+  "n_gold_writes": 2,
+  "n_agent_writes": 2,
+  "tool_errors": 0,
+  "reward": 0.0
+ },
+ {
+  "task_id": 105,
+  "prelim": "收集不全/漏动作",
+  "cause": "混合(漏写+多写)",
+  "policy_hint": "",
+  "n_gold_writes": 4,
+  "n_agent_writes": 4,
+  "tool_errors": 0,
+  "reward": 0.0
+ },
+ {
+  "task_id": 106,
+  "prelim": "多动作/参数错(写)",
+  "cause": "参数错(值级)",
+  "policy_hint": "",
+  "n_gold_writes": 1,
+  "n_agent_writes": 1,
+  "tool_errors": 0,
+  "reward": 0.0
+ },
+ {
+  "task_id": 108,
+  "prelim": "多动作/参数错(写)",
+  "cause": "混合(漏写+多写)",
+  "policy_hint": "",
+  "n_gold_writes": 2,
+  "n_agent_writes": 2,
+  "tool_errors": 0,
+  "reward": 0.0
+ },
+ {
+  "task_id": 110,
+  "prelim": "动作齐但结果不符(db不符/参数细节)",
+  "cause": "参数错(值级)",
+  "policy_hint": "",
+  "n_gold_writes": 2,
+  "n_agent_writes": 2,
+  "tool_errors": 0,
+  "reward": 0.0
+ }
+]
