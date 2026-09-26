@@ -180,19 +180,24 @@ def run_direct(item, base, key, model, raw_log):
     return parse_answer(out, item["target"])
 
 
-def run_mem0(item, base, key, model, dims, raw_log):
+def run_mem0(item, base, key, model, dims, raw_log, infer=True,
+             arm_tag="mem0"):
     mem = make_memory(dims, item["qid"], base, key, model)
     payload = json.dumps(item["inputs"], ensure_ascii=False)
-    # 写入:mem0 自带抽取管线(infer=True=其写入门本体被测)
+    # 写入:infer=True=mem0 默认抽取管线(其写入门本体被测);
+    # infer=False=调参臂,存原文不做语义压缩(防"你们没调优"质疑的对照)
     chunks = [payload[i:i + 6000] for i in range(0, len(payload), 6000)]
     for c in chunks:
-        mem.add(c, user_id="exam")
+        try:
+            mem.add(c, user_id="exam", infer=infer)
+        except TypeError:  # 老版 mem0 无 infer 形参
+            mem.add(c, user_id="exam")
     hits = mem.search(item["prompt"][:2000], filters={"user_id": "exam"})
     hits = hits.get("results", hits) if isinstance(hits, dict) else hits
     mems = [h.get("memory", str(h)) if isinstance(h, dict) else str(h)
             for h in hits]
-    raw_log.append({"qid": item["qid"], "arm": "mem0", "stage": "retrieved",
-                    "out": mems})
+    raw_log.append({"qid": item["qid"], "arm": arm_tag,
+                    "stage": "retrieved", "out": mems})
     slot = SLOT_INSTR[item["target"]]
     user = (f"以下是记忆系统就本题检索到的全部内容:\n"
             f"{json.dumps(mems, ensure_ascii=False)}\n\n"
@@ -220,8 +225,12 @@ def grade(answers_path: Path) -> str:
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--limit", type=int, default=0)
-    ap.add_argument("--arm", choices=["both", "direct", "mem0"],
+    ap.add_argument("--arm", choices=["both", "direct", "mem0",
+                                      "mem0_raw"],
                     default="both")
+    ap.add_argument("--infer", choices=["on", "off"], default="on",
+                    help="mem0 写入抽取:on=默认管线(被测本体);"
+                         "off=存原文不压缩(调参对照臂)")
     ap.add_argument("--provider", choices=["minimax", "ark"],
                     default="minimax")
     ap.add_argument("--model", default="", help="覆盖提供商默认模型")
@@ -234,17 +243,19 @@ def main():
     if a.model:
         model = a.model
     raw_log = []
-    dims = local_emb_dims() if a.arm in ("both", "mem0") else 0
+    dims = local_emb_dims() if a.arm in ("both", "mem0", "mem0_raw") else 0
 
     for arm in (["direct", "mem0"] if a.arm == "both" else [a.arm]):
+        infer = a.infer == "on"
         answers = {}
         for it in items:
             try:
                 if arm == "direct":
                     val, abstain = run_direct(it, base, key, model, raw_log)
                 else:
-                    val, abstain = run_mem0(it, base, key, model,
-                                            dims, raw_log)
+                    val, abstain = run_mem0(it, base, key, model, dims,
+                                            raw_log, infer=infer,
+                                            arm_tag=arm)
             except Exception as e:
                 raw_log.append({"qid": it["qid"], "arm": arm,
                                 "stage": "error", "out": repr(e)[:500]})
