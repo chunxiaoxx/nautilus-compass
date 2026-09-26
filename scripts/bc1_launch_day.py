@@ -146,16 +146,25 @@ def counters() -> None:
     n_signup = 0
     if r.returncode == 0:
         for it in json.loads(r.stdout):
-            if it["createdAt"] >= "2026-09-27" and re.search(
+            # 发布实际提前到 9/26 晚(18:41 上帖),窗口从 9/26 起防漏计
+            if it["createdAt"] >= "2026-09-26" and re.search(
                     r"exam|bc1", it["title"], re.I):
                 n_signup += 1
-    lines.append(f"- 报名/考试相关 issue(9/27 起): {n_signup}")
+    lines.append(f"- 报名/考试相关 issue(9/26 起): {n_signup}")
     r = subprocess.run(
         ["ssh", SSH_HOST, "sudo -n zgrep -h bc1_launch_0927 "
-         "/var/log/nginx/access.log* 2>/dev/null | wc -l"],
+         "/var/log/nginx/compass-access.log* 2>/dev/null | wc -l"],
         capture_output=True, text=True, timeout=30)
     utm = r.stdout.strip() if r.returncode == 0 else "查不到(权限/路径)"
-    lines.append(f"- UTM(bc1_launch_0927)nginx 命中: {utm}")
+    # UTM 只铺在投流物料(X/知乎付费),此数=投流归因口径,非总流量
+    lines.append(f"- UTM(bc1_launch_0927)命中(投流归因口径): {utm}")
+    r2 = subprocess.run(
+        ["ssh", SSH_HOST, "sudo -n zgrep -h 'GET /wall' "
+         "/var/log/nginx/compass-access.log* 2>/dev/null "
+         "| grep 26/Sep/2026 | wc -l"],
+        capture_output=True, text=True, timeout=30)
+    wall_hits = r2.stdout.strip() if r2.returncode == 0 else "查不到"
+    lines.append(f"- wall 今日 GET 命中(自然流量口径): {wall_hits}")
     lines.append("- Discord 反应数: 走 cdp_tool.py 直链人工读(③存的 lastid)")
     lines.append("- 判分请求数: 看本仓 issue+邮箱,人工计")
     REPORT.write_text("\n".join(lines) + "\n", encoding="utf-8")
