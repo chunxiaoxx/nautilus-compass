@@ -115,11 +115,15 @@ from 4/4 to 1/4. Once incidents are stored as prose, incident #3 and
 incident #1 blur into "that recurring problem with the deploy job," and
 counting — the thing recurrence detection is — becomes impossible.
 
-Two disclosures, because the grader is watching us too. First, the
-no-compression arm beating direct access (18 vs 16) is within single-run
-variance for a reasoning model at n=1; we report it and do not build a claim
-on it. The load-bearing finding is the compression delta, which survived
-per-field anatomy and a same-model controlled comparison. Second, this is a
+Two disclosures, because the grader is watching us too. First, this is
+n=1 per arm on a single backbone (MiniMax-M3); the no-compression arm
+beating direct access (18 vs 16) is within single-run variance for a
+reasoning model at n=1, and we report it without building a claim on it.
+The load-bearing finding is the compression delta, which survived
+per-field anatomy and a same-model controlled comparison — and is a
+mechanism, not a magic number: if the next mem0 release changes the
+default, that is the finding working, not the finding expiring. Second,
+this is a
 report, not an indictment: mem0's default optimizes for conversational
 coherence, which is a legitimate target. It is simply the wrong default for
 audit, compliance, and forensics workloads. Our free health check for the
@@ -248,6 +252,27 @@ Honest limits, stated before anyone else states them for us:
   we have not spent yet. The compression finding is causal and controlled;
   the 18-vs-16 overshoot is disclosed as within-run variance, not claimed
   as signal.
+- **We wrote the questions about ourselves.** The seeds come from one
+  organization's operational history — ours — so we hold home-field
+  knowledge of the domain. The holdout split protects against "has seen
+  the questions," not against "the domain is shaped like us." Read the
+  three-arm result accordingly: the *relative* delta is mechanistic and
+  survives a same-model controlled comparison, but *absolute* scores should
+  not be extrapolated to another organization's memory corpus. The real
+  fix is external organizations bringing their own runbooks to seed
+  same-structure exams — which we will grade and publish. That does not
+  exist yet, and we are not going to pretend it does.
+- **The operator sells verification, and that is a conflict of interest
+  we cannot protocol away in v1.** The question layer is publicly
+  auditable; the grading layer is self-runnable; but the question author,
+  the answer-key holder, and the party that gets paid for recomputes are,
+  today, the same entity. Disclosure is not a structural fix — the
+  structural fix is separating exam authorship, grading, and operations
+  into different parties, and the first release does not have that. What
+  v1 does offer: challenges are free inside the 90-day window (we eat the
+  cost), and every grading error we have caught in ourselves is published
+  next to the results it wronged. If you trust anything here, trust it
+  because you recomputed it — not because we are nice.
 
 ## Take the exam
 
@@ -271,8 +296,10 @@ And the commercial part, said plainly, because hiding it would be stranger
 than not: we run a **recompute desk**. Bring us a self-reported result you
 do not fully trust — an agent's, a vendor's, your own system's — and we
 independently recompute it from artifacts, under the same four primitives.
-The first one is free, because that is how trust gets bootstrapped in
-verification markets: not by claims, but by receipts.
+Yes, this means we get paid for finding FAILs, which is exactly why you
+should audit our grader harder than anyone's. The first one is free,
+because that is how trust gets bootstrapped in verification markets: not
+by claims, but by receipts.
 
 In a stack where models rotate monthly and memory compounds for years, the
 durable asset is not the model. It is the receipt.
