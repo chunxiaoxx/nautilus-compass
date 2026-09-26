@@ -1,0 +1,101 @@
+\documentclass[11pt]{article}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{ctex}  % xelatex 下自动取 Windows 系统中文字体
+\hypersetup{colorlinks=true,linkcolor=blue!60!black,urlcolor=blue!60!black}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}p{2.6cm}}
+\title{\textbf{Jev 1.13.0 域校准实测报告}\\[4pt]
+\large 自报置信 vs 实际能力:七域扫描}
+\author{Nautilus Assay(伊洛科技有限公司)\\ \small 独立验证 · 工件全公开可复算}
+\date{2026 年 9 月 26 日}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent 我们在自己的七个任务域上实测了 Jev 1.13.0(hosted)标榜的
+``calibrated confidence''。核心读数:在合成邮件三分类任务上,Jev 自报
+平均置信 \textbf{91\%},实际选择题准确率 \textbf{50\%}——校准分
+$C = 1-\mathrm{ECE}$ 仅 \textbf{0.086}。规律:域越模糊、越接近业务
+现场(分诊/标注/行为判断),校准崩塌越严重;闭合式任务上校准良好。
+全部原始工件与判分程序公开,任何人可复算;我们自家系统在同一面墙上
+以同一把尺照登。
+\end{abstract}
+
+\section{方法}
+测量仪器:\texttt{jev-trust}(MIT 开源,\texttt{pip install jev-trust}),
+校准货币 $C(\text{agent},\text{domain},t) = 1 - \mathrm{ECE}_t$,
+top-label 口径,10 桶分箱。每域 $n{=}120$(标注类)或按任务定义;
+hosted API 全量调用,原始应答留痕。判分与 ECE 计算脚本公开,
+非实现者复算流程内置。
+
+\section{七域读数}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lccR}
+\toprule
+\textbf{域} & \textbf{准确率} & \textbf{自报置信} & \textbf{C (1$-$ECE)} \\
+\midrule
+闭合确定性任务 & — & — & 0.959 \\
+对抗压测 & — & — & 0.988 \\
+Python 异常预测 & 100\% & — & 0.953 \\
+代码 patch 行为判定 & 92.5\% & — & 0.866 \\
+具身数据 QC 标注$^{\dagger}$ & 50\%(全 yes 策略) & — & \textbf{0.689} \\
+邮件分诊(布尔 spam) & — & — & 0.831 \\
+邮件三分类(choice) & \textbf{50\%} & \textbf{91\%} & \textbf{0.086} \\
+\midrule
+NanoJev 0.6B(本地) 轨迹重放 & — & — & $\approx$1.000 \\
+NanoJev 0.6B 校准基准重放 & — & — & $\approx$1.000 \\
+\bottomrule
+\end{tabular}
+\caption{$^{\dagger}$全 yes 策略 = 对所有样本一律答 yes:召回 100\%、
+精确率 50\%——模型在模糊域退化为一键策略但置信度仍高。}
+\end{table}
+
+\section{解读}
+\begin{itemize}
+\item \textbf{校准崩塌发生在业务现场}。三分类分诊是最常见的生产决策
+形态(路由/审核/过滤),恰恰在此自报置信 91\% 而准确率 50\%——
+置信虚高直接转化为错单、漏检、误放行。
+\item \textbf{闭合域可信}。闭合确定性任务与对抗压测的 $C \ge 0.959$,
+说明问题不在模型能力,在\textbf{置信度对域的迁移}没有随域重新校准。
+\item \textbf{操作结论}:Jev 是快而省的决策引擎(TypeSafe 官方宣称
+40--200$\times$ 快/40--400$\times$ 便宜,非本文测量),但在你的域里,
+其置信度应先实测再使用——典型修正如「0.9 当 0.77 用」。
+\end{itemize}
+
+\section{诚实披露}
+\begin{itemize}
+\item 第 3--5 行读数待第二操作员独立复算(验证墙目录中已标注);
+其余为单轮测量。
+\item 我们自家记忆系统(NautilusMem)在同一验证墙挂
+\textbf{UNVERIFIED}——同一把尺,先量自己。
+\item 本报告只覆盖我们实测的\textbf{校准}维度;不涉及安全性、
+延迟、成本等未测维度。
+\end{itemize}
+
+\section{可验证性}
+\begin{itemize}
+\item 验证墙(签名成绩单+方法论,实时):
+\url{https://github.com/chunxiaoxx/nautilus-compass/blob/main/docs/wall/MEMORY_SYSTEMS_DIRECTORY.md}
+\item 测量仪器(MIT):\url{https://pypi.org/project/jev-trust/}
+\item Trust Report \#1:\url{https://compass.nautilus.social/trust_report_2026-09.html}
+\end{itemize}
+
+\section*{如果你的生产环境在跑 Jev}
+给我们 20--50 条你的真实决策样本,48 小时内交付带 ed25519 签名的
+域校准报告(DCR):你域上的真实准确率、校准误差、与通用基线的偏移,
+以及一句可操作的话——「你的域里 0.9 的置信当 0.77 用」。
+全原始工件随附,任何人可复算;判错赔付条款(§5b)适用。
+
+\vfill
+\begin{center}\footnotesize
+Nautilus Assay · 第三方 AI 验证 · \texttt{assay-verify} on PyPI\\
+本报告由独立验证流程产出,工件绑定 commit 可溯
+\end{center}
+
+\end{document}
