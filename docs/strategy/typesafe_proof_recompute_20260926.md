@@ -29,6 +29,30 @@
 4. 红线:不指控造假(人家自己贴了 caveat,是诚实的强者);复算函
    语气=同行复现,不是审计执法
 
+
+## 工件坐标·预备轮实抓(2026-09-27 02:3x,轮 40 · 快照在 runtime/typesafe_*.html)
+
+| 工件 | 坐标 | 公开度 |
+|---|---|---|
+| proof 声明本体 | 首页 (proof) 链接 → `typesafe.ai/blog/introducing-system-one-models-and-jev`(blog 正文,非独立基准页) | 全公开 |
+| **workflow 对拍数据** | `evals.typesafe.ai` 首页 Lens 图:Jev 67.8%/$0.0004/**0.4s** · terra 67.9%/$0.0304/10.1s · opus5 73.1%/$0.1761/37.8s · sol 74.1%/$0.0836/23.3s · sonnet5 67.8%/$0.1174/78.1s · haiku4.5 53.6%/$0.0195/12.5s · DS v4×2 · luna | **数字全公开**(每模型 accuracy/cost/time 三元组) |
+| 四任务 per-case 页 | evals 站:security_incidents / agent_trace_observability / invoice_processing / customer_service(.html) | 待细抓(9/28 第一动作) |
+| 可跑接入 | `github.com/typesafe-ai/system-one-adapter-python`(System One LLM Python adapter) | repo 公开 |
+| 直测入口 | console.typesafe.ai/playground?share=shr_13a74b49…(blog 内可分享 playground) | 需 console 账号? |
+| 第三方参照 | llm-benchmarks.diegoromero.es(blog 引) | 弱相关 |
+
+**初步口径分析(预备轮推算,待 9/28 细核)**:
+- 444.6x Cheaper ≈ opus5 workflow 成本比(0.1761/0.0004=**440x**)——宣称大概率锚定 opus 5 workflow 口径
+- 193.6x Faster 与首页图任何一对(0.4s vs 最慢 78.1s=195x sonnet5!78.1/0.4=195.25≈193.6 量级)——**疑似锚定 sonnet5 workflow 时间**;细核待四任务页
+- 注意:evals 图里 Jev 67.8% 与 terra 67.9% 准确率几乎持平,而 opus5/sol 更高(73.1/74.1)——「快且便宜但不更准」是复算报告要如实呈现的完整图景(同行复现姿态)
+
+## 9/28 开工清单(就绪状态)
+
+1. 抓四任务 per-case 页(runtime 快照)+定位 193.6/444.6 精确出处对
+2. clone adapter-python,跑通最小调用(是否需 API key=playground/console)
+3. 对照腿:MiniMax(配方=memory minimax-coding-plan-provider)同 workload 计时+成本
+4. 产出:三态判定(≥100x=REPRODUCIBLE / 10-100x=PARTIAL / <10x 或不可跑=NOT-REPRODUCIBLE→公开问询函)
+
 ## 执行计划
 
 - 9/28-29:抓 proof 工件坐标(blog 内链/GitHub)+搭 workload 对拍脚手架
