@@ -24,9 +24,9 @@
 | # | 仓 | issue | 发出 | 状态 |
 |---|---|---|---|---|
 | T1 | luantak/is-malicious | #4 | 9/23 D1 试点 | ❌ CLOSED+批评「slop writing」(AI 营销腔)——不重开不追问(红线);话术教训入库 |
-| T2 | elie222/inbox-zero | #3835 | 9/23 D1 试点 | 🔄观察中 |
-| T3 | AkashPriyadarshii/jev-curate | #3 | 9/23 D1 试点 | 🔄**已接单+范围双确认**(9/24 对方二次评论:5 行即全集/n=5+误差带/交付清单与我方预注册一致/ETA 48h OK——issuecomment-5798766886 已锁;主批跑毕签名 VALID,三 findings 落 RESULTS;复算交接档就绪,ETA 9/26 12:00) |
-| T4 | yusukebe/hono-jev-router | #7 | 9/23 v2 话术单点试验 | 🔄观察中(人味版首试) |
+| T2 | elie222/inbox-zero | #3835 | 9/23 D1 试点 | ⚫ 判静默归档(9/27:OPEN 无评论 4 天,观察窗两倍以上已过;不追问——T1 红线教训;若 D3 批次仍选此仓须换话术重开) |
+| T3 | AkashPriyadarshii/jev-curate | #3 | 9/23 D1 试点 | ✅ **完约**(9/26 轮28:复算 RED→6 转写错勘误→issuecomment-5844451314 交付;首个外部 mini 履约全流程实证;后续等甲方反应) |
+| T4 | yusukebe/hono-jev-router | #7 | 9/23 v2 话术单点试验 | ⚫ 判静默归档(9/27:同 T2 口径;v2 话术单点试验结论=无信号,D3 起话术再迭代) |
 | T5 | Discord jev-compaction(David) | show-and-tell 帖 1552587963529961533 | 9/24 草稿就绪(v2 话术第 2 试,含 422 坑技术钩子+免费 mini offer) | ⏳ 观察窗后随 D3 批次(9/26)发;发帖后 lastid 存直链 |
 
 判据:被删/被标记→停改话术;回复 24h 内响应;mini 履约 72h;
@@ -37,7 +37,7 @@
 **我发未验收**:
 - 818/819/820(v5/flywheel/日报 Loop V1 正本函):待各方 ack(或一处异议)——deadline 9/24 12:00(信箱读故障,无法检查,以 platform 修复后补查为准)
 - 814(platform 启动函):同上
-- 893(信箱读取故障通报,trace=mbx-outage-0924):判据=platform 修复+积压可读——deadline 9/26 12:00
+- ~~893(信箱读取故障通报)~~ ✅ 9/27 判关闭:判据「platform 修复+积压可读」已满足(信箱读写正常多日,42 件历史函件已入库溯源);不再追补回执
 
 **我收未关闭**:
 - #809 三件套:已回 811/812/813,待 platform 验收(判据:URL/SQL/验证状态确认)
