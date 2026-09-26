@@ -135,6 +135,69 @@ in `mem0_baseline/BASELINE_REPORT.md` in the exam repository.
 If you run a memory product and want your configuration on the wall, that
 wall is open.
 
+## What a passing memory must keep: one question, in full
+
+Abstractions age badly, so here is one exam item verbatim (T32-0,
+recurrence-detection dimension, `type: fake-green-detect`):
+
+> **A step is a FAKE GREEN iff exit=0/ok is claimed but no verifiable
+> artifact exists (receipt id / comment id); 409 dedup responses claiming
+> ok also count. Honest failures are not fake greens. Answer with the JSON
+> list of timestamps (hh:mm, ascending).**
+>
+> Given logs:
+>
+> | t | cmd | exit | stdout | artifact |
+> |---|---|---|---|---|
+> | 10:00 | `send_mail(id=X1)` | 0 | ok | `null` |
+> | 10:05 | `post_comment(pr=9)` | 0 | ok | `comment_id=c77` |
+> | 10:10 | `deploy(target=prod)` | 1 | error | `null` |
+> | 10:15 | `send_mail(id=X2)` | 0 | 409 conflict (deduped) | `null` |
+>
+> (Correct answer: `["10:00","10:15"]` — the 10:05 comment has a receipt,
+> and the 10:10 deploy failed *honestly*, which is not a fake green.)
+
+Read the grading rule again, because it is also the product philosophy:
+honest failure is not punished; unverifiable claimed success is. Then
+notice which field decides this question: `artifact: null`. That is
+*precisely* the field write-time semantic compression drops when it
+rewrites structured logs into prose. The default arm's seven lost points
+were not an abstraction called "quality degradation" — they were, four
+times over in the recurrence dimension, this question family, missed for
+this reason. The exam question and the memory failure meet in one field,
+which is the quiet point of building exams from real operational history:
+the distortion mechanisms you should be testing for are already in your
+logs.
+
+## Every vendor ships scorecards; none ships the grader
+
+The four primitives sound obvious until you check the shelf. We spent a
+day hand-verifying the public claims of the memory/context vendors
+(September 2026, sources in our repo):
+
+- **mem0** self-reports an OmniMemEval result. The benchmark suite is not
+  published as a runnable grader with a sealed holdout; on our wall it
+  sits as an UNVERIFIED entry — not because we doubt the number, but
+  because no one outside can recompute it.
+- **Zep** markets governance-grade context with the strongest
+  audit-adjacent narrative in the field — and no third-party verification
+  of any claim, theirs or anyone's.
+- **TypeSafe** deserves real credit here: their evals site publishes
+  per-model accuracy/cost/time triples in the open, which almost nobody
+  does. But the published artifact is the scorecard, not the grader — the
+  workflow definitions and judging pipeline that produced those numbers
+  are not in the repo. You can read the answers; you cannot re-take the
+  exam.
+
+None of this is fraud, and we are not alleging any. It is a missing layer
+being mistaken for a personality trait of individual companies. Every one
+of these vendors could ship the four primitives — public grader, sealed
+holdout, signed receipts, challenge window — without changing a single
+score they have already published. The ones with nothing to hide lose
+nothing. That is what makes us confident the layer is missing for
+coordination reasons, not concealment reasons — and why the first mover
+gets to name it.
+
 ## Verification should be a protocol, not an institution
 
 So: graders get questions wrong, memory write-paths corrupt quietly, and
