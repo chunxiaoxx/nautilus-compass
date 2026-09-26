@@ -1,0 +1,123 @@
+{
+ "T32-0": {
+  "answer_json": [
+   "10:00",
+   "10:15"
+  ]
+ },
+ "T11-2": {
+  "answer_json": {
+   "due_promises": [],
+   "replied": [],
+   "unanswered": [
+    "M002",
+    "M013"
+   ]
+  }
+ },
+ "T11-1": {
+  "answer_json": {
+   "due_promises": [],
+   "replied": [
+    "M004"
+   ],
+   "unanswered": [
+    "M000",
+    "M012"
+   ]
+  }
+ },
+ "T31-1": {
+  "answer_json": {
+   "P1": 2,
+   "P2": 1,
+   "P3": 3
+  }
+ },
+ "T12-0": {
+  "answer_json": [
+   {
+    "claim_day": "D1",
+    "evidence_day": "D2"
+   }
+  ]
+ },
+ "T11-0": {
+  "answer_json": {
+   "due_promises": [
+    "M002",
+    "M007"
+   ],
+   "replied": [],
+   "unanswered": []
+  }
+ },
+ "T13-1": {
+  "answer_json": {
+   "derivable": false,
+   "recomputed": 0.38
+  }
+ },
+ "T12-1": {
+  "answer_json": [
+   {
+    "claim_day": "D1",
+    "evidence_day": "D2"
+   }
+  ]
+ },
+ "T21-2": {
+  "answer_json": [
+   "R1",
+   "R2"
+  ]
+ },
+ "T32-1": {
+  "answer_json": [
+   "10:00",
+   "10:15"
+  ]
+ },
+ "T31-2": {
+  "answer_json": {
+   "P1": 0,
+   "P2": 3,
+   "P3": 2
+  }
+ },
+ "T42-2": {
+  "answer": "POOL_GUILTY"
+ },
+ "T41-2": {
+  "answer_json": {
+   "stage": "recompute",
+   "criteria_ref": "independent-recomputer-v1"
+  }
+ },
+ "T22-1": {
+  "answer_json": [
+   [
+    "R1",
+    "R2"
+   ]
+  ]
+ },
+ "T43-1": {
+  "answer": "SKIP_OUTCOME"
+ },
+ "T21-1": {
+  "answer_json": [
+   "R1",
+   "R2"
+  ]
+ },
+ "T43-0": {
+  "answer": "SKIP_CAUSE"
+ },
+ "T41-0": {
+  "answer_json": {
+   "stage": "preregister",
+   "criteria_ref": "criteria-locked-before-run-v1"
+  }
+ }
+}
