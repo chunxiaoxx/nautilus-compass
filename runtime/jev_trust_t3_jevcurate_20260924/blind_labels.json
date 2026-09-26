@@ -1,0 +1,41 @@
+{
+  "labeler": "recompute-agent (independent session, non-implementer)",
+  "date": "2026-09-26",
+  "inputs": "blind_pack.json only; PROTOCOL.md / RESULTS.md / t3_results.json NOT read prior to this file being written",
+  "scale_notes": {
+    "y_circ": "1 = contains circular reasoning / tautology / conclusion presupposed in premises; 0 = otherwise",
+    "d_depth": "1-5 per task spec: 1=superficial/wrong calc, 2=lacks intermediate steps, 3=reliable derivation with standard details, 4=clear complete stepwise, 5=fully formalized"
+  },
+  "labels": [
+    {
+      "rid": "R1",
+      "y_circ": 0,
+      "d_depth": 2,
+      "rationale": "Correct differentiation result (d/dx x^2 = 2x) with no circularity, but the rule application/limit work is entirely omitted, so intermediate steps are missing -> 2."
+    },
+    {
+      "rid": "R2",
+      "y_circ": 1,
+      "d_depth": 1,
+      "rationale": "Textbook circular reasoning ('P is true because P is valid' presupposes the conclusion in the premise), and the argument is vacuous with no mathematical content -> depth 1."
+    },
+    {
+      "rid": "R3",
+      "y_circ": 0,
+      "d_depth": 1,
+      "rationale": "Bare assertion backed by 'trust me' — there is no premise chain at all, so no conclusion is being presupposed by an argument (not circular in the strict sense), but rigor is nil -> 1."
+    },
+    {
+      "rid": "R4",
+      "y_circ": 0,
+      "d_depth": 2,
+      "rationale": "A correctly ordered two-step plan (determinant, then invert) with no execution or intermediate computation shown -> lacks intermediate steps -> 2."
+    },
+    {
+      "rid": "R5",
+      "y_circ": 0,
+      "d_depth": 3,
+      "rationale": "Correct, complete-in-itself trivial derivation (given a=1, b=2, a+b=3) with no circularity; reliable and standard but minimal, so 3 rather than 4."
+    }
+  ]
+}

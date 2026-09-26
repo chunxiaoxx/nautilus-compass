@@ -1,0 +1,274 @@
+{
+ "recompute_labels": {
+  "noul": {
+   "accuracy@0.70": 0.8,
+   "brier": 0.12924,
+   "ece10": 0.224,
+   "bins": [
+    {
+     "bin": 0,
+     "n": 3,
+     "conf_k": 0.06,
+     "acc_k": 0.0,
+     "|acc-conf|": 0.06
+    },
+    {
+     "bin": 7,
+     "n": 1,
+     "conf_k": 0.78,
+     "acc_k": 0.0,
+     "|acc-conf|": 0.78
+    },
+    {
+     "bin": 8,
+     "n": 1,
+     "conf_k": 0.84,
+     "acc_k": 1.0,
+     "|acc-conf|": 0.16
+    }
+   ]
+  },
+  "depth": {
+   "mae": 0.35,
+   "accuracy@3.0": 0.8,
+   "low_conf_rows": [
+    "R2"
+   ]
+  }
+ },
+ "implementer_labels": {
+  "noul": {
+   "accuracy@0.70": 0.8,
+   "brier": 0.12924,
+   "ece10": 0.224,
+   "bins": [
+    {
+     "bin": 0,
+     "n": 3,
+     "conf_k": 0.06,
+     "acc_k": 0.0,
+     "|acc-conf|": 0.06
+    },
+    {
+     "bin": 7,
+     "n": 1,
+     "conf_k": 0.78,
+     "acc_k": 0.0,
+     "|acc-conf|": 0.78
+    },
+    {
+     "bin": 8,
+     "n": 1,
+     "conf_k": 0.84,
+     "acc_k": 1.0,
+     "|acc-conf|": 0.16
+    }
+   ]
+  },
+  "depth": {
+   "mae": 0.69,
+   "accuracy@3.0": 0.8,
+   "low_conf_rows": [
+    "R2"
+   ]
+  }
+ },
+ "transcription_xcheck_blindpack_vs_t3results": [
+  {
+   "rid": "R1",
+   "noul_p_match": true,
+   "depth0_match": true,
+   "depth_conf_match": true,
+   "score_plus1_ok": true
+  },
+  {
+   "rid": "R2",
+   "noul_p_match": true,
+   "depth0_match": true,
+   "depth_conf_match": true,
+   "score_plus1_ok": true
+  },
+  {
+   "rid": "R3",
+   "noul_p_match": true,
+   "depth0_match": true,
+   "depth_conf_match": true,
+   "score_plus1_ok": true
+  },
+  {
+   "rid": "R4",
+   "noul_p_match": true,
+   "depth0_match": true,
+   "depth_conf_match": true,
+   "score_plus1_ok": true
+  },
+  {
+   "rid": "R5",
+   "noul_p_match": true,
+   "depth0_match": true,
+   "depth_conf_match": true,
+   "score_plus1_ok": true
+  }
+ ],
+ "sessionlog_xcheck": [
+  {
+   "rid": "R1",
+   "noul_decision": "no",
+   "p_derived_from_sessionlog": 0.05,
+   "p_in_blindpack": 0.05,
+   "match": true,
+   "depth0_sessionlog": 1.05,
+   "depth0_blindpack": 1.05,
+   "depth_match": true,
+   "sessionlog_depth_stated_conf": 1.0
+  },
+  {
+   "rid": "R2",
+   "noul_decision": "yes",
+   "p_derived_from_sessionlog": 0.84,
+   "p_in_blindpack": 0.84,
+   "match": true,
+   "depth0_sessionlog": 0.75,
+   "depth0_blindpack": 0.75,
+   "depth_match": true,
+   "sessionlog_depth_stated_conf": 1.0
+  },
+  {
+   "rid": "R3",
+   "noul_decision": "yes",
+   "p_derived_from_sessionlog": 0.78,
+   "p_in_blindpack": 0.78,
+   "match": true,
+   "depth0_sessionlog": 0.0,
+   "depth0_blindpack": 0.0,
+   "depth_match": true,
+   "sessionlog_depth_stated_conf": 1.0
+  },
+  {
+   "rid": "R4",
+   "noul_decision": "no",
+   "p_derived_from_sessionlog": 0.09,
+   "p_in_blindpack": 0.09,
+   "match": true,
+   "depth0_sessionlog": 0.65,
+   "depth0_blindpack": 0.65,
+   "depth_match": true,
+   "sessionlog_depth_stated_conf": 1.0
+  },
+  {
+   "rid": "R5",
+   "noul_decision": "no",
+   "p_derived_from_sessionlog": 0.04,
+   "p_in_blindpack": 0.04,
+   "match": true,
+   "depth0_sessionlog": 1.4,
+   "depth0_blindpack": 1.4,
+   "depth_match": true,
+   "sessionlog_depth_stated_conf": 1.0
+  }
+ ],
+ "implementer_reported": {
+  "n_evaluated": 5,
+  "n_errors": 0,
+  "noul": {
+   "n": 5,
+   "accuracy@0.70": 0.8,
+   "brier": 0.12924000000000002,
+   "ece10": 0.22400000000000003,
+   "per_row": {
+    "R1": {
+     "p": 0.05,
+     "y": 0
+    },
+    "R2": {
+     "p": 0.84,
+     "y": 1
+    },
+    "R3": {
+     "p": 0.78,
+     "y": 0
+    },
+    "R4": {
+     "p": 0.09,
+     "y": 0
+    },
+    "R5": {
+     "p": 0.04,
+     "y": 0
+    }
+   }
+  },
+  "depth": {
+   "n": 5,
+   "mae": 0.6900000000000001,
+   "accuracy@3.0": 0.8,
+   "low_conf_rows": [
+    "R2"
+   ],
+   "per_row": {
+    "R1": {
+     "s": 2.05,
+     "d": 4,
+     "conf": 0.89
+    },
+    "R2": {
+     "s": 1.75,
+     "d": 1,
+     "conf": 0.37
+    },
+    "R3": {
+     "s": 1.0,
+     "d": 1,
+     "conf": 1.0
+    },
+    "R4": {
+     "s": 1.65,
+     "d": 2,
+     "conf": 0.7
+    },
+    "R5": {
+     "s": 2.4,
+     "d": 2,
+     "conf": 0.64
+    }
+   }
+  }
+ },
+ "control_batch_with_recompute_labels": {
+  "noul": {
+   "accuracy@0.70": 0.8,
+   "brier": 0.11294,
+   "ece10": 0.21,
+   "bins": [
+    {
+     "bin": 0,
+     "n": 3,
+     "conf_k": 0.06,
+     "acc_k": 0.0,
+     "|acc-conf|": 0.06
+    },
+    {
+     "bin": 7,
+     "n": 1,
+     "conf_k": 0.73,
+     "acc_k": 0.0,
+     "|acc-conf|": 0.73
+    },
+    {
+     "bin": 8,
+     "n": 1,
+     "conf_k": 0.86,
+     "acc_k": 1.0,
+     "|acc-conf|": 0.14
+    }
+   ]
+  },
+  "depth": {
+   "mae": 0.322,
+   "accuracy@3.0": 0.8,
+   "low_conf_rows": [
+    "R2"
+   ]
+  }
+ }
+}
