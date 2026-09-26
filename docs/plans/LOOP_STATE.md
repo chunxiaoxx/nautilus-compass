@@ -44,6 +44,11 @@
 
 ## 轮次日志
 
+### 轮 41(市场化loop R22) · 2026-09-27 03:0x(**G4 v1.2 扩段两节:考题实物+竞品验证层对照**)
+- 进展:信箱空/值守无事件 → 推 G4 扩段第一刀(0e439453):①**「What a passing memory must keep」**——考题实物节:T32-0(DIM3 fake-green-detect)全文入文(判分哲学=诚实失败不罚/不可验证声称成功才罚;**artifact:null=考题与 mem0 失真机制在同一字段闭环**,考卷 json 实取)②**「Every vendor ships scorecards; none ships the grader」**——竞品验证层对照节(mem0 自报 OmniMemEval=墙上 UNVERIFIED/Zep 治理叙事无三方/TypeSafe 公开数字值得表扬但判分器闭源=「能读答案不能重考」);结尾=缺层是协调问题非隐瞒问题,先动者命名权;同行姿态不树敌(TypeSafe=9/28 复算对象);词数 2400→**3256**/9 节
+- M1:0 不变
+- 下轮:安静值守或 G4 第二刀(τ-bench 判因展开);今晚 21:00 UniPat/22:00 VB
+
 ### 轮 40(市场化loop R21) · 2026-09-27 02:3x(**TypeSafe proof 预备轮:工件坐标全抓·口径眉目现**)
 - 进展:①信箱:platform zenmind 状态答(1172:台式机静默6h云上无病,卡点=本地定时任务列用户待办,compass 无配合件)ack 闭环②**TypeSafe proof 预备轮实抓**(d5472e8e):(proof) 链=blog 正文;**evals.typesafe.ai 全数字公开**(Jev 67.8%/$0.0004/0.4s vs terra 67.9%/0.0304/10.1s vs opus5 73.1%/0.1761/37.8s 等 9 模型×3 指标);adapter-python repo 可跑;playground 直测口;**口径推算**:444.6x≈opus5 成本比(440x)/193.6x 疑锚 sonnet5 时间(78.1/0.4=195x);「Jev 与 terra 准确率持平、opus5/sol 更高」=复算报告要如实呈现的完整图景;快照 3 html 入仓供复算引用;9/28 开工清单就绪
 - M1:0 不变(exam-signup 0;Discord 直链 200)
