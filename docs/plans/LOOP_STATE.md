@@ -44,6 +44,11 @@
 
 ## 轮次日志
 
+### 轮 39(市场化loop R20) · 2026-09-27 02:0x(**awesome-jev 双 PR MERGED·VB 前置全齐**)
+- 进展:①**G5 生态实锤:awesome-jev 双 PR 已 MERGED**(cobanov#71+yibie#137,gh 实查)——jev-trust 曝光触点+2(PyPI/Discord 之外两个列表在册);NanoJev PR#12(仓定位=TianyuCodings/NanoJev)仍 OPEN 未催(9/21 投,距上次催 4 天)②**v5 patch 坐标答复(1166)ack+物理坐实**:bench 侧 vb_bench_side.patch(87 行 3757B ✓)+v5 侧 899f2d1(零工具病根因=tool_calls 非空 content 必 None)已在 HEAD c309d73 ✓+起跑脚本在 ✓③**VB 批1预注册判据档落地**(ee8bb9d2):冻结口径+J1-J5(零工具红灯先证伪 patch 链)+执行坐标,今晚 22:00 窗,不给预期读数
+- M1:0 不变(exam-signup 0)
+- 下轮:G4 扩段决策或 TypeSafe proof 预备;今晚 21:00 UniPat 汇聚/22:00 VB 窗(预注册档即开工件)
+
 ### 轮 38(市场化loop R19) · 2026-09-27 01:4x(**G4 对面3质疑自审+v1.1 修订一轮做掉**)
 - 进展:①信箱:vc_daily 回执 1151(BC1 发布通报收讫+迟复说明=信箱误址沉底+R1冲刺断档36h,已修复;公众号二次分发呈用户)→ ack 闭环②**G4 自审+v1.1 同轮完成**(99f00e0e):三条真质疑=题域过拟合(出题人考自己,相对差异站得住/绝对分数勿外推,终极解法=外带题同构考首版没有)/n=1+单 backbone(机制=护城河,若 mem0 改默认恰证明发现有效)/运动员兼裁判利益冲突(出题+真值+收钱三合一首版无解,挑战免费=最大让步,行为反证≠结构解决);修订三处=cannot-probe 增两条硬披露+机制vs魔法数+CTA「请更用力审我们」;自审档留档可附 editor note
 - M1:0 不变
