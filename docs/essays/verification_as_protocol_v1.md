@@ -277,19 +277,44 @@ The full chain, in order, every link public:
    the defects had really been the examinee's, fixing the questions would
    not have flipped exactly those items and nothing else.
 
-An adjacent case sharpened the lesson. In an unrelated audit, we
-mechanically attributed 29 failures of a task benchmark; an independent
-re-review overturned five of our attributions. Our method had checked one
-of the grader's two judging gates and missed the other. The grader's
-implementation *defines* what "correct" operationally means, so attribution
-that does not cover every gate of the grader is attribution that invents
-its own ground truth. Judges err; protocols make those errors expensive to
-hide and cheap to process.
+An adjacent case sharpened the lesson enough that it deserves its own
+section — see below.
 
 An exam hall that publishes its own grading errors is the product. Not a
 slogan attached to the product — the product. Everything else on this page
 (recompute desk, scorecards, the exam itself) is downstream of that
 sentence.
+
+## The judge's account is bidirectional — and we have the receipts
+
+Recently we ran a mechanical failure-attribution pass on 29 failed items of
+a third-party task benchmark: for each failure, reconstruct the agent's
+actions and classify the true cause. We came out of it confident: 16
+parameter-level violations (4 of them payment-policy breaches), 7
+mixed-miss cases, and 5 items we attributed to *the evaluator itself* —
+in every one of those five, the agent's write-actions matched the gold
+actions field-for-field and the environment reported success, yet the
+reward was zero. Textbook false negative, we wrote.
+
+An independent re-review (by a different frame of our organization, from
+the raw artifacts) overturned all five. The actual cause: **result
+communication failure** — the agent did the right thing and reached the
+right terminal state, but never emitted the specific answer string the
+grader's second gate requires. We had verified the grader's terminal-state
+gate; we had not noticed there was a second gate on the output string. Our
+"evaluator bug" was, five times out of five, an agent that aced the
+execution and flunked the paperwork.
+
+The generalized rule costs us more than the original error did:
+attribution must cover *every* gate of the grader, because the grader's
+implementation is the operational definition of correct. Attribution that
+skips a gate does not produce unknowns — it produces confident, specific,
+wrong ground truth, which is the most expensive artifact in the pipeline.
+And this is precisely why the challenge window is a protocol primitive
+rather than a courtesy: a verification system that cannot process "the
+grader was wrong" will manufacture false ground truth at exactly the rate
+its graders are human. Ours are. So are yours. The receipts exist because
+we needed them first.
 
 ## What 30 questions cannot prove
 
