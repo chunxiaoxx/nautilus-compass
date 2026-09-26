@@ -44,6 +44,11 @@
 
 ## 轮次日志
 
+### 轮 36(市场化loop R17) · 2026-09-27 01:2x(**loop 提速半小时档·跨框协同日开局**)
+- 进展:①用户令:loop 每小时→**半小时**(cron 7ccc7160,7,37 触发,7 天自动过期;durable)②**跨框探查五框**(纪律:物理探查非凭记忆)——flywheel 全速(OOD 成功侧补采器 c7140cf/函1146核验闭环)、core 活跃(zenmind PR#173 并入+免疫册+1)、platform 今晨 UniPat 作答+接主持(1146,汇聚 9/27 21:00 收卷,compass 已答无动作)、v5 仓活路径坐实=~/nautilus-v5/nautilus-v5(customer-demo-ship-1)③**出函 v5(id 1150)**:VB 批1死期复诵+深夜窗排期+patch 取数一问(deadline 18:00);函件归档即 commit(162e56f2,改观:历史函件散落未跟踪)④任务清单+遗留件梳理入 cron prompt(单一真值仍在正档+本账本)
+- M1:0 不变
+- 下轮(01:37):G4 对面 3 质疑自审;白天 BC1 值守;今晚 21:00 UniPat 汇聚结果函留意;~22:00 VB 深夜窗
+
 ### 轮 35(市场化loop R16) · 2026-09-27 01:1x(G4 全文初稿 v1 落)
 - 进展:**《Verification as Protocol》英文全文初稿 v1**(docs/essays/verification_as_protocol_v1.md,cae68843)——六段断言句标题+四协议原语段+「We failed our own exam first」证据链段(11/18→审计→复算 GREEN 抓 69/62vs71/67→签名事故→v2 18/18 反证)+3 条自我披露(n=1/18vs16 波动/独立性悖论代价)+CTA 含 recompute desk;**全部数字逐项回工件核对**(BC1_LAUNCH+SCORECARD_V2);~2400 词短于范文 6300(修订轮决定扩段,不注水)
 - M1:0 不变
