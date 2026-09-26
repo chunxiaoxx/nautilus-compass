@@ -113,6 +113,50 @@ async def insert_text(cdp, text):
     return await cdp.send("Input.insertText", {"text": text})
 
 
+def set_cf_html(fragment):
+    """写 Windows 剪贴板 CF_HTML 格式(ctypes;64 位句柄必须显式 c_void_p,
+    默认 c_int 截断=野指针)。知乎行内格式三条通道实测定案:
+    synthetic ClipboardEvent / execCommand insertHTML / 真剪贴板+Ctrl+V,
+    知乎 paste 管线一律剥行内(strong/a),块级(h3/li)保留;裸 URL 文字保留。"""
+    import ctypes
+    import ctypes.wintypes as w
+    head = ("<html><body>\r\n<!--StartFragment-->",
+            "<!--EndFragment-->\r\n</body></html>")
+    tmpl = ("Version:0.9\r\nStartHTML:{}\r\nEndHTML:{}\r\n"
+            "StartFragment:{}\r\nEndFragment:{}\r\n")
+    prefix_len = len(tmpl.format(*(["0" * 10] * 4)).encode())
+    start_frag = prefix_len + len(head[0].encode())
+    end_frag = start_frag + len(fragment.encode())
+    end_html = prefix_len + len((head[0] + fragment + head[1]).encode())
+    src = tmpl.format(f"{prefix_len:010d}", f"{end_html:010d}",
+                      f"{start_frag:010d}", f"{end_frag:010d}")
+    src += head[0] + fragment + head[1]
+    data = src.encode("utf-8")
+    k32, u32 = ctypes.windll.kernel32, ctypes.windll.user32
+    k32.GlobalAlloc.restype = ctypes.c_void_p
+    k32.GlobalAlloc.argtypes = [w.UINT, ctypes.c_size_t]
+    k32.GlobalLock.restype = ctypes.c_void_p
+    k32.GlobalLock.argtypes = [ctypes.c_void_p]
+    k32.GlobalUnlock.argtypes = [ctypes.c_void_p]
+    u32.SetClipboardData.argtypes = [w.UINT, ctypes.c_void_p]
+    cf = u32.RegisterClipboardFormatW("HTML Format")
+    h = k32.GlobalAlloc(0x0002, len(data) + 1)  # GMEM_MOVEABLE
+    p = k32.GlobalLock(h)
+    ctypes.memmove(p, data, len(data))
+    ctypes.memset(p + len(data), 0, 1)
+    k32.GlobalUnlock(h)
+    if not u32.OpenClipboard(0):
+        raise RuntimeError("OpenClipboard failed")
+    try:
+        u32.EmptyClipboard()
+        if not u32.SetClipboardData(cf, h):
+            k32.GlobalFree(h)
+            raise RuntimeError("SetClipboardData failed")
+    finally:
+        u32.CloseClipboard()
+    return len(data)
+
+
 async def press_enter(cdp):
     await cdp.send("Input.dispatchKeyEvent", {
         "type": "keyDown", "key": "Enter", "code": "Enter",
@@ -140,7 +184,8 @@ def md_to_html(md):
 
     def inline(s):
         s = s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-        s = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", s)
+        # 知乎 ProseMirror schema 认 strong 不认 b(实弹探针:b=0)
+        s = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", s)
         s = re.sub(r"`([^`]+)`", r"<code>\1</code>", s)
         s = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r'<a href="\2">\1</a>', s)
         return s
@@ -220,20 +265,47 @@ async def zhihu_publish(cdp, md, publish):
         'if(t){t.focus();return "ok"}})()')
     await insert_text(cdp, title)
     await asyncio.sleep(1)
-    # 正文:富文本粘贴(剪贴板事件带 text/html,Discord 通道 C 同款)
-    v = await _ev(cdp,
+    # 清空正文(重跑防叠加):全选+删除
+    await _ev(cdp,
         '(function(){var e=document.querySelector("[contenteditable=true]");'
-        'if(!e)return "no-editor";e.focus();'
-        'var dt=new DataTransfer();'
-        'dt.setData("text/html",' + json.dumps(body) + ');'
-        'dt.setData("text/plain",' + json.dumps(re.sub(r"<[^>]+>", "", md)) + ');'
-        'e.dispatchEvent(new ClipboardEvent("paste",{clipboardData:dt,'
-        'bubbles:true,cancelable:true}));return "pasted"})()')
-    print("paste:", v)
+        'if(!e)return "no-editor";e.focus();return 1})()')
+    await asyncio.sleep(0.3)
+    await cdp.send("Input.dispatchKeyEvent", {
+        "type": "keyDown", "key": "a", "code": "KeyA",
+        "windowsVirtualKeyCode": 65, "modifiers": 2})
+    await cdp.send("Input.dispatchKeyEvent", {
+        "type": "keyUp", "key": "a", "code": "KeyA",
+        "windowsVirtualKeyCode": 65, "modifiers": 2})
+    await asyncio.sleep(0.3)
+    await cdp.send("Input.dispatchKeyEvent", {
+        "type": "keyDown", "key": "Backspace", "code": "Backspace",
+        "windowsVirtualKeyCode": 8})
+    await cdp.send("Input.dispatchKeyEvent", {
+        "type": "keyUp", "key": "Backspace", "code": "Backspace",
+        "windowsVirtualKeyCode": 8})
+    await asyncio.sleep(1)
+
+    # 正文:真剪贴板 CF_HTML + CDP Ctrl+V(实测三通道中最稳:块级结构保真)
+    n = set_cf_html(body)
+    print("cf_html bytes:", n)
+    await _ev(cdp,
+        '(function(){var e=document.querySelector("[contenteditable=true]");'
+        'if(!e)return "no-editor";e.focus();return 1})()')
+    await asyncio.sleep(0.3)
+    await cdp.send("Input.dispatchKeyEvent", {
+        "type": "keyDown", "key": "v", "code": "KeyV",
+        "windowsVirtualKeyCode": 86, "modifiers": 2})
+    await cdp.send("Input.dispatchKeyEvent", {
+        "type": "keyUp", "key": "v", "code": "KeyV",
+        "windowsVirtualKeyCode": 86, "modifiers": 2})
     await asyncio.sleep(2)
     probe = await _ev(cdp,
         'JSON.stringify({len:(document.querySelector("[contenteditable=true]")||'
         '{textContent:"?"}).textContent.length,'
+        'h3:(document.querySelector("[contenteditable=true]")||'
+        '{querySelectorAll:function(){return[]}}).querySelectorAll("h3").length,'
+        'url:(document.querySelector("[contenteditable=true]")||'
+        '{textContent:""}).textContent.includes("github.com"),'
         'title:(document.querySelector("textarea")||{value:"?"}).value.slice(0,60)})')
     print("after-fill:", probe)
     await shot(cdp, "runtime/zhihu_dryrun.png")
