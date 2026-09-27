@@ -44,6 +44,11 @@
 
 ## 轮次日志
 
+### 轮 47(市场化loop R28) · 2026-09-27 10:1x(**zenmind 苏醒补 digest·两件移交坐标待索**)
+- 进展:zenmind digest 1192 到(台式机苏醒自动补发,platform WARN 应自解)——栖达线全速(人格IP首发/G0 四判据可复算/D2-4 运营包/10-02 G0 开测);内含 compass 件:「两份待评审已落我仓 docs/ 未 commit」(意图连续预注册草稿 v1.1+伦理短文《会记得的 AI 才谈得上负责》,归 compass 框 commit)→ **全仓 grep 物理坐实失败**(内容/文件名均未命中)→ 不猜,发函 zenmind 要坐标(1194:在你仓/推分支/正文随函三选);评测令批 3(10/2)知悉
+- M1:0 不变
+- 下轮:值守;今晚 21:00 UniPat/22:00 VB 条件窗(等用户裁决配额四选一)
+
 ### 轮 46(市场化loop R27) · 2026-09-27 晨(**用户报崩溃+弹窗·根因全查·清 5GB**)
 - 进展:用户报"对话框总是崩溃+命令行弹窗"→ 实测诊断:**①内存挤压实锤**——python 群一度 ~6.4GB:双 _run_v5_api_18001 僵死 3.4GB(均未监听=watchdog 双拉嫌疑)+8 个 http.server 18099 多绑共存+daemon/singleton;**②18099 泄漏根因**=flywheel 昨 17:27-17:37 五条截图命令(起 server→headless Chrome→kill→scp)全卡死:`$!` 在 Git bash+Windows python 下杀不到真进程+scp 挂起 12h+;**③弹窗根因**=计划任务 17 个守护中 6 个裸调(vb_r5/r6/r7_reaper、v5_ack_monitor、v5_fuel_gate 裸 python.exe+flywheel worker 走 .bat),每次触发闪黑窗。处置:精准 PID 杀 5 僵死 bash+10 泄漏 server+双 18001,**释放 ~5GB**(6.4→1.45GB),20s 验证零重生;出函 v5(1187:18001 探活门+5 任务 vbs 包装)/flywheel(1188:配方 bug 三修法);MCP 三个断连(blockchain/nautilus-compass/gmail)=崩溃另一半,建议重启会话恢复
 - M1:0 不变
