@@ -405,6 +405,9 @@ async def zhihu_publish(cdp, md, publish):
     title = re.match(r"^#\s+(.+)", md)
     title = title.group(1).strip() if title else md.splitlines()[0][:40]
     body_md = re.sub(r"^#\s+.+\n?", "", md, count=1).strip()
+    # 剥头部备稿注记(H1 后紧跟的连续引用块——内部元数据,勿入正文;
+    # 9/27 发布事故复盘:四修重构时此逻辑被覆盖,内部注记原样上墙)
+    body_md = re.sub(r"\A(?:>[^\n]*\n)+", "", body_md).strip()
     body = md_to_html(body_md)
 
     await nav(cdp, "https://zhuanlan.zhihu.com/write", wait=8)
