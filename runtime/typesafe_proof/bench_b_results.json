@@ -1,0 +1,78 @@
+{
+ "jev": {
+  "med": 0.48,
+  "tok_in": 414.0,
+  "tok_out": 69.0,
+  "first": {
+   "urgency": {
+    "type": "noul",
+    "noul": 0.98
+   },
+   "team": {
+    "type": "choice",
+    "choice": "engineering",
+    "confidence": 0.76,
+    "probabilities": {
+     "billing": 0.15,
+     "support": 0.01,
+     "engineering": 0.84
+    }
+   },
+   "severity": {
+    "type": "score",
+    "score": 2.65,
+    "confidence": 0.65,
+    "legend": {
+     "0": "low",
+     "1": "medium",
+     "2": "high",
+     "3": "critical"
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.35,
+     "3": 0.65
+    }
+   }
+  }
+ },
+ "mm": {
+  "med": 7.65,
+  "tok_in": 549.0,
+  "tok_out": 406.5,
+  "first": {
+   "urgency": {
+    "type": "noul",
+    "noul": 0.92
+   },
+   "team": {
+    "type": "choice",
+    "choice": "engineering",
+    "confidence": 0.625,
+    "probabilities": {
+     "support": 0.15,
+     "engineering": 0.75,
+     "billing": 0.1
+    }
+   },
+   "severity": {
+    "type": "score",
+    "score": 2.23,
+    "confidence": 0.53,
+    "legend": {
+     "0": "low",
+     "1": "medium",
+     "2": "high",
+     "3": "critical"
+    },
+    "probabilities": {
+     "0": 0.02,
+     "1": 0.08,
+     "2": 0.55,
+     "3": 0.35
+    }
+   }
+  }
+ }
+}
