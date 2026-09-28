@@ -198,6 +198,37 @@ nothing. That is what makes us confident the layer is missing for
 coordination reasons, not concealment reasons — and why the first mover
 gets to name it.
 
+## A vendor claim, recomputed: our first worked example
+
+To show this is not a lecture, here is what the recompute desk did to a
+real claim this week. TypeSafe's homepage says its model Jev is "193.6x
+faster, 444.6x cheaper *based on workflows for System One tasks (proof)*."
+We ran the full protocol against it: reverse-engineer the claim's
+calculus from their published evals site, then independently re-run both
+legs against our own supplier.
+
+**The claims are real — and the multiplier is a function of the
+comparison.** From their own published numbers, 444.6x cheaper is Jev vs
+opus 5 (we compute 440.1x across their four tasks) and 193.6x faster
+tracks vs sonnet 5 (183.8x). Self-consistent to within a few percent.
+Our own head-to-head — 64 timed calls, both legs on our machines —
+found Jev at a flat 0.44-0.48s latency regardless of one question or
+three, short state or long, while the fastest local model we have
+(MiniMax-M2.7) ranged 3.7-8.0s for the same answers. Against that
+comparison the ratio is 7.9-18.2x, not 193.6x. All of these numbers are
+true simultaneously. The advantage is architectural (constant latency,
+probabilities emitted directly — 69 output tokens vs 406) rather than
+intellectual (accuracy is at parity, not above), which means the
+multiplier scales with how heavy your incumbent is. A single headline
+number is marketing; **the multiplier-vs-comparison curve is the
+information** — and no consumer can draw that curve from a homepage.
+
+Verdict, under our pre-registered three-state rule: PARTIAL — reproducible
+at order-of-magnitude, magnitude depends on the comparator. We will send
+TypeSafe the full report and one suggestion: label the comparison model
+next to the multiplier. Their evals site already publishes more raw data
+than almost anyone; one annotation closes the gap.
+
 ## Verification should be a protocol, not an institution
 
 So: graders get questions wrong, memory write-paths corrupt quietly, and
