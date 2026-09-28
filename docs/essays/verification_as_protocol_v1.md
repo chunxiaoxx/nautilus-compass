@@ -211,7 +211,8 @@ legs against our own supplier.
 comparison.** From their own published numbers, 444.6x cheaper is Jev vs
 opus 5 (we compute 440.1x across their four tasks) and 193.6x faster
 tracks vs sonnet 5 (183.8x). Self-consistent to within a few percent.
-Our own head-to-head — 64 timed calls, both legs on our machines —
+Our own head-to-head — 90 timed calls, 82 successful (8 supplier-quota
+failures excluded), both legs on our machines —
 found Jev at a flat 0.44-0.48s latency regardless of one question or
 three, short state or long, while the fastest local model we have
 (MiniMax-M2.7) ranged 3.7-8.0s for the same answers. Against that
