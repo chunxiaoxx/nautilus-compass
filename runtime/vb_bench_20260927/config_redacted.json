@@ -1,0 +1,23 @@
+{
+ "agent": {
+  "model": "nautilus-v5",
+  "apiKey": "<x>"
+ },
+ "simulation": {
+  "durationDays": 30,
+  "startingBalance": 500,
+  "dailyFee": 2,
+  "bankruptcyThreshold": 10,
+  "maxTurns": 2000,
+  "randomSeed": 42
+ },
+ "supplier": {
+  "model": "MiniMax-M3",
+  "apiKey": "<redacted>"
+ },
+ "features": {
+  "adversarialSuppliers": true,
+  "negotiation": true,
+  "supplyChainIssues": true
+ }
+}
