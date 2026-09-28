@@ -211,18 +211,23 @@ legs against our own supplier.
 comparison.** From their own published numbers, 444.6x cheaper is Jev vs
 opus 5 (we compute 440.1x across their four tasks) and 193.6x faster
 tracks vs sonnet 5 (183.8x). Self-consistent to within a few percent.
-Our own head-to-head — 90 timed calls, 82 successful (8 supplier-quota
-failures excluded), both legs on our machines —
-found Jev at a flat 0.44-0.48s latency regardless of one question or
-three, short state or long, while the fastest local model we have
-(MiniMax-M2.7) ranged 3.7-8.0s for the same answers. Against that
-comparison the ratio is 7.9-18.2x, not 193.6x. All of these numbers are
+Our own head-to-head — 90 timed calls, 82
+successful (8 supplier-quota failures excluded), both legs on our
+machines — found Jev at a flat 0.44-0.48s latency regardless of one
+question or three, short state or long, while our local comparisons
+(MiniMax-M2.7, M2.7-highspeed, glm-5.3-flash) ranged 3.7-8.0s for the
+same answers. Against those comparisons the ratio is 7.9-18.2x, not
+193.6x. All of these numbers are
 true simultaneously. The advantage is architectural (constant latency,
 probabilities emitted directly — 69 output tokens vs 406) rather than
 intellectual (accuracy is at parity, not above), which means the
 multiplier scales with how heavy your incumbent is. A single headline
 number is marketing; **the multiplier-vs-comparison curve is the
-information** — and no consumer can draw that curve from a homepage.
+information** — and the curve turns out not to be a curve at all but
+two clusters: every fast cheap model we tested lands in a narrow
+16-18x band, while the heavy generators sit at 184-440x. Which cluster
+you fall into depends on whether your incumbent generates text for a
+living — and no consumer can see that from a homepage.
 
 Verdict, under our pre-registered three-state rule: PARTIAL — reproducible
 at order-of-magnitude, magnitude depends on the comparator. We will send
