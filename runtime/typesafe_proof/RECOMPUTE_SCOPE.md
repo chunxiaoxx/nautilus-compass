@@ -150,3 +150,29 @@ system-one-adapter-python/(clone)
 + 轮3=32(jev/m2.7/hs 各 8 成功 24,glm 8 次全 429 失败)——
 **总计 90 次调用 / 成功 82 / 失败 8**。后续引用一律用 90/82 口径。
 (教训:累计数要逐轮从原始 JSON 重数,不能沿用轮次汇报里的速记。)
+
+
+---
+
+# 四轮:glm-5.3-flash 腿补齐(2026-09-28 深夜 · 用户供智谱 Coding Plan key)
+
+key 经 ~/.claude/.cache/zhipu_coding_key.env(不入仓);端点实测:**Coding Plan
+权益在 anthropic 兼容口**(open.bigmodel.cn/api/anthropic),OpenAI v4 口报
+余额不足(=按量通道不含 plan);thinking 块独立无需剥(anthropic 协议天然隔离)。
+
+B 题组(三问混合,N=8,7 成功+1 连接错误):
+
+| 腿 | 中位 | vs Jev(0.44s) |
+|---|---|---|
+| glm-5.3-flash(智谱 Coding Plan) | **7.81s**(p25-75 7.6-9.3) | **17.8x** |
+
+三问语义全同向:urgency 0.97 / team=engineering(0.93) / severity 1.8。
+
+## 谱系终图(五点)
+
+MiniMax-M2.7-hs 16.3x → glm-5.3-flash **17.8x** → MiniMax-M2.7 18.2x →
+(断层)→ sonnet5 183.8x → opus5 440.1x
+
+**低价快速模型全部挤在 16-18x 窄带;重量级模型 184-440x**——倍数不是
+连续谱,是两簇:对手是不是"生成型大模型"决定数量级。三态终判维持 PARTIAL
+(结论不变,证据更厚:实测四腿+公开两腿)。
