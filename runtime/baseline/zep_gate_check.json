@@ -1,0 +1,20 @@
+{
+ "target": "Zep (getzep/zep)",
+ "date": "2026-09-30",
+ "method": "\u4e09\u95e8\u771f\u95e8gates_v1",
+ "claims": [
+  {
+   "claim": "open-source unified context layer",
+   "verdict": "pass",
+   "g1": "repo accessible",
+   "g2": "criteria ref"
+  },
+  {
+   "claim": "Context Graphs temporal superiority",
+   "verdict": "unverifiable",
+   "g1": "product page unreachable",
+   "g2": "no prereg"
+  }
+ ],
+ "summary": "Zep: 1pass(repo\u53ef\u9a8c)+1U(\u8425\u9500\u5ba3\u79f0\u4e0d\u53ef\u590d\u7b97);\u4e09\u95e8\u7b2c\u4e8c\u6b21\u7b2c\u4e09\u65b9\u57fa\u7ebf\u7528"
+}
