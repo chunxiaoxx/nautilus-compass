@@ -1,0 +1,306 @@
+{
+ "verdicts": {
+  "e5_20260929_131955_1": "pass",
+  "e5_20260929_132505_1": "pass",
+  "e5_20260929_135010_1": "pass",
+  "e5_20260929_141824_1": "pass",
+  "e5_20260929_142444_1": "pass",
+  "e5_20260929_142832_1": "pass",
+  "e5_20260929_143304_1": "pass",
+  "e5_20260929_160409_1": "pass",
+  "e5_20260929_160751_1": "pass",
+  "e5_20260929_163432_1": "pass",
+  "e5_20260929_174832_1": "pass",
+  "e5_20260929_175329_1": "pass",
+  "e5_20260929_132041_2": "pass",
+  "e5_20260929_132550_2": "pass",
+  "e5_20260929_135056_2": "pass",
+  "e5_20260929_141914_2": "pass",
+  "e5_20260929_142454_2": "pass",
+  "e5_20260929_142916_2": "pass",
+  "e5_20260929_143352_2": "pass",
+  "e5_20260929_160458_2": "pass",
+  "e5_20260929_160840_2": "pass",
+  "e5_20260929_163522_2": "pass",
+  "e5_20260929_174911_2": "pass",
+  "e5_20260929_132128_3": "pass",
+  "e5_20260929_132632_3": "pass",
+  "e5_20260929_135143_3": "pass",
+  "e5_20260929_141959_3": "pass",
+  "e5_20260929_142538_3": "pass",
+  "e5_20260929_142954_3": "pass",
+  "e5_20260929_143439_3": "pass",
+  "e5_20260929_160544_3": "pass",
+  "e5_20260929_160926_3": "pass",
+  "e5_20260929_174955_3": "pass"
+ },
+ "detail": {
+  "e5_20260929_131955_1": {
+   "verdict": "pass",
+   "g1": "pass",
+   "g2": "pass",
+   "g3": "pass",
+   "sample_for_recheck": false,
+   "detail": {}
+  },
+  "e5_20260929_132505_1": {
+   "verdict": "pass",
+   "g1": "pass",
+   "g2": "pass",
+   "g3": "pass",
+   "sample_for_recheck": false,
+   "detail": {}
+  },
+  "e5_20260929_135010_1": {
+   "verdict": "pass",
+   "g1": "pass",
+   "g2": "pass",
+   "g3": "pass",
+   "sample_for_recheck": false,
+   "detail": {}
+  },
+  "e5_20260929_141824_1": {
+   "verdict": "pass",
+   "g1": "pass",
+   "g2": "pass",
+   "g3": "pass",
+   "sample_for_recheck": false,
+   "detail": {}
+  },
+  "e5_20260929_142444_1": {
+   "verdict": "pass",
+   "g1": "pass",
+   "g2": "pass",
+   "g3": "pass",
+   "sample_for_recheck": false,
+   "detail": {}
+  },
+  "e5_20260929_142832_1": {
+   "verdict": "pass",
+   "g1": "pass",
+   "g2": "pass",
+   "g3": "pass",
+   "sample_for_recheck": false,
+   "detail": {}
+  },
+  "e5_20260929_143304_1": {
+   "verdict": "pass",
+   "g1": "pass",
+   "g2": "pass",
+   "g3": "pass",
+   "sample_for_recheck": false,
+   "detail": {}
+  },
+  "e5_20260929_160409_1": {
+   "verdict": "pass",
+   "g1": "pass",
+   "g2": "pass",
+   "g3": "pass",
+   "sample_for_recheck": false,
+   "detail": {}
+  },
+  "e5_20260929_160751_1": {
+   "verdict": "pass",
+   "g1": "pass",
+   "g2": "pass",
+   "g3": "pass",
+   "sample_for_recheck": false,
+   "detail": {}
+  },
+  "e5_20260929_163432_1": {
+   "verdict": "pass",
+   "g1": "pass",
+   "g2": "pass",
+   "g3": "pass",
+   "sample_for_recheck": false,
+   "detail": {}
+  },
+  "e5_20260929_174832_1": {
+   "verdict": "pass",
+   "g1": "pass",
+   "g2": "pass",
+   "g3": "pass",
+   "sample_for_recheck": false,
+   "detail": {}
+  },
+  "e5_20260929_175329_1": {
+   "verdict": "pass",
+   "g1": "pass",
+   "g2": "pass",
+   "g3": "pass",
+   "sample_for_recheck": false,
+   "detail": {}
+  },
+  "e5_20260929_132041_2": {
+   "verdict": "pass",
+   "g1": "pass",
+   "g2": "pass",
+   "g3": "pass",
+   "sample_for_recheck": false,
+   "detail": {}
+  },
+  "e5_20260929_132550_2": {
+   "verdict": "pass",
+   "g1": "pass",
+   "g2": "pass",
+   "g3": "pass",
+   "sample_for_recheck": false,
+   "detail": {}
+  },
+  "e5_20260929_135056_2": {
+   "verdict": "pass",
+   "g1": "pass",
+   "g2": "pass",
+   "g3": "pass",
+   "sample_for_recheck": true,
+   "detail": {}
+  },
+  "e5_20260929_141914_2": {
+   "verdict": "pass",
+   "g1": "pass",
+   "g2": "pass",
+   "g3": "pass",
+   "sample_for_recheck": false,
+   "detail": {}
+  },
+  "e5_20260929_142454_2": {
+   "verdict": "pass",
+   "g1": "pass",
+   "g2": "pass",
+   "g3": "pass",
+   "sample_for_recheck": false,
+   "detail": {}
+  },
+  "e5_20260929_142916_2": {
+   "verdict": "pass",
+   "g1": "pass",
+   "g2": "pass",
+   "g3": "pass",
+   "sample_for_recheck": false,
+   "detail": {}
+  },
+  "e5_20260929_143352_2": {
+   "verdict": "pass",
+   "g1": "pass",
+   "g2": "pass",
+   "g3": "pass",
+   "sample_for_recheck": false,
+   "detail": {}
+  },
+  "e5_20260929_160458_2": {
+   "verdict": "pass",
+   "g1": "pass",
+   "g2": "pass",
+   "g3": "pass",
+   "sample_for_recheck": false,
+   "detail": {}
+  },
+  "e5_20260929_160840_2": {
+   "verdict": "pass",
+   "g1": "pass",
+   "g2": "pass",
+   "g3": "pass",
+   "sample_for_recheck": false,
+   "detail": {}
+  },
+  "e5_20260929_163522_2": {
+   "verdict": "pass",
+   "g1": "pass",
+   "g2": "pass",
+   "g3": "pass",
+   "sample_for_recheck": false,
+   "detail": {}
+  },
+  "e5_20260929_174911_2": {
+   "verdict": "pass",
+   "g1": "pass",
+   "g2": "pass",
+   "g3": "pass",
+   "sample_for_recheck": false,
+   "detail": {}
+  },
+  "e5_20260929_132128_3": {
+   "verdict": "pass",
+   "g1": "pass",
+   "g2": "pass",
+   "g3": "pass",
+   "sample_for_recheck": true,
+   "detail": {}
+  },
+  "e5_20260929_132632_3": {
+   "verdict": "pass",
+   "g1": "pass",
+   "g2": "pass",
+   "g3": "pass",
+   "sample_for_recheck": true,
+   "detail": {}
+  },
+  "e5_20260929_135143_3": {
+   "verdict": "pass",
+   "g1": "pass",
+   "g2": "pass",
+   "g3": "pass",
+   "sample_for_recheck": false,
+   "detail": {}
+  },
+  "e5_20260929_141959_3": {
+   "verdict": "pass",
+   "g1": "pass",
+   "g2": "pass",
+   "g3": "pass",
+   "sample_for_recheck": false,
+   "detail": {}
+  },
+  "e5_20260929_142538_3": {
+   "verdict": "pass",
+   "g1": "pass",
+   "g2": "pass",
+   "g3": "pass",
+   "sample_for_recheck": false,
+   "detail": {}
+  },
+  "e5_20260929_142954_3": {
+   "verdict": "pass",
+   "g1": "pass",
+   "g2": "pass",
+   "g3": "pass",
+   "sample_for_recheck": false,
+   "detail": {}
+  },
+  "e5_20260929_143439_3": {
+   "verdict": "pass",
+   "g1": "pass",
+   "g2": "pass",
+   "g3": "pass",
+   "sample_for_recheck": false,
+   "detail": {}
+  },
+  "e5_20260929_160544_3": {
+   "verdict": "pass",
+   "g1": "pass",
+   "g2": "pass",
+   "g3": "pass",
+   "sample_for_recheck": false,
+   "detail": {}
+  },
+  "e5_20260929_160926_3": {
+   "verdict": "pass",
+   "g1": "pass",
+   "g2": "pass",
+   "g3": "pass",
+   "sample_for_recheck": true,
+   "detail": {}
+  },
+  "e5_20260929_174955_3": {
+   "verdict": "pass",
+   "g1": "pass",
+   "g2": "pass",
+   "g3": "pass",
+   "sample_for_recheck": true,
+   "detail": {}
+  }
+ },
+ "hook_fired": 0,
+ "signature": "65658378d51d7ee985a2ecdf97bb1997014fdfcefc443766e3ea54053be95455",
+ "ts": 1790684956.8834956
+}
