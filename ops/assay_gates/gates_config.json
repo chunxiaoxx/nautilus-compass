@@ -1,6 +1,6 @@
 {
   "recheck_rate": 0.10,
-  "question_webhook": "http://127.0.0.1:9876/v1/tools/submit_platform_task",
+  "question_queue_dir": "~/.claude/projects/_platform_queue",
   "gate_semantics": "pass=evidence_chain_not_score; finished_false_can_pass",
   "criteria_catalog": "criteria@catalog-v0",
   "catalog_paths": {
