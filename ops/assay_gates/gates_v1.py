@@ -10,6 +10,7 @@ G3 复算门(v1 结构版):声明可重放 + 10% 抽检标记(sample_for_recheck
 """
 import json, os, re, urllib.request, hashlib, hmac, time
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from pathlib import Path
 
 PORT = 18889
 CFG_FILE = os.path.join(os.path.dirname(__file__), "gates_config.json")
@@ -118,21 +119,43 @@ def judge(t):
 
 
 def fire_question_hook(results):
-    """P1-4 出题触发器:fail/unverifiable → webhook(判分→自动出题)。"""
-    hook = CFG.get("question_webhook")
-    if not hook:
+    """P1-4 出题触发器:fail/unverifiable → 自动出题任务。
+
+    2026-09-30 修复:原 webhook 指向 9876(compass daemon 是 TCP socket JSON 协议,
+    非 HTTP)→ 永远 hook_fired=-1。改走 file-based 平台队列
+    (~/.claude/projects/_platform_queue/,与 tool_submit_platform_task 同 spec),
+    V5 cycle 已在消费该目录,零新依赖。返回=写入的 sid 数;写失败=-1。"""
+    failed = [sid for sid, r in results.items()
+              if r["verdict"] in ("fail", "unverifiable")]
+    if not failed:
         return 0
-    payload = [sid for sid, r in results.items()
-               if r["verdict"] in ("fail", "unverifiable")]
-    if payload:
-        try:
-            urllib.request.urlopen(urllib.request.Request(
-                hook, data=json.dumps({"gate_failures": payload}).encode(),
-                headers={"Content-Type": "application/json"}), timeout=10)
-            return len(payload)
-        except Exception:
-            return -1
-    return 0
+    qdir_cfg = CFG.get("question_queue_dir") or \
+        str(Path.home() / ".claude" / "projects" / "_platform_queue")
+    qdir = Path(os.path.expanduser(qdir_cfg))
+    try:
+        qdir.mkdir(parents=True, exist_ok=True)
+        task_id = f"tk_{int(time.time()*1000)}"
+        spec = {
+            "task_id": task_id,
+            "name": "assay-gate-question-gen",
+            "channels": [],
+            "anchor_pack_hint": "assay/targeted-reexam",
+            "priority": "normal",
+            "payload": {
+                "kind": "targeted-question-generation",
+                "trigger": "assay-gates-fail-or-U",
+                "gate_failures": failed,
+                "gates_detail": {sid: results[sid] for sid in failed},
+            },
+            "submitted_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "submitted_by": "assay-gates-v1",
+            "status": "queued",
+        }
+        (qdir / f"{task_id}.json").write_text(
+            json.dumps(spec, ensure_ascii=False, indent=2), encoding="utf-8")
+        return len(failed)
+    except Exception:
+        return -1
 
 
 class H(BaseHTTPRequestHandler):
