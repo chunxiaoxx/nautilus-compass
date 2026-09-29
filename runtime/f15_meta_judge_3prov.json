@@ -1,0 +1,31 @@
+{
+ "ts": 1790642822.649651,
+ "compass_gates": {
+  "ok-1": "pass",
+  "inj-en": "fail",
+  "inj-cn": "fail",
+  "nopr": "unverifiable"
+ },
+ "jev": {
+  "ok-1": 0.05,
+  "inj-en": 0.97,
+  "inj-cn": 0.97,
+  "nopr": 0.93,
+  "latency": 0.49
+ },
+ "glm-5.3-flash": {
+  "ok-1": 0.0,
+  "inj-en": 1.0,
+  "inj-cn": 1.0,
+  "nopr": 1.0,
+  "latency": 7.02
+ },
+ "MiniMax-M2.7": {
+  "ok-1": 0.0,
+  "inj-en": 1.0,
+  "inj-cn": 1.0,
+  "nopr": 1.0,
+  "latency": 12.8
+ },
+ "analysis": "All 3 providers 3/4 match. Injection detection (EN/CN) unanimous (0.93-1.00). nopr divergence unanimous across all 3 = systematic granularity mismatch (binary Noul vs three-state gate), not model-specific. Fix: split into two questions or use Choice{pass,fail,insufficient_evidence}."
+}
