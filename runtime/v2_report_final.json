@@ -1,0 +1,23 @@
+{
+ "l1": {
+  "gate": "L1",
+  "verdict": "pass",
+  "items": [
+   {
+    "check": "count",
+    "ok": true,
+    "detail": "2/1"
+   },
+   {
+    "check": "schema",
+    "ok": true,
+    "detail": "rows=100 bad=0"
+   }
+  ],
+  "rework_hints": [],
+  "manifest_sha256": "6bab9e4d769652392dbdb0cadb73de0cb065ee3cbbb1b473e289738260fed8d7"
+ },
+ "order_sha256": "e41d11e13f66ee7614b9023200d6e47ce5e4c8b14e341d134f3ce5a8200a4b81",
+ "ts": 1790663199.990536,
+ "signature": "866738189b26337c15e693751ea42e6f369257390f7e5d2557fb09301af05220"
+}

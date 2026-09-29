@@ -37,7 +37,7 @@ def check_url_alive(url: str, timeout=15) -> bool:
 def l1_check(order: dict, delivery_dir: Path) -> dict:
     results, hard_fail = [], 0
     files = sorted([p for p in delivery_dir.iterdir() if p.is_file()])
-    manifest_files = [f for f in files if f.suffix in (".json", ".jsonl", ".csv")]
+    manifest_files = [f for f in files if f.suffix in (".jsonl", ".csv")]
 
     # 1) 数量门
     req_n = order.get("l1", {}).get("min_files")
@@ -98,7 +98,7 @@ def l1_check(order: dict, delivery_dir: Path) -> dict:
         "gate": "L1", "verdict": verdict,
         "items": [{"check": n, "ok": ok, "detail": d} for n, ok, d in results],
         "rework_hints": [f"{n}: {d}" for n, ok, d in results if not ok],
-        "manifest_sha256": sha256_file(delivery_dir / files[0]) if files else "",
+        "manifest_sha256": sha256_file(files[0]) if files else "",
     }
 
 

@@ -1,0 +1,1 @@
+{"order_id":"b-human-001-frameqc","l1":{"min_files":1,"min_rows":100,"schema":{"frame_id":"str","label":"str","confidence":"num"}},"labels":["black","frozen","blurry","normal"],"reward":"200NAU","actor":"compass-dryrun"}
