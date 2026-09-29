@@ -3,5 +3,8 @@
   "question_webhook": "http://127.0.0.1:9876/v1/tools/submit_platform_task",
   "gate_semantics": "pass=evidence_chain_not_score; finished_false_can_pass",
   "criteria_catalog": "criteria@catalog-v0",
+  "catalog_paths": {
+    "catalog-v0": "C:/Users/chunx/Projects/nautilus-compass/docs/capability/criteria_catalog_v0.md"
+  },
   "note": "webhook points to compass daemon task intake; when gate fails/U, auto-submit a question task for targeted re-exam generation"
 }

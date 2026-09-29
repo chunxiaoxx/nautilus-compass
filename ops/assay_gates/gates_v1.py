@@ -26,7 +26,7 @@ INJECTION_PATTERNS = [
     r"(忽|无)视.{0,8}(以|上|前)(的)?(全部)?(指|指?令)",
 ]
 INJ_RE = [re.compile(p, re.I) for p in INJECTION_PATTERNS]
-CRIT_KEYS = re.compile(r"(criteria|判据)@([A-Za-z0-9_\-\.]+)")
+CRIT_KEYS = re.compile(r"(criteria|判据)@([A-Za-z0-9_\-\.]+)(?:#([A-Za-z0-9_\-\.]+))?")
 
 
 def load_cfg():
@@ -66,13 +66,34 @@ def gate_g1(t):
 
 
 def gate_g2(t):
+    """判据引用回查 catalog 真身(v5 1669 加严补丁语义):
+    criteria@<catalog>#<entry> 须 ① catalog 在 catalog_paths 配置 ② 文件存在
+    ③ 条目 id 在文件内;任一不满足 → unverifiable(诚实暴露未接线,不静默放行)。
+    非判据引用(路径/URL)走 _resolvable 旧径。"""
     ref = t.get("preregistration_ref", "")
     if not ref:
         return "unverifiable", "no preregistration"
-    m = CRIT_KEYS.search(ref) if isinstance(ref, str) else None
-    if m or _resolvable(ref):
-        return "pass", ""
-    return "unverifiable", "preregistration unresolvable"
+    if not isinstance(ref, str):
+        return "unverifiable", "preregistration unresolvable"
+    m = CRIT_KEYS.search(ref)
+    if not m:
+        return ("pass", "") if _resolvable(ref) else \
+               ("unverifiable", "preregistration unresolvable")
+    catalog, entry = m.group(2), m.group(3)
+    path = (CFG.get("catalog_paths") or {}).get(catalog)
+    if not path:
+        return "unverifiable", f"catalog {catalog} not wired"
+    if not os.path.exists(path):
+        return "unverifiable", f"catalog {catalog} file missing: {path}"
+    if not entry:
+        return "unverifiable", f"criteria@{catalog} without entry id (#C-xxx)"
+    try:
+        body = open(path, encoding="utf-8").read()
+    except Exception:
+        return "unverifiable", f"catalog {catalog} unreadable"
+    if entry not in body:
+        return "unverifiable", f"entry {entry} not in catalog {catalog}"
+    return "pass", ""
 
 
 def gate_g3(t):
