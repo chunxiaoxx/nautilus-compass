@@ -219,7 +219,7 @@ def main() -> int:
     print(json.dumps(out["analysis"], ensure_ascii=False))
 
     out_path = sys.argv[sys.argv.index("--out") + 1] if "--out" in sys.argv else \
-        os.path.join(ROOT, "runtime", "f15_choice3_20261001.json")
+        os.path.join(ROOT, "runtime", "f15_choice3_20260930.json")
     json.dump(out, open(out_path, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     print("saved", out_path)
     return 0
