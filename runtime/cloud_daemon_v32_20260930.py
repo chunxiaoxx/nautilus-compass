@@ -464,7 +464,8 @@ except Exception:
     pass
 
 HOST = "127.0.0.1"
-PORT = 9876
+# v3.2 · 2026-09-30 · 蓝绿前提:端口 env 化(蓝实例 :9877 只读验证,切换窗口用)
+PORT = int(os.environ.get("COMPASS_PORT", "9876"))
 _PLUGIN_USER = Path.home() / ".claude" / "plugins" / "nautilus-compass"
 # CI / pip-install fallback · use the script's own dir when user-level
 # plugin path doesn't exist (eg. installed via pip · or fresh git clone)
