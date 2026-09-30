@@ -1,0 +1,16 @@
+{
+ "ts": "2026-09-30T22:50:58+08:00",
+ "best_dev_acc": 0.9161,
+ "best_ep": 5,
+ "J1_test_binary_acc": 0.8851,
+ "J1_pass": true,
+ "J2_test_ece_10bin": 0.0723,
+ "J2_pass": true,
+ "J3_U_test": 1,
+ "J7_v1_vs_v2": {
+  "v1_floor": 0.6622,
+  "v2": 0.8851,
+  "delta_pt": 22.3,
+  "J7_pass": true
+ }
+}
