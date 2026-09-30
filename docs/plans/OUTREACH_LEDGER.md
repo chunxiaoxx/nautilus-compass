@@ -6,6 +6,8 @@
 | # | 日期 | 对象 | 匹配理由(三点交集) | 动作 | 状态 |
 |---|---|---|---|---|---|
 | 1 | 2026-09-30 | MemTensor/MemOS(11.6k★ 活跃) | ①OmniMemEval 基准作者 ②README 自报"35.24% token savings" ③我们=第三方可复算验证(三态协议+errata 窗) | GitHub issue **#2440**:免费独立复算 OmniMemEval 公开成绩(判据冻结/全工件归档/失败样本如实公开/报告共署名) | **已发,等回应** |
+| 2 | 2026-09-30 | mem0(62.6k★,$24M A轮) | ①我们已有其产品的三臂实证(16/11/18,压缩=丢分元凶,工件公开) ②DolphinBench 博客(9/22)自报对比 OpenAI/LangMem/MemGPT,判分协议未见公开 ③第三方可复算验证 | GitHub issue **#7514**:双锚——三臂数据+修复建议先给(非挑刺),问 DolphinBench 判分协议公开性+免费独立复算 offer(同 #2440 模式) | **已发,等回应** |
+| 3 | 2026-09-30 | TypeSafe(UniPat/EchoZ) | ①我们已公开分析其 headline(proof 不可寻址/同页双口径,X 帖 status/2105296550117458093) ②Jev=我们实测最稳的决策模型(latency 0.44s) ③回应权+复算 offer=M1 直接转化 | **Gmail** hello@typesafe.ai(官网一手邮箱,id 1a0f2ae379a7385d):公开分析知会+完整回应权+免费独立复算(判据冻结/errata 90天窗) | **已发,等回应** |
 
 ## 纠偏记录
 
@@ -13,8 +15,8 @@
 
 ## 待发池(按匹配度)
 
-- mem0:DolphinBench 复算协作(同 #2442 模式)
 - Letta:Letta Evals(开源评测框架)判分协议互补提案
 - LongMemEval 上游(xiaowu0162):T0 成绩册+判分协议贡献(合作姿态,N6 红线前置)
-- Latent Space:投稿已发(1a0e8ba1),无回音→定向函
-- Reddit r/LocalLLaMA:稿备(bbc2ee3a)
+- Latent Space:投稿已发(9/28,1a0e8ba1)——**周期内(1-2周)不催**,超期再定向函
+- Reddit r/LocalLLaMA:稿备(dcr_reddit_post_20260930)——10/1 09:00-10:00 北京发
+- (mem0 已于 9/30 晚发出 #7514 出池)
