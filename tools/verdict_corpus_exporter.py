@@ -154,6 +154,66 @@ def harvest_vtf_aggregated(path: Path) -> list:
         judge_output={"note": "run-level metrics; per-item labels not present"})]
 
 
+def harvest_bc1_scorecard(bc_dir: Path) -> list:
+    """BC1 v1/v2 自测成绩单 → 逐题样本(v1 的 7 FAIL 人工审计=判分器纠错金矿)。
+
+    标签映射(源:SELFTEST_SCORECARD.md 逐题审计表 + V2 重考,2026-09-23):
+      v1 11 PASS:verify=pass,truth=pass(判分器对)
+      T12-0/1:verify=fail,truth=pass(真值错误——考生比真值对,判分器被坏真值骗)
+      T11-0/1/2:verify=fail,truth=insufficient_evidence(题面歧义,应判 U 而非 fail)
+      T31-1/2:verify=fail,truth=insufficient_evidence(边界未定义)
+      v2 18/18:verify=pass,truth=pass(修题重考全对=v1 归因的反向证明)
+    """
+    v1_audit = {  # (verify, truth, audit_reason) —— 数据化自 scorecard 审计表
+        "T12-0": ("fail", "pass", "真值错误:生成器意外产生第二处真矛盾,考生多报的那对是真的,考生比真值更对"),
+        "T12-1": ("fail", "pass", "真值错误:同 T12-0"),
+        "T11-0": ("fail", "insufficient_evidence", "题面歧义:due_promises 语义两读,expected 与考生采用不同但各自合理的口径"),
+        "T11-1": ("fail", "insufficient_evidence", "题面歧义:同 T11-0"),
+        "T11-2": ("fail", "insufficient_evidence", "题面歧义:同 T11-0"),
+        "T31-1": ("fail", "insufficient_evidence", "边界未定义:「复发」是否含首见当日未声明,expected 宽口径 vs 考生严口径"),
+        "T31-2": ("fail", "insufficient_evidence", "边界未定义:同 T31-1"),
+    }
+    out = []
+    # v1 实际被考题号 = selftest_answers.json 的键(public 18;decision_set 全 30 含
+    # holdout 12 未考,不可作标签源——首版曾错标,以 answers 键为准+18 题硬校验)
+    try:
+        ids = list(json.loads(
+            (bc_dir / "selftest_answers.json").read_text(encoding="utf-8")).keys())
+    except Exception:
+        ids = []
+    if len(ids) != 18:
+        raise SystemExit(f"BC1 v1 实际考题数 {len(ids)} ≠ 18(scorecard 口径),中止防错标")
+    for qid in ids:
+        verify, truth, reason = v1_audit.get(qid, ("pass", "pass", "原样判分 PASS,审计无异议"))
+        out.append(_sample(
+            sid=f"bc1-v1-{qid}",
+            source=bc_dir / "SELFTEST_SCORECARD.md",
+            criteria_ref="BC1 v1 自测(verify_bc1.py 三态,U 不充正分;sha=16de925e)",
+            artifact={"exam": "selftest_exam_paper.json", "qid": qid,
+                      "audit_table": "SELFTEST_SCORECARD.md §逐题审计"},
+            judge_output={"verify_bc1": verify},
+            truth_label=truth, label_origin="BC1 v1 逐题人工审计(2026-09-23)",
+            reason=reason))
+    # v2 重考(修题后 18/18,含 7 缺陷题转 PASS——归因正确的反向证明)
+    try:
+        ids2 = list(json.loads(
+            (bc_dir / "selftest_answers_v2.json").read_text(encoding="utf-8")).keys())
+    except Exception:
+        ids2 = []
+    if len(ids2) != 18:
+        raise SystemExit(f"BC1 v2 实际考题数 {len(ids2)} ≠ 18,中止防错标")
+    for qid in ids2:
+        out.append(_sample(
+            sid=f"bc1-v2-{qid}",
+            source=bc_dir / "SELFTEST_SCORECARD_V2.md",
+            criteria_ref="BC1 v2 自测(五处出题缺陷已修;sha=3b9def7d)",
+            artifact={"exam": "selftest_exam_paper_v2.json", "qid": qid},
+            judge_output={"verify_bc1": "pass"},
+            truth_label="pass", label_origin="BC1 v2 重考+非实现者复算",
+            reason="修题后重考 18/18 全 PASS,7 缺陷题全部转 PASS 且无新错"))
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="runtime/verdict_corpus")
@@ -172,7 +232,15 @@ def main():
             labelled += ss
             src_summary.append((str(p.relative_to(ROOT)), f"{len(ss)} labelled"))
 
-    # S2 · BC1 考题包(unlabelled;审计标签在 scorecard md,v1 再解析)
+    # S2 · BC1 自测成绩单逐题标签(v1 审计+v2 重考 = 最大标签增量源)
+    bc_dir = ROOT / "runtime" / "assay_bc1_20260927"
+    if bc_dir.exists():
+        ss = harvest_bc1_scorecard(bc_dir)
+        labelled += ss
+        src_summary.append(("runtime/assay_bc1_20260927/SELFTEST_SCORECARD{,_V2}.md",
+                            f"{len(ss)} labelled"))
+
+    # S3 · BC1 考题包(unlabelled;判分输出未内联)
     for p in sorted((ROOT / "runtime" / "benchmarks").glob("*/judge_pack.json")):
         ss = harvest_judge_pack_unlabelled(p)
         unlabelled += ss
