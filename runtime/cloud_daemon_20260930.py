@@ -804,6 +804,21 @@ def get_memory_entries(mem_dir: Path):
     # cache lookup
     proj_key = str(mem_dir)
     cache = _state["memory_caches"].setdefault(proj_key, {})
+    # v3.1.1 · 2026-09-30 · LRU 回归修复:项目被 entries-LRU 逐出后重进时,memory_caches
+    # 为空 dict → 走全量重嵌入(CPU 风暴根因:逐出↔重进循环每轮全项目 re-embed,
+    # 18万次 overload 拒绝)。修复:空 cache 且盘上有 pkl 时先从 pkl 回读(mtime 命中
+    # 的向量免重算),仅真正的新文件/变更文件才嵌入。
+    if not cache:
+        try:
+            import hashlib as _hl_rr
+            _pkl_rr = CACHE_DIR / f"{_hl_rr.sha256(proj_key.encode()).hexdigest()[:12]}.pkl"
+            if _pkl_rr.exists():
+                _data_rr = pickle.load(open(_pkl_rr, "rb"))
+                _c_rr = _data_rr.get("embeddings", {}) if isinstance(_data_rr, dict) else {}
+                if _c_rr:
+                    _state["memory_caches"][proj_key] = cache = _c_rr
+        except Exception:
+            pass
     with _mem_lock(proj_key):  # v3.0.3 · serialize fill+flush per project
         updated = 0
         for e in entries:
