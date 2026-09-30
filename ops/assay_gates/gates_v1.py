@@ -8,7 +8,7 @@ G3 复算门(v1 结构版):声明可重放 + 10% 抽检标记(sample_for_recheck
 聚合:任一 fail→fail;否则任一 unverifiable→unverifiable;全过→pass。
 出题触发器(P1-4):fail/unverifiable 条目 POST 回调(webhook 可配置)。
 """
-import json, os, re, urllib.request, hashlib, hmac, time
+import json, os, re, sys, urllib.request, hashlib, hmac, time
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 
@@ -37,6 +37,25 @@ def load_cfg():
 
 
 CFG = load_cfg()
+# 2026-09-30 · G2/G3 重放缺口闭合:原始判分请求随结果归档(jsonl append,
+# 一请求一行,含判分输入全量——text 截断=重放失真,RSI 环 J3 教训,不截断)。
+ARCHIVE_PATH = os.path.expanduser(CFG.get("request_archive",
+                                          "ops/assay_gates/archive/judged_requests.jsonl"))
+
+
+def archive_request(body: dict, results: dict, fired: bool, ts: float, sig: str):
+    """请求件归档:judged_requests.jsonl 每行={ts, sig, trajectories(原始输入全量),
+    results}。事后重放=读行内 trajectories 重跑 judge(),比对 results。"""
+    try:
+        os.makedirs(os.path.dirname(ARCHIVE_PATH), exist_ok=True)
+        line = json.dumps({"ts": ts, "sig": sig,
+                           "trajectories": body.get("trajectories", []),
+                           "results": results},
+                          ensure_ascii=False, sort_keys=True)
+        with open(ARCHIVE_PATH, "a", encoding="utf-8") as f:
+            f.write(line + "\n")
+    except Exception as e:  # 归档失败不阻塞判分响应,但必须大声
+        print(f"[archive-fail] {e}", file=sys.stderr)
 
 
 def _resolvable(ref):
@@ -195,6 +214,7 @@ class H(BaseHTTPRequestHandler):
         self.send_header("Content-Type", "application/json")
         self.end_headers()
         self.wfile.write(out.encode())
+        archive_request(body, results, fired, ts, sig)  # 2026-09-30 · 重放缺口闭合
 
     def do_GET(self):
         self.send_response(200)
