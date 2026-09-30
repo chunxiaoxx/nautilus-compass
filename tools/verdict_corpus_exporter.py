@@ -320,6 +320,38 @@ def harvest_errata_registry() -> list:
     return out
 
 
+def harvest_lmev2_official(pq_path: Path) -> list:
+    """LME-V2 官方 harness 明细(d12/d14 per_question.jsonl)→ labelled。
+
+    真值口径:answer_gold=官方金标 + score_bool=透明 eval_function 机械判定
+    (mc_choice_match 等规则代码,非 LLM judge 自报;d14 复核的探针三陷阱
+    分析即针对此层)。is_abstention_problem/is_unknown 一并入 artifact,
+    供 abstention gate 样本族后续细分。
+    """
+    out = []
+    run, dom = pq_path.parts[-3], pq_path.parts[-2]
+    for line in pq_path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        r = json.loads(line)
+        out.append(_sample(
+            sid=f"lme-{run}-{dom[:12]}-{r.get('question_id')}",
+            source=pq_path,
+            criteria_ref=f"LME-V2 {run} {dom}(官方 harness·透明规则判定)",
+            artifact={"question": str(r.get("question_text"))[:200],
+                      "response": str(r.get("response_parsed_boxed"))[:200],
+                      "answer_gold": r.get("answer_gold"),
+                      "is_abstention_problem": r.get("is_abstention_problem"),
+                      "is_unknown": r.get("is_unknown"),
+                      "question_type": r.get("question_type")},
+            judge_output={"score": r.get("score"), "score_bool": r.get("score_bool"),
+                          "eval_function": r.get("eval_function")},
+            truth_label=("pass" if str(r.get("score_bool")) == "True" else "fail"),
+            label_origin="官方 answer_gold+透明 eval_function(上游 harness,d14 复核加持)",
+            reason="规则判定可复算可审计(非 LLM judge 自报)"))
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="runtime/verdict_corpus")
@@ -381,6 +413,16 @@ def main():
     unlabelled += ss
     src_summary.append(("v5:18890 assay_errata.jsonl",
                         f"{len(ss)} unlabelled(errata-registry·smoke)"))
+
+    # S8 · LME-V2 d12/d14 官方 harness 明细(透明规则判定 → labelled)
+    for run in ("d12", "d14"):
+        for dom in ("compass_web_small", "compass_enterprise_small"):
+            pq = ROOT / "vtf" / "_compass_lmev2_out" / run / dom / "per_question.jsonl"
+            if pq.exists():
+                ss = harvest_lmev2_official(pq)
+                labelled += ss
+                src_summary.append((str(pq.relative_to(ROOT)),
+                                    f"{len(ss)} labelled(官方规则)"))
 
     # S3 · vtf aggregated_metrics(unlabelled;复算记录的 run 在 v1 挂标签)
     n_vtf = 0
