@@ -1,0 +1,13 @@
+epoch 0: dev_acc=0.7063
+epoch 1: dev_acc=0.7063
+epoch 2: dev_acc=0.7063
+epoch 3: dev_acc=0.7063
+epoch 4: dev_acc=0.7133
+epoch 5: dev_acc=0.6923
+epoch 6: dev_acc=0.6993
+epoch 7: dev_acc=0.6993
+epoch 8: dev_acc=0.7133
+epoch 9: dev_acc=0.7063
+epoch 10: dev_acc=0.6853
+epoch 11: dev_acc=0.6853
+epoch 12: dev_acc=0.6713
