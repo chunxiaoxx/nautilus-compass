@@ -121,36 +121,54 @@ def judge(t):
 def fire_question_hook(results):
     """P1-4 出题触发器:fail/unverifiable → 自动出题任务。
 
-    2026-09-30 修复:原 webhook 指向 9876(compass daemon 是 TCP socket JSON 协议,
-    非 HTTP)→ 永远 hook_fired=-1。改走 file-based 平台队列
-    (~/.claude/projects/_platform_queue/,与 tool_submit_platform_task 同 spec),
-    V5 cycle 已在消费该目录,零新依赖。返回=写入的 sid 数;写失败=-1。"""
+    2026-09-30 二修:本地 _platform_queue 实测是死管道(tk_1784550063720 自 7/20
+    无人消费);V5 cycle 消费的是云端队列。改 POST 云端 MCP submit_platform_task
+    (token 从 compass_cloud_tokens.env);失败 fallback 本地文件留痕。
+    返回=派发的 sid 数;失败=-1。"""
     failed = [sid for sid, r in results.items()
               if r["verdict"] in ("fail", "unverifiable")]
     if not failed:
         return 0
-    qdir_cfg = CFG.get("question_queue_dir") or \
-        str(Path.home() / ".claude" / "projects" / "_platform_queue")
-    qdir = Path(os.path.expanduser(qdir_cfg))
+    payload = {
+        "kind": "targeted-question-generation",
+        "trigger": "assay-gates-fail-or-U",
+        "gate_failures": failed,
+        "gates_detail": {sid: results[sid] for sid in failed},
+    }
+    mcp_url = CFG.get("cloud_mcp_url") or "https://nautilus.social/compass-mcp/"
+    tok_file = os.path.expanduser(CFG.get("cloud_token_file") or
+                                  "~/.claude/.cache/compass_cloud_tokens.env")
     try:
+        token = ""
+        for ln in open(tok_file, encoding="utf-8"):
+            if ln.startswith("COMPASS_TOKEN_COMPASS_DIALOG="):
+                token = ln.split("=", 1)[1].strip()
+                break
+        req = urllib.request.Request(
+            mcp_url,
+            data=json.dumps({"jsonrpc": "2.0", "id": 1, "method": "tools/call",
+                             "params": {"name": "submit_platform_task",
+                                        "arguments": {
+                                            "name": "assay-gate-question-gen",
+                                            "anchor_pack_hint": "assay/targeted-reexam",
+                                            "payload": payload}}}).encode(),
+            headers={"Authorization": f"Bearer {token}",
+                     "Content-Type": "application/json",
+                     "Accept": "application/json, text/event-stream"},
+            method="POST")
+        urllib.request.urlopen(req, timeout=15)
+        return len(failed)
+    except Exception:
+        pass  # 云端不可达 → 本地留痕 fallback
+    try:
+        qdir = Path.home() / ".claude" / "projects" / "_platform_queue"
         qdir.mkdir(parents=True, exist_ok=True)
         task_id = f"tk_{int(time.time()*1000)}"
-        spec = {
-            "task_id": task_id,
-            "name": "assay-gate-question-gen",
-            "channels": [],
-            "anchor_pack_hint": "assay/targeted-reexam",
-            "priority": "normal",
-            "payload": {
-                "kind": "targeted-question-generation",
-                "trigger": "assay-gates-fail-or-U",
-                "gate_failures": failed,
-                "gates_detail": {sid: results[sid] for sid in failed},
-            },
-            "submitted_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-            "submitted_by": "assay-gates-v1",
-            "status": "queued",
-        }
+        spec = {"task_id": task_id, "name": "assay-gate-question-gen",
+                "anchor_pack_hint": "assay/targeted-reexam", "priority": "normal",
+                "payload": payload,
+                "submitted_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                "submitted_by": "assay-gates-v1", "status": "queued-local-fallback"}
         (qdir / f"{task_id}.json").write_text(
             json.dumps(spec, ensure_ascii=False, indent=2), encoding="utf-8")
         return len(failed)
