@@ -1,0 +1,36 @@
+{
+  "exported_at": "2026-09-30T11:57:10+08:00",
+  "counts": {
+    "labelled": 8,
+    "unlabelled": 13,
+    "p1_target": 500
+  },
+  "schema": {
+    "truth_label": "pass|fail|insufficient_evidence",
+    "label_origin": "真值来源(人工复核/三门判分/独立复算)",
+    "content_hash": "sha256[:16] 溯源对账"
+  },
+  "sources": [
+    [
+      "runtime\\f15_meta_judge_3prov.json",
+      "4 labelled"
+    ],
+    [
+      "runtime\\jev_meta_judge_first.json",
+      "4 labelled"
+    ],
+    [
+      "runtime\\benchmarks\\exam5\\judge_pack.json",
+      "5 unlabelled"
+    ],
+    [
+      "vtf/**/aggregated_metrics.json",
+      "8 unlabelled"
+    ]
+  ],
+  "v1_backlog": [
+    "BC1 SELFTEST_SCORECARD(.sig) 逐题标签解析",
+    "T3 mini 主批 findings 挂标签",
+    "rejudge_errors 勘误样本(判绩账:评委也会错)"
+  ]
+}
