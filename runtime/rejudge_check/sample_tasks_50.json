@@ -1,0 +1,302 @@
+[
+ {
+  "qid": "gpt4_21adecb5",
+  "question": "How many months passed between the completion of my undergraduate degree and the submission of my master's thesis?",
+  "truth": "6 months",
+  "model_answer": "[SUBJECT_ERROR: HTTPSConnectionPool(host='ark.cn-beijing.volces.com', port=443): Read timed out. (read timeout=180)]"
+ },
+ {
+  "qid": "gpt4_b5700ca9",
+  "question": "How many days ago did I attend the Maundy Thursday service at the Episcopal Church?",
+  "truth": "4 days.",
+  "model_answer": "[SUBJECT_ERROR: HTTPSConnectionPool(host='ark.cn-beijing.volces.com', port=443): Read timed out. (read timeout=180)]"
+ },
+ {
+  "qid": "71315a70",
+  "question": "How many hours have I spent on my abstract ocean sculpture?",
+  "truth": "10-12 hours",
+  "model_answer": "You have spent 10-12 hours on your abstract ocean sculpture as of your latest update."
+ },
+ {
+  "qid": "4bc144e2",
+  "question": "How much did I spend on car wash and parking ticket?",
+  "truth": "$65",
+  "model_answer": "You spent a total of $65 on car wash and parking ticket: $15 for the February 3rd car wash and $50 for the January 5th parking ticket."
+ },
+ {
+  "qid": "6b7dfb22",
+  "question": "I've been feeling a bit stuck with my paintings lately. Do you have any ideas on how I can find new inspiration?",
+  "truth": "The user would prefer responses that build upon their existing sources of inspiration, such as revisiting Instagram art accounts or exploring new techniques from online tutorials. They might also appreciate suggestions that revisit previous themes they found enjoyable, like painting flowers. The user would not prefer generic or vague suggestions for finding inspiration, and would likely appreciate responses that utilize their recent 30-day painting challenge experience.",
+  "model_answer": "You’ve previously found painting inspiration from social media, and your recent 30-day painting challenge can also help spark new creative ideas."
+ },
+ {
+  "qid": "0e4e4c46",
+  "question": "What is my current highest score in Ticket to Ride?",
+  "truth": "132 points",
+  "model_answer": "Your current highest score in Ticket to Ride is 132 points."
+ },
+ {
+  "qid": "0862e8bf",
+  "question": "What is the name of my cat?",
+  "truth": "Luna",
+  "model_answer": "Your cat's name is Luna."
+ },
+ {
+  "qid": "031748ae",
+  "question": "How many engineers do I lead when I just started my new role as Senior Software Engineer? How many engineers do I lead now?",
+  "truth": "When you just started your new role as Senior Software Engineer, you led 4 engineers. Now, you lead 5 engineers",
+  "model_answer": "When you just started your new role as Senior Software Engineer, you led 4 engineers; you now lead 5 engineers."
+ },
+ {
+  "qid": "gpt4_e414231f",
+  "question": "Which bike did I fixed or serviced the past weekend?",
+  "truth": "road bike",
+  "model_answer": "[SUBJECT_ERROR: HTTPSConnectionPool(host='ark.cn-beijing.volces.com', port=443): Read timed out. (read timeout=180)]"
+ },
+ {
+  "qid": "9aaed6a3",
+  "question": "How much cashback did I earn at SaveMart last Thursday?",
+  "truth": "$0.75",
+  "model_answer": "You earned $0.75 in cashback from your $75 SaveMart purchase last Thursday, based on your 1% cashback rate for all SaveMart purchases."
+ },
+ {
+  "qid": "d905b33f",
+  "question": "What percentage discount did I get on the book from my favorite author?",
+  "truth": "20%",
+  "model_answer": "[SUBJECT_ERROR: HTTPSConnectionPool(host='ark.cn-beijing.volces.com', port=443): Read timed out. (read timeout=180)]"
+ },
+ {
+  "qid": "f9e8c073",
+  "question": "How many sessions of the bereavement support group did I attend?",
+  "truth": "five",
+  "model_answer": "You attended five sessions of the bereavement support group."
+ },
+ {
+  "qid": "gpt4_6dc9b45b",
+  "question": "How many months ago did I attend the Seattle International Film Festival?",
+  "truth": "4 months ago",
+  "model_answer": "As of the most recent conversation on June 1, 2021, you attended the Seattle International Film Festival 0 months ago. You attended the festival for a week leading up to and including June 1, 2021, with your most recent day at the festival falling earlier that same day."
+ },
+ {
+  "qid": "6aeb4375_abs",
+  "question": "How many Italian restaurants have I tried in my city?",
+  "truth": "The information provided is not enough. You mentioned trying Korean restaurants but not Italian restaurants.",
+  "model_answer": "You have not specified how many Italian restaurants you've tried in your city. You have mentioned trying 4 Korean restaurants in your city as of May 26, 2023."
+ },
+ {
+  "qid": "7e00a6cb",
+  "question": "I'm planning my trip to Amsterdam again and I was wondering, what was the name of that hostel near the Red Light District that you recommended last time?",
+  "truth": "International Budget Hostel",
+  "model_answer": "The Bulldog Hostel Amsterdam."
+ },
+ {
+  "qid": "gpt4_d9af6064",
+  "question": "Which device did I set up first, the smart thermostat or the new router?",
+  "truth": "new router",
+  "model_answer": "You set up the new router first. The router was operational by January 15th, which is earlier than the February 10th setup date of your smart thermostat."
+ },
+ {
+  "qid": "gpt4_b4a80587",
+  "question": "Which event happened first, the road trip to the coast or the arrival of the new prime lens?",
+  "truth": "The arrival of the new prime lens",
+  "model_answer": "The arrival of the new prime lens happened first. The user received their 50mm f/1.8 prime lens approximately one month before the May 23, 2023 sessions, while the coastal road trip occurred just one week before those sessions, and the user brought the lens with them on the trip."
+ },
+ {
+  "qid": "92a0aa75",
+  "question": "How long have I been working in my current role?",
+  "truth": "1 year and 5 months",
+  "model_answer": "You have been working in your current role as Senior Marketing Specialist for 1 year and 5 months. This is calculated by subtracting the 2 years and 4 months it took you to advance from Marketing Coordinator to Senior Marketing Specialist from your total 3 years and 9 months of experience at the com"
+ },
+ {
+  "qid": "6ade9755",
+  "question": "Where do I take yoga classes?",
+  "truth": "Serenity Yoga",
+  "model_answer": "You take in-person yoga classes at Serenity Yoga, and use the Down Dog app for yoga classes at home."
+ },
+ {
+  "qid": "eac54adc",
+  "question": "How many days ago did I launch my website when I signed a contract with my first client?",
+  "truth": "19 days ago. 20 days (including the last day) is also acceptable.",
+  "model_answer": "When you signed your first client contract on 2023/03/01, your website launch (on 2023/02/10) was 19 days prior."
+ },
+ {
+  "qid": "6c49646a",
+  "question": "What is the total distance I covered in my four road trips?",
+  "truth": "3,000 miles",
+  "model_answer": "The total distance covered across your four road trips is 3,000 miles (1,800 miles from three recent trips to Durango, Breckenridge, and Santa Fe, plus 1,200 miles from the 4-day Yellowstone National Park trip)."
+ },
+ {
+  "qid": "b29f3365",
+  "question": "How long had I been taking guitar lessons when I bought the new guitar amp?",
+  "truth": "Four weeks",
+  "model_answer": "You had been taking weekly guitar lessons with Alex for 4 weeks when you bought the new guitar amp. This is calculated by subtracting the 2 weeks between the amp purchase and 2023/05/25 from the 6 total weeks of lessons completed as of that same date."
+ },
+ {
+  "qid": "gpt4_468eb063",
+  "question": "How many days ago did I meet Emma?",
+  "truth": "9 days ago. 10 days (including the last day) is also acceptable.",
+  "model_answer": "[SUBJECT_ERROR: HTTPSConnectionPool(host='ark.cn-beijing.volces.com', port=443): Read timed out. (read timeout=180)]"
+ },
+ {
+  "qid": "2698e78f_abs",
+  "question": "How often do I see Dr. Johnson?",
+  "truth": "The information provided is not enough. You mentioned seeing Dr. Smith but not Dr. Johnson.",
+  "model_answer": "Dr. Johnson is not referenced in your past conversations; you see Dr. Smith every week per your most recent statement."
+ },
+ {
+  "qid": "c4f10528",
+  "question": "I'm planning to visit Bandung again and I was wondering if you could remind me of the name of that restaurant in Cihampelas Walk that serves a great Nasi Goreng?",
+  "truth": "Miss Bee Providore",
+  "model_answer": "Miss Bee Providore is the restaurant in the Cihampelas Walk area that serves the signature Miss Bee's Nasi Goreng, a take on classic Indonesian fried rice served with prawn crackers and a fried egg."
+ },
+ {
+  "qid": "gpt4_f420262d",
+  "question": "What was the airline that I flied with on Valentine's day?",
+  "truth": "American Airlines",
+  "model_answer": "[SUBJECT_ERROR: HTTPSConnectionPool(host='ark.cn-beijing.volces.com', port=443): Read timed out. (read timeout=180)]"
+ },
+ {
+  "qid": "3249768e",
+  "question": "I'm looking back at our previous conversation about building a cocktail bar. You recommended five bottles to make the widest variety of gin-based cocktails. Can you remind me what the fifth bottle was",
+  "truth": "Absinthe",
+  "model_answer": "Absinthe is the fifth bottle recommended for making the widest variety of gin-based cocktails."
+ },
+ {
+  "qid": "gpt4_e05b82a6",
+  "question": "How many times did I ride rollercoasters across all the events I attended from July to October?",
+  "truth": "10 times",
+  "model_answer": "You rode rollercoasters 7 times total across your visits from July to October: 3 rides (Mako, Kraken, Manta) at SeaWorld San Diego in July, 3 rides on Space Mountain: Ghost Galaxy at Disneyland's Mickey's Halloween Party on September 24, and 1 ride on Xcelerator at Knott's Berry Farm on October 8."
+ },
+ {
+  "qid": "gpt4_c27434e8_abs",
+  "question": "Which project did I start first, the Ferrari model or the Porsche 991 Turbo S model?",
+  "truth": "The information provided is not enough. You did not mention starting the Porsche 991 Turbo S model.",
+  "model_answer": "The Ferrari model was started first. No Porsche 991 Turbo S model project is mentioned in the provided conversations, while the 1980s-era Ferrari 288 GTO model was started approximately three weeks before May 23, 2023."
+ },
+ {
+  "qid": "0bb5a684",
+  "question": "How many days before the team meeting I was preparing for did I attend the workshop on 'Effective Communication in the Workplace'?",
+  "truth": "7 days. 8 days (including the last day) is also acceptable.",
+  "model_answer": "You attended the \"Effective Communication in the Workplace\" workshop 7 days before the January 17th team meeting you were preparing for."
+ },
+ {
+  "qid": "8a137a7f",
+  "question": "What type of bulb did I replace in my bedside lamp?",
+  "truth": "Philips LED bulb",
+  "model_answer": "Philips LED bulb."
+ },
+ {
+  "qid": "71a3fd6b",
+  "question": "I'm planning my trip to Speyer again and I wanted to confirm, what's the phone number of the Speyer tourism board that you provided me earlier?",
+  "truth": "+49 (0) 62 32 / 14 23 - 0",
+  "model_answer": "+49 (0) 62 32 / 14 23 - 0"
+ },
+ {
+  "qid": "15745da0_abs",
+  "question": "How long have I been collecting vintage films?",
+  "truth": "You did not mention this information. You mentioned collecting vintage cameras but not vintage films.",
+  "model_answer": "You have been collecting vintage cameras for three months; there is no mention of collecting vintage films in the provided conversation history."
+ },
+ {
+  "qid": "8550ddae",
+  "question": "What type of cocktail recipe did I try last weekend?",
+  "truth": "lavender gin fizz",
+  "model_answer": "A lavender gin fizz recipe."
+ },
+ {
+  "qid": "e56a43b9",
+  "question": "How much discount will I get on my next purchase at FreshMart?",
+  "truth": "$5",
+  "model_answer": "You will get a $5 discount on your next FreshMart purchase, as you have reached 500 points (100 points equal $1 in discounts)."
+ },
+ {
+  "qid": "488d3006",
+  "question": "I'm planning to go back to the Natural Park of Moncayo mountain in Aragón and I was wondering, what was the name of that hiking trail you recommended that takes you through the park's most stunning la",
+  "truth": "The GR-90 trail.",
+  "model_answer": "GR-90 is the recommended hiking trail in the Natural Park of the Moncayo mountain in Aragón that takes you through the park's most stunning landscapes and offers panoramic views of the surrounding mountainside. It is a 36-kilometer circular trail that takes 2 to 3 days to complete."
+ },
+ {
+  "qid": "f0e564bc",
+  "question": "What is the total amount I spent on the designer handbag and high-end skincare products?",
+  "truth": "$1,300",
+  "model_answer": "The total amount spent on the designer handbag and high-end skincare products is $1300."
+ },
+ {
+  "qid": "gpt4_4929293a",
+  "question": "Which event happened first, my cousin's wedding or Michael's engagement party?",
+  "truth": "Michael's engagement party",
+  "model_answer": "Michael's engagement party happened first. It occurred on May 6, 2023, while the user's cousin's wedding took place on June 15, 2023."
+ },
+ {
+  "qid": "4c36ccef",
+  "question": "Can you remind me of the name of the romantic Italian restaurant in Rome you recommended for dinner?",
+  "truth": "Roscioli",
+  "model_answer": "Roscioli."
+ },
+ {
+  "qid": "fca70973",
+  "question": "I am planning another theme park weekend; do you have any suggestions?",
+  "truth": "The user would prefer theme park suggestions that cater to their interest in both thrill rides and special events, utilizing their previous experiences at Disneyland, Knott's Berry Farm, Six Flags Magic Mountain, and Universal Studios Hollywood as a reference point. They would also appreciate recommendations that highlight unique food experiences and nighttime shows. The user might not prefer suggestions that focus solely on one aspect of theme parks, such as only thrill rides or only family-friendly attractions, and may not be interested in parks that lack special events or unique dining options.",
+  "model_answer": "Visit LA-area theme parks for their upcoming Halloween-themed events: Disneyland's Halloween Time starts in mid-September with seasonal pumpkin beignets, and Knott's Berry Farm, Six Flags Magic Mountain, and Universal Studios Hollywood also offer spooky thrill rides, unique themed food, and nighttim"
+ },
+ {
+  "qid": "3ba21379",
+  "question": "What type of vehicle model am I currently working on?",
+  "truth": "Ford F-150 pickup truck",
+  "model_answer": "Ford Mustang Shelby GT350R model."
+ },
+ {
+  "qid": "gpt4_468eb064",
+  "question": "Who did I meet with during the lunch last Tuesday?",
+  "truth": "Emma",
+  "model_answer": "You met with Emma, a freelance writer and potential collaborator for your project, during lunch last Tuesday (April 11, 2023)."
+ },
+ {
+  "qid": "6f9b354f",
+  "question": "What color did I repaint my bedroom walls?",
+  "truth": "a lighter shade of gray",
+  "model_answer": "A lighter shade of gray."
+ },
+ {
+  "qid": "2ebe6c90",
+  "question": "How many days did it take me to finish 'The Nightingale' by Kristin Hannah?",
+  "truth": "21 days. 22 days (including the last day) is also acceptable.",
+  "model_answer": "It took you 21 days to finish \"The Nightingale\" by Kristin Hannah, from the day you started (January 10, 2023) to the day you finished (January 31, 2023)."
+ },
+ {
+  "qid": "4dfccbf8",
+  "question": "What did I do with Rachel on the Wednesday two months ago?",
+  "truth": "I started taking ukulele lessons with Rachel.",
+  "model_answer": "[SUBJECT_ERROR: HTTPSConnectionPool(host='ark.cn-beijing.volces.com', port=443): Read timed out. (read timeout=180)]"
+ },
+ {
+  "qid": "6456829e_abs",
+  "question": "How many plants did I initially plant for tomatoes and chili peppers?",
+  "truth": "The information provided is not enough. You mentioned planting 5 plants for tomatoes but you did not mention chili peppers.",
+  "model_answer": "You initially planted 5 tomato plants. No information about the number of chili pepper plants you initially planted is available."
+ },
+ {
+  "qid": "gpt4_5dcc0aab",
+  "question": "Which pair of shoes did I clean last month?",
+  "truth": "white Adidas sneakers",
+  "model_answer": "You cleaned your white Adidas sneakers last month. You used a soap and water mixture to wipe down the uppers and air dried them on a balcony for a few hours, making them look like new again."
+ },
+ {
+  "qid": "3e321797",
+  "question": "I wanted to follow up on our previous conversation about natural remedies for dark circles under the eyes. You mentioned applying tomato juice mixed with lemon juice, how long did you say I should lea",
+  "truth": "10 minutes",
+  "model_answer": "You should leave the tomato juice mixed with lemon juice on your under-eye area for 10 minutes, then wash it off with cold water."
+ },
+ {
+  "qid": "06878be2",
+  "question": "Can you suggest some accessories that would complement my current photography setup?",
+  "truth": "The user would prefer suggestions of Sony-compatible accessories or high-quality photography gear that can enhance their photography experience. They may not prefer suggestions of other brands' equipment or low-quality gear.",
+  "model_answer": "Protective cases for your Godox V1 flash are ideal complementary accessories for your Sony A7R IV setup, including the official $25 Godox V1 Hard Case (sturdy and compact) and the Nanuk 915 Hard Case."
+ },
+ {
+  "qid": "77eafa52",
+  "question": "How much more did I have to pay for the trip after the initial quote?",
+  "truth": "$300",
+  "model_answer": "You had to pay $300 more for the trip after the initial quote, as the initial quote was $2,500 and the corrected total trip price was $2,800."
+ }
+]

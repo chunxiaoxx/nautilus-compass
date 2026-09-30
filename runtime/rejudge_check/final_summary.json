@@ -1,0 +1,20 @@
+{
+ "conflicts": [],
+ "mech_n": 85,
+ "agree": 48,
+ "n": 50,
+ "disagreements": [
+  {
+   "qid": "6b7dfb22",
+   "judge": true,
+   "indep": false,
+   "indep_reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+  },
+  {
+   "qid": "gpt4_c27434e8_abs",
+   "judge": true,
+   "indep": false,
+   "indep_reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+  }
+ ]
+}

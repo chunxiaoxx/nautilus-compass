@@ -1,0 +1,32 @@
+写文件未获授权,评分结果直接在此给出(如需落盘为 JSON,请授权 Write,我再写入)。
+
+已盲评全部 50 条(sample_tasks_50.json,逐条对照 question / truth / model_answer)。判定口径:`correct` = 核心事实与 truth 一致(对抗题须正确指出信息缺失、偏好题须锚定用户既有偏好);`partial` = 方向对但有明显缺漏;`incorrect` = 事实矛盾/编造/未产出答案(`[SUBJECT_ERROR]` 超时计 incorrect 并单独标记)。
+
+判定为 incorrect 的 11 条:
+
+| qid | 原因 | 类型 |
+|---|---|---|
+| gpt4_21adecb5 | SUBJECT_ERROR 超时,无答案(truth: 6 months) | 超时 |
+| gpt4_b5700ca9 | SUBJECT_ERROR 超时(truth: 4 days) | 超时 |
+| gpt4_e414231f | SUBJECT_ERROR 超时(truth: road bike) | 超时 |
+| d905b33f | SUBJECT_ERROR 超时(truth: 20%) | 超时 |
+| gpt4_468eb063 | SUBJECT_ERROR 超时(truth: 9 天前) | 超时 |
+| gpt4_f420262d | SUBJECT_ERROR 超时(truth: American Airlines) | 超时 |
+| 4dfccbf8 | SUBJECT_ERROR 超时(truth: 与 Rachel 开始 ukulele 课) | 超时 |
+| 7e00a6cb | 答 The Bulldog Hostel,truth 为 International Budget Hostel | 事实错误 |
+| gpt4_6dc9b45b | 答 "0 months ago" 且称电影节持续到 6/1,与 truth "4 months ago" 矛盾,疑似幻觉时间线 | 事实错误 |
+| gpt4_e05b82a6 | 答 7 次(明细 3+3+1),truth 为 10 次,漏计 | 事实错误 |
+| 3ba21379 | 答 Ford Mustang Shelby GT350R,truth 为 Ford F-150 pickup truck | 事实错误 |
+
+判定为 partial 的 2 条:
+- 6b7dfb22(绘画灵感偏好题):锚定了社媒灵感来源与 30 天绘画挑战,但没给出任何具体建议(revisit 花卉主题、在线教程等),而 truth 明确不偏好 vague suggestions。
+- gpt4_c27434e8_abs(对抗题):正确指出 Porsche 991 Turbo S 项目未被提及,但仍给出 "Ferrari 先开始" 的确定性排序,应直接说明信息不足无法比较。
+
+其余 37 条均为 correct(含 4 条 _abs 对抗题正确识别信息缺失:6aeb4375_abs、2698e78f_abs、15745da0_abs、6456829e_abs;2 条偏好题 fca70973、06878be2 锚定用户既有记忆/器材)。
+
+汇总:
+- 总体:37 correct / 2 partial / 11 incorrect → 二值正确率 74.0%(partial 计 0),加权 76.0%(partial 计 0.5)
+- 11 条 incorrect 中 7 条是 SUBJECT_ERROR(被评方 API 超时,非知识性错误);剔除后 43 条有效,正确率 86.0%(加权 88.4%),内容性错误仅 4 条
+- 分类:factual 42 条 → 31 对/11 错(错全部来自上述 11 条);unanswerable(_abs)5 条 → 4 对/1 partial;preference 3 条 → 2 对/1 partial
+
+方法学提示:对抗题和偏好题是这批样本里区分度最高的部分,该模型在这两类上没有硬伤(无编造);失分主因是 7 次基础设施级超时(14%)和 4 处检索/幻觉型事实错误,若超时可重跑,预计真实能力在 86% 一档。
