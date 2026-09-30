@@ -1,0 +1,7 @@
+{
+ "base_url": "https://infistar.ai/v1",
+ "models": [
+  "REPLACE_WITH_MODEL_LIST"
+ ],
+ "fingerprint_file": "C:\\Users\\chunx\\Projects\\nautilus-compass\\runtime\\infistar_meter\\fingerprints.json"
+}
