@@ -1,0 +1,29 @@
+{
+ "ts": "2026-09-30T16:21:43+08:00",
+ "seed": 20260930,
+ "best_dev_acc": 0.7063,
+ "J1_test_binary_acc": 0.6486,
+ "J1_pass": false,
+ "J2_test_ece_10bin": 0.1369,
+ "J2_pass": false,
+ "J3_U": {
+  "test_U_true": 1,
+  "test_U_pred": 0,
+  "test_U_hit": 0
+ },
+ "per_class": {
+  "pass": {
+   "n": 78,
+   "pred_n": 57
+  },
+  "fail": {
+   "n": 70,
+   "pred_n": 92
+  },
+  "insufficient_evidence": {
+   "n": 1,
+   "pred_n": 0
+  }
+ },
+ "epochs": 1
+}
