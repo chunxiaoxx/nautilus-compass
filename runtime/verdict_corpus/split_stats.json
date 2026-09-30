@@ -1,0 +1,52 @@
+{
+ "seed": 20260930,
+ "ratios": [
+  0.8,
+  0.1,
+  0.1
+ ],
+ "per_split": {
+  "train": {
+   "n": 1162,
+   "labels": {
+    "fail": 546,
+    "pass": 610,
+    "insufficient_evidence": 6
+   },
+   "fams": {
+    "lme": 720,
+    "t3": 6,
+    "rejudge": 400,
+    "bc1": 29,
+    "f15": 7
+   }
+  },
+  "dev": {
+   "n": 143,
+   "labels": {
+    "pass": 71,
+    "fail": 72
+   },
+   "fams": {
+    "rejudge": 50,
+    "lme": 90,
+    "bc1": 3
+   }
+  },
+  "test": {
+   "n": 149,
+   "labels": {
+    "pass": 78,
+    "fail": 70,
+    "insufficient_evidence": 1
+   },
+   "fams": {
+    "rejudge": 50,
+    "f15": 1,
+    "lme": 92,
+    "bc1": 4,
+    "t3": 2
+   }
+  }
+ }
+}
