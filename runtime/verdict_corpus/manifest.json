@@ -1,8 +1,8 @@
 {
-  "exported_at": "2026-09-30T14:00:08+08:00",
+  "exported_at": "2026-09-30T15:00:04+08:00",
   "counts": {
     "labelled": 52,
-    "unlabelled": 46,
+    "unlabelled": 547,
     "p1_target": 500
   },
   "schema": {
@@ -34,6 +34,14 @@
     [
       "runtime/e5_gates_first33.json",
       "33 unlabelled"
+    ],
+    [
+      "vtf/_e2e_diag/arm_a_rows_rejudged.json",
+      "500 unlabelled(judge-self-reported·待复算升级)"
+    ],
+    [
+      "v5:18890 assay_errata.jsonl",
+      "1 unlabelled(errata-registry·smoke)"
     ],
     [
       "vtf/**/aggregated_metrics.json",
