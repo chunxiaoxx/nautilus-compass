@@ -908,8 +908,10 @@ def get_memory_entries(mem_dir: Path):
     return entries
 
 
-# v3.1 · 2026-09-30 · 内存根治刀2(已被 v3.2 预算制替代主控,保留为绝对上限)。
-_ENTRIES_CACHE_MAX_PROJ = int(os.environ.get("COMPASS_ENTRIES_CACHE_MAX_PROJ", "64"))
+# v3.1 · 2026-09-30 · 内存根治刀2(已被 v3.2 预算制替代主控)。MAX_PROJ 仅作
+# 病态膨胀护栏:np 化后 75 项目全驻仅 ~180MB,64 上限会在 75 项目场景硬逐 11 个
+# (合成压测 9/30 实抓:total 52.5k≤预算 300k 仍逐出)——真护栏是预算制,此项放宽。
+_ENTRIES_CACHE_MAX_PROJ = int(os.environ.get("COMPASS_ENTRIES_CACHE_MAX_PROJ", "256"))
 # v3.2 · 2026-09-30 · 刀B:向量容量预算制——np 化后 300k 向量 ≈1.2G 封顶;
 # 预算内零逐出(结构上应不再触发);超预算才逐出最久未用项目(重进走 pkl 回读)。
 _EMBED_BUDGET = int(os.environ.get("COMPASS_EMBED_BUDGET", "300000"))
