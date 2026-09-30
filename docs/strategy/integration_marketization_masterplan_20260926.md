@@ -38,7 +38,7 @@
 | Aegis Compass | coding agent 记忆+治理层 | $20/mo(9/7 调研档) | 动作门强/记忆门弱;无第三方独立性 |
 | UniPat/TypeSafe | 数字域评测+RL 数据+自有模型 | 阿里领投 $3 亿(9/25 flywheel 三证) | **自证悖论**:EchoZ 既评测又做模型;具身零布局;首页宣称已升至 **193.6x Faster/444.6x Cheaper (proof)**(实抓)——自带验证靶;9/30 终核:(proof) 无链接目标·方法页不可寻址,页内 demo 复算仅 171x/75x(§七.3) |
 | Scale AI 类 | 数据标注+eval 服务 | 企业合同 | 重人力非协议化;不做可复算回执 |
-| mem0(YC S24,62.6k star,实抓) | "The memory layer for AI agents" | **Free/$19/$249/Enterprise**(add 请求数分档,实抓) | 选手无裁判;其自报 OmniMemEval=我们墙上的 UNVERIFIED 条目;融资 $24M 已核(Basis Set 领投 A 轮,TechCrunch,§七.1) |
+| mem0(YC S24,62.6k star,实抓) | "The memory layer for AI agents" | **Free/$19/$249/Enterprise**(add 请求数分档,实抓) | 选手无裁判;自报基准=DolphinBench(9/22 博客);融资 $24M 已核(Basis Set 领投 A 轮,TechCrunch,§七.1)。~~OmniMemEval~~(9/30 纠错:OmniMemEval 属 MemTensor/MemOS 非 mem0,先前挂错) |
 | Zep(Zep Software Inc.,实抓) | "unified context layer"+Context Graphs+治理 | **积分制 Flex $25/万credits·$75/4万**(实抓) | **独立运营定谳**(9/30 官网一手:Zep Software, Inc. 署名+卖 Cloud/BYOK/BYOC,收购说不成立,§七.2);治理叙事与我们最近,但无第三方验证 |
 | Letta(实抓) | stateful agents/自编辑记忆 | Free $0 起步+BYO keys(实抓);$10M seed Felicis 领投(TechCrunch 2024-09,§七.4) | 选手无裁判 |
 | MemOS | 研究向(MemCubes 论文) | — | 未商业化 |
