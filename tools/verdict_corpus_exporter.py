@@ -270,6 +270,53 @@ def harvest_e5_gates_unlabelled(path: Path) -> list:
         for qid, v in verdicts.items()]
 
 
+def harvest_rejudge_selfreported(path: Path) -> list:
+    """arm_a 重判 500 题 → unlabelled(judge-self-reported 族)。
+
+    🔴 证伪记录(9/30):行内 is_correct = _parse_judge(judge_raw)(harness
+    L493),judge 开卷判(truth 在 prompt 里)的自报复写,非独立真值对比——
+    500/500"一致"只是同源复写。**不得冒充 labelled**(报数纪律)。
+    升级条件:非实现者抽样(≥10%)独立比对 question/truth/model_answer,
+    一致率达标后整族升 labelled。"""
+    d = json.loads(path.read_text(encoding="utf-8"))
+    return [_sample(
+        sid=f"rejudge-{r.get('question_id')}",
+        source=path,
+        criteria_ref="LME arm-a 重判(同 judge 协议 retry,judge 开卷)",
+        artifact={"question": str(r.get("question"))[:200],
+                  "model_answer": str(r.get("model_answer"))[:200],
+                  "official_truth": r.get("truth")},
+        judge_output={"judge_raw": r.get("judge_raw"),
+                      "is_correct_self": r.get("is_correct")})
+        for r in d.values()]
+
+
+def harvest_errata_registry() -> list:
+    """v5 挑战登记处(第四原语)errata → unlabelled(errata-registry·smoke 族)。
+
+    🔴 smoke 样本(recomputer=v5-smoke 自测),非独立复算,不进 labelled;
+    真实第三方 errata(独立 recomputer)到达后才是 labelled 活水——该登记处
+    是 SSI×Jev 判分器 P3 动态真值供给的正式管道。"""
+    reg = Path(r"C:/Users/chunx/nautilus-v5/vtf/assay_errata.jsonl")
+    if not reg.exists():
+        return []
+    out = []
+    for line in reg.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        e = json.loads(line)
+        out.append(_sample(
+            sid=f"errata-{e.get('challenge_id')}",
+            source=reg,
+            criteria_ref="挑战登记处 18890(90 天窗·只追加不删)",
+            artifact={"original_verdict_ref": e.get("original_verdict_ref"),
+                      "reason": e.get("reason")},
+            judge_output={"new_verdict": e.get("new_verdict"),
+                          "recomputer": e.get("recomputer"),
+                          "status": e.get("status")}))
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="runtime/verdict_corpus")
@@ -317,6 +364,20 @@ def main():
         unlabelled += ss
         src_summary.append(("runtime/e5_gates_first33.json",
                             f"{len(ss)} unlabelled"))
+
+    # S6 · arm-a 重判 500 题(judge 自报族,待非实现者抽样复算升级)
+    rj = ROOT / "vtf" / "_e2e_diag" / "arm_a_rows_rejudged.json"
+    if rj.exists():
+        ss = harvest_rejudge_selfreported(rj)
+        unlabelled += ss
+        src_summary.append(("vtf/_e2e_diag/arm_a_rows_rejudged.json",
+                            f"{len(ss)} unlabelled(judge-self-reported·待复算升级)"))
+
+    # S7 · v5 挑战登记处 errata(第四原语,smoke 族)
+    ss = harvest_errata_registry()
+    unlabelled += ss
+    src_summary.append(("v5:18890 assay_errata.jsonl",
+                        f"{len(ss)} unlabelled(errata-registry·smoke)"))
 
     # S3 · vtf aggregated_metrics(unlabelled;复算记录的 run 在 v1 挂标签)
     n_vtf = 0
