@@ -1,0 +1,30 @@
+{
+ "resp": {
+  "verdicts": {
+   "live-arch3-ok-1": "pass",
+   "live-arch3-ok-2": "pass"
+  },
+  "detail": {
+   "live-arch3-ok-1": {
+    "verdict": "pass",
+    "g1": "pass",
+    "g2": "pass",
+    "g3": "pass",
+    "sample_for_recheck": false,
+    "detail": {}
+   },
+   "live-arch3-ok-2": {
+    "verdict": "pass",
+    "g1": "pass",
+    "g2": "pass",
+    "g3": "pass",
+    "sample_for_recheck": true,
+    "detail": {}
+   }
+  },
+  "hook_fired": 0,
+  "signature": "8bda83d1513ae6976e6df7a53e98c34be39ff878cf17701ddff4e70525e3f117",
+  "ts": 1790766551.9187517
+ },
+ "replay_ok": true
+}
