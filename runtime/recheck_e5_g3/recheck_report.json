@@ -1,0 +1,45 @@
+{
+ "seed": 20260930,
+ "sample": [
+  "e5_20260929_174832_1",
+  "e5_20260929_160840_2",
+  "e5_20260929_142538_3"
+ ],
+ "results": [
+  {
+   "qid": "e5_20260929_174832_1",
+   "recorded": "pass",
+   "artifact_exists": true,
+   "artifact_parsable": true,
+   "g1_replay": "pass",
+   "g1_replay_why": "",
+   "artifact_bytes": 1260,
+   "g2_replayable": false,
+   "g3_replayable": false
+  },
+  {
+   "qid": "e5_20260929_160840_2",
+   "recorded": "pass",
+   "artifact_exists": true,
+   "artifact_parsable": true,
+   "g1_replay": "pass",
+   "g1_replay_why": "",
+   "artifact_bytes": 1342,
+   "g2_replayable": false,
+   "g3_replayable": false
+  },
+  {
+   "qid": "e5_20260929_142538_3",
+   "recorded": "pass",
+   "artifact_exists": true,
+   "artifact_parsable": true,
+   "g1_replay": "pass",
+   "g1_replay_why": "",
+   "artifact_bytes": 1353,
+   "g2_replayable": false,
+   "g3_replayable": false
+  }
+ ],
+ "g1_layer_pass": true,
+ "gap": "原始判分请求未归档,G2/G3 判分输入不可重放"
+}
