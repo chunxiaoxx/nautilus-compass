@@ -9,7 +9,8 @@ X.com 的 compose box 是 Draft.js 编辑器:
 - CDP Input.insertText → 文字丢失(React state 不更新)
 - document.execCommand("insertText") → **唯一有效**(经浏览器编辑管线,Draft.js 拦截)
 - 编辑器选择器: [data-testid="tweetTextarea_0"]
-- Post 按钮: [data-testid="tweetButton"]
+- Post 按钮: [data-testid="tweetButtonInline"](compose/post 页;9/30 晚实证 tweetButton 不存在,
+  inline 才是发帖钮;发后跳 graduated-access 过渡页属正常,验证走 profile 首条)
 
 ## 发帖流程:
 1. Page.navigate → x.com/compose/post
