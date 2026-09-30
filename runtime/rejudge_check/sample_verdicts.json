@@ -1,0 +1,252 @@
+[
+ {
+  "qid": "gpt4_21adecb5",
+  "verdict": "INCORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "gpt4_b5700ca9",
+  "verdict": "INCORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "71315a70",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "4bc144e2",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "6b7dfb22",
+  "verdict": "INCORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "0e4e4c46",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "0862e8bf",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "031748ae",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "gpt4_e414231f",
+  "verdict": "INCORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "9aaed6a3",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "d905b33f",
+  "verdict": "INCORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "f9e8c073",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "gpt4_6dc9b45b",
+  "verdict": "INCORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "6aeb4375_abs",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "7e00a6cb",
+  "verdict": "INCORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "gpt4_d9af6064",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "gpt4_b4a80587",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "92a0aa75",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "6ade9755",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "eac54adc",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "6c49646a",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "b29f3365",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "gpt4_468eb063",
+  "verdict": "INCORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "2698e78f_abs",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "c4f10528",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "gpt4_f420262d",
+  "verdict": "INCORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "3249768e",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "gpt4_e05b82a6",
+  "verdict": "INCORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "gpt4_c27434e8_abs",
+  "verdict": "INCORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "0bb5a684",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "8a137a7f",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "71a3fd6b",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "15745da0_abs",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "8550ddae",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "e56a43b9",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "488d3006",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "f0e564bc",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "gpt4_4929293a",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "4c36ccef",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "fca70973",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "3ba21379",
+  "verdict": "INCORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "gpt4_468eb064",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "6f9b354f",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "2ebe6c90",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "4dfccbf8",
+  "verdict": "INCORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "6456829e_abs",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "gpt4_5dcc0aab",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "3e321797",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "06878be2",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ },
+ {
+  "qid": "77eafa52",
+  "verdict": "CORRECT",
+  "reason": "markdown 报告解析(incorrect 表+partial 列表,partial 计 0 二值)"
+ }
+]

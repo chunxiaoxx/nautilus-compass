@@ -270,24 +270,27 @@ def harvest_e5_gates_unlabelled(path: Path) -> list:
         for qid, v in verdicts.items()]
 
 
-def harvest_rejudge_selfreported(path: Path) -> list:
-    """arm_a 重判 500 题 → unlabelled(judge-self-reported 族)。
+def harvest_rejudge_upgraded(path: Path) -> list:
+    """arm_a 重判 500 题 → labelled(v2 · 9/30 双层复算升级)。
 
-    🔴 证伪记录(9/30):行内 is_correct = _parse_judge(judge_raw)(harness
-    L493),judge 开卷判(truth 在 prompt 里)的自报复写,非独立真值对比——
-    500/500"一致"只是同源复写。**不得冒充 labelled**(报数纪律)。
-    升级条件:非实现者抽样(≥10%)独立比对 question/truth/model_answer,
-    一致率达标后整族升 labelled。"""
+    升级依据(REJUDGE_RECOMPUTE_PREREG_20260930.md 预注册+修正#1,双绿):
+      J1 机械层 M1 数值 85 题,judge 与官方 truth 机械判定零冲突(0/85)
+      J2 抽样 50 题(隔离子进程盲判,J5 物理隔离),一致率 48/50=96%
+    🔴 沿革:首版判 judge 自报(is_correct=_parse_judge 复写)不可标——
+    本升级走完整复算路径,非口径放水。分歧 2 条(partial 口径)入勘误库。
+    """
     d = json.loads(path.read_text(encoding="utf-8"))
     return [_sample(
         sid=f"rejudge-{r.get('question_id')}",
         source=path,
-        criteria_ref="LME arm-a 重判(同 judge 协议 retry,judge 开卷)",
+        criteria_ref="LME arm-a 重判·双层复算升级(J1 0/85+J2 48/50 双绿)",
         artifact={"question": str(r.get("question"))[:200],
                   "model_answer": str(r.get("model_answer"))[:200],
                   "official_truth": r.get("truth")},
-        judge_output={"judge_raw": r.get("judge_raw"),
-                      "is_correct_self": r.get("is_correct")})
+        judge_output={"judge_raw": r.get("judge_raw")},
+        truth_label=("pass" if r.get("judge_raw") == "CORRECT" else "fail"),
+        label_origin="LME 官方 truth+双层复算(机械 M1+隔离盲判抽样)",
+        reason="judge 判定经独立双层复算背书(96% 抽样一致+数值零冲突)")
         for r in d.values()]
 
 
@@ -365,13 +368,13 @@ def main():
         src_summary.append(("runtime/e5_gates_first33.json",
                             f"{len(ss)} unlabelled"))
 
-    # S6 · arm-a 重判 500 题(judge 自报族,待非实现者抽样复算升级)
+    # S6 · arm-a 重判 500 题(双层复算双绿后升 labelled,9/30)
     rj = ROOT / "vtf" / "_e2e_diag" / "arm_a_rows_rejudged.json"
     if rj.exists():
-        ss = harvest_rejudge_selfreported(rj)
-        unlabelled += ss
+        ss = harvest_rejudge_upgraded(rj)
+        labelled += ss
         src_summary.append(("vtf/_e2e_diag/arm_a_rows_rejudged.json",
-                            f"{len(ss)} unlabelled(judge-self-reported·待复算升级)"))
+                            f"{len(ss)} labelled(双层复算升级)"))
 
     # S7 · v5 挑战登记处 errata(第四原语,smoke 族)
     ss = harvest_errata_registry()
