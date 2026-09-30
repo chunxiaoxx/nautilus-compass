@@ -1,0 +1,34 @@
+{
+ "resp": {
+  "verdicts": {
+   "live-arch2-ok-1": "unverifiable",
+   "e5_20260929_174832_1": "pass"
+  },
+  "detail": {
+   "live-arch2-ok-1": {
+    "verdict": "unverifiable",
+    "g1": "unverifiable",
+    "g2": "pass",
+    "g3": "pass",
+    "sample_for_recheck": false,
+    "detail": {
+     "g1": "artifacts_ref unresolvable"
+    }
+   },
+   "e5_20260929_174832_1": {
+    "verdict": "pass",
+    "g1": "pass",
+    "g2": "pass",
+    "g3": "pass",
+    "sample_for_recheck": false,
+    "detail": {}
+   }
+  },
+  "hook_fired": 1,
+  "signature": "cdcd0997c5654b818bb80e8b50fa8d62a61357af5954c7c568476959e2965c1d",
+  "ts": 1790766492.4586933
+ },
+ "archive_rows": 1,
+ "replay_ok": false,
+ "arch_path": "ops\\assay_gates\\archive\\judged_requests.jsonl"
+}

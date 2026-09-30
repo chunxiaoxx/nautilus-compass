@@ -39,8 +39,10 @@ def load_cfg():
 CFG = load_cfg()
 # 2026-09-30 · G2/G3 重放缺口闭合:原始判分请求随结果归档(jsonl append,
 # 一请求一行,含判分输入全量——text 截断=重放失真,RSI 环 J3 教训,不截断)。
-ARCHIVE_PATH = os.path.expanduser(CFG.get("request_archive",
-                                          "ops/assay_gates/archive/judged_requests.jsonl"))
+# 路径锚定脚本自身目录(实弹教训:相对路径随服务 cwd 漂移,首跑归档写进了
+# ops/assay_gates/ops/assay_gates/archive/ 嵌套目录);CFG 可配绝对路径覆盖。
+ARCHIVE_PATH = os.path.expanduser(CFG.get("request_archive") or str(
+    Path(__file__).resolve().parent / "archive" / "judged_requests.jsonl"))
 
 
 def archive_request(body: dict, results: dict, fired: bool, ts: float, sig: str):
@@ -59,6 +61,10 @@ def archive_request(body: dict, results: dict, fired: bool, ts: float, sig: str)
 
 
 def _resolvable(ref):
+    """引用可解析判定。2026-09-30 实弹红灯修复:本地相对路径双解析
+    (服务 cwd + 仓根)——判分结果曾随服务 cwd 漂移(README.md 在 ops/assay_gates
+    下不存在→G1 unverifiable,仓根下存在→pass),同一请求两次判分不同=
+    不可复现,违反判分器立身之本。"""
     if not ref or not isinstance(ref, str):
         return False
     if ref.startswith(("http://", "https://")):
@@ -70,7 +76,10 @@ def _resolvable(ref):
             return False
     if ref.startswith(("repo@", "git@", "sha256:")):
         return len(ref) > 10
-    return os.path.exists(ref)
+    if os.path.isabs(ref):
+        return os.path.exists(ref)
+    root = Path(__file__).resolve().parent.parent.parent
+    return os.path.exists(ref) or (root / ref).exists()
 
 
 def gate_g1(t):
