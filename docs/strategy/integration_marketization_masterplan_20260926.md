@@ -3,7 +3,7 @@
 > 四问:BC1 价值不足的应对/compass 与平台组织融合盘点/Assay 市场化/
 > 与 Jev 融合创新。调研基线=仓内 9/20-25 调研档(UniPat 三证 1018/
 > Aegis 9/7/Jev 重估 9/20/考场调研 9/16)+**竞品官网一手实抓(9/26 晚,
-> curl 直取,非二手报道)**。残余待核项见 §七。
+> curl 直取,非二手报道)**。残余待核四项已于 9/30 全部终核定谳(见 §七)。
 
 ## 一 · BC1:接受「价值不够」,降格重组
 
@@ -36,11 +36,11 @@
 | 竞品(9/26 官网一手核验) | 位置 | 定价(实抓) | 与我们差异 |
 |---|---|---|---|
 | Aegis Compass | coding agent 记忆+治理层 | $20/mo(9/7 调研档) | 动作门强/记忆门弱;无第三方独立性 |
-| UniPat/TypeSafe | 数字域评测+RL 数据+自有模型 | 阿里领投 $3 亿(9/25 flywheel 三证) | **自证悖论**:EchoZ 既评测又做模型;具身零布局;首页宣称已升至 **193.6x Faster/444.6x Cheaper (proof)**(实抓)——自带验证靶 |
+| UniPat/TypeSafe | 数字域评测+RL 数据+自有模型 | 阿里领投 $3 亿(9/25 flywheel 三证) | **自证悖论**:EchoZ 既评测又做模型;具身零布局;首页宣称已升至 **193.6x Faster/444.6x Cheaper (proof)**(实抓)——自带验证靶;9/30 终核:(proof) 无链接目标·方法页不可寻址,页内 demo 复算仅 171x/75x(§七.3) |
 | Scale AI 类 | 数据标注+eval 服务 | 企业合同 | 重人力非协议化;不做可复算回执 |
-| mem0(YC S24,62.6k star,实抓) | "The memory layer for AI agents" | **Free/$19/$249/Enterprise**(add 请求数分档,实抓) | 选手无裁判;其自报 OmniMemEval=我们墙上的 UNVERIFIED 条目 |
-| Zep(Zep Software Inc.,实抓) | "unified context layer"+Context Graphs+治理 | **积分制 Flex $25/万credits·$75/4万**(实抓) | 仍独立运营(⚠训练知识称被 NVIDIA 收购,官网无此迹象,存疑待核);治理叙事与我们最近,但无第三方验证 |
-| Letta(实抓) | stateful agents/自编辑记忆 | Free $0 起步+BYO keys(实抓) | 选手无裁判 |
+| mem0(YC S24,62.6k star,实抓) | "The memory layer for AI agents" | **Free/$19/$249/Enterprise**(add 请求数分档,实抓) | 选手无裁判;其自报 OmniMemEval=我们墙上的 UNVERIFIED 条目;融资 $24M 已核(Basis Set 领投 A 轮,TechCrunch,§七.1) |
+| Zep(Zep Software Inc.,实抓) | "unified context layer"+Context Graphs+治理 | **积分制 Flex $25/万credits·$75/4万**(实抓) | **独立运营定谳**(9/30 官网一手:Zep Software, Inc. 署名+卖 Cloud/BYOK/BYOC,收购说不成立,§七.2);治理叙事与我们最近,但无第三方验证 |
+| Letta(实抓) | stateful agents/自编辑记忆 | Free $0 起步+BYO keys(实抓);$10M seed Felicis 领投(TechCrunch 2024-09,§七.4) | 选手无裁判 |
 | MemOS | 研究向(MemCubes 论文) | — | 未商业化 |
 
 **我们的空位=裁判位**:「在信任无法自证处提供可复算第三方真值」。
@@ -92,9 +92,13 @@ mini 免费首检(T3 模式已实证)→ DCR $99-499(48h 签名报告,渠道=Jev
 **组织是车间,Assay 是门店,Jev 生态是客流,判绩账是账本**——
 BC1 从产品降为开业鞭炮;真产品是「可复算的信任」本身。
 
-## 七 · 残余待核项(9/30 搜索配额恢复后终核)
+## 七 · 残余待核项终核(2026-09-30 完结,四项全定谳)
 
-1. mem0 Series A 数额(训练知识称 $24M/Abstract Ventures 领投——官网未见,一手渠道已核定位与定价,数额待新闻源)
-2. Zep×NVIDIA 关系真相(官网显示独立运营+卖积分;训练知识称 2025 被收购——矛盾,待新闻源定谳)
-3. TypeSafe"193.6x/444.6x (proof)"的 proof 工件本体(首页有 (proof) 链接字样,待抓取其基准方法页——**这本身就是 calibration-claim-verify-v1 的第一活靶**,核验动作=市场动作)
-4. Letta 融资数额($10M 训练知识,待核)
+1. **mem0 Series A ✅**:$24M(=$3.9M seed+$20M Series A),**Basis Set Ventures 领投 A 轮**(训练知识"Abstract Ventures 领投"系错误);seed 由 Kindred Ventures 领投;YC/Peak XV/GitHub Fund 跟投。Traction:41k+ star、13M+ PyPI 下载、API 调用 Q1 35M→Q3 186M、80k 云开发者、AWS Agent SDK 独家记忆商;"Plaid for memory"定位。
+   源:TechCrunch 2025-10-28(Tage Kene-Okafor)· techcrunch.com/2025/10/28/mem0-raises-24m-from-yc-peak-xv-and-basis-set-to-build-the-memory-layer-for-ai-apps/
+2. **Zep×NVIDIA ✅ 定谳=独立运营,收购说不成立**:zep.ai 一手(9/30 实抓)creator/publisher 均署 "Zep Software, Inc.",卖 Cloud/BYOK/BYOC 三种部署(SOC 2 Type II+HIPAA BAA),产品已转型 "unified context layer for enterprise data"(Context Lake/Konig 图库)——纯 agent memory 赛道已撤、治理叙事与我们正面对位;官网挂 LoCoMo 94.7%/LongMemEval 90.2%(自报,无第三方验证)。训练知识"2025 被 NVIDIA 收购"判为幻觉。
+   源:zep.ai(2026-09-30 实抓)
+3. **TypeSafe proof ✅ 核验=不可寻址(calibration-claim-verify 第一活靶已打)**:首页 "(proof)" 为纯文字无链接目标(HTML 直检无 proof/benchmark/eval href;typesafe.ai/pricing 404);页内可复算 demo:$0.000081 vs $0.013880=171x、0.114s vs 8.566s=75x,均低于 headline 193.6x/444.6x(**同页双口径**);新增价格锚 $42/B input tokens、"238x Lower input price than Claude Fable 5.1"(42×238≈$10/M,自洽)。结论:倍率声明不可独立复算,方法页不存在——印证 9/26 两簇分析(headline 倍率疑来自更贵 LLM 对照簇)。
+   源:typesafe.ai(2026-09-30 实抓+HTML 直检)
+4. **Letta 融资 ✅**:$10M **seed**(非 A 轮),Felicis 领投(Astasia Myers),估值 $70M post-money,2024-09-23 出 stealth;天使含 Jeff Dean/Clem Delangue/Robert Nishihara;博客至 2026-09 无后续轮公告;mem0 报道中"Felicis-backed Letta"交叉印证。
+   源:TechCrunch 2024-09-23(Julie Bort)· techcrunch.com/2024/09/23/letta-one-of-uc-berkeleys-most-anticipated-ai-startups-has-just-come-out-of-stealth/
