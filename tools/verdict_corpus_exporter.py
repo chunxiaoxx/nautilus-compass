@@ -214,6 +214,62 @@ def harvest_bc1_scorecard(bc_dir: Path) -> list:
     return out
 
 
+def harvest_t3_blind(t3_dir: Path) -> list:
+    """T3 jev-curate 首个外部履约 → 盲评真值样本(n=5)+ 三 findings 系统性错误样本。
+
+    三层结构(仓内最完整的判绩账样本族):
+      judge_output = jev-curate 腿判定(RESULTS.md 读数表)
+      truth_label  = blind_labels.json(独立会话盲评,只读 blind_pack 未读结果)
+      勘误层       = RECOMPUTE_REPORT(独立复算 RED→6 处勘误,R1 标注分歧未预披露)
+    """
+    bl = json.loads((t3_dir / "blind_labels.json").read_text(encoding="utf-8"))
+    out = []
+    for row in bl.get("labels", []):
+        rid = row.get("rid", "?")
+        out.append(_sample(
+            sid=f"t3-jevcurate-{rid}",
+            source=t3_dir / "blind_labels.json",
+            criteria_ref="T3 mini jev-curate PROTOCOL.md(预注册判据)",
+            artifact={"rid": rid, "probe": "jev-trust-probe-format-t3-*.jsonl",
+                      "rationale": row.get("rationale", "")[:200]},
+            judge_output={"delivery": "RESULTS.md 读数表(noul/depth 腿+阈值判定)",
+                          "verdict": "见 RESULTS.md(逐行腿输出)"},
+            truth_label=("fail" if row.get("y_circ") == 1 else "pass"),
+            label_origin="T3 独立盲评(recompute-agent·只读 blind_pack·2026-09-26)",
+            reason=f"y_circ={row.get('y_circ')} d_depth={row.get('d_depth')}"
+                   "(1-5 标尺;复算层另证 R1 标注分歧未预披露=预注册纪律样本)"))
+    # 三 findings=判分管线系统性错误+人工定性(F1 格式/F2 标尺/F3 误拒)
+    for fid, desc in [
+        ("F1", "score 腿 criteria dict 在真 API 必 422,生产全量拒收(格式 bug 非阈值问题)"),
+        ("F2", "标尺错位:真 API 0-4 vs 阈值按 1-5 写,depth 腿真值 4 的正确行也被拒"),
+        ("F3", "R3 纯断言行被 noul 腿误拒(方向对腿标签错):口径敏感点 S1"),
+    ]:
+        out.append(_sample(
+            sid=f"t3-finding-{fid}",
+            source=t3_dir / "RESULTS.md",
+            criteria_ref="T3 主批 findings(生产影响排序)",
+            artifact={"finding": fid, "evidence": "RESULTS.md 原文+probe jsonl"},
+            judge_output={"pipeline": "jev-curate reasoning-math preset 生产路径"},
+            truth_label="fail",
+            label_origin="T3 主批审计+独立复算(RECOMPUTE_REPORT)",
+            reason=desc))
+    return out
+
+
+def harvest_e5_gates_unlabelled(path: Path) -> list:
+    """e5 三门判分首件(33 题):gates 自动三态+hook 实弹+签名。
+    无人工逐题对照 → unlabelled(诚实处理,不拿自动判分冒充真值)。"""
+    d = json.loads(path.read_text(encoding="utf-8"))
+    verdicts = d.get("verdicts") or {}
+    return [_sample(
+        sid=f"e5gates-{qid}",
+        source=path,
+        criteria_ref="三门真门 G1-G3(ops/assay_gates/gates_v1.py)",
+        artifact={"qid": qid, "hook_fired": d.get("hook_fired")},
+        judge_output={"gates_verdict": v})
+        for qid, v in verdicts.items()]
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="runtime/verdict_corpus")
@@ -245,6 +301,22 @@ def main():
         ss = harvest_judge_pack_unlabelled(p)
         unlabelled += ss
         src_summary.append((str(p.relative_to(ROOT)), f"{len(ss)} unlabelled"))
+
+    # S4 · T3 jev-curate 盲评真值(外部首单三层:交付 vs 盲评 vs 复算)
+    t3_dir = ROOT / "runtime" / "jev_trust_t3_jevcurate_20260924"
+    if (t3_dir / "blind_labels.json").exists():
+        ss = harvest_t3_blind(t3_dir)
+        labelled += ss
+        src_summary.append(("runtime/jev_trust_t3_jevcurate_20260924/",
+                            f"{len(ss)} labelled"))
+
+    # S5 · e5 三门判分首件(33 题自动判分,无人工对照 → unlabelled)
+    e5 = ROOT / "runtime" / "e5_gates_first33.json"
+    if e5.exists():
+        ss = harvest_e5_gates_unlabelled(e5)
+        unlabelled += ss
+        src_summary.append(("runtime/e5_gates_first33.json",
+                            f"{len(ss)} unlabelled"))
 
     # S3 · vtf aggregated_metrics(unlabelled;复算记录的 run 在 v1 挂标签)
     n_vtf = 0
