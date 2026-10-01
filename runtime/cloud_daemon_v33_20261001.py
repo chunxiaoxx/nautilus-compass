@@ -842,10 +842,13 @@ def get_memory_entries(mem_dir: Path):
             import hashlib as _hl_rr
             _pkl_rr = CACHE_DIR / f"{_hl_rr.sha256(proj_key.encode()).hexdigest()[:12]}.pkl"
             if _pkl_rr.exists():
-                _data_rr = pickle.load(open(_pkl_rr, "rb"))
-                _c_rr = _data_rr.get("embeddings", {}) if isinstance(_data_rr, dict) else {}
-                if _c_rr:
-                    _state["memory_caches"][proj_key] = cache = _npify_cache(_c_rr)  # v3.3
+                if _pkl_rr.stat().st_size > 200 * 1024 * 1024:  # v3.3.1 · lazy 同防巨物(实测教训:warmup 防了 lazy 没防,生产流量载入 999MB PyList 顶穿)
+                    log(f"pkl lazy skip-big {_pkl_rr.stem}: {_pkl_rr.stat().st_size // (1024*1024)}MB (re-embed on demand)")
+                else:
+                    _data_rr = pickle.load(open(_pkl_rr, "rb"))
+                    _c_rr = _data_rr.get("embeddings", {}) if isinstance(_data_rr, dict) else {}
+                    if _c_rr:
+                        _state["memory_caches"][proj_key] = cache = _npify_cache(_c_rr)  # v3.3
         except Exception:
             pass
     with _mem_lock(proj_key):  # v3.0.3 · serialize fill+flush per project
