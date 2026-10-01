@@ -17,6 +17,7 @@
 | 8 | 判分器热路径接入清单 | 15min | ✅ R6(docs/metering/JUDGE_HOTPATH_INTEGRATION_PLAN_20261001.md,S1-S5 判据草案) |
 | 9 | 判分器热路径:延迟预算实测(本地 CPU 推理一例计时) | 15min | ⏳ |
 | 12 | F15 glm 腿样本抽取脚本备好(额度窗口到即跑) | 10min | ⏳ |
+| 21 | lint-report 实现(VerifyPack 第七命令,立项档 docs/plans/NARRATIVE_DRIFT_LINT_CHARTER_20261002.md,L1-L6 判据已预注册,触发实例=10/1 jev_cvscreen 叙事层事故) | 0.5-1d | ⏳ 死线四件后窗口 |
 
 ## 定时件(到点触发,不在队列)
 
