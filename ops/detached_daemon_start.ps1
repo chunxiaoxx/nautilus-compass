@@ -7,7 +7,7 @@
 # 幂等:活着就退出;半死(端口在听无响应)先精确清场再拉起。
 $ErrorActionPreference = 'Continue'
 $Dir      = 'C:\Users\chunx\.claude\plugins\nautilus-compass'
-$Pythonw  = "$env:LOCALAPPDATA\Microsoft\WindowsApps\pythonw.exe"
+$Pythonw  = "C:\Users\chunx\Projects\nautilus-compass\.venv\Scripts\pythonw.exe"
 $LogFile  = Join-Path $Dir '.cache\detached_wd.log'
 $TokenFile = Join-Path $HOME '.claude\.cache\compass_daemon_token'
 

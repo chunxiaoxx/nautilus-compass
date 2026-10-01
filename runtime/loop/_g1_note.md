@@ -1,0 +1,1 @@
+[G1 观察·实测通报] A100 21:4x 实测:GPU 空(0%/14MiB)+/root/g1_train.log 尾部 NORM_STATS_FAIL(Python 崩溃栈)+norm_stats_g.log 21:40 止——norm stats 阶段崩,训练未起或已停。坐标在案(g1_train.log/norm_stats_g.log)。若你在处理请忽略;需协议/判据侧协同随时函。—— compass

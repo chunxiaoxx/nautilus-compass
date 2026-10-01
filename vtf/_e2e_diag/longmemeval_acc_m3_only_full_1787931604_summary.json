@@ -1,0 +1,22 @@
+{
+  "pipeline": "m3-only",
+  "subject_model": "doubao-seed-2-0-pro-260215",
+  "judge_model": "glm-5.3-flash",
+  "subject_temperature": 0.1,
+  "vote_n": 1,
+  "n": 125,
+  "accuracy": 0.568,
+  "by_type": {
+    "knowledge-update": {
+      "n": 69,
+      "correct": 57,
+      "acc": 0.8260869565217391
+    },
+    "single-session-assistant": {
+      "n": 56,
+      "correct": 14,
+      "acc": 0.25
+    }
+  },
+  "out_jsonl": "/root/e2e/nautilus-compass/.cache/longmemeval_acc_m3_only_full_1787931604.jsonl"
+}

@@ -1,0 +1,213 @@
+{
+  "overall": {
+    "overall_full_set": 0.38333333333333336,
+    "overall_non_abstention_only": 0.2976190476190476,
+    "overall_abstention_only": 0.5833333333333334,
+    "count_all_questions": 240,
+    "count_non_abstention": 168,
+    "count_abstention": 72
+  },
+  "non_abstention_by_category": {
+    "static": {
+      "count": 60,
+      "pct_correct": 0.13333333333333333,
+      "pct_answered_wrong": 0.8666666666666667,
+      "pct_unknown": 0.0
+    },
+    "dynamic": {
+      "count": 51,
+      "pct_correct": 0.1568627450980392,
+      "pct_answered_wrong": 0.8431372549019608,
+      "pct_unknown": 0.0
+    },
+    "procedure": {
+      "count": 42,
+      "pct_correct": 0.6428571428571429,
+      "pct_answered_wrong": 0.35714285714285715,
+      "pct_unknown": 0.0
+    },
+    "gotchas": {
+      "count": 15,
+      "pct_correct": 0.4666666666666667,
+      "pct_answered_wrong": 0.5333333333333333,
+      "pct_unknown": 0.0
+    }
+  },
+  "abstention_by_category": {
+    "static-abs": {
+      "count": 31,
+      "pct_correct": 0.7419354838709677,
+      "pct_answered_wrong": 0.25806451612903225,
+      "pct_unknown": 0.0
+    },
+    "dynamic-abs": {
+      "count": 21,
+      "pct_correct": 0.5238095238095238,
+      "pct_answered_wrong": 0.47619047619047616,
+      "pct_unknown": 0.0
+    },
+    "procedure-abs": {
+      "count": 20,
+      "pct_correct": 0.4,
+      "pct_answered_wrong": 0.6,
+      "pct_unknown": 0.0
+    }
+  },
+  "combined_abstention_by_category": {
+    "static": {
+      "count": 91,
+      "pct_correct": 0.34065934065934067,
+      "pct_answered_wrong": 0.6593406593406593,
+      "pct_unknown": 0.0
+    },
+    "dynamic": {
+      "count": 72,
+      "pct_correct": 0.2638888888888889,
+      "pct_answered_wrong": 0.7361111111111112,
+      "pct_unknown": 0.0
+    },
+    "procedure": {
+      "count": 62,
+      "pct_correct": 0.5645161290322581,
+      "pct_answered_wrong": 0.43548387096774194,
+      "pct_unknown": 0.0
+    }
+  },
+  "abstention_overall": {
+    "count": 72,
+    "pct_correct": 0.5833333333333334,
+    "pct_answered_wrong": 0.4166666666666667,
+    "pct_unknown": 0.0
+  },
+  "tokens": {
+    "prompt_tokens": 1623583,
+    "completion_tokens": 1213335,
+    "total_tokens": 2836918,
+    "avg_prompt_tokens": 6764.929166666667,
+    "avg_completion_tokens": 5055.5625,
+    "avg_total_tokens": 11820.491666666667
+  },
+  "memory_context": {
+    "avg_original_tokens": 6051.608333333334,
+    "avg_final_tokens": 6051.608333333334,
+    "num_truncated_sequences": 0
+  },
+  "memory_query": {
+    "avg_seconds": 0.432005727695838,
+    "p50_seconds": 0.2801908229998844,
+    "p95_seconds": 0.5786318430000392,
+    "max_seconds": 28.08507480900016,
+    "total_seconds": 103.68137464700112
+  },
+  "memory_post_query": {
+    "avg_seconds": 9.355283329644712e-06,
+    "p50_seconds": 7.822000043233857e-06,
+    "p95_seconds": 1.4806999843131052e-05,
+    "max_seconds": 5.1683000037883176e-05,
+    "total_seconds": 0.0022452679991147306
+  },
+  "completed_at_utc": "2026-08-31T16:33:53.803212+00:00",
+  "shared_haystack": true,
+  "shared_haystack_ids": [
+    "dce5a79b",
+    "8a6653c8",
+    "2d00b63d",
+    "4ae82e48",
+    "06c70de4",
+    "3ac1289c",
+    "518d6fea",
+    "9cd66f15",
+    "c7fec7e9",
+    "317e3887",
+    "894816c3",
+    "f1b80250",
+    "28e88ef7",
+    "2325099f",
+    "89ea183d",
+    "ab3a3f6b",
+    "41e879fd",
+    "dbddeaa4",
+    "6d5f3f24",
+    "576d210a",
+    "ffcfdab5",
+    "ff54501d",
+    "1ad1af4b",
+    "4ba5e9cb",
+    "bfd28157",
+    "8db2b8cf",
+    "755aa9ff",
+    "290edbec",
+    "909f8b7e",
+    "ac3ecf96",
+    "6ea56646",
+    "01b7cff8",
+    "cdc1b110",
+    "8012d4f3",
+    "8a19ff1d",
+    "8e64f1b1",
+    "53f7b75e",
+    "763605f1",
+    "5110abd0",
+    "e43e60e4",
+    "0de8561d",
+    "06a17a60",
+    "868ad4c0",
+    "87d5dc7f",
+    "70cc15dc",
+    "2ab85f90",
+    "6279dd00",
+    "ef39085f",
+    "d4949793",
+    "e5aec2da",
+    "78f5c752",
+    "439eed03",
+    "2e8f6477",
+    "90d36b63",
+    "2305e825",
+    "b9109177",
+    "6474579e",
+    "0eef1502",
+    "639cb243",
+    "2a99f536",
+    "ba84f3cc",
+    "366f17da",
+    "c605a94c",
+    "e9db8fea",
+    "02817e5d",
+    "e94615d0",
+    "a48b860b",
+    "3331c568",
+    "d0bcf4db",
+    "128b0f46",
+    "c8041f65",
+    "e45b6563",
+    "e9a95d4f",
+    "3e919e78",
+    "83047b5f",
+    "1e58cea9",
+    "3b4ea1fd",
+    "64bdcaff",
+    "83fa29f7",
+    "2e66df34",
+    "19022110",
+    "11c4dfb8",
+    "07d1d6f4",
+    "5502a021",
+    "80f5526c",
+    "a5a78494",
+    "aacfe598",
+    "1b41458b",
+    "56b3344d",
+    "2af3e2bb",
+    "dddd8aa2",
+    "00c06bce",
+    "e471cc29",
+    "028ee25f",
+    "af969ebc",
+    "b1c719fb",
+    "7633c3df",
+    "49886eee",
+    "17c38707",
+    "2cfe4dab"
+  ]
+}

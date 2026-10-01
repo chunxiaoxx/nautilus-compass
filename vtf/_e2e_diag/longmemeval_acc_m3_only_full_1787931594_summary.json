@@ -1,0 +1,27 @@
+{
+  "pipeline": "m3-only",
+  "subject_model": "doubao-seed-2-0-pro-260215",
+  "judge_model": "glm-5.3-flash",
+  "subject_temperature": 0.1,
+  "vote_n": 1,
+  "n": 125,
+  "accuracy": 0.328,
+  "by_type": {
+    "multi-session": {
+      "n": 78,
+      "correct": 17,
+      "acc": 0.21794871794871795
+    },
+    "single-session-preference": {
+      "n": 30,
+      "correct": 24,
+      "acc": 0.8
+    },
+    "temporal-reasoning": {
+      "n": 17,
+      "correct": 0,
+      "acc": 0.0
+    }
+  },
+  "out_jsonl": "/root/e2e/nautilus-compass/.cache/longmemeval_acc_m3_only_full_1787931594.jsonl"
+}
