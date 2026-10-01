@@ -1,0 +1,249 @@
+{
+  "generator": "scripts/make-sample-cvs.py",
+  "generator_version": 1,
+  "seed": 7,
+  "count": 40,
+  "reference_date": "2026-09-17",
+  "files": [
+    {
+      "file": "fotopoulos_eirini_CV.pdf",
+      "pages": 1,
+      "language": "el",
+      "profile": "Greek-language CV, IT / software, 5 yrs experience, 2 employers, lateral moves across employers, no age evidence, female"
+    },
+    {
+      "file": "kalogeropoulos_petros_CV.pdf",
+      "pages": 1,
+      "language": "en",
+      "profile": "English-language CV, hospitality / retail, 4 yrs experience, 3 employers, job hopping (many short roles), no age evidence, military completed, degraded text layer"
+    },
+    {
+      "file": "oikonomou_maria_CV.pdf",
+      "pages": 1,
+      "language": "el",
+      "profile": "Greek-language CV, marketing / digital, 14 yrs experience, 3 employers, unclear/partial dates, birth date stated, female"
+    },
+    {
+      "file": "vlachos_despoina_CV.pdf",
+      "pages": 1,
+      "language": "el",
+      "profile": "Greek-language CV, food quality / QA, 9 yrs experience, 3 employers, internally inconsistent dates, birth date stated, female"
+    },
+    {
+      "file": "papadopoulos_anastasia_CV.pdf",
+      "pages": 1,
+      "language": "el",
+      "profile": "Greek-language CV, food R&D / product development, 18 yrs experience, 4 employers, internally inconsistent dates, birth date stated, female, degraded text layer"
+    },
+    {
+      "file": "manolakis_panagiotis_CV.pdf",
+      "pages": 1,
+      "language": "en",
+      "profile": "English-language CV, food quality / QA, 3 yrs experience, 3 employers, internally inconsistent dates, birth date stated, military completed"
+    },
+    {
+      "file": "vlachos_andreas_CV.pdf",
+      "pages": 1,
+      "language": "en",
+      "profile": "English-language CV, food quality / QA, 2 yrs experience, 3 employers, unclear/partial dates, age inferable from dates"
+    },
+    {
+      "file": "samaras_athanasios_CV.pdf",
+      "pages": 1,
+      "language": "el",
+      "profile": "Greek-language CV, food production / plant, 2 yrs experience, 5 employers, job hopping (many short roles), birth date stated, military completed, degraded text layer"
+    },
+    {
+      "file": "stamatiou_elena_CV.pdf",
+      "pages": 1,
+      "language": "el",
+      "profile": "Greek-language CV, IT / software, 19 yrs experience, 4 employers, lateral moves across employers, age inferable from dates, female"
+    },
+    {
+      "file": "stamatiou_vasiliki_CV.pdf",
+      "pages": 1,
+      "language": "en",
+      "profile": "English-language CV, food production / plant, 4 yrs experience, 4 employers, job hopping (many short roles), birth date stated, female, degraded text layer"
+    },
+    {
+      "file": "zachariadis_natalia_CV.pdf",
+      "pages": 1,
+      "language": "en",
+      "profile": "English-language CV, marketing / digital, 0 yrs experience, 3 employers, unclear/partial dates, age inferable from dates, female"
+    },
+    {
+      "file": "manolakis_ioannis_CV.pdf",
+      "pages": 1,
+      "language": "en",
+      "profile": "English-language CV, food quality / QA, 4 yrs experience, 2 employers, steady growth at one employer, age inferable from dates, military completed"
+    },
+    {
+      "file": "pappas_georgios_CV.pdf",
+      "pages": 1,
+      "language": "el",
+      "profile": "Greek-language CV, accounting / finance, 20 yrs experience, 2 employers, steady growth at one employer, birth date stated, military pending"
+    },
+    {
+      "file": "nikolaou_dimitrios_CV.pdf",
+      "pages": 1,
+      "language": "el",
+      "profile": "Greek-language CV, food production / plant, 18 yrs experience, 2 employers, steady growth at one employer, birth date stated, military completed"
+    },
+    {
+      "file": "manolakis_fotios_CV.pdf",
+      "pages": 1,
+      "language": "el",
+      "profile": "Greek-language CV, mechanical engineering, 20 yrs experience, 4 employers, lateral moves across employers, age inferable from dates, military exempted, degraded text layer"
+    },
+    {
+      "file": "lamprou_michalis_CV.pdf",
+      "pages": 2,
+      "language": "en",
+      "profile": "English-language CV, mechanical engineering, 3 yrs experience, 3 employers, job hopping (many short roles), birth date stated, degraded text layer"
+    },
+    {
+      "file": "tzanetakis_markos_CV.pdf",
+      "pages": 1,
+      "language": "el",
+      "profile": "Greek-language CV, accounting / finance, 0 yrs experience, 1 employers, steady growth at one employer, age inferable from dates, military completed"
+    },
+    {
+      "file": "vlachos_spyridon_CV.pdf",
+      "pages": 1,
+      "language": "el",
+      "profile": "Greek-language CV, food R&D / product development, 4 yrs experience, 1 employers, internally inconsistent dates, age inferable from dates"
+    },
+    {
+      "file": "georgiou_anastasia_CV.pdf",
+      "pages": 1,
+      "language": "el",
+      "profile": "Greek-language CV, food R&D / product development, 9 yrs experience, 2 employers, steady growth at one employer, no age evidence, female"
+    },
+    {
+      "file": "antoniou_spyridon_CV.pdf",
+      "pages": 1,
+      "language": "en",
+      "profile": "English-language CV, food quality / QA, 9 yrs experience, 3 employers, lateral moves across employers, birth date stated, military pending, degraded text layer"
+    },
+    {
+      "file": "samaras_stefanos_CV.pdf",
+      "pages": 1,
+      "language": "en",
+      "profile": "English-language CV, food production / plant, 3 yrs experience, 4 employers, internally inconsistent dates, no age evidence, military completed"
+    },
+    {
+      "file": "samaras_eirini_CV.pdf",
+      "pages": 1,
+      "language": "el",
+      "profile": "Greek-language CV, food quality / QA, 17 yrs experience, 4 employers, internally inconsistent dates, birth date stated, female"
+    },
+    {
+      "file": "pappas_dimitrios_CV.pdf",
+      "pages": 1,
+      "language": "el",
+      "profile": "Greek-language CV, food production / plant, 19 yrs experience, 2 employers, steady growth at one employer, age inferable from dates, degraded text layer"
+    },
+    {
+      "file": "vasileiou_christina_CV.pdf",
+      "pages": 1,
+      "language": "el",
+      "profile": "Greek-language CV, food R&D / product development, 4 yrs experience, 1 employers, steady growth at one employer, birth date stated, female, degraded text layer"
+    },
+    {
+      "file": "christodoulou_leonidas_CV.pdf",
+      "pages": 1,
+      "language": "en",
+      "profile": "English-language CV, hospitality / retail, 2 yrs experience, 6 employers, job hopping (many short roles), birth date stated, military completed"
+    },
+    {
+      "file": "konstantinou_dimitrios_CV.pdf",
+      "pages": 1,
+      "language": "en",
+      "profile": "English-language CV, food quality / QA, 3 yrs experience, 1 employers, steady growth at one employer, age inferable from dates, military pending"
+    },
+    {
+      "file": "dimitriou_dimitra_CV.pdf",
+      "pages": 1,
+      "language": "en",
+      "profile": "English-language CV, food production / plant, 4 yrs experience, 4 employers, job hopping (many short roles), birth date stated, female, degraded text layer"
+    },
+    {
+      "file": "antoniou_dimitra_CV.pdf",
+      "pages": 1,
+      "language": "el",
+      "profile": "Greek-language CV, IT / software, 0 yrs experience, 1 employers, steady growth at one employer, age inferable from dates, female"
+    },
+    {
+      "file": "papadopoulos_konstantinos_CV.pdf",
+      "pages": 1,
+      "language": "el",
+      "profile": "Greek-language CV, food quality / QA, 11 yrs experience, 3 employers, unclear/partial dates, birth date stated, military completed"
+    },
+    {
+      "file": "stamatiou_dimitrios_CV.pdf",
+      "pages": 1,
+      "language": "en",
+      "profile": "English-language CV, mechanical engineering, 3 yrs experience, 3 employers, internally inconsistent dates, birth date stated, military exempted, degraded text layer"
+    },
+    {
+      "file": "georgiou_markos_CV.pdf",
+      "pages": 1,
+      "language": "en",
+      "profile": "English-language CV, food R&D / product development, 10 yrs experience, 3 employers, lateral moves across employers, birth date stated, military completed"
+    },
+    {
+      "file": "drakopoulos_maria_CV.pdf",
+      "pages": 1,
+      "language": "el",
+      "profile": "Greek-language CV, IT / software, 3 yrs experience, 4 employers, job hopping (many short roles), age inferable from dates, female"
+    },
+    {
+      "file": "anagnostou_michalis_CV.pdf",
+      "pages": 1,
+      "language": "el",
+      "profile": "Greek-language CV, marketing / digital, 0 yrs experience, 2 employers, lateral moves across employers, birth date stated, military completed"
+    },
+    {
+      "file": "makris_ioanna_CV.pdf",
+      "pages": 1,
+      "language": "el",
+      "profile": "Greek-language CV, accounting / finance, 6 yrs experience, 3 employers, unclear/partial dates, age inferable from dates, female, degraded text layer"
+    },
+    {
+      "file": "rizos_charalampos_CV.pdf",
+      "pages": 1,
+      "language": "en",
+      "profile": "English-language CV, food quality / QA, 20 yrs experience, 4 employers, lateral moves across employers, birth date stated, degraded text layer"
+    },
+    {
+      "file": "sideris_fotios_CV.pdf",
+      "pages": 1,
+      "language": "el",
+      "profile": "Greek-language CV, marketing / digital, 4 yrs experience, 5 employers, job hopping (many short roles), age inferable from dates, military completed"
+    },
+    {
+      "file": "oikonomou_stamatia_CV.pdf",
+      "pages": 1,
+      "language": "el",
+      "profile": "Greek-language CV, food quality / QA, 0 yrs experience, 1 employers, steady growth at one employer, age inferable from dates, female"
+    },
+    {
+      "file": "papageorgiou_alexandros_CV.pdf",
+      "pages": 1,
+      "language": "el",
+      "profile": "Greek-language CV, food R&D / product development, 6 yrs experience, 4 employers, lateral moves across employers, birth date stated, degraded text layer"
+    },
+    {
+      "file": "manolakis_christos_CV.pdf",
+      "pages": 1,
+      "language": "el",
+      "profile": "Greek-language CV, mechanical engineering, 8 yrs experience, 1 employers, steady growth at one employer, no age evidence, military pending"
+    },
+    {
+      "file": "georgiou_evangelia_CV.pdf",
+      "pages": 1,
+      "language": "en",
+      "profile": "English-language CV, accounting / finance, 6 yrs experience, 3 employers, unclear/partial dates, no age evidence, female"
+    }
+  ]
+}
