@@ -24,6 +24,7 @@
 - **08:53** 云 daemon 24h 内存终读数 → 蓝绿部署窗口(runbook:ops/ 一键五步)
 - **09:00-10:00** Reddit r/LocalLLaMA 发帖(稿:runtime/marketing/dcr_reddit_post_20260930.md)
 - 外联回应:MemOS #2440(9/30 发,10/2 22:00 前 48h 窗)/mem0 #7514 + TypeSafe(10/1 发,10/3 窗)——探针守,回应到即触发轮
+- 外联台账(10/2 起,原则=开放利他·对外皆师友):cognee 赞助函已回(婉拒付费+反转送测 offer,邮件 1a0f83827fb443fe,等回应);notra #1314 关单归档(撒网负样本,不追);XERJ Ivan 招募函待轻回应;撒网第一批候选 Letta/Zep(白天先读 repo 找声称再发 issue,同时在跑测量≤2)
 
 ## 完成区
 
@@ -34,6 +35,13 @@
 | — | 探针首跑即抓事件:E6 GRPO 00:17 完成(200 步/adapter 落盘/GPU 释放) | R1 | +0(记录) |
 
 ## 轮次日志
+
+### R22 · 2026-10-02 00:4x-01:0x(战略轮·组织原则落定+cognee 反转 offer)
+- 拍板:用户定组织原则「积极开放利他·无竞争对手·上善若水·对外皆师友」(memory: org-principle-open-altruistic-20261002)——外联基调从防备转学习,"竞品"叙事废用
+- 交付:cognee 赞助函(Nikolaus 10/1)已回——婉拒付费(理由=零利益关联才能给同行干净读数)+反转送测 offer(gtaras7 同协议,邮件 1a0f83827fb443fe);notra #1314 关单归档(负样本);XERJ 待轻回应;narrative-drift lint 立项档落定(11a07635)
+- gmail 盘点:cognee(合作咨询)/notra(关单)/XERJ(招募)三封定性完毕
+- 下轮第一件:明晨 09:00 投票(主键 367);白天 Letta/Zep 撒网(先读 repo 找声称)+XERJ 轻回应
+- M1:+(cognee=送测 offer 第二例;撒网基线 1/2)
 
 ### R21 · 2026-10-01 23:3x-23:5x(深夜值守轮·gtaras7 评审勘误日闭环)
 - 交付:gtaras7 #2 评审(11:40)全链处置——①矛盾裁定:divergence 散文臆造类别互换(数据层 measure_report 一直正确;2/27 unclear=分歧行同源;gtaras7"unclear 不可能同时是类别错位"推理正确)②flag leakage 撤回:性别代理独立复现(18 行军事 0 女/22 行非军事 16 女/IT4 全女)精确匹配其计数后才撤 ③Brier 口径披露(0.069 严口径含弃权贡献 38%,单列口径≈0.046)④回函已发(comment 5934831483,坐标存档 runtime/outreach/typesafe_jev_issue2_erratum_reply_20261001.md)⑤勘误 v1.1 落 commit 910bed22(报告两副本)。mem0 #7514 chenhz01 回复=面向 maintainer 不涉我方,10/3 窗继续。
