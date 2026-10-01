@@ -24,7 +24,7 @@
 - **08:53** 云 daemon 24h 内存终读数 → 蓝绿部署窗口(runbook:ops/ 一键五步)
 - **09:00-10:00** Reddit r/LocalLLaMA 发帖(稿:runtime/marketing/dcr_reddit_post_20260930.md)
 - 外联回应:MemOS #2440(9/30 发,10/2 22:00 前 48h 窗)/mem0 #7514 + TypeSafe(10/1 发,10/3 窗)——探针守,回应到即触发轮
-- 外联台账(10/2 起,原则=开放利他·对外皆师友):cognee 赞助函已回(婉拒付费+反转送测 offer,邮件 1a0f83827fb443fe,等回应);notra #1314 关单归档(撒网负样本,不追);XERJ Ivan 招募函待轻回应;撒网第一批候选 Letta/Zep(白天先读 repo 找声称再发 issue,同时在跑测量≤2)
+- 外联台账(10/2 起,原则=开放利他·对外皆师友·两线分离):cognee 两函已发——①offer 送测(1a0f83827fb443fe)②补函重开合作:接受 creator 合作(real build+披露标签,1a0f83b7f699b241),等 Veljko call 窗;notra #1314 关单归档(撒网负样本,不追);XERJ Ivan 招募函待轻回应;撒网第一批候选 Letta/Zep(白天先读 repo 找声称再发 issue,同时在跑测量≤2)
 
 ## 完成区
 
