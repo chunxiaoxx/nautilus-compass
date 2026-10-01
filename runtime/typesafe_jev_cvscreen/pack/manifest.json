@@ -1,0 +1,13 @@
+{
+ "manifest_version": "0.2",
+ "files": {
+  "answer_key.json": "abe6536604741b1d744000d310e7ca4bc4298e64a61d52c32b8e7b70e9a01ef8",
+  "jev_answers.json": "3c329cf7a3390b624334eb4d66e6fc0c6e6ed8f66f0dc6caa3ab082fe782fdbc",
+  "jev_run_log.jsonl": "1e4330fd8efa542e4e537dd6891b19a3b11489c5fe2a3d8ba0c6b89f7d7ed9f4",
+  "measure_report.json": "fc18bb628bfd47e0e3d3c78b249a377311cdc6058d6a06049459a0fd7963a788",
+  "mini_report.md": "e2077511637c76d81425078881bab52c511d805bdd6c6f6c72ea549733228d60",
+  "pack.json": "c60aa5e95f2831cbe7dd3f5c5ba8a65be0e0ac14191b90b6b396d38942580371"
+ },
+ "inputs": {},
+ "input_decls": []
+}

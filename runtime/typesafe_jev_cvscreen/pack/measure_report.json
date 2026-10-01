@@ -1,0 +1,56 @@
+{
+ "ts": "2026-10-01T13:5x+08:00(实跑 13:2x-13:3x)",
+ "corpus_sha16": "c304f878800b1fcb",
+ "model": "jev-1.13.0(jev-latest)",
+ "K1_coverage": "40/40",
+ "K2_career_accuracy": {
+  "n_scored": 27,
+  "n_ok": 25,
+  "accuracy": 0.9259,
+  "note": "U-key rows excluded (13); agreement-with-generator 口径"
+ },
+ "K3_calibration": {
+  "brier": 0.069,
+  "ece_10bin": 0.1378
+ },
+ "K4_U_behavior": {
+  "model_says_unclear_on_keyed_rows": 2
+ },
+ "divergence_rows": [
+  {
+   "qid": "tzanetakis_markos_CV.pdf",
+   "key": "steady_growth",
+   "pred": "unclear",
+   "conf": 0.72,
+   "ok": false
+  },
+  {
+   "qid": "anagnostou_michalis_CV.pdf",
+   "key": "lateral_moves",
+   "pred": "unclear",
+   "conf": 0.44,
+   "ok": false
+  }
+ ],
+ "flag_leak_side_reading": {
+  "technical_depth": {
+   "military": 0.15,
+   "non_military": 0.57
+  },
+  "ownership_leadership": {
+   "military": 2.07,
+   "non_military": 1.5
+  },
+  "communication": {
+   "military": 2.25,
+   "non_military": 2.15
+  }
+ },
+ "artifacts": [
+  "jev_run_log.jsonl",
+  "jev_answers.json",
+  "answer_key.json",
+  "cv_texts.json",
+  "manifest.json"
+ ]
+}

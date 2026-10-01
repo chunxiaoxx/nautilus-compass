@@ -1,0 +1,4922 @@
+[
+ {
+  "qid": "anagnostou_michalis_CV.pdf",
+  "answers": {
+   "career_progression": {
+    "type": "choice",
+    "choice": "unclear",
+    "confidence": 0.44,
+    "probabilities": {
+     "unclear": 0.58,
+     "steady_growth": 0.05,
+     "lateral_moves": 0.31,
+     "job_hopping": 0.06
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 0.0,
+    "confidence": 1.0,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 1.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 0.96,
+    "confidence": 0.2,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.48,
+     "1": 0.09,
+     "2": 0.43,
+     "3": 0.0,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 2.97,
+    "confidence": 0.97,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.01,
+     "2": 0.01,
+     "3": 0.98
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.78,
+    "probabilities": {
+     "sideways": 0.11,
+     "pointed": 0.86,
+     "elsewhere": 0.03
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "working",
+    "confidence": 0.42,
+    "probabilities": {
+     "working": 0.61,
+     "none_or_minimal": 0.25,
+     "strong": 0.14
+    }
+   }
+  }
+ },
+ {
+  "qid": "antoniou_dimitra_CV.pdf",
+  "answers": {
+   "career_progression": {
+    "type": "choice",
+    "choice": "steady_growth",
+    "confidence": 0.51,
+    "probabilities": {
+     "unclear": 0.33,
+     "steady_growth": 0.63,
+     "job_hopping": 0.01,
+     "lateral_moves": 0.03
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 2.04,
+    "confidence": 0.95,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.02,
+     "2": 0.92,
+     "3": 0.06,
+     "4": 0.0,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 0.11,
+    "confidence": 0.91,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.91,
+     "1": 0.08,
+     "2": 0.01,
+     "3": 0.0,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 1.24,
+    "confidence": 0.73,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.01,
+     "1": 0.74,
+     "2": 0.25,
+     "3": 0.0
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.78,
+    "probabilities": {
+     "pointed": 0.85,
+     "sideways": 0.12,
+     "elsewhere": 0.03
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "strong",
+    "confidence": 0.64,
+    "probabilities": {
+     "strong": 0.76,
+     "none_or_minimal": 0.07,
+     "working": 0.17
+    }
+   }
+  }
+ },
+ {
+  "qid": "antoniou_spyridon_CV.pdf",
+  "answers": {
+   "career_progression": {
+    "type": "choice",
+    "choice": "lateral_moves",
+    "confidence": 0.71,
+    "probabilities": {
+     "unclear": 0.01,
+     "lateral_moves": 0.78,
+     "steady_growth": 0.21,
+     "job_hopping": 0.0
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 0.0,
+    "confidence": 1.0,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 1.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 1.63,
+    "confidence": 0.6,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.42,
+     "2": 0.52,
+     "3": 0.06,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 2.79,
+    "confidence": 0.79,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.21,
+     "3": 0.79
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.97,
+    "probabilities": {
+     "sideways": 0.01,
+     "pointed": 0.98,
+     "elsewhere": 0.01
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "strong",
+    "confidence": 0.92,
+    "probabilities": {
+     "none_or_minimal": 0.0,
+     "working": 0.05,
+     "strong": 0.95
+    }
+   }
+  }
+ },
+ {
+  "qid": "christodoulou_leonidas_CV.pdf",
+  "answers": {
+   "career_progression": {
+    "type": "choice",
+    "choice": "job_hopping",
+    "confidence": 0.85,
+    "probabilities": {
+     "job_hopping": 0.89,
+     "unclear": 0.0,
+     "lateral_moves": 0.09,
+     "steady_growth": 0.02
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 0.0,
+    "confidence": 1.0,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 1.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 2.29,
+    "confidence": 0.57,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.11,
+     "2": 0.49,
+     "3": 0.4,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 2.26,
+    "confidence": 0.7,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.01,
+     "1": 0.01,
+     "2": 0.7,
+     "3": 0.28
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.58,
+    "probabilities": {
+     "sideways": 0.22,
+     "pointed": 0.72,
+     "elsewhere": 0.06
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "working",
+    "confidence": 0.72,
+    "probabilities": {
+     "none_or_minimal": 0.01,
+     "strong": 0.17,
+     "working": 0.82
+    }
+   }
+  }
+ },
+ {
+  "qid": "dimitriou_dimitra_CV.pdf",
+  "answers": {
+   "english_level": {
+    "type": "choice",
+    "choice": "strong",
+    "confidence": 0.81,
+    "probabilities": {
+     "strong": 0.87,
+     "working": 0.12,
+     "none_or_minimal": 0.01
+    }
+   },
+   "career_progression": {
+    "type": "choice",
+    "choice": "job_hopping",
+    "confidence": 0.88,
+    "probabilities": {
+     "steady_growth": 0.02,
+     "lateral_moves": 0.03,
+     "job_hopping": 0.91,
+     "unclear": 0.04
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 0.0,
+    "confidence": 1.0,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 1.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 2.97,
+    "confidence": 0.97,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.01,
+     "2": 0.02,
+     "3": 0.97,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 1.77,
+    "confidence": 0.77,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.09,
+     "1": 0.04,
+     "2": 0.87,
+     "3": 0.0
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.88,
+    "probabilities": {
+     "pointed": 0.92,
+     "sideways": 0.07,
+     "elsewhere": 0.01
+    }
+   }
+  }
+ },
+ {
+  "qid": "drakopoulos_maria_CV.pdf",
+  "answers": {
+   "career_progression": {
+    "type": "choice",
+    "choice": "job_hopping",
+    "confidence": 0.93,
+    "probabilities": {
+     "lateral_moves": 0.03,
+     "unclear": 0.01,
+     "steady_growth": 0.01,
+     "job_hopping": 0.95
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 2.4,
+    "confidence": 0.73,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.6,
+     "3": 0.4,
+     "4": 0.0,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 0.26,
+    "confidence": 0.78,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.8,
+     "1": 0.14,
+     "2": 0.06,
+     "3": 0.0,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 1.27,
+    "confidence": 0.22,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.23,
+     "1": 0.3,
+     "2": 0.44,
+     "3": 0.03
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.88,
+    "probabilities": {
+     "elsewhere": 0.03,
+     "sideways": 0.05,
+     "pointed": 0.92
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "strong",
+    "confidence": 0.75,
+    "probabilities": {
+     "working": 0.1,
+     "none_or_minimal": 0.06,
+     "strong": 0.84
+    }
+   }
+  }
+ },
+ {
+  "qid": "fotopoulos_eirini_CV.pdf",
+  "answers": {
+   "career_progression": {
+    "type": "choice",
+    "choice": "lateral_moves",
+    "confidence": 0.79,
+    "probabilities": {
+     "lateral_moves": 0.85,
+     "unclear": 0.0,
+     "job_hopping": 0.03,
+     "steady_growth": 0.12
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 2.81,
+    "confidence": 0.87,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.19,
+     "3": 0.81,
+     "4": 0.0,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 0.04,
+    "confidence": 0.97,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.97,
+     "1": 0.02,
+     "2": 0.01,
+     "3": 0.0,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 1.15,
+    "confidence": 0.71,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.07,
+     "1": 0.73,
+     "2": 0.18,
+     "3": 0.02
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.94,
+    "probabilities": {
+     "sideways": 0.02,
+     "pointed": 0.96,
+     "elsewhere": 0.02
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "working",
+    "confidence": 0.33,
+    "probabilities": {
+     "working": 0.55,
+     "strong": 0.06,
+     "none_or_minimal": 0.39
+    }
+   }
+  }
+ },
+ {
+  "qid": "georgiou_anastasia_CV.pdf",
+  "answers": {
+   "technical_depth": {
+    "type": "score",
+    "score": 0.02,
+    "confidence": 0.99,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 1.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 1.43,
+    "confidence": 0.46,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.25,
+     "1": 0.11,
+     "2": 0.6,
+     "3": 0.04,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 2.12,
+    "confidence": 0.76,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.06,
+     "2": 0.76,
+     "3": 0.18
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.97,
+    "probabilities": {
+     "elsewhere": 0.01,
+     "pointed": 0.98,
+     "sideways": 0.01
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "strong",
+    "confidence": 0.8,
+    "probabilities": {
+     "strong": 0.86,
+     "working": 0.11,
+     "none_or_minimal": 0.03
+    }
+   },
+   "career_progression": {
+    "type": "choice",
+    "choice": "steady_growth",
+    "confidence": 1.0,
+    "probabilities": {
+     "steady_growth": 1.0,
+     "unclear": 0.0,
+     "lateral_moves": 0.0,
+     "job_hopping": 0.0
+    }
+   }
+  }
+ },
+ {
+  "qid": "georgiou_evangelia_CV.pdf",
+  "answers": {
+   "career_progression": {
+    "type": "choice",
+    "choice": "unclear",
+    "confidence": 0.63,
+    "probabilities": {
+     "job_hopping": 0.02,
+     "lateral_moves": 0.23,
+     "unclear": 0.73,
+     "steady_growth": 0.02
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 0.0,
+    "confidence": 1.0,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 1.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 0.43,
+    "confidence": 0.64,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.75,
+     "1": 0.09,
+     "2": 0.14,
+     "3": 0.02,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 2.96,
+    "confidence": 0.96,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.01,
+     "2": 0.03,
+     "3": 0.96
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.9,
+    "probabilities": {
+     "sideways": 0.02,
+     "pointed": 0.93,
+     "elsewhere": 0.05
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "strong",
+    "confidence": 0.94,
+    "probabilities": {
+     "none_or_minimal": 0.0,
+     "working": 0.04,
+     "strong": 0.96
+    }
+   }
+  }
+ },
+ {
+  "qid": "georgiou_markos_CV.pdf",
+  "answers": {
+   "english_level": {
+    "type": "choice",
+    "choice": "strong",
+    "confidence": 0.85,
+    "probabilities": {
+     "strong": 0.9,
+     "none_or_minimal": 0.0,
+     "working": 0.1
+    }
+   },
+   "career_progression": {
+    "type": "choice",
+    "choice": "lateral_moves",
+    "confidence": 0.67,
+    "probabilities": {
+     "steady_growth": 0.24,
+     "job_hopping": 0.0,
+     "unclear": 0.0,
+     "lateral_moves": 0.76
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 0.01,
+    "confidence": 1.0,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 1.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 1.52,
+    "confidence": 0.6,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.01,
+     "1": 0.47,
+     "2": 0.52,
+     "3": 0.0,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 2.09,
+    "confidence": 0.9,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.9,
+     "3": 0.1
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.94,
+    "probabilities": {
+     "pointed": 0.96,
+     "elsewhere": 0.03,
+     "sideways": 0.01
+    }
+   }
+  }
+ },
+ {
+  "qid": "kalogeropoulos_petros_CV.pdf",
+  "answers": {
+   "technical_depth": {
+    "type": "score",
+    "score": 0.0,
+    "confidence": 1.0,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 1.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 2.22,
+    "confidence": 0.63,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.11,
+     "2": 0.56,
+     "3": 0.33,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 2.38,
+    "confidence": 0.58,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.01,
+     "2": 0.59,
+     "3": 0.4
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.77,
+    "probabilities": {
+     "pointed": 0.85,
+     "sideways": 0.1,
+     "elsewhere": 0.05
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "strong",
+    "confidence": 0.74,
+    "probabilities": {
+     "working": 0.17,
+     "strong": 0.83,
+     "none_or_minimal": 0.0
+    }
+   },
+   "career_progression": {
+    "type": "choice",
+    "choice": "job_hopping",
+    "confidence": 0.86,
+    "probabilities": {
+     "steady_growth": 0.02,
+     "job_hopping": 0.89,
+     "lateral_moves": 0.08,
+     "unclear": 0.01
+    }
+   }
+  }
+ },
+ {
+  "qid": "konstantinou_dimitrios_CV.pdf",
+  "answers": {
+   "career_progression": {
+    "type": "choice",
+    "choice": "steady_growth",
+    "confidence": 1.0,
+    "probabilities": {
+     "job_hopping": 0.0,
+     "steady_growth": 1.0,
+     "lateral_moves": 0.0,
+     "unclear": 0.0
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 0.0,
+    "confidence": 1.0,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 1.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 1.73,
+    "confidence": 0.61,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.37,
+     "2": 0.53,
+     "3": 0.1,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 2.59,
+    "confidence": 0.59,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.01,
+     "1": 0.0,
+     "2": 0.39,
+     "3": 0.6
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.93,
+    "probabilities": {
+     "sideways": 0.03,
+     "elsewhere": 0.02,
+     "pointed": 0.95
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "strong",
+    "confidence": 0.75,
+    "probabilities": {
+     "strong": 0.83,
+     "none_or_minimal": 0.0,
+     "working": 0.17
+    }
+   }
+  }
+ },
+ {
+  "qid": "lamprou_michalis_CV.pdf",
+  "answers": {
+   "english_level": {
+    "type": "choice",
+    "choice": "strong",
+    "confidence": 0.88,
+    "probabilities": {
+     "strong": 0.92,
+     "working": 0.08,
+     "none_or_minimal": 0.0
+    }
+   },
+   "career_progression": {
+    "type": "choice",
+    "choice": "job_hopping",
+    "confidence": 0.71,
+    "probabilities": {
+     "unclear": 0.01,
+     "job_hopping": 0.78,
+     "lateral_moves": 0.02,
+     "steady_growth": 0.19
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 2.14,
+    "confidence": 0.86,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 0.02,
+     "1": 0.0,
+     "2": 0.83,
+     "3": 0.14,
+     "4": 0.0,
+     "5": 0.01
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 2.93,
+    "confidence": 0.94,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.01,
+     "2": 0.04,
+     "3": 0.95,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 1.69,
+    "confidence": 0.68,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.31,
+     "2": 0.69,
+     "3": 0.0
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.92,
+    "probabilities": {
+     "sideways": 0.04,
+     "pointed": 0.95,
+     "elsewhere": 0.01
+    }
+   }
+  }
+ },
+ {
+  "qid": "makris_ioanna_CV.pdf",
+  "answers": {
+   "technical_depth": {
+    "type": "score",
+    "score": 0.0,
+    "confidence": 1.0,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 1.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 0.51,
+    "confidence": 0.57,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.73,
+     "1": 0.08,
+     "2": 0.14,
+     "3": 0.05,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 2.94,
+    "confidence": 0.94,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.02,
+     "2": 0.03,
+     "3": 0.95
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.83,
+    "probabilities": {
+     "sideways": 0.05,
+     "elsewhere": 0.07,
+     "pointed": 0.88
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "strong",
+    "confidence": 0.44,
+    "probabilities": {
+     "none_or_minimal": 0.17,
+     "working": 0.2,
+     "strong": 0.63
+    }
+   },
+   "career_progression": {
+    "type": "choice",
+    "choice": "steady_growth",
+    "confidence": 0.48,
+    "probabilities": {
+     "lateral_moves": 0.1,
+     "unclear": 0.25,
+     "steady_growth": 0.62,
+     "job_hopping": 0.03
+    }
+   }
+  }
+ },
+ {
+  "qid": "manolakis_christos_CV.pdf",
+  "answers": {
+   "career_progression": {
+    "type": "choice",
+    "choice": "steady_growth",
+    "confidence": 0.65,
+    "probabilities": {
+     "lateral_moves": 0.24,
+     "unclear": 0.02,
+     "steady_growth": 0.74,
+     "job_hopping": 0.0
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 2.29,
+    "confidence": 0.62,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 0.07,
+     "1": 0.01,
+     "2": 0.51,
+     "3": 0.39,
+     "4": 0.01,
+     "5": 0.01
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 2.53,
+    "confidence": 0.61,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.01,
+     "1": 0.01,
+     "2": 0.43,
+     "3": 0.55,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 0.66,
+    "confidence": 0.34,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.61,
+     "1": 0.13,
+     "2": 0.26,
+     "3": 0.0
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.93,
+    "probabilities": {
+     "pointed": 0.95,
+     "elsewhere": 0.02,
+     "sideways": 0.03
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "strong",
+    "confidence": 0.47,
+    "probabilities": {
+     "none_or_minimal": 0.04,
+     "working": 0.32,
+     "strong": 0.64
+    }
+   }
+  }
+ },
+ {
+  "qid": "manolakis_fotios_CV.pdf",
+  "answers": {
+   "career_progression": {
+    "type": "choice",
+    "choice": "lateral_moves",
+    "confidence": 0.84,
+    "probabilities": {
+     "lateral_moves": 0.89,
+     "job_hopping": 0.0,
+     "unclear": 0.0,
+     "steady_growth": 0.11
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 0.23,
+    "confidence": 0.85,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 0.93,
+     "1": 0.0,
+     "2": 0.02,
+     "3": 0.04,
+     "4": 0.0,
+     "5": 0.01
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 2.98,
+    "confidence": 0.98,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.02,
+     "3": 0.98,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 1.95,
+    "confidence": 0.94,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.05,
+     "2": 0.95,
+     "3": 0.0
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.9,
+    "probabilities": {
+     "sideways": 0.03,
+     "pointed": 0.9400000000000001,
+     "elsewhere": 0.03
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "strong",
+    "confidence": 0.47,
+    "probabilities": {
+     "working": 0.19,
+     "strong": 0.64,
+     "none_or_minimal": 0.17
+    }
+   }
+  }
+ },
+ {
+  "qid": "manolakis_ioannis_CV.pdf",
+  "answers": {
+   "career_progression": {
+    "type": "choice",
+    "choice": "steady_growth",
+    "confidence": 1.0,
+    "probabilities": {
+     "unclear": 0.0,
+     "lateral_moves": 0.0,
+     "job_hopping": 0.0,
+     "steady_growth": 1.0
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 0.0,
+    "confidence": 1.0,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 1.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 1.66,
+    "confidence": 0.58,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.42,
+     "2": 0.5,
+     "3": 0.08,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 2.78,
+    "confidence": 0.78,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.22,
+     "3": 0.78
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.95,
+    "probabilities": {
+     "pointed": 0.97,
+     "sideways": 0.02,
+     "elsewhere": 0.01
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "strong",
+    "confidence": 0.91,
+    "probabilities": {
+     "working": 0.06,
+     "none_or_minimal": 0.0,
+     "strong": 0.94
+    }
+   }
+  }
+ },
+ {
+  "qid": "manolakis_panagiotis_CV.pdf",
+  "answers": {
+   "career_progression": {
+    "type": "choice",
+    "choice": "unclear",
+    "confidence": 0.41,
+    "probabilities": {
+     "lateral_moves": 0.33,
+     "unclear": 0.56,
+     "steady_growth": 0.08,
+     "job_hopping": 0.03
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 0.0,
+    "confidence": 1.0,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 1.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 2.05,
+    "confidence": 0.73,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.13,
+     "2": 0.68,
+     "3": 0.19,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 2.77,
+    "confidence": 0.77,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.23,
+     "3": 0.77
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.94,
+    "probabilities": {
+     "elsewhere": 0.01,
+     "sideways": 0.03,
+     "pointed": 0.96
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "working",
+    "confidence": 0.69,
+    "probabilities": {
+     "working": 0.79,
+     "none_or_minimal": 0.01,
+     "strong": 0.2
+    }
+   }
+  }
+ },
+ {
+  "qid": "nikolaou_dimitrios_CV.pdf",
+  "answers": {
+   "career_progression": {
+    "type": "choice",
+    "choice": "steady_growth",
+    "confidence": 1.0,
+    "probabilities": {
+     "steady_growth": 1.0,
+     "job_hopping": 0.0,
+     "unclear": 0.0,
+     "lateral_moves": 0.0
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 0.01,
+    "confidence": 0.99,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 1.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 3.1,
+    "confidence": 0.9,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.89,
+     "4": 0.11
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 1.93,
+    "confidence": 0.93,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.03,
+     "1": 0.02,
+     "2": 0.95,
+     "3": 0.0
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.95,
+    "probabilities": {
+     "pointed": 0.97,
+     "elsewhere": 0.02,
+     "sideways": 0.01
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "none_or_minimal",
+    "confidence": 0.47,
+    "probabilities": {
+     "working": 0.34,
+     "none_or_minimal": 0.65,
+     "strong": 0.01
+    }
+   }
+  }
+ },
+ {
+  "qid": "oikonomou_maria_CV.pdf",
+  "answers": {
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.88,
+    "probabilities": {
+     "sideways": 0.06,
+     "pointed": 0.91,
+     "elsewhere": 0.03
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "strong",
+    "confidence": 0.68,
+    "probabilities": {
+     "none_or_minimal": 0.07,
+     "strong": 0.79,
+     "working": 0.14
+    }
+   },
+   "career_progression": {
+    "type": "choice",
+    "choice": "steady_growth",
+    "confidence": 0.63,
+    "probabilities": {
+     "steady_growth": 0.73,
+     "unclear": 0.19,
+     "lateral_moves": 0.08,
+     "job_hopping": 0.0
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 0.0,
+    "confidence": 1.0,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 1.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 0.81,
+    "confidence": 0.33,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.52,
+     "1": 0.15,
+     "2": 0.33,
+     "3": 0.0,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 2.99,
+    "confidence": 0.99,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.01,
+     "3": 0.99
+    }
+   }
+  }
+ },
+ {
+  "qid": "oikonomou_stamatia_CV.pdf",
+  "answers": {
+   "career_progression": {
+    "type": "choice",
+    "choice": "steady_growth",
+    "confidence": 0.93,
+    "probabilities": {
+     "job_hopping": 0.0,
+     "unclear": 0.05,
+     "lateral_moves": 0.0,
+     "steady_growth": 0.95
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 0.0,
+    "confidence": 1.0,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 1.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 1.6,
+    "confidence": 0.59,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.01,
+     "1": 0.43,
+     "2": 0.52,
+     "3": 0.04,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 2.0,
+    "confidence": 0.97,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.01,
+     "2": 0.97,
+     "3": 0.02
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.89,
+    "probabilities": {
+     "sideways": 0.07,
+     "elsewhere": 0.01,
+     "pointed": 0.92
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "strong",
+    "confidence": 0.51,
+    "probabilities": {
+     "working": 0.24,
+     "strong": 0.68,
+     "none_or_minimal": 0.08
+    }
+   }
+  }
+ },
+ {
+  "qid": "papadopoulos_anastasia_CV.pdf",
+  "answers": {
+   "career_progression": {
+    "type": "choice",
+    "choice": "unclear",
+    "confidence": 0.4,
+    "probabilities": {
+     "steady_growth": 0.25,
+     "unclear": 0.54,
+     "job_hopping": 0.03,
+     "lateral_moves": 0.18
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 0.04,
+    "confidence": 0.98,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 0.99,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.01,
+     "4": 0.0,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 1.74,
+    "confidence": 0.69,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.31,
+     "2": 0.64,
+     "3": 0.05,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 2.14,
+    "confidence": 0.85,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.86,
+     "3": 0.14
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.93,
+    "probabilities": {
+     "pointed": 0.96,
+     "sideways": 0.01,
+     "elsewhere": 0.03
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "strong",
+    "confidence": 0.61,
+    "probabilities": {
+     "none_or_minimal": 0.07,
+     "working": 0.19,
+     "strong": 0.74
+    }
+   }
+  }
+ },
+ {
+  "qid": "papadopoulos_konstantinos_CV.pdf",
+  "answers": {
+   "ownership_leadership": {
+    "type": "score",
+    "score": 1.77,
+    "confidence": 0.54,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.09,
+     "1": 0.2,
+     "2": 0.55,
+     "3": 0.16,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 2.56,
+    "confidence": 0.56,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.11,
+     "2": 0.21,
+     "3": 0.68
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.95,
+    "probabilities": {
+     "pointed": 0.97,
+     "sideways": 0.02,
+     "elsewhere": 0.01
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "strong",
+    "confidence": 0.73,
+    "probabilities": {
+     "none_or_minimal": 0.08,
+     "working": 0.1,
+     "strong": 0.82
+    }
+   },
+   "career_progression": {
+    "type": "choice",
+    "choice": "unclear",
+    "confidence": 0.39,
+    "probabilities": {
+     "steady_growth": 0.27,
+     "unclear": 0.55,
+     "job_hopping": 0.0,
+     "lateral_moves": 0.18
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 0.0,
+    "confidence": 1.0,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 1.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0
+    }
+   }
+  }
+ },
+ {
+  "qid": "papageorgiou_alexandros_CV.pdf",
+  "answers": {
+   "career_progression": {
+    "type": "choice",
+    "choice": "lateral_moves",
+    "confidence": 0.83,
+    "probabilities": {
+     "job_hopping": 0.08,
+     "unclear": 0.0,
+     "lateral_moves": 0.88,
+     "steady_growth": 0.04
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 0.01,
+    "confidence": 0.99,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 1.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 1.45,
+    "confidence": 0.62,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.56,
+     "2": 0.44,
+     "3": 0.0,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 2.09,
+    "confidence": 0.9,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.9,
+     "3": 0.1
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.97,
+    "probabilities": {
+     "sideways": 0.01,
+     "pointed": 0.98,
+     "elsewhere": 0.01
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "strong",
+    "confidence": 0.41,
+    "probabilities": {
+     "none_or_minimal": 0.03,
+     "strong": 0.61,
+     "working": 0.36
+    }
+   }
+  }
+ },
+ {
+  "qid": "pappas_dimitrios_CV.pdf",
+  "answers": {
+   "career_progression": {
+    "type": "choice",
+    "choice": "steady_growth",
+    "confidence": 1.0,
+    "probabilities": {
+     "steady_growth": 1.0,
+     "unclear": 0.0,
+     "job_hopping": 0.0,
+     "lateral_moves": 0.0
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 0.01,
+    "confidence": 0.99,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 1.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 3.03,
+    "confidence": 0.95,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.01,
+     "3": 0.94,
+     "4": 0.05
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 1.9,
+    "confidence": 0.89,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.02,
+     "1": 0.06,
+     "2": 0.92,
+     "3": 0.0
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.96,
+    "probabilities": {
+     "elsewhere": 0.02,
+     "pointed": 0.97,
+     "sideways": 0.01
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "strong",
+    "confidence": 0.49,
+    "probabilities": {
+     "strong": 0.66,
+     "working": 0.18,
+     "none_or_minimal": 0.16
+    }
+   }
+  }
+ },
+ {
+  "qid": "pappas_georgios_CV.pdf",
+  "answers": {
+   "career_progression": {
+    "type": "choice",
+    "choice": "steady_growth",
+    "confidence": 1.0,
+    "probabilities": {
+     "steady_growth": 1.0,
+     "unclear": 0.0,
+     "lateral_moves": 0.0,
+     "job_hopping": 0.0
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 0.0,
+    "confidence": 1.0,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 1.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 2.36,
+    "confidence": 0.44,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.13,
+     "2": 0.39,
+     "3": 0.46,
+     "4": 0.02
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 2.97,
+    "confidence": 0.97,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.03,
+     "3": 0.97
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.96,
+    "probabilities": {
+     "elsewhere": 0.02,
+     "pointed": 0.98,
+     "sideways": 0.0
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "strong",
+    "confidence": 0.73,
+    "probabilities": {
+     "strong": 0.82,
+     "working": 0.13,
+     "none_or_minimal": 0.05
+    }
+   }
+  }
+ },
+ {
+  "qid": "rizos_charalampos_CV.pdf",
+  "answers": {
+   "career_progression": {
+    "type": "choice",
+    "choice": "lateral_moves",
+    "confidence": 0.57,
+    "probabilities": {
+     "lateral_moves": 0.68,
+     "steady_growth": 0.32,
+     "unclear": 0.0,
+     "job_hopping": 0.0
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 0.0,
+    "confidence": 1.0,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 1.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 2.08,
+    "confidence": 0.74,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.11,
+     "2": 0.7,
+     "3": 0.19,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 2.66,
+    "confidence": 0.66,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.34,
+     "3": 0.66
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.97,
+    "probabilities": {
+     "pointed": 0.98,
+     "sideways": 0.01,
+     "elsewhere": 0.01
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "strong",
+    "confidence": 0.92,
+    "probabilities": {
+     "working": 0.05,
+     "strong": 0.95,
+     "none_or_minimal": 0.0
+    }
+   }
+  }
+ },
+ {
+  "qid": "samaras_athanasios_CV.pdf",
+  "answers": {
+   "career_progression": {
+    "type": "choice",
+    "choice": "job_hopping",
+    "confidence": 0.92,
+    "probabilities": {
+     "lateral_moves": 0.03,
+     "unclear": 0.01,
+     "steady_growth": 0.02,
+     "job_hopping": 0.94
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 0.03,
+    "confidence": 0.98,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 0.99,
+     "1": 0.0,
+     "2": 0.01,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 2.95,
+    "confidence": 0.96,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.01,
+     "2": 0.03,
+     "3": 0.96,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 1.14,
+    "confidence": 0.13,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.33,
+     "1": 0.21,
+     "2": 0.46,
+     "3": 0.0
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.89,
+    "probabilities": {
+     "pointed": 0.93,
+     "elsewhere": 0.02,
+     "sideways": 0.05
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "strong",
+    "confidence": 0.5,
+    "probabilities": {
+     "none_or_minimal": 0.2,
+     "working": 0.13,
+     "strong": 0.67
+    }
+   }
+  }
+ },
+ {
+  "qid": "samaras_eirini_CV.pdf",
+  "answers": {
+   "communication": {
+    "type": "score",
+    "score": 2.68,
+    "confidence": 0.68,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.31,
+     "3": 0.69
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.98,
+    "probabilities": {
+     "pointed": 0.98,
+     "sideways": 0.01,
+     "elsewhere": 0.01
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "strong",
+    "confidence": 0.79,
+    "probabilities": {
+     "none_or_minimal": 0.04,
+     "working": 0.09,
+     "strong": 0.87
+    }
+   },
+   "career_progression": {
+    "type": "choice",
+    "choice": "unclear",
+    "confidence": 0.29,
+    "probabilities": {
+     "steady_growth": 0.36,
+     "lateral_moves": 0.15,
+     "job_hopping": 0.02,
+     "unclear": 0.47
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 0.0,
+    "confidence": 1.0,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 1.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 2.04,
+    "confidence": 0.65,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.19,
+     "2": 0.58,
+     "3": 0.23,
+     "4": 0.0
+    }
+   }
+  }
+ },
+ {
+  "qid": "samaras_stefanos_CV.pdf",
+  "answers": {
+   "career_progression": {
+    "type": "choice",
+    "choice": "steady_growth",
+    "confidence": 0.56,
+    "probabilities": {
+     "unclear": 0.29,
+     "job_hopping": 0.01,
+     "lateral_moves": 0.03,
+     "steady_growth": 0.67
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 0.01,
+    "confidence": 1.0,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 1.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 2.99,
+    "confidence": 0.99,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 1.0,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 1.32,
+    "confidence": 0.31,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.2,
+     "1": 0.29,
+     "2": 0.51,
+     "3": 0.0
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.94,
+    "probabilities": {
+     "pointed": 0.97,
+     "sideways": 0.02,
+     "elsewhere": 0.01
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "strong",
+    "confidence": 0.8,
+    "probabilities": {
+     "strong": 0.86,
+     "working": 0.13,
+     "none_or_minimal": 0.01
+    }
+   }
+  }
+ },
+ {
+  "qid": "sideris_fotios_CV.pdf",
+  "answers": {
+   "career_progression": {
+    "type": "choice",
+    "choice": "job_hopping",
+    "confidence": 0.97,
+    "probabilities": {
+     "job_hopping": 0.99,
+     "steady_growth": 0.0,
+     "lateral_moves": 0.01,
+     "unclear": 0.0
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 0.0,
+    "confidence": 1.0,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 1.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 1.57,
+    "confidence": 0.64,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.43,
+     "2": 0.57,
+     "3": 0.0,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 2.95,
+    "confidence": 0.95,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.05,
+     "3": 0.95
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.9,
+    "probabilities": {
+     "sideways": 0.04,
+     "elsewhere": 0.02,
+     "pointed": 0.94
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "strong",
+    "confidence": 0.42,
+    "probabilities": {
+     "none_or_minimal": 0.01,
+     "strong": 0.62,
+     "working": 0.37
+    }
+   }
+  }
+ },
+ {
+  "qid": "stamatiou_dimitrios_CV.pdf",
+  "answers": {
+   "career_progression": {
+    "type": "choice",
+    "choice": "unclear",
+    "confidence": 0.47,
+    "probabilities": {
+     "unclear": 0.6,
+     "steady_growth": 0.11,
+     "lateral_moves": 0.26,
+     "job_hopping": 0.03
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 0.16,
+    "confidence": 0.89,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 0.94,
+     "1": 0.0,
+     "2": 0.02,
+     "3": 0.04,
+     "4": 0.0,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 2.88,
+    "confidence": 0.9,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.02,
+     "2": 0.09,
+     "3": 0.89,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 1.97,
+    "confidence": 0.97,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.02,
+     "2": 0.98,
+     "3": 0.0
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.86,
+    "probabilities": {
+     "pointed": 0.91,
+     "sideways": 0.07,
+     "elsewhere": 0.02
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "strong",
+    "confidence": 0.8,
+    "probabilities": {
+     "strong": 0.87,
+     "working": 0.13,
+     "none_or_minimal": 0.0
+    }
+   }
+  }
+ },
+ {
+  "qid": "stamatiou_elena_CV.pdf",
+  "answers": {
+   "career_progression": {
+    "type": "choice",
+    "choice": "lateral_moves",
+    "confidence": 0.92,
+    "probabilities": {
+     "job_hopping": 0.0,
+     "steady_growth": 0.05,
+     "lateral_moves": 0.94,
+     "unclear": 0.01
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 2.98,
+    "confidence": 0.96,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.04,
+     "3": 0.94,
+     "4": 0.02,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 1.42,
+    "confidence": 0.64,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.58,
+     "2": 0.42,
+     "3": 0.0,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 2.0,
+    "confidence": 0.99,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.01,
+     "2": 0.98,
+     "3": 0.01
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.85,
+    "probabilities": {
+     "sideways": 0.06,
+     "pointed": 0.89,
+     "elsewhere": 0.05
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "strong",
+    "confidence": 0.81,
+    "probabilities": {
+     "none_or_minimal": 0.02,
+     "working": 0.11,
+     "strong": 0.87
+    }
+   }
+  }
+ },
+ {
+  "qid": "stamatiou_vasiliki_CV.pdf",
+  "answers": {
+   "english_level": {
+    "type": "choice",
+    "choice": "strong",
+    "confidence": 0.93,
+    "probabilities": {
+     "none_or_minimal": 0.0,
+     "working": 0.04,
+     "strong": 0.96
+    }
+   },
+   "career_progression": {
+    "type": "choice",
+    "choice": "job_hopping",
+    "confidence": 0.71,
+    "probabilities": {
+     "lateral_moves": 0.01,
+     "job_hopping": 0.78,
+     "steady_growth": 0.2,
+     "unclear": 0.01
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 0.01,
+    "confidence": 0.99,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 1.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 2.83,
+    "confidence": 0.86,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.01,
+     "1": 0.02,
+     "2": 0.1,
+     "3": 0.87,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 1.84,
+    "confidence": 0.84,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.06,
+     "1": 0.05,
+     "2": 0.89,
+     "3": 0.0
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.94,
+    "probabilities": {
+     "sideways": 0.03,
+     "pointed": 0.96,
+     "elsewhere": 0.01
+    }
+   }
+  }
+ },
+ {
+  "qid": "tzanetakis_markos_CV.pdf",
+  "answers": {
+   "career_progression": {
+    "type": "choice",
+    "choice": "unclear",
+    "confidence": 0.72,
+    "probabilities": {
+     "lateral_moves": 0.01,
+     "job_hopping": 0.0,
+     "steady_growth": 0.2,
+     "unclear": 0.79
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 0.0,
+    "confidence": 1.0,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 1.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 0.09,
+    "confidence": 0.93,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.92,
+     "1": 0.07,
+     "2": 0.01,
+     "3": 0.0,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 2.37,
+    "confidence": 0.37,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.16,
+     "1": 0.03,
+     "2": 0.08,
+     "3": 0.73
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.83,
+    "probabilities": {
+     "pointed": 0.89,
+     "sideways": 0.09,
+     "elsewhere": 0.02
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "strong",
+    "confidence": 0.54,
+    "probabilities": {
+     "working": 0.26,
+     "none_or_minimal": 0.05,
+     "strong": 0.69
+    }
+   }
+  }
+ },
+ {
+  "qid": "vasileiou_christina_CV.pdf",
+  "answers": {
+   "career_progression": {
+    "type": "choice",
+    "choice": "steady_growth",
+    "confidence": 0.75,
+    "probabilities": {
+     "unclear": 0.02,
+     "lateral_moves": 0.17,
+     "steady_growth": 0.81,
+     "job_hopping": 0.0
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 0.02,
+    "confidence": 0.99,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 1.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 1.43,
+    "confidence": 0.64,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.57,
+     "2": 0.43,
+     "3": 0.0,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 2.05,
+    "confidence": 0.94,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.94,
+     "3": 0.06
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.94,
+    "probabilities": {
+     "pointed": 0.96,
+     "sideways": 0.02,
+     "elsewhere": 0.02
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "working",
+    "confidence": 0.64,
+    "probabilities": {
+     "strong": 0.1,
+     "working": 0.76,
+     "none_or_minimal": 0.14
+    }
+   }
+  }
+ },
+ {
+  "qid": "vlachos_andreas_CV.pdf",
+  "answers": {
+   "career_progression": {
+    "type": "choice",
+    "choice": "steady_growth",
+    "confidence": 0.38,
+    "probabilities": {
+     "lateral_moves": 0.01,
+     "steady_growth": 0.54,
+     "job_hopping": 0.28,
+     "unclear": 0.17
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 0.0,
+    "confidence": 1.0,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 1.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 1.84,
+    "confidence": 0.72,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.25,
+     "2": 0.66,
+     "3": 0.09,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 2.49,
+    "confidence": 0.5,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.51,
+     "3": 0.49
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.96,
+    "probabilities": {
+     "pointed": 0.97,
+     "elsewhere": 0.01,
+     "sideways": 0.02
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "working",
+    "confidence": 0.52,
+    "probabilities": {
+     "none_or_minimal": 0.01,
+     "working": 0.67,
+     "strong": 0.32
+    }
+   }
+  }
+ },
+ {
+  "qid": "vlachos_despoina_CV.pdf",
+  "answers": {
+   "career_progression": {
+    "type": "choice",
+    "choice": "steady_growth",
+    "confidence": 0.4,
+    "probabilities": {
+     "steady_growth": 0.56,
+     "unclear": 0.38,
+     "job_hopping": 0.0,
+     "lateral_moves": 0.06
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 0.01,
+    "confidence": 1.0,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 1.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 1.99,
+    "confidence": 0.69,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.19,
+     "2": 0.63,
+     "3": 0.18,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 2.52,
+    "confidence": 0.52,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.48,
+     "3": 0.52
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.98,
+    "probabilities": {
+     "elsewhere": 0.01,
+     "pointed": 0.98,
+     "sideways": 0.01
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "strong",
+    "confidence": 0.59,
+    "probabilities": {
+     "strong": 0.73,
+     "working": 0.11,
+     "none_or_minimal": 0.16
+    }
+   }
+  }
+ },
+ {
+  "qid": "vlachos_spyridon_CV.pdf",
+  "answers": {
+   "career_progression": {
+    "type": "choice",
+    "choice": "steady_growth",
+    "confidence": 0.38,
+    "probabilities": {
+     "job_hopping": 0.0,
+     "unclear": 0.43,
+     "lateral_moves": 0.03,
+     "steady_growth": 0.54
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 0.03,
+    "confidence": 0.98,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 0.99,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.01,
+     "4": 0.0,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 0.49,
+    "confidence": 0.59,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.67,
+     "1": 0.19,
+     "2": 0.13,
+     "3": 0.01,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 1.95,
+    "confidence": 0.87,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.08,
+     "2": 0.88,
+     "3": 0.04
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.93,
+    "probabilities": {
+     "sideways": 0.01,
+     "pointed": 0.96,
+     "elsewhere": 0.03
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "strong",
+    "confidence": 0.5,
+    "probabilities": {
+     "none_or_minimal": 0.02,
+     "working": 0.31,
+     "strong": 0.67
+    }
+   }
+  }
+ },
+ {
+  "qid": "zachariadis_natalia_CV.pdf",
+  "answers": {
+   "career_progression": {
+    "type": "choice",
+    "choice": "unclear",
+    "confidence": 0.62,
+    "probabilities": {
+     "job_hopping": 0.24,
+     "unclear": 0.72,
+     "steady_growth": 0.02,
+     "lateral_moves": 0.02
+    }
+   },
+   "technical_depth": {
+    "type": "score",
+    "score": 0.0,
+    "confidence": 1.0,
+    "legend": {
+     "0": {
+      "what": "No role or project where the candidate wrote code."
+     },
+     "1": {
+      "what": "Code appears only as coursework, a bootcamp or a tutorial exercise."
+     },
+     "2": {
+      "what": "Small scoped work inside someone else's design, such as bug fixes, small features, tests or scripts."
+     },
+     "3": {
+      "what": "Owns features end to end, from design through shipping and keeping them running."
+     },
+     "4": {
+      "what": "Owns a whole system or service and makes its architectural decisions."
+     },
+     "5": {
+      "what": "Deep specialist with real breadth, such as hard production problems solved across more than one area."
+     }
+    },
+    "probabilities": {
+     "0": 1.0,
+     "1": 0.0,
+     "2": 0.0,
+     "3": 0.0,
+     "4": 0.0,
+     "5": 0.0
+    }
+   },
+   "ownership_leadership": {
+    "type": "score",
+    "score": 1.53,
+    "confidence": 0.6,
+    "legend": {
+     "0": {
+      "what": "No evidence of responsibility beyond their own tasks."
+     },
+     "1": {
+      "what": "Helps colleagues informally, reviews other people's work or explains things to them."
+     },
+     "2": {
+      "what": "Owns a small project or workstream, or formally mentors one person."
+     },
+     "3": {
+      "what": "Leads a team or a workstream that other people's work depends on, with responsibility for outcomes."
+     },
+     "4": {
+      "what": "Leads several teams, or sets direction for a whole function or discipline."
+     }
+    },
+    "probabilities": {
+     "0": 0.02,
+     "1": 0.44,
+     "2": 0.54,
+     "3": 0.0,
+     "4": 0.0
+    }
+   },
+   "communication": {
+    "type": "score",
+    "score": 2.94,
+    "confidence": 0.94,
+    "legend": {
+     "0": {
+      "what": "No evidence of written or spoken work outside their own immediate team."
+     },
+     "1": {
+      "what": "Writes internal notes or documentation for their own team."
+     },
+     "2": {
+      "what": "Writes material other teams use, presents to a group, or trains others."
+     },
+     "3": {
+      "what": "Writes for people outside the company, or represents it in front of clients, regulators or the public."
+     }
+    },
+    "probabilities": {
+     "0": 0.0,
+     "1": 0.0,
+     "2": 0.05,
+     "3": 0.95
+    }
+   },
+   "motivation_fit": {
+    "type": "choice",
+    "choice": "pointed",
+    "confidence": 0.93,
+    "probabilities": {
+     "elsewhere": 0.01,
+     "pointed": 0.96,
+     "sideways": 0.03
+    }
+   },
+   "english_level": {
+    "type": "choice",
+    "choice": "strong",
+    "confidence": 0.91,
+    "probabilities": {
+     "working": 0.05,
+     "strong": 0.95,
+     "none_or_minimal": 0.0
+    }
+   }
+  }
+ }
+]
