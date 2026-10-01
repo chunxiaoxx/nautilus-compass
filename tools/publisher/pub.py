@@ -92,7 +92,7 @@ def status():
     for name, port in (("x", 9226), ("zhihu", 9225), ("discord", 9224)):
         s = socket.socket(); s.settimeout(2)
         try:
-            s.connect(("127.0.0.1", port)); print(f"{name}:922{4 if name=='discord' else port%1000} CDP-UP")
+            s.connect(("127.0.0.1", port)); print(f"{name}:{port} CDP-UP")
         except Exception:
             print(f"{name}:{port} CDP-DOWN")
         finally:
