@@ -2,6 +2,11 @@
 
 **Assay / nautilus-compass · 2026-10-01 · issue #2 deliverable**
 
+> **ERRATUM v1.1 (2026-10-01, same day — maintainer review caught two errors in the prose; the data files were always correct):**
+> 1. The "Divergence rows" section as first posted claimed both divergences were `job_hopping` vs `lateral_moves` class swaps. **Wrong.** Both divergence rows are model abstentions (`pred=unclear`) on keyed rows — `measure_report.json → divergence_rows` was always correct. The table's "unclear 2/27" and the divergence 2/27 are the *same two rows*; the prose invented a class swap the data does not contain. The 18-month boundary-zone reading is withdrawn.
+> 2. The flag-leakage side reading is **retracted** — see that section. The maintainer's counter-analysis (military = gender proxy in this corpus) was independently reproduced on our box before retraction.
+> Brier disclosure (added): 0.069 counts the two abstentions as errors (strict); they contribute 0.712 of the 1.863 total (38%). Abstentions-excluded Brier ≈ 0.046. Preregistered K3 fixed no abstention policy; the posted number stays (strict), the alternative is disclosed here.
+
 > **Caveat (verbatim, as required):** agreement with the manifest is agreement with the generator, not accuracy on real applicants.
 > Protocol: key committed and timestamped before any model call; corpus frozen at sha16 `c304f878800b1fcb`; all requests/responses logged; anyone can recompute from the artifacts linked below.
 
@@ -21,9 +26,9 @@
 | ECE (10-bin) | **0.138** | 27 | model slightly overconfident; our own internal bar is ≤0.10 |
 | model chose `unclear` on keyed rows | 2/27 | — | honest-abstention present but rare |
 
-## Divergence rows (2/27) — the interesting output
+## Divergence rows (2/27) — corrected in v1.1
 
-Both divergences are `job_hopping` predicted where the generator wrote lateral moves (or vice versa). Per the corollary in our protocol: these are **policy-vs-generator-intent divergences**, not necessarily model errors — the 18-month threshold in `job_hopping` vs the generator's "no pattern of short stays" in `lateral_moves` is a genuine boundary zone. Raw rows in `measure_report.json → divergence_rows`.
+Both divergences are **model abstentions**: `pred=unclear` on keyed rows — `tzanetakis_markos_CV.pdf` (key `steady_growth`, conf 0.72) and `anagnostou_michalis_CV.pdf` (key `lateral_moves`, conf 0.44). There are **no class-swap divergences** in this run. These are the same two rows counted as "unclear 2/27" in the table above. Raw rows in `measure_report.json → divergence_rows`.
 
 ## Side reading: flag leakage (the finding you may act on)
 
@@ -36,6 +41,8 @@ Score means, military-service CVs (n=18) vs non-military (n=22):
 | communication | 2.25 | 2.15 | +0.10 (flat) |
 
 Reading boundary, stated plainly: n is small, and military CVs in this corpus may genuinely carry less code experience — so this is a **correlation, not a proven leak**. But the pattern (technical depth suppressed, leadership elevated on the same flag) is exactly the shape a policy author would want to check against the `flag`/`weight` mode separation in `src/policy.ts`. We report it as a question, not a verdict.
+
+**RETRACTED (v1.1):** maintainer counter-analysis shows `military` is a **gender proxy** in this corpus, not a service signal — 18 military rows contain 0 females; 22 non-military rows contain 16 females; all 4 IT/software CVs are female; experience / employer count / job-hopping rate near-identical across the split. The −0.42 on technical_depth is what the generator wrote (coding roles are women; women carry no military line in this Greek-context corpus) — a corpus artifact, and the flag never touches the score in `src/policy.ts` anyway. We reproduced the counter-numbers from `manifest.json` on our box before retracting.
 
 ## Five judgment dimensions (technical_depth, ownership, communication, motivation_fit, english_level)
 
