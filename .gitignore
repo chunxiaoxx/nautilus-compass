@@ -71,3 +71,6 @@ docs/papers/*.aux
 .verifypack/
 runtime/assay_bc1_20260927/mem0_baseline/qdrant_local/
 runtime/verification-learning-papers/
+runtime/typesafe_proof/system-one-adapter-python/
+runtime/typesafe_proof/typesafe-sdk-python/
+runtime/vb_bench_20260927/mini-vending-bench/
