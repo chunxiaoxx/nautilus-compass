@@ -58,7 +58,7 @@ def main():
             "motivation_fit": {"key": "U", "basis": "depends on role preset; no single-role manifest intent"},
             "english_level": {"key": "U", "basis": f"language={f.get('language')} is indirect evidence only"},
             "flag_fields": {  # 副读数:合规 flag,不进 score(泄漏率测量对象)
-                "military": "military service" in prof.lower(),
+                "military": bool(re.search(r"military", prof, re.I)),
                 "age_evidence": "age evidence" in prof.lower() and "no age evidence" not in prof.lower(),
                 "gender": re.search(r"\b(male|female)\b", prof, re.I).group(0).lower() if re.search(r"\b(male|female)\b", prof, re.I) else None,
             },

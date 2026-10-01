@@ -68,7 +68,7 @@
     "basis": "language=en is indirect evidence only"
    },
    "flag_fields": {
-    "military": false,
+    "military": true,
     "age_evidence": false,
     "gender": null
    },
@@ -204,7 +204,7 @@
     "basis": "language=en is indirect evidence only"
    },
    "flag_fields": {
-    "military": false,
+    "military": true,
     "age_evidence": false,
     "gender": null
    },
@@ -272,7 +272,7 @@
     "basis": "language=el is indirect evidence only"
    },
    "flag_fields": {
-    "military": false,
+    "military": true,
     "age_evidence": false,
     "gender": null
    },
@@ -408,7 +408,7 @@
     "basis": "language=en is indirect evidence only"
    },
    "flag_fields": {
-    "military": false,
+    "military": true,
     "age_evidence": false,
     "gender": null
    },
@@ -442,7 +442,7 @@
     "basis": "language=el is indirect evidence only"
    },
    "flag_fields": {
-    "military": false,
+    "military": true,
     "age_evidence": false,
     "gender": null
    },
@@ -476,7 +476,7 @@
     "basis": "language=el is indirect evidence only"
    },
    "flag_fields": {
-    "military": false,
+    "military": true,
     "age_evidence": false,
     "gender": null
    },
@@ -510,7 +510,7 @@
     "basis": "language=el is indirect evidence only"
    },
    "flag_fields": {
-    "military": false,
+    "military": true,
     "age_evidence": false,
     "gender": null
    },
@@ -578,7 +578,7 @@
     "basis": "language=el is indirect evidence only"
    },
    "flag_fields": {
-    "military": false,
+    "military": true,
     "age_evidence": false,
     "gender": null
    },
@@ -680,7 +680,7 @@
     "basis": "language=en is indirect evidence only"
    },
    "flag_fields": {
-    "military": false,
+    "military": true,
     "age_evidence": false,
     "gender": null
    },
@@ -714,7 +714,7 @@
     "basis": "language=en is indirect evidence only"
    },
    "flag_fields": {
-    "military": false,
+    "military": true,
     "age_evidence": false,
     "gender": null
    },
@@ -850,7 +850,7 @@
     "basis": "language=en is indirect evidence only"
    },
    "flag_fields": {
-    "military": false,
+    "military": true,
     "age_evidence": false,
     "gender": null
    },
@@ -884,7 +884,7 @@
     "basis": "language=en is indirect evidence only"
    },
    "flag_fields": {
-    "military": false,
+    "military": true,
     "age_evidence": false,
     "gender": null
    },
@@ -986,7 +986,7 @@
     "basis": "language=el is indirect evidence only"
    },
    "flag_fields": {
-    "military": false,
+    "military": true,
     "age_evidence": false,
     "gender": null
    },
@@ -1020,7 +1020,7 @@
     "basis": "language=en is indirect evidence only"
    },
    "flag_fields": {
-    "military": false,
+    "military": true,
     "age_evidence": false,
     "gender": null
    },
@@ -1054,7 +1054,7 @@
     "basis": "language=en is indirect evidence only"
    },
    "flag_fields": {
-    "military": false,
+    "military": true,
     "age_evidence": false,
     "gender": null
    },
@@ -1122,7 +1122,7 @@
     "basis": "language=el is indirect evidence only"
    },
    "flag_fields": {
-    "military": false,
+    "military": true,
     "age_evidence": false,
     "gender": null
    },
@@ -1224,7 +1224,7 @@
     "basis": "language=el is indirect evidence only"
    },
    "flag_fields": {
-    "military": false,
+    "military": true,
     "age_evidence": false,
     "gender": null
    },
@@ -1326,7 +1326,7 @@
     "basis": "language=el is indirect evidence only"
    },
    "flag_fields": {
-    "military": false,
+    "military": true,
     "age_evidence": false,
     "gender": null
    },
