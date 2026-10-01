@@ -25,7 +25,8 @@ def probe_mailbox():
 
 
 def probe_github():
-    for repo, num in (("MemTensor/MemOS", 2440), ("mem0ai/mem0", 7514)):
+    for repo, num in (("MemTensor/MemOS", 2440), ("mem0ai/mem0", 7514),
+                      ("gtaras7/typesafe-jev", 2)):
         try:
             out = subprocess.run(
                 ["gh", "issue", "view", str(num), "--repo", repo, "--json", "comments"],
@@ -35,6 +36,17 @@ def probe_github():
                 EVENTS.append(f"GitHub {repo}#{num} 有 {n} 条评论(外联回应!)")
         except Exception:
             pass
+    # 通知流兜底(漏监教训 10/1:typesafe-jev Issue#2 回应漏看半天)
+    try:
+        out = subprocess.run(
+            ["gh", "api", "notifications", "--jq",
+             ".[] | select(.unread==true) | .subject.title"],
+            capture_output=True, text=True, timeout=20)
+        for line in (out.stdout or "").splitlines():
+            if line.strip():
+                EVENTS.append(f"GitHub 通知未读: {line.strip()[:70]}")
+    except Exception:
+        pass
 
 
 def probe_a100():
