@@ -44,10 +44,15 @@ def probe_a100():
         c.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         c.connect("223.109.239.30", port=23236, username="root",
                   password="REDACTED_A100_PW", timeout=10)
+        # GPU 空闲判定=无计算进程(瞬时利用率会误报:迭代间隙利用率 0 但进程在)
         _, out, _ = c.exec_command(
-            "tail -3 /root/vdd2/e6/grpo.log 2>/dev/null | tr '\\r' '\\n' | tail -1; "
-            "nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader", timeout=20)
-        EVENTS.append(f"A100 状态: {out.read().decode().strip()[:100]}")
+            "nvidia-smi --query-compute-apps=pid --format=csv,noheader | wc -l; "
+            "nvidia-smi --query-gpu=utilization.gpu,memory.used --format=csv,noheader",
+            timeout=20)
+        lines = out.read().decode().strip().splitlines()
+        n_proc = int(lines[0].strip() or 0)
+        if n_proc == 0:
+            EVENTS.append(f"A100 真空闲(无计算进程): {lines[1] if len(lines) > 1 else '?'}")
         c.close()
     except Exception as e:
         EVENTS.append(f"探针故障-A100: {type(e).__name__}")
