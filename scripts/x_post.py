@@ -63,7 +63,7 @@ async def main():
     d = json.loads(result) if isinstance(result, str) and result.startswith("{") else {}
     if d.get("len", 0) > 10:
         post_result = await ev('''(function(){
-            var btn = document.querySelector('[data-testid="tweetButton"]');
+            var btn = document.querySelector('[data-testid="tweetButtonInline"]') || document.querySelector('[data-testid="tweetButton"]');
             if (!btn) return "no-btn";
             btn.click();
             return "posted";
