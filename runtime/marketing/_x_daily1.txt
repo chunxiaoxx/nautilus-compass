@@ -1,0 +1,7 @@
+Latency fact of the day:
+
+We measured Jev across query loads — 0.44s whether you ask 1 question or 3. Flat.
+
+A heavy reasoning model on the same decision task: 7.7s.
+
+17x is not the interesting part. The interesting part is the variance: flat vs unpredictable. For anything sitting in a hot path (validation, gating, routing), variance is the spec, not the mean.
