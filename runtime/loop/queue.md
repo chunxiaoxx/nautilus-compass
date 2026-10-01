@@ -34,6 +34,15 @@
 
 ## 轮次日志
 
+### R15 · 2026-10-01 14:5x-16:2x(战略沉淀+调研+论文+能力注册轮)
+- 六天复盘落记忆(retrospect-6d-patterns:五病七模式);验证即反射三层架构档(用户令 RSI 视角)
+- 全网调研六线(literature_scan:压缩×智能缝/PRM/abstention/SSI/RSI 安全窗口/F 商业实锤)+ThinkPRM 深挖(论文三引用位+四条 v0.5 候选)
+- **论文计划重大变形**:发现既有三论文仓(verification-learning-papers 8/22 立)→升级非新写;用户「高维借时空」形式化五步定式;主笔正式函 2080(P3 先行 10/8,五方供料 10/6)
+- 能力普查令 2075:writeback 注册 2 项 capability(inserted=2:verdict-judge+pub.py)
+- 下轮:21:00 BC1 知乎发布(pub.py --publish,全自动首验);G1 boot 确认函 2063 等 v5 回
+- M1:论文主笔+能力注册=组织位
+
+
 ### R14 · 2026-10-01 15:1x-16:0x(全自动化攻坚+glm 定谳+v5 勘误轮)
 - **glm 定谳**:用户指正→glm-5.3-flash 跑通(3/4,分歧=ok-1 信息边界病又一例;模型名坑:列表实为 glm-5.3-flash 连字符,glm-4.6 同跑 4/4)——**glm coding plan 全程可用坐实,此前"断腿"纯属端点/模型名错配**
 - **Reddit 自动化三路攻坚定谳**:①CDP UI(shadow DOM 死)②页内 fetch+modhash(挖到 modhash 实证!)→**BAD_CAPTCHA**(新登录态 API 提交要验证码)③建 script app(正道,免 captcha 永久)→**recaptcha 静默拦**(CDP 过不了)。结论:差用户 10 秒——apps 页点一次验证+create app(name=assay-publisher/script/redirect=http://localhost 已预填),此后 PRAW 永久自动
