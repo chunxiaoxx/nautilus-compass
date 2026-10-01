@@ -1,0 +1,25 @@
+{
+ "l1": {
+  "gate": "L1",
+  "verdict": "rework",
+  "items": [
+   {
+    "check": "count",
+    "ok": true,
+    "detail": "2/1"
+   },
+   {
+    "check": "schema",
+    "ok": false,
+    "detail": "rows=101 bad=1"
+   }
+  ],
+  "rework_hints": [
+   "schema: rows=101 bad=1"
+  ],
+  "manifest_sha256": "6bab9e4d769652392dbdb0cadb73de0cb065ee3cbbb1b473e289738260fed8d7"
+ },
+ "order_sha256": "e41d11e13f66ee7614b9023200d6e47ce5e4c8b14e341d134f3ce5a8200a4b81",
+ "ts": 1790663147.623448,
+ "signature": "40d4e69daf44ae8fd9ca9f6cd2e95aec023bc9887cb4bdfd4b2af5429aa16398"
+}

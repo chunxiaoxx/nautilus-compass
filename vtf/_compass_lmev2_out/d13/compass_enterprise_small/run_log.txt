@@ -1,0 +1,336 @@
+materialized 211 questions -> /root/lmev2_runs_d13/compass_enterprise_small_runtime
+RUN: /usr/bin/python3 -m evaluation.harness --domain enterprise --questions-path /root/lmev2_runs_d13/compass_enterprise_small_runtime/questions.json --haystack-path /root/lmev2_runs_d13/compass_enterprise_small_runtime/haystack.json --trajectories-path /root/LongMemEval-V2/data/longmemeval-v2/trajectories.jsonl --memory-config-path /root/compass_cfg.json --output-dir /root/lmev2_runs_d13/compass_enterprise_small --model doubao-seed-2-0-pro-260215 --base-url https://ark.cn-beijing.volces.com/api/coding/v3 --temperature 0.6 --top-p 0.95 --top-k 20 --reader-max-concurrent-requests 16 --prompt-build-max-workers 1 --timeout-seconds 43200.0 --evaluator-model doubao-seed-2-0-pro-260215 --evaluator-timeout-seconds 180.0 --evaluator-base-url https://ark.cn-beijing.volces.com/api/coding/v3
+All questions share the same haystack, building shared memory once for all questions.
+Building memory:   0%|          | 0/100 [00:00<?, ?traj/s]Building memory:  18%|█▊        | 18/100 [00:00<00:00, 177.52traj/s]Building memory:  36%|███▌      | 36/100 [00:00<00:00, 130.19traj/s]Building memory:  50%|█████     | 50/100 [00:00<00:00, 101.59traj/s]Building memory:  63%|██████▎   | 63/100 [00:00<00:00, 105.70traj/s]Building memory:  75%|███████▌  | 75/100 [00:00<00:00, 94.65traj/s] Building memory:  86%|████████▌ | 86/100 [00:00<00:00, 98.08traj/s]Building memory:  97%|█████████▋| 97/100 [00:00<00:00, 98.58traj/s]Building memory: 100%|██████████| 100/100 [00:00<00:00, 104.14traj/s]
+Building prompts:   0%|          | 0/211 [00:00<?, ?q/s]The tokenizer you are loading from '/root/knife3/bge-m3-lmev2' with an incorrect regex pattern: https://huggingface.co/mistralai/Mistral-Small-3.1-24B-Instruct-2503/discussions/84#69121093e8b480e709447d5e. This will lead to incorrect tokenization. You should set the `fix_mistral_regex=True` flag when loading this tokenizer to fix this issue.
+Building prompts:   0%|          | 1/211 [02:19<8:06:47, 139.08s/q]Building prompts:   1%|          | 2/211 [02:20<3:21:45, 57.92s/q] Building prompts:   1%|▏         | 3/211 [02:20<1:50:09, 31.77s/q]Building prompts:   2%|▏         | 4/211 [02:21<1:07:16, 19.50s/q]Building prompts:   2%|▏         | 5/211 [02:22<44:24, 12.94s/q]  Building prompts:   3%|▎         | 6/211 [02:23<29:56,  8.76s/q]Building prompts:   3%|▎         | 7/211 [02:24<21:24,  6.30s/q]Building prompts:   4%|▍         | 8/211 [02:25<15:17,  4.52s/q]Building prompts:   4%|▍         | 9/211 [02:26<11:09,  3.31s/q]Building prompts:   5%|▍         | 10/211 [02:26<08:14,  2.46s/q]Building prompts:   5%|▌         | 11/211 [02:27<06:12,  1.86s/q]Building prompts:   6%|▌         | 12/211 [02:31<08:30,  2.57s/q]Building prompts:   6%|▌         | 13/211 [02:31<06:33,  1.99s/q]Building prompts:   7%|▋         | 14/211 [02:32<05:14,  1.60s/q]Building prompts:   7%|▋         | 15/211 [02:33<04:26,  1.36s/q]Building prompts:   8%|▊         | 16/211 [02:34<03:51,  1.19s/q]Building prompts:   8%|▊         | 17/211 [02:35<03:30,  1.08s/q]Building prompts:   9%|▊         | 18/211 [02:35<03:12,  1.00q/s]Building prompts:   9%|▉         | 19/211 [02:36<03:01,  1.06q/s]Building prompts:   9%|▉         | 20/211 [02:37<02:41,  1.18q/s]Building prompts:  10%|▉         | 21/211 [02:38<02:51,  1.11q/s]Building prompts:  10%|█         | 22/211 [02:39<02:42,  1.17q/s]Building prompts:  11%|█         | 23/211 [02:39<02:26,  1.28q/s]Building prompts:  11%|█▏        | 24/211 [02:40<02:12,  1.41q/s]Building prompts:  12%|█▏        | 25/211 [02:40<02:10,  1.42q/s]Building prompts:  12%|█▏        | 26/211 [02:43<03:24,  1.11s/q]Building prompts:  13%|█▎        | 27/211 [02:43<03:04,  1.01s/q]Building prompts:  13%|█▎        | 28/211 [02:44<03:07,  1.02s/q]Building prompts:  14%|█▎        | 29/211 [02:45<02:49,  1.07q/s]Building prompts:  14%|█▍        | 30/211 [02:46<02:32,  1.19q/s]Building prompts:  15%|█▍        | 31/211 [02:46<02:11,  1.37q/s]Building prompts:  15%|█▌        | 32/211 [02:47<02:15,  1.32q/s]Building prompts:  16%|█▌        | 33/211 [02:48<02:13,  1.33q/s]Building prompts:  16%|█▌        | 34/211 [02:49<02:38,  1.12q/s]Building prompts:  17%|█▋        | 35/211 [02:49<02:18,  1.27q/s]Building prompts:  17%|█▋        | 36/211 [02:50<02:13,  1.31q/s]Building prompts:  18%|█▊        | 37/211 [02:51<02:02,  1.42q/s]Building prompts:  18%|█▊        | 38/211 [02:52<02:08,  1.34q/s]Building prompts:  18%|█▊        | 39/211 [02:52<02:01,  1.42q/s]Building prompts:  19%|█▉        | 40/211 [02:53<02:25,  1.17q/s]Building prompts:  19%|█▉        | 41/211 [02:54<02:11,  1.29q/s]Building prompts:  20%|█▉        | 42/211 [02:55<02:30,  1.12q/s]Building prompts:  20%|██        | 43/211 [02:56<02:20,  1.20q/s]Building prompts:  21%|██        | 44/211 [02:57<02:21,  1.18q/s]Building prompts:  21%|██▏       | 45/211 [02:57<02:14,  1.24q/s]Building prompts:  22%|██▏       | 46/211 [02:58<02:00,  1.37q/s]Building prompts:  22%|██▏       | 47/211 [02:59<01:57,  1.40q/s]Building prompts:  23%|██▎       | 48/211 [03:00<02:01,  1.35q/s]Building prompts:  23%|██▎       | 49/211 [03:00<02:11,  1.23q/s]Building prompts:  24%|██▎       | 50/211 [03:01<02:00,  1.34q/s]Building prompts:  24%|██▍       | 51/211 [03:02<02:10,  1.22q/s]Building prompts:  25%|██▍       | 52/211 [03:03<02:05,  1.26q/s]Building prompts:  25%|██▌       | 53/211 [03:03<01:59,  1.32q/s]Building prompts:  26%|██▌       | 54/211 [03:04<01:59,  1.31q/s]Building prompts:  26%|██▌       | 55/211 [03:05<01:55,  1.35q/s]Building prompts:  27%|██▋       | 56/211 [03:05<01:46,  1.45q/s]Building prompts:  27%|██▋       | 57/211 [03:06<01:54,  1.35q/s]Building prompts:  27%|██▋       | 58/211 [03:07<01:56,  1.32q/s]Building prompts:  28%|██▊       | 59/211 [03:08<01:49,  1.39q/s]Building prompts:  28%|██▊       | 60/211 [03:09<02:09,  1.16q/s]Building prompts:  29%|██▉       | 61/211 [03:10<02:21,  1.06q/s]Building prompts:  29%|██▉       | 62/211 [03:11<02:10,  1.14q/s]Building prompts:  30%|██▉       | 63/211 [03:12<02:07,  1.16q/s]Building prompts:  30%|███       | 64/211 [03:13<02:15,  1.08q/s]Building prompts:  31%|███       | 65/211 [03:14<02:25,  1.00q/s]Building prompts:  31%|███▏      | 66/211 [03:15<02:14,  1.08q/s]Building prompts:  32%|███▏      | 67/211 [03:16<02:16,  1.06q/s]Building prompts:  32%|███▏      | 68/211 [03:16<02:04,  1.14q/s]Building prompts:  33%|███▎      | 69/211 [03:18<02:16,  1.04q/s]Building prompts:  33%|███▎      | 70/211 [03:20<03:25,  1.46s/q]Building prompts:  34%|███▎      | 71/211 [03:21<02:54,  1.25s/q]Building prompts:  34%|███▍      | 72/211 [03:22<02:27,  1.06s/q]Building prompts:  35%|███▍      | 73/211 [03:22<02:11,  1.05q/s]Building prompts:  35%|███▌      | 74/211 [03:23<02:00,  1.14q/s]Building prompts:  36%|███▌      | 75/211 [03:24<02:13,  1.02q/s]Building prompts:  36%|███▌      | 76/211 [03:25<01:58,  1.14q/s]Building prompts:  36%|███▋      | 77/211 [03:25<01:47,  1.25q/s]Building prompts:  37%|███▋      | 78/211 [03:26<01:42,  1.29q/s]Building prompts:  37%|███▋      | 79/211 [03:27<01:54,  1.15q/s]Building prompts:  38%|███▊      | 80/211 [03:28<01:44,  1.25q/s]Building prompts:  38%|███▊      | 81/211 [03:29<01:47,  1.21q/s]Building prompts:  39%|███▉      | 82/211 [03:29<01:42,  1.26q/s]Building prompts:  39%|███▉      | 83/211 [03:30<01:41,  1.26q/s]Building prompts:  40%|███▉      | 84/211 [03:31<01:34,  1.35q/s]Building prompts:  40%|████      | 85/211 [03:32<01:35,  1.32q/s]Building prompts:  41%|████      | 86/211 [03:32<01:33,  1.34q/s]Building prompts:  41%|████      | 87/211 [03:33<01:26,  1.43q/s]Building prompts:  42%|████▏     | 88/211 [03:33<01:19,  1.54q/s]Building prompts:  42%|████▏     | 89/211 [03:34<01:25,  1.43q/s]Building prompts:  43%|████▎     | 90/211 [03:35<01:25,  1.42q/s]Building prompts:  43%|████▎     | 91/211 [03:36<01:22,  1.46q/s]Building prompts:  44%|████▎     | 92/211 [03:36<01:14,  1.60q/s]Building prompts:  44%|████▍     | 93/211 [03:37<01:30,  1.31q/s]Building prompts:  45%|████▍     | 94/211 [03:38<01:23,  1.40q/s]Building prompts:  45%|████▌     | 95/211 [03:38<01:16,  1.52q/s]Building prompts:  45%|████▌     | 96/211 [03:40<01:58,  1.03s/q]Building prompts:  46%|████▌     | 97/211 [03:42<02:26,  1.29s/q]Building prompts:  46%|████▋     | 98/211 [03:44<02:44,  1.46s/q]Building prompts:  47%|████▋     | 99/211 [03:45<02:34,  1.38s/q]Building prompts:  47%|████▋     | 100/211 [03:46<02:09,  1.17s/q]Building prompts:  48%|████▊     | 101/211 [03:47<02:10,  1.18s/q]Building prompts:  48%|████▊     | 102/211 [03:48<01:50,  1.02s/q]Building prompts:  49%|████▉     | 103/211 [03:48<01:39,  1.09q/s]Building prompts:  49%|████▉     | 104/211 [03:50<01:48,  1.01s/q]Building prompts:  50%|████▉     | 105/211 [03:51<01:57,  1.11s/q]Building prompts:  50%|█████     | 106/211 [03:52<01:38,  1.07q/s]Building prompts:  51%|█████     | 107/211 [03:52<01:37,  1.07q/s]Building prompts:  51%|█████     | 108/211 [03:53<01:28,  1.17q/s]Building prompts:  52%|█████▏    | 109/211 [03:54<01:20,  1.27q/s]Building prompts:  52%|█████▏    | 110/211 [03:55<01:27,  1.15q/s]Building prompts:  53%|█████▎    | 111/211 [03:56<01:27,  1.14q/s]Building prompts:  53%|█████▎    | 112/211 [03:56<01:22,  1.20q/s]Building prompts:  54%|█████▎    | 113/211 [03:57<01:23,  1.18q/s]Building prompts:  54%|█████▍    | 114/211 [03:58<01:16,  1.26q/s]Building prompts:  55%|█████▍    | 115/211 [03:59<01:09,  1.38q/s]Building prompts:  55%|█████▍    | 116/211 [03:59<01:06,  1.42q/s]Building prompts:  55%|█████▌    | 117/211 [04:00<01:03,  1.48q/s]Building prompts:  56%|█████▌    | 118/211 [04:00<01:00,  1.54q/s]Building prompts:  56%|█████▋    | 119/211 [04:02<01:12,  1.26q/s]Building prompts:  57%|█████▋    | 120/211 [04:02<01:09,  1.32q/s]Building prompts:  57%|█████▋    | 121/211 [04:03<01:09,  1.29q/s]Building prompts:  58%|█████▊    | 122/211 [04:04<01:12,  1.23q/s]Building prompts:  58%|█████▊    | 123/211 [04:04<01:05,  1.34q/s]Building prompts:  59%|█████▉    | 124/211 [04:05<01:08,  1.27q/s]Building prompts:  59%|█████▉    | 125/211 [04:06<01:11,  1.21q/s]Building prompts:  60%|█████▉    | 126/211 [04:07<01:17,  1.09q/s]Building prompts:  60%|██████    | 127/211 [04:08<01:14,  1.13q/s]Building prompts:  61%|██████    | 128/211 [04:09<01:14,  1.12q/s]Building prompts:  61%|██████    | 129/211 [04:10<01:15,  1.09q/s]Building prompts:  62%|██████▏   | 130/211 [04:11<01:10,  1.16q/s]Building prompts:  62%|██████▏   | 131/211 [04:12<01:04,  1.25q/s]Building prompts:  63%|██████▎   | 132/211 [04:13<01:12,  1.08q/s]Building prompts:  63%|██████▎   | 133/211 [04:13<01:06,  1.18q/s]Building prompts:  64%|██████▎   | 134/211 [04:16<01:43,  1.34s/q]Building prompts:  64%|██████▍   | 135/211 [04:17<01:27,  1.15s/q]Building prompts:  64%|██████▍   | 136/211 [04:17<01:15,  1.00s/q]Building prompts:  65%|██████▍   | 137/211 [04:18<01:08,  1.08q/s]Building prompts:  65%|██████▌   | 138/211 [04:19<01:00,  1.21q/s]Building prompts:  66%|██████▌   | 139/211 [04:19<00:59,  1.22q/s]Building prompts:  66%|██████▋   | 140/211 [04:20<00:57,  1.23q/s]Building prompts:  67%|██████▋   | 141/211 [04:21<00:56,  1.25q/s]Building prompts:  67%|██████▋   | 142/211 [04:22<00:51,  1.33q/s]Building prompts:  68%|██████▊   | 143/211 [04:22<00:48,  1.40q/s]Building prompts:  68%|██████▊   | 144/211 [04:23<00:53,  1.25q/s]Building prompts:  69%|██████▊   | 145/211 [04:24<00:52,  1.26q/s]Building prompts:  69%|██████▉   | 146/211 [04:25<01:02,  1.03q/s]Building prompts:  70%|██████▉   | 147/211 [04:26<00:55,  1.14q/s]Building prompts:  70%|███████   | 148/211 [04:27<00:55,  1.13q/s]Building prompts:  71%|███████   | 149/211 [04:28<00:50,  1.24q/s]Building prompts:  71%|███████   | 150/211 [04:28<00:45,  1.33q/s]Building prompts:  72%|███████▏  | 151/211 [04:29<00:51,  1.16q/s]Building prompts:  72%|███████▏  | 152/211 [04:30<00:47,  1.23q/s]Building prompts:  73%|███████▎  | 153/211 [04:31<00:45,  1.29q/s]Building prompts:  73%|███████▎  | 154/211 [04:32<00:49,  1.15q/s]Building prompts:  73%|███████▎  | 155/211 [04:33<00:46,  1.21q/s]Building prompts:  74%|███████▍  | 156/211 [04:33<00:47,  1.15q/s]Building prompts:  74%|███████▍  | 157/211 [04:34<00:42,  1.27q/s]Building prompts:  75%|███████▍  | 158/211 [04:35<00:39,  1.36q/s]Building prompts:  75%|███████▌  | 159/211 [04:35<00:36,  1.42q/s]Building prompts:  76%|███████▌  | 160/211 [04:36<00:34,  1.49q/s]Building prompts:  76%|███████▋  | 161/211 [04:38<00:59,  1.19s/q]Building prompts:  77%|███████▋  | 162/211 [04:39<00:54,  1.11s/q]Building prompts:  77%|███████▋  | 163/211 [04:40<00:49,  1.04s/q]Building prompts:  78%|███████▊  | 164/211 [04:41<00:44,  1.07q/s]Building prompts:  78%|███████▊  | 165/211 [04:42<00:45,  1.01q/s]Building prompts:  79%|███████▊  | 166/211 [04:43<00:41,  1.08q/s]Building prompts:  79%|███████▉  | 167/211 [04:43<00:38,  1.13q/s]Building prompts:  80%|███████▉  | 168/211 [04:45<00:50,  1.16s/q]Building prompts:  80%|████████  | 169/211 [04:46<00:43,  1.04s/q]Building prompts:  81%|████████  | 170/211 [04:47<00:39,  1.05q/s]Building prompts:  81%|████████  | 171/211 [04:48<00:35,  1.14q/s]Building prompts:  82%|████████▏ | 172/211 [04:48<00:35,  1.11q/s]Building prompts:  82%|████████▏ | 173/211 [04:49<00:32,  1.17q/s]Building prompts:  82%|████████▏ | 174/211 [04:50<00:34,  1.07q/s]Building prompts:  83%|████████▎ | 175/211 [04:52<00:39,  1.11s/q]Building prompts:  83%|████████▎ | 176/211 [04:53<00:36,  1.03s/q]Building prompts:  84%|████████▍ | 177/211 [04:54<00:36,  1.08s/q]Building prompts:  84%|████████▍ | 178/211 [04:54<00:30,  1.09q/s]Building prompts:  85%|████████▍ | 179/211 [04:55<00:28,  1.14q/s]Building prompts:  85%|████████▌ | 180/211 [04:56<00:24,  1.27q/s]Building prompts:  86%|████████▌ | 181/211 [04:57<00:23,  1.27q/s]Building prompts:  86%|████████▋ | 182/211 [04:57<00:21,  1.34q/s]Building prompts:  87%|████████▋ | 183/211 [05:01<00:48,  1.74s/q]Building prompts:  87%|████████▋ | 184/211 [05:02<00:39,  1.48s/q]Building prompts:  88%|████████▊ | 185/211 [05:03<00:32,  1.24s/q]Building prompts:  88%|████████▊ | 186/211 [05:04<00:27,  1.11s/q]Building prompts:  89%|████████▊ | 187/211 [05:04<00:24,  1.02s/q]Building prompts:  89%|████████▉ | 188/211 [05:05<00:23,  1.02s/q]Building prompts:  90%|████████▉ | 189/211 [05:06<00:20,  1.08q/s]Building prompts:  90%|█████████ | 190/211 [05:08<00:22,  1.05s/q]Building prompts:  91%|█████████ | 191/211 [05:08<00:20,  1.00s/q]Building prompts:  91%|█████████ | 192/211 [05:10<00:20,  1.06s/q]Building prompts:  91%|█████████▏| 193/211 [05:10<00:17,  1.00q/s]Building prompts:  92%|█████████▏| 194/211 [05:11<00:14,  1.15q/s]Building prompts:  92%|█████████▏| 195/211 [05:12<00:16,  1.02s/q]Building prompts:  93%|█████████▎| 196/211 [05:13<00:14,  1.01q/s]Building prompts:  93%|█████████▎| 197/211 [05:14<00:12,  1.15q/s]Building prompts:  94%|█████████▍| 198/211 [05:17<00:19,  1.49s/q]Building prompts:  94%|█████████▍| 199/211 [05:18<00:14,  1.24s/q]Building prompts:  95%|█████████▍| 200/211 [05:18<00:11,  1.08s/q]Building prompts:  95%|█████████▌| 201/211 [05:19<00:09,  1.06q/s]Building prompts:  96%|█████████▌| 202/211 [05:19<00:07,  1.17q/s]Building prompts:  96%|█████████▌| 203/211 [05:20<00:06,  1.16q/s]Building prompts:  97%|█████████▋| 204/211 [05:21<00:05,  1.19q/s]Building prompts:  97%|█████████▋| 205/211 [05:22<00:05,  1.19q/s]Building prompts:  98%|█████████▊| 206/211 [05:23<00:03,  1.31q/s]Building prompts:  98%|█████████▊| 207/211 [05:24<00:03,  1.22q/s]Building prompts:  99%|█████████▊| 208/211 [05:25<00:02,  1.04q/s]Building prompts:  99%|█████████▉| 209/211 [05:26<00:02,  1.02s/q]Building prompts: 100%|█████████▉| 210/211 [05:27<00:00,  1.06q/s]Building prompts: 100%|██████████| 211/211 [05:27<00:00,  1.13q/s]Building prompts: 100%|██████████| 211/211 [05:27<00:00,  1.55s/q]
+Generating:   0%|          | 0/211 [00:00<?, ?q/s]Generating:   0%|          | 1/211 [00:14<50:53, 14.54s/q]Generating:   1%|          | 2/211 [00:14<21:26,  6.16s/q]Generating:   1%|▏         | 3/211 [00:15<12:40,  3.66s/q]Generating:   2%|▏         | 4/211 [00:18<11:45,  3.41s/q]Generating:   2%|▏         | 5/211 [00:20<09:18,  2.71s/q]Generating:   3%|▎         | 6/211 [00:23<09:42,  2.84s/q]Generating:   3%|▎         | 7/211 [00:36<20:56,  6.16s/q]Generating:   4%|▍         | 8/211 [00:36<14:48,  4.38s/q]Generating:   4%|▍         | 9/211 [00:37<11:12,  3.33s/q]Generating:   5%|▍         | 10/211 [00:39<09:56,  2.97s/q]Generating:   5%|▌         | 11/211 [00:44<11:47,  3.54s/q]Generating:   6%|▌         | 12/211 [00:45<08:30,  2.56s/q]Generating:   6%|▌         | 13/211 [00:46<07:30,  2.28s/q]Generating:   7%|▋         | 14/211 [00:47<06:33,  2.00s/q]Generating:   7%|▋         | 15/211 [00:57<13:32,  4.15s/q]Generating:   8%|▊         | 16/211 [00:58<10:54,  3.36s/q]Generating:   8%|▊         | 17/211 [01:00<09:15,  2.87s/q]Generating:   9%|▊         | 18/211 [01:05<11:15,  3.50s/q]Generating:   9%|▉         | 19/211 [01:05<08:07,  2.54s/q]Generating:   9%|▉         | 20/211 [01:10<10:25,  3.28s/q]Generating:  10%|▉         | 21/211 [01:15<12:16,  3.88s/q]Generating:  10%|█         | 22/211 [01:17<10:29,  3.33s/q]Generating:  11%|█         | 23/211 [01:18<08:03,  2.57s/q]Generating:  11%|█▏        | 24/211 [01:21<07:49,  2.51s/q]Generating:  12%|█▏        | 25/211 [01:25<09:36,  3.10s/q]Generating:  12%|█▏        | 26/211 [01:27<08:20,  2.71s/q]Generating:  13%|█▎        | 27/211 [01:34<12:40,  4.14s/q]Generating:  13%|█▎        | 28/211 [01:35<09:21,  3.07s/q]Generating:  14%|█▎        | 29/211 [01:41<11:35,  3.82s/q]Generating:  14%|█▍        | 30/211 [01:43<09:59,  3.31s/q]Generating:  15%|█▍        | 31/211 [01:43<07:21,  2.45s/q]Generating:  15%|█▌        | 32/211 [01:44<05:56,  1.99s/q]Generating:  16%|█▌        | 33/211 [01:44<04:20,  1.47s/q]Generating:  16%|█▌        | 34/211 [01:46<04:08,  1.41s/q]Generating:  17%|█▋        | 35/211 [01:59<14:51,  5.07s/q]Generating:  17%|█▋        | 36/211 [02:00<11:03,  3.79s/q]Generating:  18%|█▊        | 37/211 [02:01<08:20,  2.88s/q]Generating:  18%|█▊        | 38/211 [02:07<11:01,  3.82s/q]Generating:  18%|█▊        | 39/211 [02:08<08:51,  3.09s/q]Generating:  19%|█▉        | 40/211 [02:08<06:25,  2.25s/q]Generating:  19%|█▉        | 41/211 [02:09<05:02,  1.78s/q]Generating:  20%|█▉        | 42/211 [02:10<04:13,  1.50s/q]Generating:  20%|██        | 43/211 [02:11<03:57,  1.41s/q]Generating:  21%|██        | 44/211 [02:14<05:12,  1.87s/q]Generating:  21%|██▏       | 45/211 [02:17<06:18,  2.28s/q]Generating:  22%|██▏       | 46/211 [02:21<07:29,  2.73s/q]Generating:  22%|██▏       | 47/211 [02:29<11:28,  4.20s/q]Generating:  23%|██▎       | 48/211 [02:32<10:45,  3.96s/q]Generating:  23%|██▎       | 49/211 [02:35<10:05,  3.74s/q]Generating:  24%|██▎       | 50/211 [02:37<08:12,  3.06s/q]Generating:  24%|██▍       | 51/211 [02:38<07:02,  2.64s/q]Generating:  25%|██▍       | 52/211 [02:48<12:16,  4.63s/q]Generating:  26%|██▌       | 54/211 [02:56<11:22,  4.35s/q]Generating:  26%|██▌       | 55/211 [03:01<11:43,  4.51s/q]Generating:  27%|██▋       | 56/211 [03:02<09:10,  3.55s/q]Generating:  27%|██▋       | 57/211 [03:02<06:45,  2.63s/q]Generating:  27%|██▋       | 58/211 [03:13<13:07,  5.15s/q]Generating:  28%|██▊       | 59/211 [03:16<11:01,  4.35s/q]Generating:  28%|██▊       | 60/211 [03:21<11:27,  4.55s/q]Generating:  29%|██▉       | 62/211 [03:26<09:11,  3.70s/q]Generating:  30%|██▉       | 63/211 [03:40<15:24,  6.25s/q]Generating:  30%|███       | 64/211 [03:46<14:42,  6.00s/q]Generating:  31%|███       | 65/211 [04:01<21:02,  8.65s/q]Generating:  31%|███▏      | 66/211 [04:04<16:30,  6.83s/q]Generating:  32%|███▏      | 67/211 [04:06<13:28,  5.62s/q]Generating:  32%|███▏      | 68/211 [04:09<11:30,  4.83s/q]Generating:  33%|███▎      | 69/211 [04:10<08:55,  3.77s/q]Generating:  33%|███▎      | 70/211 [04:10<06:24,  2.72s/q]Generating:  34%|███▎      | 71/211 [04:12<05:30,  2.36s/q]Generating:  34%|███▍      | 72/211 [04:23<11:41,  5.04s/q]Generating:  35%|███▍      | 73/211 [04:26<10:18,  4.48s/q]Generating:  35%|███▌      | 74/211 [04:27<07:18,  3.20s/q]Generating:  36%|███▌      | 75/211 [04:29<06:32,  2.89s/q]Generating:  36%|███▌      | 76/211 [04:29<04:43,  2.10s/q]Generating:  36%|███▋      | 77/211 [04:32<05:04,  2.28s/q]Generating:  37%|███▋      | 78/211 [04:33<04:05,  1.85s/q]Generating:  37%|███▋      | 79/211 [04:34<03:35,  1.63s/q]Generating:  38%|███▊      | 80/211 [04:36<04:12,  1.93s/q]Generating:  38%|███▊      | 81/211 [04:45<08:44,  4.03s/q]Generating:  39%|███▉      | 82/211 [04:46<06:48,  3.17s/q]Generating:  39%|███▉      | 83/211 [04:49<06:14,  2.92s/q]Generating:  40%|███▉      | 84/211 [04:51<05:54,  2.79s/q]Generating:  40%|████      | 85/211 [04:53<05:11,  2.47s/q]Generating:  41%|████      | 86/211 [04:57<06:19,  3.03s/q]Generating:  41%|████      | 87/211 [04:59<05:43,  2.77s/q]Generating:  42%|████▏     | 88/211 [05:02<05:42,  2.78s/q]Generating:  42%|████▏     | 89/211 [05:04<05:02,  2.48s/q]Generating:  43%|████▎     | 90/211 [05:04<03:40,  1.82s/q]Generating:  43%|████▎     | 91/211 [05:08<04:35,  2.30s/q]Generating:  44%|████▎     | 92/211 [05:13<06:31,  3.29s/q]Generating:  44%|████▍     | 93/211 [05:16<05:56,  3.02s/q]Generating:  45%|████▍     | 94/211 [05:17<04:50,  2.49s/q]Generating:  45%|████▌     | 95/211 [05:26<08:19,  4.31s/q]Generating:  45%|████▌     | 96/211 [05:27<06:21,  3.32s/q]Generating:  46%|████▌     | 97/211 [05:30<06:10,  3.25s/q]Generating:  46%|████▋     | 98/211 [05:32<05:23,  2.86s/q]Generating:  47%|████▋     | 99/211 [05:33<04:15,  2.28s/q]Generating:  47%|████▋     | 100/211 [05:35<04:03,  2.19s/q]Generating:  48%|████▊     | 101/211 [05:38<04:48,  2.62s/q]Generating:  49%|████▉     | 103/211 [05:39<03:04,  1.71s/q]Generating:  49%|████▉     | 104/211 [05:42<03:36,  2.03s/q]Generating:  50%|████▉     | 105/211 [05:45<03:47,  2.15s/q]Generating:  50%|█████     | 106/211 [05:45<03:00,  1.71s/q]Generating:  51%|█████     | 107/211 [05:51<04:55,  2.84s/q]Generating:  51%|█████     | 108/211 [05:57<06:20,  3.69s/q]Generating:  52%|█████▏    | 109/211 [05:58<05:10,  3.05s/q]Generating:  52%|█████▏    | 110/211 [06:07<07:42,  4.57s/q]Generating:  53%|█████▎    | 111/211 [06:07<05:40,  3.41s/q]Generating:  53%|█████▎    | 112/211 [06:10<05:20,  3.24s/q]Generating:  54%|█████▎    | 113/211 [06:11<04:07,  2.52s/q]Generating:  54%|█████▍    | 114/211 [06:12<03:08,  1.94s/q]Generating:  55%|█████▍    | 115/211 [06:12<02:24,  1.50s/q]Generating:  55%|█████▍    | 116/211 [06:27<08:50,  5.59s/q]Generating:  55%|█████▌    | 117/211 [06:37<10:38,  6.79s/q]Generating:  56%|█████▌    | 118/211 [06:38<08:04,  5.21s/q]Generating:  56%|█████▋    | 119/211 [06:44<08:08,  5.31s/q]Generating:  57%|█████▋    | 120/211 [06:45<05:59,  3.95s/q]Generating:  57%|█████▋    | 121/211 [06:49<06:18,  4.21s/q]Generating:  58%|█████▊    | 122/211 [06:52<05:19,  3.59s/q]Generating:  58%|█████▊    | 123/211 [07:02<08:07,  5.54s/q]Generating:  59%|█████▉    | 124/211 [07:05<07:14,  5.00s/q]Generating:  59%|█████▉    | 125/211 [07:09<06:37,  4.62s/q]Generating:  60%|█████▉    | 126/211 [07:10<04:54,  3.46s/q]Generating:  60%|██████    | 127/211 [07:14<05:17,  3.78s/q]Generating:  61%|██████    | 128/211 [07:22<06:56,  5.01s/q]Generating:  61%|██████    | 129/211 [07:27<06:42,  4.91s/q]Generating:  62%|██████▏   | 130/211 [07:28<05:00,  3.71s/q]Generating:  62%|██████▏   | 131/211 [07:34<05:43,  4.30s/q]Generating:  63%|██████▎   | 132/211 [07:38<05:33,  4.22s/q]Generating:  63%|██████▎   | 133/211 [07:41<05:03,  3.90s/q]Generating:  64%|██████▎   | 134/211 [07:43<04:12,  3.28s/q]Generating:  64%|██████▍   | 135/211 [07:43<03:05,  2.44s/q]Generating:  64%|██████▍   | 136/211 [07:45<02:47,  2.24s/q]Generating:  65%|██████▍   | 137/211 [07:47<02:46,  2.25s/q]Generating:  65%|██████▌   | 138/211 [07:54<04:26,  3.65s/q]Generating:  66%|██████▋   | 140/211 [07:55<02:37,  2.22s/q]Generating:  67%|██████▋   | 141/211 [07:57<02:20,  2.01s/q]Generating:  67%|██████▋   | 142/211 [08:00<02:50,  2.47s/q]Generating:  68%|██████▊   | 143/211 [08:00<02:04,  1.83s/q]Generating:  68%|██████▊   | 144/211 [08:02<02:00,  1.80s/q]Generating:  69%|██████▊   | 145/211 [08:11<04:05,  3.71s/q]Generating:  69%|██████▉   | 146/211 [08:11<03:02,  2.80s/q]Generating:  70%|██████▉   | 147/211 [08:15<03:10,  2.98s/q]Generating:  70%|███████   | 148/211 [08:15<02:24,  2.29s/q]Generating:  71%|███████   | 149/211 [08:16<01:47,  1.73s/q]Generating:  71%|███████   | 150/211 [08:16<01:18,  1.29s/q]Generating:  72%|███████▏  | 151/211 [08:23<03:01,  3.02s/q]Generating:  72%|███████▏  | 152/211 [08:28<03:32,  3.60s/q]Generating:  73%|███████▎  | 153/211 [08:30<02:58,  3.08s/q]Generating:  73%|███████▎  | 154/211 [08:32<02:33,  2.70s/q]Generating:  73%|███████▎  | 155/211 [08:32<01:50,  1.97s/q]Generating:  74%|███████▍  | 156/211 [08:35<02:14,  2.44s/q]Generating:  74%|███████▍  | 157/211 [08:40<02:47,  3.10s/q]Generating:  75%|███████▍  | 158/211 [08:50<04:28,  5.07s/q]Generating:  75%|███████▌  | 159/211 [08:51<03:22,  3.89s/q]Generating:  76%|███████▌  | 160/211 [08:52<02:38,  3.10s/q]Generating:  76%|███████▋  | 161/211 [08:55<02:31,  3.02s/q]Generating:  77%|███████▋  | 162/211 [08:57<02:17,  2.81s/q]Generating:  77%|███████▋  | 163/211 [08:57<01:37,  2.02s/q]Generating:  78%|███████▊  | 164/211 [09:05<02:51,  3.65s/q]Generating:  78%|███████▊  | 165/211 [09:13<03:53,  5.09s/q]Generating:  79%|███████▊  | 166/211 [09:22<04:37,  6.17s/q]Generating:  79%|███████▉  | 167/211 [09:25<03:48,  5.20s/q]Generating:  80%|███████▉  | 168/211 [09:29<03:33,  4.96s/q]Generating:  80%|████████  | 169/211 [09:32<02:56,  4.20s/q]Generating:  81%|████████  | 170/211 [09:37<03:04,  4.50s/q]Generating:  81%|████████  | 171/211 [09:39<02:28,  3.72s/q]Generating:  82%|████████▏ | 172/211 [09:44<02:40,  4.11s/q]Generating:  82%|████████▏ | 173/211 [09:46<02:13,  3.52s/q]Generating:  82%|████████▏ | 174/211 [09:49<01:58,  3.20s/q]Generating:  83%|████████▎ | 175/211 [09:54<02:18,  3.84s/q]Generating:  83%|████████▎ | 176/211 [09:58<02:17,  3.94s/q]Generating:  84%|████████▍ | 177/211 [10:04<02:33,  4.53s/q]Generating:  84%|████████▍ | 178/211 [10:13<03:11,  5.81s/q]Generating:  85%|████████▍ | 179/211 [10:22<03:40,  6.90s/q]Generating:  85%|████████▌ | 180/211 [10:23<02:41,  5.20s/q]Generating:  86%|████████▌ | 181/211 [10:32<03:06,  6.23s/q]Generating:  86%|████████▋ | 182/211 [10:37<02:46,  5.74s/q]Generating:  87%|████████▋ | 183/211 [10:38<02:06,  4.53s/q]Generating:  87%|████████▋ | 184/211 [10:41<01:42,  3.81s/q]Generating:  88%|████████▊ | 185/211 [10:48<02:06,  4.87s/q]Generating:  88%|████████▊ | 186/211 [10:54<02:08,  5.14s/q]Generating:  89%|████████▊ | 187/211 [11:01<02:17,  5.72s/q]Generating:  89%|████████▉ | 188/211 [11:02<01:41,  4.43s/q]Generating:  90%|████████▉ | 189/211 [11:03<01:11,  3.26s/q]Generating:  90%|█████████ | 190/211 [11:04<00:58,  2.80s/q]Generating:  91%|█████████ | 191/211 [11:07<00:56,  2.83s/q]Generating:  91%|█████████ | 192/211 [11:14<01:18,  4.13s/q]Generating:  91%|█████████▏| 193/211 [11:17<01:07,  3.72s/q]Generating:  92%|█████████▏| 194/211 [11:21<01:01,  3.62s/q]Generating:  92%|█████████▏| 195/211 [11:22<00:47,  2.95s/q]Generating:  93%|█████████▎| 196/211 [11:23<00:37,  2.51s/q]Generating:  93%|█████████▎| 197/211 [11:26<00:36,  2.64s/q]Generating:  94%|█████████▍| 198/211 [11:30<00:37,  2.92s/q]Generating:  94%|█████████▍| 199/211 [11:43<01:10,  5.88s/q]Generating:  95%|█████████▍| 200/211 [12:31<03:23, 18.46s/q]Generating:  95%|█████████▌| 201/211 [12:35<02:22, 14.28s/q]Generating:  96%|█████████▌| 202/211 [12:37<01:34, 10.47s/q]Generating:  96%|█████████▌| 203/211 [12:45<01:17,  9.71s/q]Generating:  97%|█████████▋| 204/211 [12:52<01:02,  8.94s/q]Generating:  97%|█████████▋| 205/211 [12:55<00:43,  7.31s/q]Generating:  98%|█████████▊| 206/211 [13:21<01:04, 12.90s/q]Generating:  98%|█████████▊| 207/211 [14:09<01:32, 23.24s/q]Generating:  99%|█████████▊| 208/211 [14:26<01:04, 21.51s/q]Generating:  99%|█████████▉| 209/211 [16:40<01:50, 55.12s/q]Generating: 100%|█████████▉| 210/211 [18:01<01:02, 62.94s/q]Generating: 100%|██████████| 211/211 [18:43<00:00, 56.82s/q]Generating: 100%|██████████| 211/211 [18:43<00:00,  5.33s/q]
+Scoring:   0%|          | 0/211 [00:00<?, ?q/s]Scoring:   2%|▏         | 4/211 [01:03<54:32, 15.81s/q][judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] giving up; scoring 0 for this question
+Scoring:   7%|▋         | 14/211 [14:59<3:45:50, 68.78s/q]Scoring:   7%|▋         | 15/211 [15:08<3:24:57, 62.74s/q]Scoring:   8%|▊         | 16/211 [16:16<3:26:18, 63.48s/q][judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+Scoring:   8%|▊         | 17/211 [18:21<3:55:13, 72.75s/q][judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+Scoring:   9%|▊         | 18/211 [27:22<8:22:38, 156.26s/q]Scoring:  10%|▉         | 21/211 [27:28<4:43:17, 89.46s/q] [judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] giving up; scoring 0 for this question
+Scoring:  10%|█         | 22/211 [42:09<11:48:04, 224.79s/q][judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] giving up; scoring 0 for this question
+Scoring:  11%|█▏        | 24/211 [57:32<15:43:10, 302.62s/q][judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] giving up; scoring 0 for this question
+Scoring:  15%|█▍        | 31/211 [1:12:18<9:39:30, 193.17s/q]Scoring:  16%|█▌        | 34/211 [1:12:33<6:56:58, 141.35s/q][judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+Scoring:  17%|█▋        | 36/211 [1:15:40<6:23:12, 131.38s/q]Scoring:  19%|█▉        | 40/211 [1:16:42<4:11:20, 88.19s/q] Scoring:  19%|█▉        | 41/211 [1:17:55<4:04:51, 86.42s/q]Scoring:  20%|█▉        | 42/211 [1:18:00<3:30:37, 74.78s/q]Scoring:  21%|██        | 44/211 [1:19:26<3:02:19, 65.51s/q][judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+Scoring:  24%|██▎       | 50/211 [1:22:30<2:03:52, 46.17s/q][judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+Scoring:  24%|██▍       | 51/211 [1:30:31<4:18:21, 96.88s/q][judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 2/3 failed: Evaluator model returned empty response content.
+Scoring:  25%|██▌       | 53/211 [1:41:41<6:52:04, 156.48s/q][judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+Scoring:  27%|██▋       | 57/211 [1:49:02<5:52:09, 137.20s/q][judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 1/3 failed: Evaluator model returned empty response content.
+Scoring:  27%|██▋       | 58/211 [1:54:56<7:01:29, 165.29s/q]Scoring:  28%|██▊       | 60/211 [1:55:01<5:05:12, 121.28s/q]Scoring:  29%|██▉       | 61/211 [1:55:52<4:34:59, 110.00s/q][judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] giving up; scoring 0 for this question
+Scoring:  32%|███▏      | 68/211 [2:09:10<4:28:01, 112.46s/q]Scoring:  33%|███▎      | 69/211 [2:09:30<4:01:41, 102.12s/q]Scoring:  34%|███▎      | 71/211 [2:09:45<3:04:42, 79.16s/q] Scoring:  34%|███▍      | 72/211 [2:11:05<3:03:42, 79.30s/q][judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] giving up; scoring 0 for this question
+Scoring:  35%|███▍      | 73/211 [2:24:09<7:44:27, 201.94s/q][judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+Scoring:  35%|███▌      | 74/211 [2:30:42<9:07:57, 239.98s/q][judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+Scoring:  37%|███▋      | 78/211 [2:33:06<4:51:27, 131.48s/q][judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] giving up; scoring 0 for this question
+Scoring:  42%|████▏     | 88/211 [2:46:38<3:21:52, 98.47s/q] [judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] giving up; scoring 0 for this question
+Scoring:  43%|████▎     | 90/211 [2:59:49<4:53:07, 145.35s/q]Scoring:  43%|████▎     | 91/211 [3:00:52<4:34:03, 137.03s/q][judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 1/3 failed: Evaluator model returned empty response content.
+Scoring:  44%|████▎     | 92/211 [3:06:25<5:20:57, 161.82s/q][judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] giving up; scoring 0 for this question
+Scoring:  45%|████▍     | 94/211 [3:20:31<7:30:39, 231.10s/q]Scoring:  47%|████▋     | 99/211 [3:20:57<3:46:09, 121.15s/q]Scoring:  49%|████▉     | 103/211 [3:21:05<2:21:26, 78.58s/q][judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] giving up; scoring 0 for this question
+Scoring:  50%|█████     | 106/211 [3:34:37<3:50:39, 131.81s/q][judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] giving up; scoring 0 for this question
+Scoring:  55%|█████▌    | 117/211 [3:48:49<2:36:01, 99.59s/q] Scoring:  56%|█████▌    | 118/211 [3:50:01<2:31:20, 97.64s/q]Scoring:  56%|█████▋    | 119/211 [3:50:05<2:16:24, 88.97s/q][judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 1/3 failed: Evaluator model returned empty response content.
+Scoring:  59%|█████▉    | 125/211 [3:55:24<1:44:53, 73.18s/q]Scoring:  61%|██████    | 129/211 [3:55:52<1:13:11, 53.55s/q][judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] giving up; scoring 0 for this question
+Scoring:  62%|██████▏   | 130/211 [4:11:23<3:05:42, 137.56s/q]Scoring:  64%|██████▍   | 135/211 [4:11:54<1:46:38, 84.19s/q] [judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+Scoring:  66%|██████▋   | 140/211 [4:14:41<1:17:32, 65.53s/q]Scoring:  67%|██████▋   | 141/211 [4:16:11<1:19:11, 67.88s/q][judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 1/3 failed: Evaluator model returned empty response content.
+Scoring:  68%|██████▊   | 143/211 [4:22:37<1:47:08, 94.54s/q]Scoring:  72%|███████▏  | 151/211 [4:22:44<43:06, 43.11s/q]  Scoring:  72%|███████▏  | 152/211 [4:23:32<42:46, 43.49s/q][judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+Scoring:  73%|███████▎  | 155/211 [4:27:23<49:17, 52.81s/q][judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] giving up; scoring 0 for this question
+Scoring:  75%|███████▍  | 158/211 [4:41:34<1:44:28, 118.28s/q][judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] giving up; scoring 0 for this question
+Scoring:  75%|███████▌  | 159/211 [4:55:25<2:55:53, 202.96s/q][judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] giving up; scoring 0 for this question
+Scoring:  78%|███████▊  | 165/211 [5:09:54<2:13:07, 173.64s/q][judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+Scoring:  79%|███████▉  | 167/211 [5:12:16<1:52:45, 153.76s/q][judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] giving up; scoring 0 for this question
+Scoring:  82%|████████▏ | 173/211 [5:26:25<1:33:50, 148.16s/q]Scoring:  83%|████████▎ | 176/211 [5:27:13<1:07:34, 115.85s/q]Scoring:  84%|████████▍ | 177/211 [5:27:21<59:15, 104.57s/q]  [judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] giving up; scoring 0 for this question
+Scoring:  85%|████████▌ | 180/211 [5:42:07<1:24:28, 163.50s/q][judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] giving up; scoring 0 for this question
+Scoring:  86%|████████▌ | 181/211 [5:56:03<2:04:55, 249.84s/q][judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+Scoring:  87%|████████▋ | 184/211 [6:07:41<1:49:40, 243.71s/q][judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+Scoring:  88%|████████▊ | 186/211 [6:15:15<1:39:47, 239.49s/q]Scoring:  89%|████████▊ | 187/211 [6:15:46<1:23:04, 207.70s/q]Scoring:  90%|████████▉ | 189/211 [6:16:32<55:35, 151.60s/q]  Scoring:  93%|█████████▎| 196/211 [6:17:32<16:19, 65.27s/q] [judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+Scoring:  93%|█████████▎| 197/211 [6:20:02<17:24, 74.60s/q][judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] giving up; scoring 0 for this question
+Scoring:  94%|█████████▍| 199/211 [6:33:45<30:59, 154.93s/q][judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 1/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 2/3 failed: Evaluator model returned empty response content.
+[judge-retry] evaluator attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] judge attempt 3/3 failed: Evaluator model returned empty response content.
+[judge-retry] giving up; scoring 0 for this question
+Scoring:  95%|█████████▍| 200/211 [6:48:25<47:44, 260.42s/q]Scoring:  99%|█████████▊| 208/211 [6:48:34<04:55, 98.54s/q] Scoring:  99%|█████████▉| 209/211 [6:49:01<03:02, 91.31s/q]Scoring: 100%|██████████| 211/211 [6:49:01<00:00, 116.31s/q]

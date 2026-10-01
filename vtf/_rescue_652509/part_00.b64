@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "C:\Users\chunx\Projects\nautilus-compass\vtf\gpu_ssh.py", line 90, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\chunx\Projects\nautilus-compass\vtf\gpu_ssh.py", line 66, in main
+    Path(sys.argv[3]).write_bytes(data)
+         ~~~~~~~~^^^
+IndexError: list index out of range
