@@ -8,12 +8,12 @@
 | # | 任务 | 预估 | 状态 |
 |---|---|---|---|
 | 1 | ack 1824(经费预授权池规则知悉)+ 回函 1828(幂等键建议收下+勘误入档) | 8min | ⏳ |
-| 2 | Report #3 大纲(P2 达标+TypeSafe 复算+三臂,骨架级) | 15min | ⏳ |
-| 3 | Report #3 §1 P2 达标段(88.51% 三门全绿叙事,数据从 eval_report.json) | 15min | ⏳ |
+| 2 | Report #3 大纲 | 15min | ✅ R6(docs/marketing/TRUST_REPORT_3_OUTLINE_20261001.md) |
+| 3 | Report #3 §1 成文 | 15min | ✅ R6(docs/marketing/trust_report_3/section1_judge.md) |
 | 4 | Report #3 §2 TypeSafe 四轮段(171x/75x 同页双口径+238x 自洽) | 15min | ⏳ |
 | 5 | Report #3 §3 mem0 三臂段(16/11/18 压缩元凶) | 15min | ⏳ |
-| 6 | 语料活水:E5 三门轨迹 33 条导出核对(e5_gates_first33.json→入库清单) | 15min | ⏳ |
-| 7 | 语料活水:33 条复核标记+manifest 更新 | 15min | ⏳ |
+| 6 | ~~语料活水:E5 33 条~~ **关:任务不匹配**(门级判定≠答案判分,硬塞=污染;真源=unlabelled 47+errata gold+判官金标) | — | ❌ |
+| 7 | ~~33 条复核标记~~ 随 #6 关闭 | — | ❌ |
 | 8 | 判分器热路径:接入点清单(记忆写入流程哪里调判分器) | 15min | ⏳ |
 | 9 | 判分器热路径:延迟预算实测(本地 CPU 推理一例计时) | 15min | ⏳ |
 | 10 | X 每日一贴 #1(素材:Jev 0.44s vs MiniMax 7.7s) | 5min | ⏳ |
@@ -35,6 +35,15 @@
 | — | 探针首跑即抓事件:E6 GRPO 00:17 完成(200 步/adapter 落盘/GPU 释放) | R1 | +0(记录) |
 
 ## 轮次日志
+
+### R6 · 2026-10-01 12:1x-12:4x(回归主线:Report #3 两件+语料修正)
+- Report #3 大纲落档(五节结构:判分器自纠错主线/TypeSafe/mem0/品类横评/自曝台;英文独立版=§1 讲自己不讲别人,比 TypeSafe 稿更安全的下一篇)
+- §1 成文(section1_judge.md):66.2% 起点-三作弊通道故事-LoRA 三态-读数表-U 态方法论(可溯源全链)
+- 语料活水修正:E5 33 条**不进判分语料**(实测 verdicts 全 pass=门级判定,与答案判分任务不匹配,硬塞=污染)——活水真源=unlabelled 47+errata gold+判官金标二包;E5 价值重定位=三门自动判官(另一模型线)的训练料
+- Reddit:CDP 死通道收兵,稿与配方坑全留(runtime/marketing/),待用户手点或换 UI 自动化路线
+- 下轮第一件:queue #8 判分器热路径接入点清单(装前申报准备)
+- M1:+0(内容漏斗件两件落地)
+
 
 ### R5 · 2026-10-01 10:50-11:3x(救火+W42销+头脑风暴轮)
 - 🔴救火:切换后 40min 生产重演(4.9G/available 0/overload)→根因=v3.3 warmup 防了巨物 **lazy 没防**→v3.3.1 补丁(lazy 同款 200MB 防护)+重启→稳态 available 4981/evict 归零/pong True;J1 单项 4.9G 不达如实挂账(构成=entries 文本缓存,v3.4 治理另立项)
