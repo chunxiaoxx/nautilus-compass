@@ -34,6 +34,14 @@
 
 ## 轮次日志
 
+### R16 · 2026-10-01 17:0x-18:2x(BC1 知乎攻坚+发布成功)
+- 🔴 **BC1 知乎发布成功**:https://zhuanlan.zhihu.com/p/2089032973794407525(B 级外发+pub.py 双首验完成)
+- 用户纠正在先:cn_publisher「填好」=自报(execCommand 改 DOM 被 React/Draft 丢弃,检查读幽灵层)——第 N 次自报复发,幸有用户实况核查
+- Draft.js 正道三件:React 受控 setter(标题)/CDP Input.insertText 系统级(正文,焦点坐标必须命中编辑器)/污染 tab 关掉重开(僵尸层键盘够不着)
+- 发布确认条短命:0.8s 轮询抓点(poll 6 命中 y=2795)
+- M1:BC1 上线=首考生入口开(M1 信号位)
+
+
 ### R15 · 2026-10-01 14:5x-16:2x(战略沉淀+调研+论文+能力注册轮)
 - 六天复盘落记忆(retrospect-6d-patterns:五病七模式);验证即反射三层架构档(用户令 RSI 视角)
 - 全网调研六线(literature_scan:压缩×智能缝/PRM/abstention/SSI/RSI 安全窗口/F 商业实锤)+ThinkPRM 深挖(论文三引用位+四条 v0.5 候选)
