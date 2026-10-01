@@ -82,6 +82,8 @@ def probe_a100():
 
 
 def main():
+    import datetime
+    print(f"[ts {datetime.datetime.now():%m-%d %H:%M}]")  # 时间戳头:防轮账时间漂移(10/2 第三次复发教训)
     probe_mailbox()
     probe_github()
     probe_a100()
