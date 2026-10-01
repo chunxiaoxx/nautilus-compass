@@ -36,6 +36,18 @@
 
 ## 轮次日志
 
+### R4 · 2026-10-01 08:44-09:35(蓝绿攻坚+rollback+A100 评估轮)
+- 定时件 08:53:旧版终读数 **RSS 5352MB**(9/30 重启回 2427 后 24h 又爬回——MAX_PROJ 加严治标坐实)
+- 蓝绿三连测:①默认 256 warmup→稳态 4239 ②错 env 名→256/5235 ③COMPASS_ENTRIES_CACHE_MAX_PROJ=8→loaded=8/**仍 5326**——verify 线(4000)/J1 线(3500)均不过→**按纪律 rollback**(旧版回 9876 服务中,active/5010MB/available 6027)
+- 🔴 根因待查:np 化云端真机未复现本地 175MB 降幅(差 ~30 倍;loaded=8 时 BGE2.3G+基线 0.5G 预期 ~3G,2G 差额不明)
+- 部署坑三(修入 runbook):systemctl 要 sudo -n;**9877 被 mcp_server.py 占**(蓝改 9878);stop 挡不住 Restart=always(须 disable)
+- 中断如实披露:两段(08:53-08:56 约 3min/09:03-09:25 约 20min),通报函 **1905** 已发
+- A100 空档评估件(判分器热路径):**P50=30.1ms/P95=42.2ms/吞吐 118 条/s/VRAM 5.9G**——写入热路径可行性坐实(装前申报核心数据到手)
+- Reddit 定时件卡登录(9226 Chrome 未登录 Reddit)→顺延用户登录后;稿就绪
+- 下轮第一件:queue 深活(Report #3 大纲);值守 W42 回函/v5 GPU 空档回函/BC1 卡 #27(用户飞书)
+- M1:+0(R4=运维攻坚;评估数据=判分器上岗前置)
+
+
 ### R3 · 2026-10-01 01:0x-01:4x(GPU 协调+W42 端点攻坚轮)
 - 交付:①GPU 协调函两封(v5 1852/flywheel 1853——首调 409 duplicate 证实被中断调用实际成功,被吞的只是回显)②W42 端点四连试:正确 URL(/api/platform/org/judge/writeback,承 1845)→openapi 拉 _WritebackReq schema→v4/v5 两种装载均 200+inserted=0→回函 1896 要行 schema/判重确认(停止猜)③三 ack(1845/1848/1851)
 - 探针修正:A100 空闲判定改计算进程数(瞬时利用率会误报迭代间隙——v5 E6 是连续迭代:00:17 一轮完→00:25 二轮起,38G/86%,实例并未空闲);热路径评估脚本修 modelscope 路径(真实=/root/.cache/modelscope/models/Qwen--Qwen3-1.7B/snapshots/master)排队等空档
