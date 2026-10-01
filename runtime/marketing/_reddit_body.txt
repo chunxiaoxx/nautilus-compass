@@ -1,0 +1,18 @@
+Saw a homepage recently claiming "193.6x faster, 444.6x cheaper (proof)" — the "(proof)" suffix made it look citable, so we tried to click it.
+
+**Finding 1: it's not a link.** We checked the HTML — no href on the "(proof)" text, no /benchmarks page, no methodology doc anywhere. The /pricing page 404s.
+
+**Finding 2: the same page contains numbers that don't match the headline.** The demo widget shows $0.013880 → $0.000081 (171x cheaper) and 8.566s → 0.114s (75x faster). Both real numbers, both impressive — neither is 444.6x or 193.6x.
+
+**Finding 3: one claim on the page IS verifiable** — "$42 per billion tokens, 238x cheaper than [frontier model]". 42 × 238 ≈ $10/M, which matches the public list price. So it's not fraud, it's unverifiability: different comparison sets, no methodology disclosure, self-consistent arithmetic.
+
+Which raised the question: **how much of this category runs on numbers nobody can check?**
+
+Quick survey of the agent-memory layer (all public sources):
+- A memory startup that raised $24M (TechCrunch, Oct 2025) reports "186M API calls in Q3" — self-reported
+- A company that pivoted to "enterprise context governance" still quotes "94.7% accuracy" from its own homepage benchmark
+- Everyone has "(proof)". Nobody has a methodology page.
+
+Our take after doing this for a while: the fix isn't trusting harder, it's **reproducible verification** — pre-registered criteria, frozen benchmarks, third-party recompute, published errata. We're building exactly that (independent verification lab, first live target was this homepage). Happy to answer methodology questions in comments.
+
+What's the worst "benchmark claim vs reality" gap you've found?
