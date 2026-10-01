@@ -1,0 +1,16 @@
+{
+ "ts": "2026-10-01T20:54:20+08:00",
+ "system": "P2v1 embedder pass (bge-m3, CPU)",
+ "environment": "local CPU (same class as 9876 daemon production)",
+ "note_v2_parity": "v2 measured on A100 bf16; v1's PRODUCTION environment is the CPU daemon, so CPU is the deployment-faithful measurement. Cross-hardware comparison flagged; head latency (<1ms) excluded.",
+ "load_seconds": 10.2,
+ "single_n": 60,
+ "single_p50_ms": 404.7,
+ "single_p95_ms": 480.6,
+ "single_mean_ms": 397.3,
+ "batch_total": 149,
+ "batch_seconds": 57.72,
+ "throughput_per_s": 2.58,
+ "seq_cap": 768,
+ "hardware": 8
+}

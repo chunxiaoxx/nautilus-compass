@@ -1,7 +1,7 @@
 {
  "_meta": {
   "name": "eta_probe_pack_p2v1v2",
-  "produced": "2026-10-01T20:35:13+08:00",
+  "produced": "2026-10-01T20:56+08:00 (latency gap closed same day)",
   "purpose": "eta=C/V first-pass probe data: two verifier systems on the SAME frozen split, differing in architecture only. Per operational definitions in paper3-v1.1 sec:operational (C = utility-per-bit; V = path-coverage x accuracy x truth-grade).",
   "split_commitment": {
    "train": "35683198dd3c4992 (1162 rows)",
@@ -28,8 +28,15 @@
     "note": "66.22% floor = architectural ceiling (semantic-match regime)"
    },
    "latency": {
-    "head_only_ms": "not measured (linear head, sub-ms by construction)",
-    "end_to_end_ms": "not measured -- HONEST GAP; embedder pass dominates; same input pipeline as v2's tokenizer"
+    "single_p50_ms": 404.7,
+    "single_p95_ms": 480.6,
+    "single_mean_ms": 397.3,
+    "batch_throughput_per_s": 2.58,
+    "batch_seconds_149": 57.72,
+    "load_s": 10.2,
+    "seq_cap": 768,
+    "environment": "CPU (8 threads) -- DEPLOYMENT-FAITHFUL (9876 daemon production class)",
+    "note": "MEASURED 2026-10-01, protocol mirrors v2 (60 singles + batch-149); head (<1ms) excluded. v2 runs on A100 bf16 = ITS deployment environment."
    },
    "flops_per_item_estimate": "embedder (560M x 2 x seq_len) + head (~1.2M); seq_len=768 token cap",
    "training_cost": "CPU-minutes (head only)"
@@ -65,13 +72,13 @@
   "C_marginal_ratio": "v2/v1 = (0.8851/0.6622) / (1.03e8/1.92e7) = 1.337 / 5.365 = 0.249",
   "C_total_ratio": "v2/v1 = 1.337 / (6.9e9 / 1.79e10) = 1.337 / 0.385 = 3.47",
   "interpretation": "Marginal (task-specific bits) view: v2 spends 5.4x the task bits for 1.34x utility -> C_marginal DROPS. Total-infra view: v2 uses 0.385x the infra bits for 1.34x utility -> C_total RISES 3.5x. WHICH view is correct is a REAL question for eta's definition, not a bug: pre-existing open weights are effectively free infrastructure, same as bge-m3 is for v1.",
-  "latency_note": "v1 latency unmeasured blocks a strict latency-normalized comparison; linear-head-only is sub-ms but embedder pass is shared. Flagged HONEST."
+  "latency_note": "MEASURED both: v1 CPU P50 404.7ms / 2.58 items/s vs v2 A100 P50 30.1ms / 118 items/s -> v2 is 13.4x faster (P50) and 45.9x (throughput) IN EACH SYSTEM'S OWN DEPLOYMENT ENVIRONMENT, while +22.3pt accuracy. Cross-hardware caveat: v1-on-A100 and v2-on-CPU unmeasured; the deployment-faithful pairing is the operationally meaningful one."
  },
  "honest_gaps": [
-  "v1 end-to-end latency unmeasured (only head is trivially fast)",
   "FLOPs are parameter-count estimates, not profiler-verified",
   "n=1 seed per system (split frozen; seed effect unquantified)",
-  "utility is single-metric (binary acc); ECE given as secondary"
+  "utility is single-metric (binary acc); ECE given as secondary",
+  "cross-hardware cells (v1-on-A100, v2-on-CPU) unmeasured; deployment-faithful pairing (v1=CPU daemon, v2=A100 hotpath) is what production actually runs"
  ],
  "recompute": {
   "splits": "data/paper3_snapshot/split_*.jsonl (anonymized, sha-committed)",
