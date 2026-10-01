@@ -36,6 +36,15 @@
 
 ## 轮次日志
 
+### R9 · 2026-10-01 12:0x-14:5x(双实例处置+key 公证轮)
+- v5 通报 1982 属实:**本地 9876 双实例**(7724 主/24056 空壳)→24056 精确击杀+回函 1987+互斥锁列 v3.4;跨框监视网首次抓我方生产问题
+- CI 失败×3=lint 债(9/28 起存量,挂账非本轮引入)
+- 探针修:typesafe-jev#2"2条评论"虚惊=无基线计数,已记待改增量报
+- 🔴 **answer_key 公证完成**(48h 承诺核心件):40 件 career 全锚定(lateral8/hopping8/growth11/U13,机械映射表随 key);五判断维度诚实 U;flag 副读数修正(military 18/40 实标);commit 时间戳=K 先于模型公证
+- 下轮第一件(新 session 深活):Jev 跑分段——questions.ts 出题逻辑→runner→40×6 调用→聚合→mini-report 签名发 issue
+- M1:gtaras7 线推进至 key 公证(测量半程)
+
+
 ### R8 · 2026-10-01 14:0x-14:3x(外联转化+派单轮)
 - 🔴 **外联首转化**:gtaras7/typesafe-jev Issue#2 正面回应(9/30 21:05,漏看 21h——探针没盯 GitHub 通知流,已修:gh notifications 兜底+专项监控);对方给 40 种子 CV+manifest 意图+公开 policy,强制 caveat;我方回协议(corpus sha 冻结 c304f878800b1fcb+key 先于模型 commit+全工件)——**预注册立项档落**(K1-K7/诚实边界:六判断维度大半 U+flag 泄漏副读数);40/40 CV 文本抽取全绿归档;48h 承诺启动
 - XERJ/Ivan 回信(贡献三件套+复算 offer);Infistar 四条款回复;两封发(gmail 双证)
