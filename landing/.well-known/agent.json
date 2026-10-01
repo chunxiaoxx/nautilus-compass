@@ -19,13 +19,13 @@
     "auth": {
       "type": "bearer-token",
       "transport": "Authorization: Bearer <token> on https://compass.nautilus.social/mcp/",
-      "acquisition": "self-serve open beta - sign up at https://compass.nautilus.social/signup, then create a scoped token in the console (or POST /tokens); scope is server-bound to your own space (read+write)",
+      "acquisition": "invitation-only beta - open a GitHub issue or PR at https://github.com/chunxiaoxx/nautilus-compass and include your A2A endpoint URL for platform registration",
       "scopes": ["read:<project>", "write:<project>"]
     },
     "mcp_alternative": {
       "transport": "streamable-http",
       "server_url": "https://compass.nautilus.social/mcp/",
-      "note": "any MCP-compatible client; open registration - no invitation needed"
+      "note": "any MCP-compatible client; onboarding is invitation-only (issue/PR + endpoint registration)"
     },
     "documentation": "https://github.com/chunxiaoxx/nautilus-compass#a2a-protocol"
   }
