@@ -195,8 +195,8 @@ def main() -> int:
     key_zhipu = _env_key("~/.claude/.cache/zhipu_coding_key.env", "ZHIPU")
     if key_zhipu:
         from system_one_adapter.providers.openai import OpenAIProvider
-        legs.append(("glm-4.6", OpenAIProvider(
-            "glm-4.6",
+        legs.append(("glm-5.3-flash", OpenAIProvider(
+            "glm-5.3-flash",
             base_url="https://open.bigmodel.cn/api/coding/paas/v4",
             api_key=key_zhipu)))
     if key_mm:
