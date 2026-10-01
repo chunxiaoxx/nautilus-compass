@@ -10,11 +10,11 @@
 | 1 | ack 1824(经费预授权池规则知悉)+ 回函 1828(幂等键建议收下+勘误入档) | 8min | ⏳ |
 | 2 | Report #3 大纲 | 15min | ✅ R6(docs/marketing/TRUST_REPORT_3_OUTLINE_20261001.md) |
 | 3 | Report #3 §1 成文 | 15min | ✅ R6(docs/marketing/trust_report_3/section1_judge.md) |
-| 4 | Report #3 §2 TypeSafe 四轮段(171x/75x 同页双口径+238x 自洽) | 15min | ⏳ |
-| 5 | Report #3 §3 mem0 三臂段(16/11/18 压缩元凶) | 15min | ⏳ |
+| 4 | Report #3 §2 TypeSafe 段 | 15min | ✅ R7(section2_typesafe.md) |
+| 5 | Report #3 §3 mem0 段 | 15min | ✅ R7(section3_mem0.md) |
 | 6 | ~~语料活水:E5 33 条~~ **关:任务不匹配**(门级判定≠答案判分,硬塞=污染;真源=unlabelled 47+errata gold+判官金标) | — | ❌ |
 | 7 | ~~33 条复核标记~~ 随 #6 关闭 | — | ❌ |
-| 8 | 判分器热路径:接入点清单(记忆写入流程哪里调判分器) | 15min | ⏳ |
+| 8 | 判分器热路径接入清单 | 15min | ✅ R6(docs/metering/JUDGE_HOTPATH_INTEGRATION_PLAN_20261001.md,S1-S5 判据草案) |
 | 9 | 判分器热路径:延迟预算实测(本地 CPU 推理一例计时) | 15min | ⏳ |
 | 10 | X 每日一贴 #1(素材:Jev 0.44s vs MiniMax 7.7s) | 5min | ⏳ |
 | 11 | 知乎伦理文 403 复验(9225 窗口) | 5min | ⏳ |
