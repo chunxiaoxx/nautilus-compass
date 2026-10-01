@@ -71,3 +71,38 @@
 
 - 未深挖:B 线与 A 线的交叉文献(PRM 的压缩视角);组织记忆审计的付费价位参照;ThinkPRM 全文方法论细节
 - 检索窗:部分 query 返回空(zhipu 通道质量波动),E 线补了三轮定向才命中
+
+
+## 第二波补充(2026-10-01 晚 · 承用户令:更多学术业界+过往教训提取)
+
+### G · 率失真×验证=学术空白实锤(P3 形式化的机会位)
+
+- 检索证实:**无 2025-2026 工作结合率失真理论与验证/审计**(搜索原话"did not surface recent papers combining rate-distortion theory with verification")
+- 可用形式化工具箱:[率失真感知三元权衡](https://openreview.net)(RDP tradeoff/Training-Free Traversal)+[描述统计的率失真](https://arxiv.org)(2022)+[个体序列率失真](https://pure.uva.nl)(denoising 应用)
+- **P3 写作策略**:用 RDP 三元(rate-distortion-perception)扩为四元(加 verification)——「借来的时空对账」的形式化即 RDP-V 框架,空位我们自己立
+
+### H · 记忆生产教训线(业界金矿 · 与我们过往经验直接可比)
+
+| 来源 | 要点 | 我们的一手对应 |
+|---|---|---|
+| [Cleric.ai 2026.7 "LLM judge scored worse than chance"](https://cleric.ai) | 无真值+用户反馈稀疏时,**pairwise 相对评分优于绝对评分** | 🔴同题:47/47 自不一致(绝对判分崩)→三门/重放(相对锚工件)=我们的解法;可互引 |
+| [Mem0 论文 arXiv 2504.19413](https://arxiv.org/abs/2504.19413)(1000+引) | 记忆抽取/巩固/检索架构正式论文 | P2 引用位+我们三臂档案(16/11/18)是它的实测压力测试 |
+| [supermemory 生产迁移案例](https://supermemory.ai) | Mem0→Supermemory 生产 A/B(失败/改进/评测方法) | 业界也走对照评测路线=三臂方法论同盟 |
+| [mbrenndoerfer 2026.2](https://mbrenndoerfer.com) | 显式用户反馈("remember this")=重要性真值 | **=user_verdict 导出器的设计依据**(B 线欠账的理论支撑) |
+| [Incremental Multi-Turn 记忆评测](https://arxiv.org) | 隔离记忆能力与推理/规划能力 | =BC1 设计原则(只考记忆不考推理)的同构 |
+| HF papers:20% 噪声下稳健 | 稀疏噪声用户反馈的鲁棒性 | T2 真值稀缺→真值三级加权的又一依据 |
+
+**共识主题**:真值稀缺是核心问题/用户反馈稀疏但价值高/eval-before-architecture(先评测后架构)——三条全部命中我们的既定路线。
+
+### I · 我们过往经验教训的一手数据表(论文素材库 · 全部仓内可溯)
+
+| 教训 | 数据 | 喂论文 |
+|---|---|---|
+| 判分器架构天花板 | 66.2%(冻结嵌入+线性头)→88.51%(LoRA 三态),+22.3pt/ECE 0.072 | P2 异构解法主证据 |
+| 同构验证三盲区 | is_correct 复写(险虚报 552 条)/特征含被检输出(开卷)/M2 等价误伤 13.8% | P2 盲区三形态 |
+| 判官自不一致 | 47/47 全 void+10/10 不可复算(输入只在日志) | P2 量产证据 |
+| E6 假训 | 200 步日志完成/权重零更新/六存档 md5 全同→遥测四件套 | P1 空转最纯形式+P3 反射层必要性 |
+| 合成压测假绿 | v3.2 本地 175MB vs 生产 4.9G(存量未模拟)→两败一成 | P1「测试环境失真」=压缩失真的工程实例 |
+| 剧场化读数 | income 自产 verdict 100%/B=0 停摆 2 月 | P1 生产实例 |
+| 外部协议实测 | gtaras7 40 件:92.59% 一致/Brier 0.069/ECE 0.138(模型略过自信)/2 分歧=生成器边界 | P3 协议层+P2 U 态(2/27 主动 unclear) |
+| 平台边界摩擦 | Reddit 三路/B 级授权前 0 发布→授权制后首日发布 | P1 制度反空转证据 |
