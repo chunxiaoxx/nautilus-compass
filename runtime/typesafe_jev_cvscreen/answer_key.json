@@ -1,0 +1,1370 @@
+{
+ "_meta": {
+  "corpus_sha16": "c304f878800b1fcb",
+  "key_built_at": "2026-10-01",
+  "rule": "manifest-only mechanical mapping; U where no basis",
+  "model_runs_before_this_commit": 0
+ },
+ "items": [
+  {
+   "qid": "fotopoulos_eirini_CV.pdf",
+   "language": "el",
+   "career_progression": {
+    "key": "lateral_moves",
+    "basis": "profile states 'lateral moves' → fields.ts criteria lateral_moves"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=el is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": "female"
+   },
+   "profile_verbatim": "Greek-language CV, IT / software, 5 yrs experience, 2 employers, lateral moves across employers, no age evidence, female"
+  },
+  {
+   "qid": "kalogeropoulos_petros_CV.pdf",
+   "language": "en",
+   "career_progression": {
+    "key": "job_hopping",
+    "basis": "profile states 'job hopping' → fields.ts criteria job_hopping"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=en is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": null
+   },
+   "profile_verbatim": "English-language CV, hospitality / retail, 4 yrs experience, 3 employers, job hopping (many short roles), no age evidence, military completed, degraded text layer"
+  },
+  {
+   "qid": "oikonomou_maria_CV.pdf",
+   "language": "el",
+   "career_progression": {
+    "key": "U",
+    "basis": "profile has no progression-shape phrase (only tenure/employer counts)"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=el is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": "female"
+   },
+   "profile_verbatim": "Greek-language CV, marketing / digital, 14 yrs experience, 3 employers, unclear/partial dates, birth date stated, female"
+  },
+  {
+   "qid": "vlachos_despoina_CV.pdf",
+   "language": "el",
+   "career_progression": {
+    "key": "U",
+    "basis": "profile has no progression-shape phrase (only tenure/employer counts)"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=el is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": "female"
+   },
+   "profile_verbatim": "Greek-language CV, food quality / QA, 9 yrs experience, 3 employers, internally inconsistent dates, birth date stated, female"
+  },
+  {
+   "qid": "papadopoulos_anastasia_CV.pdf",
+   "language": "el",
+   "career_progression": {
+    "key": "U",
+    "basis": "profile has no progression-shape phrase (only tenure/employer counts)"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=el is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": "female"
+   },
+   "profile_verbatim": "Greek-language CV, food R&D / product development, 18 yrs experience, 4 employers, internally inconsistent dates, birth date stated, female, degraded text layer"
+  },
+  {
+   "qid": "manolakis_panagiotis_CV.pdf",
+   "language": "en",
+   "career_progression": {
+    "key": "U",
+    "basis": "profile has no progression-shape phrase (only tenure/employer counts)"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=en is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": null
+   },
+   "profile_verbatim": "English-language CV, food quality / QA, 3 yrs experience, 3 employers, internally inconsistent dates, birth date stated, military completed"
+  },
+  {
+   "qid": "vlachos_andreas_CV.pdf",
+   "language": "en",
+   "career_progression": {
+    "key": "U",
+    "basis": "profile has no progression-shape phrase (only tenure/employer counts)"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=en is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": null
+   },
+   "profile_verbatim": "English-language CV, food quality / QA, 2 yrs experience, 3 employers, unclear/partial dates, age inferable from dates"
+  },
+  {
+   "qid": "samaras_athanasios_CV.pdf",
+   "language": "el",
+   "career_progression": {
+    "key": "job_hopping",
+    "basis": "profile states 'job hopping' → fields.ts criteria job_hopping"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=el is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": null
+   },
+   "profile_verbatim": "Greek-language CV, food production / plant, 2 yrs experience, 5 employers, job hopping (many short roles), birth date stated, military completed, degraded text layer"
+  },
+  {
+   "qid": "stamatiou_elena_CV.pdf",
+   "language": "el",
+   "career_progression": {
+    "key": "lateral_moves",
+    "basis": "profile states 'lateral moves' → fields.ts criteria lateral_moves"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=el is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": "female"
+   },
+   "profile_verbatim": "Greek-language CV, IT / software, 19 yrs experience, 4 employers, lateral moves across employers, age inferable from dates, female"
+  },
+  {
+   "qid": "stamatiou_vasiliki_CV.pdf",
+   "language": "en",
+   "career_progression": {
+    "key": "job_hopping",
+    "basis": "profile states 'job hopping' → fields.ts criteria job_hopping"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=en is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": "female"
+   },
+   "profile_verbatim": "English-language CV, food production / plant, 4 yrs experience, 4 employers, job hopping (many short roles), birth date stated, female, degraded text layer"
+  },
+  {
+   "qid": "zachariadis_natalia_CV.pdf",
+   "language": "en",
+   "career_progression": {
+    "key": "U",
+    "basis": "profile has no progression-shape phrase (only tenure/employer counts)"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=en is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": "female"
+   },
+   "profile_verbatim": "English-language CV, marketing / digital, 0 yrs experience, 3 employers, unclear/partial dates, age inferable from dates, female"
+  },
+  {
+   "qid": "manolakis_ioannis_CV.pdf",
+   "language": "en",
+   "career_progression": {
+    "key": "steady_growth",
+    "basis": "profile states growth → fields.ts criteria steady_growth"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=en is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": null
+   },
+   "profile_verbatim": "English-language CV, food quality / QA, 4 yrs experience, 2 employers, steady growth at one employer, age inferable from dates, military completed"
+  },
+  {
+   "qid": "pappas_georgios_CV.pdf",
+   "language": "el",
+   "career_progression": {
+    "key": "steady_growth",
+    "basis": "profile states growth → fields.ts criteria steady_growth"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=el is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": null
+   },
+   "profile_verbatim": "Greek-language CV, accounting / finance, 20 yrs experience, 2 employers, steady growth at one employer, birth date stated, military pending"
+  },
+  {
+   "qid": "nikolaou_dimitrios_CV.pdf",
+   "language": "el",
+   "career_progression": {
+    "key": "steady_growth",
+    "basis": "profile states growth → fields.ts criteria steady_growth"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=el is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": null
+   },
+   "profile_verbatim": "Greek-language CV, food production / plant, 18 yrs experience, 2 employers, steady growth at one employer, birth date stated, military completed"
+  },
+  {
+   "qid": "manolakis_fotios_CV.pdf",
+   "language": "el",
+   "career_progression": {
+    "key": "lateral_moves",
+    "basis": "profile states 'lateral moves' → fields.ts criteria lateral_moves"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=el is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": null
+   },
+   "profile_verbatim": "Greek-language CV, mechanical engineering, 20 yrs experience, 4 employers, lateral moves across employers, age inferable from dates, military exempted, degraded text layer"
+  },
+  {
+   "qid": "lamprou_michalis_CV.pdf",
+   "language": "en",
+   "career_progression": {
+    "key": "job_hopping",
+    "basis": "profile states 'job hopping' → fields.ts criteria job_hopping"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=en is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": null
+   },
+   "profile_verbatim": "English-language CV, mechanical engineering, 3 yrs experience, 3 employers, job hopping (many short roles), birth date stated, degraded text layer"
+  },
+  {
+   "qid": "tzanetakis_markos_CV.pdf",
+   "language": "el",
+   "career_progression": {
+    "key": "steady_growth",
+    "basis": "profile states growth → fields.ts criteria steady_growth"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=el is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": null
+   },
+   "profile_verbatim": "Greek-language CV, accounting / finance, 0 yrs experience, 1 employers, steady growth at one employer, age inferable from dates, military completed"
+  },
+  {
+   "qid": "vlachos_spyridon_CV.pdf",
+   "language": "el",
+   "career_progression": {
+    "key": "U",
+    "basis": "profile has no progression-shape phrase (only tenure/employer counts)"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=el is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": null
+   },
+   "profile_verbatim": "Greek-language CV, food R&D / product development, 4 yrs experience, 1 employers, internally inconsistent dates, age inferable from dates"
+  },
+  {
+   "qid": "georgiou_anastasia_CV.pdf",
+   "language": "el",
+   "career_progression": {
+    "key": "steady_growth",
+    "basis": "profile states growth → fields.ts criteria steady_growth"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=el is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": "female"
+   },
+   "profile_verbatim": "Greek-language CV, food R&D / product development, 9 yrs experience, 2 employers, steady growth at one employer, no age evidence, female"
+  },
+  {
+   "qid": "antoniou_spyridon_CV.pdf",
+   "language": "en",
+   "career_progression": {
+    "key": "lateral_moves",
+    "basis": "profile states 'lateral moves' → fields.ts criteria lateral_moves"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=en is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": null
+   },
+   "profile_verbatim": "English-language CV, food quality / QA, 9 yrs experience, 3 employers, lateral moves across employers, birth date stated, military pending, degraded text layer"
+  },
+  {
+   "qid": "samaras_stefanos_CV.pdf",
+   "language": "en",
+   "career_progression": {
+    "key": "U",
+    "basis": "profile has no progression-shape phrase (only tenure/employer counts)"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=en is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": null
+   },
+   "profile_verbatim": "English-language CV, food production / plant, 3 yrs experience, 4 employers, internally inconsistent dates, no age evidence, military completed"
+  },
+  {
+   "qid": "samaras_eirini_CV.pdf",
+   "language": "el",
+   "career_progression": {
+    "key": "U",
+    "basis": "profile has no progression-shape phrase (only tenure/employer counts)"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=el is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": "female"
+   },
+   "profile_verbatim": "Greek-language CV, food quality / QA, 17 yrs experience, 4 employers, internally inconsistent dates, birth date stated, female"
+  },
+  {
+   "qid": "pappas_dimitrios_CV.pdf",
+   "language": "el",
+   "career_progression": {
+    "key": "steady_growth",
+    "basis": "profile states growth → fields.ts criteria steady_growth"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=el is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": null
+   },
+   "profile_verbatim": "Greek-language CV, food production / plant, 19 yrs experience, 2 employers, steady growth at one employer, age inferable from dates, degraded text layer"
+  },
+  {
+   "qid": "vasileiou_christina_CV.pdf",
+   "language": "el",
+   "career_progression": {
+    "key": "steady_growth",
+    "basis": "profile states growth → fields.ts criteria steady_growth"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=el is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": "female"
+   },
+   "profile_verbatim": "Greek-language CV, food R&D / product development, 4 yrs experience, 1 employers, steady growth at one employer, birth date stated, female, degraded text layer"
+  },
+  {
+   "qid": "christodoulou_leonidas_CV.pdf",
+   "language": "en",
+   "career_progression": {
+    "key": "job_hopping",
+    "basis": "profile states 'job hopping' → fields.ts criteria job_hopping"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=en is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": null
+   },
+   "profile_verbatim": "English-language CV, hospitality / retail, 2 yrs experience, 6 employers, job hopping (many short roles), birth date stated, military completed"
+  },
+  {
+   "qid": "konstantinou_dimitrios_CV.pdf",
+   "language": "en",
+   "career_progression": {
+    "key": "steady_growth",
+    "basis": "profile states growth → fields.ts criteria steady_growth"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=en is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": null
+   },
+   "profile_verbatim": "English-language CV, food quality / QA, 3 yrs experience, 1 employers, steady growth at one employer, age inferable from dates, military pending"
+  },
+  {
+   "qid": "dimitriou_dimitra_CV.pdf",
+   "language": "en",
+   "career_progression": {
+    "key": "job_hopping",
+    "basis": "profile states 'job hopping' → fields.ts criteria job_hopping"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=en is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": "female"
+   },
+   "profile_verbatim": "English-language CV, food production / plant, 4 yrs experience, 4 employers, job hopping (many short roles), birth date stated, female, degraded text layer"
+  },
+  {
+   "qid": "antoniou_dimitra_CV.pdf",
+   "language": "el",
+   "career_progression": {
+    "key": "steady_growth",
+    "basis": "profile states growth → fields.ts criteria steady_growth"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=el is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": "female"
+   },
+   "profile_verbatim": "Greek-language CV, IT / software, 0 yrs experience, 1 employers, steady growth at one employer, age inferable from dates, female"
+  },
+  {
+   "qid": "papadopoulos_konstantinos_CV.pdf",
+   "language": "el",
+   "career_progression": {
+    "key": "U",
+    "basis": "profile has no progression-shape phrase (only tenure/employer counts)"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=el is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": null
+   },
+   "profile_verbatim": "Greek-language CV, food quality / QA, 11 yrs experience, 3 employers, unclear/partial dates, birth date stated, military completed"
+  },
+  {
+   "qid": "stamatiou_dimitrios_CV.pdf",
+   "language": "en",
+   "career_progression": {
+    "key": "U",
+    "basis": "profile has no progression-shape phrase (only tenure/employer counts)"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=en is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": null
+   },
+   "profile_verbatim": "English-language CV, mechanical engineering, 3 yrs experience, 3 employers, internally inconsistent dates, birth date stated, military exempted, degraded text layer"
+  },
+  {
+   "qid": "georgiou_markos_CV.pdf",
+   "language": "en",
+   "career_progression": {
+    "key": "lateral_moves",
+    "basis": "profile states 'lateral moves' → fields.ts criteria lateral_moves"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=en is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": null
+   },
+   "profile_verbatim": "English-language CV, food R&D / product development, 10 yrs experience, 3 employers, lateral moves across employers, birth date stated, military completed"
+  },
+  {
+   "qid": "drakopoulos_maria_CV.pdf",
+   "language": "el",
+   "career_progression": {
+    "key": "job_hopping",
+    "basis": "profile states 'job hopping' → fields.ts criteria job_hopping"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=el is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": "female"
+   },
+   "profile_verbatim": "Greek-language CV, IT / software, 3 yrs experience, 4 employers, job hopping (many short roles), age inferable from dates, female"
+  },
+  {
+   "qid": "anagnostou_michalis_CV.pdf",
+   "language": "el",
+   "career_progression": {
+    "key": "lateral_moves",
+    "basis": "profile states 'lateral moves' → fields.ts criteria lateral_moves"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=el is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": null
+   },
+   "profile_verbatim": "Greek-language CV, marketing / digital, 0 yrs experience, 2 employers, lateral moves across employers, birth date stated, military completed"
+  },
+  {
+   "qid": "makris_ioanna_CV.pdf",
+   "language": "el",
+   "career_progression": {
+    "key": "U",
+    "basis": "profile has no progression-shape phrase (only tenure/employer counts)"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=el is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": "female"
+   },
+   "profile_verbatim": "Greek-language CV, accounting / finance, 6 yrs experience, 3 employers, unclear/partial dates, age inferable from dates, female, degraded text layer"
+  },
+  {
+   "qid": "rizos_charalampos_CV.pdf",
+   "language": "en",
+   "career_progression": {
+    "key": "lateral_moves",
+    "basis": "profile states 'lateral moves' → fields.ts criteria lateral_moves"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=en is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": null
+   },
+   "profile_verbatim": "English-language CV, food quality / QA, 20 yrs experience, 4 employers, lateral moves across employers, birth date stated, degraded text layer"
+  },
+  {
+   "qid": "sideris_fotios_CV.pdf",
+   "language": "el",
+   "career_progression": {
+    "key": "job_hopping",
+    "basis": "profile states 'job hopping' → fields.ts criteria job_hopping"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=el is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": null
+   },
+   "profile_verbatim": "Greek-language CV, marketing / digital, 4 yrs experience, 5 employers, job hopping (many short roles), age inferable from dates, military completed"
+  },
+  {
+   "qid": "oikonomou_stamatia_CV.pdf",
+   "language": "el",
+   "career_progression": {
+    "key": "steady_growth",
+    "basis": "profile states growth → fields.ts criteria steady_growth"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=el is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": "female"
+   },
+   "profile_verbatim": "Greek-language CV, food quality / QA, 0 yrs experience, 1 employers, steady growth at one employer, age inferable from dates, female"
+  },
+  {
+   "qid": "papageorgiou_alexandros_CV.pdf",
+   "language": "el",
+   "career_progression": {
+    "key": "lateral_moves",
+    "basis": "profile states 'lateral moves' → fields.ts criteria lateral_moves"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=el is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": null
+   },
+   "profile_verbatim": "Greek-language CV, food R&D / product development, 6 yrs experience, 4 employers, lateral moves across employers, birth date stated, degraded text layer"
+  },
+  {
+   "qid": "manolakis_christos_CV.pdf",
+   "language": "el",
+   "career_progression": {
+    "key": "steady_growth",
+    "basis": "profile states growth → fields.ts criteria steady_growth"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=el is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": null
+   },
+   "profile_verbatim": "Greek-language CV, mechanical engineering, 8 yrs experience, 1 employers, steady growth at one employer, no age evidence, military pending"
+  },
+  {
+   "qid": "georgiou_evangelia_CV.pdf",
+   "language": "en",
+   "career_progression": {
+    "key": "U",
+    "basis": "profile has no progression-shape phrase (only tenure/employer counts)"
+   },
+   "technical_depth": {
+    "key": "U",
+    "basis": "manifest carries no hands-on-depth intent; scoring levels 0-5 not derivable"
+   },
+   "ownership_leadership": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "communication": {
+    "key": "U",
+    "basis": "no manifest intent"
+   },
+   "motivation_fit": {
+    "key": "U",
+    "basis": "depends on role preset; no single-role manifest intent"
+   },
+   "english_level": {
+    "key": "U",
+    "basis": "language=en is indirect evidence only"
+   },
+   "flag_fields": {
+    "military": false,
+    "age_evidence": false,
+    "gender": "female"
+   },
+   "profile_verbatim": "English-language CV, accounting / finance, 6 yrs experience, 3 employers, unclear/partial dates, no age evidence, female"
+  }
+ ]
+}
