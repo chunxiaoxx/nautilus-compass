@@ -61,6 +61,26 @@ CHOICE_CRIT = {
 }
 
 
+def load_full_samples() -> dict:
+    """--full:platform_judge_scores 5% 抽样(seed=20260930,80 行)→ SAMPLES 形。
+
+    数据源:runtime/f15_full_sample.json(由 DB 快照落地;字段 id/score/
+    reasoning/hint/judge_model)。text 合成=judge_model+score+reasoning+hint
+    (复判对象=原判定是否合理/受污染)。"""
+    src = os.path.join(ROOT, "runtime", "f15_full_sample.json")
+    rows = json.load(open(src, encoding="utf-8"))
+    out = {}
+    for r in rows:
+        out[f"js-{r['id']}"] = {
+            "session_id": f"f15db-{r['id']}",
+            "text": f"judge_model={r.get('judge_model')} score={r.get('score')}\n"
+                    f"reasoning: {r.get('reasoning')}\nhint: {r.get('hint')}",
+            "artifacts_ref": "docs/capability/criteria_catalog_v0.md",
+            "preregistration_ref": "criteria@catalog-v0#C-001",
+            "replay_ref": "docs/capability/criteria_catalog_v0.md"}
+    return out
+
+
 def compass_gates() -> dict:
     sys.path.insert(0, os.path.join(ROOT, "ops", "assay_gates"))
     import gates_v1
@@ -130,6 +150,10 @@ def ask_openai_like(prov, client, Choice, state: str) -> tuple[str, float]:
 
 
 def main() -> int:
+    global SAMPLES
+    if "--full" in sys.argv:
+        SAMPLES = load_full_samples()
+        print(f"[full] {len(SAMPLES)} samples from platform_judge_scores 5%")
     key_ts = _env_key("~/.claude/.cache/typesafe_api_key.env", "TYPESAFE")
     key_glm = None
     for ln in open(os.path.expanduser("~/.arkcli/config.yaml"), encoding="utf-8"):
@@ -166,13 +190,14 @@ def main() -> int:
     client = Client(structured_outputs=False, llm_answer_mode="probabilities",
                     normalize_probabilities=True)
     legs = []
-    # glm 腿:ARK coding key 2026-10-01 实测 401(轮换),改智谱自家 v4 + coding plan key
+    # glm 腿:智谱 coding plan 端点(2026-09-30 冒烟实证 api/coding/paas/v4→PONG;
+    # 按量端点 paas/v4 配 coding key=429——当初断腿根源即端点错配,非余额不足)
     key_zhipu = _env_key("~/.claude/.cache/zhipu_coding_key.env", "ZHIPU")
     if key_zhipu:
         from system_one_adapter.providers.openai import OpenAIProvider
-        legs.append(("glm-5.3-flash", OpenAIProvider(
-            "glm-5.3-flash",
-            base_url="https://open.bigmodel.cn/api/paas/v4",
+        legs.append(("glm-4.6", OpenAIProvider(
+            "glm-4.6",
+            base_url="https://open.bigmodel.cn/api/coding/paas/v4",
             api_key=key_zhipu)))
     if key_mm:
         from system_one_adapter.providers.openai import OpenAIProvider
