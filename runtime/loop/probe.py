@@ -6,6 +6,7 @@ import json
 import subprocess
 import sys
 import urllib.request
+from pathlib import Path
 
 EVENTS = []
 
@@ -25,6 +26,12 @@ def probe_mailbox():
 
 
 def probe_github():
+    base_f = Path(__file__).parent / ".gh_baseline.json"
+    base = {}
+    try:
+        base = json.loads(base_f.read_text(encoding="utf-8"))
+    except Exception:
+        pass
     for repo, num in (("MemTensor/MemOS", 2440), ("mem0ai/mem0", 7514),
                       ("gtaras7/typesafe-jev", 2)):
         try:
@@ -32,10 +39,14 @@ def probe_github():
                 ["gh", "issue", "view", str(num), "--repo", repo, "--json", "comments"],
                 capture_output=True, text=True, timeout=20)
             n = len(json.loads(out.stdout).get("comments", [])) if out.returncode == 0 else -1
-            if n > 0:
-                EVENTS.append(f"GitHub {repo}#{num} 有 {n} 条评论(外联回应!)")
+            k = f"{repo}#{num}"
+            prev = base.get(k)
+            if n > 0 and prev is not None and n > prev:
+                EVENTS.append(f"GitHub {k} 新增 {n - prev} 条评论(总 {n})——外联回应!")
+            base[k] = max(n, prev or 0)
         except Exception:
             pass
+    base_f.write_text(json.dumps(base), encoding="utf-8")
     # 通知流兜底(漏监教训 10/1:typesafe-jev Issue#2 回应漏看半天)
     try:
         out = subprocess.run(
