@@ -9,6 +9,9 @@
 | 2 | 2026-09-30 | mem0(62.6k★,$24M A轮) | ①我们已有其产品的三臂实证(16/11/18,压缩=丢分元凶,工件公开) ②DolphinBench 博客(9/22)自报对比 OpenAI/LangMem/MemGPT,判分协议未见公开 ③第三方可复算验证 | GitHub issue **#7514**:双锚——三臂数据+修复建议先给(非挑刺),问 DolphinBench 判分协议公开性+免费独立复算 offer(同 #2440 模式) | **已发,等回应** |
 | 3 | 2026-09-30 | TypeSafe(UniPat/EchoZ) | ①我们已公开分析其 headline(proof 不可寻址/同页双口径,X 帖 status/2105296550117458093) ②Jev=我们实测最稳的决策模型(latency 0.44s) ③回应权+复算 offer=M1 直接转化 | **Gmail** hello@typesafe.ai(官网一手邮箱,id 1a0f2ae379a7385d):公开分析知会+完整回应权+免费独立复算(判据冻结/errata 90天窗) | **已发,等回应** |
 
+| 4 | 2026-10-01 | XERJ/Ivan N(开源参考编码语料,Apache2.0 无公司) | ①他方主动:watch 检索/向量/agent-memory 域看到我们 commit 即来函邀约 ②同频:其实测(11/16 vs 16/16,26x)方法论与我们 TypeSafe 复算立场一致 ③开源贡献式营销(playbook 长期动作)首个实弹位 | Gmail 回复(gmail 1a0f58c89e092caa):应下贡献三件套(带复现的 issues 优先/hybrid scoring 小 PR/llms.txt 本周实测反馈)+一次性 offer 第三方复算其 11/16 数字 | **已回,等对方反应;我方行动件=跑检索栈对照+llms.txt 反馈** |
+| 5 | 2026-10-01 | Infistar(API 网关,跟进函) | 商务赞助跟进(原函 9/28 前后) | Gmail 回复(1a0f58c3e0ff51d5):四条款框架(中性位/实测先行 30 天 J1-J7/独立性披露/资质前置三项材料) | **已回,待对方三项材料** |
+
 ## 纠偏记录
 
 - 2026-09-30:首批件原计划 mem0(OmniMemEval)——GitHub 全搜证实 **OmniMemEval 属 MemTensor/MemOS**(mem0 仓零命中,总纲 9/26 挂错归属已修);mem0 的真基准=DolphinBench(9/22),其触达另行排(下批)。
