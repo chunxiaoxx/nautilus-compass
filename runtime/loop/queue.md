@@ -38,6 +38,13 @@
 
 ## 轮次日志
 
+### R40 · 2026-10-02 20:3x-21:0x(外联轮·rsi-bench 提案被采纳落地=协议输出首例)
+- 🔴**外部大事:9/17 考场借轨提案被 rsi-bench 当天实现并 merge(PR #2,10:25Z)"Add opt-in transcript replay certification and trusted receipts"**——replay 六轴+Ed25519 审计收据+verifier-key allowlist+仅收据排名+UNVERIFIABLE 墙+诚信分单列(七 claim 组)+防重复占位+replay≠truth 信任边界文档化;docs/certification.md 明确引用我方 Issue #1=**第三方采纳我方验证协议设计的首例(组织级里程碑)**
+- 细节如实:对方 03:28 长评(邮件副本可考:要求我方交机读四件套样例包+四对抗案例复现步骤+完整观察窗+可复算 vs 自报标注)后被删除,GitHub 公开区仅剩客套句;我方回应只锚公开实物(PR #2+certification.md),不回述被删内容
+- 轻回复已发(comment 5953691509):信任边界认同+样例包本周内链接+10/10 不可复算校准披露;**样例包=本周交付件**(材料坐标:catalog=docs/catalog/CATALOG_v0.md·fix diff=RSI 环 #1 9/14 commit 链待挖·trajectory=observation jsonl)
+- 撒网基线更新:发 6/接 3(gtaras7 深互动·rsi-bench 实现落地·cognee offer 在桌)/拒 2/待 MemOS(22:00)+Graphiti+mem0(10/3)
+- M1:+(协议输出首例:提案→48h 内第三方实现落地;GTaras7 是方法论被采纳,这次是协议被实现)
+
 ### R39 · 2026-10-02 18:4x-20:0x(主线轮·P0-full v2:可达性预检抓 v0 结构缺陷+锚点 v0.1 重构)
 - 🔴**提取前预检抓到 v0 数据结构缺陷**:anchor_v0 effect 侧(reason_span)1428/1454(96.4%)为簇级模板句(十簇判据引用仅 10 唯一值,LME 五簇整簇同一句)→同簇 effect 向量全同共享同一 top-5→**锚点级 hit@5 数学上限≈3.0-3.9%<F2 门槛 5%,任何模型不可达**(A2v2 门槛不可达同型病,本次提取前抓住=省 G1 空窗);用户拍板修 effect 侧再跑
 - **A2-v4 归因勘误**:"因果桥完全不在 BGE 层"不完整——effect 无样本级信号,BGE 从未有机会;shuffled 地板同 0 与此吻合;RED 结论(P0-full 升级依据)维持
