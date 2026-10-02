@@ -9,17 +9,26 @@
 
 | # | 任务 | 预估 | 状态 |
 |---|---|---|---|
-| 1 | ack 1824(经费预授权池规则知悉)+ 回函 1828(幂等键建议收下+勘误入档) | 8min | ⏳ |
-| 2 | Report #3 大纲 | 15min | ✅ R6(docs/marketing/TRUST_REPORT_3_OUTLINE_20261001.md) |
-| 3 | Report #3 §1 成文 | 15min | ✅ R6(docs/marketing/trust_report_3/section1_judge.md) |
-| 4 | Report #3 §2 TypeSafe 段 | 15min | ✅ R7(section2_typesafe.md) |
-| 5 | Report #3 §3 mem0 段 | 15min | ✅ R7(section3_mem0.md) |
-| 6 | ~~语料活水:E5 33 条~~ **关:任务不匹配**(门级判定≠答案判分,硬塞=污染;真源=unlabelled 47+errata gold+判官金标) | — | ❌ |
-| 7 | ~~33 条复核标记~~ 随 #6 关闭 | — | ❌ |
-| 8 | 判分器热路径接入清单 | 15min | ✅ R6(docs/metering/JUDGE_HOTPATH_INTEGRATION_PLAN_20261001.md,S1-S5 判据草案) |
-| 9 | 判分器热路径:延迟预算实测(本地 CPU 推理一例计时) | 15min | ✅ R38(读数 RED 定谳:CPU 路线排除,工件 runtime/verdict_corpus/hotpath_cpu_report_20261002.json) |
-| 12 | F15 glm 腿样本抽取脚本备好(额度窗口到即跑) | 10min | ✅ R38(tools/f15_glm_leg.py;test 折 145 名单冻结 sha16=1f2cadeb79e1a0d9;--go 即跑) |
-| 21 | lint-report 实现 | 0.5-1d | ✅ R34(commit 70050ee0,L1-L6 全绿:回放 RED/GREEN/六数字/不误报/CLI/覆盖82%;全量回归 90 passed) |
+| N1 | **rsi-bench 四件套样例包**(杠杆最大:对方已实现协议等 follow-up;判据锚=docs/catalog/CATALOG_v0.md/fix 链=RSI 环 #1 9/14/轨迹=observation;含失败全窗+可复算 vs 自报标注) | 3 轮 | ⏳ |
+| N2 | **gtaras7 C 口径短回函**(必答:C=0.086 是 1−ECE 还是 1−MAE——查 wall/报告原文定谳;短回不超额) | 1 轮 | ⏳ |
+| N3 | turbo venv 修复(查系统 python 版本→pin 兼容 transformers;备空窗即用) | 1 轮 | ⏳ |
+| N4 | **G1 判分值守**(触发式:18889 收轨迹/信箱 flywheel 件→按 g1_protocol_v1.json J1-J3 判;deadline 09:00) | 触发 | 🔄 服务已挂探活过 |
+| N5 | 报名/送测回应(触发式:probe 增量→处置) | 触发 | ⏳ |
+
+> 夜间纪律:不做战略函(flywheel 两问/2343 执行评估留明早新会话)·不重发外联(48h 窗)·知乎逆向不做·每轮时间戳只从 probe 头抄。
+
+<details><summary>旧队列(10/1-10/2 已清件)</summary>
+
+| # | 任务 | 状态 |
+|---|---|---|
+| 1 | ack 1824+回函 1828 | ✅ R1 |
+| 2-5 | Report#3 大纲+§1/§2/§3 | ✅ R6/R7 |
+| 6/7 | 语料活水 E5 | ❌ 关(任务不匹配) |
+| 8/9 | 判分器热路径清单+CPU 计时 | ✅ R6/R38(CPU 排除) |
+| 12 | F15 glm 腿备好 | ✅ R38(sha16=1f2cadeb) |
+| 21 | lint-report | ✅ R34 |
+
+</details>
 
 ## 定时件(到点触发,不在队列)
 
