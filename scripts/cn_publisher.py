@@ -473,9 +473,10 @@ async def zhihu_publish(cdp, md, publish):
             'ae:document.activeElement.className.slice(0,40)})})()')
         print(f"focus[{attempt}]:", fr)
         await asyncio.sleep(0.3)
+        # rawKeyDown:Chrome 升级后 keyDown 不再触发 paste 默认动作(10/3 实测三轮 len=0)
         await cdp.send("Input.dispatchKeyEvent", {
-            "type": "keyDown", "key": "v", "code": "KeyV",
-            "windowsVirtualKeyCode": 86, "modifiers": 2})
+            "type": "rawKeyDown", "key": "v", "code": "KeyV",
+            "windowsVirtualKeyCode": 86, "modifiers": 2, "nativeVirtualKeyCode": 86})
         await cdp.send("Input.dispatchKeyEvent", {
             "type": "keyUp", "key": "v", "code": "KeyV",
             "windowsVirtualKeyCode": 86, "modifiers": 2})

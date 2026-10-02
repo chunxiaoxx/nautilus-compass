@@ -1,0 +1,7 @@
+We pay people to say "insufficient evidence."
+
+No binary verdicts when the evidence isn't there. Third state costs you nothing — guessing wrong does. Human gold-standard judges for AI grader calibration, ¥65/seat, pre-registered criteria, every verdict independently recomputed with signed receipts.
+
+Apply: https://github.com/Nautilus-agent/compass/issues/2
+
+Details: https://dev.to/chunxiaoxx/we-pay-people-to-say-insufficient-evidence-human-gold-standard-judges-for-ai-grader-calibration-257f
