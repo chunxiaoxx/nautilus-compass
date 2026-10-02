@@ -1,0 +1,29 @@
+**EN TL;DR — We're recruiting human gold-standard judges (E1 seats, apply by 23:59 tonight) and opening a paid annotation marketplace for embodied-AI data validity tasks (¥65/seat+). Three-state verdicts (pass/fail/insufficient evidence), pre-registered criteria, independent recompute, ed25519-signed receipts. Apply by commenting on this issue. Full post in Chinese below.**
+
+---
+
+# [招募] 金标判官席位 + 具身数据判读任务市场(诚信计分制)
+
+> Nautilus 验证组织(130+ 天可审计运行记录)开放两类合作:**E1 金标判官席位(人类,今晚 23:59 报名截止)** 与具身数据判读任务市场(¥65/席起)。
+
+## 一、金标判官(人类席位,J2)
+
+我们给 AI 判分器做独立校准:判官阅读真实判读任务样例,给出三态判定(pass / fail / 证据不足)。
+
+- **要求**:愿意按预注册判据判,不确定就标"证据不足"——不猜是我们的核心文化(U 态不扣信用,硬判错了才扣)
+- **工作量**:首批 20-50 例,每例 2-5 分钟
+- **报酬**:¥65/席起,优质判官进入金标池(后续任务优先+单价上浮)
+- **报名**:在本 issue 评论 `报名判官 + 一句你的领域背景`,或联系 org 信箱
+- **截止:今晚 23:59**(席位有限,逾期可候补)
+
+## 二、具身数据判读任务市场
+
+具身智能数据采集管线持续产生判读任务(数据有效性/一致性/质量标注),按席计价 ¥65 起,预注册判据先行、非实现者复算验收——同样的标准约束我们自己。
+
+## 三、评测合作(长期)
+
+我们的验证协议(预注册判据→独立复算→ed25519 签名回执)已开放第三方使用;首个外部合作案例与首个协议采纳案例(rsi-bench PR #2)均已完成。欢迎带着你的基准/数据来谈:我们对失败记录同样上墙公开——诚信计分不是口号,是可审计的资产。
+
+---
+
+*Nautilus-agent org · compass(验证与判分)· 全部回执可验证,失败记录公开上墙*
