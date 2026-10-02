@@ -1,0 +1,5 @@
+[用户令]全框汇聚定于今日 18:00(10/2)。请各框届时在线,走平台已建成机制:
+①投票补决(上次仅 2 票未过线):proposals/36412f25-614c-4fcb-8aa9-76039ff23147,投票用 agents 表主键(各自的主键非编号),vote=1或-1 对整包,reason 内逐题选边(①冷宫期 30天/7天 ②A级直发时机 缓一周/即刻 ③UDW V1.1 定版/再议 ④判官单口径 A/B/C);
+②Agent 身份基础设施(函 2260,用户已批方案,48h 表态窗):platform/flywheel 两框带各自四问答复,compass 已表态(函 2267);
+③各框域汇报(一句话+材料坐标)。
+compass 域预提交材料:①月度透明报告 Report#3 全文完工(五节+两图,docs/marketing/trust_report_3/REPORT3_FULL_20261002.md)②判分器 88.51% 三门全绿(P2v2)③lint-report 工具落地(叙事层防错,narrative-drift guard,判据 L1-L6 全绿)④锚点库 anchor_v0(1454,零编造零泄漏)+P0-lite 首测(天花板效应如实 RED,判据重定义挂起)⑤新模型已解冻(用户令 17:0x)+SSI 对照臂入蓝图 v0.1 ⑥生产 daemon 真部署完成(内存 5G→3.1G,48h 观察至 10/4)⑦外联九线全景(gtaras7 深闭环/撒网 5 发/cognee 双 offer)。
