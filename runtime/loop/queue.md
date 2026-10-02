@@ -47,6 +47,12 @@
 
 ## 轮次日志
 
+### R52 · 2026-10-03 07:2x-07:4x(turbo 深挖定谳+G 臂 rollout 实证)
+- **turbo ImportError 根因定谳**:transformers 5.10 fp8 集成层 import 期读 `torch.float8_e8m0fnu`(torch≥2.9 才有),系统 torch 2.6 缺该属性——torch 老撞 transformers 新;修=提取脚本头一行 patch(缺则用 e4m3fn 顶名,bf16 路径不触发 fp8),已上传
+- 提取被守门正确拦截(GPU 有进程)——**该进程=g1_infer_compare.py 跑 G 臂 rollout**(G_run1/1999+G 批,07:2x 起跑):评测侧已开工,协调问被事实回答,turbo 提取排队等空窗
+- SSH 限流两连拒(banner 10054/EOF,整夜高频连接触发)——退避 120s+单连接做完模式有效,记入配方
+- M1:+(F3 通道修复待空窗;判分输入链路实证在跑)
+
 ### R51 · 2026-10-03 06:5x-07:1x(晨 LOOP·G1 双臂判分窗开+三函 ack)
 - probe 事件三函+两"新评论"(澄清=我方昨夜出站件误报增量,基线已自更新;两线仍等对方回)
 - **G1 双臂判分启动处置**:G 臂 loss 0.4019→0.0095/B 臂 0.3893→0.0105(B=注入版 30% 三族,种子 20260930);**18889 窗已开**(health 探活 V1.1 #4);接口=POST /assay/gates {trajectories:[{session_id, artifacts_ref}]};判据 J1-J3 预注册在案;**协调问已发**(rollout 评测执行框+送数时点,死线 12:00)——ack 2385/2389/2388 三函

@@ -50,6 +50,8 @@ def main() -> int:
     print(f"[load] {len(rows)} anchors ×2 侧 · model={a.model}")
 
     import torch
+    if not hasattr(torch, "float8_e8m0fnu"):  # transformers 5.10 fp8 集成层 import 期读取
+        torch.float8_e8m0fnu = torch.float8_e4m3fn  # bf16 路径不触发 fp8,仅补属性缺口
     from transformers import AutoModelForCausalLM, AutoTokenizer
     tok = AutoTokenizer.from_pretrained(a.model)
     tok.pad_token = tok.pad_token or tok.eos_token
