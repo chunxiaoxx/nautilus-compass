@@ -10,7 +10,7 @@ import platform
 import sys
 from pathlib import Path
 
-from . import checks, keys, receipt, seal, spec
+from . import checks, lint_report, keys, receipt, seal, spec
 
 sys.stdout.reconfigure(encoding="utf-8")
 
@@ -263,6 +263,13 @@ def main(argv: list[str] | None = None) -> int:
     x.add_argument("--trace", help="批次 trace id(回函链)")
     x.add_argument("--pubkey", help="验签公钥 hex(缺省 .verifypack 同名 .pub)")
     x.set_defaults(fn=cmd_export)
+
+    l = sub.add_parser("lint", help="叙事层:报告断言 ↔ 数据一致性(narrative-drift guard)")
+    l.add_argument("--report", required=True)
+    l.add_argument("--assertions", required=True)
+    l.add_argument("--data", required=True)
+    l.set_defaults(fn=lambda a: lint_report.run_lint(
+        a.report, a.assertions, a.data))
 
     a = p.parse_args(argv)
     return a.fn(a)
