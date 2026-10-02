@@ -1748,6 +1748,7 @@ def handle_conn(conn: socket.socket):
         conn.sendall(json.dumps(resp, ensure_ascii=False).encode("utf-8") + b"\n")
     except Exception as e:
         log(f"conn handler fail: {e}")
+        import traceback as _tb; log(_tb.format_exc())  # v3.3.2 · 栈补丁收编(10/2 生产排障实证:仅打 str(e) 定不了位)
         try:
             conn.sendall(json.dumps({"ok":False,"error":str(e)}).encode("utf-8") + b"\n")
         except Exception:
