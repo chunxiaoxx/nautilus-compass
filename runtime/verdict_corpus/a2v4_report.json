@@ -1,0 +1,13 @@
+{
+ "ts": "2026-10-02T18:0x+08:00",
+ "R1_coverage": "2908/2908 编码零失败",
+ "R2_causal_bridge": {
+  "hit@5_true_query": 0.0,
+  "shuffled_query_floor": 0.0,
+  "random_expectation": 0.00344,
+  "gate": 0.0172,
+  "pass": false
+ },
+ "verdict": "桥不在 BGE 层→P0-full(14B)升级依据坐实",
+ "note": "R3 头增量副读数略(lite 头已证天花板,本次直连检索即为轻量件上限形态)"
+}
