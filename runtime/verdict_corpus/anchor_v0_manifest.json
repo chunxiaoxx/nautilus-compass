@@ -8,11 +8,20 @@
   "note": "如实报,无达标线,U 锚单列"
  },
  "A2_separability": {
-  "dev_trials": 143,
-  "top5_family_hit": 1.0,
-  "random_baseline_bestof5": 1.0,
-  "pass_x3": false,
-  "note": "简化口径:truth_label 相似+判据族 frozenset 交"
+  "v1_criteria_family": {
+   "hit": 1.0,
+   "random": 1.0,
+   "verdict": "RED(判据族 frozenset 共享,结构性无判别)"
+  },
+  "v2_origin_family": {
+   "effect": "truth_label×eval_function(27 distinct)",
+   "hit": 0.9394,
+   "random_best5": 0.5399,
+   "lift": 1.74,
+   "x3_gate": "RED(主族 62% 偏斜→门槛 1.62>上限 1.0,数学不可达)"
+  },
+  "final_verdict": "RED×2 定谳:简单相似度在 verdict 语料不可分——**P0 检索头必须用学习型 Mahalanobis 投影头的实证依据**(蓝图组件 1);判据不放宽",
+  "next": "P0 用 train 折(1162)训练投影头后再测可分性;2053 决策集 cause 结构更多样可复核"
  },
  "A3_zero_fabrication": "PASS(逐字段断言全过)",
  "A4_fold_isolation": "PASS(1454 全一致)",
