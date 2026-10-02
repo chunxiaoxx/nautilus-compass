@@ -1,0 +1,5 @@
+Answering the statistics question directly: **C = 1 − ECE**, equal-width 10-bin top-label ECE. That is consistent across the wall definition and the jev-trust SDK methodology line (`Methodology: ECE = equal-width 10-bin top-label`). My earlier reply's "1 − MAE-style" phrasing was a wording error — withdrawn, and thanks for pinning it down before it calcified into two different statistics wearing one symbol.
+
+One honest note while we are here: the wall row compresses bin detail — `C=0.086, acc 50% @ conf 91%` implies a headline gap |0.50 − 0.91| = 0.41, while C = 0.086 implies ECE = 0.914. That distance is exactly the kind of thing the raw per-bin artifacts should settle rather than a summary row. Those artifacts bundle with the rerun when your 400 labels land — same batch as already promised, no new promise added.
+
+Your reading of the two abstention CVs is accepted, by the way — zero-elapsed-time profiles with same-month double roles are not a career any progression rule can describe, and "agreement with generator intent vs agreement with the question" is the sharper frame for what 92.6% measured. We'll carry that distinction into the rerun report explicitly.

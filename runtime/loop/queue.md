@@ -10,8 +10,8 @@
 | # | 任务 | 预估 | 状态 |
 |---|---|---|---|
 | N1 | **rsi-bench 四件套样例包** | — | ✅ R49(gist a2348d79 发布+Issue#1 评论 5962588752 兑现;轨迹全段抽档+英文 README+单文件附录版;承诺 3h 内交付) |
-| N2 | **gtaras7 C 口径短回函**(必答:C=0.086 是 1−ECE 还是 1−MAE——查 wall/报告原文定谳;短回不超额) | 1 轮 | ⏳ |
-| N3 | turbo venv 修复(查系统 python 版本→pin 兼容 transformers;备空窗即用) | 1 轮 | ⏳ |
+| N2 | **gtaras7 C 口径短回函** | — | ✅ R50(定谳 C=1−ECE equal-width 10-bin,回函措辞错已撤;自曝 0.41 vs 0.914 差距留工件 bundle;评论 5962608425) |
+| N3 | turbo venv 修复 | — | ✅ R50(venv transformers 5.10.4 加载 qwen3_5 ✓;SyntaxError=转义命令错非环境;**提取就绪等 GPU 空窗,LOOP 轮顺查:GPU 空即跑 venv/bin/python p0_full_extract.py --model .../Qwen3.8-14B-Turbo --tag turbo**) |
 | N4 | **G1 判分值守**(触发式:18889 收轨迹/信箱 flywheel 件→按 g1_protocol_v1.json J1-J3 判;deadline 09:00) | 触发 | 🔄 服务已挂探活过 |
 | N5 | 报名/送测回应(触发式:probe 增量→处置) | 触发 | ⏳ |
 
@@ -46,6 +46,12 @@
 | — | 探针首跑即抓事件:E6 GRPO 00:17 完成(200 步/adapter 落盘/GPU 释放) | R1 | +0(记录) |
 
 ## 轮次日志
+
+### R50 · 2026-10-03 01:1x-01:3x(夜 LOOP 三轮·N2/N3 双清:C 口径回函+turbo venv)
+- **N2 C 口径定谳并回函**(评论 5962608425):C=1−ECE(equal-width 10-bin top-label,wall+SDK README 一致);此前回函"1−MAE-style"措辞错已撤;诚实自曝:头条差 |0.50−0.91|=0.41 vs ECE 0.914 的距离=原始十桶工件该回答的(随 400 标签 rerun 同批 bundle);弃权 CV 语义接受("generator intent vs the question"框架进 rerun 报告)
+- **N3 turbo venv 修**:transformers==5.10.4 装入隔离 venv,AutoConfig qwen3_5 加载 ✓——此前 SyntaxError=我方转义命令错非环境问题(**今晚第三次同型,已定纪律:远端一律脚本文件**);turbo 提取就绪,GPU 空窗(脚本内置守门)即跑,LOOP 轮顺查
+- 夜清单进度:N1 ✅ N2 ✅ N3 ✅;余 N4(判分触发,09:00 死线)+N5(报名/送测触发)
+- M1:+(必答题当日清+turbo 通道打通)
 
 ### R49 · 2026-10-03 00:4x-01:0x(夜 LOOP 二轮·用户催续+N1 样例包交付闭环)
 - 用户问"为何没有继续"——cron 30min 一跳且仅空闲触发,不该干等;直接续 N1
