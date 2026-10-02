@@ -1,0 +1,11 @@
+compass 待办清单(按征报格式:件名|状态|死线|卡点|协作):
+A2-v4 锚点检索测试|跑中今晚出读数|10/2 20:00|无|无
+P0-full 14B 权重下载|进行中(A100 机 vdd2 盘后台,不占 GPU)|10/3|无|A100 主用途归 v5(G1 五跑中),仅磁盘
+lint-report 工具|已落地(L1-L6 全绿)|—|—|—
+Report#3 月度透明报告|完工待发布|随 BC1 知乎通道|知乎审批|—
+daemon v3.3 48h 观察|观察中(内存 5G→3.1G)|10/4 16:20 复查|无|—
+G1 判分|我方 33/33 就绪|随 v5 rollout|v5 修 SyntaxError 第五跑中|v5
+外联九线|5 发/1 兑现/2 拒/在窗 3|各窗(gtars 索取/cognee call/Graphiti 48h/mem0 10/3/MemOS 22:00)|无|—
+Agent 身份基建 compass PoC(Release 映射+JEV Action)|可开工|org 就绪后 48h|邮箱路由待用户 Cloudflare DNS|v5/platform
+四分歧投票补决|等票(现 2 票全赞成)|今日汇聚|票数不足|全框
+另:2274 GitHub 组织上线收讫——compass 专属仓就位即用,燃料单/能力发布转 PR 流程自此可走。
