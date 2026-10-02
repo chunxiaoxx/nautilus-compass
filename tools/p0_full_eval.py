@@ -21,8 +21,10 @@ K = 5
 
 
 def hit_at_k(Q: np.ndarray, C: np.ndarray, k: int = K) -> tuple[int, int]:
+    """池=全量 1454 条 cause(含自己的 cause_i——它是金标准,不是泄漏,勿屏蔽)。
+    勘误 10/2:首版 fill_diagonal(-1e9) 把金标对屏蔽后仍判命中,hit@5 恒 0
+    (承自 a2v4 同 bug——其 RED 读数作废重测)。"""
     sims = Q @ C.T
-    np.fill_diagonal(sims, -1e9)  # 排除自身位置(池=全量含自己,检索对象是其余 1453)
     top = np.argsort(-sims, axis=1)[:, :k]
     hits = int((top == np.arange(len(Q))[:, None]).any(axis=1).sum())
     return hits, len(Q)
@@ -47,7 +49,7 @@ def main() -> int:
         pass
 
     d = Path(a.dir)
-    random_exp = K / (1454 - 1)
+    random_exp = K / 1454  # 池含自己(金标在池内)
     report = {"ts": time.strftime("%Y-%m-%dT%H:%M:%S"), "random_expectation":
               round(random_exp, 5), "gate_F2": 0.05, "backbones": {}}
     any_pass = False
