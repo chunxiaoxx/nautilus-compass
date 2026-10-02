@@ -1,0 +1,25 @@
+{
+ "ts": "2026-10-02T08:3x+08:00",
+ "total": 1454,
+ "A1_coverage": {
+  "full_anchors": 1454,
+  "u_anchors": 0,
+  "coverage": 1.0,
+  "note": "如实报,无达标线,U 锚单列"
+ },
+ "A2_separability": {
+  "dev_trials": 143,
+  "top5_family_hit": 1.0,
+  "random_baseline_bestof5": 1.0,
+  "pass_x3": false,
+  "note": "简化口径:truth_label 相似+判据族 frozenset 交"
+ },
+ "A3_zero_fabrication": "PASS(逐字段断言全过)",
+ "A4_fold_isolation": "PASS(1454 全一致)",
+ "anchor_sha16": "598df93695ab383d",
+ "fold_dist": {
+  "train": 1162,
+  "test": 149,
+  "dev": 143
+ }
+}
