@@ -1,0 +1,20 @@
+{
+ "ts": "2026-10-02T17:2x+08:00",
+ "P1_coverage": {
+  "n": 1454,
+  "fail": 0
+ },
+ "P4_baselines": {
+  "dev_cos_no_head": 0.9874,
+  "marginal_majority": 0.6294,
+  "random_est": 0.296
+ },
+ "P2_A2v3": {
+  "dev_mahalanobis_top5_hit": 0.9874,
+  "gate": "H≥cos+5pt 且 ≥marginal+10pt",
+  "pass": false,
+  "feasibility": "判据失效(余弦基线已>90%,转 P0-full)"
+ },
+ "P3_isolation": "头仅 train 折拟合(1162),dev 只评估",
+ "verdict": "P0-lite RED→P0-full 升级依据"
+}
