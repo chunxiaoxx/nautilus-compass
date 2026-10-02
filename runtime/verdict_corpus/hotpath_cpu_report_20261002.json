@@ -1,0 +1,24 @@
+{
+ "ts": "2026-10-02 18:18:52",
+ "model": "Qwen3-1.7B fp32 cpu",
+ "threads": 8,
+ "context": "G1 训练同机背景(load~0.7/16核);判分器 LoRA 不在机,底模单前向口径(LoRA 延迟增量<5% 不改量级)",
+ "cold_load_s": 6.4,
+ "single_ms": {
+  "p50": 399.2,
+  "p95": 617.9,
+  "n": 10
+ },
+ "batch8_ms": {
+  "p50": 1460.4,
+  "p95": 1598.7,
+  "n": 5
+ },
+ "verdicts_sample": [
+  "pass",
+  "pass",
+  "pass",
+  "pass"
+ ],
+ "gate_S2_100ms": false
+}
