@@ -17,8 +17,8 @@
 | 6 | ~~语料活水:E5 33 条~~ **关:任务不匹配**(门级判定≠答案判分,硬塞=污染;真源=unlabelled 47+errata gold+判官金标) | — | ❌ |
 | 7 | ~~33 条复核标记~~ 随 #6 关闭 | — | ❌ |
 | 8 | 判分器热路径接入清单 | 15min | ✅ R6(docs/metering/JUDGE_HOTPATH_INTEGRATION_PLAN_20261001.md,S1-S5 判据草案) |
-| 9 | 判分器热路径:延迟预算实测(本地 CPU 推理一例计时) | 15min | ⏳ |
-| 12 | F15 glm 腿样本抽取脚本备好(额度窗口到即跑) | 10min | ⏳ |
+| 9 | 判分器热路径:延迟预算实测(本地 CPU 推理一例计时) | 15min | ✅ R38(读数 RED 定谳:CPU 路线排除,工件 runtime/verdict_corpus/hotpath_cpu_report_20261002.json) |
+| 12 | F15 glm 腿样本抽取脚本备好(额度窗口到即跑) | 10min | ✅ R38(tools/f15_glm_leg.py;test 折 145 名单冻结 sha16=1f2cadeb79e1a0d9;--go 即跑) |
 | 21 | lint-report 实现 | 0.5-1d | ✅ R34(commit 70050ee0,L1-L6 全绿:回放 RED/GREEN/六数字/不误报/CLI/覆盖82%;全量回归 90 passed) |
 
 ## 定时件(到点触发,不在队列)
@@ -37,6 +37,12 @@
 | — | 探针首跑即抓事件:E6 GRPO 00:17 完成(200 步/adapter 落盘/GPU 释放) | R1 | +0(记录) |
 
 ## 轮次日志
+
+### R38 · 2026-10-02 18:1x-18:3x(白天新会话·queue 挂账双清:热路径 CPU 计时+F15 glm 腿备料)
+- 开工读数:信箱无未读✅;zenmind PR#90/CI failed=9/28 存量通知非新事件;**G1 复活在跑(30.7G)→P0-full 提取阻塞等空窗**;双 14B 下载在途(16G/27.6G+5G/28G,ETA 20-22 点,vdd2 余 53G 够)
+- #9 定谳:CPU 计时(tools/judge_hotpath_cpu_timer.py,A100 同机 CPU 8 线程=G1 不抢+独立进程部署口径,prompt 与 train_judge_lora 逐字同款)——**单例 P50 399.2ms/P95 617.9ms,批8 折单 ~183ms,均超 S2 线(100ms)→CPU 路线排除**;对照 A100 GPU P95=42.2ms(R4)→热路径部署结论=需 GPU 窗或异步队列设计。口径注记三条如实:样本 prompt 211 chars 偏短(读数=保守下界)/G1 训练同机背景(load~0.7)/底模单前向(LoRA 增量<5% 不改量级)
+- #12 备好:tools/f15_glm_leg.py(F15 meta-judge glm 腿)——抽样纪律=名单先冻结;**schema 勘误:anchor_v0.jsonl(锚点视图 anchor_id/cause/effect)≠判分语料本源 split_*.jsonl(id/artifact/truth_label)**,源取 split_test.jsonl 全折 145(与判分器三门读数同折可比,>F15 定义 5% 下限 73;verdict log 上线后回归 5% 口径);manifest sha16=1f2cadeb79e1a0d9 落 runtime/f15/;--go 烧 glm 额度,窗口到即跑
+- M1:+(热路径部署决策依据收口=负结论也是读数;F15 腿就位=考官面 SLA 首块砖)
 
 ### R36 · 2026-10-02 14:0x-16:3x(生产轮·蓝绿部署真执行+热修两 bug)
 - 🔴**发现:"10/1 v3.3 切换"从未真正上云**——unit 主文件 ExecStart 指 daemon_v33.py 但被 deploy-path.conf(空 ExecStart 重置+指旧 daemon.py)覆盖,云上从未有 daemon_v33.py;现役一直是 9/30 旧版(RSS 5.05G=v3.2 病态区间佐证)。10/1 记录与实物不符,教训=部署验证只验了"服务 active"没验"进程 cmdline 指新文件"
