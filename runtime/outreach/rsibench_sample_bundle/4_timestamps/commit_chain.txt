@@ -1,0 +1,8 @@
+0210f49d8602a15aca13697de6c02f8e007065f6 2026-09-14 12:30:18 +0800 docs(rsi): #48 非实现者复算回执——J1/J3 FAIL(0/30 覆盖·chain_extra 窗口截断)·J2/J4 PASS·环 #1 不闭环不发通报函
+
+ docs/plans/2026-09-09-rsi-trial1-preregistered.md | 29 ++++++++++++++++++++++-
+ 1 file changed, 28 insertions(+), 1 deletion(-)
+a12c08c839e91aee247378b8c00c38dadaf794b6 2026-09-14 13:52:05 +0800 docs(rsi): #48 修复与重测记录——J3 全文扫描+J1 写入门 hook(插件仓 d9a47e1)·30 回填+2 规范化·重测四条全绿(J1 100%/J2 三档/J3 严格批量验证/J4 GREEN)·环 #1 闭环
+
+ docs/plans/2026-09-09-rsi-trial1-preregistered.md | 40 ++++++++++++++++++++++-
+ 1 file changed, 39 insertions(+), 1 deletion(-)
