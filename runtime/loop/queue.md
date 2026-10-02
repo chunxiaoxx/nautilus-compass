@@ -47,6 +47,13 @@
 
 ## 轮次日志
 
+### R48 · 2026-10-03 00:21(夜 LOOP 首轮·quiet+N1 样例包开工)
+- LOOP 注册:job bde713a8(30min/轮,45m 取整 30m 因 cron 干净整除;session 内,7 天过期)+probe 扩六监控点+夜间清单 N1-N5 落 queue(commit 5d041118)
+- probe quiet(CI 存量噪声)/信箱 0 未读/G1 未到判分窗
+- **N1 开工(rsi-bench 四件套样例包)**:材料链定位=预注册正本 docs/plans/2026-09-09-rsi-trial1-preregistered.md+复算 FAIL 回执(0210f49d)→修复重测(a12c08c8)同日闭环(12:30→13:52);四件已落三件(ticket 判据正本/两 diff/时间链)至 runtime/outreach/rsibench_sample_bundle/;MANIFEST+可复算 vs 自报标注表骨架成
+- 下轮续:3_trajectory 轨迹抽取+英文 README+挂 gist
+- M1:+(样例包=对方 Issue #1 开放等待的 follow-up,杠杆件)
+
 ### R46 · 2026-10-03 01:0x-01:3x(外拓二轮·X 落实+Gmail/Discord/知乎诊断)
 - **X 坐实**:新 tab(PUT /json/new)验证 profile 首条=判官帖+dev.to 链(15min 前)——POSTED 自报转实证;验证 ws 挂起换路解决
 - **Gmail 发出**:Trajko 跟进信(id 1a0fd45122bb958d,9/4 主动来信 3 周未跟=我方流失,补上)——rsi-bench 采纳+判官席位+Reproducibility Wall 三钩子
