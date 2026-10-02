@@ -1,0 +1,70 @@
+{
+ "ts": "2026-10-02T19:2x+08:00",
+ "n": 1454,
+ "unmatched": [],
+ "F1b_unique_rate": {
+  "F15-meta-judge 三态基准(choices@assay)": {
+   "n": 8,
+   "unique": 4,
+   "unique_rate": 0.5,
+   "max_isogroup": 2
+  },
+  "BC1 v1 自测(verify_bc1.py 三态,U 不充正分;sha=16": {
+   "n": 18,
+   "unique": 18,
+   "unique_rate": 1.0,
+   "max_isogroup": 1
+  },
+  "BC1 v2 自测(五处出题缺陷已修;sha=3b9def7d)": {
+   "n": 18,
+   "unique": 18,
+   "unique_rate": 1.0,
+   "max_isogroup": 1
+  },
+  "T3 mini jev-curate PROTOCOL.md(预注册判据)": {
+   "n": 5,
+   "unique": 4,
+   "unique_rate": 0.8,
+   "max_isogroup": 2
+  },
+  "T3 主批 findings(生产影响排序)": {
+   "n": 3,
+   "unique": 3,
+   "unique_rate": 1.0,
+   "max_isogroup": 1
+  },
+  "LME arm-a 重判·双层复算升级(J1 0/85+J2 48/50 双绿)": {
+   "n": 500,
+   "unique": 500,
+   "unique_rate": 1.0,
+   "max_isogroup": 1
+  },
+  "LME-V2 d12 compass_web_small(官方 harness·": {
+   "n": 240,
+   "unique": 220,
+   "unique_rate": 0.917,
+   "max_isogroup": 5
+  },
+  "LME-V2 d12 compass_enterprise_small(官方 h": {
+   "n": 211,
+   "unique": 204,
+   "unique_rate": 0.967,
+   "max_isogroup": 3
+  },
+  "LME-V2 d14 compass_web_small(官方 harness·": {
+   "n": 240,
+   "unique": 220,
+   "unique_rate": 0.917,
+   "max_isogroup": 5
+  },
+  "LME-V2 d14 compass_enterprise_small(官方 h": {
+   "n": 211,
+   "unique": 204,
+   "unique_rate": 0.967,
+   "max_isogroup": 3
+  }
+ },
+ "F1b_pass": true,
+ "anchor_v01_sha16": "e710a70105df50e7",
+ "criteria_lib": "criteria_lib_v0.json(10)"
+}
