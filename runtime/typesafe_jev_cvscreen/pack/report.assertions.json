@@ -1,0 +1,33 @@
+{
+ "_meta": "jev_cvscreen mini-report 断言 v1(10/2 与 lint-report 同日落档;勘误前后版本共用,heading scope 保证可回放)",
+ "assertions": [
+  {"id": "D1", "kind": "enum_set", "severity": "hard",
+   "source": "#/divergence_rows/*/pred",
+   "prose_scope": {"heading": "## Divergence rows"},
+   "expect": ["unclear"],
+   "vocab_all": ["job_hopping", "lateral_moves", "steady_growth", "unclear"],
+   "allow_patterns": ["key `[^`]*`", "\\([^()]*\\)"],
+   "note": "昨晚事故正中此门:散文叙述 pred 为类别互换 → RED;key 标注与括号元数据为合法引用形态,剥离后查纯叙述"},
+  {"id": "K4", "kind": "enum_set", "severity": "soft",
+   "source": "#/K4_U_behavior/model_says_unclear_on_keyed_rows",
+   "prose_scope": {"whole": true},
+   "expect": [],
+   "vocab_all": [],
+   "note": "占位:U 行为数字走 N5"},
+  {"id": "N1", "kind": "number", "severity": "hard",
+   "source": "#/K2_career_accuracy/accuracy", "fmt": "percent",
+   "prose_scope": {"whole": true}, "note": "92.6"},
+  {"id": "N2", "kind": "number", "severity": "hard",
+   "fmt": "frac", "num": "#/K2_career_accuracy/n_ok", "den": "#/K2_career_accuracy/n_scored",
+   "prose_scope": {"whole": true}, "note": "25/27"},
+  {"id": "N3", "kind": "number", "severity": "hard",
+   "source": "#/K3_calibration/brier", "fmt": "round3",
+   "prose_scope": {"whole": true}, "note": "0.069"},
+  {"id": "N4", "kind": "number", "severity": "hard",
+   "source": "#/K3_calibration/ece_10bin", "fmt": "round3",
+   "prose_scope": {"whole": true}, "note": "0.138(报告口径 round3)"},
+  {"id": "N5", "kind": "number", "severity": "hard",
+   "source": "#/K4_U_behavior/model_says_unclear_on_keyed_rows", "fmt": "int",
+   "prose_scope": {"heading": "## Headline numbers"}, "note": "2(表格 unclear 行)"}
+ ]
+}
