@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="330" viewBox="0 0 920 330" font-family="system-ui, 'Microsoft YaHei', sans-serif">
+  <rect width="920" height="330" fill="#ffffff"/>
+  <text x="460" y="34" text-anchor="middle" font-size="19" font-weight="700" fill="#1a1a1a">U 态:不确定性显式化是特性,不是缺陷</text>
+
+  <!-- 二值条 -->
+  <text x="60" y="82" font-size="13.5" font-weight="600" fill="#212121">二值判分器(错误伪装成正确)</text>
+  <rect x="60" y="94" width="800" height="46" rx="7" fill="#e6f4ea" stroke="#137333" stroke-width="1.5"/>
+  <rect x="680" y="94" width="180" height="46" rx="7" fill="#fce8e6" stroke="#c5221f" stroke-width="1.5"/>
+  <text x="370" y="123" text-anchor="middle" font-size="12.5" fill="#0d652d">报"正确" 85%</text>
+  <text x="770" y="123" text-anchor="middle" font-size="12.5" fill="#a50e0e">报"错误" 15%</text>
+  <text x="60" y="162" font-size="11.5" fill="#8c3a3a">→ 其中的错误混在"正确"里,下游无从分辨</text>
+
+  <!-- 分隔 -->
+  <line x1="60" y1="186" x2="860" y2="186" stroke="#e0e0e0" stroke-width="1"/>
+
+  <!-- 三态条 -->
+  <text x="60" y="216" font-size="13.5" font-weight="600" fill="#212121">三态判分器(pass / fail / U)</text>
+  <rect x="60" y="228" width="560" height="46" rx="7" fill="#e6f4ea" stroke="#137333" stroke-width="1.5"/>
+  <rect x="624" y="228" width="100" height="46" rx="7" fill="#fce8e6" stroke="#c5221f" stroke-width="1.5"/>
+  <rect x="728" y="228" width="132" height="46" rx="7" fill="#f1f3f4" stroke="#5f6368" stroke-width="1.5" stroke-dasharray="6 3"/>
+  <text x="340" y="257" text-anchor="middle" font-size="12.5" fill="#0d652d">有依据的 pass</text>
+  <text x="674" y="257" text-anchor="middle" font-size="12" fill="#a50e0e">fail</text>
+  <text x="794" y="251" text-anchor="middle" font-size="12" fill="#3c4043">U 态</text>
+  <text x="794" y="267" text-anchor="middle" font-size="9.5" fill="#5f6368">证据不足</text>
+  <text x="60" y="296" font-size="11.5" fill="#33691e">→ U 态单列成池,送人审;边界样本不再硬猜——校准误差(ECE)由此可测:0.072</text>
+
+  <text x="460" y="322" text-anchor="middle" font-size="10.5" fill="#9e9e9e">Assay · Trust Report #3 §1/§5 · 判不了就说不判,待人工池是诚实的能力边界声明</text>
+</svg>

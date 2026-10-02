@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="380" viewBox="0 0 920 380" font-family="system-ui, 'Microsoft YaHei', sans-serif">
+  <rect width="920" height="380" fill="#ffffff"/>
+  <text x="460" y="34" text-anchor="middle" font-size="19" font-weight="700" fill="#1a1a1a">三门判分架构:预注册判据 × 三态输出</text>
+
+  <!-- 输入 -->
+  <rect x="30" y="90" width="200" height="120" rx="10" fill="#f5f5f5" stroke="#616161" stroke-width="1.5"/>
+  <text x="130" y="118" text-anchor="middle" font-size="14" font-weight="600" fill="#212121">verdict 语料 1454</text>
+  <text x="130" y="142" text-anchor="middle" font-size="12" fill="#424242">train 1162 · dev 143 · test 149</text>
+  <text x="130" y="162" text-anchor="middle" font-size="12" fill="#424242">三折切分冻结 sha(防泄漏)</text>
+  <text x="130" y="186" text-anchor="middle" font-size="11" fill="#757575">真值链:官方答案+机械规则</text>
+
+  <line x1="230" y1="150" x2="300" y2="150" stroke="#424242" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- 判分器 -->
+  <rect x="302" y="70" width="230" height="160" rx="10" fill="#e8f0fe" stroke="#1a56a0" stroke-width="1.8"/>
+  <text x="417" y="98" text-anchor="middle" font-size="14" font-weight="600" fill="#0d3b7a">判分器(LoRA)</text>
+  <text x="417" y="122" text-anchor="middle" font-size="12" fill="#1a3a63">Qwen3-1.7B + QLoRA r16</text>
+  <text x="417" y="142" text-anchor="middle" font-size="12" fill="#1a3a63">verbalizer 三态输出</text>
+  <text x="417" y="168" text-anchor="middle" font-size="11" fill="#5a7196">判分输入不含被检输出</text>
+  <text x="417" y="186" text-anchor="middle" font-size="11" fill="#5a7196">(开卷通道已剔除)</text>
+  <text x="417" y="212" text-anchor="middle" font-size="11" fill="#5a7196">热路径 P50=30ms</text>
+
+  <!-- 预注册判据框 -->
+  <rect x="302" y="250" width="230" height="104" rx="10" fill="#fff8e1" stroke="#b8860b" stroke-width="1.5"/>
+  <text x="417" y="274" text-anchor="middle" font-size="13" font-weight="600" fill="#7a5c00">预注册判据(先 commit 再跑)</text>
+  <text x="417" y="296" text-anchor="middle" font-size="11.5" fill="#6b5200">J1 准确率 ≥85% → 实测 88.51% ✅</text>
+  <text x="417" y="316" text-anchor="middle" font-size="11.5" fill="#6b5200">J2 ECE ≤0.10 → 实测 0.072 ✅</text>
+  <text x="417" y="336" text-anchor="middle" font-size="11.5" fill="#6b5200">J7 vs 一版 ≥+10pt → +22.3pt ✅</text>
+
+  <line x1="532" y1="150" x2="600" y2="150" stroke="#424242" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- 三态输出 -->
+  <rect x="602" y="66" width="288" height="54" rx="9" fill="#e6f4ea" stroke="#137333" stroke-width="1.8"/>
+  <text x="746" y="88" text-anchor="middle" font-size="14" font-weight="600" fill="#0d652d">pass</text>
+  <text x="746" y="108" text-anchor="middle" font-size="11" fill="#33691e">有依据的通过</text>
+
+  <rect x="602" y="130" width="288" height="54" rx="9" fill="#fce8e6" stroke="#c5221f" stroke-width="1.8"/>
+  <text x="746" y="152" text-anchor="middle" font-size="14" font-weight="600" fill="#a50e0e">fail</text>
+  <text x="746" y="172" text-anchor="middle" font-size="11" fill="#8c3a3a">有依据的驳回</text>
+
+  <rect x="602" y="194" width="288" height="54" rx="9" fill="#f1f3f4" stroke="#5f6368" stroke-width="1.8" stroke-dasharray="6 3"/>
+  <text x="746" y="216" text-anchor="middle" font-size="14" font-weight="600" fill="#3c4043">insufficient_evidence (U)</text>
+  <text x="746" y="236" text-anchor="middle" font-size="11" fill="#5f6368">证据不足→不硬猜,聚合为待人工池</text>
+
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L8,4.5 L0,9 z" fill="#424242"/>
+    </marker>
+  </defs>
+  <text x="460" y="372" text-anchor="middle" font-size="10.5" fill="#9e9e9e">Assay · Trust Report #3 §1 · 判据只许加严;test 集训练全程不可见</text>
+</svg>
