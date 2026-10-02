@@ -885,7 +885,7 @@ def get_memory_entries(mem_dir: Path):
                 cch = cache.get(ck)
                 if cch and cch[0] == e["mtime"]:
                     vecs = cch[1]
-                    if np is not None and vecs and not isinstance(vecs[0], np.ndarray):
+                    if np is not None and vecs is not None and len(vecs) and not isinstance(vecs[0], np.ndarray):
                         # v3.2 · 旧 pkl PyList chunks 惰性转 np
                         vecs = [np.asarray(v, dtype=np.float32) for v in vecs]
                         cache[ck] = (e["mtime"], vecs)
@@ -1183,7 +1183,8 @@ def handle_request(req: dict) -> dict:
         all_entries = _apply_lifecycle_filter(all_entries)
         scored = []
         for e in all_entries:
-            if not e.get("embedding"): continue
+            _emb = e.get("embedding")
+            if _emb is None or len(_emb) == 0: continue
             s = cosine(q_emb, e["embedding"])
             if s >= COSINE_MIN:
                 scored.append((s, e))
