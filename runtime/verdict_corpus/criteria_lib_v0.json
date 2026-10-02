@@ -1,0 +1,48 @@
+{
+  "_meta": {
+    "ts": "2026-10-02T19:1x+08:00",
+    "n": 10,
+    "note": "判据库 v0(微型首版):anchor_v0 全量 1454 条的判据引用仅 10 个唯一值,逐条给出判据文本自然语言展开+仓内出处。文本为仓内既有档的忠实概括,非新立判据。",
+    "usage": "anchor_build_v01.py cause 侧展开用;P0-full v2 判据档 §1"
+  },
+  "LME arm-a 重判·双层复算升级(J1 0/85+J2 48/50 双绿)": {
+    "text": "对 LongMemEval arm-a 评测的 judge 判定做双层独立复算:第一层逐题核对判定与金标一致性(J1:85 题数值零冲突),第二层抽样人工复核(J2:50 题一致率 96%)。判定经双层复算背书方可采信,复算层为非实现者新会话。",
+    "origin": "docs/metering/REJUDGE_RECOMPUTE_PREREG_20260930.md"
+  },
+  "LME-V2 d12 compass_web_small(官方 harness·透明规则判定)": {
+    "text": "LongMemEval-V2 官方 harness 在 web 域小型集上的规则判定:answer_gold 与 response_parsed_boxed 逐题程序化比对,透明规则而非 LLM judge,可复算可审计。d12 为调优第 12 版口径(判分协议与检索单元改造后)。",
+    "origin": "vtf/_compass_lmev2_out/d12/compass_web_small/per_question.jsonl(eval_function 字段)"
+  },
+  "LME-V2 d14 compass_web_small(官方 harness·透明规则判定)": {
+    "text": "LongMemEval-V2 官方 harness 在 web 域小型集上的规则判定,d14 为 abstention 口径版:拒答题(is_abstention_problem/is_unknown)与误拒答区分,拒答模板不等于误拒答。透明规则可复算,非 LLM judge 自报。",
+    "origin": "vtf/_compass_lmev2_out/d14/compass_web_small/per_question.jsonl"
+  },
+  "LME-V2 d12 compass_enterprise_small(官方 harness·透明规则判定)": {
+    "text": "LongMemEval-V2 官方 harness 在 enterprise 域小型集上的规则判定:企业场景题(ServiceNow 等门户操作)answer_gold 与 response_parsed_boxed 逐题程序化比对。d12 口径,透明规则可复算可审计。",
+    "origin": "vtf/_compass_lmev2_out/d12/compass_enterprise_small/per_question.jsonl"
+  },
+  "LME-V2 d14 compass_enterprise_small(官方 harness·透明规则判定)": {
+    "text": "LongMemEval-V2 官方 harness 在 enterprise 域小型集上的规则判定,d14 abstention 口径:拒答题与误拒答区分。透明规则判定,可复算可审计,非 LLM judge 自报。",
+    "origin": "vtf/_compass_lmev2_out/d14/compass_enterprise_small/per_question.jsonl"
+  },
+  "BC1 v1 自测(verify_bc1.py 三态,U 不充正分;sha=16de925e)": {
+    "text": "考场 BC1 首次自测判分:verify_bc1.py 三态判定(pass/fail/U),U 不充正分,原样判分不因任何理由调整。v1 结果 11/18 PASS、7 FAIL、0 U;7 个 FAIL 逐题审计定性(真值错误/题面歧义为出题侧缺陷)。",
+    "origin": "runtime/assay_bc1_20260927/SELFTEST_SCORECARD.md"
+  },
+  "BC1 v2 自测(五处出题缺陷已修;sha=3b9def7d)": {
+    "text": "修题后重考判分:五处出题缺陷修复后 v2 重考 18/18 全 PASS,7 缺陷题全部转 PASS 且无新错。三态口径不变,U 不充正分。",
+    "origin": "runtime/assay_bc1_20260927/SELFTEST_SCORECARD_V2.md"
+  },
+  "F15-meta-judge 三态基准(choices@assay)": {
+    "text": "meta-judge 三供应商复判基准:以三门判分(compass_gates)为金标准,对同批样本计量三家模型(jev、glm-5.3-flash、MiniMax-M2.7)的概率输出,测校准与区分度;三门 pass/fail 与供应商概率同报。",
+    "origin": "runtime/f15_meta_judge_3prov.json"
+  },
+  "T3 mini jev-curate PROTOCOL.md(预注册判据)": {
+    "text": "jev-curate 外部 mini 履约的预注册判据:y_circ(循环论证,0/1)与 d_depth(深度,1-5 标尺)双腿评分,盲标先行,复算层独立核验;标注分歧未预披露的样本单列。",
+    "origin": "runtime/jev_trust_t3_jevcurate_20260924/blind_labels.json"
+  },
+  "T3 主批 findings(生产影响排序)": {
+    "text": "T3 主批复算发现按生产影响排序:格式级 bug(真 API 必 422,生产全量拒收)>标尺错位(0-4 与 1-5 错位致正确行被拒)>其他措辞类。findings 以 RESULTS.md 原文与 probe jsonl 为证。",
+    "origin": "runtime/jev_trust_t3_jevcurate_20260924/RESULTS.md"
+  }
+}

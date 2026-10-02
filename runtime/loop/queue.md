@@ -38,6 +38,14 @@
 
 ## 轮次日志
 
+### R39 · 2026-10-02 18:4x-20:0x(主线轮·P0-full v2:可达性预检抓 v0 结构缺陷+锚点 v0.1 重构)
+- 🔴**提取前预检抓到 v0 数据结构缺陷**:anchor_v0 effect 侧(reason_span)1428/1454(96.4%)为簇级模板句(十簇判据引用仅 10 唯一值,LME 五簇整簇同一句)→同簇 effect 向量全同共享同一 top-5→**锚点级 hit@5 数学上限≈3.0-3.9%<F2 门槛 5%,任何模型不可达**(A2v2 门槛不可达同型病,本次提取前抓住=省 G1 空窗);用户拍板修 effect 侧再跑
+- **A2-v4 归因勘误**:"因果桥完全不在 BGE 层"不完整——effect 无样本级信号,BGE 从未有机会;shuffled 地板同 0 与此吻合;RED 结论(P0-full 升级依据)维持
+- **P0-full v2 预注册落档**(docs/metering/P0_FULL_PREREG_V2_20261002.md,v1 作废):effect=样本级判定记录(不含题面原文,防同题双侧指纹);cause=判据库 v0 展开+样本工件;F2 门槛 5% 不动;F1b 新增可分性预检(同构组主判 ≤25,构建实测定稿);F4 加脚本守门(GPU 有计算进程即拒启)
+- **锚点 v0.1 构建完成**:tools/anchor_build_v01.py 回源五路(per_question/arm_a/SCORECARD/selftest_answers/f15_3prov)——1454/1454 零未匹配(前缀匹配修 anchor 侧 question 截断 200;dict 键覆盖 bug 一次);F1b 全绿(最大同构组 1-5 条,唯一率 91.7-100%);sha16=e710a70105df50e7 冻结;**判据库 v0 同步落地**(criteria_lib_v0.json,10 条判据文本+仓内出处)=本周任务"判据库 v0"首块
+- 提取/评估脚本备好(p0_full_extract.py 守门版+p0_full_eval.py hit@5+二项检验);**双前置未齐**:G1 仍在跑(30.7G)+下载速率掉至 ~1MB/s(Q14 21G/27.6G ETA ~22 点,Turbo 11G/30G ETA 明晨;磁盘 42G 够)
+- M1:+(判据纪律救一轮 GPU 空窗+数据根修;判据库 v0 落地)
+
 ### R38 · 2026-10-02 18:1x-18:3x(白天新会话·queue 挂账双清:热路径 CPU 计时+F15 glm 腿备料)
 - 开工读数:信箱无未读✅;zenmind PR#90/CI failed=9/28 存量通知非新事件;**G1 复活在跑(30.7G)→P0-full 提取阻塞等空窗**;双 14B 下载在途(16G/27.6G+5G/28G,ETA 20-22 点,vdd2 余 53G 够)
 - #9 定谳:CPU 计时(tools/judge_hotpath_cpu_timer.py,A100 同机 CPU 8 线程=G1 不抢+独立进程部署口径,prompt 与 train_judge_lora 逐字同款)——**单例 P50 399.2ms/P95 617.9ms,批8 折单 ~183ms,均超 S2 线(100ms)→CPU 路线排除**;对照 A100 GPU P95=42.2ms(R4)→热路径部署结论=需 GPU 窗或异步队列设计。口径注记三条如实:样本 prompt 211 chars 偏短(读数=保守下界)/G1 训练同机背景(load~0.7)/底模单前向(LoRA 增量<5% 不改量级)
