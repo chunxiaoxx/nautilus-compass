@@ -38,6 +38,12 @@
 
 ## 轮次日志
 
+### R35 · 2026-10-02 10:0x(死线轮·G1 判分窗判定=顺延+第四次异常通报)
+- 判定:G1 rollout 未完成(需 27-35h,四次重启累计实际训练仅数小时)——判分顺延不强判;18889 材料持续就绪
+- 🔴第四次异常(新形态):g1_train.log 10:00 尾 SyntaxError: unmatched ')'(代码级,非环境抖动);norm_stats 曾独立推进 108/12475(08:51)后中断;计算进程归零——已通报 v5(函 2241,deadline 14:00);G1 时间线:21:40 崩/重起/00:00 静默停/01:05 再起/10:00 SyntaxError
+- 死线带剩余:12:04 daemon 48h 复查/22:04 MemOS 窗
+- M1:+0(观察+通报)
+
 ### R34 · 2026-10-02 10:3x(产品线·lint-report 落地,昨晚事故 12h 闭环)
 - 交付:VerifyPack 第七命令 lint-report(commit 70050ee0)——tools/verifypack/lint_report.py(enum_set+number 两类断言+allow_patterns 豁免 key 引用形态)+cli.py 接线+report.assertions.json 样例+7 测试
 - 判据全绿:L1 昨晚事故回放必 RED(git show 勘误前版→D1 抓 job_hopping 叙述 ✓)/L2 勘误后 GREEN/L3 六数字复现(92.6/25/27/0.069/0.138/2)/L4 措辞改动不误报/L5 CLI 端到端/L6 覆盖 82%;全量回归 90 passed 零破坏
