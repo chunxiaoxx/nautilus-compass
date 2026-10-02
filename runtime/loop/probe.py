@@ -33,7 +33,11 @@ def probe_github():
     except Exception:
         pass
     for repo, num in (("MemTensor/MemOS", 2440), ("mem0ai/mem0", 7514),
-                      ("gtaras7/typesafe-jev", 2)):
+                      ("gtaras7/typesafe-jev", 2),
+                      # 10/3 夜 LOOP 增:报名帖+送测+已采纳协议线(增量报,首跑只建基线)
+                      ("Nautilus-agent/compass", 1), ("Nautilus-agent/compass", 2),
+                      ("Srt-tian/PhysicalRSI", 1), ("EmbodiedSWE/EmbodiedSWE", 134),
+                      ("sunghunkwag/rsi-bench", 1), ("getzep/graphiti", 1948)):
         try:
             out = subprocess.run(
                 ["gh", "issue", "view", str(num), "--repo", repo, "--json", "comments"],
