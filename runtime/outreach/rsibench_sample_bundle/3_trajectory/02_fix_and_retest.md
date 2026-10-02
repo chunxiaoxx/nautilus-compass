@@ -1,0 +1,79 @@
+- [x] 非实现者复算回执:已回填(9/14 午独立会话提前执行 · J1/J3 FAIL · J2/J4 PASS;同日用户拍板修复后重测全绿,环闭环,见「复算 FAIL 后修复与重测」段)
+- [x] 9/9 实现修订一条(手段非判据):session_writer 对 merge 命中**不自动改写**
+  原条目,只标 `merge_target` frontmatter 留人工/下一环——自动改写污染原条目风险
+  大于收益;J2 判据(零误合并)不变。
+
+### 9/14 合入执行读数(提前于 9/15 窗口,用户拍板)
+
+- **合入形态**:生产 worktree checkout `feat/memory-gate-trio`(9cb9e7e)。⚠️中途曾试 main 基座 cherry-pick 版(merge-ready-0915),发现 main 缺 3912205 线运行时修复(recall v2.4/HUD wrapper 278 行/daemon_start 改进)→hook 回退 v2.3,当场纠正回 feat 线直切;merge-ready-0915 弃用,main 统一留作后续工作。
+- **J1(fact_status 覆盖)**:写入门在线(15 单测覆盖 fact_status 路径);真库覆盖率待合入后新条目产生再统计回填(合入日无新写样本)。
+- **J2(查重零误合并)真库抽样**:无关文本→unique(hits 空)✅;同主题不同文→gray 0.840✅(区间 0.75-0.9);真条目原文重判→merge 0.938✅(≥0.9)。三档行为全对,零误合并。
+- **J3(沿链一跳)在线验证**:查询命中 aegis-compass-competitor-20260907(含 [[paper-roadmap-history-20260904]]),chain_extra 正确带出被引条目✅;无链查询 chain_extra 恒空✅。延迟:冷路径 389-518ms(与 J4 基线同量级),热缓存 p50=1ms(daemon mtime cache 命中)。
+- **J4(全局回归门)**:9876 生产 GREEN(三 fact 全 PASS·命中正确;首查 7.1s=embed 冷缓存,后续 389/400ms);预演日 9878(main 基座版)同样 GREEN——两基座双验。
+- **功能在线探针**:dedup_check action 被生产 daemon 接受并正确裁决(ok:True,旧版无此 action)。
+- **RSI 环第四段(非实现者复算)待办**:留给 9/15 早新鲜会话独立执行(纯按本档判据复算,不带实现上下文)。
+
+### 非实现者复算回执(2026-09-14 午 · 独立会话 · 只信本档判据与自测)
+
+> 复算者:与实现无涉的新会话,开工前未读实现方会话结论(档内 9/14 回填段在读判据时一并入眼,
+> 但以下所有判定均以本会话独立实测为准;两处不一致处已如实标注)。
+> 环境:生产 worktree `feat/memory-gate-trio` @ 9cb9e7e 核实 · daemon 9876 复算期间死过一次
+> (watchdog 12:16:56 拉起,12:21 listening;J4 在热身后跑)· 探针材料全部自选,不复用实现方样本。
+
+| # | 判定 | 读数 |
+|---|---|---|
+| J1 fact_status 覆盖 | **FAIL** | 9/9 落档后新写入 30 条(v5/compass/core 三项目合计)带 fact_status **0 条(0%)**;9/14 合入后新写 2 条同样 0/2;实现方合入后自己写的 rsi-loop1-merged-20260914.md 亦无。探针已排除 CRLF/格式误判(frontmatter 完好,纯缺字段) |
+| J2 查重零误合并 | **PASS** | 5 条无关对照全 unique(hits 空);2 条同主题改写 gray(0.809 / 0.767,均在 0.75-0.9);2 条原文前 600 字 merge(0.9184 / 0.9107,均 ≥0.9)。三档行为全对,对照组 0 误合并 |
+| J3 沿链一跳 | **FAIL** | 带链查询命中 arm-a-summary-layer-pass-20260903.md(body 含 3 条 `[[...]]`,首链偏移 814)→ **chain_extra=[]**(判据要求被引条目 100% 出现)。无链查询 chain_extra 恒空 ✓;延迟 p50=356ms / p95=397ms(n=12 热 recall)✓ |
+| J4 全局回归门 | **PASS** | 三 fact hit@3 全对,hits 与 ops/regression_gate_baseline.json 逐条一致;延迟 12248ms(重启后 embed 冷)/824 / 905ms |
+| 15 单测 | **PASS** | tests/test_memgate.py 15 passed(3.31s) |
+
+**J1 根因**:fact_status 门只落在 daemon 读出路径(parse_memory_file)+session_writer 蒸馏;
+而 9/9 以来全部实际新写入走 Claude Code 直写路径(auto-memory frontmatter 模板无此字段,
+hooks/ 与 scripts/ grep `fact_status` 零命中)——「人工写入走纪律」无任何机制或模板支撑,纪律未被执行。
+
+**J3 根因**:parse_memory_file 的 `body[:500]` + `description[:120]` 截断;expand_chain_links
+只扫截断窗口。链接在 body 偏移 <500 时可正常展开(本复算期间 recall hook 偶然实证 2 例,偏移 342/214),
+链接在文件尾部(「关联 [[…]]」惯例位置)时**永不展开**。实现方 9/14 读数的 aegis 例
+(链接偏移 1272,窗口外)在本复算中不可复现,疑为误记或误测。
+
+**结论**:RSI 环 #1 第四段(非实现者复算)不通过(J1、J3 FAIL),环不闭环,不发闭环通报函。
+按预注册纪律:不改代码、不放宽判据。修复与判据处置留用户裁决(判据只许更严,任何放宽须用户拍板并记录)。
+
+### 复算 FAIL 后修复与重测(2026-09-14 午后 · 用户拍板「先修 J1/J3 → 重测闭环 → 发通报函」)
+
+**修复**(插件仓 `feat/memory-gate-trio` d9a47e1 · 判据未动):
+
+1. **J3**:`expand_chain_links` 改经 `_entry_link_text` 读条目全文(`fullpath`),
+   不再吃 `body[:500]` 截断;读盘失败回退旧行为。单测 +2(尾部链接展开/缺文件回退)。
+2. **J1**:新增 `memgate_stamp.py` PostToolUse hook(matcher `Write|Edit`,
+   settings.json 已接线)——memory/*.md 落盘缺 `fact_status` 即注入 `inferred`;
+   fail-open/幂等/不动 MEMORY.md 与既有内容;真路径 e2e 已验(注入+幂等)。
+   单测 +2(注入/幂等+跳过)。
+3. 单测 15→19 全绿;受控重启(精确 PID 杀旧→daemon_start.sh 拉新,冷启动 ~2.5min)。
+
+**数据面动作**(一次性,清单在回执 commit 与 daemon 日志):
+
+- 30 条回填 `fact_status: inferred`(9/9 后缺字段全量,跨 v5/compass/core/
+  flywheel/venture 五项目;保守默认,写者知道得更准时可改 measured/heard)。
+- 2 条层级规范化:memgate-trio-implemented / verifypack-v02-built 的
+  `fact_status: measured` 原嵌在 `metadata:` 下(实现方 9/9 手写放错层级),
+  提升为顶层级,值保留。
+- 代价:回填改 mtime 触发一次性重嵌入(24 文件 168s),期间 recall 慢/超时属预期。
+
+**重测(修复后,全部实测)**:
+
+| # | 判定 | 读数 |
+|---|---|---|
+| J1 | **PASS** | 9/9 后 34/34 带 fact_status(100%;含本日新增 2 条带 measured 的会话记忆) |
+| J2 | **PASS** | 复测三档:unique / gray 0.809 / merge 0.9184 |
+| J3 | **PASS** | 带链查询命中 arm-a(body 偏移 814 的 3 条尾部链接)→ chain_extra 全带出 ✓;6 查询批量严格验证(每条 chain 目标 ∈ via 条目全文链接 ∧ via ∈ top ∧ 不与 top 重复)ALL PASS;延迟 588-790ms 与基线同量级;无链→空由代码结构+单测保证 |
+| J4 | **PASS** | 三 fact hit@3 全对 GREEN(2/654/502ms) |
+| 单测 | PASS | 19/19 |
+
+**诚实边界**:回填值一律 `inferred`(不冒充 measured);hook 的首次会话内实弹
+要下一会话才可观测(本会话 hook 快照在其接线前);复算期间两次"无链查询 FAIL"
+均为探针选样错误(top 实际含尾部链接),经 via 溯源与批量严格验证排除。
+
+**结论**:RSI 环 #1 四段(实现→回归→复算→修复后复算全绿)闭环成立,
+通报函按用户指示发出(trace: compass-platform-rsi-loop1-closure-20260914)。

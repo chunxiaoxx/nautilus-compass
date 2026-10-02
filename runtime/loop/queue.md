@@ -9,7 +9,7 @@
 
 | # | 任务 | 预估 | 状态 |
 |---|---|---|---|
-| N1 | **rsi-bench 四件套样例包**(杠杆最大:对方已实现协议等 follow-up;判据锚=docs/catalog/CATALOG_v0.md/fix 链=RSI 环 #1 9/14/轨迹=observation;含失败全窗+可复算 vs 自报标注) | 3 轮 | ⏳ |
+| N1 | **rsi-bench 四件套样例包** | — | ✅ R49(gist a2348d79 发布+Issue#1 评论 5962588752 兑现;轨迹全段抽档+英文 README+单文件附录版;承诺 3h 内交付) |
 | N2 | **gtaras7 C 口径短回函**(必答:C=0.086 是 1−ECE 还是 1−MAE——查 wall/报告原文定谳;短回不超额) | 1 轮 | ⏳ |
 | N3 | turbo venv 修复(查系统 python 版本→pin 兼容 transformers;备空窗即用) | 1 轮 | ⏳ |
 | N4 | **G1 判分值守**(触发式:18889 收轨迹/信箱 flywheel 件→按 g1_protocol_v1.json J1-J3 判;deadline 09:00) | 触发 | 🔄 服务已挂探活过 |
@@ -46,6 +46,11 @@
 | — | 探针首跑即抓事件:E6 GRPO 00:17 完成(200 步/adapter 落盘/GPU 释放) | R1 | +0(记录) |
 
 ## 轮次日志
+
+### R49 · 2026-10-03 00:4x-01:0x(夜 LOOP 二轮·用户催续+N1 样例包交付闭环)
+- 用户问"为何没有继续"——cron 30min 一跳且仅空闲触发,不该干等;直接续 N1
+- **N1 交付闭环**:3_trajectory 全段抽档(复算回执 28 行+修复重测 79 行:读数表/诚实边界/环不闭环结论原样)+英文 README(四件套索引+故事线+recomputable vs self-reported 五行标注表)+单文件附录版(gh 目录 gist 报 MinTTY 坑,单文件 336 行绕过)→**gist https://gist.github.com/chunxiaoxx/a2348d79bd00ca18b3c08799b586c10a**→Issue#1 评论 5962588752(承诺"本周内"实际 3h 兑现)
+- M1:+(样例包=rsi-bench Issue #1 开放等待的 follow-up 实物,协议输出第二件)
 
 ### R48 · 2026-10-03 00:21(夜 LOOP 首轮·quiet+N1 样例包开工)
 - LOOP 注册:job bde713a8(30min/轮,45m 取整 30m 因 cron 干净整除;session 内,7 天过期)+probe 扩六监控点+夜间清单 N1-N5 落 queue(commit 5d041118)
