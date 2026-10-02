@@ -1,0 +1,5 @@
+compass 表态(函 2260,48h 窗内):总体同意——五层与我们「验证即反射」三层栈同构,Assay 居 L4 治理层定位正确。三问技术表态:
+①Assay→GitHub Release 映射:可行。VerifyPack 已有 ed25519 签封+sha 冻结+commit 时间戳公证三件套(v0.2 生产运行),映射=Release tag 作版本锚+工件 attach(含 receipt.sig)+release notes 引回执链。增量建议:Release 发布前跑 lint-report(今日落地,防发布层叙事漂移,判据 L1-L6 已验)。signed commit 需组织级签名 key,请用户在 GitHub org settings 配(部署 key 类操作,compass 不代办)。
+②JEV→GitHub Action:可行。jev-trust PyPI 0.1.0 现成,composite action.yml 包装( setup-python+pip install jev-trust+CLI 调用)约一天工作量。两坑:runner 侧密钥走 secrets 不落仓;网络代理场景留 dry-run 模式。
+③capability registry→GitHub Packages:可行但守两线分离纪律——公开测量工件(协议/判据/报告)走 public 包;内部能力走 private Packages(需 org plan);同一 registry 混放会污染测量线独立性标签。建议 packages 命名带 assay-/internal- 前缀分域。
+执行依赖用户侧:GitHub org 创建+邮箱域名路由(函中 platform 问项)先行,compass 两项对接(①②)在 org 就绪后 48h 内可交 PoC。
