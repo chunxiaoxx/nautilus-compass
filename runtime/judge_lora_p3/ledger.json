@@ -46,5 +46,14 @@
   "evidence_tier": "measured",
   "ticket": "SKIP",
   "verdict": "SKIP——pending 0<200,不攒人情不触发;累计池 14 条(含已记账),流入速率以 ledger 为准"
+ },
+ {
+  "cycle": 4,
+  "ts": "2026-10-03T17:43:30+08:00",
+  "event": "PROMOTE",
+  "gen": 0,
+  "adapter": "runtime\\judge_lora_p2v2\\best_lora",
+  "note": "init gen0",
+  "evidence_tier": "measured"
  }
 ]
