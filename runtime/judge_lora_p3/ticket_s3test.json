@@ -1,0 +1,10 @@
+{
+ "ticket_id": "ticket_s3test",
+ "pending_deltas": [
+  {
+   "file": "delta_0001.jsonl",
+   "sha16": "ed36f118343de453"
+  }
+ ],
+ "note": "S3 engineering test ticket(不入岗)"
+}

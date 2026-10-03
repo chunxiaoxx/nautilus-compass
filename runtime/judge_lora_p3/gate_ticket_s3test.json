@@ -1,0 +1,49 @@
+{
+ "ts": "2026-10-03T20:11:58+08:00",
+ "gate_version": "p3_gate_v1(P3 设计档 §五,判据只许更严)",
+ "champion_sha16": "1fd2cd98455ad2d7",
+ "challenger_sha16": "09cff105f8536a5d",
+ "ticket_id": "ticket_s3test.json",
+ "gates": {
+  "G1_zero_flip": {
+   "flips": [],
+   "n_flips": 0,
+   "max_allowed": 0,
+   "pass": true
+  },
+  "G2_constitution_floor": {
+   "challenger_binary_acc": 0.9122,
+   "min_acc": 0.85,
+   "challenger_ece": 0.0741,
+   "max_ece": 0.1,
+   "pass": true
+  },
+  "G3_u_conservation": {
+   "champion_u_rate_pt": 0.0,
+   "challenger_u_rate_pt": 0.0,
+   "delta_pt": 0.0,
+   "max_pt": 2.0,
+   "pass": true
+  }
+ },
+ "metrics_champion_test": {
+  "n_scored": 149,
+  "tri_acc": 0.9128,
+  "ece_10bin": 0.0737,
+  "binary_acc": 0.9189,
+  "binary_n": 148,
+  "u_rate_pt": 0.0
+ },
+ "metrics_challenger_test": {
+  "n_scored": 149,
+  "tri_acc": 0.906,
+  "ece_10bin": 0.0741,
+  "binary_acc": 0.9122,
+  "binary_n": 148,
+  "u_rate_pt": 0.0
+ },
+ "regression_only_upgrades": 0,
+ "verdict": "PASS",
+ "verdict_note": "三门全绿,可提交 S5 上岗",
+ "evidence_tier": "measured"
+}
