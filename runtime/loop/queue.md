@@ -11,8 +11,8 @@
 |---|---|---|---|
 | N1 | **rsi-bench 四件套样例包** | — | ✅ R49(gist a2348d79 发布+Issue#1 评论 5962588752 兑现;轨迹全段抽档+英文 README+单文件附录版;承诺 3h 内交付) |
 | N2 | **gtaras7 C 口径短回函** | — | ✅ R50(定谳 C=1−ECE equal-width 10-bin,回函措辞错已撤;自曝 0.41 vs 0.914 差距留工件 bundle;评论 5962608425) |
-| N3 | turbo venv 修复 | — | ✅ R50(venv transformers 5.10.4 加载 qwen3_5 ✓;SyntaxError=转义命令错非环境;**提取就绪等 GPU 空窗,LOOP 轮顺查:GPU 空即跑 venv/bin/python p0_full_extract.py --model .../Qwen3.8-14B-Turbo --tag turbo**) |
-| N4 | **G1 判分值守**(触发式:18889 收轨迹/信箱 flywheel 件→按 g1_protocol_v1.json J1-J3 判;deadline 09:00) | 触发 | 🔄 服务已挂探活过 |
+| N3 | turbo venv 修复 | — | ✅ R50 venv 修;**R54 核:提取已完成(c60b4275),产物实测在列(cause/effect_turbo.npy 08:38-40+p0_full_report.json 08:44),④条件不再触发** |
+| N4 | **G1 判分值守**(触发式:18889 收轨迹/信箱 flywheel 件→按 g1_protocol_v1.json J1-J3 判;deadline 09:00) | 触发 | 🔄 R54:G 修复批重判 **PARTIAL**(三修生效 J1=0.85/J2=0.925),B 待同三修重跑,函 2447(死线 10/4 12:00) |
 | N5 | 报名/送测回应(触发式:probe 增量→处置) | 触发 | ⏳ |
 
 > 夜间纪律:不做战略函(flywheel 两问/2343 执行评估留明早新会话)·不重发外联(48h 窗)·知乎逆向不做·每轮时间戳只从 probe 头抄。
@@ -46,6 +46,14 @@
 | — | 探针首跑即抓事件:E6 GRPO 00:17 完成(200 步/adapter 落盘/GPU 释放) | R1 | +0(记录) |
 
 ## 轮次日志
+
+### R54 · 2026-10-03 10:05-10:2x(判分轮·G1 G 臂修复批重判 PARTIAL+rsi-bench 回应处置)
+- **外部回应**:rsi-bench#1 sunghunkwag 新评论(00:06Z)——致谢样例包+通报 **PR #3 merged**(AGG false-success 修复:v2 要 benchmark-owned goal verifier 门整个 AGG 分,无 verifier/未验证完成=0);读 PR #3 正文核实后短回(评论 5964511670)——**四对抗种子首例变成协议门=协议输出第三例**
+- **G1 重判触发**:G 臂新材料 09:21 落盘(n=40,注记"对齐 #2407 三修+#2413 阈值参考")——探针自证伪一次(指令路径 summary.json 实为 infer_summary.json);拉材料本地**独立复算**(dir 34/40、band 37/40、degen 0、sha eab63d7fd833d7da,与脚本逐位一致)
+- **判 g1_judge_v3**:v2→v3=findings 状态感知化+PARTIAL 语义+differential valid 标记(**判据 J1/J2/J3 与质量门逐字未动**);本地模拟跑→部署 A100 执行→verdict 落 /root/vdd3/pipe_art/g1_verdict.json:**PARTIAL**——G 三修验证全部生效(实测:filter min 7.2e-2/sign 分布/abs 下不可能出 0/40帧5eps),J1=0.85(ep0 2/8 vs ep1-4 8/8 集中现象单列不归因)/J2=0.925/ratio 中位 1.9863;B 旧批未变(sha 413e6aba=R53 锚定)=THIN+DEGENERATE,差分 valid=false 判 U 待 B 同三修重跑
+- turbo ④条件核=不触发:产物实测在列(cause/effect_turbo.npy 08:38-40+p0_full_report.json 08:44)
+- 回传 flywheel **函 2447**(死线 10/4 12:00,B 重跑请);信箱 0 未读
+- M1:+(判分机构动作第二演:修复验证+PARTIAL 语义,不发硬判传统保持;协议输出第三例入账)
 
 ### R53 · 2026-10-03 07:3x-08:0x(判分轮·G1 双臂判分定谳 U 态+复盘拍板)
 - **判分执行**:G 臂 07:21 出果(链自动接 B,B 08:0x 前齐)→g1_judge_v1.py 判——**verdict=MATERIAL_INSUFFICIENT(U 态)**:双臂同形态(dir 双 1.0/J2 带宽 0/8 双/ratio 中位 4162/4257/Δ 全 0)证实材料构造问题非模型差异;sha 锚定 G=7288ed69/B=413e6aba;verdict 落 /root/vdd3/pipe_art/g1_verdict.json
