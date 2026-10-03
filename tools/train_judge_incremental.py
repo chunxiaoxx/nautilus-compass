@@ -77,6 +77,10 @@ def main() -> int:
     try:
         import torch
         assert torch.cuda.is_available(), "CUDA 不可用——S3 只许 GPU 跑(守门)"
+        if not hasattr(torch, "float8_e8m0fnu"):
+            # transformers 5.x import 期读此属性需 torch>=2.9;torch 2.6 无(P0 turbo 同款补丁,
+            # bf16 路径不触发 fp8;不补则 peft/transformers import 即炸)
+            torch.float8_e8m0fnu = torch.bfloat16
     except (ImportError, AssertionError) as e:
         print(f"[EXIT42] {e}")
         return 42
@@ -99,7 +103,7 @@ def main() -> int:
     champ_adapter = a.champion_adapter or ROOT / champ["adapter_path"]
     model = PeftModel.from_pretrained(model, champ_adapter,
                                       is_trainable=True)  # 热启动:冠军权重继续训
-    label_ids = [tok.encode(l)[0] for l in LABELS]
+    label_ids = [tok.encode(l, add_special_tokens=False)[0] for l in LABELS]
     label_ids = [l[0] if isinstance(l, list) else l for l in label_ids]
 
     def encode(rows):
@@ -111,13 +115,16 @@ def main() -> int:
         return out
 
     def predict(rows) -> list[dict]:
+        """口径对齐 P2v2 evaluate():完整 prompt 末位 logits 预测 verdict 首 token
+        (R78 实测教训:截 prompt 尾=预测':'错位,读数掉 40pt)。"""
         model.eval()
         preds = []
+        tids = torch.tensor(label_ids).cuda()
         with torch.no_grad():
             for ids, att, _, rid in rows:
-                logits = model(input_ids=ids[:-1].unsqueeze(0).cuda(),
-                               attention_mask=att[:-1].unsqueeze(0).cuda()).logits[0, -1, :]
-                probs = torch.softmax(logits[torch.tensor(label_ids).cuda()], dim=-1)
+                logits = model(input_ids=ids.unsqueeze(0).cuda(),
+                               attention_mask=att.unsqueeze(0).cuda()).logits[0, -1, :]
+                probs = torch.softmax(logits[tids], dim=-1)
                 p = int(probs.argmax())
                 preds.append({"id": rid, "pred": LABELS[p], "conf": round(float(probs[p]), 4)})
         return preds
