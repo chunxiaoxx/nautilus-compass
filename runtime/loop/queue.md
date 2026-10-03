@@ -48,6 +48,14 @@
 
 ## 轮次日志
 
+### R92 · 2026-10-03 23:3x-23:5x(E1 主包收割前置轮)
+- **主包 J2 498 帧到手**:flywheel 直供函 2699→cloud scp 直取(https://fde URL 猜错拿 45KB 假件,ssh cloud /opt/flywheel/deliveries 正路)→sha16=7f40f42529d1b2fa 验签一致→解包 498 帧(K_t*_*_p{35,80})+README
+- **一处缺口回函 2719**:主包缺 id→任务卡映射(OOD 有 blind_data.js,主包仅 README+frames,判官须知第一环"先看任务卡"不可执行)——请补 a/b/c 其一;顺确认判读产物归属(platform vs flywheel)+主包判读方式同 2710
+- 三 ack:2699(主包)/2694(裁决分级清单V1·7天异议期)/2709(deploy-key org 策略挡——**开关在用户裁**,M1 批次二注册侧挂)
+- 编排健康:后台轮询正常(23:43 心跳,VL 下载总进度~30%,预计 01:15 完→自动发车 OOD 400 题判读);exp2 5/6
+- 下轮第一件:双收割(E1 OOD CSV+exp2 六 summary)——外部件:VL 下载完/exp2f 完/flywheel 补任务卡
+- M1:+0(J2 双包判读在途)
+
 ### R91 · 2026-10-03 23:2x-00:0x(E1 盲判排程轮·用户令留缓冲)
 - **E1 J2 判读全链排好**:①OOD 包下载验签通过(sha16 一致,400 样本)②判官协议读毕(五组作答/直觉/独立/CSV 导出)③判读方式申报函 2710(AI 视觉 Qwen2.5-VL-7B·A100 本地,先行后批;纯人工要求则用户过 viewer 重判,死线前时间够)④主包 J2 498 帧坐标催办(平台转 flywheel)⑤批判脚本 e1_j2_batch_judge.py 就绪(断点续跑/五组枚举/viewer CSV 兼容)⑥VL 模型 A100 下载中(5 分片过 1.5)⑦自动编排挂后台(下载完+exp2 清→自动发车,无人值守)
 - **A2 bug 根因断根**:remote.py put/get ENOENT 假报根因=git-bash MSYS 路径转换(独立 /root 参数→C:/Program Files/Git/root)——_unmangle 修复+base64 传输兜底;python -c 内嵌字符串不转=直连成功的解释;MSYS 坑又一例入档
