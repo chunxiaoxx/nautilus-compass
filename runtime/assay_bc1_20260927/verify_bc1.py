@@ -30,7 +30,7 @@ def deep_eq(a, b):
     if isinstance(a, (int, float)) and isinstance(b, (int, float)) \
             and not isinstance(a, bool) and not isinstance(b, bool):
         return abs(a - b) <= TOL
-    if type(a) != type(b):
+    if type(a) is not type(b):
         return False
     if isinstance(a, dict):
         return a.keys() == b.keys() and all(deep_eq(a[k], b[k]) for k in a)

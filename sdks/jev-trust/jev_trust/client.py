@@ -99,7 +99,8 @@ def correctness(top: dict, truth) -> int:
     if isinstance(decision, float):
         raise ValueError("score answers have no top-label correctness")
     if decision in ("yes", "no"):
-        yes = {1: "yes", 0: "no", True: "yes", False: "no"}.get(truth)
+        # bool 即 int(True==1 同 hash),0/1 两键已覆盖 True/False 传参
+        yes = {1: "yes", 0: "no"}.get(truth)
         if yes is None:
             raise ValueError(f"bad truth for noul answer: {truth!r}")
         return 1 if decision == yes else 0

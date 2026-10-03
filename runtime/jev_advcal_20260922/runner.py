@@ -3,7 +3,7 @@
 5 adversarial cells x 40 = 200 questions, seed=20260922, one run, no retries.
 Cell A4 (self-referential) reported separately: confidence distribution only.
 """
-import json, random, time, os, sys, urllib.request, hashlib
+import json, random, time, sys, urllib.request, hashlib
 from pathlib import Path
 
 SEED = 20260922

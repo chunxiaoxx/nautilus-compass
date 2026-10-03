@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """实例端:诊断缺失文件 → hf-mirror 下载(重试x5)→ 完整性验证 → 启动训练。"""
-import os, sys, time, json, glob
+import os, sys, time, glob
 
 os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"  # 必须在 import hub 前设
 from huggingface_hub import snapshot_download

@@ -16,7 +16,6 @@ from pathlib import Path
 
 # ed25519 纯 python 参考实现(与 tools/verifypack/ed25519.py 同源;此处内联拷贝以保
 # 单文件可分发 —— 协议要求:验证不依赖签发方的任何代码)。
-import base64
 import hashlib as _hl
 
 

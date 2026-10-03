@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 
 from . import expr
-from .spec import CALIB_METRICS, EPISODE_FRAME_OPS, SpecError
+from .spec import EPISODE_FRAME_OPS, SpecError
 
 JSON_SUFFIX = ".json"
 

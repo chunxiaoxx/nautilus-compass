@@ -1,5 +1,5 @@
 """mini-DCR dry-run: full fulfillment chain in 15 min (20 q, one synthetic business domain)."""
-import json, random, time, urllib.request, hashlib, sys
+import json, random, time, urllib.request, sys
 from pathlib import Path
 OUT = Path(sys.argv[1]) if len(sys.argv) > 1 else Path.home() / "Downloads" / "mini_dcr"
 OUT.mkdir(parents=True, exist_ok=True)

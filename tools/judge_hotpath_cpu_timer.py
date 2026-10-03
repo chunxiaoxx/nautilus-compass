@@ -12,7 +12,6 @@ prompt 组装与 tools/train_judge_lora.py 逐字同款(无作弊通道版)。
 from __future__ import annotations
 
 import json
-import statistics
 import sys
 import time
 from pathlib import Path

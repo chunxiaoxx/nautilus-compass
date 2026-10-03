@@ -4,7 +4,6 @@
 L1 昨晚事故回放必 RED / L2 勘误后必 GREEN / L3 六数字复现 / L4 措辞改动不报红 /
 L5 CLI 一条命令端到端。
 """
-import json
 import subprocess
 import sys
 from pathlib import Path

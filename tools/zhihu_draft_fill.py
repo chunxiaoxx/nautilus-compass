@@ -3,7 +3,6 @@
 import asyncio
 import json
 import re
-import sys
 import urllib.request
 import websockets
 
