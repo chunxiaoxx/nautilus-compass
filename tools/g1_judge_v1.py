@@ -156,11 +156,16 @@ def main() -> int:
              "evidence_tier": "unverifiable",
              "basis": "材料不含采样过程信息,需材料侧自查"},
         ]
+    inj_basis = ("双臂 pred_head 逐帧差异远小于 pred 与 act 差异;state 未注入,"
+                 "模型或主要由 state 驱动;G 修复批 same_form_watch 字段已列为差分观察项")
+    if material_ok:
+        inj_basis += (f";双臂修复批差分实测:ΔJ1={v['differential']['delta_J1']:+}"
+                      f"/ΔJ2={v['differential']['delta_J2']:+}(B=30% 注入)≈0,"
+                      "注入未在读数层面表现=不传导特征增强")
     v["findings"].append(
         {"finding": "视频注入未传导到预测(双臂 pred 高度同形态)",
          "evidence_tier": "inferred",
-         "basis": "双臂 pred_head 逐帧差异远小于 pred 与 act 差异;state 未注入,"
-                  "模型或主要由 state 驱动;G 修复批 same_form_watch 字段已列为差分观察项",
+         "basis": inj_basis,
          "upgrade_path": "注入帧 vs 干净帧的 pred 逐帧对比"})
     if g_fixed and (B.get("n_ok", 0) < 20 or B.get("n_degenerate_ratio", 0) > 0):
         v["findings"].append(
