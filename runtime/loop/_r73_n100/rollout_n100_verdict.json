@@ -1,0 +1,103 @@
+{
+ "ts": "2026-10-03T18:14:41",
+ "judge": "compass rollout_n100_final_v1",
+ "evidence_policy": "JUDGING_EVIDENCE_TIERS_20261003",
+ "criteria": "层1 v2(用户已批#2568):成功率差分(冻结语义)+coverage 连续主判;T1=全量100集/窗 seed70000-70099 配对;T2=主配对Wilcoxon辅MWU,中位并陈",
+ "material_sha16": {
+  "A1O": "ac828a7c84140750",
+  "A1N": "1b203d540b13f288",
+  "A2F": "7cf97b340c6524ab",
+  "A2N": "90b6c0a7e8724935"
+ },
+ "summary_verify_vs_v5": {
+  "A1O": true,
+  "A1N": true,
+  "A2F": true,
+  "A2N": true
+ },
+ "windows": {
+  "A1O": {
+   "n": 100,
+   "n_success": 0,
+   "cov_mean": 0.0445,
+   "cov_median": 0.0,
+   "cov_max": 0.4597
+  },
+  "A1N": {
+   "n": 100,
+   "n_success": 0,
+   "cov_mean": 0.0703,
+   "cov_median": 0.0,
+   "cov_max": 0.4151
+  },
+  "A2F": {
+   "n": 100,
+   "n_success": 0,
+   "cov_mean": 0.1513,
+   "cov_median": 0.0,
+   "cov_max": 0.757
+  },
+  "A2N": {
+   "n": 100,
+   "n_success": 0,
+   "cov_mean": 0.1513,
+   "cov_median": 0.0,
+   "cov_max": 0.757
+  }
+ },
+ "primary_floor": {
+  "all_zero": true,
+  "reading": "成功率四窗全 0/100——冻结语义判不动,如实报"
+ },
+ "coverage_continuous_v2": {
+  "A2F_minus_A1N_paired_wilcoxon(主)": {
+   "n_pairs": 100,
+   "n_nonzero": 64,
+   "identical_pairs": 36,
+   "mean_delta": 0.081,
+   "median_delta": 0.0,
+   "pos": 40,
+   "neg": 24,
+   "W_plus": 1506.5,
+   "z": 3.12,
+   "p_two_sided": 0.00181
+  },
+  "A2F_vs_A1N_mwu(辅)": {
+   "U": 4247.0,
+   "p_two_sided": 0.06579
+  },
+  "T2_ruling": "主法显著即判显著"
+ },
+ "noise_floor": {
+  "A2F_minus_A2N": {
+   "n_pairs": 100,
+   "n_nonzero": 0,
+   "identical_pairs": 100,
+   "mean_delta": 0.0,
+   "median_delta": 0.0,
+   "pos": 0,
+   "neg": 0,
+   "W_plus": 0.0,
+   "z": 0.0,
+   "p_two_sided": 1.0,
+   "note": "全部逐对相同=确定性(nz=0,检验不适用)"
+  },
+  "note": "同臂双跑逐局核验"
+ },
+ "sensitivity_mixed_ref": {
+  "A1N_minus_A1O": {
+   "n_pairs": 100,
+   "n_nonzero": 49,
+   "identical_pairs": 51,
+   "mean_delta": 0.0257,
+   "median_delta": 0.0,
+   "pos": 29,
+   "neg": 20,
+   "W_plus": 809.0,
+   "z": 1.955,
+   "p_two_sided": 0.05063
+  },
+  "note": "含 v1/v2 协议混杂,不作纯 run 底(flywheel 同判)"
+ },
+ "verdict": "终判(PARTIAL-U→v2 连续主判):①冻结语义成功率四窗全 0/100=地板依旧判不动,照实报;②coverage 连续主判(v2):配对 Wilcoxon p=0.00181(<0.05 显著),meanΔ=0.081(中位 0.0,正/负 40/24,逐局全同 36 局);辅 MWU p=0.06579;噪声底=A2F/A2N 逐局 100/100 全同(p=1.0)——效应为真;③臂1底敏感性 p=0.05063(含 v1/v2 混杂不作纯底);④首案效度判定:帧级(p=0.0099)与任务级 coverage(n=100 p=0.0018)双级显著一致支持修复,但'真达标'FULL≥0.95 无一窗触及(成功率 0),任务级有效性未达标——首案结论=修复方向显著有效(帧级+连续代理),达标性未证实(冻结语义);判据零放宽,seed 序列不换,不再扩 n(止损线生效)。"
+}
