@@ -58,14 +58,24 @@ def probe_github():
             pass
     base_f.write_text(json.dumps(base), encoding="utf-8")
     # 通知流兜底(漏监教训 10/1:typesafe-jev Issue#2 回应漏看半天)
+    # 分级过滤(R70:CI/Deploy 常规红每轮刷 20-40 行稀释真事件信号)——
+    # workflow 失败类折叠计数不逐条列;issue/PR 类=外联回应信号,逐条列
     try:
         out = subprocess.run(
             ["gh", "api", "notifications", "--jq",
              ".[] | select(.unread==true) | .subject.title"],
             capture_output=True, text=True, timeout=20)
+        ci_n = 0
         for line in (out.stdout or "").splitlines():
-            if line.strip():
-                EVENTS.append(f"GitHub 通知未读: {line.strip()[:70]}")
+            t = line.strip()
+            if not t:
+                continue
+            if "workflow run failed" in t or "workflow run succeeded" in t:
+                ci_n += 1
+                continue
+            EVENTS.append(f"GitHub 通知未读: {t[:70]}")
+        if ci_n:
+            EVENTS.append(f"GitHub CI/Deploy 通知 ×{ci_n}(组织他仓常规红,折叠不处置)")
     except Exception:
         pass
 

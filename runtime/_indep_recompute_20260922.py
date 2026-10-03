@@ -9,7 +9,6 @@ Writes independent results to runtime/_indep_results_20260922.json
 import hashlib
 import json
 import os
-import sys
 from collections import Counter, defaultdict
 
 BASE = os.path.dirname(os.path.abspath(__file__))
