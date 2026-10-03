@@ -9,6 +9,7 @@
 
 > 🔴 报数纪律(2026-09-15 用户拍板,流程正本 `docs/soul/proposal_preregistered_recompute_20260914.md`,soul 提案 approved):
 > 对外要报数字的任务(评测/跑分/数据产出/修复验收)——**开工先落预注册判据档**(判据只许更严),**收工走非实现者复算**(新鲜会话,只信判据与自测);交接档只给坐标与命令,**不给任何预期读数**(占位句也不写,留空白)。复算红灯先证伪自己探针。
+> **判分证据分层(2026-10-03 用户拍板,正本 `docs/metering/JUDGING_EVIDENCE_TIERS_20261003.md`)**:判分/复算/验收报告的每条结论性陈述必须标注 `[实测]/[推断]/[不可验]` 三层之一,推断不得冒充实测,推断发布即带 upgrade_path,U 态与证据层独立标注。
 
 
 <!-- COMPASS-KG-NODE · 2026-07-14 从 4 个历史会话提炼 · 完整见 ~/.claude/projects/<proj>/memory/session_NODE_nautilus-compass.md -->
