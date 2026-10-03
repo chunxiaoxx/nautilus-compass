@@ -1,0 +1,7 @@
+{"type":"object","properties":{
+"dim1":{"type":"string","enum":["完成","部分","未动"]},
+"dim2":{"type":"string","enum":["正常","异常","无法判断"]},
+"dim3":{"type":"string","enum":["高","中","低"]},
+"pos":{"type":"string","enum":["是","否"]},
+"neg":{"type":"string","enum":["是","否"]}},
+"required":["dim1","dim2","dim3","pos","neg"],"additionalProperties":false}

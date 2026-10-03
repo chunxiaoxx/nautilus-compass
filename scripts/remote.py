@@ -45,6 +45,14 @@ def run(c, cmd: str, timeout: int = 60) -> str:
     return o if o.strip() else e
 
 
+def _unmangle(p: str) -> str:
+    """MSYS(git-bash) 把以 / 开头的独立参数转成 C:/Program Files/Git/...——还原。"""
+    for pre in ("C:/Program Files/Git", "C:/Progra~1/Git"):
+        if p.startswith(pre):
+            return p[len(pre):] or "/"
+    return p
+
+
 def main() -> int:
     try:
         sys.stdout.reconfigure(encoding="utf-8")
@@ -56,6 +64,7 @@ def main() -> int:
     ap.add_argument("--backoff", type=int, default=120)
     ap.add_argument("--timeout", type=int, default=60)
     a = ap.parse_args()
+    a.args = [_unmangle(x) for x in a.args]
     c = connect(a.backoff)
     try:
         if a.cmd == "exec":
@@ -64,17 +73,17 @@ def main() -> int:
             local, remote = a.args
             if local.endswith(".py"):
                 py_compile.compile(local, doraise=True)
-            s = c.open_sftp()
-            s.put(local, remote)
-            s.close()
-            print(run(c, f"ls -la {remote}"))
+            import base64
+            data = base64.b64encode(Path(local).read_bytes()).decode()
+            # sftp 在本机环境不可靠(ENOENT 假报),走 exec+base64 兜底
+            print(run(c, f"echo '{data}' | base64 -d > {remote} && wc -c {remote}", timeout=90))
         elif a.cmd == "get":
             remote, local = a.args
+            import base64
             Path(local).parent.mkdir(parents=True, exist_ok=True)
-            s = c.open_sftp()
-            s.get(remote, local)
-            s.close()
-            print(Path(local).read_text(encoding="utf-8", errors="replace")[:400])
+            b64 = run(c, f"base64 -w0 {remote}", timeout=90).strip()
+            Path(local).write_bytes(base64.b64decode(b64))
+            print(f"[got] {local} {len(b64) // 4 * 3}B")
         elif a.cmd == "launch":
             cmd, log = a.args
             out = run(
