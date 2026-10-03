@@ -64,5 +64,21 @@
   "adapter": "runtime/judge_lora_p2v2/best_lora",
   "note": "init gen0",
   "evidence_tier": "measured"
+ },
+ {
+  "cycle": 6,
+  "ts": "2026-10-03T20:25:42+08:00",
+  "gate": ">=200 pending labelled",
+  "pending_deltas": [
+   {
+    "file": "delta_0002.jsonl",
+    "n": 15,
+    "sha16": "37475b548e1a2f4a"
+   }
+  ],
+  "pending_n": 15,
+  "evidence_tier": "measured",
+  "ticket": "SKIP",
+  "verdict": "SKIP——pending 15<200,不攒人情不触发;累计池 29 条(含已记账),流入速率以 ledger 为准"
  }
 ]
