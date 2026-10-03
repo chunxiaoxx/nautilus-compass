@@ -1,3 +1,50 @@
 [
- {"cycle": 1, "ts": "2026-10-03T13:31:04+08:00", "delta_id": "delta_0001", "delta_n": 14, "label_dist": {"pass": 7, "insufficient_evidence": 5, "fail": 2}, "label_origin": "independent_recompute", "whitelist_rejected": 0, "delta_sha16": "dfeb132b4c47e92d", "ticket_gate": ">=200 new labelled", "ticket": "SKIP", "verdict": "SKIP——delta 14<200,不攒人情不触发;语料流入速率校准:五演=14 条,200 门槛≈14 倍当前单轮流入,门槛现实性复核挂 P3 首评审", "evidence_tier": "measured", "chain": {"manifest": "runtime/verdict_corpus/delta/manifest_delta_0001.json", "anchors_sha256": "见 manifest.anchor_files_sha256"}}
+ {
+  "cycle": 1,
+  "ts": "2026-10-03T13:31:04+08:00",
+  "delta_id": "delta_0001",
+  "delta_n": 14,
+  "label_dist": {
+   "pass": 7,
+   "insufficient_evidence": 5,
+   "fail": 2
+  },
+  "label_origin": "independent_recompute",
+  "whitelist_rejected": 0,
+  "delta_sha16": "dfeb132b4c47e92d",
+  "ticket_gate": ">=200 new labelled",
+  "ticket": "SKIP",
+  "verdict": "SKIP——delta 14<200,不攒人情不触发;语料流入速率校准:五演=14 条,200 门槛≈14 倍当前单轮流入,门槛现实性复核挂 P3 首评审",
+  "evidence_tier": "measured",
+  "chain": {
+   "manifest": "runtime/verdict_corpus/delta/manifest_delta_0001.json",
+   "anchors_sha256": "见 manifest.anchor_files_sha256"
+  }
+ },
+ {
+  "cycle": 2,
+  "ts": "2026-10-03T17:20:16+08:00",
+  "gate": ">=200 pending labelled",
+  "pending_deltas": [
+   {
+    "file": "delta_0001.jsonl",
+    "n": 14,
+    "sha16": "ed36f118343de453"
+   }
+  ],
+  "pending_n": 14,
+  "evidence_tier": "measured",
+  "ticket": "SKIP",
+  "verdict": "SKIP——pending 14<200,不攒人情不触发;累计池 14 条(含已记账),流入速率以 ledger 为准"
+ },
+ {
+  "cycle": 3,
+  "ts": "2026-10-03T17:22:15+08:00",
+  "gate": ">=200 pending labelled",
+  "pending_deltas": [],
+  "pending_n": 0,
+  "evidence_tier": "measured",
+  "ticket": "SKIP",
+  "verdict": "SKIP——pending 0<200,不攒人情不触发;累计池 14 条(含已记账),流入速率以 ledger 为准"
+ }
 ]
