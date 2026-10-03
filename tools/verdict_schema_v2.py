@@ -114,6 +114,15 @@ def validate(v: dict) -> tuple[list[str], list[str]]:
         if f.get("evidence_tier") in ("inferred", "unverifiable"):
             if not f.get("upgrade_path") and not re.search("推断|不可验|inferred", f.get("basis", "")):
                 warns.append(f"L2 findings[{i}] inferred/unverifiable 缺 upgrade_path 且 basis 无推断字样")
+    gr = v.get("gap_report")  # v2.1 可选(EGR 接口,函 2730/2731):判读件缺口报告
+    if gr is not None:
+        if not isinstance(gr, dict) or gr.get("gap_layer") not in (
+                "execution", "data", "judgment", "capability"):
+            errors.append("L1 gap_report.gap_layer 枚举外(execution|data|judgment|capability)")
+        elif not gr.get("evidence"):
+            errors.append("L1 gap_report.evidence 必填(缺口结论须带坐标)")
+        elif gr.get("confidence") not in ("measured", "inferred"):
+            errors.append("L1 gap_report.confidence 枚举外(measured|inferred)")
     for i, cm in enumerate(v.get("claims", [])):
         if cm.get("supported") is False and not cm.get("boundary"):
             errors.append(f"L2 claims[{i}] supported=false 缺 boundary")
