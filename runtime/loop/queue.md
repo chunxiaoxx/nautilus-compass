@@ -47,6 +47,11 @@
 
 ## 轮次日志
 
+### R60 · 2026-10-03 12:01(quiet 轮)
+- probe quiet(CI 噪声)/信箱 0 未读
+- G1:无新材料(四目录均为已判批;verdict 11:55 为我方 B2 判);GPU 空闲(pusht_arm2_fixed 已完,效度实验两臂跑完待 flywheel 送判);④ turbo 已完成不触发
+- M1:+0(quiet)
+
 ### R59 · 2026-10-03 11:44-12:0x(判分轮·flywheel B2 送判双函 #2470/#2471——B2 判读+口径披露+双链一致性)
 - **B2=g1_infer_B2 独立目录**(flywheel 材料链自驱产出,与 v5 通道 B 批同 ckpt 同刻 10:48)——判分链:拉取→独立复算(dir 33/40/band 37/40/degen 0/sha 340eff115ef49e50)→judge 参数化(G1_B_DIR 环境变量覆盖,material_dirs 入 verdict,判据未动)→模拟→部署→A100 执行(ts 11:55)→回读验证
 - **判定:B2 材料合格,G vs B2 差分 valid=true ΔJ1=+2.5pp/ΔJ2=0**——与 R57 B(v5) 锚定结论相同
