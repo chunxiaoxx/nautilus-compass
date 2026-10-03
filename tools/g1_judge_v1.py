@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""G1 双臂判分 v1(2026-10-03 · compass 独立判,材料=/root/vdd3/pipe_art/g1_infer_{G,B}/)。
+"""G1 双臂判分 v2(2026-10-03 · compass 独立判,材料=/root/vdd3/pipe_art/g1_infer_{G,B}/)。
+
+v2:内嵌证据分层(JUDGING_EVIDENCE_TIERS_20261003)——每条陈述标
+evidence_tier: measured(直读材料/数据集)/ inferred(数学推导,带 upgrade_path)/
+unverifiable(材料不含验证所需信息,单列)。
 
 判据(g1_protocol_v1.json criteria_J,flywheel 函 2389 引用语境=帧级材料):
   J1 方向性:dir_consistent 帧率(逐臂)+ G−B 差分方向(注入坏数据应伤拟合)
@@ -60,7 +64,8 @@ def main() -> int:
         print(f"[wait] 材料未齐:缺 {'/'.join(missing)} 臂 infer_compare.jsonl")
         return 1
     G, B = arm_stats("G"), arm_stats("B")
-    v = {"ts": time.strftime("%Y-%m-%dT%H:%M:%S"), "judge": "compass g1_judge_v1",
+    v = {"ts": time.strftime("%Y-%m-%dT%H:%M:%S"), "judge": "compass g1_judge_v2",
+         "evidence_policy": "JUDGING_EVIDENCE_TIERS_20261003",
          "protocol": "g1_protocol_v1.json criteria_J(flywheel 函 2389 帧级语境)",
          "criteria_note": "criteria_J 原文为 probe/full 语义;本判分按 2389 引用的帧级口径"
                           "(J1=方向一致率,J2=幅度比带宽),映射已披露非静默",
@@ -89,6 +94,34 @@ def main() -> int:
     qg, qb = quality(G), quality(B)
     v["material_quality"] = {"G": qg, "B": qb}
     material_ok = qg == "OK" and qb == "OK"
+    # ── 证据分层标注(每条陈述独立标层,v2 核心)──
+    v["findings"] = [
+        {"finding": "双臂逐帧读数(dir/J2 带宽/ratio 分布/差分)",
+         "evidence_tier": "measured",
+         "basis": f"直读 infer_compare.jsonl 逐帧字段,双臂 sha 见 arms"},
+        {"finding": "ratio 数千倍源于分母 ‖act−state‖ 趋零(静止段帧)",
+         "evidence_tier": "measured"
+         if G.get("n_degenerate_ratio", 0) > 0 else "inferred",
+         "basis": "实测依据:2026-10-03 直读数据集 ep0 前 8 帧 ‖act−state‖=3.5e-5~7.4e-5"
+                  "(双臂一致);本判定阈值=ratio>30 计数",
+         "upgrade_path": None
+         if G.get("n_degenerate_ratio", 0) > 0 else
+         "直读数据集算 ‖act−state‖ 逐帧分布"},
+        {"finding": "dir_consistent 在近零增量上不可区分于随机(abs(dot)>0 实现疑与"
+                    "docstring sign 语义不符)",
+         "evidence_tier": "inferred",
+         "basis": "dot≈‖pred−state‖×5e-5×cos,>0 几乎仅由夹角符号决定;"
+                  "实现与设计不符为源码直读(实测),其'不可信'效果为推导(推断)",
+         "upgrade_path": "材料侧改 sign 实现后重跑对照"},
+        {"finding": "视频注入未传导到预测(双臂 pred 高度同形态)",
+         "evidence_tier": "inferred",
+         "basis": "双臂 pred_head 逐帧差异远小于 pred 与 act 差异;state 未注入,"
+                  "模型或主要由 state 驱动",
+         "upgrade_path": "注入帧 vs 干净帧的 pred 逐帧对比"},
+        {"finding": "8/40 帧是否 ep_ranges 索引 bug(仅 ep0 被处理)",
+         "evidence_tier": "unverifiable",
+         "basis": "材料不含采样过程信息,需材料侧自查"},
+    ]
     v["verdict"] = (
         "MATERIAL_INSUFFICIENT——判 U 态:材料质量不足(见 material_quality),"
         "J1/J2 读数不可作为判分依据;材料侧修复建议:①帧选取避开零增量帧"
