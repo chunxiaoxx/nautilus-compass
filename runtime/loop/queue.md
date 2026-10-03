@@ -48,6 +48,13 @@
 
 ## 轮次日志
 
+### R87 · 2026-10-03 22:3x(quiet 轮+FRAME.yaml 状态刷新)
+- quiet:信箱 0;A100 真空闲(0%/14MiB);GitHub 三通知为上轮已处置项未读标记(threads API 权限 404 清不掉,实质闭环:rsi-bench 已复/mem0 已记/zenmind 属 v5)
+- 实件:FRAME.yaml 从 9 月初状态刷新至 10/3 判分机构主线现状(旧 deliverable 还是 e2e/LME-V2 时代)
+- 夜间不推:L5 冷外联留白天窗口(纪律);L3 等材料/L6 等语料/L2 样板等金标 CSV;G1/turbo 为旧清单残留不倒跑(G1 已终判,turbo 线 P0-full 定谳后无必要)
+- 下轮第一件:同 R86
+- M1:+0(quiet)
+
 ### R86 · 2026-10-03 22:2x(L4 主件+L7 paper2 织入轮)
 - **L4 判例集 v1 装订完成**:docs/cases/CASEBOOK_V1.md——8 案(G1 三锚定/假说对撞 2422/pusht 帧级/配对归因/rollout n20/n100 终判/判据演进 v1→v2-final/口径裁定三连裁 #2553·#2572·#2667)+判据零放宽 vs 演进张力段如实段+每案 sha 锚/复算命令/证据分层 claims+附录校验状态表;前置=三核心 verdict schema v2 全合规(R85);验收口径=外部读者按 sha 链独立复验
 - **L7 paper2 织入完成**:四件新素材进 §6 卫生协议——P6 判据演进程序化(amendment owner-ruled+T1 样本锁死+T2 两法裁决)/P7 证据三层 verdict(假说对撞实测裁决+自我证伪勘误例)/Checklist 表加两行/Discussion 新段 embodied verification gap(具身真空位,判分机构模式迁移+byte 级复算缺位如实标);pdflatex 两遍收敛 11 页 0 错 0 undefined;arXiv 包 docs/papers/arxiv_pkg/(tex+zip,提交动作=用户操作)

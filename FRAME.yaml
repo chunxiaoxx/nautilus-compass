@@ -1,4 +1,4 @@
 name: compass
 status: active
-waiting_on: 用户(paper2 arXiv 提交动作/营销帖发布拍板/ent 出数后 GPU 退租)
-deliverable: MVP 多租户生产上线(FOUR-GREEN)+e2e 定案 75.4/81.6%+LME-V2 d12 现役 40.0/38.4%+cheap web 36.3%(三改未超现役)+营销两帖成品就绪+paper2 材料定稿等提交
+waiting_on: platform(E1 判官材料发包,函2661已催,死线10/5 13:16)/errata 增量活水(首训练单语料<15/200)/用户(paper2 arXiv 提交——包已就绪 docs/papers/arxiv_pkg//GPU 充值拍板 余额128.20)
+deliverable: 判分机构主线——判例集 v1 装订(docs/cases/CASEBOOK_V1.md 8案,三核心 verdict schema v2 全合规)+pusht 首案全弧(帧级 p=0.00986/n100 终判方向显著达标未证实,止损线生效)+G1 三锚定差分+两线定价(判读免费/装订收费)+schema 会签闭环(flywheel L2)+org_state v1 writeback;paper2 四素材织入 11 页编译收敛+arXiv 包就绪;2667 errata 供给三案裁决已发
