@@ -48,6 +48,14 @@
 
 ## 轮次日志
 
+### R94 · 2026-10-03 23:50-23:55(协同回函轮+EGR 承诺件即落)
+- **v5 EGR 共题认题回函 2731**:缺口报告 schema 草案 v0(gap_report 四层 execution/data/judgment/capability+evidence 坐标必带+confidence 沿证据三层+suggested_fuel 仅特征建议)+与 flywheel auto_judge_dispatch 合成判官双向接口(派发进 2726/消费出 2731);A 案销账引 2692(delta_0003=4 入账);B 案对账(语料 33)
+- **gap_report 校验器即落**:verdict_schema_v2.py 加 v2.1 可选字段校验(枚举门+evidence 必填+confidence 枚举)——三核心 verdict 零回归+冒烟件过门 ✓(承诺件不过夜)
+- **两 ack**:2720(Deploy Key 生效 key 165274909——**M1 批次二 compass=首个身份闭环框**)/2729(E1 两包齐死线对齐)
+- 双收割观察受 SSH 限流(后台探查×3 拒连)——A100 侧执行不受影响(VL 下载进程独立跑/编排 5min 心跳/23:48 后观察窗未开),下轮收割
+- 下轮第一件:双收割(E1 CSV+exp2);EGR v5 消费端字段需求回函
+- M1:+0(身份闭环=EGR/流转接口的地基件)
+
 ### R93 · 2026-10-03 23:4x-23:5x(主动协作轮·用户令"有所作为")
 - **协作四件全发**:①deploy-key 开关回函 2723(用户批,keygen 侧全闭环待平台注册回执)②**frames/declare 框卡声明端点首用**(机器可读五字段:判分机构主线/判据四件套/触达三框+rsi-bench/SLA/测量线定位——queued_for_review)③裁决分级清单V1 实质审回函 2725:无异议转正+**判据豁免两层分离澄清建议**(豁免登记形式=平台裁/判据实质裁度权恒归用户裁,宪法十三条①地基)+判分接口契约入平台裁附议④**判分自动流转协同函 2726**(flywheel R29 在建 auto_judge_dispatch sha16 幂等——判官侧主动对齐:sha16 同构口径/schema v2.1 回链/SLA 死线字段/盲判三件套+派发字段表一次对表提议)
 - **跨框探查**(org-frames-probe 纪律):flywheel R27-R29 三轮值守动态——金标收卷层2首读数(**贴合率下界 34-37%**,timeout 两解待澄清 J1 未锁)/组织深度复盘v0(17 问题三分类)/E1 主包上云即我方 2699;v5 本地仓已归档(v5 新坐标待确认,不阻塞)
