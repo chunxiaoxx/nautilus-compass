@@ -1,0 +1,15 @@
+{
+ "delta_id": "delta_0002",
+ "exported_at": "2026-10-03T20:25:42+08:00",
+ "n_new": 15,
+ "label_distribution": {
+  "pass": 13,
+  "insufficient_evidence": 2
+ },
+ "whitelist_rejected": 0,
+ "inbox_files": [
+  "v2s__p3_g1_verdict.jsonl",
+  "v2s__p3_pusht_4win_verdict.jsonl",
+  "v2s_rollout_n100_verdict.jsonl"
+ ]
+}
