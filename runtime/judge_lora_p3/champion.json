@@ -1,9 +1,9 @@
 {
  "gen": 0,
- "adapter_path": "runtime\\judge_lora_p2v2\\best_lora",
+ "adapter_path": "runtime/judge_lora_p2v2/best_lora",
  "adapter_sha16": "dbcbab6fd1ff5821",
  "gate_report_sha16": null,
  "corpus_delta_sha16": null,
- "promoted_at": "2026-10-03T17:43:30+08:00",
+ "promoted_at": "2026-10-03T17:49:43+08:00",
  "note": "gen0=P2v2 冠军(J1 88.51/ECE 0.072),P3 管道启用基准"
 }

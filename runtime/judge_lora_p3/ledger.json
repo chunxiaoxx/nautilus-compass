@@ -55,5 +55,14 @@
   "adapter": "runtime\\judge_lora_p2v2\\best_lora",
   "note": "init gen0",
   "evidence_tier": "measured"
+ },
+ {
+  "cycle": 5,
+  "ts": "2026-10-03T17:49:43+08:00",
+  "event": "PROMOTE",
+  "gen": 0,
+  "adapter": "runtime/judge_lora_p2v2/best_lora",
+  "note": "init gen0",
+  "evidence_tier": "measured"
  }
 ]
