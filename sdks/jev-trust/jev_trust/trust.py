@@ -20,9 +20,13 @@ from __future__ import annotations
 import json
 import time
 from dataclasses import dataclass, field
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:  # 注解专用,运行时零依赖(ruff F821:名字须可见)
+    from .receipt import ReceiptResult
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Callable, Dict, List, Optional
+from typing import Callable, Dict, Optional
 
 from . import calib
 from .calib import (CalibrationState, Prediction, effective_confidence,

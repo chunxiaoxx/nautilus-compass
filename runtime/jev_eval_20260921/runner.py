@@ -4,7 +4,7 @@ Generates a deterministic decision set (seed=20260921), calls jev-latest one
 question per request, records every raw response, computes Brier/ECE/accuracy.
 No retries on content, no cherry-picking; failures recorded as-is.
 """
-import json, random, time, os, sys, urllib.request, hashlib
+import json, random, time, sys, urllib.request, hashlib
 from pathlib import Path
 
 SEED = 20260921

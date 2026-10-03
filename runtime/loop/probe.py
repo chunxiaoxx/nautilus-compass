@@ -5,7 +5,6 @@
 import json
 import subprocess
 import sys
-import urllib.request
 from pathlib import Path
 
 EVENTS = []

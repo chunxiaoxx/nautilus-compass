@@ -9,7 +9,6 @@
   刀3 chunk cap env 化:COMPASS_CHUNK_PER_ENTRY_CAP 默认 24(部署配 8)
   刀4 pkl warmup 只载最近 N 项目(按 pkl mtime),治启动峰值
 """
-import re, sys
 
 SRC = "runtime/cloud_daemon_20260930.py"
 s = open(SRC, encoding="utf-8").read()

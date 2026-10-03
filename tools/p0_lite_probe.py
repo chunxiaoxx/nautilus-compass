@@ -4,7 +4,6 @@
 判据档:docs/metering/P0_LITE_PREREG_20261002.md(开工前预注册,只许加严)。
 """
 import json
-import math
 from pathlib import Path
 
 import numpy as np

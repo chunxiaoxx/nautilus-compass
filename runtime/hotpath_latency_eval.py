@@ -13,7 +13,7 @@ from pathlib import Path
 import torch
 
 sys.path.insert(0, "/root/tools")
-from train_judge_lora import LABELS, PROMPT_TMPL, load, sample_text  # noqa: E402
+from train_judge_lora import LABELS, PROMPT_TMPL, sample_text  # noqa: E402
 
 OUT = Path("/root/runtime/judge_lora/hotpath_eval.json")
 MODEL_PATH = None  # 自动探测 modelscope 路径

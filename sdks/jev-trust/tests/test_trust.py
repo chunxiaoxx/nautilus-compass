@@ -6,7 +6,7 @@ import pytest
 from jev_trust import (TrustedJev, TrustResult, UNVERIFIED, FACE_VALUE,
                        top_label, correctness)
 from jev_trust.client import JevAPIError
-from jev_trust.receipt import KeyPair, verify_log
+from jev_trust.receipt import verify_log
 
 
 def fake_transport_factory(answers, calls=None):

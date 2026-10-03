@@ -185,7 +185,6 @@ def due_ledger(rows: list[dict], now_iso: str) -> dict:
     +历史误报率=flare_total/(flare_total+cleared_total)——执法器自身
     漂移可被复算(自报复发防线)。
     """
-    import os
     p = Path(__file__).parent.parent / "runtime/deepsync/due_ledger.json"
     book: dict[str, dict] = {}
     if p.exists():

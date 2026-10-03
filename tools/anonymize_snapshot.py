@@ -4,7 +4,6 @@
 import hashlib
 import json
 import re
-import shutil
 from pathlib import Path
 
 SRC = Path("runtime/verdict_corpus")

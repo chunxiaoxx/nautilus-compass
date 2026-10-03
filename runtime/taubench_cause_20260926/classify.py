@@ -7,7 +7,6 @@
 """
 import ast
 import json
-import re
 from pathlib import Path
 
 SRC = Path(r"C:/Users/chunx/nautilus-v5/deliverables/taubench_r1_fail_traces")
