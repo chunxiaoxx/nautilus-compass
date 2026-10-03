@@ -50,6 +50,14 @@
     "text": "人读全文",
     "stop_loss": {"seed_locked": true, "no_expansion": true, "no_new_methods": true,
                   "note": "防加注条款;无止损线案件省略整段"}
+  },
+
+  "peer_case_spec": {                       // v2.1 会签新增(可选,与 flywheel case_spec 互引)
+    "repo": "nautilusflywheel", "path": "runtime/case_specs/<case_id>.json",
+    "sha16": "spec 文件锚",
+    "mapping": "case_spec.criteria_frozen_file→criteria.freeze_chain;"
+               "stop_loss.rule→verdict.stop_loss(判定记录);"
+               "arms[]→readings+material;gates.judge→judge"
   }
 }
 ```
