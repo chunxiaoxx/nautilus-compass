@@ -47,6 +47,12 @@
 
 ## 轮次日志
 
+### R56 · 2026-10-03 10:36(quiet 轮)
+- probe quiet(CI 存量噪声;外部评论过滤生效无误报)/信箱 0 未读
+- G1:B 臂材料未变(07:40 旧批,等 v5 通道);GPU 仍被 pusht_arm1_noise 占(10:14 起,100%)=flywheel 效度实验在跑;我方无 GPU 需求(④ turbo 已完成)
+- 夜间清单:N4/N5 均触发式,触发件未到;无队列头可取
+- M1:+0(quiet)
+
 ### R55 · 2026-10-03 10:32-10:4x(同步轮·对话框全同步+实例/飞轮实际工作探查+probe 误报机制化)
 - **probe 误报机制化**:rsi-bench#1 增量=自家出站件(R51 后第二次同型)→probe.py 只数外部评论(author≠chunxiaoxx)+基线改外部口径直写(不取 max:对方删评时 max 冻结高位会漏报,R40 有先例);复跑验证误报消除,外部口径基线 rsi-bench=2/gtaras7=3
 - **实例实际工作**:A100 GPU 10:14 起被 `train.py pusht_local --exp-name pusht_arm1_noise` 占(100%/30.8G)=flywheel 首案 pusht A/B 效度实验臂1 噪声跑;G1 B 臂材料未出(等 v5 通道,flywheel dd5522d"重跑v5通道出数即送判");turbo 已完成,我方无 GPU 需求
