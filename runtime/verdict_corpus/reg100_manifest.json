@@ -1,0 +1,14 @@
+{
+ "frozen_at": "2026-10-03",
+ "seed": 20261003,
+ "n": 100,
+ "quota": {
+  "pass": 52,
+  "fail": 47,
+  "insufficient_evidence": 1
+ },
+ "source": "split_test.jsonl(149,sha16=4bcaf1c9b551f336)",
+ "reg100_sha16": "2f029984ee0c76f3",
+ "frozen_terms": "永久冻结、永不入训、修改即事故(P3 设计档 §五;判据只许更严)",
+ "usage": "G1 零退化门:挑战者与冠军在 REG-100 逐条对照,correct→incorrect 翻转必须=0"
+}
