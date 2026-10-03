@@ -54,7 +54,7 @@ def ledger_append(entry: dict) -> None:
 
 def rel(p: Path) -> str:
     try:
-        return str(p.relative_to(ROOT))
+        return p.relative_to(ROOT).as_posix()  # posix 斜杠:GPU Linux 机可直读
     except ValueError:  # selftest 临时目录在仓外;生产路径恒在仓内
         return str(p)
 
