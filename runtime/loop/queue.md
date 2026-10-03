@@ -14,7 +14,7 @@
 | N3 | turbo venv 修复 | — | ✅ R50 venv 修;**R54 核:提取已完成(c60b4275),产物实测在列(cause/effect_turbo.npy 08:38-40+p0_full_report.json 08:44),④条件不再触发** |
 | N4 | **G1 判分值守**(触发式:18889 收轨迹/信箱 flywheel 件→按 g1_protocol_v1.json J1-J3 判;deadline 09:00) | 触发 | ✅ R57:双臂差分终判(材料合格 ΔJ1=+2.5pp/ΔJ2=0,注入不传导特征增强),U 态窗口关闭;后续=pusht A/B 效度实验送判(臂2 在跑) |
 | N5 | 报名/送测回应(触发式:probe 增量→处置) | 触发 | ⏳ R63:platform 判官邀请 #2508 ack(倾向领 1 席,白昼拍板,死线 10/5 13:16) |
-| N6 | compass main CI 红(ruff F401,runtime scratch 未用 import,10/1 起非回归) | 15min | ⏳ R63 入队,留新会话清(加 per-file ignore 或删 import) |
+| N6 | ~~compass main CI 红(ruff F401)~~ | — | ✅ R71:34 处全量清,ruff 绿+CI run 37109617577 success 实测转绿,10/1 起红灯清零 |
 
 > 夜间纪律:不做战略函(flywheel 两问/2343 执行评估留明早新会话)·不重发外联(48h 窗)·知乎逆向不做·每轮时间戳只从 probe 头抄。
 
@@ -47,6 +47,12 @@
 | — | 探针首跑即抓事件:E6 GRPO 00:17 完成(200 步/adapter 落盘/GPU 释放) | R1 | +0(记录) |
 
 ## 轮次日志
+
+### R71 · 2026-10-03 16:30(lint 全量清+CI 转绿闭环,N6 销账)
+- **N6 升级定谳**:CI 红非单处——10/1 起累积 34 处(30 F401+E721+F601×2+F821);我方第一轮只看失败日志头几行误判"单处 F401",修完仍红才拉全量清单(教训:失败日志要读全,验证要抓远端实测非本地单点)
+- 修复:`ruff --fix` 30 处未用 import+手修 4 处(verify_bc1 E721 type is/jev-trust client F601 bool-int 冗余键删减带行为回归 4 断言/trust F821 TYPE_CHECKING 守卫);`ruff check .` 本地全绿+**远端 CI run 37109617577 success(2m28s)实测转绿**——10/1 起 main CI 红清零,SDK 零行为变更
+- 杂项如实记:`git add -u` 误带 zhihu_dryrun.png 旧改动入 commit(无敏感,留档不追加噪音)
+- push:`4099a88f..08070b9c` 全部在 origin;扩 n 终判轮 ~18:10 唤起仍挂;E1 材料+GPU 充值外部时钟不变
 
 ### R70 · 2026-10-03 15:57(问题解决轮·probe 噪声过滤+N6 清+燃料口径裁定)
 - **发现并修:probe 通知噪声**——CI/Deploy 常规红每轮刷 20-40 行稀释真事件信号;修=workflow 失败类折叠计数一行,issue/PR 类逐条列。过滤立见价值:47 条折叠,两新函浮出即处置
