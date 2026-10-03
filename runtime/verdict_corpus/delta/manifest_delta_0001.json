@@ -1,0 +1,31 @@
+{
+ "delta_id": "delta_0001",
+ "exported_at": "2026-10-03T13:31:04+08:00",
+ "exporter": "tools/verdict_corpus_embodied_delta.py",
+ "n_samples": 14,
+ "label_distribution": {
+  "insufficient_evidence": 5,
+  "pass": 7,
+  "fail": 2
+ },
+ "label_origin_all": "independent_recompute",
+ "whitelist_rejected": 0,
+ "delta_sha16": "dfeb132b4c47e92d",
+ "anchor_files_sha256": {
+  "g1_verdict.json": "0a17c8b9b4078e5aa3b19eace4a3be47dc2aa11ca9114084952dd5a836cf11d2",
+  "pusht_4win_verdict.json": "93a1409c3450d8078e24be297f3d8eed7836e3aadee600fa3b3209bd9c1671f3",
+  "g1_infer_B/infer_summary.json": "818846d96c4834bfcb8b5b0c5f3d7dc14330f20dc866d19ec2676482d296a92b"
+ },
+ "letter_anchors": [
+  "函2407(U态)",
+  "函2422(假说裁决)",
+  "函2459(v5送判)",
+  "函2464(差分终判)"
+ ],
+ "commit_anchors": [
+  "45184784",
+  "fe7922b5",
+  "eae2d9b2"
+ ],
+ "note": "首个增量;P3 S2 触发门槛≥200,本批 14 → 训练单 SKIP(见 runtime/judge_lora_p3/ledger.jsonl cycle1)"
+}
