@@ -1,0 +1,12 @@
+{
+ "delta_id": "delta_0003",
+ "exported_at": "2026-10-03T23:07:23+08:00",
+ "n_new": 4,
+ "label_distribution": {
+  "fail": 4
+ },
+ "whitelist_rejected": 6,
+ "inbox_files": [
+  "p3_delta_v5_20261003.samples.jsonl"
+ ]
+}
