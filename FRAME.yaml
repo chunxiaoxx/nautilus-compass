@@ -1,4 +1,5 @@
 name: compass
 status: active
-waiting_on: platform(E1 判官材料发包,函2661已催,死线10/5 13:16)/errata 增量活水(首训练单语料<15/200)/用户(paper2 arXiv 提交——包已就绪 docs/papers/arxiv_pkg//GPU 充值拍板 余额128.20)
-deliverable: 判分机构主线——判例集 v1 装订(docs/cases/CASEBOOK_V1.md 8案,三核心 verdict schema v2 全合规)+pusht 首案全弧(帧级 p=0.00986/n100 终判方向显著达标未证实,止损线生效)+G1 三锚定差分+两线定价(判读免费/装订收费)+schema 会签闭环(flywheel L2)+org_state v1 writeback;paper2 四素材织入 11 页编译收敛+arXiv 包就绪;2667 errata 供给三案裁决已发
+waiting_on: E1 判官材料(死线10/5)
+deliverable: docs(org): 组织机制周复盘——实测278commits/239函/79轮;核心主线一条(验证机构=判据×证据×机构);问题七条(产;feat(L4判例集v1): CASEBOOK_V1 装订——8案(G1三锚定/假说对撞2422/pusht帧级/配对归因/rollout ;docs(handoff): 10/4 开工件——GPU充值第一动作+E1/errata/会签三时钟+接线计划实事队列+10/3成果索引(判;feat(L2协议会签): case_spec×verdict_schema_v2 映射表落档+verdict v2.1 加 peer_ca
+# 由 scripts/frame_autosync.py 生成(2026-10-03);手改会被覆盖,改 HANDOFF/queue 而非此处
