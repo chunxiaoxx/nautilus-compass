@@ -48,6 +48,13 @@
 
 ## 轮次日志
 
+### R82 · 2026-10-03 21:32(标准件轮·org_state v1 首落 writeback)
+- **#2642 org_state v1 上线**:三端点探活(frames compass 框卡现役/verdicts 24行 compass 5行均 capability 类);**七演判读未落索引→补落 writeback 函 2649**(G1 VERDICT/pusht 帧级 PARTIAL/rollout n100 PARTIAL+判据演进链+噪声底三级);框卡更新声明函 2650(判分机构主线+两线定价+SLA<1h+schema v2);ack 完结
+- L2 会签函 2648 已发 flywheel(死线 10/5 20:00);在途:errata 2634/E1 材料/GPU 充值
+- push:992249cc..8f820a8f 已同步;未 push:接线计划+L2 会签+本轮
+
+### R81 · 2026-10-03 20:52(quiet 轮+A100 限流退避补查)
+
 ### R81 · 2026-10-03 20:52(quiet 轮+A100 限流退避补查)
 - quiet:信箱 0;A100 退避 120s 后补查——G1 双锚未变/GPU 0 进程/无新材料;probe A100 段限流一次(高频日已知配方)
 - 在途:errata 请求函 2634(死线 10/5 18:00)/E1 材料/GPU 充值(跑道 <12h)
