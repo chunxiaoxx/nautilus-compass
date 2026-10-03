@@ -48,6 +48,13 @@
 
 ## 轮次日志
 
+### R89 · 2026-10-03 22:5x(exp1 收割判读+exp2 扫描链连跑轮)
+- **exp1 收割**(全量重训 3ep/lr1e-4,champion 热启动):challenger Δtest=+0.67pt/Δreg=−1pt/**REG-100 金标翻转 6 条**→按预注册判据(Δtest≥+1pt 且 flip=0)**不记首单热启动候选**,负结果如实报。信息量:champion 本训自 train1162,全量重训无新信息只引入优化噪声=**反向实证 P3 增量设计(增益只能来自 delta 新语料)**;loss ep2 0.1268 仍在降→epochs 上扫有据
+- **exp2 扫描链发车**(用户拍板连跑):6 组合串行 LR{5e-5,1e-4,2e-4}×ep{3,5,8},预注册判读规则先落盘(Δtest≥+1pt 且 flip≤1=配方候选;全不过线=重训无增益坐实首单等 delta);exp_runner.py 参数化(champion 臂训练前逐条测,flip 精确对齐;修 exp1 的粗 flip 口径);预计 23:40 全链完
+- 修 runner 顺序 bug:champion 臂预测必须在训练前(训练改 adapter)——首版放训练后=测错臂,发车前自查抓出
+- 下轮第一件:收 exp2 六 summary→汇总表判读;E1 死线 10/5 13:16
+- M1:+0(实验线二连跑)
+
 ### R88 · 2026-10-03 22:4x(P3 因果倒置训练线复驰+paper3 立项轮)
 - **exp1 challenger v2 发车**(用户令:不让 A100 空闲/持续开展因果倒置模型训练):全量 split_train 1162 条+champion 热启动+bf16 3 epochs lr1e-4;预注册实验判据(Δtest≥+1pt 且 REG-100 gold 翻转=0 记"首单热启动候选";记录不 promote 不触 delta 账本);同 session champion 基线 reg=0.9100/test=0.9128(全精度);预计 ~40min 出 exp1_summary.json
 - launch 通道坑再犯再修:setsid nohup 后台进程占 ssh channel→`( ... &) `子壳+`</dev/null` 修(与 HANDOFF"发车/验证分 channel"纪律同款);exp1 实际一次发车成功
