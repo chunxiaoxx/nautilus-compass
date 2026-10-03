@@ -47,6 +47,14 @@
 
 ## 轮次日志
 
+### R55 · 2026-10-03 10:32-10:4x(同步轮·对话框全同步+实例/飞轮实际工作探查+probe 误报机制化)
+- **probe 误报机制化**:rsi-bench#1 增量=自家出站件(R51 后第二次同型)→probe.py 只数外部评论(author≠chunxiaoxx)+基线改外部口径直写(不取 max:对方删评时 max 冻结高位会漏报,R40 有先例);复跑验证误报消除,外部口径基线 rsi-bench=2/gtaras7=3
+- **实例实际工作**:A100 GPU 10:14 起被 `train.py pusht_local --exp-name pusht_arm1_noise` 占(100%/30.8G)=flywheel 首案 pusht A/B 效度实验臂1 噪声跑;G1 B 臂材料未出(等 v5 通道,flywheel dd5522d"重跑v5通道出数即送判");turbo 已完成,我方无 GPU 需求
+- **flywheel 真实工作状态**(repo 物理探查,今日 9+ commit 最新 10:17):①G1 线:材料送判(2409 量纲异常如实申报)→U 态收讫+三修逐行验证(dd5522d)→G 修复批(R54 已判)②LeRobot 质检线:pusht_qc_v0 首读数(freeze 15.8%×Calibra 76.7 交叉印证)/droid_100 链式/首案效度实验臂2 就绪函(#2430:22/206 剔除 REPAIR_MANIFEST 可审计,1h 可发车)③商业线:一页纸 v0.5 双栏终版(用户拍板 #2420:Nautilus 组织品牌+上海国曙签约)④组织件:**render_report 已接 g1_verdict.json 回填(8b5ee3e)=我方 verdict 被下游管道消费实证**;mailbox dup_replay 回执链处理至 2437(10:31)
+- **判读注意点入档**(臂2 就绪函):臂2 剔除 22 集后 pad 占比与臂1 ~40% 有分布偏移,未来 pusht A/B 送判时若 pad 占比差异落入判读须如实记录;噪声底(同种子双跑差分)按预注册口径兜底;"判读主权在 compass,材料就位即送"
+- 信箱 0 未读;2447 函 flywheel 未 mailbox 回函(其节奏=repo 批量轮,B 重跑诉求与其既定 v5 通道计划一致)
+- M1:+(跨框探查:flywheel 三线全速;协议接线实证+1;探针同型误报第二次→机制化)
+
 ### R54 · 2026-10-03 10:05-10:2x(判分轮·G1 G 臂修复批重判 PARTIAL+rsi-bench 回应处置)
 - **外部回应**:rsi-bench#1 sunghunkwag 新评论(00:06Z)——致谢样例包+通报 **PR #3 merged**(AGG false-success 修复:v2 要 benchmark-owned goal verifier 门整个 AGG 分,无 verifier/未验证完成=0);读 PR #3 正文核实后短回(评论 5964511670)——**四对抗种子首例变成协议门=协议输出第三例**
 - **G1 重判触发**:G 臂新材料 09:21 落盘(n=40,注记"对齐 #2407 三修+#2413 阈值参考")——探针自证伪一次(指令路径 summary.json 实为 infer_summary.json);拉材料本地**独立复算**(dir 34/40、band 37/40、degen 0、sha eab63d7fd833d7da,与脚本逐位一致)

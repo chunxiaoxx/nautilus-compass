@@ -42,12 +42,18 @@ def probe_github():
             out = subprocess.run(
                 ["gh", "issue", "view", str(num), "--repo", repo, "--json", "comments"],
                 capture_output=True, text=True, timeout=20)
-            n = len(json.loads(out.stdout).get("comments", [])) if out.returncode == 0 else -1
+            comments = json.loads(out.stdout).get("comments", []) if out.returncode == 0 else None
+            if comments is None:
+                continue
+            # 只数外部评论:自家出站件不计增量(R51/R55 两次自家回评误报同型);
+            # 基线直写不取 max(对方删评时 max 会冻结高位漏报,R40 有先例)
+            n = sum(1 for c in comments
+                    if (c.get("author") or {}).get("login") != "chunxiaoxx")
             k = f"{repo}#{num}"
             prev = base.get(k)
-            if n > 0 and prev is not None and n > prev:
-                EVENTS.append(f"GitHub {k} 新增 {n - prev} 条评论(总 {n})——外联回应!")
-            base[k] = max(n, prev or 0)
+            if prev is not None and n > prev:
+                EVENTS.append(f"GitHub {k} 新增 {n - prev} 条外部评论(外部总 {n})——外联回应!")
+            base[k] = n
         except Exception:
             pass
     base_f.write_text(json.dumps(base), encoding="utf-8")
