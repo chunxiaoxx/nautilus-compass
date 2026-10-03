@@ -48,6 +48,13 @@
 
 ## 轮次日志
 
+### R86 · 2026-10-03 22:2x(L4 主件+L7 paper2 织入轮)
+- **L4 判例集 v1 装订完成**:docs/cases/CASEBOOK_V1.md——8 案(G1 三锚定/假说对撞 2422/pusht 帧级/配对归因/rollout n20/n100 终判/判据演进 v1→v2-final/口径裁定三连裁 #2553·#2572·#2667)+判据零放宽 vs 演进张力段如实段+每案 sha 锚/复算命令/证据分层 claims+附录校验状态表;前置=三核心 verdict schema v2 全合规(R85);验收口径=外部读者按 sha 链独立复验
+- **L7 paper2 织入完成**:四件新素材进 §6 卫生协议——P6 判据演进程序化(amendment owner-ruled+T1 样本锁死+T2 两法裁决)/P7 证据三层 verdict(假说对撞实测裁决+自我证伪勘误例)/Checklist 表加两行/Discussion 新段 embodied verification gap(具身真空位,判分机构模式迁移+byte 级复算缺位如实标);pdflatex 两遍收敛 11 页 0 错 0 undefined;arXiv 包 docs/papers/arxiv_pkg/(tex+zip,提交动作=用户操作)
+- 外部状态:2667 裁决函已发待回;E1 材料未到(2661 已催,死线 10/5 13:16);GPU 余额 128.20(白天按需充)
+- 下轮第一件:等外部回函窗口;L3 E1 材料到即判(<1h SLA)/L5 冷外联引用判例集
+- M1:+0(判例集=装订线首物资产;paper2 未发布;首外单未动)
+
 ### R85 · 2026-10-03 22:1x(信箱裁决轮+L4 校验前置)
 - **信箱清零四件**:①2651 补 ack——nautilus-core `send_letter.py` 的 ack SQL 写死 `to_agent='platform'`,compass 信假失败,手工 SQL 补正(教训已入 memory:发函一律 scripts/platform_mail.py)②2660/2664 ack③**2660 三案裁决函 2667 发出**:errata 供给 A/B/C 全接;label_origin 分层映射(E3/E4 compass 复算=independent_recompute 入燃料/E1E2 v5 自勘=self_recompute 归对账件);机构判读行暂作装订素材不直接入 P3 燃料(反自指护栏,label_origin 扩展须走只许更严程序);首单不凑数,L6 时点后移等增量
 - **勘误落实**:18890 系 ASSAY 登记处端口号非 errata 行数(实况 1 条全文+判分相关 4-10 条),记忆档 judge-corpus-p2-baseline 已改
