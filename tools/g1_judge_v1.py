@@ -20,6 +20,7 @@ error 帧排除出分母单列(U 态不充任何方向)。幂等:同材料重跑
 """
 import hashlib
 import json
+import os
 import sys
 import time
 from pathlib import Path
@@ -28,6 +29,10 @@ BASE = Path("/root/vdd3/pipe_art")
 CKPTS = {"G": "/root/openpi/checkpoints/g1_probe_G/g1_G_run1/1999",
          "B": "/root/openpi/checkpoints/g1_probe_B/g1_B_run1/1999"}
 RATIO_LO, RATIO_HI = 0.3, 3.0
+# 材料目录可用环境变量覆盖(默认 g1_infer_G/g1_infer_B);
+# R59 起 B2 批(flywheel 材料链)与 B 批(v5 通道)并存,判谁锚谁须显式入 verdict
+ARM_DIRS = {"G": os.environ.get("G1_G_DIR", "g1_infer_G"),
+            "B": os.environ.get("G1_B_DIR", "g1_infer_B")}
 
 
 def sha16(p: Path) -> str:
@@ -35,7 +40,7 @@ def sha16(p: Path) -> str:
 
 
 def arm_stats(arm: str) -> dict:
-    f = BASE / f"g1_infer_{arm}" / "infer_compare.jsonl"  # 实际产物文件名
+    f = BASE / ARM_DIRS[arm] / "infer_compare.jsonl"  # 实际产物文件名
     rows = [json.loads(l) for l in f.read_text().splitlines() if l.strip()]
     ok = [r for r in rows if "error" not in r]
     n_err = len(rows) - len(ok)
@@ -70,14 +75,16 @@ def main() -> int:
     except Exception:
         pass
     missing = [a for a in "GB"
-               if not (BASE / f"g1_infer_{a}" / "infer_compare.jsonl").exists()]
+               if not (BASE / ARM_DIRS[a] / "infer_compare.jsonl").exists()]
     if missing:
-        print(f"[wait] 材料未齐:缺 {'/'.join(missing)} 臂 infer_compare.jsonl")
+        print(f"[wait] 材料未齐:缺 {'/'.join(missing)} 臂 infer_compare.jsonl"
+              f"(dirs: {ARM_DIRS})")
         return 1
     G, B = arm_stats("G"), arm_stats("B")
     v = {"ts": time.strftime("%Y-%m-%dT%H:%M:%S"), "judge": "compass g1_judge_v3",
          "evidence_policy": "JUDGING_EVIDENCE_TIERS_20261003",
          "protocol": "g1_protocol_v1.json criteria_J(flywheel 函 2389 帧级语境)",
+         "material_dirs": dict(ARM_DIRS),
          "criteria_note": "criteria_J 原文为 probe/full 语义;本判分按 2389 引用的帧级口径"
                           "(J1=方向一致率,J2=幅度比带宽),映射已披露非静默",
          "arms": {"G": {**G, "ckpt": CKPTS["G"]}, "B": {**B, "ckpt": CKPTS["B"]}},
