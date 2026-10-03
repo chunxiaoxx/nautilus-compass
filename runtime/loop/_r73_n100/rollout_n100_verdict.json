@@ -99,5 +99,37 @@
   },
   "note": "含 v1/v2 协议混杂,不作纯 run 底(flywheel 同判)"
  },
+ "findings": [
+  {
+   "finding": "冻结语义成功率四窗全 0/100,地板依旧判不动",
+   "evidence_tier": "measured",
+   "basis": "四窗 rollout summary 直读 n_success=0",
+   "upgrade_path": null
+  },
+  {
+   "finding": "coverage 连续主判(v2)显著:配对 Wilcoxon p=0.00181,meanΔ=+0.081(中位 0.0,正/负 40/24,36 局逐局全同);辅 MWU p=0.06579",
+   "evidence_tier": "measured",
+   "basis": "100 对逐 seed 配对直算(material_sha16 四窗锚定)",
+   "upgrade_path": null
+  },
+  {
+   "finding": "噪声底=A2F/A2N 逐局 100/100 全同(p=1.0),效应非 run 噪声",
+   "evidence_tier": "measured",
+   "basis": "同臂双跑逐对核验,n_nonzero=0",
+   "upgrade_path": null
+  },
+  {
+   "finding": "修复方向显著有效(帧级 p=0.0099+任务级 coverage p=0.0018 双级一致),但达标性未证实:FULL≥0.95 无一窗触及",
+   "evidence_tier": "measured",
+   "basis": "双级统计直读;达标判定按冻结语义成功率口径",
+   "upgrade_path": "成功率地板抬升后重判达标性(本轮止损线生效不再扩 n)"
+  },
+  {
+   "finding": "判据零放宽,seed 序列不换,不再扩 n(止损线生效)",
+   "evidence_tier": "measured",
+   "basis": "程序性裁定:判据与 n=20 案逐字段一致(仅 n 20→100,用户已批)",
+   "upgrade_path": null
+  }
+ ],
  "verdict": "终判(PARTIAL-U→v2 连续主判):①冻结语义成功率四窗全 0/100=地板依旧判不动,照实报;②coverage 连续主判(v2):配对 Wilcoxon p=0.00181(<0.05 显著),meanΔ=0.081(中位 0.0,正/负 40/24,逐局全同 36 局);辅 MWU p=0.06579;噪声底=A2F/A2N 逐局 100/100 全同(p=1.0)——效应为真;③臂1底敏感性 p=0.05063(含 v1/v2 混杂不作纯底);④首案效度判定:帧级(p=0.0099)与任务级 coverage(n=100 p=0.0018)双级显著一致支持修复,但'真达标'FULL≥0.95 无一窗触及(成功率 0),任务级有效性未达标——首案结论=修复方向显著有效(帧级+连续代理),达标性未证实(冻结语义);判据零放宽,seed 序列不换,不再扩 n(止损线生效)。"
 }
