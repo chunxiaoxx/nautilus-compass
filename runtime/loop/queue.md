@@ -55,6 +55,7 @@
 - **verdict=PARTIAL(schema v2.1 一次 compliant)**两件裁决:①J1 PARTIAL 成立零放宽+CI 保守计②J2 不升格(lock 无判定权不代赋权)——可作方向性发现入首报探索段(p=0.011+双 WARN 互证),结论宣称等扩样≥200 对;升格走判据演进程序
 - 回函 **2930**(re 2925,两裁决+材料缺口+产物落仓升级建议+**aloha_ins_qc_v0/xarm_qc_v0 送判与否问询**——用户拍主动问询项)
 - probe(14:49):GitHub bug(server) 通知=外部仓常规不处置;A100 真空闲
+- **push 已执行(#2921 动作项)**:main 13645285→**875af818**(R109-R114 七 commit 累积);三正本 sha16 回函 **2931**(memory_io d0cfc7b2/judge_model 7252c3ae/p3_pipeline 6bf3dcb6);raw 端点实测对表一致(d0cfc7b2 复现)——sinks 转 live 待 platform 复核
 - 下轮第一件:2921 sha 回执(转 live 确认)/2930 回执/letta-evals#340 盯守
 - M1:+0(组织内判读,EGR 第三发;QC 问询开具身采集线判读接口)
 
