@@ -1,0 +1,2994 @@
+{
+ "n": 498,
+ "fix_note": "task_zh_fixed=按task_en语义重配(旧blind_data.js的zh整体错位+含伪条目'整理散落文件'并缺'汤+芝士'翻译,en为唯一可靠源)",
+ "cards": [
+  {
+   "id": "K_t00_e00_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t00_e00_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t00_e01_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t00_e01_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t00_e03_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t00_e03_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t00_e05_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t00_e05_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t00_e07_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t00_e07_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t00_e09_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t00_e09_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t00_e12_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t00_e12_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t00_e14_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t00_e14_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t00_e15_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t00_e15_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t00_e17_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t00_e17_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t00_e18_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t00_e18_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t00_e21_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t00_e21_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t00_e22_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t00_e22_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t00_e24_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t00_e24_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t00_e26_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t00_e26_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t00_e29_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t00_e29_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t00_e31_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t00_e31_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t00_e34_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t00_e34_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t00_e36_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t00_e36_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t00_e38_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t00_e38_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t00_e41_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t00_e41_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t00_e43_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t00_e43_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t00_e46_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t00_e46_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t00_e49_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t00_e49_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t01_e04_p35",
+   "task_en": "put both the cream cheese box and the butter in the basket",
+   "task_zh_fixed": "把奶油芝士盒和黄油放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t01_e04_p80",
+   "task_en": "put both the cream cheese box and the butter in the basket",
+   "task_zh_fixed": "把奶油芝士盒和黄油放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t01_e06_p35",
+   "task_en": "put both the cream cheese box and the butter in the basket",
+   "task_zh_fixed": "把奶油芝士盒和黄油放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t01_e06_p80",
+   "task_en": "put both the cream cheese box and the butter in the basket",
+   "task_zh_fixed": "把奶油芝士盒和黄油放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t01_e16_p35",
+   "task_en": "put both the cream cheese box and the butter in the basket",
+   "task_zh_fixed": "把奶油芝士盒和黄油放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t01_e16_p80",
+   "task_en": "put both the cream cheese box and the butter in the basket",
+   "task_zh_fixed": "把奶油芝士盒和黄油放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t02_e07_p35",
+   "task_en": "turn on the stove and put the moka pot on it",
+   "task_zh_fixed": "打开炉灶并把摩卡壶放上去",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t02_e07_p80",
+   "task_en": "turn on the stove and put the moka pot on it",
+   "task_zh_fixed": "打开炉灶并把摩卡壶放上去",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t03_e06_p35",
+   "task_en": "put the black bowl in the bottom drawer of the cabinet and close it",
+   "task_zh_fixed": "把黑碗放进橱柜最下层抽屉并关上",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t03_e06_p80",
+   "task_en": "put the black bowl in the bottom drawer of the cabinet and close it",
+   "task_zh_fixed": "把黑碗放进橱柜最下层抽屉并关上",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t03_e19_p35",
+   "task_en": "put the black bowl in the bottom drawer of the cabinet and close it",
+   "task_zh_fixed": "把黑碗放进橱柜最下层抽屉并关上",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t03_e19_p80",
+   "task_en": "put the black bowl in the bottom drawer of the cabinet and close it",
+   "task_zh_fixed": "把黑碗放进橱柜最下层抽屉并关上",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t04_e02_p35",
+   "task_en": "put the white mug on the left plate and put the yellow and white mug on the right plate",
+   "task_zh_fixed": "白杯子放左盘,黄白杯子放右盘",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t04_e02_p80",
+   "task_en": "put the white mug on the left plate and put the yellow and white mug on the right plate",
+   "task_zh_fixed": "白杯子放左盘,黄白杯子放右盘",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t04_e15_p35",
+   "task_en": "put the white mug on the left plate and put the yellow and white mug on the right plate",
+   "task_zh_fixed": "白杯子放左盘,黄白杯子放右盘",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t04_e15_p80",
+   "task_en": "put the white mug on the left plate and put the yellow and white mug on the right plate",
+   "task_zh_fixed": "白杯子放左盘,黄白杯子放右盘",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t04_e23_p35",
+   "task_en": "put the white mug on the left plate and put the yellow and white mug on the right plate",
+   "task_zh_fixed": "白杯子放左盘,黄白杯子放右盘",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t04_e23_p80",
+   "task_en": "put the white mug on the left plate and put the yellow and white mug on the right plate",
+   "task_zh_fixed": "白杯子放左盘,黄白杯子放右盘",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t04_e27_p35",
+   "task_en": "put the white mug on the left plate and put the yellow and white mug on the right plate",
+   "task_zh_fixed": "白杯子放左盘,黄白杯子放右盘",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t04_e27_p80",
+   "task_en": "put the white mug on the left plate and put the yellow and white mug on the right plate",
+   "task_zh_fixed": "白杯子放左盘,黄白杯子放右盘",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t05_e10_p35",
+   "task_en": "pick up the book and place it in the back compartment of the caddy",
+   "task_zh_fixed": "把书放进球车后隔层",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t05_e10_p80",
+   "task_en": "pick up the book and place it in the back compartment of the caddy",
+   "task_zh_fixed": "把书放进球车后隔层",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t06_e04_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t06_e04_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t06_e08_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t06_e08_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t06_e11_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t06_e11_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t06_e13_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t06_e13_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t06_e16_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t06_e16_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t06_e20_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t06_e20_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t06_e22_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t06_e22_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t06_e28_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t06_e28_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t06_e30_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t06_e30_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t06_e32_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t06_e32_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t06_e35_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t06_e35_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t06_e39_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t06_e39_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t06_e42_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t06_e42_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t06_e44_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t06_e44_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t06_e47_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t06_e47_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t08_e02_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t08_e02_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t08_e08_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t08_e08_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t08_e12_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t08_e12_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t08_e21_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t08_e21_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t08_e23_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t08_e23_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t08_e25_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t08_e25_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t08_e37_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t08_e37_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t08_e40_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t08_e40_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t08_e48_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t08_e48_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t09_e00_p35",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t09_e00_p80",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t09_e11_p35",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t09_e11_p80",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t09_e13_p35",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t09_e13_p80",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t09_e33_p35",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t09_e33_p80",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 80
+  },
+  {
+   "id": "K_t09_e45_p35",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 35
+  },
+  {
+   "id": "K_t09_e45_p80",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t00_e14_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t00_e14_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t00_e41_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t00_e41_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t00_e49_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t00_e49_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t02_e06_p35",
+   "task_en": "turn on the stove and put the moka pot on it",
+   "task_zh_fixed": "打开炉灶并把摩卡壶放上去",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t02_e06_p80",
+   "task_en": "turn on the stove and put the moka pot on it",
+   "task_zh_fixed": "打开炉灶并把摩卡壶放上去",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t02_e33_p35",
+   "task_en": "turn on the stove and put the moka pot on it",
+   "task_zh_fixed": "打开炉灶并把摩卡壶放上去",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t02_e33_p80",
+   "task_en": "turn on the stove and put the moka pot on it",
+   "task_zh_fixed": "打开炉灶并把摩卡壶放上去",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t03_e17_p35",
+   "task_en": "put the black bowl in the bottom drawer of the cabinet and close it",
+   "task_zh_fixed": "把黑碗放进橱柜最下层抽屉并关上",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t03_e17_p80",
+   "task_en": "put the black bowl in the bottom drawer of the cabinet and close it",
+   "task_zh_fixed": "把黑碗放进橱柜最下层抽屉并关上",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t04_e15_p35",
+   "task_en": "put the white mug on the left plate and put the yellow and white mug on the right plate",
+   "task_zh_fixed": "白杯子放左盘,黄白杯子放右盘",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t04_e15_p80",
+   "task_en": "put the white mug on the left plate and put the yellow and white mug on the right plate",
+   "task_zh_fixed": "白杯子放左盘,黄白杯子放右盘",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t04_e31_p35",
+   "task_en": "put the white mug on the left plate and put the yellow and white mug on the right plate",
+   "task_zh_fixed": "白杯子放左盘,黄白杯子放右盘",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t04_e31_p80",
+   "task_en": "put the white mug on the left plate and put the yellow and white mug on the right plate",
+   "task_zh_fixed": "白杯子放左盘,黄白杯子放右盘",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t04_e34_p35",
+   "task_en": "put the white mug on the left plate and put the yellow and white mug on the right plate",
+   "task_zh_fixed": "白杯子放左盘,黄白杯子放右盘",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t04_e34_p80",
+   "task_en": "put the white mug on the left plate and put the yellow and white mug on the right plate",
+   "task_zh_fixed": "白杯子放左盘,黄白杯子放右盘",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t04_e38_p35",
+   "task_en": "put the white mug on the left plate and put the yellow and white mug on the right plate",
+   "task_zh_fixed": "白杯子放左盘,黄白杯子放右盘",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t04_e38_p80",
+   "task_en": "put the white mug on the left plate and put the yellow and white mug on the right plate",
+   "task_zh_fixed": "白杯子放左盘,黄白杯子放右盘",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t04_e45_p35",
+   "task_en": "put the white mug on the left plate and put the yellow and white mug on the right plate",
+   "task_zh_fixed": "白杯子放左盘,黄白杯子放右盘",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t04_e45_p80",
+   "task_en": "put the white mug on the left plate and put the yellow and white mug on the right plate",
+   "task_zh_fixed": "白杯子放左盘,黄白杯子放右盘",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t05_e03_p35",
+   "task_en": "pick up the book and place it in the back compartment of the caddy",
+   "task_zh_fixed": "把书放进球车后隔层",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t05_e03_p80",
+   "task_en": "pick up the book and place it in the back compartment of the caddy",
+   "task_zh_fixed": "把书放进球车后隔层",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t05_e20_p35",
+   "task_en": "pick up the book and place it in the back compartment of the caddy",
+   "task_zh_fixed": "把书放进球车后隔层",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t05_e20_p80",
+   "task_en": "pick up the book and place it in the back compartment of the caddy",
+   "task_zh_fixed": "把书放进球车后隔层",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t05_e46_p35",
+   "task_en": "pick up the book and place it in the back compartment of the caddy",
+   "task_zh_fixed": "把书放进球车后隔层",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t05_e46_p80",
+   "task_en": "pick up the book and place it in the back compartment of the caddy",
+   "task_zh_fixed": "把书放进球车后隔层",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t06_e01_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t06_e01_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t06_e09_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t06_e09_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t06_e23_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t06_e23_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t06_e27_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t06_e27_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t06_e36_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t06_e36_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t06_e43_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t06_e43_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t07_e24_p35",
+   "task_en": "put both the alphabet soup and the cream cheese box in the basket",
+   "task_zh_fixed": "把字母汤罐和奶油芝士盒放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t07_e24_p80",
+   "task_en": "put both the alphabet soup and the cream cheese box in the basket",
+   "task_zh_fixed": "把字母汤罐和奶油芝士盒放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t08_e00_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t08_e00_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t08_e01_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t08_e01_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t08_e02_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t08_e02_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t08_e03_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t08_e03_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t08_e04_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t08_e04_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t08_e05_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t08_e05_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t08_e06_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t08_e06_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t08_e07_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t08_e07_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t08_e08_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t08_e08_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t08_e10_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t08_e10_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t08_e11_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t08_e11_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t08_e12_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t08_e12_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t08_e13_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t08_e13_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t08_e14_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t08_e14_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t08_e15_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t08_e15_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t08_e16_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t08_e16_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t08_e17_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t08_e17_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t08_e18_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t08_e18_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t08_e19_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t08_e19_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t08_e20_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t08_e20_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t08_e21_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t08_e21_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t08_e22_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t08_e22_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t08_e23_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t08_e23_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t08_e24_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t08_e24_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t08_e26_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t08_e26_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t08_e28_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t08_e28_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t08_e29_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t08_e29_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t08_e32_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t08_e32_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t08_e35_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t08_e35_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t08_e37_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t08_e37_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t08_e39_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t08_e39_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t08_e40_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t08_e40_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t08_e42_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t08_e42_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t08_e47_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t08_e47_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t09_e04_p35",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t09_e04_p80",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t09_e18_p35",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t09_e18_p80",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t09_e25_p35",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t09_e25_p80",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t09_e30_p35",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t09_e30_p80",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t09_e44_p35",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t09_e44_p80",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 80
+  },
+  {
+   "id": "M_t09_e48_p35",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 35
+  },
+  {
+   "id": "M_t09_e48_p80",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t00_e00_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t00_e00_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t00_e01_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t00_e01_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t00_e03_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t00_e03_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t00_e05_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t00_e05_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t00_e07_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t00_e07_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t00_e10_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t00_e10_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t00_e12_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t00_e12_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t00_e14_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t00_e14_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t00_e15_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t00_e15_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t00_e19_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t00_e19_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t00_e22_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t00_e22_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t00_e24_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t00_e24_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t00_e26_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t00_e26_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t00_e28_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t00_e28_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t00_e31_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t00_e31_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t00_e33_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t00_e33_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t00_e36_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t00_e36_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t00_e39_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t00_e39_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t00_e41_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t00_e41_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t00_e42_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t00_e42_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t00_e43_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t00_e43_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t00_e46_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t00_e46_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t00_e48_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t00_e48_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t01_e04_p35",
+   "task_en": "put both the cream cheese box and the butter in the basket",
+   "task_zh_fixed": "把奶油芝士盒和黄油放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t01_e04_p80",
+   "task_en": "put both the cream cheese box and the butter in the basket",
+   "task_zh_fixed": "把奶油芝士盒和黄油放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t01_e34_p35",
+   "task_en": "put both the cream cheese box and the butter in the basket",
+   "task_zh_fixed": "把奶油芝士盒和黄油放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t01_e34_p80",
+   "task_en": "put both the cream cheese box and the butter in the basket",
+   "task_zh_fixed": "把奶油芝士盒和黄油放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t02_e02_p35",
+   "task_en": "turn on the stove and put the moka pot on it",
+   "task_zh_fixed": "打开炉灶并把摩卡壶放上去",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t02_e02_p80",
+   "task_en": "turn on the stove and put the moka pot on it",
+   "task_zh_fixed": "打开炉灶并把摩卡壶放上去",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t02_e05_p35",
+   "task_en": "turn on the stove and put the moka pot on it",
+   "task_zh_fixed": "打开炉灶并把摩卡壶放上去",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t02_e05_p80",
+   "task_en": "turn on the stove and put the moka pot on it",
+   "task_zh_fixed": "打开炉灶并把摩卡壶放上去",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t03_e16_p35",
+   "task_en": "put the black bowl in the bottom drawer of the cabinet and close it",
+   "task_zh_fixed": "把黑碗放进橱柜最下层抽屉并关上",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t03_e16_p80",
+   "task_en": "put the black bowl in the bottom drawer of the cabinet and close it",
+   "task_zh_fixed": "把黑碗放进橱柜最下层抽屉并关上",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t03_e20_p35",
+   "task_en": "put the black bowl in the bottom drawer of the cabinet and close it",
+   "task_zh_fixed": "把黑碗放进橱柜最下层抽屉并关上",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t03_e20_p80",
+   "task_en": "put the black bowl in the bottom drawer of the cabinet and close it",
+   "task_zh_fixed": "把黑碗放进橱柜最下层抽屉并关上",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t04_e03_p35",
+   "task_en": "put the white mug on the left plate and put the yellow and white mug on the right plate",
+   "task_zh_fixed": "白杯子放左盘,黄白杯子放右盘",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t04_e03_p80",
+   "task_en": "put the white mug on the left plate and put the yellow and white mug on the right plate",
+   "task_zh_fixed": "白杯子放左盘,黄白杯子放右盘",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t04_e37_p35",
+   "task_en": "put the white mug on the left plate and put the yellow and white mug on the right plate",
+   "task_zh_fixed": "白杯子放左盘,黄白杯子放右盘",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t04_e37_p80",
+   "task_en": "put the white mug on the left plate and put the yellow and white mug on the right plate",
+   "task_zh_fixed": "白杯子放左盘,黄白杯子放右盘",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t05_e13_p35",
+   "task_en": "pick up the book and place it in the back compartment of the caddy",
+   "task_zh_fixed": "把书放进球车后隔层",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t05_e13_p80",
+   "task_en": "pick up the book and place it in the back compartment of the caddy",
+   "task_zh_fixed": "把书放进球车后隔层",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t06_e08_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t06_e08_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t06_e14_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t06_e14_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t06_e16_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t06_e16_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t06_e20_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t06_e20_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t06_e21_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t06_e21_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t06_e23_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t06_e23_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t06_e29_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t06_e29_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t06_e32_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t06_e32_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t06_e35_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t06_e35_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t06_e40_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t06_e40_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t06_e44_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t06_e44_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t06_e49_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t06_e49_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t08_e01_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t08_e01_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t08_e06_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t08_e06_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t08_e08_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t08_e08_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t08_e13_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t08_e13_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t08_e17_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t08_e17_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t08_e21_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t08_e21_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t08_e22_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t08_e22_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t08_e27_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t08_e27_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t08_e38_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t08_e38_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t08_e47_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t08_e47_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t09_e02_p35",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t09_e02_p80",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t09_e04_p35",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t09_e04_p80",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t09_e06_p35",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t09_e06_p80",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t09_e09_p35",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t09_e09_p80",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t09_e11_p35",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t09_e11_p80",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t09_e18_p35",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t09_e18_p80",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t09_e23_p35",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t09_e23_p80",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t09_e25_p35",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t09_e25_p80",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t09_e30_p35",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t09_e30_p80",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 80
+  },
+  {
+   "id": "X_t09_e45_p35",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 35
+  },
+  {
+   "id": "X_t09_e45_p80",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t00_e00_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t00_e00_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t00_e01_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t00_e01_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t00_e02_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t00_e02_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t00_e05_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t00_e05_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t00_e08_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t00_e08_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t00_e12_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t00_e12_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t00_e15_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t00_e15_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t00_e17_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t00_e17_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t00_e20_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t00_e20_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t00_e22_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t00_e22_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t00_e24_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t00_e24_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t00_e26_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t00_e26_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t00_e29_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t00_e29_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t00_e31_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t00_e31_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t00_e34_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t00_e34_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t00_e38_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t00_e38_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t00_e40_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t00_e40_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t00_e43_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t00_e43_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t00_e46_p35",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t00_e46_p80",
+   "task_en": "put both the alphabet soup and the tomato sauce in the basket",
+   "task_zh_fixed": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t01_e06_p35",
+   "task_en": "put both the cream cheese box and the butter in the basket",
+   "task_zh_fixed": "把奶油芝士盒和黄油放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t01_e06_p80",
+   "task_en": "put both the cream cheese box and the butter in the basket",
+   "task_zh_fixed": "把奶油芝士盒和黄油放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t01_e25_p35",
+   "task_en": "put both the cream cheese box and the butter in the basket",
+   "task_zh_fixed": "把奶油芝士盒和黄油放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t01_e25_p80",
+   "task_en": "put both the cream cheese box and the butter in the basket",
+   "task_zh_fixed": "把奶油芝士盒和黄油放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t01_e27_p35",
+   "task_en": "put both the cream cheese box and the butter in the basket",
+   "task_zh_fixed": "把奶油芝士盒和黄油放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t01_e27_p80",
+   "task_en": "put both the cream cheese box and the butter in the basket",
+   "task_zh_fixed": "把奶油芝士盒和黄油放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t01_e44_p35",
+   "task_en": "put both the cream cheese box and the butter in the basket",
+   "task_zh_fixed": "把奶油芝士盒和黄油放进篮子",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t01_e44_p80",
+   "task_en": "put both the cream cheese box and the butter in the basket",
+   "task_zh_fixed": "把奶油芝士盒和黄油放进篮子",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t02_e02_p35",
+   "task_en": "turn on the stove and put the moka pot on it",
+   "task_zh_fixed": "打开炉灶并把摩卡壶放上去",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t02_e02_p80",
+   "task_en": "turn on the stove and put the moka pot on it",
+   "task_zh_fixed": "打开炉灶并把摩卡壶放上去",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t02_e41_p35",
+   "task_en": "turn on the stove and put the moka pot on it",
+   "task_zh_fixed": "打开炉灶并把摩卡壶放上去",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t02_e41_p80",
+   "task_en": "turn on the stove and put the moka pot on it",
+   "task_zh_fixed": "打开炉灶并把摩卡壶放上去",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t02_e45_p35",
+   "task_en": "turn on the stove and put the moka pot on it",
+   "task_zh_fixed": "打开炉灶并把摩卡壶放上去",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t02_e45_p80",
+   "task_en": "turn on the stove and put the moka pot on it",
+   "task_zh_fixed": "打开炉灶并把摩卡壶放上去",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t03_e06_p35",
+   "task_en": "put the black bowl in the bottom drawer of the cabinet and close it",
+   "task_zh_fixed": "把黑碗放进橱柜最下层抽屉并关上",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t03_e06_p80",
+   "task_en": "put the black bowl in the bottom drawer of the cabinet and close it",
+   "task_zh_fixed": "把黑碗放进橱柜最下层抽屉并关上",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t03_e13_p35",
+   "task_en": "put the black bowl in the bottom drawer of the cabinet and close it",
+   "task_zh_fixed": "把黑碗放进橱柜最下层抽屉并关上",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t03_e13_p80",
+   "task_en": "put the black bowl in the bottom drawer of the cabinet and close it",
+   "task_zh_fixed": "把黑碗放进橱柜最下层抽屉并关上",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t03_e42_p35",
+   "task_en": "put the black bowl in the bottom drawer of the cabinet and close it",
+   "task_zh_fixed": "把黑碗放进橱柜最下层抽屉并关上",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t03_e42_p80",
+   "task_en": "put the black bowl in the bottom drawer of the cabinet and close it",
+   "task_zh_fixed": "把黑碗放进橱柜最下层抽屉并关上",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t03_e47_p35",
+   "task_en": "put the black bowl in the bottom drawer of the cabinet and close it",
+   "task_zh_fixed": "把黑碗放进橱柜最下层抽屉并关上",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t03_e47_p80",
+   "task_en": "put the black bowl in the bottom drawer of the cabinet and close it",
+   "task_zh_fixed": "把黑碗放进橱柜最下层抽屉并关上",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t05_e48_p35",
+   "task_en": "pick up the book and place it in the back compartment of the caddy",
+   "task_zh_fixed": "把书放进球车后隔层",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t05_e48_p80",
+   "task_en": "pick up the book and place it in the back compartment of the caddy",
+   "task_zh_fixed": "把书放进球车后隔层",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t06_e03_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t06_e03_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t06_e07_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t06_e07_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t06_e09_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t06_e09_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t06_e13_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t06_e13_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t06_e14_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t06_e14_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t06_e16_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t06_e16_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t06_e18_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t06_e18_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t06_e21_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t06_e21_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t06_e23_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t06_e23_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t06_e28_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t06_e28_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t06_e30_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t06_e30_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t06_e32_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t06_e32_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t06_e35_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t06_e35_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t06_e49_p35",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t06_e49_p80",
+   "task_en": "put the white mug on the plate and put the chocolate pudding to the right of the plate",
+   "task_zh_fixed": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t08_e01_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t08_e01_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t08_e04_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t08_e04_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t08_e07_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t08_e07_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t08_e10_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t08_e10_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t08_e14_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t08_e14_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t08_e18_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t08_e18_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t08_e21_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t08_e21_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t08_e36_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t08_e36_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t08_e39_p35",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t08_e39_p80",
+   "task_en": "put both moka pots on the stove",
+   "task_zh_fixed": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t09_e00_p35",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t09_e00_p80",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t09_e04_p35",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t09_e04_p80",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t09_e11_p35",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t09_e11_p80",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t09_e19_p35",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t09_e19_p80",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t09_e33_p35",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t09_e33_p80",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 80
+  },
+  {
+   "id": "Y_t09_e37_p35",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 35
+  },
+  {
+   "id": "Y_t09_e37_p80",
+   "task_en": "put the yellow and white mug in the microwave and close it",
+   "task_zh_fixed": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 80
+  }
+ ]
+}
