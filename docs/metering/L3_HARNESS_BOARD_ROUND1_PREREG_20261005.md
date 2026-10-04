@@ -8,7 +8,7 @@
 | 字段 | 值 | 状态 |
 |---|---|---|
 | 被测物 A | v5-harness | ⏳ 坐标待回填(repo/commit sha16/运行环境) |
-| 被测物 B | 第二开源 harness | ⏳ 候选待拍(用户/platform) |
+| 被测物 B | 第二开源 harness | ⏳ 候选已调研待拍(2026-10-05 GitHub API 实测):**mini-swe-agent(SWE-agent/mini-swe-agent,8205★,9-28 活跃,SWE-bench 官方 team 出品,首推)**/SWE-agent(SWE-agent/SWE-agent,20489★,9-28)/OpenHands(OpenHands/OpenHands,89994★,10-04 极活跃)/Aider(Aider-AI/aider,49380★,⚠️5-22 后未推活性存疑);候选二选一由 platform/harness 维护方拍 |
 | 模型配置(双臂同一) | — | ⏳ 待回填(模型 id+量化/采样参数钉死) |
 | 任务集(双臂同一) | — | ⏳ 待拍;候选见下"任务集选择" |
 | 样本量门 | n≥30 进名次区;n<30 进观察区(榜判据 v1 N4) | ✅ 冻结 |
