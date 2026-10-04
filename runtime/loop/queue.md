@@ -48,6 +48,12 @@
 
 ## 轮次日志
 
+### R134 · 2026-10-04 21:0x-21:3x(夜间 LOOP·quiet 轮+G1 路径勘误)
+- probe [ts 10-04 21:01]:信箱空(3053/3054/3037/3023 无回执);GitHub 常规红折叠;A100 banner 限流(10054,六连二成功)
+- G1 检查 [实测]:指令所写 g1_infer_G/summary.json 与 g1_infer_B/summary.json 在 A100 均不存在(No such file)——夜间指令路径笔误(实文件 infer_summary.json,probe.py 无此段无病不改);[推断] 无新批材料(前四轮 mtime 10/3 未变+G1 判分弧 10/3 案 6 终判收官),不判卷不回传;upgrade_path=SSH 窗口恢复后 stat infer_summary.json 复核
+- turbo 不触发(已提取);队列无活件,quiet
+- 下轮第一件:3053/3054 回执;r80 批送达按判据 v1 受理;calib60 标定待用户交回
+
 ### R133 · 2026-10-04 20:4x-21:0x(主线推进轮·P3 delta 导出+判例集装订 v1.1)
 - probe [ts 10-04 20:31]:信箱空;无外部事件
 - P3 S1 cycle 3 = **SKIP**(new=0/rejected=0)——R125/R131 的 verdict 均为裁定档 md 非 jsonl 判读件,不入白名单燃料;具身判读无新增属实,SKIP=管道正常记账,如实录
