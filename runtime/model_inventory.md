@@ -7,7 +7,7 @@
 | 模型 | 大小 | 用途 | 状态 | 来源(留档) |
 |---|---|---|---|---|
 | **Qwen3-14B** | 28G | p0_full 因果提取主线(**胜出**:hit@5 0.6774,双 F2_pass);14B 级训练基座候选 | 在库 | ModelScope(见 dl_qwen14b.log) |
-| **Qwen3.8-14B-Turbo** | 29G | p0_full 对照(落选 hit@5 0.6094);**14B 级基座库存**(用户 10/4 拍保留) | ✅ **重下完成**(2026-10-05 01:0x 实测 du=29G,incomplete=0;index.json 复核留下轮) | ⚠️ 官方 Qwen 组织无此 id;源=ModelScope `ewinregirgojr/Qwen3.8-14B-Instruct-Turbo`(第三方转载,25 文件);qwen3_5 新架构,加载需 venv 特批(transformers 支持待验) |
+| **Qwen3.8-14B-Turbo** | 29G | p0_full 对照(落选 hit@5 0.6094);**14B 级基座库存**(用户 10/4 拍保留) | ✅ **重下完成+index.json 复核通过**(2026-10-05 02:3x 实测:weight_map 760 entries→10 shards,missing=0/zero_size=0,shard 合计 28.28G 对上;arch=Qwen3_5ForCausalLM) | ⚠️ 官方 Qwen 组织无此 id;源=ModelScope `ewinregirgojr/Qwen3.8-14B-Instruct-Turbo`(第三方转载,25 文件);qwen3_5 新架构,加载需 venv 特批(transformers 支持待验) |
 
 ## 其他基座(坐标标注不全,后续巡检补)
 
