@@ -118,6 +118,24 @@
 - **边界**：裁定不因供给可得性放宽（v5 自身初判与我方同结论，双向不为凑数开口子）；资本侧（对方如实报量级不凑数）判读方明示肯定入档。
 - **复算**：函 2537/2553/2572/2660/2667 正文（DB org_mailbox）+`tools/p3_delta.py` 白名单门源码。
 
+## 案 9 · gen4 全卷判读案(判官双向接口首演+EGR 缺口回流首用)
+
+- **背景**:flywheel auto_judge_dispatch 首派(gen4 全卷,sha16 幂等)——判官"材料派发进/缺口报告出"双向接口的第一次完整走环。spec 两闸首例(判据 lock v1,freeze_chain sha 9b565f1c/990f3dbc,2026-10-04 02:40 用户拍板冻结)。
+- **判据**:gen4_v1_criteria.lock.json v1——J1 金标贴合率(手部骨架 PCK)≥0.367 / J2 教师一致率≥0.85(止损线 70%)/ J3 单帧延迟<1s;止损=J1 与 MediaPipe 打平且 J2<70% 即停。
+- **材料锚**:gen4_judge_materials_v1.tgz sha16=`bcf6754d15d3c0b8`(两版 eval 报告+log+train log+dataset 199 行)。
+- **判读**(verdict=PARTIAL):
+  1. [实测] J2a 教师一致率 0.04(2/50),objects Jaccard 中位 0.00,scene 词重叠中位 0.00——零一致;eval.log 逐条计数独立复算与材料自报**三读数零偏差**。
+  2. [实测] J2b 弱任务口径 0.0333(2/60,文本粗判弱信号 caveat 如实并陈)与 J2a 同向。
+  3. [实测] **J1 判不动照报**:模型无关键点输出头(训练目标=四维语义 JSON),预注册 J1(骨架 PCK)与数据格式不匹配——口径错位自方案 v0 即存在,非执行漂移。upgrade_path=模型侧补关键点头或新案注册语义判据。
+  4. [实测] 止损条款实质触发(J2=0.04 远低于 70%)——执行侧停手回炉**正确**,止损确认。
+  5. [推断] J3 21.9s/帧=裸 generate 无 vLLM 部署口径,是工程优化问题非模型能力否证;不改变止损判定(止损条款不含 J3)。
+  6. [实测] 200 对教师数据不足以教会 7B 该语义生成任务(退化解实证)=**数据量下限锚点**。
+- **EGR 首用**:gap_report{gap_layer=data, suggested_fuel=教师池扩 540+ 全量重训(新案)/任务降级二分类先行(新案)/判据侧预注册语义版 J1}——缺口回流 flywheel,回流消费回执待对方(2804 承诺)。
+- **三件裁决**(函 2788):J1 口径错位=上游设计缺陷 U 态处置/止损确认停手正确/首选归档=200 对教师池下限锚点(不直接入 P3 燃料——白名单门判据不因可得性放宽,承案 8)。
+- **边界**:判读方不出"该不该继续 gen4"的组织决策,只出读数+缺口回流;教师池数据本身不因判读被否定(判据对材料,不对人)。
+- **verdict 正本**:`runtime/gen4_judge/gen4_v1_verdict_v2.json`(schema v2.1 compliant,gap_report 首个实弹)
+- **复算**:`python tools/verdict_schema_v2.py validate runtime/gen4_judge/gen4_v1_verdict_v2.json`;eval.log 逐条计数脚本与底稿在 runtime/gen4_judge/(闭环函 2791)。
+
 ---
 
 ## 附录 A · verdict 正本与校验状态
@@ -132,6 +150,7 @@
 | 6 | `runtime/loop/_r73_n100/rollout_n100_verdict_v2.json` | compliant |
 | 7 | 函 2551/2568/2574（DB） | （程序档） |
 | 8 | 函 2553/2572/2660/2667（DB） | （裁定档） |
+| 9 | `runtime/gen4_judge/gen4_v1_verdict_v2.json` | compliant（v2.1，gap_report 首用） |
 
 ## 附录 B · 判读 SLA 与机构口径
 
