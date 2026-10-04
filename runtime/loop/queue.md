@@ -48,6 +48,13 @@
 
 ## 轮次日志
 
+### R110 · 2026-10-04 13:53-14:1x(三外联盯守轮·案 9 装订)
+- **外联盯守全读数**:letta-evals#340 open 静默(1h 正常);rsi-bench 线=PR#2 replay 认证已合并(对方 10/2 实装,等 next ticket 触发认证);Graphiti #1950 open 静默;Letta #3450/mem0 维持已知状态;信箱 0 未读;probe(13:53)无新事件——**外部回应面全静默,零新动作**
+- **CASEBOOK 案 9 装订**(gen4 全卷判读,候补转正):判官双向接口首演+spec 两闸首例;六 findings 全证据分层(J1 口径错位判不动照报/三读数零偏差/200 对=数据量下限锚点)+EGR gap_report 首用+三件裁决(2788);附录 A 增行(v2.1 compliant);schema validate 复验 compliant
+- **memory 两条提炼**:letta 发错仓考古教训(外联前三查)+E1 收官与两条闭环同瓶颈结构认知
+- 下轮第一件:外部回应面继续盯守(#340/rsi-bench next ticket/Graphiti);端点上线回函后补关联段端点行
+- M1:+0(盯守轮)
+
 ### R109 · 2026-10-04 13:31-13:5x(夜间轮·E1 残余归档)
 - probe(13:31):信箱 0 未读;GitHub 三通知已分类无新回应;#340 发后 40min 无评论无 reaction(正常);rsi-bench 最后评论仍=我方 10/3;③④不触发(G1 收官/turbo 已提取,A100 无新事件不重跑)
 - **E1 实验残余处置**(工作区两文件定谳):①e1_j2_batch_judge_3b.py diff=v4 定版配置未入仓(仓内残留旧 4bit 版)→已 commit 归档;②goldpack_J2.csv 工作区版 dim2 全'无法判断'=v6 en 对照坍缩产物(v6 负结果原始数据)→另存 goldpack_J2_v6_en_trial.csv 归档,**git checkout 还原交卷正本**(HEAD=0012f39f,2842 收讫版)——险情排除:交卷正本从未被覆盖(raw 与 HEAD 一致);诊断件 _diag 一并留档
