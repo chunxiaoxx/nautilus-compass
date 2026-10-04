@@ -48,6 +48,13 @@
 
 ## 轮次日志
 
+### R115 · 2026-10-04 15:04-15:2x(夜间 quiet 轮·案 11 装订)
+- probe(15:04):信箱无未读;GitHub 三外联静默(letta-evals#340/2930/2931/2921 均待回,被动守);A100 段 probe SSHException(限流)→退避 125s paramiko 重试成功
+- G1 触发检查:g1_infer_G/B summary.json 确认已清,无新 G1 材料;pipe_art 无新工件(aloha/xarm 问询函 2930 待回);A100 真空闲 0%/14MiB
+- ④turbo 不触发(R54 已核);⑤取清单件:**案 11 装订**(CASEBOOK——V4 效用探针判读:分辨率单变量隔离+J2 判定权边界+McNemar 保守并陈+连续两案产物落仓缺口);附录 A 增行
+- 下轮第一件:外部回应面盯守(sinks 转 live 回执/2930 回执/#340)
+- M1:+0(装订件,判例资产)
+
 ### R114 · 2026-10-04 14:49-15:2x(V4 效用探针判读轮·双函处置+QC 问询)
 - **#2921 platform 复核回执**:三正本质量合格收讫但 3b7ddb5d 未 push(main HEAD=R108)→sinks 维持 planned,**push 后回函带 sha16 即转 live**;两台账已代合并上线(judging-pipelines 3 条+memory-io 1 条,GET 200 实测)——本窗口执行 push+回 sha
 - **#2925 V4 效用闭环探针送判→判读交卷**(判官<1h 惯例;V4=res_check/franka_diving 即 R113 所见 pipe_art 工件的实验链,已随函送判非无主件):材料验签——判据 lock+脚本 GitHub 2e0af3e 直取,report/detail/log/.v4_done **函报仓路径树内 404→实例侧取证**(52f9e72c/f5efce52/2d4b1af4/e1464b77);逐行复算零偏差(52/47/37 每 60);盲探 3/3 log 实读;replay delta=0.0 过门

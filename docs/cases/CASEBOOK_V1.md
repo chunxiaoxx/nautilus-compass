@@ -152,6 +152,21 @@
 - **verdict 正本**:`runtime/gen4v2_btrack/gen4v2_btrack_verdict_v2.json`(schema v2.1 compliant;含 statistics 段——verdict.text 提及显著性数字即触发 L4 检查的机构自律样本)
 - **复算**:`python tools/verdict_schema_v2.py validate runtime/gen4v2_btrack/gen4v2_btrack_verdict_v2.json`;log 逐条计数脚本随 runtime/gen4v2_btrack/(log 本体实例侧锚 sha16)。
 
+## 案 11 · V4 效用闭环探针判读案(分辨率单变量隔离+J2 判定权边界)
+
+- **背景**:flywheel V4 探针送判(#2925)——gen4_v2 B 轨 ckpt(step2000)在输入分辨率三档(native/d128/d96,LANCZOS 短边)下的效用对照,GT 不变,60 对 held-out 池与 J1b 同池。效用闭环首件,用户 10/4 拍板立项当日出数。
+- **判据**:v4_probe_criteria.lock.json(2026-10-04 冻结,预注册先于出数)——V4_J1=drop128≥0.15 成立/<0.05 未证实/其间 partial;V4_J2=drop96 **lock 明文 gradient evidence only 无判定权**;自检门 native replay 0.8667±0.03+盲探 3/3。
+- **材料锚**:v4_report.json `52f9e72c9001f077` / v4_detail.jsonl `f5efce52d8e7c8d3` / v4_probe.log `2d4b1af40b5c518f` / .v4_done `e1464b772bbbc048`(**函报仓路径在 2e0af3e 树内 404,实例侧取证**——连续两案同缺口,产物落仓入升级惯例);判据 lock+探针脚本 GitHub 2e0af3e 直取。
+- **判读**(verdict=PARTIAL):
+  1. [实测] 三档读数逐行复算零偏差(52/47/37 每 60),drop128=0.0833、drop96=0.25;探针自检三重过(盲探 log 实读 3/3、replay delta=0.0、金标分布同池一致)。
+  2. [实测] V4-J1 PARTIAL 按零放宽成立——但判官补测**同帧配对 McNemar p=0.267 不显著**(对错 9/错对 4),较函申报 CI±9pp 口径更保守:"128px 实质损害"不足以单独宣称。补测检验法未预注册,只作 caveat 权重证据不进判定。
+  3. [实测] 损害形态=判别力渐失非多数类塌缩:d128 预测 True 42/60、d96 24/60 单调渐降——与案 10 J1b caveat"偏向多数类"担忧可区分。
+  4. [实测] J2 梯度坐实(配对 p=0.011+单调+resolution 检 franka 128/pusht 96 双 WARN 互证)但**不升格**:lock 未赋判定权,预注册纪律=判官不代赋权;明示口径=可入首报"方向性发现"探索段(标注 PARTIAL/扩样中),结论宣称等扩样≥200 对;升格走判据演进程序(承案 7 三要件)。
+- **EGR 三发**:gap_layer=data——60 对样本量卡住效用维终判;扩集≥200 对与 J1b 同池复用(一池两判)。
+- **边界**:未预注册的检验法不进判定只作并陈证据;resolution_check/franka_diving 作为互证材料在链,aloha_ins_qc_v0/xarm_qc_v0 无函不抢判(问询函 2930 已发)。
+- **verdict 正本**:`runtime/v4_probe/v4_probe_verdict_v2.json`(schema v2.1 compliant,一次通过)
+- **复算**:`python tools/verdict_schema_v2.py validate runtime/v4_probe/v4_probe_verdict_v2.json`;detail 逐行计数+McNemar/Wilson 随 verdict readings 段可查。
+
 ---
 
 ## 附录 A · verdict 正本与校验状态
@@ -168,6 +183,7 @@
 | 8 | 函 2553/2572/2660/2667（DB） | （裁定档） |
 | 9 | `runtime/gen4_judge/gen4_v1_verdict_v2.json` | compliant（v2.1，gap_report 首用） |
 | 10 | `runtime/gen4v2_btrack/gen4v2_btrack_verdict_v2.json` | compliant（v2.1，EGR 回流首闭环） |
+| 11 | `runtime/v4_probe/v4_probe_verdict_v2.json` | compliant（v2.1，J2 判定权边界样本） |
 
 ## 附录 B · 判读 SLA 与机构口径
 
