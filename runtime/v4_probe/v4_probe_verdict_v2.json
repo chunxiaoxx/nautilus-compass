@@ -1,0 +1,91 @@
+{
+  "ts": "2026-10-04T15:12:00+08:00",
+  "judge": "compass v4_probe_judge_1",
+  "evidence_policy": "JUDGING_EVIDENCE_TIERS_20261003",
+  "case": "v4_utility_probe(效用闭环首件:输入分辨率单变量隔离,G T 不变三档对照)",
+  "material": {
+    "v4_probe_criteria.lock.json": {"sha16": "判读方经 GitHub API 自 2e0af3e 拉取", "match": true},
+    "v4_report.json": {"sha16": "52f9e72c9001f077", "source": "实例侧 /root/vdd3/gen4_v2/(函报仓路径 runtime/v4_probe/report.json 在 commit 2e0af3e 树内 404)", "match": true},
+    "v4_detail.jsonl": {"sha16": "f5efce52d8e7c8d3", "source": "实例侧同上", "match": true},
+    "v4_probe.log": {"sha16": "2d4b1af40b5c518f", "source": "实例侧同上", "match": true},
+    ".v4_done": {"sha16": "e1464b772bbbc048", "source": "实例侧同上", "match": true},
+    "v4_probe.py": {"sha16": "GitHub 2e0af3e 树内直取(脚本逻辑审读:ckpt 数值排序修复版/输出格式/盲探实现)", "match": true}
+  },
+  "criteria": {
+    "version": "v4_probe_criteria.lock.json v1(frozen 2026-10-04,approved_by=user_midturn_20261004,预注册先于出数)",
+    "V4_J1": "acc_native − acc_d128 ≥0.15 established / <0.05 not_established / 其间 partial",
+    "V4_J2": "acc_native − acc_d96,lock 明文 gradient evidence only 无判定权",
+    "self_checks": "native replay 0.8667±0.03(违即 RED 先证伪探针)+盲探 d96 vs 灰图 3/3"
+  },
+  "readings": {
+    "independent_recompute_from_detail": {
+      "native": "52/60=0.8667", "d128": "47/60=0.7833", "d96": "37/60=0.6167", "vs_report": "零偏差",
+      "drop128": "0.0833", "drop96": "0.25"
+    },
+    "self_check_native": "delta=0.0 ≤0.03 过门(与 gen4_v2 J1b 同池同读数互证)",
+    "blind_probe": "log V4_BLIND_PROBE 3/3 实读坐实",
+    "gold_cross": "detail gold 分布 47 True/13 False 与 eval_set 同池一致(R112 已交叉 60/60)",
+    "paired_tests": "McNemar exact: native vs d128 对错9/错对4 p=0.2668 不显著;native vs d96 对错23/错对8 p=0.0107 显著",
+    "prediction_shape": "d128 pred True 42/60、d96 24/60——单调渐降非塌缩",
+    "coverage_note": "函报 report.json/detail.jsonl/probe.log 三件仓坐标在 commit 2e0af3e 树内 404(同 gen4_v2 B 轨缺席模式)——判官实例侧同内容取证,复算未受阻"
+  },
+  "findings": [
+    {
+      "finding": "三档读数逐行复算零偏差,native replay delta=0.0 过自校验门,盲探 3/3 log 实读坐实——探针自身可信度三重验证过",
+      "evidence_tier": "measured",
+      "basis": "v4_detail.jsonl(sha16 f5efce52)逐行计数;v4_probe.log(sha16 2d4b1af4)盲探行",
+      "upgrade_path": null
+    },
+    {
+      "finding": "V4-J1=0.0833∈[0.05,0.15)→PARTIAL 判定成立(判据零放宽)。证据权重较函申报口径更保守:60 对非配对 CI±~9pp 之外,判读方补测同帧配对 McNemar p=0.267 不显著——'128px 造成实质效用损害'不足以单独宣称",
+      "evidence_tier": "measured",
+      "basis": "detail 逐帧配对可查(native 对 d128 错 9 帧/d128 对 native 错 4 帧)",
+      "upgrade_path": "扩样≥200 对同 lock 门复测;配对检验预注册入判据(本 lock 未注册检验法,补测仅作 caveat 权重证据不进判定)"
+    },
+    {
+      "finding": "损害形态=判别力渐失而非多数类塌缩:d128 预测 True 42/60、d96 24/60 单调渐降,非全 True 塌缩——与 gen4_v2 J1b caveat'偏向多数类'担忧可区分,分辨率损害是渐进性而非阶跃崩坏",
+      "evidence_tier": "measured",
+      "basis": "detail 三档预测形态直读",
+      "upgrade_path": null
+    },
+    {
+      "finding": "J2 梯度证据坐实:drop96=0.25 配对 McNemar p=0.011 显著+单调性+与 resolution 检(franka 128/pusht 96 双 WARN)互证——但 lock 明文 gradient evidence only 无判定权,预注册纪律=判官不代赋权",
+      "evidence_tier": "measured",
+      "basis": "detail 配对计数+lock V4_J2.role 原文",
+      "upgrade_path": "扩样复测按同 lock 门(V4_J2 若升格须走判据演进程序,用户批+预注册+止损三要件)"
+    },
+    {
+      "finding": "材料缺口如实记:函报三件仓路径在 2e0af3e 树内 404,判官实例侧取证补齐(sha16 三件见 material)——复算未受阻;升级建议=探针产物随 report 一并落仓",
+      "evidence_tier": "measured",
+      "basis": "GitHub trees API 2e0af3e 全树清单 vs 实例侧文件",
+      "upgrade_path": null
+    }
+  ],
+  "gap_report": {
+    "gap_layer": "data",
+    "evidence": [
+      {"ref": "finding#2:60 对样本 drop128 配对检验不显著", "reading": "效用维终判被样本量卡住,非探针或判据卡住——60 对下 PARTIAL 已是判据可达上限"}
+    ],
+    "suggested_fuel": "①eval 池扩≥200 对(与 J1b 扩集同池复用,一池两判)②探针产物(report/detail/log)随材料落仓③若拟升格 J2 为判定判据,走判据演进程序(用户批+预注册+止损)",
+    "confidence": "measured"
+  },
+  "statistics": {
+    "ruling": "lock 只定 drop 门未注册检验法——判读方补配对 McNemar 作 caveat 权重证据并陈,不进判定(判据零放宽);PARTIAL 判定完全按 lock 门语义",
+    "tests": [
+      {"name": "McNemar exact(native vs d128,同帧配对)", "value": "9/4, p=0.2668", "role": "caveat 权重证据(非判据)"},
+      {"name": "McNemar exact(native vs d96)", "value": "23/8, p=0.0107", "role": "J2 梯度坐实佐证(非判据)"},
+      {"name": "Wilson 95% CI", "value": "native [0.7583,0.9309] / d128 [0.6638,0.8688] / d96 [0.4902,0.7291]", "role": "CI 并陈"}
+    ]
+  },
+  "verdict": {
+    "state": "PARTIAL",
+    "text": "两件裁决:①V4-J1 PARTIAL 口径成立(0.0833∈[0.05,0.15),判据零放宽)——但证据权重按保守口径计:配对 McNemar p=0.267 不显著+CI 覆盖,不足以单独支撑'128px 实质损害'宣称;②J2(25pp@96px)不随本判升格宣称——lock 明文无判定权,预注册纪律判官不代赋权;可作方向性发现并入首报探索段(标注 PARTIAL/扩样中,带 McNemar p=0.011 与双 WARN 互证),结论宣称须等扩样≥200 对复测。附:损害形态=判别力渐失非多数类塌缩(d128 42/60 True 渐降),探针三重自检(盲探 3/3/replay delta 0/计数零偏差)全过,材料缺口(三件仓 404 已实例侧取证)如实记。"
+  },
+  "claims": [
+    {"statement": "三档读数逐行复算零偏差(52/47/37 每 60)", "supported": true},
+    {"statement": "V4-J1 PARTIAL 按零放宽成立;配对 McNemar p=0.267 不显著补测并陈", "supported": true, "boundary": "补测检验法未预注册,只作 caveat 权重证据,不进判定"},
+    {"statement": "J2 梯度证据显著但无判定权,不升格宣称", "supported": true, "boundary": "升格须走判据演进程序(用户批+预注册+止损),本判不预设"},
+    {"statement": "损害形态=渐失非塌缩", "supported": true},
+    {"statement": "材料三件仓树缺席,实例侧取证 sha16 锚定", "supported": true}
+  ]
+}

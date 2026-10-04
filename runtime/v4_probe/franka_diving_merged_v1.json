@@ -1,0 +1,212 @@
+[
+ {
+  "frame": "0000000.jpg",
+  "valid": false,
+  "note": "画面模糊且分辨率较低",
+  "lap_var": 1794.3,
+  "bright": 127.6
+ },
+ {
+  "frame": "0000137.jpg",
+  "valid": true,
+  "note": "正常，略有低分辨率",
+  "lap_var": 1944.5,
+  "bright": 125.6
+ },
+ {
+  "frame": "0000275.jpg",
+  "valid": false,
+  "note": "低分辨率且略模糊",
+  "lap_var": 1727.1,
+  "bright": 115.4
+ },
+ {
+  "frame": "0000413.jpg",
+  "valid": false,
+  "note": "略糊",
+  "lap_var": 1946.9,
+  "bright": 121.2
+ },
+ {
+  "frame": "0000551.jpg",
+  "valid": false,
+  "note": "画质轻微模糊，细节较模糊",
+  "lap_var": 1885.0,
+  "bright": 125.6
+ },
+ {
+  "frame": "0000689.jpg",
+  "valid": true,
+  "note": "画面略糊但可辨识",
+  "lap_var": 2046.1,
+  "bright": 120.6
+ },
+ {
+  "frame": "0000827.jpg",
+  "valid": true,
+  "note": "模糊",
+  "lap_var": 1734.5,
+  "bright": 132.7
+ },
+ {
+  "frame": "0000965.jpg",
+  "valid": true,
+  "note": "画面分辨率较低且略模糊，细节",
+  "lap_var": 1586.5,
+  "bright": 118.3
+ },
+ {
+  "frame": "0001103.jpg",
+  "valid": true,
+  "note": "画面偏暗且分辨率较低，细节略",
+  "lap_var": 1881.0,
+  "bright": 119.7
+ },
+ {
+  "frame": "0001241.jpg",
+  "valid": true,
+  "note": "画面分辨率较低且略模糊",
+  "lap_var": 2091.3,
+  "bright": 123.3
+ },
+ {
+  "frame": "0001378.jpg",
+  "valid": true,
+  "note": "模糊",
+  "lap_var": 1575.9,
+  "bright": 125.8
+ },
+ {
+  "frame": "0001516.jpg",
+  "valid": true,
+  "note": "糊",
+  "lap_var": 2138.9,
+  "bright": 121.8
+ },
+ {
+  "frame": "0001654.jpg",
+  "valid": true,
+  "note": "画面偏糊",
+  "lap_var": 2048.8,
+  "bright": 128.1
+ },
+ {
+  "frame": "0001792.jpg",
+  "valid": true,
+  "note": "略糊",
+  "lap_var": 1987.7,
+  "bright": 121.3
+ },
+ {
+  "frame": "0001930.jpg",
+  "valid": true,
+  "note": "正常",
+  "lap_var": 1819.2,
+  "bright": 121.4
+ },
+ {
+  "frame": "0002068.jpg",
+  "valid": true,
+  "note": "画面略模糊但整体正常，机器人",
+  "lap_var": 1735.2,
+  "bright": 117.3
+ },
+ {
+  "frame": "0002206.jpg",
+  "valid": true,
+  "note": "画面模糊且分辨率较低",
+  "lap_var": 1693.5,
+  "bright": 121.8
+ },
+ {
+  "frame": "0002344.jpg",
+  "valid": true,
+  "note": "画面略模糊，分辨率较低。",
+  "lap_var": 2180.0,
+  "bright": 122.7
+ },
+ {
+  "frame": "0002482.jpg",
+  "valid": true,
+  "note": "略糊",
+  "lap_var": 2557.3,
+  "bright": 123.1
+ },
+ {
+  "frame": "0002620.jpg",
+  "valid": false,
+  "note": "画面模糊且分辨率较低",
+  "lap_var": 1999.3,
+  "bright": 126.6
+ },
+ {
+  "frame": "0002757.jpg",
+  "valid": false,
+  "note": "画面低分辨率且略模糊",
+  "lap_var": 1982.9,
+  "bright": 128.1
+ },
+ {
+  "frame": "0002895.jpg",
+  "valid": false,
+  "note": "画面模糊且分辨率较低",
+  "lap_var": 2111.0,
+  "bright": 126.2
+ },
+ {
+  "frame": "0003033.jpg",
+  "valid": true,
+  "note": "糊",
+  "lap_var": 1668.8,
+  "bright": 127.9
+ },
+ {
+  "frame": "0003171.jpg",
+  "valid": false,
+  "note": "模糊",
+  "lap_var": 1904.3,
+  "bright": 126.8
+ },
+ {
+  "frame": "0003309.jpg",
+  "valid": false,
+  "note": "轻微模糊",
+  "lap_var": 1976.8,
+  "bright": 120.6
+ },
+ {
+  "frame": "0003447.jpg",
+  "valid": false,
+  "note": "画面偏糊且分辨率较低",
+  "lap_var": 1999.6,
+  "bright": 124.1
+ },
+ {
+  "frame": "0003585.jpg",
+  "valid": true,
+  "note": "画面略模糊，主体仍可辨认",
+  "lap_var": 2293.7,
+  "bright": 124.8
+ },
+ {
+  "frame": "0003723.jpg",
+  "valid": false,
+  "note": "正常",
+  "lap_var": 2060.5,
+  "bright": 121.5
+ },
+ {
+  "frame": "0003861.jpg",
+  "valid": true,
+  "note": "画面偏糊，分辨率较低",
+  "lap_var": 1607.8,
+  "bright": 124.9
+ },
+ {
+  "frame": "0003999.jpg",
+  "valid": false,
+  "note": "糊",
+  "lap_var": 1797.4,
+  "bright": 126.4
+ }
+]

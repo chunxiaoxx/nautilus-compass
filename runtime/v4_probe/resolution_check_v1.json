@@ -1,0 +1,77 @@
+{
+ "pusht": {
+  "n_video_files": 1,
+  "streams": {
+   "observation.image": {
+    "native": "96x96",
+    "short_side": 96,
+    "verdict": "WARN_low_resolution"
+   }
+  },
+  "worst": 96
+ },
+ "aloha_sim_transfer_cube_human": {
+  "n_video_files": 1,
+  "streams": {
+   "observation.images.top": {
+    "native": "640x480",
+    "short_side": 480,
+    "verdict": "PASS"
+   }
+  },
+  "worst": 480
+ },
+ "droid_100": {
+  "n_video_files": 3,
+  "streams": {
+   "observation.images.exterior_image_1_left": {
+    "native": "320x180",
+    "short_side": 180,
+    "verdict": "WARN_low_resolution"
+   },
+   "observation.images.exterior_image_2_left": {
+    "native": "320x180",
+    "short_side": 180,
+    "verdict": "WARN_low_resolution"
+   },
+   "observation.images.wrist_image_left": {
+    "native": "320x180",
+    "short_side": 180,
+    "verdict": "WARN_low_resolution"
+   }
+  },
+  "worst": 180
+ },
+ "nyu_franka_play_dataset": {
+  "n_video_files": 2,
+  "streams": {
+   "observation.images.image": {
+    "native": "128x128",
+    "short_side": 128,
+    "verdict": "WARN_low_resolution"
+   },
+   "observation.images.image_additional_view": {
+    "native": "128x128",
+    "short_side": 128,
+    "verdict": "WARN_low_resolution"
+   }
+  },
+  "worst": 128
+ },
+ "svla_so100_pickplace": {
+  "n_video_files": 2,
+  "streams": {
+   "observation.images.top": {
+    "native": "640x480",
+    "short_side": 480,
+    "verdict": "PASS"
+   },
+   "observation.images.wrist": {
+    "native": "640x480",
+    "short_side": 480,
+    "verdict": "PASS"
+   }
+  },
+  "worst": 480
+ }
+}
