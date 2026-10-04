@@ -1,0 +1,547 @@
+{
+ "seed": 202610042,
+ "n": 60,
+ "rows": [
+  {
+   "q": 1,
+   "id": "K_t00_e05_p35",
+   "layer_3b_dim3": "低",
+   "task": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35,
+   "frame_sha16": "69f78a4cc425e974",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=异常 分歧=False"
+  },
+  {
+   "q": 2,
+   "id": "K_t00_e09_p35",
+   "layer_3b_dim3": "低",
+   "task": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35,
+   "frame_sha16": "1e62915d607a44c3",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=无法判断 分歧=True"
+  },
+  {
+   "q": 3,
+   "id": "K_t00_e14_p35",
+   "layer_3b_dim3": "低",
+   "task": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35,
+   "frame_sha16": "11342164af6b1338",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=异常 分歧=False"
+  },
+  {
+   "q": 4,
+   "id": "K_t00_e21_p35",
+   "layer_3b_dim3": "低",
+   "task": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35,
+   "frame_sha16": "8df99f44889d6588",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=无法判断 分歧=True"
+  },
+  {
+   "q": 5,
+   "id": "K_t00_e26_p35",
+   "layer_3b_dim3": "低",
+   "task": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35,
+   "frame_sha16": "efd514ad8da04a31",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=无法判断 分歧=True"
+  },
+  {
+   "q": 6,
+   "id": "K_t00_e26_p80",
+   "layer_3b_dim3": "中",
+   "task": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80,
+   "frame_sha16": "74cceecb6ed9807c",
+   "判官读数区_汇总期填": "3B_dim2=正常 7B_dim2=异常 分歧=True"
+  },
+  {
+   "q": 7,
+   "id": "K_t00_e31_p35",
+   "layer_3b_dim3": "低",
+   "task": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35,
+   "frame_sha16": "6886b0fd838010fa",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=无法判断 分歧=True"
+  },
+  {
+   "q": 8,
+   "id": "K_t00_e41_p80",
+   "layer_3b_dim3": "中",
+   "task": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80,
+   "frame_sha16": "422a9c02535d7c60",
+   "判官读数区_汇总期填": "3B_dim2=正常 7B_dim2=异常 分歧=True"
+  },
+  {
+   "q": 9,
+   "id": "K_t02_e07_p35",
+   "layer_3b_dim3": "低",
+   "task": "打开炉灶并把摩卡壶放上去",
+   "progress_pct": 35,
+   "frame_sha16": "a28b56609bc2c44d",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=异常 分歧=False"
+  },
+  {
+   "q": 10,
+   "id": "K_t03_e06_p35",
+   "layer_3b_dim3": "低",
+   "task": "把黑碗放进橱柜最下层抽屉并关上",
+   "progress_pct": 35,
+   "frame_sha16": "65373dff570315e0",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=异常 分歧=False"
+  },
+  {
+   "q": 11,
+   "id": "K_t03_e06_p80",
+   "layer_3b_dim3": "低",
+   "task": "把黑碗放进橱柜最下层抽屉并关上",
+   "progress_pct": 80,
+   "frame_sha16": "1320223afd853749",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=异常 分歧=False"
+  },
+  {
+   "q": 12,
+   "id": "K_t03_e19_p35",
+   "layer_3b_dim3": "低",
+   "task": "把黑碗放进橱柜最下层抽屉并关上",
+   "progress_pct": 35,
+   "frame_sha16": "7799f6ea16dafd03",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=异常 分歧=False"
+  },
+  {
+   "q": 13,
+   "id": "K_t03_e19_p80",
+   "layer_3b_dim3": "低",
+   "task": "把黑碗放进橱柜最下层抽屉并关上",
+   "progress_pct": 80,
+   "frame_sha16": "fb19586ba759aa92",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=异常 分歧=False"
+  },
+  {
+   "q": 14,
+   "id": "K_t06_e08_p80",
+   "layer_3b_dim3": "中",
+   "task": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80,
+   "frame_sha16": "747bab90a87a802b",
+   "判官读数区_汇总期填": "3B_dim2=正常 7B_dim2=异常 分歧=True"
+  },
+  {
+   "q": 15,
+   "id": "K_t06_e28_p35",
+   "layer_3b_dim3": "中",
+   "task": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35,
+   "frame_sha16": "7cb810d64f3e9fb4",
+   "判官读数区_汇总期填": "3B_dim2=正常 7B_dim2=异常 分歧=True"
+  },
+  {
+   "q": 16,
+   "id": "K_t08_e02_p35",
+   "layer_3b_dim3": "中",
+   "task": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35,
+   "frame_sha16": "4c82a4f5e17ecd6b",
+   "判官读数区_汇总期填": "3B_dim2=正常 7B_dim2=异常 分歧=True"
+  },
+  {
+   "q": 17,
+   "id": "K_t08_e40_p80",
+   "layer_3b_dim3": "中",
+   "task": "把两个摩卡壶放到炉子上",
+   "progress_pct": 80,
+   "frame_sha16": "de422f104191eb51",
+   "判官读数区_汇总期填": "3B_dim2=正常 7B_dim2=异常 分歧=True"
+  },
+  {
+   "q": 18,
+   "id": "M_t00_e14_p35",
+   "layer_3b_dim3": "低",
+   "task": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35,
+   "frame_sha16": "7f5d154db3ffb7a5",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=异常 分歧=False"
+  },
+  {
+   "q": 19,
+   "id": "M_t00_e41_p35",
+   "layer_3b_dim3": "中",
+   "task": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35,
+   "frame_sha16": "e810401acef1da55",
+   "判官读数区_汇总期填": "3B_dim2=正常 7B_dim2=异常 分歧=True"
+  },
+  {
+   "q": 20,
+   "id": "M_t02_e06_p35",
+   "layer_3b_dim3": "低",
+   "task": "打开炉灶并把摩卡壶放上去",
+   "progress_pct": 35,
+   "frame_sha16": "ee4d4980a20963f9",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=异常 分歧=False"
+  },
+  {
+   "q": 21,
+   "id": "M_t02_e33_p35",
+   "layer_3b_dim3": "低",
+   "task": "打开炉灶并把摩卡壶放上去",
+   "progress_pct": 35,
+   "frame_sha16": "30d6a55ad584efbd",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=异常 分歧=False"
+  },
+  {
+   "q": 22,
+   "id": "M_t02_e33_p80",
+   "layer_3b_dim3": "低",
+   "task": "打开炉灶并把摩卡壶放上去",
+   "progress_pct": 80,
+   "frame_sha16": "ebe74ec12205309f",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=异常 分歧=False"
+  },
+  {
+   "q": 23,
+   "id": "M_t03_e17_p35",
+   "layer_3b_dim3": "低",
+   "task": "把黑碗放进橱柜最下层抽屉并关上",
+   "progress_pct": 35,
+   "frame_sha16": "90f910138bd93f65",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=异常 分歧=False"
+  },
+  {
+   "q": 24,
+   "id": "M_t03_e17_p80",
+   "layer_3b_dim3": "低",
+   "task": "把黑碗放进橱柜最下层抽屉并关上",
+   "progress_pct": 80,
+   "frame_sha16": "5febddde1f7fb80c",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=异常 分歧=False"
+  },
+  {
+   "q": 25,
+   "id": "M_t08_e16_p35",
+   "layer_3b_dim3": "中",
+   "task": "把两个摩卡壶放到炉子上",
+   "progress_pct": 35,
+   "frame_sha16": "65db32ebe42d3943",
+   "判官读数区_汇总期填": "3B_dim2=正常 7B_dim2=异常 分歧=True"
+  },
+  {
+   "q": 26,
+   "id": "M_t09_e48_p80",
+   "layer_3b_dim3": "中",
+   "task": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 80,
+   "frame_sha16": "709c61ecdb486d02",
+   "判官读数区_汇总期填": "3B_dim2=正常 7B_dim2=异常 分歧=True"
+  },
+  {
+   "q": 27,
+   "id": "X_t00_e01_p35",
+   "layer_3b_dim3": "低",
+   "task": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35,
+   "frame_sha16": "4671569f37798e0f",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=异常 分歧=False"
+  },
+  {
+   "q": 28,
+   "id": "X_t00_e05_p35",
+   "layer_3b_dim3": "中",
+   "task": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35,
+   "frame_sha16": "06d7c3654ddab122",
+   "判官读数区_汇总期填": "3B_dim2=正常 7B_dim2=异常 分歧=True"
+  },
+  {
+   "q": 29,
+   "id": "X_t00_e05_p80",
+   "layer_3b_dim3": "中",
+   "task": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80,
+   "frame_sha16": "ff6ce2c85c0428f1",
+   "判官读数区_汇总期填": "3B_dim2=正常 7B_dim2=异常 分歧=True"
+  },
+  {
+   "q": 30,
+   "id": "X_t00_e14_p35",
+   "layer_3b_dim3": "低",
+   "task": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35,
+   "frame_sha16": "006b022fbde98631",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=异常 分歧=False"
+  },
+  {
+   "q": 31,
+   "id": "X_t00_e15_p35",
+   "layer_3b_dim3": "低",
+   "task": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35,
+   "frame_sha16": "e987a14dd7494556",
+   "判官读数区_汇总期填": "3B_dim2=无法判断 7B_dim2=异常 分歧=True"
+  },
+  {
+   "q": 32,
+   "id": "X_t00_e24_p35",
+   "layer_3b_dim3": "低",
+   "task": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35,
+   "frame_sha16": "533b75d3b7c85569",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=异常 分歧=False"
+  },
+  {
+   "q": 33,
+   "id": "X_t00_e24_p80",
+   "layer_3b_dim3": "低",
+   "task": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80,
+   "frame_sha16": "98116def3c977da7",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=异常 分歧=False"
+  },
+  {
+   "q": 34,
+   "id": "X_t00_e36_p35",
+   "layer_3b_dim3": "中",
+   "task": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35,
+   "frame_sha16": "8ec063a134c97ec3",
+   "判官读数区_汇总期填": "3B_dim2=正常 7B_dim2=异常 分歧=True"
+  },
+  {
+   "q": 35,
+   "id": "X_t00_e42_p35",
+   "layer_3b_dim3": "低",
+   "task": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35,
+   "frame_sha16": "0c11b332d151a31c",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=异常 分歧=False"
+  },
+  {
+   "q": 36,
+   "id": "X_t03_e16_p35",
+   "layer_3b_dim3": "低",
+   "task": "把黑碗放进橱柜最下层抽屉并关上",
+   "progress_pct": 35,
+   "frame_sha16": "04ab8fa3cd15bf47",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=无法判断 分歧=True"
+  },
+  {
+   "q": 37,
+   "id": "X_t03_e16_p80",
+   "layer_3b_dim3": "低",
+   "task": "把黑碗放进橱柜最下层抽屉并关上",
+   "progress_pct": 80,
+   "frame_sha16": "cede5e852d122870",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=异常 分歧=False"
+  },
+  {
+   "q": 38,
+   "id": "X_t03_e20_p35",
+   "layer_3b_dim3": "低",
+   "task": "把黑碗放进橱柜最下层抽屉并关上",
+   "progress_pct": 35,
+   "frame_sha16": "0a0851d723cf4fbe",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=异常 分歧=False"
+  },
+  {
+   "q": 39,
+   "id": "X_t03_e20_p80",
+   "layer_3b_dim3": "低",
+   "task": "把黑碗放进橱柜最下层抽屉并关上",
+   "progress_pct": 80,
+   "frame_sha16": "795f5012eb3ac71c",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=异常 分歧=False"
+  },
+  {
+   "q": 40,
+   "id": "X_t04_e37_p35",
+   "layer_3b_dim3": "中",
+   "task": "白杯子放左盘,黄白杯子放右盘",
+   "progress_pct": 35,
+   "frame_sha16": "93b54e1de629cbc3",
+   "判官读数区_汇总期填": "3B_dim2=正常 7B_dim2=异常 分歧=True"
+  },
+  {
+   "q": 41,
+   "id": "X_t06_e21_p35",
+   "layer_3b_dim3": "低",
+   "task": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35,
+   "frame_sha16": "b7258f393549838f",
+   "判官读数区_汇总期填": "3B_dim2=无法判断 7B_dim2=异常 分歧=True"
+  },
+  {
+   "q": 42,
+   "id": "X_t06_e44_p35",
+   "layer_3b_dim3": "中",
+   "task": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35,
+   "frame_sha16": "ee095ac66386902f",
+   "判官读数区_汇总期填": "3B_dim2=正常 7B_dim2=异常 分歧=True"
+  },
+  {
+   "q": 43,
+   "id": "X_t06_e44_p80",
+   "layer_3b_dim3": "中",
+   "task": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80,
+   "frame_sha16": "e827ce8b8cdd7575",
+   "判官读数区_汇总期填": "3B_dim2=正常 7B_dim2=异常 分歧=True"
+  },
+  {
+   "q": 44,
+   "id": "X_t09_e04_p80",
+   "layer_3b_dim3": "中",
+   "task": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 80,
+   "frame_sha16": "bae6e27d05602e85",
+   "判官读数区_汇总期填": "3B_dim2=正常 7B_dim2=异常 分歧=True"
+  },
+  {
+   "q": 45,
+   "id": "Y_t00_e02_p35",
+   "layer_3b_dim3": "低",
+   "task": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35,
+   "frame_sha16": "ba82a8c1503c4dd5",
+   "判官读数区_汇总期填": "3B_dim2=无法判断 7B_dim2=异常 分歧=True"
+  },
+  {
+   "q": 46,
+   "id": "Y_t00_e08_p35",
+   "layer_3b_dim3": "低",
+   "task": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 35,
+   "frame_sha16": "920aeed392ceb162",
+   "判官读数区_汇总期填": "3B_dim2=无法判断 7B_dim2=异常 分歧=True"
+  },
+  {
+   "q": 47,
+   "id": "Y_t00_e08_p80",
+   "layer_3b_dim3": "低",
+   "task": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80,
+   "frame_sha16": "83b317f394e04eb2",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=异常 分歧=False"
+  },
+  {
+   "q": 48,
+   "id": "Y_t00_e26_p80",
+   "layer_3b_dim3": "低",
+   "task": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80,
+   "frame_sha16": "6d4cb979c045de97",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=异常 分歧=False"
+  },
+  {
+   "q": 49,
+   "id": "Y_t00_e31_p80",
+   "layer_3b_dim3": "中",
+   "task": "把字母汤罐和番茄酱放进篮子",
+   "progress_pct": 80,
+   "frame_sha16": "352abc43edc8a52f",
+   "判官读数区_汇总期填": "3B_dim2=正常 7B_dim2=异常 分歧=True"
+  },
+  {
+   "q": 50,
+   "id": "Y_t02_e02_p35",
+   "layer_3b_dim3": "低",
+   "task": "打开炉灶并把摩卡壶放上去",
+   "progress_pct": 35,
+   "frame_sha16": "0867b511e09ef5cf",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=异常 分歧=False"
+  },
+  {
+   "q": 51,
+   "id": "Y_t02_e41_p35",
+   "layer_3b_dim3": "低",
+   "task": "打开炉灶并把摩卡壶放上去",
+   "progress_pct": 35,
+   "frame_sha16": "df3c07d7f8e5d3c4",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=异常 分歧=False"
+  },
+  {
+   "q": 52,
+   "id": "Y_t03_e06_p35",
+   "layer_3b_dim3": "低",
+   "task": "把黑碗放进橱柜最下层抽屉并关上",
+   "progress_pct": 35,
+   "frame_sha16": "871fb874d2fd0599",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=无法判断 分歧=True"
+  },
+  {
+   "q": 53,
+   "id": "Y_t03_e13_p35",
+   "layer_3b_dim3": "低",
+   "task": "把黑碗放进橱柜最下层抽屉并关上",
+   "progress_pct": 35,
+   "frame_sha16": "e56d311aa6baa1d8",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=异常 分歧=False"
+  },
+  {
+   "q": 54,
+   "id": "Y_t03_e13_p80",
+   "layer_3b_dim3": "低",
+   "task": "把黑碗放进橱柜最下层抽屉并关上",
+   "progress_pct": 80,
+   "frame_sha16": "98a81fe5da4ac9e1",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=异常 分歧=False"
+  },
+  {
+   "q": 55,
+   "id": "Y_t03_e42_p80",
+   "layer_3b_dim3": "低",
+   "task": "把黑碗放进橱柜最下层抽屉并关上",
+   "progress_pct": 80,
+   "frame_sha16": "4be3e59885a4fc40",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=异常 分歧=False"
+  },
+  {
+   "q": 56,
+   "id": "Y_t03_e47_p35",
+   "layer_3b_dim3": "低",
+   "task": "把黑碗放进橱柜最下层抽屉并关上",
+   "progress_pct": 35,
+   "frame_sha16": "967c713379ee9b3e",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=无法判断 分歧=True"
+  },
+  {
+   "q": 57,
+   "id": "Y_t03_e47_p80",
+   "layer_3b_dim3": "低",
+   "task": "把黑碗放进橱柜最下层抽屉并关上",
+   "progress_pct": 80,
+   "frame_sha16": "72976c6b65aab168",
+   "判官读数区_汇总期填": "3B_dim2=异常 7B_dim2=异常 分歧=False"
+  },
+  {
+   "q": 58,
+   "id": "Y_t06_e16_p35",
+   "layer_3b_dim3": "中",
+   "task": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 35,
+   "frame_sha16": "2ee2f731e674429d",
+   "判官读数区_汇总期填": "3B_dim2=正常 7B_dim2=异常 分歧=True"
+  },
+  {
+   "q": 59,
+   "id": "Y_t06_e21_p80",
+   "layer_3b_dim3": "中",
+   "task": "白杯子放盘子上,巧克力布丁放盘子右侧",
+   "progress_pct": 80,
+   "frame_sha16": "30df6e4d04962c1c",
+   "判官读数区_汇总期填": "3B_dim2=正常 7B_dim2=异常 分歧=True"
+  },
+  {
+   "q": 60,
+   "id": "Y_t09_e33_p35",
+   "layer_3b_dim3": "中",
+   "task": "把黄白相间的杯子放进微波炉并关门",
+   "progress_pct": 35,
+   "frame_sha16": "8b57bb9ad115ccc3",
+   "判官读数区_汇总期填": "3B_dim2=正常 7B_dim2=异常 分歧=True"
+  }
+ ],
+ "须知_sha16": "2b2bfe005f659fa0"
+}
