@@ -50,6 +50,12 @@
 
 ## 轮次日志
 
+### R139 · 2026-10-04 22:1x-22:3x(三拍板落地轮:磁盘清理+push+服务页上站)
+- **push 3 枚**(用户令):7fde2e93..6cf4e1cb 上 origin/main(R136 架构主线/R137 M4 核查/R138 errata 落地)
+- **M2 磁盘清理(用户拍二选一删)**:实测 vdd2 已 85%(23G 可用,此前"98% 满/剩 5.1G"读数过时);eval 定谳 q14 胜出(hit@5 0.6774>0.6094 双 F2_pass)→**删 Qwen3.8-14B-Turbo**(29G,落选对照,删前快照纯 HF 权重),vdd2→**66%/51G 可用**;留 Qwen3-14B 主线
+- **流程固化上站(用户拍)**:服务页 v1 底稿成(docs/metering/JUDGING_SERVICE_PAGE_V1_20261004.md,八段:定位/两线定价/五步流程/证据三层/勘误双向/assay 协议/反自指护栏/入口);**上站请求函 3074**→platform(收件方未读箱实测可见),形态/排期由 platform 定,正本在仓
+- 下轮第一件:3074/3065/3066/3053/3054/3037 回执;calib60 待用户交回
+
 ### R138 · 2026-10-04 21:4x-22:0x(用户拍 M2:errata 勘误件当教材活水·落地轮)
 - **通道状态定谳(全链已在通)**:#2634 请求(死线 10/5 18:00)→v5 回 2660 实况披露(errata 存量 1 条+"18890 行"系我方把登记处端口号误读为行数,前会话已勘误)→我方 2667 裁决(E3/E4=compass 复算入燃料/E1E2 自勘归对账)→v5 A 案交付 #2678 结构化 10 条→**delta_0003 已吸收 3 条**(E3 vendingbench/E4 pusht 复现注/S6 18890 行数),6 条 self_recompute 归对账
 - **账实差新发现**:manifest_delta_0003 记 n_new=4 但现存 3 条——S2(m1-milestone-attribution,domain=state_narrative)缺席且指纹已清,移出规则依据不可考(delta 未进 git);**不改 manifest**,勘误注 accompany(manifest_delta_0003.erratum.md),S2 原件 absorbed 完整保留无丢件
