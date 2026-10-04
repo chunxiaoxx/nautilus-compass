@@ -1,0 +1,31 @@
+{
+ "case": "v4_utility_probe_retest_v2",
+ "ckpt": "step2000",
+ "criteria_lock": "v4_probe_criteria.lock.json (门 v1 不改;池扩 n=200 经用户拍板+判官终判条件,如实注记)",
+ "pool": {
+  "file": "eval_set_v2.jsonl",
+  "n": 200,
+  "exclusion": "v1 训练弱池+60 对 v2 原池帧均排除,seed 202610043"
+ },
+ "dual_use": "native 档 = J1b 终判读数(一池两判);drop128/96 = V4 复测",
+ "blind_probe": "3/3",
+ "acc": {
+  "native": 0.855,
+  "d128": 0.755,
+  "d96": 0.55
+ },
+ "n": {
+  "native": 200,
+  "d128": 200,
+  "d96": 200
+ },
+ "drop128": 0.1,
+ "drop96": 0.305,
+ "V4_J1_gate": ">=0.15 established / <0.05 not_established / else partial (同 lock v1)",
+ "J1b_gate": ">=0.85 pass / <0.70 stop (同 btrack lock)",
+ "self_check": {
+  "v1_ref_native": 0.8667,
+  "note": "v2 池与 v1 池不同帧,读数不预期相等;偏差仅作分布漂移观察非门"
+ },
+ "elapsed_s": 512.2
+}

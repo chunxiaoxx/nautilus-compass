@@ -1,0 +1,140 @@
+{
+ "ts": "2026-10-04T16:55:00+08:00",
+ "judge": "compass",
+ "schema_version": "v2.1",
+ "evidence_policy": "docs/metering/JUDGING_EVIDENCE_TIERS_20261003.md",
+ "case": "v4_utility_probe_retest_v2(J1b 终判 + V4-J1 复测 + J2 演进程序口径,扩样 200 对一池两判,#2978 送判)",
+ "material": {
+  "report_v2.json": {
+   "sha16": "97baa15b3a07439a",
+   "source_path": "nautilusflywheel@76698bc:runtime/v4_probe/report_v2.json"
+  },
+  "detail_v2.jsonl": {
+   "sha16": "0c7b3b1cecd53898",
+   "source_path": "nautilusflywheel@76698bc:runtime/v4_probe/detail_v2.jsonl"
+  },
+  "eval_set_v2.jsonl": {
+   "sha16": "5e89a66a3f753106",
+   "source_path": "nautilusflywheel@76698bc:runtime/v4_probe/eval_set_v2.jsonl"
+  },
+  "probe_v2.log": {
+   "sha16": "825fe6dd72186250",
+   "source_path": "nautilusflywheel@76698bc:runtime/v4_probe/probe_v2.log"
+  }
+ },
+ "criteria": {
+  "lock": "v4_probe_criteria.lock.json 门 v1 不改(J1b native>=0.85 pass/<0.70 stop;V4-J1 drop>=0.15 established/<0.05 not_est/else partial);池扩 n=200 经用户拍板+终判条件,判据零改动",
+  "stop_loss": {
+   "seed_locked": true,
+   "no_expansion": true,
+   "no_new_methods": true
+  },
+  "version": "v4_probe_criteria.lock.json v1(frozen,门 v1 不改;池扩 n=200 用户拍板+判官终判条件)"
+ },
+ "readings": {
+  "pool": "n=200,true165/false35(多数类基线 0.8250),域 business67/industry69/domestic64,image 全路径唯一 200/200 [实测]",
+  "acc": "native 0.8550(171/200,CI95=[0.7995,0.8971])/d128 0.7550(151/200,CI95=[0.6910,0.8094])/d96 0.5500(110/200,CI95=[0.4808,0.6174])——三档与 report_v2 逐位一致 [实测]",
+  "drop": "drop128=0.1000/drop96=0.3050 复算逐位一致 [实测]",
+  "confusion": "native TP160/FN5/FP24/TN11;d128 TP125/FN40/FP9/TN26;d96 TP78/FN87/FP3/TN32 [实测]",
+  "alignment": "detail_v2(200 条)↔eval_set_v2 按 i 对齐 gold 零不一致 [实测]"
+ },
+ "findings": [
+  {
+   "finding": "三问裁一(J1b 终判):native 0.8550>=0.85 门,按预注册字面 PASS(压线,+0.5pp);下门 <0.70 stop 不触发。双 caveat 实质化:(a) Wilson CI95 下界 0.7995 跨门;(b) 对多数类基线(全猜 true=0.825)增益仅 3.0pp,二项精确 P(X<=29|p=0.175)=0.153 不显著——过门与优于全猜 true 未被证明显著区分,门设在基线上方 2.5pp 处=判据区分度结构弱点,记入判据演进评估输入",
+   "evidence_tier": "measured",
+   "basis": "复算表",
+   "upgrade_path": null
+  },
+  {
+   "finding": "native 误差结构:false 类识别弱(35 帧中 FP24/TN11,68.6% 的 false 帧被放行),0.855 大头来自 true 类(165 帧对 160)。J1b 若用于质检放行门,漏检(false 放行)是主要风险方向,建议使用方按此校准阈值",
+   "evidence_tier": "measured",
+   "basis": "混淆矩阵",
+   "upgrade_path": null
+  },
+  {
+   "finding": "三问裁二(V4-J1 复测):drop128=10.0pp 落 [0.05,0.15) 带,PARTIAL 维持(判据零放宽)。效应确证升级:v2 池配对 McNemar 对错35/错对15 exact p=0.0066 显著(v1 n=60 p=0.267 不显著)——扩样后掉幅存在性坐实;显著性属效应确证,非升格理由,带不动",
+   "evidence_tier": "measured",
+   "basis": "drop128 复算值+配对 McNemar 表",
+   "upgrade_path": null
+  },
+  {
+   "finding": "三问裁三(J2 演进程序技术口径):drop96=30.5pp(v1 25.0pp 跨池复现上升)+配对 McNemar p<1e-5 强显著+双 WARN 互证+v1 池 p=0.011——证据链符合启动评估门槛,d96 掉幅方向坐实为 true 类召回崩(FN 5→87)而 false 类判别改善(FP 24→3)。程序启动与否=组织方权限(用户批+预注册新判据+止损三要件),判读方技术口径=支持启动评估;演进是新预注册非旧判据放宽",
+   "evidence_tier": "measured",
+   "basis": "drop96 复算值+跨池对照+McNemar+混淆矩阵 FN/FP 迁移",
+   "upgrade_path": null
+  },
+  {
+   "finding": "池声明'排除 v1 训练弱池+60 对 v2 原池帧'不可独立验:原池文件不在共享面,零重叠=自报。upgrade_path:原池随下一 commit 落仓即升 measured",
+   "evidence_tier": "unverifiable",
+   "basis": "v1 原池 eval_set.jsonl 不在本轮 commit 树(材料缺口模式第三案,前两案已由本轮池正本落仓修复惯例示范)",
+   "upgrade_path": "v1 原池 eval_set.jsonl 随下一 commit 落仓共享面,零重叠即升 measured"
+  },
+  {
+   "finding": "弱标按域独立生成存在互斥标注实例(帧内容是否相同不可验——帧在实例侧未上共享面);弱标噪声未标定 caveat 获实例级实锤。upgrade_path:抽 4 帧上图共享面人工裁",
+   "evidence_tier": "inferred",
+   "basis": "跨域同名帧 003102.jpg(business gold=False/industry gold=True)gold 互斥+四对跨域同名帧两实例判定不同",
+   "upgrade_path": "跨域同名 4 对帧各抽 1 实例上图共享面,人工裁 gold 互斥即升 measured"
+  },
+  {
+   "finding": "材料锚惯例执行到位(r114/r118 两案缺口已修),判读零受阻,记账肯定",
+   "evidence_tier": "measured",
+   "basis": "池正本+产物同 commit 76698bc 落仓,判读方 git 树内直取",
+   "upgrade_path": null
+  }
+ ],
+ "statistics": {
+  "ruling": "J1b PASS(压线)带基线区分度 caveat;V4-J1 PARTIAL 维持;J2 演进评估支持启动(组织方拍板)",
+  "tests": [
+   "native vs 多数类基线:二项精确 P(X<=29|n=200,p=0.175)=0.153 不显著 [实测]",
+   "native vs d128 配对 McNemar(b=35,c=15) exact p=0.0066 显著 [实测]",
+   "native vs d96 配对 McNemar(b=82,c=21) exact p<1e-5 强显著 [实测]",
+   "Wilson 95% CI:native [0.7995,0.8971] 跨 0.85 门;d96 [0.4808,0.6174] 与抛硬币 0.5 相交 [实测]"
+  ]
+ },
+ "verdict": {
+  "text": "三问三裁:J1b 终判=PASS(压线,带基线区分度与 false 类漏检双 caveat);V4-J1 复测=PARTIAL 维持(带内落,效应确证升级);J2 演进程序=技术口径支持启动评估,启动权在组织方。全部读数独立复算逐位一致,材料锚闭环",
+  "state": "PARTIAL"
+ },
+ "claims": [
+  {
+   "statement": "三档读数/掉幅/池构成独立复算逐位一致(171/151/110 每 200)",
+   "supported": true
+  },
+  {
+   "statement": "J1b PASS 按预注册字面成立(0.8550>=0.85)",
+   "supported": true,
+   "boundary": "压线 +0.5pp;CI 下界 0.7995 跨门;对基线增益 3.0pp 不显著(p=0.153),过门≠显著优于全猜 true"
+  },
+  {
+   "statement": "native 误差结构=false 类漏检主导(FP24/TN11)",
+   "supported": true,
+   "boundary": "使用建议非判定;阈值校准属使用方权限"
+  },
+  {
+   "statement": "V4-J1 PARTIAL 零放宽维持;扩样后 McNemar p=0.0066 效应确证",
+   "supported": true,
+   "boundary": "显著性为效应确证非升格理由,判据带 [0.05,0.15) 不动"
+  },
+  {
+   "statement": "J2 演进评估门槛已符合,支持启动",
+   "supported": true,
+   "boundary": "启动=组织方权限(用户批+预注册+止损三要件);演进是新预注册非放宽"
+  },
+  {
+   "statement": "v1 池零重叠声明不可独立验(原池不在共享面)",
+   "supported": false,
+   "boundary": "U 态子项;upgrade_path=原池落仓"
+  },
+  {
+   "statement": "弱标互斥标注实例(003102 两域 gold 互斥)",
+   "supported": true,
+   "boundary": "帧内容相同性不可验,推断层;upgrade_path=抽帧上图共享"
+  }
+ ],
+ "gap_report": {
+  "gap_layer": "data",
+  "evidence": "v1 原池 eval_set.jsonl 与弱标帧(003102 等 4 对跨域同名)不在共享面,零重叠与 gold 一致性两项不可独立验(runtime/v4_probe/eval_set.jsonl 缺席 nautilusflywheel@76698bc 树)",
+  "suggested_fuel": "①v1 原池 eval_set.jsonl 随下一 commit 落仓(材料锚惯例第三案闭环);②跨域同名 4 对帧各抽 1 实例上图共享面,人工裁 gold 互斥",
+  "confidence": "measured"
+ }
+}
