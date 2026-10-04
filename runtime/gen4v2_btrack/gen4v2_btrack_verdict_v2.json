@@ -1,0 +1,89 @@
+{
+  "ts": "2026-10-04T14:37:59+08:00",
+  "judge": "compass gen4v2_btrack_judge_1",
+  "evidence_policy": "JUDGING_EVIDENCE_TIERS_20261003",
+  "case": "gen4_v2_btrack(EGR 回流首闭环:gap_layer=data 建议的 B 轨二分类降级案)",
+  "material": {
+    "gen4_v2_btrack_criteria.lock.json": {"sha16": "82b3cef1212db956", "match": true},
+    "eval_report.json": {"sha16": "37f71237cf98d125", "match": true},
+    "eval_report_step500_invalid.json": {"sha16": "88943387d8557611", "match": true},
+    "eval_step2000.log": {"sha16": "ad1b0bce9136fda6", "source": "实例侧 /root/vdd3/gen4_v2/(commit 7e05d2c 仓树内缺席,判官实例侧取证)", "match": true},
+    "eval.log": {"sha16": "ddbbd85da2963a70", "source": "实例侧同上", "match": true},
+    "eval_set.jsonl": {"sha16": "判读集 60 行随拉回件", "source": "实例侧"}
+  },
+  "coverage_note": "材料仓 chunxiaoxx/nautilusflywheel @7e05d2c58a18;函申报两 log 坐标为仓路径但 commit 7e05d2c 树内无此二件——判官按实例侧同 sha 取证补齐,复算未受阻;升级建议=eval log 随 report 一并落仓",
+  "criteria": {
+    "version": "gen4_v2_btrack_criteria.lock.json(2026-10-04 13:30 用户拍板冻结)",
+    "J1b": "valid_frame+hand_present 二分类 match rate >= 0.85(弱任务 60 对,draft 预注册口径)",
+    "stop_loss": "J1b < 0.70 → 不进 A 轨",
+    "lock_caveat": "60 对 CI ±~9pp——过线读数按'初步通过'申报"
+  },
+  "readings": {
+    "independent_recompute_from_log": {
+      "step2000": {"teacher_vf": "49/50=0.9800", "weak_hp": "52/60=0.8667", "vs_report": "零偏差"},
+      "step500_invalid": {"teacher_vf": "48/50=0.9600", "weak_hp": "34/60=0.5667", "vs_report": "零偏差"}
+    },
+    "gold_crosscheck": "log gold 列与 eval_set.jsonl 行序 60/60 一致(金标文件与 log 未脱钩)",
+    "blind_probe": {"step2000": "3/3", "step500_invalid": "0/3"},
+    "majority_baseline": "hand_present 金标分布 47/60 True=0.7833(材料方未报;函称事故卷'0.5667≈随机基线'口径需精确化:抛硬币基线=0.5,多数类基线=0.7833,事故卷 0.5667 介于两者且盲探 0/3 才是其作为训练过程证据的核心)",
+    "significance": "正卷 52/60 vs 多数类基线 0.7833:单尾 p=0.0739 不显著;Wilson 95% CI=[0.7583,0.9309],CI 覆盖基线且下界<0.85"
+  },
+  "findings": [
+    {
+      "finding": "J1b=0.8667(52/60)≥0.85 过线,按 lock 判据零放宽,'初步通过'成立——判官逐条计数复算与自报零偏差,金标交叉 60/60 一致",
+      "evidence_tier": "measured",
+      "basis": "eval_step2000.log(sha16 ad1b0bce)逐行 t/w 计数;eval_set.jsonl 行序交叉",
+      "upgrade_path": null
+    },
+    {
+      "finding": "caveat 实质化:'初步'权重大——判别力增益对多数类基线(0.7833,全答 True)不显著(单尾 p=0.074,95% CI 覆盖基线)。60 对弱标集无法区分'学会判别'与'偏向多数类';弱标本身=MediaPipe 自动口径,金标噪声上限未标定",
+      "evidence_tier": "measured",
+      "basis": "eval_set.jsonl 金标分布直读+二项检验+Wilson CI",
+      "upgrade_path": "人工金标抽检 20-50 例(判官市场衔接)标定 MediaPipe 弱标误差率+扩 eval 集≥200 对重读"
+    },
+    {
+      "finding": "H2 假设定谳:任务粒度过细=v1 失败主因——同 200 对数据,B 轨二分类 0.8667 vs v1 四维生成 0.04,同数据对照实证;gap_report 原排序(数据量优先)修正为 H2 主因/H1(数据量)降次因",
+      "evidence_tier": "measured",
+      "basis": "gen4_v1 verdict(52/60 对照 v1 0.04)同数据量对照",
+      "upgrade_path": "边界如实注:只证'四维生成超当前粒度',不证'二分类已吃满数据'——粒度阶梯上升时数据量假设需重测"
+    },
+    {
+      "finding": "step500 事故卷申报可信:ckpt 字典序 bug('step2000'<'step500')致错卷,盲探 0/3+weak 0.5667(图像不敏感特征)与修正后 3/3+0.8667 对照,恰构成训练过程证据;两卷完整留档未删=如实申报纪律正面样例(material_side_honesty 同型)",
+      "evidence_tier": "measured",
+      "basis": "eval.log(sha16 ddbbd85d)盲探行+两 report 对照",
+      "upgrade_path": null
+    },
+    {
+      "finding": "J3b 0.94s 中位为裸 generate 部署口径,按 lock 不作能力判据——照 lock 注记,不影响判定",
+      "evidence_tier": "measured",
+      "basis": "eval_report.json J3b 段",
+      "upgrade_path": "vLLM 部署口径另行单测( lock 原文)"
+    }
+  ],
+  "gap_report": {
+    "gap_layer": "data",
+    "evidence": [
+      {"ref": "finding#2:eval_set 60 对弱标(MediaPipe 自动口径)+金标分布 47/60", "reading": "缺口在评测集侧(弱标噪声未标定+样本量不足)——按 schema v2.1 四枚举归 data,评测集属材料数据"}
+    ],
+    "suggested_fuel": "①weak 口径人工金标抽检 20-50 例(Nautilus-agent/compass#1 判官市场衔接,校准 MediaPipe 误差率)②eval 集扩至≥200 对(同分布)③两 eval log 随 report 落仓(材料链闭环)",
+    "confidence": "measured"
+  },
+  "statistics": {
+    "ruling": "判据 lock 语义=点估计过线+CI caveat 申报'初步通过',判官不另立超基线门槛(判据零放宽);基线对照作为 caveat 权重证据并陈不进判定",
+    "tests": [
+      {"name": "vs 多数类基线二项单尾", "value": "52/60 vs p0=0.7833, p=0.0739", "role": "caveat 权重证据(非判据)"},
+      {"name": "Wilson 95% CI", "value": "[0.7583, 0.9309]", "role": "CI 并陈(lock caveat 要求)"}
+    ]
+  },
+  "verdict": {
+    "state": "PARTIAL",
+    "text": "三件裁决:①J1b 初步通过成立(判据零放宽;vs 多数类基线增益未过显著性门 p=0.074,CI 覆盖基线,如实并陈——'初步'权重大,终判=人工金标抽检+扩集);②H2 主因定谳(同数据对照 0.04→0.8667),gap_report 排序修正 H2 主/H1 次;③A 轨暂不发车——H1 已非主矛盾,B 轨结论足入判例;建议顺序=判例归档→weak 口径人工金标抽检(20-50 例,判官市场衔接)→粒度阶梯新案(二分类→中间态→四维)按需发车,A 轨全任务重训作为其中可选段。step500 事故卷如实申报正面记档。"
+  },
+  "claims": [
+    {"statement": "逐条计数复算零偏差(两卷四读数)", "supported": true},
+    {"statement": "金标交叉 60/60;盲探 3/3 与 0/3;多数类基线 0.7833;增益 p=0.074 CI[0.758,0.931]", "supported": true},
+    {"statement": "材料锚五件 sha 验签一致(log 二件实例侧取证,仓树缺席如实记)", "supported": true},
+    {"statement": "H2 主因排序修正(同数据对照)", "supported": true, "boundary": "只证'四维生成超当前粒度',不证'二分类已吃满数据'——粒度阶梯上升时数据量假设需重测"},
+    {"statement": "step500 卷构成训练过程证据(两卷对照形态)", "supported": true, "boundary": "基于两卷对照的推断,非逐帧因果实证"}
+  ]
+}

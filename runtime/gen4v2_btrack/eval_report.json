@@ -1,0 +1,21 @@
+{
+ "case": "gen4_v2_btrack",
+ "ckpt": "step2000",
+ "criteria_lock": "gen4_v2_btrack_criteria.lock.json",
+ "blind_probe": "3/3",
+ "J1b": {
+  "teacher_vf_match": 0.98,
+  "teacher_n": 50,
+  "weak_hp_match": 0.8667,
+  "weak_n": 60,
+  "combined": 0.9182,
+  "gate": "pass>=0.85 / stop<0.70",
+  "caveat": "teacher 为训练集自测非 held-out;weak hp 金标=MediaPipe 弱标口径"
+ },
+ "J3b_latency": {
+  "n": 50,
+  "median_s": 0.94,
+  "note": "裸 generate 部署口径,非能力判据"
+ },
+ "elapsed_s": 133.8
+}

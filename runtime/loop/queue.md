@@ -48,6 +48,16 @@
 
 ## 轮次日志
 
+### R112 · 2026-10-04 14:2x-14:4x(gen4_v2 B 轨判读轮·EGR 回流首闭环交卷)
+- **#2905 gen4_v2 B 轨送判→判读交卷**(响应<1h 惯例):材料验签五件(lock 82b3cef1/report 37f71237/事故卷 88943387/两 log 实例侧取证 ad1b0bce+ddbbd85d——**commit 7e05d2c 仓树内缺席,函坐标失实如实记**);log 逐条计数复算零偏差(49/50+52/60,48/50+34/60);金标交叉 60/60(**首验假绿已纠:eval_set 无 id 字段,改行序对齐**);盲探 3/3 与 0/3
+- **关键发现**:多数类基线 0.7833(材料方未报)——正卷增益 p=0.0739 不显著,Wilson CI=[0.7583,0.9309] 覆盖基线,60 对弱标集判别力不可终判
+- **verdict=PARTIAL(schema v2.1 compliant)**,三件裁决:①J1b 初步通过成立(零放宽+caveat 实质化)②H2 主因定谳(同数据对照 0.04→0.8667,gap 排序修正)③A 轨暂不发车(建议顺序=判例→人工金标抽检 20-50 例接判官市场→粒度阶梯新案);step500 事故卷正面记档(material_side_honesty 同型)
+- **verdict 修正五处**(首版三违 schema):material 内 str 项(repo/coverage_note)挪段/claims 改 dict 结构/gap_layer "evaluation"→"data"(枚举外不私扩,评测集归材料数据)/verdict.text 含"显著"补 statistics 段/PASS-PRELIMINARY→PARTIAL(STATES 枚举惯例);ts 占位填实
+- 回函 **2918**(re 2905,读数+三件裁决+材料缺口告知);gap_report EGR 回流第二发(首发=案 9)
+- probe(14:2x):GitHub 三外联维持静默;#2905 判读件处置完毕
+- 下轮第一件:外部回应面盯守(2918 回执/#340/端点施工);CASEBOOK 案 10 装订(B 轨判读)待下轮
+- M1:+0(组织内判读,EGR 闭环深一环)
+
 ### R111 · 2026-10-04 14:01-14:2x(DeployKey 首验轮·身份批次二就绪)
 - **#2897 DeployKey 领取+首验全闭环**:scp 私钥→~/.ssh(git 域外,禁入仓/函);ssh -T 认证过("Hi Nautilus-agent/compass!");首推 Nautilus-agent/compass 分支 compass/identity-verify-20261004 **sha=9272a0faeaa6**(IDENTITY_VERIFY 标记,零代码改动);GitHub API 独立复验分支 sha 一致;回执函 2904+ack 2897
 - #2903 勘误 ack(Gmail 别名走 v5 Gmail CLI 不卡 DNS;org_mailbox 继续主通道)
