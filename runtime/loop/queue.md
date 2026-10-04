@@ -48,6 +48,12 @@
 
 ## 轮次日志
 
+### R109 · 2026-10-04 13:31-13:5x(夜间轮·E1 残余归档)
+- probe(13:31):信箱 0 未读;GitHub 三通知已分类无新回应;#340 发后 40min 无评论无 reaction(正常);rsi-bench 最后评论仍=我方 10/3;③④不触发(G1 收官/turbo 已提取,A100 无新事件不重跑)
+- **E1 实验残余处置**(工作区两文件定谳):①e1_j2_batch_judge_3b.py diff=v4 定版配置未入仓(仓内残留旧 4bit 版)→已 commit 归档;②goldpack_J2.csv 工作区版 dim2 全'无法判断'=v6 en 对照坍缩产物(v6 负结果原始数据)→另存 goldpack_J2_v6_en_trial.csv 归档,**git checkout 还原交卷正本**(HEAD=0012f39f,2842 收讫版)——险情排除:交卷正本从未被覆盖(raw 与 HEAD 一致);诊断件 _diag 一并留档
+- 下轮第一件:三外联+#340 回应盯守;端点上线回函后补关联段端点行
+- M1:+0
+
 ### R108 · 2026-10-04 13:4x-14:0x(Letta 重提交轮·M1 线推进)
 - **Letta #3450 重提交完成→letta-evals#340**:考古发现原提案发错仓——letta 主仓=landing page(AGENTS.md 明文禁 benchmarks/evaluations 类 issue),机器人 7 项校验自动关是表象;正确归属=letta-ai/letta-evals(无 guard/维护者 devanshrj 处理勤/外部提案先例 #339)
 - 提案挂钩点实测:RubricGrader(letta_evals/graders/rubric.py)=LLM judge 评分路径,三型判官失败分类直接适用;引用 example=multi-model-simple-rubric-grader(存在性实测);第三方关系+AI 协助主动披露(此仓无强制,按判分机构一致性姿势带);AGENTS.md/AI_POLICY.md 勾"已读"前已真读
