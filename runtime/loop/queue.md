@@ -9,7 +9,7 @@
 
 | # | 任务 | 预估 | 状态 |
 |---|---|---|---|
-| A1 | **【主线常驻】架构主线 M1-M6 滚动推进**(智能=压缩×验证×因果倒置;正本 docs/soul/mainline_architecture_20261004.md——M1 J8 装载/M2 P3 燃料/M3 判例集装订/M4 assay 扩散/M5 记忆门合入/M6 判官语料)+ **PMF 主线**(10/5 用户拍:unipat 在 agent 领域——harness 基准评测/对比测试发榜/卖数据卖轨迹/归因提升;正本同档第五节;缺口三件:榜单开张/轨迹通道/归因制式化) | 每晚轮对照取件 | 🔄 M1 等 3037 回执·M2 33/200·M3 v1.1 已发知会·M4 盯 rsi-bench/letta#340·M5 择窗·M6 随装订;PMF 首件候选=榜单开张预注册判据(未拍) |
+| A1 | **【主线常驻】架构主线 M1-M6**(智能=压缩×验证×因果倒置;正本 docs/soul/mainline_architecture_20261004.md)+ **PMF 主线**(unipat-in-agent,同档第五节)· **北极星执行**:L1 评测集登记(owner=compass)✅判据冻结注记已交(3154,sha16=19e73d436bc84c63,10/6 端点回填)/L3 harness 榜(10/12,读数供给:榜判据 v1 已入册)/L2 渠道=判分页→v7→BC 知乎(线索 24h 协同) | 每晚轮对照取件 | 🔄 M1 J8 等 3037·M2 33/200·M3 v1.1 装订·M4 rsi-bench+letta#340·M5 择窗·M6 随装订;14B smoke SMOKE_PASS(升格预注册待立);turbo 库存✅ |
 
 | N1 | **rsi-bench 四件套样例包** | — | ✅ R49(gist a2348d79 发布+Issue#1 评论 5962588752 兑现;轨迹全段抽档+英文 README+单文件附录版;承诺 3h 内交付) |
 | N2 | **gtaras7 C 口径短回函** | — | ✅ R50(定谳 C=1−ECE equal-width 10-bin,回函措辞错已撤;自曝 0.41 vs 0.914 差距留工件 bundle;评论 5962608425) |
@@ -49,6 +49,15 @@
 | — | 探针首跑即抓事件:E6 GRPO 00:17 完成(200 步/adapter 落盘/GPU 释放) | R1 | +0(记录) |
 
 ## 轮次日志
+
+### R148 · 2026-10-05 01:0x-01:4x(LOOP 大轮:平台六函+gmail 合作+L1 交付+smoke PASS)
+- **信箱六函全清**(probe ts 01:00):#3116 北极星批(L1 owner=compass,10/8;L3 榜 10/12)→认领回函 3152;#3123 v5 编制表广播→回执 3151(岗位无异议,纪律四条接受);#3126 L1 端点就绪→注记提前交付(3154);#3128 催办→说明 3115 系我方发函(3153,建议 sent/received 两列);#3132 v5 sha16 勘误认领→定格确认 3150(树内 bd81dca2 为正本锚,判绩账双向正向案例);#3137 榜单判据入册第 6 件+服务页第 5 件→ack(续验 11/3、11/4 入队列)
+- **gmail 合作件处置**:XERJ(Ivan)热情回信邀公开提交→已回信+开 Issue **xerj-org/xerj#1138**(两 recipe:session-memory 检索+预注册复算,corpus wishlist 内嵌);PMF 客户线索型采用案例
+- **L1 判据冻结注记 v1 交付**(10/8 死线提前交):docs/metering/L1_CRITERIA_FREEZE_NOTES_20261005.md(sha16=19e73d436bc84c63)——SWE-bench Verified/GAIA/Terminal-Bench 三件口径冻结+cutoff 泄漏对策+UNVERIFIABLE 墙(GAIA test 只收引用);上游坐标 curl 实测(SWE-bench 301 迁移 swe-bench org);回函 3154,10/6 端点上线即回填
+- **14B smoke = SMOKE_PASS 五门全绿**(用户拍空窗即跑→执行):S1 200 步 86.3s 零 OOM/S2 峰值 22.44G<36G/S3 0.4949→0.386/S4 格式 20/20/S5 n20=0.80 申报;**14B 管线可行性已证**,升格另立预注册+非实现者复算待走
+- **turbo 重下完成**:29G,incomplete=0(10-05 01:0x 实测);index.json 复核留下轮
+- 兼容三坑留档:peft×transformers 5 三件套补丁/lab padding/pgrep ^锚定(R147)
+- 下轮:A100 B 臂材料守(tail 无 B_EXITED);L3 榜判分读数(v5-harness+第二 harness);非实现者复算 smoke;RPT-G1-2407 归因首件回填
 
 ### R147 · 2026-10-05 0:3x-1:3x(用户拍:归因制式化优先+smoke 空窗即跑+push;smoke 执行轮)
 - **push 5 枚**:fb236699..61e8f8d8(R143-R146 全上 origin)
