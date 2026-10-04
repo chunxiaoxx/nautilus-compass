@@ -1,0 +1,142 @@
+{
+ "criteria_id": "fuel-criteria",
+ "version": "1.1",
+ "title": "FUEL criteria preregistration v1 (fuel_trajectory single-verdict standard)",
+ "preregistered_at": "2026-10-04",
+ "binding_commit": "2cb6797f",
+ "human_doc": "docs/FUEL_CRITERIA_PREREG_V1.md",
+ "issued_by": "v5 (fuel-verifier anchor)",
+ "applies_to": "v5-delivered fuel_trajectory batches (selfline production / question-bank r78+) and batches where v5 acts as evaluator",
+ "evaluator_policy": {
+  "single_evaluator": true,
+  "preregistration_precedes_judging": true,
+  "no_mid_batch_evaluator_swap": true,
+  "no_post_hoc_criteria": true,
+  "empirical_basis": "r79 split-verdict case: prime 0.75/0.92 series vs kairos 0.25/0.3 series untranslatable (compass #3007 ruling 2)"
+ },
+ "verdict": {
+  "enum": [
+   "pass",
+   "fail",
+   "insufficient_evidence"
+  ],
+  "primary_judge": "binary: pass|fail only",
+  "label_origin": "verifier",
+  "machine_rule": "convert_submit deterministic check, never LLM self-report",
+  "rules": {
+   "pass": {
+    "all_of": [
+     "finished == true",
+     "errors == 0",
+     "timeouts == 0",
+     "transcript_nonempty",
+     "user_prompt_nonempty",
+     "not_held_out"
+    ],
+    "failure_tag": null
+   },
+   "fail": {
+    "condition": "finished == false",
+    "failure_tag": "unfinished",
+    "legal_negative_sample": true,
+    "notes": "fail is a legal delivery (GRPO needs negatives); strictly distinct from pseudo-fail (see errata_binding)"
+   },
+   "insufficient_evidence": {
+    "condition": "finished == true AND (errors > 0 OR timeouts > 0)",
+    "failure_tag": "tool_errors",
+    "settlement": "excluded: U state, not positive, not negative; insufficient evidence is not failure"
+   }
+  },
+  "settlement_formula_reads": "binary verdict only",
+  "continuous_scores": {
+   "role": "caveat_weight_field_only",
+   "excluded_from": [
+    "verdict_mapping",
+    "settlement_formula",
+    "batch_ranking_decisions"
+   ],
+   "zero_variance_flag": {
+    "trigger": "same evaluator, same batch, >= 8 identical values (r79 case: 8 x 0.75)",
+    "action": "flag whole group U, suspect formula score"
+   }
+  }
+ },
+ "precondition_gates": {
+  "semantics": "any gate failing => batch does not enter judging, verdict = U",
+  "gates": [
+   {
+    "gate": "form",
+    "rule": "trajectory JSON is the only valid delivery form",
+    "notes": "result text reports (incl. self-reported 'scored(0.55)' style) do not constitute delivery",
+    "basis": "compass #3007 ruling 4"
+   },
+   {
+    "gate": "provenance",
+    "rule": "claim_subject == trajectory.source.operator AND trajectory asset replayable",
+    "asset_replay_check": "cross-check fuel_trajectories table or staging files by qid",
+    "asset_path_null_is": "normal for registration-flow (not a red flag)",
+    "quick_claim_submit_is": "legal registration action (trajectory-first, register-then-backfill pipeline form)",
+    "before_anomaly_filing_must": "triangulate own production traces: run log + staging + workdirs timestamps",
+    "basis": "r79 misdiagnosis case 2026-10-04 (quick-submit was misread as impersonation, retracted same day)"
+   },
+   {
+    "gate": "leak_prevention",
+    "rule": "held_out intersection == 0",
+    "metric": "753 held-out render intersection (b1 gate-2)"
+   },
+   {
+    "gate": "actuality",
+    "rule": "transcript contains real tool_call turns (not pure-text replies)",
+    "reference": "tool_schema declared tool surface"
+   }
+  ]
+ },
+ "source_side_validation": {
+  "when": "before batch launch (self-check)",
+  "required_all": [
+   "build_prompts_nonempty",
+   "heldout_render_intersection_zero",
+   "prompt_hash_dedup_counted (duplicate pairs forbidden in training pool)",
+   "gold_passes_first_obj_parse"
+  ],
+  "policy": "any missing => no launch"
+ },
+ "audit_sampling": {
+  "formula": "min(3, ceil(0.1 * n))",
+  "when": "after batch verdicts complete",
+  "method": "manual review: transcript actuality vs verdict consistency",
+  "on_mismatch": "flag whole batch U + errata registration",
+  "forbidden": "voiding only the sampled items"
+ },
+ "errata_binding": {
+  "cause_tag_enum": [
+   "execution",
+   "data",
+   "judgment",
+   "capability"
+  ],
+  "confidence_enum": [
+   "measured",
+   "inferred"
+  ],
+  "inferred_requires_evidence_chain": true,
+  "new_verdict": "nullable; gap report is not overturn, rework suggestion only",
+  "label_origin_whitelist": "fail-closed",
+  "judge_self_label": "forbidden forever (exception: self-admit, honest failure registration; ref f012 forfeiture case)",
+  "pseudo_fail": {
+   "tag": "pseudo_fail_high",
+   "definition": "delivery actually passes but was judged fail (e.g. f067/f075/d65ef94b prompt-bias cases)",
+   "policy": "isolated, not counted as negative sample"
+  }
+ },
+ "code_binding": {
+  "verdict_impl": "tools/org_lib/fuel_self_line.py::convert_submit",
+  "gates_sink": "tools/org_lib/fuel_gates_sink.py",
+  "amendment_rule": "changing code requires amending this file to v2 first"
+ },
+ "immutability": {
+  "frozen_once_judging_starts": true,
+  "amendment": "v2 with new version + date + reason; applies to future batches only",
+  "retroactive_judging": "forbidden"
+ }
+}
