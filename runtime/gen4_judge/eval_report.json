@@ -1,0 +1,23 @@
+{
+ "case": "gen4_v1",
+ "ckpt": "step2000",
+ "J1_note": "预注册J1=手部骨架PCK与训练目标(语义JSON)口径错位,送compass裁定;本轮照报可自动化口径",
+ "J2a_teacher": {
+  "n": 50,
+  "valid_frame_match_rate": 0.04,
+  "objects_jaccard_median": 0.0,
+  "objects_jaccard_mean": 0.0,
+  "scene_word_overlap_median": 0.0
+ },
+ "J2b_weak": {
+  "n": 60,
+  "hand_present_match_rate": 0.0333,
+  "caveat": "pred侧为arm_state文本粗判(语义模型无关键点头),弱信号口径"
+ },
+ "J3_latency": {
+  "n": 110,
+  "median_s": 21.877,
+  "p90_s": 30.128,
+  "mean_s": 21.976
+ }
+}

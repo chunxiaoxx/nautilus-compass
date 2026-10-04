@@ -1,0 +1,82 @@
+{
+ "ts": "2026-10-04T09:5x:00+08:00",
+ "judge": "compass gen4_v1_judge_1",
+ "evidence_policy": "JUDGING_EVIDENCE_TIERS_20261003",
+ "case": "gen4_v1(spec 两闸首例,判据 lock v1 freeze_chain sha 9b565f1c/990f3dbc)",
+ "material": {
+  "gen4_judge_materials_v1.tgz": {
+   "sha16": "bcf6754d15d3c0b8",
+   "source_path": "cloud /opt/flywheel/deliveries/gen4_judge_materials_v1.tgz",
+   "content": "两版eval报告+两版eval log+train log+dataset.jsonl(199行)"
+  }
+ },
+ "criteria": {
+  "version": "gen4_v1_criteria.lock.json v1(2026-10-04 02:40 用户拍板冻结)",
+  "J1": "金标贴合率(手部骨架PCK)≥0.367 — 本轮无法按预注册语义计算(见 findings)",
+  "J2": "与教师一致率≥0.85(止损线 70%)",
+  "J3": "单帧延迟<1s",
+  "stop_loss": "J1 与 MediaPipe 打平且 J2<70% → 停,回炉数据池"
+ },
+ "readings": {
+  "J2a_teacher_n50": {"valid_frame_match": 0.04, "objects_jaccard_median": 0.0, "scene_word_overlap_median": 0.0},
+  "J2b_weak_n60": {"hand_present_match": 0.0333, "caveat": "pred 侧 arm_state 文本粗判,弱信号口径"},
+  "J3_n110": {"median_s": 21.877, "p90_s": 30.128, "note": "7B 裸 generate 无 vLLM 部署口径"}
+ },
+ "independent_recompute": {
+  "method": "eval.log 逐条计数直读",
+  "J2a": "50/50 计数器 vf_match=2 → 0.04 与报告一致",
+  "J2b": "60/60 计数器一致=2 → 0.0333 与报告一致",
+  "J3": "log 逐帧时间(17.0s/27.4s 样例)与中位 21.9s 分布相符",
+  "verdict_on_report": "材料方自报三读数与独立复算零偏差"
+ },
+ "findings": [
+  {
+   "finding": "J2a 教师一致率 0.04(2/50),objects Jaccard 中位 0.00,scene 词重叠中位 0.00——零一致",
+   "evidence_tier": "measured",
+   "basis": "eval.log 逐条计数独立复算,材料 sha16 bcf6754d 锚定",
+   "upgrade_path": null
+  },
+  {
+   "finding": "J2b 弱任务口径 0.0333(2/60,pred 侧文本粗判)与 J2a 同向",
+   "evidence_tier": "measured",
+   "basis": "逐条计数复算;caveat(弱信号口径)如实并陈",
+   "upgrade_path": null
+  },
+  {
+   "finding": "J1 无法按预注册语义(手部骨架 PCK)计算:模型无关键点输出头,训练目标为四维语义 JSON——口径错位自方案 v0 即存在(预注册判据与数据格式不匹配),非执行漂移",
+   "evidence_tier": "measured",
+   "basis": "dataset.jsonl target 字段(hand_present 语义 JSON)直读+模型任务头结构;判据 lock 原文 J1=手部骨架 PCK",
+   "upgrade_path": "模型侧补关键点头或新案注册语义判据(走预注册程序)"
+  },
+  {
+   "finding": "止损条款实质触发:J1 在任何可计算口径下不高于 MediaPipe 基线(骨架口径不可算;语义口径一致率 0.04),J2=0.04 远低于 70%",
+   "evidence_tier": "measured",
+   "basis": "lock 文件 stop_loss 条款逐字对照+读数",
+   "upgrade_path": null
+  },
+  {
+   "finding": "J3 21.9s/帧为部署口径(裸 generate 无 vLLM),是工程优化问题非模型能力否证——如实注记,不改变止损判定(止损条款不含 J3)",
+   "evidence_tier": "inferred",
+   "basis": "材料方自报部署口径+log 逐帧时间;vLLM 加速幅度为业界常识未实测",
+   "upgrade_path": "部署优化后单测 J3"
+  },
+  {
+   "finding": "200 对教师数据不足以教会 7B 该语义生成任务(退化解实证)",
+   "evidence_tier": "measured",
+   "basis": "J2a/J2b 双口径零一致+train loss≈0.12 收敛(训得进但学不到格式)联合证据",
+   "upgrade_path": "教师池扩至 540+ 重训按新案验证"
+  }
+ ],
+ "gap_report": {
+  "gap_layer": "data",
+  "evidence": [
+   {"ref": "material sha16 bcf6754d + J2a 0.04/J2b 0.0333", "reading": "200 对教师池下,7B 语义生成退化解——数据量下限锚点"}
+  ],
+  "suggested_fuel": "教师池扩至 540+ 全量重训(新案);或任务降级为 valid_frame/hand_present 二分类先行(新案);判据侧预注册语义版 J1",
+  "confidence": "measured"
+ },
+ "verdict": {
+  "state": "PARTIAL",
+  "text": "材料合格,三读数独立复算零偏差[J1 判不动(口径错位照实报,U 态)/J2 未达标(0.04<<0.85,止损线 70% 亦远未及)/J3 未达标但为部署口径非能力否证]。止损条款确认触发——执行侧停手回炉正确。结论=教师池 200 对的数据量下限证据,案卷归档。三件裁决另函(函 2788)。"
+ }
+}
