@@ -48,6 +48,14 @@
 
 ## 轮次日志
 
+### R117 · 2026-10-04 15:13-15:3x(2734 全闭环轮·sinks live+端点行补齐)
+- **#2934 platform 复核通过转 live**(平台独立验证 sha16 三件逐一吻合,非采信自报):sinks 注册表三件 planned→live,`GET /api/platform/org/sinks` 外网可查(4 live 含 v5);platform 自纠仓名 404(chunxiaoxx/compass→nautilus-compass)
+- **2734 全闭环最后一步履约**:三正本关联段补机构注册端点行(sinks+两台账 GET 坐标)——commit 7bf423c7+push,**sha16 漂移报备回函 2937**(dd1ba24b/c72e9fc5/02a84c7e,raw 实测对表过,请刷新注册表)
+- 2934 组织级事项认领:日常 push 节奏防单点(R109-R116 九 commit 已零积压)
+- probe(15:13):信箱仅 2934 已处置;三外联静默;A100 空闲
+- 下轮第一件:外部回应面盯守(2937 刷新回执/2930 回执/#340)
+- M1:+0(闭环收尾件)
+
 ### R116 · 2026-10-04 15:08-15:2x(三外联盯守轮·全静默)
 - probe(15:08):信箱无未读;A100 真空闲
 - **三外联直查全静默**(gh api 直查非凭通知):letta-evals#340 open/0 评论(10/4 05:28 发,~10h);Graphiti #1950 open/0 评论(10/3 16:03);rsi-bench#1 最后评论 10/3 02:17(我方 replay 承诺)——仓 commits 最后 10/2 b0779bd(protocol v2),**无 next ticket 动静,replay 认证触发未到**
