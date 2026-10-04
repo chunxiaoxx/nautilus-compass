@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.3.0] · 2026-10-04 — 判分机构产品面(assay 子包)
+
+- **新增 `nautilus_compass.assay` 子包**(判分机构产品面首次 pip 可用):
+  - `assay.schema_v2` — Verdict Schema v2 校验器正本(自 tools/verdict_schema_v2.py 迁入,tools CLI 转薄壳):L1 结构/L2 语义/L3 锚定/L4 一致四级校验 + v1→v2 migrate;含 v2.1 EGR gap_report 接口(execution|data|judgment|capability × measured|inferred)
+  - `assay.submit` — assay 提交侧 schema(API 最小件):challenge 八件制式(#2981 三补:new_verdict nullable+confidence+cause_tag 四枚举)与 errata 勘误件(new_verdict 可空=仅撤回);纯 stdlib 零依赖
+- 证据三层纪律(measured/inferred/unverifiable)与判分两线定价(判读免费/装订收费)为 3.2.x 判分机构演进的产品化承载;判例档见 docs/cases/CASEBOOK_V1.md(案 1-12)
+- 版本四处一次对齐 3.3.0(pyproject/package.json/plugin.json;终结 3.2.0 起的漂移)
+
+## [3.2.0] · 2026-09-10 — (发布当日未留 CHANGELOG)
+
+- 2026-10-04 补记:3.2.0 发布于 PyPI(实测 releases 时间线);当日改动明细以 PyPI 元数据与 git 历史为准,此处不臆补。
+
 ## [3.1.2] · 2026-09-06 — PyPI 元数据修正
 
 - PyPI 页面 description 换掉 EvoMap 时代旧文案(旧文案仍写 retrieval-hit 80% / e2e 26.7%,与 9 月定案口径 0.890 / 75.4% 矛盾)——零代码改动,纯元数据刷新
