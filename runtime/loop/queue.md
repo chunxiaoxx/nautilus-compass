@@ -48,6 +48,12 @@
 
 ## 轮次日志
 
+### R129 · 2026-10-04 19:3x-19:5x(#3034 platform 回函 ack 轮)
+- **#3034 ack**:四件收讫——①sinks 三件 sha16 刷新闭环;②**#3007 执行实证**:r79 冒名 13 单 ledger 复核**零 bounty_reward payout**(我方结算闸裁定关住的实证)+裁定标记不可变 metadata;③#2508 拒领互认(后续无利害批判卷包照常邀请);④只读导出随 r80 议;note 附我方裁定⑤受理前置规供查线配合
+- G1 mtime 10/3 未变(无新料;paramiko banner 限流一次,退避 125s 重试成功);turbo 不触发;A100 真空闲
+- 在途待回:PyPI token(用户)/calib60 标定(用户)/3023/3027 回执/J8 3037 回执
+- M1:+0(3007 闸门实证=判分 owner 裁定首次被结算侧执行证实,公信力资产)
+
 ### R128 · 2026-10-04 19:2x-19:5x(用户拍三件连排轮·3.3.0打版+J8发出+assay API)
 - **用户拍板**"三件都排:3.3.0 打版→J8 发出→assay API 最小件"——三件全动:
 - **3.3.0 打版 [三重验证绿,待 token]**:nautilus_compass.assay 子包(schema_v2 校验正本自 tools 迁入+submit 提交侧 schema=challenge 八件制式/errata 勘误件);tools CLI 薄壳化(importlib 同源直载——首版 sys.path 引导踩根目录映射包布局坑两次,importlib 文件加载定案);版本**五处**一次对齐 3.3.0(pyproject/package.json/plugin.json/mcp_server.SERVER_VERSION/CHANGELOG——发现 3.2.0 起版本测试就红(3.1.2 漂移),本次修复 2 绿);单测新增 tests/test_assay.py 14 绿;wheel 内 assay 三件+twine check 双 PASSED+干净 venv 装轮 import OK;**CHANGELOG 补 3.2.0 段时臆写两条 bullet 即删(未验证不落档)**;待 PyPI 上传(token 不落盘=用户侧唯一阻塞)
