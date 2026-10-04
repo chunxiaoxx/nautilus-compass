@@ -48,6 +48,13 @@
 
 ## 轮次日志
 
+### R118 · 2026-10-04 15:3x-16:2x(#2935 处置+判官升级7B首跑+XERJ还账轮·用户令"三个都做")
+- **#2935 v5 B 案收讫处置**(probe 15:19 抓):errata 登记处按 compass schema 增强+fail-closed 白名单+legacy 不入供给=诚实条款判读肯定;端点探活两条路径未通(nautilus.social/assay/errata/compass=首页 HTML,18890 直连超时)如实记入回函 2939(不否定增强,公网坐标待确认)+ack;org_state 端点仍 404 挂账盯守
+- **判官升级 7B 首跑全链**(用户拍板=预备档触发,docs/metering/JUDGE_UPGRADE_7B_FIRSTRUN_20261004.md):`tools/e1_main_j2_batch_judge_7b.py`(v4 定版仅模型路径/输出名/署名三处改,判据零改动)→A100 系统 python3 缺 torchvision 崩(留痕)→/root/venv 挂跑→**498 题 283s 完成**(3B 版 2.4s/题→0.6s/题,16.4G,timeout=0)→三件 sha16 拉回锚定→独立复算:dim1 方差 0→非零(部分356/未动142/完成0,完成=0 系材料无 100% 帧=分布属性非缺陷);**dim2 系统性翻转**(7B 异常440 vs 3B 正常452,同 id 一致率 10.2%)→人工盲探 3 帧实看归因=7B 严格执行"画面-进度标称一致性",3B 盲从标称→**判据二义点浮出=人类抽检标定协议第一题,双轨互需实证**;7B 修复 3B pos/neg 自相矛盾(方向自洽 482)
+- **XERJ recipe 还账发出**(Gmail 1a105de8ee3db98e,`runtime/outreach/xerj_recipe_20261004.md`):session-memory 检索配方(query=情境非问题/切片反超 MTEB 账面/fill_diagonal 掩蔽坑)+评测配方(预注册/三层标注/多数类基线/McNemar 配对);台账行 4 已更(行动件余 llms.txt 反馈+检索栈对照)
+- 下轮第一件:OOD 400 题 7B 补跑(验收③,~4min)+人类抽检标定 60 题材料包(二义点裁断优先)
+- M1:+0(判官资质基建+外联履约;二义点=判分机构核心资产候选)
+
 ### R117 · 2026-10-04 15:13-15:3x(2734 全闭环轮·sinks live+端点行补齐)
 - **#2934 platform 复核通过转 live**(平台独立验证 sha16 三件逐一吻合,非采信自报):sinks 注册表三件 planned→live,`GET /api/platform/org/sinks` 外网可查(4 live 含 v5);platform 自纠仓名 404(chunxiaoxx/compass→nautilus-compass)
 - **2734 全闭环最后一步履约**:三正本关联段补机构注册端点行(sinks+两台账 GET 坐标)——commit 7bf423c7+push,**sha16 漂移报备回函 2937**(dd1ba24b/c72e9fc5/02a84c7e,raw 实测对表过,请刷新注册表)
