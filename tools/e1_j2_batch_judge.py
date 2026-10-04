@@ -19,16 +19,20 @@ PK = Path("/root/runtime/e1_judge_pack")
 ANS = PK / "j2_answers.jsonl"
 MODEL = None  # 自动探测 modelscope 缓存路径
 
-# 定位模型
-for cand in Path("/root/.cache/modelscope/hub/models").glob("Qwen/Qwen2.5-VL-7B-Instruct*"):
-    MODEL = str(cand)
-    break
+# 定位模型(modelscope 两代缓存布局都扫)
+for base in ("/root/.cache/modelscope/models",
+             "/root/.cache/modelscope/hub/models"):
+    for pat in ("Qwen--Qwen2.5-VL-7B-Instruct*/snapshots/*",
+                "Qwen/Qwen2.5-VL-7B-Instruct*"):
+        for cand in sorted(Path(base).glob(pat)):
+            MODEL = str(cand)
+            break
 assert MODEL, "模型未下载完"
 
 # 解析 blind_data.js
 raw = (PK / "judge_pack" / "blind_data.js").read_text(encoding="utf-8")
 m = re.search(r"samples:\s*(\[.*?\])\s*\}", raw, re.S)
-samples = json.loads(m.group(1).replace("'", '"'))
+samples = json.loads(m.group(1))
 print(f"[data] n={len(samples)}", flush=True)
 
 done = {}
