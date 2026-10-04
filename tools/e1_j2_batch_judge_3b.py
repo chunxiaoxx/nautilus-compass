@@ -12,6 +12,8 @@ import re
 import time
 from pathlib import Path
 
+from PIL import Image as PILImage
+
 import torch
 from transformers import AutoProcessor, Qwen2_5_VLForConditionalGeneration
 
@@ -80,7 +82,8 @@ with ANS.open("a", encoding="utf-8") as f:
             ]}]
             text = proc.apply_chat_template(conv, tokenize=False,
                                             add_generation_prompt=True)
-            inputs = proc(text=[text], images=[img], return_tensors="pt").to("cuda")
+            inputs = proc(text=[text], images=[PILImage.open(img).convert("RGB")],
+                          return_tensors="pt").to("cuda")
             with torch.no_grad():
                 out = model.generate(**inputs, max_new_tokens=80,
                                      do_sample=False, temperature=None)
