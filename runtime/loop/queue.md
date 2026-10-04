@@ -48,6 +48,14 @@
 
 ## 轮次日志
 
+### R128 · 2026-10-04 19:2x-19:5x(用户拍三件连排轮·3.3.0打版+J8发出+assay API)
+- **用户拍板**"三件都排:3.3.0 打版→J8 发出→assay API 最小件"——三件全动:
+- **3.3.0 打版 [三重验证绿,待 token]**:nautilus_compass.assay 子包(schema_v2 校验正本自 tools 迁入+submit 提交侧 schema=challenge 八件制式/errata 勘误件);tools CLI 薄壳化(importlib 同源直载——首版 sys.path 引导踩根目录映射包布局坑两次,importlib 文件加载定案);版本**五处**一次对齐 3.3.0(pyproject/package.json/plugin.json/mcp_server.SERVER_VERSION/CHANGELOG——发现 3.2.0 起版本测试就红(3.1.2 漂移),本次修复 2 绿);单测新增 tests/test_assay.py 14 绿;wheel 内 assay 三件+twine check 双 PASSED+干净 venv 装轮 import OK;**CHANGELOG 补 3.2.0 段时臆写两条 bullet 即删(未验证不落档)**;待 PyPI 上传(token 不落盘=用户侧唯一阻塞)
+- **J8 发出 [3037]**:verdict-judge 装载热路径三步申报+P4 判据预注册正本发 platform,deadline 10/11;档头状态更新"已用户明示";动工=申报回执后
+- **assay API 最小件**:随 3.3.0 交付(challenge/errata 纯 stdlib 校验,枚举与 verdict schema v2.1 同源)
+- 发版五连进度:四处版本✓→PyPI(等 token)→git tag→GitHub Release(后两环随上传后)
+- M1:+1(PyPI 3.3.0=判分机构产品面首次 pip 可用,M1 直通车供给侧;J8=RL 飞轮出题环节启动)
+
 ### R127 · 2026-10-04 19:0x-19:1x(quiet 轮·Casebook 案 12+案 8 扩展装订)
 - probe [ts 10-04 19:01]:信箱空(3023/3027 回执未回),无外部回应事件;G1 双链 mtime 10/3 未变(无新料);turbo 不触发
 - 取清单件:**Casebook 装订**——案 12 立(V4-J2 首判 established:承案 11 升格链+止损 a 双法 CI 复核首例+判别字段红灯自纠入判读惯例);案 8 扩展(r79 四裁合订+裁定①升 measured 对表+裁定⑤受理前置规冒名实锤);附录 A 增行 12(裁定档+判官档双锚)
