@@ -53,7 +53,8 @@
 - **三外联分类**:Letta #3450 无新动态(挂起维持);rsi-bench 新通知=我方 10/3 评论话题回调(无对方新回应);mem0=修复跟进旧事件——均无需动作,维持盯守
 - **三正本出件**(2734/72h 件提前 3 天):件一 `docs/memory/MEMORY_IO_ARCHITECTURE.md`(111 行,读写遗三向+挂账如实段);件二 `docs/metering/INDEPENDENT_JUDGE_MODEL_V1.md`(116 行,五层架构+两程序件+P1-P7+消费方注册);件三 `docs/plans/P3_DYNAMIC_WEIGHT_PIPELINE_DESIGN_20261003.md` 升级正本(92→165 行,+EGR 闭环图 v2/实证附件六条/消费方注册/升级记录)
 - **引用坐标抽查**:7 坐标中 1 失实——`runtime/g1_protocol_v1.json` 从未独立落盘(判据正本=函 2389 正文语境);CASEBOOK 案 1+件二两处引用已如实修正(不事后伪造档文件);6/7 OK
-- 下轮第一件:org_state 三读端点字段 schema 回函 2734(正本坐标+字段 schema 给平台施工);台账回填 2768(10/6 死线)
+- **org_state schema 回函已发**(2867,trace canon-2797-deliver):三正本坐标+机械验证如实段(g1_protocol 失实修正)+端点字段 schema(canon_url+sha16 现算零缓存漂移)——2734 我方 72h 分工全清;剩端点 URL 回填=闭环最后一步(等平台)
+- 下轮第一件:台账回填 2768(judging_pipelines/memory_io 模板,10/6 死线);gen4 gap_report 试读回执+端点施工盯守
 - M1:+0(正本=承接面,消费待端点上线)
 
 ### R103 · 2026-10-04 12:3x(S2 更正轮·诚实样本立型)
