@@ -48,6 +48,15 @@
 
 ## 轮次日志
 
+### R125 · 2026-10-04 18:0x-18:2x(V4-J2 首判 established 轮·判定主权行使第 2 演)
+- **#3013 处置(flywheel,J2演进启动+帧包上云,用户 10/4 批"两件都批")**:①**V4-J2 首判=established**——判据以 lock@fa866e4 我方 gh api 直拉原文为据(不采函面转述);drop96=0.3050,止损 a 复核 [实测] Newcombe paired CI95=[0.2118,0.3911]+bootstrap 同 i 配对(seed 20261004)=[0.2150,0.3900] 双法下缘均过 0.15 不触发;联合表 n11=89/n10=82/n01=21/n00=8 与判官档 McNemar b=82/c=21 逐位复核一致;止损 b/c 无触发;效果域限定照录(hp 粒度+B轨step2000,跨任务/跨基座不沿用)。裁定档 _r125_3013_j2_first_verdict.md,回函 **3023**+ack
+- **帧包四端验收 [实测]**:cloud:/opt/flywheel/deliveries/20261004_v4_j2_framepack/v4_j2_framepack.tgz sha256 前缀 c295e52d895561f9 逐位一致(我方经 cloud 独立读=第四端);取用方式明示=SSH cloud 直读已通;目视裁维持 R123 立场非必需
+- **G1 无新材料**:infer_summary.json(G 0.85/1.9861,B 0.825/1.7857,ΔJ1=+2.5pp)与 10/3 差分终判已判批次逐位一致,mtime 10/3 未更新——同批不重判,盯守转待新 ckpt;指令③文件名 summary.json 实为 infer_summary.json(照实录档)
+- **CI 计算红灯自纠**:首算把判别字段当通过率(联合表 p1=0.92≠0.855)——停,查字段语义(gold 阳性判定,accuracy=(TP+TN)/n),按 native==gold 判对指标重建,边联合与判官档逐位对上后才出数
+- turbo 不触发(已提取);A100 真空闲
+- 下轮第一件:3023 回执/3007/3008 盯守;用户战略总结问题(经验教训+具身数据飞轮+agent harness SFT+RL+评测飞轮+自研架构全链路一站式)作答
+- M1:+0(V4-J2 established=判分 owner 裁定第二演,resolution WARN 争议有了下游损害实证锚)
+
 ### R123 · 2026-10-04 17:31-17:5x(判分owner首裁+EGR双闭+勘误轮·三封齐清)
 - **#3002 v5 两锚复验 [实测] 双升 measured**:bf38be9d@nautilus-v5:customer-demo-ship-1 可达+**代码抽验过**(CAUSE_TAG_ENUMS 四枚举/CONFIDENCE_ENUMS/file_errata new_verdict str|None 逐项坐实,#2981 正式闭环);3aab513@Nautilus-agent/shared:prod-field-tree-v1 可达+assay/README.md 544B 在树;查错仓在我(#2996 未验证即断言 flywheel——对称教训记我方账)
 - **#2994 判分 owner 首裁出**(回函 3007+platform 通报 3008):①r79 13 条 score **整体不采信,结算闸门保持关**(prime 8 条 0.75 零方差+伪 fail 同档=脱钩实证 [推断,原始记录未独立拉,upgrade_path=导出对表];kairos 不可互译挂 U 态)②双判分器统一规即刻生效(单 evaluator+判据预注册先于判分,verdict 二值主判,分数只作 caveat)③伪 fail 三条追认隔离 ④f043 形态双标纳入四裁,prime 侧 0.55 作废(形态门前置)
