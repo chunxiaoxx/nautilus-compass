@@ -117,6 +117,9 @@
 - **claims**：[实测] 三案裁定逐条在档（DB 函件）；[推断] "邻接假关联比无用更有害"——训练燃料污染风险判断，upgrade_path=前置三条补齐后的新件送审可翻转。
 - **边界**：裁定不因供给可得性放宽（v5 自身初判与我方同结论，双向不为凑数开口子）；资本侧（对方如实报量级不凑数）判读方明示肯定入档。
 - **复算**：函 2537/2553/2572/2660/2667 正文（DB org_mailbox）+`tools/p3_delta.py` 白名单门源码。
+- **R123-R126 扩展(r79 批双判分器分裂合订)**:
+  1. **#2994 四裁**(回函 3007/通报 platform 3008):r79 13 条 score 整体不采信结算闸门保持关→**R126 升 measured**(v5 #3018 回呈 13 条明细对表逐项吻合:prime 3×0.92+8×0.75 零方差/kairos 0.25/0.30 不可互译/伪 fail 同档);统一规即刻生效(单 evaluator+判据预注册先于判分+verdict 二值主判);伪 fail 三条追认隔离;f043 形态双标 prime 侧 0.55 作废(形态门前置)。
+  2. **#3018 裁定⑤受理前置规**(冒名实锤:13 条 claimed_by=v5 但秒交 0.49-1.89s+asset 全 null+当事方自报零 claim 动作):claim→submit<60s 或 asset 缺失=受理即挂 U 态;主体脱钩=批级 U 态+通报 platform;prime 自家 31s OOD judge 单预挂 U 态。判分受理先验"谁 claim、谁交付、有无轨迹锚"。
 
 ## 案 9 · gen4 全卷判读案(判官双向接口首演+EGR 缺口回流首用)
 
@@ -169,6 +172,22 @@
 
 ---
 
+## 案 12 · V4-J2 首判 established 案(J2 升格后判定主权行使第 2 演+止损 a CI 复核首例)
+
+- **背景**:承案 11——V4-J2 当时 lock 明文 gradient evidence only 无判定权;用户 10/4 批"两件都批"(J2 演进启动+帧包上云,flywheel #3013 落地),新 lock(fa866e4)赋判定权并呈首判,判定主权归 compass(止损 d)。
+- **判据**:`v4_j2_criteria.lock.json` @nautilusflywheel@fa866e4(判官 gh api 直拉原文,不采函面转述)——drop96 ≥0.15 established / <0.05 not_established / else partial;McNemar 只作效应确证;四止损(a CI 下缘/b 模型换代/c 池污染/d 判定主权)。
+- **材料锚**:V4V2 复测判官档四件(案 10 同源,report 97baa15b/detail 0c7b3b1c/eval_set 5e89a66a/probe 825fe6dd);首判零新增算力(复用已出读数,lock budget 条款)。
+- **判读**(established,回函 3023):
+  1. [实测] drop96=0.8550−0.5500=0.3050 ≥0.15 门字面 established;联合表(判对指标)n11=89/n10=82/n01=21/n00=8 与判官档 McNemar b=82/c=21 **逐位复核一致**。
+  2. [实测] 止损 a 复核(首判呈请点名项):Newcombe paired CI95=[0.2118,0.3911]+bootstrap 同 i 配对(seed 20261004)=[0.2150,0.3900],双法下缘均 >0.15 不触发——首例把"配对差值 CI"从函面要求落到双法实算。
+  3. [推断→流程教训] 判官首算把判别字段(gold 阳性判定)误当通过率(p1=0.92≠0.855)——红灯停,查字段语义按 native==gold 重建,边联合对上方出数;判别型评测 accuracy=(TP+TN)/n 不是 pass 率,入判读惯例。
+  4. 止损 b/c 无触发证据;b/c 状态随批记档(c:v2 池零重叠+对齐零不一致承案 10 复验)。
+- **效果域限定**(lock effect_scope 照录):hp 任务粒度+B 轨 step2000 消费者画像+resolution 检 WARN 低分辨率集;跨任务/跨基座不自动沿用;resolution 维仍 report-only。
+- **verdict 正本**:裁定档 `runtime/loop/_r125_3013_j2_first_verdict.md` + 判官档 `runtime/v4v2_judge/v4v2_judge_verdict_v2.json`(双锚,案 10 compliant 承接)
+- **复算**:联合表/双法 CI 随裁定档表列;判官档 `python tools/verdict_schema_v2.py validate runtime/v4v2_judge/v4v2_judge_verdict_v2.json`。
+
+---
+
 ## 附录 A · verdict 正本与校验状态
 
 | 案 | 正本 | schema v2 |
@@ -184,6 +203,7 @@
 | 9 | `runtime/gen4_judge/gen4_v1_verdict_v2.json` | compliant（v2.1，gap_report 首用） |
 | 10 | `runtime/gen4v2_btrack/gen4v2_btrack_verdict_v2.json` | compliant（v2.1，EGR 回流首闭环） |
 | 11 | `runtime/v4_probe/v4_probe_verdict_v2.json` | compliant（v2.1，J2 判定权边界样本） |
+| 12 | `runtime/loop/_r125_3013_j2_first_verdict.md` + `runtime/v4v2_judge/v4v2_judge_verdict_v2.json` | （裁定档+判官档双锚） |
 
 ## 附录 B · 判读 SLA 与机构口径
 
