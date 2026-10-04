@@ -45,10 +45,8 @@ if ANS.exists():
             done[r["id"]] = r
 print(f"[resume] already={len(done)}", flush=True)
 
-from transformers import BitsAndBytesConfig
-bnb = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_compute_dtype=torch.bfloat16)
 model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
-    MODEL, quantization_config=bnb, device_map="cuda")
+    MODEL, torch_dtype="auto", device_map="cuda")
 proc = AutoProcessor.from_pretrained(MODEL)
 VALID = {
     "dim1": ["完成", "部分", "未动"],
@@ -63,7 +61,8 @@ PROMPT = """任务:{task}
 1.完成度 dim1(完成/部分/未动) 2.执行质量 dim2(正常/异常/无法判断) 3.置信 dim3(高/中/低)
 4.正问"任务完成了吗"pos(是/否) 5.反问"任务没完成对吗"neg(是/否)
 画面与任务对不上→dim2=异常;看不清→dim2=无法判断+dim3=低。
-只输出一行JSON:{{"dim1":"...","dim2":"...","dim3":"...","pos":"...","neg":"..."}}"""
+Answer in Chinese values. 输出格式(按画面实况选值):{{"dim1":"<完成|部分|未动>","dim2":"<正常|异常|无法判断>","dim3":"<高|中|低>","pos":"<是|否>","neg":"<是|否>"}}
+只输出一行JSON,不要任何其他文字"""
 
 t0 = time.time()
 with ANS.open("a", encoding="utf-8") as f:
@@ -78,7 +77,7 @@ with ANS.open("a", encoding="utf-8") as f:
         else:
             conv = [{"role": "user", "content": [
                 {"type": "image", "image": str(img)},
-                {"type": "text", "text": PROMPT.format(task=s["task_zh"], pct=s["progress_pct"])},
+                {"type": "text", "text": PROMPT.format(task=s.get("task_en") or s["task_zh"], pct=s["progress_pct"])},
             ]}]
             text = proc.apply_chat_template(conv, tokenize=False,
                                             add_generation_prompt=True)
@@ -90,7 +89,20 @@ with ANS.open("a", encoding="utf-8") as f:
             resp = proc.decode(out[0][inputs.input_ids.shape[1]:],
                                skip_special_tokens=True).strip()
             try:
-                j = json.loads(resp[resp.index("{"):resp.rindex("}") + 1])
+                import re as _re
+                blob = resp[resp.index("{"):resp.rindex("}") + 1] if "{" in resp and "}" in resp else resp
+                try:
+                    j = json.loads(blob)
+                except Exception:
+                    j = {}
+                    for k, pat in (("dim1", "完成|部分|未动"), ("dim2", "正常|异常|无法判断"),
+                                   ("dim3", "高|中|低"), ("pos", "是|否"), ("neg", "是|否")):
+                        mm = _re.search(rf'{k}"\s*[:：]\s*["“]?({pat})', resp)
+                        if mm:
+                            j[k] = mm.group(1)
+                    if not j:
+                        raise ValueError("no fields")
+                j = json.loads(json.dumps(j))
                 ans = {k: (j[k] if j.get(k) in VALID[k] else
                            ("无法判断" if k == "dim2" else VALID[k][0]))
                        for k in VALID}
