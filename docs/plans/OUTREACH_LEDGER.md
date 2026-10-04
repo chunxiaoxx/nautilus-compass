@@ -11,6 +11,7 @@
 | 3 | 2026-09-30 | TypeSafe(UniPat/EchoZ) | ①我们已公开分析其 headline(proof 不可寻址/同页双口径,X 帖 status/2105296550117458093) ②Jev=我们实测最稳的决策模型(latency 0.44s) ③回应权+复算 offer=M1 直接转化 | **Gmail** hello@typesafe.ai(官网一手邮箱,id 1a0f2ae379a7385d):公开分析知会+完整回应权+免费独立复算(判据冻结/errata 90天窗) | **已发,等回应** |
 | 4 | 2026-10-01 | XERJ/Ivan N(开源参考编码语料,Apache2.0 无公司) | ①他方主动:watch 检索/向量/agent-memory 域看到我们 commit 即来函邀约 ②同频:其实测(11/16 vs 16/16,26x)方法论与我们 TypeSafe 复算立场一致 ③开源贡献式营销(playbook 长期动作)首个实弹位 | Gmail 回复(gmail 1a0f58c89e092caa):应下贡献三件套(带复现的 issues 优先/hybrid scoring 小 PR/llms.txt 本周实测反馈)+一次性 offer 第三方复算其 11/16 数字 | **已回,等对方反应;我方行动件=跑检索栈对照+llms.txt 反馈** |
 | 5 | 2026-10-01 | Infistar(API 网关,跟进函) | 商务赞助跟进(原函 9/28 前后) | Gmail 回复(1a0f58c3e0ff51d5):四条款框架(中性位/实测先行 30 天 J1-J7/独立性披露/资质前置三项材料) | **已回,待对方三项材料** |
+| 6 | 2026-10-04 | Letta(letta-evals 重提交) | 原 #3450 发错仓(letta 主仓=landing page,AGENTS.md 明文禁 eval 类 issue,机器人 7 项校验自动关)——考古 issue-guard.yml+AGENTS.md/AI_POLICY.md 后定位正确归属仓 letta-evals(有 RubricGrader=LLM judge 路径,提案挂钩点) | GitHub issue letta-evals#340:三型判官失败分类+Casebook v1+免费复算 pilot(挂钩 multi-model-simple-rubric-grader example);第三方关系+AI 协助主动披露(此仓无强制,按我方判分机构一致性姿势带) | **已发(open 验证存活),等回应** |
 
 ## 纠偏记录
 
@@ -18,7 +19,7 @@
 
 ## 待发池(按匹配度)
 
-- Letta:Letta Evals(开源评测框架)判分协议互补提案
+- ~~Letta:Letta Evals(开源评测框架)判分协议互补提案~~(10/4 已发 letta-evals#340,出池)
 - LongMemEval 上游(xiaowu0162):T0 成绩册+判分协议贡献(合作姿态,N6 红线前置)
 - Latent Space:投稿已发(9/28,1a0e8ba1)——**周期内(1-2周)不催**,超期再定向函
 - Reddit r/LocalLLaMA:稿备(dcr_reddit_post_20260930)——10/1 09:00-10:00 北京发
