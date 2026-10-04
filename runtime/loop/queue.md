@@ -48,6 +48,16 @@
 
 ## 轮次日志
 
+### R114 · 2026-10-04 14:49-15:2x(V4 效用探针判读轮·双函处置+QC 问询)
+- **#2921 platform 复核回执**:三正本质量合格收讫但 3b7ddb5d 未 push(main HEAD=R108)→sinks 维持 planned,**push 后回函带 sha16 即转 live**;两台账已代合并上线(judging-pipelines 3 条+memory-io 1 条,GET 200 实测)——本窗口执行 push+回 sha
+- **#2925 V4 效用闭环探针送判→判读交卷**(判官<1h 惯例;V4=res_check/franka_diving 即 R113 所见 pipe_art 工件的实验链,已随函送判非无主件):材料验签——判据 lock+脚本 GitHub 2e0af3e 直取,report/detail/log/.v4_done **函报仓路径树内 404→实例侧取证**(52f9e72c/f5efce52/2d4b1af4/e1464b77);逐行复算零偏差(52/47/37 每 60);盲探 3/3 log 实读;replay delta=0.0 过门
+- **判读增量**:同帧配对 McNemar——native vs d128 **p=0.267 不显著**(较函申报 CI±9pp 口径更保守,128px 实质损害不足以单独宣称);native vs d96 p=0.011 显著(梯度坐实);形态=判别力渐失非多数类塌缩(d128 42/60 True 渐降)
+- **verdict=PARTIAL(schema v2.1 一次 compliant)**两件裁决:①J1 PARTIAL 成立零放宽+CI 保守计②J2 不升格(lock 无判定权不代赋权)——可作方向性发现入首报探索段(p=0.011+双 WARN 互证),结论宣称等扩样≥200 对;升格走判据演进程序
+- 回函 **2930**(re 2925,两裁决+材料缺口+产物落仓升级建议+**aloha_ins_qc_v0/xarm_qc_v0 送判与否问询**——用户拍主动问询项)
+- probe(14:49):GitHub bug(server) 通知=外部仓常规不处置;A100 真空闲
+- 下轮第一件:2921 sha 回执(转 live 确认)/2930 回执/letta-evals#340 盯守
+- M1:+0(组织内判读,EGR 第三发;QC 问询开具身采集线判读接口)
+
 ### R113 · 2026-10-04 14:42-15:0x(夜间盯守轮·两条通知辨旧+案 10 装订)
 - probe(14:42):信箱 #2905(**补 ack**,R112 已回函 2918);GitHub 两条 Proposal 通知——**辨旧**:rsi-bench#1 最后评论 10/3 02:17(我方 replay 承诺,对方 AGG fix #3 已在 R108 处置)、letta#3450 自动关 10/3 16:02(发错仓已知)——均非新回应,标记已读;letta-evals#340 实测 open/0 评论,维持守
 - G1 触发检查:paramiko 首连 banner 限流→退避 125s 重试成功——g1_infer_G/B summary.json **已不存在**(收官清理,无新 G1 材料);pipe_art 下见 flywheel 具身线新工件(aloha_ins_qc_v0/xarm_qc_v0/franka_diving_v1-v2/resolution_check_v1,10/4 12:58-14:16)——**无送判函不抢判**(材料派发进纪律),如实记

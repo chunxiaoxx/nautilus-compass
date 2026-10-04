@@ -1,0 +1,29 @@
+{
+  "case": "v4_utility_probe",
+  "version": 1,
+  "frozen_at": "2026-10-04",
+  "approved_by": "user_midturn_20261004",
+  "basis": "docs/plans/2026-10-04-v4效用闭环探针预注册草案-v0.md",
+  "carrier": {
+    "model": "gen4_v2 B-track ckpt step2000 (numeric sort)",
+    "eval_pool": "/root/vdd3/gen4_v2/eval_set.jsonl (60 pairs, held-out, shared with gen4_v2 J1b)"
+  },
+  "manipulation": {
+    "variable": "input image shortest side only, LANCZOS",
+    "arms": {"native": "original", "d128": 128, "d96": 96},
+    "labels": "unchanged (native-frame MediaPipe weak gold)"
+  },
+  "criteria": {
+    "V4_J1": {
+      "metric": "acc_native - acc_d128 (hand_present match)",
+      "verdict": {"established": ">=0.15", "not_established": "<0.05", "partial": "in between"}
+    },
+    "V4_J2": {"metric": "acc_native - acc_d96", "role": "gradient evidence only, no verdict"}
+  },
+  "self_checks": {
+    "native_replay": {"ref": 0.8667, "tolerance": 0.03, "on_violation": "probe RED, stop, falsify probe first"},
+    "blind_probe": {"spec": "d96 vs gray image, outputs must differ", "n": 3, "gate": "3/3"}
+  },
+  "anti_replay": ["numeric ckpt sort", ".v4_done lock + self-check exit", "incident run preserved verbatim", "no retro-edit; adjudication via compass (merged with gen4_v2 dispatch)"],
+  "sha16_note": "this lock is the frozen criteria; report must cite this filename"
+}

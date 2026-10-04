@@ -1,0 +1,34 @@
+{
+  "case": "gen4_v2_btrack",
+  "frozen_at": "2026-10-04 13:30:00",
+  "frozen_by": "user 2026-10-04 拍板（B 轨发车令）",
+  "hypothesis": "H2 任务粒度过细：四维语义 JSON 生成超出当前可达粒度；降级二分类后 7B 可过最低判别线",
+  "task": "帧图输入→结构化二值输出 {\"valid_frame\": bool, \"hand_present\": bool}",
+  "criteria": {
+    "J1b": "valid_frame+hand_present 二分类 match rate >= 0.85（弱任务 60 对金标 eval，draft 预注册口径）",
+    "stop_loss": "J1b < 0.70 → 根因非数据量，任务定义回炉，不进 A 轨",
+    "J3b": "部署口径（vLLM）另行单测，不作能力判据",
+    "caveat": "弱任务金标仅 60 对，95% CI ±~9pp@0.85——过线读数按'初步通过'申报，扩 eval 集入 A 轨"
+  },
+  "data": {
+    "train": "教师 flash_v3 标注 50 对（valid_frame+hand_present 字段二值化）",
+    "eval": "弱任务 60 对（hand_present MediaPipe 金标）+教师 50 对 vf 自测",
+    "leakage_note": "弱任务集仅作 eval 不入训练；教师集仅自测口径非 held-out，如实注记"
+  },
+  "train_recipe": {
+    "base": "Qwen2.5-VL-7B QLoRA 4bit r16",
+    "steps": 2000,
+    "note": "同 v1 配方；prompt 改二分类判别指令，输出二值 JSON"
+  },
+  "anti_repeat": [
+    "盲答探针：训练前后各跑 3 样本图像传递链验证（v1 盲答 bug 教训）",
+    "watcher 启动锁：条件触发前查 /root/vdd3/gen4_v2/.eval_launched（v1 三连重触发教训）",
+    "eval 完成自校验退出：产物落盘+进程 exit（v1 残骸 4.5h 教训）",
+    "判据与训练目标同口径：二分类判二分类（v1 J1 口径错位教训）"
+  ],
+  "chain": {
+    "draft": "docs/plans/2026-10-04-gen4-v2-新案预注册草案-v0.md",
+    "verdict_v1": "compass 函 2788 gen4_v1_verdict_v2.json（PARTIAL+gap_layer=data）",
+    "criteria_lock_sha16": "TBD_AFTER_COMMIT"
+  }
+}
