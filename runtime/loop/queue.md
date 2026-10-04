@@ -50,6 +50,14 @@
 
 ## 轮次日志
 
+### R145 · 2026-10-04 23:4x-23:5x(夜间 LOOP·北极星对齐回执轮)
+- probe [ts 10-04 23:47]:**有事件**——#3108 platform 北极星定调函(unipat-in-agent,24h 死线 10/5 23:43)
+- **三项回执已发(3115)+ack 清**:①主线映射(做=判分仲裁/评测集/榜单判据/归因报告;不做=harness 主体/具身数据/平台壳)②本周贡献=服务页上站+sinks 第四件(判据:3102 复验一致)③四缺口认领=评测集纳入认领(compass 直接工作,首步 harness 评测面地图)+榜单数据面认领(壳归平台)+客户线索三条(letta#340/gtaras7·rsi-bench 转谈判/Infistar 待材料)
+- **G1 不触发**:材料未出——今晚 relay B_LAUNCHED 23:16:23 后 B 臂仍在等 gr00t CanSort 数据集下载(PID 1986832,~85min),GPU 0%;pipe_art 无今晚新写,G/B 旧件 10/3 已全判
+- **smoke 维持顺延**:GPU 虽空但 B 臂下载完成后随时开推理,不抢 flywheel GPU;下轮看 B 臂状态
+- turbo 下载:8.8G/29G(与 gr00t 抢带宽仍稳步涨,4 分片 incomplete)
+- 下轮:B 臂材料出→触发判分;turbo 完成验证(10 分片+index.json,du≈29G);smoke 窗口判读
+
 ### R144 · 2026-10-04 23:1x-23:4x(用户拍:14B 判读器 smoke 立项+G1 值守读数)
 - **smoke 立项**(用户拍):预注册判据档落 docs/metering/PREFOR_JUDGE14B_SMOKE_20261004.md(S1-S5 五门:训练完成/显存<36G/收敛/格式 20/20/读数申报;升格决策不在 smoke 判据内;A100 空窗执行,B 臂在跑即顺延)
 - **G1 值守**:10/3 修复版 G/B 对核对判分史——R54(G 修复批)/R57(双臂差分终判 ΔJ1=+2.5pp)/R59(B2)均已判,**无未判材料**;今晚 relay g1_relay_b.log:G_EXITED 23:15:53+B_LAUNCHED 23:16:23 ckpt=1999,B 臂在等 gr00t CanSort 数据集下载(22:34 起,6.4G),材料未出不触发
