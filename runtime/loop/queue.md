@@ -48,6 +48,14 @@
 
 ## 轮次日志
 
+### R116 · 2026-10-04 15:08-15:2x(三外联盯守轮·全静默)
+- probe(15:08):信箱无未读;A100 真空闲
+- **三外联直查全静默**(gh api 直查非凭通知):letta-evals#340 open/0 评论(10/4 05:28 发,~10h);Graphiti #1950 open/0 评论(10/3 16:03);rsi-bench#1 最后评论 10/3 02:17(我方 replay 承诺)——仓 commits 最后 10/2 b0779bd(protocol v2),**无 next ticket 动静,replay 认证触发未到**
+- 纪律:48h 窗内不追不重发;#340/#1950 继续守
+- 无其他事件;被动挂账:sinks 转 live(等 platform 复核 2931)/2930 回执(flywheel)/端点行补填(等 live 回执后一次到位)
+- 下轮第一件:外部回应面盯守
+- M1:+0
+
 ### R115 · 2026-10-04 15:04-15:2x(夜间 quiet 轮·案 11 装订)
 - probe(15:04):信箱无未读;GitHub 三外联静默(letta-evals#340/2930/2931/2921 均待回,被动守);A100 段 probe SSHException(限流)→退避 125s paramiko 重试成功
 - G1 触发检查:g1_infer_G/B summary.json 确认已清,无新 G1 材料;pipe_art 无新工件(aloha/xarm 问询函 2930 待回);A100 真空闲 0%/14MiB
