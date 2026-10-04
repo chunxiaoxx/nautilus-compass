@@ -136,6 +136,22 @@
 - **verdict 正本**:`runtime/gen4_judge/gen4_v1_verdict_v2.json`(schema v2.1 compliant,gap_report 首个实弹)
 - **复算**:`python tools/verdict_schema_v2.py validate runtime/gen4_judge/gen4_v1_verdict_v2.json`;eval.log 逐条计数脚本与底稿在 runtime/gen4_judge/(闭环函 2791)。
 
+## 案 10 · gen4_v2 B 轨二分类判读案(EGR 回流首闭环+多数类基线 caveat)
+
+- **背景**:案 9 EGR gap_report{gap_layer=data, suggested_fuel=任务降级二分类}回流后,flywheel 产出 B 轨降级案(同 200 对教师数据,四维语义 JSON 生成→valid_frame+hand_present 二分类 LoRA)送判(#2905)。判官双向接口"缺口报告出→材料按缺口建议回流→再判"的第一次完整走环闭环。
+- **判据**:gen4_v2_btrack_criteria.lock.json(sha16=`82b3cef1212db956`,2026-10-04 13:30 用户拍板冻结)——J1b valid_frame+hand_present 二分类 match rate≥0.85(60 对弱任务,CI±~9pp caveat 按初步通过申报)/止损线 J1b<0.70 不进 A 轨。
+- **材料锚**:eval_report.json `37f71237cf98d125` / 事故卷 eval_report_step500_invalid.json `88943387d8557611` / eval_step2000.log `ad1b0bce9136fda6` + eval.log `ddbbd85da2963a70`(**函申报仓路径在 commit 7e05d2c 树内缺席,判官实例侧 /root/vdd3/gen4_v2/ 同 sha 取证,材料缺口如实告知**)/eval_set.jsonl 60 行。
+- **判读**(verdict=PARTIAL):
+  1. [实测] J1b=0.8667(52/60)≥0.85 过线——log 逐条计数独立复算与自报零偏差(两卷四读数),金标交叉 60/60(首验假绿已纠:eval_set 无 id 字段,改行序对齐),盲探正卷 3/3。
+  2. [实测] **多数类基线 0.7833(材料方未报,判官补测)**:金标分布 47/60 全 True。正卷对基线增益单尾 p=0.0739 不显著,Wilson 95% CI=[0.7583,0.9309] 覆盖基线——60 对弱标集无法区分"学会判别"与"偏向多数类",caveat 实质化,"初步"权重大。
+  3. [实测] **H2 主因定谳**:同 200 对数据,B 轨 0.8667 vs v1 四维生成 0.04——任务粒度过细=v1 失败主因实证;案 9 gap 排序修正(H2 主/H1 降次)。边界:只证"四维生成超当前粒度",不证"二分类已吃满数据"。
+  4. [实测] step500 事故卷(ckpt 字典序 bug `step2000`<`step500` 致错卷)完整留档未删,盲探 0/3+weak 0.5667 与正卷对照构成训练过程证据——如实申报纪律正面记档(material_side_honesty 同型)。
+- **三件裁决**(回函 2918):①J1b 初步通过成立(判据零放宽+caveat 并陈,终判=人工金标抽检 20-50 例+扩集≥200 对)②H2 定谳③A 轨暂不发车(建议顺序=判例→金标抽检接判官市场→粒度阶梯新案按需发车)。
+- **EGR 二发**:gap_report{gap_layer=data:评测集侧缺口(弱标=MediaPipe 自动口径未标定+样本量)}——suggested_fuel 三条,confidence=measured。
+- **边界**:多数类基线对照作 caveat 权重证据并陈,不进判定(判据零放宽,lock 语义=点估计过线+CI caveat);抛硬币基线 0.5 vs 多数类 0.7833 口径在函件中精确化(函称事故卷"≈随机基线"需勘正)。
+- **verdict 正本**:`runtime/gen4v2_btrack/gen4v2_btrack_verdict_v2.json`(schema v2.1 compliant;含 statistics 段——verdict.text 提及显著性数字即触发 L4 检查的机构自律样本)
+- **复算**:`python tools/verdict_schema_v2.py validate runtime/gen4v2_btrack/gen4v2_btrack_verdict_v2.json`;log 逐条计数脚本随 runtime/gen4v2_btrack/(log 本体实例侧锚 sha16)。
+
 ---
 
 ## 附录 A · verdict 正本与校验状态
@@ -151,6 +167,7 @@
 | 7 | 函 2551/2568/2574（DB） | （程序档） |
 | 8 | 函 2553/2572/2660/2667（DB） | （裁定档） |
 | 9 | `runtime/gen4_judge/gen4_v1_verdict_v2.json` | compliant（v2.1，gap_report 首用） |
+| 10 | `runtime/gen4v2_btrack/gen4v2_btrack_verdict_v2.json` | compliant（v2.1，EGR 回流首闭环） |
 
 ## 附录 B · 判读 SLA 与机构口径
 
