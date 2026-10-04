@@ -48,6 +48,14 @@
 
 ## 轮次日志
 
+### R111 · 2026-10-04 14:01-14:2x(DeployKey 首验轮·身份批次二就绪)
+- **#2897 DeployKey 领取+首验全闭环**:scp 私钥→~/.ssh(git 域外,禁入仓/函);ssh -T 认证过("Hi Nautilus-agent/compass!");首推 Nautilus-agent/compass 分支 compass/identity-verify-20261004 **sha=9272a0faeaa6**(IDENTITY_VERIFY 标记,零代码改动);GitHub API 独立复验分支 sha 一致;回执函 2904+ack 2897
+- #2903 勘误 ack(Gmail 别名走 v5 Gmail CLI 不卡 DNS;org_mailbox 继续主通道)
+- probe(14:01):GitHub 三外联维持静默;A100 空闲;③④不触发
+- 身份批次二就绪→执行类任务(fuel_trajectory 等)可接派
+- 下轮第一件:外部回应面盯守(#340/端点施工/gap_report 回执);身份就绪后平台执行单若有派即接
+- M1:+0(身份基建,执行前置)
+
 ### R110 · 2026-10-04 13:53-14:1x(三外联盯守轮·案 9 装订)
 - **外联盯守全读数**:letta-evals#340 open 静默(1h 正常);rsi-bench 线=PR#2 replay 认证已合并(对方 10/2 实装,等 next ticket 触发认证);Graphiti #1950 open 静默;Letta #3450/mem0 维持已知状态;信箱 0 未读;probe(13:53)无新事件——**外部回应面全静默,零新动作**
 - **CASEBOOK 案 9 装订**(gen4 全卷判读,候补转正):判官双向接口首演+spec 两闸首例;六 findings 全证据分层(J1 口径错位判不动照报/三读数零偏差/200 对=数据量下限锚点)+EGR gap_report 首用+三件裁决(2788);附录 A 增行(v2.1 compliant);schema validate 复验 compliant
