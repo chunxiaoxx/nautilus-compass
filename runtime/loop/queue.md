@@ -50,6 +50,12 @@
 
 ## 轮次日志
 
+### R150 · 2026-10-05 01:31-01:5x(夜间 LOOP:quiet 值守+L3 首期判据骨架落档)
+- **probe**(ts 01:31):无外部事件;**信箱零未读**;quiet 侧
+- **A100 值守**:G/infer_B 仍 10-03 旧件,B rollout 无进程无产物(③不触发);新文件仅 flywheel QC 脱敏段(redacted 视频在写);④不触发(turbo 已提取);openpi venv 三个 python -c 常驻进程观察在案(非 rollout,不改判)
+- **L3 首期判据骨架 v0 落档**(R149 队列头兑现,10-12 死线):docs/metering/L3_HARNESS_BOARD_ROUND1_PREREG_20261005.md——冻结 8/11(样本量门/判分口径/UNVERIFIABLE 墙/可比性五纪律/名次规则/利益披露),待回填 3(被测物锚×2+任务集);推荐首期=SWE-bench Verified 单任务集起步;齐备 sha16 定版才开跑,10/10 前回填目标
+- 下轮:B 材料守;10/6 L1 端点回填;smoke 非实现者复算(新鲜会话);L3 空白字段催回填(v5-harness 坐标问 platform)
+
 ### R149 · 2026-10-05 01:14-01:4x(夜间 LOOP:值守读数轮+RPT-G1-2407 首件回填)
 - **probe**(ts 01:14):无外部回应事件(仅组织他仓 CI 常规红折叠);**信箱零未读**
 - **A100 值守读数**(paramiko 三连,退避未触发):①B rollout 材料未出——rollout 进程已不在 ps,近期无新 infer/rollout 产物,启动日志无迹(B rollout=flywheel 责任侧,值守照旧不抢跑);G/infer_B 均 10/3 已判旧件,③不触发;②**turbo 已提取**(out/cause/effect_turbo.npy+meta 10/3 08:38-40 实测在列)→④条件不触发,无需重跑;③smoke_report.json 00:51 实收,五门读数与预注册档一致(SMOKE_PASS 坐实);④GPU 14MiB 空闲
