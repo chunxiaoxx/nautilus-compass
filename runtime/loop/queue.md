@@ -50,6 +50,14 @@
 
 ## 轮次日志
 
+### R137 · 2026-10-04 21:3x-22:2x(夜间 LOOP·A1 主线 M4 核查轮+探针病自纠实录)
+- probe [ts 10-04 21:32]:信箱空(3065/3066/3037/3053/3054 无回执);A100 真空闲(0%,SSH 通无限流)
+- G1 [实测]:两 infer_summary.json mtime=10/3 09:21/10:48(R134 勘误坐实:实文件名 infer_summary.json),与已判材料同批无新批——不判卷不回传
+- **M4 核查(主线件)**:①letta-evals#340=open/0 评论(挂起正常);②rsi-bench **存活**[实测](sunghunkwag/rsi-bench pushed 10/2+PR#2 merged 10/2+issue#1 6 评论)——**中途误判"gtaras7/rsi-bench 404"=查错 owner 的探针病**(把 gtaras7 线与 rsi-bench 线混为一人),出结论前复核翻案并三处回改(主线档/记忆);错误全程留档=勘误双向纪律自用第 N 演
+- gtaras7 新事实入记忆:名下现役仓=typesafe-jev(9/17 建,10 星,CV 筛选决策模型)
+- turbo 不触发;M2 三杠杆仍待用户拍;quiet 之外唯一实质件=M4 状态定谳
+- 下轮第一件:回执群(3053/3054/3037/3065/3066);calib60 待用户交回;M2 杠杆拍板
+
 ### R136 · 2026-10-04 22:0x-22:1x(push 三枚+架构主线立档·用户指令)
 - push 7caa63d2/2eb6827a/7fde2e93 三枚上 origin/main(远端实读验证)
 - **架构主线立档(用户拍板列为持续推进)**:正本 docs/soul/mainline_architecture_20261004.md——公式"智能=压缩×验证×因果倒置"三件产品映射表(compass=记忆+验证仲裁/assay=提交勘误协议/jev=判分燃料与标定)+因果倒置载体=动态权重小判分器(P3 六段+反自指护栏)+**M1-M6 滚动清单**(J8 装载/P3 燃料/判例集装订/assay 扩散/记忆门合入/判官语料)+判分纪律五不变式;queue 队列头加 A1 主线常驻件;记忆 architecture-mainline-20261004 入 MEMORY.md
