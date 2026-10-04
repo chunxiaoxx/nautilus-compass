@@ -50,6 +50,13 @@
 
 ## 轮次日志
 
+### R149 · 2026-10-05 01:14-01:4x(夜间 LOOP:值守读数轮+RPT-G1-2407 首件回填)
+- **probe**(ts 01:14):无外部回应事件(仅组织他仓 CI 常规红折叠);**信箱零未读**
+- **A100 值守读数**(paramiko 三连,退避未触发):①B rollout 材料未出——rollout 进程已不在 ps,近期无新 infer/rollout 产物,启动日志无迹(B rollout=flywheel 责任侧,值守照旧不抢跑);G/infer_B 均 10/3 已判旧件,③不触发;②**turbo 已提取**(out/cause/effect_turbo.npy+meta 10/3 08:38-40 实测在列)→④条件不触发,无需重跑;③smoke_report.json 00:51 实收,五门读数与预注册档一致(SMOKE_PASS 坐实);④GPU 14MiB 空闲
+- **顺带实测(flywheel 侧观察,不越权)**:gr00t CanSort QC **1206/1206 全 PASS 零 WARN**(gr00t_gr1_qc_v0,v0.3.1 深格式适配首跑;QC 进程仍在跑分辨率段);set14_chain 启动(0 字节);phi/smolvlm/internvl 下載 log 在(10/4 晚)
+- **RPT-G1-2407 归因首件回填**(用户拍"制式化优先"兑现):docs/metering/RPT-G1-2407.md 八段全——P1-P5 现象三层标注/归因链定谳"数据层为主+判据层联动,未指向模型层"/三修复建议全验收/反证两条(初判先证伪自己+B2 时间戳核对)/消费记录四条实测(三修全采纳+#2413 对齐+same_form_watch 挂账确认+语义实验回档主);制式档状态行同步;**待非实现者复算后入判例集 v1.2**
+- 下轮:B rollout 材料守;10/6 L1 端点回填;smoke 非实现者复算(需新鲜会话);L3 期判据(v5-harness+第二 harness)
+
 ### R148 · 2026-10-05 01:0x-01:4x(LOOP 大轮:平台六函+gmail 合作+L1 交付+smoke PASS)
 - **信箱六函全清**(probe ts 01:00):#3116 北极星批(L1 owner=compass,10/8;L3 榜 10/12)→认领回函 3152;#3123 v5 编制表广播→回执 3151(岗位无异议,纪律四条接受);#3126 L1 端点就绪→注记提前交付(3154);#3128 催办→说明 3115 系我方发函(3153,建议 sent/received 两列);#3132 v5 sha16 勘误认领→定格确认 3150(树内 bd81dca2 为正本锚,判绩账双向正向案例);#3137 榜单判据入册第 6 件+服务页第 5 件→ack(续验 11/3、11/4 入队列)
 - **gmail 合作件处置**:XERJ(Ivan)热情回信邀公开提交→已回信+开 Issue **xerj-org/xerj#1138**(两 recipe:session-memory 检索+预注册复算,corpus wishlist 内嵌);PMF 客户线索型采用案例
