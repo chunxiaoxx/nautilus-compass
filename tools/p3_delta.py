@@ -35,6 +35,10 @@ FINGERPRINTS = DELTA / "accepted_hashes.json"
 
 WHITELIST = {"independent_recompute", "human_review", "official_rule",
              "three_vendor_final"}
+# domain 门槛(2026-10-04 用户拍 errata 活水轮新增,更严不追溯):
+# 件若自带 domain 字段,必须属判读域;叙事/活性类(state_narrative 等)不入燃料
+# (delta_0003 S2 移出案的制度化——manifest_delta_0003.erratum.md)。无 domain 字段=老格式,放行。
+JUDGMENT_DOMAINS = {"artifact_judgment", "judge_output", "judge_verdict"}
 
 
 def load_fingerprints() -> set:
@@ -75,6 +79,11 @@ def main() -> int:
             if row.get("label_origin") not in WHITELIST:
                 rejected += 1
                 fps.add(h)  # 拒绝件也记指纹,防反复投递反复计数
+                continue
+            dom = (row.get("artifact") or {}).get("domain") or row.get("domain")
+            if dom is not None and dom not in JUDGMENT_DOMAINS:
+                rejected += 1
+                fps.add(h)
                 continue
             fresh.append(row)
             fps.add(h)
