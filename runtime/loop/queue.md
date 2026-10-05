@@ -50,6 +50,12 @@
 
 ## 轮次日志
 
+### R194 · 2026-10-05 19:0x(推进轮:dockerhub 直连拉镜像卡死→daocloud mirror 修复,评测正式健康)
+- **诊断链 [实测]**:A 臂评测 20min 0 容器 0 完成(磁盘+5.8G=layer 在拉但极慢,dockerhub 直连国内不通畅)→决定配 mirror 重启;首杀不净(旧 containerd 残留→新 dockerd "timeout waiting for containerd"半死)→**restart_eval.sh 脚本化**:杀净(dockerd/containerd/shim 两轮 pkill+9)→带 --registry-mirror https://docker.m.daocloud.io 重启→**验证循环(docker info OK 才继续,修上轮"daemon 未就绪即重跑评测秒退"时序错)**→评测重跑
+- **修复后健康 [实测]**:DOCKER-READY+mirror 生效;首个实例 **pylint-4661 1 ran successfully, 0 failed**(镜像 2.82GB 拉+测试跑通,~4min/题);rest 批 15 题预计 ~1h,后接 django 批
+- **B 臂 [实测]**:task_27 完成(28 目录剩 2 题在跑);B 模式稳定:几乎全 LimitsExceeded@50(patch 时有时无)
+- M1:+0(判分链推进)
+
 ### R193 · 2026-10-05 18:3x-18:5x(值守轮:A 臂评测首跑炸+同轮修复重跑)
 - **probe(18:35)**:quiet(信箱 0 未读)·CI 折叠·A100 GPU 空闲(评测吃 CPU 不冲突)
 - **A 臂评测首跑炸 [实测]**:swebench 5.0.2 `KeyError: 'image'`——make_test_spec 从数据集行读 image 列,**princeton-nlp/SWE-bench_Verified 无此列**;同轮修复:探得 **swe-bench/SWE-bench_Verified(官方 org 镜像数据集)自带 image 列**(500 rows 已验)→eval_runner.py sed 换数据源→重跑;**修复后健康**:rest 批 16 题(Running 15=空 patch 1 题跳过),容器拉镜像中;附带坑:SSH nohup 后台任务通道挂起(输出重定向+<dev/null 姿势,重连验证法)
