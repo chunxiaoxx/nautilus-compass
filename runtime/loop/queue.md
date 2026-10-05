@@ -50,6 +50,12 @@
 
 ## 轮次日志
 
+### R209 · 2026-10-06 00:31-00:4x(夜间 LOOP:quiet 信箱;B 臂 rest 批 report 收割)
+- **probe(00:31)**:信箱 0 未读(#9854 已闭环)·CI×50 折叠·A100 无计算进程(GPU 空;评测进程健在)
+- **B 臂 rest 批 report 收割 [实测]**(l3r1b_..._rest.json 23:38 落盘,拉回 _r198_judging/b_rest_report_b.json):**resolved 2**(xarray-3151/sklearn-14141)/unresolved 3/error 5/**empty_patch 6**(合计 16 ✓);**sphinx-8475 双臂皆 error=镜像 EOF 双臂复现坐实,补跑对齐候选+1**;B 臂空 patch 6 vs A 臂 1=mini-swe-agent LimitsExceeded 打满无产出行为(与 smoke 信号一致)
+- **B 臂 django 批在跑**:5/11(45%,~305s/题),预计 ~01:15 完;全量合并 Round 1 读数+榜页填数留收官轮
+- M1:+0(判读链核心读数半程到手;读数以全量为准不半程填榜)
+
 ### R208 · 2026-10-06 00:2x-00:4x(用户插话:代号 v1 批次否决→v2 批次;metis 融合;#9854 域意见闭环)
 - **用户否决 v1 代号批**(Chamber/Sextant/Assayer/Arbiter:未体现动态权重×压缩×验证×因果倒置的关联)→**v2 批次落白皮书骨架**:NACRE ★推荐(**N**ovelty-gated **A**djudication via **C**ompression & **R**egistered **E**volution——全称一句即公式,三支柱+动态权重+防自指全显式编码;珍珠母=nautilus 壳材质本身,生物矿化=增量固化同构)/Gnomon(自相似增量件=零翻转门几何同构)/Tessera(结义信物对合验证)/中文备选「溯衡」;撞名风险待白天工具窗查
 - **metis 深度吸收落档**:白皮书骨架新增 §二·五(MemoryTensor Metis 对照:四同构四分野+吸收四点)——核心=借"-native"造词权立 **Judgment-Native(判分原生)** 品类(如 Metis 之于 memory)+尺寸阶梯开源策略+三层商业化+中立层定位句式;分野=Metis 记业务经验(被验证方生态),我们压判分纪律(验证方,品类空位仍在)
