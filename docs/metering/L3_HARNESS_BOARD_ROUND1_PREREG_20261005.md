@@ -23,9 +23,15 @@
 
 1. **工具面差异(v5 LocalSandbox: str_replace_editor+submit 无 shell vs mini-swe-agent 容器全工具)=harness 本体差异的一部分,属被测能力,如实披露不惩罚**——harness 对比测的正是各 harness 在给定模型下的编排/工具运用;但 v5 已明示此为"容器化全工具 agent 横比下位配置",榜面 caveat 如实转述:**Round 1 读数不代表 v5 全能力,解读须带此披露**;
 2. **模型必须同**(MiniMax-M3 系双臂同网关)——模型不同=不可比,按纪律 1 降级单臂,不并榜;
-3. **max_steps=25 双臂同**(A 臂已钉,B 臂对齐);
+3. **max_steps=50 双臂同**(R177 smoke 暴露 25 偏紧(B 臂 10/10 打满零提交),用户 2026-10-05 拍板双臂同步放宽至 50——判据演进程序:开跑前修订+判绩账记档,开跑后不得再动;初版 25 的裁定史留档);
 4. 采样参数开跑对齐时钉死并双臂同,钉死后入档不得再动(纪律 5:中途换判据=该期作废)。
-5. **采样参数钉死(R171,2026-10-05)**:model=MiniMax-M3 系(v5 网关)/temperature=0/top_p=1(贪心,SWE-bench 对比惯例)/max_steps=25 双臂同;max_tokens 等其余=harness 各自默认,开跑时如实记录(默认参数差异=harness 本体差异,披露不惩罚,同配置差裁定 1)。
+5. **采样参数钉死(R171,2026-10-05;R177 演进 max_steps 一项)**:model=MiniMax-M3 系(v5 网关)/**max_steps=50**/temperature=0/top_p=1(贪心,SWE-bench 对比惯例)双臂同;max_tokens 等其余=harness 各自默认,开跑时如实记录(默认参数差异=harness 本体差异,披露不惩罚,同配置差裁定 1)。
+
+## 正榜题源(R177 演进,2026-10-05)
+
+- smoke 用的 heldout30(repo 分布 astropy 19+django 11=2 repo)**分布偏,不作正榜样本**;
+- 正榜 Round 1 题源=**SWE-bench Verified 分层抽样 n=30(按 repo 比例配额,固定 seed 入档)**,双臂同题面(ENV 行注入同 smoke 配方,harness 代码零改动);n=30 达名次区门槛(N4),剩余 470 题滚动扩样(榜页如实标 n);
+- 全 500 题滚动目标不变(任务集口径=Verified 500 resolved%,n 滚动披露)。
 
 ## 任务集选择(✅ 2026-10-05 已拍=SWE-bench Verified 单集起步,platform 3194 函确认;下文推荐理由留档)
 
@@ -48,7 +54,8 @@
 - [x] 2026-10-05 platform 3216 函:被测物 A 三件齐(v5 坐标+配置如实披露+B 无异议)→ **v1 定版**:上表全 12 字段齐,配置披露列增设+配置差裁定落档;A 臂环境披露如实记:Windows 11+Python 3.13,LocalSandbox 受限工具面(无 shell),推理 127.0.0.1:18001(MiniMax-M3 系),max_steps=25,v5 自述"容器化全工具横比下位配置"入榜面 caveat
 - [x] 2026-10-05 R172:**v5 网关×mini-swe-agent 接入验证 PASS**(docs/metering/L3_GATEWAY_INTEGRATION_CHECK_20261005.md)——litellm 连接/tools 透传(参数名随请求 schema)/多轮回喂全 [实测];协议磨合点(M3 完成即收尾 vs mini 每轮须 tool call)与网关 chat 分支非 stream 挂起缺陷如实记(均不阻塞);B 臂接入配置定版。**开跑前置全部清零**
 - [x] 2026-10-05 R177:**smoke 双臂×10 PASS(管道级)**(runtime/loop/_r177_l3smoke/SMOKE_PREREG.md+smoke_summary.json)——题源 heldout30[0:10]+ENV 行(双臂同题面,harness 代码零改动);A 臂 finished 7/10·patch 9/10·步均 18.1,B 臂 finished 0/10·patch 5/10·步均 25.0 全打满;**预算信号:max_steps=25 偏紧(B 臂全打满零提交)——正榜开跑前判据演进窗口建议重估(双臂同步+平台知会),开跑后不得再动**;smoke 不出名次不出 resolved%(预注册)
-- [ ] 开跑(双臂各自跑批)+判分抽查 ≥20% → 10/12 榜页上线
+- [x] 2026-10-05 R181:**开跑**(双臂并行后台)——max_steps=50 演进生效(A 臂 v5 仓 `f1921b66` 参数化 `--max-steps`,默认 25 保持 4e14a898 行为,正榜显式传 50;B 臂 b_runner_r1.py step_limit=50+wall 3600s);题源 board30(runtime/loop/_r181_board30/board30.parquet+tasks.json,seed=20261005,回读验证过);A 臂 tag=l3r1a(held_out=true),B 臂 worktree 前缀 l3r1b;产物坐标 runtime/loop/_r181_board30/{arm_a_run.log,arm_b_run.log,board_b/}+A 臂 e5_workdirs/task_*;
+- [ ] 跑批完成+判分抽查 ≥20% → 10/12 榜页上线
 
 ## 定版指纹
 
