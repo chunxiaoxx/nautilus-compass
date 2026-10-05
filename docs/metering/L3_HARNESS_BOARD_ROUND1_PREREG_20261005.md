@@ -33,7 +33,17 @@
 - 正榜 Round 1 题源=**SWE-bench Verified 分层抽样 n=30(按 repo 比例配额,固定 seed 入档)**,双臂同题面(ENV 行注入同 smoke 配方,harness 代码零改动);n=30 达名次区门槛(N4),剩余 470 题滚动扩样(榜页如实标 n);
 - 全 500 题滚动目标不变(任务集口径=Verified 500 resolved%,n 滚动披露)。
 
+## 判分工序预注册(2026-10-05 R183 落,用户拍板"双臂跑完自动判分出 Round 1 读数")
+
+- **判分环境**:独立判分机(CPU 即可,评测不需 GPU),与双臂运行机(Windows 本机)物理分离——非实现者隔离的落地件之一。A100 现役机已探:docker 未装+磁盘 100% 满(206G 全为 flywheel 资产不可动,可清项 ≤43G < swebench 镜像需求 ~150G)→ 判定不可复用,另租 [待用户拍板预算];本机无 WSL/docker 亦不可行 [实测]。
+- **判分命令**(官方口径,零改):`python -m swebench.harness.run_evaluation --dataset_name princeton-nlp/SWE-bench_Verified --predictions_path preds_arm_{a,b}.json --run_id l3r1_{a,b} --max_workers 4`——predictions 由 collect_predictions.py 生成(idx→instance_id 对齐断言,A 臂 patch 取 trajectory.final_patch,B 臂取 patch.diff,缺件如实记 _note)。
+- **resolved 定义**:官方 report 的 resolved 列(FAIL_TO_PASS 全过 且 PASS_TO_PASS 全过);unresolved 按 apply fail/test fail/environment error 分桶如实报,负结果照报。
+- **抽查 ≥20%**(可比性纪律 4):n=30 抽 6 题/臂,复核=评测执行日志逐题与 report 判定一致性(容器误判/环境错装核对),抽查记录落档。
+- **读数**:双臂 resolved/30+分桶+配置披露列全开;榜页标 n=30;判读免费。
+- 双臂完成检测:进程退出+30 题产物齐(trajectory/patch.diff 计数),由值守轮轮询触发,不设 cron。
+
 ## 任务集选择(✅ 2026-10-05 已拍=SWE-bench Verified 单集起步,platform 3194 函确认;下文推荐理由留档)
+
 
 - 首期建议单任务集起步(双臂可比性优先,不铺面);
 - 推荐 **SWE-bench Verified**(500 题,resolved%,harness 对比最主流口径,L1 注记已冻结其口径与 cutoff 披露);备选 Terminal-Bench(resolve rate,harness+dataset 双 tag 天然适配 harness 对比叙事);
@@ -55,6 +65,7 @@
 - [x] 2026-10-05 R172:**v5 网关×mini-swe-agent 接入验证 PASS**(docs/metering/L3_GATEWAY_INTEGRATION_CHECK_20261005.md)——litellm 连接/tools 透传(参数名随请求 schema)/多轮回喂全 [实测];协议磨合点(M3 完成即收尾 vs mini 每轮须 tool call)与网关 chat 分支非 stream 挂起缺陷如实记(均不阻塞);B 臂接入配置定版。**开跑前置全部清零**
 - [x] 2026-10-05 R177:**smoke 双臂×10 PASS(管道级)**(runtime/loop/_r177_l3smoke/SMOKE_PREREG.md+smoke_summary.json)——题源 heldout30[0:10]+ENV 行(双臂同题面,harness 代码零改动);A 臂 finished 7/10·patch 9/10·步均 18.1,B 臂 finished 0/10·patch 5/10·步均 25.0 全打满;**预算信号:max_steps=25 偏紧(B 臂全打满零提交)——正榜开跑前判据演进窗口建议重估(双臂同步+平台知会),开跑后不得再动**;smoke 不出名次不出 resolved%(预注册)
 - [x] 2026-10-05 R181:**开跑**(双臂并行后台)——max_steps=50 演进生效(A 臂 v5 仓 `f1921b66` 参数化 `--max-steps`,默认 25 保持 4e14a898 行为,正榜显式传 50;B 臂 b_runner_r1.py step_limit=50+wall 3600s);题源 board30(runtime/loop/_r181_board30/board30.parquet+tasks.json,seed=20261005,回读验证过);A 臂 tag=l3r1a(held_out=true),B 臂 worktree 前缀 l3r1b;产物坐标 runtime/loop/_r181_board30/{arm_a_run.log,arm_b_run.log,board_b/}+A 臂 e5_workdirs/task_*;
+- [x] 2026-10-05 R183:**A 臂返工一次(如实记档)**——首启 4 题作废:board30.parquet 首版 prompt 列漏烧 ENV 行(B 臂 tasks.json 有),A 臂 runner 靠题面 ENV 行预置 worktree→裸跑(env_ready=False 全零 patch);停臂→build 脚本修(ENV 行烧入+tasks.json 单源双出+回读断言)→tasks.json 前后 md5 一致(B 臂零影响)→废件逐个验 session_id 后清→重跑;修后首题 env_ready=True/18 步 patch 1947ch 实证;题源/seed/判据零变,仅题面制备修正;
 - [ ] 跑批完成+判分抽查 ≥20% → 10/12 榜页上线
 
 ## 定版指纹

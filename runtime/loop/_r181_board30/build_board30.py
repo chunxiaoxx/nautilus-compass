@@ -31,6 +31,10 @@ def http_bytes(url: str) -> bytes:
 
 
 def main() -> None:
+    import sys
+
+    sys.path.insert(0, "C:/Users/chunx/nautilus-v5/tools/uni_agent_bridge")
+    from r81_env import env_line
     tree = http_json(f"{MIRROR}/api/{REPO}/tree/main?recursive=true")
     files = [f["path"] for f in tree if f["type"] == "file" and f["path"].endswith(".parquet")]
     print("parquet files:", files)
@@ -102,7 +106,16 @@ def main() -> None:
         records.append(
             {
                 "data_source": "princeton-nlp/SWE-bench_Verified",
-                "prompt": [{"role": "user", "content": r["problem_statement"]}],
+                # 🔴 ENV 行必须烧进 prompt(A 臂 runner 靠题面 ENV 行预置 worktree;
+                # 首版漏烧→A 臂裸跑 4 题作废返工,与 B 臂 tasks.json task_text 字节同源)
+                "prompt": [
+                    {
+                        "role": "user",
+                        "content": env_line(r["repo"], r["base_commit"])
+                        + "\n\n"
+                        + r["problem_statement"],
+                    }
+                ],
                 "extra_info": {
                     "tools_kwargs": {
                         "task": {
@@ -162,6 +175,27 @@ def main() -> None:
     )
     empty_ps = sum(1 for r in back if not r["prompt"][0]["content"].strip())
     assert empty_ps == 0, f"{empty_ps} empty problem statements"
+    # 🔴 回读验证: ENV 行必须在 prompt 头(首版漏烧→A 臂裸跑 4 题作废返工)
+    assert all(
+        r["prompt"][0]["content"].startswith("ENV (repo=") for r in back
+    ), "ENV line missing in prompt!"
+
+    # tasks.json 单源双出(B 臂输入;与 parquet prompt 字节同源, 双臂题面不漂移)
+    tasks = []
+    for i, r in enumerate(back):
+        md = r["extra_info"]["tools_kwargs"]["task"]["metadata"]
+        tasks.append(
+            {
+                "idx": i,
+                "instance_id": md["instance_id"],
+                "repo": md["repo"],
+                "base_commit": md["base_commit"],
+                "task_text": r["prompt"][0]["content"],
+            }
+        )
+    with open("tasks.json", "w", encoding="utf-8") as f:
+        json.dump(tasks, f, ensure_ascii=False, indent=1)
+    print("tasks.json rows:", len(tasks))
 
     meta = {
         "note": "L3 正榜 Round 1 题源: Verified 分层抽样 n=30 (repo 比例配额, 最大余数法)",
