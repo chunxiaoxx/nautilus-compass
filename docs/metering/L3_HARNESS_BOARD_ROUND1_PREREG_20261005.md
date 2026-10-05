@@ -8,9 +8,9 @@
 | 字段 | 值 | 状态 |
 |---|---|---|
 | 被测物 A | v5-harness | ⏳ 坐标待回填(repo/commit sha16/运行环境) |
-| 被测物 B | 第二开源 harness | ⏳ 候选已调研待拍(2026-10-05 GitHub API 实测):**mini-swe-agent(SWE-agent/mini-swe-agent,8205★,9-28 活跃,SWE-bench 官方 team 出品,首推)**/SWE-agent(SWE-agent/SWE-agent,20489★,9-28)/OpenHands(OpenHands/OpenHands,89994★,10-04 极活跃)/Aider(Aider-AI/aider,49380★,⚠️5-22 后未推活性存疑);候选二选一由 platform/harness 维护方拍 |
+| 被测物 B | 第二开源 harness | ✅ **mini-swe-agent**(2026-10-05 platform 3194 函拍定:"同意 mini-swe-agent 首推(官方血统+轻量+活跃)";坐标 repo/commit 回填待其 v5 侧无既定栈时落实) |
 | 模型配置(双臂同一) | — | ⏳ 待回填(模型 id+量化/采样参数钉死) |
-| 任务集(双臂同一) | — | ⏳ 待拍;候选见下"任务集选择" |
+| 任务集(双臂同一) | — | ✅ **SWE-bench Verified 单集起步**(2026-10-05 platform 3194 函确认:"确认你的推荐——SWE-bench Verified 单任务集起步(500 题 resolved%,L1 注记口径已冻结,双臂可比优先)") |
 | 样本量门 | n≥30 进名次区;n<30 进观察区(榜判据 v1 N4) | ✅ 冻结 |
 | 判分口径 | 按任务集口径引 L1 注记(SWE-bench=resolved%/GAIA=exact match/Terminal-Bench=task resolve rate,harness+dataset 双 tag) | ✅ 冻结(随任务集回填落具体值) |
 | 判分者 | compass 独立判分读数供给(判读免费);harness 自报读数只收引用标 [不可验](UNVERIFIABLE 墙) | ✅ 冻结 |
@@ -18,7 +18,7 @@
 | 名次规则 | 单一主指标;并列明写;负结果照实名次;U 态不上名次 | ✅ 冻结 |
 | 利益披露 | 双方无装订关系;赞助按榜判据 v1 N5 披露 | ✅ 冻结 |
 
-## 任务集选择(待拍,附推荐)
+## 任务集选择(✅ 2026-10-05 已拍=SWE-bench Verified 单集起步,platform 3194 函确认;下文推荐理由留档)
 
 - 首期建议单任务集起步(双臂可比性优先,不铺面);
 - 推荐 **SWE-bench Verified**(500 题,resolved%,harness 对比最主流口径,L1 注记已冻结其口径与 cutoff 披露);备选 Terminal-Bench(resolve rate,harness+dataset 双 tag 天然适配 harness 对比叙事);
@@ -35,5 +35,6 @@
 ## 状态
 
 - [x] 2026-10-05 骨架 v0 落档(冻结项 8/11;待回填 3:被测物锚×2+任务集)
-- [ ] 待回填齐备(目标 10/10 前,留 10/11-12 缓冲)→ sha16 定版 → 开跑
+- [x] 2026-10-05 platform 3194 函:任务集=SWE-bench Verified 确认+被测物 B=mini-swe-agent 拍定——待回填收窄至 1 项(被测物 A v5-harness 坐标,platform 另函向 v5 索取,10/10 死线)
+- [ ] 被测物 A 坐标回填齐备(10/10 前)→ sha16 定版 → 开跑(10/12 榜页)
 - [ ] 榜页上线(10/12,壳归 platform,榜面只引本档坐标不嵌全文)

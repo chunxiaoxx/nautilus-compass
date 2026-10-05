@@ -50,6 +50,13 @@
 
 ## 轮次日志
 
+### R166 · 2026-10-05 08:4x-09:1x(用户拍"14B升格现在开跑"→执行完毕+L1四行全闭环)
+- **14B 升格开跑**(GPU 空窗 14MiB 实测+预注册坐标回填先行):1.7B 基座 modelscope 现下(3.8G)+champion 传 A100+U1-U7 脚本落盘跑通——**UPGRADE_EVIDENCE_PASS(核心门全绿)+U5/U6 判别力门双红(负结果照报)**:U1 873步零OOM/U2 22.42G/U3 0.319→0.1138/U4 100/100;**U5 未过 acc_14b=0.8664<acc_17b=0.9041**(292条held-out同集对拍,现役净胜11题);U7 申报 14B 吞吐 20/s vs 1.7B 74.3/s;**判读=保留 1.7B 现役,14B 记档待语料增长再评**(预注册语义,不预授权切换);产物 sha16 adapter=07a168b377e91ea9/report=8fcea6bbe3d46b5a;待非实现者复算
+- **执行插曲如实记**:①首起用 venv_fw 缺 bitsandbytes 即败退出→改系统 python3(与 smoke 实配一致)成功(脚本注释环境信息是本地开发残留,教训=环境断言先跑探针);②双开被 GPU 守门正确拦截(第一次连接 TimeoutError 但远端已起跑,第二次守门 busy abort)——**exec_command 超时≠远端未执行再证**;③train.log 两进程同写出空洞(观察件损坏,report/eval 不受影响)
+- **platform 三信处置(3194/3199/3201/3203 四 ack)**:L1 三件已由 platform 代写转 live(10/8 死线提前闭环)+**pusht 档挡闸修复**(根因=判据档漏 push,补 push 43784e17→raw 200+sha16 逐字节一致→走新上线自助端点 POST /benchmarks/backfill 得 **APPROVED**,入值守合并队列);L3 任务集=SWE-bench Verified 确认+被测物 B=mini-swe-agent 拍定→骨架档已回填(待回填收窄至 1 项=v5-harness 坐标,10/10)
+- 本轮 push:560c7756+43784e17(挡闸修复义务);R166 读数落档 commit 见下
+- 下轮:B 材料守;14B 复算挂账;3161/3183+v5 坐标回函即回填 L3 末字段;升级读数可作判例素材(负结果:更大≠更强)
+
 ### R165 · 2026-10-05 08:1x-08:3x(值守+L1 回填件闭环:pusht-frame-v2 sha16 化+数据函 3190)
 - **probe**(ts 08:13):无外部事件;**信箱零未读**;A100 G/B 仍 10-03 旧件(paramiko 实测)quiet
 - **全框同步 [实测]**:flywheel commits API 解析失败(非阻塞);**platform L1 benchmarks 端点提前开张**(早于 #3126 承诺的 10/6)——4 行全 custodian=compass,pusht-frame-v2 hash 仍为 deferred 占位;侦察:根 openapi.json=SPA fallback 假 200,**/api/openapi.json=真 openapi 3.1.0**;benchmarks 仅 GET 无公开写接口→回填归 platform 代写
