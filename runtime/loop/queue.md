@@ -50,6 +50,13 @@
 
 ## 轮次日志
 
+### R193 · 2026-10-05 18:3x-18:5x(值守轮:A 臂评测首跑炸+同轮修复重跑)
+- **probe(18:35)**:quiet(信箱 0 未读)·CI 折叠·A100 GPU 空闲(评测吃 CPU 不冲突)
+- **A 臂评测首跑炸 [实测]**:swebench 5.0.2 `KeyError: 'image'`——make_test_spec 从数据集行读 image 列,**princeton-nlp/SWE-bench_Verified 无此列**;同轮修复:探得 **swe-bench/SWE-bench_Verified(官方 org 镜像数据集)自带 image 列**(500 rows 已验)→eval_runner.py sed 换数据源→重跑;**修复后健康**:rest 批 16 题(Running 15=空 patch 1 题跳过),容器拉镜像中;附带坑:SSH nohup 后台任务通道挂起(输出重定向+<dev/null 姿势,重连验证法)
+- **B 臂 [实测]**:task_25(26 目录,剩 ~4-5 题);日志尾 [B23/24] sphinx 两题均 LimitsExceeded@50 步(patch 2803ch/0ch)
+- r80 20:00 探点不变
+- M1:+0(判分链修复推进)
+
 ### R192 · 2026-10-05 18:2x-18:4x(用户令:推进+同步+清单梳理——A 臂完成,评测先行开跑)
 - **清单梳理**:今夜死线=L3 判分链(A 臂尾题+B 臂 ~19:50+评测+抽查)+r80 20:00 探;10/6-12=UMI 窗守草案/榜页起草(10/10 自验目标)/五件 v2 自验;挂账=**GitHub PAT 过期(probe 18:13 抓到,需用户手动续)**/gmail 探针/判读器偏置修复待拍板/14B 复算/pusht-v2/回执群(3037 deadline 10/11)/$199 首单
 - **A 臂双开真相(对账抓出)**:31 条 l3r1a 轨迹=task_1-29+task_5 重复(14:34 双开残留进程与 14:55 正式进程同题双跑,latest 取正式版入判,如实披露);18:4x 终态=**进程 0+task_30 落盘=A 臂完成**;collector 定版:**A patch 非空 28/30,零 notes**
