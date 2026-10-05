@@ -8,7 +8,7 @@
 | 字段 | 值 | 状态 |
 |---|---|---|
 | 被测物 A | **v5-harness**:github.com/chunxiaoxx/nautilus-v5 @ customer-demo-ship-1 @ `4e14a898`;入口 tools/uni_agent_bridge/mini_runner_e5.py(NautilusAgent+LocalSandbox) | ✅ 2026-10-05 platform 3216 函回填 |
-| 被测物 B | **mini-swe-agent**(官方 repo;开跑时锚定 commit sha16 落档) | ✅ 2026-10-05 platform 3194 函拍定 |
+| 被测物 B | **mini-swe-agent**(SWE-agent/mini-swe-agent)**@ v2.4.6 官方 release tag(commit `a83fcae82d2a`)**;main@`04d809ce` 参考(比 release 新 6 周,不采用——榜判据钉 release 保可复现) | ✅ 2026-10-05 3194 函拍定+同日 R171 锚定 commit |
 | 模型配置(双臂同一) | **双臂同模型=MiniMax-M3 系**(A 臂已钉:127.0.0.1:18001 网关,model=nautilus-v5/MiniMax-M3 系,max_steps=25;B 臂接同模型同网关,采样参数对齐时钉死并双臂同——若 B 臂无法接同模型,按可比性纪律 1 降级为单臂读数,不并榜不对比) | ✅ 定版(采样参数=开跑对齐件,钉死后不得再动) |
 | 任务集(双臂同一) | **SWE-bench Verified 500 题 resolved%**(L1 注记口径已冻结) | ✅ platform 3194 确认 |
 | 样本量门 | n≥30 进名次区;n<30 进观察区(榜判据 v1 N4) | ✅ 冻结 |
@@ -25,6 +25,7 @@
 2. **模型必须同**(MiniMax-M3 系双臂同网关)——模型不同=不可比,按纪律 1 降级单臂,不并榜;
 3. **max_steps=25 双臂同**(A 臂已钉,B 臂对齐);
 4. 采样参数开跑对齐时钉死并双臂同,钉死后入档不得再动(纪律 5:中途换判据=该期作废)。
+5. **采样参数钉死(R171,2026-10-05)**:model=MiniMax-M3 系(v5 网关)/temperature=0/top_p=1(贪心,SWE-bench 对比惯例)/max_steps=25 双臂同;max_tokens 等其余=harness 各自默认,开跑时如实记录(默认参数差异=harness 本体差异,披露不惩罚,同配置差裁定 1)。
 
 ## 任务集选择(✅ 2026-10-05 已拍=SWE-bench Verified 单集起步,platform 3194 函确认;下文推荐理由留档)
 
@@ -45,8 +46,8 @@
 - [x] 2026-10-05 骨架 v0 落档(冻结项 8/11;待回填 3:被测物锚×2+任务集)
 - [x] 2026-10-05 platform 3194 函:任务集=SWE-bench Verified 确认+被测物 B=mini-swe-agent 拍定——待回填收窄至 1 项(被测物 A v5-harness 坐标,platform 另函向 v5 索取,10/10 死线)
 - [x] 2026-10-05 platform 3216 函:被测物 A 三件齐(v5 坐标+配置如实披露+B 无异议)→ **v1 定版**:上表全 12 字段齐,配置披露列增设+配置差裁定落档;A 臂环境披露如实记:Windows 11+Python 3.13,LocalSandbox 受限工具面(无 shell),推理 127.0.0.1:18001(MiniMax-M3 系),max_steps=25,v5 自述"容器化全工具横比下位配置"入榜面 caveat
-- [ ] B 臂 mini-swe-agent commit 锚定+采样参数对齐钉死 → sha16 复锚(判据只许更严)→ 开跑
-- [ ] 榜页上线(10/12,壳归 platform,榜面只引本档坐标不嵌全文)
+- [x] 2026-10-05 R171:B 臂 commit 锚定(v2.4.6@`a83fcae82d2a`,release tag 保可复现)+采样参数钉死(temp=0/top_p=1/max_steps=25 双臂同)——**10/10 对齐闸提前达成**;剩=开跑(v5 网关对 mini-swe-agent 的接入验证=开跑前置)
+- [ ] 开跑(双臂各自跑批)+判分抽查 ≥20% → 10/12 榜页上线
 
 ## 定版指纹
 
