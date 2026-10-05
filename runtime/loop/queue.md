@@ -50,6 +50,12 @@
 
 ## 轮次日志
 
+### R175 · 2026-10-05 11:31-11:4x(夜间值守轮 quiet:probe 重试+A100 复查仍无 G1 新件)
+- **probe(11:31)**:信箱 0 未读·Gmail 无新件·GitHub=已知件+CI 折叠·A100 探针 SSH banner 错(已知抖动)
+- **③G1 材料查(退避重连成功)**:10/4 后 g1/infer 类 json=空,无新 rollout——不触发;flywheel 侧在动(pipe.db 11:28+新目录 challenge2026_sample 11:28,非判分件)
+- **④**turbo 已完成不再触发;建议件(smoke/A 型复验)用户未拍板——按纪律不擅启
+- commit(不 push)
+
 ### R174 · 2026-10-05 11:2x-11:5x(夜间值守轮 quiet:probe 五源+G1 材料查无新件)
 - **probe(11:22)**:信箱 0 未读·Gmail 无新件(第五源正常)·GitHub=已知件(Certification proposal,R170 已回评论)+CI×49 折叠·**A100 真空闲(0%/14MiB,venv_phi 负载结束)**
 - **③G1 材料查(paramiko)**:g1_infer_B/G 仅 10/3 旧案两件(infer_compare/infer_summary,verdict 已于 10/3 结案),无 10/4 后新 rollout——不触发;pipe_art 另有 flywheel 侧 10/5 凌晨新目录(handmarks_backfill 02:43/gr00t_gr1_qc_v0 01:37,非 g1 判分件,不越界)
