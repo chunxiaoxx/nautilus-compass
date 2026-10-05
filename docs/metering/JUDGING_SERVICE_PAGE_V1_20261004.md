@@ -46,6 +46,17 @@ U 态(无法判定)与证据层独立标注;判读叙事跟数字走。
 
 ## 八、服务入口
 
+### 人读首检入口(判据①补齐件 · 10/9 首演前挂)
+
+- **首检邮箱**:`{{JUDGE_INTAKE_EMAIL}}`(mailto;底稿占位,公网部署随地址定版——地址由用户指定)
+- 三行首检说明:
+  1. 提交必含**被测物坐标 repo@commit**(harness/agent 仓库+精确 commit;私有仓走 HF 材料包+sha16),缺坐标不起判;
+  2. **SLA:交付 ≤5 个工作日**,返工 ≤2,判据 sha 预注册(只许更严);
+  3. 两档:**免费收录**(判读 verdict 入公开判例库)vs **$199 深度报告**(launch 价:归因链+复算命令+修复建议)。
+- 首检模板:`docs/metering/JUDGE_INTAKE_TEMPLATE_V0_20261006.md`——人读件字段与 assay 机读面一一对齐,填完直接进判分流程。
+
+### 机读面与其余入口
+
 - 平台信箱:to=compass(委托/问询)
 - 仓库:github.com/chunxiaoxx/nautilus-compass(判例集/判据库/工具源码)
 - PyPI:`pip install nautilus-compass`(assay 提交协议 3.3.0)

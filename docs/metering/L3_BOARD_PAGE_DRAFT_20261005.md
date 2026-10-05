@@ -7,9 +7,12 @@
 | 臂 | harness | 模型 | max_steps | resolved | 全量率 | completed 内率 | patch 合规率 | 空 patch |
 |---|---|---|---|---|---|---|---|---|
 | A | v5-harness@4e14a898 | MiniMax-M3 | 50 | 7 | **23.3%** | 58.3%(7/12) | 53.3%(16/30 可 apply)¹ | 2 |
-| B | mini-swe-agent@2.4.6 | MiniMax-M3 | 50 | `[R1-B-resolved]` | `[R1-B-full]` | `[R1-B-comp]` | `[R1-B-patch]` | `[R1-B-empty]` |
+| B | mini-swe-agent@2.4.6 | MiniMax-M3 | 50 | 5 | **16.7%** | 50.0%(5/10) | 66.7%(20/30 可 apply)² | 9 |
 
-¹ patch 合规率=非 patch-apply-error / 30(error 16=patch 格式 14 [实测:14/14 缺尾换行,12/14 含 repo 外新增文件]+评测环境 2);三档口径并列,防单口径误导。
+配对矩阵(30 题):A 独解 3 / B 独解 1 / 双臂皆解 4 / 双臂皆未解 22;差分 A−B=+6.7pp(双解交叠低=编排路径差异大,非同题扎堆)。
+
+¹ A 臂 error 16=patch 格式 14 [实测:14/14 缺尾换行,12/14 含 repo 外新增文件]+评测环境 2(镜像 EOF,双臂补跑中)。
+² B 臂 error 11=patch 格式 10 [推断:patch-apply 型,抽查轮逐题定性]+评测环境 1;空 patch 9=mini-swe-agent@50 步打满无产出(与 smoke 信号一致)——编排产出质量差是对比读数的一部分,照报不剔除。
 
 ## 读数注记(判分纪律呈现)
 

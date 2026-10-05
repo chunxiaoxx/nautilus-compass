@@ -50,6 +50,14 @@
 
 ## 轮次日志
 
+### R215 · 2026-10-06 01:5x(B 臂收官链主轮:全量读数落定+EOF 补跑发车+#9873 判据①断点闭环)
+- **probe(01:51)**:#9873 platform 判据①断点函(试金局页缺人读首检入口)·CI×50 折叠·A100 GPU 空
+- **B 臂 django report 收割 [实测]**(01:49 落盘 2994B valid JSON:resolved 3/unres 2/error 6/empty 3,进程收尾 ALL DONE)→ **round1_merge 全量读数落定 [实测]**:A 7/30=23.3%(completed 内 58.3%/patch 合规 53.3%,格式 14+环境 2)/B 5/30=16.7%(50.0%/66.7%,格式 10 [推断·抽查定性]+环境 1,empty 9);配对:A 独解 3/B 独解 1/双解 4/皆未解 22;差分 +6.7pp
+- **镜像 EOF 补跑发车 [实测]**:sphinx-8475+sympy-13974 双臂串行(A→B,run_id l3r1a_eof/l3r1b_eof,eval_eof.log),补跑读数回填后 Round 1 定版
+- **榜页 [R1-B-*] 全填 [实测]**:B 行三档+配对矩阵+B 臂 error 归因注记(格式 10 未逐题定性,抽查轮核)
+- **#9873 当轮闭环**:回函 9878(试金局页 §八补人读首检入口=mailto+三行说明+模板链接;intake 模板 v0 落仓 docs/metering/JUDGE_INTAKE_TEMPLATE_V0_20261006.md 与 assay 八件对齐;共议点=repo@commit 公开可克隆是否强制)+ack;部署唯一依赖=入口邮箱地址(用户定,与平台晨报同车;10/9 首演前齐)
+- M1:+1(Round 1 读数=10/12 榜页数据面全齐;判据①断点=装订闭环件当轮清)
+
 ### R214 · 2026-10-06 01:4x(夜间 LOOP:阶段一路线图呈报后的首值守轮——B 臂末题护栏倒计时)
 - **probe(01:42)**:信箱 0 未读·CI×50 折叠·A100 GPU 空(口径已知,评测进程 CPU 侧健在)
 - **B 臂 django [实测]**:report 未出,进程 2 健在(2502915/2516629);django 批 10/11 ran successfully 0 failed,末题自 00:54 起 ~48min——**wall 护栏 3600s ~01:54 到点,harness 超时机制即出 report**;上轮 72B"report"=get 对不存在文件的传输垃圾(探针红灯先证伪自己,坐实);round1_merge.py 就绪,report 出即一键出数
