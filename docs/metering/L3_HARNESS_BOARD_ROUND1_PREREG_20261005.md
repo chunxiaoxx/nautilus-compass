@@ -46,7 +46,7 @@
 - [x] 2026-10-05 骨架 v0 落档(冻结项 8/11;待回填 3:被测物锚×2+任务集)
 - [x] 2026-10-05 platform 3194 函:任务集=SWE-bench Verified 确认+被测物 B=mini-swe-agent 拍定——待回填收窄至 1 项(被测物 A v5-harness 坐标,platform 另函向 v5 索取,10/10 死线)
 - [x] 2026-10-05 platform 3216 函:被测物 A 三件齐(v5 坐标+配置如实披露+B 无异议)→ **v1 定版**:上表全 12 字段齐,配置披露列增设+配置差裁定落档;A 臂环境披露如实记:Windows 11+Python 3.13,LocalSandbox 受限工具面(无 shell),推理 127.0.0.1:18001(MiniMax-M3 系),max_steps=25,v5 自述"容器化全工具横比下位配置"入榜面 caveat
-- [x] 2026-10-05 R171:B 臂 commit 锚定(v2.4.6@`a83fcae82d2a`,release tag 保可复现)+采样参数钉死(temp=0/top_p=1/max_steps=25 双臂同)——**10/10 对齐闸提前达成**;剩=开跑(v5 网关对 mini-swe-agent 的接入验证=开跑前置)
+- [x] 2026-10-05 R172:**v5 网关×mini-swe-agent 接入验证 PASS**(docs/metering/L3_GATEWAY_INTEGRATION_CHECK_20261005.md)——litellm 连接/tools 透传(参数名随请求 schema)/多轮回喂全 [实测];协议磨合点(M3 完成即收尾 vs mini 每轮须 tool call)与网关 chat 分支非 stream 挂起缺陷如实记(均不阻塞);B 臂接入配置定版。**开跑前置全部清零**
 - [ ] 开跑(双臂各自跑批)+判分抽查 ≥20% → 10/12 榜页上线
 
 ## 定版指纹
