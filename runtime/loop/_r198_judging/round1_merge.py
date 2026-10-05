@@ -20,6 +20,11 @@ REPORTS = {
 KEYS = ("resolved_ids", "unresolved_ids", "error_ids", "empty_patch_ids")
 # A 臂 2 题镜像 EOF(dockerhub auth token EOF)=评测环境侧,双臂机会不等补跑候选
 MIRROR_EOF = {"sympy__sympy-13974", "sphinx-doc__sphinx-8475"}
+# 补跑折入后(fold_eof.py):环境层名单以 mirror_eof_final.txt 为准
+# (补跑后仍判环境层的题;其余补跑 error 归 patch 格式层;空文件=补跑 error 全格式)
+_ov = HERE / "mirror_eof_final.txt"
+if _ov.exists():
+    MIRROR_EOF = {x.strip() for x in _ov.read_text(encoding="utf-8").splitlines() if x.strip()}
 
 
 def load_arm(prefix: str) -> tuple[dict, set]:
