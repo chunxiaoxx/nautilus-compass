@@ -50,6 +50,13 @@
 
 ## 轮次日志
 
+### R171 · 2026-10-05 10:33-10:4x(值守轮 quiet→实质件:L3 B臂锚定提前达成)
+- **probe**(ts 10:33):信箱未读 0(quiet)·Gmail 第五源首战 quiet(基线正常,10 封已读未重报)·GitHub 已知件;**A100 无空闲行=GPU 被占**
+- **A100 实查**:占用=venv_phi 四进程×9650MiB(外部负载,非 G1/非 turbo)——compass 不动;④turbo 已完成不触发
+- **③G1 判分触发:无新触发**——g1_infer_G/g1_infer_B 目录有件但均 10/3 旧案材料(infer_summary.json),g1_verdict.json 已于 10/3 11:55 回传(差分终判已结案);无 10/4-10/5 新 rollout 材料
+- **⑤实质件:L3 B 臂锚定(10/10 死线闸提前达成)**:SWE-agent/mini-swe-agent **@ v2.4.6 release tag(commit `a83fcae82d2a`)**——release 2026-07-23,main@04d809ce(9/3)仅参考不采用(钉 release 保可复现);采样参数钉死 temp=0/top_p=1/max_steps=25 双臂同,max_tokens=harness 默认开跑如实记;复锚 sha16=`3b82f06bbce02b42`(收窄合规);通报函 3228 已发
+- commit(不 push);下轮:开跑前置=v5 网关对 mini-swe-agent 接入验证;pusht-frame-v2 值守合并探端点;等回函群
+
 ### R170 追补 · 2026-10-05 10:2x-10:5x(用户拷问 Gmail 盲区+拍板 MVP 支点两件→SPEC+判例集全落地)
 - **Gmail 盲区根因+修复(commit 2ecde644)**:根因=LOOP 指令清单从未含 Gmail,probe 四源不含它,严格执行清单=清单外盲区(9/10 后零覆盖);修复=probe.py 补第五源 probe_gmail(REST fallback 链 ~/.gmail-mcp token→oauth→API+基线增量防重报+营销过滤);坑两枚如实记——credentials.json 无 client_secret(在 client_secret.json installed 键下)/socks5h 形式 env 致 curl SSL rc35(显式 --proxy http://127.0.0.1:10808 修);首跑 10 封未读建基线+二跑 fresh=0 增量逻辑验过
 - **Gmail 实查结论**:3 天内 9 封未读无外部待办(rsi-bench 通知=已回应那条+营销件);两处安全类提请用户自证(9/30 Windows 新登录+10/4 五仓 deploy key 13:56)
