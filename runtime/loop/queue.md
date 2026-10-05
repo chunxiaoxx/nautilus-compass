@@ -50,6 +50,13 @@
 
 ## 轮次日志
 
+### R213 · 2026-10-06 01:01-01:1x(夜间 LOOP:quiet 信箱;django 续跑+r80 提前探仍空)
+- **probe(01:01)**:信箱 0 未读·CI×50 折叠·A100 GPU 空(probe"无计算进程"=GPU 口径,B 臂评测进程 CPU 侧健在,勿误判)
+- **B 臂 django**:report 未出,进程 2 健在(后半批 django 慢题,预计 01:15-01:45);合并器已就绪,report 出即一键出数
+- **r80 提前探 [实测]**:pipe_art 无 r80/staging 新材料(仍空)——上午正点再探,仍缺才 U 态顺延通报(承诺口径不变)
+- SSH 限流一次(SSHException→重试成功,配方再现效)
+- M1:+0(值守+观察)
+
 ### R212 · 2026-10-06 01:0x-01:2x(NACRE 定案后继续推进:Round 1 合并器前置件落地+B 臂 django 续守)
 - **NACRE 定案落地**(用户拍板:同意 NACRE,中文名不认可):白皮书全文替换(标题/§一/§五定案)+品类锚 judgment-native judge model(如 Metis 之于 memory)+记忆 nacre-codename-decided-20261006 入档;后续文档/发版/榜页一律 NACRE(commit 50fdbe5c)
 - **Round 1 合并器落地 [实测预跑]**:round1_merge.py——四 report 全量合并+30 题配对矩阵+三档口径(预注册口径校验:A 臂 23.3%/58.3%/53.3% 逐位对上榜页稿)+镜像 EOF 补跑候选自动列;B_django pending 时不出指标不填榜(纪律内建);**django report 一出=一键出全量读数,收官零等待**
