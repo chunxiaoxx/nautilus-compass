@@ -50,6 +50,11 @@
 
 ## 轮次日志
 
+### R203 · 2026-10-05 22:3x(夜间值守轮 quiet)
+- **probe(22:31)**:信箱 0 未读·CI×50 折叠·A100 GPU 空;③④不触发(g1_full 已判/turbo 固化)
+- **评测巡 [实测]**:django 批 12/13(92%,末题,0 failed);B 臂接力 3 进程健在(eval_b.log 空=串行排队正常);下轮=django 收官+双 report 合并+2 题镜像 EOF 补跑+抽查
+- M1:+0
+
 ### R202 · 2026-10-05 22:0x-22:4x(值守轮 quiet:A 臂 rest 批收官读数全景——resolved 4/15+8 error 定性)
 - **probe(22:01)**:信箱 0 未读 quiet·CI×50 折叠·A100 GPU 空
 - **A 臂 rest 批收官 [实测]**(report `l3r1a_v5-harness-4e14a898+ms50_MiniMax-M3.l3r1_a_rest.json`,schema v2,拉回本地 _r198_judging/rest_report_a.json):
