@@ -14,6 +14,7 @@
 ¹ A 臂 error 15=patch 格式 15/环境 0 [实测:补跑折入,sphinx-8475 补跑后 resolved(+1),sympy-13974 补跑后仍 apply fail 归格式;malformed hunk 是致命特征]。
 ² B 臂 error 11=patch 格式 11/环境 0 [实测:sphinx-8475 原判环境 EOF,补跑实机跑通后 apply fail(malformed at line 64)改判格式;sympy-13974 patch 本为 0ch,原批即 empty,补跑复核一致,empty 9 净不变];空 patch 9=mini-swe-agent@50 步打满无产出为主因(与 smoke 信号一致)——编排产出质量差是对比读数的一部分,照报不剔除。
 **归因勘误(判绩账)**:此前归因简报(函 9842)称"缺尾换行=apply 失败确定性成因"——抽查 12 题(含全部 resolved 题)patch **全部缺尾换行**,其中 4 题 resolved 通过 apply → 缺尾换行降级为伴随特征非充分条件;真正阻断=malformed hunk 结构(hunk 行数/新增文件路径)。修正不改变 16→25 题格式层归因结论,只修正机制表述。
+**根因机制坐实(v5 通报 #9926)**:malformed hunk 亚型含语法层——采集端 collect_final_patch 对 diff 正文 `.strip()` 剥掉 patch 尾行换行,尾行换行是 unified diff 语法一部分,strip 即 corrupt(git apply --check 失败,v5 单测复现);已修 nautilus-v5@d2a05a70(尾换行补齐+repo 外路径过滤+烟测门原子件,TDD 4/4 绿),Round 2 发车前 5 题 smoke 门接线。
 
 ## 读数注记(判分纪律呈现)
 
