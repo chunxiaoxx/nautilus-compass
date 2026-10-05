@@ -1,6 +1,6 @@
 {
   "case_id": "umi_batch1_v4",
-  "ts": "2026-10-05T21:20:00+08:00",
+  "ts": "2026-10-05T21:45:00+08:00",
   "judge": "compass",
   "lock": "aa380f28fd6e67ce-v1.1",
   "material": {
@@ -12,20 +12,53 @@
     "consumer": "Phi-3.5-vision-instruct 4.2B (zero-shot, venv_phi 4.44.2)"
   },
   "recompute": {
-    "native_acc": {"claimed": 0.3529, "recomputed": "18/51=0.35294", "evidence_tier": "measured", "zero_deviation": true},
-    "drop128": {"claimed": 0.0, "evidence_tier": "self-reported", "note": "d128/d96 逐帧明细未落 pipe_art,detail.jsonl 仅单条件 51 行,drop 层不可独立复算"},
-    "drop96": {"claimed": -0.0196, "evidence_tier": "self-reported", "note": "同上"}
+    "native_acc": {
+      "claimed": 0.3529,
+      "recomputed": "18/51=0.35294",
+      "evidence_tier": "measured",
+      "zero_deviation": true
+    },
+    "drop128": {
+      "claimed": 0.0,
+      "evidence_tier": "measured",
+      "note": "v2 明细 153 行(51×3,sha16 ff22b45bc8787297)复算:d128 18/51=native 18/51,零偏差;R198 self-reported 升级(材料方响应 upgrade_path 办结)",
+      "paired_flips": "降5升5(净0,对称翻转)"
+    },
+    "drop96": {
+      "claimed": -0.0196,
+      "evidence_tier": "measured",
+      "note": "d96 19/51 复算零偏差",
+      "paired_flips": "降5升6(净-1)"
+    }
   },
   "criteria_check": {
     "V4-UMI-J1": "drop128=0.0 < 0.05 → 未证实分支(Phi 画像对 UMI 域高分辨率退化不敏感)"
   },
   "findings": [
-    {"id": "F1", "text": "native 层统计复算零偏差 [实测];三 caveat(基线弱/盲探针2-3/GT常数性)收讫入判读", "evidence_tier": "measured"},
-    {"id": "F2", "text": "材料缺口:d128/d96 逐帧明细未随工件落仓 → drop 读数为材料方自报层;upgrade_path=补落三条件明细 jsonl 后可升 measured", "evidence_tier": "inferred", "gap_layer": "data"},
-    {"id": "F3", "text": "跨域一致性观察:与 gen4_v2 域 Phi 零掉幅互证,鲁棒形态跨域稳定——矩阵'数据×消费者交互属性'主张方向性支持(等更多画像)", "evidence_tier": "inferred"}
+    {
+      "id": "F1",
+      "text": "native 层统计复算零偏差 [实测];三 caveat(基线弱/盲探针2-3/GT常数性)收讫入判读",
+      "evidence_tier": "measured"
+    },
+    {
+      "id": "F2",
+      "text": "材料缺口:d128/d96 逐帧明细未随工件落仓 → drop 读数为材料方自报层;upgrade_path=补落三条件明细 jsonl 后可升 measured",
+      "evidence_tier": "inferred",
+      "gap_layer": "data"
+    },
+    {
+      "id": "F3",
+      "text": "跨域一致性观察:与 gen4_v2 域 Phi 零掉幅互证,鲁棒形态跨域稳定——矩阵'数据×消费者交互属性'主张方向性支持(等更多画像)",
+      "evidence_tier": "inferred"
+    },
+    {
+      "id": "F4",
+      "text": "upgrade_path 办结(21:10 通报):三档明细补落+重跑确定性复现;drop 层升 measured;新配对翻转读数=零净效应下 d128/d96 各有 10-11 帧对称翻转——Phi 逐帧对分辨率有敏感但方向对称,净效应零",
+      "evidence_tier": "measured"
+    }
   ],
   "verdict": {
     "state": "PARTIAL",
-    "text": "未证实分支成立:V4-UMI-J1 门未触发(drop128=0.0)。材料 native 层复算通过;drop 层自报(明细未落件,如实标)。基线弱(0.25→0.353)caveat 限制读数解释力,结论限定为零证据掉幅,非分辨率无害的正面证明。"
+    "text": "未证实分支成立:V4-UMI-J1 门未触发(drop128=0.0)。全部读数(native/d128/d96/drop)已升级为 measured 零偏差;配对翻转读数(降5升5)为帧级注记。基线弱(0.25→0.353)caveat 限制读数解释力,结论限定为零证据掉幅,非分辨率无害的正面证明。"
   }
 }
