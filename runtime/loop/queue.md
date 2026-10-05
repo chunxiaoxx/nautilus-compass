@@ -50,6 +50,15 @@
 
 ## 轮次日志
 
+### R169 · 2026-10-05 10:0x-10:4x(用户拍"语料 v1 重导出现在做"→v1 全件落地+验收全绿)
+- **exporter --v1 模式开发**(tools/verdict_corpus_exporter.py,~630 行):调试期五 bug 如实记——①f15 `_f15_samples_text` 对已解析 dict 二次 literal_eval(TypeError 被吞→text 0/8)②t3 probe rid 伪映射(三 probe 文件 rid 全=1=call 日志行号,非盲评 rid,**已撤除不臆造对应**,改 probe_calls 三行原始内联留证)③通用键映射初版只落旁键(artifact.text/prompt,未进 question/response)④批量替换 tag NameError ⑤Edit 误吞注释即补回
+- **通用键映射落地**(R168 建议二):f15 response=SAMPLES text+question 模板·bc1 question=exam prompt+response=answer_json(考生作答,selftest_answers 正源)·t3-jevcurate question=盲评口径+response=blind_pack rows[rid].text(题面正源,首版漏用)·t3-finding question=desc
+- **验收全绿 [实测]**:id 全同 1454·label 零漂移 0·**空题面 52→0(R168 建议二验收判据达成)**·A 型 11/11 response 全文(579557d8=309 字符含 boxed 结论)·bc1 36/36·t3-jevcurate 5/5·t3-finding 3/3·f15 8/8(jev 首例版 4 条 text 22-75 字符=源数据本身短,非截断)·rejudge context_dependency 500/500(model_answer 99/500 >200,余 401 条源本身短如实申报)
+- **split 继承(切分不变只换内容)**:旧三折 id 序映射→split_train_v1 1162(`b1fcf208d8540d12`)/split_dev_v1 143(`a9609c9a309df99f`)/split_test_v1 149(`aa8ed4ce8363fe19`);并集=v1 全同+两两不交双验过
+- 产物 sha16:train_set_v1=`84277e05e44b77c3`/unlabelled_v1=`61ec70429b88af1b`;manifest_v1 含 v1_changes 四键
+- **修复建议一验收待执行**:A 型 11 条复评 ≥7/11 转对需 GPU 训练/推理(v1 语料重训或现役模型重判),等用户拍板;v1 后两模型重对拍=14B 记档的干净基线
+- commit(不 push);下轮:B 材料守/等回函/A 型复评拍板件
+
 ### R168 · 2026-10-05 09:4x-10:0x(用户拍"both_wrong 14 条人工复核"→语料管线两缺陷实锤)
 - **复核执行**(本地 split sha16 与 A100 一致先验;14 条题面抽全 `_r168_bothwrong_14.json`):截断假说修正——语料件 response 本身=200 字符(入库截断,原始 per_question response_raw 317-509 字符,579557d8 的 boxed 结论 309 字符全被砍)
 - **两缺陷实锤 [实测]**:

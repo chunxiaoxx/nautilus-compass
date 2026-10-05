@@ -86,23 +86,32 @@ def _loads_lenient(text: str):
         raise
 
 
-def harvest_f15_meta(path: Path) -> list:
+def harvest_f15_meta(path: Path, inline_v1: bool = False) -> list:
     """F15 meta-judge 件(两种格式):
     ① 三供应商版:顶层 compass_gates{case:三态}+ 各供应商{case:概率}
     ② 首例版:results{case:{compass:三态, jev_noul:概率}}
     compass 三态=基准真值,供应商概率=被检输出。"""
     d = _loads_lenient(path.read_text(encoding="utf-8"))
+    samples_v1 = _f15_samples_text() if inline_v1 else {}
     out = []
     if isinstance(d.get("results"), dict):  # 首例版
         for case_id, cell in d["results"].items():
             truth3 = _TRUTH_MAP.get(str(cell.get("compass", "")).lower())
             if truth3 is None:
                 continue
+            artifact = {"case_id": case_id,
+                        "sample_pack": "scripts/f15_meta_judge.py SAMPLES"}
+            if case_id in samples_v1:
+                artifact["text"] = samples_v1[case_id]
+                # v1 通用键映射(R168 建议二):response=被检输出文本
+                artifact["response"] = samples_v1[case_id]
+                artifact["question"] = (f"[F15 case {case_id}] meta-judge 三态判定:"
+                                        "判读被检输出与 compass_gates 三门判分基准是否一致"
+                                        "(ok/injected/noprovenance)")
             out.append(_sample(
                 sid=f"f15-{path.stem}-{case_id}",
                 source=path, criteria_ref="F15-meta-judge 三态基准(choices@assay)",
-                artifact={"case_id": case_id,
-                          "sample_pack": "scripts/f15_meta_judge.py SAMPLES"},
+                artifact=artifact,
                 judge_output={k: v for k, v in cell.items() if k != "compass"},
                 truth_label=truth3, label_origin="compass_gates(三门判分)",
                 reason="F15 首例:三门判分为基准,jev_noul 概率为被检对象"))
@@ -115,14 +124,73 @@ def harvest_f15_meta(path: Path) -> list:
         judge_out = {k: d[k][case_id] for k in d
                      if k not in ("compass_gates", "analysis", "ts")
                      and isinstance(d[k], dict) and case_id in d[k]}
+        artifact = {"case_id": case_id, "sample_pack": "scripts/f15_meta_judge.py SAMPLES"}
+        if case_id in samples_v1:
+            artifact["text"] = samples_v1[case_id]
+            # v1 通用键映射(R168 建议二):response=被检输出文本
+            artifact["response"] = samples_v1[case_id]
+            artifact["question"] = (f"[F15 case {case_id}] meta-judge 三态判定:"
+                                    "判读被检输出与 compass_gates 三门判分基准是否一致"
+                                    "(ok/injected/noprovenance)")
         out.append(_sample(
             sid=f"f15-{path.stem}-{case_id}",
             source=path, criteria_ref="F15-meta-judge 三态基准(choices@assay)",
-            artifact={"case_id": case_id, "sample_pack": "scripts/f15_meta_judge.py SAMPLES"},
+            artifact=artifact,
             judge_output=judge_out,
             truth_label=truth3, label_origin="compass_gates(三门判分)",
             reason="F15 抽样:三门判分为基准,供应商概率输出为被检对象"))
     return out
+
+
+def _f15_samples_text() -> dict:
+    """v1 修复:从 f15_meta_judge.py 的 SAMPLES 字面量解析 case_id→text(失败留指针不炸)。"""
+    import ast
+    src = ROOT / "scripts" / "f15_meta_judge.py"
+    if not src.exists():
+        return {}
+    try:
+        text = src.read_text(encoding="utf-8")
+        node = re_search_samples(text)   # 已返回解析后 dict(内含 literal_eval)
+        if not isinstance(node, dict):
+            return {}
+        return {k: str(v.get("text", "")) for k, v in node.items()
+                if isinstance(v, dict)}
+    except Exception:
+        return {}
+
+
+def re_search_samples(text: str):
+    import re as _re
+    m = _re.search(r"SAMPLES\s*=\s*(\{)", text)
+    if not m:
+        return None
+    start = m.start(1)
+    depth, instr, esc = 0, False, False
+    for i in range(start, len(text)):
+        ch = text[i]
+        if esc:
+            esc = False
+            continue
+        if ch == "\\":
+            esc = True
+            continue
+        if ch == '"':
+            instr = not instr
+            continue
+        if instr:
+            continue
+        if ch == "{":
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth == 0:
+                return ast_safe(text[start:i + 1])
+    return None
+
+
+def ast_safe(literal: str):
+    import ast as _ast
+    return _ast.literal_eval(literal)
 
 
 def harvest_judge_pack_unlabelled(path: Path) -> list:
@@ -154,7 +222,7 @@ def harvest_vtf_aggregated(path: Path) -> list:
         judge_output={"note": "run-level metrics; per-item labels not present"})]
 
 
-def harvest_bc1_scorecard(bc_dir: Path) -> list:
+def harvest_bc1_scorecard(bc_dir: Path, inline_v1: bool = False) -> list:
     """BC1 v1/v2 自测成绩单 → 逐题样本(v1 的 7 FAIL 人工审计=判分器纠错金矿)。
 
     标签映射(源:SELFTEST_SCORECARD.md 逐题审计表 + V2 重考,2026-09-23):
@@ -174,47 +242,81 @@ def harvest_bc1_scorecard(bc_dir: Path) -> list:
         "T31-2": ("fail", "insufficient_evidence", "边界未定义:同 T31-1"),
     }
     out = []
+    # v1 修复:按 qid 内联 exam 题面(v1/v2 各自的 paper;映射缺口 → 无题面盲判)
+    prompts: dict = {}
+    if inline_v1:
+        for paper in ("selftest_exam_paper.json", "selftest_exam_paper_v2.json"):
+            p = bc_dir / paper
+            if p.exists():
+                try:
+                    d = json.loads(p.read_text(encoding="utf-8"))
+                    for it in d.get("items", []):
+                        prompts[(paper, it.get("qid"))] = str(it.get("prompt", ""))
+                except Exception:
+                    pass
     # v1 实际被考题号 = selftest_answers.json 的键(public 18;decision_set 全 30 含
     # holdout 12 未考,不可作标签源——首版曾错标,以 answers 键为准+18 题硬校验)
+    answers_v1: dict = {}
     try:
-        ids = list(json.loads(
-            (bc_dir / "selftest_answers.json").read_text(encoding="utf-8")).keys())
+        answers_v1 = json.loads(
+            (bc_dir / "selftest_answers.json").read_text(encoding="utf-8"))
+        ids = list(answers_v1.keys())
     except Exception:
         ids = []
     if len(ids) != 18:
         raise SystemExit(f"BC1 v1 实际考题数 {len(ids)} ≠ 18(scorecard 口径),中止防错标")
     for qid in ids:
         verify, truth, reason = v1_audit.get(qid, ("pass", "pass", "原样判分 PASS,审计无异议"))
+        artifact = {"exam": "selftest_exam_paper.json", "qid": qid,
+                    "audit_table": "SELFTEST_SCORECARD.md §逐题审计"}
+        pr = prompts.get(("selftest_exam_paper.json", qid))
+        if pr:
+            artifact["prompt"] = pr
+            # v1 通用键映射(R168 建议二):question=考题,response=考生作答
+            artifact["question"] = pr
+        ans = answers_v1.get(qid)
+        if ans is not None:
+            artifact["response"] = json.dumps(ans, ensure_ascii=False)
         out.append(_sample(
             sid=f"bc1-v1-{qid}",
             source=bc_dir / "SELFTEST_SCORECARD.md",
             criteria_ref="BC1 v1 自测(verify_bc1.py 三态,U 不充正分;sha=16de925e)",
-            artifact={"exam": "selftest_exam_paper.json", "qid": qid,
-                      "audit_table": "SELFTEST_SCORECARD.md §逐题审计"},
+            artifact=artifact,
             judge_output={"verify_bc1": verify},
             truth_label=truth, label_origin="BC1 v1 逐题人工审计(2026-09-23)",
             reason=reason))
     # v2 重考(修题后 18/18,含 7 缺陷题转 PASS——归因正确的反向证明)
+    answers_v2: dict = {}
     try:
-        ids2 = list(json.loads(
-            (bc_dir / "selftest_answers_v2.json").read_text(encoding="utf-8")).keys())
+        answers_v2 = json.loads(
+            (bc_dir / "selftest_answers_v2.json").read_text(encoding="utf-8"))
+        ids2 = list(answers_v2.keys())
     except Exception:
         ids2 = []
     if len(ids2) != 18:
         raise SystemExit(f"BC1 v2 实际考题数 {len(ids2)} ≠ 18,中止防错标")
     for qid in ids2:
+        artifact = {"exam": "selftest_exam_paper_v2.json", "qid": qid}
+        pr = prompts.get(("selftest_exam_paper_v2.json", qid))
+        if pr:
+            artifact["prompt"] = pr
+            # v1 通用键映射(R168 建议二):question=考题,response=考生作答
+            artifact["question"] = pr
+        ans = answers_v2.get(qid)
+        if ans is not None:
+            artifact["response"] = json.dumps(ans, ensure_ascii=False)
         out.append(_sample(
             sid=f"bc1-v2-{qid}",
             source=bc_dir / "SELFTEST_SCORECARD_V2.md",
             criteria_ref="BC1 v2 自测(五处出题缺陷已修;sha=3b9def7d)",
-            artifact={"exam": "selftest_exam_paper_v2.json", "qid": qid},
+            artifact=artifact,
             judge_output={"verify_bc1": "pass"},
             truth_label="pass", label_origin="BC1 v2 重考+非实现者复算",
             reason="修题后重考 18/18 全 PASS,7 缺陷题全部转 PASS 且无新错"))
     return out
 
 
-def harvest_t3_blind(t3_dir: Path) -> list:
+def harvest_t3_blind(t3_dir: Path, inline_v1: bool = False) -> list:
     """T3 jev-curate 首个外部履约 → 盲评真值样本(n=5)+ 三 findings 系统性错误样本。
 
     三层结构(仓内最完整的判绩账样本族):
@@ -223,15 +325,52 @@ def harvest_t3_blind(t3_dir: Path) -> list:
       勘误层       = RECOMPUTE_REPORT(独立复算 RED→6 处勘误,R1 标注分歧未预披露)
     """
     bl = json.loads((t3_dir / "blind_labels.json").read_text(encoding="utf-8"))
+    # v1 修复:blind_pack rows 按 rid 取被检回复原文(题面正源);
+    # probe*.jsonl 三行是 call 日志(其 rid=1 是日志行号,非盲评 rid——
+    # 首版按 rid 伪映射已撤),只整行内联留证,不臆造文件↔rid 对应。
+    pack_text: dict = {}
+    if inline_v1:
+        try:
+            bp = json.loads((t3_dir / "blind_pack.json").read_text(encoding="utf-8"))
+            for row in bp.get("rows", []):
+                if row.get("rid"):
+                    pack_text[str(row["rid"])] = {
+                        "text": str(row.get("text", "")),
+                        "noul_p": row.get("noul_p"),
+                        "depth_score_0based": row.get("depth_score_0based")}
+        except Exception:
+            pass
+    probe_calls: list = []
+    if inline_v1:
+        for p in sorted(t3_dir.glob("*probe*.jsonl")):
+            try:
+                for line in p.read_text(encoding="utf-8").splitlines():
+                    if line.strip():
+                        probe_calls.append({"file": p.name,
+                                            "record": json.loads(line)})
+            except Exception:
+                pass
     out = []
     for row in bl.get("labels", []):
         rid = row.get("rid", "?")
+        rationale = str(row.get("rationale", ""))
+        artifact = {"rid": rid, "probe": "jev-trust-probe-format-t3-*.jsonl",
+                    "rationale": rationale if inline_v1 else rationale[:200]}
+        if inline_v1:
+            # v1 通用键映射(R168 建议二):question=盲评任务口径,response=被检回复原文
+            artifact["question"] = (f"[T3 {rid}] jev-trust probe-format 盲评:"
+                                    "判该回复是否存在循环论证(noul 腿)+推理深度(depth 腿,1-5 标尺)")
+            pk = pack_text.get(str(rid))
+            if pk:
+                artifact["response"] = pk["text"]
+                artifact["pack_row"] = pk
+        if inline_v1 and probe_calls:
+            artifact["probe_calls"] = probe_calls
         out.append(_sample(
             sid=f"t3-jevcurate-{rid}",
             source=t3_dir / "blind_labels.json",
             criteria_ref="T3 mini jev-curate PROTOCOL.md(预注册判据)",
-            artifact={"rid": rid, "probe": "jev-trust-probe-format-t3-*.jsonl",
-                      "rationale": row.get("rationale", "")[:200]},
+            artifact=artifact,
             judge_output={"delivery": "RESULTS.md 读数表(noul/depth 腿+阈值判定)",
                           "verdict": "见 RESULTS.md(逐行腿输出)"},
             truth_label=("fail" if row.get("y_circ") == 1 else "pass"),
@@ -248,7 +387,11 @@ def harvest_t3_blind(t3_dir: Path) -> list:
             sid=f"t3-finding-{fid}",
             source=t3_dir / "RESULTS.md",
             criteria_ref="T3 主批 findings(生产影响排序)",
-            artifact={"finding": fid, "evidence": "RESULTS.md 原文+probe jsonl"},
+            artifact={"finding": fid,
+                      **({"question": desc,
+                          "response": "RESULTS.md 原文+probe jsonl"
+                                      "(三行 call 日志:001039/001040/001050)"
+                         } if inline_v1 else {"evidence": "RESULTS.md 原文+probe jsonl"})},
             judge_output={"pipeline": "jev-curate reasoning-math preset 生产路径"},
             truth_label="fail",
             label_origin="T3 主批审计+独立复算(RECOMPUTE_REPORT)",
@@ -270,7 +413,7 @@ def harvest_e5_gates_unlabelled(path: Path) -> list:
         for qid, v in verdicts.items()]
 
 
-def harvest_rejudge_upgraded(path: Path) -> list:
+def harvest_rejudge_upgraded(path: Path, inline_v1: bool = False) -> list:
     """arm_a 重判 500 题 → labelled(v2 · 9/30 双层复算升级)。
 
     升级依据(REJUDGE_RECOMPUTE_PREREG_20260930.md 预注册+修正#1,双绿):
@@ -278,15 +421,19 @@ def harvest_rejudge_upgraded(path: Path) -> list:
       J2 抽样 50 题(隔离子进程盲判,J5 物理隔离),一致率 48/50=96%
     🔴 沿革:首版判 judge 自报(is_correct=_parse_judge 复写)不可标——
     本升级走完整复算路径,非口径放水。分歧 2 条(partial 口径)入勘误库。
+    v1 修复:question/model_answer 截断 200→2000,artifact 标 context_dependency
+    (gold 依据=多轮对话偏好链,单轮化损失,R168 复核 C 型)。
     """
     d = json.loads(path.read_text(encoding="utf-8"))
+    qlen = 2000 if inline_v1 else 200
     return [_sample(
         sid=f"rejudge-{r.get('question_id')}",
         source=path,
         criteria_ref="LME arm-a 重判·双层复算升级(J1 0/85+J2 48/50 双绿)",
-        artifact={"question": str(r.get("question"))[:200],
-                  "model_answer": str(r.get("model_answer"))[:200],
-                  "official_truth": r.get("truth")},
+        artifact={"question": str(r.get("question"))[:qlen],
+                  "model_answer": str(r.get("model_answer"))[:qlen],
+                  "official_truth": r.get("truth"),
+                  **({"context_dependency": True} if inline_v1 else {})},
         judge_output={"judge_raw": r.get("judge_raw")},
         truth_label=("pass" if r.get("judge_raw") == "CORRECT" else "fail"),
         label_origin="LME 官方 truth+双层复算(机械 M1+隔离盲判抽样)",
@@ -320,16 +467,19 @@ def harvest_errata_registry() -> list:
     return out
 
 
-def harvest_lmev2_official(pq_path: Path) -> list:
+def harvest_lmev2_official(pq_path: Path, inline_v1: bool = False) -> list:
     """LME-V2 官方 harness 明细(d12/d14 per_question.jsonl)→ labelled。
 
     真值口径:answer_gold=官方金标 + score_bool=透明 eval_function 机械判定
     (mc_choice_match 等规则代码,非 LLM judge 自报;d14 复核的探针三陷阱
     分析即针对此层)。is_abstention_problem/is_unknown 一并入 artifact,
     供 abstention gate 样本族后续细分。
+    v1 修复(R168 复核 A 型):question/response 截断 200→2000——
+    [:200] 截断把 boxed 结论段砍掉,gold 依据不可见于判读输入。
     """
     out = []
     run, dom = pq_path.parts[-3], pq_path.parts[-2]
+    rlen = 2000 if inline_v1 else 200
     for line in pq_path.read_text(encoding="utf-8").splitlines():
         if not line.strip():
             continue
@@ -338,8 +488,8 @@ def harvest_lmev2_official(pq_path: Path) -> list:
             sid=f"lme-{run}-{dom[:12]}-{r.get('question_id')}",
             source=pq_path,
             criteria_ref=f"LME-V2 {run} {dom}(官方 harness·透明规则判定)",
-            artifact={"question": str(r.get("question_text"))[:200],
-                      "response": str(r.get("response_parsed_boxed"))[:200],
+            artifact={"question": str(r.get("question_text"))[:rlen],
+                      "response": str(r.get("response_parsed_boxed"))[:rlen],
                       "answer_gold": r.get("answer_gold"),
                       "is_abstention_problem": r.get("is_abstention_problem"),
                       "is_unknown": r.get("is_unknown"),
@@ -355,7 +505,11 @@ def harvest_lmev2_official(pq_path: Path) -> list:
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="runtime/verdict_corpus")
+    ap.add_argument("--v1", action="store_true",
+                    help="v1 修复模式(R168 复核):截断放开+三族字段内联+rejudge 标注;"
+                         "输出 train_set_v1.jsonl/manifest_v1.json,id 集与 v0 全同")
     args = ap.parse_args()
+    v1 = args.v1
     out_dir = ROOT / args.out
     out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -366,14 +520,14 @@ def main():
     for p in [ROOT / "runtime" / "f15_meta_judge_3prov.json",
               ROOT / "runtime" / "jev_meta_judge_first.json"]:
         if p.exists():
-            ss = harvest_f15_meta(p)
+            ss = harvest_f15_meta(p, inline_v1=v1)
             labelled += ss
             src_summary.append((str(p.relative_to(ROOT)), f"{len(ss)} labelled"))
 
     # S2 · BC1 自测成绩单逐题标签(v1 审计+v2 重考 = 最大标签增量源)
     bc_dir = ROOT / "runtime" / "assay_bc1_20260927"
     if bc_dir.exists():
-        ss = harvest_bc1_scorecard(bc_dir)
+        ss = harvest_bc1_scorecard(bc_dir, inline_v1=v1)
         labelled += ss
         src_summary.append(("runtime/assay_bc1_20260927/SELFTEST_SCORECARD{,_V2}.md",
                             f"{len(ss)} labelled"))
@@ -387,7 +541,7 @@ def main():
     # S4 · T3 jev-curate 盲评真值(外部首单三层:交付 vs 盲评 vs 复算)
     t3_dir = ROOT / "runtime" / "jev_trust_t3_jevcurate_20260924"
     if (t3_dir / "blind_labels.json").exists():
-        ss = harvest_t3_blind(t3_dir)
+        ss = harvest_t3_blind(t3_dir, inline_v1=v1)
         labelled += ss
         src_summary.append(("runtime/jev_trust_t3_jevcurate_20260924/",
                             f"{len(ss)} labelled"))
@@ -403,7 +557,7 @@ def main():
     # S6 · arm-a 重判 500 题(双层复算双绿后升 labelled,9/30)
     rj = ROOT / "vtf" / "_e2e_diag" / "arm_a_rows_rejudged.json"
     if rj.exists():
-        ss = harvest_rejudge_upgraded(rj)
+        ss = harvest_rejudge_upgraded(rj, inline_v1=v1)
         labelled += ss
         src_summary.append(("vtf/_e2e_diag/arm_a_rows_rejudged.json",
                             f"{len(ss)} labelled(双层复算升级)"))
@@ -419,7 +573,7 @@ def main():
         for dom in ("compass_web_small", "compass_enterprise_small"):
             pq = ROOT / "vtf" / "_compass_lmev2_out" / run / dom / "per_question.jsonl"
             if pq.exists():
-                ss = harvest_lmev2_official(pq)
+                ss = harvest_lmev2_official(pq, inline_v1=v1)
                 labelled += ss
                 src_summary.append((str(pq.relative_to(ROOT)),
                                     f"{len(ss)} labelled(官方规则)"))
@@ -433,10 +587,11 @@ def main():
         n_vtf += len(ss)
     src_summary.append(("vtf/**/aggregated_metrics.json", f"{n_vtf} unlabelled"))
 
-    (out_dir / "train_set_v0.jsonl").write_text(
+    tag = "v1" if v1 else "v0"
+    (out_dir / f"train_set_{tag}.jsonl").write_text(
         "\n".join(json.dumps(s, ensure_ascii=False) for s in labelled) + "\n",
         encoding="utf-8")
-    (out_dir / "unlabelled_v0.jsonl").write_text(
+    (out_dir / f"unlabelled_{tag}.jsonl").write_text(
         "\n".join(json.dumps(s, ensure_ascii=False) for s in unlabelled) + "\n",
         encoding="utf-8")
     manifest = {
@@ -451,10 +606,18 @@ def main():
                        "T3 mini 主批 findings 挂标签",
                        "rejudge_errors 勘误样本(判绩账:评委也会错)"],
     }
-    (out_dir / "manifest.json").write_text(
+    if v1:
+        manifest["v1_changes"] = {
+            "basis": "R168 both_wrong 人工复核(runtime/loop/_r168_bothwrong_audit.md)",
+            "fix1_lme_rejudge_truncation": "question/response[:200]->[:2000](boxed 结论段保留)",
+            "fix2_bc1_t3_f15_inline": "exam prompt/probe 行/SAMPLES text 内联(52 条映射缺口修复)",
+            "fix3_rejudge_context_flag": "rejudge artifact.context_dependency=true(单轮化损失 caveat)",
+            "invariants": "id 集与 v0 全同;truth_label/label_origin/reason/source 不动;content_hash 因 artifact 修复而变(预期)",
+        }
+    (out_dir / f"manifest_{tag}.json").write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    print(f"[exporter] labelled={len(labelled)} unlabelled={len(unlabelled)} "
+    print(f"[exporter mode={tag}] labelled={len(labelled)} unlabelled={len(unlabelled)} "
           f"(P1 目标 500 带标签,现距 {500 - len(labelled)})")
     for s, c in src_summary:
         print(f"  {c:<28} {s}")

@@ -1,0 +1,79 @@
+{
+  "exported_at": "2026-10-05T09:59:14+08:00",
+  "counts": {
+    "labelled": 1454,
+    "unlabelled": 47,
+    "p1_target": 500
+  },
+  "schema": {
+    "truth_label": "pass|fail|insufficient_evidence",
+    "label_origin": "真值来源(人工复核/三门判分/独立复算)",
+    "content_hash": "sha256[:16] 溯源对账"
+  },
+  "sources": [
+    [
+      "runtime\\f15_meta_judge_3prov.json",
+      "4 labelled"
+    ],
+    [
+      "runtime\\jev_meta_judge_first.json",
+      "4 labelled"
+    ],
+    [
+      "runtime/assay_bc1_20260927/SELFTEST_SCORECARD{,_V2}.md",
+      "36 labelled"
+    ],
+    [
+      "runtime\\benchmarks\\exam5\\judge_pack.json",
+      "5 unlabelled"
+    ],
+    [
+      "runtime/jev_trust_t3_jevcurate_20260924/",
+      "8 labelled"
+    ],
+    [
+      "runtime/e5_gates_first33.json",
+      "33 unlabelled"
+    ],
+    [
+      "vtf/_e2e_diag/arm_a_rows_rejudged.json",
+      "500 labelled(双层复算升级)"
+    ],
+    [
+      "v5:18890 assay_errata.jsonl",
+      "1 unlabelled(errata-registry·smoke)"
+    ],
+    [
+      "vtf\\_compass_lmev2_out\\d12\\compass_web_small\\per_question.jsonl",
+      "240 labelled(官方规则)"
+    ],
+    [
+      "vtf\\_compass_lmev2_out\\d12\\compass_enterprise_small\\per_question.jsonl",
+      "211 labelled(官方规则)"
+    ],
+    [
+      "vtf\\_compass_lmev2_out\\d14\\compass_web_small\\per_question.jsonl",
+      "240 labelled(官方规则)"
+    ],
+    [
+      "vtf\\_compass_lmev2_out\\d14\\compass_enterprise_small\\per_question.jsonl",
+      "211 labelled(官方规则)"
+    ],
+    [
+      "vtf/**/aggregated_metrics.json",
+      "8 unlabelled"
+    ]
+  ],
+  "v1_backlog": [
+    "BC1 SELFTEST_SCORECARD(.sig) 逐题标签解析",
+    "T3 mini 主批 findings 挂标签",
+    "rejudge_errors 勘误样本(判绩账:评委也会错)"
+  ],
+  "v1_changes": {
+    "basis": "R168 both_wrong 人工复核(runtime/loop/_r168_bothwrong_audit.md)",
+    "fix1_lme_rejudge_truncation": "question/response[:200]->[:2000](boxed 结论段保留)",
+    "fix2_bc1_t3_f15_inline": "exam prompt/probe 行/SAMPLES text 内联(52 条映射缺口修复)",
+    "fix3_rejudge_context_flag": "rejudge artifact.context_dependency=true(单轮化损失 caveat)",
+    "invariants": "id 集与 v0 全同;truth_label/label_origin/reason/source 不动;content_hash 因 artifact 修复而变(预期)"
+  }
+}
