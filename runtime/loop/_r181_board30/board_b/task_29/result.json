@@ -1,0 +1,8 @@
+{
+ "idx": 29,
+ "instance_id": "django__django-12308",
+ "status": "manual_collect_after_runner_stall",
+ "note": "runner 卡在 agent.run 收尾(trajectory 已落盘 30min+ 无 result.json,无 git 子进程);patch.diff 由值守手动采集=工作区零改动(0 字节),与 runner 若完成将采到的口径一致",
+ "exit_status": "",
+ "patch_chars": 0
+}
