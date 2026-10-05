@@ -50,6 +50,12 @@
 
 ## 轮次日志
 
+### R173 · 2026-10-05 11:4x(用户拍"SPEC 发 gist+README 挂链接"→对外发布完成,双端验证)
+- **gist 发布**:IVP SPEC v1 → https://gist.github.com/chunxiaoxx/34dd19b430ad69242198d4c429303bd5(公开,描述含 rsi-bench#3 采纳背书);外网探活 HTTP 200 [实测]
+- **README 双语挂链**:英文/中文版 Reproducibility Wall 段各加 IVP 段(SPEC gist+Casebook v1+判读免费装订收费条款+rsi-bench#3 链接);push a8550a1b(含 R166-R172 积压 13 commit,全判据档/日志,透明纪律本该公开);raw.githubusercontent 实测远端已含 gist 链接 [实测]
+- 支点固化链闭环:协议(SPEC 一页)→判例(判例集 v1)→橱窗(README 双语+gist)——"被采纳"摩擦从读全部内档降到复制一页
+- commit(已 push,发布类动作);下轮=值守等外部事件/A 型复评拍板件/L3 开跑排期
+
 ### R172 · 2026-10-05 10:5x-11:3x(用户拍"现在验证 v5 网关接 mini-swe-agent"→接入验证 PASS,开跑前置清零)
 - **验证执行(docs/metering/L3_GATEWAY_INTEGRATION_CHECK_20261005.md)**:mini-swe-agent 2.4.6 装机($TEMP/mini_venv;坑:清华镜像无此包走官方源+socks 代理毁 pip 第 N 次复发)→ 四步全 [实测]:①网关探活✓②litellm 连接✓(两坑:config 字段名=model_kwargs 非 litellm_model_kwargs,写错静默打到真 OpenAI 401 误导;本地模型须 cost_tracking=ignore_errors)③tools 透传✓(参数名随请求 schema——mini 的 command 正确传递,adapter 仅归一化)④多轮 tool 结果回喂✓
 - **协议磨合点(开跑实测项)**:mini 官方协议每轮(含完成轮)必须 tool call(submit 机制),M3 完成后倾向文本收尾(finish=stop)→ FormatError→RepeatedFormatError 退出;mini 的 format_error 喂回重试会兜,真跑表现=开跑读数不预设
