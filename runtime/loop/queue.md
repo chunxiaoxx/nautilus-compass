@@ -50,6 +50,14 @@
 
 ## 轮次日志
 
+### R170 · 2026-10-05 10:06-10:2x(值守轮:L3 v1 定版(死线件)+rsi-bench 外部回应+G1 quiet)
+- **probe**(ts 10:06)有事件:#3216 platform L3 定版输入(死线 12:04)+rsi-bench#1 外部评论(10/5 02:02Z)+A100 真空闲
+- **③G1 判分触发:quiet**——paramiko 实查 /root/vdd3/pipe_art/:g1_infer_G/summary.json 与 g1_infer_B/summary.json 均不存在,无 g1_infer_* 目录;GPU 14MiB 真空闲;④turbo 已完成不触发
+- **#3216 L3 定版(本轮主件,死线 12:04 前 2h 收口)**:12 字段全齐——A=v5-harness@4e14a898(入口 mini_runner_e5.py)+B=mini-swe-agent+任务集 SWE-bench Verified 500 resolved%;**配置披露列增设(采纳平台意见)+配置差裁定**:工具面差异=被测能力披露不惩罚不加权(加权=主观自由度违反预注册)/模型必须双臂同否则降级单臂/max_steps=25 双臂同/采样参数开跑钉死;v5"下位配置"自述入 caveat;定版 sha16=`d20d167f934af255`(commit c163264f);回函 3217+ack
+- **rsi-bench#1 外部评论处置**(sunghunkwag 10/5:Sponsors 上线公告+#3 边界认可):轻回应评论 5986916661(祝贺+重申 replay certification receipt 承诺);对方非索赞助,不涉金钱动作
+- **#3215 zenmind digest**:例行 ack
+- commit(不 push);下轮:B 臂 commit 锚+采样参数对齐(等 v5/platform);pusht-frame-v2 值守合并探端点;G1 材料守
+
 ### R169 · 2026-10-05 10:0x-10:4x(用户拍"语料 v1 重导出现在做"→v1 全件落地+验收全绿)
 - **exporter --v1 模式开发**(tools/verdict_corpus_exporter.py,~630 行):调试期五 bug 如实记——①f15 `_f15_samples_text` 对已解析 dict 二次 literal_eval(TypeError 被吞→text 0/8)②t3 probe rid 伪映射(三 probe 文件 rid 全=1=call 日志行号,非盲评 rid,**已撤除不臆造对应**,改 probe_calls 三行原始内联留证)③通用键映射初版只落旁键(artifact.text/prompt,未进 question/response)④批量替换 tag NameError ⑤Edit 误吞注释即补回
 - **通用键映射落地**(R168 建议二):f15 response=SAMPLES text+question 模板·bc1 question=exam prompt+response=answer_json(考生作答,selftest_answers 正源)·t3-jevcurate question=盲评口径+response=blind_pack rows[rid].text(题面正源,首版漏用)·t3-finding question=desc
