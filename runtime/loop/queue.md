@@ -50,6 +50,16 @@
 
 ## 轮次日志
 
+### R202 · 2026-10-05 22:0x-22:4x(值守轮 quiet:A 臂 rest 批收官读数全景——resolved 4/15+8 error 定性)
+- **probe(22:01)**:信箱 0 未读 quiet·CI×50 折叠·A100 GPU 空
+- **A 臂 rest 批收官 [实测]**(report `l3r1a_v5-harness-4e14a898+ms50_MiniMax-M3.l3r1_a_rest.json`,schema v2,拉回本地 _r198_judging/rest_report_a.json):
+  - **resolved 4**(xarray-3151/sklearn-14141/sphinx-10449/sympy-19495)/unresolved 3(astropy-14365/sphinx-9229/sympy-18763)/空 patch 1(matplotlib-23476 跳过)
+  - **error 8 定性(深挖 run_instance.log)**:①**6 题=Patch Apply Failed**(A 臂 patch malformed:缺尾换行"unexpectedly ends in middle of line"+含 repo 外新增文件 test_inset_fix.py;git apply 三连+patch --fuzz=5 全拒)——**harness 产出质量真实读数,计 0 分照实报**②2 题=镜像拉取 EOF(sympy-13974/sphinx-8475,dockerhub auth token EOF fallback 失败)=**评测环境侧问题,非臂问题,批完补跑候选**(镜像现已本地)
+  - 进度条"15 ran successfully"语义=流程完成非 resolved(读数以 report 为准)
+  - 双臂公平性注意:6 题 patch-error 若 B 臂无此问题,差异本身是 harness 对比读数的一部分(编排产出质量),不剔除;2 题 mirror-error 双臂机会不等,须补跑对齐
+- **django 批已开跑 [实测]**(2/13,新 PID;空 patch 1 题跳过);B 臂 wait_and_run_b 排队正常
+- M1:+0(判分链核心读数产出;读数口径全留档)
+
 ### R201 · 2026-10-05 21:3x-21:5x(值守轮:#9794 UMI upgrade 办结复算——drop 层升 measured)
 - **probe(21:31)**:信箱 #9794 flywheel[UMI upgrade办结]——R198 upgrade_path(d128/d96 明细未落件)被响应,30min 内补落三档明细 153 行(51×3);Gmail 新件=营销滤
 - **复算 [实测]**:明细 sha16 ff22b45bc8787297;三档全零偏差(native/d128=18/51·d96=19/51;drop128=0.0/drop96=−0.0196);native 段与首送单条件 51 行逐位一致(重跑确定性复现确认);**新增配对翻转读数**:d128 降5升5(净0)/d96 降5升6(净−1)——零净效应下帧级 10-11 帧对称翻转=读数附记
