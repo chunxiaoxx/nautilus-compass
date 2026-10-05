@@ -50,6 +50,16 @@
 
 ## 轮次日志
 
+### R170 追补 · 2026-10-05 10:2x-10:5x(用户拷问 Gmail 盲区+拍板 MVP 支点两件→SPEC+判例集全落地)
+- **Gmail 盲区根因+修复(commit 2ecde644)**:根因=LOOP 指令清单从未含 Gmail,probe 四源不含它,严格执行清单=清单外盲区(9/10 后零覆盖);修复=probe.py 补第五源 probe_gmail(REST fallback 链 ~/.gmail-mcp token→oauth→API+基线增量防重报+营销过滤);坑两枚如实记——credentials.json 无 client_secret(在 client_secret.json installed 键下)/socks5h 形式 env 致 curl SSL rc35(显式 --proxy http://127.0.0.1:10808 修);首跑 10 封未读建基线+二跑 fresh=0 增量逻辑验过
+- **Gmail 实查结论**:3 天内 9 封未读无外部待办(rsi-bench 通知=已回应那条+营销件);两处安全类提请用户自证(9/30 Windows 新登录+10/4 五仓 deploy key 13:56)
+- **MVP 支点盘点**(用户拍"先找支点再固化放大"):系统化过筛=真支点两个(①验证协议=唯一外部实装资产 rsi-bench#3;②判例三单+勘误账=装订首物);诊断=**资源投放错位(最重投入在零消费判读器,被外部验证的协议层投入最轻)**
+- **支点固化两件全落地(commit d0a73bb4)**:
+  - **IVP 协议 SPEC v1**(docs/spec/VERIFICATION_PROTOCOL_SPEC_V1.md,sha16=`05e5d5b9ee532a60`):英文一页可带走——四机制(预注册只许更严/证据三层/非实现者复算不给预期读数/双向判绩账)+最小采纳模板+rsi-bench 实装背书+判读免费装订收费条款
+  - **判例集 v1**(docs/metering/CASEBOOK_V1_20261005.md,sha16=`d3537b65ba314498`):三案装订(G1 pusht 差分终判/E1·J2 498 帧/T3 盲评)+勘误账 E1-E5(含语料 v0 缺陷自曝)+判据张力如实四条(U5 构成偏易/内部客户依赖/装订零成交/语料审查入门)
+- 待确认:SPEC 发 gist(公开外发)+README 链接=下一步对外动作,等拍板;判例集上架判分页=L2 渠道件
+- commit(不 push)
+
 ### R170 · 2026-10-05 10:06-10:2x(值守轮:L3 v1 定版(死线件)+rsi-bench 外部回应+G1 quiet)
 - **probe**(ts 10:06)有事件:#3216 platform L3 定版输入(死线 12:04)+rsi-bench#1 外部评论(10/5 02:02Z)+A100 真空闲
 - **③G1 判分触发:quiet**——paramiko 实查 /root/vdd3/pipe_art/:g1_infer_G/summary.json 与 g1_infer_B/summary.json 均不存在,无 g1_infer_* 目录;GPU 14MiB 真空闲;④turbo 已完成不触发
