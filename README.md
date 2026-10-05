@@ -335,6 +335,16 @@ Protocol: [Assay Protocol v0](docs/protocol/ASSAY_PROTOCOL_V0.md) — criteria
 registration, verification packs, signed receipts, wall discipline. Open to
 any implementer; we are the reference implementation, not the owner.
 
+**The Independent Verification Protocol (IVP) v1** — our judging methodology on
+one page: preregistered gates (stricter-only), evidence tiers
+(`[measured]/[inferred]/[unverifiable]`), recompute by a non-implementer, and a
+two-way scorecard (our own errors stay on the record). Adopted by external
+projects — e.g. [rsi-bench #3](https://github.com/sunghunkwag/rsi-bench/pull/3)
+gates its AGG score on independently checked goal completion.
+→ [SPEC (one page, take & adopt)](https://gist.github.com/chunxiaoxx/34dd19b430ad69242198d4c429303bd5)
+· [Casebook v1](docs/metering/CASEBOOK_V1_20261005.md) (three engagements +
+errata ledger). Judging is free; binding (casebooks, certification) is paid.
+
 Run the head-to-head yourself (~$3.50) — your numbers go on the wall,
 **favorable or not**. Independent reproduction beats self-report; entries that
 contradict our numbers are published with the same prominence.

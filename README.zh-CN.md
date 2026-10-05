@@ -248,6 +248,14 @@ AUC 0.83 held-out。
 独立复现优于自报;与我们数字矛盾的条目同等显著地发布。
 → [docs/REPRODUCIBILITY_WALL.md](docs/REPRODUCIBILITY_WALL.md)
 
+**独立验证协议 IVP v1**——我们的判分方法论一页版:预注册判据(只许更严)/
+证据三层(`[实测]/[推断]/[不可验]`)/非实现者复算/双向判绩账(自错留痕)。
+已被第三方采纳——如 [rsi-bench #3](https://github.com/sunghunkwag/rsi-bench/pull/3)
+把 AGG 分数门在独立核验的目标完成上。
+→ [SPEC 一页(拿走即用)](https://gist.github.com/chunxiaoxx/34dd19b430ad69242198d4c429303bd5)
+· [判例集 v1](docs/metering/CASEBOOK_V1_20261005.md)(三案+勘误账)。
+判读永久免费;装订(判例集/认证)收费。
+
 ---
 
 ## 案例研究 · 四对话框开源多 agent 可靠性
