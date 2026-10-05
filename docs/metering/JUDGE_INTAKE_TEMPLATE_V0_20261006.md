@@ -6,7 +6,7 @@
 
 | 字段 | 对应 assay 字段 | 说明 |
 |---|---|---|
-| 被测物坐标 | `artifacts_ref` | **repo@commit**(公开 git 可克隆);私有仓=HF 材料包链接+sha16 |
+| 被测物坐标 | `artifacts_ref` | **repo@commit**(公开 git 可克隆);私有仓=HF 材料包链接+sha16,**材料包须带 manifest+逐件 sha16,字段兼容 assay/TrajPack**(人读/机读同一套坐标语言,platform #9892 补条) |
 | 被测声明 | `claim` | 一句话:委托我们判定什么(例:"该 harness 在 SWE-bench Verified 抽样 30 题上 resolved=X%") |
 | 联系方式 | — | 邮箱(回执与交付用) |
 

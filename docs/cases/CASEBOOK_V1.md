@@ -235,6 +235,15 @@
 - **判绩账**:材料方响应速度(判读 20:41→办结 21:10)=material_side_honesty 第 3 例正面记档;跨域观察(与 gen4_v2 域 Phi 零掉幅互证,"数据×消费者交互属性"矩阵主张方向性支持)留 [推断] 层。
 - **verdict 正本**:`/root/vdd3/pipe_art/umi_batch1/v4_umi_verdict.json`(v2 含 measured 升级+F4);回执函 9790/9799。
 
+## 案 16 · L3 Harness 榜 Round 1:双臂编排差分与归因勘误(2026-10-05/06)
+
+- **案情**:SWE-bench Verified 分层抽样 n=30(seed 20261005),同模型(MiniMax-M3)双臂 harness 对比——A=v5-harness@4e14a898+ms50 vs B=mini-swe-agent@2.4.6(max_steps=50);判分环境=独立 A100(swebench 5.0.2 官方 resolved 口径,非实现者隔离);判据预注册冻结(L3_HARNESS_BOARD_ROUND1_PREREG,含披露附录 A 污染 caveat)。
+- **判定 [实测]**:A 臂 resolved **8/30=26.7%** vs B 臂 **5/30=16.7%**(+10.0pp);配对 A 独解 4/B 独解 1/双解 4/皆未解 21;镜像 EOF 2 题双臂补跑折入后**环境层归零**(sphinx-8475:A 补跑转 resolved/B 实机 apply fail 改判格式;sympy-13974:A 仍 apply fail/B 本 empty 复核一致)。
+- **归因三层**:模型层同模型受控;编排层=A completed 内转化 61.5%>B 50.0%,B 空 patch 9(50 步打满无产出);格式层=双臂 error A 15/B 11 全定性 malformed hunk。
+- **勘误(判绩账第 6 例)**:归因简报补遗(函 9842)称"缺尾换行=apply 失败确定性成因"——终版抽查 12/12 题(含 4 题 resolved)patch **全部缺尾换行** → 缺尾换行降级为伴随特征非充分条件,真阻断=malformed hunk(hunk 行数计数错/repo 外新增文件);归因结论不变、机制表述修正,勘误函 9895 送 v5。
+- **抽查与污染扫描**:12 题(6/臂分层)状态↔preds 零不符;"解在题面"30 题全量子串扫描弱命中 2 题(惯用代码行,不构成污染证据,如实披露,升级路径=人工 hunk 上下文比对)。
+- **工件**:榜页稿 v1(docs/metering/L3_BOARD_PAGE_DRAFT_20261005.md,sha16 全挂:判据档 b81eca8436887785+preds+六 report+合并件 36f3f38665419f3a+抽查件);回执函 9895(v5)/9896(platform)。判读免费线。
+
 ## 附录 A · verdict 正本与校验状态
 
 | 案 | 正本 | schema v2 |
@@ -254,6 +263,7 @@
 | 13 | `docs/metering/RPT-G1-2407.md`（归因制式首件,复算 PASS-with-erratum 随件） | （制式八段+判绩账回填） |
 | 14 | `/root/vdd3/pipe_art/g1_full_verdict.json`（本地 `_r198_judging/g1_full_verdict.json`） | compliant（配对 McNemar 加固） |
 | 15 | `/root/vdd3/pipe_art/umi_batch1/v4_umi_verdict.json`（v2,measured 升级随件） | compliant |
+| 16 | `runtime/loop/_r198_judging/round1_merged.json` 36f3f38665419f3a+榜页稿 v1 sha16 组 | compliant（判分产出件） |
 
 ## 附录 B · 判读 SLA 与机构口径
 
@@ -269,3 +279,4 @@
 | v1.1 | 2026-10-04 | 补两线边界段+勘误与判绩账专段（四例）+版本记录段；案 8 扩展（r79 四裁 R126 补条+R131 勘误）、案 9-12 入集（gen4 两案/V4 探针/V4-J2 首判）；追补不改史 |
 | v1.2 | 2026-10-05 | 案 13 入集（归因制式 v1 首件 RPT-G1-2407,含非实现者复算 PASS-with-erratum 全录与中位数口径勘误——判绩账双向第 5 例）；勘误与判绩账专段扩展至五例 |
 | v1.3 | 2026-10-05 | 案 14/15 入集（G1-full 门槛终判:小样本信号被全量稀释实证+配对 McNemar 零效应;UMI V4:self-reported→measured 升级链首例+配对翻转读数）;两案双负结果照报 |
+| v1.4 | 2026-10-06 | 案 16 入集（L3 Round 1 双臂编排差分+10.0pp+环境层归零+归因勘误第 6 例:尾换行表述降级）;追补不改史 |
