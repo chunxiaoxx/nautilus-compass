@@ -50,6 +50,13 @@
 
 ## 轮次日志
 
+### R195 · 2026-10-05 19:5x-20:1x(值守轮:r80 探点已执行未到+评测健康推进)
+- **probe**:A100 段撞 banner 限流(traceback,手动补探)·信箱 0 未读 quiet
+- **③r80 20:00 承诺探点已执行 [实测]**:staging 空,材料未到——按 R178 承诺下一动作=**10/6 上午再探**,仍缺才 U 态顺延+即时通报(判据不放宽,死线不让材料缺席背锅)
+- **A 臂评测 [实测]**:4/15 ran successfully 0 failed(163s/题提速,rest 批剩 ~30min,后接 django 批);GPU 空闲(评测吃 CPU)
+- **B 臂 [实测]**:task_29 末题在跑(30 目录全建,进程 2;前 29 题模式稳定:几乎全 LimitsExceeded@50,patch 依题有有无);完即 collector+sftp+B 评测接力
+- M1:+0
+
 ### R194 · 2026-10-05 19:0x(推进轮:dockerhub 直连拉镜像卡死→daocloud mirror 修复,评测正式健康)
 - **诊断链 [实测]**:A 臂评测 20min 0 容器 0 完成(磁盘+5.8G=layer 在拉但极慢,dockerhub 直连国内不通畅)→决定配 mirror 重启;首杀不净(旧 containerd 残留→新 dockerd "timeout waiting for containerd"半死)→**restart_eval.sh 脚本化**:杀净(dockerd/containerd/shim 两轮 pkill+9)→带 --registry-mirror https://docker.m.daocloud.io 重启→**验证循环(docker info OK 才继续,修上轮"daemon 未就绪即重跑评测秒退"时序错)**→评测重跑
 - **修复后健康 [实测]**:DOCKER-READY+mirror 生效;首个实例 **pylint-4661 1 ran successfully, 0 failed**(镜像 2.82GB 拉+测试跑通,~4min/题);rest 批 15 题预计 ~1h,后接 django 批
