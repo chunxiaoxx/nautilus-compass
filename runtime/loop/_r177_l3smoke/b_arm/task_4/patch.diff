@@ -1,0 +1,25 @@
+diff --git a/test_issue.py b/test_issue.py
+new file mode 100644
+index 0000000000..06cced7a0d
+--- /dev/null
++++ b/test_issue.py
+@@ -0,0 +1,19 @@
++import astropy.coordinates as coord
++
++
++class custom_coord(coord.SkyCoord):
++    @property
++    def prop(self):
++        return self.random_attr
++
++
++c = custom_coord("00h42m30s", "+41d12m00s", frame="icrs")
++try:
++    c.prop
++except AttributeError as e:
++    print(f"Error message: {e}")
++    if "prop" in str(e):
++        print("BUG: The error message incorrectly says prop does not exist!")
++        print("It should say random_attr does not exist")
++    elif "random_attr" in str(e):
++        print("CORRECT: The error message correctly identifies random_attr")

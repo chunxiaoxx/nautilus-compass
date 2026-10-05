@@ -1,0 +1,30 @@
+diff --git a/0 b/0
+new file mode 100644
+index 0000000000..e69de29bb2
+diff --git a/astropy/io/fits/connect.py b/astropy/io/fits/connect.py
+index 4b6150f4ac..8d06a93e9c 100644
+--- a/astropy/io/fits/connect.py
++++ b/astropy/io/fits/connect.py
+@@ -69,7 +69,7 @@ def is_fits(origin, filepath, fileobj, *args, **kwargs):
+             (".fits", ".fits.gz", ".fit", ".fit.gz", ".fts", ".fts.gz")
+         ):
+             return True
+-    return isinstance(args[0], (HDUList, TableHDU, BinTableHDU, GroupsHDU))
++    return len(args)  and isinstance(args[0], (HDUList, TableHDU, BinTableHDU, GroupsHDU))
+ 
+ 
+ def _decode_mixins(tbl):
+diff --git a/test_issue.py b/test_issue.py
+new file mode 100644
+index 0000000000..2d9e2bcafb
+--- /dev/null
++++ b/test_issue.py
+@@ -0,0 +1,8 @@
++'from astropy.io.registry import identify_format'  
++'from astropy.table import Table'  
++''  
++'try:'  
++'    result = identify_format("write", Table, "bububu.ecsv", None, [], {})'  
++'    print(f"Result: {result}")'  
++'except IndexError as e:'  
++'    print(f"IndexError caught: {e}")'

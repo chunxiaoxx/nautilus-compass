@@ -1,0 +1,14 @@
+diff --git a/test_issue.py b/test_issue.py
+new file mode 100644
+index 0000000000..203874db5d
+--- /dev/null
++++ b/test_issue.py
+@@ -0,0 +1,8 @@
++from astropy.io import fits
++value = 0.009125
++new_c = fits.Card("HIERARCH ESO IFM CL RADIUS", value, "[m] radius arround actuator to avoid")
++print("Value:", value)
++print("str(value):", str(value))
++print()
++print("Actual card:")
++print(str(new_c))

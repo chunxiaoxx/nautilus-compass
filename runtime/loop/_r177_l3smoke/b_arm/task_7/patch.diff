@@ -1,0 +1,35 @@
+diff --git a/test_qdp_case.py b/test_qdp_case.py
+new file mode 100644
+index 0000000000..80e5db129d
+--- /dev/null
++++ b/test_qdp_case.py
+@@ -0,0 +1,29 @@
++from astropy.table import Table
++
++test_qdp_lower = """read serr 1 2
++1 0.5 1 0.5
++"""
++
++with open("test_lower.qdp", "w") as f:
++    f.write(test_qdp_lower)
++
++try:
++    t = Table.read("test_lower.qdp", format="ascii.qdp")
++    print("SUCCESS: Lowercase command worked!")
++    print(t)
++except Exception as e:
++    print(f"FAILED: {e}")
++
++test_qdp_upper = """READ SERR 1 2
++1 0.5 1 0.5
++"""
++
++with open("test_upper.qdp", "w") as f:
++    f.write(test_qdp_upper)
++
++try:
++    t = Table.read("test_upper.qdp", format="ascii.qdp")
++    print("SUCCESS: Uppercase command worked!")
++    print(t)
++except Exception as e:
++    print(f"FAILED: {e}")

@@ -47,6 +47,7 @@
 - [x] 2026-10-05 platform 3194 函:任务集=SWE-bench Verified 确认+被测物 B=mini-swe-agent 拍定——待回填收窄至 1 项(被测物 A v5-harness 坐标,platform 另函向 v5 索取,10/10 死线)
 - [x] 2026-10-05 platform 3216 函:被测物 A 三件齐(v5 坐标+配置如实披露+B 无异议)→ **v1 定版**:上表全 12 字段齐,配置披露列增设+配置差裁定落档;A 臂环境披露如实记:Windows 11+Python 3.13,LocalSandbox 受限工具面(无 shell),推理 127.0.0.1:18001(MiniMax-M3 系),max_steps=25,v5 自述"容器化全工具横比下位配置"入榜面 caveat
 - [x] 2026-10-05 R172:**v5 网关×mini-swe-agent 接入验证 PASS**(docs/metering/L3_GATEWAY_INTEGRATION_CHECK_20261005.md)——litellm 连接/tools 透传(参数名随请求 schema)/多轮回喂全 [实测];协议磨合点(M3 完成即收尾 vs mini 每轮须 tool call)与网关 chat 分支非 stream 挂起缺陷如实记(均不阻塞);B 臂接入配置定版。**开跑前置全部清零**
+- [x] 2026-10-05 R177:**smoke 双臂×10 PASS(管道级)**(runtime/loop/_r177_l3smoke/SMOKE_PREREG.md+smoke_summary.json)——题源 heldout30[0:10]+ENV 行(双臂同题面,harness 代码零改动);A 臂 finished 7/10·patch 9/10·步均 18.1,B 臂 finished 0/10·patch 5/10·步均 25.0 全打满;**预算信号:max_steps=25 偏紧(B 臂全打满零提交)——正榜开跑前判据演进窗口建议重估(双臂同步+平台知会),开跑后不得再动**;smoke 不出名次不出 resolved%(预注册)
 - [ ] 开跑(双臂各自跑批)+判分抽查 ≥20% → 10/12 榜页上线
 
 ## 定版指纹

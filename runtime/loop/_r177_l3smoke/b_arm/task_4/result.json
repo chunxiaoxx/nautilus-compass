@@ -1,0 +1,12 @@
+{
+ "idx": 4,
+ "instance_id": "astropy__astropy-14096",
+ "wall_s": 432.9,
+ "exit_status": "LimitsExceeded",
+ "n_model_calls": 25,
+ "cost": 0.0,
+ "patch_nonempty": true,
+ "patch_chars": 711,
+ "exit_error": "",
+ "status": "ok"
+}

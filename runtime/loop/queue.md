@@ -56,7 +56,8 @@
   - A 臂(mini_runner_e5.py@4e14a898,tag=l3a):task_1-4 完,task_4 馌完整提交(finished=True 20 步+patch)——全链通;双开事故两次(nohup 假失败+taskkill 吞输出)已精确 PID 清理
   - B 臂(mini-swe-agent 2.4.6,b_runner.py 自写+官方 default.yaml 模板):首题通(exit=LimitsExceeded 25 步打满 patch=0)——**双臂共同信号:max_steps=25 对 astropy 大 repo 偏紧,开跑前判据演进窗口内可重估**;socks 代理毁 httpx 第 N 次复发=脚本级根治(清 env+NO_PROXY)
   - smoke 判据:不出 resolved%,只验管道+暴露磨合;产物 runtime/loop/_r177_l3smoke/{a,b} 臂
-- commit(不 push);下轮:双臂跑完收终读数+smoke 档
+  - **smoke 终读数 [实测]:管道级 PASS(双臂 10/10 零崩)**——A 臂 finished 7/10·patch 9/10·步均 18.1;B 臂 finished 0/10(全 LimitsExceeded)·patch 5/10·步均 25.0;**预算信号 max_steps=25 偏紧(B 臂全打满零提交),正榜开跑前判据演进窗口建议重估(双臂同步+平台知会)**;B 臂完成协议未炸(format_error 喂回兜住);读数不出名次,汇总 smoke_summary.json+SMOKE_PREREG.md
+- commit(不 push);下轮:smoke 收口 commit+值守;max_steps 重估等用户拍板
 
 ### R176 · 2026-10-05 12:01-12:1x(夜间值守轮 quiet)
 - **probe(12:01)**:信箱 0 未读·Gmail 无新件·GitHub=已知件+CI 折叠·A100 真空闲

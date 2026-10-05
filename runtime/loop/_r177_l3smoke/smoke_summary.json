@@ -1,0 +1,192 @@
+{
+ "ts": "2026-10-05 13:5x",
+ "note": "L3 smoke 双臂×10(heldout30[0:10]+ENV行),不出resolved%,判据见 SMOKE_PREREG.md",
+ "a_arm": {
+  "arm": "v5-harness@4e14a898",
+  "n": 10,
+  "finished": 7,
+  "patch_nonempty": 9,
+  "steps_mean": 18.1,
+  "rows": [
+   {
+    "idx": 0,
+    "instance_id": "astropy__astropy-13398",
+    "finished": true,
+    "steps": 8,
+    "patch_nonempty": true,
+    "patch_chars": 743
+   },
+   {
+    "idx": 1,
+    "instance_id": "astropy__astropy-13453",
+    "finished": true,
+    "steps": 25,
+    "patch_nonempty": false,
+    "patch_chars": 0
+   },
+   {
+    "idx": 2,
+    "instance_id": "astropy__astropy-13579",
+    "finished": true,
+    "steps": 24,
+    "patch_nonempty": true,
+    "patch_chars": 2317
+   },
+   {
+    "idx": 3,
+    "instance_id": "astropy__astropy-13977",
+    "finished": false,
+    "steps": 25,
+    "patch_nonempty": true,
+    "patch_chars": 264
+   },
+   {
+    "idx": 4,
+    "instance_id": "astropy__astropy-14096",
+    "finished": true,
+    "steps": 5,
+    "patch_nonempty": true,
+    "patch_chars": 564
+   },
+   {
+    "idx": 5,
+    "instance_id": "astropy__astropy-14182",
+    "finished": true,
+    "steps": 20,
+    "patch_nonempty": true,
+    "patch_chars": 1987
+   },
+   {
+    "idx": 6,
+    "instance_id": "astropy__astropy-14309",
+    "finished": true,
+    "steps": 4,
+    "patch_nonempty": true,
+    "patch_chars": 548
+   },
+   {
+    "idx": 7,
+    "instance_id": "astropy__astropy-14365",
+    "finished": true,
+    "steps": 20,
+    "patch_nonempty": true,
+    "patch_chars": 2713
+   },
+   {
+    "idx": 8,
+    "instance_id": "astropy__astropy-14369",
+    "finished": false,
+    "steps": 25,
+    "patch_nonempty": true,
+    "patch_chars": 4352
+   },
+   {
+    "idx": 9,
+    "instance_id": "astropy__astropy-14508",
+    "finished": false,
+    "steps": 25,
+    "patch_nonempty": true,
+    "patch_chars": 13350
+   }
+  ]
+ },
+ "b_arm": {
+  "arm": "mini-swe-agent-2.4.6@a83fcae82d2a",
+  "n": 10,
+  "finished": 0,
+  "patch_nonempty": 5,
+  "steps_mean": 25.0,
+  "rows": [
+   {
+    "idx": 0,
+    "instance_id": "astropy__astropy-13398",
+    "finished": false,
+    "steps": 25,
+    "wall_s": 240.0,
+    "patch_nonempty": false,
+    "patch_chars": 0
+   },
+   {
+    "idx": 1,
+    "instance_id": "astropy__astropy-13453",
+    "finished": false,
+    "steps": 25,
+    "wall_s": 244.4,
+    "patch_nonempty": false,
+    "patch_chars": 0
+   },
+   {
+    "idx": 2,
+    "instance_id": "astropy__astropy-13579",
+    "finished": false,
+    "steps": 25,
+    "wall_s": 366.9,
+    "patch_nonempty": false,
+    "patch_chars": 0
+   },
+   {
+    "idx": 3,
+    "instance_id": "astropy__astropy-13977",
+    "finished": false,
+    "steps": 25,
+    "wall_s": 317.3,
+    "patch_nonempty": false,
+    "patch_chars": 0
+   },
+   {
+    "idx": 4,
+    "instance_id": "astropy__astropy-14096",
+    "finished": false,
+    "steps": 25,
+    "wall_s": 432.9,
+    "patch_nonempty": true,
+    "patch_chars": 711
+   },
+   {
+    "idx": 5,
+    "instance_id": "astropy__astropy-14182",
+    "finished": false,
+    "steps": 25,
+    "wall_s": 396.6,
+    "patch_nonempty": true,
+    "patch_chars": 767
+   },
+   {
+    "idx": 6,
+    "instance_id": "astropy__astropy-14309",
+    "finished": false,
+    "steps": 25,
+    "wall_s": 337.8,
+    "patch_nonempty": true,
+    "patch_chars": 1056
+   },
+   {
+    "idx": 7,
+    "instance_id": "astropy__astropy-14365",
+    "finished": false,
+    "steps": 25,
+    "wall_s": 289.4,
+    "patch_nonempty": true,
+    "patch_chars": 797
+   },
+   {
+    "idx": 8,
+    "instance_id": "astropy__astropy-14369",
+    "finished": false,
+    "steps": 25,
+    "wall_s": 299.6,
+    "patch_nonempty": false,
+    "patch_chars": 0
+   },
+   {
+    "idx": 9,
+    "instance_id": "astropy__astropy-14508",
+    "finished": false,
+    "steps": 25,
+    "wall_s": 185.6,
+    "patch_nonempty": true,
+    "patch_chars": 394
+   }
+  ]
+ }
+}
