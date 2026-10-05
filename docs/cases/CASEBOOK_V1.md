@@ -216,6 +216,25 @@
 - **verdict 正本**:`docs/metering/RPT-G1-2407.md`(判绩账段含复算全录);复算材料 md5 G=`7170892d3d940142a2afdd43d8b6346b` / B=`599c76a6f43f6c682080c56a9648d1e2`
 - **复算**:报告§"非实现者复算坐标"(判读函底稿 `_r57_mail_g1_differential.md`+`mail_g1_verdict_supplement_20261003.md`;远端材料 `/root/vdd3/pipe_art/g1_infer_{G,B}/infer_compare.jsonl`;数据集直读=parquet 'index' 帧索引+episode_index 断言自校)
 
+## 案 14 · G1-full 门槛语义实验终判案(小样本信号被全量稀释的实证+配对 McNemar 零效应)
+
+- **背景**:承案 13"门槛裁断留预注册语义实验"——flywheel 落 672 帧/臂全量实验(42 eps×top-16 选帧,帧过滤 ‖act−state‖≥1e-3,LOCK 9350c762),送判函 #9786(2026-10-05 20:18,窗 24h 档)。
+- **判定 [实测]**:全部读数统计层独立复算**零偏差**(J1 G 501/672=0.7455 / B 504/672=0.7500 / Δ=−3/672=−0.45pp / ratio 中位 1.9025·1.7267 / 带宽 0.8854·0.8958 / 零退化解 / 配对键 全同);**加固统计:配对 McNemar exact p=0.8126(b=34/c=37)**——全量配对下零效应坐实,比"未过门槛"更强:方向微负纯噪声级。
+- **裁决**:+5pp 门槛未过 → **未证实分支成立;G1 视频注入线按预注册语义收束**(负结果照报,不换判据不加注)。
+- **方法论价值**:probe(n=40)Δ+2.5pp"方向符合预期" → full(n=672)Δ−0.45pp 精确收敛零——**小样本方向性信号不可信的实证标本**,恰是判分机构存在理由的例证(受测方自报"方向符合预期"被全量数据否证,预注册门槛挡住了 premature 结论)。ratio 口径链闭合(G 1.99→1.90/B 1.77→1.73)。
+- **判绩账**:材料方执行口径三遍对齐披露(前两遍废弃如实)=material_side_honesty 正面记档(案 10 step500 事故卷同型);机制层互恰(案 13"注入不传导"发现与零效应读数一致)。
+- **SLA**:出数 20:18→回执 20:43(~25min,24h 档)。
+- **verdict 正本**:`/root/vdd3/pipe_art/g1_full_verdict.json`(本地底稿 `runtime/loop/_r198_judging/g1_full_verdict.json`);材料 G sha16 `52c1c121a5fe2b37` / B `80aedba7bfbd8ff9`;回执函 9791。
+
+## 案 15 · UMI V4 判读+upgrade 闭环案(self-reported→measured 升级链首例+配对翻转读数)
+
+- **背景**:UMI 批(umi_batch1,manifest_sha 9aa6993d)效用探针判读窗(案 11 框架第 3 域复用),LOCK aa380f28-v1.1,送判函 #9778(19:36,n=51=20+20+11 材料现实修正如实披露)。
+- **判定**:V4-UMI-J1 门 drop128=0.0<0.05 → **未证实分支成立**(Phi-3.5-vision 4.2B 对 UMI 域高分辨率退化不敏感);三 caveat(基线弱 0.25→0.353/盲探针 2/3/GT actor_confidence 常数性)收讫入判读。
+- **upgrade 闭环(本案核心)** [实测]:首判(函 9790)发现 d128/d96 逐帧明细未落件→标 self-reported+upgrade_path=补落明细→**材料方 30min 办结**(通报 #9794,153 行=51×3 落盘,sha16 ff22b45b)→复算三档全零偏差(native/d128=18/51·d96=19/51·drop128=0.0/drop96=−0.0196)→verdict v2 **drop 层升 measured**(函 9799)。证据三层纪律的动态升级链首次完整走通:自报不冒充、缺口如实标、补件即升格。
+- **新增读数**:配对翻转 d128 降5升5(净0)/d96 降5升6(净−1)——零净效应下帧级 10-11 帧对称翻转,Phi 逐帧对分辨率有敏感但方向对称;此为读数附记不改变判定。
+- **判绩账**:材料方响应速度(判读 20:41→办结 21:10)=material_side_honesty 第 3 例正面记档;跨域观察(与 gen4_v2 域 Phi 零掉幅互证,"数据×消费者交互属性"矩阵主张方向性支持)留 [推断] 层。
+- **verdict 正本**:`/root/vdd3/pipe_art/umi_batch1/v4_umi_verdict.json`(v2 含 measured 升级+F4);回执函 9790/9799。
+
 ## 附录 A · verdict 正本与校验状态
 
 | 案 | 正本 | schema v2 |
@@ -233,6 +252,8 @@
 | 11 | `runtime/v4_probe/v4_probe_verdict_v2.json` | compliant（v2.1，J2 判定权边界样本） |
 | 12 | `runtime/loop/_r125_3013_j2_first_verdict.md` + `runtime/v4v2_judge/v4v2_judge_verdict_v2.json` | （裁定档+判官档双锚） |
 | 13 | `docs/metering/RPT-G1-2407.md`（归因制式首件,复算 PASS-with-erratum 随件） | （制式八段+判绩账回填） |
+| 14 | `/root/vdd3/pipe_art/g1_full_verdict.json`（本地 `_r198_judging/g1_full_verdict.json`） | compliant（配对 McNemar 加固） |
+| 15 | `/root/vdd3/pipe_art/umi_batch1/v4_umi_verdict.json`（v2,measured 升级随件） | compliant |
 
 ## 附录 B · 判读 SLA 与机构口径
 
@@ -247,3 +268,4 @@
 | v1 | 2026-10-03 | 首装订（两线定价拍板的装订线首物，公开 demo 版免费） |
 | v1.1 | 2026-10-04 | 补两线边界段+勘误与判绩账专段（四例）+版本记录段；案 8 扩展（r79 四裁 R126 补条+R131 勘误）、案 9-12 入集（gen4 两案/V4 探针/V4-J2 首判）；追补不改史 |
 | v1.2 | 2026-10-05 | 案 13 入集（归因制式 v1 首件 RPT-G1-2407,含非实现者复算 PASS-with-erratum 全录与中位数口径勘误——判绩账双向第 5 例）；勘误与判绩账专段扩展至五例 |
+| v1.3 | 2026-10-05 | 案 14/15 入集（G1-full 门槛终判:小样本信号被全量稀释实证+配对 McNemar 零效应;UMI V4:self-reported→measured 升级链首例+配对翻转读数）;两案双负结果照报 |
