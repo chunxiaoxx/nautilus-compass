@@ -50,6 +50,13 @@
 
 ## 轮次日志
 
+### R167 · 2026-10-05 09:19-09:3x(值守轮:pusth合并回执+U5分歧对账实质件)
+- **probe**(ts 09:19)有事件:信箱 #3207 platform(pusht-frame-v2 APPROVED 回执=入值守合并队列)+CI 常规红折叠+A100 真空闲
+- **pusht-frame-v2 实测状态**:端点仍 deferred 旧值——3207 是"入队"回执,值守合并异步待跑(**R166 ack 中"四行全 live"表述超前于实测,以本轮端点读数为准纠正:三件 live+pusht 待合并**);ack 已发
+- **值守**:④turbo 已完成不触发;③G1 B 材料未出(g1_infer_B/summary.json 不存在,pipe_art 无新目录)quiet
+- **quiet 轮实质件:U5 分歧对账**(eval292 两件 sftp 拉回):**错误方向不对称 [实测]**——14B 分歧错误集中错杀侧(pass→fail 23例,lme族),1.7B 集中错放侧(fail→pass 10例=危险侧);both_wrong 14 条双双错成 fail(共同盲区亦 lme 族);判读不变(U5=一致率口径 1.7B 胜),错放加权重定义属判据演进走程序;对账档 `runtime/loop/_r167_u5_disagreement_audit.md`+预注册档 upgrade_path 追补两条
+- 下轮:pusth 值守合并即探端点;B 材料守;v5 坐标回函即回填 L3 末字段;14B 复算挂新鲜会话
+
 ### R166 · 2026-10-05 08:4x-09:1x(用户拍"14B升格现在开跑"→执行完毕+L1四行全闭环)
 - **14B 升格开跑**(GPU 空窗 14MiB 实测+预注册坐标回填先行):1.7B 基座 modelscope 现下(3.8G)+champion 传 A100+U1-U7 脚本落盘跑通——**UPGRADE_EVIDENCE_PASS(核心门全绿)+U5/U6 判别力门双红(负结果照报)**:U1 873步零OOM/U2 22.42G/U3 0.319→0.1138/U4 100/100;**U5 未过 acc_14b=0.8664<acc_17b=0.9041**(292条held-out同集对拍,现役净胜11题);U7 申报 14B 吞吐 20/s vs 1.7B 74.3/s;**判读=保留 1.7B 现役,14B 记档待语料增长再评**(预注册语义,不预授权切换);产物 sha16 adapter=07a168b377e91ea9/report=8fcea6bbe3d46b5a;待非实现者复算
 - **执行插曲如实记**:①首起用 venv_fw 缺 bitsandbytes 即败退出→改系统 python3(与 smoke 实配一致)成功(脚本注释环境信息是本地开发残留,教训=环境断言先跑探针);②双开被 GPU 守门正确拦截(第一次连接 TimeoutError 但远端已起跑,第二次守门 busy abort)——**exec_command 超时≠远端未执行再证**;③train.log 两进程同写出空洞(观察件损坏,report/eval 不受影响)

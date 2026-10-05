@@ -42,5 +42,6 @@
   - [实测] 分歧对账:only_17b 对 25 vs only_14b 对 14(现役净胜 11 题),both_wrong 14;
   - [实测] U7 申报:14B-4bit 推理 P50 49.9ms/吞吐 20.05/s vs 1.7B-bf16 13.5ms/74.3/s;
   - **判读(按预注册语义,不预授权切换)**:保留 1.7B 现役(P2v2 `dbcbab6fd1ff5821`);14B 记档待语料增长再评。更大基座在同分布判读任务上未带来判别力增益(4bit 量化+配方未调优为候选归因,upgrade_path=bf16 推理对拍/超参 sweep/语料扩容后重评);
+  - [实测] U5 分歧对账(R167 追补,`runtime/loop/_r167_u5_disagreement_audit.md`):**错误方向不对称**——14B 分歧错误集中错杀侧(pass→fail 23 例),1.7B 集中错放侧(fail→pass 10 例,危险侧);分歧与共同盲区(both_wrong 14 条双双错成 fail)均聚集 lme 族;判读不变(U5=一致率口径 1.7B 胜),错误代价不对称重定义属判据演进走程序;upgrade_path 新增:①错放加权判据(如采纳)②both_wrong 盲区人工复核(gold 勘误活水优先);
   - 产物:/root/vdd2/judge14b_upgrade/(adapter `07a168b377e91ea9`+report `8fcea6bbe3d46b5a`+eval292 两件);执行插曲如实记:首起用错环境(venv_fw 缺 bitsandbytes)即败退出,改系统 python3(torch2.6/peft0.13/tf4.57/bnb0.50,与 smoke 实配一致)成功;双开被 GPU 守门正确拦截(第二进程 busy abort),train.log 因同写出空洞(观察件损坏,report/eval 落盘件不受影响)。
 - [ ] 非实现者复算(新鲜会话按坐标复跑;交接只给坐标命令不给预期读数)
