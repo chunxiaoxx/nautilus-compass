@@ -23,14 +23,17 @@
 - 收工走非实现者复算(新鲜会话,交接只给坐标与命令,不给预期读数);
 - 升格与否的决策由 U5/U6 读数+用户拍板产生,本档不预授权切换。
 
-## 执行坐标(交接用)
+## 执行坐标(交接用;2026-10-05 开跑时回填)
 
-- 机器/基座/配方:同 PREFOR_JUDGE14B_SMOKE_20261004(A100 223.109.239.30:23236;/root/vdd2/models/Qwen3-14B;tools/train_judge14b_smoke.py 配方);
-- 语料与复核集坐标:执行时从判分语料仓核对后回填此处,不臆写;
-- 产物:/root/vdd2/judge14b_upgrade/(adapter+训练 log+U4/U5/U6 读数件)。
+- 机器/基座/配方:A100 223.109.239.30:23236(paramiko;限流退避 115s);/root/vdd2/models/Qwen3-14B;环境=/root/venv_fw(torch 2.11.0+cu126/peft 0.21.0/transformers 5.5.0,smoke 同环境实测);
+- 脚本:`tools/train_judge14b_upgrade.py`(smoke 同构迁移;GPU 守门>2G 退出不抢 B 臂);
+- **U1 语料回填 [实测]**:全量 judge 语料=qid 分组防泄漏切分三件,A100 实物 sha256 前 16 位三件全对上 P2v2 档——split_train 1162 条(`35683198dd3c4992`)/split_dev 143 条(`942e4daeaedca2fb`)/split_test 149 条(`4bcaf1c9b551f336`),合计 1454;训练用 split_train 全量,3 epoch(≈873 步,MAX_STEPS_CAP=2000 取先到);
+- **U5/U6 复核集回填(核对结果如实记)**:预注册原设想构成="判例勘误+人工抽检沉淀"——执行时核对判分语料仓(runtime/verdict_corpus/),**该构成无现成实物,不臆造**;回填=split_dev+split_test 全量 **292 条**(held-out,qid 分组切分保证与 train 零相交,n≥200 满足);构成差异如实申报:dev+test 与训练同语料同分布,比"勘误沉淀新题"口径偏易,对冲=同集两模型对拍(同题同 gold)+逐条读数落盘(eval292_14b/17b.jsonl)供复算与分歧对账;qid 零相交核查命令与结果随 report 落档(qid_of 派生键,与 corpus_split.py 同构);
+- 现役 1.7B champion:adapter `dbcbab6fd1ff5821`(runtime/judge_lora_p2v2/best_lora,已传 A100 副本);基座 Qwen3-1.7B(A100 无库存,modelscope `Qwen/Qwen3-1.7B` 现下);
+- 产物:/root/vdd2/judge14b_upgrade/(judge14b_lora+upgrade_report.json+eval292 两件+训练 log)。
 
 ## 状态
 
 - [x] 2026-10-05 判据档预注册(用户批"有所作为推动"当日立,先于任何开跑动作)
-- [ ] 开跑时窗:GPU 空窗+用户明示拍板后;开跑前回填 U1 语料条数与 U5 复核集坐标
+- [x] 2026-10-05 开跑时窗到达:GPU 空窗 [实测](14MiB/40960MiB,零计算进程)+用户明示拍板"现在开跑";U1 语料与 U5 复核集坐标已回填(见上)
 - [ ] 执行+非实现者复算
