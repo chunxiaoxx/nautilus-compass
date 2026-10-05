@@ -50,6 +50,12 @@
 
 ## 轮次日志
 
+### R210 · 2026-10-06 00:4x-00:5x(用户令"继续同步思考推进":代号撞名核查当轮清+B 臂 django 续守)
+- **代号撞名核查 [实测 gh api+HF API]**:NACRE=干净(GitHub 209 仓最高 36★/HF 2 零下载)→**主推维持**;Gnomon=中风险降级(撞 paypal/gnomon 932★);Tessera=**淘汰**(词根撞 tesseract 76827★)——v2 批次收敛 NACRE+「溯衡」,白皮书代号节已更新落档,"待查"挂账当轮清
+- **B 臂 django 批续守**:report 未出,评测进程 2 健在(5/11→~01:15 完预期不变);全量合并+榜页填数留收官轮
+- **rest 半程思考(记档不入榜)**:B 臂 rest 批 resolved 2/16 vs A 臂 4/15;空 patch B=6 vs A=1——双臂编排产出质量差(预注册读数的一部分,不剔除);B 臂 mini-swe-agent@50 步打满无产出行为与 smoke 信号一致
+- M1:+1(用户点名挂账"撞名待查"当轮清=不让待办过夜;读数纪律=半程不填榜)
+
 ### R209 · 2026-10-06 00:31-00:4x(夜间 LOOP:quiet 信箱;B 臂 rest 批 report 收割)
 - **probe(00:31)**:信箱 0 未读(#9854 已闭环)·CI×50 折叠·A100 无计算进程(GPU 空;评测进程健在)
 - **B 臂 rest 批 report 收割 [实测]**(l3r1b_..._rest.json 23:38 落盘,拉回 _r198_judging/b_rest_report_b.json):**resolved 2**(xarray-3151/sklearn-14141)/unresolved 3/error 5/**empty_patch 6**(合计 16 ✓);**sphinx-8475 双臂皆 error=镜像 EOF 双臂复现坐实,补跑对齐候选+1**;B 臂空 patch 6 vs A 臂 1=mini-swe-agent LimitsExceeded 打满无产出行为(与 smoke 信号一致)
