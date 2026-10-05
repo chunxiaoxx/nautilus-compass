@@ -1,0 +1,67 @@
+{
+ "note": "L3 smoke 双臂同题源=heldout30[0:10]+ENV 行注入(数据侧准备,harness 代码零改动@4e14a898)",
+ "source": "swe_verified_heldout30.parquet[0:10]",
+ "env_line_format": "r81_env.env_line",
+ "tasks": [
+  {
+   "idx": 0,
+   "instance_id": "astropy__astropy-13398",
+   "repo": "astropy/astropy",
+   "base_commit": "6500928dc0e57be8f06d1162eacc3ba5e2eff692"
+  },
+  {
+   "idx": 1,
+   "instance_id": "astropy__astropy-13453",
+   "repo": "astropy/astropy",
+   "base_commit": "19cc80471739bcb67b7e8099246b391c355023ee"
+  },
+  {
+   "idx": 2,
+   "instance_id": "astropy__astropy-13579",
+   "repo": "astropy/astropy",
+   "base_commit": "0df94ff7097961e92fd7812036a24b145bc13ca8"
+  },
+  {
+   "idx": 3,
+   "instance_id": "astropy__astropy-13977",
+   "repo": "astropy/astropy",
+   "base_commit": "5250b2442501e6c671c6b380536f1edb352602d1"
+  },
+  {
+   "idx": 4,
+   "instance_id": "astropy__astropy-14096",
+   "repo": "astropy/astropy",
+   "base_commit": "1a4462d72eb03f30dc83a879b1dd57aac8b2c18b"
+  },
+  {
+   "idx": 5,
+   "instance_id": "astropy__astropy-14182",
+   "repo": "astropy/astropy",
+   "base_commit": "a5917978be39d13cd90b517e1de4e7a539ffaa48"
+  },
+  {
+   "idx": 6,
+   "instance_id": "astropy__astropy-14309",
+   "repo": "astropy/astropy",
+   "base_commit": "cdb66059a2feb44ee49021874605ba90801f9986"
+  },
+  {
+   "idx": 7,
+   "instance_id": "astropy__astropy-14365",
+   "repo": "astropy/astropy",
+   "base_commit": "7269fa3e33e8d02485a647da91a5a2a60a06af61"
+  },
+  {
+   "idx": 8,
+   "instance_id": "astropy__astropy-14369",
+   "repo": "astropy/astropy",
+   "base_commit": "fa4e8d1cd279acf9b24560813c8652494ccd5922"
+  },
+  {
+   "idx": 9,
+   "instance_id": "astropy__astropy-14508",
+   "repo": "astropy/astropy",
+   "base_commit": "a3f4ae6cd24d5ecdf49f213d77b3513dd509a06c"
+  }
+ ]
+}

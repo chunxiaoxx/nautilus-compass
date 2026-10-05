@@ -26,6 +26,7 @@ both_wrong 14 条的共同错误**主因不是判读器能力,而是语料特征
 ## 修复建议(≤3,带验收判据)
 
 > **执行状态(R169 追记,2026-10-05)**:②③已落地并过验收——v1 重导出空题面 52→0(建议二验收达成)、rejudge context_dependency 500/500(建议三达成);train_set_v1 sha16=`84277e05e44b77c3`,split 三折继承 id 不变(train `b1fcf208d8540d12`/dev `a9609c9a309df99f`/test `aa8ed4ce8363fe19`)。①的复评验收(A 型 11 条 ≥7/11 转对)需 GPU 训练/推理,待拍板;probe 文件 rid=1 系 call 日志行号非盲评 rid,按 rid 映射的初版方案已撤(不臆造对应),改 probe_calls 原始行内联。
+> **①复评验收已执行(R177,2026-10-05):FAIL 1/11<7/11 [实测]**——截断修复后 champion 1.7B 仍 9/11 高置信判 fail,"截断主因"假说被证伪,主因升格为判读框架对正确拒答类的系统性偏置;详见 `runtime/loop/_r177_atype_recheck_11.md`(负结果照报,本档"截断坐实"结论维持、"修复足以转对"预期撤销)。
 
 1. **语料 response 截断修复**:从原始 per_question 重导出 train_set_v0 v1(response 不截断或 ≥1000 字符,含 boxed 结论段);验收=抽 A 型 11 条同 id 复评,判读一致率显著回升(预期 ≥7/11 转对;不回升则截断非主因,如实报负结果)。
 2. **字段映射缺口修复**:导入器按各族原生结构重映射(bc1 exam→question+audit_table→response;t3 probe→question+rationale→response;f15 sample_pack→response),或 artifact schema 统一;验收=全仓零"Q/R 双空"条目(本轮普查命令可复跑),预期修复后 52 条盲判样本转可判。

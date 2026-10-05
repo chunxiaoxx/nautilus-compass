@@ -50,6 +50,14 @@
 
 ## 轮次日志
 
+### R177 · 2026-10-05 12:1x-13:0x(用户拍"smoke 双臂各 10 题+A 型复验"→A 型 FAIL 负结果照报+smoke 双臂在跑)
+- **A 型 11 条复验:FAIL 1/11<7/11 [实测]**(R168 建议一验收)——v1 语料全文喂 champion 1.7B(U5 同源管线,A100 实测),9/11 高置信判 fail,"截断主因"假说证伪,主因升格=判读框架对正确拒答类系统性偏置;档 `_r177_atype_recheck_11.md`+判绩账追记 `_r168_bothwrong_audit.md`;upgrade_path 三条(校正 SFT/gold 二盲评/陷阱题族标注)
+- **L3 smoke 双臂开跑**(题源=heldout30[0:10]+ENV 行注入,pyarrow 显式类型重建——首版 parquet prompt 列退化 str 被回读验证抓出重造;harness 代码零改动@4e14a898):
+  - A 臂(mini_runner_e5.py@4e14a898,tag=l3a):task_1-4 完,task_4 馌完整提交(finished=True 20 步+patch)——全链通;双开事故两次(nohup 假失败+taskkill 吞输出)已精确 PID 清理
+  - B 臂(mini-swe-agent 2.4.6,b_runner.py 自写+官方 default.yaml 模板):首题通(exit=LimitsExceeded 25 步打满 patch=0)——**双臂共同信号:max_steps=25 对 astropy 大 repo 偏紧,开跑前判据演进窗口内可重估**;socks 代理毁 httpx 第 N 次复发=脚本级根治(清 env+NO_PROXY)
+  - smoke 判据:不出 resolved%,只验管道+暴露磨合;产物 runtime/loop/_r177_l3smoke/{a,b} 臂
+- commit(不 push);下轮:双臂跑完收终读数+smoke 档
+
 ### R176 · 2026-10-05 12:01-12:1x(夜间值守轮 quiet)
 - **probe(12:01)**:信箱 0 未读·Gmail 无新件·GitHub=已知件+CI 折叠·A100 真空闲
 - **③G1 材料查**:10/4 后新 json 仅 qc_summary 类(flywheel 自产 QC,xarm/aloha/kuka/challenge2026_sample 11:45 在动)——**无 g1_infer rollout 材料**,不触发

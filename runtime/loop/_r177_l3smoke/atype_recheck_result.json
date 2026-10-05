@@ -1,0 +1,86 @@
+{
+ "n": 11,
+ "ok": 1,
+ "rate": 0.0909,
+ "gate": ">=7/11 (R168 建议一)",
+ "pass": false,
+ "rows": [
+  {
+   "id": "lme-d14-compass_ente-579557d8",
+   "pred": "fail",
+   "gold": "pass",
+   "conf": 0.8789,
+   "ok": false
+  },
+  {
+   "id": "lme-d12-compass_web_-2e67d04f",
+   "pred": "fail",
+   "gold": "pass",
+   "conf": 0.9805,
+   "ok": false
+  },
+  {
+   "id": "lme-d12-compass_ente-191184f3",
+   "pred": "pass",
+   "gold": "pass",
+   "conf": 0.707,
+   "ok": true
+  },
+  {
+   "id": "lme-d14-compass_web_-4b0c5275",
+   "pred": "pass",
+   "gold": "fail",
+   "conf": 0.7305,
+   "ok": false
+  },
+  {
+   "id": "lme-d12-compass_web_-aa8d21f5",
+   "pred": "fail",
+   "gold": "pass",
+   "conf": 0.9922,
+   "ok": false
+  },
+  {
+   "id": "lme-d14-compass_web_-0cd6dc43",
+   "pred": "fail",
+   "gold": "pass",
+   "conf": 0.8867,
+   "ok": false
+  },
+  {
+   "id": "lme-d14-compass_web_-f90f2255",
+   "pred": "fail",
+   "gold": "pass",
+   "conf": 0.9531,
+   "ok": false
+  },
+  {
+   "id": "lme-d12-compass_web_-bb7ebd5c",
+   "pred": "fail",
+   "gold": "pass",
+   "conf": 0.9844,
+   "ok": false
+  },
+  {
+   "id": "lme-d12-compass_ente-50d92f55",
+   "pred": "fail",
+   "gold": "pass",
+   "conf": 0.9688,
+   "ok": false
+  },
+  {
+   "id": "lme-d14-compass_ente-71026f57",
+   "pred": "fail",
+   "gold": "pass",
+   "conf": 0.8164,
+   "ok": false
+  },
+  {
+   "id": "lme-d14-compass_ente-247bf724",
+   "pred": "fail",
+   "gold": "pass",
+   "conf": 0.9766,
+   "ok": false
+  }
+ ]
+}
