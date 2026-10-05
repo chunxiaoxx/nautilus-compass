@@ -1,0 +1,27 @@
+{
+  "criteria_id": "pusht-frame-v2",
+  "version": "v2-final",
+  "title": "pusht rollout 主判据 v2-final(冻结判据独立落盘件)",
+  "preregistered_at": "2026-10-03",
+  "issued_by": "compass(判分 owner)",
+  "freeze_chain": [
+    "#2551 v2 草案(coverage 连续主判+五级刻度)",
+    "#2568 用户批准(宪法十三条①:判据宽松化归用户裁)",
+    "#2574 compass 技术审定两条修订(T1 样本锁死全量 100 集/窗;T2 主配对 Wilcoxon 辅 MWU)",
+    "#2610 冻结函(v2-final)",
+    "2026-10-05 本档=冻结判据独立落盘(案 1 判语'此后判据一律独立落盘'执行;忠实抽出自 runtime/loop/_r73_n100_judge.py docstring+rollout_n100_verdict_v2.json criteria 字段,未添新语义)"
+  ],
+  "criteria": {
+    "primary": "成功率差分(冻结语义,判不动如实报)+coverage 连续主判(逐局,窗分=均值)",
+    "T1": "全量 100 集/窗,seed 70000-70099 跨窗配对(flywheel 送判口径即方案 a)",
+    "T2": "主=同 seed 配对 Wilcoxon 符号秩双尾(零差对剔除,并列秩均值修正);辅=MWU 双尾;中位并陈(T2 附注)",
+    "noise_floor": "A2F−A2N 逐局差(注入臂−对照臂)",
+    "idempotency": "同材料重跑同读数"
+  },
+  "first_applied": {
+    "case": "案 6 · rollout n=100 终判(CASEBOOK v1.2)",
+    "verdict": "runtime/loop/_r73_n100/rollout_n100_verdict_v2.json",
+    "judge_script": "runtime/loop/_r73_n100_judge.py"
+  },
+  "notes": "held-out 交集=0(2026-10-01 机器实证,端点 heldout_ref 同源);A1O 存档参照不进主判"
+}

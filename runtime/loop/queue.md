@@ -50,6 +50,15 @@
 
 ## 轮次日志
 
+### R165 · 2026-10-05 08:1x-08:3x(值守+L1 回填件闭环:pusht-frame-v2 sha16 化+数据函 3190)
+- **probe**(ts 08:13):无外部事件;**信箱零未读**;A100 G/B 仍 10-03 旧件(paramiko 实测)quiet
+- **全框同步 [实测]**:flywheel commits API 解析失败(非阻塞);**platform L1 benchmarks 端点提前开张**(早于 #3126 承诺的 10/6)——4 行全 custodian=compass,pusht-frame-v2 hash 仍为 deferred 占位;侦察:根 openapi.json=SPA fallback 假 200,**/api/openapi.json=真 openapi 3.1.0**;benchmarks 仅 GET 无公开写接口→回填归 platform 代写
+- **L1 回填件闭环**:
+  1. **pusht-frame-v2 独立判据档落盘** `docs/metering/CRITERIA_PUSHT_FRAME_V2_FINAL.json`(1534 字节)——忠实抽自 _r73_n100_judge.py docstring+verdict criteria 字段,冻结链 #2551→#2568→#2574→#2610+本档落盘记录,未添新语义(执行案 1 判语"此后判据一律独立落盘");**sha16=fcb793e274a7bdbc**(sha256 直算,JSON 合法性验证过)
+  2. **双 hash 复核 [实测]**:L1 三件冻结注记档现 hash 复算仍=19e73d436bc84c63(4262 字节,与函 3154 申报一致,文件未动)
+  3. **回填数据函已发**(id **3190**,trace=l1-backfill-values-20261005,deadline 10/6):4 行值(三件 v1/19e73d43+pusht-frame-v2 v2-final/fcb793e2/status→live),请 platform 端点代写转 live;底稿 `runtime/loop/_r165_l1_backfill_values.md`
+- 下轮:B 材料守;3190 回执+3161/3183 回函即回填 L3 剩余字段;14B 升格开跑等用户拍板
+
 ### R164 · 2026-10-05 08:07-08:2x(实质推进轮:判例集 v1.2 真装订——抓出 R163 自报缝)
 - **probe**(ts 08:07):无外部事件;**信箱零未读**;值守 quiet(B 材料仍未出 [推断,07:02 实测链+probe 无计算进程])
 - **抓出 R163 自报缝并补齐**:R163 日志写"已入判例集 v1.2"但当时只改了 RPT 自身状态行,**CASEBOOK_V1.md 本体未动**(声称超前于实物)——本轮真装订:**案 13 入集**(G1 差分归因报告案:制式八段首件+复算 PASS-with-erratum 全录+中位数口径勘误=判绩账双向第 5 例;附录 A 案 13 行+勘误专段扩至五例+版本记录 v1.2+卷首升版),grep 六处验证在档,commit 17d47fed
