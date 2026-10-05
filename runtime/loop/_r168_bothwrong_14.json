@@ -1,0 +1,156 @@
+[
+ {
+  "split": "split_dev",
+  "id": "lme-d14-compass_ente-579557d8",
+  "truth_label": "pass",
+  "source": "C:\\Users\\chunx\\Projects\\nautilus-compass\\vtf\\_compass_lmev2_out\\d14\\compass_enterprise_small\\per_question.jsonl",
+  "criteria_ref": "LME-V2 d14 compass_enterprise_small(官方 harness·透明规则判定)",
+  "question": "I am working with our ServiceNow portal. On the Incidents list page, when I open the \"Filters\" dropdown, excluding \"Edit personal filters\" and \"-- None --\", which filter option labels contain the word",
+  "response": "I lack access to the live ServiceNow environment so this cannot be verified from the recorded snapshots. The needed information is the full list of options in the Incidents list page \"Filters\" dropdow",
+  "official_truth": "none of the filter options contain Escalated",
+  "reason": "规则判定可复算可审计(非 LLM judge 自报)"
+ },
+ {
+  "split": "split_dev",
+  "id": "lme-d12-compass_web_-2e67d04f",
+  "truth_label": "pass",
+  "source": "C:\\Users\\chunx\\Projects\\nautilus-compass\\vtf\\_compass_lmev2_out\\d12\\compass_web_small\\per_question.jsonl",
+  "criteria_ref": "LME-V2 d12 compass_web_small(官方 harness·透明规则判定)",
+  "question": "I am using our reddit-based custom forum website. Among the forum creator view, subscriber-only view, and viewer-only view of a forum page, which views show moderation-related links such as `Bans` or ",
+  "response": "I lack access to the live environment so it cannot be verified. Information about the permission configurations for each of the three view types (forum creator, subscriber-only, viewer-only) as well a",
+  "official_truth": "{Forum creator, Subscriber-only, Viewer-only}",
+  "reason": "规则判定可复算可审计(非 LLM judge 自报)"
+ },
+ {
+  "split": "split_dev",
+  "id": "lme-d12-compass_ente-191184f3",
+  "truth_label": "pass",
+  "source": "C:\\Users\\chunx\\Projects\\nautilus-compass\\vtf\\_compass_lmev2_out\\d12\\compass_enterprise_small\\per_question.jsonl",
+  "criteria_ref": "LME-V2 d12 compass_enterprise_small(官方 harness·透明规则判定)",
+  "question": "I am working with our ServiceNow portal. After a problem is marked as Duplicate and the progress changes from \"Assess\" to \"Closed\", which field replaces \"Resolution code\" directly below the \"State\" fi",
+  "response": "I lack access to the live environment, and the provided recorded snapshots only contain data about change request list filtering with no information about the problem form's field layout or state tran",
+  "official_truth": "Nothing replaces `Resolution code` there; `Resolution code` is itself the field shown directly below `State` in the traced closed form.",
+  "reason": "规则判定可复算可审计(非 LLM judge 自报)"
+ },
+ {
+  "split": "split_dev",
+  "id": "lme-d14-compass_web_-4b0c5275",
+  "truth_label": "fail",
+  "source": "C:\\Users\\chunx\\Projects\\nautilus-compass\\vtf\\_compass_lmev2_out\\d14\\compass_web_small\\per_question.jsonl",
+  "criteria_ref": "LME-V2 d14 compass_web_small(官方 harness·透明规则判定)",
+  "question": "I am using our magento-based shopping admin dashboard. I am viewing the list of pages in Content > Elements > Pages, which contains a large table. What is the name of the Search button that immediatel",
+  "response": "I lack access to the live environment so this cannot be verified. The recorded snapshots only document inline editing of the Title grid cell on the Content > Elements > Pages list, which uses a text i",
+  "official_truth": "There is no Search button that appears just because a grid cell enters inline edit mode.",
+  "reason": "规则判定可复算可审计(非 LLM judge 自报)"
+ },
+ {
+  "split": "split_dev",
+  "id": "lme-d12-compass_web_-aa8d21f5",
+  "truth_label": "pass",
+  "source": "C:\\Users\\chunx\\Projects\\nautilus-compass\\vtf\\_compass_lmev2_out\\d12\\compass_web_small\\per_question.jsonl",
+  "criteria_ref": "LME-V2 d12 compass_web_small(官方 harness·透明规则判定)",
+  "question": "I am using our magento-based shopping admin dashboard. On the Product Views Report page, the info banner reminds us to refresh lifetime statistics whenever we change what currency setting? Your final ",
+  "response": "I lack access to the live Magento admin environment to view the info banner on the Product Views Report page, so this cannot be verified. To answer this, the content of the info banner present on the ",
+  "official_truth": "The premise is false. The banner mentions changing the time zone, not a currency setting.",
+  "reason": "规则判定可复算可审计(非 LLM judge 自报)"
+ },
+ {
+  "split": "split_test",
+  "id": "rejudge-09d032c9",
+  "truth_label": "fail",
+  "source": "C:\\Users\\chunx\\Projects\\nautilus-compass\\vtf\\_e2e_diag\\arm_a_rows_rejudged.json",
+  "criteria_ref": "LME arm-a 重判·双层复算升级(J1 0/85+J2 48/50 双绿)",
+  "question": "I've been having trouble with the battery life on my phone lately. Any tips?",
+  "response": "You can use a compact portable power bank like the Anker PowerCore 5000, which can charge your phone up to 1.5 times and fits in most travel cases, to supplement your phone's battery life when you're ",
+  "official_truth": "The user would prefer responses that build upon their previous mention of purchasing a portable power bank, such as suggestions on how to optimize its use, like ensuring it's fully charged before use.",
+  "reason": "judge 判定经独立双层复算背书(96% 抽样一致+数值零冲突)"
+ },
+ {
+  "split": "split_test",
+  "id": "lme-d14-compass_web_-0cd6dc43",
+  "truth_label": "pass",
+  "source": "C:\\Users\\chunx\\Projects\\nautilus-compass\\vtf\\_compass_lmev2_out\\d14\\compass_web_small\\per_question.jsonl",
+  "criteria_ref": "LME-V2 d14 compass_web_small(官方 harness·透明规则判定)",
+  "question": "I am using our magento-based shopping admin dashboard. I am on the product listings page. After selecting a few products and clicking `Update Attributes` in the Actions dropdown, I am brought to a new",
+  "response": "I lack access to the live environment so this cannot be verified. The recorded trajectory snapshots only show the left sidebar navigation of the Magento admin pages and do not include the content of t",
+  "official_truth": "There is no second embedded link in that top banner besides `View Details`.",
+  "reason": "规则判定可复算可审计(非 LLM judge 自报)"
+ },
+ {
+  "split": "split_test",
+  "id": "lme-d14-compass_web_-f90f2255",
+  "truth_label": "pass",
+  "source": "C:\\Users\\chunx\\Projects\\nautilus-compass\\vtf\\_compass_lmev2_out\\d14\\compass_web_small\\per_question.jsonl",
+  "criteria_ref": "LME-V2 d14 compass_web_small(官方 harness·透明规则判定)",
+  "question": "I am using our reddit-based custom forum website. When I compare my own profile page with another user's profile page, what is the name of the second additional section on the right side that appears ",
+  "response": "I lack access to the live environment so this cannot be verified. The recorded trajectory snapshots do not show the full right-side section content of either a personal profile page or another user's ",
+  "official_truth": "There is no second additional section there. The only extra right-side section on my own profile page is moderator.",
+  "reason": "规则判定可复算可审计(非 LLM judge 自报)"
+ },
+ {
+  "split": "split_test",
+  "id": "bc1-v1-T31-1",
+  "truth_label": "insufficient_evidence",
+  "source": "C:\\Users\\chunx\\Projects\\nautilus-compass\\runtime\\assay_bc1_20260927\\SELFTEST_SCORECARD.md",
+  "criteria_ref": "BC1 v1 自测(verify_bc1.py 三态,U 不充正分;sha=16de925e)",
+  "question": "",
+  "response": "",
+  "official_truth": "",
+  "reason": "边界未定义:「复发」是否含首见当日未声明,expected 宽口径 vs 考生严口径"
+ },
+ {
+  "split": "split_test",
+  "id": "lme-d12-compass_web_-bb7ebd5c",
+  "truth_label": "pass",
+  "source": "C:\\Users\\chunx\\Projects\\nautilus-compass\\vtf\\_compass_lmev2_out\\d12\\compass_web_small\\per_question.jsonl",
+  "criteria_ref": "LME-V2 d12 compass_web_small(官方 harness·透明规则判定)",
+  "question": "I am using our reddit-based custom forum website. I am on the my profile page and I would like to edit my last post draft. What is the tab name that I can click on to view my post drafts without comme",
+  "response": "I lack access to the live environment so it cannot be verified. Information about the available tabs on your custom forum's user profile page, specifically tabs for unpublished draft posts, is require",
+  "official_truth": "There is no such tab. This profile page does not have a drafts tab.",
+  "reason": "规则判定可复算可审计(非 LLM judge 自报)"
+ },
+ {
+  "split": "split_test",
+  "id": "rejudge-a89d7624",
+  "truth_label": "pass",
+  "source": "C:\\Users\\chunx\\Projects\\nautilus-compass\\vtf\\_e2e_diag\\arm_a_rows_rejudged.json",
+  "criteria_ref": "LME arm-a 重判·双层复算升级(J1 0/85+J2 48/50 双绿)",
+  "question": "I'm planning a trip to Denver soon. Any suggestions on what to do there?",
+  "response": "Catch a concert at Red Rocks Amphitheater, enjoy BBQ at GQue BBQ in Golden, CO (a 10-15 minute drive from Red Rocks), and explore Denver's thriving music scene at its must-visit venues and festivals.",
+  "official_truth": "The user would prefer responses that take into account their previous experience in Denver, specifically their interest in live music and memorable encounter with Brandon Flowers. They might appreciat",
+  "reason": "judge 判定经独立双层复算背书(96% 抽样一致+数值零冲突)"
+ },
+ {
+  "split": "split_test",
+  "id": "lme-d12-compass_ente-50d92f55",
+  "truth_label": "pass",
+  "source": "C:\\Users\\chunx\\Projects\\nautilus-compass\\vtf\\_compass_lmev2_out\\d12\\compass_enterprise_small\\per_question.jsonl",
+  "criteria_ref": "LME-V2 d12 compass_enterprise_small(官方 harness·透明规则判定)",
+  "question": "I am working in our ServiceNow portal to offboard a user. I opened this page, cleared the \"Assigned to\" field, updated the record, and returned to the list, but the user still appears assigned and the",
+  "response": "After clearing the \"Assigned to\" field, you did not defocus (e.g. tab out of) the field before saving, so the autocomplete repopulated the user value, so your change was not committed. Open the hardwa",
+  "official_truth": "1) the page you are looking at is not wrong; 2) inside the record, clearing the \"Assigned to\" field is not enough, you need to click into that field and then click elsewhere so the cleared value is ac",
+  "reason": "规则判定可复算可审计(非 LLM judge 自报)"
+ },
+ {
+  "split": "split_test",
+  "id": "lme-d14-compass_ente-71026f57",
+  "truth_label": "pass",
+  "source": "C:\\Users\\chunx\\Projects\\nautilus-compass\\vtf\\_compass_lmev2_out\\d14\\compass_enterprise_small\\per_question.jsonl",
+  "criteria_ref": "LME-V2 d14 compass_enterprise_small(官方 harness·透明规则判定)",
+  "question": "I am working with our ServiceNow portal. When we order an iPad mini, how many total possible (color, cellular-plan) combinations are there? Answer with an English word and wrap your final answer in \\b",
+  "response": "This cannot be verified from the recorded snapshots, as we lack access to the live ServiceNow environment's iPad mini catalog item configuration. To determine the number of (color, cellular-plan) comb",
+  "official_truth": "There is no cellular-plan chooser on the iPad mini page.",
+  "reason": "规则判定可复算可审计(非 LLM judge 自报)"
+ },
+ {
+  "split": "split_test",
+  "id": "lme-d14-compass_ente-247bf724",
+  "truth_label": "pass",
+  "source": "C:\\Users\\chunx\\Projects\\nautilus-compass\\vtf\\_compass_lmev2_out\\d14\\compass_enterprise_small\\per_question.jsonl",
+  "criteria_ref": "LME-V2 d14 compass_enterprise_small(官方 harness·透明规则判定)",
+  "question": "I am working with our ServiceNow portal. For the Hardware form, how many model-category options are there besides `Computer` and `Computer Peripheral`? Answer in English and wrap your final answer in ",
+  "response": "I lack access to the live ServiceNow environment so the exact count cannot be verified. To determine the number, the full list of available model-category options on the Hardware form (or all entries ",
+  "official_truth": "There are no additional model-category options besides those two.",
+  "reason": "规则判定可复算可审计(非 LLM judge 自报)"
+ }
+]
