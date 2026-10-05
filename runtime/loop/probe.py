@@ -100,11 +100,60 @@ def probe_a100():
         EVENTS.append(f"探针故障-A100: {type(e).__name__}")
 
 
+def probe_gmail():
+    # Gmail 未读探针(10/5 盲区修复:LOOP 指令清单从未含 Gmail,9/10 后零覆盖,
+    # 用户拷问"为何没找到 gmail 外部来信"——补第五源;REST 配方=9/10 fallback 档)
+    # 只报营销过滤后的真未读增量;基线记见过的 msg id,防同一封轮轮重报
+    base_f = Path(__file__).parent / ".gmail_baseline.json"
+    try:
+        base = set(json.loads(base_f.read_text(encoding="utf-8")))
+    except Exception:
+        base = set()
+    try:
+        gdir = Path.home() / ".gmail-mcp"
+        creds = json.loads((gdir / "credentials.json").read_text(encoding="utf-8"))
+        inst = json.loads((gdir / "client_secret.json").read_text(encoding="utf-8"))["installed"]
+        out = subprocess.run(
+            ["curl", "-s", "--max-time", "15", "--proxy", "http://127.0.0.1:10808",
+             "-X", "POST", "https://oauth2.googleapis.com/token",
+             "-d", f"client_id={inst['client_id']}",
+             "-d", f"client_secret={inst['client_secret']}",
+             "-d", "refresh_token=" + creds["refresh_token"],
+             "-d", "grant_type=refresh_token"],
+            capture_output=True, text=True, timeout=20)
+        tok = json.loads(out.stdout).get("access_token")
+        if not tok:
+            raise RuntimeError("no access_token")
+        q = "is%3Ainbox%20is%3Aunread%20-category%3Apromotions%20-category%3Asocial"
+        out = subprocess.run(
+            ["curl", "-s", "--max-time", "15", "--proxy", "http://127.0.0.1:10808",
+             f"https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=10&q={q}",
+             "-H", f"Authorization: Bearer {tok}"],
+            capture_output=True, text=True, timeout=20)
+        msgs = json.loads(out.stdout).get("messages") or []
+        fresh = [m["id"] for m in msgs if m["id"] not in base]
+        base.update(m["id"] for m in msgs)
+        for i, mid in enumerate(fresh[:5]):
+            det = subprocess.run(
+                ["curl", "-s", "--max-time", "15", "--proxy", "http://127.0.0.1:10808",
+                 f"https://gmail.googleapis.com/gmail/v1/users/me/messages/{mid}?format=metadata&metadataHeaders=Subject&metadataHeaders=From",
+                 "-H", f"Authorization: Bearer {tok}"],
+                capture_output=True, text=True, timeout=20)
+            hdrs = {h["name"]: h["value"] for h in
+                    json.loads(det.stdout).get("payload", {}).get("headers", [])}
+            EVENTS.append(f"Gmail 未读新件: {(hdrs.get('Subject') or '?')[:60]}"
+                          f" <{(hdrs.get('From') or '?')[:40]}>")
+        base_f.write_text(json.dumps(sorted(base)[-200:]), encoding="utf-8")
+    except Exception as e:
+        EVENTS.append(f"探针故障-gmail: {type(e).__name__}: {str(e)[:60]}")
+
+
 def main():
     import datetime
     print(f"[ts {datetime.datetime.now():%m-%d %H:%M}]")  # 时间戳头:防轮账时间漂移(10/2 第三次复发教训)
     probe_mailbox()
     probe_github()
+    probe_gmail()
     probe_a100()
     if EVENTS:
         print("== LOOP 探针有事件 ==")
