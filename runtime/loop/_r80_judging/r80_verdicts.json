@@ -1,0 +1,477 @@
+[
+ {
+  "qid": "grpo-r80-0ba6cc336d09",
+  "bounty_id": "b-turbo-f084",
+  "submitter": "v5",
+  "verdict": "fail",
+  "failure_tag": "unfinished",
+  "lib_verdict": "fail",
+  "last_role": "tool",
+  "msg_n": 52,
+  "gates_G1G3": {
+   "G1": "PASS",
+   "G2": "PASS",
+   "G3": "PASS"
+  },
+  "gates_G4": "SKIP(panel 侧)",
+  "final_patch_present": null,
+  "recheck_agree": true,
+  "unescape": true
+ },
+ {
+  "qid": "grpo-r80-11abdcb9c391",
+  "bounty_id": "b-turbo-f082",
+  "submitter": "v5",
+  "verdict": "fail",
+  "failure_tag": "unfinished",
+  "lib_verdict": "fail",
+  "last_role": "tool",
+  "msg_n": 52,
+  "gates_G1G3": {
+   "G1": "PASS",
+   "G2": "PASS",
+   "G3": "PASS"
+  },
+  "gates_G4": "SKIP(panel 侧)",
+  "final_patch_present": null,
+  "recheck_agree": true,
+  "unescape": true
+ },
+ {
+  "qid": "grpo-r80-27e484d116ee",
+  "bounty_id": "b-turbo-f085",
+  "submitter": "v5",
+  "verdict": "fail",
+  "failure_tag": "unfinished",
+  "lib_verdict": "fail",
+  "last_role": "tool",
+  "msg_n": 52,
+  "gates_G1G3": {
+   "G1": "PASS",
+   "G2": "PASS",
+   "G3": "PASS"
+  },
+  "gates_G4": "SKIP(panel 侧)",
+  "final_patch_present": null,
+  "recheck_agree": true,
+  "unescape": true
+ },
+ {
+  "qid": "grpo-r80-2d1707dc3b81",
+  "bounty_id": "b-turbo-f086",
+  "submitter": "v5",
+  "verdict": "pass",
+  "failure_tag": null,
+  "lib_verdict": "pass",
+  "last_role": "assistant",
+  "msg_n": 47,
+  "gates_G1G3": {
+   "G1": "PASS",
+   "G2": "PASS",
+   "G3": "PASS"
+  },
+  "gates_G4": "SKIP(panel 侧)",
+  "final_patch_present": null,
+  "recheck_agree": true,
+  "unescape": true
+ },
+ {
+  "qid": "grpo-r80-335cb9646f50",
+  "bounty_id": "b-turbo-f078",
+  "submitter": "v5",
+  "verdict": "fail",
+  "failure_tag": "unfinished",
+  "lib_verdict": "fail",
+  "last_role": "tool",
+  "msg_n": 52,
+  "gates_G1G3": {
+   "G1": "PASS",
+   "G2": "PASS",
+   "G3": "PASS"
+  },
+  "gates_G4": "SKIP(panel 侧)",
+  "final_patch_present": null,
+  "recheck_agree": true,
+  "unescape": true
+ },
+ {
+  "qid": "grpo-r80-380c3b624c4a",
+  "bounty_id": "b-turbo-f098",
+  "submitter": "v5",
+  "verdict": "fail",
+  "failure_tag": "unfinished",
+  "lib_verdict": "fail",
+  "last_role": "tool",
+  "msg_n": 52,
+  "gates_G1G3": {
+   "G1": "PASS",
+   "G2": "PASS",
+   "G3": "PASS"
+  },
+  "gates_G4": "SKIP(panel 侧)",
+  "final_patch_present": null,
+  "recheck_agree": true,
+  "unescape": true
+ },
+ {
+  "qid": "grpo-r80-40bfd00081a7",
+  "bounty_id": "b-turbo-f100",
+  "submitter": "v5",
+  "verdict": "fail",
+  "failure_tag": "unfinished",
+  "lib_verdict": "fail",
+  "last_role": "tool",
+  "msg_n": 52,
+  "gates_G1G3": {
+   "G1": "PASS",
+   "G2": "PASS",
+   "G3": "PASS"
+  },
+  "gates_G4": "SKIP(panel 侧)",
+  "final_patch_present": null,
+  "recheck_agree": true,
+  "unescape": true
+ },
+ {
+  "qid": "grpo-r80-56e54b7c4e6d",
+  "bounty_id": "b-turbo-f095",
+  "submitter": "v5",
+  "verdict": "fail",
+  "failure_tag": "unfinished",
+  "lib_verdict": "fail",
+  "last_role": "tool",
+  "msg_n": 52,
+  "gates_G1G3": {
+   "G1": "PASS",
+   "G2": "PASS",
+   "G3": "PASS"
+  },
+  "gates_G4": "SKIP(panel 侧)",
+  "final_patch_present": null,
+  "recheck_agree": true,
+  "unescape": true
+ },
+ {
+  "qid": "grpo-r80-56e98137584e",
+  "bounty_id": "b-turbo-f097",
+  "submitter": "v5",
+  "verdict": "fail",
+  "failure_tag": "unfinished",
+  "lib_verdict": "fail",
+  "last_role": "tool",
+  "msg_n": 52,
+  "gates_G1G3": {
+   "G1": "PASS",
+   "G2": "PASS",
+   "G3": "PASS"
+  },
+  "gates_G4": "SKIP(panel 侧)",
+  "final_patch_present": null,
+  "recheck_agree": true,
+  "unescape": true
+ },
+ {
+  "qid": "grpo-r80-6b455c45a8ec",
+  "bounty_id": "b-turbo-f096",
+  "submitter": "v5",
+  "verdict": "fail",
+  "failure_tag": "unfinished",
+  "lib_verdict": "fail",
+  "last_role": "tool",
+  "msg_n": 52,
+  "gates_G1G3": {
+   "G1": "PASS",
+   "G2": "PASS",
+   "G3": "PASS"
+  },
+  "gates_G4": "SKIP(panel 侧)",
+  "final_patch_present": null,
+  "recheck_agree": true,
+  "unescape": true
+ },
+ {
+  "qid": "grpo-r80-710d21ecef23",
+  "bounty_id": "b-turbo-f076",
+  "submitter": "v5",
+  "verdict": "fail",
+  "failure_tag": "unfinished",
+  "lib_verdict": "fail",
+  "last_role": "tool",
+  "msg_n": 52,
+  "gates_G1G3": {
+   "G1": "PASS",
+   "G2": "PASS",
+   "G3": "PASS"
+  },
+  "gates_G4": "SKIP(panel 侧)",
+  "final_patch_present": null,
+  "recheck_agree": true,
+  "unescape": true
+ },
+ {
+  "qid": "grpo-r80-7527e6fb1855",
+  "bounty_id": "b-turbo-f088",
+  "submitter": "v5",
+  "verdict": "fail",
+  "failure_tag": "unfinished",
+  "lib_verdict": "fail",
+  "last_role": "tool",
+  "msg_n": 54,
+  "gates_G1G3": {
+   "G1": "PASS",
+   "G2": "PASS",
+   "G3": "PASS"
+  },
+  "gates_G4": "SKIP(panel 侧)",
+  "final_patch_present": null,
+  "recheck_agree": true,
+  "unescape": true
+ },
+ {
+  "qid": "grpo-r80-8128a6520c7f",
+  "bounty_id": "b-turbo-f094",
+  "submitter": "v5",
+  "verdict": "fail",
+  "failure_tag": "unfinished",
+  "lib_verdict": "fail",
+  "last_role": "tool",
+  "msg_n": 52,
+  "gates_G1G3": {
+   "G1": "PASS",
+   "G2": "PASS",
+   "G3": "PASS"
+  },
+  "gates_G4": "SKIP(panel 侧)",
+  "final_patch_present": null,
+  "recheck_agree": true,
+  "unescape": true
+ },
+ {
+  "qid": "grpo-r80-81866efd4a0a",
+  "bounty_id": "b-turbo-f093",
+  "submitter": "v5",
+  "verdict": "fail",
+  "failure_tag": "unfinished",
+  "lib_verdict": "fail",
+  "last_role": "tool",
+  "msg_n": 52,
+  "gates_G1G3": {
+   "G1": "PASS",
+   "G2": "PASS",
+   "G3": "PASS"
+  },
+  "gates_G4": "SKIP(panel 侧)",
+  "final_patch_present": null,
+  "recheck_agree": true,
+  "unescape": true
+ },
+ {
+  "qid": "grpo-r80-83d756262830",
+  "bounty_id": "b-turbo-f089",
+  "submitter": "v5",
+  "verdict": "fail",
+  "failure_tag": "unfinished",
+  "lib_verdict": "fail",
+  "last_role": "tool",
+  "msg_n": 52,
+  "gates_G1G3": {
+   "G1": "PASS",
+   "G2": "PASS",
+   "G3": "PASS"
+  },
+  "gates_G4": "SKIP(panel 侧)",
+  "final_patch_present": null,
+  "recheck_agree": true,
+  "unescape": true
+ },
+ {
+  "qid": "grpo-r80-8f76a38f5aed",
+  "bounty_id": "b-turbo-f090",
+  "submitter": "v5",
+  "verdict": "pass",
+  "failure_tag": null,
+  "lib_verdict": "pass",
+  "last_role": "assistant",
+  "msg_n": 15,
+  "gates_G1G3": {
+   "G1": "PASS",
+   "G2": "PASS",
+   "G3": "PASS"
+  },
+  "gates_G4": "SKIP(panel 侧)",
+  "final_patch_present": null,
+  "recheck_agree": true,
+  "unescape": true
+ },
+ {
+  "qid": "grpo-r80-9f7f334a4f95",
+  "bounty_id": "b-turbo-f083",
+  "submitter": "v5",
+  "verdict": "pass",
+  "failure_tag": null,
+  "lib_verdict": "pass",
+  "last_role": "assistant",
+  "msg_n": 47,
+  "gates_G1G3": {
+   "G1": "PASS",
+   "G2": "PASS",
+   "G3": "PASS"
+  },
+  "gates_G4": "SKIP(panel 侧)",
+  "final_patch_present": null,
+  "recheck_agree": true,
+  "unescape": true
+ },
+ {
+  "qid": "grpo-r80-a1c094f3a415",
+  "bounty_id": "b-turbo-f080",
+  "submitter": "v5",
+  "verdict": "fail",
+  "failure_tag": "unfinished",
+  "lib_verdict": "fail",
+  "last_role": "tool",
+  "msg_n": 52,
+  "gates_G1G3": {
+   "G1": "PASS",
+   "G2": "PASS",
+   "G3": "PASS"
+  },
+  "gates_G4": "SKIP(panel 侧)",
+  "final_patch_present": null,
+  "recheck_agree": true,
+  "unescape": true
+ },
+ {
+  "qid": "grpo-r80-a8d00c88ce50",
+  "bounty_id": "b-turbo-f099",
+  "submitter": "v5",
+  "verdict": "fail",
+  "failure_tag": "unfinished",
+  "lib_verdict": "fail",
+  "last_role": "tool",
+  "msg_n": 52,
+  "gates_G1G3": {
+   "G1": "PASS",
+   "G2": "PASS",
+   "G3": "PASS"
+  },
+  "gates_G4": "SKIP(panel 侧)",
+  "final_patch_present": null,
+  "recheck_agree": true,
+  "unescape": true
+ },
+ {
+  "qid": "grpo-r80-b7bcb17b6f05",
+  "bounty_id": "b-turbo-f092",
+  "submitter": "v5",
+  "verdict": "fail",
+  "failure_tag": "unfinished",
+  "lib_verdict": "fail",
+  "last_role": "tool",
+  "msg_n": 52,
+  "gates_G1G3": {
+   "G1": "PASS",
+   "G2": "PASS",
+   "G3": "PASS"
+  },
+  "gates_G4": "SKIP(panel 侧)",
+  "final_patch_present": null,
+  "recheck_agree": true,
+  "unescape": true
+ },
+ {
+  "qid": "grpo-r80-b9e0aa4e4b74",
+  "bounty_id": "b-turbo-f079",
+  "submitter": "v5",
+  "verdict": "fail",
+  "failure_tag": "unfinished",
+  "lib_verdict": "fail",
+  "last_role": "tool",
+  "msg_n": 52,
+  "gates_G1G3": {
+   "G1": "PASS",
+   "G2": "PASS",
+   "G3": "PASS"
+  },
+  "gates_G4": "SKIP(panel 侧)",
+  "final_patch_present": null,
+  "recheck_agree": true,
+  "unescape": true
+ },
+ {
+  "qid": "grpo-r80-b9f8aa3b809a",
+  "bounty_id": "b-turbo-f087",
+  "submitter": "v5",
+  "verdict": "pass",
+  "failure_tag": null,
+  "lib_verdict": "pass",
+  "last_role": "assistant",
+  "msg_n": 17,
+  "gates_G1G3": {
+   "G1": "PASS",
+   "G2": "PASS",
+   "G3": "PASS"
+  },
+  "gates_G4": "SKIP(panel 侧)",
+  "final_patch_present": null,
+  "recheck_agree": true,
+  "unescape": true
+ },
+ {
+  "qid": "grpo-r80-d0786750faa9",
+  "bounty_id": "b-turbo-f081",
+  "submitter": "v5",
+  "verdict": "pass",
+  "failure_tag": null,
+  "lib_verdict": "pass",
+  "last_role": "assistant",
+  "msg_n": 12,
+  "gates_G1G3": {
+   "G1": "PASS",
+   "G2": "PASS",
+   "G3": "PASS"
+  },
+  "gates_G4": "SKIP(panel 侧)",
+  "final_patch_present": null,
+  "recheck_agree": true,
+  "unescape": true
+ },
+ {
+  "qid": "grpo-r80-d4591b882993",
+  "bounty_id": "b-turbo-f077",
+  "submitter": "v5",
+  "verdict": "pass",
+  "failure_tag": null,
+  "lib_verdict": "pass",
+  "last_role": "assistant",
+  "msg_n": 29,
+  "gates_G1G3": {
+   "G1": "PASS",
+   "G2": "PASS",
+   "G3": "PASS"
+  },
+  "gates_G4": "SKIP(panel 侧)",
+  "final_patch_present": null,
+  "recheck_agree": true,
+  "unescape": true
+ },
+ {
+  "qid": "grpo-r80-ddc54fde827e",
+  "bounty_id": "b-turbo-f091",
+  "submitter": "v5",
+  "verdict": "fail",
+  "failure_tag": "unfinished",
+  "lib_verdict": "fail",
+  "last_role": "tool",
+  "msg_n": 52,
+  "gates_G1G3": {
+   "G1": "PASS",
+   "G2": "PASS",
+   "G3": "PASS"
+  },
+  "gates_G4": "SKIP(panel 侧)",
+  "final_patch_present": null,
+  "recheck_agree": true,
+  "unescape": true
+ }
+]
