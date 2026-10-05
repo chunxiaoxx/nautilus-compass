@@ -50,6 +50,14 @@
 
 ## 轮次日志
 
+### R197 · 2026-10-05 20:2x-20:5x(用户令:数商×基准评测全网调研+系列规划——落档)
+- **调研执行 [实测]**:微信原文《数据公司一个个都太神了》+web_reader 定向五源(维基:Scale AI/Surge AI/Mercor/Arena(LMArena)/SWE-bench;搜索 MCP 全掉线,web_reader 替代)
+- **关键情报**:①数商格局(Surge 估值 $15-25B/营收 $1.2B 零融资;Mercor $10B 自产 APEX-Agents 基准;UniPat<1yr $2.5B)②**发 bench=数商 marketing** 模式坐实(Scale SEAL/Mercor APEX 皆此)③**信任市场无公认验收标准**(文内原话:模厂只能抽检,后验同批数据两家结果不同)=compass 判分机构要填的空获一级市场叙事直接验证④**SWE-bench Verified 已被 OpenAI 2026/2 停止引用**(污染:前沿模型可复现 repo 原文措辞;学界复核 SWE-agent 老榜 12.47%→净 3.97%)——直接影响我方 L3 Round 1 榜页口径
+- **系列规划档落地**:docs/soul/DATA_VENDOR_BENCHMARK_SERIES_20261005.md——四线(A 评测 L3 Round 1→2→3+L4 渠道集/B 判读 UMI 窗+G1 判据推广为数据批验收模板/C 内容三篇英文先行/D 商业榜页 10/12→$199 首单)+本周排序
+- **对现役判据的直接影响**(待明日执行):①判据档补污染 caveat 行(Round 1 测的是 harness 编排差非模型上限,如实披露)②Round 2 任务集演进预排(SWE-Bench Pro 公开部分)③抽查加"解在题面"标注
+- **评测链巡 [实测]**:A 臂评测 13/15(87%,0 failed)推进中,B 臂 wait_and_run_b 排队正常(eval_b.log 空=未起,符合串行设计)
+- M1:+0(调研规划=PMF 主线市场情报;评测链推进)
+
 ### R196 · 2026-10-05 20:0x-20:2x(值守轮:B 臂收官卡死手动兜底+双臂 preds 定版+B 评测排队)
 - **时间修正**:probe 19:32 打脸 R195 的"20:00 探点已执行"——那是提前探;**本轮 20:00 后正点补探 [实测]:staging/f076-f100 仍未到**,10/6 上午再探,仍缺才 U 态顺延通报(承诺口径)
 - **B 臂收官卡死 [实测]**:task_29 trajectory 落盘后 30min+ 无 result.json(无 git 子进程,卡 agent.run 收尾层);处置=**手动兜底**:worktrees/l3r1b_29 手动 git diff 采集=**零改动(0 字节 patch,与 runner 将采口径一致)**→补 result.json(status=manual_collect_after_runner_stall 如实标)→精确 PID 杀僵死 runner(27016/22728);**判分链零等**
