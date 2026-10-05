@@ -50,6 +50,13 @@
 
 ## 轮次日志
 
+### R184 · 2026-10-05 15:5x-16:0x(用户纠偏:判分环境复用 A100 数据盘——管道全链就绪)
+- **用户纠偏"没找对数据盘"**:此前只 df 系统盘(196G 100% 满)判死=探针盲区;全量 df 复测 **vdd4 数据盘 98G 仅用 8%(87G 余)+vdd3 余 63G**——租机方案作废,复用 A100 ¥0
+- **判分环境落成(全 [实测])**:static docker 27.3.1 全落 /root/vdd4(dockerd --data-root=vdd4/docker-root,系统盘满零触碰;三坑:userland-proxy-path 显式指定/containerd 须 PATH 带入/SSH banner 限流退避 120s)→docker info+hello-world 拉取过;swebench 5.0.2 venv@/root/vdd4(pip 走 tuna);HF Verified 500 rows 经 hf-mirror 拉通;eval_runner.py 上传(分批 rest→django 防镜像超容+批后 rmi+report 回显,COMPILE-OK)
+- **判分触发序(跑完自动)**:双臂进程退出+30 题产物齐→collect_predictions.py(collector session_id 过滤)→sftp preds→nohup eval_runner 双臂→report 合并→抽查 6 题/臂→Round 1 读数回传
+- 双臂进度 [实测]:A 5/30(~5min/题,预计 ~18:10 完);B task_5(~9min/题,预计 ~19:30 完,B 为瓶颈)
+- M1:+0(判分读数供给前置件全就绪)
+
 ### R183 · 2026-10-05 15:2x-15:4x(用户拍板:双臂跑完自动判分——判分前置+A 臂返工)
 - **拍板**:双臂跑完自动判分出 Round 1 读数
 - **判分工序预注册落档**(判据档新增节):官方 swebench resolved% 口径+独立判分机+collector(idx→instance_id 对齐断言)+抽查 6 题/臂+读数分桶;A100 判死(docker 无+磁盘 100% 满,206G flywheel 资产不可动,可清 ≤43G<镜像需求 ~150G);本机无 WSL/docker 判死——**待用户拍板租 CPU 判分机(预算约 ¥20-40)**
