@@ -1,0 +1,15 @@
+{
+ "lock": "aa380f28fd6e67ce-v1.1",
+ "model": "Phi-3.5-vision-instruct 4.2B (MIT, zero-shot)",
+ "n": 51,
+ "acc": {
+  "native": 0.35294117647058826,
+  "d128": 0.35294117647058826,
+  "d96": 0.37254901960784315
+ },
+ "drop128": 0.0,
+ "drop96": -0.0196,
+ "blind_ok": 2,
+ "grab_fail": 0,
+ "elapsed_s": 57.9
+}

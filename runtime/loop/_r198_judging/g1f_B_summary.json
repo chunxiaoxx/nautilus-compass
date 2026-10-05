@@ -1,0 +1,14 @@
+{
+ "probe": "g1_full_B",
+ "ckpt": "/root/openpi/checkpoints/g1_probe_B/g1_B_run1/1999",
+ "n_frames": 672,
+ "n_eps": 42,
+ "dir_rate": 0.75,
+ "ratio_median": 1.726710841265017,
+ "J1_material": "dir_rate=方向一致率(sign 语义:dot(pred−state,act−state)>0)",
+ "J2_material": "ratio_median=幅度比(判[0.3,3.0])",
+ "frame_filter": "‖act−state‖≥0.001",
+ "lock": "9350c762d9b706dd",
+ "smoke": false,
+ "elapsed_s": 105.9
+}

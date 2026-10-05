@@ -50,6 +50,15 @@
 
 ## 轮次日志
 
+### R198 · 2026-10-05 20:2x-20:5x(值守轮:双判读触发件一小时内全闭环——UMI V4+G1-full 两案)
+- **probe(20:23)有事件**:信箱 #9778 flywheel[UMI批V4出数·窗24h起算 19:36]+#9786 flywheel[G1-full出数·672帧/臂满样本]——两案判读触发件,优先处置
+- **两案材料拉取验签 [实测]**:pipe_art 直读六工件,双端 sha16 逐位一致(UMI report 4a497a94/detail d0ebd049;G1-full G compare 52c1c121/B 80aedba7,与函申报同);SSH banner 限流三连→退避 300s 重试成功(高频日配方)
+- **UMI V4 判读闭环(函 9790)**:native acc=18/51=0.3529 复算零偏差 [实测];判据 V4-UMI-J1 drop128=0.0<0.05 → **未证实分支成立**(Phi 画像对 UMI 域分辨率退化不敏感);**材料缺口如实记**:d128/d96 逐帧明细未落件(detail 仅单条件 51 行)→ drop 层标 self-reported,upgrade_path=补落明细即升 measured;三 caveat 收讫;verdict 落 pipe_art umi_batch1/v4_umi_verdict.json
+- **G1-full 判读闭环(函 9791)**:全读数复算零偏差 [实测](J1 G 501/672=0.7455/B 504/672=0.7500/Δ=-3/672=-0.45pp/ratio 1.9025·1.7267/零退化解/配对键全同);**加固统计:配对 McNemar exact p=0.8126(b=34/c=37)=全量零效应坐实**;+5pp 门槛未过 → 未证实分支成立,**G1 视频注入线按预注册语义收束**(负结果照报不换判据不加注);probe+2.5pp→full-0.45pp 小样本噪声被稀释=10/3 verdict 预判获印证;口径三遍披露=material_side_honesty 正面记档;verdict 落 pipe_art g1_full_verdict.json
+- **双案 SLA**:出数 19:36/20:18 → 回执 20:41/20:43,~1h 内完判(24h 档)
+- **评测链巡 [实测]**:A 臂 rest 批 13/15(87%,0 failed,swebench 进程健在);B 臂 wait_and_run_b 排队正常
+- M1:+0(判读履约两案=判分机构主业;两负结果入档=判例素材)
+
 ### R197 · 2026-10-05 20:2x-20:5x(用户令:数商×基准评测全网调研+系列规划——落档)
 - **调研执行 [实测]**:微信原文《数据公司一个个都太神了》+web_reader 定向五源(维基:Scale AI/Surge AI/Mercor/Arena(LMArena)/SWE-bench;搜索 MCP 全掉线,web_reader 替代)
 - **关键情报**:①数商格局(Surge 估值 $15-25B/营收 $1.2B 零融资;Mercor $10B 自产 APEX-Agents 基准;UniPat<1yr $2.5B)②**发 bench=数商 marketing** 模式坐实(Scale SEAL/Mercor APEX 皆此)③**信任市场无公认验收标准**(文内原话:模厂只能抽检,后验同批数据两家结果不同)=compass 判分机构要填的空获一级市场叙事直接验证④**SWE-bench Verified 已被 OpenAI 2026/2 停止引用**(污染:前沿模型可复现 repo 原文措辞;学界复核 SWE-agent 老榜 12.47%→净 3.97%)——直接影响我方 L3 Round 1 榜页口径

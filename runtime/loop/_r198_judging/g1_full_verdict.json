@@ -1,0 +1,41 @@
+{
+  "case_id": "g1_full_infer",
+  "ts": "2026-10-05T21:20:00+08:00",
+  "judge": "compass",
+  "lock": "9350c762d9b706dd",
+  "material": {
+    "G_dir": "/root/vdd3/pipe_art/g1_full_infer_G/", "G_compare_sha16": "52c1c121a5fe2b37",
+    "B_dir": "/root/vdd3/pipe_art/g1_full_infer_B/", "B_compare_sha16": "80aedba7bfbd8ff9",
+    "n_frames_per_arm": 672, "n_eps": 42,
+    "frame_filter": "‖act−state‖≥0.001", "selection": "per-ep top-16 by ‖act−state‖ desc"
+  },
+  "recompute": {
+    "J1_G": {"claimed": 0.7455, "recomputed": "501/672=0.74554", "evidence_tier": "measured", "zero_deviation": true},
+    "J1_B": {"claimed": 0.7500, "recomputed": "504/672=0.75000", "evidence_tier": "measured", "zero_deviation": true},
+    "delta_full": {"claimed": "-0.45pp", "recomputed": "-3/672=-0.446pp", "evidence_tier": "measured", "zero_deviation": true},
+    "ratio_median_G": {"claimed": 1.902, "recomputed": 1.9025, "evidence_tier": "measured"},
+    "ratio_median_B": {"claimed": 1.727, "recomputed": 1.7267, "evidence_tier": "measured"},
+    "band_pass": {"G": 0.8854, "B": 0.8958, "evidence_tier": "measured"},
+    "degenerate_zero": 0,
+    "paired_keys_identical": true
+  },
+  "statistics": {
+    "test": "McNemar exact (paired, per-frame dir_consistent, n=672)",
+    "b_G_only": 34, "c_B_only": 37,
+    "p_value": 0.8126,
+    "interpretation": "全量配对下零效应:Δ=-0.45pp 为噪声级,远低于 +5pp 门槛,方向微负无统计意义"
+  },
+  "criteria_check": {
+    "threshold": "+5pp 门槛(预注册语义实验):Δ=-0.45pp → 未证实分支,门槛未过"
+  },
+  "findings": [
+    {"id": "F1", "text": "全部读数统计层独立复算零偏差 [实测];配对键(ep,idx)两臂全同,配对设计干净", "evidence_tier": "measured"},
+    {"id": "F2", "text": "probe(n=40)Δ+2.5pp → full(n=672)Δ-0.45pp:小样本信号被全量稀释,10/3 verdict 预判(不越权硬判)获印证;ratio 口径链闭合(G 1.99→1.90 / B 1.77→1.73)", "evidence_tier": "measured"},
+    {"id": "F3", "text": "执行口径三遍对齐披露(前两遍废弃如实)=material_side_honesty 正面记档", "evidence_tier": "measured"},
+    {"id": "F4", "text": "G1 视频注入方向按预注册语义收束:门槛级判据未过,负结果入档,不换判据不加注(止损线精神)", "evidence_tier": "measured"}
+  ],
+  "verdict": {
+    "state": "PARTIAL",
+    "text": "未证实分支成立:G1 视频注入增益门槛(+5pp)未过——全量 672 帧/臂复算 Δ=-0.45pp 零偏差,配对 McNemar p=0.8126 零效应坐实。材料合格,口径链闭合,负结果照报。G1 视频注入线到此收束;注入不传导机制层发现(10/3)与零效应读数互恰。"
+  }
+}

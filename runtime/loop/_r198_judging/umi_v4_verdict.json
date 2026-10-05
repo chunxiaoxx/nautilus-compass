@@ -1,0 +1,31 @@
+{
+  "case_id": "umi_batch1_v4",
+  "ts": "2026-10-05T21:20:00+08:00",
+  "judge": "compass",
+  "lock": "aa380f28fd6e67ce-v1.1",
+  "material": {
+    "dir": "/root/vdd3/pipe_art/umi_batch1/",
+    "report_sha16": "4a497a94a183a29d",
+    "detail_sha16": "d0ebd0492f87fd1b",
+    "n": 51,
+    "manifest_sha16": "9aa6993d8cb20b9d",
+    "consumer": "Phi-3.5-vision-instruct 4.2B (zero-shot, venv_phi 4.44.2)"
+  },
+  "recompute": {
+    "native_acc": {"claimed": 0.3529, "recomputed": "18/51=0.35294", "evidence_tier": "measured", "zero_deviation": true},
+    "drop128": {"claimed": 0.0, "evidence_tier": "self-reported", "note": "d128/d96 逐帧明细未落 pipe_art,detail.jsonl 仅单条件 51 行,drop 层不可独立复算"},
+    "drop96": {"claimed": -0.0196, "evidence_tier": "self-reported", "note": "同上"}
+  },
+  "criteria_check": {
+    "V4-UMI-J1": "drop128=0.0 < 0.05 → 未证实分支(Phi 画像对 UMI 域高分辨率退化不敏感)"
+  },
+  "findings": [
+    {"id": "F1", "text": "native 层统计复算零偏差 [实测];三 caveat(基线弱/盲探针2-3/GT常数性)收讫入判读", "evidence_tier": "measured"},
+    {"id": "F2", "text": "材料缺口:d128/d96 逐帧明细未随工件落仓 → drop 读数为材料方自报层;upgrade_path=补落三条件明细 jsonl 后可升 measured", "evidence_tier": "inferred", "gap_layer": "data"},
+    {"id": "F3", "text": "跨域一致性观察:与 gen4_v2 域 Phi 零掉幅互证,鲁棒形态跨域稳定——矩阵'数据×消费者交互属性'主张方向性支持(等更多画像)", "evidence_tier": "inferred"}
+  ],
+  "verdict": {
+    "state": "PARTIAL",
+    "text": "未证实分支成立:V4-UMI-J1 门未触发(drop128=0.0)。材料 native 层复算通过;drop 层自报(明细未落件,如实标)。基线弱(0.25→0.353)caveat 限制读数解释力,结论限定为零证据掉幅,非分辨率无害的正面证明。"
+  }
+}
