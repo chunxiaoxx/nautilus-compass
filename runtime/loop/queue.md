@@ -50,6 +50,12 @@
 
 ## 轮次日志
 
+### R185 · 2026-10-05 15:5x(夜间值守轮 quiet——双臂推进中)
+- **probe(15:55)**:信箱 0 未读·gmail 探针故障(JSONDecodeError,token 待查,不阻塞)·CI×50 折叠·A100 空闲
+- **③r80/G1**:pipe_art 仅旧案材料(g1_infer_B/B2/G),staging 无新材料——quiet;20:00 探点不变
+- **双臂 [实测]**:A 6/30(~4.5min/题),B task_5;进程 3(mini_runner 1+b_runner venv 父子 2)健康;turbo 不触发(已固化)
+- 判分管道就位待触发(R184 序)
+
 ### R184 · 2026-10-05 15:5x-16:0x(用户纠偏:判分环境复用 A100 数据盘——管道全链就绪)
 - **用户纠偏"没找对数据盘"**:此前只 df 系统盘(196G 100% 满)判死=探针盲区;全量 df 复测 **vdd4 数据盘 98G 仅用 8%(87G 余)+vdd3 余 63G**——租机方案作废,复用 A100 ¥0
 - **判分环境落成(全 [实测])**:static docker 27.3.1 全落 /root/vdd4(dockerd --data-root=vdd4/docker-root,系统盘满零触碰;三坑:userland-proxy-path 显式指定/containerd 须 PATH 带入/SSH banner 限流退避 120s)→docker info+hello-world 拉取过;swebench 5.0.2 venv@/root/vdd4(pip 走 tuna);HF Verified 500 rows 经 hf-mirror 拉通;eval_runner.py 上传(分批 rest→django 防镜像超容+批后 rmi+report 回显,COMPILE-OK)
