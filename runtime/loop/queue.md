@@ -50,6 +50,17 @@
 
 ## 轮次日志
 
+### R204 · 2026-10-05 23:0x(值守轮 quiet:A 臂评测全量收官 resolved 7/30+B 臂自动接力开跑)
+- **probe(23:01)**:信箱 0 未读·CI×50 折叠·Gmail=Medium 营销滤·A100 GPU 空
+- **A 臂全量收官 [实测]**(rest+django 双 report 齐):
+  - rest 批:resolved 4/unresolved 3/error 8/空 patch 1(R202 已定性)
+  - **django 批(新收官)**:resolved **3**/unresolved 2/error **8**/空 patch 1(completed 5)
+  - **A 臂全量=resolved 7/30(23.3%)**:completed 12(resolved 7+unresolved 5)/error 16/空 patch 2——django 批 8 error 待定性(疑同 patch malformed 型,抽查时核)
+  - 双 report 文件:l3r1a_..._rest.json + l3r1a_..._django.json(均在 /root/vdd4/l3r1_eval/)
+- **B 臂评测自动接力 [实测]**:wait_and_run_b 生效,eval_b.log "Running 10 instances"(eval_runner 对 B 臂 preds 同逻辑分批;B 非空 patch 21/30);预计 ~1.5-2h 出双批
+- 下轮:B 臂批巡+双臂合并 Round 1 读数+2 题镜像 EOF 补跑决策+抽查 6 题/臂(含"解在题面"标注)
+- M1:+0(判分链核心读数:首臂读数落定)
+
 ### R203 · 2026-10-05 22:3x(夜间值守轮 quiet)
 - **probe(22:31)**:信箱 0 未读·CI×50 折叠·A100 GPU 空;③④不触发(g1_full 已判/turbo 固化)
 - **评测巡 [实测]**:django 批 12/13(92%,末题,0 failed);B 臂接力 3 进程健在(eval_b.log 空=串行排队正常);下轮=django 收官+双 report 合并+2 题镜像 EOF 补跑+抽查
