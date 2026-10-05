@@ -50,6 +50,12 @@
 
 ## 轮次日志
 
+### R178 · 2026-10-05 13:48-14:1x(值守轮:催办件 #3284 处置闭环+Gmail 两件)
+- **#3284 platform 催办(deadline 14:25)处置闭环**:①r79 13 条选 **(b) 维持不采信结案**(废判出清 14 单零结算+登记材料缺陷原因:零方差 8×0.75+伪 fail 同档,统一规 §五/§七;重判同材料不改缺陷=拿坏输入出好分)②r80 25 单按统一规 v1 出判,**回执 ≤10/6 18:00**,材料坐标请 v5 按 #3034 原议开只读导出或落 A100(实测 A100 现无 r80/fuel 材料),到位即判 24h 内出读数;回函 4908+ack✓
+- **Gmail 三件**:Roy(8tree GoRaven,solo 773★ Go 平台)→ star(gh api 实测 STAR-CONFIRMED)+简短回复已发(SENT 1a10aa1dfd5ada33);rsi-bench Sung Hun Kwag 回评论=framing 收敛确认无 action(不再回);Medium digest 营销滤
+- **③G1**:g1_infer_B/G 仍 10/3 旧件(结案),无新材料 quiet;**④**turbo 完成不触发
+- commit(不 push);下轮:r80 材料坐标守(10/5 20:00 探一次/10/6 上午再探)+max_steps 重估等拍板
+
 ### R177 · 2026-10-05 12:1x-13:0x(用户拍"smoke 双臂各 10 题+A 型复验"→A 型 FAIL 负结果照报+smoke 双臂在跑)
 - **A 型 11 条复验:FAIL 1/11<7/11 [实测]**(R168 建议一验收)——v1 语料全文喂 champion 1.7B(U5 同源管线,A100 实测),9/11 高置信判 fail,"截断主因"假说证伪,主因升格=判读框架对正确拒答类系统性偏置;档 `_r177_atype_recheck_11.md`+判绩账追记 `_r168_bothwrong_audit.md`;upgrade_path 三条(校正 SFT/gold 二盲评/陷阱题族标注)
 - **L3 smoke 双臂开跑**(题源=heldout30[0:10]+ENV 行注入,pyarrow 显式类型重建——首版 parquet prompt 列退化 str 被回读验证抓出重造;harness 代码零改动@4e14a898):
