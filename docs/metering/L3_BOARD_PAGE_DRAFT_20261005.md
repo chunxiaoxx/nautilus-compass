@@ -6,10 +6,10 @@
 
 | 臂 | harness | 模型 | max_steps | resolved | 全量率 | completed 内率 | patch 合规率 | 空 patch |
 |---|---|---|---|---|---|---|---|---|
-| A | v5-harness@4e14a898 | MiniMax-M3 | 50 | 7 | **23.3%** | 58.3%(7/12) | 46.7%(14/30 非 error)¹ | 2 |
+| A | v5-harness@4e14a898 | MiniMax-M3 | 50 | 7 | **23.3%** | 58.3%(7/12) | 53.3%(16/30 可 apply)¹ | 2 |
 | B | mini-swe-agent@2.4.6 | MiniMax-M3 | 50 | `[R1-B-resolved]` | `[R1-B-full]` | `[R1-B-comp]` | `[R1-B-patch]` | `[R1-B-empty]` |
 
-¹ patch 合规率=非 patch-apply-error / 30。三档口径并列,防单口径误导。
+¹ patch 合规率=非 patch-apply-error / 30(error 16=patch 格式 14 [实测:14/14 缺尾换行,12/14 含 repo 外新增文件]+评测环境 2);三档口径并列,防单口径误导。
 
 ## 读数注记(判分纪律呈现)
 
