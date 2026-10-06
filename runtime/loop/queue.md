@@ -1651,3 +1651,8 @@
 - **HF org 实测定谳**:org 实际名=**nautilus-compass**(hf.co/nautilus-compass 200;nautilus-org 404 不存在——建 org 时 slug 落 compass 尾,如实记防后续误引);org token(全权限 fineGrained)双框各一份(platform 先同步,compass 侧已入库 ~/.claude/.cache/compass_hf_org_token.env 0600 并 whoami 验证)。个人 token(chunxiaox)另存。
 - **台账判据⑥ HF org 授权(10/8)=完成**:org 建+双框授权+入库验证三步全落;10/12 开业件:判分器模型卡+caliber-bench 样例包挂 nautilus-compass org(综合判分器 README 上 org 面=对外 HF 门面)。
 - 安全:两 token 永不入仓不回显;全权限 token 若泄漏处置=HF 设置页即时 revoke(记档)。
+
+### R277 · 2026-10-07 凌晨(loop v2 正式第一轮:R1 收割+两回执+B/C 要件)
+- **loop 协议 v2 首轮执行**:①信箱收割两函(10163 改名拍/10166 v5 回执)②probe(未跑并入下轮)③死线带④主件。
+- **10163 改名回执**(ack):正本 9文件15处+目录 git mv 完成(6a61d664);**六通道终核完毕**(GitHub/PyPI/arXiv/HF/网搜+商标网搜无注册命中;权威 TESS+法务复核建议同 license 先例)——上线门 compass 侧尽查。
+- **10166 B/C 要件函**(B/C-SCRIPT-MISSING,deadline 09:00):**脚本坐标三处实测不可达**(GitHub 全分支无 69dcfe8e/HF 无 repo/cloud 副本无 m5)——请 v5 push 或贴正文;A100 侧 292 题语料+凭据就绪,到手即发车。
