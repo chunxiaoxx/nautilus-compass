@@ -1622,3 +1622,7 @@
 - **A 管道建成+基线出数[实测]**:tools/corpus_pipeline.py(合并三 split+delta,qid 防泄漏去重,SFT 清单+manifest+双触发器);首跑=1453 唯一 qid(拦 18 跨源重复)/train 1162/7B 缺口 1838/基线 sha16=2a0a8f0c825292f4/manifest_corpus_pipeline.json 落盘。
 - **A100 环境探明[实测]**:Qwen3-1.7B 基座在盘(/root/vdd4/modelscope/models/Qwen--Qwen3-1.7B)+磁盘 36G 余+RAM 47G;E1 复算栈在 vdd4/e1_recheck(generate 配方可复用)。
 - **发车留交接(4h 护栏+质量纪律)**:发车前置=1.7B champion 推理管线复原(prompt 构造在 P2 训练机 js2.blockelite.cn:15124 的 bootstrap_and_train.sh,未入仓)——管线拼错=实验白跑+白烧 GPU,不硬上。交接件:①从 js2 拉取管线脚本入仓 ②按 PRECOR 档写 robust_exp 脚本(8 配置+2 轨)③scp adapter(best_lora/dbcbab6f)+292 题语料④nohup 发车+收数 /root/vdd4/robust_exp/。
+
+### R271 · 2026-10-06 深夜(B/C 发车转协同+涡轮增压跨框提案)
+- **B/C 发车路径调整**:js2 训练机已不可达(超时,疑释放),1.7B 管线唯一现存载体=v5 judge_pack_v1(6ea94dec9c6fc903,J8 挂载件)——发车转跨框协同(函 TURBO-ECO-1006→v5,deadline 10/7 12:00):请 v5 提供推理接口或认领管线复原;compass 侧其余材料 24h 内齐(判据档已冻/基座在盘/语料+adapter 坐标在仓)。
+- **涡轮增压产品化提案发出(用户令响应)**:机制已存在(白皮书 §3 五段+r84 64%),缺产品化三件——正本独立档(五段 owner:供油/入池/训练复考=v5,判读=compass,结算=platform;corpus_pipeline=燃料计数器)/sink 入册(出生证+流量位)/结算联动(S SKU 已挂价);复用判据=两域共享验证内核换域不换骨架;商业判据=10/12 首日变现+10/31 首笔。建议正本 10/7 共笔,随两外壳 v1.5 同步。
