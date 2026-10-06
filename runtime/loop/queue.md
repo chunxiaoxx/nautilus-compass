@@ -1660,3 +1660,8 @@
 ### R278 · 2026-10-07 凌晨(loop v2 R2:BYZ 归档回执+第三波定性)
 - **BYZ 归档通报收讫**(10179 ack):两外壳 v1.5/BP v1.3 定稿,挂载外网三验✓,局部件 4/4——06:30 死线提前达成,组织级合流闭环。
 - **daemon 第三波定性[实测]**:overload +256/轮,但 ESTAB 仅 4 条、log 22:04 后无完成请求行、CPU 99.4% 持续——**非泄漏非空转:502MB skip-big 巨物(c096d6883da3,"re-embed on demand")按需重嵌吃满 worker**,涉它的查询(v5 重试流)每单卡数分钟→32 槽占满→reject。**修复卡值守窗**:候选=巨物项目拆分/查询侧 bypass 嵌入回退标量/预分批 embed;今晚不动(服务在算真活)。
+
+### R279 · 2026-10-07 早(loop v2 R3:B/C 材料闭环+三分歧修正+发车中)
+- **v5 脚本到手**(10193 正文直贴;分支谜底=customer-demo-ship-1);审读抓**三处与 PRECOR 分歧**:①一致率=逐字全等(量化必全假红)②配置集 fp8/awq/gptq 系(vLLM)≠冻结的 bnb 系 ③语料 prompt 字段缺(模板缺口)。**管线缺口正式关闭**:模板在本地工具链复原(train_judge_baseline v2 PROMPT_TMPL+sample_text 剔 judge_output;14b smoke 同款)。
+- **compass 修正版 runner 写就**(runtime/robust_exp/precor_replay_bnb.py):bnb 直载四精度×双解码+label 一致率+模板自验证门(bf16-greedy acc<0.80 实验作废)。发车件三份上传 A100 中(SSH 瞬时抖动重试);v5 serve 脚本转 J8 生产用(两轨分工)。
+- 回函 B/C-SCRIPT-V2(deadline 12:00);cron 72d4f6c9 已挂(每 10min 值守轮,durable 7 天)。
