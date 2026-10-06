@@ -50,6 +50,11 @@
 
 ## 轮次日志
 
+### R246 · 2026-10-06 09:1x(用户令停止 Loop+全面复盘沉淀——收线轮)
+- **Loop 停**:cron e6dc84ba 已删(CronDelete);本 session R214-R246 全程 ~8h 收线
+- **沉淀四件**:记忆×2 入档(benchmark-system-dual-domain-20261006+day-log-20261006-morning-benchmark-system)+MEMORY.md 索引;HANDOFF §5c 最终交接态(E1 回放 runbook/待拍板三件/死线带);本轮账
+- M1:+0(沉淀收线)
+
 ### R245 · 2026-10-06 09:0x(用户两连令落地:RSI 信号衰减→rsi-bench #4 已发+自有 benchmark 立项)
 - **用户插话一**:"RSI 最大的问题是信号衰减严重"→**rsi-bench Issue #4 已发 [实测]**(https://github.com/sunghunkwag/rsi-bench/issues/4):effective-gain(margin-gain)gate 提案——表观增益 vs 有效增益,以我方 Round 1 案例反例开题(+10.0pp 表观/格式层 A15+B11 回收空间);承诺 25 题回归集+rubric 可开 follow-up PR;AI 协助披露随件
 - **用户插话二**:"我们应该有自己的 benchmark"→**立项档落地** docs/benchmarks/SELF_BENCH_CHARTER_V0_20261006.md:两轴设计(信号衰减轨+判分器保真轨)/种子题库全自有资产(E1 金标 898+anchor 1454+L3 全工件+25 题回归集+16 案)/判据预注册框架/命名查重(signal-decay-bench 0 撞全净·JudgeBench 撞 133★ 弃)——**名字待用户拍**;PMF 第一件事(自建基准集)落位,rsi-bench #4=引流砖,自有基准=承接
