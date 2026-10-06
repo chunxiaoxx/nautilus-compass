@@ -20,7 +20,7 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from peft import PeftModel
 
-BASE = "/root/vdd4/modelscope/models/Qwen--Qwen3-1.7B"
+BASE = "/root/vdd4/modelscope/models/Qwen--Qwen3-1.7B/snapshots/master"
 ADAPTER = "/root/vdd4/adapters/best_lora"  # sha16=dbcbab6fd1ff5821
 CORPUS_DIR = "/root/vdd4/robust_exp/corpus"
 

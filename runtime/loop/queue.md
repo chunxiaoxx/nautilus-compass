@@ -1665,3 +1665,8 @@
 - **v5 脚本到手**(10193 正文直贴;分支谜底=customer-demo-ship-1);审读抓**三处与 PRECOR 分歧**:①一致率=逐字全等(量化必全假红)②配置集 fp8/awq/gptq 系(vLLM)≠冻结的 bnb 系 ③语料 prompt 字段缺(模板缺口)。**管线缺口正式关闭**:模板在本地工具链复原(train_judge_baseline v2 PROMPT_TMPL+sample_text 剔 judge_output;14b smoke 同款)。
 - **compass 修正版 runner 写就**(runtime/robust_exp/precor_replay_bnb.py):bnb 直载四精度×双解码+label 一致率+模板自验证门(bf16-greedy acc<0.80 实验作废)。发车件三份上传 A100 中(SSH 瞬时抖动重试);v5 serve 脚本转 J8 生产用(两轨分工)。
 - 回函 B/C-SCRIPT-V2(deadline 12:00);cron 72d4f6c9 已挂(每 10min 值守轮,durable 7 天)。
+
+### R280 · 2026-10-07 早(loop v2 R4:B/C 正式发车✅)
+- **PRECOR B/C 上 A100 实跑[实测]**:两障碍连破——①modelscope 目录结构(config 在 snapshots/master/,顶层无 config→Unrecognized model)②共享实例实锤(venv_groot 的 _staff_batch100_inset.py 占 16.6G 跑 11h——A100 非独占,1.7B 4.5G 共存无冲突)。进程 3816420 活,bf16-greedy 150/291 acc≈0.86(>模板自验证门 0.80,向生产 0.885 收敛中),GPU 21.1G 共存。预计 1-1.5h 跑完 9 轨(bf16/fp16/int8/int4×greedy+bf16-T0.3),收数=matrix.csv+一致率矩阵(判门 0.99 预注册)。
+- 发车路径复盘:上传脚本坑(heredoc 反斜杠/import os 漏/SSH 间歇拒绝)=退避重试+文件化脚本解决;**shared GPU 事实记档**(排期计划须虑及他框任务共存)。
+- 下轮:run.log 巡检收数→按 PRECOR 判门出 verdict→回函 v5/platform。
