@@ -100,6 +100,31 @@ def probe_a100():
         EVENTS.append(f"探针故障-A100: {type(e).__name__}")
 
 
+def probe_cloud_daemon():
+    """第六源(2026-10-06 灯下黑教训):云端 compass daemon 健康——19.5万次过载拒连 19h 无人察觉。"""
+    try:
+        import subprocess
+        r = subprocess.run(
+            ["ssh", "-o", "ConnectTimeout=12", "cloud",
+             "grep -c 'overload' ~/.claude/plugins/nautilus-compass/.cache/daemon.log 2>/dev/null; "
+             "tail -1 ~/.claude/plugins/nautilus-compass/.cache/daemon.log 2>/dev/null"],
+            capture_output=True, text=True, timeout=40)
+        lines = [x for x in r.stdout.splitlines() if x.strip()]
+        cnt = int(lines[0]) if lines and lines[0].isdigit() else -1
+        last = lines[1][:60] if len(lines) > 1 else "?"
+        if cnt < 0:
+            EVENTS.append("探针故障-cloudd: 无读数")
+        elif cnt > _CLOUD_OVERLOAD_BASELINE + 50:
+            EVENTS.append(f"🔴 cloud-daemon 过载新增 {cnt - _CLOUD_OVERLOAD_BASELINE}(累计 {cnt})尾行: {last}")
+        else:
+            EVENTS.append(f"cloud-daemon 过载零新增(累计 {cnt})")
+    except Exception as e:
+        EVENTS.append(f"探针故障-cloudd: {type(e).__name__}: {str(e)[:50]}")
+
+
+_CLOUD_OVERLOAD_BASELINE = 195013  # 2026-10-06 修复时刻基线(MAX_PROJ=500 drop-in 后)
+
+
 def probe_gmail():
     # Gmail 未读探针(10/5 盲区修复:LOOP 指令清单从未含 Gmail,9/10 后零覆盖,
     # 用户拷问"为何没找到 gmail 外部来信"——补第五源;REST 配方=9/10 fallback 档)
@@ -154,6 +179,7 @@ def main():
     probe_mailbox()
     probe_github()
     probe_gmail()
+    probe_cloud_daemon()
     probe_a100()
     if EVENTS:
         print("== LOOP 探针有事件 ==")
