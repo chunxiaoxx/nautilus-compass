@@ -114,15 +114,28 @@ def probe_cloud_daemon():
         last = lines[1][:60] if len(lines) > 1 else "?"
         if cnt < 0:
             EVENTS.append("探针故障-cloudd: 无读数")
-        elif cnt > _CLOUD_OVERLOAD_BASELINE + 50:
-            EVENTS.append(f"🔴 cloud-daemon 过载新增 {cnt - _CLOUD_OVERLOAD_BASELINE}(累计 {cnt})尾行: {last}")
         else:
-            EVENTS.append(f"cloud-daemon 过载零新增(累计 {cnt})")
+            base = _cloud_baseline(cnt)
+            delta = cnt - base
+            if delta > 50:
+                EVENTS.append(f"🔴 cloud-daemon 过载新增 {delta}(累计 {cnt})尾行: {last}")
+            elif delta > 0:
+                EVENTS.append(f"cloud-daemon 过载小幅 +{delta}(累计 {cnt})观察")
+            else:
+                EVENTS.append(f"cloud-daemon 过载零新增(累计 {cnt})")
     except Exception as e:
         EVENTS.append(f"探针故障-cloudd: {type(e).__name__}: {str(e)[:50]}")
 
 
-_CLOUD_OVERLOAD_BASELINE = 195013  # 2026-10-06 修复时刻基线(MAX_PROJ=500 drop-in 后)
+_CLOUD_BASELINE_FILE = Path(__file__).parent / ".cloud_overload_last.txt"
+def _cloud_baseline(cur: int) -> int:
+    """滚动基线:读上次计数(无文件则用修复时刻 195013 并落盘),比较后回写。"""
+    try:
+        last = int(_CLOUD_BASELINE_FILE.read_text().strip())
+    except Exception:
+        last = 195013
+    Path(_CLOUD_BASELINE_FILE).write_text(str(cur))
+    return last
 
 
 def probe_gmail():
