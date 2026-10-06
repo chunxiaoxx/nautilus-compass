@@ -90,5 +90,6 @@
 | J5 改判 | scope | **B 允许小规模新采集**(命名 signal-decay-bench 不变)——基底仍纯包装(样例包 v0 不受阻),增量采集限两轨语义内 ≤100 题/批+判据预注册先行;保真轨采集与 14B 重评燃料同向 |
 | J3 追记(10/6 晚用户拍) | 升格阶梯中间档=7B? | **否决现跑 7B,先攒语料**:至 ~3000 条(现 1162+errata 33/200+P3 活水并轨)再以现成阶梯框架对拍 1.7B vs 7B(半天出结果,判据零放宽)。理由=14B 三实验已证容量非瓶颈、1162 条喂 7B 同样过参数化,现跑预期白烧算力。7B=语料到位后第一候选 |
 | J5 追记(10/6 深夜) | 元基准改名 assay-bench(用户提) | **查重红灯搁置**:Genentech AssayBench 硬撞(arXiv 2605.10876+"LLMs and Agents" benchmark+GitHub 项目页全套)+PyPI assaybench 占用(v0.2.1 同类基因排序 benchmark)。替代候选双通道快查:caliber-bench/proctor-bench 较净,verdict-bench 27 撞/litmus-bench 有占用;**改名与否挂 NACRE 对齐会(函 10105)拍**,10/12 上线前为零成本改名窗。现名 signal-decay-bench 维持 |
+| J5 二追记(10/7 凌晨用户批复) | 元基准定名 | **改名 caliber-bench 全案同意**(他框对话框批复;compass 五通道终核全净:GitHub 别义2/PyPI空/arXiv空/HF空/网搜零命中)。执行=9 文件 15 处替换+样例包目录 git mv(signal_decay_bench_v0→caliber_bench_v0)+判例集 v1.4 挂墙版统一新名;历史判断行保留原名不改史,以本追记为改名凭据 |
 | J6 | 10/26 需求裁决条款 | **A 照草案预注册**(PREREG_DEMAND_CHECKPOINT_20261026.md):窗口 10/12→10/26;分发仅 rsi-bench#4 跟评+知乎 L2 两处;主判据=外部复算请求/首单意向 >0 加码判读路,=0 重心切数据包;窗口内供给侧新资产不充数,裁决日照报。**J7 已被条款吸收**(两处定向=窗口内动作),七窗全清 |
-| 自治件 1 | signal-decay-bench 样例包 v0 | ✅ README+资产坐标组包完(docs/benchmarks/signal_decay_bench_v0/),两轨+判据+张力披露;随 10/12 同窗挂 |
+| 自治件 1 | caliber-bench 样例包 v0 | ✅ README+资产坐标组包完(docs/benchmarks/caliber_bench_v0/),两轨+判据+张力披露;随 10/12 同窗挂 |

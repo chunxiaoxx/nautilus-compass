@@ -1,4 +1,4 @@
-# signal-decay-bench 样例包 v0
+# caliber-bench 样例包 v0
 
 > 两轨样例(纯包装,全部现有 sha 锚资产;拍定 J5-B 2026-10-06)。
 
