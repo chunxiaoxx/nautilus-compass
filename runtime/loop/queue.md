@@ -1589,3 +1589,10 @@
 ### R264 · 2026-10-06 晚(loop:#10078 死线令两件局部件 23:00 前回函+v3.3.3 稳态复查)
 - #10078 死线令(两外壳 BYZ 提前 10/7 06:30,今晚 23:00 局部件截收)→ **回函 10085**(trace CONV-ACCEL-1006-COMPASS):①条线方案·基准评测与判据线 V1(七段模板:Round1 A26.7/B16.7@f9df9f01/判分器 88.51%@9f9a6e04/E1 复算 U 态@91c11c9c/判例集 v1.4@3c0ba2d3;两线不变式+产能接缝 #10057);②证据包坐标表 6 件+勘误 5 条附;BP§5 口径=信号链@4ad0cc93+双域地图@6dc1da48 直接引用不改写。
 - v3.3.3 部署稳态复查[实测]:OVL 195369 稳住(部署后 11min 零新增)、P9 cache 持续服务(12 ops)、CPU ~110%=服务态负载、CW 19 微涨观察;fusion fail 残留(在 _rrf_fusion 内部,fallback 正常)留值守窗。
+
+### R265 · 2026-10-06 深夜(loop:用户三拍板落地——7B 缓/NACRE 对齐底稿/SLA 修正函)
+- **7B 拍板落账**(SIGNAL_CHAIN §七 J3 追记):否决现跑 7B,先攒语料至 ~3000 条再阶梯对拍 1.7B vs 7B;理由=14B 三实验容量假设已排除,1162 条喂 7B 同样过参数化。
+- **元基准改名 assay-bench → 查重红灯搁置**(J5 追记):Genentech AssayBench 硬撞(arXiv 2605.10876+GitHub+PyPI assaybench v0.2.1 同类 benchmark);候选快查 caliber-bench/proctor-bench 较净,verdict-bench 27 撞;改名挂 NACRE 对齐会拍,10/12 前零成本窗。现名维持。
+- **NACRE 对齐底稿成文+发函 10105**(docs/soul/NACRE_ALIGNMENT_DRAFT_20261006.md,trace NACRE-ALIGN-D1,deadline 10/7 18:00):四议题=①定义机制化(模型 vs 机制+实例/压缩环边界/J8 首演)②部件归位表(6 部件全坐标)③双榜分工+命名归属④两外壳叙事;签署栏 platform+v5。源头=用户纠偏"NACRE 体系和架构还没逐个对齐"。
+- **SLA 分档修正函 10104**(trace SLA-TIER-1006,deadline 10/7 12:00):L1 免费 24h(实测 25 单 20min)/L2 48h/L3 维持 5 工作日;返工≤2 不动;榜页文案随判随改。源头=用户纠偏"5 个工作日不是 AI 时代效率"。
+- **compass 定义口径校准**(用户纠偏吸收):compass 本体=agent 长期记忆/记忆仲裁;判分评测=组织商业动作挂 Nautilus 平台品牌;验证方法学软件形态=assay。对外叙事三层不互换。
