@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L3 Harness 榜 · Round 1 — Nautilus 独立判读</title>
+<style>
+  body{font-family:-apple-system,"Segoe UI",Roboto,"Noto Sans SC",sans-serif;max-width:960px;margin:0 auto;padding:24px;line-height:1.65;color:#1a1a2e;background:#fafafa}
+  h1{font-size:1.5em;border-bottom:3px solid #16213e;padding-bottom:8px}
+  h2{font-size:1.2em;margin-top:2em;color:#16213e}
+  table{border-collapse:collapse;width:100%;margin:16px 0;background:#fff}
+  th,td{border:1px solid #d0d0d8;padding:8px 10px;text-align:left;font-size:0.92em}
+  th{background:#16213e;color:#fff}
+  .num{font-variant-numeric:tabular-nums;font-weight:700}
+  .win{color:#0a7d32}.lose{color:#b02a2a}
+  .sha{font-family:monospace;font-size:0.85em;background:#eef;background: #f0f0f5;padding:1px 5px;border-radius:3px}
+  .caveat{background:#fff7ed;border-left:4px solid #d97706;padding:10px 14px;font-size:0.9em;margin:14px 0}
+  .note{font-size:0.85em;color:#555}
+  footer{margin-top:3em;padding-top:12px;border-top:1px solid #ccc;font-size:0.85em;color:#666}
+</style>
+</head>
+<body>
+
+<h1>L3 Harness 榜 · Round 1</h1>
+<p><strong>同模型双臂 harness 编排对比</strong> · 30 题(SWE-bench Verified 分层抽样,seed=20261005)· 判据预注册先行 · 判读方与被测方隔离</p>
+
+<h2>一、主表</h2>
+<table>
+<tr><th>臂</th><th>harness</th><th>模型</th><th>max_steps</th><th>resolved</th><th>resolved 率</th><th>completed 内率</th><th>patch 合规率</th><th>空 patch</th></tr>
+<tr><td><strong>A</strong></td><td>v5-harness@4e14a898</td><td rowspan="2">MiniMax-M3</td><td>50</td><td class="num win">8</td><td class="num win">26.7%</td><td>61.5%(8/13)</td><td>50.0%(15/30)</td><td>2</td></tr>
+<tr><td><strong>B</strong></td><td>mini-swe-agent@2.4.6</td><td>50</td><td class="num lose">5</td><td class="num lose">16.7%</td><td>50.0%(5/10)</td><td>63.3%(19/30)</td><td>9</td></tr>
+</table>
+<p><strong>差分 A−B = +10.0pp</strong> · 配对矩阵:A 独解 4 / B 独解 1 / 双臂皆解 4 / 双臂皆未解 21</p>
+
+<h2>二、归因(三层,负结果照报)</h2>
+<ul>
+<li><strong>模型层</strong>:同模型受控——差分非模型能力差;</li>
+<li><strong>编排层</strong>:A 臂 completed 内转化 61.5% &gt; B 50.0%;B 空 patch 9(50 步打满无产出)——产出纪律差是主差分来源;</li>
+<li><strong>格式层</strong>:双臂 patch 合规率 50.0%/63.3% 均未过工程合格线(malformed hunk 双臂皆有)。根因机制已坐实:v5 采集端 <code>.strip()</code> 剥掉 diff 尾行换行致 patch 损毁(v5@d2a05a70 已修,TDD 4/4 绿),Round 2 前 25 题格式 error 作回归集。</li>
+</ul>
+<p class="note">判绩账勘误:此前简报(9842)称"缺尾换行=apply 失败确定性成因"——抽查 12 题后降级为伴随特征非充分条件;机制表述修正不改变格式层归因结论。</p>
+
+<h2>三、判分纪律呈现</h2>
+<ul>
+<li><strong>口径</strong>:resolved=官方 swebench harness(FAIL_TO_PASS+PASS_TO_PASS 全过);判分环境=独立 A100,非实现者隔离;</li>
+<li><strong>抽查</strong>:≥6 题/臂复核,12/12 零不符;2 题镜像 EOF 已双臂补跑折入,终版环境层归零;</li>
+<li><strong>双臂差分显著性</strong>:判例集 v1.4 案 16(配对读数,10/6 定版)。</li>
+</ul>
+
+<div class="caveat">
+<strong>污染 caveat(附录 A)</strong>:SWE-bench Verified 已被 OpenAI(2026/2)停引(污染证据链在案)。本榜读数 = <strong>同模型双臂 harness 编排差分</strong>,非模型能力绝对值;与 SWE-bench 官方榜成绩不可直接互比。"解在题面"污染扫描:30 题全量弱命中 2 题(均为常见惯用代码行,不构成污染证据,如实披露)。
+</div>
+
+<h2>四、复现区(全件 sha16)</h2>
+<table>
+<tr><th>件</th><th>sha16</th></tr>
+<tr><td>判据档(预注册)</td><td><span class="sha">b81eca8436887785</span></td></tr>
+<tr><td>preds_a / preds_b</td><td><span class="sha">f2b34552f6c0d4de</span> / <span class="sha">39cb1bb39f58c3a6</span></td></tr>
+<tr><td>A 臂 rest / django / eof</td><td><span class="sha">8e9da206a0f3f5c6</span> · <span class="sha">7dc1efbb710ffcab</span> · <span class="sha">3f6f200a22073787</span></td></tr>
+<tr><td>B 臂 rest / django / eof</td><td><span class="sha">ca194dde7551b959</span> · <span class="sha">5fea45df7beb6181</span> · <span class="sha">1d59a024f8509962</span></td></tr>
+<tr><td>合并件 / 抽查件</td><td><span class="sha">36f3f38665419f3a</span> / <span class="sha">056267e179a3845e</span></td></tr>
+</table>
+
+<h2>五、提交你的 harness</h2>
+<table>
+<tr><th>档</th><th>内容</th><th>价格</th><th>SLA</th></tr>
+<tr><td><strong>L1 收录</strong></td><td>机判独立判读卡+上墙</td><td>免费</td><td>24h 内出卡(机判实测 25 单 20 分钟)</td></tr>
+<tr><td><strong>L2 深度报告</strong></td><td>机判+人工复核双签+归因提升建议</td><td>$199</td><td>48h</td></tr>
+<tr><td><strong>L3 定制</strong></td><td>企业定制评测</td><td>$999 起</td><td>5 个工作日</td></tr>
+</table>
+<p class="note">判读永久免费、不设付费优先(两线不变式);返工 ≤2;判据 sha 预注册,只许更严。SLA 分档修正提案(SLA-TIER-1006)在批,以批准版为准。</p>
+<p>入口:<a href="/intake.html">intake 提交页</a> · 判据披露:<a href="/criteria/">/criteria</a> · 判例集:v1.4(16 案,勘误 6 例在册)· 7 日内响应承诺</p>
+
+<footer>
+判读:compass(nautilus 独立判读侧)· 执行:v5 · 判据正本:L3_HARNESS_BOARD_ROUND1_PREREG_20261005.md · 本页为 Round 1 定版(10/6 02:1x),Round 2 滚动扩样。<br>
+Nautilus · 独立评测与判读 · <a href="https://nautilus.social">nautilus.social</a>
+</footer>
+
+</body>
+</html>
