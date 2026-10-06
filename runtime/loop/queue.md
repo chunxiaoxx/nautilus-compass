@@ -1606,3 +1606,7 @@
 - **🔴开业级死链修复[实测闭环]**:终检预跑抓到 https://nautilus.social/criteria 裸路径 301→`:8443/criteria/`(外网 000 不可达)——nginx 目录加斜杠隐式重定向用 listen 端口。修复=sites-enabled/nautilus 8443 块定点 `location = /criteria` → 301 https://nautilus.social/criteria/(同块 phase3 先例同款);备份 nautilus.bak_20261006_criteria;nginx -t 过+reload;**外网跟随 200+页面判据内容在**。报备函已发(trace NGINX-CRITERIA-FIX-1006)。教训:nginx 隐式 301 端口坑=凡"目录自动加斜杠"必查 Location 端口。
 - **daemon 重启(补丁 A/C 上岗)**:低峰重启完成;随后 ping 超时 → py-spy 取证=**非故障**,4 worker 全在 get_memory_entries 856/867 真算=重启后 embed 债高峰(缓存空一次性重算)。明早值守首查三件:①ping 恢复 ②fusion fail 零新增(补丁 C 验证)③liveness skip 行出现(补丁 A 验证)。
 - **榜页真身确认**:26.7%/16.7% 榜面=文档草稿 L3_BOARD_PAGE_DRAFT_20261005.md 定版(f9df9f01),**10/12 才挂墙**,unipat.html 现无数字属正常;终检预跑发现 intake/unipat 200 健在。
+
+### R268 · 2026-10-06 深夜(主线推进:delta_0004 证伪自止+开业 HTML 件提前制)
+- **delta_0004 证伪自止**:拟将 J4"gold 自相矛盾"转 P3 燃料,细读正本 GOLD_RECHECK_BOTH_WRONG14 发现该判定已被 v5 四象限澄清(#10028)**撤回**(10 条 pass=不可答而正确弃权/1 条 fail=可答而弃,标注一致;矛盾感=is_abstention_problem 旗标题族级粒度过粗)——errata 第 7 例不成立,delta 通道维持 33 条,不入账。判绩账诚实链完整(发现→申请澄清→撤回+旗标改进项移交语料侧)。
+- **开业 HTML 件提前制**(PMF 主线 L1):L3 榜页 HTML 挂墙件 v1 制成(runtime/l3_board/index.html,b5015061,本地验收五组全过:主表数字/七 sha16/价目/纪律/入口)——SLA 按 SLA-TIER-1006 分档提案标注"在批";10/11 终检=直接部署验证,10/12 挂墙。
