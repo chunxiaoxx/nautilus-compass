@@ -1616,3 +1616,9 @@
 - **SLA 分档全案生效**(10121,用户确认):L1 24h/L2 48h/L3 5 日;compass 侧 HTML 榜页件已按分档写(先见之明对表);L2 样例(v5 正本)更新义务转知;BP 升 v1.3。
 - **补丁 A 实测生效**:liveness skip 112 次(僵尸排队已跳);当前 overload=embed 债+重试吞吐(非风暴复发),明早值守首查三件。
 - 五函 ack 清(10087 生态/10116/10121/10124/10128);组织通报函 10128+ 发出(trace COMPASS-SYNC-1006,五节:对齐闭环/SLA 对表/五实绩/基础设施/在途协作)。
+
+### R270 · 2026-10-06 深夜(A+B+C 启动:判据档冻结+管道基线出数;发车留交接)
+- **B+C 预注册判据档冻结**(docs/metering/PRECOR_JUDGE_ROBUST_20261006.md):B=量化漂移矩阵(1.7B champion×{bf16/fp16/int8/int4}×{greedy/T0.3}=8 配置×292 题,部署合格线=对 bf16 一致率≥99% 预注册);C=软维度双跑一致性(k=5×两轨,只产数不定门,ER v2 数值=实测-2pp 判据修订序另冻)。
+- **A 管道建成+基线出数[实测]**:tools/corpus_pipeline.py(合并三 split+delta,qid 防泄漏去重,SFT 清单+manifest+双触发器);首跑=1453 唯一 qid(拦 18 跨源重复)/train 1162/7B 缺口 1838/基线 sha16=2a0a8f0c825292f4/manifest_corpus_pipeline.json 落盘。
+- **A100 环境探明[实测]**:Qwen3-1.7B 基座在盘(/root/vdd4/modelscope/models/Qwen--Qwen3-1.7B)+磁盘 36G 余+RAM 47G;E1 复算栈在 vdd4/e1_recheck(generate 配方可复用)。
+- **发车留交接(4h 护栏+质量纪律)**:发车前置=1.7B champion 推理管线复原(prompt 构造在 P2 训练机 js2.blockelite.cn:15124 的 bootstrap_and_train.sh,未入仓)——管线拼错=实验白跑+白烧 GPU,不硬上。交接件:①从 js2 拉取管线脚本入仓 ②按 PRECOR 档写 robust_exp 脚本(8 配置+2 轨)③scp adapter(best_lora/dbcbab6f)+292 题语料④nohup 发车+收数 /root/vdd4/robust_exp/。

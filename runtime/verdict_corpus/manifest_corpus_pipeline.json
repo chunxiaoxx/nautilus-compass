@@ -1,0 +1,22 @@
+{
+ "generated_for": "judge_lora corpus pipeline (A 件)",
+ "counts_by_source": {
+  "split_train_v1": 1162,
+  "split_dev_v1": 143,
+  "split_test_v1": 149,
+  "delta:delta_0001.jsonl": 14,
+  "delta:delta_0002.jsonl": 15,
+  "delta:delta_0003.jsonl": 3
+ },
+ "merged_unique_by_qid": 1453,
+ "cross_source_dups_ignored": 18,
+ "train_count": 1162,
+ "next_retrain_candidate_at": 1500,
+ "sevenb_target": 3000,
+ "sevenb_remaining": 1838,
+ "merged_sha16": "2a0a8f0c825292f4",
+ "triggers": {
+  "retrain_candidate": false,
+  "sevenb_compare_ready": false
+ }
+}
