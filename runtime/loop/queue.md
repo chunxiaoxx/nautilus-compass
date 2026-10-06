@@ -1642,3 +1642,7 @@
 ### R274 · 2026-10-07 凌晨(loop 开启总纲落地)
 - **ORG_LOOP_MASTERPLAN_V1 成文**(docs/soul/ORG_LOOP_MASTERPLAN_20261007.md):目标层不变式/死线路线图 10-7→10-31 逐日带判据/五框任务全收口/协同机制三补缺(回执催办节律+正本单一事实源+段间裁判自动化)/降摩擦三招(模板化·批处理·触发器化)/抗信号衰减三招(每件必死线·闭环才算数·新鲜度分级)/LOOP 协议 v2 固化(14 轮实践升维:加催办节律+触发器巡检)/明早首单五件。
 - HF token 入库验证(chunxiaox fineGrained,org 命名两案候拍);组织审计第一轮+判读段交卷(前轮)。
+
+### R275 · 2026-10-07 凌晨(两命名落地:元基准定名 caliber-bench+HF org 分析)
+- **元基准定名 caliber-bench**(用户批复,他框对话框已同意):9 文件 15 处替换+样例包目录 git mv(caliber_bench_v0)+CHARTER v0.1 注+SETTLED/WP_V15 裁决注;**判绩账保史**:J5/J5改判/J5追记历史行恢复原名,新增 J5 二追记为改名凭据(6a61d664)。样例包 sha 将随改名变化——10/11 终检重算挂墙。
+- **HF org 分析(用户令"肯定用组织名")**:hf.co/nautilus **已被占(200)**;nautilus-social/-org/-labs 均可用。**推荐 nautilus-social**=与主域 nautilus.social 同串,跨网站/HF/GitHub 品牌零歧义;"-org"占位词无品牌义,"labs"泛滥且与域名不一致。待用户拍后即建(10/8 死线前)。
