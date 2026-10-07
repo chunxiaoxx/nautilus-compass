@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registry 实态 · 判例与语料计数器 · Nautilus</title>
+<style>
+  :root{--ink:#16213e;--accent:#0a5ad6;--bg:#fff;--muted:#5b6472;--line:#e5e8ee;--green:#0a7d32}
+  body{font-family:-apple-system,"Segoe UI","Noto Sans SC",sans-serif;color:var(--ink);background:var(--bg);margin:0;line-height:1.65}
+  .wrap{max-width:880px;margin:0 auto;padding:0 22px}
+  header{border-bottom:1px solid var(--line);padding:20px 0}
+  h1{font-size:1.45rem;margin:0 0 4px}
+  p.sub{color:var(--muted);margin:0;font-size:.92rem}
+  section{padding:30px 0;border-bottom:1px solid var(--line)}
+  h2{font-size:1.15rem;margin:0 0 14px}
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+  .tile{border:1px solid var(--line);border-radius:10px;padding:16px}
+  .tile b{display:block;font-size:1.9rem;color:var(--accent)}
+  .tile span{color:var(--muted);font-size:.85rem}
+  .tile .goal{font-size:.78rem;color:var(--green);margin-top:4px;display:block}
+  .bar{height:8px;background:#eef1f6;border-radius:99px;overflow:hidden;margin-top:8px}
+  .bar i{display:block;height:100%;background:var(--accent)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left}
+  th{background:#f7f9fc}
+  code{background:#f0f3f8;border-radius:5px;padding:1px 6px;font-size:.85em}
+  footer{padding:20px 0;color:var(--muted);font-size:.8rem}
+  a{color:var(--accent)}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>Registry 实态 · 判例与语料计数器</h1>
+  <p class="sub">NACRE 因果倒置柱的公开仪表:数据全部由 <code>tools/corpus_pipeline.py</code> manifest 生成,判据 sha 锚定,每值守轮刷新。</p>
+</div></header>
+
+<section><div class="wrap">
+  <h2>语料总量(唯一 qid)</h2>
+  <div class="tiles">
+    <div class="tile"><b id="m-total">—</b><span>总语料(去重)</span>
+      <div class="bar"><i id="b-total"></i></div>
+      <span class="goal" id="m-goal"></span></div>
+    <div class="tile"><b id="m-train">—</b><span>训练集(train)</span></div>
+    <div class="tile"><b id="m-orgfuel">—</b><span>ORG-FUEL 判例(组织历史)</span></div>
+    <div class="tile"><b id="m-letters">—</b><span>函件判例(承诺-兑现)</span></div>
+    <div class="tile"><b id="m-delta">—</b><span>delta registry(勘误活水)</span></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>判例集与判分器</h2>
+  <table>
+    <tr><th>件</th><th>状态</th><th>锚</th></tr>
+    <tr><td>判例集 CASEBOOK</td><td>v1.4 封版(16 案+勘误 6 例)</td><td><code>@3c0ba2d3</code></td></tr>
+    <tr><td>NACRE 判分实例 v1</td><td>88.51% 三态(ECE 0.072)</td><td><code>dbcbab6fd1ff5821</code> · <a href="https://huggingface.co/nautilus-compass/nacre-judge-v1">HF</a></td></tr>
+    <tr><td>部署精度纪律</td><td>fp16 1.0000 ✅ · int8 0.9828 ❌ · int4 0.9416 ❌</td><td><a href="https://nautilus.social/criteria/">判据披露</a></td></tr>
+    <tr><td>重训触发器</td><td>train≥1500 候选评估 · ≥3000 触发 7B 对拍</td><td id="trig" class="goal">自动</td></tr>
+  </table>
+</div></section>
+
+<footer><div class="wrap">
+  数据源 <code>manifest_corpus_pipeline.json</code>(sha16 锚) · 由 compass 值守轮自动刷新 · 判读永久免费 <a href="/intake.html">提交评测 →</a>
+</div></footer>
+
+<script>
+// 活数据:由 corpus_pipeline manifest 注入(静态快照兜底,值守轮覆写)
+const FALLBACK = {"merged_unique_by_qid":1716,"train_count":1162,
+  "org_fuel":289,"delta":33,"sevenb_target":3000};
+fetch('/corpus_stats.json').then(r=>r.json()).then(upd).catch(()=>upd(FALLBACK));
+function upd(m){
+  set('m-total', m.merged_unique_by_qid); set('m-train', m.train_count);
+  set('m-orgfuel', m.org_fuel||289); set('m-letters', m.letters||47); set('m-delta', m.delta||33);
+  const t=m.merged_unique_by_qid, g=3000;
+  document.getElementById('b-total').style.width=Math.min(100,t/g*100)+'%';
+  document.getElementById('m-goal').textContent=`7B 对拍目标 ${g} · 进度 ${Math.round(t/g*100)}%`;
+  document.getElementById('trig').textContent = m.train_count>=3000?'7B 触发!':`train ${m.train_count}/${g}`;
+}
+function set(id,v){document.getElementById(id).textContent=v}
+</script>
+</body>
+</html>

@@ -1846,3 +1846,7 @@
 ### R319 · 2026-10-08 凌晨(loop 改主件制+首件交付:XERJ 捐赠包 v0 材料成型)
 - **loop 改制(用户批评采纳)**:废空转巡检轮——cron 50835fa9 改 15min 主件制,**每轮必交付一件**,队列=XERJ包→registry状态页→M5→mem0评估→rsi回归集→PRECOR初稿→判读卡状态页→语料2000;信箱/probe 降附带 30s。旧 6ee947f7 已删。
 - **XERJ 捐赠包 v0 交付✅[实测]**(原排 10/9 提前):①设计 V1 落档(域句/三缺口映射 schema(tried-and-failed 显式字段+主题切片)/50 会话选取三分/脱敏五步/CC-BY-4.0/分工时序)②抽取器建成首跑:**70 条记录**(eval-judging 46/infra 13/audit 6/misc 5)——超 50 目标;**脱敏终扫 CLEAN✓**(字面量补丁+全记录终扫两道);10/9-10 人工复核+README 三段→10/12 后 PR。
+
+### R320 · 2026-10-08(主件轮:registry 状态活数据页上线✅)
+- **registry.html 上线✅[实测外网 200]**(nautilus.social/registry.html):语料五瓦片(总 1716/train/ORG-FUEL/函件/delta)+7B 进度条(57%)+判例集/判分器/部署纪律表(sha 全锚);**活数据=/corpus_stats.json**(外网 200 实测,由 corpus_pipeline manifest 注入,fetch 失败兜底静态快照);值守轮每轮覆写 json=自动刷新闭环。部署=cloud current/ 直挂。
+- 附带:10510(批甲落定)/10513(a+ 实装门复验过)双 ack——部署窗就绪。
