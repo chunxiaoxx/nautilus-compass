@@ -1,4 +1,4 @@
-# Quantized Small Judges: A Preregistered Deployment-Precision Study of a Production Verification Judge(v0.3(Intro+§4 英文化))
+# Quantized Small Judges: A Preregistered Deployment-Precision Study of a Production Verification Judge(v0.4 全文成文(§5-7 英文化))
 
 > 目标:arXiv short paper 或官方博客首发(研究空白:无先例同时覆盖 量化×小判分×鲁棒性,四路调研 2026-10-07 确认)。状态=骨架 DRAFT,开业(10/12)后一周内定稿投出。
 
@@ -89,15 +89,37 @@ chain) bounds the drift.
 
 ## 5. Related Work
 
-SLM-as-judge survey(robustness gap)/量化行为预注册研究(LessWrong 2026)/LLM-as-a-Verifier(连续打分)/RIPD 攻击(判据操纵)——各占一面,无交叉(我们的位置)。
+Each neighboring thread examines one face of the problem; none crosses them.
+A survey of small-language-model judges flags robustness as under-studied but
+does not test quantization. A preregistered study of post-training quantization
+(2026) examines welfare-relevant behaviors of general models, not judges.
+Continuous-verifier proposals move beyond discrete labels but do not ask when a
+deployed verifier silently changes its mind. The RIPD attack family shows
+natural-language rubrics can be manipulated — a concern orthogonal to precision,
+and one our criteria-freeze rule partially addresses. Our study sits in the
+unoccupied intersection: quantization × small judges × deployment gating, with
+the loop-corruption motivation unique to registry-based systems.
 
 ## 6. Limitations & Negative Results
 
-单一 judge 实例(泛化到其他 judge 待验)/软维度(连续档)数据因工程缺陷本轮缺失(补跑中)/翻转清单以聚合一致率呈现(逐题清单 v2)。
+Single judge instance: generalization to other judges is claimed only as
+direction, not established. Soft-dimension (confidence-tier) agreement data was
+lost to an engineering defect in this round (non-incremental CSV write); the
+rerun is registered and pending. Per-case flip lists are summarized as aggregate
+agreement here; the full matrix is released in the artifact bundle. We also report a
+negative methodological result prominently rather than in a footnote: our first
+review of a collaborator's replay script revealed a verbatim-equality metric
+that would have produced all-fail results for every quantized configuration —
+caught only because we re-derived the expected agreement by hand before
+running.
 
-## 7. Artifact
+## 7. Artifacts
 
-判定表+判据档+runner(merge-quantization 版)+CSV/log——全 sha 锚(nautilus-compass 主仓+HF org)。
+All released and sha-anchored: the frozen criteria document, the
+merge-then-quantize runner, the per-case judgment matrix, and run logs, in the
+nautilus-compass repository and the nautilus-compass Hugging Face organization.
+The judge model card (nacre-judge-v1, adapter sha16 dbcbab6fd1ff5821) carries
+the deployment-precision table on its face.
 
 ---
 素材源:PRECOR_BC_VERDICT_20261007.md+PRECOR_JUDGE_ROBUST_20261006.md+run.log。
