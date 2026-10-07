@@ -1829,3 +1829,8 @@
 - **密码轮换✅[实测]**:不等控制台——A100 机内 chpasswd 轮换(ROTATED+新密登录验证 OK);隧道(密钥认证)与嵌入服务无恙;新凭据入 .cache/a100_env(0600)。**旧密码作废=历史泄漏无害化**(js2 死密先例同口径)。
 - **push 解冻✅**:88311983..6cdc28da 常规推送(62 commit,非 force)——README 新章(独立判读 pillar)/landing 刷新/全部三天战果上 GitHub;远端 raw 验证新章在。B(历史清除)降为可选卫生项,默认不做。
 - 事故全程:发现(README 更新途中)→定谳(40 文件/6 天)→树脱敏→凭据迁移→机内轮换→解冻推送——闭环零等待。
+
+### R316 · 2026-10-08 凌晨(用户批 B:历史清除执行完毕✅)
+- **git filter-repo 全史替换✅[实测]**:iefe4Eey/Coh9ech3→REDACTED 占位(python -m git_filter_repo,Windows 无 shim 坑);本地历史对象残留 0;commit 全史 1761 个保留(受影响链 hash 重写,HEAD 82e5c932→4e2c21b4)。
+- **force push✅(用户明示批准)**:origin/main 强推至 4e2c21b4;远端残留验证 0 文件;README 独立判读新章完好;cloud 部署副本 fetch+reset 同步完毕(残留 0)。替换表即删;含密备份分支删除(本地 pre-purge 分支随 filter-repo 处理,未推任何含密 ref)。
+- 事故最终态:树脱敏+机内轮换+全史清除三层闭环——公网仓库凭据零残留。js2 死密一并清除(卫生)。
