@@ -1684,3 +1684,8 @@
 ### R283 · 2026-10-07 早(loop v2 R7:巨物身份落定+PRECOR 判定表双函回执期)
 - **daemon 巨物身份落定[实测]**:c096d6883da3.pkl=**embeddings dict 63726 条**(超大生产项目嵌入缓存,量级吻合 502MB)——活跃资产不可移出;修复方向=拆分/增量加载(工程件,立卡值守窗主件);过渡=v5 侧重试退避建议(潮汐 +61-69/轮匀速 grinding,非风暴)。消费方最大嫌疑=v5 brain 自循环记忆。
 - PRECOR 判定表已双函(FIX 版 10232/10233),候 v5/platform 回执;实验 C(软维度+翻转清单)补跑卡=CSV 行级写(bnb 版 v3)。
+
+### R284 · 2026-10-07 早(全面加速:HF 双 repo 挂载✅+七点终检+leaderboard 404 finding)
+- **HF 挂载完成✅[实测外网 200]**:nautilus-compass org 双 repo——nacre-judge-v1(判分器模型卡+LoRA,卡内含部署纪律)+caliber-bench-v0(元基准样例包首挂);10/8 死线件提前达成。上传坑:adapter 自带 README 含本地路径 metadata 被 HF 校验拒——剥离后传。
+- **七点终检**:六点 200(intake/unipat/pipeline/criteria/org 样例/HF);**🔴 leaderboard.html 404**(platform 称已同步)——报备催修(HF-MOUNT-LEADERBOARD-1007,deadline 12:00)。
+- 邮箱部署:J2 定案页 token 已换实址(10007);部署窗 10/9,终检口径已备(外网 grep 实址)。
