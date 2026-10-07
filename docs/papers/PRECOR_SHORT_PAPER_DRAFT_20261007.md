@@ -65,6 +65,8 @@ measured on parsed labels, not raw output equality** — a verbatim-equality met
 produces all-fail results for any quantized model and would have invalidated the study
 had we not caught it during script review.
 
+![Figure 1: Label agreement vs quantization strength](precor_fig1.svg)
+
 ## 4. A Deployment-Precision Discipline for Verification Judges
 
 From these results we distill four rules, all enforced in our production

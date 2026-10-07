@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="300" font-family="Helvetica,Arial,sans-serif" font-size="13">
+<line x1="70" y1="22" x2="70" y2="240" stroke="#333" stroke-width="1.2"/>
+<line x1="70" y1="240" x2="620" y2="240" stroke="#333" stroke-width="1.2"/>
+<line x1="65" y1="240.0" x2="70" y2="240.0" stroke="#333"/>
+<text x="62" y="244.0" text-anchor="end" fill="#333">0.90</text>
+<line x1="65" y1="179.99999999999986" x2="70" y2="179.99999999999986" stroke="#333"/>
+<text x="62" y="183.99999999999986" text-anchor="end" fill="#333">0.93</text>
+<line x1="65" y1="119.99999999999997" x2="70" y2="119.99999999999997" stroke="#333"/>
+<text x="62" y="123.99999999999997" text-anchor="end" fill="#333">0.96</text>
+<line x1="65" y1="59.999999999999844" x2="70" y2="59.999999999999844" stroke="#333"/>
+<text x="62" y="63.999999999999844" text-anchor="end" fill="#333">0.99</text>
+<line x1="65" y1="39.9999999999998" x2="70" y2="39.9999999999998" stroke="#333"/>
+<text x="62" y="43.9999999999998" text-anchor="end" fill="#333">1.00</text>
+<line x1="70" y1="59.999999999999844" x2="620" y2="59.999999999999844" stroke="#b02a2a" stroke-dasharray="6,4" stroke-width="1.3"/>
+<text x="616" y="53.999999999999844" text-anchor="end" fill="#b02a2a" font-size="12">preregistered gate ≥ 99%</text>
+<rect x="130" y="39.9999999999998" width="90" height="200.0000000000002" fill="#0a7d32" fill-opacity="0.82"/>
+<text x="175.0" y="31.9999999999998" text-anchor="middle" fill="#16213e" font-weight="bold">1.0000</text>
+<text x="175.0" y="260" text-anchor="middle" fill="#333">fp16</text>
+<rect x="290" y="74.39999999999984" width="90" height="165.60000000000016" fill="#b02a2a" fill-opacity="0.82"/>
+<text x="335.0" y="66.39999999999984" text-anchor="middle" fill="#16213e" font-weight="bold">0.9828</text>
+<text x="335.0" y="48.399999999999835" text-anchor="middle" fill="#666" font-size="11">2 label flips</text>
+<text x="335.0" y="260" text-anchor="middle" fill="#333">int8</text>
+<rect x="450" y="156.79999999999995" width="90" height="83.20000000000005" fill="#b02a2a" fill-opacity="0.82"/>
+<text x="495.0" y="148.79999999999995" text-anchor="middle" fill="#16213e" font-weight="bold">0.9416</text>
+<text x="495.0" y="130.79999999999995" text-anchor="middle" fill="#666" font-size="11">17 label flips</text>
+<text x="495.0" y="260" text-anchor="middle" fill="#333">int4-nf4</text>
+<text x="18" y="135" transform="rotate(-90 18 135)" text-anchor="middle" fill="#333">Label agreement vs bf16 anchor (n=291)</text>
+<text x="345" y="288" text-anchor="middle" fill="#333">Post-training quantization</text>
+</svg>
