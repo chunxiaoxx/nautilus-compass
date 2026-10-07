@@ -1,18 +1,22 @@
-# Quantized Small Judges: A Preregistered Deployment-Precision Study of a Production Verification Judge(DRAFT v0.1)
+# Quantized Small Judges: A Preregistered Deployment-Precision Study of a Production Verification Judge(v0.2 成文(10/8))
 
 > 目标:arXiv short paper 或官方博客首发(研究空白:无先例同时覆盖 量化×小判分×鲁棒性,四路调研 2026-10-07 确认)。状态=骨架 DRAFT,开业(10/12)后一周内定稿投出。
 
-## Abstract(骨架)
+## Abstract
 
-Small language models (SLMs) are increasingly deployed as verification judges, yet their
+Small language models are increasingly deployed as verification judges, yet their
 robustness to post-training quantization — the default cost-saving step in production —
 remains unstudied. We present a preregistered deployment-precision study of a production
-three-state verification judge (Qwen3-1.7B + LoRA, 88.5% binary accuracy), evaluating four
-precision configurations × two decoding regimes on 291 held-out cases. Under a preregistered
-agreement gate (≥99% vs the bf16 anchor), fp16 passes with zero label drift while int8
-(98.28%) and int4-nf4 (94.16%) fail. We release the full judgment matrix, gating criteria,
-and a deployment-precision discipline for verification judges, and discuss implications for
-registry-based self-improving judge systems (NACRE).
+three-state verification judge (Qwen3-1.7B + LoRA adapter, 88.5% binary accuracy, ECE
+0.072), evaluating four precision configurations × two decoding regimes over 291
+held-out cases. Under a preregistered agreement gate (≥99% label agreement with the
+bf16 anchor), fp16 passes with **zero label drift** (1.0000), while int8 (0.9828, two
+flips) and int4-nf4 (0.9416, seventeen flips) fail the gate. Drift increases
+monotonically with quantization strength, corroborating an independent 3B-scale
+observation. We release the full per-case judgment matrix, the frozen gating criteria,
+and a four-rule deployment discipline for verification judges, and discuss implications
+for registry-based self-improving judge systems where a drifting judge silently corrupts
+the training signal of the entire loop.
 
 ## 1. Introduction
 
@@ -29,10 +33,20 @@ registry-based self-improving judge systems (NACRE).
 
 ## 3. Results
 
-表 1:精度×解码 → 三态 acc/对 bf16 一致率/判门(数据=PRECOR_BC_VERDICT 表,复制);
-- fp16:一致率 1.0000(零漂移);int8:0.9828(2 翻转);int4:0.9416(17 翻转);
-- 漂移-量化强度单调;与 3B 判分器独立观察(0.817@4bit)互证;
-- 一致率(判定)≠输出逐字一致——逐字口径会产生全假红(方法论警示段)。
+| Config | Three-state acc | Agreement vs bf16 | Gate (≥99%) | Verdict |
+|---|---|---|---|---|
+| bf16 (anchor) | 0.8797 | — | — | reference |
+| fp16 | 0.8797 | **1.0000** | pass | deployable |
+| int8-bnb | 0.8694 | 0.9828 (2 flips) | fail | not for prod |
+| int4-nf4 | 0.8694 | 0.9416 (17 flips) | fail | forbidden |
+| bf16 + T=0.3 | — | 0.9931 | (disclosure only) | keep greedy |
+
+Three observations: (1) drift grows monotonically with quantization strength; (2) an
+independent 3B-scale judge showed the same direction (0.8173 at 4-bit), suggesting a
+systematic property rather than a model-specific artifact; (3) **agreement must be
+measured on parsed labels, not raw output equality** — a verbatim-equality metric
+produces all-fail results for any quantized model and would have invalidated the study
+had we not caught it during script review.
 
 ## 4. A Deployment-Precision Discipline for Verification Judges
 
