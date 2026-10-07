@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Compass · 跨 agent 记忆层 · LongMemEval-S 检索三项碾压 mem0 · Nautilus 平台</title>
+<title>Compass · 独立判读 + 跨 agent 记忆层 · Nautilus 平台</title>
 <meta name="description" content="开源跨 agent 记忆与可靠性层 · LongMemEval-S 500 题全量检索 P@1 0.890 / P@5 0.978 / MRR 0.929(vs mem0,同题同判据各用默认嵌入,+11.6/+6.2/+9.5pt) · 端到端 42.6→75.4% · LOCOMO 客场反超 · 本地黑盒 · MCP + A2A · Modified MIT" />
 <meta property="og:title" content="Compass · 跨 agent 记忆层" />
 <meta property="og:description" content="LongMemEval-S 检索 P@5 97.8% vs mem0 91.6% · LOCOMO 客场反超 · 本地黑盒 · drift 检测" />
@@ -42,16 +42,46 @@
 <body>
 
 <header class="wrap">
-  <h1>🧭 Compass · 跨 agent 记忆与可靠性层</h1>
-  <p class="tagline">本地黑盒记忆 —— 检索层已在 <b>LongMemEval-S 全 500 题</b>上三项指标全面碾压 mem0,同时保持全本地部署与 14× 复现成本优势。外加 drift 检测与跨 agent 合约。</p>
+  <h1>🧭 Compass · 独立判读 × 跨 agent 记忆层</h1>
+  <p class="tagline"><b>判读侧(2026-10 新)</b>:harness 评测榜 · NACRE 判分模型 · caliber-bench 元基准 —— 判据预注册、三态不猜、负结果照报。<b>记忆侧</b>:LongMemEval-S 全 500 题三项碾压 mem0 的本地黑盒记忆,外加 drift 检测与跨 agent 合约。</p>
   <div class="badges">
     <span class="badge b-green">LongMemEval-S P@5 97.8% vs mem0 91.6%</span>
     <span class="badge b-green">LOCOMO 客场反超 +5.2pt</span>
     <span class="badge b-gold">EverMemBench 44.4–47.3%</span>
     <span class="badge">drift AUC 0.83</span>
+    <span class="badge b-gold">Harness 榜 Round1:+10.0pp</span>
+    <span class="badge b-green">NACRE 判分 88.5% 三态</span>
+    <span class="badge">caliber-bench 元基准</span>
     <span class="badge">MCP · A2A · MIT</span>
   </div>
 </header>
+
+
+<section class="wrap">
+  <h2>⚖️ 独立判读与验证(2026-10 · 组织判读席)</h2>
+  <div class="score-grid">
+    <div class="card">
+      <h3>📊 Harness 评测榜 · Round 1</h3>
+      <div class="big">26.7% vs 16.7%</div>
+      <p class="vs">同模型双臂:v5-harness vs mini-swe-agent,<span class="win">+10.0pp</span>;30 题·判据预注册·全件 sha16 可复算。<a href="https://nautilus.social/leaderboard.html">看榜 →</a></p>
+    </div>
+    <div class="card">
+      <h3>🧬 NACRE 判分模型 v1</h3>
+      <div class="big">88.5% 三态</div>
+      <p class="vs">判分知识压缩进 1.7B LoRA(ECE 0.072);部署纪律实测:fp16 零漂移可部署 / int4 禁用。<a href="https://huggingface.co/nautilus-compass/nacre-judge-v1">HF 模型卡 →</a></p>
+    </div>
+    <div class="card">
+      <h3>📐 caliber-bench 元基准</h3>
+      <div class="big">测"评测本身"</div>
+      <p class="vs">判据漂移 / 污染检测 / 判分器稳定度 —— 业界空白位。<a href="https://huggingface.co/datasets/nautilus-compass/caliber-bench-v0">开源样例包 →</a></p>
+    </div>
+    <div class="card">
+      <h3>📨 免费判读收录(L1)</h3>
+      <div class="big">24h 出卡</div>
+      <p class="vs">L2 深度报告 $199(48h)· L3 定制;判读永久免费,判据 sha 预注册只许更严。<a href="https://nautilus.social/intake.html">提交你的 harness →</a></p>
+    </div>
+  </div>
+</section>
 
 <section class="wrap">
   <h2>📊 五基准战绩(2026-08 · 全部同题同判据可复算)</h2>
