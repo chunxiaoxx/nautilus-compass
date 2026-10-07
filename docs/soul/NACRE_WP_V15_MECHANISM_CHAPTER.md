@@ -2,9 +2,22 @@
 
 > 地位:承 NACRE 对齐四议题双签闭环(NACRE_ALIGNMENT_SETTLED_20261006.md;platform 10124+v5 10128),compass 受权主笔。v1.0 白皮书(NACRE_WHITEPAPER_V1.md@9f9a6e04)正文不改史,本章为 v1.5 升格件,合流时装订。两外壳引用坐标随本件更新。
 
-## §M1 机制定义:NACRE 是机制,不是模型
+## §M1 机制定义:NACRE 是组织级统一智能机制(用户 10/7 扩容定义)
 
-**NACRE(Novelty-gated Adjudication via Compression & Registered Evolution)= 一套"判分原生的判分机制"**:把判分知识压缩进小权重(压缩柱),以三态判读+证据分层守住不猜(验证柱),让每一条判例勘误经注册棘轮回流为训练燃料(因果倒置柱)。
+**NACRE = "压缩×验证×因果倒置" + 动态权重算法 + RSI 自进化 + 涡轮增压 + compass 原生记忆能力 + JEV 和 assay 判断能力**——六组件一机制,组织全部智能能力的统一名。
+
+六组件现状(全部有实物或设计档,诚实分层):
+
+| 组件 | 实物/坐标 | 状态 |
+|---|---|---|
+| 压缩×验证×因果倒置 | 判分实例 v1 88.51%+E1 复算+delta registry | ✅ 在役 |
+| 动态权重算法 | P3 管道+REG-100 零翻转门(33/200) | 🟡 设计档+管道通,在线演化未启动 |
+| RSI 自进化 | 考场线+rsi-bench 采纳(PR#2/#4)+反自指护栏(自训只限小判分器) | 🟡 协议层在役,自进化回路待外部单 |
+| 涡轮增压 | r79→r84 64%+fuel_trajectories 双端点(TURBO 管道正本三段材料齐) | ✅ 在役 |
+| compass 原生记忆 | MCP 记忆层+七算子;M5 记忆门(双层记忆打通点)未部署 | 🟡 外挂层在役,双层融合待 M5 |
+| JEV+assay 判断能力 | 判官语料 1454+criteria 库+证据三层;assay PyPI 0.3.3+rsi-bench 采纳 | ✅ 在役 |
+
+原英文展开名(Novelty-gated Adjudication via Compression & Registered Evolution)保留为判读柱的机制注脚;六组件版为组织级定义。
 
 - **运行形态=机制名+实例版本号**(对齐议题①,双签):
   - **NACRE 判读实例 v1**=1.7B LoRA 判分器(compass 侧,runtime/judge_lora_p2v2/best_lora,adapter sha16=dbcbab6fd1ff5821,J1 88.51%/ECE 0.072 三门全绿);
