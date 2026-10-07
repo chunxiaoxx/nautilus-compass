@@ -1776,3 +1776,7 @@
 - **切换全链落地**:①A100 ed25519 密钥→cloud authorized_keys 授权②反向隧道守护(A100 tunnel_daemon.sh:nohup while 循环,断线 30s 重连,ServerAlive 10s×3 快检测)③隧道端口 19987(首用 19986 被僵死 sshd 占住→整体换口,坑:ssh -R 半死不退出时 bind 冲突)④daemon v3.3.5 补丁(_BGEWrapper.encode 走 COMPASS_EMBED_PROXY,失败回退本地;超时 8s 快回退)⑤systemd drop-in 指向 19987⑥重启。
 - **判定[实测]**:fails 110→110 零新增(GPU 代理承接全部嵌入);**overload 199858→199858 零新增**(60s 窗,此前 +60~1000/10min);**CPU 100%→10.5%**(嵌入计算全卸载 A100);ping 正常。两天过载问题根治。
 - 运维注记:隧道守护不抗 A100 重启(reboot 后需重跑 tunnel_daemon.sh);cloud 旧 19986 僵死监听会自然消亡;embed_server.py 与隧道均已 nohup 常驻。
+
+### R305 · 2026-10-07 深夜(GPU 嵌入复核✅+网站 P0 反馈直达+四问答)
+- **GPU 嵌入现状复核[实测]**:A100 CUDA fp16 在跑(GPU util 2%/1.7G),cloud 经 19987 隧道取向量正常,daemon CPU **1.7%**(切换前 100%),fails 110 稳定零新增;overload 切换后 ~2.5h 仅 +32(原速率 +60-1000/10min,余波涓流,probe 持续盯)。
+- **网站 P0 函发 platform**(SITE-P0-1007,用户反馈转达):v5 全站替换=md 文档墙无闭环+观感差→用户架构令(平台=基础设施门面/各框=产品体系)→10/12 P0 提案(IA 按体系地图落页/compass 三件贡献/l3_board 详版/v5 回退为产品页之一);deadline 10/8 12:00。
