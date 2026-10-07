@@ -1854,3 +1854,8 @@
 ### R321 · 2026-10-08(主件轮:M5 移植方案冻结+patch 提取)
 - **M5 三件套实物定位[实测]**:插件仓 feat/memory-gate-trio @1121328(fact_status 写入门/dedup_check 三档查重/沿链一跳 expand_chain_links,+125 行);patch 全量提取落仓(runtime/loop/_m5_memgate.patch 167 行);移植方案冻结(M5_MIGRATION_PLAN:git apply --3way 于 daemon_v33.py+J4 实弹门+四验收;稳定窗=即刻,红线避开 19-22 点)。执行=下轮主件。
 - 附带:信箱 API 一次瞬时异常(json 空响应)——下轮复查;probe 无告警。
+
+### R322 · 2026-10-08(主件轮:M5 记忆门三件套生产部署✅)
+- **部署✅[实测四验收]**:三件套移植 daemon_v33.py(四锚 bytes patch 5/5 hunks+编译过+restart):①ping True②**dedup_check 实弹**(ok/verdict=unique/hits 0——首查冷缓存,BGE 代理嵌入工作正常)③chain expand fail 零计数④CPU 16.9% 常态。修一个移植坑:ndarray 真值 guard(`if not emb`→is None+len 检查)——v2.5 原码基于 list embedding,v33 是 numpy。
+- **意义**:七算子审计(9/7)三病灶的修复二/三落地生产(写前查重+沿链一跳+fact_status 带出);M5=对齐账"压缩环边界从紧"解除条件达成→**NACRE 六组件第五件转✅**;钩子亮牌(fact_status 注入)随下次 recall 自然生效。
+- 备份链:bak_20261008_m5;回滚=cp 回+restart。
