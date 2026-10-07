@@ -10,7 +10,7 @@ import paramiko
 
 HERE = Path(__file__).parent
 REMOTE_DIR = "/root/vdd4/e1_recheck"
-HOST, PORT, USER, PW = "223.109.239.30", 23236, "root", "REDACTED_A100_PW"
+HOST, PORT, USER, PW = "223.109.239.30", 23236, "root", "A100_PW_ENV"
 TARGETS = {"goldpack_frames.tgz": "634a3f7266942657", "ood_frames.tgz": "2a705d4922e0104f"}
 CHUNK = 96 * 1024
 

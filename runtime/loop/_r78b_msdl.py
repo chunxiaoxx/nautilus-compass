@@ -3,7 +3,7 @@ import paramiko
 
 c = paramiko.SSHClient()
 c.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-c.connect("223.109.239.30", port=23236, username="root", password="REDACTED_A100_PW", timeout=10)
+c.connect("223.109.239.30", port=23236, username="root", password="A100_PW_ENV", timeout=10)
 _, out, _ = c.exec_command(
     "ls -la /root/.cache/huggingface/hub/models--Qwen--Qwen3-1.7B/snapshots/*/ 2>/dev/null;"
     "echo ---; /root/vdd2/p0_full/venv/bin/pip install -q modelscope 2>&1 | tail -1;"

@@ -3,7 +3,7 @@ import paramiko
 
 c = paramiko.SSHClient()
 c.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-c.connect("223.109.239.30", port=23236, username="root", password="REDACTED_A100_PW", timeout=10)
+c.connect("223.109.239.30", port=23236, username="root", password="A100_PW_ENV", timeout=10)
 _, out, _ = c.exec_command(
     "ls ~/.cache/modelscope/hub/models/ 2>/dev/null | head -5;"
     "echo ---; ls /root/vdd2/models/ 2>/dev/null | head -8;"

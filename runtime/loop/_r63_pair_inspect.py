@@ -3,7 +3,7 @@ import paramiko
 
 c = paramiko.SSHClient()
 c.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-c.connect("223.109.239.30", port=23236, username="root", password="REDACTED_A100_PW", timeout=10)
+c.connect("223.109.239.30", port=23236, username="root", password="A100_PW_ENV", timeout=10)
 _, out, err = c.exec_command(
     "ls -la /root/vdd3/pipe_art/pusht_infer_pair/ 2>&1;"
     "echo ---; head -c 1200 /root/vdd3/pipe_art/pusht_infer_pair/paired_compare.jsonl 2>&1;"

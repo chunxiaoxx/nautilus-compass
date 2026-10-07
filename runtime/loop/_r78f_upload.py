@@ -3,7 +3,7 @@ import paramiko
 
 c = paramiko.SSHClient()
 c.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-c.connect("223.109.239.30", port=23236, username="root", password="REDACTED_A100_PW", timeout=15)
+c.connect("223.109.239.30", port=23236, username="root", password="A100_PW_ENV", timeout=15)
 s = c.open_sftp()
 s.put("tools/train_judge_incremental.py", "/root/tools/train_judge_incremental_fixed.py")
 s.put("runtime/loop/_r78e_repredict.py", "/root/_r78e_repredict.py")

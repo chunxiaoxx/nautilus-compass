@@ -9,7 +9,7 @@ CMDS = [
 
 c = paramiko.SSHClient()
 c.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-c.connect("223.109.239.30", port=23236, username="root", password="REDACTED_A100_PW", timeout=10)
+c.connect("223.109.239.30", port=23236, username="root", password="A100_PW_ENV", timeout=10)
 for cmd in CMDS:
     _, out, err = c.exec_command(cmd, timeout=20)
     print(f"$ {cmd}")

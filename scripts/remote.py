@@ -22,7 +22,7 @@ from pathlib import Path
 
 import paramiko
 
-HOST, PORT, USER, PW = "223.109.239.30", 23236, "root", "REDACTED_A100_PW"
+HOST, PORT, USER, PW = "223.109.239.30", 23236, "root", "A100_PW_ENV"
 
 
 def connect(backoff: int, retries: int = 3) -> paramiko.SSHClient:

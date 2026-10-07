@@ -85,7 +85,7 @@ def probe_a100():
         c = paramiko.SSHClient()
         c.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         c.connect("223.109.239.30", port=23236, username="root",
-                  password="REDACTED_A100_PW", timeout=10)
+                  password="A100_PW_ENV", timeout=10)
         # GPU 空闲判定=无计算进程(瞬时利用率会误报:迭代间隙利用率 0 但进程在)
         _, out, _ = c.exec_command(
             "nvidia-smi --query-compute-apps=pid --format=csv,noheader | wc -l; "

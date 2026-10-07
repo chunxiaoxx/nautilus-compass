@@ -6,7 +6,7 @@ import paramiko
 
 c = paramiko.SSHClient()
 c.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-c.connect('223.109.239.30', port=23236, username='root', password='REDACTED_A100_PW', timeout=20)
+c.connect('223.109.239.30', port=23236, username='root', password='A100_PW_ENV', timeout=20)
 
 DL_SCRIPT = '''from modelscope import snapshot_download
 p = snapshot_download('BAAI/bge-m3', cache_dir='/root/vdd4/modelscope/models',

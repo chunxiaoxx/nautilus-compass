@@ -28,7 +28,30 @@
 
 ---
 
-## What this is (2026-08 state)
+## October 2026 — Independent Judging & Verification (new pillar)
+
+This project now also powers the **independent judging layer** of the Nautilus
+platform — preregistered criteria, three-state verdicts, negative results
+published as-is:
+
+- **NACRE judge v1** — judging knowledge compressed into a 1.7B LoRA
+  (88.5% three-state, ECE 0.072). Model card + weights:
+  [nautilus-compass/nacre-judge-v1](https://huggingface.co/nautilus-compass/nacre-judge-v1)
+- **Deployment-precision discipline** (preregistered, 291 cases): fp16 = 100%
+  label agreement with bf16 anchor (safe) · int8 = 98.28% (fail) · int4 = 94.16%
+  (forbidden). Full verdict table in-repo (`docs/metering/PRECOR_BC_VERDICT_20261007.md`).
+- **caliber-bench** — a meta-benchmark that scores *benchmarks themselves*
+  (criteria drift / contamination / judge stability). Open sample pack:
+  [nautilus-compass/caliber-bench-v0](https://huggingface.co/datasets/nautilus-compass/caliber-bench-v0)
+- **Harness leaderboard, Round 1** — same model, two harnesses:
+  v5-harness 26.7% vs mini-swe-agent 16.7% (+10.0pp), every artifact
+  sha16-addressable. Live at [nautilus.social/leaderboard.html](https://nautilus.social/leaderboard.html);
+  free L1 intake at [nautilus.social/intake.html](https://nautilus.social/intake.html).
+
+Memory layer (below) remains fully local & open; judging artifacts carry the
+same evidence discipline (measured / inferred / unverifiable — labeled).
+
+## What this is (memory layer, 2026-08 state)
 
 Three pillars, one plugin:
 

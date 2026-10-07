@@ -3,7 +3,7 @@ import paramiko
 
 c = paramiko.SSHClient()
 c.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-c.connect("223.109.239.30", port=23236, username="root", password="REDACTED_A100_PW", timeout=10)
+c.connect("223.109.239.30", port=23236, username="root", password="A100_PW_ENV", timeout=10)
 _, out, _ = c.exec_command(
     "echo '== smoke A2F (133210)'; cat /root/vdd3/pipe_art/pusht_rollout_20261003_133210/rollout_A2F_summary.json;"
     "echo; echo '== full A1N'; cat /root/vdd3/pipe_art/pusht_rollout_20261003_133459/rollout_A1N_summary.json;"

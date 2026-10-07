@@ -8,7 +8,7 @@ import paramiko
 
 c = paramiko.SSHClient()
 c.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-c.connect('223.109.239.30', port=23236, username='root', password='REDACTED_A100_PW', timeout=15)
+c.connect('223.109.239.30', port=23236, username='root', password='A100_PW_ENV', timeout=15)
 sftp = c.open_sftp()
 for d in ('/root/vdd4/robust_exp', '/root/vdd4/robust_exp/corpus', '/root/vdd4/adapters/best_lora'):
     try:

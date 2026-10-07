@@ -27,7 +27,7 @@ def connect():
             c = paramiko.SSHClient()
             c.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             c.connect("223.109.239.30", port=23236, username="root",
-                      password="REDACTED_A100_PW", timeout=20)
+                      password="A100_PW_ENV", timeout=20)
             return c
         except Exception as e:
             print(f"[retry {i + 1}] {type(e).__name__}", flush=True)

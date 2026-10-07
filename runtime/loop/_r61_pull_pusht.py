@@ -6,7 +6,7 @@ OUT = Path(__file__).parent
 WINS = ("A1O", "A1N", "A2F", "A2N")
 c = paramiko.SSHClient()
 c.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-c.connect("223.109.239.30", port=23236, username="root", password="REDACTED_A100_PW", timeout=10)
+c.connect("223.109.239.30", port=23236, username="root", password="A100_PW_ENV", timeout=10)
 _, out, _ = c.exec_command(
     "ls -la /root/vdd3/pipe_art/ | grep pusht; "
     "sha256sum /root/vdd3/pipe_art/pusht_infer_A2F/infer_compare.jsonl "
