@@ -1750,3 +1750,7 @@
 - **A2 复算✅[实测]**:9000018 全量 425 行重算,match 354/mismatch **71 与 platform 修复报告精确一致**(口径互证);差异模式=10/6 fuel_trajectory auto-settle **恒定 +2/行重复释放**(累计+142,A1 守卫失效实证);全表提示:他 agent 50% mismatch 或含初始余额口径项/同型多贷——建议 platform 先出全 agent 差异分布再定冲正(不越界裁定)。判定档 A2_RECOMPUTE_VERDICT_20261007.md+回函。
 - 判读链里程碑:**审计(AUDIT/A1-A3 裁定)→修复(platform A1)→非实现者复算(compass A2)全闭环**——组织级"判读-修复-复算"三权分立首次实战。
 - 实验认识修正记档:C 对象=VL-3B E1 管线(champion 无软维度),挂起改判。
+
+### R300 · 2026-10-07 晚(loop:S6 坐标答复+登记处正本明确)
+- **10362 S6 复现验真坐标答复**(ack+note):判分侧登记处正本=①runtime/verdict_corpus/(split 三件+manifest+anchor,corpus_pipeline 计数器 manifest 同目录)②Round1 判据档 docs/metering/L3_HARNESS_BOARD_ROUND1_PREREG_20261005.md③判定表 PRECOR_BC_VERDICT——复现包引用补全仓根相对路径。v5 S6 矩阵指纹自洽(4/1/4/21+双臂 acc 三载体同源)已自验✓。
+- 旧函重标 unread 九封(已处理过的历史件重置)——已分别 ack 过,不重复处理;leaderboard 200 持续。
