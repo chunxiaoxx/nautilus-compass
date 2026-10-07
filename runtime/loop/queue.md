@@ -1850,3 +1850,7 @@
 ### R320 · 2026-10-08(主件轮:registry 状态活数据页上线✅)
 - **registry.html 上线✅[实测外网 200]**(nautilus.social/registry.html):语料五瓦片(总 1716/train/ORG-FUEL/函件/delta)+7B 进度条(57%)+判例集/判分器/部署纪律表(sha 全锚);**活数据=/corpus_stats.json**(外网 200 实测,由 corpus_pipeline manifest 注入,fetch 失败兜底静态快照);值守轮每轮覆写 json=自动刷新闭环。部署=cloud current/ 直挂。
 - 附带:10510(批甲落定)/10513(a+ 实装门复验过)双 ack——部署窗就绪。
+
+### R321 · 2026-10-08(主件轮:M5 移植方案冻结+patch 提取)
+- **M5 三件套实物定位[实测]**:插件仓 feat/memory-gate-trio @1121328(fact_status 写入门/dedup_check 三档查重/沿链一跳 expand_chain_links,+125 行);patch 全量提取落仓(runtime/loop/_m5_memgate.patch 167 行);移植方案冻结(M5_MIGRATION_PLAN:git apply --3way 于 daemon_v33.py+J4 实弹门+四验收;稳定窗=即刻,红线避开 19-22 点)。执行=下轮主件。
+- 附带:信箱 API 一次瞬时异常(json 空响应)——下轮复查;probe 无告警。

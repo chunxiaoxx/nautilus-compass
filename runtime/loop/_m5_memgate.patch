@@ -1,0 +1,167 @@
+diff --git a/daemon.py b/daemon.py
+index beb9279..d79f151 100644
+--- a/daemon.py
++++ b/daemon.py
+@@ -463,7 +463,7 @@ except Exception:
+     pass
+ 
+ HOST = "127.0.0.1"
+-PORT = 9876
++PORT = int(os.environ.get("COMPASS_DAEMON_PORT", "9876"))  # v2.5 · env 化供测试实例隔离
+ _PLUGIN_USER = Path.home() / ".claude" / "plugins" / "nautilus-compass"
+ # CI / pip-install fallback · use the script's own dir when user-level
+ # plugin path doesn't exist (eg. installed via pip · or fresh git clone)
+@@ -742,6 +742,9 @@ def parse_memory_file(path: Path) -> dict:
+         "mtime": path.stat().st_mtime,
+         # v2.3.0 · lifecycle · surface forget_at for production forget-filter
+         "forget_at": fm.get("forget_at", ""),
++        # v2.5 · #48 修复一 · fact_status 写入门(measured|inferred|heard)· 随条目带出注入
++        "fact_status": fm.get("fact_status", ""),
++        "verified_at": fm.get("verified_at", ""),
+     }
+ 
+ 
+@@ -1071,6 +1074,115 @@ def _list_user_project_dirs() -> list[tuple[str, Path]]:
+     return out
+ 
+ 
++# ── v2.5 · #48 记忆门三件套(修复二/三)─────────────────────────────────
++# spec/判据正本: compass 仓 docs/plans/2026-09-09-rsi-trial1-preregistered.md
++# 修复二 = dedup_check action(写入前 BGE 查重,三档 verdict,daemon 不自动改写文件)
++# 修复三 = recall 结果 [[name]] 沿链一跳(不递归,chain_extra 独立字段)
++
++_WIKI_LINK_RE = None  # lazy compile · expand_chain_links 首调时建
++_DEDUP_MERGE_DEFAULT = 0.9
++_DEDUP_GRAY_DEFAULT = 0.75
++_CHAIN_CAP_DEFAULT = 5
++
++
++def _wiki_link_re():
++    global _WIKI_LINK_RE
++    if _WIKI_LINK_RE is None:
++        import re
++        _WIKI_LINK_RE = re.compile(r"\[\[([^\[\]\|#]+?)\]\]")
++    return _WIKI_LINK_RE
++
++
++def dedup_verdict(q_emb, entries, t_merge=_DEDUP_MERGE_DEFAULT,
++                  t_gray=_DEDUP_GRAY_DEFAULT) -> dict:
++    """新条目向量 vs 既有条目向量 → merge/gray/unique 三档。纯函数(向量注入)· 可单测。"""
++    hits = []
++    for e in entries:
++        emb = e.get("embedding")
++        if not emb:
++            continue
++        s = cosine(q_emb, emb)
++        if s >= t_gray:
++            hits.append({"path": e["path"], "score": round(float(s), 4)})
++    hits.sort(key=lambda h: -h["score"])
++    if hits and hits[0]["score"] >= t_merge:
++        verdict = "merge"
++    elif hits:
++        verdict = "gray"
++    else:
++        verdict = "unique"
++    return {"ok": True, "verdict": verdict, "hits": hits[:5],
++            "thresholds": {"merge": t_merge, "gray": t_gray}}
++
++
++def _handle_dedup_check(req: dict) -> dict:
++    """action=dedup_check · 修复二 · 写入前查重。daemon 只判定,不改写任何 memory 文件。"""
++    text = (req.get("text") or "").strip()[:8000]
++    project = (req.get("project") or "").strip()
++    if not text:
++        return {"ok": False, "error": "empty text"}
++    if not project:
++        return {"ok": False, "error": "project required"}
++    mem_dir = Path.home() / ".claude" / "projects" / project / "memory"
++    if not mem_dir.exists():
++        return {"ok": True, "verdict": "unique", "hits": []}
++    try:
++        embedder = get_embedder()
++        v = embedder.encode(text)
++        q_emb = v.tolist() if hasattr(v, "tolist") else v
++    except Exception as e:
++        return {"ok": False, "error": f"embed failed: {e}"}
++    entries = get_memory_entries(mem_dir)
++    return dedup_verdict(q_emb, entries,
++                         float(req.get("threshold_merge", _DEDUP_MERGE_DEFAULT)),
++                         float(req.get("threshold_gray", _DEDUP_GRAY_DEFAULT)))
++
++
++def _stem(p: str) -> str:
++    return p.removesuffix(".md")
++
++
++def expand_chain_links(top: list, all_entries: list, cap: int = _CHAIN_CAP_DEFAULT) -> list:
++    """召回 top 条目 body/description 里的 [[name]] 引用展开一层(修复三)。
++
++    不递归 · 已在 top 的不重复 · 输出 cap 条,字段含 via(来源条目)。
++    """
++    index: dict = {}
++    for e in all_entries:
++        if e.get("name"):
++            index.setdefault(e["name"], e)
++        index.setdefault(_stem(e["path"]), e)
++    top_keys: set = set()
++    for _s, e in top:
++        if e.get("name"):
++            top_keys.add(e["name"])
++        top_keys.add(_stem(e["path"]))
++    seen: set = set()
++    out: list = []
++    for _s, e in top:
++        text = (e.get("description") or "") + "\n" + (e.get("body") or "")
++        for m in _wiki_link_re().findall(text):
++            name = m.strip()
++            if not name or name in top_keys:
++                continue
++            target = index.get(name)
++            if target is None:
++                continue
++            t_key, t_name = _stem(target["path"]), target.get("name", "")
++            if t_key in seen or t_name in seen:
++                continue
++            seen.add(t_key)
++            if t_name:
++                seen.add(t_name)
++            out.append({"path": target["path"], "name": t_name,
++                        "description": target.get("description", ""),
++                        "fact_status": target.get("fact_status", ""),
++                        "via": e["path"]})
++            if len(out) >= cap:
++                return out
++    return out
++
++
+ def handle_request(req: dict) -> dict:
+     action = req.get("action", "both")
+     query = (req.get("query") or "").strip()[:2000]
+@@ -1232,9 +1344,15 @@ def handle_request(req: dict) -> dict:
+              "project": e.get("project", ""),
+              "age_str": e["age_str"], "age_seconds": e["age_seconds"],
+              "description": e["description"],
++             "fact_status": e.get("fact_status", ""),
+              "body": e.get("body", "")}
+             for s, e in top
+         ]
++        # v2.5 · #48 修复三 · [[name]] 沿链一跳 · 独立字段(混入主列表会污染打分口径)
++        try:
++            result["chain_extra"] = expand_chain_links(top, all_entries)
++        except Exception as _ce:
++            log(f"chain expand fail · skip: {_ce}")
+         # fresh memories not in top
+         top_set = {(t[1]["path"], t[1].get("project", "")) for t in top}
+         fresh_extra = [
+@@ -1719,6 +1837,11 @@ def handle_conn(conn: socket.socket):
+             resp_bytes = json.dumps(_handle_score(req), ensure_ascii=False).encode("utf-8") + b"\n"
+             conn.sendall(resp_bytes)
+             return
++        # v2.5 · #48 修复二 · 写入前查重
++        if req.get("action") == "dedup_check":
++            resp_bytes = json.dumps(_handle_dedup_check(req), ensure_ascii=False).encode("utf-8") + b"\n"
++            conn.sendall(resp_bytes)
++            return
+         _t0 = time.time()
+         resp = handle_request(req)
+         # v3.0.2 · record recall/drift latency for /status sliding window
