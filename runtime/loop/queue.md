@@ -1670,3 +1670,7 @@
 - **PRECOR B/C 上 A100 实跑[实测]**:两障碍连破——①modelscope 目录结构(config 在 snapshots/master/,顶层无 config→Unrecognized model)②共享实例实锤(venv_groot 的 _staff_batch100_inset.py 占 16.6G 跑 11h——A100 非独占,1.7B 4.5G 共存无冲突)。进程 3816420 活,bf16-greedy 150/291 acc≈0.86(>模板自验证门 0.80,向生产 0.885 收敛中),GPU 21.1G 共存。预计 1-1.5h 跑完 9 轨(bf16/fp16/int8/int4×greedy+bf16-T0.3),收数=matrix.csv+一致率矩阵(判门 0.99 预注册)。
 - 发车路径复盘:上传脚本坑(heredoc 反斜杠/import os 漏/SSH 间歇拒绝)=退避重试+文件化脚本解决;**shared GPU 事实记档**(排期计划须虑及他框任务共存)。
 - 下轮:run.log 巡检收数→按 PRECOR 判门出 verdict→回函 v5/platform。
+
+### R281 · 2026-10-07 早(loop v2 R5:int8 崩修复+脚本 v2 重发)
+- **int8 轨崩根因**:peft 0.13.2×bnb 0.50.2 版本代差(dispatch_bnb_8bit 访问已移除的 memory_efficient_backward)——与 compat 记忆"peft×transformers 坑"同族;且 v1 设计最后才写 CSV,崩=丢 bf16/fp16 全部数据(教训:长实验必须边跑边写)。
+- **脚本 v2**:merge 后量化绕法(LoRA merge_and_unload→save→纯 CausalLM 量化加载,完全绕开 peft×bnb hook;统一 merged 权重=各精度公平)+per-config try 容错+边跑边写 matrix.csv。已重发车[实测]:merge 落盘✓、进程 3821367 在跑、bf16 双轨过、fp16 进行中——全轨约 15-20min,收数下轮判门。

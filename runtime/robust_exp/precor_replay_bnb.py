@@ -76,6 +76,22 @@ def load_rows():
     return out
 
 
+MERGED = "/root/vdd4/robust_exp/merged_champion"
+
+
+def ensure_merged():
+    """LoRA merge 后落盘,量化加载走纯 CausalLM(绕 peft×bnb 量化 hook 版本冲突)。"""
+    if Path(MERGED, "config.json").exists():
+        return
+    m = AutoModelForCausalLM.from_pretrained(BASE, torch_dtype=torch.bfloat16)
+    m = PeftModel.from_pretrained(m, ADAPTER)
+    m = m.merge_and_unload()
+    m.save_pretrained(MERGED)
+    del m
+    torch.cuda.empty_cache()
+    print("merged champion saved ->", MERGED, flush=True)
+
+
 def load_model(dtype_cfg: str):
     kw = {"device_map": "cuda"}
     if dtype_cfg == "bf16":
@@ -89,8 +105,7 @@ def load_model(dtype_cfg: str):
                   bnb_4bit_compute_dtype=torch.bfloat16)
     else:
         raise ValueError(dtype_cfg)
-    m = AutoModelForCausalLM.from_pretrained(BASE, **kw)
-    m = PeftModel.from_pretrained(m, ADAPTER)
+    m = AutoModelForCausalLM.from_pretrained(MERGED, **kw)
     m.eval()
     return m
 
@@ -127,22 +142,37 @@ def main():
     print(f"rows={len(rows)} (unique qid)", flush=True)
     tok = AutoTokenizer.from_pretrained(BASE)
 
+    ensure_merged()
     all_out = []
     accs = {}
+    out_f = open(a.out, "w", newline="", encoding="utf-8")
+    w = csv.DictWriter(out_f, fieldnames=["qid", "cfg", "label", "truth", "ok"])
+    w.writeheader()  # 边跑边写,崩不丢数(R281)
+    out_f.flush()
     for dtype in ("bf16", "fp16", "int8", "int4"):
-        print(f"== load {dtype}", flush=True)
-        model = load_model(dtype)
-        acc = run_batch(model, tok, rows, False, None, all_out, f"{dtype}-greedy")
-        accs[f"{dtype}-greedy"] = acc
-        print(f"== {dtype}-greedy 三态 acc={acc:.4f}", flush=True)
-        del model
-        torch.cuda.empty_cache()
-        if dtype == "bf16":  # T 轨只在基线精度跑(PRECOR:T 读数披露不判门)
+        try:
+            print(f"== load {dtype}", flush=True)
             model = load_model(dtype)
-            acc = run_batch(model, tok, rows, True, 0.3, all_out, "bf16-T0.3")
-            accs["bf16-T0.3"] = acc
+            acc = run_batch(model, tok, rows, False, None, all_out, f"{dtype}-greedy")
+            accs[f"{dtype}-greedy"] = acc
+            print(f"== {dtype}-greedy 三态 acc={acc:.4f}", flush=True)
             del model
             torch.cuda.empty_cache()
+            if dtype == "bf16":  # T 轨只在基线精度跑(PRECOR:T 读数披露不判门)
+                model = load_model(dtype)
+                acc = run_batch(model, tok, rows, True, 0.3, all_out, "bf16-T0.3")
+                accs["bf16-T0.3"] = acc
+                del model
+                torch.cuda.empty_cache()
+        except Exception as e:
+            print(f"!! cfg {dtype} FAILED: {e}", flush=True)
+            accs[f"{dtype}-greedy"] = None
+            try:
+                del model
+                torch.cuda.empty_cache()
+            except Exception:
+                pass
+    out_f.close()
 
     # 一致率矩阵:各配置 vs bf16-greedy 的 label 一致率
     base = {o["qid"]: o["label"] for o in all_out if o["cfg"] == "bf16-greedy"}
@@ -155,11 +185,6 @@ def main():
         verdict = "PASS" if agree >= 0.99 else "FAIL"
         print(f"  {c}: agree={agree:.4f} ({verdict})", flush=True)
 
-    Path(a.out).parent.mkdir(parents=True, exist_ok=True)
-    with open(a.out, "w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=["qid", "cfg", "label", "truth", "ok"])
-        w.writeheader()
-        w.writerows(all_out)
     print(f"rows_written={len(all_out)} -> {a.out}", flush=True)
     # 模板自验证门:bf16-greedy acc 显著偏低则实验作废
     if accs["bf16-greedy"] < 0.80:
