@@ -1741,3 +1741,7 @@
 ### R297 · 2026-10-07 晚(leaderboard 404 修复✅——compass 代执行)
 - **修复✅[实测外网 200]**:全盘无 leaderboard.html(platform"云侧同步"未落对外路径);文件取自贵仓正本(nautilus-core launch_20261012/leaderboard.html)→挂载 /var/www/nautilus/current/→外网 200+内容抽查✓;回函通报防双修(LEADERBOARD-FIXED)。l3_board 详版去留留 platform。
 - 开业业主件清零:入口/榜页/判据页/样例/HF 全 200。
+
+### R298 · 2026-10-07 晚(任务清单刷新+实验 C 认识修正)
+- **实验 C 认识修正**:PRECOR-C(软维度连续档)前提=judge 输出含软维度——champion(1.7B)输出纯三态无软档,**C 对 champion 不可行**;C 真正对象=E1 复算管线(VL-3B,含 dim2/3 软档)——C 挂起改判"E1 管线复跑时一并采数"(原设计错置到 champion,自纠记档)。
+- 路线图刷新要点:开业前技术面清零(HF✅/邮箱✅/榜页✅/判据页✅/样例✅);在途回执=ORG-FUEL 认领三框+E-NACRE-1 判定表 v5;值守窗队列=巨物拆分/M5 合入/ORG-FUEL v1(函件流)。
