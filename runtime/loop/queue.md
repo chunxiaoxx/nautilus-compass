@@ -1897,3 +1897,7 @@
 
 ### R332 · 2026-10-08 早(主件轮:PRECOR Fig1 生成)
 - **Fig1 生成器+SVG✅**:precor_fig1_gen.py(纯手写 SVG,零依赖)→ 2635 字节柱状图(三精度 agreement+预注册门红虚线+翻转数标注,绿/红=过门/否);论文 §3-§4 间引用位接入。**短文剩余工序清零至:署名口径(用户定)+投递窗**。
+
+### R333 · 2026-10-08 早(主件轮:判读卡状态 API v0 建成+冒烟)
+- **judge_status API v0✅[冒烟通过]**:tools/judge_status_api.py(零依赖 :9890,/api/judge_status?id=→六步 JSON+判据 sha+result_url;404 未知 id;CORS 开);双用例冒烟(已知 id 六步+sha / 未知 id 404);与 status.html 前端约定对齐——**部署=cloud 挂 systemd 或 nginx 代理(P2 排期),受理台账接真源后 v1**。
+- 主件制 15 轮;下轮候选:XERJ 包人工复核 10%/判读卡 API 部署 cloud。
