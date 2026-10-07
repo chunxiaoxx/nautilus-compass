@@ -1901,3 +1901,6 @@
 ### R333 · 2026-10-08 早(主件轮:判读卡状态 API v0 建成+冒烟)
 - **judge_status API v0✅[冒烟通过]**:tools/judge_status_api.py(零依赖 :9890,/api/judge_status?id=→六步 JSON+判据 sha+result_url;404 未知 id;CORS 开);双用例冒烟(已知 id 六步+sha / 未知 id 404);与 status.html 前端约定对齐——**部署=cloud 挂 systemd 或 nginx 代理(P2 排期),受理台账接真源后 v1**。
 - 主件制 15 轮;下轮候选:XERJ 包人工复核 10%/判读卡 API 部署 cloud。
+
+### R334 · 2026-10-08 早(主件轮:XERJ 包人工复核 10% 全过)
+- **复核[实测] 7/7 PASS(100%)**(seed 1010,五判据:schema/主题/失败尝试非空/敏感串清零/final_fix);判门 ≥80% 超 20pp——**包材料复核收官**(剩 README 终稿,PR 窗 10/12 后)。记录入设计档。
