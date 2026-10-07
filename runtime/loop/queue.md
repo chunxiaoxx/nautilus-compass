@@ -1760,3 +1760,9 @@
 - **定性转移[实测]**:载入后 overload 仍持续(+148/2min 不退,CPU 107%)——**吞吐瓶颈实锤**(入站率>单机 CPU embedder 上限),非巨物问题。最大嫌疑=v5 brain 重试流无退避。
 - **双函**:v5 退避请求(10385,指数退避+断路器+峰值降频;生效判据=reject 速率降)+platform 升级(10386,长期 GPU embedder/扩容排产+BYZ 判例建议)。
 - 巨物拆分工程降级:载入止血后拆分 urgency 下调(内存可容忍),保留值守窗长线。
+
+### R302 · 2026-10-07 夜(入站请求画像完成——py-spy+连接级取证)
+- **消费方实锤**:9876 全部 ESTAB=v5 main_singleton(3 连)+daemon 自连回环(3 连)——唯一外部消费方=v5 brain 自循环。
+- **请求类型实锤[py-spy]**:全部 bge-handler 线程持续在 get_memory_entries→embedder.encode=recall(记忆召回)请求,含新条目现场嵌入(v5 brain 持续写新记忆=recall+ingest 混合流)。
+- **根因链收敛**:v5 brain 每步自循环 recall/write compass 记忆→嵌入计算(CPU bge-m3)为吞吐瓶颈→超时→重试放大→overload。阈值修复解决了"缓存跳过重嵌",但新条目写入嵌入+查询量本身仍超 CPU 吞吐。
+- 治理三件已函(v5 退避/platform 扩容/compass 公开计量);根本解=embedder GPU 化或 v5 brain 降频批量化。
