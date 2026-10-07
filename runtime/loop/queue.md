@@ -1715,3 +1715,9 @@
 - **八函批量 ack**:v5 认知对表(SWE-bench Science 失败分类学对表 S3 字典+科学域 119 任务=扩榜候选,L1 线记档)/NeoHorse 修正口径(同路先行者非竞品,我方差异化=第三方判据层=RSI 最稀缺层,进对外叙事正本)/D-0 裁定回执(A 账接入面+B 账正本+单向阀,投递恢复)/flywheel 认领具身判读域(goldset n30+VL-7B)/RoboDrop 学界引用(V4 效用判据)/三封自动催办清。
 - **leaderboard.html 仍 404**(二验)——deadline 12:00 已过,platform 修复中,继续守。
 - 新情报落位:NeoHorse 修正口径→叙事正本;SWE-bench Science→L1 扩榜候选(判据预注册先行);RoboDrop/GMM-BIC→caliber-bench 引用清单(v1.5 窗)。
+
+### R292 · 2026-10-07 早(ORG-PRECEDENT-FUEL V0——组织历史判例燃料自动化机制)
+- 用户提议(组织全部历史作判例燃料自动化)→方案 V0 落档(docs/soul/ORG_PRECEDENT_FUEL_V0_20261007.md):四段全自动(采集五框历史→结构化抽取"判断-结果"对→NACRE judge 三态判定→过门入册 delta registry);**防污染护栏四条**(anchor_level 阻抗分层:用户拍板/物理执行/外部复算=L0-L1 直入,模型自说自话 L3 永不入;训练用途定向=教 judge 元判读非教组织历史;原始文本不入池;判例抽样 10% 人工复检)。
+- 零重复造轮子:corpus_pipeline 计数器/registry 棘轮/judge 判定/证据分层/信箱总线全是现成件复用;M5 二期接入效用信号。
+- 量级:三天数百事件,一季数万——**7B/动态权重的 3000 触发从月级变周级**。
+- 落地:v0 本周单框试点(compass queue.md+session 记忆判例化,目标 ≥50 条过门,判据档预注册先行)→v1 接函件流+全框认领→v2 全自动+结算联动。
