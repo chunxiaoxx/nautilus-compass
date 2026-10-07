@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>判读卡状态查询 · Nautilus</title>
+<style>
+  :root{--ink:#16213e;--accent:#0a5ad6;--bg:#fff;--muted:#5b6472;--line:#e5e8ee;--green:#0a7d32;--gold:#b8860b}
+  body{font-family:-apple-system,"Segoe UI","Noto Sans SC",sans-serif;color:var(--ink);background:var(--bg);margin:0;line-height:1.65}
+  .wrap{max-width:720px;margin:0 auto;padding:0 22px}
+  header{border-bottom:1px solid var(--line);padding:22px 0}
+  h1{font-size:1.35rem;margin:0 0 4px}
+  p.sub{color:var(--muted);margin:0;font-size:.9rem}
+  .box{border:1px solid var(--line);border-radius:12px;padding:22px;margin:26px 0}
+  input[type=text]{width:100%;box-sizing:border-box;padding:12px 14px;border:1px solid var(--line);border-radius:8px;font-size:1rem}
+  button{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:12px 24px;font-size:1rem;margin-top:12px;cursor:pointer}
+  .card{border:1px solid var(--line);border-radius:10px;padding:18px;margin-top:18px;display:none}
+  .pill{display:inline-block;font-size:.78rem;border-radius:99px;padding:2px 12px;margin-bottom:10px}
+  .p-done{background:#e8f5e9;color:var(--green)} .p-run{background:#fff8e1;color:var(--gold)} .p-queue{background:#eef1f6;color:var(--muted)}
+  table{width:100%;border-collapse:collapse;font-size:.88rem;margin-top:8px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left}
+  th{background:#f7f9fc}
+  footer{padding:18px 0;color:var(--muted);font-size:.8rem}
+  a{color:var(--accent)}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>判读卡状态查询</h1>
+  <p class="sub">输入受理编号(如 <code>nautilus-l1-0001</code>)查询你的评测进度 · SLA:L1 24h / L2 48h · <a href="/intake.html">提交评测 →</a></p>
+</div></header>
+
+<div class="wrap">
+  <div class="box">
+    <input type="text" id="qid" placeholder="受理编号 / 邮箱后缀" onkeydown="if(event.key==='Enter')query()">
+    <button onclick="query()">查询状态</button>
+    <div class="card" id="card"></div>
+    <p style="color:var(--muted);font-size:.82rem;margin-top:14px">判读流程:受理登记 → 判据预注册(sha 冻结) → 三态判读 → 自检复核 → 出卡回函 → 入判例集。每步时间戳全程可溯。</p>
+  </div>
+</div>
+
+<footer><div class="wrap">Nautilus · 判读永久免费 · 判据 sha 预注册只许更严 · <a href="/criteria/">判据披露</a></div></footer>
+
+<script>
+// v0:本地演示数据(受理台账 API 上线前);真实查询=fetch('/api/judge_status?id=')
+const DEMO = {
+  'nautilus-l1-0001': {status:'done', title:'Round 1 · v5-harness vs mini-swe-agent',
+    steps:[['2026-10-05 14:02','受理登记','✓'],['2026-10-05 14:20','判据预注册 sha=b81eca84','✓'],
+           ['2026-10-06 02:10','三态判读 30 题(双臂)','✓'],['2026-10-06 02:15','自检复核 12/12 零不符','✓'],
+           ['2026-10-06 02:30','出卡(A 26.7% / B 16.7%)','✓'],['2026-10-06 03:00','入判例集 v1.4','✓']]},
+  'demo': {status:'run', title:'(示例)L1 收取中',
+    steps:[['—','受理登记','✓'],['—','判据预注册','进行中…'],['—','三态判读','排队'],['—','出卡回函','排队']]}
+};
+function query(){
+  const q = document.getElementById('qid').value.trim() || 'demo';
+  const d = DEMO[q] || DEMO['demo'];
+  const pill = d.status==='done' ? '<span class="pill p-done">已完成</span>'
+             : d.status==='run' ? '<span class="pill p-run">进行中</span>' : '<span class="pill p-queue">排队中</span>';
+  document.getElementById('card').style.display='block';
+  document.getElementById('card').innerHTML = pill + '<b>' + d.title + '</b>' +
+    '<table><tr><th>时间</th><th>步骤</th><th>状态</th></tr>' +
+    d.steps.map(s=>`<tr><td>${s[0]}</td><td>${s[1]}</td><td>${s[2]}</td></tr>`).join('') + '</table>';
+}
+</script>
+</body>
+</html>
