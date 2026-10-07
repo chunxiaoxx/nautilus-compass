@@ -1834,3 +1834,6 @@
 - **git filter-repo 全史替换✅[实测]**:iefe4Eey/Coh9ech3→REDACTED 占位(python -m git_filter_repo,Windows 无 shim 坑);本地历史对象残留 0;commit 全史 1761 个保留(受影响链 hash 重写,HEAD 82e5c932→4e2c21b4)。
 - **force push✅(用户明示批准)**:origin/main 强推至 4e2c21b4;远端残留验证 0 文件;README 独立判读新章完好;cloud 部署副本 fetch+reset 同步完毕(残留 0)。替换表即删;含密备份分支删除(本地 pre-purge 分支随 filter-repo 处理,未推任何含密 ref)。
 - 事故最终态:树脱敏+机内轮换+全史清除三层闭环——公网仓库凭据零残留。js2 死密一并清除(卫生)。
+
+### R317 · 2026-10-08 凌晨(主件:判分岗 SOP v0 交付✅)
+- **ROLE_JUDGE_SOP_V0 落档**(docs/sops/):岗位六件(职责/正册注册行含模型版本锚/六步工作流 SLA 分档/四道验证门/唯一升级通道/五红线);10482 五边界全展开;函 platform 供注册表首行样例+扩岗模板(v5 数据处理岗/前端岗同构)。W0 认领件兑现,判分岗=自研 agent 岗位制第一份可执行说明书。
