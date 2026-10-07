@@ -1,4 +1,4 @@
-# Quantized Small Judges: A Preregistered Deployment-Precision Study of a Production Verification Judge(v0.2 成文(10/8))
+# Quantized Small Judges: A Preregistered Deployment-Precision Study of a Production Verification Judge(v0.3(Intro+§4 英文化))
 
 > 目标:arXiv short paper 或官方博客首发(研究空白:无先例同时覆盖 量化×小判分×鲁棒性,四路调研 2026-10-07 确认)。状态=骨架 DRAFT,开业(10/12)后一周内定稿投出。
 
@@ -20,9 +20,26 @@ the training signal of the entire loop.
 
 ## 1. Introduction
 
-- 判分器(judge)作为独立服务的兴起;部署成本驱动量化;但 judge 的量化鲁棒性缺研究(SLM-as-judge survey 亦指出 robustness 研究不足);
-- 我们的独特视角:judge 不是一次性评测组件,而是**持续学习回路的核心**(误判→registry→再训练)——量化漂移会污染整个自进化回路的信号;
-- 贡献:①首个预注册的 judge 部署精度判定(含判门)②部署纪律(bf16/fp16 only)③带可复算证据的负结果方法论。
+Verification judges — small models that grade the outputs of other models — are
+becoming infrastructure: LLM-as-judge pipelines, agent-harness evaluation
+services, and self-improving training loops all depend on them. Quantization is
+the default cost-saving step when serving such judges in production, yet the
+effect of post-training quantization on *judgment stability* has, to our
+knowledge, not been studied; a recent survey of small-language-model judges
+likewise notes that their robustness is under-examined.
+
+Our perspective is narrower than "do quantized models get worse": a judge in a
+registry-based self-improving loop is not a one-off evaluator but **the source
+of training signal** — every mis-flip it produces becomes (incorrect) training
+data. Quantization drift in such a judge does not merely distort one leaderboard;
+it silently corrupts the loop itself. This motivates treating judgment agreement,
+not task accuracy, as the primary metric.
+
+We contribute: (1) the first preregistered deployment-precision verdict for a
+production judge, with a frozen agreement gate; (2) a four-rule deployment
+discipline (bf16/fp16 only for production judges, criteria-freeze, U-state
+honesty, two-way judging records); (3) a reproducible methodology with all
+per-case artifacts released.
 
 ## 2. Setup
 
@@ -50,8 +67,25 @@ had we not caught it during script review.
 
 ## 4. A Deployment-Precision Discipline for Verification Judges
 
-四条(从 PRECOR_BC_VERDICT 提升):精度门/判据冻结门/U 态门/判绩账双向;
-与 registry 的交互:judge 漂移=registry 判例判定的系统性噪声源→重锚机制(锚定链 L0-L3)。
+From these results we distill four rules, all enforced in our production
+deployment:
+
+1. **Precision gate.** A judge may serve in production at a given precision iff
+   greedy label agreement with the bf16 anchor is ≥99% on a frozen held-out set
+   (preregistered; may only be tightened). For our judge: fp16 yes; int8 and
+   int4 no.
+2. **Criteria freeze.** The gate, the held-out set, and the prompt template are
+   sha-anchored before any deployment change; loosening requires re-registration.
+3. **U-state honesty.** When the judge cannot decide, it must emit
+   insufficient_evidence rather than guess; deployment changes may not trade
+   U-rate for accuracy.
+4. **Two-way judging records.** Judges err too; every correction feeds an errata
+   channel that retrains the judge — which is precisely why rule 1 must hold for
+   every redeployment, or the errata loop amplifies noise instead of removing it.
+
+Interaction with registries: judge drift is a systematic noise source in
+precedent registries; periodic re-anchoring on held-out sets (our L0–L3 anchor
+chain) bounds the drift.
 
 ## 5. Related Work
 
