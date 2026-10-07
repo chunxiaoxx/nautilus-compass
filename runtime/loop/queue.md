@@ -1737,3 +1737,7 @@
 ### R296 · 2026-10-07 午(loop:PRECOR 短文骨架 DRAFT+三推送收官)
 - **PRECOR 短文骨架 DRAFT v0.1**(docs/papers/PRECOR_SHORT_PAPER_DRAFT_20261007.md):研究空白首发占位(量化×小判分×鲁棒性无先例)——Abstract/七节骨架+素材源+定稿检查单(英文润色/图表/署名口径用户定/投递目标开业后按传播五层排)。
 - 三框 ORG-FUEL 认领邀约发毕(10329-10331,deadline 10/8);信箱 quiet。
+
+### R297 · 2026-10-07 晚(leaderboard 404 修复✅——compass 代执行)
+- **修复✅[实测外网 200]**:全盘无 leaderboard.html(platform"云侧同步"未落对外路径);文件取自贵仓正本(nautilus-core launch_20261012/leaderboard.html)→挂载 /var/www/nautilus/current/→外网 200+内容抽查✓;回函通报防双修(LEADERBOARD-FIXED)。l3_board 详版去留留 platform。
+- 开业业主件清零:入口/榜页/判据页/样例/HF 全 200。
