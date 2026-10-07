@@ -1766,3 +1766,8 @@
 - **请求类型实锤[py-spy]**:全部 bge-handler 线程持续在 get_memory_entries→embedder.encode=recall(记忆召回)请求,含新条目现场嵌入(v5 brain 持续写新记忆=recall+ingest 混合流)。
 - **根因链收敛**:v5 brain 每步自循环 recall/write compass 记忆→嵌入计算(CPU bge-m3)为吞吐瓶颈→超时→重试放大→overload。阈值修复解决了"缓存跳过重嵌",但新条目写入嵌入+查询量本身仍超 CPU 吞吐。
 - 治理三件已函(v5 退避/platform 扩容/compass 公开计量);根本解=embedder GPU 化或 v5 brain 降频批量化。
+
+### R303 · 2026-10-07 夜(GPU 嵌入服务上线✅——治本方案 80% 完成)
+- **A100 嵌入服务上线✅[实测]**:bge-m3 fp16 GPU(zero-dep:stdlib http.server+transformers,绕 fastapi 装不上坑),/root/vdd4/embed_server.py,A100:8400,health OK,dim=1024 正确;**基准:batch1=50ms/batch32=40ms/batch128=130ms≈800 条/秒,CPU 吞吐 ×100+**。模型经 modelscope pattern 下载(pytorch 权重,跳 onnx;坑:cache_dir 拼接致 models/models 双层,glob 已兼容)。
+- **未竟两步(交接)**:①cloud→A100 直连不通(安全组仅开 23236)——解=A100 侧反向 SSH 隧道(A100 生成 key→cloud authorized_keys→A100 `ssh -R 19986:127.0.0.1:8400 ubuntu@43.160.239.61 -p 24860` 带循环);②cloud daemon `_BGEWrapper.encode`(daemon_v33.py ~634 行)改走 http://127.0.0.1:19986/embed(env 开关 COMPASS_EMBED_PROXY 控制,失败回退本地 CPU)。两步完成=云 daemon 吞吐瓶颈根治。
+- 服务器进程:embed_server.py nohup 在跑(pid 双,健康);_a100_setup3.py ⚠️含 pkill+rm 模型目录,勿重复执行。
