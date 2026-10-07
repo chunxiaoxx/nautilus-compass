@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nautilus · Agent 评测与数据基础设施</title>
+<style>
+  :root{--ink:#16213e;--accent:#0a5ad6;--bg:#fff;--muted:#5b6472;--line:#e5e8ee}
+  body{font-family:-apple-system,"Segoe UI","Noto Sans SC",sans-serif;color:var(--ink);background:var(--bg);margin:0;line-height:1.65}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 24px}
+  header{border-bottom:1px solid var(--line);padding:18px 0}
+  header .wrap{display:flex;justify-content:space-between;align-items:center}
+  .logo{font-weight:700;font-size:1.15rem;letter-spacing:.5px}
+  nav a{color:var(--muted);text-decoration:none;margin-left:22px;font-size:.95rem}
+  nav a:hover{color:var(--accent)}
+  .hero{padding:72px 0 56px;text-align:left}
+  .hero h1{font-size:2.3rem;margin:0 0 18px;line-height:1.25}
+  .hero p.lead{font-size:1.12rem;color:var(--muted);max-width:640px;margin:0 0 28px}
+  .cta{display:inline-block;background:var(--accent);color:#fff;padding:12px 26px;border-radius:8px;text-decoration:none;font-weight:600}
+  .cta.ghost{background:#fff;color:var(--accent);border:1px solid var(--accent);margin-left:12px}
+  section{padding:44px 0;border-top:1px solid var(--line)}
+  h2{font-size:1.45rem;margin:0 0 8px}
+  p.sub{color:var(--muted);margin:0 0 26px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+  .card{border:1px solid var(--line);border-radius:10px;padding:22px}
+  .card h3{margin:0 0 8px;font-size:1.08rem}
+  .card p{margin:0 0 14px;color:var(--muted);font-size:.95rem}
+  .card a{color:var(--accent);text-decoration:none;font-weight:600;font-size:.92rem}
+  .infra{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
+  .infra div{background:#f7f9fc;border-radius:8px;padding:16px;font-size:.92rem}
+  .infra b{display:block;margin-bottom:4px}
+  footer{border-top:1px solid var(--line);padding:26px 0;color:var(--muted);font-size:.85rem}
+  .tag{display:inline-block;font-size:.78rem;color:var(--accent);border:1px solid var(--accent);border-radius:99px;padding:2px 10px;margin-bottom:10px}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="logo">Nautilus</div>
+  <nav>
+    <a href="/unipat.html">评测榜</a>
+    <a href="/intake.html">提交评测</a>
+    <a href="/criteria/">判据</a>
+    <a href="/pipeline.html">数据管道</a>
+  </nav>
+</div></header>
+
+<div class="wrap hero">
+  <div class="tag">Agent 评测与数据基础设施</div>
+  <h1>给 AI 工作流一个<br>可复算的裁判席</h1>
+  <p class="lead">Nautilus 是独立评测与验证平台:任何 agent harness 提交仓库地址,即可获得预注册判据下的独立判读——判读免费建立信任,深度报告与数据产品变现。</p>
+  <a class="cta" href="/intake.html">免费提交评测(L1 收录 · 24h 出卡)</a>
+  <a class="cta ghost" href="/leaderboard.html">查看评测榜</a>
+</div>
+
+<section><div class="wrap">
+  <h2>产品体系</h2>
+  <p class="sub">一套基础设施,长出两类域产品——所有产品共享同一验证内核:预注册判据 · 独立判分 · 负结果照报。</p>
+  <div class="grid">
+    <div class="card">
+      <h3>📊 Harness 评测榜</h3>
+      <p>同模型双臂对比实测:工作流差异可量化。Round 1:v5-harness 26.7% vs mini-swe-agent 16.7%(+10.0pp),全件 sha16 可复算。</p>
+      <a href="/leaderboard.html">进榜 / 复算 →</a>
+    </div>
+    <div class="card">
+      <h3>⚖️ 独立判读服务</h3>
+      <p>L1 免费收录(24h 出卡)· L2 深度报告 $199(48h 双签)· L3 企业定制。判读永久免费,不设付费优先。</p>
+      <a href="/intake.html">提交你的 harness →</a>
+    </div>
+    <div class="card">
+      <h3>🧬 caliber-bench 元基准</h3>
+      <p>测"评测本身可不可信":判据漂移 / 污染检测 / 判分器稳定度——业界空白位,样例包已开源。</p>
+      <a href="https://huggingface.co/datasets/nautilus-compass/caliber-bench-v0">HF 开源仓库 →</a>
+    </div>
+    <div class="card">
+      <h3>📦 数据与轨迹产品</h3>
+      <p>带验证的轨迹数据包(b/c 档):判分-结算绑定,每条带判据指纹。面向模型厂商。</p>
+      <a href="/pipeline.html">管道实态 →</a>
+    </div>
+    <div class="card">
+      <h3>🤖 具身域服务</h3>
+      <p>具身数据飞轮同构验证(goldset 人工金标 + 四验门),与 agent 域共享验证内核。</p>
+      <a href="/pipeline.html">具身管道 →</a>
+    </div>
+    <div class="card">
+      <h3>🛠️ NACRE 判分模型</h3>
+      <p>判分知识压缩进 1.7B 小模型(88.5% 三态),部署纪律公开;HF 开源,可自部署。</p>
+      <a href="https://huggingface.co/nautilus-compass/nacre-judge-v1">模型卡 →</a>
+    </div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>平台基础设施</h2>
+  <p class="sub">组织即平台:五插座生态,交付即接入——各产品线长在同一底座上。</p>
+  <div class="infra">
+    <div><b>🔌 插座总线</b>信箱 A2A / MCP / assay CLI</div>
+    <div><b>🧾 出生证</b>sinks 入册 + 五件判据认证</div>
+    <div><b>📈 流量</b>榜单 CTA / 晨报 / 发布面</div>
+    <div><b>💰 结算</b>判分-结算绑定 / 交叉销售</div>
+    <div><b>🛡️ 信用</b>判据 sha 预注册 / 不可写面</div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  Nautilus · 独立评测与判读 · <a href="/criteria/" style="color:var(--accent)">判据披露</a> · 判例集 v1.4 · 联系:chunxiaoxx+external@gmail.com
+</div></footer>
+</body>
+</html>

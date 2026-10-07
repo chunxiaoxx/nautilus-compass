@@ -49,6 +49,12 @@ def main() -> int:
                 if l.strip() and json.loads(l).get("judge_verdict") == "pass"
                 and json.loads(l).get("anchor_level") in ("L0", "L1")]
         sources["org_fuel:gate_passed"] = gate
+    fuel_l = root.parent / "org_fuel/fuel_verdicts_letters.jsonl"
+    if fuel_l.exists():
+        gl = [json.loads(l) for l in fuel_l.read_text(encoding="utf-8").splitlines()
+              if l.strip() and json.loads(l).get("judge_verdict") == "pass"
+              and json.loads(l).get("anchor_level") in ("L0", "L1")]
+        sources["org_fuel:letters"] = gl
 
     # qid 防泄漏:同 qid 只保留 train/首个来源版;跨 split 重复=报数
     seen: dict[str, str] = {}
