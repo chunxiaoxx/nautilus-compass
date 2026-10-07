@@ -42,6 +42,7 @@ import os
 import socket
 import sys
 import threading
+import time
 
 
 HOST = os.environ.get("COMPASS_CLOUD_HOST", "127.0.0.1")
@@ -66,6 +67,42 @@ _IDEMPOTENT_TOOLS = {
     "drift_history", "session_search", "profile",
     "governance_audit", "governance_lock_check",
 }
+
+# v2.3 · #10385 v5-throttle: circuit breaker + peak-hour backdown.
+# cloud compass daemon reported overload reject (+1000/10min) driven by v5
+# retry volume > throughput. Bridge is the single point ALL v5 MCP traffic
+# crosses, so the breaker lives here: N consecutive overload/reject replies
+# (or -32029) → open circuit for 60s (90s peak 19:00-22:00); during open,
+# requests are errored back fast instead of hammering the cloud. Local
+# daemon retries also gain exponential backoff (0.5·2^n, ×2 base at peak).
+_REJECT_STREAK = 0
+_CIRCUIT_OPEN_UNTIL = 0.0
+_CB_LOCK = threading.Lock()
+
+
+def _is_peak() -> bool:
+    return 19 <= time.localtime().tm_hour < 22
+
+
+def _note_reply_health(cl_text: str) -> None:
+    """Cloud reply observed: count overload/reject streak, trip breaker on threshold."""
+    global _REJECT_STREAK, _CIRCUIT_OPEN_UNTIL
+    t = cl_text.lower()
+    is_rej = "overload" in t or "reject" in t or "-32029" in t
+    with _CB_LOCK:
+        if is_rej:
+            _REJECT_STREAK += 1
+            threshold = 2 if _is_peak() else 3
+            if _REJECT_STREAK >= threshold:
+                cooldown = 90.0 if _is_peak() else 60.0
+                _CIRCUIT_OPEN_UNTIL = time.time() + cooldown
+                _trace("CIRCUIT", f"open {cooldown:.0f}s after {_REJECT_STREAK} rejects")
+        else:
+            _REJECT_STREAK = 0
+
+
+def _circuit_blocked() -> bool:
+    return time.time() < _CIRCUIT_OPEN_UNTIL
 
 
 def _line_is_idempotent(line: str) -> bool:
@@ -496,6 +533,10 @@ def _try_local_daemon(line: str):
             except Exception:
                 pass
             buf = b""
+            # v2.3 · exponential backoff between local retries (#10385)
+            if attempt + 1 < LOCAL_RETRIES:
+                base = 1.0 if _is_peak() else 0.5
+                time.sleep(min(base * (2 ** attempt), 8.0))
     else:
         _trace("LOCAL_FAIL", f"connect/io error after {LOCAL_RETRIES} tries: {last_err!r}")
         return None
@@ -636,6 +677,19 @@ def _pump_in_to_cloud(link: "_CloudLink") -> None:
             _write_stdout(local_resp)
             continue
         # Local didn't handle it · forward to cloud via the link
+        # v2.3 · circuit breaker: during overload cooldown, error back fast
+        if _circuit_blocked():
+            try:
+                msg = json.loads(line)
+                if isinstance(msg, dict) and "id" in msg:
+                    err = {"jsonrpc": "2.0", "id": msg["id"], "error": {
+                        "code": -32603,
+                        "message": "circuit-open: cloud overload cooldown (v5 throttle, compass #10385; retry after cooldown)"}}
+                    _write_stdout((json.dumps(err) + "\n").encode("utf-8"))
+                    _trace("CIRCUIT_BLOCK", line)
+                    continue
+            except Exception:
+                pass
         out = _inject_auth(line)
         try:
             link.send(out)
@@ -696,6 +750,7 @@ def _pump_cloud_to_out(link: "_CloudLink") -> None:
                     continue
                 _trace("CLOUD→", cl)
                 link.note_reply(cl.decode("utf-8", errors="replace"))  # v1.9 · clear pending
+                _note_reply_health(cl.decode("utf-8", errors="replace"))  # v2.3 · breaker feed
                 out_line = _rewrite_init_version(cl.decode("utf-8", errors="replace"))
                 # v2.2 · belt-and-braces: strip protocol-foreign top-level "_eid"
                 # from ANY cloud line (observed on initialize; be safe for all).
