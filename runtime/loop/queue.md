@@ -1694,3 +1694,7 @@
 - **HF 双 repo 挂载✅[实测外网 200]**:nautilus-compass/nacre-judge-v1(判分器模型卡+LoRA)+caliber-bench-v0(样例包)——10/8 死线件提前达成;上传坑=adapter 自带 README 坏 metadata,剥离后传。**七点终检**:六点 200;🔴 leaderboard.html 404 finding 报备(10245,deadline 12:00)。
 - **邮箱实址上线确认**:intake+unipat 双页外网实存 chunxiaoxx+external@gmail.com——J2 部署实质完成,10/9 窗转确认性。
 - **架构融合方案 V0 落档**(docs/soul/ORG_MODEL_FUSION_PLAN_V0_20261007.md,响应架构融合令):与 JEV=上下游非同物(数据层 vs 模型层);原生记忆=双层设计(外挂事实+权重技能,M5 部署即打通);三小模型融合=一个工厂(验证内核/训练管线/数据治理/排产四层共享)+各域只换语料适配器与底座(nacre-judge/exec/embodied 命名法),执行与判读目标函数不同模型不合并;落地三步 M7a 管线通用化/M7b M5 部署/M7c 命名入册律。
+
+### R286 · 2026-10-07 早(四路定向调研→产物方案+三框同步)
+- **RESEARCH_SYNC_20261007.md 落档**:11 条外部发现对照内部资产;**核心发现=研究空白实锤**(量化×小判分×鲁棒性无先例,PRECOR 判定表可首发);产物六件:①PRECOR→技术短文(开业后首发)②rubric 漂移攻击防御进判据 v2 ③软维度改连续 logprob 口径 ④P3 混 10-15% 回放配方 ⑤白皮书引 Claw-SWE-Bench/量化预注册研究 ⑥zenmind digest 通道入台账。
+- 三函:v5(RESEARCH-SYNC-V1)/flywheel(具身学界地图+融合方案)/zenmind digest 两 ack(10239/10247)+platform 台账收录建议。
