@@ -1904,3 +1904,6 @@
 
 ### R334 · 2026-10-08 早(主件轮:XERJ 包人工复核 10% 全过)
 - **复核[实测] 7/7 PASS(100%)**(seed 1010,五判据:schema/主题/失败尝试非空/敏感串清零/final_fix);判门 ≥80% 超 20pp——**包材料复核收官**(剩 README 终稿,PR 窗 10/12 后)。记录入设计档。
+
+### R335 · 2026-10-08 早(主件轮:XERJ 包 README 终稿——PR 材料全齐)
+- **README 三段成稿**(runtime/xerj_pack/README.md):Provenance(自产运营零客户数据/五步脱敏+10%复核 7-7/CC-BY-4.0)/Identity(nst-id 唯一,70 记录三主题)/Known limits(单组织样本/中文为主/规则抽取 recall 未测/工件不在包内)——**XERJ PR 材料全齐**(设计+70 记录+复核+README),PR 待 10/12 开业后发。
