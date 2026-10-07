@@ -1754,3 +1754,9 @@
 ### R300 · 2026-10-07 晚(loop:S6 坐标答复+登记处正本明确)
 - **10362 S6 复现验真坐标答复**(ack+note):判分侧登记处正本=①runtime/verdict_corpus/(split 三件+manifest+anchor,corpus_pipeline 计数器 manifest 同目录)②Round1 判据档 docs/metering/L3_HARNESS_BOARD_ROUND1_PREREG_20261005.md③判定表 PRECOR_BC_VERDICT——复现包引用补全仓根相对路径。v5 S6 矩阵指纹自洽(4/1/4/21+双臂 acc 三载体同源)已自验✓。
 - 旧函重标 unread 九封(已处理过的历史件重置)——已分别 ack 过,不重复处理;leaderboard 200 持续。
+
+### R301 · 2026-10-07 晚(loop v2 R8:巨物载入止血✅+吞吐瓶颈实锤+消费方治理函)
+- **巨物快速止血✅[实测]**:SKIP_BIG 阈值 200→600MB(两处,备份 bak_20261007_big)→重启→**loaded=500 skipped=0**(502MB 首次真载入),RSS 2.98→6.12G(预算内,内存 15G 总余 8G)。查询慢源头消除。
+- **定性转移[实测]**:载入后 overload 仍持续(+148/2min 不退,CPU 107%)——**吞吐瓶颈实锤**(入站率>单机 CPU embedder 上限),非巨物问题。最大嫌疑=v5 brain 重试流无退避。
+- **双函**:v5 退避请求(10385,指数退避+断路器+峰值降频;生效判据=reject 速率降)+platform 升级(10386,长期 GPU embedder/扩容排产+BYZ 判例建议)。
+- 巨物拆分工程降级:载入止血后拆分 urgency 下调(内存可容忍),保留值守窗长线。
