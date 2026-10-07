@@ -1674,3 +1674,9 @@
 ### R281 · 2026-10-07 早(loop v2 R5:int8 崩修复+脚本 v2 重发)
 - **int8 轨崩根因**:peft 0.13.2×bnb 0.50.2 版本代差(dispatch_bnb_8bit 访问已移除的 memory_efficient_backward)——与 compat 记忆"peft×transformers 坑"同族;且 v1 设计最后才写 CSV,崩=丢 bf16/fp16 全部数据(教训:长实验必须边跑边写)。
 - **脚本 v2**:merge 后量化绕法(LoRA merge_and_unload→save→纯 CausalLM 量化加载,完全绕开 peft×bnb hook;统一 merged 权重=各精度公平)+per-config try 容错+边跑边写 matrix.csv。已重发车[实测]:merge 落盘✓、进程 3821367 在跑、bf16 双轨过、fp16 进行中——全轨约 15-20min,收数下轮判门。
+
+### R282 · 2026-10-07 早(loop v2 R6:PRECOR B/C 收数判门✅——部署精度纪律 v1 定案)
+- **B/C 全轨收数[实测]**(291 题,bf16 锚 acc=0.8797 贴生产 0.885,模板自验证 PASS):fp16 一致率 **1.0000 PASS**(零漂移)/int8 **0.9828 FAIL**(差 2 题)/int4 **0.9416 FAIL**(漂移 17 题)/bf16-T0.3 0.9931(披露不判门)。精度-一致性阶梯单调,与 E1 3B 信号互证。
+- **部署纪律 v1 定案**:判分器生产只许 bf16/fp16;int8 照 FAIL 报(可走判据修订序);int4 禁用。判定表落档 docs/metering/PRECOR_BC_VERDICT_20261007.md;双函 v5/platform+FIX 补发(前函附件误附自纠)。
+- 缺陷如实:matrix.csv 增量写未及修复,数据随进程丢——per-question 翻转清单 [不可验],升级路径=补行级写入重跑(判门不受影响);实验 C 软维度数据同丢,ER v2 待补跑。
+- NACRE 白皮书 §M4 素材+caliber-bench 首批自评用例=本次判定表。
