@@ -26,7 +26,8 @@ def load_jsonl(p: Path) -> list[dict]:
 
 
 def qid_of(e: dict) -> str:
-    return (e.get("artifact") or {}).get("qid") or e.get("id", "")
+    return ((e.get("artifact") or {}).get("qid") or e.get("id")
+            or e.get("pf_id", ""))
 
 
 def main() -> int:
@@ -41,6 +42,13 @@ def main() -> int:
     deltas = sorted((root / "delta").glob("delta_*.jsonl"))
     for d in deltas:
         sources[f"delta:{d.name}"] = load_jsonl(d)
+    # ORG-FUEL 源(R294):过门 org 判例(L0/L1 且 judge pass)计入独立源
+    fuel_v = root.parent / "org_fuel/fuel_verdicts.jsonl"
+    if fuel_v.exists():
+        gate = [json.loads(l) for l in fuel_v.read_text(encoding="utf-8").splitlines()
+                if l.strip() and json.loads(l).get("judge_verdict") == "pass"
+                and json.loads(l).get("anchor_level") in ("L0", "L1")]
+        sources["org_fuel:gate_passed"] = gate
 
     # qid 防泄漏:同 qid 只保留 train/首个来源版;跨 split 重复=报数
     seen: dict[str, str] = {}
