@@ -51,15 +51,20 @@ const DEMO = {
   'demo': {status:'run', title:'(示例)L1 收取中',
     steps:[['—','受理登记','✓'],['—','判据预注册','进行中…'],['—','三态判读','排队'],['—','出卡回函','排队']]}
 };
-function query(){
-  const q = document.getElementById('qid').value.trim() || 'demo';
-  const d = DEMO[q] || DEMO['demo'];
+function render(d){
   const pill = d.status==='done' ? '<span class="pill p-done">已完成</span>'
              : d.status==='run' ? '<span class="pill p-run">进行中</span>' : '<span class="pill p-queue">排队中</span>';
   document.getElementById('card').style.display='block';
   document.getElementById('card').innerHTML = pill + '<b>' + d.title + '</b>' +
     '<table><tr><th>时间</th><th>步骤</th><th>状态</th></tr>' +
     d.steps.map(s=>`<tr><td>${s[0]}</td><td>${s[1]}</td><td>${s[2]}</td></tr>`).join('') + '</table>';
+}
+function query(){
+  const q = document.getElementById('qid').value.trim() || 'demo';
+  fetch('/api/judge_status?id=' + encodeURIComponent(q))
+    .then(r => r.json())
+    .then(j => { render(j.ok ? j : (DEMO[q] || DEMO['demo'])); })
+    .catch(() => render(DEMO[q] || DEMO['demo']));
 }
 </script>
 </body>
