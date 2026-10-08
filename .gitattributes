@@ -1,0 +1,9 @@
+# 行尾口径固化(2026-10-08 · S6 复核二轮 sha 分裂根因修复)
+# 根因:core.autocrlf=true 使 Windows 工作树 CRLF、cloud/Linux checkout LF——
+# 同一 blob 两种字节两种 sha256,登记处锚(b81eca84 等,Windows 字节口径)
+# 与平台 cloud 复验(LF 口径)永不可能对上(10703 实锤)。
+# 判分资产类文件统一 LF 入库与 checkout,sha 口径自此单一。
+*.jsonl text eol=lf
+*.json text eol=lf
+docs/metering/** text eol=lf
+docs/cases/** text eol=lf
