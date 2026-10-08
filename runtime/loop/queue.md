@@ -2212,3 +2212,7 @@
 - **compass 排除证词[实测]**:我方 10/8 云侧动作全在 14:00 后(registry/corpus_stats 部署链,R366 时间戳),删除窗零动作,从未写 nautilus-v5;ack 已呈(10748)。
 - **自防护双执行✅**:风险面盘点=compass 云目录是 git 仓(安全),/data/s6_rerun 非 VCS(暴露)→双备份:/data/backups tar 127M+**15 份 S6 复算报告入仓 runtime/s6_runs/**(68K,GitHub VCS 保护)——重算结果数据自此不可静默丢失。
 - 附议 v5:无 VCS 运行目录应 git 化;归因不做猜测(同纪律)。
+
+### R398 · 2026-10-09 晨五(主件轮:MEMX 三向归因算子 v0 落地✅——站3 因果倒置从设计到实弹)
+- **memx_attribution.py 建成[实测]**:输入失败事件→两路探测(recall top5+dedup 宽扫 0.65)→三向归因(A 记忆缺口→定向补写/B 记忆错误→降级勘误任务/C 检索失效→E1 调优/NONE 非记忆因→行为层转出);归因记录追加 runtime/memx/attributions.jsonl(棘轮式);selftest 6/6(含低分噪声过滤判据);实测两例全对(陌生量子域→A;daemon 双进程事故→B,其记忆条目实为 inferred 级=语义准确)。修正一轮:recall 无阈值 top-k 的低分命中曾误触发 B→加 REL_MIN 0.60 相关性门(缺陷在第一版就位前被实测抓出)。
+- **MEMX 飞轮站3自此实弹**:判读 FAIL/drift 事件→跑本算子→三分类任务清单——失败变成记忆系统的定向饲料,"自我催化"第一齿轮转动。
