@@ -2168,3 +2168,6 @@
 ### R386 · 2026-10-09 凌晨十(用户令"现在就推动":XERJ PR 提前发出✅——#1255 OPEN)
 - **PR #1255 已发**(xerj-org/xerj,pull/1255,base=corpus-hub,OPEN):fork(chunxiaoxx/xerj)→浅克隆 corpus-hub→两件落 tools/packs/agent-session-trajectories/→commit 8056834→push→pr create(CI 候绿);PR 正文 checklist 逐项(domain+query/70→70/Provenance/CC-BY-4.0+基准归属/demand anchor #1138+#1210/eval-answers offer);**#1138 跟帖回链**(comment 6060713784)。原排 10/12 提前——用户"现在就推动"令;格式=flat 语义若 build 不符 maintainer 会标,PR body 已注明格式。
 - 窗前发 vs 不发条款:XERJ PR 独立于 nautilus 开业(对 XERJ hub 贡献,无开业依赖),提前发成立;Einsia 函仍守 10/12(依赖开业三链接)。
+
+### R387 · 2026-10-09 凌晨十一(openclaw#3787 二轮审核启动——keep-alive 起效)
+- ClawSweeper bot 占位评论(审核已开始/工作者阅读中/实际评论随后)——R386 前的 keep-alive 回应(6053467049 updated details)触发二轮正式审核(9/20 Codex review 后第二次);处置=等实际审核结论不扰 bot;若通过→ClawHub 卡面 verification 字段合作进入实质;若拒→plain no 亦可接受(已在 PR 评论预声明)。
