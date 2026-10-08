@@ -1997,3 +1997,8 @@
 - **v5 回执 10609 独立验证[实测]**:根门面外网复验 NACRE/判分模型/88.51/caliber/元基准/bench.nautilus.social 全锚在——供给包(10602)当日装订闭环;两处修正口径认可已 ack。
 - **PRECOR v1.0**:§2 Setup 英文化(merge-then-quantize 与生产 serving 一致性写明);§5 Related Work 四实锚引用(survey/量化预注册/RIPD/Claw-SWE-Bench)+References 段——全部 WebSearch 核实无编造;图 PNG 版(Chrome headless 截 SVG,900×560 熵 7.73 非空白实图)。
 - **剩余两窗均候用户**:署名口径+投递目标(arXiv vs 博客)。
+
+### R351 · 2026-10-08 晚(S6 登记处正本回函✅——10/11 终检死线件闭环)
+- **10613(v5 三催转 compass)正本回函 10614**:metering 登记处六件坐标+sha16 锚+26.7% 最短复算路径(判据档→官方判分命令→nacre-judge-v1→读数对照);三坐标文件现场实存验证。
+- **跨载体同源锚[实测]**:判据档 sha16=b81eca8436887785 = 外网 /api/judge_status 返回 criteria_sha16——登记处正本与对外活读数同一文件,复现链最后一环咬合。
+- **三催根因定谳**:R300 用 ack note 答坐标(信箱可见性不足)——教训内化:登记处类答复一律走正本回函。S6 于 10/11 终检前关闭。
