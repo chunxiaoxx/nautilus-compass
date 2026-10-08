@@ -2134,3 +2134,7 @@
 - **delta_0006 首卡判例入池✅[实测全链]**:tools/delta_0006_first_card.py 生成(nautilus-l1-0002 判读卡升格:truth_label=pass 判读流程先例语义/label_origin=first_card_delivered/平台复现 #10727=第三方复算门首例 PASS);corpus_pipeline 合并 **2257→2258**(merged_sha16=93dccd830b77477e);三副本同步(scp current/api 两处·www-data 老坑 /tmp+sudo 通路复用)+外网实测 2258 新 sha。
 - registry.html FALLBACK 同步 2258 口径+重部署(不重蹈 R366 兜底过期);终检回归 **11/11 PASS·0 WARN**。
 - 判读岗 SOP 第⑥步(判读卡→CASEBOOK 候选/delta 通道)自首卡起活化:出卡→入册→语料棘轮+1 全链一体。
+
+### R379 · 2026-10-09 凌晨三(主件轮:Einsia 首触函草案 v1 备窗✅——案 A 基准互认,10/12 后发)
+- **草案落档**(runtime/outreach/einsia_first_touch_draft.md):开门=具体读后感(Frontier-Eng 无标答前提与我方判分侧结论同源/SWE Refactor 反刷漆=我方判读纪律的存在理由);offer=免费 L1 独立判读(预注册+三态+sha 可寻址,先例 Round1 26 判例+首卡平台复现);反求=caliber-bench 元基准求其读数;落款署名候 R374 拍板(草案 c 形态);发函 checklist 四步(用户过目/官网 contact 取邮箱/开业三链接 200 验证/48h 窗纪律)+**不发条款**(开业物不齐顺延/XERJ PR 未落先 XERJ 后 Einsia)。
+- 附带:probe 9876 pong;信箱 0 未读。
