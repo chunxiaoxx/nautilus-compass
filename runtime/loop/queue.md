@@ -1963,3 +1963,9 @@
 
 ### R343 · 2026-10-08(主件轮:网站体系全面审度报告)
 - **SITE_COMPREHENSIVE_REVIEW 落档并函 platform**(12 触点实测/白皮书承诺 vs 实际/BP承诺 vs 实际/三结构缺陷/修复优先级六件 P0 两件 P1 两件 P2 两件)。核心发现:主站定位文案与白皮书不一致/产品页零互链/SPA 站渲染后不可验/L2 样例偏薄。
+
+### R343b · 2026-10-08 早(主件轮:compass 网页+GitHub 全景审计)
+- **GitHub 仓库[实测]**:⭐1255·🍴36 forks·22 open issues·10 open PRs·v3.3.0 最新 release·pushed 10/6。README 新章(Independent Judging pillar)远端✓;16 topics(含 benchmark/evaluation/llm-as-judge/verification 新增四枚)。
+- **HF org[实测]**:nautilus-compass org 下 models 1 件(nacre-judge-v1)+datasets 3 件(caliber-bench-v0/nautilus-swe-trajectories/lerobot-independent-qc)。
+- **网页五件[实测 200+内容锚]**:leaderboard 详版✓/criteria 判据×8/status 判读卡✓/registry 仪表✓/compass 子域(独立判读+记忆双层叙事)✓。data./bench. 待 flywheel/v5 各自 own。
+- **评估**:GitHub 仓库健康(1255 星/活跃/多 topics);网页五件全绿;HF org 结构清晰(1 model+3 datasets)。**薄弱点**:①主门面 nautilus.social 的首页 title 仍是"数据飞轮管道平台"而非"评测与数据基础设施"(与白皮书定位不一致);②open PRs 10 个——需盘点哪些是依赖项哪些可合并;③GitHub 仓库描述已更新但 topics 可再精准化(加 meta-benchmark/open-source-evaluation)。
