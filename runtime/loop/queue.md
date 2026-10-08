@@ -1979,3 +1979,10 @@
 - **部署✅[实测外网 200]**:judge_status API 以 systemd compass-judge-status 部署到 cloud(9890 端口),nginx 已有 /api/judge_status 代理(前期配置);外网 E2E 验证:ok=True/status=done/6 步含判据 sha=b81eca84——**从公网任何地方查询判读卡状态全链通**。
 - **至此客户旅程全链上线**:intake(提交)→criteria(判据)→leaderboard(榜)→status(查进度)→registry(语料)→judge_status API(程序化查)→/api/corpus_stats(公开计数)。全部外网 200。
 - 这不是 demo,是真服务:任何外部 harness 开发者今天就可以提交、查进度、看结果。
+
+### R348 · 2026-10-08 午(主件轮:语料 2000 冲刺达成✅——1846→2228)
+- **四源全刷新**:主源重提取 369→423 候选(新轮次+新记忆);docs 源提取器重写(tools/org_fuel_docs.py,表格行/要点行切块,205→799 候选);A100 判分 1222 条(bf16 NACRE judge,pass 303+456)。
+- **合并去重后 1846→2228(+382),跨 2000 门槛**[实测管道+外网]:org_fuel 池 419→802(gate 287/letters 47/docs 456/outreach 12);merged_sha16=8f302d698df6a8e4。
+- **站点语料数已刷新**:corpus_stats.json 三副本同步(cloud /var/www/nautilus + current/ + current/api/),外网 /corpus_stats.json 实测回 2228;registry.html 活取数自动生效。
+- **新工具**:tools/org_fuel_harvest.py 收割段(--check 轮询+FLAG 门+SFTP 拉取+管道重跑一键);环境锚=A100 判分必须 /root/venv/bin/python 绝对路径(nohup 非登录 shell 无 conda,首次 rerun 空转教训——flag 假绿被证伪抓获)。
+- 判据零放宽:pass 口径同旧(pass=具体判断+具体可验结果);docs fail 317 条照弃不用。
