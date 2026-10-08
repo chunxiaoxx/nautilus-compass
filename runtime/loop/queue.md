@@ -2053,4 +2053,12 @@
 ### R362 · 2026-10-08 深夜三(S6 复跑启动件预检✅——环境就绪,磁盘硬缺口如实呈报)
 - **排期回函 10647**(四问全答:排期 10/9-11 留缓冲/磁盘=唯一硬约束/口径同判据档 sha b81eca84/判分岗 8 单 10/9 盘点并行清)。
 - **预检先行 [实测]**:cloud swebench 5.0.2 装妥(venv)+preds_arm_a.json 上传+镜像覆盖 30/30 全缺(现存 3 swe 镜像=非 board30 残留;获取走 swebench 内置按需 pull);补函 10663。
+
+### R364 · 2026-10-08 夜(主件轮:XERJ 捐赠包逐字终扫 CLEAN✅——构建收官,PR 材料终态锁定)
+- **终扫器建成+全量扫描[实测]**(tools/xerj_pack_scan.py,幂等可复跑):判据先声明零豁免(FAIL=凭据/PII 残留或 schema 破损;WARN=内部路径/env 名);selftest 5/5 检测力自证先行;**FINAL-SCAN: CLEAN(fails=0 · warns=17)**——70 记录 schema 全过,topics 46/13/6/5 与 R319 一致;17 WARN 全为 /root/ 通用路径(r184 vdd4×8/r118 venv×4/r303 vdd4×5),处置=保留(无凭据/PII/主机名,人工复核同类文本 7/7 已过)。报告=docs/outreach/XERJ_PACK_FINAL_SCAN_20261008.md。
+- **三件套 sha256 锚定**:jsonl=ea7fab54…5653e1/README=328247c3…e84d44c/recipe=572b4205…2fd355b;效力条款=sha 不变报告有效至 PR 日,变更须重扫。
+- **R363 同型坑第二例**:pr_ready/agent-session-trajectories.jsonl 被 .gitignore:7 `*.jsonl` 静默挡(README/recipe/sessions.jsonl 均已跟踪,唯 PR 提交源副本漏网)→git add -f 补入,PR 提交源自此 GitHub 可寻址。
+- **队列拍板:XERJ 捐赠包构建收官**(R319 设计→R334 复核→R335 README→R343 组装→本轮终扫);PR 窗=10/12 开业后(recipe.toml+README 提 corpus-hub,built pack 不入 PR,发后回函链接)。下轮顺延核对下一件:registry/语料状态活数据页(R344/R348 已有实现,核验现役态后取真开件)。
+- 附带:信箱 1 函 ack(10670 冲正重算暂缓通知——前置 v5#10616 落地回函未到按序暂缓,SQL 以再生成版为唯一权威,执行日现场重算);9876 probe pong(pid 27120)。
+- 补注:R363(split 三件语料正本补入仓,commit 00d29232)漏记本账,顺此补注。
 - **磁盘硬缺口**:30 镜像解压预计 90-120G vs 余 62G——明日预拉前需清盘(候选列单待批:swe_b50 Exit 容器/v5 仓归档/nanojev_ckpt)或平台扩容。资源请求经 10647/10663 已达(用户令背景优先响应)。
