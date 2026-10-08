@@ -1,0 +1,8 @@
+# agent-session-trajectories · record pack recipe
+[corpus]
+name = "agent-session-trajectories"
+
+[[sources]]
+path = "agent-session-trajectories.jsonl"
+licence = "CC-BY-4.0"
+review = "own production ops records; sanitized 5-step + 10% human audit (7/7)"
