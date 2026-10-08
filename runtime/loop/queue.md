@@ -2110,3 +2110,13 @@
 - **垫跑实质起跑✅**:pull_batches.sh 后台实跑——[#1] astropy-14365 OK(73G→70G),[#2] django-12304 进行中;护栏在位(余量<25G 自停);扩容获批后余批切全拉。
 - **首卡信用闭环首例✅**:10727 平台独立复现 nautilus-l1-0002 通过(verdict/sha16 逐项命中)+72fdcb66 回写 delivered+关单 5 件+真实客户单=0 坐实——**判读岗首例 delivered→第三方复现→关单全链走通**,判读管线信用实证;ack 已回。
 - 附带:probe 9876 pong(pid 29128);信箱 1 函处理。
+
+### R373 · 2026-10-08 深夜八(主件轮:XERJ PR 最后预检✅——recipe 重写对齐 TEMPLATE+PR 草稿备妥,窗开即发)
+- **预检抓出重大形态偏差并修正**:XERJ hub CONTRIBUTING.md(corpus-hub 分支,132 行)全读对标——Lane B record pack 正解=tools/packs/<name>/recipe.toml+README(PY 脚本 recipes/ 是 demo 非语料配方;槽位=backlog-100.json 条目,PR #1210 实证);我方原 recipe.toml 骨架([corpus]/path=本地文件)**不符 TEMPLATE schema**→按 format=1 全段重写(sources slug=nautilus-ops kind=git url=nautilus-compass 公开仓 glob=jsonl 路径/format=flat/envelope 字段映射/identity id 唯一/merge 单源/emit 16)。
+- **jsonl 归属定案**:rust-vulns showcase 实证 records 不进 PR repo→我方 jsonl=我方 repo 侧 build 源(sources.url+glob 寻址,00d29232 起公开可寻址闭环),PR 只带 recipe+README 两件。
+- **终扫复跑 CLEAN(fails=0 warns=18)**:R364 效力条款执行(变更→重扫→新锚:README a1081ad1/recipe 344fef9a/jsonl ea7fab54 不变);报告追加变更记录。
+- **PR 草稿备妥**(runtime/loop/_xerj_pr_draft.md):checklist 逐条预填(域句/70→70 identity 数/Provenance/CC-BY-4.0+基准归属/demand anchor #1138+#1210/build 命令)+机械步骤(fork→cp 两件→pr create→#1138 跟帖+回函);唯一不确定点=format="flat" 对逐行 JSON 的语义(PR body 注明,build 由 maintainer 执行)。
+- 窗=10/12 开业后;窗开日零现场工作直接发。
+
+### R374 · 2026-10-08 深夜九(主件轮:PRECOR 投递决策卡呈批✅——两拍板项一次呈清)
+- **决策卡落档**(docs/papers/PRECOR_SUBMISSION_DECISION_20261008.md):短文 v1.0 全英可投零内容欠账[实测核对];问一署名三选项(推荐 c=Chunxiao Wang — nautilus-compass, Nautilus Platform,与 XERJ recipe 信/HF org 既有署名一致);问二投递三选项(推荐 c=双轨:开业周博客短版带 CTA 首发→同周 arXiv 全版;对传播五层对账=不占第一层窗口,层次无冲突);拍板即执行清单四步零现场写作。
