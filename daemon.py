@@ -1133,9 +1133,16 @@ def _handle_dedup_check(req: dict) -> dict:
     except Exception as e:
         return {"ok": False, "error": f"embed failed: {e}"}
     entries = get_memory_entries(mem_dir)
-    return dedup_verdict(q_emb, entries,
-                         float(req.get("threshold_merge", _DEDUP_MERGE_DEFAULT)),
-                         float(req.get("threshold_gray", _DEDUP_GRAY_DEFAULT)))
+    _verdict = dedup_verdict(q_emb, entries,
+                             float(req.get("threshold_merge", _DEDUP_MERGE_DEFAULT)),
+                             float(req.get("threshold_gray", _DEDUP_GRAY_DEFAULT)))
+    # v2.5.1 · 覆盖度披露:_EMBED_BUDGET 渐进消化(v3.0.9)下冷文件 embedding=None,
+    # dedup 对其漏检=fail-open 静默。调用方有权知道本次判定实际覆盖了多少库。
+    _verdict["coverage"] = {
+        "embedded": sum(1 for e in entries if e.get("embedding")),
+        "total": len(entries),
+    }
+    return _verdict
 
 
 def _stem(p: str) -> str:
