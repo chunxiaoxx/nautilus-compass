@@ -2284,3 +2284,6 @@
 - **memx_utility.py 建成**:汇总 attributions.jsonl → 每条被命中记忆的 hits/归因分布/fact_status/结局 四列效用表;首跑=11 条记忆命中视图。**附带发现**:多条记忆 fact_status 显示"?"(recall 带出空值)=老条目 frontmatter 缺标注——**fact_status 覆盖率问题被效用表抓出**(M5 带出依赖条目自有标注),入 E1 修复清单。
 - outcome 字段入归因账(--card 模式 verdict 随卡记录)——hit→outcome 关联通道打通,RL 奖励地基成形。
 - LOOP 驱动器:T4.5✅销项。G4 MEMX 四件销其四(T4.3 对拍/T4.4 改写/T4.5 效用表/归因算子)——站3 全链实弹。
+
+### R411 · 2026-10-09 午三(memory 沉淀二轮——今晨新教训入库)
+- memory 二轮沉淀:①memx-flywheel-first-night(NACRE 全名即架构图/三向归因双坑/A+ -57pp 发现/工程三坑)②s6-ledger-recompute-complete(五门独立验收/R3 判读被采纳/A3 平台自纠示范/卡面勘误纪律/MCP 网关限制);MEMORY.md 索引同步。全场静默确认,收工候回音。
