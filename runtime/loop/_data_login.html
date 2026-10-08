@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>登录 · 智涌飞轮工作台</title><style>
+body{font-family:system-ui,sans-serif;color:#1B3A33;margin:0;min-height:100vh;background:radial-gradient(1100px 500px at 15% -10%,#CBEFE4 0%,transparent 60%),radial-gradient(900px 500px at 110% 110%,#BFE3F5 0%,transparent 55%),#F6FBF9;display:flex;align-items:center;justify-content:center;padding:24px 12px;box-sizing:border-box}
+.card{background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border:1px solid #E3F1EC;border-radius:18px;box-shadow:0 10px 40px rgba(0,90,70,.14);padding:2rem 1.8rem;width:min(92vw,400px)}.brand-row{display:flex;align-items:baseline;gap:.5rem;margin-bottom:.2rem}.brand-row b{font-size:1.15rem;color:#00997B}.brand-row span{font-size:.78rem;color:#7A968D}
+h1{font-size:1.3rem;margin:0 0 .3rem}p.sub{color:#5B7A71;font-size:.9rem;margin:0 0 1.2rem}
+.tabs{display:flex;gap:6px;margin-bottom:1rem}.tabs button{flex:1;padding:.55rem;border:1px solid #CBE5DD;background:#fff;border-radius:8px;cursor:pointer;font-size:.95rem}
+.tabs button.on{background:#00997B;color:#fff;border-color:#00997B;font-weight:700}
+label{display:block;font-size:.85rem;color:#40604F;margin:.7rem 0 .25rem}
+input{width:100%;box-sizing:border-box;padding:.6rem .7rem;border:1px solid #C9D8D3;border-radius:8px;font-size:1rem}
+button.go{width:100%;margin-top:1.1rem;padding:.7rem;background:#00997B;color:#fff;border:0;border-radius:10px;font-size:1.05rem;cursor:pointer}
+button.go:disabled{background:#9CC9BD}#msg{min-height:1.4rem;font-size:.85rem;margin-top:.7rem;color:#B4470A}
+#vrow{display:none}a{color:#00997B}</style></head><body>
+<div class="card"><div class="brand-row"><b>智涌飞轮</b><span>FLYWHEEL CONSOLE</span></div><h1>工作台登录</h1>
+<p class="sub">对外演示层免密开放；生产工作台使用邮箱验证账号。</p>
+<div class="tabs"><button id="t-login" class="on" onclick="tab(1)">登录</button><button id="t-sign" onclick="tab(2)">注册</button></div>
+<label>邮箱</label><input id="email" type="email" autocomplete="email">
+<label>密码（≥8 位）</label><input id="pass" type="password" autocomplete="current-password">
+<div id="vrow"><label>邮箱验证码（6 位）</label><input id="code" inputmode="numeric" maxlength="6"></div>
+<button class="go" id="go" onclick="go()">登录</button>
+<div id="msg"></div>
+<p class="sub" style="margin-top:1rem">演示层入口：<a href="/console/g/">/console/g/</a></p>
+</div><script>
+let mode=1;
+function tab(m){mode=m;document.getElementById('t-login').classList.toggle('on',m==1);document.getElementById('t-sign').classList.toggle('on',m==2);
+ document.getElementById('vrow').style.display=(m==2)?'block':'none';document.getElementById('go').textContent=(m==2?'发送验证码 / 完成验证':'登录');document.getElementById('msg').textContent='';}
+async function go(){const em=document.getElementById('email').value.trim(),pw=document.getElementById('pass').value;
+ const m=document.getElementById('msg'),btn=document.getElementById('go');btn.disabled=true;
+ try{if(mode==1){const r=await fetch('/console/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:em,pass:pw})});
+  const j=await r.json();if(!r.ok){if(j.unverified){fetch('/console/auth/resend',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:em})});mode=2;tab(2);document.getElementById('vrow').style.display='block';m.textContent='该邮箱已注册但未验证——验证码已重新发送，查收后填入并点击下方按钮完成验证';}else{m.textContent=j.error||'登录失败';}}else{location.href='/console/';return;}}
+ else{const cd=document.getElementById('code').value.trim();
+  if(!cd){const r=await fetch('/console/auth/signup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:em,pass:pw})});
+   const j=await r.json();m.textContent=r.ok?'验证码已发送到邮箱，查收后填入并再次点击':(j.error||'注册失败');}
+  else{const r=await fetch('/console/auth/verify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:em,code:cd})});
+   const j=await r.json();if(!r.ok){m.textContent=j.error||'验证失败';}
+   else{const r2=await fetch('/console/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:em,pass:pw})});
+    const j2=await r2.json();if(r2.ok){location.href='/console/';return;}m.textContent=j2.error||'登录失败';}}}}catch(e){m.textContent='网络异常'}btn.disabled=false;}
+</script></body></html>

@@ -1986,3 +1986,9 @@
 - **站点语料数已刷新**:corpus_stats.json 三副本同步(cloud /var/www/nautilus + current/ + current/api/),外网 /corpus_stats.json 实测回 2228;registry.html 活取数自动生效。
 - **新工具**:tools/org_fuel_harvest.py 收割段(--check 轮询+FLAG 门+SFTP 拉取+管道重跑一键);环境锚=A100 判分必须 /root/venv/bin/python 绝对路径(nohup 非登录 shell 无 conda,首次 rerun 空转教训——flag 假绿被证伪抓获)。
 - 判据零放宽:pass 口径同旧(pass=具体判断+具体可验结果);docs fail 317 条照弃不用。
+
+### R349 · 2026-10-08 午后(主件轮:data 站 headless 深验✅——10/11 终检前置件提前完成)
+- **五路由渲染实证[实测]**:主页 35KB(84 路实测读数/判据迭代实录/81pp/sha 存证全在)、pricing 30.5KB、console/login 4.4KB 真表单、#/doc/l1-sku 1062 字符、#/doc/l2-case 1728 字符——SPA 渲染后内容质量高,SITE_REVIEW 缺陷三关闭。
+- **链接层全枚举**:23 链零空 href 零外链,mailto/锚/console 路由分布健康。
+- **配方沉淀**:chrome --headless=new --dump-dom --virtual-time-budget(零依赖可复跑);渲染件存 runtime/loop/_data_*.html。
+- **移交**:console/g/* 内页需登录未验,记 10/11 终检清单(flywheel 补验或开测试账号)。报告 docs/outreach/DATA_SITE_DEEPVERIFY_20261008.md。
