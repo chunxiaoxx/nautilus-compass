@@ -93,8 +93,10 @@ def main() -> int:
             return 0
         args.event = f"{card.get('title', '')} — {str(card.get('evidence', ''))[:400]}"
         card_id = args.card
+        card_verdict = verdict
     else:
         card_id = None
+        card_verdict = None
     if not args.event:
         print("--event 或 --card 必填(或 --selftest)")
         return 2
@@ -110,6 +112,7 @@ def main() -> int:
     record = {
         "ts": time.strftime("%Y-%m-%dT%H:%M:%S"),
         "card": card_id,
+        "outcome": card_verdict if card_id else None,
         "event": args.event[:300],
         "recall_n": len(hits),
         "recall_top": [(h.get("path", "")[-45:], h.get("fact_status", "")) for h in hits[:3]],
