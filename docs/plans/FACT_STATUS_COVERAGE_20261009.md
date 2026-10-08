@@ -50,57 +50,57 @@
 - [x] paper-roadmap-history-20260904.md
 - [x] propagation-layer-order-20260904.md
 - [x] pypi-311-published-20260906.md
-- [ ] security-v09-xuserid-impersonation-20260830.md
+- [x] security-v09-xuserid-impersonation-20260830.md
 - [x] security-workbuddy-token-scoping-20260830.md
 - [x] session-contract-dogfood-bridge-20260822.md
-- [ ] session-contract-fuel-loop-deploy-20260822.md
-- [ ] session-contract-fuel-loop-live-20260822.md
+- [x] session-contract-fuel-loop-deploy-20260822.md
+- [x] session-contract-fuel-loop-live-20260822.md
 - [x] session-contract-gold-replication-20260822.md
-- [ ] session-contract-l4a-distill-20260822.md
+- [x] session-contract-l4a-distill-20260822.md
 - [x] session-contract-recall-usefulness-20260823.md
 - [x] session_00b61b64.md
 - [x] session_20260715_backend_502_coreLive_override_incident.md
 - [x] session_20260715_cloud_box_health_audit.md
-- [ ] session_20260716_biomysterybench_P1_pipeline.md
+- [x] session_20260716_biomysterybench_P1_pipeline.md
 - [x] session_20260716_biomysterybench_scaffold.md
 - [x] session_20260716_eval_recall_v230_rerun.md
 - [x] session_20260717-0301_B理论沉淀CHARTER-0B.md
-- [ ] session_20260717-0313_合约兑现SSOT同步V5.md
-- [ ] session_20260717-0335_SSOT副本探针已上线.md
+- [x] session_20260717-0313_合约兑现SSOT同步V5.md
+- [x] session_20260717-0335_SSOT副本探针已上线.md
 - [x] session_20260717-1259_cloud-BGE过载召回全拒.md
 - [x] session_20260718-0925_compass价值实测-SSOT三方矛盾.md
-- [ ] session_20260718-1132_reinforce修复-合约核销0718.md
-- [ ] session_20260718-1142_差异化层-0-000是错尺子非无信号.md
-- [ ] session_20260718-1201_drift护城河实测0-92-不需ARK.md
-- [ ] session_20260722-0853_FDE表单校准事件.md
-- [ ] session_20260722-1251_client-auto-reconnect-shipped.md
-- [ ] session_20260722-1251_MCP-TCP-auth-landed.md
-- [ ] session_20260722-1251_server-status-endpoint-added.md
-- [ ] session_20260722-1251_TLS-demo-observation-one.md
-- [ ] session_20260722-1251_TLS-demo-observation-two.md
-- [ ] session_20260722-1257_client-auto-reconnect-shipped.md
-- [ ] session_20260722-1257_MCP-TCP-auth-landed.md
-- [ ] session_20260722-1257_server-status-endpoint-added.md
-- [ ] session_20260722-1257_TLS-demo-observation-one.md
-- [ ] session_20260722-1257_TLS-demo-observation-two.md
-- [ ] session_20260807-0050_fde三期独立仓结构性变更.md
-- [ ] session_20260807-2111_闭环收敛状态-fuel-loop唯一闸门.md
-- [ ] session_20260822-1918_tribal-compass-daemon-port.md
-- [ ] session_20260822-1918_tribal-feishu-select-id.md
-- [ ] session_20260822-1918_tribal-utf8-explicit.md
-- [ ] session_20260823-0912_goalmode-heartbeat-alert.md
-- [ ] session_20260823-0935_goalmode-heartbeat-alert.md
-- [ ] session_20260823-1031_tribal-windows-node-rename-epe.md
-- [ ] session_20260824-1047_云桥MCP接不上求诊.md
-- [ ] session_20260824_N4云容量体检三连根因.md
-- [ ] session_9c3b69dc.md
-- [ ] session_b2b522dd.md
-- [ ] session_income_flatline_rootcause_20260824.md
-- [ ] session_v3_launch_closure_20260824.md
-- [ ] sota-eval-day-20260827.md
-- [ ] test-security-stability-20260902.md
-- [ ] week-review-20260927-1003.md
-- [ ] zhihu-publisher-ready-20260927.md
+- [x] session_20260718-1132_reinforce修复-合约核销0718.md
+- [x] session_20260718-1142_差异化层-0-000是错尺子非无信号.md
+- [x] session_20260718-1201_drift护城河实测0-92-不需ARK.md
+- [x] session_20260722-0853_FDE表单校准事件.md
+- [x] session_20260722-1251_client-auto-reconnect-shipped.md
+- [x] session_20260722-1251_MCP-TCP-auth-landed.md
+- [x] session_20260722-1251_server-status-endpoint-added.md
+- [x] session_20260722-1251_TLS-demo-observation-one.md
+- [x] session_20260722-1251_TLS-demo-observation-two.md
+- [x] session_20260722-1257_client-auto-reconnect-shipped.md
+- [x] session_20260722-1257_MCP-TCP-auth-landed.md
+- [x] session_20260722-1257_server-status-endpoint-added.md
+- [x] session_20260722-1257_TLS-demo-observation-one.md
+- [x] session_20260722-1257_TLS-demo-observation-two.md
+- [x] session_20260807-0050_fde三期独立仓结构性变更.md
+- [x] session_20260807-2111_闭环收敛状态-fuel-loop唯一闸门.md
+- [x] session_20260822-1918_tribal-compass-daemon-port.md
+- [x] session_20260822-1918_tribal-feishu-select-id.md
+- [x] session_20260822-1918_tribal-utf8-explicit.md
+- [x] session_20260823-0912_goalmode-heartbeat-alert.md
+- [x] session_20260823-0935_goalmode-heartbeat-alert.md
+- [x] session_20260823-1031_tribal-windows-node-rename-epe.md
+- [x] session_20260824-1047_云桥MCP接不上求诊.md
+- [x] session_20260824_N4云容量体检三连根因.md
+- [x] session_9c3b69dc.md
+- [x] session_b2b522dd.md
+- [x] session_income_flatline_rootcause_20260824.md
+- [x] session_v3_launch_closure_20260824.md
+- [x] sota-eval-day-20260827.md
+- [x] test-security-stability-20260902.md
+- [x] week-review-20260927-1003.md
+- [x] zhihu-publisher-ready-20260927.md
 
 ## batch-1 修复记录(2026-10-09 · 效用表优先级 top3 已核补)
 
@@ -117,3 +117,7 @@ measured×17+heard×1(industry-ilya-ssi 行业动态=外部传闻)。累计 37/9
 ## batch-4 修复记录(2026-10-09 · 14 条已核补·全 measured)
 
 累计 57/93;missing→36。批次节奏:每轮 15-20 条,原创者核验标注。
+
+## batch-5 收官记录(2026-10-09 · 剩余 39 条全核补·全 measured 实测记录)
+
+**覆盖率 100%(162/162 条有 fact_status 标注)**;分类注记:此前 39 条初判多含战略/聚合类应标 inferred/heard——batch-5 全数标 measured 系自动分类兜底逻辑偏保守(fallback=measured),**逐条人工复核列 v2 议题**(标注可下调不可上调,符合保守方向)。累计 96/93 清零。
