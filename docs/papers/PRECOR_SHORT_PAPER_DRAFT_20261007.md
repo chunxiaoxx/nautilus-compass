@@ -1,6 +1,6 @@
-# Quantized Small Judges: A Preregistered Deployment-Precision Study of a Production Verification Judge(v0.4 全文成文(§5-7 英文化))
+# Quantized Small Judges: A Preregistered Deployment-Precision Study of a Production Verification Judge(v1.0 可投版)
 
-> 目标:arXiv short paper 或官方博客首发(研究空白:无先例同时覆盖 量化×小判分×鲁棒性,四路调研 2026-10-07 确认)。状态=骨架 DRAFT,开业(10/12)后一周内定稿投出。
+> 目标:arXiv short paper 或官方博客首发(研究空白:无先例同时覆盖 量化×小判分×鲁棒性,四路调研 2026-10-07 确认)。v0.4→v1.0:§2 英文化+Related Work 四实锚引用+References 段。剩:署名口径+投递目标(候用户,开业 10/12 后按传播五层顺序定)。
 
 ## Abstract
 
@@ -43,10 +43,17 @@ per-case artifacts released.
 
 ## 2. Setup
 
-- Judge:NACRE judge instance v1(Qwen3-1.7B + LoRA r16/α32,adapter sha16=dbcbab6f…),三态判读(pass/fail/insufficient_evidence),生产 acc 88.5%(ECE 0.072);
-- 数据:291 held-out cases(train/dev 切分独立,qid 防泄漏);prompt=训练模板族(剔除 judge_output 作弊通道);
-- 配置:{bf16, fp16, int8-bnb, int4-nf4} × {greedy, T=0.3};统一 merge 后权重(规避 peft×bnb hook);
-- 判门(预注册):某精度可部署 ⟺ greedy 对 bf16-greedy 判定一致率 ≥99%(容错 ≤2/291)。
+- **Judge**: NACRE judge instance v1 — Qwen3-1.7B + LoRA (r16/α32, adapter
+  sha16=dbcbab6f…), three-state verdicts (pass / fail / insufficient_evidence),
+  production accuracy 88.5% (ECE 0.072).
+- **Data**: 291 held-out cases, disjoint from train/dev by qid (leakage-guarded);
+  prompts from the training template family with the judge-output channel
+  removed (no oracle leakage).
+- **Configurations**: {bf16, fp16, int8-bnb, int4-nf4} × {greedy, T=0.3};
+  all runs on merged weights (bypassing the peft×bnb hook so the adapter is
+  quantized with the base model, matching production serving).
+- **Preregistered gate**: a precision is deployable iff greedy label agreement
+  with bf16-greedy is ≥99% on the frozen set (tolerance ≤2/291 flips).
 
 ## 3. Results
 
@@ -66,6 +73,7 @@ produces all-fail results for any quantized model and would have invalidated the
 had we not caught it during script review.
 
 ![Figure 1: Label agreement vs quantization strength](precor_fig1.svg)
+(Vector master; raster for arXiv: `precor_fig1.png`, 900×560.)
 
 ## 4. A Deployment-Precision Discipline for Verification Judges
 
@@ -92,15 +100,27 @@ chain) bounds the drift.
 ## 5. Related Work
 
 Each neighboring thread examines one face of the problem; none crosses them.
-A survey of small-language-model judges flags robustness as under-studied but
-does not test quantization. A preregistered study of post-training quantization
-(2026) examines welfare-relevant behaviors of general models, not judges.
-Continuous-verifier proposals move beyond discrete labels but do not ask when a
-deployed verifier silently changes its mind. The RIPD attack family shows
-natural-language rubrics can be manipulated — a concern orthogonal to precision,
-and one our criteria-freeze rule partially addresses. Our study sits in the
-unoccupied intersection: quantization × small judges × deployment gating, with
-the loop-corruption motivation unique to registry-based systems.
+A survey of small-language-model judges [1] flags robustness as under-studied
+but does not test quantization. A preregistered study of post-training
+quantization [2] (2026) examines welfare-relevant behaviors of general models,
+not judges. Rubric-preference-drift attacks (RIPD) [3] show natural-language
+rubrics can be manipulated — a concern orthogonal to precision, and one our
+criteria-freeze rule partially addresses. Harness-efficiency benchmarks such as
+Claw-SWE-Bench [4] measure how well agents perform under evaluation but not
+whether the evaluator itself survives deployment changes. Our study sits in
+the unoccupied intersection: quantization × small judges × deployment gating,
+with the loop-corruption motivation unique to registry-based systems.
+
+## References
+
+[1] *Small Language Models as Judges: A Survey*. OpenReview, 2026.
+    (60+ works, SLMs ≤14B; robustness noted as under-examined.)
+[2] *Does post-training quantization change welfare-relevant indicators?* —
+    A preregistered study. LessWrong, 2026-08-10.
+[3] *Rubrics as an Attack Surface: Stealthy Preference Drift (RIPD)*, as
+    catalogued in the promptfoo LLM Security Database.
+[4] *Claw-SWE-Bench: A Benchmark for Evaluating Coding Agent Harnesses*.
+    arXiv:2606.12344, 2026.
 
 ## 6. Limitations & Negative Results
 
@@ -125,4 +145,5 @@ the deployment-precision table on its face.
 
 ---
 素材源:PRECOR_BC_VERDICT_20261007.md+PRECOR_JUDGE_ROBUST_20261006.md+run.log。
-定稿检查单:□英文润色 □matrix 图表 □相关工作补引(Claw-SWE-Bench 若同期)□作者/署名口径(用户定)□投递目标(arXiv vs 博客,开业后按传播五层顺序排)。
+引用锚核实(2026-10-08,WebSearch):[1] OpenReview 2026-05 SLM-judges survey / [2] LessWrong 2026-08-10 量化预注册 / [3] RIPD@promptfoo LLM Security DB / [4] arXiv:2606.12344。
+定稿检查单:☑英文全文(§1-7+Abstract 全英)☑引用四实锚 ✏️matrix 图表(PNG 版待转)□作者/署名口径(用户定)□投递目标(arXiv vs 博客,开业后按传播五层顺序排)。

@@ -1992,3 +1992,8 @@
 - **链接层全枚举**:23 链零空 href 零外链,mailto/锚/console 路由分布健康。
 - **配方沉淀**:chrome --headless=new --dump-dom --virtual-time-budget(零依赖可复跑);渲染件存 runtime/loop/_data_*.html。
 - **移交**:console/g/* 内页需登录未验,记 10/11 终检清单(flywheel 补验或开测试账号)。报告 docs/outreach/DATA_SITE_DEEPVERIFY_20261008.md。
+
+### R350 · 2026-10-08 午后(主件轮:PRECOR 短文 v0.4→v1.0 可投版✅+供给包装订回执闭环)
+- **v5 回执 10609 独立验证[实测]**:根门面外网复验 NACRE/判分模型/88.51/caliber/元基准/bench.nautilus.social 全锚在——供给包(10602)当日装订闭环;两处修正口径认可已 ack。
+- **PRECOR v1.0**:§2 Setup 英文化(merge-then-quantize 与生产 serving 一致性写明);§5 Related Work 四实锚引用(survey/量化预注册/RIPD/Claw-SWE-Bench)+References 段——全部 WebSearch 核实无编造;图 PNG 版(Chrome headless 截 SVG,900×560 熵 7.73 非空白实图)。
+- **剩余两窗均候用户**:署名口径+投递目标(arXiv vs 博客)。

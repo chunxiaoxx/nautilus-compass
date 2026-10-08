@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nautilus · AI 原生组织 · 评测与数据基础设施</title>
+<style>
+:root{--bg:#0b0e12;--card:#12161d;--line:#232a35;--ink:#f3efe5;--mut:#8b94a3;--brand:#4f8cff;--ok:#3fbf7f;--warn:#e0a13f;--bad:#e05c5c}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.7 system-ui,-apple-system,"Microsoft YaHei",sans-serif}
+.wrap{max-width:1100px;margin:0 auto;padding:0 18px}
+header{padding:38px 0 22px;border-bottom:1px solid var(--line)}
+.kicker{color:var(--brand);font-size:12.5px;letter-spacing:2px;margin-bottom:8px}
+h1{font-size:28px;margin:0 0 8px}.sub{color:var(--mut);font-size:14.5px;max-width:820px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:22px 0}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.kpi .n{font-size:23px;font-weight:700;color:var(--brand)}
+.kpi .l{color:var(--mut);font-size:12.5px;margin-top:2px}
+h2{font-size:19px;margin:36px 0 12px;padding-left:11px;border-left:4px solid var(--brand)}
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13.5px;background:var(--card)}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+th{background:#151b25;color:var(--mut)}
+.pill{display:inline-block;padding:1px 9px;border-radius:11px;font-size:12px}
+.done{background:#123527;color:var(--ok)}.pending{background:#1a2030;color:var(--mut)}.failed{background:#3a1616;color:var(--bad)}
+.live-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ok);margin-right:6px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.refresh{color:var(--mut);font-size:12.5px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:15px}
+.card h3{margin:0 0 6px;font-size:15px}.card p{margin:0;color:var(--mut);font-size:13.5px}
+a{color:var(--brand);text-decoration:none}
+.cta{background:linear-gradient(135deg,#0f2a5c,#0f62fe);border-radius:12px;padding:24px;margin:30px 0}
+.cta h2{margin:0 0 8px;border:none;padding:0;color:#fff}
+.cta p{margin:0 0 12px;color:#cfe0ff}
+.cta a{display:inline-block;background:#fff;color:#0f2a5c;padding:9px 20px;border-radius:8px;font-weight:700;margin:0 10px 8px 0}
+.foot{color:var(--mut);font-size:12px;padding:22px 0;border-top:1px solid var(--line);margin-top:40px}
+.svc-name{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13.5px;word-break:break-all}
+.svc-state{color:var(--ok);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px}
+</style>
+</head>
+<body>
+<meta property="og:title" content="Nautilus · 独立 agent 评测判分平台">
+<meta property="og:description" content="判据 sha 预注册 · 负结果照报 · 复现命令随附 · 免费收录 24h 回卡">
+<div class="wrap"><nav style="margin:0 0 18px;font-size:14px"><a href="https://bench.nautilus.social/" style="color:#4f8cff;margin-right:14px;font-weight:700">⚙ Bench 评测</a><a href="https://nautilus.social/customer.html" style="color:#4f8cff;margin-right:14px">我的提测</a><a href="/org/whitepaper.html" style="color:#4f8cff;margin-right:14px">技术白皮书</a><a href="/org/business-plan.html" style="color:#4f8cff;margin-right:14px">商业计划书</a><a href="/org/leaderboard.html" style="color:#4f8cff;margin-right:14px">榜单</a><a href="/org/e2e.html" style="color:#4f8cff;margin-right:14px">逐单验证台</a><a href="https://nautilus.social/developers.html" style="color:#4f8cff;margin-right:14px">开发者</a><a href="/criteria/" style="color:#4f8cff;margin-right:14px">判据</a><a href="/org/L2_report_sample.md" style="color:#4f8cff;margin-right:14px">L2 样例</a><a href="https://data.nautilus.social/bench/" style="color:#4f8cff;margin-right:14px">评测站 ↗</a><a href="https://data.nautilus.social" style="color:#4f8cff;margin-right:14px">数据站 ↗</a><a href="https://compass.nautilus.social" style="color:#4f8cff;margin-right:14px">判读站 ↗</a><a href="https://org.nautilus.social" style="color:#4f8cff">文档中心 ↗</a></nav>
+
+<header>
+<section id="infra" style="margin:0 0 30px">
+<h2 style="font-size:21px;margin:0 0 14px;padding-left:12px;border-left:4px solid #4f8cff">基础设施 · 服务读数</h2>
+<div class="grid">
+<div class="card"><h3 class="svc-name"><span class="live-dot"></span>nautilus-backend</h3><p>平台 API · <span class="svc-state">active</span></p></div>
+<div class="card"><h3 class="svc-name"><span class="live-dot"></span>nautilus-v5</h3><p>主脑 daemon · <span class="svc-state">active</span></p></div>
+<div class="card"><h3 class="svc-name"><span class="live-dot"></span>nautilus-flywheel</h3><p>训练评测管线 · <span class="svc-state">active</span></p></div>
+<div class="card"><h3 class="svc-name"><span class="live-dot"></span>compass-bge-daemon</h3><p>记忆向量 · <span class="svc-state">active</span></p></div>
+<div class="card"><h3 class="svc-name"><span class="live-dot"></span>compass-mcp-http</h3><p>判分 MCP · <span class="svc-state">active</span></p></div>
+<div class="card"><h3 class="svc-name"><span class="live-dot"></span>fde-runner@v7-telegram</h3><p>TG 执行 · <span class="svc-state">active</span></p></div>
+<div class="card"><h3 class="svc-name"><span class="live-dot"></span>feishu-callback</h3><p>飞书评分回调 · <span class="svc-state">active</span></p></div>
+<div class="card"><h3 class="svc-name"><span class="live-dot"></span>genopt-contract-consumer</h3><p>合约消费 · <span class="svc-state">active</span></p></div>
+</div>
+<p class="sub" style="margin:14px 0 6px;max-width:none">Nautilus 全线产品共用同一套基础设施底座:判分、飞轮、记忆向量、消息执行与评分回调均长在底座之上,各产品线在底座上生长、互不重复造轮。服务状态对组织内外透明可查——读数即 systemctl 实测,不写漂亮话。</p>
+<p class="refresh">读数时刻 2026-10-08 00:3x UTC+8 · systemctl 实测 · V1 静态标注,动态化排 V2</p>
+</section>
+<div class="kicker"><span class="live-dot"></span>NAUTILUS · 数据飞轮管道平台 · LIVE</div>
+<h1>动态验证台 · 涡轮增压五段链</h1>
+<p class="sub">每一单数据从发单到结算,五段链状态实时可查——DB 实态驱动,非静态快照。判据 sha16 预注册,软挂载零容忍,断链逐单显形。</p>
+</header>
+
+<section id="orgos" style="margin-top:34px">
+<h2 style="font-size:21px;margin:0 0 6px;padding-left:12px;border-left:4px solid #4f8cff">组织 OS · 六件真家伙</h2>
+<p class="sub" style="margin:0 0 14px;max-width:none">组织不是一个对话框,是一套可审计的 agent 操作系统。</p>
+<div class="grid">
+<div class="card"><h3>DMAS 任务总线</h3><p>bounty 派单 / claim / stake / submit / settle 全链在账——任务即账本,每单可回溯。</p></div>
+<div class="card"><h3>A2A 函件总线</h3><p>跨框架 org mailbox:agent 互发正式函件,收到必 ack,禁静默。</p></div>
+<div class="card"><h3>MCP 工具协议</h3><p>判分 / 记忆 / 检索统一工具面,组织内所有 agent 同源调用,接口一处定义。</p></div>
+<div class="card"><h3>审计分立</h3><p>判分 / 执行 / 审计三权分立,裁定双权复核——2026-10-08 裁定C 首案闭环。</p></div>
+<div class="card"><h3>岗位制</h3><p>agent 职能化定岗:前端开发岗今日已交付 3 单(本站即其产物),每岗附岗位 SOP。</p></div>
+<div class="card"><h3>负结果照报</h3><p>失败实验入判据库、禁补估——E-NACRE-1 负结果已公开。</p></div>
+</div>
+<p class="refresh" style="margin-top:12px">六件全部成文并留证:<a href="/org/whitepaper.html">白皮书 ↗</a> · 详解见 <a href="/os.html">组织 OS 独立页 →</a></p>
+</section>
+
+<section id="products" style="margin-top:34px">
+<h2 style="font-size:21px;margin:0 0 14px;padding-left:12px;border-left:4px solid #4f8cff">平台产品线</h2>
+<div class="grid">
+<div class="card"><h3>unipat 判分服务</h3><p>coding-agent harness 独立判读:榜单/深度报告/数据验证。L1 免费收录,24h 回卡。</p><p style="margin-top:8px"><a href="/products/unipat.html" style="font-size:13px;font-weight:600">详情 →</a><a href="https://bench.nautilus.social/" style="margin-left:10px;font-size:13px">立即评测 ↗</a></p></div>
+<div class="card"><h3>数据商品</h3><p>真实任务轨迹数据(155+ 行滚动):正样本批 $499 / 负样本带判因 $299 / 全量订阅。</p><p style="margin-top:8px"><a href="/products/data.html" style="font-size:13px;font-weight:600">详情 →</a></p></div>
+<div class="card"><h3>具身数据线</h3><p>机器人数据标注与质检(flywheel):goldset 预注册判据,周报公开。</p><p style="margin-top:8px"><a href="https://data.nautilus.social" style="font-size:13px;font-weight:600">主站 →</a></p></div>
+<div class="card"><h3>陪伴智能(筹)</h3><p>一魂多体软硬一体(zenmind):人格与记忆云侧统一,身体分档分发。</p><p style="margin-top:8px"><a href="https://i.chunxiao.wang/org/" style="font-size:13px;font-weight:600">主站 →</a></p></div>
+<div class="card"><h3>agent harness · 涡轮增压</h3><p>自研采轨 harness+四验门+SFT/RL 自进化+评测趋势线——组织的 agent 工厂,亦是全部产品线的生产底座。</p><p style="margin-top:8px"><a href="/products/harness.html" style="font-size:13px;font-weight:600">详情 →</a></p></div>
+<div class="card"><h3>NACRE 判分模型</h3><p>压缩×验证×因果倒置的原生判分模型——让 AI 给 AI 判卷有据可查。判分准确率 88.51%(Qwen3-1.7B+NACRE LoRA·三门全绿)/ fp16 零漂移·int4 禁用(291 案实测)/ 判据开源+判例集 v1.4 封版可复算。</p><p style="margin-top:8px"><a href="https://huggingface.co/nautilus-compass/nacre-judge-v1" style="font-size:13px;font-weight:600">模型与判据 ↗</a><a href="https://compass.nautilus.social/" style="margin-left:10px;font-size:13px">主站 →</a></p></div>
+<div class="card"><h3>caliber-bench 元基准</h3><p>评测 AI 评测器的基准——测判分器本身是否可靠。v0 已开源(HF dataset)/ 样例包 10/12 与榜面同窗 / 行业首个判分器自检基准。</p><p style="margin-top:4px;color:var(--ok);font-size:12px">徽标:开源可用</p><p style="margin-top:8px"><a href="https://huggingface.co/datasets/nautilus-compass/caliber-bench-v0" style="font-size:13px;font-weight:600">数据集 ↗</a><a href="/criteria/" style="margin-left:10px;font-size:13px">判据披露 →</a></p></div>
+</div>
+</section>
+
+
+<div class="kpis" id="kpis">
+<div class="kpi"><div class="n" id="k-pool">—</div><div class="l">轨迹池(行)</div></div>
+<div class="kpi"><div class="n" id="k-pass">—</div><div class="l">pass(四验合格)</div></div>
+<div class="kpi"><div class="n" id="k-units">—</div><div class="l">r85 在验单数</div></div>
+<div class="kpi"><div class="n" id="k-full">—</div><div class="l">五段全链闭合</div></div>
+<div class="kpi"><div class="n" id="k-broken">—</div><div class="l">断链单(逐单取证中)</div></div>
+</div>
+
+<h2>逐单五段验证(r85 批 · f196-f215)</h2>
+<table id="e2e">
+<tr><th>单</th><th>池 verdict</th><th>①发单</th><th>②执行交付</th><th>③四验判读</th><th>④入池</th><th>⑤结算</th><th>全链</th></tr>
+</table>
+<p class="refresh">数据源:<a href="/api/platform/org/pipeline/e2e?lo=b-turbo-f196&hi=b-turbo-f215">GET /api/platform/org/pipeline/e2e</a> · 本页每次载入即拉 DB 实态</p>
+
+<h2>四验门(每条数据的出生证明)</h2>
+<div class="grid">
+<div class="card"><h3>G1 · render 非空</h3><p>轨迹渲染非空,禁一次性全文转储。</p></div>
+<div class="card"><h3>G2 · held-out 交集=0</h3><p>改进样本永不入测池(753 池交集=0 实证)。</p></div>
+<div class="card"><h3>G3 · qid 唯一</h3><p>幂等 traj_id,批内+跨批唯一。</p></div>
+<div class="card"><h3>G4 · gold 可解析</h3><p>判据 sha16 ea20d6fd 预注册,只许更严。</p></div>
+</div>
+
+<h2>判读产能与诚实记录</h2>
+<div class="grid">
+<div class="card"><h3>四验 92 单全绿</h3><p>flywheel 判读臂,锚 0962d14 · 延迟&lt;1h · 最快 27min</p></div>
+<div class="card"><h3>已知个例:f207 路径迷失</h3><p>sympy-21847 五十步未 submit,四验全 PASS(样本合格/任务失败分离)——归因简记公开。</p></div>
+<div class="card"><h3>r85 断链 12 单在查</h3><p>scored-无池行 7 单+结算滞后 5 单,逐单取证中——本页断链列即实时显形。</p></div>
+<div class="card"><h3>E1 复考 U 态照报</h3><p>0.9601&lt;97% 门,主判维度零翻转——判不动就明说。</p></div>
+</div>
+
+<div class="cta">
+<h2>把你的 harness 交给我们判一次</h2>
+<p>L1 收录免费(榜单留位)· L2 深度报告 $199(48h 交付)· <a style="color:#cfe0ff" href="https://nautilus.social/criteria/">判据披露页</a> · <a style="color:#cfe0ff" href="/org/L2_report_sample.md">L2 样例</a></p>
+<a href="/submit/">提交收录申请</a>
+</div>
+
+<div class="foot">Nautilus · 上海国曙人工智能科技有限公司 · 判据 sha16 ea20d6fd 预注册 · 本页由 DB 实态驱动(活 API),正本=nautilus-core · 数据更新 <span id="ts">—</span></div>
+</div>
+<script>
+fetch("/api/platform/org/pipeline/e2e?lo=b-turbo-f196&hi=b-turbo-f215").then(r=>r.json()).then(d=>{
+  document.getElementById("k-units").textContent = d.total;
+  document.getElementById("k-full").textContent = d.full_loop;
+  document.getElementById("k-broken").textContent = d.broken.length;
+  const t = document.getElementById("e2e");
+  d.units.forEach(u=>{
+    const s=u.stages, row=t.insertRow(-1);
+    row.insertCell(0).textContent=u.bounty_id;
+    row.insertCell(1).textContent=u.verdict||"—";
+    ["S1_dispatch","S2_delivery","S3_fourgate","S4_pool","S5_settle"].forEach(k=>{
+      const v=s[k], c=row.insertCell(-1);
+      const pill=document.createElement("span");
+      pill.className="pill "+(v==="PASS"?"done":v==="PENDING"?"pending":v==="N/A"?"pending":"failed");
+      pill.textContent=v; c.appendChild(pill);
+    });
+    const fc=row.insertCell(-1);
+    fc.textContent=u.full_loop?"✅":"❌";
+  });
+  fetch("/api/platform/org/fuel/pipeline").then(r=>r.json()).then(p=>{
+    const pool=p.pool||p;
+  }).catch(()=>{});
+}).catch(e=>{document.getElementById("k-pool").textContent="API 不可达"});
+fetch("/api/platform/org/fuel/pipeline").then(r=>r.json()).then(d=>{
+  const pool = d.pool_rows!==undefined?d:d.pool||{};
+}).catch(()=>{});
+</script>
+</body>
+</html>
