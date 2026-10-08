@@ -50,6 +50,10 @@ LIVE = [
      lambda d: int(d.get("merged_unique_by_qid", 0)) >= 2200),
     ("判读状态 API", f"{BASE}/api/judge_status?id=nautilus-l1-0001",
      lambda d: d.get("ok") is True and d.get("criteria_sha16") == "b81eca8436887785"),
+    ("判读状态 API 首例卡", f"{BASE}/api/judge_status?id=nautilus-l1-0002",
+     lambda d: d.get("ok") is True and d.get("status") == "done"),
+    ("判读卡清单(无参)", f"{BASE}/api/judge_status",
+     lambda d: d.get("ok") is True and "nautilus-l1-0002" in (d.get("cards") or [])),
 ]
 
 RENDER_POINTS = [
