@@ -10,6 +10,19 @@ import urllib.parse
 
 # v0 演示台账(受理 API 上线前;与 status.html DEMO 同源)
 LEDGER = {
+    "nautilus-l1-0003": {
+        "title": "S6 recompute fidelity · Round1 A-arm 30-case recompute",
+        "status": "done",
+        "criteria_sha16": "b81eca8436887785",
+        "steps": [
+            ["2026-10-08T20:49+08", "recompute_batches_1_15", "done"],
+            ["2026-10-09T02:20+08", "four_bucket_merge", "done"],
+            ["2026-10-09T02:40+08", "fidelity_compare_vs_orig_3_reports", "done"],
+            ["2026-10-09T02:50+08", "card_issued", "done"]],
+        "result_url": "/registry.html",
+        "verdict": "pass",
+        "evidence": "29/30 per-case four-bucket identical vs original run (9R/5U/2EP exact; sole drift django-16560 error->resolved, direction aligned with Round1 judging-fix precedent). Reports: runtime/s6_runs/ (15, VCS-protected). Doc: docs/metering/S6_RECOMPUTE_FIDELITY_20261009.md. Issuer=self, independently recomputable (batch_run.sh + preds_arm_a.json).",
+    },
     "nautilus-l1-0001": {
         "title": "Round 1 · v5-harness vs mini-swe-agent",
         "status": "done",
