@@ -2203,3 +2203,6 @@
 ### R395 · 2026-10-09 晨二(终检升级 13 项✅——首例卡+卡清单双新锚入册)
 - final_check.py 增两锚:①id=nautilus-l1-0002(status=done 首例卡)②无参卡清单(nautilus-l1-0002 在 cards)——复跑 **13 PASS/0 WARN/0 FAIL**;判读管线两张卡自此都受终检保护,卡片回归有门。
 - 附带:信箱 0 未读(外部全静,美国深夜);probe pong。
+
+### R396 · 2026-10-09 晨三(主件轮:MEMX 记忆自催化飞轮设计 V1 落档✅——用户架构问的正本)
+- **MEMX_FUSION 落档**(docs/soul/MEMX_FUSION_20261009.md):点破 NACRE 全名即架构图(Novelty-gated=dedup/Adjudication=判官/Compression=fact_status/Registered Evolution=delta 棘轮——判分模型只是该机制第一实例);四站闭环(压缩写入→检索验证→因果倒置→注册升格)+**三向归因算子**(甲记忆缺口→定向补写/乙记忆错误→fact_status 降级+勘误/丙检索失效→E1 调优信号,纯 glue 本周可实现);与涡轮逐项映射(SFT=判例棘轮/RL=hit 归因日志/基准=J4+drift+held-out+元检);护栏三条(小判分器限训/NACRE 外部锚/errata 唯一通道);分期(glue 本周→开业周积累→10/26 后训练)。
