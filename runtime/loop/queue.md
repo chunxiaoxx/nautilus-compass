@@ -2181,3 +2181,8 @@
 - **XERJ PR #1255 CLA 流程走通**:cla-bot 指引=开 PR 加名 .contributors(自账号即签名)——sign-cla 分支(chunxiaoxx 加名)→**签署 PR #1257** 开出;#1255 注记(merge 后 @cla-bot check)。
 - **Gmail 未回合作件扫描**:unread 全景=cla-bot/XERJ 链+订阅噪音+GitHub key 旧件——零待回合作信。
 - 主动外联线全量状态:Einsia 已发/XERJ #1255+#1257 双 PR 在飞/openclaw 候二轮结论/mem0 观察档/Graphiti+cognee 窗内候回——零我方欠账,全部球在外侧。
+
+### R390 · 2026-10-09 凌晨十三(主动外联续:awesome 收录 PR #656✅+hesreallyhim 通道受限实况)
+- **ccplugins/awesome-claude-code-plugins PR #656 发出**(Workflow Orchestration 记忆节,omega-memory 相邻位):nautilus-compass 收录提名(LongMemEval-S 500 P@1 0.890 vs mem0 0.774 可复现+drift AUC 0.83+MCP 17 tools+install.sh);首试 -f body 静默失败,body-file 重试成功(教训:多段 markdown body 一律 body-file)。
+- **hesreallyhim/awesome-claude-code(★55k 现主力)通道受限[实测]**:punkpeye 仓已消失(我方 #14065 随之蒸发),现主力仓 interactions restricted to collaborators only(PR 404+issue 422)——收录通道对外临时关闭,挂账候限制解除;ccplugins(969★插件专类)为本次落位。
+- 主动外联今日累计三发:Einsia 首触函/XERJ CLA PR #1257/awesome 收录 PR #656。
