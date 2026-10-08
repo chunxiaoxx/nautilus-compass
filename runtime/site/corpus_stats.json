@@ -1,1 +1,29 @@
-{"merged_unique_by_qid": 2257, "train_count": 1162, "org_fuel": 802, "delta": 32, "sevenb_target": 3000, "merged_sha16": "d91192a67eae2db3", "updated": "2026-10-08"}
+{
+ "generated_for": "judge_lora corpus pipeline (A 件)",
+ "counts_by_source": {
+  "split_train_v1": 1162,
+  "split_dev_v1": 143,
+  "split_test_v1": 149,
+  "delta:delta_0001.jsonl": 14,
+  "delta:delta_0002.jsonl": 15,
+  "delta:delta_0003.jsonl": 3,
+  "delta:delta_0004.jsonl": 13,
+  "delta:delta_0005.jsonl": 16,
+  "delta:delta_0006.jsonl": 1,
+  "org_fuel:gate_passed": 287,
+  "org_fuel:letters": 47,
+  "org_fuel:docs": 456,
+  "org_fuel:outreach": 12
+ },
+ "merged_unique_by_qid": 2258,
+ "cross_source_dups_ignored": 45,
+ "train_count": 1162,
+ "next_retrain_candidate_at": 1500,
+ "sevenb_target": 3000,
+ "sevenb_remaining": 1838,
+ "merged_sha16": "93dccd830b77477e",
+ "triggers": {
+  "retrain_candidate": false,
+  "sevenb_compare_ready": false
+ }
+}

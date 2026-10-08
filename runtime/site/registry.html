@@ -70,10 +70,10 @@
 
 <script>
 // 活数据:由 corpus_pipeline manifest 注入(静态快照兜底,值守轮覆写)
-// FALLBACK=2026-10-08 现役快照(与 /corpus_stats.json 同源,merged_sha16=d91192a67eae2db3)
-const FALLBACK = {"merged_unique_by_qid":2257,"train_count":1162,
+// FALLBACK=2026-10-09 现役快照(与 /corpus_stats.json 同源,merged_sha16=93dccd830b77477e)
+const FALLBACK = {"merged_unique_by_qid":2258,"train_count":1162,
   "org_fuel":802,"delta":32,"letters":47,"sevenb_target":3000,
-  "merged_sha16":"d91192a67eae2db3","updated":"2026-10-08"};
+  "merged_sha16":"93dccd830b77477e","updated":"2026-10-09"};
 fetch('/corpus_stats.json').then(r=>r.json()).then(upd).catch(()=>upd(FALLBACK));
 function upd(m){
   set('m-total', m.merged_unique_by_qid); set('m-train', m.train_count);

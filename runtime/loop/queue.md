@@ -2129,3 +2129,8 @@
 ### R377 · 2026-10-09 凌晨(主件轮:判读岗 24h 值守排班表 v1✅——10541 死线件提前交付)
 - **排班表落档**(docs/sops/JUDGE_DUTY_ROSTER_20261008.md,衔接 ROLE_JUDGE_SOP_V0 §七):三层值守(15min cron 实时层/新会话接单层 SLA L1 24h·L2 48h·L3 5d/用户仲裁层)+24h 时刻表+接单判定树+在役凭据全坐标(判据双口径锚/判分器/卡片 API/现役两卡)+升级异常(daemon 假死/超 SLA/判据争议 errata 唯一通道)+注册行补全(holder=compass 9000017,last_audit=nautilus-l1-0002 平台复现通过)。
 - 交付函 platform(10541 两件之一;另一件判分岗 SOP 上库=ROLE_JUDGE_SOP_V0 已在档)——10/11 承诺提前 3 天完成。
+
+### R378 · 2026-10-09 凌晨二(主件轮:首卡判例入册 delta_0006✅——SOP 第⑥步首例,语料 2257→2258)
+- **delta_0006 首卡判例入池✅[实测全链]**:tools/delta_0006_first_card.py 生成(nautilus-l1-0002 判读卡升格:truth_label=pass 判读流程先例语义/label_origin=first_card_delivered/平台复现 #10727=第三方复算门首例 PASS);corpus_pipeline 合并 **2257→2258**(merged_sha16=93dccd830b77477e);三副本同步(scp current/api 两处·www-data 老坑 /tmp+sudo 通路复用)+外网实测 2258 新 sha。
+- registry.html FALLBACK 同步 2258 口径+重部署(不重蹈 R366 兜底过期);终检回归 **11/11 PASS·0 WARN**。
+- 判读岗 SOP 第⑥步(判读卡→CASEBOOK 候选/delta 通道)自首卡起活化:出卡→入册→语料棘轮+1 全链一体。

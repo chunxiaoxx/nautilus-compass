@@ -1,0 +1,12 @@
+{
+ "delta": "0006",
+ "exported_at": "2026-10-09",
+ "records": 1,
+ "generator": "tools/delta_0006_first_card.py",
+ "source_chain": [
+  "#10713 派单",
+  "#10723 delivered 回函",
+  "#10727 平台复现通过"
+ ],
+ "note": "判读岗 SOP 第⑥步入册首例;truth_label=判读流程先例语义(零新判定)"
+}
