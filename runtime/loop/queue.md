@@ -2233,3 +2233,7 @@
 - **预注册判据冻结**(docs/metering/EMB_BAKEOFF_PREREG_20261009.md):三候选(bge-m3 锚/Qwen3-Emb-0.6B/4B)×三评测集(A 全库自监督 30 查询 seed42/B 中文切片/C 实弹 J4 三查询);**换模型门=Set A R@1≥+2.0pp 且 Set B≥+2.0pp 且 Set C 不降(3/3)**,同分留任;负结果照发。
 - **工程就绪[实测]**:paramiko 5.0.0 密码通道(a100_env,凭据不落仓不打印);A100 实探=40G 卡余 39G/transformers 5.16.1/modelscope 1.40.0/embed_server 在役;语料 160 md 上岛解压;eval 脚本上传(三模型官方用法:bge CLS 池化/Qwen3 末token池化+指令前缀,fp16 归一化余弦);**双模型 modelscope 顺序下载中**(0.6B 57%·4B ~8G 殿后)。
 - 下载完即跑评测→判读(预注册门)。
+
+### R404 · 2026-10-09 晨十一(主件轮:引擎选型分析落档✅——XERJ 类项目"借模式不换底座")
+- **MEMX_ENGINE_ANALYSIS 落档**(docs/soul/):检索引擎=商品件,我们护城河在验证/治理层——换引擎=搬家具不筑墙;XERJ 逐项评(Apache-2.0 可魔改/早期快进风险/关系是资产);**抄三模式**(autoindex 分块溯源/release-notes CI claim-check/manifest 制式);"魔改+JEV"正确形态=XERJ 生态插件(assay-verified 记忆模式,分发渠道非底座,M1 后评估);GitHub 同类盘点(mem0/Letta 系=被测对象非底座来源)。Conan-v2 下载排队(Apache-2.0 实核;v1 CC-BY-NC 否)。
+- 预注册 V2 落档(EMB_BAKEOFF_PREREG:任务本质五特征/硬过滤含禁外部 API/终榜四模型/否决表/评测升级 Set A+ 情境改写为主判据)。
