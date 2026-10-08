@@ -47,6 +47,25 @@ published as-is:
   v5-harness 26.7% vs mini-swe-agent 16.7% (+10.0pp), every artifact
   sha16-addressable. Live at [nautilus.social/leaderboard.html](https://nautilus.social/leaderboard.html);
   free L1 intake at [nautilus.social/intake.html](https://nautilus.social/intake.html).
+- **Casebook v1.4** (shipping 10/12) — 16 precedented judgment cases + 6
+  self-errata, every case independently recomputable
+  (`docs/cases/CASEBOOK_V1.md`); the paid binding line's first artifact.
+- **Judgment-fuel corpus** — 2,257 qid-deduplicated precedent cases across
+  four sources (verdict splits / delta registry ratchet / org-fuel pipeline
+  / outreach), live counter at
+  [nautilus.social/corpus_stats.json](https://nautilus.social/corpus_stats.json).
+- **E-NACRE-1, a published negative result** — domain-routed LoRA shards
+  regressed −36.6pp; dynamic-weight routing suspended until corpus ≥3,000.
+  Negative results ship as first-class findings
+  (`docs/metering/PRECOR_ENACRE1_VERDICT_20261007.md`).
+- **Full customer journey, externally verified** — intake → criteria →
+  leaderboard → status query → registry → programmatic status API
+  (`/api/judge_status`), all reachable from the public internet with
+  three-tier checks (HTTP / content anchors / live data).
+- **Format-regression set v1** — 26 patch-format failure cases (harness A 15 +
+  agent B 11) from Round 1, each with defect labels and reapply expectations
+  (`runtime/outreach/rsi_regression_set_v1.jsonl`), built for rsi-bench
+  replay certification.
 
 Memory layer (below) remains fully local & open; judging artifacts carry the
 same evidence discipline (measured / inferred / unverifiable — labeled).
