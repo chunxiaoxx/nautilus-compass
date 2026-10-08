@@ -2025,3 +2025,8 @@
 - **vs 承诺 25**:如实交付 26(+1 来自 A 臂补跑折入:sphinx-8475 补跑 resolved 移出,sympy-13974 补跑仍 apply fail 折入格式域)——不凑数。
 - **缺陷标注层**:23/26 缺尾换行(伴随特征标注,非选入门——归因勘误口径:malformed hunk 为主阻断);选入门=error 域(patch 非空+评测 error)。
 - PR 就绪态:v1 定版+构建器可重跑+期望行(reapply 应过或内容性失败);PR 窗=10/12 开业后 rsi-bench#4 承诺件。
+
+### R357 · 2026-10-08 夜(README October 柱段刷新✅——10/8 新资产五 bullet,外网实测)
+- **五 bullet 补入**:Casebook v1.4(16 判例+6 勘误)/ 语料 2257 活计数链 / E-NACRE-1 负结果公开 / 客户旅程三口径 / 格式回归集 v1(A15+B11)——全部带仓内路径或外网链接实锚。
+- **验证[实测]**:push 7687a2d4 → raw.githubusercontent CDN 缓存延迟 ~80s → 复验 2 命中(Casebook v1.4+2,257 qid)。
+- 承用户"GitHub 仓库优化和 readme 更新"令的正向延续(上次全树审计后首刷)。
