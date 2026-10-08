@@ -1969,3 +1969,8 @@
 - **HF org[实测]**:nautilus-compass org 下 models 1 件(nacre-judge-v1)+datasets 3 件(caliber-bench-v0/nautilus-swe-trajectories/lerobot-independent-qc)。
 - **网页五件[实测 200+内容锚]**:leaderboard 详版✓/criteria 判据×8/status 判读卡✓/registry 仪表✓/compass 子域(独立判读+记忆双层叙事)✓。data./bench. 待 flywheel/v5 各自 own。
 - **评估**:GitHub 仓库健康(1255 星/活跃/多 topics);网页五件全绿;HF org 结构清晰(1 model+3 datasets)。**薄弱点**:①主门面 nautilus.social 的首页 title 仍是"数据飞轮管道平台"而非"评测与数据基础设施"(与白皮书定位不一致);②open PRs 10 个——需盘点哪些是依赖项哪些可合并;③GitHub 仓库描述已更新但 topics 可再精准化(加 meta-benchmark/open-source-evaluation)。
+
+### R344 · 2026-10-08 早(主件轮:补锚口径回函+审计触发器部署确认)
+- **10584 审计触发器部署✓收讫**:nau_balance 全变更留痕(who/app/query)——追凶基础设施就位。
+- **10593 补锚口径回函✅**(10596 LEADERBOARD-ANCHORS-V2):status.html 已接 /api/judge_status 真源 + registry.html 已接 /corpus_stats.json(1846 实时);HF/元基准/状态查询三组 CTA 锚给口径候 platform 补。
+- 主件队列:当前全部可独立推进件已清;候 RFC 表决(10/9 22:00)+冲正 apply+三件终检(10/11)。
