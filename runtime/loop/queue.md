@@ -2144,3 +2144,6 @@
 - **batch1 端到端完成✅[实测]**:分批执行器 batch_run.sh(拉→跑→删闭环,每批2实例)部署 /data;batch1(astropy-14365+django-12304)实跑完成,报告落 /data/s6_rerun/runs(l3r1a…s6_batch_1.json)=**2 实例:0 resolved/1 unresolved/1 error**——管线验证达成;django-12304 复算 error 与回归集原判(格式域 apply fail)方向一致✓;astropy-14365 原跑各分桶无 resolved 记录,复算 unresolved 不矛盾(精确对照留正式判读全量 30 例)。
 - 输入源核验:cloud preds_arm_a.json=本地正本 _r181_board30/preds_arm_a.json 逐 id 吻合(无错源,虚警排除);round1_merged 四桶为计数不含 id(查证过程)。
 - 剩余 14 批按 10/9-14 排期推进(每批 ~20min,执行器一键)。
+
+### R381 · 2026-10-09 凌晨五(S6 全量过夜循环挂载✅——batch2-15 串行自动)
+- loop_all.sh 挂载(batch2-15 串行,单批 40min timeout 防挂死,TIMEOUT 跳下一批):batch2(django-16263+django-11490)19:14 已起跑;预计凌晨全量完成,明晨核 15 份报告+逐例对照判读。
