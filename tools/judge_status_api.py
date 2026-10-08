@@ -23,6 +23,26 @@ LEDGER = {
             ["2026-10-06T03:00+08", "casebook_entry", "done"]],
         "result_url": "/leaderboard.html",
     },
+    "nautilus-l1-0002": {
+        "title": "L1 selftest-claude-code v1.0.0 · 平台自检单(管线首例)",
+        "status": "done",
+        "criteria_sha16": "5c8e0a7ce3a0048b",
+        "verdict": "insufficient_evidence",
+        "steps": [
+            ["2026-10-08T12:01+08", "intake", "done"],
+            ["2026-10-08T16:30+08", "criteria_prereg", "done"],
+            ["2026-10-08T16:35+08", "metadata_check", "done"],
+            ["2026-10-08T16:40+08", "three_state_judging", "done"],
+            ["2026-10-08T16:45+08", "card_issued", "done"]],
+        "verdict_detail": {
+            "metadata": "[实测] repo=anthropics/claude-code HTTP 200(149820 stars);version_anchor=1.0.0 npm 口径可锚(git tag 无——单未声明锚口径,披露)",
+            "evaluation_evidence": "[实测缺失] 任务集读数(SWE-bench Verified resolved%)=零;评测产物=零;模型配置/采样参数=零",
+            "three_state": "insufficient_evidence —— 无可判读评测读数;单据自述『平台自检单,非真实评测需求』与证据状态一致",
+            "disposition": "不予收录(不进名次区/观察区);管线 intake→judging→delivered 首例走通;可携评测产物重提走正常判读",
+        },
+        "submission": "72fdcb665e79482b",
+        "result_url": "/leaderboard.html",
+    },
     "demo": {
         "title": "(示例)L1 收取中",
         "status": "running",
