@@ -2007,3 +2007,9 @@
 - **runtime/loop/final_check.py 固化**(承 R339 手跑预演+R340 三口径修正):A 状态码+B 内容锚(9 页逐页锚串)+C 活数据源(SPA 读 JSON 正本——R339 唯一 WARN 根治)+可选 --render(Chrome headless 渲染口径,R349 配方内化);退出码三态(0/1/2)终检正日一键复跑。
 - **首跑[实测]**:11/11 PASS · 0 WARN · 0 FAIL(registry 项走活数据源 2228 过,不再受异步渲染影响);--render 模式 12/12(data 站渲染 30.5KB 实测)。
 - **终检清单清零**:S6✅(R351)/data 深验✅(R349)/渲染口径 WARN✅(本脚本根治)——10/11 正日=本脚本复跑+文案判据零变更前提维持。
+
+### R353 · 2026-10-08 晚(7B 语料第二段:delta_0004 回填✅——2228→2241,delta registry 棘轮升格)
+- **tools/delta_backfill.py + delta_0004.jsonl(13 案)**:已成文判定档案升格为结构化 registry 条目(零新判定,判据零放宽)——C 冲正 4 案/A2 复算 1 案/E-NACRE-1 负结果 1 案/PRECOR 精度门 3 案(fp16 pass·int8/int4 fail)/运维定谳 4 案(风暴翻案/A100 泄漏/nohup 假绿/渲染口径)。
+- **标签分布**:pass 7/fail 6;label_origin=independent_recompute 9/preregistered_gate 4;qid 防撞校验过(生成器内置)。
+- **合并实测**:2228+13=2241 精确;merged_sha16=a7847595b6ad573e;corpus_stats 三副本同步外网实测 2241。
+- **终检脚本回归**:一次瞬态 FAIL(并行窗口 cp 中间态撞活数据判据)复跑×2 均 11/11 PASS——红灯先证伪自己原则执行,无实故障。距 3000 还差 759。

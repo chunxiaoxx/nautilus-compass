@@ -7,18 +7,19 @@
   "delta:delta_0001.jsonl": 14,
   "delta:delta_0002.jsonl": 15,
   "delta:delta_0003.jsonl": 3,
+  "delta:delta_0004.jsonl": 13,
   "org_fuel:gate_passed": 287,
   "org_fuel:letters": 47,
   "org_fuel:docs": 456,
   "org_fuel:outreach": 12
  },
- "merged_unique_by_qid": 2228,
+ "merged_unique_by_qid": 2241,
  "cross_source_dups_ignored": 45,
  "train_count": 1162,
  "next_retrain_candidate_at": 1500,
  "sevenb_target": 3000,
  "sevenb_remaining": 1838,
- "merged_sha16": "8f302d698df6a8e4",
+ "merged_sha16": "a7847595b6ad573e",
  "triggers": {
   "retrain_candidate": false,
   "sevenb_compare_ready": false

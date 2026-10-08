@@ -1,0 +1,21 @@
+{
+ "delta": "delta_0004.jsonl",
+ "exported_at": "2026-10-08",
+ "n_cases": 13,
+ "by_label": {
+  "pass": 7,
+  "fail": 6
+ },
+ "by_origin": {
+  "independent_recompute": 9,
+  "preregistered_gate": 4
+ },
+ "sources": [
+  "docs/metering/A2_RECOMPUTE_VERDICT_20261007.md",
+  "docs/metering/C_VERDICT_LEDGER_20261007.md",
+  "docs/metering/PRECOR_BC_VERDICT_20261007.md",
+  "docs/metering/PRECOR_ENACRE1_VERDICT_20261007.md",
+  "runtime/loop/queue.md"
+ ],
+ "note": "回填批:已成文档案升格入 registry,零新判定;判据零放宽"
+}
