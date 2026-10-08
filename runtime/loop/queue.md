@@ -2175,3 +2175,9 @@
 ### R388 · 2026-10-09 凌晨十二(XERJ PR CLA 签署+10739 口径微调注记)
 - **XERJ PR #1255 唯一红=verification/cla-signed**:读 CLA.md(ASF ICLA v2.0 改版,maintainer 自注未过律师+占位未填)→PR 标准句式签署评论(comment 6060827225"I have read the CLA Document and I hereby sign the CLA")——候 cla bot 轮询重跑。
 - **10739 预检 ack+口径微调**:触发器现态=**不存在(新建非修改)**——A4 门核对口径按"新建后 def 含 SUM(delta)+挂载点 BEFORE UPDATE OF claimed_by";漂移面=22 agent 全量 9219 行(非 4096)——A1 全量形态门天然覆盖,口径兼容零放宽;五门读数候执行完成函,24h SLA 不变。
+
+### R389 · 2026-10-09 凌晨十二二(用户令"持续积极主动对外拓展"——Einsia 首触函发出✅+XERJ CLA 签署 PR✅)
+- **Einsia 首触函正式发出**(gmail 1a11bc3e53a62942 → zyj578335934@gmail.com,Einsia-Overleaf-Agent 活跃工程师/commit 邮箱;官网无直露邮箱走 GitHub org 触点):两顺延条件全解除(XERJ PR #1255 已落+开业三链接 200)即发;发后 48h 窗纪律,回音升活跃档。
+- **XERJ PR #1255 CLA 流程走通**:cla-bot 指引=开 PR 加名 .contributors(自账号即签名)——sign-cla 分支(chunxiaoxx 加名)→**签署 PR #1257** 开出;#1255 注记(merge 后 @cla-bot check)。
+- **Gmail 未回合作件扫描**:unread 全景=cla-bot/XERJ 链+订阅噪音+GitHub key 旧件——零待回合作信。
+- 主动外联线全量状态:Einsia 已发/XERJ #1255+#1257 双 PR 在飞/openclaw 候二轮结论/mem0 观察档/Graphiti+cognee 窗内候回——零我方欠账,全部球在外侧。
