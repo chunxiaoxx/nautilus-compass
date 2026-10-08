@@ -1,0 +1,13 @@
+{
+ "delta": "delta_0005.jsonl",
+ "exported_at": "2026-10-08",
+ "n_cases": 16,
+ "by_label": {
+  "pass": 9,
+  "fail": 3,
+  "insufficient_evidence": 4
+ },
+ "label_origin": "casebook_v1_4_final_verdict",
+ "source": "docs/cases/CASEBOOK_V1.md(v1.4 封版,10/12 榜页挂墙版)",
+ "note": "判例集 16 案入池;标签=正文终判短语映射,零新判定;判据零放宽"
+}

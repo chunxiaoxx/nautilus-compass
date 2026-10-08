@@ -2013,3 +2013,9 @@
 - **标签分布**:pass 7/fail 6;label_origin=independent_recompute 9/preregistered_gate 4;qid 防撞校验过(生成器内置)。
 - **合并实测**:2228+13=2241 精确;merged_sha16=a7847595b6ad573e;corpus_stats 三副本同步外网实测 2241。
 - **终检脚本回归**:一次瞬态 FAIL(并行窗口 cp 中间态撞活数据判据)复跑×2 均 11/11 PASS——红灯先证伪自己原则执行,无实故障。距 3000 还差 759。
+
+### R354 · 2026-10-08 夜(7B 语料第三段:判例集 v1.4 16 案入 delta 池✅——2241→2257)
+- **tools/delta_casebook_ingest.py + delta_0005.jsonl(16 案)**:docs/cases/CASEBOOK_V1.md(v1.4 封版,10/12 榜页挂墙版)全量结构化入 registry;truth_label 逐案映射自正文终判短语(LABELS 表零新判定):pass 9/fail 3/insufficient_evidence 4;label_origin=casebook_v1_4_final_verdict。
+- **domain 五类**:embodied_data_judgment×9/agent_track×2/criteria_evolution×2/harness_board×1;每案带判据/材料锚/claims/复算四链字段。
+- **合并实测**:2241+16=2257 精确;merged_sha16=d91192a67eae2db3;外网 corpus_stats 同步实测 2257。
+- 7B 攒语料(merged 口径):2257/3000,差 743。主增量通道=10/12 后真实判读卡流入。
