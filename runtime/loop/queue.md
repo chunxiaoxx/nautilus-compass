@@ -2155,3 +2155,7 @@
 ### R383 · 2026-10-09 凌晨七(主件轮:跨框全景梳理复盘✅——五框活跃度+主线归位+六次证伪复盘)
 - **DAY_LOG 落档**(docs/plans/DAY_LOG_20261009.md):五框活跃度对照(flywheel 全速:held-out 20 集冻结六点令⑥+标注员招募/v5 L1 管线上线/platform 全天函件流+派单制/三框咬合点三处);compass 主线归位五件(判读信用闭环/S6 规模化/M5/三通道备窗/基建);**六次"红灯先证伪自己"复盘**(sha 口径分裂/A4 险删/containerd 误诊/cache 虚警/dedup 渐进/recipe 偏差——共性=探针成本远低于错误动作成本);明日带四线。
 - 附带:S6 循环 batch6+ 进行中(5 报告在盘);probe pong。
+
+### R384 · 2026-10-09 凌晨八(主件轮:今夜教训沉淀 memory 三条✅——元习惯收尾)
+- **memory 沉淀**(~/.claude/projects/.../memory/):①judge-pipeline-first-card(判读管线首夜全链:sha 口径 LF 固化/派单制/L1L2 分界/4096 五门+对照先找 per-instance 报告)②m5-memgate-deploy-lessons(双进程同端口 MSYS kill 无效/EMBED_BUDGET 渐进漏检 coverage 披露/fast path 环境差虚警)③s6-disk-final-and-batch-guard(既存数据盘终裁/分批用完即删/GUARD 精确自停/containerd 误诊教训/A4 探针否决先例);MEMORY.md 索引同步三条。
+- 全部用户侧待办清零;S6 过夜循环自转中。收工。
