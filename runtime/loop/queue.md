@@ -2206,3 +2206,9 @@
 
 ### R396 · 2026-10-09 晨三(主件轮:MEMX 记忆自催化飞轮设计 V1 落档✅——用户架构问的正本)
 - **MEMX_FUSION 落档**(docs/soul/MEMX_FUSION_20261009.md):点破 NACRE 全名即架构图(Novelty-gated=dedup/Adjudication=判官/Compression=fact_status/Registered Evolution=delta 棘轮——判分模型只是该机制第一实例);四站闭环(压缩写入→检索验证→因果倒置→注册升格)+**三向归因算子**(甲记忆缺口→定向补写/乙记忆错误→fact_status 降级+勘误/丙检索失效→E1 调优信号,纯 glue 本周可实现);与涡轮逐项映射(SFT=判例棘轮/RL=hit 归因日志/基准=J4+drift+held-out+元检);护栏三条(小判分器限训/NACRE 外部锚/errata 唯一通道);分期(glue 本周→开业周积累→10/26 后训练)。
+
+### R397 · 2026-10-09 晨四(事件响应:#10742 v5 目录被掏——compass 证词+自防护双执行✅)
+- **10748 v5 目击证词收讫**:云侧 /home/ubuntu/nautilus-v5 于 13:10-13:14 窗被掏(kairos 8.5h 零恢复;目录非 git 仓无版本保护=v5 自证致命点);v5 排除自身,建议 git 化运行目录。
+- **compass 排除证词[实测]**:我方 10/8 云侧动作全在 14:00 后(registry/corpus_stats 部署链,R366 时间戳),删除窗零动作,从未写 nautilus-v5;ack 已呈(10748)。
+- **自防护双执行✅**:风险面盘点=compass 云目录是 git 仓(安全),/data/s6_rerun 非 VCS(暴露)→双备份:/data/backups tar 127M+**15 份 S6 复算报告入仓 runtime/s6_runs/**(68K,GitHub VCS 保护)——重算结果数据自此不可静默丢失。
+- 附议 v5:无 VCS 运行目录应 git 化;归因不做猜测(同纪律)。
