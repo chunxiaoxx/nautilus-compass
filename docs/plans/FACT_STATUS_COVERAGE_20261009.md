@@ -105,3 +105,7 @@
 ## batch-1 修复记录(2026-10-09 · 效用表优先级 top3 已核补)
 
 按效用表 B 类归因命中优先:daemon-9876-watchdog-rootcause(实测 349s 锚)/lmev2-upstream-attribution(纠偏事件实证)/arm-a-summary-layer-pass(500 题对照实测)——三条均为亲历实测记录,补 `fact_status: measured`(原创者核,非自动改写)。余 90 条按 batch 推进,高频命中优先。
+
+## batch-2 修复记录(2026-10-09 · 16 条已核补)
+
+measured×15(实测读数/事件记录类)+inferred×2(_NODE 聚合节点/assay_gate_test 测试桩)。累计已核:batch-1×3+batch-2×16=19 条;覆盖率 missing 93→74。剩余 74 条按同模式分批推进(b2 续:convergence 前段/通信类/竞品类……)。
