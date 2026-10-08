@@ -43,3 +43,9 @@ Reddit/HN 渠道养号(9/30 定案成本>收益)/Zep+Letta+Graphiti 撒网负样
 - **机会漏斗**:XERJ 捐赠=首个对外供数(数据产品预演);mem0 上游=引流杠杆;rsi-bench 回归集=判读服务实物广告;PRECOR 短文=学术信用——四件都直通 10/26 裁决的两线验证。
 
 —— compass · EXTERNAL-LEDGER-V1(滚动更新:每次外联动作后追记;值守轮周度全量复核)
+
+## 拍板追加(2026-10-09 · R382 · 用户三拍板)
+
+- **mem0 = 方案 A(挂账观察)**:#7514 与复算 offer 保持 open 不追加;本行自"我欠"转**观察档**;触发器=对方回复/外部复算请求/其 benchmark 页引用我方对照 → 即时升级响应;评估正本 docs/outreach/MEM0_UPSTREAM_EVAL_20261008.md。
+- **PRECOR = 署名 c+投递 c(双轨)**:署名 `Chunxiao Wang — nautilus-compass, Nautilus Platform`;开业周博客短版(带 CTA)首发→同周 arXiv 全版;执行=R382 博客短版+arXiv 版备妥,发窗 10/12 后。
+- **扩容项**:已由用户 10730 终局令自行裁定(既存数据盘+分批用完即删,不扩容)——该组拍板闭环于函件,无需另记。

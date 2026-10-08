@@ -2147,3 +2147,7 @@
 
 ### R381 · 2026-10-09 凌晨五(S6 全量过夜循环挂载✅——batch2-15 串行自动)
 - loop_all.sh 挂载(batch2-15 串行,单批 40min timeout 防挂死,TIMEOUT 跳下一批):batch2(django-16263+django-11490)19:14 已起跑;预计凌晨全量完成,明晨核 15 份报告+逐例对照判读。
+
+### R382 · 2026-10-09 凌晨六(三组拍板落执行✅——mem0=A/PRECOR=署名c+投递c/扩容已由10730自裁)
+- **拍板执行**(用户"三组拍板现在定",按推荐方案落):①mem0=A 挂账观察(台账追加拍板段:mem0 行转观察档+三触发器即时升级);③PRECOR=署名 c 落稿(Author 段:Chunxiao Wang — nautilus-compass, Nautilus Platform)+定稿检查单两窗全勾+**博客短版成稿**(docs/papers/PRECOR_BLOG_SHORT_20261009.md:工程师口吻摘编+四规则+判定表+判读服务 CTA+发布 checklist 四步);②扩容项闭环于 10730 用户自裁,无需另记。
+- 发窗:开业周博客短版首发(21:00 北京惯例)→同周 arXiv 全版——PRECOR 线全部就绪,零待办遗留。

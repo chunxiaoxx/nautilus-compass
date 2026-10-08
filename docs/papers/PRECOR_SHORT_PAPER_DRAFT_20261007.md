@@ -144,6 +144,11 @@ The judge model card (nacre-judge-v1, adapter sha16 dbcbab6fd1ff5821) carries
 the deployment-precision table on its face.
 
 ---
+
+**Author**: Chunxiao Wang — nautilus-compass, Nautilus Platform
+(chunxiaoxx@gmail.com · correspondence; artifacts: github.com/chunxiaoxx/nautilus-compass · huggingface.co/nautilus-compass)
+
+---
 素材源:PRECOR_BC_VERDICT_20261007.md+PRECOR_JUDGE_ROBUST_20261006.md+run.log。
 引用锚核实(2026-10-08,WebSearch):[1] OpenReview 2026-05 SLM-judges survey / [2] LessWrong 2026-08-10 量化预注册 / [3] RIPD@promptfoo LLM Security DB / [4] arXiv:2606.12344。
-定稿检查单:☑英文全文(§1-7+Abstract 全英)☑引用四实锚 ✏️matrix 图表(PNG 版待转)□作者/署名口径(用户定)□投递目标(arXiv vs 博客,开业后按传播五层顺序排)。
+定稿检查单:☑英文全文(§1-7+Abstract 全英)☑引用四实锚 ✏️matrix 图表(PNG 版待转)☑作者/署名(R382 用户拍板 c=个人+组织锚)☑投递目标(R382 拍板 c=双轨:开业周博客短版首发→同周 arXiv 全版)。
