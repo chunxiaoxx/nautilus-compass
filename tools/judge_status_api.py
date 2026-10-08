@@ -41,12 +41,15 @@ class H(BaseHTTPRequestHandler):
         if u.path != "/api/judge_status":
             self.send_response(404); self.end_headers(); return
         q = urllib.parse.parse_qs(u.query)
-        cid = (q.get("id") or [""])[0].strip() or "demo"
-        rec = LEDGER.get(cid)
-        if rec is None:
-            self.send_response(404)
-            body = json.dumps({"ok": False, "error": "unknown id"}).encode()
-        else:
+        # 无参默认返回可查询卡清单(2026-10-08 修:原默认 demo 卡被平台复核
+        # 误读为"API 返 demo 无 sha"——10664;demo 卡仅 ?id=demo 显式可查)
+        cid = (q.get("id") or [""])[0].strip()
+        if not cid:
+            rec = {"ok": True, "cards": sorted(LEDGER.keys()),
+                   "note": "pass ?id=<card_id> to query; live cards carry criteria_sha16"}
+            self.send_response(200)
+            body = json.dumps(rec, ensure_ascii=False).encode()
+        elif (rec := LEDGER.get(cid)) is not None:
             self.send_response(200)
             body = json.dumps({"ok": True, "id": cid, **rec},
                               ensure_ascii=False).encode()
