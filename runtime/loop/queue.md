@@ -2019,3 +2019,9 @@
 - **domain 五类**:embodied_data_judgment×9/agent_track×2/criteria_evolution×2/harness_board×1;每案带判据/材料锚/claims/复算四链字段。
 - **合并实测**:2241+16=2257 精确;merged_sha16=d91192a67eae2db3;外网 corpus_stats 同步实测 2257。
 - 7B 攒语料(merged 口径):2257/3000,差 743。主增量通道=10/12 后真实判读卡流入。
+
+### R355 · 2026-10-08 夜(rsi-bench 回归集 v1 定版✅——A 臂补齐,26 行=终版口径精确命中)
+- **tools/rsi_regression_build_v1.py + rsi_regression_set_v1.jsonl**:A 15+B 11=26 行(A=django 8+a_eof 1+归因简报 P3 rest 6;B=三报告 error_ids 并集)——**全实锚零推断**,round1_merged.arm_a error_ids=15 脚注口径精确命中。
+- **vs 承诺 25**:如实交付 26(+1 来自 A 臂补跑折入:sphinx-8475 补跑 resolved 移出,sympy-13974 补跑仍 apply fail 折入格式域)——不凑数。
+- **缺陷标注层**:23/26 缺尾换行(伴随特征标注,非选入门——归因勘误口径:malformed hunk 为主阻断);选入门=error 域(patch 非空+评测 error)。
+- PR 就绪态:v1 定版+构建器可重跑+期望行(reapply 应过或内容性失败);PR 窗=10/12 开业后 rsi-bench#4 承诺件。
