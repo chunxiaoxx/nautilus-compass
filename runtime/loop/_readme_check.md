@@ -1,0 +1,553 @@
+# nautilus-compass
+
+<!-- mcp-name: io.github.chunxiaoxx/nautilus-compass -->
+
+> **Open-source memory & reliability layer for AI agents.**
+> Long-term memory that now **beats mem0 on all three LongMemEval-S metrics**
+> while staying fully local & 14× cheaper — plus drift detection and
+> cross-agent contracts that no other memory layer ships.
+>
+> Plugin for Claude Code / Desktop · Cline · Cursor · Continue.dev · Zed ·
+> any MCP client.
+>
+> **Built by [Nautilus Platform](https://nautilus.social)** · open agent ecosystem · [join as agent →](https://nautilus.social)
+
+🇬🇧 English (this file) · [🇨🇳 中文](README.zh-CN.md)
+
+[![CI](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/ci.yml)
+[![arXiv build](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/build-paper.yml/badge.svg?branch=main)](https://github.com/chunxiaoxx/nautilus-compass/actions/workflows/build-paper.yml)
+[![LongMemEval-S](https://img.shields.io/badge/LongMemEval--S-full500%20P%405%2097.8%25%20%C2%B7%20vs%20mem0%2091.6%25-brightgreen)](docs/evidence/headhead_mem0_full500_20260826.json)
+[![EverMemBench](https://img.shields.io/badge/EverMemBench-44.4%E2%80%9347.3%25-brightgreen)](paper/sections/paper2_06_5_evermembench.tex)
+[![drift-AUC](https://img.shields.io/badge/drift_AUC-0.83_held--out-brightgreen)](#how-it-works)
+[![PyPI](https://img.shields.io/pypi/v/nautilus-compass?label=PyPI&color=blue)](https://pypi.org/project/nautilus-compass/)
+[![MCP Registry](https://img.shields.io/badge/MCP_Registry-io.github.chunxiaoxx%2Fnautilus--compass-blue)](https://registry.modelcontextprotocol.io)
+[![ClawHub](https://img.shields.io/badge/ClawHub-1.0.2%20%C2%B7%20audit%20Pass-brightgreen)](https://clawhub.ai/chunxiaoxx/skills/nautilus-compass-memory)
+[![MCP](https://img.shields.io/badge/MCP-17%20tools%20%C2%B7%20TLS%20%C2%B7%20RBAC-blue)](docs/mcp-usage.md)
+[![A2A](https://img.shields.io/badge/A2A-mTLS%20%C2%B7%20scoped%20peers-blue)](examples/a2a_tls_demo.py)
+[![license](https://img.shields.io/badge/license-Modified%20MIT-blue)](LICENSE)
+
+---
+
+## October 2026 — Independent Judging & Verification (new pillar)
+
+This project now also powers the **independent judging layer** of the Nautilus
+platform — preregistered criteria, three-state verdicts, negative results
+published as-is:
+
+- **NACRE judge v1** — judging knowledge compressed into a 1.7B LoRA
+  (88.5% three-state, ECE 0.072). Model card + weights:
+  [nautilus-compass/nacre-judge-v1](https://huggingface.co/nautilus-compass/nacre-judge-v1)
+- **Deployment-precision discipline** (preregistered, 291 cases): fp16 = 100%
+  label agreement with bf16 anchor (safe) · int8 = 98.28% (fail) · int4 = 94.16%
+  (forbidden). Full verdict table in-repo (`docs/metering/PRECOR_BC_VERDICT_20261007.md`).
+- **caliber-bench** — a meta-benchmark that scores *benchmarks themselves*
+  (criteria drift / contamination / judge stability). Open sample pack:
+  [nautilus-compass/caliber-bench-v0](https://huggingface.co/datasets/nautilus-compass/caliber-bench-v0)
+- **Harness leaderboard, Round 1** — same model, two harnesses:
+  v5-harness 26.7% vs mini-swe-agent 16.7% (+10.0pp), every artifact
+  sha16-addressable. Live at [nautilus.social/leaderboard.html](https://nautilus.social/leaderboard.html);
+  free L1 intake at [nautilus.social/intake.html](https://nautilus.social/intake.html).
+
+Memory layer (below) remains fully local & open; judging artifacts carry the
+same evidence discipline (measured / inferred / unverifiable — labeled).
+
+## What this is (memory layer, 2026-08 state)
+
+Three pillars, one plugin:
+
+**1 · Black-box long-term memory — now with SOTA retrieval.**
+Raw text embedded locally with BGE-m3. No extraction LLM at ingest, no graph,
+no data leaving your machine. In Aug 2026 we added **utterance-routed chunk
+retrieval**: single-session and knowledge-update questions route to
+turn-window chunks (the answer usually lives in ONE user turn; whole-session
+embedding dilutes it), everything else uses session-level hybrid
+(BM25 + dense RRF). Result on LongMemEval-S full 500 questions,
+same-question head-to-head vs mem0 2.0.19 (both sides `infer=False`,
+each on its own default embedder — bge-m3 vs vertexai text-embedding-005 —
+our reproduction):
+
+| LongMemEval-S · n=500 | P@1 | P@5 | MRR |
+|---|---|---|---|
+| **compass** | **0.890** | **0.978** | **0.929** |
+| mem0 2.0.19 | 0.774 | 0.916 | 0.834 |
+
+One-command reproduction (retrieval-only, no LLM calls, CPU works / GPU
+recommended for the full 500):
+
+```bash
+bash scripts/reproduce_lmes_retrieval.sh            # full 500
+SUBSET=12 bash scripts/reproduce_lmes_retrieval.sh  # smoke
+```
+
+The same utterance ammo overtakes mem0 **on its own home benchmark**
+(LOCOMO-10, n=1986: 0.644 / 0.890 vs 0.592 / 0.802) and fixes the
+single-session collapse on LongMemEval-M (0.20 → 1.00). Full evidence chain
+with per-type breakdowns and every config flag:
+[`docs/evidence/headhead_mem0_full500_20260826.json`](docs/evidence/headhead_mem0_full500_20260826.json)
+— including the experiments that failed (cross-encoder reranking *hurts* on
+this corpus; candidate-pool K is a no-op; Qwen3-0.6B swap is a wash).
+
+**2 · Drift detection — the half nobody else solves.**
+Memory recalled doesn't stop the AI from breaking the rule *this time*.
+compass scores every prompt against an anchor set of real failure patterns
+(25 positive + 35 negative) before the agent acts. AUC 0.83 held-out,
+p95 latency <50 ms, fire rate 0.5% in production traffic. White-box layers
+abstract prompts into facts before drift becomes checkable — structurally
+out of their reach.
+
+**3 · Cross-agent contracts + governance.**
+When you run multiple agents (or multiple Claude dialogs) on shared files,
+compass derives implicit contracts from handoff files, tracks closure, and
+audits for fake-closure / red drift. A 4-dialog 28-hour field study lives in
+[`docs/case_study_4dialog_compass.md`](docs/case_study_4dialog_compass.md).
+
+**The trade that flipped**: earlier versions traded −30 points on
+LongMemEval-S for local deployment and cost. As of 2026-08 there is no trade
+— full sweep at 1/14 the reproduction cost (~$3.50 per 500 questions vs
+$50+ for GPT-4o-judged stacks). Full argument:
+[paper/BLACKBOX_VS_WHITEBOX.md](paper/BLACKBOX_VS_WHITEBOX.md).
+
+---
+
+## Quickstart
+
+### Packages on PyPI
+
+| Package | What it is |
+|---|---|
+| [`nautilus-compass`](https://pypi.org/project/nautilus-compass/) | this repo — CLI, MCP server, A2A adapter, **assay judge toolkit** (3.3.0) |
+| [`assay-verify`](https://pypi.org/project/assay-verify/) | ed25519 signed receipts for AI outputs — attest-at-generation, verify-on-consume (Let's Encrypt for AI claims) |
+| [`jev-trust`](https://pypi.org/project/jev-trust/) | trust middleware for the Jev decision API — logs every call, measures calibration in *your* domain, signs the evidence |
+| **BC1 benchmark** | 30-item organizational-memory exam — honest scoring (U never counts), machine-scored, our own 11/18 first self-test published in full — [LAUNCHED 9/27](docs/benchmarks/BC1_LAUNCH.md) |
+
+### Python package (PyPI · 3.3.0)
+
+```bash
+pip install nautilus-compass
+# ships the CLI, the MCP server, the A2A adapter and session tools:
+#   nautilus-compass · compass-mcp · compass-a2a
+#   compass-drift-history · compass-session-search · compass-session-writer
+```
+
+### 30 seconds (Claude Code / Desktop · local daemon)
+
+```bash
+git clone https://github.com/chunxiaoxx/nautilus-compass ~/.claude/plugins/nautilus-compass
+bash ~/.claude/plugins/nautilus-compass/install.sh
+
+# start the BGE-m3 daemon (one-time per boot)
+bash ~/.claude/plugins/nautilus-compass/daemon_start.sh
+```
+
+> **Deploy notes (field-verified pitfalls, 2026-08-28):**
+> - `COMPASS_USE_INOTIFY=0` disables new-file discovery — recalls won't see
+>   fresh writes, **silently**. Only set it if you know why; the daemon logs a
+>   WARNING when it's off.
+> - `drift` fails loudly now: if `anchors.json` is missing from the plugin dir,
+>   responses carry `drift.anchors_error` + `should_alert: true` (it used to
+>   silently return "no risk" — that was a security hole).
+> - Token changes to `tokens.json` hot-reload via mtime check (no systemd
+>   restart needed since v3.1.0).
+> - First recall after daemon idle may take up to 90 s (model cold-load); the
+>   MCP client auto-retries once with the extended timeout.
+
+The installer wires three hooks into `~/.claude/settings.json`:
+- `UserPromptSubmit` → time-bucketed memory recall + drift check
+- `PostToolUse` → mid-session writer
+- `Stop` → end-of-session summary (writes a session battle-report to
+  `~/.claude/.cache/compass-last-session.txt`)
+
+Slash commands: `/compass-verify` · `/compass-drift` · `/compass-recall` ·
+`/compass-search` · `/compass-status`.
+
+### Any other MCP client
+
+```bash
+python ~/.claude/plugins/nautilus-compass/scripts/install_to_agent.py
+```
+
+Auto-detects Claude Desktop, Cursor, Cline, Continue.dev, Zed and patches
+their MCP config. Per-agent copy-paste configs:
+[`docs/AGENT_ONBOARDING.md`](docs/AGENT_ONBOARDING.md) · raw protocol:
+[`docs/mcp-usage.md`](docs/mcp-usage.md).
+
+### Cloud-hosted (open beta · self-serve)
+
+The hosted gateway — MCP over HTTPS with scoped tokens and per-user memory
+isolation — is open for self-serve registration: sign up at
+[`https://compass.nautilus.social/signup`](https://compass.nautilus.social/signup),
+then create a token in the web console (or `POST /tokens`). Scopes are
+server-bound to your own space (read+write); cross-user access is denied and
+verified by automated probes. Design:
+[`docs/plans/2026-08-30-multi-tenant-memory-design.md`](docs/plans/2026-08-30-multi-tenant-memory-design.md).
+
+MCP endpoint: `https://compass.nautilus.social/mcp/` (Bearer token ·
+streamable-http). Also listed in the **official MCP Registry** as
+`io.github.chunxiaoxx/nautilus-compass` (remote + PyPI self-host, dual entry) —
+registry-aware clients (Glama and other aggregators) can discover it from there.
+A2A discovery:
+`curl https://compass.nautilus.social/.well-known/agent.json`
+
+### Nautilus platform agents (cloud ssh quickstart)
+
+For agents on machines with ssh access to your Nautilus cloud box —
+generates a scoped token, wires the cloud MCP bridge, writes `.mcp.json`,
+and runs an end-to-end self-check. Add `--hud` to install the fused status
+line (live recall hit-counter 🧠, drift state, 5-min traffic).
+
+```bash
+bash ~/.claude/plugins/nautilus-compass/ops/agent_quickstart.sh my-agent
+```
+
+---
+
+## Headline numbers
+
+| Benchmark | Score | Honest compare |
+|---|---|---|
+| **LongMemEval-S 500q full** (utt-routed + hybrid, n=500) | **P@1 0.890 · P@5 0.978 · MRR 0.929** | sweeps mem0 2.0.19 (0.774/0.916/0.834, our reproduction, each side on its own default embedder): +11.6/+6.2/+9.5pt. Largest flip: single-session-user P@1 0.90 vs 0.49 |
+| **LOCOMO-10** (n=1986 · mem0's home benchmark) | **P@1 0.644 · P@5 0.890 · MRR 0.740** | overtakes mem0 (0.592/0.802/0.677, our reproduction) +5.2/+8.8pt |
+| **LongMemEval-M 500q full** (~501 sessions/question) | **P@5 0.888** | 12x larger session pools cost only 9pt vs S500; ssu collapse fixed at n=500 (0.20 → 0.93); ssp 0.53 newly exposed; no mem0 M head-to-head yet |
+| **EverMemBench-Dynamic** (n=500) | **44.4% (Run 1) / 47.3% (Run 2)** | tops the four published Table 4 baselines (Mem0 37.09, Zep 39.97, MemOS 42.55, MemoBase 34.27). Not claiming "industry SOTA" — OMEGA / Mem0g haven't reported publicly |
+| **LongMemEval-S e2e 500q full + summary layer** (doubao subject × glm judge, 2026-09-03) | **75.4%** (377/500; 81.6% when excluding judge-disconnect questions, all re-judged and resolved) by type: ssu **96.9%** · ssa **85.4%** · tr **83.3%** · ms **73.2%** · ku 79.5% · ssp 75.0% | summary-layer verdict **PASS** (preregistered gates: ms≥35/ssa≥40/tr≥30 — all cleared 2×). Cross-session types jumped +45~60pt (ms 22.6→73.2, ssa 25.0→85.4, tr 15.8→83.3) via per-session summary cards + date-anchored timeline — zero retrieval change, zero training, pure context engineering. All 71 judge-disconnect questions re-judged and resolved (same judge, retry only). Full verdict: [`vtf/_e2e_diag/arm_a_final_verdict.md`](vtf/_e2e_diag/arm_a_final_verdict.md); baseline JSON: [`docs/evidence/e2e_500_full_20260829.json`](docs/evidence/e2e_500_full_20260829.json) |
+| **LongMemEval-V2** (official benchmark by [xiaowu0162](https://github.com/xiaowu0162/LongMemEval-V2), 451q agent-trajectory memory · our tuned run, rejudged clean 2026-09-02) | **web 40.0% / enterprise 38.4%** (first untuned run 2026-08-30: 19.6% / 12.8%; paper reports frontier LLMs ≤14.1% without trajectory evidence) | brand-new multi-session benchmark (webarena agent trajectories); published untuned baseline AND tuned v2. Two levers: abstention judging alignment (bare-UNKNOWN 121→0; unanswerable-from-snapshot questions 2.8% → 45.8% via the rubric's two legitimate routes) + retrieval unit upgrade (a11y-structure pruning, per-trajectory dense rerank, budget 12k→24k; procedure +16.6pt). **Scoring correction 2026-09-02**: the original judge (4096 max tokens) was silently eaten by reasoning, systematically zeroing answers; full re-judge of all 156 LLM-graded questions (low-reasoning / 16384 tokens) moves web 36.7→40.0, ent 40.3→38.4 — these clean numbers are the current headline. Honest caveats: abstention route relies on judge discretion; web dynamic-type dipped -3.9pt. Follow-ups: LoRA retrieval-augmentation closed at parity (2026-08-31, not adopted); abstention-gate patch rejected by preregistered criteria (2026-09-02 — refusal template leaked into answerable questions, 92/89 items). Evidence: [`vtf/_compass_lmev2_out/`](vtf/_compass_lmev2_out/) |
+| **Drift detector AUC** | **0.83 held-out / 0.92 in-set** | only public memory layer doing drift detection at all |
+| **Reproduction cost** | **~$3.50** / 500 questions | ~14× cheaper than GPT-4o-judged stacks |
+| **p95 hook latency** | **<50 ms** | safe for every-prompt invocation |
+
+We deliberately report Run 1 (44.4%) as the EverMemBench headline to avoid
+cherry-picking; cross-run mean 45.84% clears MemOS by +3.3pt. Dual-run +
+Gemini cross-judge sensitivity analysis:
+[`paper/sections/paper2_06_5_evermembench.tex`](paper/sections/paper2_06_5_evermembench.tex).
+
+**Try it without installing**: live drift-detection + Merkle-integrity demo
+at [huggingface.co/spaces/chunxiaox/nautilus-compass](https://huggingface.co/spaces/chunxiaox/nautilus-compass)
+(CPU only · metadata-mode jaccard fallback · no signup).
+
+**Reproduce the numbers** — eval dataset (behavioral anchors + labeled
+traces + LongMemEval-S / EverMemBench scoring) on the Hub:
+[huggingface.co/datasets/chunxiaox/nautilus-compass-test-data](https://huggingface.co/datasets/chunxiaox/nautilus-compass-test-data)
+
+```python
+from datasets import load_dataset
+ds = load_dataset("chunxiaox/nautilus-compass-test-data")
+```
+
+Benchmark entrypoint: `bash ops/bench_all.sh l0` (fast layer, no GPU) ·
+`bash ops/bench_all.sh l1 30` (LongMemEval subset). Retrieval levers are
+env-switched in `tests/eval_longmemeval_accuracy.py`
+(`ZMM_UTTERANCE_RETRIEVE` / `ZMM_UTTERANCE_TYPES` / `ZMM_HYBRID` /
+`ZMM_RETRIEVE_K` / `ZMM_DATE_ANCHOR` / `ZMM_EMBED_CACHE`).
+
+---
+
+## Glossary
+
+Terms this project coined and uses precisely. Other teams are welcome to use them for their own systems — that's what terms are for.
+
+**Judge hygiene** — the discipline of keeping an LLM judge trustworthy: preregistered criteria, function-level smoke tests, silent-failure detection, dual accounting, confidence intervals. If your benchmark uses an LLM judge without these, the leaderboard is fiction. See [the judging protocol](docs/nautilusmem/PROTOCOL.md) · [paper2](docs/papers/paper2_judge_hygiene.pdf).
+
+**Write-time wager** — compressing or summarizing memory at write time is a bet on the future query distribution, which is structurally unknowable. That's why the compass write path makes zero LLM calls; all intelligence lives at read time (e2e 42.6% → 75.4% on identical memories and questions).
+
+**Dual accounting** — every headline score is reported twice: full set, and judge-outage-excluded set (75.4% / 81.6%). A single number hides judge failures; two numbers disclose them.
+
+---
+
+## How it works
+
+```
+            User prompt: "Fix bug X for me"
+                         │
+                         ▼
+       ┌─────────────────────────────────────┐
+       │  UserPromptSubmit Hook (this plugin)│
+       └─────────────────────────────────────┘
+                         │
+            ┌────────────┼────────────┐
+            ▼            ▼            ▼
+       ┌────────┐  ┌─────────┐  ┌──────────┐
+       │ recall │  │  drift  │  │ profile  │
+       │ memory │  │  check  │  │ aggregate│
+       └────────┘  └─────────┘  └──────────┘
+                         │
+                         ▼
+       Hooks inject results into Claude's system prompt:
+       - Time-bucketed past memory (BGE-m3 semantic + keyword hybrid)
+       - Drift score + nearest negative anchor (if score < threshold)
+       - Profile facts ("you have 3 unfinished tasks in this repo")
+                         │
+                         ▼
+            Claude answers — with full context loaded
+```
+
+Drift detector: each prompt vs anchor set (real failure transcripts),
+BGE-m3 cosine. AUC 0.83 held-out.
+
+---
+
+## What's exposed (MCP tools)
+
+**17 tools** — core seven:
+
+| Tool | Purpose | Latency (local daemon) |
+|---|---|---|
+| `ingest_obs(name, body, agent_id?)` | Write observation with auto-anchor + drift signal | ~150 ms |
+| `recall(query, project?, top_k?)` | BGE-m3 semantic + keyword hybrid search | ~200 ms |
+| `session_search(query, since?)` | Time-bucketed session-log search | ~80 ms |
+| `profile(user_id?)` | Work-profile aggregate (topics, agents, drift trend) | ~100 ms |
+| `drift_check(prompt, project?)` | Black-box drift score against anchors | <50 ms |
+| `drift_history(since?, agent_id?)` | Drift score timeline for trend audit | ~30 ms |
+| `feedback_log(direction, reason)` | Log positive/negative anchor signal | <20 ms |
+
+> Latencies are local-daemon figures. Over the public HTTPS MCP endpoint
+> (`https://compass.nautilus.social/mcp/`) add TLS + WAN round-trip:
+> measured p50 ≈ 0.9–1.7 s per call (2026-08-28 field test).
+
+Plus: `thread_recall` · `proof_of_impact` · `long_task` · platform bridge
+(`submit_platform_task` / `ingest_platform_task_result`) · governance
+(`governance_dispatch` / `governance_audit` / `governance_lock_check` ·
+`governance_plan`) · `add_worker`. JSON-RPC 2.0 over stdio / TCP / TLS / mTLS;
+`notifications/*`, `logging/setLevel`, `resources/*` spec-complete.
+Full guide: [`docs/mcp-usage.md`](docs/mcp-usage.md).
+
+### Token scopes (v2.3.1)
+
+Tokens are scoped, not global. `ops/compass_token_admin.py grant <agent>
+--scopes read:<project>,write:<project>` issues a least-privilege token;
+`read:*` (all-project recall, incl. `scope=user`) requires an explicit
+`--yes-i-want-star`. The HTTP server enforces scopes per call (fail-closed);
+legacy list-format tokens map to full access for backward compatibility.
+The quickstart script signs **read-only, current-project** tokens by default.
+
+---
+
+## Comparison
+
+| Capability | this | mem0 | Letta | Zep | claude-mem | MemOS | Smriti |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| Cross-agent memory | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | archive-only |
+| MCP A2A protocol native | ✅ TLS+mTLS+RBAC | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Drift detection | ✅ AUC 0.83 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Merkle integrity audit log | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| LongMemEval-S retrieval (500q head-to-head) | ✅ **0.890 / 0.978 / 0.929** | 0.774 / 0.916 / 0.834 (our reproduction) | n/r | n/r | n/r | ❌ | ❌ |
+| LOCOMO-10 retrieval (n=1986) | ✅ **0.644 / 0.890 / 0.740** | 0.592 / 0.802 / 0.677 (our reproduction) | n/r | n/r | n/r | n/r | n/r |
+| EverMemBench verified | ✅ 44.4-47.3% | 37.09 | n/r | 39.97 | n/r | 42.55 | ❌ |
+| LongMemEval-S e2e (their own harness) | **500q full 75.4%** with summary layer (2026-09-04, all questions judged) — by type (final re-judged n=500): ssu 97.1 / ssa 83.9 / tr 62.4 / ms 69.2 / ku 80.8 / ssp 80.0; clean accounting excl. 71 outage: 96.9/85.4/83.3/73.2/79.5/75.0. Preregistered verdict PASS ([link](vtf/_e2e_diag/arm_a_final_verdict.md)) | 94.4% (self-reported) | n/r | n/r | n/r | n/r | n/r |
+
+*2026 newcomers not yet same-machine reproduced by us: Hindsight, Supermemory (self-reports LongMemEval SOTA), Cognee, LangMem, Membase — rows pending; their published numbers use their own harnesses and are not directly comparable to our head-to-head protocol.*
+| Self-host + hosted both | ✅ | ☁ only | ✅ | ☁ only | ✅ | OSS only | OSS only |
+| License | Mod. MIT | Apache | Apache | proprietary | MIT | Apache | MIT |
+
+`n/r` = not reported in their published evaluations. Smriti is a team
+conversation archive — different scope, listed for completeness.
+
+---
+
+## Reproducibility Wall
+
+**Verify our scorecards yourself** — no trust in us required, one command,
+stdlib only:
+
+```bash
+python scripts/verify_receipt.py docs/wall/EXAM5_SCORECARD.md \
+  docs/wall/EXAM5_SCORECARD.sig \
+  f7554b8709b7fe36f5a63e7f76cf2a31f827aee5724ff8dd4f11772d1aa3e8be
+```
+
+Protocol: [Assay Protocol v0](docs/protocol/ASSAY_PROTOCOL_V0.md) — criteria
+registration, verification packs, signed receipts, wall discipline. Open to
+any implementer; we are the reference implementation, not the owner.
+
+**The Independent Verification Protocol (IVP) v1** — our judging methodology on
+one page: preregistered gates (stricter-only), evidence tiers
+(`[measured]/[inferred]/[unverifiable]`), recompute by a non-implementer, and a
+two-way scorecard (our own errors stay on the record). Adopted by external
+projects — e.g. [rsi-bench #3](https://github.com/sunghunkwag/rsi-bench/pull/3)
+gates its AGG score on independently checked goal completion.
+→ [SPEC (one page, take & adopt)](https://gist.github.com/chunxiaoxx/34dd19b430ad69242198d4c429303bd5)
+· [Casebook v1](docs/metering/CASEBOOK_V1_20261005.md) (three engagements +
+errata ledger). Judging is free; binding (casebooks, certification) is paid.
+
+Run the head-to-head yourself (~$3.50) — your numbers go on the wall,
+**favorable or not**. Independent reproduction beats self-report; entries that
+contradict our numbers are published with the same prominence.
+→ [docs/REPRODUCIBILITY_WALL.md](docs/REPRODUCIBILITY_WALL.md)
+
+**Our own numbers are on the wall too** (self-audit log, ugly ones included):
+C-family calibration pack 6/6 agree under independent recompute (ed25519-signed
+receipt, 2026-09-17) · 10/10 legacy verdicts NOT recomputable (2026-09-15 audit
+finding, fixed forward) · X1-v2 judge batch 47/47 inconsistent → voided, never
+cited · RSI loop #1: two self-reported greens caught by fresh-session recompute
+before merge · **first exam + full improvement cycle under our own certification track
+(2026-09-18/19): 1/5 → 3/5 agree** — our own agent org's submitted fixes,
+judged by the same three-gate protocol, zero bad-paper submissions after the
+first round, ugly numbers and all (signed scorecards in docs/wall/). Free recompute
+entry: open an issue with your evidence pack — audit tier starts at $99.
+
+---
+
+## Case study · 4-dialog OSS multi-agent reliability
+
+28 hours, four Claude Code dialogs on shared filesystem protocols:
+drift fired 314×/7d (act-on rate instrumented), contract
+`cnt_compass_soul_sub_a1` closed in 17.92h vs 6d21h budget, 13 plan-dup
+audits saved ~40-50h, first cross-dialog L4 fire settled 50 NAU. Field log
++ 7 generalizable patterns:
+[`docs/case_study_4dialog_compass.md`](docs/case_study_4dialog_compass.md).
+
+---
+
+## Advanced (opt-in surface)
+
+<details>
+<summary><b>Drift loop closure · act-on rate</b></summary>
+
+Every fired alert gets a stable `alert_id` in
+`.cache/drift_mitigation_log.jsonl`. Acknowledge via
+`feedback.py log <alert_id> fp|tp`; `audit_kpi.py` reports
+`act_on_rate(window_hours)` (target ≥0.70; <0.30 = cry-wolf → raise
+threshold or retrain anchors).
+
+```python
+from audit_kpi import act_on_rate
+m = act_on_rate(window_hours=168)
+assert m["rate"] >= 0.70
+```
+</details>
+
+<details>
+<summary><b>v3 opt-in LLM switches (all default-off, byte-equal promise)</b></summary>
+
+With no opt-in env set, daemon behavior is byte-equal to v2.0.1 — gated by
+`tests/test_llm_opt_in.py` on every PR.
+
+| env var | tier | feature |
+|---|---|---|
+| `COMPASS_USE_LLM_RESOLVE` | 1 (session-end) | LLM contradiction resolution |
+| `COMPASS_USE_LLM_VERIFY` | 4 (runtime) | anti-confabulation cite-or-refuse |
+| `COMPASS_USE_LLM_DRIFT_PAY` | 4 (runtime) | drift × outcome anchor feedback |
+| `COMPASS_USE_LLM_REFLECT` | 3 (periodic) | self-reflection semantic emit |
+| `COMPASS_USE_LLM_ECON` | 4 (runtime) | memory-as-economy NAU budget |
+
+Deterministic v3 surface (always on): typed knowledge graph layer (NO-OP
+until built), confidence scoring + contradiction hook, `MEMORY_REPORT.md`
+auto-gen, `implementation_notes` frontmatter. Registry: [`llm_opt_in.py`](llm_opt_in.py).
+</details>
+
+<details>
+<summary><b>Platform integration · BP1/BP3 + V7 governance</b></summary>
+
+OSS↔platform bridge without a new HTTP server:
+`submit_platform_task` (compass → platform queue, file-based or HTTP when
+`COMPASS_PLATFORM_QUEUE_URL` is set) · `ingest_platform_task_result`
+(platform → compass, searchable via `recall`). Round-trip demo:
+`python examples/platform_flywheel_demo.py`.
+
+V7 governance (multi-executor deployments): `governance_dispatch`
+(decompose 1 task → N routed sub-tasks) · `governance_audit` (fake-closure /
+red-drift scan) · `governance_lock_check` (SHA256 lock on the L0 core).
+Demo: `python examples/v7_governance_demo.py`. Contract details:
+[`docs/PLATFORM_HANDSHAKE.md`](docs/PLATFORM_HANDSHAKE.md).
+</details>
+
+<details>
+<summary><b>Release history · v3.0.0 / v2.1.0 / v2.0.0</b></summary>
+
+**v3.0.0 · "from memory library to evolution engine"** — same system closing
+the loop: memories feed a **extract fuel → external verdict → distill**
+cycle. Semantic-recall revival (Windows torch long-path fix), GOAL-SSOT
+ledger + hourly heartbeat, cloud capacity root-cause fixes (load 10-14 →
+1.x), daemon atomic pkl + per-project locks, paired-control evidence
+(tribal-fact retrieval 0/3 → 3/3), fused HUD, 30-second quickstart.
+
+**v2.1.0 · drift v2 + line reconciliation** — cry-wolf fix (fire rate
+64.5% → 0.5% via rule-hit OR drift_score < −0.07), cross-agent contract
+scanner (L4 substrate), L3 tier promotion + PoI, daemon hardening
+(bounded pools, in-flight semaphore, BM25+vector RRF opt-in).
+
+**v2.0.0 · Opinionated EvoMap** — deterministic lifecycle layer on the
+black-box base. No LLM at ingest / tier promotion / forgetting; no vendoring
+of GBrain/OpenViking; no graph rerank for closed haystacks (cost −6.2pt in
+v0.8 — [`paper/RESULTS_v0.8.md`](paper/RESULTS_v0.8.md)).
+
+Full notes: [`CHANGELOG.md`](CHANGELOG.md) · release:
+[`v3.0.0`](https://github.com/chunxiaoxx/nautilus-compass/releases/tag/v3.0.0)
+</details>
+
+---
+
+## Documentation
+
+- [`docs/AGENT_ONBOARDING.md`](docs/AGENT_ONBOARDING.md) — per-agent install configs (6 platforms + 3 frameworks)
+- [`docs/mcp-usage.md`](docs/mcp-usage.md) — raw MCP protocol guide, TLS setup, RBAC
+- [`docs/PLATFORM_HANDSHAKE.md`](docs/PLATFORM_HANDSHAKE.md) — OSS↔SaaS coordination contract
+- [`docs/evidence/`](docs/evidence/) — raw benchmark evidence files (JSON, per-question rows)
+- [`paper/`](paper/) — two papers (drift detection + memory pipeline) and eval scripts
+- [`ops/GPU_EVAL_RECIPE_4090.md`](ops/GPU_EVAL_RECIPE_4090.md) — 12-minute rented-GPU benchmark recipe
+- [`CHANGELOG.md`](CHANGELOG.md) · [`CONTRIBUTING.md`](CONTRIBUTING.md)
+
+---
+
+## Citation
+
+**Paper 1 · drift detection**:
+
+```bibtex
+@misc{nautiluscompass-drift-2026,
+  title  = {Nautilus Compass: Black-box Persona Drift Detection
+            for Production LLM Agents},
+  author = {Chunxiao Wang},
+  year   = {2026},
+  note   = {Yiluo Technology Co., Ltd.},
+  howpublished = {\url{https://github.com/chunxiaoxx/nautilus-compass}}
+}
+```
+
+**Paper 2 · memory pipeline + EverMemBench cross-bench**:
+
+```bibtex
+@misc{nautiluscompass-memrecall-2026,
+  title  = {Closing the Memory Recall Gap with Chinese LLMs:
+            A Multi-Stage Retrieval Pipeline Achieving Zep-SOTA Performance
+            on LongMemEval-S at 1/15 Cost},
+  author = {Chunxiao Wang},
+  year   = {2026},
+  note   = {Yiluo Technology Co., Ltd.},
+  howpublished = {\url{https://github.com/chunxiaoxx/nautilus-compass}}
+}
+```
+
+Prior work we build on (cite as appropriate): BGE-m3 / BGE-Reranker
+(BAAI 2024) · Persona Vectors (Anthropic, [arXiv:2507.21509](https://arxiv.org/abs/2507.21509),
+complementary white-box) · DPT-Agent ([arXiv:2502.11882](https://arxiv.org/abs/2502.11882)) ·
+A-MEM ([arXiv:2502.12110](https://arxiv.org/abs/2502.12110)) ·
+LongMemEval (Wu et al., NeurIPS 2024) · EverMemBench (Hu et al., 2026).
+
+---
+
+## License
+
+- **Code, plugin, MCP wrapper, papers, scripts** — Modified MIT License (MIT + trademark clause + hosted-service cap; self-hosting / internal deployment / personal use stay free forever — [`LICENSE`](LICENSE))
+- **Behavioral anchor files** (`anchors*.json`) — CC0 1.0 Universal ([`LICENSE-ANCHORS`](LICENSE-ANCHORS))
+- Historical releases before this license's introduction were pure MIT.
+
+---
+
+## Star history
+
+[![Star History Chart](https://api.star-history.com/svg?repos=chunxiaoxx/nautilus-compass&type=Date)](https://star-history.com/#chunxiaoxx/nautilus-compass&Date)
+
+## Contributors
+
+<a href="https://github.com/chunxiaoxx/nautilus-compass/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=chunxiaoxx/nautilus-compass" alt="Contributors" />
+</a>
+
+PRs welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Contact
+
+- **Author**: Chunxiao Wang · Yiluo Technology Co., Ltd. · `chunxiaoxx@gmail.com`
+- **Issues**: [github.com/chunxiaoxx/nautilus-compass/issues](https://github.com/chunxiaoxx/nautilus-compass/issues)
+- **Hosted gateway**: [compass.nautilus.social](https://compass.nautilus.social)
+- **中文文档**: [README.zh-CN.md](README.zh-CN.md)
