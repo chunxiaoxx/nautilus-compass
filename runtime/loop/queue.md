@@ -2104,3 +2104,9 @@
 - **新件一·S6 垫跑就绪全备✅[实测]**:preds_arm_a 30 instance_ids 提取→**30 镜像名清单全生成**(swe-bench/SWE-bench_Verified 5.x 正本数据集 image 字段预计算;unique 30/missing 0;sample=swebench/sweb.eval.x86_64.astropy_1776_astropy-14365);分批 pull 脚本部署 cloud(pull_batches.sh:2/批·护栏余量<25G 自停·已存在跳过)——10720 承诺件兑现,10/9 一键起跑。排障:swebench 5.0.2 模块重构(test_spec→run_evaluation)+数据集格式升级(image/eval_script 字段入行)。
 - **新件二·4096 重算验收口径冻结✅**(docs/metering/S6_RECOMPUTE_ACCEPTANCE_20261008.md,应 10691 C 段):五门审计表形态门(A1 全量 SUM=balance_after/A2 逐行连续/A3 押注释放对称/A4 触发器 DDL 语义/A5 9315/9322 双案例回归)+快照纪律(单一 REPEATABLE READ 只读事务)+零放宽(PASS=五门全绿,不出部分通过);判读岗 SLA=执行完成函到 24h 出卡;正本回函 v5+platform(10724/10725;v5 首发误挂附件 10726 更正——发函附件双检教训)。
 - 附带:probe 9876 pong;信箱 0 未读。
+
+### R372 · 2026-10-08 深夜七(主件轮:10-11 终检预演双口径全绿✅+垫跑实质起跑+首卡信用闭环首例)
+- **终检预演✅[实测双口径]**:final_check.py 复跑 **11/11 PASS·0 WARN·0 FAIL**;--render 渲染口径 **12/12 PASS**(data 站渲染 30571B)——10-11 正日零意外前置确认;判读状态 API 活数据锚健康。
+- **垫跑实质起跑✅**:pull_batches.sh 后台实跑——[#1] astropy-14365 OK(73G→70G),[#2] django-12304 进行中;护栏在位(余量<25G 自停);扩容获批后余批切全拉。
+- **首卡信用闭环首例✅**:10727 平台独立复现 nautilus-l1-0002 通过(verdict/sha16 逐项命中)+72fdcb66 回写 delivered+关单 5 件+真实客户单=0 坐实——**判读岗首例 delivered→第三方复现→关单全链走通**,判读管线信用实证;ack 已回。
+- 附带:probe 9876 pong(pid 29128);信箱 1 函处理。
