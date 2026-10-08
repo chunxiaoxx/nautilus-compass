@@ -2084,3 +2084,11 @@
 - **回函两发**:10706(S6 二轮回应正本:HEAD/六件 LF sha 表/双口径注:b81eca84=历史锚,LF 等价 5c8e0a7c,API criteria_sha16 外网实测在体)+**10707 补函=intake 断点呈报**:selftest 单 72fdcb66 四路寻单无着(任务系统 integer 无此号/gmail 零/信箱零/仓零)——**intake 管道断点坐实**(mailto 无落点无共享队列),请 platform 信箱函发单内容(SLA 10/9 04:00 死线)+两案修复(短期信箱总线/中期 /api/intake 提前开业);10694 admin 后台 ack。
 - 挂账:72fdcb66 判读候单函;S6 三轮复核候平台;语料台账裁决悬案(10664 律)候平台核。
 - **磁盘硬缺口**:30 镜像解压预计 90-120G vs 余 62G——明日预拉前需清盘(候选列单待批:swe_b50 Exit 容器/v5 仓归档/nanojev_ckpt)或平台扩容。资源请求经 10647/10663 已达(用户令背景优先响应)。
+
+### R369 · 2026-10-08 深夜四(M5 移植部署收官✅+S6 首卡 delivered✅——判读岗实弹首例)
+- **M5 记忆门三件套部署生产✅[实测全门]**:cherry-pick 1121328+de0552b 到 1009 基线零冲突(937ffdc0/bc65c603);v2.5.1 dedup coverage 披露修复(EMBED_BUDGET 渐进消化下冷文件漏检有权可知);15 单测绿+9878 测试实例冒烟 4/4 GREEN(热复述 gray 0.8447/unique 分档/fact_status 带出/chain_extra 链展开)+生产 9876 J4 gate GREEN(暖机后三案读数与 9/9 基线一致)。**生产切换**:watchdog 禁→切→验→复(纪律走完);pid 29128 在役。
+- **部署排障三课[实测]**:①探针/进程环境差(inotify_simple 有无)使同代码两行为——测试进程走 fast path 缓存 return 不进 embed 段(logs 空=分支实锤);②EMBED_BUDGET=24 渐进消化致重启后 J4 假 RED(冷文件无向量不可打分=非代码回归,排名分数带 0.49-0.53 证缺席非劣化);③根修=COMPASS_EMBED_BUDGET=200 重启单进程一轮收完(coverage 155/155,490s)——暖机循环脚本两小时不递进被此法替代。
+- **9878 双进程同端口事故[精确清杀]**:kill MSYS pid 不达 Windows pid,新旧双 LISTENING(14320+26252)——taskkill //PID 精确双杀后单实例(pid 2696)冒烟 GREEN;8/30 双进程写文件事故同型,记录在案。
+- **S6 首卡 delivered✅**:72fdcb66(平台自检单)按判据档 5c8e0a7c(LF 口径)判读=insufficient_evidence(repo 200/npm 1.0.0 锚/任务集读数零/产物零——证据三层逐项);**nautilus-l1-0002 外网 live**(verdict/criteria_sha16/steps 全带)=C9 管线 intake→judging→delivered 首例+首张带 sha 真卡;SLA 提前 11.5h;10713 三项全办(假单处置方案=关单标注防 SLA 噪声/派单函制入轮值),回函 10723。judge_status 部署链:本地 main ff b04a0747→cloud pull(再遇 daemon.py staged 热修挡路,存档 backup diff+stash 后过)→systemd 重启→外网实测。
+- **仓库考古定谳**:开场快照的 main=85d0bead(M5 早版)链已不在主线(先前会话重建),现 main=b04a0747 线性无重复(DUP-CHECK=0);本地 main ref 已 ff 对齐。
+- 附带:probe 9876 pong 贯穿;watchdog 已复能;信箱 2 函(10713/10712)全处理。
