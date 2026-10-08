@@ -109,3 +109,7 @@
 ## batch-2 修复记录(2026-10-09 · 16 条已核补)
 
 measured×15(实测读数/事件记录类)+inferred×2(_NODE 聚合节点/assay_gate_test 测试桩)。累计已核:batch-1×3+batch-2×16=19 条;覆盖率 missing 93→74。剩余 74 条按同模式分批推进(b2 续:convergence 前段/通信类/竞品类……)。
+
+## batch-3 修复记录(2026-10-09 · 18 条已核补)
+
+measured×17+heard×1(industry-ilya-ssi 行业动态=外部传闻)。累计 37/93;覆盖率 missing→56。清单勾选更新随 batch 滚动。
