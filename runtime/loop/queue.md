@@ -2237,3 +2237,8 @@
 ### R404 · 2026-10-09 晨十一(主件轮:引擎选型分析落档✅——XERJ 类项目"借模式不换底座")
 - **MEMX_ENGINE_ANALYSIS 落档**(docs/soul/):检索引擎=商品件,我们护城河在验证/治理层——换引擎=搬家具不筑墙;XERJ 逐项评(Apache-2.0 可魔改/早期快进风险/关系是资产);**抄三模式**(autoindex 分块溯源/release-notes CI claim-check/manifest 制式);"魔改+JEV"正确形态=XERJ 生态插件(assay-verified 记忆模式,分发渠道非底座,M1 后评估);GitHub 同类盘点(mem0/Letta 系=被测对象非底座来源)。Conan-v2 下载排队(Apache-2.0 实核;v1 CC-BY-NC 否)。
 - 预注册 V2 落档(EMB_BAKEOFF_PREREG:任务本质五特征/硬过滤含禁外部 API/终榜四模型/否决表/评测升级 Set A+ 情境改写为主判据)。
+
+### R405 · 2026-10-09 晨十(用户令 LOOP 模式:驱动档落盘✅+A100 磁盘满处置)
+- **LOOP_MODE 驱动档落档**(docs/plans/LOOP_MODE_20261009.md):四目标(G1 开业/G2 引用/G3 NACRE/G4 MEMX)×任务勾选制×路线图(今日/10-11/开业周/10-26)+每轮执行纪律——cron 自此按驱动器取任务。
+- **A100 磁盘满处置[实测]**:vdd4 共享盘 98G 100% 满(4B 下载 Errno 28 中断;flywheel 资产 qc17 22G/GR00T 12G 在盘,**不碰**);处置=新下载改道根盘 /root/emb_models(余 35G:0.6B→4B→Conan-v2 串行 nohup);共享盘治理函候发(flywheel+platform)。
+- 附带:probe pong。
