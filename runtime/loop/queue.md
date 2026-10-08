@@ -2098,3 +2098,9 @@
 - **四函处置**:10717 e2e 验证单收阅不接单/10718 派单制代码化+is_smoke 口径知悉(产能读数按 is_smoke=false 过滤)/10720 **方案二扩容+100G 获批**(178→278G;A1-A4 追认合规;A5A6 暂缓;阻塞=国际站凭据缺位候用户 a 控制台扩容/b 供密钥)——**垫跑自决=是**(74G 同窗 1-2 镜像,10/9 起第一批,判据 sha 不变,ack 已回)/10722 **L1/L2 分界确认回执**(L1 机器判读=v5/L2 深度=compass;补两点:争议复核通道建议归 compass 判读岗+ed2b4d8f 未付款 L2 单请报状态)。
 - 垫跑环境:cloud swebench 用户级重装转后台(sweb_reinstall.log),镜像名清单 10/9 前备好。
 - 附带:probe 9876 pong(pid 29128·memgate 构建在役)。
+
+### R371 · 2026-10-08 深夜六(主件轮:S6 垫跑就绪件全备✅+4096 重算验收口径冻结✅——队列清空后追新件两件)
+- **队列定谳:原始八件全销项**(XERJ R364/registry R366/M5 R369/mem0 R370 呈批/rsi-bench 回归集 R355 已 26 行定版(PR 窗 10/12)/PRECOR R350 v1.0 候用户署名+投递/判读卡状态页 R345+首卡 live/语料 R348 2257)——按主件制追新件两件。
+- **新件一·S6 垫跑就绪全备✅[实测]**:preds_arm_a 30 instance_ids 提取→**30 镜像名清单全生成**(swe-bench/SWE-bench_Verified 5.x 正本数据集 image 字段预计算;unique 30/missing 0;sample=swebench/sweb.eval.x86_64.astropy_1776_astropy-14365);分批 pull 脚本部署 cloud(pull_batches.sh:2/批·护栏余量<25G 自停·已存在跳过)——10720 承诺件兑现,10/9 一键起跑。排障:swebench 5.0.2 模块重构(test_spec→run_evaluation)+数据集格式升级(image/eval_script 字段入行)。
+- **新件二·4096 重算验收口径冻结✅**(docs/metering/S6_RECOMPUTE_ACCEPTANCE_20261008.md,应 10691 C 段):五门审计表形态门(A1 全量 SUM=balance_after/A2 逐行连续/A3 押注释放对称/A4 触发器 DDL 语义/A5 9315/9322 双案例回归)+快照纪律(单一 REPEATABLE READ 只读事务)+零放宽(PASS=五门全绿,不出部分通过);判读岗 SLA=执行完成函到 24h 出卡;正本回函 v5+platform(10724/10725;v5 首发误挂附件 10726 更正——发函附件双检教训)。
+- 附带:probe 9876 pong;信箱 0 未读。
