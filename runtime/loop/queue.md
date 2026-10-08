@@ -2061,4 +2061,11 @@
 - **队列拍板:XERJ 捐赠包构建收官**(R319 设计→R334 复核→R335 README→R343 组装→本轮终扫);PR 窗=10/12 开业后(recipe.toml+README 提 corpus-hub,built pack 不入 PR,发后回函链接)。下轮顺延核对下一件:registry/语料状态活数据页(R344/R348 已有实现,核验现役态后取真开件)。
 - 附带:信箱 1 函 ack(10670 冲正重算暂缓通知——前置 v5#10616 落地回函未到按序暂缓,SQL 以再生成版为唯一权威,执行日现场重算);9876 probe pong(pid 27120)。
 - 补注:R363(split 三件语料正本补入仓,commit 00d29232)漏记本账,顺此补注。
+
+### R365 · 2026-10-08 深夜(用户三令轮:Einsia 调研+外联回应+README 多语言同步)
+- **Einsia AI 调研 V1 落档**(docs/outreach/EINSIA_RESEARCH_20261008.md):定谳=2021 成立清华+国家超算团队("清华 Einsia Lab"实体不存在,SIA Lab=清华AIR×字节撞名);五实物(Vida/Overleaf 插件/AgentGit 会话协作/Navers Lab 四基准/SWE Refactor 反刷漆·清华联合);**三案合作空间**:A 基准互认(其 47 题无标答上我方榜免费 L1)B 轨迹数据同业(AgentGit×我方 XERJ 轨迹包)C 学术互引;行动=不撒网,10/12 开业后以案 A 首触,优先级中。
+- **外联回应定谳[实测]**:①openclaw#3787 被 stale bot 标记→已发 keep-alive 回应(comment 6053467049:供给端已从提案变在役服务+最小集成=卡片 `verification` 字段+RFC offer 维持+rsi-bench 先例,明示"plain no 也可接受");②VOBC#24=对方礼貌婉拒(专注本地 CLI 无榜单计划)→归档不追;③mem0 新评论=第三方程 holistis 推进 rate limit 修复,非对我方,不回应;④rsi-bench#4 窗内静默照排 10/13-15 回归集;⑤XERJ#1138/#1118=对方 10/7 双件上线(hub 槽位 PR#1210 merged+recipes 页署名发文),我方 10/7 15:02 已三答,窗内无需追。
+- **README.zh-CN.md 同步 October 判分柱段九 bullet**(commit 2283f456 已 push;英文版 10/8 R357 更新而中文版停在 10/5——补齐 NACRE judge/精度纪律/caliber-bench/Round1 榜/判例集 v1.4/语料 2257/E-NACRE-1/客户旅程/格式回归集全九件中文化)。
+- **compass 子域现状[实测]**:200,8.7KB,title=独立判读+记忆层,NACRE×3/2026-10×2——在役但内容薄于 README R357 九 bullet;网站内容刷新列下轮主件候选(含 runtime/site 正本与子域对齐);data 站深验=10/11 final_check 复跑(排期件);SITE_CONTENT_PACK 已于 10/8 交付 platform(死线 10/10 前)。
+- 附带:CI 噪声 60+ 条(CheckSuite failed·v5 域 Deploy to Staging 已知,非本仓真实故障);9876 probe pong。
 - **磁盘硬缺口**:30 镜像解压预计 90-120G vs 余 62G——明日预拉前需清盘(候选列单待批:swe_b50 Exit 容器/v5 仓归档/nanojev_ckpt)或平台扩容。资源请求经 10647/10663 已达(用户令背景优先响应)。
