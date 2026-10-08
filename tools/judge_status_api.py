@@ -10,6 +10,19 @@ import urllib.parse
 
 # v0 演示台账(受理 API 上线前;与 status.html DEMO 同源)
 LEDGER = {
+    "nautilus-l1-0004": {
+        "title": "4096/9225 冲正重算窗 · 五门独立验收(compass 判读)",
+        "status": "done",
+        "criteria_sha16": "b81eca8436887785",
+        "steps": [
+            ["2026-10-09T01:0x+08", "recompute_executed_by_platform", "done"],
+            ["2026-10-09T08:3x+08", "independent_db_verification", "done"],
+            ["2026-10-09T08:4x+08", "five_gate_verdict", "done"],
+            ["2026-10-09T08:4x+08", "card_issued", "done"]],
+        "result_url": "/criteria/",
+        "verdict": "pass",
+        "evidence": "Five gates independently verified via read-only SQL (not self-report): A1 last-row SUM=balance_after 0/37 mismatch; A2 continuity+first-row 0 violations; A4 both trigger functions contain SUM(delta), mounts stake=BEFORE UPDATE OF claimed_by / release=AFTER UPDATE OF status; A5 ledger rows 9315/9322 = -20 stake, balance 30236/30452 exact match vs v5 pre-run baseline; roster 0 real drift (36 seed-only-by-design agents disclosed, per #10712). A3: 209 historical orphan stakes = pre-trigger-gap artifacts, repayment pending user (fund operation). Formula erratum accepted: A1 last-row semantics + A2 prev_bal+current-delta (independent run used corrected forms). Evidence: docs/metering/S6_RECOMPUTE_ACCEPTANCE_20261009.md V2.",
+    },
     "nautilus-l1-0003": {
         "title": "S6 recompute fidelity · Round1 A-arm 30-case recompute",
         "status": "done",
