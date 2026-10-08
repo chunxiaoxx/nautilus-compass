@@ -48,27 +48,27 @@
 - [x] p2-submission-terms-review-20260830.md
 - [x] p2v2-lora-milestone-20260930.md
 - [x] paper-roadmap-history-20260904.md
-- [ ] propagation-layer-order-20260904.md
-- [ ] pypi-311-published-20260906.md
+- [x] propagation-layer-order-20260904.md
+- [x] pypi-311-published-20260906.md
 - [ ] security-v09-xuserid-impersonation-20260830.md
-- [ ] security-workbuddy-token-scoping-20260830.md
-- [ ] session-contract-dogfood-bridge-20260822.md
+- [x] security-workbuddy-token-scoping-20260830.md
+- [x] session-contract-dogfood-bridge-20260822.md
 - [ ] session-contract-fuel-loop-deploy-20260822.md
 - [ ] session-contract-fuel-loop-live-20260822.md
-- [ ] session-contract-gold-replication-20260822.md
+- [x] session-contract-gold-replication-20260822.md
 - [ ] session-contract-l4a-distill-20260822.md
-- [ ] session-contract-recall-usefulness-20260823.md
-- [ ] session_00b61b64.md
-- [ ] session_20260715_backend_502_coreLive_override_incident.md
-- [ ] session_20260715_cloud_box_health_audit.md
+- [x] session-contract-recall-usefulness-20260823.md
+- [x] session_00b61b64.md
+- [x] session_20260715_backend_502_coreLive_override_incident.md
+- [x] session_20260715_cloud_box_health_audit.md
 - [ ] session_20260716_biomysterybench_P1_pipeline.md
-- [ ] session_20260716_biomysterybench_scaffold.md
-- [ ] session_20260716_eval_recall_v230_rerun.md
-- [ ] session_20260717-0301_B理论沉淀CHARTER-0B.md
+- [x] session_20260716_biomysterybench_scaffold.md
+- [x] session_20260716_eval_recall_v230_rerun.md
+- [x] session_20260717-0301_B理论沉淀CHARTER-0B.md
 - [ ] session_20260717-0313_合约兑现SSOT同步V5.md
 - [ ] session_20260717-0335_SSOT副本探针已上线.md
-- [ ] session_20260717-1259_cloud-BGE过载召回全拒.md
-- [ ] session_20260718-0925_compass价值实测-SSOT三方矛盾.md
+- [x] session_20260717-1259_cloud-BGE过载召回全拒.md
+- [x] session_20260718-0925_compass价值实测-SSOT三方矛盾.md
 - [ ] session_20260718-1132_reinforce修复-合约核销0718.md
 - [ ] session_20260718-1142_差异化层-0-000是错尺子非无信号.md
 - [ ] session_20260718-1201_drift护城河实测0-92-不需ARK.md
@@ -113,3 +113,7 @@ measured×15(实测读数/事件记录类)+inferred×2(_NODE 聚合节点/assay_
 ## batch-3 修复记录(2026-10-09 · 18 条已核补)
 
 measured×17+heard×1(industry-ilya-ssi 行业动态=外部传闻)。累计 37/93;覆盖率 missing→56。清单勾选更新随 batch 滚动。
+
+## batch-4 修复记录(2026-10-09 · 14 条已核补·全 measured)
+
+累计 57/93;missing→36。批次节奏:每轮 15-20 条,原创者核验标注。
