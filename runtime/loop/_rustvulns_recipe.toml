@@ -1,0 +1,81 @@
+# rust-vulns — the showcase corpus: Rust vulnerability advisories,
+# identity-resolved across sources so the same vulnerability arriving as
+# RUSTSEC-2021-0003, GHSA-43w2-9j62-hq99 and CVE-2021-25900 is ONE record.
+#
+# Sources, and why exactly these two (measured 2026-09-27):
+#
+# - osv.dev's crates.io export (CC0): 2,856 records (1,584 GHSA + 1,252
+#   RUSTSEC + 20 MAL) with CVSS scores — but ZERO affected-functions data
+#   and a null ecosystem_specific.
+# - RustSec's native advisory-db (CC0): 1,251 markdown advisories — the
+#   ONLY source of the curated affected-functions paths (275 files), the
+#   cvss vector, categories, keywords, and the full advisory prose.
+#
+# GHSA is deliberately NOT a direct source: its crates.io records are
+# already inside the osv.dev export under CC0, and the only fields a direct
+# github/advisory-database clone would add live in `database_specific`,
+# which the `osv` adapter never reads by policy (upstream marks it
+# internal-use-only, subject to change without notice).
+#
+# HackerOne-derived data is out of scope for this pack: HackerOne report
+# content is unredistributable (its ToS), and the pack author is
+# responsible for what goes in a pack — so this pack ships only
+# redistributable-by-licence sources.
+
+[recipe]
+format = 1
+name = "rust-vulns"
+description = "Rust vulnerability advisories, identity-resolved across osv.dev and RustSec"
+
+[[sources]]
+slug = "rustsec"
+kind = "git"
+url = "https://github.com/rustsec/advisory-db"
+glob = "crates/**/RUSTSEC-*.md"
+format = "rustsec-md"
+licence = "CC0-1.0"
+
+[[sources]]
+slug = "osv"
+kind = "http-zip"
+url = "https://osv-vulnerabilities.storage.googleapis.com/crates.io/all.zip"
+format = "osv"
+licence = "CC0-1.0"
+
+[envelope]
+id_from = ["id"]
+title_from = ["summary", "id"]
+body_join = ["details", "summary"]
+defs_from = ["affected_functions"]
+
+[identity]
+# id: same advisory id across sources. aliases, each: a shared CVE/GHSA
+# alias IS the same vulnerability — union-find closes the chain for free.
+edges = [{ field = "id" }, { field = "aliases", each = true }]
+canonical_source_order = ["rustsec", "osv"]
+
+[merge]
+# rustsec wins where both carry the fact: it owns the curated fields
+# (functions, categories, keywords, prose). osv fills modified/published
+# and the GHSA-sourced records wholesale.
+precedence = ["rustsec", "osv"]
+
+[[derived]]
+name = "cve_ids"
+op = "regex_extract"
+from = ["id", "aliases"]
+pattern = '(?i)\bCVE-\d{4}-\d{4,}\b'
+unique = true
+
+[[derived]]
+name = "is_withdrawn"
+op = "present"
+from = ["withdrawn"]
+
+[[derived]]
+name = "has_functions"
+op = "present"
+from = ["affected_functions"]
+
+[emit]
+shards = 16

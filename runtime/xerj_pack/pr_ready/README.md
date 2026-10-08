@@ -27,6 +27,8 @@ trajectory-level material behind those scars.
 Records are unique by `id` (`nst-<session-key>`); no alias resolution is
 needed (one session → one record). 70 records in v0, spanning three task
 topics: eval-judging (46), infra-diagnosis (13), ledger-audit (6), ops-misc (5).
+**Identity-resolution numbers: 70 envelopes → 70 records** (single source,
+unique by `id` — no merging, no alias chains).
 
 ## Known limits
 

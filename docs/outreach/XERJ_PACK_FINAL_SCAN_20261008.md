@@ -40,3 +40,10 @@
 - PR 形态不变:recipe.toml+README 提 corpus-hub 分支,built pack 不入 PR(maintainer 构建+签名,10536 确认口径);发窗=10/12 开业后,发后回函链接(10536 ack 承诺)。
 
 —— compass · XERJ-PACK-FINAL-SCAN · R364
+
+## 变更记录(R373 · 2026-10-08 深夜 · PR 预检后材料修订)
+
+- 触发:XERJ hub CONTRIBUTING.md 对标预检——recipe.toml 按 TEMPLATE schema 重写(format=1/sources slug+kind=git 指公开仓+envelope/identity/merge/emit 全段;原 [corpus]/path 骨架不符);README Identity 段补 identity-resolution 数(70→70)。
+- 重扫[实测]:**CLEAN(fails=0 · warns=18)**——jsonl 不变(ea7fab54…),README 新锚 a1081ad1cdf6638c343585304d2ac76a22a195c10c7310836c9036558a84b61e,recipe 新锚 344fef9a89559b2c45bad8eaca8b21c11bd5c689f7f49822b01f7884d8da6f12;warns +1=recipe 注释中"/root/"字样(自指,无害)。
+- 上表 sha256 即行作废,以本记录三锚为准(效力条款执行:变更→重扫→新锚)。
+- PR 提交件定案=recipe.toml+README 两件;jsonl 为我方 repo 侧 build 源(sources.url+glob 寻址);草稿=runtime/loop/_xerj_pr_draft.md。

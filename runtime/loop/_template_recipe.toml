@@ -1,0 +1,51 @@
+# TEMPLATE — a record-pack recipe. Copy to tools/packs/<name>/recipe.toml.
+# Everything domain-specific lives HERE, never in the tooling: which sources,
+# which files inside them, what format each speaks, and which fields make two
+# records the same thing. The showcase to read alongside this file is
+# tools/packs/rust-vulns/recipe.toml — every block there carries a comment
+# saying why the source is in and what it was measured to uniquely contribute.
+
+[recipe]
+format = 1                      # refused when unknown — bump protocol, not silence
+name = "<name>"                 # must equal the directory name
+description = "<one line: the domain, the sources, the resolution>"
+
+# One block per source. kinds today: dir, http-zip, git.
+# A source's licence is YOUR responsibility to verify before shipping.
+[[sources]]
+slug = "<source-short-name>"    # letters/digits/dash only; never a path
+kind = "git"                    # or "http-zip" / "dir"
+url = "<where it comes from>"
+# glob = "<which files inside it>"      # kind-dependent
+# format = "flat"                      # normaliser: flat | osv | rustsec-md
+licence = "<SPDX id you verified yourself>"
+
+# Envelope: how a raw source file becomes one searchable record.
+[envelope]
+id_from = ["<field holding the stable id>"]
+title_from = ["<first non-empty of these>"]
+body_join = ["<fields concatenated into the searchable body>"]
+# defs_from = ["<structured fields kept verbatim>"]
+
+# Identity: which fields make two records the same thing. `each = true`
+# explodes a list field so every value links (union-find closes the chain).
+# This is the whole dedup contract — write it so a reader can predict the
+# merged count, then put the measured count (envelopes -> records) in your README.
+[identity]
+edges = [{ field = "<id field>" }, { field = "<alias list>", each = true }]
+canonical_source_order = ["<source-slug-first>"]
+
+[merge]
+# when two sources carry the same fact, who wins — and say WHY in a comment
+precedence = ["<source-slug-first>", "<source-slug-second>"]
+
+# Optional derived fields (regex_extract, present, …) computed at build time.
+# [[derived]]
+# name = "<field>"
+# op = "regex_extract"
+# from = ["id", "aliases"]
+# pattern = '(?i)\bCVE-\d{4}-\d{4,}\b'
+# unique = true
+
+[emit]
+shards = 16
