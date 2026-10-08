@@ -58,6 +58,7 @@ def classify(recall_hits: list, dedup: dict) -> tuple:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--event", help="失败事件描述文本")
+    ap.add_argument("--card", help="判读卡 id(经 judge_status API 取卡;verdict∈{fail,insufficient_evidence} 自动触发归因)")
     ap.add_argument("--selftest", action="store_true")
     args = ap.parse_args()
     if args.selftest:
@@ -78,8 +79,24 @@ def main() -> int:
             assert got == want, f"{hits}+{dedup.get('verdict')} => {got} != {want}"
         print(f"SELFTEST: PASS {len(cases)}/{len(cases)}")
         return 0
+    if args.card:
+        import urllib.request
+        with urllib.request.urlopen(
+                f"https://nautilus.social/api/judge_status?id={args.card}", timeout=15) as r:
+            card = json.loads(r.read())
+        if not card.get("ok"):
+            print("card fetch fail:", card.get("error"))
+            return 1
+        verdict = (card.get("verdict") or "").lower()
+        if verdict not in ("fail", "insufficient_evidence"):
+            print(f"card {args.card} verdict={verdict or '(none)'} — 非负判,归因不触发(判据:仅 FAIL/U 态)")
+            return 0
+        args.event = f"{card.get('title', '')} — {str(card.get('evidence', ''))[:400]}"
+        card_id = args.card
+    else:
+        card_id = None
     if not args.event:
-        print("--event required(或 --selftest)")
+        print("--event 或 --card 必填(或 --selftest)")
         return 2
 
     rec = daemon_req({"action": "recall", "project": PROJ, "query": args.event, "top_k": 5})
@@ -92,6 +109,7 @@ def main() -> int:
     code, tasks = classify(hits, dedup)
     record = {
         "ts": time.strftime("%Y-%m-%dT%H:%M:%S"),
+        "card": card_id,
         "event": args.event[:300],
         "recall_n": len(hits),
         "recall_top": [(h.get("path", "")[-45:], h.get("fact_status", "")) for h in hits[:3]],

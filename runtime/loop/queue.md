@@ -2224,3 +2224,7 @@
 ### R400 · 2026-10-09 晨七(主件轮:判读卡 nautilus-l1-0003 上册✅——S6 复算获正式卡)
 - **l1-0003 发卡✅[实测外网]**:S6 复算保真度(30 例 Round1 A 臂重算,29/30 逐例一致)出正式卡——steps 四步/retrieval criteria_sha16=b81eca84/verdict=pass/**issuer=self 如实标注**+evidence 链(15 报告 VCS+判读档+batch_run.sh 可独立复算);cloud pull+restart compass-judge-status,外网 API 实测三字段全中;终检回归 13/13 PASS。
 - 判读管线三卡现役:0001(Round1 榜)/0002(首例 delivered+平台复现)/0003(复算保真度,自验如实标)——每张卡都带 sha 锚与可复算路径。
+
+### R401 · 2026-10-09 晨八(主件轮:归因算子接入判读卡流程✅——FAIL/U 态自动触发)
+- memx_attribution.py 增 --card 模式:judge_status API 取卡→verdict∈{fail,insufficient_evidence} 自动触发归因(卡号入归因账),非负判跳过;双向实测=0003(pass 正确跳过)/0002(U 态触发全链,归因=A:首例管线先例记忆对该查询未达相关门——诚实输出,暴露记忆相关性排序的后续调优点);selftest 6/6 回归绿。
+- SOP §六入册流程自此含归因:出卡→入册→**负判自动归因**→三分类任务进 MEMX 站3。
