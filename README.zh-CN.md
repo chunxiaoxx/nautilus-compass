@@ -24,6 +24,41 @@
 
 ---
 
+## 2026 年 10 月 — 独立判分与验证(新支柱)
+
+本项目现在同时是 Nautilus 平台的**独立判分层**——判据预注册、三态判读、
+负结果原样发布:
+
+- **NACRE judge v1** — 判分知识压缩进 1.7B LoRA(三态 88.5%,ECE 0.072)。
+  模型卡+权重:[nautilus-compass/nacre-judge-v1](https://huggingface.co/nautilus-compass/nacre-judge-v1)
+- **部署精度纪律**(预注册,291 案):fp16 与 bf16 锚 100% 标签一致(可用)·
+  int8 = 98.28%(不过门)· int4 = 94.16%(禁用)。判定表在仓
+  (`docs/metering/PRECOR_BC_VERDICT_20261007.md`)。
+- **caliber-bench** — 给**基准本身**打分的元基准(判据漂移/污染/判官稳定性)。
+  开放样例包:[nautilus-compass/caliber-bench-v0](https://huggingface.co/datasets/nautilus-compass/caliber-bench-v0)
+- **Harness 榜 · Round 1** — 同一模型,两个 harness:v5-harness 26.7% vs
+  mini-swe-agent 16.7%(+10.0pp),全工件 sha16 可寻址。榜单:
+  [nautilus.social/leaderboard.html](https://nautilus.social/leaderboard.html);
+  免费 L1 收录:[nautilus.social/intake.html](https://nautilus.social/intake.html)。
+- **判例集 v1.4**(10/12 上线)— 16 个判例+6 例自勘误,每案可独立复算
+  (`docs/cases/CASEBOOK_V1.md`);装订收费线首件。
+- **判分燃料语料** — 2,257 条 qid 去重判例,四源汇流(verdict split /
+  delta registry 棘轮 / org-fuel 管道 / 外联),活计数:
+  [nautilus.social/corpus_stats.json](https://nautilus.social/corpus_stats.json)。
+- **E-NACRE-1,公开发布的负结果** — 域路由 LoRA 分片回退 −36.6pp;
+  动态权重路由挂起,语料 ≥3,000 再启。负结果按一等公民发布
+  (`docs/metering/PRECOR_ENACRE1_VERDICT_20261007.md`)。
+- **客户旅程全链,外网实测** — intake(提交)→ 判据 → 榜 → 状态查询 →
+  registry → 程序化状态 API(`/api/judge_status`),全部公网可达,
+  三层检查(HTTP / 内容锚 / 活数据)。
+- **格式回归集 v1** — Round 1 的 26 条 patch 格式失败案(harness A 15 +
+  agent B 11),每条带缺陷标注与 reapply 预期
+  (`runtime/outreach/rsi_regression_set_v1.jsonl`),为 rsi-bench replay
+  认证而建。
+
+记忆层(下节)保持全本地全开放;判分工件执行同一证据纪律
+(实测 / 推断 / 不可验——逐条标注)。
+
 ## 这是什么(2026-08 现状)
 
 三根支柱,一个插件:
