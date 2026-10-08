@@ -8,46 +8,46 @@
 - 修复建议:按 batch 人工核(每小时 ~40 条),核后补 `fact_status: measured|inferred|heard` 一行至 frontmatter;
 - 候选清单如下(全列):
 
-- [ ] _NODE_nautilus-compass.md
-- [ ] aegis-compass-competitor-20260907.md
-- [ ] arm-a-summary-layer-pass-20260903.md
-- [ ] assay_gate_test.md
-- [ ] benchmark-naming-licensing-20260902.md
-- [ ] cheap-tier-close-and-watcher-20260904.md
-- [ ] compass-daemon-pylibs-rootcause-20260830.md
-- [ ] compass-roadmap-20260907.md
-- [ ] convergence-state-snapshot-20260809.md
-- [ ] convergence-state-snapshot-20260821.md
-- [ ] d13-judge-retry-verdict-20260831.md
-- [ ] d14-abstention-verdict-20260902.md
-- [ ] daemon-9876-watchdog-rootcause-20260908.md
-- [ ] daemon-auth-and-hf-offline-20260901.md
-- [ ] devto-operations-20260908.md
-- [ ] e2e-context-fix-and-tr-diagnosis-20260828.md
-- [ ] emb-bakeoff-bge-stays-20260925.md
-- [ ] feedback-ark-coding-plan-not-metered-api.md
-- [ ] gmail-verify-production-20260906.md
-- [ ] gpu-651799-expiry-incident-20260831.md
-- [ ] gpu-e2e-rootcause-chain-20260829.md
-- [ ] gpu-instance-reuse-not-rent.md
-- [ ] gpu-old-disk-restart-20260903.md
-- [ ] hud-multiview-crosstalk-fix-20260901.md
-- [ ] inbox-agent-round-20260831.md
-- [ ] industry-ilya-ssi-continual-learning-20260822.md
-- [ ] launch-sprint-status-20260905.md
-- [ ] license-modified-mit-20260904.md
-- [ ] lmev2-first-full-baseline-20260830.md
-- [ ] lmev2-judge-401-envvar-pitfall.md
-- [ ] lmev2-pipeline-smoke-proven-20260830.md
-- [ ] lmev2-three-knives-tuning-20260830.md
-- [ ] lmev2-upstream-attribution-20260902.md
-- [ ] memory-audit-seven-operators-20260907.md
-- [ ] minimax-coding-plan-provider.md
-- [ ] no-jargon-user-correction-20260829.md
-- [ ] p1-host-migration-http-20260906.md
-- [ ] p2-submission-terms-review-20260830.md
-- [ ] p2v2-lora-milestone-20260930.md
-- [ ] paper-roadmap-history-20260904.md
+- [x] _NODE_nautilus-compass.md
+- [x] aegis-compass-competitor-20260907.md
+- [x] arm-a-summary-layer-pass-20260903.md
+- [x] assay_gate_test.md
+- [x] benchmark-naming-licensing-20260902.md
+- [x] cheap-tier-close-and-watcher-20260904.md
+- [x] compass-daemon-pylibs-rootcause-20260830.md
+- [x] compass-roadmap-20260907.md
+- [x] convergence-state-snapshot-20260809.md
+- [x] convergence-state-snapshot-20260821.md
+- [x] d13-judge-retry-verdict-20260831.md
+- [x] d14-abstention-verdict-20260902.md
+- [x] daemon-9876-watchdog-rootcause-20260908.md
+- [x] daemon-auth-and-hf-offline-20260901.md
+- [x] devto-operations-20260908.md
+- [x] e2e-context-fix-and-tr-diagnosis-20260828.md
+- [x] emb-bakeoff-bge-stays-20260925.md
+- [x] feedback-ark-coding-plan-not-metered-api.md
+- [x] gmail-verify-production-20260906.md
+- [x] gpu-651799-expiry-incident-20260831.md
+- [x] gpu-e2e-rootcause-chain-20260829.md
+- [x] gpu-instance-reuse-not-rent.md
+- [x] gpu-old-disk-restart-20260903.md
+- [x] hud-multiview-crosstalk-fix-20260901.md
+- [x] inbox-agent-round-20260831.md
+- [x] industry-ilya-ssi-continual-learning-20260822.md
+- [x] launch-sprint-status-20260905.md
+- [x] license-modified-mit-20260904.md
+- [x] lmev2-first-full-baseline-20260830.md
+- [x] lmev2-judge-401-envvar-pitfall.md
+- [x] lmev2-pipeline-smoke-proven-20260830.md
+- [x] lmev2-three-knives-tuning-20260830.md
+- [x] lmev2-upstream-attribution-20260902.md
+- [x] memory-audit-seven-operators-20260907.md
+- [x] minimax-coding-plan-provider.md
+- [x] no-jargon-user-correction-20260829.md
+- [x] p1-host-migration-http-20260906.md
+- [x] p2-submission-terms-review-20260830.md
+- [x] p2v2-lora-milestone-20260930.md
+- [x] paper-roadmap-history-20260904.md
 - [ ] propagation-layer-order-20260904.md
 - [ ] pypi-311-published-20260906.md
 - [ ] security-v09-xuserid-impersonation-20260830.md
