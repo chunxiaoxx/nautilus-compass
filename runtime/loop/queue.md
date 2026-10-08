@@ -2263,3 +2263,8 @@
 ### R408 · 2026-10-09 晨十四(回音巡检:五件全静+新函 ack 三连)
 - #1257 仍 OPEN(候 maintainer)/#656 候 review/4B 评测 Fetching 中(在线补拉)——外部全静。
 - 10778 ack(settled=0 闭环与 l1-0004 两线并行自洽)/10757 ack(R3 判读回函 10777 已发)/10765 ack(表态函 10780 已发)。
+
+### R409 · 2026-10-09 晨十五(XERJ CLA 闭环✅——maintainer 代转 main,#1255 全绿候并)
+- **#1257 关闭真相=superseded 非 rejected**:maintainer 亲手将签名经 #1263 落 main("chunxiaoxx now in .contributors");我方 PR base=corpus-hub(stale base)无法生效故被代转——处置干净友好。
+- **@cla-bot check 触发→verification/cla-signed PASS✅**:XERJ PR #1255 唯一红灯清除,CI 全绿进入 review 队列;XERJ 捐赠线=候 maintainer 构建+签名+发布(hub Release)。
+- 信箱 0 未读;4B 评测仍 Fetching(hub 分片补拉慢)。
