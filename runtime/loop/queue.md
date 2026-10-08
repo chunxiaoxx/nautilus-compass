@@ -2068,4 +2068,10 @@
 - **README.zh-CN.md 同步 October 判分柱段九 bullet**(commit 2283f456 已 push;英文版 10/8 R357 更新而中文版停在 10/5——补齐 NACRE judge/精度纪律/caliber-bench/Round1 榜/判例集 v1.4/语料 2257/E-NACRE-1/客户旅程/格式回归集全九件中文化)。
 - **compass 子域现状[实测]**:200,8.7KB,title=独立判读+记忆层,NACRE×3/2026-10×2——在役但内容薄于 README R357 九 bullet;网站内容刷新列下轮主件候选(含 runtime/site 正本与子域对齐);data 站深验=10/11 final_check 复跑(排期件);SITE_CONTENT_PACK 已于 10/8 交付 platform(死线 10/10 前)。
 - 附带:CI 噪声 60+ 条(CheckSuite failed·v5 域 Deploy to Staging 已知,非本仓真实故障);9876 probe pong。
+
+### R366 · 2026-10-08 深夜二(主件轮:registry 活数据页增固✅+S6 磁盘决策件呈批✅——用户令"推动 S6 排期"当日办结)
+- **registry 活数据页增固✅[实测外网]**:FALLBACK 兜底 1716(过期)→现役 2257 快照口径+四源四 tile+新增合并快照 sha16 展示(d91192a67eae2db3 审计可寻址)+数据日期+活数据源链接;部署踩坑一枚:nginx 根=/var/www/nautilus/**current**/(非顶层,蓝绿结构,scp 顶层 Permission denied→/tmp+sudo cp www-data 属主);外网五锚全中(2257/802/32/sha/2026-10-08)。**队列件"registry/语料状态活数据页"完成销项**(R344 接活取数→R348 计数 API→本轮审计锚+兜底增固)。
+- **S6 磁盘决策件呈批✅**(用户令"推动 S6 排期";承 10690"列单直呈用户"):ssh cloud 四级实测(df/du/ctr/crictl)——**余 66G vs S6 需 90-120G**;清理列单分级:A1 pnpm ~6G/A2 snapd 1G/A3 containerd 残留层 ~14G(k8s.io ns 零容器实测)/A4 ecc venv 5G=安全级 ~25G;A5 flywheel venv 8.1G(进程占用)/A6 .local/lib ~10G=窗口级;生产四件不可动(espocrm 4.7G/pg 2.3G/冷归档 4.3G/.claude);三方案:一(建议)清 A1-A4+镜像按需 pull 分批 10/9-14/二扩容 +100G 排期不变/三异地(不推荐);**函 platform(S6-DISK-CLEANUP-PROPOSAL,死线 10/9 22:00)+汇报直呈用户批**。
+- **三函 ack**:10690(已办)/10691(v5 三答收讫;验收口径=审计表形态门将先于重算另函)/10689(处方收讫)。
+- 附带:信箱 3 函收割全处理;probe pong。
 - **磁盘硬缺口**:30 镜像解压预计 90-120G vs 余 62G——明日预拉前需清盘(候选列单待批:swe_b50 Exit 容器/v5 仓归档/nanojev_ckpt)或平台扩容。资源请求经 10647/10663 已达(用户令背景优先响应)。

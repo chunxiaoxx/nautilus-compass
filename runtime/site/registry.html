@@ -45,6 +45,12 @@
     <div class="tile"><b id="m-letters">—</b><span>函件判例(承诺-兑现)</span></div>
     <div class="tile"><b id="m-delta">—</b><span>delta registry(勘误活水)</span></div>
   </div>
+  <p style="color:var(--muted);font-size:.85rem;margin:14px 0 0">
+    四源汇流:verdict split(train)· ORG-FUEL 管道 · 函件判例 · delta registry 棘轮(只增不删,
+    <a href="https://nautilus.social/criteria/">判据零放宽</a>)。
+    合并快照 sha16:<code id="m-sha">—</code> · 数据日期:<code id="m-updated">—</code> ·
+    活数据源:<code><a href="/corpus_stats.json">/corpus_stats.json</a></code>
+  </p>
 </div></section>
 
 <section><div class="wrap">
@@ -64,13 +70,16 @@
 
 <script>
 // 活数据:由 corpus_pipeline manifest 注入(静态快照兜底,值守轮覆写)
-const FALLBACK = {"merged_unique_by_qid":1716,"train_count":1162,
-  "org_fuel":289,"delta":33,"sevenb_target":3000};
+// FALLBACK=2026-10-08 现役快照(与 /corpus_stats.json 同源,merged_sha16=d91192a67eae2db3)
+const FALLBACK = {"merged_unique_by_qid":2257,"train_count":1162,
+  "org_fuel":802,"delta":32,"letters":47,"sevenb_target":3000,
+  "merged_sha16":"d91192a67eae2db3","updated":"2026-10-08"};
 fetch('/corpus_stats.json').then(r=>r.json()).then(upd).catch(()=>upd(FALLBACK));
 function upd(m){
   set('m-total', m.merged_unique_by_qid); set('m-train', m.train_count);
-  set('m-orgfuel', m.org_fuel||289); set('m-letters', m.letters||47); set('m-delta', m.delta||33);
-  const t=m.merged_unique_by_qid, g=3000;
+  set('m-orgfuel', m.org_fuel); set('m-letters', m.letters); set('m-delta', m.delta);
+  set('m-sha', m.merged_sha16||'—'); set('m-updated', m.updated||'—');
+  const t=m.merged_unique_by_qid, g=m.sevenb_target||3000;
   document.getElementById('b-total').style.width=Math.min(100,t/g*100)+'%';
   document.getElementById('m-goal').textContent=`7B 对拍目标 ${g} · 进度 ${Math.round(t/g*100)}%`;
   document.getElementById('trig').textContent = m.train_count>=3000?'7B 触发!':`train ${m.train_count}/${g}`;
