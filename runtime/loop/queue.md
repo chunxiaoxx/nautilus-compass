@@ -2164,3 +2164,7 @@
 - **全量复算完成[实测]**:loop_all 15 批零 TIMEOUT,ALL_BATCHES_DONE;15 报告四桶合并=9R/5U/14E/2EP;与原跑三报告(django+a_eof+rest——两份时 MISSING_ORIG 14 例虚惊,补 rest_report_a.json 后全量覆盖)逐例对照:**29/30 SAME,唯一漂移 django-16560(原 error→复算 resolved,方向与判读层修复口径一致,sphinx-8475 同型 SAME)**——复算保真度门 PASS(docs/metering/S6_RECOMPUTE_FIDELITY_20261009.md,判读卡候选编号顺延)。
 - **10732 v5 交叉件收讫**:R1/R2/R3 三件回归 SQL(不同实现同语义)+双案例预跑基线——供 4096 五门交叉验证,ack 后入判读流程。
 - 磁盘终态:系统盘余 74G(分批用完即删循环自洽),/data 余 57G。
+
+### R386 · 2026-10-09 凌晨十(用户令"现在就推动":XERJ PR 提前发出✅——#1255 OPEN)
+- **PR #1255 已发**(xerj-org/xerj,pull/1255,base=corpus-hub,OPEN):fork(chunxiaoxx/xerj)→浅克隆 corpus-hub→两件落 tools/packs/agent-session-trajectories/→commit 8056834→push→pr create(CI 候绿);PR 正文 checklist 逐项(domain+query/70→70/Provenance/CC-BY-4.0+基准归属/demand anchor #1138+#1210/eval-answers offer);**#1138 跟帖回链**(comment 6060713784)。原排 10/12 提前——用户"现在就推动"令;格式=flat 语义若 build 不符 maintainer 会标,PR body 已注明格式。
+- 窗前发 vs 不发条款:XERJ PR 独立于 nautilus 开业(对 XERJ hub 贡献,无开业依赖),提前发成立;Einsia 函仍守 10/12(依赖开业三链接)。
