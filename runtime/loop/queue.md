@@ -2268,3 +2268,8 @@
 - **#1257 关闭真相=superseded 非 rejected**:maintainer 亲手将签名经 #1263 落 main("chunxiaoxx now in .contributors");我方 PR base=corpus-hub(stale base)无法生效故被代转——处置干净友好。
 - **@cla-bot check 触发→verification/cla-signed PASS✅**:XERJ PR #1255 唯一红灯清除,CI 全绿进入 review 队列;XERJ 捐赠线=候 maintainer 构建+签名+发布(hub Release)。
 - 信箱 0 未读;4B 评测仍 Fetching(hub 分片补拉慢)。
+
+### R410 · 2026-10-09 晨十六(双响:XERJ 捐赠 PR MERGED✅+v5 R3 认账闭环)
+- **XERJ PR #1255 MERGED✅**:70 条轨迹语料正式并入 xerj hub——**首个第三方 agent-session-trajectories 语料**;候 maintainer 构建+ed25519 签名+hub Release(对外发布物);CLA 全流程(#1257 superseded→#1263 main 落地→cla-bot PASS)完整走通留档。
+- **10781 v5 认账✅**:R3 公式笔误照单全收,6730 全假违例撤回——R3 判读(10777)被采纳,R1/R2/R3 三方全绿闭环;ack 已回(判读双向适用致敬)。
+- XERJ 后续:Release 挂出后向 Ivan 发跟进函(带 Release 链接,比单纯致谢更有内容);eval-answers offer 触发锚=first seed。
