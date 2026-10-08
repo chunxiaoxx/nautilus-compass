@@ -2220,3 +2220,7 @@
 ### R399 · 2026-10-09 晨六(主件轮:A100 迁移定谳修正+18 天 100% CPU 僵尸终结✅)
 - **A100 迁移定谳修正(对用户上轮答"未完成"更正)**:cloud daemon 的 GPU 嵌入切换 **10/7 R304 当晚已完成**——CPU 100%→1.7%/过载归零/吞吐 ×100(batch128=130ms≈800 条/秒);**今晨实测隧道活**(19987 health ok,A100 fp16 bge-m3 在役),systemd drop-in 在位。"未完成"系把本地笔记本 daemon(开发面,CPU 属正常)误当生产面——生产路径=cloud daemon,A100 迁移已兑现且健康。本地如需 GPU 化可后续用 paramiko 隧道(已验 5.0.0 在位),非必需。
 - **18 天 100% CPU 僵尸终结✅**:cloud pid 2607774(`python3 -`,stdin 脚本无文件痕迹,9/19 起)单核烧 18.3 天;取证=零 socket/零子进程/仅 3 管道(启动会话已亡)→纯孤儿死循环,安全击杀;击杀后 CPU idle 98.5%,19987 隧道与 9876 daemon 复验无恙。教训入账:nohup `python3 -` 内联脚本死后无代码痕迹不可追——**内联脚本一律先落文件再执行**(可识别可击杀)。
+
+### R400 · 2026-10-09 晨七(主件轮:判读卡 nautilus-l1-0003 上册✅——S6 复算获正式卡)
+- **l1-0003 发卡✅[实测外网]**:S6 复算保真度(30 例 Round1 A 臂重算,29/30 逐例一致)出正式卡——steps 四步/retrieval criteria_sha16=b81eca84/verdict=pass/**issuer=self 如实标注**+evidence 链(15 报告 VCS+判读档+batch_run.sh 可独立复算);cloud pull+restart compass-judge-status,外网 API 实测三字段全中;终检回归 13/13 PASS。
+- 判读管线三卡现役:0001(Round1 榜)/0002(首例 delivered+平台复现)/0003(复算保真度,自验如实标)——每张卡都带 sha 锚与可复算路径。
