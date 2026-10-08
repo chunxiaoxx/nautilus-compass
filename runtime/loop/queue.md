@@ -2074,4 +2074,13 @@
 - **S6 磁盘决策件呈批✅**(用户令"推动 S6 排期";承 10690"列单直呈用户"):ssh cloud 四级实测(df/du/ctr/crictl)——**余 66G vs S6 需 90-120G**;清理列单分级:A1 pnpm ~6G/A2 snapd 1G/A3 containerd 残留层 ~14G(k8s.io ns 零容器实测)/A4 ecc venv 5G=安全级 ~25G;A5 flywheel venv 8.1G(进程占用)/A6 .local/lib ~10G=窗口级;生产四件不可动(espocrm 4.7G/pg 2.3G/冷归档 4.3G/.claude);三方案:一(建议)清 A1-A4+镜像按需 pull 分批 10/9-14/二扩容 +100G 排期不变/三异地(不推荐);**函 platform(S6-DISK-CLEANUP-PROPOSAL,死线 10/9 22:00)+汇报直呈用户批**。
 - **三函 ack**:10690(已办)/10691(v5 三答收讫;验收口径=审计表形态门将先于重算另函)/10689(处方收讫)。
 - 附带:信箱 3 函收割全处理;probe pong。
+
+### R367 · 2026-10-08 深夜二(用户批令执行:A1-A2 清理落地+A4 探针否决+Docker 悬空 2.3G——磁盘 66→74G)
+- **用户批"A1-A4+方案一"执行[实测]**:A1 pnpm prune=0 包(无收益);A2 snapd cache 1G 清;**A4 探针否决**(清前活性探针抓到 ecc-shared venv 有两个 uvicorn 在役 8850/8849 自 9/15——列单自身有错,执行前探针制胜);**A3 诊断修正**:containerd 4K 空(k8s 零负载坐实),16G 大头=**Docker 镜像**(8 容器全在跑 Up3w=生产),`docker image prune` 收悬空 2 件 2.3G,`-a` 0B(其余全 active 不可收)。**磁盘 66→74G**;清理后复核:8 容器 Up、espocrm 302、judge-status active。
+- **方案一启动**:余 74G 支撑按需镜像分批(S6 30 镜像 4-5 批,峰值 2 个 ~10G 判读跑完即删)——swebench 执行排 10/9-14 窗。
+
+### R368 · 2026-10-08 深夜三(S6 复核二轮红灯修复✅:工作树落正本+sha 行尾分裂根因固化)
+- **10703 两点处置**:①cloud 工作树 999b6541(私有 commit 未 push)→**fetch 回并主线**(merge 30e200d5,landing/status.html 无冲突区)+judge_status_api 云侧热修与正本 eb7f3476 同 diff 坐实后 checkout+**工作树拉齐 ba5ab5cf**[实测];②"manifest 02f1604≠cc5713"**非文件旧,系 sha 行尾口径分裂**——本地 autocrlf=true 致 Windows 工作树 CRLF/cloud LF 同 blob 双 sha,登记处口径(b81eca84/cc5713b0)与平台 cloud 复验(5c8e0a7c/02f1604)永不合;**.gitattributes 判分资产类 LF 固化**(ba5ab5cf,renormalize 六件零重写=blob 已 LF 验证)——**教训:sha 锚登记一律 LF 规范化字节口径,Windows autocrlf 是登记处级陷阱**。
+- **回函两发**:10706(S6 二轮回应正本:HEAD/六件 LF sha 表/双口径注:b81eca84=历史锚,LF 等价 5c8e0a7c,API criteria_sha16 外网实测在体)+**10707 补函=intake 断点呈报**:selftest 单 72fdcb66 四路寻单无着(任务系统 integer 无此号/gmail 零/信箱零/仓零)——**intake 管道断点坐实**(mailto 无落点无共享队列),请 platform 信箱函发单内容(SLA 10/9 04:00 死线)+两案修复(短期信箱总线/中期 /api/intake 提前开业);10694 admin 后台 ack。
+- 挂账:72fdcb66 判读候单函;S6 三轮复核候平台;语料台账裁决悬案(10664 律)候平台核。
 - **磁盘硬缺口**:30 镜像解压预计 90-120G vs 余 62G——明日预拉前需清盘(候选列单待批:swe_b50 Exit 容器/v5 仓归档/nanojev_ckpt)或平台扩容。资源请求经 10647/10663 已达(用户令背景优先响应)。
