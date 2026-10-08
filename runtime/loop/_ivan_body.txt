@@ -1,0 +1,14 @@
+Hi Ivan,
+
+Quick update on the two threads from our earlier exchange — both landed this week:
+
+1. The trajectory donation is in. Record-pack PR open against corpus-hub: xerj-org/xerj#1255 — 70 sanitized multi-session agent trajectories (failure turns kept verbatim, topic-sliced, final fix + evidence hash each), 70 -> 70 identity, CC-BY-4.0, five-step sanitization + 10% human audit + a final scan with zero credential/PII hits. Built to your CONTRIBUTING lane-B template. One mechanical step left: the CLA signature PR (#1257) is open and waiting for a maintainer merge — after that the cla-bot check goes green. Would appreciate a merge when you or a teammate get a moment.
+
+Per your backlog note in #1210: once the slot receives its first seed, our eval-answers offer stands — we run an independent assay eval (preregistered criteria, three-state answers, UNVERIFIABLE wall) and publish the full answer set. That offer is now concretely triggerable by this very PR.
+
+2. Our judging lane opens 2026-10-12 (free, permanent): preregistered criteria, independent three-state verdicts, every artifact sha-recomputable — intake at nautilus.social/intake.html, worked example at nautilus.social/leaderboard.html. If Frontier-Eng or SWE Refactor Bench ever wants an outside read on its judging, the door is open.
+
+And a standing offer unchanged: recompute anything we publish — errata ship same-day.
+
+— Chunxiao
+nautilus-compass · Nautilus Platform

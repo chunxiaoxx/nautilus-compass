@@ -2186,3 +2186,7 @@
 - **ccplugins/awesome-claude-code-plugins PR #656 发出**(Workflow Orchestration 记忆节,omega-memory 相邻位):nautilus-compass 收录提名(LongMemEval-S 500 P@1 0.890 vs mem0 0.774 可复现+drift AUC 0.83+MCP 17 tools+install.sh);首试 -f body 静默失败,body-file 重试成功(教训:多段 markdown body 一律 body-file)。
 - **hesreallyhim/awesome-claude-code(★55k 现主力)通道受限[实测]**:punkpeye 仓已消失(我方 #14065 随之蒸发),现主力仓 interactions restricted to collaborators only(PR 404+issue 422)——收录通道对外临时关闭,挂账候限制解除;ccplugins(969★插件专类)为本次落位。
 - 主动外联今日累计三发:Einsia 首触函/XERJ CLA PR #1257/awesome 收录 PR #656。
+
+### R391 · 2026-10-09 凌晨十四(Ivan 知会函待发+主动外联收口)
+- **Ivan 知会函体已备**(runtime/loop/_ivan_body.txt:XERJ PR #1255 落地告知+CLA #1257 候并求 merge+eval-answers offer 触发锚+判读 lane 10/12 开门)——gmail MCP 与 REST fallback 三次重试均 SSL EOF(凌晨到 Google 出口持续抖),**待发明晨网络恢复即发**(第一动作);Ivan 坐标=ivan@xerj.ai(过往 XERJ 函件实锚)。
+- 主动外联今日实发盘点:XERJ PR #1255+CLA #1257+awesome 收录 PR #656+Einsia 首触函(gmail 唯一成功通道时发)=四发;Ivan 函=第五发待发。
