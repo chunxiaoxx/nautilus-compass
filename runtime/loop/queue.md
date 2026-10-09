@@ -541,6 +541,12 @@
 - **自我证伪再立功**:候选"四门评测脚本预写"——查证评测已内嵌训练脚本基座(U4/U5/U6 段),无需独立脚本;真增量=**8B 版脚本实体化**(_train_judge8b_upgrade_A100.py):U6_MARGIN 0.03→**0.02 对齐判据档 G1**(防执行用错尺子)+五默认路径修正(model=8B 新位/base17+champion=现役在位路径/corpus+out=vdf)——argparse 旧 vdd2 路径全替换。
 - 至此 8B 对拍零现场清单**实体齐**:判据档+配置档+脚本实体+基模+触发器——触发日=`python _train_judge8b_upgrade_A100.py` 一条命令。
 
+### R476 · 2026-10-10 晨二十(轮:rerank 合入尝试中止✅如实——plugin 仓分支治理债浮出)
+- **尝试**:feat/rerank-remote 合入 plugin main——**中止**(无损):main 被 memgate worktree 占用+本地 main **behind origin/main 698 commits**(分叉严重),乱合可能污染生产 memgate 线;merge 实际跑在自身分支=Already up to date 零变更。
+- **发现(新悬置)**:plugin 仓分支治理债——main(本地 7c7572e,worktree 占用)vs origin/main 分叉 698;rerank 合入正确姿势=**GitHub PR 流程**(feat/rerank-remote 已在 origin,候白天清晰会话开 PR)。
+- 状态回滚确认:checkout 回 feat/memory-gate-trio 无损;rerank 代码安全在 feat/rerank-remote(origin 有副本)。
+- 教训:跨分支操作前先 `git worktree list`+`branch -vv` 摸拓扑——今晚三次盲目操作都被前置检查拦住(整体是赚的)。
+
 ### R461 · 2026-10-10 晨五(主件轮:判读岗 SOP v0.1 增补✅——r87 首例实战沉淀外部复核单子模式)
 - **主件=SOP 增补**(docs/sops/ROLE_JUDGE_SOP_V0 §八,v0.1):r87 实战新增三模式入规程——①**产能前置门**(被测方先函询产能,判读岗按容量纪律回函接/拒,防白跑);②**判据来源双模式**(自拟预注册/被测方预注册+岗审五点,未冻结不出复核不变);③**复核动作三件+结论三态**(逻辑抽查/抽样 n≥10/一致性比对→背书/修正/退回)。
 - 独立性从严条款:被测方兼判据作者时,阈值须给历史分布支撑。
