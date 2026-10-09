@@ -457,7 +457,12 @@
 - **主件=7B 资源预检**(docs/plans/SEVENB_PRECHECK_20261010.md):基模 ❌→**已启动下载**(modelscope→vdf,Qwen3-7B ~15GB);脚本 ✅(a3_lora_sft);适配器 ✅(best_lora 完整);磁盘 ✅(vdf 167G)。四项三绿一下载中。
 - **信箱 2 函 ack**:10899 平台审计回执(SHA 双锚机制共建+自伤循环补丁已部署毕+days le=90 更正——高质量闭环);10916 kairos 双凭据+无 key 调用方全谱(compass grep 实证无 WRITEBACK_KEY 依赖+不在名单;GRACE 关闸 10/12 提醒收下,我方调用全带 X-API-Key)。
 - NACRE_ROADMAP §二洞察 1 已就地修正(澄清段)。
-- 附带:A100 SSH banner 断连持续频发(重试版通道兜住,a100_exec 3 次退避)。
+- NACRE_ROADMAP §二洞察 1 已就地修正(澄清段)。
+
+### R458 · 2026-10-10 晨二(主件轮:7B 下载核查→🔴勘误第 8 例——Qwen3 系无 7B,实为 8B·Qwen3-8B 下载跑起[实测 376M+])
+- **勘误第 8 例[实测]**:"7B 对拍"口径误——hf-mirror 实测 Qwen/Qwen3-7B=404 而 8B=302 在,**Qwen3 系官方无 7B 尺寸(0.6/1.7/4/8/14/32B)**,实际对象=Qwen3-8B;registry 文案勘误已部署(外网 grep 8B 对拍×2),corpus_stats 字段名 sevenb_* 保留(schema 稳定);预检档补勘误段。
+- **下载链排障**:昨晚"7B"下载实为空壳(modelscope record not found=repo 不存在的表象);换 hf-mirror 通道**Qwen3-8B 下载健康跑起**(376M/67% 文件/3 进程,~16GB 预计 1h 内)。完成后 7B(8B) 资源预检四项全绿,对拍就绪状态。
+- 附带:信箱 0 新函(10899/10916 已 ack)。
 
 ### R457 · 2026-10-10 晨二(主件轮:r87 判读复核接单✅函 10921——判读岗首张外部复核单,v5 训练方/compass 独立复核)
 - **死线带新件接单**(#10920 v5 产能确认函):r87 双臂同构复考(held-out 60 题×r80 vs grpo_r87)10/11 发车——**compass 接复核单**:读数到手 4h 内出终判,10/12 12:00 前完成(榜单刷新前背书,余量 6h+);投递=mailbox(trace r87-judge),卡经 judge_status API live(卡号顺延 0005)。

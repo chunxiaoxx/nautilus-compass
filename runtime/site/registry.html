@@ -74,7 +74,7 @@
     <tr><td>判例集 CASEBOOK</td><td>v1.4 封版(16 案+勘误 6 例)</td><td><code>@3c0ba2d3</code></td></tr>
     <tr><td>NACRE 判分实例 v1</td><td>88.51% 三态(ECE 0.072)</td><td><code>dbcbab6fd1ff5821</code> · <a href="https://huggingface.co/nautilus-compass/nacre-judge-v1">HF</a></td></tr>
     <tr><td>部署精度纪律</td><td>fp16 1.0000 ✅ · int8 0.9828 ❌ · int4 0.9416 ❌</td><td><a href="https://nautilus.social/criteria/">判据披露</a></td></tr>
-    <tr><td>重训触发器</td><td>train≥1500 候选评估 · ≥3000 触发 7B 对拍</td><td id="trig" class="goal">自动</td></tr>
+    <tr><td>重训触发器</td><td>train≥1500 候选评估 · ≥3000 触发 8B 对拍(勘误:原记 7B,Qwen3 系无 7B 尺寸,实为 Qwen3-8B)</td><td id="trig" class="goal">自动</td></tr>
   </table>
 </div></section>
 
@@ -105,8 +105,8 @@ function upd(m){
   set('m-rem', m.sevenb_remaining ?? '—');
   const t=m.merged_unique_by_qid, g=m.sevenb_target||3000;
   document.getElementById('b-total').style.width=Math.min(100,t/g*100)+'%';
-  document.getElementById('m-goal').textContent=`7B 对拍目标 ${g} · 进度 ${Math.round(t/g*100)}%`;
-  document.getElementById('trig').textContent = m.train_count>=3000?'7B 触发!':`train ${m.train_count}/${g}`;
+  document.getElementById('m-goal').textContent=`8B 对拍目标 ${g} · 进度 ${Math.round(t/g*100)}%`;
+  document.getElementById('trig').textContent = m.train_count>=3000?'8B 触发!':`train ${m.train_count}/${g}`;
   const tb=document.getElementById('src-table');
   tb.querySelectorAll('tr:not(:first-child)').forEach(tr=>tr.remove());
   Object.entries(cs).sort((a,b)=>b[1]-a[1]).forEach(([k,v])=>{
