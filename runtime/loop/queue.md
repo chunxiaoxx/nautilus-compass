@@ -390,3 +390,8 @@
 - **两闭环**:①v2 基线 0.50>v1 表观 0.40=工作集污染拉低表观难度实锤;②干净口径 rerank 增益 +33.3pp>污染口径 +16.7pp——rerank 主收益结论正本口径下更强。
 - **产出**:E1_FAILURE_ATTRIBUTION §九(终局定谳)+e1_final_verdict_20261009.json+A_plus_queries_v2 归档;生成器清洗纪律回写 tools/emb_gen_a_plus.py。
 - **E1 线一夜五连收官**:R437 归因→R438 H1→R439 H2→R440 组合→R442 定谳。遗留=daemon rerank 层接入设计(候用户拍板排期);vdd4 磁盘 93% 观察(disk 14G+四盘分布实测,数据盘 vdf 170G 充裕,系统盘紧张候观察)。
+
+### R443 · 2026-10-09 深夜六(主件轮:开业日公告物料 v1✅——判分 API 公告文+当日 checklist+候拍板清单;10886 大进展 ack)
+- **主件=开业备料**(docs/plans/LAUNCH_KIT_V1_20261009.md):①判分 API 公告文(六能力清单全实锚:judge_status API/intake/criteria/榜单 26.7-16.7/NACRE judge HF/免费复算;定价边界一句话"判读永久免费,装订收费");②开业日 checklist(10/12 七时点:终检复跑/XERJ 跟进/白窗配合/三链接终验/21:00 PRECOR 候拍板/API 公告/回音巡检);③候拍板清单(PRECOR 署名投递=唯一阻塞,Einsia 函候三链接齐)。
+- **附带·10886 ack**:nginx 403 止血落地(bootstrap 系全封含孪生 apply_improvement prompt 注入面)——**P0-A 应用层洞先于 e2e 闭环**,e2e 五用例转回归性质;代码固化三读数全过;nginx conf 正本回 git(drift 417 行清零);10885 e2e 坐标确认收到。
+- 链接探活:intake/criteria 200 [实测];信箱 10886 处理毕 0 未读。
