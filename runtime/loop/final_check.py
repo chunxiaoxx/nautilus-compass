@@ -59,6 +59,10 @@ LIVE = [
 RENDER_POINTS = [
     ("data 站渲染", "https://data.nautilus.social/",
      ["验货", "PASS", "判据"]),
+    # R434 防回归:registry 字段错位 bug(活数据路径渲染 undefined)只能渲染口径抓到;
+    # 锚=源分布表首行 key(由同一次 upd() 填充,undefined bug 连带使其缺失)
+    ("registry 渲染", "https://nautilus.social/registry.html",
+     ["split_train_v1", "93dccd830b77477e"]),
 ]
 
 

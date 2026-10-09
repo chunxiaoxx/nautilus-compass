@@ -51,6 +51,13 @@
     合并快照 sha16:<code id="m-sha">—</code> · 数据日期:<code id="m-updated">—</code> ·
     活数据源:<code><a href="/corpus_stats.json">/corpus_stats.json</a></code>
   </p>
+  <h2 style="margin-top:26px">源分布(活渲染 · 与 JSON 逐源一致)</h2>
+  <table id="src-table">
+    <tr><th>源</th><th>条数</th></tr>
+  </table>
+  <p style="color:var(--muted);font-size:.85rem;margin:10px 0 0">
+    跨源去重忽略:<code id="m-dups">—</code> 条 · 7B 候语料缺口:<code id="m-rem">—</code>
+  </p>
 </div></section>
 
 <section><div class="wrap">
@@ -70,19 +77,39 @@
 
 <script>
 // 活数据:由 corpus_pipeline manifest 注入(静态快照兜底,值守轮覆写)
-// FALLBACK=2026-10-09 现役快照(与 /corpus_stats.json 同源,merged_sha16=93dccd830b77477e)
+// 正本 schema=tools/corpus_pipeline.py 输出:counts_by_source 明细,聚合字段(org_fuel/
+// letters/delta)一律前端汇总——2026-10-09 修字段错位 bug(旧 upd() 直读 m.org_fuel 等
+// JSON 不存在的键,fetch 成功路径渲染 undefined,被无渲染口径的终检掩盖)。
 const FALLBACK = {"merged_unique_by_qid":2258,"train_count":1162,
-  "org_fuel":802,"delta":32,"letters":47,"sevenb_target":3000,
+  "counts_by_source":{"split_train_v1":1162,"split_dev_v1":143,"split_test_v1":149,
+    "delta:delta_0001.jsonl":14,"delta:delta_0002.jsonl":15,"delta:delta_0003.jsonl":3,
+    "delta:delta_0004.jsonl":13,"delta:delta_0005.jsonl":16,"delta:delta_0006.jsonl":1,
+    "org_fuel:gate_passed":287,"org_fuel:letters":47,"org_fuel:docs":456,"org_fuel:outreach":12},
+  "cross_source_dups_ignored":45,"sevenb_target":3000,"sevenb_remaining":1838,
   "merged_sha16":"93dccd830b77477e","updated":"2026-10-09"};
 fetch('/corpus_stats.json').then(r=>r.json()).then(upd).catch(()=>upd(FALLBACK));
 function upd(m){
+  const cs = m.counts_by_source || {};
+  const sum = pred => Object.entries(cs).reduce((a,[k,v])=>pred(k)?a+v:a,0);
   set('m-total', m.merged_unique_by_qid); set('m-train', m.train_count);
-  set('m-orgfuel', m.org_fuel); set('m-letters', m.letters); set('m-delta', m.delta);
-  set('m-sha', m.merged_sha16||'—'); set('m-updated', m.updated||'—');
+  set('m-orgfuel', sum(k=>k.startsWith('org_fuel:')));
+  set('m-letters', cs['org_fuel:letters'] ?? 0);
+  set('m-delta', sum(k=>k.startsWith('delta:')));
+  set('m-sha', m.merged_sha16||'—');
+  set('m-updated', m.updated||'live(fetch)');
+  set('m-dups', m.cross_source_dups_ignored ?? '—');
+  set('m-rem', m.sevenb_remaining ?? '—');
   const t=m.merged_unique_by_qid, g=m.sevenb_target||3000;
   document.getElementById('b-total').style.width=Math.min(100,t/g*100)+'%';
   document.getElementById('m-goal').textContent=`7B 对拍目标 ${g} · 进度 ${Math.round(t/g*100)}%`;
   document.getElementById('trig').textContent = m.train_count>=3000?'7B 触发!':`train ${m.train_count}/${g}`;
+  const tb=document.getElementById('src-table');
+  tb.querySelectorAll('tr:not(:first-child)').forEach(tr=>tr.remove());
+  Object.entries(cs).sort((a,b)=>b[1]-a[1]).forEach(([k,v])=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td><code>${k}</code></td><td>${v}</td>`;
+    tb.appendChild(tr);
+  });
 }
 function set(id,v){document.getElementById(id).textContent=v}
 </script>

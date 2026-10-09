@@ -325,3 +325,11 @@
 - **死线带核对(新会话开局)**:冲正复读=已销案(A3 201 自纠+8 已还)/RFC 表决=已直交 10836(R428)——两项闭环;10-11 终检=预演绿;10-12 开业=轨道上。
 - **信箱收割**:零新函;#10829 已 ack(注 10836 坐标请平台核对)。**probe**:daemon 9876 pong 绿+凭据在位+HEAD 0eeed811。
 - 积压清单顺次核对:XERJ 捐赠包(#1255 MERGED)/M5 移植部署(已上生产)/mem0 评估(docs/outreach 立档)/语料 2000 冲刺(2258 超标)——已完成项跳过;下一候选=registry 活数据页/判读卡状态页(终检已含其探活,内容充实另议)。
+
+### R434 · 2026-10-09 晚(主件轮:registry 字段错位 bug 修复✅+源分布活渲染上线[实测]——终检渲染判据防回归+data 站改版发现通报)
+- **主件=registry/语料状态活数据页(用户点名重做)**:线上渲染实测抓到实锤 bug——`upd()` 直读 `m.org_fuel/m.letters/m.delta/m.updated`,而 `/corpus_stats.json` 正本 schema(tools/corpus_pipeline.py)只有 `counts_by_source` 明细无聚合键 → **fetch 成功路径三 tile 渲染 undefined**,被无渲染口径的终检 13/13 绿掩盖;FALLBACK `delta:32` 亦过期(六 delta 文件合计=62)。
+- **修复[实测线上]**:upd() 改 counts_by_source 前端聚合(org_fuel=四子源和=802 与旧 FALLBACK 互印/letters/delta=前缀和)+新增源分布 13 行活渲染表(降序)+dups/7B 缺口展示;FALLBACK 同步 62 口径;本地 file:// 冒烟(无 undefined/16 code 节点)→scp+sudo cp 部署(R366 蓝绿配方)→**线上 Chrome 渲染 6904B:无 undefined+13 源全渲染+sha/2258 全锚**。
+- **终检加渲染防回归判据**:RENDER_POINTS 增 registry 渲染项(锚=split_train_v1+sha16,undefined bug 连带使其缺失)——首跑 PASS 7021B;快检 13 项维持全绿。
+- **附带·信箱收割**:10862 平台实质回执(nginx 止血今夜窗+应用层入 #10856 白窗 10/11+72h 宽限 10/14 收紧+逐函实质回话承诺)已 ack;第四条候我方件=e2e 真签测试坐标(#10853 余项考古无果,函件 body 无存档,候下轮向平台函询原文口径)。
+- **附带·新发现通报**:终检 data 站渲染 FAIL 4,542B(10/8 深验 35,093B 实证页→「智涌飞轮」营销壳,稳定复现非瞬断)=**flywheel 改版跨框资产变更**;判据不擅改(零放宽),函 10867 通报请其 10/10 22:00 前确认(改版预期?实证内容去留?判据重锚两路任选);未回则正日标 PENDING-EXTERNAL 不阻塞开业物。
+- 教训两枚:管道吃 exit code 复现(`py|tail; $?`=tail 码,exit=2 真码靠重跑无管道拿);活数据页终检必带渲染口径(内容锚+JSON 判据双层均抓不到 undefined 级 bug)。
