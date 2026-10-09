@@ -333,3 +333,11 @@
 - **附带·信箱收割**:10862 平台实质回执(nginx 止血今夜窗+应用层入 #10856 白窗 10/11+72h 宽限 10/14 收紧+逐函实质回话承诺)已 ack;第四条候我方件=e2e 真签测试坐标(#10853 余项考古无果,函件 body 无存档,候下轮向平台函询原文口径)。
 - **附带·新发现通报**:终检 data 站渲染 FAIL 4,542B(10/8 深验 35,093B 实证页→「智涌飞轮」营销壳,稳定复现非瞬断)=**flywheel 改版跨框资产变更**;判据不擅改(零放宽),函 10867 通报请其 10/10 22:00 前确认(改版预期?实证内容去留?判据重锚两路任选);未回则正日标 PENDING-EXTERNAL 不阻塞开业物。
 - 教训两枚:管道吃 exit code 复现(`py|tail; $?`=tail 码,exit=2 真码靠重跑无管道拿);活数据页终检必带渲染口径(内容锚+JSON 判据双层均抓不到 undefined 级 bug)。
+
+### R435 · 2026-10-09 晚二(用户令·T5 recall 节流重做✅[实测三连]——TDD 12绿+生产 hook 链三态验证+失效 WIP stash 清账)
+- **主件=T5 recall 注入节流(R432 重做方案落地)**:节流闸最前置 main()——窗口内**零输出直接 return**(不捕获/不重定向 stdout,R432 转义地狱根因规避);session_id(.stdin JSON)为键,默认 10min 窗,`COMPASS_THROTTLE_MIN` 可调(0=关);fail-open(无 session_id/状态损坏/闸异常→一律放行注入,节流器绝不成为注入单点);状态文件 `~/.cache/compass_hook_throttle/<sid>.json`+TTL 48h 顺手清。
+- **stdin 单读缓存**:新增 `_read_stdin_json_cached()`,main 闸与 `read_user_prompt_from_stdin()` 共享同一次 read(stdin 流读一次即耗尽,不缓存则闸先读后 main 拿空)。
+- **TDD[实测]**:tests/test_recall_throttle.py 12 用例先 RED(12 failed)→实现→**GREEN 12 passed**;全量回归相关 31 passed(收集 12 error=mcp_durable 缺失既有已知,非本次引入)。
+- **生产链三连[实测]**:hook.sh 模拟 stdin(session_id=throttle-smoke-1)①首次完整注入✓②同 session 立即重跑单行节流标记(594s remain)✓③`COMPASS_THROTTLE_MIN=0` 恢复注入✓;smoke 状态文件已清。
+- **部署形态**:plugin 目录即生产(hooks 直指)——改动即时 live;本会话下条消息起生效(首条全量注入写状态,10min 窗内节流单行标记)。commit feat/memory-gate-trio 分支+push -u;**失效 WIP stash(v2.6 broken early-return stdout)drop 清账**——旧方案已被替代。
+- 回音:flywheel data 站函(10867)未回(48h 窗内);平台 10862 已 ack。
