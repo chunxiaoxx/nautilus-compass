@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nautilus 商业计划书 · Agent 评测与数据基础设施</title>
+<meta property="og:title" content="Nautilus 商业计划书 · Agent 评测与数据基础设施">
+<meta property="og:description" content="v1.5 · 判据 sha 锚定 · 负结果照报 · 坐标可寻址">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<style>
+:root{--ink:#141b26;--mut:#5c6675;--line:#e4e8ef;--brand:#0f62fe;--brand2:#0043ce;
+--bg:#f7f9fc;--card:#ffffff;--soft:#eef3fb}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font:16px/1.85 -apple-system,"Segoe UI","Microsoft YaHei","PingFang SC",sans-serif;
+color:var(--ink);background:var(--bg)}
+a{color:var(--brand);text-decoration:none}
+a:hover{text-decoration:underline}
+.hero{background:linear-gradient(140deg,#08142e 0%,#0d2f6e 55%,#0f62fe 130%);color:#fff;
+padding:46px 28px 30px}
+.hero .in{max-width:1080px;margin:0 auto}
+.hero .crumb{font-size:13px;opacity:.75;letter-spacing:.4px}
+.hero h1{margin:8px 0 6px;font-size:clamp(24px,3.4vw,34px);letter-spacing:.4px;line-height:1.3}
+.hero .tagline{margin:0;opacity:.88;font-size:15px}
+.hero .ver{display:inline-block;margin-left:10px;font-size:12.5px;border:1px solid rgba(255,255,255,.45);
+border-radius:999px;padding:1px 10px;vertical-align:2px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;
+max-width:1080px;margin:26px auto 0;padding:0 28px}
+.kpi{background:rgba(255,255,255,.97);color:var(--ink);border-radius:12px;padding:14px 18px 12px;
+box-shadow:0 6px 24px rgba(4,16,44,.35)}
+.kpi b{display:block;font-size:26px;color:var(--brand2);letter-spacing:.3px}
+.kpi span{font-size:12.5px;color:var(--mut);line-height:1.5;display:block;margin-top:2px}
+.layout{max-width:1080px;margin:26px auto 60px;padding:0 28px;display:grid;
+grid-template-columns:212px minmax(0,1fr);gap:34px}
+aside.toc{position:sticky;top:18px;align-self:start;font-size:13.5px;max-height:86vh;overflow:auto}
+aside.toc .t{font-weight:700;color:var(--mut);font-size:12px;letter-spacing:1px;margin-bottom:8px}
+aside.toc a{display:block;color:var(--ink);padding:5px 10px;border-radius:7px;line-height:1.45;
+white-space:normal;border-left:2px solid transparent}
+aside.toc a:hover{background:var(--soft);text-decoration:none;color:var(--brand)}
+article{background:var(--card);border:1px solid var(--line);border-radius:14px;
+padding:34px 40px 40px;box-shadow:0 1px 3px rgba(16,32,64,.05);min-width:0}
+article h2{font-size:21px;margin:42px 0 14px;padding:10px 14px;background:var(--soft);
+border-radius:9px;border-left:4px solid var(--brand);scroll-margin-top:20px;line-height:1.4}
+article h2:first-child{margin-top:6px}
+article h3{font-size:17px;margin:26px 0 10px}
+article p{margin:10px 0}
+article ul,article ol{padding-left:24px;margin:10px 0}
+article li{margin:5px 0}
+table{border-collapse:collapse;width:100%;margin:16px 0;font-size:13.8px;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:var(--soft);font-weight:600;white-space:nowrap}
+tbody tr:nth-child(even){background:#fafbfd}
+tbody tr:hover{background:var(--soft)}
+code{background:var(--soft);padding:1px 6px;border-radius:5px;font-size:13.5px}
+pre{background:#0d1526;color:#dce6ff;padding:16px;border-radius:10px;overflow:auto;font-size:13px;line-height:1.6}
+pre code{background:none;color:inherit;padding:0}
+blockquote{margin:14px 0;padding:10px 16px;border-left:4px solid var(--brand);
+background:var(--soft);border-radius:0 9px 9px 0;color:#2a3547}
+blockquote p{margin:4px 0}
+hr{border:none;border-top:1px dashed var(--line);margin:34px 0}
+footer{text-align:center;color:var(--mut);font-size:12.5px;padding:20px;border-top:1px solid var(--line)}
+.mtoc{display:none}
+@media(max-width:900px){
+.layout{display:block;padding:0 16px}
+aside.toc{display:none}
+article{padding:22px 18px 28px}
+.mtoc{display:block;margin:18px 16px 0;background:var(--card);border:1px solid var(--line);
+border-radius:11px;padding:10px 16px;font-size:13.5px}
+.mtoc summary{cursor:pointer;font-weight:600;color:var(--mut)}
+.mtoc a{display:inline-block;margin:6px 14px 0 0}
+.kpis{padding:0 16px}
+.hero{padding:34px 16px 24px}
+}
+@media print{.hero{background:#08142e}aside.toc,.mtoc{display:none}.layout{display:block}
+article{border:none;box-shadow:none;padding:0}}
+</style>
+</head>
+<body>
+<header class="hero"><div class="in">
+<div class="crumb">NAUTILUS · 文档正本</div>
+<h1>Nautilus 商业计划书 V1 · Agent 评测与数据基础设施<span class="ver">v1.5</span></h1>
+<p class="tagline">Agent 评测与数据基础设施 · 商业正本 · 判据 sha 锚定 · 负结果照报 · 坐标可寻址</p>
+</div></header>
+<div class="kpis"><div class="kpi"><b>88.51%</b><span>NACRE 主判三门全绿/P95 42ms</span></div><div class="kpi"><b>41 家</b><span>线索池三波推进(Wave1 已发)</span></div><div class="kpi"><b>$10K-40K</b><span>enterprise 定价带/年(L3 委托制)</span></div><div class="kpi"><b>10/12</b><span>开业(榜单+Wave2 直邮)</span></div></div>
+<details class="mtoc"><summary>目录(8 节)</summary><a href="#s1">1. 1. 市场判断</a><a href="#s2">2. 2. 产品矩阵与价格墙(挂平台门面,五件判据 v2 门禁)</a><a href="#s3">3. 3. 获客路径与北极星</a><a href="#s4">4. 4. 里程碑与财务假设(保守)</a><a href="#s5">5. 5. 组织协同(八框编制,涡轮增压分工;供收两列合一)</a><a href="#s6">6. 6. 风险与对策(两域合并去重)</a><a href="#s7">7. 7. 附录:坐标与判据索引</a><a href="#s8">8. 8. v0.1→v1 变更记录(呈批件)</a></details>
+<div class="layout">
+<aside class="toc"><div class="t">目录 · 8 节</div><a href="#s1">1. 1. 市场判断</a><a href="#s2">2. 2. 产品矩阵与价格墙(挂平台门面,五件判据 v2 门禁)</a><a href="#s3">3. 3. 获客路径与北极星</a><a href="#s4">4. 4. 里程碑与财务假设(保守)</a><a href="#s5">5. 5. 组织协同(八框编制,涡轮增压分工;供收两列合一)</a><a href="#s6">6. 6. 风险与对策(两域合并去重)</a><a href="#s7">7. 7. 附录:坐标与判据索引</a><a href="#s8">8. 8. v0.1→v1 变更记录(呈批件)</a></aside>
+<article><h1>Nautilus 商业计划书 V1 · Agent 评测与数据基础设施</h1>
+<blockquote>
+<p>✅ <strong>用户终审通过(2026-10-07,三确认点均接受:§5.1 初稿随发 10/26 转正/§7 坐标先行全文后补/双臂读数发布口径)——本版为 10/12 开业定格版。</strong></p>
+<p>2026-10-06 升稿。基:UNIPAT_BUSINESS_PLAN_V0.md(v0.1,48h 三框回执已齐)。
+结构正本:docs/ORG_WHITEPAPER_MERGE_FRAMEWORK_V1_20261006.md(冲突消解六条预注册)。
+品牌:顶层=Nautilus;unipat(SWE 评测)/flywheel(具身数据)=域产品线名。
+收款(冲突消解#6):统一国曙主体(微信+对公已通)+美元档人工收款;首笔后并轨入闭环台账。</p>
+</blockquote>
+<h2 id="s1">1. 市场判断</h2>
+<ul>
+<li><strong>赛道</strong>:agent infra。对标锚:Manus Cue(agent 配邮箱/钱包/电脑,团队 $20/座/月,据报道 ARR $125M)证明"给 agent 配零件"可卖钱;Meta Muse(9/8)验证个人 agent+硬件叙事;Scale/Surge 证明数据服务市场存在但依赖人工标注。</li>
+<li><strong>缺口</strong>:①harness 一站式中立评测无平台(各家自吹,DeepSeek/Xiaomi 类厂商需要第三方判读)②agent 训练数据集质量参差、无机器判读留痕 ③"评测→提升"闭环(评测出分→知道怎么改)无人交付。</li>
+<li><strong>具身域竞争层(并入段,来源 flywheel BP,v3 定稿后复核)</strong>:UniPat 融资为具身数据赛道商业化铁证;Calibra 与我方定位差异明确;千寻等大厂不做第三方验证——具身域"数据无机器判读"与 SWE 域同一缺口,为同一基础设施的第二个域实例(技术白皮书 §7)。</li>
+<li><strong>核心资产=自研 agent harness 引擎与自进化闭环</strong>(十条特性+RSI 递归自提升,详技术白皮书 §2.5/§5.2);裁判服务与训练数据是这个引擎的两种商业化输出。<strong>实证</strong>:机器判读(四验门+δ 判读)×真实任务数据(判分-结算绑定防刷)×训练提升闭环(B7 args +3.58pp&gt;δ UP;L3 Round1 双臂 26.7% vs 16.7% 配对 +10.0pp&gt;δ,判分侧实测定版)。三环齐备者市场空缺;零件与 Cue 同构,差别只在装进门面(10/05 platform 对表原话)。</li>
+</ul>
+<blockquote>
+<p>差异化一句(v1.4 补丁,10/7):<strong>核心资产=harness 引擎与自进化闭环;裁判与教材是引擎的两种输出。</strong>(v5 呈批 #10248,与"带第三方判据的自进化飞轮"叙事互证)</p>
+</blockquote>
+<h2 id="s2">2. 产品矩阵与价格墙(挂平台门面,五件判据 v2 门禁)</h2>
+<table>
+<thead>
+<tr>
+<th>产品</th>
+<th>档位</th>
+<th>定价</th>
+<th>现态(10/06)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>判分服务</strong></td>
+<td>L1 收录(上榜+判据 sha 披露)</td>
+<td>免费(获客面)</td>
+<td>10/12 首发榜单</td>
+</tr>
+<tr>
+<td></td>
+<td>L2 深度报告(单 harness×单评测集+复现包+改进建议)</td>
+<td>$199/次(SWE 域)</td>
+<td>样例已出,主坐标 org.nautilus.social/L2_report_sample.md(200,sha256-16=6315954f45f2c715;溯源:chunxiaoxx/nautilus-v5@43bea7e1);10/31 首单死线=北极星</td>
+</tr>
+<tr>
+<td></td>
+<td>L3 企业定制(定制评测集+私有部署)</td>
+<td>$999 起询价</td>
+<td>随 c 档管道</td>
+</tr>
+<tr>
+<td><strong>NACRE 判分服务(v1.1 增补,compass@9f9a6e04)</strong></td>
+<td>判分 API(热路径)+assay CLI</td>
+<td>计量随 L1/L2 档(判读永久免费,收入全来自判后装订)</td>
+<td>实测:主判 88.51% 三门全绿/P95 42ms/118 条@s;三态判定+复算协议=可购买"验收"</td>
+</tr>
+<tr>
+<td><strong>数据产品 a</strong></td>
+<td>S1 样例(10 条 pass)</td>
+<td>免费</td>
+<td>✅ HF 已上架(nautilus-compass/nautilus-swe-trajectories;platform 独立复验 200,#9870)</td>
+</tr>
+<tr>
+<td></td>
+<td>S2 正样本批(现货零打码,redact 后全池口径;DB 滚动实测 82+ 条@10/6 22:20)</td>
+<td>$499/批</td>
+<td>现货就绪</td>
+</tr>
+<tr>
+<td></td>
+<td>S3 负样本批(带判因;DB 滚动实测 73+ 条)</td>
+<td>$299/批</td>
+<td>现货就绪</td>
+</tr>
+<tr>
+<td></td>
+<td>S4 全量+订阅</td>
+<td>$999 起</td>
+<td>池 98 行滚动增厚</td>
+</tr>
+<tr>
+<td><strong>数据验证 b(新 SKU 分列注记,#9836)</strong></td>
+<td>客户自带轨迹,四验门判读+打标</td>
+<td>按条询价</td>
+<td>MVP 2 周(判据包底座已有:verdict schema v2.1,assay 子包 PyPI 3.3.0)</td>
+</tr>
+<tr>
+<td><strong>管道托管 c</strong></td>
+<td>客户 agent 接我方全链</td>
+<td>L3 档定制</td>
+<td>L2 首单后启动</td>
+</tr>
+<tr>
+<td><strong>具身域同档服务(来源 flywheel BP,v3 定稿后复核)</strong></td>
+<td>Bench(免费)/Audit 深度报告($999 起,含 QC+效用+消费者适配)/Ledger</td>
+<td>三段式</td>
+<td>具身域产品线,与技术白皮书 §7 同源</td>
+</tr>
+</tbody>
+</table>
+<p><strong>同档两域定价关系(冲突消解#2)</strong>:L2 深度报告 SWE 域 $199/具身域 Audit $999 起——同档服务两域定价,Audit 含 QC+效用+消费者适配;价格变动须用户拍板(升级规则)。
+<strong>交叉销售行(#9856-二②)</strong>:L2 报告客户购 S2 八折(防渠道价签打架;比价链:判分 $199/S2 $499/S3 $299)。
+<strong>免费首检统一为获客面</strong>(#9836):L1 收录/S1 样例/具身 Bench 同层。</p>
+<p>SLA 分档(10/6 用户拍生效,compass 提案):<strong>L1 收录 24h 内出判读卡(实测分钟-小时级)/L2 深度报告 48h(机判+人工双签)/L3 定制 5 工作日</strong>;返工≤2;判据 sha16 预注册(判据④三要素)。</p>
+<h2 id="s3">3. 获客路径与北极星</h2>
+<pre><code>10/12 L3 榜单(公开被测物 A=v5-harness,repo 4e14a898 披露)
+  → 榜单 CTA=判分服务入口(免费 L1 收录获客)
+    → L2 首单($199,人工收款端到端闭环=判据⑤)
+      → 交付深度报告+复现包(证明&quot;知道如何提升&quot;)
+        → L3 定制+数据产品交叉销售(L2 客户购 S2 八折;S2/S3 现货)
+          → c 档管道托管(最深耦合,留存)
+</code></pre>
+<ul>
+<li>北极星:<strong>10/31 首笔 L2 外部委托端到端闭环</strong>(PMF 信号;未达成负结果照报)</li>
+<li>渠道双通道:SWE 域(platform 榜页+判分服务入口;v5/HF 数据集详情页导流)+具身域(flywheel 社区/HF QC 矩阵)</li>
+<li><strong>外部对手盘实证(venture 线,v1.5 并入)</strong>:2026Q3 六项外部交付——省级政府内参(4 飞书回执在档)/行业协会章程 47 条/具身两案/国曙常态供稿/订阅号群发记录(细节可审计,对外匿名化口径);收款主体已统一国曙;唯一公域渠道资产=微信订阅号(七步门禁:双 Critic+机判盲测出厂)——证明组织对外交付与结算通道已通</li>
+<li>竞争壁垒:判据 sha 预注册+不可写面判读=可审计中立性;数据判读留痕=可复核质量。这两件难抄(组织级纪律资产)。</li>
+<li><strong>生态位区分(COG-SYNC ②,#10254)</strong>:NeoHorse-1(2026-09,HF 热榜)=harness-native data flywheel+Agentic Routing <strong>自训练模型厂</strong>;我们=<strong>第三方中立判分+数据商品</strong>——判分中立性是壁垒非冲突,两壳 P1 已增生态位区分段。</li>
+<li><strong>市场时窗验证(COG-SYNC ④)</strong>:Humanloop 已关停(2025-09),存活 eval 平台转向开发者调试——<strong>独立判分+数据商品是空位</strong>;enterprise 定价带 $10K-40K/年→L3 年度委托制实验(10/12 后启动)。</li>
+<li><strong>线索池(v1.2 更新 10/6 晚,用户加速令版)</strong>:候选 <strong>41 家已全选</strong>(平台名单 v0∪v5 BD 20 家,三波走)——Wave1 开源框架 11 家 GitHub 邀请帖<strong>已发</strong>(含 OpenHands/SWE-agent/Cline,首日读数:3 家自动响应=机器分诊,0 人工回复,Cline 入其内部任务队列);Wave2 付费直邮 10/12 随开业发车;Wave3 长线培育。渠道凭据(首检邮箱✅已定版/HF org ✅已完成 10/7:nautilus-compass 双 repo 外网 200,nacre-judge-v1+caliber-bench-v0;余 Wave2 邮箱凭据);收单演练 S0-S5 全链走通(10/9 真实邮箱通道复演);分发弹药=forum/X 呈批稿+L3 技术博客+Dev.to 样例解读二篇(均候批)</li>
+</ul>
+<h2 id="s4">4. 里程碑与财务假设(保守)</h2>
+<table>
+<thead>
+<tr>
+<th>期</th>
+<th>里程碑</th>
+<th>收入假设</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-10</td>
+<td>判据 v2 生效✅+榜单发布+L2 首单</td>
+<td>首单 $199(信号价值&gt;金额)</td>
+</tr>
+<tr>
+<td>2026-Q4</td>
+<td>L2 月 2-4 单+S2/S3 首批售出+b 档 MVP;<strong>L3 年度委托制实验</strong>($10K-40K/年 enterprise 带,COG-SYNC ④,10/12 后启动)</td>
+<td>$1-3k/月</td>
+</tr>
+<tr>
+<td>2027-H1</td>
+<td>c 档首个托管客户+L3 首单</td>
+<td>$5-15k/月</td>
+</tr>
+<tr>
+<td>2027-H2</td>
+<td>多租户管道规模化</td>
+<td>复盘再估</td>
+</tr>
+<tr>
+<td>具身域对齐行(v3 定稿后复核)</td>
+<td>10 月首单/11 月自训标注员/Q4 蒸馏环</td>
+<td>flywheel BP 口径</td>
+</tr>
+</tbody>
+</table>
+<p>成本面:基础设施已沉没(云+GPU 现有盘位);边际成本=判读算力(CPU 池可承)+人工审核(试点期)。</p>
+<h2 id="s5">5. 组织协同(八框编制,涡轮增压分工;供收两列合一)</h2>
+<table>
+<thead>
+<tr>
+<th>框</th>
+<th>角色</th>
+<th>供</th>
+<th>收</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>平台</td>
+<td>门面+底盘+判分服务 owner</td>
+<td>判据 v2 正本/榜单壳/获客入口/闭环台账(ORG_PRODUCTIZATION_LEDGER)</td>
+<td>L2/L3 订单面</td>
+</tr>
+<tr>
+<td>compass</td>
+<td>评测判分侧</td>
+<td>UMI 办结/G1-full 判读(负结果照报)/判据档+背书函</td>
+<td>判分交付产能</td>
+</tr>
+<tr>
+<td>v5</td>
+<td>执行引擎+数据飞轮承载端</td>
+<td>r82 pass 60%/HF 上架/池 98 行/L2 样例与报告</td>
+<td>数据产品 a+b 档底座</td>
+</tr>
+<tr>
+<td>flywheel</td>
+<td>具身数据线+判读臂</td>
+<td>四验&lt;1h(35 单三战全绿)/数据出售先例/UMI 闭环</td>
+<td>具身域 Audit/Ledger</td>
+</tr>
+<tr>
+<td>soul/v7/kairos</td>
+<td>组织生态(弱耦合外围)</td>
+<td>复活中</td>
+<td>—</td>
+</tr>
+<tr>
+<td>venture</td>
+<td>创投数据与内容线(对外对手盘实证)</td>
+<td>六项外部交付实证(可审计)+订阅号公域面(七步门禁)</td>
+<td>外部成交记录背书(§3 注)</td>
+</tr>
+</tbody>
+</table>
+<p>周报纪律(判据 v2):固定"本周外部可见增量"行,没有=内部建设不计价值。</p>
+<h2 id="s6">6. 风险与对策(两域合并去重)</h2>
+<table>
+<thead>
+<tr>
+<th>风险</th>
+<th>对策</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>L2 首单不出(获客弱,两域同构各留一行)</td>
+<td>榜单+HF 双入口导流+具身社区通道;负结果 11/1 复盘,调获客而非调产品</td>
+</tr>
+<tr>
+<td>数据集同质化竞争(HF 免费集)</td>
+<td>卖点=四验留痕+判因标注(可复核),不打价格战</td>
+</tr>
+<tr>
+<td>判读中立性被质疑</td>
+<td>sha 预注册+不可写面+第三方可复核通道(Assay 登记)+compass 中性事实背书函</td>
+</tr>
+<tr>
+<td>规模化人工瓶颈(两域同构)</td>
+<td>b 档 API 化(机器判读为主,人工仲裁例外)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="s7">7. 附录:坐标与判据索引</h2>
+<table>
+<thead>
+<tr>
+<th>读数/资产</th>
+<th>坐标</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HF 数据集(S1 入口)</td>
+<td>huggingface.co/datasets/nautilus-compass/nautilus-swe-trajectories(platform 复验 200)</td>
+</tr>
+<tr>
+<td>L2 样例报告</td>
+<td>主坐标:org.nautilus.social/L2_report_sample.md(200,sha256-16=6315954f45f2c715);溯源:chunxiaoxx/nautilus-v5@43bea7e1</td>
+</tr>
+<tr>
+<td>Pipeline 仪表盘</td>
+<td>nautilus.social/pipeline.html(200)</td>
+</tr>
+<tr>
+<td>榜单被测物 repo</td>
+<td>4e14a898(10/12 披露)</td>
+</tr>
+<tr>
+<td>判据正本</td>
+<td>GET /assay/criteria·sha16 ea20d6fd(fuel_criteria_v1);判据披露页=nautilus.social/criteria/(human-readable 外显件,#10211 统一口径);L3 榜判据档 sha16 定版随 10/6 双臂读数齐(#9845-3①)</td>
+</tr>
+<tr>
+<td>评测四锚</td>
+<td>docs/RSI_BENCH_PANEL.md</td>
+</tr>
+<tr>
+<td>池口径</td>
+<td><strong>155/82 pass/73 fail</strong>(DB 实测 2026-10-06 22:20,滚动;verdict 列,历史勘误 #9818 为口径正本)</td>
+</tr>
+<tr>
+<td>闭环台账</td>
+<td>docs/ORG_PRODUCTIZATION_LEDGER.md(七产品线×五件判据)</td>
+</tr>
+<tr>
+<td>评测体系判读侧背书函</td>
+<td>github.com/chunxiaoxx/nautilus-compass·docs/cases/CASEBOOK_V1.md(v1.4;中性事实限位:判读独立/复算零偏差/负结果照报,三件带锚)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="s8">8. v0.1→v1 变更记录(呈批件)</h2>
+<table>
+<thead>
+<tr>
+<th>处</th>
+<th>变更</th>
+<th>依据</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>全册</td>
+<td>品牌=Nautilus 顶层;收款主体国曙+美元人工</td>
+<td>冲突消解#1/#6</td>
+</tr>
+<tr>
+<td>§1</td>
+<td>具身竞争层并入段(v3 定稿后复核)</td>
+<td>框架§二/#9836</td>
+</tr>
+<tr>
+<td>§2</td>
+<td>flywheel 三段式并列行;交叉销售行(L2 客户购 S2 八折);b 档新 SKU 分列;两域定价关系行;S2/S3 更新 45/53 全池口径</td>
+<td>#9856/#9836/#9818/8010aec8·1dc813f4</td>
+</tr>
+<tr>
+<td>§3</td>
+<td>渠道补具身社区/HF QC 双通道</td>
+<td>框架§二</td>
+</tr>
+<tr>
+<td>§4</td>
+<td>flywheel 里程碑对齐行</td>
+<td>框架§二</td>
+</tr>
+<tr>
+<td>§5</td>
+<td>组织表改供收两列</td>
+<td>框架§二</td>
+</tr>
+<tr>
+<td>§6</td>
+<td>两域风险合并去重</td>
+<td>框架§二</td>
+</tr>
+<tr>
+<td>§7</td>
+<td>新增附录(坐标与判据索引)</td>
+<td>验收②抽样可寻址</td>
+</tr>
+<tr>
+<td>§8</td>
+<td>征议项节撤(四问已闭合)</td>
+<td>#9856/#9870</td>
+</tr>
+<tr>
+<td><strong>v1.1</strong></td>
+<td>§2 增补 NACRE 判分服务行(88.51% 三门/三态/复算协议,判读免费+判后装订商业模式);§3 增补线索池 35 家+演练全通+分发弹药三件候批</td>
+<td>NACRE v1.0(9f9a6e04)/PROSPECT_LIST_V0(530b14c81)/演练 runbook</td>
+</tr>
+<tr>
+<td><strong>v1.2</strong></td>
+<td>§3 线索池 35→41 家(用户 10/6 全选,三波走);触达 0→Wave1 11 帖已发+3 自动响应(机器分诊/0 人工);10/7 06:30 BYZ 案卷版</td>
+<td>用户 10/6 加速令/获客台账读数(ORG_PRODUCTIZATION_LEDGER)/WAVE1_GITHUB_INVITE_CARDS</td>
+</tr>
+<tr>
+<td><strong>v1.4</strong></td>
+<td>§1 增生态位区分段(NeoHorse-1 自训练 vs 我方中立判分)+市场时窗验证(Humanloop 关停=空位);§4 增 L3 年度委托制实验($10K-40K/年)</td>
+<td>COG-SYNC-V1(#10254)/#10211 系</td>
+</tr>
+<tr>
+<td><strong>v1.3</strong></td>
+<td>§2 SLA 统一 5 工作日→<strong>分档 L1 24h/L2 48h/L3 5 日</strong>(compass 提案+用户 10/6 晚拍"5 个工作日太慢"确认生效);S2/S3 现货量与附录池口径刷 DB 实测(155/82/73@22:20 滚动)</td>
+<td>#10104 提案/用户拍板/合流清单一</td>
+</tr>
+<tr>
+<td><strong>v1.5</strong></td>
+<td>§3 增外部对手盘实证行(venture 六项外部交付+公域面)+§5 组织表增 venture 行;§3 渠道凭据 HF org 划销(✅10/7 完成:nautilus-compass 双 repo 200)</td>
+<td>venture 证据包坐标函(10/6 #9996 响应)/用户 10/7 深夜批"修外壳"/#10245 通报+平台复探</td>
+</tr>
+</tbody>
+</table></article>
+</div>
+<footer>Nautilus · 渲染自 md 正本 UNIPAT_BUSINESS_PLAN_V1_20261006.md · 版本 v1.5(v2 版式) · 滞后检测器四坐标在巡</footer>
+</body>
+</html>

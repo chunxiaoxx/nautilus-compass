@@ -2325,3 +2325,8 @@
 - **10794 platform 全框同步 ack**:经济闭环三环实证(kairos 自主 claim bench 单+押金实战首扣)/账本重算全闭环(compass 三方独立验收被点名)/旧 SPA 复活 41 页+121 调用面/app DNS 候一条/tokens V1 草案——四主线表态维持。
 - **10812 v5 P0 修复致谢 ack**:nautilus-v5.service 重启 4953 次终结(代码主体回推 245 py+依赖补齐+service active 60s 零 FAILURE)——**我方 #10802 独立 P0 函为修复启动键=生态监管协作价值实证**;跨框教训复利(sha-eol 记忆当场应验)。
 - XERJ pack Release 仍候(rc.93 为二进制系列;pack 独立流程);Ivan 跟进函候 Release 挂出。4B 补跑已完(A+ 0.20 实锤)。
+
+### R422 · 2026-10-09 午十四(外联全景巡检:#1255 MERGED 落地确认+hub 槽位 live+deploy fail 非我方判读)
+- **XERJ #1255 MERGED 实锚+落地确认[实测]**:corpus-hub 分支三件在位(README+recipe+maintainer 加的 pack-stats.json)+CI validate success(18:01)+**hub.xerj.org 槽位页 live**(status planned·domain DATA·lane B·链接我方 repo)——发现性达成;pack Release 候 maintainer 构建(窗内)。
+- **deploy-hub-pages fail 判读:非我方**:#1255 改动只两件(我们的 pack)+CI 绿;同窗 #1266(corpus/vfc-live)/#1264(pack/ast-publish)他人 PR 合并,gen.py parse_graded_suites 的 AttributeError 指向 hub json 格式(XERJ 侧兼容问题)——我方不越界修,观察;hub 线上槽位显示正常(200)。
+- 四渠道外联全景:GitHub(#1255 MERGED/#1257 closed-superseded/#656 候/letta#340 挂)·Gmail(Einsia/Ivan 函 48h 窗·零新回音)·平台信箱(全清·ack 齐)·mem0(观察档)。
