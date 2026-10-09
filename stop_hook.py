@@ -33,7 +33,10 @@ LOG_FILE = CACHE_DIR / "auto_distill_log.jsonl"
 DRIFT_SIDECAR = CACHE_DIR / "drift_per_session.jsonl"
 DAEMON_HOST = "127.0.0.1"
 DAEMON_PORT = 9876
-DRIFT_TIMEOUT_S = 5.0
+DRIFT_TIMEOUT_S = 2.5   # R444 收紧(2026-10-09): 5s→2.5s,实测 Stop hook 7.7s 大头=
+                        # 多文件×daemon BGE drift 排队;2.5s 足够 daemon 正常响应,
+                        # 排队时早失败 fail-soft,不拖回合结束
+DRIFT_MAX_FILES = 3     # R444: 24h 内未评分文件最多逐个 drift 3 个(最新优先)
 
 
 def find_latest_session_memory() -> Path | None:
@@ -249,7 +252,7 @@ def main():
         _dr_total = 0
         _dr_alert = 0
         _dr_last = None
-        for f in recent_session_memories(within_hours=24.0):
+        for f in recent_session_memories(within_hours=24.0)[:DRIFT_MAX_FILES]:
             if _drift_already_scored(f.name):
                 continue
             summary_raw = parse_session_summary(f)

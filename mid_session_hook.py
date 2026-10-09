@@ -138,8 +138,12 @@ def main():
     elapsed = now - state.get("last_refresh_ts", 0)
 
     # v0.7.1 · 每个 tool call 都跑 drift check (但 daemon dead 时 0 cost)
+    # R444 节流(2026-10-09): 实测每 tool call 打 daemon BGE drift = 3.5s/次,
+    # 一轮 N 工具 = N×3.5s。加 10min 时间窗(与 T5 recall 节流同思路);
+    # 主 drift 防线仍在 UserPromptSubmit recall 侧(每窗一次),此处为辅助告警。
     tool_name, tool_input = read_tool_input()
-    if tool_name:
+    if tool_name and (now - state.get("last_drift_ts", 0)) > 600:
+        state["last_drift_ts"] = now
         sig = tool_to_signature(tool_name, tool_input)
         alert = check_tool_drift(sig)
         if alert:
