@@ -2315,3 +2315,8 @@
 - **NACRE 判分 API 上线✅[实测]**:A100 判分服务(nacre_judge_server.py·FastAPI·19988·Qwen3-1.7B+adapter fp16 共居 embed_server)——**adapter sha 实锚 dbcbab6f=HF 卡逐位一致**(best_lora 正品验明);/judge 实弹双测(判分语义正确:patch 案 pass/LongMemEval 案 pass);**compass→隧道→A100 全通**(cloud 127.0.0.1:19988 直打 NACRE)=BP 矩阵"判分 API 热路径"的"可购买验收"有了实锚端点。
 - **通道工程(systemd 化)**:compass-a100-tunnel.service(19987→A100:8400 embed·19988→judge·autossh 语义 Restart=always);A100 侧根因链三连:①19987 端口从未真实监听(R304 假设错位,embed_server 实监听 8400)→隧道映射修正;②19987 断=临时管道消失→systemd 常驻替代;③**生产服务跑的 daemon_v33.py 非 daemon.py**(deploy-path.conf 实锤)——v3.3.5 自带 per-call proxy(BGEWrapper.encode 内试 proxy 失败回退本地),**隧道修通即自动生效**,无需改代码;daemon.py 主线 proxy 分支为 v34 合并预备(两文件并存)。
 - 澄清更正(第三轮):cloud daemon 现役=CPU BGE(单元素自述+proxy 未触发实锤)——R304"切换完成"实为半成品(隧道未 systemd 化+端口错配);本轮补齐=真完成。embed 生效验证待 P9 缓存旁路后确证(下轮)。
+
+### R419b · 2026-10-09 午十二(用户令执行:embed_server 换 FastAPI 栈✅——GPU 嵌入最后一环打通)
+- **embed_server v2(FastAPI/uvicorn)部署✅[实测]**:替换 R303 简易 http.server(协议不变 /embed+/health);**proxy 实弹生效实锤**——cloud 全新 query 探针 364ms 穿透全链(daemon proxy→隧道→A100 v2 POST /embed 200 access log 实锚);daemon 切换后零 fail 日志。
+- **J4-proxy 0/3 如实披露+归因**:三冻结查询全 FAIL——根因=**cloud daemon serve 的是 cloud 侧自己的记忆库**(hits 全为 cloud 会话条目),与笔记本 J4 门(笔记本库三冻结)不是同一个库——**库不同非 embed 质量问题**;proxy 生效独立实锚(A100 access log);cloud 库的质检基准另立(列 E1 v2)。
+- GPU 嵌入切换自此完整:R304 半成品→隧道 systemd 化+端口映射修正+协议栈替换+proxy 实弹——四件补齐全落。
