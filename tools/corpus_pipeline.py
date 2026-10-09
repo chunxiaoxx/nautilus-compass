@@ -67,6 +67,15 @@ def main() -> int:
               if l.strip() and json.loads(l).get("judge_verdict") == "pass"
               and json.loads(l).get("anchor_level") in ("L0", "L1")]
         sources["org_fuel:outreach"] = go
+    # R455 扩容两源(queue 轮次/memory 记忆,gate 口径不变:NACRE 同模板 pass+L0/L1)
+    for tag, fname in (("queue", "fuel_verdicts_queue.jsonl"),
+                       ("memory", "fuel_verdicts_memory.jsonl")):
+        f = root.parent / f"org_fuel/{fname}"
+        if f.exists():
+            g = [json.loads(l) for l in f.read_text(encoding="utf-8").splitlines()
+                 if l.strip() and json.loads(l).get("judge_verdict") == "pass"
+                 and json.loads(l).get("anchor_level") in ("L0", "L1")]
+            sources[f"org_fuel:{tag}"] = g
 
     # qid 防泄漏:同 qid 只保留 train/首个来源版;跨 split 重复=报数
     seen: dict[str, str] = {}

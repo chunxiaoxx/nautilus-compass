@@ -13,15 +13,17 @@
   "org_fuel:gate_passed": 287,
   "org_fuel:letters": 47,
   "org_fuel:docs": 456,
-  "org_fuel:outreach": 12
+  "org_fuel:outreach": 12,
+  "org_fuel:queue": 69,
+  "org_fuel:memory": 93
  },
- "merged_unique_by_qid": 2258,
+ "merged_unique_by_qid": 2420,
  "cross_source_dups_ignored": 45,
  "train_count": 1162,
  "next_retrain_candidate_at": 1500,
  "sevenb_target": 3000,
  "sevenb_remaining": 1838,
- "merged_sha16": "93dccd830b77477e",
+ "merged_sha16": "f92cb5490399aeb7",
  "triggers": {
   "retrain_candidate": false,
   "sevenb_compare_ready": false

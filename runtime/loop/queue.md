@@ -447,6 +447,11 @@
 - **诚实重算[推断,重要]**:docs 407 文件已被 docs 源全量覆盖(799 candidates);扩容天花板=2258+134+开业周真实单+delta≈**2400-2450<3000**——10/26 主场景=**按预注册条款推迟报告**(推迟≠放宽,新裁决窗重注册);副场景=真实单超预期。候用户知悉此预期修正。
 - 路线图文件与生成器入仓;judge 投判候下轮(脚本沿用 _fuel_judge 模式)。
 
+### R455 · 2026-10-10 凌晨九(主件轮:ORG-FUEL 扩容闭环✅[实测]——244 全判 pass 162/门过 162,语料 2258→2420 外网 live)
+- **主件=扩容全链闭环**:①candidates 投递遇 base64 命令长度上限(135KB 炸)→分块传输修复;②judge 投判(_fuel_judge_expand.py,同模板 bf16+LoRA 合规)——**244 全判:pass 162/insufficient_evidence 67/fail 15[实测]**;③拉回 verdicts×2→corpus_pipeline 扩两源(org_fuel:queue=69/org_fuel:memory=93,pass+anchor L0/L1 双门)→重算 **2420/新 sha f92cb549**;④site stats+registry FALLBACK 更新+部署→**外网 2420 live[实测]**。
+- **10/26 预期修订[推断]**:2420+真实单+delta≈2450-2500,3000 不可达——推迟主场景维持(R454 重算),推迟报告预案候用户拍板后写入对拍执行档。
+- 教训:base64-over-exec 通道对 >100KB 文件需分块(已实测);put 大文件统一走分块路径。
+
 ### R447 · 2026-10-10 凌晨二(用户拍板落执行:PRECOR 双轨弹药全备✅——署名 c+投递 c 确认,arXiv tex 编译 COMPILE OK)
 - **用户拍板**:署名 c+投递 c(双轨)——与 R382 初拍一致,确认知认落档(决策卡 APPROVED 注记)。
 - **执行状态盘点[实测]**:步骤①署名落稿✅(R382 已落,Author 段 c 形态+检查单四勾);步骤②博客短版✅(PRECOR_BLOG_SHORT_20261009.md,R382 产出,工程师口吻+负结果原样+CTA——10/12 21:00 弹药);步骤③**本轮补齐**:全版→arXiv tex(arxiv_pkg/precors_arxiv/,Abstract+§1-7+表格 tabular+Fig1 png 入包+thebibliography 四实锚)——**pdflatex 编译 COMPILE OK** 产出 PDF;步骤④发后回链候首发后。
