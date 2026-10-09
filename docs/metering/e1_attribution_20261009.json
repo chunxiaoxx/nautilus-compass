@@ -1,0 +1,557 @@
+{
+ "summary": {
+  "n_queries": 30,
+  "n_corpus": 158,
+  "recall_at_1": 0.4,
+  "recall_at_5": 0.6667,
+  "mrr": 0.4994,
+  "baseline_prereg_r1": 0.4,
+  "hits": 12,
+  "near_miss": 8,
+  "far_miss": 10,
+  "miss_with_entity": 12,
+  "miss_without_entity": 6
+ },
+ "rows": [
+  {
+   "query": "如果 agent 再次遇到完全相同的情况，它会输入的一句话情境查询：**北极星四框对齐落定，L1 三件判据冻结，14B smoke 五门全绿，turbo 29G 重下完成**",
+   "gold": "day-log-20261005-northstar-sprint.md",
+   "top1": "day-log-20261005-northstar-sprint.md",
+   "gold_rank": 1,
+   "gold_sim": 0.6899,
+   "top1_sim": 0.6899,
+   "top5": [
+    "day-log-20261005-northstar-sprint.md",
+    "judgments-j1-j7-settled-20261006.md",
+    "benchmark-system-dual-domain-20261006.md",
+    "e1-arc-closure-two-loops-20261004.md",
+    "lmev2-pipeline-smoke-proven-20260830.md"
+   ],
+   "q_len": 87,
+   "q_has_entity": true,
+   "verdict": "HIT"
+  },
+  {
+   "query": "如果 agent 再次遇到完全相同的情况，它会输入的一句话情境查询：  ",
+   "gold": "bc1-launch-eve-20260926.md",
+   "top1": "benchmark-system-dual-domain-20261006.md",
+   "gold_rank": 55,
+   "gold_sim": 0.4668,
+   "top1_sim": 0.5698,
+   "top5": [
+    "benchmark-system-dual-domain-20261006.md",
+    "aegis-compass-competitor-20260907.md",
+    "_NODE_nautilus-compass.md",
+    "session-contract-recall-usefulness-20260823.md",
+    "pmf-mainline-agent-harness-20261005.md"
+   ],
+   "q_len": 36,
+   "q_has_entity": true,
+   "verdict": "FAR_MISS"
+  },
+  {
+   "query": "fast path 环境差虚警: inotify_simple 误触发缓存返回，导致 embed 段不执行",
+   "gold": "m5-memgate-deploy-lessons-20261009.md",
+   "top1": "memgate-m5-deploy-lessons-20261008.md",
+   "gold_rank": 4,
+   "gold_sim": 0.6021,
+   "top1_sim": 0.6455,
+   "top5": [
+    "memgate-m5-deploy-lessons-20261008.md",
+    "session_20260823-0912_goalmode-heartbeat-alert.md",
+    "session_20260823-0935_goalmode-heartbeat-alert.md",
+    "m5-memgate-deploy-lessons-20261009.md",
+    "probe-filename-blindspot-g1-20261005.md"
+   ],
+   "q_len": 53,
+   "q_has_entity": true,
+   "verdict": "NEAR_MISS"
+  },
+  {
+   "query": "nginx 生产陷阱：非 systemd 管理，需用 `sudo kill -HUP <master PID>` 修复",
+   "gold": "launch-sprint-status-20260905.md",
+   "top1": "memgate-m5-deploy-lessons-20261008.md",
+   "gold_rank": 4,
+   "gold_sim": 0.5557,
+   "top1_sim": 0.5669,
+   "top5": [
+    "memgate-m5-deploy-lessons-20261008.md",
+    "hud-multiview-crosstalk-fix-20260901.md",
+    "session_20260715_backend_502_coreLive_override_incident.md",
+    "launch-sprint-status-20260905.md",
+    "day-log-20261008-corpus-finalcheck.md"
+   ],
+   "q_len": 59,
+   "q_has_entity": true,
+   "verdict": "NEAR_MISS"
+  },
+  {
+   "query": "如果 agent 再次遇到完全相同的情况，它会输入的一句话情境查询：  ",
+   "gold": "judge-lessons-20260926.md",
+   "top1": "benchmark-system-dual-domain-20261006.md",
+   "gold_rank": 10,
+   "gold_sim": 0.5132,
+   "top1_sim": 0.5698,
+   "top5": [
+    "benchmark-system-dual-domain-20261006.md",
+    "aegis-compass-competitor-20260907.md",
+    "_NODE_nautilus-compass.md",
+    "session-contract-recall-usefulness-20260823.md",
+    "pmf-mainline-agent-harness-20261005.md"
+   ],
+   "q_len": 36,
+   "q_has_entity": true,
+   "verdict": "FAR_MISS"
+  },
+  {
+   "query": "判官升级项列下轮，我方备料档已出",
+   "gold": "e1-arc-closure-two-loops-20261004.md",
+   "top1": "day-log-20261006-round1-final.md",
+   "gold_rank": 2,
+   "gold_sim": 0.5664,
+   "top1_sim": 0.6025,
+   "top5": [
+    "day-log-20261006-round1-final.md",
+    "e1-arc-closure-two-loops-20261004.md",
+    "ssi-jev-p3-pipeline-20261003.md",
+    "bc1-launch-eve-20260926.md",
+    "cheap-tier-close-and-watcher-20260904.md"
+   ],
+   "q_len": 16,
+   "q_has_entity": false,
+   "verdict": "NEAR_MISS"
+  },
+  {
+   "query": "查询: 该情况是否与之前相同？",
+   "gold": "day-log-1007-judge-discipline.md",
+   "top1": "session_20260717-0335_SSOT副本探针已上线.md",
+   "gold_rank": 91,
+   "gold_sim": 0.4907,
+   "top1_sim": 0.562,
+   "top5": [
+    "session_20260717-0335_SSOT副本探针已上线.md",
+    "session-contract-recall-usefulness-20260823.md",
+    "p1-host-migration-http-20260906.md",
+    "paper-roadmap-history-20260904.md",
+    "probe-filename-blindspot-g1-20261005.md"
+   ],
+   "q_len": 15,
+   "q_has_entity": false,
+   "verdict": "FAR_MISS"
+  },
+  {
+   "query": "如果 agent 再次遇到完全相同的情况，它会输入的一句话情境查询：目标计算机积极拒绝，无法连接。",
+   "gold": "session_20260823-0912_goalmode-heartbeat-alert.md",
+   "top1": "session_20260823-0912_goalmode-heartbeat-alert.md",
+   "gold_rank": 1,
+   "gold_sim": 0.6851,
+   "top1_sim": 0.6851,
+   "top5": [
+    "session_20260823-0912_goalmode-heartbeat-alert.md",
+    "session_20260823-0935_goalmode-heartbeat-alert.md",
+    "benchmark-system-dual-domain-20261006.md",
+    "_NODE_nautilus-compass.md",
+    "session_20260717-1259_cloud-BGE过载召回全拒.md"
+   ],
+   "q_len": 49,
+   "q_has_entity": true,
+   "verdict": "HIT"
+  },
+  {
+   "query": "探活三态（CLAUDE.md 只说了「socket JSON」,缺了换行）：进程死 = ConnectionRefused，活 = `se`",
+   "gold": "daemon-9876-watchdog-rootcause-20260908.md",
+   "top1": "daemon-9876-watchdog-rootcause-20260908.md",
+   "gold_rank": 1,
+   "gold_sim": 0.6797,
+   "top1_sim": 0.6797,
+   "top5": [
+    "daemon-9876-watchdog-rootcause-20260908.md",
+    "dogfood-and-e1-recheck-20261006.md",
+    "session_20260824_N4云容量体检三连根因.md",
+    "probe-filename-blindspot-g1-20261005.md",
+    "daemon-auth-and-hf-offline-20260901.md"
+   ],
+   "q_len": 70,
+   "q_has_entity": true,
+   "verdict": "HIT"
+  },
+  {
+   "query": "\"为什么 recall 从未改变任务结局？\"",
+   "gold": "session-contract-recall-usefulness-20260823.md",
+   "top1": "session-contract-recall-usefulness-20260823.md",
+   "gold_rank": 1,
+   "gold_sim": 0.6357,
+   "top1_sim": 0.6357,
+   "top5": [
+    "session-contract-recall-usefulness-20260823.md",
+    "session_20260717-1259_cloud-BGE过载召回全拒.md",
+    "session_20260823-0912_goalmode-heartbeat-alert.md",
+    "session_20260823-0935_goalmode-heartbeat-alert.md",
+    "memory-audit-seven-operators-20260907.md"
+   ],
+   "q_len": 22,
+   "q_has_entity": true,
+   "verdict": "HIT"
+  },
+  {
+   "query": "如果 agent 再次遇到完全相同的情况，它会输入：“我们已经做了大量的工作，体系叙事必须收编已有资产，不从零讲起。”",
+   "gold": "benchmark-system-dual-domain-20261006.md",
+   "top1": "benchmark-system-dual-domain-20261006.md",
+   "gold_rank": 1,
+   "gold_sim": 0.5967,
+   "top1_sim": 0.5967,
+   "top5": [
+    "benchmark-system-dual-domain-20261006.md",
+    "_NODE_nautilus-compass.md",
+    "aegis-compass-competitor-20260907.md",
+    "session-contract-recall-usefulness-20260823.md",
+    "memory-audit-seven-operators-20260907.md"
+   ],
+   "q_len": 59,
+   "q_has_entity": true,
+   "verdict": "HIT"
+  },
+  {
+   "query": "T0 发布版(9/12)",
+   "gold": "benchmark-naming-licensing-20260902.md",
+   "top1": "bc1-launch-eve-20260926.md",
+   "gold_rank": 4,
+   "gold_sim": 0.5137,
+   "top1_sim": 0.5317,
+   "top5": [
+    "bc1-launch-eve-20260926.md",
+    "week-review-20260927-1003.md",
+    "day-log-1007-judge-discipline.md",
+    "benchmark-naming-licensing-20260902.md",
+    "launch-sprint-status-20260905.md"
+   ],
+   "q_len": 12,
+   "q_has_entity": false,
+   "verdict": "NEAR_MISS"
+  },
+  {
+   "query": "\"客户端直连 9876 桥未带 token → 请检查 token 文件\"",
+   "gold": "daemon-auth-and-hf-offline-20260901.md",
+   "top1": "daemon-auth-and-hf-offline-20260901.md",
+   "gold_rank": 1,
+   "gold_sim": 0.6816,
+   "top1_sim": 0.6816,
+   "top5": [
+    "daemon-auth-and-hf-offline-20260901.md",
+    "session-contract-dogfood-bridge-20260822.md",
+    "session_20260824-1047_云桥MCP接不上求诊.md",
+    "session_20260722-1251_MCP-TCP-auth-landed.md",
+    "session_20260722-1257_MCP-TCP-auth-landed.md"
+   ],
+   "q_len": 37,
+   "q_has_entity": true,
+   "verdict": "HIT"
+  },
+  {
+   "query": "域 3(同日):embodied-qc-labeling(flywheel 数据",
+   "gold": "jev-trust-launch-20260922.md",
+   "top1": "compass-roadmap-20260907.md",
+   "gold_rank": 7,
+   "gold_sim": 0.5073,
+   "top1_sim": 0.5938,
+   "top5": [
+    "compass-roadmap-20260907.md",
+    "org-frames-probe-runbook.md",
+    "week-review-20260927-1003.md",
+    "c-family-verify-closure-20260917.md",
+    "benchmark-system-dual-domain-20261006.md"
+   ],
+   "q_len": 40,
+   "q_has_entity": true,
+   "verdict": "FAR_MISS"
+  },
+  {
+   "query": "如果 agent 再次遇到完全相同的情况，它会输入的一句话情境查询：  ",
+   "gold": "judging-evidence-tiers-20261003.md",
+   "top1": "benchmark-system-dual-domain-20261006.md",
+   "gold_rank": 122,
+   "gold_sim": 0.4211,
+   "top1_sim": 0.5698,
+   "top5": [
+    "benchmark-system-dual-domain-20261006.md",
+    "aegis-compass-competitor-20260907.md",
+    "_NODE_nautilus-compass.md",
+    "session-contract-recall-usefulness-20260823.md",
+    "pmf-mainline-agent-harness-20261005.md"
+   ],
+   "q_len": 36,
+   "q_has_entity": true,
+   "verdict": "FAR_MISS"
+  },
+  {
+   "query": "query: 为什么 token 被清除 before forwarding?",
+   "gold": "session_20260722-1257_MCP-TCP-auth-landed.md",
+   "top1": "p1-host-migration-http-20260906.md",
+   "gold_rank": 4,
+   "gold_sim": 0.6021,
+   "top1_sim": 0.6064,
+   "top5": [
+    "p1-host-migration-http-20260906.md",
+    "session-contract-recall-usefulness-20260823.md",
+    "session_20260722-1251_MCP-TCP-auth-landed.md",
+    "session_20260722-1257_MCP-TCP-auth-landed.md",
+    "cloud-daemon-storm-rootfix-20261006.md"
+   ],
+   "q_len": 39,
+   "q_has_entity": true,
+   "verdict": "NEAR_MISS"
+  },
+  {
+   "query": "查询: 该情况是否重复发生？",
+   "gold": "week-review-20260927-1003.md",
+   "top1": "judge-lessons-20260926.md",
+   "gold_rank": 63,
+   "gold_sim": 0.5176,
+   "top1_sim": 0.5986,
+   "top5": [
+    "judge-lessons-20260926.md",
+    "session-contract-recall-usefulness-20260823.md",
+    "session_20260823-0912_goalmode-heartbeat-alert.md",
+    "session_20260823-0935_goalmode-heartbeat-alert.md",
+    "pilot-verdicts-unverifiable-20260915.md"
+   ],
+   "q_len": 14,
+   "q_has_entity": false,
+   "verdict": "FAR_MISS"
+  },
+  {
+   "query": "如果再次遇到完全相同的情况，我会输入：“这条帖被秒flag，作者评论也被拒，零 karma。”",
+   "gold": "hn-submit-pipeline-20260910.md",
+   "top1": "hn-submit-pipeline-20260910.md",
+   "gold_rank": 1,
+   "gold_sim": 0.6812,
+   "top1_sim": 0.6812,
+   "top5": [
+    "hn-submit-pipeline-20260910.md",
+    "devto-operations-20260908.md",
+    "no-jargon-user-correction-20260829.md",
+    "session_20260823-0935_goalmode-heartbeat-alert.md",
+    "session_20260823-0912_goalmode-heartbeat-alert.md"
+   ],
+   "q_len": 47,
+   "q_has_entity": true,
+   "verdict": "HIT"
+  },
+  {
+   "query": "如果再次遇到相同情况，我会输入：“云 daemon SSH 端口是 24860，不要用 22。”",
+   "gold": "ssh-cloud-port-2460-20260930.md",
+   "top1": "ssh-cloud-port-2460-20260930.md",
+   "gold_rank": 1,
+   "gold_sim": 0.7993,
+   "top1_sim": 0.7993,
+   "top5": [
+    "ssh-cloud-port-2460-20260930.md",
+    "session_20260822-1918_tribal-compass-daemon-port.md",
+    "daemon-v33-switch-20261001.md",
+    "gpu-instance-reuse-not-rent.md",
+    "daemon-auth-and-hf-offline-20260901.md"
+   ],
+   "q_len": 48,
+   "q_has_entity": true,
+   "verdict": "HIT"
+  },
+  {
+   "query": "如果 agent 再次遇到完全相同的情况，它会输入的一句话情境查询：  ",
+   "gold": "session-contract-l4a-distill-20260822.md",
+   "top1": "benchmark-system-dual-domain-20261006.md",
+   "gold_rank": 110,
+   "gold_sim": 0.437,
+   "top1_sim": 0.5698,
+   "top5": [
+    "benchmark-system-dual-domain-20261006.md",
+    "aegis-compass-competitor-20260907.md",
+    "_NODE_nautilus-compass.md",
+    "session-contract-recall-usefulness-20260823.md",
+    "pmf-mainline-agent-harness-20261005.md"
+   ],
+   "q_len": 36,
+   "q_has_entity": true,
+   "verdict": "FAR_MISS"
+  },
+  {
+   "query": "如果 agent 再次遇到完全相同的情况，它会输入的一句话情境查询：**“是否需要独立复算判分器输出以避免作弊通道？”**",
+   "gold": "judge-corpus-p2-baseline-20260930.md",
+   "top1": "judge-lessons-20260926.md",
+   "gold_rank": 8,
+   "gold_sim": 0.5825,
+   "top1_sim": 0.6362,
+   "top5": [
+    "judge-lessons-20260926.md",
+    "_NODE_nautilus-compass.md",
+    "benchmark-system-dual-domain-20261006.md",
+    "session_00b61b64.md",
+    "convergence-state-snapshot-20260821.md"
+   ],
+   "q_len": 61,
+   "q_has_entity": true,
+   "verdict": "FAR_MISS"
+  },
+  {
+   "query": "查询: 语料无元数据信号",
+   "gold": "session_20260716_eval_recall_v230_rerun.md",
+   "top1": "session_20260718-1142_差异化层-0-000是错尺子非无信号.md",
+   "gold_rank": 26,
+   "gold_sim": 0.502,
+   "top1_sim": 0.5889,
+   "top5": [
+    "session_20260718-1142_差异化层-0-000是错尺子非无信号.md",
+    "emb-bakeoff-bge-stays-20260925.md",
+    "d14-abstention-verdict-20260902.md",
+    "judge-corpus-p2-baseline-20260930.md",
+    "launch-sprint-status-20260905.md"
+   ],
+   "q_len": 12,
+   "q_has_entity": false,
+   "verdict": "FAR_MISS"
+  },
+  {
+   "query": "compass 主线自然延伸，v5 主线互补不冲突",
+   "gold": "mainline-anchor-20261008.md",
+   "top1": "mainline-anchor-20261008.md",
+   "gold_rank": 1,
+   "gold_sim": 0.6431,
+   "top1_sim": 0.6431,
+   "top5": [
+    "mainline-anchor-20261008.md",
+    "session_20260718-0925_compass价值实测-SSOT三方矛盾.md",
+    "session_20260717-0335_SSOT副本探针已上线.md",
+    "session_20260717-0313_合约兑现SSOT同步V5.md",
+    "dogfood-and-e1-recheck-20261006.md"
+   ],
+   "q_len": 25,
+   "q_has_entity": true,
+   "verdict": "HIT"
+  },
+  {
+   "query": "“选”算子拆 select-action vs select-memory——Aegis 前者强后者弱，政策挡写是核心。",
+   "gold": "aegis-compass-competitor-20260907.md",
+   "top1": "aegis-compass-competitor-20260907.md",
+   "gold_rank": 1,
+   "gold_sim": 0.6592,
+   "top1_sim": 0.6592,
+   "top5": [
+    "aegis-compass-competitor-20260907.md",
+    "compass-strategy-four-priorities-20260910.md",
+    "memory-audit-seven-operators-20260907.md",
+    "compass-roadmap-20260907.md",
+    "judgments-j1-j7-settled-20261006.md"
+   ],
+   "q_len": 60,
+   "q_has_entity": true,
+   "verdict": "HIT"
+  },
+  {
+   "query": "如果 agent 再次遇到完全相同的情况，它会输入的一句话情境查询：  ",
+   "gold": "feedback-ark-coding-plan-not-metered-api.md",
+   "top1": "benchmark-system-dual-domain-20261006.md",
+   "gold_rank": 82,
+   "gold_sim": 0.4539,
+   "top1_sim": 0.5698,
+   "top5": [
+    "benchmark-system-dual-domain-20261006.md",
+    "aegis-compass-competitor-20260907.md",
+    "_NODE_nautilus-compass.md",
+    "session-contract-recall-usefulness-20260823.md",
+    "pmf-mainline-agent-harness-20261005.md"
+   ],
+   "q_len": 36,
+   "q_has_entity": true,
+   "verdict": "FAR_MISS"
+  },
+  {
+   "query": "为什么在 Windows 上不能直接 sha256sum 文件后入档？",
+   "gold": "sha-eol-autocrlf-trap-20261008.md",
+   "top1": "sha-eol-autocrlf-trap-20261008.md",
+   "gold_rank": 1,
+   "gold_sim": 0.6143,
+   "top1_sim": 0.6143,
+   "top5": [
+    "sha-eol-autocrlf-trap-20261008.md",
+    "session_20260822-1918_tribal-utf8-explicit.md",
+    "cloud-daemon-storm-rootfix-20261006.md",
+    "session_20260823-1031_tribal-windows-node-rename-epe.md",
+    "probe-filename-blindspot-g1-20261005.md"
+   ],
+   "q_len": 35,
+   "q_has_entity": true,
+   "verdict": "HIT"
+  },
+  {
+   "query": "查询: 本批是否仍需复算？",
+   "gold": "pilot-verdicts-unverifiable-20260915.md",
+   "top1": "pilot-verdicts-unverifiable-20260915.md",
+   "gold_rank": 1,
+   "gold_sim": 0.6274,
+   "top1_sim": 0.6274,
+   "top5": [
+    "pilot-verdicts-unverifiable-20260915.md",
+    "rsi-loop1-recompute-verdict-20260914.md",
+    "verification-commercialization-20260915.md",
+    "d13-judge-retry-verdict-20260831.md",
+    "judge-lessons-20260926.md"
+   ],
+   "q_len": 13,
+   "q_has_entity": false,
+   "verdict": "HIT"
+  },
+  {
+   "query": "R0 有4种 intervention+5种 selector，比C2丰富一个量级",
+   "gold": "session_20260807-2111_闭环收敛状态-fuel-loop唯一闸门.md",
+   "top1": "session_20260718-1142_差异化层-0-000是错尺子非无信号.md",
+   "gold_rank": 4,
+   "gold_sim": 0.5283,
+   "top1_sim": 0.5688,
+   "top5": [
+    "session_20260718-1142_差异化层-0-000是错尺子非无信号.md",
+    "examhall-charter-20260916.md",
+    "day-log-1007-judge-discipline.md",
+    "session_20260807-2111_闭环收敛状态-fuel-loop唯一闸门.md",
+    "lmev2-three-knives-tuning-20260830.md"
+   ],
+   "q_len": 41,
+   "q_has_entity": true,
+   "verdict": "NEAR_MISS"
+  },
+  {
+   "query": "这轮用户的实质诉求推进了吗",
+   "gold": "feedback-analysis-vs-action-mode-20261003.md",
+   "top1": "launch-sprint-status-20260905.md",
+   "gold_rank": 4,
+   "gold_sim": 0.5576,
+   "top1_sim": 0.584,
+   "top5": [
+    "launch-sprint-status-20260905.md",
+    "architecture-mainline-20261004.md",
+    "compass-roadmap-20260907.md",
+    "feedback-analysis-vs-action-mode-20261003.md",
+    "inbox-agent-round-20260831.md"
+   ],
+   "q_len": 13,
+   "q_has_entity": false,
+   "verdict": "NEAR_MISS"
+  },
+  {
+   "query": "\"标准远程MCP已实现，但当前/мcp/*是自定义REST，需升级为JSON-RPC\"",
+   "gold": "session_9c3b69dc.md",
+   "top1": "session_20260822-1918_tribal-compass-daemon-port.md",
+   "gold_rank": 2,
+   "gold_sim": 0.6021,
+   "top1_sim": 0.626,
+   "top5": [
+    "session_20260822-1918_tribal-compass-daemon-port.md",
+    "session_9c3b69dc.md",
+    "session_20260722-1251_MCP-TCP-auth-landed.md",
+    "session_20260722-1257_MCP-TCP-auth-landed.md",
+    "gmail-rest-fallback-recipe-20260910.md"
+   ],
+   "q_len": 43,
+   "q_has_entity": true,
+   "verdict": "NEAR_MISS"
+  }
+ ]
+}
