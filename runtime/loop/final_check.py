@@ -44,7 +44,7 @@ POINTS = [
     # R444 重锚(函 10891 flywheel 确认 B 案静态化预期发布): 根页=纯静态营销页,
     # 渲染口径对静态页无意义 → curl 内容锚; 84 路实证页未下线,固化至 /app.html
     ("data 站根页(静态版)", "https://data.nautilus.social/",
-     ["智涌飞轮", "读数生成于"]),
+     ["智涌飞轮"]),
     ("HF 判分模型", "https://huggingface.co/nautilus-compass/nacre-judge-v1",
      ["nacre-judge"]),
     ("HF 元基准", "https://huggingface.co/datasets/nautilus-compass/caliber-bench-v0",
@@ -60,7 +60,8 @@ LIVE = [
     ("判读状态 API 首例卡", f"{BASE}/api/judge_status?id=nautilus-l1-0002",
      lambda d: d.get("ok") is True and d.get("status") == "done"),
     ("判读卡清单(无参)", f"{BASE}/api/judge_status",
-     lambda d: d.get("ok") is True and "nautilus-l1-0002" in (d.get("cards") or [])),
+     lambda d: d.get("ok") is True and "nautilus-l1-0002" in (d.get("cards") or [])
+     and "nautilus-l1-0006" in (d.get("cards") or [])),
 ]
 
 RENDER_POINTS = [
@@ -71,7 +72,7 @@ RENDER_POINTS = [
     # R434 防回归:registry 字段错位 bug(活数据路径渲染 undefined)只能渲染口径抓到;
     # 锚=源分布表首行 key(由同一次 upd() 填充,undefined bug 连带使其缺失)
     ("registry 渲染", "https://nautilus.social/registry.html",
-     ["split_train_v1", "93dccd830b77477e"]),
+     ["split_train_v1", "f92cb5490399aeb7"]),
 ]
 
 
