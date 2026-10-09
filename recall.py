@@ -501,30 +501,102 @@ def is_system_injected_prompt(text: str) -> bool:
     return any(m.lower() in head for m in markers)
 
 
+# T5 · stdin 单次读缓存(2026-10-09 R432 重做): main() 节流闸与 read_user_prompt_from_stdin
+# 共享同一次 read — stdin 是流,读一次即耗尽,不缓存则闸先读后 main 再读会拿空。
+_STDIN_JSON_CACHE: dict | None = None
+
+
+def _read_stdin_json_cached() -> dict:
+    """读一次 stdin JSON 并缓存;后续调用(含 read_user_prompt_from_stdin)复用。"""
+    global _STDIN_JSON_CACHE
+    if _STDIN_JSON_CACHE is not None:
+        return _STDIN_JSON_CACHE
+    if sys.stdin.isatty():
+        _STDIN_JSON_CACHE = {}
+        return _STDIN_JSON_CACHE
+    try:
+        raw_bytes = sys.stdin.buffer.read()
+        if not raw_bytes:
+            _STDIN_JSON_CACHE = {}
+        else:
+            _STDIN_JSON_CACHE = json.loads(raw_bytes.decode("utf-8", errors="replace"))
+            if not isinstance(_STDIN_JSON_CACHE, dict):
+                _STDIN_JSON_CACHE = {}
+    except Exception:
+        _STDIN_JSON_CACHE = {}
+    return _STDIN_JSON_CACHE
+
+
 def read_user_prompt_from_stdin() -> str:
     """Claude Code hook 通过 stdin 传 JSON · 拿 prompt 字段.
 
     Windows fix: 强制 sys.stdin.buffer.read() UTF-8 解码 (避免 GBK surrogate).
+    T5: 走 _read_stdin_json_cached() — 同一进程内 stdin 只物理读一次.
     """
-    if sys.stdin.isatty():
-        return ""
+    data = _read_stdin_json_cached()
+    for key in ("prompt", "user_prompt", "message", "text", "content"):
+        v = data.get(key)
+        if v:
+            # 双重 sanitize: encode UTF-8 错替换 + str 强制
+            s = str(v)
+            # 去 surrogate (Python 内部 unpaired \udcXX)
+            s = s.encode("utf-8", errors="replace").decode("utf-8", errors="replace")
+            return s[:2000]
+    return ""
+
+
+# T5 · UserPromptSubmit 注入节流(2026-10-09 R432 重做落地)
+# 动机: 每轮 UserPromptSubmit 全量注入 2-4KB recall 块,长 session 上下文塞爆
+# (用户 10/9 点名)。机制: 以 stdin JSON 的 session_id 为键,同 session 窗口内
+# (默认 10min,COMPASS_THROTTLE_MIN 可调,0=禁用)跳过注入 — main() 闸在窗口内
+# 直接 return 0 零输出,不捕获/不重定向 stdout(R432 转义地狱的根因即 stdout 捕获)。
+# fail-open: 无 session_id / 状态损坏 / 本函数任何异常 → 一律注入,绝不因节流器断流。
+THROTTLE_STATE_DIR = Path.home() / ".cache" / "compass_hook_throttle"
+
+
+def throttle_check(session_id, now: float | None = None,
+                   state_dir: Path | None = None,
+                   window_min: float | None = None) -> tuple[bool, str]:
+    """返回 (should_skip, reason)。纯逻辑(时钟/目录/窗口可注入),便于 pytest。"""
+    if now is None:
+        now = time.time()
+    if state_dir is None:
+        state_dir = THROTTLE_STATE_DIR
+    if window_min is None:
+        try:
+            window_min = float(os.environ.get("COMPASS_THROTTLE_MIN", "10"))
+        except ValueError:
+            window_min = 10.0
+    if not window_min or window_min <= 0:
+        return (False, "disabled")
+    if not session_id or not isinstance(session_id, str):
+        return (False, "no-session-id")
     try:
-        raw_bytes = sys.stdin.buffer.read()
-        if not raw_bytes:
-            return ""
-        raw = raw_bytes.decode("utf-8", errors="replace")
-        data = json.loads(raw)
-        for key in ("prompt", "user_prompt", "message", "text", "content"):
-            v = data.get(key)
-            if v:
-                # 双重 sanitize: encode UTF-8 错替换 + str 强制
-                s = str(v)
-                # 去 surrogate (Python 内部 unpaired \udcXX)
-                s = s.encode("utf-8", errors="replace").decode("utf-8", errors="replace")
-                return s[:2000]
-        return ""
-    except Exception:
-        return ""
+        state_dir.mkdir(parents=True, exist_ok=True)
+        # TTL 清理: 48h 前的会话状态文件顺手删,防无限积累
+        cutoff = now - 48 * 3600
+        for stale in state_dir.glob("*.json"):
+            try:
+                if stale.stat().st_mtime < cutoff:
+                    stale.unlink(missing_ok=True)
+            except OSError:
+                pass
+        safe = re.sub(r"[^a-zA-Z0-9_-]", "_", session_id)[:80] or "anon"
+        sf = state_dir / f"{safe}.json"
+        if sf.exists():
+            try:
+                last = float(json.loads(sf.read_text(encoding="utf-8")).get("ts", 0))
+            except Exception:
+                last = 0.0  # 损坏视作从未注入 → 放行并覆写
+            if now - last < window_min * 60:
+                remain = int(window_min * 60 - (now - last))
+                return (True, f"window {int(window_min)}min · {remain}s remain")
+        sf.write_text(json.dumps({"ts": now}), encoding="utf-8")
+        return (False, "inject")
+    except OSError:
+        return (False, "fail-open: state dir unwritable")
+    except Exception as e:  # 任何意外都放行 — 节流器不可成为注入单点
+        return (False, f"fail-open: {type(e).__name__}")
 
 
 def load_links() -> dict:
@@ -1293,6 +1365,17 @@ def try_daemon_recall(mem_dir: Path, user_prompt: str) -> bool:
 
 
 def main():
+    # T5 · 节流闸最前置(2026-10-09): 窗口内零输出直接返回 = 不注入,不碰 stdout 捕获。
+    # stdin 经 _read_stdin_json_cached() 只读一次,后续 read_user_prompt_from_stdin 复用缓存。
+    try:
+        _stdin_data = _read_stdin_json_cached()
+        _skip, _why = throttle_check(_stdin_data.get("session_id"))
+        if _skip:
+            print(f"[nautilus-compass-recall 节流 · {_why} · 调 COMPASS_THROTTLE_MIN(分钟,0=关)可调]")
+            return 0
+    except Exception:
+        pass  # 闸自身异常 → 照常全量跑(fail-open)
+
     # v0.7 · auto-promote to BGE mode if daemon alive (默认 hook 也走 daemon)
     # 旧 (v0.6 及前): hook 默认只 metadata · daemon 跑了 12 天 0 次被调 · drift/recall 全空
     # 新 (v0.7): hook 入口先 ping daemon · alive 就用 BGE (1.8s) · 不 alive 才 fallback metadata
