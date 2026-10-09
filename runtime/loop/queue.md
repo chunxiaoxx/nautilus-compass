@@ -423,6 +423,12 @@
 - **管线发现一:薄卡适用域**[实测]:四张存卡中 0001/0003/0004 **verdict_detail 全空**(早期 schema,API 层无明细),仅 0002 有厚数据——L2 报告对薄卡会产出空壳。处置=适用域声明(L2 对象=新 schema 卡,真实单 0002 起标准)+薄卡回填候选(卡面档案→API 补明细,候排期,非开业阻塞)。
 - 演练摩擦点零新增(生成→人工段→定稿链路顺滑,l2gen-v0 判据 G1-G5 全程保持)。
 
+### R451 · 2026-10-10 凌晨五(用户拷问修正+rerank A100 服务端上线✅[实测 10ms]——pkill 自匹配第 6 次+SSH 重试通道)
+- **用户四问修正**:①"为何等 10/18"——承认排期错误(把"开业周不动对外服务"偷换成"内部增强也推迟",而 rerank 是 env 开关 opt-in 对开业零风险),当场落地不等;②NACRE/assay/compass/基准评测四线进展展开陈述(v1 在役 88.51%/assay 3.3.0+验签门/Round1 榜单/E1-TUNE 方法论)。
+- **主件=路径 a 服务端落地✅[实测]**:A100 rerank 服务(a100_rerank_svc.py v2,裸 transformers 零新依赖,9879 端口,token 鉴权)——**GPU 实测 10ms/查询**(3 docs;对照本机 CPU 3.44s=344 倍),排序语义正确,uptime 稳定。rerank 激活四前提的延迟前提就此补齐。
+- **排障两课**:①`pkill -f` 自匹配**第 6 次**实锤——bash -c 命令串后半段明文目标名被正则命中,宿主自杀新进程从未启动(log 旧错假象);修法=pkill 与启动分两次 run+cmdline 避明文;②A100 SSH banner 间歇断连频发→a100_exec.py 加 3 次指数退避重试(通道治本)。
+- **daemon 接入候下件**:本机 recall→A100 rerank 需稳定 SSH 隧道(autossh),E1 判据 0.8333 为接入后验收;另 sentence_transformers 缺失教训=服务端依赖优先裸 transformers。
+
 ### R447 · 2026-10-10 凌晨二(用户拍板落执行:PRECOR 双轨弹药全备✅——署名 c+投递 c 确认,arXiv tex 编译 COMPILE OK)
 - **用户拍板**:署名 c+投递 c(双轨)——与 R382 初拍一致,确认知认落档(决策卡 APPROVED 注记)。
 - **执行状态盘点[实测]**:步骤①署名落稿✅(R382 已落,Author 段 c 形态+检查单四勾);步骤②博客短版✅(PRECOR_BLOG_SHORT_20261009.md,R382 产出,工程师口吻+负结果原样+CTA——10/12 21:00 弹药);步骤③**本轮补齐**:全版→arXiv tex(arxiv_pkg/precors_arxiv/,Abstract+§1-7+表格 tabular+Fig1 png 入包+thebibliography 四实锚)——**pdflatex 编译 COMPILE OK** 产出 PDF;步骤④发后回链候首发后。
