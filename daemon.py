@@ -599,8 +599,39 @@ class _APIEmbedder:
         return result["embedding"]["values"]
 
 
+class _ProxyEmbedder:
+    """COMPASS_EMBED_PROXY 远程嵌入(A100 embed_server /embed)· GPU 批量加速。
+
+    encode(str) -> vec1d ; encode(list) -> vecs2d(调用方既有 .tolist()/索引兼容)。
+    proxy 不可达时抛异常,由调用侧 fallback 本地(R304 原设计语义)。"""
+    def __init__(self, base: str):
+        self.base = base.rstrip("/")
+
+    def encode(self, texts):
+        import urllib.request
+        import numpy as _np
+        single = isinstance(texts, str)
+        arr = [texts] if single else list(texts)
+        req = urllib.request.Request(
+            self.base + "/embed",
+            data=json.dumps({"texts": arr}, ensure_ascii=False).encode("utf-8"),
+            headers={"Content-Type": "application/json"})
+        with urllib.request.urlopen(req, timeout=120) as resp:
+            embs = json.loads(resp.read())["embeddings"]
+        vecs = _np.array(embs, dtype=float)
+        return vecs[0] if single else vecs
+
+
 def get_embedder():
     if _state["embedder"] is not None:
+        return _state["embedder"]
+    # R421 · COMPASS_EMBED_PROXY 显式设置 → 远程 GPU 嵌入(A100 fp16);
+    # 未设置 → 原本地 BGE 路径(行为零变化)。proxy 故障由 embed_proxy
+    # fail-safe 日志观察(调用侧 embed 失败回退逻辑沿用)。
+    _proxy = os.environ.get("COMPASS_EMBED_PROXY", "").strip()
+    if _proxy:
+        log(f"embed proxy ON → {_proxy} (remote fp16)")
+        _state["embedder"] = _ProxyEmbedder(_proxy)
         return _state["embedder"]
     # 2026-04-28 · 用户强制不用 gemini · 永远只 BGE local (隐私 + 不依赖外部 API)
     # 旧: 优先 Gemini API (250ms) · 没 key 才 BGE
