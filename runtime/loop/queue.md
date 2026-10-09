@@ -319,3 +319,9 @@
 - **用户令"上下文塞爆现在解决"→节流改造实做遇生产复杂度,诚实止损**:mid_session/read WIP 已 stash(feat/memory-gate-trio 分支"v2.6 throttle WIP"标签);生产 hook 零损伤验证(回滚后 diff 空+注入持续活)。
 - **发现链(供白天重做)**:①注入源=hook.sh→recall.py(1547 行)②UserPromptSubmit stdin JSON 含 session_id(节流键)③recall.py 多点 early return→stdout 捕获需 try/finally 全包裹④转义地狱(heredoc+repr+真换行三重)——**重做方案=plugin 仓开 branch+pytest 夹具+日间会话**(深夜+生产文件+转义三重风险不叠加)。
 - 上下文塞爆问题的**已完成部分**:S2 LOOP_STATE 正本/queue 归档 -87%/S3 三环境探针/S4 全框一览——**接续效率件已落地;注入侧节流=T5 新任务(白天带测试正式做)**。
+
+### R433 · 2026-10-09 深夜(新会话开工+终检预演复跑✅13/13 全绿[实测]——死线带核对:冲正/RFC 已闭)
+- **主件=终检 13 项预演复跑**(10-11 正日钦点任务):`runtime/loop/final_check.py` 复跑 **13 PASS / 0 WARN / 0 FAIL**[实测],输出含活数据实证(语料计数活值+判读 API 卡清单 demo/l1-0001~0003 四卡在列)——预演维持全绿,10-11 正日一键就绪。
+- **死线带核对(新会话开局)**:冲正复读=已销案(A3 201 自纠+8 已还)/RFC 表决=已直交 10836(R428)——两项闭环;10-11 终检=预演绿;10-12 开业=轨道上。
+- **信箱收割**:零新函;#10829 已 ack(注 10836 坐标请平台核对)。**probe**:daemon 9876 pong 绿+凭据在位+HEAD 0eeed811。
+- 积压清单顺次核对:XERJ 捐赠包(#1255 MERGED)/M5 移植部署(已上生产)/mem0 评估(docs/outreach 立档)/语料 2000 冲刺(2258 超标)——已完成项跳过;下一候选=registry 活数据页/判读卡状态页(终检已含其探活,内容充实另议)。
