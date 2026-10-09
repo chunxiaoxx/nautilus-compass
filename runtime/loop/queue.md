@@ -429,6 +429,12 @@
 - **排障两课**:①`pkill -f` 自匹配**第 6 次**实锤——bash -c 命令串后半段明文目标名被正则命中,宿主自杀新进程从未启动(log 旧错假象);修法=pkill 与启动分两次 run+cmdline 避明文;②A100 SSH banner 间歇断连频发→a100_exec.py 加 3 次指数退避重试(通道治本)。
 - **daemon 接入候下件**:本机 recall→A100 rerank 需稳定 SSH 隧道(autossh),E1 判据 0.8333 为接入后验收;另 sentence_transformers 缺失教训=服务端依赖优先裸 transformers。
 
+### R452 · 2026-10-10 凌晨六(主件轮:rerank 隧道端到端✅[实测 74ms]——本机→A100 GPU 全链打通,daemon 开关设计定案)
+- **主件=隧道落地**(tools/a100_rerank_tunnel.py+bat 保活,compass_tunnel.bat 同款模式):paramiko direct-tcpip 双向 pump+断线自愈(transport 失活重建);凭据走 a100_env 不落仓。**端到端实测 74ms**(本机 19879→A100 9879→GPU rerank→返回,ok=True 排序语义正确)——E1 检索质量读数的全链路硬件路径就此打通。
+- **daemon 开关设计定案**(候下件实现):`COMPASS_RERANK_REMOTE=127.0.0.1:19879`(空=本地模式不变)——daemon.py `_rerank_top` 加 remote 分支(socket 协议同 rerank_svc),改 plugin 分支+测试择窗部署(生产 daemon 直改纪律)。
+- 修一坑:类型注解 `socket.channel` 定义时求值炸→`from __future__ import annotations` 一行修。
+- 开业周 daemon 部署窗后顺序:分支合入→隧道 watchdog 自启→COMPASS_PROD_RERANK=1+COMPASS_RERANK_REMOTE 双开→E1 判据 v2 工作集复测验收(零新判据)。
+
 ### R447 · 2026-10-10 凌晨二(用户拍板落执行:PRECOR 双轨弹药全备✅——署名 c+投递 c 确认,arXiv tex 编译 COMPILE OK)
 - **用户拍板**:署名 c+投递 c(双轨)——与 R382 初拍一致,确认知认落档(决策卡 APPROVED 注记)。
 - **执行状态盘点[实测]**:步骤①署名落稿✅(R382 已落,Author 段 c 形态+检查单四勾);步骤②博客短版✅(PRECOR_BLOG_SHORT_20261009.md,R382 产出,工程师口吻+负结果原样+CTA——10/12 21:00 弹药);步骤③**本轮补齐**:全版→arXiv tex(arxiv_pkg/precors_arxiv/,Abstract+§1-7+表格 tabular+Fig1 png 入包+thebibliography 四实锚)——**pdflatex 编译 COMPILE OK** 产出 PDF;步骤④发后回链候首发后。
