@@ -2301,3 +2301,8 @@
 ### R417 · 2026-10-09 午八(E1 首件:fact_status 覆盖率报告✅——MEMX 效用表缺口的量化+修复候选)
 - **覆盖率报告落档**(docs/plans/FACT_STATUS_COVERAGE_20261009.md):161 条记忆分布=missing 93(58%)/inferred 57/measured 11——缺失=三件套上线前的老条目;影响=归因算子 B 类误判面扩大;修复=按 batch 人工核补标注(清单 93 条全列入档,daemon 零自动改写纪律)。
 - 顺带实测:本地 daemon embed 预算渐进消化运转正常(24 条/轮)。
+
+### R415 · 2026-10-09 午六(开业级 P0 修复:intake.html 客户旅程断环补✅)
+- **彩排抓出开业级 P0**:intake.html 仍在教客户"发邮件提交",而平台 POST /api/platform/org/assay/submissions 已上站(10718 代码化)——**客户旅程断在第一环**(开业第一天体验=手工发邮件,与判分机构定位严重不符)。
+- **修复✅[实测]**:API 端点实证(POST 活,必填 harness/repo_url/lane/contact)→intake v2(API 主通道带 curl 样例+字段表+单号查询指引,邮件降轻量备选)→部署→外网双锚验证(api/platform 路径+方式一)→终检回归。
+- 客户旅程首环自此闭合:提交(POST 自动受理派单)→判读→出卡→status 查询全 API 化。

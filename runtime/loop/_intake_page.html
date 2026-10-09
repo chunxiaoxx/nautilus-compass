@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>判分收录受理 · unipat</title>
+<style>
+  body{font-family:-apple-system,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;margin:0;color:#1a1a1a;line-height:1.7;}
+  .wrap{max-width:880px;margin:0 auto;padding:0 24px;}
+  header{background:#0f172a;color:#fff;padding:28px 0;}
+  header .wrap{display:flex;justify-content:space-between;align-items:center;}
+  header a{color:#cbd5e1;text-decoration:none;margin-left:20px;font-size:.95em;}
+  h1{font-size:1.9em;margin:.4em 0;}
+  section{padding:40px 0;border-bottom:1px solid #eee;}
+  h2{font-size:1.4em;}
+  code,pre{background:#f4f4f5;border-radius:6px;font-family:Consolas,monospace;}
+  code{padding:2px 6px;}
+  pre{padding:14px 18px;overflow-x:auto;font-size:.9em;}
+  table{border-collapse:collapse;width:100%;font-size:.95em;}
+  th,td{border:1px solid #e2e2e2;padding:8px 12px;text-align:left;}
+  th{background:#f8fafc;}
+  .mail{background:#ecfdf5;border:1px solid #a7f3d0;border-radius:10px;padding:18px 22px;margin:18px 0;}
+  footer{padding:28px 0;color:#888;font-size:.9em;text-align:center;}
+</style>
+</head>
+<body>
+<header><div class="wrap"><b>unipat · 判分收录受理</b><nav><a href="/">首页</a><a href="/unipat.html">协议</a><a href="/pipeline.html">管道</a></nav></div></header>
+
+<section>
+  <div class="wrap">
+    <h1>三步提交,免费首检</h1>
+    <div class="mail">
+      <b>方式一 · API 提交(推荐,自动受理+自动派单)</b>
+      <pre>
+curl -X POST https://nautilus.social/api/platform/org/assay/submissions   -H "Content-Type: application/json"   -d '{
+    "harness": "你的harness名@版本",
+    "repo_url": "公开 git URL(指定 commit 更佳)",
+    "lane": "l1",
+    "contact": "你的邮箱",
+    "note": "评测目标/自报读数/运行前提(可选)"
+  }'
+      </pre>
+      受理通过即自动派单判读岗(SLA 5 个工作日回判读卡);单号可用于
+      <code>GET /api/judge_status?id=&lt;单号&gt;</code> 查进度。
+    </div>
+    <div class="mail" style="background:#f8fafc;border-color:#e2e2e2">
+      <b>方式二 · 邮件提交(轻量备选)</b>(L1 免费收录档)
+      <pre>
+致:chunxiaoxx+external@gmail.com
+主题:[L1收录] &lt;你的harness名&gt;@&lt;版本&gt;
+
+仓地址:  (公开 git URL)
+评测目标: (想被测什么)
+自报读数: (如有;将与实测分列,不混列)
+备注:    (运行前提/依赖/license)
+      </pre>
+    </div>
+    <p>我们只做三件事:判据预注册(先公示后判分判后冻结)→ 独立判分(不可写面,禁自评)→ 判读卡交付(实测读数+改进建议+复核命令)。</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>判据披露(可复算纪律)</h2>
+    <p>每个被测物的判据在判分前预注册并冻结;以下锚全部可独立复算:</p>
+    <table>
+      <tr><th>工件</th><th>判据/内容锚(sha256-16)</th><th>位置</th></tr>
+      <tr><td>判分器主判精度 88.51%(三门 J1/J2/J7)</td><td>判据档随 NACRE 白皮书</td><td>github.com/chunxiaoxx/nautilus-compass @ 9f9a6e04 docs/soul/NACRE_WHITEPAPER_V1.md</td></tr>
+      <tr><td>L1 收录判读卡样例(mini-swe-agent@2.4.6)</td><td>b81eca8436887785</td><td>github.com/chunxiaoxx/nautilus-v5 @ 86fe77ba docs/L1_READOUT_CARD_mini_swe_agent_20261006.md</td></tr>
+      <tr><td>L2 深度报告样例</td><td>6315954f45f2c715</td><td><a href="http://org.nautilus.social/L2_report_sample.md">org.nautilus.social/L2_report_sample.md</a></td></tr>
+      <tr><td>L3 Round1 榜面读数(A 26.7%/B 16.7%,差分+10.0pp&gt;δ)</td><td>工件随榜页发布</td><td>10/12 榜页(本域)</td></tr>
+      <tr><td>E1 金标(主包 600+OOD 400)</td><td>6217ec05438a267e / bf6a71704f9ea84f</td><td>nautilus-v5 docs/E1_GOLDSOURCE_INGEST_20261005.md</td></tr>
+    </table>
+    <p style="color:#666;font-size:.92em;">口径:一切对外读数以库 verdict 列为准;数据方自报(self-reported)与判分实测(measured)分列。判分机构独立于被测双方,永不闭环自评。</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>档位</h2>
+    <table>
+      <tr><th>档</th><th>内容</th><th>定价</th></tr>
+      <tr><td>L1 免费收录</td><td>收录判读卡(实测读数+判据锚+复核命令)</td><td>$0</td></tr>
+      <tr><td>L2 深度报告</td><td>单 harness×单评测集+复现包+改进建议</td><td>$199/次</td></tr>
+      <tr><td>L3 企业定制</td><td>定制评测集+私有部署</td><td>$999 起询价</td></tr>
+    </table>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">unipat · nautilus 组织 · 本页 v1 · 2026-10-06 · 正本 github.com/chunxiaoxx/nautilus-core phase3/frontend/intake.html</div>
+</footer>
+</body>
+</html>
