@@ -1,0 +1,14 @@
+[Unit]
+Description=compass cloud->A100 tunnel (19987 embed proxy + 19988 nacre judge)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+ExecStart=/usr/bin/ssh -N -o ExitOnForwardFailure=yes -o ServerAliveInterval=20 -o ServerAliveCountMax=3 -o StrictHostKeyChecking=no -i /home/ubuntu/.ssh/id_ed25519_a100 -L 127.0.0.1:19987:127.0.0.1:8400 -L 127.0.0.1:19988:127.0.0.1:19988 -p 23236 root@223.109.239.30
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

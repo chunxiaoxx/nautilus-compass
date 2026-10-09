@@ -2310,3 +2310,8 @@
 ### R416b · 2026-10-09 午十(开业彩排环2:判读卡体验✅——四卡客户视角全审)
 - **四卡客户视角全审[实测]**:①中文直出正常(API UTF-8✓,"乱码"系查看管道 json.tool 转义误报——彩排排掉一个假问题);②**0001 verdict 字段缺失(真问题)——已补**(verdict=pass+result_summary 一行结论),四卡字段一致性达成;③cloud 部署+外网实测 verdict=pass 直读+终检 13/13 回归绿。
 - 判读卡客户体验自此达标:单号查询即得 三态结论+证据链+复算路径,中英混排正常,四卡字段一致。
+
+### R418 · 2026-10-09 午十一(主件轮:T5.1 NACRE 判分 API 产品化✅——BP 矩阵承诺落地上线)
+- **NACRE 判分 API 上线✅[实测]**:A100 判分服务(nacre_judge_server.py·FastAPI·19988·Qwen3-1.7B+adapter fp16 共居 embed_server)——**adapter sha 实锚 dbcbab6f=HF 卡逐位一致**(best_lora 正品验明);/judge 实弹双测(判分语义正确:patch 案 pass/LongMemEval 案 pass);**compass→隧道→A100 全通**(cloud 127.0.0.1:19988 直打 NACRE)=BP 矩阵"判分 API 热路径"的"可购买验收"有了实锚端点。
+- **通道工程(systemd 化)**:compass-a100-tunnel.service(19987→A100:8400 embed·19988→judge·autossh 语义 Restart=always);A100 侧根因链三连:①19987 端口从未真实监听(R304 假设错位,embed_server 实监听 8400)→隧道映射修正;②19987 断=临时管道消失→systemd 常驻替代;③**生产服务跑的 daemon_v33.py 非 daemon.py**(deploy-path.conf 实锤)——v3.3.5 自带 per-call proxy(BGEWrapper.encode 内试 proxy 失败回退本地),**隧道修通即自动生效**,无需改代码;daemon.py 主线 proxy 分支为 v34 合并预备(两文件并存)。
+- 澄清更正(第三轮):cloud daemon 现役=CPU BGE(单元素自述+proxy 未触发实锤)——R304"切换完成"实为半成品(隧道未 systemd 化+端口错配);本轮补齐=真完成。embed 生效验证待 P9 缓存旁路后确证(下轮)。
