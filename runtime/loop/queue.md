@@ -441,6 +441,12 @@
 - **TDD[实测]**:tests/test_rerank_remote.py 5 用例(fake TCP server 三模式)先 RED 后 **GREEN 5 passed**;回归 throttle+rerank **17 passed**;ast 语法 OK。
 - **部署边界**:不部署——本机生产 daemon 仍跑旧版;部署序=分支合入 main→隧道 watchdog 自启→双开关打开→E1 v2 判据复测验收。
 
+### R454 · 2026-10-10 凌晨八(用户令深度梳理·NACRE 路线图落档✅+ORG-FUEL 扩容开工✅——诚实重算:10/26 主场景=推迟报告)
+- **主件一=路线图正本**(docs/plans/NACRE_ROADMAP_20261010.md):现状盘点(v1 在役/7B 卡语料/检索全通)+四洞察(语料关键路径算账/飞轮显式化/方法论即产品/双轨诚实)+时间轴(开业冲刺→开业周→对拍窗→北极星收官→11 月二期)+NACRE 专项四优先级。
+- **主件二=扩容开工**[实测]:新源生成器×2(tools/fuel_gen_queue.py+fuel_gen_memory.py,gate 口径不变)——queue 轮次源 82 candidates+memory 记忆源 162 candidates=**244 新候选就绪**(runtime/org_fuel/candidates_queue|memory.jsonl),候 NACRE judge 投判(现 4 源 pass 率 55% 外推→约 +134)。
+- **诚实重算[推断,重要]**:docs 407 文件已被 docs 源全量覆盖(799 candidates);扩容天花板=2258+134+开业周真实单+delta≈**2400-2450<3000**——10/26 主场景=**按预注册条款推迟报告**(推迟≠放宽,新裁决窗重注册);副场景=真实单超预期。候用户知悉此预期修正。
+- 路线图文件与生成器入仓;judge 投判候下轮(脚本沿用 _fuel_judge 模式)。
+
 ### R447 · 2026-10-10 凌晨二(用户拍板落执行:PRECOR 双轨弹药全备✅——署名 c+投递 c 确认,arXiv tex 编译 COMPILE OK)
 - **用户拍板**:署名 c+投递 c(双轨)——与 R382 初拍一致,确认知认落档(决策卡 APPROVED 注记)。
 - **执行状态盘点[实测]**:步骤①署名落稿✅(R382 已落,Author 段 c 形态+检查单四勾);步骤②博客短版✅(PRECOR_BLOG_SHORT_20261009.md,R382 产出,工程师口吻+负结果原样+CTA——10/12 21:00 弹药);步骤③**本轮补齐**:全版→arXiv tex(arxiv_pkg/precors_arxiv/,Abstract+§1-7+表格 tabular+Fig1 png 入包+thebibliography 四实锚)——**pdflatex 编译 COMPILE OK** 产出 PDF;步骤④发后回链候首发后。
