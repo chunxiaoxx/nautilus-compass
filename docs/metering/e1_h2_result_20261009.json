@@ -1,0 +1,285 @@
+{
+ "n_queries": 30,
+ "reranker": "bge-reranker-v2-m3 fp16",
+ "rerank_scope": "top5 only (bge retrieval unchanged)",
+ "recall_at_1": 0.5667,
+ "recall_at_5": 0.6667,
+ "mrr": 0.6167,
+ "baseline_r1": 0.4,
+ "baseline_r5": 0.6667,
+ "baseline_mrr": 0.4994,
+ "delta_r1": 0.1667,
+ "top1_changed": 14,
+ "per_query": [
+  {
+   "q": "如果 agent 再次遇到完全相同的情况，它会输入的一句话情境查询：**",
+   "gold": "day-log-20261005-northstar-sprin",
+   "old_rank": 1,
+   "new_rank": 1,
+   "new_top1": "day-log-20261005-northstar-sprin",
+   "gold_score": 1.346,
+   "top1_old_score": 1.346
+  },
+  {
+   "q": "如果 agent 再次遇到完全相同的情况，它会输入的一句话情境查询：  ",
+   "gold": "bc1-launch-eve-20260926.md",
+   "old_rank": 55,
+   "new_rank": 55,
+   "new_top1": "_NODE_nautilus-compass.md",
+   "gold_score": -99,
+   "top1_old_score": -6.113
+  },
+  {
+   "q": "fast path 环境差虚警: inotify_simple 误触发缓",
+   "gold": "m5-memgate-deploy-lessons-202610",
+   "old_rank": 4,
+   "new_rank": 2,
+   "new_top1": "memgate-m5-deploy-lessons-202610",
+   "gold_score": 3.799,
+   "top1_old_score": 3.871
+  },
+  {
+   "q": "nginx 生产陷阱：非 systemd 管理，需用 `sudo kil",
+   "gold": "launch-sprint-status-20260905.md",
+   "old_rank": 4,
+   "new_rank": 1,
+   "new_top1": "launch-sprint-status-20260905.md",
+   "gold_score": 5.352,
+   "top1_old_score": -0.275
+  },
+  {
+   "q": "如果 agent 再次遇到完全相同的情况，它会输入的一句话情境查询：  ",
+   "gold": "judge-lessons-20260926.md",
+   "old_rank": 10,
+   "new_rank": 10,
+   "new_top1": "_NODE_nautilus-compass.md",
+   "gold_score": -99,
+   "top1_old_score": -6.113
+  },
+  {
+   "q": "判官升级项列下轮，我方备料档已出",
+   "gold": "e1-arc-closure-two-loops-2026100",
+   "old_rank": 2,
+   "new_rank": 1,
+   "new_top1": "e1-arc-closure-two-loops-2026100",
+   "gold_score": 4.684,
+   "top1_old_score": -4.656
+  },
+  {
+   "q": "查询: 该情况是否与之前相同？",
+   "gold": "day-log-1007-judge-discipline.md",
+   "old_rank": 91,
+   "new_rank": 91,
+   "new_top1": "session_20260717-0335_SSOT副本探针已上",
+   "gold_score": -99,
+   "top1_old_score": -5.246
+  },
+  {
+   "q": "如果 agent 再次遇到完全相同的情况，它会输入的一句话情境查询：目标",
+   "gold": "session_20260823-0912_goalmode-h",
+   "old_rank": 1,
+   "new_rank": 2,
+   "new_top1": "session_20260823-0935_goalmode-h",
+   "gold_score": 0.109,
+   "top1_old_score": 0.109
+  },
+  {
+   "q": "探活三态（CLAUDE.md 只说了「socket JSON」,缺了换行",
+   "gold": "daemon-9876-watchdog-rootcause-2",
+   "old_rank": 1,
+   "new_rank": 1,
+   "new_top1": "daemon-9876-watchdog-rootcause-2",
+   "gold_score": 4.465,
+   "top1_old_score": 4.465
+  },
+  {
+   "q": "\"为什么 recall 从未改变任务结局？\"",
+   "gold": "session-contract-recall-usefulne",
+   "old_rank": 1,
+   "new_rank": 1,
+   "new_top1": "session-contract-recall-usefulne",
+   "gold_score": 2.01,
+   "top1_old_score": 2.01
+  },
+  {
+   "q": "如果 agent 再次遇到完全相同的情况，它会输入：“我们已经做了大量的",
+   "gold": "benchmark-system-dual-domain-202",
+   "old_rank": 1,
+   "new_rank": 1,
+   "new_top1": "benchmark-system-dual-domain-202",
+   "gold_score": 1.484,
+   "top1_old_score": 1.484
+  },
+  {
+   "q": "T0 发布版(9/12)",
+   "gold": "benchmark-naming-licensing-20260",
+   "old_rank": 4,
+   "new_rank": 1,
+   "new_top1": "benchmark-naming-licensing-20260",
+   "gold_score": 4.082,
+   "top1_old_score": -0.547
+  },
+  {
+   "q": "\"客户端直连 9876 桥未带 token → 请检查 token 文件",
+   "gold": "daemon-auth-and-hf-offline-20260",
+   "old_rank": 1,
+   "new_rank": 1,
+   "new_top1": "daemon-auth-and-hf-offline-20260",
+   "gold_score": 4.305,
+   "top1_old_score": 4.305
+  },
+  {
+   "q": "域 3(同日):embodied-qc-labeling(flywhee",
+   "gold": "jev-trust-launch-20260922.md",
+   "old_rank": 7,
+   "new_rank": 7,
+   "new_top1": "compass-roadmap-20260907.md",
+   "gold_score": -99,
+   "top1_old_score": 0.731
+  },
+  {
+   "q": "如果 agent 再次遇到完全相同的情况，它会输入的一句话情境查询：  ",
+   "gold": "judging-evidence-tiers-20261003.",
+   "old_rank": 122,
+   "new_rank": 122,
+   "new_top1": "_NODE_nautilus-compass.md",
+   "gold_score": -99,
+   "top1_old_score": -6.113
+  },
+  {
+   "q": "query: 为什么 token 被清除 before forwardi",
+   "gold": "session_20260722-1257_MCP-TCP-au",
+   "old_rank": 4,
+   "new_rank": 2,
+   "new_top1": "session_20260722-1251_MCP-TCP-au",
+   "gold_score": 0.413,
+   "top1_old_score": -3.781
+  },
+  {
+   "q": "查询: 该情况是否重复发生？",
+   "gold": "week-review-20260927-1003.md",
+   "old_rank": 63,
+   "new_rank": 63,
+   "new_top1": "session-contract-recall-usefulne",
+   "gold_score": -99,
+   "top1_old_score": -6.762
+  },
+  {
+   "q": "如果再次遇到完全相同的情况，我会输入：“这条帖被秒flag，作者评论也被",
+   "gold": "hn-submit-pipeline-20260910.md",
+   "old_rank": 1,
+   "new_rank": 1,
+   "new_top1": "hn-submit-pipeline-20260910.md",
+   "gold_score": 1.202,
+   "top1_old_score": 1.202
+  },
+  {
+   "q": "如果再次遇到相同情况，我会输入：“云 daemon SSH 端口是 24",
+   "gold": "ssh-cloud-port-2460-20260930.md",
+   "old_rank": 1,
+   "new_rank": 1,
+   "new_top1": "ssh-cloud-port-2460-20260930.md",
+   "gold_score": 3.604,
+   "top1_old_score": 3.604
+  },
+  {
+   "q": "如果 agent 再次遇到完全相同的情况，它会输入的一句话情境查询：  ",
+   "gold": "session-contract-l4a-distill-202",
+   "old_rank": 110,
+   "new_rank": 110,
+   "new_top1": "_NODE_nautilus-compass.md",
+   "gold_score": -99,
+   "top1_old_score": -6.113
+  },
+  {
+   "q": "如果 agent 再次遇到完全相同的情况，它会输入的一句话情境查询：**",
+   "gold": "judge-corpus-p2-baseline-2026093",
+   "old_rank": 8,
+   "new_rank": 8,
+   "new_top1": "judge-lessons-20260926.md",
+   "gold_score": -99,
+   "top1_old_score": -1.177
+  },
+  {
+   "q": "查询: 语料无元数据信号",
+   "gold": "session_20260716_eval_recall_v23",
+   "old_rank": 26,
+   "new_rank": 26,
+   "new_top1": "session_20260718-1142_差异化层-0-000",
+   "gold_score": -99,
+   "top1_old_score": 0.488
+  },
+  {
+   "q": "compass 主线自然延伸，v5 主线互补不冲突",
+   "gold": "mainline-anchor-20261008.md",
+   "old_rank": 1,
+   "new_rank": 1,
+   "new_top1": "mainline-anchor-20261008.md",
+   "gold_score": 5.062,
+   "top1_old_score": 5.062
+  },
+  {
+   "q": "“选”算子拆 select-action vs select-memor",
+   "gold": "aegis-compass-competitor-2026090",
+   "old_rank": 1,
+   "new_rank": 1,
+   "new_top1": "aegis-compass-competitor-2026090",
+   "gold_score": 4.781,
+   "top1_old_score": 4.781
+  },
+  {
+   "q": "如果 agent 再次遇到完全相同的情况，它会输入的一句话情境查询：  ",
+   "gold": "feedback-ark-coding-plan-not-met",
+   "old_rank": 82,
+   "new_rank": 82,
+   "new_top1": "_NODE_nautilus-compass.md",
+   "gold_score": -99,
+   "top1_old_score": -6.113
+  },
+  {
+   "q": "为什么在 Windows 上不能直接 sha256sum 文件后入档？",
+   "gold": "sha-eol-autocrlf-trap-20261008.m",
+   "old_rank": 1,
+   "new_rank": 1,
+   "new_top1": "sha-eol-autocrlf-trap-20261008.m",
+   "gold_score": 3.109,
+   "top1_old_score": 3.109
+  },
+  {
+   "q": "查询: 本批是否仍需复算？",
+   "gold": "pilot-verdicts-unverifiable-2026",
+   "old_rank": 1,
+   "new_rank": 1,
+   "new_top1": "pilot-verdicts-unverifiable-2026",
+   "gold_score": 0.791,
+   "top1_old_score": 0.791
+  },
+  {
+   "q": "R0 有4种 intervention+5种 selector，比C2丰",
+   "gold": "session_20260807-2111_闭环收敛状态-fue",
+   "old_rank": 4,
+   "new_rank": 1,
+   "new_top1": "session_20260807-2111_闭环收敛状态-fue",
+   "gold_score": 4.633,
+   "top1_old_score": -8.219
+  },
+  {
+   "q": "这轮用户的实质诉求推进了吗",
+   "gold": "feedback-analysis-vs-action-mode",
+   "old_rank": 4,
+   "new_rank": 1,
+   "new_top1": "feedback-analysis-vs-action-mode",
+   "gold_score": 3.227,
+   "top1_old_score": -5.742
+  },
+  {
+   "q": "\"标准远程MCP已实现，但当前/мcp/*是自定义REST，需升级为JS",
+   "gold": "session_9c3b69dc.md",
+   "old_rank": 2,
+   "new_rank": 1,
+   "new_top1": "session_9c3b69dc.md",
+   "gold_score": 4.004,
+   "top1_old_score": -2.197
+  }
+ ]
+}
