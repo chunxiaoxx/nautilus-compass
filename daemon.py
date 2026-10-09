@@ -110,6 +110,61 @@ _BM25_RRF_TOP_K = int(os.environ.get("COMPASS_BM25_RRF_TOP_K", "30"))
 # (RESULTS.md:54-56). Local cross-encoder (non-LLM) → does NOT break the
 # black-box hot-path constraint. Default OFF: behavior unchanged until enabled.
 _PROD_RERANK_USE = os.environ.get("COMPASS_PROD_RERANK", "0") == "1"
+
+# R453 · remote rerank 分支(feat/rerank-remote, 2026-10-10):
+# COMPASS_RERANK_REMOTE=host:port 时, rerank 走 A100 GPU 服务(a100_rerank_svc.py,
+# 实测 GPU 10ms/查询 + 隧道端到端 74ms), 本机无 GPU 也吃得到 E1-TUNE 读数
+# (R@1 0.40→0.8333, 判据 E1_FAILURE_ATTRIBUTION §九)。remote 失败→本地
+# CrossEncoder→dense 三级回退, recall 永不因 rerank 故障崩溃。
+_RERANK_REMOTE_ADDR = None
+if os.environ.get("COMPASS_RERANK_REMOTE"):
+    try:
+        _h, _p = os.environ["COMPASS_RERANK_REMOTE"].rsplit(":", 1)
+        _RERANK_REMOTE_ADDR = (_h, int(_p))
+    except ValueError:
+        _RERANK_REMOTE_ADDR = None
+_RERANK_TOKEN_FILE = Path.home() / ".claude" / ".cache" / "a100_rerank_token"
+_RERANK_REMOTE_TIMEOUT = float(os.environ.get("COMPASS_RERANK_REMOTE_TIMEOUT", "6"))
+
+
+def _rerank_via_remote(query: str, docs: list) -> list | None:
+    """remote rerank: 9879 协议(a100_rerank_svc.py)。任何失败返回 None(回退)。"""
+    if not _RERANK_REMOTE_ADDR or not docs:
+        return None
+    s = None
+    try:
+        token = _RERANK_TOKEN_FILE.read_text(encoding="utf-8").strip()
+    except OSError:
+        return None
+    try:
+        s = socket.create_connection(_RERANK_REMOTE_ADDR, timeout=_RERANK_REMOTE_TIMEOUT)
+        s.settimeout(_RERANK_REMOTE_TIMEOUT)
+        req = {"action": "rerank", "query": query[:1500],
+               "docs": [d[:3000] for d in docs], "token": token}
+        s.sendall((json.dumps(req) + "\n").encode("utf-8"))
+        buf = b""
+        deadline = time.time() + _RERANK_REMOTE_TIMEOUT
+        while not buf.endswith(b"\n"):
+            if time.time() > deadline:
+                return None
+            chunk = s.recv(65536)
+            if not chunk:
+                break
+            buf += chunk
+        resp = json.loads(buf.decode("utf-8"))
+        if resp.get("ok") is True:
+            return [float(x) for x in resp.get("scores", [])]
+        return None
+    except Exception:
+        return None
+    finally:
+        try:
+            if s:
+                s.close()
+        except Exception:
+            pass
+
+
 _RERANKER_MODEL = os.environ.get(
     "ZMM_RERANKER_MODEL",
     # local ModelScope path preferred · else HF repo id (mirrors EMBEDDER_MODEL).
@@ -270,6 +325,15 @@ def _rerank_top(query, top, top_k):
         return top[:top_k]
     candidates = top[:_RERANK_CANDIDATES]
     try:
+        # R453 · remote 优先: COMPASS_RERANK_REMOTE 配置时走 A100 GPU(实测 10ms
+        # +隧道 74ms), 失败静默落回本地 CrossEncoder, 再失败 dense(三级回退)。
+        if _RERANK_REMOTE_ADDR:
+            docs = [(e.get("embed_text") or e.get("description") or "") for _s, e in candidates]
+            rscores = _rerank_via_remote(query, docs)
+            if rscores is not None and len(rscores) == len(candidates):
+                reordered = sorted(zip(candidates, rscores), key=lambda x: -float(x[1]))
+                return [item for item, _rscore in reordered][:top_k]
+            log("remote rerank unavailable · fallback to local crossencoder")
         reranker = _get_reranker()
         pairs = [(query, (e.get("embed_text") or e.get("description") or ""))
                  for _s, e in candidates]
