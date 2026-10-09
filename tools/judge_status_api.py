@@ -40,6 +40,8 @@ LEDGER = {
         "title": "Round 1 · v5-harness vs mini-swe-agent",
         "status": "done",
         "criteria_sha16": "b81eca8436887785",
+        "verdict": "pass",
+        "result_summary": "v5-harness 26.7% vs mini-swe-agent 16.7% (+10.0pp) · 30 cases, all artifacts sha16-addressable",
         "steps": [
             ["2026-10-05T14:02+08", "intake", "done"],
             ["2026-10-05T14:20+08", "criteria_prereg", "done"],
