@@ -314,3 +314,8 @@
 
 ### R431 · 2026-10-09 晚(S3 增强三环境版✅——用户令"现在就写"响应)
 - check_env.sh 增 --remote 模式:本地摘要(原有)+cloud 段(git HEAD+三服务 active)+A100 段(embed/judge 双 health)——三环境一键全探,串环境三坑的根治工具成型;A100 ssh banner 偶发慢已知(ConnectTimeout 10s 兜底)。
+
+### R432 · 2026-10-09 深夜(recall 节流 WIP 止损✅——生产 hook 零损伤,分支候白天重做)
+- **用户令"上下文塞爆现在解决"→节流改造实做遇生产复杂度,诚实止损**:mid_session/read WIP 已 stash(feat/memory-gate-trio 分支"v2.6 throttle WIP"标签);生产 hook 零损伤验证(回滚后 diff 空+注入持续活)。
+- **发现链(供白天重做)**:①注入源=hook.sh→recall.py(1547 行)②UserPromptSubmit stdin JSON 含 session_id(节流键)③recall.py 多点 early return→stdout 捕获需 try/finally 全包裹④转义地狱(heredoc+repr+真换行三重)——**重做方案=plugin 仓开 branch+pytest 夹具+日间会话**(深夜+生产文件+转义三重风险不叠加)。
+- 上下文塞爆问题的**已完成部分**:S2 LOOP_STATE 正本/queue 归档 -87%/S3 三环境探针/S4 全框一览——**接续效率件已落地;注入侧节流=T5 新任务(白天带测试正式做)**。
