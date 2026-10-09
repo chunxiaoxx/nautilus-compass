@@ -528,6 +528,10 @@
 - **主件=发前 double-check**(R373 后 40+ 轮首重读):PR 正文预填八段完整(domain/counts 70→70/provenance 五步脱敏+抽检 7/7/CC-BY-4.0+baseline attribution/source git+glob/demand anchor/build 命令);预检表 7✅+1⚠️(flat 语义已内置处理);**三件材料在位性[实测]**——recipe.toml 2355B/README.md 3167B/jsonl 147KB **70 行整**(与 PR counts 声明一致)——draft 引用路径零失配。
 - 结论:XERJ PR 窗开日(10/12)五步机械执行即可,通读无新增修正项。
 
+### R473 · 2026-10-10 晨十七(主件轮:intake 出站链接全检✅零死链+判据化终检 16 项)
+- **主件=开业页死链防护**:intake.html 出站 6 链接逐个探活——**全 200 零死链**[实测](pipeline/unipat/org 子域样例/registry/leaderboard/criteria);判据化入终检(POINTS 增"intake 出站链接"锚项,pipeline/unipat/L2_report_sample 三锚)——复跑 **16 PASS/0 WARN/0 FAIL**。
+- 开业页事故点(死链)自此有判据覆盖;正日终检项=快检 16+渲染 2=18 项。
+
 ### R461 · 2026-10-10 晨五(主件轮:判读岗 SOP v0.1 增补✅——r87 首例实战沉淀外部复核单子模式)
 - **主件=SOP 增补**(docs/sops/ROLE_JUDGE_SOP_V0 §八,v0.1):r87 实战新增三模式入规程——①**产能前置门**(被测方先函询产能,判读岗按容量纪律回函接/拒,防白跑);②**判据来源双模式**(自拟预注册/被测方预注册+岗审五点,未冻结不出复核不变);③**复核动作三件+结论三态**(逻辑抽查/抽样 n≥10/一致性比对→背书/修正/退回)。
 - 独立性从严条款:被测方兼判据作者时,阈值须给历史分布支撑。
