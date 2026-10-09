@@ -1,0 +1,122 @@
+[
+ {
+  "gold": "day-log-20261005-northstar-sprint.md",
+  "text": "14B 判读器管线可行性已证"
+ },
+ {
+  "gold": "bc1-launch-eve-20260926.md",
+  "text": "curl 直抓竞品官网"
+ },
+ {
+  "gold": "m5-memgate-deploy-lessons-20261009.md",
+  "text": "测试进程装了 inotify_simple→_ENTRIES_CACHE 直接 return 缓存列表，永不进 embed 段"
+ },
+ {
+  "gold": "launch-sprint-status-20260905.md",
+  "text": "nginx 生产陷阱：生效非 systemd 管理，需 `sudo kill -HUP <master PID>`"
+ },
+ {
+  "gold": "e1-arc-closure-two-loops-20261004.md",
+  "text": "判官升级项列下轮，我方备料档已出"
+ },
+ {
+  "gold": "day-log-1007-judge-discipline.md",
+  "text": "该情况是否与之前相同？"
+ },
+ {
+  "gold": "session_20260823-0912_goalmode-heartbeat-alert.md",
+  "text": "目标计算机积极拒绝，无法连接"
+ },
+ {
+  "gold": "daemon-9876-watchdog-rootcause-20260908.md",
+  "text": "探活三态（CLAUDE.md 只说了「socket JSON」,缺了换行）："
+ },
+ {
+  "gold": "session-contract-recall-usefulness-20260823.md",
+  "text": "从不觉得它帮到我\"的机械根因候选第一名"
+ },
+ {
+  "gold": "benchmark-system-dual-domain-20261006.md",
+  "text": "“我们已经做了大量的工作，体系叙事必须收编已有资产，不从零讲起。”"
+ },
+ {
+  "gold": "benchmark-naming-licensing-20260902.md",
+  "text": "T0 发布版(9/12"
+ },
+ {
+  "gold": "daemon-auth-and-hf-offline-20260901.md",
+  "text": "{\"ok\":false,\"error\":\"auth_failed\"}"
+ },
+ {
+  "gold": "jev-trust-launch-20260922.md",
+  "text": "domain3_20260922"
+ },
+ {
+  "gold": "judging-evidence-tiers-20261003.md",
+  "text": "实测/推断/不可验三层标注已确定，每条结论标明证据层级，覆盖帧数如实记录"
+ },
+ {
+  "gold": "week-review-20260927-1003.md",
+  "text": "本周最重方法论增量是什么？"
+ },
+ {
+  "gold": "hn-submit-pipeline-20260910.md",
+  "text": "“这条帖被秒 flag，作者评论也被拒，怎么办？”"
+ },
+ {
+  "gold": "ssh-cloud-port-2460-20260930.md",
+  "text": "“云 daemon SSH 端口是 24860，不要用 22。”"
+ },
+ {
+  "gold": "session-contract-l4a-distill-20260822.md",
+  "text": "“燃料必须带溯源，对照协议不可省，Repair也核销。”"
+ },
+ {
+  "gold": "judge-corpus-p2-baseline-20260930.md",
+  "text": "**“是否需要独立复算判分器输出以避免作弊通道？”**"
+ },
+ {
+  "gold": "session_20260716_eval_recall_v230_rerun.md",
+  "text": "语料无元数据信号"
+ },
+ {
+  "gold": "mainline-anchor-20261008.md",
+  "text": "compass 主线自然延伸，v5 主线互补不冲突"
+ },
+ {
+  "gold": "aegis-compass-competitor-20260907.md",
+  "text": "“选”算子拆 select-action vs select-memory —— Aegis 前者强后者弱（policy 挡写）"
+ },
+ {
+  "gold": "feedback-ark-coding-plan-not-metered-api.md",
+  "text": "如何在 coding plan 模式下使用 ARK 模型？"
+ },
+ {
+  "gold": "sha-eol-autocrlf-trap-20261008.md",
+  "text": "为什么在 Windows 上不能直接 sha256sum 文件后入档？"
+ },
+ {
+  "gold": "pilot-verdicts-unverifiable-20260915.md",
+  "text": "本批是否仍需复算？"
+ },
+ {
+  "gold": "session_20260807-2111_闭环收敛状态-fuel-loop唯一闸门.md",
+  "text": "fuel-loop 没部署到 cloud（4 文件+表全 MISSING）"
+ },
+ {
+  "gold": "feedback-analysis-vs-action-mode-20261003.md",
+  "text": "这轮用户的实质诉求推进了吗"
+ },
+ {
+  "gold": "session_9c3b69dc.md",
+  "text": "标准远程MCP是否已实现？"
+ },
+ {
+  "gold": "paper-roadmap-history-20260904.md",
+  "text": "kimi 论文②实身"
+ },
+ {
+  "gold": "commit-attribution-rule-20260923.md",
+  "text": "attributed to chunxiaoxx, no co-authored by, no thank you in PR body"
+ }
+]

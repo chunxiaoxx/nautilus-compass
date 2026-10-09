@@ -1,0 +1,32 @@
+{
+ "workset": "A_plus_queries_v2.json (generator v2, 30 clean queries)",
+ "cells": [
+  {
+   "cfg": "baseline: src corpus, bge alone",
+   "n": 30,
+   "r1": 0.5,
+   "r5": 0.8333,
+   "mrr": 0.6446
+  },
+  {
+   "cfg": "h2: src corpus + rerank",
+   "n": 30,
+   "r1": 0.8,
+   "r5": 0.8333,
+   "mrr": 0.8241
+  },
+  {
+   "cfg": "combined: merged corpus + rerank",
+   "n": 30,
+   "r1": 0.8333,
+   "r5": 0.8333,
+   "mrr": 0.8408
+  }
+ ],
+ "criteria_v1": {
+  "r1_min": 0.6,
+  "r5_min": 0.8,
+  "bge_frozen": true
+ },
+ "note": "正式定谳口径: 判据正本=v2 重生成工作集(本评测);H1+H2 组合格为建议部署管线"
+}
