@@ -629,10 +629,41 @@ def get_embedder():
     # 包一个 wrapper · encode 返 list 兼容 _APIEmbedder
     class _BGEWrapper:
         def encode(self, text, **kwargs):
+            _state["last_embed"] = time.time()  # v3.1 idle-unload 时间戳
             return model.encode(text).tolist()
     _state["embedder"] = _BGEWrapper()
+    _state["last_embed"] = time.time()
     log(f"BGE loaded · {time.time()-t0:.1f}s")
     return _state["embedder"]
+
+
+# v3.1 · 内存根治:空闲自动卸载 BGE+reranker(默认30分钟无嵌入请求→释放~1.4GB)
+_IDLE_UNLOAD_SEC = int(os.environ.get("COMPASS_IDLE_UNLOAD_SEC", "1800"))
+
+
+def _idle_unloader():
+    """后台线程:检查空闲超时→卸载模型→GC。下次请求时 lazy reload(~30s)。"""
+    while True:
+        time.sleep(60)
+        try:
+            if _state.get("embedder") is not None:
+                idle = time.time() - _state.get("last_embed", 0)
+                if idle > _IDLE_UNLOAD_SEC:
+                    _state["embedder"] = None
+                    _state.pop("last_embed", None)
+                    global _RERANKER_SINGLETON
+                    _RERANKER_SINGLETON = None
+                    import gc
+                    gc.collect()
+                    log(f"idle-unload: BGE+reranker freed after {idle:.0f}s idle "
+                        f"(saved ~1.4GB; next recall will lazy-reload in ~30s)")
+        except Exception as e:
+            log(f"idle-unload error: {e}")
+
+
+# 随 daemon 启动(daemon=True=不阻止主进程退出)
+_idle_thread = threading.Thread(target=_idle_unloader, daemon=True, name="idle-unloader")
+_idle_thread.start()
 
 
 def _get_embedder():
@@ -1593,6 +1624,22 @@ def serve():
         # queue + running > 32 · prevents CLOSE-WAIT leak from unbounded
         # ThreadPoolExecutor queueing under V5/V7 retry storms.
         if not _INFLIGHT_SEM.acquire(blocking=False):
+            # 2026-09-30 冷启动风暴教训:业务 handler 全忙时 status/ping 诊断通道也被
+            # in-flight 门堵死,运维在风暴中反而失去观测能力。peek 首字节判 action,
+            # status/ping 放行(只读不 encode,不占 handler 池)。
+            try:
+                conn.settimeout(2)
+                peek = conn.recv(1024, socket.MSG_PEEK)
+                _line = peek.split(b"\n", 1)[0][:120]
+                if b'"status"' in _line or b'"ping"' in _line:
+                    resp = _status_payload() if b'"status"' in _line \
+                        else _runtime_identity_payload()
+                    conn.sendall(json.dumps(resp, ensure_ascii=False).encode() + b"\n")
+                    try: conn.close()
+                    except Exception: pass
+                    continue
+            except Exception:
+                pass
             log(f"overload · reject conn (inflight cap {DAEMON_INFLIGHT_LIMIT})")
             _OVERLOAD_TS_BUFFER.append(time.time())
             try:
