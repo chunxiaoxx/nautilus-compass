@@ -412,3 +412,8 @@
 - **主件=激活评估**(docs/metering/RERANK_ACTIVATION_ASSESS_20261010.md):daemon v2.3.0 **已有完整 rerank 骨架**(复用旧实物再中:COMPASS_PROD_RERANK 开关/同款模型/candidates 配置/fail-soft,当年 benchmark P@5 0.86→0.92 在档);四前提三过一否——**本机无 GPU,CPU 实测 cand=8 3.44s/cand=30 7.64s,recall <3s 预算不过,硬激活否决**(否则吃掉 R444 提速成果)。
 - 三路径候拍板:a GPU 宿主(A100 remote-rerank 通道,建议,开业周后 10/18 位)/b 轻量模型(精度未证)/c 边际触发;验收判据=E1-TUNE 现成档零新立。
 - 附带:本机 HF 缓存 2.2GB reranker 权重完整性确认(此前断点下载残件实为完整快照)。
+
+### R447 · 2026-10-10 凌晨二(用户拍板落执行:PRECOR 双轨弹药全备✅——署名 c+投递 c 确认,arXiv tex 编译 COMPILE OK)
+- **用户拍板**:署名 c+投递 c(双轨)——与 R382 初拍一致,确认知认落档(决策卡 APPROVED 注记)。
+- **执行状态盘点[实测]**:步骤①署名落稿✅(R382 已落,Author 段 c 形态+检查单四勾);步骤②博客短版✅(PRECOR_BLOG_SHORT_20261009.md,R382 产出,工程师口吻+负结果原样+CTA——10/12 21:00 弹药);步骤③**本轮补齐**:全版→arXiv tex(arxiv_pkg/precors_arxiv/,Abstract+§1-7+表格 tabular+Fig1 png 入包+thebibliography 四实锚)——**pdflatex 编译 COMPILE OK** 产出 PDF;步骤④发后回链候首发后。
+- 双轨两轨弹药全备:博客短版(开业 21:00)+arXiv 全版(同周窗)。遗留小项=arXiv 官方投稿时按其 meta 界面再核对 license 选项(发时动作)。

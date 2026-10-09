@@ -1,5 +1,7 @@
 # PRECOR 短文投递决策卡(呈批 · 2026-10-08 · R374)
 
+> **【已批准 · APPROVED】** 署名 c+投递 c(双轨)——R382 初拍,2026-10-10 用户再确认一致。执行状态:①署名落稿✅(draft Author 段 c 形态)②博客短版✅(PRECOR_BLOG_SHORT_20261009.md,工程师口吻+CTA)③arXiv tex✅(arxiv_pkg/precors_arxiv/,pdflatex 编译 COMPILE OK+fig1 入包,2026-10-10 R447)④发后回链=候首发后执行。双轨两轨弹药全备,10/12 21:00 候窗口。
+
 > 短文现状 [实测]:docs/papers/PRECOR_SHORT_PAPER_DRAFT_20261007.md **v1.0 全英可投**(Abstract+§1-7+References 四实锚+Fig1 PNG);内容零欠账,唯两窗待拍板。本卡把两窗的选项/利弊/推荐一次呈清,拍板即发。
 
 ## 问一 · 署名口径
