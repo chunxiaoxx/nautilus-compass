@@ -459,6 +459,11 @@
 - NACRE_ROADMAP §二洞察 1 已就地修正(澄清段)。
 - 附带:A100 SSH banner 断连持续频发(重试版通道兜住,a100_exec 3 次退避)。
 
+### R457 · 2026-10-10 晨二(主件轮:r87 判读复核接单✅函 10921——判读岗首张外部复核单,v5 训练方/compass 独立复核)
+- **死线带新件接单**(#10920 v5 产能确认函):r87 双臂同构复考(held-out 60 题×r80 vs grpo_r87)10/11 发车——**compass 接复核单**:读数到手 4h 内出终判,10/12 12:00 前完成(榜单刷新前背书,余量 6h+);投递=mailbox(trace r87-judge),卡经 judge_status API live(卡号顺延 0005)。
+- **判读纪律条款先冻结**:v5 初稿须带预注册判据档(criteria sha,未冻结不出复核);compass 终判=非实现者复核(判定逻辑抽查+held-out 抽样 n≥10 复验+一致性比对);结论三态背书/修正/退回如实。独立性成立(v5=训练方,compass=复核)。
+- **Einsia 首触函呈批候用户**(草案 v1 在档 runtime/outreach/einsia_first_touch_draft.md,不发条款已解除——开业三链接全 live;checklist 第一步=用户过目署名/语气)。
+
 ### R447 · 2026-10-10 凌晨二(用户拍板落执行:PRECOR 双轨弹药全备✅——署名 c+投递 c 确认,arXiv tex 编译 COMPILE OK)
 - **用户拍板**:署名 c+投递 c(双轨)——与 R382 初拍一致,确认知认落档(决策卡 APPROVED 注记)。
 - **执行状态盘点[实测]**:步骤①署名落稿✅(R382 已落,Author 段 c 形态+检查单四勾);步骤②博客短版✅(PRECOR_BLOG_SHORT_20261009.md,R382 产出,工程师口吻+负结果原样+CTA——10/12 21:00 弹药);步骤③**本轮补齐**:全版→arXiv tex(arxiv_pkg/precors_arxiv/,Abstract+§1-7+表格 tabular+Fig1 png 入包+thebibliography 四实锚)——**pdflatex 编译 COMPILE OK** 产出 PDF;步骤④发后回链候首发后。
