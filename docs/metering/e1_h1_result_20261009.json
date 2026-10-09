@@ -1,0 +1,235 @@
+{
+ "n_queries": 30,
+ "n_corpus_after_merge": 150,
+ "merged_away": [
+  "memgate-m5-deploy-lessons-20261008.md",
+  "session_20260722-1251_client-auto-reconnect-shipped.md",
+  "session_20260722-1251_MCP-TCP-auth-landed.md",
+  "session_20260722-1251_server-status-endpoint-added.md",
+  "session_20260722-1251_TLS-demo-observation-one.md",
+  "session_20260722-1251_TLS-demo-observation-two.md",
+  "session_20260823-0912_goalmode-heartbeat-alert.md",
+  "convergence-state-snapshot-20260809.md"
+ ],
+ "recall_at_1": 0.4333,
+ "recall_at_5": 0.6333,
+ "mrr": 0.5197,
+ "baseline": {
+  "recall_at_1": 0.4,
+  "recall_at_5": 0.6667,
+  "mrr": 0.4994
+ },
+ "delta_r1": 0.0333,
+ "per_query": [
+  {
+   "query": "如果 agent 再次遇到完全相同的情况，它会输入的一句话情境查询：**北极星四",
+   "gold": "day-log-20261005-northstar-sprint.md",
+   "rank": 1,
+   "top1": "day-log-20261005-northstar-sprint.md",
+   "verdict": "HIT"
+  },
+  {
+   "query": "如果 agent 再次遇到完全相同的情况，它会输入的一句话情境查询：  ",
+   "gold": "bc1-launch-eve-20260926.md",
+   "rank": 51,
+   "top1": "benchmark-system-dual-domain-20261006.md",
+   "verdict": "MISS"
+  },
+  {
+   "query": "fast path 环境差虚警: inotify_simple 误触发缓存返回，",
+   "gold": "m5-memgate-deploy-lessons-20261009.md",
+   "rank": 1,
+   "top1": "m5-memgate-deploy-lessons-20261009.md",
+   "verdict": "HIT"
+  },
+  {
+   "query": "nginx 生产陷阱：非 systemd 管理，需用 `sudo kill -H",
+   "gold": "launch-sprint-status-20260905.md",
+   "rank": 3,
+   "top1": "hud-multiview-crosstalk-fix-20260901.md",
+   "verdict": "MISS"
+  },
+  {
+   "query": "如果 agent 再次遇到完全相同的情况，它会输入的一句话情境查询：  ",
+   "gold": "judge-lessons-20260926.md",
+   "rank": 11,
+   "top1": "benchmark-system-dual-domain-20261006.md",
+   "verdict": "MISS"
+  },
+  {
+   "query": "判官升级项列下轮，我方备料档已出",
+   "gold": "e1-arc-closure-two-loops-20261004.md",
+   "rank": 2,
+   "top1": "day-log-20261006-round1-final.md",
+   "verdict": "MISS"
+  },
+  {
+   "query": "查询: 该情况是否与之前相同？",
+   "gold": "day-log-1007-judge-discipline.md",
+   "rank": 86,
+   "top1": "session_20260717-0335_SSOT副本探针已上线.md",
+   "verdict": "MISS"
+  },
+  {
+   "query": "如果 agent 再次遇到完全相同的情况，它会输入的一句话情境查询：目标计算机积",
+   "gold": "session_20260823-0935_goalmode-heartbeat-alert.md",
+   "rank": 1,
+   "top1": "session_20260823-0935_goalmode-heartbeat-alert.md",
+   "verdict": "HIT"
+  },
+  {
+   "query": "探活三态（CLAUDE.md 只说了「socket JSON」,缺了换行）：进程",
+   "gold": "daemon-9876-watchdog-rootcause-20260908.md",
+   "rank": 1,
+   "top1": "daemon-9876-watchdog-rootcause-20260908.md",
+   "verdict": "HIT"
+  },
+  {
+   "query": "\"为什么 recall 从未改变任务结局？\"",
+   "gold": "session-contract-recall-usefulness-20260823.md",
+   "rank": 1,
+   "top1": "session-contract-recall-usefulness-20260823.md",
+   "verdict": "HIT"
+  },
+  {
+   "query": "如果 agent 再次遇到完全相同的情况，它会输入：“我们已经做了大量的工作，体",
+   "gold": "benchmark-system-dual-domain-20261006.md",
+   "rank": 1,
+   "top1": "benchmark-system-dual-domain-20261006.md",
+   "verdict": "HIT"
+  },
+  {
+   "query": "T0 发布版(9/12)",
+   "gold": "benchmark-naming-licensing-20260902.md",
+   "rank": 4,
+   "top1": "bc1-launch-eve-20260926.md",
+   "verdict": "MISS"
+  },
+  {
+   "query": "\"客户端直连 9876 桥未带 token → 请检查 token 文件\"",
+   "gold": "daemon-auth-and-hf-offline-20260901.md",
+   "rank": 1,
+   "top1": "daemon-auth-and-hf-offline-20260901.md",
+   "verdict": "HIT"
+  },
+  {
+   "query": "域 3(同日):embodied-qc-labeling(flywheel 数据",
+   "gold": "jev-trust-launch-20260922.md",
+   "rank": 7,
+   "top1": "compass-roadmap-20260907.md",
+   "verdict": "MISS"
+  },
+  {
+   "query": "如果 agent 再次遇到完全相同的情况，它会输入的一句话情境查询：  ",
+   "gold": "judging-evidence-tiers-20261003.md",
+   "rank": 118,
+   "top1": "benchmark-system-dual-domain-20261006.md",
+   "verdict": "MISS"
+  },
+  {
+   "query": "query: 为什么 token 被清除 before forwarding?",
+   "gold": "session_20260722-1257_MCP-TCP-auth-landed.md",
+   "rank": 31,
+   "top1": "p1-host-migration-http-20260906.md",
+   "verdict": "MISS"
+  },
+  {
+   "query": "查询: 该情况是否重复发生？",
+   "gold": "week-review-20260927-1003.md",
+   "rank": 59,
+   "top1": "judge-lessons-20260926.md",
+   "verdict": "MISS"
+  },
+  {
+   "query": "如果再次遇到完全相同的情况，我会输入：“这条帖被秒flag，作者评论也被拒，零 ",
+   "gold": "hn-submit-pipeline-20260910.md",
+   "rank": 1,
+   "top1": "hn-submit-pipeline-20260910.md",
+   "verdict": "HIT"
+  },
+  {
+   "query": "如果再次遇到相同情况，我会输入：“云 daemon SSH 端口是 24860，",
+   "gold": "ssh-cloud-port-2460-20260930.md",
+   "rank": 1,
+   "top1": "ssh-cloud-port-2460-20260930.md",
+   "verdict": "HIT"
+  },
+  {
+   "query": "如果 agent 再次遇到完全相同的情况，它会输入的一句话情境查询：  ",
+   "gold": "session-contract-l4a-distill-20260822.md",
+   "rank": 104,
+   "top1": "benchmark-system-dual-domain-20261006.md",
+   "verdict": "MISS"
+  },
+  {
+   "query": "如果 agent 再次遇到完全相同的情况，它会输入的一句话情境查询：**“是否需",
+   "gold": "judge-corpus-p2-baseline-20260930.md",
+   "rank": 8,
+   "top1": "judge-lessons-20260926.md",
+   "verdict": "MISS"
+  },
+  {
+   "query": "查询: 语料无元数据信号",
+   "gold": "session_20260716_eval_recall_v230_rerun.md",
+   "rank": 26,
+   "top1": "session_20260718-1142_差异化层-0-000是错尺子非无信号.md",
+   "verdict": "MISS"
+  },
+  {
+   "query": "compass 主线自然延伸，v5 主线互补不冲突",
+   "gold": "mainline-anchor-20261008.md",
+   "rank": 1,
+   "top1": "mainline-anchor-20261008.md",
+   "verdict": "HIT"
+  },
+  {
+   "query": "“选”算子拆 select-action vs select-memory——A",
+   "gold": "aegis-compass-competitor-20260907.md",
+   "rank": 1,
+   "top1": "aegis-compass-competitor-20260907.md",
+   "verdict": "HIT"
+  },
+  {
+   "query": "如果 agent 再次遇到完全相同的情况，它会输入的一句话情境查询：  ",
+   "gold": "feedback-ark-coding-plan-not-metered-api.md",
+   "rank": 78,
+   "top1": "benchmark-system-dual-domain-20261006.md",
+   "verdict": "MISS"
+  },
+  {
+   "query": "为什么在 Windows 上不能直接 sha256sum 文件后入档？",
+   "gold": "sha-eol-autocrlf-trap-20261008.md",
+   "rank": 1,
+   "top1": "sha-eol-autocrlf-trap-20261008.md",
+   "verdict": "HIT"
+  },
+  {
+   "query": "查询: 本批是否仍需复算？",
+   "gold": "pilot-verdicts-unverifiable-20260915.md",
+   "rank": 1,
+   "top1": "pilot-verdicts-unverifiable-20260915.md",
+   "verdict": "HIT"
+  },
+  {
+   "query": "R0 有4种 intervention+5种 selector，比C2丰富一个量",
+   "gold": "session_20260807-2111_闭环收敛状态-fuel-loop唯一闸门.md",
+   "rank": 4,
+   "top1": "session_20260718-1142_差异化层-0-000是错尺子非无信号.md",
+   "verdict": "MISS"
+  },
+  {
+   "query": "这轮用户的实质诉求推进了吗",
+   "gold": "feedback-analysis-vs-action-mode-20261003.md",
+   "rank": 4,
+   "top1": "launch-sprint-status-20260905.md",
+   "verdict": "MISS"
+  },
+  {
+   "query": "\"标准远程MCP已实现，但当前/мcp/*是自定义REST，需升级为JSON-R",
+   "gold": "session_9c3b69dc.md",
+   "rank": 2,
+   "top1": "session_20260822-1918_tribal-compass-daemon-port.md",
+   "verdict": "MISS"
+  }
+ ]
+}
