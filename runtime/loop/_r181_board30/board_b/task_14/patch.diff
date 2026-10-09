@@ -1,0 +1,68 @@
+diff --git a/output.txt b/output.txt
+new file mode 100644
+index 0000000000..e69de29bb2
+diff --git a/test_issue.py b/test_issue.py
+new file mode 100644
+index 0000000000..27a5fcde53
+--- /dev/null
++++ b/test_issue.py
+@@ -0,0 +1,59 @@
++import os
++import sys
++import django
++
++os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'test_settings')
++sys.path.insert(0, '/c/Users/chunx/nautilus-v5/tools/uni_agent_bridge/e5_repos/worktrees/l3r1b_14')
++
++from django.conf import settings
++if not settings.configured:
++    settings.configure(
++        DEBUG=True,
++        DATABASES={},
++        INSTALLED_APPS=[
++            "django.contrib.contenttypes",
++            "django.contrib.auth",
++        ],
++        USE_TZ=True,
++    )
++
++django.setup()
++
++from django.forms import (
++    Form,
++    CharField,
++    MultiValueField,
++    MultiWidget,
++)
++
++class MF(MultiValueField):
++    widget = MultiWidget
++    def __init__(self):
++        fields = [
++            CharField(required=False),
++            CharField(required=True),
++        ]
++        widget = self.widget(widgets=[
++            f.widget
++            for f in fields
++        ], attrs={})
++        super(MF, self).__init__(
++            fields=fields,
++            widget=widget,
++            require_all_fields=False,
++            required=False,
++        )
++    def compress(self, value):
++        return []
++
++class F(Form):
++    mf = MF()
++
++f = F({
++    'mf_0': '',
++    'mf_1': '',
++})
++print('Test 1: Empty values for both sub fields')
++print("  is_valid() =", f.is_valid())
++print('  Expected: False (because one sub field is required)')
++print("  Actual errors:", f.errors)

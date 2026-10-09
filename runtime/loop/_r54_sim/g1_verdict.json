@@ -1,0 +1,95 @@
+{
+ "ts": "2026-10-03T11:54:50",
+ "judge": "compass g1_judge_v3",
+ "evidence_policy": "JUDGING_EVIDENCE_TIERS_20261003",
+ "protocol": "g1_protocol_v1.json criteria_J(flywheel 函 2389 帧级语境)",
+ "material_dirs": {
+  "G": "g1_infer_G",
+  "B": "g1_infer_B2"
+ },
+ "criteria_note": "criteria_J 原文为 probe/full 语义;本判分按 2389 引用的帧级口径(J1=方向一致率,J2=幅度比带宽),映射已披露非静默",
+ "arms": {
+  "G": {
+   "n": 40,
+   "n_ok": 40,
+   "n_err": 0,
+   "n_degenerate_ratio": 0,
+   "J1_dir_rate": 0.85,
+   "J2_ratio_in_band": 0.925,
+   "ratio_median": 1.9863,
+   "ratio_min": 1.364,
+   "per_ep_dir": {
+    "0": "2/8",
+    "1": "8/8",
+    "2": "8/8",
+    "3": "8/8",
+    "4": "8/8"
+   },
+   "rows_sha16": "eab63d7fd833d7da",
+   "ckpt": "/root/openpi/checkpoints/g1_probe_G/g1_G_run1/1999"
+  },
+  "B": {
+   "n": 40,
+   "n_ok": 40,
+   "n_err": 0,
+   "n_degenerate_ratio": 0,
+   "J1_dir_rate": 0.825,
+   "J2_ratio_in_band": 0.925,
+   "ratio_median": 1.768,
+   "ratio_min": 1.0043,
+   "per_ep_dir": {
+    "0": "2/8",
+    "1": "8/8",
+    "2": "7/8",
+    "3": "8/8",
+    "4": "8/8"
+   },
+   "rows_sha16": "340eff115ef49e50",
+   "ckpt": "/root/openpi/checkpoints/g1_probe_B/g1_B_run1/1999"
+  }
+ },
+ "J3_sha": "见 arms.*.rows_sha16(逐臂材料锚定;checkpoint 目录只读路径记录)",
+ "differential": {
+  "delta_J1": 0.025,
+  "delta_J2": 0.0,
+  "J1_direction": "G>B(注入坏数据伤拟合,方向符合预期)",
+  "note": "差分为材料判读;预注册门槛(J1 Δfull≥5pp 等 probe/full 语义)不适用于本帧级材料,完整门槛裁断留预注册语义实验,不越权硬判",
+  "valid": true
+ },
+ "material_quality": {
+  "G": "OK",
+  "B": "OK"
+ },
+ "findings": [
+  {
+   "finding": "双臂逐帧读数(dir/J2 带宽/ratio 分布/差分)",
+   "evidence_tier": "measured",
+   "basis": "直读 infer_compare.jsonl 逐帧字段,双臂 sha 见 arms"
+  },
+  {
+   "finding": "G 修复批三修全部生效:①frame_filter ‖act−state‖≥1e-3(逐帧实测 min 7.2e-2)②dir 0/1 混合分布=sign 语义(abs(dot)>0 实现下不可能出 0)③5 eps×8 帧=40/40(ep0-only 疑义对 G 消除)",
+   "evidence_tier": "measured",
+   "basis": "直读新 G 批逐帧 act_state_norm/dir_consistent/ep 字段;材料 sha16=eab63d7fd833d7da",
+   "upgrade_path": null
+  },
+  {
+   "finding": "旧批 ratio 数千倍源于分母 ‖act−state‖ 趋零(静止段帧)——G 修复批 0/40 帧 degenerate,ratio 中位回落至带宽内,旧判定被新材料闭合",
+   "evidence_tier": "measured",
+   "basis": "旧批实测依据:2026-10-03 直读数据集 ep0 前 8 帧 ‖act−state‖=3.5e-5~7.4e-5;新批判定=ratio>30 计数=0",
+   "upgrade_path": null
+  },
+  {
+   "finding": "G 修复批 J1 逐 ep 分布(见 arms.G.per_ep_dir):方向不一致集中 ep0",
+   "evidence_tier": "measured",
+   "basis": "直读逐帧 ep 字段分组统计;现象单列不归因",
+   "upgrade_path": "若需归因(ep0 分布偏移/预热),材料侧逐 ep 对照重跑"
+  },
+  {
+   "finding": "视频注入未传导到预测(双臂 pred 高度同形态)",
+   "evidence_tier": "inferred",
+   "basis": "双臂 pred_head 逐帧差异远小于 pred 与 act 差异;state 未注入,模型或主要由 state 驱动;G 修复批 same_form_watch 字段已列为差分观察项;双臂修复批差分实测:ΔJ1=+0.025/ΔJ2=+0.0(B=30% 注入)≈0,注入未在读数层面表现=不传导特征增强",
+   "upgrade_path": "注入帧 vs 干净帧的 pred 逐帧对比"
+  }
+ ],
+ "verdict": "材料合格,读数见 arms/differential;门槛裁断留预注册语义实验"
+}

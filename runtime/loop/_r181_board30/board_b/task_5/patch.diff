@@ -1,0 +1,19 @@
+diff --git a/test_django.py b/test_django.py
+new file mode 100644
+index 0000000000..25ed2c783d
+--- /dev/null
++++ b/test_django.py
+@@ -0,0 +1,10 @@
++"import os" 
++"import sys"  
++"import django"  
++"from django.conf import settings"  
++"settings.configure("  
++"    DEBUG=True,"  
++"    DATABASES={'default': {'ENGINE': 'django.db.backends.sqlite3', 'NAME': ':memory:'}},"  
++"    INSTALLED_APPS=['django.contrib.contenttypes', 'django.contrib.auth'],"  
++")"  
++"django.setup()" 
+diff --git a/test_issue.py b/test_issue.py
+new file mode 100644
+index 0000000000..e69de29bb2

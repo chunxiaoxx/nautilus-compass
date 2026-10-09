@@ -1,0 +1,8 @@
+tools/xerj-code/hub/backlog/g7-cisa-2026-10-graded.json
+tools/xerj-code/hub/backlog/g7-cve-records-2026-10-08-graded.json
+tools/xerj-code/hub/backlog/g7-night2-2026-10-04-graded.json
+tools/xerj-code/hub/backlog/g7-nonit-2026-10-graded.json
+tools/xerj-code/hub/backlog/g7-otel-proto-2026-10-08-graded.json
+tools/xerj-code/hub/backlog/g7-tonight-2026-10-03-graded.json
+tools/xerj-code/hub/backlog/g7-vuln-fix-commits-2026-10-08-graded.json
+tools/xerj-code/hub/backlog/g7-wave1-2026-10-graded.json

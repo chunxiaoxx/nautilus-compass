@@ -1,0 +1,70 @@
+{
+ "env": {
+  "env_id": "gym_pusht/PushT-v0",
+  "obs_type": "pixels_agent_pos",
+  "gym_pusht_version": "0.1.6",
+  "pymunk_version": "6.11.1",
+  "max_episode_steps": 300,
+  "success_threshold": 0.95,
+  "policy_protocol": "closed_loop_replan_first_action",
+  "n_eps_per_window": 100,
+  "seed_base": 70000,
+  "seed_pairing": "同 seed 序列跨窗配对(初始布局一致),差异只来自 ckpt",
+  "success_def": "terminated & info[is_success](coverage>0.95)",
+  "note": "判读坐标:A1N vs A2F=数据修复效应(v2 协议同口径);A1O 存档参照(v1 训练协议混杂,不进主判);噪声底=同臂双跑 |orig−noise|(rollout 维度)"
+ },
+ "windows": [
+  {
+   "window": "A1O",
+   "role": "orig",
+   "config": "pusht_local",
+   "ckpt": "/root/openpi/checkpoints/pusht_local/pusht_arm1_orig/1999",
+   "ckpt_sha16": "b9b23d51d273aea4",
+   "n_eps": 100,
+   "n_success": 0,
+   "success_rate": 0.0,
+   "mean_steps_to_success": null,
+   "mean_final_coverage": 0.0445,
+   "wall_s": 2927.4
+  },
+  {
+   "window": "A1N",
+   "role": "noise",
+   "config": "pusht_local",
+   "ckpt": "/root/openpi/checkpoints/pusht_local/pusht_arm1_noise/1999",
+   "ckpt_sha16": "1968c1c003880bb8",
+   "n_eps": 100,
+   "n_success": 0,
+   "success_rate": 0.0,
+   "mean_steps_to_success": null,
+   "mean_final_coverage": 0.0703,
+   "wall_s": 2860.3
+  },
+  {
+   "window": "A2F",
+   "role": "fixed",
+   "config": "pusht_fixed",
+   "ckpt": "/root/openpi/checkpoints/pusht_fixed/pusht_arm2_fixed/1999",
+   "ckpt_sha16": "70bfbff386c8ea5c",
+   "n_eps": 100,
+   "n_success": 0,
+   "success_rate": 0.0,
+   "mean_steps_to_success": null,
+   "mean_final_coverage": 0.1513,
+   "wall_s": 2851.5
+  },
+  {
+   "window": "A2N",
+   "role": "fixed_noise",
+   "config": "pusht_fixed",
+   "ckpt": "/root/openpi/checkpoints/pusht_fixed/pusht_arm2_noise/1999",
+   "ckpt_sha16": "629583967b49e1bb",
+   "n_eps": 100,
+   "n_success": 0,
+   "success_rate": 0.0,
+   "mean_steps_to_success": null,
+   "mean_final_coverage": 0.1513,
+   "wall_s": 2850.0
+  }
+ ]
+}

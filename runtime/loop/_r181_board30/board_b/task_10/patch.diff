@@ -1,0 +1,95 @@
+diff --git a/django/views/generic/base.py b/django/views/generic/base.py
+index ea5baca08d..a4f8db0626 100644
+--- a/django/views/generic/base.py
++++ b/django/views/generic/base.py
+@@ -11,7 +11,7 @@ from django.template.response import TemplateResponse
+ from django.urls import reverse
+ from django.utils.decorators import classonlymethod
+ from django.utils.deprecation import RemovedInDjango40Warning
+-from django.utils.functional import SimpleLazyObject
++from django.utils.functional import lazy
+ 
+ logger = logging.getLogger('django.request')
+ 
+@@ -169,7 +169,7 @@ def _wrap_url_kwargs_with_deprecation_warning(url_kwargs):
+     context_kwargs = {}
+     for key, value in url_kwargs.items():
+         # Bind into function closure.
+-        @SimpleLazyObject
++        
+         def access_value(key=key, value=value):
+             warnings.warn(
+                 'TemplateView passing URL kwargs to the context is '
+@@ -178,7 +178,7 @@ def _wrap_url_kwargs_with_deprecation_warning(url_kwargs):
+                 RemovedInDjango40Warning, stacklevel=2,
+             )
+             return value
+-        context_kwargs[key] = access_value
++        context_kwargs[key] = lazy(access_value, type(value))()
+     return context_kwargs
+ 
+ 
+diff --git a/test_issue.py b/test_issue.py
+new file mode 100644
+index 0000000000..c6c4205f9a
+--- /dev/null
++++ b/test_issue.py
+@@ -0,0 +1,50 @@
++import os
++import sys
++sys.path.insert(0, ".")
++os.environ["DJANGO_SETTINGS_MODULE"] = "test_settings"
++
++with open("test_settings.py", "w") as f:
++    f.write("SECRET_KEY = \"test-secret-key\"")
++
++import django
++django.setup()
++
++from django.db import connection, models
++from django.utils.functional import SimpleLazyObject, lazy
++
++class Artist(models.Model):
++    name = models.CharField(max_length=100)
++    class Meta:
++        app_label = "test_app"
++
++with connection.schema_editor() as schema_editor:
++    schema_editor.create_model(Artist)
++
++artist = Artist.objects.create(name="Rene Magritte")
++
++print("Testing SimpleLazyObject:")
++lazy_obj = SimpleLazyObject(lambda: "Rene Magritte")
++print("Type:", type(lazy_obj))
++print("Is string:", isinstance(lazy_obj, str))
++
++print()
++print("Testing lazy():")
++lazy_str = lazy(lambda: "Rene Magritte", str)()
++print("Type:", type(lazy_str))
++print("Is string:", isinstance(lazy_str, str))
++
++print()
++print("Filtering with SimpleLazyObject:")
++try:
++    result = Artist.objects.get(name=lazy_obj)
++    print("Success:", result)
++except Exception as e:
++    print("Error:", type(e).__name__, str(e))
++
++print()
++print("Filtering with lazy():")
++try:
++    result = Artist.objects.get(name=lazy_str)
++    print("Success:", result)
++except Exception as e:
++    print("Error:", type(e).__name__, str(e))
+diff --git a/test_settings.py b/test_settings.py
+new file mode 100644
+index 0000000000..d595223b6f
+--- /dev/null
++++ b/test_settings.py
+@@ -0,0 +1 @@
++SECRET_KEY = "test-secret-key"
+\ No newline at end of file

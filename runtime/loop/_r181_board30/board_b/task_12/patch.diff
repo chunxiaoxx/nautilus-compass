@@ -1,0 +1,99 @@
+diff --git a/django/db/models/sql/query.py b/django/db/models/sql/query.py
+index ce18098fd2..919a40fb66 100644
+--- a/django/db/models/sql/query.py
++++ b/django/db/models/sql/query.py
+@@ -1124,7 +1124,7 @@ class Query(BaseExpression):
+ 
+     def check_filterable(self, expression):
+         """Raise an error if expression cannot be used in a WHERE clause."""
+-        if not getattr(expression, 'filterable', True):
++        if isinstance(expression, BaseExpression) and not getattr(expression, filterable', True):
+             raise NotSupportedError(
+                 expression.__class__.__name__ + ' is disallowed in the filter '
+                 'clause.'
+diff --git a/test_filterable_issue.py b/test_filterable_issue.py
+new file mode 100644
+index 0000000000..6f68542258
+--- /dev/null
++++ b/test_filterable_issue.py
+@@ -0,0 +1,63 @@
++import os
++import sys
++import django
++
++os.environ.setdefault("DJANGO_SETTINGS_MODULE", "test_settings")
++
++settings_content = """SECRET_KEY = "test-secret-key"
++DATABASES = {
++    "default": {
++        "ENGINE": "django.db.backends.sqlite3",
++        "NAME": ":memory:"
++    }
++}
++INSTALLED_APPS = [
++    "django.contrib.contenttypes",
++    "django.contrib.auth",
++]
++"""
++
++with open("test_settings.py", "w") as f:
++    f.write(settings_content)
++
++django.setup()
++
++from django.db import models, connection
++
++class ProductMetaDataType(models.Model):
++    label = models.CharField(max_length=255)
++    filterable = models.BooleanField(default=False)
++    
++    class Meta:
++        app_label = "test_app"
++
++class Product(models.Model):
++    name = models.CharField(max_length=255)
++    
++    class Meta:
++        app_label = "test_app"
++
++class ProductMetaData(models.Model):
++    product = models.ForeignKey(Product, on_delete=models.CASCADE)
++    value = models.TextField()
++    metadata_type = models.ForeignKey(ProductMetaDataType, on_delete=models.CASCADE)
++    
++    class Meta:
++        app_label = "test_app"
++
++with connection.schema_editor() as schema_editor:
++    schema_editor.create_model(ProductMetaDataType)
++    schema_editor.create_model(Product)
++    schema_editor.create_model(ProductMetaData)
++
++brand_metadata = ProductMetaDataType.objects.create(label="brand", filterable=False)
++product = Product.objects.create(name="Test Product")
++ProductMetaData.objects.create(product=product, value="Dark Vador", metadata_type=brand_metadata)
++
++print("Testing filter with model that has filterable=False field...")
++try:
++    result = ProductMetaData.objects.filter(value="Dark Vador", metadata_type=brand_metadata)
++    list(result)
++    print("SUCCESS: Query worked correctly!")
++except Exception as e:
++    print("ERROR: {}: {}".format(type(e).__name__, e))
+diff --git a/test_settings.py b/test_settings.py
+new file mode 100644
+index 0000000000..05ecfcd34f
+--- /dev/null
++++ b/test_settings.py
+@@ -0,0 +1,11 @@
++SECRET_KEY = "test-secret-key"
++DATABASES = {
++    "default": {
++        "ENGINE": "django.db.backends.sqlite3",
++        "NAME": ":memory:"
++    }
++}
++INSTALLED_APPS = [
++    "django.contrib.contenttypes",
++    "django.contrib.auth",
++]

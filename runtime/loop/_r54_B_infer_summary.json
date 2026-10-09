@@ -1,0 +1,16 @@
+{
+ "probe": "g1_probe_B",
+ "ckpt": "/root/openpi/checkpoints/g1_probe_B/g1_B_run1/1999",
+ "n_frames": 40,
+ "n_ok": 40,
+ "n_eps": 5,
+ "frame_target": "5 eps × 8 帧=40",
+ "dir_rate": 0.825,
+ "ratio_median": 1.7857,
+ "J1_material": "dir_rate=方向一致率(sign 语义:dot(pred−state,act−state)>0)",
+ "J2_material": "ratio_median=幅度比(判[0.3,3.0])",
+ "frame_filter": "‖act−state‖≥1e-3(零增量帧已剔除)",
+ "frame_src": "parquet 'index' 全局帧索引直读+ds回读episode_index断言自校",
+ "same_form_watch": "候选结论(#2413):修复后 G/B pred 仍同形态→'视频注入不传导到预测',单列差分实验观察项",
+ "note": "原始材料,判分归 compass 独立;修复版对齐 #2407 三条建议+#2413 阈值参考"
+}

@@ -1,0 +1,12 @@
+{
+ "idx": 15,
+ "instance_id": "matplotlib__matplotlib-26291",
+ "wall_s": 496.2,
+ "exit_status": "LimitsExceeded",
+ "n_model_calls": 50,
+ "cost": 0.0,
+ "patch_nonempty": true,
+ "patch_chars": 601,
+ "exit_error": "",
+ "status": "ok"
+}

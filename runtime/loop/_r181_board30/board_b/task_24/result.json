@@ -1,0 +1,12 @@
+{
+ "idx": 24,
+ "instance_id": "sphinx-doc__sphinx-9229",
+ "wall_s": 337.0,
+ "exit_status": "LimitsExceeded",
+ "n_model_calls": 50,
+ "cost": 0.0,
+ "patch_nonempty": false,
+ "patch_chars": 0,
+ "exit_error": "",
+ "status": "ok"
+}

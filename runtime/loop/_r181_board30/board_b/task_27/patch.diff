@@ -1,0 +1,17 @@
+diff --git a/test_issue.py b/test_issue.py
+new file mode 100644
+index 0000000000..708848bc1e
+--- /dev/null
++++ b/test_issue.py
+@@ -0,0 +1,11 @@
++from sympy.utilities.autowrap import autowrap
++from sympy import MatrixSymbol
++import numpy as np
++
++x = MatrixSymbol("x", 2, 1)
++expr = 1.0
++f = autowrap(expr, args=(x,), backend="cython")
++
++result = f(np.array([[1.0], [2.0]]))
++print("Result:", result)
++print("Expected: 1.0")

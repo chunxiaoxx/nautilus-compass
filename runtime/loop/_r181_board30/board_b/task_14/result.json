@@ -1,0 +1,12 @@
+{
+ "idx": 14,
+ "instance_id": "django__django-14034",
+ "wall_s": 545.7,
+ "exit_status": "LimitsExceeded",
+ "n_model_calls": 50,
+ "cost": 0.0,
+ "patch_nonempty": true,
+ "patch_chars": 1634,
+ "exit_error": "",
+ "status": "ok"
+}

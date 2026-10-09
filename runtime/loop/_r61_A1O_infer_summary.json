@@ -1,0 +1,19 @@
+{
+ "window": "A1O",
+ "role": "orig",
+ "config": "pusht_local",
+ "ckpt": "/root/openpi/checkpoints/pusht_local/pusht_arm1_orig/1999",
+ "dataset": "/root/vdd3/datasets/pusht",
+ "n_frames": 40,
+ "n_ok": 40,
+ "n_eps": 5,
+ "frame_target": "5 eps × 8 帧=40",
+ "dir_rate": 0.7,
+ "ratio_median": 0.5227,
+ "J1_material": "dir_rate=方向一致率(sign 语义:dot(pred−state,act−state)>0)",
+ "J2_material": "ratio_median=幅度比(参考带[0.3,3.0],判据归 compass)",
+ "frame_filter": "‖act−state‖≥1e-3(原始像素单位·零增量帧剔除)",
+ "noise_floor_design": "orig/noise=臂1同数据双跑 run 方差底;fixed/fixed_noise 同理;数据效应须过噪声底",
+ "pad_note": "臂2 剔除 22 集后 pad 占比与臂1(~40%)有分布偏移(flywheel #2448 口径,如实记录)",
+ "note": "原始材料,判分归 compass 独立;口径同 G1 三修(#2407/#2413)"
+}

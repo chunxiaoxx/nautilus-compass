@@ -1,0 +1,41 @@
+diff --git a/django/template/defaultfilters.py b/django/template/defaultfilters.py
+index 7a5b28d159..b0cbfa2aeb 100644
+--- a/django/template/defaultfilters.py
++++ b/django/template/defaultfilters.py
+@@ -152,7 +152,7 @@ def floatformat(text, arg=-1):
+             arg = arg[:-1] or -1
+     try:
+         input_val = repr(text)
+-        d = Decimal(input_val)
++        d = Decimal(text)
+     except InvalidOperation:
+         try:
+             d = Decimal(str(float(text)))
+diff --git a/test_fix.py b/test_fix.py
+new file mode 100644
+index 0000000000..c8454de0f2
+--- /dev/null
++++ b/test_fix.py
+@@ -0,0 +1,2 @@
++from decimal import Decimal, ROUND_HALF_UP, Context, InvalidOperation 
++def floatformat_original(text, arg): 
+diff --git a/test_issue.py b/test_issue.py
+new file mode 100644
+index 0000000000..a361bc55f8
+--- /dev/null
++++ b/test_issue.py
+@@ -0,0 +1,14 @@
++from decimal import Decimal  
++from django import setup  
++from django.conf import settings  
++from django.template import Template, Context 
++TEMPLATES = [  
++    {  
++        'BACKEND': 'django.template.backends.django.DjangoTemplates',  
++    },  
++] 
++settings.configure(TEMPLATES=TEMPLATES, USE_L10N=False)  
++setup() 
++from django.template.defaultfilters import floatformat  
++d = Decimal('42.12345678901234567890')  
++print(floatformat(d, 20))

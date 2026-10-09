@@ -1,0 +1,63 @@
+diff --git a/django/db/models/enums.py b/django/db/models/enums.py
+index f48143ddaf..1944121520 100644
+--- a/django/db/models/enums.py
++++ b/django/db/models/enums.py
+@@ -60,6 +60,7 @@ class ChoicesMeta(enum.EnumMeta):
+ 
+ class Choices(enum.Enum, metaclass=ChoicesMeta):
+     """Class for creating enumerated choices."""
++    do_not_call_in_templates = True
+ 
+     def __str__(self):
+         """
+diff --git a/test_enum_template.py b/test_enum_template.py
+new file mode 100644
+index 0000000000..d1f8bc347a
+--- /dev/null
++++ b/test_enum_template.py
+@@ -0,0 +1,45 @@
++import django
++from django.conf import settings
++
++settings.configure(
++    DEBUG=True,
++    DATABASES={},
++    INSTALLED_APPS=[
++        "django.contrib.contenttypes",
++        "django.contrib.auth",
++    ],
++    DEFAULT_AUTO_FIELD="django.db.models.AutoField",
++)
++
++django.setup()
++
++from django.db.models import TextChoices, IntegerChoices
++from django.template import Template, Context
++
++class YearInSchool(TextChoices):
++    FRESHMAN = "FR", "Freshman"
++    SOPHOMORE = "SO", "Sophomore"
++    JUNIOR = "JR", "Junior"
++    SENIOR = "SR", "Senior"
++
++class Priority(IntegerChoices):
++    LOW = 1, "Low"
++    MEDIUM = 2, "Medium"
++    HIGH = 3, "High"
++
++print("YearInSchool.do_not_call_in_templates:", getattr(YearInSchool, "do_not_call_in_templates", "NOT SET"))
++print("Priority.do_not_call_in_templates:", getattr(Priority, "do_not_call_in_templates", "NOT SET"))
++
++template_str = "{% if student.year_in_school == YearInSchool.FRESHMAN %}Yes{% else %}No{% endif %}"
++
++class Student:
++    year_in_school = YearInSchool.FRESHMAN
++
++context = Context({"student": Student(), "YearInSchool": YearInSchool})
++
++try:
++    template = Template(template_str)
++    result = template.render(context)
++    print("Template result:", result)
++except Exception as e:
++    print("Error:", type(e).__name__, str(e))

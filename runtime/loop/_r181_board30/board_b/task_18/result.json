@@ -1,0 +1,12 @@
+{
+ "idx": 18,
+ "instance_id": "pylint-dev__pylint-4661",
+ "wall_s": 685.4,
+ "exit_status": "LimitsExceeded",
+ "n_model_calls": 50,
+ "cost": 0.0,
+ "patch_nonempty": true,
+ "patch_chars": 6084,
+ "exit_error": "",
+ "status": "ok"
+}

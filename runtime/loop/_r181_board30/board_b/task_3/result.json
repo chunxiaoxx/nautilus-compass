@@ -1,0 +1,12 @@
+{
+ "idx": 3,
+ "instance_id": "django__django-11490",
+ "wall_s": 920.0,
+ "exit_status": "",
+ "n_model_calls": 33,
+ "cost": 0.0,
+ "patch_nonempty": false,
+ "patch_chars": 0,
+ "exit_error": "InternalServerError: litellm.InternalServerError: InternalServerError: OpenAIException - Internal Server Error",
+ "status": "error"
+}

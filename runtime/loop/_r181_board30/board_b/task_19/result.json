@@ -1,0 +1,12 @@
+{
+ "idx": 19,
+ "instance_id": "pytest-dev__pytest-5262",
+ "wall_s": 496.3,
+ "exit_status": "LimitsExceeded",
+ "n_model_calls": 50,
+ "cost": 0.0,
+ "patch_nonempty": true,
+ "patch_chars": 167,
+ "exit_error": "",
+ "status": "ok"
+}

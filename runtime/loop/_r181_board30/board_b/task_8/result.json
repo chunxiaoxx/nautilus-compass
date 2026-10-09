@@ -1,0 +1,12 @@
+{
+ "idx": 8,
+ "instance_id": "django__django-14376",
+ "wall_s": 572.3,
+ "exit_status": "Submitted",
+ "n_model_calls": 48,
+ "cost": 0.0,
+ "patch_nonempty": true,
+ "patch_chars": 1477,
+ "exit_error": "",
+ "status": "ok"
+}

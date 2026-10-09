@@ -1,0 +1,54 @@
+diff --git a/sklearn/utils/_show_versions.py b/sklearn/utils/_show_versions.py
+index e5d3141bf0..dafd518f48 100644
+--- a/sklearn/utils/_show_versions.py
++++ b/sklearn/utils/_show_versions.py
+@@ -47,6 +47,7 @@ def _get_deps_info():
+         "scipy",
+         "Cython",
+         "pandas",
++        "joblib",
+         "matplotlib",
+     ]
+ 
+diff --git a/sklearn/utils/tests/test_show_versions.py.bak b/sklearn/utils/tests/test_show_versions.py.bak
+new file mode 100644
+index 0000000000..31153c96c7
+--- /dev/null
++++ b/sklearn/utils/tests/test_show_versions.py.bak
+@@ -0,0 +1,33 @@
++
++from sklearn.utils._show_versions import _get_sys_info
++from sklearn.utils._show_versions import _get_deps_info
++from sklearn.utils._show_versions import show_versions
++
++
++def test_get_sys_info():
++    sys_info = _get_sys_info()
++
++    assert 'python' in sys_info
++    assert 'executable' in sys_info
++    assert 'machine' in sys_info
++
++
++def test_get_deps_info():
++    deps_info = _get_deps_info()
++
++    assert 'pip' in deps_info
++    assert 'setuptools' in deps_info
++    assert 'sklearn' in deps_info
++    assert 'numpy' in deps_info
++    assert 'scipy' in deps_info
++    assert 'Cython' in deps_info
++    assert 'pandas' in deps_info
++    assert 'matplotlib' in deps_info
++
++
++def test_show_versions_with_blas(capsys):
++    show_versions()
++    out, err = capsys.readouterr()
++    assert 'python' in out
++    assert 'numpy' in out
++    assert 'BLAS' in out
+diff --git a/temp.py b/temp.py
+new file mode 100644
+index 0000000000..e69de29bb2

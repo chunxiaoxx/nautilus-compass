@@ -1,0 +1,222 @@
+{
+ "graded_at": "2026-10-06",
+ "corpora": {
+  "cisa": {
+   "median": 4.0,
+   "queries": [
+    {
+     "q": "Is CVE-2021-44228 in the Known Exploited Vulnerabilities catalog and what is the required patch due date",
+     "expect": "kev/CVE-2021-44228.txt in top-5 (dateAdded 2021-12-10, dueDate 2021-12-24)",
+     "verdict": "pass",
+     "hit": "corpus-cisa/kev/CVE-2021-44228.txt (rank 1)",
+     "top5": [
+      "corpus-cisa/kev/CVE-2021-44228.txt",
+      "corpus-cisa/kev/CVE-2021-45046.txt",
+      "corpus-cisa/kev/CVE-2020-1350.txt",
+      "corpus-cisa/kev/CVE-2020-1472.txt",
+      "corpus-cisa/kev/CVE-2020-0601.txt"
+     ]
+    },
+    {
+     "q": "Which KEV entries are known to be exploited by ransomware actors and list their due dates",
+     "expect": "kev/CVE-*.txt with knownRansomwareCampaignUse Known in top-5",
+     "verdict": "miss",
+     "top5": [
+      "corpus-cisa/alerts/2026/aa26-113a.md",
+      "corpus-cisa/alerts/2026/aa26-113a.md",
+      "corpus-cisa/alerts/2025/aa25-343a.md",
+      "corpus-cisa/alerts/2026/2026-07-30-cisa-urges-water-and-wastewater-systems-sector-protect-ot-against-activity-targeting-plcs.md",
+      "corpus-cisa/README.md"
+     ],
+     "note": "List-style question over a field value; lexical ranking surfaces advisories about ransomware actors instead of the records. An agent gets this from a filtered query (knownRansomwareCampaignUse) rather than plain retrieval; kept honest as the suite's one miss."
+    },
+    {
+     "q": "What is the known exploitation date and description for CVE-2023-4966 Citrix NetScaler",
+     "expect": "kev/CVE-2023-4966.txt in top-5 (dateAdded 2023-10-18)",
+     "verdict": "pass",
+     "hit": "corpus-cisa/kev/CVE-2023-4966.txt (rank 1)",
+     "top5": [
+      "corpus-cisa/kev/CVE-2023-4966.txt",
+      "corpus-cisa/kev/CVE-2023-3519.txt",
+      "corpus-cisa/kev/CVE-2023-6548.txt",
+      "corpus-cisa/kev/CVE-2023-6549.txt",
+      "corpus-cisa/alerts/2026/2026-09-27-critical-zero-day-vulnerabilities-exploited-citrix-netscaler-adc-gateway.md"
+     ]
+    },
+    {
+     "q": "What indicators of compromise and required actions does the CISA advisory about a ransomware campaign give",
+     "expect": "an AA-series joint advisory with IOC and required-actions sections",
+     "verdict": "pass",
+     "hit": "corpus-cisa/alerts/2026/aa26-204a.md (Zimbra advisory with IOC sections)",
+     "top5": [
+      "corpus-cisa/alerts/2026/2026-03-18-cisa-urges-endpoint-management-system-hardening-after-cyberattack-against-us-organization.md",
+      "corpus-cisa/alerts/2026/aa26-204a.md",
+      "corpus-cisa/alerts/2026/2026-02-10-poland-energy-sector-cyber-incident-highlights-ot-and-ics-security-gaps.md",
+      "corpus-cisa/alerts/2026/aa26-204a.md",
+      "corpus-cisa/alerts/2026/aa26-097a.md"
+     ]
+    },
+    {
+     "q": "Which ICS advisory covers Siemens products and what mitigations does it recommend",
+     "expect": "an ICSA advisory naming Siemens products",
+     "verdict": "pass",
+     "hit": "corpus-cisa/ics/2026/icsa-26-209-04.md (Siemens SIMATIC S7-1500 CPU 1518(F)-4 PN/DP MFP)",
+     "top5": [
+      "corpus-cisa/ics/2026/icsa-26-209-04.md",
+      "corpus-cisa/ics/2026/icsa-26-211-07.md",
+      "corpus-cisa/alerts/2026/aa26-231a.md",
+      "corpus-cisa/alerts/2026/aa26-097a.md",
+      "corpus-cisa/ics/2026/icsa-26-209-04.md"
+     ]
+    }
+   ],
+   "first_run": {
+    "graded_at": "2026-10-06",
+    "corpus_pin": "corpus-cisa-alerts @b4d2547e86425aa3b3d63fa07a9ea07d339b49e1 + corpus-cisa-kev @1c09ebebd1e9821c8c38d4a72e4a3c7e6ea51c80 (two repos merged into one index)",
+    "median": 2.5,
+    "verdict": "fail",
+    "queries": [
+     {
+      "q": "Is CVE-2021-44228 in the Known Exploited Vulnerabilities catalog and what is the required patch due date",
+      "expect": "kev/CVE-2021-44228.txt in top-5 (dateAdded 2021-12-10, dueDate 2021-12-24)",
+      "verdict": "miss",
+      "top5": [
+       "corpus-cisa-alerts/alerts/2026/2026-03-05-cisa-adds-five-known-exploited-vulnerabilities-catalog.md",
+       "corpus-cisa-alerts/alerts/2026/2026-02-18-cisa-adds-two-known-exploited-vulnerabilities-catalog.md",
+       "corpus-cisa-alerts/alerts/2026/2026-03-09-cisa-adds-three-known-exploited-vulnerabilities-catalog.md",
+       "corpus-cisa-alerts/alerts/2026/2026-02-03-cisa-adds-four-known-exploited-vulnerabilities-catalog.md",
+       "corpus-cisa-alerts/alerts/2026/2026-07-21-cisa-adds-four-known-exploited-vulnerabilities-catalog.md"
+      ],
+      "note": "Weekly announcement alerts carry 'known exploited vulnerabilities catalog' verbatim in the title and crowd the per-CVE record out of the top-5 entirely. The record itself is retrievable (rank 2 on the probe 'CVE-2021-44228 log4shell due date 2021-12-10')."
+     },
+     {
+      "q": "Which KEV entries are known to be exploited by ransomware actors and list their due dates",
+      "expect": "kev/CVE-*.txt records with knownRansomwareCampaignUse: Known",
+      "verdict": "miss",
+      "top5": [
+       "corpus-cisa-alerts/alerts/2026/2026-04-20-cisa-adds-eight-known-exploited-vulnerabilities-catalog.md",
+       "corpus-cisa-alerts/alerts/2026/2026-02-17-cisa-adds-four-known-exploited-vulnerabilities-catalog.md",
+       "corpus-cisa-alerts/alerts/2026/2026-04-28-cisa-adds-two-known-exploited-vulnerabilities-catalog.md",
+       "corpus-cisa-alerts/alerts/2026/2026-06-02-cisa-adds-two-known-exploited-vulnerabilities-catalog.md",
+       "corpus-cisa-alerts/alerts/2026/2026-05-21-cisa-adds-two-known-exploited-vulnerabilities-catalog.md"
+      ],
+      "note": "Same crowding class: announcements about ransomware-group activity outrank the records whose knownRansomwareCampaignUse field is the answer."
+     },
+     {
+      "q": "What is the known exploitation date and description for CVE-2023-4966 Citrix NetScaler",
+      "expect": "kev/CVE-2023-4966.txt in top-5",
+      "verdict": "partial",
+      "top5": [
+       "corpus-cisa-alerts/alerts/2026/2026-09-27-critical-zero-day-vulnerabilities-exploited-citrix-netscaler-adc-gateway.md",
+       "corpus-cisa-alerts/alerts/2026/2026-09-27-critical-zero-day-vulnerabilities-exploited-citrix-netscaler-adc-gateway.md",
+       "corpus-cisa-alerts/alerts/2026/2026-09-27-cisa-adds-two-known-exploited-vulnerabilities-catalog.md",
+       "corpus-cisa-alerts/alerts/2026/2026-08-26-cisa-adds-six-known-exploited-vulnerabilities-catalog.md",
+       "corpus-cisa-alerts/alerts/2026/2026-09-09-cisa-adds-four-known-exploited-vulnerabilities-catalog.md"
+      ],
+      "note": "Top-1 is a genuine NetScaler ADC/Gateway exploitation advisory (right vendor and product family, 2026 CVEs not the asked 2023 one). The asked record is absent from top-5."
+     },
+     {
+      "q": "What indicators of compromise and required actions does the CISA advisory about a ransomware campaign give",
+      "expect": "an AA-series joint advisory with IOC and required-actions sections",
+      "verdict": "pass",
+      "top5": [
+       "corpus-cisa-alerts/alerts/2026/aa26-204a.md",
+       "corpus-cisa-alerts/alerts/2026/aa26-222a.md",
+       "corpus-cisa-alerts/alerts/2026/2026-03-18-cisa-urges-endpoint-management-system-hardening-after-cyberattack-against-us-organization.md",
+       "corpus-cisa-alerts/alerts/2026/aa26-251a.md",
+       "corpus-cisa-alerts/alerts/2025/2025-11-13-cisa-and-partners-release-advisory-update-akira-ransomware.md"
+      ]
+     },
+     {
+      "q": "Which ICS advisory covers Siemens products and what mitigations does it recommend",
+      "expect": "an ICSA advisory naming Siemens products",
+      "verdict": "pass",
+      "hit": "corpus-cisa-alerts/ics/2026/icsa-26-209-04.md (Siemens SIMATIC S7-1500 CPU 1518(F)-4 PN/DP MFP)",
+      "top5": [
+       "corpus-cisa-alerts/ics/2026/icsa-26-209-04.md",
+       "corpus-cisa-alerts/alerts/2026/aa26-231a.md",
+       "corpus-cisa-alerts/README.md",
+       "corpus-cisa-alerts/ics/2026/icsa-26-211-07.md",
+       "corpus-cisa-alerts/alerts/2026/aa26-097a.md"
+      ]
+     }
+    ],
+    "note": "G2 shape fix, not a re-grade: the 72 weekly 'CISA adds N known exploited vulnerabilities' announcement alerts duplicate kev/CVE-*.txt fields (dateAdded, dueDate, ransomware use) in prose whose title matches every KEV-phrased query. Dropped at merge into the single xerj-org/corpus-cisa mirror @f84cf43cf38187b495deccc5115d8f8226377b8c; advisory and ICS bodies byte-verbatim. Same five queries re-graded below on the fixed corpus."
+   },
+   "second_run": {
+    "graded_at": "2026-10-06",
+    "corpus_pin": "corpus-cisa @f84cf43cf38187b495deccc5115d8f8226377b8c (announcements dropped, tree still carried the raw feed blob)",
+    "median": 2.5,
+    "verdict": "fail",
+    "queries": [
+     {
+      "q": "Is CVE-2021-44228 in the Known Exploited Vulnerabilities catalog and what is the required patch due date",
+      "expect": "kev/CVE-2021-44228.txt in top-5",
+      "verdict": "miss",
+      "top5": [
+       "corpus-cisa/kev/CVE-2021-34527.txt",
+       "corpus-cisa/kev/CVE-2021-26858.txt",
+       "corpus-cisa/kev/CVE-2021-27065.txt",
+       "corpus-cisa/kev/CVE-2021-26857.txt",
+       "corpus-cisa/kev/CVE-2021-26855.txt"
+      ],
+      "note": "Announcement crowding gone, but the asked record still lost to the shared vocabulary of 1,734 structurally identical records (cve, year, known, exploited, vulnerabilities, catalog, due, date all match every record). Record retrievable at rank 1 on the probe 'CVE-2021-44228 log4shell'."
+     },
+     {
+      "q": "Which KEV entries are known to be exploited by ransomware actors and list their due dates",
+      "expect": "kev/CVE-*.txt with knownRansomwareCampaignUse Known in top-5",
+      "verdict": "miss",
+      "top5": [
+       "corpus-cisa/README.md",
+       "corpus-cisa/kev/CVE-2025-20362.txt",
+       "corpus-cisa/kev/CVE-2025-20333.txt",
+       "corpus-cisa/alerts/2026/aa26-113a.md",
+       "corpus-cisa/alerts/2026/aa26-113a.md"
+      ],
+      "note": "The two kev hits have knownRansomwareCampaignUse: Unknown; no Known record reached top-5."
+     },
+     {
+      "q": "What is the known exploitation date and description for CVE-2023-4966 Citrix NetScaler",
+      "expect": "kev/CVE-2023-4966.txt in top-5",
+      "verdict": "partial",
+      "top5": [
+       "corpus-cisa/alerts/2026/2026-09-27-critical-zero-day-vulnerabilities-exploited-citrix-netscaler-adc-gateway.md",
+       "corpus-cisa/alerts/2026/2026-09-27-critical-zero-day-vulnerabilities-exploited-citrix-netscaler-adc-gateway.md",
+       "corpus-cisa/kev/CVE-2026-88779.txt",
+       "corpus-cisa/kev/CVE-2026-88771.txt",
+       "corpus-cisa/kev/CVE-2026-19490.txt"
+      ]
+     },
+     {
+      "q": "What indicators of compromise and required actions does the CISA advisory about a ransomware campaign give",
+      "expect": "an AA-series joint advisory with IOC and required-actions sections",
+      "verdict": "pass",
+      "top5": [
+       "corpus-cisa/alerts/2026/aa26-204a.md",
+       "corpus-cisa/alerts/2026/aa26-222a.md",
+       "corpus-cisa/alerts/2026/2026-03-18-cisa-urges-endpoint-management-system-hardening-after-cyberattack-against-us-organization.md",
+       "corpus-cisa/alerts/2026/aa26-251a.md",
+       "corpus-cisa/alerts/2025/2025-11-13-cisa-and-partners-release-advisory-update-akira-ransomware.md"
+      ]
+     },
+     {
+      "q": "Which ICS advisory covers Siemens products and what mitigations does it recommend",
+      "expect": "an ICSA advisory naming Siemens products",
+      "verdict": "pass",
+      "hit": "corpus-cisa/ics/2026/icsa-26-209-04.md (Siemens SIMATIC S7-1500)",
+      "top5": [
+       "corpus-cisa/ics/2026/icsa-26-209-04.md",
+       "corpus-cisa/alerts/2026/aa26-231a.md",
+       "corpus-cisa/ics/2026/icsa-26-211-07.md",
+       "corpus-cisa/alerts/2026/aa26-097a.md",
+       "corpus-cisa/ics/2026/icsa-26-209-04.md"
+      ]
+     }
+    ],
+    "action": "Second shape pass: each kev record now opens with a one-sentence plain-English view of its fields (original fields verbatim below), and the 1.7 MB raw feed blob left the indexed tree (sha256 f51fed1c9213e7b797104fcd6dbeb1b0dc0c7073a80467b9d4b1fc25e7dd786b recorded in the mirror README; as one indexed doc it matched every query). Same five queries graded a third time on corpus-cisa @edfa369426f26b2eb679357d24b0d37506696cd1."
+   },
+   "graded_at": "2026-10-06",
+   "verdict": "pass"
+  }
+ }
+}

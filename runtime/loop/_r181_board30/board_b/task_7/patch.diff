@@ -1,0 +1,73 @@
+diff --git a/test_slice_prefetch.py b/test_slice_prefetch.py
+new file mode 100644
+index 0000000000..73ebb0a41e
+--- /dev/null
++++ b/test_slice_prefetch.py
+@@ -0,0 +1,67 @@
++import os
++import django
++os.environ.setdefault("DJANGO_SETTINGS_MODULE", "test_settings")
++
++import sys
++sys.path.insert(0, ".")
++
++from django.conf import settings
++if not settings.configured:
++    settings.configure(
++        DEBUG=True,
++        DATABASES={
++            "default": {
++                "ENGINE": "django.db.backends.sqlite3",
++                "NAME": ":memory:",
++            }
++        },
++        INSTALLED_APPS=[
++            "django.contrib.contenttypes",
++            "django.contrib.auth",
++        ],
++        USE_TZ=True,
++    )
++
++django.setup()
++
++from django.db import models, connection
++from django.db.models import Prefetch
++
++class Author(models.Model):
++    name = models.CharField(max_length=100)
++    class Meta:
++        app_label = "test_app"
++
++class Book(models.Model):
++    title = models.CharField(max_length=100)
++    author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name="books")
++    class Meta:
++        app_label = "test_app"
++
++with connection.schema_editor() as schema_editor:
++    schema_editor.create_model(Author)
++    schema_editor.create_model(Book)
++
++author1 = Author.objects.create(name="Author 1")
++author2 = Author.objects.create(name="Author 2")
++
++for i in range(5):
++    Book.objects.create(title="Book %d by Author 1" % i, author=author1)
++    Book.objects.create(title="Book %d by Author 2" % i, author=author2)
++
++print("Created authors and books")
++
++try:
++    authors = Author.objects.prefetch_related(
++        Prefetch(
++            "books",
++            queryset=Book.objects.all()[:3],
++            to_attr="first_three_books",
++        )
++    )
++    list(authors)
++    print("SUCCESS: Prefetch with slice works!")
++    for author in authors:
++        print("  %s: %s" % (author.name, [b.title for b in author.first_three_books]))
++except TypeError as e:
++    print("FAILED: %s" % e)
