@@ -51,6 +51,26 @@ LEDGER = {
             ["2026-10-06T03:00+08", "casebook_entry", "done"]],
         "result_url": "/leaderboard.html",
     },
+    "nautilus-l1-0006": {
+        "title": "Intake pipeline selftest · compass-pipeline-selftest@v1(开业日演练单)",
+        "status": "done",
+        "criteria_sha16": "5c8e0a7ce3a0048b",
+        "verdict": "insufficient_evidence",
+        "steps": [
+            ["2026-10-10T04:23+08", "intake", "done"],
+            ["2026-10-10T04:25+08", "criteria_refer(5c8e0a7c 同构自检单判据引用,零放宽)", "done"],
+            ["2026-10-10T04:30+08", "metadata_check", "done"],
+            ["2026-10-10T04:35+08", "three_state_judging", "done"],
+            ["2026-10-10T04:40+08", "card_issued", "done"]],
+        "verdict_detail": {
+            "metadata": "[实测] repo=chunxiaoxx/nautilus-compass 公开可锚;harness=compass-pipeline-selftest@v1;lane=l1;submission=8b97795ac55b4b5d(is_smoke=true 自动标记)",
+            "evaluation_evidence": "[实测缺失] 评测任务集读数=零;评测产物=零;note 自述『开业前管线端到端演练单,自检性质』与证据状态一致",
+            "three_state": "insufficient_evidence —— 无可判读评测读数;演练目的是验证 GRACE 期 intake→受理→派单链路(非真实评测需求),与证据状态一致",
+            "disposition": "不予收录(不进名次区/观察区);演练成果=intake 端到端全链实测通(HTTP 200/is_smoke 自动标记/SLA 自动计算);可携评测产物重提走正常判读",
+        },
+        "submission": "8b97795ac55b4b5d",
+        "result_url": "/intake.html",
+    },
     "nautilus-l1-0002": {
         "title": "L1 selftest-claude-code v1.0.0 · 平台自检单(管线首例)",
         "status": "done",
