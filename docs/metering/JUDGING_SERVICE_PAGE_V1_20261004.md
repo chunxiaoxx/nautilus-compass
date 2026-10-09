@@ -51,7 +51,7 @@ U 态(无法判定)与证据层独立标注;判读叙事跟数字走。
 - **首检邮箱**:`chunxiaoxx+external@gmail.com`(mailto;2026-10-06 用户拍板,与 HF 对外口径一致,公网部署随 platform 晨窗上站)
 - 三行首检说明:
   1. 提交必含**被测物坐标 repo@commit**(harness/agent 仓库+精确 commit;私有仓走 HF 材料包+sha16),缺坐标不起判;
-  2. **SLA:交付 ≤5 个工作日**,返工 ≤2,判据 sha 预注册(只许更严);
+  2. **SLA:L1 判读卡 24 小时 / L2 72h / L3 5 个工作日**(2026-10-10 收紧对齐),返工 ≤2,判据 sha 预注册(只许更严);
   3. 两档:**免费收录**(判读 verdict 入公开判例库)vs **$199 深度报告**(launch 价:归因链+复算命令+修复建议)。
 - 首检模板:`docs/metering/JUDGE_INTAKE_TEMPLATE_V0_20261006.md`——人读件字段与 assay 机读面一一对齐,填完直接进判分流程。
 

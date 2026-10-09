@@ -14,10 +14,11 @@ import re
 import time
 
 import torch
-from transformers import AutoModel, AutoTokenizer
+from tokenizers import Tokenizer
+from transformers import AutoModel
 
-os.environ.setdefault("MODELSCOPE_CACHE", "/root/vdd4/modelscope")
-CORPUS_DIR = "/root/vdd4/emb_bakeoff"
+os.environ.setdefault("MODELSCOPE_CACHE", "/root/emb_models")
+CORPUS_DIR = "/root/vdf/emb_bakeoff"
 BGE_PATH = "/root/vdd4/modelscope/models/models/BAAI--bge-m3/snapshots/master"
 QWEN032 = "Qwen/Qwen3-Embedding-0.6B"
 QWEN4B = "Qwen/Qwen3-Embedding-4B"
@@ -54,23 +55,34 @@ def load_corpus() -> list:
 @torch.no_grad()
 def embed(model, tok, texts: list, is_qwen: bool, is_query: bool) -> torch.Tensor:
     if is_qwen and is_query:
-        texts = [f"Instruct: {QWEN_INSTR}\nQuery: {t}" for t in texts]
-    enc = tok(texts, padding=True, truncation=True, max_length=MAXLEN,
-              return_tensors="pt").to(DEV)
-    out = model(**enc)
+        texts = [f"Instruct: {QWEN_INSTR} Query: {t}" for t in texts]
+    encs = [tok.encode(t).ids[:MAXLEN] for t in texts]
+    pad_id = tok.token_to_id("<|endoftext|>") or tok.token_to_id("<pad>") or 0
+    maxlen = max(len(e) for e in encs)
+    input_ids = torch.full((len(encs), maxlen), pad_id, dtype=torch.long)
+    attn = torch.zeros((len(encs), maxlen), dtype=torch.long)
+    for i, e in enumerate(encs):
+        input_ids[i, :len(e)] = torch.tensor(e)
+        attn[i, :len(e)] = 1
+    out = model(input_ids=input_ids.to(DEV), attention_mask=attn.to(DEV))
     if is_qwen:
-        last = enc["attention_mask"].sum(dim=1) - 1
+        last = attn.sum(dim=1) - 1
         vecs = out.last_hidden_state[torch.arange(len(texts)), last]
     else:
         vecs = out.last_hidden_state[:, 0]
     return torch.nn.functional.normalize(vecs, dim=-1)
 
 
-@torch.no_grad()
 def load_model(path_or_id: str, is_qwen: bool):
-    kw = dict(torch_dtype=torch.float16, trust_remote_code=True) if is_qwen else \
-         dict(torch_dtype=torch.float16)
-    tok = AutoTokenizer.from_pretrained(path_or_id, trust_remote_code=True)
+    import glob as _g
+    tok_path = path_or_id
+    if os.path.isdir(path_or_id):
+        tok_path = path_or_id.rstrip("/") + "/tokenizer.json"
+    elif is_qwen:
+        cands = _g.glob("/root/vdf/emb_models_models/*/snapshots/*/tokenizer.json")
+        tok_path = next((c for c in cands if ("0.6B" in c) == ("0.6B" in path_or_id)), cands[0])
+    tok = Tokenizer.from_file(tok_path)
+    kw = dict(torch_dtype=torch.float16)
     model = AutoModel.from_pretrained(path_or_id, **kw).to(DEV).eval()
     return tok, model
 
@@ -110,6 +122,11 @@ def main():
         {"text": "LME-V2 451 题基准归属", "gold": "lmev2-upstream-attribution-20260902.md"},
     ]
     sets = {"A_all": {"queries": set_a}, "B_cjk": {"queries": set_b}, "C_live": {"queries": set_c}}
+    ap_file = CORPUS_DIR + "/A_plus_queries.json"
+    if os.path.exists(ap_file):
+        apq = json.load(open(ap_file, encoding="utf-8"))
+        sets["A_plus"] = {"queries": apq}
+        print("A_plus loaded:", len(apq))
     print({k: len(v["queries"]) for k, v in sets.items()})
 
     results = {}
@@ -129,7 +146,7 @@ def main():
         except Exception as e:
             results[label] = {"error": str(e)[:300]}
             print(label, "ERROR", str(e)[:200])
-    out = "/root/vdd4/emb_bakeoff/results.json"
+    out = "/root/vdf/emb_bakeoff/results.json"
     json.dump(results, open(out, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     print("WROTE", out)
 
