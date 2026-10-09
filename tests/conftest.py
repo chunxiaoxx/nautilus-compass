@@ -34,3 +34,8 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+# T5.2: allow tests/ to import tools/ scripts (l2_report_gen etc.)
+TOOLS_DIR = Path(__file__).resolve().parent.parent / "tools"
+if str(TOOLS_DIR) not in sys.path:
+    sys.path.insert(0, str(TOOLS_DIR))

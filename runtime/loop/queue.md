@@ -341,3 +341,11 @@
 - **生产链三连[实测]**:hook.sh 模拟 stdin(session_id=throttle-smoke-1)①首次完整注入✓②同 session 立即重跑单行节流标记(594s remain)✓③`COMPASS_THROTTLE_MIN=0` 恢复注入✓;smoke 状态文件已清。
 - **部署形态**:plugin 目录即生产(hooks 直指)——改动即时 live;本会话下条消息起生效(首条全量注入写状态,10min 窗内节流单行标记)。commit feat/memory-gate-trio 分支+push -u;**失效 WIP stash(v2.6 broken early-return stdout)drop 清账**——旧方案已被替代。
 - 回音:flywheel data 站函(10867)未回(48h 窗内);平台 10862 已 ack。
+
+### R436 · 2026-10-09 晚三(主件轮:T5.2 L2 报告生成器 v0✅[TDD 7绿+真卡实弹七点验收]——北极星首单交付效率件)
+- **主件=T5.2 L2 报告自动生成管线首件**(LOOP_STATE 指针第 2 位,贴北极星 10/31 首笔 L2 $199):`tools/l2_report_gen.py`(纯 stdlib)——judge_status API done 卡→L2 报告草稿(卡面摘要/证据链原文零改动/时间线/复算指引/L2-ANALYST 人工槽位);**边界纪律内嵌:草稿 banner+未署名不得收费交付声明**(判读免费/装订收费两线定价的机器化执行)。
+- **TDD[实测]**:tests/test_l2_report_gen.py 7 用例(判据 G1 零丢失/G2 双 sha/G3 槽位/G4 非 done 拒绝/G5 证据层保真)先 RED 后 **GREEN 7 passed**;tests/conftest.py 补 tools/ 路径(测试可 import tools 脚本)。
+- **真卡实弹[实测]**:l1-0002 走线上 API 生成 `runtime/l2_reports/draft_l1-0002.md`(1370B)七点验收全 PASS(原文/双 sha/槽位/banner/证据层/时间线/复算指引);G4 拒绝路径实弹——假 id API 502→`[REJECT]` exit 2(fetch_card HTTPError 统一转 ValueError);stdout 模式冒烟 ✓。
+- **附带·MEMORY.md 索引压缩✅**:hook 报 19.8KB 逼近 24.4KB 上限→行级重写 76 条,18.7→**14.8KB**(目标 17.1KB 达成;8 月旧条目大缩,细节在主题文件索引只留指针)。
+- **附带·函 10869**:询平台 #10853 原文(e2e 真签测试坐标整理前置,#10862 第四条候件;我方本地无该函 body 存档)——回文即整理坐标另函直交。
+- 教训:heredoc 内嵌中文+引号批量替换脚本两次翻车→改 Write 脚本文件执行;行首锚匹配须含 `- ` 前缀(第一次 0 命中)。
