@@ -435,6 +435,12 @@
 - 修一坑:类型注解 `socket.channel` 定义时求值炸→`from __future__ import annotations` 一行修。
 - 开业周 daemon 部署窗后顺序:分支合入→隧道 watchdog 自启→COMPASS_PROD_RERANK=1+COMPASS_RERANK_REMOTE 双开→E1 判据 v2 工作集复测验收(零新判据)。
 
+### R453 · 2026-10-10 凌晨七(用户令·daemon remote 分支实现✅TDD 5绿+回归17绿——feat/rerank-remote 已 push,不部署)
+- **主件=daemon remote 分支**(feat/rerank-remote,新分支从 M5 落账基线切开——先把生产 v3.1 idle-unloader 47 行补 commit 还债):daemon.py 加 `_rerank_via_remote`(9879 协议,6s 超时,None 即回退)+`_rerank_top` remote 优先分支(**三级回退:remote→本地 CrossEncoder→dense**,recall 永不因 rerank 故障崩溃)。
+- **开关**:COMPASS_RERANK_REMOTE=host:port(空=行为完全不变);COMPASS_RERANK_TOKEN_FILE 默认 .cache/a100_rerank_token。
+- **TDD[实测]**:tests/test_rerank_remote.py 5 用例(fake TCP server 三模式)先 RED 后 **GREEN 5 passed**;回归 throttle+rerank **17 passed**;ast 语法 OK。
+- **部署边界**:不部署——本机生产 daemon 仍跑旧版;部署序=分支合入 main→隧道 watchdog 自启→双开关打开→E1 v2 判据复测验收。
+
 ### R447 · 2026-10-10 凌晨二(用户拍板落执行:PRECOR 双轨弹药全备✅——署名 c+投递 c 确认,arXiv tex 编译 COMPILE OK)
 - **用户拍板**:署名 c+投递 c(双轨)——与 R382 初拍一致,确认知认落档(决策卡 APPROVED 注记)。
 - **执行状态盘点[实测]**:步骤①署名落稿✅(R382 已落,Author 段 c 形态+检查单四勾);步骤②博客短版✅(PRECOR_BLOG_SHORT_20261009.md,R382 产出,工程师口吻+负结果原样+CTA——10/12 21:00 弹药);步骤③**本轮补齐**:全版→arXiv tex(arxiv_pkg/precors_arxiv/,Abstract+§1-7+表格 tabular+Fig1 png 入包+thebibliography 四实锚)——**pdflatex 编译 COMPILE OK** 产出 PDF;步骤④发后回链候首发后。
