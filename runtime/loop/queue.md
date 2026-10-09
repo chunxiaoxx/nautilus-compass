@@ -452,6 +452,13 @@
 - **10/26 预期修订[推断]**:2420+真实单+delta≈2450-2500,3000 不可达——推迟主场景维持(R454 重算),推迟报告预案候用户拍板后写入对拍执行档。
 - 教训:base64-over-exec 通道对 >100KB 文件需分块(已实测);put 大文件统一走分块路径。
 
+### R456 · 2026-10-10 晨(用户令·7B 资源预检✅+🔴J6 口径重大澄清——R454 错误绑定修正,"推迟预案"作废)
+- **🔴概念澄清(修正 R454)**:J6 ≠ 7B 对拍。J6(10/26)=**需求侧裁决**(外部复算请求/首单意向>0 判据,PREREG_DEMAND_CHECKPOINT);7B 对拍=语料 3000 **阈值触发无日历死线**(corpus_stats trigger)。R454"10/26 语料不到→推迟报告"系错误绑定,**前提作废、预案不需要**。J6 备考=开业周判读服务曝光(真实需求>0 即过)——与开业三件直接联动。
+- **主件=7B 资源预检**(docs/plans/SEVENB_PRECHECK_20261010.md):基模 ❌→**已启动下载**(modelscope→vdf,Qwen3-7B ~15GB);脚本 ✅(a3_lora_sft);适配器 ✅(best_lora 完整);磁盘 ✅(vdf 167G)。四项三绿一下载中。
+- **信箱 2 函 ack**:10899 平台审计回执(SHA 双锚机制共建+自伤循环补丁已部署毕+days le=90 更正——高质量闭环);10916 kairos 双凭据+无 key 调用方全谱(compass grep 实证无 WRITEBACK_KEY 依赖+不在名单;GRACE 关闸 10/12 提醒收下,我方调用全带 X-API-Key)。
+- NACRE_ROADMAP §二洞察 1 已就地修正(澄清段)。
+- 附带:A100 SSH banner 断连持续频发(重试版通道兜住,a100_exec 3 次退避)。
+
 ### R447 · 2026-10-10 凌晨二(用户拍板落执行:PRECOR 双轨弹药全备✅——署名 c+投递 c 确认,arXiv tex 编译 COMPILE OK)
 - **用户拍板**:署名 c+投递 c(双轨)——与 R382 初拍一致,确认知认落档(决策卡 APPROVED 注记)。
 - **执行状态盘点[实测]**:步骤①署名落稿✅(R382 已落,Author 段 c 形态+检查单四勾);步骤②博客短版✅(PRECOR_BLOG_SHORT_20261009.md,R382 产出,工程师口吻+负结果原样+CTA——10/12 21:00 弹药);步骤③**本轮补齐**:全版→arXiv tex(arxiv_pkg/precors_arxiv/,Abstract+§1-7+表格 tabular+Fig1 png 入包+thebibliography 四实锚)——**pdflatex 编译 COMPILE OK** 产出 PDF;步骤④发后回链候首发后。
