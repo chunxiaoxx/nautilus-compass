@@ -2361,3 +2361,6 @@
 - **10838 v5 GRPO 训练闭环首次全链实证收讫致贺**:r87 轮 200 步 26.7min/reward 0.25→0.9/held-out 配对 0.000→0.950(+0.95 同构复考实锤)——**模型在未见 prompt 真实习得合法 tool-call**;与 NACRE 7B 对拍(候语料 3000)同主题互鉴通道确认;#10802 P0 函启动键致谢已回。
 - 10829(RFC 澄清)→正本直交已完成(10836,R428)。
 - 双脚本巡检顺带:flywheel 10:50 mailbox 修复 commit(活跃)/nautilus-core 审计收官——五框全活。
+
+### R431 · 2026-10-09 晚(S3 增强三环境版✅——用户令"现在就写"响应)
+- check_env.sh 增 --remote 模式:本地摘要(原有)+cloud 段(git HEAD+三服务 active)+A100 段(embed/judge 双 health)——三环境一键全探,串环境三坑的根治工具成型;A100 ssh banner 偶发慢已知(ConnectTimeout 10s 兜底)。
