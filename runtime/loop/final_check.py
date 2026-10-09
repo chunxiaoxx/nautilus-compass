@@ -38,6 +38,10 @@ POINTS = [
      ["管道", "pipeline"]),
     ("compass 子域", "https://compass.nautilus.social/",
      ["NACRE", "LongMemEval"]),
+    # R444 重锚(函 10891 flywheel 确认 B 案静态化预期发布): 根页=纯静态营销页,
+    # 渲染口径对静态页无意义 → curl 内容锚; 84 路实证页未下线,固化至 /app.html
+    ("data 站根页(静态版)", "https://data.nautilus.social/",
+     ["智涌飞轮", "读数生成于"]),
     ("HF 判分模型", "https://huggingface.co/nautilus-compass/nacre-judge-v1",
      ["nacre-judge"]),
     ("HF 元基准", "https://huggingface.co/datasets/nautilus-compass/caliber-bench-v0",
@@ -57,7 +61,9 @@ LIVE = [
 ]
 
 RENDER_POINTS = [
-    ("data 站渲染", "https://data.nautilus.social/",
+    # R444 重锚: 原验货锚(验货/PASS/判据)平移至 /app.html(84 路实证页 SPA 固化件,
+    # 函 10891 确认未下线)——原判据内容保留,零放宽
+    ("data 站实证页渲染", "https://data.nautilus.social/app.html",
      ["验货", "PASS", "判据"]),
     # R434 防回归:registry 字段错位 bug(活数据路径渲染 undefined)只能渲染口径抓到;
     # 锚=源分布表首行 key(由同一次 upd() 填充,undefined bug 连带使其缺失)

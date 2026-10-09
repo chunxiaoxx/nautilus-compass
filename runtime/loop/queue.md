@@ -395,3 +395,11 @@
 - **主件=开业备料**(docs/plans/LAUNCH_KIT_V1_20261009.md):①判分 API 公告文(六能力清单全实锚:judge_status API/intake/criteria/榜单 26.7-16.7/NACRE judge HF/免费复算;定价边界一句话"判读永久免费,装订收费");②开业日 checklist(10/12 七时点:终检复跑/XERJ 跟进/白窗配合/三链接终验/21:00 PRECOR 候拍板/API 公告/回音巡检);③候拍板清单(PRECOR 署名投递=唯一阻塞,Einsia 函候三链接齐)。
 - **附带·10886 ack**:nginx 403 止血落地(bootstrap 系全封含孪生 apply_improvement prompt 注入面)——**P0-A 应用层洞先于 e2e 闭环**,e2e 五用例转回归性质;代码固化三读数全过;nginx conf 正本回 git(drift 417 行清零);10885 e2e 坐标确认收到。
 - 链接探活:intake/criteria 200 [实测];信箱 10886 处理毕 0 未读。
+
+### R444 · 2026-10-09 深夜七(用户令·hook 链提速三刀✅+data 站判据重锚✅16 PASS——慢诊因实锤+两刀实测生效)
+- **用户问"对话框为何慢"→实测诊断**:慢=本地 hook 链非模型(UserPromptSubmit 3.8-4.8s+每工具 mid_session 3.5s+Stop 7.7s,一轮 5 工具≈30s 纯开销);CPU<1.4s 大头=daemon BGE 排队+import 链。今天 T5 节流非变慢原因(方向是变快)。
+- **刀 1✅[实测]**:hook.sh bash 层节流前置——🔴第一版用 grep/sed/tr/cut 工具链反慢至 12.4s(MSYS 每外部进程被 Defender 扫 ~1.5s);v2 纯 bash 内建(参数扩展提取 SID+EPOCHSECONDS+read 状态文件)**窗内 3.8s→1.0s**,窗外 python 接管正常。
+- **刀 2✅[实测]**:mid_session_hook drift check 加 10min 时间窗(原每工具调用都打 daemon BGE 无节流)——**3.5s→0.38s(-89%)**;主 drift 防线仍在 recall 侧。
+- **刀 3 部分✅[如实记负]**:stop_hook 超时 5s→2.5s+DRIFT_MAX_FILES=3(最坏 7.5s 上限 vs 原 N×5s 无上限);但实测 9.6s 无改善——profile 定位 import 仅 1.3s,剩余=daemon 忙时 drift 排队(今晚评测挤占),正常时段会回落,候再测。
+- **data 站判据重锚✅[实测 16 PASS/0 FAIL]**:10891 flywheel 确认 B 案静态化预期发布(10736/10738 报备链在案)+实证内容未下线(固化 /app.html 直链可达);终检根页加静态锚(智涌飞轮/读数生成于)+原验货锚平移 /app.html 渲染口径(30571B 完整 DOM 恢复)——原判据内容不丢,净增不放宽;10867 PENDING-EXTERNAL 销项。
+- 教训:MSYS 外部进程=Defender 扫描单价 ~1.5s/个——bash 脚本优化方向=内建优先;节流类逻辑一律先测进程数。
