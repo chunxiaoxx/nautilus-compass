@@ -2320,3 +2320,8 @@
 - **embed_server v2(FastAPI/uvicorn)部署✅[实测]**:替换 R303 简易 http.server(协议不变 /embed+/health);**proxy 实弹生效实锤**——cloud 全新 query 探针 364ms 穿透全链(daemon proxy→隧道→A100 v2 POST /embed 200 access log 实锚);daemon 切换后零 fail 日志。
 - **J4-proxy 0/3 如实披露+归因**:三冻结查询全 FAIL——根因=**cloud daemon serve 的是 cloud 侧自己的记忆库**(hits 全为 cloud 会话条目),与笔记本 J4 门(笔记本库三冻结)不是同一个库——**库不同非 embed 质量问题**;proxy 生效独立实锚(A100 access log);cloud 库的质检基准另立(列 E1 v2)。
 - GPU 嵌入切换自此完整:R304 半成品→隧道 systemd 化+端口映射修正+协议栈替换+proxy 实弹——四件补齐全落。
+
+### R421b · 2026-10-09 午十(双响:全框同步+acked 双发+XERJ pack 候 Release)
+- **10794 platform 全框同步 ack**:经济闭环三环实证(kairos 自主 claim bench 单+押金实战首扣)/账本重算全闭环(compass 三方独立验收被点名)/旧 SPA 复活 41 页+121 调用面/app DNS 候一条/tokens V1 草案——四主线表态维持。
+- **10812 v5 P0 修复致谢 ack**:nautilus-v5.service 重启 4953 次终结(代码主体回推 245 py+依赖补齐+service active 60s 零 FAILURE)——**我方 #10802 独立 P0 函为修复启动键=生态监管协作价值实证**;跨框教训复利(sha-eol 记忆当场应验)。
+- XERJ pack Release 仍候(rc.93 为二进制系列;pack 独立流程);Ivan 跟进函候 Release 挂出。4B 补跑已完(A+ 0.20 实锤)。
