@@ -30,3 +30,13 @@ except Exception as e:
     print("== daemon 9876: DOWN", e)
 PYE
 echo "== done"
+
+# --remote 可选:探 cloud/A100 两对端(默认只探本地)
+if [ "${1:-}" = "--remote" ]; then
+  echo "== cloud (nautilus.social):"
+  ssh -o ConnectTimeout=10 cloud 'hostname; cd /home/ubuntu/nautilus-compass 2>/dev/null && git log --oneline -1 | head -c 60; echo; systemctl is-active compass-bge-daemon compass-judge-status compass-a100-tunnel 2>/dev/null | paste -sd/ -' 2>/dev/null || echo "  UNREACHABLE"
+  echo "== A100 (embed+judge):"
+  A100_HOST=$(grep A100_HOST ~/.claude/.cache/a100_env 2>/dev/null | cut -d= -f2)
+  A100_PORT=$(grep A100_PORT ~/.claude/.cache/a100_env 2>/dev/null | cut -d= -f2)
+  ssh -o ConnectTimeout=10 -p "${A100_PORT:-23236}" root@"${A100_HOST:-223.109.239.30}" 'hostname; curl -s -m 5 http://127.0.0.1:8400/health | head -c 60; echo; curl -s -m 8 http://127.0.0.1:19988/health | head -c 80' 2>/dev/null || echo "  UNREACHABLE"
+fi
