@@ -28,6 +28,9 @@ POINTS = [
      ["26.7", "16.7", "sha16", "caveat"]),
     ("受理入口", f"{BASE}/intake.html",
      ["L1", "L2", "L3", "SLA"]),
+    # R448: 开业主弹药页(PRECOR 博客短版)——发布面自有化(主域 blog.html)
+    ("PRECOR 博客页", f"{BASE}/blog.html",
+     ["quantized", "four-rule", "intake.html", "100.00%"]),
     ("判据披露", f"{BASE}/criteria/",
      ["判据", "预注册"]),
     ("判读卡状态页", f"{BASE}/status.html",

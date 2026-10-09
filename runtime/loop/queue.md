@@ -413,6 +413,11 @@
 - 三路径候拍板:a GPU 宿主(A100 remote-rerank 通道,建议,开业周后 10/18 位)/b 轻量模型(精度未证)/c 边际触发;验收判据=E1-TUNE 现成档零新立。
 - 附带:本机 HF 缓存 2.2GB reranker 权重完整性确认(此前断点下载残件实为完整快照)。
 
+### R448 · 2026-10-10 凌晨三(主件轮:开业博客发布面落实✅[实测外网 200]——blog.html 自有化部署+终检 15 项锚覆盖)
+- **主件=发布管道落实**(R382 checklist 第一条"平台博客管道"悬而未落的缺口):发布面自有化——主域 `/blog.html`(此前 404 空位)新建 PRECOR 博客短版 HTML(registry 风格+英文正文+verdict 表+CTA 块 intake/leaderboard/GitHub/HF 全链)→scp+sudo cp 部署(R366 配方)→**外网 200/4697B [实测]**。发布动作从"等管道"变"已挂出,开业日只转链接"。
+- **终检扩容 15 项[实测全绿]**:新加 PRECOR 博客页锚(quantized/four-rule/intake.html/100.00%——首跑抓出锚笔误 1.0000→100.00% 口径差修正);LAUNCH_KIT 三链接终验项就此全覆盖。
+- 附带:compass 子域 404 确认不同根(registry 404),发布面定主域。
+
 ### R447 · 2026-10-10 凌晨二(用户拍板落执行:PRECOR 双轨弹药全备✅——署名 c+投递 c 确认,arXiv tex 编译 COMPILE OK)
 - **用户拍板**:署名 c+投递 c(双轨)——与 R382 初拍一致,确认知认落档(决策卡 APPROVED 注记)。
 - **执行状态盘点[实测]**:步骤①署名落稿✅(R382 已落,Author 段 c 形态+检查单四勾);步骤②博客短版✅(PRECOR_BLOG_SHORT_20261009.md,R382 产出,工程师口吻+负结果原样+CTA——10/12 21:00 弹药);步骤③**本轮补齐**:全版→arXiv tex(arxiv_pkg/precors_arxiv/,Abstract+§1-7+表格 tabular+Fig1 png 入包+thebibliography 四实锚)——**pdflatex 编译 COMPILE OK** 产出 PDF;步骤④发后回链候首发后。

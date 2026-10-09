@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>We quantized our AI judge. Here's exactly what broke. · Nautilus Compass</title>
+<style>
+  :root{--ink:#16213e;--accent:#0a5ad6;--bg:#fff;--muted:#5b6472;--line:#e5e8ee;--green:#0a7d32;--red:#b42318}
+  body{font-family:-apple-system,"Segoe UI","Noto Sans SC",sans-serif;color:var(--ink);background:var(--bg);margin:0;line-height:1.75}
+  .wrap{max-width:760px;margin:0 auto;padding:0 22px}
+  header{border-bottom:1px solid var(--line);padding:22px 0}
+  h1{font-size:1.6rem;margin:0 0 6px;line-height:1.3}
+  p.meta{color:var(--muted);margin:0;font-size:.88rem}
+  section{padding:26px 0;border-bottom:1px solid var(--line)}
+  h2{font-size:1.2rem;margin:0 0 12px}
+  table{width:100%;border-collapse:collapse;font-size:.92rem;margin:14px 0}
+  th,td{border:1px solid var(--line);padding:8px 12px;text-align:left}
+  th{background:#f7f9fc}
+  code{background:#f0f3f8;border-radius:5px;padding:1px 6px;font-size:.88em}
+  ol li{margin:8px 0}
+  .cta{background:#f0f6ff;border:1px solid #c8dcff;border-radius:10px;padding:16px 18px;margin:18px 0}
+  .cta a{color:var(--accent);font-weight:600}
+  footer{padding:20px 0;color:var(--muted);font-size:.82rem}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>We quantized our AI judge. Here's exactly what broke.</h1>
+  <p class="meta">Nautilus Compass engineering blog · Chunxiao — nautilus-compass, Nautilus Platform · 2026-10</p>
+</div></header>
+
+<section><div class="wrap">
+  <p>Our production judge — a small 1.7B model with a LoRA adapter that grades other
+  AI outputs as <b>pass / fail / insufficient_evidence</b> (88.5% accuracy, ECE 0.072) —
+  is cheap to run. The obvious next step was quantization: serve it in int8 or int4
+  and cut the serving cost further.</p>
+  <p>Before flipping the switch, we did something unfashionable: we <b>froze the
+  acceptance criteria first</b> — "a quantized judge may ship only if it agrees with
+  the bf16 anchor on <b>≥99% of 291 held-out cases</b>" — and published them before
+  looking at any number.</p>
+  <p><b>Results (all measured, artifacts sha-anchored):</b></p>
+  <table>
+    <tr><th>Precision</th><th>Agreement with bf16</th><th>Verdict</th></tr>
+    <tr><td>fp16</td><td><b>100.00%</b> (0 flips)</td><td style="color:var(--green)">✅ ships</td></tr>
+    <tr><td>int8-nf4</td><td>98.28% (2 flips)</td><td style="color:var(--red)">❌ fails the gate</td></tr>
+    <tr><td>int4-nf4</td><td>94.16% (17 flips)</td><td style="color:var(--red)">❌ fails the gate</td></tr>
+  </table>
+  <p>Drift grows monotonically with quantization strength. The two int8 flips and
+  seventeen int4 flips are each a case where the judge changed its <em>verdict</em> —
+  not its confidence, its answer. In a self-improving training loop, a judge flip
+  is not a leaderboard wobble; <b>it is wrong training data, injected silently.</b></p>
+</div></section>
+
+<section><div class="wrap">
+  <h2>The four-rule deployment discipline</h2>
+  <ol>
+    <li><b>bf16/fp16 only</b> for production judges — int8/int4 are off the table until
+        re-certified against a new frozen gate.</li>
+    <li><b>Freeze criteria before running.</b> Criteria may only move stricter; loosening
+        means a fresh preregistration.</li>
+    <li><b>Label every claim</b> measured / inferred / unverifiable — and publish the
+        unverifiable ones anyway.</li>
+    <li><b>Two-way judging records</b>: judges grade, and get graded; errata ship as
+        first-class artifacts.</li>
+  </ol>
+</div></section>
+
+<section><div class="wrap">
+  <h2>The full study</h2>
+  <p>Complete per-case judgment matrix, gating criteria, runner, and the pre-registered
+  protocol: <code>nautilus-compass</code> on
+  <a href="https://github.com/chunxiaoxx/nautilus-compass">GitHub</a> and
+  <a href="https://huggingface.co/nautilus-compass">Hugging Face</a>. The arXiv version
+  ships this week.</p>
+  <div class="cta">
+    <b>Need an independent judge for your own benchmark?</b><br>
+    Our judging lane is free: preregistered criteria, three-state verdicts, every
+    artifact recomputable.<br><br>
+    Intake opens 2026-10-12 → <a href="https://nautilus.social/intake.html">nautilus.social/intake.html</a><br>
+    Live example: <a href="https://nautilus.social/leaderboard.html">nautilus.social/leaderboard.html</a>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  Chunxiao — nautilus-compass, Nautilus Platform · 判读永久免费 ·
+  <a href="/">nautilus.social</a>
+</div></footer>
+</body>
+</html>
