@@ -498,6 +498,11 @@
 - **主件=下载守护**(tools/qwen8b_dl_guard.sh→A100):loop 120s 检查——断则自动续传(hf-cli 断点续传)/完成判定(4 分片+config+无 incomplete)自停;**部署拉起验证[实测](守护+下载进程在位,15G 推进)**——免手动每轮盯。
 - 附带:演练单(8b97795a)候判读岗排期出卡(is_smoke 低优先,如实转排期);8.9→15G 续传轨迹留档。
 
+### R467 · 2026-10-10 晨十一(主件轮:演练单出卡 nautilus-l1-0006✅[实测外网 live]——判读岗标准流实战+部署链走通)
+- **主件=演练单出卡**:judge_status_api.py LEDGER 加 nautilus-l1-0006(判据引用 5c8e0a7c 同构自检单判据零放宽/is_smoke 如实标注/不进名次区/E2E 演练成果入 disposition)——commit→cloud pull→compass-judge-status 重启→**外网 judge_status?id=0006 live[实测]**;全卡清单 6 张(demo+0001/0002/0003/0004/0006),**0005 号正确预留给 r87 复核单**(顺延逻辑)。
+- 部署链:GitHub push→cloud /home/ubuntu/nautilus-compass git pull→systemctl restart compass-judge-status(active)——R370 先例复用零障碍。
+- Edit 事故一笔:中途误删 0002 title 行,语法+完整性验证抓到即时修复(先证伪自己再部署)。
+
 ### R461 · 2026-10-10 晨五(主件轮:判读岗 SOP v0.1 增补✅——r87 首例实战沉淀外部复核单子模式)
 - **主件=SOP 增补**(docs/sops/ROLE_JUDGE_SOP_V0 §八,v0.1):r87 实战新增三模式入规程——①**产能前置门**(被测方先函询产能,判读岗按容量纪律回函接/拒,防白跑);②**判据来源双模式**(自拟预注册/被测方预注册+岗审五点,未冻结不出复核不变);③**复核动作三件+结论三态**(逻辑抽查/抽样 n≥10/一致性比对→背书/修正/退回)。
 - 独立性从严条款:被测方兼判据作者时,阈值须给历史分布支撑。
