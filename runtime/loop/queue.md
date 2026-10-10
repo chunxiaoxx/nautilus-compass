@@ -526,6 +526,12 @@
 - **J6 影响评估**:rsi-bench 线暂停≠J6 受损——J6 判据=外部复算请求/首单意向,来源不止 rsi-bench 一家;开业周多渠道并行。
 - **附带·10935 ack**:v5 bearer 门落地三态实测(匿名 401)验收知悉,零误伤依据核实(24h log 唯一访问者=我方探测)。
 
+### R481 · 2026-10-10 晨廿三(主件轮:PRECOR dev.to 传播首发✅[实测外网 200]——外联转化第一发实弹)
+- **主件=dev.to 发布**(docs/marketing/devto_precor_post.md→API):标题"We quantized our AI judge. Here's exactly what broke."——**id 4825866 外网 200 live[实测]**(tags ai/llm/testing/mlops);AI 披露双保险(front matter ai: ai-assisted+正文尾注,治"披露新政不分发"根因);CTA 全链(intake/leaderboard/GitHub/HF)。
+- 排障:403 Bots=记忆在案坑(python 无 UA)→浏览器 UA 配方复用一发过。
+- 发布策略说明:博客已 live,提前传播预热(原 10/12 21:00 口径调整为"已发布,开业日为官宣节点");知乎/大人渠道仍候窗。
+- 待办:1-2h 盯评论(devto 惯例);arXiv 版同周投。
+
 ### R471 · 2026-10-10 晨十五(主件轮:8B 训练配置预注册档落盘✅——触发序列第 3 步前置+阈值不一致发现)
 - **主件=训练配置落档**(docs/metering/EIGHTB_COMPARE_TRAIN_CONFIG_20261010.md):脚本基座=_train_judge14b_upgrade_A100.py 参数化;适配点①基模=8B **bf16 全精度**(不用 4bit——PRECOR 纪律 bf16/fp16 only,比 14B 时代妥协更干净);适配点②**阈值不一致发现**——脚本 U6=+3pp(10/5) vs 判据档 G1=+2.0pp(10/8 冻结),触发日以判据档为准(常数对齐 0.02);超参沿用现役 recipe。
 - 触发日零现场清单五步落档;8B bf16 显存可行性=[推断](触发日 smoke 先行验证)。
