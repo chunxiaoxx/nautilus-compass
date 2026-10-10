@@ -542,6 +542,12 @@
 - **10937 ack**(platform 对表高质量闭环):bootstrap NameError 修复+'空体实调'改进条款采纳/fde-org 裸门 403 全过/副本漂移消除/三件开业后首批工程验收判据照单/'探针的害不取决于发什么'入组织免疫册互证。
 - SLA 口径一致性工程至此**彻底闭环**(intake API/页面/工作台/两档/扫描五点全对齐)。
 
+### R484 · 2026-10-10 晨廿六(用户令外联·🔴XERJ 线翻案收官✅[实测 GitHub 三连]——外联台账第一行欠账实为已完成项)
+- **决定性发现[实测 GitHub API]**:XERJ record pack **PR #1255 已 MERGED**(10/8 17:36Z,mergeCommit fc8f86d8)+**Release 已发**(pack-agent-session-trajectories-2026-10-09,10/9 11:34Z maintainer 构建)+#1210 槽位/#1264 publish 三连 MERGED——**捐赠包正式在 hub 上线**;#1138 跟帖已存在(2 条 pack 相关)。R373 备稿后实际已发(10/8 21:14 commit),queue R373"窗开即发"记录与事实错位(实际执行轮记录缺/在 archive)。
+- **台账修正**:V1.1 第一行"候发"→"✅收官";LOOP_STATE 在飞"XERJ Release 候构建"同步销项。
+- **勘误自省**:R373 后的执行轮(R38X?)记录缺失致台账误记欠账——复审外联台账时 GitHub API 实测(state/mergedAt/release)是唯一可靠判据,queue 回忆不作数。
+- XERJ 线最终态:捐赠 MERGED+Release 上线+demand anchor 跟帖——**外联最大单件完全收官**。
+
 ### R471 · 2026-10-10 晨十五(主件轮:8B 训练配置预注册档落盘✅——触发序列第 3 步前置+阈值不一致发现)
 - **主件=训练配置落档**(docs/metering/EIGHTB_COMPARE_TRAIN_CONFIG_20261010.md):脚本基座=_train_judge14b_upgrade_A100.py 参数化;适配点①基模=8B **bf16 全精度**(不用 4bit——PRECOR 纪律 bf16/fp16 only,比 14B 时代妥协更干净);适配点②**阈值不一致发现**——脚本 U6=+3pp(10/5) vs 判据档 G1=+2.0pp(10/8 冻结),触发日以判据档为准(常数对齐 0.02);超参沿用现役 recipe。
 - 触发日零现场清单五步落档;8B bf16 显存可行性=[推断](触发日 smoke 先行验证)。
