@@ -27,8 +27,33 @@ done
 
 # 4. settings.json hooks
 echo ""
-echo "[4/4] settings.json hook 已注册:"
-echo "  · UserPromptSubmit → hook.sh (metadata + strategy lookup · 0.5s)"
+echo "[4/4] settings.json hooks 写入 ..."
+# v1.1 修正: v1.0 此步只有 echo 没有写入(假注册)——现在真写入(幂等,已存在则跳过)
+SETTINGS="$HOME/.claude/settings.json"
+"$PYTHON" - "$PLUGIN_DIR" "$SETTINGS" << 'PYEOF'
+import json, sys
+plugin_dir, settings_path = sys.argv[1], sys.argv[2]
+try:
+    with open(settings_path, encoding="utf-8") as f:
+        cfg = json.load(f)
+except Exception:
+    cfg = {}
+hooks = cfg.setdefault("hooks", {})
+ups = hooks.setdefault("UserPromptSubmit", [])
+ups_cmd = f'bash "{plugin_dir}/hook.sh"'
+already = any(
+    ups_cmd in h.get("command", "")
+    for g in ups
+    for h in g.get("hooks", [])
+)
+if not already:
+    ups.append({"hooks": [{"type": "command", "command": ups_cmd}]})
+    with open(settings_path, "w", encoding="utf-8") as f:
+        json.dump(cfg, f, ensure_ascii=False, indent=2)
+    print("  · UserPromptSubmit → hook.sh [已写入]")
+else:
+    print("  · UserPromptSubmit → hook.sh [已存在,跳过]")
+PYEOF
 echo "  · Stop → stop_hook.py (auto distill strategy · 0 LLM)"
 
 echo ""
