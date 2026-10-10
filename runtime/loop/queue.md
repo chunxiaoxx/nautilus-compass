@@ -335,6 +335,21 @@
 - **主件二=Einsia 函网页排版版**(runtime/outreach/einsia_letter.html):批评"发 MD 是给 AI 看的"成立——对外信函改为 serif 排版网页(打印即 PDF,蓝框使用说明打印自动隐藏);MD 版保留作内部正本。
 - **附记·daemon 事故收尾**:python3.13.exe 幽灵进程根因定谳+恢复完成(LISTENING 恢复);两 watchdog 仍 Disabled 候稳定后 enable;rerank 开关回滚态(候 remote 链路排障);daemon_start.sh 进程匹配 python3* 通配修=候白天。
 
+
+### R512 · 2026-10-10 深夜四(主件轮:412 vetted 投判收官✅[实测]——qid 去重正确工作,语料维持 2553,跨框扩容全链闭环)
+- **主件=412 vetted 投 NACRE judge 判定+入池**[实测]:pass 132/insufficient_evidence 276/fail 4→gate 入池→corpus_pipeline 双 flywheel 源→重算——**merged 2553 不变,flywheel_vetted 132 条与 R509 已入池 133 条 qid 级几乎全重合**(同批档案 vetted 前后两版)——**去重机制正确工作实证,非缺陷**。
+- 语义:跨框扩容全链闭环(盘点→生成→红线筛→投判→入池→重算→部署);语料 2553 维持,下一增量=开业周真实单棘轮。
+- **附带·dev.to 发酵首轮真实信号**:1 reaction+1 评论(arhancanli,int8 flips 勘误即其触发)——**外联转化期首个外部互动**,已当晚回应修正。
+- 附带:两 watchdog Ready 确认(恢复完成);manifest 部署外网同步。
+- **用户纠正**:做减法=清除内部矛盾让推进更顺,**不是停止推进**——"rerank 现在就开"的拍板我回滚后没修完=执行不到位,本轮兑现。
+- **remote 链路复活**:隧道断连窗口自愈(keepalive+自动重连按设计工作,open_channel fail→reconnect→up)→**隧道直测 79ms/daemon recall 493ms→2ms 常速[实测]**——remote rerank 在役确认(A100 GPU 判读经隧道)。
+- **解读**:21:34 的"remote unavailable"=隧道断连重连窗口(2-15s)恰逢 daemon recall——回退本地 CE 拖慢属回退设计正确行为;R500 双加固(keepalive+重试)已把窗口从"分钟级失联"压到"秒级自愈"。
+- **rerank 生产态**:双开关 ON+隧道守护在跑(断线 10s 自动重拉)+A100 svc 活(uptime 73221s)——**RERANK_ACCEPTANCE V1-V4 验收的运行时前提全部满足**,四门验收候值守轮执行(~30min)。
+- R505 减法修正语义:减法后**聚焦推进**,非收工——dev.to 发酵监控/XERJ 候 seed/r87 复核收官继续。
+- **主件一=公告提前上线**("10/12 才上没有技术理由"批评成立):判分服务公告文 HTML 化(announcement.html,六能力表+定价边界+CTA 全链)→部署→**外网 200/3452B [实测]**——公告不再候 10/12,官宣节点仅剩传播动作。
+- **主件二=Einsia 函网页排版版**(runtime/outreach/einsia_letter.html):批评"发 MD 是给 AI 看的"成立——对外信函改为 serif 排版网页(打印即 PDF,蓝框使用说明打印自动隐藏);MD 版保留作内部正本。
+- **附记·daemon 事故收尾**:python3.13.exe 幽灵进程根因定谳+恢复完成(LISTENING 恢复);两 watchdog 仍 Disabled 候稳定后 enable;rerank 开关回滚态(候 remote 链路排障);daemon_start.sh 进程匹配 python3* 通配修=候白天。
+
 ### R502 · 2026-10-10 晨卅九(r87 复核收官✅[实测外网 live]——终判卡 0005 背书交付,SLA 大幅提前)
 - **主件=r87 复核收官**:v5 提前发车(14:08,读数 14:10 完,快一个量级)→读数实体两份 JSON 拉回归档→**复核三件**(rewards 逐条审计 60 条/delta 复算 +0.950 UP/双时点复现)→**终判卡 nautilus-l1-0005 背书交付**(函 10967+ack 10966)——**SLA 大幅提前**(读数到手 ~40min 出卡,承诺 4h)。
 - 终判:GRPO 训练有效性判定成立(delta+0.950>0.15 UP);如实披露两条件(逐 case 重推理候 r88/工单方向采纳);榜单锁版背书可用。
