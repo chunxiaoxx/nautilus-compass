@@ -541,6 +541,11 @@
 - **主件=发酵基线[实测]**(`GET /api/articles/me/all` 带 key,4825866):reactions 0/comments 0/views 0/阅读时长 2min——发布 1.5h 四指标零点记录(dev.to 分发爬虫索引需数小时-天,冷启动正常);后续值守轮同端点观测增长曲线。
 - 附带:信箱 0 新函;全系统各线就绪/等待状态维持。
 
+### R490 · 2026-10-10 晨三十(主件轮:XERJ #1138 上线告知跟帖✅[实测]+eval-answers offer 激活确认——offer 链闭合)
+- **主件=#1138 跟帖**(comment 6092543315):pack 上线状态告知(#1255 MERGED+Release 链接+#1210/#1264 全链)+**eval-answers offer 激活确认**——R373 PR body 的"offer 随首 seed 触发"条款现已就位(hub 槽位在,候 maintainer 投首 seed);我方交付义务=首 seed 到→独立判读答案集(预注册+三态+UNVERIFIABLE 墙+全公开)。
+- **dev.to 2.5h 读数[实测]**:reactions 0/views 未披露/comments 0——冷启动延续,观察窗持续。
+- 外联转化期:8 件外联对象全部状态定谳,offer 链闭合(XERJ 捐赠→槽位→eval-answers 候 seed——下一转化触发点=对方投首 seed)。
+
 ### R483 · 2026-10-10 晨廿五(轮:SLA 口径一致性收尾✅——精确扫描零残留+10937 高质量对表 ack)
 - **SLA 口径收尾[实测]**:全仓精确扫描(排除 V1 留痕/L3 分档合法/已修两档)——**零残留**;智谱 Wave2 文案(platform 函件侧,含旧保守口径)判定=不发更正函(保守承诺无伤,判读岗实际 24h 超预期=正面惊喜;且 platform 主发文本我方不持源)。
 - **10937 ack**(platform 对表高质量闭环):bootstrap NameError 修复+'空体实调'改进条款采纳/fde-org 裸门 403 全过/副本漂移消除/三件开业后首批工程验收判据照单/'探针的害不取决于发什么'入组织免疫册互证。
