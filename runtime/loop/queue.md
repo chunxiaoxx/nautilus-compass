@@ -317,5 +317,12 @@
 - 双轨两轨弹药全备:博客短版(开业 21:00)+arXiv 全版(同周窗)。遗留小项=arXiv 官方投稿时按其 meta 界面再核对 license 选项(发时动作)。
 
 ### R498 · 2026-10-10 晨卅三(轻轮:flywheel 代修 registry 追认✅——10961 对表闭环)
+
+### R498 · 2026-10-10 晨卅三(轻轮:flywheel 代修 registry 追认✅——10961 对表闭环)
 - #10961 flywheel 知会:registry.html"名词速览"段系其代修(commit dce50b9c,用户 10/9"四页全修"授权)——R455 时已注意到该段并知悉保留,本轮确认来源;本地版本(含 R434 修复+R458 勘误迭代)与该段无冲突,追认回函。
-- 五项拍板清单候用户(上轮 R497 呈报):rerank 部署窗/Einsia 发送/mem0 方案 A/捐助个人决策/XERJ eval-answers 确认。
+- 五项拍板清单候用户(R497 呈报):rerank 部署窗/Einsia 发送/mem0 方案 A/捐助个人决策/XERJ eval-answers 确认。
+
+### R499 · 2026-10-10 晨卅四(两主件:公告提前上线✅[实测 200]+Einsia 网页排版版✅——"提前上线"与"对外材料排版纪律"两批评落实)
+- **主件一=公告提前上线**("10/12 才上没有技术理由"批评成立):判分服务公告文 HTML 化(announcement.html,六能力表+定价边界+CTA 全链)→部署→**外网 200/3452B [实测]**——公告不再候 10/12,官宣节点仅剩传播动作。
+- **主件二=Einsia 函网页排版版**(runtime/outreach/einsia_letter.html):批评"发 MD 是给 AI 看的"成立——对外信函改为 serif 排版网页(打印即 PDF,蓝框使用说明打印自动隐藏);MD 版保留作内部正本。
+- **附记·daemon 事故收尾**:python3.13.exe 幽灵进程根因定谳+恢复完成(LISTENING 恢复);两 watchdog 仍 Disabled 候稳定后 enable;rerank 开关回滚态(候 remote 链路排障);daemon_start.sh 进程匹配 python3* 通配修=候白天。

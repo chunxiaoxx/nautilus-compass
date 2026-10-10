@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>判分服务公告 · Nautilus Compass</title>
+<style>
+:root{--ink:#16213e;--accent:#0a5ad6;--muted:#5b6472;--line:#e5e8ee;--green:#0a7d32}
+body{font-family:-apple-system,"Segoe UI","Noto Sans SC",sans-serif;color:var(--ink);margin:0;line-height:1.8}
+.wrap{max-width:800px;margin:0 auto;padding:0 22px}
+header{padding:26px 0;border-bottom:2px solid var(--ink)}
+h1{margin:0 0 6px;font-size:1.7rem}
+.sub{color:var(--muted);font-size:.92rem}
+h2{font-size:1.2rem;margin:30px 0 12px}
+table{width:100%;border-collapse:collapse;font-size:.92rem;margin:14px 0}
+th,td{border:1px solid var(--line);padding:9px 12px;text-align:left}
+th{background:#f7f9fc}
+.cta{background:#f0f6ff;border:1px solid #c8dcff;border-radius:10px;padding:16px 20px;margin:20px 0;font-size:1rem}
+.cta a{color:var(--accent);font-weight:600}
+footer{padding:20px 0;color:var(--muted);font-size:.82rem}
+a{color:var(--accent);text-decoration:none}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>判分服务公告 · 判读永久免费</h1>
+  <div class="sub">Nautilus Compass 独立判卷机构 · 2026-10</div>
+</div></header>
+
+<div class="wrap">
+<p style="font-size:1.08rem">AI 评测结果谁说了算？我们给出第三种答案：<b>不问厂商，不问社群，问可复算的证据链</b>。</p>
+
+<p>Nautilus Compass 独立判卷机构面向公众开放。已上线能力（全部免费）：</p>
+
+<table>
+<tr><th>能力</th><th>入口</th></tr>
+<tr><td><b>判读状态 API</b>——每张判读卡的判定/证据链/时间线/判据 sha16，机器可读</td><td><code>GET /api/judge_status?id=&lt;卡号&gt;</code></td></tr>
+<tr><td><b>免费判读入口</b>——L1 机器判读（24h SLA）/L2 深度报告/L3 定制</td><td><a href="https://nautilus.social/intake.html">intake.html</a></td></tr>
+<tr><td><b>判据预注册披露</b>——先冻结后判读，sha 锚定不可事后改</td><td><a href="https://nautilus.social/criteria/">criteria</a></td></tr>
+<tr><td><b>公开榜单</b>——Round1 已定版（A 26.7% / B 16.7%，判据+复算全锚）</td><td><a href="https://nautilus.social/leaderboard.html">leaderboard.html</a></td></tr>
+<tr><td><b>判分模型权重公开</b>——NACRE judge v1（三态 88.51%，fp16 部署纪律在档）</td><td><a href="https://huggingface.co/nautilus-compass/nacre-judge-v1">HF nautilus-compass</a></td></tr>
+<tr><td><b>独立复算</b>——任何判定可请求第三方复算</td><td>免费，走 intake 备注</td></tr>
+</table>
+
+<p><b>定价边界（一句话）：判读永久免费；装订收费</b>——深度报告/判例集/协议植入，只做判后事。</p>
+
+<p><b>已走通的首例链路</b>：intake → 判据预注册 → 三态判读 → delivered → 第三方独立复现（平台复现首卡 nautilus-l1-0002 全锚命中）。</p>
+
+<div class="cta">
+<b>提交你的评测：</b><a href="https://nautilus.social/intake.html">nautilus.social/intake.html</a><br>
+看懂我们怎么判：<a href="https://nautilus.social/criteria/">判据披露</a> ·
+<a href="https://nautilus.social/blog.html">我们如何量化自己的 AI 判卷员</a> ·
+<a href="https://nautilus.social/registry.html">Registry 实态</a>
+</div>
+
+<footer>
+Nautilus Compass · 独立计量局 · 判读永久免费 ·
+<a href="/">nautilus.social</a>
+</footer>
+</div>
+</body>
+</html>

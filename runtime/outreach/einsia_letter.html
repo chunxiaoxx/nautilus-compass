@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Judging letter to Einsia · print-ready</title>
+<style>
+  body{font-family:Georgia,"Times New Roman",serif;color:#1a1a1a;max-width:720px;margin:40px auto;padding:0 30px;line-height:1.75;font-size:15px}
+  .meta{color:#777;font-size:.8rem;border-bottom:1px solid #ddd;padding-bottom:12px;margin-bottom:24px}
+  h2{font-size:1.05rem;margin:26px 0 10px}
+  ul{padding-left:22px}
+  li{margin:7px 0}
+  .sig{margin-top:30px;border-top:1px solid #ddd;padding-top:14px;font-size:.92rem}
+  .use{background:#f6f8ff;border:1px solid #ccd9ff;border-radius:8px;padding:10px 14px;font-family:Consolas,monospace;font-size:.78rem;margin-bottom:26px}
+  code{background:#f2f4f8;padding:1px 5px;border-radius:4px;font-size:.85em}
+  @media print{.use{display:none}body{margin:10mm auto}}
+</style>
+</head>
+<body>
+<div class="use">PRINT/PDF: 浏览器 Ctrl+P → 另存为 PDF（此蓝框打印时自动隐藏）。或全选正文直接粘贴进邮件客户端（保留格式）。</div>
+
+<p><b>To:</b> Navers Lab / Einsia team (management)<br>
+<b>From:</b> Chunxiao Wang — nautilus-compass, Nautilus Platform<br>
+<b>Subject:</b> Your benchmarks, independently judged — free L1 lane is open</p>
+
+<hr>
+
+<p>Hi Einsia team,</p>
+
+<p>We've been reading Navers Lab's work with real attention — not the polite kind. <b>Frontier-Eng's premise</b> (47 tasks with no standard answers, graded on the work rather than the answer) is the same conclusion we reached from the judging side: when there is no ground truth, <em>who grades and how</em> becomes the whole game. And <b>SWE Refactor Bench</b> — testing whether C→Rust migration is a real refactor or cosmetic repainting — is the exact failure mode our judging discipline exists for: we publish preregistered criteria <em>before</em> running, label every claim measured/inferred/unverifiable, and ship negative results as first-class findings.</p>
+
+<h2>What we're offering (free, no strings)</h2>
+
+<p>Our independent judging lane for agent-harness benchmarks is open at nautilus.social. If you submit Frontier-Eng or SWE Refactor Bench runs, you get:</p>
+
+<ul>
+<li><b>Preregistered criteria</b> frozen before we look at any result (sha-anchored; criteria may only move stricter);</li>
+<li><b>Independent three-state verdicts</b> (pass / fail / insufficient_evidence) with per-case artifacts sha16-addressable;</li>
+<li>A worked example: Round 1 of our harness leaderboard — same model, two harnesses, 26 judgments, every artifact recomputable — live at <a href="https://nautilus.social/leaderboard.html">nautilus.social/leaderboard.html</a>. Our first card was independently reproduced by the platform side before delivery.</li>
+</ul>
+
+<h2>What we'd ask (also free)</h2>
+
+<p>A look at <b>caliber-bench</b> — our meta-benchmark that scores benchmarks themselves (criteria drift, contamination, judge stability). Your release-notes discipline ("only measured numbers; CI re-checks every claim") is the same instinct; caliber-bench turns it into a measurement. We'd value your read on it more than a star.</p>
+
+<p>The free L1 intake is at <a href="https://nautilus.social/intake.html">nautilus.social/intake.html</a>. And the standing offer from our public work applies: recompute anything we publish — if a number doesn't reproduce, the erratum ships the same day.</p>
+
+<div class="sig">
+<p>Chunxiao<br>
+nautilus-compass · Nautilus Platform<br>
+chunxiaoxx@gmail.com</p>
+</div>
+
+</body>
+</html>
