@@ -357,3 +357,9 @@
 - **五发布面全修正**:blog.html(重部署外网验证)/arXiv tex+PDF 重编译/短文 draft md/dev.to 帖(PUT 更新)/PRECOR_BC_VERDICT 判读档勘误注记——**勘误纪律"当天修正"兑现**(读者当晚抓,当晚修)。
 - **erratum 回礼**:rsi-bench#4 + XERJ#1138 各回评论致谢+修正告知(读者审查=判读岗质量的免费外审,两个渠道各答)。
 - 深层教训:发布前数学自洽检查(每行 agreement×n 整除 flips)应入 PRECOR 发布 checklist——数字组合的内部一致性无人查过,读者一遍抓出。
+
+### R509 · 2026-10-10 深夜三(主件轮:flywheel 423 判定收官✅[实测]——语料 2553 外网 live,跨框扩容执行完毕)
+- **主件=跨框扩容执行完毕**:flywheel candidates 423 投 NACRE judge(分块投递+PAIRS 括号修)→**判定分布:pass 133/insufficient_evidence 286/fail 4**→gate 双门(pass+L0/L1)入池 **133 条**→corpus_pipeline 扩 org_fuel:flywheel 源→重算 **merged 2553**(新 sha 831750e0)→site stats+部署 **外网 live[实测]**。
+- **语料轨迹**:2420→**2553**(+133);sevenb_remaining 1838;A100 双任务并行(423 判定+8B 训练 smoke)——A100 空置问题当日两轮利用(判定+训练)。
+- **files**:tools/corpus_pipeline.py 扩源+fuel_verdicts_flywheel.jsonl 归档+manifest 更新。
+- 剩余:跨框扩容收官(候选池已榨干本轮);语料下一增量=开业周真实单棘轮;3000 触发线剩 447。
