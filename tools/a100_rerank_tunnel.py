@@ -30,6 +30,7 @@ def connect_transport() -> paramiko.Transport:
         try:
             t = paramiko.Transport((env["A100_HOST"], int(env["A100_PORT"])))
             t.connect(username=env["A100_USER"], password=env["A100_PW"])
+            t.set_keepalive(30)  # R500: SSH 瞬断防护(实测 A100 banner 断连频发)
             print(f"[tunnel] transport up ({attempt + 1} tries)", flush=True)
             return t
         except Exception as e:

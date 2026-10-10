@@ -1,0 +1,1 @@
+cd /root/vdd2/p0_full && setsid nohup /root/vdd2/p0_full/venv/bin/python p0_full_extract.py --model /root/vdd2/models/Qwen3.8-14B-Turbo --tag turbo --data anchor_v01.jsonl --out /root/vdd2/p0_full/out > extract_turbo2.log 2>&1 < /dev/null & echo LAUNCHED_TURBO

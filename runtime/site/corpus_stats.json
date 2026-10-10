@@ -16,10 +16,11 @@
   "org_fuel:outreach": 12,
   "org_fuel:queue": 69,
   "org_fuel:memory": 93,
-  "org_fuel:flywheel": 133
+  "org_fuel:flywheel": 133,
+  "org_fuel:flywheel_vetted": 132
  },
  "merged_unique_by_qid": 2553,
- "cross_source_dups_ignored": 45,
+ "cross_source_dups_ignored": 177,
  "train_count": 1162,
  "next_retrain_candidate_at": 1500,
  "sevenb_target": 3000,

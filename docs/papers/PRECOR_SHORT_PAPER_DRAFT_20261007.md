@@ -61,7 +61,7 @@ per-case artifacts released.
 |---|---|---|---|---|
 | bf16 (anchor) | 0.8797 | — | — | reference |
 | fp16 | 0.8797 | **1.0000** | pass | deployable |
-| int8-bnb | 0.8694 | 0.9828 (2 flips) | fail | not for prod |
+| int8-bnb | 0.8694 | 0.9828 (5 flips) | fail | not for prod |
 | int4-nf4 | 0.8694 | 0.9416 (17 flips) | fail | forbidden |
 | bf16 + T=0.3 | — | 0.9931 | (disclosure only) | keep greedy |
 
