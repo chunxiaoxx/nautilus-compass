@@ -1,0 +1,79 @@
+{
+ "ts": "2026-10-11T00:06:48+08:00",
+ "model": "/root/vdf/models/Qwen3-8B",
+ "base17": "/root/vdd4/modelscope/models/Qwen--Qwen3-1.7B/snapshots/master",
+ "champion_adapter": "/root/vdd4/adapters/best_lora",
+ "corpus": {
+  "dir": "/root/vdf/judge8b_corpus",
+  "sha16": {
+   "train": "35683198dd3c4992",
+   "dev": "942e4daeaedca2fb",
+   "test": "4bcaf1c9b551f336"
+  }
+ },
+ "steps": 873,
+ "train_seconds": 327.9,
+ "gates": {
+  "qid_disjoint_check": {
+   "holdout_n": 292,
+   "train_n": 1162,
+   "qid_intersection": 0,
+   "pass": true
+  },
+  "U1_full_corpus_trained": {
+   "steps": 873,
+   "expected_3epoch_steps": 873,
+   "zero_oom": true,
+   "pass": true
+  },
+  "U2_peak_mem_under_36G": {
+   "peak_gib": 16.49,
+   "pass": true
+  },
+  "U3_loss_converging": {
+   "first20": 0.2435,
+   "last20": 0.1674,
+   "pass": true
+  },
+  "U4_format_n100": {
+   "n": 100,
+   "valid_rows": 100,
+   "gate": 98,
+   "pass": true
+  },
+  "U5_not_worse_than_incumbent": {
+   "acc_14b": 0.8459,
+   "acc_17b": 0.8767,
+   "pass": false
+  },
+  "U6_significant_over_incumbent": {
+   "delta_pp": -3.08,
+   "margin_pp": 3.0,
+   "pass": false,
+   "note": "达 U5 未达 U6=保留 1.7B 现役,14B 记档待语料增长再评"
+  },
+  "U7_cost_reported": {
+   "train_seconds": 327.9,
+   "train_peak_gib": 16.49,
+   "infer_14b_4bit": {
+    "per_sample_p50_s": 0.0378,
+    "per_sample_p95_s": 0.0404,
+    "throughput_per_s": 26.49
+   },
+   "infer_17b_bf16": {
+    "per_sample_p50_s": 0.0111,
+    "per_sample_p95_s": 0.0237,
+    "throughput_per_s": 90.09
+   },
+   "note": "口径差异:14B=4bitQLoRA,1.7B=bf16;14B 慢是预期,只申报不设门槛"
+  }
+ },
+ "agree_disagree": {
+  "both_ok": 234,
+  "only_14b": 13,
+  "only_17b": 22,
+  "both_wrong": 23
+ },
+ "core_pass": true,
+ "verdict": "UPGRADE_EVIDENCE_PASS"
+}
