@@ -331,3 +331,4 @@
  变真换行)——git checkout 单文件恢复+改用 Edit 工具(教训:多行含 
  的代码注入禁用内联字符串);测试签名同步更新 5 passed。
 - **rerank 状态**:双加固就绪(开关仍 off 回滚态)——重开条件=daemon 稳定(现渐进消化中)+remote 实测 3 连通;隧道 keepalive 需重启隧道进程生效(候下轮)。
+- R501 补完:隧道进程已用 keepalive 版重启[实测 19879 LISTENING+transport up 1 tries]——R500 双加固全部生效,remote 链路就绪待 daemon 稳定后开测。
