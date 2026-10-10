@@ -20,10 +20,10 @@ looking at any number.
 | Precision | Agreement with bf16 | Verdict |
 |---|---|---|
 | fp16 | **100.00%** (0 flips) | ✅ ships |
-| int8-nf4 | 98.28% (2 flips) | ❌ fails the gate |
+| int8-nf4 | 98.28% (5 flips) | ❌ fails the gate |
 | int4-nf4 | 94.16% (17 flips) | ❌ fails the gate |
 
-Drift grows monotonically with quantization strength. The two int8 flips and
+Drift grows monotonically with quantization strength. The five int8 flips and
 seventeen int4 flips are each a case where the judge changed its *verdict* —
 not its confidence, its answer. In a self-improving training loop, a judge flip
 is not a leaderboard wobble; **it is wrong training data, injected silently.**

@@ -23,7 +23,7 @@ study of a production three-state verification judge (Qwen3-1.7B + LoRA adapter,
 88.5\% binary accuracy, ECE 0.072), evaluating four precision configurations
 $\times$ two decoding regimes over 291 held-out cases. Under a preregistered
 agreement gate ($\geq$99\% label agreement with the bf16 anchor), fp16 passes with
-\textbf{zero label drift} (1.0000), while int8 (0.9828, two flips) and int4-nf4
+\textbf{zero label drift} (1.0000), while int8 (0.9828, five flips) and int4-nf4
 (0.9416, seventeen flips) fail the gate. Drift increases monotonically with
 quantization strength, corroborating an independent 3B-scale observation. We
 release the full per-case judgment matrix, the frozen gating criteria, and a
@@ -81,7 +81,7 @@ Config & Three-state acc & Agreement vs bf16 & Gate ($\geq$99\%) & Verdict \\
 \midrule
 bf16 (anchor) & 0.8797 & --- & --- & reference \\
 fp16 & 0.8797 & \textbf{1.0000} & pass & deployable \\
-int8-bnb & 0.8694 & 0.9828 (2 flips) & fail & not for prod \\
+int8-bnb & 0.8694 & 0.9828 (5 flips) & fail & not for prod \\
 int4-nf4 & 0.8694 & 0.9416 (17 flips) & fail & forbidden \\
 bf16 + $T{=}0.3$ & --- & 0.9931 & (disclosure only) & keep greedy \\
 \bottomrule
