@@ -127,15 +127,17 @@ _RERANK_TOKEN_FILE = Path.home() / ".claude" / ".cache" / "a100_rerank_token"
 _RERANK_REMOTE_TIMEOUT = float(os.environ.get("COMPASS_RERANK_REMOTE_TIMEOUT", "6"))
 
 
-def _rerank_via_remote(query: str, docs: list) -> list | None:
-    """remote rerank: 9879 协议(a100_rerank_svc.py)。任何失败返回 None(回退)。"""
+def _rerank_via_remote(query: str, docs: list, _retried: bool = False) -> tuple[list | None, bool]:
+    """remote rerank: 9879 协议(a100_rerank_svc.py)。返回 (scores|None, tried_ok)。
+
+    R500: 失败自动重试 1 次(跨隧道 reconnect 窗口;A100 SSH 瞬断实测频发)。"""
     if not _RERANK_REMOTE_ADDR or not docs:
-        return None
+        return None, False
     s = None
     try:
         token = _RERANK_TOKEN_FILE.read_text(encoding="utf-8").strip()
     except OSError:
-        return None
+        return None, False
     try:
         s = socket.create_connection(_RERANK_REMOTE_ADDR, timeout=_RERANK_REMOTE_TIMEOUT)
         s.settimeout(_RERANK_REMOTE_TIMEOUT)
@@ -146,23 +148,28 @@ def _rerank_via_remote(query: str, docs: list) -> list | None:
         deadline = time.time() + _RERANK_REMOTE_TIMEOUT
         while not buf.endswith(b"\n"):
             if time.time() > deadline:
-                return None
+                raise TimeoutError("remote rerank read deadline")
             chunk = s.recv(65536)
             if not chunk:
                 break
             buf += chunk
         resp = json.loads(buf.decode("utf-8"))
         if resp.get("ok") is True:
-            return [float(x) for x in resp.get("scores", [])]
-        return None
+            return [float(x) for x in resp.get("scores", [])], True
+        return None, False
     except Exception:
-        return None
+        pass
     finally:
         try:
             if s:
                 s.close()
         except Exception:
             pass
+    if _retried:
+        return None, False
+    time.sleep(1.0)  # 跨隧道 reconnect 窗口(实测 ~2-15s 自愈;先短候再试一次)
+    scores, _ = _rerank_via_remote(query, docs, _retried=True)
+    return scores, scores is not None
 
 
 _RERANKER_MODEL = os.environ.get(
@@ -329,7 +336,7 @@ def _rerank_top(query, top, top_k):
         # +隧道 74ms), 失败静默落回本地 CrossEncoder, 再失败 dense(三级回退)。
         if _RERANK_REMOTE_ADDR:
             docs = [(e.get("embed_text") or e.get("description") or "") for _s, e in candidates]
-            rscores = _rerank_via_remote(query, docs)
+            rscores, _remote_ok = _rerank_via_remote(query, docs)
             if rscores is not None and len(rscores) == len(candidates):
                 reordered = sorted(zip(candidates, rscores), key=lambda x: -float(x[1]))
                 return [item for item, _rscore in reordered][:top_k]

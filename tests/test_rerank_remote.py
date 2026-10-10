@@ -80,8 +80,8 @@ def test_remote_success(token_file, monkeypatch):
     srv = FakeServer("ok")
     srv.start()
     monkeypatch.setattr(daemon, "_RERANK_REMOTE_ADDR", ("127.0.0.1", srv.port))
-    out = daemon._rerank_via_remote("q", ["docA", "docB", "docC"])
-    assert out is not None and len(out) == 3
+    out, ok = daemon._rerank_via_remote("q", ["docA", "docB", "docC"])
+    assert ok is True and out is not None and len(out) == 3
     assert out == sorted(out, reverse=True)  # G1 scores 降序返回
 
 
@@ -89,7 +89,8 @@ def test_remote_bad_fallback(token_file, monkeypatch):
     srv = FakeServer("bad")
     srv.start()
     monkeypatch.setattr(daemon, "_RERANK_REMOTE_ADDR", ("127.0.0.1", srv.port))
-    assert daemon._rerank_via_remote("q", ["a", "b"]) is None  # G2
+    out, ok = daemon._rerank_via_remote("q", ["a", "b"])
+    assert out is None and ok is False  # G2
 
 
 def test_remote_unreachable(token_file, monkeypatch):
@@ -99,7 +100,8 @@ def test_remote_unreachable(token_file, monkeypatch):
     dead_port = s.getsockname()[1]
     s.close()
     monkeypatch.setattr(daemon, "_RERANK_REMOTE_ADDR", ("127.0.0.1", dead_port))
-    assert daemon._rerank_via_remote("q", ["a"]) is None  # G3
+    out, ok = daemon._rerank_via_remote("q", ["a"])
+    assert out is None and ok is False  # G3
 
 
 def test_env_off_no_connection(monkeypatch):
@@ -112,7 +114,8 @@ def test_env_off_no_connection(monkeypatch):
 
     monkeypatch.setattr(socket, "create_connection", spy)
     monkeypatch.setattr(daemon, "_RERANK_REMOTE_ADDR", None)
-    assert daemon._rerank_via_remote("q", ["a"]) is None
+    out, ok = daemon._rerank_via_remote("q", ["a"])
+    assert out is None and ok is False
     assert calls == []  # G4 未配置零连接
 
 
