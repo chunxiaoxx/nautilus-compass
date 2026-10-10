@@ -51,6 +51,25 @@ LEDGER = {
             ["2026-10-06T03:00+08", "casebook_entry", "done"]],
         "result_url": "/leaderboard.html",
     },
+    "nautilus-l1-0005": {
+        "title": "r87 双臂同构复考 · GRPO 训练有效性独立复核(v5 委托)",
+        "status": "done",
+        "criteria_sha16": "223a9dbf33af3316",
+        "verdict": "pass",
+        "steps": [
+            ["2026-10-10T14:1x+08", "readings_delivered(v5 提前发车)", "done"],
+            ["2026-10-10T14:2x+08", "compass_review_start", "done"],
+            ["2026-10-10T14:4x+08", "rewards_per_case_audit(60 条逐条)", "done"],
+            ["2026-10-10T14:5x+08", "card_issued(nautilus-l1-0005)", "done"]],
+        "verdict_detail": {
+            "metadata": "[实测] 双臂=adapter r80(基线) vs grpo_r87(训练臂);卷面=vtf/_grpo_prompts.jsonl 尾部 60(held-out,卷面 sha16=55acc402);判据=b7_iso_r87_dualarm_v1 sha16=223a9dbf(实体已落盘三环境,compass 独立复算一致 #10956/#10960)",
+            "evaluation_evidence": "[实测] 读数实体两份 JSON 已拉回归档(docs/metering/r487_iso_eval_r87official_*.json):r80 n=60 rewards 逐条全 0(mean/min/max 自洽);grpo n=60 逐条 57×1.0+3×0.0(mean 0.95 与 legal_rate 0.95 自洽);delta=+0.950>noise_floor 0.15→UP;与 10/9 预演读数完全一致(同卷同判复现)",
+            "three_state": "pass —— GRPO 训练有效性判定成立:训练臂对基线臂 +0.950(全 rewards),判定逻辑与判据档一致;稳定性双时点复现",
+            "disposition": "背书 v5 初稿(附两条件):①逐 case 重推理未做(打分器重跑候 r88 前,如实披露)——本背书基于 rewards 数组逐条审计+跨时点复现,非独立重推理;②name/args 层断裂(0/60)与初稿解读一致(legal 档天花板),工单方向(金标精标→配比→r88)采纳为建议"
+        },
+        "submission": "8b97795ac55b4b5d",
+        "result_url": "/leaderboard.html",
+    },
     "nautilus-l1-0006": {
         "title": "Intake pipeline selftest · compass-pipeline-selftest@v1(开业日演练单)",
         "status": "done",
