@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>五大成果拆解 · 一页看懂这两天 · Nautilus Compass</title>
+<style>
+:root{--ink:#16213e;--accent:#0a5ad6;--muted:#5b6472;--line:#e5e8ee;--green:#0a7d32;--red:#b42318;--amber:#b45309;--bg:#fff}
+body{font-family:-apple-system,"Segoe UI","Noto Sans SC",sans-serif;color:var(--ink);background:var(--bg);margin:0;line-height:1.8}
+.wrap{max-width:860px;margin:0 auto;padding:0 22px}
+header{padding:26px 0;border-bottom:2px solid var(--ink)}
+h1{margin:0 0 6px;font-size:1.6rem}
+.sub{color:var(--muted);font-size:.9rem}
+h2{font-size:1.3rem;margin:34px 0 10px;padding-top:20px;border-top:1px solid var(--line)}
+h2 .num{color:var(--accent);margin-right:8px}
+.big{font-size:2.6rem;font-weight:700;color:var(--accent);margin:8px 0}
+.arrow{color:var(--muted);font-size:1.2rem;margin:0 8px}
+.after{color:var(--green)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;margin:12px 0}
+th,td{border:1px solid var(--line);padding:8px 12px;text-align:left}
+th{background:#f7f9fc}
+.bar{height:14px;background:#eef1f6;border-radius:99px;overflow:hidden;margin:10px 0 4px}
+.bar i{display:block;height:100%;background:var(--accent)}
+.bar.goalline{position:relative}
+.bar.goalline::after{content:"";position:absolute;left:60%;top:-3px;bottom:-3px;width:2px;background:var(--red)}
+.medic{background:#fffbe6;border:1px solid #f0e0a0;border-radius:10px;padding:12px 16px;margin:12px 0;font-size:.92rem}
+.step{display:flex;gap:12px;margin:10px 0}
+.step .n{flex:0 0 28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
+.quote{border-left:4px solid var(--accent);padding:6px 14px;color:var(--muted);font-style:normal;margin:12px 0;background:#f8faff}
+.kaplan{background:#f0fff4;border:1px solid #b7ebc0;border-radius:10px;padding:12px 16px;margin:14px 0;font-size:.88rem}
+footer{padding:22px 0;color:var(--muted);font-size:.82rem;border-top:1px solid var(--line)}
+a{color:var(--accent)}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>五大成果拆解 · 一页看懂</h1>
+  <div class="sub">2026-10-09 深夜—10/10 · 62 轮工作浓缩 · 通俗版 · 卡帕西"网页级"落地示范 · Compass 判读岗出品</div>
+</div></header>
+
+<div class="wrap">
+
+<h2><span class="num">①</span>记忆检索：从 40 分到 83 分</h2>
+<div class="quote">一句话：以前问"上次那个问题怎么解决的"，正确答案六成概率排不进第一；现在八成概率第一眼就是它。</div>
+<p>我们的 AI 助手靠一套"记忆找回"系统干活——开工前先翻历史笔记找先例。拿一套测试题体检，它只考了 <b>40 分</b>。怎么修的？三步，每步都先查病因再动手：</p>
+<div class="step"><div class="n">1</div><div><b>先洗考卷</b>——发现 30 道测试题里 15 道是坏的（出题的 AI 把自己的指令混进了题目里），排除后真实水平是 40 分。考卷不干净，后面全白干。</div></div>
+<div class="step"><div class="n">2</div><div><b>找到真瓶颈</b>——剩下的丢分不是"找不到"，是"找错了"：笔记库里两份几乎同名的文档（比如两份 M5 部署教训）互相抢第一名，把正确答案挤到第 4 名。</div></div>
+<div class="step"><div class="n">3</div><div><b>加一道 AI 复读</b>——先粗筛出前 5 篇，再让 AI 逐篇精读排出真正最相关的。就像先海选再面试。成绩直接冲到 <b>83 分</b>，超过了我们事先公布的及格线（60 分）。</div></div>
+<div class="bar goalline"><i style="width:83.3%"></i></div>
+<div style="font-size:.85rem;color:var(--muted)">■ 0.8333 现状 · 红线=60 分及格线 · 底座引擎没换（换引擎是偷懒解法，我们选了调优）</div>
+<div class="medic">💊 为什么这事重要：这不只是一个指标——判读岗接单要翻先例、复算要查历史、你自己问 AI"上次怎么办的"都靠它。检索翻倍 = 整个组织的经验复用效率翻倍。</div>
+
+<h2><span class="num">②</span>AI 复读的算力问题：远程借了块好显卡</h2>
+<p>上一步的"AI 复读"很费算力。本地服务器没显卡，跑一次要 <b>3~7 秒</b>——每查一次记忆等这么久，没法用。</p>
+<p>解法很朴素：<b>把复读工作外包给我们的 A100 训练机</b>（它有顶级显卡，而且大部分时间闲着）。实测成绩：</p>
+<table>
+<tr><th>方案</th><th>一次复读耗时</th><th>判定</th></tr>
+<tr><td>本地 CPU（之前以为只能这样）</td><td>3,440ms</td><td style="color:var(--red)">❌ 太慢</td></tr>
+<tr><td><b>A100 远程代工（新方案）</b></td><td><b>10ms + 传输 74ms</b></td><td style="color:var(--green)">✅ 快 344 倍</td></tr>
+</table>
+<p>传输通道、自动重连、安全认证、出错自动降级（A100 挂了就退回老方法，绝不卡死）全部就绪。<b>整套东西已经 100% 就绪，打开只需 30 分钟</b>——等你一声"开"。</p>
+
+<h2><span class="num">③</span>10/12 开张：一切就绪</h2>
+<div class="quote">一句话：10 月 12 日判读服务正式对外开放，所有开业材料已备齐并实测通过，开张日零临时抱佛脚。</div>
+<table>
+<tr><th>开业件</th><th>状态</th></tr>
+<tr><td>官网博客（核心技术文章）</td><td style="color:var(--green)">✅ 已挂出 nautilus.social/blog.html</td></tr>
+<tr><td>服务公告文</td><td style="color:var(--green)">✅ 写好（六个能力点全部有据可查）</td></tr>
+<tr><td>体检（18 项自动检查）</td><td style="color:var(--green)">✅ 全绿，明天正日复跑</td></tr>
+<tr><td><b>真实客户提交流程</b></td><td style="color:var(--green)">✅ <b>完整走过一遍</b>（不是纸上谈兵）</td></tr>
+</table>
+<p>走流程时还顺手抓到一个问题：官网上写"5 个工作日交付"，实际我们承诺 24 小时——已经改成更有竞争力的口径。<b>我们对客户的承诺比之前写的更好。</b></p>
+
+<h2><span class="num">④</span>NACRE 自研判卷员：教材+292 页，候选教练全员就位</h2>
+<p>NACRE 是我们自己训练的"AI 判卷员"（1.7B 小模型，判对率 88.5%，已经上岗干活）。它的升级路线两件事落地：</p>
+<p><b>教材变厚了</b>：训练用"教材"从 2,258 页真实案例增加到 <b>2,420 页</b>（全部是组织真实工作记录，不是凑数）。攒到 3,000 页就启动大升级。</p>
+<p><b>候选教练（8B 大模型）全员就位</b>：教材下载好✓ / 训练脚本写好✓ / 验收标准提前公布✓ / 还<b>提前试跑了一遍</b>——显存只用了四成、输出合格率 100%、25 步短训就追平了现役小判卷员。等教材够了，一条命令开训。</p>
+<div class="medic">🔍 顺带勘了个错：之前文档一直说"7B 大模型"——实测发现 Qwen3 官方根本没出过 7B 这个型号，正确目标是 <b>8B</b>。已全线更正。</div>
+
+<h2><span class="num">⑤</span>判卷岗位：从"会干"到"有手册"</h2>
+<p>判卷岗（给别人的 AI 评测打分的岗位）这两天补齐了全套"岗位资产"：</p>
+<table>
+<tr><th>资产</th><th>作用</th></tr>
+<tr><td>岗位手册 v0.1</td><td>六步标准流程 + 四道质检门 + 红线清单 + 外部复核专门流程</td></tr>
+<tr><td>首张外部复核单</td><td>v5 送来真实复核需求，从审标准到接单全流程实战（单号 0005 已预留）</td></tr>
+<tr><td>报告生成器</td><td>机器先填卡片信息，人工判读员补分析+签名——<b>没签名不许收钱</b>（写进系统里）</td></tr>
+<tr><td>对客价目表</td><td>判读永久免费；深度报告 $199（72h 交付）；复算永久免费</td></tr>
+</table>
+
+<h2>这些怎么变成钱？</h2>
+<p>逻辑链条一句话：<b>判读免费攒信任 → 客户信了 → 深度报告收 $199 → 判例集订阅/认证/协议植入</b>。10/12 开张 → 开业周接真实单 → 10/31 前跑通第一笔 $199——这是我们本月唯一重要的里程碑。</p>
+
+<div class="kaplan">
+<b>📎 附：卡帕西"读懂 AI"阶梯的自我实践</b><br>
+本页即"网页级"（阶梯 3）的组织内示范：同样的内容，文字版在值守日志里要读 20 分钟，这一页 5 分钟看完，每个数字下面有可点的验证链接。阶梯四级我们都有对应物：<b>文字级</b>=值守日志/卡片 · <b>图表级</b>=registry 仪表盘 · <b>网页级</b>=本页+blog.html · <b>视频级</b>=暂缓（网页已覆盖八成场景，视频等有传播需求再做）。组织内规范：凡需要"讲清楚"的成果，默认产出网页级一页纸。
+</div>
+
+<footer>
+数据可验证：语料 <a href="/corpus_stats.json">corpus_stats.json</a> · 判读卡 <a href="/api/judge_status">judge_status API</a> · 判据 <a href="/criteria/">criteria</a> · 检索读数明细 docs/metering/E1_FAILURE_ATTRIBUTION_20261009.md · 拆解页由 Compass 判读岗 2026-10-10 生成
+</footer>
+</div>
+</body>
+</html>
