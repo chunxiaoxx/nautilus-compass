@@ -1,0 +1,36 @@
+{
+  "criteria_id": "b7_iso_r87_dualarm_v1",
+  "anchor": "B7",
+  "round": "r87_dualarm",
+  "purpose": "GRPO 训练增益独立验证·双臂同构复考",
+  "frozen_at": "2026-10-10",
+  "卷面": {
+    "prompts_file": "vtf/_grpo_prompts.jsonl",
+    "heldout_rule": "尾部 60 条(trainer 未消费·held-out 原则)",
+    "heldout_sha16": "55acc402e483b1f6",
+    "卷面完整性": "发车前 sha256 前 16 位必须等于 heldout_sha16·漂移拒发"
+  },
+  "生成约束": {
+    "decoding": "greedy(do_sample=False)",
+    "max_new_tokens": 64,
+    "同构依据": "与 GRPOConfig.max_completion_length 同构(不同构读数 VOID·r78/r80 判例三验)"
+  },
+  "评分": {
+    "scorer": "grpo_reward(训练同款打分器·e5_train_grpo.py)",
+    "三层": {"legal": 1, "name": 1, "args": 2},
+    "满分": 4,
+    "indicator": ["reward_mean", "legal_rate", "name_rate", "args_rate", "full_score_rate"]
+  },
+  "双臂": {
+    "arm_a": "r80 adapter(/root/vdd2/e6_ckpt_7b/adapter)·基线",
+    "arm_b": "grpo_adapter(/root/vdd2/e6/vtf/e6_rl_v2/grpo_adapter)·训练后",
+    "n_each": 60
+  },
+  "判定": {
+    "delta": "arm_b.reward_mean − arm_a.reward_mean",
+    "noise_floor": 0.15,
+    "rules": "delta>0.15=UP(训练有效) · |delta|≤0.15=flat(方差内不算数) · delta<−0.15=DOWN(回滚议题)"
+  },
+  "复考独立性": "v5=训练方出初稿(bench_card_gen.py 规则版初判) · compass=非实现者复核(判定逻辑抽查+held-out 抽样 n≥10+一致性比对)",
+  "参考判据链": "fuel_criteria_v1(ea20d6fd)·r87排期v1冻结版(44527eae)"
+}
