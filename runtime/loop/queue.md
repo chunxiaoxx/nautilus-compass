@@ -546,6 +546,12 @@
 - **10937 ack**(platform 对表高质量闭环):bootstrap NameError 修复+'空体实调'改进条款采纳/fde-org 裸门 403 全过/副本漂移消除/三件开业后首批工程验收判据照单/'探针的害不取决于发什么'入组织免疫册互证。
 - SLA 口径一致性工程至此**彻底闭环**(intake API/页面/工作台/两档/扫描五点全对齐)。
 
+### R487 · 2026-10-10 晨廿九(主件轮:8B bf16 训练 smoke 跑通✅[实测 26.4G 无 OOM]——配置档证据层 [推断]→[实测] 兑现)
+- **主件=8B smoke 先行**(EIGHTB_COMPARE_TRAIN_CONFIG 证据层 upgrade_path 兑现,不等语料 3000):8B 版脚本(25 步短训副本)投 A100 实跑——**LoRA 正确挂载(trainable 15.3M/0.19%)+bf16 显存 26.4G 无 OOM[实测]**——配置档"8B bf16 显存可行性=[推断]"升级 **[实测]**。
+- **两坑修**:①启动门 2G 拦截(A100 常驻服务 7G=判分+嵌入+rerank)——门阈值参数化 COMPASS_GPU_BUSY_G=12G(真大训练仍拦,常驻共存放行,env 可调);②语料后缀不匹配(脚本要 split_train.jsonl 无 _v1)——软链修正。
+- **附带·10941 ack**:platform P0 闭环对表(8001 iptables 封死+v5 bearer 门 401 验证+19 条加固候评估)——turf 边界确认。
+- smoke 训练+评测段后台运行中(约 15-30 分钟),终态读数候下轮收割。
+
 ### R484 · 2026-10-10 晨廿六(用户令外联·🔴XERJ 线翻案收官✅[实测 GitHub 三连]——外联台账第一行欠账实为已完成项)
 - **决定性发现[实测 GitHub API]**:XERJ record pack **PR #1255 已 MERGED**(10/8 17:36Z,mergeCommit fc8f86d8)+**Release 已发**(pack-agent-session-trajectories-2026-10-09,10/9 11:34Z maintainer 构建)+#1210 槽位/#1264 publish 三连 MERGED——**捐赠包正式在 hub 上线**;#1138 跟帖已存在(2 条 pack 相关)。R373 备稿后实际已发(10/8 21:14 commit),queue R373"窗开即发"记录与事实错位(实际执行轮记录缺/在 archive)。
 - **台账修正**:V1.1 第一行"候发"→"✅收官";LOOP_STATE 在飞"XERJ Release 候构建"同步销项。
