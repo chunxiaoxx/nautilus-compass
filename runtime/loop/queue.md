@@ -392,3 +392,30 @@
 - **主件=文章 PUT 更新加"Discussion highlights"段**:逐点回应四机制(calibration 集中 decision boundary 与我方 flips 聚集互证/LLM.int8 已内建 vector-wise absmax/残差源于 merged 量化/KV cache 我们 fp16 未量化不适用)+r32-64 rank sweep 入 r88 实验设计致谢——**技术对等回应,非致谢了事**。
 - 通道:forem API v1 评论创建 404(历史限制),改文章 PUT 更新已验证通道。
 - 附带:hub.xerj.org 槽位页 seed 尚未落地(候 maintainer);信箱 0 新函。
+
+### R517 · 2026-10-11 晨(主件轮:RERANK 双加固重开✅[实测 3/3 连通]+install.sh 假注册修正——发布面两 bug 全修)
+- **主件=rerank 重开完成**:双开关 ON+隧道 keepalive 重启→**remote 3/3 连通[实测]**(首包 19.8s 隧道重连,稳态 181/166ms)→daemon 重启带开关→V1 实测通过(nginx query 2ms 常速)。
+- **install.sh 假注册修正**:v1.0 第 4 步只 echo 不写入→真写 settings.json(幂等 JSON 安全写入)。
+- daemon 幽灵进程根因拔除(python3.13.exe 命名错位);hook 探活快退+timeout 120s。
+- 四项修复状态:①install.sh ✅ ②daemon 幽灵 ✅ ③hook 挂 ✅ ④PyPI 环境雷(文档候 3.3.1)。
+
+### R518 · 2026-10-11 晨二(flywheel 423 判定收官[实测]+pipeline 三源扩容——语料推进 2553)
+
+### R519 · 2026-10-11 晨三(多函处理:UNIFY 选型回函/token 交接/0005 办结/代发规范/10972 红线回执)
+- **10986 UNIFY 两问回函**:compass 站选 b 保域换皮(判读卡公信力依赖独立可引用 URL)+登录需求(公开面零登录/L2 门户接父域 JWT/工作台走 org-auth)——已 ack。
+- **10987 token 交接**:org-auth:compass 两把 key 拉至本机 .cache(600 权限);AUTH_STANDARD_V1 两级身份(HS256 本地验签暂不需)知悉;UNIFY 并入两问已另函回。
+- **10988 0005 办结**:agent_id=9000024+org-auth:agent-dialog 核发确认;ag_local_laptop_001 歧义解答 useful。
+- **10972 flywheel 红线清单 R1-R7 ack**:无异议+生成器红线 R1-R7 全落地(EXCLUDE 正则扩至政府线/谈判情报/泄密审计/结算语义全模式)——红线前移到生成端。
+
+### R520 · 2026-10-11 晨四(信箱清零确认+LOOP 事件驱动静默——72 轮收工)
+
+今晚累计 72 轮(LOOP 停止后事件驱动推进了 R502-R520)。全部线就绪/等待,实质件池清空。
+
+**明天 10/11 开局清单**:
+1. 终检正日 18 项一键(判据已锁定)
+2. watchdog 已恢复(Ready ×2 确认)
+3. r87 读数候收(已复核完毕)
+4. 白窗部署配合(候 platform 窗口函告)
+5. 10/12 开张三件
+
+**LOOP 静默待命**(cron 已删,事件触发恢复)。
