@@ -8,7 +8,6 @@ champion 热启动+全精度 3 epochs,读数对比 champion 基线(reg100+test14
 口径:复用 train_judge_incremental_fixed(R78 修复版)的 PROMPT_TMPL/sample_text,
 predict=完整 prompt 末位 logits(截尾=40pt 错位教训)。
 """
-import importlib.util
 import json
 import sys
 import time

@@ -5,11 +5,9 @@ POST /embed {"texts":[...]} → {"embeddings":[[...]]};GET /health。
 """
 import json
 import glob
-import os
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
-import numpy as np
 import torch
 from transformers import AutoModel, AutoTokenizer
 

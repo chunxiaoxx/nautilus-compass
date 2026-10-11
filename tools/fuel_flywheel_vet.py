@@ -8,7 +8,6 @@
 - R6: PII 角色化(手机号/邮箱→占位);结算语义件按文件名排除;
 - R7: runtime 仅取 git 跟踪清单内 + 白名单类名。
 """
-import csv
 import json
 import re
 import subprocess

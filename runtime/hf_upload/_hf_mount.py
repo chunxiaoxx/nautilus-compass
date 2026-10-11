@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """HF 挂载:nautilus-compass org 下两件——判分器模型卡+caliber-bench 样例包。"""
-import os
 from pathlib import Path
 
 from huggingface_hub import HfApi

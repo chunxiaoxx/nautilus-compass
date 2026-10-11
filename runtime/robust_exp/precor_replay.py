@@ -2,7 +2,7 @@
 # PRECOR B/C 一致性回放 runner:8 配置 x 292 题 → 一致率矩阵 CSV
 # 用法:python precor_replay.py --serve http://127.0.0.1:8300 --split test --out precor_matrix.csv
 # 判据:docs/metering/PRECOR_JUDGE_ROBUST_20261006.md(合格线=对 bf16 一致率>=99%,预注册)
-import argparse, csv, itertools, json, urllib.request
+import argparse, csv, json, urllib.request
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--serve", default="http://127.0.0.1:8300")

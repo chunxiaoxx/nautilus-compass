@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """E1 帧包直传 v2:单 SSH 连接循环分块 exec(绕 banner 限流),块 384KB。"""
 import base64
-import hashlib
 import sys
 import time
 from pathlib import Path

@@ -3,7 +3,6 @@
 只读统计层;推理层复算(盲探针/GPU)不在本脚本。"""
 
 import json
-import statistics
 from pathlib import Path
 
 D = Path(__file__).parent

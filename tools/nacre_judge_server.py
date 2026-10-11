@@ -11,7 +11,6 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import peft  # noqa: F401  # adapter 加载需要
 import torch
-import re
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 BASE = "/root/vdd4/modelscope/models/Qwen--Qwen3-1.7B/snapshots/master"

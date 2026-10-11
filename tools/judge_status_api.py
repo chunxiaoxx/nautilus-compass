@@ -4,7 +4,6 @@
 数据源:platform_nau_ledger + 受理登记表(暂用书信 trace 代替,v1 接 intake 台账);
 输出:GET /api/judge_status?id=<受理编号> → 六步状态 JSON。"""
 import json
-import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import urllib.parse
 

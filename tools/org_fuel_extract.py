@@ -74,7 +74,6 @@ def main():
     with open(OUT, "w", encoding="utf-8") as f:
         for c in cands:
             f.write(json.dumps(c, ensure_ascii=False) + "\n")
-    from collections import Counter
     lv = {}
     for c in cands:
         lv[c["anchor_level"]] = lv.get(c["anchor_level"], 0) + 1

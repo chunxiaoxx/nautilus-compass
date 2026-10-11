@@ -76,13 +76,22 @@ def main() -> int:
                  if l.strip() and json.loads(l).get("judge_verdict") == "pass"
                  and json.loads(l).get("anchor_level") in ("L0", "L1")]
             sources[f"org_fuel:{tag}"] = g
-    # R508 跨框源(flywheel 档案)
-    f_fw = root.parent / "org_fuel/fuel_verdicts_flywheel.jsonl"
-    if f_fw.exists():
-        gf = [json.loads(l) for l in f_fw.read_text(encoding="utf-8").splitlines()
+    # R508/R511 跨框源(flywheel 档案): 初判版+vetted 版(取 vetted 正本, 初判版留痕)
+    # R516 跨框扩容源(flywheel 423 条 + vetted 412 条): qid 防泄漏去重
+    for tag, fname in (("flywheel", "fuel_verdicts_flywheel.jsonl"),
+                       ("flywheel_vetted", "fuel_verdicts_flywheel_vetted.jsonl")):
+        f_fw = root.parent / f"org_fuel/{fname}"
+        if f_fw.exists():
+            gf = [json.loads(l) for l in f_fw.read_text(encoding="utf-8").splitlines()
+                  if l.strip() and json.loads(l).get("judge_verdict") == "pass"
+                  and json.loads(l).get("anchor_level") in ("L0", "L1")]
+            sources[f"org_fuel:{tag}"] = gf
+    f_fw_vetted = root.parent / "org_fuel/fuel_verdicts_flywheel_vetted.jsonl"
+    if f_fw_vetted.exists():
+        gv = [json.loads(l) for l in f_fw_vetted.read_text(encoding="utf-8").splitlines()
               if l.strip() and json.loads(l).get("judge_verdict") == "pass"
               and json.loads(l).get("anchor_level") in ("L0", "L1")]
-        sources["org_fuel:flywheel"] = gf
+        sources["org_fuel:flywheel_vetted"] = gv
 
     # qid 防泄漏:同 qid 只保留 train/首个来源版;跨 split 重复=报数
     seen: dict[str, str] = {}

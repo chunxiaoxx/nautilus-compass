@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """A100 嵌入服务部署脚本(R301 续):杀旧下载/pattern 重下/装 fastapi/部署服务。"""
-import time
 
 import paramiko
 

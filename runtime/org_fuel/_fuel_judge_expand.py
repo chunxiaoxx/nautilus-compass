@@ -3,7 +3,6 @@
 """ORG-FUEL 扩容判定(R455): queue+memory 两新源 × NACRE judge 三态判。
 口径与 _fuel_judge_docs.py 完全一致(同模板/bf16+LoRA 合规部署)。"""
 import json
-from pathlib import Path
 
 import torch
 from peft import PeftModel

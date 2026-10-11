@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """E1 复考传输:7 块帧包分块上传 A100→合并→sha 校验→解压。带限流退避重试。"""
-import hashlib
 import subprocess
 import sys
 import time

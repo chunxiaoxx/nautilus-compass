@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """A100 上执行的组织脚本(R301 续):部署嵌入服务前置检查。在 A100 上运行。"""
 import subprocess
-import sys
 
 
 def run(cmd, timeout=60):

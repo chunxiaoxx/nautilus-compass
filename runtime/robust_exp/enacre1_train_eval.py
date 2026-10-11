@@ -7,11 +7,11 @@
 读数:全域加权 acc(A/B)+各域 acc(A/B)+B 对 A 的 label 一致率。行级写 CSV。
 判门:全域 B≥A+1.5pp;各域 B≥A;一致率≥99%。负结果照报。
 """
-import argparse, csv, json, random, re, time
+import argparse, csv, json, random, re
 from pathlib import Path
 
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
 BASE = "/root/vdd4/modelscope/models/Qwen--Qwen3-1.7B/snapshots/master"
 CHAMPION = "/root/vdd4/adapters/best_lora"          # A 臂(现役)
@@ -60,7 +60,6 @@ def sample_text(s: dict) -> str:
 
 
 def train_domain(base_model, tok, train_rows, out_dir):
-    from peft import LoraConfig, get_peft_model
     model = PeftWrap(base_model, out_dir)
     label_ids = {lab: tok.encode(lab, add_special_tokens=False)[0] for lab in LABELS}
     pairs = [(r["prompt"], LABELS.index(r["truth"])) for r in train_rows

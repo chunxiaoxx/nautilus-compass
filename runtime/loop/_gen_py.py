@@ -16,7 +16,6 @@ Copy: plain short sentences, no em-dashes, no filler intros (user directive
 2026-10-06). Stdlib only; deterministic; no network. Rerun + redeploy on
 registry change.
 """
-import datetime as dt
 import html
 import json
 import pathlib

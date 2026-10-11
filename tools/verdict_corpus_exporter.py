@@ -144,7 +144,6 @@ def harvest_f15_meta(path: Path, inline_v1: bool = False) -> list:
 
 def _f15_samples_text() -> dict:
     """v1 修复:从 f15_meta_judge.py 的 SAMPLES 字面量解析 case_id→text(失败留指针不炸)。"""
-    import ast
     src = ROOT / "scripts" / "f15_meta_judge.py"
     if not src.exists():
         return {}

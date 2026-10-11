@@ -6,7 +6,6 @@
   resp: {"ok":true,"scores":[...],"ms":N} | {"ok":false,"error":"..."}\\n
 """
 import json
-import socket
 import socketserver
 import time
 from pathlib import Path

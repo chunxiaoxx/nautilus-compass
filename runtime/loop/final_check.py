@@ -16,7 +16,6 @@
 import json
 import subprocess
 import sys
-import tempfile
 from pathlib import Path
 
 BASE = "https://nautilus.social"

@@ -14,7 +14,6 @@ import json
 import socket
 import sys
 import time
-from datetime import date
 from pathlib import Path
 
 TOKEN = (Path.home() / ".claude" / ".cache" / "compass_daemon_token").read_text(encoding="utf-8").strip()
