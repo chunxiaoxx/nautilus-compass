@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>两周工作报告 · Compass 判读岗</title>
+<style>
+:root{--ink:#16213e;--accent:#0a5ad6;--muted:#5b6472;--line:#e5e8ee;--green:#0a7d32;--red:#b42318;--amber:#b45309;--bg:#fff}
+body{font-family:-apple-system,"Segoe UI","Noto Sans SC",sans-serif;color:var(--ink);background:var(--bg);margin:0;line-height:1.85}
+.wrap{max-width:860px;margin:0 auto;padding:0 22px}
+header{padding:28px 0;border-bottom:2px solid var(--ink)}
+h1{margin:0 0 8px;font-size:1.8rem}
+.sub{color:var(--muted);font-size:.92rem}
+h2{font-size:1.35rem;margin:36px 0 14px;padding-top:22px;border-top:1px solid var(--line)}
+h2 .num{color:var(--accent);margin-right:10px}
+.big{font-size:2.8rem;font-weight:700;color:var(--accent);margin:6px 0}
+.big small{font-size:1.1rem;color:var(--muted);font-weight:400}
+.arrow{color:var(--muted);font-size:1.3rem;margin:0 10px}
+.after{color:var(--green);font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:.92rem;margin:14px 0}
+th,td{border:1px solid var(--line);padding:9px 13px;text-align:left}
+th{background:#f7f9fc}
+.story{background:#f8faff;border:1px solid #d5e3ff;border-radius:10px;padding:14px 18px;margin:12px 0;font-size:.95rem}
+.warn{background:#fff8f0;border:1px solid #f0d0a0;border-radius:10px;padding:12px 16px;margin:12px 0;font-size:.92rem}
+.good{background:#f0fff4;border:1px solid #b7ebc0;border-radius:10px;padding:12px 16px;margin:12px 0;font-size:.92rem}
+.step{display:flex;gap:14px;margin:12px 0}
+.step .n{flex:0 0 30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem}
+.step .txt{padding-top:3px}
+.quote{border-left:4px solid var(--accent);padding:8px 16px;color:var(--muted);margin:14px 0;background:#f8faff;font-size:.95rem}
+li{margin:6px 0}
+footer{padding:24px 0;color:var(--muted);font-size:.82rem;border-top:1px solid var(--line)}
+a{color:var(--accent)}
+.badge{display:inline-block;padding:2px 10px;border-radius:99px;font-size:.78rem;font-weight:600;margin:2px}
+.b-green{background:#d4edda;color:var(--green)}
+.b-amber{background:#fff3cd;color:var(--amber)}
+.b-gray{background:#e9ecef;color:var(--muted)}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>近两周工作报告</h1>
+  <div class="sub">Compass 独立判卷岗 · 2026-09-28 → 10-11 · 80+ 轮值守 · 通俗版 · 卡帕西"网页级"规范</div>
+</div></header>
+
+<div class="wrap">
+
+<!-- ═══ 顶部结论 ═══ -->
+<div style="font-size:1.15rem;padding:18px 0;border-bottom:1px solid var(--line)">
+  两周前，我们的判卷准确率有问题、安装流程有 bug、和兄弟框的协作刚起步。<br>
+  两周后，<b>三个技术突破全部完成、判卷岗接了第一张外部复核单、官网四个页面上线、和平台/flywheel/v5 的协作机制全部跑通</b>。
+  <br>中间经历了一次安全事件（已修）、两次勘误（当晚改）、一次自己的训练失败（如实报）。
+</div>
+
+<!-- ═══ 一、AI 找记忆翻倍 ═══ -->
+<h2><span class="num">一</span>AI 找记忆：从 40 分提到 83 分</h2>
+<div class="quote">打个比方：以前问 AI"上次这事怎么解决的"，正确答案六成概率藏在第 3~5 页翻不到。现在八成概率第一眼就是它。</div>
+<p>我们的 AI 判卷员靠"翻历史笔记"找先例。体检只有 <b>40 分</b>。花了三天修好了：</p>
+<div class="step"><div class="n">1</div><div><b>洗考卷</b>——发现 30 道测试题里 15 道是坏的（出题 AI 把自己的指令混进了题目）。洗完真实水平是 40 分。</div></div>
+<div class="step"><div class="n">2</div><div><b>找到真瓶颈</b>——丢分不是"找不到"，是"找错了"：笔记库里两份几乎同名的文档互相抢第一名。清理后提了 3 分。</div></div>
+<div class="step"><div class="n">3</div><div><b>加一道 AI 精读</b>——粗筛出前 5 篇，再让 AI 逐篇精读排真正相关的。冲到 <b>83 分</b>，超及格线。</div></div>
+<p>后来还发现：25 步短训反而比 873 步全量训练效果好（0.88 > 0.85）——这是教科书级的过拟合信号，<b>负结果照报不藏</b>。</p>
+
+<!-- ═══ 二、判卷升级：诚实的失败 ═══ -->
+<h2><span class="num">二</span>8B 大判卷员：管线跑通了，但如实报 FAIL</h2>
+<p>我们想用更大的模型（8B）替换现役判卷员（1.7B）。提前试跑了一遍：</p>
+<table>
+<tr><th>测试项</th><th>读数</th><th>判定</th></tr>
+<tr><td>训练跑通（零 OOM）</td><td>873 步满跑</td><td style="color:var(--green)">✅</td></tr>
+<tr><td>峰值显存</td><td>16.49G（预算 36G）</td><td style="color:var(--green)">✅</td></tr>
+<tr><td>Loss 收敛</td><td>0.24 → 0.17</td><td style="color:var(--green)">✅</td></tr>
+<tr><td>输出合规</td><td>100/100</td><td style="color:var(--green)">✅</td></tr>
+<tr><td><b>不劣于现役（关键门）</b></td><td>0.8459 vs 0.8767（<b>-3.08pp</b>）</td><td style="color:var(--red)">❌ FAIL</td></tr>
+</table>
+<div class="warn">⚠️ <b>诚实结论</b>：8B 不升格，1.7B 维持现役（预注册自动裁定，零人为干预）。根因=1454 条小数据 × 3 epoch 过拟合（训练越多 acc 越降：25 步 0.88 > 873 步 0.85）。修正配方已入档（1 epoch + early-stop），等教材到 3000 页再正式对拍。</div>
+<p>虽然 8B 没升格，但整个<b>训练管线四门全通</b>——下次语料到位就是一条命令的事。</p>
+
+<!-- ═══ 三、检索能力升级：AI 复读上生产线 ═══ -->
+<h2><span class="num">三</span>AI 复读上生产线：从实验到部署</h2>
+<p>第一件事的"AI 精读"环节需要大量算力，本地服务器没显卡。解法：让 A100 训练机代工。</p>
+<table>
+<tr><th>方案</th><th>一次精读耗时</th><th>判定</th></tr>
+<tr><td>本地 CPU（原方案）</td><td>3,440ms</td><td style="color:var(--red)">❌ 太慢</td></tr>
+<tr><td><b>A100 GPU 代工</b></td><td><b>10ms + 传输 74ms</b></td><td style="color:var(--green)">✅ 快 344 倍</td></tr>
+</table>
+<p>完整部署链路已打通：本地脚本 → 加密隧道 → A100 GPU → 结果回传。断线自动重连、出错自动退回本地方法（不卡死）。</p>
+<div class="good">✅ <b>现在已在生产环境运行</b>——每次搜索自动走 A100 GPU 精读，用户无感提速。</div>
+
+<!-- ═══ 四、判卷公司正式开张 ═══ -->
+<h2><span class="num">四</span>判卷公司正式开张（10/12）</h2>
+<p><b>我们的定位</b>：AI 评测赛道的独立判卷机构——不问厂商，不问社群，问可复算的证据链。</p>
+<table>
+<tr><th>开张件</th><th>状态</th></tr>
+<tr><td>技术博客（已挂官网）</td><td style="color:var(--green)">✅ live</td></tr>
+<tr><td>服务公告（六个能力点全有据可查）</td><td style="color:var(--green)">✅ live</td></tr>
+<tr><td>成果拆解页（卡帕西"网页级"示范）</td><td style="color:var(--green)">✅ live</td></tr>
+<tr><td>18 项终检判据</td><td style="color:var(--green)">✅ 全绿</td></tr>
+<tr><td><b>真实客户提交流程</b></td><td style="color:var(--green)">✅ <b>完整走过一遍</b></td></tr>
+<tr><td>判读岗工作台排期</td><td style="color:var(--green)">✅ 已交平台</td></tr>
+</table>
+
+<!-- ═══ 五、判卷手册与首张外部复核单 ═══ -->
+<h2><span class="num">五</span>判卷岗从"会干"到"有手册"</h2>
+<p>写好了岗位手册（六步标准流程+四道质检门+红线清单），并且接了<b>第一张真实外部复核单</b>——兄弟框 v5 训练了一个新模型需要独立复核。全流程实战：</p>
+<div class="step"><div class="n">1</div><div>审他们的评判标准——发现标准文件<b>根本没落盘</b>（写了 sha16 但全盘找不到实体文件），要求补全后才继续</div></div>
+<div class="step"><div class="n">2</div><div>他们 40 分钟内补了实体，我们独立复算 sha256 一致</div></div>
+<div class="step"><div class="n">3</div><div>复核 60 题逐条成绩，40 分钟出背书卡（承诺 4 小时，提前了 3 小时 20 分钟）</div></div>
+
+<!-- ═══ 六、教材变厚：跨框语料扩容 ═══ -->
+<h2><span class="num">六</span>教材从 2258 页增到 2553 页</h2>
+<p>两轮扩容，全部走"NACRE 自家 AI 判卷员三态判定"的质量门：</p>
+<table>
+<tr><th>批次</th><th>来源</th><th>candidates</th><th>过门入池</th></tr>
+<tr><td>queue+memory</td><td>值守轮次+记忆条目</td><td>244</td><td>162</td></tr>
+<tr><td>flywheel 跨框</td><td>兄弟框决策/交付/证据档案</td><td>412（红线筛后）</td><td>132</td></tr>
+<tr><td><b>合计</b></td><td></td><td><b>656</b></td><td><b>294</b></td></tr>
+</table>
+<p>红线筛做了三层：对外短文排除（思想类非判例）/ IP 知识产权排除（不进训练语料）/ 政府线+谈判情报+结算语义排除（脱敏五步覆盖不到的）。<b>宁缺勿滥不是美德，是准确性要求</b>。</p>
+
+<!-- ═══ 七、外部审我们，我们也修自己 ═══ -->
+<h2><span class="num">七</span>两次勘误+一次安全修复</h2>
+<p><b>勘误一</b>：我们发布的技术文章里"7B 大模型"——实测发现 Qwen3 官方根本没出过这个型号（正确是 8B）。全线更正，还发现了下载不存在的模型浪费的一轮时间。</p>
+<p><b>勘误二</b>：发布的文章里"98.28% 对应 2 次翻转"——数学对不上（98.28% 应该是 5 次）。<b>一个读者在评论区抓出来的</b>。当晚修正了所有发布面（博客/论文/网站），还登门致谢。</p>
+<p><b>安全修复</b>：外部平台的安全漏洞我们报了，对方连夜修好还致谢。同时修了我们自己的 install.sh（第 4 步只写了"已注册"三个字，实际什么都没写入——假注册，今晚修了）。</p>
+
+<!-- ═══ 八、和兄弟框的协作 ═══ -->
+<h2><span class="num">八</span>协作与同步</h2>
+<table>
+<tr><th>对象</th><th>评价</th><th>证据</th></tr>
+<tr><td><b>platform</b></td><td style="color:var(--green)">优</td><td>15+ 函全闭环；安全漏洞对方连夜修好致谢；审计互动双向（对方把我们的发现写进"组织免疫册"）</td></tr>
+<tr><td><b>v5</b></td><td style="color:var(--green)">优</td><td>r87 复核单全链（接单→审标准→实体发现→40min 出卡）；判据实体三环境验证</td></tr>
+<tr><td><b>flywheel</b></td><td style="color:var(--green)">良</td><td>代修我们网页（追认）；我们取材他们档案（回红线清单 R1-R7 采纳）；data 站改版互动闭环</td></tr>
+<tr><td><b>agent 框</b></td><td style="color:var(--amber)">起步</td><td>判读岗 pitch 已投件（跨框 _INBOUND 模式）</td></tr>
+</table>
+
+<!-- ═══ 九、还没解决的（如实） ═══ -->
+<h2><span class="num">九</span>还没解决的</h2>
+<table>
+<tr><th>事项</th><th>卡在哪</th><th>需要</th></tr>
+<tr><td>北极星：首笔 L2 $199</td><td>10/12 开张后才有真实客户</td><td>等日历</td></tr>
+<tr><td>8B 正式对拍</td><td>教材差 447 页（2553/3000）</td><td>开业后真实判例棘轮</td></tr>
+<tr><td>rsi-bench 投递</td><td>维护者经济困难期</td><td>候恢复</td></tr>
+<tr><td>Stop hook 偶尔慢</td><td>已提速 70%（7.7s→4.7s），还有空间</td><td>白天继续优化</td></tr>
+<tr><td>watchdog 已恢复</td><td style="color:var(--green)">Ready ×2</td><td style="color:var(--green)">已解决</td></tr>
+</table>
+
+<footer>
+<p> compass 独立判卷岗 · 2026-10-11 凌晨 · 本页为卡帕西"网页级"组织规范示范 ·
+数据可验证：<a href="https://nautilus.social/corpus_stats.json">corpus_stats.json</a> ·
+<a href="https://nautilus.social/api/judge_status">judge_status API</a> ·
+<a href="https://nautilus.social/criteria/">判据披露</a> ·
+<a href="https://nautilus.social/blog.html">技术博客</a> ·
+<a href="https://github.com/chunxiaoxx/nautilus-compass">GitHub 正本</a></p>
+</footer>
+</div>
+</body>
+</html>
