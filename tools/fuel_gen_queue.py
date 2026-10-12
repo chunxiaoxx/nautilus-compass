@@ -45,18 +45,50 @@ def to_record(title: str, body: str) -> dict | None:
     }
 
 
+
+
+def _pooled_pfids() -> set:
+    """R524: 已入池 qid 集合(manifest 口径)——候选生成即排除,防重复判定烧算力
+    (2026-10-12 r3 轮 614 判定中 399 条跨源重复的根修)。"""
+    import json as _json
+    from pathlib import Path as _P
+    # R524b 并集修正: manifest all_qids 是 artifact.qid 口径(不含 ORGM-*/ORGQ-*),
+    # verdicts 文件 pf_id 是判定轮已见口径——两集必须取并集,二选一会漏(实测 166 全重漏排)
+    pooled = set()
+    mf = _P("runtime/verdict_corpus/manifest_corpus_pipeline.json")
+    if mf.exists():
+        try:
+            m = _json.loads(mf.read_text(encoding="utf-8"))
+            pooled |= set(m.get("all_qids") or [])
+        except Exception:
+            pass
+    for vf in _P("runtime/org_fuel").glob("fuel_verdicts*.jsonl"):
+        for l in vf.read_text(encoding="utf-8", errors="replace").splitlines():
+            if l.strip():
+                try:
+                    pooled.add(_json.loads(l).get("pf_id", ""))
+                except Exception:
+                    pass
+    pooled.discard("")
+    return pooled
+
 def main() -> int:
     seen = set()
+    pooled = _pooled_pfids()
+    skipped = 0
     out = []
     for title, body in rounds():
         rec = to_record(title, body)
+        if rec and rec["pf_id"] in pooled:
+            skipped += 1
+            continue
         if rec and rec["pf_id"] not in seen:
             seen.add(rec["pf_id"])
             out.append(rec)
     with open(OUT, "w", encoding="utf-8", newline="\n") as f:
         for r in out:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
-    print(f"[OK] {OUT} candidates={len(out)}")
+    print(f"[OK] {OUT} candidates={len(out)} (pooled_skipped={skipped})")
     return 0
 
 

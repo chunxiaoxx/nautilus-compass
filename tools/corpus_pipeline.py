@@ -92,6 +92,14 @@ def main() -> int:
               if l.strip() and json.loads(l).get("judge_verdict") == "pass"
               and json.loads(l).get("anchor_level") in ("L0", "L1")]
         sources["org_fuel:flywheel_vetted"] = gv
+    # R524 三源扩容 r3(2026-10-12: queue 69/memory 166/flywheel 379 判定轮,gate 口径不变)
+    for tag in ("queue", "memory", "flywheel"):
+        f3 = root.parent / f"org_fuel/fuel_verdicts_{tag}_r3.jsonl"
+        if f3.exists():
+            g3 = [json.loads(l) for l in f3.read_text(encoding="utf-8").splitlines()
+                  if l.strip() and json.loads(l).get("judge_verdict") == "pass"
+                  and json.loads(l).get("anchor_level") in ("L0", "L1")]
+            sources[f"org_fuel:{tag}_r3"] = g3
 
     # qid 防泄漏:同 qid 只保留 train/首个来源版;跨 split 重复=报数
     seen: dict[str, str] = {}
@@ -121,7 +129,10 @@ def main() -> int:
         "retrain_candidate": n_train >= 1 and (n_train // SFT_TRIGGERS["retrain_candidate_step"])
         > ((n_train - len(sources.get("delta:delta_0003.jsonl", [])) or 0)
            // SFT_TRIGGERS["retrain_candidate_step"]),
-        "sevenb_compare_ready": n_train >= SFT_TRIGGERS["sevenb_compare"],
+        # R524 口径修正:判据正本(SEVENB_COMPARE_PREREG 触发条件)=「语料 ≥3000 (unique qid,
+        # corpus_pipeline 口径)」——此前误用 n_train(训练子集),比正本更严且显示误导
+        # (remaining 虚高 1838 vs 真缺口 447)。实现对齐正本,非放宽判据。
+        "sevenb_compare_ready": n_total >= SFT_TRIGGERS["sevenb_compare"],
     }
 
     manifest = {
@@ -133,7 +144,7 @@ def main() -> int:
         "next_retrain_candidate_at": ((n_train // SFT_TRIGGERS["retrain_candidate_step"]) + 1)
         * SFT_TRIGGERS["retrain_candidate_step"],
         "sevenb_target": SFT_TRIGGERS["sevenb_compare"],
-        "sevenb_remaining": max(0, SFT_TRIGGERS["sevenb_compare"] - n_train),
+        "sevenb_remaining": max(0, SFT_TRIGGERS["sevenb_compare"] - n_total),
         "merged_sha16": h,
         "triggers": {k: bool(v) for k, v in triggers.items()},
     }

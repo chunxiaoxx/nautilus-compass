@@ -68,18 +68,32 @@ def render_report(card: dict, generated_at: str) -> str:
     add(f"- 判读卡: {card.get('id')} · {card.get('title')}")
     add(f"- 判定: `{card.get('verdict')}` · 状态: {card.get('status')}")
     add(f"- 判据 sha16: `{card.get('criteria_sha16')}` ([判据披露](https://nautilus.social/criteria/))")
-    add(f"- 提交物 sha16: `{card.get('submission')}`")
+    sub = card.get("submission")
+    add(f"- 提交物 sha16: `{sub}`" + ("" if sub else "(未登记——老卡口径,卡面无该字段)"))
     add(f"- 结果页: {card.get('result_url')}")
     add("")
     add("## 二、判定与证据链(原文零改动)")
     add("")
-    for key, label in (("metadata", "被测元数据"), ("evaluation_evidence", "评测证据"),
-                       ("three_state", "三态判定"), ("disposition", "处置")):
-        if key in vd:
-            add(f"### {label}")
-            add("")
-            add(vd[key])
-            add("")
+    if vd:
+        for key, label in (("metadata", "被测元数据"), ("evaluation_evidence", "评测证据"),
+                           ("three_state", "三态判定"), ("disposition", "处置")):
+            if key in vd:
+                add(f"### {label}")
+                add("")
+                add(vd[key])
+                add("")
+    else:
+        # R525 兜底(G1 零丢失):老卡无 verdict_detail 子结构(如 nautilus-l1-0001
+        # 仅 7 个顶层字段)——原样 dump 全部顶层字段,禁止静默丢段。
+        add("*(本卡无 verdict_detail 子结构——老卡口径。以下为卡面全部字段原样呈现,)*")
+        add("*(零丢失兜底,本生成器不新增任何断言)*")
+        add("")
+        add("| 字段 | 值(原文) |")
+        add("|---|---|")
+        for k, v in card.items():
+            vs = json.dumps(v, ensure_ascii=False) if isinstance(v, (list, dict)) else str(v)
+            add(f"| {k} | {vs} |")
+        add("")
     add("## 三、流程时间线")
     add("")
     add("| 时点 | 环节 | 状态 |")

@@ -45,7 +45,33 @@ def looks_sensitive(t: str) -> bool:
     return bool(EXCLUDE.search(t[:600]) or PII.search(t[:2000]))
 
 
+
+def _pooled_pfids() -> set:
+    """R524: 已入池/已判定 pf_id 并集(manifest all_qids ∪ verdicts pf_id),
+    候选生成即排除,防重复判定烧算力(2026-10-12 r3 轮 399 重复根修)。"""
+    import json as _json
+    from pathlib import Path as _P
+    pooled = set()
+    mf = _P("runtime/verdict_corpus/manifest_corpus_pipeline.json")
+    if mf.exists():
+        try:
+            m = _json.loads(mf.read_text(encoding="utf-8"))
+            pooled |= set(m.get("all_qids") or [])
+        except Exception:
+            pass
+    for vf in _P("runtime/org_fuel").glob("fuel_verdicts*.jsonl"):
+        for l in vf.read_text(encoding="utf-8", errors="replace").splitlines():
+            if l.strip():
+                try:
+                    pooled.add(_json.loads(l).get("pf_id", ""))
+                except Exception:
+                    pass
+    pooled.discard("")
+    return pooled
+
 def main() -> int:
+    pooled = _pooled_pfids()
+    skipped = 0
     seen, out, excluded = set(), [], 0
     files = sorted(FW.glob("docs/**/*.md")) + sorted(FW.glob("runtime/*.md"))
     for p in files:
@@ -72,6 +98,9 @@ def main() -> int:
             continue
         content = f"flywheel 档案 {name}\n{body[:1600]}"
         h = hashlib.sha256(content.encode("utf-8")).hexdigest()[:16]
+        if f"ORGF-{h}" in pooled:
+            skipped += 1
+            continue
         if h in seen:
             continue
         seen.add(h)
