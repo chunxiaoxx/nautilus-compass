@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>勘误与事故公开账本 · Compass 独立判读</title>
+<style>
+:root{--ink:#16213e;--accent:#0a5ad6;--muted:#5b6472;--line:#e5e8ee;--green:#0a7d32;--red:#b42318;--amber:#b45309}
+body{font-family:-apple-system,"Segoe UI","Noto Sans SC",sans-serif;color:var(--ink);background:#fff;margin:0;line-height:1.85}
+.wrap{max-width:880px;margin:0 auto;padding:0 22px}
+header{padding:30px 0 22px;border-bottom:2px solid var(--ink)}
+h1{margin:0 0 6px;font-size:1.75rem}
+.sub{color:var(--muted);font-size:.93rem}
+h2{font-size:1.3rem;margin:34px 0 12px;padding-top:20px;border-top:1px solid var(--line)}
+table{width:100%;border-collapse:collapse;font-size:.88rem;margin:12px 0}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f7f9fc;white-space:nowrap}
+.why{background:#f8faff;border:1px solid #d5e3ff;border-radius:10px;padding:14px 18px;margin:14px 0;font-size:.95rem}
+.rule{background:#fff8f0;border:1px solid #f0d0a0;border-radius:10px;padding:11px 16px;margin:12px 0;font-size:.9rem}
+.tag{display:inline-block;padding:1px 9px;border-radius:99px;font-size:.75rem;font-weight:600;margin:1px}
+.t-red{background:#fde8e6;color:var(--red)}
+.t-green{background:#d4edda;color:var(--green)}
+.t-gray{background:#e9ecef;color:var(--muted)}
+code{background:#f1f3f7;padding:1px 6px;border-radius:4px;font-size:.85em}
+footer{padding:26px 0;color:var(--muted);font-size:.82rem;border-top:1px solid var(--line)}
+a{color:var(--accent)}
+li{margin:5px 0}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>勘误与事故公开账本</h1>
+  <div class="sub">Compass 独立判读 · 错误照登 · 修正留痕 · 改动可溯 · 建档 2026-10-12</div>
+</div></header>
+
+<div class="wrap">
+
+<div class="why">
+  <b>这是什么:</b>我们对外发布的一切材料(博客/论文/榜单/公告)出现错误后的公开修正记录,以及影响服务的运行事故记录。<b>发现者不限于我们自己</b>——外部读者抓出的错误与自查抓出的同等登载,并署名致谢。<br>
+  <b>为什么公开:</b>评测机构的唯一资产是可信。可信不靠"从没错过",靠"错了之后发生了什么"。本页即那份"之后"。
+</div>
+
+<h2>一、勘误记录(对外发布面)</h2>
+<table>
+<tr><th>日期</th><th>错误(原口径)</th><th>实际</th><th>发现者</th><th>修复锚</th></tr>
+<tr>
+  <td>2026-09-05</td>
+  <td>发布材料 6 处声称评测为 same-embedder 设定</td>
+  <td>实际为不同 embedder,声明不成立</td>
+  <td><span class="tag t-red">自查</span></td>
+  <td>6 处全部纠偏重发</td>
+</tr>
+<tr>
+  <td>2026-10-02</td>
+  <td>将 gtaras7 个人仓库(9 星)定为"里程碑"</td>
+  <td>价值定级过高;降格为闭环 reference</td>
+  <td><span class="tag t-red">自查</span>(用户质询触发)</td>
+  <td>定级修正;方法论被对方仓库采纳</td>
+</tr>
+<tr>
+  <td>2026-10-06</td>
+  <td>判读函称"缺尾换行=apply 失败的确定性成因"</td>
+  <td>抽查 12/12 题全缺尾换行(含 4 题 resolved),不构成确定性成因;真阻断=malformed hunk</td>
+  <td><span class="tag t-red">自查</span>(复核抽查)</td>
+  <td>勘误函送 v5 留痕;归因结论不变、机制表述修正</td>
+</tr>
+<tr>
+  <td>2026-10-10</td>
+  <td>历史文档将 Qwen3 对拍对象写作"7B"</td>
+  <td>Qwen3 官方无 7B 尺寸(0.6/1.7/4/8/14/32B),被测物=8B(hf-mirror 7B 路径 404 实测)</td>
+  <td><span class="tag t-red">自查</span></td>
+  <td>registry 文案勘误部署;判据档留痕注记;G1-G4 数字零改动</td>
+</tr>
+<tr>
+  <td>2026-10-10</td>
+  <td>PRECOR 文章 int8 行"98.28% agreement + 2 flips"数学矛盾</td>
+  <td>98.28% 实测真值不变;flips 真值=5(2/291=99.31% 与 98.28% 互斥);"2"系容错数误抄。门判定不变(98.28%&lt;99% FAIL)</td>
+  <td><span class="tag t-green">外部读者 arhancanli</span>(dev.to 评论)</td>
+  <td>当晚 5 个发布面(blog/arXiv draft/registry 等)全部修正;双渠道登门致谢;「发布前数学自洽检查」固化入 checklist</td>
+</tr>
+</table>
+<div class="rule">⚠️ 编号说明:勘误编号体系自 2026-10-10(第 8/9 例)起固化;此前例按日期列示不补编号,一视同仁。</div>
+
+<h2>二、事故记录(服务运行)</h2>
+<table>
+<tr><th>日期</th><th>事故</th><th>影响</th><th>根因</th><th>修复</th></tr>
+<tr>
+  <td>2026-10-11 → 10-12</td>
+  <td>云端记忆层语义 recall 全局拒绝</td>
+  <td>13.2 小时,1809 次请求被拒(10/11 23:05 → 10/12 12:19);判读公开面/判读 API 不受影响</td>
+  <td>单项目语料装载无时间预算,霸占串行锁分钟级;重试风暴填满 32 连接槽;槽为全局资源,一个项目的慢拖死所有项目</td>
+  <td>重启恢复(秒级);根修补丁:装载加 30 秒时间预算,超时返回部分结果;事故档 <a href="https://github.com/chunxiaoxx/nautilus-compass">docs/incidents/</a> 如实落仓</td>
+</tr>
+</table>
+
+<h2>三、拦截记录(发布前抓出,未外流)</h2>
+<table>
+<tr><th>日期</th><th>险情</th><th>拦截方式</th></tr>
+<tr>
+  <td>2026-09-02</td>
+  <td>差点将上游官方基准(451 题)作为"自建基准"改名发布——侵权级风险</td>
+  <td>资产断言先 grep 溯源,发布前拦截;基准命名三连撞(CompassBench/ATLAS/CompassMem)后终选独立名</td>
+</tr>
+</table>
+
+<h2>四、账本规则</h2>
+<ul>
+  <li><b>谁都能上账:</b>外部发现与内部发现同等登载,外部发现者署名致谢(除非要求匿名)。</li>
+  <li><b>只追加不删改:</b>条目错误再勘误时新增条目指向旧条目,不抹改历史。</li>
+  <li><b>门判定与事实分层:</b>勘误区分"事实错误已修"与"结论是否随之改变",门判定变化永远显式标注。</li>
+  <li><b>每条给修复锚:</b>可查的修正落点(文件/页面/函件),不接受"已内部修正"式空口销账。</li>
+</ul>
+
+<footer>
+Compass 独立判读 · 勘误账本 · 2026-10-12 建档 ·
+数据与公开面:<a href="https://nautilus.social/blog.html">技术博客</a> ·
+<a href="https://nautilus.social/status.html">判读卡状态</a> ·
+<a href="https://nautilus.social/criteria/">判据披露</a> ·
+<a href="https://github.com/chunxiaoxx/nautilus-compass">GitHub 正本</a>
+</footer>
+</div>
+</body>
+</html>

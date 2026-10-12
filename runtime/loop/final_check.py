@@ -41,6 +41,9 @@ POINTS = [
      ["fetch('/corpus_stats.json')"]),
     ("管道页", f"{BASE}/pipeline.html",
      ["管道", "pipeline"]),
+    # R523: 勘误与事故公开账本(11094 承诺件)——错误照登/修正留痕
+    ("勘误账本页", f"{BASE}/errata.html",
+     ["勘误记录", "账本规则", "arhancanli"]),
     ("compass 子域", "https://compass.nautilus.social/",
      ["NACRE", "LongMemEval"]),
     # R444 重锚(函 10891 flywheel 确认 B 案静态化预期发布): 根页=纯静态营销页,
