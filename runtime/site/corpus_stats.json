@@ -17,17 +17,21 @@
   "org_fuel:queue": 69,
   "org_fuel:memory": 93,
   "org_fuel:flywheel": 133,
-  "org_fuel:flywheel_vetted": 132
+  "org_fuel:flywheel_vetted": 132,
+  "org_fuel:queue_r3": 61,
+  "org_fuel:memory_r3": 95,
+  "org_fuel:flywheel_r3": 117,
+  "org_fuel:grain_r4": 690
  },
- "merged_unique_by_qid": 2553,
- "cross_source_dups_ignored": 177,
+ "merged_unique_by_qid": 3294,
+ "cross_source_dups_ignored": 399,
  "train_count": 1162,
  "next_retrain_candidate_at": 1500,
  "sevenb_target": 3000,
- "sevenb_remaining": 1838,
- "merged_sha16": "831750e0ec165e00",
+ "sevenb_remaining": 0,
+ "merged_sha16": "c1aac9d8b47064a1",
  "triggers": {
   "retrain_candidate": false,
-  "sevenb_compare_ready": false
+  "sevenb_compare_ready": true
  }
 }

@@ -100,6 +100,13 @@ def main() -> int:
                   if l.strip() and json.loads(l).get("judge_verdict") == "pass"
                   and json.loads(l).get("anchor_level") in ("L0", "L1")]
             sources[f"org_fuel:{tag}_r3"] = g3
+    # R526 细粒度源(2026-10-13: 判读档段级切分 892 条判定轮,gate 口径不变)
+    f_grain = root.parent / "org_fuel/fuel_verdicts_grain_r4.jsonl"
+    if f_grain.exists():
+        gg = [json.loads(l) for l in f_grain.read_text(encoding="utf-8").splitlines()
+              if l.strip() and json.loads(l).get("judge_verdict") == "pass"
+              and json.loads(l).get("anchor_level") in ("L0", "L1")]
+        sources["org_fuel:grain_r4"] = gg
 
     # qid 防泄漏:同 qid 只保留 train/首个来源版;跨 split 重复=报数
     seen: dict[str, str] = {}
@@ -154,7 +161,7 @@ def main() -> int:
     if triggers["retrain_candidate"]:
         print("RETRAIN-CANDIDATE: 语料较上次候选阈值 +500,评估 LoRA 重训")
     if triggers["sevenb_compare_ready"]:
-        print("SEVENB-COMPARE-READY: train≥3000,按 PRECOR_JUDGE14B_UPGRADE 框架对拍")
+        print("SEVENB-COMPARE-READY: unique qid ≥3000(R524 口径),按 SEVENB_COMPARE_PREREG+EIGHTB_COMPARE_TRAIN_CONFIG 对拍")
     return 0
 
 
