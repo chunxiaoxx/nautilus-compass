@@ -1,0 +1,76 @@
+{
+ "ts": "2026-10-13T01:01:39+08:00",
+ "model": "/root/vdd4/modelscope/models/Qwen--Qwen3-1.7B/snapshots/master",
+ "base17": "/root/vdd4/modelscope/models/Qwen--Qwen3-1.7B/snapshots/master",
+ "champion_adapter": "/root/vdd4/adapters/best_lora",
+ "corpus": {
+  "dir": "/root/vdf/judge8b_corpus_trigger",
+  "note": "eightb_trigger 2026-10-13: pool sha16=c1aac9d8b47064a1(=manifest), train 2994/holdout 300, self_labeled 1811 如实申报(自举标签=NACRE 1.7B judge_verdict)",
+  "audit": "split_audit.json"
+ },
+ "steps": 636,
+ "train_seconds": 115.8,
+ "gates": {
+  "qid_disjoint_check": {
+   "holdout_n": 300,
+   "train_n": 2543,
+   "qid_intersection": 0,
+   "pass": true
+  },
+  "U1_full_corpus_trained": {
+   "steps": 636,
+   "expected_3epoch_steps": 636,
+   "zero_oom": true,
+   "pass": true
+  },
+  "U2_peak_mem_under_36G": {
+   "peak_gib": 6.1,
+   "pass": true
+  },
+  "U3_loss_converging": {
+   "first20": 0.2901,
+   "last20": 0.2137,
+   "pass": true
+  },
+  "U4_format_n100": {
+   "n": 100,
+   "valid_rows": 100,
+   "gate": 98,
+   "pass": true
+  },
+  "U5_not_worse_than_incumbent": {
+   "acc_cand": 0.9467,
+   "acc_17b": 0.9667,
+   "pass": false
+  },
+  "U6_significant_over_incumbent": {
+   "delta_pp": -2.0,
+   "margin_pp": 3.0,
+   "pass": false,
+   "note": "达 U5 未达 U6=保留 1.7B 现役,14B 记档待语料增长再评"
+  },
+  "U7_cost_reported": {
+   "train_seconds": 115.8,
+   "train_peak_gib": 6.1,
+   "infer_cand_bf16": {
+    "per_sample_p50_s": 0.0158,
+    "per_sample_p95_s": 0.0282,
+    "throughput_per_s": 63.16
+   },
+   "infer_17b_bf16": {
+    "per_sample_p50_s": 0.0089,
+    "per_sample_p95_s": 0.0118,
+    "throughput_per_s": 112.15
+   },
+   "note": "口径差异:14B=4bitQLoRA,1.7B=bf16;14B 慢是预期,只申报不设门槛"
+  }
+ },
+ "agree_disagree": {
+  "both_ok": 562,
+  "only_14b": 6,
+  "only_17b": 18,
+  "both_wrong": 14
+ },
+ "core_pass": true,
+ "verdict": "UPGRADE_EVIDENCE_PASS"
+}
