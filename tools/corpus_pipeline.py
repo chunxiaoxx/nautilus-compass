@@ -107,6 +107,13 @@ def main() -> int:
               if l.strip() and json.loads(l).get("judge_verdict") == "pass"
               and json.loads(l).get("anchor_level") in ("L0", "L1")]
         sources["org_fuel:grain_r4"] = gg
+    # R529 commit 流源(2026-10-13: 本仓 git log+工具 docstring 761 条判定轮,gate 口径不变)
+    f_com = root.parent / "org_fuel/fuel_verdicts_commits_r5.jsonl"
+    if f_com.exists():
+        gc = [json.loads(l) for l in f_com.read_text(encoding="utf-8").splitlines()
+              if l.strip() and json.loads(l).get("judge_verdict") == "pass"
+              and json.loads(l).get("anchor_level") in ("L0", "L1")]
+        sources["org_fuel:commits_r5"] = gc
 
     # qid 防泄漏:同 qid 只保留 train/首个来源版;跨 split 重复=报数
     seen: dict[str, str] = {}

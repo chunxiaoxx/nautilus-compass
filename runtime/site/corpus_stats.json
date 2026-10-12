@@ -21,15 +21,16 @@
   "org_fuel:queue_r3": 61,
   "org_fuel:memory_r3": 95,
   "org_fuel:flywheel_r3": 117,
-  "org_fuel:grain_r4": 690
+  "org_fuel:grain_r4": 690,
+  "org_fuel:commits_r5": 708
  },
- "merged_unique_by_qid": 3294,
+ "merged_unique_by_qid": 4002,
  "cross_source_dups_ignored": 399,
  "train_count": 1162,
  "next_retrain_candidate_at": 1500,
  "sevenb_target": 3000,
  "sevenb_remaining": 0,
- "merged_sha16": "c1aac9d8b47064a1",
+ "merged_sha16": "2ed369f3ea5756e1",
  "triggers": {
   "retrain_candidate": false,
   "sevenb_compare_ready": true
