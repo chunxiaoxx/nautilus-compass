@@ -44,6 +44,9 @@ POINTS = [
     # R523: 勘误与事故公开账本(11094 承诺件)——错误照登/修正留痕
     ("勘误账本页", f"{BASE}/errata.html",
      ["勘误记录", "账本规则", "arhancanli"]),
+    # R527: L2 深度报告服务样本页(演练件公开,卡面数据=公开判读卡可复算)
+    ("L2 样本页", f"{BASE}/l2_sample.html",
+     ["b81eca8436887785", "演练件", "G5", "intake.html"]),
     ("compass 子域", "https://compass.nautilus.social/",
      ["NACRE", "LongMemEval"]),
     # R444 重锚(函 10891 flywheel 确认 B 案静态化预期发布): 根页=纯静态营销页,

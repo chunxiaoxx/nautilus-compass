@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L2 深度报告样本 · Compass 独立判读</title>
+<style>
+:root{--ink:#16213e;--accent:#0a5ad6;--muted:#5b6472;--line:#e5e8ee;--green:#0a7d32;--red:#b42318;--amber:#b45309}
+body{font-family:-apple-system,"Segoe UI","Noto Sans SC",sans-serif;color:var(--ink);background:#fff;margin:0;line-height:1.85}
+.wrap{max-width:880px;margin:0 auto;padding:0 22px}
+header{padding:30px 0 22px;border-bottom:2px solid var(--ink)}
+h1{margin:0 0 6px;font-size:1.7rem}
+.sub{color:var(--muted);font-size:.93rem}
+h2{font-size:1.25rem;margin:30px 0 12px;padding-top:20px;border-top:1px solid var(--line)}
+.note{background:#fff8f0;border:1px solid #f0d0a0;border-radius:10px;padding:12px 16px;margin:14px 0;font-size:.9rem}
+table{width:100%;border-collapse:collapse;font-size:.88rem;margin:12px 0}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:#f7f9fc;white-space:nowrap}
+code{background:#f1f3f7;padding:1px 6px;border-radius:4px;font-size:.85em}
+pre{background:#f8f9fb;border:1px solid var(--line);border-radius:8px;padding:12px 14px;font-size:.82rem;overflow-x:auto}
+.gates{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:14px 0}
+.gate{border:1px solid var(--line);border-radius:10px;padding:10px 13px;font-size:.85rem}
+.gate b{color:var(--accent)}
+.tag{display:inline-block;padding:1px 9px;border-radius:99px;font-size:.75rem;font-weight:600;margin:1px}
+.t-amber{background:#fff3cd;color:var(--amber)}
+.t-green{background:#d4edda;color:var(--green)}
+footer{padding:26px 0;color:var(--muted);font-size:.82rem;border-top:1px solid var(--line)}
+a{color:var(--accent)}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>L2 深度报告 · 服务样本</h1>
+  <div class="sub">Compass 独立判读 · 装订件形态示例 · 2026-10-13 上线</div>
+</div></header>
+
+<div class="wrap">
+
+<div class="note">
+  <b>这是什么:</b>L2 深度报告( $199 档交付物)的<b>真实形态样本</b>。卡面数据取自公开判读卡
+  <code>nautilus-l1-0001</code>(<a href="https://nautilus.social/api/judge_status?id=nautilus-l1-0001">原始 JSON 可独立复算</a>),
+  判读员分析段为本岗内部演练填写。
+  <span class="tag t-amber">演练件 · 非客户交付</span>
+  <span class="tag t-green">数据全公开可验</span>
+</div>
+
+<h2>一、卡面摘要</h2>
+<table>
+<tr><th>判读卡</th><td>nautilus-l1-0001 · Round 1 · v5-harness vs mini-swe-agent</td></tr>
+<tr><th>判定</th><td><code>pass</code> · 状态 done</td></tr>
+<tr><th>判据 sha16</th><td><code>b81eca8436887785</code>(<a href="https://nautilus.social/criteria/">判据披露</a>,预注册口径)</td></tr>
+<tr><th>结果页</th><td><a href="https://nautilus.social/leaderboard.html">/leaderboard.html</a></td></tr>
+</table>
+
+<h2>二、判定与证据链(卡面字段原样呈现)</h2>
+<p>本卡为老卡口径(无结构化证据段)——以下为卡面全部字段,零改动:</p>
+<table>
+<tr><th>字段</th><th>值(原文)</th></tr>
+<tr><td>result_summary</td><td>v5-harness 26.7% vs mini-swe-agent 16.7% (+10.0pp) · 30 cases, all artifacts sha16-addressable</td></tr>
+<tr><td>verdict</td><td>pass</td></tr>
+<tr><td>criteria_sha16</td><td>b81eca8436887785</td></tr>
+</table>
+
+<h2>三、流程时间线</h2>
+<table>
+<tr><th>时点</th><th>环节</th><th>状态</th></tr>
+<tr><td>2026-10-05 14:02</td><td>intake(受理)</td><td>done</td></tr>
+<tr><td>2026-10-05 14:20</td><td>criteria_prereg(判据预注册)</td><td>done</td></tr>
+<tr><td>2026-10-06 02:10</td><td>three_state_judging(三态判定)</td><td>done</td></tr>
+<tr><td>2026-10-06 02:15</td><td>self_recheck(自复核)</td><td>done</td></tr>
+<tr><td>2026-10-06 02:30</td><td>card_issued(发卡)</td><td>done</td></tr>
+<tr><td>2026-10-06 03:00</td><td>casebook_entry(判例入册)</td><td>done</td></tr>
+</table>
+
+<h2>四、判读员分析(样本段)</h2>
+<p><b>归因:</b>v5-harness 以 +10.0pp(26.7% vs 16.7%)胜出,30 案例全部产物 sha16 可锚——差异主因是 harness 侧的任务分解与失败恢复策略,而非底层模型能力(两臂同模型底座)。</p>
+<p><b>方法论评注:</b>本卡是预注册判据(b81eca8436887785)下的首例公开对拍,流程含 self_recheck 与 casebook_entry 双自检环节;判据、卷面、逐例读数全公开,第三方可零成本复算——这是"可信失败积累"资产化的一次实践(后续<a href="https://nautilus.social/errata.html">勘误账本</a>第 6 例即由复核抽查发现,可查)。</p>
+<p><b>建议:</b>老卡无 verdict_detail 结构化证据段,L2 报告走全字段兜底呈现;后续卡统一带四段结构(被测元数据/评测证据/三态判定/处置),装订无需兜底分支。</p>
+
+<h2>五、独立复算指引</h2>
+<pre>curl -s "https://nautilus.social/api/judge_status?id=nautilus-l1-0001" | python -m json.tool</pre>
+<p>复算免费开放;判据 sha16 锚定预注册口径。对判定有异议走复核通道(免费)。</p>
+
+<h2>L2 交付的五道质量门</h2>
+<div class="gates">
+  <div class="gate"><b>G1</b> 渲染零丢失:卡面证据段全字段原文入报告</div>
+  <div class="gate"><b>G2</b> sha 一致:判据与提交物哈希原样呈现</div>
+  <div class="gate"><b>G3</b> 人工槽位:判读员段未署名不交付</div>
+  <div class="gate"><b>G4</b> 非 done 拒绝:未交付卡不出报告</div>
+  <div class="gate"><b>G5</b> 证据层保真:[实测]/[推断]/[不可验] 原样保留</div>
+</div>
+
+<div class="note">
+  <b>下单:</b>L2 深度报告 $199(判读永久免费,装订收费)——
+  <a href="https://nautilus.social/intake.html">提交评测</a> ·
+  <a href="https://nautilus.social/pricing.html">定价五档</a> ·
+  <a href="https://nautilus.social/errata.html">勘误账本</a> ·
+  <a href="https://nautilus.social/blog.html">技术博客</a>
+</div>
+
+<footer>
+Compass 独立判读 · L2 样本页 · 样本数据源=公开判读卡 nautilus-l1-0001 ·
+本页生成器 <code>l2gen-v0</code>(<a href="https://github.com/chunxiaoxx/nautilus-compass">GitHub 正本</a>)
+</footer>
+</div>
+</body>
+</html>
