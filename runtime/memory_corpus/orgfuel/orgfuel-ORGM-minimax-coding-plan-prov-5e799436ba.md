@@ -1,0 +1,28 @@
+---
+name: orgfuel-ORGM-minimax-coding-plan-prov-5e799436ba
+description: "--- name: minimax-coding-plan-provider description: MiniMax "
+metadata:
+  type: reference
+  source: org_fuel:gate_passed
+  pf_id: ORGM-minimax-coding-plan-prov
+  corpus: orgfuel-v2
+  sm_verdict: unparsed
+---
+
+---
+name: minimax-coding-plan-provider
+description: MiniMax 国内 coding plan 作为评测/基线 LLM 供给的完整配方(端点/模型/坑)
+metadata: 
+  node_type: memory
+  type: reference
+  originSessionId: 09bcfcba-392a-4334-9087-6ea8f23b88f4
+  modified: 2026-09-25T13:24:29.608Z
+---
+
+MiniMax 国内 coding plan(订阅制非按量)可作离线评测 LLM 供给——2026-09-25 用户供 key 并实测跑通 BC1 mem0 基线。
+
+- **端点**:`https://api.minimaxi.com/v1`(开放平台国内站;intl 站 api.minimax.io 对该 key 401;agent.minimax.cn/mavis 代理只吃 CLI 的 OAuth mmoat_ token,不吃 sk-cp key)
+- **模型**:`MiniMax-M3`(400k 上下文,推理模型)
+- **key 形态**:`sk-cp-...`(cp=coding plan);由用户持有,调用一律走环境变量 `MINIMAX_API_KEY`,**绝不落仓**
+- **推理模型两坑**:①回答夹 `<think>...</think>` 标签,抽 JSON 前必须先剥②思考链吃 max_tokens,4096 会截断,给 8192
+- **本机 CLI token 路线**(agent.minimax.cn)已证失效:OAuth token 2026-09-14 过期,refresh 端点藏在 Electron asar 里挖不出——别走这条,用开

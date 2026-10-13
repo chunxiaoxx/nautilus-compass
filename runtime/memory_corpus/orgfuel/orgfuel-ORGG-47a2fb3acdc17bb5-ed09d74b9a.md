@@ -1,0 +1,18 @@
+---
+name: orgfuel-ORGG-47a2fb3acdc17bb5-ed09d74b9a
+description: "判读档判例 PREFOR_E1_RECHECK_20261006 · 三、回放配置冻结 ## 三、回放配置冻结  - 判"
+metadata:
+  type: reference
+  source: org_fuel:grain_r4
+  pf_id: ORGG-47a2fb3acdc17bb5
+  corpus: orgfuel-v2
+  sm_verdict: unparsed
+---
+
+判读档判例 PREFOR_E1_RECHECK_20261006 · 三、回放配置冻结
+## 三、回放配置冻结
+
+- 判分器:verdict-judge 1.7B LoRA(adapter sha 随读数申报);三态 verbalizer;
+- 推理参数:temperature=0/greedy(确定性回放;若管线强制采样,如实披露并改 ER1 预期为"已归因翻转"档);
+- 环境:A100 独立判分环境(非实现者隔离);
+- 工件:回放逐题判定 jsonl+读数汇总+翻转明细表,全 sha16 锚定入判读目录。

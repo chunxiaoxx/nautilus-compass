@@ -1,0 +1,19 @@
+---
+name: orgfuel-ORGD-e260be5506d2d7ab-d3b8cac5ae
+description: "[## 阶段 2 · T0 官方成绩册(9/12 前 · 当前主战线)] | # | 任务 | 产物 | 依赖 | |-"
+metadata:
+  type: reference
+  source: org_fuel:docs
+  pf_id: ORGD-e260be5506d2d7ab
+  corpus: orgfuel-v2
+  sm_verdict: unparsed
+---
+
+[## 阶段 2 · T0 官方成绩册(9/12 前 · 当前主战线)] | # | 任务 | 产物 | 依赖 |
+|---|---|---|---|
+| #30 | 上游 license 三待查项 | HF dataset license 字段 / leaderboard baseline 公开数字 / 提交包格式(leaderboard/README.md) | 网络通(代理不稳就重试) |
+| #34 | judge 口径决策材料 | 官方 gpt-5.2 复跑成本估算(451 题×2 域 judge 调用)+差异声明方案对比,呈用户拍板 | leaderboard 格式 |
+| #29 | 自研部分打包 | compass backend(LME-V2 官方接口实现)+判分修正工具(rejudge)+摘要卡生成器+协议文档→可安装包(GitHub repo 骨架) | 无 |
+| #31 | 成绩册文档 | 对比表(上游锚 frontier ≤14.1% / untuned 19.6/12.8 / tuned 40.0/38.4 双口径)+判分修正故事+attribution | #30/#34 |
+| #32 | 判分协议 v1.0 | PROTOCOL.md 定版(成绩卡 JSON schema+提交规则) | 无 |
+| #33 | 发布动作 | GitHub 发布+leaderboard 提交+营销帖 | 🔴 用户拍板 |

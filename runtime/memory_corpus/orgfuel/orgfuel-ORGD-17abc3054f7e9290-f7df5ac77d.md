@@ -1,0 +1,19 @@
+---
+name: orgfuel-ORGD-17abc3054f7e9290-f7df5ac77d
+description: "[## 四 · 判据(预注册,开工先落,只许加严)] | # | 判据 | 线 | |---|---|---| | L1"
+metadata:
+  type: reference
+  source: org_fuel:docs
+  pf_id: ORGD-17abc3054f7e9290
+  corpus: orgfuel-v2
+  sm_verdict: unparsed
+---
+
+[## 四 · 判据(预注册,开工先落,只许加严)] | # | 判据 | 线 |
+|---|---|---|
+| L1 | **昨晚事故回放 RED**:对勘误前版本(`git show dda96982:runtime/typesafe_jev_cvscreen/pack/mini_report.md`)配原 assertions 跑 lint,必须报出 divergence 叙事矛盾 | 抓得住 |
+| L2 | 勘误后 v1.1(910bed22)同断言跑 lint,GREEN | 不误杀 |
+| L3 | 数字复现:报告六个数字(92.6%/25/27/0.069/0.1378/2/27)从 measure_report.json 重导出逐位一致 | 数字门 |
+| L4 | 误报控制:纯措辞改动(不动断言与数据)不报红;anchor 词表外词汇不触发 | 不扰民 |
+| L5 | 端到端:jev_cvscreen pack 一条命令跑通,输出可入 receipt | 集成门 |
+| L6 | 测试覆盖率 ≥80%(仓规) | 质量门 |

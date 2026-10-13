@@ -1,0 +1,18 @@
+---
+name: orgfuel-ORGG-fee0a7561a03fe11-0c73ac1d1a
+description: "判读档判例 2026-09-10-compass-strategy-four-priorities · 协同机制备忘 #"
+metadata:
+  type: reference
+  source: org_fuel:grain_r4
+  pf_id: ORGG-fee0a7561a03fe11
+  corpus: orgfuel-v2
+  sm_verdict: unparsed
+---
+
+判读档判例 2026-09-10-compass-strategy-four-priorities · 协同机制备忘
+## 协同机制备忘
+
+- 分工红线:flywheel 管生产+自证,compass 管独立验证+判据;VerifyPack 宪法边界(验证方不作客户验收、不作结算决定)
+- 已闭:batch001 复算+签名回执(6/7 agree+1 活文件实锤);VerifyPack v0.2 回执互认
+- 进行:今晚 22:00 收口(X1 金标过线后 17.5% 错配候选入包,双方已同意此门槛);G1 几何判官进判据库当第一个外部锚
+- 结算:verified 标签进 V5 训练数据选择 → 外部数据商采信=分水岭;compass 只出可验签判定,不碰数据不碰训练

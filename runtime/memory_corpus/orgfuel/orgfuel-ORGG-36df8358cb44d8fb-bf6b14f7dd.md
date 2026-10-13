@@ -1,0 +1,19 @@
+---
+name: orgfuel-ORGG-36df8358cb44d8fb-bf6b14f7dd
+description: "判读档判例 CROSS_LINE_SYNC_20261001 · 1. 理论线终审：η = C/V 证伪核已定稿 ## "
+metadata:
+  type: reference
+  source: org_fuel:grain_r4
+  pf_id: ORGG-36df8358cb44d8fb
+  corpus: orgfuel-v2
+  sm_verdict: unparsed
+---
+
+判读档判例 CROSS_LINE_SYNC_20261001 · 1. 理论线终审：η = C/V 证伪核已定稿
+## 1. 理论线终审：η = C/V 证伪核已定稿
+
+- 四轮由果溯因追问完成，终审结论：**量子密度矩阵计算内核被定理级否决**——ρ = |ψ⟩⟨ψ| 为纯态，冯·诺依曼熵恒等于 0（数学硬伤）；引入混合态后 S(ρ) 退化为经典协方差谱熵，与有效秩逐符号重合。量子逆因果作为**计算优势**在经典硬件上不存在（反量子化文献已封杀同品类声明）。
+- **存活形态（经典版）**：η = C/V。C = 隐空间有效秩（Ledoit-Wolf 收缩协方差谱熵，**C 低 = 压缩好**）；V = 验证成本双代理（V_flops 有效矩阵乘 + V_time 中位时延，两者同报防刷）。
+- **死刑条款已预注册**：P-CV-1（3 组基准 ≥3 组不赢基线 → 作废，准确率 ±2pt 前提）；P-CV-2（逆跳步错误率超顺向基线 5pt → 场景失效；**判官禁用 LLM，须程序化校验或人工盲评**——否则与论文 2 盲区定理自相矛盾）；跨底座 C 值偏差 >10% 仅为测量可靠性前置检查，非证伪线。
+- 量子词汇的最终定位：**仅作语义表征隐喻（DisCoCat 血脉），零参与数值计算**。此声明已写入文档抬头防复发。
+- 定稿档：`verification-learning-papers/docs/CV_falsification_core_20261001.md`（commit `26adc09`）。
