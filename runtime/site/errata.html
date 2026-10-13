@@ -85,6 +85,13 @@ li{margin:5px 0}
 <table>
 <tr><th>日期</th><th>事故</th><th>影响</th><th>根因</th><th>修复</th></tr>
 <tr>
+  <td>2026-10-13</td>
+  <td>判读器自产标签入训练池(NACRE judge 自判标签约 1800+ 条),违反自家 9/30 反自指护栏"判官自产标签永久禁入训练燃料";judge 全 pass 化(抽检 58/58 pass+空样本 42/42 pass),盲评一致率仅 37.9%</td>
+  <td>数量棘轮暂停;2970 条自举池降级为待人工标注;可信燃料修正为 1032 条人工标签;四臂对照归因勘误(主因=标签崩坏非数据量);8B/1.7B 重训冻结至标签修复</td>
+  <td><span class="tag t-red">自查</span>(预注册抽检审计)</td>
+  <td><a href="https://github.com/chunxiaoxx/nautilus-compass">SELFLABEL_AUDIT_20261013.md</a>(判据同日冻结+盲评对拍全录)</td>
+</tr>
+<tr>
   <td>2026-10-11 → 10-12</td>
   <td>云端记忆层语义 recall 全局拒绝</td>
   <td>13.2 小时,1809 次请求被拒(10/11 23:05 → 10/12 12:19);判读公开面/判读 API 不受影响</td>
