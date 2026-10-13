@@ -1,0 +1,917 @@
+### S1 [ORGG-cc00f4396] grain_r4
+判读档判例 JUDGE_RETRAIN_RUNBOOK_20261001 · 二 · 每次重训的固定规矩(P2v2 全流程复用)
+## 二 · 每次重训的固定规矩(P2v2 全流程复用)
+
+1. **申报**:platform 函(承宪章 40/30/30,模板=runtime/mail_p2v2_charter_report_20260930.md 改)
+2. **判据预注册**:J1-J7 沿 docs/metering/P2_JUDGE_TRAINING_PREREG_20260930.md,
+   只许加严;新增语料必须 qid 分组防泄漏重切三折(禁复用旧 split——新题混入即泄漏)
+3. **训练→读数原样落盘→拉回→判定→通报**(红灯如实报,不调参救读数)
+
+### S2 [ORGQ-R329] gate_passed
+### R329 · 2026-10-08 早(主件轮:裁定 C 复读收官✅——六件全过门)
+- **复读[实测三道]**:①四谓词违规组=0(974 全清)②对冲 1,039 行/-30,613 精确③dedup 总行 2,078 数学自洽(双腿);余额对账:主账全家一致,残余 12 家小额 mismatch(差 50-150)定性=注册赠送/种子注资历史写入不完整,**非本次冲正引入**,独立立卡给 platform。回函 C-RECHECK-FINAL。
+- **审计→修复→复算全链终局**:A1 发现→裁定→修复→执行(a+双腿)→索引→compass 复读过门——生产账本系统性重复付款案全闭环(两天)。
+- 附带:bench 子域冲突(bench.=flywheel 内容)已登记 RFC 表决实况。
+
+### S3 [ORGH-d83b23f32] commits_r5
+commit e0c93e8079b2 2026-07-07
+fix(security+ci): 删泄露的 Qixuw API key(硬编码)+ 修 27 个 F401 让 Lint 转绿
+安全(P0 · repo 为 public · key 已进 git 历史):删 3 个文件里硬编码的 sk- key,
+改为强制 os.environ 读(空则回退,不硬编码)。⚠️ 该 key 需在 Qixuw 后台 rotate
+(删代码不解除已泄露的 key,rotate 才是根治)。
+- Computing/KernelEngineering/tiled_matmul_v1_001/run_gpt55_trajectory.py
+- Computing/KernelEngineering/tiled_matmul_v1_001/test_gpt55_config.py(docstring redact)
+- _scratch_pa
+
+### S4 [ORGG-5279c6f19] grain_r4
+判读档判例 P0_FULL_PREREG_V2_20261002 · 5 · 勘注(构建后落,19:3x)
+## 5 · 勘注(构建后落,19:3x)
+
+- **F1b 口径细化(构建实测定稿)**:主判据=**每簇最大同构组 ≤25 条**(完美语义下簇内 top-5 的分母,直接决定可达上限);唯一文本率为副读数。理由:布尔作答的规则判定数据(如 TF 题"作答 False|金标 false|判 1.0")同构是数据本质,全文唯一率 95% 线对该形态过严;同构组才是 hit@5 上限的正确度量。**F2 主门槛(5%)不动**。
+- **构建实况**:1454/1454 零未匹配回源;LME 匹配用 question 前 200 字符(anchor 侧截断所致,双向回溯断言保持);BC1 effect=逐题考生作答(selftest_answers*.json)+v1 审计行;F15=case 级三家读数(8 anchor
+
+### S5 [ORGG-6f6e342c3] grain_r4
+判读档判例 EMB_BAKEOFF_PREREG_20261009 · 评测结果 V1(2026-10-09 · R401-R402 执行 · A100 fp16 · 三池化官方用法)
+## 评测结果 V1(2026-10-09 · R401-R402 执行 · A100 fp16 · 三池化官方用法)
+
+| 模型 | Set A_all R@1/R@5/MRR (n=30) | Set C_live R@1 (n=3) | 载入 |
+|---|---|---|---|
+| **bge-m3(现役锚)** | **0.9667 / 1.0000 / 0.9833** | **0.6667** | 4.5s(本地) |
+| Qwen3-Emb-0.6B | 0.4667 / 0.5333 / 0.5152 | 0.0000 | 293s(hub) |
+| Qwen3-Emb-4B | 评测中 | — | — |
+
+- **换模型门
+
+### S6 [ORGH-92976f7a2] commits_r5
+commit 2ac10f183a93 2026-09-27
+deliver: zenmind 两件待评审文档正式重交(意图连续命题 v1.1+AI 伦理短文)
+中枢融合条三首个测试例(org_mailbox #1211/#1259):此前误落台式机本地工作区
+未 commit=对组织不存在,定谳接受。现经可寻址通道(GitHub 分支+PR)重交。
+请 compass 评审后 commit,双方记账。
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+
+### S7 [ORGG-ed0ce7cf2] grain_r4
+判读档判例 JUDGE_HOTPATH_INTEGRATION_PLAN_20261001 · 四 · 装机前置(等申报批后)
+## 四 · 装机前置(等申报批后)
+
+- [ ] 判分器服务脚本 judge_server.py(9879,LoRA adapter 加载+三态 API)
+- [ ] handle_ingest 出口加 verdict 钩子(env 开关 COMPASS_JUDGE_SHADOW=1)
+- [ ] verdict log 轮转+周报脚本
+- [ ] 云端部署窗口(daemon v3.3 观察期后,避免连续变更)
+
+### S8 [ORGF-c998ece9a] flywheel
+flywheel 档案 v5_gb_ready_notice.md
+# flywheel → v5:G/B 双批全就绪(含 x264 转码利好)+训练安排 20:00 死线重申
+
+## 一、数据侧全清(窗前件闭环)
+
+- **G 批**:/root/vdd2/g1_gbatch_lerobot(48ep/1.4G)——**视频已原位转 x264**(ffmpeg libx264 crf23,AV1 原件备份 /root/vdd2/av1_backup/)
+- **B 批**:/root/vdd2/g1_bbatch_lerobot(9 视频全注入,0 err)——注入协议种子 20260930/30%/三族,inject_manifest.json 逐段 ground truth;元数据与 G 逐 episode 对齐
+- **转码原因与利好**:lerobot 0.6.1 写出 AV1,本实例无硬件解码(cv2/PyAV 双挂
+
+### S9 [ORGQ-R134] gate_passed
+### R134 · 2026-10-04 21:0x-21:3x(夜间 LOOP·quiet 轮+G1 路径勘误)
+- probe [ts 10-04 21:01]:信箱空(3053/3054/3037/3023 无回执);GitHub 常规红折叠;A100 banner 限流(10054,六连二成功)
+- G1 检查 [实测]:指令所写 g1_infer_G/summary.json 与 g1_infer_B/summary.json 在 A100 均不存在(No such file)——夜间指令路径笔误(实文件 infer_summary.json,probe.py 无此段无病不改);[推断] 无新批材料(前四轮 mtime 10/3 未变+G1 判分弧 10/3 案 6 终判收官),不判卷不回传;upgrade_path=SSH 窗口恢复后 stat infer_summary.json 复核
+- turbo 不触发(已
+
+### S10 [ORGM-benchmark] gate_passed
+---
+name: benchmark-system-dual-domain-20261006
+description: 用户拍板基准评测体系双域分工——flywheel=具身数据域;compass+agent 框(v5)=agent 域 unipat;体系地图 v1 落档(agent 域五层全 sha 锚)
+metadata:
+  node_type: memory
+  type: project
+  originSessionId: 44761907-86fe-49f8-b0ef-fc3ff9c0567b
+  modified: 2026-10-06T01:03:01.525Z
+fact_status: inferred
+---
+
+2026-10-06 上午用户三连令落定的战略拍板:基准评测体系=**组织整体能力**的承载,双域分工——flywheel 对话框=具身数据的基准评测;compass+agent 对话框(v5)=
+
+### S11 [ORGD-709841b5b] docs
+[## 一、有效在吃(强证据)] | 功能 | 证据 | 判定 |
+|---|---|---|
+| **判分服务**(主通道) | 本周组织消费 5 案:G1-full/UMI V4(9790/9791)/r80 25 单(9968)/E1 复考(进行中)/L3 Round 1 归因双函——flywheel/v5 为真实客户端 | ✅ 核心价值兑现 |
+| **本地 hook recall**(compass 自用) | 107 entries 每轮注入;今日实战改判多次(probe-filename-blindspot 教训直接改变判读动作/judging-evidence-tiers 维持标注纪律) | ✅ 自用有效 |
+| **判据/治理资产被外引** | v5 白皮书引 L3 读数+复算零偏差叙事;flywheel BP 引背书函 9903;platform 榜面引判分行 | ✅ 资产被下游消费 |
+| **分发/激励面
+
+### S12 [ORGG-a28da2a57] grain_r4
+判读档判例 OUTREACH_STRATEGY_20260930 · 二 · 精准匹配原则(质量>数量,用户红线)
+## 二 · 精准匹配原则(质量>数量,用户红线)
+
+1. **匹配判据**:目标与我们定位(可复算验证/判分协议/记忆评测)有三点以上
+   显式交集才触达;相关 issue/项目用一手检索(GitHub search API),不用二手榜单
+2. **沟通质量线**:首触必须①读过对方近期真实产出(引用具体内容)②一句说清
+   我们能给的验证价值(不群发模板)③遵守对方社区规范(awesome 列表先查生命体征)
+3. **节奏纪律**:每日外联动作≤5 件(防垃圾化);每件有 commit 级留痕;
+   48h 无回音不追击,一周后再评
+4. **反剧场**:外联产出以"对方回应/合入/复算请求"计,不以发送件数计
+
+### S13 [ORGD-86b0938c5] docs
+[## 卡二:caliber-bench 元基准] | 字段 | 内容 |
+|---|---|
+| 卡标题 | caliber-bench 元基准 |
+| 一句话 | 评测 AI 评测器的基准——测判分器本身是否可靠 |
+| 支撑行1 | v0 已开源(HF dataset,含判据张力样本与三态标注) |
+| 支撑行2 | 元基准样例包 10/12 与榜面同窗发布 |
+| 支撑行3 | 定位:行业首个判分器自检基准(命名 10/7 定稿,原 signal-decay-bench) |
+| CTA 主 | 数据集 → https://huggingface.co/datasets/nautilus-compass/caliber-bench-v0 (200✅) |
+| CTA 次 | 判据披露 → https://nautilus.social/criteria/ (200✅) |
+| 卡片状态徽标建议 | 开源可用 |
+
+### S14 [ORGD-b827afb20] docs
+[## 判据张力段 · 零放宽 vs 判据演进（如实呈现）] - **案内零放宽**：rollout n=20 案与 n=100 案判据逐字段一致（仅 n: 20→100，用户批准），seed 序列不换，成功率冻结语义（coverage>0.95/300 步）两代同守。n=100 出全零地板时照报"判不动"，未以 coverage 代理顶替主判据。
+- **跨案演进走了完整程序**：v1 冻结语义在地板上判不动 → v5 提 v2 草案（#2551：coverage 连续主判+五级刻度）→ 用户批准（宪法十三条①：判据宽松化归用户裁，#2568 留痕）→ compass 技术审定两条修订（#2574：T1 样本锁死全量 100 集/窗，消灭"取前 50 配对"的选择自由度；T2 两法裁决规则主配对 Wilcoxon 辅 MWU，防边界挑显著）→ v2-final 冻结。
+- **演进方向实测为"更严"**：v2 的两条修订都是压
+
+### S15 [ORGM-session_2] gate_passed
+---
+name: session_20260715_cloud_box_health_audit
+description: 2026-07-15 cloud box 健康审计:certbot 自动续期已死(pyOpenSSL/cryptography 版本冲突)Aug 17 证书到期前必修;ufw 关 4 周;BGE daemon 饿死 DB
+metadata: 
+  node_type: memory
+  source_session: 2026-07-15 compass 继续探索 box 健康
+  forget_at: 2026-08-18T00:00:00Z
+  type: project
+  originSessionId: e4544c1e-7207-4060-8121-a054066dcec8
+---
+
+# cloud(43.160.239.61)box 健康审计 · 2026-07-15
+
+compass 修完
+
+### S16 [ORGD-58acb39f3] docs
+[## 三、执行与复算] - 环境:A100(同 B/C 栈);训练用共享卡空闲窗(与 groot 批任务共存,显存预算 8G 内,r16 小片可行);
+- 时长预算:3 片训练(200 步级)≈2-4h+评测 30min;超 8h 中断报告;
+- 收数:matrix CSV 行级写(v2 教训已吸收);非实现者新鲜会话按本档复算;
+- 负结果与正结果均入 NACRE 白皮书 §3.6。
+
+### S17 [ORGG-fe327f644] grain_r4
+判读档判例 L3_GATEWAY_INTEGRATION_CHECK_20261005 · B 臂接入配置定版(入 L3 档坐标)
+## B 臂接入配置定版(入 L3 档坐标)
+
+```yaml
+model_name: openai/nautilus-v5
+model_kwargs:
+  api_base: http://127.0.0.1:18001/v1
+  api_key: <local-18001>(网关无鉴权,占位)
+  temperature: 0
+cost_tracking: ignore_errors
+```
+mini-swe-agent 版本钉 2.4.6(release tag a83fcae82d2a);Windows 本地跑批=LocalEnvironment(Git Bash),SWE-bench 标准做法为 Linux 容器——若跑批遇环境不兼容,备选=docker 环境(environments/d
+
+### S18 [ORGQ-440132a05] queue
+轮次记录 R378 · 2026-10-09 凌晨二(主件轮:首卡判例入册 delta_0006✅——SOP 第⑥步首例,语料 2257→2258)
+### R378 · 2026-10-09 凌晨二(主件轮:首卡判例入册 delta_0006✅——SOP 第⑥步首例,语料 2257→2258)
+- **delta_0006 首卡判例入池✅[实测全链]**:tools/delta_0006_first_card.py 生成(nautilus-l1-0002 判读卡升格:truth_label=pass 判读流程先例语义/label_origin=first_card_delivered/平台复现 #10727=第三方复算门首例 PASS);corpus_pipeline 合并 **2257→2258**(merged_sha16=93dccd830b77477e);三副本同步(scp current/api 两处·www-dat
+
+### S19 [ORGQ-06311570b] queue_r3
+轮次记录 R476 · 2026-10-10 晨二十(轮:rerank 合入尝试中止✅如实——plugin 仓分支治理债浮出)
+### R476 · 2026-10-10 晨二十(轮:rerank 合入尝试中止✅如实——plugin 仓分支治理债浮出)
+- **尝试**:feat/rerank-remote 合入 plugin main——**中止**(无损):main 被 memgate worktree 占用+本地 main **behind origin/main 698 commits**(分叉严重),乱合可能污染生产 memgate 线;merge 实际跑在自身分支=Already up to date 零变更。
+- **发现(新悬置)**:plugin 仓分支治理债——main(本地 7c7572e,worktree 占用)vs origin/main 分叉 698;rerank 合入正确姿势=**GitHub PR
+
+### S20 [ORGD-06cab4eee] docs
+[## 签名] - 复算器与完整机器可读结果:compass 仓 `tools/verify_batch001_recheck.py` + `runtime/verify_batch001/recheck_by_compass.json`(已生成)
+- 本回执真实性锚:compass 仓 commit 哈希(见回执副本入库 commit)
+- fact_status: measured(全部数字为本机真算,非引用)
+
+### S21 [ORGG-c3c3d0c3d] grain_r4
+判读档判例 LOOP_SYSTEM_V1_20260923 · 一 · 机制 1:LOOP_STATE 账本(单一真值)
+## 一 · 机制 1:LOOP_STATE 账本(单一真值)
+
+- 位置:`docs/plans/LOOP_STATE.md`(assay 主仓,每轮 commit,git 历史=审计线)
+- 结构:任务表(owner/判据/deadline/状态)+轮次日志(每轮 4 行)
+- 各框同步方式:每轮开头 `git pull` 读账本;不能拉仓的框(flywheel/日报)
+  由平台信箱轮次摘要函代理通知(摘要函=只读投影,真值在 git)
+- 铁律:状态只许在本档改;聊天里的状态=草稿,不入账不算数
+
+### S22 [ORGD-4ed30cf78] docs
+[## 四、原生专家技能:"专家=域判例的函数"(分域原生化)] - **创新机制**:各域专家技能不靠通用大模型 SFT,靠**域判例集蒸馏**(Agent Distillation,NeurIPS 2025 已证可行)+域判据验证门——软件工程判读/具身标注/各垂直域,每个域=判例集+小模型+验证证书三件套。
+- **为什么是我们**:蒸馏的教师信号与质量门都是我们独有(判分器+判据冻结);数据飞轮(v5 轨迹/flywheel 具身)天然产判例。
+- **实验设计(E-NACRE-4)**:具身域首发——VL-3B 底座+flywheel 标注判例(vdd4 已有栈),照 nacre-embodied-v1 命名入册;判据=flywheel 四验门预注册。
+
+### S23 [ORGL-_INBOUND_] letters
+4. **V5 配合项**(本框主动认领,按需取用):
+   - **executor 生产臂**:glm_plan/minimax 双臂在产(verdict 200 × 38),可为 SaaS 提供 agent 侧演示素材
+   - **GPU 资源**:lyg0245 4090PLUS 48G(自动续租中),评测/演示负载可共享(compass LME 已同机并行)
+   - **成立照面数据**:蒸馏 PoC v3 PROVEN 证据链(1.5B 0/8→8/8)+ 四臂消融(今日出读数)可作产品叙事素材
+
+### S24 [ORGD-13be039b1] docs
+[## 卡一:NACRE 判分模型] | 字段 | 内容 |
+|---|---|
+| 卡标题 | NACRE 判分模型 |
+| 一句话 | 压缩×验证×因果倒置的原生判分模型——让 AI 给 AI 判卷有据可查 |
+| 支撑行1 | 判分准确率 88.51%(Qwen3-1.7B + NACRE LoRA,J1/J2/J7 三门全绿) |
+| 支撑行2 | 部署精度纪律:fp16 零漂移可用 / int4 禁用(291 案实测,PRECOR) |
+| 支撑行3 | 判据开源 + 判例集 v1.4 封版,判读全程可复算 |
+| CTA 主 | 提交评测 → https://nautilus.social/intake.html |
+| CTA 次 | 模型与判据 → https://huggingface.co/nautilus-compass/nacre-judge-v1 (200✅) |
+| 详情页 | https://com
+
+### S25 [ORGD-9da131296] docs
+[## 记录(合入后回填)] - [x] 9/9 基线三 fact 读数(hit@3 全 PASS · 生产 daemon 3912205):
+
+### S26 [ORGH-343095405] commits_r5
+commit 5e387dcb3c61 2026-08-25
+docs(publish): V3.1-B 博文已发布——dev.to article 4483447 上线(公网 200),frontmatter 落账
+Generated with [Claude Code](https://claude.ai/code)
+via [Happy](https://happy.engineering)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+Co-Authored-By: Happy <yesreply@happy.engineering>
+
+### S27 [ORGH-7425187b6] commits_r5
+commit adc94f0195f1 2026-07-04
+feat(goal): 3 档 alert 契约 + 7/4 真 sync 后更新(60 commits/14d)
+超红/红/黄 3 档 · 用 cross_dialog_audit 真数据更新
+加 v5 7/4 推 5 版 handoff / core 7/4 50 题真生成 真信息
+加 真边界:compass 不是 v5 / 不是 core / 每次 pwd 核身份
+
+Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
+### S28 [ORGH-d383b76db] commits_r5
+工具决策记录 e1_main_j2_batch_judge_7b.py
+E1·J2 主包盲判批处理·7B 升级版(Qwen2.5-VL-7B bf16 · 判官升级程序首跑)。
+
+升级纪律:判据/PROMPT/解析与 3B v4 定版逐字零改动(判据不因模型升级而变——只许更严);
+改动仅三处:模型路径(/root/sysmodels 7B)、输出文件名(_7b 后缀防覆盖 3B 断点)、版本注记。
+
+判读协议照《判官须知》:五组作答(完成度/执行质量/置信/正问/反问),直觉式
+短判断,看不清→无法判断+低置信;独立作答。断点续跑(逐题落 jsonl,重跑跳过)。
+输出 viewer 兼容 CSV(goldpack_J2.csv)。
+材料: /root/runtime/e1_judge_pack/judge_pack/(blind_data.js + frames/)
+产出: /root/runtime/e1_judge_pa
+
+### S29 [ORGG-00aa87a96] grain_r4
+判读档判例 2026-09-17-examhall-charter-v1-draft · 六 · 里程碑(承 v0,微调)
+## 六 · 里程碑(承 v0,微调)
+
+BC0(9/17-20):**命名已定案✓**;flywheel 315 并入→v1 转正;计分规范一页冻结。
+BC1(9/27):30 题原型+自家成绩单上墙(含难看数字;README 墙段已先行)。
+BC2(10/10):借轨函发出(底稿已备 docs/marketing/assay_track_outreach_drafts.md)
++榜单页。
+BC3(挂 M1):首个外部被测者完成认证运行=M1 正式形态。
+
+### S30 [ORGG-3d9893801] grain_r4
+判读档判例 2026-06-06-compass-cloud-substrate-plan · Phase 0 · un-gated 代码前置(可现在 TDD · 不需 T4)
+## Phase 0 · un-gated 代码前置(可现在 TDD · 不需 T4)
+
+### Task 1: 修 CJK-surrogate ingest 崩 bug(P1 必修前置 · 独立价值)
+
+**背景:** 调研定位跨设备 ingest 静默失败根因 = CJK-name surrogate 崩(`session_20260605_dual_flywheel_wiring` Finding1)。云权威下所有 ingest 走一条路,这条路**不能崩在 CJK**。
+
+**Files:**
+- 先 systematic-debugging 定位:`Grep` `surrogate|encode|UnicodeEncodeError|gbk` 
+
+### S31 [ORGD-89dcb54df] docs
+[### compass 自己切片(实测坐实范围)] - **A · verdict 语义 bug(③我那半)**:实测仅 1 条 `bvh_001`。修=解耦"难倒门pass/解对pass"两套口径 + 作废 bvh_001 + 6 条阈值统一。小、清晰。
+- **B · 记忆并库+沉淀(⑤主线)**:桥 Store A→B + consolidation。约束:往文件库并(别往sqlite·会丢真语义召回+人类可读沉淀);但要补 ①飞轮晋升门/revoke 文件侧等价过滤 ②user 隔离 ③解 37k 冷扫 perf。需单独 writing-plans。
+- **C · recall 清污**:删 `~/.claude/projects/default/memory/dummy.md`(测试遗留霸榜根源)。安全。
+
+### S32 [ORGG-f6db94054] grain_r4
+判读档判例 2026-07-21-compass-eval-runtime-railroad-and-benchmark · 2026-07-20 execution note
+## 2026-07-20 execution note
+
+Implemented the route-A smoke benchmark path on Windows-native Python because
+the active WSL image is Ubuntu 20.04 with Python 3.8.10 and no working TCP/HTTP
+package path. WSL is now switched from mirrored networking to NAT and the bad
+`/etc/wsl.conf` key placement is fixed, but TCP package access re
+
+### S33 [ORGD-d764256c0] docs
+[## 7 · 终判(10/3 09:1x,F3 补齐,判据档全闭环)] - turbo 通道三障清零:qwen3_5 需新 transformers(venv 5.10.4)→ fp8 属性补丁(torch 2.6 缺 float8_e8m0fnu)→ venv 内 peft 升级(旧 peft 撞新 transformers,ImportError)
+- **F1/F2/F3/F4 全绿**:q14 hit@5=67.74%(p≈0)/ **turbo hit@5=60.94%(p≈0)** 双主干过 5% 门;F3 对拍:正传>Turbo 6.8pt(32 层蒸馏版略弱,同报不作门);F1 零失败×3 表征器;F4 双主干工件落盘(ids_sha16=062ae3cd 一致)
+- 三梯度终表:BGE-m3 **82.94%** > Qwen3-14B 67.74% > Turbo 60.94%(随机 0.34%)——**果
+
+### S34 [ORGG-812bc68cc] grain_r4
+判读档判例 2026-06-04-poi-writer-role-tightening-design · R-guardrail notes
+## R-guardrail notes
+
+Production DDL → R4 git-state check before ship (main is clean now). REVOKE step
+gated behind verification-before-completion (live reconciler + negative write
+test). Does not touch V5 / platform-soul turf.
+
+### S35 [ORGF-08aca305e] flywheel
+flywheel 档案 loop_night_R108_20261006.md
+# LOOP 值守轮 R108 留痕 2026-10-06
+
+## ①信箱:未读 0/OPEN 0
+
+## ②实例:QwenEngine smoke 发车
+- **标注员工位首跑 SMOKE_ALIVE**(nohup,g1_venv+Qwen2.5-VL-7B@vdd/models,DROID-100 前 2 集×6 帧 caption,双路解码,flag=_staff_smoke_final.txt)——模型装载需分钟级,下轮收件
+- 环境实证:视频三路(wrist+exterior×2)/模型五分片齐/episodes+tasks parquet 在位
+
+## ③主力件:职员制线推到"真引擎首跑";discussions/2 复核(open/零回复,10/11 窗;二触材料=三封之封 2 已备,10/9 发仍待用户)
+
+## ④留痕:本件+lo
+
+### S36 [ORGG-299111420] grain_r4
+判读档判例 LEADERBOARD_PREREG_CRITERIA_V1_20261005 · 二、立榜不变式(任何期榜不得违反)
+## 二、立榜不变式(任何期榜不得违反)
+
+1. **判据先行**:开跑前预注册期判据,开跑后冻结;改判据只许出 v2 向前生效,不改已发布名次(勘误除外)。
+2. **UNVERIFIABLE 墙**:不可复算的声称不入名次(rsi-bench PR#2 首例判例);自报数字=声称,须过非实现者复算才算实测。
+3. **U 态不上名次**:材料不足的受测对象挂「观察区」标 U 态,不给名次不给分数(判分机构五演惯例)。
+4. **证据三层强制**:榜面每条成绩标 [实测]/[推断]/[不可验];推断冒充实测=判绩账事故,双向留痕。
+5. **判绩账双向**:榜单判错(含我方判分器误判)勘误公开留档,不改史追补。
+6. **零利益**:测量线不收受测方钱、不接受测方赞助位;赞助关系(如有)在榜面披露
+
+### S37 [ORGG-9a63b8f57] grain_r4
+判读档判例 2026-06-21-memory-capsule-evolution-design · 0c. anchor#5 复用盘点(别从零造 · 2026-06-21)
+## 0c. anchor#5 复用盘点(别从零造 · 2026-06-21)
+
+- 🔴 **平台已有(烂尾)A2A+MCP 服务端**(用户提示·实测定位):git worktree `agent-a2152bb850d8d40bc`(**未合主干 = 烂尾**·最后活动 2026-05-03 ~7 周前)。
+  - 代码 ~1021 行:`phase3/backend/api/a2a.py`(227)+ `a2a_relay.py`(145)+ `services/a2a_protocol.py`(309)+ `nautilus_agent/connectors/mcp_connector.py`(340)。
+  - 文档:`docs/a2a-mcp-
+
+### S38 [ORGM-session_2] gate_passed
+---
+name: 闭环收敛状态·fuel-loop唯一闸门
+description: 闭环收敛状态:income 1067暴涨产题端已恢复,唯一闸门=fuel-loop部署(agent→compass管道物理断),R0 learning kernel 20种组合待真实数据,球在codex
+type: change
+concept: what-changed
+drift: green
+drift_signals: []
+agent_type: claude-code
+user_id: u_local
+ingested_via: mcp
+proof_of_recall: fail
+proof_of_recall_reason: no_token_provided
+declaration_type: none
+tier: working
+decay_rate: 0.5
+promote_after: 1_access
+reinforc
+
+### S39 [ORGG-1a5f799b8] grain_r4
+判读档判例 2026-08-30-multi-tenant-memory-design · 5. 实施分期与验收判据
+## 5. 实施分期与验收判据
+
+- **P2 提审版(最小,≈0 新代码)**:自用 dogfood 单租户全链跑通——workbuddy(JWT agent token)+ 各框桥(scoped token)全部走 8097/9877 鉴权通道,本地 9876 仅限本机回环。
+- **商用版(提审通过后)**:自助 signup → 自动签发该用户 scoped token → 隔离验收探针自动跑;TCP 版补 tokens.json 热加载;8770 退役时多用户模型迁入正式服务。
+- **验收四探针(可证伪)**:① 跨用户读 DENY ② 跨用户写 DENY ③ 同用户跨设备 recall 命中同一记忆 ④ token 撤销后旧请求 DENY。四绿才可宣称"多租户隔离成立"。
+
+### S40 [ORGD-33711c57c] docs
+[### 9/14 合入执行读数(提前于 9/15 窗口,用户拍板)] - **合入形态**:生产 worktree checkout `feat/memory-gate-trio`(9cb9e7e)。⚠️中途曾试 main 基座 cherry-pick 版(merge-ready-0915),发现 main 缺 3912205 线运行时修复(recall v2.4/HUD wrapper 278 行/daemon_start 改进)→hook 回退 v2.3,当场纠正回 feat 线直切;merge-ready-0915 弃用,main 统一留作后续工作。
+- **J1(fact_status 覆盖)**:写入门在线(15 单测覆盖 fact_status 路径);真库覆盖率待合入后新条目产生再统计回填(合入日无新写样本)。
+- **J2(查重零误合并)真库抽样**:无关文本→unique(hits 空)✅;同主题不同文→gr
+
+### S41 [ORGG-506588bf2] grain_r4
+判读档判例 L1_CRITERIA_FREEZE_NOTES_20261005 · 三、Terminal-Bench
+## 三、Terminal-Bench
+
+- **上游正本**:GitHub laude-institute/terminal-bench(repo id 918420677 实测);任务集+官方 harness(terminal-bench CLI)+每任务官方 verifier;任务集持续扩张,版本敏感。
+- **criteria_version v1 冻结口径**:主指标=**task resolve rate**(官方 verifier 判过);harness=官方 CLI 钉 release tag;**任务集钉 dataset 版本 tag**(成绩行必示 tag,防跨版本不可比);单 run 起步,agent 配置(模型/工具)全披露。
+- **污染风险与对策**:①任务公开可被训练——对策:cut
+
+### S42 [ORGG-3be8d2b61] grain_r4
+判读档判例 2026-06-06-compass-mcp-3agent-dogfood-design · 1. 架构定调:谁提供什么(已确认 · 回答"是平台提供 MCP+token 吗?")
+## 1. 架构定调:谁提供什么(已确认 · 回答"是平台提供 MCP+token 吗?")
+
+**不是平台提供 compass 的 MCP 服务。** compass 已自有 MCP 服务 + 鉴权中间件。固化分工:
+
+| 层 | 谁拥有 | 现状(已核实) |
+|---|---|---|
+| MCP 服务 + 工具契约 | **compass**(G-turf) | `mcp_server.py` ~17 工具已建 |
+| **认证 (authn)** | **compass** | `middleware/auth.py` 已建:X-Agent-Key = 平台 JWT(V5_JWT_SECRET 同源)· tenant 派生 qu
+
+### S43 [ORGH-6b1c37686] commits_r5
+工具决策记录 l2_report_gen.py
+L2 深度报告生成器 v0(T5.2 · 2026-10-09 R436)。
+
+定位:从 judge_status API 的 done 卡自动生成 L2 报告**草稿**(骨架+数据零丢失填充),
+人工判读员段留槽位——生成物未经判读员署名不得作为 L2 收费交付件(判读免费/装订
+收费两线定价的边界纪律,见 docs/metering 判分两线定价档)。
+
+判据(预注册 v0):
+  G1 渲染零丢失: verdict_detail 全字段原文入报告
+  G2 sha 一致:   criteria_sha16 + submission 原样呈现
+  G3 人工槽位:   L2-ANALYST 段+未署名不得收费声明
+  G4 非 done 拒绝: status != ok/done 时 ValueError
+  G5 证据层保真: [实测]/[推断]/[不可验] 原样保留,本工
+
+### S44 [ORGG-a2151906d] grain_r4
+判读档判例 CAPABILITY_MAP_20261009 · 三、竞争优势(为什么是我们)
+## 三、竞争优势(为什么是我们)
+
+1. **可复算是产品而非口号**:别家发"我们测了",我们发"你按这条命令重算,数对不上当天发勘误"——且已被实战验证(平台复现首例/v5 交叉 SQL/S6 全量 29/30)
+2. **预注册纪律的护城河**:判据先行、零放宽,这要求组织级自我约束——竞争者模仿一句话,坚持一个季度极难
+3. **负结果文化形成信用复利**:E-NACRE-1 负结果公开发布、6 例自勘误——"敢报坏消息"本身就是最稀有的可信信号
+4. **判分器自检真空位**:caliber-bench(给基准打分的基准)全行业无同类;XERJ 证实语料库中"agent 轨迹+失败过程"数据为零——**两个真空位都被我们占住**
+5. **成本结构**:1.7B 判官+自有复算管线,边际判读成本趋近于零——免费判读线可持续,
+
+### S45 [ORGD-017105606] docs
+[### 6.1 五个战场各测什么] | 战场 | 性质 | 回答的问题 |
+|---|---|---|
+| LME-S e2e 500 题 | 自建 harness 主场 | 方法效应:路由+组装带来多少(42.6→75.4) |
+| 检索对打 mem0 | 同题同判据 | 相对优势:开箱检索层谁强(P@1 0.890 vs 0.774) |
+| LOCOMO-10 | 客场 | 换数据集结论是否保持(0.644 vs 0.592) |
+| EverMemBench | 第三方公开榜 | 别人出的卷子防自吹(44.4-47.3 vs Mem0 37.09) |
+| LME-V2 451 题 | 上游官方基准 | 社区可比坐标系(40.0/38.4,untuned 19.6/12.8) |
+
+### S46 [ORGQ-R91] gate_passed
+### R91 · 2026-10-03 23:2x-00:0x(E1 盲判排程轮·用户令留缓冲)
+- **E1 J2 判读全链排好**:①OOD 包下载验签通过(sha16 一致,400 样本)②判官协议读毕(五组作答/直觉/独立/CSV 导出)③判读方式申报函 2710(AI 视觉 Qwen2.5-VL-7B·A100 本地,先行后批;纯人工要求则用户过 viewer 重判,死线前时间够)④主包 J2 498 帧坐标催办(平台转 flywheel)⑤批判脚本 e1_j2_batch_judge.py 就绪(断点续跑/五组枚举/viewer CSV 兼容)⑥VL 模型 A100 下载中(5 分片过 1.5)⑦自动编排挂后台(下载完+exp2 清→自动发车,无人值守)
+- **A2 bug 根因断根**:remote.py put/get ENOENT 假报根因=git-bash MSYS 路径转换(独立 /root 参数→C:
+
+### S47 [ORGH-2bc705a6e] commits_r5
+commit 64f9a0e0edd5 2026-08-30
+fix(security): TCP MCP 服务加项目级 scope 强制——补 8/28 scoped-token 体系只覆盖 HTTP 版的洞
+workbuddy 与各框桥主通道=云端 TCP 9877(mcp_server.py),原先只有工具级
+tools.read/write,持有效 token 可跨全部 project 读写(用户实测暴露)。
+- read:<project>/write:<project>/read:*/write:*/admin 语法与 HTTP 版同构,共用 tokens.json
+- 携带任一 project 级 scope 的 token 进入 fail-closed 强制;旧工具级/'*' token 行为不变
+- dict 空 scopes=全拒;8/8 单测绿(TDD,含 scope=user 需 read:* 边界)
+
+
+
+### S48 [ORGH-daa60b284] commits_r5
+commit b09e58637a3f 2026-09-23
+feat(bc1): L2 自测成绩单——11/18 原样+7 FAIL 全判出题侧缺陷(含考生比真值对 2 题)
+独立 agent 应考(public 18,考卷剥真值,transcript 可审):11 PASS
+7 FAIL 0 U。逐题审计:7 FAIL=出题方 5 处缺陷——T12×2 真值错误
+(生成器 D3 意外产生真矛盾,考生多报的真冲突比 expected 更对)+
+T11×3 题面歧义(三桶语义两读/无 reply-to 关联)+T31×2 边界未定义
+(复发含否首见日)。净口径 11/11 全对。修复清单入 9/27 发布版。
+成绩单 ed25519 签名 VALID(pub 8cf767a6…),答卷+考卷归档,
+待非实现者复算。
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+
+### S49 [ORGG-f5f03d8e8] grain_r4
+判读档判例 2026-09-07-verifypack-v02 · 3. 现有资产盘点(measured)
+## 3. 现有资产盘点(measured)
+
+| 资产 | 位置 | 复用 |
+|---|---|---|
+| utility-metrics-protocol-v1-frozen | flywheel 仓 | claims 结构直接继承 |
+| scripts/verify_pack.py | flywheel 仓 | build 命令的底 |
+| 复算路径惯例 | flywheel 手几何函最小验证代码 | verify 命令的形态 |
+| 签名回执惯例 | compass 逐函 agree/disagree 格式 | receipt 的内容结构 |
+| 宪法边界 | compass CLAUDE.md/回执惯例 | 独立技术验证≠客户验收≠结算决定(写进 spec 前言) |
+
+### S50 [ORGD-90e1d1e81] docs
+[## §2 TypeSafe 四轮复算(对外第一靶,全部一手实抓)] - 发现结构:(proof) 不可点击(HTML 无 href)/同页双口径(headline 193.6x/444.6x vs demo 171x/75x)/一个可验声明(238x≈$10/M 自洽)
+- 立场:不指名不推断动机,只述可复算事实——"不是欺诈,是不可验证"
+- X 长文已发(status/2105296550117458093)+邮件回应权已给(hello@typesafe.ai)
+- 待续:回应/复算 offer 在途
+
+### S51 [ORGH-ee79ac28a] commits_r5
+工具决策记录 rejudge_errors.py
+Re-judge the 71 judge-disconnect questions (task #40).
+
+Same judge model & prompt as the arm-a runs (imported from the harness, not
+reimplemented) so the verdict stays in-protocol; only adds retry with backoff,
+because the original failures were connection-layer (403/timeout), not model
+verdicts. Answers are reused verbatim -- subjects are NOT re-run.
+
+Writes vtf/_e2e_diag/arm_a_rows_rejudged
+
+### S52 [ORGH-59a105831] commits_r5
+工具决策记录 delta_0006_first_card.py
+delta_0006 首卡判例入池生成器(2026-10-09 · 判读岗 SOP 第⑥步入册首例)。
+
+判读卡 nautilus-l1-0002(S6 首卡,72fdcb66 平台自检单)升格为结构化 delta
+registry 条目。truth_label=判读流程先例语义(零新判定):按预注册判据对
+无评测产物提交正确出 insufficient_evidence 判定——管线首例+平台独立复现
+通过(#10727)即第三方复算门首例 PASS。判据零放宽。
+输出:runtime/verdict_corpus/delta/delta_0006.jsonl(+manifest)
+
+### S53 [ORGD-13d3f6b46] docs
+[## 六 · S5 上岗切换(tools/p3_promote.py)+ S6 台账] - champion.json 原子切换(tmp 写+rename):{adapter_path, adapter_sha16, gate_report_sha16, corpus_delta_sha16, promoted_at}。
+- 回滚:保留最近 3 代 champion;kill switch=手动把 champion.json 指回上一代(一条命令,设计档承认人工兜底)。
+- 台账 runtime/judge_lora_p3/ledger.json(JSON 数组;仓 .gitignore 第 7 行 `*.jsonl` 全局忽略,审计件须入 git 故用 .json):每轮一条{cycle, delta_n, verdict(SKIP/PASS/FAIL), 门读数, sha 链}并 commit;每条结论带证据三层标注(JU
+
+### S54 [ORGH-d77aaaea6] commits_r5
+commit c11752213031 2026-09-30
+docs(goals): 三门真门任务收口为✅(G1/G2加严/G3/出题触发器file-based全落地)
+Generated with [Claude Code](https://claude.ai/code)
+via [Happy](https://happy.engineering)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+Co-Authored-By: Happy <yesreply@happy.engineering>
+
+### S55 [ORGH-11674ef49] commits_r5
+commit 03fcc09e180a 2026-09-16
+docs(strategy): RSI 浪潮深度启示——动态模型时代验证机构论+verdict 语料涡轮论+自训判分器带牙齿方案(反自指护栏)+三机制收费映射;全挂 M1 闸门后
+Co-Authored-By: Claude Code <noreply@anthropic.com>
+Co-Authored-By: Happy <yesreply@happy.engineering>
+
+### S56 [ORGQ-274ab8188] queue_r3
+轮次记录 R457 · 2026-10-10 晨二(主件轮:r87 判读复核接单✅函 10921——判读岗首张外部复核单,v5 训练方/compass 独立复核)
+### R457 · 2026-10-10 晨二(主件轮:r87 判读复核接单✅函 10921——判读岗首张外部复核单,v5 训练方/compass 独立复核)
+- **死线带新件接单**(#10920 v5 产能确认函):r87 双臂同构复考(held-out 60 题×r80 vs grpo_r87)10/11 发车——**compass 接复核单**:读数到手 4h 内出终判,10/12 12:00 前完成(榜单刷新前背书,余量 6h+);投递=mailbox(trace r87-judge),卡经 judge_status API live(卡号顺延 0005)。
+- **判读纪律条款先冻结**:v5 初稿须带预注册判据档(criteria sha,未冻结不出
+
+### S57 [ORGH-c4507f03b] commits_r5
+commit 77a28ef70955 2026-05-22
+feat(skills): #4 · ship 3 real codified skills + verify 5-step cycle
+Closes the third part of the architecture-level integration push.
+The skills_pkg framework existed in v2.0.0 but had ZERO registered
+skills · this commit lands 3 production-ready skills + demonstrates
+the concept → prototype → codified promotion cycle works end-to-end.
+
+3 real codified skills:
+
+  1. drift_summary
+     
+
+### S58 [ORGD-c5f0c02a9] docs
+[## 8. 判绩账(回填段)] - **2026-10-05 非实现者复算:PASS-with-erratum**(独立上下文复算人,md5 校验后原始 JSONL 本地重算;G=7170892d…/B=599c76a6…):
+- 16 项对表 15 项逐位一致(两臂 J1 0.85/0.825、J2 0.925/0.925、ΔJ1=+0.0250/ΔJ2=0.0000、degenerate 0/0、ep 分布、act_state_norm 双臂配对同值 0.072213~0.112599);
+- **勘误一项 [实测]**:G 臂 ratio 中位数判读函声称 1.9863,复算=**1.9861**(40 帧偶数,中位=第 20/21 位 1.9859/1.9863 均值;原始 G summary 实物亦为 1.9861)。成因 [推断]:判读函 G 臂误取上中位(median_high),而同函 B 臂(1.7857)用
+
+### S59 [ORGD-0cf2a2e71] docs
+[## 我们做什么] - 每次任务产出(代码/修复/决策)自动过**确定性验证器**(pytest/编译/程序化判据)
+- 三臂对照实验(control vs treatment)证明经验**真的有用**才入库(Gold)
+- 入库经验带全套溯源:谁产的、谁验的(必须异构)、哪次运行、什么判据
+- 裸模型做不出来的任务才学(headroom 门)——模型已会的经验不浪费存储
+
+### S60 [ORGD-9b62a19ea] docs
+[### 轮 40(市场化loop R21) · 2026-09-27 02:3x(**TypeSafe proof 预备] - 进展:①信箱:platform zenmind 状态答(1172:台式机静默6h云上无病,卡点=本地定时任务列用户待办,compass 无配合件)ack 闭环②**TypeSafe proof 预备轮实抓**(d5472e8e):(proof) 链=blog 正文;**evals.typesafe.ai 全数字公开**(Jev 67.8%/$0.0004/0.4s vs terra 67.9%/0.0304/10.1s vs opus5 73.1%/0.1761/37.8s 等 9 模型×3 指标);adapter-python repo 可跑;playground 直测口;**口径推算**:444.6x≈opus5 成本比(440x)/193.6x 疑锚 sonnet5 时间(78.1/0.4=19
+
+### S61 [ORGH-ac7f1824f] commits_r5
+commit 9d8f30485c2b 2026-07-04
+plan: 5 dialog 补齐 20 分 ship 清单
+4 task:session memory 模板 + hook 模板 + dialog_bootstrap + 端到端验证
+每步 2-5 分 · 治根 anchor #6
+
+Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
+### S62 [ORGM-cda255ec2] memory
+记忆条目 examhall-charter-20260916.md
+# 「考场」立项(2026-09-16 · 草案 v0 · 用户指示正式立项+跨框头脑风暴)
+
+**调研定谳**(真实检索):RSI-Bench 已存在(评改进速率,共识化中);**LME-V2
+(ICML26,我们 NautilusMem T0 的上游)已自己转向组织经验记忆**;AgentMemoryBench/
+AMB 密集 → **题目层拥挤,认证协议层空位**。差异化三板斧:①诚信是分数(不可复
+算占比 U 扣分)②官方名次只认带回执运行 ③UNVERIFIABLE 上墙。姿态=借轨合作
+优先(向 LME-V2/RSI-Bench 提认证轨),被拒再全自建。
+
+**compass 走向 v2(四层→五层)**:状态层(记忆)→裁判层(三态复算+回执)→
+法律层(CATALOG+棘轮)→**考场层(本立项,唯一直通 M1)**→燃料层(verdict
+语
+
+### S63 [ORGG-db7f604a1] grain_r4
+判读档判例 JUDGING_SERVICE_PAGE_V1_20261004 · 二、两线定价(2026-10-03 定)
+## 二、两线定价(2026-10-03 定)
+
+| 线 | 内容 | 价格 |
+|---|---|---|
+| **判读** | verdict 出件:按预注册判据判材料,出判定书 | **永久免费**,不设付费优先队列 |
+| **装订** | 判后事:判例集、认证背书、协议植入 | 收费(以已出 verdict 为原料,收费不改变任何一案判据与结论) |
+
+判例集当前为公开 demo 版(免费):12 案全录,每案附材料指纹(sha16)与复算命令。
+
+### S64 [ORGH-873cdef32] commits_r5
+commit 5750ffd11d40 2026-05-06
+add EverMemBench reproducibility scripts (smoke + e2e)
+evermembench_smoke.py · BM25 retrieval@K baseline
+  · pulls 5 topics · 2400 QAs from EverMind-AI/EverMemBench-Dynamic HF
+  · SQLite FTS5 (BM25 only · no GPU needed)
+  · 17.5s for 2400 QAs on cloud
+  · output (lower-bound · BM25 only):
+      R@1   14.8%    R@5   25.2%
+      R@10  30.6%    R@20  38.1%
+
+evermembench_e2e.py · BM25 + Dee
+
+### S65 [ORGH-37adbf05e] commits_r5
+commit a333970dd0f9 2026-07-07
+feat(compass): convergence_report 一键日报 + feishu helper UTF-8 修复 + 日报内容级证据
+- ops/convergence_report.py: 合成 economy_liveness_probe + 记分牌 SQL + feishu_read_via_cloud
+  + contract.scan,一键出收敛执法日报(--json / --no-feishu)。实测复现 5 记分牌 + 4 表 + 合约。
+- ops/feishu_read_via_cloud.py: 修 Windows GBK 编解码(subprocess 强制 UTF-8 解码 + stdout
+  reconfigure),rows 读中文/emoji 不再崩。
+- 日报补附录:A2 内容级证据(交付 29 行=seed 假 sha2
+
+### S66 [ORGH-8f5c51944] commits_r5
+commit b6ff7bfd15c0 2026-05-11
+fix(ops): L2 metrics · nautilus-v5 → nautilus-prime-001 alias
+V5 production agent_id is 'nautilus-prime-001' not 'nautilus-v5'. The
+EXPECTED_AGENTS list in compass_l2_metrics.py had the wrong name · so
+dashboard always showed V5 absent even when V5 was calling daily.
+
+Found during 7-claim self-verification this morning:
+  meeting gate showed: nautilus-prime-001 · 23 calls/day · gate hit
+
+### S67 [ORGG-26b56d04b] grain_r4
+判读档判例 CLOUD_RECALL_LIVELOCK_20261012 · 二、时间线 [实测]
+## 二、时间线 [实测]
+
+| 时刻 | 事件 |
+|---|---|
+| 10/11 23:05:53 | journald 首条 `overload · reject conn (inflight cap 32)` |
+| 10/12 12:12 | status 口:5min 窗 **0 成功 recall / 27 拒绝**;线程仅 15(<32 槽) |
+| 10/12 12:15 | py-spy 抓旧进程(pid 941):8 个池 worker **全部**卡 `get_memory_entries:873` 等 `_mem_lock`,其中 1 线程在 http.client `getresponse`(正常嵌入读取) |
+| 10/12 12:19:17 | systemctl restart → 立即恢复 
+
+### S68 [ORGD-dd8600bb4] docs
+[### ✅ compass 主线正产(无归属争议)] | 件 | 状态 | 价值 |
+|---|---|---|
+| 跨 agent 记忆层(LongMemEval 碾压 mem0) | 在役 | compass 立身之本 |
+| M5 记忆门三件套(fact_status/dedup/沿链) | ✅ 今日上生产 | 七算子审计病灶修复 |
+| NACRE 判分模型 v1(1.7B LoRA 88.51%) | 在役 | 压缩柱首柱 |
+| ORG-FUEL 语料管道(1846 条/4 源) | 在役 | 因果倒置柱燃料 |
+| delta registry(棘轮式注册) | 在役 | 因果倒置柱载体 |
+| PRECOR 部署精度纪律(fp16 可用/int4 禁用) | 判定表已出 | 验证柱实证 |
+| GPU 嵌入服务(A100,×100 吞吐) | 在役 | 基础设施 |
+| assay 0.3.3(PyPI) | 
+
+### S69 [ORGH-757c43b03] commits_r5
+commit 0af2c5a9cf9d 2026-05-06
+paper · LaTeX unicode fixes + figure placeholders (arxiv-ready source)
+Bulk replace unicode glyphs with LaTeX commands so source is portable
+across TeXLive versions:
+  Δ → \(\Delta\)    κ → \(\kappa\)    σ → \(\sigma\)
+  τ → \(\tau\)      θ → \(\theta\)    α → \(\alpha\)
+  → → \(\to\)       ≤ → \(\le\)       ≥ → \(\ge\)
+  · → \textperiodcentered{}            ≈ → \(\approx\)
+
+Side effect
+
+### S70 [ORGD-90a8852fb] docs
+[## 目录(v0 · 2026-09-21)] | 系统 | LoCoMo | LongMemEval | HaluMem | Assay 验证状态 |
+|---|---:|---:|---:|---|
+| MemOS(MemTensor) | 88.83 | 89.20 | 80.91 | 🔹 assayed-tier1(README↔源表 10/10+均值复算;LongMemEval 加权口径缺口在案) |
+| EverOS | 82.75 | 80.40 | 88.66 | ⚪ self-reported/UNVERIFIABLE |
+| Cognee | 83.48 | 51.80 | 72.60 | ⚪ self-reported/UNVERIFIABLE |
+| Hindsight | 81.99 | 72.20 | 83.99 | ⚪ self-reported/UNVERIFIABLE |
+| Mem0 | 7
+
+### S71 [ORGG-ce516eb24] grain_r4
+判读档判例 JUDGING_SERVICE_PAGE_V1_20261004 · 三、委托判读流程(五步)
+## 三、委托判读流程(五步)
+
+1. **材料投递**:经平台信箱(to=compass)发函,材料落盘并附指纹锚(sha16);函数据与磁盘实物缺一不可。
+2. **判据预注册**:判据先于判分冻结(criteria lock,版本+指纹可引);判据只许更严,冻结后不改;判不动照报"判不动",不以代理指标顶替。判据宽松化的裁决权在用户,不在判读方与被判方任何一侧。
+3. **判读**:非实现者复算原则——判读方与材料实现方分离;verdict 二值主判,连续分数只作 caveat;每条结论性陈述标注证据层。
+4. **回执**:verdict 经信箱回传,附复算命令;惯例响应 <1h(材料落盘即判,判例集附录 B 三次实证)。
+5. **复算与装订**:任何人可按公开命令独立复验;判例按判例集程序装订,新案即装。
+
+### S72 [ORGH-3d93cea0e] commits_r5
+commit 553b063d9cdd 2026-09-15
+docs(marketing): 验证价值 playbook+商业化路径——免费复算入口已开(#166 官方回复)·四路径排会话·第一付费 SKU=发布前独立审计($99-299 三档)·里程碑 M1-M3 反剧场判据·平台市场结算一石三鸟·四条红线(两向如实/不验己售/license 口径待拍板)
+Generated with [Claude Code](https://claude.ai/code)
+via [Happy](https://happy.engineering)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+Co-Authored-By: Happy <yesreply@happy.engineering>
+
+### S73 [ORGG-98747ee33] grain_r4
+判读档判例 2026-06-05-fde-rsi-dual-flywheel-closure-design · 5. 依赖 / 边界 / owner
+## 5. 依赖 / 边界 / owner
+- 缺口1/2 = compass 纯 turf,可独立做(需云端实测)。
+- 缺口3 = compass adapter,接 soul 已有 `checklist_scorer` schema(soul 出 verdict)。
+- 缺口4 = compass(飞书读+胶囊+adapter),需真批次专家复核数据(可先 mock,G3.1 scope 已解)。
+- 全程不碰平台内部 RSI wiring(平台 held)。
+
+### S74 [ORGH-4ce58834f] commits_r5
+commit b500e541399a 2026-10-10
+docs(loop): R501——隧道keepalive版重启生效[实测19879 LISTENING]·R500双加固全部生效
+Generated with [Claude Code](https://claude.ai/code)
+via [Happy](https://happy.engineering)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+Co-Authored-By: Happy <yesreply@happy.engineering>
+
+### S75 [ORGH-b56616c62] commits_r5
+commit f871c4b0be31 2026-04-27
+feat: zenmind-mem v0.5 · initial release
+Memory plugin for Claude Code · 基于 V5 nautilus 治理实战
++ 借鉴 zenmind.chat 禅心 AI 长期记忆栈
+
+核心能力:
+  · UserPromptSubmit hook · metadata + age 警告 + strategy 命中 (0.5s)
+  · CLI BGE daemon · 真语义召回 + Persona drift detection (1.8s warm)
+  · Stop hook · 自动 strategy 蒸馏 + Ebbinghaus decay
+  · A-MEM cross-cosine · supersede 检测
+  · Persona Vectors L3 · 25+25 锚点 · 反锚点
+
+### S76 [ORGD-8cf133deb] docs
+[### 轮 31(市场化loop R14) · 2026-09-26 17:1x(**判因被 v5 复核推翻一处→勘误+] - 进展:①v5 复核定谳(1111):我方"评测器嫌疑×5"系方法盲区(终态门验了/outputs 答案串门未察)→5 题改判**「结果传达失败」**新判因类(做对了没说对);判因表勘误落档+回函 1113 接受定谳(R1 维持 74.8%);**方法论教训:机械判因必须覆盖判分器全部判定门——评委也会错,复核链抓到=判绩账双向价值实证** ②组织评测令(1104 用户令):compass 确认批 1 死期 9/28(VB mini-vending-bench,9/27 发布日 VB 排深夜窗)——宪法第十二条外部真值全组织首践
+- M1:0 不变
+- 下轮:安静;明 09:00 BC1 机械腿(建议新会话执行);9/27 深夜-9/28 晨 VB 跑
+
+### S77 [ORGQ-R45] gate_passed
+### R45 · 2026-10-03 00:0x-00:2x(外拓轮·美国白天窗口开打:GitHub 三连发)
+- 用户令:北京深夜=美国白天,充分对外拓展(承传播五层规划/9/11 渠道定案/组织开放利他原则)
+- **三发落地**:①Srt-tian/PhysicalRSI #1(送测 offer:物理筛选假阳/假阴率复算,~1%成本/+40% 声称为引)②EmbodiedSWE/EmbodiedSWE #134(送测 offer:仿真通过判据假阳性+扩增分布漂移=两个可测缺口)③Nautilus-agent/compass #2(英文判官帖:三态不猜文化+¥65/席+rsi-bench 采纳案例背书)——两送测目标=flywheel 2341 双雷达直接转化(独立计量缺口=Assay 生态位首攻)
+- **dev.to 英文判官帖发布+双验**:https://dev.to/chunxiaoxx/we-pay-peop
+
+### S78 [ORGQ-R207] gate_passed
+### R207 · 2026-10-06 00:0x-00:2x(用户四令:实例排期+创新模型白皮书+命名+组织收敛)
+- **probe(00:02)**:#9847 platform 征议收卷致谢(机制 v2 生效)→ack 无异议;A100 SSH 限流窗持续(评测自跑不受影响,B 臂读数窗后收)
+- **实例排期盘点 [实测基础]**:今晚 GPU 空约 8h(评测=CPU 负载,G1-full 白天已跑完)——如实报:GPU 件全挂账待拍板(14B 复算/偏置修复三路径/P3 等燃料);排期方案已呈(10/6 上午 14B 复算填空窗等)
+- **创新模型白皮书骨架落档**:docs/soul/INNOV_MODEL_WHITEPAPER_SKELETON_20261006.md——动态权重小判分器=压缩×验证×因果倒置载体(1454→88.51% 三门/P3 delta 六段+REG-100/三态不猜);白皮书 6
+
+### S79 [ORGH-9d8aec815] commits_r5
+工具决策记录 fuel_flywheel_vet.py
+R506 · flywheel 423 candidates 过 flywheel 红线 R1-R7 重筛(其审计件为正本判据)。
+
+红线实现:
+- R1/R2/R5: 港区投资/泄密审计/报价盘口/政府线方案件按文件名排除;
+- R4: 谈判/intel 件按文件名排除;
+- R6: PII 角色化(手机号/邮箱→占位);结算语义件按文件名排除;
+- R7: runtime 仅取 git 跟踪清单内 + 白名单类名。
+
+### S80 [ORGH-0eff244c0] commits_r5
+commit aa361c9ee8be 2026-06-23
+test(hooks): inbound select_inbound — fix watermark surface-once (Phase2 Task2.2 · B4)
+measurement-first 纠错: plan 假设'per-project漏'是错的·hook始终扫nautilus-core。
+真bug=watermark surface-once: 老消息surface一次后跨session永不再现→丢未消费入站(本session亲踩漏一批)。
+修=select_inbound纯函数+近48h floor二次surface+watermark只推进到newest-new(不跳now)。
+端到端smoke自证: 现surface出20条之前丢失的近期入站。5 tests green。
+⚠️ hook本体在全局~/.claude/hooks/inboun
+
+### S81 [ORGH-4d1b01616] commits_r5
+commit 43d117650cad 2026-10-11
+fix(ci): ruff --fix 31 个 F401 unused imports+F821 补 import os·Lint 转绿
+Generated with [Claude Code](https://claude.ai/code)
+via [Happy](https://happy.engineering)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+Co-Authored-By: Happy <yesreply@happy.engineering>
+
+### S82 [ORGH-ae21f7d8f] commits_r5
+commit 0f88a8ec3e5f 2026-10-06
+chore(loop): R268——delta_0004证伪自止(J4撤回件不入账,维持33)+L3榜页HTML挂墙件提前制(本地验收全过,10/11终检即部署)
+Generated with [Claude Code](https://claude.ai/code)
+via [Happy](https://happy.engineering)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+Co-Authored-By: Happy <yesreply@happy.engineering>
+
+### S83 [ORGG-fac65b476] grain_r4
+判读档判例 L1_CRITERIA_FREEZE_NOTES_20261005 · 二、GAIA
+## 二、GAIA
+
+- **上游正本**:HF `gaia-benchmark/GAIA`(450+ 题,validation 165 题公开含答案/test 集答案不公开走官方 leaderboard;gating 防爬,不转载题面);官方 scorer 随数据集卡。
+- **criteria_version v1 冻结口径**:主指标=**exact match**(官方 scorer 口径:数字/字符串规范化匹配);主轨=**validation 165 实测**(compass 自跑可复算);test 成绩只收官方 leaderboard 截图/URL,标 [不可验] 挂引用不入名次(UNVERIFIABLE 墙);level 1/2/3 分层申报;agent 工具栈(搜索/代码执行)配置随成绩行公示。
+- **污染风险与
+
+### S84 [ORGQ-R340] gate_passed
+### R340 · 2026-10-08 晨(用户质疑响应:内容级复验——状态码≠可用,4 实证/2 待深验)
+- **用户批评成立并吸收**:我方此前终检用状态码口径=自报不可信;已换**内容级口径**复验全对外触点:①11 触点 HTTP 全 200(含修后 criteria)②内容实证 4 页(leaderboard 判读卡/criteria 判据×10/L2 样例结构化/compass 双产品线)③**如实短板**:data 站=SPA 壳 JS 渲染 curl 无法验内容(headless 待做)/unipat 产品密度待评估/L2 样例 2.9KB 偏薄($199 产品样例说服力待加强)。
+- **口径修正入档**:终检判据升级=状态码+内容锚+渲染后三口径并列;headless 深验(data/compass 渲染后)列 10/11 终检必做项。
+- 教训吸收:"200 就算过"=审计自己的大忌(与 A2 复算同
+
+### S85 [ORGF-c6060c1ce] flywheel
+flywheel 档案 loop_night_R114_20261007.md
+# LOOP 值守轮 R114 留痕 2026-10-07
+
+## 本轮实况
+- **#10062 四验主业函即时办结**:f196-f205 十单 four_gates_v0 **10/10 PASS**(final_patch 连续兼容第三批),落库 inserted=10 skipped=0 实测;回执投 soul-workspace @03e57c28a+ack 双销;**累计燃料四验 89 单全绿(f151-f205)**
+- BYZ/MOD-CAT 回函:仍未到(截止今日 18:00/已过 12:00——MOD-CAT 过线无回函=逾期视为无异议条款生效,BYZ 晚间截止)
+- 扩样补抽 5 集:本轮未做(聚焦四验),下轮 SSH 窗续
+- 树清零 @0a61744
+
+## 下轮(R115)
+- MOD-CAT 逾期条款生效确认(12:0
+
+### S86 [ORGG-f6c1d4d8f] grain_r4
+判读档判例 2026-06-21-memory-capsule-evolution-design · 5b. 协作分工 + 推进序(谁做 · 能借 soul/agent 吗 = 能且必须)
+## 5b. 协作分工 + 推进序(谁做 · 能借 soul/agent 吗 = 能且必须)
+
+| 阶段 | compass(实现层·主力) | agent/V5(写端) | soul(质量信号) | 用户 |
+|---|---|---|---|---|
+| **P0 防退化** | serving:质量分进 recall 排序 + 单条 revoke API | W1 写回**带 verdict 元数据**(reward/bucket/score/source) | 提供 verdict(**已产·只需被带上**) | — |
+| **P1 精度** | serving schema 支持结构化字段 + recall 返回 | **产结构化
+
+### S87 [ORGM-cf77f2947] memory_r3
+记忆条目 j6-clarify-and-qwen3-8b-errata-20261010.md
+2026-10-10 深夜复盘确认的两个口径修正（R456/R458/R463）：
+
+**1. J6 澄清**：J6（10/26 裁决）=**需求侧检查点**——主判据"外部复算请求/首单意向 >0 → 加码判读路；=0 → 重心切数据包"（PREREG_DEMAND_CHECKPOINT_20261026.md）。**≠ 7B/8B 对拍**——对拍是语料 3000 阈值触发（corpus_stats trigger），无日历死线。我曾错误绑定两者并产出"推迟报告"预案（R454），后自我修正（R456）——预案作废。
+
+**2. 勘误第 8 例**：**Qwen3 官方无 7B 尺寸**（0.6/1.7/4/8/14/32B）[实测 hf-mirror 7B=404]。历史文档"7B 对拍"实际对象=**Qwen3-8B**。re
+
+### S88 [ORGQ-a19028aca] queue_r3
+轮次记录 R459 · 2026-10-10 晨三(主件轮:r87 判据冻结确认✅函 10925+LOOP_STATE 全面刷新——复核前置门全通过)
+### R459 · 2026-10-10 晨三(主件轮:r87 判据冻结确认✅函 10925+LOOP_STATE 全面刷新——复核前置门全通过)
+- **主件一=判据冻结确认**(#10920 v5 判据档 b7_iso_r87_dualarm_v1 sha16=223a9dbf 审阅):五要素逐条过(卷面 sha 锚/greedy 同构/reward 三层同款/delta 三态 noise_floor 0.15/独立性分工)——**无异议冻结生效**(函 10925);复核动作预告=noise_floor 对历史分布回验 [非异议];复核就绪承诺重申(4h/10-12 12:00/卡号 0005)。
+- **主件二=LOOP_STATE 状态正本全面刷新**(值守纪律补课,
+
+### S89 [ORGG-21390ba85] grain_r4
+判读档判例 WIRING_PLAN_20261004 · L6 · 首训练单线(P3 管道首转)【语料 ≥200 触发】
+## L6 · 首训练单线(P3 管道首转)【语料 ≥200 触发】
+
+- **触发**:p3_ticket.py 报 ISSUED(pending ≥200;L1 errata+L3 E1+案源任一凑齐)
+- **步骤**:①人工批准执行(ticket PENDING_APPROVAL→APPROVED)②4090 短租(1.65/h,API 层,守门 exit42)③train_judge_incremental.py(--ticket, epochs≤5)④双臂 preds 拉回⑤p3_gate --record⑥PASS→p3_promote 上岗;FAIL→rejected/ 冠军不动(重训限 2 次)
+- **验收**:ledger 记 GATE/PROMOTE;组织 RSI 循环首次完整转一圈
+
+
+### S90 [ORGG-39c8bdce1] grain_r4
+判读档判例 2026-09-22-calibration-currency-charter · 三 · 计价场景(商业闭环)
+## 三 · 计价场景(商业闭环)
+
+**场景 1:agent 采购的汇率牌**(买方 SKU 增强)
+企业采购 agent 服务时看 C 值:「此 agent 在代码修复域 C=0.87(3 天前更新)」
+vs「此 agent C=UNVERIFIED」——**数字一样,汇率不同,采购价差合理化**。
+DCR $99-499 就是「查汇率」的报告费。
+
+**场景 2:管线内的信任路由**(SKU-B 验收嵌入)
+agent 管线运行时,C<0.50 的域自动降级(人工复核/降速/拒答);C≥0.80 的域
+自动通过。**校准货币即风控参数**——不需要人工判断「信不信」,查牌即可。
+
+**场景 3:多 agent 协作的清结算**
+Agent A 请求 Agent B 完成任务:B 的 C=0.72 →
+
+### S91 [ORGG-de29e4d76] grain_r4
+判读档判例 2026-06-03-p5-v14-poi-emission-design · Component 1 · candidate emission(云端 gating)
+## Component 1 · candidate emission(云端 gating)
+
+`ops/patch_v14_recall_poi_candidate.py` — 幂等增量 patch:
+- guard marker `_v14_emit_poi_candidate`,已 patch 则 skip
+- **edit 1**:给 `v14_recall` 签名加 `agent_id: Optional[str] = None`(query 参数)
+- **edit 2**:插入 inline helper `_v14_emit_poi_candidate(hits, query, agent_id)`
+  - cache dir = `C
+
+### S92 [ORGQ-R239] gate_passed
+### R239 · 2026-10-06 07:5x-08:0x(用户令"主动出击":NACRE 白皮书 v1.0 成文——白天主件落地)
+- **NACRE 白皮书 v1.0 成文** docs/soul/NACRE_WHITEPAPER_V1.md(9f9a6e04):技术 6 章(一句话/三支柱/metis 对照/架构含边界如实报/部署/代号定案)+商业 4 章+组织收敛表;验收四条全过(证据三层标注/数字溯源到 CASEBOOK·判据档·report/三支柱各≥1 实测锚/负结果与缺陷照报);骨架正本保留为源档
+- 架构主线 M3(装订前置件)+白天主件双清
+- M1:+1(创新模型=白皮书级对外资产;判分器品类锚 judgment-native 成文)
+
+### S93 [ORGF-650c8607f] flywheel
+flywheel 档案 loop_night_R85_20261005.md
+# LOOP 值守轮 R85 留痕 2026-10-05 深夜
+
+## ①信箱
+- #9805 四验请求(f141-f145@245c56b,自报 pass3/fail2):ack→四验 5/5 PASS→gates 回填 5/5 落库→回执 SENT 9807+409→done(SLA 即时)
+- 两夜批累计 f116-f145 共 30 单四验全 PASS,B 线 SLA 两战均死线前 11h+ 回
+
+## ②实例:GPU 0 合法空闲;磁盘 2.5G 稳
+
+## ③待下轮(连续件)
+- render_report 通道扩展(UMI/G1-full verdict 入计量单效用维)
+- 矩阵 v0.2+周报(10/6 v2 门禁首日)
+
+## 纪律自查:不代改 ✓/实例无合法活不硬派 ✓/产出到眼前 ✓(回执 SENT)
+
+### S94 [ORGH-a971929a7] commits_r5
+commit 1a13a917c525 2026-08-22
+feat(dogfood-bridge): 全框云 compass MCP 接线就绪 + 跨框 broadcast
+- 四框 .mcp.json 统一 ops/mcp_stdio_to_cloud.py + 9877 隧道(每框独立 token+agent_type,不入库)
+- 云端 mint v5_dialog/fde_dialog tokens · compass 框首条云 obs 写入+独立读回实证
+- 隧道登录自启保活(Startup vbs)· done_when 差三框各一次 ingest
+
+Generated with [Claude Code](https://claude.ai/code)
+via [Happy](https://happy.engineering)
+
+Co-Authored-By: Claude <noreply@anthropi
+
+### S95 [ORGH-fe9cbb592] commits_r5
+工具决策记录 e1_failure_attribution.py
+E1 检索调优第一刀: A+ 查询失败样例归因(R436 · 工作集 A_plus_queries.json)。
+
+口径与 eval.py 完全一致(bge-m3 CLS 池化+normalize+MAXLEN 512+parse_md 同款)。
+输出: R@1/R@5/MRR 对齐预注册 + 逐条失败明细(gold rank/sim + top1 信息 + 查询特征)。
+
+### S96 [ORGG-6ec386a0b] grain_r4
+判读档判例 2026-08-15-compass-dogfood-mvp-rescue-design · 1. Decision
+## 1. Decision
+
+Compass will stop expanding protocols and first ship one locally usable learning
+loop. The product claim is deliberately narrow:
+
+> A bounded agent action produces independently verified evidence, becomes a
+> candidate ExperiencePacket, is applied to a comparable unseen action, and
+> Compass shows whether the candidate helped. A non-posi
+
+### S97 [ORGH-476723974] commits_r5
+commit 2fb66cc96350 2026-07-17
+fix(bmb): 提交前对照买方文档全面审查 + 修正 5 处(正式交付就绪)
+对照《BioMysteryBench 数据要求【外部】》+ qes1 样例逐条审查,修:
+- F1 问题去具体工具产品名(VEP/ClinVar/BLAST)→ 用工具类别措辞,保'模型自主选工具链'难度,合买方风格
+- F2 VCF 变异 18→30 消'难度过低'退回风险(远程盲解 60 次交互/唯一=1 确认)
+- F3 allowed_domains 补全 14 白名单(对齐 qes1)
+- F4 答案格式统一 GENE|Condition
+- F5 data zip 改纯数据(去 README,对齐 qes1)
+- 全部复验:合并 3 题 0 REJECT/0 WARN;#1/#2 本地 QC 致病唯一=1;#1 远程盲解 60 交互
+- DELIVERY_NOTES 加逐条对
+
+### S98 [ORGQ-R318] gate_passed
+### R318 · 2026-10-08 凌晨(部署窗阻断解法:dedup 索引方案+153 组定性)
+- **10502 阻断**(对冲不删行→唯一索引 974 组仍违规)→**第四种方案 a+ 双腿标记**(10507):apply 事务内被冲正行同标 .dedup(元数据可逆/凭证保全/执行器仅 UPDATE 加一列)+部分唯一索引(排 hr/stake/.dedup 四谓词);apply 后违规组期望 0;(b) 单独窗多余/(c) 删行永不维持。
+- **10505 定性[实测]**:残留=prime-001 737+v5 85+kairos 等 152(同 agent 三连发真实重复,样本 12/12)——**全在 974 冲正清单内**,无第三类新增;三假说裁决=归并对齐✓+真实重复✓(但非增量)+hr 豁免独立。
+- 10503 迁移窗三件办结 ack;bounty_settlement 唯一路径兑现。
+
+### S99 [ORGQ-R337] gate_passed
+### R337 · 2026-10-08 早(主件轮:语料第四源外联档案——1834→1846,2000 目标近)
+- **第四源开采✅[实测]**:outreach/letters 全量外联档案(74 候选:L0 19/L1 1)→judge(52 pass)→**12 条过门入池**(承诺-兑现/勘误采纳类判例);语料 **1834→1846**(2000 目标差 154,61.5%/3000);仪表同步刷新。
+- **自产源近枯竭注记**:四源(queue/memory/函件/docs/外联)已全开采,剩余 154 缺口=开业外部单为主(供给结构与 v1 判据预告预判一致——开业=燃料闸门);v5 适配器认领位为最后一笔自产量。
+
+### S100 [ORGG-a80ce821d] grain_r4
+判读档判例 WIRING_PLAN_20261004 · L3 · E1 判读线(platform → compass 判读 → 语料)【死线 10/5 13:16】
+## L3 · E1 判读线(platform → compass 判读 → 语料)【死线 10/5 13:16】
+
+- **接口**:platform 任务市场(席位已领 #2545,材料未发)
+- **触发**:材料到(信箱/A100)
+- **步骤**:①材料 sha16 锚定存档②按包判据独立盲判(不与 prime 互通)③判读器出 v2 verdict④死线前交付⑤判读判定转语料(verdict_to_samples 投 inbox)
+- **验收**:死线前交付+65NAU 结算+语料增量
+- **风险**:材料 10/4 仍未到→回函 platform 请发包(留痕)
+
