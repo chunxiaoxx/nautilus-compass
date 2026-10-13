@@ -19,6 +19,7 @@ from pathlib import Path
 PROVIDERS = {
     "minimax": ("https://api.minimaxi.com/v1/chat/completions", "MiniMax-M3", "MINIMAX"),
     "glm": ("https://open.bigmodel.cn/api/paas/v4/chat/completions", "glm-4.5-air", "GLM_API_KEY"),
+    "relay": ("https://api.chunxiao.wang/v1/chat/completions", "glm-5.3", "RELAY_API_KEY"),
 }
 TMPL = """You are a verification judge. Decide whether the following
 organization decision-and-outcome record constitutes a VALID reusable
@@ -48,7 +49,8 @@ def load_key(provider="minimax"):
     env_name = PROVIDERS[provider][2]
     for cand in [os.environ.get(env_name),
                  _from_env_file(os.path.expanduser(f"~/.claude/.cache/{env_name.lower()}.env"), env_name),
-                 _from_env_file(os.path.expanduser("~/nautilus-v5/.env"), env_name)]:
+                 _from_env_file(os.path.expanduser("~/nautilus-v5/.env"), env_name),
+                 _from_env_file(os.path.expanduser("~/venture_daily_report/.env"), env_name)]:
         if cand:
             return cand
     raise SystemExit(f"{env_name} not found")
