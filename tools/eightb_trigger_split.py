@@ -67,7 +67,8 @@ def main() -> int:
                    ("queue_r3", "fuel_verdicts_queue_r3.jsonl"),
                    ("memory_r3", "fuel_verdicts_memory_r3.jsonl"),
                    ("flywheel_r3", "fuel_verdicts_flywheel_r3.jsonl"),
-                   ("grain_r4", "fuel_verdicts_grain_r4.jsonl")]:
+                   ("grain_r4", "fuel_verdicts_grain_r4.jsonl"),
+                   ("commits_r5", "fuel_verdicts_commits_r5.jsonl")]:
         rows = gate_rows(f)
         if rows:
             sources[f"org_fuel:{tag}"] = rows
@@ -113,8 +114,21 @@ def main() -> int:
             n_self += 1
         if label not in LABELS.values():
             continue
+        # R533 空输入修复:org_fuel 系 verdicts 行无 content 字段(只有 situation),
+        # delta_0003/4/5 内容在 artifact_ref,delta_0001 为聚合数值行——分级兜底,
+        # 杜绝"空输入+标签"进训练(审计 R532 发现 28.9% 空输入后的根修)
+        art = e.get("artifact") or {}
+        has_text = any(isinstance(art.get(k), str) and art[k].strip()
+                       for k in ("question", "response", "content", "model_answer",
+                                 "official_truth", "answer_gold", "reason", "rationale"))
+        if not has_text:
+            fill = (e.get("content") or e.get("situation")
+                    or (art.get("artifact_ref") if isinstance(art.get("artifact_ref"), str) else "")
+                    or json.dumps({k: v for k, v in art.items() if not isinstance(v, (dict, list))},
+                                  ensure_ascii=False))
+            art = {"content": (fill or "").strip()}
         rows.append({"id": q, "criteria_ref": e.get("criteria_ref", ""),
-                     "artifact": e.get("artifact") or {"content": e.get("content", "")},
+                     "artifact": art,
                      "truth_label": label, "_src": src})
     print(f"[OK] trainable rows={len(rows)} (self_labeled={n_self})")
 
@@ -136,7 +150,7 @@ def main() -> int:
              "seed": SEED, "ts": "2026-10-13"}
     assert audit["qid_intersection"] == 0
 
-    out = ROOT / "verdict_corpus/eightb_trigger"
+    out = ROOT / "verdict_corpus/orgfuel_v2"  # R533: v1(2843 含空输入)为 8B/1.7B-v2 对拍历史数据集保留不动;v2=空输入修复+对齐 manifest 最新源
     out.mkdir(parents=True, exist_ok=True)
     for name, data in [("split_train.jsonl", train), ("split_dev.jsonl", holdout)]:
         (out / name).write_text(

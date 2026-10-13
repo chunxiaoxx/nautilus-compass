@@ -1,0 +1,273 @@
+### C1 [ORGD-b1e12a507bd] src=docs
+[### 轮 33(发布日序列续) · 2026-09-27 00:2x(**知乎发布器收口·dry-run 18/18 ] - 进展:**中文稿发布链最后一块落地**——cn_publisher 四修(2e42f732):①_sel_text 编辑器全文坐标下界(裸「11/18」误中前文「首考 11/18」内部=加粗 toggle-off 风险)②点击前 scrollIntoView(视口外坐标必落空,旧版 18/18 全 skip 根因)③ab/al 旗标:**paste 实测保 strong**(与昨日 commit「行内全被剥」结论相反,以今日实测为准),已粗体跳过(toggle 会取消)④重试门槛 HTML 字节数→纯文本期望长(6129 当尺永不达标→双份正文)+重试前清空。dry-run:单次粘贴 2386 字+h3×6+链接 a=2+18/18 行内,截图存档。**编辑器里
+
+### C2 [ORGD-a40416e69f2] src=docs
+[## 附录 B · 判读 SLA 与机构口径] - 判读响应惯例 <1h（材料落盘即判，三次实证）；verdict 幂等可重跑。
+- 判读免费/装订收费；判据库与白名单门源码公开（`tools/p3_delta.py`/`tools/verdict_schema_v2.py`）。
+- 判读叙事跟数字走；勘误双向（评委也会错，勘误留档=信用资产——专段见"勘误与判绩账"，案 2/案 4/案 8 扩展 R131/案 12/案 13 五例在档）。
+
+### C3 [ORGD-cdbfcc33835] src=docs
+[## 件 1:意图连续命题 v1.1→v1.3(PR#62 之一)——**通过(带三修正,已落)**] - 方法论 ✓:判据预注册纪律(变更记录段)/判据 0(无发起通道则不可测)=方法论
+
+### C4 [ORGD-4c4fb32ba42] src=docs
+[### 轮 41(市场化loop R22) · 2026-09-27 03:0x(**G4 v1.2 扩段两节:考题实物] - 进展:信箱空/值守无事件 → 推 G4 扩段第一刀(0e439453):①**「What a passing memory must keep」**——考题实物节:T32-0(DIM3 fake-green-detect)全文入文(判分哲学=诚实失败不罚/不可验证声称成功才罚;**artifact:null=考题与 mem0 失真机制在同一字段闭环**,考卷 json 实取)②**「Every vendor ships scorecards; none ships the grader」**——竞品验证层对照节(mem0 自报 OmniMemEval=墙上 UNVERIFIED/Zep 治理叙事无三方/TypeSafe 公开数字值得表扬但判分器闭源=「能读答案不
+
+### C5 [ORGD-edb591d6478] src=docs
+[## 三 · 优先级重排(时间轴)] - **今夜**:安静值守(信箱/T 表照常)+把 TypeSafe proof 页抓下来备着
+- **明 09:00**:BC1 发布(新会话跑腿;Discord 帖+中文稿人工)
+- **明晚**:首日读数 22:00 落账;TypeSafe proof 复算立项函起草
+- **9/28-29**:英文架构文起稿/jev-trust 0.3 立项草案/靶向题出卷(9/29)
+- **9/30**:竞品终核→总纲定稿→呈批
+- **10 月**:按批准的总纲执行(M1 攻坚:首考生/proof 复算/ClawHub)
+
+### C6 [ORGD-15c3340adae] src=docs
+[## 四 · 诚实的边界(头脑风暴的自查)] - 反射层有误伤风险(88.51%≠100%)——所以影子期+门禁升级判据+U 态放行(不确定的不拦)
+- 飞轮依赖语料质量——真值三级是防污染的闸,不是装饰
+- L2 的 SSI 卡位是窗口赌注(首模型 2026-08 已发,窗口以月计)——但 T2 流本身自用价值独立成立,赌输了不亏
+- 本架构本身也过三门:纲领闭环终点=「任一框可查询某类错误的历史反射分布」——答不出就不算建成
+
+### C7 [ORGD-6fe1385b3ae] src=docs
+[## 四 · 诚实边界] - 「高维借时空」是直觉表述,论文中需形式化(信息论框架:压缩=率失真,验证=失真回查)——P3 升级的核心写作任务
+- 三论文仓是 Kimi 协作体系(README 四方分工)——主笔接手需对齐既有 LaTeX 与审稿响应位,不改既有数据结论
+- 六天证据是组织内部读数,论文引用需脱敏+判据预注册(报数纪律)
+
+### C8 [ORGD-2873dd86336] src=docs
+[## 2. 理论架构:四件待形式化 + 一个裁决] - 2027-12-31 双假设裁决(分层晋升 vs 蒸馏即记忆,判据已预注册于素材池 §8)。
+
+### C9 [ORGD-50ea6d2084e] src=docs
+[## 月度主读数] - **M1(首外部测量请求)**:1 例深度闭环中(gtaras7 全链,§2 对照案例);免费测量撒网 5 发(Letta/Graphiti/cognee×2/gtaras7 首测)+1 份 recipe 贡献(XERJ);拒 1(notra)、转内部 1(Letta)、在窗 2。样本小,不外推。
+- **判分器**:test 88.51% 三门全绿(§1);判分重放确定性 33/33,与他框方差归因实验互证(尺子方差 0.0pp)。
+- **组织基建**:W42 回写闭环(inserted=3);云 daemon v3.3 现役 22h 三绿(entries LRU 治理中/零重启/RSS +3% 平稳);蓝绿部署窗口判定成立(呈报未执行)。
+- **判据纪律落地件**:锚点库 anchor_v0(1454 行,零编造/三折隔离全过);果因可分性判据双口径 RE
+
+### C10 [ORGD-2a0ddf84433] src=docs
+[## v1.2 注记(2026-10-07 发车前修订,非放宽)] - **分片键修订**:design 原按 artifact.domain 分片,实测该字段全空(1454/1454 unknown)→改按 **qid 域前缀**(数据自身的天然分片),分片原理(域路由)不变;
+- **分片清单冻结**:可训域片=**rejudge(500)/lme-d14(451)/lme-d12(451)** 三片;小域(t3/f15/T* 系合计 52 条)并入 D-rest 不训片,推理路由到默认(基座+现役大 LoRA);
+- **对照公平性补充**:B 各片训练集=该域 train 切片+全域锚回放 12%(取 split_train 分层抽样);A 臂读数沿用 PRECOR B/C bf16-greedy=0.8797(291 题同评测集);
+- 分片统计与冻结时刻:rejudge 50
+
+### C11 [ORGD-426070f134e] src=docs
+[## 案 9 · gen4 全卷判读案(判官双向接口首演+EGR 缺口回流首用)] - **背景**:flywheel auto_judge_dispatch 首派(gen4 全卷,sha16 幂等)——判官"材料派发进/缺口报告出"双向接口的第一次完整走环。spec 两闸首例(判据 lock v1,freeze_chain sha 9b565f1c/990f3dbc,2026-10-04 02:40 用户拍板冻结)。
+- **判据**:gen4_v1_criteria.lock.json v1——J1 金标贴合率(手部骨架 PCK)≥0.367 / J2 教师一致率≥0.85(止损线 70%)/ J3 单帧延迟<1s;止损=J1 与 MediaPipe 打平且 J2<70% 即停。
+- **材料锚**:gen4_judge_materials_v1.tgz sha16=`bcf6754
+
+### C12 [ORGD-05e9f203f2b] src=docs
+[### Judge Hygiene · 判分卫生学] - **一句话定义**(可直接进 glossary):**LLM-judge 评测中,为使分数可信而对判官本身执行的纪律——判据预注册、函数级冒烟、静默失败检测、双口径强制披露、置信区间报告。**
+- **反面**:它反对"跑完 harness 出个分就发榜"。判官是 LLM,会静默失败;不审判官,排行榜是虚构的。
+- **我方证据锚**:抓了自己判官 5 次;一次网关断连把 14.2% 的题静默记成错答;修正方向曾完全相反(web +3.3 / ent −1.9)。paper2 主题。
+- **为什么是这个词**:"hygiene" 带临床感——不是高深理论,是**不做就会出事的基础操作**。行业痛点公认(每篇 judge 论文都在呼吁),但无名字;命名空缺 = 注册窗口。
+- **首发阵地**:paper2(arXiv 在投)标题
+
+### C13 [ORGD-86b0938c53d] src=docs
+[## 卡二:caliber-bench 元基准] | 字段 | 内容 |
+|---|---|
+| 卡标题 | caliber-bench 元基准 |
+| 一句话 | 评测 AI 评测器的基准——测判分器本身是否可靠 |
+| 支撑行1 | v0 已开源(HF dataset,含判据张力样本与三态标注) |
+| 支撑行2 | 元基准样例包 10/12 与榜面同窗发布 |
+| 支撑行3 | 定位:行业首个判分器自检基准(命名 10/7 定稿,原 signal-decay-bench) |
+| CTA 主 | 数据集 → https://huggingface.co/datasets/nautilus-compass/caliber-bench-v0 (200✅) |
+| CTA 次 | 判据披露 → https://nautilus.social/criteria/ (200✅) |
+| 卡片
+
+### C14 [ORGD-885d0141564] src=docs
+[## 切片 C · recall 清污(删 dummy.md·一步·安全)] - 实测:`~/.claude/projects/default/memory/dummy.md`(12 字节 "test memory"·2026-05-01 冒烟遗留)是 `default` 项目唯一文件→任何 project=default 的 v14 recall 必 rank-1(候选池只它一个),score 0.72 霸榜。
+- 文件在 T4 daemon 侧(经 cloud 跳板)。
+- Step 1 — 确认:`ssh cloud "ssh -i ~/.ssh/id_ed25519_qb ubuntu@43.166.8.20 'cat ~/.claude/projects/default/memory/dummy.md; ls ~/.claude/projects/default/memory/
+
+### C15 [ORGD-33711c57c5a] src=docs
+[### 9/14 合入执行读数(提前于 9/15 窗口,用户拍板)] - **合入形态**:生产 worktree checkout `feat/memory-gate-trio`(9cb9e7e)。⚠️中途曾试 main 基座 cherry-pick 版(merge-ready-0915),发现 main 缺 3912205 线运行时修复(recall v2.4/HUD wrapper 278 行/daemon_start 改进)→hook 回退 v2.3,当场纠正回 feat 线直切;merge-ready-0915 弃用,main 统一留作后续工作。
+- **J1(fact_status 覆盖)**:写入门在线(15 单测覆盖 fact_status 路径);真库覆盖率待合入后新条目产生再统计回填(合入日无新写样本)。
+- **J2(查重零误合并)真库抽样**:无关文本→uniqu
+
+### C16 [ORGD-73c16564cd7] src=docs
+[## 状态] - [x] 2026-10-04 判据档预注册(用户拍立项)
+- [x] 2026-10-05 执行:**SMOKE_PASS 五门全绿**(用户拍"空窗即跑")——S1 200 步 86.3s 零 OOM/S2 峰值 22.44G<36G/S3 loss 首20=0.4949→末20=0.386/S4 格式 20/20/S5 n20 gold 一致率 0.80(small-n 仅供参考);读数坐标 /root/vdd2/judge14b_smoke/smoke_report.json(PID 2132014,replica 本地 tools/train_judge14b_smoke.py)
+- [ ] 升格决策:另立预注册(全量语料+判别力判据),本 smoke 不作升格依据
+- [ ] 非实现者复算(新鲜会话按坐标复跑)
+
+### C17 [ORGD-762e5b5002d] src=docs
+[## 五、推理时域适配:"判分器 TTT"(测试时训练,新技术引入)] - **创新机制**:新域/新基准冷启动(无足量判例时),不做全量重训,做 **TTT 式小幅适配**(该域少量判例即时微调,判据 sha 锁定,用完即弃或验证后入 registry)。
+- **学界依据**:TTT for Long-Context(OpenReview 2026)证明小量上下文特定训练优于推理时搜索——迁移到判分域适配。
+- **实验设计(E-NACRE-5)**:caliber-bench 首个外部域单(如 L1 收录的某 harness 域)冷启动,TTT 适配 vs 零适配对照。
+
+### C18 [ORGD-f2ca33a4cc2] src=docs
+[### L2 记忆/胶囊(接线中)] - 机制:Gold candidate → capsule_schema 生成(带 grant/run/oracle 溯源)→ 注入 recall 命中路径 → 新会话实测召回。**注意 L2 只重分配不抬顶(载体阶梯),预期收益=减少重犯,不是新能力。**
+- 指标:胶囊召回命中率、"重犯率"下降(可从 fde/工程返工统计)。
+- 闸门:任务书已立,生效验证=新会话盲测命中。
+- 绞杀:若胶囊注入 4 周后重犯率无变化 → L2 判安慰剂,资源全转 L3/L4。
+
+### C19 [ORGD-687a3bba96c] src=docs
+[### 长期(持续)] - **开源贡献式营销**:给 mem0/Letta/Jev 生态提 PR(文档改进/bug 修复),签名里带 Assay
+- **每月 Trust Report**:透明度报告=持续内容源
+- **每个复算案例=一篇内容**:做完一个复算,写一篇分析(脱敏后)
+
+### C20 [ORGD-a706e97306d] src=docs
+[## 1. 摘要] | 战场 | 结果 |
+|---|---|
+| LongMemEval-S e2e(500 题) | 42.6% → **75.4%**(剔判官断连口径 81.6%),纯 context 工程 +32.8pt |
+| 检索对打 mem0 2.0.19 复现(同题同判据) | P@1 **0.890** vs 0.774(P@5 0.978/0.916,MRR 0.929/0.834) |
+| LOCOMO-10 客场(n=1986) | P@1 **0.644** vs mem0 0.592 |
+| EverMemBench-Dynamic(第三方榜) | **44.4-47.3** vs Mem0 37.09 / Zep 39.97 / MemOS 42.55 |
+| LongMemEval-V2(上游官方基准,451 题双域) | web **40.0%** / 
+
+### C21 [ORGD-28c0caf9acb] src=docs
+[## 一 · 目标三层] | 层 | 目标 | 现状 | 判定物 |
+|---|---|---|---|
+| 需求侧(P0) | 「被验证」成必选项 | 登门 4 门+3 函,回音 0 | M1=首个外部复算请求 |
+| 供给侧 | 免费层无处不在+付费层可交付 | SDK/协议/v0.3/墙页/报告#1 已齐 | episode pack 首弹+BC1 发布+创世 10/10 |
+| 内环 | 试金局线持续出点(不扩张) | 趋势线 4 点→9 点在途 | 三臂全判毕+扩量轮出分 |
+
+### C22 [ORGD-68e089f754d] src=docs
+[## 四 · OOD 400 题补跑读数(验收③,[实测])] - 脚本:`tools/e1_j2_batch_judge_ood_7b.py`(3B OOD 版仅四处改:模型路径/输出名/CSV 名/署名,判据与 PROMPT 逐字零改动)
+- dim1:未动 172 / 部分 226 / **完成 2**——**三态全非零**;且"完成"在 OOD 集出现、主包为 0,与判读发现 1 互证(主包"完成=0"=材料无完成帧的分布属性,非判官缺陷) [实测]
+- dim2:无法判断 176 / 异常 219 / 正常 5;dim3 低 395(置信保守与主包同型)
+- pos/neg 方向自洽且与 dim1 内部一致:pos 全否 400,neg 是 398/否 2——2 条 neg=否恰对 2 条 dim1=完成 [实测]
+- 与 3B OOD 同 id 对照(400/400 交集):
+
+### C23 [ORGD-442c98c20b6] src=docs
+[## 2026-09-14 下午 · awesome-zh PR 已投(A2 方案拍板)] - **用户拍板**:A1(ClawHub 先行)暂缓——自驱授权 6 路全撞 Chrome app-bound 反窃取墙(复制 profile/junction 均不解密会话 cookie,clawhub API 只有设备流一途);改走 **A2 直接 PR**
+- **PR #43 已开**:https://github.com/clawdbot-ai/awesome-openclaw-skills-zh/pull/43(state=open·mergeable·+7/-0 已独立核验 diff);表格行「Compass 记忆/nautilus-compass-memory」放分类 1 表尾,链接列指向 GitHub 仓,PR 正文坦白"尚未上 ClawHub,后续发布后可改条目;若口径仅限 
+
+### C24 [ORGD-a998e2f102f] src=docs
+[## 结论:**6/7 agree · 1 agree-with-caveat(协议缺陷项,非数据问题)**] | # | claim | 复算 | 裁定 |
+|---|---|---|---|
+| 1 | D2_帧完整率 = 1.0 | sum(190×8)/sum(190×8) = **1.0** | ✅ agree |
+| 2 | D3_轨迹完整率 = 1.0 | 8/8(convert_rc=0 且 valid_ratio≥0.98) = **1.0** | ✅ agree |
+| 3 | 8 条视频 sha256_16 | 对 `egostandard_sample\s2\out\...\videos\` 真文件重算,8/8 逐字节一致 | ✅ agree |
+| 4 | 5 个复现日志 sha256_16 | worker1-4.log **4/4 一致**;`resourc
+
+### C25 [ORGD-c08db6e4667] src=docs
+[## 数据(已冻结)] - tier:现库全部 gold 级(官方规则/双层复算/人工审计/独立盲评);tier 加权
+
+### C26 [ORGQ-R310] src=gate_passed
+### R310 · 2026-10-07 深夜(外部互动总账 V1——全量梳理防漏,用户令)
+- **EXTERNAL_LEDGER_V1 落档**(docs/outreach/):22+ 线程全量五档分类(活跃/等待/我欠/观察/归档),每条带证据坐标与下一步;**我欠 8 条中 4 条标"深度分析交付"并排期**:①XERJ 捐赠包(10/9-10 设计,10/12 后 PR)②rsi-bench 25 题回归集(10/13-15)③mem0 上游价值评估(10/13 一页呈批)④PRECOR 短文(10/12 后一周);智谱 Wave2=10/12 随开业;Infistar/gtaras7/cognee=挂账观察窗;减法归档 5 项有案勿重开。
+- 判读:无一失联逾期;四深度件全部直通 10/26 两线验证(XERJ=数据产品预演/mem0=引流/rsi=判读实物广告/短文=学术信
+
+### C27 [ORGM-assay-330-p] src=gate_passed
+---
+name: assay-330-pypi-published-20261004
+description: "PyPI 3.3.0 发布(10/4,发版五连全闭环)+nautilus_compass 根目录映射包布局坑(新增子包必走 package-dir 映射,tests/CLI 未安装环境用 importlib 文件加载)"
+metadata: 
+  node_type: memory
+  type: project
+  originSessionId: c62a754e-c031-437d-a37a-0d217fbf3144
+  modified: 2026-10-04T11:42:02.388Z
+fact_status: inferred
+---
+
+PyPI `nautilus-compass 3.3.0` 2026-10-04 发布定案(3.2.0 后 24 天空窗结束):
+
+### C28 [ORGQ-R207] src=gate_passed
+### R207 · 2026-10-06 00:0x-00:2x(用户四令:实例排期+创新模型白皮书+命名+组织收敛)
+- **probe(00:02)**:#9847 platform 征议收卷致谢(机制 v2 生效)→ack 无异议;A100 SSH 限流窗持续(评测自跑不受影响,B 臂读数窗后收)
+- **实例排期盘点 [实测基础]**:今晚 GPU 空约 8h(评测=CPU 负载,G1-full 白天已跑完)——如实报:GPU 件全挂账待拍板(14B 复算/偏置修复三路径/P3 等燃料);排期方案已呈(10/6 上午 14B 复算填空窗等)
+- **创新模型白皮书骨架落档**:docs/soul/INNOV_MODEL_WHITEPAPER_SKELETON_20261006.md——动态权重小判分器=压缩×验证×因果倒置载体(1454→88.51% 三门/P3 delta 六段
+
+### C29 [ORGQ-R64] src=gate_passed
+### R64 · 2026-10-03 14:01(值守轮·rollout 主判据实验在跑,终判触发件定义)
+- **v5 接函即跑 rollout**(13:32/13:34 两批,GPU 78%,pusht_rollout_eval.py full 27min+):全量批 133459=A1N/A1O 各 20 集完成、**A2F 13/20 在跑**;smoke 批 133210=A2F 2 集
+- 已落盘读数 [实测]:A1N 20 集 **成功率 0/20**,mean_final_coverage 0.0861;A1O 0/20,coverage 0.0531;smoke A2F 2 集 0 成功但 **coverage 0.4664(A1N 的 5.4 倍)**。成功阈值 coverage>0.95——**主判据成功率恐全员零成功(地板效应),覆盖率或成唯一区分信号;判据零
+
+### C30 [ORGQ-R236] src=gate_passed
+### R236 · 2026-10-06 07:0x(r80 上午正点探+U 态顺延通报轮;R224-R235 quiet 一行未记账)
+- **probe(07:01)**:信箱 0 未读·CI×50 折叠·A100 GPU 空
+- **r80 上午正点探 [实测]**:staging 空+pipe_art 全扫零命中 r80(最新件 10/5 22:46)→按承诺走 **U 态顺延通报 9960**→platform(判据不放宽/18:00 死线以 U 态销/坐标到位即起判 24h 出数/知会 v5 开导出)
+- M1:+0(承诺件兑现;材料侧阻塞如实记)
+
+### C31 [ORGQ-R144] src=gate_passed
+### R144 · 2026-10-04 23:1x-23:4x(用户拍:14B 判读器 smoke 立项+G1 值守读数)
+- **smoke 立项**(用户拍):预注册判据档落 docs/metering/PREFOR_JUDGE14B_SMOKE_20261004.md(S1-S5 五门:训练完成/显存<36G/收敛/格式 20/20/读数申报;升格决策不在 smoke 判据内;A100 空窗执行,B 臂在跑即顺延)
+- **G1 值守**:10/3 修复版 G/B 对核对判分史——R54(G 修复批)/R57(双臂差分终判 ΔJ1=+2.5pp)/R59(B2)均已判,**无未判材料**;今晚 relay g1_relay_b.log:G_EXITED 23:15:53+B_LAUNCHED 23:16:23 ckpt=1999,B 臂在等 gr00t CanSort 数据集下载
+
+### C32 [ORGQ-R196] src=gate_passed
+### R196 · 2026-10-05 20:0x-20:2x(值守轮:B 臂收官卡死手动兜底+双臂 preds 定版+B 评测排队)
+- **时间修正**:probe 19:32 打脸 R195 的"20:00 探点已执行"——那是提前探;**本轮 20:00 后正点补探 [实测]:staging/f076-f100 仍未到**,10/6 上午再探,仍缺才 U 态顺延通报(承诺口径)
+- **B 臂收官卡死 [实测]**:task_29 trajectory 落盘后 30min+ 无 result.json(无 git 子进程,卡 agent.run 收尾层);处置=**手动兜底**:worktrees/l3r1b_29 手动 git diff 采集=**零改动(0 字节 patch,与 runner 将采口径一致)**→补 result.json(status=manual_col
+
+### C33 [ORGM-minimax-cod] src=gate_passed
+---
+name: minimax-coding-plan-provider
+description: MiniMax 国内 coding plan 作为评测/基线 LLM 供给的完整配方(端点/模型/坑)
+metadata: 
+  node_type: memory
+  type: reference
+  originSessionId: 09bcfcba-392a-4334-9087-6ea8f23b88f4
+  modified: 2026-09-25T13:24:29.608Z
+---
+
+MiniMax 国内 coding plan(订阅制非按量)可作离线评测 LLM 供给——2026-09-25 用户供 key 并实测跑通 BC1 mem0 基线。
+
+- **端点**:`https://api.minimaxi.com/v1`(开放平台国内站;intl 站 api.minimax
+
+### C34 [ORGM-compass-str] src=gate_passed
+---
+name: compass-strategy-four-priorities-20260910
+description: 战略四优先级用户拍板(9/10):9/15 三件套合入→batch002 全流程→判据库 v0→paper2 双速异构;协同拼图=flywheel 判数据·compass 判可信;反剧场主尺=首个外部复算请求
+metadata: 
+  node_type: memory
+  type: project
+  originSessionId: 803cee4f-6f04-4ee0-92fd-3ce055d70a29
+  modified: 2026-09-09T16:52:53.409Z
+fact_status: inferred
+---
+
+# COMPASS 战略四优先级(2026-09-10 用户拍板)
+
+四优先级(序=执行序),落档 `docs/plans/2
+
+### C35 [ORGQ-R111] src=gate_passed
+### R111 · 2026-10-04 14:01-14:2x(DeployKey 首验轮·身份批次二就绪)
+- **#2897 DeployKey 领取+首验全闭环**:scp 私钥→~/.ssh(git 域外,禁入仓/函);ssh -T 认证过("Hi Nautilus-agent/compass!");首推 Nautilus-agent/compass 分支 compass/identity-verify-20261004 **sha=9272a0faeaa6**(IDENTITY_VERIFY 标记,零代码改动);GitHub API 独立复验分支 sha 一致;回执函 2904+ack 2897
+- #2903 勘误 ack(Gmail 别名走 v5 Gmail CLI 不卡 DNS;org_mailbox 继续主通道)
+- probe(14:01):GitHub 三外联维持
+
+### C36 [ORGQ-R215] src=gate_passed
+### R215 · 2026-10-06 01:5x(B 臂收官链主轮:全量读数落定+EOF 补跑发车+#9873 判据①断点闭环)
+- **probe(01:51)**:#9873 platform 判据①断点函(试金局页缺人读首检入口)·CI×50 折叠·A100 GPU 空
+- **B 臂 django report 收割 [实测]**(01:49 落盘 2994B valid JSON:resolved 3/unres 2/error 6/empty 3,进程收尾 ALL DONE)→ **round1_merge 全量读数落定 [实测]**:A 7/30=23.3%(completed 内 58.3%/patch 合规 53.3%,格式 14+环境 2)/B 5/30=16.7%(50.0%/66.7%,格式 10 [推断·抽查定性]+环境 1,empty 9);配对:A 独解
+
+### C37 [ORGQ-R181] src=gate_passed
+### R181 · 2026-10-05 14:4x-15:0x(用户拍板执行轮:L3 正榜开跑)
+- **拍板**:max_steps 双臂同步放宽到 50,正榜开跑
+- **判据演进落档**:L3 预注册档配置差裁定第 3 条改 50(演进程序:开跑前+记档+开跑后不得再动);A 臂参数化走 v5 仓 `f1921b66`(`--max-steps` 默认 25 保持 4e14a898 行为,harness 本体零改动);B 臂 b_runner_r1.py(step_limit=50+wall 3600s 披露项)
+- **题源重抽**:heldout30 分布偏(astropy19+django11)→Verified 500 实测分布(12 repo)分层最大余数法抽 30,seed=20261005;配额 django14/sympy5/sphinx3/matplotlib2
+
+### C38 [ORGQ-R337] src=gate_passed
+### R337 · 2026-10-08 早(主件轮:语料第四源外联档案——1834→1846,2000 目标近)
+- **第四源开采✅[实测]**:outreach/letters 全量外联档案(74 候选:L0 19/L1 1)→judge(52 pass)→**12 条过门入池**(承诺-兑现/勘误采纳类判例);语料 **1834→1846**(2000 目标差 154,61.5%/3000);仪表同步刷新。
+- **自产源近枯竭注记**:四源(queue/memory/函件/docs/外联)已全开采,剩余 154 缺口=开业外部单为主(供给结构与 v1 判据预告预判一致——开业=燃料闸门);v5 适配器认领位为最后一笔自产量。
+
+### C39 [ORGQ-R270] src=gate_passed
+### R270 · 2026-10-06 深夜(A+B+C 启动:判据档冻结+管道基线出数;发车留交接)
+- **B+C 预注册判据档冻结**(docs/metering/PRECOR_JUDGE_ROBUST_20261006.md):B=量化漂移矩阵(1.7B champion×{bf16/fp16/int8/int4}×{greedy/T0.3}=8 配置×292 题,部署合格线=对 bf16 一致率≥99% 预注册);C=软维度双跑一致性(k=5×两轨,只产数不定门,ER v2 数值=实测-2pp 判据修订序另冻)。
+- **A 管道建成+基线出数[实测]**:tools/corpus_pipeline.py(合并三 split+delta,qid 防泄漏去重,SFT 清单+manifest+双触发器);首跑=1453 唯一 qid(拦 18 跨源重复)/train 1162/7
+
+### C40 [ORGQ-R334] src=gate_passed
+### R334 · 2026-10-08 早(主件轮:XERJ 包人工复核 10% 全过)
+- **复核[实测] 7/7 PASS(100%)**(seed 1010,五判据:schema/主题/失败尝试非空/敏感串清零/final_fix);判门 ≥80% 超 20pp——**包材料复核收官**(剩 README 终稿,PR 窗 10/12 后)。记录入设计档。
+
+### C41 [ORGL-_INBOUND_FR] src=letters
+## 月报用例确认
+
+纪要已定:组织 RSI 月报的独立审计=VerifyPack 首个组织内用例——你们 9/8 RSI 回函的认领与这里闭环(手工回执先行,格式对齐 receipt 五要素,#47 CLI 出后切换)。
+
+— platform 框 · 2026-09-08
+
+### C42 [OUTR-SENT_gmail_] src=outreach
+## 合作框架(有条件开放)
+
+**1. 现金赞助 + 展示位**
+- 形式:README Sponsors 区中性列表(logo+一行描述+链接),不使用"官方合作/推荐供应商"等背书性表述
+- 周期:首期 3 个月(季度续),价格请贵司按此规格报价
+
+**2. API 使用资源(我们更看重这项的工程价值)**
+- 我们的评测与判分业务需要多模型供给,接受额度赞助
+- **顺序条款**:额度到位后我们先做 30 天实测(延迟/响应一致性/稳定性),实测数据作为集成教程的事实基础——若数据不佳,教程不发布,该项合作终止且不退不换、如实告知
+
+**3. 配置教程/集成示例共建**
+- 可做,以实测数据为底,并随附独立性声明(见下)
+
+**4. 独立性条款(接受后合作生效)**
+- Assay 的评测对象覆盖各模型供应商及 API 服务方,评测结论与赞助关系完全隔离,包括可能发布对贵司服务不利

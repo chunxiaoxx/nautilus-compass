@@ -1,0 +1,12 @@
+{
+ "pool_sha16": "c57e512685df2256",
+ "source_pool_sha16": "2ed369f3ea5756e1",
+ "variant_rows_merged": 451,
+ "pool_n": 3551,
+ "holdout_n": 300,
+ "train_n": 3251,
+ "qid_intersection": 0,
+ "self_labeled_n": 2519,
+ "seed": 20261005,
+ "ts": "2026-10-13"
+}
