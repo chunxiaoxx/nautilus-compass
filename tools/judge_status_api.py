@@ -139,6 +139,12 @@ class H(BaseHTTPRequestHandler):
             self.send_response(200)
             body = json.dumps({"ok": True, "id": cid, **rec},
                               ensure_ascii=False).encode()
+        else:
+            # R538 · 2026-10-14 收编平台代修(11197/11198/11200): id 不在 LEDGER 时
+            # body 未赋值直落 end_headers → UnboundLocalError → 进程断连 → nginx 502
+            self.send_response(404)
+            body = json.dumps({"ok": False, "id": cid, "error": "card not found"},
+                              ensure_ascii=False).encode()
         self.send_header("Content-Type", "application/json")
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Content-Length", str(len(body)))
