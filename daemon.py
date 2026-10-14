@@ -18,6 +18,19 @@ import hashlib
 import hmac
 import json
 import os
+
+# R538 · 2026-10-14 · 唯一配置源:无论哪个拉起源(hook/watchdog/手动/何种解释器)
+# 启动本 daemon,env 统一从 .cache/daemon_env 读取(本地不跑 BGE,嵌入走 A100 隧道)
+try:
+    _cfg_path = Path(__file__).resolve().parent / ".cache" / "daemon_env"
+    if _cfg_path.exists():
+        for _line in _cfg_path.read_text(encoding="utf-8").splitlines():
+            if "=" in _line and not _line.strip().startswith("#"):
+                _k, _v = _line.split("=", 1)
+                os.environ.setdefault(_k.strip(), _v.strip())
+except Exception:
+    pass
+
 import secrets
 
 # v2.0.2 · P6 · BLAS internal thread limit · CRITICAL: must set BEFORE importing
