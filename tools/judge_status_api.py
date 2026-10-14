@@ -69,6 +69,27 @@ LEDGER = {
         "submission": "8b97795ac55b4b5d",
         "result_url": "/leaderboard.html",
     },
+    "nautilus-l1-0007": {
+        "title": "nautilus-judge-action selftest · GitHub Action 自动提单首例(mini-swe-bench-lite l1)",
+        "status": "done",
+        "criteria_sha16": "b81eca8436887785",
+        "verdict": "insufficient_evidence",
+        "steps": [
+            ["2026-10-14T08:45+08", "intake(action self-test 自动提单,workflow_dispatch 38491920964)", "done"],
+            ["2026-10-14T08:45+08", "platform_auto_dispatch(信箱派单制 #10709 首弹)", "done"],
+            ["2026-10-14T12:20+08", "criteria_refer(b81eca8436887785=L3_HARNESS_BOARD_ROUND1,与 #11185 对表口径一致)", "done"],
+            ["2026-10-14T12:25+08", "evidence_audit(action run 日志+submission API+is_smoke 口径核)", "done"],
+            ["2026-10-14T12:30+08", "three_state_judging", "done"],
+            ["2026-10-14T12:32+08", "card_issued", "done"]],
+        "verdict_detail": {
+            "metadata": "[实测] repo=chunxiaoxx/nautilus-judge-action(2026-10-14 新建,GitHub Action 提单器);harness=mini-swe-bench-lite;lane=l1;submission=205df0f1f7244c82;run=38491920964(workflow_dispatch self-test,4m17s)",
+            "evaluation_evidence": "[实测缺失] 评测任务集读数=零;评测产物=零;action 日志自述 smoke submission(is_smoke=true)——但 platform submission API 返回 is_smoke=false(两端口径断链,finding 移交 platform)",
+            "three_state": "insufficient_evidence —— 无可判读评测读数;提单目的是验证 GitHub Action→intake→自动派单→判读岗的自动化闭环(非真实评测需求),与证据状态一致",
+            "disposition": "不予收录(不进名次区/观察区);闭环成果=Action→intake→自动派单→判读全链实测通(受理 10s/自动派单即时/判读岗接单);另得 finding 一枚:is_smoke 字段 action→platform 传递断链(action 发 true/API 存 false),已移交 platform;可携评测产物重提走正常判读",
+        },
+        "submission": "205df0f1f7244c82",
+        "result_url": "/intake.html",
+    },
     "nautilus-l1-0006": {
         "title": "Intake pipeline selftest · compass-pipeline-selftest@v1(开业日演练单)",
         "status": "done",
