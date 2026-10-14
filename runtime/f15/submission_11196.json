@@ -1,0 +1,1 @@
+{"id":"205df0f1f7244c82","harness":"mini-swe-bench-lite","lane":"l1","status":"intake_validated","created_at":"2026-10-14T08:45:15.119532+08:00","sla_deadline":"2026-10-15T08:45:15.123027+08:00","sla_hours_left":19.9,"is_smoke":false,"state_meaning":"受理完成,判读排队中(SLA 计时中)"}

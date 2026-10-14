@@ -1,0 +1,1 @@
+{"id":"1caff8497a95444d","harness":"payment-test-v5@1.0","lane":"l2","status":"intake_validated","created_at":"2026-10-15T00:07:24.449879+08:00","sla_deadline":"2026-10-17T00:07:24.454687+08:00","sla_hours_left":47.0,"is_smoke":false,"state_meaning":"受理完成,判读排队中(SLA 计时中)"}
