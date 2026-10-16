@@ -128,6 +128,7 @@ def _load_feishu_records(app_token, table_id):
     env = os.environ.get("COMPASS_VTF_DIR")
     if env:
         candidates.append(Path(env))
+    candidates += [Path(os.path.expanduser("~/fde-toolbox")), Path.home()]
     candidates.append(_HERE.parent.parent / "vertical-task-factory" / "fde-toolbox")
     for c in candidates:
         fc = c / "feishu_client.py"
