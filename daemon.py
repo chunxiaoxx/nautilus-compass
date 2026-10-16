@@ -27,7 +27,8 @@ try:
         for _line in _cfg_path.read_text(encoding="utf-8").splitlines():
             if "=" in _line and not _line.strip().startswith("#"):
                 _k, _v = _line.split("=", 1)
-                os.environ.setdefault(_k.strip(), _v.strip())
+                # R540 · 文件权威:配置文件覆盖继承 env(防拉起源带死值挡新配置)
+                os.environ[_k.strip()] = _v.strip()
 except Exception:
     pass
 
@@ -881,7 +882,9 @@ def get_memory_entries(mem_dir: Path):
         misses = []
         for e in entries:
             cached = cache.get(e["fullpath"])
-            if cached and cached[0] == e["mtime"]:
+            # R541 · None 污染防护:缓存命中但值为 None(历史 embed 失败 flush 进
+            # pkl)必须视为 miss 重嵌——否则 None 永久驻留,该条目永零召回
+            if cached and cached[0] == e["mtime"] and cached[1] is not None:
                 e["embedding"] = cached[1]
             else:
                 misses.append(e)
