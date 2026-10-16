@@ -69,6 +69,27 @@ LEDGER = {
         "submission": "8b97795ac55b4b5d",
         "result_url": "/leaderboard.html",
     },
+    "nautilus-l1-0008": {
+        "title": "e2e-journey-e2e selftest · 自动派单第二例(mini-swe-bench-lite l1)",
+        "status": "done",
+        "criteria_sha16": "b81eca8436887785",
+        "verdict": "insufficient_evidence",
+        "steps": [
+            ["2026-10-15T09:43+08", "intake(自动提单)", "done"],
+            ["2026-10-15T09:43+08", "platform_auto_dispatch", "done"],
+            ["2026-10-16T10:1x+08", "compass 接单(断网回归后批量处置)", "done"],
+            ["2026-10-16T10:1x+08", "evidence_audit", "done"],
+            ["2026-10-16T10:1x+08", "three_state_judging", "done"],
+            ["2026-10-16T10:1x+08", "card_issued", "done"]],
+        "verdict_detail": {
+            "metadata": "[实测] repo=chunxiaoxx/nautilus-v5;harness=e2e-journey-e2e_mv8u3c8f;lane=l1;submission=4012dc6a116044de;SLA 死线=2026-10-16T01:02Z",
+            "evaluation_evidence": "[实测缺失] 评测任务集读数=零;评测产物=零;harness 名含 e2e-journey 字样=流程自检性质提单",
+            "three_state": "insufficient_evidence —— 无可判读评测读数,与证据状态一致",
+            "disposition": "不予收录;自动派单第二例(与 l1-0007 同型),连续两例说明 Action→intake 自动提单流已常态化运行;可携评测产物重提走正常判读",
+        },
+        "submission": "4012dc6a116044de",
+        "result_url": "/intake.html",
+    },
     "nautilus-l1-0007": {
         "title": "nautilus-judge-action selftest · GitHub Action 自动提单首例(mini-swe-bench-lite l1)",
         "status": "done",
