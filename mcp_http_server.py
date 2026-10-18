@@ -219,6 +219,11 @@ def _check_scope(scopes: frozenset, tool_name: str, arguments: dict) -> str | No
             return None
         if f"write:{project}" in scopes:
             return None
+        # 2026-10-18 - add_worker/long_task 等全局注册类工具无 project 参数,
+        # project 落空串导致任何 token 均 forbidden(确定性 bug,openclaw 报)。
+        # 语义:有任一项目写权的 token 可注册全局 worker/task 注册表。
+        if not project and any(s.startswith("write:") for s in scopes):
+            return None
         return f"token lacks write scope for project '{project}'"
     return None
 
