@@ -6,7 +6,7 @@
 
 - **964d22b6(10/14)**:merged_unique 4002 达标,`sevenb_compare_ready=true`,"8B 重评窗口再开"
 - **423997c0(10/14 同日)**:P2 验收 FAIL(盲评二值 65% < 90% 门),2519 条重判标签**不回训练池**,标签修复线收口
-- 池构成([实测]manifest 2ed369f3):split 系 1454(人工标签,champion 来源)+ delta 62 + org_fuel 系 ~2900(truth_label=NACRE 1.7B 自举,P2/SELFLABEL 双审计判死)
+- 池构成([实测]manifest 2ed369f3):split 系 1454(官方真值基准的本地判定样本,champion 来源;真值 96% 为上游官方 answer_gold+机械复算,勘误档 §五)+ delta 62 + org_fuel 系 ~2900(truth_label=NACRE 1.7B 自举,P2/SELFLABEL 双审计判死)
 - **推论:8B 重评窗口"程序开,实质闭"——现在跑 = 以自举标签为主训练**,与同日收口结论直接冲突。964d22b6 的"下次杠杆=标签质量"在 P2 FAIL 后已无现成解(标签质量线已判死)。
 
 ## 二、背景链(三条负结果,判据档均在案)
@@ -21,7 +21,7 @@ SELFLABEL_AUDIT 处置条款 4(预注册):"8B 第三评/1.7B-v3 重训冻结,直
 
 ### A · SFT 冻结,等外部真评测题(默认态,零成本)
 
-- NACRE 7B/8B SFT 维持准备态;可信燃料=1032/1454 人工标签维持现役 champion(verdict-judge 88.51%/0.9667)
+- NACRE 7B/8B SFT 维持准备态;可信燃料=split 系 1454(官方真值判定样本,勘误档 §五口径)维持现役 champion(verdict-judge 88.51%/0.9667)
 - 自产语料 2970 条归 RAG 检索层(现役在用,有效);glm-5.3 重判 2383 条保留为检索排序弱信号
 - 启动前置=外部真评测题到位(收购/co-build/众包)——与外联主线(矩阵)合流,不单开线
 - 成本:0;风险:NACRE 时间表后置(如实:准备态本就是现状)
