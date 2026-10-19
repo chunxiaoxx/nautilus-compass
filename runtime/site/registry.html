@@ -31,6 +31,10 @@
 <body>
 <header><div class="wrap">
   <h1>Registry 实态 · 判例与语料计数器</h1>
+  <div style="background:#fdf3e7;border:1px solid #e8c99b;border-radius:10px;padding:12px 16px;margin:10px 0 6px;font-size:.9rem">
+    <b style="color:#b45309">⚠️ 2026-10-19 勘误(语义级,数字不改)</b>:本页所计的 ORG-FUEL 自产语料经两轮独立盲评审计,其自动标签不构成有效训练燃料(人机一致率 65%,门 90%;详见 <a href="/errata.html">勘误账本</a>)。
+    <b>「8B 对拍目标 3000 / 触发器」语义自始作废</b>——语料量达标 ≠ 燃料达标,自产工作记录不是"判例",数量棘轮已永久停止。本页数字仅作档案留痕。
+  </div>
   <p class="sub">NACRE 因果倒置柱的公开仪表:数据全部由 <code>tools/corpus_pipeline.py</code> manifest 生成,判据 sha 锚定,每值守轮刷新。</p>
   <p style="color:var(--muted);font-size:.85rem;margin:8px 0 0">
     名词速览:NACRE=本组织判分模型(输出 PASS / FAIL / 判不动 三态,判不动就明说) ·
@@ -63,7 +67,7 @@
     <tr><th>源</th><th>条数</th></tr>
   </table>
   <p style="color:var(--muted);font-size:.85rem;margin:10px 0 0">
-    跨源去重忽略:<code id="m-dups">—</code> 条 · 7B 候语料缺口:<code id="m-rem">—</code>
+    跨源去重忽略:<code id="m-dups">—</code> 条 · <span style="color:#b45309">原"7B 候语料缺口"指标已作废(勘误):<code id="m-rem">—</code></span>
   </p>
 </div></section>
 
@@ -74,7 +78,7 @@
     <tr><td>判例集 CASEBOOK</td><td>v1.4 封版(16 案+勘误 6 例)</td><td><code>@3c0ba2d3</code></td></tr>
     <tr><td>NACRE 判分实例 v1</td><td>88.51% 三态(ECE 0.072)</td><td><code>dbcbab6fd1ff5821</code> · <a href="https://huggingface.co/nautilus-compass/nacre-judge-v1">HF</a></td></tr>
     <tr><td>部署精度纪律</td><td>fp16 1.0000 ✅ · int8 0.9828 ❌ · int4 0.9416 ❌</td><td><a href="https://nautilus.social/criteria/">判据披露</a></td></tr>
-    <tr><td>重训触发器</td><td>train≥1500 候选评估 · ≥3000 触发 8B 对拍(勘误:原记 7B,Qwen3 系无 7B 尺寸,实为 Qwen3-8B)</td><td id="trig" class="goal">自动</td></tr>
+    <tr><td>重训触发器</td><td><b style="color:#b45309">已冻结(2026-10-19 勘误)</b>:自产材料标签盲评 65% FAIL 不回池;NACRE 训练燃料只认人工评测题/外部题。历史口径:train≥1500 候选评估 · ≥3000 触发 8B 对拍(Qwen3-8B)</td><td id="trig" class="goal" style="color:#b45309">冻结</td></tr>
   </table>
 </div></section>
 
@@ -105,8 +109,8 @@ function upd(m){
   set('m-rem', m.sevenb_remaining ?? '—');
   const t=m.merged_unique_by_qid, g=m.sevenb_target||3000;
   document.getElementById('b-total').style.width=Math.min(100,t/g*100)+'%';
-  document.getElementById('m-goal').textContent=`8B 对拍目标 ${g} · 进度 ${Math.round(t/g*100)}%`;
-  document.getElementById('trig').textContent = m.train_count>=3000?'8B 触发!':`train ${m.train_count}/${g}`;
+  document.getElementById('m-goal').textContent=`(勘误:目标已作废)原 8B 对拍目标 ${g} · 档案进度 ${Math.round(t/g*100)}%`;
+  document.getElementById('trig').textContent = '冻结(勘误)';
   const tb=document.getElementById('src-table');
   tb.querySelectorAll('tr:not(:first-child)').forEach(tr=>tr.remove());
   Object.entries(cs).sort((a,b)=>b[1]-a[1]).forEach(([k,v])=>{
