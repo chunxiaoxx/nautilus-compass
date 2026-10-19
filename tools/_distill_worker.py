@@ -1,0 +1,116 @@
+# -*- coding: utf-8 -*-
+"""提炼 worker(后台):transcript jsonl → claude -p 蒸馏 → memory/session_*.md。
+教训吸收:子进程 claude 需清代理+显式模型(bc1-launch-eve);输出必须非空校验(防假绿)。
+"""
+import json
+import os
+import re
+import shutil
+import subprocess
+import sys
+from datetime import datetime
+
+sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+WINDOW_CHARS = 40000          # 送蒸馏的窗口(尾部)
+MAX_FIRST_USER = 1500         # 首条用户消息截断
+TIMEOUT_S = 600
+
+
+def find_claude():
+    """claude CLI 定位:PATH → npm 全局(Windows .cmd 需经 cmd.exe)。"""
+    p = shutil.which("claude")
+    if p:
+        return p
+    cand = os.path.join(os.environ.get("APPDATA", ""), "npm", "claude.cmd")
+    if os.path.isfile(cand):
+        return cand
+    return "claude"
+
+
+def extract(transcript_path):
+    """取首条用户消息 + 尾部窗口的对话文本。"""
+    first_user = ""
+    tail = []
+    total = 0
+    with open(transcript_path, encoding="utf-8", errors="replace") as f:
+        lines = f.readlines()
+    for line in lines:
+        try:
+            j = json.loads(line)
+        except Exception:
+            continue
+        msg = j.get("message") or {}
+        role = msg.get("role") or j.get("type")
+        content = msg.get("content")
+        if role == "user" and not first_user:
+            text = content if isinstance(content, str) else " ".join(
+                c.get("text", "") for c in content if isinstance(c, dict))
+            if text.strip() and "system-reminder" not in text[:100]:
+                first_user = text.strip()[:MAX_FIRST_USER]
+        if role in ("user", "assistant"):
+            text = content if isinstance(content, str) else " ".join(
+                c.get("text", "") for c in (content or []) if isinstance(c, dict) and c.get("type") == "text")
+            if text.strip():
+                tail.append(f"【{role}】{text.strip()}")
+                total += len(text)
+    window = "\n\n".join(tail)[-WINDOW_CHARS:]
+    return first_user, window
+
+
+def slugify(text):
+    words = re.findall(r"[一-鿿A-Za-z0-9]+", text[:120])
+    s = "-".join(words[:4])
+    return re.sub(r"[^0-9A-Za-z一-鿿-]", "", s)[:28] or "session"
+
+
+PROMPT = """你是会话档案蒸馏器。以下是一段 Claude Code 会话的首条用户消息与尾部对话。
+蒸馏成一篇记忆档案(md),只保留对未来工作有用:决策(含依据)、bug 与根修、技法/配方、教训、待办。丢弃寒暄/过程性叙述/自夸。
+格式要求:
+- 首行: # <8-15字标题>
+- 然后 3-8 条要点(每条 ≤60字,结论先行,数字/路径/commit号保留)
+- 末行: "来源: <今日日期> 会话蒸馏(自动)"
+- 总长 ≤600字,中文,直接输出 md 正文,不要解释。
+
+首条用户消息:
+{first}
+
+尾部对话:
+{window}
+"""
+
+
+def main():
+    tp, mem_dir, marker, size = sys.argv[1], sys.argv[2], sys.argv[3], int(sys.argv[4])
+    first, window = extract(tp)
+    if len(window) < 400:
+        return
+    prompt = PROMPT.format(first=first, window=window)
+    env = {k: v for k, v in os.environ.items()
+           if not k.lower().endswith("_proxy") and k not in ("HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY")}
+    claude = find_claude()
+    argv = [claude, "-p", "--model", "haiku", "--max-turns", "1"]
+    if claude.lower().endswith((".cmd", ".bat")):
+        argv = ["cmd.exe", "/c"] + argv
+    try:
+        # 提示词走 stdin(40k 窗口超 Windows 32k 命令行上限)
+        r = subprocess.run(argv, input=prompt, capture_output=True,
+                           text=True, timeout=TIMEOUT_S, env=env,
+                           encoding="utf-8", errors="replace")
+        out = (r.stdout or "").strip()
+    except Exception:
+        return
+    # 假绿防护:太短或含道歉/失败语视为失败
+    if len(out) < 120 or out.startswith(("(失败", "I'm sorry", "抱歉")):
+        return
+    body = out if out.startswith("#") else "# 会话蒸馏\n\n" + out
+    ts = datetime.now().strftime("%Y%m%d-%H%M")
+    name = f"session_auto_{ts}_{slugify(first)}.md"
+    path = os.path.join(mem_dir, name)
+    with open(path, "w", encoding="utf-8") as f:
+        f.write("---\nfact_status: inferred\ndistilled: auto\n---\n\n" + body + "\n")
+    with open(marker, "w") as f:
+        f.write(str(size))
+
+
+if __name__ == "__main__":
+    main()
