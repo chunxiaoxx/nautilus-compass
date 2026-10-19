@@ -81,6 +81,12 @@ def judge_one(key, content, retry=4, provider="minimax"):
             m = re.search(r"(?:verdict|answer)\s*[:\-]*\s*(pass|fail|insufficient_evidence)", txt)
             if m:
                 return m.group(1)
+            # v1.3 中文判定映射(glm-5.3 偶发中文结论)
+            cn = [("通过", "pass"), ("合格", "pass"), ("证据不足", "insufficient_evidence"),
+                  ("不合格", "fail"), ("无效", "fail")]
+            for cnw, en in cn:
+                if cnw in txt[:300]:
+                    return en
             hits = [v for v in LABELS if v in txt]
             if hits:
                 # 全文都出现时取最靠后(结论通常在末尾)
