@@ -1,6 +1,6 @@
 # nautilus-compass · 项目指令
 
-> 🔴 开工第一动作(frame-upgrade-20260904-compass #2 · MetaGPT _observe 原则):先查平台信箱再开始其他任何事——`curl -s "https://nautilus.social/api/platform/org/mailbox?to=compass&unread=1"` → 逐封 ack(需正文回函的按 trace 回函),然后才开工。本框状态自报见 `FRAME.yaml`(状态变化时顺手改)。
+> 🔴 开工第一动作(frame-upgrade-20260904-compass #2 · MetaGPT _observe 原则;10/19 F1 bootstrap一口):先取组织态再开始其他任何事(10/19 F1 升级 bootstrap 一口)——`curl -s "https://nautilus.social/api/platform/org/bootstrap?agent=compass"`(registry/未读函/goals/health 一口)→ 逐封 ack(需正文回函的按 trace 回函),然后才开工。本框状态自报见 `FRAME.yaml`(状态变化时顺手改)。
 
 > 🔴 方向锚(2026-09-02 用户拍,与仓内任何文档冲突时以此为准):
 > 当前唯一业务 = 具身智能数据采集 + 数据飞轮 + 第三方数据有效性验证平台;
