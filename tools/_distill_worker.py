@@ -98,6 +98,9 @@ def main():
     argv = [claude, "-p", "--model", "haiku", "--max-turns", "1"]
     if claude.lower().endswith((".cmd", ".bat")):
         argv = ["cmd.exe", "/c"] + argv
+    # 2026-10-20 Mac:nvm bin 里的 node 脚本(happy)shebang 靠 PATH 找 node,
+    # hook/ssh 环境 PATH 可能无 nvm → claude 所在目录前置进子进程 PATH(实测 RC=127 根因)
+    env["PATH"] = os.path.dirname(os.path.abspath(claude)) + os.pathsep + env.get("PATH", "")
     try:
         # 提示词走 stdin(40k 窗口超 Windows 32k 命令行上限)
         r = subprocess.run(argv, input=prompt, capture_output=True,
