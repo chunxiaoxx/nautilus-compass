@@ -101,6 +101,13 @@ def main():
     # 2026-10-20 Mac:nvm bin 里的 node 脚本(happy)shebang 靠 PATH 找 node,
     # hook/ssh 环境 PATH 可能无 nvm → claude 所在目录前置进子进程 PATH(实测 RC=127 根因)
     env["PATH"] = os.path.dirname(os.path.abspath(claude)) + os.pathsep + env.get("PATH", "")
+    # 2026-10-20 Mac 第二坑:happy -p 的 SDK 路径不解析 --model 参数(传什么都走
+    # settings 默认 glm-5.3[1M],该后缀原生 claude 不认→unrecognized→max-turns 空转)。
+    # worker 自带蒸馏模型 env 覆盖(k3-256k=haiku 档;COMPASS_DISTILL_MODEL 可换),不动用户 settings。
+    _dm = os.environ.get("COMPASS_DISTILL_MODEL", "k3-256k")
+    for _k in ("ANTHROPIC_MODEL", "ANTHROPIC_DEFAULT_HAIKU_MODEL",
+               "ANTHROPIC_DEFAULT_SONNET_MODEL", "ANTHROPIC_DEFAULT_OPUS_MODEL"):
+        env[_k] = _dm
     try:
         # 提示词走 stdin(40k 窗口超 Windows 32k 命令行上限)
         r = subprocess.run(argv, input=prompt, capture_output=True,
