@@ -17,10 +17,17 @@ TIMEOUT_S = 600
 
 
 def find_claude():
-    """claude CLI 定位:PATH → npm 全局(Windows .cmd 需经 cmd.exe)。"""
+    """claude CLI 定位:PATH → Mac nvm bin(claude=happy 别名,子进程不可见)→ npm 全局(Windows .cmd 需经 cmd.exe)。"""
     p = shutil.which("claude")
     if p:
         return p
+    # 2026-10-20 Mac 适配:Mac 上 claude 是 happy 的 shell 别名,子进程 which 不到;
+    # happy 兼容 -p --model 等参数(实测 haiku 蒸馏通路 OK)。扫 nvm bin 下实体。
+    import glob as _g
+    for _pat in ("~/.nvm/versions/node/*/bin/claude", "~/.nvm/versions/node/*/bin/happy"):
+        _hits = _g.glob(os.path.expanduser(_pat))
+        if _hits:
+            return _hits[0]
     cand = os.path.join(os.environ.get("APPDATA", ""), "npm", "claude.cmd")
     if os.path.isfile(cand):
         return cand
