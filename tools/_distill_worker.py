@@ -21,9 +21,14 @@ def find_claude():
     p = shutil.which("claude")
     if p:
         return p
-    # 2026-10-20 Mac 适配:Mac 上 claude 是 happy 的 shell 别名,子进程 which 不到;
-    # happy 兼容 -p --model 等参数(实测 haiku 蒸馏通路 OK)。扫 nvm bin 下实体。
+    # 2026-10-20 Mac 适配:Mac 上交互 claude 是 happy 别名,但 happy 包装层会吃掉
+    # --model 与 env 注入(恒走默认 glm-5.3[1M] 且该后缀不被认)。优先用 native
+    # installer 的官方位 ~/.local/bin/claude(实测 --model haiku 生效);退 nvm 扫
+    # claude/happy 实体(happy 为最后手段,仅保底)。
     import glob as _g
+    _native = os.path.expanduser("~/.local/bin/claude")
+    if os.path.isfile(_native) and os.access(_native, os.X_OK):
+        return _native
     for _pat in ("~/.nvm/versions/node/*/bin/claude", "~/.nvm/versions/node/*/bin/happy"):
         _hits = _g.glob(os.path.expanduser(_pat))
         if _hits:
