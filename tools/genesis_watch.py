@@ -15,6 +15,10 @@ WATCH = [
     ('mem0ai/mem0', 7641),
     ('letta-ai/letta', 3453),
     ('topoteretes/cognee', 5883),
+    # 二批(2026-10-21 投):supermemory/MIRIX/MemOS;Memobase 死仓+Zep 无通道跳过
+    ('supermemoryai/supermemory', 1831),
+    ('Mirix-AI/MIRIX', 141),
+    ('MemTensor/MemOS', 2534),
 ]
 LOG = Path('runtime/loop/watch_genesis.log')
 STATE = Path('runtime/loop/genesis_state.json')
