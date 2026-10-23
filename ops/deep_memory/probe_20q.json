@@ -1,0 +1,22 @@
+[
+ {"q": "GPU 实例租用时怎么避免多花冤枉钱", "expect": "gpu-instance-reuse / 复用"},
+ {"q": "BGE 向量对拍为什么不换嵌入模型", "expect": "emb-bakeoff / +0.46pt"},
+ {"q": "勘误第 9 例 int8 flips 讲了什么", "expect": "errata / int8 / 5处"},
+ {"q": "判读岗第一张卡怎么交付的", "expect": "judge-pipeline / first-card / del ivered"},
+ {"q": "云 daemon 之前瘫痪的根因是什么", "expect": "fill / livelock / 预算"},
+ {"q": "A100 密码泄漏怎么处置的", "expect": "chpasswd / 轮换"},
+ {"q": "CompassBench 这个名字为什么不能用", "expect": "撞名 / NautilusMem"},
+ {"q": "自举标签审计发现了多少 FAIL", "expect": "37.9% / 自回声"},
+ {"q": "Gmail 漏回信是哪次事故", "expect": "Infistar / 巡检清单"},
+ {"q": "每日简报为什么被撤下", "expect": "信息过载 / 收敛"},
+ {"q": "首考 0007 的部署冲突怎么回事", "expect": "双写 / cloud仓"},
+ {"q": "Mac mini 迁移前 BGE 跑在哪里", "expect": "A100 / 隧道 / 19988"},
+ {"q": "daemon 双实例问题怎么发生的", "expect": "watchdog / 计划任务"},
+ {"q": " LOOP 首夜复盘发现哪些问题", "expect": "凑件 / 伪事件驱动"},
+ {"q": "rsi-bench 提案为什么被采纳", "expect": "replay 认证 / UNVERIFIABLE"},
+ {"q": "verdict-judge LoRA 达到多少准确率", "expect": "88.51% / 三门"},
+ {"q": "PyPI 3.1.1 发布遇到什么坑", "expect": "token 截断 / 403"},
+ {"q": "SSH 到 cloud 正确端口是多少", "expect": "24860"},
+ {"q": "NAUTILUS 的 Super Agent 公式是什么", "expect": "EvoMap / Automaton"},
+ {"q": "判读岗收费模式最终怎么定的", "expect": "免费 / 装订收费"}
+]
