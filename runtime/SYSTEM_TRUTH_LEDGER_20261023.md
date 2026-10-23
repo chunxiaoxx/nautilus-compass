@@ -27,6 +27,10 @@
 | ⚠️ 不在仓(脆弱) | 13 个 launchd 服务 plist / daemon_env / 全局 hooks / MCP 全局配置 |
 | 🔴 无守护 | 隧道两条(19988 反向 / 9877 正向)——**Mac 重启即丢,需建 launchd** |
 
+## 线务变更(10/23)
+- ✅ arm-worker 线退役(拍板;报备函 20974;资产留档可恢复)
+- ⏳ fw_api_key 重发函 20972 在途(解锁 flywheel 报备/ack)
+
 ## 已知待办(按优先级)
 1. 🔴 隧道 launchd 化(重启存活)
 2. 🔴 v5 287 脏文件分类(该提交提交/该 ignore ignore)
