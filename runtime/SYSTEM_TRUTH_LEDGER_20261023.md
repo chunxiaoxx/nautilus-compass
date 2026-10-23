@@ -27,6 +27,27 @@
 | ⚠️ 不在仓(脆弱) | 13 个 launchd 服务 plist / daemon_env / 全局 hooks / MCP 全局配置 |
 | 🔴 无守护 | 隧道两条(19988 反向 / 9877 正向)——**Mac 重启即丢,需建 launchd** |
 
+## 🔴 框身份更正(10/24 · 七轮考古教训)
+
+**平台对话框 = nautilus-core 框**(用户口中的"nautilus/平台/最初的对话框"),
+其现役历史载体 = `C--Users-chunx-Projects-nautilus-core`(172 条,**永不归档**——10/24 由平台框自愈恢复标准名)。
+连字符 live 目录(-Users-chunxiao-wang-Projects-nautilus-core, 838 条)是超集,Mac 路径打开即用。
+
+### 盘整规则新增(血泪条)
+> **归档任何 projects 目录前,必须确认无活跃消费者引用该目录名**(进程/长驻 agent/remote 会话)。
+> 10/23 归档 C-- core 目录直接断了平台对话框的粮,10/24 平台框自愈改回。同类风险目录逐一排查后才可动。
+
+## 用户叫法 ↔ 实际载体对照表(永不重复七轮考古)
+
+| 您叫它 | 实际载体 | Mac 打开方式 |
+|---|---|---|
+| **nautilus / 平台 / 最初的对话框** | **nautilus-core 框**(C-- core 目录=平台框本体) | 平台框自管;终端用户 `cd ~/Projects/nautilus-core && claude`(838 条超集) |
+| compass / 判读 | nautilus-compass | `compass` 命令 |
+| 飞轮 | nautilusflywheel | `flywheel` 命令(2,612 条) |
+| v5 | nautilus-v5(最初路径 C:\Users\chunx\nautilus-v5,5/18 起) | `nautilus` 命令(已改指)/ `v5cd` |
+| agent 对话框 | Happy 手机会话(主目录) | `cd ~ && claude` / 手机 Happy |
+| 台式机上的框 | zenmind = quantum-buddha(禅心 AI = 量子佛陀 V3.5) | quantum-buddha-project 目录 |
+
 ## 线务变更(10/23)
 - ✅ arm-worker 线退役(拍板;报备函 20974;资产留档可恢复)
 - ⏳ fw_api_key 重发函 20972 在途(解锁 flywheel 报备/ack)
