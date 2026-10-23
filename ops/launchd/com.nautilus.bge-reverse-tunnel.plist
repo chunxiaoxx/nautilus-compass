@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+  <key>Label</key><string>com.nautilus.bge-reverse-tunnel</string>
+  <key>ProgramArguments</key><array>
+    <string>/usr/bin/ssh</string>
+    <string>-N</string><string>-R</string>
+    <string>19988:127.0.0.1:8400</string>
+    <string>-o</string><string>ServerAliveInterval=20</string>
+    <string>-o</string><string>ServerAliveCountMax=6</string>
+    <string>-o</string><string>ExitOnForwardFailure=yes</string>
+    <string>-o</string><string>StrictHostKeyChecking=accept-new</string>
+    <string>-i</string><string>/Users/chunxiao.wang/.ssh/id_ed25519</string>
+    <string>-p</string><string>24860</string>
+    <string>ubuntu@43.160.239.61</string>
+  </array>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key>
+  <dict><key>SuccessfulExit</key><false/><key>NetworkState</key><true/></dict>
+</dict></plist>

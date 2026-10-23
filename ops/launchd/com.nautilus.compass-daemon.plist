@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+  <key>Label</key><string>com.nautilus.compass-daemon</string>
+  <key>ProgramArguments</key><array>
+    <string>/Users/chunxiao.wang/Projects/nautilus-compass/.venv/bin/python</string>
+    <string>/Users/chunxiao.wang/.claude/plugins/nautilus-compass/daemon.py</string>
+  </array>
+  <key>EnvironmentVariables</key><dict>
+    <key>COMPASS_EMBED_PROXY</key><string>http://127.0.0.1:8400</string>
+    <key>COMPASS_RERANK_REMOTE</key><string>127.0.0.1:8401</string>
+    <key>COMPASS_RERANK_REMOTE_TIMEOUT</key><string>4</string>
+    <key>COMPASS_PROD_RERANK</key><string>1</string>
+    <key>HF_HUB_OFFLINE</key><string>1</string>
+  </dict>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
+  <key>StandardOutPath</key><string>/Users/chunxiao.wang/.claude/plugins/nautilus-compass/.cache/daemon.log</string>
+  <key>StandardErrorPath</key><string>/Users/chunxiao.wang/.claude/plugins/nautilus-compass/.cache/daemon.log</string>
+</dict></plist>

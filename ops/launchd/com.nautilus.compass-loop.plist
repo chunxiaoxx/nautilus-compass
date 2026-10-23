@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+  <key>Label</key><string>com.nautilus.compass-loop</string>
+  <key>ProgramArguments</key><array>
+    <string>/bin/zsh</string>
+    <string>-c</string>
+    <string>cd /Users/chunxiao.wang/Projects/nautilus-compass &amp;&amp; [ -f runtime/loop/STOP ] &amp;&amp; exit 0; claude -p "$(cat runtime/loop/round_prompt.md)" --model claude-sonnet-4-5 --output-format text &gt;&gt; runtime/loop/rounds.log 2&gt;&amp;1; echo "---- round end $(date '+%m-%d %H:%M') ----" &gt;&gt; runtime/loop/rounds.log</string>
+  </array>
+  <key>StartInterval</key><integer>1800</integer>
+  <key>RunAtLoad</key><false/>
+</dict></plist>
