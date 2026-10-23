@@ -48,6 +48,10 @@
 | agent 对话框 | Happy 手机会话(主目录) | `cd ~ && claude` / 手机 Happy |
 | 台式机上的框 | zenmind = quantum-buddha(禅心 AI = 量子佛陀 V3.5) | quantum-buddha-project 目录 |
 
+## 线务变更(10/24)
+- 📨 21151 平台框单轨协调函(切 ~/Projects/nautilus-core,死线 10/25 20:00)
+- ✅ 30 题评测认领(S3 变体辅助+S5 判分候命,回函 21137,候 v5 机制库卡)
+
 ## 线务变更(10/23)
 - ✅ arm-worker 线退役(拍板;报备函 20974;资产留档可恢复)
 - ⏳ fw_api_key 重发函 20972 在途(解锁 flywheel 报备/ack)
