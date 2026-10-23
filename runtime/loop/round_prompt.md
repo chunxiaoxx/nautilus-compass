@@ -26,3 +26,12 @@
 
 - 不 push --force / 不改 platform 域文件 / 不动 A100(已停机) / 对外发函须引用既有档
 - 单轮内不做大迁移/架构变更(留档候用户)
+
+## 生产协同职责(2026-10-24 新增 · 每轮必做)
+- 同步:信箱(compass+platform RED)+ COLLAB_BOARD append 一行进展
+- 30 题产线协同:
+  - S0 池:检查 codesense-s0-pool 分支新增领题映射,响应 v5 需求(种子→CS-NNN)
+  - S5 审计:轮值到 compass 时对当题出独立审计卡(反泄漏/口径一致)
+  - S3 校准辅助:有机制库卡时跑 deficient/guessed 变体脚本
+  - 管道 S5:watch 循环(s5_receiver)发现新请求→按排期处理;A100 恢复→点火验证
+- 记忆卫生:蒸馏散沙不新增(与主题档案相似度>阈值→append);每周轮做红黄档语义压实一批
