@@ -1,0 +1,188 @@
+[
+ {
+  "q": "GPU 实例租用时怎么避免多花冤枉钱",
+  "marks": [
+   0,
+   0,
+   0
+  ],
+  "any": false
+ },
+ {
+  "q": "BGE 向量对拍为什么不换嵌入模型",
+  "marks": [
+   1,
+   1,
+   1
+  ],
+  "any": true
+ },
+ {
+  "q": "勘误第 9 例 int8 flips 讲了什么",
+  "marks": [
+   1,
+   1,
+   1
+  ],
+  "any": true
+ },
+ {
+  "q": "判读岗第一张卡怎么交付的",
+  "marks": [
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "any": false
+ },
+ {
+  "q": "云 daemon 之前瘫痪的根因是什么",
+  "marks": [
+   1,
+   0,
+   1
+  ],
+  "any": true
+ },
+ {
+  "q": "A100 密码泄漏怎么处置的",
+  "marks": [
+   1,
+   1,
+   1
+  ],
+  "any": true
+ },
+ {
+  "q": "CompassBench 这个名字为什么不能用",
+  "marks": [
+   1,
+   0,
+   0
+  ],
+  "any": true
+ },
+ {
+  "q": "自举标签审计发现了多少 FAIL",
+  "marks": [
+   1,
+   0,
+   1
+  ],
+  "any": true
+ },
+ {
+  "q": "Gmail 漏回信是哪次事故",
+  "marks": [
+   1,
+   0,
+   1
+  ],
+  "any": true
+ },
+ {
+  "q": "每日简报为什么被撤下",
+  "marks": [
+   1,
+   0,
+   0
+  ],
+  "any": true
+ },
+ {
+  "q": "首考 0007 的部署冲突怎么回事",
+  "marks": [
+   1,
+   0,
+   1
+  ],
+  "any": true
+ },
+ {
+  "q": "Mac mini 迁移前 BGE 跑在哪里",
+  "marks": [
+   1,
+   1,
+   1
+  ],
+  "any": true
+ },
+ {
+  "q": "daemon 双实例问题怎么发生的",
+  "marks": [
+   0,
+   0,
+   0
+  ],
+  "any": false
+ },
+ {
+  "q": " LOOP 首夜复盘发现哪些问题",
+  "marks": [
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "any": false
+ },
+ {
+  "q": "rsi-bench 提案为什么被采纳",
+  "marks": [
+   0,
+   1,
+   0
+  ],
+  "any": true
+ },
+ {
+  "q": "verdict-judge LoRA 达到多少准确率",
+  "marks": [
+   0,
+   0,
+   1
+  ],
+  "any": true
+ },
+ {
+  "q": "PyPI 3.1.1 发布遇到什么坑",
+  "marks": [
+   1,
+   1,
+   0
+  ],
+  "any": true
+ },
+ {
+  "q": "SSH 到 cloud 正确端口是多少",
+  "marks": [
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "any": false
+ },
+ {
+  "q": "NAUTILUS 的 Super Agent 公式是什么",
+  "marks": [
+   0,
+   0,
+   0
+  ],
+  "any": false
+ },
+ {
+  "q": "判读岗收费模式最终怎么定的",
+  "marks": [
+   1,
+   1,
+   0
+  ],
+  "any": true
+ }
+]
