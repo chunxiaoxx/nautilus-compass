@@ -30,7 +30,7 @@
 ## 已知待办(按优先级)
 1. 🔴 隧道 launchd 化(重启存活)
 2. 🔴 v5 287 脏文件分类(该提交提交/该 ignore ignore)
-3. 🟡 13 个 launchd plist 纳仓备份(灾难可重建)
+3. ✅ 6 个核心 launchd plist 已纳仓(ops/launchd/ + install_all.sh,commit 见 git log)
 4. 🟡 core/flywheel 各 2 条提交推送
 5. 🟢 会话碎片归档(1291 → archive,/resume 清爽化)
 6. 🟢 记忆散沙聚类收敛(882 蒸馏 → 主题档案)
