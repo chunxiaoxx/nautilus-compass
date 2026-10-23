@@ -74,3 +74,5 @@ runtime/verification-learning-papers/
 runtime/typesafe_proof/system-one-adapter-python/
 runtime/typesafe_proof/typesafe-sdk-python/
 runtime/vb_bench_20260927/mini-vending-bench/
+ops/deep_memory/*.db
+ops/deep_memory/blocks_*.jsonl
