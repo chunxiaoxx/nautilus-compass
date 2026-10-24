@@ -27,3 +27,4 @@
 | daemon | rerank 8401 | com.nautilus.bge-rerank.plist | ❌ 不在仓 | token 在 ~/bge-embed/ |
 | hooks | 全局 settings.json hooks | ~/.claude/settings.json | ❌ 不在仓 | 路径全验 ✓;Stop hook 1 处 Windows 残留 |
 | 隧道 | cloud 反向 19988 / 9877 正向 | ssh -f -N 进程 | ❌ 不在仓 | ⚠️ 无 launchd,重启即丢! |
+| launchd | com.nautilus.ali30q-loop | ops/ali30q/ | ✓脚本在仓 | 阿里判分矩阵每小时轮,渠道自适应 |
