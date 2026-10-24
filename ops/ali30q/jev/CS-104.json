@@ -1,0 +1,147 @@
+{
+ "item": "CS-104",
+ "generated_at": "2026-10-24T15:14:58+00:00",
+ "schema": "jev-skeleton-v1 (letter 21309/21321)",
+ "evidence_tier": "skeleton-empty-slots=PENDING; filled=per-field [实测] provenance _s5/*_result.json",
+ "g_gates": {},
+ "reads": {
+  "opus5.5": {
+   "3": {
+    "score": 1.0,
+    "elapsed_s": 138.6,
+    "error": "",
+    "ut_pass_n": 7,
+    "ut_total": 7
+   },
+   "2": {
+    "score": 1.0,
+    "elapsed_s": 126.2,
+    "error": "",
+    "ut_pass_n": 7,
+    "ut_total": 7
+   },
+   "1": {
+    "score": 1.0,
+    "elapsed_s": 103.6,
+    "error": "",
+    "ut_pass_n": 7,
+    "ut_total": 7
+   }
+  },
+  "gpt-6-astra": {
+   "2": {
+    "score": 1.0,
+    "elapsed_s": 40.2,
+    "error": "",
+    "ut_pass_n": 7,
+    "ut_total": 7
+   },
+   "1": {
+    "score": 1.0,
+    "elapsed_s": 77.4,
+    "error": "",
+    "ut_pass_n": 7,
+    "ut_total": 7
+   }
+  },
+  "qwen3.8max": {
+   "1": {
+    "score": 1.0,
+    "elapsed_s": 660.9,
+    "error": "",
+    "ut_pass_n": 7,
+    "ut_total": 7
+   },
+   "2": {
+    "score": 1.0,
+    "elapsed_s": 481.7,
+    "error": "",
+    "ut_pass_n": 7,
+    "ut_total": 7
+   },
+   "3": {
+    "score": 1.0,
+    "elapsed_s": 539.7,
+    "error": "",
+    "ut_pass_n": 7,
+    "ut_total": 7
+   }
+  },
+  "glm5.3": {
+   "1": {
+    "score": 1.0,
+    "elapsed_s": 649.8,
+    "error": "",
+    "ut_pass_n": 7,
+    "ut_total": 7
+   },
+   "2": {
+    "score": 1.0,
+    "elapsed_s": 356.7,
+    "error": "",
+    "ut_pass_n": 7,
+    "ut_total": 7
+   },
+   "3": {
+    "score": 1.0,
+    "elapsed_s": 324.5,
+    "error": "",
+    "ut_pass_n": 7,
+    "ut_total": 7
+   }
+  },
+  "kimi-k3": {
+   "3": {
+    "score": 1.0,
+    "elapsed_s": 344.2,
+    "error": "",
+    "ut_pass_n": 7,
+    "ut_total": 7
+   },
+   "2": {
+    "score": 1.0,
+    "elapsed_s": 205.0,
+    "error": "",
+    "ut_pass_n": 7,
+    "ut_total": 7
+   },
+   "1": {
+    "score": 1.0,
+    "elapsed_s": 308.0,
+    "error": "",
+    "ut_pass_n": 7,
+    "ut_total": 7
+   }
+  }
+ },
+ "gold_check": "PENDING",
+ "verify": {
+  "independent_recompute": "PENDING",
+  "recompute_session": null
+ },
+ "avg_score": {
+  "per_model": {
+   "opus5.5": 1.0,
+   "gpt-6-astra": 1.0,
+   "qwen3.8max": 1.0,
+   "glm5.3": 1.0,
+   "kimi-k3": 1.0
+  },
+  "group_sota": 1.0,
+  "group_cn": 1.0,
+  "passrate_per_model": {
+   "opus5.5": 1.0,
+   "gpt-6-astra": 1.0,
+   "qwen3.8max": 1.0,
+   "glm5.3": 1.0,
+   "kimi-k3": 1.0
+  }
+ },
+ "gap_check": {
+  "cn_minus_sota_pp": 0.0,
+  "meets_20pp": false,
+  "passrate_trend_consistent": null,
+  "coverage_n": 14,
+  "coverage_full": false
+ }
+}

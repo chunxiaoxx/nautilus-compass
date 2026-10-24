@@ -1,0 +1,92 @@
+{
+ "item": "CS-011",
+ "generated_at": "2026-10-24T15:14:58+00:00",
+ "schema": "jev-skeleton-v1 (letter 21309/21321)",
+ "evidence_tier": "skeleton-empty-slots=PENDING; filled=per-field [实测] provenance _s5/*_result.json",
+ "g_gates": {},
+ "reads": {
+  "opus5.5": {
+   "0": {
+    "score": 0.0,
+    "elapsed_s": 86.8,
+    "error": "",
+    "ut_pass_n": 0,
+    "ut_total": 1
+   }
+  },
+  "gpt-6-astra": {
+   "2": {
+    "score": 0.0,
+    "elapsed_s": 129.9,
+    "error": "",
+    "ut_pass_n": 0,
+    "ut_total": 1
+   },
+   "1": {
+    "score": 0.0,
+    "elapsed_s": 92.0,
+    "error": "",
+    "ut_pass_n": 0,
+    "ut_total": 1
+   },
+   "0": {
+    "score": 0.0,
+    "elapsed_s": 109.9,
+    "error": "",
+    "ut_pass_n": 0,
+    "ut_total": 1
+   }
+  },
+  "qwen3.8max": {},
+  "glm5.3": {
+   "1": {
+    "score": 0.0,
+    "elapsed_s": 412.9,
+    "error": "",
+    "ut_pass_n": 0,
+    "ut_total": 1
+   },
+   "2": {
+    "score": 0.0,
+    "elapsed_s": 436.0,
+    "error": "",
+    "ut_pass_n": 0,
+    "ut_total": 1
+   },
+   "0": {
+    "score": 0.0,
+    "elapsed_s": 388.2,
+    "error": "",
+    "ut_pass_n": 0,
+    "ut_total": 1
+   }
+  },
+  "kimi-k3": {}
+ },
+ "gold_check": "PENDING",
+ "verify": {
+  "independent_recompute": "PENDING",
+  "recompute_session": null
+ },
+ "avg_score": {
+  "per_model": {
+   "opus5.5": 0.0,
+   "gpt-6-astra": 0.0,
+   "glm5.3": 0.0
+  },
+  "group_sota": 0.0,
+  "group_cn": 0.0,
+  "passrate_per_model": {
+   "opus5.5": 0.0,
+   "gpt-6-astra": 0.0,
+   "glm5.3": 0.0
+  }
+ },
+ "gap_check": {
+  "cn_minus_sota_pp": 0.0,
+  "meets_20pp": false,
+  "passrate_trend_consistent": null,
+  "coverage_n": 7,
+  "coverage_full": false
+ }
+}

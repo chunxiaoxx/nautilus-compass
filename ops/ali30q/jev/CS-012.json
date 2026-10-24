@@ -1,0 +1,29 @@
+{
+ "item": "CS-012",
+ "generated_at": "2026-10-24T15:14:58+00:00",
+ "schema": "jev-skeleton-v1 (letter 21309/21321)",
+ "evidence_tier": "skeleton-empty-slots=PENDING; filled=per-field [实测] provenance _s5/*_result.json",
+ "g_gates": {},
+ "reads": {
+  "opus5.5": {},
+  "gpt-6-astra": {},
+  "qwen3.8max": {},
+  "glm5.3": {},
+  "kimi-k3": {}
+ },
+ "gold_check": "PENDING",
+ "verify": {
+  "independent_recompute": "PENDING",
+  "recompute_session": null
+ },
+ "avg_score": {
+  "per_model": {},
+  "group_sota": null,
+  "group_cn": null,
+  "passrate_per_model": {}
+ },
+ "gap_check": {
+  "coverage_n": 0,
+  "coverage_full": false
+ }
+}

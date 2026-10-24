@@ -1,0 +1,145 @@
+{
+ "item": "CS-004",
+ "generated_at": "2026-10-24T15:14:58+00:00",
+ "schema": "jev-skeleton-v1 (letter 21309/21321)",
+ "evidence_tier": "skeleton-empty-slots=PENDING; filled=per-field [实测] provenance _s5/*_result.json",
+ "g_gates": {
+  "G1": {
+   "uts": [
+    "test_e2e_settlement_flow"
+   ],
+   "dimension": "答案正确性",
+   "reads": {
+    "opus5.5": {
+     "0": null,
+     "1": null,
+     "2": null,
+     "3": null
+    },
+    "gpt-6-astra": {
+     "0": null,
+     "1": null,
+     "2": null,
+     "3": null
+    },
+    "qwen3.8max": {
+     "0": null,
+     "1": null,
+     "2": null,
+     "3": null
+    },
+    "glm5.3": {
+     "0": null,
+     "1": null,
+     "2": null,
+     "3": null
+    },
+    "kimi-k3": {
+     "0": null,
+     "1": null,
+     "2": null,
+     "3": null
+    }
+   }
+  }
+ },
+ "reads": {
+  "opus5.5": {},
+  "gpt-6-astra": {
+   "2": {
+    "score": 1.0,
+    "elapsed_s": 47.1,
+    "error": "",
+    "ut_pass_n": 23,
+    "ut_total": 23
+   },
+   "1": {
+    "score": 1.0,
+    "elapsed_s": 63.9,
+    "error": "",
+    "ut_pass_n": 23,
+    "ut_total": 23
+   },
+   "3": {
+    "score": 1.0,
+    "elapsed_s": 69.4,
+    "error": "",
+    "ut_pass_n": 23,
+    "ut_total": 23
+   }
+  },
+  "qwen3.8max": {},
+  "glm5.3": {
+   "1": {
+    "score": 1.0,
+    "elapsed_s": 275.0,
+    "error": "",
+    "ut_pass_n": 23,
+    "ut_total": 23
+   },
+   "2": {
+    "score": 1.0,
+    "elapsed_s": 431.5,
+    "error": "",
+    "ut_pass_n": 23,
+    "ut_total": 23
+   },
+   "3": {
+    "score": 1.0,
+    "elapsed_s": 269.1,
+    "error": "",
+    "ut_pass_n": 23,
+    "ut_total": 23
+   }
+  },
+  "kimi-k3": {
+   "2": {
+    "score": 1.0,
+    "elapsed_s": 49.0,
+    "error": "",
+    "ut_pass_n": 23,
+    "ut_total": 23
+   },
+   "1": {
+    "score": 1.0,
+    "elapsed_s": 31.1,
+    "error": "",
+    "ut_pass_n": 23,
+    "ut_total": 23
+   },
+   "3": {
+    "score": 1.0,
+    "elapsed_s": 64.5,
+    "error": "",
+    "ut_pass_n": 23,
+    "ut_total": 23
+   }
+  }
+ },
+ "gold_check": "PENDING",
+ "verify": {
+  "independent_recompute": "PENDING",
+  "recompute_session": null
+ },
+ "avg_score": {
+  "per_model": {
+   "gpt-6-astra": 1.0,
+   "glm5.3": 1.0,
+   "kimi-k3": 1.0
+  },
+  "group_sota": 1.0,
+  "group_cn": 1.0,
+  "passrate_per_model": {
+   "gpt-6-astra": 1.0,
+   "glm5.3": 1.0,
+   "kimi-k3": 1.0
+  }
+ },
+ "gap_check": {
+  "cn_minus_sota_pp": 0.0,
+  "meets_20pp": false,
+  "passrate_trend_consistent": null,
+  "coverage_n": 9,
+  "coverage_full": false
+ }
+}
