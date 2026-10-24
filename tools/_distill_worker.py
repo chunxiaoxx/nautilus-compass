@@ -96,6 +96,10 @@ def main():
     first, window = extract(tp)
     if len(window) < 400:
         return
+    # 防自噬守卫(2026-10-24):本 worker 调 claude -p 跑的会话本身也是 transcript,
+    # 首条 user 恒为 PROMPT 开头——命中即跳过,断「蒸馏蒸馏器」无限嵌套回路。
+    if "你是会话档案蒸馏器" in first[:60]:
+        return
     prompt = PROMPT.format(first=first, window=window)
     env = {k: v for k, v in os.environ.items()
            if not k.lower().endswith("_proxy") and k not in ("HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY")}
