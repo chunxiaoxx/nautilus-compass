@@ -23,7 +23,9 @@ echo "[$(date '+%m-%d %H:%M')] 中转站探活: $relay (000/500=宕)" >> $LOG
 if [ "$relay" = "200" ]; then   # OpenAI 端全恢复才扩原生渠道
   # qwen3.8max 两分支同摘(10/25 补 if 分支):渠道表仍指 bl.cmd(Windows 名),Mac 无 bl CLI,
   # relay 恢复走 if 分支后连崩 96 次;v5 渠道表修好前不回
-  MODELS=(glm5.3 kimi-k3-256k gpt-6-astra opus5.5)
+  # kimi 走 ark 直连(10/25 R17 实核:relay k3 池 429 累计 95,v5 渠道表无 kimi-k3-256k key
+  # ——559b0e1f 改名落空 KeyError 连崩;渠道表 verified 替代线=kimi-k3-ark,key 已入 env)
+  MODELS=(glm5.3 kimi-k3-ark gpt-6-astra opus5.5)
 else
   # qwen3.8max 摘除(10/24):bailian 协议需 bl CLI,Windows arm 线退役后 Mac 未装
   # (shutil.which("bl") 落空→FileNotFoundError 崩循环);bl 装好后加回
