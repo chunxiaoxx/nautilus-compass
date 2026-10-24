@@ -7,13 +7,23 @@ PROBE() {
   curl -s -m 8 -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $RELAY" https://api.chunxiao.wang/v1/models 2>/dev/null
 }
 RELAY=$(grep ^RELAY_API_KEY ~/Projects/nautilus-v5/.claude/worktrees/codesense-a-fix/.env | cut -d= -f2)
+# 防堆叠:launchd 900s 一拉,单轮跑批>15min 会多实例互踩(10/25 实证同 run 开考两次);锁内 pid 死亡自动清锁
+LOCK=/tmp/ali30q_runner.lock
+if ! mkdir "$LOCK" 2>/dev/null; then
+  _pid=$(cat "$LOCK/pid" 2>/dev/null)
+  if [ -n "$_pid" ] && ! kill -0 "$_pid" 2>/dev/null; then rm -rf "$LOCK"; mkdir "$LOCK"; else exit 0; fi
+fi
+echo $$ > "$LOCK/pid"
+trap 'rm -rf "$LOCK"' EXIT
 # 恢复判定放宽:200=OpenAI端可用扩原生glm/k3/gpt;401/5xx=仅Anthropic应急通道+qwen+opus
 
 relay=$(PROBE)
 echo "[$(date '+%m-%d %H:%M')] 中转站探活: $relay (000/500=宕)" >> $LOG
 # 渠道集:中转站通=5渠道;宕=qwen+opus先行
 if [ "$relay" = "200" ]; then   # OpenAI 端全恢复才扩原生渠道
-  MODELS=(glm5.3 kimi-k3 gpt-6-astra qwen3.8max opus5.5)
+  # qwen3.8max 两分支同摘(10/25 补 if 分支):渠道表仍指 bl.cmd(Windows 名),Mac 无 bl CLI,
+  # relay 恢复走 if 分支后连崩 96 次;v5 渠道表修好前不回
+  MODELS=(glm5.3 kimi-k3-256k gpt-6-astra opus5.5)
 else
   # qwen3.8max 摘除(10/24):bailian 协议需 bl CLI,Windows arm 线退役后 Mac 未装
   # (shutil.which("bl") 落空→FileNotFoundError 崩循环);bl 装好后加回
