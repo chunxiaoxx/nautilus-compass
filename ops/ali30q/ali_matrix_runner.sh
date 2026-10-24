@@ -4,20 +4,28 @@
 CS=~/Projects/nautilus-v5/.claude/worktrees/codesense-a-fix/codesense
 LOG=~/Projects/nautilus-compass/ops/ali30q/matrix_run.log
 PROBE() {
-  curl -s -m 8 -o /dev/null -w "%{http_code}" https://api.chunxiao.wang/v1/models 2>/dev/null
+  curl -s -m 8 -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $RELAY" https://api.chunxiao.wang/v1/models 2>/dev/null
 }
+RELAY=$(grep ^RELAY_API_KEY ~/Projects/nautilus-v5/.claude/worktrees/codesense-a-fix/.env | cut -d= -f2)
+# 恢复判定放宽:200=OpenAI端可用扩原生glm/k3/gpt;401/5xx=仅Anthropic应急通道+qwen+opus
+
 relay=$(PROBE)
 echo "[$(date '+%m-%d %H:%M')] 中转站探活: $relay (000/500=宕)" >> $LOG
 # 渠道集:中转站通=5渠道;宕=qwen+opus先行
-if [ "$relay" = "200" ]; then
+if [ "$relay" = "200" ]; then   # OpenAI 端全恢复才扩原生渠道
   MODELS=(glm5.3 kimi-k3 gpt-6-astra qwen3.8max opus5.5)
 else
-  MODELS=(opus5.5)  # qwen 候百炼key入env(断点7);中转恢复扩glm/k3/gpt
+  # qwen3.8max 摘除(10/24):bailian 协议需 bl CLI,Windows arm 线退役后 Mac 未装
+  # (shutil.which("bl") 落空→FileNotFoundError 崩循环);bl 装好后加回
+  MODELS=(opus5.5 glm5.3-anthropic)  # key已入env(10/24);中转恢复扩glm/k3/gpt
 fi
-ITEMS=(CS-010 CS-011 CS-012 CS-013 CS-014)
+ITEMS=(CS-010 CS-011 CS-012 CS-013 CS-014 CS-001 CS-002 CS-003 CS-004 CS-005 CS-006 CS-007 CS-301)
 for item in $ITEMS; do
   # 题目就绪检查(笔记本线未交付的题跳过)
   [ -f "$CS/items/$item/task.toml" ] || { echo "[$item] 未就绪,跳过" >> $LOG; continue }
+  # 考试副本物化(model_solve 只读不建;原件=repo_bak,10/24 修连续 workspace/repo 缺失断点)
+  [ -d "$CS/items/$item/environment/workspace/repo" ] || \
+    cp -R "$CS/items/$item/environment/workspace/repo_bak" "$CS/items/$item/environment/workspace/repo"
   for m in $MODELS; do
     for run in 0 1 2 3; do
       R="$CS/items/$item/_s5/${m}_run${run}_result.json"
