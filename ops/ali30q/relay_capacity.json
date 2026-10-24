@@ -1,0 +1,69 @@
+{
+  "version": "2026-10-24-macmini",
+  "channels_file": "codesense/tools/models_channels.json",
+  "basis": "中转站侧压测(21:40-22:10) + macmini 侧直连并发实测(22:35-22:40);数字含判分型真实负载(取自 matrix_run.log 实测耗时),非 hi 探针",
+  "judge_models": {
+    "gpt-6-astra": {
+      "api_model": "gpt-6-astra",
+      "endpoint": "relay",
+      "base_url": "https://api.chunxiao.wang/v1",
+      "max_concurrency": 6,
+      "min_interval_s": 0,
+      "timeout_s": 600,
+      "status": "ok",
+      "measured": "中转站 10 并发 10/10 200(短提示 1.7-2.5s);判分型 6.4-6.8s",
+      "note": "批量主力;未见站级限速"
+    },
+    "glm5.3": {
+      "api_model": "glm-5.3",
+      "endpoint": "relay",
+      "base_url": "https://api.chunxiao.wang/v1",
+      "max_concurrency": 1,
+      "min_interval_s": 6,
+      "timeout_s": 900,
+      "status": "limited",
+      "measured": "站级 12req/min 硬墙(ch4/ch5 两把 key 共享同一池);11/min 与 17/min 持续均全通;14 并发 → 5 次客户端可见 429",
+      "note": "错峰 ≥6s;官方兜底腿是 5h 窗口制,突发会把它打满"
+    },
+    "kimi-k3-ark": {
+      "api_model": "kimi-k3",
+      "endpoint": "ark",
+      "base_url": "https://ark.cn-beijing.volces.com/api/plan/v1",
+      "max_concurrency": 4,
+      "min_interval_s": 0,
+      "timeout_s": 900,
+      "status": "ok",
+      "measured": "macmini 直连实测 200(content 与 reasoning_content 分离)",
+      "note": "替代 relay 的 kimi-k3 —— 后者周额度耗尽,每次 0.1s 秒拒 429 且会删掉旧结果反复重跑"
+    },
+    "opus5.5": {
+      "api_model": "claude-opus-5-5",
+      "endpoint": "code80",
+      "base_url": "https://code.ai80.vip/v1",
+      "max_concurrency": 1,
+      "min_interval_s": 0,
+      "timeout_s": 1200,
+      "status": "serial_only",
+      "measured": "macmini 直连并发 2 → 1×200(5.9s) + 1×499(0.13s 上游断连);判分型单次 83-132s",
+      "note": "🔴 上游拒绝并发,只能串行;判分批里建议降级为抽样"
+    },
+    "qwen3.8max": {
+      "api_model": "qwen3.8-max",
+      "endpoint": "bailian",
+      "max_concurrency": 2,
+      "min_interval_s": 0,
+      "timeout_s": 2400,
+      "status": "ok",
+      "measured": "判分型单次 928-1152s(15-19 分钟);走 bl CLI 子进程(messages-file 传大 prompt)",
+      "note": "最慢通道,并发收益最大;首次开并发建议先单题验证 bl CLI 无共享锁"
+    }
+  },
+  "global": {
+    "max_total_concurrency": 8,
+    "per_item_runs": 4,
+    "items": ["CS-010", "CS-011", "CS-012", "CS-013", "CS-014", "CS-001", "CS-002", "CS-003", "CS-004", "CS-005", "CS-006", "CS-007", "CS-301"],
+    "resume_rule": "result.json 里 score 非 null 才跳过;score=null 的 error 结果删掉重跑",
+    "repo_materialize": "items/<item>/environment/workspace/repo 缺失时从 repo_bak 复制(10-24 修的连续断点)",
+    "log": "ops/ali30q/matrix_run.log"
+  }
+}
