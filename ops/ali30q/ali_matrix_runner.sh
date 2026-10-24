@@ -12,7 +12,7 @@ echo "[$(date '+%m-%d %H:%M')] 中转站探活: $relay (000/500=宕)" >> $LOG
 if [ "$relay" = "200" ]; then
   MODELS=(glm5.3 kimi-k3 gpt-6-astra qwen3.8max opus5.5)
 else
-  MODELS=(qwen3.8max opus5.5)
+  MODELS=(opus5.5)  # qwen 候百炼key入env(断点7);中转恢复扩glm/k3/gpt
 fi
 ITEMS=(CS-010 CS-011 CS-012 CS-013 CS-014)
 for item in $ITEMS; do
@@ -21,9 +21,14 @@ for item in $ITEMS; do
   for m in $MODELS; do
     for run in 0 1 2 3; do
       R="$CS/items/$item/_s5/${m}_run${run}_result.json"
-      [ -f "$R" ] && continue  # 幂等:已有结果跳过
+      # 幂等:有 score(成功读数)才跳过;error 结果重跑
+      if [ -f "$R" ]; then
+        S=$(python3 -c "import json;d=json.load(open('$R'));print(d.get('score'))" 2>/dev/null)
+        [ "$S" != "None" ] && continue
+        rm -f "$R"
+      fi
       echo "[$(date '+%H:%M')] $item × $m × run$run 开考" >> $LOG
-      (cd $CS && python3 tools/model_solve.py $item --model $m --run $run >> $LOG 2>&1)
+      (cd $CS && .venv-judge/bin/python tools/model_solve.py $item --model $m --run $run >> $LOG 2>&1)
       sleep 20   # relay 12req/min 约束
     done
   done
