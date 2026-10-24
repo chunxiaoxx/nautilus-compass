@@ -35,3 +35,9 @@
   - S3 校准辅助:有机制库卡时跑 deficient/guessed 变体脚本
   - 管道 S5:watch 循环(s5_receiver)发现新请求→按排期处理;A100 恢复→点火验证
 - 记忆卫生:蒸馏散沙不新增(与主题档案相似度>阈值→append);每周轮做红黄档语义压实一批
+
+## 阿里30题专项(2026-10-24 起 · 每轮必查)
+- 矩阵进度: tail ops/ali30q/matrix_run.log——跑批器每小时自动轮(ali30q-loop);断点连续 3 条同因=停下报 v5 而非空转
+- 渠道恢复: 中转站(api.chunxiao.wang)探活恢复 200 → 跑批器自动扩 5 渠道,无需干预
+- 信箱: v5/platform 新令(发卷/审计/话术审查)按 SLA 回;每轮 COLLAB_BOARD append 一行矩阵进度
+- 交付锚: B批5题矩阵 10/30 18:00;话术(APPROVE-WITH-EDITS 已回)候矩阵实证后发 feishu
