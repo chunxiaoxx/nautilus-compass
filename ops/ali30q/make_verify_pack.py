@@ -46,7 +46,26 @@ def main(item_dir):
             'independence': '[实测] compass 非设计框审计',
         },
     }
-    out = item / '_s5' / 'verify_manifest.json'
+
+    # v1.1: 平均分维度(甲方口径 21321)——五模型各+分组(国内/SOTA)+差值+趋势一致性
+    DOMESTIC = {'qwen3.8max', 'glm5.3', 'kimi-k3'}
+    SOTA = {'opus5.5', 'gpt-6-astra'}
+    by_model = {}
+    for k, v in results.items():
+        m = k.rsplit('_run', 1)[0]
+        by_model.setdefault(m, []).append(v['score'])
+    avg = {m: round(sum(s)/len(s), 4) for m, ss in by_model.items() for s in [ss]}
+    dom = [avg[m] for m in avg if m in DOMESTIC]
+    sota = [avg[m] for m in avg if m in SOTA]
+    manifest['avg_score_v1_1'] = {
+        'per_model': avg,
+        'domestic_avg': round(sum(dom)/len(dom), 4) if dom else None,
+        'sota_avg': round(sum(sota)/len(sota), 4) if sota else None,
+        'gap_sota_minus_domestic': round(sum(sota)/len(sota) - sum(dom)/len(dom), 4) if dom and sota else None,
+        'trend_consistency': 'PASS' if (dom and sota and (sum(sota)/len(sota) - sum(dom)/len(dom)) >= 0.10) else 'CHECK',
+        'threshold_note': '甲方口径:国内比SOTA低10-20分以上(0.10-0.20);<0.10 区分度不足警报',
+    }
+        out = item / '_s5' / 'verify_manifest.json'
     json.dump(manifest, open(out, 'w'), ensure_ascii=False, indent=1)
     print(f'✅ {out} ({len(results)} 有效读数入包)')
 
