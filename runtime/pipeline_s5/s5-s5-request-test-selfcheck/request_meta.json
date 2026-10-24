@@ -1,0 +1,8 @@
+{
+ "received_at": "2026-10-23T17:30:12.240292+00:00",
+ "mail_id": 0,
+ "trace": "pipeline-s5-request-test-selfcheck",
+ "title": "[TEST] 自检",
+ "deadline": "",
+ "body_head": "selfcheck"
+}

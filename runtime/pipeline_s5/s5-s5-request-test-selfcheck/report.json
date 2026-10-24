@@ -1,0 +1,14 @@
+{
+ "task_id": "s5-s5-request-test-selfcheck",
+ "compass_signed": true,
+ "stage": "PENDING-A100-OFFLINE",
+ "s4_output_persistent": "/home/ubuntu/pipeline_s5_persistent/sjb_pipeline_v2_output/",
+ "eval_criteria_ref": "飞轮判词 v1.7(微调税律:精选80→50少伤,大路货80→0全毁)",
+ "pipeline": [
+  "零样本基线评测",
+  "S4数据微调",
+  "微调后评测",
+  "Delta pp 计算"
+ ],
+ "generated_at": "2026-10-23T17:30:20.252762+00:00"
+}
