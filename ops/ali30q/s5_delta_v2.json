@@ -1,0 +1,26 @@
+{
+ "compass_signed": true,
+ "avg_delta_pp": 2.25,
+ "n_pairs": 2,
+ "method": "BGE-M3 cos(vs gold), zero-shot vs fine-tuned same-frame",
+ "detail": [
+  {
+   "episode": "episode_000000",
+   "gold": "机械手正将一袋洗涤剂拿到装有黑色衣物的水桶旁，准备清洗。",
+   "pred_base": "机器人在超市货架上挑选商品，涉及的物体有方便面、零食包装、货架和购物篮。",
+   "pred_ft": "机器人在超市货架上挑选商品，涉及的物体有方便面、零食包装、货架和购物篮。",
+   "sim_base": 0.5586,
+   "sim_ft": 0.5586,
+   "delta_pp": 0.0
+  },
+  {
+   "episode": "episode_000006",
+   "gold": "机器人视角记录了超市商品货架、购物车和隔帘附近的通道环境。",
+   "pred_base": "机器人正在操作一个大型物体，可能是一个机械装置或设备，背景是布帘。",
+   "pred_ft": "机器人在超市货架上挑选零食，涉及的物体有货架、零食包装、价格标签。",
+   "sim_base": 0.6846,
+   "sim_ft": 0.73,
+   "delta_pp": 4.5
+  }
+ ]
+}
