@@ -1,0 +1,19 @@
+{
+ "compass_signed": true,
+ "avg_delta_pp": 0.0,
+ "n": 2,
+ "detail": [
+  {
+   "episode": "episode_000000",
+   "sim_base": 0.5586,
+   "sim_ft": 0.5586,
+   "delta_pp": 0.0
+  },
+  {
+   "episode": "episode_000006",
+   "sim_base": 0.6846,
+   "sim_ft": 0.6846,
+   "delta_pp": 0.0
+  }
+ ]
+}
