@@ -25,7 +25,9 @@ if [ "$relay" = "200" ]; then   # OpenAI 端全恢复才扩原生渠道
   # relay 恢复走 if 分支后连崩 96 次;v5 渠道表修好前不回
   # kimi 走 ark 直连(10/25 R17 实核:relay k3 池 429 累计 95,v5 渠道表无 kimi-k3-256k key
   # ——559b0e1f 改名落空 KeyError 连崩;渠道表 verified 替代线=kimi-k3-ark,key 已入 env)
-  MODELS=(glm5.3 kimi-k3-ark gpt-6-astra opus5.5)
+  # kimi-k3-ark 暂停(平台 #21909):CS-005 四槽空 body,候 ARK key/端点/配额归因后定槽补跑。
+  # qwen3.8max 仍因 Mac 无 bl CLI 暂停；不可把三通道恢复表述为四通道全恢复。
+  MODELS=(glm5.3 gpt-6-astra opus5.5)
 else
   # qwen3.8max 摘除(10/24):bailian 协议需 bl CLI,Windows arm 线退役后 Mac 未装
   # (shutil.which("bl") 落空→FileNotFoundError 崩循环);bl 装好后加回
