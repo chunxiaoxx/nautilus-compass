@@ -65,7 +65,7 @@ def main(item_dir):
         'trend_consistency': 'PASS' if (dom and sota and (sum(sota)/len(sota) - sum(dom)/len(dom)) >= 0.10) else 'CHECK',
         'threshold_note': '甲方口径:国内比SOTA低10-20分以上(0.10-0.20);<0.10 区分度不足警报',
     }
-        out = item / '_s5' / 'verify_manifest.json'
+    out = item / '_s5' / 'verify_manifest.json'
     json.dump(manifest, open(out, 'w'), ensure_ascii=False, indent=1)
     print(f'✅ {out} ({len(results)} 有效读数入包)')
 
