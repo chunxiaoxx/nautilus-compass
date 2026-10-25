@@ -1,0 +1,502 @@
+[
+ {
+  "file": "arm-a-summary-layer-pass-20260903",
+  "desc": "A 臂摘要层终判 PASS(9/3)——e2e 500 题 42.6%→70.0/81.6%,三型全过门双口径稳健;judge 断连 71 题两类口径披露;ssp 回退=噪声",
+  "patterns": [
+   "P1_口径理解错误"
+  ]
+ },
+ {
+  "file": "assay-330-pypi-published-20261004",
+  "desc": "PyPI 3.3.0 发布(10/4,发版五连全闭环)+nautilus_compass 根目录映射包布局坑(新增子包必走 package-dir 映射,tests/CLI 未安装环境用 import",
+  "patterns": [
+   "P2_交付形态错位"
+  ]
+ },
+ {
+  "file": "bc1-and-loop-day-20260923",
+  "desc": "BC1 基准全链(30题/自测/审计/重考/发布就绪)+Loop V1 系统+历史署名重写+签名断链三连修——9/23 超长 session 战报",
+  "patterns": [
+   "P2_交付形态错位"
+  ]
+ },
+ {
+  "file": "bc1-launch-eve-20260926",
+  "desc": "BC1 发布前夜 31h 会话主 log——mem0 三臂对照/判因两轮勘误/战略总纲/五件批/子进程配方",
+  "patterns": [
+   "P2_交付形态错位"
+  ]
+ },
+ {
+  "file": "benchmark-naming-licensing-20260902",
+  "desc": "自建基准(LME-V2 451题)对外发布立项 N6:命名两连撞(CompassBench=上海AI实验室·ATLAS=李飞飞WorldLabs 9/2发布)·候选 CompassMemBench/C",
+  "patterns": [
+   "P1_口径理解错误",
+   "P2_交付形态错位"
+  ]
+ },
+ {
+  "file": "c-family-verify-closure-20260917",
+  "desc": "C族首批校准verify闭环——6/6 agree零disagree,ed25519回执+check绿,回函id 324(含独立性暴露面+回执覆盖两条披露);T4棘轮按platform 319精化案重",
+  "patterns": [
+   "P5_范围遗漏漏项"
+  ]
+ },
+ {
+  "file": "clawhub-glama-audit-20260916",
+  "desc": "ClawHub 安全审查(Review·T03 Error 未钉版本)+ Glama Docker build 根因(nautilus extra 内部轮子炸 uv universal lock)双双",
+  "patterns": [
+   "P2_交付形态错位",
+   "P7_口径语义错位"
+  ]
+ },
+ {
+  "file": "cloud-recall-livelock-fillbudget-20261012",
+  "desc": "云端MCP recall全拒13.2h根因=fill霸锁livelock;COMPASS_FILL_BUDGET_S根修;诊断套路四步",
+  "patterns": [
+   "P4_边界异常缺陷"
+  ]
+ },
+ {
+  "file": "codesense-first-fullchain-20261024",
+  "desc": "阿里30题CS-010贯通演练收官——S2→S5全链首次贯通·opus两连0.0(G1区分度有效)·9断点全账(中转站宕/百炼key缺/pytest缺/409限流等)·launchd循环接管",
+  "patterns": [
+   "P5_范围遗漏漏项"
+  ]
+ },
+ {
+  "file": "compass-daemon-pylibs-rootcause-20260830",
+  "desc": "compass daemon 1322 次 recall 失败根因=启动脚本注入 PYTHONPATH=C:\\pylibs 旧库快照;HUD 丢失/报错同源;修=移除注入改用 site-package",
+  "patterns": [
+   "P5_范围遗漏漏项"
+  ]
+ },
+ {
+  "file": "competitor-final-audit-20260930",
+  "desc": "竞品终核四项全定谳——mem0领投纠错(Basis Set非Abstract)/Zep独立运营+转型治理层(收购=幻觉)/TypeSafe proof不可寻址+同页双口径(171x/75x≠193.6",
+  "patterns": [
+   "P1_口径理解错误"
+  ]
+ },
+ {
+  "file": "d14-abstention-verdict-20260902",
+  "desc": "d14 刀4(abstention gate)定案未过门:误拒答 92/89 题大越界(门≤1/≤2)但 95% 是 d12 本来也错的题·打掉仅 5/2;终局干净口径 web 40.0%/ent 3",
+  "patterns": [
+   "P1_口径理解错误"
+  ]
+ },
+ {
+  "file": "day-log-20261005-northstar-sprint",
+  "desc": "10/5 凌晨冲刺——北极星四框对齐+L1 判据冻结交付+14B smoke PASS+turbo 完成+XERJ Issue#1138;compat 三坑(peft×transformers5/la",
+  "patterns": [
+   "P2_交付形态错位"
+  ]
+ },
+ {
+  "file": "day-log-20261008-corpus-finalcheck",
+  "desc": "10/8 主件制 11 轮——语料 1846→2257 三段冲刺/终检清单清零(final_check.py 三口径)/S6 正本回函;两通用教训:nohup 非登录 shell 无 conda 假绿",
+  "patterns": [
+   "P1_口径理解错误"
+  ]
+ },
+ {
+  "file": "devto-operations-20260908",
+  "desc": "dev.to 自主运营首夜——零流量三根因(AI 披露新政/泄露文/title 锁死)+API 管道配方(curl UA 拦截)+泄露文下架事件",
+  "patterns": [
+   "P4_边界异常缺陷"
+  ]
+ },
+ {
+  "file": "devto-publish-recipe-20261021",
+  "desc": "dev.to API 发文配方+四坑(UA必须带否则403 Forbidden Bots/标题重复422/DELETE草稿404/分段取错发空串乌龙)——首篇英文触客文发布成功坐标",
+  "patterns": [
+   "P2_交付形态错位"
+  ]
+ },
+ {
+  "file": "e1-tune-h2-rerank-pass-20261009",
+  "desc": "E1-TUNE H2 rerank 过门级读数——R@1 0.40→0.5667 全集/干净子集 0.80 三门全过;归因分离 H2≫H1;判据口径声明与剩余工作",
+  "patterns": [
+   "P1_口径理解错误"
+  ]
+ },
+ {
+  "file": "feedback-analysis-vs-action-mode-20261003",
+  "desc": "用户严肃纠正——连续提问被回以六份分析文档+options审批流,实质推进仅1.5件;四层根因(工件激励错位/options滥用切割连续思考/推进指令当分析请求处理/疲劳风险规避)+修复规则",
+  "patterns": [
+   "P7_口径语义错位"
+  ]
+ },
+ {
+  "file": "feedback-brief-page-reverted-20261010",
+  "desc": "用户纠正\\\"每日简报=又增加负担\\\"——信息过载的解法是收敛与异常推送,不是新增信息源;brief.html 已撤",
+  "patterns": [
+   "P4_边界异常缺陷"
+  ]
+ },
+ {
+  "file": "first-exam-0007-deploy-conflict",
+  "desc": "首考0007出卡(IE·SLA内11.5h)+is_smoke断链finding+同仓并发写冲突教训(platform同机部署互踩)",
+  "patterns": [
+   "P4_边界异常缺陷"
+  ]
+ },
+ {
+  "file": "gmail-not-in-patrol-infistar-lapse",
+  "desc": "Gmail漏回Infistar四天根因=例巡清单缺Gmail;全渠道欠账盘点法;Infistar回函口径",
+  "patterns": [
+   "P1_口径理解错误",
+   "P5_范围遗漏漏项"
+  ]
+ },
+ {
+  "file": "gmail-verify-production-20260906",
+  "desc": "Gmail 邮箱验证生产链 9/6 定案——production refresh_token+四坑(CRLF 401/nginx 漏 verify 路由/probe env 配方)+signup e2",
+  "patterns": [
+   "P7_口径语义错位"
+  ]
+ },
+ {
+  "file": "gpu-e2e-rootcause-chain-20260829",
+  "desc": "GPU e2e 500 四层根因链(429限流/reranker权重损坏/漏ZMM_SSU_UTTERANCE/bge路径不认)+教训:抄env必须逐项diff·权重必须验载·API必须退避",
+  "patterns": [
+   "P4_边界异常缺陷"
+  ]
+ },
+ {
+  "file": "gpu-old-disk-restart-20260903",
+  "desc": "GPU 用旧盘重启实例是正路(全套环境秒级就位)——租新机前必查保留盘;9/3 实例 654686(js1.blockelite.cn:11224)踩坑:pip 缺失/24G 卡 vllm cudag",
+  "patterns": [
+   "P4_边界异常缺陷",
+   "P5_范围遗漏漏项"
+  ]
+ },
+ {
+  "file": "hud-multiview-crosstalk-fix-20260901",
+  "desc": "HUD statusline 多窗口串台修复(v3.0.11·commit 2a359aa):claude-hud 段缓存曾全局单份不带 cwd 键,4 窗口互相覆盖=目录/仓库显示混乱+节流窗内空段",
+  "patterns": [
+   "P5_范围遗漏漏项"
+  ]
+ },
+ {
+  "file": "ihui-artur-due-diligence-m1-candidate",
+  "desc": "IHUI#78尽调——Artur个人开发者(与IHUI关系未证实)·IHUI=李春川个人项目(真实但话术重)·三步走48h时钟",
+  "patterns": [
+   "P2_交付形态错位"
+  ]
+ },
+ {
+  "file": "j6-clarify-and-qwen3-8b-errata-20261010",
+  "desc": "🔴J6(10/26)=需求侧裁决≠7B对拍(阈值触发无死线)·勘误第8例Qwen3系无7B实为8B·两概念混淆的教训与正确口径",
+  "patterns": [
+   "P1_口径理解错误",
+   "P3_需求约束遗漏"
+  ]
+ },
+ {
+  "file": "jev-trust-launch-20260922",
+  "desc": "jev-trust 0.1.0 发布(PyPI+双 awesome-jev PR+Discord 同发)——Jev API 信任中间件,含双列表 fork 坑与 PR 创建配方",
+  "patterns": [
+   "P2_交付形态错位"
+  ]
+ },
+ {
+  "file": "judge-pipeline-first-card-20261009",
+  "desc": "判读管线首夜全链信用闭环——首卡delivered→平台独立复现通过(#10727)→判例入册delta_0006(语料2258)·sha口径LF固化·派单制信箱函·L1/L2分界",
+  "patterns": [
+   "P1_口径理解错误"
+  ]
+ },
+ {
+  "file": "launch-sprint-status-20260905",
+  "desc": "9/8 发布冲刺全景——物料清单位置+用户拍板方向(新共识叙事/造词)+nginx /mcp 8443 陷阱+用户侧阻塞清单",
+  "patterns": [
+   "P2_交付形态错位"
+  ]
+ },
+ {
+  "file": "letta-wrong-repo-lesson-20261004",
+  "desc": "Letta #3450 发错仓考古——主仓已变 landing page 禁 eval 类 issue,正确归属 letta-evals;发外联 issue 前必查目标仓 AGENTS.md",
+  "patterns": [
+   "P1_口径理解错误"
+  ]
+ },
+ {
+  "file": "lmev2-first-full-baseline-20260830",
+  "desc": "LME-V2 small tier 451 题首次全量基线——web 19.6%/ent 12.8%(doubao 口径一致 e2e500);短板=static/dynamic unknown 55-",
+  "patterns": [
+   "P1_口径理解错误",
+   "P5_范围遗漏漏项"
+  ]
+ },
+ {
+  "file": "lmev2-pipeline-smoke-proven-20260830",
+  "desc": "LME-V2 评测管线 GPU 机全链路打通(六坑定案)——BGE 线程竞态须单 worker/newapi 审查拦截题干换 ARK judge/32k context 硬要求;续租一键复跑命令在 T",
+  "patterns": [
+   "P4_边界异常缺陷"
+  ]
+ },
+ {
+  "file": "lmev2-three-knives-tuning-20260830",
+  "desc": "LME-V2 三刀调优——d12 全量定案 web 19.6→36.7%·ent 12.8→40.3%(刀1 abstention 口径+刀2 检索单元,四判据三中一未测);judge retry p",
+  "patterns": [
+   "P1_口径理解错误",
+   "P5_范围遗漏漏项"
+  ]
+ },
+ {
+  "file": "lmev2-upstream-attribution-20260902",
+  "desc": "🔴 重大纠偏:LME-V2 451题=上游 xiaowu0162(Di Wu)官方基准非我们自建(差点改名NautilusMem发布=侵权)——N6改形:T0=官方基准成绩册+判分协议+调优栈(att",
+  "patterns": [
+   "P2_交付形态错位"
+  ]
+ },
+ {
+  "file": "m5-memgate-deploy-lessons-20261009",
+  "desc": "M5 记忆门三件套部署四课——cherry-pick 路线+9878 双进程端口事故(精确PID杀)+EMBED_BUDGET渐进=dedup冷文件漏检(coverage披露修)+J4 gate RE",
+  "patterns": [
+   "P5_范围遗漏漏项"
+  ]
+ },
+ {
+  "file": "memory-audit-seven-operators-20260907",
+  "desc": "compass 七算子审计(9/7)——写无gate/读介质异构/选不挡错/合并无触发/组合缺位属实;两处修正(衰减在schema未在使用·gate在燃料线缺记忆线);三修复冻结至9/15窗口",
+  "patterns": [
+   "P5_范围遗漏漏项"
+  ]
+ },
+ {
+  "file": "memx-flywheel-first-night-20261009",
+  "desc": "MEMX记忆自催化飞轮首夜——三向归因算子v0实弹+A+情境改写查询使R@1全线-57pp(0.97→0.40=检索真实短板量化基线)·效用表首跑抓出fact_status覆盖率缺口",
+  "patterns": [
+   "P3_需求约束遗漏",
+   "P5_范围遗漏漏项",
+   "P7_口径语义错位"
+  ]
+ },
+ {
+  "file": "org-frames-probe-runbook",
+  "desc": "五框坐标与跨框探查法——9/24 教训:凭 compass 记忆索引断言他框状态=自报复发,flywheel\\\"静默\\\"误判全案",
+  "patterns": [
+   "P5_范围遗漏漏项"
+  ]
+ },
+ {
+  "file": "p2-submission-terms-review-20260830",
+  "desc": "8/30 P2 提审材料陌生人终审定案——3 条死路已修(卡片改真/README 邀请制/npm 死链删),路径 B 拍板(8/31 话术版提交+6 件 MVP 并行);🔴 GitHub 版 READ",
+  "patterns": [
+   "P2_交付形态错位"
+  ]
+ },
+ {
+  "file": "paper-roadmap-history-20260904",
+  "desc": "论文线历史纠偏(用户 9/4 口述)——旧 paper2(Chinese LLMs recall gap·v0.8 56.6%)arXiv 审核未通过;当前 paper2=判官盲区融合版是另一篇(零引",
+  "patterns": [
+   "P5_范围遗漏漏项"
+  ]
+ },
+ {
+  "file": "platform-mail-script-boundary",
+  "desc": "🔴发函脚本按框归属——compass 一律用 scripts/platform_mail.py,nautilus-core 的 ops/send_letter.py 是 platform 框的(发函署",
+  "patterns": [
+   "P1_口径理解错误"
+  ]
+ },
+ {
+  "file": "platform-verifypack-integration-20260914",
+  "desc": "平台迁移引导落地到 compass——技术函 223 三案选 A(函件异步·零新服务·独立性最强)已回函 id 229 附 SLA 工作时段边界+判据互锚同意+10 条 fde_verdicts 试点",
+  "patterns": [
+   "P1_口径理解错误",
+   "P4_边界异常缺陷"
+  ]
+ },
+ {
+  "file": "propagation-layer-order-20260904",
+  "desc": "用户拍板传播五层顺序——英文业界架构文→中文圈→论文→市场需求→大众营销贴(故事钩排最末)",
+  "patterns": [
+   "P3_需求约束遗漏"
+  ]
+ },
+ {
+  "file": "pypi-311-published-20260906",
+  "desc": "PyPI 3.1.1 发布定案(9/6)——三重独立验证绿·构建配方 --no-isolation·403=截断 token 教训·README 补 pip Quickstart",
+  "patterns": [
+   "P2_交付形态错位",
+   "P4_边界异常缺陷"
+  ]
+ },
+ {
+  "file": "rerank-macmini-migration-r561",
+  "desc": "R561 rerank迁Mac mini 8401(用户拍板)——服务端候用户跑安装脚本,客户端已切;含\\\"覆盖丢失\\\"误判勘正",
+  "patterns": [
+   "P5_范围遗漏漏项"
+  ]
+ },
+ {
+  "file": "retrospect-6d-patterns-20261001",
+  "desc": "9/26-10/1 六天复盘——五个共性病(最后一厘米/叙事升格/测试环境失真/知识时效/工具脆性)与七个高价值模式(预注册key先行/判据零放宽/U态/探针LOOP/失败公开/跨框互查/薄封装)",
+  "patterns": [
+   "P3_需求约束遗漏"
+  ]
+ },
+ {
+  "file": "rsi-loop1-recompute-verdict-20260914",
+  "desc": "RSI 环 #1 终局——非实现者复算抓 2 处自报绿(J1 覆盖 0/30·J3 body[:500] 截断)→ 用户拍板修复(hook 写入门+全文沿链)→ 重测四条全绿 → 环闭环+通报函已发(",
+  "patterns": [
+   "P4_边界异常缺陷",
+   "P5_范围遗漏漏项"
+  ]
+ },
+ {
+  "file": "rsibench-adoption-20261002",
+  "desc": "rsi-bench 考场借轨提案被对方当天实现落地(PR #2)=第三方采纳我方验证协议设计首例;样例包=本周交付承诺",
+  "patterns": [
+   "P2_交付形态错位"
+  ]
+ },
+ {
+  "file": "s6-ledger-recompute-complete-20261009",
+  "desc": "S6冲正重算+判读四卡收官——4096五门独立验收PASS(只读SQL直查非采信自报)·l1-0003/0004发卡·R3判读被v5全盘采纳·A3终态201自纠+8真欠·四门口径勘误双采纳",
+  "patterns": [
+   "P1_口径理解错误"
+  ]
+ },
+ {
+  "file": "security-workbuddy-token-scoping-20260830",
+  "desc": "8/30 workbuddy 跨框记忆暴露修复:TCP MCP 版补项目级 scope(8/28 体系只覆盖 HTTP 版)· 13 存量全权 token·workbuddy 已换 scoped+旧已",
+  "patterns": [
+   "P5_范围遗漏漏项"
+  ]
+ },
+ {
+  "file": "selfboot-line-invalid-foundation-20261019",
+  "desc": "用户定谳:自产语料自举线从底层无效——工作痕迹不是判例,棘轮永久停止;燃料只认官方真值样本/外部题(1032人工题口径已勘误);RAG 用途保留",
+  "patterns": [
+   "P1_口径理解错误"
+  ]
+ },
+ {
+  "file": "session-contract-l4a-distill-20260822",
+  "desc": "✅CONSUMED 8/25 · compass 派发 · L4a 权重蒸馏首跑合约(T4+qwen QLoRA,正负皆是产出)· compass 独立验收 PROVEN(单族弱边界)",
+  "patterns": [
+   "P4_边界异常缺陷"
+  ]
+ },
+ {
+  "file": "session_20260715_cloud_box_health_audit",
+  "desc": "2026-07-15 cloud box 健康审计:certbot 自动续期已死(pyOpenSSL/cryptography 版本冲突)Aug 17 证书到期前必修;ufw 关 4 周;BGE da",
+  "patterns": [
+   "P7_口径语义错位"
+  ]
+ },
+ {
+  "file": "session_20260716_biomysterybench_scaffold",
+  "desc": "BioMysteryBench(甲方外部新需求·生物信息学反向推理benchmark)compass 建了格式+验证器脚手架;真解验证的 bio 工具环境+批量待拍",
+  "patterns": [
+   "P3_需求约束遗漏"
+  ]
+ },
+ {
+  "file": "session_20260717-0313_合约兑现SSOT同步V5",
+  "desc": "cnt_ssot_mint_v5_20260716 兑现:V5 repo SSOT 副本真值段已同步 7/17 记分牌实测(703/66/89.4%),mint 跳过已铸题逻辑已在 cloud 实证存",
+  "patterns": [
+   "P5_范围遗漏漏项"
+  ]
+ },
+ {
+  "file": "session_20260717-0335_SSOT副本探针已上线",
+  "desc": "用户拍板即刻做:recall hook 新增 SSOT 副本一致性探针(v2.3·commit 141040c),CHARTER/LOOP_STATE 跨 repo 哈希漂移即对每框亮牌;首跑证实两锚",
+  "patterns": [
+   "P7_口径语义错位"
+  ]
+ },
+ {
+  "file": "session_20260718-1142_差异化层-0-000是错尺子非无信号",
+  "desc": "受控实验证伪\"gated V5/信号饿死\":tier/poi 用 retrieval MRR 量结构性≈0(强cosine已封顶+全局信号≠单query相关性),且 poi ×2.0 boost 是反",
+  "patterns": [
+   "P7_口径语义错位"
+  ]
+ },
+ {
+  "file": "session_20260718-1201_drift护城河实测0-92-不需ARK",
+  "desc": "compass 唯一真护城河 drift 当前 live 实测 AUC 0.9232(anchor集,本地BGE,零LLM);冻结held-out本机缺失需LLM-judge重造(ARK唯一正当用途)",
+  "patterns": [
+   "P5_范围遗漏漏项"
+  ]
+ },
+ {
+  "file": "session_20261020-1610_笔记本侧进展同步",
+  "desc": "2026-10-20 笔记本(compass框)当日全景同步给Mac侧Claude——迁移收官B8终验/rerank 8401本机上线/ssh双向/触客在途清单/分工边界",
+  "patterns": [
+   "P4_边界异常缺陷"
+  ]
+ },
+ {
+  "file": "session_9c3b69dc",
+  "desc": "MCP超时根因=cloud被泄漏sshd拖垮(非服务死)；复用已实现的FastMCP+nginx模式上线标准远程MCP(nautilus.social/compass-mcp)；修复SSOT drif",
+  "patterns": [
+   "P4_边界异常缺陷"
+  ]
+ },
+ {
+  "file": "session_b2b522dd",
+  "desc": "compass 审计执法一轮从\"出收敛日报\"滚到\"看 GitHub PR\"，途中挖出公网泄露的 API key、系统性 Lint 红、conv2d oracle bug，并三次因拿陈旧 README ",
+  "patterns": [
+   "P2_交付形态错位"
+  ]
+ },
+ {
+  "file": "session_v3_launch_closure_20260824",
+  "desc": "V3.0 上线冲刺 C1-C3 全收口——pkl 卡死真根因(非原子写非\\\"不落盘\\\")/main ff 推送/云 repo 切 main 残留两个坑(stage1a 分叉线已备份,/opt daem",
+  "patterns": [
+   "P5_范围遗漏漏项"
+  ]
+ },
+ {
+  "file": "sha-eol-autocrlf-trap-20261008",
+  "desc": "🔴sha锚登记的autocrlf行尾陷阱——Windows工作树CRLF与cloud LF同blob双sha,登记处口径与平台复验永不合;sha锚一律LF规范化字节口径",
+  "patterns": [
+   "P1_口径理解错误",
+   "P7_口径语义错位"
+  ]
+ },
+ {
+  "file": "tech-launchd-three-pitfalls-20261021",
+  "desc": "Mac launchd 三坑纪律(openclaw TECH通报)——日历型装后永不自燃必kickstart/agent域写/Volumes=TCC EPERM/KeepAlive料缺=崩溃循环356",
+  "patterns": [
+   "P4_边界异常缺陷",
+   "P5_范围遗漏漏项"
+  ]
+ },
+ {
+  "file": "test-security-stability-20260902",
+  "desc": "9/2 测试+安全+稳定性专项:全量pytest复活(1581绿·mcp_durable 15失败=契约迁移非回归·tests/缺__init__坑)+漏网客户端#8(pytest探测器抓出)+aut",
+  "patterns": [
+   "P5_范围遗漏漏项",
+   "P7_口径语义错位"
+  ]
+ },
+ {
+  "file": "verification-commercialization-20260915",
+  "desc": "验证能力商业化定稿——免费复算入口已开(#166 回复+issue 入口)·第一付费 SKU=发布前独立审计 $99/199/299 三档·里程碑 M1(首请求)/M2(付费意愿)/M3(成交)M1 ",
+  "patterns": [
+   "P1_口径理解错误",
+   "P2_交付形态错位"
+  ]
+ },
+ {
+  "file": "verifypack-v02-built-20260909",
+  "desc": "#47 VerifyPack v0.2 完成——SPEC+CLI 四命令纯 stdlib 实现,batch001 端到端跑通,活文件缺陷显式化,等 flywheel 确认",
+  "patterns": [
+   "P3_需求约束遗漏",
+   "P5_范围遗漏漏项"
+  ]
+ },
+ {
+  "file": "zhihu-publisher-ready-20260927",
+  "desc": "知乎发布器四修定稿+9225键盘管道死亡复活术+paste保strong翻案(昨日\\\"全被剥\\\"结论过期)",
+  "patterns": [
+   "P2_交付形态错位"
+  ]
+ }
+]
