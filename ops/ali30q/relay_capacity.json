@@ -34,7 +34,8 @@
       "timeout_s": 900,
       "status": "ok",
       "measured": "端到端实测:CS-010 run0 有效读数 score=1.0(raw_len 3642,elapsed 327s);直连探针 200(content 与 reasoning_content 分离)",
-      "note": "替代 relay 的 kimi-k3 —— 后者周额度耗尽,36 次调用全 429(0.1s 秒拒)且会删掉旧结果反复重跑;火山 Agent Plan 直连已验证可用"
+      "note": "替代 relay 的 kimi-k3 —— 后者周额度耗尽,36 次调用全 429(0.1s 秒拒)且会删掉旧结果反复重跑;火山 Agent Plan 直连已验证可用",
+      "canonical_model": "kimi-k3"
     },
     "opus5.5": {
       "api_model": "claude-opus-5-5",
@@ -61,7 +62,21 @@
   "global": {
     "max_total_concurrency": 8,
     "per_item_runs": 4,
-    "items": ["CS-010", "CS-011", "CS-012", "CS-013", "CS-014", "CS-001", "CS-002", "CS-003", "CS-004", "CS-005", "CS-006", "CS-007", "CS-301"],
+    "items": [
+      "CS-010",
+      "CS-011",
+      "CS-012",
+      "CS-013",
+      "CS-014",
+      "CS-001",
+      "CS-002",
+      "CS-003",
+      "CS-004",
+      "CS-005",
+      "CS-006",
+      "CS-007",
+      "CS-301"
+    ],
     "resume_rule": "result.json 里 score 非 null 才跳过;score=null 的 error 结果删掉重跑",
     "repo_materialize": "items/<item>/environment/workspace/repo 缺失时从 repo_bak 复制(10-24 修的连续断点)",
     "log": "ops/ali30q/matrix_run.log",

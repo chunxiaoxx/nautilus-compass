@@ -17,6 +17,7 @@
 import argparse
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -133,6 +134,48 @@ def run_one(item: str, model: str, run: int, gate: RateGate, dry: bool) -> None:
             log(f"{item} × {model} × run{run} 超时(>2400s) · 记为失败")
 
 
+def merge_to_canonical(canonical: str, channel: str) -> int:
+    """把通道结果归并到正典模型名(不覆盖已有有效读数,只填空缺)。
+
+    背景:模型通道换过(ark 替代 relay 的 k3),但判分矩阵按文件名前缀分组、
+    DOMESTIC 白名单里写的是正典名 ⇒ 通道名会成为独立列被整体丢弃。
+    归并时在 JSON 里保留 channel 字段,通道来源可追溯。
+    """
+    filled = archived = 0
+    for s5 in sorted((CS / "items").glob("*/_s5")):
+        for src in sorted(s5.glob(f"{channel}_run*_result.json")):
+            m = re.match(rf"{re.escape(channel)}_run(\d+)_result\.json$", src.name)
+            if not m:
+                continue
+            run = m.group(1)
+            try:
+                d = json.loads(src.read_text(encoding="utf-8"))
+            except Exception:
+                continue
+            if d.get("score") is None:
+                continue
+            tgt = s5 / f"{canonical}_run{run}_result.json"
+            if tgt.exists():
+                try:
+                    old = json.loads(tgt.read_text(encoding="utf-8"))
+                except Exception:
+                    old = {}
+                if old.get("score") is not None:
+                    src.rename(s5 / f"{src.name}.merged-{time.strftime('%Y%m%d')}")
+                    archived += 1
+                    continue
+            d["model"] = canonical
+            d["channel"] = channel
+            d["channel_note"] = f"通道 {channel} 归并到正典模型 {canonical}(通道来源留痕)"
+            tgt.write_text(json.dumps(d, ensure_ascii=False, indent=1), encoding="utf-8")
+            src.rename(s5 / f"{src.name}.merged-{time.strftime('%Y%m%d')}")
+            filled += 1
+            archived += 1
+    if filled or archived:
+        log(f"归并 {channel} → {canonical}: 填空 {filled} · 归档 {archived}")
+    return filled
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", default=str(DEFAULT_CONFIG))
@@ -177,6 +220,9 @@ def main() -> int:
             else:
                 with ThreadPoolExecutor(max_workers=conc) as ex:
                     list(ex.map(lambda t: run_one(t[0], m, t[1], gate, args.dry_run), tasks))
+        canon = spec.get("canonical_model")
+        if canon and canon != m:
+            merge_to_canonical(canon, m)
         n = len(list((CS / "items" / item / "_s5").glob(f"{m}_run*_result.json"))) if item else 0
         log(f"[{item}] {m} 读数: {n}")
     log("本轮结束" + ("(dry-run,未发起模型调用)" if args.dry_run else ""))
