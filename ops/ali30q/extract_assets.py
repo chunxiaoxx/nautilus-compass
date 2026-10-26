@@ -45,9 +45,7 @@ for d in sorted(I.glob('CS-*')):
         except: pass
     
     # 从 tests/ 复制现有测试文件作为题目上下文证据
-    for tf in d.glob('tests/test_*.py'):
-        dst = assets / f'test_context_{tf.name}'
-        if not dst.exists(): shutil.copy2(tf, dst)
+    # 不拷 test 文件(防 pytest 重跑冲突)
     
     if n > 0:
         OUT_LOG.append(f'✅ {iid}: {n} 答卷片段 → tests/assets/')
