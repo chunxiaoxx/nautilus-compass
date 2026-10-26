@@ -65,6 +65,10 @@
 
 ## 2026-10-26
 
+### 15:0x · 补 glm-5.3-flash[1M] 别名（四件套正确示范，macmini OPUS 档解锁）
+- macmini settings 的 OPUS 档 = `glm-5.3-flash[1M]`（该名中转站原不存在 → 503）。按**四件套**补齐：ch13/ch4/ch5/ch1 四腿 models+mapping（→glm-5.3-flash）+ abilities（pri 镜像 flash：0/-5/-5/-10）+ ModelRatio/CompletionRatio=0.0548/3.5（镜像 flash 档）。
+- 验证：e2e 200 落 ch13；计费生效；全站 37.5 兜底保持 0。此条是"别名四件套"判据的正确执行样例（对比 09:1x 与 20:3x 两次漏键反例）。
+
 ### 12:2x · ch10/ch11 百炼 key 轮换（旧套餐过期 → 新套餐新 key）
 - **背景**：百炼 Token Plan 月配额耗尽（bl CLI 报 "1-month quota exhausted"），用户 10-25 夜开通新套餐（新 key 尾 83YA，与 macmini `~/.bailian/config.json` 的 bl CLI key 同值）。
 - **变更**：ch10/ch11 key 更新为新 key（热写+restart）。旧 key（尾 A7gQ）随旧套餐失效被上游 401。
