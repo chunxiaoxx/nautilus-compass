@@ -31,7 +31,10 @@ if [ "$relay" = "200" ]; then   # OpenAI 端全恢复才扩原生渠道
 else
   # qwen3.8max 摘除(10/24):bailian 协议需 bl CLI,Windows arm 线退役后 Mac 未装
   # (shutil.which("bl") 落空→FileNotFoundError 崩循环);bl 装好后加回
-  MODELS=(opus5.5 glm5.3-anthropic)  # key已入env(10/24);中转恢复扩glm/k3/gpt
+  # glm5.3-anthropic 暂停(R69 2026-10-26):中转 000 时走应急通道,但 04:08-11:16
+  # 连续 Errno 8 nodename nor servname(DNS) raw_len=0/score=null,同因远超三连红线;
+  # 候 v5 查 Anthropic 端点主机名。中转 200 时仍走 if 分支 glm5.3/gpt/opus。
+  MODELS=(opus5.5)
 fi
 ITEMS=(CS-010 CS-011 CS-012 CS-013 CS-014 CS-001 CS-002 CS-003 CS-004 CS-005 CS-006 CS-007 CS-301)
 for item in $ITEMS; do
