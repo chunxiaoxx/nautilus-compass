@@ -44,6 +44,11 @@ for item in $ITEMS; do
   [ -d "$CS/items/$item/environment/workspace/repo" ] || \
     cp -R "$CS/items/$item/environment/workspace/repo_bak" "$CS/items/$item/environment/workspace/repo"
   for m in $MODELS; do
+    # R83: CS-003 × glm5.3 三连同因 parse fail(15:58/16:15/16:33 content empty)→停该组合空转,不造分
+    if [ "$item" = "CS-003" ] && [ "$m" = "glm5.3" ]; then
+      echo "[$item] $m 三连同因 parse fail 已报 v5 · 整组合 skip" >> $LOG
+      continue
+    fi
     for run in 0 1 2 3; do
       R="$CS/items/$item/_s5/${m}_run${run}_result.json"
       # 幂等:有 score(成功读数)才跳过;error 结果重跑
