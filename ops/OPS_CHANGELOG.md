@@ -63,6 +63,18 @@
 - **经济账**：内账 $115.45 vs ai80 成本 $69.28 → 毛利 1.67×，定价合理。
 - 🔴 **判据（第三次，升格为清单）**：加模型别名 = **四件套缺一不可**：models + abilities + ModelRatio + CompletionRatio。缺失不报错、静默落兜底，只在真实流量进账后从账单显形。修复别名后必须**回扫当天账单**。
 
+## 2026-10-26
+
+### 12:2x · ch10/ch11 百炼 key 轮换（旧套餐过期 → 新套餐新 key）
+- **背景**：百炼 Token Plan 月配额耗尽（bl CLI 报 "1-month quota exhausted"），用户 10-25 夜开通新套餐（新 key 尾 83YA，与 macmini `~/.bailian/config.json` 的 bl CLI key 同值）。
+- **变更**：ch10/ch11 key 更新为新 key（热写+restart）。旧 key（尾 A7gQ）随旧套餐失效被上游 401。
+- **验证**：新 key 直测百炼 compatible-mode 200；e2e `bl-qwen3.8-max` 经中转站 200 落 ch10。
+- 🔴 **判据**：百炼套餐续期/新购**必须同步 ch10/ch11 的 key**（key 真源 = macmini `~/.bailian/config.json` 的 api_key）；判据 = ch10/ch11 401 "Invalid API-key" 出现即查套餐/key 同步。
+
+### 00:5x · 判分批失败谱盘点 + "600s 网关线"判决（详见 10-25 19:5x 条）
+- qwen 真堵点 = 百炼**月配额**（非 600s、非 5h 窗口，三层不同限制）；600s@504 只在已废弃的 qwen3.8max-direct 渠道。
+- macmini DNS 间歇事件（11:10-11:15，5 分钟窗，glm5.3-anthropic 48 连败 Errno 8，嫌疑 Tailscale MagicDNS）已自愈；加固选项 = /etc/hosts 加 `115.159.62.192 api.chunxiao.wang`（需 macmini sudo，未执行）。
+
 ## 2026-10-24
 
 ### 21:4x · guard v4 → 策略演进起点（ch1 三道保险静音）
