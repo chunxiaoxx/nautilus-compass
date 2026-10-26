@@ -55,9 +55,24 @@ def main(item_dir):
     if dom_s and sota_s:
         da, sa = sum(dom_s)/len(dom_s), sum(sota_s)/len(sota_s)
         gap = sa - da
-        gates.append(('G5 区分度差值', 'PASS' if gap >= 0.10 else 'WARN', f'SOTA-国内={gap:.3f}(带0.10-0.20)'))
+        gates.append(('G5 区分度差值(观察列)', 'INFO',
+                      f'SOTA-国内={gap:.3f};交付以 22064 G-SotaGap/G-QwenPoint 为准'))
     else:
-        gates.append(('G5 区分度差值', 'WARN(数据不全)', ''))
+        gates.append(('G5 区分度差值(观察列)', 'WARN(数据不全)', ''))
+
+    # G5b/G9 资格战量化门(函 22064)
+    try:
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from discrimination_jaccard import evaluate as _disc_eval
+        disc = _disc_eval(item)
+        gates.append(('G-QwenPoint', disc['qwen_point']['status'],
+                      disc['qwen_point'].get('reason', '')))
+        gates.append(('G-SotaGap', disc['sota_gap']['status'],
+                      f"gap={disc['sota_gap'].get('gap')} {disc['sota_gap'].get('reason','')}"))
+        gates.append(('G-Sig', disc['signature']['status'],
+                      f"div={disc['signature'].get('diversity')} max={disc['signature'].get('max_share')} J={disc['signature'].get('jaccard_ratio')}"))
+    except Exception as e:
+        gates.append(('G-QwenPoint/G-Sig', 'UNVERIFIED', str(e)[:80]))
 
     # G6 双口径一致性
     gates.append(('G6 双口径一致', 'INFO', 'verify_pack v1.2 自动列'))
