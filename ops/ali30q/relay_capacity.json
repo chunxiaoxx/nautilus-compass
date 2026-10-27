@@ -24,7 +24,7 @@
       "timeout_s": 900,
       "status": "limited",
       "measured": "真实负载 n=15 有效 15/15 · 耗时中位 382s(300-553s);站级 12req/min 硬墙(ch4/ch5 两把 key 共享同一池);11/min 与 17/min 持续均全通,14 并发 → 5 次客户端可见 429;2026-10-25 扩容:中转站新增 ch13=ark-glm(火山 Agent Plan 直连,实测 8 并发 8/8 全 200)+ 官方腿 ch1 常驻 ⇒ glm 判分不再需要错峰",
-      "note": "四条腿自动分流:ch13 ark(pri0, 8 并发)→ ch4/ch5 07211996(pri-5, 站级 12/min)→ ch1 官方(pri-10, 5h 窗口)→ 客户端无需错峰,new-api 会按优先级与 429 自动换腿",
+      "note": "四条腿自动分流:ch13 ark(pri0, 8 并发)→ ch4/ch5 07211996(pri-5, 站级 12/min)→ ch1 官方(pri-10, 5h 窗口)→ 客户端无需错峰,new-api 会按优先级与 429 自动换腿; 10-27 18:3x ch13(ark-glm) 全量停用(用户拍板不用ark glm,官方ch1已重置) => glm 走 ch4/ch5 -> ch1, 5h窗口制",
       "expected_s": 382
     },
     "kimi-k3-ark": {

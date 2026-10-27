@@ -65,7 +65,14 @@
 
 ## 2026-10-27
 
-### 18:2x · glm 主力档补回第三腿：ch13(ark) 用 flash 接回 glm-5.3[1M]
+### 18:3x · ch13(ark-glm) 整体停用（用户拍板：不用 ark 的 glm，官方渠道已重置）
+- **指令**：用户明确"不用 ark 的 glm 渠道，官方渠道我已经重置了" —— 推翻 18:2x 的补腿决策。
+- **变更**：ch13 status=2 + abilities 三行（flash / flash[1M] / [1M]）enabled=0，**配置全保留、一行 UPDATE 可逆**；ch12(ark-kimi) 不受影响。
+- **验证**：`[1M]` 纯文本 200、`[1M]` 带图 200（无 400 回归）、`flash` 200；落点 ch4/ch5 → **ch1（18:34:04 实测承接溢出 200 带 quota 记录 = 官方重置生效）**；ch13 零流量。
+- **回滚**：`backups/one-api_20261027_183226_ch13-disable.db`；或热写 `UPDATE channels SET status=1 WHERE id=13; UPDATE abilities SET enabled=1 WHERE channel_id=13` + restart。
+- 🔴 **判据**：路由补腿决策与用户额度知情权冲突时，以用户为准 —— 官方 5h 窗口的充值/重置状态只有用户可见，我方实测只能看到"当下通不通"。
+
+### 18:2x · glm 主力档补回第三腿：ch13(ark) 用 flash 接回 glm-5.3[1M]【注:已被 18:3x 条反转】
 - **症状**：用户报"glm 又额度用完了"。实测 18:14：`glm-5.3[1M]` 当时只有两条腿 —— ch4/ch5（**同一 07211996 站、两把 key 共享一个 12/min 池**）+ ch1 官方（5h 窗口）；**ch13(ark) 整体不在 glm-5.3/[1M] 池里**（10-25 19:5x 为根治多模态 400 洞主动摘除）⇒ 深对话撞 12/min 硬墙。
 - **新实测依据**：ark **glm-5.3-flash 真实窗口也达 ~1M**（400K/700K/900K 全 200，1.05M 才 400）**且支持多模态** ⇒ 能同时满足"深+带图"，是补腿的最优解（ark 纯文本 glm-5.3 仍不接，避免 400 洞复发）。
 - **变更**：ch13 models 加 `glm-5.3[1M]`；**mapping `[1M] → glm-5.3-flash`**（不是纯文本 glm-5.3）；abilities 加一行 pri 0。
@@ -110,15 +117,15 @@
 
 ---
 
-## 当前渠道拓扑（2026-10-25 15:00）
+## 当前渠道拓扑（2026-10-27 19:00）
 
 | 渠道 | 上游 | priority | 多模态 | 并发能力 | 定位 |
 |---|---|---|---|---|---|
-| ch13 ark-glm | 火山 Agent Plan | **0** | ✅（flash）/ ❌（5.3/[1M] 纯文本） | 8 并发全通 | glm 主力 |
 | ch12 ark-kimi | 火山 Agent Plan | 0 | ✅ | 5-9 并发 | k3 主力 |
 | ch6 ai80-claude | code.ai80.vip | 0 | ✅ | **1（串行，并发即 499）** | claude 系 |
 | ch4/ch5 07211996 | 第三方智谱中转 | -5 | ✅ | **站级 12 req/min 共享** | glm 余量 |
 | ch1 zhipu-glm | 官方智谱 | -10（常驻） | ✅（flash 实测） | 5h 窗口制 | glm 兜底 |
+| ch13 ark-glm | 火山 Agent Plan | **停用(10-27)** | — | — | 配置保留可逆（18:3x 用户拍板摘出 glm 路由） |
 | ch3 minimax / ch2 kimi | 官方直连 | 20 / 0 | — | 订阅额度制 | MiniMax/kimi |
 | ch7 qixuw / ch9 vertex / ch10-11 bailian | 各上游 | 5-10 | — | — | gpt/gemini/百炼 |
 
