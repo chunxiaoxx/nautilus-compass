@@ -647,6 +647,15 @@ def get_embedder():
         log(f"embed proxy ON → {_proxy} (remote fp16)")
         _state["embedder"] = _ProxyEmbedder(_proxy)
         return _state["embedder"]
+    # R133 · COMPASS_EMBED_ENABLED=0 跳过本地 BGE(云第四犯缓解;recall 走 pkl+BM25)
+    _en = os.environ.get("COMPASS_EMBED_ENABLED", "1").strip().lower()
+    if _en in ("0", "false", "off", "no"):
+        class _DisabledEmbedder:
+            def encode(self, text, **kwargs):
+                raise RuntimeError("COMPASS_EMBED_ENABLED=0 · local BGE skipped")
+        log("COMPASS_EMBED_ENABLED=0 · skip local BGE (recall pkl+BM25)")
+        _state["embedder"] = _DisabledEmbedder()
+        return _state["embedder"]
     # 2026-04-28 · 用户强制不用 gemini · 永远只 BGE local (隐私 + 不依赖外部 API)
     # 旧: 优先 Gemini API (250ms) · 没 key 才 BGE
     # 新: 永远 BGE · 不读 GEMINI_API_KEY · 完全本地
