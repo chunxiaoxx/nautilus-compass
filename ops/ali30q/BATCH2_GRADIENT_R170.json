@@ -1,0 +1,902 @@
+{
+ "CS-001": {
+  "item": "CS-001",
+  "overall": "FAIL",
+  "mg_status": "FAIL",
+  "gap": -0.0792,
+  "dom_mean": 0.9322,
+  "sota_mean": 0.853,
+  "per_model": {
+   "glm5.3": 0.8357,
+   "gpt-6-astra": 0.7791,
+   "kimi-k3": 0.8767,
+   "opus5.5": 0.894,
+   "qwen3.8max": 0.9322
+  }
+ },
+ "CS-002": {
+  "item": "CS-002",
+  "overall": "FAIL",
+  "mg_status": "PASS",
+  "gap": 1.0,
+  "dom_mean": 0.0,
+  "sota_mean": 1.0,
+  "per_model": {
+   "glm5.3": 1.0,
+   "gpt-6-astra": 1.0,
+   "kimi-k3": 1.0,
+   "qwen3.8max": 0.0
+  }
+ },
+ "CS-003": {
+  "item": "CS-003",
+  "overall": "FAIL",
+  "mg_status": "FAIL",
+  "gap": 0.0833,
+  "dom_mean": 0.9167,
+  "sota_mean": 1.0,
+  "per_model": {
+   "glm5.3": 1.0,
+   "gpt-6-astra": 1.0,
+   "kimi-k3": 1.0,
+   "opus5.5": 1.0,
+   "qwen3.8max": 0.9167
+  }
+ },
+ "CS-003B": {
+  "item": "CS-003B",
+  "overall": "FAIL",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-004": {
+  "item": "CS-004",
+  "overall": "UNVERIFIED",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-005": {
+  "item": "CS-005",
+  "overall": "FAIL",
+  "mg_status": "FAIL",
+  "gap": -0.0321,
+  "dom_mean": 0.9412,
+  "sota_mean": 0.9091,
+  "per_model": {
+   "glm5.3": 0.9608,
+   "gpt-6-astra": 0.8774,
+   "kimi-k3": 0.8235,
+   "opus5.5": 0.9471,
+   "qwen3.8max": 0.9412
+  }
+ },
+ "CS-006": {
+  "item": "CS-006",
+  "overall": "FAIL",
+  "mg_status": "FAIL",
+  "gap": -0.0053,
+  "dom_mean": 1.0,
+  "sota_mean": 0.9947,
+  "per_model": {
+   "glm5.3": 1.0,
+   "gpt-6-astra": 0.9905,
+   "kimi-k3": 0.9905,
+   "opus5.5": 1.0,
+   "qwen3.8max": 1.0
+  }
+ },
+ "CS-007": {
+  "item": "CS-007",
+  "overall": "FAIL",
+  "mg_status": "FAIL",
+  "gap": -0.0067,
+  "dom_mean": 0.9733,
+  "sota_mean": 0.9667,
+  "per_model": {
+   "glm5.3": 0.9734,
+   "gpt-6-astra": 0.9611,
+   "kimi-k3": 1.0,
+   "opus5.5": 0.9833,
+   "qwen3.8max": 0.9733
+  }
+ },
+ "CS-008": {
+  "item": "CS-008",
+  "overall": "FAIL",
+  "mg_status": "FAIL",
+  "gap": -0.2302,
+  "dom_mean": 0.6828,
+  "sota_mean": 0.4526,
+  "per_model": {
+   "glm5.3": 0.0357,
+   "gpt-6-astra": 0.8696,
+   "kimi-k3": 0.0357,
+   "opus5.5": 0.0357,
+   "qwen3.8max": 0.6828
+  }
+ },
+ "CS-009": {
+  "item": "CS-009",
+  "overall": "UNVERIFIED",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-010": {
+  "item": "CS-010",
+  "overall": "FAIL",
+  "mg_status": "FAIL",
+  "gap": -0.5714,
+  "dom_mean": 1.0,
+  "sota_mean": 0.4286,
+  "per_model": {
+   "gpt-6-astra": 0.4286,
+   "qwen3.8max": 1.0
+  }
+ },
+ "CS-011": {
+  "item": "CS-011",
+  "overall": "UNVERIFIED",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-012": {
+  "item": "CS-012",
+  "overall": "FAIL",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-013": {
+  "item": "CS-013",
+  "overall": "UNVERIFIED",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-014": {
+  "item": "CS-014",
+  "overall": "FAIL",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-015": {
+  "item": "CS-015",
+  "overall": "UNVERIFIED",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-016": {
+  "item": "CS-016",
+  "overall": "UNVERIFIED",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-017": {
+  "item": "CS-017",
+  "overall": "UNVERIFIED",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-018": {
+  "item": "CS-018",
+  "overall": "UNVERIFIED",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-019": {
+  "item": "CS-019",
+  "overall": "UNVERIFIED",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-020": {
+  "item": "CS-020",
+  "overall": "UNVERIFIED",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-021": {
+  "item": "CS-021",
+  "overall": "UNVERIFIED",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-022": {
+  "item": "CS-022",
+  "overall": "UNVERIFIED",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-023": {
+  "item": "CS-023",
+  "overall": "UNVERIFIED",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-024": {
+  "item": "CS-024",
+  "overall": "UNVERIFIED",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-101": {
+  "item": "CS-101",
+  "overall": "UNVERIFIED",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-102": {
+  "item": "CS-102",
+  "overall": "FAIL",
+  "mg_status": "FAIL",
+  "gap": -0.0715,
+  "dom_mean": 1.0,
+  "sota_mean": 0.9285,
+  "per_model": {
+   "glm5.3": 0.9285,
+   "gpt-6-astra": 0.8571,
+   "kimi-k3": 1.0,
+   "opus5.5": 1.0,
+   "qwen3.8max": 1.0
+  }
+ },
+ "CS-103": {
+  "item": "CS-103",
+  "overall": "FAIL",
+  "mg_status": "FAIL",
+  "gap": -0.0,
+  "dom_mean": 0.7143,
+  "sota_mean": 0.7143,
+  "per_model": {
+   "glm5.3": 0.7857,
+   "gpt-6-astra": 0.7143,
+   "kimi-k3": 0.7143,
+   "opus5.5": 0.7143,
+   "qwen3.8max": 0.7143
+  }
+ },
+ "CS-104": {
+  "item": "CS-104",
+  "overall": "FAIL",
+  "mg_status": "FAIL",
+  "gap": 0.0,
+  "dom_mean": 1.0,
+  "sota_mean": 1.0,
+  "per_model": {
+   "glm5.3": 1.0,
+   "gpt-6-astra": 1.0,
+   "kimi-k3": 1.0,
+   "opus5.5": 1.0,
+   "qwen3.8max": 1.0
+  }
+ },
+ "CS-105": {
+  "item": "CS-105",
+  "overall": "FAIL",
+  "mg_status": "FAIL",
+  "gap": -0.0318,
+  "dom_mean": 0.4286,
+  "sota_mean": 0.3968,
+  "per_model": {
+   "glm5.3": 1.0,
+   "gpt-6-astra": 0.3572,
+   "kimi-k3": 0.3929,
+   "opus5.5": 0.4286,
+   "qwen3.8max": 0.4286
+  }
+ },
+ "CS-201": {
+  "item": "CS-201",
+  "overall": "UNVERIFIED",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-202": {
+  "item": "CS-202",
+  "overall": "FAIL",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-203": {
+  "item": "CS-203",
+  "overall": "FAIL",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-204": {
+  "item": "CS-204",
+  "overall": "UNVERIFIED",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-205": {
+  "item": "CS-205",
+  "overall": "UNVERIFIED",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-206": {
+  "item": "CS-206",
+  "overall": "UNVERIFIED",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-207": {
+  "item": "CS-207",
+  "overall": "UNVERIFIED",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-301": {
+  "item": "CS-301",
+  "overall": "FAIL",
+  "mg_status": "FAIL",
+  "gap": 0.0,
+  "dom_mean": 1.0,
+  "sota_mean": 1.0,
+  "per_model": {
+   "glm5.3": 0.75,
+   "gpt-6-astra": 1.0,
+   "kimi-k3": 1.0,
+   "opus5.5": 1.0,
+   "qwen3.8max": 1.0
+  }
+ },
+ "CS-302": {
+  "item": "CS-302",
+  "overall": "FAIL",
+  "mg_status": "FAIL",
+  "gap": 0.0,
+  "dom_mean": 1.0,
+  "sota_mean": 1.0,
+  "per_model": {
+   "kimi-k3": 1.0,
+   "opus5.5": 1.0,
+   "qwen3.8max": 1.0
+  }
+ },
+ "CS-303": {
+  "item": "CS-303",
+  "overall": "FAIL",
+  "mg_status": "FAIL",
+  "gap": 0.0238,
+  "dom_mean": 0.9762,
+  "sota_mean": 1.0,
+  "per_model": {
+   "kimi-k3": 0.9167,
+   "opus5.5": 1.0,
+   "qwen3.8max": 0.9762
+  }
+ },
+ "CS-304": {
+  "item": "CS-304",
+  "overall": "FAIL",
+  "mg_status": "FAIL",
+  "gap": -0.0119,
+  "dom_mean": 1.0,
+  "sota_mean": 0.9881,
+  "per_model": {
+   "kimi-k3": 0.9881,
+   "opus5.5": 0.9881,
+   "qwen3.8max": 1.0
+  }
+ },
+ "CS-305": {
+  "item": "CS-305",
+  "overall": "FAIL",
+  "mg_status": "FAIL",
+  "gap": -0.0238,
+  "dom_mean": 0.881,
+  "sota_mean": 0.8572,
+  "per_model": {
+   "kimi-k3": 0.631,
+   "opus5.5": 0.8572,
+   "qwen3.8max": 0.881
+  }
+ },
+ "CS-401": {
+  "item": "CS-401",
+  "overall": "FAIL",
+  "mg_status": "FAIL",
+  "gap": -0.0655,
+  "dom_mean": 1.0,
+  "sota_mean": 0.9345,
+  "per_model": {
+   "glm5.3": 1.0,
+   "gpt-6-astra": 0.869,
+   "kimi-k3": 1.0,
+   "opus5.5": 1.0,
+   "qwen3.8max": 1.0
+  }
+ },
+ "CS-402": {
+  "item": "CS-402",
+  "overall": "FAIL",
+  "mg_status": "FAIL",
+  "gap": 0.0,
+  "dom_mean": 1.0,
+  "sota_mean": 1.0,
+  "per_model": {
+   "glm5.3": 1.0,
+   "kimi-k3": 1.0,
+   "opus5.5": 1.0,
+   "qwen3.8max": 1.0
+  }
+ },
+ "CS-501": {
+  "item": "CS-501",
+  "overall": "FAIL",
+  "mg_status": "FAIL",
+  "gap": 0.0204,
+  "dom_mean": 0.9524,
+  "sota_mean": 0.9728,
+  "per_model": {
+   "glm5.3": 0.9881,
+   "gpt-6-astra": 0.9683,
+   "kimi-k3": 0.9881,
+   "opus5.5": 0.9762,
+   "qwen3.8max": 0.9524
+  }
+ },
+ "CS-502": {
+  "item": "CS-502",
+  "overall": "FAIL",
+  "mg_status": "FAIL",
+  "gap": -0.0155,
+  "dom_mean": 0.7155,
+  "sota_mean": 0.7,
+  "per_model": {
+   "glm5.3": 0.7,
+   "gpt-6-astra": 0.7,
+   "kimi-k3": 0.7,
+   "opus5.5": 0.7,
+   "qwen3.8max": 0.7155
+  }
+ },
+ "CS-503": {
+  "item": "CS-503",
+  "overall": "FAIL",
+  "mg_status": "FAIL",
+  "gap": 0.0,
+  "dom_mean": 1.0,
+  "sota_mean": 1.0,
+  "per_model": {
+   "glm5.3": 1.0,
+   "gpt-6-astra": 1.0,
+   "kimi-k3": 1.0,
+   "opus5.5": 1.0,
+   "qwen3.8max": 1.0
+  }
+ },
+ "CS-504": {
+  "item": "CS-504",
+  "overall": "FAIL",
+  "mg_status": "FAIL",
+  "gap": 0.0,
+  "dom_mean": 1.0,
+  "sota_mean": 1.0,
+  "per_model": {
+   "glm5.3": 1.0,
+   "gpt-6-astra": 1.0,
+   "kimi-k3": 1.0,
+   "opus5.5": 1.0,
+   "qwen3.8max": 1.0
+  }
+ },
+ "CS-505": {
+  "item": "CS-505",
+  "overall": "FAIL",
+  "mg_status": "FAIL",
+  "gap": 0.0,
+  "dom_mean": 1.0,
+  "sota_mean": 1.0,
+  "per_model": {
+   "glm5.3": 1.0,
+   "gpt-6-astra": 1.0,
+   "kimi-k3": 1.0,
+   "opus5.5": 1.0,
+   "qwen3.8max": 1.0
+  }
+ },
+ "CS-506": {
+  "item": "CS-506",
+  "overall": "FAIL",
+  "mg_status": "FAIL",
+  "gap": -0.03,
+  "dom_mean": 0.93,
+  "sota_mean": 0.9,
+  "per_model": {
+   "glm5.3": 0.9167,
+   "gpt-6-astra": 0.9,
+   "kimi-k3": 0.925,
+   "opus5.5": 0.9,
+   "qwen3.8max": 0.93
+  }
+ },
+ "CS-507": {
+  "item": "CS-507",
+  "overall": "FAIL",
+  "mg_status": "FAIL",
+  "gap": 0.0476,
+  "dom_mean": 0.9524,
+  "sota_mean": 1.0,
+  "per_model": {
+   "glm5.3": 0.8809,
+   "gpt-6-astra": 1.0,
+   "kimi-k3": 1.0,
+   "opus5.5": 1.0,
+   "qwen3.8max": 0.9524
+  }
+ },
+ "CS-508": {
+  "item": "CS-508",
+  "overall": "FAIL",
+  "mg_status": "FAIL",
+  "gap": 0.0,
+  "dom_mean": 1.0,
+  "sota_mean": 1.0,
+  "per_model": {
+   "glm5.3": 1.0,
+   "gpt-6-astra": 1.0,
+   "kimi-k3": 1.0,
+   "opus5.5": 1.0,
+   "qwen3.8max": 1.0
+  }
+ },
+ "CS-509": {
+  "item": "CS-509",
+  "overall": "FAIL",
+  "mg_status": "FAIL",
+  "gap": 0.0,
+  "dom_mean": 1.0,
+  "sota_mean": 1.0,
+  "per_model": {
+   "glm5.3": 1.0,
+   "gpt-6-astra": 1.0,
+   "kimi-k3": 1.0,
+   "opus5.5": 1.0,
+   "qwen3.8max": 1.0
+  }
+ },
+ "CS-510": {
+  "item": "CS-510",
+  "overall": "FAIL",
+  "mg_status": "FAIL",
+  "gap": 0.0526,
+  "dom_mean": 0.7895,
+  "sota_mean": 0.8421,
+  "per_model": {
+   "glm5.3": 0.8947,
+   "gpt-6-astra": 0.7895,
+   "kimi-k3": 0.8553,
+   "opus5.5": 0.8947,
+   "qwen3.8max": 0.7895
+  }
+ },
+ "CS-511": {
+  "item": "CS-511",
+  "overall": "FAIL",
+  "mg_status": "FAIL",
+  "gap": -0.1167,
+  "dom_mean": 0.95,
+  "sota_mean": 0.8333,
+  "per_model": {
+   "gpt-6-astra": 0.9524,
+   "kimi-k3": 0.9524,
+   "opus5.5": 0.7936,
+   "qwen3.8max": 0.95
+  }
+ },
+ "CS-512": {
+  "item": "CS-512",
+  "overall": "FAIL",
+  "mg_status": "FAIL",
+  "gap": -0.0476,
+  "dom_mean": 1.0,
+  "sota_mean": 0.9524,
+  "per_model": {
+   "glm5.3": 0.9524,
+   "gpt-6-astra": 0.9524,
+   "kimi-k3": 0.9524,
+   "opus5.5": 0.9524,
+   "qwen3.8max": 1.0
+  }
+ },
+ "CS-513": {
+  "item": "CS-513",
+  "overall": "UNVERIFIED",
+  "mg_status": "PASS",
+  "gap": 0.225,
+  "dom_mean": 0.775,
+  "sota_mean": 1.0,
+  "per_model": {
+   "glm5.3": 1.0,
+   "gpt-6-astra": 1.0,
+   "kimi-k3": 1.0,
+   "opus5.5": 1.0,
+   "qwen3.8max": 0.775
+  }
+ },
+ "CS-514": {
+  "item": "CS-514",
+  "overall": "FAIL",
+  "mg_status": "FAIL",
+  "gap": -0.0961,
+  "dom_mean": 1.0,
+  "sota_mean": 0.9039,
+  "per_model": {
+   "gpt-6-astra": 1.0,
+   "kimi-k3": 0.9808,
+   "opus5.5": 0.8077,
+   "qwen3.8max": 1.0
+  }
+ },
+ "CS-515": {
+  "item": "CS-515",
+  "overall": "UNVERIFIED",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-516": {
+  "item": "CS-516",
+  "overall": "FAIL",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-517": {
+  "item": "CS-517",
+  "overall": "FAIL",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-518": {
+  "item": "CS-518",
+  "overall": "UNVERIFIED",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-601": {
+  "item": "CS-601",
+  "overall": "UNVERIFIED",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-G1": {
+  "item": "CS-G1",
+  "overall": "UNVERIFIED",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-G2": {
+  "item": "CS-G2",
+  "overall": "UNVERIFIED",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-G3": {
+  "item": "CS-G3",
+  "overall": "UNVERIFIED",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-G4": {
+  "item": "CS-G4",
+  "overall": "UNVERIFIED",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-G5": {
+  "item": "CS-G5",
+  "overall": "UNVERIFIED",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-G6": {
+  "item": "CS-G6",
+  "overall": "UNVERIFIED",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-G7": {
+  "item": "CS-G7",
+  "overall": "UNVERIFIED",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-G8": {
+  "item": "CS-G8",
+  "overall": "UNVERIFIED",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-SK11": {
+  "item": "CS-SK11",
+  "overall": "UNVERIFIED",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "codesense": {
+  "item": "codesense",
+  "overall": "UNVERIFIED",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-004B": {
+  "item": "CS-004B",
+  "overall": "FAIL",
+  "mg_status": "PASS",
+  "gap": 0.5357,
+  "dom_mean": 0.4643,
+  "sota_mean": 1.0,
+  "per_model": {
+   "glm5.3": 1.0,
+   "gpt-6-astra": 1.0,
+   "kimi-k3": 1.0,
+   "qwen3.8max": 0.4643
+  }
+ },
+ "CS-005B": {
+  "item": "CS-005B",
+  "overall": "UNVERIFIED",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-509B": {
+  "item": "CS-509B",
+  "overall": "UNVERIFIED",
+  "mg_status": "UNVERIFIED",
+  "gap": null,
+  "dom_mean": null,
+  "sota_mean": null,
+  "per_model": null
+ },
+ "CS-515B": {
+  "item": "CS-515B",
+  "overall": "FAIL",
+  "mg_status": "FAIL",
+  "gap": 0.0625,
+  "dom_mean": 0.75,
+  "sota_mean": 0.8125,
+  "per_model": {
+   "glm5.3": 0.9875,
+   "kimi-k3": 0.9375,
+   "opus5.5": 0.8125,
+   "qwen3.8max": 0.75
+  }
+ },
+ "CS-514B": {
+  "item": "CS-514B",
+  "overall": "FAIL",
+  "mg_status": "FAIL",
+  "gap": -0.0961,
+  "dom_mean": 1.0,
+  "sota_mean": 0.9039,
+  "per_model": {
+   "gpt-6-astra": 1.0,
+   "kimi-k3": 0.9808,
+   "opus5.5": 0.8077,
+   "qwen3.8max": 1.0
+  }
+ }
+}
