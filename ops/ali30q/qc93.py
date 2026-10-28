@@ -9,7 +9,8 @@
 用法: python3 qc93.py <item_dir> [--full]
 输出: 逐项 Pass/Fail/N/A + 汇总
 """
-import json, os, sys, subprocess, hashlib, re
+import sys, subprocess, re
+import argparse
 from pathlib import Path
 
 HOME = Path.home()
@@ -88,7 +89,7 @@ def check(item: Path):
     if score_py.is_file() and tests.exists():
         scores = []
         for _ in range(3):
-            r = subprocess.run([str(JUDGE_PY) if "JUDGE_PY" in dir() else "python3", str(score_py)],
+            r = subprocess.run(["python3", str(score_py)],
                                capture_output=True, text=True, timeout=120, cwd=str(item))
             scores.append(r.stdout.strip())
         add("VV-05", "VV", "判分确定性(3次100%一致)", "PASS" if len(set(scores)) <= 1 else "FAIL", str(scores[:2]))
