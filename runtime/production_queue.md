@@ -22,3 +22,5 @@
 - G1 全量批 10-28 起:判据=修复后 gold_check(非静默);账 /tmp/g1_batch_20261028.log
 
 - R178(10-28): CS-008B重造闭合,双态与R174定谳完全一致(重造=复原非漂移);qwen 32K再溢出800s空(渠道面系统性故障R176已定谳,未烧run2);件归档ops/ali30q/decoy_008B/14件+_s5溢出证据,管道已同步;scratch=/tmp/csCS-008B完好
+
+- R188(10-29): 队列零PENDING(005B/008B维持BLOCKED候非qwen渠道裁决,不烧会话);本轮主件转素材线——平台三函办结(23288素材库/23299配额映射ack·23292样板题完工ack·领卡回函23301先前已发409不重发);**compass领卡#005(env静默降级)开工**:spec骨架档落ops/ali30q/GS005_SPEC_SKELETON_20261029.md(卡号#005/坑面=静默fallback+配置错静默skip两层互锁/UT计划4条/model_failure_modes 4条/载体=core真实模块群1672py>300门宽裕);证据分层:defb148半边[实测]实锤(git直验·super_agent.py:375引用缺失API自5/18静默file fallback),env DSN半边[待补]实物坐标候考古;badpattern预映射F03·30条表候选F06.01候对表;施工轮出全件(坑版/金标/UT/calibration)
