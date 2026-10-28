@@ -150,7 +150,10 @@ def gate5(item: Path):
             r["reason"].append(f"④qwen均 {q_avg:.3f} 未双低(opus {o_avg:.3f}/gpt {g_avg:.3f})")
         q_pr = q_avg
         r["qwen_passrate"] = round(q_pr, 4)
-        r["cond"]["⑤qwen∈{25%,50%}"] = any(abs(q_pr - t) < 0.02 for t in (0.25, 0.50))
+        # D1 收敛(23241 全员令对齐): 正本行41 无容差定义,±0.02 属放宽违"判据只许更严",
+        # 收敛为精确档位(与 discrimination_jaccard.allowed={0.25,0.50} 一致);
+        # q_pr=整数/4 仅五取值,精确比较无浮点风险
+        r["cond"]["⑤qwen∈{25%,50%}"] = q_pr in (0.25, 0.50)
         if not r["cond"]["⑤qwen∈{25%,50%}"]:
             near = min((0.25, 0.50), key=lambda t: abs(q_pr - t))
             r["reason"].append(f"⑤qwen passrate {q_pr:.1%} 距目标{near:.0%}差 {abs(q_pr-near)*100:.1f}pp")
