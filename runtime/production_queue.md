@@ -6,9 +6,9 @@
 | 序 | 题 | 状态 | 双态 | qwen | 备注 |
 |---|---|---|---|---|---|
 | 1 | CS-003(ephem·时区微秒域) | FAILED 超档 | ✅1.0/0.2593 | 0.963 | catalog层被看穿;时域+聚合=qwen强域 |
-| 2 | CS-005B(audit·联审聚合层) | BUILT·qwen阻塞 | ✅实测:坑版4挂(3gating全中+fsum)/金标8/8=1.0 | 无有效读数 | 32K双样本reasoning溢出(run1 814s/run2 797s,12:05与12:30两时段一致);tomllib门过;下轮试qwen3.8max-bl渠道或抬max_tokens取读数再定带 |
-| 3 | CS-008B(OCR批清洗入口·版式处置) | BUILT·qwen待筛 | ✅实测:坑版4挂(3gating全中+validate²放行)/金标6/6=1.0(det 0.01s) | 待筛 | 515B二层=白名单静默丢弃≠§1打回("1²3"→"13"静默变形,跨§1/§3互锁)+isdigit放行'²';tomllib门过;🔴finding:①原golden.patch错配(内容=quota_gate记账金标,与OCR题面无关,已隔离,金标以solution直写件为准)②原conftest挂repo_bak与模型面repo/割裂(改A面测B面),已单面化+repo_bak退役;管道已同步 |
-| 4 | CS-509B(三档加深) | PENDING | ✅闭合 | 1.0(强域) | 最低优先 |
+| 2 | CS-005B(audit·联审聚合层) | BUILT·BLOCKED(qwen渠道面) | ✅实测:坑版4挂(3gating全中+fsum)/金标8/8=1.0 | 无有效读数(四连溢出) | R176定谳:32K抬限无效——qwen3.8max 828s/bl 807s双渠道双时段均content empty(16:38-17:07),reasoning系统性吃满,「抬max_tokens取读数」备选路堵死;候出路=非qwen渠道判带或渠道面修(候裁决);scratch=/tmp/csCS-005B重建完好可复跑,件仓内档ops/ali30q/decoy_005B |
+| 3 | CS-008B(OCR批清洗入口·版式处置) | BUILT件失联·需重造 | ✅实测留档:坑版4挂(3gating全中+validate²放行)/金标6/6=1.0(det 0.01s) | 未筛 | 515B二层=白名单静默丢弃≠§1打回("1²3"→"13"静默变形,跨§1/§3互锁)+isdigit放行'²';tomllib门过;🔴finding:①原golden.patch错配(内容=quota_gate记账金标,与OCR题面无关,已隔离,金标以solution直写件为准)②原conftest挂repo_bak与模型面repo/割裂(改A面测B面),已单面化+repo_bak退役;管道已同步;🔴10/28 R176:/tmp全灭连带件本体丢失,全盘无归档,重造需35min一轮(两层语义与双态结论在COLLAB_BOARD R174可考古) |
+| 4 | CS-509B(三档加深) | FAILED(强域放弃) | ✅闭合 | 1.0(强域) | 10/28 R176终态更正:读数在案,无需再投 |
 | — | CS-514 | SKIPPED | — | 强域 | 不投入 |
 | — | CS-004B | CANDIDATE | ✅1.0/0.4643 | 0.4643 | 候五模型面+裁决 |
 | — | CS-515B | CANDIDATE | ✅1.0/0.6923 | 时段分歧 | F-009定谳 |
