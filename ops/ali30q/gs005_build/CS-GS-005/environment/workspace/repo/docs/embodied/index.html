@@ -1,0 +1,1769 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>具身数据工厂 · 作战地图 v3</title>
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+  :root {
+    --bg: #F1F3F2; --surface: #FFFFFF; --ink: #16201D; --ink-2: #57635F;
+    --line: #DAE0DD; --accent: #0B685D; --accent-soft: #DEEEEA; --accent-line: #96C6BE;
+    --amber: #8F5B00; --amber-soft: #F7EDD4;
+    --pass: #2E7D46; --pass-soft: #E2F0E5; --fail: #B23A32; --fail-soft: #F7E7E5;
+    --chip: #EAEEEC; --shadow: 0 1px 4px rgba(22,32,29,.09);
+    --hero-ink: #EDF3F0; --hero-bg1: #0D1F1B; --hero-bg2: #123A32;
+    --mono: ui-monospace, "JetBrains Mono", Consolas, monospace;
+    --serif: "Noto Serif SC", "Source Han Serif SC", "Songti SC", Georgia, serif;
+    --disp: "Archivo", "Segoe UI", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111614; --surface: #1A211E; --ink: #E6ECE9; --ink-2: #95A29D;
+      --line: #2A332F; --accent: #46B5A3; --accent-soft: #13302A; --accent-line: #2A5A50;
+      --amber: #DDA847; --amber-soft: #2D2513;
+      --pass: #5FBD7D; --pass-soft: #15301E; --fail: #E07A70; --fail-soft: #33211F;
+      --chip: #222B27; --shadow: 0 1px 4px rgba(0,0,0,.45);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #111614; --surface: #1A211E; --ink: #E6ECE9; --ink-2: #95A29D;
+    --line: #2A332F; --accent: #46B5A3; --accent-soft: #13302A; --accent-line: #2A5A50;
+    --amber: #DDA847; --amber-soft: #2D2513;
+    --pass: #5FBD7D; --pass-soft: #15301E; --fail: #E07A70; --fail-soft: #33211F;
+    --chip: #222B27; --shadow: 0 1px 4px rgba(0,0,0,.45);
+  }
+  :root[data-theme="light"] {
+    --bg: #F1F3F2; --surface: #FFFFFF; --ink: #16201D; --ink-2: #57635F;
+    --line: #DAE0DD; --accent: #0B685D; --accent-soft: #DEEEEA; --accent-line: #96C6BE;
+    --amber: #8F5B00; --amber-soft: #F7EDD4;
+    --pass: #2E7D46; --pass-soft: #E2F0E5; --fail: #B23A32; --fail-soft: #F7E7E5;
+    --chip: #EAEEEC; --shadow: 0 1px 4px rgba(22,32,29,.09);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 16.5px/1.85 "Noto Sans SC", "PingFang SC", "Microsoft YaHei UI", "Microsoft YaHei", system-ui, sans-serif;
+  }
+  a { color: var(--accent); }
+  .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+  /* ---------- topbar + nav ---------- */
+  header.topbar {
+    position: sticky; top: 0; z-index: 40;
+    background: var(--surface); border-bottom: 1px solid var(--line);
+    padding: 12px 24px 0; box-shadow: var(--shadow);
+  }
+  .head-row { max-width: 1220px; margin: 0 auto; display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+  header.topbar .brand { font-family: var(--serif); font-weight: 900; font-size: 20px; margin: 0; letter-spacing: .02em; }
+  .head-meta { color: var(--ink-2); font-size: 13px; }
+  .badge-internal {
+    background: var(--fail-soft); color: var(--fail); border: 1px solid var(--fail);
+    font-size: 11.5px; padding: 1px 9px; border-radius: 3px; letter-spacing: .14em; font-weight: 600;
+  }
+  #themeBtn {
+    margin-left: auto; background: var(--chip); border: 1px solid var(--line); color: var(--ink-2);
+    border-radius: 6px; padding: 3px 13px; cursor: pointer; font-size: 13px;
+  }
+  nav.tabs { max-width: 1220px; margin: 8px auto 0; display: flex; gap: 2px; overflow-x: auto; scrollbar-width: thin; }
+  nav.tabs button {
+    background: none; border: none; border-bottom: 3px solid transparent;
+    padding: 9px 15px 11px; font-size: 15.5px; color: var(--ink-2); cursor: pointer; white-space: nowrap;
+    font-family: inherit;
+  }
+  nav.tabs button:hover { color: var(--ink); }
+  nav.tabs button.on { color: var(--accent); border-bottom-color: var(--accent); font-weight: 700; }
+  nav.tabs button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+  /* ---------- hero ---------- */
+  .hero {
+    position: relative; overflow: hidden; border-radius: 14px; margin-bottom: 30px;
+    background: linear-gradient(120deg, var(--hero-bg1), var(--hero-bg2));
+    color: var(--hero-ink); min-height: 350px;
+  }
+  .hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .hero .inner { position: relative; z-index: 2; padding: 52px 52px 40px; max-width: 880px; }
+  .hero .eyebrow { font-size: 13.5px; letter-spacing: .28em; color: #7FC6B8; font-weight: 600; }
+  .hero h1 { font-family: var(--serif); font-weight: 900; font-size: 44px; line-height: 1.28; margin: 12px 0 14px; text-wrap: balance; }
+  .hero h1 em { font-style: normal; color: #8FE0CE; }
+  .hero .sub { font-size: 17.5px; line-height: 1.9; color: #C8D8D2; max-width: 46em; }
+  .hero .stats { display: flex; gap: 44px; margin-top: 30px; flex-wrap: wrap; }
+  .hero .stat .v { font-family: var(--disp); font-weight: 800; font-size: 36px; color: #8FE0CE; line-height: 1.1; }
+  .hero .stat .k { font-size: 13.5px; color: #9DB5AE; margin-top: 3px; }
+  @media (max-width: 720px) { .hero .inner { padding: 34px 24px; } .hero h1 { font-size: 31px; } }
+
+  /* ---------- layout ---------- */
+  main { max-width: 1220px; margin: 0 auto; padding: 28px 24px 90px; }
+  section.tab { display: none; }
+  section.tab.on { display: block; animation: fadein .18s ease; }
+  @keyframes fadein { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { section.tab.on { animation: none; } }
+  h2 {
+    font-family: var(--serif); font-weight: 900; font-size: 25px; letter-spacing: .01em;
+    margin: 44px 0 6px; padding-left: 13px; border-left: 5px solid var(--accent); line-height: 1.4;
+  }
+  h2:first-child { margin-top: 6px; }
+  h3 { font-size: 17.5px; margin: 22px 0 8px; }
+  .lede { color: var(--ink-2); font-size: 14.5px; margin: 0 0 16px 18px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px 22px; box-shadow: var(--shadow); }
+  .grid { display: grid; gap: 14px; }
+  .g2 { grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); }
+  .g3 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+  .g4 { grid-template-columns: repeat(auto-fit, minmax(205px, 1fr)); }
+  .chip { display: inline-block; background: var(--chip); border-radius: 4px; padding: 0 9px; font-size: 12.5px; color: var(--ink-2); margin: 2px 4px 2px 0; }
+  .tag-us { background: var(--amber-soft); color: var(--amber); border: 1px solid var(--amber); font-weight: 600; }
+  .tag-pass { background: var(--pass-soft); color: var(--pass); }
+  .tag-fail { background: var(--fail-soft); color: var(--fail); }
+  .hint { color: var(--ink-2); font-size: 13.5px; }
+  .src { color: var(--ink-2); font-size: 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  th, td { text-align: left; padding: 9px 11px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--ink-2); font-weight: 600; font-size: 13px; white-space: nowrap; }
+  .tblwrap { overflow-x: auto; }
+  ul { padding-left: 22px; margin: 8px 0; }
+  li { margin: 4px 0; }
+  .callout { border-left: 5px solid var(--amber); background: var(--amber-soft); border-radius: 0 10px 10px 0; padding: 15px 19px; margin: 16px 0; }
+  .callout.teal { border-left-color: var(--accent); background: var(--accent-soft); }
+
+  /* KPI */
+  .kpi { padding: 17px 19px; }
+  .kpi .v { font-family: var(--disp); font-weight: 800; font-size: 34px; color: var(--accent); line-height: 1.15; }
+  .kpi .v.warn { color: var(--fail); }
+  .kpi .k { font-size: 15px; font-weight: 600; margin-top: 3px; }
+  .kpi .s { font-size: 12.5px; color: var(--ink-2); margin-top: 5px; line-height: 1.6; }
+
+  /* chain map */
+  .chain { display: grid; grid-template-columns: 1fr 28px 1fr 28px 1fr; gap: 0; align-items: start; }
+  .chain .col h3 { margin: 0 0 10px; font-size: 13.5px; color: var(--ink-2); letter-spacing: .12em; }
+  .chain .arrowcol { display: flex; align-items: center; justify-content: center; padding-top: 100px; color: var(--ink-2); font-size: 22px; }
+  .node {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 9px;
+    padding: 9px 13px; margin-bottom: 9px; cursor: pointer; transition: border-color .12s;
+  }
+  .node:hover { border-color: var(--accent); }
+  .node.sel { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+  .node .t { font-weight: 700; font-size: 15px; }
+  .node .d { font-size: 13px; color: var(--ink-2); }
+  .node.us { border: 1.5px solid var(--amber); background: var(--amber-soft); }
+  .node.us .t { color: var(--amber); }
+  #nodeDetail { margin-top: 16px; min-height: 52px; }
+  #nodeDetail .card { border-left: 5px solid var(--accent); font-size: 15px; }
+  .uslayer {
+    margin: 20px 0 0; border: 2px solid var(--amber); background: var(--amber-soft);
+    border-radius: 12px; padding: 16px 20px; text-align: center; font-size: 16px;
+  }
+  .uslayer b { color: var(--amber); }
+  @media (max-width: 880px) { .chain { grid-template-columns: 1fr; } .chain .arrowcol { padding: 4px 0; transform: rotate(90deg); } }
+
+  /* svg charts */
+  .chart { width: 100%; height: auto; display: block; }
+  .axis { stroke: var(--line); stroke-width: 1; }
+  .gridline { stroke: var(--line); stroke-width: 1; stroke-dasharray: 3 4; opacity: .7; }
+  .axlabel { fill: var(--ink-2); font-size: 11.5px; font-family: var(--mono); }
+  .ptlabel { fill: var(--ink); font-size: 12.5px; }
+  .pt { fill: var(--accent); opacity: .78; cursor: pointer; }
+  .pt.dim { fill: var(--ink-2); opacity: .45; }
+  .pt.pick { stroke: var(--amber); stroke-width: 3; }
+  #tip {
+    position: fixed; pointer-events: none; z-index: 60; display: none;
+    background: var(--ink); color: var(--bg); font-size: 13px; line-height: 1.6;
+    padding: 8px 12px; border-radius: 7px; max-width: 290px;
+  }
+  .bar-bg { fill: var(--chip); }
+  .bar { fill: var(--accent); opacity: .85; }
+  .bar.hi { fill: var(--amber); }
+  .barlabel { fill: var(--ink); font-size: 13px; }
+  .barval { fill: var(--ink-2); font-size: 12px; font-family: var(--mono); }
+  .planlabel { fill: var(--ink); font-size: 12.5px; font-weight: 600; }
+  .plansub { fill: var(--ink-2); font-size: 10.5px; }
+
+  /* rival cards */
+  .rival .who { font-weight: 700; font-size: 17px; }
+  .rival .pos { font-size: 12.5px; color: var(--ink-2); letter-spacing: .04em; }
+  .rival .facts { font-size: 14.5px; margin: 9px 0; }
+  .rival .steal { border-top: 1px dashed var(--line); margin-top: 9px; padding-top: 9px; font-size: 14px; }
+  .rival .steal b { color: var(--accent); }
+
+  /* sop stepper */
+  .stepper { display: flex; gap: 7px; overflow-x: auto; padding-bottom: 6px; }
+  .step {
+    flex: 1 0 112px; text-align: center; background: var(--surface); border: 1px solid var(--line);
+    border-radius: 9px; padding: 9px 6px; cursor: pointer; font-size: 13.5px; position: relative;
+  }
+  .step:hover { border-color: var(--accent); }
+  .step.on { border-color: var(--accent); background: var(--accent-soft); font-weight: 700; }
+  .step .no { font-family: var(--disp); color: var(--accent); font-weight: 800; font-size: 16px; }
+  .step::after { content: "→"; position: absolute; right: -10px; top: 34%; color: var(--ink-2); font-size: 14px; }
+  .step:last-child::after { content: ""; }
+  #stepDetail { margin-top: 14px; font-size: 15.5px; }
+
+  /* timeline / gates */
+  .phase { display: grid; grid-template-columns: 128px 1fr; gap: 16px; margin-bottom: 6px; }
+  .phase .ph { font-family: var(--disp); font-weight: 800; font-size: 19px; color: var(--accent); padding-top: 16px; }
+  .gate { border-left: 5px solid var(--pass); background: var(--pass-soft); border-radius: 0 9px 9px 0; padding: 9px 15px; margin-top: 9px; font-size: 15px; }
+  .gate b { color: var(--pass); }
+  .status-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 7px; }
+  .dot-live { background: var(--pass); } .dot-wait { background: var(--amber); } .dot-frozen { background: var(--ink-2); }
+
+  /* expandable / sortable */
+  tr.xrow { cursor: pointer; }
+  tr.xrow:hover td { background: var(--accent-soft); }
+  tr.xdetail td { background: var(--chip); font-size: 13.5px; color: var(--ink-2); }
+  tr.xdetail { display: none; }
+  tr.xdetail.show { display: table-row; }
+  th.sortable { cursor: pointer; user-select: none; }
+  th.sortable:hover { color: var(--accent); }
+
+  /* demo + calculator */
+  .demo-wrap { display: grid; grid-template-columns: 1.4fr 1fr; gap: 18px; }
+  @media (max-width: 880px) { .demo-wrap { grid-template-columns: 1fr; } }
+  #qcCv { width: 100%; height: 300px; background: linear-gradient(120deg, var(--hero-bg1), var(--hero-bg2)); border-radius: 10px; display: block; }
+  .demo-btn {
+    background: var(--accent); color: #fff; border: none; border-radius: 8px;
+    padding: 8px 22px; font-size: 15.5px; font-weight: 600; cursor: pointer; font-family: inherit;
+  }
+  .demo-btn:hover { opacity: .9; }
+  .ctl { margin: 12px 0; }
+  .ctl label { display: flex; justify-content: space-between; font-size: 14.5px; color: var(--ink-2); }
+  .ctl label b { color: var(--ink); font-family: var(--mono); }
+  input[type="range"] { width: 100%; accent-color: var(--accent); height: 26px; }
+  .bigstat { display: flex; gap: 30px; flex-wrap: wrap; margin: 8px 0; }
+  .bigstat .v { font-family: var(--disp); font-weight: 800; font-size: 32px; color: var(--accent); line-height: 1.1; }
+  .bigstat .v.warn { color: var(--fail); }
+  .bigstat .k { font-size: 13px; color: var(--ink-2); }
+  .fmbar { display: grid; grid-template-columns: 120px 1fr 36px; gap: 8px; align-items: center; font-size: 13px; margin: 3px 0; }
+  .fmbar .tr { background: var(--chip); border-radius: 4px; height: 12px; overflow: hidden; }
+  .fmbar .fi { background: var(--fail); height: 100%; width: 0; transition: width .2s; }
+  .calc-out { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-top: 14px; }
+  .calc-out .o { background: var(--chip); border-radius: 9px; padding: 10px 14px; }
+  .calc-out .o .v { font-family: var(--disp); font-weight: 800; font-size: 25px; color: var(--accent); }
+  .calc-out .o .v.warn { color: var(--fail); }
+  .calc-out .o .k { font-size: 12.5px; color: var(--ink-2); }
+
+  /* glossary + tab intro + sandbox */
+  .gl { border-bottom: 1.5px dashed var(--accent-line); cursor: help; }
+  .tabintro { background: var(--chip); border-radius: 9px; padding: 9px 16px; font-size: 15px; color: var(--ink-2); margin: 0 0 18px; }
+  .tabintro b { color: var(--ink); }
+  #sandCv { width: 100%; height: 420px; background: linear-gradient(180deg, var(--hero-bg2), var(--hero-bg1)); border-radius: 10px; display: block; cursor: crosshair; touch-action: none; }
+  .sand-stats { display: flex; gap: 26px; flex-wrap: wrap; margin-top: 10px; align-items: center; }
+  #sandVerdict { margin-top: 12px; font-size: 15px; }
+  .vbadge { display: inline-block; font-family: var(--disp); font-weight: 800; font-size: 21px; padding: 2px 16px; border-radius: 8px; }
+  .vbadge.ok { background: var(--pass-soft); color: var(--pass); }
+  .vbadge.bad { background: var(--fail-soft); color: var(--fail); }
+
+  footer { max-width: 1220px; margin: 44px auto 0; padding: 16px 24px; border-top: 1px solid var(--line); color: var(--ink-2); font-size: 12.5px; }
+</style>
+</head>
+<body>
+<div id="tip"></div>
+<header class="topbar">
+  <div class="head-row">
+    <h1 class="brand">具身数据工厂 · 作战地图</h1>
+    <span class="badge-internal">INTERNAL</span>
+    <span class="head-meta">v3.4 · 2026-07-23 · Fable5基线恢复 · 任务001冷启动 · 3天单样板闭环 · Paris HTML生成式DEMO · 双数据集审计(pusht+aloha)</span>
+    <button id="themeBtn" type="button">主题</button>
+  </div>
+  <nav class="tabs" id="tabs">
+    <button data-tab="t-ov" class="on">总览</button>
+    <button data-tab="t-wm">世界模型分析</button>
+    <button data-tab="t-chain">产业链地图</button>
+    <button data-tab="t-route">技术路线·前沿</button>
+    <button data-tab="t-rival">竞争格局</button>
+    <button data-tab="t-biz">商业模式·打法</button>
+    <button data-tab="t-base">基地建设运营</button>
+    <button data-tab="t-cold">冷启动·任务001</button>
+    <button data-tab="t-sop">SOP·质检·DEMO</button>
+    <button data-tab="t-road">路线图·风险</button>
+  </nav>
+</header>
+<main>
+
+<!-- ============ 总览 ============ -->
+<section class="tab on" id="t-ov">
+  <div class="hero">
+    <canvas id="heroCv" aria-hidden="true"></canvas>
+    <div class="inner">
+      <div class="eyebrow">EMBODIED DATA FACTORY · 作战地图</div>
+      <h1>把行业的计量单位,<br>从「小时」改写成<em>「合格小时」</em></h1>
+      <p class="sub">国曙的人力与政府资源 × 我方 AI 裁判链与培训体系 —— 业内唯一「可复现验收、按合格小时计费」的数采供应商;裁判规则库以独立品牌沉淀,不焊死单一渠道。</p>
+      <div class="stats">
+        <div class="stat"><div class="v">~50%</div><div class="k">行业有效率 = 一半人工被废品吃掉</div></div>
+        <div class="stat"><div class="v">4-10×</div><div class="k">采集成本→售价毛利差(基地代采核心利差)</div></div>
+        <div class="stat"><div class="v">0</div><div class="k">episode 级自动 QC 商用产品(裁判位空缺)</div></div>
+      </div>
+    </div>
+  </div>
+  <h2 style="margin-top:0">本轮新增(7/21 · 先看这两块)</h2>
+  <div class="grid g2">
+    <a class="card" href="/embodied/team/#pilot-3day" style="display:block;text-decoration:none;color:inherit;border:1.5px solid var(--accent)">
+      <b>① pilot_day3_core_v1 · 3 天单样板闭环</b><br>
+      <span class="hint">pass@5=5/5 · repeat=100% · E-D=96%。作用:证明一条样板可以复跑、审计、回流;不是规模化承诺。点击进入团队工作台说明。</span>
+    </a>
+    <a class="card" href="/embodied/public/#parisDemo" style="display:block;text-decoration:none;color:inherit;border:1.5px solid var(--amber)">
+      <b>② Paris HTML 实时生成导览 Demo</b><br>
+      <span class="hint">已并入外发能力册。作用:解释“输入需求 → 生成交互页面”,后续可替换成基地参观导览页和审计报告动态页。</span>
+    </a>
+  </div>
+
+  <h2>市场关键数字</h2>
+  <p class="lede">每个数字至少两路信源交叉;点其他标签页看出处上下文。</p>
+  <div class="grid g4">
+    <div class="card kpi"><div class="v">&gt;99%</div><div class="k">真机数据缺口</div><div class="s">全球高质量真机数据 ~50 万 h vs 共识需求千万 h 级</div></div>
+    <div class="card kpi"><div class="v warn">~50%</div><div class="k">行业有效率</div><div class="s">"采 100 小时筛下来 50 小时有效";北京人形靠 SOP 做到 95%+ = SOP 是关键变量</div></div>
+    <div class="card kpi"><div class="v">250 元</div><div class="k">真机数据采集成本/h</div><div class="s">无本体 50-100 · 行业均 100-150(每经 2026-06);觅蜂售价 1000+/h</div></div>
+    <div class="card kpi"><div class="v">$30亿+</div><div class="k">两年行业数据支出(Bessemer)</div><div class="s">XDOF 出道即 20 客户/$70M;光轮 26Q1 订单 5.5 亿超去年全年</div></div>
+    <div class="card kpi"><div class="v">64 个</div><div class="k">政府训练场已投用</div><div class="s">23 省 27 城,城投出资 1.3-2.6 亿/个;"建设已招、运营未招"= 窗口</div></div>
+    <div class="card kpi"><div class="v">1.5×</div><div class="k">失败样本溢价</div><div class="s">世界模型厂新买方;智元专门开源失败交互数据集</div></div>
+    <div class="card kpi"><div class="v">2400 元</div><div class="k">三级证书补贴/人(广东)</div><div class="s">五级 1000 → 一级 3600;上海三级 2500;市面培训收费 2500-4980/人</div></div>
+    <div class="card kpi"><div class="v warn">12-24月</div><div class="k">标准窗口期</div><div class="s">YD/T 6770-2026 已实施但<b>尚无首批通过名单</b>;LeRobot v3 成事实格式</div></div>
+  </div>
+
+  <h2>六大市场真需求(全部有证据,非叙事)</h2>
+  <div class="grid g3">
+      <div class="card"><b>N1 · 数据缺口买方实际付费</b><br><span class="hint">缺口 &gt;99%;XDOF/光轮/Bessemer 三重印证付费真实。</span></div>
+    <div class="card"><b>N2 · 废品率是最大钱坑</b><br><span class="hint">"一周采集大半是废数据";过滤最差 10-20% demo 反而提升策略性能(ICLR 2025)。</span></div>
+    <div class="card" style="border-color:var(--amber)"><b>N3 · "什么算合格"没有裁判</b><br><span class="hint">行业原话:"采集员动作不合格,<b>谁来判断,谁来承担成本?</b>" 合同级验收条款范本不存在;episode 级自动 QC 无商用。</span></div>
+    <div class="card"><b>N4 · 采集员职业化空白</b><br><span class="hint">头部工厂 3 天速成上岗、中介层层转包;订单班公开案例为零 = 先发空位。</span></div>
+    <div class="card"><b>N5 · 标准窗口刚开</b><br><span class="hint">YD/T 6770-2026(基准测试方法)2026-06-01 实施,实施一个半月尚无认证名单 = 预测试/认证服务窗口。</span></div>
+    <div class="card"><b>N6 · 世界模型厂 = 新买方</b><br><span class="hint">要失败样本+评估 ground truth,不是通用轨迹;Cosmos 3 全开源后"真采数据 provenance 验证"成新需求。</span></div>
+  </div>
+
+  <h2>飞轮(每圈都要外部验证信号,防剧场化)</h2>
+  <div class="card">
+    <svg class="chart" viewBox="0 0 760 360" role="img" aria-label="业务飞轮图">
+      <defs>
+        <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/>
+        </marker>
+      </defs>
+      <ellipse cx="380" cy="180" rx="122" ry="54" fill="var(--amber-soft)" stroke="var(--amber)" stroke-width="1.5"/>
+      <text x="380" y="172" text-anchor="middle" font-size="17" font-weight="700" fill="var(--amber)">元 / 合格小时</text>
+      <text x="380" y="196" text-anchor="middle" font-size="12" fill="var(--ink-2)">把行业计量单位从"小时"改写成"合格小时"</text>
+      <g font-size="13.5" fill="var(--ink)">
+        <rect x="266" y="14" width="228" height="48" rx="9" fill="var(--surface)" stroke="var(--accent)"/>
+        <text x="380" y="34" text-anchor="middle" font-weight="600">① 更多数据过裁判</text>
+        <text x="380" y="52" text-anchor="middle" fill="var(--ink-2)" font-size="11.5">蜂巢单 · 灵巧手包 · 第三方验收单</text>
+        <rect x="556" y="154" width="196" height="54" rx="9" fill="var(--surface)" stroke="var(--accent)"/>
+        <text x="654" y="175" text-anchor="middle" font-weight="600">② 错判/边界案例回流</text>
+        <text x="654" y="193" text-anchor="middle" fill="var(--ink-2)" font-size="11.5">每批次规则库必须有增量</text>
+        <rect x="260" y="294" width="240" height="54" rx="9" fill="var(--surface)" stroke="var(--accent)"/>
+        <text x="380" y="315" text-anchor="middle" font-weight="600">③ 规则库+评测集变强(资产)</text>
+        <text x="380" y="333" text-anchor="middle" fill="var(--ink-2)" font-size="11.5">裁判越判越准 · 认证含金量上升</text>
+        <rect x="8" y="154" width="204" height="54" rx="9" fill="var(--surface)" stroke="var(--accent)"/>
+        <text x="110" y="175" text-anchor="middle" font-weight="600">④ 验收报告成付款依据</text>
+        <text x="110" y="193" text-anchor="middle" fill="var(--ink-2)" font-size="11.5">买卖双方都用我们的尺子</text>
+      </g>
+      <path d="M 498 44 Q 640 60 654 148" fill="none" stroke="var(--accent)" stroke-width="2" marker-end="url(#arr)"/>
+      <path d="M 638 214 Q 600 300 506 318" fill="none" stroke="var(--accent)" stroke-width="2" marker-end="url(#arr)"/>
+      <path d="M 254 318 Q 130 300 108 214" fill="none" stroke="var(--accent)" stroke-width="2" marker-end="url(#arr)"/>
+      <path d="M 118 148 Q 140 58 260 42" fill="none" stroke="var(--accent)" stroke-width="2" marker-end="url(#arr)"/>
+    </svg>
+    <p class="hint">收敛判据(出现任一 = 该圈闭合):① 首单付费 ② 验收报告写进买卖合同作付款依据 ③ 证书被第二家雇主认可 ④ 标准文件引用我们的方法。<b>连续两圈无信号 = 诚实复盘方向。</b></p>
+  </div>
+
+  <h2>当前状态(2026-07-21)</h2>
+  <div class="card">
+    <ul style="list-style:none;padding-left:2px">
+      <li><span class="status-dot dot-live"></span><b>QC 裁判 v0 已建成</b>:7 条规则(时长/丢帧/停滞/平滑度/成败标签/关节越限/夹爪活动),15 项测试全绿,判定确定性可复现 —— 本页「SOP·质检·DEMO」有交互演示。</li>
+      <li><span class="status-dot dot-live"></span><b>两份真实数据审计报告已产出(7/17)</b>:① pusht(206 条)按官方成功判据 <b>0 条可结算</b>(判据过严,最好 0.94<0.95)、商业口径 44.2%;② aloha_static_coffee(50 条 ALOHA 真机)严格口径 <b>0 条可结算</b>(数据集根本没有成败标注列)、质量口径 98%。<b>双数据集同一结论:行业缺的不是数据质量,是验收基础设施——判据、标签、合同。这一页就是我们全部生意的论证。</b></li>
+      <li><span class="status-dot dot-live"></span><b>pilot_day3_core_v1 单样板闭环已接入</b>:pass@5=5/5、repeat=100%、E-D 轨迹一致率 96%。这只证明最小闭环可复跑,不触发扩量;扩量必须等客户 spec 和书面反馈。</li>
+      <li><span class="status-dot dot-live"></span><b>页面结构已恢复 Fable5 基线</b>:/embodied/ = 内部作战地图;/embodied/public/ = 唯一外发能力册;/embodied/team/ = 团队工作台。新增内容进入插槽,不再另起分叉;旧 /partner/ 只做 301 兼容跳转。</li>
+      <li><span class="status-dot dot-live"></span><b>商务弹药包已备</b>:致智元/觅蜂一页纸 + 致灵心巧手一页纸 + spec 问询清单 + 真实审计报告(可外发)。</li>
+      <li><span class="status-dot dot-wait"></span><b>等两家 spec</b>(用户线):智元/觅蜂、灵心巧手,谁先给规格先做谁的样板包;硬件以销定产。</li>
+      <li><span class="status-dot dot-wait"></span><b>AI 侧排队</b>:飞书 ERP(FDE S1-S3 引擎换内容)→ 培训考核系统。</li>
+      <li><span class="status-dot dot-frozen"></span><b>五目无感穿戴设备</b>:Phase 2+ 路线图项,先设备定义文档,找 ODM,不自建电子研发。</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 世界模型分析 ============ -->
+<section class="tab" id="t-wm">
+  <div class="callout teal" style="margin-top:0">
+    <b>我们的核心判断:</b>世界模型 1-2 年内是数采市场的<b>放大器</b>而非替代者——但它会残酷地分化品类:通用轨迹被压价,<b>高保真/带力触觉/带失败标签/可验证</b>的稀缺数据溢价上升。我们卖裁判不卖轨迹:<b>数据越被质疑,裁判越值钱(反脆弱)。</b>
+  </div>
+
+  <h2>玩家格局(2026-07 · 谁在做什么)</h2>
+  <div class="card tblwrap">
+    <table>
+      <thead><tr><th>玩家</th><th>路线</th><th>最新动态</th><th>与数采的关系</th></tr></thead>
+      <tbody>
+        <tr><td><b>NVIDIA Cosmos 3</b></td><td>开放 omnimodel(推理+生成+动作)</td><td>2026-06-01 全开源(16B/64B),20 万亿 token 训练,成立 Cosmos Coalition(Agile Robots/Generalist/Skild/Runway)</td><td>合成数据管线全开源化 → 真采数据的相对价值向"合成做不出的部分"集中</td></tr>
+        <tr><td><b>Google Genie 3</b></td><td>文本→可交互 3D 世界</td><td>24fps/720p 实时;SIMA 2 在其中自我改进</td><td>agent 训练课程定位,暂不直接买机器人数据</td></tr>
+        <tr><td><b>Meta V-JEPA 2</b></td><td>非生成潜空间</td><td>100 万 h 网络视频 + 仅 62h 机器人数据零样本操作;规划快 30×</td><td>证明少量高质量真机数据的杠杆极大</td></tr>
+        <tr><td><b>1X / Tesla / Wayve</b></td><td>世界模型做训练+评估</td><td>1X:14B 模型 + ~400h 真机;GAIA-3 定位转向评估</td><td>评估用 ground-truth 真机 rollout = 新品类买方</td></tr>
+        <tr><td><b>OpenAI Sora</b></td><td>—</td><td>app 与 API 已先后关停(算力成本倒挂),暂退出</td><td>反面教材:世界模型烧钱,数据供给方现金流反而稳</td></tr>
+        <tr><td><b>腾讯 HY-World 2.0</b></td><td>开源 3D 世界全家桶</td><td>2026-04 开源(Pano/Nav/Stereo/Mirror),与阿里 HappyOyster 同日对撞发布</td><td>国内世界模型竞赛白热化 = 训练数据需求走高</td></tr>
+        <tr><td><b>字节</b></td><td>秘密行军</td><td>世界模型列 2026 AI 战略第一命题,目标年底全球 SOTA,无公开发布</td><td>潜在超级买方(短视频数据基因,缺物理交互数据)</td></tr>
+        <tr><td><b>阿里 / 高德</b></td><td>物理交互预测</td><td>ABot-PhysWorld 登顶 WorldArena(滑动/倾倒/堆叠/流体);RynnWorld 后续无公开信息</td><td>RynnWorld-Teleop 曾证明:300 合成+300 真实,成功率 42.9%→62.9% —— 合成放大真实</td></tr>
+        <tr><td><b>极佳 GigaAI / 智元</b></td><td>世界模型+数据集</td><td>GigaWorld-1/GigaBrain-0(10 亿 Pre-B);智元 AGIBOT WORLD 二期含失败样本</td><td>智元自己开源失败数据集 = 失败样本需求被头部确认</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>三种用法的实用化程度(我们的评估)</h2>
+  <div class="card">
+    <svg class="chart" viewBox="0 0 700 170" role="img" aria-label="世界模型三用法实用度">
+      <g class="gridline"><line x1="480" y1="10" x2="480" y2="150"/></g>
+      <text class="barlabel" x="8" y="36">合成数据生成</text>
+      <rect class="bar-bg" x="180" y="22" width="500" height="20" rx="4"/><rect class="bar" x="180" y="22" width="255" height="20" rx="4"/>
+      <text class="barval" x="445" y="36">半实用 · 全部需要真机种子+真机评估闭环</text>
+      <text class="barlabel" x="8" y="86">策略评估(裁判)</text>
+      <rect class="bar-bg" x="180" y="72" width="500" height="20" rx="4"/><rect class="bar hi" x="180" y="72" width="330" height="20" rx="4"/>
+      <text class="barval" x="520" y="86">最热新方向 · 驾驶域已进生产</text>
+      <text class="barlabel" x="8" y="136">Model-based 规划</text>
+      <rect class="bar-bg" x="180" y="122" width="500" height="20" rx="4"/><rect class="bar" x="180" y="122" width="290" height="20" rx="4"/>
+      <text class="barval" x="480" y="136">接近实用(V-JEPA 2 零样本抓放)· 大规模 RL 仍 demo 级</text>
+    </svg>
+    <p class="hint">操作域告诫(学界):"世界模型尚不能忠实还原物理交互" —— 评估永远需要真机 ground truth 校准,这正是真机数据商的长期饭票。</p>
+  </div>
+
+  <h2>放大器 vs 天花板:双面证据与盯梢指标</h2>
+  <div class="grid g2">
+    <div class="card">
+      <b>放大器证据(1-2 年内做大数采市场)</b>
+      <ul>
+        <li>DreamGen:1 任务遥操种子 → 78 万条合成轨迹,GR00T N1.5 学会 22 个新行为 —— 但<b>种子与评估都要真机</b>。</li>
+        <li>RynnWorld-Teleop:合成+真实混合把成功率 42.9%→62.9%,合成放大真实而非替代。</li>
+        <li>"预训练基本全用真实数据,100 万小时前看不到大规模采用仿真的必要性"(每经/财联社 2026)。</li>
+        <li>EgoScale(NVIDIA 2026-02):2 万 h 动作标注人类视频预训练 VLA,任务完成率 +54%,证明 <b>log-linear scaling law</b> —— 人类视频是数据金矿,我们五目设备愿景的最硬论据。</li>
+      </ul>
+    </div>
+    <div class="card">
+      <b>天花板风险(3 年+尺度,持续盯梢)</b>
+      <ul>
+        <li>Stanford AI Index 2026:仿真操控 89.4% → 真实家庭 <b>12%</b>(sim-to-real 未解 = 护城河还在)。</li>
+        <li>Sergey Levine:"仿真/人类视频是叉勺(spork),真机数据不可替代"。</li>
+      <li><b>盯梢指标:</b>① Cosmos Coalition 成员的真机数据用量 ② 1X/Tesla 的真实/合成配比 ③ 光轮"仿真:真机 100:1 微调上产线"案例是否扩散。</li>
+        <li>任一指标显示真机需求断崖 → 触发路线复盘(裁判/评估线不受影响,受影响的是采集产能扩张节奏)。</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>对我们生意的四条精准含义</h2>
+  <div class="grid g2">
+    <div class="card"><b>① 卖裁判不卖轨迹(反脆弱)</b><br><span class="hint">世界模型压价的是"通用轨迹";它同时制造了新问题——合成数据混入真采数据集,买方需要 <b>provenance 验证(这条轨迹是真机采的吗?)</b>。这项能力进裁判清单,规则形态与现有 7 条规则同构。</span></div>
+    <div class="card"><b>② 失败样本 = 废品变商品</b><br><span class="hint">裁判天然产出"带失败模式标签的废品"(7 类失败分类),这正是世界模型训练要的失败样本(溢价 1.5×)。别人的废品是成本,我们的废品是 SKU。</span></div>
+    <div class="card"><b>③ 评估 ground truth 是长期饭票</b><br><span class="hint">GAIA-3/RoboChallenge 都在说同一件事:评估必须真机。给世界模型厂供"评估用 ground-truth 校准集"= 轨 B 远期最高毛利品类,规格定义现在就可以进规则库。</span></div>
+    <div class="card"><b>④ EgoScale 撑起五目设备愿景</b><br><span class="hint">2 万小时 egocentric + 动作标注 → +54%,且 MANUS 手套 21 关键点→22-DoF 重定向已跑通 —— 五目无感设备(头戴+吊坠+手环+UWB+自标注)的输出格式对齐 EgoScale 管线,数据可直接进主流 VLA 预训练。Phase 2+ 定义文档的技术锚。</span></div>
+  </div>
+
+  <h2>"实时生成 HTML 导览"那类 demo 是怎么实现的(二轮溯源已修正方向)</h2>
+  <div class="card">
+    <b>溯源结论(2026-07 二轮修正):</b>那个"实时生成的巴黎旅游导览"demo 属于<b>生成式 UI(Generative UI)</b>赛道——LLM 现场写出完整 HTML/CSS/JS 页面,不是视频流世界模型(首轮 Odyssey 判断已作废)。头号候选:<b>Google Gemini 3 "Generative Interfaces"</b>(2025-11 首发、2026 春随 AI Mode/Gemini Intelligence 放量,官方旗舰示例就是旅行导览"3 天罗马行程"+伦敦地图版;"巴黎"大概率是媒体/开发者转发实测时自己输的 prompt)。次候选:Anthropic「Imagine with Claude」(实时生成软件界面研究预览;其交互式可视化功能恰好 2026-03-12 发布,时间吻合)、Manus/Genspark 旅行网页 demo(2025-03/04 刷屏,产物是交付好的网页)。
+    <ul>
+      <li><b>实现方式(Google Research 官方披露):</b>模型直接<b>流式生成完整 HTML/CSS/JS</b> → 浏览器沙箱 iframe 渲染;交互性来自生成出来的 JS 本身;"继续探索"= 每次新意图触发一轮新生成,状态保存在会话上下文里。外加三件套:工具访问(搜图/搜索)、精调 system prompt、HTML 纠错后处理。</li>
+      <li><b>我们完全可以在自有服务器复刻(不碰红线):</b>FastAPI 后端持 API key → 调 Claude 流式生成 → SSE 推给前端 sandboxed iframe 渐进渲染,2-3 秒见首屏;设计系统写进 system prompt 并用 prompt caching。<b>成本量级:一页 8-20K token ≈ $0.1-0.4/次(Sonnet 档),demo 日均百次 = 个位数美元。</b></li>
+      <li><b>贴我们生意的用法(比复刻巴黎导览更值钱):</b>①「基地参观导览页」——客户来访前输入其公司与关注点,现场生成个性化参观动线+能力展示页;②「审计报告动态页」——后端出真实 verdict JSON(防幻觉:模型只排版不编数),LLM 现场生成可交互报告页。<b>已并入唯一外发能力册:<a href="/embodied/public/">/embodied/public/</a> 顶部「输入即生成」面板与「Paris HTML 实时生成导览 Demo」</b>(规则引擎实时装配真实数据,诚实标注;LLM 撰写版架构就绪;原 /genui/ 与 /partner/ 都只做跳转,不再分叉)。</li>
+      <li><b>档位对照(保留首轮结论作参照):</b>视频流世界模型(Odyssey-2/Genie 3/RTFM)= 服务端 H100 自回归视频、$1-2/用户小时,那是另一个赛道;我们的沙盘 DEMO(档位 0)+ 生成式 UI 复刻(档位 A,零 GPU)才是现在该做的。</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 产业链 ============ -->
+<section class="tab" id="t-chain">
+  <h2>上下游链路(点节点看拆解)</h2>
+  <p class="lede">钱从右往左流,数据从左往右流。琥珀色 = 已对接/自有资产。</p>
+  <div class="card">
+    <div class="chain">
+      <div class="col">
+        <h3>上游 · 硬件与设备供给</h3>
+        <div class="node" data-k="arx"><div class="t">遥操作双臂(ARX / 松灵 / ALOHA)</div><div class="d">¥2.98万/台起 · 国内数采主力</div></div>
+        <div class="node us" data-k="linker"><div class="t">灵心巧手 ★已对接</div><div class="d">灵巧手 = 最高溢价品类硬件源</div></div>
+        <div class="node" data-k="wear"><div class="t">穿戴/手持(MEgo / FastUMI / Quest)</div><div class="d">低成本扩量路线的设备层</div></div>
+        <div class="node" data-k="humanoid"><div class="t">人形整机(宇树 / 智元)</div><div class="d">价格战中,¥2.99万起 · 晚买</div></div>
+        <div class="node" data-k="touch"><div class="t">触觉传感(帕西尼 / GelSight)</div><div class="d">灵巧手数据包的配套件</div></div>
+      </div>
+      <div class="arrowcol">→</div>
+      <div class="col">
+        <h3>中游 · 数采生产(我们在这里)</h3>
+        <div class="node us" data-k="guoshu"><div class="t">人力派:国曙 ★自有渠道</div><div class="d">500+人 · 50+分支 · 105+政府关系</div></div>
+        <div class="node" data-k="mifeng"><div class="t">平台派:觅蜂(智元系)</div><div class="d">蜂巢加盟 = 我们的切入口</div></div>
+        <div class="node" data-k="lightwheel"><div class="t">仿真派:光轮智能</div><div class="d">$2B 估值 · 不做真机遥操作</div></div>
+        <div class="node" data-k="factory"><div class="t">自建工厂:智元 / 国地中心 / 数据堂</div><div class="d">重资产堆量,单机日 500-1000 条</div></div>
+        <div class="node" data-k="crowd"><div class="t">众包:京东 60 万大军 / XDOF</div><div class="d">在岗员工+UMI 背包 · 全球遥操作员</div></div>
+        <div class="node" data-k="gov"><div class="t">G 端训练场:64 个已投用</div><div class="d">城投出资 1.3-2.6 亿/个 · 运营未招</div></div>
+      </div>
+      <div class="arrowcol">→</div>
+      <div class="col">
+        <h3>下游 · 买方</h3>
+        <div class="node us" data-k="agibot"><div class="t">智元 ★已对接(本体+模型厂)</div><div class="d">GO-1 基座 · AgiBot World 百万条</div></div>
+        <div class="node" data-k="robotco"><div class="t">本体/模型厂:宇树 / 银河通用 / Figure / 1X</div><div class="d">预训练几乎全用真实数据</div></div>
+        <div class="node" data-k="worldmodel"><div class="t">世界模型厂:Cosmos / GigaAI / 阿里</div><div class="d">新买方:失败样本 + 评估 ground truth</div></div>
+        <div class="node" data-k="labs"><div class="t">科研 / frontier labs</div><div class="d">XDOF 出道即 20 客户含 frontier labs</div></div>
+        <div class="node" data-k="exchange"><div class="t">数据交易所:江苏首单 / 京东云平台</div><div class="d">场内挂牌通道成形 · 二次变现出口</div></div>
+      </div>
+    </div>
+    <div class="uslayer">
+      <b>我们的夹层 = 质检 · 验收 · 认证</b> —— 向下给人力派供「培训认证 + 按质计价」,向上给平台派/买方供「独立第三方验收」。<br>
+      <span class="hint">三方都需要、都不做、都替代不了;不碰硬件、不碰劳务差价、不碰仿真引擎。与"独立验证优于自报"的全部肌肉记忆同构。</span>
+    </div>
+    <div id="nodeDetail"><div class="card hint">← 点任意节点看拆解</div></div>
+  </div>
+
+  <h2>钱怎么流:成本→售价的利差结构(2026-06 一手口径)</h2>
+  <div class="card">
+    <svg class="chart" viewBox="0 0 700 210" role="img" aria-label="成本售价利差">
+      <text class="barlabel" x="8" y="34">无本体采集成本</text>
+      <rect class="bar" x="185" y="20" width="50" height="20" rx="4"/><text class="barval" x="243" y="34">50-100 元/h</text>
+      <text class="barlabel" x="8" y="76">行业平均成本</text>
+      <rect class="bar" x="185" y="62" width="75" height="20" rx="4"/><text class="barval" x="268" y="76">100-150 元/h</text>
+      <text class="barlabel" x="8" y="118">真机采集成本</text>
+      <rect class="bar" x="185" y="104" width="125" height="20" rx="4"/><text class="barval" x="318" y="118">~250 元/h(每经 2026-06-16)</text>
+      <text class="barlabel" x="8" y="160">数据售价</text>
+      <rect class="bar hi" x="185" y="146" width="400" height="20" rx="4"/><text class="barval" x="240" y="160" fill="#fff">500-1000 元/h(北京人形)· 觅蜂 1000+ 元/h</text>
+      <text class="barval" x="185" y="196">→ 采集成本与售价之间 4-10× 毛利空间 = 基地代采生意的核心利差;有效率每 +10pp,利差再放大一成</text>
+    </svg>
+  </div>
+</section>
+
+<!-- ============ 技术路线·前沿 ============ -->
+<section class="tab" id="t-route">
+  <h2>七条采集技术路线:成本 × 质量 × 产能</h2>
+  <p class="lede">气泡大小 = 产能(条/h);琥珀描边 = 我们的选型。悬停看数据。</p>
+  <div class="card">
+    <svg class="chart" id="scatter" viewBox="0 0 700 450" role="img" aria-label="技术路线散点图">
+      <line class="axis" x1="60" y1="390" x2="670" y2="390"/>
+      <line class="axis" x1="60" y1="20" x2="60" y2="390"/>
+      <g class="gridline">
+        <line x1="60" y1="94" x2="670" y2="94"/><line x1="60" y1="168" x2="670" y2="168"/>
+        <line x1="60" y1="242" x2="670" y2="242"/><line x1="60" y1="316" x2="670" y2="316"/>
+        <line x1="180" y1="20" x2="180" y2="390"/><line x1="300" y1="20" x2="300" y2="390"/>
+        <line x1="420" y1="20" x2="420" y2="390"/><line x1="540" y1="20" x2="540" y2="390"/>
+      </g>
+      <text class="axlabel" x="670" y="410" text-anchor="end">→ 单位成本高</text>
+      <text class="axlabel" x="62" y="410">成本低</text>
+      <text class="axlabel" x="14" y="26">质量高</text>
+      <text class="axlabel" x="14" y="388">低</text>
+      <circle class="pt dim" cx="108" cy="286" r="14" data-tip="仿真合成 · Isaac/Genesis:边际成本≈0,但 manipulation sim-to-real 89.4%→12%,落地率最低。光轮已卡位,我们不做。"/>
+      <text class="ptlabel" x="108" y="316" text-anchor="middle">仿真合成</text>
+      <circle class="pt pick" cx="180" cy="198" r="13" data-tip="手持数采 UMI 系 · FastUMI:&lt;0.6元/条、10秒/条(遥操 3-5元/50秒);20-60条/h 产能最高;短板=缺力觉物理接地。2026-03 全家桶补上触觉(FastUMI Touch)。【选型:扩量线】"/>
+      <text class="ptlabel" x="180" y="228" text-anchor="middle">手持 UMI</text>
+      <circle class="pt pick" cx="228" cy="161" r="13" data-tip="第一视角人类视频 · Aria/EgoDex/MEgo View:1h ≈ 1h 遥操作的策略贡献;EgoScale 2万h 预训练证明 log-linear scaling(+54%)。【选型:五目无感设备愿景的技术地基】"/>
+      <text class="ptlabel" x="228" y="131" text-anchor="middle">第一视角视频</text>
+      <circle class="pt" cx="372" cy="124" r="10" data-tip="VR 遥操作 · Quest3 $499 + OpenTeleVision(开源):10-25条/h,可远程,精度低于主从;延迟≥300ms 判无效是硬门。"/>
+      <text class="ptlabel" x="372" y="152" text-anchor="middle">VR 遥操</text>
+      <circle class="pt pick" cx="540" cy="35" r="10" data-tip="主从臂遥操作 · ARX L5 双臂工位 ¥6-10万 / ALOHA2 $20-32k:10-30条/h,ACT 成功率比 VR 数据高 ~20%,质量之王。policy-assisted teleop 正把人力需求降 5-10×。【选型:Phase 0 主力产线】"/>
+      <text class="ptlabel" x="540" y="63" text-anchor="middle">主从臂遥操</text>
+      <circle class="pt" cx="588" cy="94" r="9" data-tip="真机部署回流 · AgiBot LWD/Figure/Tesla:前期投入重;2026 趋势 policy-assisted teleop 人力降 5-10×,值得跟。"/>
+      <text class="ptlabel" x="600" y="122" text-anchor="middle">部署回流</text>
+      <circle class="pt" cx="636" cy="72" r="8" data-tip="外骨骼 · 智元A2/傅利叶:5-15条/h,全身数据、retarget 损失小,成本最高。"/>
+      <text class="ptlabel" x="636" y="46" text-anchor="middle">外骨骼</text>
+    </svg>
+  </div>
+
+  <h2>路线明细(点行展开短板与判断 · 点表头排序)</h2>
+  <div class="card tblwrap">
+    <table id="routeTbl">
+      <thead><tr>
+        <th>路线</th><th>代表方案</th>
+        <th class="sortable" data-col="2">成本 ▾</th>
+        <th class="sortable" data-col="3">产能(条/h) ▾</th>
+        <th>质量口径</th>
+      </tr></thead>
+      <tbody>
+        <tr class="xrow"><td><b>主从臂遥操作</b> <span class="chip tag-us">主力</span></td><td>ARX L5 ¥2.98万/台 · ALOHA2 · GELLO &lt;$5k</td><td data-v="4" class="num">高</td><td data-v="20" class="num">10-30</td><td>质量之王,ACT 成功率比 VR 高 ~20%</td></tr>
+        <tr class="xdetail"><td colspan="5">短板:贵、操作员疲劳→质量衰减(公认痛点);单任务 500-1000 条 demo 后边际价值锐减 → 排产要多任务轮换。我们的双臂标准工位方案 ¥10-13 万(ARX L5×2+主从+3相机),比松灵整包省一半。2026 变量:policy-assisted teleop(策略处理简单段、人只接管难段)人力降 5-10× —— 人产数据变少,每条数据的验证权重变大 = 裁判价值上升。</td></tr>
+        <tr class="xrow"><td><b>手持数采(UMI 系)</b> <span class="chip tag-us">扩量</span></td><td>FastUMI &lt;0.6元/条 · 松灵 Pika Pro(±1.5mm/120Hz)</td><td data-v="1" class="num">最低</td><td data-v="40" class="num">20-60</td><td>速度 5×,可多人分发</td></tr>
+        <tr class="xdetail"><td colspan="5">短板:缺物理接地/力觉,同等成功率有时需 &gt;5× episode。2026-03 鹿明 AWE 发"全家桶":FastUMI Pro/Ego(无需建图第一人称)/Touch(触觉)/Go + 数据市场,即将上京东;2026 年内目标百万小时产能。用途:培训班学员练手 + 低价品类扩量,全部过裁判再交付。</td></tr>
+        <tr class="xrow"><td><b>第一视角人类视频</b> <span class="chip tag-us">愿景地基</span></td><td>Apple EgoDex 829h · Aria Gen 2(A2PD 已放出)· MEgo View 7摄</td><td data-v="1.5" class="num">低</td><td data-v="30" class="num">高(在岗即采)</td><td>1h ≈ 1h 遥操作策略贡献;log-linear scaling</td></tr>
+        <tr class="xdetail"><td colspan="5">EgoScale(NVIDIA 2026-02):20,854 小时动作标注 ego 视频预训练 VLA,22-DoF 灵巧手任务完成率 +54%,one-shot 泛化;手部动作 21 关键点(MANUS 手套)重定向机器人关节。<b>五目无感穿戴设备(头戴+吊坠+手环装饰品级 + UWB + 自标注 + 跨本体)公开调研未见先例</b>,输出格式对齐 EgoScale 管线即可直接进主流 VLA 预训练。Phase 2+:设备定义文档 → ODM。</td></tr>
+        <tr class="xrow"><td><b>VR 遥操作</b></td><td>Quest3 $499 / Vision Pro + OpenTeleVision(开源栈)</td><td data-v="2.5" class="num">中</td><td data-v="17" class="num">10-25</td><td>可远程,精度低于主从</td></tr>
+        <tr class="xdetail"><td colspan="5">备选:远程众包场景才用;XDOF/Adamo(sub-40ms)证明远程遥操在跑通,但延迟≥300ms 判无效是硬门。</td></tr>
+        <tr class="xrow"><td><b>外骨骼</b></td><td>智元 A2 · 傅利叶</td><td data-v="5" class="num">最高</td><td data-v="10" class="num">5-15</td><td>全身、retarget 损失小</td></tr>
+        <tr class="xdetail"><td colspan="5">不进 Phase 0/1:单价最高,只在客户 spec 明确要全身数据时按单配置。傅利叶 2026 重心已转养老陪护(GR-3),数采服务无更新。</td></tr>
+        <tr class="xrow"><td><b>仿真合成</b></td><td>Isaac(GR00T 真机 88h + 仿真 78 万条)· Genesis · Genie Sim 3.0</td><td data-v="0.5" class="num">边际≈0</td><td data-v="99" class="num">∞</td><td>manipulation 落地率低(89.4%→12%)</td></tr>
+        <tr class="xdetail"><td colspan="5">不做(光轮+NVIDIA 已卡位;智元 Genie Sim 3.0 已开源 LLM 驱动仿真+断点续采)。但"仿真数据的真机校验/物理有效性验证"玩家少、技术含量高 —— 是轨 B 裁判服务的远期品类。</td></tr>
+        <tr class="xrow"><td><b>真机部署回流</b></td><td>AgiBot LWD · Figure · Tesla</td><td data-v="4.5" class="num">前期重</td><td data-v="15" class="num">随部署量</td><td>policy-assisted teleop 人力降 5-10×</td></tr>
+        <tr class="xdetail"><td colspan="5">跟踪项:等我们有稳定基地后,承接买方"部署回流数据的第三方质检"是自然延伸。</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>2026 上半年前沿速报(二轮调研 · 每条带信源)</h2>
+  <div class="grid g3">
+    <div class="card"><b>policy-assisted teleop 成主流</b><br><span class="hint">"策略处理简单子任务+人只接管难段"列 2026 三大方向之首,人类演示需求降 <b>5-10×</b>(EVS 2026 指南;学术源头 PATO)。<b>含义:人产数据变少 → 每条数据的验证/评分权重变大,裁判价值上升。</b></span></div>
+    <div class="card"><b>Genie Sim 3.0(智元,CES 2026-01)</b><br><span class="hint">LLM 驱动开源仿真 + 低延迟遥操 + 自动标注 + <b>任务失败断点续采</b>;数采单机日 1000 条口径。走蜂巢就要对齐它的工具链。</span></div>
+    <div class="card"><b>FastUMI 全家桶(鹿明,AWE 2026-03)</b><br><span class="hint">Pro/Ego(无需建图第一人称)/Touch(触觉)/Go + 数据市场,上京东零售;2026 目标百万小时产能。<b>UMI 不带力触觉将失去差异化;"采集方自建交易层"趋势下,裁判中立性反而稀缺。</b></span></div>
+    <div class="card"><b>EgoScale scaling law(NVIDIA 2026-02)</b><br><span class="hint">2 万 h 动作标注 ego 视频,VLA 任务完成率 +54%,log-linear scaling —— 2026 上半年最硬的"人类视频=数据金矿"证据,五目设备愿景的技术锚。</span></div>
+    <div class="card"><b>帕西尼 B 轮超 10 亿(2026-03)</b><br><span class="hint">具身感知估值最高;OmniSharing DB 全模态数据平台已上线但<b>定价不透明</b> —— 触觉数据质量/对齐的验收标准完全空白,裁判可先占;PX-3AX 消费级(199 元档)可做灵巧手 SKU 低成本触觉通道。</span></div>
+    <div class="card"><b>标准与评测窗口</b><br><span class="hint">LeRobot v3 正式论文(2026-02)+ BEHAVIOR challenge 3.27TB 数据集直接采用 = 事实标准坐实;<b>YD/T 6770-2026 已实施但尚无首批通过名单 = 预测试/认证服务窗口正开</b>;RoboChallenge 立场:"数字孪生无法复现真实,真机评测必需"。裁判工具链原生支持 LeRobot v3 + 报告对齐 YD/T 6770 口径。</span></div>
+  </div>
+
+  <h2>选型结论(Phase 0 已拍板)</h2>
+  <div class="grid g3">
+    <div class="card"><b>先验证 · $800 内</b><br><span class="hint">LeRobot SO-101 双工位:1 周打通"采集→格式→训练→回放"全链路,零风险练兵。</span></div>
+    <div class="card"><b>主力产线 · ¥10-13 万</b><br><span class="hint">ARX L5×2 + 主从 + 3 相机 + 工作站;对标智元 Genie Studio 单机日数百-1000 条口径。<b>spec 到手才下单(以销定产)。</b></span></div>
+    <div class="card"><b>扩量小队 · FastUMI/Pika</b><br><span class="hint">单条 &lt;0.6 元、5 倍速;培训班毕业生人手一套;力觉短板品类不接。</span></div>
+  </div>
+  <p class="hint">格式基座:LeRobotDataset v3(Parquet+视频,chunk 化流式训练)为事实标准;RLDS 有开源双向转换;可视化 Rerun(开源)。人形整机晚买(价格下行中)。</p>
+</section>
+
+<!-- ============ 竞争格局 ============ -->
+<section class="tab" id="t-rival">
+  <h2>对手拆解(向每家学一招)</h2>
+  <div class="grid g2">
+    <div class="card rival">
+      <div class="who">光轮智能 Lightwheel <span class="chip">仿真派</span></div>
+      <div class="pos">2023 成立 · 创始人谢晨(NVIDIA→Cruise 仿真→蔚来)· 估值 $20 亿(2 个月翻倍)</div>
+      <div class="facts">2025 营收破亿(10×);<b class="num">26Q1 订单 5.5 亿</b>超 2025 全年;<b>2026-06 两周内两轮融资合计约 20 亿元</b>(政府基金领投+三家游戏上市公司跟投);累计交付 150 万+h;优质场景<b>数据复售率超 10 倍</b>;主导/参编 20 项标准。三层产品:SimReady 资产库(2000 个,NVIDIA Newton 共建)→ EgoSuite 第一视角数据网络(30 万+h,周产 2 万 h)→ RoboFinals 仿真评测平台(阿里 Qwen 已采用)。<b>明确不做真机遥操作</b>("贵到残忍无法规模化")。</div>
+      <div class="steal"><b>学它:</b>"定义 benchmark 者控制整个领域的优化方向"——评测标准权是制高点;开源免费层(Lightwheel-YCB)当获客漏斗;"一份数据多次复售"是纯劳务实采做不到的毛利结构 → 我们的对应物 = <b>规则库/评测集可无限复用</b>。<b>它不碰真机 → 人力派是它的执行商而非对手。</b></div>
+    </div>
+    <div class="card rival">
+      <div class="who">觅蜂科技 <span class="chip">平台派</span></div>
+      <div class="pos">2026-02 成立(仅 5 个月)· 智元孵化 · CEO 姚卯青(Waymo→蔚来→智元 SVP)· 4 个月两轮数亿元(红杉/国方)</div>
+      <div class="facts">一站式物理 AI 数据平台(真机遥操+无本体+仿真三产线);MEgo 硬件(夹爪 480g/1mm 轨迹精度、头戴 7 摄 300°)+ MEgo Engine 数据治理;<b>"蜂巢数据共创" = 加盟采集基地 + 众包 + 职业院校</b>(伙伴出设备招人触达场景,按标准采集结算;产能模型 = 万台级终端 × 单终端日均 3-4 有效小时 × 年 250 作业天,60-70% 走无本体)。2026-06-17 再融数亿元(国资+产业资本),目标年内千万小时产能、2030 冲百亿小时;数据售价约 <b>1000+ 元/h</b>。CEO 原话:<b>"盈利点在数据后处理/标注/治理等增值环节,不是劳务佣金。"</b>已明确表态:未来参考<b>美团骑手式"培训+管理"体系</b>推动众包采集。</div>
+      <div class="steal"><b>切它:</b>平台派不下场招训管人,把这环外包给"有运营能力的伙伴"——<b>那个伙伴位(加盟基地运营方/认证培训方)正是我们竞标的位置</b>;它公开要的"骑手式培训+管理体系"与我们「培训认证+按质计价」<b>直接同构 = 最值得对标也最可能先买单的对象</b>。注意:加盟财务条款不公开,需商务接触拿一手条款。风险:议价权在它 → 用灵巧手自有品类+轨 B 对冲。</div>
+    </div>
+    <div class="card rival">
+      <div class="who">国曙集团 <span class="chip tag-us">自有渠道</span></div>
+      <div class="pos">2017 成立 · 人力资源/财税出身 · PPT=招商书(尚无数采运营实体)</div>
+      <div class="facts">资产:500+ 可调配人员 · 50+ 全国分支 · <b>105+ 地区政府关系</b>(残联/人社/就业局)· 服务过 4000+ 企业 · 20+ 软著。运营参数(行业基准):人力 85/10/5,日人产 3-4h 有效,县域用工 150-200 元/天(低一线 30-40%),新基地五步法 5-8 周投产。</div>
+      <div class="steal"><b>组合:</b>它强在人和政府、<b>弱在技术——质检靠人工、"什么算合格"语焉不详,裁判位是空的</b>。我们补它 PPT 最薄的"质检"一页成最厚的一页;它的 105 地区人社关系 = 培训补贴申报通道 + 政府训练场运营标入口。</div>
+    </div>
+    <div class="card rival">
+      <div class="who">凡拓数创(301313)<span class="chip">G 端/基建派</span></div>
+      <div class="pos">广州 · A 股上市 · 原 3D 数字孪生商,2025-26 转型"工业物理 AI/具身智能全栈"。注:用户提的"凡客数创"查无此司,凡拓为最接近实体(2026-07 核查)</div>
+      <div class="facts">2025 营收 <b class="num">6.31 亿(+72.8%)</b>,AI/数字孪生线 +255%;三条具身产品线:导览背包硬件 · FTE 仿真引擎合成数据 · <b>数据采集与标注训练平台</b>。2025-11 中标<b>广东省具身智能训练场(一期)</b>(该项目信息系统集成由中国电信中标 3518 万);2026-04 中标深圳国创仿真平台;<b>3000 万参股广东省具身智能公司</b>换训练场生态入场券。模式 = G 端/大 B 项目制(接基建单+留平台资产),非数据订阅。与智元/光轮/觅蜂未发现直接关系。</div>
+      <div class="steal"><b>学它:</b>①<b>政府训练场是当前最大金主</b>(64 个已投用、90 个在建/用)——它证明"接基建单"可先于本体盈利;我们不做总包,做训练场的 <b>QC/验收分包 + 运营标</b>。②小额参股/合资绑定订单渠道:数采生意本质是<b>渠道+验收标准之争,不是设备之争</b>——与我们"国曙渠道+裁判标准"的牌型互证。③它的采集/标注环节仍人力密集可外协 = 潜在客户而非对手。</div>
+    </div>
+    <div class="card rival">
+      <div class="who">XDOF / Scale AI <span class="chip">海外</span></div>
+      <div class="pos">XDOF:2026-06 出 stealth,$70M(a16z/Thrive),60 人 20 客户含 frontier labs</div>
+      <div class="facts">XDOF 三层采集+全球雇佣遥操作员——证明"买方付费+愿外包"。Scale 正面入场("Data Foundry for Physical AI"+UR AI Trainer),但<b>专业轨迹标注供给仍稀薄</b>(其官网无公开具身轨迹产品页)。</div>
+      <div class="steal"><b>信号:</b>纯采集将像语音标注一样价格战(标注员月薪已从 4-5k 缩到 2-3k);<b>出道即 20 客户说明需求端根本不缺单,缺的是可信供给。</b></div>
+    </div>
+    <div class="card rival">
+      <div class="who">重资产工厂群 <span class="chip">堆量派</span></div>
+      <div class="pos">智元 3000㎡ 工厂(日 3-5 万条)· 国地中心 5000㎡(100+ 台,日 10TB)· 北京人形 5000㎡(120+ 台,年十几万 h,合格率 95%+)· 帕西尼 5 厂 · 数据堂 8000㎡ · 京东 60 万大军计划</div>
+      <div class="facts">产能锚点:智元两个多月累计百万条;国地单机日 500+ 条;北京人形数据外售 <b>500-1000 元/h</b> 并牵头首个数采规范行业标准。投资界 2026-06 调查:大型采集场初始投入"一个小目标以上"、<b>基本都没有实现盈利</b>。</div>
+      <div class="steal"><b>不跟:</b>不与它们拼重资产;北京人形证明 <b>SOP 能把合格率做到 95%+(vs 行业 50%)= 质量管理是最大杠杆</b>,这正是裁判系统要固化的东西;<b>它们全部是轨 B 裁判服务的潜在客户</b>(谁的数据都要有人验收)。</div>
+    </div>
+    <div class="card rival" style="border:1.5px solid var(--amber)">
+      <div class="who" style="color:var(--amber)">我们(具身数据工厂)</div>
+      <div class="pos">人力派资产 × 裁判链技术 × 培训基建 —— 三合一,行业无同构玩家</div>
+      <div class="facts">
+        ① <b>裁判技术已 LIVE</b>:FDE verdict/canonical verify/幂等门跑在生产;qc_judge v0(7 规则 10 测试全绿)——行业 episode 级自动 QC 2026 年才出论文、无成熟商用。<br>
+        ② <b>渠道自有</b>:国曙的人/分支/政府关系是自己的,不用冷启动。<br>
+        ③ <b>培训基建现成</b>:fde.nautilus.social 培训链 + 飞书 S1-S3 派活-QC-结算引擎,换内容即用。<br>
+        ④ <b>文化同构</b>:"独立验证优于自报"是全部肌肉记忆,恰是行业验收纠纷("谁来判断,谁来承担成本?")的答案。
+      </div>
+    </div>
+  </div>
+
+  <h2>生态位地图:利润在哪层,谁挤谁</h2>
+  <div class="card">
+    <div class="tblwrap"><table>
+      <thead><tr><th>层</th><th>玩家</th><th>利润与议价权</th><th>与我们的关系</th></tr></thead>
+      <tbody>
+        <tr><td><b>标准+工具+治理(平台派)</b></td><td>觅蜂 · 光轮(评测)</td><td><span class="chip tag-pass">利润与定价权集中层</span></td><td>做它的最优供给方(蜂巢),同时在验收环节保住独立性</td></tr>
+        <tr><td><b>仿真+评测(仿真派)</b></td><td>光轮 · NVIDIA</td><td>高毛利,标准权竞争;数据复售率 10×</td><td>非对手;远期"仿真数据的真机校验"可合作</td></tr>
+        <tr><td><b>G 端训练场基建(基建派)</b></td><td>凡拓数创 · 省级具身智能公司 · 64 个采集中心</td><td>项目制,现金流好;但数据端"左手倒右手"体内循环,基本不盈利</td><td>训练场的 QC/验收分包 + 运营标是我们的切口;不做总包,不进体内循环</td></tr>
+        <tr style="background:var(--amber-soft)"><td><b>质检·验收·认证(空夹层)</b></td><td><b>我们</b></td><td>轻资产 · 网络效应(双边都用我们的尺子)</td><td>唯一无人卡位的层;12-24 个月标准窗口</td></tr>
+        <tr><td><b>采集执行(人力派)</b></td><td>国曙类 · 数据堂 · 众包</td><td><span class="chip tag-fail">议价权在平台手里,长期毛利被压</span></td><td>我们自有渠道在此层,但靠上面两层的技术溢价挣钱,不赚纯劳务差价</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- ============ 商业模式·打法 ============ -->
+<section class="tab" id="t-biz">
+  <h2>收入三条腿(按现金流先后)</h2>
+  <div class="grid g3">
+    <div class="card"><b>① 培训认证 <span class="chip tag-pass">第 1-2 月回款</span></b>
+      <ul><li>人社《人工智能训练师》五级体系;补贴(广东):五级 1000 / 四级 1500 / 三级 2400 / 二级 3000 / 一级 3600 元;上海三级 2500(学生 80%)</li>
+      <li>市面培训收费 2500-4980 元/人(重庆人社口径 1500-3500;中传继教院 4980)—— <b>"有补贴等于半价/免费"是现成招生话术</b></li>
+      <li><b>落地路径:不自建评价组织(备案周期长),与已备案高校继教院合办</b>(中传/上海交大/上海电机学院模式):我们出"具身数采实操"课程+就业出口(基地上岗),对方出证书通道</li>
+      <li>毕业进自己基地或输送同行 —— 同时解决基地人员供给;订单班公开案例为零 = 先发空位</li></ul></div>
+    <div class="card"><b>② 数采交付 <span class="chip">第 2-4 月起量 · 主营</span></b>
+      <ul><li>蜂巢加盟单(标准化产能)+ 灵巧手数据包(自有高毛利 SKU)</li>
+      <li>计价锚点(2026-06 一手):无本体成本 50-100 / 真机 250 / 售价 500-1000+(北京人形/觅蜂)—— <b>4-10× 毛利差是基地代采核心利差</b></li>
+      <li>计价按"合格小时";行业有效率 ~50%,<b>合格率每提 10pp = 白赚 10% 产能</b></li>
+      <li>失败样本子包选配(溢价 1.5×,世界模型训练需求)</li></ul></div>
+    <div class="card"><b>③ QC/验收服务 <span class="chip">第 4 月后 · 资产化(轨 B)</span></b>
+      <ul><li>给其他基地做验收、给买方做第三方审计;规则库+评测集独立品牌</li>
+      <li>对齐 YD/T 6770 出「数据集质量评测报告」——对标国曙 PPT 里 Benchmark 卖 <b class="num">8-50 万/套</b>;YD/T 6770 尚无首批通过名单 = <b>预测试服务窗口</b></li>
+      <li>远期:政府训练场运营标(建设已招、运营未招)+ 数据交易所挂牌前的质量评估报告(上海标准要求上架附质量评估报告 = 制度性需求)</li></ul></div>
+  </div>
+
+  <h2>市场定价矩阵(2025-26 一手行情 · 我们的品类站位)</h2>
+  <div class="card">
+    <svg class="chart" viewBox="0 0 700 250" role="img" aria-label="定价区间图">
+      <g class="gridline">
+        <line x1="205" y1="10" x2="205" y2="210"/><line x1="257" y1="10" x2="257" y2="210"/>
+        <line x1="387" y1="10" x2="387" y2="210"/><line x1="640" y1="10" x2="640" y2="210"/>
+      </g>
+      <text class="barval" x="205" y="226" text-anchor="middle">500</text>
+      <text class="barval" x="257" y="226" text-anchor="middle">1000</text>
+      <text class="barval" x="387" y="226" text-anchor="middle">3000</text>
+      <text class="barval" x="640" y="226" text-anchor="middle">10000 元/h(√刻度)</text>
+      <g>
+        <text class="barlabel" x="8" y="34">无本体穿戴</text><rect class="bar" x="177" y="22" width="61" height="16" rx="3"/><text class="barval" x="244" y="34">300-800</text>
+        <text class="barlabel" x="8" y="70">使用权许可</text><rect class="bar" x="205" y="58" width="125" height="16" rx="3"/><text class="barval" x="336" y="70">500-2000(一采多授)</text>
+        <text class="barlabel" x="8" y="106">真机遥操作</text><rect class="bar" x="238" y="94" width="59" height="16" rx="3"/><text class="barval" x="303" y="106">800-1500</text>
+        <text class="barlabel" x="8" y="142">灵巧手触觉</text><rect class="bar hi" x="297" y="130" width="90" height="16" rx="3"/><text class="barval" x="393" y="142">1500-3000 ★我们的 SKU(灵心巧手联合)</text>
+        <text class="barlabel" x="8" y="178">所有权买断</text><rect class="bar" x="387" y="166" width="253" height="16" rx="3"/><text class="barval" x="470" y="162">3000-10000(央国企/护城河型买方)</text>
+      </g>
+    </svg>
+    <p class="hint">另:LLM 数据全家桶 SFT 200-15000 元/千条 · RLHF 至 3 万/千对 · 红队至 5 万/千条 · <b>Benchmark 评估 8-50 万/套</b>(与我方 FDE 基准业务直接重叠 = 轨 B 定价锚)。来源:国曙 PPT 2025 版,与 ITBear 2026-07 行情互证。</p>
+  </div>
+
+  <h2>合同与验收:具体怎么操作(二轮调研沉淀)</h2>
+  <div class="grid g2">
+    <div class="card"><b>验收条款模板(从数据标注行业直接移植)</b>
+      <ul>
+        <li>全流程:人员准入 → 规则培训 → 初标 → 复核 → 抽检 → <b>仲裁</b> → 质检报告 → 返工闭环</li>
+        <li>一致性量化:Kappa 系数 <b>κ≥0.8 高可信</b>;κ&lt;0.6 判规则歧义/培训失效</li>
+        <li>人员配比:常规任务 初标:复核 ≈ 4:1-5:1;复杂任务提至 2:1</li>
+        <li><b>我们的差异化加法:episode 级可复现判定当仲裁</b>(同输入同输出,争议可复跑)——甲方公告普遍缺失的一块,把"合格小时"定义成可仲裁的量化指标</li>
+      </ul></div>
+    <div class="card"><b>数据产权与二次变现</b>
+      <ul>
+        <li>全国首单具身数据集场内交易:2026-01-03 江苏省数据交易所成交(金额/授权方式未披露);京东云"具身智能数据交易平台"已上线 —— 场内挂牌通道成形</li>
+        <li>上海地方标准:数据产品上架须过合规审查 + 附<b>质量评估报告</b> = 裁判报告的制度性需求</li>
+        <li><b>"一采多授"公开层无先例无判例</b>:机会(同批合格小时可场内二次变现)+ 风险(合同必须显式写排他期/授权范围,没有行业惯例可援引);默认甲方会要求独家,<b>二次授权权利在合同里显式争取</b></li>
+      </ul></div>
+  </div>
+
+  <h2>五套打法(playbook)</h2>
+  <div class="grid g2">
+    <div class="card"><b>打法 1 · 对智元/觅蜂:蜂巢加盟切入</b>
+      <ul>
+        <li><b>不</b>直接卖通用遥操数据给智元(和它自己工厂竞争);正确入口 = 蜂巢共创伙伴,领 MEgo 设备做委托产能</li>
+        <li>差异化承诺:<b>全网合格率最高的基地</b>——裁判链预检,废品不出厂,贵方复检成本与返工率显著下降</li>
+        <li><b>合格率对赌</b>:按合格小时计价、接受抽检复核;判定可复现,争议可复跑仲裁</li>
+        <li>弹药已备:一页纸提案 + spec 问询清单;加盟财务条款不公开 → 首次商务接触就要拿一手结算条款 <span class="chip tag-us">等 spec</span></li>
+      </ul></div>
+    <div class="card"><b>打法 2 · 对灵心巧手:手+数据打包</b>
+      <ul>
+        <li>它出手(硬件+SDK),我们出采集运营+QC → 联合 SKU「XX 手 + N 类任务 + 合格轨迹 M 小时 + 验收报告」</li>
+        <li>逻辑:买它手的客户天然缺配套操作数据 → <b>它有动力推</b>;触觉数据全行业稀缺刚起量(帕西尼 OmniSharing 定价都不透明 = 定价权真空)</li>
+        <li>低成本试水:1-2 只手 + 4-6 周首个样板包 → 共同拿去 1 家目标客户验货 → 过了再谈量产分成;触觉通道可选帕西尼 PX-3AX 消费级</li>
+        <li>输出格式对齐 EgoScale 手部关键点管线 → 数据可直接进主流 VLA 预训练 = 卖点</li>
+      </ul></div>
+    <div class="card"><b>打法 3 · 培训先回款(政府补贴现金流)</b>
+      <ul>
+        <li>国曙 105 地区人社关系 × 证书补贴(三级 2400-2500 元)= 培训成本大头由补贴对冲,先于数采订单回款</li>
+        <li>路径:与已备案高校继教院合办(中传 4980/人 是市价上限参照),我们出课程+考核系统+就业出口</li>
+        <li>FDE 培训链 + 飞书派活-QC-结算引擎换内容即用(已 LIVE 资产);毕业考核数据直接喂裁判规则库(人才侧飞轮)</li>
+        <li>院校订单班空位先占;县域基地直雇砍掉中介层(中介抽 5 元/h ≈ 20% 工时差价)</li>
+      </ul></div>
+    <div class="card"><b>打法 4 · 轨 B:独立裁判品牌(学光轮)</b>
+      <ul>
+        <li>开源一份可复现《废品率审计报告》(AgiBot World/DROID 公开数据)当获客漏斗 —— 光轮 YCB 模式</li>
+        <li>对齐 YD/T 6770 出评测报告;<b>实施一个半月尚无首批通过名单 → 做"预测试/陪跑认证"首批服务商</b></li>
+        <li>以方法论挤进地方/团体标准("定义 benchmark 者控制领域");北京人形已牵头数采规范国标 = 下一个标准阵地在验收</li>
+        <li>独立第三方身份 = 对抗平台派自建 QC 的防线(买方不信卖方自检)</li>
+      </ul></div>
+    <div class="card"><b>打法 5 · 高溢价品类:失败样本 + 评估 GT + provenance</b>
+      <ul>
+        <li>世界模型厂新买方:失败样本溢价 1.5×(智元已自己开源失败数据集);裁判天然产出"带证据的失败样本"= 废品变商品</li>
+        <li>评估 ground truth 校准集:GAIA-3/RoboChallenge 共识"评估必须真机"</li>
+        <li>Cosmos 3 全开源后,合成混入真采的 <b>provenance 验证(真机采的吗?)</b>成新需求 → 提前进裁判能力清单</li>
+      </ul></div>
+    <div class="card"><b>打法 6 · G 端训练场:QC 分包 + 运营标</b>
+      <ul>
+        <li>64 个已投用、90 个在建/用;城投出资 1.26-2.64 亿/个;<b>"左手倒右手"体内循环基本不盈利已被公开锤</b> —— 各地平台公司急需能带来外部买方与合格数据的运营方</li>
+        <li>广东样板:省具身智能公司持有训练场 → 电信 3518 万中标集成 → <b>运营标还没出现 = 提前备好运营服务方案模板(含合格率门槛/抽检比例/复检机制)做首批投标人</b></li>
+        <li>入口 = 国曙的 105+ 地区政府关系;弹药 = 对齐 YD/T 6770 的评测报告(轨 B 同一套资产)</li>
+        <li>互证:凡拓 3000 万参股换渠道 —— 数采生意本质是<b>渠道+验收标准之争</b>,我们两样都占</li>
+      </ul></div>
+    <div class="card" style="border-color:var(--fail)"><b style="color:var(--fail)">不做清单(减法,同样是打法)</b>
+      <ul>
+        <li>不自研硬件(买 ARX/MEgo/灵心巧手;五目设备走 ODM 路线图)</li>
+        <li>不做仿真引擎(光轮+NVIDIA 已卡位)</li>
+        <li>不接纯劳务外包单(价格战已开打,标注员月薪已腰斩)</li>
+        <li>不先建大基地(64 个训练场亏损样本在前;以销定产,Phase 0 预算 ≤¥15 万)</li>
+        <li>不进"政府买机器人→采数据→机器人公司回购"的体内循环</li>
+      </ul></div>
+  </div>
+
+  <h2>五目无感穿戴设备(用户愿景 · Phase 2+ 硬件路线图)</h2>
+  <div class="card">
+    <b>形态:</b>五目视觉 + 头戴/吊坠/手环装饰品级无感 · UWB 无线抗干扰 · 自标注自适应 · 一次采集多本体通用(cross-embodiment)。
+    <ul>
+      <li><b>行业坐标:</b>与光轮 EgoSuite、觅蜂 MEgo View(7 摄)、Meta Aria Gen 2、鹿明 FastUMI Ego 同赛道;但"吊坠+手环+装饰品级"形态与 UWB 方案<b>公开调研未见先例</b>。</li>
+      <li><b>技术依据(2026-02 更新):</b>EgoScale 证明 2 万 h ego 视频 log-linear scaling(+54%);MANUS 手套 21 关键点→22-DoF 重定向已跑通;自标注参照 EgoScale 管线;跨本体对应 LeRobot/RLDS 格式层。</li>
+      <li><b>执行定位:</b>不进 Phase 0/1 预算。先用现成设备验证管线与买方需求 → 设备定义文档(传感器清单/UWB 组网/标定/BOM 目标价)→ 找 ODM,不自建电子研发团队。</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 基地建设运营 ============ -->
+<section class="tab" id="t-base">
+  <div class="callout teal" style="margin-top:0">
+    <b>县域基地的三条结构性优势(全行业对标后得出):</b>① 直雇砍中介层(中介抽 5 元/h ≈ 20% 工时差)② 现成餐馆/民宿/超市 = 零成本实景场景(一线工厂要花钱复刻)③ 本地已婚劳动力池 = 低流失(对冲行业高流失)。<b>最大杠杆不是压工资,是把有效率从 50% 提到 70%+ —— 等于产能翻一半。</b>
+  </div>
+
+  <h2>头部工厂运营参数对标(2025-26 一手信源)</h2>
+  <div class="card tblwrap">
+    <table>
+      <thead><tr><th>工厂</th><th>场地/设备</th><th>产能</th><th>关键口径</th></tr></thead>
+      <tbody>
+        <tr><td><b>智元 · 上海张江</b></td><td>3000㎡ · 5 复刻场景(家庭/零售/服务/餐饮/工厂)· 近百台机器人</td><td class="num">日 3-5 万条;2 个多月累计百万条</td><td>任务 1000+ 种,每任务几百条;手持遥操+VR 映射</td></tr>
+        <tr><td><b>国地中心 · 浦东"麒麟"</b></td><td>5000㎡+ · 100+ 台异构 · 7 大场景</td><td class="num">单机日 500+ 条 · 全场日 10TB</td><td>异构遥操/动捕/便携末端/仿真 4 路线并跑;目标 5000 万条开源语料</td></tr>
+        <tr><td><b>北京人形 · 亦庄</b></td><td>近 5000㎡ · 6 大类 30+ 场景 · 120+ 台</td><td class="num">年产十几万小时 · 千万条任务级</td><td><b>合格率 95%+(SOP 化的力量)</b>· 数据外售 500-1000 元/h · 牵头首个数采规范标准</td></tr>
+        <tr><td><b>帕西尼</b></td><td>5 厂(天津 1.2 万㎡ 超级工厂等)</td><td>—</td><td>触觉全模态"以人为中心"实采体系</td></tr>
+        <tr><td><b>数据堂</b></td><td>8000㎡ 实景工厂</td><td>PB 级方案</td><td>众包+工厂双轨;ISO9001/27001/27701</td></tr>
+      </tbody>
+    </table>
+    <p class="hint">核心公式(行业基准):日薪 200 元 × 有效率 50% × 单机日 500 条。我们对着这三个数下手:县域日薪 120-150、有效率靠裁判提到 70%+、多任务轮换防边际递减。</p>
+  </div>
+
+  <h2>政府训练场的真相(64 个样本 · 我们怎么站位)</h2>
+  <div class="grid g2">
+    <div class="card"><b>公开事实(艾邦/央广/投资界 2026)</b>
+      <ul>
+        <li>截至 2026-04:<b>64 个已投用</b>、90 个在用/在建;23 省 27 城(浙苏粤最多,各 10+);合计机器人 2500+ 台、总面积 28 万㎡+(≈110㎡/台)</li>
+        <li>出资方压倒性是<b>地方城投/国资平台</b>:防城港 2.64 亿 / 自贡 1.59 亿 / 九江 1.43 亿 / 柳州 1.26 亿</li>
+        <li>运营 = "政府平台 + 企业参与"(德清由浙江无问智行运营,联合浙大+云深处+<b>灵心巧手</b>等 30 余家)</li>
+        <li>商业模式被公开点名"左手倒右手":政府买机器人→采数据→机器人公司回购,<b>大型采集场基本没有盈利</b>(投资界 2026-06)</li>
+      </ul></div>
+    <div class="card"><b>我们的站位(反着来)</b>
+      <ul>
+        <li><b>不复制体内循环</b>:不当"国资买机器人再卖数据给本体厂"的第 65 个样本</li>
+        <li><b>当外包产能节点</b>:接 64 个中心和头部数据商的委托采集单,设备争取委托方提供或租赁,避开亿级重资产门槛</li>
+        <li><b>抢运营标</b>:建设已招(广东 3518 万电信)、运营未招 —— 平台公司花了钱必然要找"能带来外部买方+合格数据交付"的运营方,提前备好含合格率门槛/抽检/复检机制的运营方案模板</li>
+        <li><b>细节彩蛋:灵心巧手已在德清训练场生态里</b> —— 联合数据包可借这个场落地第一单</li>
+      </ul></div>
+  </div>
+
+  <h2>采集员:招聘 → 培训 → 绩效(行业实录 vs 我们的改法)</h2>
+  <div class="card tblwrap">
+    <table>
+      <thead><tr><th>环节</th><th>行业现状(投资界/虎嗅 2026-06 一线调查)</th><th>我们的改法(县域 20-50 人)</th></tr></thead>
+      <tbody>
+        <tr><td><b>招聘画像</b></td><td>20 多岁为主,大专/职院,00 后多;无学历硬门槛;<b>体格是硬筛选</b>(手套尺寸适配、耐受 VR)</td><td>同画像 + 本地已婚劳动力池(低流失);体格筛选进面试 checklist</td></tr>
+        <tr><td><b>培训</b></td><td><b>3 天速成上岗</b>,试岗不合格不结费;培训期两次点名都有人退出</td><td><b>5 天带考核</b>(考核数据过裁判 ≥ 阈值才上岗)= 用 2 天换有效率;毕业即报《人工智能训练师》证(补贴 2400 元档)</td></tr>
+        <tr><td><b>薪酬</b></td><td>日薪制 200 元基准(区间 150-250);加班 2h +80、夜班 +100;勤快者月 9000+;<b>中介抽成:工厂结 25 元/h、工人拿 20 元/h</b></td><td><b>直雇砍中介</b>(省 20% 差价归双方分享);<b>底薪 + 有效小时奖金</b> —— 把 50% 有效率漏斗变成员工自己的 KPI</td></tr>
+        <tr><td><b>质检反馈</b></td><td>动作过快/多余动作/手汗 → 整段作废不计酬;质检滞后,白干一天才知道</td><td><b>裁判当日反馈</b>(采完即判):废品当天告知+归因(7 类失败模式),士气和有效率同时救</td></tr>
+        <tr><td><b>劳动强度</b></td><td>单任务重复 700+ 遍("夹三明治");"羽毛球入筒"采 3 天;情绪管理是公认难题</td><td>多任务轮换排产(同时防单任务 500-1000 条后边际递减);任务多样性本身就是数据卖点</td></tr>
+        <tr><td><b>流失</b></td><td>无量化公开数据;日结临时工为主,归属感低</td><td>县域全职+持证+晋升通道(采集员→质检员→班组长);证书是可带走的资产 = 招聘卖点</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>基地平面 v0(县域 20 工位示意 · 约 600-800㎡)</h2>
+  <div class="card">
+    <svg class="chart" viewBox="0 0 760 400" role="img" aria-label="基地平面图">
+      <rect x="10" y="10" width="740" height="380" rx="10" fill="none" stroke="var(--ink-2)" stroke-width="2"/>
+      <rect x="30" y="30" width="330" height="200" rx="6" fill="var(--accent-soft)" stroke="var(--accent)"/>
+      <text x="195" y="55" text-anchor="middle" class="planlabel">遥操作采集区 · 双臂工位 ×4</text>
+      <g fill="var(--surface)" stroke="var(--accent)">
+        <rect x="55" y="75" width="130" height="60" rx="5"/><rect x="205" y="75" width="130" height="60" rx="5"/>
+        <rect x="55" y="150" width="130" height="60" rx="5"/><rect x="205" y="150" width="130" height="60" rx="5"/>
+      </g>
+      <text x="120" y="110" text-anchor="middle" class="plansub">ARX L5×2 + 3 相机</text>
+      <text x="270" y="110" text-anchor="middle" class="plansub">ARX L5×2 + 3 相机</text>
+      <text x="120" y="185" text-anchor="middle" class="plansub">灵巧手工位(预留)</text>
+      <text x="270" y="185" text-anchor="middle" class="plansub">灵巧手工位(预留)</text>
+      <rect x="30" y="250" width="330" height="120" rx="6" fill="var(--amber-soft)" stroke="var(--amber)"/>
+      <text x="195" y="275" text-anchor="middle" class="planlabel">实景场景区(县域现成资源)</text>
+      <text x="195" y="300" text-anchor="middle" class="plansub">餐饮台 · 家居角 · 货架区 —— 复刻智元 5 场景的最小可行版</text>
+      <text x="195" y="322" text-anchor="middle" class="plansub">穿戴/UMI 移动采集 ×12 人在此轮换</text>
+      <rect x="390" y="30" width="170" height="150" rx="6" fill="var(--pass-soft)" stroke="var(--pass)"/>
+      <text x="475" y="55" text-anchor="middle" class="planlabel">质检区</text>
+      <text x="475" y="80" text-anchor="middle" class="plansub">裁判系统自动预检</text>
+      <text x="475" y="100" text-anchor="middle" class="plansub">人工抽检工位 ×2</text>
+      <text x="475" y="120" text-anchor="middle" class="plansub">当日反馈看板</text>
+      <rect x="580" y="30" width="150" height="150" rx="6" fill="var(--chip)" stroke="var(--ink-2)"/>
+      <text x="655" y="55" text-anchor="middle" class="planlabel">培训考核区</text>
+      <text x="655" y="80" text-anchor="middle" class="plansub">5 天上岗课</text>
+      <text x="655" y="100" text-anchor="middle" class="plansub">考核 = 数据过裁判</text>
+      <text x="655" y="120" text-anchor="middle" class="plansub">证书报考(补贴 2400)</text>
+      <rect x="390" y="200" width="340" height="80" rx="6" fill="var(--surface)" stroke="var(--ink-2)"/>
+      <text x="560" y="228" text-anchor="middle" class="planlabel">机房/设备间</text>
+      <text x="560" y="250" text-anchor="middle" class="plansub">本地缓存+断点续传 · NAS · 充电/维修台(设备故障是行业头号中断源)</text>
+      <rect x="390" y="300" width="340" height="70" rx="6" fill="var(--surface)" stroke="var(--ink-2)"/>
+      <text x="560" y="328" text-anchor="middle" class="planlabel">办公/休息区</text>
+      <text x="560" y="350" text-anchor="middle" class="plansub">基地长 1 · 班组长 2 · 情绪管理(单调劳动的公认难题)</text>
+    </svg>
+    <p class="hint">预算大头是设备不是装修:穿戴手套约 10 万/工位(投资界口径),遥操工位 ¥10-13 万/套;20-50 人基地设备投入 200-500 万量级,<b>远低于"买 30 台人形机器人"路线</b>;Phase 0 先 1 个工位(≤15 万)验证,签约量到了再扩。</p>
+  </div>
+
+  <h2>基地经济模型(拖动滑杆算账)</h2>
+  <div class="card">
+    <div class="ctl"><label>采集员人数 <b id="cN">20</b></label><input type="range" id="rN" min="5" max="100" value="20"></div>
+    <div class="ctl"><label>日薪(元) <b id="cW">150</b></label><input type="range" id="rW" min="100" max="300" value="150" step="10"></div>
+    <div class="ctl"><label>人均日有效采集小时 <b id="cH">3.5</b></label><input type="range" id="rH" min="2" max="6" value="3.5" step="0.5"></div>
+    <div class="ctl"><label>合格率 <b id="cQ">50%</b></label><input type="range" id="rQ" min="30" max="95" value="50" step="5"></div>
+    <div class="ctl"><label>合格小时单价(元/h) <b id="cP">300</b></label><input type="range" id="rP" min="50" max="1500" value="300" step="50"></div>
+    <div class="ctl"><label>月作业天数 <b id="cD">25</b></label><input type="range" id="rD" min="20" max="28" value="25"></div>
+    <div class="calc-out">
+      <div class="o"><div class="v" id="oHours">—</div><div class="k">月合格小时</div></div>
+      <div class="o"><div class="v" id="oRev">—</div><div class="k">月营收(万元)</div></div>
+      <div class="o"><div class="v" id="oCost">—</div><div class="k">月人力+运营成本(万元)</div></div>
+      <div class="o"><div class="v" id="oProfit">—</div><div class="k">月毛利(万元)</div></div>
+      <div class="o"><div class="v" id="oMargin">—</div><div class="k">毛利率</div></div>
+      <div class="o"><div class="v" id="oLift">—</div><div class="k">合格率 +10pp 的月毛利增量(万元)</div></div>
+    </div>
+    <p class="hint">口径:营收 = 人数×日有效小时×合格率×月天×单价;成本 = 人力(日薪×人数×月天)× 1.45(含场地/水电/管理/设备摊销的粗估系数);行业参数锚:日有效 3-4h(国曙/觅蜂口径)、合格率 50%(行业)vs 95%(北京人形 SOP 化)、单价见定价矩阵。仅作沙盘,签约用真实参数覆盖。</p>
+  </div>
+
+  <h2>建站五步法(5-8 周投产 · 国曙框架 + 我们的门)</h2>
+  <div class="card">
+    <svg class="chart" viewBox="0 0 760 190" role="img" aria-label="建站甘特">
+      <g font-size="12.5">
+        <text x="8" y="34" class="planlabel">① 政府对接</text><rect class="bar" x="150" y="20" width="120" height="18" rx="4"/><text class="barval" x="278" y="34">1-2 周 · 场地/补贴/证书通道</text>
+        <text x="8" y="66" class="planlabel">② 招募培训</text><rect class="bar" x="230" y="52" width="180" height="18" rx="4"/><text class="barval" x="418" y="66">2-3 周 · 5 天上岗课×分批 · 考核过裁判</text>
+        <text x="8" y="98" class="planlabel">③ 设备部署</text><rect class="bar" x="330" y="84" width="70" height="18" rx="4"/><text class="barval" x="408" y="98">≤1 周 · 工位+机房+断点续传</text>
+        <text x="8" y="130" class="planlabel">④ 试运行</text><rect class="bar" x="400" y="116" width="120" height="18" rx="4"/><text class="barval" x="528" y="130">1-2 周 · 有效率爬坡目标 ≥60%</text>
+        <text x="8" y="162" class="planlabel">⑤ 投产</text><rect class="bar hi" x="520" y="148" width="90" height="18" rx="4"/><text class="barval" x="618" y="162">门:首月按合格小时全额结算</text>
+      </g>
+    </svg>
+    <p class="hint">行业教训前置:爬坡瓶颈不在场地在<b>设备稳定性</b>("不是通信问题就是网络/电池问题"——投资界一线实录),机房维修台与备件是标配不是可选。</p>
+  </div>
+
+  <h2>组织架构(Phase 1 · 20-50 人)</h2>
+  <div class="grid g4">
+    <div class="card"><b>基地长 ×1</b><br><span class="hint">带过 50 人班组;比算法工程师更难找也更关键 —— 现场管理决定合格率。先找。</span></div>
+    <div class="card"><b>班组长 ×2</b><br><span class="hint">培训班优秀毕业生或有带班经验者;负责排班/情绪管理/当日反馈落实。</span></div>
+    <div class="card"><b>质检员 ×2-3</b><br><span class="hint">裁判系统抽检复核(一致率 ≥95%);培训班留用;质检人力比压到 5% 以下 = 结构优势。</span></div>
+    <div class="card"><b>采集员 ×15-40</b><br><span class="hint">持证上岗;底薪+有效小时奖金;晋升通道:采集→质检→班组长。</span></div>
+  </div>
+</section>
+
+<!-- ============ 冷启动·任务001 ============ -->
+<section class="tab" id="t-cold">
+  <h2>冷启动不是先建基地，而是先交一包能验货的任务 001</h2>
+  <div class="callout teal"><b>三天的唯一目标:</b>把一个客户任务做成 30–50 条可回放 episode，里面同时有金样本、边界样本、失败样本，以及一份能说明“为什么合格/为什么返工”的 QC 报告。客户给书面反馈后，再谈设备、基地和扩量。</div>
+
+  <div class="grid g3">
+    <div class="card"><b>① 世界模型/多模态团队</b><br><span class="hint">缺的不是泛视频，而是有任务边界、授权、失败标签、可追溯来源的工作流数据。首选 <b>EGO</b>：头部/胸前/手部视角，补少量 UMI 动作线索。</span></div>
+    <div class="card"><b>② 机器人本体/灵巧手团队</b><br><span class="hint">关心数据是否能转成动作能力。首选 <b>UMI 或对方本体</b>，EGO 补足场景与意图；先共同冻结成功判据，不承诺跨本体零适配。</span></div>
+    <div class="card"><b>③ 聚合/数据平台</b><br><span class="hint">需要区域交付、培训、预检、返工和结算治理。首选 <b>兼容对方设备</b>；我们的 EGO/UMI 只做样机与兜底，不抢平台入口。</span></div>
+  </div>
+
+  <h2>任务 001 立项器(交互版)</h2>
+  <p class="lede">八项硬门有一项不满足就不启动；评分 ≥80 分才能进入三天闭环。先填写每项评分，再看设备与下一步如何变化。</p>
+  <div class="grid g2">
+    <div class="card">
+      <h3 style="margin-top:0">先过八项硬门</h3>
+      <div id="taskGates">
+        <label><input type="checkbox" checked> 有明确买方，能说清数据为什么有用</label><br>
+        <label><input type="checkbox" checked> 单条 episode 可收在 10–60 秒内</label><br>
+        <label><input type="checkbox" checked> 仅凭视频与元数据可判成功/失败</label><br>
+        <label><input type="checkbox" checked> 场地、物品、授权能重复取得</label><br>
+        <label><input type="checkbox" checked> 至少能用 EGO 采集，可选 UMI 补动作</label><br>
+        <label><input type="checkbox" checked> 单次准备不打断现场作业超过 15 分钟</label><br>
+        <label><input type="checkbox" checked> 能保留失败/边界案例，不只录成功</label><br>
+        <label><input type="checkbox" checked> 客户/伙伴愿给书面反馈或 POC 意向</label>
+      </div>
+      <p id="gateOut" class="gate" style="margin-bottom:0"></p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">100 分选择评分</h3>
+      <div id="taskScoring"></div>
+      <div class="calc-out">
+        <div class="o"><div class="v" id="taskScore">0</div><div class="k">任务总分 / 100</div></div>
+        <div class="o"><div class="v" id="taskDecision">—</div><div class="k">立项结论</div></div>
+      </div>
+      <p class="hint">不是用这张表替代客户判断，而是先把“可交付性”变成团队可以共同检查的标准。</p>
+    </div>
+  </div>
+
+  <h2>选定任务后，先用哪套设备</h2>
+  <div class="card">
+    <div class="ctl"><label>目标客户 <b id="deviceLabel">世界模型/多模态团队</b></label><select id="deviceBuyer" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:7px;background:var(--surface);color:var(--ink);font:inherit"><option value="wm">世界模型/多模态团队</option><option value="robot">机器人本体/灵巧手团队</option><option value="platform">聚合/数据平台</option><option value="field">垂直行业现场</option><option value="gov">政府/训练基地</option></select></div>
+    <div class="grid g3" style="margin-top:14px">
+      <div class="card"><b>第一设备</b><div id="deviceFirst" class="hint" style="margin-top:8px"></div></div>
+      <div class="card"><b>第二设备</b><div id="deviceSecond" class="hint" style="margin-top:8px"></div></div>
+      <div class="card"><b>此刻不买</b><div id="deviceAvoid" class="hint" style="margin-top:8px"></div></div>
+    </div>
+  </div>
+
+  <h2>三天交付节奏与对外话术</h2>
+  <div class="grid g3">
+    <div class="card"><b>Day 1 · 冻结任务</b><br><span class="hint">写清目标、对象、episode 边界、成功/失败、授权；先录 10 条试采，修机位和判据。</span></div>
+    <div class="card"><b>Day 2 · 采样并预检</b><br><span class="hint">采 30–50 条原始样本：10 条金样本、10 条边界样本、10 条失败样本；当天把返工原因回传给采集员。</span></div>
+    <div class="card"><b>Day 3 · 打包验货</b><br><span class="hint">交视频/轨迹、元数据、标签、授权记录、QC 与拒收字典、回放页、LeRobot/Parquet 格式说明；只要书面反馈，不急于扩量。</span></div>
+  </div>
+  <div class="callout"><b>30 秒统一开场:</b>“我们不卖泛泛的数据时长，也不先承诺大规模基地。先从一个真实任务开始，把它做成可采集、可验收、可拒收、可返工的合格 episode。你们给目标，我们用 EGO/UMI 两条采集线完成任务 001 的付费 POC；验收通过，再讨论规模和基地。”</div>
+  <p class="hint">团队执行细节见 <a href="/embodied/team/#task-001-scorecard">《任务 001 选择清单与评分表》</a> 与 <a href="/embodied/team/#ego-umi-equipment-v0">《EGO/UMI 设备采购与组装清单 v0》</a>。这两份文档是本页的可打印、可执行版本。</p>
+</section>
+
+<!-- ============ SOP·质检·DEMO ============ -->
+<section class="tab" id="t-sop">
+  <h2>八环节生产 SOP(点环节看产出物与验收标准)</h2>
+  <div class="stepper" id="stepper">
+    <div class="step on" data-i="0"><div class="no">1</div>需求定义</div>
+    <div class="step" data-i="1"><div class="no">2</div>场景搭建</div>
+    <div class="step" data-i="2"><div class="no">3</div>招募培训</div>
+    <div class="step" data-i="3"><div class="no">4</div>采集执行</div>
+    <div class="step" data-i="4"><div class="no">5</div>质检</div>
+    <div class="step" data-i="5"><div class="no">6</div>标注</div>
+    <div class="step" data-i="6"><div class="no">7</div>交付</div>
+    <div class="step" data-i="7"><div class="no">8</div>回流</div>
+  </div>
+  <div id="stepDetail" class="card"></div>
+  <div class="card" style="border:1.5px solid var(--accent)">
+    <b>本轮新增演示怎么串起来(7/21):</b>
+    <ul>
+      <li><b>3 天单样板闭环:</b>`pilot_day3_core_v1` 只证明一条样板可复跑(pass@5=5/5、repeat=100%、E-D=96%),不把它包装成规模化成绩。</li>
+      <li><b>Paris HTML 实时生成导览 Demo:</b>放在外发能力册,用于解释"输入需求 → 生成交互页面"。对应我们的业务用法是基地参观导览页和审计报告动态页。</li>
+      <li><b>团队工作台:</b><a href="/embodied/team/">/embodied/team/</a> 已新增 3 天闭环、讲解顺序、网页融合红线。团队讲解以那里为准。</li>
+    </ul>
+  </div>
+
+  <h2>QC 裁判 · 交互演示(模拟一条产线过裁判门)</h2>
+  <p class="lede">左侧是产线:每个方块 = 一条 episode 轨迹,过裁判门被判合格(绿)或废品(红,标失败模式)。拖动滑杆看「培训/SOP 投入」如何改变合格率 —— 这就是我们对甲方讲的那笔账。</p>
+  <div class="card">
+    <div class="demo-wrap">
+      <div>
+        <canvas id="qcCv" width="640" height="300"></canvas>
+        <div class="ctl" style="margin-top:14px"><label>培训/SOP 投入(决定动作质量分布) <b id="cSkill">行业均值</b></label><input type="range" id="rSkill" min="0" max="100" value="40"></div>
+        <button class="demo-btn" id="qcBtn" type="button">▶ 开始模拟</button>
+      </div>
+      <div>
+        <div class="bigstat">
+          <div><div class="v" id="qTotal">0</div><div class="k">已判定 episodes</div></div>
+          <div><div class="v" id="qRate">—</div><div class="k">合格率</div></div>
+          <div><div class="v" id="qHours">0</div><div class="k">合格小时(按 2 分钟/条折算)</div></div>
+        </div>
+        <h3 style="margin-top:10px">废品失败模式分布(RoboMIND 7 类)</h3>
+        <div id="fmBars"></div>
+        <p class="hint" style="margin-top:12px">判定规则 = qc_judge v0 的 7 条(时长/丢帧/停滞/平滑度/标签/越限/夹爪);真实系统同输入同输出、可复跑仲裁 —— 本演示用同分布随机数直观化。<b>行业 50% vs SOP 化 70%+:同样的人,产能差一半。</b></p>
+      </div>
+    </div>
+  </div>
+
+  <h2>遥操沙盘 · 你亲手采一条数据试试(可生成 · 可交互 · 现场判定 · 可回放导出)</h2>
+  <p class="lede">跑在浏览器里的物理小世界,两种任务随机生成:<b>抓放</b>(按住闭合夹爪,拖到绿区放下)和<b>推块</b>(pusht 同款——就是我们刚审计过 206 条的那种任务,用夹爪把积木顶进绿区)。结束后你的轨迹立刻过裁判 7 条规则并<b>显影</b>(绿=平滑,红=抖动);可回放(演示"可复现仲裁"),可导出 LeRobot 风格 JSON(演示交付格式)。</p>
+  <div class="card">
+    <canvas id="sandCv" width="760" height="420"></canvas>
+    <div class="sand-stats">
+      <button class="demo-btn" id="sandNew" type="button">⟳ 生成新任务</button>
+      <button class="demo-btn" id="sandReplay" type="button" style="background:var(--amber)" disabled>▶ 回放上一条</button>
+      <button class="demo-btn" id="sandExport" type="button" style="background:var(--ink-2)" disabled>⤓ 导出 LeRobot JSON</button>
+      <span class="hint">任务 #<b id="sandSeed" class="num">1</b> · <b id="sandTask">—</b></span>
+      <span class="hint">会话合格率:<b id="sandOk" class="num">0</b>/<b id="sandTotal" class="num">0</b> = <b id="sandRate" class="num">—</b></span>
+    </div>
+    <div id="sandVerdict" class="hint">操作提示:做得太快、中途发呆、乱抖、放错位置都会被裁判抓出来 —— 行业里一半数据就是这样变成废品的。</div>
+  </div>
+
+  <h2>QC 裁判:行业标准怎么编进规则</h2>
+  <div class="grid g2">
+    <div class="card">
+      <b>判定协议(两套已有结构化标准直接复用)</b>
+      <ul>
+        <li><b>学术四维协议</b>(Eval-Actions 基准):成功率(二元)/ 平滑度(关节角速度方差)/ 安全性(碰撞)/ 效率</li>
+        <li><b>RoboMIND 7 类失败模式</b>:抓取不完整 · 握持不足 · 关键帧错位 · 旋转错误 · 动作顺序错 · 目标物错 等</li>
+        <li>操作层口径:延迟 ≥300ms 判无效 · 动作过快/多余动作/变形 = 作废 · 传感器伪影过滤</li>
+        <li>依据:过滤最差 10-20% demo 稳定提升策略性能(ICLR 2025,DROID 76k→36k)—— <b>裁判不是成本,是买方的性能提升器</b></li>
+      </ul>
+    </div>
+    <div class="card">
+      <b>qc_judge v0(已建成,独立 repo)</b>
+      <ul>
+        <li>7 条纯函数规则:R1 时长 · R2 丢帧间隔 · R3 停滞 · R4 平滑度(jerk)· R5 成败标签 · R6 关节越限 · R7 夹爪活动</li>
+        <li>确定性判定:同输入同输出,criticals→0 分、warning 每条 −10,pass ≥70 —— <b>争议可复跑仲裁</b></li>
+        <li>15 项单元测试全绿;批量报告 = 合格率 + 废品清单(每条附证据);通用审计 CLI 支持任意 LeRobot v2/v3 数据集(阈值自动分布校准)</li>
+        <li><b>已审计两个真实公开数据集:</b>① pusht(206 条仿真人类演示):官方判据 0% vs 商业口径 44.2%;② <b>aloha_static_coffee(50 条 ALOHA 真机双臂演示,50fps/弧度/双夹爪)</b>:严格结算口径 0%(<b>整个数据集没有任何成败标注列</b>)vs 质量口径 98%。<b>双数据集同一结论:卡脖子的不是采集质量,是验收基础设施(标签/判据/合同)</b> —— 可复跑核验</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>人力结构:结构性成本优势在哪</h2>
+  <div class="card">
+    <svg class="chart" viewBox="0 0 700 130" role="img" aria-label="人力结构对比">
+      <text class="barlabel" x="8" y="34">行业(国曙口径)</text>
+      <rect class="bar" x="150" y="20" width="420" height="20" rx="3"/><rect x="570" y="20" width="52" height="20" rx="3" fill="var(--amber)"/><rect x="622" y="20" width="30" height="20" rx="3" fill="var(--ink-2)"/>
+      <text class="barval" x="355" y="34" text-anchor="middle" fill="#fff">采集 80-85%</text><text class="barval" x="596" y="34" text-anchor="middle" fill="#fff">质检10</text><text class="barval" x="637" y="34" text-anchor="middle" fill="#fff">管5</text>
+      <text class="barlabel" x="8" y="86">我们(裁判自动化)</text>
+      <rect class="bar" x="150" y="72" width="452" height="20" rx="3"/><rect x="602" y="72" width="24" height="20" rx="3" fill="var(--amber)"/><rect x="626" y="72" width="26" height="20" rx="3" fill="var(--ink-2)"/>
+      <text class="barval" x="376" y="86" text-anchor="middle" fill="#fff">采集 ~90%(同样人产更多合格小时)</text><text class="barval" x="614" y="86" text-anchor="middle" fill="#fff">≤5</text><text class="barval" x="639" y="86" text-anchor="middle" fill="#fff">管</text>
+    </svg>
+    <p class="hint">质检大半自动化(自动预检+人工抽检复核一致率 ≥95%)→ 质检人力比从 8-12% 压到 5% 以下;叠加合格率提升(行业 ~50% 起步,北京人形 SOP 化 95% 是天花板证明),同样的人力产出更多可计费"合格小时" —— 双重结构优势。</p>
+  </div>
+</section>
+
+<!-- ============ 路线图·风险 ============ -->
+<section class="tab" id="t-road">
+  <h2>三阶段路线(每阶段有门,不达标不进下一阶)</h2>
+  <div class="card">
+    <div class="phase">
+      <div class="ph">Phase 0<br><span class="hint num">第 1-6 周<br>≤¥15 万</span></div>
+      <div>
+        <b>样板间:一个工位产出一份"客户验过货"的样板数据包</b>
+        <ul>
+          <li>硬件:双臂标准工位 ¥10-13 万(或蜂巢申领 MEgo 抵部分自购)—— <b>spec 到手才下单</b></li>
+          <li>人:用户(BD/统筹)+ 采集员 2(熟人/兼职,日薪 200-250 行情)+ AI 侧软件全包(不占 headcount)</li>
+          <li>软件(已开工):QC 裁判 v0 ✅ → LeRobot v3 适配器 → 飞书 ERP(FDE S1-S3 引擎换内容)</li>
+        </ul>
+        <div class="gate"><b>门:</b>智元/觅蜂或灵心巧手对样板包出具<b>书面反馈</b>(合格率/单价/量的意向)。拿不到 = 回炉,不建基地。</div>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="ph">Phase 1<br><span class="hint num">第 7-16 周<br>以签约量定投资</span></div>
+      <div>
+        <b>首基地(触发条件:Phase 0 拿到 ≥500 h/月意向)</b>
+        <ul>
+          <li>选址县域:人力 120-200 元/天 + 政府场地/就业补贴;规模 = 订单量 ÷(3-4h/人/天 × 目标合格率),<b>先 20-50 人不超</b>;基地长先于一切招</li>
+          <li>培训班先行:开班→持证(补贴 2400 元档)→上岗;与已备案高校继教院合办拿证书通道;毕业考核数据直接喂裁判规则库</li>
+        </ul>
+        <div class="gate"><b>门:</b>首月按"合格小时"<b>全额结算无纠纷</b>;基地毛利为正(用上面的经济模型沙盘核算)。</div>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="ph">Phase 2<br><span class="hint num">第 4 个月后</span></div>
+      <div>
+        <b>复制与资产化</b>
+        <ul>
+          <li>基地复制(五步法 5-8 周/个);政府训练场运营标投标(方案模板提前备好)</li>
+          <li>灵巧手数据包成标准 SKU;裁判规则库对外输出(轨 B);五目设备定义文档启动</li>
+        </ul>
+        <div class="gate"><b>门:</b>第二基地<b>不靠创始人驻场</b>也能达标 = SOP 成立。</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>风险与对冲(只列真的)</h2>
+  <div class="grid g2">
+    <div class="card"><b>R1 · 蜂巢条款压价 + 数据产权归平台</b><br><span class="hint">议价权在觅蜂手里,且加盟财务条款不公开。<b>对冲:</b>灵巧手自有品类 + 轨 B 独立规则库,不做纯代工;"合格率对赌"换议价筹码;合同显式争取二次授权权利。</span></div>
+    <div class="card"><b>R2 · 价格战(2026H2 已开打)</b><br><span class="hint">基础采集/仿真单价下探,标注员月薪已腰斩。<b>对冲:</b>只做"合格小时"计价与高溢价品类(灵巧手/失败样本/评估 GT),不接底价单。</span></div>
+    <div class="card"><b>R3 · 招商书→实体的执行风险</b><br><span class="hint">团队/场地/资金从零;64 个训练场亏损样本证明重资产危险。<b>对冲:</b>Phase 0 只花 ≤15 万验证,以销定产;每阶段的门不达标不加码;基地长先找;设备稳定性(行业头号中断源)备件与维修台标配。</span></div>
+  <div class="card"><b>R4 · 世界模型长期压真机需求</b><br><span class="hint">3 年+尺度;当前业内共识"预训练几乎全用真实数据"。<b>对冲:</b>裁判/评估层反而受益(数据越被质疑裁判越值钱);盯 Cosmos Coalition 真机用量与 1X/Tesla 真实/合成配比。</span></div>
+  </div>
+
+  <h2>分工界面(谁干什么,现在)</h2>
+  <div class="card tblwrap"><table>
+    <thead><tr><th>线</th><th>负责</th><th>本周动作</th><th>状态</th></tr></thead>
+    <tbody>
+      <tr><td>商务(spec)</td><td>用户</td><td>向智元/觅蜂、灵心巧手分别要数据规格;谁先给先做谁的样板;顺带要蜂巢一手结算条款</td><td><span class="chip tag-us">进行中</span></td></tr>
+      <tr><td>QC 裁判</td><td>AI 侧</td><td>v0 已建;下一步 LeRobot v3 适配器 + AgiBot World 首份审计报告</td><td><span class="chip tag-pass">v0 完成</span></td></tr>
+      <tr><td>飞书 ERP</td><td>AI 侧</td><td>FDE S1-S3 派活-QC-结算引擎换内容(排在适配器后)</td><td><span class="chip">排队</span></td></tr>
+      <tr><td>培训考核系统</td><td>AI 侧</td><td>fde.nautilus.social 培训链换内容(排第三)</td><td><span class="chip">排队</span></td></tr>
+      <tr><td>训练场运营方案模板</td><td>AI 侧</td><td>含合格率门槛/抽检比例/复检仲裁机制,等运营标出现即投</td><td><span class="chip">排队</span></td></tr>
+      <tr><td>硬件采购</td><td>用户</td><td>不动 —— spec 到手、样板品类定了再下单(以销定产)</td><td><span class="chip">冻结</span></td></tr>
+      <tr><td>五目设备</td><td>AI 侧(文档)+ ODM(远期)</td><td>Phase 2+ 定义文档进 backlog(技术锚 = EgoScale 管线对齐)</td><td><span class="chip">冻结</span></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+</main>
+<footer>
+  内部资料 · 请勿外传 · 更新至 2026-07-23 · 源:docs/research/2026-07-16 调研报告(§1-§9 + §6.1)+ docs/business/2026-07-17 蓝图 v3 + docs/plans/2026-07-20 3天闭环报告 + 任务001选择与EGO/UMI设备SOP · repo: embodied-data-factory
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- theme ---------- */
+  var root = document.documentElement;
+  var saved = null;
+  try { saved = localStorage.getItem("edf-theme"); } catch (e) {}
+  if (saved === "dark" || saved === "light") root.setAttribute("data-theme", saved);
+  document.getElementById("themeBtn").addEventListener("click", function () {
+    var cur = root.getAttribute("data-theme");
+    if (!cur) cur = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    var next = cur === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    try { localStorage.setItem("edf-theme", next); } catch (e) {}
+  });
+
+  /* ---------- tabs ---------- */
+  var tabBtns = document.querySelectorAll("#tabs button");
+  var tabs = document.querySelectorAll("section.tab");
+  function showTab(id) {
+    tabBtns.forEach(function (b) { b.classList.toggle("on", b.dataset.tab === id); });
+    tabs.forEach(function (s) { s.classList.toggle("on", s.id === id); });
+    window.scrollTo(0, 0);
+    if (history.replaceState) history.replaceState(null, "", "#" + id);
+  }
+  tabBtns.forEach(function (b) { b.addEventListener("click", function () { showTab(b.dataset.tab); }); });
+  if (location.hash && document.getElementById(location.hash.slice(1))) showTab(location.hash.slice(1));
+
+  /* ---------- hero canvas: episodes through the judge gate ---------- */
+  (function () {
+    var cv = document.getElementById("heroCv");
+    if (!cv) return;
+    var ctx = cv.getContext("2d");
+    var W, H, GX;
+    function resize() {
+      W = cv.width = cv.offsetWidth * (window.devicePixelRatio || 1);
+      H = cv.height = cv.offsetHeight * (window.devicePixelRatio || 1);
+      GX = W * 0.72;
+    }
+    resize(); window.addEventListener("resize", resize);
+    var parts = [];
+    function spawn() {
+      parts.push({
+        x: -10, y: H * (0.15 + Math.random() * 0.7),
+        v: (1 + Math.random() * 1.4) * (window.devicePixelRatio || 1),
+        r: (2 + Math.random() * 3) * (window.devicePixelRatio || 1),
+        pass: Math.random() < 0.55, judged: false, a: 0.9, vy: 0
+      });
+    }
+    for (var i = 0; i < 26; i++) { spawn(); parts[i].x = Math.random() * W * 0.7; }
+    function frame() {
+      ctx.clearRect(0, 0, W, H);
+      ctx.strokeStyle = "rgba(143,224,206,.5)"; ctx.lineWidth = 2 * (window.devicePixelRatio || 1);
+      ctx.setLineDash([8, 7]);
+      ctx.beginPath(); ctx.moveTo(GX, H * 0.06); ctx.lineTo(GX, H * 0.94); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = "rgba(143,224,206,.75)";
+      ctx.font = (12 * (window.devicePixelRatio || 1)) + "px sans-serif";
+      ctx.fillText("裁判门", GX + 10 * (window.devicePixelRatio || 1), H * 0.1);
+      for (var i = parts.length - 1; i >= 0; i--) {
+        var p = parts[i];
+        p.x += p.v; p.y += p.vy;
+        if (!p.judged && p.x >= GX) { p.judged = true; if (!p.pass) { p.vy = 1.6 * (window.devicePixelRatio || 1); } }
+        if (p.judged && !p.pass) p.a -= 0.012;
+        var col;
+        if (!p.judged) col = "rgba(160,190,182," + p.a + ")";
+        else col = p.pass ? "rgba(120,220,170," + p.a + ")" : "rgba(230,110,100," + p.a + ")";
+        ctx.fillStyle = col;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.3); ctx.fill();
+        if (p.x > W + 20 || p.a <= 0 || p.y > H + 20) { parts.splice(i, 1); spawn(); }
+      }
+      if (!reduced) requestAnimationFrame(frame);
+    }
+    frame();
+  })();
+
+  /* ---------- chain node details ---------- */
+  var nodeInfo = {
+    arx: "<b>遥操作双臂行情:</b>ARX 方舟无限 L5 ¥2.98 万/台(双臂工位 ¥6-10 万,国内数采复现主力)· 松灵 Cobot Magic 20 万+/套 · ALOHA 2 自建 $20-32k(Trossen 旧套件已停产)· GELLO 自建 <$300 · LeRobot SO-101 主从对 $220-400(HF 官方参考硬件,我们的 $800 验证工位)。",
+    linker: "<b>灵心巧手(已对接):</b>灵巧手厂商。联合打法 = 它出手+SDK,我们出采集运营+QC,共同卖「手+数据包」;灵巧手触觉数据 1500-3000 元/h 是最高溢价品类。细节彩蛋:它已在德清政府训练场生态里(浙江无问智行运营,30 余家伙伴)——联合数据包可借该场落地第一单。一页纸提案已备,等它的数据规格。",
+    wear: "<b>穿戴/手持设备:</b>觅蜂 MEgo(夹爪 480g/轨迹精度 1mm · 头戴 7 摄 300° 视野,走蜂巢可申领)· 鹿明 FastUMI 全家桶(Pro/Ego/Touch/Go + 数据市场,2026-03 AWE;成本 <0.6 元/条,2026 目标百万小时产能)· 松灵 Pika Pro(±1.5mm/120Hz,2026-04 手册)· Quest 3 $499 + OpenTeleVision 开源栈 · 清华 DOGlove 开源手套 <$600。",
+    humanoid: "<b>人形整机(价格战中,晚买):</b>宇树 R1 ¥29,900(2026-06 已降 25%;2026-03 已递交科创板 IPO)· G1 EDU $43,900 起 · 智元灵犀 X2 ¥9.8 万起、远征 A2 青春版 ¥16.8 万;智元累计出货破 5000 台。只在客户 spec 要全身+移动操作数据时才上。",
+    touch: "<b>触觉传感:</b>帕西尼 2026-03 B 轮超 10 亿(具身感知估值最高):PX-6AX-GEN3 / 消费级 PX-3AX / SLIM(1mm 厚,400 测力点/cm²);OmniSharing DB 全模态数据平台已上线但定价不透明 = 触觉验收标准空白,裁判先占。GelSight Mini <$500;六维力传感器 ~¥2 万/个。",
+    guoshu: "<b>国曙(自有渠道):</b>2017 成立,人力/财税出身转数采;PPT=招商书(尚无运营实体)。资产:500+ 可调配人员、50+ 分支、105+ 地区政府关系(残联/人社/就业局)、服务过 4000+ 企业。弱点=无技术、质检靠人工 —— 我们正好补裁判位。它的人社关系 = 培训补贴申报通道 + 政府训练场运营标入口。",
+    mifeng: "<b>觅蜂(智元孵化,2026-02 成立):</b>MEgo 硬件 + MEgo Engine 治理 + 蜂巢加盟(伙伴出设备招人触达场景、按标准采集结算;产能模型 = 万台终端 × 日均 3-4 有效小时 × 年 250 天)。2026-06-17 再融数亿元;数据售价 1000+ 元/h;公开表态要做美团骑手式培训+管理体系 —— 与我们的培训认证+按质计价直接同构,最可能先买单。加盟财务条款不公开,首次商务接触就要拿一手条款。",
+    lightwheel: "<b>光轮(仿真派独角兽):</b>2026-06 两周两轮共约 20 亿元;26Q1 订单 5.5 亿;数据复售率超 10×;SimReady 资产库 + EgoSuite(30 万 h)+ RoboFinals 评测(阿里 Qwen 采用)。明确不做真机遥操作 → 与我们无正面冲突;学它:标准权制高点 + 开源漏斗 + 数据资产复售的毛利结构。",
+    factory: "<b>重资产工厂群:</b>智元张江 3000㎡(5 场景,日 3-5 万条,2 个月百万条)· 国地中心 5000㎡(100+ 台,单机日 500+ 条,日 10TB)· 北京人形 5000㎡(120+ 台,年十几万小时,合格率 95%+,外售 500-1000 元/h)· 帕西尼 5 厂 · 数据堂 8000㎡。投资界 2026-06:大型采集场基本没有盈利。全部是轨 B 裁判服务的潜在客户。",
+    crowd: "<b>众包路线:</b>京东「60 万采集大军」(在岗员工+UMI 背包,目标两年 1000 万小时)—— 与我们五目无感设备愿景互证「在岗无感采集」需求真实。XDOF 全球雇佣遥操作员($70M,20 客户)。众包最大痛点恰是质控 —— 裁判层价值放大;觅蜂也公开表态要美团骑手式培训管理。",
+    gov: "<b>G 端训练场(基建派):</b>截至 2026-04 全国 64 个已投用、90 个在用/在建(23 省 27 城,合计 2500+ 台、28 万㎡);城投出资:防城港 2.64 亿/自贡 1.59 亿/九江 1.43 亿/柳州 1.26 亿。商业模式被公开点名「左手倒右手」体内循环、基本不盈利。我们的切口:不做总包不进循环,做 QC/验收分包 + 抢「建设已招、运营未招」的运营标(广东样板:省平台公司持场,电信 3518 万中标集成)。",
+    agibot: "<b>智元(已对接,双重身份):</b>既是最大买方之一(GO-1 基座模型),又通过觅蜂控产能。不要直接卖通用数据给它(和它自己工厂竞争),从蜂巢加盟切入做它的委托产能;AgiBot World 二期含失败样本数据集 = 高溢价品类需求已被它自己确认;Genie Sim 3.0 已开源(LLM 驱动仿真+断点续采),走蜂巢要对齐它的工具链。",
+    robotco: "<b>本体/模型厂买方:</b>宇树/银河通用/星动纪元/越疆/非夕/思灵/傲意(国曙 PPT 目标客户名单)+ Figure/1X。买方口径:预训练几乎全用真实数据;后训练要真机;单任务 500-1000 条 demo 后边际锐减 → 任务多样性比单任务堆量值钱。",
+    worldmodel: "<b>世界模型厂(新买方):</b>NVIDIA Cosmos 3(2026-06 全开源 + Cosmos Coalition)· 1X(14B 模型+400h 真机)· GigaAI · 腾讯 HY-World 2.0 · 字节(秘密行军,目标年底 SOTA)。要的 spec:多视角/物理接触/失败样本/评估 ground-truth 校准集/provenance 可验证 —— 竞争少、单价高,轨 B 远期客户。",
+    labs: "<b>科研/frontier labs:</b>XDOF 出道即服务 20 客户含 frontier labs,证明高端定制采集需求真实付费;学界数据集(EgoDex 829h/DROID/Open X-Embodiment/Aria Gen 2 A2PD)是我们裁判器的免费练兵场与审计报告素材。",
+    exchange: "<b>数据交易层(2026 新出口):</b>全国首单具身数据集场内交易 2026-01-03 江苏省数据交易所成交(卖方江苏箸境,金额/授权未披露);京东云「具身智能数据交易平台」已上线。上海地方标准要求数据产品上架附质量评估报告 = 裁判报告的制度性需求;「一采多授」无公开先例判例 → 合同显式争取二次授权。"
+  };
+  var detail = document.getElementById("nodeDetail");
+  document.querySelectorAll(".node").forEach(function (n) {
+    n.addEventListener("click", function () {
+      document.querySelectorAll(".node").forEach(function (m) { m.classList.remove("sel"); });
+      n.classList.add("sel");
+      if (detail) detail.innerHTML = '<div class="card">' + (nodeInfo[n.dataset.k] || "") + "</div>";
+    });
+  });
+
+  /* ---------- tooltips ---------- */
+  var tip = document.getElementById("tip");
+  document.querySelectorAll("[data-tip]").forEach(function (el) {
+    el.addEventListener("mousemove", function (ev) {
+      tip.style.display = "block";
+      tip.innerHTML = el.getAttribute("data-tip");
+      var x = ev.clientX + 14, y = ev.clientY + 14;
+      if (x + 300 > window.innerWidth) x = ev.clientX - 304;
+      if (y + tip.offsetHeight > window.innerHeight) y = ev.clientY - tip.offsetHeight - 8;
+      tip.style.left = x + "px"; tip.style.top = y + "px";
+    });
+    el.addEventListener("mouseleave", function () { tip.style.display = "none"; });
+  });
+
+  /* ---------- expandable rows ---------- */
+  document.querySelectorAll("tr.xrow").forEach(function (r) {
+    r.addEventListener("click", function () {
+      var d = r.nextElementSibling;
+      if (d && d.classList.contains("xdetail")) d.classList.toggle("show");
+    });
+  });
+
+  /* ---------- sortable columns ---------- */
+  document.querySelectorAll("#routeTbl th.sortable").forEach(function (th) {
+    var asc = false;
+    th.addEventListener("click", function () {
+      asc = !asc;
+      var col = +th.dataset.col;
+      var tbody = document.querySelector("#routeTbl tbody");
+      var pairs = [];
+      Array.prototype.slice.call(tbody.querySelectorAll("tr.xrow")).forEach(function (r) { pairs.push([r, r.nextElementSibling]); });
+      pairs.sort(function (a, b) {
+        var va = parseFloat(a[0].cells[col].dataset.v || "0");
+        var vb = parseFloat(b[0].cells[col].dataset.v || "0");
+        return asc ? va - vb : vb - va;
+      });
+      pairs.forEach(function (p) { tbody.appendChild(p[0]); if (p[1]) tbody.appendChild(p[1]); });
+    });
+  });
+
+  /* ---------- SOP stepper ---------- */
+  var steps = [
+    ["需求定义", "产出物:任务规格书(任务 ontology / 本体 / 传感器 / 格式 / 量 / 单价)。<b>验收:客户签字。</b>负责:用户 + AI 侧起草。这一步决定后面全部 —— spec 问询清单(通用 5 组 + 智元/觅蜂/灵心巧手专项)已备好。计价锚点:无本体成本 50-100、真机 250、售价 500-1000+ 元/h。"],
+    ["场景搭建", "产出物:场地 + 道具 + 机位 + 标定记录。<b>验收:标定误差入档;场景清单对齐规格书。</b>负责:运营。县域优势:现成餐馆/民宿/超市 = 零成本实景(一线工厂要花钱复刻 5 场景);标定验证用 MuJoCo,记录全部进数据湖可追溯。"],
+    ["招募培训", "产出物:持证采集员。<b>验收:培训考核通过 —— 考核数据本身过裁判 ≥ 阈值(考核即认证)。</b>负责:运营 + 培训系统。行业 3 天速成 → 我们 5 天带考核;证书走与已备案高校继教院合办通道,补贴三级 2400 元(广东)/2500(上海)。"],
+    ["采集执行", "产出物:原始轨迹。<b>验收:实时预检 —— 延迟 <300ms、无多余动作、无遮挡。</b>负责:采集员 + QC 端。行业日人产 3-4h 有效是基线;设备稳定性是头号中断源(备件+维修台标配);多任务轮换防单任务 500-1000 条后边际递减。"],
+    ["质检", "产出物:合格数据集 + 废品清单(每条附证据)。<b>验收:四维协议(成功/平滑/安全/效率)+ 7 类失败模式;人工抽检复核一致率 ≥95%(Kappa κ≥0.8)。</b>负责:裁判链 + 质检员。当日反馈:废品当天告知+归因,士气和有效率同时救。"],
+    ["标注", "产出物:语言指令 + 子任务分段。<b>验收:与轨迹逐帧对齐;VLM 预标 + 人审(复核配比常规 4:1、复杂 2:1)。</b>负责:标注员。专业轨迹标注供给全行业稀薄 = 顺手的增值项。"],
+    ["交付", "产出物:LeRobot v3 / 客户格式 + 验收报告。<b>验收:客户侧复现通过;按合格小时开票。</b>负责:AI 侧 + 用户。验收报告随批交付、机器可读、对齐 YD/T 6770 口径 —— 目标是被写进合同当付款依据(飞轮信号 #2);数据交易所上架也要这份质量评估报告。"],
+    ["回流", "产出物:错判/边界案例入规则库;采集员合格率入人才档案;<b>废品带失败模式标签打包成失败样本 SKU(溢价 1.5×)</b>。<b>验收:每批次规则库必须有增量。</b>负责:裁判链自动。这一步是飞轮的发动机 —— 数据侧与人才侧双自强化。"]
+  ];
+  var stepDetail = document.getElementById("stepDetail");
+  function showStep(i) {
+    document.querySelectorAll(".step").forEach(function (s) { s.classList.toggle("on", +s.dataset.i === i); });
+    if (stepDetail) stepDetail.innerHTML = "<b>" + (i + 1) + " · " + steps[i][0] + "</b><br>" + steps[i][1];
+  }
+  document.querySelectorAll(".step").forEach(function (s) {
+    s.addEventListener("click", function () { showStep(+s.dataset.i); });
+  });
+  if (stepDetail) showStep(0);
+
+  /* ---------- QC judge demo ---------- */
+  (function () {
+    var cv = document.getElementById("qcCv");
+    if (!cv) return;
+    var ctx = cv.getContext("2d");
+    var running = false, timer = null;
+    var total = 0, pass = 0;
+    var modes = ["抓取不完整", "握持不足", "关键帧错位", "旋转错误", "动作顺序错", "目标物错", "轨迹抖动"];
+    var modeCount = [0, 0, 0, 0, 0, 0, 0];
+    var blocks = [];
+    var GX = 420;
+    var fmWrap = document.getElementById("fmBars");
+    modes.forEach(function (m, i) {
+      var row = document.createElement("div");
+      row.className = "fmbar";
+      row.innerHTML = "<span>" + m + "</span><div class='tr'><div class='fi' id='fm" + i + "'></div></div><span class='num' id='fmn" + i + "'>0</span>";
+      fmWrap.appendChild(row);
+    });
+    function passProb() {
+      var s = +document.getElementById("rSkill").value;
+      return 0.35 + 0.006 * s;  /* 35% → 95% */
+    }
+    document.getElementById("rSkill").addEventListener("input", function () {
+      var s = +this.value;
+      var lab = s < 25 ? "无培训散工" : s < 55 ? "行业均值(~50%)" : s < 85 ? "5 天带考核培训(~70%)" : "SOP 天花板(北京人形 95%)";
+      document.getElementById("cSkill").textContent = lab;
+    });
+    function spawnBlock() {
+      var p = Math.random() < passProb();
+      blocks.push({ x: -16, y: 40 + Math.random() * 220, v: 2.2 + Math.random() * 1.6, pass: p, judged: false, a: 1, vy: 0 });
+    }
+    function judge(p) {
+      total++;
+      if (p) pass++;
+      else {
+        var m = Math.floor(Math.random() * 7);
+        modeCount[m]++;
+      }
+      document.getElementById("qTotal").textContent = total;
+      document.getElementById("qRate").textContent = Math.round(100 * pass / total) + "%";
+      document.getElementById("qHours").textContent = (pass * 2 / 60).toFixed(1);
+      var failTotal = total - pass || 1;
+      for (var i = 0; i < 7; i++) {
+        document.getElementById("fm" + i).style.width = Math.round(100 * modeCount[i] / failTotal) + "%";
+        document.getElementById("fmn" + i).textContent = modeCount[i];
+      }
+    }
+    function frame() {
+      ctx.clearRect(0, 0, cv.width, cv.height);
+      ctx.strokeStyle = "rgba(143,224,206,.6)"; ctx.lineWidth = 2; ctx.setLineDash([7, 6]);
+      ctx.beginPath(); ctx.moveTo(GX, 14); ctx.lineTo(GX, 286); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle = "rgba(143,224,206,.85)"; ctx.font = "13px sans-serif";
+      ctx.fillText("裁判门(7 条规则)", GX + 8, 26);
+      ctx.fillText("← 产线:episodes", 14, 26);
+      for (var i = blocks.length - 1; i >= 0; i--) {
+        var b = blocks[i];
+        b.x += b.v; b.y += b.vy;
+        if (!b.judged && b.x >= GX) { b.judged = true; judge(b.pass); if (!b.pass) b.vy = 2.2; }
+        if (b.judged && !b.pass) b.a -= 0.02;
+        ctx.globalAlpha = Math.max(b.a, 0);
+        ctx.fillStyle = !b.judged ? "#A8BEB8" : (b.pass ? "#78DCAA" : "#E66E64");
+        ctx.fillRect(b.x, b.y, 13, 13);
+        ctx.globalAlpha = 1;
+        if (b.x > cv.width + 20 || b.a <= 0 || b.y > cv.height + 20) blocks.splice(i, 1);
+      }
+      if (running) requestAnimationFrame(frame);
+    }
+    document.getElementById("qcBtn").addEventListener("click", function () {
+      running = !running;
+      this.textContent = running ? "❚❚ 暂停" : "▶ 继续模拟";
+      if (running) {
+        frame();
+        timer = setInterval(spawnBlock, reduced ? 400 : 170);
+      } else { clearInterval(timer); }
+    });
+  })();
+
+  /* ---------- base economics calculator ---------- */
+  (function () {
+    var ids = ["rN", "rW", "rH", "rQ", "rP", "rD"];
+    var el = {};
+    ids.forEach(function (id) { el[id] = document.getElementById(id); });
+    if (!el.rN) return;
+    function fmt(x) { return (Math.round(x * 10) / 10).toLocaleString("zh-CN"); }
+    function calc() {
+      var N = +el.rN.value, W = +el.rW.value, H = +el.rH.value, Q = +el.rQ.value / 100, P = +el.rP.value, D = +el.rD.value;
+      document.getElementById("cN").textContent = N;
+      document.getElementById("cW").textContent = W;
+      document.getElementById("cH").textContent = H;
+      document.getElementById("cQ").textContent = Math.round(Q * 100) + "%";
+      document.getElementById("cP").textContent = P;
+      document.getElementById("cD").textContent = D;
+      var hours = N * H * Q * D;
+      var rev = hours * P / 10000;
+      var cost = N * W * D * 1.45 / 10000;
+      var profit = rev - cost;
+      var lift = N * H * 0.10 * D * P / 10000;
+      document.getElementById("oHours").textContent = fmt(hours);
+      document.getElementById("oRev").textContent = fmt(rev);
+      document.getElementById("oCost").textContent = fmt(cost);
+      var op = document.getElementById("oProfit");
+      op.textContent = fmt(profit);
+      op.className = profit >= 0 ? "v" : "v warn";
+      var om = document.getElementById("oMargin");
+      om.textContent = rev > 0 ? Math.round(100 * profit / rev) + "%" : "—";
+      om.className = profit >= 0 ? "v" : "v warn";
+      document.getElementById("oLift").textContent = "+" + fmt(lift);
+    }
+    ids.forEach(function (id) { el[id].addEventListener("input", calc); });
+    calc();
+  })();
+})();
+</script>
+<script>
+(function () {
+  "use strict";
+  /* ============ 术语人话词典(悬停/点按弹出) ============ */
+  var GLOSSARY = {
+    "episode": "一条「任务录像」:机器人(或人)从开始到干完一件事的完整记录 —— 数据买卖的最小单位。",
+    "遥操作": "人手把手带机器人干活(像开挖掘机),机器把每个动作记下来当教材。",
+    "主从臂": "两套机械臂:人掰「主臂」,「从臂」跟着做 —— 精度最高的遥操作方式。",
+    "UMI": "不用机器人:人手里拿一个带摄像头的「智能夹子」干活,便宜十倍、速度五倍,但缺「手感」(力觉)数据。",
+    "第一视角": "给人戴上眼镜录「你眼中的世界」,机器人以后照着学 —— 1 小时录像 ≈ 1 小时遥操作的训练价值。",
+    "egocentric": "即「第一视角」:从干活的人眼睛位置拍的视频,是机器人学习的金矿。",
+    "世界模型": "AI 的「脑内沙盘」:在想象里预演动作的后果,不用每次都真的动手试。",
+    "sim-to-real": "「游戏里练成高手,现实里不一定会」:仿真练到 89.4% 成功率,搬到真实家庭只剩 12%。",
+    "VLA": "看得懂图、听得懂话、动得了手的机器人大脑(Vision-Language-Action 三合一模型)。",
+    "LeRobot": "机器人数据的「集装箱标准」(HuggingFace 出品):大家格式一样,数据才能互相买卖和训练。",
+    "RLDS": "谷歌系的旧数据格式,与 LeRobot 有互转工具 —— 类比集装箱的另一种规格。",
+    "合格小时": "剔掉废品后真正能用的数据时长 —— 我们主张按这个收钱,而不是按「坐了几小时」。",
+    "有效率": "采 100 小时里能用的比例。行业平均只有一半(~50%),另一半人工白花 —— 这就是我们的生意所在。",
+    "Kappa": "两个质检员意见一致程度的统计量(κ≥0.8 才算可信)—— 防止「验收全凭心情」。",
+    "jerk": "动作的「急促度」(加速度的变化率):数值太大 = 手在乱抖/动作变形,数据大概率是废品。",
+    "平滑度": "动作是否流畅不抖 —— 四维质量协议之一,用关节角速度的方差来量化。",
+    "幂等门": "同一条数据只能结算一次的闸门 —— 防止重复刷钱。",
+    "verdict": "裁判的判决书:一条数据合格与否 + 得分 + 每条扣分证据,同输入永远同输出(可复跑仲裁)。",
+    "provenance": "数据的「出生证明」:这条轨迹到底是真机采的,还是 AI 合成的?混着卖必须能验。",
+    "灵巧手": "模仿人手的多关节机械手(五指、能捏能转)—— 它产生的操作数据是全行业最贵的品类。",
+    "外骨骼": "穿在人身上的机械骨架,记录全身动作 —— 数据质量高但设备最贵。",
+    "ground truth": "「标准答案」:评估 AI 表现时用来对照的真实结果 —— 评估永远需要真机数据当答案。",
+    "policy-assisted teleop": "「AI 打辅助的遥操作」:简单动作让半成品 AI 自己做,人只在难点接管 —— 人力需求直接降 5-10 倍。",
+    "retarget": "「动作翻译」:把人手/人体的动作换算成机器人关节能执行的动作。",
+    "scaling law": "「越喂越强的规律」:数据量每翻倍,模型能力按可预测的曲线上涨 —— 意味着数据需求没有上限。",
+    "ACT": "一种主流的模仿学习算法:用它检验数据质量 —— 主从臂数据训出来的成功率比 VR 数据高约 20%。",
+    "SKU": "一个标准化的「货架商品」:规格、数量、价格都定死,可以重复卖。",
+    "ODM": "找现成工厂帮你设计+生产硬件(贴我们的牌)—— 不自建电子研发团队。",
+    "UWB": "一种抗干扰的短距离无线技术(常用于室内精确定位),适合多设备同时采集不打架。",
+    "高斯泼溅": "一种把真实场景变成可实时漫游 3D 的新技术(Gaussian Splatting),浏览器里就能 60 帧转着看。",
+    "数据治理": "数据的「仓库管理学」:清洗、去重、格式统一、质量分级 —— 觅蜂 CEO 说利润在这里,不在劳务。"
+  };
+  var tip = document.getElementById("tip");
+  function bindTip(el) {
+    el.addEventListener("mousemove", function (ev) {
+      tip.style.display = "block";
+      tip.innerHTML = el.getAttribute("data-tip");
+      var x = ev.clientX + 14, y = ev.clientY + 14;
+      if (x + 300 > window.innerWidth) x = ev.clientX - 304;
+      if (y + tip.offsetHeight > window.innerHeight) y = ev.clientY - tip.offsetHeight - 8;
+      tip.style.left = x + "px"; tip.style.top = y + "px";
+    });
+    el.addEventListener("mouseleave", function () { tip.style.display = "none"; });
+    el.addEventListener("click", function (ev) {
+      tip.style.display = "block";
+      tip.innerHTML = el.getAttribute("data-tip");
+      tip.style.left = Math.min(ev.clientX + 10, window.innerWidth - 300) + "px";
+      tip.style.top = (ev.clientY + 14) + "px";
+      setTimeout(function () { tip.style.display = "none"; }, 3500);
+      ev.stopPropagation();
+    });
+  }
+  var terms = Object.keys(GLOSSARY).sort(function (a, b) { return b.length - a.length; });
+  document.querySelectorAll("section.tab").forEach(function (sec) {
+    var counts = {};
+    var walker = document.createTreeWalker(sec, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (n) {
+        if (!n.nodeValue || !n.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+        var p = n.parentNode;
+        if (!p || !p.closest || p.closest("script,style,svg,button,h1,h2,.gl,.tabintro")) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    var nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(function (node) {
+      var text = node.nodeValue;
+      for (var i = 0; i < terms.length; i++) {
+        var t = terms[i];
+        if ((counts[t] || 0) >= 2) continue;
+        var idx = text.indexOf(t);
+        if (idx < 0) continue;
+        counts[t] = (counts[t] || 0) + 1;
+        var span = document.createElement("span");
+        span.className = "gl";
+        span.textContent = t;
+        span.setAttribute("data-tip", "<b>" + t + " · 人话</b><br>" + GLOSSARY[t]);
+        var after = node.splitText(idx);
+        after.nodeValue = after.nodeValue.slice(t.length);
+        node.parentNode.insertBefore(span, after);
+        bindTip(span);
+        break;
+      }
+    });
+  });
+
+  /* ============ 每页一句话导读 ============ */
+  var INTRO = {
+    "t-wm": "AI 的「脑内沙盘」们(世界模型)短期会把数据生意做大而不是做死;它们越强,「验数据真假优劣的裁判」越值钱 —— 我们站裁判位。",
+    "t-chain": "钱从买方(右)流向设备商(左),数据反着流;中间「质检·验收·认证」这层空着 —— 那就是我们。点每个方块看拆解。",
+    "t-route": "采数据有七条路,贵的质量好、便宜的量大;我们主力用双臂遥操(质量)+ 手持夹子(数量),全部过裁判再交付。",
+    "t-rival": "对手三派:卖仿真的、搭平台的、出人力的 —— 互相都替代不了,而给数据「验货」的裁判位没人占。每张卡片末尾是「学它一招」。",
+    "t-biz": "先靠政府补贴的培训班回款,再靠按「合格小时」计费的数采挣主营,最后把裁判规则库变成能反复卖的资产。",
+    "t-base": "建基地不拼谁人多,拼谁废品少:行业一半数据是废的,我们用裁判把合格率从 50% 提到 70%+,等于同样的人多赚一半。",
+    "t-cold": "先选一个能验收的任务,三天内交出一包数据,用客户书面反馈决定是否扩量;设备跟着任务买,不反过来。",
+    "t-sop": "从接单到交付共 8 步,每步都有「交什么、怎么验」;下面两个演示可以亲手玩:看裁判怎么判,自己采一条数据被判一次。",
+    "t-road": "三步走:先花 15 万做出一份客户验过货的样品 → 客户给量再建 20-50 人基地 → 跑通后复制。每步有硬门,不达标不加码。"
+  };
+  Object.keys(INTRO).forEach(function (id) {
+    var s = document.getElementById(id);
+    if (!s) return;
+    var p = document.createElement("p");
+    p.className = "tabintro";
+    p.innerHTML = "<b>一句话看懂本页:</b>" + INTRO[id];
+    s.insertBefore(p, s.firstElementChild);
+  });
+
+  /* ---------- Task 001 selector: score + equipment route ---------- */
+  (function () {
+    var weights = [
+      ["买方价值", 20, 18], ["可判定性", 15, 14], ["三天可做性", 15, 14], ["可重复采集", 10, 9],
+      ["多模态价值", 10, 8], ["失败样本价值", 10, 9], ["授权与隐私可控", 10, 9], ["后续扩展潜力", 10, 8]
+    ];
+    var box = document.getElementById("taskScoring");
+    if (!box) return;
+    box.innerHTML = weights.map(function (x, i) {
+      return '<div class="ctl"><label>' + x[0] + ' <b id="scoreV' + i + '">' + x[2] + ' / ' + x[1] + '</b></label><input class="taskScoreIn" data-i="' + i + '" type="range" min="0" max="' + x[1] + '" value="' + x[2] + '"></div>';
+    }).join("");
+    var gateOut = document.getElementById("gateOut"), totalOut = document.getElementById("taskScore"), decisionOut = document.getElementById("taskDecision");
+    function refreshScore() {
+      var total = 0, gates = true;
+      document.querySelectorAll(".taskScoreIn").forEach(function (input) { var i = +input.dataset.i; total += +input.value; document.getElementById("scoreV" + i).textContent = input.value + " / " + weights[i][1]; });
+      document.querySelectorAll("#taskGates input").forEach(function (input) { gates = gates && input.checked; });
+      totalOut.textContent = total;
+      if (!gates) { gateOut.innerHTML = "<b>不立项:</b> 八项硬门尚未全部满足。先补条件，不用靠评分掩盖风险。"; gateOut.style.borderLeftColor = "var(--fail)"; decisionOut.textContent = "暂缓"; decisionOut.className = "v warn"; }
+      else if (total >= 80) { gateOut.innerHTML = "<b>可进入 Day 1:</b> 硬门齐备，按三天样板闭环执行。"; gateOut.style.borderLeftColor = "var(--pass)"; decisionOut.textContent = "立项"; decisionOut.className = "v"; }
+      else if (total >= 70) { gateOut.innerHTML = "<b>先补分:</b> 硬门齐备，但商业/交付条件不足，先修任务协议后再开采。"; gateOut.style.borderLeftColor = "var(--amber)"; decisionOut.textContent = "待补"; decisionOut.className = "v warn"; }
+      else { gateOut.innerHTML = "<b>不立项:</b> 任务不适合作为第一个样板，换更短、更可判、可重复的任务。"; gateOut.style.borderLeftColor = "var(--fail)"; decisionOut.textContent = "换题"; decisionOut.className = "v warn"; }
+    }
+    document.querySelectorAll(".taskScoreIn, #taskGates input").forEach(function (input) { input.addEventListener("input", refreshScore); input.addEventListener("change", refreshScore); });
+    var routes = {
+      wm: ["EGO 头戴/胸前/手腕：先记录任务上下文、双手、物体与关键步骤。", "少量 UMI：补充夹爪开合与近端动作线索。", "不要先买机械臂或人形本体。"],
+      robot: ["UMI/GELLO 或客户本体：优先得到可复现的动作与成败结果。", "EGO：补充现场上下文、意图和失败原因。", "不要自购一整套本体来猜客户规格。"],
+      platform: ["优先兼容平台现有设备与格式。", "EGO/UMI 样机：用于演示、验收和兜底。", "不要强推自研硬件，先证明交付治理能力。"],
+      field: ["低打扰 EGO：头部/胸前/手腕组合。", "UMI：只在需要动作线索时启用。", "不要用高干扰遥操作打断现场流程。"],
+      gov: ["EGO + UMI 样板工位：用于培训、验收和展示。", "按订单接入合作方本体与遥操设备。", "不要先承诺固定产能或全套重资产设备。"]
+    };
+    var select = document.getElementById("deviceBuyer");
+    function refreshRoute() { var r = routes[select.value]; document.getElementById("deviceLabel").textContent = select.options[select.selectedIndex].text; document.getElementById("deviceFirst").textContent = r[0]; document.getElementById("deviceSecond").textContent = r[1]; document.getElementById("deviceAvoid").textContent = r[2]; }
+    select.addEventListener("change", refreshRoute);
+    refreshScore(); refreshRoute();
+  })();
+
+  /* ============ 遥操沙盘 v2:双任务 · 轨迹显影 · 回放 · 导出 ============ */
+  (function () {
+    var cv = document.getElementById("sandCv");
+    if (!cv) return;
+    var ctx = cv.getContext("2d");
+    var W = 760, H = 420, GROUND = 380;
+    var seed = 7, sessionOk = 0, sessionTotal = 0, taskNo = 1;
+    var block, zone, grip, rec, carrying, done, doneAt, roundActive, taskType;
+    var lastRec = null, lastScene = null, lastVerdict = null;
+    var replaying = false, replayIdx = 0;
+
+    function rng() { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }
+
+    function newTask(bump) {
+      if (bump !== false) taskNo++;
+      taskType = rng() < 0.5 ? "pick" : "push";
+      var s = Math.floor(34 + rng() * 22);
+      block = { w: s, h: s, x: 70 + rng() * 220, y: GROUND - s, vy: 0 };
+      zone = { w: 130, x: 430 + rng() * 180 };
+      grip = { x: 120, y: 160, tx: 120, ty: 160, closed: false, started: false };
+      rec = []; carrying = false; done = false; doneAt = 0; roundActive = true; replaying = false;
+      document.getElementById("sandSeed").textContent = taskNo;
+      document.getElementById("sandTask").textContent = taskType === "pick" ? "任务A 抓放(按住=闭合)" : "任务B 推块(pusht 同款,顶着走)";
+      var box = document.getElementById("sandVerdict");
+      box.className = "hint";
+      box.textContent = taskType === "pick"
+        ? "任务 #" + taskNo + " 抓放:按住闭合夹爪抓起积木,拖到绿区上方松开。"
+        : "任务 #" + taskNo + " 推块:不用按键,用夹爪把积木一路顶进绿区(pusht 数据集就是 206 条这种轨迹)。";
+    }
+
+    function pos(ev) {
+      var r = cv.getBoundingClientRect();
+      var cx = (ev.touches ? ev.touches[0].clientX : ev.clientX) - r.left;
+      var cy = (ev.touches ? ev.touches[0].clientY : ev.clientY) - r.top;
+      return { x: Math.max(0, Math.min(W, cx * W / r.width)), y: Math.max(0, Math.min(H, cy * H / r.height)) };
+    }
+    cv.addEventListener("pointermove", function (ev) { if (!replaying) { var p = pos(ev); grip.tx = p.x; grip.ty = p.y; if (roundActive) grip.started = true; } });
+    cv.addEventListener("pointerdown", function (ev) {
+      if (replaying) return;
+      cv.setPointerCapture(ev.pointerId);
+      var p = pos(ev); grip.tx = p.x; grip.ty = p.y; grip.started = true;
+      grip.closed = true;
+      if (taskType === "pick" && !carrying && Math.abs(grip.x - (block.x + block.w / 2)) < block.w / 2 + 12 && grip.y > block.y - 26 && grip.y < block.y + block.h) {
+        carrying = true;
+      }
+    });
+    cv.addEventListener("pointerup", function () { if (!replaying) { grip.closed = false; if (carrying) { carrying = false; block.vy = 0.1; } } });
+
+    function judgeRound(taskSuccess) {
+      var findings = [];
+      var n = rec.length;
+      var durS = n ? (rec[n - 1].t - rec[0].t) / 1000 : 0;
+      if (durS < 1.2) findings.push(["critical", "R1_duration", "轨迹过短(" + durS.toFixed(1) + "s):像误触,不像认真干活"]);
+      var gaps = 0, stall = 0, maxStall = 0, pvx = 0, pvy = 0, everClosed = false, oob = 0;
+      var dvs = [];
+      var SKIP = 12; /* 起步帧不计抖动 */
+      for (var i = 1; i < n; i++) {
+        var dt = rec[i].t - rec[i - 1].t;
+        if (dt > 55) gaps++;
+        var vx = rec[i].x - rec[i - 1].x, vy = rec[i].y - rec[i - 1].y;
+        var sp = Math.hypot(vx, vy);
+        if (sp < 0.4) { stall++; if (stall > maxStall) maxStall = stall; } else stall = 0;
+        var dv = Math.hypot(vx - pvx, vy - pvy);
+        if (i > 1) { rec[i].dv = dv; if (i > SKIP) dvs.push(dv); }
+        pvx = vx; pvy = vy;
+        if (rec[i].closed) everClosed = true;
+        if (rec[i].x < 4 || rec[i].x > W - 4 || rec[i].y < 4) oob++;
+      }
+      dvs.sort(function (a, b) { return a - b; });
+      var p95 = dvs.length ? dvs[Math.floor(0.95 * (dvs.length - 1))] : 0;
+      if (gaps > 2) findings.push(["warning", "R2_frame_gaps", "丢帧 " + gaps + " 次(浏览器卡顿被抓到 —— 真实产线上这是设备问题,行业头号中断源)"]);
+      if (maxStall > 100) findings.push(["warning", "R3_stall", "中途发呆 " + (maxStall / 60).toFixed(1) + " 秒(操作停滞)"]);
+      if (p95 > 22) findings.push(["critical", "R4_smoothness", "持续剧烈抖动(抖动指数 p95=" + p95.toFixed(1) + " > 判废线 22):动作变形。单次快速移动不受罚,持续乱抖才判"]);
+      else if (p95 > 10) findings.push(["warning", "R4_smoothness", "动作偏抖(抖动指数 p95=" + p95.toFixed(1) + " > 复核线 10)"]);
+      if (!taskSuccess) findings.push(["critical", "R5_success_label", "任务未达成:积木没有落在目标区内"]);
+      if (oob > 8) findings.push(["warning", "R6_joint_limits", "多次冲出工作空间边界(" + oob + " 帧越界)"]);
+      if (taskType === "pick" && !everClosed) findings.push(["critical", "R7_gripper_activity", "全程夹爪没有闭合过:疑似无操作"]);
+      var crits = findings.filter(function (f) { return f[0] === "critical"; }).length;
+      var warns = findings.length - crits;
+      var score = crits ? 0 : Math.max(0, 100 - 10 * warns);
+      var ok = !crits && score >= 70;
+      sessionTotal++; if (ok) sessionOk++;
+      document.getElementById("sandOk").textContent = sessionOk;
+      document.getElementById("sandTotal").textContent = sessionTotal;
+      document.getElementById("sandRate").textContent = Math.round(100 * sessionOk / sessionTotal) + "%";
+      var html = "<span class='vbadge " + (ok ? "ok'>✓ 合格 · 可结算" : "bad'>✗ 判废 / 不合格") + "</span> <span class='num'>score " + score + "</span><ul style='margin-top:8px'>";
+      if (!findings.length) html += "<li>7 条规则全过,零 finding —— 教科书级操作。</li>";
+      findings.forEach(function (f) { html += "<li>[" + (f[0] === "critical" ? "判废" : "扣分") + "] " + f[1] + ":" + f[2] + "</li>"; });
+      if (taskType === "push") html += "<li class='hint'>推块任务无夹爪操作,R7 关闭 —— 与我们审计 pusht 数据集时同款处理。</li>";
+      html += "</ul><span class='hint'>轨迹已显影(绿=平滑/红=抖动)。同一条轨迹重判一万次结果不变 = 「可复现仲裁」;可回放、可导出。</span>";
+      var box = document.getElementById("sandVerdict");
+      box.className = ""; box.innerHTML = html;
+      roundActive = false;
+      lastRec = rec.slice(); lastScene = { block: { w: block.w }, zone: { x: zone.x, w: zone.w }, taskType: taskType, taskNo: taskNo };
+      lastVerdict = { ok: ok, score: score, findings: findings.map(function (f) { return { severity: f[0], rule: f[1], message: f[2] }; }) };
+      document.getElementById("sandReplay").disabled = false;
+      document.getElementById("sandExport").disabled = false;
+    }
+
+    function drawTrace(r) {
+      for (var i = 2; i < r.length; i++) {
+        var dv = r[i].dv || 0;
+        var red = Math.min(255, Math.round(dv * 16));
+        ctx.strokeStyle = "rgba(" + red + "," + (220 - red * 0.5) + ",140,.7)";
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(r[i - 1].x, r[i - 1].y); ctx.lineTo(r[i].x, r[i].y); ctx.stroke();
+      }
+    }
+
+    function frame() {
+      if (replaying && lastRec) {
+        replayIdx += 2;
+        if (replayIdx >= lastRec.length) { replaying = false; }
+        else { var f0 = lastRec[replayIdx]; grip.x = grip.tx = f0.x; grip.y = grip.ty = f0.y; grip.closed = f0.closed; }
+      } else {
+        /* 惯性跟随:夹爪像真机械臂一样有平滑动力学,消除"光标瞬移"假抖动 */
+        grip.x += (grip.tx - grip.x) * 0.3;
+        grip.y += (grip.ty - grip.y) * 0.3;
+      }
+      if (roundActive && grip.started && !replaying && rec.length < 6000) rec.push({ t: performance.now(), x: grip.x, y: grip.y, closed: grip.closed });
+      /* physics */
+      if (taskType === "pick") {
+        if (carrying) { block.x = grip.x - block.w / 2; block.y = Math.min(grip.y + 14, GROUND - block.h); }
+        else if (block.y < GROUND - block.h) { block.vy += 0.55; block.y = Math.min(block.y + block.vy, GROUND - block.h); }
+      } else if (!replaying) {
+        /* push:夹爪贴地推动积木(仅水平) */
+        if (grip.y > block.y - 20) {
+          var gl = grip.x - 36, gr = grip.x + 36;
+          if (gr > block.x && gl < block.x && grip.y > block.y - 10) block.x = gr;              /* 从左推 */
+          else if (gl < block.x + block.w && gr > block.x + block.w) block.x = gl - block.w;    /* 从右推 */
+          block.x = Math.max(0, Math.min(W - block.w, block.x));
+        }
+      }
+      var inZone = block.x + block.w / 2 > zone.x && block.x + block.w / 2 < zone.x + zone.w && block.y >= GROUND - block.h - 0.5;
+      if (roundActive && !carrying && inZone && !done) { done = true; doneAt = performance.now(); }
+      if (roundActive && done && performance.now() - doneAt > 450) judgeRound(true);
+      if (roundActive && taskType === "pick" && !carrying && !done && block.y >= GROUND - block.h && rec.length > 120 && !grip.closed) {
+        if (Math.abs(block.x - 70) > 320 && !inZone) judgeRound(false);
+      }
+      /* draw */
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = "rgba(255,255,255,.06)"; ctx.fillRect(0, GROUND, W, H - GROUND);
+      ctx.strokeStyle = "rgba(255,255,255,.25)"; ctx.beginPath(); ctx.moveTo(0, GROUND); ctx.lineTo(W, GROUND); ctx.stroke();
+      ctx.setLineDash([7, 6]); ctx.strokeStyle = "#78DCAA"; ctx.lineWidth = 2;
+      ctx.strokeRect(zone.x, GROUND - 6, zone.w, 6); ctx.setLineDash([]);
+      ctx.fillStyle = "rgba(120,220,170,.16)"; ctx.fillRect(zone.x, 90, zone.w, GROUND - 90);
+      ctx.fillStyle = "#78DCAA"; ctx.font = "13px sans-serif"; ctx.fillText("目标区", zone.x + zone.w / 2 - 20, 108);
+      /* 轨迹显影:回合结束后 or 回放中 */
+      if (!roundActive && lastRec) drawTrace(lastRec);
+      ctx.fillStyle = done ? "#78DCAA" : "#DBA646";
+      ctx.fillRect(block.x, block.y, block.w, block.h);
+      var gap = grip.closed ? block.w / 2 + 3 : 34;
+      ctx.strokeStyle = replaying ? "#DBA646" : "#8FE0CE"; ctx.lineWidth = 5; ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.moveTo(grip.x - gap, grip.y + 26); ctx.lineTo(grip.x - gap, grip.y); ctx.lineTo(grip.x + gap, grip.y); ctx.lineTo(grip.x + gap, grip.y + 26);
+      ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(grip.x, grip.y); ctx.lineTo(grip.x, grip.y - 18); ctx.stroke();
+      ctx.fillStyle = "rgba(255,255,255,.55)"; ctx.font = "12px sans-serif";
+      ctx.fillText(replaying ? "回放中(琥珀色 = 幽灵夹爪,轨迹一模一样 = 可复现)" : (taskType === "pick" ? (grip.closed ? "夹爪:闭合" : "夹爪:张开(按住闭合)") : "推块模式:顶着积木走"), 14, 22);
+      requestAnimationFrame(frame);
+    }
+
+    document.getElementById("sandNew").addEventListener("click", function () {
+      if (roundActive && rec.length > 120) judgeRound(false);
+      newTask();
+    });
+    document.getElementById("sandReplay").addEventListener("click", function () {
+      if (!lastRec || !lastRec.length) return;
+      replaying = true; replayIdx = 0; roundActive = false;
+    });
+    document.getElementById("sandExport").addEventListener("click", function () {
+      if (!lastRec) return;
+      var t0 = lastRec[0].t;
+      var data = {
+        info: { codebase_version: "v3.0-like", fps: 60, robot_type: "sandbox_gripper_2d", task: lastScene.taskType === "pick" ? "pick_place" : "push_t", episode_index: lastScene.taskNo },
+        frames: lastRec.map(function (f, i) {
+          return { frame_index: i, timestamp: +((f.t - t0) / 1000).toFixed(4), "observation.state": [+f.x.toFixed(1), +f.y.toFixed(1)], gripper: f.closed ? 1 : 0 };
+        }),
+        verdict: lastVerdict
+      };
+      var blob = new Blob([JSON.stringify(data, null, 1)], { type: "application/json" });
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "episode_" + lastScene.taskNo + "_" + (lastVerdict.ok ? "pass" : "fail") + ".json";
+      a.click();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+    });
+    newTask(false);
+    requestAnimationFrame(frame);
+  })();
+})();
+</script>
+</body>
+</html>

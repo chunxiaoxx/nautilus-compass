@@ -1,0 +1,75 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "c28c821970a0cdd2e878aeb8cd2358f92faef1f3",
+  "reference_fix_commit": "09ce1172fa35a8d2f9924c5a7e5541a06ef2c4f1",
+  "subject": "fix(mcp): EventStore negative-cap guard + non-aliasing replay (Task 1 review)",
+  "test_files": [
+   "tests/mcp_durable/test_event_store.py"
+  ],
+  "source_files": [
+   "mcp_durable/event_store.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass",
+  "hist_test_id": "tests/mcp_durable/test_event_store.py::test_negative_max_events_rejected",
+  "hist_passed": true,
+  "_passed": true
+ },
+ "test_id": "tests/mcp_durable/test_event_store.py::test_negative_max_events_rejected",
+ "source_rel": "mcp_durable\\event_store.py",
+ "provider": "l2A-chunxiao_k3",
+ "provider_used": "l2A-chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/mcp_durable/event_store.py\n+++ b/mcp_durable/event_store.py\n@@ -31,6 +31,9 @@ class EventStore:\n         now_fn: Optional[Callable[[], float]] = None,\n     ) -> None:\n+        if max_events < 0:\n+            raise ValueError(\"max_events must be non-negative\")\n         self._max_events = max_events\n         self._ttl_seconds = ttl_seconds\n",
+ "budget_exceeded": false,
+ "total_tokens": 1835,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 1629,
+    "completion_tokens": 206,
+    "total_tokens": 1835,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 1117,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 512,
+      "output_tokens": 206,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 512,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 1629,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "validate_negative_max_events",
+ "duration_s": 13.3
+}

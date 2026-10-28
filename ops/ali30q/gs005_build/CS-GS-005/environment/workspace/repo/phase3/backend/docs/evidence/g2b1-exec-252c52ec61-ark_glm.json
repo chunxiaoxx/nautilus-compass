@@ -1,0 +1,66 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "78b489c2f26ca27761c311b976e344b5b8057b25",
+  "reference_fix_commit": "252c52ec6161c2cd2a8947ef3fe78fbd261d391f",
+  "subject": "fix(thin): \u7626\u5ba2\u6237\u7aef\u63a7\u5236\u53f0\u8f93\u51fa gbk-safe(\u65b0\u673a\u5668 Windows \u88c5\u4e0a\u4e0d\u5d29)",
+  "test_files": [
+   "tests/test_nautilus_thin.py"
+  ],
+  "source_files": [
+   "nautilus_thin.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5"
+ },
+ "test_id": "tests/test_nautilus_thin.py::test_console_safe_ascii_passthrough_on_gbk",
+ "source_rel": "nautilus_thin.py",
+ "provider": "ark_glm",
+ "test_passed": true,
+ "winning_diff": "--- a/nautilus_thin.py\n+++ b/nautilus_thin.py\n@@ -31,6 +31,15 @@\n     return cf\n \n \n+def _console_safe(text: str, encoding: str = \"utf-8\") -> str:\n+    \"\"\"\u8fd4\u56de\u53ef\u5b89\u5168\u7528\u7ed9\u5b9a\u7f16\u7801\u5199\u5165\u63a7\u5236\u53f0\u7684\u5b57\u7b26\u4e32(\u4e0d\u53ef\u7f16\u7801\u5b57\u7b26\u66ff\u6362\u4e3a ?)\u3002\"\"\"\n+    try:\n+        text.encode(encoding)\n+    except UnicodeEncodeError:\n+        return text.encode(encoding, errors=\"replace\").decode(encoding)\n+    return text\n+\n+\n def _norm_agent_id(agent_id: str) -> str:\n     try:\n         from fde_capsule.fleet_recall_inject import _normalize_fleet_agent_id\n",
+ "budget_exceeded": false,
+ "total_tokens": 22061,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "completion_tokens": 547,
+    "prompt_tokens": 2879,
+    "total_tokens": 3426,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 234
+    }
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: nautilus_thin.py:34\nerror: nautilus_thin.py: patch does not apply\n\n[attempt2 backend] error: patch failed: nautilus_thin.py:34\nerror: nautilus_thin.py: patch does not apply\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "completion_tokens": 15653,
+    "prompt_tokens": 2982,
+    "total_tokens": 18635,
+    "prompt_tokens_details": {
+     "cached_tokens": 2048
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 15325
+    }
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "add_console_safe_helper",
+ "duration_s": 252.3,
+ "replayed": true,
+ "verdict_post_status": 200
+}

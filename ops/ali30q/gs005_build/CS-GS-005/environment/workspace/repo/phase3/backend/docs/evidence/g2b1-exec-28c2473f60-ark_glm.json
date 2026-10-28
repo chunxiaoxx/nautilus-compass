@@ -1,0 +1,28 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "200adf435e92f96b2befb0b5c8c8661f5f085567",
+  "reference_fix_commit": "28c2473f60ac12d7d27cf693142811ebc895b592",
+  "subject": "fix(fde): stabilize schema option hashing",
+  "test_files": [
+   "phase3/backend/tests/test_fde_phase3_feishu.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/fde_phase3_feishu.py"
+  ]
+ },
+ "test_id": "phase3/backend/tests/test_fde_phase3_feishu.py::test_schema_probe_hash_is_stable_for_mixed_color_types_without_option_ids",
+ "source_rel": "phase3/backend/services/fde_phase3_feishu.py",
+ "provider": "ark_glm",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

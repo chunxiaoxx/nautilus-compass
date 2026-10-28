@@ -1,0 +1,82 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "adb76ddf182e74e13aacd10b1b147da072a356f3",
+  "reference_fix_commit": "7eed69f1f35f89690d94b609e0882bb9667901ad",
+  "subject": "fix(genopt): re-baseline 5 Rejected tasks + re-ship",
+  "test_files": [
+   "tests/test_loofold_select.py"
+  ],
+  "source_files": [
+   "fde_capsule/genopt/tasks/ComputingAndQuantumInformation/ContainerOps/real_trajectory_publish_0001/verification/evaluate.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5"
+ },
+ "test_id": "tests/test_loofold_select.py::test_baseline_runs_and_produces_valid_zero",
+ "source_rel": "fde_capsule\\genopt\\tasks\\ComputingAndQuantumInformation\\ContainerOps\\real_trajectory_publish_0001\\verification\\evaluate.py",
+ "provider": "ark_glm",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 147645,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "completion_tokens": 73878,
+    "prompt_tokens": 2011,
+    "total_tokens": 75889,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 73470
+    }
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "F                                                                        [100%]\r\n================================== FAILURES ===================================\r\n_________________ test_baseline_runs_and_produces_valid_zero __________________\r\n\r\ntmp_path = WindowsPath('C:/Users/chunx/AppData/Local/Temp/pytest-of-chunx/pytest-3803/test_baseline_runs_and_produce0')\r\n\r\n    def test_baseline_runs_and_produces_valid_zero(tmp_path):\r\n        \"\"\"Baseline (naive 4-way chunking) must score valid=0 on the impossible cases.\"\"\"\r\n        task = tmp_path / \"t\"\r\n>       _setup_task(task)\r\n\r\ntests\\test_loofold_select.py:28: \r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\r\ntests\\test_loofold_select.py:20: in _setup_task\r\n    shutil.copy(f\"{SRC}/data/instances.json\", str(task / \"data\" / \"instances.json\"))\r\nC:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\\Lib\\shutil.py:428: in copy\r\n    copyfile(src, dst, follow_symlinks=follow_symlinks)\r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\r\n\r\nsrc = 'fde_capsule/genopt/tasks/ComputingAndQuantumInformation/ContainerOps/loofold_select_0001/data/instances.json'\r\ndst = 'C:\\\\Users\\\\chunx\\\\AppData\\\\Local\\\\Temp\\\\pytest-of-chunx\\\\pytest-3803\\\\test_baseline_runs_and_produce0\\\\t\\\\data\\\\instances.json'\r\n\r\n    def copyfile(src, dst, *, follow_symlinks=True):\r\n        \"\"\"Copy data from src to dst in the most efficient way possible.\r\n    \r\n        If follow_symlinks is not set and src is a symbolic link, a new\r\n        symlink will be created instead of copying the file it points to.\r\n    \r\n        \"\"\"\r\n        sys.audit(\"shutil.copyfile\", src, dst)\r\n    \r\n        if _samefile(src, dst):\r\n            raise SameFileError(\"{!r} and {!r} are the same file\".format(src, dst))\r\n    \r\n        file_size = 0\r\n        for i, fn in enumerate([src, dst]):\r\n            try:\r\n                st = _stat(fn)\r\n            except OSError:\r\n                # File most likely does not exist\r\n                pass\r\n            else:\r\n                # XXX What about other special files? (sockets, devices...)\r\n                if stat.S_ISFIFO(st.st_mode):\r\n                    fn = fn.path if isinstance(fn, os.DirEntry) else fn\r\n                    raise SpecialFileError(\"`%s` is a named pipe\" % fn)\r\n                if _WINDOWS and i == 0:\r\n                    file_size = st.st_size\r\n    \r\n        if not follow_symlinks and _islink(src):\r\n            os.symlink(os.readlink(src), dst)\r\n        else:\r\n>           with open(src, 'rb') as fsrc:\r\n                 ^^^^^^^^^^^^^^^\r\nE           FileNotFoundError: [Errno 2] No such file or directory: 'fde_capsule/genopt/tasks/ComputingAndQuantumInformation/ContainerOps/loofold_select_0001/data/instances.json'\r\n\r\nC:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\\Lib\\shutil.py:260: FileNotFoundError\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_loofold_select.py::test_baseline_runs_and_produces_valid_zero\r\n1 failed in 0.30s\r\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "completion_tokens": 49563,
+    "prompt_tokens": 2870,
+    "total_tokens": 52433,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 49070
+    }
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "F                                                                        [100%]\r\n================================== FAILURES ===================================\r\n_________________ test_baseline_runs_and_produces_valid_zero __________________\r\n\r\ntmp_path = WindowsPath('C:/Users/chunx/AppData/Local/Temp/pytest-of-chunx/pytest-3804/test_baseline_runs_and_produce0')\r\n\r\n    def test_baseline_runs_and_produces_valid_zero(tmp_path):\r\n        \"\"\"Baseline (naive 4-way chunking) must score valid=0 on the impossible cases.\"\"\"\r\n        task = tmp_path / \"t\"\r\n        _setup_task(task)\r\n        r = subprocess.run(\r\n            [sys.executable, str(task / \"verification\" / \"evaluate.py\"),\r\n             \"--candidate\", str(task / \"baseline\" / \"init.py\"),\r\n             \"--out\", str(task / \"metrics.json\")],\r\n            capture_output=True, text=True, timeout=30)\r\n>       assert r.returncode == 0, r.stderr\r\nE       AssertionError: Traceback (most recent call last):\r\nE           File \"C:\\Users\\chunx\\AppData\\Local\\Temp\\pytest-of-chunx\\pytest-3804\\test_baseline_runs_and_produce0\\t\\verification\\evaluate.py\", line 106, in <module>\r\nE             main()\r\nE             ~~~~^^\r\nE           File \"C:\\Users\\chunx\\AppData\\Local\\Temp\\pytest-of-chunx\\pytest-3804\\test_baseline_runs_and_produce0\\t\\verification\\evaluate.py\", line 94, in main\r\nE             result = evaluate(a.candidate, a.data)\r\nE           File \"C:\\Users\\chunx\\AppData\\Local\\Temp\\pytest-of-chunx\\pytest-3804\\test_baseline_runs_and_produce0\\t\\verification\\evaluate.py\", line 44, in evaluate\r\nE             insts = core.load_instances(data_path)\r\nE           File \"C:\\Users\\chunx\\AppData\\Local\\Temp\\pytest-of-chunx\\pytest-3804\\test_baseline_runs_and_produce0\\t\\verification\\_core.py\", line 7, in load_instances\r\nE             return json.load(f)[\"instances\"]\r\nE                    ~~~~~~~~~~~~^^^^^^^^^^^^^\r\nE         TypeError: list indices must be integers or slices, not str\r\nE         \r\nE       assert 1 == 0\r\nE        +  where 1 = CompletedProcess(args=['C:\\\\Users\\\\chunx\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13...(f)[\"instances\"]\\n           ~~~~~~~~~~~~^^^^^^^^^^^^^\\nTypeError: list indices must be integers or slices, not str\\n').returncode\r\n\r\ntests\\test_loofold_select.py:34: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_loofold_select.py::test_baseline_runs_and_produces_valid_zero\r\n1 failed in 0.43s\r\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "completion_tokens": 16668,
+    "prompt_tokens": 2655,
+    "total_tokens": 19323,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 16311
+    }
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "F                                                                        [100%]\r\n================================== FAILURES ===================================\r\n_________________ test_baseline_runs_and_produces_valid_zero __________________\r\n\r\ntmp_path = WindowsPath('C:/Users/chunx/AppData/Local/Temp/pytest-of-chunx/pytest-3805/test_baseline_runs_and_produce0')\r\n\r\n    def test_baseline_runs_and_produces_valid_zero(tmp_path):\r\n        \"\"\"Baseline (naive 4-way chunking) must score valid=0 on the impossible cases.\"\"\"\r\n        task = tmp_path / \"t\"\r\n        _setup_task(task)\r\n        r = subprocess.run(\r\n            [sys.executable, str(task / \"verification\" / \"evaluate.py\"),\r\n             \"--candidate\", str(task / \"baseline\" / \"init.py\"),\r\n             \"--out\", str(task / \"metrics.json\")],\r\n            capture_output=True, text=True, timeout=30)\r\n>       assert r.returncode == 0, r.stderr\r\nE       AssertionError: Traceback (most recent call last):\r\nE           File \"C:\\Users\\chunx\\AppData\\Local\\Temp\\pytest-of-chunx\\pytest-3805\\test_baseline_runs_and_produce0\\t\\verification\\evaluate.py\", line 106, in <module>\r\nE             main()\r\nE             ~~~~^^\r\nE           File \"C:\\Users\\chunx\\AppData\\Local\\Temp\\pytest-of-chunx\\pytest-3805\\test_baseline_runs_and_produce0\\t\\verification\\evaluate.py\", line 94, in main\r\nE             result = evaluate(a.candidate, a.data)\r\nE           File \"C:\\Users\\chunx\\AppData\\Local\\Temp\\pytest-of-chunx\\pytest-3805\\test_baseline_runs_and_produce0\\t\\verification\\evaluate.py\", line 44, in evaluate\r\nE             insts = core.load_instances(data_path)\r\nE           File \"C:\\Users\\chunx\\AppData\\Local\\Temp\\pytest-of-chunx\\pytest-3805\\test_baseline_runs_and_produce0\\t\\verification\\_core.py\", line 7, in load_instances\r\nE             return json.load(f)[\"instances\"]\r\nE                    ~~~~~~~~~~~~^^^^^^^^^^^^^\r\nE         TypeError: list indices must be integers or slices, not str\r\nE         \r\nE       assert 1 == 0\r\nE        +  where 1 = CompletedProcess(args=['C:\\\\Users\\\\chunx\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13...(f)[\"instances\"]\\n           ~~~~~~~~~~~~^^^^^^^^^^^^^\\nTypeError: list indices must be integers or slices, not str\\n').returncode\r\n\r\ntests\\test_loofold_select.py:34: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_loofold_select.py::test_baseline_runs_and_produces_valid_zero\r\n1 failed in 0.37s\r\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 2079.5
+}

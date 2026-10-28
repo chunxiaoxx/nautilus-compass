@@ -1,0 +1,35 @@
+{
+  "combined_score": 33.2627,
+  "valid": 1.0,
+  "instances": 3,
+  "failures": 0,
+  "per_instance": [
+    {
+      "instance": "ft06",
+      "elapsed_s": 0.29,
+      "feasible": true,
+      "reason": "ok",
+      "makespan": 152,
+      "optimum": 55,
+      "score": 36.18421052631579
+    },
+    {
+      "instance": "ft10",
+      "elapsed_s": 0.33,
+      "feasible": true,
+      "reason": "ok",
+      "makespan": 3394,
+      "optimum": 930,
+      "score": 27.40129640542133
+    },
+    {
+      "instance": "ft20",
+      "elapsed_s": 0.23,
+      "feasible": true,
+      "reason": "ok",
+      "makespan": 3218,
+      "optimum": 1165,
+      "score": 36.20261031696706
+    }
+  ]
+}

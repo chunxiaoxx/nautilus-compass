@@ -1,0 +1,30 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "2dbd26589b2dc05d6ad56dcbd494a26a14a15ca6",
+  "reference_fix_commit": "726708dff5241b3ad67d2e1a01b81962e909c72e",
+  "subject": "fix(fde): gate phase 3 exports by readback",
+  "test_files": [
+   "phase3/backend/tests/test_fde_phase3_feishu.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/fde_phase3_feishu.py"
+  ],
+  "repo_path": "C:/Users/chunx/Projects/nautilus-core"
+ },
+ "test_id": "tests/test_fde_phase3_feishu.py",
+ "source_rel": "services\\fde_phase3_feishu.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 14.0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

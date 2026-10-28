@@ -1,0 +1,157 @@
+# AlertManager 配置文件
+# Nautilus Phase 3 Backend Alert Management
+
+global:
+  # SMTP 邮件配置（生产环境）
+  smtp_smarthost: 'smtp.gmail.com:587'
+  smtp_from: 'alerts@nautilus.example.com'
+  smtp_auth_username: 'your-email@gmail.com'
+  smtp_auth_password: 'your-app-password'
+  smtp_require_tls: true
+
+  # Slack Webhook URL（生产环境）
+  slack_api_url: 'https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK'
+
+  # 钉钉 Webhook URL（生产环境）
+  # 注意：钉钉需要使用 webhook_configs
+
+  # 全局解析超时
+  resolve_timeout: 5m
+
+# 告警路由配置
+route:
+  # 默认接收者
+  receiver: 'default'
+  # 分组等待时间（收集同组告警）
+  group_wait: 10s
+  # 分组间隔时间（发送新告警前等待）
+  group_interval: 10s
+  # 重复告警间隔（避免告警疲劳）
+  repeat_interval: 4h
+  # 分组标签
+  group_by: ['alertname', 'cluster', 'service', 'severity']
+
+  # 子路由（按优先级和组件分发）
+  routes:
+    # P1 关键告警 - 立即发送到所有渠道
+    - match:
+        severity: critical
+        priority: P1
+      receiver: 'critical-alerts'
+      group_wait: 0s
+      repeat_interval: 5m
+      continue: false
+
+    # 安全告警 - 立即发送到安全团队
+    - match:
+        component: security
+      receiver: 'security-team'
+      group_wait: 0s
+      repeat_interval: 10m
+      continue: false
+
+    # 数据库告警 - 发送到数据库团队
+    - match:
+        component: database
+      receiver: 'database-team'
+      group_wait: 30s
+      repeat_interval: 30m
+
+    # 区块链告警 - 发送到区块链团队
+    - match:
+        component: blockchain
+      receiver: 'blockchain-team'
+      group_wait: 30s
+      repeat_interval: 30m
+
+    # API 告警 - 发送到后端团队
+    - match:
+        component: api
+      receiver: 'backend-team'
+      group_wait: 30s
+      repeat_interval: 30m
+
+    # 系统资源告警 - 发送到运维团队
+    - match:
+        component: system
+      receiver: 'ops-team'
+      group_wait: 1m
+      repeat_interval: 1h
+
+# 接收者配置
+receivers:
+  # 默认接收者（Webhook）
+  - name: 'default'
+    webhook_configs:
+      - url: 'http://backend:8000/api/alerts/webhook'
+        send_resolved: true
+
+  # 关键告警（邮件 + Webhook）
+  - name: 'critical-alerts'
+    email_configs:
+      - to: 'ops-team@nautilus.example.com'
+        headers:
+          Subject: '[CRITICAL] Nautilus Alert: {{ .GroupLabels.alertname }}'
+    webhook_configs:
+      - url: 'http://backend:8000/api/alerts/webhook'
+        send_resolved: true
+
+  # 数据库团队
+  - name: 'database-team'
+    email_configs:
+      - to: 'database-team@nautilus.example.com'
+        headers:
+          Subject: '[Database] Nautilus Alert: {{ .GroupLabels.alertname }}'
+
+  # 区块链团队
+  - name: 'blockchain-team'
+    email_configs:
+      - to: 'blockchain-team@nautilus.example.com'
+        headers:
+          Subject: '[Blockchain] Nautilus Alert: {{ .GroupLabels.alertname }}'
+
+  # 安全团队
+  - name: 'security-team'
+    email_configs:
+      - to: 'security-team@nautilus.example.com'
+        headers:
+          Subject: '[SECURITY] Nautilus Alert: {{ .GroupLabels.alertname }}'
+    webhook_configs:
+      - url: 'http://backend:8000/api/alerts/security-webhook'
+        send_resolved: true
+
+  # 后端团队
+  - name: 'backend-team'
+    email_configs:
+      - to: 'backend-team@nautilus.example.com'
+        headers:
+          Subject: '[Backend] Nautilus Alert: {{ .GroupLabels.alertname }}'
+    webhook_configs:
+      - url: 'http://backend:8000/api/alerts/webhook'
+        send_resolved: true
+
+  # 运维团队
+  - name: 'ops-team'
+    email_configs:
+      - to: 'ops-team@nautilus.example.com'
+        headers:
+          Subject: '[Ops] Nautilus Alert: {{ .GroupLabels.alertname }}'
+    webhook_configs:
+      - url: 'http://backend:8000/api/alerts/webhook'
+        send_resolved: true
+
+# 抑制规则
+inhibit_rules:
+  # 如果数据库连接失败，抑制数据库查询慢的告警
+  - source_match:
+      alertname: 'DatabaseConnectionFailed'
+    target_match:
+      alertname: 'SlowDatabaseQueries'
+    equal: ['cluster']
+
+  # 如果区块链断开连接，抑制交易失败告警
+  - source_match:
+      alertname: 'BlockchainDisconnected'
+    target_match:
+      alertname: 'HighBlockchainTransactionFailureRate'
+    equal: ['cluster']

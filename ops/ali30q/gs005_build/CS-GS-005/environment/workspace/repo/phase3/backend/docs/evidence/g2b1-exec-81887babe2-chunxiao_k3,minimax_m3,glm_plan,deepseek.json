@@ -1,0 +1,33 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "746cd2f2f91e5da384dc0cbeef6abda0d4a62313",
+  "reference_fix_commit": "81887babe2c5c2645222e45926a8c13882868f28",
+  "subject": "fix: bind M1 hashes to evaluated episodes",
+  "test_files": [
+   "tests/test_m1_config.py",
+   "tests/test_m1_truth.py",
+   "tests/test_synthetic_ego.py"
+  ],
+  "source_files": [
+   "src/nautilusflywheel/m1_config.py",
+   "src/nautilusflywheel/m1_truth.py",
+   "src/nautilusflywheel/synthetic_ego.py"
+  ],
+  "repo_path": "C:/Users/chunx/Projects/nautilusflywheel"
+ },
+ "test_id": "tests/test_synthetic_ego.py",
+ "source_rel": "src\\nautilusflywheel\\m1_config.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "skipped_reason": "fixture_broken_red",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 2.5,
+ "replayed": true,
+ "verdict_post_status": 200
+}

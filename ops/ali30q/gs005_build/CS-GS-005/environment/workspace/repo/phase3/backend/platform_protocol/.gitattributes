@@ -1,0 +1,10 @@
+conformance_vectors_v2.json text eol=lf
+conformance_vectors_v2.sha256 text eol=lf
+m1_r1a_execution_evidence_vectors_v1.json text eol=lf
+m1_r1a_execution_evidence_vectors_v1.sha256 text eol=lf
+g2_a0_model_gate.py text eol=lf
+g2_a0_model_gate_v2.py text eol=lf
+g2_a0_model_gate_v3.py text eol=lf
+g2_a0_model_gate_v4.py text eol=lf
+g2_a0_model_gate_v5.py text eol=lf
+g2_a0_model_gate_v6.py text eol=lf

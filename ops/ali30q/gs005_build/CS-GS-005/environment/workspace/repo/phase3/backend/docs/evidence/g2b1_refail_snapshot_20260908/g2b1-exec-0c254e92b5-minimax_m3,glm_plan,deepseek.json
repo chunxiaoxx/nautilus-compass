@@ -1,0 +1,71 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "590a88f36b104a99f21d45316531f7b76ce57a60",
+  "reference_fix_commit": "0c254e92b50c0fe8c42e0314fd027c35c9fbbfd2",
+  "subject": "fix(platform): align R1a ephemeral signer v3 bindings",
+  "test_files": [
+   "phase3/backend/tests/platform_protocol/test_m1_r1a_ephemeral_key_admission.py",
+   "phase3/backend/tests/platform_protocol/test_m1_r1a_ephemeral_key_service.py"
+  ],
+  "source_files": [
+   "phase3/backend/platform_protocol/m1_r1a_ephemeral_key_admission.py",
+   "phase3/backend/platform_protocol/m1_r1a_routing.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/platform_protocol/test_m1_r1a_ephemeral_key_admission.py::test_platform_challenge_and_live_announcement_produce_frozen_admission",
+ "source_rel": "platform_protocol\\m1_r1a_ephemeral_key_admission.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 3295,
+    "output_tokens": 277,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_oxv_p3ft\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 1 item\r\n\r\ntests/platform_protocol/test_m1_r1a_ephemeral_key_admission.py::test_platform_challenge_and_live_announcement_produce_frozen_admission FAILED [100%]\r\n\r\n================================== FAILURES ===================================\r\n___ test_platform_challenge_and_live_announcement_produce_frozen_admission ____\r\ntests\\platform_protocol\\test_m1_r1a_ephemeral_key_admission.py:89: in test_platform_challenge_and_live_announcement_produce_frozen_admission\r\n    assert EPHEMERAL_EXECUTOR_RELEASE == \"rel_r1a_ephemeral_v3\"\r\nE   AssertionError: assert 'rel_r1a_ephemeral_v2' == 'rel_r1a_ephemeral_v3'\r\nE     \r\nE     - rel_r1a_ephemeral_v3\r\nE     ?                    ^\r\nE     + rel_r1a_ephemeral_v2\r\nE     ?                    ^\r\n=========================== short test summary info ===========================\r\nFAILED tests/platform_protocol/test_m1_r1a_ephemeral_key_admission.py::test_platform_challenge_and_live_announcement_produce_frozen_admission\r\n============================== 1 failed in 0.36s ==============================\r\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 3750,
+    "output_tokens": 240,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_oxv_p3ft\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 1 item\r\n\r\ntests/platform_protocol/test_m1_r1a_ephemeral_key_admission.py::test_platform_challenge_and_live_announcement_produce_frozen_admission FAILED [100%]\r\n\r\n================================== FAILURES ===================================\r\n___ test_platform_challenge_and_live_announcement_produce_frozen_admission ____\r\ntests\\platform_protocol\\test_m1_r1a_ephemeral_key_admission.py:88: in test_platform_challenge_and_live_announcement_produce_frozen_admission\r\n    assert ANNOUNCEMENT_VERSION == \"m1-r1a-ephemeral-signer-announcement-v3\"\r\nE   AssertionError: assert 'm1-r1a-ephem...nouncement-v1' == 'm1-r1a-ephem...nouncement-v3'\r\nE     \r\nE     - m1-r1a-ephemeral-signer-announcement-v3\r\nE     ?                                       ^\r\nE     + m1-r1a-ephemeral-signer-announcement-v1\r\nE     ?                                       ^\r\n=========================== short test summary info ===========================\r\nFAILED tests/platform_protocol/test_m1_r1a_ephemeral_key_admission.py::test_platform_challenge_and_live_announcement_produce_frozen_admission\r\n============================== 1 failed in 0.42s ==============================\r\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 3640,
+    "output_tokens": 152,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 root] error: No valid patches in input (allow with \"--allow-empty\")\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 15.5,
+ "verdict_post_status": 200
+}

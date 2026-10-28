@@ -1,0 +1,57 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "5f77f1a52ff4c27731d7fac890e42f75bc471701",
+  "reference_fix_commit": "0c2c60c7a1150a4b89292e3efe4d0c1a577311fe",
+  "subject": "fix(liveness): \u4fee 2 RED \u63a2\u9488\u00b7\u672c\u673a 0 RED",
+  "test_files": [
+   "tests/test_liveness_audit.py"
+  ],
+  "source_files": [
+   "ops/liveness_audit.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass"
+ },
+ "test_id": "tests/test_liveness_audit.py::test_probe_snapshot_freshness_green_within_dev_tolerance",
+ "source_rel": "ops\\liveness_audit.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": true,
+ "winning_diff": "--- a/ops/liveness_audit.py\n+++ b/ops/liveness_audit.py\n@@ -38,7 +38,7 @@ def _is_green(condition: bool, detail: str) -> dict:\n DEFAULT_SNAPSHOT_PATH = Path(\n     os.environ.get(\n         \"COMPASS_POI_CACHE_DIR\",\n         str(Path.home() / \".claude\" / \"plugins\" / \"nautilus-compass\" / \".cache\"),\n     )\n ) / \"poi_credit_cache.json\"\n-DEFAULT_FRESHNESS_HOURS = 2.0\n+DEFAULT_FRESHNESS_HOURS = float(os.environ.get(\"COMPASS_FRESHNESS_HOURS\", \"168\"))\n DEFAULT_MIN_LINES = 1\n DEFAULT_PATCH_FILE = _REPO / \"ops\" / \"patch_v14_recall_poi_boost.py\"\n",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 2091,
+    "output_tokens": 578,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_5o9dfc1m/repo/_g2b1.patch:6\n\n[attempt2 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_5o9dfc1m/repo/_g2b1.patch:6\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "input_tokens": 2378,
+    "output_tokens": 239,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "fix_probe_freshness_default_tolerance",
+ "duration_s": 11.5,
+ "verdict_post_status": 200
+}

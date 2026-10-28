@@ -1,0 +1,28 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "183c823883c9b8c609e6b6a9296ab259efaa691b",
+  "reference_fix_commit": "6f9265b38766def018494b011b19d397fbfa519f",
+  "subject": "fix(fde): retire forms with supported metadata body",
+  "test_files": [
+   "phase3/backend/tests/test_fde_phase3_20260722_schema.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/fde_phase3_20260722_form_publishing.py"
+  ]
+ },
+ "test_id": "phase3/backend/tests/test_fde_phase3_20260722_schema.py",
+ "source_rel": "phase3/backend/services/fde_phase3_20260722_form_publishing.py",
+ "provider": "ark_glm",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

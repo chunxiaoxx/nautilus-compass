@@ -1,0 +1,116 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "4b24a6c8f6658ef89fd6db4dcaf8ee88eef75dfa",
+  "reference_fix_commit": "7d05a59b9d46a415d85937630d1d812cf477f60a",
+  "subject": "Fix get_parameter_source() during type conversion and eager callbacks",
+  "test_files": [
+   "tests/test_defaults.py",
+   "tests/test_options.py"
+  ],
+  "source_files": [
+   "src/click/core.py"
+  ],
+  "repo_path": "C:/Users/chunx/ext_mine"
+ },
+ "test_id": "tests/test_defaults.py::test_parameter_source_during_paramtype_convert",
+ "source_rel": "src\\click\\core.py",
+ "provider": "t6pool-chunxiao_k3",
+ "provider_used": "t6pool-chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/src/click/core.py\n+++ b/src/click/core.py\n@@ -2790,45 +2790,47 @@ class Parameter(ABC):\n                 )\n                 echo(style(message, fg=\"red\"), err=True)\n \n-            # Process the value through the parameter's type.\n-            try:\n-                value = self.process_value(ctx, value)\n-            except Exception:\n-                if not ctx.resilient_parsing:\n-                    raise\n-                # In resilient parsing mode, we do not want to fail the command if the\n-                # value is incompatible with the parameter type, so we reset the value\n-                # to UNSET, which will be interpreted as a missing value.\n-                value = UNSET\n-\n         # Arbitrate the slot when several parameters target the same variable\n         # name (feature-switch groups). See: https://github.com/pallets/click/issues/3403\n         slot_empty = existing_value is UNSET\n         more_explicit = existing_source is not None and source < existing_source\n         same_source = existing_source is not None and source == existing_source\n         auto_would_downgrade_explicit = (\n             same_source\n             and source == ParameterSource.DEFAULT\n             and existing_default_explicit\n             and not self._default_explicit\n         )\n         is_winner = (\n             slot_empty\n             or more_explicit\n             or (same_source and not auto_would_downgrade_explicit)\n         )\n \n-        if is_winner:\n+        # Record the source before processing the value so that it is\n+        # available via ``Context.get_parameter_source`` during\n+        # ``ParamType.convert``.\n+        # Refs: https://github.com/pallets/click/issues/3458\n+        if is_winner or existing_source is None:\n             ctx.set_parameter_source(self.name, source)\n-            if self.expose_value:\n-                ctx.params[self.name] = value\n-                ctx._param_default_explicit[self.name] = self._default_explicit\n-        elif existing_source is None:\n-            # Nothing has claimed the slot yet. Record at least our source so downstream\n-            # lookups don't return ``None``.\n-            ctx.set_parameter_source(self.name, source)\n+\n+        with augment_usage_errors(ctx, param=self):\n+            # Process the value through the parameter's type.\n+            try:\n+                value = self.process_value(ctx, value)\n+            except Exception:\n+                if not ctx.resilient_parsing:\n+                    raise\n+                # In resilient parsing mode, we do not want to fail the command if the\n+                # value is incompatible with the parameter type, so we reset the value\n+                # to UNSET, which will be interpreted as a missing value.\n+                value = UNSET\n+\n+        if is_winner and self.expose_value:\n+            ctx.params[self.name] = value\n+            ctx._param_default_explicit[self.name] = self._default_explicit\n \n         return value, args\n \n     def get_help_record(self, ctx: Context) -> tuple[str, str] | None:\n         return None\n",
+ "budget_exceeded": false,
+ "total_tokens": 65442,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 29893,
+    "completion_tokens": 728,
+    "total_tokens": 30621,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 29637,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 728,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 29893,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_8qei3zb8/repo/_g2b1.patch:3\n\n[attempt2 backend] error: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_8qei3zb8/repo/_g2b1.patch:3\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 30039,
+    "completion_tokens": 4782,
+    "total_tokens": 34821,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 343,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 29696,
+      "output_tokens": 4782,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 29696,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 30039,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "param_source_during_convert",
+ "duration_s": 123.7
+}

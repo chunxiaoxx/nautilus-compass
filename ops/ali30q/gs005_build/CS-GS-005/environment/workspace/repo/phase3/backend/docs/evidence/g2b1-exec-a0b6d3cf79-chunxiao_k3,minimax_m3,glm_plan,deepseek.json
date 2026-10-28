@@ -1,0 +1,73 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "7f86fded77d1d6e310b80ba9b83337ce0613f6ea",
+  "reference_fix_commit": "a0b6d3cf799a4a0a21f6f253629e539eed3bde67",
+  "subject": "fix(platform): preserve V2 replay on opaque budget rejection",
+  "test_files": [
+   "phase3/backend/tests/platform_protocol/test_g2_a0_model_gate_v2_cli.py"
+  ],
+  "source_files": [
+   "phase3/backend/tests/platform_protocol/g2_a0_model_gate_v2_cli.py"
+  ],
+  "repo_path": "C:/Users/chunx/Projects/nautilus-core"
+ },
+ "test_id": "tests/platform_protocol/test_g2_a0_model_gate_v2_cli.py::test_transport_budget_error_is_replay_safe_inconclusive",
+ "source_rel": "tests\\platform_protocol\\g2_a0_model_gate_v2_cli.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/tests/platform_protocol/g2_a0_model_gate_v2_cli.py\n+++ b/tests/platform_protocol/g2_a0_model_gate_v2_cli.py\n@@ -218,9 +218,14 @@\n         try:\n             completion_result = self._completion(canonical_request, api_key)\n         except DeepSeekClientViolation as error:\n-            status = \"rejected\"\n-            reason_codes = (error.code,)\n-            trace_key = \"rejected_after_call\"\n+            if error.code == \"budget_exceeded\":\n+                status = \"inconclusive\"\n+                reason_codes = (\"provider_call_ambiguous\",)\n+                trace_key = \"inconclusive\"\n+            else:\n+                status = \"rejected\"\n+                reason_codes = (error.code,)\n+                trace_key = \"rejected_after_call\"\n         except Exception:  # noqa: BLE001\n             status = \"inconclusive\"\n             reason_codes = (\"provider_call_ambiguous\",)\n",
+ "budget_exceeded": false,
+ "total_tokens": 10059,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 5324,
+    "completion_tokens": 4735,
+    "total_tokens": 10059,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 5324,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 4735,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 0,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 5324,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "transport_budget_error_inconclusive",
+ "duration_s": 89.4,
+ "verdict_post_status": 200
+}

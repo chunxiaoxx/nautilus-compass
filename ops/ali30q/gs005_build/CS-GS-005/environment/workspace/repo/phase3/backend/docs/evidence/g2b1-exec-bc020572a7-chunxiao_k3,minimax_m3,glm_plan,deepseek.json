@@ -1,0 +1,116 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "cfcaa24df94fc4ee233d37a62f36c70513d434a3",
+  "reference_fix_commit": "bc020572a7c36c7db3659371b27f46b7c322a9af",
+  "subject": "fix(security): \u81ea\u52a9 token \u7f3a\u7701 project \u53cc\u6d1e\u4fee\u590d\u2014\u2014\u8bfb\u5199\u5168\u65ad+\u8de8\u79df\u6237\u8bfb,\u5df2\u4e0a\u7ebf\u9a8c\u8bc1",
+  "test_files": [
+   "tests/test_auth_mvp.py"
+  ],
+  "source_files": [
+   "mcp_http_server.py"
+  ],
+  "repo_path": "C:/Users/chunx/Projects/nautilus-compass"
+ },
+ "test_id": "tests/test_auth_mvp.py::test_unqualified_project_resolves_to_owner",
+ "source_rel": "mcp_http_server.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/mcp_http_server.py\n+++ b/mcp_http_server.py\n@@ -52,7 +52,15 @@\n     if not meta:\n         raise ValueError(f\"unknown tool: {name}\")\n     # 2026-08-28 \u00b7 scoped-token \u5f3a\u5236\u6267\u884c\uff08fail-closed\uff09\n-    deny = _check_scope(_current_scopes.get(), name, arguments)\n+    scopes = _current_scopes.get()\n+    args = dict(arguments or {})\n+    if not args.get(\"project\"):\n+        # 9/5 incident: unqualified calls resolve to the token holder's own\n+        # project (uid carried in read:{uid}/write:{uid}), never project ''.\n+        owner = _default_project(scopes)\n+        if owner:\n+            args[\"project\"] = owner\n+    deny = _check_scope(scopes, name, args)\n     if deny:\n         return [types.TextContent(\n             type=\"text\",\n@@ -61,7 +69,7 @@\n         )]\n     # compass fns are SYNC and do blocking socket I/O to the BGE daemon \u2014\n     # never run them directly on the event loop.\n-    result = await anyio.to_thread.run_sync(meta[\"fn\"], arguments or {})\n+    result = await anyio.to_thread.run_sync(meta[\"fn\"], args)\n     return [types.TextContent(\n         type=\"text\",\n         text=json.dumps(result, ensure_ascii=False, indent=2),\n@@ -145,6 +153,19 @@\n         _tokens_mtime = m\n \n \n+def _default_project(scopes: frozenset) -> str:\n+    \"\"\"Self-service tokens are issued read:{uid}/write:{uid}; an unqualified\n+    recall/ingest (no project argument) resolves to that owner project.\n+    Returns '' for admin/legacy wildcard scopes (no single owner project).\"\"\"\n+    for s in scopes:\n+        if s.startswith(\"read:\") and s != \"read:*\":\n+            return s[len(\"read:\"):]\n+    for s in scopes:\n+        if s.startswith(\"write:\") and s != \"write:*\":\n+            return s[len(\"write:\"):]\n+    return \"\"\n+\n+\n def _check_scope(scopes: frozenset, tool_name: str, arguments: dict) -> str | None:\n     \"\"\"\u8fd4\u56de None=\u653e\u884c\uff1b\u5426\u5219\u62d2\u7edd\u539f\u56e0\u3002\u672a\u5217\u9879\u76ee\u4e00\u5f8b fail-closed\u3002\"\"\"\n     want_read = tool_name in READ_TOOLS\n",
+ "budget_exceeded": false,
+ "total_tokens": 12811,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 4580,
+    "completion_tokens": 623,
+    "total_tokens": 5203,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 4324,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 623,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 4580,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "F                                                                        [100%]\r\n================================== FAILURES ===================================\r\n_________________ test_unqualified_project_resolves_to_owner __________________\r\n\r\nclient = <starlette.testclient.TestClient object at 0x00000265D5D3E510>\r\n\r\n    def test_unqualified_project_resolves_to_owner(client):\r\n        \"\"\"No project argument \u2192 resolves to the token holder's own space.\r\n    \r\n        9/5 production incident: self-service tokens are issued read:{uid},\r\n        write:{uid}, but every unqualified recall/ingest checked read:\"\" /\r\n        write:\"\" and was scope-denied \u2014 new users could not read OR write at\r\n        all while auth itself looked healthy (forbidden hidden inside 200s).\"\"\"\r\n        uid, hdr = _mk_user(client, \"np@x.io\")\r\n        tok = client.post(\"/tokens\", json={\"name\": \"np\"},\r\n                          headers=hdr).json()[\"token\"]\r\n    \r\n        r = _rpc(client, tok, \"recall\", {\"query\": \"q\"})\r\n        assert r.status_code == 200 and \"forbidden\" not in r.text, r.text\r\n        # executes in OWN space: the response references the holder's uid\r\n        # (test env: empty-dir error carries the uid; prod: \"project={uid}\")\r\n>       assert uid in r.text, r.text[-400:]\r\nE       AssertionError: ntent\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"content\\\": [\\n    {\\n      \\\"type\\\": \\\"text\\\",\\n      \\\"text\\\": \\\"Recall \u00b7 query='q' \u00b7 scope=project, project=e0049791d8f44cc29263354c3596b025 \u00b7 1 hits\\\\nrecall_token: rt_4b1911b69bc836d5  (cite \u22651 snippet in next ingest_obs \u00b7 30 min TTL \u00b7 proof-of-recall)\\\\n  \u00b7 score=0.380 \u00b7 0.3h \u00b7 session_20260907-1433_probe-np.md\\\\n    \\\"\\n    }\\n  ]\\n}\"}],\"isError\":false}}\r\nE       assert '61c555454f4a4c0e88a359fed4a2bf7d' in '{\"jsonrpc\":\"2.0\",\"id\":1,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"{\\\\n  \\\\\"content\\\\\": [\\\\n    {\\\\n      \\\\\"type\\\\\"...all)\\\\\\\\n  \u00b7 score=0.380 \u00b7 0.3h \u00b7 session_20260907-1433_probe-np.md\\\\\\\\n    \\\\\"\\\\n    }\\\\n  ]\\\\n}\"}],\"isError\":false}}'\r\nE        +  where '{\"jsonrpc\":\"2.0\",\"id\":1,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"{\\\\n  \\\\\"content\\\\\": [\\\\n    {\\\\n      \\\\\"type\\\\\"...all)\\\\\\\\n  \u00b7 score=0.380 \u00b7 0.3h \u00b7 session_20260907-1433_probe-np.md\\\\\\\\n    \\\\\"\\\\n    }\\\\n  ]\\\\n}\"}],\"isError\":false}}' = <Response [200 OK]>.text\r\n\r\ntests\\test_auth_mvp.py:195: AssertionError\r\n============================== warnings summary ===============================\r\ntests/test_auth_mvp.py::test_unqualified_project_resolves_to_owner\r\n  C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_avi6_xvz\\repo\\tests\\conftest.py:27: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\r\n    from starlette.testclient import TestClient\r\n\r\ntests/test_auth_mvp.py::test_unqualified_project_resolves_to_owner\r\n  C:\\Users\\chunx\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\jwt\\api_jwt.py:147: InsecureKeyLengthWarning: The HMAC key is 25 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.\r\n    return self._jws.encode(\r\n\r\ntests/test_auth_mvp.py::test_unqualified_project_resolves_to_owner\r\n  C:\\Users\\chunx\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\jwt\\api_jwt.py:368: InsecureKeyLengthWarning: The HMAC key is 25 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.\r\n    decoded = self.decode_complete(\r\n\r\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_auth_mvp.py::test_unqualified_project_resolves_to_owner - A...\r\n1 failed, 3 warnings in 6.98s\r\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 5743,
+    "completion_tokens": 1865,
+    "total_tokens": 7608,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 1391,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 4352,
+      "output_tokens": 1865,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 4352,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 5743,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "unqualified_project_owner_resolution",
+ "duration_s": 126.3,
+ "verdict_post_status": 200
+}

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FDE 原生 AI 组织生产 · 工作计划与使用落地手册</title>
+<style>
+  :root{--ink:#1a2230;--muted:#5b6678;--line:#e3e8f0;--bg:#f6f8fb;--card:#fff;
+        --blue:#2563eb;--green:#15a36a;--amber:#d98e00;--red:#d4453a;--accent:#0f3d8c}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+       color:var(--ink);background:var(--bg);line-height:1.65;font-size:15px}
+  .wrap{max-width:940px;margin:0 auto;padding:0 20px 80px}
+  header{background:linear-gradient(135deg,#0f3d8c,#2563eb);color:#fff;padding:38px 20px 30px;margin-bottom:24px}
+  header .wrap{padding-bottom:0}
+  h1{margin:0 0 6px;font-size:26px;letter-spacing:.5px}
+  header p{margin:4px 0;opacity:.92;font-size:14px}
+  nav{position:sticky;top:0;background:rgba(246,248,251,.95);backdrop-filter:blur(6px);
+      border-bottom:1px solid var(--line);z-index:10;padding:10px 0}
+  nav .wrap{padding-bottom:0;display:flex;flex-wrap:wrap;gap:6px}
+  nav a{font-size:13px;color:var(--accent);text-decoration:none;padding:5px 11px;border:1px solid var(--line);
+        border-radius:20px;background:#fff;white-space:nowrap}
+  nav a:hover{background:var(--accent);color:#fff}
+  section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px 24px;margin:18px 0;
+          box-shadow:0 1px 3px rgba(20,40,80,.04)}
+  h2{font-size:20px;margin:0 0 14px;padding-bottom:10px;border-bottom:2px solid var(--accent);color:var(--accent)}
+  h3{font-size:16px;margin:20px 0 8px;color:var(--ink)}
+  p,li{color:var(--ink)}
+  .muted{color:var(--muted)}
+  .lead{font-size:16px;background:#eef3fb;border-left:4px solid var(--blue);padding:12px 16px;border-radius:0 8px 8px 0;margin:12px 0}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13.5px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#eef2f8;font-weight:600}
+  .tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:10px;font-weight:600}
+  .done{background:#e3f6ec;color:var(--green)} .wip{background:#fdf3df;color:var(--amber)} .todo{background:#fbe6e4;color:var(--red)}
+  .flow{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;white-space:pre;overflow-x:auto;
+        background:#0f1b2d;color:#cfe0ff;padding:16px;border-radius:8px;line-height:1.5}
+  .red{color:var(--red);font-weight:600}
+  ol{padding-left:22px} ul{padding-left:20px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:680px){.grid{grid-template-columns:1fr}}
+  .role{border:1px solid var(--line);border-radius:10px;padding:14px 16px;background:#fbfcfe}
+  .role h3{margin-top:0}
+  .onepager{border:2px dashed var(--accent);background:#fff}
+  .btn{display:inline-block;background:var(--accent);color:#fff;border:none;padding:9px 18px;border-radius:8px;
+       font-size:14px;cursor:pointer;text-decoration:none}
+  .small{font-size:12.5px}
+  .legend span{margin-right:14px;font-size:12.5px}
+  @media print{
+    nav,.noprint{display:none!important}
+    body{background:#fff;font-size:12px} header{background:#0f3d8c!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    section{break-inside:avoid;box-shadow:none;border:1px solid #ccc}
+    .page-break{break-before:page}
+    .tag,.done,.wip,.todo,th{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>FDE 原生 AI 组织生产 · 工作计划与使用落地手册</h1>
+    <p>给保密大厂交付三类高难度数据集样例 · agent 做量+结构+QC+复现,人(专家)做不可替代的真场景作者+终验</p>
+    <p class="small">讨论材料 · 2026-06-11 · 单一真相源(诚实分档,不夸大)</p>
+  </div>
+</header>
+
+<nav><div class="wrap">
+  <a href="#now">现状盘点</a>
+  <a href="#arch">架构</a>
+  <a href="#entry">入口与角色</a>
+  <a href="#use">内部使用</a>
+  <a href="#expert">专家使用</a>
+  <a href="#buyer">买方</a>
+  <a href="#promo">推广招募</a>
+  <a href="#road">路线图</a>
+  <a href="#train">培训咨询</a>
+  <a href="#pm">项目管理</a>
+  <a href="#onepager">专家一页纸</a>
+  <a href="#" onclick="window.print();return false">🖨 打印/导出PDF</a>
+</div></nav>
+
+<div class="wrap">
+
+<section id="now">
+  <h2>一、现状盘点(诚实分档)</h2>
+  <p class="lead">骨架建成且第一条线实测闭环(S1 里程碑),但"组织"的肉还没长出来:真专家未进场、培训/PM 未产线、规模交付为 0、财务流未建。位置 = 从"反复设计落空"翻到"第一条线可重复闭环"。</p>
+  <p class="legend"><span class="tag done">✅ 有实际产出</span><span class="tag wip">🟡 工具就位未产线化</span><span class="tag todo">🔴 设计/未建</span></p>
+  <table>
+    <tr><th>领域</th><th>状态</th><th>说明 / 证据</th></tr>
+    <tr><td>FDE 引擎(派单→认领→产出→判分→结算)</td><td><span class="tag done">✅</span></td><td>生产 LIVE · 6/11 walking skeleton 端到端实测闭环</td></tr>
+    <tr><td>agent 生产线(线3 复现)</td><td><span class="tag done">✅</span></td><td>kairos/v7/prime 自驱 · 12 道 T3 在跑</td></tr>
+    <tr><td>human-author 生产线(线1/2 · S1)</td><td><span class="tag done">✅</span></td><td>飞书派活表→poller→具名认领→专家领活 · 6/11 完整闭环实测</td></tr>
+    <tr><td>入口/派单(飞书派活表 + poller)</td><td><span class="tag done">✅</span></td><td>每 5min 自驱 LIVE · 老路径废弃入宪章</td></tr>
+    <tr><td>审核 QC(checklist_scorer/RUBRIC/benchmark_verifier)</td><td><span class="tag done">✅</span></td><td>data_001 11/11 过 QC = 第一个真外部 PMF 证据</td></tr>
+    <tr><td>交付物(三类各有样例)</td><td><span class="tag done">✅</span></td><td>data_001~006 / 第3类复现真 pass@k / 教案首篇</td></tr>
+    <tr><td>RSI(轨2 棘轮 + 轨1 grounded 两臂)</td><td><span class="tag done">✅</span></td><td>账本 2 点(radix escapes=True / bvh False)</td></tr>
+    <tr><td>副驾驶 skills</td><td><span class="tag wip">🟡</span></td><td>6 个 skills 就位,未接进飞书给专家用</td></tr>
+    <tr><td>S2 亲笔提交→QC 反馈环</td><td><span class="tag wip">🟡</span></td><td>设计好,未建(下一片)</td></tr>
+    <tr><td>培训咨询</td><td><span class="tag todo">🔴</span></td><td>机制有(QC 反馈即教材)·0 产出</td></tr>
+    <tr><td>项目管理面板</td><td><span class="tag todo">🔴</span></td><td>给人 PM 的管理台未建(S5)</td></tr>
+    <tr><td>真外部专家 / HR / 工作台</td><td><span class="tag todo">🔴</span></td><td>即将进场 · 当前组织 = AI dialogs + 你</td></tr>
+    <tr><td>规模交付 + 财务流</td><td><span class="tag todo">🔴</span></td><td>买方规模接收 = 0 · 结算/成本记账未建</td></tr>
+  </table>
+</section>
+
+<section id="arch">
+  <h2>二、整体架构(四层引擎)</h2>
+  <div class="flow">┌─ RSI 进化拱顶:消费三流外部信号 → 改进 → 下次更好 ──────────┐
+│   🔴 fitness = QC verdict + 买方验收 + 真$ · 非内部自评        │
+├─ 三流:业务流 · 信息流(verdict-bus)· 财务流(缺口)         │
+├─ 原生 AI 能力七件(职能全 agent · 人 = 作者+终验+HR+PM 三席) │
+│   项目管理 · 生产组织 · 培训咨询 · 审核验收 · 全流程编排      │
+├─ 引擎+数据模型(已证转):双 producer = agent(线3)+人(线1/2)│
+│   surface 适配器:飞书表(#1·已用)· 未来网页/桌面          │
+└──────────────────────────────────────────────────────────────┘</div>
+  <p class="muted">人类席位仅 3 个:HR 招聘 · 项目管理 · 专家作者+终验。其余职能全 agent。</p>
+</section>
+
+<section id="entry">
+  <h2>三、入口与角色(一张图)</h2>
+  <div class="flow">                  ┌──────── 飞书多维表格(唯一面·零安装)────────┐
+运营/PM(内部·人)─▶│ FDE派活表:填任务 / 分派 / 看进度              │
+                  │                                               │
+领域专家(外部·人)▶│ 我的派活行:领活 / 看验收标准 → 亲笔 → 提交 → 看QC│
+                  │                                               │
+买方(外部·保密)─▶│ 交付物表:隔离·只看成品·🔴绝不见内部          │
+                  └──────────────┬────────────────────────────────┘
+                                 │ 平台 poller(每5min自驱·已LIVE)
+                  ┌──────────────┴── 平台引擎(后台·agent自驱)───┐
+                  │ 派单→认领→产出→QC→结算 · soul/compass/v5 agent│
+                  └────────────────────────────────────────────────┘</div>
+  <p><b>核心:</b>人只在飞书操作(零安装零学习);agent 后台自驱;平台 poller 是飞书↔引擎的桥。运营另可看 control-plane 控制面(引擎/verdict/RSI · 内部网页)。</p>
+</section>
+
+<div class="grid">
+<section id="use">
+  <h2>四、内部:运营/PM</h2>
+  <p><b>入口</b>:飞书派活表 + control-plane 控制面。</p>
+  <ol>
+    <li><b>派活</b>:飞书填一行(task/线/类目/L级/指派专家/<b>验收标准必填</b>/状态=待派单)。</li>
+    <li><b>自动</b>:poller 每 5min 读「待派单」→ 派单+具名认领(防 agent 抢)→ 转「已派单」。不用手动 dispatch。</li>
+    <li><b>盯进度</b>:派活表视图看每行阶段。</li>
+    <li><b>卡点+结算</b>:管理 agent 推提醒;运营决策优先级、确认应付。</li>
+  </ol>
+  <p class="small"><span class="tag done">✅ S1 LIVE</span> 进度看板/管理agent/结算 = S3/S5。</p>
+</section>
+
+<section id="expert">
+  <h2>五、外部:领域专家</h2>
+  <p><b>入口</b>:飞书(收邀即用·零安装)。</p>
+  <ol>
+    <li>进场 → 飞书派活表看自己的行。</li>
+    <li>看<b>验收标准</b>列(什么算合格/什么被拒)。</li>
+    <li>领活(改「已领取」)。</li>
+    <li><span class="red">亲笔</span>写题/教案(副驾驶只结构化校验,不代写)。</li>
+    <li>飞书提交 → 看逐项 QC 反馈 → 改 → 过。</li>
+    <li>过审结算。</li>
+  </ol>
+  <p class="small"><span class="tag done">✅ S1 领活</span> 提交→QC 反馈环 = S2。</p>
+</section>
+
+<section id="buyer">
+  <h2>六、外部:买方(保密)</h2>
+  <p><b>入口</b>:单独「交付物」飞书 base(物理隔离)。</p>
+  <p>买方只看<b>成品交付物表</b> + 验收。</p>
+  <p class="red">🔴 绝不可见:派活表 / QC 内部列 / 避坑语料 / "我方=伊洛" / 其他专家稿。</p>
+  <p class="small"><span class="tag todo">🔴 未建</span> S3 + 引擎设计 §E 权限分层。</p>
+</section>
+
+<section id="promo">
+  <h2>七、推广(诚实定位)</h2>
+  <p class="small muted">战略锚:客户获取 defer(买方已有)。推广重心 = 供给侧招募专家,非找客户。</p>
+  <p><b>A 专家招募(主)</b>:垂直社区/前同事/KOL → 飞书做一道<b>试做题</b>过 checklist_scorer = 客观筛(不靠简历)→ 发一页纸进场。</p>
+  <p><b>B 能力展示(谨慎)</b>:平台网页展示能力与方法论。<span class="red">🔴 FDE 业务保密</span>:不宣传具体甲方、不晒买方交付。</p>
+</section>
+</div>
+
+<section id="road">
+  <h2>八、路线图(每片 walking skeleton · binding-DONE 才开下一片)</h2>
+  <table>
+    <tr><th>片</th><th>内容</th><th>闭环判据</th><th>状态</th></tr>
+    <tr><td><b>S1</b></td><td>派活+验收标准</td><td>1 专家从飞书领到真买方任务+看到验收标准</td><td><span class="tag done">✅ DONE 6/11</span></td></tr>
+    <tr><td><b>S2</b></td><td>亲笔提交→QC 反馈环</td><td>1 份亲笔稿走完 提交→QC→反馈→改→过</td><td><span class="tag wip">下一片</span></td></tr>
+    <tr><td><b>S3</b></td><td>交付+财务最小记账</td><td>1 批交付物入买方表+应付/成本账</td><td><span class="tag todo">待</span></td></tr>
+    <tr><td><b>S4</b></td><td>三流喂 RSI</td><td>≥1 条人作者流 fail-reason 被消费度量 ΔReward</td><td><span class="tag todo">待</span></td></tr>
+    <tr><td><b>S5</b></td><td>PM+培训面板</td><td>一面看清全组织 · 培训库自动 ≥10 条</td><td><span class="tag todo">待</span></td></tr>
+  </table>
+  <p class="small"><b>S1-S3 全闭生产判据(可证伪)</b>:≥5 道买方交付物全程在系统内流完 + settlement 记账。不足 = 没落地,不开 S4。</p>
+</section>
+
+<div class="grid">
+<section id="train">
+  <h2>九、培训咨询落地</h2>
+  <p><b>核心:培训内容自动来自 QC 反馈——不单独编教材。</b>专家被打回的 reason = 避坑知识 = 教材。</p>
+  <ol>
+    <li><b>避坑库</b>:QC fail-reason → ingest compass 记忆 + 飞书避坑表。</li>
+    <li><b>副驾驶答疑(咨询)</b>:agent 基于 RUBRIC+避坑库 recall 答"怎么写/为何被拒"。</li>
+    <li><b>样板</b>:RUBRIC=方法论底本 · data_001 录屏=操作样板 · 首篇教案=范文。</li>
+  </ol>
+  <p class="small">载体=飞书。<span class="tag todo">🔴 未产线化</span>(S2/S4 的活)。</p>
+</section>
+
+<section id="pm">
+  <h2>十、项目管理落地</h2>
+  <p><b>定位:给专人 PM(人)的 agent 服务台</b>——人决策,agent 备数据/提醒/催办。</p>
+  <ol>
+    <li><b>进度看板</b>:飞书派活表视图(看板/甘特·谁领什么/卡在哪)。</li>
+    <li><b>管理 agent</b>:扫流程出提醒/卡点告警/周报(复用 control-plane+企业微信)。</li>
+    <li><b>结算视图</b>:每专家应付 + token 成本归集。</li>
+  </ol>
+  <p class="small">复用飞书多维表格+control-plane 不自建。<span class="tag todo">🔴 S5</span>(没数据的面板=装饰,放最后)。</p>
+</section>
+</div>
+
+<section id="onepager" class="onepager page-break">
+  <h2>专家招募 / Onboarding 一页纸 <span class="small noprint muted">(可单独打印发给候选专家)</span></h2>
+  <h3 style="color:var(--accent);font-size:18px">加入我们 · 用你的领域专长,和 AI 一起做高难度数据集</h3>
+  <div class="grid">
+    <div>
+      <h3>你是谁</h3>
+      <p>金融 / 法律 / 医疗 / 工程 / ML 研究等领域资深专家(从业 ≥3 年,做过影响真金白银或重大决策的事,有一份可脱敏代表作)。</p>
+      <h3>你做什么</h3>
+      <ul>
+        <li><b>出题</b>:写一道你领域"≥8 小时专家级、AI 做不了"的真场景难题 + 隐性验收点。</li>
+        <li><b>教案</b>:亲笔写一篇领域知识正文(1k–30k 字),沉淀你的专业知识。</li>
+      </ul>
+      <h3>为什么是你</h3>
+      <p>这些内容 <b>AI 写不了、网上搜不到</b>——只有你的真实专业经验能产出。AI 帮你加速(结构化、查漏、排版),但 <span class="red">核心内容必须你亲笔</span>(客户会跑 AI 检测,拼凑的整批拒收)。</p>
+    </div>
+    <div>
+      <h3>怎么开始(全程飞书 · 零安装)</h3>
+      <ol>
+        <li>收邀请 → 打开飞书「FDE派活表」。</li>
+        <li>看到指派任务 + <b>验收标准</b>(什么算合格)。</li>
+        <li>点「已领取」认领。</li>
+        <li>按标准亲笔完成 → 飞书提交。</li>
+        <li>看逐项反馈 → 修改 → 通过。</li>
+        <li>通过即结算。</li>
+      </ol>
+      <h3>副驾驶帮你什么</h3>
+      <p>自动生成检查清单、按客户格式排版、解析附件、查完整性和 AI 味。<b>帮你达标,不替你写。</b></p>
+      <h3>门槛 & 红线</h3>
+      <p><b>试做</b>:先做一道试做题,过客观评分即录用(看能力不看简历)。<br>
+      <span class="red">红线</span>:① 内容亲笔(过 AI 检测) ② 真实专业经验,不编造。</p>
+    </div>
+  </div>
+</section>
+
+<p class="muted small" style="text-align:center;margin-top:30px">
+  关联:FDE_BUSINESS_CHARTER.md · 主设计 2026-06-05 · 引擎设计 2026-06-11 · 工作计划 FDE_WORK_PLAN_AND_ROADMAP_20260611.md<br>
+  飞书派活表 base EOVhbQwA0a1HEOsgmxecgkBVnwh / table tbl69fankpoBhJfw
+</p>
+
+</div>
+</body>
+</html>

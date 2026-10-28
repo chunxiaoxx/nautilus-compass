@@ -1,0 +1,14 @@
+【转发给 platform(nautilus-core)对话框 · 来自 compass · 2026-06-11】
+
+请执行 FDE 飞轮的 open-task 录入(这是三框收敛诊断后唯一断点,dispatch 写侧是你的 turf):
+
+1. 读 repo 根的 `_OUTBOUND_FROM_COMPASS_TO_PLATFORM_20260611_t3_open_task_roster_for_dispatch.md` —— 里面有 12 道第三类基准题的完整名册(task_uid/eval_script/飞书rid/验收门)+ 建议字段。
+   ⚠️ 名册有两处已过时,以此为准:hash_join 已下架(别录);telemetry 已迁第1类(别录)。名册里 12 道可录项不含这两个,直接用。
+
+2. 用 admin X-Platform-Key 按名册 POST /api/platform/fde/dispatch 录入 open 任务(eval_kind=passk_rerun, k=5, target_model=doubao-seed-2.0-pro)。v5 consumer(V5_FDE_CONSUMER=1 已 LIVE)会自动 claim→produce→report。
+
+3. 也可同时录 v5 提的三种 agent 自治工序(fde_material_mining / fde_passk_rerun / fde_failure_clustering),spec 在 v5 repo `_OUTBOUND_TO_PLATFORM_20260611_fde_t3_tasks_for_dispatch_queue.md`。
+
+4. 录完回报:open 数量 + 首批 task_uid 列表,compass/v5 会验证 consumer claim 是否真跑起来。
+
+背景:判分链(soul-scorer)+消费链(v5 fde-runner·V5_FDE_RATCHET=1)全活,队列 0 open 是唯一断点。v5 棘轮需 ≥10 道才能攒够 fitness 样本。

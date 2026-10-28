@@ -1,0 +1,116 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "f71d3e91bde1ed624596f0adb2f623694197c771",
+  "reference_fix_commit": "dfb2cca7b8c064b41d0e174b52b5fcf1745fabff",
+  "subject": "fix(swe-fuel): empty-diff guard(soul 6/21\u00b7n_files=0 \u4e0d\u5f53\u6709\u6548 diff \u62a5)",
+  "test_files": [
+   "tests/test_swe_fuel_produce.py"
+  ],
+  "source_files": [
+   "fde_capsule/swe_fuel_produce.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_swe_fuel_produce.py::test_swe_fuel_route_raises_on_empty_diff",
+ "source_rel": "fde_capsule\\swe_fuel_produce.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "diff --git a/fde_capsule/swe_fuel_produce.py b/fde_capsule/swe_fuel_produce.py\n--- a/fde_capsule/swe_fuel_produce.py\n+++ b/fde_capsule/swe_fuel_produce.py\n@@ -186,8 +186,11 @@\n     def route(task: dict) -> Dict[str, Any]:\n         spec = parse_swe_fuel_spec(task) or {}\n         producer = make_swe_diff_producer(completer, make_embedded_fetch(spec))\n         result = producer(spec)\n-        return {\"code\": result.get(\"code\", \"swe-unified-diff\"),\n+        n_files = (result.get(\"metrics\") or {}).get(\"n_files\", 0)\n+        if n_files == 0:\n+            raise ValueError(\"swe fuel route produced empty diff\")\n+        return {\"code\": result.get(\"code\", \"swe-unified-diff\"),\n                 \"output\": result.get(\"patch\", \"\"),\n                 \"metrics\": result.get(\"metrics\", {})}\n     return route\n",
+ "budget_exceeded": false,
+ "total_tokens": 8957,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 2819,
+    "completion_tokens": 313,
+    "total_tokens": 3132,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 2563,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 313,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 2819,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: No valid patches in input (allow with \"--allow-empty\")\n\n[attempt2 backend] error: No valid patches in input (allow with \"--allow-empty\")\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 2898,
+    "completion_tokens": 2927,
+    "total_tokens": 5825,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 338,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 2560,
+      "output_tokens": 2927,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 2560,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 2898,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "raise_empty_swe_fuel_diff",
+ "duration_s": 79.7,
+ "verdict_post_status": 200
+}

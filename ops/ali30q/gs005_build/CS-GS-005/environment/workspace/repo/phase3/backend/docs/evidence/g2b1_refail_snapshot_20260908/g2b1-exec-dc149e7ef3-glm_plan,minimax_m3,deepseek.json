@@ -1,0 +1,71 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "130017ac06f0b9cd2803bc675356f20621b58b47",
+  "reference_fix_commit": "dc149e7ef3a90332481f18c018e04b788437433e",
+  "subject": "fix(dashboard): FDE \u4e1a\u52a1\u73af\u5361\u6392\u9664 my_test_*/test_* \u6b8b\u7559(\u7532\u65b9 demo \u4e0d\u9732\u6d4b\u8bd5\u6570\u636e)\u00b710 passed",
+  "test_files": [
+   "phase3/backend/tests/test_platform_rsi_fde_api.py"
+  ],
+  "source_files": [
+   "phase3/backend/api/platform_rsi_fde.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/test_platform_rsi_fde_api.py::test_fde_business_section_excludes_test_uids",
+ "source_rel": "api\\platform_rsi_fde.py",
+ "provider": "glm_plan,minimax_m3,deepseek",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 5809,
+    "output_tokens": 357,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_vmnyl0m8\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 1 item\r\n\r\ntests/test_platform_rsi_fde_api.py::test_fde_business_section_excludes_test_uids \r\n-------------------------------- live log call --------------------------------\r\n2026-08-29 03:20:15 [    INFO] HTTP Request: GET http://testserver/api/platform/rsi-fde \"HTTP/1.1 200 OK\"\r\nFAILED                                                                   [100%]\r\n\r\n================================== FAILURES ===================================\r\n________________ test_fde_business_section_excludes_test_uids _________________\r\ntests\\test_platform_rsi_fde_api.py:232: in test_fde_business_section_excludes_test_uids\r\n    assert fb[\"total\"] == 1 and fb[\"passed\"] == 1\r\nE   assert (3 == 1)\r\n------------------------------ Captured log call ------------------------------\r\nINFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/api/platform/rsi-fde \"HTTP/1.1 200 OK\"\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_platform_rsi_fde_api.py::test_fde_business_section_excludes_test_uids\r\n======================== 1 failed, 2 warnings in 0.84s ========================\r\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 6244,
+    "output_tokens": 363,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_vmnyl0m8\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 1 item\r\n\r\ntests/test_platform_rsi_fde_api.py::test_fde_business_section_excludes_test_uids \r\n-------------------------------- live log call --------------------------------\r\n2026-08-29 03:20:41 [    INFO] HTTP Request: GET http://testserver/api/platform/rsi-fde \"HTTP/1.1 200 OK\"\r\nFAILED                                                                   [100%]\r\n\r\n================================== FAILURES ===================================\r\n________________ test_fde_business_section_excludes_test_uids _________________\r\ntests\\test_platform_rsi_fde_api.py:232: in test_fde_business_section_excludes_test_uids\r\n    assert fb[\"total\"] == 1 and fb[\"passed\"] == 1\r\nE   assert (3 == 1)\r\n------------------------------ Captured log call ------------------------------\r\nINFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/api/platform/rsi-fde \"HTTP/1.1 200 OK\"\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_platform_rsi_fde_api.py::test_fde_business_section_excludes_test_uids\r\n======================== 1 failed, 2 warnings in 0.80s ========================\r\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 6244,
+    "output_tokens": 521,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 root] error: No valid patches in input (allow with \"--allow-empty\")\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 82.8,
+ "verdict_post_status": 200
+}

@@ -1,0 +1,29 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "9db0724c6741b64e8708194ad295bbf500aaf29c",
+  "reference_fix_commit": "6f1eb3fb6bf054a70fadce64b68b8a32c9c3f295",
+  "subject": "fix(swe-fuel): is_swe \u515c\u5e95 substring + coerce_patch \u8f93\u51fa\u5f52\u4e00\u5316(\u6cbb\u8de8\u9898\u590d\u5229\u7b2c2\u9898\u683c\u5f0f bug)",
+  "test_files": [
+   "tests/test_swe_fuel_produce.py"
+  ],
+  "source_files": [
+   "fde_capsule/swe_fuel_produce.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_swe_fuel_produce.py",
+ "source_rel": "fde_capsule\\swe_fuel_produce.py",
+ "provider": "glm_plan",
+ "test_passed": false,
+ "skipped_reason": "fixture_broken_red",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 1.7,
+ "replayed": true,
+ "verdict_post_status": 200
+}

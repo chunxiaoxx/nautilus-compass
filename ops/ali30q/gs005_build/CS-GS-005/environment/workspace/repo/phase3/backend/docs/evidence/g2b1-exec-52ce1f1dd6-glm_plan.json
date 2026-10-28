@@ -1,0 +1,36 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "6a618eb1ec2384a00a353e01c8130ad0d6b89a25",
+  "reference_fix_commit": "52ce1f1dd62448a3d9413912568679aeaf368ad2",
+  "subject": "fix(security+ci): \u5220\u6cc4\u9732\u7684 Qixuw API key(\u786c\u7f16\u7801)+ \u4fee 27 \u4e2a F401 \u8ba9 Lint \u8f6c\u7eff",
+  "test_files": [
+   "tests/hooks/test_inbound_select.py",
+   "tests/test_autolab_corpus_retrieve.py",
+   "tests/test_economy_liveness_probe.py",
+   "tests/test_liveness_audit.py"
+  ],
+  "source_files": [
+   "Computing/KernelEngineering/conv2d_tiling_v1_002/verification/_core.py",
+   "Computing/KernelEngineering/rmsnorm_v1_003/verification/_core.py",
+   "Computing/KernelEngineering/tiled_matmul_v1_001/run_gpt55_trajectory.py",
+   "Computing/KernelEngineering/tiled_matmul_v1_001/test_gpt55_config.py",
+   "Computing/KernelEngineering/tiled_matmul_v1_001/verification/_core.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass"
+ },
+ "test_id": "tests/hooks/test_inbound_select.py",
+ "source_rel": "Computing\\KernelEngineering\\conv2d_tiling_v1_002\\verification\\_core.py",
+ "provider": "glm_plan",
+ "test_passed": false,
+ "skipped_reason": "fixture_broken_red",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 2.2,
+ "replayed": true,
+ "verdict_post_status": 200
+}

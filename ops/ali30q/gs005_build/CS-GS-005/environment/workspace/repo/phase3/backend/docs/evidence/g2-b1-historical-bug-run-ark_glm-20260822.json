@@ -1,0 +1,33 @@
+{
+ "schema_version": "g2-b1-historical-bug-run-v1",
+ "context_mode": "with_traceback",
+ "task_source": "nautilus-core git history (real bug, no synthetic fixture)",
+ "buggy_commit": "5ea2fc32dc088db3e57b1edc0d96f7c5f8a3f172",
+ "reference_fix_commit": "c7646a57f97a7182225486e7c65841b9a95f915b",
+ "test_id": "tests/platform_protocol/test_g2_a0_model_gate_v5_fail_closed.py::test_v5_live_probe_uses_only_mock_transport_and_exact_three_requests",
+ "red_confirmed_before_call": true,
+ "model": "glm-5-2-260617",
+ "provider": "ark_glm",
+ "usage": {
+  "completion_tokens": 47684,
+  "prompt_tokens": 6873,
+  "total_tokens": 54557,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 47265
+  }
+ },
+ "patch_applied": false,
+ "apply_error": "error: corrupt patch at C:/Users/chunx/Projects/nautilus-core/.claude/worktrees/g2b1-buggy/phase3/backend/_g2b1.patch:8\n",
+ "test_passed_after_patch": false,
+ "summary_code": "fix_missing_return_in_parse_response",
+ "traceback_experiment": {
+  "context_mode": "with_traceback",
+  "diagnosis": "CORRECT \u2014 fix_missing_return_in_parse_response (exact root cause)",
+  "patch_applied_after_trailing_newline_fix": true,
+  "test_passed": true,
+  "conclusion": "single-shot GLM-5.2 fails blind but succeeds with failure traceback; the feedback-information component, not a full agentic loop, was the missing piece"
+ }
+}

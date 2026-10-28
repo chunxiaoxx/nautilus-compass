@@ -1,0 +1,40 @@
+FROM python:3.11-slim
+
+# Scientific computing packages for academic tasks
+RUN pip install --no-cache-dir \
+    numpy \
+    scipy \
+    matplotlib \
+    pandas \
+    sympy \
+    scikit-learn \
+    statsmodels \
+    seaborn \
+    networkx \
+    && pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
+
+# Open-source simulation tools (replacements for commercial software)
+# - lmfit: advanced curve fitting (replaces commercial optimizers)
+# - gmsh + meshio: mesh generation and I/O (replaces commercial meshing)
+# - pyvista: 3D scientific visualization
+# - pyDOE2: design of experiments
+# - uncertainties: error propagation
+RUN pip install --no-cache-dir \
+    lmfit \
+    gmsh \
+    meshio \
+    pyvista \
+    pyDOE2 \
+    uncertainties \
+    || true
+
+# Optional: heavier simulation packages (may not be available on all platforms)
+# - cantera: chemical kinetics and thermodynamics (replaces Aspen Plus)
+# - fenics-dolfinx: FEM/multiphysics solver (replaces COMSOL/ABAQUS)
+RUN pip install --no-cache-dir cantera 2>/dev/null || true
+RUN pip install --no-cache-dir fenics-dolfinx 2>/dev/null || true
+
+# Prevent matplotlib from trying to open display
+ENV MPLBACKEND=Agg
+
+WORKDIR /workspace

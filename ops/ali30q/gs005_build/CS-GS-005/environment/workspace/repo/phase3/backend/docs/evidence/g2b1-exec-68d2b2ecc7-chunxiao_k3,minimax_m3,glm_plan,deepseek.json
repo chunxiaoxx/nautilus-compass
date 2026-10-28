@@ -1,0 +1,30 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "d4461e74448d7df1ba89770f3442d975ab7a356c",
+  "reference_fix_commit": "68d2b2ecc715410a2841e682b93cb4dbf9c919d7",
+  "subject": "fix: bind Self-Proof replay run instances",
+  "test_files": [
+   "tests/test_selfproof_replay.py"
+  ],
+  "source_files": [
+   "src/nautilusflywheel/selfproof_evidence.py",
+   "src/nautilusflywheel/selfproof_replay.py"
+  ],
+  "repo_path": "C:/Users/chunx/Projects/nautilusflywheel"
+ },
+ "test_id": "tests/test_selfproof_replay.py",
+ "source_rel": "src\\nautilusflywheel\\selfproof_evidence.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "skipped_reason": "fixture_broken_red",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 2.7,
+ "replayed": true,
+ "verdict_post_status": 200
+}

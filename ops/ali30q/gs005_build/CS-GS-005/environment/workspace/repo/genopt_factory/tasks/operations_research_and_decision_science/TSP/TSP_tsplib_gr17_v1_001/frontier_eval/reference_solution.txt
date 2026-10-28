@@ -1,0 +1,9 @@
+single_start_nearest_neighbor_baseline:
+  description: "Naive NN from city 0 only, no 2-opt."
+  expected_combined_score_range: [80, 90]
+  role: "weak baseline — leaves GPT5.5 a real gap to demonstrate"
+reference_solver:
+  path: reference/solve.py
+  description: "NN + multi-restart 2-opt (5 starts, deterministic seed 20260702)."
+  expected_combined_score_range: [95, 100]
+  role: "informational quality bar; not used by candidate"

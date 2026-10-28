@@ -1,0 +1,117 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "53a654679649f3eef6b16d340381cae00d7ab32d",
+  "reference_fix_commit": "5fae13bf727ffc82190eba9bf2c01c7e874d36f9",
+  "subject": "fix(MVP-3/6): \u81ea\u52a9 token scope \u8865 write:<uid>(\u539f\u53ea\u6709 read \u2192 \u7528\u6237\u5199\u81ea\u5df1\u7a7a\u95f4\u88ab\u62d2,HANDOFF \u5224\u636e step3 'scope \u53ea\u9650\u672c\u4eba\u7a7a\u95f4'\u542b\u5199)\u00b7\u56db\u63a2\u9488 P3 \u52a0\u56fa\u4e3a\u8bfb+\u5199\u53cc\u65ad\u8a00(\u539f\u53ea\u67e5\u975e forbidden,\u4e1a\u52a1\u9519\u6f0f\u7f51)\u00b7TDD \u5148\u7ea2\u540e\u7eff 19/19\u00b7\u4e94\u6b65\u65c5\u7a0b\u672c\u5730 e2e 5/5(S1 signup/S2 \u5199\u81ea\u5df1\u7a7a\u95f4 obs written\u00b7S",
+  "test_files": [
+   "tests/test_auth_mvp.py"
+  ],
+  "source_files": [
+   "auth_api.py",
+   "probes.py"
+  ],
+  "repo_path": "C:/Users/chunx/Projects/nautilus-compass"
+ },
+ "test_id": "tests/test_auth_mvp.py::test_http_token_lifecycle",
+ "source_rel": "auth_api.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "diff --git a/auth_api.py b/auth_api.py\nindex 1111111..2222222 100644\n--- a/auth_api.py\n+++ b/auth_api.py\n@@ -84,11 +84,11 @@ def require_user(authorization: str) -> str:\n def issue_api_token(conn: Any, *, user_id: str, name: str = \"\") -> dict:\n     \"\"\"Create a self-service MCP token. Plaintext is returned once, only the\n-    sha256 is stored. Scope is bounded to the owner: read:<user_id>.\"\"\"\n+    sha256 is stored. Scope is bounded to the owner: read+write on own space.\"\"\"\n     raw = \"cmp_live_\" + secrets.token_hex(16)\n     token_hash = hashlib.sha256(raw.encode()).hexdigest()\n-    scopes = f\"read:{user_id}\"\n+    scopes = f\"read:{user_id},write:{user_id}\"\n     token_id = st.create_token(conn, user_id=user_id, token_hash=token_hash,\n                                prefix=raw[:12], name=name, scopes=scopes)\n     return {\"token_id\": token_id, \"token\": raw, \"scopes\": scopes}\n",
+ "budget_exceeded": false,
+ "total_tokens": 4693,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 1987,
+    "completion_tokens": 278,
+    "total_tokens": 2265,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 1731,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 278,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 1987,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: No valid patches in input (allow with \"--allow-empty\")\n\n[attempt2 backend] error: No valid patches in input (allow with \"--allow-empty\")\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 2083,
+    "completion_tokens": 345,
+    "total_tokens": 2428,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 291,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1792,
+      "output_tokens": 345,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 1792,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 2083,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "token_scopes_add_write",
+ "duration_s": 58.1,
+ "verdict_post_status": 200
+}

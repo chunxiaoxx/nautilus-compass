@@ -1,0 +1,72 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "ae46cfd6bc997804893adc799589248eadcdbc29",
+  "reference_fix_commit": "546f2851f414b07413777ebcae89b2c21a685252",
+  "subject": "Fix callable ``flag_value`` being instantiated when used as a default",
+  "test_files": [
+   "tests/test_defaults.py",
+   "tests/test_options.py"
+  ],
+  "source_files": [
+   "src/click/core.py"
+  ],
+  "repo_path": "C:/Users/chunx/ext_mine"
+ },
+ "test_id": "tests/test_defaults.py::test_default_map_with_callable_flag_value",
+ "source_rel": "src\\click\\core.py",
+ "provider": "t6A-minimax_m3",
+ "provider_used": "t6A-minimax_m3",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 31459,
+    "output_tokens": 371,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1818,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: src/click/core.py:2850\nerror: src/click/core.py: patch does not apply\n\n[attempt2 backend] error: patch failed: src/click/core.py:2850\nerror: src/click/core.py: patch does not apply\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 181,
+    "output_tokens": 378,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 33216,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: src/click/core.py:2850\nerror: src/click/core.py: patch does not apply\n\n[attempt2 backend] error: patch failed: src/click/core.py:2850\nerror: src/click/core.py: patch does not apply\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 31616,
+    "output_tokens": 483,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1792,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "F.....                                                                   [100%]\r\n================================== FAILURES ===================================\r\n________ test_default_map_with_callable_flag_value[None-args0-_Marker] ________\r\n\r\nrunner = <click.testing.CliRunner object at 0x00000286734A1550>\r\ndefault_map = None, args = [], expected = <class 'test_defaults._Marker'>\r\n\r\n    @pytest.mark.parametrize(\r\n        (\"default_map\", \"args\", \"expected\"),\r\n        [\r\n            # No default_map: auto-aligned default returns the class, not an instance.\r\n            (None, [], _Marker),\r\n            # CLI flag always returns the class.\r\n            (None, [\"--opt\"], _Marker),\r\n            # Static value in default_map overrides the auto-aligned flag_value.\r\n            ({\"value\": \"from-map\"}, [], \"from-map\"),\r\n            # Callable in default_map is still invoked (not suppressed by the fix).\r\n            ({\"value\": lambda: \"lazy-map\"}, [], \"lazy-map\"),\r\n            # None in default_map overrides the flag_value.\r\n            ({\"value\": None}, [], None),\r\n            # CLI arg wins over default_map.\r\n            ({\"value\": \"from-map\"}, [\"--opt\"], _Marker),\r\n        ],\r\n    )\r\n    def test_default_map_with_callable_flag_value(runner, default_map, args, expected):\r\n        \"\"\"``default_map`` entries should override the auto-aligned callable ``flag_value``,\r\n        and callable entries in ``default_map`` should still be invoked.\r\n    \r\n        Verifies the fix for https://github.com/pallets/click/issues/3121 does not\r\n        break ``default_map`` precedence.\r\n        \"\"\"\r\n    \r\n        @click.command()\r\n        @click.option(\"--opt\", \"value\", flag_value=_Marker, type=UNPROCESSED, default=True)\r\n        def cli(value):\r\n            click.echo(repr(value), nl=False)\r\n    \r\n        kwargs = {}\r\n        if default_map is not None:\r\n            kwargs[\"default_map\"] = default_map\r\n        result = runner.invoke(cli, args, **kwargs)\r\n        assert result.exit_code == 0\r\n>       assert result.output == repr(expected)\r\nE       assert '<test_defaul...0286734A1BE0>' == \"<class 'test...lts._Marker'>\"\r\nE         \r\nE         - <class 'test_defaults._Marker'>\r\nE         + <test_defaults._Marker object at 0x00000286734A1BE0>\r\n\r\ntests\\test_defaults.py:356: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_defaults.py::test_default_map_with_callable_flag_value[None-args0-_Marker]\r\n1 failed, 5 passed in 0.34s\r\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 28.3
+}

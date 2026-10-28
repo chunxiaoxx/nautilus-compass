@@ -1,0 +1,73 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "6f9f66bcc2c9782c772b0c81cdb20e1379023564",
+  "reference_fix_commit": "94b002a338060c96ed614f85716c75894f3bc6e4",
+  "subject": "fix(mcp): bridge _eid strip preserves CJK bytes (ensure_ascii=False, Task 4 review)",
+  "test_files": [
+   "tests/mcp_durable/test_bridge_resume.py"
+  ],
+  "source_files": [
+   "ops/mcp_stdio_to_cloud.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass"
+ },
+ "test_id": "tests/mcp_durable/test_bridge_resume.py::test_strip_eid_preserves_cjk_bytes",
+ "source_rel": "ops\\mcp_stdio_to_cloud.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/ops/mcp_stdio_to_cloud.py\n+++ b/ops/mcp_stdio_to_cloud.py\n@@ -118,7 +118,11 @@\n     try:\n         link.note_high_eid(int(eid))\n     except (TypeError, ValueError):\n         pass\n-    return json.dumps(msg).encode(\"utf-8\")\n+    # ensure_ascii=False \u00b7 the real workload is Chinese memory recall; the\n+    # default True would expand every CJK char into a \\uXXXX escape (~6x the\n+    # bytes). Claude Code's MCP stream is UTF-8, so forward literal bytes.\n+    return json.dumps(msg, ensure_ascii=False).encode(\"utf-8\")\n \n \n def _recv_one_line(sock, timeout: float = 10.0) -> bytes:\n",
+ "budget_exceeded": false,
+ "total_tokens": 8696,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 8433,
+    "completion_tokens": 263,
+    "total_tokens": 8696,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 8433,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 263,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 0,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 8433,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "strip_eid_ensure_ascii_false",
+ "duration_s": 11.4,
+ "verdict_post_status": 200
+}

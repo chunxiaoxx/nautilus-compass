@@ -1,0 +1,43 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "f71d3e91bde1ed624596f0adb2f623694197c771",
+  "reference_fix_commit": "dfb2cca7b8c064b41d0e174b52b5fcf1745fabff",
+  "subject": "fix(swe-fuel): empty-diff guard(soul 6/21\u00b7n_files=0 \u4e0d\u5f53\u6709\u6548 diff \u62a5)",
+  "test_files": [
+   "tests/test_swe_fuel_produce.py"
+  ],
+  "source_files": [
+   "fde_capsule/swe_fuel_produce.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_swe_fuel_produce.py::test_swe_fuel_route_raises_on_empty_diff",
+ "source_rel": "fde_capsule\\swe_fuel_produce.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": true,
+ "winning_diff": "diff --git a/fde_capsule/swe_fuel_produce.py b/fde_capsule/swe_fuel_produce.py\n--- a/fde_capsule/swe_fuel_produce.py\n+++ b/fde_capsule/swe_fuel_produce.py\n@@ -154,12 +154,20 @@ def make_swe_fuel_route(completer: Callable[[str], str]):\n     completer = daemon \u5df2 resolve \u7684 LLM(\u51fa\u4fee\u6b63\u540e\u6587\u4ef6\u5168\u6587)\u3002\u96f6\u7f51\u7edc(\u539f\u6587\u8d70 spec \u5185\u5d4c)\u3002\n     \"\"\"\n     def route(task: dict) -> Dict[str, Any]:\n         spec = parse_swe_fuel_spec(task) or {}\n         producer = make_swe_diff_producer(completer, make_embedded_fetch(spec))\n         result = producer(spec)\n+        # soul 6/21\u00b7\u6cbb\u961f\u5217\u6c61\u67d3:\u7a7a diff(n_files=0)\u2192 \u4e0d\u5f53\u6709\u6548 swe-unified-diff \u62a5\n+        # \u2192 produce \u5931\u8d25\u2192\u4e0d report\u2192reaper \u56de\u6536\u91cd\u8bd5\u00b7\u975e\u5047 settle(2026-06-21)\n+        if not (result.get(\"patch\") or \"\").strip():\n+            raise ValueError(\n+                \"swe_fuel_route produced empty diff (n_files=0): \"\n+                \"fetch_original \u5168\u90e8 miss \u6216 LLM \u56de\u7a7a\u00b7\u4e0d\u5047 settle\u2192raise \u8ba9 daemon \u62d2\u6536\"\n+            )\n         return {\"code\": result.get(\"code\", \"swe-unified-diff\"),\n                 \"output\": result.get(\"patch\", \"\"),\n                 \"metrics\": result.get(\"metrics\", {})}\n     return route\n",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "input_tokens": 2663,
+    "output_tokens": 416,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "raise_on_empty_diff_in_swe_fuel_route",
+ "duration_s": 5.8,
+ "verdict_post_status": 200
+}

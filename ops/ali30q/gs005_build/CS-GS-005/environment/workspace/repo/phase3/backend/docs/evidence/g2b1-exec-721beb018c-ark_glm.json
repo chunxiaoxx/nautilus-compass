@@ -1,0 +1,28 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "00a508ec04c87f0db2571fb53d3480b84063f424",
+  "reference_fix_commit": "721beb018c3dedc4f51ade000c37f0527c92e7dc",
+  "subject": "fix(fde-reconcile): line_code \u5bb9\u9519\u6587\u6863\u4e1a\u52a1\u7ebf\u53d8\u4f53(\u4e2d\u6587\u6570\u5b57/\u7b2cN\u7c7b\u5168\u540d\u2192\u6570\u5b57\u7f16\u7801)",
+  "test_files": [
+   "phase3/backend/tests/test_fde_qc_feedback.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/fde_qc_feedback_runner.py"
+  ]
+ },
+ "test_id": "phase3/backend/tests/test_fde_qc_feedback.py::test_line_code_normalizes_doc_variants",
+ "source_rel": "phase3/backend/services/fde_qc_feedback_runner.py",
+ "provider": "ark_glm",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

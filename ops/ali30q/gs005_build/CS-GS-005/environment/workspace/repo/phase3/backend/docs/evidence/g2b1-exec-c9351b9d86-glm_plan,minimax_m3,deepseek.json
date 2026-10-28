@@ -1,0 +1,57 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "fc743dff947bc465e69776539db410e01f5609f9",
+  "reference_fix_commit": "c9351b9d86f77a767eada011c47d27a97d52a941",
+  "subject": "fix(fde): allow read-only legacy form retirement preview",
+  "test_files": [
+   "phase3/backend/tests/test_fde_phase3_single_submission_forms.py"
+  ],
+  "source_files": [
+   "phase3/backend/scripts/publish_phase3_single_submission_forms.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/test_fde_phase3_single_submission_forms.py::test_form_publish_cli_requires_exact_confirmation_without_record_options",
+ "source_rel": "scripts\\publish_phase3_single_submission_forms.py",
+ "provider": "glm_plan,minimax_m3,deepseek",
+ "test_passed": true,
+ "winning_diff": "--- a/scripts/publish_phase3_single_submission_forms.py\n+++ b/scripts/publish_phase3_single_submission_forms.py\n@@ -125,7 +125,7 @@\n     if args.apply and args.confirm != CONFIRMATION:\n         raise SystemExit(f\"--apply requires --confirm {CONFIRMATION}\")\n     if args.retire_legacy and not args.apply:\n-        raise SystemExit(\"--retire-legacy requires --apply\")\n+        return None\n \n \n def _plan_output(publisher: FormPublisher, *, retire_legacy: bool) -> dict[str, Any]:\n",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 1963,
+    "output_tokens": 269,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_13pv8snd\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 1 item\r\n\r\ntests/test_fde_phase3_single_submission_forms.py::test_form_publish_cli_requires_exact_confirmation_without_record_options FAILED [100%]\r\n\r\n================================== FAILURES ===================================\r\n__ test_form_publish_cli_requires_exact_confirmation_without_record_options ___\r\ntests\\test_fde_phase3_single_submission_forms.py:302: in test_form_publish_cli_requires_exact_confirmation_without_record_options\r\n    module.validate_args(dry_run)\r\nscripts\\publish_phase3_single_submission_forms.py:132: in validate_args\r\n    raise SystemExit(\"--retire-legacy requires --apply\")\r\nE   SystemExit: --retire-legacy requires --apply\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_fde_phase3_single_submission_forms.py::test_form_publish_cli_requires_exact_confirmation_without_record_options\r\n============================== 1 failed in 0.44s ==============================\r\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "input_tokens": 2479,
+    "output_tokens": 181,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "fix_validate_args_retire_legacy_check",
+ "duration_s": 53.7,
+ "verdict_post_status": 200
+}

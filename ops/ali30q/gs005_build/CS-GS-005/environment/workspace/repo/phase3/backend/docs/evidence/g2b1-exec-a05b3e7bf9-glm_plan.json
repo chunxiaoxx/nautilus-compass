@@ -1,0 +1,30 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "35c4cadfbcb1cdb80a11cc3c6198c4fb76953ddb",
+  "reference_fix_commit": "a05b3e7bf95ba92dbd84a09bebaef7d93bca1fe4",
+  "subject": "fix(verify): g2b1 \u53cc\u95e8\u652f\u6301\u56db\u4ed3\u9898\u6e90 \u2014 \u8f6e\u8f6c\u961f\u5217 buggy_commit\u2192repo_path\u2192\u4e91\u4ed3\u6620\u5c04(DEFAULT_REPO_MAP/env G2B1_REPO_MAP),\u65e0\u6eaf\u6e90\u8df3\u8fc7 \u00b7 TDD 6 green",
+  "test_files": [
+   "phase3/backend/tests/test_g2b1_double_gate_plan.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/fde_auto_verify_runner.py",
+   "phase3/backend/services/g2b1_double_gate.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "phase3/backend/tests/test_g2b1_double_gate_plan.py::test_plan_resolves_repo_via_queue",
+ "source_rel": "phase3/backend/services/fde_auto_verify_runner.py",
+ "provider": "glm_plan",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

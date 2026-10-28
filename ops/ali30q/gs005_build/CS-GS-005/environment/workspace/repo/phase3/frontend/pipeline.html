@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数据飞轮管道 · 实时 — Nautilus</title>
+<meta name="description" content="Nautilus 数据飞轮管道实时读数:发单→执行→四验判读→入池→结算→训练,全链可审计。">
+<style>
+  :root { --ink:#1a1d24; --sub:#5a6070; --accent:#0a6cff; --bg:#fafbfc; --card:#ffffff; --line:#e6e9ee; --ok:#0a7d3c; --fail:#c93a34; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif; color:var(--ink); background:var(--bg); line-height:1.75; }
+  .wrap { max-width:860px; margin:0 auto; padding:0 20px; }
+  header { background:linear-gradient(135deg,#0a1a3a 0%,#0a3a7a 100%); color:#fff; padding:52px 0 44px; }
+  header h1 { font-size:30px; letter-spacing:1px; }
+  header .tag { font-size:17px; opacity:.92; margin-top:12px; max-width:640px; }
+  header .sub { font-size:13px; opacity:.65; margin-top:18px; }
+  header .sub a { color:#9cc4ff; text-decoration:none; }
+  .kpi { display:flex; flex-wrap:wrap; gap:26px; margin:26px 0 4px; }
+  .kpi div b { font-size:26px; color:#7fb5ff; display:block; font-variant-numeric:tabular-nums; }
+  .kpi div span { font-size:13px; opacity:.8; }
+  section { padding:44px 0; border-bottom:1px solid var(--line); }
+  h2 { font-size:22px; margin-bottom:20px; }
+  h2 .n { color:var(--accent); margin-right:10px; font-variant-numeric:tabular-nums; }
+  p.lead { color:var(--sub); margin-bottom:16px; }
+  table { width:100%; border-collapse:collapse; background:var(--card); border-radius:10px; overflow:hidden; font-size:14px; }
+  th,td { padding:11px 14px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+  th { background:#f0f3f8; font-size:13px; }
+  td:first-child { font-weight:600; }
+  td.num, th.num { text-align:right; font-variant-numeric:tabular-nums; }
+  .bar { display:flex; height:12px; border-radius:6px; overflow:hidden; background:#eef1f6; min-width:110px; }
+  .bar i { display:block; height:100%; }
+  .bar .pass { background:var(--ok); } .bar .fail { background:var(--fail); }
+  .flow { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:20px 24px; font-size:14px; }
+  .flow .step { padding:8px 0; border-bottom:1px dashed var(--line); }
+  .flow .step:last-child { border-bottom:none; }
+  .flow b { color:var(--accent); margin-right:8px; }
+  .flow span { color:var(--sub); font-size:13px; }
+  .live { font-size:12.5px; color:var(--sub); }
+  .live .dot { display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--ok); margin-right:6px; animation:pulse 2s infinite; }
+  @keyframes pulse { 50%{opacity:.35} }
+  .cta { background:var(--accent); color:#fff; border-radius:10px; padding:20px 26px; margin-top:8px; }
+  .cta b { font-size:16px; }
+  .cta a { color:#fff; }
+  footer { padding:34px 0 60px; color:var(--sub); font-size:13.5px; }
+  footer a { color:var(--accent); text-decoration:none; }
+  .err { color:var(--fail); }
+  @media (max-width:600px){ header h1{font-size:24px} .kpi div b{font-size:22px} }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1>数据飞轮管道 · 实时读数</h1>
+    <div class="tag">发单 → 执行 → 四验判读 → 入池 → 结算 → 训练复考。每一条轨迹可验、每一笔结算可查、每一次判读留痕。</div>
+    <div class="sub"><a href="/index.html">Nautilus 首页</a> · <a href="/unipat.html">unipat 评测平台</a> · 数据端点 <a href="/api/platform/org/fuel/pipeline" target="_blank" rel="noopener">/fuel/pipeline</a>(只读)</div>
+    <div class="kpi">
+      <div><b id="c-pool">–</b><span>池内轨迹</span></div>
+      <div><b id="c-pass">–</b><span>四验合格 pass</span></div>
+      <div><b id="c-rate">–</b><span>合格率</span></div>
+      <div><b id="c-bounty">–</b><span>累计燃料单</span></div>
+    </div>
+    <div class="sub live"><span class="dot"></span><span id="ts">连接中…</span></div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2><span class="n">01</span>合格读数(以库 verdict 列为准)</h2>
+    <p class="lead">入池 ≠ 合格:判读完成的负样本(带判因)照收入池供训练与研究,对外合格口径以 verdict 列为准。</p>
+    <table>
+      <thead><tr><th>口径</th><th class="num">数量</th><th class="num">占比</th><th style="width:200px">分布</th></tr></thead>
+      <tbody id="rounds"><tr><td colspan="4" style="color:var(--sub)">加载中…</td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2><span class="n">02</span>管道六环</h2>
+    <div class="flow" id="stages">加载中…</div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2><span class="n">03</span>数据如何验证(为什么可信)</h2>
+    <table>
+      <tr><th>门</th><th>判定内容</th></tr>
+      <tr><td>① render 非空</td><td>轨迹含真实工具调用过程,非纯文本报告</td></tr>
+      <tr><td>② held-out 隔离</td><td>与评测 held-out 正本交集=0,防背题</td></tr>
+      <tr><td>③ qid 唯一</td><td>指纹+hash 双判重门,同题异包装拒收</td></tr>
+      <tr><td>④ prompt 去重</td><td>题面去重,训练多样性保护</td></tr>
+      <tr><td>⑤ gold 可解析</td><td>每条带环境真值锚,可复核</td></tr>
+    </table>
+    <p class="lead" style="margin-top:12px">判读由独立验证器执行(判分与采集不同体,不可写面),判分-结算绑定,结果落库可复核。</p>
+    <div class="cta">
+      <b>获取数据:</b>样例与完整数据集见 <a href="https://huggingface.co/datasets/chunxiaox/nautilus-swe-trajectories" target="_blank" rel="noopener">HuggingFace · nautilus-swe-trajectories</a>;
+      评测服务见 <a href="/unipat.html">unipat</a>。
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    Nautilus · AI 原生组织 OS · 管道读数每 60 秒自动刷新 · 正本文档 <a href="/docs">/docs</a>
+  </div>
+</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+async function load(){
+  try{
+    const r = await fetch('/api/platform/org/fuel/pipeline');
+    const j = await r.json();
+    if(!j.success) throw new Error('API error');
+    const d = j.data, rd = d.readings || {};
+    const pool = Object.values(rd.pool_stage||{}).reduce((a,b)=>a+b,0);
+    const pass = rd.pool_gated_pass ?? 0, fail = pool - pass;
+    const pct = n => pool ? (n/pool*100).toFixed(1)+'%' : '–';
+    $('c-pool').textContent = pool; $('c-pass').textContent = pass;
+    $('c-rate').textContent = pct(pass);
+    const bs = rd.bounty_stage||{};
+    $('c-bounty').textContent = Object.values(bs).reduce((a,b)=>a+b,0);
+    $('ts').textContent = '实时 · ' + new Date().toLocaleString('zh-CN');
+    const rows = `
+      <tr><td>四验合格 pass</td><td class="num">${pass}</td><td class="num">${pct(pass)}</td>
+        <td><div class="bar"><i class="pass" style="width:${pool?pass/pool*100:0}%"></i></div></td></tr>
+      <tr><td>判读 fail(带判因,负样本)</td><td class="num">${fail}</td><td class="num">${pct(fail)}</td>
+        <td><div class="bar"><i class="fail" style="width:${pool?fail/pool*100:0}%"></i></div></td></tr>
+      ${Object.entries(bs).map(([s,n])=>`<tr><td>燃料单 · ${s}</td><td class="num">${n}</td><td class="num"></td><td></td></tr>`).join('')}`;
+    $('rounds').innerHTML = rows;
+    const st = (d.stages||[]).map((s,i)=>`<div class="step"><b>${i+1}. ${s.stage||s.id}</b>${s.input_coord||''} → ${s.output_coord||''}<span> · 触发:${s.trigger||'–'} · owner:${s.owner||'–'}</span></div>`).join('');
+    $('stages').innerHTML = st || '<span class="err">无 stages</span>';
+  }catch(e){
+    $('ts').textContent = '读取失败: ' + e.message;
+  }
+}
+load(); setInterval(load, 60000);
+</script>
+</body>
+</html>

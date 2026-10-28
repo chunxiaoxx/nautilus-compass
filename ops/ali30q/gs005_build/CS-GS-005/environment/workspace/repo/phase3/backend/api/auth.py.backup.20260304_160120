@@ -1,0 +1,814 @@
+"""
+Authentication API endpoints.
+"""
+from fastapi import APIRouter, Depends, HTTPException, status, Request
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
+from fastapi.responses import RedirectResponse
+from sqlalchemy.orm import Session
+from pydantic import BaseModel, EmailStr, field_validator
+from typing import Optional
+from datetime import timedelta, datetime
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+import os
+import httpx
+import secrets
+from utils.redis_client import get_redis
+
+from models.database import User
+from utils.database import get_db
+from utils.auth import (
+    hash_password,
+    verify_password,
+    create_access_token,
+    get_current_user
+)
+from monitoring_config import record_login_attempt, record_security_event
+
+router = APIRouter()
+security = HTTPBasic()
+
+# Check if we're in testing mode
+TESTING = os.getenv("TESTING", "false").lower() == "true"
+
+# Create limiter with disabled state for testing
+limiter = Limiter(key_func=get_remote_address, enabled=not TESTING)
+
+# OAuth Configuration
+GITHUB_CLIENT_ID = os.getenv("GITHUB_CLIENT_ID")
+GITHUB_CLIENT_SECRET = os.getenv("GITHUB_CLIENT_SECRET")
+GITHUB_REDIRECT_URI = os.getenv("GITHUB_REDIRECT_URI")
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
+
+
+class UserRegister(BaseModel):
+    """User registration request."""
+    username: str
+    email: EmailStr
+    password: str
+    wallet_address: Optional[str] = None
+
+    @field_validator('username', 'password')
+    @classmethod
+    def validate_not_empty(cls, v, info):
+        """Validate fields are not empty"""
+        if not v or not v.strip():
+            raise ValueError(f"{info.field_name} cannot be empty")
+        return v
+
+    @field_validator('username')
+    @classmethod
+    def validate_username_length(cls, v):
+        """Validate username length"""
+        if len(v) > 50:
+            raise ValueError("Username must be 50 characters or less")
+        return v
+
+    @field_validator('password')
+    @classmethod
+    def validate_password_strength(cls, v):
+        """Validate password strength"""
+        if len(v) < 12:
+            raise ValueError("Password must be at least 12 characters long")
+
+        # Check for uppercase letter
+        if not any(c.isupper() for c in v):
+            raise ValueError("Password must contain at least one uppercase letter")
+
+        # Check for lowercase letter
+        if not any(c.islower() for c in v):
+            raise ValueError("Password must contain at least one lowercase letter")
+
+        # Check for digit
+        if not any(c.isdigit() for c in v):
+            raise ValueError("Password must contain at least one digit")
+
+        # Check for special character
+        special_chars = "!@#$%^&*()_+-=[]{}|;:,.<>?"
+        if not any(c in special_chars for c in v):
+            raise ValueError("Password must contain at least one special character")
+
+        # Check for common weak passwords
+        weak_passwords = [
+            "password123!", "Password123!", "Admin123!", "Welcome123!",
+            "Qwerty123!", "Abc123456!", "P@ssw0rd123", "Password1!"
+        ]
+        if v in weak_passwords:
+            raise ValueError("Password is too common, please choose a stronger password")
+
+        return v
+
+    @field_validator('wallet_address')
+    @classmethod
+    def validate_wallet_format(cls, v):
+        """Validate wallet address format"""
+        if v is None:
+            return v
+        if not v.startswith('0x'):
+            raise ValueError("Wallet address must start with 0x")
+        if len(v) != 42:
+            raise ValueError("Wallet address must be 42 characters long")
+        # Check if it contains only hex characters after 0x
+        try:
+            int(v, 16)
+        except ValueError:
+            raise ValueError("Wallet address must contain only hexadecimal characters")
+        return v
+
+
+class UserLogin(BaseModel):
+    """User login request."""
+    username: str
+    password: str
+
+
+class Token(BaseModel):
+    """Token response."""
+    access_token: str
+    token_type: str
+
+
+@router.post("/register", response_model=Token, status_code=status.HTTP_201_CREATED)
+@limiter.limit("5/minute")
+async def register(request: Request, user_data: UserRegister, db: Session = Depends(get_db)):
+    """
+    Register a new user account.
+
+    Creates a new user account with the provided credentials and returns a JWT access token
+    for immediate authentication.
+
+    **Rate Limit**: 5 requests per minute
+
+    **Request Body**:
+    - `username`: Unique username (max 50 characters)
+    - `email`: Valid email address
+    - `password`: Secure password (min 8 characters recommended)
+    - `wallet_address`: Ethereum wallet address (0x + 40 hex characters)
+
+    **Returns**:
+    - `access_token`: JWT token valid for 7 days
+    - `token_type`: Always "bearer"
+
+    **Errors**:
+    - `400`: Username, email, or wallet address already registered
+    - `422`: Validation error (invalid format)
+
+    **Example**:
+    ```json
+    {
+      "username": "alice",
+      "email": "alice@example.com",
+      "password": "SecurePass123!",
+      "wallet_address": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+    }
+    ```
+    """
+    # Check if username exists
+    existing_user = db.query(User).filter(User.username == user_data.username).first()
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Username already registered"
+        )
+
+    # Check if email exists
+    existing_email = db.query(User).filter(User.email == user_data.email).first()
+    if existing_email:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email already registered"
+        )
+
+    # Check if wallet address exists
+    if user_data.wallet_address:
+        existing_wallet = db.query(User).filter(
+            User.wallet_address == user_data.wallet_address
+        ).first()
+        if existing_wallet:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Wallet address already registered"
+            )
+
+    # Create user
+    user = User(
+        username=user_data.username,
+        email=user_data.email,
+        hashed_password=hash_password(user_data.password),
+        wallet_address=user_data.wallet_address
+    )
+
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+
+    # Create access token
+    access_token = create_access_token(
+        data={"sub": user.username},
+        expires_delta=timedelta(days=7)
+    )
+
+    return {"access_token": access_token, "token_type": "bearer"}
+
+
+@router.post("/login", response_model=Token)
+@limiter.limit("5/minute")
+async def login(request: Request, user_data: UserLogin, db: Session = Depends(get_db)):
+    """
+    Authenticate user and receive JWT token.
+
+    Validates user credentials and returns a JWT access token for API authentication.
+    Failed login attempts are logged for security monitoring.
+
+    **Rate Limit**: 5 requests per minute (prevents brute force attacks)
+
+    **Request Body**:
+    - `username`: User's username
+    - `password`: User's password
+
+    **Returns**:
+    - `access_token`: JWT token valid for 7 days
+    - `token_type`: Always "bearer"
+
+    **Errors**:
+    - `401`: Incorrect username or password
+    - `403`: User account is inactive
+
+    **Security**:
+    - Login attempts are monitored and logged
+    - Rate limiting prevents brute force attacks
+    - Passwords are hashed with bcrypt
+
+    **Example**:
+    ```json
+    {
+      "username": "alice",
+      "password": "SecurePass123!"
+    }
+    ```
+    """
+    # Get user
+    user = db.query(User).filter(User.username == user_data.username).first()
+    if not user:
+        # 记录登录失败
+        record_login_attempt(success=False, username=user_data.username)
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password"
+        )
+
+    # Verify password
+    if not verify_password(user_data.password, user.hashed_password):
+        # 记录登录失败
+        record_login_attempt(success=False, username=user_data.username)
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password"
+        )
+
+    # Check if user is active
+    if not user.is_active:
+        # 记录权限拒绝
+        record_security_event(
+            event_type="permission_denied",
+            severity="warning",
+            details={"username": user_data.username, "reason": "inactive_user"}
+        )
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Inactive user"
+        )
+
+    # 记录登录成功
+    record_login_attempt(success=True, username=user_data.username)
+
+    # Create access token
+    access_token = create_access_token(
+        data={"sub": user.username},
+        expires_delta=timedelta(days=7)
+    )
+
+    return {"access_token": access_token, "token_type": "bearer"}
+
+
+@router.get("/me")
+@limiter.limit("100/minute")
+async def read_current_user(request: Request, current_user: User = Depends(get_current_user)):
+    """
+    Get authenticated user information.
+
+    Returns detailed information about the currently authenticated user.
+
+    **Authentication**: JWT token required
+
+    **Rate Limit**: 100 requests per minute
+
+    **Returns**:
+    - `id`: User's unique identifier
+    - `username`: User's username
+    - `email`: User's email address
+    - `wallet_address`: User's Ethereum wallet address
+    - `is_admin`: Whether user has admin privileges
+    - `created_at`: Account creation timestamp
+
+    **Errors**:
+    - `401`: Invalid or expired JWT token
+
+    **Example Response**:
+    ```json
+    {
+      "id": 1,
+      "username": "alice",
+      "email": "alice@example.com",
+      "wallet_address": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
+      "is_admin": false,
+      "created_at": "2024-01-15T10:30:00Z"
+    }
+    ```
+    """
+    return {
+        "id": current_user.id,
+        "username": current_user.username,
+        "email": current_user.email,
+        "wallet_address": current_user.wallet_address,
+        "is_admin": current_user.is_admin,
+        "created_at": current_user.created_at
+    }
+
+
+class WalletUpdate(BaseModel):
+    """Wallet address update request."""
+    wallet_address: str
+
+
+@router.put("/me/wallet")
+@limiter.limit("10/minute")
+async def update_wallet(
+    request: Request,
+    wallet_data: WalletUpdate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Update user's Ethereum wallet address.
+
+    Updates the wallet address associated with the user's account. The new wallet address
+    must not be in use by another user.
+
+    **Authentication**: JWT token required
+
+    **Rate Limit**: 10 requests per minute
+
+    **Request Body**:
+    - `wallet_address`: New Ethereum wallet address (0x + 40 hex characters)
+
+    **Returns**:
+    - `message`: Success message
+    - `wallet_address`: Updated wallet address
+
+    **Errors**:
+    - `400`: Wallet address already in use by another user
+    - `401`: Invalid or expired JWT token
+    - `422`: Invalid wallet address format
+
+    **Example**:
+    ```json
+    {
+      "wallet_address": "0x8ba1f109551bD432803012645Ac136ddd64DBA72"
+    }
+    ```
+    """
+    # Check if wallet address is already used by another user
+    if wallet_data.wallet_address:
+        existing_wallet = db.query(User).filter(
+            User.wallet_address == wallet_data.wallet_address,
+            User.id != current_user.id
+        ).first()
+        if existing_wallet:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Wallet address already in use"
+            )
+
+    # Update wallet address
+    current_user.wallet_address = wallet_data.wallet_address
+    db.commit()
+    db.refresh(current_user)
+
+    return {
+        "message": "Wallet address updated successfully",
+        "wallet_address": current_user.wallet_address
+    }
+
+
+# ==================== GitHub OAuth ====================
+
+@router.get("/github/login")
+@limiter.limit("10/minute")
+async def github_login(request: Request):
+    """
+    Initiate GitHub OAuth login flow.
+
+    Redirects user to GitHub authorization page.
+
+    **Rate Limit**: 10 requests per minute
+
+    **Returns**: Redirect to GitHub OAuth page
+    """
+    if not GITHUB_CLIENT_ID or not GITHUB_REDIRECT_URI:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="GitHub OAuth not configured"
+        )
+
+    # Generate state for CSRF protection
+    # Store state in Redis (5 minutes expiry)
+    redis_client = get_redis()
+    state = secrets.token_urlsafe(32)
+    state = secrets.token_urlsafe(32)
+
+    # Store state in session (in production, use Redis or database)
+    # For now, we'll validate it in the callback
+
+    github_auth_url = (
+        f"https://github.com/login/oauth/authorize"
+        f"?client_id={GITHUB_CLIENT_ID}"
+        f"&redirect_uri={GITHUB_REDIRECT_URI}"
+        f"&scope=user:email"
+        f"&state={state}"
+    )
+
+    return RedirectResponse(url=github_auth_url)
+
+
+@router.get("/github/callback")
+@limiter.limit("10/minute")
+async def github_callback(
+    request: Request,
+    code: str,
+    state: Optional[str] = None,
+    db: Session = Depends(get_db)
+):
+    """
+    GitHub OAuth callback endpoint.
+
+    Handles the OAuth callback from GitHub, exchanges code for access token,
+    fetches user info, and creates/updates user account.
+
+    **Rate Limit**: 10 requests per minute
+
+    **Query Parameters**:
+    - `code`: Authorization code from GitHub
+    - `state`: CSRF protection state
+
+    **Returns**: Redirect to frontend with JWT token
+    """
+    if not GITHUB_CLIENT_ID or not GITHUB_CLIENT_SECRET:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="GitHub OAuth not configured"
+        )
+    # Validate state parameter
+    if not state:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Missing state parameter"
+        )
+    
+    # Verify state from Redis
+    redis_client = get_redis()
+    stored_state = redis_client.get(f"oauth_state:{state}")
+    
+    if not stored_state:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+          detail="Invalid or expired state parameter"
+        )
+    
+    # Delete used state
+    redis_client.delete(f"oauth_state:{state}")
+
+    # Exchange code for access token
+    async with httpx.AsyncClient() as client:
+        token_response = await client.post(
+            "https://github.com/login/oauth/access_token",
+            headers={"Accept": "application/json"},
+            data={
+                "client_id": GITHUB_CLIENT_ID,
+                "client_secret": GITHUB_CLIENT_SECRET,
+                "code": code,
+                "redirect_uri": GITHUB_REDIRECT_URI
+            }
+        )
+
+        if token_response.status_code != 200:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Failed to exchange code for token"
+            )
+
+        token_data = token_response.json()
+        access_token = token_data.get("access_token")
+
+        if not access_token:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="No access token received from GitHub"
+            )
+
+        # Fetch user info from GitHub
+        user_response = await client.get(
+            "https://api.github.com/user",
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Accept": "application/json"
+            }
+        )
+
+        if user_response.status_code != 200:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Failed to fetch user info from GitHub"
+            )
+
+        github_user = user_response.json()
+
+        # Fetch user emails
+        email_response = await client.get(
+            "https://api.github.com/user/emails",
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Accept": "application/json"
+            }
+        )
+
+        primary_email = None
+        if email_response.status_code == 200:
+            emails = email_response.json()
+            for email in emails:
+                if email.get("primary") and email.get("verified"):
+                    primary_email = email.get("email")
+                    break
+
+        if not primary_email:
+            primary_email = github_user.get("email")
+
+        if not primary_email:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="No verified email found in GitHub account"
+            )
+
+    # Check if user exists by GitHub ID
+    github_id = str(github_user.get("id"))
+    user = db.query(User).filter(User.github_id == github_id).first()
+
+    if not user:
+        # Check if email already exists
+        user = db.query(User).filter(User.email == primary_email).first()
+
+        if user:
+            # Link GitHub account to existing user
+            user.github_id = github_id
+            user.github_username = github_user.get("login")
+        else:
+            # Create new user
+            username = github_user.get("login")
+
+            # Ensure username is unique
+            existing_username = db.query(User).filter(User.username == username).first()
+            if existing_username:
+                username = f"{username}_{secrets.token_hex(4)}"
+
+            user = User(
+                username=username,
+                email=primary_email,
+                hashed_password=hash_password(secrets.token_urlsafe(32)),  # Random password
+                github_id=github_id,
+                github_username=github_user.get("login"),
+                is_active=True
+            )
+            db.add(user)
+    else:
+        # Update existing user info
+        user.github_username = github_user.get("login")
+        user.email = primary_email
+
+    db.commit()
+    db.refresh(user)
+
+    # Record successful login
+    record_login_attempt(success=True, username=user.username)
+
+    # Create JWT token
+    jwt_token = create_access_token(
+        data={"sub": user.username},
+        expires_delta=timedelta(days=7)
+    )
+
+    # Redirect to frontend with token
+    frontend_redirect = f"{FRONTEND_URL}/auth/callback?token={jwt_token}"
+    return RedirectResponse(url=frontend_redirect)
+
+
+# ==================== Google OAuth ====================
+
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
+GOOGLE_REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI")
+
+
+@router.get("/google/login")
+@limiter.limit("10/minute")
+async def google_login(request: Request):
+    """
+    Initiate Google OAuth login flow.
+
+    Redirects user to Google authorization page.
+
+    **Rate Limit**: 10 requests per minute
+
+    **Returns**: Redirect to Google OAuth page
+    """
+    if not GOOGLE_CLIENT_ID or not GOOGLE_REDIRECT_URI:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Google OAuth not configured"
+        )
+
+    # Generate state for CSRF protection
+    # Store state in Redis (5 minutes expiry)
+    redis_client = get_redis()
+    state = secrets.token_urlsafe(32)
+    state = secrets.token_urlsafe(32)
+
+    # Build Google OAuth URL
+    google_auth_url = (
+        f"https://accounts.google.com/o/oauth2/v2/auth"
+        f"?client_id={GOOGLE_CLIENT_ID}"
+        f"&redirect_uri={GOOGLE_REDIRECT_URI}"
+        f"&response_type=code"
+        f"&scope=openid%20email%20profile"
+        f"&state={state}"
+    )
+
+    return RedirectResponse(url=google_auth_url)
+
+
+@router.get("/google/callback")
+@limiter.limit("10/minute")
+async def google_callback(
+    request: Request,
+    code: str,
+    state: Optional[str] = None,
+    db: Session = Depends(get_db)
+):
+    """
+    Google OAuth callback endpoint.
+
+    Handles the OAuth callback from Google, exchanges code for access token,
+    fetches user info, and creates/updates user account.
+
+    **Rate Limit**: 10 requests per minute
+
+    **Query Parameters**:
+    - `code`: Authorization code from Google
+    - `state`: CSRF protection state
+
+    **Returns**: Redirect to frontend with JWT token
+    """
+    if not GOOGLE_CLIENT_ID or not GOOGLE_CLIENT_SECRET:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Google OAuth not configured"
+        )
+    # Validate state parameter
+    if not state:
+        raise HTTPException(
+      status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Missing state parameter"
+        )
+    
+    # Verify state from Redis
+    redis_client = get_redis()
+    stored_state = redis_client.get(f"oauth_state:{state}")
+    
+    if not stored_state:
+     raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or expired state parameter"
+        )
+    
+    # Delete used state
+    redis_client.delete(f"oauth_state:{state}")
+
+    # Exchange code for access token
+    async with httpx.AsyncClient() as client:
+        token_response = await client.post(
+            "https://oauth2.googleapis.com/token",
+            data={
+                "client_id": GOOGLE_CLIENT_ID,
+                "client_secret": GOOGLE_CLIENT_SECRET,
+                "code": code,
+                "grant_type": "authorization_code",
+                "redirect_uri": GOOGLE_REDIRECT_URI
+            }
+        )
+
+        if token_response.status_code != 200:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Failed to exchange code for token"
+            )
+
+        token_data = token_response.json()
+        access_token = token_data.get("access_token")
+
+        if not access_token:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="No access token received from Google"
+            )
+
+        # Fetch user info from Google
+        user_response = await client.get(
+            "https://www.googleapis.com/oauth2/v2/userinfo",
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Accept": "application/json"
+            }
+        )
+
+        if user_response.status_code != 200:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Failed to fetch user info from Google"
+            )
+
+        google_user = user_response.json()
+
+        # Validate email
+        email = google_user.get("email")
+        if not email:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="No email found in Google account"
+            )
+
+        # Check if email is verified
+        email_verified = google_user.get("verified_email", False)
+        if not email_verified:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Google email is not verified"
+            )
+
+    # Check if user exists by Google ID
+    google_id = str(google_user.get("id"))
+    user = db.query(User).filter(User.google_id == google_id).first()
+
+    if not user:
+        # Check if email already exists
+        user = db.query(User).filter(User.email == email).first()
+
+        if user:
+            # Link Google account to existing user
+            user.google_id = google_id
+        else:
+            # Create new user
+            # Use email prefix as username
+            username = email.split("@")[0]
+
+            # Ensure username is unique
+            existing_username = db.query(User).filter(User.username == username).first()
+            if existing_username:
+                username = f"{username}_{secrets.token_hex(4)}"
+
+            user = User(
+                username=username,
+                email=email,
+                hashed_password=hash_password(secrets.token_urlsafe(32)),  # Random password
+                google_id=google_id,
+                is_active=True
+            )
+            db.add(user)
+    else:
+        # Update existing user info
+        user.email = email
+
+    db.commit()
+    db.refresh(user)
+
+    # Record successful login
+    record_login_attempt(success=True, username=user.username)
+
+    # Create JWT token
+    jwt_token = create_access_token(
+        data={"sub": user.username},
+        expires_delta=timedelta(days=7)
+    )
+
+    # Redirect to frontend with token
+    frontend_redirect = f"{FRONTEND_URL}/auth/callback?token={jwt_token}"
+    return RedirectResponse(url=frontend_redirect)
+

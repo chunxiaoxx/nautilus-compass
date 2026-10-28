@@ -1,0 +1,75 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "d284d13f0d7ad22502400f05c0921e480d637537",
+  "reference_fix_commit": "94f1e570b3fb1593fc96fc94f294f805009bdafd",
+  "subject": "fix(llm): deepseek-anthropic round-2 400 \u53cc\u4fee\u590d",
+  "test_files": [
+   "tests/test_anthropic_message_translate.py"
+  ],
+  "source_files": [
+   "nautilus_v5/runtime/llm_client.py"
+  ],
+  "repo_path": "C:/Users/chunx/nautilus-v5",
+  "hist_test_id": "tests/test_anthropic_message_translate.py::test_consecutive_tool_results_merged_into_single_user_msg",
+  "hist_passed": false,
+  "_passed": false
+ },
+ "test_id": "tests/test_anthropic_message_translate.py::test_consecutive_tool_results_merged_into_single_user_msg",
+ "source_rel": "nautilus_v5\\runtime\\llm_client.py",
+ "provider": "fmB-chunxiao_k3",
+ "provider_used": "fmB-chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/nautilus_v5/runtime/llm_client.py\n+++ b/nautilus_v5/runtime/llm_client.py\n@@ -655,12 +655,21 @@\n \n         elif role == \"tool\":\n             # role=\"tool\" (OpenAI) \u2192 user + tool_result block (Anthropic)\n-            out.append({\n-                \"role\": \"user\",\n-                \"content\": [{\n-                    \"type\": \"tool_result\",\n-                    \"tool_use_id\": m.get(\"tool_call_id\", \"\"),\n-                    \"content\": str(content) if content else \"\",\n-                }],\n-            })\n+            # \u5408\u5e76\u8fde\u7eed tool \u6d88\u606f\u4e3a\u4e00\u6761 user \u6d88\u606f \u00b7 DeepSeek/Anthropic \u8981\u6c42\n+            # \u540c\u4e00 assistant \u7684\u591a\u4e2a tool_result \u5fc5\u987b\u5728\u540c\u4e00\u6761 user \u6d88\u606f\u91cc\n+            _block = {\n+                \"type\": \"tool_result\",\n+                \"tool_use_id\": m.get(\"tool_call_id\", \"\"),\n+                \"content\": str(content) if content else \"\",\n+            }\n+            if (\n+                out\n+                and out[-1].get(\"role\") == \"user\"\n+                and isinstance(out[-1].get(\"content\"), list)\n+                and all(isinstance(b, dict) and b.get(\"type\") == \"tool_result\" for b in out[-1][\"content\"])\n+            ):\n+                out[-1][\"content\"].append(_block)\n+            else:\n+                out.append({\"role\": \"user\", \"content\": [_block]})\n \n         else:\n             out.append(m)",
+ "budget_exceeded": false,
+ "total_tokens": 11405,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 10939,
+    "completion_tokens": 466,
+    "total_tokens": 11405,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 10683,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 466,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 10939,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "merge_consecutive_tool_results",
+ "duration_s": 22.9
+}

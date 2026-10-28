@@ -1,0 +1,116 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "5f77f1a52ff4c27731d7fac890e42f75bc471701",
+  "reference_fix_commit": "0c2c60c7a1150a4b89292e3efe4d0c1a577311fe",
+  "subject": "fix(liveness): \u4fee 2 RED \u63a2\u9488\u00b7\u672c\u673a 0 RED",
+  "test_files": [
+   "tests/test_liveness_audit.py"
+  ],
+  "source_files": [
+   "ops/liveness_audit.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass"
+ },
+ "test_id": "tests/test_liveness_audit.py::test_probe_snapshot_freshness_green_within_dev_tolerance",
+ "source_rel": "ops\\liveness_audit.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/ops/liveness_audit.py\n+++ b/ops/liveness_audit.py\n@@ -36,7 +36,7 @@ DEFAULT_SNAPSHOT_PATH = Path(\n         str(Path.home() / \".claude\" / \"plugins\" / \"nautilus-compass\" / \".cache\"),\n     )\n ) / \"poi_credit_cache.json\"\n-DEFAULT_FRESHNESS_HOURS = 2.0\n+DEFAULT_FRESHNESS_HOURS = 168.0\n DEFAULT_MIN_LINES = 1\n DEFAULT_PATCH_FILE = _REPO / \"ops\" / \"patch_v14_recall_poi_boost.py\"\n \n",
+ "budget_exceeded": false,
+ "total_tokens": 5062,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 2109,
+    "completion_tokens": 396,
+    "total_tokens": 2505,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 2109,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 396,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 0,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 2109,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: ops/liveness_audit.py:1\nerror: ops/liveness_audit.py: patch does not apply\n\n[attempt2 backend] error: patch failed: ops/liveness_audit.py:1\nerror: ops/liveness_audit.py: patch does not apply\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 2212,
+    "completion_tokens": 345,
+    "total_tokens": 2557,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 164,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 2048,
+      "output_tokens": 345,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 2048,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 2212,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "freshness_default_168h",
+ "duration_s": 23.7,
+ "verdict_post_status": 200
+}

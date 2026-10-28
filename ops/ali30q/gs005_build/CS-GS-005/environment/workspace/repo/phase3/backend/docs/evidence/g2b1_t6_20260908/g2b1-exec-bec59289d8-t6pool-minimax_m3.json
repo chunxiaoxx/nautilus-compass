@@ -1,0 +1,43 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "916883afad450c0c9bbc4212817900949131adbd",
+  "reference_fix_commit": "bec59289d8cf9b9b4010642b2fee483e5f8eeefc",
+  "subject": "Fix `package_name` resolution when top-level module differs from distribution name",
+  "test_files": [
+   "tests/test_basic.py"
+  ],
+  "source_files": [
+   "src/click/decorators.py"
+  ],
+  "repo_path": "C:/Users/chunx/ext_mine"
+ },
+ "test_id": "tests/test_basic.py::test_version_option_resolves_import_name_to_distribution",
+ "source_rel": "src\\click\\decorators.py",
+ "provider": "t6pool-minimax_m3",
+ "provider_used": "t6pool-minimax_m3",
+ "test_passed": true,
+ "winning_diff": "--- a/src/click/decorators.py\n+++ b/src/click/decorators.py\n@@ -1,6 +1,7 @@\n from __future__ import annotations\n \n import inspect\n+import importlib.metadata\n import typing as t\n from functools import update_wrapper\n from gettext import gettext as _\n \n@@ -475,15 +476,24 @@ def version_option(\n         if version is None and package_name is not None:\n             import importlib.metadata\n \n-            try:\n-                version = importlib.metadata.version(package_name)\n-            except importlib.metadata.PackageNotFoundError:\n-                raise RuntimeError(\n-                    f\"{package_name!r} is not installed. Try passing\"\n-                    \" 'package_name' instead.\"\n-                ) from None\n+            try:\n+                version = importlib.metadata.version(package_name)\n+            except importlib.metadata.PackageNotFoundError:\n+                # The provided ``package_name`` might be an import name\n+                # rather than the distribution name. Try to resolve it\n+                # through ``packages_distributions()`` which maps top-level\n+                # module names to the distribution(s) that provide them.\n+                dist_name: str | None = None\n+                for dists in importlib.metadata.packages_distributions().values():\n+                    if package_name in dists:\n+                        dist_name = package_name\n+                        break\n+                if dist_name is None:\n+                    for module_name, dists in importlib.metadata.packages_distributions().items():\n+                        if module_name == package_name and dists:\n+                            dist_name = dists[0]\n+                            break\n+                if dist_name is not None:\n+                    version = importlib.metadata.version(dist_name)\n+                else:\n+                    raise RuntimeError(\n+                        f\"{package_name!r} is not installed. Try passing\"\n+                        \" 'package_name' instead.\"\n+                    ) from None\n \n         if version is None:\n             raise RuntimeError(",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "input_tokens": 5099,
+    "output_tokens": 498,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 134,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "resolve_import_name_via_packages_distributions",
+ "duration_s": 12.0
+}

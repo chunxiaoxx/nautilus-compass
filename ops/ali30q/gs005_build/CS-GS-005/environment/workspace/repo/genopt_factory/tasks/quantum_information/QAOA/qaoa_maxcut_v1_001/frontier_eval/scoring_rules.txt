@@ -1,0 +1,13 @@
+scoring:
+  per_instance:
+    formula: "score_i = max(0, 100 * cut_size / opt_cut)"
+  combined:
+    formula: "mean(score_i)"
+    valid_gate: "valid=0 if any infeasible"
+difficulty_grading:
+  source: GPT5.5 N=3 gap_closed calibration
+  bands:
+    Rejected: "<0.1"
+    Hard: "0.1-0.3"
+    Medium: "0.3-0.6"
+    Easy: ">=0.6"

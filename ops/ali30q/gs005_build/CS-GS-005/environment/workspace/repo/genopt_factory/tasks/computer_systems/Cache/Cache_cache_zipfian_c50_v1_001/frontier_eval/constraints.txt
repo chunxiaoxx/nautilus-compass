@@ -1,0 +1,6 @@
+constraints:
+  - pure_python_stdlib_only: true
+  - deterministic: true
+  - per_instance_timeout_s: 30
+  - scoring_formula: "score_i = max(0, 100 * (1 - misses_you / misses_FIFO))"
+  - valid_gate: "any instance failure => combined_score = 0"

@@ -1,0 +1,159 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "57558794a385169a327263a61a59ad8fa9ed0402",
+  "reference_fix_commit": "c561b26a27ae7ff6116584c186e457628904c14f",
+  "subject": "fix(ops): \u54e8\u5175 baseline \u5fc5\u5217\u5f85\u5904\u7406\u51fd\u660e\u7ec6\u2014\u2014\u6839\u6cbb\u4e0a\u7ebf\u7a97\u53e3\u541e\u4e8b\u4ef6",
+  "test_files": [
+   "phase3/backend/tests/test_org_sentinel.py"
+  ],
+  "source_files": [
+   "phase3/backend/ops/org_sentinel.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/test_org_sentinel.py::test_baseline_lists_pending_letters_with_detail",
+ "source_rel": "ops\\org_sentinel.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/ops/org_sentinel.py\n+++ b/ops/org_sentinel.py\n@@ -38,11 +38,14 @@ def collect_events(db: Session, state: dict) -> tuple[list[str], dict]:\n def _baseline(db: Session) -> tuple[str, dict]:\n     \"\"\"\u9996\u8f6e:\u5efa\u57fa\u7ebf\u4e0d\u9010\u6761\u63a8,\u53d1\u4e00\u6761\u4e0a\u7ebf\u6982\u89c8(\u517c\u9a8c\u8bc1\u98de\u4e66\u94fe\u8def)\u3002\"\"\"\n     events, state = collect_events(db, {\"notified_ids\": [], \"acked\": {}})\n     inbound_open = [e for e in events if e.startswith(\"\ud83d\udce8\")]\n     acked_n = sum(1 for v in state[\"acked\"].values() if v)\n+    import re\n+    ids = [m.group() for e in inbound_open if (m := re.search(r\"#\\d+\", e))]\n+    detail = \",\".join(ids) if ids else \"\u65e0\"\n     text = (f\"\ud83d\udef0 org \u54e8\u5175\u4e0a\u7ebf(15min \u8f6e)\u3002\u57fa\u7ebf:platform \u6536\u4ef6\u5f85\u5904\u7406 \"\n-            f\"{len(inbound_open)} \u5c01;\u5173\u6ce8\u51fd {WATCH_IDS} acked {acked_n}/{len(WATCH_IDS)}\u3002\"\n+            f\"{len(inbound_open)} \u5c01:{detail};\u5173\u6ce8\u51fd {WATCH_IDS} acked {acked_n}/{len(WATCH_IDS)}\u3002\"\n             f\"\u540e\u7eed\u53d8\u5316\u5373\u63a8,\u65e0\u53d8\u5316\u9759\u9ed8\u3002\")\n     return text, state",
+ "budget_exceeded": false,
+ "total_tokens": 7893,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 1727,
+    "completion_tokens": 649,
+    "total_tokens": 2376,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 1727,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 649,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 0,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 1727,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 root] error: patch failed: phase3/backend/ops/org_sentinel.py:1\nerror: phase3/backend/ops/org_sentinel.py: patch does not apply\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 1824,
+    "completion_tokens": 768,
+    "total_tokens": 2592,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 288,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1536,
+      "output_tokens": 768,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 1536,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 1824,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 root] error: phase3/backend/phase3/backend/ops/org_sentinel.py: No such file or directory\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 1812,
+    "completion_tokens": 1113,
+    "total_tokens": 2925,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 276,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1536,
+      "output_tokens": 1113,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 1536,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 1812,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "baseline_lists_pending_letter_ids",
+ "duration_s": 86.4,
+ "verdict_post_status": 200
+}

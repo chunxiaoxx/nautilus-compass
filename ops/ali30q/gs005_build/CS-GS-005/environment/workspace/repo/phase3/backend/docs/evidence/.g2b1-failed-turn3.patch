@@ -1,0 +1,15 @@
+--- a/api/org.py
++++ b/api/org.py
+@@
+-    if existing is not None:  # idempotent re-post
+-        data = existing.to_dict()
+-        data["idempotent"] = True
+-        return _ok(data)
+-    # 账本身份守卫(9/16):平台自身发函走 DB 直写不走本端点;此处收到
++    if existing is not None:  # duplicate trace_id+to_agent:冲突,回 existing_id
++        return JSONResponse(status_code=409,
++                            content={"success": False,
++                                     "data": {"existing_id": existing.id,
++                                              "existing": existing.to_dict()},
++                                     "error": "duplicate trace_id for this to_agent"})
++    # 账本身份守卫(9/16):平台自身发函走 DB 直写不走本端点;此处收到

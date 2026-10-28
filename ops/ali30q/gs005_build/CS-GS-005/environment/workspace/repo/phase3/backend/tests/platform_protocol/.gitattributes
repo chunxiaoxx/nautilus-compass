@@ -1,0 +1,9 @@
+g2_a0_deepseek_client.py text eol=lf
+g2_a0_model_gate_cli.py text eol=lf
+g2_a0_model_gate_v2_cli.py text eol=lf
+g2_a0_synthetic_fixture.py text eol=lf
+g2_a0_synthetic_verifier.py text eol=lf
+g2_a0_model_gate_v3_cli.py text eol=lf
+g2_a0_model_gate_v4_cli.py text eol=lf
+g2_a0_model_gate_v5_cli.py text eol=lf
+g2_a0_model_gate_v6_cli.py text eol=lf

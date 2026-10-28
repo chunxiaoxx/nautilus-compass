@@ -1,0 +1,73 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "5e06f26d39c49235ac8aefee0ee43c8eae7f531b",
+  "reference_fix_commit": "cebce1c562e3efe2ec29a3d8015c67302552bfe3",
+  "subject": "fix(fde): validate source before token request",
+  "test_files": [
+   "tests/test_feishu_wiki_evidence.py"
+  ],
+  "source_files": [
+   "tools/fde_feishu_wiki_evidence.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-fde-phase3"
+ },
+ "test_id": "tests/test_feishu_wiki_evidence.py::test_probe_rejects_invalid_source_before_any_transport_call",
+ "source_rel": "tools\\fde_feishu_wiki_evidence.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/tools/fde_feishu_wiki_evidence.py\n+++ b/tools/fde_feishu_wiki_evidence.py\n@@ -301,10 +301,12 @@ def probe(\n ) -> dict[str, str | int]:\n     \"\"\"Resolve a canonical Wiki or docx URL to metadata without reading content.\"\"\"\n     wiki_token = None\n-    if not _is_direct_docx_url(source_url):\n+    if _is_direct_docx_url(source_url):\n+        parse_docx_url(source_url)\n+    else:\n         wiki_token = parse_wiki_url(source_url)\n     use_credentials = credential_provider or _environment_credentials\n     use_transport = transport or standard_transport\n     _, document_id, title, revision_id = _resolve_docx(\n         source_url, use_credentials, use_transport\n",
+ "budget_exceeded": false,
+ "total_tokens": 6648,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 6250,
+    "completion_tokens": 398,
+    "total_tokens": 6648,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 5994,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 398,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 6250,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "validate_docx_url_before_transport",
+ "duration_s": 14.1,
+ "verdict_post_status": 200
+}

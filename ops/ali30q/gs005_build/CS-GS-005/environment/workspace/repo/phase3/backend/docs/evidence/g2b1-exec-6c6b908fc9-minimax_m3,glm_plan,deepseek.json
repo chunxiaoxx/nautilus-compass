@@ -1,0 +1,57 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "c88d6e65a8b1cccb44f0a8a8668655d292d7c704",
+  "reference_fix_commit": "6c6b908fc99915ae45f71d693db98044f984bf4b",
+  "subject": "fix(context): compact_text guards head/tail overlap (shared-pkg safety)",
+  "test_files": [
+   "tests/commons/context/test_compact_text.py"
+  ],
+  "source_files": [
+   "nautilus_v5/commons/context/compactor.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/commons/context/test_compact_text.py::test_head_tail_overlap_returns_original",
+ "source_rel": "nautilus_v5\\commons\\context\\compactor.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": true,
+ "winning_diff": "--- a/nautilus_v5/commons/context/compactor.py\n+++ b/nautilus_v5/commons/context/compactor.py\n@@ -52,6 +52,8 @@ async def compact_text(\n     if not text or len(text) <= threshold_chars:\n         return text\n \n+    if head_chars + tail_chars >= len(text):\n+        return text\n+\n     head = text[:head_chars]\n     tail = text[-tail_chars:]\n     middle = text[head_chars:-tail_chars] if len(text) > head_chars + tail_chars else \"\"\n",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 1366,
+    "output_tokens": 172,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_cs00skvv/repo/_g2b1.patch:6\n\n[attempt2 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_cs00skvv/repo/_g2b1.patch:6\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "input_tokens": 1378,
+    "output_tokens": 173,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "fix_compact_text_head_tail_overlap",
+ "duration_s": 18.5,
+ "verdict_post_status": 200
+}

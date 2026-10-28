@@ -1,0 +1,51 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "d4ac68caa68ba566c44970a6195725b6345b9255",
+  "reference_fix_commit": "d60b44f93eb87ac49d2078dae7ad6cd24fea02a7",
+  "subject": "fix(rsi-C): W1 \u5199\u56de\u4e09\u6839\u56e0\u4fee\u590d(wrote_back=0 \u2192 \u771f\u590d\u5229)",
+  "test_files": [
+   "tests/test_fleet_recall_inject.py",
+   "tests/test_fleet_writeback.py"
+  ],
+  "source_files": [
+   "fde_capsule/fleet_recall_inject.py",
+   "fde_capsule/fleet_writeback.py",
+   "nautilus_v5/runtime/daemon.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5"
+ },
+ "test_id": "tests/test_fleet_recall_inject.py::test_w1_normalizes_agent_id_hyphen_and_prefix",
+ "source_rel": "fde_capsule\\fleet_recall_inject.py",
+ "provider": "ark_glm",
+ "test_passed": true,
+ "winning_diff": "--- a/fde_capsule/fleet_recall_inject.py\n+++ b/fde_capsule/fleet_recall_inject.py\n@@ -90,6 +90,14 @@ def maybe_recall_block(task: Any, *,\n         return \"\"\n \n \n+def _normalize_agent_id(agent_id: str) -> str:\n+    \"\"\"daemon agent_id \u89c4\u8303\u5316:'-' \u2192 '_',\u7f3a 'ag_' \u524d\u7f00\u5219\u8865(compass write_learning \u53e3\u5f84)\u3002\"\"\"\n+    aid = str(agent_id).replace(\"-\", \"_\")\n+    if not aid.startswith(\"ag_\"):\n+        aid = \"ag_\" + aid\n+    return aid\n+\n+\n def prepare_writeback(reward: Any, agent_id: str, task_family: Optional[str],\n                       reason: Optional[str], task_uid: Optional[str],\n                       threshold: float = 1.0) -> Optional[dict]:\n@@ -118,7 +126,7 @@ def prepare_writeback(reward: Any, agent_id: str, task_family: Optional[str],\n         return None\n     return {\n-        \"agent_id\": agent_id,\n+        \"agent_id\": _normalize_agent_id(agent_id),\n         \"task_family\": str(task_family).strip(),\n         \"reason\": str(reason).strip()[:200],\n         \"task_uid\": task_uid,\n",
+ "budget_exceeded": false,
+ "total_tokens": 2315,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "completion_tokens": 735,
+    "prompt_tokens": 1580,
+    "total_tokens": 2315,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 242
+    }
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "normalize_agent_id_in_writeback",
+ "duration_s": 16.8,
+ "replayed": true,
+ "verdict_post_status": 200
+}

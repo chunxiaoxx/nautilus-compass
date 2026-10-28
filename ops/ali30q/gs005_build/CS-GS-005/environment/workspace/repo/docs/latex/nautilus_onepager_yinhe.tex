@@ -1,0 +1,76 @@
+\documentclass[10pt,a4paper]{ctexart}
+\usepackage[margin=1.7cm]{geometry}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\setlist{nosep,leftmargin=1.4em}
+\pagestyle{empty}
+\definecolor{acc}{RGB}{30,80,150}
+
+\title{\vspace{-1.6em}\textcolor{acc}{具身数据质量体检}\\[0.2em]
+\large 致银河通用:几十万条真机数据,合格率谁说了算}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+\vspace{-3.2em}
+
+\noindent\textbf{一句话}:真机数据大规模自采与外采并行的团队,迟早遇到同一个
+问题——供应商说数据合格,自采报表说数据合格,但这两个"合格"都是自报。
+我们做第三方数据验货:检测规则公开、读数可复算、机器初筛加人工复核。
+
+\section*{如果你遇到过这三件事}
+\begin{enumerate}
+\item 外采交付验收,合格率是交付方自报的数,没有独立一方复算过;
+\item 自采数据入库进训练集前,坏片率没有独立读数;
+\item 训练不收敛时,数据质量是第一个说不清的变量。
+\end{enumerate}
+
+\section*{我们怎么检}
+\noindent
+\begin{tabular}{@{}p{2.6cm}p{12.6cm}@{}}
+\toprule
+\textbf{自动检测} & 黑画面 / 卡顿 / 模糊画面 / 人脸出现,四项,规则固定 \\
+\midrule
+\textbf{人工复核} & 机器初筛加人工抽核双链路,疑似项逐帧核验 \\
+\midrule
+\textbf{判据公开} & 检测规则全文随报告附上,任何人可按规则复算 \\
+\midrule
+\textbf{交付物} & 有效数据率、坏片清单、逐项读数、改进建议 \\
+\bottomrule
+\end{tabular}
+
+\section*{两份实证}
+\textbf{(1) 行业开源数据实测}:对智元机器人开源数据集 AgiBotWorld-Alpha
+官方样例包(7.1GB,84 路视频、14 个操作回合、8 个机位)做独立体检:
+黑画面零命中、卡顿仅 4 路轻微越限;机器初筛报出 76 路“疑似人脸”,
+人工抽 27 帧核验,全部为窗户反光误报——\textbf{自动检测的读数必须经
+人工复核才可作为结论},这条已写进我们的流程。
+
+\textbf{(2) 我们自己}:判分器首跑给同一道题的三份答卷挂出 6 个失败,
+我们 7 分钟内自查定位——是判分器自己的探针环境缺陷造成的假败,
+不是答卷的错;修复重跑,两份全绿、一份 9/10(那一分是 Python 版本
+语义差,非逻辑错误),判分基线随之冻结并公开全过程。验货方的公信力
+不来自永远正确,来自先疑自己、错误必被公开。
+
+\section*{免费首检(首批 3 名)}
+20–50 条数据,收样后 5 个工作日,独立体检报告全项交付——免费。
+条件:授权脱敏摘页作公开案例,加一句可署名推荐语(条款全文随附)。
+
+\section*{赔付背书}
+验错赔付条款公开(§5b):同规格免费重测 + 全额退款 + 挑战成本我们承担;
+免费首检同享赔付纪律(免费复检 + 公开勘误)。
+
+\vspace{0.3em}
+\begin{tcolorbox}[colback=gray!6,colframe=gray!40,boxrule=0.4pt,arc=2pt]
+\small 另:若你更关心 AI 模型输出质量(而非数据质量),域校准报告 DCR
+¥699 起:compass.nautilus.social\\[0.3em]
+上海国曙人工智能科技有限公司 · 王春晓 · 18510625230 ·
+\texttt{chunxiaoxx@gmail.com}\\
+检测管道已在行业开源数据上实测运行 · 正在推进与行业标准(YD/T 6771)对齐
+· 2026 年 9 月
+\end{tcolorbox}
+
+\end{document}

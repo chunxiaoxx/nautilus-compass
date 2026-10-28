@@ -1,0 +1,73 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "2802c5004f37ceb449d4c58dbd4607e45c109a63",
+  "reference_fix_commit": "95be568b5947cf5100c397b1fd1d5deb72f60021",
+  "subject": "fix(sentinel): E4\u8bef\u50ac\u6839\u56e0=task_meta JSON null\u6807\u91cf\u8fc7SQL\u8fc7\u6ee4\u2014\u2014\u975e\u4efb\u52a1\u51fd(task_type/chain\u53cc\u65e0)Python\u5c42\u6321\u4e0b",
+  "test_files": [
+   "phase3/backend/tests/test_org_sentinel.py"
+  ],
+  "source_files": [
+   "phase3/backend/ops/org_sentinel.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/test_org_sentinel.py::test_e4_json_null_meta_not_urged",
+ "source_rel": "ops\\org_sentinel.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/ops/org_sentinel.py\n+++ b/ops/org_sentinel.py\n@@ -117,6 +117,8 @@\n     for r in overdue:\n         if r.id in sla_warned:\n             continue\n         tm = r.task_meta or {}\n+        if not tm:\n+            continue  # JSON null/\u7a7a meta \u4e0d\u7b97\u4efb\u52a1\u51fd\u2014\u2014\u4e0d\u63d0\u9192\u4e5f\u4e0d\u81ea\u52a8\u50ac\u529e\n         if tm.get(\"chain\") == \"m1\" and batches.get(tm.get(\"batch\"), (True, None))[0]:\n             continue  # \u5df2\u6536\u5b98\u94fe\u7684\u5386\u53f2\u4efb\u52a1\u51fd,\u6536\u5b98\u62a5\u5373\u7ec8\u70b9,\u4e0d\u8ffd\u8d85\u65f6\n",
+ "budget_exceeded": false,
+ "total_tokens": 6287,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 3781,
+    "completion_tokens": 2506,
+    "total_tokens": 6287,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 3781,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 2506,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 0,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 3781,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "skip_json_null_task_meta_e4",
+ "duration_s": 59.4,
+ "verdict_post_status": 200
+}

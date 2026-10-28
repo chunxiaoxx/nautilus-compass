@@ -1,0 +1,72 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "916883afad450c0c9bbc4212817900949131adbd",
+  "reference_fix_commit": "bec59289d8cf9b9b4010642b2fee483e5f8eeefc",
+  "subject": "Fix `package_name` resolution when top-level module differs from distribution name",
+  "test_files": [
+   "tests/test_basic.py"
+  ],
+  "source_files": [
+   "src/click/decorators.py"
+  ],
+  "repo_path": "C:/Users/chunx/ext_mine"
+ },
+ "test_id": "tests/test_basic.py::test_version_option_resolves_import_name_to_distribution",
+ "source_rel": "src\\click\\decorators.py",
+ "provider": "t6pool-chunxiao_k3",
+ "provider_used": "t6pool-chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/src/click/decorators.py\n+++ b/src/click/decorators.py\n@@ -446,10 +446,25 @@ def version_option(\n             try:\n                 version = importlib.metadata.version(package_name)\n             except importlib.metadata.PackageNotFoundError:\n-                raise RuntimeError(\n-                    f\"{package_name!r} is not installed. Try passing\"\n-                    \" 'package_name' instead.\"\n-                ) from None\n+                # The name may be an import name that differs from its\n+                # installed distribution name (e.g. ``PIL`` vs\n+                # ``Pillow``). Resolve the distribution name(s) for the\n+                # import name and try those.\n+                distributions = importlib.metadata.packages_distributions()\n+\n+                for dist_name in distributions.get(package_name, ()):\n+                    try:\n+                        version = importlib.metadata.version(dist_name)\n+                        break\n+                    except importlib.metadata.PackageNotFoundError:\n+                        continue\n+\n+                if version is None:\n+                    raise RuntimeError(\n+                        f\"{package_name!r} is not installed. Try passing\"\n+                        \" 'package_name' instead.\"\n+                    ) from None\n \n         if version is None:\n             raise RuntimeError(\n",
+ "budget_exceeded": false,
+ "total_tokens": 5802,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 5191,
+    "completion_tokens": 611,
+    "total_tokens": 5802,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 4935,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 611,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 5191,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "version_option_resolve_import_name_via_packages_distributions",
+ "duration_s": 39.1
+}

@@ -1,0 +1,29 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "1bb18ce9208d4498d54b37c0fd294b33712eaf25",
+  "reference_fix_commit": "9d71eea5b58e602a5474d531053afd80ca29a06e",
+  "subject": "fix(fde): reject malformed discovery reasons",
+  "test_files": [
+   "tests/test_adapter_contracts.py"
+  ],
+  "source_files": [
+   "src/nautilus_fde_phase3/contracts.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-fde-phase3"
+ },
+ "test_id": "tests/test_adapter_contracts.py::test_rejects_nested_reason_codes_without_raising",
+ "source_rel": "src/nautilus_fde_phase3/contracts.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

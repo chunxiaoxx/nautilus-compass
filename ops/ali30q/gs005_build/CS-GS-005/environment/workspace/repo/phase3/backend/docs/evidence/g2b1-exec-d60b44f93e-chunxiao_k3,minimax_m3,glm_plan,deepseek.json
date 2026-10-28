@@ -1,0 +1,119 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "d4ac68caa68ba566c44970a6195725b6345b9255",
+  "reference_fix_commit": "d60b44f93eb87ac49d2078dae7ad6cd24fea02a7",
+  "subject": "fix(rsi-C): W1 \u5199\u56de\u4e09\u6839\u56e0\u4fee\u590d(wrote_back=0 \u2192 \u771f\u590d\u5229)",
+  "test_files": [
+   "tests/test_fleet_recall_inject.py",
+   "tests/test_fleet_writeback.py"
+  ],
+  "source_files": [
+   "fde_capsule/fleet_recall_inject.py",
+   "fde_capsule/fleet_writeback.py",
+   "nautilus_v5/runtime/daemon.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_fleet_recall_inject.py::test_w1_normalizes_agent_id_hyphen_and_prefix",
+ "source_rel": "fde_capsule\\fleet_recall_inject.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/fde_capsule/fleet_recall_inject.py\n+++ b/fde_capsule/fleet_recall_inject.py\n@@ -98,10 +98,14 @@ def prepare_writeback(reward: Any, agent_id: str, task_family: Optional[str],\n     if not (task_family and str(task_family).strip()):\n         return None\n     if not (reason and str(reason).strip()):\n         return None\n+    aid = str(agent_id or \"\").strip().lower().replace(\"-\", \"_\")\n+    if aid and not aid.startswith(\"ag_\"):\n+        aid = f\"ag_{aid}\"\n     return {\n-        \"agent_id\": agent_id,\n+        \"agent_id\": aid,\n         \"task_family\": str(task_family).strip(),\n         \"reason\": str(reason).strip()[:200],\n         \"task_uid\": task_uid,\n     }\n",
+ "budget_exceeded": false,
+ "total_tokens": 6138,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 1743,
+    "completion_tokens": 754,
+    "total_tokens": 2497,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 1487,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 754,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 1743,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: No valid patches in input (allow with \"--allow-empty\")\n\n[attempt2 backend] error: No valid patches in input (allow with \"--allow-empty\")\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 1822,
+    "completion_tokens": 1819,
+    "total_tokens": 3641,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 286,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1536,
+      "output_tokens": 1819,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 1536,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 1822,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "normalize_agent_id_writeback",
+ "duration_s": 97.6,
+ "verdict_post_status": 200
+}

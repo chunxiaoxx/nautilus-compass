@@ -1,0 +1,73 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "648d7c403829013ade629d63ddbfe808f6b2b770",
+  "reference_fix_commit": "82f377c547e1867d073f02bb8f476214d07e245b",
+  "subject": "Fix deprecated label formatting",
+  "test_files": [
+   "tests/test_commands.py",
+   "tests/test_options.py"
+  ],
+  "source_files": [
+   "src/click/core.py"
+  ],
+  "repo_path": "C:/Users/chunx/ext_mine"
+ },
+ "test_id": "tests/test_commands.py::test_deprecated_empty_help_no_leading_space",
+ "source_rel": "src\\click\\core.py",
+ "provider": "t6pool-chunxiao_k3",
+ "provider_used": "t6pool-chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/src/click/core.py\n+++ b/src/click/core.py\n@@ -1310,7 +1310,10 @@ class Command:\n             text = \"\"\n \n         if self.deprecated:\n-            text = f\"{_(text)} {_format_deprecated_label(self.deprecated)}\"\n+            label = _format_deprecated_label(self.deprecated)\n+            # Avoid a stray leading space when there is no help text to\n+            # which the deprecation label is appended.\n+            text = f\"{_(text)} {label}\" if text else label\n \n         if text:\n             formatter.write_paragraph()\n",
+ "budget_exceeded": false,
+ "total_tokens": 30933,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 30533,
+    "completion_tokens": 400,
+    "total_tokens": 30933,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 30277,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 400,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 30533,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "fix_deprecated_empty_help_leading_space",
+ "duration_s": 33.2
+}

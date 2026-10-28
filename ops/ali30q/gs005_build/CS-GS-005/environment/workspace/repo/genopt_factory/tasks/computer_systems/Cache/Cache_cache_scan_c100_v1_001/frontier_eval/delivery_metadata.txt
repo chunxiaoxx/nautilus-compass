@@ -1,0 +1,18 @@
+delivery_status: provisional · GPT5.5 N=3 v5 真测 · **Hard 0.1087** ✓
+task_uid: genopt_computer_systems_Cache_cache_scan_c100_v1_001_20260704
+spec_ref: vtf/BUYER_SPEC_GenOpt_RL_20260702.md
+platform: platform (nautilus-core)
+note: "v1/v2/v3 失败都是 verifier bug(candidate 当 fifo 跑)·v4 修后未真生效(workdir 副本)·v5 在 harness 加 --baseline 显式路径 + evaluate.py 加 --baseline 参数,真 grounded Hard 0.1087"
+hand_off:
+  - platform: Task.md + baseline/init.py + reference/solve.py + verification/{evaluate,_run_one}.py + 9 frontier_eval/*.txt + data/SOURCE.txt + 5 data/instances/*.json + Dockerfile + README.md
+  - soul: pending verifier QC final review
+  - V5: pending batch runner hookup
+  - FDE: pending feishu table domain extension
+gap_closed_calibration:
+  seed: 0.0
+  best: 10.8659
+  gap: 0.1087
+  difficulty: Hard
+  rounds: "r1=10.82/59s · r2=10.87/43s · r3=10.83/55s"
+  trajectory: gpt55_trajectory_h800_v5.json (H800 真 grounded · 6.5KB)
+  fix_history: "v1=v2=v3=v4=0 (verifier path bug) · v5=HARD 0.1087"

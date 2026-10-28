@@ -1,0 +1,8 @@
+readonly:
+  - verification/
+  - data/
+  - frontier_eval/
+  - reference/
+writable:
+  - baseline/init.py
+  - /tmp/*

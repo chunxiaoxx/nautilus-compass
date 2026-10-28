@@ -1,0 +1,73 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "874327627c3e02442bc2830f1e3cab1557df1998",
+  "reference_fix_commit": "ababe584ad05f79b431190227837108128c0a0ba",
+  "subject": "fix(rsi): tool_surface\u53e3\u5f84\u4fee\u6b63\u2014\u2014\u53ea\u8bfb\u53ef\u8fbe=\u8bcd\u8868\u222a\u76f4\u901a\u767d\u540d\u5355",
+  "test_files": [
+   "tests/test_tool_surface_harvest.py"
+  ],
+  "source_files": [
+   "tools/rsi_obs_harvest.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\nautilus-v5"
+ },
+ "test_id": "tests/test_tool_surface_harvest.py::test_gap_two_kinds_read_and_gated",
+ "source_rel": "tools\\rsi_obs_harvest.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/tools/rsi_obs_harvest.py\n+++ b/tools/rsi_obs_harvest.py\n@@ -28,6 +28,10 @@\n KEY_GATED_TOOLS = (\"write_file\", \"edit_file\", \"bash\", \"code_exec\",\n                    \"cloud_exec\")\n \n+# 2026-09-18 \u590d\u76d8\u53e3\u5f84\u4fee\u6b63:\u53ea\u8bfb\u4ef6\u53ef\u8fbe\u5224\u636e=\u8bcd\u8868 \u222a P1 \u76f4\u901a\u767d\u540d\u5355\n+# (P1 \u5df2\u542b read_file/list_dir \u2192 lock \u5f52\u96f6);\u5199\u4ef6\u6c38\u4e0d\u76f4\u901a,\u4e0d\u9002\u7528\u6b64\u8c41\u514d\n+P1_PASSTHROUGH = (\"read_file\", \"list_dir\")\n+\n \n def _router_tools():\n     \"\"\"\u4ece intent_router \u6e90\u7801\u62bd\u8bcd\u8868\u767d\u540d\u5355\u5de5\u5177\u540d(\u4e0e\u6ce8\u518c\u8868\u65e0\u5173,\u7eaf\u6587\u672c\u62bd)\u3002\"\"\"\n@@ -44,7 +48,8 @@\n     \"\"\"coding \u901a\u9053\u4ef6 vs \u8bcd\u8868\u5dee\u96c6,\u4e24\u5206\u89c2\u6d4b\u3002\u5404 gap=0 \u4e0d\u4ea7\u884c\u3002\"\"\"\n     rt = _router_tools()\n     out = []\n-    miss_read = [t for t in KEY_READ_TOOLS if t not in rt]\n+    miss_read = [t for t in KEY_READ_TOOLS\n+                 if t not in rt and t not in P1_PASSTHROUGH]\n     if miss_read:\n         out.append({\"kind\": \"tool_surface_lock\", \"count\": len(miss_read),\n                     \"samples\": miss_read})\n",
+ "budget_exceeded": false,
+ "total_tokens": 3569,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 2770,
+    "completion_tokens": 799,
+    "total_tokens": 3569,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 2514,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 799,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 2770,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "tool_surface_read_p1_passthrough",
+ "duration_s": 30.6,
+ "verdict_post_status": 200
+}

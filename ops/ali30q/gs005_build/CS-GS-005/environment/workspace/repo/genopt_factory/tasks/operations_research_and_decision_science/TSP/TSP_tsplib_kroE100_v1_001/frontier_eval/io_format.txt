@@ -1,0 +1,11 @@
+input_format: "JSON object with {name, dimension, node_coords: [(x,y), ...]}"
+output_format: "JSON object with {tour: [int, ...]} — permutation of [0..dimension-1]"
+problem_type: "symmetric TSP, 2-D Euclidean"
+num_instances: 6
+instance_names:
+  - burma14_synth        # 14 cities (toy, density)
+  - grid20_synth         # 20 cities (grid, structure)
+  - random50_synth       # 50 cities (uniform)
+  - cluster100_synth     # 100 cities (4-cluster)
+  - random225_synth      # 225 cities (large uniform)
+  - random500_synth      # 500 cities (very large, Hard target)

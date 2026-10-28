@@ -1,0 +1,73 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "e057ede128baf1d49f9ab0e6dedece64f0173e67",
+  "reference_fix_commit": "d0b9e1147b037db282f757819cf558e27af311b7",
+  "subject": "fix(exam): \u9002\u914d\u5668\u89e3\u5305\u5e73\u53f0JSON\u5305\u88f9(\u952e\u540d\u4e0d\u5b9a_raw/_original_description)",
+  "test_files": [
+   "tests/test_exam_adapter.py"
+  ],
+  "source_files": [
+   "fde_capsule/fde_consumer.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\nautilus-v5"
+ },
+ "test_id": "tests/test_exam_adapter.py::test_adapt_unwraps_platform_raw_json",
+ "source_rel": "fde_capsule\\fde_consumer.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/fde_capsule/fde_consumer.py\n+++ b/fde_capsule/fde_consumer.py\n@@ -38,6 +38,17 @@\n     if not uid.startswith(\"g2b1:\"):\n         return task\n     desc = str(task.get(\"description\") or \"\")\n+    # \u5e73\u53f0 dispatch \u628a description \u5305\u6210 {\"_raw\": \"...\"}(\u6362\u884c\u8f6c\u4e49)\u2192 \u5148\u89e3\u5305\u518d\u6309\u6807\u8bb0\u89e3\u6790\n+    _s = desc.strip()\n+    if _s.startswith(\"{\"):\n+        try:\n+            import json as _json\n+            _p = _json.loads(_s)\n+            if isinstance(_p, dict) and isinstance(_p.get(\"_raw\"), str):\n+                desc = _p[\"_raw\"]\n+        except Exception:\n+            pass\n     m_s = _EXAM_STARTER_RE.search(desc)\n     m_t = _EXAM_TEST_RE.search(desc)\n     m_h = _EXAM_STMT_RE.search(desc)\n",
+ "budget_exceeded": false,
+ "total_tokens": 6118,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 5701,
+    "completion_tokens": 417,
+    "total_tokens": 6118,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 5445,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 417,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 5701,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "exam_adapter_unwrap_raw_json",
+ "duration_s": 18.6,
+ "verdict_post_status": 200
+}

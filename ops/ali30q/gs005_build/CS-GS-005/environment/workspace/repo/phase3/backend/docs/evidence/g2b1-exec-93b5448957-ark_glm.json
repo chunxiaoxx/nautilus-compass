@@ -1,0 +1,48 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "c41df275fde78befe1e8531b75a74ef21d14cd81",
+  "reference_fix_commit": "93b544895780ca1d350323ce9b4f199570718bcf",
+  "subject": "fix(ale-fuel): _extract_best_code \u672a\u95ed\u5408 fence \u56de\u9000(\u6cbb\u5047 0\u00b7confound 6/23 ahc003)",
+  "test_files": [
+   "tests/test_ale_fuel_batch.py"
+  ],
+  "source_files": [
+   "fde_capsule/ale_fuel_batch.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5"
+ },
+ "test_id": "tests/test_ale_fuel_batch.py::test_extract_best_code_unclosed_fence_head",
+ "source_rel": "fde_capsule\\ale_fuel_batch.py",
+ "provider": "ark_glm",
+ "test_passed": true,
+ "winning_diff": "--- a/fde_capsule/ale_fuel_batch.py\n+++ b/fde_capsule/ale_fuel_batch.py\n@@ -223,6 +223,10 @@\n             if b.strip()]\n     if anyb:\n         return anyb[-1]\n+    # unclosed fence at head(6/23 ahc003:reasoning \u6324\u6389\u95ed\u5408 ``` \u2192 \u5265\u5f00\u5934 fence)\n+    m = re.match(r\"^\\s*```[a-zA-Z0-9]*[^\\n]*\\n(.*)\", text, re.DOTALL)\n+    if m and m.group(1).strip():\n+        return m.group(1).strip()\n     if re.search(r\"^\\s*(import |from |def |print\\()\", text, re.MULTILINE):\n         return text.strip()\n     return text.strip()",
+ "budget_exceeded": false,
+ "total_tokens": 26187,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "completion_tokens": 20412,
+    "prompt_tokens": 5775,
+    "total_tokens": 26187,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 20179
+    }
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "strip_unclosed_fence_head",
+ "duration_s": 262.8,
+ "replayed": true,
+ "verdict_post_status": 200
+}

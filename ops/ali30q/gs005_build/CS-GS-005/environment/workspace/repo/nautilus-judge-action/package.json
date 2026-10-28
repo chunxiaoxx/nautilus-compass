@@ -1,0 +1,1 @@
+{ "name": "nautilus-judge-action", "version": "0.1.0", "main": "dist/index.js", "dependencies": {} , "devDependencies": { "@actions/core": "^1.10.1", "typescript": "^5.0.0", "esbuild": "^0.20.0" }, "scripts": { "build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outfile=dist/index.js" } }

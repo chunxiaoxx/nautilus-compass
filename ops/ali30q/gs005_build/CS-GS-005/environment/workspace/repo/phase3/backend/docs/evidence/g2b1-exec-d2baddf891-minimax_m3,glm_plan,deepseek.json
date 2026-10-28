@@ -1,0 +1,57 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "f3020da8ffc92484712c188fd090725556b4e0d9",
+  "reference_fix_commit": "d2baddf891760eaeeb750d2abb7418b3ddae021a",
+  "subject": "fix(context): coalesce adjacent same-role msgs after compaction (anthropic-compat 400 guard) + drop dead _PRUNED",
+  "test_files": [
+   "tests/commons/context/test_compact_messages.py"
+  ],
+  "source_files": [
+   "nautilus_v5/commons/context/compactor.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/commons/context/test_compact_messages.py::test_no_consecutive_same_role_after_inject",
+ "source_rel": "nautilus_v5\\commons\\context\\compactor.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": true,
+ "winning_diff": "--- a/nautilus_v5/commons/context/compactor.py\n+++ b/nautilus_v5/commons/context/compactor.py\n@@ -170,9 +170,15 @@ async def compact_messages(\n     out = list(messages[:head_end])\n     if summary:\n         out.append({\"role\": \"user\", \"content\": f\"{_SUMMARY_PREFIX}\\n{summary}\"})\n     out.extend(messages[tail_start:])\n     out = _sanitize_tool_pairs(out)\n+\n+    # Avoid consecutive same-role messages (e.g. summary user msg directly\n+    # followed by another user msg from the tail). Coalesce by merging content\n+    # of adjacent same-role messages \u2014 they all become a single user msg.\n+    coalesced: List[Dict[str, Any]] = []\n+    for m in out:\n+        if coalesced and coalesced[-1].get(\"role\") == m.get(\"role\"):\n+            coalesced[-1][\"content\"] = (coalesced[-1].get(\"content\") or \"\") + \"\\n\\n\" + (m.get(\"content\") or \"\")\n+        else:\n+            coalesced.append(dict(m))\n+    out = coalesced\n+\n     return out, (summary or None)\n",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 2659,
+    "output_tokens": 554,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: No valid patches in input (allow with \"--allow-empty\")\n\n[attempt2 backend] error: No valid patches in input (allow with \"--allow-empty\")\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "input_tokens": 2598,
+    "output_tokens": 347,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "fix_consecutive_role_after_compaction_injection",
+ "duration_s": 23.7,
+ "verdict_post_status": 200
+}

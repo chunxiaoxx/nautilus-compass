@@ -1,0 +1,71 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "200adf435e92f96b2befb0b5c8c8661f5f085567",
+  "reference_fix_commit": "28c2473f60ac12d7d27cf693142811ebc895b592",
+  "subject": "fix(fde): stabilize schema option hashing",
+  "test_files": [
+   "phase3/backend/tests/test_fde_phase3_feishu.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/fde_phase3_feishu.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/test_fde_phase3_feishu.py::test_schema_probe_hash_is_stable_for_mixed_color_types_without_option_ids",
+ "source_rel": "services\\fde_phase3_feishu.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 7154,
+    "output_tokens": 173,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_1jtauqu4\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 1 item\r\n\r\ntests/test_fde_phase3_feishu.py::test_schema_probe_hash_is_stable_for_mixed_color_types_without_option_ids FAILED [100%]\r\n\r\n================================== FAILURES ===================================\r\n__ test_schema_probe_hash_is_stable_for_mixed_color_types_without_option_ids __\r\ntests\\test_fde_phase3_feishu.py:1093: in test_schema_probe_hash_is_stable_for_mixed_color_types_without_option_ids\r\n    assert first.schema_sha256 == second.schema_sha256\r\nE   AssertionError: assert '6ba3ad0a8b98...13c6905fe3c1c' == 'd8c18157f2f3...3082a7094b414'\r\nE     \r\nE     - d8c18157f2f3622cd846a5774e6784bfe7c1e6cf79a32495f553082a7094b414\r\nE     + 6ba3ad0a8b984bda0781500bdd1859296200d48a4ea56f4533d13c6905fe3c1c\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_fde_phase3_feishu.py::test_schema_probe_hash_is_stable_for_mixed_color_types_without_option_ids\r\n============================== 1 failed in 0.26s ==============================\r\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 7634,
+    "output_tokens": 209,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_1jtauqu4\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 1 item\r\n\r\ntests/test_fde_phase3_feishu.py::test_schema_probe_hash_is_stable_for_mixed_color_types_without_option_ids FAILED [100%]\r\n\r\n================================== FAILURES ===================================\r\n__ test_schema_probe_hash_is_stable_for_mixed_color_types_without_option_ids __\r\ntests\\test_fde_phase3_feishu.py:1095: in test_schema_probe_hash_is_stable_for_mixed_color_types_without_option_ids\r\n    colors = [option[\"color\"] for option in first.to_audit_dict()[\"tables\"][0][\"fields\"][0][\"options\"]]\r\n              ^^^^^^^^^^^^^^^\r\nE   KeyError: 'color'\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_fde_phase3_feishu.py::test_schema_probe_hash_is_stable_for_mixed_color_types_without_option_ids\r\n============================== 1 failed in 0.34s ==============================\r\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 7529,
+    "output_tokens": 178,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_1jtauqu4\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 1 item\r\n\r\ntests/test_fde_phase3_feishu.py::test_schema_probe_hash_is_stable_for_mixed_color_types_without_option_ids FAILED [100%]\r\n\r\n================================== FAILURES ===================================\r\n__ test_schema_probe_hash_is_stable_for_mixed_color_types_without_option_ids __\r\ntests\\test_fde_phase3_feishu.py:1093: in test_schema_probe_hash_is_stable_for_mixed_color_types_without_option_ids\r\n    assert first.schema_sha256 == second.schema_sha256\r\nE   AssertionError: assert '6ba3ad0a8b98...13c6905fe3c1c' == 'd8c18157f2f3...3082a7094b414'\r\nE     \r\nE     - d8c18157f2f3622cd846a5774e6784bfe7c1e6cf79a32495f553082a7094b414\r\nE     + 6ba3ad0a8b984bda0781500bdd1859296200d48a4ea56f4533d13c6905fe3c1c\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_fde_phase3_feishu.py::test_schema_probe_hash_is_stable_for_mixed_color_types_without_option_ids\r\n============================== 1 failed in 0.31s ==============================\r\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 14.2,
+ "verdict_post_status": 200
+}

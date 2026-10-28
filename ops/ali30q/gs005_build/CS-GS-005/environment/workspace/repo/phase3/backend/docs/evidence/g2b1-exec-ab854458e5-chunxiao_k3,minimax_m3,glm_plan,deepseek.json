@@ -1,0 +1,159 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "d4590aa6df92bb064128a16df1737d8de2f44153",
+  "reference_fix_commit": "ab854458e5729e042dc410c7b9c702607aa60374",
+  "subject": "fix(dashboard): FDE \u4e1a\u52a1\u73af\u5361\u6392\u9664 my_test_*/test_* \u6b8b\u7559(\u7532\u65b9 demo \u4e0d\u9732\u6d4b\u8bd5\u6570\u636e)\u00b710 passed",
+  "test_files": [
+   "phase3/backend/tests/test_platform_rsi_fde_api.py"
+  ],
+  "source_files": [
+   "phase3/backend/api/platform_rsi_fde.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/test_platform_rsi_fde_api.py::test_fde_business_section_excludes_test_uids",
+ "source_rel": "api\\platform_rsi_fde.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/api/platform_rsi_fde.py\n+++ b/api/platform_rsi_fde.py\n@@ -170,6 +170,11 @@ def _fde_business_section(db, limit: int) -> dict:\n     \u4e0e\u98de\u8f6e\u81ea\u52a8\u8f68(source=compass/bench_eval\u00b7\u673a\u5668\u5224)\u533a\u5206:\u8fd9\u662f\u4eba\u7c7b\u4e13\u5bb6\u4eb2\u5199\u3001\n     soul/feishu-expert \u4eba\u5de5 QC \u7684\u4e1a\u52a1\u73af(charter \u00a71 \u7b2c1/2\u7c7b)\u3002\u4ea4\u4ed8+\u7ed3\u7b97(\u5e94\u4ed8=\n     \u5355\u4ef7\u00d7\u5de5\u65f6)\u843d\u98de\u4e66 RGDK \u6d3e\u6d3b\u8868 + Dx2qb \u7ed3\u7b97\u8868(DB \u4e0d\u5b58\u91d1\u989d\u00b7\u53ea\u5b58 QC verdict)\u3002\n+\n+    Test-fixture / smoke-probe task_uids (\u4efb\u4f55\u542b 'TEST' \u7684 uid)\u4e0d\u7b97\u771f\u4e1a\u52a1:\n+    \u5b83\u4eec\u6c61\u67d3\u300c\u4eba\u5de5 QC \u901a\u8fc7\u300d\u53e3\u5f84,\u628a\u5192\u70df\u63a2\u9488\u5f53\u6210\u4ea4\u4ed8\u3002Dashboard \u53ea\u6570\u771f\u5ba2\u6237\u9898\u3002\n     \"\"\"\n+    _TEST_UID_FILTER = \"AND UPPER(task_uid) NOT LIKE '%TEST%'\"\n     rows = _safe_rows(\n         db,\n         \"SELECT task_uid, source, overall_pass, score, created_at FROM fde_verdicts \"\n-        \"WHERE source IN ('soul','feishu-expert') \"\n+        \"WHERE source IN ('soul','feishu-expert') \" + _TEST_UID_FILTER + \" \"\n         \"ORDER BY created_at DESC, id DESC LIMIT :lim\",\n         {\"lim\": limit},\n     )\n@@ -186,7 +191,8 @@ def _fde_business_section(db, limit: int) -> dict:\n     tot = _safe_rows(\n         db,\n         \"SELECT COUNT(*) AS t, SUM(CASE WHEN overall_pass THEN 1 ELSE 0 END) AS p \"\n-        \"FROM fde_verdicts WHERE source IN ('soul','feishu-expert')\",\n+        \"FROM fde_verdicts WHERE source IN ('soul','feishu-expert') \"\n+        + _TEST_UID_FILTER,\n     )\n     total = int(tot[0][0]) if tot else 0\n     passed = int(tot[0][1] or 0) if tot else 0",
+ "budget_exceeded": false,
+ "total_tokens": 21023,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 5929,
+    "completion_tokens": 990,
+    "total_tokens": 6919,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 5673,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 990,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 5929,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 root] error: No valid patches in input (allow with \"--allow-empty\")\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 6006,
+    "completion_tokens": 695,
+    "total_tokens": 6701,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 374,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 5632,
+      "output_tokens": 695,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 5632,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 6006,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_5lwrwyrl\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0, httpbin-2.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 1 item\r\n\r\ntests/test_platform_rsi_fde_api.py::test_fde_business_section_excludes_test_uids \r\n-------------------------------- live log call --------------------------------\r\n2026-09-08 23:31:41 [    INFO] HTTP Request: GET http://testserver/api/platform/rsi-fde \"HTTP/1.1 200 OK\"\r\nFAILED                                                                   [100%]\r\n\r\n================================== FAILURES ===================================\r\n________________ test_fde_business_section_excludes_test_uids _________________\r\ntests\\test_platform_rsi_fde_api.py:232: in test_fde_business_section_excludes_test_uids\r\n    assert fb[\"total\"] == 1 and fb[\"passed\"] == 1\r\nE   assert (2 == 1)\r\n------------------------------ Captured log call ------------------------------\r\nINFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/api/platform/rsi-fde \"HTTP/1.1 200 OK\"\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_platform_rsi_fde_api.py::test_fde_business_section_excludes_test_uids\r\n======================== 1 failed, 2 warnings in 1.21s ========================\r\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 6400,
+    "completion_tokens": 1003,
+    "total_tokens": 7403,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 512,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 5888,
+      "output_tokens": 1003,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 5888,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 6400,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "fde_business_exclude_test_uids",
+ "duration_s": 86.8,
+ "verdict_post_status": 200
+}

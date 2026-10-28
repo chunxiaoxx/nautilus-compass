@@ -1,0 +1,30 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "b1fb3a0bebc9ee0da682bd6d704acef607bf9cf9",
+  "reference_fix_commit": "2dbd26589b2dc05d6ad56dcbd494a26a14a15ca6",
+  "subject": "fix(fde): harden phase 3 ownership boundaries",
+  "test_files": [
+   "phase3/backend/tests/test_fde_phase3_feishu.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/fde_phase3_feishu.py"
+  ],
+  "repo_path": "C:/Users/chunx/Projects/nautilus-core"
+ },
+ "test_id": "tests/test_fde_phase3_feishu.py",
+ "source_rel": "services\\fde_phase3_feishu.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 4.6,
+ "replayed": true,
+ "verdict_post_status": 200
+}

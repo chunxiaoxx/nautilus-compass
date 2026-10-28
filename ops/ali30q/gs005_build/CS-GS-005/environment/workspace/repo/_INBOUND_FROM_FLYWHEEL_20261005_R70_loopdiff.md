@@ -1,0 +1,1 @@
+[loop-diff] R70 2026-10-05 flywheel: #3270 r81四验全链闭环——5/5过门(G4 SKIP panel侧)+writeback inserted:5(池58)+final_patch兼容确认(附字段不进判定,元数据入writeback)+r80判因占比实测回执(fail 19/25=76%全unfinished,与env_missing_repo预期占比一致,现象/根因两层映射已附)+回函SENT 3283双确认+ack/done双销账;主批f111-f130放行;set16=challenge umi_batch1(940件9.7G UMI手持批首例)发车中。待用户批:challenge邮件/社区文案/千寻三问。

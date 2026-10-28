@@ -1,0 +1,29 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "af9e9d14a3893b65d29246c9785931beff845386",
+  "reference_fix_commit": "748a21180b92e5d5e09274a3bddde8826ece8948",
+  "subject": "fix(ale-fuel): _extract_best_code \u6293\u6700\u540e\u4ee3\u7801\u5757(\u6cbb reasoning \u591a\u8349\u7a3f\u4f4e\u4ea7\u7387)",
+  "test_files": [
+   "tests/test_ale_fuel_batch.py"
+  ],
+  "source_files": [
+   "fde_capsule/ale_fuel_batch.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_ale_fuel_batch.py",
+ "source_rel": "fde_capsule\\ale_fuel_batch.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "skipped_reason": "fixture_broken_red",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 2.4,
+ "replayed": true,
+ "verdict_post_status": 200
+}

@@ -1,0 +1,73 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "3c1599cdfe0a2d202275538c62f5b3d3d103a95d",
+  "reference_fix_commit": "2a03d03c6be19166fcbffa68d5e1e7fecb1d32af",
+  "subject": "fix(jarvis): @\u76f4\u8fbe\u6307\u4ee4\u5e26task_meta\u2014\u2014\u8fdb\u54e8\u5175E4\u8d85\u65f6\u76d1\u63a7(\u56de\u6267\u627f\u8bfa\u4e0e\u6267\u6cd5\u95ed\u73af\u5bf9\u9f50,\u6d4b\u8bd517\u8fc7)",
+  "test_files": [
+   "phase3/backend/tests/platform_protocol/test_feishu_cmd.py"
+  ],
+  "source_files": [
+   "phase3/backend/api/feishu_cmd.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/platform_protocol/test_feishu_cmd.py::test_at_frame_routes_as_user",
+ "source_rel": "api\\feishu_cmd.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/api/feishu_cmd.py\n+++ b/api/feishu_cmd.py\n@@ -220,6 +220,7 @@\n         db.add(OrgMailbox(from_agent=\"user\", to_agent=to, trace_id=trace,\n                           title=f\"[\u7528\u6237\u76f4\u8fbe\u6307\u4ee4] {msg[:40]}\",\n                           body=f\"\u7528\u6237\u7ecf\u8d3e\u7ef4\u65af(@\u8f6c\u53d1)\u4e0b\u8fbe\u6307\u4ee4:\\n{msg}\\n\"\n                                f\"(from=user,\u767d\u540d\u5355\u4f1a\u8bdd+\u9a8c\u7b7e,2h SLA)\",\n+                          task_meta={\"task_type\": \"jarvis_direct\", \"target\": to},\n                           deadline=now + timedelta(hours=2), created_at=now))\n         db.commit()\n         return f\"\ud83d\udce8 \u5df2\u8f6c\u8fbe {to}:\u300c{msg[:60]}\u300d(2h SLA \u5df2\u6302,\u56de\u51fd\u54e8\u5175\u4f1a\u63a8\u4f60)\"\n",
+ "budget_exceeded": false,
+ "total_tokens": 6251,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 5910,
+    "completion_tokens": 341,
+    "total_tokens": 6251,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 5910,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 341,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 0,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 5910,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "at_frame_task_meta_jarvis_direct",
+ "duration_s": 32.0,
+ "verdict_post_status": 200
+}

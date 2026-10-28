@@ -1,0 +1,57 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "23b0d6d2f306c34086f1d67830ae468a48f6558c",
+  "reference_fix_commit": "ca8ddb890126c0a7fe735cee7a81e3227f2c9f62",
+  "subject": "fix(fde): c6 \u2014 shared_facts pin \u7518\u7279\u7814\u53d1\u9636\u6bb5(\u9010\u5b57\u5b8c\u6574\u00b7\u4e0d\u5f97\u5408\u5e76/\u6539\u540d/\u9057\u6f0f)",
+  "test_files": [
+   "tests/test_solve_task.py"
+  ],
+  "source_files": [
+   "fde_capsule/solve_task.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_solve_task.py::test_shared_facts_injected_into_author_prompt",
+ "source_rel": "fde_capsule\\solve_task.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": true,
+ "winning_diff": "--- a/fde_capsule/solve_task.py\n+++ b/fde_capsule/solve_task.py\n@@ -168,11 +168,13 @@ def derive_shared_facts(task: str, digest_text: str, deliverables: list[dict],\n     \"   - \u9690\u79c1\u53c2\u6570:\u7ed9\u51fa\u5355\u4e00\u786e\u5b9a\u9608\u503c(\u5982 k-\u533f\u540d\u6027 k \u7684\u552f\u4e00\u53d6\u503c\u3001\u5dee\u5206\u9690\u79c1 \u03b5),\u4e0d\u5f97\u7ed9\u533a\u95f4\u6216\u591a\u503c\u3002\\n\"\n     \"   - \u7248\u672c\u65f6\u95f4\u7ebf:MVP \u53ca\u540e\u7eed\u5404\u7248\u672c(\u5982 V3.1/V3.2/V3.3),\u6bcf\u4e2a\u7248\u672c\u7ed9\u300e\u65f6\u95f4\u7a97\u53e3 + \u91cc\u7a0b\u7891 + \u7eb3\u5165\u6a21\u5757\u300f\u4e09\u8981\u7d20\u3002\\n\"\n     \"   - \u6a21\u5757\u6e05\u5355:\u516d\u5927\u6a21\u5757\u7684\u7edf\u4e00\u7f16\u53f7\u4e0e\u540d\u79f0\u3002\\n\"\n     \"   - \u5173\u952e\u6570\u636e\u5173\u8054:\u8de8\u6570\u636e\u96c6\u63a8\u65ad/\u53cd\u4e8b\u5b9e\u7684\u7edf\u4e00\u8868\u8ff0\u3002\\n\"\n-    \"3. \u540c\u4e00\u53c2\u6570\u5168\u7a0b\u53ea\u5141\u8bb8\u4e00\u4e2a\u503c\u3002\\n\\n\"\n+    \"3. \u540c\u4e00\u53c2\u6570\u5168\u7a0b\u53ea\u5141\u8bb8\u4e00\u4e2a\u503c\u3002\\n\"\n+    \"4. \u7248\u672c\u65f6\u95f4\u7ebf\u4e2d\u5404\u300e\u7814\u53d1\u9636\u6bb5\u300f\u5fc5\u987b\u663e\u5f0f\u5c55\u5f00\u4e3a\u72ec\u7acb\u9636\u6bb5\u884c(\u5982 \u6570\u636e\u63a5\u5165 / \u7279\u5f81\u5de5\u7a0b / \u5efa\u6a21 / \u4e0a\u7ebf),\u4e0d\u5f97\u5408\u5e76\u4e3a\u5355\u4e00\u9636\u6bb5(\u6cbb c6 \u7518\u7279\u9636\u6bb5\u538b\u7f29)\u3002\\n\\n\"\n     \"## \u9898\u76ee\u5168\u6587\\n{task}\\n\\n## \u9644\u4ef6\u6570\u636e\u6458\u8981\\n{digest}\\n\\n## \u5404\u4ea4\u4ed8\u7269\\n{delivs}\\n\"\n )\n",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 3046,
+    "output_tokens": 244,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: fde_capsule/solve_task.py:170\nerror: fde_capsule/solve_task.py: patch does not apply\n\n[attempt2 backend] error: patch failed: fde_capsule/solve_task.py:170\nerror: fde_capsule/solve_task.py: patch does not apply\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "input_tokens": 3164,
+    "output_tokens": 363,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "add_pinning_rule_to_shared_facts_prompt",
+ "duration_s": 14.3,
+ "verdict_post_status": 200
+}

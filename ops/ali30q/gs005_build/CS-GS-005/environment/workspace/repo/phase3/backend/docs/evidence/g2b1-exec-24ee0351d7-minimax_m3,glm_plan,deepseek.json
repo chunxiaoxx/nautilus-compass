@@ -1,0 +1,43 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "84d541441d6f194744e03a98f5eccb8cea5b0025",
+  "reference_fix_commit": "24ee0351d751635ad0b664426c3b0c537ba6cfef",
+  "subject": "fix(genopt): feishu_ship defaults to None (anchor #6 secret hygiene)",
+  "test_files": [
+   "tests/test_genopt_feishu_ship.py"
+  ],
+  "source_files": [
+   "fde_capsule/genopt/feishu_ship.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_genopt_feishu_ship.py::test_defaults_are_none_for_secret_hygiene",
+ "source_rel": "fde_capsule\\genopt\\feishu_ship.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": true,
+ "winning_diff": "--- a/fde_capsule/genopt/feishu_ship.py\n+++ b/fde_capsule/genopt/feishu_ship.py\n@@ -13,8 +13,8 @@ import sys\n \n from fde_capsule.genopt import feishu_schema\n \n-DEFAULT_APP_TOKEN = \"EOVhbQwA0a1HEOsgmxecgkBVnwh\"\n-DEFAULT_TABLE_ID = \"tblhD4O4f0esTyXc\"\n+DEFAULT_APP_TOKEN = None\n+DEFAULT_TABLE_ID = None\n TASK_FIELDS = [\"task_id\", \"Prompt\", \"Domain\", \"Sub-domain\", \"directory\"]\n",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "input_tokens": 1845,
+    "output_tokens": 197,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "feishu_ship_defaults_none_for_secret_hygiene",
+ "duration_s": 6.4,
+ "verdict_post_status": 200
+}

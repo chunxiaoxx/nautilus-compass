@@ -1,0 +1,17 @@
+2026-03-10 01:23:06 - root - [32mINFO[0m - Structured logging system initialized
+2026-03-10 01:23:06 - root - [32mINFO[0m - Sensitive data filtering enabled for all loggers
+2026-03-10 01:23:06 - utils.security_validators - [33mWARNING[0m - Security warnings:
+  - Using example Infura project ID, please replace with your own
+2026-03-10 01:23:06 - utils.security_validators - [32mINFO[0m - Environment security validation passed
+2026-03-10 01:23:06 - main - [32mINFO[0m - Security validation completed: passed
+2026-03-10 01:23:06 - main - [33mWARNING[0m - Security warning: Using example Infura project ID, please replace with your own
+/home/ubuntu/.local/lib/python3.10/site-packages/fastapi/openapi/utils.py:254: UserWarning: Duplicate Operation ID get_agent_tasks_api_agents__agent_id__tasks_get for function get_agent_tasks at /home/ubuntu/nautilus-mvp/phase3/backend/scripts/../api/agent_tasks.py
+  warnings.warn(message, stacklevel=1)
+/home/ubuntu/.local/lib/python3.10/site-packages/fastapi/openapi/utils.py:254: UserWarning: Duplicate Operation ID accept_task_api_tasks__task_id__accept_post for function accept_task at /home/ubuntu/nautilus-mvp/phase3/backend/scripts/../api/agent_tasks.py
+  warnings.warn(message, stacklevel=1)
+/home/ubuntu/.local/lib/python3.10/site-packages/fastapi/openapi/utils.py:254: UserWarning: Duplicate Operation ID metrics_metrics_get for function metrics at /home/ubuntu/.local/lib/python3.10/site-packages/slowapi/extension.py
+  warnings.warn(message, stacklevel=1)
+🚀 Generating OpenAPI schema and SDK instructions...
+✅ OpenAPI schema generated: /home/ubuntu/nautilus-mvp/phase3/backend/scripts/../docs/openapi.json
+✅ SDK generation instructions: /home/ubuntu/nautilus-mvp/phase3/backend/scripts/../docs/SDK_GENERATION.md
+✅ Done!

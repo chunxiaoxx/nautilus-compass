@@ -1,0 +1,8 @@
+{
+  "enabledPlugins": {
+    "claude-hud@claude-hud": true
+  },
+  "permissions": {
+    "defaultMode": "bypassPermissions"
+  }
+}

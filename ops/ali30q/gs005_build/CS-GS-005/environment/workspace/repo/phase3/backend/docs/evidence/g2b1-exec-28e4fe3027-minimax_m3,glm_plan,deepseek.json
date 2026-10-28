@@ -1,0 +1,29 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "8c3094c5a4b64f2b9949631367f41726cee74bb5",
+  "reference_fix_commit": "28e4fe3027362f3675284ff5b294cb8bb92975c1",
+  "subject": "fix(code-guard): \u5b88\u62a4\u8303\u56f4\u6269\u5230\u6574\u5305(cycle83202 \u5b9e\u9524:super_agent.py \u5728\u5305\u6839\u4e0d\u5728\u4e94\u76ee\u5f55\u767d\u540d\u5355=\u5b88\u536b\u5931\u660e)",
+  "test_files": [
+   "tests/test_code_integrity_guard.py"
+  ],
+  "source_files": [
+   "nautilus_v5/runtime/code_integrity.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_code_integrity_guard.py::test_find_broken_py_detects_future_import_misplacement",
+ "source_rel": "nautilus_v5/runtime/code_integrity.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

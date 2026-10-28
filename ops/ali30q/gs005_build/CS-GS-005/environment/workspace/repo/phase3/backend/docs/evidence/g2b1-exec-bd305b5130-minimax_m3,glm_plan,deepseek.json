@@ -1,0 +1,71 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "85d493855112222e0467215327b75379817d4b61",
+  "reference_fix_commit": "bd305b5130e4cbc117031676ccd6e0b77b0a09f6",
+  "subject": "fix(s1): C1/I2/I3 quality\u5ba1 must-fix(claim\u5e42\u7b49-\u81ea\u5360\u00b7_http\u6355HTTPError\u00b7write_back\u9694\u79bb\u00b7+3 TDD)",
+  "test_files": [
+   "phase3/backend/tests/test_fde_assignment_runner.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/fde_assignment_runner.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/test_fde_assignment_runner.py::test_claim_fn_idempotent_when_already_claimed_by_same_expert",
+ "source_rel": "services\\fde_assignment_runner.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": true,
+ "winning_diff": "--- a/services/fde_assignment_runner.py\n+++ b/services/fde_assignment_runner.py\n@@ -96,11 +96,16 @@ def make_dispatch_fn(base: str, key: str):\n def make_claim_fn(base: str):\n     def claim_fn(uid: str, agent: str) -> None:\n         res = _http(\"POST\", base + \"/api/platform/fde/claim\",\n                     body={\"task_uid\": uid, \"agent_id\": agent})\n-        if not res.get(\"success\", True):\n-            raise RuntimeError(f\"claim failed: {res.get('error')}\")\n+        if not res.get(\"success\", True):\n+            err = str(res.get(\"error\", \"\"))\n+            # idempotent: same expert re-claiming is a no-op, not a failure\n+            already = f\"claimed_by={agent}\" in err\n+            if not already:\n+                raise RuntimeError(f\"claim failed: {err}\")\n     return claim_fn\n",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 1992,
+    "output_tokens": 195,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_5n9dzbzd\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 1 item\r\n\r\ntests/test_fde_assignment_runner.py::test_claim_fn_idempotent_when_already_claimed_by_same_expert FAILED [100%]\r\n\r\n================================== FAILURES ===================================\r\n________ test_claim_fn_idempotent_when_already_claimed_by_same_expert _________\r\ntests\\test_fde_assignment_runner.py:57: in test_claim_fn_idempotent_when_already_claimed_by_same_expert\r\n    claim(\"expert_t2_k\", \"expert:chunxiao\")  # \u4e0d\u629b = ok\r\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nservices\\fde_assignment_runner.py:100: in claim_fn\r\n    raise RuntimeError(f\"claim failed: {res.get('error')}\")\r\nE   RuntimeError: claim failed: task already claimed (claimed_by=expert:chunxiao)\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_fde_assignment_runner.py::test_claim_fn_idempotent_when_already_claimed_by_same_expert\r\n============================== 1 failed in 0.35s ==============================\r\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 2401,
+    "output_tokens": 266,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_5n9dzbzd\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 1 item\r\n\r\ntests/test_fde_assignment_runner.py::test_claim_fn_idempotent_when_already_claimed_by_same_expert FAILED [100%]\r\n\r\n================================== FAILURES ===================================\r\n________ test_claim_fn_idempotent_when_already_claimed_by_same_expert _________\r\ntests\\test_fde_assignment_runner.py:57: in test_claim_fn_idempotent_when_already_claimed_by_same_expert\r\n    claim(\"expert_t2_k\", \"expert:chunxiao\")  # \u4e0d\u629b = ok\r\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nservices\\fde_assignment_runner.py:104: in claim_fn\r\n    raise RuntimeError(f\"claim failed: {res.get('error')}\")\r\nE   RuntimeError: claim failed: task already claimed (claimed_by=expert:chunxiao)\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_fde_assignment_runner.py::test_claim_fn_idempotent_when_already_claimed_by_same_expert\r\n============================== 1 failed in 0.36s ==============================\r\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "input_tokens": 2285,
+    "output_tokens": 280,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 244,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "fix_claim_fn_idempotent_same_expert",
+ "duration_s": 19.5,
+ "verdict_post_status": 200
+}

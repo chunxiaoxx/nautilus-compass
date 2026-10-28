@@ -1,0 +1,327 @@
+{
+  "schema": "sinks.v2",
+  "note": "沉淀物注册表(体系级正本指针卡)——各框体系面单端点收口:正本在框仓,本表只记坐标+sha锚+消费方(零重复正本,一处改处处新)。compass #2797 三件 72h 出件后由 planned 转 live;status 语义:planned=在途占位(sha16 可空),live=正本可查(sha16 必填)。施工=2026-10-04 提前开工(用户令)。compass 三件 2026-10-04 转 live(#2931 回执 sha16 经平台 raw 独立复现一致)。活性机制(2026-10-04 用户批·expires 30 天):①入册闸——live 件 sha16 必须 16 位 hex,违者端点自动按 planned 呈现;②复验明规则——live 转正必附平台对正本 raw 的 sha256 复验记录;③expires——每件 verified_at+expires_days(30 天)过期自动呈 planned,续验=框回执新 sha→平台 raw 复验→刷新 verified_at。v1.1(2026-10-04 依 compass 判据级回函修规):①改版回函必附变更说明一行;②可用判据分层——锚可复现=身份判据(生死线),消费方在读=价值信号(仅排序展示);③退役=程序性(锚失复验即摘牌;两个 30 天窗无续验回应程序性降级出册),7 天访问判据仅适用页面级不适用单件(长尾判据件零访问是常态);④owner 字段=到期续验义务人,平台到期主动提醒。 v2(2026-10-05 用户批·组合制+分层退役):live=复验通过 AND consumers 非空(空=unclaimed 待认领不降级);摘牌仅锚失配或程序性死亡(60 天无复验无消费方;permanent_type 永久件豁免后者);next_review=verified_at+expires_days;permanent_type 首批全 null 待 owner 随续验自报;T-7 提醒+漂移 7 天宽限降级=ops/sinks_review_scan.py(月度 timer)。",
+  "sinks": [
+    {
+      "sink_id": "compass-memory-io",
+      "frame": "compass",
+      "owner": "compass",
+      "title": "组织记忆的读写与遗忘(记忆IO正本)",
+      "repo": "chunxiaoxx/nautilus-compass",
+      "path": "docs/memory/MEMORY_IO_ARCHITECTURE.md",
+      "sha16": "dd1ba24b3cf50559",
+      "status": "live",
+      "consumers": [
+        "compass-mcp-recall(自用首例)",
+        "跨框dogfood桥(在册)"
+      ],
+      "criteria_ref": "提案#2797件一",
+      "verified_at": "2026-10-04",
+      "expires_days": 30,
+      "updated": "2026-10-04",
+      "next_review": "2026-11-03",
+      "permanent_type": null
+    },
+    {
+      "sink_id": "compass-independent-judge-model-v1",
+      "frame": "compass",
+      "owner": "compass",
+      "title": "独立判官架构模型 v1(五层+两程序件)",
+      "repo": "chunxiaoxx/nautilus-compass",
+      "path": "docs/metering/INDEPENDENT_JUDGE_MODEL_V1.md",
+      "sha16": "c72e9fc518fa7248",
+      "status": "live",
+      "consumers": [
+        "rsi-bench认证轨(第三方采信)",
+        "flywheel auto_judge_dispatch(#2726对表)",
+        "v5 EGR(#2731认题)"
+      ],
+      "criteria_ref": "提案#2797件二",
+      "verified_at": "2026-10-04",
+      "expires_days": 30,
+      "updated": "2026-10-04",
+      "next_review": "2026-11-03",
+      "permanent_type": null
+    },
+    {
+      "sink_id": "compass-p3-judge-pipeline",
+      "frame": "compass",
+      "owner": "compass",
+      "title": "P3 判官增量训练管线正本(含EGR缺口回流闭环)",
+      "repo": "chunxiaoxx/nautilus-compass",
+      "path": "docs/plans/P3_DYNAMIC_WEIGHT_PIPELINE_DESIGN_20261003.md",
+      "sha16": "02a84c7e69278f1c",
+      "status": "live",
+      "consumers": [
+        "v5(缺口报告消费端)",
+        "flywheel(delta供给端)",
+        "E1判官席位"
+      ],
+      "criteria_ref": "提案#2797件三(已在册,升级正本+补闭环图)",
+      "verified_at": "2026-10-04",
+      "expires_days": 30,
+      "updated": "2026-10-04",
+      "next_review": "2026-11-03",
+      "permanent_type": null
+    },
+    {
+      "sink_id": "v5-turbo-system-iteration-v1",
+      "frame": "v5",
+      "owner": "v5",
+      "title": "涡轮增压体系迭代 v1(六环指标+四级cadence+评测四层分类学)",
+      "repo": "Nautilus-agent/shared",
+      "path": "specs/TURBO_SYSTEM_ITERATION_V1.md",
+      "sha16": "318867008566767a",
+      "status": "live",
+      "consumers": [
+        "组织档案",
+        "v5(体系骨架)"
+      ],
+      "criteria_ref": "v5 #2727 转存(commit 777ea16)",
+      "verified_at": "2026-10-04",
+      "expires_days": 30,
+      "updated": "2026-10-04",
+      "next_review": "2026-11-03",
+      "permanent_type": null
+    },
+    {
+      "sink_id": "compass-judging-service-page",
+      "frame": "compass",
+      "owner": "compass",
+      "title": "第三方判分服务流程页(触客渠道序第一环正本)",
+      "repo": "chunxiaoxx/nautilus-compass",
+      "path": "docs/metering/JUDGING_SERVICE_PAGE_V1_20261004.md",
+      "sha16": "8ad0a13961fce5f9",
+      "status": "live",
+      "consumers": [
+        "门户试金局卡(nautilus.social 首页)",
+        "北极星L2渠道序第一环(判分页自然流量)"
+      ],
+      "criteria_ref": "compass 3102 函入册确认+平台 raw 复验一致(54f7e3ae9 挂卡,2026-10-05 补登记)",
+      "verified_at": "2026-10-05",
+      "expires_days": 30,
+      "updated": "2026-10-05",
+      "next_review": "2026-11-04",
+      "permanent_type": null
+    },
+    {
+      "sink_id": "compass-leaderboard-prereg-v1",
+      "frame": "compass",
+      "owner": "compass",
+      "title": "榜单开张判据 v1(agent harness 对比评测榜·预注册总纲)",
+      "repo": "chunxiaoxx/nautilus-compass",
+      "path": "docs/metering/LEADERBOARD_PREREG_CRITERIA_V1_20261005.md",
+      "sha16": "282a268ca84ecf72",
+      "status": "live",
+      "consumers": [
+        "L3 harness 对比榜壳(平台,数据面 A 轨 3-5 条目过门后挂)",
+        "compass 期榜判据母版(期判据只许更严)"
+      ],
+      "criteria_ref": "compass-leaderboard-prereg-20261005 函回执+平台 raw 复验一致(3857B)",
+      "verified_at": "2026-10-05",
+      "expires_days": 30,
+      "updated": "2026-10-05",
+      "next_review": "2026-11-04",
+      "permanent_type": null
+    },
+    {
+      "sink_id": "v5-e1-fuel-criteria-prereg-v1",
+      "frame": "v5",
+      "owner": "v5",
+      "title": "E1 判据预注册 v1(fuel 版锚≥r79 基线)",
+      "repo": "Nautilus-agent/shared",
+      "path": "specs/E1_FUEL_CRITERIA_PREREG_V1.md",
+      "sha16": "fec3b0a23e81d611",
+      "status": "live",
+      "consumers": [
+        "v5 发车判据(10/13 复考)",
+        "compass 判分对表"
+      ],
+      "criteria_ref": "v5 转存回执@shared 032724a(原创 nautilus-v5@bbebae42)+平台 raw 复验 2026-10-05",
+      "verified_at": "2026-10-05",
+      "expires_days": 30,
+      "updated": "2026-10-05",
+      "next_review": "2026-11-04",
+      "permanent_type": null
+    },
+    {
+      "sink_id": "v5-s1-sft-dataset",
+      "frame": "v5",
+      "owner": "v5",
+      "title": "S1 轨迹→样本转换件",
+      "repo": "Nautilus-agent/shared",
+      "path": "specs/S1_e5_sft_dataset.md",
+      "sha16": "83fc15407807e23b",
+      "status": "live",
+      "consumers": [
+        "v5 产线运转件",
+        "fuel→SFT 管道"
+      ],
+      "criteria_ref": "v5 转存回执@shared 032724a+平台 raw 复验 2026-10-05",
+      "verified_at": "2026-10-05",
+      "expires_days": 30,
+      "updated": "2026-10-05",
+      "next_review": "2026-11-04",
+      "permanent_type": null
+    },
+    {
+      "sink_id": "v5-s2-train-lora",
+      "frame": "v5",
+      "owner": "v5",
+      "title": "S2 LoRA 训练件",
+      "repo": "Nautilus-agent/shared",
+      "path": "specs/S2_e5_train_lora.md",
+      "sha16": "e2f907d370948191",
+      "status": "live",
+      "consumers": [
+        "v5 产线运转件",
+        "A100 训练环"
+      ],
+      "criteria_ref": "v5 转存回执@shared 032724a+平台 raw 复验 2026-10-05",
+      "verified_at": "2026-10-05",
+      "expires_days": 30,
+      "updated": "2026-10-05",
+      "next_review": "2026-11-04",
+      "permanent_type": null
+    },
+    {
+      "sink_id": "v5-s3-fuel-convert",
+      "frame": "v5",
+      "owner": "v5",
+      "title": "S3 三层 join 燃料转换",
+      "repo": "Nautilus-agent/shared",
+      "path": "specs/S3_e5_fuel_convert.md",
+      "sha16": "0893f2985908e3d5",
+      "status": "live",
+      "consumers": [
+        "v5 产线运转件",
+        "fuel→SFT 管道"
+      ],
+      "criteria_ref": "v5 转存回执@shared 032724a+平台 raw 复验 2026-10-05",
+      "verified_at": "2026-10-05",
+      "expires_days": 30,
+      "updated": "2026-10-05",
+      "next_review": "2026-11-04",
+      "permanent_type": null
+    },
+    {
+      "sink_id": "v5-s4-fuel-sft-convert",
+      "frame": "v5",
+      "owner": "v5",
+      "title": "S4 扩池同分布转换(防自喂)",
+      "repo": "Nautilus-agent/shared",
+      "path": "specs/S4_e5_fuel_sft_convert.md",
+      "sha16": "5e90e124788f900d",
+      "status": "live",
+      "consumers": [
+        "v5 产线运转件",
+        "防自喂同构(r79 学生自产禁入)"
+      ],
+      "criteria_ref": "v5 转存回执@shared 032724a+平台 raw 复验 2026-10-05",
+      "verified_at": "2026-10-05",
+      "expires_days": 30,
+      "updated": "2026-10-05",
+      "next_review": "2026-11-04",
+      "permanent_type": null
+    },
+    {
+      "sink_id": "v5-r1-grpo-six-crashes",
+      "frame": "v5",
+      "owner": "v5",
+      "title": "R1 GRPO 六崩配方(memory 提炼成档)",
+      "repo": "Nautilus-agent/shared",
+      "path": "specs/R1_GRPO_SIX_CRASHES_RECIPE.md",
+      "sha16": "af7e84c6f56d58bf",
+      "status": "live",
+      "consumers": [
+        "v5 训练配方库",
+        "组织记忆提炼复用首例"
+      ],
+      "criteria_ref": "v5 转存回执@shared 032724a+平台 raw 复验 2026-10-05",
+      "verified_at": "2026-10-05",
+      "expires_days": 30,
+      "updated": "2026-10-05",
+      "next_review": "2026-11-04",
+      "permanent_type": null
+    },
+    {
+      "sink_id": "v5-r2-turbo-proposal-v1",
+      "frame": "v5",
+      "owner": "v5",
+      "title": "R2+沉淀提案 V1 正本(含 verdict-as-reward 设计定稿)",
+      "repo": "Nautilus-agent/shared",
+      "path": "specs/R2_TURBO_PROPOSAL_V1.md",
+      "sha16": "cd38ebf7ffb45f29",
+      "status": "live",
+      "consumers": [
+        "组织沉淀提案主本",
+        "TSI 三线索引"
+      ],
+      "criteria_ref": "v5 转存回执@shared 032724a+平台 raw 复验 2026-10-05",
+      "verified_at": "2026-10-05",
+      "expires_days": 30,
+      "updated": "2026-10-05",
+      "next_review": "2026-11-04",
+      "permanent_type": null
+    },
+    {
+      "sink_id": "v5-e5-mainline-roadmap",
+      "frame": "v5",
+      "owner": "v5",
+      "title": "E5 任务正本(unipat 主线锚版)",
+      "repo": "Nautilus-agent/shared",
+      "path": "specs/E5_MAINLINE_ROADMAP_20261004.md",
+      "sha16": "936bcc29d0d658ff",
+      "status": "live",
+      "consumers": [
+        "unipat 主线锚(v5 侧)",
+        "周报对表"
+      ],
+      "criteria_ref": "v5 转存回执@shared 032724a+平台 raw 复验 2026-10-05",
+      "verified_at": "2026-10-05",
+      "expires_days": 30,
+      "updated": "2026-10-05",
+      "next_review": "2026-11-04",
+      "permanent_type": null
+    },
+    {
+      "sink_id": "v5-e2-challenge-registry-py",
+      "frame": "v5",
+      "owner": "v5",
+      "title": "E2 assay 登记处正本 py(18890 服务部署源)",
+      "repo": "Nautilus-agent/shared",
+      "path": "specs/e2_challenge_registry.py",
+      "sha16": "cceb44df70fd8053",
+      "status": "live",
+      "consumers": [
+        "assay 登记处(外网 /assay/challenges/open)"
+      ],
+      "criteria_ref": "v5 转存回执@shared 032724a+平台 raw 复验 2026-10-05",
+      "verified_at": "2026-10-05",
+      "expires_days": 30,
+      "updated": "2026-10-05",
+      "next_review": "2026-11-04",
+      "permanent_type": null
+    },
+    {
+      "sink_id": "v5-e5-rsi-bench-panel",
+      "frame": "v5",
+      "owner": "v5",
+      "title": "E5 RSI 基准面板正本(六环指标读数)",
+      "repo": "Nautilus-agent/shared",
+      "path": "specs/E5_RSI_BENCH_PANEL.md",
+      "sha16": "e707ed615a186e9e",
+      "status": "live",
+      "consumers": [
+        "v5 RSI 面板读数",
+        "组织 RSI 周报对表"
+      ],
+      "criteria_ref": "v5 勘误函 platform-202610050850(正解值,根因CRLF工作区直读;平台 raw 复验一致 2026-10-05)——活性闸首次拦截件勘误后补入册",
+      "verified_at": "2026-10-05",
+      "expires_days": 30,
+      "updated": "2026-10-05",
+      "next_review": "2026-11-04",
+      "permanent_type": null
+    }
+  ]
+}

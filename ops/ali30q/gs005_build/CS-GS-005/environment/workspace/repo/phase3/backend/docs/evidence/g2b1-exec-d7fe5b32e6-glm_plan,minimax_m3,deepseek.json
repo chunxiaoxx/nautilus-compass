@@ -1,0 +1,29 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "a77d876af5296d7b9f7c874876b8258c1a73ec7d",
+  "reference_fix_commit": "d7fe5b32e66363d20beb07e6b5d38b94b3ff105e",
+  "subject": "fix(soul): self-improve path never crashes timer + honest engine-unavailable test + assert proposal reaches ship",
+  "test_files": [
+   "phase3/soul/tests/test_daemon.py"
+  ],
+  "source_files": [
+   "phase3/soul/daemon.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "phase3/soul/tests/test_daemon.py::test_daemon_no_goal_engine_unavailable_skips",
+ "source_rel": "phase3/soul/daemon.py",
+ "provider": "glm_plan,minimax_m3,deepseek",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

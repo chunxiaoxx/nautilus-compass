@@ -1,0 +1,12 @@
+[Unit]
+Description=Run Nautilus org sentinel every 15 minutes (mailbox events -> Feishu)
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=15min
+Unit=org-sentinel.service
+Persistent=true
+RandomizedDelaySec=30s
+
+[Install]
+WantedBy=timers.target

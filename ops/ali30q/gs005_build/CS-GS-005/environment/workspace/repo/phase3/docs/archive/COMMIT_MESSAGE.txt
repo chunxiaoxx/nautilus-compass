@@ -1,0 +1,110 @@
+feat: Implement Nautilus OAuth 2.0 Service (Task #35)
+
+Implemented a complete, production-ready OAuth 2.0 service for Nautilus Agent
+authentication, enabling third-party applications to integrate "Login with Nautilus"
+functionality.
+
+## Features
+
+### Core OAuth 2.0 Implementation
+- Authorization Code Grant flow
+- Token refresh mechanism
+- Token revocation support
+- Scope-based access control (profile, tasks, balance)
+- State parameter for CSRF protection
+- Redirect URI validation
+
+### Security
+- Client secret hashing (SHA-256)
+- Authorization code expiry (10 minutes)
+- Access token expiry (1 hour)
+- Refresh token expiry (30 days)
+- Token revocation support
+- Comprehensive input validation
+
+### API Endpoints
+- POST /oauth/clients - Register OAuth client
+- GET /oauth/clients/{client_id} - Get client details
+- GET /oauth/authorize - Authorization endpoint
+- POST /oauth/token - Token endpoint (code exchange & refresh)
+- GET /oauth/userinfo - Get agent information
+- POST /oauth/verify - Verify token validity
+- POST /oauth/revoke - Revoke tokens
+
+### Python SDK
+- Complete OAuth client implementation
+- Easy integration with Flask, FastAPI, CLI apps
+- Automatic token refresh
+- Comprehensive examples
+
+## Files Added
+
+### Core Implementation (3 files)
+- models/oauth.py - OAuth database models
+- api/oauth.py - OAuth API endpoints (700+ lines)
+- migrations/002_add_oauth_tables.py - Database migration
+
+### SDK & Examples (4 files)
+- sdk/python/nautilus_oauth.py - Python OAuth SDK
+- sdk/python/examples.py - Integration examples
+- sdk/python/setup.py - SDK package setup
+- sdk/python/README.md - SDK documentation
+
+### Tests (2 files)
+- tests/test_oauth.py - Comprehensive test suite (20+ tests)
+- test_oauth_quick.py - Quick test script
+
+### Documentation (4 files)
+- docs/OAUTH_GUIDE.md - Complete OAuth guide
+- OAUTH_IMPLEMENTATION.md - Implementation summary
+- OAUTH_README.md - Deployment guide
+- OAUTH_FINAL_REPORT.md - Final report
+
+### Deployment (3 files)
+- deploy_oauth.sh - Linux/Mac deployment script
+- deploy_oauth.bat - Windows deployment script
+- OAUTH_FILES_SUMMARY.md - Files summary
+
+## Files Modified
+
+- models/database.py - Added OAuth models to main database
+- main.py - Registered OAuth router
+
+## Testing
+
+- 20+ comprehensive test cases
+- Tests cover all OAuth flows
+- Error handling validation
+- Security checks
+
+## Documentation
+
+- Complete OAuth 2.0 guide
+- SDK documentation with examples
+- Integration examples for Flask, FastAPI, CLI
+- Deployment and troubleshooting guides
+
+## Deployment
+
+Run database migration:
+```bash
+python manage_migrations.py upgrade
+```
+
+Test implementation:
+```bash
+python test_oauth_quick.py
+pytest tests/test_oauth.py -v
+```
+
+## Breaking Changes
+
+None - This is a new feature addition.
+
+## References
+
+- OAuth 2.0 RFC 6749
+- NAUTILUS_INFRASTRUCTURE_EXCHANGE.md
+- Task #35: Implement Nautilus OAuth 2.0 Service
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>

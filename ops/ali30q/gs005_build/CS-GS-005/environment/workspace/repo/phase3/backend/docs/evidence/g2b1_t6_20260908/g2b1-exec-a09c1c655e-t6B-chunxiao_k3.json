@@ -1,0 +1,72 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "fc6c7c47edd6110b6bd5a1a5297b2035214b0cd1",
+  "reference_fix_commit": "a09c1c655eef3d43181eb46036b66cf058d72df4",
+  "subject": "fix: show custom error message in prompt with hide_input=True",
+  "test_files": [
+   "tests/test_termui.py"
+  ],
+  "source_files": [
+   "src/click/termui.py"
+  ],
+  "repo_path": "C:/Users/chunx/ext_mine"
+ },
+ "test_id": "tests/test_termui.py::test_hide_input_error_message",
+ "source_rel": "src\\click\\termui.py",
+ "provider": "t6B-chunxiao_k3",
+ "provider_used": "t6B-chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/src/click/termui.py\n+++ b/src/click/termui.py\n@@ -202,8 +202,19 @@\n         try:\n             result = value_proc(value)\n         except UsageError as e:\n             if hide_input:\n-                echo(_(\"Error: The value you entered was invalid.\"), err=err)\n+                message = e.message\n+                # Built-in types format the invalid value with ``{value!r}``\n+                # in the error message. Mask that representation instead of\n+                # hiding the whole message so the user still gets useful\n+                # feedback. If the raw value appears in the message in a way\n+                # that cannot be masked reliably, fall back to a generic\n+                # message to avoid leaking the hidden input.\n+                if repr(value) in message:\n+                    message = message.replace(repr(value), \"'***'\")\n+                elif value and value in message:\n+                    message = _(\"The value you entered was invalid.\")\n+                echo(_(\"Error: {message}\").format(message=message), err=err)\n             else:\n                 echo(_(\"Error: {e.message}\").format(e=e), err=err)\n             continue\n",
+ "budget_exceeded": false,
+ "total_tokens": 17747,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 9903,
+    "completion_tokens": 7844,
+    "total_tokens": 17747,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 8623,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1280,
+      "output_tokens": 7844,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 1280,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 9903,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "mask_hidden_prompt_error_value",
+ "duration_s": 214.2
+}

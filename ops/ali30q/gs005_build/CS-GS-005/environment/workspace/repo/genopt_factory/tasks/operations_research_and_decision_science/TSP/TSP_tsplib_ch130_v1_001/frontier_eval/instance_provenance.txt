@@ -1,0 +1,9 @@
+instance_source: SYNTHETIC (controlled, deterministic)
+generator_script: genopt_factory/tools/fetch_tsplib_synth.py
+master_seed: 20260702
+why_synthetic: TSPLIB official mirror unreachable from this environment (HTTP 503 / SSL).
+              Controlled synthetic instances with multi-restart 2-opt optimum
+              estimates serve as difficulty ground truth. SHA256 of every
+              instance JSON is recorded in data/SOURCE.txt for reproducibility.
+benchmark_versions:
+  - "1.0 (2026-07-02): 6 synthetic instances, scales 14-500 cities"

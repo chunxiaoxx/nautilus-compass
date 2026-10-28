@@ -1,0 +1,29 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "8e1e6ca234dbc569a01880139c3a797ca2f1327c",
+  "reference_fix_commit": "998842b4568ac50c1c0c073330d5fada0da5373b",
+  "subject": "fix(s4): validate persisted v2 event rows",
+  "test_files": [
+   "tests/gep/test_flywheel_log.py"
+  ],
+  "source_files": [
+   "gep/flywheel_log.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass"
+ },
+ "test_id": "tests/gep/test_flywheel_log.py::test_untouched_v2_episode_and_verdict_rows_reopen_without_mutation",
+ "source_rel": "gep/flywheel_log.py",
+ "provider": "glm_plan,minimax_m3,deepseek",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

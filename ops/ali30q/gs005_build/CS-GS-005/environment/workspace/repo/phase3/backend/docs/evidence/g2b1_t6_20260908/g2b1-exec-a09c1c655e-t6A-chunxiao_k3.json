@@ -1,0 +1,72 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "fc6c7c47edd6110b6bd5a1a5297b2035214b0cd1",
+  "reference_fix_commit": "a09c1c655eef3d43181eb46036b66cf058d72df4",
+  "subject": "fix: show custom error message in prompt with hide_input=True",
+  "test_files": [
+   "tests/test_termui.py"
+  ],
+  "source_files": [
+   "src/click/termui.py"
+  ],
+  "repo_path": "C:/Users/chunx/ext_mine"
+ },
+ "test_id": "tests/test_termui.py::test_hide_input_error_message",
+ "source_rel": "src\\click\\termui.py",
+ "provider": "t6A-chunxiao_k3",
+ "provider_used": "t6A-chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/src/click/termui.py\n+++ b/src/click/termui.py\n@@ -188,11 +188,26 @@ def prompt(\n         try:\n             result = value_proc(value)\n         except UsageError as e:\n             if hide_input:\n-                echo(_(\"Error: The value you entered was invalid.\"), err=err)\n+                message = e.message\n+\n+                if value:\n+                    quoted = repr(value)\n+\n+                    if quoted in message:\n+                        # The type included the value in quoted (repr) form,\n+                        # so it can be located and masked without leaking it.\n+                        message = message.replace(quoted, \"'***'\")\n+                    elif str(value) in message:\n+                        # The raw value was included and can't be masked\n+                        # reliably, so don't risk echoing it back.\n+                        message = _(\"The value you entered was invalid.\")\n+\n+                echo(_(\"Error: {message}\").format(message=message), err=err)\n             else:\n                 echo(_(\"Error: {e.message}\").format(e=e), err=err)\n             continue\n",
+ "budget_exceeded": false,
+ "total_tokens": 16983,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 9637,
+    "completion_tokens": 7346,
+    "total_tokens": 16983,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 8869,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 768,
+      "output_tokens": 7346,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 768,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 9637,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "mask_hidden_prompt_value",
+ "duration_s": 200.9
+}

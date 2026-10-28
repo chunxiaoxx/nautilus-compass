@@ -1,0 +1,62 @@
+{
+  "test_name": "\u524d\u540e\u7aef\u96c6\u6210\u6d4b\u8bd5",
+  "status": "PASSED",
+  "total_tests": 9,
+  "passed": 9,
+  "failed": 0,
+  "pass_rate": 100.0,
+  "test_results": [
+    {
+      "test": "\u524d\u7aef\u94b1\u5305\u8fde\u63a5",
+      "status": "PASSED",
+      "details": "\u94b1\u5305\u5730\u5740: 0x4c7AC72C711Cfe12F539158A82eAc42f2107A898"
+    },
+    {
+      "test": "\u524d\u7aef\u8bf7\u6c42nonce",
+      "status": "PASSED",
+      "details": "Nonce\u957f\u5ea6: 64"
+    },
+    {
+      "test": "\u524d\u7aef\u751f\u6210\u7b7e\u540d",
+      "status": "PASSED",
+      "details": "\u7b7e\u540d\u957f\u5ea6: 130"
+    },
+    {
+      "test": "\u540e\u7aef\u9a8c\u8bc1\u7b7e\u540d",
+      "status": "PASSED",
+      "details": "\u7b7e\u540d\u9a8c\u8bc1\u6210\u529f"
+    },
+    {
+      "test": "\u6570\u636e\u5e93\u5b58\u50a8",
+      "status": "PASSED",
+      "details": "\u7528\u6237ID: 1"
+    },
+    {
+      "test": "Redis\u5b58\u50a8nonce",
+      "status": "PASSED",
+      "details": "TTL: 300\u79d2"
+    },
+    {
+      "test": "JWT Token\u751f\u6210",
+      "status": "PASSED",
+      "details": "Token\u957f\u5ea6: 190"
+    },
+    {
+      "test": "\u524d\u7aef\u5b58\u50a8Token",
+      "status": "PASSED",
+      "details": "\u5b58\u50a8\u5230localStorage"
+    },
+    {
+      "test": "\u8ba4\u8bc1\u8bf7\u6c42",
+      "status": "PASSED",
+      "details": "Token\u9a8c\u8bc1\u6210\u529f"
+    }
+  ],
+  "integration_points": [
+    "\u524d\u7aef \u2194 MetaMask",
+    "\u524d\u7aef \u2194 \u540e\u7aefAPI",
+    "\u540e\u7aef \u2194 \u6570\u636e\u5e93",
+    "\u540e\u7aef \u2194 Redis",
+    "\u540e\u7aef \u2194 Web3"
+  ]
+}

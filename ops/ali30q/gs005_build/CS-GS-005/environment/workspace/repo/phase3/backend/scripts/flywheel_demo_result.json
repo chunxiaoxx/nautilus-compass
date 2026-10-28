@@ -1,0 +1,56 @@
+{
+  "task_uid": "compass_exp_c2d_utf8_byte_truncation_001",
+  "stages": {
+    "1_mint": {
+      "status": "open"
+    },
+    "2_claim": {
+      "claimed_by": "bailian-deepseek-consumer",
+      "status": "claimed"
+    },
+    "3_produce": {
+      "produced_by": "deepseek-v4-pro",
+      "status": "produced",
+      "solution_chars": 338
+    },
+    "4_verify_5_settle": {
+      "verified": [
+        "compass_exp_c2d_utf8_byte_truncation_001"
+      ],
+      "skipped": [],
+      "errored": [],
+      "failed": []
+    }
+  },
+  "verdict_body": {
+    "verdict_id": "bench|compass_exp_c2d_utf8_byte_truncation_001|2623c1a8",
+    "task_uid": "compass_exp_c2d_utf8_byte_truncation_001",
+    "source": "compass/bench_eval",
+    "overall_pass": true,
+    "veto_failed": false,
+    "score": 1.0,
+    "items": [],
+    "artifacts": {
+      "kind": "t3_deterministic_bench",
+      "n_pass": 6,
+      "n_total": 6,
+      "reason": "pass",
+      "bench": "C:\\Users\\chunx\\AppData\\Local\\Temp\\fde_bench_ly7wbs5m\\bench_eval.py",
+      "sol_hash": "2623c1a8"
+    }
+  },
+  "final": {
+    "effective_status": "settled",
+    "verdict": {
+      "overall_pass": true,
+      "veto_failed": false,
+      "score": 1.0,
+      "source": "compass/bench_eval"
+    }
+  },
+  "prod_post": {
+    "verdict_id": "bench|compass_exp_c2d_utf8_byte_truncation_001|2623c1a8",
+    "ok": false,
+    "error": "<urlopen error _ssl.c:1015: The handshake operation timed out>"
+  }
+}

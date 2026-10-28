@@ -1,0 +1,36 @@
+{
+  "combined_score": 32.1438,
+  "valid": 1.0,
+  "num_instances": 5,
+  "num_failures": 0,
+  "candidate": "baseline/init.py",
+  "scoring": "score_i = min(100, 100*optimum_i/makespan_i); combined = mean over feasible instances; any infeasible => valid=0, combined=0",
+  "per_instance_makespan": {
+    "la01": 2272,
+    "la02": 1962,
+    "la03": 1579,
+    "la04": 2195,
+    "la05": 1779
+  },
+  "per_instance_optimum": {
+    "la01": 666,
+    "la02": 655,
+    "la03": 597,
+    "la04": 590,
+    "la05": 593
+  },
+  "per_instance_score": {
+    "la01": 29.31338028169014,
+    "la02": 33.384301732925586,
+    "la03": 37.80873970867638,
+    "la04": 26.879271070615033,
+    "la05": 33.333333333333336
+  },
+  "per_instance_feasible": {
+    "la01": true,
+    "la02": true,
+    "la03": true,
+    "la04": true,
+    "la05": true
+  }
+}

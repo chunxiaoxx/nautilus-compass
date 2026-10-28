@@ -1,0 +1,7 @@
+[
+  {"id": "PC-001", "what": "mailbox 验收(两周 ack 100% + EXPIRED>7d=0)", "registered": "2026-08-29", "due": "2026-09-12", "verify": "云 org_mailbox 14d ack 率查询", "owner": "platform", "status": "verified-pass", "note": "10/3 实测:14d 1541/1554=99.2% ack,EXPIRED>7d=0;残余 13 封全为 <48h 活体队列(soul 消化中)。严格 100% 未达,用户 10/3 拍板核销:判实质达标,残余属健康在途而非断供。9/25 验证:14d 759 封,ack 96%(29 未 ack 全在收件框侧:flywheel11/soul8[熔断期]/vc_daily5/daily3/v5+compass 各1);EXPIRED>7d=0 ✅;platform 自身 100% ✅。组织级 100% 未达,继续在册,短板=各框收件 ack 纪律(9/26 判分日随 loop 协议提醒)"},
+  {"id": "PC-002", "what": "驾驶舱 7 天日均访问>=1", "registered": "2026-08-30", "due": "2026-09-06", "verify": "云 nginx org.nautilus.social access log 计数", "owner": "platform", "status": "abandoned", "note": "9/30 用户拍板核销:等访问的仪表盘路线放弃(建了无数个零访问,对话框为主战场);读数一律走推送(飞书日报/会话开轮),不建等访问盘面——入免疫册+三纪律②子规则。访问判据永久失效,不重验"},
+  {"id": "PC-003", "what": "栈项14 首单判据(两周,免费换案例算)", "registered": "2026-09-23", "due": "2026-10-07", "verify": "biz_dcr_real 首笔真单或免费首检收样回执", "owner": "user+org", "status": ""},
+  {"id": "PC-004", "what": "断奶判据·阶段一:用户日均硬介入≤8 次", "registered": "2026-09-25", "due": "2026-10-07", "verify": "快照 PC-004 断奶仪表节(口径=硬 only,U28 9/30 用户拍;函化石自动源+手工台账双源,随 09:07 飞书推送)", "owner": "user+org", "status": "", "note": "9/30 U28:口径定=硬介入 only(拍板/动手,软/被动不计),旧基线 15-20 作废重测;首周函化石 09-24:4/09-25:9/09-26:5/09-27:6/09-28:12/09-29:2/09-30:3=新基线"},
+  {"id": "PC-005", "what": "断奶判据·阶段二:用户日均硬介入≤3 次", "registered": "2026-09-25", "due": "2026-10-31", "verify": "同 PC-004 仪表节(硬 only);终态=11 月中 ≤2(只剩拍板)", "owner": "user+org", "status": ""}
+]

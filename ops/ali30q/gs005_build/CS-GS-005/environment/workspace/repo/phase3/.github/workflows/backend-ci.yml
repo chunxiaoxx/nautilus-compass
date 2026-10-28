@@ -1,0 +1,152 @@
+name: Backend CI
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-ci.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'backend/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: nautilus
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: nautilus_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+    
+    - name: Install dependencies
+      working-directory: ./backend
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov pytest-asyncio black flake8 mypy
+    
+    - name: Run Black (code formatting check)
+      working-directory: ./backend
+      run: black --check --line-length 120 .
+    
+    - name: Run Flake8 (linting)
+      working-directory: ./backend
+      run: flake8 . --max-line-length=120 --exclude=venv,__pycache__,.git --count
+    
+    - name: Run Mypy (type checking)
+      working-directory: ./backend
+      run: mypy . --ignore-missing-imports --exclude='venv|__pycache__|.git' || true
+    
+    - name: Run tests with coverage
+      working-directory: ./backend
+      env:
+        DATABASE_URL: postgresql://nautilus:test_password@localhost:5432/nautilus_test
+        JWT_SECRET: test-secret-key-for-ci-min-32-characters-long
+        REDIS_URL: redis://localhost:6379/0
+        ETHEREUM_RPC_URL: https://mainnet.base.org
+        ENVIRONMENT: test
+      run: |
+        pytest --cov=. --cov-report=xml --cov-report=term --cov-report=html -v
+    
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        file: ./backend/coverage.xml
+        flags: backend
+        name: backend-coverage
+    
+    - name: Check coverage threshold
+      working-directory: ./backend
+      run: |
+        coverage report --fail-under=80 || echo "Warning: Coverage below 80%"
+
+  security:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      working-directory: ./backend
+      run: |
+        python -m pip install --upgrade pip
+        pip install safety bandit pip-audit
+    
+    - name: Run Safety (dependency vulnerability check)
+      working-directory: ./backend
+      run: safety check --json || true
+    
+    - name: Run Bandit (security linting)
+      working-directory: ./backend
+      run: bandit -r . -f json -o bandit-report.json || true
+    
+    - name: Run pip-audit (dependency audit)
+      working-directory: ./backend
+      run: pip-audit || true
+    
+    - name: Upload security reports
+      uses: actions/upload-artifact@v4
+      with:
+        name: security-reports
+        path: backend/bandit-report.json
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [test, security]
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    
+    - name: Build Docker image
+      working-directory: ./backend
+      run: docker build -t nautilus-backend:test .
+    
+    - name: Test Docker image
+      run: |
+        docker run -d --name test-backend \
+          -e DATABASE_URL=postgresql://test:test@localhost:5432/test \
+          -e JWT_SECRET=test-secret-key-min-32-chars \
+          -e REDIS_URL=redis://localhost:6379/0 \
+          nautilus-backend:test
+        sleep 5
+        docker logs test-backend
+        docker stop test-backend

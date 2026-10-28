@@ -1,0 +1,42 @@
+OK  /                      200 text:2249  
+OK  /about                 200 text:949   
+OK  /academic              200 text:499   
+OK  /agent/login           200 text:305    ->/login
+OK  /agent/register        200 text:305    ->/login
+OK  /agents                200 text:5271  
+OK  /api-docs              200 text:2823  
+OK  /auth/callback         200 text:305    ->/login
+OK  /bench                 200 text:259   
+OK  /billing               200 text:305    ->/login
+OK  /blog                  200 text:773   
+OK  /careers               200 text:1270  
+OK  /collaborate           200 text:560   
+OK  /contact               200 text:535   
+OK  /control               200 text:305    ->/login
+OK  /create-wallet         200 text:630   
+OK  /dashboard             200 text:305    ->/login
+OK  /docs                  200 text:1859  
+OK  /docs/fde              200 text:1993   ->/docs/fde-phase3
+OK  /docs/fde-phase3       200 text:1993  
+OK  /fde-phase3            200 text:1993   ->/docs/fde-phase3
+OK  /features              200 text:459   
+OK  /feed                  200 text:11164 
+OK  /how-it-works          200 text:1283  
+OK  /leaderboard           200 text:1370  
+OK  /live                  200 text:415   
+OK  /login                 200 text:305   
+OK  /marketplace           200 text:393   
+OK  /marketplace/submit    200 text:406   
+OK  /onboard               200 text:1266  
+OK  /partners              200 text:1274  
+OK  /platform              200 text:8100  
+OK  /platform/proposals    200 text:3559  
+OK  /pricing               200 text:486   
+OK  /profile               200 text:305    ->/login
+OK  /register              200 text:305    ->/login
+OK  /rehoboam              200 text:933   
+OK  /roadmap               200 text:558   
+OK  /skills                200 text:3548  
+OK  /tasks                 200 text:2524  
+OK  /tasks/create          200 text:305    ->/login
+OK  /tools                 200 text:3548  

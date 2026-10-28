@@ -1,0 +1,43 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "c9351b9d86f77a767eada011c47d27a97d52a941",
+  "reference_fix_commit": "277c87edc9f680d4b0276fad15cee10f9b76b363",
+  "subject": "fix(fde): use supported hidden form field patch",
+  "test_files": [
+   "phase3/backend/tests/test_fde_phase3_single_submission_forms.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/fde_phase3_single_submission_forms.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/test_fde_phase3_single_submission_forms.py::test_hidden_form_questions_use_the_minimal_supported_patch_body",
+ "source_rel": "services\\fde_phase3_single_submission_forms.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": true,
+ "winning_diff": "--- a/services/fde_phase3_single_submission_forms.py\n+++ b/services/fde_phase3_single_submission_forms.py\n@@ -282,7 +282,7 @@ class FormPublisher:\n     @staticmethod\n     def _field_body(config: FormFieldConfiguration) -> dict[str, Any]:\n         if not config.visible:\n-            return {\"visible\": False, \"required\": False}\n+            return {\"visible\": False}\n         return {\n             \"title\": config.title,\n             \"description\": config.description,\n",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "input_tokens": 4141,
+    "output_tokens": 159,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "fix_hidden_field_body_minimal",
+ "duration_s": 8.7,
+ "verdict_post_status": 200
+}

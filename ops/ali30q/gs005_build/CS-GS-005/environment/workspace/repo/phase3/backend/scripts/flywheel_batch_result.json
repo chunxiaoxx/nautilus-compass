@@ -1,0 +1,157 @@
+{
+  "verdicts": [
+    {
+      "verdict_id": "bench|compass_exp_f2_rate_unit_caliber_001|23e73f4d",
+      "task_uid": "compass_exp_f2_rate_unit_caliber_001",
+      "source": "compass/bench_eval",
+      "overall_pass": true,
+      "veto_failed": false,
+      "score": 1.0,
+      "items": [],
+      "artifacts": {
+        "kind": "t3_deterministic_bench",
+        "n_pass": 8,
+        "n_total": 8,
+        "reason": "pass",
+        "bench": "C:\\Users\\chunx\\AppData\\Local\\Temp\\fde_bench_zvsi059r\\bench_eval.py",
+        "sol_hash": "23e73f4d"
+      }
+    },
+    {
+      "verdict_id": "bench|compass_exp_f1_money_half_up_rounding_001|98fb0974",
+      "task_uid": "compass_exp_f1_money_half_up_rounding_001",
+      "source": "compass/bench_eval",
+      "overall_pass": true,
+      "veto_failed": false,
+      "score": 1.0,
+      "items": [],
+      "artifacts": {
+        "kind": "t3_deterministic_bench",
+        "n_pass": 6,
+        "n_total": 6,
+        "reason": "pass",
+        "bench": "C:\\Users\\chunx\\AppData\\Local\\Temp\\fde_bench_pc9qwr4u\\bench_eval.py",
+        "sol_hash": "98fb0974"
+      }
+    },
+    {
+      "verdict_id": "bench|compass_exp_d1_version_key_join_shadowing_001|461d2430",
+      "task_uid": "compass_exp_d1_version_key_join_shadowing_001",
+      "source": "compass/bench_eval",
+      "overall_pass": true,
+      "veto_failed": false,
+      "score": 1.0,
+      "items": [],
+      "artifacts": {
+        "kind": "t3_deterministic_bench",
+        "n_pass": 5,
+        "n_total": 5,
+        "reason": "pass",
+        "bench": "C:\\Users\\chunx\\AppData\\Local\\Temp\\fde_bench_bukte61b\\bench_eval.py",
+        "sol_hash": "461d2430"
+      }
+    },
+    {
+      "verdict_id": "bench|compass_exp_c3_ndjson_bom_crlf_001|f26a9036",
+      "task_uid": "compass_exp_c3_ndjson_bom_crlf_001",
+      "source": "compass/bench_eval",
+      "overall_pass": true,
+      "veto_failed": false,
+      "score": 1.0,
+      "items": [],
+      "artifacts": {
+        "kind": "t3_deterministic_bench",
+        "n_pass": 7,
+        "n_total": 7,
+        "reason": "pass",
+        "bench": "C:\\Users\\chunx\\AppData\\Local\\Temp\\fde_bench_ep_e1s7b\\bench_eval.py",
+        "sol_hash": "f26a9036"
+      }
+    },
+    {
+      "verdict_id": "bench|compass_exp_c2d_utf8_byte_truncation_001|814232d3",
+      "task_uid": "compass_exp_c2d_utf8_byte_truncation_001",
+      "source": "compass/bench_eval",
+      "overall_pass": true,
+      "veto_failed": false,
+      "score": 1.0,
+      "items": [],
+      "artifacts": {
+        "kind": "t3_deterministic_bench",
+        "n_pass": 6,
+        "n_total": 6,
+        "reason": "pass",
+        "bench": "C:\\Users\\chunx\\AppData\\Local\\Temp\\fde_bench_6cbwe24j\\bench_eval.py",
+        "sol_hash": "814232d3"
+      }
+    },
+    {
+      "verdict_id": "bench|compass_exp_c2c_csv_rfc4180_001|7a0e2ba4",
+      "task_uid": "compass_exp_c2c_csv_rfc4180_001",
+      "source": "compass/bench_eval",
+      "overall_pass": true,
+      "veto_failed": false,
+      "score": 1.0,
+      "items": [],
+      "artifacts": {
+        "kind": "t3_deterministic_bench",
+        "n_pass": 6,
+        "n_total": 6,
+        "reason": "pass",
+        "bench": "C:\\Users\\chunx\\AppData\\Local\\Temp\\fde_bench_cum5xe19\\bench_eval.py",
+        "sol_hash": "7a0e2ba4"
+      }
+    },
+    {
+      "verdict_id": "bench|compass_exp_c2b_chunked_utf8_split_001|cf777beb",
+      "task_uid": "compass_exp_c2b_chunked_utf8_split_001",
+      "source": "compass/bench_eval",
+      "overall_pass": true,
+      "veto_failed": false,
+      "score": 1.0,
+      "items": [],
+      "artifacts": {
+        "kind": "t3_deterministic_bench",
+        "n_pass": 8,
+        "n_total": 8,
+        "reason": "pass",
+        "bench": "C:\\Users\\chunx\\AppData\\Local\\Temp\\fde_bench_3o35_2l7\\bench_eval.py",
+        "sol_hash": "cf777beb"
+      }
+    },
+    {
+      "verdict_id": "bench|compass_exp_c2_stdin_jsonrpc_cjk_001|2053f25b",
+      "task_uid": "compass_exp_c2_stdin_jsonrpc_cjk_001",
+      "source": "compass/bench_eval",
+      "overall_pass": true,
+      "veto_failed": false,
+      "score": 1.0,
+      "items": [],
+      "artifacts": {
+        "kind": "t3_deterministic_bench",
+        "n_pass": 8,
+        "n_total": 8,
+        "reason": "pass",
+        "bench": "C:\\Users\\chunx\\AppData\\Local\\Temp\\fde_bench_eq4tjfzp\\bench_eval.py",
+        "sol_hash": "2053f25b"
+      }
+    }
+  ],
+  "poll": {
+    "verified": [
+      "compass_exp_f2_rate_unit_caliber_001",
+      "compass_exp_f1_money_half_up_rounding_001",
+      "compass_exp_d1_version_key_join_shadowing_001",
+      "compass_exp_c3_ndjson_bom_crlf_001",
+      "compass_exp_c2d_utf8_byte_truncation_001",
+      "compass_exp_c2c_csv_rfc4180_001",
+      "compass_exp_c2b_chunked_utf8_split_001",
+      "compass_exp_c2_stdin_jsonrpc_cjk_001"
+    ],
+    "skipped": [],
+    "errored": [],
+    "failed": []
+  },
+  "passed": 8,
+  "total": 8
+}

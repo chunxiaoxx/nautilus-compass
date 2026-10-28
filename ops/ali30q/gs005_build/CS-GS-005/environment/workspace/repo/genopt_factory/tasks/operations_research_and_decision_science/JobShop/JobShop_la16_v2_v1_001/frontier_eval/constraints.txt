@@ -1,0 +1,1 @@
+minimize makespan on every instance; pure Python 3 stdlib only in baseline/init.py; preserve solve_instance(instance)->{"starts":...} interface; deterministic output (seed any randomness with a fixed constant); 60s per-instance budget; do not modify verification/, data/ or frontier_eval/

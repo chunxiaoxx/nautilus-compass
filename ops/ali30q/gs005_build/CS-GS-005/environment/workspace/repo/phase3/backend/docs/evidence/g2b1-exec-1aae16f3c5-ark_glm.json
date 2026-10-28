@@ -1,0 +1,48 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "cef2ec8973f01672150285ff443275c2abe3c549",
+  "reference_fix_commit": "1aae16f3c5c35f03c1414df9ab62074c4c0adc05",
+  "subject": "fix(swe-fuel): extract_fixed_file \u53d6\u6700\u5916\u5c42\u56f4\u680f\u4fee\u6e90\u6587\u4ef6\u5185\u542b\u56f4\u680f\u622a\u65ad\u6839\u56e0",
+  "test_files": [
+   "tests/test_swe_fuel_produce.py"
+  ],
+  "source_files": [
+   "fde_capsule/swe_fuel_produce.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5"
+ },
+ "test_id": "tests/test_swe_fuel_produce.py::test_extract_fenced_with_internal_triple_backtick",
+ "source_rel": "fde_capsule\\swe_fuel_produce.py",
+ "provider": "ark_glm",
+ "test_passed": true,
+ "winning_diff": "--- a/fde_capsule/swe_fuel_produce.py\n+++ b/fde_capsule/swe_fuel_produce.py\n@@ -38,8 +38,8 @@ def extract_fixed_file(text: str) -> str:\n     import re\n     if not text:\n         return \"\"\n-    m = re.search(r\"```[a-zA-Z0-9]*\\s*\\n(.*?)```\", text, re.DOTALL)\n+    m = re.search(r\"```[a-zA-Z0-9]*\\s*\\n(.*)```\", text, re.DOTALL)\n     if m:\n         return m.group(1)\n-    m = re.search(r\"```(.*?)```\", text, re.DOTALL)\n+    m = re.search(r\"```(.*)```\", text, re.DOTALL)\n     return m.group(1) if m else text\n@@ -101,5 +101,5 @@ def coerce_patch(text: str, path: str, original: str) -> str:\n     import re\n     if not text:\n         return \"\"\n-    fence = re.search(r\"```[a-zA-Z0-9]*\\s*\\n(.*?)```\", text, re.DOTALL)\n+    fence = re.search(r\"```[a-zA-Z0-9]*\\s*\\n(.*)```\", text, re.DOTALL)\n     inner = fence.group(1).strip() if fence else text.strip()",
+ "budget_exceeded": false,
+ "total_tokens": 21648,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "completion_tokens": 18454,
+    "prompt_tokens": 3194,
+    "total_tokens": 21648,
+    "prompt_tokens_details": {
+     "cached_tokens": 3194
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 18086
+    }
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "greedy_fence_extract_no_truncate",
+ "duration_s": 2042.5,
+ "replayed": true,
+ "verdict_post_status": 200
+}

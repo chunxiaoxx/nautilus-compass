@@ -1,0 +1,48 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "09d07269c053deb780682b241a2591322f74ead2",
+  "reference_fix_commit": "9d3dfd31b33450256dcceef0576a9bc2fc8a0c9f",
+  "subject": "fix(s4): make quarantine records append-only",
+  "test_files": [
+   "tests/gep/test_flywheel_log.py"
+  ],
+  "source_files": [
+   "gep/flywheel_log.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass"
+ },
+ "test_id": "tests/gep/test_flywheel_log.py::test_quarantine_rows_are_immutable_at_the_database_boundary",
+ "source_rel": "gep\\flywheel_log.py",
+ "provider": "ark_glm",
+ "test_passed": true,
+ "winning_diff": "--- a/gep/flywheel_log.py\n+++ b/gep/flywheel_log.py\n@@ -256,6 +256,20 @@\n             BEFORE DELETE ON flywheel_events\n             BEGIN\n                 SELECT RAISE(ABORT, 'flywheel_events rows are immutable');\n             END;\n             \"\"\",\n+\n+            \"\"\"\n+            CREATE TRIGGER IF NOT EXISTS flywheel_quarantine_immutable_update\n+            BEFORE UPDATE ON flywheel_quarantine\n+            BEGIN\n+                SELECT RAISE(ABORT, 'flywheel_quarantine rows are immutable');\n+            END;\n+            \"\"\",\n+\n+            \"\"\"\n+            CREATE TRIGGER IF NOT EXISTS flywheel_quarantine_immutable_delete\n+            BEFORE DELETE ON flywheel_quarantine\n+            BEGIN\n+                SELECT RAISE(ABORT, 'flywheel_quarantine rows are immutable');\n+            END;\n+            \"\"\",\n         )\n         for statement in statements:\n             self._connection.execute(statement)\n",
+ "budget_exceeded": false,
+ "total_tokens": 4274,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "completion_tokens": 928,
+    "prompt_tokens": 3346,
+    "total_tokens": 4274,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 586
+    }
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "add_quarantine_immutability_triggers",
+ "duration_s": 21.8,
+ "replayed": true,
+ "verdict_post_status": 200
+}

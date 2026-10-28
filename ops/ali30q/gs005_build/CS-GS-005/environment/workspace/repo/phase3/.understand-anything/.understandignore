@@ -1,0 +1,143 @@
+# .understandignore — patterns for files/dirs to exclude from analysis
+# Syntax: same as .gitignore (globs, # comments, ! negation, trailing / for dirs)
+# Lines below are suggestions — uncomment to activate.
+# Use ! prefix to force-include something excluded by defaults.
+#
+# Built-in defaults (always excluded unless negated):
+#   node_modules/, .git/, dist/, build/, obj/, *.lock, *.min.js, etc.
+#
+# --- From .gitignore (uncomment to exclude) ---
+
+# .env
+# .env.local
+# .env.staging
+# .env.production
+# *.env
+# *.py[cod]
+# *$py.class
+# *.so
+# .Python
+# ENV/
+# env/
+# pip-log.txt
+# pip-delete-this-directory.txt
+# .pytest_cache/
+# .coverage
+# htmlcov/
+# *.cover
+# .hypothesis/
+# npm-debug.log*
+# yarn-debug.log*
+# yarn-error.log*
+# .pnpm-debug.log*
+# *.tsbuildinfo
+# *.swp
+# *.swo
+# *~
+# .DS_Store
+# logs/
+# *.log.*
+# *.db
+# *.sqlite
+# *.sqlite3
+# *.tmp
+# *.temp
+# *.bak
+# *.backup
+# tmp/
+# temp/
+# *.tar.gz
+# *.rar
+# *_SUMMARY.md
+# *_REPORT.md
+# *_FEEDBACK*.txt
+# *_REVIEW*.md
+# *_STATUS*.md
+# *_COMPLETE*.md
+# *_FINAL*.md
+# *_LOG*.md
+# DIALOG_*.md
+# DIALOG_*.txt
+# TO_*.txt
+# TO_*.md
+# TASK_*.md
+# TASK_*.txt
+# WORK_*.md
+# ANALYSIS_*.md
+# EXECUTION_*.md
+# VERIFICATION_*.md
+# MONITORING_*.md
+# DEPLOYMENT_*.md
+# PERFORMANCE_*.md
+# BACKUP_*.md
+# PROJECT_*.md
+# SYSTEM_*.md
+# EVIDENCE_*.md
+# OAUTH_*.md
+# WEB3_*.md
+# WEBSOCKET_*.md
+# ACTION_*.md
+# PRIORITY_*.md
+# RECOMMENDATIONS.md
+# NEXT_STEPS.md
+# WHAT_TO_DO_NEXT.txt
+# START_HERE.md
+# QUICK_FIX_COMMANDS.sh
+# VISUAL_SUMMARY.md
+# COMPLETE.md
+# TASK_DONE.md
+# TEST_FIX.md
+# nul
+# .claude/
+# .claude.md
+# CLAUDE.md
+# CLAUDE_CODE_*.md
+# marketing/
+# config/
+# diagnose.sh
+# deploy-full.sh
+# fix-*.sh
+# setup_mcp.ps1
+# verify_mcp.ps1
+# test-*.js
+# *_test.py
+# run_smoke_test.py
+# monitoring/deploy-*.sh
+# backup-*.md
+# package.json
+# *[\u4e00-\u9fa5]*.md
+# !README.md
+# !CONTRIBUTING.md
+# !CHANGELOG.md
+# !LICENSE
+# !SECURITY.md
+# !CODE_QUALITY_REPORT.md
+# !DEPENDENCY_AUDIT_REPORT.md
+# !PERFORMANCE_OPTIMIZATION_GUIDE.md
+# !.env.example
+
+# --- Detected directories (uncomment to exclude) ---
+
+# docs/
+# scripts/
+
+# --- Test file patterns (uncomment to exclude) ---
+
+# *.test.*
+# *.spec.*
+# *.snap
+
+# --- 5/31 narrow patterns (user-approved · keep docs · exclude legacy/non-core) ---
+_dead_code_backup_20260327/
+**/_dead_code_backup_*/
+**/_dead_code/
+**/backup/
+**/backups/
+**/*.bak
+**/*.backup
+**/archive/
+**/archives/
+night_work/
+monitoring/
+scripts/
+contracts/

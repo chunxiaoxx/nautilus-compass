@@ -1,0 +1,164 @@
+[
+  {
+    "id": 1,
+    "title": "Build AI Image Classification Model",
+    "description": "Develop a convolutional neural network for classifying images into 10 categories. The model should achieve at least 85% accuracy on the test set. Use PyTorch or TensorFlow.",
+    "type": "AI/ML",
+    "status": "Open",
+    "reward": 1500,
+    "requiredSkills": ["Python", "TensorFlow", "PyTorch", "Computer Vision"],
+    "difficulty": "Hard",
+    "estimatedTime": "3-5 days",
+    "requirements": {
+      "dataset": "CIFAR-10",
+      "minAccuracy": 0.85,
+      "framework": ["PyTorch", "TensorFlow"]
+    }
+  },
+  {
+    "id": 2,
+    "title": "Implement Smart Contract for NFT Marketplace",
+    "description": "Create a Solidity smart contract for an NFT marketplace with minting, buying, selling, and royalty features. Must be gas-optimized and secure.",
+    "type": "Blockchain",
+    "status": "Open",
+    "reward": 2000,
+    "requiredSkills": ["Solidity", "Ethereum", "Web3", "Smart Contracts"],
+    "difficulty": "Hard",
+    "estimatedTime": "5-7 days",
+    "requirements": {
+      "blockchain": "Ethereum",
+      "features": ["minting", "trading", "royalties"],
+      "security": "audited"
+    }
+  },
+  {
+    "id": 3,
+    "title": "Build React Dashboard with Real-time Data",
+    "description": "Create a responsive dashboard using React and TypeScript that displays real-time analytics. Include charts, tables, and WebSocket integration.",
+    "type": "Frontend",
+    "status": "Open",
+    "reward": 1200,
+    "requiredSkills": ["React", "TypeScript", "WebSocket", "Chart.js"],
+    "difficulty": "Medium",
+    "estimatedTime": "3-4 days",
+    "requirements": {
+      "framework": "React",
+      "language": "TypeScript",
+      "features": ["real-time updates", "responsive design", "charts"]
+    }
+  },
+  {
+    "id": 4,
+    "title": "Design RESTful API for E-commerce Platform",
+    "description": "Build a scalable RESTful API using FastAPI with authentication, product management, order processing, and payment integration.",
+    "type": "Backend",
+    "status": "Open",
+    "reward": 1800,
+    "requiredSkills": ["Python", "FastAPI", "PostgreSQL", "Redis"],
+    "difficulty": "Hard",
+    "estimatedTime": "5-6 days",
+    "requirements": {
+      "framework": "FastAPI",
+      "database": "PostgreSQL",
+      "cache": "Redis",
+      "features": ["auth", "products", "orders", "payments"]
+    }
+  },
+  {
+    "id": 5,
+    "title": "Optimize Database Query Performance",
+    "description": "Analyze and optimize slow database queries in a PostgreSQL database. Add appropriate indexes and rewrite complex queries for better performance.",
+    "type": "Backend",
+    "status": "In Progress",
+    "reward": 800,
+    "requiredSkills": ["PostgreSQL", "SQL", "Database Optimization"],
+    "difficulty": "Medium",
+    "estimatedTime": "2-3 days",
+    "requirements": {
+      "database": "PostgreSQL",
+      "goal": "reduce query time by 50%",
+      "deliverables": ["index recommendations", "optimized queries"]
+    }
+  },
+  {
+    "id": 6,
+    "title": "Create Natural Language Processing Chatbot",
+    "description": "Build an intelligent chatbot using NLP techniques. Should understand context, handle multiple intents, and provide relevant responses.",
+    "type": "AI/ML",
+    "status": "Open",
+    "reward": 1600,
+    "requiredSkills": ["Python", "NLP", "Transformers", "LangChain"],
+    "difficulty": "Hard",
+    "estimatedTime": "4-5 days",
+    "requirements": {
+      "model": "transformer-based",
+      "features": ["context awareness", "multi-intent", "response generation"],
+      "framework": ["LangChain", "Hugging Face"]
+    }
+  },
+  {
+    "id": 7,
+    "title": "Implement CI/CD Pipeline with Docker",
+    "description": "Set up a complete CI/CD pipeline using GitHub Actions, Docker, and Kubernetes. Include automated testing, building, and deployment.",
+    "type": "DevOps",
+    "status": "Open",
+    "reward": 1000,
+    "requiredSkills": ["Docker", "Kubernetes", "GitHub Actions", "CI/CD"],
+    "difficulty": "Medium",
+    "estimatedTime": "3-4 days",
+    "requirements": {
+      "platform": "GitHub Actions",
+      "containerization": "Docker",
+      "orchestration": "Kubernetes",
+      "stages": ["test", "build", "deploy"]
+    }
+  },
+  {
+    "id": 8,
+    "title": "Build Mobile App with React Native",
+    "description": "Develop a cross-platform mobile app for task management. Include offline support, push notifications, and cloud sync.",
+    "type": "Mobile",
+    "status": "Open",
+    "reward": 2200,
+    "requiredSkills": ["React Native", "JavaScript", "Mobile Development", "Firebase"],
+    "difficulty": "Hard",
+    "estimatedTime": "6-8 days",
+    "requirements": {
+      "framework": "React Native",
+      "platforms": ["iOS", "Android"],
+      "features": ["offline mode", "push notifications", "cloud sync"]
+    }
+  },
+  {
+    "id": 9,
+    "title": "Implement Data Visualization Dashboard",
+    "description": "Create interactive data visualizations using D3.js or Recharts. Display complex datasets with multiple chart types and filtering options.",
+    "type": "Frontend",
+    "status": "Completed",
+    "reward": 900,
+    "requiredSkills": ["JavaScript", "D3.js", "React", "Data Visualization"],
+    "difficulty": "Medium",
+    "estimatedTime": "2-3 days",
+    "requirements": {
+      "library": ["D3.js", "Recharts"],
+      "chartTypes": ["line", "bar", "pie", "scatter"],
+      "features": ["interactive", "filterable", "responsive"]
+    }
+  },
+  {
+    "id": 10,
+    "title": "Security Audit for Web Application",
+    "description": "Perform comprehensive security audit including penetration testing, vulnerability assessment, and security recommendations.",
+    "type": "Security",
+    "status": "Open",
+    "reward": 1400,
+    "requiredSkills": ["Security", "Penetration Testing", "OWASP", "Web Security"],
+    "difficulty": "Hard",
+    "estimatedTime": "3-4 days",
+    "requirements": {
+      "scope": ["authentication", "authorization", "data protection", "API security"],
+      "standards": ["OWASP Top 10"],
+      "deliverables": ["vulnerability report", "recommendations", "remediation plan"]
+    }
+  }
+]

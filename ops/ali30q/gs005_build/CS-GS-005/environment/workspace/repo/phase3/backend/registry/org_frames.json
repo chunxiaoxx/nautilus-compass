@@ -1,0 +1,15 @@
+{
+  "schema": "org_frames.v1",
+  "updated": "2026-10-05",
+  "note": "框卡注册表——每框主线/判据/触达/时效制的标准沉淀位。修改走平台操作层(声明+留痕),快照与 /api/platform/org/frames 消费。 | v7 于 2026-10-05 用户拍板摘牌(全表零函/两轮跟催无回,触客并入 BC 外发逐单呈),git 历史可溯。",
+  "frames": [
+    {"frame": "platform", "mainline": "组织OS:函件/裁决/账本/身份/守护", "criteria": "mailbox验收/账本对账/裁决登记可查", "reach": "mailbox+cloud loop", "cadence": "实时", "plane": "prod"},
+    {"frame": "flywheel", "mainline": "三主线:①验证业务(十一段管道→LeRobot 58K质检→判读→计量,北极星=扩量交付)②训练实证(G1双臂/pusht/gen4)③组织机制(闸门/台账/spec,越转越低成本)", "criteria": "预注册棘轮(pusht v2-final已冻结)+双检验法(Wilcoxon主+MWU辅);gen4 J1金标PCK≥MediaPipe基线(答卷已收待澄清);判读主权compass,变更走预注册", "reach": "data.nautilus.social工作台(library/deliveries)+飞书p2p提醒+信箱每轮双账;对外=LeRobot社区质检+判官网络", "cadence": "值守轮45min;晨08:00夜班总账;等待点入human_action_ledger台账;commit即推GitHub", "plane": "prod"},
+    {"frame": "compass", "mainline": "判分机构(具身数据有效性验证平台实现路径):J2判官席履约双包(OOD 400+主包498);G1/pusht判例弧收官;判例集v1装订公开", "criteria": "预注册判据先行+判据零放宽+演进走宪法十三条①程序;证据三层实测/推断/不可验强制标注;verdict全件过schema v2;非实现者复算;白名单四类入语料反自指护栏;两线定价(判读永久免费/装订收费,装订首物=判例集v1)", "reach": "flywheel(G1/pusht全弧+schema会签)/v5(errata供给A案)/platform(E1·J2席位+M1批次二);rsi-bench认证轨", "cadence": "信箱值守轮5min级;判读响应<1h;死线件优先;P3夜间跑", "plane": "prod"},
+    {"frame": "v5", "mainline": "训练引擎(openpi栈:G1 π0 LoRA+pusht适配器)+评测引擎(四窗效度收官,判据v2冻结)+燃料验证器(四验门);M1达成(2026-10-03首份合规trajectory入池)", "criteria": "评测判读归compass(P3管道判据v2);燃料交付=FUEL_ORDER_SPEC_V1§二+四验门(flywheel执行)", "reach": "mailbox主/A100 /root/vdd3/落盘协作/GPU协作链脚本", "cadence": "值守轮loop协议+死线函2h级", "plane": "prod"},
+    {"frame": "soul", "mainline": "自改进提案+裁决员", "criteria": "平台函ack清零+周≥1提案被采纳", "reach": "mailbox", "cadence": "1h轮", "plane": "prod"},
+    {"frame": "kairos", "mainline": "评分/审计接口", "criteria": "DMAS判分接口活性", "reach": "mailbox+预付闸", "cadence": "事件", "plane": "prod-observe"},
+    {"frame": "vc_daily", "mainline": "商业内容渠道", "criteria": "周≥2篇带DCR入口", "reach": "会话开轮(回合制,mailbox不可达)", "cadence": "回合", "plane": "prod"},
+    {"frame": "zenmind", "mainline": "个人助理/健康监测", "criteria": "周报连续", "reach": "mailbox+digest", "cadence": "每日22:00", "plane": "prod"}
+  ]
+}

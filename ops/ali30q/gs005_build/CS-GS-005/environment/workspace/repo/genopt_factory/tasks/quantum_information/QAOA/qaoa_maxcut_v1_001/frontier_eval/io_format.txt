@@ -1,0 +1,4 @@
+input_format: "JSON with {name, n, edges: [[u,v],...], p}"
+output_format: "JSON with {bitstring: [0|1,...], cut_size: int}"
+problem_type: "Max-Cut (NP-hard combinatorial optimization)"
+reference_algorithm: "1-flip local search + 5 random restarts (deterministic seed)"

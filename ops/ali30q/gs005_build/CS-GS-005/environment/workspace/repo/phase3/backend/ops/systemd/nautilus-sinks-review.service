@@ -1,0 +1,9 @@
+[Unit]
+Description=nautilus sinks review scan (monthly, SINKS_LIVENESS_V2)
+
+[Service]
+Type=oneshot
+User=ubuntu
+WorkingDirectory=/home/ubuntu/nautilus-backend
+ExecStart=/usr/bin/python3 /home/ubuntu/nautilus-backend/ops/sinks_review_scan.py --apply
+# 部署窗随晨间部署走:上传 service+timer → daemon-reload → enable --now → 手跑一次 --apply 验证回读

@@ -1,0 +1,29 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "55d751547974561b1128351d41326c4dc677a96c",
+  "reference_fix_commit": "7493bfa763cb56a4752fe51b1fe4c94df46bcd11",
+  "subject": "fix(p1): swe_docker eval \u8d85\u65f6\u6cbb\u672c(\u9632\u5355\u9898 hang \u51bb\u7ed3\u6574\u4e2a verify \u961f\u5217 + \u6e05\u8fdc\u7aef\u5b64\u513f)",
+  "test_files": [
+   "phase3/backend/tests/test_swe_docker.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/swe_docker.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/test_swe_docker.py",
+ "source_rel": "services\\swe_docker.py",
+ "provider": "glm_plan,minimax_m3,deepseek",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 1.8,
+ "replayed": true,
+ "verdict_post_status": 200
+}

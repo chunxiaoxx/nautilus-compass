@@ -1,0 +1,73 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "69c976dc88516d5f47ff6f3b063efee913878987",
+  "reference_fix_commit": "71033bf83c3cdaaca0fe1c1d8ba807441af9c957",
+  "subject": "fix(fde): \u7b2c\u516b\u4fee\u2014\u2014exam3arm\u524d\u7f00\u8fdbSWE\u9002\u914d,\u6cbb\u4e09\u81c2v5\u81c2\u8d70\u901a\u7528code-fix(q2-v5\u7ba1\u7ebf\u9519\u5377\u00b7\u4e94\u5200\u5168\u7ed5\u8fc7\u00b7\u5224\u5206\u524d\u987b\u7f6e\u56de\u91cd\u4ea7)",
+  "test_files": [
+   "tests/test_fde_consumer.py"
+  ],
+  "source_files": [
+   "fde_capsule/fde_consumer.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\nautilus-v5"
+ },
+ "test_id": "tests/test_fde_consumer.py::test_adapt_exam_task_covers_exam3arm_prefix",
+ "source_rel": "fde_capsule\\fde_consumer.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/fde_capsule/fde_consumer.py\n+++ b/fde_capsule/fde_consumer.py\n@@ -34,7 +34,9 @@\n     \"\"\"g2b1: \u8003\u9898 \u2192 SWE spec \u5e73\u94fa task;\u975e\u8003\u9898\u539f\u6837\u8fd4\u56de;\u6807\u8bb0\u7f3a\u5931 None(\u4ea4\u539f\u8def\u7531)\u3002\"\"\"\n     uid = str(task.get(\"task_uid\") or \"\")\n-    if not uid.startswith(\"g2b1:\"):\n+    # \u4e09\u81c2\u6559\u8bad(2026-09-19):exam3arm- \u524d\u7f00\u8003\u9898\u4e0e g2b1 \u540c\u8d70 SWE \u9002\u914d\n+    # (q2-v5 \u7ba1\u7ebf\u9519\u5377\u5b9e\u8bc1:\u53ea\u8ba4 g2b1: \u4f1a\u628a exam3arm \u8003\u9898\u539f\u6837\u653e\u7ed9\u804a\u5929\u8def\u7531)\u3002\n+    if not (uid.startswith(\"g2b1:\") or uid.startswith(\"exam3arm-\")):\n         return task\n     desc = str(task.get(\"description\") or \"\")\n",
+ "budget_exceeded": false,
+ "total_tokens": 7079,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 6761,
+    "completion_tokens": 318,
+    "total_tokens": 7079,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 6761,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 318,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 0,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 6761,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "exam3arm_prefix_adapt",
+ "duration_s": 32.5,
+ "verdict_post_status": 200
+}

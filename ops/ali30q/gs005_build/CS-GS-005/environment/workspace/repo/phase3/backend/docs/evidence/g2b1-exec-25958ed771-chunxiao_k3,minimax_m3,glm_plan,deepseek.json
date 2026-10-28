@@ -1,0 +1,29 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "0dd1d74b1c69e266da4be2df421d6351872beb1c",
+  "reference_fix_commit": "25958ed771cde1ac01cfedefbd0443b49991ad55",
+  "subject": "fix: reject malformed sync estimate fields",
+  "test_files": [
+   "tests/test_selfproof_sync.py"
+  ],
+  "source_files": [
+   "src/nautilusflywheel/selfproof_sync.py"
+  ],
+  "repo_path": "C:/Users/chunx/Projects/nautilusflywheel"
+ },
+ "test_id": "tests/test_selfproof_sync.py",
+ "source_rel": "src\\nautilusflywheel\\selfproof_sync.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "skipped_reason": "fixture_broken_red",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 3.3,
+ "replayed": true,
+ "verdict_post_status": 200
+}

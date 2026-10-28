@@ -1,0 +1,36 @@
+--- a/src/click/core.py
++++ b/src/click/core.py
+@@ -1686,14 +1686,24 @@ class Parameter:
+         name = self.name
+         value = ctx.lookup_default(name, call=False) if name is not None else None
+
+-        if value is None and not (
+-            ctx.default_map is not None and name is not None and name in ctx.default_map
+-        ):
+-            value = self.default
+-        if call and callable(value):
+-            value = value()
++        if name is not None and ctx.default_map is not None and name in ctx.default_map:
++            # Respect the explicit entry in ``default_map`` even if it is ``None``,
++            # and invoke it if it is callable. This preserves the precedence of
++            # ``default_map`` over the parameter's own default, including for
++            # callable flag values that get auto-aligned to the parameter's default.
++            if call and callable(value):
++                value = value()
++        else:
++            # No explicit entry in ``default_map``. Fall back to the parameter's
++            # own default, but only when it isn't a callable that was
++            # auto-aligned to a ``flag_value`` (which would replace the user's
++            # intended default). Detect such auto-aligned callables by
++            # comparing identity with ``self.flag_value`` when available.
++            value = self.default
++            if call and callable(value):
++                # Don't auto-call the parameter's default if it is the
++                # same callable that was set as ``flag_value``; the caller
++                # should receive the original (class/object) rather than an
++                # instance produced by calling it.
++                from .core import Option  # noqa: F401  (avoid circular at import)
++                if not (isinstance(self, Option) and value is getattr(self, "flag_value", None)):
++                    value = value()
+
+         return value

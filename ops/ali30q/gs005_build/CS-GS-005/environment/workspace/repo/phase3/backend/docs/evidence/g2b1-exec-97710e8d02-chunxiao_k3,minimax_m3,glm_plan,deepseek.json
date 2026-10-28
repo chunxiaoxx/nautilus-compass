@@ -1,0 +1,73 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "d1d45bc1dbfc37560317932b81a321a865f5dfe4",
+  "reference_fix_commit": "97710e8d0221cf2e57e8ca25da4fd8b4d2c9d55b",
+  "subject": "fix(distill): is_a_bucket ALE\u65b9\u5411\u611f\u77e5(minimize\u9898\u00b7\u5206\u8d8a\u4f4e\u8d8a\u597d)\u2014\u2014\u4fee\u6f5c\u5728\u71c3\u6599confound",
+  "test_files": [
+   "phase3/backend/tests/test_distill_fuel.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/distill_fuel.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/test_distill_fuel.py::test_ale_minimize_a_bucket_when_strong_lower_than_doubao",
+ "source_rel": "services\\distill_fuel.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/services/distill_fuel.py\n+++ b/services/distill_fuel.py\n@@ -35,9 +35,18 @@\n     if kind == \"ale\":\n         strong = float(rec.get(\"strong_score\") or 0.0)\n         doubao = float(rec.get(\"doubao_score\") or 0.0)\n-        if strong <= 0:\n-            return False\n-        # \u76f8\u5bf9 gap:\u5f3a\u6a21\u578b\u9886\u5148 doubao \u2265 margin = \u6709\u53ef\u84b8 headroom;\u5426\u5219\u9971\u548c\u62d2\n-        rel_gap = (strong - doubao) / strong\n+        if rec.get(\"score_type\") == \"minimize\":\n+            # \u6700\u5c0f\u5316\u6253\u5206(\u8d8a\u4f4e\u8d8a\u597d):\u5f3a\u6a21\u578b\u5206 \u226a doubao \u5206 = \u6709\u53ef\u84b8 headroom\n+            if doubao <= 0:\n+                # doubao \u5df2 0 \u5206(\u6700\u4f18)\u00b7\u65e0 gap \u53ef\u84b8 \u2192 \u9971\u548c\u62d2\n+                return False\n+            # \u76f8\u5bf9 gap:\u5f3a\u6a21\u578b\u6bd4 doubao \u4f4e \u2265 margin = A \u7c7b;\u5426\u5219\u9971\u548c\u62d2\n+            rel_gap = (doubao - strong) / doubao\n+        else:\n+            if strong <= 0:\n+                return False\n+            # \u76f8\u5bf9 gap:\u5f3a\u6a21\u578b\u9886\u5148 doubao \u2265 margin = \u6709\u53ef\u84b8 headroom;\u5426\u5219\u9971\u548c\u62d2\n+            rel_gap = (strong - doubao) / strong\n         return rel_gap >= ale_rel_margin\n \n     if kind == \"swe\":",
+ "budget_exceeded": false,
+ "total_tokens": 2313,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 1810,
+    "completion_tokens": 503,
+    "total_tokens": 2313,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 1554,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 503,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 1810,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "ale_minimize_score_gap_fix",
+ "duration_s": 19.5,
+ "verdict_post_status": 200
+}

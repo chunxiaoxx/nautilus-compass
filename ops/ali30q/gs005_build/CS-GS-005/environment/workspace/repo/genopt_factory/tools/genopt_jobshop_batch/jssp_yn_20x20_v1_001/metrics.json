@@ -1,0 +1,44 @@
+{
+  "combined_score": 9.3147,
+  "valid": 1.0,
+  "instances": 4,
+  "failures": 0,
+  "per_instance": [
+    {
+      "instance": "yn1",
+      "elapsed_s": 0.93,
+      "feasible": true,
+      "reason": "ok",
+      "makespan": 9477,
+      "optimum": 885,
+      "score": 9.338398227287117
+    },
+    {
+      "instance": "yn2",
+      "elapsed_s": 1.51,
+      "feasible": true,
+      "reason": "ok",
+      "makespan": 9721,
+      "optimum": 909,
+      "score": 9.350889826149572
+    },
+    {
+      "instance": "yn3",
+      "elapsed_s": 1.11,
+      "feasible": true,
+      "reason": "ok",
+      "makespan": 9958,
+      "optimum": 892,
+      "score": 8.9576220124523
+    },
+    {
+      "instance": "yn4",
+      "elapsed_s": 0.34,
+      "feasible": true,
+      "reason": "ok",
+      "makespan": 10071,
+      "optimum": 968,
+      "score": 9.611756528646609
+    }
+  ]
+}

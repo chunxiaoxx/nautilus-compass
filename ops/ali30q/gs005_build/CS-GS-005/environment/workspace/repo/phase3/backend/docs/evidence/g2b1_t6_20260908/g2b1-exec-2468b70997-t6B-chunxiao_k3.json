@@ -1,0 +1,27 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "ddede2147c9370ab8275f81db4826b6895d2e7dc",
+  "reference_fix_commit": "2468b70997a6ec27ced4b4867954c90da3f92075",
+  "subject": "Fix readline backspace/line-wrapping on linux (#2969)",
+  "test_files": [
+   "tests/test_utils.py"
+  ],
+  "source_files": [
+   "src/click/termui.py"
+  ],
+  "repo_path": "C:/Users/chunx/ext_mine"
+ },
+ "test_id": "tests/test_utils.py::test_full_prompt_passed_to_readline",
+ "source_rel": "src/click/termui.py",
+ "provider": "t6B-chunxiao_k3",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0
+}

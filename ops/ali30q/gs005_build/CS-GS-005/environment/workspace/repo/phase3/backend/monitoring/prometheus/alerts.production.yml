@@ -1,0 +1,430 @@
+# Prometheus 生产环境告警规则
+# Nautilus Phase 3 Backend Production Alerts
+# 创建时间: 2026-02-27
+
+groups:
+  # ==================== 生产环境 API 性能告警 ====================
+  - name: production_api_performance
+    interval: 30s
+    rules:
+      # 严重: API 错误率过高（生产环境阈值更严格）
+      - alert: ProductionHighAPIErrorRate
+        expr: |
+          (
+            sum(rate(nautilus_http_requests_total{status=~"5..", environment="production"}[5m]))
+            /
+            sum(rate(nautilus_http_requests_total{environment="production"}[5m]))
+          ) > 0.01
+        for: 1m
+        labels:
+          severity: critical
+          component: api
+          environment: production
+          priority: P1
+        annotations:
+          summary: "生产环境 API 错误率过高"
+          description: "生产环境 API 5xx 错误率超过 1%，当前值: {{ $value | humanizePercentage }}"
+          runbook_url: "https://wiki.nautilus.com/runbooks/high-api-error-rate"
+          dashboard_url: "http://grafana:3000/d/nautilus-api"
+
+      # 严重: API 响应时间过长（P95）
+      - alert: ProductionHighAPILatencyP95
+        expr: |
+          histogram_quantile(0.95,
+            sum(rate(nautilus_http_request_duration_seconds_bucket{environment="production"}[5m])) by (le, endpoint)
+          ) > 1
+        for: 3m
+        labels:
+          severity: critical
+          component: api
+          environment: production
+          priority: P1
+        annotations:
+          summary: "生产环境 API P95 响应时间过长"
+          description: "端点 {{ $labels.endpoint }} 的 P95 响应时间超过 1 秒，当前值: {{ $value | printf \"%.2f\" }}s"
+          runbook_url: "https://wiki.nautilus.com/runbooks/high-api-latency"
+
+      # 警告: API 响应时间过长（P99）
+      - alert: ProductionHighAPILatencyP99
+        expr: |
+          histogram_quantile(0.99,
+            sum(rate(nautilus_http_request_duration_seconds_bucket{environment="production"}[5m])) by (le, endpoint)
+          ) > 3
+        for: 5m
+        labels:
+          severity: warning
+          component: api
+          environment: production
+          priority: P2
+        annotations:
+          summary: "生产环境 API P99 响应时间过长"
+          description: "端点 {{ $labels.endpoint }} 的 P99 响应时间超过 3 秒，当前值: {{ $value | printf \"%.2f\" }}s"
+
+      # 严重: API 请求量异常下降（可能服务中断）
+      - alert: ProductionAPIRequestRateDrop
+        expr: |
+          (
+            sum(rate(nautilus_http_requests_total{environment="production"}[5m]))
+            /
+            sum(rate(nautilus_http_requests_total{environment="production"}[1h] offset 1h))
+          ) < 0.3
+        for: 5m
+        labels:
+          severity: critical
+          component: api
+          environment: production
+          priority: P1
+        annotations:
+          summary: "生产环境 API 请求量异常下降"
+          description: "API 请求量下降超过 70%，可能服务不可用或网络问题"
+          runbook_url: "https://wiki.nautilus.com/runbooks/low-request-rate"
+
+      # 警告: 4xx 错误率过高（客户端错误）
+      - alert: ProductionHigh4xxErrorRate
+        expr: |
+          (
+            sum(rate(nautilus_http_requests_total{status=~"4..", environment="production"}[10m]))
+            /
+            sum(rate(nautilus_http_requests_total{environment="production"}[10m]))
+          ) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+          component: api
+          environment: production
+          priority: P3
+        annotations:
+          summary: "生产环境 4xx 错误率过高"
+          description: "客户端错误率超过 10%，当前值: {{ $value | humanizePercentage }}，可能是 API 使用问题"
+
+  # ==================== 生产环境数据库告警 ====================
+  - name: production_database
+    interval: 30s
+    rules:
+      # 严重: 数据库连接失败
+      - alert: ProductionDatabaseDown
+        expr: nautilus_database_connections{environment="production"} == 0
+        for: 30s
+        labels:
+          severity: critical
+          component: database
+          environment: production
+          priority: P1
+        annotations:
+          summary: "生产环境数据库连接失败"
+          description: "无法连接到 PostgreSQL 数据库，服务可能完全中断"
+          runbook_url: "https://wiki.nautilus.com/runbooks/database-down"
+          dashboard_url: "http://grafana:3000/d/nautilus-database"
+
+      # 严重: 数据库查询时间过长
+      - alert: ProductionSlowDatabaseQueries
+        expr: |
+          histogram_quantile(0.95,
+            sum(rate(nautilus_database_query_duration_seconds_bucket{environment="production"}[5m])) by (le, operation)
+          ) > 0.5
+        for: 3m
+        labels:
+          severity: critical
+          component: database
+          environment: production
+          priority: P1
+        annotations:
+          summary: "生产环境数据库查询缓慢"
+          description: "操作 {{ $labels.operation }} 的 P95 查询时间超过 500ms，当前值: {{ $value | printf \"%.2f\" }}s"
+          runbook_url: "https://wiki.nautilus.com/runbooks/slow-queries"
+
+      # 严重: 数据库错误率过高
+      - alert: ProductionHighDatabaseErrorRate
+        expr: rate(nautilus_database_errors_total{environment="production"}[5m]) > 0.5
+        for: 1m
+        labels:
+          severity: critical
+          component: database
+          environment: production
+          priority: P1
+        annotations:
+          summary: "生产环境数据库错误率过高"
+          description: "数据库错误频率: {{ $value | printf \"%.2f\" }} 错误/秒"
+          runbook_url: "https://wiki.nautilus.com/runbooks/database-errors"
+
+      # 警告: 数据库连接池使用率高
+      - alert: ProductionDatabaseConnectionPoolHigh
+        expr: |
+          (
+            nautilus_database_connections_active{environment="production"}
+            /
+            nautilus_database_connections_max{environment="production"}
+          ) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          component: database
+          environment: production
+          priority: P2
+        annotations:
+          summary: "生产环境数据库连接池使用率高"
+          description: "数据库连接池使用率超过 80%，当前值: {{ $value | humanizePercentage }}"
+
+  # ==================== 生产环境区块链告警 ====================
+  - name: production_blockchain
+    interval: 30s
+    rules:
+      # 严重: 区块链连接断开
+      - alert: ProductionBlockchainDisconnected
+        expr: nautilus_blockchain_connection_status{environment="production"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          component: blockchain
+          environment: production
+          priority: P1
+        annotations:
+          summary: "生产环境区块链连接断开"
+          description: "无法连接到区块链网络，所有区块链操作将失败"
+          runbook_url: "https://wiki.nautilus.com/runbooks/blockchain-disconnected"
+          dashboard_url: "http://grafana:3000/d/nautilus-blockchain"
+
+      # 严重: 区块链交易失败率过高
+      - alert: ProductionHighBlockchainTransactionFailureRate
+        expr: |
+          (
+            sum(rate(nautilus_blockchain_transactions_total{status="failed", environment="production"}[10m]))
+            /
+            sum(rate(nautilus_blockchain_transactions_total{environment="production"}[10m]))
+          ) > 0.05
+        for: 3m
+        labels:
+          severity: critical
+          component: blockchain
+          environment: production
+          priority: P1
+        annotations:
+          summary: "生产环境区块链交易失败率过高"
+          description: "区块链交易失败率超过 5%，当前值: {{ $value | humanizePercentage }}"
+          runbook_url: "https://wiki.nautilus.com/runbooks/blockchain-tx-failures"
+
+      # 警告: Gas 费用异常高
+      - alert: ProductionHighGasCost
+        expr: nautilus_blockchain_gas_price_wei{environment="production"} > 50000000000
+        for: 10m
+        labels:
+          severity: warning
+          component: blockchain
+          environment: production
+          priority: P2
+        annotations:
+          summary: "生产环境 Gas 费用异常高"
+          description: "当前 Gas 价格: {{ $value | humanize }} Wei (> 50 Gwei)，建议延迟非紧急交易"
+          runbook_url: "https://wiki.nautilus.com/runbooks/high-gas-price"
+
+      # 严重: 待处理交易过多
+      - alert: ProductionHighPendingTransactions
+        expr: nautilus_blockchain_pending_transactions{environment="production"} > 20
+        for: 15m
+        labels:
+          severity: critical
+          component: blockchain
+          environment: production
+          priority: P1
+        annotations:
+          summary: "生产环境待处理区块链交易过多"
+          description: "待处理交易数量: {{ $value }}，可能网络拥堵或交易卡住"
+          runbook_url: "https://wiki.nautilus.com/runbooks/pending-transactions"
+
+      # 警告: 区块链同步延迟
+      - alert: ProductionBlockchainSyncLag
+        expr: (time() - nautilus_blockchain_last_block_timestamp{environment="production"}) > 300
+        for: 5m
+        labels:
+          severity: warning
+          component: blockchain
+          environment: production
+          priority: P2
+        annotations:
+          summary: "生产环境区块链同步延迟"
+          description: "最后区块时间戳延迟超过 5 分钟，当前延迟: {{ $value | humanizeDuration }}"
+
+  # ==================== 生产环境系统资源告警 ====================
+  - name: production_system_resources
+    interval: 30s
+    rules:
+      # 严重: CPU 使用率过高
+      - alert: ProductionHighCPUUsage
+        expr: nautilus_system_cpu_usage_percent{environment="production"} > 85
+        for: 5m
+        labels:
+          severity: critical
+          component: system
+          environment: production
+          priority: P1
+        annotations:
+          summary: "生产环境 CPU 使用率过高"
+          description: "CPU 使用率: {{ $value | printf \"%.1f\" }}%，可能影响服务性能"
+          runbook_url: "https://wiki.nautilus.com/runbooks/high-cpu"
+
+      # 警告: CPU 使用率高
+      - alert: ProductionElevatedCPUUsage
+        expr: nautilus_system_cpu_usage_percent{environment="production"} > 70
+        for: 10m
+        labels:
+          severity: warning
+          component: system
+          environment: production
+          priority: P2
+        annotations:
+          summary: "生产环境 CPU 使用率较高"
+          description: "CPU 使用率: {{ $value | printf \"%.1f\" }}%"
+
+      # 严重: 内存使用率过高
+      - alert: ProductionHighMemoryUsage
+        expr: |
+          (
+            nautilus_system_memory_usage_bytes{environment="production"}
+            /
+            nautilus_system_memory_total_bytes{environment="production"}
+          ) > 0.9
+        for: 5m
+        labels:
+          severity: critical
+          component: system
+          environment: production
+          priority: P1
+        annotations:
+          summary: "生产环境内存使用率过高"
+          description: "内存使用率: {{ $value | humanizePercentage }}，可能导致 OOM"
+          runbook_url: "https://wiki.nautilus.com/runbooks/high-memory"
+
+      # 警告: 磁盘使用率高
+      - alert: ProductionHighDiskUsage
+        expr: |
+          (
+            nautilus_system_disk_usage_bytes{environment="production"}
+            /
+            nautilus_system_disk_total_bytes{environment="production"}
+          ) > 0.8
+        for: 10m
+        labels:
+          severity: warning
+          component: system
+          environment: production
+          priority: P2
+        annotations:
+          summary: "生产环境磁盘使用率高"
+          description: "磁盘使用率: {{ $value | humanizePercentage }}"
+          runbook_url: "https://wiki.nautilus.com/runbooks/high-disk"
+
+  # ==================== 生产环境 Redis 告警 ====================
+  - name: production_redis
+    interval: 30s
+    rules:
+      # 严重: Redis 连接失败
+      - alert: ProductionRedisDown
+        expr: nautilus_redis_connection_status{environment="production"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          component: redis
+          environment: production
+          priority: P1
+        annotations:
+          summary: "生产环境 Redis 连接失败"
+          description: "无法连接到 Redis 缓存服务，缓存功能不可用"
+          runbook_url: "https://wiki.nautilus.com/runbooks/redis-down"
+
+      # 警告: Redis 内存使用率高
+      - alert: ProductionRedisHighMemory
+        expr: |
+          (
+            nautilus_redis_memory_used_bytes{environment="production"}
+            /
+            nautilus_redis_memory_max_bytes{environment="production"}
+          ) > 0.85
+        for: 5m
+        labels:
+          severity: warning
+          component: redis
+          environment: production
+          priority: P2
+        annotations:
+          summary: "生产环境 Redis 内存使用率高"
+          description: "Redis 内存使用率: {{ $value | humanizePercentage }}"
+
+  # ==================== 生产环境安全告警 ====================
+  - name: production_security
+    interval: 30s
+    rules:
+      # 严重: 异常登录失败次数（可能是暴力破解）
+      - alert: ProductionHighLoginFailureRate
+        expr: rate(nautilus_security_events_total{event_type="login_failed", environment="production"}[5m]) > 10
+        for: 2m
+        labels:
+          severity: critical
+          component: security
+          environment: production
+          priority: P1
+        annotations:
+          summary: "生产环境登录失败次数异常"
+          description: "登录失败频率: {{ $value | printf \"%.1f\" }} 次/秒，可能遭受暴力破解攻击"
+          runbook_url: "https://wiki.nautilus.com/runbooks/brute-force-attack"
+
+      # 严重: 异常 API 调用（可能是攻击）
+      - alert: ProductionAbnormalAPICall
+        expr: rate(nautilus_security_events_total{event_type="abnormal_api_call", environment="production"}[5m]) > 0.5
+        for: 1m
+        labels:
+          severity: critical
+          component: security
+          environment: production
+          priority: P1
+        annotations:
+          summary: "生产环境检测到异常 API 调用"
+          description: "异常 API 调用频率: {{ $value | printf \"%.2f\" }} 次/秒，可能遭受攻击"
+          runbook_url: "https://wiki.nautilus.com/runbooks/abnormal-api-calls"
+
+      # 警告: 权限拒绝事件频繁
+      - alert: ProductionHighPermissionDeniedRate
+        expr: rate(nautilus_security_events_total{event_type="permission_denied", environment="production"}[10m]) > 5
+        for: 5m
+        labels:
+          severity: warning
+          component: security
+          environment: production
+          priority: P2
+        annotations:
+          summary: "生产环境权限拒绝事件频繁"
+          description: "权限拒绝频率: {{ $value | printf \"%.1f\" }} 次/秒"
+
+  # ==================== 生产环境业务指标告警 ====================
+  - name: production_business_metrics
+    interval: 60s
+    rules:
+      # 警告: 用户注册率异常下降
+      - alert: ProductionLowUserRegistrationRate
+        expr: rate(nautilus_user_registrations_total{environment="production"}[1h]) < 0.01
+        for: 30m
+        labels:
+          severity: warning
+          component: business
+          environment: production
+          priority: P3
+        annotations:
+          summary: "生产环境用户注册率异常下降"
+          description: "用户注册率低于正常水平"
+
+      # 警告: 交易成功率下降
+      - alert: ProductionLowTransactionSuccessRate
+        expr: |
+          (
+            sum(rate(nautilus_transactions_total{status="success", environment="production"}[10m]))
+            /
+            sum(rate(nautilus_transactions_total{environment="production"}[10m]))
+          ) < 0.95
+        for: 10m
+        labels:
+          severity: warning
+          component: business
+          environment: production
+          priority: P2
+        annotations:
+          summary: "生产环境交易成功率下降"
+          description: "交易成功率低于 95%，当前值: {{ $value | humanizePercentage }}"

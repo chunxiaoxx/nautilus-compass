@@ -1,0 +1,49 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "f1f5ea75545a59b8bf1b7020a954d85b315b1bb5",
+  "reference_fix_commit": "3ea02a08f2ab8b9d006b2976ae788ff65dac9d41",
+  "subject": "fix(proof): ts_from_filename date validation + stop_hook tweak + docs sync",
+  "test_files": [
+   "tests/test_local_outcomes.py"
+  ],
+  "source_files": [
+   "proof/local_outcomes.py",
+   "stop_hook.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass"
+ },
+ "test_id": "tests/test_local_outcomes.py::test_hash_name_session_falls_back_to_frontmatter_date",
+ "source_rel": "proof\\local_outcomes.py",
+ "provider": "ark_glm",
+ "test_passed": true,
+ "winning_diff": "--- a/proof/local_outcomes.py\n+++ b/proof/local_outcomes.py\n@@ -52,9 +52,13 @@\n     out = []\n     for p in sorted(mem.glob(\"session_*.md\")):\n-        ts = ts_from_filename(p.name)\n-        if ts is None:\n+        front = parse_session_frontmatter_safe(p)\n+        ts = ts_from_filename(p.name)\n+        if ts is None:\n+            m = re.match(r\"^(\\d{4})-(\\d{2})-(\\d{2})\", str(front.get(\"date\", \"\")).strip())\n+            if m:\n+                ts = f\"{m.group(1)}-{m.group(2)}-{m.group(3)}T00:00:00+00:00\"\n+        if ts is None:\n             continue\n         if since_iso and ts < since_iso:\n             continue\n-        front = parse_session_frontmatter_safe(p)\n         success = _drift_to_success(front.get(\"drift\", \"\"))\n",
+ "budget_exceeded": false,
+ "total_tokens": 13043,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "completion_tokens": 11955,
+    "prompt_tokens": 1088,
+    "total_tokens": 13043,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 11677
+    }
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "frontmatter_date_fallback",
+ "duration_s": 238.0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

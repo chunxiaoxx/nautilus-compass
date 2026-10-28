@@ -1,0 +1,48 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "087b49a42f7d6858fb370eaab65ebe8009a72e85",
+  "reference_fix_commit": "724533e03be3f05bbd3afbf670722b7764c16007",
+  "subject": "fix(loop): stop Gate B after unusable source evidence",
+  "test_files": [
+   "tests/gep/test_gate_b_reuse.py"
+  ],
+  "source_files": [
+   "gep/loop_run.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass"
+ },
+ "test_id": "tests/gep/test_gate_b_reuse.py::test_gate_b_records_repair_when_a_source_action_has_no_reusable_experience",
+ "source_rel": "gep\\loop_run.py",
+ "provider": "ark_glm",
+ "test_passed": true,
+ "winning_diff": "--- a/gep/loop_run.py\n+++ b/gep/loop_run.py\n@@ -229,14 +229,18 @@\n     if plan.schema_version == PLAN_SCHEMA_V1:\n         return arm.advice\n-    if arm.advice_from_episode_id is None:\n-        return None\n+    if arm.advice_from_episode_id is not None:\n+        source_episode_id = arm.advice_from_episode_id\n+    elif arm.label == \"control\":\n+        source_episode_id = plan.arms[0].episode_id\n+    else:\n+        return None\n     states = reduce_episode_states(log.list_events())\n-    source_state = states.get(arm.advice_from_episode_id)\n+    source_state = states.get(source_episode_id)\n     if source_state is None or source_state.state != \"verified\":\n         raise _DependencyUnavailable(\"dependency.source_not_verified\")\n     if source_state.verified_outcome != \"success\":\n         raise _DependencyUnavailable(\"dependency.source_not_successful\")\n-    source_artifact = _read_artifact(out / \"artifacts\" / f\"{arm.advice_from_episode_id}.json\")\n+    source_artifact = _read_artifact(out / \"artifacts\" / f\"{source_episode_id}.json\")\n     advice = source_artifact.content.get(\"reuse_advice\")\n     if not isinstance(advice, str) or not advice.strip():\n         raise _DependencyUnavailable(\"dependency.reuse_advice_missing\")\n+    if arm.label == \"control\":\n+        return None\n     return advice",
+ "budget_exceeded": false,
+ "total_tokens": 39048,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "completion_tokens": 30659,
+    "prompt_tokens": 8389,
+    "total_tokens": 39048,
+    "prompt_tokens_details": {
+     "cached_tokens": 8389
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 30085
+    }
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "gate_b_control_gated_on_source_reuse",
+ "duration_s": 2276.6,
+ "replayed": true,
+ "verdict_post_status": 200
+}

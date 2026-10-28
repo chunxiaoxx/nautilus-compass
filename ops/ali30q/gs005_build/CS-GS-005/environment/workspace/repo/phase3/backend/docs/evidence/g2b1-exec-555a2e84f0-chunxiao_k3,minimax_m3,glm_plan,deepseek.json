@@ -1,0 +1,29 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "105a499956d8f7af990d0293ea844abd190c973f",
+  "reference_fix_commit": "555a2e84f0da58c9ce20cfb8ac1d7b7032ae4008",
+  "subject": "fix(mcp): test-cover watchdog cross-fire state + docstring (Task 5 review)",
+  "test_files": [
+   "tests/mcp_durable/test_watchdog.py"
+  ],
+  "source_files": [
+   "mcp_durable/watchdog.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass"
+ },
+ "test_id": "tests/mcp_durable/test_watchdog.py",
+ "source_rel": "mcp_durable\\watchdog.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "skipped_reason": "fixture_broken_red",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 2.1,
+ "replayed": true,
+ "verdict_post_status": 200
+}

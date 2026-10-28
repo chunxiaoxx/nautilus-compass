@@ -1,0 +1,30 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "4b22d86281a5ab442a780e2f4f1cc936e0ac8dd2",
+  "reference_fix_commit": "f31ab5f06178edbfdda6a7f781f92f5867d261f5",
+  "subject": "fix(swe): \u6bd2\u9898\u81ea\u566c\u516d\u4fee\u2014\u2014think\u5265\u9664\u52a0\u5b57\u9762\u91cf\u5b88\u536b\u00b7\u53cc\u5c42\u5265\u9664\u7edf\u4e00\u6536\u53e3",
+  "test_files": [
+   "tests/test_swe_gates.py"
+  ],
+  "source_files": [
+   "fde_capsule/fde_consumer.py",
+   "fde_capsule/swe_fuel_produce.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\nautilus-v5"
+ },
+ "test_id": "tests/test_swe_gates.py::test_pair_think_regex_literal_not_stripped",
+ "source_rel": "fde_capsule/fde_consumer.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

@@ -1,0 +1,12 @@
+[Unit]
+Description=Drift threshold inbox alert · 6h
+Wants=behavioral-drift.service
+
+[Timer]
+# Every 6 hours · :19 to avoid hour boundary
+OnCalendar=*-*-* 00,06,12,18:19:00
+Persistent=true
+Unit=drift-threshold-alert.service
+
+[Install]
+WantedBy=timers.target

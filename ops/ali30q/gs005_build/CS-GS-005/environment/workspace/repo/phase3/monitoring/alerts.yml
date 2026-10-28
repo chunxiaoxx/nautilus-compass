@@ -1,0 +1,96 @@
+groups:
+  - name: nautilus_alerts
+    interval: 30s
+    rules:
+      # P0 - 关键告警
+      - alert: ServiceDown
+        expr: up{job="nautilus-api",instance="172.17.0.1:8000"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          priority: P0
+        annotations:
+          summary: "Nautilus API 服务宕机"
+          description: "API 服务已宕机超过 1 分钟"
+
+      - alert: DatabaseDown
+        expr: pg_up == 0
+        for: 1m
+        labels:
+          severity: critical
+          priority: P0
+        annotations:
+          summary: "数据库连接失败"
+          description: "PostgreSQL 数据库无法连接"
+
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+          priority: P0
+        annotations:
+          summary: "API 错误率过高"
+          description: "5xx 错误率超过 5%"
+
+      # P1 - 重要告警
+      - alert: HighResponseTime
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 1
+        for: 10m
+        labels:
+          severity: warning
+          priority: P1
+        annotations:
+          summary: "API 响应时间过慢"
+          description: "95% 请求响应时间超过 1 秒"
+
+      - alert: HighMemoryUsage
+        expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes > 0.85
+        for: 5m
+        labels:
+          severity: warning
+          priority: P1
+        annotations:
+          summary: "内存使用率过高"
+          description: "内存使用率超过 85%"
+
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 10m
+        labels:
+          severity: warning
+          priority: P1
+        annotations:
+          summary: "CPU 使用率过高"
+          description: "CPU 使用率超过 80%"
+
+      - alert: DiskSpaceLow
+        expr: (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"}) < 0.15
+        for: 5m
+        labels:
+          severity: warning
+          priority: P1
+        annotations:
+          summary: "磁盘空间不足"
+          description: "根分区可用空间低于 15%"
+
+      # P2 - 次要告警
+      - alert: HighDatabaseConnections
+        expr: pg_stat_activity_count > 50
+        for: 10m
+        labels:
+          severity: info
+          priority: P2
+        annotations:
+          summary: "数据库连接数过多"
+          description: "活跃数据库连接超过 50"
+
+      - alert: SlowDatabaseQuery
+        expr: rate(pg_stat_statements_mean_time_seconds[5m]) > 0.5
+        for: 10m
+        labels:
+          severity: info
+          priority: P2
+        annotations:
+          summary: "数据库查询变慢"
+          description: "平均查询时间超过 500ms"

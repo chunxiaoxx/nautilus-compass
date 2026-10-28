@@ -1,0 +1,15 @@
+{
+  "test_name": "\u94b1\u5305\u8ba4\u8bc1\u6027\u80fd\u6d4b\u8bd5",
+  "status": "PASSED",
+  "p95_latency": {
+    "signature_verification": "77.76ms",
+    "nonce_generation": "0.00ms",
+    "token_generation": "0.02ms",
+    "complete_flow": "100.09ms",
+    "concurrent": "4572.52ms"
+  },
+  "throughput": {
+    "concurrent": "5.59 req/s"
+  },
+  "performance_grade": "\u4f18\u79c0"
+}

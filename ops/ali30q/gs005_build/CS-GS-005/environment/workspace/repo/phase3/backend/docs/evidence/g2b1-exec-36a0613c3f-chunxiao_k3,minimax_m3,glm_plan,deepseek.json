@@ -1,0 +1,103 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "3c5637c5c5cf2302d23d8d0d833da8449d86115e",
+  "reference_fix_commit": "36a0613c3f395dd3cdf12d6f1cc9f379f9a21af8",
+  "subject": "fix(fde): fail closed on attestation interrupts",
+  "test_files": [
+   "tests/test_adapter_contracts.py"
+  ],
+  "source_files": [
+   "src/nautilus_fde_phase3/contracts.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-fde-phase3"
+ },
+ "test_id": "tests/test_adapter_contracts.py::test_accepts_strict_s0_evidence_only_for_exact_observed_pair_and_trusted_attestation",
+ "source_rel": "src\\nautilus_fde_phase3\\contracts.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "minimax_m3",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 21493,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 4415,
+    "output_tokens": 638,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "service_tier": "standard",
+    "total_tokens": 5053
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: No valid patches in input (allow with \"--allow-empty\")\n\n[attempt2 backend] error: No valid patches in input (allow with \"--allow-empty\")\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 4476,
+    "completion_tokens": 7185,
+    "total_tokens": 11661,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 380,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 4096,
+      "output_tokens": 7185,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 4096,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 4476,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "F                                                                        [100%]\r\n================================== FAILURES ===================================\r\n_ test_accepts_strict_s0_evidence_only_for_exact_observed_pair_and_trusted_attestation _\r\n\r\n    def test_accepts_strict_s0_evidence_only_for_exact_observed_pair_and_trusted_attestation():\r\n        discovery_receipt, role_summary_receipt, envelope = _strict_s0_inputs()\r\n        verifier = _RecordingAttestationVerifier(True)\r\n    \r\n        ok, errors = _validate_strict_s0(\r\n            envelope,\r\n            discovery_receipt,\r\n            role_summary_receipt,\r\n            verifier,\r\n        )\r\n    \r\n>       assert ok is True\r\nE       assert False is True\r\n\r\ntests\\test_adapter_contracts.py:732: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_adapter_contracts.py::test_accepts_strict_s0_evidence_only_for_exact_observed_pair_and_trusted_attestation\r\n1 failed in 0.37s\r\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 4549,
+    "output_tokens": 230,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard",
+    "total_tokens": 4779
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: No valid patches in input (allow with \"--allow-empty\")\n\n[attempt2 backend] error: No valid patches in input (allow with \"--allow-empty\")\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 7468.1,
+ "verdict_post_status": 200
+}

@@ -1,0 +1,57 @@
+{
+  "cleanup": {
+    "database_present": 0,
+    "protocol_tables": 0
+  },
+  "counts": {
+    "first_run_audit_events": 4,
+    "first_run_outbox_events": 3,
+    "first_run_rows": {
+      "attempts": 1,
+      "executor_evidence": 1,
+      "manifests": 1,
+      "operations": 1,
+      "receipts": 1
+    }
+  },
+  "evidence_level": "local_r1a",
+  "fail_closed": {
+    "case_count": 33,
+    "fallback_count": 0
+  },
+  "outcomes": {
+    "missing_scope": "review_required",
+    "positive": "completed",
+    "receipt_decision": "accepted",
+    "receipt_reason_codes": [
+      "policy_satisfied"
+    ]
+  },
+  "protocol": {
+    "attempt_id": "att_r1a_vertical_01",
+    "contract_version": "protocol-v2-contracts-v1",
+    "execution_evidence_contract_version": "m1-r1a-executor-execution-evidence-v1",
+    "manifest_hash": "a1a8aa6769ad64f1053e712cb9d0073e09d156874aa68bc447db899031aef5ea",
+    "migration_head": "20260809_01_r1a_evidence",
+    "operation_id": "op_r1a_vertical_01",
+    "policy_version": "pol_r1a_synthetic_repair_v1"
+  },
+  "replay": {
+    "audit_growth": 0,
+    "exact_replay_count": 6,
+    "outbox_growth": 0,
+    "row_growth": 0
+  },
+  "schema_version": "m1-r1a-synthetic-repair-readback-v1",
+  "source": {
+    "compass_authority_commit": "37efc4fc2f7455202c94515b29314af9e5e2e16e",
+    "compass_capsule_sha256": "1387d4d12edddbe2a8b83e54160ac864760d33d8b9372010976df1279a5f53d0",
+    "compass_proposal_commit": "e87234bbdc072bd10e9b88079c21f7c574361506",
+    "failure_matrix_sha256": "a3fc52d0d5a403fe79d4f14c7d7bb0c16d753fc0a362fa6e32b801fc2cfab1f3",
+    "platform_commit": "2518bc010b10c485443dbaef3fd7eb99ad2dae81",
+    "runtime_admission_sha256": "476685dccbf74f11423cd6c73994c2e45366d9b405fb31de6d6bea4e3db4f47f",
+    "task6_cli_sha256": "ddb6fe9472186433a39ec001db78ce6cd633e4347951fac4f58b4adcfc05d0b0",
+    "v5_contract_sha256": "dbd18532f30f58a6e59355f3584d609026bda839f49d31e017eeb27b38a4dc29",
+    "v5_executor_commit": "f3d94d32fce6316e84628c63754468ba608a1595"
+  }
+}

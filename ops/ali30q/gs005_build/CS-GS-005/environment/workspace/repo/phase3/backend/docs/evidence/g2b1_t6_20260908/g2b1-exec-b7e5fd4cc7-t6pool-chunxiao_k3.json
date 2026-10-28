@@ -1,0 +1,158 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "5b1aba82745cbde04c75e0bab995e5ddf0804196",
+  "reference_fix_commit": "b7e5fd4cc7de70280eccd39f2bb956df617e5519",
+  "subject": "Fix broken fish completion and multiline help string",
+  "test_files": [
+   "tests/test_shell_completion.py"
+  ],
+  "source_files": [
+   "src/click/shell_completion.py"
+  ],
+  "repo_path": "C:/Users/chunx/ext_mine"
+ },
+ "test_id": "tests/test_shell_completion.py::test_full_complete",
+ "source_rel": "src\\click\\shell_completion.py",
+ "provider": "t6pool-chunxiao_k3",
+ "provider_used": "t6pool-chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "diff --git a/src/click/shell_completion.py b/src/click/shell_completion.py\nindex 1111111..2222222 100644\n--- a/src/click/shell_completion.py\n+++ b/src/click/shell_completion.py\n@@ -183,16 +183,12 @@\n     for completion in $response;\n-        set -l metadata (string split \\n $completion);\n+        set -l metadata (string split \",\" $completion);\n \n         if test $metadata[1] = \"dir\";\n             __fish_complete_directories $metadata[2];\n         else if test $metadata[1] = \"file\";\n             __fish_complete_path $metadata[2];\n         else if test $metadata[1] = \"plain\";\n-            if test $metadata[3] != \"_\";\n-                echo $metadata[2]\\t$metadata[3];\n-            else;\n-                echo $metadata[2];\n-            end;\n+            echo $metadata[2];\n         end;\n     end;\n end;\n@@ -424,15 +420,6 @@\n     def format_completion(self, item: CompletionItem) -> str:\n-        \"\"\"\n-        .. versionchanged:: 8.4.0\n-            Escape newlines in value and help to fix completion errors with\n-            multi-line help strings.\n-        \"\"\"\n-        # The fish completion script splits each response line on literal\n-        # newlines, so any newline in the value or help would corrupt the\n-        # frame. Replace them with the two-character escape \"\\n\" so the text\n-        # round-trips through fish without breaking the format. The \"_\"\n-        # sentinel for missing help mirrors :class:`ZshComplete`.\n-        help_ = item.help or \"_\"\n-        value = item.value.replace(\"\\n\", r\"\\n\")\n-        help_escaped = help_.replace(\"\\n\", r\"\\n\")\n-        return f\"{item.type}\\n{value}\\n{help_escaped}\"\n+        if item.help:\n+            return f\"{item.type},{item.value}\\t{item.help}\"\n+\n+        return f\"{item.type},{item.value}\"\n \n",
+ "budget_exceeded": false,
+ "total_tokens": 32647,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 6370,
+    "completion_tokens": 4539,
+    "total_tokens": 10909,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 6114,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 4539,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 6370,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: src/click/shell_completion.py:405\nerror: src/click/shell_completion.py: patch does not apply\n\n[attempt2 backend] error: patch failed: src/click/shell_completion.py:405\nerror: src/click/shell_completion.py: patch does not apply\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 6498,
+    "completion_tokens": 1800,
+    "total_tokens": 8298,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 354,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 6144,
+      "output_tokens": 1800,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 6144,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 6498,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: No valid patches in input (allow with \"--allow-empty\")\n\n[attempt2 backend] error: No valid patches in input (allow with \"--allow-empty\")\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 6466,
+    "completion_tokens": 6974,
+    "total_tokens": 13440,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 322,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 6144,
+      "output_tokens": 6974,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 6144,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 6466,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "fix_fish_completion_format",
+ "duration_s": 311.0
+}

@@ -1,0 +1,93 @@
+version: '3.8'
+
+# 生产环境配置
+services:
+  nexus-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - BUILD_DATE=${BUILD_DATE:-2026-02-25}
+        - VERSION=${VERSION:-1.0.0}
+    image: nexus-server:${VERSION:-latest}
+    container_name: nexus-server-prod
+    ports:
+      - "8001:8001"
+    environment:
+      # 服务器配置
+      - MAX_AGENTS=${MAX_AGENTS:-200}
+      - MAX_QUEUE_SIZE=${MAX_QUEUE_SIZE:-2000}
+      - CORS_ORIGINS=${CORS_ORIGINS:-https://yourdomain.com}
+
+      # 日志级别
+      - LOG_LEVEL=${LOG_LEVEL:-warning}
+
+      # 环境
+      - ENVIRONMENT=production
+
+    # 生产环境资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 2G
+        reservations:
+          cpus: '1'
+          memory: 512M
+      replicas: 2
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: start-first
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+
+    # 重启策略
+    restart: always
+
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8001/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+        compress: "true"
+
+    # 网络模式
+    networks:
+      - nexus-network
+
+    # 卷挂载
+    volumes:
+      - nexus-logs:/app/logs
+      - nexus-data:/app/data
+
+    # 安全配置
+    security_opt:
+      - no-new-privileges:true
+    read_only: false
+    tmpfs:
+      - /tmp
+
+volumes:
+  nexus-logs:
+    driver: local
+  nexus-data:
+    driver: local
+
+networks:
+  nexus-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16

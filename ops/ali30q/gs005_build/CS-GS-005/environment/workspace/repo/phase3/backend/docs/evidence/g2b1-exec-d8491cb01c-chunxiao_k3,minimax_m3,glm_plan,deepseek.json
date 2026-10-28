@@ -1,0 +1,73 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "bfffc7a6841f4614ec1f1bfa5d1ac62cf5769475",
+  "reference_fix_commit": "d8491cb01cc4f0a1dc1ab77fab21a0c3ff13a997",
+  "subject": "fix(transfer-4): feed FK\u9632\u5fa1\u2014\u2014\u672a\u6ce8\u518cagent(\u5e7d\u7075\u8eab\u4efd)\u8df3\u8fc7\u4e0d\u5582\u4e0d\u70b8(\u4e91\u7aef\u5b9e\u6d4b9000009\u672a\u6ce8\u518c\u81f4FK violation);+ghost\u6d4b\u8bd5 7 green",
+  "test_files": [
+   "phase3/backend/tests/test_capability_feed.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/capability_feed.py"
+  ],
+  "repo_path": "C:/Users/chunx/Projects/nautilus-core"
+ },
+ "test_id": "tests/test_capability_feed.py::test_feed_skips_ghost_agent",
+ "source_rel": "services\\capability_feed.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/services/capability_feed.py\n+++ b/services/capability_feed.py\n@@ -17,6 +17,23 @@\n _UID_TYPE_MAP = {\"g2b1\": \"g2b1_code_repair\"}\n \n \n+def _agent_exists(db: Session, agent_id: int) -> bool:\n+    \"\"\"\u5e7d\u7075\u4ee3\u7406\u5b88\u536b:\u80fd\u529b\u8bb0\u8d26\u524d\u786e\u8ba4 agent \u771f\u5b9e\u5b58\u5728(\u81ea\u62a5\u4e0d\u7b97,\u5e7d\u7075\u4e0d\u5582)\u3002\n+\n+    \u5224\u5b9a\u5931\u8d25\u65f6 fail-open(\u4fdd\u6301\u5386\u53f2\u653e\u884c\u884c\u4e3a),\u7edd\u4e0d\u56e0\u5b88\u536b\u672c\u8eab\u70b8\u4e3b\u94fe\u3002\n+    \"\"\"\n+    try:\n+        from sqlalchemy import text\n+        row = db.execute(\n+            text(\"SELECT 1 FROM agents WHERE id = :aid\"), {\"aid\": agent_id}\n+        ).first()\n+        return row is not None\n+    except Exception:  # noqa: BLE001\n+        pass\n+    try:\n+        from models.agent import Agent\n+        return db.query(Agent).filter(Agent.id == agent_id).first() is not None\n+    except Exception:  # noqa: BLE001\n+        return True\n+\n+\n def task_type_from_uid(task_uid: str) -> str:\n     uid = (task_uid or \"\").strip()\n     if \":\" in uid:\n@@ -38,6 +55,9 @@\n     \"\"\"\n     if not isinstance(agent_id, int):\n         return None\n+    if not _agent_exists(db, agent_id):\n+        logger.info(\"capability feed skipped: ghost agent %s\", agent_id)\n+        return None\n     try:\n         import asyncio\n         from services.capability_evolution import record_task_outcome\n",
+ "budget_exceeded": false,
+ "total_tokens": 4062,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 1549,
+    "completion_tokens": 2513,
+    "total_tokens": 4062,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 1549,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 2513,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 0,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 1549,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "cap_feed_ghost_guard",
+ "duration_s": 166.1,
+ "verdict_post_status": 200
+}

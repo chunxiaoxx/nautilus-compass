@@ -1,0 +1,24 @@
+scoring:
+  per_instance:
+    formula: "score_i = min(100.0, 100.0 * optimum_i / tour_length_i)"
+    optimum_source: data/optima.json
+  combined:
+    formula: "mean(score_i over all instances)"
+    valid_gate: "valid = 0 if any instance infeasible/timeout; else 1"
+    combined_score_value: "0 if valid=0; else mean(score_i)"
+difficulty_grading:
+  source: GPT5.5 N=3 gap_closed calibration
+  formula: "gap_closed = (best_score - start_score) / 100"
+  bands:
+    Rejected: "gap_closed < 0.1 OR best_score >= 95 (too easy)"
+    Hard: "0.1 <= gap_closed < 0.3"
+    Medium: "0.3 <= gap_closed < 0.6"
+    Easy: "gap_closed >= 0.6 AND best_score < 95"
+delivery_artifact:
+  gpt55_trajectory: gpt55_trajectory.json
+  required_fields:
+    - start_score
+    - best_score
+    - gap_closed
+    - difficulty
+    - rounds[] (each: round, prompt, response_text, extracted_code, metrics, score, llm_seconds)

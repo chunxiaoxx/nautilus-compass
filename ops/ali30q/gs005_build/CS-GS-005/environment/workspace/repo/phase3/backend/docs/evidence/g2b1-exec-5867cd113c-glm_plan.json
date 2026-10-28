@@ -1,0 +1,30 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "cfcf2badd2ef39529ff3aa83a3dd1e244c8b8cae",
+  "reference_fix_commit": "5867cd113c8c50d7278b0efdae3dc1cdde709392",
+  "subject": "fix(fde): line_code \u8def\u7531\u6559\u6848\u9898(\u4e1a\u52a1\u7ebf'2\u00b7\u6559\u6848'\u2260'2')+ walking-skeleton \u9996\u8dd1\u771f\u4efb\u52a1\u5168\u7a0b\u6d41\u901a",
+  "test_files": [
+   "phase3/backend/tests/test_fde_qc_feedback.py"
+  ],
+  "source_files": [
+   "phase3/backend/scripts/seed_real_t2_task.py",
+   "phase3/backend/services/fde_qc_feedback_runner.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "phase3/backend/tests/test_fde_qc_feedback.py::test_line_code_extracts_leading_digit_from_rgdk_singleselect",
+ "source_rel": "phase3/backend/scripts/seed_real_t2_task.py",
+ "provider": "glm_plan",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

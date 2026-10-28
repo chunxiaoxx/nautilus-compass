@@ -1,0 +1,220 @@
+{
+  "task_id": "cache_lru_v1_001",
+  "seed_score": 0.0,
+  "seed_valid": 1,
+  "best_score": 10.8659,
+  "gap_closed": 0.1087,
+  "difficulty_bucket": "Hard",
+  "n": 3,
+  "model": "gpt-5.5",
+  "rounds": [
+    {
+      "round": 0,
+      "metrics": {
+        "combined_score": 0.0,
+        "valid": 1,
+        "per_instance": [
+          {
+            "instance": "looping_c100_n5k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "misses": 1155,
+            "fifo_misses": 1155
+          },
+          {
+            "instance": "looping_c500_n15k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "misses": 2909,
+            "fifo_misses": 2909
+          },
+          {
+            "instance": "mixed_c200_n10k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "misses": 7259,
+            "fifo_misses": 7259
+          },
+          {
+            "instance": "phase_c100_n8k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "misses": 4157,
+            "fifo_misses": 4157
+          },
+          {
+            "instance": "scan_c100_n10k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "misses": 225,
+            "fifo_misses": 225
+          }
+        ],
+        "stdout": "re\": 0.0,\n   \"misses\": 4157,\n   \"fifo_misses\": 4157\n  },\n  {\n   \"instance\": \"scan_c100_n10k\",\n   \"feasible\": true,\n   \"reason\": \"ok\",\n   \"score\": 0.0,\n   \"misses\": 225,\n   \"fifo_misses\": 225\n  }\n ]\n}\n"
+      },
+      "elapsed": 0
+    },
+    {
+      "round": 1,
+      "elapsed": 58.7,
+      "metrics": {
+        "combined_score": 10.8231,
+        "valid": 1,
+        "per_instance": [
+          {
+            "instance": "looping_c100_n5k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 20.6926,
+            "misses": 916,
+            "fifo_misses": 1155
+          },
+          {
+            "instance": "looping_c500_n15k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 18.1162,
+            "misses": 2382,
+            "fifo_misses": 2909
+          },
+          {
+            "instance": "mixed_c200_n10k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 12.853,
+            "misses": 6326,
+            "fifo_misses": 7259
+          },
+          {
+            "instance": "phase_c100_n8k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 2.4537,
+            "misses": 4055,
+            "fifo_misses": 4157
+          },
+          {
+            "instance": "scan_c100_n10k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "misses": 225,
+            "fifo_misses": 225
+          }
+        ],
+        "stdout": ": 2.4537,\n   \"misses\": 4055,\n   \"fifo_misses\": 4157\n  },\n  {\n   \"instance\": \"scan_c100_n10k\",\n   \"feasible\": true,\n   \"reason\": \"ok\",\n   \"score\": 0.0,\n   \"misses\": 225,\n   \"fifo_misses\": 225\n  }\n ]\n}\n"
+      },
+      "source_preview": "\"\"\"Adaptive Replacement Cache (ARC) policy.\n\nPure stdlib, deterministic. Exposes run_cache(instance) as required by the\ncache-eviction task. ARC keeps recent en"
+    },
+    {
+      "round": 2,
+      "elapsed": 43.3,
+      "metrics": {
+        "combined_score": 10.8659,
+        "valid": 1,
+        "per_instance": [
+          {
+            "instance": "looping_c100_n5k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 20.6926,
+            "misses": 916,
+            "fifo_misses": 1155
+          },
+          {
+            "instance": "looping_c500_n15k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 18.1162,
+            "misses": 2382,
+            "fifo_misses": 2909
+          },
+          {
+            "instance": "mixed_c200_n10k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 13.2112,
+            "misses": 6300,
+            "fifo_misses": 7259
+          },
+          {
+            "instance": "phase_c100_n8k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 2.3094,
+            "misses": 4061,
+            "fifo_misses": 4157
+          },
+          {
+            "instance": "scan_c100_n10k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "misses": 225,
+            "fifo_misses": 225
+          }
+        ],
+        "stdout": ": 2.3094,\n   \"misses\": 4061,\n   \"fifo_misses\": 4157\n  },\n  {\n   \"instance\": \"scan_c100_n10k\",\n   \"feasible\": true,\n   \"reason\": \"ok\",\n   \"score\": 0.0,\n   \"misses\": 225,\n   \"fifo_misses\": 225\n  }\n ]\n}\n"
+      },
+      "source_preview": "\"\"\"Adaptive cache eviction policy for synthetic traces.\n\nImplements ARC (Adaptive Replacement Cache) with ghost lists. ARC adapts between\nrecency-friendly behav"
+    },
+    {
+      "round": 3,
+      "elapsed": 54.9,
+      "metrics": {
+        "combined_score": 10.8253,
+        "valid": 1,
+        "per_instance": [
+          {
+            "instance": "looping_c100_n5k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 20.6926,
+            "misses": 916,
+            "fifo_misses": 1155
+          },
+          {
+            "instance": "looping_c500_n15k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 18.1162,
+            "misses": 2382,
+            "fifo_misses": 2909
+          },
+          {
+            "instance": "mixed_c200_n10k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 13.225,
+            "misses": 6299,
+            "fifo_misses": 7259
+          },
+          {
+            "instance": "phase_c100_n8k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 2.0929,
+            "misses": 4070,
+            "fifo_misses": 4157
+          },
+          {
+            "instance": "scan_c100_n10k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "misses": 225,
+            "fifo_misses": 225
+          }
+        ],
+        "stdout": ": 2.0929,\n   \"misses\": 4070,\n   \"fifo_misses\": 4157\n  },\n  {\n   \"instance\": \"scan_c100_n10k\",\n   \"feasible\": true,\n   \"reason\": \"ok\",\n   \"score\": 0.0,\n   \"misses\": 225,\n   \"fifo_misses\": 225\n  }\n ]\n}\n"
+      },
+      "source_preview": "\"\"\"Adaptive Replacement Cache policy for synthetic cache traces.\n\nPure stdlib, deterministic. The public entry point is run_cache(instance).\n\"\"\"\n\nfrom collectio"
+    }
+  ],
+  "best_round_source": "\"\"\"Adaptive cache eviction policy for synthetic traces.\n\nImplements ARC (Adaptive Replacement Cache) with ghost lists. ARC adapts between\nrecency-friendly behav"
+}

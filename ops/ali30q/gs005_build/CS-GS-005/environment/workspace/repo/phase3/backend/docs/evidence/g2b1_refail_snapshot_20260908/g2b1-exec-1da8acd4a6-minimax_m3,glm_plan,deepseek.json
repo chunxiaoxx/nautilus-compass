@@ -1,0 +1,71 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "2c2b2a3f94b65741319156ff669db233ccba062a",
+  "reference_fix_commit": "1da8acd4a634d9e436679b032201fd28995739ab",
+  "subject": "fix(ale-eval): default judge_version=202510 (live bug: public_eval defaults 202301\u2192ImageNotFound)",
+  "test_files": [
+   "tests/test_ale_eval.py"
+  ],
+  "source_files": [
+   "ale_bench/ale_eval.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass"
+ },
+ "test_id": "tests/test_ale_eval.py::test_judge_version_defaults_to_built_image",
+ "source_rel": "ale_bench\\ale_eval.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 1339,
+    "output_tokens": 707,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: No valid patches in input (allow with \"--allow-empty\")\n\n[attempt2 backend] error: No valid patches in input (allow with \"--allow-empty\")\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 1556,
+    "output_tokens": 879,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_xw2l7ymy/repo/_g2b1.patch:5\n\n[attempt2 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_xw2l7ymy/repo/_g2b1.patch:5\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 1485,
+    "output_tokens": 662,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "F                                                                        [100%]\r\n================================== FAILURES ===================================\r\n_________________ test_judge_version_defaults_to_built_image __________________\r\n\r\n    def test_judge_version_defaults_to_built_image():\r\n        # live bug guard: public_eval default judge_version=202301 \u2192 pulls nonexistent\r\n        # ale-bench:cpp23-202301. Must pass 202510 (the built image).\r\n        sink = []\r\n        ale_eval.eval_fn(\"c\", \"ahc001\", start_fn=_start_returning(50.0, sink=sink))\r\n>       assert sink[0].last_judge_version == \"202510\"\r\nE       AssertionError: assert None == '202510'\r\nE        +  where None = <test_ale_eval._FakeSession object at 0x000001F8478A82F0>.last_judge_version\r\n\r\ntests\\test_ale_eval.py:97: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_ale_eval.py::test_judge_version_defaults_to_built_image - A...\r\n1 failed in 0.26s\r\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 23.0,
+ "verdict_post_status": 200
+}

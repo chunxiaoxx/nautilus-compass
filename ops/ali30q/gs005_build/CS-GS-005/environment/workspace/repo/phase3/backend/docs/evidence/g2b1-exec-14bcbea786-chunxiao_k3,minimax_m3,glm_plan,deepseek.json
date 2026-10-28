@@ -1,0 +1,29 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "69392a24e098159a2825b6e025b20005d4eb3817",
+  "reference_fix_commit": "14bcbea786dda2562bf43de44de5fc1423197da3",
+  "subject": "fix(eval): smoke \u4e09\u8fde\u4fee\u2014\u2014\u2460_dates \u4f5c\u7528\u57df bug(8/29 \u9057\u7559:\u53ea\u5728 utterance \u5206\u652f\u8d4b\u503c,session \u7ea7\u9898\u578b\u8bfb\u5230\u540c\u5206\u7247\u524d\u4e00\u9898\u7684\u65e5\u671f\u6570\u7ec4=\u9519\u4f4d\u6c61\u67d3)\u2461ARK base url \u786c\u7f16\u7801 coding/v3(\u672c\u673a env \u7684 ARK_BASE_URL \u6307\u5411\u6309\u91cf\u7aef\u70b9 v3,\u7ea2\u7ebf\u7981\u7528)\u2462newapi \u7f51\u5173 UA \u8fc7\u6ee4(python-requests 403/curl",
+  "test_files": [
+   "tests/test_summary_layer.py"
+  ],
+  "source_files": [
+   "tests/eval_longmemeval_accuracy.py"
+  ],
+  "repo_path": "C:/Users/chunx/Projects/nautilus-compass"
+ },
+ "test_id": "tests/test_summary_layer.py",
+ "source_rel": "tests/eval_longmemeval_accuracy.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

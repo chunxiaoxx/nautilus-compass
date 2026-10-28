@@ -1,0 +1,159 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "480092e8b8606999bd8a80d1f17d496a285ae85e",
+  "reference_fix_commit": "6b8156d19c22c8a9970e5f32315ad872b91c1146",
+  "subject": "fix(fde): distinguish form metadata from publication",
+  "test_files": [
+   "phase3/backend/tests/test_fde_phase3_single_submission_forms.py"
+  ],
+  "source_files": [
+   "phase3/backend/scripts/refresh_phase3_expert_form.py"
+  ],
+  "repo_path": "C:/Users/chunx/Projects/nautilus-core"
+ },
+ "test_id": "tests/test_fde_phase3_single_submission_forms.py::test_expert_form_cli_is_scoped_to_sanitized_probe_or_confirmed_refresh",
+ "source_rel": "scripts\\refresh_phase3_expert_form.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 12573,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 1930,
+    "completion_tokens": 609,
+    "total_tokens": 2539,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 1674,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 609,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 1930,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_5xcs4i7x\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 1 item\r\n\r\ntests/test_fde_phase3_single_submission_forms.py::test_expert_form_cli_is_scoped_to_sanitized_probe_or_confirmed_refresh FAILED [100%]\r\n\r\n================================== FAILURES ===================================\r\n___ test_expert_form_cli_is_scoped_to_sanitized_probe_or_confirmed_refresh ____\r\ntests\\test_fde_phase3_single_submission_forms.py:570: in test_expert_form_cli_is_scoped_to_sanitized_probe_or_confirmed_refresh\r\n    operation = module.result_output(\r\n                ^^^^^^^^^^^^^^^^^^^^\r\nE   AttributeError: module 'phase3_expert_form_recovery_cli_test' has no attribute 'result_output'\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_fde_phase3_single_submission_forms.py::test_expert_form_cli_is_scoped_to_sanitized_probe_or_confirmed_refresh\r\n============================== 1 failed in 1.18s ==============================\r\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 2338,
+    "completion_tokens": 4026,
+    "total_tokens": 6364,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 546,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1792,
+      "output_tokens": 4026,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 1792,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 2338,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "lower()\r\nE   AssertionError: assert 'browser acceptance' in 'usage: refresh_phase3_expert_form.py [-h] [--base-token base_token]\\n                                     [--secret-file secret_file] [--probe]\\n                                     [--apply] [--confirm confirm]\\n\\nprobe or fail-closed refresh the phase 3 expert-information form only (browser\\nacceptance scoped).\\n\\noptions:\\n  -h, --help            show this help message and exit\\n  --base-token base_token\\n  --secret-file secret_file\\n  --probe               read expert form metadata only\\n  --apply               refresh the expert form\\n  --confirm confirm     required with --apply: fde_phase3_expert_form_refresh\\n'\r\nE    +  where 'usage: refresh_phase3_expert_form.py [-h] [--base-token base_token]\\n                                     [--secret-file secret_file] [--probe]\\n                                     [--apply] [--confirm confirm]\\n\\nprobe or fail-closed refresh the phase 3 expert-information form only (browser\\nacceptance scoped).\\n\\noptions:\\n  -h, --help            show this help message and exit\\n  --base-token base_token\\n  --secret-file secret_file\\n  --probe               read expert form metadata only\\n  --apply               refresh the expert form\\n  --confirm confirm     required with --apply: fde_phase3_expert_form_refresh\\n' = <built-in method lower of str object at 0x0000029C4084F800>()\r\nE    +    where <built-in method lower of str object at 0x0000029C4084F800> = 'usage: refresh_phase3_expert_form.py [-h] [--base-token BASE_TOKEN]\\n                                     [--secret-file SECRET_FILE] [--probe]\\n                                     [--apply] [--confirm CONFIRM]\\n\\nProbe or fail-closed refresh the Phase 3 expert-information Form only (browser\\nacceptance scoped).\\n\\noptions:\\n  -h, --help            show this help message and exit\\n  --base-token BASE_TOKEN\\n  --secret-file SECRET_FILE\\n  --probe               read expert Form metadata only\\n  --apply               refresh the expert Form\\n  --confirm CONFIRM     required with --apply: FDE_PHASE3_EXPERT_FORM_REFRESH\\n'.lower\r\nE    +      where 'usage: refresh_phase3_expert_form.py [-h] [--base-token BASE_TOKEN]\\n                                     [--secret-file SECRET_FILE] [--probe]\\n                                     [--apply] [--confirm CONFIRM]\\n\\nProbe or fail-closed refresh the Phase 3 expert-information Form only (browser\\nacceptance scoped).\\n\\noptions:\\n  -h, --help            show this help message and exit\\n  --base-token BASE_TOKEN\\n  --secret-file SECRET_FILE\\n  --probe               read expert Form metadata only\\n  --apply               refresh the expert Form\\n  --confirm CONFIRM     required with --apply: FDE_PHASE3_EXPERT_FORM_REFRESH\\n' = CompletedProcess(args=['C:\\\\Users\\\\chunx\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\\\python.exe', 'C:\\\\Users\\\\chunx\\\\AppData\\\\Local\\\\Temp\\\\g2b1_exec_5xcs4i7x\\\\repo\\\\phase3\\\\backend\\\\scripts\\\\refresh_phase3_expert_form.py', '--help'], returncode=0, stdout='usage: refresh_phase3_expert_form.py [-h] [--base-token BASE_TOKEN]\\n                                     [--secret-file SECRET_FILE] [--probe]\\n                                     [--apply] [--confirm CONFIRM]\\n\\nProbe or fail-closed refresh the Phase 3 expert-information Form only (browser\\nacceptance scoped).\\n\\noptions:\\n  -h, --help            show this help message and exit\\n  --base-token BASE_TOKEN\\n  --secret-file SECRET_FILE\\n  --probe               read expert Form metadata only\\n  --apply               refresh the expert Form\\n  --confirm CONFIRM     required with --apply: FDE_PHASE3_EXPERT_FORM_REFRESH\\n', stderr='').stdout\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_fde_phase3_single_submission_forms.py::test_expert_form_cli_is_scoped_to_sanitized_probe_or_confirmed_refresh\r\n============================== 1 failed in 1.34s ==============================\r\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 2919,
+    "completion_tokens": 751,
+    "total_tokens": 3670,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 1127,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1792,
+      "output_tokens": 751,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 1792,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 2919,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 root] error: patch failed: phase3/backend/scripts/refresh_phase3_expert_form.py:1\nerror: phase3/backend/scripts/refresh_phase3_expert_form.py: patch does not apply\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 153.9,
+ "verdict_post_status": 200
+}

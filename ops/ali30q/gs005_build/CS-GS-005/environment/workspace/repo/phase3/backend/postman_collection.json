@@ -1,0 +1,833 @@
+{
+  "info": {
+    "name": "Nautilus Phase 3 API",
+    "description": "Complete API collection for Nautilus Phase 3 Backend - Task Marketplace MVP with Blockchain Integration",
+    "version": "3.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{jwt_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    },
+    {
+      "key": "jwt_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "api_key",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "task_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "agent_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Core Endpoints",
+      "item": [
+        {
+          "name": "Root - Get API Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": ["{{base_url}}"],
+              "path": [""]
+            },
+            "description": "Get basic API information including version and status."
+          },
+          "response": []
+        },
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            },
+            "description": "Comprehensive health check for database, blockchain, and Redis."
+          },
+          "response": []
+        },
+        {
+          "name": "Metrics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/metrics",
+              "host": ["{{base_url}}"],
+              "path": ["metrics"]
+            },
+            "description": "Get Prometheus-compatible metrics."
+          },
+          "response": []
+        },
+        {
+          "name": "Get CSRF Token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/csrf-token",
+              "host": ["{{base_url}}"],
+              "path": ["csrf-token"]
+            },
+            "description": "Get CSRF token for form submissions."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('jwt_token', jsonData.access_token);",
+                  "    pm.environment.set('jwt_token', jsonData.access_token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"alice\",\n  \"email\": \"alice@example.com\",\n  \"password\": \"SecurePass123!\",\n  \"wallet_address\": \"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Register a new user account. Returns JWT token."
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('jwt_token', jsonData.access_token);",
+                  "    pm.environment.set('jwt_token', jsonData.access_token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"alice\",\n  \"password\": \"SecurePass123!\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Login and get JWT access token."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/auth/me",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "me"]
+            },
+            "description": "Get authenticated user information."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Wallet Address",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"wallet_address\": \"0x8ba1f109551bD432803012645Ac136ddd64DBA72\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/me/wallet",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "me", "wallet"]
+            },
+            "description": "Update user's wallet address."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Agents",
+      "item": [
+        {
+          "name": "Register Agent",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('api_key', jsonData.api_key);",
+                  "    pm.collectionVariables.set('agent_id', jsonData.agent.agent_id);",
+                  "    pm.environment.set('api_key', jsonData.api_key);",
+                  "    pm.environment.set('agent_id', jsonData.agent.agent_id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"CodeMaster AI\",\n  \"description\": \"Specialized in backend development and API design\",\n  \"specialties\": [\"Python\", \"FastAPI\", \"PostgreSQL\", \"Docker\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/agents",
+              "host": ["{{base_url}}"],
+              "path": ["api", "agents"]
+            },
+            "description": "Register a new agent. Returns agent info and API key."
+          },
+          "response": []
+        },
+        {
+          "name": "List Agents",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/agents?skip=0&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "agents"],
+              "query": [
+                {
+                  "key": "skip",
+                  "value": "0"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "List all agents with pagination."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Agent Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/agents/{{agent_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "agents", "{{agent_id}}"]
+            },
+            "description": "Get detailed information about a specific agent."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Agent Tasks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/agents/{{agent_id}}/tasks?status=Completed&skip=0&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "agents", "{{agent_id}}", "tasks"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "Completed"
+                },
+                {
+                  "key": "skip",
+                  "value": "0"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get agent's task history with optional status filter."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Agent Reputation",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/agents/{{agent_id}}/reputation",
+              "host": ["{{base_url}}"],
+              "path": ["api", "agents", "{{agent_id}}", "reputation"]
+            },
+            "description": "Get agent's reputation metrics and success rate."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Agent Blockchain Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/agents/{{agent_id}}/blockchain-status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "agents", "{{agent_id}}", "blockchain-status"]
+            },
+            "description": "Check agent's blockchain registration status."
+          },
+          "response": []
+        },
+        {
+          "name": "Create API Key",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Production Key\",\n  \"description\": \"API key for production environment\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/agents/api-keys",
+              "host": ["{{base_url}}"],
+              "path": ["api", "agents", "api-keys"]
+            },
+            "description": "Create additional API key for agent."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Tasks",
+      "item": [
+        {
+          "name": "Create Task",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('task_id', jsonData.id);",
+                  "    pm.environment.set('task_id', jsonData.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Develop a REST API endpoint for user authentication\",\n  \"input_data\": \"Requirements: JWT tokens, bcrypt hashing, PostgreSQL integration\",\n  \"expected_output\": \"Working API endpoint with comprehensive tests\",\n  \"reward\": 1000000000000000000,\n  \"task_type\": \"CODE\",\n  \"timeout\": 86400\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/tasks",
+              "host": ["{{base_url}}"],
+              "path": ["api", "tasks"]
+            },
+            "description": "Create a new task. Reward is in Wei (1 ETH = 10^18 Wei)."
+          },
+          "response": []
+        },
+        {
+          "name": "List Tasks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/tasks?status=Open&task_type=CODE&skip=0&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "tasks"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "Open"
+                },
+                {
+                  "key": "task_type",
+                  "value": "CODE"
+                },
+                {
+                  "key": "skip",
+                  "value": "0"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "List tasks with optional filters for status and type."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Task Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/tasks/{{task_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "tasks", "{{task_id}}"]
+            },
+            "description": "Get detailed information about a specific task."
+          },
+          "response": []
+        },
+        {
+          "name": "Accept Task",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/tasks/{{task_id}}/accept",
+              "host": ["{{base_url}}"],
+              "path": ["api", "tasks", "{{task_id}}", "accept"]
+            },
+            "description": "Accept a task as an agent. Requires API Key authentication."
+          },
+          "response": []
+        },
+        {
+          "name": "Submit Task Result",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"result\": \"API endpoint implemented with JWT authentication, bcrypt password hashing, and PostgreSQL integration. All tests passing. Repository: https://github.com/example/project\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/tasks/{{task_id}}/submit",
+              "host": ["{{base_url}}"],
+              "path": ["api", "tasks", "{{task_id}}", "submit"]
+            },
+            "description": "Submit task result for verification."
+          },
+          "response": []
+        },
+        {
+          "name": "Complete Task",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/tasks/{{task_id}}/complete",
+              "host": ["{{base_url}}"],
+              "path": ["api", "tasks", "{{task_id}}", "complete"]
+            },
+            "description": "Complete task and distribute rewards. Publisher only."
+          },
+          "response": []
+        },
+        {
+          "name": "Dispute Task",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"The verification criteria were incorrect. The implementation meets all stated requirements.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/tasks/{{task_id}}/dispute",
+              "host": ["{{base_url}}"],
+              "path": ["api", "tasks", "{{task_id}}", "dispute"]
+            },
+            "description": "Dispute a failed task verification."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Task Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/tasks/{{task_id}}/status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "tasks", "{{task_id}}", "status"]
+            },
+            "description": "Get task status and timeline."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Task Gas Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/tasks/{{task_id}}/gas",
+              "host": ["{{base_url}}"],
+              "path": ["api", "tasks", "{{task_id}}", "gas"]
+            },
+            "description": "Get detailed gas fee information for a task."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Rewards",
+      "item": [
+        {
+          "name": "Get Balance",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/rewards/balance",
+              "host": ["{{base_url}}"],
+              "path": ["api", "rewards", "balance"]
+            },
+            "description": "Get agent's reward balance from database and blockchain."
+          },
+          "response": []
+        },
+        {
+          "name": "Withdraw Rewards (Full)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/rewards/withdraw",
+              "host": ["{{base_url}}"],
+              "path": ["api", "rewards", "withdraw"]
+            },
+            "description": "Withdraw all available rewards."
+          },
+          "response": []
+        },
+        {
+          "name": "Withdraw Rewards (Partial)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 1000000000000000000\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/rewards/withdraw",
+              "host": ["{{base_url}}"],
+              "path": ["api", "rewards", "withdraw"]
+            },
+            "description": "Withdraw specific amount of rewards (in Wei)."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Reward History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/rewards/history?skip=0&limit=20",
+              "host": ["{{base_url}}"],
+              "path": ["api", "rewards", "history"],
+              "query": [
+                {
+                  "key": "skip",
+                  "value": "0"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "Get agent's reward history with pagination."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Monitoring",
+      "item": [
+        {
+          "name": "Cache Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/cache/stats",
+              "host": ["{{base_url}}"],
+              "path": ["cache", "stats"]
+            },
+            "description": "Get cache performance statistics."
+          },
+          "response": []
+        },
+        {
+          "name": "Clear Cache",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/cache/clear",
+              "host": ["{{base_url}}"],
+              "path": ["cache", "clear"]
+            },
+            "description": "Clear all cached data (admin operation)."
+          },
+          "response": []
+        },
+        {
+          "name": "Performance Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/performance/stats",
+              "host": ["{{base_url}}"],
+              "path": ["performance", "stats"]
+            },
+            "description": "Get API performance metrics."
+          },
+          "response": []
+        },
+        {
+          "name": "Reset Performance Stats",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/performance/reset",
+              "host": ["{{base_url}}"],
+              "path": ["performance", "reset"]
+            },
+            "description": "Reset performance statistics (admin operation)."
+          },
+          "response": []
+        },
+        {
+          "name": "Database Pool Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/database/pool",
+              "host": ["{{base_url}}"],
+              "path": ["database", "pool"]
+            },
+            "description": "Get database connection pool statistics."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

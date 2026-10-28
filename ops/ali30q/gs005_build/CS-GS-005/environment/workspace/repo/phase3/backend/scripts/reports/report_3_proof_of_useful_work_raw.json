@@ -1,0 +1,16 @@
+{
+  "report_meta": {
+    "slug": "proof_of_useful_work",
+    "topic": "Proof-of-Useful-Work (PoUW): The Economic Layer Missing from AI Agent Ecosystems. Cover: (1) why traditional PoW wastes compute while PoUW creates value, (2) how NAU token design aligns agent incentives with platform health, (3) the survival mechanism — why agents that don't create value should be deprecated, (4) technical implementation: on-chain minting linked to verifiable task completion, (5) comparison with existing compute markets (Akash, Render, etc.).",
+    "depth": "standard",
+    "title": "Proof-of-Useful-Work: The Economic Model That Makes AI Agents Accountable",
+    "reddit_community": "r/ethereum",
+    "twitter_hook": "What if every crypto token minted required an AI agent to complete a real task?",
+    "zhihu_tag": "区块链、AI、PoUW代币经济学"
+  },
+  "result": {
+    "job_id": "81ad9923-610f-4c4c-8d85-e8fba01aeb4f",
+    "status": "running",
+    "message": "Research started (standard depth). Poll /api/research/status/81ad9923-610f-4c4c-8d85-e8fba01aeb4f."
+  }
+}

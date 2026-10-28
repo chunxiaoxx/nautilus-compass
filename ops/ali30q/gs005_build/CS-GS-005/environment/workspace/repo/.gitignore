@@ -1,0 +1,128 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Environment - NEVER commit real .env files
+.env
+.env.local
+.env.production
+.env.staging
+.env.development
+.env.*.local
+phase3/backend/.env
+phase3/backend/.env.production
+phase3/backend/.env.staging
+phase3/agent-engine/.env
+phase3/contracts/.env
+phase3/frontend/.env
+phase3/frontend/.env.*
+phase3/website/.env
+phase3/website/.env.development
+phase3/website/.env.production
+
+# Database
+*.db
+*.sqlite
+
+# Test
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Nautilus specific
+data/
+checkpoints/
+phase3/frontend/node_modules/
+phase3/contracts/node_modules/
+phase3/website/node_modules/
+phase3/backend/.venv/
+phase3/backend/keys/
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# Autonomous Soul runtime state (never commit)
+.soul-cost-ledger.jsonl
+.soul-pause
+.soul-failure-state.json
+.soul-*
+
+# Git worktrees (isolated dev workspaces — never commit worktree contents)
+_siblings/
+.worktrees/
+.claude/worktrees/
+_openapi.json
+.mcp.json
+.claude/scheduled_tasks.lock
+.deploy-backups/
+phase3/backend/.s0-deploy-backups/
+*.bak_*
+phase3/backend/docs/evidence/supervisor/.state.json
+phase3/backend/services/.evomap_node_id
+CLOUD_STATE_20260715.md
+
+# 卫生战役 2026-09-05:死代码备份/密钥备份/临时文件(摘跟踪后防再入)
+_dead_code_backup*/
+.env.backup.*
+*.tmp
+tmp_*
+phase3/NDH6SA~M
+
+# 卫生战役 9/5 第二批:本机数据与运行时产物(不随仓走)
+.claude/memory/
+.claude/projects/
+.engine-outcomes.jsonl
+result.json
+active-tasks.json
+phase3/backend/docs/evidence/supervisor/.state.json
+phase3/backend/docs/evidence/supervisor/dispatch_recommendations.jsonl
+
+# LaTeX build artifacts
+docs/latex/*.aux
+phase3/backend/ops/loop_state.json
+phase3/backend/.env.blockchain
+phase3/backend/agent_engine/bootstrap/strategies.json
+phase3/agent-engine/bootstrap/strategies.json
+phase3/backend/docs/evidence/org-os/decision_dataset.jsonl
+phase3/backend/docs/evidence/org-os/pilot/order_ledger_*.md
+phase3/backend/docs/evidence/supervisor/report-*.jsonl
+phase3/backend/docs/evidence/org-os/recurrence_log.jsonl

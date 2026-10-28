@@ -1,0 +1,7 @@
+constraints:
+  - pure_python_stdlib_only: true
+  - deterministic: true
+  - per_instance_timeout_s: 60
+  - bitstring_shape: "length == n, values in {0, 1}"
+  - scoring_formula: "score_i = max(0, 100 * cut_size / opt_cut)"
+  - valid_gate: "any instance infeasible => combined_score = 0"

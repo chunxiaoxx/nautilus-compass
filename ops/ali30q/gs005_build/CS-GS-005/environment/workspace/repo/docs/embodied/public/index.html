@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>具身数据生产伙伴 · 真实任务到合格 episode · 能力册</title>
+<link rel="stylesheet" href="../fonts/fonts.css">
+<style>
+  :root {
+    --bg: #F1F3F2; --surface: #FFFFFF; --ink: #16201D; --ink-2: #57635F;
+    --line: #DAE0DD; --accent: #0B685D; --accent-soft: #DEEEEA;
+    --amber: #8F5B00; --amber-soft: #F7EDD4; --pass: #2E7D46; --pass-soft: #E2F0E5;
+    --fail: #B23A32; --chip: #EAEEEC;
+    --serif: "Noto Serif SC", "Source Han Serif SC", Georgia, serif;
+    --disp: "Archivo", "Segoe UI", system-ui, sans-serif;
+    --mono: ui-monospace, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #111614; --surface: #1A211E; --ink: #E6ECE9; --ink-2: #95A29D;
+      --line: #2A332F; --accent: #46B5A3; --accent-soft: #13302A;
+      --amber: #DDA847; --amber-soft: #2D2513; --pass: #5FBD7D; --pass-soft: #15301E;
+      --fail: #E07A70; --chip: #222B27; }
+  }
+  :root[data-theme="dark"] { --bg: #111614; --surface: #1A211E; --ink: #E6ECE9; --ink-2: #95A29D;
+    --line: #2A332F; --accent: #46B5A3; --accent-soft: #13302A;
+    --amber: #DDA847; --amber-soft: #2D2513; --pass: #5FBD7D; --pass-soft: #15301E;
+    --fail: #E07A70; --chip: #222B27; }
+  :root[data-theme="light"] { --bg: #F1F3F2; --surface: #FFFFFF; --ink: #16201D; --ink-2: #57635F;
+    --line: #DAE0DD; --accent: #0B685D; --accent-soft: #DEEEEA;
+    --amber: #8F5B00; --amber-soft: #F7EDD4; --pass: #2E7D46; --pass-soft: #E2F0E5;
+    --fail: #B23A32; --chip: #EAEEEC; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 16.5px/1.85 "Noto Sans SC", "PingFang SC", "Microsoft YaHei UI", system-ui, sans-serif; }
+  main { max-width: 940px; margin: 0 auto; padding: 30px 24px 80px; }
+  .hero { background: linear-gradient(120deg, #0D1F1B, #123A32); color: #EDF3F0;
+    border-radius: 14px; padding: 46px 46px 38px; margin-bottom: 30px; }
+  .hero .eyebrow { font-size: 13px; letter-spacing: .26em; color: #7FC6B8; font-weight: 600; }
+  .hero h1 { font-family: var(--serif); font-weight: 900; font-size: 38px; line-height: 1.3; margin: 12px 0 12px; text-wrap: balance; }
+  .hero h1 em { font-style: normal; color: #8FE0CE; }
+  .hero p { color: #C8D8D2; font-size: 17px; max-width: 42em; }
+  h2 { font-family: var(--serif); font-weight: 900; font-size: 23px; margin: 38px 0 12px;
+    padding-left: 12px; border-left: 5px solid var(--accent); }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 19px 21px; box-shadow: 0 1px 4px rgba(22,32,29,.09); }
+  .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  th, td { text-align: left; padding: 9px 11px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--ink-2); font-size: 13px; }
+  .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  .big { font-family: var(--disp); font-weight: 800; font-size: 32px; color: var(--accent); line-height: 1.15; }
+  .hint { color: var(--ink-2); font-size: 13.5px; }
+  ul { padding-left: 22px; margin: 8px 0; }
+  li { margin: 4px 0; }
+  .callout { border-left: 5px solid var(--accent); background: var(--accent-soft); border-radius: 0 10px 10px 0; padding: 14px 18px; margin: 16px 0; }
+  .flow { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin: 14px 0; }
+  .flow .step { background: var(--chip); border-radius: 10px; padding: 12px 14px; min-height: 92px; }
+  .flow .step b { display: block; margin-bottom: 4px; }
+  .tag { display: inline-block; border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; color: var(--ink-2); font-size: 12.5px; margin-bottom: 8px; }
+  .tag.live { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+  .tag.wait { border-color: var(--amber); color: var(--amber); background: var(--amber-soft); }
+  footer { max-width: 940px; margin: 40px auto 0; padding: 14px 24px; border-top: 1px solid var(--line); color: var(--ink-2); font-size: 12.5px; }
+
+  /* genui + 速算器 */
+  .panel { background: var(--surface); border: 1.5px solid var(--accent); border-radius: 12px; padding: 20px 22px; box-shadow: 0 1px 4px rgba(22,32,29,.09); margin-bottom: 26px; }
+  label.f { display: block; font-size: 14px; color: var(--ink-2); margin: 12px 0 4px; }
+  input[type="text"], select { width: 100%; font: inherit; padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); }
+  .chks { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 6px; }
+  .chks label { font-size: 15px; display: flex; align-items: center; gap: 6px; cursor: pointer; }
+  input[type="checkbox"] { accent-color: var(--accent); width: 17px; height: 17px; }
+  .go { background: var(--accent); color: #fff; border: none; border-radius: 9px; padding: 11px 30px; font-size: 17px; font-weight: 700; cursor: pointer; font-family: inherit; margin-top: 16px; }
+  .go:hover { opacity: .92; }
+  #gStatus { font-family: var(--mono); font-size: 13px; color: var(--accent); margin: 12px 0 0; min-height: 20px; }
+  #gOut { margin-top: 16px; }
+  #gOut .ghero { background: linear-gradient(120deg, #0D1F1B, #123A32); color: #EDF3F0; border-radius: 14px; padding: 30px 32px; margin-bottom: 14px; }
+  #gOut .ghero h2 { font-family: var(--serif); font-weight: 900; font-size: 27px; margin: 6px 0 8px; border: none; padding: 0; color: #EDF3F0; }
+  #gOut .ghero em { font-style: normal; color: #8FE0CE; }
+  #gOut .ghero p { color: #C8D8D2; margin: 0; }
+  #gOut h2 { font-size: 20px; margin: 20px 0 8px; }
+  #gOut .card { margin-bottom: 10px; animation: rise .35s ease; }
+  @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { #gOut .card { animation: none; } }
+  .cursor { display: inline-block; width: 9px; background: var(--accent); animation: blink .8s step-end infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .honest { border-left: 5px solid var(--amber); background: var(--amber-soft); border-radius: 0 10px 10px 0; padding: 11px 16px; font-size: 13.5px; color: var(--ink-2); margin-top: 14px; }
+  .calc-out { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-top: 14px; }
+  .calc-out .o { background: var(--chip); border-radius: 9px; padding: 10px 14px; }
+  .calc-out .o .v { font-family: var(--disp); font-weight: 800; font-size: 24px; color: var(--accent); }
+  .calc-out .o .k { font-size: 12.5px; color: var(--ink-2); }
+  .ctl2 { margin: 10px 0; }
+  .ctl2 label { display: flex; justify-content: space-between; font-size: 14.5px; color: var(--ink-2); }
+  .ctl2 label b { color: var(--ink); font-family: var(--mono); }
+  .chart { width: 100%; height: auto; display: block; }
+  .bar { fill: var(--accent); opacity: .85; }
+  .bar.hi { fill: var(--amber); }
+  .barlabel { fill: var(--ink); font-size: 13px; }
+  .barval { fill: var(--ink-2); font-size: 12px; font-family: var(--mono); }
+  .gridline { stroke: var(--line); stroke-width: 1; stroke-dasharray: 3 4; opacity: .7; }
+</style>
+</head>
+<body>
+<main>
+  <div class="hero">
+    <div class="eyebrow">GUOSHU / EMBODIED DATA</div>
+    <h1>让<em>真实工作</em>成为<br>具身智能可学习的经验</h1>
+    <p>面向具身本体、世界模型与数据平台,从一个边界清晰的真实任务开始,共同定义采集协议、验收口径、数据权利与付费 POC。</p>
+  </div>
+
+  <h2 style="margin-top:0">客户先理解这句话:缺的不是更多视频,而是可闭环的数据</h2>
+  <div class="flow">
+    <div class="step"><b>观察</b><span class="hint">场景、物体、人手与过程发生了什么</span></div>
+    <div class="step"><b>动作</b><span class="hint">手部/末端状态、时间关系与可对齐的操作线索</span></div>
+    <div class="step"><b>任务</b><span class="hint">指令、步骤、成功/失败与异常原因</span></div>
+    <div class="step"><b>证据</b><span class="hint">采集条件、质量记录、授权范围、版本与交付边界</span></div>
+  </div>
+  <div class="callout">可闭环 = 同一任务可以被复盘、拒收、修订并再次验证,而不只是累积视频时长。数据结构与验收口径由客户的目标任务共同定义。</div>
+
+  <h2>一条训练闭环,两条采集线</h2>
+  <div class="grid">
+    <div class="card">
+      <span class="tag live">EGO / FIRST-PERSON</span>
+      <b>EGO:采集真实世界的任务经验</b>
+      <ul>
+        <li>第一视角视频、时间戳、场景/物体状态、任务/步骤语义。</li>
+        <li>适合世界模型、环境时序、任务先验与长流程经验。</li>
+        <li><b>边界:</b>EGO 记录人类经验,不自动等于机器人可执行动作。</li>
+      </ul>
+    </div>
+    <div class="card">
+      <span class="tag live">UMI / END-EFFECTOR</span>
+      <b>UMI:采集更接近机器人动作接口的示范</b>
+      <ul>
+        <li>末端邻近视觉、夹爪状态、位姿/相对动作、对象状态。</li>
+        <li>适合本体策略、动作示范与机器人验证。</li>
+        <li><b>边界:</b>设备选型、标定和本体适配必须写入 POC 任务书。</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>一个标准,三类供给单元</h2>
+  <div class="card">
+    <table>
+      <thead><tr><th>供给单元</th><th>价值</th><th>当前状态</th><th>开启条件</th></tr></thead>
+      <tbody>
+        <tr><td><b>协同基地</b></td><td>金样本、标定与高控制任务的质量锚点</td><td><span class="tag live">当前/POC</span></td><td>任务书冻结、首批样本可回放、联合验收口径明确</td></tr>
+        <tr><td><b>分布式众包</b></td><td>场景覆盖与弹性供给</td><td><span class="tag wait">条件触发</span></td><td>金样本、任务包、拒收字典、授权规则已被验证</td></tr>
+        <tr><td><b>垂直现场</b></td><td>进入真实高价值工作流,低打扰采集</td><td><span class="tag wait">条件触发</span></td><td>客户授权、隐私边界、低打扰流程与业务连续性验证通过</td></tr>
+      </tbody>
+    </table>
+    <p class="hint">三类供给不是三种采集技术;技术路线仍是 EGO/UMI。区别在于在哪里采、谁来采、怎样控质。</p>
+  </div>
+
+  <h2>当前可购买:任务 001 的付费 POC</h2>
+  <div class="grid">
+    <div class="card"><span class="tag live">门槛 1</span><b>样本验收</b><br><span class="hint">金样本、拒收字典、联合验收。</span></div>
+    <div class="card"><span class="tag live">门槛 2</span><b>权利/授权</b><br><span class="hint">对象、场景、访问、保存、删除、使用范围。</span></div>
+    <div class="card"><span class="tag live">门槛 3</span><b>可复现性</b><br><span class="hint">人员、设备、场景、协议稳定复跑。</span></div>
+    <div class="card"><span class="tag live">门槛 4</span><b>价格/结算</b><br><span class="hint">合格单位、返工阈值、版本与责任分界。</span></div>
+  </div>
+  <div class="callout">付费 POC 后的选择是扩量、调整任务包,或停止;由证据决定,不靠预设承诺。</div>
+
+  <h2>今日演示重点:先看这两项</h2>
+  <div class="grid" style="margin-bottom:26px">
+    <a class="card" href="#pilot3day" style="display:block;text-decoration:none;color:inherit;border:1.5px solid var(--accent)">
+      <b>① 3 天单样板闭环证据包</b><br>
+      <span class="hint">`pilot_day3_core_v1`: pass@5=5/5 · repeat=100% · E-D=96%。先打一条样板,不夸大成规模化承诺。</span>
+    </a>
+    <a class="card" href="#parisDemo" style="display:block;text-decoration:none;color:inherit;border:1.5px solid var(--amber)">
+      <b>② Paris HTML 实时生成导览 Demo</b><br>
+      <span class="hint">演示“输入需求 → 生成交互页面”。对应业务是基地参观导览页、审计报告动态页。</span>
+    </a>
+  </div>
+
+  <h2 style="margin-top:0">⚡ 先来点动态的:输入即生成您的专属方案页</h2>
+  <div class="panel">
+    <label class="f">贵方名称(可留空)</label>
+    <input type="text" id="fCompany" placeholder="例:某机器人公司 / 某训练场" maxlength="30">
+    <label class="f">贵方角色</label>
+    <select id="fRole">
+      <option value="model">模型 / 具身智能公司(要训练数据)</option>
+      <option value="robot">机器人本体厂(要配套数据与验收)</option>
+      <option value="platform">数据平台 / 数采同行(要产能与质检)</option>
+      <option value="gov">政府训练场 / 国资平台(要运营方)</option>
+      <option value="hand">灵巧手 / 硬件厂商(要联合数据包)</option>
+    </select>
+    <label class="f">您最关心(多选)</label>
+    <div class="chks">
+      <label><input type="checkbox" class="fk" value="quality" checked>数据质量与验收</label>
+      <label><input type="checkbox" class="fk" value="price">价格与结算方式</label>
+      <label><input type="checkbox" class="fk" value="train">人员培训认证</label>
+      <label><input type="checkbox" class="fk" value="fail">失败样本 / 世界模型数据</label>
+      <label><input type="checkbox" class="fk" value="ops">基地与产能</label>
+    </div>
+    <button class="go" id="goBtn" type="button">⚡ 生成我的专属页</button>
+    <div id="gStatus"></div>
+    <div id="gOut"></div>
+    <div class="honest"><b>诚实标注:</b>本生成为规则引擎实时装配(所有数字真实、审计可复跑核验),非 LLM 撰写;LLM 现场撰写版架构已就绪。我们做数据验收生意,先从不糊弄自己的演示做起。</div>
+  </div>
+
+  <h2>行业共同的痛,我们的回答</h2>
+  <div class="callout">
+    行业实况:采集有效率普遍 ~50%,"一周采集大半是废数据";验收纠纷无解——"采集员动作不合格,谁来判断,谁来承担成本?"<br>
+    <b>我们的回答:先把任务协议、质量证据、权利边界和拒收规则写清楚;再按客户共同确认的合格 episode 交付。</b>
+  </div>
+
+  <h2>三项交付能力</h2>
+  <div class="grid">
+    <div class="card"><b>任务协议与数据包</b><br><span class="hint">任务 ID/版本、场景与对象、步骤、成功/失败判据、目标格式;EGO/UMI 可单独或组合配置。</span></div>
+    <div class="card"><b>供给组织与质量闭环</b><br><span class="hint">协同基地优先做金样本与标定;人员组织、现场运营、预检、抽检、返工版本形成闭环。</span></div>
+    <div class="card"><b>验收与权利交付</b><br><span class="hint">同步/标定、完整性、成功判据、抽检结果、拒收原因、授权范围、保存/删除与使用范围进入项目协议。</span></div>
+  </div>
+
+  <h2>质检系统:公开数据上的真实审计(可复跑核验)</h2>
+  <div class="card">
+    <p>我们用自研裁判系统审计了 HuggingFace 公开数据集 <b>lerobot/pusht</b>(206 条人类演示轨迹,LeRobotDataset v3.0):</p>
+    <table>
+      <thead><tr><th>口径</th><th>结果</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>按数据集官方成功判据(任务覆盖率 ≥0.95)</td><td class="num"><b>0 / 206 可结算</b></td><td>206 条演示最好只到 0.94 —— 判据口径过严时"按成功结算"= 颗粒无收</td></tr>
+        <tr><td>按商业交付口径(覆盖率 ≥0.90 + 七维质量规则)</td><td class="num"><b>44.2% 合格</b></td><td>与行业"有效率 ~50%"口径互证</td></tr>
+        <tr><td colspan="3" style="background:var(--chip)"><b>aloha_static_coffee</b>(ALOHA 官方真机双臂演示,50 条 × 22 秒,50fps 弧度制含双夹爪)</td></tr>
+        <tr><td>按严格结算口径(须成败标签)</td><td class="num"><b>0 / 50 可结算</b></td><td>该数据集<b>没有任何成败标注列</b> —— 真机公开数据集普遍缺验收基础设施</td></tr>
+        <tr><td>按质量口径(七维规则)</td><td class="num"><b>98% 合格</b></td><td>官方演示质量高,仅 5 条平滑度复核</td></tr>
+      </tbody>
+    </table>
+    <p class="hint">双数据集同一结论:<b>卡脖子的不是采集质量(44%/98%),是验收基础设施——判据、标签、合同。</b>成功判据没写清,数据再多也结不了账。这正是验收条款的价值——我们把判据、抽检比例(κ≥0.8 一致性)、复检仲裁机制作为合同标准件提供。审计报告与判定程序可提供复跑,同输入同输出。</p>
+  </div>
+
+  <h2>裁判规则(episode 级,全自动预检 + 人工抽检)</h2>
+  <div class="card">
+    <table>
+      <thead><tr><th>规则</th><th>判什么</th></tr></thead>
+      <tbody>
+        <tr><td>R1 时长</td><td>过短/过长轨迹(误触、挂机)</td></tr>
+        <tr><td>R2 丢帧</td><td>时间戳间隔异常(采集设备故障)</td></tr>
+        <tr><td>R3 停滞</td><td>连续静止(操作中断/发呆)</td></tr>
+        <tr><td>R4 平滑度</td><td>动作抖动/变形(jerk 分布校准:最差 10% 复核、最差 1% 判废)</td></tr>
+        <tr><td>R5 成败标签</td><td>任务成败标注缺失或失败(不可结算)</td></tr>
+        <tr><td>R6 关节越限</td><td>超出安全工作空间</td></tr>
+        <tr><td>R7 夹爪活动</td><td>全程无操作(疑似空采)</td></tr>
+      </tbody>
+    </table>
+    <p class="hint">判定协议对齐学术四维标准(成功/平滑/安全/效率)与主流失败模式分类;阈值按客户 spec 校准。</p>
+  </div>
+
+<style>
+  .demo-wrap { display: grid; grid-template-columns: 1.4fr 1fr; gap: 18px; }
+  @media (max-width: 880px) { .demo-wrap { grid-template-columns: 1fr; } }
+  #qcCv { width: 100%; height: 300px; background: linear-gradient(120deg, #0D1F1B, #123A32); border-radius: 10px; display: block; }
+  #sandCv { width: 100%; height: 420px; background: linear-gradient(180deg, #123A32, #0D1F1B); border-radius: 10px; display: block; cursor: crosshair; touch-action: none; }
+  .demo-btn { background: var(--accent); color: #fff; border: none; border-radius: 8px; padding: 8px 22px; font-size: 15.5px; font-weight: 600; cursor: pointer; font-family: inherit; }
+  .demo-btn:hover { opacity: .9; }
+  .demo-btn:disabled { opacity: .45; cursor: default; }
+  .ctl { margin: 12px 0; }
+  .ctl label { display: flex; justify-content: space-between; font-size: 14.5px; color: var(--ink-2); }
+  .ctl label b { color: var(--ink); font-family: var(--mono); }
+  input[type="range"] { width: 100%; accent-color: var(--accent); height: 26px; }
+  .bigstat { display: flex; gap: 30px; flex-wrap: wrap; margin: 8px 0; }
+  .bigstat .v { font-family: var(--disp); font-weight: 800; font-size: 32px; color: var(--accent); line-height: 1.1; }
+  .bigstat .k { font-size: 13px; color: var(--ink-2); }
+  .fmbar { display: grid; grid-template-columns: 120px 1fr 36px; gap: 8px; align-items: center; font-size: 13px; margin: 3px 0; }
+  .fmbar .tr { background: var(--chip); border-radius: 4px; height: 12px; overflow: hidden; }
+  .fmbar .fi { background: var(--fail); height: 100%; width: 0; transition: width .2s; }
+  .sand-stats { display: flex; gap: 26px; flex-wrap: wrap; margin-top: 10px; align-items: center; }
+  #sandVerdict { margin-top: 12px; font-size: 15px; }
+  #sandJsonOut { max-height: 170px; overflow: auto; background: var(--chip); border-radius: 8px; padding: 10px 12px; display: none; font-family: var(--mono); font-size: 12.5px; color: var(--ink-2); white-space: pre-wrap; }
+  .vbadge { display: inline-block; font-family: var(--disp); font-weight: 800; font-size: 21px; padding: 2px 16px; border-radius: 8px; }
+  .vbadge.ok { background: var(--pass-soft); color: var(--pass); }
+  .vbadge.bad { background: #F7E7E5; color: var(--fail); }
+  .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  .pilot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin: 12px 0; }
+  .pilot-kpi { background: var(--chip); border-radius: 9px; padding: 12px 14px; }
+  .pilot-kpi .v { font-family: var(--disp); font-weight: 800; color: var(--accent); font-size: 27px; line-height: 1.1; }
+  .pilot-kpi .k { color: var(--ink-2); font-size: 12.5px; margin-top: 4px; }
+  .paris-demo { display: grid; grid-template-columns: 1.2fr 1fr; gap: 14px; align-items: start; }
+  @media (max-width: 880px) { .paris-demo { grid-template-columns: 1fr; } }
+  #parisCv { width: 100%; height: 260px; border-radius: 10px; background: linear-gradient(180deg, #E9F3F1, #F7FBFA); border: 1px solid var(--line); display: block; }
+  #parisSpec { width: 100%; min-height: 180px; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; background: var(--bg); color: var(--ink); font: 13px/1.55 var(--mono); resize: vertical; }
+  #parisStatus { font-family: var(--mono); font-size: 12.5px; color: var(--ink-2); margin-top: 8px; white-space: pre-wrap; }
+</style>
+
+<h2>亲手体验 ① · 裁判怎么判(合格率模拟)</h2>
+<div class="card">
+  <p class="hint" style="margin-top:0">每个方块 = 一条 episode 轨迹,流过裁判门被判合格(绿)或废品(红,归因到失败模式)。拖动滑杆改变"培训/SOP 投入",直观看到行业均值 ~50% 与 SOP 化 95% 的差距——同样的人,产能差一半。</p>
+  <div class="demo-wrap">
+    <div>
+      <canvas id="qcCv" width="640" height="300"></canvas>
+      <div class="ctl" style="margin-top:14px"><label>培训/SOP 投入 <b id="cSkill">行业均值</b></label><input type="range" id="rSkill" min="0" max="100" value="40"></div>
+      <button class="demo-btn" id="qcBtn" type="button">▶ 开始模拟</button>
+    </div>
+    <div>
+      <div class="bigstat">
+        <div><div class="v" id="qTotal">0</div><div class="k">已判定 episodes</div></div>
+        <div><div class="v" id="qRate">—</div><div class="k">合格率</div></div>
+        <div><div class="v" id="qHours">0</div><div class="k">合格小时(2 分钟/条折算)</div></div>
+      </div>
+      <h3 style="margin:10px 0 6px;font-size:15px">废品失败模式分布</h3>
+      <div id="fmBars"></div>
+      <p class="hint" style="margin-top:10px">真实系统 = 7 条确定性规则,同输入同输出、可复跑仲裁;本演示以同分布随机数直观化。</p>
+    </div>
+  </div>
+</div>
+
+<h2>亲手体验 ② · 自己采一条数据,被裁判判一次</h2>
+<div class="card">
+  <p class="hint" style="margin-top:0">浏览器里的物理小世界,两种任务随机生成:<b>抓放</b>(按住闭合夹爪,拖到绿区放下)与<b>推块</b>(顶着积木走)。结束后您的轨迹立刻过裁判,显影(绿=平滑/红=抖动)、可回放(可复现仲裁)、可导出 LeRobot 风格 JSON(交付格式)。</p>
+  <canvas id="sandCv" width="760" height="420"></canvas>
+  <div class="sand-stats">
+    <button class="demo-btn" id="sandNew" type="button">⟳ 生成新任务</button>
+    <button class="demo-btn" id="sandReplay" type="button" style="background:var(--amber)" disabled>▶ 回放上一条</button>
+    <button class="demo-btn" id="sandExport" type="button" style="background:var(--ink-2)" disabled>查看 LeRobot JSON</button>
+    <span class="hint">任务 #<b id="sandSeed" class="num">1</b> · <b id="sandTask">—</b></span>
+    <span class="hint">您的合格率:<b id="sandOk" class="num">0</b>/<b id="sandTotal" class="num">0</b> = <b id="sandRate" class="num">—</b></span>
+    <pre id="sandJsonOut"></pre>
+  </div>
+  <div id="sandVerdict" class="hint">提示:做太快、中途停顿、抖动、放错位置都会被判出来——行业里约一半数据正是这样成为废品的。</div>
+</div>
+
+
+  <h2>验收条款标准件(可直接进合同附件)</h2>
+  <div class="card">
+    <table>
+      <thead><tr><th>条款项</th><th>标准写法</th></tr></thead>
+      <tbody>
+        <tr><td>合格判定</td><td>episode 级 7 条确定性规则(见上),阈值按 spec 双方确认后冻结入附件;同输入同输出</td></tr>
+        <tr><td>计费口径</td><td><b>元 / 合格小时</b>:只对通过判定的数据计费;废品不出厂、不占贵方复检成本</td></tr>
+        <tr><td>抽检机制</td><td>贵方按批次抽检(建议 5-10%);人工复核与裁判一致率要求 <b>κ ≥ 0.8</b>(Kappa 一致性系数)</td></tr>
+        <tr><td>争议仲裁</td><td><b>复跑仲裁</b>:争议轨迹双方复跑同一判定程序,以程序输出为准 —— 行业首个可执行的仲裁条款</td></tr>
+        <tr><td>返工闭环</td><td>不合格批次归因到失败模式,针对性返工后重新过裁判;返工成本我方承担</td></tr>
+        <tr><td>报告交付</td><td>机器可读验收报告随批交付,口径对齐 YD/T 6770-2026《具身智能基准测试方法》</td></tr>
+      </tbody>
+    </table>
+    <p class="hint">背景:行业访谈原话——"采集员动作不合格,谁来判断,谁来承担成本?" 公开渠道检索不到任何合同级验收条款范本。这套标准件就是我们对这个空白的回答。</p>
+  </div>
+
+  <h2>采集技术路线概览(我们按品类配产线)</h2>
+  <div class="card" style="overflow-x:auto">
+    <table>
+      <thead><tr><th>路线</th><th>产能(条/h)</th><th>质量特点</th><th>适用品类</th></tr></thead>
+      <tbody>
+        <tr><td><b>主从臂遥操作</b></td><td class="num">10-30</td><td>质量最高;策略成功率比 VR 数据高 ~20%</td><td>精细操作 / 接触密集任务(主力产线)</td></tr>
+        <tr><td><b>手持采集(UMI 系)</b></td><td class="num">20-60</td><td>成本最低、速度最快;缺力觉</td><td>大批量场景多样性数据(扩量线)</td></tr>
+        <tr><td><b>第一视角穿戴</b></td><td class="num">在岗即采</td><td>1h 视频 ≈ 1h 遥操作的训练价值(公开研究口径)</td><td>垂直行业真实场景数据</td></tr>
+        <tr><td><b>VR 遥操作</b></td><td class="num">10-25</td><td>可远程;延迟 ≥300ms 判无效是硬门</td><td>远程众包场景</td></tr>
+        <tr><td><b>外骨骼</b></td><td class="num">5-15</td><td>全身动作、重定向损失小;单价最高</td><td>全身/移动操作数据(按单配置)</td></tr>
+        <tr><td><b>灵巧手工位</b></td><td class="num">按 spec</td><td>五指操作+可选触觉通道</td><td>最高溢价品类(公开行情 1500-3000 元/h)</td></tr>
+      </tbody>
+    </table>
+    <p class="hint">交付格式:LeRobotDataset v3(事实标准,HuggingFace 生态原生兼容)或客户指定格式;所有路线的产出统一过同一套裁判。</p>
+  </div>
+
+  <h2>生产 SOP:八个环节,每环有"交什么、怎么验"</h2>
+  <div class="card" style="overflow-x:auto">
+    <table>
+      <thead><tr><th>#</th><th>环节</th><th>产出物</th><th>验收标准</th></tr></thead>
+      <tbody>
+        <tr><td class="num">1</td><td>需求定义</td><td>任务规格书(任务/本体/传感器/格式/量/单价)</td><td>客户签字</td></tr>
+        <tr><td class="num">2</td><td>场景搭建</td><td>场地+道具+机位+标定记录</td><td>标定误差入档,场景对齐规格书</td></tr>
+        <tr><td class="num">3</td><td>招募培训</td><td>持证采集员</td><td>考核数据过裁判 ≥ 阈值(考核即认证)</td></tr>
+        <tr><td class="num">4</td><td>采集执行</td><td>原始轨迹</td><td>实时预检:延迟&lt;300ms、无多余动作、无遮挡</td></tr>
+        <tr><td class="num">5</td><td>质检</td><td>合格数据集+废品清单(每条附证据)</td><td>四维协议+失败模式分类;抽检一致率 κ≥0.8</td></tr>
+        <tr><td class="num">6</td><td>标注</td><td>语言指令+子任务分段</td><td>与轨迹逐帧对齐;预标+人审</td></tr>
+        <tr><td class="num">7</td><td>交付</td><td>LeRobot v3 / 客户格式 + 验收报告</td><td>客户侧复现通过;按合格小时开票</td></tr>
+        <tr><td class="num">8</td><td>回流</td><td>错判案例入规则库;人员合格率入档案</td><td>每批次规则库有增量(越判越准)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>培训认证:人从哪来,证谁买单</h2>
+  <div class="grid">
+    <div class="card"><b>职业标准与证书</b><br><span class="hint">对接人社部《人工智能训练师》国家职业标准(五级体系);培训 5 天带考核,<b>考核数据本身过裁判 = 考核即认证</b>;毕业进基地上岗或输送合作方。</span></div>
+    <div class="card"><b>政府补贴(公开标准)</b><br><span class="hint">证书补贴按等级:五级 1000 / 四级 1500 / <b>三级 2400</b> / 二级 3000 / 一级 3600 元(广东口径;上海三级 2500,在校生按 80%)。多地纳入紧缺工种目录,另可抵个税。<b>补贴可覆盖学员大部分培训成本。</b></span></div>
+    <div class="card"><b>为什么这对贵方重要</b><br><span class="hint">行业现状是 3 天速成上岗、劳务中介层层转包 —— 动作一致性差是废品率高的根源之一。持证+带考核的人员产线,是合格率承诺的地基。</span></div>
+  </div>
+
+  <h2>高溢价品类:别人的废品,我们的 SKU</h2>
+  <div class="grid">
+    <div class="card"><b>失败样本包</b><br><span class="hint">裁判判废的每条轨迹都带失败模式标签(7 类归因)—— 正是世界模型训练需要的失败数据,行业溢价 ~1.5×,头部厂商已专门开源失败交互数据集验证了这一需求。</span></div>
+    <div class="card"><b>评估用 ground-truth 校准集</b><br><span class="hint">行业共识"评估必须真机"(数字孪生无法完全复现真实物理)。按贵方评测协议定制采集+判定的校准集,规格可谈。</span></div>
+    <div class="card"><b>数据来源验证(provenance)</b><br><span class="hint">合成数据管线全面开源化后,"这条轨迹是真机采的吗"成为新问题。我们的判定规则可扩展做真采/合成鉴别,保护贵方数据资产的可信度。</span></div>
+  </div>
+
+  <h2>需求速算器(拖一拖,现场出方案框架)</h2>
+  <div class="card">
+    <div class="ctl2"><label>月需求合格小时 <b id="cH2">500</b> h/月</label><input type="range" id="rH2" min="100" max="5000" value="500" step="100"></div>
+    <div class="ctl2"><label>数据品类 <b id="cP2">真机遥操作</b></label>
+      <select id="rP2">
+        <option value="300,800">无本体穿戴(公开行情 300-800 元/h)</option>
+        <option value="800,1500" selected>真机遥操作(公开行情 800-1500 元/h)</option>
+        <option value="1500,3000">灵巧手/触觉(公开行情 1500-3000 元/h)</option>
+      </select></div>
+    <div class="calc-out">
+      <div class="o"><div class="v" id="oTrial">—</div><div class="k">建议首期试单(合格小时)</div></div>
+      <div class="o"><div class="v" id="oPeople">—</div><div class="k">我方需配采集员(人)</div></div>
+      <div class="o"><div class="v" id="oWeeks">—</div><div class="k">产能就绪周期(周)</div></div>
+      <div class="o"><div class="v" id="oBudget">—</div><div class="k">月预算区间(万元)</div></div>
+    </div>
+    <p class="hint">口径:行业公开参数(人均日有效 3-4h、目标合格率 ≥70%、月作业 25 天、基地五步法 5-8 周投产);试单先行、以销定产,精确报价以规格书为准。</p>
+  </div>
+
+  <h2>市场行情参照(公开报道口径)</h2>
+  <div class="card">
+    <svg class="chart" viewBox="0 0 700 210" role="img" aria-label="行情图">
+      <g class="gridline"><line x1="185" y1="10" x2="185" y2="175"/><line x1="435" y1="10" x2="435" y2="175"/></g>
+      <text class="barlabel" x="8" y="34">无本体采集成本</text><rect class="bar" x="185" y="20" width="50" height="20" rx="4"/><text class="barval" x="243" y="34">50-100 元/h</text>
+      <text class="barlabel" x="8" y="76">真机采集成本</text><rect class="bar" x="185" y="62" width="125" height="20" rx="4"/><text class="barval" x="318" y="76">~250 元/h(每日经济新闻 2026-06)</text>
+      <text class="barlabel" x="8" y="118">市面数据售价</text><rect class="bar hi" x="185" y="104" width="400" height="20" rx="4"/><text class="barval" x="240" y="118" fill="#fff">500-1000+ 元/h(头部机构公开口径)</text>
+      <text class="barlabel" x="8" y="160">行业有效率</text><rect class="bar" x="185" y="146" width="200" height="20" rx="4"/><text class="barval" x="392" y="160">~50% —— 买 100 小时只有一半能用</text>
+      <text class="barval" x="185" y="196">我们的主张:按「合格小时」计价,废品是我们的成本不是您的;有效率每提 10pp,您的采购性价比提一成。</text>
+    </svg>
+  </div>
+
+  <h2>交付之外:数据资产的二次出口</h2>
+  <div class="card">
+    <p>具身数据的场内交易通道已经打开:全国首单具身智能数据集已在省级数据交易所挂牌成交(2026-01),主流云平台的具身数据交易市场已上线。<b>数据产品上架需要质量评估报告</b>(上海地方标准要求)—— 我们的验收报告即按可挂牌口径出具,贵方的数据资产多一条变现通道。授权范围与排他条款在合同中显式约定。</p>
+  </div>
+
+  <h2 id="pilot3day">3 天单样板闭环证据包</h2>
+  <div class="card">
+    <p class="hint" style="margin-top:0">这部分吸收当前 `pilot_day3_core_v1` 的闭环结果,用于客户会现场说明:先做 1 个样板,把题面、场景、仿真、交互、真实轨迹先验和失败回流跑通,再决定是否 1 -> 3 扩量。</p>
+    <div class="pilot-grid">
+      <div class="pilot-kpi"><div class="v">5/5</div><div class="k">pass@5 复测</div></div>
+      <div class="pilot-kpi"><div class="v">100%</div><div class="k">重复一致率</div></div>
+      <div class="pilot-kpi"><div class="v">96%</div><div class="k">E-D 轨迹一致率</div></div>
+      <div class="pilot-kpi"><div class="v">1</div><div class="k">当前只保留单样板</div></div>
+    </div>
+    <table>
+      <thead><tr><th>输入口</th><th>业务含义</th><th>验收动作</th></tr></thead>
+      <tbody>
+        <tr><td>A 语义</td><td>题面与成功标准</td><td>先统一口径,不让外发和内部两套说法分叉</td></tr>
+        <tr><td>B 场景</td><td>对象、约束、扰动</td><td>把客户需求转成可执行字段</td></tr>
+        <tr><td>C 仿真</td><td>参数与边界</td><td>先筛掉低价值路线,降低真机成本</td></tr>
+        <tr><td>D 交互</td><td>可回放的动作过程</td><td>用 demo 解释动作链路,不把 demo 当最终验收</td></tr>
+        <tr><td>E 真实轨迹先验</td><td>真实动作参照</td><td>低于 90% 自动回流,不直接过线</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="parisDemo">Paris HTML 实时生成导览 Demo</h2>
+  <div class="card paris-demo">
+    <div>
+      <canvas id="parisCv" width="720" height="260"></canvas>
+      <div style="margin-top:10px">
+        <button class="demo-btn" id="parisBuild" type="button">生成导览图</button>
+        <button class="demo-btn" id="parisReplay" type="button" style="background:var(--amber)">重放路径</button>
+      </div>
+      <div id="parisStatus">输入 JSON 后生成一张可解释的导览路线图。</div>
+    </div>
+    <div>
+      <textarea id="parisSpec">{"title":"巴黎客户导览样例","nodes":[{"name":"入口","x":52,"y":138},{"name":"需求访谈","x":170,"y":78},{"name":"QC裁判","x":312,"y":150},{"name":"基地SOP","x":456,"y":82},{"name":"世界模型回放","x":590,"y":146},{"name":"合作确认","x":678,"y":84}],"risk":["口径不一致","失败样本未回流"],"speed":1.0}</textarea>
+      <p class="hint">这不是游戏客户端,而是 HTML 现场生成:同一份 JSON 生成路线、节点、风险提示和回放。我们后续可把客户基地参观、数据审计报告、任务复盘都变成这种可交互页面。</p>
+    </div>
+  </div>
+
+  <h2>项目责任如何追溯</h2>
+  <div class="grid">
+    <div class="card"><div class="big">客户</div><span class="hint">定义任务目标、规格、验收口径与反馈;共同确认任务书和变更。</span></div>
+    <div class="card"><div class="big">国曙</div><span class="hint">与客户签约,承担人员组织、项目运营、质量闭环与最终交付责任。</span></div>
+    <div class="card"><div class="big">合作资源</div><span class="hint">提供基地支持、指导培训、派单协同;不替代国曙面对客户的合同与交付责任。</span></div>
+  </div>
+  <p class="hint">当前边界:设备配置、实际产能、现场可进入性和扩量路径均以项目勘察与 POC 证据为准。</p>
+
+  <h2>启动任务 001 需要的输入</h2>
+  <div class="card">
+    <ul>
+      <li><b>目标任务</b>:目标本体/模型、真实任务、场景、对象、成功标准;</li>
+      <li><b>采集模态</b>:EGO、UMI,或两者组合;传感器、格式、频率与标定要求;</li>
+      <li><b>验收口径</b>:合格 episode 定义、抽检比例、拒收条件、返工阈值;</li>
+      <li><b>权利边界</b>:主体/场景授权、访问、保存/删除、脱敏、使用范围与交付版本;</li>
+      <li><b>POC 决策</b>:付费 POC 后是扩量、调整任务包,还是停止。</li>
+    </ul>
+    <div class="callout" style="margin-top:14px"><b>下一步:</b>带着一个边界清晰的真实任务,共同定义任务 001 与付费 POC。</div>
+  </div>
+</main>
+<footer>本页为合作洽谈材料 · 数据截至 2026-07 · 叙事口径对齐《国曙具身数据生产网络_业务介绍_v2.0》 · 行业数字均来自公开报道(可提供出处清单)</footer>
+
+<script>
+(function(){
+"use strict";
+var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  /* ---------- QC judge demo ---------- */
+  (function () {
+    var cv = document.getElementById("qcCv");
+    if (!cv) return;
+    var ctx = cv.getContext("2d");
+    var running = false, timer = null;
+    var total = 0, pass = 0;
+    var modes = ["抓取不完整", "握持不足", "关键帧错位", "旋转错误", "动作顺序错", "目标物错", "轨迹抖动"];
+    var modeCount = [0, 0, 0, 0, 0, 0, 0];
+    var blocks = [];
+    var GX = 420;
+    var fmWrap = document.getElementById("fmBars");
+    modes.forEach(function (m, i) {
+      var row = document.createElement("div");
+      row.className = "fmbar";
+      row.innerHTML = "<span>" + m + "</span><div class='tr'><div class='fi' id='fm" + i + "'></div></div><span class='num' id='fmn" + i + "'>0</span>";
+      fmWrap.appendChild(row);
+    });
+    function passProb() {
+      var s = +document.getElementById("rSkill").value;
+      return 0.35 + 0.006 * s;  /* 35% → 95% */
+    }
+    document.getElementById("rSkill").addEventListener("input", function () {
+      var s = +this.value;
+      var lab = s < 25 ? "无培训散工" : s < 55 ? "行业均值(~50%)" : s < 85 ? "5 天带考核培训(~70%)" : "SOP 天花板(北京人形 95%)";
+      document.getElementById("cSkill").textContent = lab;
+    });
+    function spawnBlock() {
+      var p = Math.random() < passProb();
+      blocks.push({ x: -16, y: 40 + Math.random() * 220, v: 2.2 + Math.random() * 1.6, pass: p, judged: false, a: 1, vy: 0 });
+    }
+    function judge(p) {
+      total++;
+      if (p) pass++;
+      else {
+        var m = Math.floor(Math.random() * 7);
+        modeCount[m]++;
+      }
+      document.getElementById("qTotal").textContent = total;
+      document.getElementById("qRate").textContent = Math.round(100 * pass / total) + "%";
+      document.getElementById("qHours").textContent = (pass * 2 / 60).toFixed(1);
+      var failTotal = total - pass || 1;
+      for (var i = 0; i < 7; i++) {
+        document.getElementById("fm" + i).style.width = Math.round(100 * modeCount[i] / failTotal) + "%";
+        document.getElementById("fmn" + i).textContent = modeCount[i];
+      }
+    }
+    function frame() {
+      ctx.clearRect(0, 0, cv.width, cv.height);
+      ctx.strokeStyle = "rgba(143,224,206,.6)"; ctx.lineWidth = 2; ctx.setLineDash([7, 6]);
+      ctx.beginPath(); ctx.moveTo(GX, 14); ctx.lineTo(GX, 286); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle = "rgba(143,224,206,.85)"; ctx.font = "13px sans-serif";
+      ctx.fillText("裁判门(7 条规则)", GX + 8, 26);
+      ctx.fillText("← 产线:episodes", 14, 26);
+      for (var i = blocks.length - 1; i >= 0; i--) {
+        var b = blocks[i];
+        b.x += b.v; b.y += b.vy;
+        if (!b.judged && b.x >= GX) { b.judged = true; judge(b.pass); if (!b.pass) b.vy = 2.2; }
+        if (b.judged && !b.pass) b.a -= 0.02;
+        ctx.globalAlpha = Math.max(b.a, 0);
+        ctx.fillStyle = !b.judged ? "#A8BEB8" : (b.pass ? "#78DCAA" : "#E66E64");
+        ctx.fillRect(b.x, b.y, 13, 13);
+        ctx.globalAlpha = 1;
+        if (b.x > cv.width + 20 || b.a <= 0 || b.y > cv.height + 20) blocks.splice(i, 1);
+      }
+      if (running) requestAnimationFrame(frame);
+    }
+    document.getElementById("qcBtn").addEventListener("click", function () {
+      running = !running;
+      this.textContent = running ? "❚❚ 暂停" : "▶ 继续模拟";
+      if (running) {
+        frame();
+        timer = setInterval(spawnBlock, reduced ? 400 : 170);
+      } else { clearInterval(timer); }
+    });
+  })();
+
+
+  /* ============ 遥操沙盘 v2:双任务 · 轨迹显影 · 回放 · 导出 ============ */
+  (function () {
+    var cv = document.getElementById("sandCv");
+    if (!cv) return;
+    var ctx = cv.getContext("2d");
+    var W = 760, H = 420, GROUND = 380;
+    var seed = 7, sessionOk = 0, sessionTotal = 0, taskNo = 1;
+    var block, zone, grip, rec, carrying, done, doneAt, roundActive, taskType;
+    var lastRec = null, lastScene = null, lastVerdict = null;
+    var replaying = false, replayIdx = 0;
+
+    function rng() { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }
+
+    function newTask(bump) {
+      if (bump !== false) taskNo++;
+      taskType = rng() < 0.5 ? "pick" : "push";
+      var s = Math.floor(34 + rng() * 22);
+      block = { w: s, h: s, x: 70 + rng() * 220, y: GROUND - s, vy: 0 };
+      zone = { w: 130, x: 430 + rng() * 180 };
+      grip = { x: 120, y: 160, tx: 120, ty: 160, closed: false, started: false };
+      rec = []; carrying = false; done = false; doneAt = 0; roundActive = true; replaying = false;
+      document.getElementById("sandSeed").textContent = taskNo;
+      document.getElementById("sandTask").textContent = taskType === "pick" ? "任务A 抓放(按住=闭合)" : "任务B 推块(pusht 同款,顶着走)";
+      var box = document.getElementById("sandVerdict");
+      box.className = "hint";
+      box.textContent = taskType === "pick"
+        ? "任务 #" + taskNo + " 抓放:按住闭合夹爪抓起积木,拖到绿区上方松开。"
+        : "任务 #" + taskNo + " 推块:不用按键,用夹爪把积木一路顶进绿区(pusht 数据集就是 206 条这种轨迹)。";
+    }
+
+    function pos(ev) {
+      var r = cv.getBoundingClientRect();
+      var cx = (ev.touches ? ev.touches[0].clientX : ev.clientX) - r.left;
+      var cy = (ev.touches ? ev.touches[0].clientY : ev.clientY) - r.top;
+      return { x: Math.max(0, Math.min(W, cx * W / r.width)), y: Math.max(0, Math.min(H, cy * H / r.height)) };
+    }
+    cv.addEventListener("pointermove", function (ev) { if (!replaying) { var p = pos(ev); grip.tx = p.x; grip.ty = p.y; if (roundActive) grip.started = true; } });
+    cv.addEventListener("pointerdown", function (ev) {
+      if (replaying) return;
+      cv.setPointerCapture(ev.pointerId);
+      var p = pos(ev); grip.tx = p.x; grip.ty = p.y; grip.started = true;
+      grip.closed = true;
+      if (taskType === "pick" && !carrying && Math.abs(grip.x - (block.x + block.w / 2)) < block.w / 2 + 12 && grip.y > block.y - 26 && grip.y < block.y + block.h) {
+        carrying = true;
+      }
+    });
+    cv.addEventListener("pointerup", function () { if (!replaying) { grip.closed = false; if (carrying) { carrying = false; block.vy = 0.1; } } });
+
+    function judgeRound(taskSuccess) {
+      var findings = [];
+      var n = rec.length;
+      var durS = n ? (rec[n - 1].t - rec[0].t) / 1000 : 0;
+      if (durS < 1.2) findings.push(["critical", "R1_duration", "轨迹过短(" + durS.toFixed(1) + "s):像误触,不像认真干活"]);
+      var gaps = 0, stall = 0, maxStall = 0, pvx = 0, pvy = 0, everClosed = false, oob = 0;
+      var dvs = [];
+      var SKIP = 12; /* 起步帧不计抖动 */
+      for (var i = 1; i < n; i++) {
+        var dt = rec[i].t - rec[i - 1].t;
+        if (dt > 55) gaps++;
+        var vx = rec[i].x - rec[i - 1].x, vy = rec[i].y - rec[i - 1].y;
+        var sp = Math.hypot(vx, vy);
+        if (sp < 0.4) { stall++; if (stall > maxStall) maxStall = stall; } else stall = 0;
+        var dv = Math.hypot(vx - pvx, vy - pvy);
+        if (i > 1) { rec[i].dv = dv; if (i > SKIP) dvs.push(dv); }
+        pvx = vx; pvy = vy;
+        if (rec[i].closed) everClosed = true;
+        if (rec[i].x < 4 || rec[i].x > W - 4 || rec[i].y < 4) oob++;
+      }
+      dvs.sort(function (a, b) { return a - b; });
+      var p95 = dvs.length ? dvs[Math.floor(0.95 * (dvs.length - 1))] : 0;
+      if (gaps > 2) findings.push(["warning", "R2_frame_gaps", "丢帧 " + gaps + " 次(浏览器卡顿被抓到 —— 真实产线上这是设备问题,行业头号中断源)"]);
+      if (maxStall > 100) findings.push(["warning", "R3_stall", "中途发呆 " + (maxStall / 60).toFixed(1) + " 秒(操作停滞)"]);
+      if (p95 > 22) findings.push(["critical", "R4_smoothness", "持续剧烈抖动(抖动指数 p95=" + p95.toFixed(1) + " > 判废线 22):动作变形。单次快速移动不受罚,持续乱抖才判"]);
+      else if (p95 > 10) findings.push(["warning", "R4_smoothness", "动作偏抖(抖动指数 p95=" + p95.toFixed(1) + " > 复核线 10)"]);
+      if (!taskSuccess) findings.push(["critical", "R5_success_label", "任务未达成:积木没有落在目标区内"]);
+      if (oob > 8) findings.push(["warning", "R6_joint_limits", "多次冲出工作空间边界(" + oob + " 帧越界)"]);
+      if (taskType === "pick" && !everClosed) findings.push(["critical", "R7_gripper_activity", "全程夹爪没有闭合过:疑似无操作"]);
+      var crits = findings.filter(function (f) { return f[0] === "critical"; }).length;
+      var warns = findings.length - crits;
+      var score = crits ? 0 : Math.max(0, 100 - 10 * warns);
+      var ok = !crits && score >= 70;
+      sessionTotal++; if (ok) sessionOk++;
+      document.getElementById("sandOk").textContent = sessionOk;
+      document.getElementById("sandTotal").textContent = sessionTotal;
+      document.getElementById("sandRate").textContent = Math.round(100 * sessionOk / sessionTotal) + "%";
+      var html = "<span class='vbadge " + (ok ? "ok'>✓ 合格 · 可结算" : "bad'>✗ 判废 / 不合格") + "</span> <span class='num'>score " + score + "</span><ul style='margin-top:8px'>";
+      if (!findings.length) html += "<li>7 条规则全过,零 finding —— 教科书级操作。</li>";
+      findings.forEach(function (f) { html += "<li>[" + (f[0] === "critical" ? "判废" : "扣分") + "] " + f[1] + ":" + f[2] + "</li>"; });
+      if (taskType === "push") html += "<li class='hint'>推块任务无夹爪操作,R7 关闭 —— 与我们审计 pusht 数据集时同款处理。</li>";
+      html += "</ul><span class='hint'>轨迹已显影(绿=平滑/红=抖动)。同一条轨迹重判一万次结果不变 = 「可复现仲裁」;可回放、可导出。</span>";
+      var box = document.getElementById("sandVerdict");
+      box.className = ""; box.innerHTML = html;
+      roundActive = false;
+      lastRec = rec.slice(); lastScene = { block: { w: block.w }, zone: { x: zone.x, w: zone.w }, taskType: taskType, taskNo: taskNo };
+      lastVerdict = { ok: ok, score: score, findings: findings.map(function (f) { return { severity: f[0], rule: f[1], message: f[2] }; }) };
+      document.getElementById("sandReplay").disabled = false;
+      document.getElementById("sandExport").disabled = false;
+    }
+
+    function drawTrace(r) {
+      for (var i = 2; i < r.length; i++) {
+        var dv = r[i].dv || 0;
+        var red = Math.min(255, Math.round(dv * 16));
+        ctx.strokeStyle = "rgba(" + red + "," + (220 - red * 0.5) + ",140,.7)";
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(r[i - 1].x, r[i - 1].y); ctx.lineTo(r[i].x, r[i].y); ctx.stroke();
+      }
+    }
+
+    function frame() {
+      if (replaying && lastRec) {
+        replayIdx += 2;
+        if (replayIdx >= lastRec.length) { replaying = false; }
+        else { var f0 = lastRec[replayIdx]; grip.x = grip.tx = f0.x; grip.y = grip.ty = f0.y; grip.closed = f0.closed; }
+      } else {
+        /* 惯性跟随:夹爪像真机械臂一样有平滑动力学,消除"光标瞬移"假抖动 */
+        grip.x += (grip.tx - grip.x) * 0.3;
+        grip.y += (grip.ty - grip.y) * 0.3;
+      }
+      if (roundActive && grip.started && !replaying && rec.length < 6000) rec.push({ t: performance.now(), x: grip.x, y: grip.y, closed: grip.closed });
+      /* physics */
+      if (taskType === "pick") {
+        if (carrying) { block.x = grip.x - block.w / 2; block.y = Math.min(grip.y + 14, GROUND - block.h); }
+        else if (block.y < GROUND - block.h) { block.vy += 0.55; block.y = Math.min(block.y + block.vy, GROUND - block.h); }
+      } else if (!replaying) {
+        /* push:夹爪贴地推动积木(仅水平) */
+        if (grip.y > block.y - 20) {
+          var gl = grip.x - 36, gr = grip.x + 36;
+          if (gr > block.x && gl < block.x && grip.y > block.y - 10) block.x = gr;              /* 从左推 */
+          else if (gl < block.x + block.w && gr > block.x + block.w) block.x = gl - block.w;    /* 从右推 */
+          block.x = Math.max(0, Math.min(W - block.w, block.x));
+        }
+      }
+      var inZone = block.x + block.w / 2 > zone.x && block.x + block.w / 2 < zone.x + zone.w && block.y >= GROUND - block.h - 0.5;
+      if (roundActive && !carrying && inZone && !done) { done = true; doneAt = performance.now(); }
+      if (roundActive && done && performance.now() - doneAt > 450) judgeRound(true);
+      if (roundActive && taskType === "pick" && !carrying && !done && block.y >= GROUND - block.h && rec.length > 120 && !grip.closed) {
+        if (Math.abs(block.x - 70) > 320 && !inZone) judgeRound(false);
+      }
+      /* draw */
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = "rgba(255,255,255,.06)"; ctx.fillRect(0, GROUND, W, H - GROUND);
+      ctx.strokeStyle = "rgba(255,255,255,.25)"; ctx.beginPath(); ctx.moveTo(0, GROUND); ctx.lineTo(W, GROUND); ctx.stroke();
+      ctx.setLineDash([7, 6]); ctx.strokeStyle = "#78DCAA"; ctx.lineWidth = 2;
+      ctx.strokeRect(zone.x, GROUND - 6, zone.w, 6); ctx.setLineDash([]);
+      ctx.fillStyle = "rgba(120,220,170,.16)"; ctx.fillRect(zone.x, 90, zone.w, GROUND - 90);
+      ctx.fillStyle = "#78DCAA"; ctx.font = "13px sans-serif"; ctx.fillText("目标区", zone.x + zone.w / 2 - 20, 108);
+      /* 轨迹显影:回合结束后 or 回放中 */
+      if (!roundActive && lastRec) drawTrace(lastRec);
+      ctx.fillStyle = done ? "#78DCAA" : "#DBA646";
+      ctx.fillRect(block.x, block.y, block.w, block.h);
+      var gap = grip.closed ? block.w / 2 + 3 : 34;
+      ctx.strokeStyle = replaying ? "#DBA646" : "#8FE0CE"; ctx.lineWidth = 5; ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.moveTo(grip.x - gap, grip.y + 26); ctx.lineTo(grip.x - gap, grip.y); ctx.lineTo(grip.x + gap, grip.y); ctx.lineTo(grip.x + gap, grip.y + 26);
+      ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(grip.x, grip.y); ctx.lineTo(grip.x, grip.y - 18); ctx.stroke();
+      ctx.fillStyle = "rgba(255,255,255,.55)"; ctx.font = "12px sans-serif";
+      ctx.fillText(replaying ? "回放中(琥珀色 = 幽灵夹爪,轨迹一模一样 = 可复现)" : (taskType === "pick" ? (grip.closed ? "夹爪:闭合" : "夹爪:张开(按住闭合)") : "推块模式:顶着积木走"), 14, 22);
+      requestAnimationFrame(frame);
+    }
+
+    document.getElementById("sandNew").addEventListener("click", function () {
+      if (roundActive && rec.length > 120) judgeRound(false);
+      newTask();
+    });
+    document.getElementById("sandReplay").addEventListener("click", function () {
+      if (!lastRec || !lastRec.length) return;
+      replaying = true; replayIdx = 0; roundActive = false;
+    });
+    document.getElementById("sandExport").addEventListener("click", function () {
+      if (!lastRec) return;
+      var t0 = lastRec[0].t;
+      var data = {
+        info: { codebase_version: "v3.0-like", fps: 60, robot_type: "sandbox_gripper_2d", task: lastScene.taskType === "pick" ? "pick_place" : "push_t", episode_index: lastScene.taskNo },
+        frames: lastRec.map(function (f, i) {
+          return { frame_index: i, timestamp: +((f.t - t0) / 1000).toFixed(4), "observation.state": [+f.x.toFixed(1), +f.y.toFixed(1)], gripper: f.closed ? 1 : 0 };
+        }),
+        verdict: lastVerdict
+      };
+      var pre = document.getElementById("sandJsonOut");
+      pre.textContent = JSON.stringify(data, null, 1);
+      pre.style.display = "block";
+    });
+    newTask(false);
+    requestAnimationFrame(frame);
+  })();
+
+})();
+</script>
+
+<script>
+(function () {
+  "use strict";
+  /* ===== 生成式面板(规则引擎实时装配) ===== */
+  var out = document.getElementById("gOut");
+  var status = document.getElementById("gStatus");
+  var running = false;
+  var ROLE = {
+    model: { who: "模型公司", pain: "缺高质量真机数据,买到的数据一半是废品、复检成本高", hook: "把「验收成本」变成 <em>0</em>:每条数据到手前已过裁判" },
+    robot: { who: "本体厂", pain: "卖机器人的客户要配套数据与评测,自建数采太重", hook: "您的机器人 + 我们的<em>合格数据产线</em>,打包出货" },
+    platform: { who: "数据平台", pain: "加盟基地质量参差,返工吃掉产能与账期", hook: "全网合格率最高的<em>委托产能节点</em>,交付一次过" },
+    gov: { who: "训练场运营方", pain: "基建投了上亿,数据卖不出去、运营不盈利", hook: "把训练场从「体内循环」变成<em>能结算的产线</em>" },
+    hand: { who: "硬件伙伴", pain: "客户买了手,还要配套操作数据才能训模型", hook: "「手 + 合格数据包」联合 SKU,<em>您的手更好卖</em>" }
+  };
+  function sec(title, body) { return "<h2>" + title + "</h2><div class='card'>" + body + "</div>"; }
+  function buildSections(role, keys, name) {
+    var s = [];
+    var youCall = name ? name : "贵方";
+    if (keys.indexOf("quality") >= 0) s.push(sec("为什么信我们的质量:公开数据真实审计(可复跑)",
+      "<table><thead><tr><th>数据集</th><th>严格结算口径</th><th>质量口径</th></tr></thead><tbody>" +
+      "<tr><td>lerobot/pusht(206 条人类演示)</td><td class='num'><b>0 条可结算</b>(官方判据 ≥0.95,最好 0.94)</td><td class='num'>44.2% 合格</td></tr>" +
+      "<tr><td>aloha_static_coffee(50 条真机双臂)</td><td class='num'><b>0 条可结算</b>(整个数据集无成败标注)</td><td class='num'>98% 合格</td></tr>" +
+      "</tbody></table><p class='hint'>结论:行业缺的不是数据,是验收基础设施 —— 判据、标签、合同。我们把三者做成标准件交给" + youCall + "。</p>"));
+    if (keys.indexOf("price") >= 0) s.push(sec("怎么结算:只为合格数据付钱",
+      "<div class='big'>元 / 合格小时</div>行业行情(公开口径):无本体采集成本 50-100 元/h、真机 ~250 元/h,市面售价 500-1000+ 元/h;行业有效率仅 ~50%。<br><b>我们按「合格小时」计价并接受合格率对赌</b> —— " + youCall + "买 100 小时就是 100 个能用的小时。"));
+    if (keys.indexOf("train") >= 0) s.push(sec("人从哪来:持证采集员产线",
+      "对接人社《人工智能训练师》职业标准:5 天培训 + 考核(考核数据本身过裁判,考核即认证);证书政府补贴(三级档 2400-2500 元/人)。<b>人员流动率低于行业</b>,动作一致性从源头解决。"));
+    if (keys.indexOf("fail") >= 0) s.push(sec("给世界模型的稀缺品:带证据的失败样本",
+      "裁判判废的每条轨迹都带失败模式标签(7 类)—— 正是世界模型训练要的失败数据(行业溢价 ~1.5×)。别人的废品是损耗,我们的废品是 <b>SKU</b>。评估用 ground-truth 校准集规格可按需定义。"));
+    if (keys.indexOf("ops") >= 0) s.push(sec("产能怎么给:轻资产基地,以销定产",
+      "标准工位 + 手持扩量小队;质检大半自动化(人力占比 ≤5%);县域用工成本低一线 30-40%。<b>先小批试单验货(数百合格小时),验过再谈量产</b> —— 不要求任何预付产能承诺。"));
+    if (role === "gov") s.push(sec("给训练场的专项:从基建到结算",
+      "已投用的数十个训练场普遍面临「建设已完成、运营无抓手」。我们提供:运营方案(含合格率门槛/抽检比例/复检仲裁条款)+ 持证人力供给 + 面向外部买方的合格数据交付 —— 让场地产生<b>场外收入</b>。"));
+    if (role === "hand") s.push(sec("给硬件伙伴的专项:手 + 数据联合 SKU",
+      "您出硬件与 SDK,我们出采集运营与 QC:「手 + N 类任务 + 合格轨迹 M 小时 + 验收报告」随手出货。灵巧手/触觉是公开行情最高溢价品类(1500-3000 元/h)。低成本试水:1-2 只手 + 4-6 周首个样板包。"));
+    s.push(sec("下一步(一周内可开始)",
+      "① " + youCall + "提供数据规格文档;② 我们 4-6 周产出首个样板数据包 + 可复跑验收报告;③ 按样板验货结果谈量产与结算。<span class='hint'>本页所有数字可提供出处与复跑脚本。</span>"));
+    return s;
+  }
+  function typeInto(el, html, done) {
+    var chunks = html.match(/[\s\S]{1,60}/g) || [];
+    var i = 0, acc = "";
+    (function step() {
+      acc += chunks[i++] || "";
+      el.innerHTML = acc + (i < chunks.length ? "<span class='cursor'>&nbsp;</span>" : "");
+      if (i < chunks.length) setTimeout(step, 24);
+      else done();
+    })();
+  }
+  document.getElementById("goBtn").addEventListener("click", function () {
+    if (running) return;
+    running = true;
+    var name = document.getElementById("fCompany").value.trim();
+    var role = document.getElementById("fRole").value;
+    var keys = Array.prototype.map.call(document.querySelectorAll(".fk:checked"), function (c) { return c.value; });
+    if (!keys.length) keys = ["quality"];
+    var r = ROLE[role];
+    out.innerHTML = "";
+    var hero = document.createElement("div");
+    hero.className = "ghero";
+    out.appendChild(hero);
+    var heroHtml = "<div style='font-size:12.5px;letter-spacing:.24em;color:#7FC6B8'>为 " + (name || r.who) + " 现场生成</div>" +
+      "<h2>" + r.hook + "</h2><p>" + r.who + "常见的处境:" + r.pain + "。下面按您勾选的关注点当场装配。</p>";
+    var sections = buildSections(role, keys, name);
+    var total = sections.length + 1, idx = 0;
+    function progress() { idx++; status.textContent = idx >= total ? "✔ 生成完成(" + total + " 节 · 数据全部真实)— 改输入可再生成" : "正在生成…第 " + idx + "/" + total + " 节"; }
+    typeInto(hero, heroHtml, function () {
+      progress();
+      (function next(k) {
+        if (k >= sections.length) { progress(); running = false; return; }
+        var holder = document.createElement("div");
+        out.appendChild(holder);
+        typeInto(holder, sections[k], function () { progress(); next(k + 1); });
+      })(0);
+    });
+    status.textContent = "正在生成…";
+  });
+
+  /* ===== 需求速算器 ===== */
+  var rH2 = document.getElementById("rH2"), rP2 = document.getElementById("rP2");
+  function calc2() {
+    var H = +rH2.value;
+    var pr = rP2.value.split(",").map(Number);
+    document.getElementById("cH2").textContent = H;
+    document.getElementById("cP2").textContent = rP2.options[rP2.selectedIndex].text.split("(")[0];
+    var trial = Math.min(Math.max(Math.round(H * 0.2 / 50) * 50, 100), 500);
+    var people = Math.ceil(H / (3.5 * 25 * 0.7));
+    var weeks = H <= 600 ? "5-6" : H <= 2000 ? "6-8" : "8-12(分基地爬坡)";
+    var lo = H * pr[0] / 10000, hi = H * pr[1] / 10000;
+    document.getElementById("oTrial").textContent = trial;
+    document.getElementById("oPeople").textContent = "~" + people;
+    document.getElementById("oWeeks").textContent = weeks;
+    document.getElementById("oBudget").textContent = lo.toFixed(0) + "-" + hi.toFixed(0);
+  }
+  rH2.addEventListener("input", calc2);
+  rP2.addEventListener("change", calc2);
+  calc2();
+})();
+</script>
+<script>
+(function () {
+  "use strict";
+  var cv = document.getElementById("parisCv");
+  if (!cv) return;
+  var ctx = cv.getContext("2d");
+  var specEl = document.getElementById("parisSpec");
+  var status = document.getElementById("parisStatus");
+  var progress = 1;
+  var raf = 0;
+  function parse() {
+    try {
+      var s = JSON.parse(specEl.value);
+      if (!s.nodes || s.nodes.length < 2) throw new Error("nodes 至少需要 2 个节点");
+      return s;
+    } catch (e) {
+      status.textContent = "JSON 解析失败: " + e.message;
+      return null;
+    }
+  }
+  function draw(s, p) {
+    var W = cv.width, H = cv.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = "#F7FBFA";
+    ctx.fillRect(0, 0, W, H);
+    ctx.strokeStyle = "#D7E5E1";
+    ctx.lineWidth = 1;
+    for (var gx = 40; gx < W; gx += 80) { ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, H); ctx.stroke(); }
+    for (var gy = 40; gy < H; gy += 60) { ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(W, gy); ctx.stroke(); }
+    ctx.font = "16px sans-serif";
+    ctx.fillStyle = "#16201D";
+    ctx.fillText(s.title || "Paris demo", 18, 28);
+    ctx.lineWidth = 9;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = "#BFDCD6";
+    ctx.beginPath();
+    s.nodes.forEach(function (n, i) { if (i === 0) ctx.moveTo(n.x, n.y); else ctx.lineTo(n.x, n.y); });
+    ctx.stroke();
+    ctx.strokeStyle = "#0B685D";
+    ctx.beginPath();
+    var maxSeg = Math.max(1, s.nodes.length - 1);
+    var visible = p * maxSeg;
+    s.nodes.forEach(function (n, i) {
+      if (i === 0) ctx.moveTo(n.x, n.y);
+      else if (i <= visible) ctx.lineTo(n.x, n.y);
+      else if (i - 1 < visible && visible < i) {
+        var a = s.nodes[i - 1], t = visible - (i - 1);
+        ctx.lineTo(a.x + (n.x - a.x) * t, a.y + (n.y - a.y) * t);
+      }
+    });
+    ctx.stroke();
+    s.nodes.forEach(function (n, i) {
+      ctx.fillStyle = i === 0 ? "#16201D" : i === s.nodes.length - 1 ? "#2E7D46" : "#0B685D";
+      ctx.beginPath(); ctx.arc(n.x, n.y, 9, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#16201D";
+      ctx.font = "13px sans-serif";
+      ctx.fillText((i + 1) + "." + n.name, n.x + 12, n.y - 8);
+    });
+    if (s.risk && s.risk.length) {
+      ctx.fillStyle = "#F7EDD4";
+      ctx.fillRect(18, H - 44, W - 36, 26);
+      ctx.fillStyle = "#8F5B00";
+      ctx.font = "13px sans-serif";
+      ctx.fillText("风险提示: " + s.risk.join(" / "), 28, H - 26);
+    }
+    status.textContent = "已生成 " + s.nodes.length + " 个节点; 进度 " + Math.round(p * 100) + "%; 输出由当前 JSON 决定。";
+  }
+  function build() {
+    cancelAnimationFrame(raf);
+    progress = 1;
+    var s = parse();
+    if (s) draw(s, progress);
+  }
+  function replay() {
+    var s = parse();
+    if (!s) return;
+    cancelAnimationFrame(raf);
+    var start = performance.now();
+    var dur = 1800 / Math.max(0.2, Number(s.speed) || 1);
+    function tick(t) {
+      progress = Math.min(1, (t - start) / dur);
+      draw(s, progress);
+      if (progress < 1) raf = requestAnimationFrame(tick);
+    }
+    raf = requestAnimationFrame(tick);
+  }
+  document.getElementById("parisBuild").addEventListener("click", build);
+  document.getElementById("parisReplay").addEventListener("click", replay);
+  build();
+})();
+</script>
+</body>
+</html>

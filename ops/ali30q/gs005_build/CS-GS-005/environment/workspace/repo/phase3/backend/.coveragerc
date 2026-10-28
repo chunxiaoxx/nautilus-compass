@@ -1,0 +1,30 @@
+[run]
+source =
+    api
+    models
+    utils
+    nexus_protocol
+    nexus_server
+    websocket_server
+omit =
+    tests/*
+    demo_*
+    run_*
+    verify_tests.py
+    stress_test_config.py
+    */__pycache__/*
+    */site-packages/*
+    .venv/*
+    main.py
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise NotImplementedError
+    if __name__ == .__main__.:
+    if TYPE_CHECKING:
+    @abstractmethod
+
+[html]
+directory = htmlcov

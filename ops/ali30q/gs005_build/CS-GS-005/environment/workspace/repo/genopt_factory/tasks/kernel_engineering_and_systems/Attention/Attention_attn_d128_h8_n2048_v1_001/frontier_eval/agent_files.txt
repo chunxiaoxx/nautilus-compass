@@ -1,0 +1,13 @@
+agent_files:
+  - baseline/init.py
+  - verification/evaluate.py
+  - verification/_run_one.py
+reference: reference/solve.py
+data_dir: data/instances/
+data_optima: not_applicable
+num_instances: 4
+instances:
+  - n128_d64_b2_h8    # small, naive ≈ flash
+  - n256_d64_b2_h4    # medium
+  - n512_d64_b1_h4    # medium-large, gap opens
+  - n1024_d64_b1_h2   # large, Flash wins clearly

@@ -1,0 +1,62 @@
+hold g2b1:cebce1c562e3 False
+hold g2b1:cebce1c562e3 False
+hold g2b1:cebce1c562e3 False
+hold g2b1:dc149e7ef3a9 False
+hold g2b1:dc149e7ef3a9 False
+hold g2b1:cebce1c562e3 False
+hold g2b1:cebce1c562e3 False
+hold g2b1:cebce1c562e3 False
+hold g2b1:dc149e7ef3a9 False
+hold g2b1:dc149e7ef3a9 False
+hold g2b1:dc149e7ef3a9 False
+hold g2b1:721beb018c3d False
+hold g2b1:721beb018c3d False
+hold g2b1:721beb018c3d False
+train g2b1:767fb5d55337 False
+train g2b1:767fb5d55337 True
+train g2b1:767fb5d55337 False
+train g2b1:f08c1c9e3422 False
+train g2b1:f08c1c9e3422 False
+train g2b1:f08c1c9e3422 False
+train g2b1:ac5541e47e9e False
+train g2b1:ac5541e47e9e False
+train g2b1:ac5541e47e9e False
+train g2b1:94b002a33806 False
+train g2b1:94b002a33806 False
+train g2b1:94b002a33806 False
+train g2b1:e8ddf11f82b9 False
+train g2b1:e8ddf11f82b9 False
+train g2b1:e8ddf11f82b9 False
+hold g2b1:cebce1c562e3 False
+hold g2b1:cebce1c562e3 True
+hold g2b1:cebce1c562e3 False
+hold g2b1:dc149e7ef3a9 False
+hold g2b1:dc149e7ef3a9 False
+hold g2b1:dc149e7ef3a9 False
+hold g2b1:721beb018c3d False
+hold g2b1:721beb018c3d False
+hold g2b1:721beb018c3d False
+train g2b1:767fb5d55337 True
+train g2b1:767fb5d55337 True
+train g2b1:767fb5d55337 True
+train g2b1:f08c1c9e3422 False
+train g2b1:f08c1c9e3422 False
+train g2b1:f08c1c9e3422 True
+train g2b1:ac5541e47e9e True
+train g2b1:ac5541e47e9e True
+train g2b1:ac5541e47e9e True
+train g2b1:94b002a33806 False
+train g2b1:94b002a33806 False
+train g2b1:94b002a33806 False
+train g2b1:e8ddf11f82b9 False
+train g2b1:e8ddf11f82b9 False
+train g2b1:e8ddf11f82b9 False
+RERUN distill: train 8/30  holdout 1/23
+  g2b1:721beb018c3d train 0/0 hold 0/6
+  g2b1:767fb5d55337 train 4/6 hold 0/0
+  g2b1:94b002a33806 train 0/6 hold 0/0
+  g2b1:ac5541e47e9e train 3/6 hold 0/0
+  g2b1:cebce1c562e3 train 0/0 hold 1/9
+  g2b1:dc149e7ef3a9 train 0/0 hold 0/8
+  g2b1:e8ddf11f82b9 train 0/6 hold 0/0
+  g2b1:f08c1c9e3422 train 1/6 hold 0/0

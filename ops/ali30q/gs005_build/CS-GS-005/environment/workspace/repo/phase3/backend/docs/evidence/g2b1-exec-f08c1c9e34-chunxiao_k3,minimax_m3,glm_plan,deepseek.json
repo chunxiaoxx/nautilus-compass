@@ -1,0 +1,30 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "1fe10d0c887ad4184cdeae6d3e39301891d90f4f",
+  "reference_fix_commit": "f08c1c9e3422cad14a98cc0d8305229e6c997469",
+  "subject": "fix(l0): \u7f3a\u53e3A\u00b7\u51fa\u751f\u8bc1\u660e\u6821\u9a8c\u8bfb\u5168\u94fe HELIX.jsonl(recent_blocks \u5185\u5b58\u4ec5200\u00b7\u51e0\u5c0f\u65f6\u524dproduce\u951a\u6eda\u51fa\u4f1a\u88ab\u8bef\u62d2=L0\u95ed\u73af\u786c\u524d\u63d0)\u00b7helix_hashes_from_file 2TDD",
+  "test_files": [
+   "tests/test_l0_loop_core.py"
+  ],
+  "source_files": [
+   "nautilus_v5/evolution/l0_events.py",
+   "nautilus_v5/runtime/daemon.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_l0_loop_core.py::test_helix_hashes_from_file",
+ "source_rel": "nautilus_v5\\evolution\\l0_events.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "skipped_reason": "fixture_broken_red",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 25.1,
+ "replayed": true,
+ "verdict_post_status": 200
+}

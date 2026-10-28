@@ -1,0 +1,116 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "7fd02bd154491a4405b36dd42351ace9ce09c1a2",
+  "reference_fix_commit": "e49e8ade7849c198fa24199010d9d94aa4385928",
+  "subject": "fix(fde): fail closed on wiki evidence errors",
+  "test_files": [
+   "tests/test_feishu_wiki_evidence.py"
+  ],
+  "source_files": [
+   "tools/fde_feishu_wiki_evidence.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-fde-phase3"
+ },
+ "test_id": "tests/test_feishu_wiki_evidence.py::test_probe_maps_feishu_stable_error_codes",
+ "source_rel": "tools\\fde_feishu_wiki_evidence.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "diff --git a/tools/fde_feishu_wiki_evidence.py b/tools/fde_feishu_wiki_evidence.py\nindex 1111111..2222222 100644\n--- a/tools/fde_feishu_wiki_evidence.py\n+++ b/tools/fde_feishu_wiki_evidence.py\n@@ -25,7 +25,8 @@ DOCUMENT_PATH_PREFIX = \"/open-apis/docx/v1/documents/\"\n ALLOWED_PATH_PREFIXES = (TOKEN_PATH, WIKI_NODE_PATH, DOCUMENT_PATH_PREFIX)\n IP_ALLOWLIST_CODES = frozenset({99991401})\n-RESOURCE_ACCESS_CODES = frozenset({99991663})\n+RATE_LIMIT_CODES = frozenset({99991400})\n+RESOURCE_ACCESS_CODES = frozenset({131006, 99991663})\n \n \n @dataclass(frozen=True)\n@@ -129,7 +130,7 @@ def _raise_for_api_failure(response: ApiResponse) -> None:\n         return\n     if code in IP_ALLOWLIST_CODES:\n         raise EvidenceError(\"IP_ALLOWLIST_DENIED\")\n-    if response.status == 429:\n+    if response.status == 429 or code in RATE_LIMIT_CODES:\n         raise EvidenceError(\"RATE_LIMITED\")\n     if response.status >= 500:\n         raise EvidenceError(\"TRANSIENT_FAILURE\")\n",
+ "budget_exceeded": false,
+ "total_tokens": 12797,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 5712,
+    "completion_tokens": 478,
+    "total_tokens": 6190,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 5456,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 478,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 5712,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: tools/fde_feishu_wiki_evidence.py:28\nerror: tools/fde_feishu_wiki_evidence.py: patch does not apply\n\n[attempt2 backend] error: patch failed: tools/fde_feishu_wiki_evidence.py:28\nerror: tools/fde_feishu_wiki_evidence.py: patch does not apply\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 5839,
+    "completion_tokens": 768,
+    "total_tokens": 6607,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 207,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 5632,
+      "output_tokens": 768,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 5632,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 5839,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "map_feishu_stable_error_codes",
+ "duration_s": 30.9,
+ "verdict_post_status": 200
+}

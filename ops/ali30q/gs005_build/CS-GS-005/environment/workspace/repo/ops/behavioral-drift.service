@@ -1,0 +1,14 @@
+[Unit]
+Description=Nautilus behavioral drift cron · daily axes for platform_agents
+Wants=network-online.target
+After=network-online.target postgresql.service
+
+[Service]
+Type=oneshot
+User=ubuntu
+ExecStart=/usr/local/bin/behavioral_drift_cron.py
+StandardOutput=append:/var/log/behavioral-drift.log
+StandardError=append:/var/log/behavioral-drift.log
+
+[Install]
+WantedBy=multi-user.target

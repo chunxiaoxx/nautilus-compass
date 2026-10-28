@@ -1,0 +1,73 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "c28c821970a0cdd2e878aeb8cd2358f92faef1f3",
+  "reference_fix_commit": "09ce1172fa35a8d2f9924c5a7e5541a06ef2c4f1",
+  "subject": "fix(mcp): EventStore negative-cap guard + non-aliasing replay (Task 1 review)",
+  "test_files": [
+   "tests/mcp_durable/test_event_store.py"
+  ],
+  "source_files": [
+   "mcp_durable/event_store.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass"
+ },
+ "test_id": "tests/mcp_durable/test_event_store.py::test_negative_max_events_rejected",
+ "source_rel": "mcp_durable\\event_store.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/mcp_durable/event_store.py\n+++ b/mcp_durable/event_store.py\n@@ -30,6 +30,8 @@\n         ttl_seconds: float,\n         now_fn: Optional[Callable[[], float]] = None,\n     ) -> None:\n+        if max_events < 0:\n+            raise ValueError(\"max_events must be non-negative\")\n         self._max_events = max_events\n         self._ttl_seconds = ttl_seconds\n         # The ONLY place real time is read. Injectable for deterministic tests.\n@@ -45,9 +47,8 @@\n     def _evict(self) -> None:\n         \"\"\"Drop oldest entries beyond the size cap or past the ttl window.\"\"\"\n         # Size bound: keep at most max_events.\n-        if self._max_events >= 0:\n-            while len(self._events) > self._max_events:\n-                self._events.pop(0)\n+        while len(self._events) > self._max_events:\n+            self._events.pop(0)\n         # TTL bound: drop anything older than now - ttl_seconds.\n         cutoff = self._now_fn() - self._ttl_seconds\n         while self._events and self._events[0][\"ts\"] < cutoff:\n",
+ "budget_exceeded": false,
+ "total_tokens": 1594,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 1244,
+    "completion_tokens": 350,
+    "total_tokens": 1594,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 1244,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 350,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 0,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 1244,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "reject_negative_max_events",
+ "duration_s": 12.1,
+ "verdict_post_status": 200
+}

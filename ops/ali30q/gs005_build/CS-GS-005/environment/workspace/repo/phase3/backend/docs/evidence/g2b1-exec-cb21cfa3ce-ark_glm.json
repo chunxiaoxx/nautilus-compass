@@ -1,0 +1,29 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "d53cc23a6b9ba042f2fc050b46eeda3f57821fdd",
+  "reference_fix_commit": "cb21cfa3cebca134663c6c188bb5d4c331469459",
+  "subject": "feat(platform): G2-B1 \u4ea7\u54c1\u5316\u4e09\u4ef6 \u2014 agentic\u5faa\u73afrunner+bug\u77ff\u673a+\u5e38\u9a7bexecutor\u9aa8\u67b6",
+  "test_files": [
+   "phase3/backend/tests/platform_protocol/test_g2_b1_agentic_runner.py",
+   "phase3/backend/tests/platform_protocol/test_g2_b1_executor_agent.py"
+  ],
+  "source_files": [
+   "phase3/backend/tools/g2_b1_agentic_runner.py",
+   "phase3/backend/tools/g2_b1_bug_miner.py",
+   "phase3/backend/tools/g2_b1_executor_agent.py"
+  ]
+ },
+ "test_id": "phase3/backend/tests/platform_protocol/test_g2_b1_agentic_runner.py::test_red_precondition_blocks_spend",
+ "source_rel": "phase3/backend/tools/g2_b1_agentic_runner.py",
+ "provider": "ark_glm",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0
+}

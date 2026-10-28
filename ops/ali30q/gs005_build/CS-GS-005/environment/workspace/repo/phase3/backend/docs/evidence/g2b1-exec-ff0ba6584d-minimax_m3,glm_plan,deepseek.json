@@ -1,0 +1,29 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "1ef3bece4ec348cdbc3ae296dafc4fd97ecb1a38",
+  "reference_fix_commit": "ff0ba6584d86b5c16726fca0614202f072dea97e",
+  "subject": "fix(fde): harden strict S0 envelope validation",
+  "test_files": [
+   "tests/test_adapter_contracts.py"
+  ],
+  "source_files": [
+   "src/nautilus_fde_phase3/contracts.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-fde-phase3"
+ },
+ "test_id": "tests/test_adapter_contracts.py::test_canonical_evidence_hash_uses_nested_canonical_json_without_mutating_input",
+ "source_rel": "src/nautilus_fde_phase3/contracts.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

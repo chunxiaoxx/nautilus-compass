@@ -1,0 +1,71 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "fc6c7c47edd6110b6bd5a1a5297b2035214b0cd1",
+  "reference_fix_commit": "a09c1c655eef3d43181eb46036b66cf058d72df4",
+  "subject": "fix: show custom error message in prompt with hide_input=True",
+  "test_files": [
+   "tests/test_termui.py"
+  ],
+  "source_files": [
+   "src/click/termui.py"
+  ],
+  "repo_path": "C:/Users/chunx/ext_mine"
+ },
+ "test_id": "tests/test_termui.py::test_hide_input_error_message",
+ "source_rel": "src\\click\\termui.py",
+ "provider": "t6C-minimax_m3",
+ "provider_used": "t6C-minimax_m3",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 10546,
+    "output_tokens": 282,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "F..                                                                      [100%]\r\n================================== FAILURES ===================================\r\n_________ test_hide_input_error_message[builtin-int-masks-repr-value] _________\r\n\r\nrunner = <click.testing.CliRunner object at 0x0000023DB06C2CF0>, type = INT\r\nexpected_fragment = \"'***' is not a valid integer\", unexpected_fragment = 'bad'\r\n\r\n    @pytest.mark.parametrize(\r\n        (\"type\", \"expected_fragment\", \"unexpected_fragment\"),\r\n        [\r\n            pytest.param(\r\n                click.INT,\r\n                \"'***' is not a valid integer\",\r\n                \"bad\",\r\n                id=\"builtin-int-masks-repr-value\",\r\n            ),\r\n            pytest.param(\r\n                _CustomTypeNoValue(),\r\n                \"Password must be at least 4 characters\",\r\n                None,\r\n                id=\"custom-no-value-shows-message\",\r\n            ),\r\n            pytest.param(\r\n                _CustomTypeWithRawValue(),\r\n                \"The value you entered was invalid\",\r\n                \"bad\",\r\n                id=\"custom-raw-value-falls-back-to-generic\",\r\n            ),\r\n        ],\r\n    )\r\n    def test_hide_input_error_message(runner, type, expected_fragment, unexpected_fragment):\r\n        \"\"\"https://github.com/pallets/click/issues/2809\"\"\"\r\n    \r\n        @click.command()\r\n        @click.option(\"--password\", prompt=True, hide_input=True, type=type)\r\n        def cli(password):\r\n            click.echo(password)\r\n    \r\n        result = runner.invoke(cli, input=\"bad\")\r\n>       assert expected_fragment in result.output\r\nE       assert \"'***' is not a valid integer\" in 'Password: \\nError: The value you entered was invalid.\\nPassword: \\n\\nAborted!\\n'\r\nE        +  where 'Password: \\nError: The value you entered was invalid.\\nPassword: \\n\\nAborted!\\n' = <Result SystemExit(1)>.output\r\n\r\ntests\\test_termui.py:1043: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_termui.py::test_hide_input_error_message[builtin-int-masks-repr-value]\r\n1 failed, 2 passed in 0.34s\r\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 11091,
+    "output_tokens": 348,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: src/click/termui.py:284\nerror: src/click/termui.py: patch does not apply\n\n[attempt2 backend] error: patch failed: src/click/termui.py:284\nerror: src/click/termui.py: patch does not apply\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 9787,
+    "output_tokens": 304,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 1024,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: src/click/termui.py:280\nerror: src/click/termui.py: patch does not apply\n\n[attempt2 backend] error: patch failed: src/click/termui.py:280\nerror: src/click/termui.py: patch does not apply\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 29.9
+}

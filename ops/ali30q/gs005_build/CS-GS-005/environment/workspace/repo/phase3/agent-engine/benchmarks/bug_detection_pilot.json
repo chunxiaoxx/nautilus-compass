@@ -1,0 +1,81 @@
+{
+  "source": "QuixBugs (jkoppel/QuixBugs) python_programs vs correct_python_programs",
+  "valid_labels": [
+    "buggy",
+    "clean"
+  ],
+  "items": [
+    {
+      "id": 1,
+      "algorithm": "bitcount",
+      "text": "def bitcount(n):\n    count = 0\n    while n:\n        n ^= n - 1\n        count += 1\n    return count",
+      "ground_truth": "buggy"
+    },
+    {
+      "id": 2,
+      "algorithm": "bitcount",
+      "text": "def bitcount(n):\n    count = 0\n    while n:\n        n &= n - 1\n        count += 1\n    return count",
+      "ground_truth": "clean"
+    },
+    {
+      "id": 3,
+      "algorithm": "breadth_first_search",
+      "text": "from collections import deque as Queue\n\ndef breadth_first_search(startnode, goalnode):\n    queue = Queue()\n    queue.append(startnode)\n\n    nodesseen = set()\n    nodesseen.add(startnode)\n\n    while True:\n        node = queue.popleft()\n\n        if node is goalnode:\n            return True\n        else:\n            queue.extend(node for node in node.successors if node not in nodesseen)\n            nodesseen.update(node.successors)\n\n    return False",
+      "ground_truth": "buggy"
+    },
+    {
+      "id": 4,
+      "algorithm": "breadth_first_search",
+      "text": "from collections import deque as Queue\n\ndef breadth_first_search(startnode, goalnode):\n    queue = Queue()\n    queue.append(startnode)\n\n    nodesseen = set()\n    nodesseen.add(startnode)\n\n    while queue:\n        node = queue.popleft()\n\n        if node is goalnode:\n            return True\n        else:\n            queue.extend(node for node in node.successors if node not in nodesseen)\n            nodesseen.update(node.successors)\n\n    return False",
+      "ground_truth": "clean"
+    },
+    {
+      "id": 5,
+      "algorithm": "bucketsort",
+      "text": "def bucketsort(arr, k):\n    counts = [0] * k\n    for x in arr:\n        counts[x] += 1\n\n    sorted_arr = []\n    for i, count in enumerate(arr):\n        sorted_arr.extend([i] * count)\n\n    return sorted_arr",
+      "ground_truth": "buggy"
+    },
+    {
+      "id": 6,
+      "algorithm": "bucketsort",
+      "text": "def bucketsort(arr, k):\n    counts = [0] * k\n    for x in arr:\n        counts[x] += 1\n\n    sorted_arr = []\n    for i, count in enumerate(counts):\n        sorted_arr.extend([i] * count)\n\n    return sorted_arr",
+      "ground_truth": "clean"
+    },
+    {
+      "id": 7,
+      "algorithm": "depth_first_search",
+      "text": "def depth_first_search(startnode, goalnode):\n    nodesvisited = set()\n\n    def search_from(node):\n        if node in nodesvisited:\n            return False\n        elif node is goalnode:\n            return True\n        else:\n            return any(\n                search_from(nextnode) for nextnode in node.successors\n            )\n\n    return search_from(startnode)",
+      "ground_truth": "buggy"
+    },
+    {
+      "id": 8,
+      "algorithm": "depth_first_search",
+      "text": "def depth_first_search(startnode, goalnode):\n    nodesvisited = set()\n\n    def search_from(node):\n        if node in nodesvisited:\n            return False\n        elif node is goalnode:\n            return True\n        else:\n            nodesvisited.add(node)\n            return any(\n                search_from(nextnode) for nextnode in node.successors\n            )\n\n    return search_from(startnode)",
+      "ground_truth": "clean"
+    },
+    {
+      "id": 9,
+      "algorithm": "detect_cycle",
+      "text": "def detect_cycle(node):\n    hare = tortoise = node\n\n    while True:\n        if hare.successor is None:\n            return False\n\n        tortoise = tortoise.successor\n        hare = hare.successor.successor\n\n        if hare is tortoise:\n            return True",
+      "ground_truth": "buggy"
+    },
+    {
+      "id": 10,
+      "algorithm": "detect_cycle",
+      "text": "def detect_cycle(node):\n    hare = tortoise = node\n\n    while True:\n        if hare is None or hare.successor is None:\n            return False\n\n        tortoise = tortoise.successor\n        hare = hare.successor.successor\n\n        if hare is tortoise:\n            return True",
+      "ground_truth": "clean"
+    },
+    {
+      "id": 11,
+      "algorithm": "find_first_in_sorted",
+      "text": "def find_first_in_sorted(arr, x):\n    lo = 0\n    hi = len(arr)\n\n    while lo <= hi:\n        mid = (lo + hi) // 2\n\n        if x == arr[mid] and (mid == 0 or x != arr[mid - 1]):\n            return mid\n\n        elif x <= arr[mid]:\n            hi = mid\n\n        else:\n            lo = mid + 1\n\n    return -1",
+      "ground_truth": "buggy"
+    },
+    {
+      "id": 12,
+      "algorithm": "find_first_in_sorted",
+      "text": "def find_first_in_sorted(arr, x):\n    lo = 0\n    hi = len(arr)\n\n    while lo < hi:\n        mid = (lo + hi) // 2\n\n        if x == arr[mid] and (mid == 0 or x != arr[mid - 1]):\n            return mid\n\n        elif x <= arr[mid]:\n            hi = mid\n\n        else:\n            lo = mid + 1\n\n    return -1",
+      "ground_truth": "clean"
+    }
+  ]
+}

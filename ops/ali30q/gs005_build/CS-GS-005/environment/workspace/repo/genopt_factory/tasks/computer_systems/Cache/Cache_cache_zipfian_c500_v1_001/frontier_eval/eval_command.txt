@@ -1,0 +1,1 @@
+eval_command: "python verification/evaluate.py --benchmark-dir . --candidate baseline/init.py"

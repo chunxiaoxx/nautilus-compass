@@ -1,0 +1,48 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "0f9351969282fc9e8e0f81dd48c5645fc7740525",
+  "reference_fix_commit": "c61048f84d4543e00f2badf0e505516b6db39b01",
+  "subject": "fix(soul): ship_to_draft_pr cleans dangling branch on apply/push failure",
+  "test_files": [
+   "phase3/backend/tests/test_soul_service.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/soul_service.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/test_soul_service.py::test_ship_to_draft_pr_cleans_branch_on_apply_failure",
+ "source_rel": "services\\soul_service.py",
+ "provider": "ark_glm",
+ "test_passed": true,
+ "winning_diff": "--- a/services/soul_service.py\n+++ b/services/soul_service.py\n@@ -89,6 +89,8 @@\n         engine, task, base_dir,\n         apply=True, dispatch_audit=False,\n         git_commit_msg=commit_msg, cycle_id=cycle_id, emit_outcome_telemetry=True,\n     )\n     if not getattr(result, \"applied\", False):\n+        _runner([\"git\", \"-C\", base_dir, \"checkout\", \"master\"], capture_output=True, text=True)\n+        _runner([\"git\", \"-C\", base_dir, \"branch\", \"-D\", branch], capture_output=True, text=True)\n         return {\"success\": False, \"stage\": \"apply\", \"detail\": getattr(result, \"errors\", \"apply failed\"), \"cycle_id\": cycle_id}",
+ "budget_exceeded": false,
+ "total_tokens": 14572,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "completion_tokens": 12934,
+    "prompt_tokens": 1638,
+    "total_tokens": 14572,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 12612
+    }
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "clean_branch_on_apply_failure",
+ "duration_s": 175.8,
+ "replayed": true,
+ "verdict_post_status": 200
+}

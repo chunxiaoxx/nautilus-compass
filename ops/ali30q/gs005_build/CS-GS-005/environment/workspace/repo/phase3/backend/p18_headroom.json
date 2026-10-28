@@ -1,0 +1,156 @@
+{
+  "task_uid": "kb_l2_p18",
+  "level": 2,
+  "problem_id": 18,
+  "k": 2,
+  "provider": "bailian",
+  "model": "deepseek-v4-pro",
+  "summary": {
+    "n_samples": 2,
+    "n_passed": 0,
+    "n_correct_but_gated": 2,
+    "n_correctness_fail": 0,
+    "n_errored": 0
+  },
+  "verdict": {
+    "task_uid": "kb_l2_p18",
+    "bucket": "gate_artifact",
+    "reason": "0 真通过但 2 样本正确被门拒(洗门·非真墙)",
+    "pass_rate": 0.0,
+    "distill_candidate": false
+  },
+  "raw_results": [
+    {
+      "harness": "kb_eval.py v1 (T4/Turing, guards G1-G3)",
+      "level": 2,
+      "problem_id": 18,
+      "ref_file": "/mnt/datadisk0/KernelBench/KernelBench/level2/18_Matmul_Sum_Max_AvgPool_LogSumExp_LogSumExp.py",
+      "candidate": "/mnt/datadisk0/fde_t3_harness/kb_selftest/sdiag/cand_p18_0.py",
+      "gpu": "Tesla T4",
+      "guards": {
+        "fake_kernel": {
+          "ok": true,
+          "errors": [],
+          "details": {
+            "has_global": true,
+            "has_loader": true,
+            "custom_module_names": [
+              "fused_op"
+            ],
+            "custom_module_used": true
+          }
+        },
+        "static_official": {
+          "valid": true,
+          "errors": [],
+          "warnings": []
+        },
+        "precision_static": {
+          "suspect": false,
+          "patterns": []
+        }
+      },
+      "ref_time": {
+        "mean": 30.7,
+        "std": 0.573,
+        "min": 28.9,
+        "max": 32.3,
+        "num_trials": 100,
+        "hardware": "Tesla T4",
+        "device": "cuda:0"
+      },
+      "eval": {
+        "compiled": true,
+        "correctness": true,
+        "runtime_ms": 0.168,
+        "metadata": {
+          "hardware": "Tesla T4",
+          "device": "cuda:0",
+          "correctness_trials": "(5 / 5)",
+          "excessive_speedup": true
+        }
+      },
+      "strict_recheck": {
+        "tolerance": 0.001,
+        "seed": 1337,
+        "correctness": true,
+        "metadata": {
+          "hardware": "Tesla T4",
+          "device": "cuda:0",
+          "correctness_trials": "(5 / 5)"
+        }
+      },
+      "speedup_vs_eager": 182.7380952380952,
+      "pass_final": false,
+      "pass_correct_raw": true,
+      "reward": 0.0,
+      "reason": "suspect_excessive_speedup: 182.74x > 2.0x cap (manual review required)"
+    },
+    {
+      "harness": "kb_eval.py v1 (T4/Turing, guards G1-G3)",
+      "level": 2,
+      "problem_id": 18,
+      "ref_file": "/mnt/datadisk0/KernelBench/KernelBench/level2/18_Matmul_Sum_Max_AvgPool_LogSumExp_LogSumExp.py",
+      "candidate": "/mnt/datadisk0/fde_t3_harness/kb_selftest/sdiag/cand_p18_1.py",
+      "gpu": "Tesla T4",
+      "guards": {
+        "fake_kernel": {
+          "ok": true,
+          "errors": [],
+          "details": {
+            "has_global": true,
+            "has_loader": true,
+            "custom_module_names": [
+              "fused_model"
+            ],
+            "custom_module_used": true
+          }
+        },
+        "static_official": {
+          "valid": true,
+          "errors": [],
+          "warnings": []
+        },
+        "precision_static": {
+          "suspect": false,
+          "patterns": []
+        }
+      },
+      "ref_time": {
+        "mean": 29.6,
+        "std": 0.35,
+        "min": 29.0,
+        "max": 30.5,
+        "num_trials": 100,
+        "hardware": "Tesla T4",
+        "device": "cuda:0"
+      },
+      "eval": {
+        "compiled": true,
+        "correctness": true,
+        "runtime_ms": 0.127,
+        "metadata": {
+          "hardware": "Tesla T4",
+          "device": "cuda:0",
+          "correctness_trials": "(5 / 5)",
+          "excessive_speedup": true
+        }
+      },
+      "strict_recheck": {
+        "tolerance": 0.001,
+        "seed": 1337,
+        "correctness": true,
+        "metadata": {
+          "hardware": "Tesla T4",
+          "device": "cuda:0",
+          "correctness_trials": "(5 / 5)"
+        }
+      },
+      "speedup_vs_eager": 233.0708661417323,
+      "pass_final": false,
+      "pass_correct_raw": true,
+      "reward": 0.0,
+      "reason": "suspect_excessive_speedup: 233.07x > 2.0x cap (manual review required)"
+    }
+  ]
+}

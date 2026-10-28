@@ -1,0 +1,8 @@
+naive_baseline:
+  description: "Full O(N^2) attention — materializes N*N matrix."
+  expected_combined: "0 (correct but not faster than itself)"
+reference_solver:
+  path: reference/solve.py
+  description: "FlashAttention2 simplified — block-tiled streaming softmax, BLOCK_N=32."
+  expected_combined: "~95 (correct + ~3-5x speedup on long N)"
+  rationale: "Flash wins on long sequences where naive O(N^2) memory + compute dominate"

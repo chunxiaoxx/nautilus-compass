@@ -1,0 +1,43 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "d9a7efaed9bb0b6f2e668d56626882d0ddd22795",
+  "reference_fix_commit": "a91e9a8f038d175be59e3c3ff9874df1da410a1e",
+  "subject": "fix(s4): preserve types in quarantine fingerprints",
+  "test_files": [
+   "tests/gep/test_flywheel_log.py"
+  ],
+  "source_files": [
+   "gep/flywheel_log.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass"
+ },
+ "test_id": "tests/gep/test_flywheel_log.py::test_quarantine_fingerprints_preserve_heterogeneous_mapping_key_types",
+ "source_rel": "gep\\flywheel_log.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": true,
+ "winning_diff": "--- a/gep/flywheel_log.py\n+++ b/gep/flywheel_log.py\n@@ -202,7 +202,7 @@ def _fingerprint_value(value: Any) -> Any:\n     if isinstance(value, Mapping):\n         return {\n             str(key): _fingerprint_value(item)\n-            for key, item in sorted(value.items(), key=lambda pair: repr(pair[0]))\n+            for key, item in sorted(value.items(), key=lambda pair: (type(pair[0]).__name__, repr(pair[0])))\n         }\n     if isinstance(value, (list, tuple)):\n         return [_fingerprint_value(item) for item in value]",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "input_tokens": 2897,
+    "output_tokens": 192,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "fix_heterogeneous_fingerprint_dedup",
+ "duration_s": 5.4,
+ "verdict_post_status": 200
+}

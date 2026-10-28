@@ -1,0 +1,47 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "e7fa974f5e1ea9ec167c3e6764953d7d01cf6cf1",
+  "reference_fix_commit": "5a32ecfea844820811cc3fd24ce95b3bc260e8ec",
+  "subject": "fix(transfer-4): feed FK\u9632\u5fa1\u2014\u2014\u672a\u6ce8\u518cagent(\u5e7d\u7075\u8eab\u4efd)\u8df3\u8fc7\u4e0d\u5582\u4e0d\u70b8(\u4e91\u7aef\u5b9e\u6d4b9000009\u672a\u6ce8\u518c\u81f4FK violation);+ghost\u6d4b\u8bd5 7 green",
+  "test_files": [
+   "phase3/backend/tests/test_capability_feed.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/capability_feed.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/test_capability_feed.py::test_feed_skips_ghost_agent",
+ "source_rel": "services\\capability_feed.py",
+ "provider": "ark_glm",
+ "test_passed": true,
+ "winning_diff": "--- a/services/capability_feed.py\n+++ b/services/capability_feed.py\n@@ -40,6 +40,11 @@ def feed_capability_on_verify(\n     if not isinstance(agent_id, int):\n         return None\n     try:\n+        from models.agent import Agent\n+        if db.query(Agent).filter_by(id=agent_id).first() is None:\n+            logger.info(\"skip capability feed: agent %s not found\", agent_id)\n+            return None\n         import asyncio\n         from services.capability_evolution import record_task_outcome\n         quality = round(float(score) * 5.0, 4)\n",
+ "budget_exceeded": false,
+ "total_tokens": 28397,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "completion_tokens": 26992,
+    "prompt_tokens": 1405,
+    "total_tokens": 28397,
+    "prompt_tokens_details": {
+     "cached_tokens": 1405
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 26685
+    }
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "skip_ghost_agent_precheck",
+ "duration_s": 2110.6,
+ "verdict_post_status": 200
+}

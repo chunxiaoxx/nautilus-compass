@@ -1,0 +1,73 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "2c2b2a3f94b65741319156ff669db233ccba062a",
+  "reference_fix_commit": "1da8acd4a634d9e436679b032201fd28995739ab",
+  "subject": "fix(ale-eval): default judge_version=202510 (live bug: public_eval defaults 202301\u2192ImageNotFound)",
+  "test_files": [
+   "tests/test_ale_eval.py"
+  ],
+  "source_files": [
+   "ale_bench/ale_eval.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass"
+ },
+ "test_id": "tests/test_ale_eval.py::test_judge_version_defaults_to_built_image",
+ "source_rel": "ale_bench\\ale_eval.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/ale_bench/ale_eval.py\n+++ b/ale_bench/ale_eval.py\n@@ -14,6 +14,7 @@\n from typing import Any, Callable\n \n # rejected/invalid \u89e3\u7684 reward\u3002two_arm \u540c\u9898\u5185\u6bd4\u8f83\u00b7\u8d8a\u9ad8\u8d8a\u597d\u00b7AHC \u6709\u6548\u8f93\u51fa\u7edd\u5bf9\u5206 > 0\u3002\n REJECTED_REWARD: float = 0.0\n+DEFAULT_JUDGE_VERSION: str = \"202510\"\n \n \n def score_solution(\n     code: str,\n     problem_id: str,\n@@ -22,6 +23,7 @@\n     start_fn: Callable[..., Any] | None = None,\n     lite_version: bool = False,\n     num_workers: int = 2,\n+    judge_version: str = DEFAULT_JUDGE_VERSION,\n ) -> dict:\n     \"\"\"\u8dd1 `code` \u8fc7 ALE-Bench public_eval \u00b7 \u8fd4 {\"score\",\"rejected\",\"raw\"}\u3002\n \n@@ -33,7 +35,7 @@\n \n         start_fn = ale_bench.start\n     session = start_fn(problem_id, lite_version=lite_version, num_workers=num_workers)\n     try:\n-        result = session.public_eval(code, language)\n+        result = session.public_eval(code, language, judge_version=judge_version)\n         score = float(getattr(result, \"overall_absolute_score\", 0.0) or 0.0)\n         # AHC \u6709\u6548\u8f93\u51fa\u7edd\u5bf9\u5206 > 0;<= 0 \u89c6\u4f5c rejected/WA/RE(live \u6807\u5b9a REJECTED \u54e8\u5175\u540e\u53ef\u7cbe\u5316)\u3002\n         rejected = score <= 0.0\n",
+ "budget_exceeded": false,
+ "total_tokens": 2039,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 1495,
+    "completion_tokens": 544,
+    "total_tokens": 2039,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 1495,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 544,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 0,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 1495,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "ale_eval_default_judge_version_202510",
+ "duration_s": 22.7,
+ "verdict_post_status": 200
+}

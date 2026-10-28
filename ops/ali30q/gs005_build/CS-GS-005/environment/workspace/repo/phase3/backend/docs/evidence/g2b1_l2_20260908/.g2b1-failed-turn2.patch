@@ -1,0 +1,19 @@
+--- a/phase3/backend/ops/platform_loop.py
++++ b/phase3/backend/ops/platform_loop.py
+@@ -47,10 +47,15 @@
+         rf = r.get("from_agent")
+         if rf == "platform":
+             continue
+         for orig in by_to.get(rf, []):
++            r_title = r.get("title") or ""
++            title_ref = bool(
++                (orig["trace_id"] and orig["trace_id"] in r_title)
++                or (orig.get("title") and orig["title"] in r_title)
++            )
+             if (r["id"] != orig["id"]
+-                    and r["trace_id"].startswith(orig["trace_id"])
++                    and (r["trace_id"].startswith(orig["trace_id"]) or title_ref)
+                     and r["_created"] is not None
+                     and orig["_created"] is not None
+                     and r["_created"] >= orig["_created"]):
+                 orig["has_reply"] = True

@@ -1,0 +1,73 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "bde9c0491b170885d0a3718f67233b4ef44e8429",
+  "reference_fix_commit": "43e15adea66891010c2522b7f548004c4057ffcb",
+  "subject": "fix(loop): match_replies \u952e\u540d\u7edf\u4e00 _created\u2014\u2014run#48 fail-soft \u5b9e\u8bc1:\u751f\u4ea7 dict \u952e=_created \u800c\u5b9e\u73b0\u8bfb created_at,\u6d4b\u8bd5\u5de5\u5382\u952e\u7ed3\u6784\u6ca1\u5bf9\u9f50\u751f\u4ea7\u5bfc\u81f4\u6f0f\u6293;\u7edf\u4e00 _created \u5e76\u5728 R() \u5de5\u5382\u6ce8\u660e",
+  "test_files": [
+   "phase3/backend/tests/test_platform_loop.py"
+  ],
+  "source_files": [
+   "phase3/backend/ops/platform_loop.py"
+  ],
+  "repo_path": "C:/Users/chunx/Projects/nautilus-core"
+ },
+ "test_id": "tests/test_platform_loop.py::test_match_replies_recipient_reply_resolves",
+ "source_rel": "ops\\platform_loop.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/ops/platform_loop.py\n+++ b/ops/platform_loop.py\n@@ -45,10 +45,11 @@\n         rf = r.get(\"from_agent\")\n         if rf == \"platform\":\n             continue\n         for orig in by_to.get(rf, []):\n+            rc = r.get(\"_created\", r.get(\"created_at\"))\n             if (r[\"id\"] != orig[\"id\"]\n                     and r[\"trace_id\"].startswith(orig[\"trace_id\"])\n-                    and r[\"created_at\"] is not None\n+                    and rc is not None\n                     and orig[\"_created\"] is not None\n-                    and r[\"created_at\"] >= orig[\"_created\"]):\n+                    and rc >= orig[\"_created\"]):\n                 orig[\"has_reply\"] = True\n",
+ "budget_exceeded": false,
+ "total_tokens": 4585,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 3972,
+    "completion_tokens": 613,
+    "total_tokens": 4585,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 3972,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 613,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 0,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 3972,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "match_replies_use_created_key",
+ "duration_s": 214.8,
+ "verdict_post_status": 200
+}

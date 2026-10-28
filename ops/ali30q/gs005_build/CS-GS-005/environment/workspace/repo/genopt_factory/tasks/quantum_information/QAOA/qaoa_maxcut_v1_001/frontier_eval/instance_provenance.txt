@@ -1,0 +1,5 @@
+instance_source: SYNTHETIC Max-Cut (complete K_n / random 3-regular / bipartite planted)
+generator_script: genopt_factory/tools/fetch_qaoa_synth.py
+master_seed: 20260702 + i
+benchmark_versions:
+  - "1.0 (2026-07-03): 7 instances, n in {6,8,10,20,30,40,50}, p=4"

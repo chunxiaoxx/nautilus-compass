@@ -1,0 +1,35 @@
+{
+  "combined_score": 10.8255,
+  "valid": 1.0,
+  "instances": 3,
+  "failures": 0,
+  "per_instance": [
+    {
+      "instance": "abz7",
+      "elapsed_s": 2.19,
+      "feasible": true,
+      "reason": "ok",
+      "makespan": 6122,
+      "optimum": 656,
+      "score": 10.715452466514211
+    },
+    {
+      "instance": "abz8",
+      "elapsed_s": 1.36,
+      "feasible": true,
+      "reason": "ok",
+      "makespan": 6343,
+      "optimum": 665,
+      "score": 10.483998108150717
+    },
+    {
+      "instance": "abz9",
+      "elapsed_s": 1.95,
+      "feasible": true,
+      "reason": "ok",
+      "makespan": 6021,
+      "optimum": 679,
+      "score": 11.2771964789902
+    }
+  ]
+}

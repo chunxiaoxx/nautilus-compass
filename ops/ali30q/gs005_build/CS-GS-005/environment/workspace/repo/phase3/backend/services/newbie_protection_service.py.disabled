@@ -1,0 +1,370 @@
+"""
+新手保护机制增强服务
+"""
+from typing import List, Dict, Optional, Tuple
+from datetime import datetime, timedelta
+from sqlalchemy.orm import Session
+from sqlalchemy import func, and_
+from models.agent_survival import AgentSurvival
+from models.database import Task, Agent
+from services.survival_service import SurvivalService
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+class NewbieProtectionService:
+    """新手保护服务"""
+
+    # 新手保护配置
+    PROTECTION_CONFIG = {
+        "protection_days": 7,  # 保护期7天
+        "initial_score": 500,  # 初始积分
+        "failure_tolerance": 3,  # 失败容忍次数
+        "min_tasks_for_graduation": 10,  # 毕业最少任务数
+        "min_success_rate": 0.7,  # 毕业最低成功率
+        "min_avg_rating": 3.5  # 毕业最低平均评分
+    }
+
+    # 新手任务难度配置
+    TASK_DIFFICULTY = {
+        "EASY": {"epiplexity_max": 0.3, "reward_multiplier": 0.8},
+        "MEDIUM": {"epiplexity_max": 0.6, "reward_multiplier": 1.0},
+        "HARD": {"epiplexity_max": 1.0, "reward_multiplier": 1.5}
+    }
+
+    @staticmethod
+    def is_newbie(db: Session, agent_id: int) -> bool:
+        """
+        判断是否是新手
+
+        新手定义：在保护期内
+        """
+        survival = db.query(AgentSurvival).filter(
+            AgentSurvival.agent_id == agent_id
+        ).first()
+
+        if not survival:
+            return True  # 没有生存记录，视为新手
+
+        return survival.is_protected
+
+    @staticmethod
+    def get_protection_status(db: Session, agent_id: int) -> Dict:
+        """
+        获取保护状态
+
+        返回：
+        - is_protected: 是否在保护期
+        - protection_until: 保护期结束时间
+        - days_remaining: 剩余天数
+        - failures_used: 已使用失败次数
+        - failures_remaining: 剩余失败次数
+        """
+        survival = db.query(AgentSurvival).filter(
+            AgentSurvival.agent_id == agent_id
+        ).first()
+
+        if not survival:
+            return {
+                "is_protected": False,
+                "protection_until": None,
+                "days_remaining": 0,
+                "failures_used": 0,
+                "failures_remaining": 0
+            }
+
+        is_protected = survival.is_protected
+        protection_until = survival.protection_until
+        days_remaining = 0
+
+        if is_protected and protection_until:
+            days_remaining = (protection_until - datetime.utcnow()).days
+
+        failures_used = survival.tasks_failed
+        failures_remaining = max(0, NewbieProtectionService.PROTECTION_CONFIG["failure_tolerance"] - failures_used)
+
+        return {
+            "is_protected": is_protected,
+            "protection_until": protection_until.isoformat() if protection_until else None,
+            "days_remaining": days_remaining,
+            "failures_used": failures_used,
+            "failures_remaining": failures_remaining
+        }
+
+    @staticmethod
+    def recommend_newbie_tasks(
+        db: Session,
+        agent_id: int,
+        limit: int = 5
+    ) -> List[Task]:
+        """
+        为新手推荐任务
+
+        推荐策略：
+        1. 优先推荐简单任务（低Epiplexity）
+        2. 循序渐进（根据完成情况调整难度）
+        3. 高成功率任务
+        """
+        survival = db.query(AgentSurvival).filter(
+            AgentSurvival.agent_id == agent_id
+        ).first()
+
+        if not survival:
+            # 新Agent，推荐最简单的任务
+            difficulty = "EASY"
+        else:
+            # 根据成功率调整难度
+            success_rate = survival.success_rate
+            if success_rate >= 0.8:
+                difficulty = "MEDIUM"
+            elif success_rate >= 0.5:
+                difficulty = "EASY"
+            else:
+                difficulty = "EASY"
+
+        # 查询合适难度的任务
+        max_epiplexity = NewbieProtectionService.TASK_DIFFICULTY[difficulty]["epiplexity_max"]
+
+        # 简化查询：只查询pending状态的任务
+        tasks = db.query(Task).filter(
+            Task.status == "pending"
+        ).limit(limit * 2).all()  # 多查询一些，后续过滤
+
+        # 简单过滤和排序
+        recommended = []
+        for task in tasks:
+            # 简单任务优先
+            recommended.append(task)
+            if len(recommended) >= limit:
+                break
+
+        logger.info(f"Recommended {len(recommended)} tasks for newbie agent {agent_id} (difficulty: {difficulty})")
+        return recommended
+
+    @staticmethod
+    def handle_task_failure(
+        db: Session,
+        agent_id: int,
+        task_id: int,
+        reason: Optional[str] = None
+    ) -> Dict:
+        """
+        处理任务失败
+
+        新手保护期内：
+        - 不扣除积分
+        - 记录失败次数
+        - 提供失败分析和建议
+        """
+        survival = db.query(AgentSurvival).filter(
+            AgentSurvival.agent_id == agent_id
+        ).first()
+
+        if not survival:
+            raise ValueError(f"Agent {agent_id} survival record not found")
+
+        # 记录失败
+        survival.tasks_failed += 1
+
+        # 检查是否在保护期
+        is_protected = survival.is_protected
+
+        if is_protected:
+            # 保护期内不扣分
+            logger.info(f"Newbie agent {agent_id} failed task {task_id}, but protected (no score deduction)")
+            penalty = 0
+        else:
+            # 非保护期，正常扣分
+            penalty = 50
+            survival.total_score -= penalty
+            logger.info(f"Agent {agent_id} failed task {task_id}, deducted {penalty} points")
+
+        # 更新等级和状态
+        survival.survival_level = SurvivalService.determine_survival_level(
+            survival.roi,
+            survival.total_score
+        )
+        survival.status = SurvivalService.determine_status(
+            survival.survival_level,
+            survival.is_protected
+        )
+
+        db.commit()
+        db.refresh(survival)
+
+        # 生成失败分析
+        analysis = NewbieProtectionService._analyze_failure(db, agent_id, task_id, reason)
+
+        return {
+            "is_protected": is_protected,
+            "penalty": penalty,
+            "failures_remaining": max(0, NewbieProtectionService.PROTECTION_CONFIG["failure_tolerance"] - survival.tasks_failed),
+            "analysis": analysis
+        }
+
+    @staticmethod
+    def _analyze_failure(
+        db: Session,
+        agent_id: int,
+        task_id: int,
+        reason: Optional[str]
+    ) -> Dict:
+        """
+        分析失败原因并提供建议
+
+        返回：
+        - reason: 失败原因
+        - suggestions: 改进建议
+        - common_mistakes: 常见错误
+        """
+        suggestions = []
+        common_mistakes = []
+
+        # 通用建议
+        suggestions.append("仔细阅读任务要求")
+        suggestions.append("检查代码语法和逻辑")
+        suggestions.append("充分测试后再提交")
+
+        # 常见错误
+        common_mistakes.append("未理解任务需求")
+        common_mistakes.append("代码存在语法错误")
+        common_mistakes.append("未进行充分测试")
+
+        return {
+            "reason": reason or "未知原因",
+            "suggestions": suggestions,
+            "common_mistakes": common_mistakes
+        }
+
+    @staticmethod
+    def check_graduation(db: Session, agent_id: int) -> Tuple[bool, Optional[str]]:
+        """
+        检查是否满足毕业条件
+
+        毕业条件：
+        1. 完成任务数 ≥ 10
+        2. 成功率 ≥ 70%
+        3. 平均评分 ≥ 3.5
+
+        返回：(是否毕业, 原因)
+        """
+        survival = db.query(AgentSurvival).filter(
+            AgentSurvival.agent_id == agent_id
+        ).first()
+
+        if not survival:
+            return False, "未找到生存记录"
+
+        # 检查任务数
+        total_tasks = survival.tasks_completed + survival.tasks_failed
+        if total_tasks < NewbieProtectionService.PROTECTION_CONFIG["min_tasks_for_graduation"]:
+            return False, f"完成任务数不足（{total_tasks}/{NewbieProtectionService.PROTECTION_CONFIG['min_tasks_for_graduation']}）"
+
+        # 检查成功率
+        success_rate = survival.success_rate
+        if success_rate < NewbieProtectionService.PROTECTION_CONFIG["min_success_rate"]:
+            return False, f"成功率不足（{success_rate:.1%}/{NewbieProtectionService.PROTECTION_CONFIG['min_success_rate']:.0%}）"
+
+        # 检查平均评分
+        avg_rating = survival.average_rating
+        if avg_rating < NewbieProtectionService.PROTECTION_CONFIG["min_avg_rating"]:
+            return False, f"平均评分不足（{avg_rating:.1f}/{NewbieProtectionService.PROTECTION_CONFIG['min_avg_rating']}）"
+
+        return True, "满足所有毕业条件"
+
+    @staticmethod
+    def graduate_newbie(db: Session, agent_id: int) -> Dict:
+        """
+        新手毕业
+
+        毕业后：
+        - 移除保护期
+        - 获得毕业奖励
+        - 解锁更多功能
+        """
+        survival = db.query(AgentSurvival).filter(
+            AgentSurvival.agent_id == agent_id
+        ).first()
+
+        if not survival:
+            raise ValueError(f"Agent {agent_id} survival record not found")
+
+        # 检查是否满足毕业条件
+        can_graduate, reason = NewbieProtectionService.check_graduation(db, agent_id)
+
+        if not can_graduate:
+            raise ValueError(f"Cannot graduate: {reason}")
+
+        # 移除保护期
+        survival.protection_until = datetime.utcnow()
+
+        # 毕业奖励
+        graduation_bonus = 200
+        survival.total_score += graduation_bonus
+
+        # 重新计算等级
+        survival.survival_level = SurvivalService.determine_survival_level(
+            survival.roi,
+            survival.total_score
+        )
+        survival.status = SurvivalService.determine_status(
+            survival.survival_level,
+            survival.is_protected
+        )
+
+        db.commit()
+        db.refresh(survival)
+
+        logger.info(f"Agent {agent_id} graduated from newbie protection, bonus: {graduation_bonus}")
+
+        return {
+            "graduated": True,
+            "bonus": graduation_bonus,
+            "new_score": survival.total_score,
+            "new_level": survival.survival_level
+        }
+
+    @staticmethod
+    def get_newbie_progress(db: Session, agent_id: int) -> Dict:
+        """
+        获取新手进度
+
+        返回：
+        - tasks_completed: 完成任务数
+        - success_rate: 成功率
+        - average_rating: 平均评分
+        - graduation_progress: 毕业进度
+        """
+        survival = db.query(AgentSurvival).filter(
+            AgentSurvival.agent_id == agent_id
+        ).first()
+
+        if not survival:
+            return {
+                "tasks_completed": 0,
+                "success_rate": 0.0,
+                "average_rating": 0.0,
+                "graduation_progress": {
+                    "tasks": "0/10",
+                    "success_rate": "0%/70%",
+                    "avg_rating": "0.0/3.5",
+                    "can_graduate": False
+                }
+            }
+
+        total_tasks = survival.tasks_completed + survival.tasks_failed
+        can_graduate, reason = NewbieProtectionService.check_graduation(db, agent_id)
+
+        return {
+            "tasks_completed": survival.tasks_completed,
+            "success_rate": survival.success_rate,
+            "average_rating": survival.average_rating,
+            "graduation_progress": {
+                "tasks": f"{total_tasks}/{NewbieProtectionService.PROTECTION_CONFIG['min_tasks_for_graduation']}",
+                "success_rate": f"{survival.success_rate:.0%}/{NewbieProtectionService.PROTECTION_CONFIG['min_success_rate']:.0%}",
+                "avg_rating": f"{survival.average_rating:.1f}/{NewbieProtectionService.PROTECTION_CONFIG['min_avg_rating']}",
+                "can_graduate": can_graduate,
+                "reason": reason
+            }
+        }

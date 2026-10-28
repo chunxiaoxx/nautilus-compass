@@ -1,0 +1,74 @@
+{
+  "schema": "turbo_pipeline.v1",
+  "note": "六环坐标表正本转存(v5 仓 chunxiaoxx/nautilus-v5 @ customer-demo-ship-1 commit 478607a2,2026-10-04 转存;v5 TSI 提案#2784 请裁件=shared 镜像方案,v5 定期 push 覆盖本件)。平台 GET /api/platform/org/fuel/pipeline 读本件+DB 动态读数。",
+  "repo": "chunxiaoxx/nautilus-v5",
+  "branch": "customer-demo-ship-1",
+  "stages": [
+   {
+    "id": "fuel-production",
+    "stage": "燃料生产",
+    "input_coord": "platform_bounties(task_type=fuel_trajectory)",
+    "output_coord": "shared:prod-field-tree-v1:trajectories/",
+    "trigger": "bounty claim/scored",
+    "owner": "prime-001/v5-selfline",
+    "consumers": [
+     "flywheel四验门"
+    ]
+   },
+   {
+    "id": "four-gates",
+    "stage": "四验门",
+    "input_coord": "trajectories/",
+    "output_coord": "训练池+judge_writeback索引",
+    "trigger": "PR push→fuel-verify CI",
+    "owner": "flywheel",
+    "consumers": [
+     "trainings台账"
+    ]
+   },
+   {
+    "id": "pool",
+    "stage": "训练池",
+    "input_coord": "池jsonl+快照sha",
+    "output_coord": "FUEL_THRESHOLD=50判定",
+    "trigger": "pipeline --cycle Step2",
+    "owner": "pipeline(v5)",
+    "consumers": [
+     "r78训练"
+    ]
+   },
+   {
+    "id": "training",
+    "stage": "训练",
+    "input_coord": "池快照",
+    "output_coord": "A100 checkpoints/{cfg}/{exp}/1999+遥测四件套",
+    "trigger": "Step3 gpu_status.json",
+    "owner": "v5",
+    "consumers": [
+     "评测"
+    ]
+   },
+   {
+    "id": "eval",
+    "stage": "评测",
+    "input_coord": "ckpt",
+    "output_coord": "canary(21353425冻结卷)GREEN/RED+753全量",
+    "trigger": "Step4 drift_verdict",
+    "owner": "v5+compass",
+    "consumers": [
+     "升场判定"
+    ]
+   },
+   {
+    "id": "egr",
+    "stage": "判读回流",
+    "input_coord": "verdicts索引",
+    "output_coord": "gap_reports[](schema v0.1)→定向燃料单",
+    "trigger": "verdict落库",
+    "owner": "compass(产)/v5(消)",
+    "consumers": [
+     "下批出题"
+    ]
+   }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "85d493855112222e0467215327b75379817d4b61",
+  "reference_fix_commit": "bd305b5130e4cbc117031676ccd6e0b77b0a09f6",
+  "subject": "fix(s1): C1/I2/I3 quality\u5ba1 must-fix(claim\u5e42\u7b49-\u81ea\u5360\u00b7_http\u6355HTTPError\u00b7write_back\u9694\u79bb\u00b7+3 TDD)",
+  "test_files": [
+   "phase3/backend/tests/test_fde_assignment_runner.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/fde_assignment_runner.py"
+  ]
+ },
+ "test_id": "phase3/backend/tests/test_fde_assignment_runner.py::test_claim_fn_idempotent_when_already_claimed_by_same_expert",
+ "source_rel": "phase3/backend/services/fde_assignment_runner.py",
+ "provider": "ark_glm",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

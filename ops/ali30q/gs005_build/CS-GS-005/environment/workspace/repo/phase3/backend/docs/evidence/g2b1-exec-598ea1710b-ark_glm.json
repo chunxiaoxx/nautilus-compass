@@ -1,0 +1,29 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "c7646a57f97a7182225486e7c65841b9a95f915b",
+  "reference_fix_commit": "598ea1710bfc01ed203e63d55070ba6fc41c5e61",
+  "subject": "feat(platform): add G2-A0 V6 gate (admit choices.logprobs \u2014 final schema fix)",
+  "test_files": [
+   "phase3/backend/tests/platform_protocol/test_g2_a0_model_gate_v6_cli.py",
+   "phase3/backend/tests/platform_protocol/test_g2_a0_model_gate_v6_contracts.py",
+   "phase3/backend/tests/platform_protocol/test_g2_a0_model_gate_v6_fail_closed.py"
+  ],
+  "source_files": [
+   "phase3/backend/platform_protocol/g2_a0_model_gate_v6.py",
+   "phase3/backend/tests/platform_protocol/g2_a0_model_gate_v6_cli.py"
+  ]
+ },
+ "test_id": "phase3/backend/tests/platform_protocol/test_g2_a0_model_gate_v6_cli.py::test_v6_runner_accepts_exact_cny_10_and_emits_v6_evidence",
+ "source_rel": "phase3/backend/platform_protocol/g2_a0_model_gate_v6.py",
+ "provider": "ark_glm",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0
+}

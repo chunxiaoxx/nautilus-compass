@@ -1,0 +1,73 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "23b0d6d2f306c34086f1d67830ae468a48f6558c",
+  "reference_fix_commit": "ca8ddb890126c0a7fe735cee7a81e3227f2c9f62",
+  "subject": "fix(fde): c6 \u2014 shared_facts pin \u7518\u7279\u7814\u53d1\u9636\u6bb5(\u9010\u5b57\u5b8c\u6574\u00b7\u4e0d\u5f97\u5408\u5e76/\u6539\u540d/\u9057\u6f0f)",
+  "test_files": [
+   "tests/test_solve_task.py"
+  ],
+  "source_files": [
+   "fde_capsule/solve_task.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_solve_task.py::test_shared_facts_injected_into_author_prompt",
+ "source_rel": "fde_capsule\\solve_task.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/fde_capsule/solve_task.py\n+++ b/fde_capsule/solve_task.py\n@@ -13,6 +13,7 @@\n     \"   - \u7248\u672c\u65f6\u95f4\u7ebf:MVP \u53ca\u540e\u7eed\u5404\u7248\u672c(\u5982 V3.1/V3.2/V3.3),\u6bcf\u4e2a\u7248\u672c\u7ed9\u300e\u65f6\u95f4\u7a97\u53e3 + \u91cc\u7a0b\u7891 + \u7eb3\u5165\u6a21\u5757\u300f\u4e09\u8981\u7d20\u3002\\n\"\n     \"   - \u6a21\u5757\u6e05\u5355:\u516d\u5927\u6a21\u5757\u7684\u7edf\u4e00\u7f16\u53f7\u4e0e\u540d\u79f0\u3002\\n\"\n     \"   - \u5173\u952e\u6570\u636e\u5173\u8054:\u8de8\u6570\u636e\u96c6\u63a8\u65ad/\u53cd\u4e8b\u5b9e\u7684\u7edf\u4e00\u8868\u8ff0\u3002\\n\"\n+    \"   - \u7814\u53d1\u9636\u6bb5:\u9010\u9636\u6bb5 pin \u5b9a\u5404\u7814\u53d1\u9636\u6bb5\u7684\u540d\u79f0\u4e0e\u8d77\u6b62\u7a97\u53e3,\u9636\u6bb5\u4e4b\u95f4\u4e0d\u5f97\u5408\u5e76\u3001\u4e0d\u5f97\u538b\u7f29(\u6cbb\u7518\u7279\u9636\u6bb5\u538b\u7f29)\u3002\\n\"\n     \"3. \u540c\u4e00\u53c2\u6570\u5168\u7a0b\u53ea\u5141\u8bb8\u4e00\u4e2a\u503c\u3002\\n\\n\"\n     \"## \u9898\u76ee\u5168\u6587\\n{task}\\n\\n## \u9644\u4ef6\u6570\u636e\u6458\u8981\\n{digest}\\n\\n## \u5404\u4ea4\u4ed8\u7269\\n{delivs}\\n\"\n )\n",
+ "budget_exceeded": false,
+ "total_tokens": 3454,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 3123,
+    "completion_tokens": 331,
+    "total_tokens": 3454,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 3123,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 331,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 0,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 3123,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "facts_prompt_pin_dev_phases",
+ "duration_s": 47.3,
+ "verdict_post_status": 200
+}

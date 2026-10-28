@@ -1,0 +1,7 @@
+random_baseline:
+  description: "Uniform random bitstring sampling."
+  expected_combined: "~50-70 (random guesses on hard graphs)"
+reference_solver:
+  path: reference/solve.py
+  description: "1-flip local search + 5 random restarts with seed-20260702."
+  expected_combined: "~75-85 (close to OPT on K_n, ~60-70 on regular/bipartite)"

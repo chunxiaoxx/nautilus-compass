@@ -1,0 +1,36 @@
+{
+  "combined_score": 32.0137,
+  "valid": 1.0,
+  "num_instances": 5,
+  "num_failures": 0,
+  "candidate": "baseline/init.py",
+  "scoring": "score_i = min(100, 100*optimum_i/makespan_i); combined = mean over feasible instances; any infeasible => valid=0, combined=0",
+  "per_instance_makespan": {
+    "orb01": 2754,
+    "orb02": 3869,
+    "orb03": 2185,
+    "orb04": 4038,
+    "orb05": 3193
+  },
+  "per_instance_optimum": {
+    "orb01": 1059,
+    "orb02": 888,
+    "orb03": 1005,
+    "orb04": 1005,
+    "orb05": 887
+  },
+  "per_instance_score": {
+    "orb01": 38.453159041394336,
+    "orb02": 22.9516670974412,
+    "orb03": 45.995423340961096,
+    "orb04": 24.88855869242199,
+    "orb05": 27.77951769495772
+  },
+  "per_instance_feasible": {
+    "orb01": true,
+    "orb02": true,
+    "orb03": true,
+    "orb04": true,
+    "orb05": true
+  }
+}

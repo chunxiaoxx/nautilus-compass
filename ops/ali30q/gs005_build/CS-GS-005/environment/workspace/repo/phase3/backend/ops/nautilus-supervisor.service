@@ -1,0 +1,11 @@
+[Unit]
+Description=Nautilus dogfood supervisor (transfer-1) · read-only watchdog of deposit points · telegram on ZERO
+After=network.target
+
+[Service]
+Type=oneshot
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/nautilus-mvp/phase3/backend
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/bin/python3 ops/supervisor.py

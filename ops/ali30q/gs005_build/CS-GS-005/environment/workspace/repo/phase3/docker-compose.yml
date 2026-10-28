@@ -1,0 +1,222 @@
+version: '3.8'
+
+services:
+  # PostgreSQL 数据库
+  postgres:
+    image: postgres:15
+    container_name: nautilus-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: nautilus_user
+      POSTGRES_PASSWORD: ${NAUTILUS_DB_PASSWORD:-changeme}
+      POSTGRES_DB: nautilus_production
+      POSTGRES_INITDB_ARGS: "-E UTF8"
+    ports:
+      - "5432:5432"
+    volumes:
+      - nautilus-postgres-data:/var/lib/postgresql/data
+      - ./backups/postgres:/backups
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nautilus_user -d nautilus_production"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - nautilus-network
+
+  # Redis 缓存
+  redis:
+    image: redis:7-alpine
+    container_name: nautilus-redis
+    restart: always
+    command: >
+      redis-server
+      --appendonly yes
+      --requirepass ${NAUTILUS_DB_PASSWORD:-changeme}
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    volumes:
+      - nautilus-redis-data:/data
+      - ./backups/redis:/backups
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - nautilus-network
+
+  # ChromaDB 向量数据库
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: nautilus-chromadb
+    restart: always
+    ports:
+      - "8002:8000"
+    volumes:
+      - nautilus-chroma-data:/chroma/chroma
+    environment:
+      - IS_PERSISTENT=TRUE
+      - ANONYMIZED_TELEMETRY=FALSE
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/heartbeat"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - nautilus-network
+
+  # Prometheus 监控
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: nautilus-prometheus
+    restart: always
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./monitoring/alerts.yml:/etc/prometheus/alerts.yml
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=15d'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - nautilus-network
+    depends_on:
+      - postgres
+      - redis
+
+  # Node Exporter (系统指标)
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: nautilus-node-exporter
+    restart: always
+    ports:
+      - "9100:9100"
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    networks:
+      - nautilus-network
+
+  # Grafana 可视化
+  grafana:
+    image: grafana/grafana:latest
+    container_name: nautilus-grafana
+    restart: always
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=${NAUTILUS_DB_PASSWORD:-changeme}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_ROOT_URL=http://43.160.239.61:3001
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - nautilus-network
+    depends_on:
+      - prometheus
+
+  # Loki 日志聚合
+  loki:
+    image: grafana/loki:latest
+    container_name: nautilus-loki
+    restart: always
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./monitoring/loki-config.yaml:/etc/loki/local-config.yaml
+      - loki-data:/loki
+    command: -config.file=/etc/loki/local-config.yaml
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3100/ready"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - nautilus-network
+
+  # Promtail 日志采集
+  promtail:
+    image: grafana/promtail:latest
+    container_name: nautilus-promtail
+    restart: always
+    ports:
+      - "9080:9080"
+    volumes:
+      - ./monitoring/promtail-config.yaml:/etc/promtail/config.yaml
+      - /var/log:/var/log:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    command: -config.file=/etc/promtail/config.yaml
+    networks:
+      - nautilus-network
+    depends_on:
+      - loki
+
+  # AlertManager 告警管理
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: nautilus-alertmanager
+    restart: always
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+      - alertmanager-data:/alertmanager
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+      - '--storage.path=/alertmanager'
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:9093/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - nautilus-network
+
+volumes:
+  nautilus-postgres-data:
+    driver: local
+  nautilus-redis-data:
+    driver: local
+  nautilus-chroma-data:
+    driver: local
+  prometheus-data:
+    driver: local
+  grafana-data:
+    driver: local
+  loki-data:
+    driver: local
+  alertmanager-data:
+    driver: local
+
+networks:
+  nautilus-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

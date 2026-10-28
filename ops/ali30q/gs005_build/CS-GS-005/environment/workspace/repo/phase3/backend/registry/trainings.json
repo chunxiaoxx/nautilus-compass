@@ -1,0 +1,84 @@
+{
+ "schema": "trainings.v1",
+ "note": "训练轮次台账(沉淀承载面·字段草案=docs/SEDDIMENT_SURFACE_FOUNDATION_V1.md §一.1)。提案定稿后填充,触发器=每训练轮判读回流时写一次。 | 首批回填=v5 #2780(2026-10-04,选②通道代合并,r77负结果照报)。 | r78回填=v5直推(2026-10-04,燃料批次读数·训练在途如实标注)。",
+ "trainings": [
+  {
+   "round": "r76",
+   "date": "2026-10-01",
+   "fuel": {
+    "pool_snapshot_sha": "deferred(池文件历史版未存档,现值=1467行/109unique见grpo-pool-not-question-bank)",
+    "trajectory_count": 109,
+    "source": "starter_path×prompt join(E5存量,22任务核心)"
+   },
+   "recipe": {
+    "ref": "e6_rl_v3",
+    "method": "GRPO+前缀约束生成(full+brace)",
+    "params_hash": "deferred(config同r77,A100坐标/root/vdd2/e6)"
+   },
+   "criteria_version": "B7-J2三门v2(n=753全量,δ≈2.1pp noise floor)",
+   "preregistration": {
+    "hash": "deferred(判读前未存hash,事后冻结=RSI_BENCH_PANEL.md B7预注册行)",
+    "doc_ref": "docs/RSI_BENCH_PANEL.md#B7"
+   },
+   "eval": {
+    "canary": "deferred(canary基线21353425晚于r76,未回溯)",
+    "full": "SFT基线98.3/91.9/10.36(.136)→r76 99.3/94.9/13.94(.097):args+3.58pp>δ UP(首个过floor)"
+   },
+   "verdict_ref": "commit 6d6ec3c4(面板B7)",
+   "negative_result": null,
+   "owner": "v5"
+  },
+  {
+   "round": "r77",
+   "date": "2026-10-01",
+   "fuel": {
+    "pool_snapshot_sha": "deferred",
+    "trajectory_count": 155,
+    "source": "109+46零编造扩池(join通路)"
+   },
+   "recipe": {
+    "ref": "e6_rl_v3(同r76配方)",
+    "method": "GRPO",
+    "params_hash": "deferred"
+   },
+   "criteria_version": "B7-J2三门v2(n=753全量,δ≈2.1pp)",
+   "preregistration": {
+    "hash": "deferred",
+    "doc_ref": "docs/RSI_BENCH_PANEL.md#B7"
+   },
+   "eval": {
+    "canary": "deferred",
+    "full": "args 11.55 vs r76 13.94(-2.39pp>δ DOWN);dist .112"
+   },
+   "verdict_ref": "commit 6d6ec3c4",
+   "negative_result": "燃料对口性>数量:+46 nautilus-repo路径不可推导稀释r76增益回r75裸水平(b1-internal负结果);adapter撤离vtf/e6_rl_v3_grpo_adapter_fuel",
+   "owner": "v5"
+  },
+  {
+   "round": "r78",
+   "date": "2026-10-04",
+   "fuel": {
+    "pool_snapshot_sha": "deferred",
+    "trajectory_count": 19,
+    "source": "b-turbo-f041~f060(selfline直产f046-060·四验15/15零退回+prime f043 investigation-only)"
+   },
+   "recipe": {
+    "ref": "训练在途(池积累期)",
+    "method": "GRPO(池门槛观察·r78为燃料批次非训练轮)",
+    "params_hash": "deferred"
+   },
+   "criteria_version": "四验门fuel_four_gates_v0(G1-G4·G4=753交集固化panel侧)",
+   "preregistration": {
+    "hash": "deferred",
+    "doc_ref": "docs/R78_FUEL_BATCH2_20261004.md"
+   },
+   "eval": {
+    "canary": "deferred(基线快照未落位)",
+    "full": "批次级读数:池4→19条·过门率15/15(两批,flywheel独立复核5pass+5fail逐条一致·writeback id=2848)"
+   },
+   "verdict_ref": "mailbox #2866(flywheel四验)+#2741(双轨裁决)",
+   "negative_result": "v1撤回20单:1467行池实为109unique rollout重复对(条数≠题数)·prompt-hash去重后v2重发",
+   "owner": "v5"
+  }
+ ]
+}

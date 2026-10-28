@@ -1,0 +1,44 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "5ea2fc32dc088db3e57b1edc0d96f7c5f8a3f172",
+  "reference_fix_commit": "c7646a57f97a7182225486e7c65841b9a95f915b",
+  "subject": "fix(platform): V5 probe must use mock transport only (no real API call)",
+  "test_files": [
+   "phase3/backend/tests/platform_protocol/test_g2_a0_model_gate_v5_fail_closed.py"
+  ],
+  "source_files": [
+   "phase3/backend/tests/platform_protocol/g2_a0_model_gate_v5_cli.py"
+  ]
+ },
+ "test_id": "tests/platform_protocol/test_g2_a0_model_gate_v5_fail_closed.py::test_v5_live_probe_uses_only_mock_transport_and_exact_three_requests",
+ "source_rel": "tests\\platform_protocol\\g2_a0_model_gate_v5_cli.py",
+ "provider": "ark_glm",
+ "test_passed": true,
+ "budget_exceeded": false,
+ "total_tokens": 30353,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "completion_tokens": 23489,
+    "prompt_tokens": 6864,
+    "total_tokens": 30353,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 23374
+    }
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "return_parsed_provider_response_v5",
+ "duration_s": 501.4
+}

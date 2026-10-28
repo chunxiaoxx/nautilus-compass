@@ -1,0 +1,74 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "f1f5ea75545a59b8bf1b7020a954d85b315b1bb5",
+  "reference_fix_commit": "3ea02a08f2ab8b9d006b2976ae788ff65dac9d41",
+  "subject": "fix(proof): ts_from_filename date validation + stop_hook tweak + docs sync",
+  "test_files": [
+   "tests/test_local_outcomes.py"
+  ],
+  "source_files": [
+   "proof/local_outcomes.py",
+   "stop_hook.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass"
+ },
+ "test_id": "tests/test_local_outcomes.py::test_hash_name_session_falls_back_to_frontmatter_date",
+ "source_rel": "proof\\local_outcomes.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/proof/local_outcomes.py\n+++ b/proof/local_outcomes.py\n@@ -45,11 +45,17 @@ def local_outcomes(memory_dir, actor: str, since_iso: Optional[str] = None) -> l\n     out = []\n     for p in sorted(mem.glob(\"session_*.md\")):\n         ts = ts_from_filename(p.name)\n-        if ts is None:\n-            continue\n-        if since_iso and ts < since_iso:\n-            continue\n         front = parse_session_frontmatter_safe(p)\n+        if ts is None:\n+            # hash-named sessions (session_<hash>.md) carry no date in the\n+            # filename; fall back to the frontmatter `date` field.\n+            date = str(front.get(\"date\", \"\") or \"\").strip()\n+            if not date:\n+                continue\n+            ts = date if \"T\" in date else f\"{date}T00:00:00+00:00\"\n+        if since_iso and ts < since_iso:\n+            continue\n         success = _drift_to_success(front.get(\"drift\", \"\"))\n         if success is None:\n             continue\n         out.append({\"agent_id\": actor, \"success\": success, \"ts\": ts})\n",
+ "budget_exceeded": false,
+ "total_tokens": 1644,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 1216,
+    "completion_tokens": 428,
+    "total_tokens": 1644,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 1216,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 428,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 0,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 1216,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "local_outcomes_frontmatter_date_fallback",
+ "duration_s": 15.4,
+ "verdict_post_status": 200
+}

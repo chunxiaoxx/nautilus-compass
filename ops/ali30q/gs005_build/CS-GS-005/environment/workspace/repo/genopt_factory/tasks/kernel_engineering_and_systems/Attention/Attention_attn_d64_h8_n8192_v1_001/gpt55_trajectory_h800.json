@@ -1,0 +1,188 @@
+{
+  "task_id": "attention_flash_v1_001",
+  "seed_score": 0.8676,
+  "seed_valid": 1,
+  "best_score": 33.7612,
+  "gap_closed": 0.3289,
+  "difficulty_bucket": "Medium",
+  "n": 3,
+  "model": "gpt-5.5",
+  "rounds": [
+    {
+      "round": 0,
+      "metrics": {
+        "combined_score": 0.8676,
+        "valid": 1,
+        "per_instance": [
+          {
+            "instance": "n1024_d64_b1_h2",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.054,
+            "elapsed_s": 29.9702,
+            "t_naive": 29.9864
+          },
+          {
+            "instance": "n128_d64_b2_h8",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.6097,
+            "elapsed_s": 3.7493,
+            "t_naive": 3.7723
+          },
+          {
+            "instance": "n256_d64_b2_h4",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.2991,
+            "elapsed_s": 7.4663,
+            "t_naive": 7.4887
+          },
+          {
+            "instance": "n512_d64_b1_h4",
+            "feasible": true,
+            "reason": "ok",
+            "score": 2.5076,
+            "elapsed_s": 14.9838,
+            "t_naive": 15.3692
+          }
+        ],
+        "stdout": "\"elapsed_s\": 7.4663,\n   \"t_naive\": 7.4887\n  },\n  {\n   \"instance\": \"n512_d64_b1_h4\",\n   \"feasible\": true,\n   \"reason\": \"ok\",\n   \"score\": 2.5076,\n   \"elapsed_s\": 14.9838,\n   \"t_naive\": 15.3692\n  }\n ]\n}\n"
+      },
+      "elapsed": 0
+    },
+    {
+      "round": 1,
+      "elapsed": 250.0,
+      "metrics": {
+        "combined_score": 17.4491,
+        "valid": 1,
+        "per_instance": [
+          {
+            "instance": "n1024_d64_b1_h2",
+            "feasible": true,
+            "reason": "ok",
+            "score": 17.1739,
+            "elapsed_s": 24.7337,
+            "t_naive": 29.8622
+          },
+          {
+            "instance": "n128_d64_b2_h8",
+            "feasible": true,
+            "reason": "ok",
+            "score": 17.3986,
+            "elapsed_s": 3.0997,
+            "t_naive": 3.7526
+          },
+          {
+            "instance": "n256_d64_b2_h4",
+            "feasible": true,
+            "reason": "ok",
+            "score": 17.9344,
+            "elapsed_s": 6.1454,
+            "t_naive": 7.4884
+          },
+          {
+            "instance": "n512_d64_b1_h4",
+            "feasible": true,
+            "reason": "ok",
+            "score": 17.2896,
+            "elapsed_s": 12.5154,
+            "t_naive": 15.1316
+          }
+        ],
+        "stdout": "elapsed_s\": 6.1454,\n   \"t_naive\": 7.4884\n  },\n  {\n   \"instance\": \"n512_d64_b1_h4\",\n   \"feasible\": true,\n   \"reason\": \"ok\",\n   \"score\": 17.2896,\n   \"elapsed_s\": 12.5154,\n   \"t_naive\": 15.1316\n  }\n ]\n}\n"
+      },
+      "source_preview": "\"\"\"Optimized pure-stdlib scaled dot-product attention.\n\nKeeps the required public interface:\n    attention_forward(instance: dict) -> dict\n\nThe implementation a"
+    },
+    {
+      "round": 2,
+      "elapsed": 207.9,
+      "metrics": {
+        "combined_score": 27.6451,
+        "valid": 1,
+        "per_instance": [
+          {
+            "instance": "n1024_d64_b1_h2",
+            "feasible": true,
+            "reason": "ok",
+            "score": 26.6583,
+            "elapsed_s": 21.9948,
+            "t_naive": 29.9895
+          },
+          {
+            "instance": "n128_d64_b2_h8",
+            "feasible": true,
+            "reason": "ok",
+            "score": 28.4505,
+            "elapsed_s": 2.6801,
+            "t_naive": 3.7458
+          },
+          {
+            "instance": "n256_d64_b2_h4",
+            "feasible": true,
+            "reason": "ok",
+            "score": 28.1327,
+            "elapsed_s": 5.371,
+            "t_naive": 7.4735
+          },
+          {
+            "instance": "n512_d64_b1_h4",
+            "feasible": true,
+            "reason": "ok",
+            "score": 27.3388,
+            "elapsed_s": 10.8999,
+            "t_naive": 15.001
+          }
+        ],
+        "stdout": " \"elapsed_s\": 5.371,\n   \"t_naive\": 7.4735\n  },\n  {\n   \"instance\": \"n512_d64_b1_h4\",\n   \"feasible\": true,\n   \"reason\": \"ok\",\n   \"score\": 27.3388,\n   \"elapsed_s\": 10.8999,\n   \"t_naive\": 15.001\n  }\n ]\n}\n"
+      },
+      "source_preview": "\"\"\"Optimized pure-Python scaled dot-product attention.\n\nInterface required by the verifier:\n    attention_forward(instance: dict) -> dict\n\nNo third-party module"
+    },
+    {
+      "round": 3,
+      "elapsed": 253.8,
+      "metrics": {
+        "combined_score": 33.7612,
+        "valid": 1,
+        "per_instance": [
+          {
+            "instance": "n1024_d64_b1_h2",
+            "feasible": true,
+            "reason": "ok",
+            "score": 33.5651,
+            "elapsed_s": 20.1262,
+            "t_naive": 30.2946
+          },
+          {
+            "instance": "n128_d64_b2_h8",
+            "feasible": true,
+            "reason": "ok",
+            "score": 34.6156,
+            "elapsed_s": 2.485,
+            "t_naive": 3.8006
+          },
+          {
+            "instance": "n256_d64_b2_h4",
+            "feasible": true,
+            "reason": "ok",
+            "score": 33.3188,
+            "elapsed_s": 5.0397,
+            "t_naive": 7.5579
+          },
+          {
+            "instance": "n512_d64_b1_h4",
+            "feasible": true,
+            "reason": "ok",
+            "score": 33.5451,
+            "elapsed_s": 10.1795,
+            "t_naive": 15.3179
+          }
+        ],
+        "stdout": "elapsed_s\": 5.0397,\n   \"t_naive\": 7.5579\n  },\n  {\n   \"instance\": \"n512_d64_b1_h4\",\n   \"feasible\": true,\n   \"reason\": \"ok\",\n   \"score\": 33.5451,\n   \"elapsed_s\": 10.1795,\n   \"t_naive\": 15.3179\n  }\n ]\n}\n"
+      },
+      "source_preview": "\"\"\"\nOptimized pure-stdlib scaled dot-product attention.\n\nInterface required by the verifier:\n    attention_forward(instance: dict) -> dict\n\nThe implementation a"
+    }
+  ],
+  "best_round_source": "\"\"\"\nOptimized pure-stdlib scaled dot-product attention.\n\nInterface required by the verifier:\n    attention_forward(instance: dict) -> dict\n\nThe implementation a"
+}

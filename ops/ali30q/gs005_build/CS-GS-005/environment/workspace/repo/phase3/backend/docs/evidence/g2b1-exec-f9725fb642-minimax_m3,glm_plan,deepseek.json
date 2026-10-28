@@ -1,0 +1,43 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "24ee0351d751635ad0b664426c3b0c537ba6cfef",
+  "reference_fix_commit": "f9725fb6426d5dcdbfcd0193f9e8ca1b803a7283",
+  "subject": "fix(genopt): cross_agent_contract default dir Windows-safe (tempfile)",
+  "test_files": [
+   "tests/test_genopt_cross_agent_contract.py"
+  ],
+  "source_files": [
+   "fde_capsule/genopt/cross_agent_contract.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_genopt_cross_agent_contract.py::test_default_dir_uses_tempdir_on_unix_or_windows",
+ "source_rel": "fde_capsule\\genopt\\cross_agent_contract.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": true,
+ "winning_diff": "--- a/fde_capsule/genopt/cross_agent_contract.py\n+++ b/fde_capsule/genopt/cross_agent_contract.py\n@@ -1,12 +1,14 @@\n \"\"\"Cross-agent contract emit/consume (filesystem-based, fsync-safe).\n \n On cloud, GENOPT_CONTRACT_DIR is a mountpoint that all registered agents can\n read/write. Locally (CI / tests), it falls back to a tmp path.\n \"\"\"\n import json\n import os\n+import tempfile\n import time\n from typing import List\n \n-DEFAULT_DIR = \"/root/autodl-tmp/genopt/contracts\"\n+DEFAULT_DIR = os.path.join(tempfile.gettempdir(), \"genopt_contracts\")\n \n \n def _dir():\n     return os.environ.get(\"GENOPT_CONTRACT_DIR\", DEFAULT_DIR)\n",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "input_tokens": 883,
+    "output_tokens": 232,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "use_tempdir_for_default_contract_dir",
+ "duration_s": 14.0,
+ "verdict_post_status": 200
+}

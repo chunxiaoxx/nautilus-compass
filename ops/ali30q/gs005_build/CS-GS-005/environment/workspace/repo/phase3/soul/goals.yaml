@@ -1,0 +1,48 @@
+# Autonomous Soul · goal queue · human-curated (highest priority tier)
+# status: pending | done
+#
+# IMPORTANT: the Nautilus engine is a CODE engine — it emits fenced file-blocks
+# that must pass py_compile/ruff/semantic checks. Prose goals (README/article)
+# produce parse_error. Keep goals = code-change tasks with MINIMAL CHANGE phrasing.
+#
+# NOTE on goal sourcing: hand-written docstring goals are a STARTER set and run
+# out fast on a clean repo (most engine modules already have docstrings · only
+# __main__.py lacked one as of 2026-05-27). The durable goal sources are the
+# goal_selector fallbacks: reflection (low-composite engine cycles) + docs
+# scrape (TODO/FIXME markers). Seed real backlog items here as they arise.
+#
+# --- prose backlog (NOT for the code engine · needs a separate prose path) ---
+#   a2-readme-hero  : rewrite README hero (Stage 1 demo + drift evidence)
+#   a4-devto-draft  : 1500-2000w dev.to article on dogfood ships
+# -----------------------------------------------------------------------------
+#
+# No hand-written goals queued. Empty queue → the daemon runs its SELF-IMPROVE
+# cycle (reviewer reviews soul's own code → council diverges/converges → ship →
+# pytest gate → draft PR). This is the durable, self-sustaining goal source
+# (cloud-verified 2026-05-27 · PR #52 = pause_check unlink(missing_ok)).
+# The earlier docstring starter goals (c1/c2) were removed: docstring goals on a
+# clean repo are brittle (already-present → no-op · import-heavy files like
+# __main__.py → staging check fail). Add REAL backlog items here to override the
+# self-improve default with human-curated priorities.
+goals:
+  - id: fw-tpl-l1l2l3-001
+    priority: 10
+    status: done
+    expect_files:
+      - phase3/backend/tools/report_templates_l1l2l3.py
+    description: >-
+      Create phase3/backend/tools/report_templates_l1l2l3.py (stdlib only,
+      single file, under 300 lines) implementing validation-report templates
+      from flywheel spec v0. One shared section tree with numbered slots:
+      [0 summary(usable, price_range, gaps) 1 scope(client, batch_id,
+      license, exclusions) 2 data_profile(scale, composition, spec_check)
+      3 quality(d2_frame_integrity, d3_traj_integrity, guardrail_fallbacks)
+      4 utility(mapping_signals, trainability_probe, cross_findings)
+      5 verification(wm_a_design, gain_reading) 6 valuation(price_range,
+      gap_list, stop_line) 7 method(criteria_version, compass_receipt,
+      audit)]. Level L1 renders sections 0-3, L2 adds 4, L3 adds 5-7. Each
+      slot is a dict(key, required, dtype, fill_hint). API: LEVELS dict,
+      SECTIONS dict, render(level, fills) returning markdown with unfilled
+      slots shown as [SLOT key]. Acceptance: render L2 with empty fills
+      returns markdown containing headers for sections 0-4 and at least one
+      [SLOT marker; render L4 raises ValueError.

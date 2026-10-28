@@ -1,0 +1,55 @@
+fix: address P0 security vulnerabilities (Task #37)
+
+Fixed 5 critical and high-severity security issues:
+
+🔴 C1: Code Injection Risk
+- Replaced eval() with asteval library in compute_executor.py
+- Prevents arbitrary code execution attacks
+- Safe mathematical expression evaluation only
+
+🟠 H1: Agent Registration Security
+- Added rate limiting (3/hour) to agent self-registration
+- Prevents spam and abuse of registration endpoint
+- Uses slowapi for IP-based rate limiting
+
+🟠 H2: Insecure Wallet Generation
+- Replaced custom wallet generation with eth_account library
+- Uses cryptographic standards for Ethereum key generation
+- Generates proper wallet addresses with valid private keys
+
+🟠 H3: OAuth CSRF Vulnerability
+- Implemented Redis-backed OAuth state validation
+- Stores state with 10-minute expiration
+- One-time use tokens prevent replay attacks
+
+🟠 H4: Weak Password Validation
+- Integrated Have I Been Pwned API
+- Checks passwords against 10+ billion breached credentials
+- Uses k-anonymity model for privacy
+
+Changes:
+- Modified: agent_engine/executors/compute_executor.py
+- Modified: api/agents.py
+- Modified: api/auth.py
+- Modified: requirements.txt
+- Added: tests/test_security_fixes.py (15+ test cases)
+- Added: SECURITY_FIXES.md (detailed documentation)
+- Added: SECURITY_FIXES_SUMMARY.md (executive summary)
+- Added: verify_security_fixes.py (verification script)
+
+Dependencies Added:
+- asteval>=0.9.31 (safe expression evaluation)
+- eth-account>=0.10.0 (secure wallet generation)
+
+Testing:
+- All fixes include comprehensive test coverage
+- 15+ new test cases added
+- All tests passing
+
+Security Impact:
+- Risk Level: Critical → Low
+- OWASP Top 10 compliance improved
+- No breaking API changes
+- Backward compatible
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>

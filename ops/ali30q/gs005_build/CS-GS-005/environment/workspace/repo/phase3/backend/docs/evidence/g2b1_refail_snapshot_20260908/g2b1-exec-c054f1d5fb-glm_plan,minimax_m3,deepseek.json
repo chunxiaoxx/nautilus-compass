@@ -1,0 +1,71 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "1905e3fac62f8a9896f1f0fa2b85de9a5ad2e202",
+  "reference_fix_commit": "c054f1d5fb00ce26889ea54234d8d5c72281058b",
+  "subject": "fix(fde): distinguish form metadata from publication",
+  "test_files": [
+   "phase3/backend/tests/test_fde_phase3_single_submission_forms.py"
+  ],
+  "source_files": [
+   "phase3/backend/scripts/refresh_phase3_expert_form.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/test_fde_phase3_single_submission_forms.py::test_expert_form_cli_is_scoped_to_sanitized_probe_or_confirmed_refresh",
+ "source_rel": "scripts\\refresh_phase3_expert_form.py",
+ "provider": "glm_plan,minimax_m3,deepseek",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 1792,
+    "output_tokens": 335,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 root] error: No valid patches in input (allow with \"--allow-empty\")\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 1851,
+    "output_tokens": 229,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_jybi5ocx\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 1 item\r\n\r\ntests/test_fde_phase3_single_submission_forms.py::test_expert_form_cli_is_scoped_to_sanitized_probe_or_confirmed_refresh FAILED [100%]\r\n\r\n================================== FAILURES ===================================\r\n___ test_expert_form_cli_is_scoped_to_sanitized_probe_or_confirmed_refresh ____\r\ntests\\test_fde_phase3_single_submission_forms.py:570: in test_expert_form_cli_is_scoped_to_sanitized_probe_or_confirmed_refresh\r\n    operation = module.result_output(\r\n                ^^^^^^^^^^^^^^^^^^^^\r\nE   AttributeError: module 'phase3_expert_form_recovery_cli_test' has no attribute 'result_output'\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_fde_phase3_single_submission_forms.py::test_expert_form_cli_is_scoped_to_sanitized_probe_or_confirmed_refresh\r\n============================== 1 failed in 0.49s ==============================\r\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 2174,
+    "output_tokens": 992,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 root] error: patch failed: phase3/backend/scripts/refresh_phase3_expert_form.py:42\nerror: phase3/backend/scripts/refresh_phase3_expert_form.py: patch does not apply\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 83.8,
+ "verdict_post_status": 200
+}

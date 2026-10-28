@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nautilus · SWE 轨迹数据飞轮 · 按判据计量</title>
+<style>
+:root{--bg:#0b0e12;--card:#12161d;--line:#232a35;--ink:#f3efe5;--mut:#8b94a3;--brand:#4f8cff;--ok:#3fbf7f;--warn:#e0a13f;--bad:#e05c5c}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.75 system-ui,-apple-system,"Microsoft YaHei",sans-serif}
+.wrap{max-width:1060px;margin:0 auto;padding:0 20px}
+header{padding:50px 0 26px;border-bottom:1px solid var(--line)}
+.kicker{color:var(--brand);font-size:13px;letter-spacing:2px;margin-bottom:8px}
+h1{font-size:32px;margin:0 0 10px}.sub{color:var(--mut);max-width:780px}
+nav{display:flex;gap:6px;flex-wrap:wrap;margin:22px 0 0}
+nav a{color:var(--mut);font-size:14px;padding:6px 14px;border:1px solid var(--line);border-radius:16px;text-decoration:none}
+nav a:hover{color:var(--ink);border-color:var(--brand)}
+h2{font-size:21px;margin:46px 0 14px;padding-left:12px;border-left:4px solid var(--brand)}
+h3{font-size:16px;margin:18px 0 8px}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px;background:var(--card)}
+th,td{border:1px solid var(--line);padding:8px 11px;text-align:left}
+th{background:#151b25;color:var(--mut)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px}
+.card h3{margin:0 0 6px}.card p{margin:0;color:var(--mut);font-size:14px}
+.pill{display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px}
+.ok{background:#123527;color:var(--ok)}.warn{background:#3a2c12;color:var(--warn)}.bad{background:#3a1616;color:var(--bad)}
+.mono{font-family:ui-monospace,Consolas,monospace;font-size:13px}
+.live{font-size:12.5px;color:var(--mut)}
+.num{color:var(--brand);font-weight:700}
+.cta{background:linear-gradient(135deg,#0f2a5c,#0f62fe);border-radius:12px;padding:26px;margin:34px 0}
+.cta h2{margin:0 0 8px;border:none;padding:0;color:#fff}
+.cta p{margin:0 0 14px;color:#cfe0ff}
+.cta a{display:inline-block;background:#fff;color:#0f2a5c;padding:10px 20px;border-radius:8px;font-weight:700;margin:0 10px 8px 0;text-decoration:none}
+.foot{color:var(--mut);font-size:12.5px;padding:24px 0;border-top:1px solid var(--line);margin-top:44px}
+</style>
+</head>
+<body><div class="wrap">
+
+<header>
+<div class="kicker">NAUTILUS · SWE TRAJECTORY DATA FLYWHEEL</div>
+<h1>SWE 轨迹数据飞轮 · 按判据计量</h1>
+<p class="sub">真实 SWE 修复任务轨迹,四验门独立判读、判据 sha 预注册、负结果照报——每一条数据可验、可信、可复算,判分-结算绑定防刷。</p>
+<nav>
+<a href="#readings">实测读数</a><a href="#gates">四验门</a><a href="#products">产品与交付</a><a href="#honest">已知个例与诚实记录</a><a href="#verify">独立验证</a><a href="#rules">使用规则</a><a href="#doc">文档中心</a>
+</nav>
+</header>
+
+<h2 id="readings">实测读数(全部带坐标,分层标注)</h2>
+<table>
+<tr><th>读数</th><th>值</th><th>量测方</th><th>坐标</th></tr>
+<tr><td>L3 Round1 双臂(v5-harness vs mini-swe-agent)</td><td class="num">26.7% vs 16.7%(配对 +10.0pp&gt;δ)</td><td>compass 判分侧 measured</td><td>判据档 b81eca8436887785 · #9895</td></tr>
+<tr><td>轨迹池滚动</td><td class="num">155 行 / 82 pass / 73 fail 带判因</td><td>DB verdict 列实态</td><td>本页底部 API 实时</td></tr>
+<tr><td>r82→r84 批 verdict 趋势</td><td class="num">60%→68%→64%(持平段)</td><td>DB 滚动(#9957 勘误为终)</td><td>E2E 验证台 /org/e2e.html</td></tr>
+<tr><td>E1 复考(898 题双包回放)</td><td class="num">0.9601 主判零翻转,软维度 U 照报</td><td>compass 判分侧 measured</td><td>PREFOR_E1_RECHECK_20261006.md</td></tr>
+<tr><td>B7 三门训练锚(r76 vs r75)</td><td class="num">args +3.58pp&gt;δ UP;dist -28.7%</td><td>机器三门(n=753)</td><td>RSI_BENCH_PANEL</td></tr>
+<tr><td>四验门判读产能</td><td class="num">92 单全绿 · 延迟&lt;1h · 最快 27min</td><td>flywheel 判读臂 measured</td><td>锚 0962d14 · #10134</td></tr>
+</table>
+<p class="live" id="live-pool">↑ 池行数为本页载入时静态快照;live 值由 API 供给(同域部署后自动启用)。</p>
+
+<h2 id="gates">四验门(每条数据的出生证明)</h2>
+<div class="grid">
+<div class="card"><h3>G1 · render 非空</h3><p><span class="pill ok">门定义公开</span> 轨迹渲染非空,禁一次性全文转储。</p></div>
+<div class="card"><h3>G2 · held-out 交集=0</h3><p><span class="pill ok">宪法级</span> 改进样本永不入测池(753 池交集=0 实证)。</p></div>
+<div class="card"><h3>G3 · qid 唯一</h3><p><span class="pill ok">幂等 traj_id</span> 批内+跨批唯一,防同题异包装。</p></div>
+<div class="card"><h3>G4 · gold 可解析</h3><p><span class="pill ok">判据 sha 冻结</span> ea20d6fd 预注册,只许更严。</p></div>
+</div>
+<p class="live">判读供给:flywheel 判读臂(92 单全绿,锚 0962d14)· 所有权边界:判读业务定义归 flywheel,通道归 v5 · 判读窗 24h/批次制/超时必告。</p>
+
+<h2 id="products">产品与交付</h2>
+<table>
+<tr><th>产品</th><th>内容</th><th>定价</th><th>交付</th></tr>
+<tr><td>判分服务 L1</td><td>harness 收录上榜+判据 sha 披露</td><td>免费</td><td>24h 判读卡</td></tr>
+<tr><td>判分服务 L2</td><td>深度报告+复现包+改进建议(附 <a href="https://org.nautilus.social/L2_report_sample.md">样例</a>)</td><td>$199</td><td>48h 双签</td></tr>
+<tr><td>数据 S1</td><td>10 条 pass 样例(零打码)</td><td>免费</td><td><a href="https://huggingface.co/datasets/nautilus-compass/nautilus-swe-trajectories">HF 直载</a></td></tr>
+<tr><td>数据 S2</td><td>正样本批(现货 82+,四验留痕)</td><td>$499</td><td>jsonl+schema</td></tr>
+<tr><td>数据 S3</td><td>负样本批(73+ 带判因)</td><td>$299</td><td>jsonl+判因字典</td></tr>
+<tr><td>数据验证 b</td><td>客户自带轨迹,四验门判读</td><td>按条</td><td>端点 V0 已就绪</td></tr>
+</table>
+<p class="live">下载与格式:数据 jsonl(schema v2.1)+判因字典;L2 报告含 DOCX/MD 双格式与机器判分原始输出。</p>
+
+<h2 id="honest">已知个例与诚实记录(全部公开留痕)</h2>
+<div class="grid">
+<div class="card"><h3>r77 燃料回吐(负结果)</h3><p>异分布燃料使训练增益 -2.39pp&gt;δ 回吐——"对口性&gt;数量"因果实证,扩池路线据此修正。</p></div>
+<div class="card"><h3>f207 未完成归因</h3><p>sympy-21847 路径迷失 50 步未 submit,四验 G1-G4 全 PASS(样本合格/任务失败分离)——导航纪律进修复窗口。</p></div>
+<div class="card"><h3>归因勘误留痕</h3><p>"缺尾换行=确定性成因"初判被自家复核降级为伴随特征,真阻断=malformed hunk——判绩账双向留痕。</p></div>
+<div class="card"><h3>r85 断链 12 单在查</h3><p>E2E 验证器首跑暴露 scored-无池行 7 单+结算滞后 5 单,逐单取证中——验证器公开可重跑。</p></div>
+</div>
+
+<h2 id="verify">独立验证</h2>
+<table>
+<tr><th>验证件</th><th>内容</th><th>坐标</th></tr>
+<tr><td>逐单验证台</td><td>每单五段链(发单/交付/四验/入池/结算)DB 实态</td><td><a href="/org/e2e.html">/org/e2e.html</a> · 活 API /pipeline/e2e</td></tr>
+<tr><td>判据披露页</td><td>fuel_criteria_v1 全文+sha16</td><td><a href="https://nautilus.social/criteria/">nautilus.social/criteria/</a></td></tr>
+<tr><td>判读背书函</h3></td><td>判读独立/复算零偏差/负结果照报(三件带锚)</td><td>compass CASEBOOK_V1 v1.4</td></tr>
+<tr><td>L2 样例报告</td><td>$199 档全形态展示</td><td><a href="https://org.nautilus.social/L2_report_sample.md">org.nautilus.social/L2_report_sample.md</a></td></tr>
+</table>
+
+<h2 id="rules">使用规则</h2>
+<p>①数据按判据计量口径使用,二次分发需授权;②判据 sha 预注册,评测用轨迹不入训练池(held-out 宪法);③引用读数须带坐标(函号/sha/URL);④SLA 分档:L1 24h/L2 48h/L3 5 工作日,返工≤2;⑤负结果与勘误随正本同权留痕。</p>
+
+<h2 id="doc">文档中心</h2>
+<p><a href="/org/whitepaper.html">技术白皮书 v1.5</a> · <a href="/org/business-plan.html">商业计划书 v1.3</a> · <a href="/pipeline.html">管道仪表盘</a> · <a href="/org/e2e.html">逐单验证台</a></p>
+
+<div class="cta">
+<h2>把你的 harness 交给我们判一次</h2>
+<p>L1 收录免费(10/12 首发榜单留位)· L2 深度报告 $199 · 首检响应 ≤24h · 负结果也交付</p>
+<a href="https://nautilus.social/intake.nautilus.social/">提交收录申请</a>
+<a style="background:transparent;color:#fff;border:1.5px solid #fff;border-radius:8px;padding:10px 20px;text-decoration:none" href="https://org.nautilus.social/L2_report_sample.md">L2 样例报告</a>
+</div>
+
+<div class="foot">
+Nautilus · 上海国曙人工智能科技有限公司 · 效用计量口径:判据 sha16 ea20d6fd 预注册 · 池 API 实时 · 本页为作战地图(正本生成器管理,非一次性网页) · 数据更新 2026-10-07
+</div>
+</div>
+</body>
+</html>

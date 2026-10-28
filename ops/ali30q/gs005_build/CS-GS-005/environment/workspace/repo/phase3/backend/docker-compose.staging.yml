@@ -1,0 +1,119 @@
+version: '3.8'
+
+services:
+  backend:
+    image: nautilus-backend:minimal
+    container_name: nautilus-backend-staging
+    ports:
+      - "8001:8001"
+    env_file:
+      - .env.staging
+    environment:
+      - ENVIRONMENT=staging
+      - DATABASE_URL=postgresql://nautilus:nautilus_staging_2024@postgres:5432/nautilus_staging
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+    volumes:
+      - ./logs:/app/logs
+      - ./data:/app/data
+    networks:
+      - nautilus-staging
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8001/health').read()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: nautilus-postgres-staging
+    environment:
+      POSTGRES_DB: nautilus_staging
+      POSTGRES_USER: nautilus
+      POSTGRES_PASSWORD: nautilus_staging_2024
+      POSTGRES_INITDB_ARGS: "-E UTF8"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data_staging:/var/lib/postgresql/data
+    networks:
+      - nautilus-staging
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nautilus"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: nautilus-redis-staging
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data_staging:/data
+    networks:
+      - nautilus-staging
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: nautilus-prometheus-staging
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data_staging:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    networks:
+      - nautilus-staging
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: nautilus-grafana-staging
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_ROOT_URL=http://localhost:3000
+    volumes:
+      - grafana_data_staging:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    networks:
+      - nautilus-staging
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+
+volumes:
+  postgres_data_staging:
+    driver: local
+  redis_data_staging:
+    driver: local
+  prometheus_data_staging:
+    driver: local
+  grafana_data_staging:
+    driver: local
+
+networks:
+  nautilus-staging:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.0.0/16

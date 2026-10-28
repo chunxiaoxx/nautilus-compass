@@ -1,0 +1,149 @@
+# Prometheus告警规则配置
+
+groups:
+  - name: backend_alerts
+    interval: 30s
+    rules:
+      # 服务可用性告警
+      - alert: ServiceDown
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: critical
+          component: backend
+        annotations:
+          summary: "服务下线"
+          description: "{{ $labels.instance }} 服务已下线超过1分钟"
+
+      # 高错误率告警
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+          component: backend
+        annotations:
+          summary: "高错误率检测"
+          description: "{{ $labels.instance }} 5xx错误率超过5%"
+
+      # 响应时间告警
+      - alert: HighResponseTime
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 1
+        for: 5m
+        labels:
+          severity: warning
+          component: backend
+        annotations:
+          summary: "响应时间过长"
+          description: "{{ $labels.instance }} P95响应时间超过1秒"
+
+      # CPU使用率告警
+      - alert: HighCPUUsage
+        expr: process_cpu_seconds_total > 0.8
+        for: 10m
+        labels:
+          severity: warning
+          component: backend
+        annotations:
+          summary: "CPU使用率过高"
+          description: "{{ $labels.instance }} CPU使用率超过80%"
+
+      # 内存使用告警
+      - alert: HighMemoryUsage
+        expr: process_resident_memory_bytes > 1073741824
+        for: 10m
+        labels:
+          severity: warning
+          component: backend
+        annotations:
+          summary: "内存使用过高"
+          description: "{{ $labels.instance }} 内存使用超过1GB"
+
+  - name: database_alerts
+    interval: 30s
+    rules:
+      # 数据库连接池告警
+      - alert: DatabasePoolExhausted
+        expr: database_pool_size - database_pool_available < 2
+        for: 5m
+        labels:
+          severity: critical
+          component: database
+        annotations:
+          summary: "数据库连接池耗尽"
+          description: "可用连接数少于2"
+
+      # 数据库查询慢
+      - alert: SlowDatabaseQueries
+        expr: rate(database_query_duration_seconds_sum[5m]) / rate(database_query_duration_seconds_count[5m]) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+          component: database
+        annotations:
+          summary: "数据库查询缓慢"
+          description: "平均查询时间超过500ms"
+
+  - name: redis_alerts
+    interval: 30s
+    rules:
+      # Redis连接失败
+      - alert: RedisConnectionFailed
+        expr: redis_connected == 0
+        for: 2m
+        labels:
+          severity: critical
+          component: redis
+        annotations:
+          summary: "Redis连接失败"
+          description: "无法连接到Redis服务器"
+
+      # Redis内存使用
+      - alert: RedisHighMemory
+        expr: redis_memory_used_bytes > 536870912
+        for: 10m
+        labels:
+          severity: warning
+          component: redis
+        annotations:
+          summary: "Redis内存使用过高"
+          description: "Redis内存使用超过512MB"
+
+  - name: websocket_alerts
+    interval: 30s
+    rules:
+      # WebSocket连接数过多
+      - alert: TooManyWebSocketConnections
+        expr: websocket_connections > 1000
+        for: 5m
+        labels:
+          severity: warning
+          component: websocket
+        annotations:
+          summary: "WebSocket连接数过多"
+          description: "当前连接数: {{ $value }}"
+
+  - name: blockchain_alerts
+    interval: 60s
+    rules:
+      # 区块链连接失败
+      - alert: BlockchainConnectionFailed
+        expr: blockchain_connected == 0
+        for: 5m
+        labels:
+          severity: warning
+          component: blockchain
+        annotations:
+          summary: "区块链连接失败"
+          description: "无法连接到区块链网络"
+
+      # 交易失败率高
+      - alert: HighTransactionFailureRate
+        expr: rate(blockchain_transactions_failed_total[10m]) / rate(blockchain_transactions_total[10m]) > 0.1
+        for: 10m
+        labels:
+          severity: warning
+          component: blockchain
+        annotations:
+          summary: "交易失败率过高"
+          description: "交易失败率超过10%"

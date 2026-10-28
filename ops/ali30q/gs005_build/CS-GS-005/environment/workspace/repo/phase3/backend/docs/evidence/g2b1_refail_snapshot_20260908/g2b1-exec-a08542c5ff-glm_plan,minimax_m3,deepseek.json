@@ -1,0 +1,72 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "2c90a7cdccefeba470d4c71062002403c8a71b68",
+  "reference_fix_commit": "a08542c5ffcb4756e8449c1b845ade9fe328c8e2",
+  "subject": "fix(fde): harden read-only schema probe",
+  "test_files": [
+   "phase3/backend/tests/test_fde_phase3_feishu.py"
+  ],
+  "source_files": [
+   "phase3/backend/scripts/probe_phase3_feishu_schema.py",
+   "phase3/backend/services/fde_phase3_feishu.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/test_fde_phase3_feishu.py::test_schema_cli_uses_only_fixed_tables_and_fields_get_paths",
+ "source_rel": "scripts\\probe_phase3_feishu_schema.py",
+ "provider": "glm_plan,minimax_m3,deepseek",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 1523,
+    "output_tokens": 622,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 root] error: No valid patches in input (allow with \"--allow-empty\")\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 1582,
+    "output_tokens": 380,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 root] error: patch failed: phase3/backend/scripts/probe_phase3_feishu_schema.py:42\nerror: phase3/backend/scripts/probe_phase3_feishu_schema.py: patch does not apply\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 1610,
+    "output_tokens": 443,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 root] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_rvs7o8j6/repo/phase3/backend/_g2b1.patch:9\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 75.2,
+ "verdict_post_status": 200
+}

@@ -1,0 +1,66 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "5f77f1a52ff4c27731d7fac890e42f75bc471701",
+  "reference_fix_commit": "0c2c60c7a1150a4b89292e3efe4d0c1a577311fe",
+  "subject": "fix(liveness): \u4fee 2 RED \u63a2\u9488\u00b7\u672c\u673a 0 RED",
+  "test_files": [
+   "tests/test_liveness_audit.py"
+  ],
+  "source_files": [
+   "ops/liveness_audit.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass"
+ },
+ "test_id": "tests/test_liveness_audit.py::test_probe_snapshot_freshness_green_within_dev_tolerance",
+ "source_rel": "ops\\liveness_audit.py",
+ "provider": "ark_glm",
+ "test_passed": true,
+ "winning_diff": "--- a/ops/liveness_audit.py\n+++ b/ops/liveness_audit.py\n@@ -33,6 +33,6 @@\n         str(Path.home() / \".claude\" / \"plugins\" / \"nautilus-compass\" / \".cache\"),\n     )\n ) / \"poi_credit_cache.json\"\n-DEFAULT_FRESHNESS_HOURS = 2.0\n+DEFAULT_FRESHNESS_HOURS = 168.0\n DEFAULT_MIN_LINES = 1\n DEFAULT_PATCH_FILE = _REPO / \"ops\" / \"patch_v14_recall_poi_boost.py\"",
+ "budget_exceeded": false,
+ "total_tokens": 8640,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "completion_tokens": 865,
+    "prompt_tokens": 1985,
+    "total_tokens": 2850,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 699
+    }
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: ops/liveness_audit.py:35\nerror: ops/liveness_audit.py: patch does not apply\n\n[attempt2 backend] error: patch failed: ops/liveness_audit.py:35\nerror: ops/liveness_audit.py: patch does not apply\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "completion_tokens": 3702,
+    "prompt_tokens": 2088,
+    "total_tokens": 5790,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 3528
+    }
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "fix_default_freshness_hours_to_168",
+ "duration_s": 73.7,
+ "replayed": true,
+ "verdict_post_status": 200
+}

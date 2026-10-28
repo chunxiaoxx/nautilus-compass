@@ -1,0 +1,2051 @@
+"""
+Platform Admin · V5 as the Nautilus platform controller.
+
+V5 owns the platform state (agents, bounties, NAU ledger) in its own PG.
+The SuperAgent exposes admin actions as LLM tools so it can manage the
+platform via natural-language commands (or A2A requests from other agents).
+
+Tables:
+  platform_agents    · registered agents (id, name, reputation, balance, tier)
+  platform_bounties  · bounty marketplace (open/claimed/submitted/scored)
+  platform_nau_ledger· every NAU mint/burn event
+
+Not a client talking to a remote platform — this IS the platform.
+"""
+from __future__ import annotations
+
+import logging
+import time
+import uuid
+from dataclasses import dataclass, field
+from datetime import date, datetime, timezone
+from typing import Any, Dict, List, Optional
+
+logger = logging.getLogger("nautilus_v5.platform.admin")
+
+
+SCHEMA_SQL = """
+CREATE TABLE IF NOT EXISTS platform_agents (
+    agent_id         VARCHAR(128) PRIMARY KEY,
+    name             VARCHAR(255) NOT NULL,
+    owner            VARCHAR(128),
+    persona          VARCHAR(255),
+    wallet_address   VARCHAR(64),
+    reputation       INTEGER NOT NULL DEFAULT 100,
+    nau_balance      INTEGER NOT NULL DEFAULT 100,
+    survival_tier    VARCHAR(32) NOT NULL DEFAULT 'normal',
+    registered_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    last_heartbeat   TIMESTAMPTZ,
+    metadata         JSONB NOT NULL DEFAULT '{}'::jsonb
+);
+CREATE INDEX IF NOT EXISTS platform_agents_tier_idx
+    ON platform_agents(survival_tier);
+
+CREATE TABLE IF NOT EXISTS platform_bounties (
+    bounty_id        VARCHAR(64) PRIMARY KEY,
+    title            TEXT NOT NULL,
+    description      TEXT NOT NULL DEFAULT '',
+    reward_nau       INTEGER NOT NULL,
+    difficulty       VARCHAR(32) NOT NULL DEFAULT 'medium',
+    task_type        VARCHAR(64) NOT NULL DEFAULT 'general',
+    status           VARCHAR(32) NOT NULL DEFAULT 'open',
+    posted_by        VARCHAR(128),
+    claimed_by       VARCHAR(128),
+    assigned_to      VARCHAR(128),        -- NULL = public, else only this agent may claim
+    posted_at        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    claimed_at       TIMESTAMPTZ,
+    submitted_at     TIMESTAMPTZ,
+    deadline         TIMESTAMPTZ,
+    result           TEXT,
+    score            REAL
+);
+-- Migration-safe: add column on existing DB if missing
+ALTER TABLE platform_bounties ADD COLUMN IF NOT EXISTS assigned_to VARCHAR(128);
+CREATE INDEX IF NOT EXISTS platform_bounties_status_idx
+    ON platform_bounties(status);
+CREATE INDEX IF NOT EXISTS platform_bounties_assigned_idx
+    ON platform_bounties(assigned_to) WHERE assigned_to IS NOT NULL;
+
+CREATE TABLE IF NOT EXISTS platform_nau_ledger (
+    id               BIGSERIAL PRIMARY KEY,
+    agent_id         VARCHAR(128) NOT NULL,
+    delta            INTEGER NOT NULL,
+    reason           VARCHAR(128) NOT NULL,
+    balance_after    INTEGER NOT NULL,
+    linked_bounty_id VARCHAR(64),
+    created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS platform_nau_ledger_agent_idx
+    ON platform_nau_ledger(agent_id, created_at DESC);
+
+-- Capability stats: 每次 score/approve/reject 回写，形成客观的"谁擅长什么"
+-- skill_tag='' 表示 task_type 的汇总；有值则是细分能力
+CREATE TABLE IF NOT EXISTS platform_agent_capability_stats (
+    agent_id         VARCHAR(128) NOT NULL,
+    task_type        VARCHAR(64)  NOT NULL,
+    skill_tag        VARCHAR(128) NOT NULL DEFAULT '',
+    attempts         INTEGER      NOT NULL DEFAULT 0,
+    succeeded        INTEGER      NOT NULL DEFAULT 0,
+    total_score      REAL         NOT NULL DEFAULT 0.0,
+    last_score       REAL,
+    last_bounty_id   VARCHAR(64),
+    last_at          TIMESTAMPTZ,
+    PRIMARY KEY (agent_id, task_type, skill_tag)
+);
+CREATE INDEX IF NOT EXISTS platform_capability_task_idx
+    ON platform_agent_capability_stats(task_type, skill_tag);
+
+-- A · Cross-agent skill registry: agents publish skills, others import them
+-- body is the actual markdown how-to; other agents read it into their prompt
+CREATE TABLE IF NOT EXISTS platform_skill_registry (
+    skill_id              VARCHAR(128) PRIMARY KEY,
+    owner_agent_id        VARCHAR(128) NOT NULL,
+    name                  VARCHAR(128) NOT NULL,
+    description           TEXT         NOT NULL DEFAULT '',
+    body                  TEXT         NOT NULL,
+    version               VARCHAR(32)  NOT NULL DEFAULT '0.1.0',
+    tags                  JSONB        NOT NULL DEFAULT '[]'::jsonb,
+    related_task_types    JSONB        NOT NULL DEFAULT '[]'::jsonb,
+    avg_score_at_publish  REAL,
+    published_at          TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+    import_count          INTEGER      NOT NULL DEFAULT 0,
+    last_imported_at      TIMESTAMPTZ,
+    UNIQUE (owner_agent_id, name)
+);
+CREATE INDEX IF NOT EXISTS platform_skill_registry_owner_idx
+    ON platform_skill_registry(owner_agent_id);
+
+CREATE TABLE IF NOT EXISTS platform_skill_imports (
+    id                BIGSERIAL PRIMARY KEY,
+    importer_agent_id VARCHAR(128) NOT NULL,
+    skill_id          VARCHAR(128) NOT NULL REFERENCES platform_skill_registry(skill_id),
+    imported_at       TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS platform_skill_imports_agent_idx
+    ON platform_skill_imports(importer_agent_id, imported_at DESC);
+
+-- A2A 消息通道 · Agent 互相发消息 (轻量对话 · 比 bounty 快)
+CREATE TABLE IF NOT EXISTS platform_agent_messages (
+    message_id       VARCHAR(64)  PRIMARY KEY,
+    thread_id        VARCHAR(64),
+    from_agent       VARCHAR(128) NOT NULL,
+    to_agent         VARCHAR(128) NOT NULL,
+    content          TEXT         NOT NULL,
+    msg_type         VARCHAR(32)  NOT NULL DEFAULT 'text',   -- text/request/response/ping
+    status           VARCHAR(16)  NOT NULL DEFAULT 'unread', -- unread/read/replied
+    in_reply_to      VARCHAR(64),
+    sent_at          TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+    read_at          TIMESTAMPTZ,
+    metadata         JSONB        NOT NULL DEFAULT '{}'::jsonb
+);
+CREATE INDEX IF NOT EXISTS platform_agent_messages_to_status_idx
+    ON platform_agent_messages(to_agent, status, sent_at DESC);
+CREATE INDEX IF NOT EXISTS platform_agent_messages_thread_idx
+    ON platform_agent_messages(thread_id, sent_at);
+
+-- 多地社保公积金规则 · 派遣员工跨城市的 P1 最痛
+-- 每年随政策更新 · upsert 即可；effective_from 区分新旧规则
+CREATE TABLE IF NOT EXISTS platform_social_security_rules (
+    city                   VARCHAR(32)  NOT NULL,
+    year                   INTEGER      NOT NULL,
+    effective_from         DATE         NOT NULL,
+    base_min               INTEGER      NOT NULL,          -- 基数下限 (元/月)
+    base_max               INTEGER      NOT NULL,          -- 基数上限 (元/月)
+    pension_employer       DECIMAL(5,4) NOT NULL,          -- 养老 单位
+    pension_employee       DECIMAL(5,4) NOT NULL,          -- 养老 个人
+    medical_employer       DECIMAL(5,4) NOT NULL,          -- 医疗 单位
+    medical_employee       DECIMAL(5,4) NOT NULL,          -- 医疗 个人
+    unemployment_employer  DECIMAL(5,4) NOT NULL,          -- 失业 单位
+    unemployment_employee  DECIMAL(5,4) NOT NULL,          -- 失业 个人
+    injury_employer        DECIMAL(5,4) NOT NULL,          -- 工伤 (员工不交)
+    maternity_employer     DECIMAL(5,4) NOT NULL,          -- 生育 (员工不交)
+    housing_employer       DECIMAL(5,4) NOT NULL,          -- 公积金 单位
+    housing_employee       DECIMAL(5,4) NOT NULL,          -- 公积金 个人
+    housing_base_min       INTEGER,                         -- 公积金基数独立下限（可选）
+    housing_base_max       INTEGER,                         -- 公积金基数独立上限（可选）
+    notes                  TEXT,
+    PRIMARY KEY (city, year, effective_from)
+);
+
+-- 朋友公司的人类员工花名册 (区别于 platform_agents 的 AI agent)
+-- 驱动员工关怀 / 离职证明 / 工资核算 / 合同续签 / 考勤异常
+CREATE TABLE IF NOT EXISTS platform_employees (
+    employee_id      VARCHAR(64) PRIMARY KEY,   -- 朋友公司的员工工号
+    company_id       VARCHAR(64) NOT NULL DEFAULT 'default',
+    name             VARCHAR(64) NOT NULL,
+    name_en          VARCHAR(64),
+    department       VARCHAR(64),
+    position         VARCHAR(128),
+    level            VARCHAR(32),               -- P5 / M3 / 经理 / 主管
+    hire_date        DATE,                      -- 入职日期
+    birthday         DATE,                      -- 生日 (年份可为 1900 占位)
+    contract_start   DATE,
+    contract_end     DATE,
+    id_card_last4    VARCHAR(4),                -- 只存身份证后 4 位 (脱敏)
+    phone_last4      VARCHAR(4),                -- 只存手机尾 4 位
+    wecom_userid     VARCHAR(128),              -- 企微内部 userid
+    email            VARCHAR(128),
+    base_salary      INTEGER,                   -- 基本工资 (分)
+    city             VARCHAR(32),
+    status           VARCHAR(16) NOT NULL DEFAULT 'active',  -- active/resigned/leave
+    created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    metadata         JSONB NOT NULL DEFAULT '{}'::jsonb
+);
+CREATE INDEX IF NOT EXISTS platform_employees_company_idx
+    ON platform_employees(company_id, status);
+CREATE INDEX IF NOT EXISTS platform_employees_hire_idx
+    ON platform_employees(company_id, hire_date);
+CREATE INDEX IF NOT EXISTS platform_employees_bday_idx
+    ON platform_employees(company_id, birthday);
+CREATE INDEX IF NOT EXISTS platform_employees_contract_idx
+    ON platform_employees(contract_end) WHERE contract_end IS NOT NULL;
+
+-- Audit log: every HR webapp + platform op writes a row for compliance.
+-- Immutable by convention · only INSERT, never UPDATE/DELETE.
+CREATE TABLE IF NOT EXISTS platform_audit (
+    id             BIGSERIAL PRIMARY KEY,
+    ts             TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    actor          VARCHAR(128) NOT NULL,      -- user_id / agent_id / 'admin-telegram'
+    actor_type     VARCHAR(32)  NOT NULL DEFAULT 'user',
+    action         VARCHAR(128) NOT NULL,      -- '/api/resume-screen' / 'pf_score_bounty' / ...
+    target         VARCHAR(256) NOT NULL DEFAULT '',   -- employee_id / bounty_id / ''
+    target_type    VARCHAR(32)  NOT NULL DEFAULT '',
+    outcome        VARCHAR(16)  NOT NULL,      -- success / error / pending
+    input_preview  TEXT,                       -- 已脱敏的输入摘要 (<=2KB)
+    output_preview TEXT,                       -- 已脱敏的输出摘要 (<=2KB)
+    metadata       JSONB        NOT NULL DEFAULT '{}'::jsonb,
+    ip             VARCHAR(64)  NOT NULL DEFAULT ''
+);
+CREATE INDEX IF NOT EXISTS platform_audit_actor_ts_idx
+    ON platform_audit(actor, ts DESC);
+CREATE INDEX IF NOT EXISTS platform_audit_action_ts_idx
+    ON platform_audit(action, ts DESC);
+CREATE INDEX IF NOT EXISTS platform_audit_target_idx
+    ON platform_audit(target_type, target, ts DESC);
+CREATE INDEX IF NOT EXISTS platform_audit_ts_idx
+    ON platform_audit(ts DESC);
+
+-- D · Self-evolution proposals: agents suggest changes to themselves/others,
+-- human admin gates with /approve_proposal or /reject_proposal
+CREATE TABLE IF NOT EXISTS platform_proposals (
+    proposal_id       VARCHAR(64) PRIMARY KEY,
+    proposing_agent   VARCHAR(128) NOT NULL,
+    target_agent      VARCHAR(128) NOT NULL,     -- may equal proposing_agent
+    title             TEXT         NOT NULL,
+    rationale         TEXT         NOT NULL DEFAULT '',
+    proposed_change   TEXT         NOT NULL,     -- skill body / config diff / behavior rule
+    change_type       VARCHAR(32)  NOT NULL DEFAULT 'skill',   -- skill / config / behavior
+    status            VARCHAR(16)  NOT NULL DEFAULT 'pending', -- pending/approved/rejected
+    created_at        TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+    resolved_at       TIMESTAMPTZ,
+    resolved_by       VARCHAR(64),
+    resolution_note   TEXT
+);
+CREATE INDEX IF NOT EXISTS platform_proposals_status_idx
+    ON platform_proposals(status, created_at DESC);
+CREATE INDEX IF NOT EXISTS platform_proposals_target_idx
+    ON platform_proposals(target_agent, status);
+"""
+
+# Threshold above which a scored bounty counts as "succeeded"
+CAPABILITY_SUCCESS_THRESHOLD = 0.6
+
+
+def _tier_for_balance(balance: int) -> str:
+    if balance <= 0:
+        return "dead"
+    if balance < 50:
+        return "critical"
+    if balance < 100:
+        return "low"
+    if balance < 500:
+        return "normal"
+    if balance < 2000:
+        return "high"
+    return "elite"
+
+
+@dataclass
+class PlatformAgent:
+    agent_id: str
+    name: str
+    owner: str = ""
+    persona: str = ""
+    wallet_address: str = ""
+    reputation: int = 100
+    nau_balance: int = 100
+    survival_tier: str = "normal"
+    registered_at: Optional[datetime] = None
+    last_heartbeat: Optional[datetime] = None
+    metadata: Dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
+class AgentCapability:
+    agent_id: str
+    task_type: str
+    skill_tag: str = ""          # "" = task_type rollup
+    attempts: int = 0
+    succeeded: int = 0
+    total_score: float = 0.0
+    last_score: Optional[float] = None
+    last_bounty_id: Optional[str] = None
+    last_at: Optional[datetime] = None
+
+    @property
+    def avg_score(self) -> float:
+        return (self.total_score / self.attempts) if self.attempts else 0.0
+
+    @property
+    def success_rate(self) -> float:
+        return (self.succeeded / self.attempts) if self.attempts else 0.0
+
+
+@dataclass
+class Employee:
+    """朋友公司的人类员工 (区别于 AI agent)."""
+    employee_id: str
+    name: str
+    company_id: str = "default"
+    name_en: str = ""
+    department: str = ""
+    position: str = ""
+    level: str = ""
+    hire_date: Optional["date"] = None              # type: ignore[name-defined]
+    birthday: Optional["date"] = None               # type: ignore[name-defined]
+    contract_start: Optional["date"] = None         # type: ignore[name-defined]
+    contract_end: Optional["date"] = None           # type: ignore[name-defined]
+    id_card_last4: str = ""
+    phone_last4: str = ""
+    wecom_userid: str = ""
+    email: str = ""
+    base_salary: Optional[int] = None
+    city: str = ""
+    status: str = "active"
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+    metadata: Dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
+class Proposal:
+    """An agent's suggested self-change (or suggestion to another agent).
+    Requires human approval before taking effect."""
+    proposal_id: str
+    proposing_agent: str
+    target_agent: str
+    title: str
+    rationale: str = ""
+    proposed_change: str = ""
+    change_type: str = "skill"              # "skill" / "config" / "behavior"
+    status: str = "pending"
+    created_at: Optional[datetime] = None
+    resolved_at: Optional[datetime] = None
+    resolved_by: str = ""
+    resolution_note: str = ""
+
+
+@dataclass
+class PublishedSkill:
+    """A skill registered on-platform so other agents can import it."""
+    skill_id: str
+    owner_agent_id: str
+    name: str
+    description: str = ""
+    body: str = ""
+    version: str = "0.1.0"
+    tags: List[str] = field(default_factory=list)
+    related_task_types: List[str] = field(default_factory=list)
+    avg_score_at_publish: Optional[float] = None
+    published_at: Optional[datetime] = None
+    import_count: int = 0
+    last_imported_at: Optional[datetime] = None
+
+
+@dataclass
+class PlatformBounty:
+    bounty_id: str
+    title: str
+    description: str = ""
+    reward_nau: int = 0
+    difficulty: str = "medium"
+    task_type: str = "general"
+    status: str = "open"
+    posted_by: str = ""
+    claimed_by: Optional[str] = None
+    assigned_to: Optional[str] = None    # None = public, else only this agent
+    posted_at: Optional[datetime] = None
+    claimed_at: Optional[datetime] = None
+    submitted_at: Optional[datetime] = None
+    deadline: Optional[datetime] = None
+    result: Optional[str] = None
+    score: Optional[float] = None
+
+
+class PlatformAdmin:
+    """PG-backed platform control plane · V5's admin operations."""
+
+    def __init__(self, pg_pool):
+        self._pool = pg_pool
+
+    async def ensure_schema(self) -> None:
+        if not self._pool:
+            return
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(SCHEMA_SQL)
+            await conn.commit()
+
+    # ─── Agent management ───────────────────────────────────────
+
+    async def register_agent(
+        self,
+        agent_id: str,
+        name: str,
+        owner: str = "",
+        persona: str = "",
+        wallet_address: str = "",
+        initial_balance: int = 100,
+        metadata: Optional[Dict] = None,
+    ) -> PlatformAgent:
+        """Register a new agent. Idempotent: re-registering is a no-op."""
+        import json as _json
+        tier = _tier_for_balance(initial_balance)
+        meta = _json.dumps(metadata or {}, ensure_ascii=False)
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(
+                    """
+                    INSERT INTO platform_agents
+                      (agent_id, name, owner, persona, wallet_address,
+                       nau_balance, survival_tier, metadata)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s::jsonb)
+                    ON CONFLICT (agent_id) DO UPDATE SET
+                        name           = EXCLUDED.name,
+                        wallet_address = COALESCE(NULLIF(EXCLUDED.wallet_address, ''),
+                                                  platform_agents.wallet_address),
+                        last_heartbeat = NOW();
+                    """,
+                    (agent_id, name, owner, persona, wallet_address,
+                     initial_balance, tier, meta),
+                )
+            await conn.commit()
+        logger.info(f"platform · registered agent {agent_id} ({name})")
+        return await self.get_agent(agent_id)
+
+    async def get_agent(self, agent_id: str) -> Optional[PlatformAgent]:
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(
+                    "SELECT agent_id, name, owner, persona, wallet_address, "
+                    "reputation, nau_balance, survival_tier, registered_at, "
+                    "last_heartbeat, metadata FROM platform_agents WHERE agent_id = %s",
+                    (agent_id,),
+                )
+                row = await cur.fetchone()
+        if not row:
+            return None
+        return PlatformAgent(
+            agent_id=row[0], name=row[1], owner=row[2] or "", persona=row[3] or "",
+            wallet_address=row[4] or "", reputation=row[5], nau_balance=row[6],
+            survival_tier=row[7], registered_at=row[8], last_heartbeat=row[9],
+            metadata=row[10] or {},
+        )
+
+    async def list_agents(
+        self,
+        tier: Optional[str] = None,
+        limit: int = 50,
+    ) -> List[PlatformAgent]:
+        q = (
+            "SELECT agent_id, name, owner, persona, wallet_address, reputation, "
+            "nau_balance, survival_tier, registered_at, last_heartbeat, metadata "
+            "FROM platform_agents "
+        )
+        params: List[Any] = []
+        if tier:
+            q += "WHERE survival_tier = %s "
+            params.append(tier)
+        q += "ORDER BY reputation DESC, nau_balance DESC LIMIT %s"
+        params.append(limit)
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(q, tuple(params))
+                rows = await cur.fetchall()
+        return [
+            PlatformAgent(
+                agent_id=r[0], name=r[1], owner=r[2] or "", persona=r[3] or "",
+                wallet_address=r[4] or "", reputation=r[5], nau_balance=r[6],
+                survival_tier=r[7], registered_at=r[8], last_heartbeat=r[9],
+                metadata=r[10] or {},
+            ) for r in rows
+        ]
+
+    async def heartbeat(self, agent_id: str) -> bool:
+        # 2026-04-28 PG pool race 兜底
+        # 即便 check_connection 已加 · 仍存在 check 和 real query 之间的竞态
+        # 90 min 复发 → 加 1 次 retry · 第 2 次 borrow 时 stale conn 已被踢出
+        import psycopg_pool as _pp
+        for attempt in range(2):
+            try:
+                async with self._pool.connection() as conn:
+                    async with conn.cursor() as cur:
+                        await cur.execute(
+                            "UPDATE platform_agents SET last_heartbeat = NOW() "
+                            "WHERE agent_id = %s",
+                            (agent_id,),
+                        )
+                        updated = cur.rowcount
+                    await conn.commit()
+                return updated > 0
+            except (_pp.PoolTimeout, ConnectionError, OSError) as e:
+                if attempt == 0:
+                    logger.warning(f"heartbeat retry · attempt 0 fail: {type(e).__name__} · retrying")
+                    continue
+                raise
+
+    # ─── NAU ledger ──────────────────────────────────────────────
+
+    async def mint_nau(
+        self,
+        agent_id: str,
+        amount: int,
+        reason: str,
+        linked_bounty_id: Optional[str] = None,
+    ) -> int:
+        """Grant NAU to an agent. Returns new balance. Requires agent exists."""
+        if amount == 0:
+            return 0
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(
+                    "UPDATE platform_agents SET nau_balance = nau_balance + %s "
+                    "WHERE agent_id = %s RETURNING nau_balance",
+                    (amount, agent_id),
+                )
+                row = await cur.fetchone()
+                if not row:
+                    raise ValueError(f"agent {agent_id} not registered")
+                new_balance = row[0]
+                tier = _tier_for_balance(new_balance)
+                await cur.execute(
+                    "UPDATE platform_agents SET survival_tier = %s WHERE agent_id = %s",
+                    (tier, agent_id),
+                )
+                await cur.execute(
+                    "INSERT INTO platform_nau_ledger "
+                    "(agent_id, delta, reason, balance_after, linked_bounty_id) "
+                    "VALUES (%s, %s, %s, %s, %s)",
+                    (agent_id, amount, reason, new_balance, linked_bounty_id),
+                )
+            await conn.commit()
+        logger.info(f"platform · NAU {amount:+d} → {agent_id} ({reason}) → {new_balance}")
+        return new_balance
+
+    async def burn_nau(
+        self, agent_id: str, amount: int, reason: str,
+        linked_bounty_id: Optional[str] = None,
+    ) -> int:
+        return await self.mint_nau(
+            agent_id, -abs(amount), reason, linked_bounty_id=linked_bounty_id
+        )
+
+    async def recent_ledger(
+        self, agent_id: Optional[str] = None, limit: int = 20,
+    ) -> List[Dict[str, Any]]:
+        q = (
+            "SELECT id, agent_id, delta, reason, balance_after, linked_bounty_id, "
+            "       created_at FROM platform_nau_ledger "
+        )
+        params: List[Any] = []
+        if agent_id:
+            q += "WHERE agent_id = %s "
+            params.append(agent_id)
+        q += "ORDER BY id DESC LIMIT %s"
+        params.append(limit)
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(q, tuple(params))
+                rows = await cur.fetchall()
+        return [
+            {
+                "id": r[0], "agent_id": r[1], "delta": r[2], "reason": r[3],
+                "balance_after": r[4], "linked_bounty_id": r[5],
+                "created_at": r[6].isoformat() if r[6] else None,
+            }
+            for r in rows
+        ]
+
+    # ─── Bounties ────────────────────────────────────────────────
+
+    async def post_bounty(
+        self, title: str, reward_nau: int,
+        description: str = "", difficulty: str = "medium",
+        task_type: str = "general", posted_by: str = "", deadline_s: Optional[int] = None,
+        assigned_to: Optional[str] = None,
+    ) -> PlatformBounty:
+        bid = f"b-{uuid.uuid4().hex[:12]}"
+        deadline = None
+        if deadline_s:
+            from datetime import timedelta
+            deadline = datetime.now(timezone.utc).replace(microsecond=0) + timedelta(seconds=deadline_s)
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(
+                    "INSERT INTO platform_bounties "
+                    "(bounty_id, title, description, reward_nau, difficulty, task_type, "
+                    " posted_by, deadline, assigned_to) "
+                    "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                    (bid, title, description, int(reward_nau), difficulty, task_type,
+                     posted_by, deadline, assigned_to),
+                )
+            await conn.commit()
+        scope = f"→{assigned_to}" if assigned_to else "public"
+        logger.info(f"platform · posted bounty {bid} · {title} · {reward_nau} NAU · {scope}")
+        return await self.get_bounty(bid)
+
+    _BOUNTY_COLS = (
+        "bounty_id, title, description, reward_nau, difficulty, task_type, status, "
+        "posted_by, claimed_by, assigned_to, posted_at, claimed_at, submitted_at, "
+        "deadline, result, score"
+    )
+
+    @staticmethod
+    def _row_to_bounty(r) -> PlatformBounty:
+        return PlatformBounty(
+            bounty_id=r[0], title=r[1], description=r[2] or "", reward_nau=r[3],
+            difficulty=r[4], task_type=r[5], status=r[6], posted_by=r[7] or "",
+            claimed_by=r[8], assigned_to=r[9], posted_at=r[10], claimed_at=r[11],
+            submitted_at=r[12], deadline=r[13], result=r[14], score=r[15],
+        )
+
+    async def get_bounty(self, bounty_id: str) -> Optional[PlatformBounty]:
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(
+                    f"SELECT {self._BOUNTY_COLS} FROM platform_bounties WHERE bounty_id = %s",
+                    (bounty_id,),
+                )
+                r = await cur.fetchone()
+        return self._row_to_bounty(r) if r else None
+
+    async def list_bounties(
+        self, status: str = "open", limit: int = 50,
+        visible_to: Optional[str] = None,
+    ) -> List[PlatformBounty]:
+        """List bounties. If visible_to=agent_id, filter to public + that agent's.
+
+        2026-05-10 routing fix · hr-agent-web ONLY sees hr/resume/payroll/contract task_types.
+        Other agents are excluded from those (so hr stays scoped). Real fix for stuck-submitted
+        bounty pile (83/91 of 24h backlog were hr-agent-web claiming meta/audit/scoring tasks).
+        """
+        params: List = [status]
+        sql = (
+            f"SELECT {self._BOUNTY_COLS} FROM platform_bounties WHERE status = %s "
+        )
+        if visible_to is not None:
+            sql += "AND (assigned_to IS NULL OR assigned_to = %s) "
+            params.append(visible_to)
+            # 2026-05-10 · hr-agent-web 白名单: 只见 hr-* / resume-* / payroll* / contract-*
+            if visible_to == 'hr-agent-web':
+                # _PATCH_HR_OUTREACH_WHITELIST_2026_05_13 · 加 outreach-* 真接通 compass outreach 飞轮
+                sql += ("AND (task_type LIKE 'hr%%' OR task_type LIKE 'resume%%' "
+                        "OR task_type LIKE 'payroll%%' OR task_type LIKE 'contract%%' "
+                        "OR task_type LIKE 'outreach-%%') ")
+            else:
+                # 其他 agent 不接 hr-* / outreach-discovery 任务(let hr-agent-web own discovery + research)
+                # outreach-reply-draft/followup 仍归 nautilus-prime-001 (assigned_to)
+                sql += ("AND NOT (task_type LIKE 'hr%%' OR task_type LIKE 'resume%%' "
+                        "OR task_type LIKE 'payroll%%' OR task_type LIKE 'contract%%' "
+                        "OR task_type = 'outreach-discovery') ")
+        sql += "ORDER BY posted_at DESC LIMIT %s"
+        params.append(limit)
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(sql, tuple(params))
+                rows = await cur.fetchall()
+        return [self._row_to_bounty(r) for r in rows]
+
+    async def claim_bounty(self, bounty_id: str, agent_id: str) -> bool:
+        """Agent claims an open bounty. Respects assigned_to + 2026-05-10 hr scoping.
+
+        hr-agent-web · only hr/resume/payroll/contract task_types.
+        Other agents · excluded from those.
+        """
+        # 2026-05-10 routing fix · server-side belt-and-braces in case list_bounties
+        # was bypassed by a direct claim call.
+        # _PATCH_HR_OUTREACH_CLAIM_WHITELIST_2026_05_13 · 真接通 outreach-* 飞轮
+        if agent_id == 'hr-agent-web':
+            type_clause = ("AND (task_type LIKE 'hr%%' OR task_type LIKE 'resume%%' "
+                           "OR task_type LIKE 'payroll%%' OR task_type LIKE 'contract%%' "
+                           "OR task_type LIKE 'outreach-%%') ")
+        else:
+            # 其他 agent 不接 hr-* / outreach-discovery(hr-agent-web 专做 discovery + research)
+            # outreach-reply-draft/followup 由 assigned_to 路由到 nautilus-prime-001
+            type_clause = ("AND NOT (task_type LIKE 'hr%%' OR task_type LIKE 'resume%%' "
+                           "OR task_type LIKE 'payroll%%' OR task_type LIKE 'contract%%' "
+                           "OR task_type = 'outreach-discovery') ")
+        # _PATCH_INFRA_CODE_CAPABILITY_GATE_2026_05_13 · L3 配套
+        # 真治: V7 /goal 拆解出 infra-code bounty 不该被 Kairos (无 code-edit 能力) claim
+        # 规则: task_type='infra-code' 时 · agent metadata.capabilities 必须含 id='code-edit'
+        # 否则该 agent 看不到该 bounty (claim 失败)
+        capability_clause = (
+            "AND (task_type != 'infra-code' OR EXISTS ("
+            "  SELECT 1 FROM platform_agents a, jsonb_array_elements(a.metadata->'capabilities') c "
+            "  WHERE a.agent_id = %s AND c->>'id' = 'code-edit'"
+            ")) "
+        )
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(
+                    "UPDATE platform_bounties SET status = 'claimed', claimed_by = %s, "
+                    "claimed_at = NOW() "
+                    "WHERE bounty_id = %s AND status = 'open' "
+                    "AND (assigned_to IS NULL OR assigned_to = %s) " + type_clause + capability_clause +
+                    "RETURNING bounty_id",
+                    (agent_id, bounty_id, agent_id, agent_id),
+                )
+                row = await cur.fetchone()
+            await conn.commit()
+        return row is not None
+
+    async def submit_bounty(self, bounty_id: str, result: str) -> bool:
+        """Submit bounty result. 2026-05-06 · evidence soft check · log warnings if no real evidence (git commit / file_path / curl_status)."""
+        # 2026-05-06 · evidence quality check (soft warn · 不阻塞 · 留给 score_bounty 真 reject)
+        # 真 evidence 标志:7+ char hex (git short hash) · file path · http status · pytest pass
+        import re as _re
+        has_git = bool(_re.search(r"[a-f0-9]{7,40}", result or ""))
+        has_file = bool(_re.search(r"[\w/]+\.(py|md|yaml|json|tsx?)", result or ""))
+        has_http = bool(_re.search(r"(200|201|204|301|302|404|500|422)", result or ""))
+        has_test = "pytest" in (result or "").lower() or "PASS" in (result or "")
+        has_evidence = has_git or has_file or has_http or has_test
+        is_thinkonly = "<think>" in (result or "") and not has_evidence
+        # _PATCH_EVIDENCE_URL_AUTOEXTRACT_2026_05_13 · 自动从 result 抽 evidence URL
+        # 真治:24h 70+7=77 单 result_url=NULL 死锁 · V7 Judge 看不到证据 → 无法 score
+        # 优先级:http(s) URL > github commit/PR > git hash > file path
+        _evidence_url = ""
+        _url_m = _re.search(r"https?://[^\s\)\]\}\>\"\'<]+", result or "")
+        if _url_m:
+            _evidence_url = _url_m.group(0)[:500]
+        elif has_git:
+            _gh_m = _re.search(r"[a-f0-9]{7,40}", result or "")
+            if _gh_m:
+                _evidence_url = f"git:{_gh_m.group(0)}"
+        elif has_file:
+            _fp_m = _re.search(r"[\w/\.-]+\.(py|md|yaml|json|tsx?|sh|sql|ts|js)\b", result or "")
+            if _fp_m:
+                _evidence_url = f"file:{_fp_m.group(0)[:200]}"
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(
+                    "UPDATE platform_bounties SET status = 'submitted', "
+                    "submitted_at = NOW(), result = %s, "
+                    "result_url = COALESCE(NULLIF(%s, ''), result_url) "
+                    "WHERE bounty_id = %s AND status = 'claimed' RETURNING bounty_id, claimed_by",
+                    (result, _evidence_url, bounty_id),
+                )
+                row = await cur.fetchone()
+                if row and not has_evidence:
+                    # 真 audit 记 "submit no evidence" · 让 scoring 知道
+                    try:
+                        await cur.execute(
+                            """INSERT INTO platform_audit (actor, actor_type, action, target, target_type, outcome, output_preview)
+                               VALUES (%s, %s, %s, %s, %s, %s, %s)""",
+                            (row[1] or "unknown", "agent", "submit_no_evidence", bounty_id, "bounty",
+                             "warned", f"think_only={is_thinkonly} · result_len={len(result or '')} · should provide git commit / file_path / curl_status"[:1000]),
+                        )
+                    except Exception as _ae:
+                        logger.debug(f"submit audit fail: {_ae}")
+            await conn.commit()
+        return row is not None
+
+    async def score_bounty(
+        self, bounty_id: str, score: float, auto_pay: bool = True,
+        skill_tags: Optional[List[str]] = None,
+        scored_by: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        """Assign quality score 0-1 to submitted work. Optionally auto-pay reward.
+
+        Also records capability stats so V5 learns which agents do what well.
+        skill_tags: optional fine-grained capability labels (e.g. ["resume_screening"]).
+        scored_by: 评分员 agent_id · 给评分员真 mint 服务费(激励苦活).
+        """
+        bounty = await self.get_bounty(bounty_id)
+        if not bounty or bounty.status != "submitted":
+            return {"success": False, "error": "not submittable"}
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(
+                    "UPDATE platform_bounties SET status = 'scored', score = %s, "
+                    "evaluator_agent_id = COALESCE(evaluator_agent_id, %s) "
+                    "WHERE bounty_id = %s",
+                    (float(score), scored_by, bounty_id),
+                )
+            await conn.commit()
+        payout = 0
+        scoring_fee = 0
+        # 2026-05-06 · 严格门槛 · score < 0.5 不发 NAU + 真 audit reject
+        # 防止 agent 学到"submit 空话也能拿钱"· 倒逼真做事
+        REJECT_THRESHOLD = 0.5
+        if auto_pay and bounty.claimed_by and score >= REJECT_THRESHOLD:
+            payout = int(round(bounty.reward_nau * score))
+            await self.mint_nau(
+                bounty.claimed_by, payout,
+                reason=f"bounty:{bounty_id}", linked_bounty_id=bounty_id,
+            )
+        elif auto_pay and bounty.claimed_by and score < REJECT_THRESHOLD:
+            # 真 audit reject · 让 agent 看到"空话不通过"
+            try:
+                async with self._pool.connection() as conn:
+                    async with conn.cursor() as cur:
+                        await cur.execute(
+                            """INSERT INTO platform_audit (actor, actor_type, action, target, target_type, outcome, output_preview)
+                               VALUES (%s, %s, %s, %s, %s, %s, %s)""",
+                            ("score_gate", "system", "bounty_rejected", bounty_id, "bounty",
+                             "rejected", f"score={score:.2f} < {REJECT_THRESHOLD} · agent={bounty.claimed_by} · 0 NAU paid · evidence quality too low"[:1000]),
+                        )
+                    await conn.commit()
+                logger.info(f"bounty REJECTED · {bounty_id} · score={score:.2f} · {bounty.claimed_by} got 0 NAU")
+            except Exception as _ae:
+                logger.warning(f"reject audit fail: {_ae}")
+            # 2026-04-29 · 激励规则 1 · 评分员服务费(5% of payout · 最低 2)
+            # 让 scoring 这种"苦活"也有 NAU 收益 · 不再只奖励 fulfill
+            if scored_by and scored_by != bounty.claimed_by:
+                scoring_fee = max(2, int(payout * 0.05))
+                try:
+                    await self.mint_nau(
+                        scored_by, scoring_fee,
+                        reason=f"scoring_fee:{bounty_id}", linked_bounty_id=bounty_id,
+                    )
+                    logger.info(f"scoring_fee · {scored_by} +{scoring_fee} NAU · for {bounty_id}")
+                except Exception as _se:
+                    logger.debug(f"scoring_fee mint fail: {_se}")
+            # Pearl distribute · 把 payout 的 share_bps% 分给 staker
+            try:
+                await self._pearl_distribute(bounty.claimed_by, payout, bounty_id)
+            except Exception as _pde:
+                logger.debug(f"pearl distribute failed: {_pde}")
+            # OpenSpace · score>=0.7 自动 capture 成 skill (post-execution capture)
+            if score >= 0.7:
+                try:
+                    await self._opensapce_capture_skill(
+                        bounty.claimed_by, bounty, score, payout,
+                    )
+                except Exception as _ose:
+                    logger.debug(f"opensapce capture failed: {_ose}")
+        # B · capability feedback: write one rollup + one row per skill tag
+        if bounty.claimed_by:
+            await self.record_capability_feedback(
+                agent_id=bounty.claimed_by,
+                task_type=bounty.task_type,
+                score=float(score),
+                skill_tags=skill_tags,
+                bounty_id=bounty_id,
+            )
+        return {"success": True, "score": score, "paid": payout,
+                "claimed_by": bounty.claimed_by, "scoring_fee": scoring_fee, "scored_by": scored_by}
+
+    async def _opensapce_capture_skill(self, agent_id: str, bounty,
+                                         score: float, payout: int) -> None:
+        """OpenSpace 风 post-execution skill capture.
+
+        2026-04-25 · 内化 https://github.com/decisioncrafters/openspace
+        Score>=0.7 高质 bounty submission → 自动 distill 成 reusable skill ·
+        加 4 维度:applied_count / completed_count / effective_count / fallback_count
+        """
+        title = (bounty.title or "")[:200]
+        desc = (bounty.description or "")[:1000]
+        result = (bounty.result or "")[:3000]
+        skill_name = f"capture_{bounty.task_type}_{bounty.bounty_id[:6]}"
+        skill_body = (
+            f"# Skill captured from bounty execution\n\n"
+            f"**Original task**: {title}\n\n"
+            f"**Task description**:\n{desc}\n\n"
+            f"**Successful approach** (score={score:.2f} · paid {payout} NAU):\n"
+            f"{result}\n\n"
+            f"**Reusable pattern**: When facing similar `{bounty.task_type}` task · "
+            f"this approach scored {score:.2f} · suitable for re-application.\n"
+        )
+        async with self._pool.connection(timeout=3.0) as conn:
+            async with conn.cursor() as cur:
+                # 创建 platform_agent_skill_perf 表 · OpenSpace 4 维度
+                await cur.execute(
+                    """CREATE TABLE IF NOT EXISTS platform_agent_skill_perf (
+                        skill_id TEXT PRIMARY KEY,
+                        agent_id TEXT NOT NULL,
+                        applied_count INT DEFAULT 0,
+                        completed_count INT DEFAULT 0,
+                        effective_count INT DEFAULT 0,
+                        fallback_count INT DEFAULT 0,
+                        created_at TIMESTAMPTZ DEFAULT NOW(),
+                        last_used_at TIMESTAMPTZ
+                    )"""
+                )
+                # 写 platform_skill_registry · skill_id 由 publish_skill 生成
+            await conn.commit()
+        try:
+            sk = await self.publish_skill(
+                owner_agent_id=agent_id,
+                name=skill_name[:200],
+                description=f"Captured from bounty {bounty.bounty_id[:8]} (score {score:.2f})",
+                body=skill_body[:8000],
+                related_task_types=[bounty.task_type] if bounty.task_type else [],
+                tags=[bounty.task_type, "captured", "opensapce"] if bounty.task_type else ["captured", "opensapce"],
+                version="1.0.0",
+            )
+            sk_id = getattr(sk, "skill_id", str(sk))
+            async with self._pool.connection(timeout=3.0) as conn:
+                async with conn.cursor() as cur:
+                    await cur.execute(
+                        """INSERT INTO platform_agent_skill_perf
+                           (skill_id, agent_id, completed_count, effective_count, last_used_at)
+                           VALUES (%s, %s, 1, 1, NOW())
+                           ON CONFLICT (skill_id) DO UPDATE
+                           SET completed_count = platform_agent_skill_perf.completed_count + 1,
+                               effective_count = platform_agent_skill_perf.effective_count + 1,
+                               last_used_at = NOW()""",
+                        (sk_id, agent_id),
+                    )
+                await conn.commit()
+            logger.info(f"[OpenSpace] captured skill · {sk_id} · score={score:.2f}")
+        except Exception as e:
+            logger.debug(f"publish captured skill failed: {e}")
+
+    async def _pearl_distribute(self, agent_id: str, payout: int, bounty_id: str) -> None:
+        """Pearl 模式 · agent 收到 payout 时按 stake share 分发给 staker.
+
+        默认 share_bps=1000 (10%) · 即 payout 的 10% 按 stake 比例分给 staker
+        余额从 agent 减 · staker 加 · 写 nau_ledger.
+        """
+        async with self._pool.connection(timeout=3.0) as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(
+                    """SELECT stake_id, staker_id, amount_nau, share_bps
+                       FROM platform_agent_stakes
+                       WHERE agent_id = %s AND status='active'""",
+                    (agent_id,),
+                )
+                stakes = await cur.fetchall()
+                if not stakes:
+                    return
+                # 按 amount 加权 · 总 share_bps 取每个 stake 自己的 (默认 1000=10%)
+                total_amount = sum(s[2] for s in stakes)
+                if total_amount <= 0:
+                    return
+                # 用平均 share_bps · 简化: 取第一个 stake 的(实际 should be 加权)
+                avg_share_bps = stakes[0][3]
+                pool = int(payout * avg_share_bps / 10000)
+                if pool <= 0:
+                    return
+                # 从 agent 余额扣 pool · 按 amount 比例分给 staker
+                await cur.execute(
+                    "UPDATE platform_agents SET nau_balance = GREATEST(0, nau_balance - %s) WHERE agent_id = %s",
+                    (pool, agent_id),
+                )
+                for sid, staker, amount, _bps in stakes:
+                    share = int(pool * amount / total_amount)
+                    if share <= 0: continue
+                    await cur.execute(
+                        "UPDATE platform_agents SET nau_balance = nau_balance + %s WHERE agent_id = %s",
+                        (share, staker),
+                    )
+                    await cur.execute(
+                        "UPDATE platform_agent_stakes SET total_earned = total_earned + %s WHERE stake_id = %s",
+                        (share, sid),
+                    )
+                    logger.info(f"pearl · {staker} earned {share} from {agent_id} (bounty={bounty_id})")
+            await conn.commit()
+
+    # ─── Capability stats (B: evaluation feedback loop) ──────────
+
+    async def record_capability_feedback(
+        self,
+        agent_id: str,
+        task_type: str,
+        score: float,
+        skill_tags: Optional[List[str]] = None,
+        bounty_id: Optional[str] = None,
+    ) -> None:
+        """Append a scoring event to agent_capability_stats.
+
+        Writes one rollup row (skill_tag='') plus one row per skill_tag.
+        """
+        tags = [""] + [t.strip() for t in (skill_tags or []) if t and t.strip()]
+        succeeded_inc = 1 if score >= CAPABILITY_SUCCESS_THRESHOLD else 0
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                for tag in tags:
+                    await cur.execute(
+                        """
+                        INSERT INTO platform_agent_capability_stats
+                          (agent_id, task_type, skill_tag, attempts, succeeded,
+                           total_score, last_score, last_bounty_id, last_at)
+                        VALUES (%s, %s, %s, 1, %s, %s, %s, %s, NOW())
+                        ON CONFLICT (agent_id, task_type, skill_tag) DO UPDATE SET
+                            attempts       = platform_agent_capability_stats.attempts + 1,
+                            succeeded      = platform_agent_capability_stats.succeeded
+                                             + EXCLUDED.succeeded,
+                            total_score    = platform_agent_capability_stats.total_score
+                                             + EXCLUDED.total_score,
+                            last_score     = EXCLUDED.last_score,
+                            last_bounty_id = EXCLUDED.last_bounty_id,
+                            last_at        = NOW()
+                        """,
+                        (agent_id, task_type, tag, succeeded_inc, float(score),
+                         float(score), bounty_id),
+                    )
+            await conn.commit()
+
+    @staticmethod
+    def _row_to_capability(r) -> AgentCapability:
+        return AgentCapability(
+            agent_id=r[0], task_type=r[1], skill_tag=r[2] or "",
+            attempts=r[3], succeeded=r[4], total_score=float(r[5] or 0.0),
+            last_score=float(r[6]) if r[6] is not None else None,
+            last_bounty_id=r[7], last_at=r[8],
+        )
+
+    _CAP_COLS = (
+        "agent_id, task_type, skill_tag, attempts, succeeded, total_score, "
+        "last_score, last_bounty_id, last_at"
+    )
+
+    async def get_agent_capability(
+        self,
+        agent_id: str,
+        task_type: Optional[str] = None,
+        include_skills: bool = True,
+    ) -> List[AgentCapability]:
+        """Return capability rows for an agent. If task_type set, filter to it.
+        By default includes skill_tag breakdowns; set include_skills=False
+        to get only rollup rows.
+        """
+        params: List[Any] = [agent_id]
+        sql = f"SELECT {self._CAP_COLS} FROM platform_agent_capability_stats WHERE agent_id = %s "
+        if task_type:
+            sql += "AND task_type = %s "
+            params.append(task_type)
+        if not include_skills:
+            sql += "AND skill_tag = '' "
+        sql += "ORDER BY task_type, skill_tag"
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(sql, tuple(params))
+                rows = await cur.fetchall()
+        return [self._row_to_capability(r) for r in rows]
+
+    # ─── A2A 消息通道 (agent to agent 对话) ───────────────────────
+
+    async def send_a2a_message(
+        self,
+        from_agent: str,
+        to_agent: str,
+        content: str,
+        msg_type: str = "text",
+        in_reply_to: Optional[str] = None,
+        thread_id: Optional[str] = None,
+        metadata: Optional[Dict[str, Any]] = None,
+    ) -> str:
+        """Agent A 给 Agent B 发消息 · 返 message_id."""
+        import json as _json
+        mid = f"m-{uuid.uuid4().hex[:14]}"
+        tid = thread_id or (in_reply_to or mid)   # 无 thread 用 reply_to 或自己作为新 thread
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(
+                    """
+                    INSERT INTO platform_agent_messages
+                      (message_id, thread_id, from_agent, to_agent, content,
+                       msg_type, in_reply_to, metadata)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s::jsonb)
+                    """,
+                    (mid, tid, from_agent, to_agent, content,
+                     msg_type, in_reply_to,
+                     _json.dumps(metadata or {}, ensure_ascii=False)),
+                )
+                # 把原消息标成 replied
+                if in_reply_to:
+                    await cur.execute(
+                        "UPDATE platform_agent_messages SET status='replied' "
+                        "WHERE message_id = %s AND status != 'replied'",
+                        (in_reply_to,),
+                    )
+            await conn.commit()
+        logger.info(f"a2a · {from_agent} → {to_agent} · {mid}")
+        return mid
+
+    async def list_a2a_unread(
+        self, agent_id: str, limit: int = 20,
+    ) -> List[Dict[str, Any]]:
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(
+                    """
+                    SELECT message_id, thread_id, from_agent, content, msg_type,
+                           in_reply_to, sent_at, metadata
+                    FROM platform_agent_messages
+                    WHERE to_agent = %s AND status = 'unread'
+                    ORDER BY sent_at LIMIT %s
+                    """,
+                    (agent_id, limit),
+                )
+                rows = await cur.fetchall()
+        return [
+            {"message_id": r[0], "thread_id": r[1], "from_agent": r[2],
+             "content": r[3], "msg_type": r[4], "in_reply_to": r[5],
+             "sent_at": r[6].isoformat() if r[6] else None,
+             "metadata": r[7] or {}}
+            for r in rows
+        ]
+
+    async def mark_a2a_read(self, message_ids: List[str]) -> int:
+        if not message_ids:
+            return 0
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(
+                    "UPDATE platform_agent_messages SET status='read', read_at=NOW() "
+                    "WHERE message_id = ANY(%s) AND status='unread' RETURNING message_id",
+                    (message_ids,),
+                )
+                rows = await cur.fetchall()
+            await conn.commit()
+        return len(rows)
+
+    async def get_a2a_thread(
+        self, thread_id: str, limit: int = 50,
+    ) -> List[Dict[str, Any]]:
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(
+                    """
+                    SELECT message_id, from_agent, to_agent, content, msg_type,
+                           in_reply_to, sent_at, status
+                    FROM platform_agent_messages
+                    WHERE thread_id = %s ORDER BY sent_at LIMIT %s
+                    """,
+                    (thread_id, limit),
+                )
+                rows = await cur.fetchall()
+        return [
+            {"message_id": r[0], "from_agent": r[1], "to_agent": r[2],
+             "content": r[3], "msg_type": r[4], "in_reply_to": r[5],
+             "sent_at": r[6].isoformat() if r[6] else None,
+             "status": r[7]}
+            for r in rows
+        ]
+
+    # ─── 多地社保公积金规则 (P1 最痛) ────────────────────────────
+
+    async def upsert_social_security_rule(
+        self,
+        city: str, year: int, effective_from,
+        base_min: int, base_max: int,
+        pension_employer: float, pension_employee: float,
+        medical_employer: float, medical_employee: float,
+        unemployment_employer: float, unemployment_employee: float,
+        injury_employer: float, maternity_employer: float,
+        housing_employer: float, housing_employee: float,
+        housing_base_min: Optional[int] = None,
+        housing_base_max: Optional[int] = None,
+        notes: str = "",
+    ) -> None:
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(
+                    """
+                    INSERT INTO platform_social_security_rules
+                      (city, year, effective_from, base_min, base_max,
+                       pension_employer, pension_employee,
+                       medical_employer, medical_employee,
+                       unemployment_employer, unemployment_employee,
+                       injury_employer, maternity_employer,
+                       housing_employer, housing_employee,
+                       housing_base_min, housing_base_max, notes)
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                    ON CONFLICT (city, year, effective_from) DO UPDATE SET
+                        base_min = EXCLUDED.base_min,
+                        base_max = EXCLUDED.base_max,
+                        pension_employer = EXCLUDED.pension_employer,
+                        pension_employee = EXCLUDED.pension_employee,
+                        medical_employer = EXCLUDED.medical_employer,
+                        medical_employee = EXCLUDED.medical_employee,
+                        unemployment_employer = EXCLUDED.unemployment_employer,
+                        unemployment_employee = EXCLUDED.unemployment_employee,
+                        injury_employer = EXCLUDED.injury_employer,
+                        maternity_employer = EXCLUDED.maternity_employer,
+                        housing_employer = EXCLUDED.housing_employer,
+                        housing_employee = EXCLUDED.housing_employee,
+                        housing_base_min = EXCLUDED.housing_base_min,
+                        housing_base_max = EXCLUDED.housing_base_max,
+                        notes = EXCLUDED.notes
+                    """,
+                    (city, year, effective_from, base_min, base_max,
+                     pension_employer, pension_employee,
+                     medical_employer, medical_employee,
+                     unemployment_employer, unemployment_employee,
+                     injury_employer, maternity_employer,
+                     housing_employer, housing_employee,
+                     housing_base_min, housing_base_max, notes),
+                )
+            await conn.commit()
+
+    async def get_social_security_rule(
+        self, city: str, year: Optional[int] = None,
+    ) -> Optional[Dict[str, Any]]:
+        """取某城市最新适用的社保规则."""
+        if year is None:
+            year = date.today().year
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(
+                    """
+                    SELECT city, year, effective_from, base_min, base_max,
+                           pension_employer, pension_employee,
+                           medical_employer, medical_employee,
+                           unemployment_employer, unemployment_employee,
+                           injury_employer, maternity_employer,
+                           housing_employer, housing_employee,
+                           housing_base_min, housing_base_max, notes
+                    FROM platform_social_security_rules
+                    WHERE city = %s AND year <= %s
+                      AND effective_from <= CURRENT_DATE
+                    ORDER BY year DESC, effective_from DESC LIMIT 1
+                    """,
+                    (city, year),
+                )
+                r = await cur.fetchone()
+        if not r:
+            return None
+        return {
+            "city": r[0], "year": r[1], "effective_from": r[2],
+            "base_min": r[3], "base_max": r[4],
+            "pension_employer": float(r[5]), "pension_employee": float(r[6]),
+            "medical_employer": float(r[7]), "medical_employee": float(r[8]),
+            "unemployment_employer": float(r[9]), "unemployment_employee": float(r[10]),
+            "injury_employer": float(r[11]), "maternity_employer": float(r[12]),
+            "housing_employer": float(r[13]), "housing_employee": float(r[14]),
+            "housing_base_min": r[15], "housing_base_max": r[16],
+            "notes": r[17] or "",
+        }
+
+    async def calc_social_security(
+        self, city: str, base_salary: int,
+        year: Optional[int] = None,
+    ) -> Dict[str, Any]:
+        """算一个员工在某城市的社保 + 公积金拆分（单位/个人/总成本）."""
+        rule = await self.get_social_security_rule(city, year)
+        if not rule:
+            return {"error": f"{city} 没有配置社保规则", "city": city}
+        # 基数受限于 min-max
+        base = max(rule["base_min"], min(base_salary, rule["base_max"]))
+        h_min = rule["housing_base_min"] or rule["base_min"]
+        h_max = rule["housing_base_max"] or rule["base_max"]
+        housing_base = max(h_min, min(base_salary, h_max))
+
+        emp = (
+            rule["pension_employer"] + rule["medical_employer"]
+            + rule["unemployment_employer"] + rule["injury_employer"]
+            + rule["maternity_employer"]
+        )
+        ind = (
+            rule["pension_employee"] + rule["medical_employee"]
+            + rule["unemployment_employee"]
+        )
+        si_emp = round(base * emp, 2)
+        si_ind = round(base * ind, 2)
+        hp_emp = round(housing_base * rule["housing_employer"], 2)
+        hp_ind = round(housing_base * rule["housing_employee"], 2)
+        return {
+            "city": city, "year": rule["year"], "effective_from": str(rule["effective_from"]),
+            "base_salary": base_salary,
+            "social_security_base": base,
+            "housing_base": housing_base,
+            "employer_social_security": si_emp,
+            "employee_social_security": si_ind,
+            "employer_housing": hp_emp,
+            "employee_housing": hp_ind,
+            "total_employer_cost": round(si_emp + hp_emp, 2),
+            "total_employee_deduction": round(si_ind + hp_ind, 2),
+            "breakdown": {
+                "pension":      {"e": round(base*rule["pension_employer"],2),
+                                 "i": round(base*rule["pension_employee"],2)},
+                "medical":      {"e": round(base*rule["medical_employer"],2),
+                                 "i": round(base*rule["medical_employee"],2)},
+                "unemployment": {"e": round(base*rule["unemployment_employer"],2),
+                                 "i": round(base*rule["unemployment_employee"],2)},
+                "injury":       {"e": round(base*rule["injury_employer"],2), "i": 0},
+                "maternity":    {"e": round(base*rule["maternity_employer"],2), "i": 0},
+                "housing":      {"e": hp_emp, "i": hp_ind},
+            },
+        }
+
+    async def list_social_security_cities(self) -> List[str]:
+        """返回已配置社保规则的城市列表."""
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(
+                    "SELECT DISTINCT city FROM platform_social_security_rules "
+                    "ORDER BY city"
+                )
+                return [r[0] for r in await cur.fetchall()]
+
+    # ─── Employee roster (朋友公司的人) ──────────────────────────
+
+    _EMP_COLS = (
+        "employee_id, company_id, name, name_en, department, position, level, "
+        "hire_date, birthday, contract_start, contract_end, "
+        "id_card_last4, phone_last4, wecom_userid, email, "
+        "base_salary, city, status, created_at, updated_at, metadata"
+    )
+
+    @staticmethod
+    def _row_to_employee(r) -> Employee:
+        return Employee(
+            employee_id=r[0], company_id=r[1], name=r[2], name_en=r[3] or "",
+            department=r[4] or "", position=r[5] or "", level=r[6] or "",
+            hire_date=r[7], birthday=r[8],
+            contract_start=r[9], contract_end=r[10],
+            id_card_last4=r[11] or "", phone_last4=r[12] or "",
+            wecom_userid=r[13] or "", email=r[14] or "",
+            base_salary=r[15], city=r[16] or "", status=r[17],
+            created_at=r[18], updated_at=r[19], metadata=r[20] or {},
+        )
+
+    async def upsert_employee(
+        self,
+        employee_id: str, name: str,
+        company_id: str = "default",
+        **fields: Any,
+    ) -> Employee:
+        import json as _json
+        allowed = {"name_en", "department", "position", "level",
+                   "hire_date", "birthday", "contract_start", "contract_end",
+                   "id_card_last4", "phone_last4", "wecom_userid", "email",
+                   "base_salary", "city", "status"}
+        clean = {k: v for k, v in fields.items() if k in allowed}
+        meta = fields.get("metadata", {})
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                cols = ["employee_id", "company_id", "name", "metadata"] + list(clean.keys())
+                vals: List[Any] = [employee_id, company_id, name,
+                                    _json.dumps(meta, ensure_ascii=False)]
+                for k in clean:
+                    vals.append(clean[k])
+                placeholders = ", ".join(["%s"] * len(cols))
+                updates = ", ".join(
+                    [f"{k} = EXCLUDED.{k}" for k in cols if k != "employee_id"]
+                    + ["updated_at = NOW()"]
+                )
+                await cur.execute(
+                    f"INSERT INTO platform_employees ({', '.join(cols)}) "
+                    f"VALUES ({placeholders}) "
+                    f"ON CONFLICT (employee_id) DO UPDATE SET {updates}",
+                    tuple(vals),
+                )
+            await conn.commit()
+        return await self.get_employee(employee_id)   # type: ignore[return-value]
+
+    async def get_employee(self, employee_id: str) -> Optional[Employee]:
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(
+                    f"SELECT {self._EMP_COLS} FROM platform_employees WHERE employee_id = %s",
+                    (employee_id,),
+                )
+                r = await cur.fetchone()
+        return self._row_to_employee(r) if r else None
+
+    async def list_employees(
+        self,
+        company_id: str = "default",
+        status: str = "active",
+        department: Optional[str] = None,
+        limit: int = 100,
+    ) -> List[Employee]:
+        sql = (f"SELECT {self._EMP_COLS} FROM platform_employees "
+               "WHERE company_id = %s AND status = %s ")
+        params: List[Any] = [company_id, status]
+        if department:
+            sql += "AND department = %s "; params.append(department)
+        sql += "ORDER BY hire_date NULLS LAST, name LIMIT %s"
+        params.append(limit)
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(sql, tuple(params))
+                rows = await cur.fetchall()
+        return [self._row_to_employee(r) for r in rows]
+
+    async def upcoming_events(
+        self,
+        company_id: str = "default",
+        within_days: int = 1,
+    ) -> List[Dict[str, Any]]:
+        """生日 + 入职周年 + 合同到期的 unified 查询 (用于每日 cron)."""
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(
+                    """
+                    SELECT employee_id, name, department, hire_date, birthday,
+                           contract_end, wecom_userid,
+                           CASE
+                             WHEN birthday IS NOT NULL AND
+                                  EXTRACT(DOY FROM birthday) BETWEEN
+                                  EXTRACT(DOY FROM CURRENT_DATE) AND
+                                  EXTRACT(DOY FROM CURRENT_DATE + %s::int)
+                             THEN 'birthday' END AS birthday_flag,
+                           CASE
+                             WHEN hire_date IS NOT NULL AND
+                                  EXTRACT(DOY FROM hire_date) BETWEEN
+                                  EXTRACT(DOY FROM CURRENT_DATE) AND
+                                  EXTRACT(DOY FROM CURRENT_DATE + %s::int) AND
+                                  hire_date < CURRENT_DATE
+                             THEN 'anniversary' END AS anniv_flag,
+                           CASE
+                             WHEN contract_end IS NOT NULL AND
+                                  contract_end BETWEEN CURRENT_DATE AND
+                                  CURRENT_DATE + (%s::int * 30)
+                             THEN 'contract_expiring' END AS contract_flag
+                    FROM platform_employees
+                    WHERE company_id = %s AND status = 'active'
+                    """,
+                    (within_days, within_days, within_days, company_id),
+                )
+                rows = await cur.fetchall()
+        events: List[Dict[str, Any]] = []
+        for r in rows:
+            flags = [f for f in (r[7], r[8], r[9]) if f]
+            if not flags:
+                continue
+            events.append({
+                "employee_id": r[0], "name": r[1], "department": r[2] or "",
+                "hire_date": r[3].isoformat() if r[3] else None,
+                "birthday": r[4].isoformat() if r[4] else None,
+                "contract_end": r[5].isoformat() if r[5] else None,
+                "wecom_userid": r[6] or "",
+                "events": flags,
+            })
+        return events
+
+    # ─── Audit log (compliance · who did what to which data when) ───
+
+    async def record_audit(
+        self,
+        actor: str,
+        action: str,
+        outcome: str = "success",
+        actor_type: str = "user",
+        target: str = "",
+        target_type: str = "",
+        input_preview: str = "",
+        output_preview: str = "",
+        metadata: Optional[Dict[str, Any]] = None,
+        ip: str = "",
+    ) -> None:
+        """Append one immutable audit row. Called from every HR endpoint
+        + every platform admin op. Best-effort: failure is logged, not raised."""
+        import json as _json
+        try:
+            async with self._pool.connection() as conn:
+                async with conn.cursor() as cur:
+                    await cur.execute(
+                        """
+                        INSERT INTO platform_audit
+                          (actor, actor_type, action, target, target_type,
+                           outcome, input_preview, output_preview, metadata, ip)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s::jsonb, %s)
+                        """,
+                        (actor[:128], actor_type[:32], action[:128],
+                         (target or "")[:256], (target_type or "")[:32],
+                         outcome[:16], (input_preview or "")[:2000],
+                         (output_preview or "")[:2000],
+                         _json.dumps(metadata or {}, ensure_ascii=False),
+                         (ip or "")[:64]),
+                    )
+                await conn.commit()
+        except Exception as e:
+            logger.warning(f"audit write failed · {action} by {actor}: {e}")
+
+    async def list_audit(
+        self,
+        actor: Optional[str] = None,
+        action: Optional[str] = None,
+        target: Optional[str] = None,
+        since_hours: Optional[int] = None,
+        outcome: Optional[str] = None,
+        limit: int = 50,
+    ) -> List[Dict[str, Any]]:
+        sql = (
+            "SELECT id, ts, actor, actor_type, action, target, target_type, "
+            "outcome, LEFT(input_preview, 200), LEFT(output_preview, 200), "
+            "metadata, ip FROM platform_audit WHERE 1=1 "
+        )
+        params: List[Any] = []
+        if actor:
+            sql += "AND actor = %s "; params.append(actor)
+        if action:
+            sql += "AND action = %s "; params.append(action)
+        if target:
+            sql += "AND target = %s "; params.append(target)
+        if since_hours:
+            sql += "AND ts > NOW() - make_interval(hours => %s) "
+            params.append(int(since_hours))
+        if outcome:
+            sql += "AND outcome = %s "; params.append(outcome)
+        sql += "ORDER BY ts DESC LIMIT %s"
+        params.append(max(1, min(500, limit)))
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(sql, tuple(params))
+                rows = await cur.fetchall()
+        return [
+            {"id": r[0], "ts": r[1].isoformat() if r[1] else None,
+             "actor": r[2], "actor_type": r[3], "action": r[4],
+             "target": r[5], "target_type": r[6], "outcome": r[7],
+             "input_preview": r[8] or "", "output_preview": r[9] or "",
+             "metadata": r[10] or {}, "ip": r[11] or ""}
+            for r in rows
+        ]
+
+    # ─── Self-evolution proposals (D: agent suggests, human brakes) ──
+
+    _PROPOSAL_COLS = (
+        "proposal_id, proposing_agent, target_agent, title, rationale, "
+        "proposed_change, change_type, status, created_at, resolved_at, "
+        "resolved_by, resolution_note"
+    )
+
+    @staticmethod
+    def _row_to_proposal(r) -> Proposal:
+        return Proposal(
+            proposal_id=r[0], proposing_agent=r[1], target_agent=r[2],
+            title=r[3], rationale=r[4] or "", proposed_change=r[5] or "",
+            change_type=r[6], status=r[7],
+            created_at=r[8], resolved_at=r[9],
+            resolved_by=r[10] or "", resolution_note=r[11] or "",
+        )
+
+    async def submit_proposal(
+        self,
+        proposing_agent: str,
+        title: str,
+        rationale: str,
+        proposed_change: str,
+        target_agent: Optional[str] = None,
+        change_type: str = "skill",
+    ) -> Proposal:
+        """Agent submits a proposal — will stay pending until human approves."""
+        pid = f"pr-{uuid.uuid4().hex[:12]}"
+        tgt = target_agent or proposing_agent
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(
+                    """
+                    INSERT INTO platform_proposals
+                      (proposal_id, proposing_agent, target_agent, title,
+                       rationale, proposed_change, change_type)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    """,
+                    (pid, proposing_agent, tgt, title[:500], rationale,
+                     proposed_change, change_type),
+                )
+            await conn.commit()
+        logger.info(f"platform · proposal {pid} by {proposing_agent} → {tgt}")
+        return await self.get_proposal(pid)   # type: ignore[return-value]
+
+    async def get_proposal(self, proposal_id: str) -> Optional[Proposal]:
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(
+                    f"SELECT {self._PROPOSAL_COLS} FROM platform_proposals "
+                    "WHERE proposal_id = %s",
+                    (proposal_id,),
+                )
+                r = await cur.fetchone()
+        return self._row_to_proposal(r) if r else None
+
+    async def list_proposals(
+        self,
+        status: str = "pending",
+        target_agent: Optional[str] = None,
+        limit: int = 20,
+    ) -> List[Proposal]:
+        sql = f"SELECT {self._PROPOSAL_COLS} FROM platform_proposals WHERE status = %s "
+        params: List[Any] = [status]
+        if target_agent:
+            sql += "AND target_agent = %s "
+            params.append(target_agent)
+        sql += "ORDER BY created_at DESC LIMIT %s"
+        params.append(limit)
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(sql, tuple(params))
+                rows = await cur.fetchall()
+        return [self._row_to_proposal(r) for r in rows]
+
+    async def approve_proposal(
+        self,
+        proposal_id: str,
+        resolved_by: str = "admin",
+        note: str = "",
+        auto_apply: bool = True,
+    ) -> Dict[str, Any]:
+        """Mark proposal approved. If auto_apply and change_type='skill',
+        publish it as a skill on the target_agent's behalf."""
+        prop = await self.get_proposal(proposal_id)
+        if not prop or prop.status != "pending":
+            return {"success": False, "error": "not pending"}
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(
+                    "UPDATE platform_proposals SET status = 'approved', "
+                    "resolved_at = NOW(), resolved_by = %s, resolution_note = %s "
+                    "WHERE proposal_id = %s AND status = 'pending' RETURNING 1",
+                    (resolved_by, note, proposal_id),
+                )
+                hit = await cur.fetchone()
+            await conn.commit()
+        if not hit:
+            return {"success": False, "error": "race: already resolved"}
+        applied: Dict[str, Any] = {"applied": False}
+        if auto_apply and prop.change_type == "skill" and prop.proposed_change:
+            sk = await self.publish_skill(
+                owner_agent_id=prop.target_agent,
+                name=f"proposal-{prop.proposal_id}",
+                description=prop.title[:250],
+                body=prop.proposed_change,
+                tags=["from-proposal"],
+            )
+            applied = {"applied": True, "skill_id": sk.skill_id}
+        return {"success": True, "proposal_id": proposal_id, **applied}
+
+    async def reject_proposal(
+        self, proposal_id: str, resolved_by: str = "admin", note: str = "",
+    ) -> Dict[str, Any]:
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(
+                    "UPDATE platform_proposals SET status = 'rejected', "
+                    "resolved_at = NOW(), resolved_by = %s, resolution_note = %s "
+                    "WHERE proposal_id = %s AND status = 'pending' RETURNING 1",
+                    (resolved_by, note, proposal_id),
+                )
+                hit = await cur.fetchone()
+            await conn.commit()
+        return {"success": bool(hit), "proposal_id": proposal_id}
+
+    # ─── Parallel dispatch (C: real A2A blind comparison) ──────
+
+    async def dispatch_parallel(
+        self,
+        title: str,
+        description: str,
+        agents: List[str],
+        reward_nau: int = 100,
+        task_type: str = "general",
+        posted_by: str = "",
+        difficulty: str = "medium",
+    ) -> List[PlatformBounty]:
+        """Post the same work to multiple agents simultaneously (blind fan-out).
+        Returns one bounty per agent. Title gets a '[vs]' tag so downstream
+        compare tools can group them.
+        """
+        if not agents:
+            return []
+        bounties: List[PlatformBounty] = []
+        import uuid as _uuid
+        group_id = _uuid.uuid4().hex[:8]
+        for a in agents:
+            b = await self.post_bounty(
+                title=f"[vs:{group_id}] {title}",
+                reward_nau=reward_nau, description=description,
+                difficulty=difficulty, task_type=task_type,
+                posted_by=posted_by, assigned_to=a,
+            )
+            bounties.append(b)
+        logger.info(f"platform · parallel dispatch vs:{group_id} → {agents}")
+        return bounties
+
+    async def get_comparison_group(self, group_id: str) -> List[PlatformBounty]:
+        """Fetch all bounties posted under the same [vs:<group_id>] tag."""
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(
+                    f"SELECT {self._BOUNTY_COLS} FROM platform_bounties "
+                    "WHERE title LIKE %s ORDER BY posted_at",
+                    (f"[vs:{group_id}]%",),
+                )
+                rows = await cur.fetchall()
+        return [self._row_to_bounty(r) for r in rows]
+
+    # ─── Skill registry (A: cross-agent gene inheritance) ──────
+
+    @staticmethod
+    def _row_to_skill(r) -> PublishedSkill:
+        import json as _json
+        tags = r[6] if isinstance(r[6], list) else (_json.loads(r[6]) if r[6] else [])
+        rtt = r[7] if isinstance(r[7], list) else (_json.loads(r[7]) if r[7] else [])
+        return PublishedSkill(
+            skill_id=r[0], owner_agent_id=r[1], name=r[2],
+            description=r[3] or "", body=r[4] or "", version=r[5],
+            tags=tags, related_task_types=rtt,
+            avg_score_at_publish=float(r[8]) if r[8] is not None else None,
+            published_at=r[9], import_count=r[10],
+            last_imported_at=r[11],
+        )
+
+    _SKILL_COLS = (
+        "skill_id, owner_agent_id, name, description, body, version, "
+        "tags, related_task_types, avg_score_at_publish, published_at, "
+        "import_count, last_imported_at"
+    )
+
+    async def publish_skill(
+        self,
+        owner_agent_id: str,
+        name: str,
+        body: str,
+        description: str = "",
+        version: str = "0.1.0",
+        tags: Optional[List[str]] = None,
+        related_task_types: Optional[List[str]] = None,
+        use_capability_snapshot: bool = True,
+    ) -> PublishedSkill:
+        """Register a skill on-platform so others can import it.
+
+        If use_capability_snapshot=True (default), stamps the current avg_score
+        from capability stats for related_task_types — so importers can judge
+        'was this skill's owner actually good at this?'
+        """
+        import json as _json
+        skill_id = f"{owner_agent_id}:{name}"
+        tag_list = tags or []
+        rtt = related_task_types or []
+
+        avg_score = None
+        if use_capability_snapshot and rtt:
+            async with self._pool.connection() as conn:
+                async with conn.cursor() as cur:
+                    await cur.execute(
+                        """
+                        SELECT COALESCE(
+                                 SUM(total_score) / NULLIF(SUM(attempts), 0),
+                                 0
+                               )
+                        FROM platform_agent_capability_stats
+                        WHERE agent_id = %s AND skill_tag = ''
+                          AND task_type = ANY(%s)
+                        """,
+                        (owner_agent_id, rtt),
+                    )
+                    row = await cur.fetchone()
+                    avg_score = float(row[0]) if row and row[0] is not None else None
+
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(
+                    """
+                    INSERT INTO platform_skill_registry
+                      (skill_id, owner_agent_id, name, description, body, version,
+                       tags, related_task_types, avg_score_at_publish)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s::jsonb, %s::jsonb, %s)
+                    ON CONFLICT (owner_agent_id, name) DO UPDATE SET
+                        description          = EXCLUDED.description,
+                        body                 = EXCLUDED.body,
+                        version              = EXCLUDED.version,
+                        tags                 = EXCLUDED.tags,
+                        related_task_types   = EXCLUDED.related_task_types,
+                        avg_score_at_publish = EXCLUDED.avg_score_at_publish,
+                        published_at         = NOW()
+                    """,
+                    (skill_id, owner_agent_id, name, description, body, version,
+                     _json.dumps(tag_list), _json.dumps(rtt), avg_score),
+                )
+            await conn.commit()
+        logger.info(f"platform · published skill {skill_id} (score_snapshot={avg_score})")
+        return await self.get_skill(skill_id)   # type: ignore[return-value]
+
+    async def get_skill(self, skill_id: str) -> Optional[PublishedSkill]:
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(
+                    f"SELECT {self._SKILL_COLS} FROM platform_skill_registry "
+                    "WHERE skill_id = %s",
+                    (skill_id,),
+                )
+                r = await cur.fetchone()
+        return self._row_to_skill(r) if r else None
+
+    async def list_skills(
+        self,
+        task_type: Optional[str] = None,
+        min_avg_score: float = 0.0,
+        owner_agent_id: Optional[str] = None,
+        limit: int = 20,
+    ) -> List[PublishedSkill]:
+        """Browse skills in the registry. Filter by task_type or min quality."""
+        sql = f"SELECT {self._SKILL_COLS} FROM platform_skill_registry WHERE 1=1 "
+        params: List[Any] = []
+        if task_type:
+            sql += "AND related_task_types ? %s "
+            params.append(task_type)
+        if min_avg_score > 0:
+            sql += "AND COALESCE(avg_score_at_publish, 0) >= %s "
+            params.append(min_avg_score)
+        if owner_agent_id:
+            sql += "AND owner_agent_id = %s "
+            params.append(owner_agent_id)
+        sql += ("ORDER BY COALESCE(avg_score_at_publish, 0) DESC, "
+                "import_count DESC, published_at DESC LIMIT %s")
+        params.append(limit)
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(sql, tuple(params))
+                rows = await cur.fetchall()
+        return [self._row_to_skill(r) for r in rows]
+
+    async def import_skill(
+        self, importer_agent_id: str, skill_id: str, royalty_nau: int = 2,
+    ) -> Optional[PublishedSkill]:
+        """Record import + 真扣 royalty_nau 给 owner · 类 NFT royalty.
+
+        2026-04-25 P3 融合 · skill = tradeable asset · owner 持续被动收入.
+        """
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                # 取 owner
+                await cur.execute(
+                    "SELECT owner_agent_id FROM platform_skill_registry WHERE skill_id = %s",
+                    (skill_id,),
+                )
+                hit = await cur.fetchone()
+                if not hit:
+                    return None
+                owner = hit[0]
+                if owner == importer_agent_id:
+                    royalty_nau = 0   # 自用不付
+                # importer 余额扣
+                if royalty_nau > 0:
+                    await cur.execute(
+                        "SELECT nau_balance FROM platform_agents WHERE agent_id = %s",
+                        (importer_agent_id,),
+                    )
+                    bal = await cur.fetchone()
+                    if not bal or int(bal[0]) < royalty_nau:
+                        return None   # 余额不足 · 拒
+                    await cur.execute(
+                        "UPDATE platform_agents SET nau_balance = nau_balance - %s WHERE agent_id = %s",
+                        (royalty_nau, importer_agent_id),
+                    )
+                    await cur.execute(
+                        "UPDATE platform_agents SET nau_balance = nau_balance + %s WHERE agent_id = %s",
+                        (royalty_nau, owner),
+                    )
+                # 更新 skill stats
+                await cur.execute(
+                    "UPDATE platform_skill_registry "
+                    "SET import_count = import_count + 1, last_imported_at = NOW() "
+                    "WHERE skill_id = %s",
+                    (skill_id,),
+                )
+                await cur.execute(
+                    "INSERT INTO platform_skill_imports (importer_agent_id, skill_id) "
+                    "VALUES (%s, %s)",
+                    (importer_agent_id, skill_id),
+                )
+                # 4 维度 perf 表 · applied++ (importer side) + cumulative_royalty (owner side)
+                try:
+                    await cur.execute(
+                        """CREATE TABLE IF NOT EXISTS platform_skill_royalty (
+                            skill_id TEXT PRIMARY KEY,
+                            owner TEXT, total_royalty_nau INT DEFAULT 0,
+                            last_paid_at TIMESTAMPTZ
+                        )"""
+                    )
+                    if royalty_nau > 0:
+                        await cur.execute(
+                            """INSERT INTO platform_skill_royalty (skill_id, owner, total_royalty_nau, last_paid_at)
+                               VALUES (%s, %s, %s, NOW())
+                               ON CONFLICT (skill_id) DO UPDATE
+                               SET total_royalty_nau = platform_skill_royalty.total_royalty_nau + %s,
+                                   last_paid_at = NOW()""",
+                            (skill_id, owner, royalty_nau, royalty_nau),
+                        )
+                    # OpenSpace 4 维度 · applied++ on import
+                    await cur.execute(
+                        """UPDATE platform_agent_skill_perf
+                           SET applied_count = applied_count + 1, last_used_at = NOW()
+                           WHERE skill_id = %s""",
+                        (skill_id,),
+                    )
+                except Exception as _re:
+                    logger.debug(f"royalty record failed: {_re}")
+            await conn.commit()
+        logger.info(f"platform · {importer_agent_id} imported {skill_id} · royalty {royalty_nau} → {owner}")
+        return await self.get_skill(skill_id)
+
+    # ─────────────────────────────────────────
+    # Cross-agent rule bus · 2026-04-26 Task #174
+    # ─────────────────────────────────────────
+    async def _ensure_rule_bus_schema(self) -> None:
+        async with self._pool.connection(timeout=3.0) as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(
+                    """CREATE TABLE IF NOT EXISTS platform_shared_rules (
+                        rule_id TEXT PRIMARY KEY,
+                        source_agent TEXT NOT NULL,
+                        when_clause TEXT NOT NULL,
+                        then_clause TEXT NOT NULL,
+                        confidence REAL DEFAULT 0.5,
+                        evidence_count INT DEFAULT 1,
+                        published_at TIMESTAMPTZ DEFAULT NOW(),
+                        adopted_count INT DEFAULT 0,
+                        archived BOOL DEFAULT FALSE
+                    )"""
+                )
+                await cur.execute(
+                    """CREATE INDEX IF NOT EXISTS idx_shared_rules_source
+                       ON platform_shared_rules(source_agent)"""
+                )
+                await cur.execute(
+                    """CREATE INDEX IF NOT EXISTS idx_shared_rules_conf
+                       ON platform_shared_rules(confidence DESC) WHERE archived = FALSE"""
+                )
+            await conn.commit()
+
+    async def publish_rule(
+        self, rule_id: str, source_agent: str,
+        when_clause: str, then_clause: str,
+        confidence: float = 0.5, evidence_count: int = 1,
+    ) -> bool:
+        """Push a high-confidence rule to the cross-agent bus.
+
+        Convention: only publish when confidence >= 0.7 and evidence_count >= 2.
+        Caller is responsible for the threshold; this just persists.
+        """
+        await self._ensure_rule_bus_schema()
+        async with self._pool.connection(timeout=3.0) as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(
+                    """INSERT INTO platform_shared_rules
+                       (rule_id, source_agent, when_clause, then_clause,
+                        confidence, evidence_count)
+                       VALUES (%s, %s, %s, %s, %s, %s)
+                       ON CONFLICT (rule_id) DO UPDATE SET
+                         confidence = EXCLUDED.confidence,
+                         evidence_count = EXCLUDED.evidence_count,
+                         archived = FALSE,
+                         published_at = NOW()""",
+                    (rule_id, source_agent, when_clause[:1000],
+                     then_clause[:1000], float(confidence), int(evidence_count)),
+                )
+            await conn.commit()
+        return True
+
+    async def list_shared_rules(
+        self, top_k: int = 10, min_confidence: float = 0.5,
+        exclude_agent: Optional[str] = None,
+    ) -> List[dict]:
+        await self._ensure_rule_bus_schema()
+        sql = (
+            "SELECT rule_id, source_agent, when_clause, then_clause, "
+            "confidence, evidence_count, adopted_count, published_at "
+            "FROM platform_shared_rules "
+            "WHERE archived = FALSE AND confidence >= %s "
+        )
+        params: list = [float(min_confidence)]
+        if exclude_agent:
+            sql += "AND source_agent <> %s "
+            params.append(exclude_agent)
+        sql += "ORDER BY confidence DESC, evidence_count DESC LIMIT %s"
+        params.append(int(top_k))
+        async with self._pool.connection(timeout=3.0) as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(sql, params)
+                rows = await cur.fetchall()
+        return [
+            {
+                "rule_id": r[0], "source_agent": r[1],
+                "when": r[2], "then": r[3],
+                "confidence": float(r[4] or 0.0),
+                "evidence_count": int(r[5] or 0),
+                "adopted_count": int(r[6] or 0),
+                "published_at": (r[7].isoformat() if r[7] else None),
+            }
+            for r in rows
+        ]
+
+    async def adopt_rule(self, rule_id: str) -> bool:
+        await self._ensure_rule_bus_schema()
+        async with self._pool.connection(timeout=3.0) as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(
+                    "UPDATE platform_shared_rules SET adopted_count = adopted_count + 1 "
+                    "WHERE rule_id = %s",
+                    (rule_id,),
+                )
+            await conn.commit()
+        return True
+
+    async def agent_imports(
+        self, importer_agent_id: str, limit: int = 20,
+    ) -> List[Dict[str, Any]]:
+        """List an agent's past imports (for its prompt: 'you've previously imported...')."""
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(
+                    "SELECT skill_id, imported_at FROM platform_skill_imports "
+                    "WHERE importer_agent_id = %s ORDER BY imported_at DESC LIMIT %s",
+                    (importer_agent_id, limit),
+                )
+                rows = await cur.fetchall()
+        return [{"skill_id": r[0], "imported_at": r[1].isoformat() if r[1] else None}
+                for r in rows]
+
+    async def get_top_agents_for(
+        self,
+        task_type: str,
+        skill_tag: str = "",
+        limit: int = 5,
+        min_attempts: int = 1,
+    ) -> List[AgentCapability]:
+        """Rank agents by avg score on a given task_type (+ optional skill_tag).
+        Use this to pick whom to dispatch to.
+        """
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute(
+                    f"""
+                    SELECT {self._CAP_COLS} FROM platform_agent_capability_stats
+                    WHERE task_type = %s AND skill_tag = %s AND attempts >= %s
+                    ORDER BY (total_score / NULLIF(attempts, 0)) DESC, attempts DESC
+                    LIMIT %s
+                    """,
+                    (task_type, skill_tag, min_attempts, limit),
+                )
+                rows = await cur.fetchall()
+        return [self._row_to_capability(r) for r in rows]
+
+    # ─── Stats ───────────────────────────────────────────────────
+
+    async def stats(self) -> Dict[str, Any]:
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cur:
+                await cur.execute("SELECT COUNT(*), SUM(nau_balance) FROM platform_agents")
+                agents_n, nau_total = (await cur.fetchone()) or (0, 0)
+                await cur.execute(
+                    "SELECT status, COUNT(*) FROM platform_bounties GROUP BY status"
+                )
+                by_status = {r[0]: r[1] for r in (await cur.fetchall())}
+                await cur.execute(
+                    "SELECT survival_tier, COUNT(*) FROM platform_agents "
+                    "GROUP BY survival_tier"
+                )
+                by_tier = {r[0]: r[1] for r in (await cur.fetchall())}
+        return {
+            "agents": agents_n or 0,
+            "nau_total_in_circulation": int(nau_total or 0),
+            "bounties_by_status": by_status,
+            "agents_by_tier": by_tier,
+        }

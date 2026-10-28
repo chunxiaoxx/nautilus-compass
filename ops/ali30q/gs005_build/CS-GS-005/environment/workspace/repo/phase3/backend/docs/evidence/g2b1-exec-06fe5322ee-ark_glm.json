@@ -1,0 +1,28 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "a8c83f4ad30e8c578730d09892c85db153455b81",
+  "reference_fix_commit": "06fe5322ee2f13c323fea506e9606d57403dbdc2",
+  "subject": "fix(control-plane): rerun_grounding_probe payload \u4f53\u91cf\u4e0a\u754c guard(C(n,k)>200k \u62d2\u7edd\u00b7\u9632\u7f6e\u6362\u679a\u4e3e DoS)\u00b7Task2 HIGH fix",
+  "test_files": [
+   "phase3/backend/tests/test_control_plane.py"
+  ],
+  "source_files": [
+   "phase3/backend/api/control_plane.py"
+  ]
+ },
+ "test_id": "phase3/backend/tests/test_control_plane.py::test_dispatch_rerun_rejects_oversized_payload",
+ "source_rel": "phase3/backend/api/control_plane.py",
+ "provider": "ark_glm",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

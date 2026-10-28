@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nautilus 技术白皮书 · Agent 评测与数据基础设施</title>
+<meta property="og:title" content="Nautilus 技术白皮书 · Agent 评测与数据基础设施">
+<meta property="og:description" content="v1.3 · 判据 sha 锚定 · 负结果照报 · 坐标可寻址">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<style>
+:root{--ink:#1a2233;--mut:#5b6472;--line:#e3e7ee;--brand:#0f62fe;--bg:#fbfcfe;--card:#fff}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.75 -apple-system,"Segoe UI","Microsoft YaHei",sans-serif;color:var(--ink);background:var(--bg)}
+header{background:linear-gradient(135deg,#0b1c3d,#0f62fe);color:#fff;padding:40px 24px 28px}
+header .wrap,main{max-width:980px;margin:0 auto;padding:0 20px}
+header h1{margin:0 0 6px;font-size:30px;letter-spacing:.5px}
+header p{margin:0;opacity:.85;font-size:14px}
+nav.toc{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 20px;margin:20px auto;max-width:940px;font-size:14px}
+nav.toc b{color:var(--mut)}
+nav.toc a{color:var(--brand);text-decoration:none;margin-right:14px;white-space:nowrap}
+main{padding-bottom:60px}
+h2{font-size:22px;border-left:4px solid var(--brand);padding-left:10px;margin-top:40px}
+h3{font-size:18px;margin-top:26px}
+table{border-collapse:collapse;width:100%;margin:14px 0;background:var(--card);font-size:14px}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:#f0f4fb}
+code{background:#eef1f6;padding:1px 5px;border-radius:4px;font-size:13.5px}
+pre{background:#0e1526;color:#dbe4ff;padding:14px;border-radius:8px;overflow:auto;font-size:13px}
+pre code{background:none;color:inherit}
+blockquote{margin:12px 0;padding:8px 14px;border-left:4px solid var(--line);color:var(--mut);background:var(--card)}
+hr{border:none;border-top:1px solid var(--line);margin:32px 0}
+footer{text-align:center;color:var(--mut);font-size:12.5px;padding:18px;border-top:1px solid var(--line)}
+a{color:var(--brand)}
+@media print{header{background:#0b1c3d}nav.toc{display:none}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><h1>Nautilus 技术白皮书 · Agent 评测与数据基础设施</h1><p>v1.3 · 判据 sha 锚定 · 负结果照报 · 坐标可寻址</p></div></header>
+<nav class="toc"><b>目录</b> <a href="#s1">1. 定位</a><a href="#s2">2. 系统总架构:一大系统+小系统群+涡轮增压</a><a href="#s3">2.5 自研 agent harness:特性与设计决策(十条,全部实战出生)</a><a href="#s4">3. 数据飞轮管道五段(已全链实证运行)</a><a href="#s5">4. 基础设施组件与接线清单(全部已存在,网站只做 UI)</a><a href="#s6">5. 评测体系(判分侧资产,compass 主责)</a><a href="#s7">6. 网站系统(唯一新建,三步切片,收敛到平台)</a><a href="#s8">7. 具身域实例(并入位)</a><a href="#s9">8. 安全与治理</a><a href="#s10">9. 实施路线图(挂 10/31 北极星)</a><a href="#s11">10. v0.1→v1 变更记录(呈批件)</a></nav>
+<main>
+<h1>Nautilus 技术白皮书 V1 · Agent 评测与数据基础设施</h1>
+<blockquote>
+<p>✅ <strong>用户终审通过(2026-10-07,三确认点均接受:§5.1 初稿随发 10/26 转正/§7 坐标先行全文后补/双臂读数发布口径)——本版为 10/12 开业定格版。</strong></p>
+<p>2026-10-06 升稿。基:UNIPAT_TECH_WHITEPAPER_V0.md(v0.1 征议稿,48h 三框回执已齐:#9845/#9856/#9870)。
+结构正本:docs/ORG_WHITEPAPER_MERGE_FRAMEWORK_V1_20261006.md(平台出,冲突消解六条预注册)。
+品牌(冲突消解#1):顶层=Nautilus;unipat=SWE 评测产品线名;flywheel=具身域产品线名。对外封面只出现 Nautilus。
+纪律:一切接线收敛到平台,不发散新系统;对外读数一律带坐标,口径一律库 verdict 列。</p>
+</blockquote>
+<h2 id="s1">1. 定位</h2>
+<p><strong>unipat-in-agent:为 DeepSeek/Xiaomi 及各 agent 研发企业做 agent harness 一站式「基准评测 → 能力提升」平台。</strong></p>
+<p>核心判断:agent 能力的天花板在 harness(结构)而非模型(2026-09-14 用户定调,"问题从来不在模型");市场上 harness 评测无中立一站平台,数据集质量参差无机器判读。我们已实证的独特资产=<strong>评测判读体系(不可写面+δ判读+held-out 宪法)×真实任务数据飞轮(四验门+判分结算绑定)×训练闭环(SFT/GRPO+复考锚)</strong>三环,今天市场上三环齐备者空缺。具身域同构实例见 §7。</p>
+<h2 id="s2">2. 系统总架构:一大系统+小系统群+涡轮增压</h2>
+<pre><code>┌─────────────────── 大系统(平台底盘,唯一对外门面)───────────────────┐
+│ 身份/结算/函件总线 A2A/榜单发布/判分服务入口/Assay登记·判据·复核      │
+│ 网站系统(本白皮书 §6,唯一新建 UI,三步切片)                            │
+└───────────────────────────┬───────────────────────────────────┘
+                            │ API/函件(一切接线收敛于此)
+   ┌────────────┬───────────┼───────────┬────────────┐
+   v5 框        compass 框   flywheel 框   soul/v7/kairos
+   执行引擎+数据  评测判分侧    具身数据线     组织生态框
+   (harness 主体  (基准/判据/   (数据出售先例)  (外围,弱耦合)
+    +飞轮承载端)   榜单/协议)
+   └────────────┴───────────┼───────────┴────────────┘
+                外部:飞轮对话框(客户触达/社区/HF 通道)
+</code></pre>
+<p>生态纪律(插件式生长,2026-10-06 用户拍板):各框产品/服务以"插件"形态长在底座五插座上(信箱总线/入册 registry/五件判据上架门/结算计量/发布面),四项齐全=组织资产;三条纪律=①新品不入册不算数②跨框只走总线禁私有集成③一个能力只有一个正本。阴(平台,承载+信用,不利己不接管框客户)阳(各框,生长,不离阴)双防线,平衡读数=台账跨框交换笔数(详本=docs/SIGNAL_CHAIN_CONSOLIDATION_V1_20261006.md §三·补)。</p>
+<p><strong>涡轮增压机制(大小系统之间的数据泵)</strong>:小系统(agent 框)在真实任务中产生轨迹(执行)→大系统固化(四验判读+入池+结算,判分-结算绑定防刷)→合格数据反哺训练引擎→复考锚验证提升→更强的执行臂接更难的任务。飞轮每转一圈,小系统能力与大系统数据资产同时增值——这是 10/05 单日入池 70 行、pass 率 36%→60% 的机制本质。</p>
+<h2 id="s3">2.5 自研 agent harness:特性与设计决策(十条,全部实战出生)</h2>
+<p><strong>定位:不是"调 API 的壳",是一台为"采集合格训练燃料"而设计的确定性工作机器。</strong></p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>特性</th>
+<th>设计决策(为什么)</th>
+<th>实证坐标</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>双工具极简工作面</strong></td>
+<td>只给 str_replace_editor+submit 两个工具——评测口径收敛律:工具面越大,弱模型迷航率越高</td>
+<td>mini_runner cfg.tools 实码·四家调研收敛律</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>50 步预算门控</strong></td>
+<td>无限步=金鱼死循环温床;硬预算强制"探索→收敛→submit"节奏,超限 unfinished 如实记</td>
+<td>r78-r85 八批 195 单口径统一</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>worktree 隔离沙箱</strong></td>
+<td>每单独立 git worktree 预置 base_commit,ENV 行同构——环境错配归因清零</td>
+<td>e5_workdirs 实证·r80 根修</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>apply 烟测门</strong></td>
+<td>patch 产出后 git apply --check 自验,5 题 100% 再全量——交付前拦格式废品</td>
+<td>Round2 三修 d2a05a70 首战 5/5</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Round2 根因三修</strong></td>
+<td>尾换行补齐/repo 外路径过滤/diff strip 语法件——自家 50% 格式失败的完整根因链公开</td>
+<td>42a877a7/d2a05a70·#10112</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>轨迹全程留痕</strong></td>
+<td>OpenAI messages 全文+final_patch+session 元数据,每步可回放——数据即过程,非结果快照</td>
+<td>trajectory.json schema</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>判分-结算绑定</strong></td>
+<td>fn_stake_on_claim 押金门+fuel_settle 自动结算——防刷:每个 verdict 都有真金代价</td>
+<td>platform_nau_ledger 今日 +711 NAU</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>失败也是燃料</strong></td>
+<td>fail 行强制带 failure_tag 判因——S3 负样本产品的原料线</td>
+<td>池 73 fail 行带判因·f207 归因</td>
+</tr>
+<tr>
+<td>9</td>
+<td><strong>防自喂规则</strong></td>
+<td>学生自产轨迹不入训,held-out 753 交集=0——防概念漂移与自我污染</td>
+<td>e5_fuel_sft_convert 口径·B7 宪法</td>
+</tr>
+<tr>
+<td>10</td>
+<td><strong>可靠性底座</strong></td>
+<td>心跳 30min 自报+隧道/网关双看门 5min 自愈+哨兵 30min——执行臂两单点已自动化</td>
+<td>heartbeat seq22·看门日志在档</td>
+</tr>
+</tbody>
+</table>
+<h3>2.5 自研 harness 十条特性(v5 正本坐标引,零改写)</h3>
+<p>双工具极简/50 步门控/worktree 隔离/apply 烟测门/Round2 三修/全程留痕/判分结算绑定/失败即燃料/防自喂/可靠性底座——每条带实码坐标,正本=v5@docs/HARNESS_RSI_CORE_SECTIONS_20261007.md(§2.5,2026-10-07 用户令并入)。</p>
+<h2 id="s4">3. 数据飞轮管道五段(已全链实证运行)</h2>
+<table>
+<thead>
+<tr>
+<th>段</th>
+<th>实现</th>
+<th>实证读数(10/06 更新)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>①供油(发单→执行)</td>
+<td>b-turbo-* 环境同构单(SWE-bench_Verified 判重双门)+v5-harness 50 步执行</td>
+<td>r78-r84 七批 175 单(r84 25 单 10/06 终读 64%,#9957 勘误口径);pass 36%→64%(格式修复三件+strip 根因修复首次实战验证,42a877a7/d2a05a70)</td>
+</tr>
+<tr>
+<td>②判读(四验门)</td>
+<td>flywheel 独立判读:render 非空/held-out 交集=0/qid 唯一/prompt 去重/gold 可解析</td>
+<td>判读延迟&lt;1h;35 单三战全绿,最快 27min;pass 单 100% 合格(完成即合格)</td>
+</tr>
+<tr>
+<td>③入池</td>
+<td>POST /trajectories(幂等 traj_id,全带正文+gates 留痕)</td>
+<td>池 <strong>155 行/82 pass/73 fail 带判因</strong>(DB 实测 2026-10-06 22:20,滚动口径;历史勘误 #9818 为 verdict 列口径正本)</td>
+</tr>
+<tr>
+<td>④结算</td>
+<td>fn_stake_on_claim 抱金门+fuel_settle(判分-结算绑定)</td>
+<td>自动结算零卡单;防刷实证:值守误催/假入池均已三源定谳勘误(内部结算细节不对外)</td>
+</tr>
+<tr>
+<td>⑤训练+复考</td>
+<td>SFT/GRPO(B7 三门 δ 判读)+复考锚(同锚同口径)</td>
+<td>r78 adapter 收官;E1 复考 10/13</td>
+</tr>
+</tbody>
+</table>
+<p>自动化:哨兵 30min tick(推树+四验函+清档)+结算轮+Phase A 件,无人值守闭环(10/05 起三 tick 实证)。</p>
+<h2 id="s5">4. 基础设施组件与接线清单(全部已存在,网站只做 UI)</h2>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>端点/坐标</th>
+<th>状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>派单</td>
+<td>GET/POST /bounties</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>执行网关</td>
+<td>18001 OpenAI 兼容(#3579 修复+chat 200 复测 10/06)</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>判读回写</td>
+<td>POST /judge/writeback、/assay/meter</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>判据正本</td>
+<td>GET /assay/criteria(sha16 ea20d6fd 预注册)</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>入池</td>
+<td>POST /trajectories</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>结算账本</td>
+<td>/balance、platform_nau_ledger</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>管道总览</td>
+<td>GET /pipeline</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>前端</td>
+<td>https://nautilus.social/pipeline.html(#9868 勘误坐标,200 实测)+unipat.html 榜页;dashboard 40e62a1ad runbook 上云在途</td>
+<td>✅(Step1 已上云)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="s6">5. 评测体系(判分侧资产,compass 主责)</h2>
+<ul>
+<li>四锚登记(RSI_BENCH_PANEL):B1 周考/B2 VB 长程/B7 J2-RL 三门/B4 周报,口径冻结+死期纪律</li>
+<li>不可写面:判分永不闭环自评;机器判(发射计数/三门/官方判分器)</li>
+<li>δ 判读:最小可判差 2.1pp(出处:RSI 线实测,非拍脑袋数);差值&lt;δ 记 flat 禁声称改进</li>
+<li>held-out 宪法:改进样本永不入测池(交集=0 实证)</li>
+<li>E1 金标:flywheel sealed 双包 1000 行=主包 600(重复 102,唯一 498 按 flywheel 297c10b 裁定计账)+OOD 400;sha16 6217ec05438a267e/bf6a71704f9ea84f(接入口径与三锚坐标:nautilus-v5 docs/E1_GOLDSOURCE_INGEST_20261005.md)</li>
+<li>分层标注条款(#9843):数据方自报(self-reported)与判分实测(measured)分层标注,不混列</li>
+<li>负结果照报:UMI 办结+G1-full 判读引为判读侧资产实证,G1-full 保持"负结果/未证实分支"定性(纪律强度的证据)</li>
+<li>L3 Round1 定版:双臂 v5-harness 26.7%/基线臂 16.7%,配对差分 +10.0pp&gt;δ(判分侧实测定版,10/12 榜单发布物,工件 sha16 锚定可复算)</li>
+<li>compass 域回执(#9845):§5 表述与判分侧实态实测对表全一致,可入 v1</li>
+</ul>
+<h3>5.1 判分模型 NACRE(机制章·NACRE-ALI 对齐会初稿,v1.5 升格)</h3>
+<ul>
+<li>判分原生判分模型——judgment-native 判分器——1454 判例语料→1.7B 基座 LoRA,主判精度 88.51%(三门 J1/J2/J7 全绿,2026-09-30 实测);反例基线=纯 prompt 工程 66.2%(压缩进权重是量级差异);输出<strong>三态判定 PASS/FAIL/UNVERIFIABLE</strong>(判不动就明说=交付物);REG-100 零翻转门(delta 不得翻转 100 金标旧案,registry 棘轮);复算协议(任何人按公开命令独立复验);部署实测热路径 P95 42.2ms/118 条@s;PyPI <code>nautilus-compass</code>(assay)判据校验 CLI 公网可装。定位对照 Metis(记忆原生基模):NACRE=判分原生,压的是"判分纪律与判例"非"用户经验",验证方生态位空缺 [实测对照]。正本=compass@9f9a6e04 docs/soul/NACRE_WHITEPAPER_V1.md(证据三层标注,全文可复算);14B 升格 smoke 五门全绿,复算待执行(U5 门未过前不宣称"更大=更准")。<strong>对外口径(NACRE-ALI 议题④签):判读免费,判后装订收费</strong>;发布时序=随 10/12 开业首发(议题①未闭合处以"对齐会初稿"标注,不阻塞)</li>
+</ul>
+<h3>5.2 RSI 递归自提升能力(闭环在转,每日有账)</h3>
+<p><strong>定义</strong>:采集(成功与失败都是燃料)→ SFT+RL 强化 → 同锚复考 → 更强的执行臂接更难的任务。</p>
+<p><strong>三环实证</strong>:
+1. <strong>采集环</strong>:今日 +57 行(池 155/82),八批 195 单口径统一;
+2. <strong>训练环</strong>:B7 args +3.58pp&gt;δ UP 实证(r76 前缀约束),W2 训练集 1465 样本/72 qid 就绪(flywheel 4090 排期 10/13);
+3. <strong>判读环</strong>:四验 92 单全绿+NACRE 判分模型 88.51% 三态(compass 独立判读,判分-实现分离)。</p>
+<p><strong>诚实边界</strong>(负结果照报):趋势 60→68→64% 持平段——瓶颈移到题目难度×模型能力,训练段是打开下一级的关键,当前未跑;E1 复考 0.9601&lt;97% 门 U 态照报;递归闭环"圈数"尚少(八批),RSI 声明以"闭环在转+每日有账"为限,不宣称已收敛。</p>
+<h3>5.2 RSI 递归自提升(v5 正本坐标引,零改写)</h3>
+<p>采集燃料→SFT+RL→复考锚三环实证+诚实边界;涡轮增压三表工程化(v5_pipe 三表+逐单断链显形)。正本=v5@docs/HARNESS_RSI_CORE_SECTIONS_20261007.md(§5.2)。BYZ 判读段留 compass 位。</p>
+<h2 id="s7">6. 网站系统(唯一新建,三步切片,收敛到平台)</h2>
+<p><strong>Step 1 · Pipeline Dashboard——已上云</strong>:只读仪表盘=五段实时读数+四验 gates 留痕样例+去敏轨迹浏览。https://nautilus.social/pipeline.html(200 实测,#9868 勘误终坐标;旧 data-portal 地址不再引用);dashboard 40e62a1ad runbook 上云+门面导航挂口在途(平台主责,#9856-一①)。价值:判据③外部可懂样例+L3 榜发布物+飞轮活体演示。</p>
+<p><strong>Step 2 · 自助发单台(10/20 预演窗)</strong>:登录→配置题源(域/难度/数量)→POST /bounties→交付+四验实时跟踪。内部 dogfood 优先(r83 起自用),外部=托管管道入口。</p>
+<p><strong>Step 3 · c 档全托管(L2 首单后 2-3 周)</strong>:客户 agent endpoint(OpenAI 兼容)接入→我方判读/结算/入池全链服务=多租户数据管道系统。</p>
+<h2 id="s8">7. 具身域实例(并入位)</h2>
+<p>定位句(#9836):与 SWE 线平行+共享验证内核(预注册判据 sha/独立判分/负结果照报),组织基建共享。</p>
+<h3>7.1 实证素材(坐标全引,零改写;flywheel v3 定稿后全文并入)</h3>
+<table>
+<thead>
+<tr>
+<th>件</th>
+<th>坐标</th>
+<th>一句话结论</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>判据预注册</td>
+<td>flywheel@runtime/goldset_a3/PREREG_goldset_a3_v1.md(lock d26942b)</td>
+<td>lock 前不出数,判据先行</td>
+</tr>
+<tr>
+<td>标注真引擎首跑 v1(负结果照报)</td>
+<td>@e83e7e6 · accuracy_report_v1.md</td>
+<td>n=10 四率 R1 40%/R2 10%/R3 0.083/R4 44%;<strong>"格式 guard 50/50 vs 语义 40%"=表面绿病灶定量坐实</strong>(方法学负结果)</td>
+</tr>
+<tr>
+<td>终版 v2 三版对照</td>
+<td>@runtime/goldset_a3/accuracy_report_v2.md</td>
+<td>v2b 对齐模式 R1≈90%&gt;预注册线 80%——¥40-50/集校验型标注解冻;v2a 盲标 60% 不单卖</td>
+</tr>
+<tr>
+<td>量生产线</td>
+<td>@d284422 · runtime/staff_batch50_annotator</td>
+<td>50/50 集 771s;engine sha16 654c1eb1ff3364ec;27 集任务名空=DROID 元数据现状如实注</td>
+</tr>
+<tr>
+<td>对照集收口</td>
+<td>@3f69b49</td>
+<td>n=10→30(30 集/240 帧零重复;含清单覆盖事故修复)</td>
+</tr>
+<tr>
+<td>WeeklyDigest 周报化</td>
+<td>@8109d72 · WEEKLY_DIGEST.md #1</td>
+<td>HF 公开仓 GET 200 实证;节拍每周一,下次 10/13</td>
+</tr>
+<tr>
+<td>条线③方案</td>
+<td>flywheel@docs/line_schemes/LINE_SCHEME_EMBODIED_QC_DATA_V1_20261006.md(#10113)</td>
+<td>具身质检+数据线(B/A)七段示范,五件判据:A3 全齐/唯一硬缺口=首单</td>
+</tr>
+</tbody>
+</table>
+<p>双域分工(具身=flywheel 正本):与 SWE 线平行+共享验证内核(预注册判据 sha/独立判分/负结果照报),组织基建共享(#9836);SWE 线与具身线在架构图中为并列产品线(§2)。正本声明:flywheel 白皮书 v3(#9876 在途)用户批后零改写全文并入本节;本节=坐标装订层(合并不改写原则 4)。</p>
+<h3>7.2 禅心域(陪伴智能,并入位)</h3>
+<p>zenmind 交付《一魂多体:陪伴智能的软硬一体技术白皮书 v2》+《商业计划书 v1》(函 #10164,commit e7370ab;remote 坐标候补,交付实态经用户 10/7 晨确认):禅心软件魂(四服务一宪法)+栖达硬件体(形态判据/¥7k 底盘/端云分工)+Nautilus 平台座(CUDA 插座);核心架构决策=<strong>一魂多体</strong>(人格与记忆云侧统一,身体分档分发,关系不随身体丢失);数据脱敏闭环+双规合规;动工判据(软件=漏斗非零/硬件=参与者≥10,软硬互不阻塞)。装订层坐标引,全文零改写待其仓坐标入库后挂接。</p>
+<h2 id="s9">8. 安全与治理</h2>
+<ul>
+<li>去敏:8 类敏感模式扫描,样例层零打码(命中即排除);redact 通道全池覆盖(S2=45/S3=53,10/05)</li>
+<li>判读不可写面+判分-结算绑定(防刷实证:值守误催/假入池均已三源定谳勘误)</li>
+<li>判据 sha 棘轮:判据只增不改,历史判读可复算(判分侧与具身域判据库同规)</li>
+<li>数据主权:轨迹正本在组织 git 树(sha 留痕),池行带 gates 坐标可复核</li>
+<li>口径纪律:对外宣传以库 verdict 列为准(98/45,非"78 合格"误读,#9818 勘误为终)</li>
+</ul>
+<h2 id="s10">9. 实施路线图(挂 10/31 北极星)</h2>
+<p>W1(10/6-12):判据 v2 生效✅→HF 三档上架✅(platform 独立复验 200,#9870)→Step1 dashboard 已上云✅→L3 榜发布(10/12)
+W2(10/13-19):E1 复考(#3579 L4 分差首例)→L2 内部预演启动→Step2 发单台→r83 难度分层选题门(10/06 已发车)
+W3(10/20-26):L2 预演交卷(全本 v1 终审同窗)→b 档(数据验证 API)立项评估
+W4(10/27-31):<strong>L2 首笔外部委托端到端闭环=PMF 信号</strong>(未达成负结果照报)</p>
+<p>扩榜候选(COG-SYNC ①,#10254):SWE-bench Science 科学域 119 任务(最强 agent&lt;50%,四类失败分类学证实 harness 瓶颈论;失败分类学与 S3 判因字典对表)——unipat 扩榜候选,W3 评估。
+训练侧对表(COG-SYNC ③):ET-Agent Self-evolving Data Flywheel+行为校准(Pareto/课程 RL,arXiv 2601.06860)——B7/GRPO 训练侧方法论对表,采买其课程 RL 配方作 W2 复考对照。</p>
+<h2 id="s11">10. v0.1→v1 变更记录(呈批件)</h2>
+<table>
+<thead>
+<tr>
+<th>处</th>
+<th>变更</th>
+<th>依据</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>全册</td>
+<td>品牌顶层=Nautilus,unipat 降为产品线名</td>
+<td>冲突消解#1</td>
+</tr>
+<tr>
+<td>§3</td>
+<td>判读行补四验 SLA 读数(35 单三战全绿,最快 27min);④结算行去内部结算读数</td>
+<td>框架§二/#9856;不并入清单§五</td>
+</tr>
+<tr>
+<td>§4</td>
+<td>前端行更新=pipeline.html+unipat.html,Step1 转已上云</td>
+<td>#9868 勘误/#9870</td>
+</tr>
+<tr>
+<td>§5</td>
+<td>δ 标出处;G1-full 负结果定性;分层标注条款;compass 回执可入 v1</td>
+<td>#9845 两注/#9843</td>
+</tr>
+<tr>
+<td>§6</td>
+<td>Step1 状态改已上云</td>
+<td>#9856-一①</td>
+</tr>
+<tr>
+<td>§7</td>
+<td>新增具身域并入位(v3 截段,零改写)</td>
+<td>框架§二/工序步2/#9876</td>
+</tr>
+<tr>
+<td>§8</td>
+<td>合并 flywheel 判据库棘轮条款去重</td>
+<td>框架§二</td>
+</tr>
+<tr>
+<td>§9</td>
+<td>征议项节撤(四问已在 #9856+框架闭合,#9870)</td>
+<td>#9870</td>
+</tr>
+<tr>
+<td><strong>v1.4</strong></td>
+<td>§3 供油行=r84 终读 64%(七批 175 单,#9957 勘误);§5 增补 NACRE 判分模型段(88.51%/三态/REG-100/Metis 对照,compass@9f9a6e04);§2 增补插件生态纪律(用户 10/6 拍板三纪律+太极双防线)</td>
+<td>NACRE v1.0 成文/插件三纪律拍板/信号链正本</td>
+</tr>
+<tr>
+<td><strong>v1.4 注</strong></td>
+<td>§7 待装填状态注(提前令#10079/BYZ 案卷按现状交/v1.5 补全窗 10/7 12:00)</td>
+<td>用户 10/6 拍"修§7标注"</td>
+</tr>
+<tr>
+<td><strong>v1.5</strong></td>
+<td>§5.1 NACRE 升机制章(对齐会初稿,对外口径"判读免费装订收费",10/12 首发签);§3 ③池口径刷 DB 实测 155/82/73(@22:20,滚动);§7 状态注维持候 flywheel</td>
+<td>NACRE-ALI platform 签(#10124)/合流清单一</td>
+</tr>
+</tbody>
+</table>
+</main>
+<footer>Nautilus · 本页由文档正本生成(md 单一事实源,网页为只读视图) · 生成时间 2026-10-06 · 文档正本 chunxiaoxx/nautilus-core · docs/UNIPAT_TECH_WHITEPAPER_V1_20261006.md</footer>
+</body>
+</html>

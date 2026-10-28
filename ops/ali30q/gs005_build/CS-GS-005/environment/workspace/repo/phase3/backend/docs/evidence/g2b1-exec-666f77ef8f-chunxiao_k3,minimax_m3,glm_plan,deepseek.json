@@ -1,0 +1,74 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "302cbcb61f708a62f619295725385e8990eb9b7e",
+  "reference_fix_commit": "666f77ef8fe7063b8b03aa0a2584a27f73fd11aa",
+  "subject": "fix(jarvis): \u89e3\u5bc6\u5bf9\u9f50\u5b98\u65b9SDK(IV=\u5bc6\u6587\u524d16\u5b57\u8282\u524d\u7f6e)+token\u6821\u9a8c+\u771f\u5b9e\u4e8b\u4ef6\u5b9a\u8c33",
+  "test_files": [
+   "phase3/backend/tests/platform_protocol/test_feishu_cmd.py"
+  ],
+  "source_files": [
+   "phase3/backend/api/feishu_cmd.py",
+   "phase3/backend/ops/jarvis_decrypt_matrix.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/platform_protocol/test_feishu_cmd.py::test_encrypted_event_handled",
+ "source_rel": "api\\feishu_cmd.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/api/feishu_cmd.py\n+++ b/api/feishu_cmd.py\n@@ -66,9 +66,10 @@\n         import hashlib\n \n         from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes\n-        aes_key = hashlib.sha256(key.encode()).digest()\n-        data = base64.b64decode(enc)\n-        decryptor = Cipher(algorithms.AES(aes_key), modes.CBC(aes_key[:16])).decryptor()\n-        padded = decryptor.update(data) + decryptor.finalize()\n+        aes_key = hashlib.sha256(key.encode()).digest()\n+        data = base64.b64decode(enc)\n+        iv, ciphertext = data[:16], data[16:]\n+        decryptor = Cipher(algorithms.AES(aes_key), modes.CBC(iv)).decryptor()\n+        padded = decryptor.update(ciphertext) + decryptor.finalize()\n         out = json.loads(padded[:-padded[-1]].decode(\"utf-8\", \"replace\"))\n         return out if isinstance(out, dict) else None\n",
+ "budget_exceeded": false,
+ "total_tokens": 7869,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 3767,
+    "completion_tokens": 4102,
+    "total_tokens": 7869,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 3767,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 4102,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 0,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 3767,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "feishu_decrypt_iv_from_ciphertext_prefix",
+ "duration_s": 104.1,
+ "verdict_post_status": 200
+}

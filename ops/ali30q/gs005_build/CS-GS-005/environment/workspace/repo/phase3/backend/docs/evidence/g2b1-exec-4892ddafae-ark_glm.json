@@ -1,0 +1,28 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "8b490c08332f20e42250a71cceb5ff2acbb990b1",
+  "reference_fix_commit": "4892ddafaeddc165751e7ba569712aaaadd1a692",
+  "subject": "fix(distill): is_a_bucket ALE\u65b9\u5411\u611f\u77e5(minimize\u9898\u00b7\u5206\u8d8a\u4f4e\u8d8a\u597d)\u2014\u2014\u4fee\u6f5c\u5728\u71c3\u6599confound",
+  "test_files": [
+   "phase3/backend/tests/test_distill_fuel.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/distill_fuel.py"
+  ]
+ },
+ "test_id": "phase3/backend/tests/test_distill_fuel.py::test_ale_minimize_a_bucket_when_strong_lower_than_doubao",
+ "source_rel": "phase3/backend/services/distill_fuel.py",
+ "provider": "ark_glm",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

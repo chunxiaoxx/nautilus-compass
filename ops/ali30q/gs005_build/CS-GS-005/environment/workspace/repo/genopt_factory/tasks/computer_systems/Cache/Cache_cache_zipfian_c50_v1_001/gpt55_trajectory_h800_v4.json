@@ -1,0 +1,219 @@
+{
+  "task_id": "cache_lru_v1_001",
+  "seed_score": 0.0,
+  "seed_valid": 1,
+  "best_score": 0.0,
+  "gap_closed": 0.0,
+  "difficulty_bucket": "Rejected",
+  "n": 3,
+  "model": "gpt-5.5",
+  "rounds": [
+    {
+      "round": 0,
+      "metrics": {
+        "combined_score": 0.0,
+        "valid": 1,
+        "per_instance": [
+          {
+            "instance": "looping_c100_n5k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "misses": 1155,
+            "fifo_misses": 1155
+          },
+          {
+            "instance": "looping_c500_n15k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "misses": 2909,
+            "fifo_misses": 2909
+          },
+          {
+            "instance": "mixed_c200_n10k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "misses": 7259,
+            "fifo_misses": 7259
+          },
+          {
+            "instance": "phase_c100_n8k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "misses": 4157,
+            "fifo_misses": 4157
+          },
+          {
+            "instance": "scan_c100_n10k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "misses": 225,
+            "fifo_misses": 225
+          }
+        ],
+        "stdout": "re\": 0.0,\n   \"misses\": 4157,\n   \"fifo_misses\": 4157\n  },\n  {\n   \"instance\": \"scan_c100_n10k\",\n   \"feasible\": true,\n   \"reason\": \"ok\",\n   \"score\": 0.0,\n   \"misses\": 225,\n   \"fifo_misses\": 225\n  }\n ]\n}\n"
+      },
+      "elapsed": 0
+    },
+    {
+      "round": 1,
+      "elapsed": 62.8,
+      "metrics": {
+        "combined_score": 0.0,
+        "valid": 1,
+        "per_instance": [
+          {
+            "instance": "looping_c100_n5k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "misses": 917,
+            "fifo_misses": 917
+          },
+          {
+            "instance": "looping_c500_n15k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "misses": 2382,
+            "fifo_misses": 2382
+          },
+          {
+            "instance": "mixed_c200_n10k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "misses": 6288,
+            "fifo_misses": 6288
+          },
+          {
+            "instance": "phase_c100_n8k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "misses": 4058,
+            "fifo_misses": 4058
+          },
+          {
+            "instance": "scan_c100_n10k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "misses": 225,
+            "fifo_misses": 225
+          }
+        ],
+        "stdout": "re\": 0.0,\n   \"misses\": 4058,\n   \"fifo_misses\": 4058\n  },\n  {\n   \"instance\": \"scan_c100_n10k\",\n   \"feasible\": true,\n   \"reason\": \"ok\",\n   \"score\": 0.0,\n   \"misses\": 225,\n   \"fifo_misses\": 225\n  }\n ]\n}\n"
+      },
+      "source_preview": "\"\"\"Adaptive cache eviction policy for synthetic traces.\n\nImplements a scan-resistant ARC-style cache using only Python stdlib.\n\nPublic interface:\n    run_cache("
+    },
+    {
+      "round": 2,
+      "elapsed": 51.7,
+      "metrics": {
+        "combined_score": 0.0,
+        "valid": 1,
+        "per_instance": [
+          {
+            "instance": "looping_c100_n5k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "misses": 916,
+            "fifo_misses": 916
+          },
+          {
+            "instance": "looping_c500_n15k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "misses": 2382,
+            "fifo_misses": 2382
+          },
+          {
+            "instance": "mixed_c200_n10k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "misses": 6414,
+            "fifo_misses": 6414
+          },
+          {
+            "instance": "phase_c100_n8k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "misses": 4061,
+            "fifo_misses": 4061
+          },
+          {
+            "instance": "scan_c100_n10k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "misses": 225,
+            "fifo_misses": 225
+          }
+        ],
+        "stdout": "re\": 0.0,\n   \"misses\": 4061,\n   \"fifo_misses\": 4061\n  },\n  {\n   \"instance\": \"scan_c100_n10k\",\n   \"feasible\": true,\n   \"reason\": \"ok\",\n   \"score\": 0.0,\n   \"misses\": 225,\n   \"fifo_misses\": 225\n  }\n ]\n}\n"
+      },
+      "source_preview": "\"\"\"Adaptive Replacement Cache (ARC) policy.\n\nPure stdlib, deterministic. The verifier calls run_cache(instance), where ops are\n(\"get\", key) and (\"put\", key, val"
+    },
+    {
+      "round": 3,
+      "elapsed": 51.2,
+      "metrics": {
+        "combined_score": 0.0,
+        "valid": 0,
+        "per_instance": [
+          {
+            "instance": "looping_c100_n5k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "misses": 916,
+            "fifo_misses": 916
+          },
+          {
+            "instance": "looping_c500_n15k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "misses": 2382,
+            "fifo_misses": 2382
+          },
+          {
+            "instance": "mixed_c200_n10k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "misses": 6300,
+            "fifo_misses": 6300
+          },
+          {
+            "instance": "phase_c100_n8k",
+            "feasible": false,
+            "reason": "Traceback (most recent call last):\n  File \"/tmp/feval_r3_zfrcvfce/verification/_run_one.py\", line 31, in <module>\n    main()\n  File \"/tmp/feval_r3_zfrcvfce/verification/_run_one.py\", line 23, in main\n    result = mod.run_cache(inst)\n             ^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/feval_r3_zfrcvfce/baseline/init.py\", line 134, in run_cache\n    admit(key, value)\n  File \"/tmp/feval_r3_zfrcvfce/baseline/init.py\", line 85, in admit\n    del b2[key]\n        ~~^^^^^\nKeyError: 193\n",
+            "score": 0.0,
+            "misses": 0
+          },
+          {
+            "instance": "scan_c100_n10k",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "misses": 225,
+            "fifo_misses": 225
+          }
+        ],
+        "stdout": "\\nKeyError: 193\\n\",\n   \"score\": 0.0,\n   \"misses\": 0\n  },\n  {\n   \"instance\": \"scan_c100_n10k\",\n   \"feasible\": true,\n   \"reason\": \"ok\",\n   \"score\": 0.0,\n   \"misses\": 225,\n   \"fifo_misses\": 225\n  }\n ]\n}\n"
+      },
+      "source_preview": "\"\"\"Adaptive Replacement Cache policy for the synthetic cache traces.\n\nPure stdlib, deterministic implementation of ARC:\n- T1: recent entries seen once\n- T2: fre"
+    }
+  ],
+  "best_round_source": ""
+}

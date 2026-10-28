@@ -1,0 +1,48 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "f71d3e91bde1ed624596f0adb2f623694197c771",
+  "reference_fix_commit": "dfb2cca7b8c064b41d0e174b52b5fcf1745fabff",
+  "subject": "fix(swe-fuel): empty-diff guard(soul 6/21\u00b7n_files=0 \u4e0d\u5f53\u6709\u6548 diff \u62a5)",
+  "test_files": [
+   "tests/test_swe_fuel_produce.py"
+  ],
+  "source_files": [
+   "fde_capsule/swe_fuel_produce.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5"
+ },
+ "test_id": "tests/test_swe_fuel_produce.py::test_swe_fuel_route_raises_on_empty_diff",
+ "source_rel": "fde_capsule\\swe_fuel_produce.py",
+ "provider": "ark_glm",
+ "test_passed": true,
+ "winning_diff": "--- a/fde_capsule/swe_fuel_produce.py\n+++ b/fde_capsule/swe_fuel_produce.py\n@@ -168,6 +168,8 @@\n             d = coerce_patch(resp, p, original)\n             if d:\n                 diffs.append(d)\n+        if not diffs:\n+            raise ValueError(\"empty swe-unified-diff: no files produced (soul 6/21\u00b7\u6cbb\u961f\u5217\u6c61\u67d3)\")\n         patch = \"\\n\".join(diffs)\n         return {\"patch\": patch, \"text\": patch, \"code\": \"swe-unified-diff\",\n                 \"metrics\": {\"n_files\": len(diffs)}}\n",
+ "budget_exceeded": false,
+ "total_tokens": 5446,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "completion_tokens": 2745,
+    "prompt_tokens": 2701,
+    "total_tokens": 5446,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 2547
+    }
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "swe_fuel_raise_on_empty_diff",
+ "duration_s": 44.6,
+ "replayed": true,
+ "verdict_post_status": 200
+}

@@ -1,0 +1,29 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "ab30c77905ca2d014c98a369009094dd9092acbe",
+  "reference_fix_commit": "d821039cf687f018f77dd403722aafcad0dd8fb1",
+  "subject": "fix(#3 dmas): marketplace_client \u6539\u6b63\u4e3a platform FDE \u7aef\u70b9(/api/platform/fde\u00b7claim/report\u65e0key) \u2014 \u771fe2e\u9a8c:V5 dispatch\u2192claim\u2192report\u5168200\u00b7\u88abDMAS\u8c03\u5ea6\u95ed\u73af\u00b710 TDD",
+  "test_files": [
+   "tests/test_marketplace_client.py"
+  ],
+  "source_files": [
+   "fde_capsule/marketplace_client.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_marketplace_client.py",
+ "source_rel": "fde_capsule\\marketplace_client.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "skipped_reason": "fixture_broken_red",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 1.7,
+ "replayed": true,
+ "verdict_post_status": 200
+}

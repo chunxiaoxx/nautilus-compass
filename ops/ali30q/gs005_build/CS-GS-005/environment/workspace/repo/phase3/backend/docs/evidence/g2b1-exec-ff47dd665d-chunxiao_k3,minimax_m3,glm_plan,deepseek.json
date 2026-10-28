@@ -1,0 +1,29 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "89ed7bdfe0c27947fb3d5f6ab9030c05a6541814",
+  "reference_fix_commit": "ff47dd665d52b18fb5b6232eeaf85d8b3d3db77a",
+  "subject": "fix(fde): validate nested domain contract fields",
+  "test_files": [
+   "tests/test_domain_contract.py"
+  ],
+  "source_files": [
+   "src/nautilus_fde_phase3/contracts.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-fde-phase3"
+ },
+ "test_id": "tests/test_domain_contract.py::test_domain_contract_rejects_empty_nested_p1_dimensions",
+ "source_rel": "src/nautilus_fde_phase3/contracts.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

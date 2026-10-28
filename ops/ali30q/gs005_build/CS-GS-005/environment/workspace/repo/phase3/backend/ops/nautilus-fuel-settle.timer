@@ -1,0 +1,9 @@
+[Unit]
+Description=Nautilus fuel 结算联动器 timer(每小时,评分即结算)
+
+[Timer]
+OnCalendar=*-*-* *:15:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

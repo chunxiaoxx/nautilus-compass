@@ -1,0 +1,31 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "995f8be567b645692319880650b62a2314c6a753",
+  "reference_fix_commit": "ff658886865539a1116ea3d3ecd17fcbe6d83a4f",
+  "subject": "fix(v2.3.0 \u6536\u53e3): de-flake test_mcp_client + \u7248\u672c\u7edf\u4e00 bump 2.2.0\u21922.3.0",
+  "test_files": [
+   "tests/test_mcp_client.py"
+  ],
+  "source_files": [
+   "__init__.py",
+   "mcp_server.py",
+   "recall.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass"
+ },
+ "test_id": "tests/test_mcp_client.py",
+ "source_rel": "__init__.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

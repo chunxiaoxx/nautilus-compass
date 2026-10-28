@@ -1,0 +1,29 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "7493bfa763cb56a4752fe51b1fe4c94df46bcd11",
+  "reference_fix_commit": "ed633c76d2faf249416c1cadfa845f7112ac91ac",
+  "subject": "fix(soul-scorer): \u5b9e\u8d28\u6027 output \u5b88\u536b \u00b7 \u9632 producer \u5360\u4f4d\u95f2\u804a\u88ab judge \u76d6 pass \u7ae0",
+  "test_files": [
+   "phase3/backend/tests/test_fde_scorer_poll.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/fde_scorer_poll.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/test_fde_scorer_poll.py",
+ "source_rel": "services\\fde_scorer_poll.py",
+ "provider": "glm_plan",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 2.0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

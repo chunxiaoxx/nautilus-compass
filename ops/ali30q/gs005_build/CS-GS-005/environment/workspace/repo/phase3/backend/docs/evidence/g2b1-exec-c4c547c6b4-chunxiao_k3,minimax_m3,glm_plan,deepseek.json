@@ -1,0 +1,116 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "7488885cbd7035070b90d4587f654373cf5e1efb",
+  "reference_fix_commit": "c4c547c6b4c97fb5852babb0073e2616b3cef02b",
+  "subject": "fix(executor): verdict POST\u7ed3\u679c\u5199\u56deevidence+replay\u5e42\u7b49\u8865\u53d1\u2014\u2014\u6cbb8/28\u590d\u6d3b\u5b9e\u6d4b\u53cc\u7f3a\u9677(POST\u77ac\u65f6\u5931\u8d25\u96f6\u7559\u75d5/replay\u8df3\u8fc7\u81f4verdict\u6c38\u4e22);TDD 6 green+\u751f\u4ea7\u91cd\u653e200\u5b9e\u6d4b",
+  "test_files": [
+   "phase3/backend/tests/platform_protocol/test_g2_b1_verdict_submit.py"
+  ],
+  "source_files": [
+   "phase3/backend/tools/g2_b1_executor_agent.py"
+  ],
+  "repo_path": "C:/Users/chunx/Projects/nautilus-core"
+ },
+ "test_id": "tests/platform_protocol/test_g2_b1_verdict_submit.py::test_record_verdict_post_writes_status",
+ "source_rel": "tools\\g2_b1_executor_agent.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "diff --git a/tools/g2_b1_executor_agent.py b/tools/g2_b1_executor_agent.py\nindex 0ff48cc..c82048b 100644\n--- a/tools/g2_b1_executor_agent.py\n+++ b/tools/g2_b1_executor_agent.py\n@@ -319,6 +319,22 @@ def submit_verdict(evidence: dict, backend_base: str | None = None,\n     return {\"status\": resp.status_code, \"body\": resp.text[:200]}\n \n \n+def _record_verdict_post(evidence: dict, evidence_path: Path,\n+                         backend_base: str | None = None,\n+                         poster=None) -> dict:\n+    \"\"\"Post the verdict and persist its outcome with the task evidence.\n+\n+    Evidence files are terminal task records; retaining the delivery status\n+    alongside them prevents a successful verdict POST from disappearing when\n+    the resident process exits.\n+    \"\"\"\n+    result = submit_verdict(evidence, backend_base=backend_base, poster=poster)\n+    evidence[\"verdict_post_status\"] = result[\"status\"]\n+    evidence_path.write_text(json.dumps(evidence, indent=1) + \"\\n\",\n+                             encoding=\"utf-8\")\n+    return result\n+\n+\n def _executor_agent_id() -> int | None:\n     try:\n         return json.loads(CRED_PATH.read_text(encoding=\"utf-8\")).get(\"agent_id\")\n",
+ "budget_exceeded": false,
+ "total_tokens": 13172,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 5656,
+    "completion_tokens": 853,
+    "total_tokens": 6509,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 5656,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 853,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 0,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 5656,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_1ui_rht0\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 1 item\r\n\r\ntests/platform_protocol/test_g2_b1_verdict_submit.py::test_record_verdict_post_writes_status FAILED [100%]\r\n\r\n================================== FAILURES ===================================\r\n___________________ test_record_verdict_post_writes_status ____________________\r\ntests\\platform_protocol\\test_g2_b1_verdict_submit.py:77: in test_record_verdict_post_writes_status\r\n    assert json.loads(p.read_text(encoding=\"utf-8\"))[\"verdict_post_status\"] == 200\r\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nE   KeyError: 'verdict_post_status'\r\n=========================== short test summary info ===========================\r\nFAILED tests/platform_protocol/test_g2_b1_verdict_submit.py::test_record_verdict_post_writes_status\r\n============================== 1 failed in 0.65s ==============================\r\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 6034,
+    "completion_tokens": 629,
+    "total_tokens": 6663,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 658,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 5376,
+      "output_tokens": 629,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 5376,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 6034,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "record_verdict_post_status",
+ "duration_s": 92.9,
+ "verdict_post_status": 200
+}

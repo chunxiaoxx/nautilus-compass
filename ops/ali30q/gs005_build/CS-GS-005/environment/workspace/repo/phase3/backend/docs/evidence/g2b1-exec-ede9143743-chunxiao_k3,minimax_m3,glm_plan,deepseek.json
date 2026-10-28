@@ -1,0 +1,31 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "94c0e24186d19b981048afc13d3e808c88ee43f4",
+  "reference_fix_commit": "ede9143743563cfe5f305bd8e2870b63feec5175",
+  "subject": "fix(rsi): claim\u81ea\u6307\u53c2\u6570\u81ea\u52a8\u586b+TG\u65e5\u62a5\u7626\u8eab\u2014\u2014dispatch\u5f52\u56e0\u95ed\u73af\u7b2c\u4e8c\u6848",
+  "test_files": [
+   "tests/test_dispatch_post_bounty_autofill.py"
+  ],
+  "source_files": [
+   "nautilus_v5/runtime/daemon.py",
+   "nautilus_v5/runtime/dispatch_mixin.py",
+   "tools/rsi_ticket_gen.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\nautilus-v5"
+ },
+ "test_id": "tests/test_dispatch_post_bounty_autofill.py::test_claim_bounty_agent_id_autofilled",
+ "source_rel": "nautilus_v5/runtime/daemon.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

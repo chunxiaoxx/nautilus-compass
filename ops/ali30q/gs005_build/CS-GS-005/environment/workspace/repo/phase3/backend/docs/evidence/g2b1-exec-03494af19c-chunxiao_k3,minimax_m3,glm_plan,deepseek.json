@@ -1,0 +1,33 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "dfece42a1b7363b0f7da2a2e53f3928fc5113ea3",
+  "reference_fix_commit": "03494af19c1238b0c75e44954c66f3670d5b3979",
+  "subject": "fix: close M1 paired experiment integrity gates",
+  "test_files": [
+   "tests/test_linear_probe.py",
+   "tests/test_m1_metrics.py",
+   "tests/test_m1_runner.py"
+  ],
+  "source_files": [
+   "src/nautilusflywheel/linear_probe.py",
+   "src/nautilusflywheel/m1_metrics.py",
+   "src/nautilusflywheel/m1_runner.py"
+  ],
+  "repo_path": "C:/Users/chunx/Projects/nautilusflywheel"
+ },
+ "test_id": "tests/test_linear_probe.py",
+ "source_rel": "src\\nautilusflywheel\\linear_probe.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "skipped_reason": "fixture_broken_red",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 2.7,
+ "replayed": true,
+ "verdict_post_status": 200
+}

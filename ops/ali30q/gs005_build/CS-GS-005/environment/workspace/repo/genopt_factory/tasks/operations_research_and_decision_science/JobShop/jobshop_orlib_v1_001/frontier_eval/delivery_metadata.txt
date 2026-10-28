@@ -1,0 +1,5 @@
+task_uid: genopt_or_jobshop_orlib_v1_001_20260702
+domain: operations_research_and_decision_science
+subdomain: JobShop
+instances: ft06 ft10 la01 la16 la21 la36
+optima_source: Beasley OR-Library (proven optima)

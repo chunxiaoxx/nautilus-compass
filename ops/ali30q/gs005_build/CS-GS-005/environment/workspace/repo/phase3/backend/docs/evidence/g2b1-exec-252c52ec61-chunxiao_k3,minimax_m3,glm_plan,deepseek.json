@@ -1,0 +1,73 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "78b489c2f26ca27761c311b976e344b5b8057b25",
+  "reference_fix_commit": "252c52ec6161c2cd2a8947ef3fe78fbd261d391f",
+  "subject": "fix(thin): \u7626\u5ba2\u6237\u7aef\u63a7\u5236\u53f0\u8f93\u51fa gbk-safe(\u65b0\u673a\u5668 Windows \u88c5\u4e0a\u4e0d\u5d29)",
+  "test_files": [
+   "tests/test_nautilus_thin.py"
+  ],
+  "source_files": [
+   "nautilus_thin.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_nautilus_thin.py::test_console_safe_ascii_passthrough_on_gbk",
+ "source_rel": "nautilus_thin.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/nautilus_thin.py\n+++ b/nautilus_thin.py\n@@ -29,6 +29,17 @@\n     return cf\n \n \n+def _console_safe(text: str, encoding: str = \"utf-8\") -> str:\n+    \"\"\"\u628a\u6587\u672c\u964d\u7ea7\u4e3a\u76ee\u6807 console \u7f16\u7801\u53ef\u5b89\u5168\u6253\u5370\u7684\u5f62\u5f0f\u3002\n+\n+    Windows GBK \u7b49\u7a84\u7f16\u7801\u63a7\u5236\u53f0\u4e0b,\u65e0\u6cd5\u7f16\u7801\u7684\u5b57\u7b26(\u5982 emoji)\u76f4\u63a5 print \u4f1a\n+    \u629b UnicodeEncodeError;\u7edf\u4e00\u8d70 encode(errors='replace') \u2192 decode \u964d\u7ea7\u4e3a '?'\u3002\n+    ASCII \u7eaf\u6587\u672c\u539f\u6837\u900f\u4f20\u3002\n+    \"\"\"\n+    try:\n+        return str(text).encode(encoding, errors=\"replace\").decode(encoding)\n+    except (LookupError, UnicodeError):\n+        return str(text)\n+\n+\n def _norm_agent_id(agent_id: str) -> str:\n     try:\n         from fde_capsule.fleet_recall_inject import _normalize_fleet_agent_id\n",
+ "budget_exceeded": false,
+ "total_tokens": 3491,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 3052,
+    "completion_tokens": 439,
+    "total_tokens": 3491,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 2796,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 439,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 3052,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "add_console_safe_helper",
+ "duration_s": 17.7,
+ "verdict_post_status": 200
+}

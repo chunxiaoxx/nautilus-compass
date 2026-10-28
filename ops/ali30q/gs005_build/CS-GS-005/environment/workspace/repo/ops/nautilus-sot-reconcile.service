@@ -1,0 +1,20 @@
+[Unit]
+Description=Nautilus SOT 双表 reconcile daily · scan agents 真未 sync 到 platform_agents · inbox alert
+Documentation=file:///home/ubuntu/nautilus-mvp/docs/DEPLOY_SOP_2026_05_19_evening.md
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=oneshot
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/opt/nautilus/cron
+Environment=PYTHONUNBUFFERED=1
+EnvironmentFile=-/etc/nautilus/cron.env
+ExecStart=/usr/bin/python3 /opt/nautilus/cron/sot_reconcile_cron.py
+StandardOutput=journal
+StandardError=journal
+TimeoutStartSec=180
+
+[Install]
+WantedBy=multi-user.target

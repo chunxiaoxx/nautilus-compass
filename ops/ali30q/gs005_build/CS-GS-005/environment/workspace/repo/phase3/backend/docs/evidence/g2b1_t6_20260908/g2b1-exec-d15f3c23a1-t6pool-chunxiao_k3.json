@@ -1,0 +1,27 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "e0d1678ebc10cc663f2bc1973e0399b31415f8db",
+  "reference_fix_commit": "d15f3c23a177e80c324e1ee9681c9449c31ac965",
+  "subject": "fix: Skip flaky pager test on macOS with free-threaded Python 3.14t",
+  "test_files": [
+   "tests/test_utils.py"
+  ],
+  "source_files": [
+   "src/click/_compat.py"
+  ],
+  "repo_path": "C:/Users/chunx/ext_mine"
+ },
+ "test_id": "tests/test_utils.py",
+ "source_rel": "src\\click\\_compat.py",
+ "provider": "t6pool-chunxiao_k3",
+ "test_passed": false,
+ "skipped_reason": "fixture_broken_red",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 1.9
+}

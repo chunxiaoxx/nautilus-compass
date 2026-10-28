@@ -1,0 +1,48 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "32b93cbf8b82d975b2cbd56e477c12fa9ce02735",
+  "reference_fix_commit": "ac5541e47e9e5f31c17b0682d86e6228577f933f",
+  "subject": "fix(thin): ATTEST_FAMILY \u53bb\u5192\u53f7(clean-room \u5b9e\u6d4b\u6293:\u5192\u53f7\u8fdb obs_id \u88ab compass API \u62d2\u2192\u5199\u9759\u9ed8\u5931\u8d25)",
+  "test_files": [
+   "tests/test_nautilus_thin.py"
+  ],
+  "source_files": [
+   "nautilus_thin.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5"
+ },
+ "test_id": "tests/test_nautilus_thin.py::test_attest_family_is_obs_id_safe",
+ "source_rel": "nautilus_thin.py",
+ "provider": "ark_glm",
+ "test_passed": true,
+ "winning_diff": "--- a/nautilus_thin.py\n+++ b/nautilus_thin.py\n@@ -29,7 +29,7 @@\n from typing import Any, Callable, Dict, List, Optional, Tuple\n \n-ATTEST_FAMILY = \"agent:install:attest\"\n+ATTEST_FAMILY = \"agent-install-attest\"\n _DELIVERABLE_HASH_FILES = (\"nautilus_thin.py\", \"compass_fleet_memory.py\")\n",
+ "budget_exceeded": false,
+ "total_tokens": 5689,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "completion_tokens": 841,
+    "prompt_tokens": 4848,
+    "total_tokens": 5689,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 700
+    }
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "attest_family_no_colons",
+ "duration_s": 24.1,
+ "replayed": true,
+ "verdict_post_status": 200
+}

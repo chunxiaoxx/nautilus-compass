@@ -1,0 +1,73 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "6145fe29a748317f5eab3e8232a08ff2e76580ce",
+  "reference_fix_commit": "bdb3f90ee6cc2c47c7d2506e71052d5386a109c1",
+  "subject": "fix(fde): use supported hidden form field patch",
+  "test_files": [
+   "phase3/backend/tests/test_fde_phase3_single_submission_forms.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/fde_phase3_single_submission_forms.py"
+  ],
+  "repo_path": "C:/Users/chunx/Projects/nautilus-core"
+ },
+ "test_id": "tests/test_fde_phase3_single_submission_forms.py::test_hidden_form_questions_use_the_minimal_supported_patch_body",
+ "source_rel": "services\\fde_phase3_single_submission_forms.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/services/fde_phase3_single_submission_forms.py\n+++ b/services/fde_phase3_single_submission_forms.py\n@@ -236,7 +236,7 @@\n     @staticmethod\n     def _field_body(config: FormFieldConfiguration) -> dict[str, Any]:\n         if not config.visible:\n-            return {\"visible\": False, \"required\": False}\n+            return {\"visible\": False}\n         return {\n             \"title\": config.title,\n             \"description\": config.description,",
+ "budget_exceeded": false,
+ "total_tokens": 4511,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 4274,
+    "completion_tokens": 237,
+    "total_tokens": 4511,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 4018,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 237,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 4274,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "minimal_hidden_field_patch_body",
+ "duration_s": 16.3,
+ "verdict_post_status": 200
+}

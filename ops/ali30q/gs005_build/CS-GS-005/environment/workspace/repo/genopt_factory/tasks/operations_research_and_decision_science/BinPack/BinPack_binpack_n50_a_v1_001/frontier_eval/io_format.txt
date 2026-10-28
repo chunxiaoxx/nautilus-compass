@@ -1,0 +1,4 @@
+input_format: "JSON with {name, bin_capacity, items: [float, ...]}"
+output_format: "JSON with {num_bins: int, assignment: [int, ...]}"
+problem_type: "1-D bin packing"
+reference_algorithm: "Best-Fit Decreasing (BFD)"

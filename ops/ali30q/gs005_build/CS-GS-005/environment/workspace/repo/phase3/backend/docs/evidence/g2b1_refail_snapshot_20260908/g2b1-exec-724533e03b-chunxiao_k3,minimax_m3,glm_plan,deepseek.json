@@ -1,0 +1,130 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "087b49a42f7d6858fb370eaab65ebe8009a72e85",
+  "reference_fix_commit": "724533e03be3f05bbd3afbf670722b7764c16007",
+  "subject": "fix(loop): stop Gate B after unusable source evidence",
+  "test_files": [
+   "tests/gep/test_gate_b_reuse.py"
+  ],
+  "source_files": [
+   "gep/loop_run.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass"
+ },
+ "test_id": "tests/gep/test_gate_b_reuse.py::test_gate_b_records_repair_when_a_source_action_has_no_reusable_experience",
+ "source_rel": "gep\\loop_run.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 30712,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 8710,
+    "output_tokens": 314,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "F                                                                        [100%]\r\n================================== FAILURES ===================================\r\n_ test_gate_b_records_repair_when_a_source_action_has_no_reusable_experience __\r\n\r\ntmp_path = WindowsPath('C:/Users/chunx/AppData/Local/Temp/pytest-of-chunx/pytest-6365/test_gate_b_records_repair_whe0')\r\n\r\n    def test_gate_b_records_repair_when_a_source_action_has_no_reusable_experience(\r\n        tmp_path: Path,\r\n    ) -> None:\r\n        action = _Action(include_reuse_advice=False)\r\n        report = run_loop(_plan(), tmp_path / \"run\", action, _Verifier())\r\n    \r\n        assert report[\"decision\"] == \"Repair\"\r\n        assert report[\"reason_code\"] == \"gate_b_delta_not_positive\"\r\n        assert report[\"arms\"][\"treatment\"][\"outcome\"] == \"failure\"\r\n>       assert [task[\"task_case_id\"] for task, _advice in action.calls] == [\"source\"]\r\nE       AssertionError: assert ['source', 'transfer'] == ['source']\r\nE         \r\nE         Left contains one more item: 'transfer'\r\nE         Use -v to get more diff\r\n\r\ntests\\gep\\test_gate_b_reuse.py:166: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/gep/test_gate_b_reuse.py::test_gate_b_records_repair_when_a_source_action_has_no_reusable_experience\r\n1 failed in 0.62s\r\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 8935,
+    "completion_tokens": 5097,
+    "total_tokens": 14032,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 487,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 8448,
+      "output_tokens": 5097,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 8448,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 8935,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: No valid patches in input (allow with \"--allow-empty\")\n\n[attempt2 backend] error: No valid patches in input (allow with \"--allow-empty\")\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 8667,
+    "completion_tokens": 8013,
+    "total_tokens": 16680,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 219,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 8448,
+      "output_tokens": 8013,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 8448,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 8667,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: gep/loop_run.py:199\nerror: gep/loop_run.py: patch does not apply\n\n[attempt2 backend] error: patch failed: gep/loop_run.py:199\nerror: gep/loop_run.py: patch does not apply\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 654.6,
+ "verdict_post_status": 200
+}

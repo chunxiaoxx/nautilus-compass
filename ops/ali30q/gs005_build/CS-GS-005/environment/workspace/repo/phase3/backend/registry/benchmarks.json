@@ -1,0 +1,67 @@
+{
+  "schema": "benchmarks.v1",
+  "note": "基准注册表(沉淀承载面·字段草案=docs/SEDDIMENT_SURFACE_FOUNDATION_V1.md §一.2)。判据主权=compass。 | 首批回填=v5 #2780(2026-10-04,选②通道代合并,r77负结果照报)。 | 北极星 L1 三主流集 2026-10-05 compass 判据冻结注记回填转 live(sha16=19e73d436bc84c63 平台 raw 复验一致,10/8 死线提前三天);pusht-frame-v2 判据档 compass 全坐标不可寻址,活性闸挡闸 deferred 保持,待补 push。",
+  "benchmarks": [
+    {
+      "benchmark_id": "pusht-frame-v2",
+      "status": "live",
+      "criteria_version": "v2-final(T1全量100集/窗+T2主配对Wilcoxon辅MWU+中位并陈+噪声底=0先验;冻结链#2551→#2568→#2574→#2610;首案=rollout n=100 终判案6/案7)",
+      "preregistered_hash": "fcb793e274a7bdbc",
+      "heldout_ref": {
+        "coord": "held-out33(753展开)+四窗seed=70000/100集/窗",
+        "intersection_with_training": "0(2026-10-01机器实证)"
+      },
+      "history": [
+        "2026-10-03四窗效度:帧级配对Wilcoxon p=0.00986(delta中位+0.0627);rollout主判据0/20四窗地板如实报(#2520)",
+        "2026-10-05 compass回填(criteria_version=v2-final+hash=fcb793e274a7bdbc+status=live)——判据档不可寻址,平台按活性闸挡闸,回执请补push",
+        "2026-10-05 compass补push后经回填通道自助提交,服务端raw复验1534B sha16=fcb793e274a7bdbc一致APPROVED,值守合并转live——回填通道首个custodian自助闭环"
+      ],
+      "custodian": "compass"
+    },
+    {
+      "benchmark_id": "swe-bench-verified",
+      "status": "live",
+      "title": "SWE-bench Verified(主流集·北极星L1)",
+      "upstream_coord": "github.com/SWE-bench/SWE-bench · HF princeton-nlp/SWE-bench_Verified(500 人验实例)",
+      "criteria_version": "v1(resolved%,官方评测栈钉tag,cutoff泄漏披露)",
+      "preregistered_hash": "19e73d436bc84c63",
+      "pollution_risk": "高——公开榜集,业界疑背诵(GSM1k 私有集 -13% 同类教训);对策=判据冻结+复算命令随榜公布+必要时自建 heldout 子集",
+      "custodian": "compass",
+      "updated": "2026-10-05",
+      "history": [
+        "2026-10-05 平台占位登记(北极星 L1 首批;坐标=公开事实代填,判据冻结注记待 compass 回填)",
+        "2026-10-05 compass l1-criteria-freeze-20261005 回填转 live(冻结注记 4262B sha16 复验一致;三件共用注记档 docs/metering/L1_CRITERIA_FREEZE_NOTES_20261005.md)"
+      ]
+    },
+    {
+      "benchmark_id": "gaia",
+      "status": "live",
+      "title": "GAIA(主流集·北极星L1)",
+      "upstream_coord": "HF gaia-benchmark/GAIA(Meta+HuggingFace;466 题三级 Level1-3,通用助手现实任务)",
+      "criteria_version": "v1(exact match;validation 165 实测主轨,test 官方榜成绩只收引用标[UNVERIFIABLE墙])",
+      "preregistered_hash": "19e73d436bc84c63",
+      "pollution_risk": "中-高——GAIA-v2 官方重审计进行中(污染疑虑已被上游承认);对策=锁定题集版本 hash+答案例复算",
+      "custodian": "compass",
+      "updated": "2026-10-05",
+      "history": [
+        "2026-10-05 平台占位登记(北极星 L1 首批;坐标=公开事实代填,判据冻结注记待 compass 回填)",
+        "2026-10-05 compass l1-criteria-freeze-20261005 回填转 live(冻结注记 4262B sha16 复验一致)"
+      ]
+    },
+    {
+      "benchmark_id": "terminal-bench",
+      "status": "live",
+      "title": "Terminal-Bench(主流集·北极星L1)",
+      "upstream_coord": "github.com/laude-institute/terminal-bench(Laude Institute;真实终端任务,agent harness 差异敏感)",
+      "criteria_version": "v1(task resolve rate;harness+dataset 双 tag 钉死,verifier 随 tag 冻结)",
+      "preregistered_hash": "19e73d436bc84c63",
+      "pollution_risk": "中——题库公开但较新;与 harness 榜(L3)同任务集复用设计,须防训练侧回流(restock-gate 同构)",
+      "custodian": "compass",
+      "updated": "2026-10-05",
+      "history": [
+        "2026-10-05 平台占位登记(北极星 L1 首批;坐标=公开事实代填,判据冻结注记待 compass 回填)",
+        "2026-10-05 compass l1-criteria-freeze-20261005 回填转 live(冻结注记 4262B sha16 复验一致)"
+      ]
+    }
+  ]
+}

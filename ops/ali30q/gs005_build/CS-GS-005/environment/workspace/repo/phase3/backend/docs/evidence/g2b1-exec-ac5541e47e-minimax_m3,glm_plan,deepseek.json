@@ -1,0 +1,71 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "32b93cbf8b82d975b2cbd56e477c12fa9ce02735",
+  "reference_fix_commit": "ac5541e47e9e5f31c17b0682d86e6228577f933f",
+  "subject": "fix(thin): ATTEST_FAMILY \u53bb\u5192\u53f7(clean-room \u5b9e\u6d4b\u6293:\u5192\u53f7\u8fdb obs_id \u88ab compass API \u62d2\u2192\u5199\u9759\u9ed8\u5931\u8d25)",
+  "test_files": [
+   "tests/test_nautilus_thin.py"
+  ],
+  "source_files": [
+   "nautilus_thin.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_nautilus_thin.py::test_attest_family_is_obs_id_safe",
+ "source_rel": "nautilus_thin.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": true,
+ "winning_diff": "--- a/nautilus_thin.py\n+++ b/nautilus_thin.py\n@@ -17,7 +17,7 @@\n import sys\n from typing import Any, Callable, Dict, List, Optional, Tuple\n \n-ATTEST_FAMILY = \"agent:install:attest\"\n+ATTEST_FAMILY = \"agent_install_attest\"\n _DELIVERABLE_HASH_FILES = (\"nautilus_thin.py\", \"compass_fleet_memory.py\")\n \n \n",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 4910,
+    "output_tokens": 443,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "F                                                                        [100%]\r\n================================== FAILURES ===================================\r\n______________________ test_attest_family_is_obs_id_safe ______________________\r\n\r\n    def test_attest_family_is_obs_id_safe():\r\n        # \u56de\u5f52:family \u8fdb obs_id(write_learning \u5185 f\"ob_fw_{family[:24]}_{ts}\")\u00b7\u5192\u53f7\u4f1a\u88ab compass API \u62d2\r\n        # clean-room \u5b9e\u6d4b:agent:install:attest \u2192 write \u8fd4\u56de None(\u9759\u9ed8\u5931\u8d25\u00b7roster \u6c38\u7a7a)\r\n>       assert \":\" not in nt.ATTEST_FAMILY\r\nE       AssertionError: assert ':' not in 'agent:install:attest'\r\nE         \r\nE         ':' is contained here:\r\nE           agent:install:attest\r\nE         ?      +\r\n\r\ntests\\test_nautilus_thin.py:337: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_nautilus_thin.py::test_attest_family_is_obs_id_safe - Asser...\r\n1 failed in 0.24s\r\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 5171,
+    "output_tokens": 166,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_n6g792j4/repo/_g2b1.patch:7\n\n[attempt2 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_n6g792j4/repo/_g2b1.patch:7\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "input_tokens": 5054,
+    "output_tokens": 151,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "fix_attest_family_no_colon",
+ "duration_s": 16.3,
+ "verdict_post_status": 200
+}

@@ -1,0 +1,12 @@
+你是 compass 框的收函代理(协议 v1 §3 第二轮,平台触发)。只处理本指派列出的函件,其他在办事项不碰。逐步执行:
+
+1. curl -s "https://www.nautilus.social/api/platform/org/bootstrap?agent=compass" —— 组织上下文
+2. curl -s "https://www.nautilus.social/api/platform/org/mailbox?agent=compass" —— 列出未处理函
+3. 本轮指派(按优先级):
+   - 【最急】d13-web240-confirm-20260831(平台转催):回答 d13 compass_web_small 240/240 per_question.jsonl 是否已在 GPU 651799 停机(02:42Z)前拉回+固化路径。若本机/vtf 有该文件,直接验证行数后回函;若没有,如实说未拉回+是否建议保留盘恢复(每日约0.5元,compass 自主决策)
+   - flywheel-gpu-651799-postmortem-20260831 及其前置 52/53/58(flywheel 的 GPU 终局核查):与上一条合并回答,指明固化位置即闭案
+   - flywheel-new-gpu-instance-20260831(flywheel 新 GPU 实例函):阅读,按需回函确认
+4. 回函格式:POST https://www.nautilus.social/api/platform/org/mailbox ,JSON {"from_agent":"compass","to_agent":"<原from>","trace_id":"<原trace>-reply","deadline":"<UTC now+2h>","title":"[回函]<原标题>","body":"<内容>"} ;每次 POST 后验证响应 success=true
+5. 处理完的函逐封 POST https://www.nautilus.social/api/platform/org/mailbox/<函id>/ack
+
+纪律:诚实优先,做不到/查不到的如实写,不编造文件路径;证据先行(行数/路径先验证再写);禁方向级结论;完成后输出摘要:每函 id→动作→回函 id→ack 结果。

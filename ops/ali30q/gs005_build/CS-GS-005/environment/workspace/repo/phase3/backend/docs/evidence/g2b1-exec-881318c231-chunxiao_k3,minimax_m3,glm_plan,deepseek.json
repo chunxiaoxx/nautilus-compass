@@ -1,0 +1,29 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "eb4eb70908051dc9ad28f7c8f3db74e704d4d490",
+  "reference_fix_commit": "881318c231f2af33854af43a92bfc87772d55f39",
+  "subject": "fix(T1-A3): ip\u56de\u73af\u611f\u77e5\u2014\u2014nginx\u53cd\u4ee3\u540e\u53d6X-Real-IP(\u8986\u76d6\u5f0f\u8bbe\u7f6e\u4e0d\u53ef\u4f2a\u9020);\u76f4\u8fde\u4e0d\u91c7\u4fe1\u53ef\u4f2a\u9020\u5934;\u5355\u6d4b3\u5206\u652f 9 green",
+  "test_files": [
+   "phase3/backend/tests/test_org_audit.py"
+  ],
+  "source_files": [
+   "phase3/backend/api/org.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/test_org_audit.py::test_client_ip_loopback_takes_nginx_real_ip",
+ "source_rel": "api\\org.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "skipped_reason": "fixture_broken_red",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 3.3,
+ "replayed": true,
+ "verdict_post_status": 200
+}

@@ -1,0 +1,205 @@
+[
+  {
+    "task_id": "jssp_ft_mixed_v1_001",
+    "desc": "Fisher-Thompson classic (mixed sizes)",
+    "instances": [
+      "ft06",
+      "ft10",
+      "ft20"
+    ],
+    "combined_score": 33.2627,
+    "valid": 1.0
+  },
+  {
+    "task_id": "jssp_la_10x5_v1_001",
+    "desc": "Lawrence 10 jobs x 5 machines",
+    "instances": [
+      "la01",
+      "la02",
+      "la03",
+      "la04",
+      "la05"
+    ],
+    "combined_score": 32.1438,
+    "valid": 1.0
+  },
+  {
+    "task_id": "jssp_la_15x5_v1_001",
+    "desc": "Lawrence 15 jobs x 5 machines",
+    "instances": [
+      "la06",
+      "la07",
+      "la08",
+      "la09",
+      "la10"
+    ],
+    "combined_score": 30.7047,
+    "valid": 1.0
+  },
+  {
+    "task_id": "jssp_la_20x5_v1_001",
+    "desc": "Lawrence 20 jobs x 5 machines",
+    "instances": [
+      "la11",
+      "la12",
+      "la13",
+      "la14",
+      "la15"
+    ],
+    "combined_score": 30.2942,
+    "valid": 1.0
+  },
+  {
+    "task_id": "jssp_la_10x10_v1_001",
+    "desc": "Lawrence 10 jobs x 10 machines",
+    "instances": [
+      "la16",
+      "la17",
+      "la18",
+      "la19",
+      "la20"
+    ],
+    "combined_score": 20.999,
+    "valid": 1.0
+  },
+  {
+    "task_id": "jssp_la_15x10_v1_001",
+    "desc": "Lawrence 15 jobs x 10 machines",
+    "instances": [
+      "la21",
+      "la22",
+      "la23",
+      "la24",
+      "la25"
+    ],
+    "combined_score": 15.6208,
+    "valid": 1.0
+  },
+  {
+    "task_id": "jssp_la_15x15_v1_001",
+    "desc": "Lawrence 15 jobs x 15 machines",
+    "instances": [
+      "la36",
+      "la37",
+      "la38",
+      "la39",
+      "la40"
+    ],
+    "combined_score": 13.5561,
+    "valid": 1.0
+  },
+  {
+    "task_id": "jssp_la_20x10_v1_001",
+    "desc": "Lawrence 20 jobs x 10 machines",
+    "instances": [
+      "la26",
+      "la27",
+      "la28",
+      "la29",
+      "la30"
+    ],
+    "combined_score": 14.7939,
+    "valid": 1.0
+  },
+  {
+    "task_id": "jssp_la_30x10_v1_001",
+    "desc": "Lawrence 30 jobs x 10 machines",
+    "instances": [
+      "la31",
+      "la32",
+      "la33",
+      "la34",
+      "la35"
+    ],
+    "combined_score": 15.2649,
+    "valid": 1.0
+  },
+  {
+    "task_id": "jssp_swv_20x10_v1_001",
+    "desc": "Storer-Wu-Vaccari 20 jobs x 10 machines",
+    "instances": [
+      "swv01",
+      "swv02",
+      "swv03",
+      "swv04",
+      "swv05"
+    ],
+    "combined_score": 35.0481,
+    "valid": 1.0
+  },
+  {
+    "task_id": "jssp_swv_20x15_v1_001",
+    "desc": "Storer-Wu-Vaccari 20 jobs x 15 machines",
+    "instances": [
+      "swv06",
+      "swv07",
+      "swv08",
+      "swv09",
+      "swv10"
+    ],
+    "combined_score": 24.4694,
+    "valid": 1.0
+  },
+  {
+    "task_id": "jssp_abz_20x15_v1_001",
+    "desc": "Adams-Balas-Zawack 20 jobs x 15 machines",
+    "instances": [
+      "abz7",
+      "abz8",
+      "abz9"
+    ],
+    "combined_score": 10.8255,
+    "valid": 1.0
+  },
+  {
+    "task_id": "jssp_yn_20x20_v1_001",
+    "desc": "Yamada-Nakano 20 jobs x 20 machines",
+    "instances": [
+      "yn1",
+      "yn2",
+      "yn3",
+      "yn4"
+    ],
+    "combined_score": 9.3147,
+    "valid": 1.0
+  },
+  {
+    "task_id": "jssp_swv_50x10a_v1_001",
+    "desc": "Storer-Wu-Vaccari 50 jobs x 10 machines (a)",
+    "instances": [
+      "swv11",
+      "swv12",
+      "swv13",
+      "swv14",
+      "swv15"
+    ],
+    "combined_score": 28.4657,
+    "valid": 1.0
+  },
+  {
+    "task_id": "jssp_swv_50x10b_v1_001",
+    "desc": "Storer-Wu-Vaccari 50 jobs x 10 machines (b)",
+    "instances": [
+      "swv16",
+      "swv17",
+      "swv18",
+      "swv19",
+      "swv20"
+    ],
+    "combined_score": 14.6768,
+    "valid": 1.0
+  },
+  {
+    "task_id": "jssp_orb_10x10_v1_001",
+    "desc": "Applegate-Cook 10 jobs x 10 machines",
+    "instances": [
+      "orb01",
+      "orb02",
+      "orb03",
+      "orb04",
+      "orb05"
+    ],
+    "combined_score": 32.0137,
+    "valid": 1.0
+  }
+]

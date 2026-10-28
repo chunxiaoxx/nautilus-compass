@@ -1,0 +1,55 @@
+schema_version = "1.4"
+
+[[artifacts]]
+source = "environment/workspace/repo"
+destination = "/workspace/repo"
+
+[task]
+name = "guoshu/codesense-cs-p701"
+description = "Code Sense · P1口径理解错×D01.1(告警分级分发:优先级跳过/去重/resolved过滤/fallback链)· 中档语义评测题"
+
+[[task.authors]]
+name = "上海国曙智能"
+
+[agent]
+timeout_sec = 1800
+network_mode = "no-network"
+
+[verifier]
+timeout_sec = 900
+network_mode = "no-network"
+
+[environment]
+build_timeout_sec = 900
+network_mode = "no-network"
+os = "linux"
+cpus = 2
+memory_mb = 4096
+
+[metadata]
+id = "CS-P701"
+badpattern = "P1 口径理解错误 × D01.1 后端接口与业务逻辑"
+focus_points = "①执行语义与状态追踪, ③单轮反幻觉与拒绝错误前提, ⑥约束理解与tradeoff判断"
+pool = "ali-codesense-30q"
+batch = "P1P6-14"
+producer = "platform"
+EOF
+python3 - <<'PYEOF'
+import sys, importlib.util
+spec = importlib.util.spec_from_file_location('t', 'tests/test_csp701.py')
+t = importlib.util.module_from_spec(spec); sys.modules['t']=t; spec.loader.exec_module(t)
+sys.path = [p for p in sys.path if 'environment/workspace/repo' not in p]
+for m in [k for k in list(sys.modules) if k.startswith('alert_dispatch')]: del sys.modules[m]
+sys.path.insert(0,'solution')
+import alert_dispatch as gold
+t.dispatch_alert = gold.dispatch_alert
+fns=[(n,f) for n,f in vars(t).items() if n.startswith('test_') and callable(f)]
+ok=0; fails=[]
+for n,f in fns:
+    try: f(); ok+=1
+    except Exception as e: fails.append((n,str(e)[:40]))
+print(f'金标: {ok}/{len(fns)}', '全过✓' if not fails else fails)
+PYEOF
+cd ~/Projects/nautilus-core && git add codesense/items/CS-P701 && git commit -m "feat(阿里30q·P7-1首题CS-P701·平台新单): 告警分级分发题(P1口径理解错×D01.1:优先级跳过/resolved过滤/去重/fallback链+§5备注三坑+反幻觉gating)——22条UT(L1 5/L2 4/L3 5/L4 5/gating 3)金标全过实测;P7配额首题
+
+Co-Authored-By: Claude Code <noreply@anthropic.com>" | head -2

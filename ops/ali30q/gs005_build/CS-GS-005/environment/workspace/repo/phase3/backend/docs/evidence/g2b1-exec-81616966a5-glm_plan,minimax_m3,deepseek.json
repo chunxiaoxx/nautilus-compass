@@ -1,0 +1,71 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "9aad060678cd50991c6b5dfc31edde45ef679bfd",
+  "reference_fix_commit": "81616966a559f789431ac553181b4b735f52356f",
+  "subject": "fix(ratchet): produce_versions parent \u53d6 latest-active \u800c\u975e latest-version(C6 lineage \u8df3 reverted)",
+  "test_files": [
+   "tests/test_produce_register_and_provenance_link.py"
+  ],
+  "source_files": [
+   "fde_capsule/produce_versions.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_produce_register_and_provenance_link.py::test_decide_register_already_exists_noop",
+ "source_rel": "fde_capsule\\produce_versions.py",
+ "provider": "glm_plan,minimax_m3,deepseek",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 2251,
+    "output_tokens": 471,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "F                                                                        [100%]\r\n================================== FAILURES ===================================\r\n__________________ test_decide_register_already_exists_noop ___________________\r\n\r\n    def test_decide_register_already_exists_noop():\r\n        # \u5f53\u524d\u7247\u6bb5\u7248\u672c\u5df2\u5728\u5e93(\u4efb\u610f status) \u2192 \u4e0d\u91cd\u590d\u767b\u8bb0(\u5e42\u7b49\u67e5\u5168\u96c6\u00b7\u975e\u53ea latest)\r\n        ver = pp.fragment_version(\"FRAG\")\r\n>       d = pv.decide_register(rows=[(ver, \"active\")], fragment_text=\"FRAG\")\r\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nE       TypeError: decide_register() got an unexpected keyword argument 'rows'\r\n\r\ntests\\test_produce_register_and_provenance_link.py:19: TypeError\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_produce_register_and_provenance_link.py::test_decide_register_already_exists_noop\r\n1 failed in 2.48s\r\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 2479,
+    "output_tokens": 572,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_wiba3dlf/repo/_g2b1.patch:5\n\n[attempt2 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_wiba3dlf/repo/_g2b1.patch:5\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 2393,
+    "output_tokens": 439,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "no_json",
+   "feedback_excerpt": "{\"artifact_version\":\"g2-b1-candidate-v1\",\"claimed_test_scope\":[\"public_behavior\"],\"language\":\"python\",\"summary_code\":\"decide_register_accepts_rows_for_idempotency\",\"unified_diff\":\"--- a/fde_capsule/produce_versions.py\\n+++ b/fde_capsule/produce_versions.py\\n@@ -39,13 +39,21 @@ def build_register(agent_id: str, fragment_text: str, parent: Optional[str] = No\\n         version = fragment_version(fragment_text)\\n         return _REGISTER_SQL, (agent_id, version, parent, fragment_text)\\n \\n-def decid"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 88.3,
+ "verdict_post_status": 200
+}

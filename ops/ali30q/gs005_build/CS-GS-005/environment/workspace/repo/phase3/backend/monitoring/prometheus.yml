@@ -1,0 +1,93 @@
+# Prometheus 监控配置文件
+# Nautilus Phase 3 Backend Monitoring
+
+global:
+  # 全局抓取间隔（生产环境优化）
+  scrape_interval: 15s
+  # 规则评估间隔
+  evaluation_interval: 15s
+  # 抓取超时时间
+  scrape_timeout: 10s
+  # 外部标签（用于联邦和远程存储）
+  external_labels:
+    cluster: 'nautilus-phase3'
+    environment: 'production'
+    region: 'default'
+    datacenter: 'primary'
+
+# 告警管理器配置
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - 'alertmanager:9093'
+
+# 告警规则文件
+rule_files:
+  - '/etc/prometheus/alerting_rules.yml'
+  - '/etc/prometheus/alerts.production.yml'
+
+# 抓取配置
+scrape_configs:
+  # Prometheus 自身监控
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          service: 'prometheus'
+
+  # Nautilus Backend API 监控
+  - job_name: 'nautilus-backend'
+    scrape_interval: 10s
+    scrape_timeout: 5s
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['backend:8000']
+        labels:
+          service: 'nautilus-api'
+          component: 'backend'
+          env: 'production'
+      # 生产环境多实例配置（如有）
+      # - targets: ['backend-1:8000', 'backend-2:8000', 'backend-3:8000']
+      #   labels:
+      #     service: 'nautilus-api'
+      #     component: 'backend'
+      #     env: 'production'
+    # 健康检查
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: backend:8000
+
+  # PostgreSQL 数据库监控
+  - job_name: 'postgres'
+    scrape_interval: 30s
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+        labels:
+          service: 'postgresql'
+          component: 'database'
+
+  # Redis 缓存监控
+  - job_name: 'redis'
+    scrape_interval: 30s
+    static_configs:
+      - targets: ['redis-exporter:9121']
+        labels:
+          service: 'redis'
+          component: 'cache'
+
+  # Node Exporter (系统资源监控)
+  - job_name: 'node'
+    scrape_interval: 30s
+    static_configs:
+      - targets: ['node-exporter:9100']
+        labels:
+          service: 'node-exporter'
+          component: 'system'
+
+# 注意：数据存储配置（retention.time, retention.size等）
+# 应该通过docker-compose.yml中的命令行参数配置，不在此文件中

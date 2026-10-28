@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="三期垂直领域专家计划：邀请具备真实行业经验的专家参与办公任务场景建设。">
+  <title>三期垂直领域专家计划</title>
+  <style>
+    :root { --ink:#1d302a; --muted:#61716b; --paper:#f8f3e9; --panel:#fffdf7; --pine:#174b3a; --moss:#2e7659; --brass:#c58b35; --line:#dfd7c8; --shadow:0 18px 42px rgba(24,50,40,.12); }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; color:var(--ink); background:radial-gradient(circle at 86% 0%,#dcebdc 0 13%,transparent 34%),var(--paper); font-family:"Noto Serif SC","Songti SC",STSong,serif; line-height:1.6; }
+    a { color:inherit; text-decoration:none; }
+    .wrap { width:min(1120px,calc(100% - 40px)); margin:auto; }
+    .topbar { border-bottom:1px solid rgba(255,255,255,.22); background:var(--pine); color:#fffaf0; }
+    .topbar .wrap { min-height:54px; display:flex; align-items:center; justify-content:space-between; gap:20px; font-family:"Microsoft YaHei",sans-serif; font-size:14px; }
+    .brand { font-weight:700; letter-spacing:.08em; }
+    .topbar nav { display:flex; gap:22px; color:#dbe7df; }
+    .hero { padding:84px 0 70px; position:relative; overflow:hidden; }
+    .hero:after { content:""; position:absolute; width:420px; height:420px; border:1px solid rgba(197,139,53,.42); border-radius:50%; right:-160px; top:-145px; }
+    .eyebrow { color:var(--brass); font-family:"Microsoft YaHei",sans-serif; font-size:13px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; }
+    h1,h2,h3,p { margin-top:0; }
+    h1 { max-width:820px; margin:18px 0 18px; font-size:clamp(42px,6vw,76px); line-height:1.12; letter-spacing:-.055em; }
+    .lead { max-width:680px; color:#44554e; font-size:20px; }
+    .hero-actions { margin-top:32px; display:flex; gap:14px; flex-wrap:wrap; }
+    .button { display:inline-flex; align-items:center; justify-content:center; min-height:50px; padding:0 22px; border-radius:5px; font-family:"Microsoft YaHei",sans-serif; font-size:15px; font-weight:700; transition:.18s ease; }
+    .button.primary { background:var(--pine); color:#fff; box-shadow:0 10px 20px rgba(23,75,58,.2); }
+    .button.primary:hover { transform:translateY(-2px); background:#0e392b; }
+    .button.secondary { border:1px solid #b7c0b9; color:var(--pine); background:rgba(255,255,255,.48); }
+    .microcopy { margin:15px 0 0; color:var(--muted); font-family:"Microsoft YaHei",sans-serif; font-size:13px; }
+    .truth { margin:4px 0 0; padding:16px 18px; border-left:4px solid var(--brass); background:rgba(255,253,247,.68); max-width:820px; font-family:"Microsoft YaHei",sans-serif; font-size:14px; }
+    section { padding:68px 0; }
+    section.alt { background:rgba(225,237,226,.58); border-block:1px solid #d3ded5; }
+    .section-title { max-width:760px; margin-bottom:30px; }
+    h2 { margin-bottom:9px; font-size:clamp(29px,4vw,46px); line-height:1.2; letter-spacing:-.04em; }
+    .section-title p { color:var(--muted); font-size:17px; }
+    .fit-grid,.card-grid,.team-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+    .fit,.card,.team-card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:25px; box-shadow:0 5px 16px rgba(29,48,42,.035); }
+    .fit .num { color:var(--brass); font-family:"Microsoft YaHei",sans-serif; font-weight:800; font-size:12px; letter-spacing:.12em; }
+    h3 { margin:9px 0 8px; font-size:20px; line-height:1.35; }
+    .fit p,.card p,.team-card p { color:var(--muted); font-family:"Microsoft YaHei",sans-serif; font-size:14px; margin-bottom:0; }
+    .qualification { display:grid; grid-template-columns:1.2fr .8fr; gap:18px; }
+    .must { padding:31px; background:var(--pine); color:#fffdf5; border-radius:8px; box-shadow:var(--shadow); }
+    .must h2 { margin-bottom:12px; }
+    .must ul { margin:18px 0 0; padding:0; list-style:none; font-family:"Microsoft YaHei",sans-serif; }
+    .must li { padding:12px 0; border-top:1px solid rgba(255,255,255,.24); }
+    .bonus { padding:31px; background:#f4e8cd; border:1px solid #dec69a; border-radius:8px; }
+    .bonus strong { display:block; color:#855810; font-family:"Microsoft YaHei",sans-serif; font-size:14px; letter-spacing:.1em; }
+    .bonus h3 { margin-top:11px; font-size:28px; }
+    .steps { counter-reset:step; display:grid; grid-template-columns:repeat(3,1fr); gap:0; border:1px solid var(--line); border-radius:8px; overflow:hidden; background:var(--panel); }
+    .step { min-height:214px; padding:28px; border-right:1px solid var(--line); }
+    .step:last-child { border-right:0; }
+    .step:before { counter-increment:step; content:"0" counter(step); display:block; color:var(--brass); font-family:"Microsoft YaHei",sans-serif; font-size:13px; font-weight:800; letter-spacing:.14em; }
+    .step p { color:var(--muted); font-family:"Microsoft YaHei",sans-serif; font-size:14px; }
+    .checklist { padding:28px; border:1px solid var(--line); border-radius:8px; background:var(--panel); }
+    .checklist ul { display:grid; grid-template-columns:repeat(2,1fr); gap:10px 24px; margin:0; padding:0; list-style:none; font-family:"Microsoft YaHei",sans-serif; }
+    .checklist li:before { content:"✓"; margin-right:9px; color:var(--moss); font-weight:800; }
+    .privacy { margin-top:17px; padding:20px 22px; border-radius:7px; background:#edf4ec; color:#355244; font-family:"Microsoft YaHei",sans-serif; font-size:14px; }
+    .team-note { margin-top:22px; border:1px dashed #9cafa4; border-radius:7px; padding:18px 20px; color:#496056; font-family:"Microsoft YaHei",sans-serif; font-size:14px; background:rgba(255,255,255,.45); }
+    .cta { padding:70px 0; background:linear-gradient(118deg,#123e30,#28664e); color:#fffaf0; }
+    .cta .inner { max-width:790px; }
+    .cta p { color:#d7e5dc; font-family:"Microsoft YaHei",sans-serif; font-size:17px; }
+    .cta .button.primary { background:#f5c86a; color:#24382e; }
+    footer { padding:25px 0; color:#6e7d75; font-family:"Microsoft YaHei",sans-serif; font-size:12px; }
+    @media (max-width:760px) { .topbar nav { display:none; } .hero { padding:58px 0 54px; } .fit-grid,.card-grid,.team-grid,.qualification { grid-template-columns:1fr; } .steps { grid-template-columns:1fr; } .step { min-height:auto; border-right:0; border-bottom:1px solid var(--line); } .step:last-child { border-bottom:0; } .checklist ul { grid-template-columns:1fr; } section { padding:50px 0; } }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap">
+      <a class="brand" href="#top">NAUTILUS / T1</a>
+      <nav aria-label="页面导航"><a href="#fit">适配条件</a><a href="#process">参与方式</a><a href="#quality">质量与隐私</a><a href="#team">团队入口</a></nav>
+    </div>
+  </header>
+  <main id="top">
+    <section class="hero">
+      <div class="wrap">
+        <div class="eyebrow">三期垂直领域专家计划</div>
+        <h1>让真实专业经验，成为可验证的贡献。</h1>
+        <p class="lead">我们邀请具备一线经验的领域专家，把复杂、真实的办公任务场景沉淀为高质量成果。你提供判断、经验和证据，项目团队提供清晰流程与受控支持。</p>
+        <div class="hero-actions">
+          <a class="button primary" href="https://qcn43eh6peiv.feishu.cn/share/base/shrcnzGvnk90SqX8RdkBH7Qp0Od" target="_blank" rel="noopener">填写三期专家报名表</a>
+          <a class="button secondary" href="#fit">先看我是否适合</a>
+        </div>
+        <p class="microcopy">报名进入准入审核，不代表立即开通任务。审核结果与后续安排以项目正式通知为准。</p>
+      </div>
+    </section>
+
+    <section id="fit" class="alt">
+      <div class="wrap">
+        <div class="section-title"><div class="eyebrow">一分钟自检</div><h2>你是否适合参与？</h2><p>请先看三个条件。都符合，再填写报名表即可。</p></div>
+        <div class="fit-grid">
+          <article class="fit"><div class="num">条件 01</div><h3>本科及以上学历</h3><p>能够在报名时如实提供学历、专业与相关背景信息。</p></article>
+          <article class="fit"><div class="num">条件 02</div><h3>2 年及以上工作经历</h3><p>在某一垂直领域有连续的真实工作经验，能够说明实际业务场景。</p></article>
+          <article class="fit"><div class="num">条件 03</div><h3>愿意沉淀真实经验</h3><p>可以在合规、脱敏前提下，描述任务背景、判断依据和完成路径。</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap qualification">
+        <div class="must"><div class="eyebrow" style="color:#f5c86a">招募要求</div><h2>先确认资格，再进入审核。</h2><ul><li>本科及以上学历</li><li>2 年及以上相关工作经历</li><li>具备可说明的真实行业或岗位经验</li><li>同意真实性、来源与隐私保护要求</li></ul></div>
+        <div class="bonus"><strong>项目激励</strong><h3>高质量贡献，享有奖金激励。</h3><p>通过项目审核的高质量成果，可获得项目奖金激励。具体认定与发放规则，以项目正式通知为准。</p></div>
+      </div>
+    </section>
+
+    <section id="process" class="alt">
+      <div class="wrap">
+        <div class="section-title"><div class="eyebrow">参与路径</div><h2>只有三步，先报名，后审核，再受控开展。</h2><p>不需要自行寻找多个入口，也不需要填写内部编号或重复提交信息。</p></div>
+        <div class="steps">
+          <article class="step"><h3>提交报名</h3><p>在唯一报名表中填写基本背景、工作领域与豆包 UID。请只提交一次，避免重复记录。</p></article>
+          <article class="step"><h3>等待准入审核</h3><p>项目团队核对信息、资格与合规要求。若需要补充，会通过正式渠道联系你。</p></article>
+          <article class="step"><h3>接收受控安排</h3><p>审核通过后，由智涌导师发送后续身份确认和任务安排。未收到正式通知前，请勿尝试进入任务页面。</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="quality">
+      <div class="wrap">
+        <div class="section-title"><div class="eyebrow">我们看重什么</div><h2>真实、可执行、可核验。</h2><p>高质量不是堆砌文字，而是让专业判断能够被理解、复现和验证。</p></div>
+        <div class="checklist"><ul><li>真实的业务场景与工作动作</li><li>清楚的任务目标和交付预期</li><li>可说明的判断依据与经验边界</li><li>必要的脱敏与来源说明</li><li>完整、一致的过程证据</li><li>遵守项目的隐私与合规要求</li></ul></div>
+        <div class="privacy">请勿提交客户姓名、联系方式、未公开数据、受保密约束材料或任何可识别个人/企业的信息。无法确认是否可用的材料，先不要提交，等待项目运营指引。</div>
+      </div>
+    </section>
+
+    <section id="team" class="alt">
+      <div class="wrap">
+        <div class="section-title"><div class="eyebrow">团队协作</div><h2>对外一张说明页，对内一套受控协作空间。</h2><p>公开页面只用于介绍项目与承接报名。团队操作、专家资料和审核信息不在这里展示。</p></div>
+        <div class="team-grid">
+          <article class="team-card"><h3>招募与市场</h3><p>使用统一推介口径、资格条件和报名链接，查看被授权的活动汇总，不接触专家隐私与审核依据。</p></article>
+          <article class="team-card"><h3>运营人员</h3><p>使用已授权飞书工作账号进入协作空间，处理本人负责范围内的准入、补充与异常升级。</p></article>
+          <article class="team-card"><h3>管理人员</h3><p>查看项目进度、例外事项和汇总信息；原始资料、内部规则和专家标识按需授权，不默认公开。</p></article>
+        </div>
+        <div class="team-note"><strong>团队成员入口：</strong>请使用已获授权的飞书工作账号，由项目管理员分发受控协作入口。公开页面不会显示专家名单、豆包 UID、多维表格地址、审核分数、模型规则或甲方信息。</div>
+      </div>
+    </section>
+
+    <section class="cta">
+      <div class="wrap inner"><div class="eyebrow" style="color:#f5c86a">准备好了？</div><h2>先确认条件，再提交一次正式报名。</h2><p>报名表是唯一公开入口。请使用本人信息填写，后续仅以项目正式通知为准。</p><a class="button primary" href="https://qcn43eh6peiv.feishu.cn/share/base/shrcnzGvnk90SqX8RdkBH7Qp0Od" target="_blank" rel="noopener">前往三期专家报名表</a></div>
+    </section>
+  </main>
+  <footer><div class="wrap">Nautilus · 三期垂直领域专家计划</div></footer>
+</body>
+</html>

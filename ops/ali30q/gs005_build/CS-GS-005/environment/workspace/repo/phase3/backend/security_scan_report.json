@@ -1,0 +1,424 @@
+{
+  "scan_time": "2026-02-26T22:18:26.636982",
+  "total_issues": 24,
+  "by_severity": {
+    "critical": 4,
+    "high": 0,
+    "medium": 1,
+    "low": 2,
+    "info": 17
+  },
+  "by_category": {
+    "hardcoded_secrets": 20,
+    "debug_code": 2,
+    "command_injection": 1,
+    "weak_crypto": 1
+  },
+  "issues": {
+    "by_severity": {
+      "critical": [
+        {
+          "severity": "critical",
+          "category": "hardcoded_secrets",
+          "file_path": "locustfile.py",
+          "line_number": 27,
+          "description": "硬编码密码",
+          "code_snippet": "self.password = \"TestPassword123!\""
+        },
+        {
+          "severity": "critical",
+          "category": "hardcoded_secrets",
+          "file_path": "locustfile.py",
+          "line_number": 206,
+          "description": "硬编码密码",
+          "code_snippet": "self.password = \"TestPassword123!\""
+        },
+        {
+          "severity": "critical",
+          "category": "hardcoded_secrets",
+          "file_path": "setup_key_management.py",
+          "line_number": 31,
+          "description": "硬编码密码",
+          "code_snippet": "password = \"SecureTestPassword2024!@#\""
+        },
+        {
+          "severity": "critical",
+          "category": "hardcoded_secrets",
+          "file_path": "blockchain\\key_manager.py",
+          "line_number": 695,
+          "description": "硬编码密码",
+          "code_snippet": "test_password = \"test_password_123\""
+        }
+      ],
+      "high": [],
+      "medium": [
+        {
+          "severity": "medium",
+          "category": "weak_crypto",
+          "file_path": "utils\\cache.py",
+          "line_number": 95,
+          "description": "使用MD5哈希",
+          "code_snippet": "return hashlib.md5(key_str.encode()).hexdigest()"
+        }
+      ],
+      "low": [
+        {
+          "severity": "low",
+          "category": "debug_code",
+          "file_path": "setup_key_management.py",
+          "line_number": 111,
+          "description": "打印密码信息",
+          "code_snippet": "print(f\"加密密码: {password[:8]}... (已保存到.env)\")"
+        },
+        {
+          "severity": "low",
+          "category": "debug_code",
+          "file_path": "tools\\key_manager_cli.py",
+          "line_number": 179,
+          "description": "打印密码信息",
+          "code_snippet": "print('❌ --input and --password required for encrypted_file source')"
+        }
+      ],
+      "info": [
+        {
+          "severity": "info",
+          "category": "hardcoded_secrets",
+          "file_path": "tests\\test_api_extended.py",
+          "line_number": 164,
+          "description": "硬编码API密钥",
+          "code_snippet": "api_key=\"test-key-123\","
+        },
+        {
+          "severity": "info",
+          "category": "hardcoded_secrets",
+          "file_path": "tests\\test_database_models.py",
+          "line_number": 52,
+          "description": "硬编码密码",
+          "code_snippet": "hashed_password=\"hashed_password\","
+        },
+        {
+          "severity": "info",
+          "category": "hardcoded_secrets",
+          "file_path": "tests\\test_e2e_api_keys.py",
+          "line_number": 56,
+          "description": "硬编码密码",
+          "code_snippet": "hashed_password=\"hashed_password\","
+        },
+        {
+          "severity": "info",
+          "category": "hardcoded_secrets",
+          "file_path": "tests\\test_e2e_api_keys.py",
+          "line_number": 134,
+          "description": "硬编码密码",
+          "code_snippet": "hashed_password=\"hashed_password\","
+        },
+        {
+          "severity": "info",
+          "category": "hardcoded_secrets",
+          "file_path": "tests\\test_e2e_edge_cases.py",
+          "line_number": 56,
+          "description": "硬编码密码",
+          "code_snippet": "hashed_password=\"hashed_password\","
+        },
+        {
+          "severity": "info",
+          "category": "hardcoded_secrets",
+          "file_path": "tests\\test_e2e_websocket.py",
+          "line_number": 57,
+          "description": "硬编码密码",
+          "code_snippet": "hashed_password=\"hashed_password\","
+        },
+        {
+          "severity": "info",
+          "category": "hardcoded_secrets",
+          "file_path": "tests\\test_gas_api.py",
+          "line_number": 52,
+          "description": "硬编码密码",
+          "code_snippet": "hashed_password=\"hashed_password\","
+        },
+        {
+          "severity": "info",
+          "category": "hardcoded_secrets",
+          "file_path": "tests\\test_gas_api.py",
+          "line_number": 285,
+          "description": "硬编码密码",
+          "code_snippet": "hashed_password=\"hashed_password\","
+        },
+        {
+          "severity": "info",
+          "category": "hardcoded_secrets",
+          "file_path": "tests\\test_key_manager.py",
+          "line_number": 69,
+          "description": "硬编码密码",
+          "code_snippet": "test_password = \"test_password_\" + secrets.token_hex(8)"
+        },
+        {
+          "severity": "info",
+          "category": "hardcoded_secrets",
+          "file_path": "tests\\test_key_manager.py",
+          "line_number": 171,
+          "description": "硬编码密码",
+          "code_snippet": "test_password = \"test_password_\" + secrets.token_hex(8)"
+        },
+        {
+          "severity": "info",
+          "category": "hardcoded_secrets",
+          "file_path": "tests\\test_key_manager.py",
+          "line_number": 248,
+          "description": "硬编码密码",
+          "code_snippet": "test_password = \"test_password_\" + secrets.token_hex(8)"
+        },
+        {
+          "severity": "info",
+          "category": "hardcoded_secrets",
+          "file_path": "tests\\test_key_manager.py",
+          "line_number": 264,
+          "description": "硬编码密码",
+          "code_snippet": "wrong_password = \"wrong_password\""
+        },
+        {
+          "severity": "info",
+          "category": "hardcoded_secrets",
+          "file_path": "tests\\test_nexus_protocol_batch3.py",
+          "line_number": 158,
+          "description": "硬编码密钥",
+          "code_snippet": "secret = \"test-secret\""
+        },
+        {
+          "severity": "info",
+          "category": "command_injection",
+          "file_path": "tests\\test_nexus_server_integration.py",
+          "line_number": 718,
+          "description": "使用eval函数",
+          "code_snippet": "async def test_agent_info_retrieval():"
+        },
+        {
+          "severity": "info",
+          "category": "hardcoded_secrets",
+          "file_path": "tests\\test_utils.py",
+          "line_number": 40,
+          "description": "硬编码密码",
+          "code_snippet": "password = \"testpassword123\""
+        },
+        {
+          "severity": "info",
+          "category": "hardcoded_secrets",
+          "file_path": "tests\\test_utils.py",
+          "line_number": 52,
+          "description": "硬编码密码",
+          "code_snippet": "password = \"testpassword123\""
+        },
+        {
+          "severity": "info",
+          "category": "hardcoded_secrets",
+          "file_path": "tests\\test_utils_extended.py",
+          "line_number": 50,
+          "description": "硬编码密码",
+          "code_snippet": "password = \"testpassword\""
+        }
+      ]
+    },
+    "by_category": {
+      "hardcoded_secrets": [
+        {
+          "severity": "critical",
+          "category": "hardcoded_secrets",
+          "file_path": "locustfile.py",
+          "line_number": 27,
+          "description": "硬编码密码",
+          "code_snippet": "self.password = \"TestPassword123!\""
+        },
+        {
+          "severity": "critical",
+          "category": "hardcoded_secrets",
+          "file_path": "locustfile.py",
+          "line_number": 206,
+          "description": "硬编码密码",
+          "code_snippet": "self.password = \"TestPassword123!\""
+        },
+        {
+          "severity": "critical",
+          "category": "hardcoded_secrets",
+          "file_path": "setup_key_management.py",
+          "line_number": 31,
+          "description": "硬编码密码",
+          "code_snippet": "password = \"SecureTestPassword2024!@#\""
+        },
+        {
+          "severity": "critical",
+          "category": "hardcoded_secrets",
+          "file_path": "blockchain\\key_manager.py",
+          "line_number": 695,
+          "description": "硬编码密码",
+          "code_snippet": "test_password = \"test_password_123\""
+        },
+        {
+          "severity": "info",
+          "category": "hardcoded_secrets",
+          "file_path": "tests\\test_api_extended.py",
+          "line_number": 164,
+          "description": "硬编码API密钥",
+          "code_snippet": "api_key=\"test-key-123\","
+        },
+        {
+          "severity": "info",
+          "category": "hardcoded_secrets",
+          "file_path": "tests\\test_database_models.py",
+          "line_number": 52,
+          "description": "硬编码密码",
+          "code_snippet": "hashed_password=\"hashed_password\","
+        },
+        {
+          "severity": "info",
+          "category": "hardcoded_secrets",
+          "file_path": "tests\\test_e2e_api_keys.py",
+          "line_number": 56,
+          "description": "硬编码密码",
+          "code_snippet": "hashed_password=\"hashed_password\","
+        },
+        {
+          "severity": "info",
+          "category": "hardcoded_secrets",
+          "file_path": "tests\\test_e2e_api_keys.py",
+          "line_number": 134,
+          "description": "硬编码密码",
+          "code_snippet": "hashed_password=\"hashed_password\","
+        },
+        {
+          "severity": "info",
+          "category": "hardcoded_secrets",
+          "file_path": "tests\\test_e2e_edge_cases.py",
+          "line_number": 56,
+          "description": "硬编码密码",
+          "code_snippet": "hashed_password=\"hashed_password\","
+        },
+        {
+          "severity": "info",
+          "category": "hardcoded_secrets",
+          "file_path": "tests\\test_e2e_websocket.py",
+          "line_number": 57,
+          "description": "硬编码密码",
+          "code_snippet": "hashed_password=\"hashed_password\","
+        },
+        {
+          "severity": "info",
+          "category": "hardcoded_secrets",
+          "file_path": "tests\\test_gas_api.py",
+          "line_number": 52,
+          "description": "硬编码密码",
+          "code_snippet": "hashed_password=\"hashed_password\","
+        },
+        {
+          "severity": "info",
+          "category": "hardcoded_secrets",
+          "file_path": "tests\\test_gas_api.py",
+          "line_number": 285,
+          "description": "硬编码密码",
+          "code_snippet": "hashed_password=\"hashed_password\","
+        },
+        {
+          "severity": "info",
+          "category": "hardcoded_secrets",
+          "file_path": "tests\\test_key_manager.py",
+          "line_number": 69,
+          "description": "硬编码密码",
+          "code_snippet": "test_password = \"test_password_\" + secrets.token_hex(8)"
+        },
+        {
+          "severity": "info",
+          "category": "hardcoded_secrets",
+          "file_path": "tests\\test_key_manager.py",
+          "line_number": 171,
+          "description": "硬编码密码",
+          "code_snippet": "test_password = \"test_password_\" + secrets.token_hex(8)"
+        },
+        {
+          "severity": "info",
+          "category": "hardcoded_secrets",
+          "file_path": "tests\\test_key_manager.py",
+          "line_number": 248,
+          "description": "硬编码密码",
+          "code_snippet": "test_password = \"test_password_\" + secrets.token_hex(8)"
+        },
+        {
+          "severity": "info",
+          "category": "hardcoded_secrets",
+          "file_path": "tests\\test_key_manager.py",
+          "line_number": 264,
+          "description": "硬编码密码",
+          "code_snippet": "wrong_password = \"wrong_password\""
+        },
+        {
+          "severity": "info",
+          "category": "hardcoded_secrets",
+          "file_path": "tests\\test_nexus_protocol_batch3.py",
+          "line_number": 158,
+          "description": "硬编码密钥",
+          "code_snippet": "secret = \"test-secret\""
+        },
+        {
+          "severity": "info",
+          "category": "hardcoded_secrets",
+          "file_path": "tests\\test_utils.py",
+          "line_number": 40,
+          "description": "硬编码密码",
+          "code_snippet": "password = \"testpassword123\""
+        },
+        {
+          "severity": "info",
+          "category": "hardcoded_secrets",
+          "file_path": "tests\\test_utils.py",
+          "line_number": 52,
+          "description": "硬编码密码",
+          "code_snippet": "password = \"testpassword123\""
+        },
+        {
+          "severity": "info",
+          "category": "hardcoded_secrets",
+          "file_path": "tests\\test_utils_extended.py",
+          "line_number": 50,
+          "description": "硬编码密码",
+          "code_snippet": "password = \"testpassword\""
+        }
+      ],
+      "debug_code": [
+        {
+          "severity": "low",
+          "category": "debug_code",
+          "file_path": "setup_key_management.py",
+          "line_number": 111,
+          "description": "打印密码信息",
+          "code_snippet": "print(f\"加密密码: {password[:8]}... (已保存到.env)\")"
+        },
+        {
+          "severity": "low",
+          "category": "debug_code",
+          "file_path": "tools\\key_manager_cli.py",
+          "line_number": 179,
+          "description": "打印密码信息",
+          "code_snippet": "print('❌ --input and --password required for encrypted_file source')"
+        }
+      ],
+      "command_injection": [
+        {
+          "severity": "info",
+          "category": "command_injection",
+          "file_path": "tests\\test_nexus_server_integration.py",
+          "line_number": 718,
+          "description": "使用eval函数",
+          "code_snippet": "async def test_agent_info_retrieval():"
+        }
+      ],
+      "weak_crypto": [
+        {
+          "severity": "medium",
+          "category": "weak_crypto",
+          "file_path": "utils\\cache.py",
+          "line_number": 95,
+          "description": "使用MD5哈希",
+          "code_snippet": "return hashlib.md5(key_str.encode()).hexdigest()"
+        }
+      ]
+    }
+  }
+}

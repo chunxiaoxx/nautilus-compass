@@ -1,0 +1,80 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "5d0d8996b9b2a7457fa565c883d501e277d1ddb4",
+  "reference_fix_commit": "6bfe61f276f35e2ad4a64c5bcbc8536b89a2ba62",
+  "subject": "fix(platform): preserve V2 replay on opaque budget rejection",
+  "test_files": [
+   "phase3/backend/tests/platform_protocol/test_g2_a0_model_gate_v2_cli.py"
+  ],
+  "source_files": [
+   "phase3/backend/tests/platform_protocol/g2_a0_model_gate_v2_cli.py"
+  ]
+ },
+ "test_id": "phase3/backend/tests/platform_protocol/test_g2_a0_model_gate_v2_cli.py::test_transport_budget_error_is_replay_safe_inconclusive",
+ "source_rel": "tests\\platform_protocol\\g2_a0_model_gate_v2_cli.py",
+ "provider": "ark_glm",
+ "test_passed": false,
+ "budget_exceeded": false,
+ "total_tokens": 138645,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "completion_tokens": 43406,
+    "prompt_tokens": 4898,
+    "total_tokens": 48304,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 43156
+    }
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "error: phase3/backend/phase3/backend/tests/platform_protocol/g2_a0_model_gate_v2_cli.py: No such file or directory\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "completion_tokens": 37959,
+    "prompt_tokens": 4968,
+    "total_tokens": 42927,
+    "prompt_tokens_details": {
+     "cached_tokens": 4096
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 37545
+    }
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "error: phase3/backend/phase3/backend/tests/platform_protocol/g2_a0_model_gate_v2_cli.py: No such file or directory\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "completion_tokens": 42446,
+    "prompt_tokens": 4968,
+    "total_tokens": 47414,
+    "prompt_tokens_details": {
+     "cached_tokens": 4096
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 42260
+    }
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "error: patch failed: phase3/backend/tests/platform_protocol/g2_a0_model_gate_v2_cli.py:249\nerror: phase3/backend/tests/platform_protocol/g2_a0_model_gate_v2_cli.py: patch does not apply\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 3781.1
+}

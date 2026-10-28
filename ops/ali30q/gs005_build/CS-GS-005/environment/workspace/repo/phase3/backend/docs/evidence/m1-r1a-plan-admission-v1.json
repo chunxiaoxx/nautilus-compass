@@ -1,0 +1,51 @@
+{
+  "adjudicator": {
+    "task6_template_commit": "286ff5535aa089ebdcda7f1bf80a814f21c58a7d",
+    "task6_template_sha256": "1127894e9793b06f8c41d0b221ff2d32a15d233ff7e076e59335797b4e6bf2da",
+    "template_role": "reference_only"
+  },
+  "compass_capsule": {
+    "authority_commit": "37efc4fc2f7455202c94515b29314af9e5e2e16e",
+    "capsule_hash": null,
+    "capsule_path": null,
+    "owner": "compass",
+    "proposal_commit": null,
+    "proposal_status": "missing",
+    "runtime_authorized": false,
+    "runtime_capabilities": {},
+    "schema_version": "m1-r1a-owner-input-v1",
+    "test_status": "not_run"
+  },
+  "decision": {
+    "reason_codes": [
+      "compass_o1_revision_noncanonical",
+      "compass_owner_input_missing",
+      "platform_o1_historical_candidate",
+      "v5_o1_revision_unresolvable"
+    ],
+    "status": "blocked"
+  },
+  "platform_o1": {
+    "candidate_commit": "2a2b91534fbfc9af9a8c3cadd1ae1da9552c0535",
+    "compass_revision_status": "noncanonical",
+    "compass_o1_revision": "d719db1e6f735cdd2fe99ab9ec997f5c8ea3e6fd",
+    "o1_evidence_sha256": "e6816ed716f591d6e92292f9c6ed1988ad88749cd4756acf522dbe87f4d0e564",
+    "schema_version": "m1-r1a-platform-o1-candidate-v1",
+    "task6_commit": "caf00fa7d1ac68d7e26adfa28317c58af88460c1",
+    "v5_o1_revision": "a651b5e96f0bcb5fcaaa490e20da5db7b5456bd7",
+    "v5_revision_status": "unresolvable",
+    "verification_status": "historical_candidate"
+  },
+  "schema_version": "m1-r1a-plan-admission-v1",
+  "v5_g0": {
+    "authority_commit": "f560be28ecac550e754eff2b82e36ea91ecad0b6",
+    "authorization_path": "docs/contracts/v5-r1a-plan-only-authorization-v1.json",
+    "authorization_sha256": "9aebc513029150af81068b13d0e454aedc7cad67bcc9d46348e7ba6de101aec6",
+    "owner": "v5",
+    "proposal_commit": "cdd55315f03c145e7d83d5a0eddbfeeb5d951c94",
+    "proposal_status": "submitted",
+    "runtime_authorized": false,
+    "schema_version": "m1-r1a-owner-input-v1",
+    "test_status": "pass"
+  }
+}

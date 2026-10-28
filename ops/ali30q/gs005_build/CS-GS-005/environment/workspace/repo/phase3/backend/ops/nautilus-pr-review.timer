@@ -1,0 +1,9 @@
+[Unit]
+Description=Nautilus soul PR 机审 timer(每 2h,U15 一期)
+
+[Timer]
+OnCalendar=*-*-* 1/2:15:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

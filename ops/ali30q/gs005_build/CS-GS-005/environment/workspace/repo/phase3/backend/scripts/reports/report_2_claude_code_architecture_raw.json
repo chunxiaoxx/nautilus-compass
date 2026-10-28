@@ -1,0 +1,16 @@
+{
+  "report_meta": {
+    "slug": "claude_code_architecture",
+    "topic": "Claude Code Multi-Agent Architecture: A Technical Deep Dive. Analyze: (1) how Claude Code uses KAIROS time-budget mechanism for task scheduling, (2) the autoDream memory consolidation pattern and how it resembles human sleep, (3) Swarm orchestration for parallel agent coordination, (4) how tool plugins extend agent capabilities without retraining, (5) lessons developers can apply to build their own multi-agent systems.",
+    "depth": "standard",
+    "title": "Claude Code's Hidden Architecture: KAIROS, autoDream, and Multi-Agent Orchestration Patterns",
+    "reddit_community": "r/ClaudeAI",
+    "twitter_hook": "Claude Code has a surprisingly sophisticated internal architecture — here's what we found.",
+    "zhihu_tag": "Claude、AI编程助手、多智能体"
+  },
+  "result": {
+    "job_id": "f79af2af-72dc-40c2-926f-4eaa3accc4a2",
+    "status": "running",
+    "message": "Research started (standard depth). Poll /api/research/status/f79af2af-72dc-40c2-926f-4eaa3accc4a2."
+  }
+}

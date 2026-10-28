@@ -1,0 +1,101 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "d284d13f0d7ad22502400f05c0921e480d637537",
+  "reference_fix_commit": "94f1e570b3fb1593fc96fc94f294f805009bdafd",
+  "subject": "fix(llm): deepseek-anthropic round-2 400 \u53cc\u4fee\u590d",
+  "test_files": [
+   "tests/test_anthropic_message_translate.py"
+  ],
+  "source_files": [
+   "nautilus_v5/runtime/llm_client.py"
+  ],
+  "repo_path": "C:/Users/chunx/nautilus-v5"
+ },
+ "test_id": "tests/test_anthropic_message_translate.py::test_consecutive_tool_results_merged_into_single_user_msg",
+ "source_rel": "nautilus_v5\\runtime\\llm_client.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "minimax_m3",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 11127,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 9263,
+    "completion_tokens": 1864,
+    "total_tokens": 11127,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 9263,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 1864,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 0,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 9263,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: No valid patches in input (allow with \"--allow-empty\")\n\n[attempt2 backend] error: No valid patches in input (allow with \"--allow-empty\")\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 9468,
+    "output_tokens": 705,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: nautilus_v5/runtime/llm_client.py:1180\nerror: nautilus_v5/runtime/llm_client.py: patch does not apply\n\n[attempt2 backend] error: patch failed: nautilus_v5/runtime/llm_client.py:1180\nerror: nautilus_v5/runtime/llm_client.py: patch does not apply\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 298,
+    "output_tokens": 640,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 9216,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_1adtamdx/repo/_g2b1.patch:42\n\n[attempt2 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_1adtamdx/repo/_g2b1.patch:42\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 3701.1,
+ "verdict_post_status": 200
+}

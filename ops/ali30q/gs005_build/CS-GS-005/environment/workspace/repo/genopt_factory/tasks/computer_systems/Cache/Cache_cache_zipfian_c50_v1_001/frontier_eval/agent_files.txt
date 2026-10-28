@@ -1,0 +1,13 @@
+agent_files:
+  - baseline/init.py
+  - verification/evaluate.py
+  - verification/_run_one.py
+reference: reference/solve.py
+data_dir: data/instances/
+num_instances: 5
+instances:
+  - looping_c100_n5k   # zipfian access, LRU strongly wins
+  - looping_c500_n15k  # zipfian, larger working set
+  - mixed_c200_n10k    # YCSB-like 80/20
+  - phase_c100_n8k     # phase shift (ARC adapts faster than LRU)
+  - scan_c100_n10k     # sequential scan + tail reuse

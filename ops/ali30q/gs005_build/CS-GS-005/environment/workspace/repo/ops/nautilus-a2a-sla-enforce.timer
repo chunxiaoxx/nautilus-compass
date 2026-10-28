@@ -1,0 +1,17 @@
+[Unit]
+Description=Run Nautilus A2A SLA enforce every 5 minutes
+Documentation=file:///home/ubuntu/nautilus-mvp/docs/DEPLOY_SOP_2026_05_19_evening.md
+
+[Timer]
+# 真 boot 后 1min delay · 真避免 boot storm
+OnBootSec=1min
+# 真 5min interval · 真匹配 a2a_pulse_cron 真节奏
+OnUnitActiveSec=5min
+Unit=nautilus-a2a-sla-enforce.service
+# 真 missed run 真 catch up(系统休眠后)· 真避免 SLA blackout
+Persistent=true
+# 真 ±15s random delay · 真避免 thundering herd 多 timer 同时跑
+RandomizedDelaySec=15s
+
+[Install]
+WantedBy=timers.target

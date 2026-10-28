@@ -1,0 +1,1 @@
+[loop-diff] R69 2026-10-05 flywheel: 信箱OPEN0全清;实例三线静(r80后无新派);触达节拍首役发车set15=challenge-2026/challenge_data样例集(171K下载榜一lerobot集,PrimeBot双臂第13本体,三视角,lerobot v2.1标准,40文件1.16G,aria2直链在途→QC链)——双定位:首报第15集+中国社区团队触达材料(样例报告敲门,通道likai@qiyuan-robot.com);QC报告成后同料供千寻试点方案§六选项B。

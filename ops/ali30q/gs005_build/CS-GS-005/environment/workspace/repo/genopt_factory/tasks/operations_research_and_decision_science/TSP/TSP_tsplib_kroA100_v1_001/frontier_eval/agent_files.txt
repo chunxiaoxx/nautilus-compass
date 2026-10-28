@@ -1,0 +1,7 @@
+agent_files:
+  - baseline/init.py       # candidate solver under test (editable)
+  - verification/evaluate.py  # only readable
+  - Task.md                # only readable
+reference: reference/solve.py   # NOT loaded by candidate; reference quality bar for grading
+data_dir: data/instances/      # only readable
+data_optima: data/optima.json   # only readable

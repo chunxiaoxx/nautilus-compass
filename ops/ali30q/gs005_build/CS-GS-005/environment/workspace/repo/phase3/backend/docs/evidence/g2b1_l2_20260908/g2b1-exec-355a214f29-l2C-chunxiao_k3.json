@@ -1,0 +1,161 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "b0331f195ccc71dacdd4e2761430eb3bf4e37564",
+  "reference_fix_commit": "355a214f29d40cbfe49363460766cdf4199d3030",
+  "subject": "fix(produce): code-fix/SWE max_tokens \u9ed8\u8ba4 8000\u219232000(\u4e3b\u4fee\u00b7\u5bf9\u9f50 ALE\u00b7\u914d fallback \u515c\u5e95)",
+  "test_files": [
+   "tests/test_fde_consumer_codefix_wiring.py"
+  ],
+  "source_files": [
+   "fde_capsule/fde_consumer.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5",
+  "hist_test_id": "tests/test_fde_consumer_codefix_wiring.py::test_codefix_llm_budget_defaults",
+  "hist_passed": false,
+  "_passed": false
+ },
+ "test_id": "tests/test_fde_consumer_codefix_wiring.py::test_codefix_llm_budget_defaults",
+ "source_rel": "fde_capsule\\fde_consumer.py",
+ "provider": "l2C-chunxiao_k3",
+ "provider_used": "l2C-chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/fde_capsule/fde_consumer.py\n+++ b/fde_capsule/fde_consumer.py\n@@ -220,10 +220,10 @@ def _codefix_llm_budget():\n     \"\"\"code-fix/kernel produce \u7684 LLM \u9884\u7b97(timeout \u79d2, max_tokens)\u00b7env \u53ef\u8986\u76d6\u3002\n \n     \u5f3a\u6a21\u578b\u63a8\u7406\u4ea7 kernel:120s/4000tok \u5fc5\u8d85\u65f6\u6216\u7a7a\u54cd\u5e94(p13 produce \u8d85\u65f6\u6839\u56e0 + compass \u5b9e\u6d4b)\u3002\n-    \u9ed8\u8ba4\u957f\u8d85\u65f6(600s)+\u5927 token(8000)\u00b7V5_CODEFIX_TIMEOUT / V5_CODEFIX_MAX_TOKENS \u8986\u76d6\u3002\n+    \u9ed8\u8ba4\u957f\u8d85\u65f6(600s)+\u5927 token(32000\u00b7\u5bf9\u9f50 ALE \u6210\u719f\u505a\u6cd5:reasoning \u6a21\u578b\u5148\u60f3\u5b8c\u518d\u5199\u5e72\u51c0\u7b54\u6848\u8fdb content)\u00b7V5_CODEFIX_TIMEOUT / V5_CODEFIX_MAX_TOKENS \u8986\u76d6\u3002\n     \"\"\"\n     import os\n     return (int(os.environ.get(\"V5_CODEFIX_TIMEOUT\", \"600\")),\n-            int(os.environ.get(\"V5_CODEFIX_MAX_TOKENS\", \"8000\")))\n+            int(os.environ.get(\"V5_CODEFIX_MAX_TOKENS\", \"32000\")))\n \n \n def make_llm_producer(api_base: Optional[str] = None,\n",
+ "budget_exceeded": false,
+ "total_tokens": 31934,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 10104,
+    "completion_tokens": 503,
+    "total_tokens": 10607,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 9848,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 503,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 10104,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: No valid patches in input (allow with \"--allow-empty\")\n\n[attempt2 backend] error: No valid patches in input (allow with \"--allow-empty\")\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 10200,
+    "completion_tokens": 417,
+    "total_tokens": 10617,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 216,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 9984,
+      "output_tokens": 417,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 9984,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 10200,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: fde_capsule/fde_consumer.py:1\nerror: fde_capsule/fde_consumer.py: patch does not apply\n\n[attempt2 backend] error: patch failed: fde_capsule/fde_consumer.py:1\nerror: fde_capsule/fde_consumer.py: patch does not apply\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 10236,
+    "completion_tokens": 474,
+    "total_tokens": 10710,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 252,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 9984,
+      "output_tokens": 474,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 9984,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 10236,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "codefix_default_max_tokens_32000",
+ "duration_s": 97.9
+}

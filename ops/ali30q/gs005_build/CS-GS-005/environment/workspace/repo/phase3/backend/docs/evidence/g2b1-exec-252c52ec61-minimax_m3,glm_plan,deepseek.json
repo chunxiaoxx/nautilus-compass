@@ -1,0 +1,71 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "78b489c2f26ca27761c311b976e344b5b8057b25",
+  "reference_fix_commit": "252c52ec6161c2cd2a8947ef3fe78fbd261d391f",
+  "subject": "fix(thin): \u7626\u5ba2\u6237\u7aef\u63a7\u5236\u53f0\u8f93\u51fa gbk-safe(\u65b0\u673a\u5668 Windows \u88c5\u4e0a\u4e0d\u5d29)",
+  "test_files": [
+   "tests/test_nautilus_thin.py"
+  ],
+  "source_files": [
+   "nautilus_thin.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_nautilus_thin.py::test_console_safe_ascii_passthrough_on_gbk",
+ "source_rel": "nautilus_thin.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 2922,
+    "output_tokens": 331,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_0inr_ojp/repo/_g2b1.patch:5\n\n[attempt2 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_0inr_ojp/repo/_g2b1.patch:5\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 3068,
+    "output_tokens": 325,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: nautilus_thin.py:25\nerror: nautilus_thin.py: patch does not apply\n\n[attempt2 backend] error: patch failed: nautilus_thin.py:25\nerror: nautilus_thin.py: patch does not apply\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 3024,
+    "output_tokens": 327,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_0inr_ojp/repo/_g2b1.patch:8\n\n[attempt2 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_0inr_ojp/repo/_g2b1.patch:8\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 12.3,
+ "verdict_post_status": 200
+}

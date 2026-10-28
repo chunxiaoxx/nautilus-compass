@@ -1,0 +1,43 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "84d541441d6f194744e03a98f5eccb8cea5b0025",
+  "reference_fix_commit": "24ee0351d751635ad0b664426c3b0c537ba6cfef",
+  "subject": "fix(genopt): feishu_ship defaults to None (anchor #6 secret hygiene)",
+  "test_files": [
+   "tests/test_genopt_feishu_ship.py"
+  ],
+  "source_files": [
+   "fde_capsule/genopt/feishu_ship.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_genopt_feishu_ship.py::test_defaults_are_none_for_secret_hygiene",
+ "source_rel": "fde_capsule\\genopt\\feishu_ship.py",
+ "provider": "glm_plan,minimax_m3,deepseek",
+ "test_passed": true,
+ "winning_diff": "--- a/fde_capsule/genopt/feishu_ship.py\n+++ b/fde_capsule/genopt/feishu_ship.py\n@@ -8,14 +8,14 @@\n fde_capsule.feishu.bitable_client API (anchor #5: never re-implement the\n feishu transport). Honors GENOPT_FEISHU_DRY_RUN=1 for offline verification.\n \n-Default buyer table is the FDE L3 baseline sample table anchored in CHARTER \u00a71.3:\n-  app_token=EOVhbQwA0a1HEOsgmxecgkBVnwh  table=tblhD4O4f0esTyXc\n-Override via GENOPT_FEISHU_APP_TOKEN / GENOPT_FEISHU_TABLE_ID env.\n+No hardcoded defaults (anchor #6: secret hygiene). The default app_token /\n+table_id are None; resolution is via GENOPT_FEISHU_APP_TOKEN / GENOPT_FEISHU_TABLE_ID\n+env vars or explicit --app-token / --table-id CLI args.\n \"\"\"\n import json\n import os\n import sys\n \n from fde_capsule.genopt import feishu_schema\n \n-DEFAULT_APP_TOKEN = \"EOVhbQwA0a1HEOsgmxecgkBVnwh\"\n-DEFAULT_TABLE_ID = \"tblhD4O4f0esTyXc\"\n+DEFAULT_APP_TOKEN = None\n+DEFAULT_TABLE_ID = None\n TASK_FIELDS = [\"task_id\", \"Prompt\", \"Domain\", \"Sub-domain\", \"directory\"]\n \n \n@@ -63,11 +63,13 @@ def ship_task(task_dir, trajectory, app_token=None, table_id=None):\n def ship_task(task_dir, trajectory, app_token=None, table_id=None):\n     \"\"\"Ship one task to feishu. Dry-run by default to avoid spurious writes.\"\"\"\n     app_token = app_token or os.environ.get(\"GENOPT_FEISHU_APP_TOKEN\",\n-                                            DEFAULT_APP_TOKEN)\n+                                            DEFAULT_APP_TOKEN)\n     table_id = table_id or os.environ.get(\"GENOPT_FEISHU_TABLE_ID\",\n-                                          DEFAULT_TABLE_ID)\n+                                          DEFAULT_TABLE_ID)\n+    assert app_token, \"app_token required: set GENOPT_FEISHU_APP_TOKEN or pass --app-token\"\n+    assert table_id, \"table_id required: set GENOPT_FEISHU_TABLE_ID or pass --table-id\"\n     fields = build_record(task_dir, trajectory)\n     if os.environ.get(\"GENOPT_FEISHU_DRY_RUN\", \"1\") == \"1\":\n         print(\"[feishu:dry_run] -> %s/%s fields=%s\" % (\n",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "input_tokens": 1717,
+    "output_tokens": 654,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "feishu_ship_defaults_none",
+ "duration_s": 28.6,
+ "verdict_post_status": 200
+}

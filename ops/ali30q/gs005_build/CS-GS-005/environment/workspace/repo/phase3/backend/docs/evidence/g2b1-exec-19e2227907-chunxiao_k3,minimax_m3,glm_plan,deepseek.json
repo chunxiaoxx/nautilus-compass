@@ -1,0 +1,31 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "d714308da397f5b33e7bc41f3eb0739d6baf300d",
+  "reference_fix_commit": "19e22279074b530db0a48899f31d58773e0c1000",
+  "subject": "fix(fde): soul-scorer \u4e0d\u53cc\u5224 deterministic-kind(code-fix)= bench_eval turf",
+  "test_files": [
+   "phase3/backend/tests/test_fde_scorer_poll.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/fde_scorer_poll.py",
+   "phase3/backend/services/fde_scorer_runner.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/test_fde_scorer_poll.py",
+ "source_rel": "services\\fde_scorer_poll.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 2.6,
+ "replayed": true,
+ "verdict_post_status": 200
+}

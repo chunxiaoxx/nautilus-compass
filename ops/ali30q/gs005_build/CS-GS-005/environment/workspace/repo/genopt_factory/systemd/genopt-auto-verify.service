@@ -1,0 +1,13 @@
+[Unit]
+Description=GenOpt auto-verify · soul 自动裁判(独立复现未验证 verdict · MATCH 才 PATCH)
+After=network-online.target nautilus-backend.service
+
+[Service]
+Type=oneshot
+User=ubuntu
+WorkingDirectory=/home/ubuntu/nautilus-mvp/phase3/backend
+Environment=PYTHONPATH=/home/ubuntu/nautilus-mvp/phase3/backend
+Environment=GENOPT_LIVE_DIR=/home/ubuntu/genopt_live
+Environment=NAUTILUS_API_URL=http://localhost:8000
+ExecStart=/usr/bin/python3 /home/ubuntu/nautilus-mvp/phase3/backend/services/fde_auto_verify_runner.py
+TimeoutStartSec=3900

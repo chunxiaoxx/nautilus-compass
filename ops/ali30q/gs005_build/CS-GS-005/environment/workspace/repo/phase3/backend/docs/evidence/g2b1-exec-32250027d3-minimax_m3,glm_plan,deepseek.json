@@ -1,0 +1,43 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "eaa48d6132c48dd08a1a7c3c4221c775a0af6785",
+  "reference_fix_commit": "32250027d328a4f650e3f4882214345fdd261576",
+  "subject": "fix(fde-t3): \u7a7a\u5019\u9009 guard(\u4e0d\u8fdbGPU\u00b7\u5982\u5b9e\u8bb0\u56e0)+ env_slot_mismatch \u5206\u7c7b(/app\u5355\u69fd\u4e0d\u5c5e\u672c\u9898=\u7ed3\u679c\u65e0\u6548\u975e\u6a21\u578bFAIL\u00b7pass@k=None\u00b7\u5047\u9634\u6027=\u5047\u6570\u636e)",
+  "test_files": [
+   "tests/test_fde_t3_produce.py"
+  ],
+  "source_files": [
+   "fde_capsule/t3_produce.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_fde_t3_produce.py::test_empty_candidate_skips_eval_with_honest_error",
+ "source_rel": "fde_capsule\\t3_produce.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": true,
+ "winning_diff": "--- a/fde_capsule/t3_produce.py\n+++ b/fde_capsule/t3_produce.py\n@@ -116,6 +116,10 @@ def run_t3_produce(spec: dict, instruction: str,\n         try:\n             code = extract_code(completer(prompt))\n+            if not code:\n+                entry[\"passed\"] = False\n+                entry[\"error\"] = \"empty candidate\"\n+                per_candidate.append(entry)\n+                continue\n             raw = eval_fn(code, label)\n             reward = parse_verifier_reward(raw)\n             entry[\"reward\"] = reward\n",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "input_tokens": 3133,
+    "output_tokens": 185,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "t3_skip_eval_on_empty_candidate",
+ "duration_s": 7.2,
+ "verdict_post_status": 200
+}

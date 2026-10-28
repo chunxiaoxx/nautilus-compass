@@ -1,0 +1,116 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "f3020da8ffc92484712c188fd090725556b4e0d9",
+  "reference_fix_commit": "d2baddf891760eaeeb750d2abb7418b3ddae021a",
+  "subject": "fix(context): coalesce adjacent same-role msgs after compaction (anthropic-compat 400 guard) + drop dead _PRUNED",
+  "test_files": [
+   "tests/commons/context/test_compact_messages.py"
+  ],
+  "source_files": [
+   "nautilus_v5/commons/context/compactor.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/commons/context/test_compact_messages.py::test_no_consecutive_same_role_after_inject",
+ "source_rel": "nautilus_v5\\commons\\context\\compactor.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/nautilus_v5/commons/context/compactor.py\n+++ b/nautilus_v5/commons/context/compactor.py\n@@ -196,6 +196,21 @@\n     out = list(messages[:head_end])\n     if summary:\n-        out.append({\"role\": \"user\", \"content\": f\"{_SUMMARY_PREFIX}\\n{summary}\"})\n-    out.extend(messages[tail_start:])\n+        summary_text = f\"{_SUMMARY_PREFIX}\\n{summary}\"\n+        tail_first = messages[tail_start] if tail_start < n else None\n+        if tail_first is not None and tail_first.get(\"role\") == \"user\":\n+            # Fold the summary into the first kept tail turn so the injected\n+            # user message never sits adjacent to another user message.\n+            merged = dict(tail_first)\n+            merged[\"content\"] = summary_text + \"\\n\\n\" + (merged.get(\"content\") or \"\")\n+            out.append(merged)\n+            out.extend(messages[tail_start + 1:])\n+        elif out and out[-1].get(\"role\") == \"user\":\n+            # Protected head already ends with a user turn; fold into it instead.\n+            merged = dict(out[-1])\n+            merged[\"content\"] = (merged.get(\"content\") or \"\") + \"\\n\\n\" + summary_text\n+            out[-1] = merged\n+            out.extend(messages[tail_start:])\n+        else:\n+            out.append({\"role\": \"user\", \"content\": summary_text})\n+            out.extend(messages[tail_start:])\n+    else:\n+        out.extend(messages[tail_start:])\n     out = _sanitize_tool_pairs(out)\n     return out, (summary or None)\n",
+ "budget_exceeded": false,
+ "total_tokens": 11705,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 2636,
+    "completion_tokens": 1256,
+    "total_tokens": 3892,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 2636,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 1256,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 0,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 2636,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: nautilus_v5/commons/context/compactor.py:1\nerror: nautilus_v5/commons/context/compactor.py: patch does not apply\n\n[attempt2 backend] error: patch failed: nautilus_v5/commons/context/compactor.py:1\nerror: nautilus_v5/commons/context/compactor.py: patch does not apply\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 2763,
+    "completion_tokens": 5050,
+    "total_tokens": 7813,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 203,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 2560,
+      "output_tokens": 5050,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 2560,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 2763,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "fix_summary_inject_role_collision",
+ "duration_s": 199.8,
+ "verdict_post_status": 200
+}

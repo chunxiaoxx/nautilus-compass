@@ -1,0 +1,118 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "e49e8ade7849c198fa24199010d9d94aa4385928",
+  "reference_fix_commit": "1a7673c6e7af1b3ae14d515256ee88f1c0164fc8",
+  "subject": "fix(fde): harden readonly evidence boundaries",
+  "test_files": [
+   "tests/test_feishu_wiki_evidence.py"
+  ],
+  "source_files": [
+   "tools/fde_feishu_wiki_evidence.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-fde-phase3",
+  "hist_test_id": "tests/test_feishu_wiki_evidence.py::test_transport_rejects_nonreadonly_or_unknown_endpoint_before_network_call",
+  "hist_passed": true,
+  "_passed": true
+ },
+ "test_id": "tests/test_feishu_wiki_evidence.py::test_transport_rejects_nonreadonly_or_unknown_endpoint_before_network_call",
+ "source_rel": "tools\\fde_feishu_wiki_evidence.py",
+ "provider": "l2B-chunxiao_k3",
+ "provider_used": "l2B-chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/tools/fde_feishu_wiki_evidence.py\n+++ b/tools/fde_feishu_wiki_evidence.py\n@@ -90,12 +90,24 @@ def _require_mapping(value: object) -> Mapping[str, Any]:\n     return value\n \n \n-def _assert_allowed_url(url: str) -> None:\n+def _assert_allowed_url(url: str, method: str = \"GET\") -> None:\n     parsed = urlparse(url)\n     if parsed.scheme != \"https\" or parsed.netloc != \"open.feishu.cn\":\n         raise EvidenceError(\"ENDPOINT_REJECTED\")\n-    if not any(parsed.path.startswith(prefix) for prefix in ALLOWED_PATH_PREFIXES):\n+    if parsed.path == TOKEN_PATH:\n+        if method != \"POST\":\n+            raise EvidenceError(\"ENDPOINT_REJECTED\")\n+        return\n+    if method != \"GET\":\n         raise EvidenceError(\"ENDPOINT_REJECTED\")\n+    if parsed.path == WIKI_NODE_PATH:\n+        return\n+    if not parsed.path.startswith(DOCUMENT_PATH_PREFIX):\n+        raise EvidenceError(\"ENDPOINT_REJECTED\")\n+    parts = [part for part in parsed.path[len(DOCUMENT_PATH_PREFIX):].split(\"/\") if part]\n+    if not parts or len(parts) > 2 or (len(parts) == 2 and parts[1] not in (\"raw_content\", \"blocks\")):\n+        raise EvidenceError(\"ENDPOINT_REJECTED\")\n \n \n def _decode_payload(raw: bytes, status: int) -> Mapping[str, Any]:\n@@ -109,7 +121,7 @@ def standard_transport(\n     body: bytes | None = None,\n ) -> ApiResponse:\n     \"\"\"Send a request only to the explicit read-only Feishu endpoint allowlist.\"\"\"\n-    _assert_allowed_url(url)\n+    _assert_allowed_url(url, method)\n     request = Request(url, data=body, headers=dict(headers or {}), method=method)\n     try:\n         with urlopen(request, timeout=15) as response:\n@@ -150,7 +162,7 @@ def _request_json(\n     headers: Mapping[str, str] | None = None,\n     body: bytes | None = None,\n ) -> Mapping[str, Any]:\n-    _assert_allowed_url(url)\n+    _assert_allowed_url(url, method)\n     response = transport(method, url, headers, body)\n     if not isinstance(response, ApiResponse):\n         raise EvidenceError(\"TRANSPORT_PROTOCOL_ERROR\")\n",
+ "budget_exceeded": false,
+ "total_tokens": 18641,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 7968,
+    "completion_tokens": 1042,
+    "total_tokens": 9010,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 7712,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 1042,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 7968,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: No valid patches in input (allow with \"--allow-empty\")\n\n[attempt2 backend] error: No valid patches in input (allow with \"--allow-empty\")\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 8064,
+    "completion_tokens": 1567,
+    "total_tokens": 9631,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 384,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 7680,
+      "output_tokens": 1567,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 7680,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 8064,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "transport_enforce_readonly_endpoints",
+ "duration_s": 81.5
+}

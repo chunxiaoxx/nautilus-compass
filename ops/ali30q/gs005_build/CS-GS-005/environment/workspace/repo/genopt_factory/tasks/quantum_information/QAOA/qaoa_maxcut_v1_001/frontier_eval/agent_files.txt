@@ -1,0 +1,17 @@
+agent_files:
+  - baseline/init.py
+  - verification/evaluate.py
+  - verification/_run_one.py
+reference: reference/solve.py
+data_dir: data/instances/
+data_optima: data/optima.json
+num_instances: 7
+p: 4
+instances:
+  - k6     # complete K6, small
+  - k8     # complete K8, small
+  - k10    # complete K10, small-medium
+  - reg20  # 3-regular n=20
+  - reg40  # 3-regular n=40
+  - bip30  # bipartite planted n=30
+  - bip50  # bipartite planted n=50

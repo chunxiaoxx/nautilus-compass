@@ -1,0 +1,41 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  group_by: ['alertname', 'priority']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 12h
+  receiver: 'default'
+  routes:
+    - match:
+        priority: P0
+      receiver: 'critical'
+      continue: true
+    - match:
+        priority: P1
+      receiver: 'warning'
+      continue: true
+
+receivers:
+  - name: 'default'
+    webhook_configs:
+      - url: 'http://localhost:8000/api/alerts/webhook'
+        send_resolved: true
+
+  - name: 'critical'
+    webhook_configs:
+      - url: 'http://localhost:8000/api/alerts/critical'
+        send_resolved: true
+
+  - name: 'warning'
+    webhook_configs:
+      - url: 'http://localhost:8000/api/alerts/warning'
+        send_resolved: true
+
+inhibit_rules:
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname']

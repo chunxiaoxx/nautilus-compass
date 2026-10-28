@@ -1,0 +1,43 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "f71d3e91bde1ed624596f0adb2f623694197c771",
+  "reference_fix_commit": "dfb2cca7b8c064b41d0e174b52b5fcf1745fabff",
+  "subject": "fix(swe-fuel): empty-diff guard(soul 6/21\u00b7n_files=0 \u4e0d\u5f53\u6709\u6548 diff \u62a5)",
+  "test_files": [
+   "tests/test_swe_fuel_produce.py"
+  ],
+  "source_files": [
+   "fde_capsule/swe_fuel_produce.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_swe_fuel_produce.py::test_swe_fuel_route_raises_on_empty_diff",
+ "source_rel": "fde_capsule\\swe_fuel_produce.py",
+ "provider": "glm_plan,minimax_m3,deepseek",
+ "test_passed": true,
+ "winning_diff": "--- a/fde_capsule/swe_fuel_produce.py\n+++ b/fde_capsule/swe_fuel_produce.py\n@@ -191,13 +191,15 @@ def make_swe_fuel_route(completer: Callable[[str], str]):\n     completer = daemon \u5df2 resolve \u7684 LLM(\u51fa\u4fee\u6b63\u540e\u6587\u4ef6\u5168\u6587)\u3002\u96f6\u7f51\u7edc(\u539f\u6587\u8d70 spec \u5185\u5d4c)\u3002\n     \"\"\"\n     def route(task: dict) -> Dict[str, Any]:\n         spec = parse_swe_fuel_spec(task) or {}\n         producer = make_swe_diff_producer(completer, make_embedded_fetch(spec))\n-        result = producer(spec)\n+        result = producer(spec)\n+        if not (result.get(\"patch\") or \"\").strip():\n+            raise ValueError(\"swe fuel route produced empty unified diff\")\n         return {\"code\": result.get(\"code\", \"swe-unified-diff\"),\n                 \"output\": result.get(\"patch\", \"\"),\n                 \"metrics\": result.get(\"metrics\", {})}\n     return route\n",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "input_tokens": 2657,
+    "output_tokens": 295,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 134,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "swe_fuel_route_raises_on_empty_diff",
+ "duration_s": 34.5,
+ "verdict_post_status": 200
+}

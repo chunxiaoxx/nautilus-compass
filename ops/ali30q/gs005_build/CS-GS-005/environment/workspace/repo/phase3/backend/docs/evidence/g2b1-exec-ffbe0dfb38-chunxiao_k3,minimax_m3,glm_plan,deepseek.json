@@ -1,0 +1,159 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "2d01cbd28c16c9ef8b6aeb5a8e59601d17f172ab",
+  "reference_fix_commit": "ffbe0dfb38ba258e7b86983c75c9601d04280f2c",
+  "subject": "fix(rsi-C gap#1): code-fix produce LLM \u957f\u8d85\u65f6+\u5927 token(\u6cbb\u5f3a\u6a21\u578b\u4ea7 kernel \u8d85\u65f6)",
+  "test_files": [
+   "tests/test_fde_consumer_codefix_wiring.py"
+  ],
+  "source_files": [
+   "fde_capsule/fde_consumer.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_fde_consumer_codefix_wiring.py::test_call_llm_accepts_timeout_param",
+ "source_rel": "fde_capsule\\fde_consumer.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/fde_capsule/fde_consumer.py\n+++ b/fde_capsule/fde_consumer.py\n@@ -162,6 +162,7 @@\n # \u2500\u2500 effect \u5de5\u5382(\u4e0d\u5355\u6d4b)\u00b7 sync LLM producer(urllib\u00b7\u907f litellm/async) \u2500\u2500\n \n def _call_llm(prompt: str, *, api_base: str = \"https://api.minimaxi.com/v1\",\n               model: str = \"MiniMax-M2.7-highspeed\",\n-              api_key_env: str = \"MINIMAX_API_KEY\", max_tokens: int = 4000) -> str:\n+              api_key_env: str = \"MINIMAX_API_KEY\", max_tokens: int = 4000,\n+              timeout: float = 120) -> str:\n     \"\"\"sync LLM \u8c03\u7528(urllib\u00b7OpenAI \u517c\u5bb9)\u00b7 \u62bd\u51fa = produce \u7684 effect \u8fb9\u754c\u00b7\u4fbf\u4e8e\u6d4b\u8bd5 mock\u3002\"\"\"\n@@ -173,5 +174,5 @@\n     req = _ur.Request(api_base.rstrip(\"/\") + \"/chat/completions\", data=body, method=\"POST\",\n                       headers={\"Content-Type\": \"application/json\",\n                                \"Authorization\": f\"Bearer {os.environ.get(api_key_env, '')}\"})\n-    with _ur.urlopen(req, timeout=120) as r:\n+    with _ur.urlopen(req, timeout=timeout) as r:\n         return _j.loads(r.read())[\"choices\"][0][\"message\"][\"content\"]\n",
+ "budget_exceeded": false,
+ "total_tokens": 16936,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 4209,
+    "completion_tokens": 305,
+    "total_tokens": 4514,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 3953,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 305,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 4209,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: No valid patches in input (allow with \"--allow-empty\")\n\n[attempt2 backend] error: No valid patches in input (allow with \"--allow-empty\")\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 4288,
+    "completion_tokens": 245,
+    "total_tokens": 4533,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 192,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 4096,
+      "output_tokens": 245,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 4096,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 4288,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: No valid patches in input (allow with \"--allow-empty\")\n\n[attempt2 backend] error: No valid patches in input (allow with \"--allow-empty\")\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 4288,
+    "completion_tokens": 3601,
+    "total_tokens": 7889,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 0,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 4288,
+      "output_tokens": 3601,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 4288,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 4288,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "call_llm_timeout_param",
+ "duration_s": 117.1,
+ "verdict_post_status": 200
+}

@@ -1,0 +1,5 @@
+{"tasks":[
+  {"task_dir":"genopt_factory/tasks/kernel_engineering_and_systems/Attention/attention_flash_v1_001","n":3,"effort":"xhigh","timeout":600},
+  {"task_dir":"genopt_factory/tasks/computer_systems/Cache/cache_lru_v1_001","n":3,"effort":"xhigh","timeout":600},
+  {"task_dir":"genopt_factory/tasks/operations_research_and_decision_science/BinPack/bin_packing_ffd_v1_001","n":3,"effort":"xhigh","timeout":600}
+]}

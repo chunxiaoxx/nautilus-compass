@@ -1,0 +1,89 @@
+{
+  "version": "1.0",
+  "description": "Data labeling benchmark dataset with ground truth for Nautilus MVP",
+  "tasks": [
+    {
+      "id": 1,
+      "type": "text_classification",
+      "description": "Classify news headlines into: technology, sports, politics, entertainment, business, science",
+      "labels": ["technology", "sports", "politics", "entertainment", "business", "science"],
+      "items": [
+        {"id": 1, "text": "OpenAI announces GPT-5 with improved reasoning capabilities", "ground_truth": "technology"},
+        {"id": 2, "text": "Federal Reserve raises interest rates by 0.25%", "ground_truth": "business"},
+        {"id": 3, "text": "NASA discovers water on Mars surface", "ground_truth": "science"},
+        {"id": 4, "text": "Barcelona wins Champions League final 3-1", "ground_truth": "sports"},
+        {"id": 5, "text": "Senate approves new immigration reform bill", "ground_truth": "politics"},
+        {"id": 6, "text": "Netflix releases most-watched series of the year", "ground_truth": "entertainment"},
+        {"id": 7, "text": "Tesla stock surges 15% after Q4 earnings beat", "ground_truth": "business"},
+        {"id": 8, "text": "CRISPR gene therapy shows promise in clinical trials", "ground_truth": "science"},
+        {"id": 9, "text": "World Cup qualifiers draw record TV audience in Asia", "ground_truth": "sports"},
+        {"id": 10, "text": "Apple launches Vision Pro 2 with spatial computing", "ground_truth": "technology"}
+      ]
+    },
+    {
+      "id": 2,
+      "type": "sentiment",
+      "description": "Analyze sentiment of product reviews",
+      "items": [
+        {"id": 1, "text": "This laptop is amazing! Best purchase I've ever made. Battery lasts all day.", "ground_truth": "positive"},
+        {"id": 2, "text": "Terrible customer service. Waited 3 hours on hold and still no resolution.", "ground_truth": "negative"},
+        {"id": 3, "text": "The product arrived on time. It works as described.", "ground_truth": "neutral"},
+        {"id": 4, "text": "Absolutely love the new design! The camera quality is outstanding.", "ground_truth": "positive"},
+        {"id": 5, "text": "Broke after two weeks. Complete waste of money. Avoid at all costs.", "ground_truth": "negative"},
+        {"id": 6, "text": "It's okay. Nothing special but gets the job done.", "ground_truth": "neutral"},
+        {"id": 7, "text": "The software update ruined everything. My phone is now extremely slow.", "ground_truth": "negative"},
+        {"id": 8, "text": "Five stars! Exceeded all my expectations. Would recommend to everyone.", "ground_truth": "positive"},
+        {"id": 9, "text": "Average quality for the price. You get what you pay for.", "ground_truth": "neutral"},
+        {"id": 10, "text": "Incredible sound quality and noise cancellation. Worth every penny!", "ground_truth": "positive"}
+      ]
+    },
+    {
+      "id": 3,
+      "type": "entity_extraction",
+      "description": "Extract named entities (PERSON, ORG, LOC, DATE) from text",
+      "items": [
+        {"id": 1, "text": "Elon Musk announced that Tesla will open a new factory in Berlin by March 2026.", "ground_truth": {"PERSON": ["Elon Musk"], "ORG": ["Tesla"], "LOC": ["Berlin"], "DATE": ["March 2026"]}},
+        {"id": 2, "text": "Google CEO Sundar Pichai met with EU officials in Brussels last Tuesday.", "ground_truth": {"PERSON": ["Sundar Pichai"], "ORG": ["Google", "EU"], "LOC": ["Brussels"], "DATE": ["last Tuesday"]}},
+        {"id": 3, "text": "Microsoft acquired Activision Blizzard for $69 billion in January 2024.", "ground_truth": {"PERSON": [], "ORG": ["Microsoft", "Activision Blizzard"], "LOC": [], "DATE": ["January 2024"]}},
+        {"id": 4, "text": "The Tokyo Olympics were held in Japan during summer 2021.", "ground_truth": {"PERSON": [], "ORG": ["Olympics"], "LOC": ["Tokyo", "Japan"], "DATE": ["summer 2021"]}},
+        {"id": 5, "text": "Jeff Bezos stepped down as Amazon CEO and moved to Miami in 2023.", "ground_truth": {"PERSON": ["Jeff Bezos"], "ORG": ["Amazon"], "LOC": ["Miami"], "DATE": ["2023"]}}
+      ]
+    },
+    {
+      "id": 4,
+      "type": "intent",
+      "description": "Classify customer support messages by intent",
+      "labels": ["billing_issue", "technical_support", "account_management", "product_inquiry", "complaint", "cancellation"],
+      "items": [
+        {"id": 1, "text": "I was charged twice for my subscription this month", "ground_truth": "billing_issue"},
+        {"id": 2, "text": "My app keeps crashing when I try to upload photos", "ground_truth": "technical_support"},
+        {"id": 3, "text": "How do I change my email address on my account?", "ground_truth": "account_management"},
+        {"id": 4, "text": "What features are included in the premium plan?", "ground_truth": "product_inquiry"},
+        {"id": 5, "text": "This is unacceptable! I've been waiting for my refund for 3 weeks!", "ground_truth": "complaint"},
+        {"id": 6, "text": "I want to cancel my subscription effective immediately", "ground_truth": "cancellation"},
+        {"id": 7, "text": "Can you explain why my bill went up from $9.99 to $14.99?", "ground_truth": "billing_issue"},
+        {"id": 8, "text": "The video player won't load on my Samsung TV", "ground_truth": "technical_support"},
+        {"id": 9, "text": "I need to update my payment method to a new credit card", "ground_truth": "account_management"},
+        {"id": 10, "text": "Do you offer a family plan with multiple profiles?", "ground_truth": "product_inquiry"}
+      ]
+    },
+    {
+      "id": 5,
+      "type": "text_classification",
+      "description": "Classify autonomous driving scenarios: weather, time_of_day, road_type, traffic_density",
+      "labels": ["clear_day", "rainy", "foggy", "night", "highway", "urban", "rural", "heavy_traffic", "light_traffic"],
+      "items": [
+        {"id": 1, "text": "Sensor data shows wet road surface, reduced visibility to 200m, windshield wipers active", "ground_truth": "rainy"},
+        {"id": 2, "text": "Multi-lane divided highway, speed limit 120km/h, minimal vehicles ahead", "ground_truth": "highway"},
+        {"id": 3, "text": "Dense fog detected, visibility below 50m, temperature near dew point", "ground_truth": "foggy"},
+        {"id": 4, "text": "Narrow residential street, parked cars on both sides, pedestrians crossing", "ground_truth": "urban"},
+        {"id": 5, "text": "Headlights on, streetlights illuminating road, moon visible, 23:00 timestamp", "ground_truth": "night"},
+        {"id": 6, "text": "Stop-and-go traffic, average speed 15km/h, vehicles within 5m in all directions", "ground_truth": "heavy_traffic"},
+        {"id": 7, "text": "Bright sunshine, clear sky, temperature 25C, excellent visibility >10km", "ground_truth": "clear_day"},
+        {"id": 8, "text": "Two-lane country road, open fields on both sides, no other vehicles detected", "ground_truth": "rural"},
+        {"id": 9, "text": "Scattered vehicles, average spacing 100m, free-flowing movement at speed limit", "ground_truth": "light_traffic"},
+        {"id": 10, "text": "Rain intensity increasing, aquaplaning risk detected, road spray from trucks", "ground_truth": "rainy"}
+      ]
+    }
+  ]
+}

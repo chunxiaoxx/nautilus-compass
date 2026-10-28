@@ -1,0 +1,151 @@
+version: '3.8'
+
+services:
+  # Prometheus 监控服务
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: nautilus-prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/alerting_rules.yml:/etc/prometheus/alerting_rules.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=15d'
+      - '--storage.tsdb.retention.size=10GB'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    networks:
+      - monitoring
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Grafana 可视化服务
+  grafana:
+    image: grafana/grafana:latest
+    container_name: nautilus-grafana
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    environment:
+      # 管理员配置
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+      # 服务器配置
+      GF_SERVER_ROOT_URL: http://localhost:3001
+      GF_SERVER_DOMAIN: localhost
+      # 匿名访问（生产环境应禁用）
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+      # 数据源配置
+      GF_DATASOURCES_DEFAULT_NAME: Prometheus
+      # 日志配置
+      GF_LOG_MODE: console
+      GF_LOG_LEVEL: info
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      - prometheus
+    networks:
+      - monitoring
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # AlertManager 告警管理（可选）
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: nautilus-alertmanager
+    restart: unless-stopped
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - alertmanager_data:/alertmanager
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+      - '--storage.path=/alertmanager'
+    networks:
+      - monitoring
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:9093/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Node Exporter 系统监控
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: nautilus-node-exporter
+    restart: unless-stopped
+    ports:
+      - "9100:9100"
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--path.rootfs=/host'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/host:ro
+    networks:
+      - monitoring
+
+  # PostgreSQL Exporter 数据库监控（可选）
+  # 注意：需要postgres服务运行，如果没有请注释掉
+  # postgres-exporter:
+  #   image: prometheuscommunity/postgres-exporter:latest
+  #   container_name: nautilus-postgres-exporter
+  #   restart: unless-stopped
+  #   ports:
+  #     - "9187:9187"
+  #   environment:
+  #     DATA_SOURCE_NAME: "postgresql://${POSTGRES_USER:-nautilus}:${POSTGRES_PASSWORD:-nautilus_dev_password}@postgres:5432/${POSTGRES_DB:-nautilus_dev}?sslmode=disable"
+  #   networks:
+  #     - monitoring
+  #     - default
+  #   depends_on:
+  #     - postgres
+
+  # Redis Exporter 缓存监控（可选）
+  # 注意：需要redis服务运行，如果没有请注释掉
+  # redis-exporter:
+  #   image: oliver006/redis_exporter:latest
+  #   container_name: nautilus-redis-exporter
+  #   restart: unless-stopped
+  #   ports:
+  #     - "9121:9121"
+  #   environment:
+  #     REDIS_ADDR: "redis:6379"
+  #   networks:
+  #     - monitoring
+  #     - default
+  #   depends_on:
+  #     - redis
+
+networks:
+  monitoring:
+    driver: bridge
+  default:
+    external: true
+    name: nautilus_default
+
+volumes:
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+  alertmanager_data:
+    driver: local

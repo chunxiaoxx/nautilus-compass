@@ -1,0 +1,70 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "9d3dfd31b33450256dcceef0576a9bc2fc8a0c9f",
+  "reference_fix_commit": "2ab23b6415f8b92873320d41064650f21dcc2946",
+  "subject": "fix(s4): enforce ExperiencePacket field types",
+  "test_files": [
+   "tests/gep/test_experience_packet.py",
+   "tests/gep/test_flywheel_event.py"
+  ],
+  "source_files": [
+   "gep/experience_packet.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass"
+ },
+ "test_id": "tests/gep/test_experience_packet.py::test_scalar_fields_reject_wrong_runtime_types",
+ "source_rel": "gep\\experience_packet.py",
+ "provider": "glm_plan,minimax_m3,deepseek",
+ "test_passed": true,
+ "winning_diff": "--- a/gep/experience_packet.py\n+++ b/gep/experience_packet.py\n@@ -38,9 +38,35 @@ class ExperiencePacket:\n         policy_hint: str | None = None\n \n     def __post_init__(self) -> None:\n+        object.__setattr__(self, \"episode_id\", _validate_optional_str(\"episode_id\", self.episode_id))\n+        object.__setattr__(self, \"parent_episode_id\", _validate_optional_str(\"parent_episode_id\", self.parent_episode_id))\n+        object.__setattr__(self, \"task\", _validate_optional_str(\"task\", self.task))\n+        object.__setattr__(self, \"action_kind\", _validate_optional_str(\"action_kind\", self.action_kind))\n         object.__setattr__(self, \"tool_chain\", _normalize_tool_chain(self.tool_chain))\n+        object.__setattr__(self, \"outcome\", _validate_optional_str(\"outcome\", self.outcome))\n+        object.__setattr__(self, \"failure_mode\", _validate_optional_str(\"failure_mode\", self.failure_mode))\n+        object.__setattr__(self, \"reward_delta\", _validate_optional_float(\"reward_delta\", self.reward_delta))\n+        object.__setattr__(self, \"impact\", _validate_optional_float(\"impact\", self.impact))\n+        object.__setattr__(self, \"route_key\", _validate_optional_str(\"route_key\", self.route_key))\n+        object.__setattr__(self, \"capsule_candidate\", _validate_optional_bool(\"capsule_candidate\", self.capsule_candidate))\n+        object.__setattr__(self, \"policy_hint\", _validate_optional_str(\"policy_hint\", self.policy_hint))\n \n \n _FIELD_NAMES = tuple(field.name for field in fields(ExperiencePacket))\n \n \n+def _validate_optional_str(name: str, value: Any) -> Any:\n+    if value is None:\n+        return None\n+    if not isinstance(value, str) or isinstance(value, bool):\n+        raise TypeError(f\"{name} must be a string or None\")\n+    return value\n+\n+\n+def _validate_optional_float(name: str, value: Any) -> Any:\n+    if value is None:\n+        return None\n+    if isinstance(value, bool) or not isinstance(value, (int, float)):\n+        raise TypeError(f\"{name} must be a number or None\")\n+    return float(value)\n+\n+\n+def _validate_optional_bool(name: str, value: Any) -> Any:\n+    if value is None:\n+        return None\n+    if not isinstance(value, bool):\n+        raise TypeError(f\"{name} must be a boolean or None\")\n+    return value\n+\n+\n def _normalize_tool_chain(value: Any) -> tuple[str, ...] | None:\n     if value is None:\n         return None\n",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 2083,
+    "output_tokens": 527,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: No valid patches in input (allow with \"--allow-empty\")\n\n[attempt2 backend] error: No valid patches in input (allow with \"--allow-empty\")\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 2033,
+    "output_tokens": 882,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_9pylnfn7/repo/_g2b1.patch:17\n\n[attempt2 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_9pylnfn7/repo/_g2b1.patch:17\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "input_tokens": 2101,
+    "output_tokens": 722,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "experience_packet_scalar_type_validation",
+ "duration_s": 79.9,
+ "verdict_post_status": 200
+}

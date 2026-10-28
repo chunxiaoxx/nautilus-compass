@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nautilus 数据飞轮 · E2E 逐单验证台</title>
+<style>
+:root{--ink:#1a2233;--mut:#5b6472;--line:#e3e7ee;--brand:#0f62fe;--bg:#fbfcfe;--card:#fff}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.75 -apple-system,"Segoe UI","Microsoft YaHei",sans-serif;color:var(--ink);background:var(--bg)}
+header{background:linear-gradient(135deg,#0b1c3d,#0f62fe);color:#fff;padding:40px 24px 28px}
+header .wrap,main{max-width:980px;margin:0 auto;padding:0 20px}
+header h1{margin:0 0 6px;font-size:30px;letter-spacing:.5px}
+header p{margin:0;opacity:.85;font-size:14px}
+nav.toc{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 20px;margin:20px auto;max-width:940px;font-size:14px}
+nav.toc b{color:var(--mut)}
+nav.toc a{color:var(--brand);text-decoration:none;margin-right:14px;white-space:nowrap}
+main{padding-bottom:60px}
+h2{font-size:22px;border-left:4px solid var(--brand);padding-left:10px;margin-top:40px}
+h3{font-size:18px;margin-top:26px}
+table{border-collapse:collapse;width:100%;margin:14px 0;background:var(--card);font-size:14px}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:#f0f4fb}
+code{background:#eef1f6;padding:1px 5px;border-radius:4px;font-size:13.5px}
+pre{background:#0e1526;color:#dbe4ff;padding:14px;border-radius:8px;overflow:auto;font-size:13px}
+pre code{background:none;color:inherit}
+blockquote{margin:12px 0;padding:8px 14px;border-left:4px solid var(--line);color:var(--mut);background:var(--card)}
+hr{border:none;border-top:1px solid var(--line);margin:32px 0}
+footer{text-align:center;color:var(--mut);font-size:12.5px;padding:18px;border-top:1px solid var(--line)}
+a{color:var(--brand)}
+@media print{header{background:#0b1c3d}nav.toc{display:none}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><h1>Nautilus 数据飞轮 · E2E 逐单验证台</h1><p>涡轮增压五段链 · 每单实证 · DB 实态生成(非叙事) · 数据源 GET /api/platform/org/pipeline/e2e</p></div></header>
+<nav class="toc"><b>目录</b> </nav>
+<main>
+<h1>数据飞轮 E2E 验证工件 · b-turbo-f196..b-turbo-f215</h1>
+<blockquote>
+<p>生成于 2026-10-06 23:12:37 · 数据源=生产 DB 实态查询(非叙事) · 本文件可随时重跑再生
+汇总:20 单 | 全链五段闭合 <strong>8</strong> | 断链单=12</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>单</th>
+<th>池verdict</th>
+<th>S1发单</th>
+<th>S2交付</th>
+<th>S3四验</th>
+<th>S4入池</th>
+<th>S5结算</th>
+<th>全链</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>b-turbo-f196</td>
+<td>fail</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>b-turbo-f197</td>
+<td>fail</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PENDING</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>b-turbo-f198</td>
+<td>fail</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PENDING</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>b-turbo-f199</td>
+<td>pass</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PENDING</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>b-turbo-f200</td>
+<td>fail</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PENDING</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>b-turbo-f201</td>
+<td>pass</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>b-turbo-f202</td>
+<td>pass</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>b-turbo-f203</td>
+<td>pass</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>b-turbo-f204</td>
+<td>pass</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>b-turbo-f205</td>
+<td>pass</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>b-turbo-f206</td>
+<td>pass</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>b-turbo-f207</td>
+<td>fail</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PENDING</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>b-turbo-f208</td>
+<td>-</td>
+<td>PASS</td>
+<td>FAIL</td>
+<td>PENDING</td>
+<td>PENDING</td>
+<td>PASS</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>b-turbo-f209</td>
+<td>-</td>
+<td>PASS</td>
+<td>FAIL</td>
+<td>PENDING</td>
+<td>PENDING</td>
+<td>PASS</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>b-turbo-f210</td>
+<td>pass</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>PASS</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>b-turbo-f211</td>
+<td>-</td>
+<td>PASS</td>
+<td>FAIL</td>
+<td>PENDING</td>
+<td>PENDING</td>
+<td>PASS</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>b-turbo-f212</td>
+<td>-</td>
+<td>PASS</td>
+<td>FAIL</td>
+<td>PENDING</td>
+<td>PENDING</td>
+<td>PASS</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>b-turbo-f213</td>
+<td>-</td>
+<td>PASS</td>
+<td>FAIL</td>
+<td>PENDING</td>
+<td>PENDING</td>
+<td>PASS</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>b-turbo-f214</td>
+<td>-</td>
+<td>PASS</td>
+<td>FAIL</td>
+<td>PENDING</td>
+<td>PENDING</td>
+<td>PASS</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>b-turbo-f215</td>
+<td>-</td>
+<td>PASS</td>
+<td>FAIL</td>
+<td>PENDING</td>
+<td>PENDING</td>
+<td>PASS</td>
+<td>❌</td>
+</tr>
+</tbody>
+</table>
+<p>断链单与卡点:['b-turbo-f197', 'b-turbo-f198', 'b-turbo-f199', 'b-turbo-f200', 'b-turbo-f207', 'b-turbo-f208', 'b-turbo-f209', 'b-turbo-f211', 'b-turbo-f212', 'b-turbo-f213', 'b-turbo-f214', 'b-turbo-f215']</p>
+</main>
+<footer>Nautilus · 本页由文档正本生成(md 单一事实源,网页为只读视图) · 生成时间 2026-10-06 23:26:33 · vtf/_pipeline/PIPELINE_E2E_VERIFY_LATEST.md</footer>
+</body>
+</html>

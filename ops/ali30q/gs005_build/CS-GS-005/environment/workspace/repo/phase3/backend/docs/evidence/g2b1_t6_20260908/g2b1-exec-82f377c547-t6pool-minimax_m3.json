@@ -1,0 +1,44 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "648d7c403829013ade629d63ddbfe808f6b2b770",
+  "reference_fix_commit": "82f377c547e1867d073f02bb8f476214d07e245b",
+  "subject": "Fix deprecated label formatting",
+  "test_files": [
+   "tests/test_commands.py",
+   "tests/test_options.py"
+  ],
+  "source_files": [
+   "src/click/core.py"
+  ],
+  "repo_path": "C:/Users/chunx/ext_mine"
+ },
+ "test_id": "tests/test_commands.py::test_deprecated_empty_help_no_leading_space",
+ "source_rel": "src\\click\\core.py",
+ "provider": "t6pool-minimax_m3",
+ "provider_used": "t6pool-minimax_m3",
+ "test_passed": true,
+ "winning_diff": "--- a/src/click/core.py\n+++ b/src/click/core.py\n@@ -1308,8 +1308,11 @@ class Command:\n     def format_help_text(self, ctx: Context, formatter: HelpFormatter) -> None:\n         \"\"\"Writes the help text to the formatter if it exists.\"\"\"\n         if self.help is not None:\n             # truncate the help text to the first form feed\n             text = inspect.cleandoc(self.help).partition(\"\\f\")[0]\n         else:\n             text = \"\"\n \n         if self.deprecated:\n-            text = f\"{_(text)} {_format_deprecated_label(self.deprecated)}\"\n+            sep = \" \" if text else \"\"\n+            text = f\"{_(text)}{sep}{_format_deprecated_label(self.deprecated)}\"\n \n         if text:\n             formatter.write_paragraph()\n",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "input_tokens": 30734,
+    "output_tokens": 245,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 134,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "fix_deprecated_empty_help_indentation",
+ "duration_s": 10.1
+}

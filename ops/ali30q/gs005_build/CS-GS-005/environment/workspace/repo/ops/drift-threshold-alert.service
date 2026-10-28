@@ -1,0 +1,14 @@
+[Unit]
+Description=Drift threshold inbox alert · scan platform_agents.metadata.behavioral_drift · post inbox alerts on breach
+Wants=network-online.target
+After=network-online.target postgresql.service
+
+[Service]
+Type=oneshot
+User=ubuntu
+ExecStart=/usr/local/bin/drift_threshold_alert.py
+StandardOutput=append:/var/log/drift-threshold-alert.log
+StandardError=append:/var/log/drift-threshold-alert.log
+
+[Install]
+WantedBy=multi-user.target

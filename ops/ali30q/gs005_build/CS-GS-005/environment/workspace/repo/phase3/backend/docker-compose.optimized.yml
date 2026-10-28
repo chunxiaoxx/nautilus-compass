@@ -1,0 +1,362 @@
+version: '3.8'
+
+# ============================================
+# Docker Compose 优化配置
+# ============================================
+# 特性：
+# - 资源限制和预留
+# - 网络隔离和安全
+# - 健康检查和重启策略
+# - 日志管理
+# - 性能优化
+# ============================================
+
+networks:
+  # 前端网络（对外暴露）
+  frontend:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
+
+  # 后端网络（内部通信）
+  backend:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 172.21.0.0/24
+
+services:
+  # ============================================
+  # PostgreSQL数据库
+  # ============================================
+  postgres:
+    image: postgres:15-alpine
+    container_name: nautilus-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_USER: nautilus
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-nautilus_dev_password}
+      POSTGRES_DB: nautilus_dev
+      POSTGRES_INITDB_ARGS: "-E UTF8 --locale=C"
+      PGDATA: /var/lib/postgresql/data/pgdata
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d:ro
+
+    networks:
+      - backend
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nautilus -d nautilus_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    # 安全选项
+    security_opt:
+      - no-new-privileges:true
+
+    # 只读根文件系统（除了数据目录）
+    tmpfs:
+      - /tmp
+      - /var/run/postgresql
+
+  # ============================================
+  # Redis缓存
+  # ============================================
+  redis:
+    image: redis:7-alpine
+    container_name: nautilus-redis
+    restart: unless-stopped
+
+    command: >
+      redis-server
+      --maxmemory 512mb
+      --maxmemory-policy allkeys-lru
+      --save 60 1000
+      --appendonly yes
+      --appendfsync everysec
+
+    ports:
+      - "6379:6379"
+
+    volumes:
+      - redis_data:/data
+
+    networks:
+      - backend
+
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    # 安全选项
+    security_opt:
+      - no-new-privileges:true
+
+  # ============================================
+  # 后端API服务
+  # ============================================
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.optimized
+      args:
+        - BUILDKIT_INLINE_CACHE=1
+
+    image: nautilus-backend:optimized
+    container_name: nautilus-backend
+    restart: unless-stopped
+
+    environment:
+      # 数据库配置
+      DATABASE_URL: postgresql://nautilus:${POSTGRES_PASSWORD:-nautilus_dev_password}@postgres:5432/nautilus_dev
+      DATABASE_POOL_SIZE: 20
+      DATABASE_MAX_OVERFLOW: 10
+
+      # Redis配置
+      REDIS_URL: redis://redis:6379
+
+      # 应用配置
+      SECRET_KEY: ${SECRET_KEY:-dev-secret-key-change-in-production}
+      API_KEY_PREFIX: nau_
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+
+      # 性能配置
+      WORKERS: 4
+      WORKER_CLASS: uvicorn.workers.UvicornWorker
+
+      # 日志配置
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+
+    ports:
+      - "8000:8000"
+
+    volumes:
+      - ./logs:/app/logs
+
+    networks:
+      - frontend
+      - backend
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+    # 安全选项
+    security_opt:
+      - no-new-privileges:true
+
+  # ============================================
+  # Prometheus监控
+  # ============================================
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: nautilus-prometheus
+    restart: unless-stopped
+
+    user: "65534:65534"
+
+    ports:
+      - "9090:9090"
+
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+
+    networks:
+      - backend
+
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=30d'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    # 安全选项
+    security_opt:
+      - no-new-privileges:true
+
+  # ============================================
+  # Grafana可视化
+  # ============================================
+  grafana:
+    image: grafana/grafana:latest
+    container_name: nautilus-grafana
+    restart: unless-stopped
+
+    user: "472:472"
+
+    ports:
+      - "3000:3000"
+
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_SERVER_ROOT_URL: http://localhost:3000
+      GF_INSTALL_PLUGINS: ""
+
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+
+    networks:
+      - backend
+
+    depends_on:
+      - prometheus
+
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    # 安全选项
+    security_opt:
+      - no-new-privileges:true
+
+# ============================================
+# 数据卷
+# ============================================
+volumes:
+  postgres_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./data/postgres
+
+  redis_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./data/redis
+
+  prometheus_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./data/prometheus
+
+  grafana_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./data/grafana

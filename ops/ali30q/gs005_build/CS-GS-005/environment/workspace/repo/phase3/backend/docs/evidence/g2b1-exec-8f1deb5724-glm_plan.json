@@ -1,0 +1,28 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "e5cf6ee4a029c93d4e94e517a4e724a1f3a0b3d5",
+  "reference_fix_commit": "8f1deb5724b32878cea4dffb9fb9ed0ced25f8ed",
+  "subject": "fix(feishu): chat \u6bcf\u4f1a\u8bdd\u72ec\u7acb conv_mem(\u4fee\u6240\u6709\u4f1a\u8bdd\u5171\u7528 api-client \u6876)",
+  "test_files": [
+   "tests/test_feishu_chat.py"
+  ],
+  "source_files": [
+   "fde_capsule/feishu/callback_app.py",
+   "fde_capsule/feishu/chat.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_feishu_chat.py::test_handle_chat_passes_chat_id_as_conv_key",
+ "source_rel": "fde_capsule/feishu/callback_app.py",
+ "provider": "glm_plan",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0
+}

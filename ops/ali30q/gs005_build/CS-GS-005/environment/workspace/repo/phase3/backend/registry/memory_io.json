@@ -1,0 +1,32 @@
+{
+  "schema": "memory_io.v1",
+  "note": "记忆IO台账(compass 侧·承#2768 最小集)。#2871 方式②回函带 JSON,平台代合并(2026-10-04),内容 verbatim。正本 sha 锚待 compass push 3b7ddb5d 后回填关联段。",
+  "memory_io": [
+    {
+      "round": "memory-io-canon-v1",
+      "date": "2026-10-04",
+      "fuel": {
+        "pool_snapshot_sha": "95 entries(本仓 memory/)",
+        "trajectory_count": 95,
+        "source": "会话提炼+判读结论+勘误双向+用户拍板(写入白名单四类)"
+      },
+      "recipe": {
+        "ref": "MEMORY_IO_ARCHITECTURE(正本,2734 件一)",
+        "method": "写入门三件套(fact_status/dedup_check/沿链一跳)+BGE-m3 向量召回(温热冷三层)+四算子治理",
+        "params_hash": "bge-m3 定谳(9/25 向量对拍:recall@5 +0.46pt<阈值不换)"
+      },
+      "criteria_version": "写入白名单+时效纪律(>7d 不倒批今日判断)+NODE 非 session_ 前缀门槛",
+      "preregistration": {
+        "hash": "deferred",
+        "doc_ref": "docs/memory/MEMORY_IO_ARCHITECTURE.md"
+      },
+      "eval": {
+        "canary": "F2 delta=1(recall 有用性首证,8/24)",
+        "full": "feedback_log 采纳率季度读数(未出,挂账如实段)"
+      },
+      "verdict_ref": "compass daemon v3.3(9876)+MCP recall/drift_check/feedback_log",
+      "negative_result": "衰减算子与 reinforce 消费端未接(9/7 七算子审计挂账);语义 recall 曾 100% 坏死无人察觉→有用性探针必配教训",
+      "owner": "compass"
+    }
+  ]
+}

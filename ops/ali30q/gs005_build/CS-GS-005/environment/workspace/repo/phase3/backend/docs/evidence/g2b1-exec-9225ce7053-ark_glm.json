@@ -1,0 +1,28 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "9d3e9fd8717f75459d3dc5fdb545fb2b3a8b4a31",
+  "reference_fix_commit": "9225ce70535769b014d92b31a11c4bf7b579c21e",
+  "subject": "fix(fde): harden phase 3 ownership boundaries",
+  "test_files": [
+   "phase3/backend/tests/test_fde_phase3_feishu.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/fde_phase3_feishu.py"
+  ]
+ },
+ "test_id": "phase3/backend/tests/test_fde_phase3_feishu.py::test_transition_direct_constructor_enforces_identity_and_state_rules",
+ "source_rel": "phase3/backend/services/fde_phase3_feishu.py",
+ "provider": "ark_glm",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

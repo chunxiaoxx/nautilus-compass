@@ -1,0 +1,73 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "a1b66eac9619b793a1913be9635344b8de16b9af",
+  "reference_fix_commit": "91f0f684c52b42d5d038fd29c940b2dbde229905",
+  "subject": "fix(exam): strip\u8bef\u5265\u7b2c\u56db\u4fee\u2014\u2014\u5b64\u7acbthink\u5206\u652f\u4ec5\u8ba4\u54cd\u5e94\u5f00\u5934",
+  "test_files": [
+   "tests/test_swe_gates.py"
+  ],
+  "source_files": [
+   "fde_capsule/swe_fuel_produce.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\nautilus-v5"
+ },
+ "test_id": "tests/test_swe_gates.py::test_midtext_think_literal_not_stripped",
+ "source_rel": "fde_capsule\\swe_fuel_produce.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "diff --git a/fde_capsule/swe_fuel_produce.py b/fde_capsule/swe_fuel_produce.py\n--- a/fde_capsule/swe_fuel_produce.py\n+++ b/fde_capsule/swe_fuel_produce.py\n@@ -172,6 +172,11 @@\n     out = re.sub(r\"<think>.*?</think>\", \"\", text, flags=re.S)\n     if \"<think>\" in out:  # \u5b64\u7acb\u672a\u95ed\u5408:\u5265\u5230\u9996\u4e2a\u56f4\u680f/\u6587\u672b\n         i = out.find(\"<think>\")\n+        # 355a \u8bef\u5265\u5b9e\u8bc1\u4fee\u590d:\u82e5 <think> \u4f4d\u4e8e\u4ee3\u7801\u56f4\u680f\u5185(\u524d\u9762\u6709\u5947\u6570\u4e2a ```)\n+        # \u2192 \u662f\u6e90\u7801\u5b57\u7b26\u4e32\u5b57\u9762\u91cf(\u5982 x.replace(\"<think>\", \"\"))\u00b7\u7edd\u975e\u5b64\u7acb\u601d\u8003\u6bb5\u00b7\u4e0d\u5265\u3002\n+        if out[:i].count(\"```\") % 2 == 1:\n+            return out.strip()\n         fence = out.find(\"```\", i)\n         out = out[:i] + (out[fence:] if fence > i else \"\")\n     return out.strip()\n",
+ "budget_exceeded": false,
+ "total_tokens": 4835,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 3953,
+    "completion_tokens": 882,
+    "total_tokens": 4835,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 3953,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 882,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 0,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 3953,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "think_literal_in_fence_not_stripped",
+ "duration_s": 23.5,
+ "verdict_post_status": 200
+}

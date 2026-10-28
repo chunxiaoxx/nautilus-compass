@@ -1,0 +1,81 @@
+# ============================================
+# Dockerfile.optimized - 优化的多阶段构建
+# ============================================
+# 镜像大小优化：使用多阶段构建和Alpine基础镜像
+# 构建时间优化：利用Docker层缓存
+# 安全优化：非root用户运行
+# ============================================
+
+# ============================================
+# 阶段1: 依赖构建器
+# ============================================
+FROM python:3.13-slim as dependencies
+
+# 设置工作目录
+WORKDIR /build
+
+# 安装构建依赖（仅在此阶段需要）
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    g++ \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# 复制依赖文件（利用Docker缓存）
+COPY requirements.txt .
+
+# 安装Python依赖到独立目录
+RUN pip install --no-cache-dir --prefix=/install --upgrade pip setuptools wheel && \
+    pip install --no-cache-dir --prefix=/install -r requirements.txt
+
+# ============================================
+# 阶段2: 运行时镜像
+# ============================================
+FROM python:3.13-slim
+
+# 设置元数据
+LABEL maintainer="Nautilus Team"
+LABEL version="1.0"
+LABEL description="Nautilus Backend API - Optimized"
+
+# 设置环境变量
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PATH="/opt/venv/bin:$PATH"
+
+# 安装运行时依赖（最小化）
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpq5 \
+    curl \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# 从构建阶段复制Python包
+COPY --from=dependencies /install /usr/local
+
+# 创建非root用户
+RUN groupadd -r nautilus -g 1000 && \
+    useradd -r -u 1000 -g nautilus -m -s /bin/bash nautilus && \
+    mkdir -p /app /app/logs && \
+    chown -R nautilus:nautilus /app
+
+# 设置工作目录
+WORKDIR /app
+
+# 复制应用代码（最后复制以利用缓存）
+COPY --chown=nautilus:nautilus . .
+
+# 切换到非root用户
+USER nautilus
+
+# 暴露端口
+EXPOSE 8000
+
+# 健康检查
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# 启动命令
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]

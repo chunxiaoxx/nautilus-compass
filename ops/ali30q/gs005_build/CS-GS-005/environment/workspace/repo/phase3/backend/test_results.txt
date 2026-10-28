@@ -1,0 +1,1880 @@
+============================= test session starts =============================
+platform win32 -- Python 3.13.12, pytest-9.0.2, pluggy-1.6.0
+rootdir: C:\Users\chunx\Projects\nautilus-core\phase3\backend
+configfile: pytest.ini
+testpaths: tests
+plugins: anyio-4.12.1, asyncio-1.3.0, cov-7.0.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+
+----------------------------- live log collection -----------------------------
+2026-02-27 10:41:06 [    INFO] Server initialized for asgi.
+2026-02-27 10:41:06 [    INFO] NexusServer initialized (max_queue_size=1000, max_agents=100)
+2026-02-27 10:41:07 [    INFO] Server initialized for asgi.
+collected 500 items
+
+tests/test_api.py::TestModels::test_task_status_enum PASSED              [  0%]
+tests/test_api.py::TestModels::test_agent_model PASSED                   [  0%]
+tests/test_api.py::TestModels::test_task_model PASSED                    [  0%]
+tests/test_api.py::TestAgentsAPI::test_agent_response_model PASSED       [  0%]
+tests/test_api.py::TestRewardsAPI::test_reward_response_model PASSED     [  1%]
+tests/test_api.py::TestAuthAPI::test_auth_router_exists PASSED           [  1%]
+tests/test_api.py::TestAuthAPI::test_auth_endpoints_count PASSED         [  1%]
+tests/test_api.py::TestAPIIntegration::test_router_registration PASSED   [  1%]
+tests/test_api.py::TestAPIIntegration::test_all_endpoints_defined PASSED [  1%]
+tests/test_api.py::TestAPIIntegration::test_models_exported PASSED       [  2%]
+tests/test_api.py::TestAPIIntegration::test_utils_exported PASSED        [  2%]
+tests/test_api_complete.py::TestTasksAPIComplete::test_list_tasks_with_filters 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:41:09 [    INFO] HTTP Request: GET http://testserver/tasks/?status=Open "HTTP/1.1 307 Temporary Redirect"
+2026-02-27 10:41:09 [    INFO] HTTP Request: GET http://testserver/tasks?status=Open "HTTP/1.1 200 OK"
+PASSED                                                                   [  2%]
+tests/test_api_complete.py::TestTasksAPIComplete::test_list_tasks_with_type_filter 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:41:09 [    INFO] HTTP Request: GET http://testserver/tasks/?task_type=CODE "HTTP/1.1 307 Temporary Redirect"
+2026-02-27 10:41:09 [    INFO] HTTP Request: GET http://testserver/tasks?task_type=CODE "HTTP/1.1 200 OK"
+PASSED                                                                   [  2%]
+tests/test_api_complete.py::TestTasksAPIComplete::test_get_task_not_found 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:41:09 [    INFO] HTTP Request: GET http://testserver/tasks/999 "HTTP/1.1 404 Not Found"
+PASSED                                                                   [  2%]
+tests/test_api_complete.py::TestAgentsAPIComplete::test_get_agent_not_found 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:41:09 [    INFO] HTTP Request: GET http://testserver/agents/999 "HTTP/1.1 404 Not Found"
+PASSED                                                                   [  3%]
+tests/test_api_complete.py::TestAgentsAPIComplete::test_agent_reputation_endpoint 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:41:09 [    INFO] HTTP Request: GET http://testserver/agents/1/reputation "HTTP/1.1 404 Not Found"
+PASSED                                                                   [  3%]
+tests/test_api_complete.py::TestAgentsAPIComplete::test_agent_reputation_not_found 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:41:09 [    INFO] HTTP Request: GET http://testserver/agents/999/reputation "HTTP/1.1 404 Not Found"
+PASSED                                                                   [  3%]
+tests/test_api_complete.py::TestRewardsAPIComplete::test_get_reward_balance_endpoint 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:41:09 [    INFO] HTTP Request: GET http://testserver/rewards/balance "HTTP/1.1 401 Unauthorized"
+PASSED                                                                   [  3%]
+tests/test_api_complete.py::TestRewardsAPIComplete::test_get_reward_history_endpoint 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:41:09 [    INFO] HTTP Request: GET http://testserver/rewards/history "HTTP/1.1 401 Unauthorized"
+PASSED                                                                   [  3%]
+tests/test_api_complete.py::TestRewardsAPIComplete::test_withdraw_reward_endpoint 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:41:09 [    INFO] HTTP Request: POST http://testserver/rewards/withdraw "HTTP/1.1 401 Unauthorized"
+PASSED                                                                   [  4%]
+tests/test_api_complete.py::TestAuthAPIComplete::test_auth_register_endpoint 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:41:09 [    INFO] HTTP Request: POST http://testserver/auth/register "HTTP/1.1 422 Unprocessable Entity"
+PASSED                                                                   [  4%]
+tests/test_api_complete.py::TestAuthAPIComplete::test_auth_login_endpoint 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:41:09 [    INFO] HTTP Request: POST http://testserver/auth/login "HTTP/1.1 422 Unprocessable Entity"
+PASSED                                                                   [  4%]
+tests/test_api_complete.py::TestAuthAPIComplete::test_auth_me_endpoint 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:41:09 [    INFO] HTTP Request: GET http://testserver/auth/me "HTTP/1.1 401 Unauthorized"
+PASSED                                                                   [  4%]
+tests/test_api_complete.py::TestAPIValidation::test_pydantic_validation PASSED [  4%]
+tests/test_api_complete.py::TestAPIValidation::test_enum_validation PASSED [  5%]
+tests/test_api_complete.py::TestDatabaseQueries::test_query_filter PASSED [  5%]
+tests/test_api_complete.py::TestDatabaseQueries::test_query_all PASSED   [  5%]
+tests/test_api_complete.py::TestErrorHandlingComplete::test_http_exception_not_found PASSED [  5%]
+tests/test_api_complete.py::TestErrorHandlingComplete::test_http_exception_bad_request PASSED [  5%]
+tests/test_api_complete.py::TestErrorHandlingComplete::test_http_exception_unauthorized PASSED [  6%]
+tests/test_api_complete.py::TestErrorHandlingComplete::test_http_exception_forbidden PASSED [  6%]
+tests/test_api_complete.py::TestPagination::test_pagination_offset_limit PASSED [  6%]
+tests/test_api_complete.py::TestPagination::test_pagination_empty PASSED [  6%]
+tests/test_api_extended.py::TestTasksAPIExtended::test_task_create_model PASSED [  6%]
+tests/test_api_extended.py::TestTasksAPIExtended::test_task_submit_model PASSED [  7%]
+tests/test_api_extended.py::TestTasksAPIExtended::test_task_dispute_model PASSED [  7%]
+tests/test_api_extended.py::TestTasksAPIExtended::test_task_response_model PASSED [  7%]
+tests/test_api_extended.py::TestTasksAPIExtended::test_task_router_endpoints PASSED [  7%]
+tests/test_api_extended.py::TestAgentsAPIExtended::test_agent_register_model PASSED [  7%]
+tests/test_api_extended.py::TestAgentsAPIExtended::test_agent_register_model_optional PASSED [  8%]
+tests/test_api_extended.py::TestAgentsAPIExtended::test_api_key_response_model PASSED [  8%]
+tests/test_api_extended.py::TestAgentsAPIExtended::test_agent_router_endpoints PASSED [  8%]
+tests/test_api_extended.py::TestRewardsAPIExtended::test_reward_response_model_extended PASSED [  8%]
+tests/test_api_extended.py::TestRewardsAPIExtended::test_reward_router_endpoints PASSED [  8%]
+tests/test_api_extended.py::TestAuthAPIExtended::test_auth_router_endpoints PASSED [  9%]
+tests/test_api_extended.py::TestAPIEndpointMocks::test_list_tasks_endpoint 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:41:10 [    INFO] HTTP Request: GET http://testserver/tasks/ "HTTP/1.1 307 Temporary Redirect"
+2026-02-27 10:41:10 [    INFO] HTTP Request: GET http://testserver/tasks "HTTP/1.1 200 OK"
+PASSED                                                                   [  9%]
+tests/test_api_extended.py::TestAPIEndpointMocks::test_list_agents_endpoint 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:41:10 [    INFO] HTTP Request: GET http://testserver/agents/ "HTTP/1.1 307 Temporary Redirect"
+2026-02-27 10:41:10 [    INFO] HTTP Request: GET http://testserver/agents "HTTP/1.1 200 OK"
+PASSED                                                                   [  9%]
+tests/test_api_extended.py::TestAPIEndpointMocks::test_get_reward_balance_endpoint 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:41:10 [    INFO] HTTP Request: GET http://testserver/rewards/balance "HTTP/1.1 401 Unauthorized"
+PASSED                                                                   [  9%]
+tests/test_api_extended.py::TestAPIErrorHandling::test_http_exception_creation PASSED [  9%]
+tests/test_api_extended.py::TestAPIErrorHandling::test_http_exception_with_headers PASSED [ 10%]
+tests/test_blockchain_integration.py::TestTaskMarketIntegration::test_publish_task_success ERROR [ 10%]
+tests/test_blockchain_integration.py::TestTaskMarketIntegration::test_publish_task_no_contract FAILED [ 10%]
+tests/test_blockchain_integration.py::TestTaskMarketIntegration::test_publish_task_no_account FAILED [ 10%]
+tests/test_blockchain_integration.py::TestTaskMarketIntegration::test_accept_task_success ERROR [ 10%]
+tests/test_blockchain_integration.py::TestTaskMarketIntegration::test_submit_task_success ERROR [ 11%]
+tests/test_blockchain_integration.py::TestTaskMarketIntegration::test_complete_task_success ERROR [ 11%]
+tests/test_blockchain_integration.py::TestTaskMarketIntegration::test_get_task_from_chain_success ERROR [ 11%]
+tests/test_blockchain_integration.py::TestTaskMarketIntegration::test_get_task_no_contract FAILED [ 11%]
+tests/test_blockchain_integration.py::TestTaskMarketIntegration::test_task_lifecycle_complete ERROR [ 11%]
+tests/test_blockchain_integration.py::TestTaskMarketIntegration::test_publish_task_contract_error FAILED [ 12%]
+tests/test_blockchain_integration.py::TestRewardPoolIntegration::test_get_reward_balance_success ERROR [ 12%]
+tests/test_blockchain_integration.py::TestRewardPoolIntegration::test_get_reward_balance_no_contract FAILED [ 12%]
+tests/test_blockchain_integration.py::TestRewardPoolIntegration::test_withdraw_reward_success ERROR [ 12%]
+tests/test_blockchain_integration.py::TestRewardPoolIntegration::test_withdraw_reward_no_contract FAILED [ 12%]
+tests/test_blockchain_integration.py::TestRewardPoolIntegration::test_withdraw_reward_no_account FAILED [ 13%]
+tests/test_blockchain_integration.py::TestRewardPoolIntegration::test_reward_query_and_withdraw_flow ERROR [ 13%]
+tests/test_blockchain_integration.py::TestAgentRegistryIntegration::test_register_agent_success ERROR [ 13%]
+tests/test_blockchain_integration.py::TestAgentRegistryIntegration::test_register_agent_no_contract FAILED [ 13%]
+tests/test_blockchain_integration.py::TestAgentRegistryIntegration::test_get_agent_from_chain_success ERROR [ 13%]
+tests/test_blockchain_integration.py::TestAgentRegistryIntegration::test_is_agent_registered_success ERROR [ 14%]
+tests/test_blockchain_integration.py::TestAgentRegistryIntegration::test_is_agent_registered_no_contract FAILED [ 14%]
+tests/test_blockchain_integration.py::TestAgentRegistryIntegration::test_agent_registration_flow ERROR [ 14%]
+tests/test_blockchain_integration.py::TestGasFeeSharing::test_estimate_gas_for_publish_task FAILED [ 14%]
+tests/test_blockchain_integration.py::TestGasFeeSharing::test_gas_cost_calculation PASSED [ 14%]
+tests/test_blockchain_integration.py::TestGasFeeSharing::test_gas_fee_split_between_parties PASSED [ 15%]
+tests/test_blockchain_integration.py::TestGasFeeSharing::test_transaction_with_gas_estimation ERROR [ 15%]
+tests/test_blockchain_integration.py::TestErrorHandlingAndRetry::test_connection_error_handling FAILED [ 15%]
+tests/test_blockchain_integration.py::TestErrorHandlingAndRetry::test_transaction_timeout_handling FAILED [ 15%]
+tests/test_blockchain_integration.py::TestErrorHandlingAndRetry::test_insufficient_funds_error FAILED [ 15%]
+tests/test_blockchain_integration.py::TestErrorHandlingAndRetry::test_nonce_too_low_error FAILED [ 16%]
+tests/test_blockchain_integration.py::TestErrorHandlingAndRetry::test_contract_revert_error FAILED [ 16%]
+tests/test_blockchain_integration.py::TestErrorHandlingAndRetry::test_network_congestion_high_gas FAILED [ 16%]
+tests/test_blockchain_integration.py::TestTransactionFailureScenarios::test_transaction_reverted FAILED [ 16%]
+tests/test_blockchain_integration.py::TestTransactionFailureScenarios::test_transaction_dropped FAILED [ 16%]
+tests/test_blockchain_integration.py::TestTransactionFailureScenarios::test_invalid_task_id ERROR [ 17%]
+tests/test_blockchain_integration.py::TestTransactionFailureScenarios::test_deadline_in_past ERROR [ 17%]
+tests/test_blockchain_integration.py::TestTransactionFailureScenarios::test_zero_reward_task ERROR [ 17%]
+tests/test_blockchain_integration.py::TestWeb3Config::test_web3_connection_success PASSED [ 17%]
+tests/test_blockchain_integration.py::TestWeb3Config::test_web3_connection_failure PASSED [ 17%]
+tests/test_blockchain_integration.py::TestWeb3Config::test_get_account_with_private_key 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:11 [   ERROR] Failed to decrypt key: 
+2026-02-27 10:42:11 [   ERROR] Failed to load key from encrypted file: 
+2026-02-27 10:42:11 [   ERROR] Failed to load key: 
+PASSED                                                                   [ 18%]
+tests/test_blockchain_integration.py::TestWeb3Config::test_get_account_without_private_key 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:11 [   ERROR] Failed to decrypt key: 
+2026-02-27 10:42:11 [   ERROR] Failed to load key from encrypted file: 
+2026-02-27 10:42:11 [   ERROR] Failed to load key: 
+PASSED                                                                   [ 18%]
+tests/test_blockchain_integration.py::TestWeb3Config::test_get_balance PASSED [ 18%]
+tests/test_blockchain_integration.py::TestWeb3Config::test_get_balance_eth PASSED [ 18%]
+tests/test_blockchain_integration.py::TestBlockchainEventListener::test_register_event_handler 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:11 [    INFO] Registered handler for event: TaskPublished
+PASSED                                                                   [ 18%]
+tests/test_blockchain_integration.py::TestBlockchainEventListener::test_handle_task_published_event 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:11 [    INFO] Registered handler for event: TaskPublished
+2026-02-27 10:42:11 [    INFO] TaskPublished event: {'args': {'taskId': 'task_001', 'creator': '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb1', 'reward': 100000000000000000}}
+PASSED                                                                   [ 19%]
+tests/test_blockchain_integration.py::TestBlockchainEventListener::test_handle_task_accepted_event 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:11 [    INFO] Registered handler for event: TaskAccepted
+2026-02-27 10:42:11 [    INFO] TaskAccepted event: {'args': {'taskId': 'task_001', 'agent': '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb1'}}
+PASSED                                                                   [ 19%]
+tests/test_blockchain_integration.py::TestBlockchainEventListener::test_handle_reward_distributed_event 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:11 [    INFO] Registered handler for event: RewardDistributed
+2026-02-27 10:42:11 [    INFO] RewardDistributed event: {'args': {'agent': '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb1', 'amount': 100000000000000000, 'taskId': 'task_001'}}
+PASSED                                                                   [ 19%]
+tests/test_blockchain_integration.py::TestBlockchainEventListener::test_handle_agent_registered_event 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:11 [    INFO] Registered handler for event: AgentRegistered
+2026-02-27 10:42:11 [    INFO] AgentRegistered event: {'args': {'agent': '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb1', 'name': 'Test Agent'}}
+PASSED                                                                   [ 19%]
+tests/test_blockchain_integration.py::TestBlockchainEventListener::test_event_listener_start_stop 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:11 [    INFO] Stopping blockchain event listeners...
+PASSED                                                                   [ 19%]
+tests/test_blockchain_integration.py::TestEndToEndIntegration::test_complete_task_workflow_e2e ERROR [ 20%]
+tests/test_blockchain_integration.py::TestEndToEndIntegration::test_agent_registration_and_task_workflow ERROR [ 20%]
+tests/test_blockchain_integration.py::TestEndToEndIntegration::test_multiple_tasks_parallel_processing ERROR [ 20%]
+tests/test_blockchain_integration.py::TestEndToEndIntegration::test_reward_distribution_multiple_agents ERROR [ 20%]
+tests/test_blockchain_integration.py::TestPerformanceAndStress::test_high_volume_task_publishing ERROR [ 20%]
+tests/test_blockchain_integration.py::TestPerformanceAndStress::test_concurrent_agent_registrations ERROR [ 21%]
+tests/test_blockchain_integration.py::TestPerformanceAndStress::test_rapid_balance_queries ERROR [ 21%]
+tests/test_coverage_boost.py::test_validate_message_with_invalid_message_type_enum PASSED [ 21%]
+tests/test_coverage_boost.py::test_nexus_server_message_handler_exception 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:23 [    INFO] Server initialized for asgi.
+2026-02-27 10:42:23 [    INFO] NexusServer initialized (max_queue_size=1000, max_agents=100)
+2026-02-27 10:42:23 [   ERROR] Error handling request: Simulated emit error
+PASSED                                                                   [ 21%]
+tests/test_coverage_boost.py::test_nexus_server_accept_handler_exception 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:23 [    INFO] Server initialized for asgi.
+2026-02-27 10:42:23 [    INFO] NexusServer initialized (max_queue_size=1000, max_agents=100)
+2026-02-27 10:42:23 [   ERROR] Error handling accept: Simulated emit error
+PASSED                                                                   [ 21%]
+tests/test_coverage_boost.py::test_nexus_server_reject_handler_exception 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:23 [    INFO] Server initialized for asgi.
+2026-02-27 10:42:23 [    INFO] NexusServer initialized (max_queue_size=1000, max_agents=100)
+2026-02-27 10:42:23 [   ERROR] Error handling reject: Simulated emit error
+PASSED                                                                   [ 22%]
+tests/test_coverage_boost.py::test_nexus_server_progress_handler_exception 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:23 [    INFO] Server initialized for asgi.
+2026-02-27 10:42:23 [    INFO] NexusServer initialized (max_queue_size=1000, max_agents=100)
+2026-02-27 10:42:23 [   ERROR] Error handling progress: Simulated emit error
+PASSED                                                                   [ 22%]
+tests/test_coverage_boost.py::test_nexus_server_complete_handler_exception 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:23 [    INFO] Server initialized for asgi.
+2026-02-27 10:42:23 [    INFO] NexusServer initialized (max_queue_size=1000, max_agents=100)
+2026-02-27 10:42:23 [   ERROR] Error handling complete: Simulated emit error
+PASSED                                                                   [ 22%]
+tests/test_coverage_boost.py::test_nexus_server_main_block 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:23 [    INFO] Server initialized for asgi.
+2026-02-27 10:42:23 [    INFO] NexusServer initialized (max_queue_size=1000, max_agents=100)
+PASSED                                                                   [ 22%]
+tests/test_database_models.py::TestDatabaseModels::test_task_type_enum PASSED [ 22%]
+tests/test_database_models.py::TestDatabaseModels::test_task_status_enum PASSED [ 23%]
+tests/test_database_models.py::TestDatabaseModels::test_user_model PASSED [ 23%]
+tests/test_database_models.py::TestDatabaseModels::test_agent_model PASSED [ 23%]
+tests/test_database_models.py::TestDatabaseModels::test_task_model PASSED [ 23%]
+tests/test_database_models.py::TestDatabaseModels::test_reward_model PASSED [ 23%]
+tests/test_database_models.py::TestDatabaseModels::test_api_key_model PASSED [ 24%]
+tests/test_database_models.py::TestDatabaseModels::test_verification_log_model PASSED [ 24%]
+tests/test_database_models.py::TestDatabaseModels::test_model_relationships PASSED [ 24%]
+tests/test_e2e_agents_rewards.py::TestAgentsE2E::test_register_agent_success 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:23 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+2026-02-27 10:42:23 [ WARNING] Security event: login_failed (severity: warning) - {'username': 'testuser'}
+2026-02-27 10:42:23 [    INFO] HTTP Request: POST http://testserver/api/auth/login "HTTP/1.1 401 Unauthorized"
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:23 [    INFO] HTTP Request: POST http://testserver/api/agents "HTTP/1.1 401 Unauthorized"
+FAILED                                                                   [ 24%]
+tests/test_e2e_agents_rewards.py::TestAgentsE2E::test_register_agent_unauthorized 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:23 [    INFO] HTTP Request: POST http://testserver/api/agents "HTTP/1.1 401 Unauthorized"
+PASSED                                                                   [ 24%]
+tests/test_e2e_agents_rewards.py::TestAgentsE2E::test_register_agent_duplicate 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:23 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+2026-02-27 10:42:23 [ WARNING] Security event: login_failed (severity: warning) - {'username': 'testuser'}
+2026-02-27 10:42:23 [    INFO] HTTP Request: POST http://testserver/api/auth/login "HTTP/1.1 401 Unauthorized"
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:23 [    INFO] HTTP Request: POST http://testserver/api/agents "HTTP/1.1 401 Unauthorized"
+2026-02-27 10:42:23 [    INFO] HTTP Request: POST http://testserver/api/agents "HTTP/1.1 401 Unauthorized"
+FAILED                                                                   [ 25%]
+tests/test_e2e_agents_rewards.py::TestAgentsE2E::test_list_agents 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:23 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+2026-02-27 10:42:23 [ WARNING] Security event: login_failed (severity: warning) - {'username': 'testuser'}
+2026-02-27 10:42:23 [    INFO] HTTP Request: POST http://testserver/api/auth/login "HTTP/1.1 401 Unauthorized"
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:23 [    INFO] HTTP Request: POST http://testserver/api/agents "HTTP/1.1 401 Unauthorized"
+2026-02-27 10:42:23 [    INFO] HTTP Request: GET http://testserver/api/agents "HTTP/1.1 200 OK"
+FAILED                                                                   [ 25%]
+tests/test_e2e_agents_rewards.py::TestAgentsE2E::test_get_agent_by_id 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:23 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+2026-02-27 10:42:23 [ WARNING] Security event: login_failed (severity: warning) - {'username': 'testuser'}
+2026-02-27 10:42:23 [    INFO] HTTP Request: POST http://testserver/api/auth/login "HTTP/1.1 401 Unauthorized"
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:23 [    INFO] HTTP Request: POST http://testserver/api/agents "HTTP/1.1 401 Unauthorized"
+FAILED                                                                   [ 25%]
+tests/test_e2e_agents_rewards.py::TestAgentsE2E::test_get_agent_not_found 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:23 [    INFO] HTTP Request: GET http://testserver/api/agents/99999 "HTTP/1.1 404 Not Found"
+PASSED                                                                   [ 25%]
+tests/test_e2e_agents_rewards.py::TestAgentsE2E::test_get_agent_tasks 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:23 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+2026-02-27 10:42:23 [ WARNING] Security event: login_failed (severity: warning) - {'username': 'testuser'}
+2026-02-27 10:42:23 [    INFO] HTTP Request: POST http://testserver/api/auth/login "HTTP/1.1 401 Unauthorized"
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:23 [    INFO] HTTP Request: POST http://testserver/api/agents "HTTP/1.1 401 Unauthorized"
+FAILED                                                                   [ 25%]
+tests/test_e2e_agents_rewards.py::TestAgentsE2E::test_get_agent_reputation 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:24 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+2026-02-27 10:42:24 [ WARNING] Security event: login_failed (severity: warning) - {'username': 'testuser'}
+2026-02-27 10:42:24 [    INFO] HTTP Request: POST http://testserver/api/auth/login "HTTP/1.1 401 Unauthorized"
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:24 [    INFO] HTTP Request: POST http://testserver/api/agents "HTTP/1.1 401 Unauthorized"
+FAILED                                                                   [ 26%]
+tests/test_e2e_agents_rewards.py::TestRewardsE2E::test_get_balance 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:24 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+2026-02-27 10:42:24 [ WARNING] Security event: login_failed (severity: warning) - {'username': 'testuser'}
+2026-02-27 10:42:24 [    INFO] HTTP Request: POST http://testserver/api/auth/login "HTTP/1.1 401 Unauthorized"
+2026-02-27 10:42:24 [    INFO] HTTP Request: POST http://testserver/api/agents "HTTP/1.1 401 Unauthorized"
+ERROR                                                                    [ 26%]
+tests/test_e2e_agents_rewards.py::TestRewardsE2E::test_get_balance_unauthorized 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:24 [    INFO] HTTP Request: GET http://testserver/api/rewards/balance "HTTP/1.1 401 Unauthorized"
+PASSED                                                                   [ 26%]
+tests/test_e2e_agents_rewards.py::TestRewardsE2E::test_get_rewards_history 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:24 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+2026-02-27 10:42:24 [ WARNING] Security event: login_failed (severity: warning) - {'username': 'testuser'}
+2026-02-27 10:42:24 [    INFO] HTTP Request: POST http://testserver/api/auth/login "HTTP/1.1 401 Unauthorized"
+2026-02-27 10:42:24 [    INFO] HTTP Request: POST http://testserver/api/agents "HTTP/1.1 401 Unauthorized"
+ERROR                                                                    [ 26%]
+tests/test_e2e_agents_rewards.py::TestRewardsE2E::test_withdraw_rewards_success 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:24 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+2026-02-27 10:42:24 [ WARNING] Security event: login_failed (severity: warning) - {'username': 'testuser'}
+2026-02-27 10:42:24 [    INFO] HTTP Request: POST http://testserver/api/auth/login "HTTP/1.1 401 Unauthorized"
+2026-02-27 10:42:24 [    INFO] HTTP Request: POST http://testserver/api/agents "HTTP/1.1 401 Unauthorized"
+ERROR                                                                    [ 26%]
+tests/test_e2e_agents_rewards.py::TestRewardsE2E::test_withdraw_insufficient_balance 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:24 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+2026-02-27 10:42:24 [ WARNING] Security event: login_failed (severity: warning) - {'username': 'testuser'}
+2026-02-27 10:42:24 [    INFO] HTTP Request: POST http://testserver/api/auth/login "HTTP/1.1 401 Unauthorized"
+2026-02-27 10:42:24 [    INFO] HTTP Request: POST http://testserver/api/agents "HTTP/1.1 401 Unauthorized"
+ERROR                                                                    [ 27%]
+tests/test_e2e_api_keys.py::TestAPIKeyManagement::test_create_api_key_success 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:24 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:24 [    INFO] Database initialized
+2026-02-27 10:42:24 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:24 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:24 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:24 [    INFO] Monitoring system initialized
+2026-02-27 10:42:24 [    INFO] Cache cleanup task started
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:24 [    INFO] HTTP Request: POST http://testserver/api/agents/api-keys "HTTP/1.1 201 Created"
+PASSED                                                                   [ 27%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:24 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_api_keys.py::TestAPIKeyManagement::test_create_api_key_unauthorized 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:24 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:24 [    INFO] Database initialized
+2026-02-27 10:42:24 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:24 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:24 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:24 [    INFO] Monitoring system initialized
+2026-02-27 10:42:24 [    INFO] Cache cleanup task started
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:24 [    INFO] HTTP Request: POST http://testserver/api/agents/api-keys "HTTP/1.1 401 Unauthorized"
+PASSED                                                                   [ 27%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:24 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_api_keys.py::TestAPIKeyManagement::test_create_api_key_no_agent 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:24 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:24 [    INFO] Database initialized
+2026-02-27 10:42:24 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:24 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:24 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:24 [    INFO] Monitoring system initialized
+2026-02-27 10:42:24 [    INFO] Cache cleanup task started
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:24 [    INFO] HTTP Request: POST http://testserver/api/agents/api-keys "HTTP/1.1 404 Not Found"
+PASSED                                                                   [ 27%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:24 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_api_keys.py::TestAPIKeyManagement::test_create_multiple_api_keys 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:24 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:24 [    INFO] Database initialized
+2026-02-27 10:42:24 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:24 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:24 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:24 [    INFO] Monitoring system initialized
+2026-02-27 10:42:24 [    INFO] Cache cleanup task started
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:24 [    INFO] HTTP Request: POST http://testserver/api/agents/api-keys "HTTP/1.1 201 Created"
+2026-02-27 10:42:24 [    INFO] HTTP Request: POST http://testserver/api/agents/api-keys "HTTP/1.1 201 Created"
+PASSED                                                                   [ 27%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:24 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_api_keys.py::TestAPIKeyManagement::test_api_key_format 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:24 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:24 [    INFO] Database initialized
+2026-02-27 10:42:24 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:24 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:24 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:24 [    INFO] Monitoring system initialized
+2026-02-27 10:42:24 [    INFO] Cache cleanup task started
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:25 [    INFO] HTTP Request: POST http://testserver/api/agents/api-keys "HTTP/1.1 201 Created"
+PASSED                                                                   [ 28%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:25 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_api_keys.py::TestAPIKeyManagement::test_use_api_key_for_authentication 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:25 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:25 [    INFO] Database initialized
+2026-02-27 10:42:25 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:25 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:25 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:25 [    INFO] Monitoring system initialized
+2026-02-27 10:42:25 [    INFO] Cache cleanup task started
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:25 [    INFO] HTTP Request: POST http://testserver/api/agents/api-keys "HTTP/1.1 201 Created"
+2026-02-27 10:42:26 [   ERROR] Failed to query blockchain balance for 0x1234567890123456789012345678901234567890: Failed to connect to Sepolia network
+2026-02-27 10:42:26 [    INFO] HTTP Request: GET http://testserver/api/rewards/balance "HTTP/1.1 200 OK"
+PASSED                                                                   [ 28%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:26 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_api_keys.py::TestAPIKeyManagement::test_api_key_with_empty_name 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:26 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:26 [    INFO] Database initialized
+2026-02-27 10:42:26 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:26 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:26 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:26 [    INFO] Monitoring system initialized
+2026-02-27 10:42:26 [    INFO] Cache cleanup task started
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:26 [    INFO] HTTP Request: POST http://testserver/api/agents/api-keys "HTTP/1.1 422 Unprocessable Entity"
+PASSED                                                                   [ 28%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:26 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_api_keys.py::TestAPIKeyManagement::test_api_key_with_long_name 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:26 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:26 [    INFO] Database initialized
+2026-02-27 10:42:26 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:26 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:26 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:26 [    INFO] Monitoring system initialized
+2026-02-27 10:42:26 [    INFO] Cache cleanup task started
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:26 [    INFO] HTTP Request: POST http://testserver/api/agents/api-keys "HTTP/1.1 201 Created"
+PASSED                                                                   [ 28%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:26 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_auth.py::TestAuthE2E::test_register_success 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:26 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+FAILED                                                                   [ 28%]
+tests/test_e2e_auth.py::TestAuthE2E::test_register_duplicate_username 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:26 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+2026-02-27 10:42:26 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+FAILED                                                                   [ 29%]
+tests/test_e2e_auth.py::TestAuthE2E::test_register_duplicate_email 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:26 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+2026-02-27 10:42:26 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+FAILED                                                                   [ 29%]
+tests/test_e2e_auth.py::TestAuthE2E::test_register_duplicate_wallet 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:26 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+2026-02-27 10:42:26 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+FAILED                                                                   [ 29%]
+tests/test_e2e_auth.py::TestAuthE2E::test_login_success 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:26 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+2026-02-27 10:42:26 [ WARNING] Security event: login_failed (severity: warning) - {'username': 'testuser'}
+2026-02-27 10:42:26 [    INFO] HTTP Request: POST http://testserver/api/auth/login "HTTP/1.1 401 Unauthorized"
+FAILED                                                                   [ 29%]
+tests/test_e2e_auth.py::TestAuthE2E::test_login_wrong_username 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:26 [ WARNING] Security event: login_failed (severity: warning) - {'username': 'nonexistent'}
+2026-02-27 10:42:26 [    INFO] HTTP Request: POST http://testserver/api/auth/login "HTTP/1.1 401 Unauthorized"
+PASSED                                                                   [ 29%]
+tests/test_e2e_auth.py::TestAuthE2E::test_login_wrong_password 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:27 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+2026-02-27 10:42:27 [ WARNING] Security event: login_failed (severity: warning) - {'username': 'testuser'}
+2026-02-27 10:42:27 [    INFO] HTTP Request: POST http://testserver/api/auth/login "HTTP/1.1 401 Unauthorized"
+PASSED                                                                   [ 30%]
+tests/test_e2e_auth.py::TestAuthE2E::test_login_inactive_user 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:27 [ WARNING] Security event: permission_denied (severity: warning) - {'username': 'inactive', 'reason': 'inactive_user'}
+2026-02-27 10:42:27 [    INFO] HTTP Request: POST http://testserver/api/auth/login "HTTP/1.1 403 Forbidden"
+PASSED                                                                   [ 30%]
+tests/test_e2e_auth.py::TestAuthE2E::test_get_current_user 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:27 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+FAILED                                                                   [ 30%]
+tests/test_e2e_auth.py::TestAuthE2E::test_get_current_user_unauthorized 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:27 [    INFO] HTTP Request: GET http://testserver/api/auth/me "HTTP/1.1 401 Unauthorized"
+PASSED                                                                   [ 30%]
+tests/test_e2e_auth.py::TestAuthE2E::test_get_current_user_invalid_token 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:27 [    INFO] HTTP Request: GET http://testserver/api/auth/me "HTTP/1.1 401 Unauthorized"
+PASSED                                                                   [ 30%]
+tests/test_e2e_auth.py::TestAuthE2E::test_update_wallet_success 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:27 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+FAILED                                                                   [ 31%]
+tests/test_e2e_auth.py::TestAuthE2E::test_update_wallet_duplicate 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:27 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+2026-02-27 10:42:27 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+FAILED                                                                   [ 31%]
+tests/test_e2e_auth.py::TestAuthE2E::test_update_wallet_unauthorized 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:27 [    INFO] HTTP Request: PUT http://testserver/api/auth/me/wallet "HTTP/1.1 401 Unauthorized"
+PASSED                                                                   [ 31%]
+tests/test_e2e_edge_cases.py::TestBoundaryConditions::test_empty_string_inputs 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:27 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:27 [    INFO] Database initialized
+2026-02-27 10:42:27 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:27 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:27 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:27 [    INFO] Monitoring system initialized
+2026-02-27 10:42:27 [    INFO] Cache cleanup task started
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:27 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+2026-02-27 10:42:27 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+PASSED                                                                   [ 31%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:27 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_edge_cases.py::TestBoundaryConditions::test_very_long_strings 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:27 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:27 [    INFO] Database initialized
+2026-02-27 10:42:27 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:27 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:27 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:27 [    INFO] Monitoring system initialized
+2026-02-27 10:42:27 [    INFO] Cache cleanup task started
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:27 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+2026-02-27 10:42:27 [    INFO] HTTP Request: POST http://testserver/api/tasks "HTTP/1.1 422 Unprocessable Entity"
+PASSED                                                                   [ 31%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:27 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_edge_cases.py::TestBoundaryConditions::test_special_characters 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:27 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:27 [    INFO] Database initialized
+2026-02-27 10:42:27 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:27 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:27 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:27 [    INFO] Monitoring system initialized
+2026-02-27 10:42:27 [    INFO] Cache cleanup task started
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:27 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+PASSED                                                                   [ 32%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:27 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_edge_cases.py::TestBoundaryConditions::test_unicode_characters 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:27 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:27 [    INFO] Database initialized
+2026-02-27 10:42:27 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:27 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:27 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:27 [    INFO] Monitoring system initialized
+2026-02-27 10:42:27 [    INFO] Cache cleanup task started
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:27 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+PASSED                                                                   [ 32%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:27 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_edge_cases.py::TestBoundaryConditions::test_null_values 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:27 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:27 [    INFO] Database initialized
+2026-02-27 10:42:27 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:27 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:27 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:27 [    INFO] Monitoring system initialized
+2026-02-27 10:42:27 [    INFO] Cache cleanup task started
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:27 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+PASSED                                                                   [ 32%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:27 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_edge_cases.py::TestNumericBoundaries::test_zero_reward 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:27 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:27 [    INFO] Database initialized
+2026-02-27 10:42:27 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:27 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:27 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:27 [    INFO] Monitoring system initialized
+2026-02-27 10:42:27 [    INFO] Cache cleanup task started
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:28 [    INFO] HTTP Request: POST http://testserver/api/tasks "HTTP/1.1 422 Unprocessable Entity"
+PASSED                                                                   [ 32%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:28 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_edge_cases.py::TestNumericBoundaries::test_negative_reward 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:28 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:28 [    INFO] Database initialized
+2026-02-27 10:42:28 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:28 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:28 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:28 [    INFO] Monitoring system initialized
+2026-02-27 10:42:28 [    INFO] Cache cleanup task started
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:28 [    INFO] HTTP Request: POST http://testserver/api/tasks "HTTP/1.1 422 Unprocessable Entity"
+PASSED                                                                   [ 32%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:28 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_edge_cases.py::TestNumericBoundaries::test_very_large_reward 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:28 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:28 [    INFO] Database initialized
+2026-02-27 10:42:28 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:28 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:28 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:28 [    INFO] Monitoring system initialized
+2026-02-27 10:42:28 [    INFO] Cache cleanup task started
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:28 [    INFO] HTTP Request: POST http://testserver/api/tasks "HTTP/1.1 422 Unprocessable Entity"
+PASSED                                                                   [ 33%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:28 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_edge_cases.py::TestNumericBoundaries::test_float_instead_of_int 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:28 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:28 [    INFO] Database initialized
+2026-02-27 10:42:28 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:28 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:28 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:28 [    INFO] Monitoring system initialized
+2026-02-27 10:42:28 [    INFO] Cache cleanup task started
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:28 [    INFO] HTTP Request: POST http://testserver/api/tasks "HTTP/1.1 422 Unprocessable Entity"
+PASSED                                                                   [ 33%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:28 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_edge_cases.py::TestDateTimeBoundaries::test_past_deadline 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:28 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:28 [    INFO] Database initialized
+2026-02-27 10:42:28 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:28 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:28 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:28 [    INFO] Monitoring system initialized
+2026-02-27 10:42:28 [    INFO] Cache cleanup task started
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:28 [    INFO] HTTP Request: POST http://testserver/api/tasks "HTTP/1.1 422 Unprocessable Entity"
+PASSED                                                                   [ 33%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:28 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_edge_cases.py::TestDateTimeBoundaries::test_far_future_deadline 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:28 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:28 [    INFO] Database initialized
+2026-02-27 10:42:28 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:28 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:28 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:28 [    INFO] Monitoring system initialized
+2026-02-27 10:42:28 [    INFO] Cache cleanup task started
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:28 [    INFO] HTTP Request: POST http://testserver/api/tasks "HTTP/1.1 422 Unprocessable Entity"
+PASSED                                                                   [ 33%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:28 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_edge_cases.py::TestDateTimeBoundaries::test_invalid_date_format 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:28 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:28 [    INFO] Database initialized
+2026-02-27 10:42:28 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:28 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:28 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:28 [    INFO] Monitoring system initialized
+2026-02-27 10:42:28 [    INFO] Cache cleanup task started
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:28 [    INFO] HTTP Request: POST http://testserver/api/tasks "HTTP/1.1 422 Unprocessable Entity"
+PASSED                                                                   [ 33%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:28 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_edge_cases.py::TestWalletAddressBoundaries::test_invalid_wallet_address_format 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:28 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:28 [    INFO] Database initialized
+2026-02-27 10:42:28 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:28 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:28 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:28 [    INFO] Monitoring system initialized
+2026-02-27 10:42:28 [    INFO] Cache cleanup task started
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:28 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+2026-02-27 10:42:28 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+PASSED                                                                   [ 34%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:28 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_edge_cases.py::TestWalletAddressBoundaries::test_wallet_address_with_invalid_chars 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:28 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:28 [    INFO] Database initialized
+2026-02-27 10:42:28 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:28 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:28 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:28 [    INFO] Monitoring system initialized
+2026-02-27 10:42:28 [    INFO] Cache cleanup task started
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:28 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+PASSED                                                                   [ 34%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:28 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_edge_cases.py::TestConcurrencyAndRaceConditions::test_duplicate_registration_race 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:28 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:28 [    INFO] Database initialized
+2026-02-27 10:42:28 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:28 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:28 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:28 [    INFO] Monitoring system initialized
+2026-02-27 10:42:28 [    INFO] Cache cleanup task started
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:28 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+2026-02-27 10:42:28 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+2026-02-27 10:42:28 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+2026-02-27 10:42:28 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+2026-02-27 10:42:28 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+PASSED                                                                   [ 34%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:28 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_edge_cases.py::TestErrorHandling::test_malformed_json 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:28 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:28 [    INFO] Database initialized
+2026-02-27 10:42:28 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:28 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:28 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:28 [    INFO] Monitoring system initialized
+2026-02-27 10:42:28 [    INFO] Cache cleanup task started
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:28 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+PASSED                                                                   [ 34%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:28 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_edge_cases.py::TestErrorHandling::test_missing_required_fields 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:28 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:28 [    INFO] Database initialized
+2026-02-27 10:42:28 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:28 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:28 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:28 [    INFO] Monitoring system initialized
+2026-02-27 10:42:28 [    INFO] Cache cleanup task started
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:28 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+PASSED                                                                   [ 34%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:28 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_edge_cases.py::TestErrorHandling::test_extra_fields 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:28 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:28 [    INFO] Database initialized
+2026-02-27 10:42:28 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:28 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:28 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:28 [    INFO] Monitoring system initialized
+2026-02-27 10:42:28 [    INFO] Cache cleanup task started
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:28 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+PASSED                                                                   [ 35%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:28 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_edge_cases.py::TestErrorHandling::test_wrong_data_types 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:28 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:28 [    INFO] Database initialized
+2026-02-27 10:42:28 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:28 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:28 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:28 [    INFO] Monitoring system initialized
+2026-02-27 10:42:28 [    INFO] Cache cleanup task started
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:28 [    INFO] HTTP Request: POST http://testserver/api/tasks "HTTP/1.1 422 Unprocessable Entity"
+PASSED                                                                   [ 35%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:28 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_edge_cases.py::TestSecurityBoundaries::test_sql_injection_attempt 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:28 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:28 [    INFO] Database initialized
+2026-02-27 10:42:28 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:28 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:28 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:28 [    INFO] Monitoring system initialized
+2026-02-27 10:42:28 [    INFO] Cache cleanup task started
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:28 [ WARNING] Security event: login_failed (severity: warning) - {'username': "admin' OR '1'='1"}
+2026-02-27 10:42:28 [    INFO] HTTP Request: POST http://testserver/api/auth/login "HTTP/1.1 401 Unauthorized"
+PASSED                                                                   [ 35%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:28 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_edge_cases.py::TestSecurityBoundaries::test_xss_attempt 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:28 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:28 [    INFO] Database initialized
+2026-02-27 10:42:28 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:28 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:28 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:28 [    INFO] Monitoring system initialized
+2026-02-27 10:42:28 [    INFO] Cache cleanup task started
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:28 [    INFO] HTTP Request: POST http://testserver/api/tasks "HTTP/1.1 422 Unprocessable Entity"
+PASSED                                                                   [ 35%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:28 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_edge_cases.py::TestSecurityBoundaries::test_path_traversal_attempt 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:28 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:28 [    INFO] Database initialized
+2026-02-27 10:42:28 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:28 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:28 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:28 [    INFO] Monitoring system initialized
+2026-02-27 10:42:28 [    INFO] Cache cleanup task started
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:28 [    INFO] HTTP Request: GET http://testserver/etc/passwd "HTTP/1.1 404 Not Found"
+PASSED                                                                   [ 35%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:28 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_edge_cases.py::TestRateLimiting::test_rapid_requests 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:28 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:28 [    INFO] Database initialized
+2026-02-27 10:42:28 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:28 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:28 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:28 [    INFO] Monitoring system initialized
+2026-02-27 10:42:28 [    INFO] Cache cleanup task started
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:28 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:28 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:28 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:28 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:28 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:28 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:28 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:28 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+PASSED                                                                   [ 36%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:29 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_tasks.py::TestTasksE2E::test_create_task_success 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:29 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+2026-02-27 10:42:29 [ WARNING] Security event: login_failed (severity: warning) - {'username': 'testuser'}
+2026-02-27 10:42:29 [    INFO] HTTP Request: POST http://testserver/api/auth/login "HTTP/1.1 401 Unauthorized"
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:29 [    INFO] HTTP Request: POST http://testserver/api/tasks "HTTP/1.1 401 Unauthorized"
+FAILED                                                                   [ 36%]
+tests/test_e2e_tasks.py::TestTasksE2E::test_create_task_unauthorized 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:29 [    INFO] HTTP Request: POST http://testserver/api/tasks "HTTP/1.1 401 Unauthorized"
+PASSED                                                                   [ 36%]
+tests/test_e2e_tasks.py::TestTasksE2E::test_list_tasks 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:29 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+2026-02-27 10:42:29 [ WARNING] Security event: login_failed (severity: warning) - {'username': 'testuser'}
+2026-02-27 10:42:29 [    INFO] HTTP Request: POST http://testserver/api/auth/login "HTTP/1.1 401 Unauthorized"
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:29 [    INFO] HTTP Request: POST http://testserver/api/tasks "HTTP/1.1 401 Unauthorized"
+2026-02-27 10:42:29 [    INFO] HTTP Request: POST http://testserver/api/tasks "HTTP/1.1 401 Unauthorized"
+2026-02-27 10:42:29 [    INFO] HTTP Request: POST http://testserver/api/tasks "HTTP/1.1 401 Unauthorized"
+2026-02-27 10:42:29 [    INFO] HTTP Request: GET http://testserver/api/tasks "HTTP/1.1 200 OK"
+FAILED                                                                   [ 36%]
+tests/test_e2e_tasks.py::TestTasksE2E::test_list_tasks_with_filters 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:29 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+2026-02-27 10:42:29 [ WARNING] Security event: login_failed (severity: warning) - {'username': 'testuser'}
+2026-02-27 10:42:29 [    INFO] HTTP Request: POST http://testserver/api/auth/login "HTTP/1.1 401 Unauthorized"
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:29 [    INFO] HTTP Request: POST http://testserver/api/tasks "HTTP/1.1 401 Unauthorized"
+2026-02-27 10:42:29 [    INFO] HTTP Request: POST http://testserver/api/tasks "HTTP/1.1 401 Unauthorized"
+2026-02-27 10:42:30 [    INFO] HTTP Request: GET http://testserver/api/tasks?task_type=CODE "HTTP/1.1 200 OK"
+PASSED                                                                   [ 36%]
+tests/test_e2e_tasks.py::TestTasksE2E::test_get_task_by_id 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:30 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+2026-02-27 10:42:30 [ WARNING] Security event: login_failed (severity: warning) - {'username': 'testuser'}
+2026-02-27 10:42:30 [    INFO] HTTP Request: POST http://testserver/api/auth/login "HTTP/1.1 401 Unauthorized"
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:30 [    INFO] HTTP Request: POST http://testserver/api/tasks "HTTP/1.1 401 Unauthorized"
+FAILED                                                                   [ 37%]
+tests/test_e2e_tasks.py::TestTasksE2E::test_get_task_not_found 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:30 [    INFO] HTTP Request: GET http://testserver/api/tasks/99999 "HTTP/1.1 404 Not Found"
+PASSED                                                                   [ 37%]
+tests/test_e2e_tasks.py::TestTasksE2E::test_accept_task_success 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:30 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+ERROR                                                                    [ 37%]
+tests/test_e2e_tasks.py::TestTasksE2E::test_accept_task_not_found 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:30 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+ERROR                                                                    [ 37%]
+tests/test_e2e_tasks.py::TestTasksE2E::test_accept_task_not_open 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:30 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+ERROR                                                                    [ 37%]
+tests/test_e2e_tasks.py::TestTasksE2E::test_submit_task_success 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:30 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+ERROR                                                                    [ 38%]
+tests/test_e2e_tasks.py::TestTasksE2E::test_submit_task_not_accepted 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:30 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+ERROR                                                                    [ 38%]
+tests/test_e2e_tasks.py::TestTasksE2E::test_submit_task_wrong_agent 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:30 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+ERROR                                                                    [ 38%]
+tests/test_e2e_tasks.py::TestTasksE2E::test_dispute_task_success 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:30 [    INFO] HTTP Request: POST http://testserver/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+ERROR                                                                    [ 38%]
+tests/test_e2e_websocket.py::TestWebSocketConnection::test_websocket_connection_success 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:30 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:30 [    INFO] Database initialized
+2026-02-27 10:42:30 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:30 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:30 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:30 [    INFO] Monitoring system initialized
+2026-02-27 10:42:30 [    INFO] Cache cleanup task started
+SKIPPED (WebSocket endpoint not implemented:)                            [ 38%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:30 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_websocket.py::TestWebSocketConnection::test_websocket_connection_unauthorized 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:30 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:30 [    INFO] Database initialized
+2026-02-27 10:42:30 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:30 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:30 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:30 [    INFO] Monitoring system initialized
+2026-02-27 10:42:30 [    INFO] Cache cleanup task started
+PASSED                                                                   [ 39%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:30 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_websocket.py::TestWebSocketConnection::test_websocket_connection_invalid_token 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:30 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:30 [    INFO] Database initialized
+2026-02-27 10:42:30 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:30 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:30 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:30 [    INFO] Monitoring system initialized
+2026-02-27 10:42:30 [    INFO] Cache cleanup task started
+PASSED                                                                   [ 39%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:30 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_websocket.py::TestWebSocketMessaging::test_send_and_receive_message 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:30 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:30 [    INFO] Database initialized
+2026-02-27 10:42:30 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:30 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:30 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:30 [    INFO] Monitoring system initialized
+2026-02-27 10:42:30 [    INFO] Cache cleanup task started
+SKIPPED (WebSocket messaging not implemented:)                           [ 39%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:30 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_websocket.py::TestWebSocketMessaging::test_broadcast_message 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:30 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:30 [    INFO] Database initialized
+2026-02-27 10:42:30 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:30 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:30 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:30 [    INFO] Monitoring system initialized
+2026-02-27 10:42:30 [    INFO] Cache cleanup task started
+SKIPPED (WebSocket broadcast not implemented:)                           [ 39%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:30 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_websocket.py::TestWebSocketEvents::test_task_status_update_event 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:30 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:30 [    INFO] Database initialized
+2026-02-27 10:42:30 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:30 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:30 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:30 [    INFO] Monitoring system initialized
+2026-02-27 10:42:30 [    INFO] Cache cleanup task started
+SKIPPED (WebSocket events not implemented:)                              [ 39%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:30 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_websocket.py::TestWebSocketEvents::test_reward_notification_event 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:30 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:31 [    INFO] Database initialized
+2026-02-27 10:42:31 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:31 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:31 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:31 [    INFO] Monitoring system initialized
+2026-02-27 10:42:31 [    INFO] Cache cleanup task started
+SKIPPED (WebSocket reward notifications not implemented:)                [ 40%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:31 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_websocket.py::TestWebSocketConnectionManagement::test_multiple_connections 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:31 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:31 [    INFO] Database initialized
+2026-02-27 10:42:31 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:31 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:31 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:31 [    INFO] Monitoring system initialized
+2026-02-27 10:42:31 [    INFO] Cache cleanup task started
+SKIPPED (Multiple WebSocket connections not supported:)                  [ 40%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:31 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_websocket.py::TestWebSocketConnectionManagement::test_connection_close 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:31 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:31 [    INFO] Database initialized
+2026-02-27 10:42:31 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:31 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:31 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:31 [    INFO] Monitoring system initialized
+2026-02-27 10:42:31 [    INFO] Cache cleanup task started
+SKIPPED (WebSocket close not testable:)                                  [ 40%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:31 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_websocket.py::TestWebSocketConnectionManagement::test_connection_timeout 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:31 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:31 [    INFO] Database initialized
+2026-02-27 10:42:31 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:31 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:31 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:31 [    INFO] Monitoring system initialized
+2026-02-27 10:42:31 [    INFO] Cache cleanup task started
+SKIPPED (WebSocket timeout test not applicable:)                         [ 40%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:31 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_websocket.py::TestWebSocketSecurity::test_websocket_requires_authentication 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:31 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:31 [    INFO] Database initialized
+2026-02-27 10:42:31 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:31 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:31 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:31 [    INFO] Monitoring system initialized
+2026-02-27 10:42:31 [    INFO] Cache cleanup task started
+PASSED                                                                   [ 40%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:31 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_websocket.py::TestWebSocketSecurity::test_websocket_token_validation 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:31 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:31 [    INFO] Database initialized
+2026-02-27 10:42:31 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:31 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:31 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:31 [    INFO] Monitoring system initialized
+2026-02-27 10:42:31 [    INFO] Cache cleanup task started
+PASSED                                                                   [ 41%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:31 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_websocket.py::TestWebSocketSecurity::test_websocket_message_validation 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:31 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:31 [    INFO] Database initialized
+2026-02-27 10:42:31 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:31 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:31 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:31 [    INFO] Monitoring system initialized
+2026-02-27 10:42:31 [    INFO] Cache cleanup task started
+SKIPPED (WebSocket message validation not testable:)                     [ 41%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:31 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_websocket.py::TestWebSocketPerformance::test_high_frequency_messages 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:31 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:31 [    INFO] Database initialized
+2026-02-27 10:42:31 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:31 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:31 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:31 [    INFO] Monitoring system initialized
+2026-02-27 10:42:31 [    INFO] Cache cleanup task started
+SKIPPED (WebSocket performance test not applicable:)                     [ 41%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:31 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_e2e_websocket.py::TestWebSocketPerformance::test_large_message 
+------------------------------- live log setup --------------------------------
+2026-02-27 10:42:31 [    INFO] Starting Nautilus Phase 3 Backend...
+2026-02-27 10:42:31 [    INFO] Database initialized
+2026-02-27 10:42:31 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:31 [    INFO] Database pool monitoring initialized
+2026-02-27 10:42:31 [    INFO] Monitoring initialized: version=3.0.0, environment=development
+2026-02-27 10:42:31 [    INFO] Monitoring system initialized
+2026-02-27 10:42:31 [    INFO] Cache cleanup task started
+SKIPPED (WebSocket large message test not applicable:)                   [ 41%]
+------------------------------ live log teardown ------------------------------
+2026-02-27 10:42:31 [    INFO] Shutting down Nautilus Phase 3 Backend...
+
+tests/test_error_handling.py::test_validate_message_with_invalid_type PASSED [ 41%]
+tests/test_error_handling.py::test_validate_message_with_validation_error PASSED [ 42%]
+tests/test_error_handling.py::test_validate_message_with_attribute_error 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:31 [ WARNING] Message validation failed: 'MockMessage' object has no attribute 'from_agent'
+PASSED                                                                   [ 42%]
+tests/test_error_handling.py::test_is_message_expired_with_value_error PASSED [ 42%]
+tests/test_error_handling.py::test_is_message_expired_with_attribute_error 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:31 [ WARNING] Failed to check message expiry: 'MockMessage' object has no attribute 'expires_at'
+PASSED                                                                   [ 42%]
+tests/test_error_handling.py::test_is_message_expired_with_type_error 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:31 [ WARNING] Failed to check message expiry: unsupported operand type(s) for -: 'datetime.datetime' and 'str'
+PASSED                                                                   [ 42%]
+tests/test_error_handling.py::test_is_message_expired_with_expires_at PASSED [ 43%]
+tests/test_error_handling.py::test_is_message_expired_with_ttl PASSED    [ 43%]
+tests/test_error_handling.py::test_is_message_expired_no_expiry PASSED   [ 43%]
+tests/test_gas_api.py::TestGasInfoEndpoint::test_get_gas_info_not_completed 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:31 [    INFO] HTTP Request: GET http://testserver/api/tasks/1/gas "HTTP/1.1 404 Not Found"
+FAILED                                                                   [ 43%]
+tests/test_gas_api.py::TestGasInfoEndpoint::test_get_gas_info_completed_with_gas 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:32 [    INFO] HTTP Request: GET http://testserver/api/tasks/1/gas "HTTP/1.1 404 Not Found"
+FAILED                                                                   [ 43%]
+tests/test_gas_api.py::TestGasInfoEndpoint::test_get_gas_info_task_not_found 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:32 [    INFO] HTTP Request: GET http://testserver/api/tasks/99999/gas "HTTP/1.1 404 Not Found"
+PASSED                                                                   [ 44%]
+tests/test_gas_api.py::TestGasInfoEndpoint::test_get_gas_info_transactions_list 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:33 [    INFO] HTTP Request: GET http://testserver/api/tasks/1/gas "HTTP/1.1 404 Not Found"
+FAILED                                                                   [ 44%]
+tests/test_gas_api.py::TestTaskCompletionWithGas::test_complete_task_with_gas_calculation 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:33 [    INFO] HTTP Request: POST http://testserver/api/tasks/1/complete "HTTP/1.1 401 Unauthorized"
+FAILED                                                                   [ 44%]
+tests/test_gas_api.py::TestTaskCompletionWithGas::test_complete_task_gas_calculation_failure 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:34 [    INFO] HTTP Request: POST http://testserver/api/tasks/1/complete "HTTP/1.1 401 Unauthorized"
+FAILED                                                                   [ 44%]
+tests/test_gas_api.py::TestTaskCompletionWithGas::test_complete_task_blockchain_failure 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:34 [    INFO] HTTP Request: POST http://testserver/api/tasks/1/complete "HTTP/1.1 401 Unauthorized"
+FAILED                                                                   [ 44%]
+tests/test_gas_api.py::TestTaskCompletionWithGas::test_complete_task_unauthorized 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:35 [    INFO] HTTP Request: POST http://testserver/api/tasks/1/complete "HTTP/1.1 401 Unauthorized"
+PASSED                                                                   [ 45%]
+tests/test_gas_api.py::TestTaskCompletionWithGas::test_complete_task_wrong_publisher 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:35 [    INFO] HTTP Request: POST http://testserver/api/tasks/1/complete "HTTP/1.1 401 Unauthorized"
+FAILED                                                                   [ 45%]
+tests/test_gas_api.py::TestGasFeeScenarios::test_high_gas_low_reward_scenario 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:36 [    INFO] HTTP Request: GET http://testserver/api/tasks/1/gas "HTTP/1.1 404 Not Found"
+FAILED                                                                   [ 45%]
+tests/test_gas_api.py::TestGasFeeScenarios::test_zero_gas_scenario 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:36 [    INFO] HTTP Request: GET http://testserver/api/tasks/1/gas "HTTP/1.1 404 Not Found"
+FAILED                                                                   [ 45%]
+tests/test_gas_fee_sharing.py::TestGasCalculation::test_get_transaction_gas_used FAILED [ 45%]
+tests/test_gas_fee_sharing.py::TestGasCalculation::test_calculate_gas_split FAILED [ 46%]
+tests/test_gas_fee_sharing.py::TestGasCalculation::test_calculate_gas_split_odd_number FAILED [ 46%]
+tests/test_gas_fee_sharing.py::TestGasCalculation::test_calculate_task_total_gas FAILED [ 46%]
+tests/test_gas_fee_sharing.py::TestGasCalculation::test_calculate_task_total_gas_with_none_hashes FAILED [ 46%]
+tests/test_gas_fee_sharing.py::TestGasCalculation::test_get_transaction_gas_used_receipt_not_found FAILED [ 46%]
+tests/test_gas_fee_sharing.py::TestGasCalculation::test_get_transaction_gas_used_transaction_not_found FAILED [ 47%]
+tests/test_gas_fee_sharing.py::TestGasCalculation::test_calculate_task_total_gas_exception FAILED [ 47%]
+tests/test_gas_fee_sharing.py::TestGasFeeSharingIntegration::test_gas_calculation_in_task_completion FAILED [ 47%]
+tests/test_gas_fee_sharing.py::TestGasFeeSharingIntegration::test_gas_split_larger_than_reward FAILED [ 47%]
+tests/test_gas_fee_sharing.py::TestGasFeeSharingIntegration::test_multiple_transactions_gas_accumulation FAILED [ 47%]
+tests/test_http_endpoints.py::test_health_check_endpoint 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:56 [    INFO] HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+PASSED                                                                   [ 48%]
+tests/test_http_endpoints.py::test_stats_endpoint 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:56 [    INFO] HTTP Request: GET http://testserver/stats "HTTP/1.1 200 OK"
+PASSED                                                                   [ 48%]
+tests/test_http_endpoints.py::test_agents_endpoint 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:56 [    INFO] HTTP Request: GET http://testserver/agents "HTTP/1.1 200 OK"
+PASSED                                                                   [ 48%]
+tests/test_http_endpoints.py::test_agents_endpoint_with_registered_agents 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:56 [    INFO] HTTP Request: GET http://testserver/agents "HTTP/1.1 200 OK"
+PASSED                                                                   [ 48%]
+tests/test_http_endpoints.py::test_root_endpoint 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:56 [    INFO] HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+PASSED                                                                   [ 48%]
+tests/test_http_endpoints.py::test_multiple_health_checks 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:56 [    INFO] HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+2026-02-27 10:42:56 [    INFO] HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+2026-02-27 10:42:56 [    INFO] HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+2026-02-27 10:42:56 [    INFO] HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+2026-02-27 10:42:56 [    INFO] HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+PASSED                                                                   [ 49%]
+tests/test_http_endpoints.py::test_stats_endpoint_structure 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:56 [    INFO] HTTP Request: GET http://testserver/stats "HTTP/1.1 200 OK"
+PASSED                                                                   [ 49%]
+tests/test_http_endpoints.py::test_agents_endpoint_empty 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:56 [    INFO] HTTP Request: GET http://testserver/agents "HTTP/1.1 200 OK"
+PASSED                                                                   [ 49%]
+tests/test_http_endpoints.py::test_concurrent_health_checks 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:56 [    INFO] HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+2026-02-27 10:42:56 [    INFO] HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+2026-02-27 10:42:56 [    INFO] HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+2026-02-27 10:42:56 [    INFO] HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+2026-02-27 10:42:56 [    INFO] HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+2026-02-27 10:42:56 [    INFO] HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+2026-02-27 10:42:56 [    INFO] HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+2026-02-27 10:42:56 [    INFO] HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+2026-02-27 10:42:56 [    INFO] HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+2026-02-27 10:42:56 [    INFO] HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+PASSED                                                                   [ 49%]
+tests/test_http_endpoints.py::test_all_endpoints_accessible 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:56 [    INFO] HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+2026-02-27 10:42:56 [    INFO] HTTP Request: GET http://testserver/stats "HTTP/1.1 200 OK"
+2026-02-27 10:42:56 [    INFO] HTTP Request: GET http://testserver/agents "HTTP/1.1 200 OK"
+PASSED                                                                   [ 49%]
+tests/test_http_simple.py::test_health_check_function PASSED             [ 50%]
+tests/test_http_simple.py::test_stats_function PASSED                    [ 50%]
+tests/test_http_simple.py::test_agents_function PASSED                   [ 50%]
+tests/test_http_simple.py::test_agents_function_with_registered_agents PASSED [ 50%]
+tests/test_integration.py::TestAuthAPI::test_register_user 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:56 [    INFO] HTTP Request: POST http://test/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+FAILED                                                                   [ 50%]
+tests/test_integration.py::TestAuthAPI::test_register_duplicate_username 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:57 [    INFO] HTTP Request: POST http://test/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+FAILED                                                                   [ 51%]
+tests/test_integration.py::TestAuthAPI::test_login_success 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:58 [    INFO] HTTP Request: POST http://test/api/auth/login "HTTP/1.1 200 OK"
+PASSED                                                                   [ 51%]
+tests/test_integration.py::TestAuthAPI::test_login_wrong_password 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:42:59 [ WARNING] Security event: login_failed (severity: warning) - {'username': 'testuser'}
+2026-02-27 10:42:59 [    INFO] HTTP Request: POST http://test/api/auth/login "HTTP/1.1 401 Unauthorized"
+PASSED                                                                   [ 51%]
+tests/test_integration.py::TestAuthAPI::test_get_current_user 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:43:00 [    INFO] HTTP Request: POST http://test/api/auth/login "HTTP/1.1 200 OK"
+2026-02-27 10:43:00 [    INFO] HTTP Request: GET http://test/api/auth/me "HTTP/1.1 200 OK"
+PASSED                                                                   [ 51%]
+tests/test_integration.py::TestTasksAPI::test_create_task 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:43:00 [    INFO] HTTP Request: POST http://test/api/auth/login "HTTP/1.1 200 OK"
+2026-02-27 10:43:02 [   ERROR] Blockchain integration error for task task_1772160180982: Failed to connect to Sepolia network
+2026-02-27 10:43:02 [    INFO] HTTP Request: POST http://test/api/tasks "HTTP/1.1 201 Created"
+PASSED                                                                   [ 51%]
+tests/test_integration.py::TestTasksAPI::test_list_tasks 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:43:02 [    INFO] HTTP Request: GET http://test/api/tasks "HTTP/1.1 200 OK"
+PASSED                                                                   [ 52%]
+tests/test_integration.py::TestTasksAPI::test_get_task 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:43:03 [    INFO] HTTP Request: POST http://test/api/auth/login "HTTP/1.1 200 OK"
+2026-02-27 10:43:05 [   ERROR] Blockchain integration error for task task_1772160183776: Failed to connect to Sepolia network
+2026-02-27 10:43:05 [    INFO] HTTP Request: POST http://test/api/tasks "HTTP/1.1 201 Created"
+2026-02-27 10:43:05 [    INFO] HTTP Request: GET http://test/api/tasks/1 "HTTP/1.1 200 OK"
+PASSED                                                                   [ 52%]
+tests/test_integration.py::TestTasksAPI::test_accept_task 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:43:06 [    INFO] HTTP Request: POST http://test/api/auth/login "HTTP/1.1 200 OK"
+2026-02-27 10:43:07 [   ERROR] Blockchain integration error for task task_1772160186208: Failed to connect to Sepolia network
+2026-02-27 10:43:07 [    INFO] HTTP Request: POST http://test/api/tasks "HTTP/1.1 201 Created"
+2026-02-27 10:43:09 [   ERROR] Blockchain integration error for agent registration 1: Failed to connect to Sepolia network
+2026-02-27 10:43:09 [    INFO] HTTP Request: POST http://test/api/agents "HTTP/1.1 201 Created"
+2026-02-27 10:43:10 [   ERROR] Blockchain integration error for task accept task_1772160186208: Failed to connect to Sepolia network
+2026-02-27 10:43:10 [    INFO] HTTP Request: POST http://test/api/tasks/1/accept "HTTP/1.1 200 OK"
+PASSED                                                                   [ 52%]
+tests/test_integration.py::TestAgentsAPI::test_register_agent 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:43:11 [    INFO] HTTP Request: POST http://test/api/auth/login "HTTP/1.1 200 OK"
+2026-02-27 10:43:13 [   ERROR] Blockchain integration error for agent registration 1: Failed to connect to Sepolia network
+2026-02-27 10:43:13 [    INFO] HTTP Request: POST http://test/api/agents "HTTP/1.1 201 Created"
+PASSED                                                                   [ 52%]
+tests/test_integration.py::TestAgentsAPI::test_list_agents 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:43:13 [    INFO] HTTP Request: GET http://test/api/agents "HTTP/1.1 200 OK"
+PASSED                                                                   [ 52%]
+tests/test_integration.py::TestAgentsAPI::test_get_agent 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:43:14 [    INFO] HTTP Request: GET http://test/api/agents/1 "HTTP/1.1 200 OK"
+PASSED                                                                   [ 53%]
+tests/test_integration.py::TestRewardsAPI::test_get_balance 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:43:15 [    INFO] HTTP Request: POST http://test/api/auth/login "HTTP/1.1 200 OK"
+2026-02-27 10:43:16 [   ERROR] Blockchain integration error for agent registration 1: Failed to connect to Sepolia network
+2026-02-27 10:43:16 [    INFO] HTTP Request: POST http://test/api/agents "HTTP/1.1 201 Created"
+2026-02-27 10:43:18 [   ERROR] Failed to query blockchain balance for 0x1234567890123456789012345678901234567890: Failed to connect to Sepolia network
+2026-02-27 10:43:18 [    INFO] HTTP Request: GET http://test/api/rewards/balance "HTTP/1.1 200 OK"
+PASSED                                                                   [ 53%]
+tests/test_integration.py::TestEndToEnd::test_complete_task_workflow 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:43:18 [    INFO] HTTP Request: POST http://test/api/auth/register "HTTP/1.1 422 Unprocessable Entity"
+FAILED                                                                   [ 53%]
+tests/test_key_manager.py::test_environment_source 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:43:18 [    INFO] Private key loaded from environment variable
+PASSED                                                                   [ 53%]
+tests/test_key_manager.py::test_encrypted_file 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:43:18 [   ERROR] Failed to load key from encrypted file: Expecting value: line 1 column 1 (char 0)
+2026-02-27 10:43:18 [   ERROR] Failed to load key: [REDACTED] value: line 1 column 1 (char 0)
+PASSED                                                                   [ 53%]
+tests/test_key_manager.py::test_key_validation 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:43:18 [    INFO] Private key loaded from environment variable
+PASSED                                                                   [ 54%]
+tests/test_key_manager.py::test_key_rotation 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:43:18 [   ERROR] Failed to load key from encrypted file: Expecting value: line 1 column 1 (char 0)
+2026-02-27 10:43:18 [   ERROR] Failed to load key: [REDACTED] value: line 1 column 1 (char 0)
+PASSED                                                                   [ 54%]
+tests/test_key_manager.py::test_encryption_decryption 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:43:19 [   ERROR] Failed to decrypt key: 
+PASSED                                                                   [ 54%]
+tests/test_key_manager.py::test_rotation_policy 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:43:19 [    INFO] Private key loaded from environment variable
+PASSED                                                                   [ 54%]
+tests/test_key_manager.py::test_key_masking 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:43:19 [    INFO] Private key loaded from environment variable
+PASSED                                                                   [ 54%]
+tests/test_key_manager.py::test_singleton_pattern 
+-------------------------------- live log call --------------------------------
+2026-02-27 10:43:19 [    INFO] Private key loaded from environment variable
+PASSED                                                                   [ 55%]
+tests/test_logging_system.py::TestStructuredLogging::test_exception_logging PASSED [ 55%]
+tests/test_logging_system.py::TestStructuredLogging::test_json_log_format FAILED [ 55%]
+tests/test_logging_system.py::TestStructuredLogging::test_log_levels FAILED [ 55%]
+tests/test_logging_system.py::TestStructuredLogging::test_structured_logger FAILED [ 55%]
+tests/test_logging_system.py::TestStructuredLogging::test_text_log_format FAILED [ 56%]
+tests/test_logging_system.py::TestStructuredFormatter::test_formatter_basic PASSED [ 56%]
+tests/test_logging_system.py::TestStructuredFormatter::test_formatter_with_exception PASSED [ 56%]
+tests/test_logging_system.py::TestLoggingMiddleware::test_request_id_generation PASSED [ 56%]
+tests/test_logging_system.py::TestLoggingMiddleware::test_user_id_context PASSED [ 56%]
+tests/test_main.py::test_root_endpoint PASSED                            [ 57%]
+tests/test_main.py::test_health_endpoint PASSED                          [ 57%]
+tests/test_message_creators.py::test_create_reject_message PASSED        [ 57%]
+tests/test_message_creators.py::test_create_reject_message_without_alternative PASSED [ 57%]
+tests/test_message_creators.py::test_create_progress_message PASSED      [ 57%]
+tests/test_message_creators.py::test_create_progress_message_without_message PASSED [ 58%]
+tests/test_message_creators.py::test_create_complete_message PASSED      [ 58%]
+tests/test_message_creators.py::test_create_complete_message_with_error PASSED [ 58%]
+tests/test_message_creators.py::test_create_share_message PASSED         [ 58%]
+tests/test_message_creators.py::test_create_share_message_to_multiple_agents PASSED [ 58%]
+tests/test_message_creators.py::test_create_share_message_without_tags PASSED [ 59%]
+tests/test_message_creators.py::test_create_ack_message PASSED           [ 59%]
+tests/test_message_creators.py::test_create_ack_message_without_metadata PASSED [ 59%]
+tests/test_message_creators.py::test_create_nack_message PASSED          [ 59%]
+tests/test_message_creators.py::test_create_nack_message_minimal PASSED  [ 59%]
+tests/test_nexus_client_integration.py::TestConnectionManagement::test_client_connect_disconnect PASSED [ 60%]
+tests/test_nexus_client_integration.py::TestConnectionManagement::test_client_reconnection PASSED [ 60%]
+tests/test_nexus_client_integration.py::TestConnectionManagement::test_client_connection_timeout PASSED [ 60%]
+tests/test_nexus_client_integration.py::TestConnectionManagement::test_multiple_clients_connection PASSED [ 60%]
+tests/test_nexus_client_integration.py::TestMessageSending::test_send_request_message PASSED [ 60%]
+tests/test_nexus_client_integration.py::TestMessageSending::test_send_accept_message PASSED [ 61%]
+tests/test_nexus_client_integration.py::TestMessageSending::test_send_reject_message PASSED [ 61%]
+tests/test_nexus_client_integration.py::TestMessageSending::test_send_progress_message PASSED [ 61%]
+tests/test_nexus_client_integration.py::TestMessageSending::test_send_complete_message PASSED [ 61%]
+tests/test_nexus_client_integration.py::TestMessageSending::test_send_share_message PASSED [ 61%]
+tests/test_nexus_client_integration.py::TestEventHandling::test_event_handler_registration PASSED [ 62%]
+tests/test_nexus_client_integration.py::TestEventHandling::test_receive_request_event PASSED [ 62%]
+tests/test_nexus_client_integration.py::TestEventHandling::test_receive_accept_event PASSED [ 62%]
+tests/test_nexus_client_integration.py::TestErrorHandling::test_send_to_offline_agent PASSED [ 62%]
+tests/test_nexus_client_integration.py::TestErrorHandling::test_invalid_message_handling PASSED [ 62%]
+tests/test_nexus_client_integration.py::TestCompleteWorkflow::test_request_accept_progress_complete_workflow PASSED [ 63%]
+tests/test_nexus_client_integration.py::TestConvenienceFunctions::test_create_and_connect_client PASSED [ 63%]
+tests/test_nexus_protocol.py::test_message_type_enum PASSED              [ 63%]
+tests/test_nexus_protocol.py::test_hello_payload PASSED                  [ 63%]
+tests/test_nexus_protocol.py::test_request_payload PASSED                [ 63%]
+tests/test_nexus_protocol.py::test_accept_payload PASSED                 [ 64%]
+tests/test_nexus_protocol.py::test_create_hello_message PASSED           [ 64%]
+tests/test_nexus_protocol.py::test_create_request_message PASSED         [ 64%]
+tests/test_nexus_protocol.py::test_create_accept_message PASSED          [ 64%]
+tests/test_nexus_protocol.py::test_validate_message PASSED               [ 64%]
+tests/test_nexus_protocol.py::test_sign_and_verify_message PASSED        [ 65%]
+tests/test_nexus_protocol.py::test_nexus_server_initialization PASSED    [ 65%]
+tests/test_nexus_protocol.py::test_agent_registration PASSED             [ 65%]
+tests/test_nexus_protocol.py::test_nexus_client_initialization PASSED    [ 65%]
+tests/test_nexus_protocol.py::test_client_event_handlers PASSED          [ 65%]
+tests/test_nexus_protocol.py::test_a2a_communication_flow PASSED         [ 66%]
+tests/test_nexus_protocol.py::test_message_creation_performance PASSED   [ 66%]
+tests/test_nexus_protocol.py::test_message_validation_performance PASSED [ 66%]
+tests/test_nexus_protocol_batch1.py::test_reject_payload PASSED          [ 66%]
+tests/test_nexus_protocol_batch1.py::test_progress_payload PASSED        [ 66%]
+tests/test_nexus_protocol_batch1.py::test_complete_payload PASSED        [ 67%]
+tests/test_nexus_protocol_batch1.py::test_share_payload PASSED           [ 67%]
+tests/test_nexus_protocol_batch1.py::test_ack_payload PASSED             [ 67%]
+tests/test_nexus_protocol_batch1.py::test_create_reject_message PASSED   [ 67%]
+tests/test_nexus_protocol_batch1.py::test_create_progress_message PASSED [ 67%]
+tests/test_nexus_protocol_batch1.py::test_create_complete_message PASSED [ 68%]
+tests/test_nexus_protocol_batch1.py::test_create_share_message PASSED    [ 68%]
+tests/test_nexus_protocol_batch1.py::test_create_ack_message PASSED      [ 68%]
+tests/test_nexus_protocol_batch2.py::test_nack_payload PASSED            [ 68%]
+tests/test_nexus_protocol_batch2.py::test_message_with_empty_string PASSED [ 68%]
+tests/test_nexus_protocol_batch2.py::test_message_with_special_characters PASSED [ 69%]
+tests/test_nexus_protocol_batch2.py::test_message_with_unicode PASSED    [ 69%]
+tests/test_nexus_protocol_batch2.py::test_message_with_very_long_string PASSED [ 69%]
+tests/test_nexus_protocol_batch2.py::test_validate_message_missing_from_agent PASSED [ 69%]
+tests/test_nexus_protocol_batch2.py::test_validate_message_missing_to_agent PASSED [ 69%]
+tests/test_nexus_protocol_batch2.py::test_validate_message_missing_payload PASSED [ 70%]
+tests/test_nexus_protocol_batch2.py::test_validate_message_with_valid_data PASSED [ 70%]
+tests/test_nexus_protocol_batch2.py::test_create_nack_message PASSED     [ 70%]
+tests/test_nexus_protocol_batch3.py::test_message_ttl_not_expired PASSED [ 70%]
+tests/test_nexus_protocol_batch3.py::test_message_ttl_expired PASSED     [ 70%]
+tests/test_nexus_protocol_batch3.py::test_message_expires_at_not_expired PASSED [ 71%]
+tests/test_nexus_protocol_batch3.py::test_message_expires_at_expired PASSED [ 71%]
+tests/test_nexus_protocol_batch3.py::test_message_no_expiry PASSED       [ 71%]
+tests/test_nexus_protocol_batch3.py::test_sign_message_with_empty_secret PASSED [ 71%]
+tests/test_nexus_protocol_batch3.py::test_sign_message_with_long_secret PASSED [ 71%]
+tests/test_nexus_protocol_batch3.py::test_verify_signature_with_modified_message PASSED [ 72%]
+tests/test_nexus_protocol_batch3.py::test_verify_signature_without_signature PASSED [ 72%]
+tests/test_nexus_protocol_batch3.py::test_sign_and_verify_with_different_keys PASSED [ 72%]
+tests/test_nexus_server_integration.py::test_server_startup_shutdown PASSED [ 72%]
+tests/test_nexus_server_integration.py::test_agent_registration PASSED   [ 72%]
+tests/test_nexus_server_integration.py::test_agent_deregistration PASSED [ 73%]
+tests/test_nexus_server_integration.py::test_multiple_agents_registration PASSED [ 73%]
+tests/test_nexus_server_integration.py::test_message_routing_unicast PASSED [ 73%]
+tests/test_nexus_server_integration.py::test_message_routing_broadcast PASSED [ 73%]
+tests/test_nexus_server_integration.py::test_message_routing_to_offline_agent PASSED [ 73%]
+tests/test_nexus_server_integration.py::test_queue_full_handling PASSED  [ 74%]
+tests/test_nexus_server_integration.py::test_agent_limit_handling PASSED [ 74%]
+tests/test_nexus_server_integration.py::test_concurrent_message_handling PASSED [ 74%]
+tests/test_nexus_server_integration.py::test_invalid_message_format PASSED [ 74%]
+tests/test_nexus_server_integration.py::test_duplicate_agent_registration PASSED [ 74%]
+tests/test_nexus_server_integration.py::test_message_expiry_handling PASSED [ 75%]
+tests/test_nexus_server_integration.py::test_get_stats PASSED            [ 75%]
+tests/test_nexus_server_integration.py::test_get_online_agents PASSED    [ 75%]
+tests/test_nexus_server_integration.py::test_agent_info_retrieval PASSED [ 75%]
+tests/test_nexus_server_integration.py::test_message_statistics_tracking PASSED [ 75%]
+tests/test_nexus_server_integration.py::test_fastapi_app_creation PASSED [ 76%]
+tests/test_nexus_server_integration.py::test_server_initialization_with_custom_params PASSED [ 76%]
+tests/test_nexus_server_integration.py::test_message_validation_comprehensive PASSED [ 76%]
+tests/test_nexus_server_socketio.py::test_connect_event_handler PASSED   [ 76%]
+tests/test_nexus_server_socketio.py::test_disconnect_event_handler PASSED [ 76%]
+tests/test_nexus_server_socketio.py::test_hello_event_handler PASSED     [ 77%]
+tests/test_nexus_server_socketio.py::test_hello_event_max_agents_reached PASSED [ 77%]
+tests/test_nexus_server_socketio.py::test_message_event_handler PASSED   [ 77%]
+tests/test_nexus_server_socketio.py::test_message_event_invalid_format PASSED [ 77%]
+tests/test_nexus_server_socketio.py::test_message_event_expired PASSED   [ 77%]
+tests/test_nexus_server_socketio.py::test_message_event_queue_full PASSED [ 78%]
+tests/test_nexus_server_socketio.py::test_request_event_handler PASSED   [ 78%]
+tests/test_nexus_server_socketio.py::test_request_event_offline_agent PASSED [ 78%]
+tests/test_nexus_server_socketio.py::test_accept_event_handler PASSED    [ 78%]
+tests/test_nexus_server_socketio.py::test_reject_event_handler PASSED    [ 78%]
+tests/test_nexus_server_socketio.py::test_progress_event_handler PASSED  [ 79%]
+tests/test_nexus_server_socketio.py::test_complete_event_handler PASSED  [ 79%]
+tests/test_nexus_server_socketio.py::test_share_event_handler PASSED     [ 79%]
+tests/test_nexus_server_socketio.py::test_get_agents_event_handler PASSED [ 79%]
+tests/test_nexus_server_socketio.py::test_get_stats_event_handler PASSED [ 79%]
+tests/test_nexus_server_socketio.py::test_broadcast_to_multiple_agents PASSED [ 80%]
+tests/test_performance.py::TestAPIPerformance::test_list_tasks_performance PASSED [ 80%]
+tests/test_performance.py::TestAPIPerformance::test_list_tasks_with_filters_performance PASSED [ 80%]
+tests/test_performance.py::TestAPIPerformance::test_list_agents_performance PASSED [ 80%]
+tests/test_performance.py::TestAPIPerformance::test_get_balance_performance FAILED [ 80%]
+tests/test_performance.py::TestAPIPerformance::test_reward_history_performance FAILED [ 81%]
+tests/test_performance.py::TestAPIPerformance::test_get_agent_tasks_performance FAILED [ 81%]
+tests/test_performance.py::TestDatabaseQueryPerformance::test_task_query_with_indexes PASSED [ 81%]
+tests/test_performance.py::TestDatabaseQueryPerformance::test_reward_aggregation_performance PASSED [ 81%]
+tests/test_performance.py::TestDatabaseQueryPerformance::test_agent_reputation_query_performance PASSED [ 81%]
+tests/test_performance.py::TestCachePerformance::test_cache_hit_performance PASSED [ 82%]
+tests/test_performance.py::TestConcurrentRequestPerformance::test_concurrent_list_tasks FAILED [ 82%]
+tests/test_performance.py::test_performance_summary PASSED               [ 82%]
+tests/test_postgres_integration.py::TestAuthAPIIntegration::test_register_user FAILED [ 82%]
+tests/test_postgres_integration.py::TestAuthAPIIntegration::test_login_user PASSED [ 82%]
+tests/test_postgres_integration.py::TestAuthAPIIntegration::test_get_current_user_unauthorized PASSED [ 83%]
+tests/test_postgres_integration.py::TestTasksAPIIntegration::test_create_task PASSED [ 83%]
+tests/test_postgres_integration.py::TestTasksAPIIntegration::test_list_tasks PASSED [ 83%]
+tests/test_postgres_integration.py::TestTasksAPIIntegration::test_list_tasks_with_filters PASSED [ 83%]
+tests/test_postgres_integration.py::TestAgentsAPIIntegration::test_register_agent PASSED [ 83%]
+tests/test_postgres_integration.py::TestAgentsAPIIntegration::test_list_agents PASSED [ 84%]
+tests/test_postgres_integration.py::TestRewardsAPIIntegration::test_get_balance PASSED [ 84%]
+tests/test_postgres_integration.py::TestRewardsAPIIntegration::test_get_history PASSED [ 84%]
+tests/test_postgres_integration.py::TestHealthChecks::test_root_endpoint PASSED [ 84%]
+tests/test_postgres_integration.py::TestHealthChecks::test_health_endpoint PASSED [ 84%]
+tests/test_postgres_integration.py::TestErrorHandling::test_not_found PASSED [ 85%]
+tests/test_postgres_integration.py::TestErrorHandling::test_method_not_allowed PASSED [ 85%]
+tests/test_server_error_handling.py::test_hello_handler_with_exception PASSED [ 85%]
+tests/test_server_error_handling.py::test_message_handler_with_exception PASSED [ 85%]
+tests/test_server_error_handling.py::test_offer_handler PASSED           [ 85%]
+tests/test_server_error_handling.py::test_typed_message_missing_fields PASSED [ 86%]
+tests/test_server_error_handling.py::test_route_message_agent_offline PASSED [ 86%]
+tests/test_server_error_handling.py::test_route_message_broadcast PASSED [ 86%]
+tests/test_server_error_handling.py::test_handle_typed_message_exception PASSED [ 86%]
+tests/test_simple_integration.py::test_simple_communication SKIPPED      [ 86%]
+tests/test_stress.py::TestConcurrentAgents::test_100_concurrent_agents PASSED [ 87%]
+tests/test_stress.py::TestMessageThroughput::test_1000_messages_per_second PASSED [ 87%]
+tests/test_stress.py::TestLongRunning::test_long_running_stability FAILED [ 87%]
+tests/test_stress.py::TestResourceMonitoring::test_memory_leak_detection PASSED [ 87%]
+tests/test_utils.py::TestAuthUtils::test_generate_api_key PASSED         [ 87%]
+tests/test_utils.py::TestAuthUtils::test_hash_password PASSED            [ 88%]
+tests/test_utils.py::TestAuthUtils::test_verify_password PASSED          [ 88%]
+tests/test_utils.py::TestAuthUtils::test_create_access_token PASSED      [ 88%]
+tests/test_utils.py::TestAuthUtils::test_decode_access_token PASSED      [ 88%]
+tests/test_utils.py::TestAuthUtils::test_decode_access_token_invalid PASSED [ 88%]
+tests/test_utils.py::TestDatabaseUtils::test_get_db_generator PASSED     [ 89%]
+tests/test_utils.py::TestDatabaseUtils::test_init_db PASSED              [ 89%]
+tests/test_utils.py::TestUtilsIntegration::test_auth_utils_exported PASSED [ 89%]
+tests/test_utils.py::TestUtilsIntegration::test_database_utils_exported PASSED [ 89%]
+tests/test_utils_extended.py::TestAuthUtilsExtended::test_create_access_token_with_expiry PASSED [ 89%]
+tests/test_utils_extended.py::TestAuthUtilsExtended::test_create_access_token_default_expiry PASSED [ 90%]
+tests/test_utils_extended.py::TestAuthUtilsExtended::test_verify_password_edge_cases PASSED [ 90%]
+tests/test_utils_extended.py::TestAuthUtilsExtended::test_generate_api_key_with_custom_prefix PASSED [ 90%]
+tests/test_utils_extended.py::TestAuthUtilsExtended::test_generate_api_key_with_custom_length PASSED [ 90%]
+tests/test_utils_extended.py::TestAuthUtilsExtended::test_jwt_config_constants PASSED [ 90%]
+tests/test_utils_extended.py::TestAuthDependencies::test_get_current_user_success PASSED [ 91%]
+tests/test_utils_extended.py::TestAuthDependencies::test_get_current_user_invalid_token PASSED [ 91%]
+tests/test_utils_extended.py::TestAuthDependencies::test_get_current_user_not_found PASSED [ 91%]
+tests/test_utils_extended.py::TestAuthDependencies::test_get_current_user_inactive PASSED [ 91%]
+tests/test_utils_extended.py::TestAuthDependencies::test_get_current_agent_success PASSED [ 91%]
+tests/test_utils_extended.py::TestAuthDependencies::test_get_current_agent_invalid_format PASSED [ 92%]
+tests/test_utils_extended.py::TestAuthDependencies::test_get_current_agent_not_found PASSED [ 92%]
+tests/test_utils_extended.py::TestAuthAdmin::test_get_current_admin_user_success PASSED [ 92%]
+tests/test_utils_extended.py::TestAuthAdmin::test_get_current_admin_user_not_admin PASSED [ 92%]
+tests/test_utils_extended.py::TestUserOrAgent::test_get_current_user_or_agent_with_jwt PASSED [ 92%]
+tests/test_utils_extended.py::TestUserOrAgent::test_get_current_user_or_agent_with_api_key PASSED [ 93%]
+tests/test_websocket.py::TestWebSocketConnection::test_connect_disconnect SKIPPED [ 93%]
+tests/test_websocket.py::TestWebSocketConnection::test_connected_event SKIPPED [ 93%]
+tests/test_websocket.py::TestTaskSubscription::test_subscribe_tasks SKIPPED [ 93%]
+tests/test_websocket.py::TestTaskSubscription::test_unsubscribe_tasks SKIPPED [ 93%]
+tests/test_websocket.py::TestTaskSubscription::test_receive_task_published SKIPPED [ 94%]
+tests/test_websocket.py::TestAgentSubscription::test_subscribe_agent SKIPPED [ 94%]
+tests/test_websocket.py::TestAgentSubscription::test_unsubscribe_agent SKIPPED [ 94%]
+tests/test_websocket.py::TestAgentSubscription::test_multiple_agent_subscriptions SKIPPED [ 94%]
+tests/test_websocket.py::TestEventEmission::test_task_events_structure SKIPPED [ 94%]
+tests/test_websocket.py::TestEventEmission::test_reward_events_structure SKIPPED [ 95%]
+tests/test_websocket.py::TestConcurrentConnections::test_multiple_clients SKIPPED [ 95%]
+tests/test_websocket.py::TestConcurrentConnections::test_concurrent_subscriptions SKIPPED [ 95%]
+tests/test_websocket.py::TestErrorHandling::test_invalid_agent_id SKIPPED [ 95%]
+tests/test_websocket.py::TestErrorHandling::test_reconnection SKIPPED    [ 95%]
+tests/test_websocket_server.py::TestWebSocketServer::test_socket_server_creation PASSED [ 96%]
+tests/test_websocket_server.py::TestWebSocketServer::test_socket_app_creation PASSED [ 96%]
+tests/test_websocket_server.py::TestWebSocketServer::test_event_handlers_exist PASSED [ 96%]
+tests/test_websocket_server.py::TestWebSocketServer::test_emit_functions_are_async PASSED [ 96%]
+tests/test_websocket_server.py::TestWebSocketServer::test_emit_task_published PASSED [ 96%]
+tests/test_websocket_server.py::TestWebSocketServer::test_emit_task_accepted_with_agent PASSED [ 97%]
+tests/test_websocket_server.py::TestWebSocketServer::test_emit_task_accepted_without_agent PASSED [ 97%]
+tests/test_websocket_server.py::TestWebSocketServer::test_emit_reward_distributed PASSED [ 97%]
+tests/test_websocket_server.py::TestWebSocketServer::test_emit_reward_distributed_no_agent PASSED [ 97%]
+tests/test_websocket_server.py::TestWebSocketServer::test_emit_task_verified PASSED [ 97%]
+tests/test_websocket_server.py::TestWebSocketServer::test_emit_task_completed PASSED [ 98%]
+tests/test_websocket_server.py::TestWebSocketServer::test_emit_task_failed PASSED [ 98%]
+tests/test_websocket_server.py::TestWebSocketEvents::test_events_module_exports PASSED [ 98%]
+tests/test_workflow_integration.py::test_full_collaboration_workflow PASSED [ 98%]
+tests/test_workflow_integration.py::test_rejection_workflow PASSED       [ 98%]
+tests/test_workflow_integration.py::test_multiple_progress_updates PASSED [ 99%]
+tests/test_workflow_integration.py::test_multi_agent_collaboration PASSED [ 99%]
+tests/test_workflow_integration.py::test_agent_handoff PASSED            [ 99%]
+tests/test_workflow_integration.py::test_knowledge_sharing PASSED        [ 99%]
+tests/test_workflow_integration.py::test_selective_sharing PASSED        [ 99%]
+tests/test_workflow_integration.py::test_agent_failure_recovery PASSED   [100%]C:\Users\chunx\AppData\Local\Programs\Python\Python313\Lib\site-packages\coverage\report_core.py:107: CoverageWarning: Couldn't parse Python file 'C:\Users\chunx\Projects\nautilus-core\phase3\backend\GAS_FEE_QUICK_REFERENCE.py' (couldnt-parse); see https://coverage.readthedocs.io/en/7.13.4/messages.html#warning-couldnt-parse
+  coverage._warn(msg, slug="couldnt-parse")
+
+
+=============================== tests coverage ================================
+______________ coverage: platform win32, python 3.13.12-final-0 _______________
+
+Name                                   Stmts   Miss  Cover
+----------------------------------------------------------
+add_performance_indexes.py                51     51     0%
+analyze_query_performance.py              72     72     0%
+api\agents.py                            138     33    76%
+api\auth.py                              121     35    71%
+api\rewards.py                            93     44    53%
+api\tasks.py                             242    111    54%
+benchmark_performance.py                 114    114     0%
+blockchain\__init__.py                     6      0   100%
+blockchain\blockchain_service.py         288    255    11%
+blockchain\event_listener.py             301    214    29%
+blockchain\key_manager.py                295    138    53%
+blockchain\monitoring.py                 213    163    23%
+blockchain\transaction_retry.py          128     97    24%
+blockchain\web3_config.py                126     48    62%
+compare_load_test_results.py             128    128     0%
+create_test_db.py                         30     30     0%
+fix_tests.py                              48     48     0%
+load_test_config.py                       98     98     0%
+locustfile.py                            139    139     0%
+logging_config.py                        104    104     0%
+manage_migrations.py                     156    156     0%
+middleware\__init__.py                     2      0   100%
+middleware\logging_middleware.py          99     74    25%
+migrate_blockchain_fields.py              38     38     0%
+models\database.py                       110      0   100%
+monitoring_config.py                     171     74    57%
+nexus_protocol\__init__.py                 3      0   100%
+nexus_protocol\types.py                  170      0   100%
+nexus_server.py                          179      0   100%
+organize_performance_docs.py             123    123     0%
+performance_statistics.py                 88     88     0%
+quick_performance_check.py               134    134     0%
+rebuild_test_db.py                        25     25     0%
+setup_key_management.py                   65     65     0%
+show_performance_results.py              106    106     0%
+test_blockchain.py                       146    146     0%
+test_migrations.py                       166    166     0%
+test_security_fixes.py                   149    149     0%
+utils\auth.py                            118     17    86%
+utils\cache.py                            86     63    27%
+utils\database.py                         27      5    81%
+utils\json_validation_middleware.py       45     13    71%
+utils\logging_config.py                  150     17    89%
+utils\performance_middleware.py           52     35    33%
+utils\pool_monitor.py                     47     14    70%
+utils\security_validators.py             107     31    71%
+utils\sensitive_data_filter.py            20      1    95%
+validate_performance_optimization.py     176    176     0%
+verify_application_performance.py        250    250     0%
+verify_blockchain_tests.py                95     95     0%
+verify_migration_tool.py                 180    180     0%
+verify_performance_complete.py           204    204     0%
+websocket_server.py                       60     19    68%
+----------------------------------------------------------
+TOTAL                                   6282   4386    30%
+Coverage HTML written to dir htmlcov
+=========================== short test summary info ===========================
+FAILED tests/test_blockchain_integration.py::TestTaskMarketIntegration::test_publish_task_no_contract
+FAILED tests/test_blockchain_integration.py::TestTaskMarketIntegration::test_publish_task_no_account
+FAILED tests/test_blockchain_integration.py::TestTaskMarketIntegration::test_get_task_no_contract
+FAILED tests/test_blockchain_integration.py::TestTaskMarketIntegration::test_publish_task_contract_error
+FAILED tests/test_blockchain_integration.py::TestRewardPoolIntegration::test_get_reward_balance_no_contract
+FAILED tests/test_blockchain_integration.py::TestRewardPoolIntegration::test_withdraw_reward_no_contract
+FAILED tests/test_blockchain_integration.py::TestRewardPoolIntegration::test_withdraw_reward_no_account
+FAILED tests/test_blockchain_integration.py::TestAgentRegistryIntegration::test_register_agent_no_contract
+FAILED tests/test_blockchain_integration.py::TestAgentRegistryIntegration::test_is_agent_registered_no_contract
+FAILED tests/test_blockchain_integration.py::TestGasFeeSharing::test_estimate_gas_for_publish_task
+FAILED tests/test_blockchain_integration.py::TestErrorHandlingAndRetry::test_connection_error_handling
+FAILED tests/test_blockchain_integration.py::TestErrorHandlingAndRetry::test_transaction_timeout_handling
+FAILED tests/test_blockchain_integration.py::TestErrorHandlingAndRetry::test_insufficient_funds_error
+FAILED tests/test_blockchain_integration.py::TestErrorHandlingAndRetry::test_nonce_too_low_error
+FAILED tests/test_blockchain_integration.py::TestErrorHandlingAndRetry::test_contract_revert_error
+FAILED tests/test_blockchain_integration.py::TestErrorHandlingAndRetry::test_network_congestion_high_gas
+FAILED tests/test_blockchain_integration.py::TestTransactionFailureScenarios::test_transaction_reverted
+FAILED tests/test_blockchain_integration.py::TestTransactionFailureScenarios::test_transaction_dropped
+FAILED tests/test_e2e_agents_rewards.py::TestAgentsE2E::test_register_agent_success
+FAILED tests/test_e2e_agents_rewards.py::TestAgentsE2E::test_register_agent_duplicate
+FAILED tests/test_e2e_agents_rewards.py::TestAgentsE2E::test_list_agents - as...
+FAILED tests/test_e2e_agents_rewards.py::TestAgentsE2E::test_get_agent_by_id
+FAILED tests/test_e2e_agents_rewards.py::TestAgentsE2E::test_get_agent_tasks
+FAILED tests/test_e2e_agents_rewards.py::TestAgentsE2E::test_get_agent_reputation
+FAILED tests/test_e2e_auth.py::TestAuthE2E::test_register_success - assert 42...
+FAILED tests/test_e2e_auth.py::TestAuthE2E::test_register_duplicate_username
+FAILED tests/test_e2e_auth.py::TestAuthE2E::test_register_duplicate_email - a...
+FAILED tests/test_e2e_auth.py::TestAuthE2E::test_register_duplicate_wallet - ...
+FAILED tests/test_e2e_auth.py::TestAuthE2E::test_login_success - assert 401 =...
+FAILED tests/test_e2e_auth.py::TestAuthE2E::test_get_current_user - KeyError:...
+FAILED tests/test_e2e_auth.py::TestAuthE2E::test_update_wallet_success - KeyE...
+FAILED tests/test_e2e_auth.py::TestAuthE2E::test_update_wallet_duplicate - Ke...
+FAILED tests/test_e2e_tasks.py::TestTasksE2E::test_create_task_success - asse...
+FAILED tests/test_e2e_tasks.py::TestTasksE2E::test_list_tasks - assert 0 >= 3
+FAILED tests/test_e2e_tasks.py::TestTasksE2E::test_get_task_by_id - KeyError:...
+FAILED tests/test_gas_api.py::TestGasInfoEndpoint::test_get_gas_info_not_completed
+FAILED tests/test_gas_api.py::TestGasInfoEndpoint::test_get_gas_info_completed_with_gas
+FAILED tests/test_gas_api.py::TestGasInfoEndpoint::test_get_gas_info_transactions_list
+FAILED tests/test_gas_api.py::TestTaskCompletionWithGas::test_complete_task_with_gas_calculation
+FAILED tests/test_gas_api.py::TestTaskCompletionWithGas::test_complete_task_gas_calculation_failure
+FAILED tests/test_gas_api.py::TestTaskCompletionWithGas::test_complete_task_blockchain_failure
+FAILED tests/test_gas_api.py::TestTaskCompletionWithGas::test_complete_task_wrong_publisher
+FAILED tests/test_gas_api.py::TestGasFeeScenarios::test_high_gas_low_reward_scenario
+FAILED tests/test_gas_api.py::TestGasFeeScenarios::test_zero_gas_scenario - a...
+FAILED tests/test_gas_fee_sharing.py::TestGasCalculation::test_get_transaction_gas_used
+FAILED tests/test_gas_fee_sharing.py::TestGasCalculation::test_calculate_gas_split
+FAILED tests/test_gas_fee_sharing.py::TestGasCalculation::test_calculate_gas_split_odd_number
+FAILED tests/test_gas_fee_sharing.py::TestGasCalculation::test_calculate_task_total_gas
+FAILED tests/test_gas_fee_sharing.py::TestGasCalculation::test_calculate_task_total_gas_with_none_hashes
+FAILED tests/test_gas_fee_sharing.py::TestGasCalculation::test_get_transaction_gas_used_receipt_not_found
+FAILED tests/test_gas_fee_sharing.py::TestGasCalculation::test_get_transaction_gas_used_transaction_not_found
+FAILED tests/test_gas_fee_sharing.py::TestGasCalculation::test_calculate_task_total_gas_exception
+FAILED tests/test_gas_fee_sharing.py::TestGasFeeSharingIntegration::test_gas_calculation_in_task_completion
+FAILED tests/test_gas_fee_sharing.py::TestGasFeeSharingIntegration::test_gas_split_larger_than_reward
+FAILED tests/test_gas_fee_sharing.py::TestGasFeeSharingIntegration::test_multiple_transactions_gas_accumulation
+FAILED tests/test_integration.py::TestAuthAPI::test_register_user - assert 42...
+FAILED tests/test_integration.py::TestAuthAPI::test_register_duplicate_username
+FAILED tests/test_integration.py::TestEndToEnd::test_complete_task_workflow
+FAILED tests/test_logging_system.py::TestStructuredLogging::test_json_log_format
+FAILED tests/test_logging_system.py::TestStructuredLogging::test_log_levels
+FAILED tests/test_logging_system.py::TestStructuredLogging::test_structured_logger
+FAILED tests/test_logging_system.py::TestStructuredLogging::test_text_log_format
+FAILED tests/test_performance.py::TestAPIPerformance::test_get_balance_performance
+FAILED tests/test_performance.py::TestAPIPerformance::test_reward_history_performance
+FAILED tests/test_performance.py::TestAPIPerformance::test_get_agent_tasks_performance
+FAILED tests/test_performance.py::TestConcurrentRequestPerformance::test_concurrent_list_tasks
+FAILED tests/test_postgres_integration.py::TestAuthAPIIntegration::test_register_user
+FAILED tests/test_stress.py::TestLongRunning::test_long_running_stability - A...
+ERROR tests/test_blockchain_integration.py::TestTaskMarketIntegration::test_publish_task_success
+ERROR tests/test_blockchain_integration.py::TestTaskMarketIntegration::test_accept_task_success
+ERROR tests/test_blockchain_integration.py::TestTaskMarketIntegration::test_submit_task_success
+ERROR tests/test_blockchain_integration.py::TestTaskMarketIntegration::test_complete_task_success
+ERROR tests/test_blockchain_integration.py::TestTaskMarketIntegration::test_get_task_from_chain_success
+ERROR tests/test_blockchain_integration.py::TestTaskMarketIntegration::test_task_lifecycle_complete
+ERROR tests/test_blockchain_integration.py::TestRewardPoolIntegration::test_get_reward_balance_success
+ERROR tests/test_blockchain_integration.py::TestRewardPoolIntegration::test_withdraw_reward_success
+ERROR tests/test_blockchain_integration.py::TestRewardPoolIntegration::test_reward_query_and_withdraw_flow
+ERROR tests/test_blockchain_integration.py::TestAgentRegistryIntegration::test_register_agent_success
+ERROR tests/test_blockchain_integration.py::TestAgentRegistryIntegration::test_get_agent_from_chain_success
+ERROR tests/test_blockchain_integration.py::TestAgentRegistryIntegration::test_is_agent_registered_success
+ERROR tests/test_blockchain_integration.py::TestAgentRegistryIntegration::test_agent_registration_flow
+ERROR tests/test_blockchain_integration.py::TestGasFeeSharing::test_transaction_with_gas_estimation
+ERROR tests/test_blockchain_integration.py::TestTransactionFailureScenarios::test_invalid_task_id
+ERROR tests/test_blockchain_integration.py::TestTransactionFailureScenarios::test_deadline_in_past
+ERROR tests/test_blockchain_integration.py::TestTransactionFailureScenarios::test_zero_reward_task
+ERROR tests/test_blockchain_integration.py::TestEndToEndIntegration::test_complete_task_workflow_e2e
+ERROR tests/test_blockchain_integration.py::TestEndToEndIntegration::test_agent_registration_and_task_workflow
+ERROR tests/test_blockchain_integration.py::TestEndToEndIntegration::test_multiple_tasks_parallel_processing
+ERROR tests/test_blockchain_integration.py::TestEndToEndIntegration::test_reward_distribution_multiple_agents
+ERROR tests/test_blockchain_integration.py::TestPerformanceAndStress::test_high_volume_task_publishing
+ERROR tests/test_blockchain_integration.py::TestPerformanceAndStress::test_concurrent_agent_registrations
+ERROR tests/test_blockchain_integration.py::TestPerformanceAndStress::test_rapid_balance_queries
+ERROR tests/test_e2e_agents_rewards.py::TestRewardsE2E::test_get_balance - Ke...
+ERROR tests/test_e2e_agents_rewards.py::TestRewardsE2E::test_get_rewards_history
+ERROR tests/test_e2e_agents_rewards.py::TestRewardsE2E::test_withdraw_rewards_success
+ERROR tests/test_e2e_agents_rewards.py::TestRewardsE2E::test_withdraw_insufficient_balance
+ERROR tests/test_e2e_tasks.py::TestTasksE2E::test_accept_task_success - KeyEr...
+ERROR tests/test_e2e_tasks.py::TestTasksE2E::test_accept_task_not_found - Key...
+ERROR tests/test_e2e_tasks.py::TestTasksE2E::test_accept_task_not_open - KeyE...
+ERROR tests/test_e2e_tasks.py::TestTasksE2E::test_submit_task_success - KeyEr...
+ERROR tests/test_e2e_tasks.py::TestTasksE2E::test_submit_task_not_accepted - ...
+ERROR tests/test_e2e_tasks.py::TestTasksE2E::test_submit_task_wrong_agent - K...
+ERROR tests/test_e2e_tasks.py::TestTasksE2E::test_dispute_task_success - KeyE...
+= 68 failed, 371 passed, 26 skipped, 1844 warnings, 35 errors in 748.17s (0:12:28) =

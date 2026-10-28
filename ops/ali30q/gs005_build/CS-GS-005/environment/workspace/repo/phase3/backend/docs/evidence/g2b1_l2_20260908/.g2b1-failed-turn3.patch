@@ -1,0 +1,7 @@
+--- a/services/fde_auto_verify_runner.py
++++ b/services/fde_auto_verify_runner.py
+@@ -14,7 +14,7 @@
+ 
+ MAX_ATTEMPTS = 2
+-TERMINAL_STATUSES = {"NOT_REPRODUCIBLE", "MISMATCH", "NONDETERMINISTIC", "MATCH"}
++TERMINAL_STATUSES = {"NOT_REPRODUCIBLE", "MISMATCH", "NONDETERMINISTIC", "MATCH", "REJECTED"}

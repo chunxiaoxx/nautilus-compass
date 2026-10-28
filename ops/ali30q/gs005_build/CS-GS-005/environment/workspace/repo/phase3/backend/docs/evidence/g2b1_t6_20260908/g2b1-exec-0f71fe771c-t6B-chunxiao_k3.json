@@ -1,0 +1,72 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "c943271a269e6941fcc51e3506ead074b9dda6be",
+  "reference_fix_commit": "0f71fe771ceefd5715b3b375c9b2e3a701c0648e",
+  "subject": "Fix dual-option arbitration to respect explicit defaults",
+  "test_files": [
+   "tests/test_options.py"
+  ],
+  "source_files": [
+   "src/click/core.py"
+  ],
+  "repo_path": "C:/Users/chunx/ext_mine"
+ },
+ "test_id": "tests/test_options.py::test_bool_flag_group_competition",
+ "source_rel": "src\\click\\core.py",
+ "provider": "t6B-chunxiao_k3",
+ "provider_used": "t6B-chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/src/click/core.py\n+++ b/src/click/core.py\n@@ -1992,7 +1992,12 @@ class Parameter(ABC):\n         self.expose_value = expose_value\n         self.default: t.Any | t.Callable[[], t.Any] | None = default\n+        # Track whether the default was explicitly provided by the user, as\n+        # opposed to an auto-derived default assigned later (e.g. ``False``\n+        # for boolean flags). Used to arbitrate between competing parameters\n+        # that share the same variable name.\n+        self._explicit_default: bool = default is not UNSET\n         self.is_eager = is_eager\n         self.metavar = metavar\n         self.envvar = envvar\n@@ -2335,7 +2340,10 @@ class Parameter(ABC):\n \n         :meta private:\n         \"\"\"\n+        # Remember the source of a value previously stored under this name by\n+        # a competing parameter, before it is updated below.\n+        previous_source = ctx.get_parameter_source(self.name)\n+\n         with augment_usage_errors(ctx, param=self):\n             value, source = self.consume_value(ctx, opts)\n \n@@ -2382,12 +2390,21 @@ class Parameter(ABC):\n                 value = UNSET\n \n         # Add parameter's value to the context.\n-        if (\n-            self.expose_value\n+        if self.expose_value and (\n             # We skip adding the value if it was previously set by another parameter\n             # targeting the same variable name. This prevents parameters competing for\n             # the same name to override each other.\n-            and (self.name not in ctx.params or ctx.params[self.name] is UNSET)\n-        ):\n+            self.name not in ctx.params\n+            or ctx.params[self.name] is UNSET\n+            or (\n+                # An explicit default beats an auto-derived default produced by\n+                # a competing parameter sharing the same name, such as the\n+                # ``False`` default auto-assigned to boolean flags. When several\n+                # competing parameters declare an explicit default, the last one\n+                # wins. Command line input, environment variables, and the\n+                # default map always win over parameter defaults.\n+                source is ParameterSource.DEFAULT\n+                and previous_source is ParameterSource.DEFAULT\n+                and self._explicit_default\n+            )\n+        ):\n             ctx.params[self.name] = value\n \n         return value, args\n",
+ "budget_exceeded": false,
+ "total_tokens": 40112,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 30187,
+    "completion_tokens": 9925,
+    "total_tokens": 40112,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 30187,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 9925,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 0,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 30187,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "bool_flag_group_explicit_default_arbitration",
+ "duration_s": 2111.8
+}

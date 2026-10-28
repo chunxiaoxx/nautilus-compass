@@ -1,0 +1,71 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "7fd02bd154491a4405b36dd42351ace9ce09c1a2",
+  "reference_fix_commit": "e49e8ade7849c198fa24199010d9d94aa4385928",
+  "subject": "fix(fde): fail closed on wiki evidence errors",
+  "test_files": [
+   "tests/test_feishu_wiki_evidence.py"
+  ],
+  "source_files": [
+   "tools/fde_feishu_wiki_evidence.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-fde-phase3"
+ },
+ "test_id": "tests/test_feishu_wiki_evidence.py::test_probe_maps_feishu_stable_error_codes",
+ "source_rel": "tools\\fde_feishu_wiki_evidence.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 5851,
+    "output_tokens": 212,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: tools/fde_feishu_wiki_evidence.py:28\nerror: tools/fde_feishu_wiki_evidence.py: patch does not apply\n\n[attempt2 backend] error: patch failed: tools/fde_feishu_wiki_evidence.py:28\nerror: tools/fde_feishu_wiki_evidence.py: patch does not apply\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 5838,
+    "output_tokens": 213,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: tools/fde_feishu_wiki_evidence.py:28\nerror: tools/fde_feishu_wiki_evidence.py: patch does not apply\n\n[attempt2 backend] error: patch failed: tools/fde_feishu_wiki_evidence.py:28\nerror: tools/fde_feishu_wiki_evidence.py: patch does not apply\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 1,
+    "output_tokens": 329,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 5965,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: tools/fde_feishu_wiki_evidence.py:28\nerror: tools/fde_feishu_wiki_evidence.py: patch does not apply\n\n[attempt2 backend] error: patch failed: tools/fde_feishu_wiki_evidence.py:28\nerror: tools/fde_feishu_wiki_evidence.py: patch does not apply\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 9.7,
+ "verdict_post_status": 200
+}

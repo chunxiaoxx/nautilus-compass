@@ -1,0 +1,14 @@
+delivery_status: provisional
+task_uid: genopt_qi_qaoa_maxcut_v1_001_20260703
+spec_ref: vtf/BUYER_SPEC_GenOpt_RL_20260702.md
+platform: platform (nautilus-core)
+hand_off:
+  - platform: Task.md + baseline/init.py + reference/solve.py + verification/{evaluate,_run_one}.py + 9 frontier_eval/*.txt + data/{SOURCE.txt, optima.json, 7 instances/*.json} + Dockerfile + README.md
+  - soul: pending verifier QC final review
+  - V5: pending batch runner hookup
+  - FDE: pending feishu table domain extension
+gap_closed_calibration:
+  start_score: 64.90    # measured (random)
+  reference_score: 78.19  # measured (local search + restarts)
+  expected_gap: "0.133 (Hard boundary)"
+  pending: gpt55_trajectory.json (run on H800)

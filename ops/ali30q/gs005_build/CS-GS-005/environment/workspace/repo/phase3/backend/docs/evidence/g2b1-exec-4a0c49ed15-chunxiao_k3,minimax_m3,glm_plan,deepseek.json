@@ -1,0 +1,159 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "1d299647b5ab66f9c4e02e08198610cc919802b6",
+  "reference_fix_commit": "4a0c49ed158d080b4f33065c5698161afa9fcd19",
+  "subject": "fix(org-os): \u51b3\u7b56\u5361\u56de\u8c03\u9a8c\u7b7e\u5bf9\u9f50\u98de\u4e66\u5b98\u65b9\u89c4\u8303\u2014\u2014ts/nonce \u4ece body \u9876\u5c42\u53d6(query \u517c\u5bb9\u4fdd\u7559,TDD body-\u51ed\u636e\u6d4b\u8bd5 RED\u2192GREEN 10 passed);\u5750\u5b9e\u5361\u7247\u56de\u8c03\u7edf\u4e00\u5165\u53e3=www/api/feishu/callback(V5 scorer 8092 \u5728\u6536,\u7528\u6237\u70b9\u6309\u94ae 3 \u6761 200 \u5b9e\u8bc1),\u5e73\u53f0\u7aef\u70b9\u5c31\u7eea\u5f85 V5 \u5f62\u72b6\u5206\u53d1\u8f6c\u53d1",
+  "test_files": [
+   "phase3/backend/tests/platform_protocol/test_feishu_decision.py"
+  ],
+  "source_files": [
+   "phase3/backend/api/feishu_decision.py"
+  ],
+  "repo_path": "C:/Users/chunx/Projects/nautilus-core"
+ },
+ "test_id": "tests/platform_protocol/test_feishu_decision.py::test_callback_signed_body_credentials",
+ "source_rel": "api\\feishu_decision.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 23731,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 2592,
+    "completion_tokens": 666,
+    "total_tokens": 3258,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 2336,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 666,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 2592,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_q83z3a7r\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0, httpbin-2.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 1 item\r\n\r\ntests/platform_protocol/test_feishu_decision.py::test_callback_signed_body_credentials \r\n-------------------------------- live log call --------------------------------\r\n2026-09-09 00:10:57 [    INFO] HTTP Request: POST http://testserver/api/platform/feishu/decision \"HTTP/1.1 200 OK\"\r\n2026-09-09 00:10:57 [    INFO] HTTP Request: POST http://testserver/api/platform/feishu/card/callback \"HTTP/1.1 200 OK\"\r\n2026-09-09 00:10:57 [    INFO] HTTP Request: GET http://testserver/api/platform/feishu/decision/v5-im-choice-1 \"HTTP/1.1 200 OK\"\r\nFAILED                                                                   [100%]\r\n\r\n================================== FAILURES ===================================\r\n____________________ test_callback_signed_body_credentials ____________________\r\ntests\\platform_protocol\\test_feishu_decision.py:152: in test_callback_signed_body_credentials\r\n    assert d[\"choice\"] == \"feishu\" and d[\"decided_by\"] == \"feishu-card\"\r\nE   AssertionError: assert (None == 'feishu')\r\n------------------------------ Captured log call ------------------------------\r\nINFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/api/platform/feishu/decision \"HTTP/1.1 200 OK\"\r\nINFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/api/platform/feishu/card/callback \"HTTP/1.1 200 OK\"\r\nINFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/api/platform/feishu/decision/v5-im-choice-1 \"HTTP/1.1 200 OK\"\r\n=========================== short test summary info ===========================\r\nFAILED tests/platform_protocol/test_feishu_decision.py::test_callback_signed_body_credentials\r\n======================== 1 failed, 4 warnings in 1.03s ========================\r\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 3226,
+    "completion_tokens": 5457,
+    "total_tokens": 8683,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 922,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 2304,
+      "output_tokens": 5457,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 2304,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 3226,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_q83z3a7r\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0, httpbin-2.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 1 item\r\n\r\ntests/platform_protocol/test_feishu_decision.py::test_callback_signed_body_credentials \r\n-------------------------------- live log call --------------------------------\r\n2026-09-09 00:13:50 [    INFO] HTTP Request: POST http://testserver/api/platform/feishu/decision \"HTTP/1.1 200 OK\"\r\n2026-09-09 00:13:50 [    INFO] HTTP Request: POST http://testserver/api/platform/feishu/card/callback \"HTTP/1.1 200 OK\"\r\n2026-09-09 00:13:50 [    INFO] HTTP Request: GET http://testserver/api/platform/feishu/decision/v5-im-choice-1 \"HTTP/1.1 200 OK\"\r\nFAILED                                                                   [100%]\r\n\r\n================================== FAILURES ===================================\r\n____________________ test_callback_signed_body_credentials ____________________\r\ntests\\platform_protocol\\test_feishu_decision.py:152: in test_callback_signed_body_credentials\r\n    assert d[\"choice\"] == \"feishu\" and d[\"decided_by\"] == \"feishu-card\"\r\nE   AssertionError: assert (None == 'feishu')\r\n------------------------------ Captured log call ------------------------------\r\nINFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/api/platform/feishu/decision \"HTTP/1.1 200 OK\"\r\nINFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/api/platform/feishu/card/callback \"HTTP/1.1 200 OK\"\r\nINFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/api/platform/feishu/decision/v5-im-choice-1 \"HTTP/1.1 200 OK\"\r\n=========================== short test summary info ===========================\r\nFAILED tests/platform_protocol/test_feishu_decision.py::test_callback_signed_body_credentials\r\n======================== 1 failed, 4 warnings in 1.18s ========================\r\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 3226,
+    "completion_tokens": 8564,
+    "total_tokens": 11790,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 666,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 2560,
+      "output_tokens": 8564,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 2560,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 3226,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_q83z3a7r\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0, httpbin-2.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 1 item\r\n\r\ntests/platform_protocol/test_feishu_decision.py::test_callback_signed_body_credentials \r\n-------------------------------- live log call --------------------------------\r\n2026-09-09 00:17:49 [    INFO] HTTP Request: POST http://testserver/api/platform/feishu/decision \"HTTP/1.1 200 OK\"\r\n2026-09-09 00:17:49 [    INFO] HTTP Request: POST http://testserver/api/platform/feishu/card/callback \"HTTP/1.1 200 OK\"\r\n2026-09-09 00:17:49 [    INFO] HTTP Request: GET http://testserver/api/platform/feishu/decision/v5-im-choice-1 \"HTTP/1.1 200 OK\"\r\nFAILED                                                                   [100%]\r\n\r\n================================== FAILURES ===================================\r\n____________________ test_callback_signed_body_credentials ____________________\r\ntests\\platform_protocol\\test_feishu_decision.py:152: in test_callback_signed_body_credentials\r\n    assert d[\"choice\"] == \"feishu\" and d[\"decided_by\"] == \"feishu-card\"\r\nE   AssertionError: assert (None == 'feishu')\r\n------------------------------ Captured log call ------------------------------\r\nINFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/api/platform/feishu/decision \"HTTP/1.1 200 OK\"\r\nINFO     httpx:_client.py:1025 HTTP Request: POST http://testserver/api/platform/feishu/card/callback \"HTTP/1.1 200 OK\"\r\nINFO     httpx:_client.py:1025 HTTP Request: GET http://testserver/api/platform/feishu/decision/v5-im-choice-1 \"HTTP/1.1 200 OK\"\r\n=========================== short test summary info ===========================\r\nFAILED tests/platform_protocol/test_feishu_decision.py::test_callback_signed_body_credentials\r\n======================== 1 failed, 4 warnings in 1.74s ========================\r\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 439.1,
+ "verdict_post_status": 200
+}

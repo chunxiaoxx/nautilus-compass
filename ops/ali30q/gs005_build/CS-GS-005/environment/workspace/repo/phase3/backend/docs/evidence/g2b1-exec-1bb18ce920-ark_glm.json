@@ -1,0 +1,29 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "50734ba3a00e02dc996e71bf9a28afea3b1a15a3",
+  "reference_fix_commit": "1bb18ce9208d4498d54b37c0fd294b33712eaf25",
+  "subject": "fix(fde): bind readonly discovery blockers",
+  "test_files": [
+   "tests/test_adapter_contracts.py"
+  ],
+  "source_files": [
+   "src/nautilus_fde_phase3/contracts.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-fde-phase3"
+ },
+ "test_id": "tests/test_adapter_contracts.py::test_accepts_a_blocked_discovery_receipt_only_with_bound_reason_code",
+ "source_rel": "src/nautilus_fde_phase3/contracts.py",
+ "provider": "ark_glm",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

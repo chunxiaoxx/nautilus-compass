@@ -1,0 +1,16 @@
+delivery_status: provisional · GPT5.5 N=3 真测 · **Easy** ✓
+task_uid: genopt_or_BinPack_binpack_n500_a_v1_001_20260704
+spec_ref: vtf/BUYER_SPEC_GenOpt_RL_20260702.md
+platform: platform (nautilus-core)
+hand_off:
+  - platform: Task.md + baseline/init.py + reference/solve.py + verification/{evaluate,_run_one}.py + 9 frontier_eval/*.txt + data/{SOURCE.txt, optima.json, 5 instances/*.json} + Dockerfile + README.md
+  - soul: pending verifier QC final review
+  - V5: pending batch runner hookup
+  - FDE: pending feishu table domain extension
+gap_closed_calibration:
+  seed: 0.0
+  best: 66.6667
+  gap: 0.6667
+  difficulty: Easy
+  rounds: "r1=66.67/105s · r2=66.67/83s · r3=66.67/116s (BFD 一致)"
+  trajectory: gpt55_trajectory_h800.json (H800 真 grounded · 7.3KB)

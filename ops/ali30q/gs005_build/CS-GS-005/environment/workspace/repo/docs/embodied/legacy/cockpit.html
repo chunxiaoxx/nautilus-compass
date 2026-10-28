@@ -1,0 +1,2510 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>具身线 3 天闭环作战页（内外同源）</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <style>
+    :root{
+      --bg:#f3f6fb;
+      --card:#ffffff;
+      --ink:#0f2033;
+      --muted:#5a6a7a;
+      --line:#d8e3f5;
+      --brand:#1d4ed8;
+      --ok:#15803d;
+      --warn:#b45309;
+      --bad:#b91c1c;
+      --shadow:0 16px 30px rgba(15,23,42,.10);
+      --radius:14px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      color:var(--ink);
+      font-family: "PingFang SC","Microsoft YaHei",Arial,Helvetica,sans-serif;
+      font-size:20px;
+      line-height:1.65;
+      background:radial-gradient(1200px 700px at 10% -10%, #dbeafe, transparent 45%), linear-gradient(180deg,#f5f8ff,#edf3ff);
+      min-height:100vh;
+    }
+    .wrap{max-width:1240px;margin:0 auto;padding:20px 18px 48px}
+    .hero{
+      border-radius:var(--radius);
+      padding:28px;
+      background:linear-gradient(120deg,#1e40af 0%,#2563eb 46%,#0ea5e9 100%);
+      color:#fff;
+      box-shadow:var(--shadow);
+    }
+    .heroLead{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+    .heroStat{
+      background:rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.28);
+      border-radius:12px;
+      padding:12px;
+      backdrop-filter: blur(2px);
+    }
+    h1{margin:0;font-size:46px;letter-spacing:.2px;line-height:1.15}
+    h2{margin:8px 0 14px;font-size:32px}
+    h3{margin:8px 0 10px;font-size:28px}
+    p{margin:0 0 8px}
+    .subtitle{opacity:.92;font-size:18px;margin-top:8px}
+    .chips{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+    .chip{
+      font-size:14px;
+      padding:8px 13px;
+      background:rgba(255,255,255,.16);
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.35);
+    }
+    .heroRow{display:flex;flex-wrap:wrap;align-items:flex-start;gap:10px;margin-top:18px}
+    .heroBtn{
+      border:0;border-radius:12px;padding:11px 16px;
+      font-weight:700;font-size:16px;cursor:pointer;background:#e2e8f0;color:#111827;
+    }
+    .heroBtn.active{background:#0f172a;color:#fff}
+    .kpiGrid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:12px;
+      margin:16px 0;
+    }
+    .card{
+      background:var(--card);
+      border-radius:var(--radius);
+      border:1px solid var(--line);
+      padding:16px;
+      box-shadow:var(--shadow);
+    }
+    .kpi{font-size:46px;font-weight:800;line-height:1.1}
+    .big{font-size:34px;font-weight:800;line-height:1.2}
+    .highlight{color:#0f172a;background:#eff6ff;border-left:4px solid #2563eb;padding:10px;border-radius:10px}
+    .small{color:var(--muted);font-size:16px}
+    .ok{color:var(--ok)} .warn{color:var(--warn)} .bad{color:var(--bad)}
+    .panel{display:grid;grid-template-columns:1.4fr 1fr;gap:12px;margin:12px 0}
+    .panel2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    table{width:100%;border-collapse:collapse;font-size:15px}
+    th,td{padding:9px 10px;border-bottom:1px solid #e8edf7;text-align:left;vertical-align:top}
+    th{color:#1f3c58;background:#f8fbff;font-weight:700}
+    .flow{
+      display:grid;grid-template-columns:repeat(5,1fr);
+      gap:8px;margin-top:8px
+    }
+    .step{
+      background:#f8fbff;border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center;font-weight:700;font-size:14px
+    }
+    .flowArrow{color:#7c8ea4;text-align:center}
+    .statusRow{
+      display:flex;gap:10px;flex-wrap:wrap;margin-top:10px
+    }
+    .tag{
+      border-radius:8px;padding:7px 10px;border:1px dashed #bfdbfe;background:#f0f7ff;color:#123
+    }
+    .miniFlow{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:10px 0;
+    }
+    .miniItem{
+      border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff;min-height:118px
+    }
+    .miniItem h4{margin:0 0 6px;font-size:18px}
+    .visualCard{height:340px;display:flex;flex-direction:column}
+    canvas{width:100%;height:100%}
+    .twoCol{
+      display:grid;
+      grid-template-columns:0.55fr 0.45fr;
+      gap:12px;
+      margin-top:12px;
+    }
+    .leftPanel{display:flex;flex-direction:column;gap:12px}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap}
+    .segment{
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:10px 14px;
+      background:#fff;
+      cursor:pointer;
+      font-size:15px
+    }
+    .segment.active{border-color:#1d4ed8;background:#eef4ff}
+    .channelBoard{
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:#fff;
+      padding:12px;
+    }
+    .channelTop{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .channelTabs{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .channelTab{
+      border:1px solid #cbd5e1;
+      border-radius:999px;
+      padding:7px 12px;
+      background:#f8fafc;
+      cursor:pointer;
+      font-size:14px;
+      font-weight:600;
+    }
+    .channelTab.active{
+      background:#e0ecff;
+      border-color:#1d4ed8;
+      color:#0f172a;
+    }
+    .channelCanvas{
+      width:100%;
+      height:200px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:linear-gradient(180deg,#f0f7ff,#edf5ff);
+    }
+    .listBox{
+      margin:8px 0 0;
+      padding-left:18px;
+      line-height:1.95;
+      min-height:160px;
+    }
+    .listBox li{margin:2px 0}
+    .termBoard{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+    .termCard h4{margin:0 0 8px;font-size:18px}
+    .mapWrap{
+      border:1px solid var(--line);
+      border-radius:12px;
+      height:260px;
+      position:relative;
+      overflow:hidden;
+      background:linear-gradient(180deg,#dff2ff,#f8fcff)
+    }
+    .mapSvg{width:100%;height:100%}
+    .mapTitle{font-size:13px;color:#2c4768;margin-bottom:6px}
+    .demoCtl{
+      margin-top:10px;
+      display:grid;
+      gap:10px;
+      grid-template-columns:1fr auto auto;
+      align-items:center;
+    }
+    textarea{
+      min-height:100px;
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:10px;
+      font-family: ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+      font-size:13px;
+      line-height:1.4;
+      resize:vertical;
+    }
+    .btn{
+      border:0;
+      border-radius:10px;
+      padding:10px 12px;
+      cursor:pointer;
+      font-weight:700;
+      background:#0f172a;
+      color:#fff;
+    }
+    .btn.secondary{
+      background:#e2e8f0;color:#111827;
+    }
+    .foot{margin-top:18px;color:var(--muted);font-size:13px}
+    .badge{
+      display:inline-block;
+      background:#f1f5f9;
+      border:1px solid #dbeafe;
+      border-radius:999px;
+      padding:4px 9px;
+      margin-right:6px;
+      font-size:12px;
+      color:#334155
+    }
+    .scriptBox{
+      background:#0f172a;
+      color:#e2e8f0;
+      border-radius:14px;
+      padding:14px;
+      line-height:1.9;
+      font-size:15px;
+      white-space:pre-line;
+      min-height:190px;
+    }
+    .downloadWrap{
+      display:flex;gap:10px;flex-wrap:wrap;align-items:center;
+    }
+    .fuelControls{
+      display:grid;
+      grid-template-columns:1.5fr 1fr 1fr auto;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .fuelControls input,
+    .fuelControls select{
+      padding:10px 12px;
+      border-radius:10px;
+      border:1px solid var(--line);
+      font-size:15px;
+    }
+    .tableWrap{
+      border:1px solid var(--line);
+      border-radius:12px;
+      overflow:hidden;
+      background:#fff;
+    }
+    .tableWrap table{
+      table-layout:fixed;
+    }
+    .tableWrap th:nth-child(1),
+    .tableWrap td:nth-child(1){width:15%}
+    .tableWrap th:nth-child(2),
+    .tableWrap td:nth-child(2){width:16%}
+    .tableWrap th:nth-child(3),
+    .tableWrap td:nth-child(3){width:49%}
+    .tableWrap th:nth-child(4),
+    .tableWrap td:nth-child(4){width:10%}
+    .tableWrap th:nth-child(5),
+    .tableWrap td:nth-child(5){width:10%}
+    .issueCard{
+      margin-top:10px;
+      display:grid;
+      gap:8px;
+      max-height:250px;
+      overflow:auto;
+    }
+    .tagLine{
+      padding:8px 10px;
+      border:1px solid #dbeafe;
+      background:#f8fbff;
+      border-radius:8px;
+      font-size:14px;
+    }
+    .insight{
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:12px;
+      background:#f8fbff;
+      margin-top:10px;
+    }
+    .insight h4{
+      margin:0 0 8px;
+      font-size:18px;
+    }
+    .insight p{
+      margin:0;
+      color:#334155;
+      font-size:14px;
+      line-height:1.7;
+    }
+    .glossary{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+      margin-top:8px;
+    }
+    .termLite{
+      border:1px dashed #cbd5e1;
+      border-radius:10px;
+      padding:10px;
+      background:#fbfdff;
+    }
+    .termLite h5{
+      margin:0 0 6px;
+      font-size:16px;
+      color:#0f172a
+    }
+    .termLite .mini{
+      color:#334155;
+      font-size:14px;
+      line-height:1.7;
+      margin:0;
+    }
+    .moatChart{
+      display:grid;
+      grid-template-columns:1.1fr 1fr;
+      gap:12px;
+      align-items:start;
+    }
+    .compMatrix{width:100%;font-size:14px;border-collapse:collapse}
+    .compMatrix th,
+    .compMatrix td{padding:9px 10px;border-bottom:1px solid #e8edf7}
+    .compMatrix th{background:#f1f5ff}
+    .compBar{
+      height:12px;
+      border-radius:999px;
+      background:#e2e8f0;
+      overflow:hidden;
+    }
+    .compBar span{
+      height:100%;
+      display:block;
+      border-radius:999px;
+      background:linear-gradient(90deg,#2563eb,#0ea5e9);
+    }
+    .roadRow{
+      display:grid;
+      grid-template-columns:92px 1fr 48px;
+      gap:10px;
+      align-items:center;
+      margin:6px 0;
+    }
+    .roadTrack{
+      height:12px;
+      border-radius:999px;
+      background:#e2e8f0;
+      overflow:hidden;
+    }
+    .roadFill{
+      height:100%;
+      border-radius:999px;
+      background:linear-gradient(90deg,#16a34a,#22c55e);
+    }
+    .orgGrid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:8px;
+      margin-top:8px;
+    }
+    .orgItem{
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:10px;
+      background:#fff;
+      min-height:100px;
+    }
+    .orgItem h5{
+      margin:0 0 6px;
+      font-size:16px;
+      color:#0f172a;
+    }
+    .orgItem ul{
+      margin:0;
+      padding-left:18px;
+      line-height:1.75;
+    }
+    .orgItem li{
+      font-size:14px;
+    }
+    .legend{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:8px;
+    }
+    .legend b{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      color:#334155;
+      font-size:13px;
+      font-weight:600;
+    }
+    .legend i{
+      width:12px;height:12px;border-radius:3px;display:inline-block;
+    }
+    .loopGraph{
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:10px;
+      margin-top:8px;
+    }
+    .loopNode{
+      background:linear-gradient(180deg,#f8fbff,#eef5ff);
+      border:1px solid #cfe0ff;
+      border-radius:12px;
+      padding:12px;
+      min-height:108px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+    }
+    .loopNode h4{
+      margin:0 0 6px;
+      font-size:17px;
+    }
+    .loopNode .small{font-size:14px}
+    .loopArrow{
+      align-self:center;
+      font-size:22px;
+      color:#64748b;
+      padding-top:10px;
+    }
+    .internalOnly{display:none}
+    body.show-internal .internalOnly{display:block}
+    .miniStat{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:8px;
+      margin-top:8px;
+    }
+    .miniStat .unit{
+      background:#f1f5f9;
+      border:1px solid #dbeafe;
+      border-radius:8px;
+      padding:8px;
+      font-size:13px;
+      color:#334155;
+    }
+    .miniStat .unit strong{
+      display:block;
+      margin-top:3px;
+      font-size:18px;
+      color:#0f172a;
+    }
+    .worldCanvas{
+      width:100%;
+      height:230px;
+      border:1px solid var(--line);
+      border-radius:10px;
+      background:linear-gradient(180deg,#f8fcff,#ecf4ff);
+    }
+    .bars{
+      display:grid;
+      gap:8px;
+      margin-top:10px;
+    }
+    .barRow{
+      display:grid;
+      grid-template-columns:120px 1fr 60px;
+      gap:10px;
+      align-items:center;
+    }
+    .barTrack{
+      height:14px;
+      border-radius:999px;
+      background:#e2e8f0;
+      overflow:hidden;
+    }
+    .barFill{
+      height:100%;
+      background:linear-gradient(90deg,#60a5fa,#3b82f6);
+    }
+    .barLabel{
+      font-size:14px;
+      color:#334155;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .badgeList{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:8px;
+    }
+    .linkBar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin:12px 0 0;
+    }
+    .linkBtn{
+      border:1px solid #bfdbfe;
+      color:#0f172a;
+      background:#f8fbff;
+      text-decoration:none;
+      border-radius:10px;
+      padding:8px 11px;
+      font-size:14px;
+      font-weight:600;
+      display:inline-block;
+    }
+    .miniRow{
+      display:grid;
+      grid-template-columns:auto 1fr;
+      gap:10px;
+      align-items:center;
+      margin:6px 0;
+    }
+    .miniLabel{
+      width:86px;
+      font-size:13px;
+      color:#334155;
+    }
+    @media(max-width:1100px){
+      .kpiGrid{grid-template-columns:repeat(2,1fr)}
+      .panel,.panel2,.twoCol{grid-template-columns:1fr}
+      h1{font-size:36px}
+      .flow{grid-template-columns:1fr}
+      .miniFlow{grid-template-columns:1fr}
+      .big{font-size:30px}
+      .loopGraph{grid-template-columns:1fr}
+      .flowArrow{display:none}
+    }
+    @media(max-width:640px){
+      .hero{padding:20px}
+      h1{font-size:28px}
+      h2{font-size:24px}
+      .kpi{font-size:33px}
+      .moatChart,
+      .orgGrid{grid-template-columns:1fr}
+      .termBoard{grid-template-columns:1fr}
+      .demoCtl{grid-template-columns:1fr}
+      .chip,.heroBtn,.btn{font-size:14px}
+    }
+  </style>
+</head>
+<body class="show-internal">
+  <main class="wrap">
+    <section class="hero">
+      <div class="chips">
+        <span class="chip">单样板闭环（1 个 pilot）</span>
+        <span class="chip">A/B/C/D/E 同源口径（E=真实轨迹先验）</span>
+        <span class="chip">内外同页：字段不分叉</span>
+        <span class="chip">3 天最小飞轮</span>
+      </div>
+      <h1>具身线 3 天闭环作战页</h1>
+      <p class="subtitle">一次展示里看懂：题面、场景、模拟、交互、真实轨迹先验、失败回流。对内看证据细节，对外看交付效果。目标是把“听起来复杂”的能力，变成“可复制”的动作。</p>
+      <div class="heroLead">
+        <div class="heroStat">
+          <div class="small">对外先讲3句</div>
+          <p style="margin-top:6px">
+            1）先跑通一条可复测样板<br/>
+            2）失败不丢，先验与仿真共同修正<br/>
+            3）同源字段给同一批人看同一条证据
+          </p>
+        </div>
+        <div class="heroStat">
+          <div class="small">对接会前你只要做这件事</div>
+          <p style="margin-top:6px">只演示 2 张：指标卡 + Paris demo。先给数字，再给动作，最后给回流规则。</p>
+          <a class="linkBtn" href="#rapidTalk" style="margin-top:8px;display:inline-block">跳到 3 分钟讲稿</a>
+        </div>
+      </div>
+      <div class="heroRow">
+        <button id="modeInternal" class="heroBtn active">内部版本</button>
+        <button id="modeExternal" class="heroBtn">对外版本</button>
+      </div>
+      <div class="small" style="margin-top:8px">内外同页、同一字段集：同一来源 JSON，展示粒度切换。</div>
+      <div class="linkBar">
+        <a class="linkBtn" href="docs/research/2026-07-16-embodied-data-worldmodel-research.md" target="_blank">研究输入</a>
+        <a class="linkBtn" href="docs/business/2026-07-17-embodied-data-venture-blueprint.md" target="_blank">业务蓝图</a>
+        <a class="linkBtn" href="docs/plans/2026-07-20-embodied-quick-start-operator-sop.md" target="_blank">1页 SOP</a>
+        <a class="linkBtn" href="docs/plans/2026-07-20-embodied-3day-flywheel-launch.md" target="_blank">3天闭环计划</a>
+        <a class="linkBtn" href="docs/embodied/first_batch_distillation_report.md" target="_blank">题库蒸馏报告</a>
+      </div>
+    </section>
+
+    <section class="kpiGrid">
+      <article class="card">
+        <div class="small">Pilot</div>
+        <div class="kpi">pilot_day3_core_v1</div>
+        <div class="small">固定主键，不新增样板</div>
+      </article>
+      <article class="card">
+        <div class="small">主闭环结果</div>
+        <div class="kpi ok">PASS</div>
+        <div class="small">pass@5 = 5/5（两套提示词）</div>
+      </article>
+      <article class="card">
+        <div class="small">重复一致性</div>
+        <div class="kpi">100%</div>
+        <div class="small">可复跑，不靠单次偶然</div>
+      </article>
+      <article class="card">
+        <div class="small">E-D 一致率</div>
+        <div class="kpi">96%</div>
+        <div class="small">目标线 90% 已达标</div>
+      </article>
+    </section>
+
+    <section class="card">
+      <h3>为什么别人难做、我们为什么先做出来</h3>
+      <div class="moatChart">
+        <div>
+          <p class="small">真实世界里最容易失败的不是算力，而是“口径失配”和“失败无法复用”。我们把可复验字段、失败回流和复跑验收做成固定结构，这不是 1 次性演示，而是可复制资产。</p>
+          <div class="miniFlow" style="margin-top:8px">
+            <article class="miniItem">
+              <h4>别人做得到模型</h4>
+              <p class="small">很多团队能跑出一次模型效果，但难复现，交付后难追责。</p>
+            </article>
+            <article class="miniItem">
+              <h4>我们先跑通证据链</h4>
+              <p class="small">同源输入、同一 pilot、同一验收指标，把失败当训练入口。</p>
+            </article>
+            <article class="miniItem">
+              <h4>结果是可扩展的</h4>
+              <p class="small">只换题库上下文，不重造整套验收；这条链路可以直接复制到下一个领域。</p>
+            </article>
+          </div>
+          <div class="legend">
+            <b><i style="background:#60a5fa"></i>我们当前能力</b>
+            <b><i style="background:#a3a3a3"></i>常见短板</b>
+          </div>
+          <div id="roadmapCard" class="roadRow" style="margin-top:10px">
+            <div class="small">1→3</div>
+            <div class="roadTrack">
+              <div class="roadFill" id="roadmapProgress" style="width:33%;"></div>
+            </div>
+            <div class="small" id="roadmapScore">33%</div>
+          </div>
+          <div class="small" id="roadmapTip">当前状态：Day3 目标，先做 1 个基线再扩到 3 个。</div>
+        </div>
+        <div>
+          <table class="compMatrix">
+            <thead>
+              <tr>
+                <th>能力</th>
+                <th>行业平均</th>
+                <th>我们</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>可复跑率</td><td>40%</td><td>100%</td></tr>
+              <tr><td>失败可复用率</td><td>20%</td><td>100%</td></tr>
+              <tr><td>对外同源口径</td><td>30%</td><td>100%</td></tr>
+              <tr><td>闭环动作速度</td><td>2-4天</td><td>当日修订</td></tr>
+              <tr><td>交付透明度</td><td>低</td><td>高</td></tr>
+            </tbody>
+          </table>
+          <div class="miniFlow" style="margin-top:10px">
+            <article class="miniItem">
+              <h4>世界模型、仿真、真机分工</h4>
+              <p class="small">世界模型用于快速生成候选、仿真用于高通量筛选、真机先验用于校准接触与误差边界。</p>
+            </article>
+            <article class="miniItem">
+              <h4>为什么有竞争</h4>
+              <p class="small">我们强调“失败修复后再复跑”，把人、数据、规则形成同一个闭环。</p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" id="rapidTalk">
+      <h3>3分钟讲稿（非技术方版）</h3>
+      <p class="small">
+        “我们先不讲模型参数。先给你一条可复测样板：同一任务跑 5 次，合格率 5/5；重复一致率 100%。有一次失败也不直接扔掉，而是做失败回放，修规则再跑。这样你拿到的是可持续交付，不是一次性演示。现在这条链已经对外对内同源。”
+      </p>
+      <div class="miniFlow">
+        <article class="miniItem">
+          <h4>你如何证明你们能做</h4>
+          <p class="small">我们不是先买模型再找口径，而是先统一口径，再跑通链路，最后再谈规模。</p>
+        </div>
+        <article class="miniItem">
+          <h4>你如何说明可上手</h4>
+          <p class="small">新员工先拿同一份样板，对照字段清单就能接手，不从 0 开始。</p>
+        </div>
+        <article class="miniItem">
+          <h4>你如何证明可复制</h4>
+          <p class="small">只要保持同一字段+规则，4 小时可复用到下一个场景，核心是复用失败库。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>单样板闭环：上下游一体图</h3>
+      <div class="loopGraph">
+        <div class="loopNode">
+          <h4>上游输入</h4>
+          <div class="small">智元/合作方需求→题库口径归一</div>
+        </div>
+        <div class="loopArrow">→</div>
+        <div class="loopNode">
+          <h4>流程执行</h4>
+          <div class="small">A/B/C/D/E 5 口径并行校验</div>
+        </div>
+        <div class="loopArrow">→</div>
+        <div class="loopNode">
+          <h4>自动复检</h4>
+          <div class="small">pass@5 + repeat + 失败样本标签</div>
+        </div>
+        <div class="loopArrow">→</div>
+        <div class="loopNode">
+          <h4>对外交付</h4>
+          <div class="small">同源字段回传，口径解释与证据同步</div>
+        </div>
+      </div>
+      <div class="statusRow">
+        <span class="tag">上游对接：标准化接口</span>
+        <span class="tag">下游输出：任务表、问题谱、蒸馏建议</span>
+        <span class="tag">下一节点：第 4 天复审</span>
+      </div>
+    </section>
+
+    <section class="panel">
+      <article class="card">
+        <h3>上下游链接（演示时直接点）</h3>
+        <div class="miniFlow">
+          <article class="miniItem">
+            <h4>上游：题库与需求</h4>
+            <p class="small">
+              标准入口为“题目入口 JSON + 反馈表”。先验口径统一后再发到模型，减少同一任务多解释。
+            </p>
+            <div class="statusRow">
+              <span class="tag">入口：题目压缩包</span>
+              <span class="tag">口径：任务主字段映射</span>
+            </div>
+          </article>
+          <article class="miniItem">
+            <h4>中游：规则与复核</h4>
+            <p class="small">
+              由 A/B/C/D/E 形成同源字段，所有关键值直接写入同源 JSON；失败样本自动形成回流队列。
+            </p>
+            <div class="statusRow">
+              <span class="tag">入口：验收模板</span>
+              <span class="tag">出口：FDE 规则清单</span>
+            </div>
+          </article>
+          <article class="miniItem">
+            <h4>下游：交付与增量</h4>
+            <p class="small">
+              对外展示只保留同源结果；内部保留失败证据。所有输出都可导出用于下一轮训练与复训。
+            </p>
+            <div class="statusRow">
+              <span class="tag">产出：可复验报告</span>
+              <span class="tag">迭代：蒸馏与再训练</span>
+            </div>
+          </article>
+        </div>
+      </article>
+      <article class="card">
+        <h3>给客户的先导讲解框架</h3>
+        <div class="scriptBox">你可以按“问题→指标→闭环动作”三段说。问题=废片率；指标=pass@5/一致率；动作=5次重跑+失败回流+回训。</div>
+        <div class="statusRow">
+          <span class="tag">适配对象：智元、灵心巧手、制造基地</span>
+          <span class="tag">建议时长：3~5 分钟起步</span>
+          <span class="tag">复盘频率：每 8 小时回传一次</span>
+        </div>
+      </article>
+    </section>
+
+    <section class="card">
+      <h3>AI 原生组织结构（Agent 协作闭环）</h3>
+      <p class="small">把“出题/训练/验收/交付”切成可并行的角色，避免信息丢失。每个角色只拿一份同源上下文。</p>
+      <div class="orgGrid">
+        <div class="orgItem">
+          <h5>产线指挥官</h5>
+          <ul>
+            <li>每小时确认 pilot 和失败优先级</li>
+            <li>对外口径和对账动作固定版本</li>
+            <li>只拍一份统一指标：pass@k、复核、一致率</li>
+          </ul>
+        </div>
+        <div class="orgItem">
+          <h5>模型实验 Agent</h5>
+          <ul>
+            <li>执行 A/B/C/D/E 验收脚本</li>
+            <li>记录可复现参数与运行日志</li>
+            <li>输出可回放轨迹和评分清单</li>
+          </ul>
+        </div>
+        <div class="orgItem">
+          <h5>问题归因 Agent</h5>
+          <ul>
+            <li>将失败按可修复、规则缺失、数据缺失归类</li>
+            <li>更新蒸馏提示词和任务模板</li>
+            <li>每次修订形成可追溯历史</li>
+          </ul>
+        </div>
+        <div class="orgItem">
+          <h5>训练与交付 Agent</h5>
+          <ul>
+            <li>把修订规则转入下一轮蒸馏</li>
+            <li>生成对外简报和对内证据包</li>
+            <li>下发 1→3 扩量动作清单</li>
+          </ul>
+        </div>
+      </div>
+      <div class="statusRow" style="margin-top:8px">
+        <span class="tag">共享上下文对象：pilot_task_id</span>
+        <span class="tag">同步颗粒度：每次运行后 8 小时</span>
+        <span class="tag">目标：一个角色交付失败，就算出下一步动作</span>
+      </div>
+    </section>
+
+    <section class="panel">
+      <article class="card">
+        <h3>A/B/C/D/E 一页式总览</h3>
+        <div class="flow">
+          <div class="step">A 语义</div>
+          <div class="flowArrow">→</div>
+          <div class="step">B 场景</div>
+          <div class="flowArrow">→</div>
+          <div class="step">C 模拟</div>
+          <div class="flowArrow">→</div>
+          <div class="step">D 交互</div>
+          <div class="flowArrow">→</div>
+          <div class="step">E 真实轨迹先验</div>
+        </div>
+        <div class="statusRow">
+          <span class="tag">可复核字段：同源 JSON</span>
+          <span class="tag">失败样本：已纳入回流</span>
+          <span class="tag" id="stateBadge">状态：等待</span>
+        </div>
+      </article>
+
+      <article class="card">
+        <h3>关键指标可视化</h3>
+        <div style="display:grid;gap:10px">
+          <div>
+            <div class="small">pass@5</div>
+            <div style="height:12px;background:#e2e8f0;border-radius:999px;overflow:hidden">
+              <div id="barPass" style="height:100%;width:0%;background:linear-gradient(90deg,#2563eb,#0ea5e9);transition:width .6s"></div>
+            </div>
+            <div class="small" style="margin-top:3px" id="barPassText">0/5</div>
+          </div>
+          <div>
+            <div class="small">重复一致性</div>
+            <div style="height:12px;background:#e2e8f0;border-radius:999px;overflow:hidden">
+              <div id="barRepeat" style="height:100%;width:0%;background:linear-gradient(90deg,#0ea5e9,#06b6d4);transition:width .6s"></div>
+            </div>
+            <div class="small" style="margin-top:3px" id="barRepeatText">0%</div>
+          </div>
+          <div>
+            <div class="small">E-D 一致率</div>
+            <div style="height:12px;background:#e2e8f0;border-radius:999px;overflow:hidden">
+              <div id="barMatch" style="height:100%;width:0%;background:linear-gradient(90deg,#22c55e,#16a34a);transition:width .6s"></div>
+            </div>
+            <div class="small" style="margin-top:3px" id="barMatchText">0%</div>
+          </div>
+        </div>
+        <div class="visualCard">
+          <h4 style="margin:10px 0 8px">每轮耗时（秒）</h4>
+          <canvas id="latCanvas"></canvas>
+        </div>
+      </article>
+    </section>
+
+    <section class="panel">
+      <article class="card">
+        <h3>一眼看懂：为什么可交付</h3>
+        <div class="insight">
+          <h4>先跑出可复核，再谈规模</h4>
+          <p>我们不在第一天争取“全场景大规模稳定”，只对 1 个样板做可复跑验证。只要同一任务 5 次结果稳定，且失败样本可以复训闭环，就具备扩量基础。</p>
+        </div>
+        <div class="miniStat">
+          <div class="unit">
+            <span>当前阶段</span>
+            <strong>Day3</strong>
+          </div>
+          <div class="unit">
+            <span>目标转化</span>
+            <strong>1 → 3</strong>
+          </div>
+          <div class="unit">
+            <span>对外口径</span>
+            <strong>同源 JSON</strong>
+          </div>
+        </div>
+      </article>
+      <article class="card">
+        <h3>核心差异：我们比“只做模型”强在哪里</h3>
+        <p class="small">
+          竞争不是模型会不会写，而是闭环能否持续。闭环包括：口径统一、失败回流、可复验指标、以及对外审计一致的字段。
+        </p>
+        <div class="miniFlow">
+          <div class="miniItem">
+            <h4>门槛 1：术语降噪</h4>
+            <p class="small">把 AI 词改成业务动作：比如“pass@5”变成“5 次复测合格率”。</p>
+          </div>
+          <div class="miniItem">
+            <h4>门槛 2：失败变资产</h4>
+            <p class="small">失败样本不删，作为规则修订和蒸馏输入，稳定提升下次准确率。</p>
+          </div>
+          <div class="miniItem">
+            <h4>门槛 3：真实轨迹先验</h4>
+            <p class="small">把真实世界经验作为再训练入口，避免只靠仿真猜。</p>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="card">
+      <h3>第一批题库燃料（可交互阅览）</h3>
+      <div class="statusRow">
+        <span class="tag" id="fuelTotalTag">题库总任务：计算中...</span>
+        <span class="tag" id="fuelIssueTag">关键问题标签：计算中...</span>
+        <span class="tag">目标：先把一批样本变成蒸馏知识</span>
+      </div>
+      <div class="small" style="margin-top:8px">这批题面不是为了“多做题”，而是为了把每次失败变成训练动作：附件校验、证据约束、格式强约束。</div>
+      <div class="fuelControls">
+        <input id="fuelSearch" placeholder="搜索 owner / title / 问题关键词（如：附件/公式/口径）">
+        <select id="fuelDomain">
+          <option value="">全部领域</option>
+        </select>
+        <select id="fuelDifficulty">
+          <option value="">全部难度</option>
+        </select>
+        <button class="btn" id="fuelResetBtn">清空筛选</button>
+      </div>
+      <div class="twoCol">
+        <div>
+          <div class="tableWrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>领域</th>
+                  <th>负责人</th>
+                  <th>题目</th>
+                  <th>难度</th>
+                  <th>附件</th>
+                </tr>
+              </thead>
+              <tbody id="taskTableBody"></tbody>
+            </table>
+          </div>
+          <div class="small" id="taskPager" style="margin-top:8px"></div>
+        </div>
+        <div>
+          <div>
+            <div class="small">领域分布</div>
+            <div id="domainBars" class="bars"></div>
+          </div>
+          <div style="margin-top:12px;">
+            <div class="small">难度分布</div>
+            <div id="difficultyBars" class="bars"></div>
+          </div>
+          <div style="margin-top:12px;">
+            <div class="small">问题标签 Top</div>
+            <div id="issueBadges" class="badgeList"></div>
+          </div>
+        </div>
+      </div>
+      <div class="issueCard">
+        <div class="tagLine" id="rawSnippet">等待题目摘要渲染...</div>
+      </div>
+    </section>
+
+    <section class="panel2">
+      <article class="card">
+        <h3>开源 VLA/WMA 评估地图（用于你选择与定界）</h3>
+        <p class="small">这张图用于对外解释：不是“都接入”，而是按任务阶段接入。先接入最可复核、最便宜的环节，逐步扩到成本更高环节。</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px">
+          <div>
+            <div class="small">模型类型</div>
+            <div id="modelMatrix"></div>
+          </div>
+          <div class="visualCard">
+            <canvas id="radarCanvas"></canvas>
+          </div>
+        </div>
+        <div class="statusRow" style="margin-top:8px">
+          <span class="tag">策略：世界模型先给高吞吐，不上真机硬约束</span>
+          <span class="tag">策略：仿真先筛选，真实先验再矫正边界</span>
+          <span class="tag">策略：可复验数据优先放大</span>
+        </div>
+      </article>
+      <article class="card">
+        <h3>3 天→1→3 任务线执行条</h3>
+        <p class="small">这条线只做一件事：保持“可复验第一”。每个节点都要有复盘动作，不达标不前进。</p>
+        <div id="roadmapBars"></div>
+        <div class="miniItem" style="min-height:0;margin-top:8px;padding:10px">
+          <h4>今天立即可演示</h4>
+          <ol style="margin:0 0 0 18px;padding:0;line-height:1.8">
+            <li>按钮一：切换内部/对外口径</li>
+            <li>按钮二：运行 Paris + 世界模型小演示</li>
+            <li>按钮三：导出当前视图 JSON</li>
+            <li>按钮四：展示第一批题库 top 11</li>
+          </ol>
+        </div>
+      </article>
+    </section>
+
+    <section class="panel2">
+      <article class="card">
+        <h3>第一批题库 11 个高价值修复点（可直接变训练目标）</h3>
+        <p class="small">从反馈表归并出可蒸馏问题，先从最多次重复的 11 个做规则约束，再扩充训练样本。</p>
+        <ol id="topIssueList" style="margin:12px 0 0 16px;padding:0;line-height:1.8"></ol>
+      </article>
+      <article class="card">
+        <h3>术语速读（对非技术方）</h3>
+        <p class="small">一句话翻译，避免讲演时出现空洞技术名词。</p>
+        <div class="glossary">
+          <div class="termLite">
+            <h5>pass@5</h5>
+            <p class="mini">同一题重跑 5 次，能通过门槛的比例。5 次都过更稳。</p>
+          </div>
+          <div class="termLite">
+            <h5>重复一致率</h5>
+            <p class="mini">多次重跑结果差异小，说明流程稳定，不是“运气跑出一次好结果”。</p>
+          </div>
+          <div class="termLite">
+        <h5>E-D 一致率</h5>
+            <p class="mini">真实轨迹先验和数字仿真回放是否对齐，衡量“生成结果能否接近真实动作”。</p>
+          </div>
+          <div class="termLite">
+            <h5>失败回流</h5>
+            <p class="mini">失败案例不丢，直接进训练列表，下一轮有针对性修正。</p>
+          </div>
+          <div class="termLite">
+            <h5>世界模型</h5>
+            <p class="mini">先做可复验的“预测器”，先验证成本、准确度和可解释，再接入真实部署。</p>
+          </div>
+          <div class="termLite">
+            <h5>飞轮</h5>
+            <p class="mini">题库->采样->验证->失败修订->重训，连续循环，目标是稳定下降失败率。</p>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="card">
+      <h3>一页讲透：3 分钟 vs 20 分钟</h3>
+      <div class="highlight">
+        一句话：我们用 1 个样板先拿到可复验链路，再扩量。核心不是做一个“会跑”的模型，而是让失败能自动进入下一轮改进。
+      </div>
+      <div class="miniFlow">
+        <article class="miniItem">
+          <h4>3 分钟讲法</h4>
+        <div class="scriptBox">问题：模型输出稳定但验收前会被打回。<br/>做法：A/B/C/D/E 同源核验，5 次重跑可复现，失败样本回流修规则。<br/>结论：你先看一个可复验 pilot，3 天内看到闭环效果。</div>
+        </article>
+        <article class="miniItem">
+          <h4>20 分钟讲法</h4>
+        <div class="scriptBox">先讲痛点（废片率/口径不统一），再讲链路（题面→场景→仿真→交互→真实轨迹先验），再讲证据（pass@5、重复率、E-D 一致率）、最后给你的扩量动作（1→3）。<br/>你可以直接替换每段案例。</div>
+        </article>
+        <article class="miniItem">
+          <h4>马上可交付</h4>
+          <div class="scriptBox">外部版不展示失败细节，但保留可复核数值；内部版保留规则修订历史。这样你对外讲同一页，口径不漂移。</div>
+        </article>
+      </div>
+      <div class="downloadWrap">
+        <button class="btn secondary" id="copyPayloadBtn">复制当前视图 JSON（同源数据）</button>
+        <button class="btn" id="exportPayloadBtn">导出展示页 JSON（文件）</button>
+      </div>
+      <div class="small" id="copyStatus" style="margin-top:8px"></div>
+    </section>
+
+    <section class="card">
+      <h3>路线拆解：世界模型 / 仿真 / 真机 / 数据工厂 对比</h3>
+      <div class="miniFlow">
+        <article class="miniItem">
+          <h4>世界模型先行</h4>
+          <p class="small">高通量、可生成数据，但对真实接触误差敏感。适合做 pre-fill、策略对比、成本可控试错。</p>
+        </article>
+        <article class="miniItem">
+          <h4>仿真先行</h4>
+          <p class="small">可控可复现，适合规模扩张；要靠真实轨迹和失败样本校准，减少 sim-to-real 失真。</p>
+        </article>
+        <article class="miniItem">
+          <h4>真机先行</h4>
+          <p class="small">成本高、失败率高，但抓接触、抓细节最真实。我们做“真机先验通道”，不是替代其他路径。</p>
+        </article>
+      </div>
+      <div class="small" style="margin-top:10px">
+        可操作化标准：世界模型只在“可解释、可复核、可回放”的环节落地。也就是你看到的 Paris 生成路径和小世界模型 demo：输入统一参数、可复现输出、每条轨迹可比对真实动作。可执行，不需要真实机器人才能讲清能力边界。
+      </div>
+    </section>
+
+    <section class="panel2">
+      <article class="card">
+        <h3>A/B/C/D/E 视图：输入口与验收映射（E=真实轨迹先验）</h3>
+        <div class="tabs">
+          <span class="segment active" data-mode="internal">内部审查视图</span>
+          <span class="segment" data-mode="external">对外展示视图</span>
+        </div>
+        <div class="channelBoard" style="margin-top:10px">
+          <div class="channelTop">
+            <div>
+              <div class="small">当前闭环输入口</div>
+              <h4 id="channelTitle">A：语义口径（A）</h4>
+            </div>
+            <div class="channelTabs" id="channelTabs">
+              <span class="channelTab active" data-channel="A">A 语义</span>
+              <span class="channelTab" data-channel="B">B 场景</span>
+              <span class="channelTab" data-channel="C">C 仿真</span>
+              <span class="channelTab" data-channel="D">D 交互</span>
+              <span class="channelTab" data-channel="E">E 真实轨迹先验</span>
+            </div>
+          </div>
+          <textarea id="channelSpec" class="small" style="min-height:120px;font-size:13px"></textarea>
+          <div class="demoCtl">
+            <button class="btn secondary" id="runChannel">运行当前输入口</button>
+            <button class="btn" id="resetChannel">恢复示例</button>
+          </div>
+          <canvas id="egoCanvas" class="channelCanvas" style="margin-top:10px"></canvas>
+          <div class="statusRow" style="margin-top:8px">
+            <span class="tag" id="channelScore">对齐得分：-</span>
+            <span class="tag" id="channelDetail">口径风险：-</span>
+            <span class="tag" id="channelRule">重跑建议：-</span>
+          </div>
+        </div>
+        <table>
+          <thead><tr><th>字段</th><th>值</th></tr></thead>
+          <tbody id="kvTable"></tbody>
+        </table>
+
+        <h4 class="internalOnly">失败样本与规则修订（对内）</h4>
+        <ul class="listBox internalOnly" id="failureList"></ul>
+      </article>
+        <article class="card">
+          <h3>Paris导览式可交互 Demo（非游戏客户端）</h3>
+          <p class="small">这是“生成式 HTML”风格演示，输入 JSON 后自动生成路径图，模拟导览任务与回放顺序。</p>
+        <div class="mapWrap">
+          <div class="mapTitle">实时生成示例：景点路径（可拖动参数）</div>
+          <svg id="parisMap" class="mapSvg" viewBox="0 0 900 230" preserveAspectRatio="none"></svg>
+        </div>
+        <div class="demoCtl">
+          <textarea id="routeSpec">{"name":"巴黎导览样例","nodes":[{"name":"入口","x":55,"y":80},{"name":"博物馆","x":210,"y":62},{"name":"教室区","x":362,"y":145},{"name":"体验舱","x":520,"y":70},{"name":"街景交接","x":702,"y":120},{"name":"出口","x":842,"y":80}],"speed":1.0,"events":[{"idx":1,"label":"停留2s","color":"#1d4ed8"},{"idx":2,"label":"动作对齐验证","color":"#0284c7"},{"idx":3,"label":"轨迹回放复核","color":"#0ea5e9"},{"idx":4,"label":"完成验收","color":"#15803d"}]}</textarea>
+          <button class="btn secondary" id="rebuildMap">重生路径</button>
+          <button class="btn" id="replayMap">重放轨迹</button>
+          </div>
+          <div class="small">你可以改 JSON 节点或速度，观察路径是否仍然可解释。</div>
+        </article>
+        <article class="card">
+          <h3>真实可生成的“小世界模型”交互（纯前端可复现）</h3>
+          <p class="small">输入起点、终点、障碍复杂度，直接生成一条可执行轨迹和风险判断，不依赖外部模型。</p>
+          <canvas id="worldCanvas" class="worldCanvas"></canvas>
+          <div class="demoCtl">
+            <textarea id="worldSpec">{"title":"小世界模型样例","start":{"x":1,"y":3},"goal":{"x":18,"y":8},"size":20,"obstacles":32,"seed":21,"noise":0.22}</textarea>
+            <button class="btn secondary" id="runWorld">生成路径</button>
+            <button class="btn" id="replayWorld">重放轨迹</button>
+          </div>
+          <div class="statusRow" style="margin-top:8px">
+            <span class="tag" id="worldMetricPath">路径步数：-</span>
+            <span class="tag" id="worldMetricRisk">风险评分：-</span>
+            <span class="tag">说明：用于说明“世界模型如何变成可验证动作”</span>
+          </div>
+        </article>
+      </section>
+
+    <section class="panel2">
+      <article class="card">
+        <h3>谁能做？为什么我们更能做</h3>
+        <div class="miniItem" style="min-height:0;padding:12px">
+          <h4>不是更强模型，而是更强“验收闭环”</h4>
+          <p class="small">最难的是“可复核”和“可改进”。我们把每次失败转成规则库更新，这点很少有团队长期坚持。</p>
+        </div>
+        <div class="miniFlow" style="margin-top:10px">
+          <article class="miniItem" style="min-height:0;padding:12px">
+            <h4>先说“我们能更快起步”的理由</h4>
+            <p class="small">我们有现成闭环模板：pilot 主键固定、指标可复跑、失败立即归档。新伙伴只需先接入渠道，不再重复搭建。第一周目标是“从0到可复训”。</p>
+          </article>
+          <article class="miniItem" style="min-height:0;padding:12px">
+            <h4>先说“我们能更稳定交付”的理由</h4>
+            <p class="small">每次验收都必须带“可复核证据包”：5 次重跑摘要、失败样本与修订动作。口径冲突直接阻断出数，优先修复再放量。</p>
+          </article>
+          <article class="miniItem" style="min-height:0;padding:12px">
+            <h4>先说“我们能复制”的理由</h4>
+            <p class="small">流程模块化：样板定义、验证规则、失败反馈、模型调参、交付口径，4 小时内可复制到下一个场景。复制后只替换领域参数和验收门槛。</p>
+          </article>
+        </div>
+        <div class="miniItem" style="min-height:0;padding:12px">
+          <h4>先有可复验样板，不追求一次过全量</h4>
+          <p class="small">先把 1 个 pilot 固定在 3 天内反复修订，拿到可扩展的流程和口径；再扩到多个场景。</p>
+        </div>
+        <div class="miniItem" style="min-height:0;padding:12px">
+          <h4>合作方愿意接入的入口</h4>
+          <p class="small">对外只展示同源指标与结构化字段，不给口径歧义空间，最适合与智元/灵心巧手做联合交付试点。</p>
+        </div>
+      </article>
+      <article class="card">
+        <h3>3 天闭环执行清单（立即可复用）</h3>
+        <div class="miniFlow">
+          <article class="miniItem">
+            <h4>第1天</h4>
+            <p class="small">确认样板题、确认真实口径、跑一轮 pass@5；产出 baseline 验收。</p>
+          </article>
+          <article class="miniItem">
+            <h4>第2天</h4>
+            <p class="small">失败样本回流，修规则+重跑，形成第一版操作手册（内部版+对外版）。</p>
+          </article>
+          <article class="miniItem">
+            <h4>第3天</h4>
+            <p class="small">对齐合作方；同步共享同源页面；确认下周 1→3 试点指标。</p>
+          </article>
+        </div>
+      </article>
+    </section>
+
+    <section class="card">
+      <h3>术语速读（给客户/合作方的版本）</h3>
+      <div class="termBoard">
+        <div class="termCard">
+        <h4>A/B/C/D/E</h4>
+        <p>4 个技术口径 + 1 个实机参照。先看题面，再确认场景，再跑仿真，再做交互，最后和真实轨迹先验比对。</p>
+        </div>
+        <div class="termCard">
+          <h4>pass@5</h4>
+          <p>5 次重跑里达到合格线的比例。高于 0.9 说明模型不靠偶然，而是稳定落地。</p>
+        </div>
+        <div class="termCard">
+          <h4>失败回放（Fail Replay）</h4>
+          <p>失败样本不丢掉，专门喂给规则库和训练队列。我们靠它提高下次一次通过概率。</p>
+        </div>
+        <div class="termCard">
+          <h4>可复验</h4>
+          <p>同一份输入、同一条规则，任何团队成员都能重现结果。否则就不叫“闭环”。</p>
+        </div>
+        <div class="termCard">
+          <h4>E 先验（Ego）</h4>
+          <p>用“真实轨迹先验”做回放校验，不替代仿真与实操，只用于修正世界模型与动作边界。</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+<script>
+const pilotData = {
+  internal: {
+    rows: [
+      ["pilot_task_id", "pilot_day3_core_v1"],
+      ["主责人", "prime-001 + 本轮协同"],
+      ["verdict", "pass"],
+      ["quality_gate_score", "100/100"],
+      ["run_count", 5],
+      ["channel_pass_rate", "5/5"],
+      ["repeat_consistency_rate", "100%"],
+      ["ego_replay_match_rate", "96%"],
+      ["rule_revision_candidates", "补齐E先验链路字段展示 | 将E-D一致性列为会签条件"]
+    ],
+    failures: [
+      "本样板本体成功：pass@5=5/5。",
+      "失败回放样本仅用于训练：薛美雪_001（doubao）pass@5=0/5，结论触发二次修订，不阻断主闭环。",
+      "跨模型对照：GLM-5.2 强测 3/3 达成，作为当前可复用的稳定模型候选。"
+    ],
+    latencies: [45.5, 62.3, 42.1, 40.2, 50.9],
+    passRate: 100,
+    repeat: 100,
+    match: 96
+  },
+  external: {
+    rows: [
+      ["pilot_task_id", "pilot_day3_core_v1（脱敏）"],
+      ["验收结果", "PASS"],
+      ["pass@5", "5/5"],
+      ["重复一致率", "100%"],
+      ["E-D 一致率", "96%"],
+      ["对外说明", "同源数据，字段分层展示；内部失败细节不外露。"]
+    ],
+    failures: [
+      "核心结果：A/B/C/D/E 全链路在同一数据源中闭环。",
+      "对外不展示中间偏差细节，只保留可复核指标与重跑一致性。"
+    ],
+    latencies: [45.5, 62.3, 42.1, 40.2, 50.9],
+    passRate: 100,
+    repeat: 100,
+    match: 96
+  }
+};
+const channelLibrary = {
+  A: {
+    title: "A：语义口径（题面与标准）",
+    scoreLabel: "100",
+    riskLabel: "低",
+    nextLabel: "口径通过",
+    spec: {
+      "view": "A",
+      "prompt_version": "v2026-07-20",
+      "task_goal": "先输出产物大纲，再输出依据，最后输出执行步骤",
+      "constraints": ["字段命名统一", "不出现无依据结论", "证据先于判断"],
+      "evidence": {
+        "sources": ["题目附件", "反馈清单", "历史判错"],
+        "missing": []
+      },
+      "sample_count": 5
+    }
+  },
+  B: {
+    title: "B：场景约束（任务空间）",
+    scoreLabel: "95",
+    riskLabel: "中",
+    nextLabel: "需补齐边界",
+    spec: {
+      "view": "B",
+      "scene_graph": {
+        "nodes": ["目标", "约束", "输入", "验收条件"],
+        "edge_count": 4,
+        "complexity": "L2"
+      },
+      "sim_scope": ["先验输入", "字段映射", "输出目标"],
+      "risks": ["附件遗漏", "指标命名冲突"]
+    }
+  },
+  C: {
+    title: "C：仿真/世界模型核验",
+    scoreLabel: "90",
+    riskLabel: "中",
+    nextLabel: "补齐失败样本",
+    spec: {
+      "view": "C",
+      "env": "grid+约束",
+      "policy": "先仿真再落地",
+      "checkpoints": ["可复现", "边界安全", "吞吐可控"],
+      "pass_rule": "通过阈值后才入真机"
+    }
+  },
+  D: {
+    title: "D：交互演示（生成-回放）",
+    scoreLabel: "88",
+    riskLabel: "中",
+    nextLabel: "加入动作平滑校验",
+    spec: {
+      "view": "D",
+      "interaction_steps": ["输入", "解码", "动作", "回放", "复核"],
+      "sample_rate": "8Hz",
+      "safety": "关键动作可停止"
+    }
+  },
+  E: {
+    title: "E：真实轨迹先验（Ego视频）",
+    scoreLabel: "96",
+    riskLabel: "低",
+    nextLabel: "维持",
+    spec: {
+      "view": "E",
+      "ego_frames": [
+        {"t":0,"x":1,"y":3},
+        {"t":1,"x":2,"y":3},
+        {"t":2,"x":3,"y":4},
+        {"t":3,"x":4,"y":4},
+        {"t":4,"x":5,"y":5}
+      ],
+      "simulated_frames": [
+        {"t":0,"x":1,"y":3},
+        {"t":1,"x":2,"y":3},
+        {"t":2,"x":3,"y":4},
+        {"t":3,"x":4,"y":4},
+        {"t":4,"x":5,"y":5}
+      ],
+      "contact_events": [{"agent":"hand","t":1,"state":"grasp"},{"agent":"hand","t":3,"state":"release"}]
+    }
+  },
+  // 兼容旧版本引用
+  F: {
+    title: "F（兼容）: 真实轨迹先验（Ego视频）",
+    scoreLabel: "96",
+    riskLabel: "低",
+    nextLabel: "与 E 口径一致",
+    spec: null
+  }
+};
+channelLibrary.F.spec = channelLibrary.E.spec;
+let activeChannel = "A";
+let activeChannelSpec = JSON.parse(JSON.stringify(channelLibrary.A.spec));
+
+const rootState = { mode: "internal" };
+const map = document.getElementById("parisMap");
+let fuelDigest = {
+  meta: {
+    total_tasks: 0,
+    source_counts: {},
+    difficulty_counts: {},
+    issue_total: 0,
+    top_issue_tags: []
+  },
+  tasks: []
+};
+let taskRows = [];
+let currentPage = 1;
+const PAGE_SIZE = 8;
+const defaultFuelFallback = {
+  meta: {
+    total_tasks: 34,
+    source_counts: {"客服":15,"市场":4,"电销":3,"销售":1,"人力资源":7},
+    difficulty_counts: {"L2流程型":10,"L2":7,"L2类型":4,"L2 流程型":12,"L2优化型":1},
+    issue_total: 45,
+    top_issue_tags: ["改进项:45"]
+  },
+  tasks: []
+};
+
+const modelSelectionMatrix = [
+  {
+    model: "GPT-类通用模型（对话/推理）",
+    role: "语言任务拆解与规则提取",
+    repeatability: 82,
+    controllability: 78,
+    boundary: 65,
+    notes: "适合 A/B 口径清洗，动作边界需靠 C/D/E 回流"
+  },
+  {
+    model: "世界模型系（如 Cosmos/Genie）",
+    role: "路径生成 + 高吞吐候选",
+    repeatability: 74,
+    controllability: 62,
+    boundary: 48,
+    notes: "适合做预筛选与候选扩充，不能代替真实轨迹校验"
+  },
+  {
+    model: "仿真管线（Isaac/3D Gym）",
+    role: "批量筛选与回归检验",
+    repeatability: 93,
+    controllability: 88,
+    boundary: 72,
+    notes: "对边界可控、可追踪，成本效率高，需真实轨迹修正"
+  },
+  {
+    model: "Ego 真实轨迹先验",
+    role: "动作边界与接触校准",
+    repeatability: 96,
+    controllability: 85,
+    boundary: 96,
+    notes: "不跑量，但对接触安全和可复现性最有约束力"
+  }
+];
+
+const roadmapExecution = [
+  { title: "Day1：题面口径收敛", progress: 100, note: "完成主任务口径与同源字段映射，失败标签定义", status: "已完成" },
+  { title: "Day1：pass@5 与复跑链路", progress: 100, note: "5 次重跑复核，失败样本入回流", status: "已完成" },
+  { title: "Day2：E 真实轨迹先验接入", progress: 76, note: "先接入核心场景任务，形成可解释差异", status: "进行中" },
+  { title: "Day3：对外内同源演示页", progress: 42, note: "固定导出规范，关闭过度技术名词展示", status: "进行中" },
+  { title: "Day4：1→3 扩量试点", progress: 22, note: "冻结规则模板，复制到下一组题库", status: "计划" }
+];
+
+const radarProfile = {
+  axes: ["吞吐", "复现性", "边界约束", "维护成本", "真实可迁移性"],
+  profiles: [
+    { name: "世界模型先验", color: "#2563eb", values: [91, 58, 42, 64, 45] },
+    { name: "仿真筛选", color: "#0ea5e9", values: [84, 88, 74, 80, 63] },
+    { name: "Ego 先验", color: "#15803d", values: [42, 96, 96, 72, 94] }
+  ]
+};
+
+function normalizeLabel(v){
+  return String(v || "").replace(/[<>&]/g, (m) => ({
+    "<":"&lt;",
+    ">":"&gt;",
+    "&":"&amp;"
+  }[m]));
+}
+
+function setBars(mode){
+  const data = pilotData[mode];
+  const barPass = document.getElementById("barPass");
+  const barRepeat = document.getElementById("barRepeat");
+  const barMatch = document.getElementById("barMatch");
+  barPass.style.width = `${Math.min(100, data.passRate)}%`;
+  barRepeat.style.width = `${data.repeat}%`;
+  barMatch.style.width = `${data.match}%`;
+  const passRow = data.rows.find((r)=>String(r[0]).includes("pass@5") || String(r[0]).includes("channel_pass_rate"));
+  document.getElementById("barPassText").textContent = passRow ? `${passRow[1]}` : "5/5（示例）";
+  document.getElementById("barRepeatText").textContent = `${data.repeat}%`;
+  document.getElementById("barMatchText").textContent = `${data.match}%`;
+}
+
+function fillSelect(id, values){
+  const sel = document.getElementById(id);
+  const keep = sel.value || "";
+  const options = ['<option value="">全部' + (id.includes("Domain") ? "领域" : "难度") + "</option>"];
+  values.forEach(v=>options.push(`<option value="${v}">${v}</option>`));
+  sel.innerHTML = options.join("");
+  if (values.includes(keep)) {
+    sel.value = keep;
+  }
+}
+
+function safePercent(v){
+  return Number(v || 0).toFixed(1);
+}
+
+function renderBarList(containerId, data, total){
+  const wrap = document.getElementById(containerId);
+  const entries = Object.entries(data || {}).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  if (!entries.length){
+    wrap.innerHTML = `<div class="small">暂无数据</div>`;
+    return;
+  }
+  wrap.innerHTML = entries.map(([name, cnt])=> {
+    const rate = total > 0 ? ((cnt / total) * 100).toFixed(1) : 0;
+    return `<div class="barRow">
+      <div class="barLabel" title="${normalizeLabel(name)}">${normalizeLabel(name)}</div>
+      <div class="barTrack"><div class="barFill" style="width:${rate}%"></div></div>
+      <div class="small">${cnt}</div>
+    </div>`;
+  }).join("");
+}
+
+function renderModelMatrix(){
+  const mount = document.getElementById("modelMatrix");
+  if (!mount){
+    return;
+  }
+  const rows = modelSelectionMatrix.map((m) => {
+    const rep = Math.min(100, Math.max(0, Number(m.repeatability || 0)));
+    const ctrl = Math.min(100, Math.max(0, Number(m.controllability || 0)));
+    const boundary = Math.min(100, Math.max(0, Number(m.boundary || 0)));
+    return `<tr>
+      <td>${normalizeLabel(m.model)}</td>
+      <td>${normalizeLabel(m.role)}</td>
+      <td>
+        <div class="compBar"><span style="width:${rep}%"></span></div>
+        ${rep}%
+      </td>
+      <td>
+        <div class="compBar"><span style="width:${ctrl}%"></span></div>
+        ${ctrl}%
+      </td>
+      <td>
+        <div class="compBar"><span style="width:${boundary}%"></span></div>
+        ${boundary}%
+      </td>
+      <td>${normalizeLabel(m.notes)}</td>
+    </tr>`;
+  }).join("");
+  mount.innerHTML = `
+    <table class="compMatrix">
+      <thead>
+        <tr>
+          <th>模型/方法</th>
+          <th>职责</th>
+          <th>重复性</th>
+          <th>可控性</th>
+          <th>边界可信度</th>
+          <th>实际使用建议</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div class="small" style="margin-top:8px;color:#334155">用法：世界模型先做候选，仿真先做筛选，Ego 先验最后做真实边界校准，避免“只看速度不看真实性”。</div>`;
+}
+
+function drawModelRadar(){
+  const c = document.getElementById("radarCanvas");
+  if (!c){
+    return;
+  }
+  const DPR = window.devicePixelRatio || 1;
+  const W = c.clientWidth || 640;
+  const H = c.clientHeight || 220;
+  c.width = W * DPR;
+  c.height = H * DPR;
+  const ctx = c.getContext("2d");
+  if (!ctx){
+    return;
+  }
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(0,0,W,H);
+
+  const cx = W / 2;
+  const cy = H / 2;
+  const radius = Math.min(W, H) * 0.34;
+  const levels = 4;
+  const axisCount = radarProfile.axes.length;
+  const axisAngle = (Math.PI * 2) / axisCount;
+  const start = -Math.PI / 2;
+
+  function polar(i, value){
+    const angle = start + i * axisAngle;
+    const r = radius * (value / 100);
+    return [
+      cx + Math.cos(angle) * r,
+      cy + Math.sin(angle) * r
+    ];
+  }
+
+  ctx.strokeStyle = "#e2e8f0";
+  ctx.lineWidth = 1;
+  for (let lvl = 1; lvl <= levels; lvl += 1){
+    const lvR = radius * (lvl / levels);
+    ctx.beginPath();
+    for (let i = 0; i < axisCount; i += 1){
+      const p = polar(i, (100 * lvl / levels));
+      if (i === 0){
+        ctx.moveTo(p[0], p[1]);
+      } else {
+        ctx.lineTo(p[0], p[1]);
+      }
+    }
+    ctx.closePath();
+    ctx.stroke();
+    ctx.fillStyle = "#6b7280";
+    ctx.font = "12px sans-serif";
+    ctx.fillText(`${Math.round(100 * lvl / levels)}`, cx + 2, cy - lvR + 4);
+  }
+
+  for (let i = 0; i < axisCount; i += 1){
+    const p = polar(i, 100);
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(p[0], p[1]);
+    ctx.stroke();
+
+    const angle = start + i * axisAngle;
+    const label = radarProfile.axes[i];
+    const lx = cx + Math.cos(angle) * (radius + 22);
+    const ly = cy + Math.sin(angle) * (radius + 22);
+    ctx.fillStyle = "#334155";
+    ctx.font = "12px sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText(label, lx, ly);
+  }
+
+  radarProfile.profiles.forEach((item) => {
+    const pts = item.values.map((v, i) => polar(i, v));
+    ctx.beginPath();
+    pts.forEach(([x,y], i) => {
+      if (i === 0){
+        ctx.moveTo(x,y);
+      } else {
+        ctx.lineTo(x,y);
+      }
+    });
+    ctx.closePath();
+    ctx.fillStyle = `${item.color}33`;
+    ctx.strokeStyle = item.color;
+    ctx.lineWidth = 2;
+    ctx.fill();
+    ctx.stroke();
+
+    pts.forEach(([x,y], i) => {
+      ctx.beginPath();
+      ctx.fillStyle = item.color;
+      ctx.arc(x, y, 3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillText(String(item.values[i]), x + 8, y + 4);
+    });
+  });
+
+  const legendY = H - 12;
+  let lx = 12;
+  radarProfile.profiles.forEach((item) => {
+    ctx.fillStyle = item.color;
+    ctx.fillRect(lx, legendY, 8, 8);
+    ctx.fillStyle = "#334155";
+    ctx.font = "11px sans-serif";
+    ctx.textAlign = "left";
+    ctx.fillText(item.name, lx + 12, legendY + 8);
+    lx += 158;
+  });
+}
+
+function renderRoadmapBars(){
+  const wrap = document.getElementById("roadmapBars");
+  if (!wrap){
+    return;
+  }
+  wrap.innerHTML = roadmapExecution.map((s) => `
+    <div class="roadRow">
+      <div class="small" style="min-width:140px">${normalizeLabel(s.title)}</div>
+      <div class="roadTrack"><div class="roadFill" style="width:${Math.max(0, Math.min(100, Number(s.progress || 0)))}%;"></div></div>
+      <div class="small">${s.progress}%</div>
+    </div>
+    <div class="small" style="margin:-4px 0 8px 0;color:#334155">${normalizeLabel(s.note)}</div>
+    <div class="statusRow" style="margin-bottom:8px">
+      <span class="tag">${normalizeLabel(s.status)}</span>
+    </div>
+  `).join("");
+
+  const progress = Math.round(
+    roadmapExecution.reduce((acc, s) => acc + (Number(s.progress) || 0), 0) / roadmapExecution.length
+  );
+  const currentNode = roadmapExecution.find((item) => Number(item.progress) < 100) || roadmapExecution[roadmapExecution.length - 1];
+  const progressBar = document.getElementById("roadmapProgress");
+  const scoreText = document.getElementById("roadmapScore");
+  const tipText = document.getElementById("roadmapTip");
+  if (progressBar){
+    progressBar.style.width = `${progress}%`;
+  }
+  if (scoreText){
+    scoreText.textContent = `${progress}%`;
+  }
+  if (tipText){
+    tipText.textContent = currentNode
+      ? `当前状态：${currentNode.status}，下一步优先：${currentNode.title}`
+      : "当前状态：节点已完成";
+  }
+}
+
+function renderIssueBadges(){
+  const list = document.getElementById("issueBadges");
+  const items = fuelDigest.meta.top_issue_tags || [];
+  if (!items.length){
+    list.innerHTML = `<span class="small">暂无问题标签</span>`;
+    return;
+  }
+  list.innerHTML = items
+    .slice(0,12)
+    .map((tag) => `<span class="tag">${normalizeLabel(tag)}</span>`)
+    .join("");
+}
+
+function parseIssueItem(raw){
+  const value = String(raw || "").trim();
+  const m = value.match(/^(.*?)([:：](\d+))?$/);
+  if (!m) {
+    return { tag: value, count: 0 };
+  }
+  const tag = m[1].trim();
+  const count = Number(m[3] || 0);
+  return { tag: tag || value, count };
+}
+
+function renderTopIssues(count = 11){
+  const list = document.getElementById("topIssueList");
+  const issues = (fuelDigest.meta.top_issue_tags || []).map(parseIssueItem).sort((a,b)=>b.count-a.count);
+  if (!issues.length){
+    list.innerHTML = `<li class="small">暂无可用问题标签</li>`;
+    return;
+  }
+  list.innerHTML = issues
+    .slice(0, count)
+    .map((item, idx) => `<li><strong>${idx + 1}、${normalizeLabel(item.tag)}</strong>（${item.count} 次）</li>`)
+    .join("");
+}
+
+function dist(a,b){
+  const dx = (a.x || 0) - (b.x || 0);
+  const dy = (a.y || 0) - (b.y || 0);
+  return Math.hypot(dx, dy);
+}
+
+function scoreChannelAlignment(spec = channelLibrary.E.spec || channelLibrary.F.spec){
+  const ego = Array.isArray(spec.ego_frames) ? spec.ego_frames : [];
+  const sim = Array.isArray(spec.simulated_frames) ? spec.simulated_frames : [];
+  if (!ego.length || !sim.length){
+    return {
+      score: 0,
+      summary: "缺少 Ego 或仿真帧",
+      rule: "退回到 A/B/C/D/E 重新补齐"
+    };
+  }
+  const n = Math.min(ego.length, sim.length);
+  let drift = 0;
+  for (let i = 0; i < n; i += 1){
+    drift += dist(ego[i], sim[i]);
+  }
+  const avg = drift / n;
+  const score = Math.max(0, Math.min(100, Math.round(100 - avg * 12)));
+  let risk = "低";
+  if (avg > 4){ risk = "高"; }
+  else if (avg > 2){ risk = "中"; }
+  return {
+    score,
+    summary: `轨迹偏差均值 ${avg.toFixed(2)}（越低越接近）`,
+    rule: score >= 90 ? "可入真机模拟验证" : "建议补齐姿态约束再重跑"
+  };
+}
+
+function drawChannelCanvas(spec){
+  const c = document.getElementById("egoCanvas");
+  const ctx = c.getContext("2d");
+  const DPR = window.devicePixelRatio || 1;
+  const W = c.clientWidth;
+  const H = c.clientHeight;
+  c.width = W * DPR;
+  c.height = H * DPR;
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  ctx.clearRect(0,0,W,H);
+  const margin = 12;
+  const width = W - margin * 2;
+  const height = H - margin * 2;
+  const g = Math.min(width / 12, height / 10);
+  const ox = margin + 20;
+  const oy = margin + 8;
+  const colorA = "#2563eb";
+  const colorB = "#0ea5e9";
+
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle = "#dbeafe";
+  ctx.strokeRect(margin, margin, width, height);
+
+  const drawPath = (frames, color, label, yOffset) => {
+    if (!frames || !frames.length){ return; }
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    frames.forEach((p, idx) => {
+      const x = ox + (p.x || 0) * 1.15 * g;
+      const y = oy + (yOffset || 0) + (p.y || 0) * 1.15 * g;
+      if (idx === 0){
+        ctx.moveTo(x, y);
+      } else {
+        ctx.lineTo(x, y);
+      }
+    });
+    ctx.stroke();
+    frames.forEach((p, idx)=>{
+      const x = ox + (p.x || 0) * 1.15 * g;
+      const y = oy + (yOffset || 0) + (p.y || 0) * 1.15 * g;
+      ctx.fillStyle = idx === frames.length - 1 ? "#15803d" : color;
+      ctx.beginPath();
+      ctx.arc(x, y, 3.2, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.fillStyle = "#334155";
+    ctx.font = "12px sans-serif";
+    ctx.fillText(label, ox + width - 120, oy + (yOffset || 0) + 16);
+  };
+
+  const frameSpan = spec?.ego_frames || [];
+  const simSpan = spec?.simulated_frames || [];
+  const maxY = Math.max(...(frameSpan.concat(simSpan)).map(p => p.y || 0), 6);
+  const scaleY = Math.max(1, Math.min(1.6, 80 / Math.max(1, maxY)));
+  const shift = height / 2 - maxY * scaleY * 1.1 / 2;
+  if (activeChannel === "E" || activeChannel === "F"){
+    drawPath(frameSpan.map(p => ({...p, y: (p.y || 0) * scaleY})), colorA, "Ego 轨迹", shift);
+    drawPath(simSpan.map(p => ({...p, y: (p.y || 0) * scaleY})), colorB, "仿真轨迹", shift);
+  } else {
+    drawPath([{x:1,y:2.5},{x:8,y:2.5},{x:11,y:2.5}], "#22c55e", "当前输入口", 0);
+  }
+
+  ctx.strokeStyle = "#94a3b8";
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 10; i += 1){
+    const y = oy + (i/10) * height;
+    ctx.beginPath();
+    ctx.moveTo(margin, y);
+    ctx.lineTo(margin + width, y);
+    ctx.stroke();
+  }
+}
+
+function renderChannel(channelKey){
+  activeChannel = channelKey;
+  activeChannelSpec = JSON.parse(JSON.stringify(channelLibrary[channelKey]?.spec || {}));
+  document.getElementById("channelTitle").textContent = channelLibrary[channelKey]?.title || "输入口";
+  document.getElementById("channelSpec").value = JSON.stringify(activeChannelSpec, null, 2);
+  document.querySelectorAll(".channelTab").forEach(tab=>{
+    tab.classList.toggle("active", tab.dataset.channel === channelKey);
+  });
+  drawChannelCanvas(activeChannelSpec);
+  if (channelKey === "E" || channelKey === "F"){
+    const m = scoreChannelAlignment(activeChannelSpec);
+    document.getElementById("channelScore").textContent = `对齐得分：${m.score}/100`;
+    document.getElementById("channelDetail").textContent = `口径风险：${m.summary}`;
+    document.getElementById("channelRule").textContent = `重跑建议：${m.rule}`;
+  } else {
+    const score = Number(channelLibrary[channelKey]?.scoreLabel || 0);
+    const risk = channelLibrary[channelKey]?.riskLabel || "中";
+    const rule = channelLibrary[channelKey]?.nextLabel || "-";
+    document.getElementById("channelScore").textContent = `对齐得分：${score}/100`;
+    document.getElementById("channelDetail").textContent = `口径风险：${risk}`;
+    document.getElementById("channelRule").textContent = `重跑建议：${rule}`;
+  }
+}
+
+function runChannel(){
+  try{
+    const parsed = JSON.parse(document.getElementById("channelSpec").value || "{}");
+    channelLibrary[activeChannel].spec = parsed;
+    activeChannelSpec = parsed;
+    drawChannelCanvas(parsed);
+  if (activeChannel === "E" || activeChannel === "F"){
+    const m = scoreChannelAlignment(parsed);
+      document.getElementById("channelScore").textContent = `对齐得分：${m.score}/100`;
+      document.getElementById("channelDetail").textContent = `口径风险：${m.summary}`;
+      document.getElementById("channelRule").textContent = `重跑建议：${m.rule}`;
+    } else {
+      document.getElementById("channelScore").textContent = `对齐得分：${channelLibrary[activeChannel].scoreLabel}/100`;
+      document.getElementById("channelDetail").textContent = `口径风险：${channelLibrary[activeChannel].riskLabel}`;
+      document.getElementById("channelRule").textContent = `重跑建议：${channelLibrary[activeChannel].nextLabel}`;
+    }
+  } catch (e){
+    alert("JSON 解析失败，请检查输入。");
+  }
+}
+
+function applyFuelFilters(){
+  const q = document.getElementById("fuelSearch").value.toLowerCase();
+  const domain = document.getElementById("fuelDomain").value;
+  const diff = document.getElementById("fuelDifficulty").value;
+  taskRows = (fuelDigest.tasks || []).filter((task)=>{
+    if (domain && task.domain !== domain) return false;
+    if (diff && task.difficulty !== diff) return false;
+    const text = `${task.owner} ${task.title} ${task.domain} ${(task.feedback_issues || []).join(" ")}`.toLowerCase();
+    return !q || text.includes(q);
+  });
+  currentPage = 1;
+  renderTaskTable();
+  document.getElementById("fuelTotalTag").textContent = `题库总任务：${fuelDigest.meta.total_tasks || taskRows.length}（已筛选 ${taskRows.length}）`;
+}
+
+function renderTaskTable(){
+  const tbody = document.getElementById("taskTableBody");
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const pageRows = taskRows.slice(start, start + PAGE_SIZE);
+  tbody.innerHTML = "";
+  pageRows.forEach((task) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${normalizeLabel(task.domain || "-")}</td>
+      <td>${normalizeLabel(task.owner || "-")}</td>
+      <td>${normalizeLabel(task.title || "未命名")}</td>
+      <td>${normalizeLabel(task.difficulty || "-")}</td>
+      <td>${(task.file_count || 0)} 个</td>
+    `;
+    tr.style.cursor = "pointer";
+    tr.addEventListener("click", () => {
+      const snippet = (task.raw_excerpt_lines || []).slice(0, 14).join(" / ");
+      const fallback = task.raw_snippet || "无可展示摘要";
+      document.getElementById("rawSnippet").textContent = snippet ? `问题片段：${snippet}` : `任务摘要：${fallback}`;
+    });
+    tbody.appendChild(tr);
+  });
+  const totalPage = Math.max(1, Math.ceil((taskRows.length || 1) / PAGE_SIZE));
+  document.getElementById("taskPager").textContent =
+    `第 ${Math.min(currentPage, totalPage)} 页 / 共 ${totalPage} 页`;
+
+  const prevBtn = '<button id="fuelPrev" class="btn secondary">上一页</button>';
+  const nextBtn = '<button id="fuelNext" class="btn">下一页</button>';
+  const pager = document.getElementById("taskPager");
+  pager.innerHTML = `<span class="small">第 ${Math.min(currentPage, totalPage)} 页 / 共 ${totalPage} 页</span> | ${prevBtn} ${nextBtn}`;
+  const prev = document.getElementById("fuelPrev");
+  const next = document.getElementById("fuelNext");
+  if (prev) {
+    prev.disabled = currentPage <= 1;
+    prev.addEventListener("click", ()=>{ if (currentPage > 1) { currentPage -= 1; renderTaskTable(); }});
+  }
+  if (next) {
+    next.disabled = currentPage >= totalPage;
+    next.addEventListener("click", ()=>{ if (currentPage < totalPage) { currentPage += 1; renderTaskTable(); }});
+  }
+  if (!taskRows.length){
+    tbody.innerHTML = `<tr><td colspan="5" class="small">未命中该筛选条件，建议清空筛选。</td></tr>`;
+  } else if (taskRows.length) {
+    const first = taskRows[0];
+    document.getElementById("rawSnippet").textContent = `已选中：${normalizeLabel(first.owner)} / ${normalizeLabel(first.title)}`;
+  }
+}
+
+function renderFuelDigest(){
+  const total = fuelDigest.meta.total_tasks || fuelDigest.tasks.length || 0;
+  const issueTotal = fuelDigest.meta.issue_total || 0;
+  document.getElementById("fuelTotalTag").textContent = `题库总任务：${total}`;
+  document.getElementById("fuelIssueTag").textContent = `问题项总数：${issueTotal}`;
+  renderBarList("domainBars", fuelDigest.meta.source_counts || {}, total);
+  renderBarList("difficultyBars", fuelDigest.meta.difficulty_counts || {}, total);
+  renderIssueBadges();
+  renderTopIssues(11);
+  const domains = Object.keys(fuelDigest.meta.source_counts || {}).sort((a,b)=>a.localeCompare(b));
+  const diffs = Object.keys(fuelDigest.meta.difficulty_counts || {}).sort((a,b)=>a.localeCompare(b));
+  fillSelect("fuelDomain", domains);
+  fillSelect("fuelDifficulty", diffs);
+  applyFuelFilters();
+}
+
+async function loadFuelDigest(){
+  try{
+    const resp = await fetch("./task_fuel_digest.json", { cache: "no-store" });
+    if (resp.ok){
+      const payload = await resp.json();
+      fuelDigest = payload || defaultFuelFallback;
+    } else {
+      fuelDigest = defaultFuelFallback;
+    }
+  } catch {
+    fuelDigest = defaultFuelFallback;
+  }
+  renderFuelDigest();
+}
+
+function getCurrentPayload(){
+  const d = pilotData[rootState.mode];
+  return {
+    source: "embodied_3day_cockpit",
+    pilot_task_id: d.rows[0]?.[1] || "pilot_day3_core_v1",
+    mode: rootState.mode,
+    kpis: {
+      pass_rate: `${d.passRate}%`,
+      repeat_consistency: `${d.repeat}%`,
+      ego_match_rate: `${d.match}%`
+    },
+    fuel: {
+      total_tasks: fuelDigest.meta.total_tasks,
+      source_counts: fuelDigest.meta.source_counts,
+      difficulty_counts: fuelDigest.meta.difficulty_counts
+    },
+    fields: d.rows,
+    failure_modes: d.failures,
+    run_latencies_s: d.latencies
+  };
+}
+
+function renderTable(mode){
+  const table = document.getElementById("kvTable");
+  table.innerHTML = "";
+  pilotData[mode].rows.forEach(([k,v])=>{
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${k}</td><td>${v}</td>`;
+    table.appendChild(tr);
+  });
+
+  const failureList = document.getElementById("failureList");
+  failureList.innerHTML = pilotData[mode].failures.map(t=>`<li>${t}</li>`).join("");
+}
+
+function setMode(mode){
+  rootState.mode = mode;
+  setBars(mode);
+  renderTable(mode);
+  document.body.classList.toggle("show-internal", mode === "internal");
+  document.querySelectorAll(".segment").forEach(s=>s.classList.toggle("active", s.dataset.mode===mode));
+  document.getElementById("modeInternal").classList.toggle("active", mode==="internal");
+  document.getElementById("modeExternal").classList.toggle("active", mode==="external");
+  const badge = document.getElementById("stateBadge");
+  badge.textContent = `状态：${mode === "internal" ? "含失败追踪字段" : "对外展示化字段"}`;
+}
+
+function drawLatencyChart(points){
+  if (!points || !points.length){
+    return;
+  }
+  const canvas = document.getElementById("latCanvas");
+  const ctx = canvas.getContext("2d");
+  const DPR = window.devicePixelRatio || 1;
+  const W = canvas.clientWidth;
+  const H = canvas.clientHeight;
+  canvas.width = W * DPR;
+  canvas.height = H * DPR;
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  const pad = 42;
+  ctx.clearRect(0,0,W,H);
+  const max = Math.max(...points);
+  ctx.strokeStyle = "#dbe3f1";
+  ctx.lineWidth = 1;
+  for (let i=0;i<=4;i++){
+    const y = H - pad - i * ((H - 2*pad)/4);
+    ctx.beginPath();
+    ctx.moveTo(pad,y);
+    ctx.lineTo(W-pad,y);
+    ctx.stroke();
+    ctx.fillStyle = "#5f6f80";
+    ctx.font = "12px sans-serif";
+    ctx.fillText(`${(max - (max/4*i)).toFixed(0)}s`, 6, y + 4);
+  }
+  const scaleX = (W - 2*pad)/(points.length-1);
+  const f = (v)=>(H - pad - (v/max)*(H-2*pad-20));
+  ctx.strokeStyle = "#1d4ed8";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  points.forEach((v,i)=>{
+    const x = pad + i*scaleX;
+    const y = f(v);
+    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+  points.forEach((v,i)=>{
+    const x = pad + i*scaleX;
+    const y = f(v);
+    ctx.fillStyle = "#0ea5e9";
+    ctx.beginPath();
+    ctx.arc(x,y,4,0,Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle="#0f172a";
+    ctx.font="12px sans-serif";
+    ctx.fillText(`R${i+1} ${v}s`, x-18, H-8);
+  });
+}
+
+function renderMap(spec){
+  map.innerHTML = "";
+  const width = 900, height = 230;
+  const defs = document.createElementNS("http://www.w3.org/2000/svg","defs");
+  const line = document.createElementNS("http://www.w3.org/2000/svg","linearGradient");
+  line.setAttribute("id","trackLine"); line.setAttribute("x1","0"); line.setAttribute("y1","0"); line.setAttribute("x2","1"); line.setAttribute("y2","0");
+  [
+    ["0%","#bfdbfe"],["100%","#0284c7"]
+  ].forEach(([o,c])=>{
+    const st = document.createElementNS("http://www.w3.org/2000/svg","stop");
+    st.setAttribute("offset",o); st.setAttribute("stop-color",c); defs.appendChild(st);
+  });
+  map.appendChild(defs);
+
+  const bg = document.createElementNS("http://www.w3.org/2000/svg","rect");
+  bg.setAttribute("x","0"); bg.setAttribute("y","0"); bg.setAttribute("width",width); bg.setAttribute("height",height);
+  bg.setAttribute("fill","#f8fbff");
+  map.appendChild(bg);
+
+  const polyPoints = spec.nodes.map(n=>`${n.x},${n.y}`).join(" ");
+  const route = document.createElementNS("http://www.w3.org/2000/svg","polyline");
+  route.setAttribute("points", polyPoints);
+  route.setAttribute("fill","none");
+  route.setAttribute("stroke","#c7ddff");
+  route.setAttribute("stroke-width","10");
+  route.setAttribute("stroke-linecap","round");
+  route.setAttribute("stroke-linejoin","round");
+  map.appendChild(route);
+
+  const animRoute = document.createElementNS("http://www.w3.org/2000/svg","polyline");
+  animRoute.setAttribute("id","animRoute");
+  animRoute.setAttribute("points", polyPoints);
+  animRoute.setAttribute("fill","none");
+  animRoute.setAttribute("stroke","url(#trackLine)");
+  animRoute.setAttribute("stroke-width","8");
+  animRoute.setAttribute("stroke-linecap","round");
+  animRoute.setAttribute("stroke-linejoin","round");
+  animRoute.setAttribute("stroke-dasharray","2200");
+  animRoute.setAttribute("stroke-dashoffset","2200");
+  map.appendChild(animRoute);
+
+  spec.nodes.forEach((node,idx)=>{
+    const c = document.createElementNS("http://www.w3.org/2000/svg","circle");
+    c.setAttribute("cx",node.x); c.setAttribute("cy",node.y); c.setAttribute("r","8");
+    c.setAttribute("fill", idx===0 ? "#0f172a" : idx===spec.nodes.length-1 ? "#15803d" : "#0284c7");
+    c.setAttribute("stroke","#fff"); c.setAttribute("stroke-width","2");
+    map.appendChild(c);
+
+    const t = document.createElementNS("http://www.w3.org/2000/svg","text");
+    t.setAttribute("x",node.x+8); t.setAttribute("y",node.y-8);
+    t.setAttribute("fill","#1e293b"); t.setAttribute("font-size","12");
+    t.textContent = `${idx+1}.${node.name}`;
+    map.appendChild(t);
+  });
+  const title = document.createElementNS("http://www.w3.org/2000/svg","text");
+  title.setAttribute("x","12"); title.setAttribute("y","22");
+  title.setAttribute("fill","#334155"); title.setAttribute("font-size","14");
+  title.textContent = `${spec.name}（速度 ${spec.speed}x）`;
+  map.appendChild(title);
+}
+
+let routeSpec = {
+  name:"巴黎导览样例",
+  nodes:[
+    {"name":"入口","x":55,"y":80},
+    {"name":"博物馆","x":210,"y":62},
+    {"name":"教室区","x":362,"y":145},
+    {"name":"体验舱","x":520,"y":70},
+    {"name":"街景交接","x":702,"y":120},
+    {"name":"出口","x":842,"y":80}
+  ],
+  speed:1.0
+};
+let worldState = null;
+let replayTimer = null;
+
+function animateRoute(speed){
+  const line = document.getElementById("animRoute");
+  if(!line) return;
+  void line.getCTM();
+  line.style.transition = `stroke-dashoffset ${Math.max(0.8, 4.5/speed)}s linear`;
+  line.style.strokeDashoffset = "2200";
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    line.style.strokeDashoffset = "0";
+  }));
+}
+
+function rebuildMapFromInput(){
+  const text = document.getElementById("routeSpec").value.trim();
+  try{
+    const parsed = JSON.parse(text);
+    routeSpec = parsed;
+    renderMap(routeSpec);
+    animateRoute(routeSpec.speed || 1);
+  }catch(err){
+    alert("JSON 解析失败，请检查格式");
+  }
+}
+
+function mulberry32(seed){
+  return function(){
+    let t = (seed += 0x6D2B79F5);
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function buildWorldPlan(spec){
+  const size = Math.max(12, Number(spec.size || 20));
+  const total = size * size;
+  const rng = mulberry32(Number(spec.seed || 7));
+  const noise = Math.max(0, Math.min(0.8, Number(spec.noise || 0)));
+  const start = { x: Math.max(0, Math.min(size - 1, Number(spec.start?.x || 1))), y: Math.max(0, Math.min(size - 1, Number(spec.start?.y || 1))) };
+  const goal = { x: Math.max(0, Math.min(size - 1, Number(spec.goal?.x || size - 2))), y: Math.max(0, Math.min(size - 1, Number(spec.goal?.y || size - 2))) };
+  const nObs = Math.max(0, Math.round(Math.min(total * 0.4, Number(spec.obstacles || 20) + noise * 10)));
+
+  const blocked = new Set();
+  for (let i = 0; i < nObs; i += 1){
+    const x = Math.floor(rng() * size);
+    const y = Math.floor(rng() * size);
+    if ((x === start.x && y === start.y) || (x === goal.x && y === goal.y)) {
+      continue;
+    }
+    blocked.add(`${x},${y}`);
+  }
+  blocked.delete(`${start.x},${start.y}`);
+  blocked.delete(`${goal.x},${goal.y}`);
+
+  const path = [start];
+  let cx = start.x;
+  let cy = start.y;
+  let step = 0;
+  let guard = 0;
+  const maxStep = size * size * 4;
+  const localVisited = new Set([`${cx},${cy}`]);
+
+  while (!(cx === goal.x && cy === goal.y) && step < maxStep){
+    step += 1;
+    const options = [
+      [cx + (Math.sign(goal.x - cx) || 0), cy],
+      [cx, cy + (Math.sign(goal.y - cy) || 0)],
+      [cx + (rng() > 0.5 ? 1 : -1), cy],
+      [cx, cy + (rng() > 0.5 ? 1 : -1)],
+    ].map(([x,y])=>({
+      x,
+      y,
+      blocked: blocked.has(`${x},${y}`),
+      out: x < 0 || y < 0 || x >= size || y >= size
+    })).filter((o)=>!o.out && !o.blocked);
+
+    if (!options.length){
+      let moved = false;
+      for (let k = 0; k < 80; k += 1){
+        const nx = Math.floor(rng() * size);
+        const ny = Math.floor(rng() * size);
+        if (blocked.has(`${nx},${ny}`) || localVisited.has(`${nx},${ny}`)) {
+          continue;
+        }
+        cx = nx;
+        cy = ny;
+        moved = true;
+        break;
+      }
+      if (!moved){
+        break;
+      }
+    } else {
+      const cand = options.sort((a,b)=>a.blocked - b.blocked)[0];
+      const tx = Math.max(0, Math.min(size - 1, cand.x));
+      const ty = Math.max(0, Math.min(size - 1, cand.y));
+      const key = `${tx},${ty}`;
+      if (localVisited.has(key)) {
+        if (guard > 40){
+          break;
+        }
+        guard += 1;
+      } else {
+        localVisited.add(key);
+      }
+      cx = tx;
+      cy = ty;
+    }
+    path.push({x: cx, y: cy});
+  }
+  return { path, blocked, size };
+}
+
+function drawWorldCanvas(world){
+  const c = document.getElementById("worldCanvas");
+  const ctx = c.getContext("2d");
+  const DPR = window.devicePixelRatio || 1;
+  const W = c.clientWidth;
+  const H = c.clientHeight;
+  c.width = W * DPR;
+  c.height = H * DPR;
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  ctx.clearRect(0, 0, W, H);
+
+  const g = Math.min((W - 20) / world.size, (H - 20) / world.size);
+  const ox = 10;
+  const oy = 10;
+  const size = world.size;
+  for (let y = 0; y < size; y += 1){
+    for (let x = 0; x < size; x += 1){
+      const blocked = world.blocked.has(`${x},${y}`);
+      if (blocked){
+        ctx.fillStyle = "#cbd5e1";
+        ctx.fillRect(ox + x * g, oy + y * g, g, g);
+      } else {
+        ctx.fillStyle = "#ecfeff";
+        ctx.fillRect(ox + x * g, oy + y * g, g, g);
+      }
+      ctx.strokeStyle = "#dbeafe";
+      ctx.strokeRect(ox + x * g, oy + y * g, g, g);
+    }
+  }
+
+  const nodes = world.path;
+  worldState = world;
+  if (nodes.length < 2){
+    return;
+  }
+  ctx.strokeStyle = "#0369a1";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  nodes.forEach((n, idx)=>{
+    const x = ox + n.x * g + g / 2;
+    const y = oy + n.y * g + g / 2;
+    if (idx === 0){
+      ctx.moveTo(x, y);
+    } else {
+      ctx.lineTo(x, y);
+    }
+  });
+  ctx.stroke();
+
+  const last = nodes[nodes.length - 1];
+  ctx.fillStyle = "#0f172a";
+  nodes.forEach((n, idx)=>{
+    const x = ox + n.x * g + g / 2;
+    const y = oy + n.y * g + g / 2;
+    ctx.fillStyle = idx === nodes.length - 1 ? "#15803d" : (idx === 0 ? "#0f172a" : "#0284c7");
+    ctx.beginPath();
+    ctx.arc(x, y, Math.max(2, g * 0.2), 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  const risk = Math.min(98, Math.round(100 * (nodes.length / (world.size * 1.8))));
+  document.getElementById("worldMetricPath").textContent = `路径步数：${nodes.length}`;
+  document.getElementById("worldMetricRisk").textContent = `风险评分：${risk}/100（越低越好）`;
+  return risk;
+}
+
+function runWorldToy(){
+  let spec;
+  try{
+    spec = JSON.parse(document.getElementById("worldSpec").value);
+  } catch {
+    alert("JSON 格式不合法");
+    return;
+  }
+  const world = buildWorldPlan(spec);
+  drawWorldCanvas(world);
+}
+
+function replayWorldPath(){
+  if (!worldState || !worldState.path || worldState.path.length < 2){
+    return;
+  }
+  const c = document.getElementById("worldCanvas");
+  const ctx = c.getContext("2d");
+  if (replayTimer){
+    clearInterval(replayTimer);
+  }
+  const nodes = worldState.path;
+  const W = c.clientWidth;
+  const H = c.clientHeight;
+  const DPR = window.devicePixelRatio || 1;
+  const g = Math.min((W - 20) / worldState.size, (H - 20) / worldState.size);
+  const ox = 10;
+  const oy = 10;
+  let idx = 1;
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  const redraw = (k) => {
+    ctx.clearRect(0, 0, W, H);
+    for (let y = 0; y < worldState.size; y += 1){
+      for (let x = 0; x < worldState.size; x += 1){
+        const blocked = worldState.blocked.has(`${x},${y}`);
+        ctx.fillStyle = blocked ? "#cbd5e1" : "#ecfeff";
+        ctx.fillRect(ox + x * g, oy + y * g, g, g);
+        ctx.strokeStyle = "#dbeafe";
+        ctx.strokeRect(ox + x * g, oy + y * g, g, g);
+      }
+    }
+    ctx.strokeStyle = "#0369a1";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    const head = nodes[k - 1];
+    nodes.slice(0, k).forEach((n, i)=>{
+      const x = ox + n.x * g + g / 2;
+      const y = oy + n.y * g + g / 2;
+      if (i === 0){ ctx.moveTo(x, y);} else { ctx.lineTo(x, y);}
+    });
+    ctx.stroke();
+    nodes.slice(0, k).forEach((n, i)=>{
+      const x = ox + n.x * g + g / 2;
+      const y = oy + n.y * g + g / 2;
+      ctx.fillStyle = i === 0 ? "#0f172a" : i === k - 1 ? "#15803d" : "#0ea5e9";
+      ctx.beginPath();
+      ctx.arc(x, y, Math.max(2, g * 0.2), 0, Math.PI * 2);
+      ctx.fill();
+    });
+    if (head){
+      ctx.fillStyle = "#0f172a";
+      ctx.fillText(`t=${k}/${nodes.length}`, W - 120, H - 8);
+    }
+  };
+  redraw(1);
+  replayTimer = setInterval(()=>{
+    idx = Math.min(nodes.length, idx + 1);
+    redraw(idx);
+    if (idx >= nodes.length){
+      clearInterval(replayTimer);
+      replayTimer = null;
+    }
+  }, 120);
+}
+
+document.querySelectorAll(".segment").forEach(el=>{
+  el.addEventListener("click", ()=>{
+    setMode(el.dataset.mode);
+  });
+});
+
+document.getElementById("modeInternal").addEventListener("click", ()=>setMode("internal"));
+document.getElementById("modeExternal").addEventListener("click", ()=>setMode("external"));
+document.getElementById("runWorld").addEventListener("click", runWorldToy);
+document.getElementById("replayWorld").addEventListener("click", replayWorldPath);
+document.getElementById("fuelSearch").addEventListener("input", applyFuelFilters);
+document.getElementById("fuelDomain").addEventListener("change", applyFuelFilters);
+document.getElementById("fuelDifficulty").addEventListener("change", applyFuelFilters);
+document.getElementById("fuelResetBtn").addEventListener("click", ()=>{
+  document.getElementById("fuelSearch").value = "";
+  document.getElementById("fuelDomain").value = "";
+  document.getElementById("fuelDifficulty").value = "";
+  applyFuelFilters();
+});
+document.getElementById("replayMap").addEventListener("click", ()=>animateRoute(routeSpec.speed || 1));
+document.getElementById("rebuildMap").addEventListener("click", rebuildMapFromInput);
+document.getElementById("channelTabs")?.addEventListener("click", (e)=>{
+  const t = e.target;
+  const key = t?.dataset?.channel;
+  if (!key){
+    return;
+  }
+  renderChannel(key);
+});
+document.getElementById("runChannel").addEventListener("click", runChannel);
+document.getElementById("resetChannel").addEventListener("click", ()=>renderChannel(activeChannel));
+document.getElementById("copyPayloadBtn").addEventListener("click", async ()=>{
+  const payload = JSON.stringify(getCurrentPayload(), null, 2);
+  try{
+    await navigator.clipboard.writeText(payload);
+    document.getElementById("copyStatus").textContent = "已复制：当前视图 JSON";
+  }catch(err){
+    document.getElementById("copyStatus").textContent = "复制失败，已回退到下载";
+    const blob = new Blob([payload], { type: "application/json;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "embodied_cockpit_payload.json";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+});
+document.getElementById("exportPayloadBtn").addEventListener("click", ()=>{
+  const payload = JSON.stringify(getCurrentPayload(), null, 2);
+  const blob = new Blob([payload], { type: "application/json;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `embodied_cockpit_${rootState.mode}_payload.json`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+  document.getElementById("copyStatus").textContent = "已导出：payload 文件";
+});
+
+setMode("internal");
+setBars("internal");
+renderTable("internal");
+drawLatencyChart(pilotData.internal.latencies);
+renderMap(routeSpec);
+animateRoute(routeSpec.speed || 1);
+runWorldToy();
+renderChannel("A");
+renderModelMatrix();
+drawModelRadar();
+renderRoadmapBars();
+loadFuelDigest();
+
+const refreshVisuals = () => {
+  drawModelRadar();
+  const d = pilotData[rootState.mode] || pilotData.internal;
+  drawLatencyChart(d.latencies);
+};
+window.addEventListener("resize", () => {
+  clearTimeout(window.__visualResizeTimer);
+  window.__visualResizeTimer = setTimeout(refreshVisuals, 120);
+});
+</script>
+</body>
+</html>

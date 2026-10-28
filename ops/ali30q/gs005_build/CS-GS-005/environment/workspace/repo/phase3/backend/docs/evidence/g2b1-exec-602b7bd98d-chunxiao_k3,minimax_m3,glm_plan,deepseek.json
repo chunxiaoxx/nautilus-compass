@@ -1,0 +1,73 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "f98d02d55b42b6450878af7e228bef04e4faa601",
+  "reference_fix_commit": "602b7bd98d7221997d1d1b363e0e7d7d30e4656d",
+  "subject": "fix(s1): C1/I2/I3 quality\u5ba1 must-fix(claim\u5e42\u7b49-\u81ea\u5360\u00b7_http\u6355HTTPError\u00b7write_back\u9694\u79bb\u00b7+3 TDD)",
+  "test_files": [
+   "phase3/backend/tests/test_fde_assignment_runner.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/fde_assignment_runner.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/test_fde_assignment_runner.py::test_claim_fn_idempotent_when_already_claimed_by_same_expert",
+ "source_rel": "services\\fde_assignment_runner.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/services/fde_assignment_runner.py\n+++ b/services/fde_assignment_runner.py\n@@ -93,9 +93,13 @@\n def make_claim_fn(base: str):\n     def claim_fn(uid: str, agent: str) -> None:\n         res = _http(\"POST\", base + \"/api/platform/fde/claim\",\n                     body={\"task_uid\": uid, \"agent_id\": agent})\n-        if not res.get(\"success\", True):\n-            raise RuntimeError(f\"claim failed: {res.get('error')}\")\n+        if res.get(\"success\", True):\n+            return\n+        err = str(res.get(\"error\") or \"\")\n+        if \"already claimed\" in err and f\"claimed_by={agent}\" in err:\n+            return  # \u5e42\u7b49:\u5df2\u88ab\u540c\u4e00 expert \u5360\u5ea7\u89c6\u4e3a\u6210\u529f\n+        raise RuntimeError(f\"claim failed: {res.get('error')}\")\n     return claim_fn",
+ "budget_exceeded": false,
+ "total_tokens": 2582,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 2116,
+    "completion_tokens": 466,
+    "total_tokens": 2582,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 1860,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 466,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 2116,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "claim_fn_idempotent_same_expert",
+ "duration_s": 23.3,
+ "verdict_post_status": 200
+}

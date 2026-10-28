@@ -1,0 +1,73 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "940dffeef154b18a0380a92d1866cb12417ea5a2",
+  "reference_fix_commit": "083dd972faa62cc077eb0a0a2d65a0b96f95daa2",
+  "subject": "fix(ops): \u54e8\u5175\u63a8\u9001\u4eba\u8bdd\u5316\u2014\u20149/14 \u7528\u6237\u53cd\u9988'\u770b\u4e0d\u61c2,\u4e0d\u65b9\u4fbf\u5f00\u5c55\u5de5\u4f5c'",
+  "test_files": [
+   "phase3/backend/tests/test_org_sentinel.py"
+  ],
+  "source_files": [
+   "phase3/backend/ops/org_sentinel.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/test_org_sentinel.py::test_new_inbound_letter_emits_event_once",
+ "source_rel": "ops\\org_sentinel.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/ops/org_sentinel.py\n+++ b/ops/org_sentinel.py\n@@ -41,7 +41,7 @@\n     for r in inbound:\n         if r.id not in seen:\n             dl = r.deadline.strftime(\"%m-%d %H:%M\") if r.deadline else \"?\"\n-            events.append(f\"\ud83d\udce8 \u65b0\u51fd #{r.id} {r.from_agent}\u2192platform:{r.title[:40]}\"\n+            events.append(f\"\ud83d\udce8 \u65b0\u51fd #{r.id} {r.from_agent} \u6765\u4fe1\u2192platform:{r.title[:40]}\"\n                           f\"(deadline {dl})\")\n             seen.add(r.id)\n",
+ "budget_exceeded": false,
+ "total_tokens": 2506,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 2167,
+    "completion_tokens": 339,
+    "total_tokens": 2506,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 2167,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 339,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 0,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 2167,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "inbound_letter_event_wording",
+ "duration_s": 22.7,
+ "verdict_post_status": 200
+}

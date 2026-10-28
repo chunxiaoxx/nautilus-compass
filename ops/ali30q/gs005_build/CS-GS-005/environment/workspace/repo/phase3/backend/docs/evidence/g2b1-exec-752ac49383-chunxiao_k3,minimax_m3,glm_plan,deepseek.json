@@ -1,0 +1,159 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "8638836c5447ec8f78ccf46a1fac3c9a9bb4f17f",
+  "reference_fix_commit": "752ac49383c3d4a78f70722b9904c303dd02d49d",
+  "subject": "fix(rsi): \u8bc4\u5206\u6865\u7f3a\u53c2\u964d\u7ea7\u2014\u2014\u8bc4\u5206=\u5224\u65ad\u503c,\u76f4\u6d3e\u7ed3\u6784\u6027\u5fc5\u8d25\u8f6c\u53ea\u8bfb\u524d\u7f6e",
+  "test_files": [
+   "tests/test_intent_router_fde.py"
+  ],
+  "source_files": [
+   "nautilus_v5/breath/intent_router.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\nautilus-v5"
+ },
+ "test_id": "tests/test_intent_router_fde.py::test_score_intent_downgrades_to_list_submitted",
+ "source_rel": "nautilus_v5\\breath\\intent_router.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/nautilus_v5/breath/intent_router.py\n+++ b/nautilus_v5/breath/intent_router.py\n@@ -202,7 +202,16 @@\n                     confidence=conf,\n                     matched_pattern=pattern.pattern[:50],\n                 ))\n \n+        # 2026-09-16 \u00b7 \u6cbb\u300c\u67e5\u7b2c\u4e00\u4e2a\u5f85\u8bc4\u5206\u7684 bounty\uff0c\u6253\u5206\u300d\u8bef\u6d3e pf_score_bounty:\n+        # \u8bc4\u5206/\u6253\u5206\u610f\u56fe\u4f46\u6587\u672c\u65e2\u65e0 bounty id \u53c8\u65e0\u5206\u6570 \u2192 \u7f3a\u771f\u53c2\u65e0\u6cd5\u8bc4\u5206,\n+        # \u964d\u7ea7\u4e3a\u53ea\u8bfb\u6e05\u5355 pf_list_bounties(\u5148\u62ff\u5f85\u8bc4\u5206\u5019\u9009,\u518d\u5e26 id+score \u8bc4\u5206)\u3002\n+        for tc in matches:\n+            if tc.tool == \"pf_score_bounty\" and not (\n+                    re.search(r\"\\bb-[0-9A-Za-z]{6,}\\b\", s)\n+                    and re.search(r\"\\d+(?:\\.\\d+)?\\s*\u5206\", s)):\n+                tc.tool = \"pf_list_bounties\"\n+                tc.args = {\"status\": \"submitted\"}\n         if matches:\n             seen: Dict[str, ToolCall] = {}\n             for tc in sorted(matches, key=lambda x: -x.confidence):\n",
+ "budget_exceeded": false,
+ "total_tokens": 31257,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 5621,
+    "completion_tokens": 1922,
+    "total_tokens": 7543,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 5365,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 1922,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 5621,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "F                                                                        [100%]\r\n================================== FAILURES ===================================\r\n_______________ test_score_intent_downgrades_to_list_submitted ________________\r\n\r\n    def test_score_intent_downgrades_to_list_submitted():\r\n        # \u300c\u67e5\u7b2c\u4e00\u4e2a\u5f85\u8bc4\u5206\u7684 bounty\uff0c\u6253\u5206\u300d\u2192 pf_score_bounty \u7f3a id/score \u2192 \u53ea\u8bfb\u6e05\u5355\r\n        tc = _tc(\"\u67e5\u7b2c\u4e00\u4e2a\u5f85\u8bc4\u5206\u7684 bounty\uff0c\u6253\u5206\uff0c\u95ed\u73af\u3002\")\r\n        assert tc.tool == \"pf_list_bounties\"\r\n>       assert tc.args.get(\"status\") == \"submitted\"\r\nE       AssertionError: assert None == 'submitted'\r\nE        +  where None = <built-in method get of dict object at 0x00000271E3944400>('status')\r\nE        +    where <built-in method get of dict object at 0x00000271E3944400> = {'hint': '\u67e5\u7b2c\u4e00\u4e2a\u5f85\u8bc4\u5206\u7684 bounty\uff0c\u6253\u5206\uff0c\u95ed\u73af\u3002'}.get\r\nE        +      where {'hint': '\u67e5\u7b2c\u4e00\u4e2a\u5f85\u8bc4\u5206\u7684 bounty\uff0c\u6253\u5206\uff0c\u95ed\u73af\u3002'} = ToolCall(tool='pf_list_bounties', args={'hint': '\u67e5\u7b2c\u4e00\u4e2a\u5f85\u8bc4\u5206\u7684 bounty\uff0c\u6253\u5206\uff0c\u95ed\u73af\u3002'}, confidence=0.9, matched_pattern='\u8bc4\u5206|\u6253\u5206|\u7ed9.{0,6}\u5206|score.{0,10}bounty|downgrade_missing_id_score').args\r\n\r\ntests\\test_intent_router_fde.py:57: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_intent_router_fde.py::test_score_intent_downgrades_to_list_submitted\r\n1 failed in 3.85s\r\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 6033,
+    "completion_tokens": 6791,
+    "total_tokens": 12824,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 657,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 5376,
+      "output_tokens": 6791,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 5376,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 6033,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: nautilus_v5/breath/intent_router.py:185\nerror: nautilus_v5/breath/intent_router.py: patch does not apply\n\n[attempt2 backend] error: patch failed: nautilus_v5/breath/intent_router.py:185\nerror: nautilus_v5/breath/intent_router.py: patch does not apply\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 5769,
+    "completion_tokens": 5121,
+    "total_tokens": 10890,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 393,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 5376,
+      "output_tokens": 5121,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 5376,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 5769,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "score_intent_downgrade_to_list_bounties",
+ "duration_s": 389.5,
+ "verdict_post_status": 200
+}

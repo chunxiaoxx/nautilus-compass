@@ -1,0 +1,48 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "a91e9a8f038d175be59e3c3ff9874df1da410a1e",
+  "reference_fix_commit": "71f0de23a4a1149306303f4e36e7dc24918c93bc",
+  "subject": "fix(s4): make quarantine fingerprints deterministic",
+  "test_files": [
+   "tests/gep/test_flywheel_log.py"
+  ],
+  "source_files": [
+   "gep/flywheel_log.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass"
+ },
+ "test_id": "tests/gep/test_flywheel_log.py::test_unknown_class_instances_have_stable_quarantine_fingerprint",
+ "source_rel": "gep\\flywheel_log.py",
+ "provider": "ark_glm",
+ "test_passed": true,
+ "winning_diff": "--- a/gep/flywheel_log.py\n+++ b/gep/flywheel_log.py\n@@ -328,4 +328,4 @@\n     return {\n         \"type\": f\"{type(value).__module__}.{type(value).__qualname__}\",\n-        \"repr\": repr(value),\n+        \"repr\": re.sub(r\" at 0x[0-9a-fA-F]+\", \"\", repr(value)),\n     }\n",
+ "budget_exceeded": false,
+ "total_tokens": 9203,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "completion_tokens": 6095,
+    "prompt_tokens": 3108,
+    "total_tokens": 9203,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 5944
+    }
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "stable_quarantine_fingerprint_for_opaque_values",
+ "duration_s": 81.6,
+ "replayed": true,
+ "verdict_post_status": 200
+}

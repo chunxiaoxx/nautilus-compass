@@ -1,0 +1,71 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "e49e8ade7849c198fa24199010d9d94aa4385928",
+  "reference_fix_commit": "1a7673c6e7af1b3ae14d515256ee88f1c0164fc8",
+  "subject": "fix(fde): harden readonly evidence boundaries",
+  "test_files": [
+   "tests/test_feishu_wiki_evidence.py"
+  ],
+  "source_files": [
+   "tools/fde_feishu_wiki_evidence.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-fde-phase3"
+ },
+ "test_id": "tests/test_feishu_wiki_evidence.py::test_transport_rejects_nonreadonly_or_unknown_endpoint_before_network_call",
+ "source_rel": "tools\\fde_feishu_wiki_evidence.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 5881,
+    "output_tokens": 408,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "..F                                                                      [100%]\r\n================================== FAILURES ===================================\r\n_ test_transport_rejects_nonreadonly_or_unknown_endpoint_before_network_call[GET-https://open.feishu.cn/open-apis/docx/v1/documents/synthetic-doc/unknown] _\r\n\r\nmonkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002074BFB3650>\r\nmethod = 'GET'\r\nurl = 'https://open.feishu.cn/open-apis/docx/v1/documents/synthetic-doc/unknown'\r\n\r\n    @pytest.mark.parametrize(\r\n        (\"method\", \"url\"),\r\n        [\r\n            (\"POST\", \"https://open.feishu.cn/open-apis/docx/v1/documents/synthetic-doc\"),\r\n            (\"DELETE\", \"https://open.feishu.cn/open-apis/wiki/v2/spaces/get_node?token=synthetic\"),\r\n            (\"GET\", \"https://open.feishu.cn/open-apis/docx/v1/documents/synthetic-doc/unknown\"),\r\n        ],\r\n    )\r\n    def test_transport_rejects_nonreadonly_or_unknown_endpoint_before_network_call(\r\n        monkeypatch, method, url\r\n    ):\r\n        def unexpected_urlopen(*args, **kwargs):\r\n            raise AssertionError(\"rejected request must not reach urlopen\")\r\n    \r\n        monkeypatch.setattr(evidence, \"urlopen\", unexpected_urlopen)\r\n        with pytest.raises(EvidenceError, match=\"ENDPOINT_REJECTED\"):\r\n>           evidence.standard_transport(method, url)\r\n\r\ntests\\test_feishu_wiki_evidence.py:188: \r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\r\ntools\\fde_feishu_wiki_evidence.py:126: in standard_transport\r\n    with urlopen(request, timeout=15) as response:\r\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\r\n\r\nargs = (<urllib.request.Request object at 0x000002074BF90980>,)\r\nkwargs = {'timeout': 15}\r\n\r\n    def unexpected_urlopen(*args, **kwargs):\r\n>       raise AssertionError(\"rejected request must not reach urlopen\")\r\nE       AssertionError: rejected request must not reach urlopen\r\n\r\ntests\\test_feishu_wiki_evidence.py:184: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_feishu_wiki_evidence.py::test_transport_rejects_nonreadonly_or_unknown_endpoint_before_network_call[GET-https://open.feishu.cn/open-apis/docx/v1/documents/synthetic-doc/unknown]\r\n1 failed, 2 passed in 0.21s\r\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 6539,
+    "output_tokens": 358,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_oeq5i_92/repo/_g2b1.patch:17\n\n[attempt2 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_oeq5i_92/repo/_g2b1.patch:17\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 6025,
+    "output_tokens": 235,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "..F                                                                      [100%]\r\n================================== FAILURES ===================================\r\n_ test_transport_rejects_nonreadonly_or_unknown_endpoint_before_network_call[GET-https://open.feishu.cn/open-apis/docx/v1/documents/synthetic-doc/unknown] _\r\n\r\nmonkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000002325348F1D0>\r\nmethod = 'GET'\r\nurl = 'https://open.feishu.cn/open-apis/docx/v1/documents/synthetic-doc/unknown'\r\n\r\n    @pytest.mark.parametrize(\r\n        (\"method\", \"url\"),\r\n        [\r\n            (\"POST\", \"https://open.feishu.cn/open-apis/docx/v1/documents/synthetic-doc\"),\r\n            (\"DELETE\", \"https://open.feishu.cn/open-apis/wiki/v2/spaces/get_node?token=synthetic\"),\r\n            (\"GET\", \"https://open.feishu.cn/open-apis/docx/v1/documents/synthetic-doc/unknown\"),\r\n        ],\r\n    )\r\n    def test_transport_rejects_nonreadonly_or_unknown_endpoint_before_network_call(\r\n        monkeypatch, method, url\r\n    ):\r\n        def unexpected_urlopen(*args, **kwargs):\r\n            raise AssertionError(\"rejected request must not reach urlopen\")\r\n    \r\n        monkeypatch.setattr(evidence, \"urlopen\", unexpected_urlopen)\r\n        with pytest.raises(EvidenceError, match=\"ENDPOINT_REJECTED\"):\r\n>           evidence.standard_transport(method, url)\r\n\r\ntests\\test_feishu_wiki_evidence.py:188: \r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\r\ntools\\fde_feishu_wiki_evidence.py:119: in standard_transport\r\n    with urlopen(request, timeout=15) as response:\r\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\r\n\r\nargs = (<urllib.request.Request object at 0x00000232534E06E0>,)\r\nkwargs = {'timeout': 15}\r\n\r\n    def unexpected_urlopen(*args, **kwargs):\r\n>       raise AssertionError(\"rejected request must not reach urlopen\")\r\nE       AssertionError: rejected request must not reach urlopen\r\n\r\ntests\\test_feishu_wiki_evidence.py:184: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_feishu_wiki_evidence.py::test_transport_rejects_nonreadonly_or_unknown_endpoint_before_network_call[GET-https://open.feishu.cn/open-apis/docx/v1/documents/synthetic-doc/unknown]\r\n1 failed, 2 passed in 0.25s\r\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 18.5,
+ "verdict_post_status": 200
+}

@@ -1,0 +1,241 @@
+apiVersion: 1
+
+groups:
+  - name: nautilus_api_alerts
+    interval: 30s
+    rules:
+      # API响应时间告警
+      - uid: api_response_time_high
+        title: API响应时间过长
+        condition: A
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job="nautilus-api"}[5m])) > 1
+              refId: A
+        noDataState: NoData
+        execErrState: Error
+        for: 5m
+        annotations:
+          description: "API P95响应时间超过1秒，当前值: {{ $values.A }}"
+          summary: "API响应时间告警"
+        labels:
+          severity: warning
+          team: backend
+
+      # API错误率告警
+      - uid: api_error_rate_high
+        title: API错误率过高
+        condition: A
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: (rate(http_requests_total{job="nautilus-api",status=~"5.."}[5m]) / rate(http_requests_total{job="nautilus-api"}[5m])) * 100 > 5
+              refId: A
+        noDataState: NoData
+        execErrState: Error
+        for: 5m
+        annotations:
+          description: "API 5xx错误率超过5%，当前值: {{ $values.A }}%"
+          summary: "API错误率告警"
+        labels:
+          severity: critical
+          team: backend
+
+      # 数据库查询慢告警
+      - uid: db_query_slow
+        title: 数据库查询缓慢
+        condition: A
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: rate(db_query_duration_seconds_sum{job="nautilus-api"}[5m]) / rate(db_query_duration_seconds_count{job="nautilus-api"}[5m]) > 0.5
+              refId: A
+        noDataState: NoData
+        execErrState: Error
+        for: 5m
+        annotations:
+          description: "数据库平均查询时间超过500ms，当前值: {{ $values.A }}s"
+          summary: "数据库查询性能告警"
+        labels:
+          severity: warning
+          team: backend
+
+      # 缓存命中率低告警
+      - uid: cache_hit_rate_low
+        title: 缓存命中率过低
+        condition: A
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: (rate(cache_hits_total{job="nautilus-api"}[5m]) / (rate(cache_hits_total{job="nautilus-api"}[5m]) + rate(cache_misses_total{job="nautilus-api"}[5m]))) * 100 < 70
+              refId: A
+        noDataState: NoData
+        execErrState: Error
+        for: 10m
+        annotations:
+          description: "缓存命中率低于70%，当前值: {{ $values.A }}%"
+          summary: "缓存性能告警"
+        labels:
+          severity: warning
+          team: backend
+
+  - name: nautilus_system_alerts
+    interval: 30s
+    rules:
+      # CPU使用率告警
+      - uid: cpu_usage_high
+        title: CPU使用率过高
+        condition: A
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: 100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+              refId: A
+        noDataState: NoData
+        execErrState: Error
+        for: 5m
+        annotations:
+          description: "CPU使用率超过80%，当前值: {{ $values.A }}%"
+          summary: "系统CPU告警"
+        labels:
+          severity: warning
+          team: ops
+
+      # 内存使用率告警
+      - uid: memory_usage_high
+        title: 内存使用率过高
+        condition: A
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+              refId: A
+        noDataState: NoData
+        execErrState: Error
+        for: 5m
+        annotations:
+          description: "内存使用率超过85%，当前值: {{ $values.A }}%"
+          summary: "系统内存告警"
+        labels:
+          severity: critical
+          team: ops
+
+      # 磁盘使用率告警
+      - uid: disk_usage_high
+        title: 磁盘使用率过高
+        condition: A
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: (1 - (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"})) * 100 > 85
+              refId: A
+        noDataState: NoData
+        execErrState: Error
+        for: 5m
+        annotations:
+          description: "磁盘使用率超过85%，当前值: {{ $values.A }}%"
+          summary: "系统磁盘告警"
+        labels:
+          severity: warning
+          team: ops
+
+      # 服务不可用告警
+      - uid: service_down
+        title: 服务不可用
+        condition: A
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 60
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: up{job="nautilus-api"} == 0
+              refId: A
+        noDataState: Alerting
+        execErrState: Error
+        for: 1m
+        annotations:
+          description: "Nautilus API服务不可用"
+          summary: "服务宕机告警"
+        labels:
+          severity: critical
+          team: ops
+
+  - name: nautilus_business_alerts
+    interval: 60s
+    rules:
+      # 请求量异常告警
+      - uid: request_rate_anomaly
+        title: 请求量异常
+        condition: A
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: abs(rate(http_requests_total{job="nautilus-api"}[5m]) - rate(http_requests_total{job="nautilus-api"}[1h] offset 1h)) / rate(http_requests_total{job="nautilus-api"}[1h] offset 1h) > 0.5
+              refId: A
+        noDataState: NoData
+        execErrState: Error
+        for: 10m
+        annotations:
+          description: "请求量与1小时前相比变化超过50%"
+          summary: "请求量异常告警"
+        labels:
+          severity: info
+          team: backend
+
+      # 数据库连接池耗尽告警
+      - uid: db_connection_pool_exhausted
+        title: 数据库连接池耗尽
+        condition: A
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: db_connection_pool_active{job="nautilus-api"} / db_connection_pool_max{job="nautilus-api"} > 0.9
+              refId: A
+        noDataState: NoData
+        execErrState: Error
+        for: 5m
+        annotations:
+          description: "数据库连接池使用率超过90%"
+          summary: "数据库连接池告警"
+        labels:
+          severity: critical
+          team: backend

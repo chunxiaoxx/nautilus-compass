@@ -1,0 +1,252 @@
+[
+ {
+  "domain": "operations_research_and_decision_science",
+  "subtype": "JobShop",
+  "variant": "orlib_instance_pack_a"
+ },
+ {
+  "domain": "operations_research_and_decision_science",
+  "subtype": "JobShop",
+  "variant": "orlib_instance_pack_b"
+ },
+ {
+  "domain": "operations_research_and_decision_science",
+  "subtype": "JobShop",
+  "variant": "orlib_instance_pack_c"
+ },
+ {
+  "domain": "operations_research_and_decision_science",
+  "subtype": "JobShop",
+  "variant": "orlib_instance_pack_d"
+ },
+ {
+  "domain": "operations_research_and_decision_science",
+  "subtype": "JobShop",
+  "variant": "orlib_instance_pack_e"
+ },
+ {
+  "domain": "operations_research_and_decision_science",
+  "subtype": "JobShop",
+  "variant": "ft06_v2"
+ },
+ {
+  "domain": "operations_research_and_decision_science",
+  "subtype": "JobShop",
+  "variant": "ft10_v2"
+ },
+ {
+  "domain": "operations_research_and_decision_science",
+  "subtype": "JobShop",
+  "variant": "la01_v2"
+ },
+ {
+  "domain": "operations_research_and_decision_science",
+  "subtype": "JobShop",
+  "variant": "la16_v2"
+ },
+ {
+  "domain": "operations_research_and_decision_science",
+  "subtype": "JobShop",
+  "variant": "la21_v2"
+ },
+ {
+  "domain": "operations_research_and_decision_science",
+  "subtype": "TSP",
+  "variant": "tsplib_kroA100"
+ },
+ {
+  "domain": "operations_research_and_decision_science",
+  "subtype": "TSP",
+  "variant": "tsplib_kroB100"
+ },
+ {
+  "domain": "operations_research_and_decision_science",
+  "subtype": "TSP",
+  "variant": "tsplib_kroC100"
+ },
+ {
+  "domain": "operations_research_and_decision_science",
+  "subtype": "TSP",
+  "variant": "tsplib_kroD100"
+ },
+ {
+  "domain": "operations_research_and_decision_science",
+  "subtype": "TSP",
+  "variant": "tsplib_kroE100"
+ },
+ {
+  "domain": "operations_research_and_decision_science",
+  "subtype": "TSP",
+  "variant": "tsplib_bier127"
+ },
+ {
+  "domain": "operations_research_and_decision_science",
+  "subtype": "TSP",
+  "variant": "tsplib_ch130"
+ },
+ {
+  "domain": "operations_research_and_decision_science",
+  "subtype": "TSP",
+  "variant": "tsplib_d198"
+ },
+ {
+  "domain": "operations_research_and_decision_science",
+  "subtype": "TSP",
+  "variant": "tsplib_eil101"
+ },
+ {
+  "domain": "operations_research_and_decision_science",
+  "subtype": "TSP",
+  "variant": "tsplib_gr17"
+ },
+ {
+  "domain": "operations_research_and_decision_science",
+  "subtype": "BinPack",
+  "variant": "binpack_n50_a"
+ },
+ {
+  "domain": "operations_research_and_decision_science",
+  "subtype": "BinPack",
+  "variant": "binpack_n50_b"
+ },
+ {
+  "domain": "operations_research_and_decision_science",
+  "subtype": "BinPack",
+  "variant": "binpack_n100_a"
+ },
+ {
+  "domain": "operations_research_and_decision_science",
+  "subtype": "BinPack",
+  "variant": "binpack_n100_b"
+ },
+ {
+  "domain": "operations_research_and_decision_science",
+  "subtype": "BinPack",
+  "variant": "binpack_n200_a"
+ },
+ {
+  "domain": "operations_research_and_decision_science",
+  "subtype": "BinPack",
+  "variant": "binpack_n200_b"
+ },
+ {
+  "domain": "operations_research_and_decision_science",
+  "subtype": "BinPack",
+  "variant": "binpack_n500_a"
+ },
+ {
+  "domain": "operations_research_and_decision_science",
+  "subtype": "BinPack",
+  "variant": "binpack_n500_b"
+ },
+ {
+  "domain": "operations_research_and_decision_science",
+  "subtype": "BinPack",
+  "variant": "binpack_skew_a"
+ },
+ {
+  "domain": "operations_research_and_decision_science",
+  "subtype": "BinPack",
+  "variant": "binpack_skew_b"
+ },
+ {
+  "domain": "kernel_engineering_and_systems",
+  "subtype": "Attention",
+  "variant": "attn_d32_h8_n128"
+ },
+ {
+  "domain": "kernel_engineering_and_systems",
+  "subtype": "Attention",
+  "variant": "attn_d32_h8_n256"
+ },
+ {
+  "domain": "kernel_engineering_and_systems",
+  "subtype": "Attention",
+  "variant": "attn_d64_h8_n512"
+ },
+ {
+  "domain": "kernel_engineering_and_systems",
+  "subtype": "Attention",
+  "variant": "attn_d64_h4_n1024"
+ },
+ {
+  "domain": "kernel_engineering_and_systems",
+  "subtype": "Attention",
+  "variant": "attn_d64_h4_n2048"
+ },
+ {
+  "domain": "kernel_engineering_and_systems",
+  "subtype": "Attention",
+  "variant": "attn_d128_h4_n512"
+ },
+ {
+  "domain": "kernel_engineering_and_systems",
+  "subtype": "Attention",
+  "variant": "attn_d128_h8_n1024"
+ },
+ {
+  "domain": "kernel_engineering_and_systems",
+  "subtype": "Attention",
+  "variant": "attn_d128_h8_n2048"
+ },
+ {
+  "domain": "kernel_engineering_and_systems",
+  "subtype": "Attention",
+  "variant": "attn_d64_h2_n4096"
+ },
+ {
+  "domain": "kernel_engineering_and_systems",
+  "subtype": "Attention",
+  "variant": "attn_d64_h8_n8192"
+ },
+ {
+  "domain": "computer_systems",
+  "subtype": "Cache",
+  "variant": "cache_zipfian_c50"
+ },
+ {
+  "domain": "computer_systems",
+  "subtype": "Cache",
+  "variant": "cache_zipfian_c100"
+ },
+ {
+  "domain": "computer_systems",
+  "subtype": "Cache",
+  "variant": "cache_zipfian_c200"
+ },
+ {
+  "domain": "computer_systems",
+  "subtype": "Cache",
+  "variant": "cache_zipfian_c500"
+ },
+ {
+  "domain": "computer_systems",
+  "subtype": "Cache",
+  "variant": "cache_mixed_c100"
+ },
+ {
+  "domain": "computer_systems",
+  "subtype": "Cache",
+  "variant": "cache_mixed_c200"
+ },
+ {
+  "domain": "computer_systems",
+  "subtype": "Cache",
+  "variant": "cache_phase_c100"
+ },
+ {
+  "domain": "computer_systems",
+  "subtype": "Cache",
+  "variant": "cache_phase_c200"
+ },
+ {
+  "domain": "computer_systems",
+  "subtype": "Cache",
+  "variant": "cache_scan_c100"
+ },
+ {
+  "domain": "computer_systems",
+  "subtype": "Cache",
+  "variant": "cache_scan_c200"
+ }
+]

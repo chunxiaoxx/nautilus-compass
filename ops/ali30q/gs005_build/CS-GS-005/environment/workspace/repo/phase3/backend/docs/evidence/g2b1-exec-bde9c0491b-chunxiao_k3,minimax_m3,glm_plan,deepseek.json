@@ -1,0 +1,30 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "4a86c744519ad33149e0cc2504a9aa78e73006be",
+  "reference_fix_commit": "bde9c0491b170885d0a3718f67233b4ef44e8429",
+  "subject": "fix(loop): \u8bef\u5347\u7ea7\u81ea\u67e5\u4e09\u4fee\u2014\u2014\u2460\u56de\u51fd\u5339\u914d\u7f3a\u53e316\u5c01:load_platform_letters \u53ea\u626b platform \u53d1\u51fa\u51fd,\u6536\u4ef6\u65b9\u56de\u51fd\u4e0d\u5728\u626b\u63cf\u96c6\u2192\u5df2\u56de\u4ecd\u5347\u7ea7;\u62bd match_replies \u7eaf\u51fd\u6570\u6539\u5168\u8868\u5339\u914d(from=\u539f\u6536\u4ef6\u4eba,\u5e73\u53f0\u81ea\u53d1\u51fd\u4e0d\u4f5c\u56de\u51fd,\u56de\u5f52 #5 \u5047 resolved)\u2461notify count \u4ec5\u5b9e\u9645\u53d1\u9001\u8f6e\u8ba1\u6570\u2462#101 deadline \u987a\u5ef6(\u53e3\u5f84\u5931\u8bef);\u9884\u6f14\u811a\u672c r",
+  "test_files": [
+   "phase3/backend/tests/test_platform_loop.py"
+  ],
+  "source_files": [
+   "phase3/backend/docs/evidence/org-os/pilot/rehearse_escalations.py",
+   "phase3/backend/ops/platform_loop.py"
+  ],
+  "repo_path": "C:/Users/chunx/Projects/nautilus-core"
+ },
+ "test_id": "phase3/backend/tests/test_platform_loop.py::test_match_replies_recipient_reply_resolves",
+ "source_rel": "phase3/backend/docs/evidence/org-os/pilot/rehearse_escalations.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

@@ -1,0 +1,276 @@
+{
+  "task_id": "tsp_tsplib_v1_001",
+  "seed_score": 89.5152,
+  "seed_valid": 1,
+  "best_score": 100.0,
+  "gap_closed": 0.1048,
+  "difficulty_bucket": "Hard",
+  "n": 3,
+  "model": "gpt-5.5",
+  "rounds": [
+    {
+      "round": 0,
+      "metrics": {
+        "combined_score": 89.5152,
+        "valid": 1,
+        "per_instance": [
+          {
+            "instance": "burma14_synth",
+            "feasible": true,
+            "reason": "ok",
+            "tour_length": 37.3615,
+            "optimum": 37.3615,
+            "score": 100.0,
+            "elapsed_s": 0.0
+          },
+          {
+            "instance": "cluster100_synth",
+            "feasible": true,
+            "reason": "ok",
+            "tour_length": 490.9754,
+            "optimum": 408.2958,
+            "score": 83.1601,
+            "elapsed_s": 0.002
+          },
+          {
+            "instance": "grid20_synth",
+            "feasible": true,
+            "reason": "ok",
+            "tour_length": 22.0,
+            "optimum": 20.0,
+            "score": 90.9091,
+            "elapsed_s": 0.0
+          },
+          {
+            "instance": "random225_synth",
+            "feasible": true,
+            "reason": "ok",
+            "tour_length": 14569.6843,
+            "optimum": 11817.1816,
+            "score": 81.108,
+            "elapsed_s": 0.008
+          },
+          {
+            "instance": "random500_synth",
+            "feasible": true,
+            "reason": "ok",
+            "tour_length": 19845.208,
+            "optimum": 18783.1331,
+            "score": 94.6482,
+            "elapsed_s": 0.041
+          },
+          {
+            "instance": "random50_synth",
+            "feasible": true,
+            "reason": "ok",
+            "tour_length": 701.2796,
+            "optimum": 611.9752,
+            "score": 87.2655,
+            "elapsed_s": 0.0
+          }
+        ],
+        "stdout": "n='ok'\n  random500_synth: feasible=True length=19845.208 score=94.65 reason='ok'\n  random50_synth: feasible=True length=701.2796 score=87.27 reason='ok'\nmetrics -> /tmp/feval_r1_22724wa8/metrics.json\n"
+      },
+      "elapsed": 0
+    },
+    {
+      "round": 1,
+      "elapsed": 118.7,
+      "metrics": {
+        "combined_score": 100.0,
+        "valid": 1,
+        "per_instance": [
+          {
+            "instance": "burma14_synth",
+            "feasible": true,
+            "reason": "ok",
+            "tour_length": 37.3615,
+            "optimum": 37.3615,
+            "score": 100.0,
+            "elapsed_s": 0.011
+          },
+          {
+            "instance": "cluster100_synth",
+            "feasible": true,
+            "reason": "ok",
+            "tour_length": 398.7576,
+            "optimum": 408.2958,
+            "score": 100.0,
+            "elapsed_s": 0.478
+          },
+          {
+            "instance": "grid20_synth",
+            "feasible": true,
+            "reason": "ok",
+            "tour_length": 20.0,
+            "optimum": 20.0,
+            "score": 100.0,
+            "elapsed_s": 0.018
+          },
+          {
+            "instance": "random225_synth",
+            "feasible": true,
+            "reason": "ok",
+            "tour_length": 11659.4052,
+            "optimum": 11817.1816,
+            "score": 100.0,
+            "elapsed_s": 0.339
+          },
+          {
+            "instance": "random500_synth",
+            "feasible": true,
+            "reason": "ok",
+            "tour_length": 17587.0388,
+            "optimum": 18783.1331,
+            "score": 100.0,
+            "elapsed_s": 0.7
+          },
+          {
+            "instance": "random50_synth",
+            "feasible": true,
+            "reason": "ok",
+            "tour_length": 596.7575,
+            "optimum": 611.9752,
+            "score": 100.0,
+            "elapsed_s": 0.162
+          }
+        ],
+        "stdout": "ok'\n  random500_synth: feasible=True length=17587.0388 score=100.00 reason='ok'\n  random50_synth: feasible=True length=596.7575 score=100.00 reason='ok'\nmetrics -> /tmp/feval_r1_22724wa8/metrics.json\n"
+      },
+      "source_preview": "\"\"\"Deterministic TSP heuristic for TSPLIB-style Euclidean symmetric instances.\n\nUses several constructive starts, candidate-neighborhood 2-opt, and repeated\ndou"
+    },
+    {
+      "round": 2,
+      "elapsed": 153.9,
+      "metrics": {
+        "combined_score": 100.0,
+        "valid": 1,
+        "per_instance": [
+          {
+            "instance": "burma14_synth",
+            "feasible": true,
+            "reason": "ok",
+            "tour_length": 37.3615,
+            "optimum": 37.3615,
+            "score": 100.0,
+            "elapsed_s": 0.005
+          },
+          {
+            "instance": "cluster100_synth",
+            "feasible": true,
+            "reason": "ok",
+            "tour_length": 402.3074,
+            "optimum": 408.2958,
+            "score": 100.0,
+            "elapsed_s": 0.914
+          },
+          {
+            "instance": "grid20_synth",
+            "feasible": true,
+            "reason": "ok",
+            "tour_length": 20.0,
+            "optimum": 20.0,
+            "score": 100.0,
+            "elapsed_s": 0.008
+          },
+          {
+            "instance": "random225_synth",
+            "feasible": true,
+            "reason": "ok",
+            "tour_length": 11695.911,
+            "optimum": 11817.1816,
+            "score": 100.0,
+            "elapsed_s": 1.622
+          },
+          {
+            "instance": "random500_synth",
+            "feasible": true,
+            "reason": "ok",
+            "tour_length": 17539.5056,
+            "optimum": 18783.1331,
+            "score": 100.0,
+            "elapsed_s": 2.934
+          },
+          {
+            "instance": "random50_synth",
+            "feasible": true,
+            "reason": "ok",
+            "tour_length": 596.7575,
+            "optimum": 611.9752,
+            "score": 100.0,
+            "elapsed_s": 0.128
+          }
+        ],
+        "stdout": "ok'\n  random500_synth: feasible=True length=17539.5056 score=100.00 reason='ok'\n  random50_synth: feasible=True length=596.7575 score=100.00 reason='ok'\nmetrics -> /tmp/feval_r2_nd8w2o81/metrics.json\n"
+      },
+      "source_preview": "\"\"\"Deterministic pure-Python TSP heuristic for TSPLIB-style Euclidean instances.\n\nUses several cheap constructive starts, then candidate-restricted 2-opt with a"
+    },
+    {
+      "round": 3,
+      "elapsed": 182.0,
+      "metrics": {
+        "combined_score": 100.0,
+        "valid": 1,
+        "per_instance": [
+          {
+            "instance": "burma14_synth",
+            "feasible": true,
+            "reason": "ok",
+            "tour_length": 37.3615,
+            "optimum": 37.3615,
+            "score": 100.0,
+            "elapsed_s": 0.023
+          },
+          {
+            "instance": "cluster100_synth",
+            "feasible": true,
+            "reason": "ok",
+            "tour_length": 396.241,
+            "optimum": 408.2958,
+            "score": 100.0,
+            "elapsed_s": 1.214
+          },
+          {
+            "instance": "grid20_synth",
+            "feasible": true,
+            "reason": "ok",
+            "tour_length": 20.0,
+            "optimum": 20.0,
+            "score": 100.0,
+            "elapsed_s": 0.046
+          },
+          {
+            "instance": "random225_synth",
+            "feasible": true,
+            "reason": "ok",
+            "tour_length": 11546.4466,
+            "optimum": 11817.1816,
+            "score": 100.0,
+            "elapsed_s": 2.967
+          },
+          {
+            "instance": "random500_synth",
+            "feasible": true,
+            "reason": "ok",
+            "tour_length": 17047.5757,
+            "optimum": 18783.1331,
+            "score": 100.0,
+            "elapsed_s": 12.797
+          },
+          {
+            "instance": "random50_synth",
+            "feasible": true,
+            "reason": "ok",
+            "tour_length": 596.7575,
+            "optimum": 611.9752,
+            "score": 100.0,
+            "elapsed_s": 0.348
+          }
+        ],
+        "stdout": "ok'\n  random500_synth: feasible=True length=17047.5757 score=100.00 reason='ok'\n  random50_synth: feasible=True length=596.7575 score=100.00 reason='ok'\nmetrics -> /tmp/feval_r3_f8tart93/metrics.json\n"
+      },
+      "source_preview": "\"\"\"Deterministic pure-Python TSP heuristic for TSPLIB-style Euclidean instances.\n\nBuilds several constructive tours, improves them with candidate-restricted 2-o"
+    }
+  ],
+  "best_round_source": "\"\"\"Deterministic TSP heuristic for TSPLIB-style Euclidean symmetric instances.\n\nUses several constructive starts, candidate-neighborhood 2-opt, and repeated\ndou"
+}

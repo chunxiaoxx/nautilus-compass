@@ -1,0 +1,67 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "409c8fa447cfd7c9eda9c2be544520dbf85e4aeb",
+  "reference_fix_commit": "767fb5d55337453ca70278ccefaf85a1ea57aece",
+  "subject": "fix(mcp): thread-safe EventStore + session-store constants (Task 3 review)",
+  "test_files": [
+   "tests/mcp_durable/test_event_store.py"
+  ],
+  "source_files": [
+   "mcp_durable/event_store.py",
+   "mcp_server.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass"
+ },
+ "test_id": "tests/mcp_durable/test_event_store.py::test_concurrent_appends_yield_unique_contiguous_ids",
+ "source_rel": "mcp_durable\\event_store.py",
+ "provider": "ark_glm",
+ "test_passed": true,
+ "winning_diff": "--- a/mcp_durable/event_store.py\n+++ b/mcp_durable/event_store.py\n@@ -19,6 +19,7 @@\n \n import time\n+import threading\n from typing import Callable, Optional\n \n \n@@ -42,14 +43,16 @@\n         self._events: list[dict] = []\n         self._next_id = 1  # first append() returns 1\n+        self._lock = threading.Lock()\n \n     def append(self, frame: dict) -> int:\n         \"\"\"Store ``frame``, return its assigned global id.\"\"\"\n-        event_id = self._next_id\n-        self._next_id += 1\n-        self._events.append(\n-            {\"id\": event_id, \"ts\": self._now_fn(), \"frame\": frame}\n-        )\n-        self._evict()\n-        return event_id\n+        with self._lock:\n+            event_id = self._next_id\n+            self._next_id += 1\n+            self._events.append(\n+                {\"id\": event_id, \"ts\": self._now_fn(), \"frame\": frame}\n+            )\n+            self._evict()\n+            return event_id\n \n     def _evict(self) -> None:\n@@ -86,21 +89,22 @@\n         Returned events are copies \u2014 mutating them does not affect the store.\n         \"\"\"\n-        if last_id == 0:\n-            return [self._copy_event(e) for e in self._events]\n-\n-        if not self._events:\n-            # Nothing retained. If the client already saw everything we ever\n-            # had (last_id >= high-water mark), nothing newer exists \u2192 []. If\n-            # it lags behind ids we once held but evicted \u2192 unfillable gap.\n-            highest_seen = self._next_id - 1\n-            if last_id >= highest_seen:\n-                return []\n-            return None\n-\n-        oldest_id = self._events[0][\"id\"]\n-        # The gap is fillable only if the next id the client needs\n-        # (last_id + 1) is still retained, i.e. last_id + 1 >= oldest_id.\n-        if last_id + 1 < oldest_id:\n-            return None\n-\n-        return [self._copy_event(e) for e in self._events if e[\"id\"] > last_id]\n+        with self._lock:\n+            if last_id == 0:\n+                return [self._copy_event(e) for e in self._events]\n+\n+            if not self._events:\n+                # Nothing retained. If the client already saw everything we ever\n+                # had (last_id >= high-water mark), nothing newer exists \u2192 []. If\n+                # it lags behind ids we once held but evicted \u2192 unfillable gap.\n+                highest_seen = self._next_id - 1\n+                if last_id >= highest_seen:\n+                    return []\n+                return None\n+\n+            oldest_id = self._events[0][\"id\"]\n+            # The gap is fillable only if the next id the client needs\n+            # (last_id + 1) is still retained, i.e. last_id + 1 >= oldest_id.\n+            if last_id + 1 < oldest_id:\n+                return None\n+\n+            return [self._copy_event(e) for e in self._events if e[\"id\"] > last_id]",
+ "budget_exceeded": false,
+ "total_tokens": 38471,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "completion_tokens": 15183,
+    "prompt_tokens": 1916,
+    "total_tokens": 17099,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 14827
+    }
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: mcp_durable/event_store.py:41\nerror: mcp_durable/event_store.py: patch does not apply\n\n[attempt2 backend] error: patch failed: mcp_durable/event_store.py:41\nerror: mcp_durable/event_store.py: patch does not apply\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "completion_tokens": 19345,
+    "prompt_tokens": 2027,
+    "total_tokens": 21372,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 18382
+    }
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "add_thread_lock_to_append_and_replay",
+ "duration_s": 2319.1,
+ "replayed": true,
+ "verdict_post_status": 200
+}

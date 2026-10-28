@@ -1,0 +1,82 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "b0331f195ccc71dacdd4e2761430eb3bf4e37564",
+  "reference_fix_commit": "355a214f29d40cbfe49363460766cdf4199d3030",
+  "subject": "fix(produce): code-fix/SWE max_tokens \u9ed8\u8ba4 8000\u219232000(\u4e3b\u4fee\u00b7\u5bf9\u9f50 ALE\u00b7\u914d fallback \u515c\u5e95)",
+  "test_files": [
+   "tests/test_fde_consumer_codefix_wiring.py"
+  ],
+  "source_files": [
+   "fde_capsule/fde_consumer.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5"
+ },
+ "test_id": "tests/test_fde_consumer_codefix_wiring.py::test_codefix_llm_budget_defaults",
+ "source_rel": "fde_capsule\\fde_consumer.py",
+ "provider": "ark_glm",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 39338,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "completion_tokens": 711,
+    "prompt_tokens": 4552,
+    "total_tokens": 5263,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 409
+    }
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: fde_capsule/fde_consumer.py:228\nerror: fde_capsule/fde_consumer.py: patch does not apply\n\n[attempt2 backend] error: patch failed: fde_capsule/fde_consumer.py:228\nerror: fde_capsule/fde_consumer.py: patch does not apply\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "completion_tokens": 13057,
+    "prompt_tokens": 4667,
+    "total_tokens": 17724,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 747
+    }
+   },
+   "feedback_kind": "no_json",
+   "feedback_excerpt": "\",re.DOTALL)`\nLine 11: `_THINK_OPEN = re.compile(r\"<think>.*$\", re.DOTALL)`\nLine 12: empty\nLine 13: empty\nLine 14: `def strip_think(text: str) -> str:`\n... this is tedious.\n\nLet me look for `_codefix_llm_budget`.\n\n```python\ndef _codefix_llm_budget():\n    \"\"\"code-fix/kernel produce \u7684 LLM \u9884\u7b97(timeout \u79d2, max_tokens)\u00b7env \u53ef\u8986\u76d6\u3002\n\n    \u5f3a\u6a21\u578b\u63a8\u7406\u4ea7 kernel:120s/4000tok \u5fc5\u8d85\u65f6\u6216\u7a7a\u54cd\u5e94(p13 produce \u8d85\u65f6\u6839\u56e0 + compass \u5b9e\u6d4b)\u3002\n    \u9ed8\u8ba4\u957f\u8d85\u65f6(600s)+\u5927 token(8000)\u00b7V5_CODEFIX_TIMEOUT / V5_CODEFIX_MAX_TOKENS \u8986\u76d6\u3002\n    \"\"\"\n    import os\n    re"
+  },
+  {
+   "turn": 3,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "completion_tokens": 11749,
+    "prompt_tokens": 4602,
+    "total_tokens": 16351,
+    "prompt_tokens_details": {
+     "cached_tokens": 4480
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 3053
+    }
+   },
+   "feedback_kind": "no_json",
+   "feedback_excerpt": ".*?\", re.DOTALL)`\nLine 20: `_THINK_OPEN = re.compile(r\".*$\", re.DOTALL)`\nLine 21: (empty)\nLine 22: (empty)\nLine 23: `def strip_think(text: str) -> str:`\n...\n\nThis is getting tedious. Let me just provide a reasonable diff. Actually, since git apply matches context, I'll provide a diff that includes enough unique context lines. The line numbers in the @@ don't have to be exact for git apply to work if the context is unique enough. But actually, git apply can fail if the line numbers are way off. L"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 320.1
+}

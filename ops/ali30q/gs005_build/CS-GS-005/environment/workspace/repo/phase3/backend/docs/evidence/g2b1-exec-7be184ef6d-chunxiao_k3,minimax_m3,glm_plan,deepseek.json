@@ -1,0 +1,73 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "3cfe3354a70c7e978e1b790484b764c2751ac34c",
+  "reference_fix_commit": "7be184ef6dfaeaefef345891d05450a99633fab8",
+  "subject": "fix(dispatch): _active_batches\u5e03\u5c14\u8bed\u4e49\u8bef\u7528\u2014\u2014timer\u4e0a\u7ebf\u4ee5\u6765\u6052no-active\u4ece\u672a\u81ea\u52a8\u63a8\u8fdb\u8fc7(M1\u6536\u5b98\u5b9e\u4e3a\u624b\u52a8);\u5224'\u65e0final'\u6539not _exists",
+  "test_files": [
+   "phase3/backend/tests/test_org_chain.py"
+  ],
+  "source_files": [
+   "phase3/backend/ops/org_chain_dispatch.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/test_org_chain.py::test_active_batches_finds_unfinished",
+ "source_rel": "ops\\org_chain_dispatch.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/ops/org_chain_dispatch.py\n+++ b/ops/org_chain_dispatch.py\n@@ -70,7 +70,7 @@ def _active_batches(db) -> list[str]:\n     rows = db.query(OrgMailbox).filter(OrgMailbox.task_meta.isnot(None)).all()\n     batches = {r.task_meta.get(\"batch\") for r in rows\n                if r.task_meta and r.task_meta.get(\"chain\") == \"m1\" and r.task_meta.get(\"batch\")}\n-    return sorted(b for b in batches if _exists(db, f\"m1-{b}-final\") is None)\n+    return sorted(b for b in batches if not _exists(db, f\"m1-{b}-final\"))\n \n \n def main(argv: list[str]) -> int:\n",
+ "budget_exceeded": false,
+ "total_tokens": 2214,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 1936,
+    "completion_tokens": 278,
+    "total_tokens": 2214,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 1680,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 278,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 1936,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "fix_active_batches_none_check",
+ "duration_s": 21.4,
+ "verdict_post_status": 200
+}

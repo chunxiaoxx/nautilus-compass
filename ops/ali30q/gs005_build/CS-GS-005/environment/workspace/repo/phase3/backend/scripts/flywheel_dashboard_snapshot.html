@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Nautilus · RSI+FDE 控制面</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin:0; font:15px/1.5 -apple-system,Segoe UI,Roboto,'Microsoft YaHei',sans-serif;
+         background:#0d1117; color:#e6edf3; padding:24px; }
+  h1 { font-size:22px; margin:0 0 4px; }
+  .sub { color:#7d8590; font-size:13px; margin-bottom:20px; }
+  .grid { display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); }
+  .card { background:#161b22; border:1px solid #30363d; border-radius:10px; padding:16px; }
+  .card h2 { font-size:14px; margin:0 0 12px; color:#7d8590; text-transform:uppercase; letter-spacing:.5px; }
+  .stat { display:flex; align-items:baseline; gap:8px; margin-bottom:10px; }
+  .stat .n { font-size:30px; font-weight:700; }
+  .stat .l { color:#7d8590; font-size:13px; }
+  .ok { color:#3fb950; } .bad { color:#f85149; } .dim { color:#7d8590; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  td,th { text-align:left; padding:5px 6px; border-bottom:1px solid #21262d; }
+  th { color:#7d8590; font-weight:500; }
+  .pill { display:inline-block; padding:1px 7px; border-radius:10px; font-size:11px; }
+  .pill.pass { background:#1f3b25; color:#3fb950; } .pill.fail { background:#3b1f1f; color:#f85149; }
+  .bar { height:6px; background:#21262d; border-radius:3px; overflow:hidden; margin-top:4px; }
+  .bar>i { display:block; height:100%; background:#3fb950; }
+  .err { color:#f85149; padding:12px; }
+  footer { color:#7d8590; font-size:12px; margin-top:20px; }
+</style>
+<script>window.__SNAPSHOT__ = {"success": true, "data": {"verdicts": {"summary": {"total": 10, "passed": 10, "pass_rate": 1.0}, "recent": [{"verdict_id": "soul|qc|expert_t2_drift_detection_20260612|a8b807a3ab", "task_uid": "expert_t2_drift_detection_20260612", "source": "soul", "overall_pass": true, "veto_failed": false, "score": 1.0, "created_at": "2026-06-16 02:09:57"}, {"verdict_id": "soul|l0fire_ignite_huffman_20260614", "task_uid": "l0fire_ignite_huffman_20260614", "source": "soul", "overall_pass": true, "veto_failed": false, "score": 0.8, "created_at": "2026-06-16 02:09:57"}, {"verdict_id": "bench|compass_exp_c2_stdin_jsonrpc_cjk_001|2053f25b", "task_uid": "compass_exp_c2_stdin_jsonrpc_cjk_001", "source": "compass/bench_eval", "overall_pass": true, "veto_failed": false, "score": 1.0, "created_at": "2026-06-16 02:09:57"}, {"verdict_id": "bench|compass_exp_c2b_chunked_utf8_split_001|cf777beb", "task_uid": "compass_exp_c2b_chunked_utf8_split_001", "source": "compass/bench_eval", "overall_pass": true, "veto_failed": false, "score": 1.0, "created_at": "2026-06-16 02:09:57"}, {"verdict_id": "bench|compass_exp_c2c_csv_rfc4180_001|7a0e2ba4", "task_uid": "compass_exp_c2c_csv_rfc4180_001", "source": "compass/bench_eval", "overall_pass": true, "veto_failed": false, "score": 1.0, "created_at": "2026-06-16 02:09:57"}, {"verdict_id": "bench|compass_exp_c2d_utf8_byte_truncation_001|814232d3", "task_uid": "compass_exp_c2d_utf8_byte_truncation_001", "source": "compass/bench_eval", "overall_pass": true, "veto_failed": false, "score": 1.0, "created_at": "2026-06-16 02:09:57"}, {"verdict_id": "bench|compass_exp_c3_ndjson_bom_crlf_001|f26a9036", "task_uid": "compass_exp_c3_ndjson_bom_crlf_001", "source": "compass/bench_eval", "overall_pass": true, "veto_failed": false, "score": 1.0, "created_at": "2026-06-16 02:09:57"}, {"verdict_id": "bench|compass_exp_d1_version_key_join_shadowing_001|461d2430", "task_uid": "compass_exp_d1_version_key_join_shadowing_001", "source": "compass/bench_eval", "overall_pass": true, "veto_failed": false, "score": 1.0, "created_at": "2026-06-16 02:09:57"}, {"verdict_id": "bench|compass_exp_f1_money_half_up_rounding_001|98fb0974", "task_uid": "compass_exp_f1_money_half_up_rounding_001", "source": "compass/bench_eval", "overall_pass": true, "veto_failed": false, "score": 1.0, "created_at": "2026-06-16 02:09:57"}, {"verdict_id": "bench|compass_exp_f2_rate_unit_caliber_001|23e73f4d", "task_uid": "compass_exp_f2_rate_unit_caliber_001", "source": "compass/bench_eval", "overall_pass": true, "veto_failed": false, "score": 1.0, "created_at": "2026-06-16 02:09:57"}]}, "flywheel": {"deterministic": {"total": 8, "passed": 8, "recent": [{"task_uid": "compass_exp_c2_stdin_jsonrpc_cjk_001", "overall_pass": true, "score": 1.0, "created_at": "2026-06-16 02:09:57"}, {"task_uid": "compass_exp_c2b_chunked_utf8_split_001", "overall_pass": true, "score": 1.0, "created_at": "2026-06-16 02:09:57"}, {"task_uid": "compass_exp_c2c_csv_rfc4180_001", "overall_pass": true, "score": 1.0, "created_at": "2026-06-16 02:09:57"}, {"task_uid": "compass_exp_c2d_utf8_byte_truncation_001", "overall_pass": true, "score": 1.0, "created_at": "2026-06-16 02:09:57"}, {"task_uid": "compass_exp_c3_ndjson_bom_crlf_001", "overall_pass": true, "score": 1.0, "created_at": "2026-06-16 02:09:57"}, {"task_uid": "compass_exp_d1_version_key_join_shadowing_001", "overall_pass": true, "score": 1.0, "created_at": "2026-06-16 02:09:57"}, {"task_uid": "compass_exp_f1_money_half_up_rounding_001", "overall_pass": true, "score": 1.0, "created_at": "2026-06-16 02:09:57"}, {"task_uid": "compass_exp_f2_rate_unit_caliber_001", "overall_pass": true, "score": 1.0, "created_at": "2026-06-16 02:09:57"}]}, "by_source": [{"source": "compass/bench_eval", "total": 8, "passed": 8}, {"source": "soul", "total": 2, "passed": 2}]}, "agents": {"total": 0, "active": 0, "by_status": []}, "events": {"summary": {"total": 0, "processed": 0}, "by_type": [], "recent": []}, "poi": {"poi_eligible": 10, "eligible_tasks": ["compass_exp_c2_stdin_jsonrpc_cjk_001", "compass_exp_c2b_chunked_utf8_split_001", "compass_exp_c2c_csv_rfc4180_001", "compass_exp_c2d_utf8_byte_truncation_001", "compass_exp_c3_ndjson_bom_crlf_001", "compass_exp_d1_version_key_join_shadowing_001", "compass_exp_f1_money_half_up_rounding_001", "compass_exp_f2_rate_unit_caliber_001", "expert_t2_drift_detection_20260612", "l0fire_ignite_huffman_20260614"]}, "generated_at": "2026-06-15 (snapshot · 真飞轮数据)"}};</script>
+</head>
+<body>
+<h1>🐚 Nautilus · RSI+FDE 控制面</h1>
+<div class="sub" id="sub">加载中…</div>
+<div class="grid" id="grid"></div>
+<footer>VIEW 层 · 只读 · 数据源 <code>/api/platform/rsi-fde</code> · 外部 FDE verdict = 唯一逃离自指经济的 fitness</footer>
+<script>
+const esc = s => String(s==null?'':s).replace(/[&<>]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+async function load() {
+  const grid = document.getElementById('grid'), sub = document.getElementById('sub');
+  try {
+    const body = window.__SNAPSHOT__;
+    if (!body.success) throw new Error(body.error || 'view error');
+    const d = body.data;
+    sub.textContent = '快照 ' + (d.generated_at||'').replace('T',' ').slice(0,19) + ' UTC';
+
+    // ── FDE Verdicts ──
+    const v = d.verdicts, vs = v.summary;
+    const vrows = v.recent.map(x =>
+      `<tr><td>${esc(x.task_uid)}</td><td>${esc(x.source)}</td>`+
+      `<td><span class="pill ${x.overall_pass?'pass':'fail'}">${x.overall_pass?'PASS':'FAIL'}</span></td>`+
+      `<td class="dim">${x.score==null?'–':(x.score*100).toFixed(0)+'%'}</td></tr>`).join('');
+    const fdeCard =
+      `<div class="card"><h2>FDE Verdicts · 外部买方验收</h2>`+
+      `<div class="stat"><span class="n ok">${vs.passed}</span><span class="l">/ ${vs.total} 通过</span>`+
+      `<span class="l">· 通过率 ${(vs.pass_rate*100).toFixed(0)}%</span></div>`+
+      `<div class="bar"><i style="width:${(vs.pass_rate*100).toFixed(0)}%"></i></div>`+
+      `<table><thead><tr><th>任务</th><th>来源</th><th>判定</th><th>分</th></tr></thead><tbody>${vrows||'<tr><td colspan=4 class=dim>暂无</td></tr>'}</tbody></table></div>`;
+
+    // ── Agents ──
+    const a = d.agents;
+    const arows = a.by_status.map(x =>
+      `<tr><td>${esc(x.status)}</td><td class="dim">${x.count}</td></tr>`).join('');
+    const agentCard =
+      `<div class="card"><h2>Agents · 编队</h2>`+
+      `<div class="stat"><span class="n ${a.active>0?'ok':'dim'}">${a.active}</span><span class="l">活跃 / ${a.total} 总</span></div>`+
+      `<table><thead><tr><th>状态</th><th>数</th></tr></thead><tbody>${arows||'<tr><td colspan=2 class=dim>暂无</td></tr>'}</tbody></table></div>`;
+
+    // ── Events ──
+    const e = d.events, es = e.summary;
+    const etrows = e.by_type.map(x =>
+      `<tr><td>${esc(x.event_type)}</td><td class="dim">${x.count}</td></tr>`).join('');
+    const eventCard =
+      `<div class="card"><h2>事件流 · platform_external_events</h2>`+
+      `<div class="stat"><span class="n">${es.total}</span><span class="l">事件 · ${es.processed} 已处理</span></div>`+
+      `<table><thead><tr><th>类型</th><th>数</th></tr></thead><tbody>${etrows||'<tr><td colspan=2 class=dim>暂无</td></tr>'}</tbody></table></div>`;
+
+    // ── RSI 飞轮 · 第3类确定性闭环 ──
+    const fw = d.flywheel || {deterministic:{total:0,passed:0,recent:[]}, by_source:[]};
+    const det = fw.deterministic;
+    const fwRows = (det.recent||[]).map(x =>
+      `<tr><td>${esc(x.task_uid)}</td>`+
+      `<td><span class="pill ${x.overall_pass?'pass':'fail'}">${x.overall_pass?'reward 1.0':'reward 0'}</span></td>`+
+      `<td class="dim">${x.score==null?'–':(x.score*100).toFixed(0)+'%'}</td></tr>`).join('');
+    const srcRows = (fw.by_source||[]).map(x =>
+      `<tr><td>${esc(x.source)}</td><td class="dim">${x.passed}/${x.total} 过</td></tr>`).join('');
+    const flywheelCard =
+      `<div class="card"><h2>🔁 RSI 飞轮 · 第3类确定性闭环</h2>`+
+      `<div class="stat"><span class="n ok">${det.passed}</span><span class="l">/ ${det.total} 题确定性通过</span></div>`+
+      `<div class="dim" style="font-size:11px;margin-bottom:8px">mint → claim → produce → <b>bench_eval 机器判(非 LLM)</b> → settle → PoI · source=compass/bench_eval</div>`+
+      `<table><thead><tr><th>燃料题</th><th>reward</th><th>分</th></tr></thead><tbody>${fwRows||'<tr><td colspan=3 class=dim>暂无确定性 verdict</td></tr>'}</tbody></table>`+
+      `<div class="dim" style="margin-top:10px;font-size:11px">分轨(source):</div>`+
+      `<table><tbody>${srcRows||'<tr><td colspan=2 class=dim>暂无</td></tr>'}</tbody></table></div>`;
+
+    // ── PoI ──
+    const p = d.poi;
+    const poiCard =
+      `<div class="card"><h2>PoI 可计入 · 平台侧推导</h2>`+
+      `<div class="stat"><span class="n ok">${p.poi_eligible}</span><span class="l">题通过 → 可计 PoI</span></div>`+
+      `<div class="dim">${p.eligible_tasks.map(esc).join(' · ')||'暂无'}</div>`+
+      `<div class="dim" style="margin-top:8px;font-size:11px">来源 = 通过的 FDE verdict(不读 compass 内部账本)</div></div>`;
+
+    grid.innerHTML = flywheelCard + fdeCard + agentCard + eventCard + poiCard;
+  } catch (err) {
+    sub.innerHTML = '<span class="err">加载失败：'+esc(err.message)+'</span>';
+  }
+}
+load();
+</script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "c943271a269e6941fcc51e3506ead074b9dda6be",
+  "reference_fix_commit": "0f71fe771ceefd5715b3b375c9b2e3a701c0648e",
+  "subject": "Fix dual-option arbitration to respect explicit defaults",
+  "test_files": [
+   "tests/test_options.py"
+  ],
+  "source_files": [
+   "src/click/core.py"
+  ],
+  "repo_path": "C:/Users/chunx/ext_mine"
+ },
+ "test_id": "tests/test_options.py::test_bool_flag_group_competition",
+ "source_rel": "src\\click\\core.py",
+ "provider": "t6B-minimax_m3",
+ "provider_used": "t6B-minimax_m3",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 30539,
+    "output_tokens": 453,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: src/click/core.py:2089\nerror: src/click/core.py: patch does not apply\n\n[attempt2 backend] error: patch failed: src/click/core.py:2089\nerror: src/click/core.py: patch does not apply\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 195,
+    "output_tokens": 368,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 30464,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: src/click/core.py:2840\nerror: src/click/core.py: patch does not apply\n\n[attempt2 backend] error: patch failed: src/click/core.py:2840\nerror: src/click/core.py: patch does not apply\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 30520,
+    "output_tokens": 541,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "                id=\"three-flags-explicit-last\",\r\n            ),\r\n            pytest.param(\r\n                [\r\n                    (\"--explicit\", {\"flag_value\": False, \"default\": False}),\r\n                    (\"--auto-a\", {\"flag_value\": True}),\r\n                    (\"--auto-b\", {\"flag_value\": True}),\r\n                ],\r\n                [],\r\n                False,\r\n                id=\"three-flags-explicit-first\",\r\n            ),\r\n            # Three-state pattern: explicit ``default=None`` on one option\r\n            # must beat a sibling's auto-derived ``False``.\r\n            pytest.param(\r\n                [\r\n                    (\"--without-xyz\", {\"flag_value\": False}),\r\n                    (\"--with-xyz\", {\"flag_value\": True, \"default\": None}),\r\n                ],\r\n                [],\r\n                None,\r\n                id=\"explicit-default-none-three-state\",\r\n            ),\r\n            pytest.param(\r\n                [\r\n                    (\"--without-xyz\", {\"flag_value\": False}),\r\n                    (\"--with-xyz\", {\"flag_value\": True, \"default\": None}),\r\n                ],\r\n                [\"--with-xyz\"],\r\n                True,\r\n                id=\"explicit-default-none-three-state-with\",\r\n            ),\r\n            pytest.param(\r\n                [\r\n                    (\"--without-xyz\", {\"flag_value\": False}),\r\n                    (\"--with-xyz\", {\"flag_value\": True, \"default\": None}),\r\n                ],\r\n                [\"--without-xyz\"],\r\n                False,\r\n                id=\"explicit-default-none-three-state-without\",\r\n            ),\r\n            # Command-line input always beats any default, regardless of\r\n            # which option carried the explicit default.\r\n            pytest.param(\r\n                [\r\n                    (\"--with-xyz\", {\"flag_value\": True, \"default\": True}),\r\n                    (\"--without-xyz\", {\"flag_value\": False}),\r\n                ],\r\n                [\"--without-xyz\"],\r\n                False,\r\n                id=\"cmdline-beats-explicit-default\",\r\n            ),\r\n            pytest.param(\r\n                [\r\n                    (\"--without-xyz\", {\"flag_value\": False, \"default\": False}),\r\n                    (\"--with-xyz\", {\"flag_value\": True}),\r\n                ],\r\n                [\"--with-xyz\"],\r\n                True,\r\n                id=\"cmdline-beats-explicit-default-symmetric\",\r\n            ),\r\n        ],\r\n    )\r\n    def test_bool_flag_group_competition(runner, opts, args, expected):\r\n        \"\"\"Competing boolean flags sharing a single parameter name.\r\n    \r\n        Verifies the arbitration rules between options that target the same\r\n        variable name in a feature-switch group.\r\n    \r\n        Regression test for https://github.com/pallets/click/issues/3403\r\n        \"\"\"\r\n    \r\n        @click.command()\r\n        def cli(enable_xyz):\r\n            click.echo(repr(enable_xyz), nl=False)\r\n    \r\n        for opt_name, opt_kwargs in opts:\r\n            cli = click.option(opt_name, \"enable_xyz\", **opt_kwargs)(cli)\r\n    \r\n        result = runner.invoke(cli, args)\r\n        assert result.exit_code == 0, result.output\r\n>       assert result.output == repr(expected)\r\nE       AssertionError: assert 'False' == 'None'\r\nE         \r\nE         - None\r\nE         + False\r\n\r\ntests\\test_options.py:2836: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_options.py::test_bool_flag_group_competition[3403-reproducer-no-args]\r\nFAILED tests/test_options.py::test_bool_flag_group_competition[explicit-default-true-on-negative]\r\nFAILED tests/test_options.py::test_bool_flag_group_competition[both-explicit-defaults-last-wins]\r\nFAILED tests/test_options.py::test_bool_flag_group_competition[both-explicit-defaults-last-wins-swapped]\r\nFAILED tests/test_options.py::test_bool_flag_group_competition[three-flags-explicit-last]\r\nFAILED tests/test_options.py::test_bool_flag_group_competition[explicit-default-none-three-state]\r\n6 failed, 16 passed in 0.66s\r\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 36.4
+}

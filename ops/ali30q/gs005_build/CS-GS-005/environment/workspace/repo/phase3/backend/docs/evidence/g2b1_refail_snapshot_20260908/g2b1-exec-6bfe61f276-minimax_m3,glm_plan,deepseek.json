@@ -1,0 +1,71 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "5d0d8996b9b2a7457fa565c883d501e277d1ddb4",
+  "reference_fix_commit": "6bfe61f276f35e2ad4a64c5bcbc8536b89a2ba62",
+  "subject": "fix(platform): preserve V2 replay on opaque budget rejection",
+  "test_files": [
+   "phase3/backend/tests/platform_protocol/test_g2_a0_model_gate_v2_cli.py"
+  ],
+  "source_files": [
+   "phase3/backend/tests/platform_protocol/g2_a0_model_gate_v2_cli.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/platform_protocol/test_g2_a0_model_gate_v2_cli.py::test_transport_budget_error_is_replay_safe_inconclusive",
+ "source_rel": "tests\\platform_protocol\\g2_a0_model_gate_v2_cli.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 5443,
+    "output_tokens": 296,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_as_ng61b\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 1 item\r\n\r\ntests/platform_protocol/test_g2_a0_model_gate_v2_cli.py::test_transport_budget_error_is_replay_safe_inconclusive FAILED [100%]\r\n\r\n================================== FAILURES ===================================\r\n___________ test_transport_budget_error_is_replay_safe_inconclusive ___________\r\ntests\\platform_protocol\\test_g2_a0_model_gate_v2_cli.py:233: in test_transport_budget_error_is_replay_safe_inconclusive\r\n    first = runner.run(\r\ntests\\platform_protocol\\g2_a0_model_gate_v2_cli.py:271: in run\r\n    evidence = self._build_evidence(\r\ntests\\platform_protocol\\g2_a0_model_gate_v2_cli.py:330: in _build_evidence\r\n    return ModelGateEvidenceV2(\r\n<string>:37: in __init__\r\n    ???\r\ntests\\platform_protocol\\g2_a0_model_gate_v2_cli.py:129: in __post_init__\r\n    _fail(\"budget_evidence_mismatch\")\r\ntests\\platform_protocol\\g2_a0_model_gate_v2_cli.py:68: in _fail\r\n    raise ModelGateRunnerViolation(code)\r\nE   g2_a0_model_gate_cli.ModelGateRunnerViolation: budget_evidence_mismatch\r\n=========================== short test summary info ===========================\r\nFAILED tests/platform_protocol/test_g2_a0_model_gate_v2_cli.py::test_transport_budget_error_is_replay_safe_inconclusive\r\n============================== 1 failed in 0.38s ==============================\r\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 5803,
+    "output_tokens": 328,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_as_ng61b\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 1 item\r\n\r\ntests/platform_protocol/test_g2_a0_model_gate_v2_cli.py::test_transport_budget_error_is_replay_safe_inconclusive FAILED [100%]\r\n\r\n================================== FAILURES ===================================\r\n___________ test_transport_budget_error_is_replay_safe_inconclusive ___________\r\ntests\\platform_protocol\\test_g2_a0_model_gate_v2_cli.py:246: in test_transport_budget_error_is_replay_safe_inconclusive\r\n    assert first.decision.status == \"inconclusive\"\r\nE   AssertionError: assert 'rejected' == 'inconclusive'\r\nE     \r\nE     - inconclusive\r\nE     + rejected\r\n=========================== short test summary info ===========================\r\nFAILED tests/platform_protocol/test_g2_a0_model_gate_v2_cli.py::test_transport_budget_error_is_replay_safe_inconclusive\r\n============================== 1 failed in 0.65s ==============================\r\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 5682,
+    "output_tokens": 264,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_as_ng61b\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 1 item\r\n\r\ntests/platform_protocol/test_g2_a0_model_gate_v2_cli.py::test_transport_budget_error_is_replay_safe_inconclusive FAILED [100%]\r\n\r\n================================== FAILURES ===================================\r\n___________ test_transport_budget_error_is_replay_safe_inconclusive ___________\r\ntests\\platform_protocol\\test_g2_a0_model_gate_v2_cli.py:233: in test_transport_budget_error_is_replay_safe_inconclusive\r\n    first = runner.run(\r\ntests\\platform_protocol\\g2_a0_model_gate_v2_cli.py:278: in run\r\n    evidence = self._build_evidence(\r\ntests\\platform_protocol\\g2_a0_model_gate_v2_cli.py:337: in _build_evidence\r\n    return ModelGateEvidenceV2(\r\n<string>:37: in __init__\r\n    ???\r\ntests\\platform_protocol\\g2_a0_model_gate_v2_cli.py:128: in __post_init__\r\n    _fail(\"budget_evidence_mismatch\")\r\ntests\\platform_protocol\\g2_a0_model_gate_v2_cli.py:68: in _fail\r\n    raise ModelGateRunnerViolation(code)\r\nE   g2_a0_model_gate_cli.ModelGateRunnerViolation: budget_evidence_mismatch\r\n=========================== short test summary info ===========================\r\nFAILED tests/platform_protocol/test_g2_a0_model_gate_v2_cli.py::test_transport_budget_error_is_replay_safe_inconclusive\r\n============================== 1 failed in 0.47s ==============================\r\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 26.0,
+ "verdict_post_status": 200
+}

@@ -1,0 +1,18 @@
+--- a/src/nautilus_fde_phase3/contracts.py
++++ b/src/nautilus_fde_phase3/contracts.py
+@@ def canonical_evidence_hash(payload: Any) -> str:
+     canonical_payload = json.dumps(
+         payload,
+-        ensure_ascii=True,
++        ensure_ascii=False,
+         separators=(",", ":"),
+         sort_keys=True,
+     )
+@@
+     canonical_body = json.dumps(
+         signed_envelope,
+-        ensure_ascii=True,
++        ensure_ascii=False,
+         separators=(",", ":"),
+         sort_keys=True,
+     )

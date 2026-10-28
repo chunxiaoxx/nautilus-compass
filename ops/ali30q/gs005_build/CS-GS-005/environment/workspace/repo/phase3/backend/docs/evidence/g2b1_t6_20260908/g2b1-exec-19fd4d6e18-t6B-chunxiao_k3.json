@@ -1,0 +1,72 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "c69643b60cf971cd5d8e5d3902632807ceab9b8f",
+  "reference_fix_commit": "19fd4d6e18bc9fce451f92f422696b11169faa57",
+  "subject": "Fix: Ensure fish completion handles multiline help strings correctly (#3126)",
+  "test_files": [
+   "tests/test_shell_completion.py"
+  ],
+  "source_files": [
+   "src/click/shell_completion.py"
+  ],
+  "repo_path": "C:/Users/chunx/ext_mine"
+ },
+ "test_id": "tests/test_shell_completion.py::test_fish_multiline_help_complete",
+ "source_rel": "src\\click\\shell_completion.py",
+ "provider": "t6B-chunxiao_k3",
+ "provider_used": "t6B-chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/src/click/shell_completion.py\n+++ b/src/click/shell_completion.py\n@@ -183,7 +183,7 @@\n \n     for completion in $response;\n-        set -l metadata (string split \",\" $completion);\n+        set -l metadata (string split \\n $completion);\n \n         if test $metadata[1] = \"dir\";\n             __fish_complete_directories $metadata[2];\n@@ -191,7 +191,11 @@\n             __fish_complete_path $metadata[2];\n         else if test $metadata[1] = \"plain\";\n-            echo $metadata[2];\n+            if test $metadata[3] != \"_\";\n+                echo $metadata[2]\\t$metadata[3];\n+            else;\n+                echo $metadata[2];\n+            end;\n         end;\n     end;\n end;\n@@ -424,8 +428,14 @@\n         return args, incomplete\n \n     def format_completion(self, item: CompletionItem) -> str:\n-        if item.help:\n-            return f\"{item.type},{item.value}\\t{item.help}\"\n-\n-        return f\"{item.type},{item.value}\"\n+        # The fish completion script splits each response line on literal\n+        # newlines, so any newline in the value or help would corrupt the\n+        # frame. Replace them with the two-character escape \"\\n\" so the\n+        # text round-trips through fish without breaking the format. The\n+        # \"_\" sentinel for missing help mirrors :class:`ZshComplete`.\n+        help_ = item.help or \"_\"\n+        value = item.value.replace(\"\\n\", r\"\\n\")\n+        help_escaped = help_.replace(\"\\n\", r\"\\n\")\n+        return f\"{item.type}\\n{value}\\n{help_escaped}\"\n \n \n ShellCompleteType = t.TypeVar(\"ShellCompleteType\", bound=\"type[ShellComplete]\")",
+ "budget_exceeded": false,
+ "total_tokens": 9509,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 7712,
+    "completion_tokens": 1797,
+    "total_tokens": 9509,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 7456,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 1797,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 7712,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "fish_completion_multiline_help_escape",
+ "duration_s": 73.7
+}

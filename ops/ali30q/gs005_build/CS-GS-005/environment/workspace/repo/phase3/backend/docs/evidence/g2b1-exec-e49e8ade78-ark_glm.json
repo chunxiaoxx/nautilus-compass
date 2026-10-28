@@ -1,0 +1,48 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "7fd02bd154491a4405b36dd42351ace9ce09c1a2",
+  "reference_fix_commit": "e49e8ade7849c198fa24199010d9d94aa4385928",
+  "subject": "fix(fde): fail closed on wiki evidence errors",
+  "test_files": [
+   "tests/test_feishu_wiki_evidence.py"
+  ],
+  "source_files": [
+   "tools/fde_feishu_wiki_evidence.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-fde-phase3"
+ },
+ "test_id": "tests/test_feishu_wiki_evidence.py::test_probe_maps_feishu_stable_error_codes",
+ "source_rel": "tools\\fde_feishu_wiki_evidence.py",
+ "provider": "ark_glm",
+ "test_passed": true,
+ "winning_diff": "--- a/tools/fde_feishu_wiki_evidence.py\n+++ b/tools/fde_feishu_wiki_evidence.py\n@@ -25,6 +25,7 @@\n ALLOWED_PATH_PREFIXES = (TOKEN_PATH, WIKI_NODE_PATH, DOCUMENT_PATH_PREFIX)\n IP_ALLOWLIST_CODES = frozenset({99991401})\n-RESOURCE_ACCESS_CODES = frozenset({99991663})\n+RESOURCE_ACCESS_CODES = frozenset({99991663, 131006})\n+RATE_LIMIT_CODES = frozenset({99991400})\n \n \n @dataclass(frozen=True)\n@@ -130,5 +131,5 @@\n     if code in IP_ALLOWLIST_CODES:\n         raise EvidenceError(\"IP_ALLOWLIST_DENIED\")\n-    if response.status == 429:\n+    if response.status == 429 or code in RATE_LIMIT_CODES:\n         raise EvidenceError(\"RATE_LIMITED\")\n     if response.status >= 500:\n",
+ "budget_exceeded": false,
+ "total_tokens": 15878,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "completion_tokens": 10328,
+    "prompt_tokens": 5550,
+    "total_tokens": 15878,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 9923
+    }
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "add_stable_error_code_mappings",
+ "duration_s": 141.6,
+ "replayed": true,
+ "verdict_post_status": 200
+}

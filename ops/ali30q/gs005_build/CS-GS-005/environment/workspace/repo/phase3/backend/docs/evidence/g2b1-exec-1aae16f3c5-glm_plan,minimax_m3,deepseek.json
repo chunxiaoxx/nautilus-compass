@@ -1,0 +1,57 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "cef2ec8973f01672150285ff443275c2abe3c549",
+  "reference_fix_commit": "1aae16f3c5c35f03c1414df9ab62074c4c0adc05",
+  "subject": "fix(swe-fuel): extract_fixed_file \u53d6\u6700\u5916\u5c42\u56f4\u680f\u4fee\u6e90\u6587\u4ef6\u5185\u542b\u56f4\u680f\u622a\u65ad\u6839\u56e0",
+  "test_files": [
+   "tests/test_swe_fuel_produce.py"
+  ],
+  "source_files": [
+   "fde_capsule/swe_fuel_produce.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_swe_fuel_produce.py::test_extract_fenced_with_internal_triple_backtick",
+ "source_rel": "fde_capsule\\swe_fuel_produce.py",
+ "provider": "glm_plan,minimax_m3,deepseek",
+ "test_passed": true,
+ "winning_diff": "diff --git a/fde_capsule/swe_fuel_produce.py b/fde_capsule/swe_fuel_produce.py\nindex 0000001..0000002 100644\n--- a/fde_capsule/swe_fuel_produce.py\n+++ b/fde_capsule/swe_fuel_produce.py\n@@ -32,7 +32,7 @@ def build_swe_fix_prompt(problem_statement: str, path: str, original: str,\n def extract_fixed_file(text: str) -> str:\n     \"\"\"\u4ece\u6a21\u578b\u54cd\u5e94\u53d6\u4fee\u6b63\u540e\u6587\u4ef6\u5168\u6587(\u4ee3\u7801\u56f4\u680f\u00b7\u5bb9\u591a\u79cd\u683c\u5f0f)\u3002\"\"\"\n     import re\n     if not text:\n         return \"\"\n-    m = re.search(r\"```[a-zA-Z0-9]*\\s*\\n(.*?)```\", text, re.DOTALL)\n+    m = re.search(r\"```[a-zA-Z0-9]*\\s*\\n([\\s\\S]*?)```[ \\t]*\\Z\", text)\n     if m:\n         return m.group(1)\n     m = re.search(r\"```(.*?)```\", text, re.DOTALL)\n",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 3148,
+    "output_tokens": 619,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: fde_capsule/swe_fuel_produce.py:32\nerror: fde_capsule/swe_fuel_produce.py: patch does not apply\n\n[attempt2 backend] error: patch failed: fde_capsule/swe_fuel_produce.py:32\nerror: fde_capsule/swe_fuel_produce.py: patch does not apply\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "input_tokens": 3417,
+    "output_tokens": 312,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "fix_extract_fenced_internal_triple_backtick",
+ "duration_s": 74.1,
+ "verdict_post_status": 200
+}

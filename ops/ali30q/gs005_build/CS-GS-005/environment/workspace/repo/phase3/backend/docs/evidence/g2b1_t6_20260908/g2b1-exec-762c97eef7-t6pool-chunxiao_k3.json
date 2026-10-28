@@ -1,0 +1,72 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "8929d392781c8113bc569f388c15c47b94f86581",
+  "reference_fix_commit": "762c97eef7c1b3779678992f26a553a2a8c80793",
+  "subject": "Fix double-bracketing of choices in synopsis",
+  "test_files": [
+   "tests/test_basic.py"
+  ],
+  "source_files": [
+   "src/click/core.py"
+  ],
+  "repo_path": "C:/Users/chunx/ext_mine"
+ },
+ "test_id": "tests/test_basic.py::test_choice_argument_optional_metavar",
+ "source_rel": "src\\click\\core.py",
+ "provider": "t6pool-chunxiao_k3",
+ "provider_used": "t6pool-chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/src/click/core.py\n+++ b/src/click/core.py\n@@ -3294,15 +3294,19 @@ class Argument(Parameter):\n     def make_metavar(self, ctx: Context) -> str:\n         if self.metavar is not None:\n             return self.metavar\n         var = self.type.get_metavar(param=self, ctx=ctx)\n         if not var:\n             var = self.name.upper()\n+        # Some types, such as ``Choice``, already wrap their metavar in\n+        # brackets to enumerate values. Don't add a second pair of\n+        # brackets when marking the argument as optional.\n+        already_bracketed = var.startswith(\"[\") and var.endswith(\"]\")\n         if self.deprecated:\n             var += \"!\"\n-        if not self.required:\n+        if not self.required and not already_bracketed:\n             var = f\"[{var}]\"\n         if self.nargs != 1:\n             var += \"...\"\n         return var\n",
+ "budget_exceeded": false,
+ "total_tokens": 31709,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 30541,
+    "completion_tokens": 1168,
+    "total_tokens": 31709,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 30285,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 1168,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 30541,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "fix_choice_argument_optional_metavar",
+ "duration_s": 71.7
+}

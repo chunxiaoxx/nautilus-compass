@@ -1,0 +1,71 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "420c8fb44eeadb537cae69d2fee3796e808558dd",
+  "reference_fix_commit": "f58ca3e81424a35626c8a475eb59ab95589008ce",
+  "subject": "Fix `copy`, `deepcopy` and `pickle` of `Sentinel` members",
+  "test_files": [
+   "tests/test_utils/test_sentinel.py"
+  ],
+  "source_files": [
+   "src/click/_utils.py"
+  ],
+  "repo_path": "C:/Users/chunx/ext_mine"
+ },
+ "test_id": "tests/test_utils/test_sentinel.py::test_sentinel_duplication_preserves_identity",
+ "source_rel": "src\\click\\_utils.py",
+ "provider": "t6pool-minimax_m3",
+ "provider_used": "t6pool-minimax_m3",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 1459,
+    "output_tokens": 280,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 134,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: src/click/_utils.py:19\nerror: src/click/_utils.py: patch does not apply\n\n[attempt2 backend] error: patch failed: src/click/_utils.py:19\nerror: src/click/_utils.py: patch does not apply\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 1587,
+    "output_tokens": 280,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": ""
+  },
+  {
+   "turn": 3,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 1661,
+    "output_tokens": 359,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch fragment without header at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_dvf__6e7/repo/_g2b1.patch:11: @@ -16,6 +17,21 @@ class Sentinel(enum.Enum):?\n\n[attempt2 backend] error: patch fragment without header at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_dvf__6e7/repo/_g2b1.patch:11: @@ -16,6 +17,21 @@ class Sentinel(enum.Enum):?\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 47.5
+}

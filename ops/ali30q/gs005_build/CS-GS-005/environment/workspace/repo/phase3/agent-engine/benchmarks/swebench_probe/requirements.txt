@@ -1,0 +1,11 @@
+# Phase 4 Paradigm B probe — pinned 2026-06-03 (Task 3 live-confirmed).
+# Requires Python 3.11+. swebench harness is Linux-only (imports `resource`) -> run
+# in WSL Ubuntu, not native Windows. M3 via litellm route A:
+#   model="anthropic/MiniMax-M3", api_base="https://api.minimaxi.com/anthropic".
+anthropic==0.105.2
+datasets==4.8.5
+docker==7.1.0
+litellm==1.87.0
+mini-swe-agent==2.3.0
+modal==1.4.3
+swebench==4.1.0

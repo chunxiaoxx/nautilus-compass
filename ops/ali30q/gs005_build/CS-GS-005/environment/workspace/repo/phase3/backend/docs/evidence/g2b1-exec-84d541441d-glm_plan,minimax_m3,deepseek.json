@@ -1,0 +1,43 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "e75bb4094b8fac91d431f4c591d7a10efd4f6658",
+  "reference_fix_commit": "84d541441d6f194744e03a98f5eccb8cea5b0025",
+  "subject": "fix(genopt): held_out_eval real impl + run_held_out_baseline error propagation",
+  "test_files": [
+   "tests/test_genopt_loo.py"
+  ],
+  "source_files": [
+   "fde_capsule/genopt/loo_eval.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_genopt_loo.py::test_eval_no_holdout_returns_no_holdout_label",
+ "source_rel": "fde_capsule\\genopt\\loo_eval.py",
+ "provider": "glm_plan,minimax_m3,deepseek",
+ "test_passed": true,
+ "winning_diff": "--- a/fde_capsule/genopt/loo_eval.py\n+++ b/fde_capsule/genopt/loo_eval.py\n@@ -53,7 +53,11 @@ def main(verdict_path=DEFAULT_VERDICT_PATH, tasks_root=DEFAULT_TASKS_ROOT):\n def main(verdict_path=DEFAULT_VERDICT_PATH, tasks_root=DEFAULT_TASKS_ROOT):\n     result = eval_holdout(tasks_root)\n-    result[\"label\"] = verdict_label(result[\"win_rate\"])\n+    if result.get(\"no_held_out_split\", False) or result[\"n_eval\"] == 0:\n+        result[\"label\"] = \"NO_HOLDOUT\"\n+    else:\n+        result[\"label\"] = verdict_label(result[\"win_rate\"])\n     os.makedirs(os.path.dirname(verdict_path) or \".\", exist_ok=True)\n     json.dump(result, open(verdict_path, \"w\", encoding=\"utf-8\"), indent=2)\n     print(\"[loo] %s win=%d/%d -> %.3f -> %s -> %s\"\n",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "input_tokens": 1957,
+    "output_tokens": 304,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "loo_eval_no_split_emits_no_holdout",
+ "duration_s": 27.2,
+ "verdict_post_status": 200
+}

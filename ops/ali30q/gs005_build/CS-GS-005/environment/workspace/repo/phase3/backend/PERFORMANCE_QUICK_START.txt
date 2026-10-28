@@ -1,0 +1,128 @@
+"""
+Quick reference guide for running performance optimizations.
+"""
+
+# PERFORMANCE OPTIMIZATION QUICK START GUIDE
+
+## 1. Apply Database Indexes
+
+Run the migration script to add performance indexes:
+
+```bash
+python add_performance_indexes.py
+```
+
+This will:
+- Add indexes to Task, Reward, and APIKey tables
+- Verify indexes were created
+- Analyze tables for query optimizer
+
+## 2. Run Performance Tests
+
+Execute the performance test suite:
+
+```bash
+# Run all performance tests
+pytest tests/test_performance.py -v
+
+# Run with detailed output
+pytest tests/test_performance.py -v -s
+
+# Run specific test class
+pytest tests/test_performance.py::TestAPIPerformance -v
+```
+
+## 3. Monitor Performance
+
+### Check Cache Statistics
+```bash
+curl http://localhost:8000/cache/stats
+```
+
+### Check Health Status
+```bash
+curl http://localhost:8000/health
+```
+
+### View Metrics
+```bash
+curl http://localhost:8000/metrics
+```
+
+## 4. Clear Cache (if needed)
+
+```bash
+curl -X POST http://localhost:8000/cache/clear
+```
+
+## 5. Monitor Logs
+
+Watch for slow query warnings in logs:
+```bash
+tail -f logs/app.log | grep "Slow query"
+```
+
+## 6. Performance Benchmarks
+
+Expected response times after optimization:
+- list_tasks: < 500ms
+- list_agents: < 300ms
+- get_balance: < 300ms
+- reward_history: < 300ms
+- Database queries: < 100ms
+- Aggregations: < 50ms
+
+## 7. Troubleshooting
+
+### If queries are still slow:
+1. Check if indexes were created: Run verify_indexes()
+2. Check database connection pool settings
+3. Review slow query logs for patterns
+4. Consider increasing cache TTL
+
+### If cache hit rate is low:
+1. Check cache statistics at /cache/stats
+2. Increase cache TTL in cache.py
+3. Review cache key generation logic
+
+## 8. Production Deployment
+
+Before deploying to production:
+1. ✅ Run add_performance_indexes.py
+2. ✅ Run performance tests
+3. ✅ Review PERFORMANCE_OPTIMIZATION_REPORT.md
+4. ✅ Set up monitoring alerts
+5. ✅ Configure cache cleanup interval
+
+## 9. Environment Variables
+
+Add to .env file:
+```env
+# Database
+DATABASE_POOL_SIZE=20
+DATABASE_MAX_OVERFLOW=40
+
+# Performance
+SLOW_QUERY_THRESHOLD=0.3
+ENABLE_QUERY_LOGGING=true
+
+# Cache
+CACHE_DEFAULT_TTL=300
+CACHE_CLEANUP_INTERVAL=300
+```
+
+## 10. Files Modified/Created
+
+### Modified:
+- models/database.py - Added indexes
+- api/tasks.py - Added performance logging
+- api/agents.py - Added performance logging
+- api/rewards.py - Optimized queries, added logging
+- main.py - Added cache endpoints and cleanup
+
+### Created:
+- utils/cache.py - Cache implementation
+- tests/test_performance.py - Performance tests
+- add_performance_indexes.py - Index migration script
+- PERFORMANCE_OPTIMIZATION_REPORT.md - Full report
+- PERFORMANCE_QUICK_START.txt - This guide

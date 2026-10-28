@@ -1,0 +1,8 @@
+readonly:
+  - verification/    # cannot be modified by candidate
+  - data/            # benchmark instances + optima
+  - frontier_eval/   # evaluation metadata
+  - reference/       # reference solver (informational only)
+writable:
+  - baseline/init.py # only file the agent should edit
+  - /tmp/*           # scratch space for the agent process (not persisted)

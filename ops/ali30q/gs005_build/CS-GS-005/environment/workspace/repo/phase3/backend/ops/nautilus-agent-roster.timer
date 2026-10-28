@@ -1,0 +1,9 @@
+[Unit]
+Description=Nautilus agent 名册读数 timer(每 2h,U16 四件之①)
+
+[Timer]
+OnCalendar=*-*-* 1/2:45:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

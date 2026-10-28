@@ -1,0 +1,34 @@
+{
+  "_doc": "Probe 3 Phase B frozen sets. probe_ids = the N=15 already-run subset (cycle-0 base resolve map reused from probe1_n15_arm1_result.json, default system_template). validation_ids = 10 NEW core-subset instances the loop NEVER scores during selection (anti-Goodhart). NOTE: validation is necessarily cross-repo (probe set exhausted the light repos astropy/flask/requests/pylint/pytest); validation lives in django/matplotlib/sphinx/sklearn/sympy/requests = a GENERALIZATION test (a generic system_template strategy should transfer across repos). Verdict caveats this distribution shift.",
+  "self_mod_target": "agent.system_template",
+  "base_system_template": "You are a helpful assistant that can interact with a computer shell to solve programming tasks.",
+  "probe_ids": [
+    "astropy__astropy-14182",
+    "astropy__astropy-14365",
+    "astropy__astropy-7746",
+    "pallets__flask-4045",
+    "pallets__flask-4992",
+    "pallets__flask-5063",
+    "psf__requests-2148",
+    "psf__requests-2317",
+    "pylint-dev__pylint-7114",
+    "pylint-dev__pylint-7228",
+    "pytest-dev__pytest-5103",
+    "pytest-dev__pytest-5692",
+    "pytest-dev__pytest-7220",
+    "pytest-dev__pytest-7373",
+    "pytest-dev__pytest-7490"
+  ],
+  "validation_ids": [
+    "psf__requests-2674",
+    "matplotlib__matplotlib-22711",
+    "matplotlib__matplotlib-23913",
+    "matplotlib__matplotlib-24265",
+    "sphinx-doc__sphinx-7975",
+    "sphinx-doc__sphinx-8435",
+    "scikit-learn__scikit-learn-13496",
+    "django__django-11099",
+    "django__django-11620",
+    "sympy__sympy-13146"
+  ]
+}

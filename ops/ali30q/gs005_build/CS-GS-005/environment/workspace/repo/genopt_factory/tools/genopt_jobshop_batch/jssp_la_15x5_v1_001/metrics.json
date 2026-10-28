@@ -1,0 +1,53 @@
+{
+  "combined_score": 30.7047,
+  "valid": 1.0,
+  "instances": 5,
+  "failures": 0,
+  "per_instance": [
+    {
+      "instance": "la06",
+      "elapsed_s": 0.76,
+      "feasible": true,
+      "reason": "ok",
+      "makespan": 2974,
+      "optimum": 926,
+      "score": 31.136516476126427
+    },
+    {
+      "instance": "la07",
+      "elapsed_s": 2.04,
+      "feasible": true,
+      "reason": "ok",
+      "makespan": 2604,
+      "optimum": 890,
+      "score": 34.17818740399385
+    },
+    {
+      "instance": "la08",
+      "elapsed_s": 1.06,
+      "feasible": true,
+      "reason": "ok",
+      "makespan": 2948,
+      "optimum": 863,
+      "score": 29.274084124830395
+    },
+    {
+      "instance": "la09",
+      "elapsed_s": 1.4,
+      "feasible": true,
+      "reason": "ok",
+      "makespan": 3107,
+      "optimum": 951,
+      "score": 30.608303830061153
+    },
+    {
+      "instance": "la10",
+      "elapsed_s": 0.6,
+      "feasible": true,
+      "reason": "ok",
+      "makespan": 3382,
+      "optimum": 958,
+      "score": 28.3264340626848
+    }
+  ]
+}

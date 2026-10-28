@@ -1,0 +1,71 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "a91e9a8f038d175be59e3c3ff9874df1da410a1e",
+  "reference_fix_commit": "71f0de23a4a1149306303f4e36e7dc24918c93bc",
+  "subject": "fix(s4): make quarantine fingerprints deterministic",
+  "test_files": [
+   "tests/gep/test_flywheel_log.py"
+  ],
+  "source_files": [
+   "gep/flywheel_log.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass"
+ },
+ "test_id": "tests/gep/test_flywheel_log.py::test_unknown_class_instances_have_stable_quarantine_fingerprint",
+ "source_rel": "gep\\flywheel_log.py",
+ "provider": "glm_plan,minimax_m3,deepseek",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 3160,
+    "output_tokens": 193,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "pping[str, Any]) -> AppendReceipt:\r\n        \"\"\"Append one event, or durably record its safe quarantine outcome.\"\"\"\r\n    \r\n        try:\r\n>           event = event_from_mapping(mapping)\r\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n\r\ngep\\flywheel_log.py:61: \r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\r\n\r\nraw_event = {'agent_id': 7, 'episode_id': 'episode-1', 'event_kind': 'episode', 'occurred_at': '2026-07-31T12:00:00Z', ...}\r\n\r\n    def event_from_mapping(raw_event: Mapping[str, Any]) -> FlywheelEvent:\r\n        \"\"\"Validate and detach an exact v1 episode envelope mapping.\"\"\"\r\n    \r\n        if not isinstance(raw_event, Mapping):\r\n            raise FlywheelEventError(\"invalid_schema\", \"event must be a mapping\")\r\n    \r\n        try:\r\n            supplied_keys = frozenset(raw_event)\r\n        except (TypeError, ValueError) as exc:\r\n            raise FlywheelEventError(\"invalid_schema\", \"event keys are invalid\") from exc\r\n    \r\n        if supplied_keys != _ENVELOPE_KEY_SET:\r\n            missing = sorted(_ENVELOPE_KEY_SET - supplied_keys)\r\n            unknown = sorted((supplied_keys - _ENVELOPE_KEY_SET), key=repr)\r\n            details = []\r\n            if missing:\r\n                details.append(f\"missing keys: {', '.join(missing)}\")\r\n            if unknown:\r\n                details.append(f\"unknown keys: {', '.join(map(str, unknown))}\")\r\n>           raise FlywheelEventError(\"invalid_schema\", \"; \".join(details))\r\nE           gep.flywheel_event.FlywheelEventError: unknown keys: unknown_input\r\n\r\ngep\\flywheel_event.py:133: FlywheelEventError\r\n\r\nDuring handling of the above exception, another exception occurred:\r\n\r\ntmp_path = WindowsPath('C:/Users/chunx/AppData/Local/Temp/pytest-of-chunx/pytest-6106/test_unknown_class_instances_h0')\r\n\r\n    def test_unknown_class_instances_have_stable_quarantine_fingerprint(tmp_path):\r\n        path = tmp_path / \"opaque-fingerprint.sqlite3\"\r\n        event_log = FlywheelEventLog(path, registered_agent_ids={7})\r\n        first = valid_mapping()\r\n        first[\"unknown_input\"] = UnknownFingerprintValue()\r\n        second = valid_mapping()\r\n        second[\"unknown_input\"] = UnknownFingerprintValue()\r\n    \r\n        try:\r\n>           first_receipt = event_log.append(first)\r\n                            ^^^^^^^^^^^^^^^^^^^^^^^\r\n\r\ntests\\gep\\test_flywheel_log.py:327: \r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\r\ngep\\flywheel_log.py:72: in append\r\n    self._run_transaction(\r\ngep\\flywheel_log.py:261: in _run_transaction\r\n    result = operation()\r\n             ^^^^^^^^^^^\r\ngep\\flywheel_log.py:73: in <lambda>\r\n    lambda: self._insert_quarantine(\r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\r\n\r\nself = <gep.flywheel_log.FlywheelEventLog object at 0x000002C6CD1F4590>\r\nreceipt = AppendReceipt(status='quarantined', source_event_id='source-1', episode_id='episode-1', event_hash=None, reason_code='invalid_schema')\r\nfingerprint = 'sha256:2c773cab0e4473905f93351f354850b2419b1fbe0e2b8febca5c2973b110835f'\r\n\r\n    def _insert_quarantine(self, receipt: AppendReceipt, fingerprint: str) -> None:\r\n>       self._connection.execute(\r\n            \"\"\"\r\n            INSERT OR IGNORE INTO flywheel_quarantine (reason_code, fingerprint, quarantined_at, source_event_id, episode_id)\r\n                (source_event_id, episode_id, reason_code, fingerprint, quarantined_at)\r\n            VALUES (?, ?, ?, ?, ?)\r\n            \"\"\",\r\n            (\r\n                receipt.source_event_id,\r\n                receipt.episode_id,\r\n                receipt.reason_code,\r\n                fingerprint,\r\n                _timestamp(),\r\n            ),\r\n        )\r\nE       sqlite3.OperationalError: near \"(\": syntax error\r\n\r\ngep\\flywheel_log.py:197: OperationalError\r\n=========================== short test summary info ===========================\r\nFAILED tests/gep/test_flywheel_log.py::test_unknown_class_instances_have_stable_quarantine_fingerprint\r\n1 failed in 0.25s\r\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 4244,
+    "output_tokens": 325,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_ux8mdsyj/repo/_g2b1.patch:29\n\n[attempt2 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_ux8mdsyj/repo/_g2b1.patch:29\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 3304,
+    "output_tokens": 222,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "F                                                                        [100%]\r\n================================== FAILURES ===================================\r\n_______ test_unknown_class_instances_have_stable_quarantine_fingerprint _______\r\n\r\ntmp_path = WindowsPath('C:/Users/chunx/AppData/Local/Temp/pytest-of-chunx/pytest-6107/test_unknown_class_instances_h0')\r\n\r\n    def test_unknown_class_instances_have_stable_quarantine_fingerprint(tmp_path):\r\n        path = tmp_path / \"opaque-fingerprint.sqlite3\"\r\n        event_log = FlywheelEventLog(path, registered_agent_ids={7})\r\n        first = valid_mapping()\r\n        first[\"unknown_input\"] = UnknownFingerprintValue()\r\n        second = valid_mapping()\r\n        second[\"unknown_input\"] = UnknownFingerprintValue()\r\n    \r\n        try:\r\n            first_receipt = event_log.append(first)\r\n            second_receipt = event_log.append(second)\r\n            rows = event_log.list_quarantine()\r\n        finally:\r\n            event_log.close()\r\n    \r\n        assert first_receipt.status == second_receipt.status == \"quarantined\"\r\n        assert second_receipt == first_receipt\r\n>       assert len(rows) == 1\r\nE       AssertionError: assert 2 == 1\r\nE        +  where 2 = len(({'episode_id': 'episode-1', 'fingerprint': 'sha256:b83930d421206822edad877789919a7b6c7af564b1fd06f523904f145891250b',...f7ff8f12002b8cb2384ae2a015243', 'quarantined_at': '2026-08-28T21:06:48.199182Z', 'reason_code': 'invalid_schema', ...}))\r\n\r\ntests\\gep\\test_flywheel_log.py:335: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/gep/test_flywheel_log.py::test_unknown_class_instances_have_stable_quarantine_fingerprint\r\n1 failed in 0.26s\r\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 79.5,
+ "verdict_post_status": 200
+}

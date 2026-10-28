@@ -1,0 +1,46 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "c54023338285df293b59a6aa81dd2422039f420e",
+  "reference_fix_commit": "5d0d8996b9b2a7457fa565c883d501e277d1ddb4",
+  "subject": "fix(platform): bind G2-A0 v2 budget evidence",
+  "test_files": [
+   "phase3/backend/tests/platform_protocol/test_g2_a0_model_gate_v2_fail_closed.py"
+  ],
+  "source_files": [
+   "phase3/backend/tests/platform_protocol/g2_a0_model_gate_v2_cli.py"
+  ]
+ },
+ "test_id": "tests/platform_protocol/test_g2_a0_model_gate_v2_fail_closed.py::test_v2_evidence_rejects_admitted_cost_over_cny_10",
+ "source_rel": "tests\\platform_protocol\\g2_a0_model_gate_v2_cli.py",
+ "provider": "ark_glm",
+ "test_passed": true,
+ "budget_exceeded": false,
+ "total_tokens": 37048,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "completion_tokens": 31830,
+    "prompt_tokens": 5218,
+    "total_tokens": 37048,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 31314
+    }
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "add_v2_evidence_budget_mismatch_guard",
+ "duration_s": 438.7,
+ "replayed": true,
+ "verdict_post_status": 200
+}

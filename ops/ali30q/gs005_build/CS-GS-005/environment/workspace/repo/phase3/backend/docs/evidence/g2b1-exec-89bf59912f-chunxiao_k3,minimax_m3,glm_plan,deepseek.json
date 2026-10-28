@@ -1,0 +1,31 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "b73a786e8113439ab63fa52b7cb6acf00bf620b7",
+  "reference_fix_commit": "89bf59912fa716fe61499040f85c3fe8ad8dd605",
+  "subject": "fix(soul): mark_done preserves comments (surgical) + no-op mark-only PR guard + real seed goal (__main__.py docstring)",
+  "test_files": [
+   "phase3/soul/tests/test_daemon.py",
+   "phase3/soul/tests/test_goal_selector.py"
+  ],
+  "source_files": [
+   "phase3/soul/daemon.py",
+   "phase3/soul/goal_selector.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests\\test_daemon.py::test_apply_path_noop_opens_mark_only_pr",
+ "source_rel": "phase3\\soul\\daemon.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "skipped_reason": "anchor_missing_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

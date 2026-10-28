@@ -1,0 +1,4 @@
+input_format: "JSON with {name, B, H, N, d, Q, K, V} — flat lists of size B*H*N*d"
+output_format: "JSON with {O: [float, ...]} — flat list of size B*H*N*d + {elapsed_s: float}"
+problem_type: "Scaled dot-product attention"
+reference_algorithm: "FlashAttention2 simplified (Dao et al. 2022) — block-tiled streaming softmax, BLOCK_N=32"

@@ -1,0 +1,12 @@
+[Unit]
+Description=Run Nautilus Soul governance executor every 10 minutes
+
+[Timer]
+# 2026-09-10: OnBootSec/OnUnitActiveSec left this timer stuck on a stale
+# 2026-08-31 monotonic base → next_elapse=0, never rescheduling after enable.
+# Wall-clock OnCalendar schedules deterministically from the moment of enable.
+OnCalendar=*-*-* *:00/10
+Persistent=true
+
+[Install]
+WantedBy=timers.target

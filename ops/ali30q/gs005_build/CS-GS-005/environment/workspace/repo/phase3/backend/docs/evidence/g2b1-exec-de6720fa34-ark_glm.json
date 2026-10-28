@@ -1,0 +1,66 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "13671fada5c891c7187254abee7fb1706fc085f9",
+  "reference_fix_commit": "de6720fa3496cf349554bcbb9c1645512940721d",
+  "subject": "fix(\u7834\u5c40\u52a8\u4f5c2): settled SQL \u6539 fde_verdicts join(fde_dispatch \u65e0 updated_at \u5217)",
+  "test_files": [
+   "tests/test_behavior_mirror.py"
+  ],
+  "source_files": [
+   "nautilus_v5/commons/behavior_mirror.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5"
+ },
+ "test_id": "tests/test_behavior_mirror.py::test_settled_count_sql",
+ "source_rel": "nautilus_v5\\commons\\behavior_mirror.py",
+ "provider": "ark_glm",
+ "test_passed": true,
+ "winning_diff": "--- a/nautilus_v5/commons/behavior_mirror.py\n+++ b/nautilus_v5/commons/behavior_mirror.py\n@@ -20,9 +20,9 @@\n def build_settled_count_sql(agent_id: str, hours: int = 24):\n     \"\"\"\u2192 (sql, params)\u3002\u8fd1 N h \u8be5 agent \u5b9e\u9645 settled \u7684\u4ea4\u4ed8\u6570(\u5916\u90e8\u53ef\u6d4b\u7ed3\u679c)\u3002\"\"\"\n     sql = (\n-        \"SELECT COUNT(*) FROM fde_dispatch \"\n-        \"WHERE claimed_by=%s AND status='settled' \"\n-        \"AND COALESCE(updated_at, created_at) > NOW() - make_interval(hours => %s)\"\n+        \"SELECT COUNT(*) FROM fde_dispatch d \"\n+        \"JOIN fde_verdicts v ON v.dispatch_id=d.id \"\n+        \"WHERE d.claimed_by=%s AND d.status='settled' \"\n+        \"AND v.created_at > NOW() - make_interval(hours => %s)\"\n     )\n     return sql, (agent_id, int(hours))\n \n",
+ "budget_exceeded": false,
+ "total_tokens": 5241,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "completion_tokens": 1007,
+    "prompt_tokens": 1475,
+    "total_tokens": 2482,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 663
+    }
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "F                                                                        [100%]\r\n================================== FAILURES ===================================\r\n___________________________ test_settled_count_sql ____________________________\r\n\r\n    def test_settled_count_sql():\r\n        sql, params = bm.build_settled_count_sql(\"nautilus-prime-001\")\r\n        assert \"fde_dispatch\" in sql\r\n        assert \"d.claimed_by=%s\" in sql\r\n        assert \"d.status='settled'\" in sql\r\n        # settle \u65f6\u95f4\u8d70 verdict join(fde_dispatch \u65e0 updated_at \u5217)\r\n>       assert \"JOIN fde_verdicts v\" in sql\r\nE       assert 'JOIN fde_verdicts v' in \"SELECT COUNT(*) FROM fde_dispatch d WHERE d.claimed_by=%s AND d.status='settled' AND COALESCE(d.updated_at, d.created_at) > NOW() - make_interval(hours => %s)\"\r\n\r\ntests\\test_behavior_mirror.py:29: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_behavior_mirror.py::test_settled_count_sql - assert 'JOIN f...\r\n1 failed in 2.56s\r\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "completion_tokens": 1009,
+    "prompt_tokens": 1750,
+    "total_tokens": 2759,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 718
+    }
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "fix_settled_count_sql_join_verdicts",
+ "duration_s": 45.6,
+ "replayed": true,
+ "verdict_post_status": 200
+}

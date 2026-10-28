@@ -1,0 +1,276 @@
+{
+  "task_id": "jobshop_orlib_v1_001",
+  "seed_score": 24.6755,
+  "seed_valid": 1.0,
+  "best_score": 93.1034,
+  "gap_closed": 0.6843,
+  "difficulty_bucket": "Easy",
+  "n": 3,
+  "model": "gpt-5.5",
+  "rounds": [
+    {
+      "round": 0,
+      "metrics": {
+        "combined_score": 24.6755,
+        "valid": 1.0,
+        "per_instance": [
+          {
+            "instance": "ft06",
+            "elapsed_s": 0.05,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 152,
+            "optimum": 55,
+            "score": 36.18421052631579
+          },
+          {
+            "instance": "ft10",
+            "elapsed_s": 0.05,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 3394,
+            "optimum": 930,
+            "score": 27.40129640542133
+          },
+          {
+            "instance": "la01",
+            "elapsed_s": 0.05,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 2272,
+            "optimum": 666,
+            "score": 29.31338028169014
+          },
+          {
+            "instance": "la16",
+            "elapsed_s": 0.05,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 3898,
+            "optimum": 945,
+            "score": 24.243201641867625
+          },
+          {
+            "instance": "la21",
+            "elapsed_s": 0.05,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 6236,
+            "optimum": 1046,
+            "score": 16.773572803078896
+          },
+          {
+            "instance": "la36",
+            "elapsed_s": 0.05,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 8969,
+            "optimum": 1268,
+            "score": 14.137585015051846
+          }
+        ],
+        "stdout": " },\n    {\n      \"instance\": \"la36\",\n      \"elapsed_s\": 0.05,\n      \"feasible\": true,\n      \"reason\": \"ok\",\n      \"makespan\": 8969,\n      \"optimum\": 1268,\n      \"score\": 14.137585015051846\n    }\n  ]\n}\n"
+      },
+      "elapsed": 0
+    },
+    {
+      "round": 1,
+      "elapsed": 129.1,
+      "metrics": {
+        "combined_score": 93.1034,
+        "valid": 1.0,
+        "per_instance": [
+          {
+            "instance": "ft06",
+            "elapsed_s": 0.18,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 55,
+            "optimum": 55,
+            "score": 100.0
+          },
+          {
+            "instance": "ft10",
+            "elapsed_s": 1.73,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 1017,
+            "optimum": 930,
+            "score": 91.44542772861357
+          },
+          {
+            "instance": "la01",
+            "elapsed_s": 0.56,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 680,
+            "optimum": 666,
+            "score": 97.94117647058823
+          },
+          {
+            "instance": "la16",
+            "elapsed_s": 1.6,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 1016,
+            "optimum": 945,
+            "score": 93.01181102362204
+          },
+          {
+            "instance": "la21",
+            "elapsed_s": 3.71,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 1199,
+            "optimum": 1046,
+            "score": 87.2393661384487
+          },
+          {
+            "instance": "la36",
+            "elapsed_s": 5.5,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 1425,
+            "optimum": 1268,
+            "score": 88.98245614035088
+          }
+        ],
+        "stdout": "   },\n    {\n      \"instance\": \"la36\",\n      \"elapsed_s\": 5.5,\n      \"feasible\": true,\n      \"reason\": \"ok\",\n      \"makespan\": 1425,\n      \"optimum\": 1268,\n      \"score\": 88.98245614035088\n    }\n  ]\n}\n"
+      },
+      "source_preview": "\"\"\"Deterministic heuristic Job-Shop solver.\n\nPortfolio of Giffler-Thompson active schedule builders followed by critical-block\nadjacent-swap descent on the indu"
+    },
+    {
+      "round": 2,
+      "elapsed": 119.2,
+      "metrics": {
+        "combined_score": 92.9354,
+        "valid": 1.0,
+        "per_instance": [
+          {
+            "instance": "ft06",
+            "elapsed_s": 1.04,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 55,
+            "optimum": 55,
+            "score": 100.0
+          },
+          {
+            "instance": "ft10",
+            "elapsed_s": 6.09,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 1064,
+            "optimum": 930,
+            "score": 87.40601503759399
+          },
+          {
+            "instance": "la01",
+            "elapsed_s": 3.22,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 666,
+            "optimum": 666,
+            "score": 100.0
+          },
+          {
+            "instance": "la16",
+            "elapsed_s": 5.85,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 1038,
+            "optimum": 945,
+            "score": 91.04046242774567
+          },
+          {
+            "instance": "la21",
+            "elapsed_s": 8.66,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 1168,
+            "optimum": 1046,
+            "score": 89.55479452054794
+          },
+          {
+            "instance": "la36",
+            "elapsed_s": 12.47,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 1415,
+            "optimum": 1268,
+            "score": 89.6113074204947
+          }
+        ],
+        "stdout": "  },\n    {\n      \"instance\": \"la36\",\n      \"elapsed_s\": 12.47,\n      \"feasible\": true,\n      \"reason\": \"ok\",\n      \"makespan\": 1415,\n      \"optimum\": 1268,\n      \"score\": 89.6113074204947\n    }\n  ]\n}\n"
+      },
+      "source_preview": "\"\"\"Deterministic heuristic Job-Shop solver.\n\nUses a Giffler-Thompson active schedule generator with a portfolio of\ndispatching priorities and deterministic pseu"
+    },
+    {
+      "round": 3,
+      "elapsed": 97.2,
+      "metrics": {
+        "combined_score": 92.6771,
+        "valid": 1.0,
+        "per_instance": [
+          {
+            "instance": "ft06",
+            "elapsed_s": 0.06,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 55,
+            "optimum": 55,
+            "score": 100.0
+          },
+          {
+            "instance": "ft10",
+            "elapsed_s": 0.17,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 1047,
+            "optimum": 930,
+            "score": 88.82521489971347
+          },
+          {
+            "instance": "la01",
+            "elapsed_s": 0.08,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 680,
+            "optimum": 666,
+            "score": 97.94117647058823
+          },
+          {
+            "instance": "la16",
+            "elapsed_s": 0.14,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 1016,
+            "optimum": 945,
+            "score": 93.01181102362204
+          },
+          {
+            "instance": "la21",
+            "elapsed_s": 0.23,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 1199,
+            "optimum": 1046,
+            "score": 87.2393661384487
+          },
+          {
+            "instance": "la36",
+            "elapsed_s": 0.37,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 1424,
+            "optimum": 1268,
+            "score": 89.04494382022472
+          }
+        ],
+        "stdout": "  },\n    {\n      \"instance\": \"la36\",\n      \"elapsed_s\": 0.37,\n      \"feasible\": true,\n      \"reason\": \"ok\",\n      \"makespan\": 1424,\n      \"optimum\": 1268,\n      \"score\": 89.04494382022472\n    }\n  ]\n}\n"
+      },
+      "source_preview": "\"\"\"Deterministic Job-Shop scheduler for OR-Library style instances.\n\nUses a portfolio of Giffler-Thompson active schedule builders followed by\ncritical-path adj"
+    }
+  ],
+  "best_round_source": "\"\"\"Deterministic heuristic Job-Shop solver.\n\nPortfolio of Giffler-Thompson active schedule builders followed by critical-block\nadjacent-swap descent on the indu"
+}

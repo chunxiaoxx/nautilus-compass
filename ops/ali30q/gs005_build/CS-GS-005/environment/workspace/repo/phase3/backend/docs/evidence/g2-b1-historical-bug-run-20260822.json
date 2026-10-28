@@ -1,0 +1,23 @@
+{
+ "schema_version": "g2-b1-historical-bug-run-v1",
+ "task_source": "nautilus-core git history (real bug, no synthetic fixture)",
+ "buggy_commit": "5ea2fc32dc088db3e57b1edc0d96f7c5f8a3f172",
+ "reference_fix_commit": "c7646a57f97a7182225486e7c65841b9a95f915b",
+ "test_id": "tests/platform_protocol/test_g2_a0_model_gate_v5_fail_closed.py::test_v5_live_probe_uses_only_mock_transport_and_exact_three_requests",
+ "red_confirmed_before_call": true,
+ "model": "deepseek-v4-flash",
+ "usage": {
+  "prompt_tokens": 7057,
+  "completion_tokens": 427,
+  "total_tokens": 7484,
+  "prompt_tokens_details": {
+   "cached_tokens": 7040
+  },
+  "prompt_cache_hit_tokens": 7040,
+  "prompt_cache_miss_tokens": 17
+ },
+ "patch_applied": false,
+ "apply_error": "error: patch failed: phase3/backend/tests/platform_protocol/g2_a0_model_gate_v5_cli.py:704\nerror: phase3/backend/tests/platform_protocol/g2_a0_model_gate_v5_cli.py: patch does not apply\n",
+ "test_passed_after_patch": false,
+ "summary_code": "fix_v5_live_probe_uses_only_mock_transport_and_exact_three_requests"
+}

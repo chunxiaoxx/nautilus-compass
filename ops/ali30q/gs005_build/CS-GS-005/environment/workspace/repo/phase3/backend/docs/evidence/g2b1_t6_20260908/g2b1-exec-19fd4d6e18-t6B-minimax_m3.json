@@ -1,0 +1,71 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "c69643b60cf971cd5d8e5d3902632807ceab9b8f",
+  "reference_fix_commit": "19fd4d6e18bc9fce451f92f422696b11169faa57",
+  "subject": "Fix: Ensure fish completion handles multiline help strings correctly (#3126)",
+  "test_files": [
+   "tests/test_shell_completion.py"
+  ],
+  "source_files": [
+   "src/click/shell_completion.py"
+  ],
+  "repo_path": "C:/Users/chunx/ext_mine"
+ },
+ "test_id": "tests/test_shell_completion.py::test_fish_multiline_help_complete",
+ "source_rel": "src\\click\\shell_completion.py",
+ "provider": "t6B-minimax_m3",
+ "provider_used": "t6B-minimax_m3",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 7400,
+    "output_tokens": 168,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "F                                                                        [100%]\r\n================================== FAILURES ===================================\r\n______________________ test_fish_multiline_help_complete ______________________\r\n\r\nrunner = <click.testing.CliRunner object at 0x0000023DEC3BCC20>\r\n\r\n    @pytest.mark.usefixtures(\"_patch_for_completion\")\r\n    def test_fish_multiline_help_complete(runner):\r\n        \"\"\"Test Fish completion with multi-line help text doesn't cause errors.\"\"\"\r\n        cli = Command(\r\n            \"cli\",\r\n            params=[\r\n                Option(\r\n                    [\"--at\", \"--attachment-type\"],\r\n                    type=(str, str),\r\n                    multiple=True,\r\n                    help=(\r\n                        \"\\b\\nAttachment with explicit mimetype,\\n--at image.jpg image/jpeg\"\r\n                    ),\r\n                ),\r\n                Option([\"--other\"], help=\"Normal help\"),\r\n            ],\r\n        )\r\n    \r\n        result = runner.invoke(\r\n            cli,\r\n            env={\r\n                \"COMP_WORDS\": \"cli --\",\r\n                \"COMP_CWORD\": \"--\",\r\n                \"_CLI_COMPLETE\": \"fish_complete\",\r\n            },\r\n        )\r\n    \r\n        # Should not fail\r\n        assert result.exit_code == 0\r\n    \r\n        # Output should contain escaped newlines, not literal newlines\r\n        # Fish expects: plain\\n--at\\n{help_with_\\\\n}\r\n        lines = result.output.split(\"\\n\")\r\n    \r\n        # Find the --at completion block (3 lines: type, value, help)\r\n        for i in range(0, len(lines) - 2, 3):\r\n            if lines[i] == \"plain\" and lines[i + 1] in (\"--at\", \"--attachment-type\"):\r\n                help_line = lines[i + 2]\r\n                # Help should have escaped newlines (\\\\n), not actual newlines\r\n                assert \"\\\\n\" in help_line\r\n                # Should contain the example text\r\n                assert \"image.jpg\" in help_line.replace(\"\\\\n\", \" \")\r\n                break\r\n        else:\r\n>           pytest.fail(\"--at completion not found in output\")\r\nE           Failed: --at completion not found in output\r\n\r\ntests\\test_shell_completion.py:608: Failed\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_shell_completion.py::test_fish_multiline_help_complete - Fa...\r\n1 failed in 0.31s\r\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 7969,
+    "output_tokens": 320,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_q4ho95zi/repo/_g2b1.patch:5\n\n[attempt2 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_q4ho95zi/repo/_g2b1.patch:5\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 7686,
+    "output_tokens": 169,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "F                                                                        [100%]\r\n================================== FAILURES ===================================\r\n______________________ test_fish_multiline_help_complete ______________________\r\n\r\nrunner = <click.testing.CliRunner object at 0x0000016C21ABCC20>\r\n\r\n    @pytest.mark.usefixtures(\"_patch_for_completion\")\r\n    def test_fish_multiline_help_complete(runner):\r\n        \"\"\"Test Fish completion with multi-line help text doesn't cause errors.\"\"\"\r\n        cli = Command(\r\n            \"cli\",\r\n            params=[\r\n                Option(\r\n                    [\"--at\", \"--attachment-type\"],\r\n                    type=(str, str),\r\n                    multiple=True,\r\n                    help=(\r\n                        \"\\b\\nAttachment with explicit mimetype,\\n--at image.jpg image/jpeg\"\r\n                    ),\r\n                ),\r\n                Option([\"--other\"], help=\"Normal help\"),\r\n            ],\r\n        )\r\n    \r\n        result = runner.invoke(\r\n            cli,\r\n            env={\r\n                \"COMP_WORDS\": \"cli --\",\r\n                \"COMP_CWORD\": \"--\",\r\n                \"_CLI_COMPLETE\": \"fish_complete\",\r\n            },\r\n        )\r\n    \r\n        # Should not fail\r\n        assert result.exit_code == 0\r\n    \r\n        # Output should contain escaped newlines, not literal newlines\r\n        # Fish expects: plain\\n--at\\n{help_with_\\\\n}\r\n        lines = result.output.split(\"\\n\")\r\n    \r\n        # Find the --at completion block (3 lines: type, value, help)\r\n        for i in range(0, len(lines) - 2, 3):\r\n            if lines[i] == \"plain\" and lines[i + 1] in (\"--at\", \"--attachment-type\"):\r\n                help_line = lines[i + 2]\r\n                # Help should have escaped newlines (\\\\n), not actual newlines\r\n                assert \"\\\\n\" in help_line\r\n                # Should contain the example text\r\n                assert \"image.jpg\" in help_line.replace(\"\\\\n\", \" \")\r\n                break\r\n        else:\r\n>           pytest.fail(\"--at completion not found in output\")\r\nE           Failed: --at completion not found in output\r\n\r\ntests\\test_shell_completion.py:608: Failed\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_shell_completion.py::test_fish_multiline_help_complete - Fa...\r\n1 failed in 0.36s\r\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 25.2
+}

@@ -1,0 +1,29 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "ed76a5bed38dbe2e34b5dfc2f857a7f885a99163",
+  "reference_fix_commit": "ab3f28a222fea07ddc37dec3b068e058f86200a9",
+  "subject": "fix(g2b1): fail_streak \u539f\u5b50\u5199\u2014\u2014\u76d8\u6ee1(Errno 28)\u4e0d\u518d\u622a\u65ad\u7194\u65ad\u8bb0\u5f55",
+  "test_files": [
+   "phase3/backend/tests/test_g2b1_fail_breaker.py"
+  ],
+  "source_files": [
+   "phase3/backend/tools/g2_b1_executor_agent.py"
+  ],
+  "repo_path": "C:/Users/chunx/Projects/nautilus-core"
+ },
+ "test_id": "phase3/backend/tests/test_g2b1_fail_breaker.py::test_save_is_atomic_no_tmp_left",
+ "source_rel": "phase3/backend/tools/g2_b1_executor_agent.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

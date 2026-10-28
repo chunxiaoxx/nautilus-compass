@@ -1,0 +1,24 @@
+# CS-GS-005 金标改动点(对坑版 v5_bridge)
+# 真实修复参照: nautilus-core defb148c6(补缺失件)+「降级必须可见」纪律
+- id: GP-1
+  file: v5_bridge/helix_bridge.py
+  change: 初始化降级结构化 —— except 分支与 no-DSN 分支置 degraded/degradation_report;
+          无 DSN 亦显式降级(坑版连 warning 都没有)
+  anchors: UT-1
+- id: GP-2
+  file: v5_bridge/helix_bridge.py
+  change: 消费侧前置防护 —— helix_v7 None 时显式跳过留痕并返回可判读 outcome,
+          不再裸调靠 soft except 吞 AttributeError
+  anchors: UT-2
+- id: GP-3
+  file: v5_bridge/helix_bridge.py
+  change: 降级计数贯穿 —— init 降级/resume 软失败/链写失败均进 degradation_count
+  anchors: UT-2
+- id: GP-4
+  file: v5_bridge/helix_bridge.py
+  change: 后端标记如实 —— chain_backend 仅真接通置 "pg",降级置 "file_fallback"
+  anchors: UT-3
+- id: GP-5
+  file: packages/nautilus_core/helix_chain.py
+  change: 补缺失件(= 真实修复 defb148c6 原件归位)—— PgStorage + HelixChain.a_close_breath_pair
+  anchors: "(真实事故修复本体;UT 判定面锚可见性语义,不依赖真 PG)"

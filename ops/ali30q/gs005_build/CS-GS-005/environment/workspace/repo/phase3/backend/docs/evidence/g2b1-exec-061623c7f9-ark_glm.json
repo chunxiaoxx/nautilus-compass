@@ -1,0 +1,54 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "3ab0776af7f9eee6493b46669796334dbeae224b",
+  "reference_fix_commit": "061623c7f9c151dcacbccdd9c99ed9284c377846",
+  "subject": "fix(genopt): close final-review blockers B-1/B-2/B-3 + LOW-7/LOW-8",
+  "test_files": [
+   "tests/test_genopt_dispatch.py",
+   "tests/test_genopt_feishu_ship.py",
+   "tests/test_genopt_grounding.py",
+   "tests/test_genopt_loo.py"
+  ],
+  "source_files": [
+   "fde_capsule/genopt/dispatch.py",
+   "fde_capsule/genopt/driver.py",
+   "fde_capsule/genopt/feishu_ship.py",
+   "fde_capsule/genopt/loo_eval.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5"
+ },
+ "test_id": "tests/test_genopt_dispatch.py::test_build_payload_fails_without_agent_id",
+ "source_rel": "fde_capsule\\genopt\\dispatch.py",
+ "provider": "ark_glm",
+ "test_passed": true,
+ "winning_diff": "--- a/fde_capsule/genopt/dispatch.py\n+++ b/fde_capsule/genopt/dispatch.py\n@@ -20,12 +20,16 @@\n def build_payload(task_dir, rounds=3, effort=\"medium\", requested_by=\"v5-dialog\",\n                   agent_id=None):\n     \"\"\"Build the marketplace payload. Shape is the daemon's contract.\"\"\"\n+    if agent_id is None:\n+        agent_id = os.environ.get(\"V5_AGENT_ID\")\n+        if not agent_id:\n+            raise RuntimeError(\"V5_AGENT_ID unset: must pass agent_id or set env\")\n     return {\n         \"task_type\": \"genopt_real\",\n         \"task_dir\": os.path.abspath(task_dir),\n         \"rounds\": rounds,\n         \"effort\": effort,\n         \"requested_by\": requested_by,\n-        \"agent_id\": agent_id or os.environ.get(\"V5_AGENT_ID\", \"v5-dialog\"),\n+        \"agent_id\": agent_id,\n         \"queued_at\": int(time.time()),\n     }\n",
+ "budget_exceeded": false,
+ "total_tokens": 3835,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "completion_tokens": 2677,
+    "prompt_tokens": 1158,
+    "total_tokens": 3835,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 2397
+    }
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "fail_loud_when_agent_id_missing",
+ "duration_s": 47.5,
+ "replayed": true,
+ "verdict_post_status": 200
+}

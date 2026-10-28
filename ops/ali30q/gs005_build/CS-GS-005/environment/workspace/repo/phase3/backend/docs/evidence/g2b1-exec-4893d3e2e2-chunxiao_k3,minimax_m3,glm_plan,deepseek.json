@@ -1,0 +1,29 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "666769e0c6273c901b9495c2a20a45fbac8f08f5",
+  "reference_fix_commit": "4893d3e2e28c6d5e1d063274a5e2bf5e8206cfef",
+  "subject": "fix(llm): tool_choice\u65b9\u8a00\u8f6c\u6362\u2014\u2014deepseek\u4e0d\u8ba4Anthropic any,any\u2192required(\u6cbbkernel_auto_failed 32/\u6668)",
+  "test_files": [
+   "tests/test_intent_router_fde.py"
+  ],
+  "source_files": [
+   "nautilus_v5/runtime/llm_client.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\nautilus-v5"
+ },
+ "test_id": "tests/test_intent_router_fde.py::test_openai_extra_tool_choice_any_becomes_required",
+ "source_rel": "nautilus_v5\\runtime\\llm_client.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "skipped_reason": "fixture_broken_red",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 153.2,
+ "replayed": true,
+ "verdict_post_status": 200
+}

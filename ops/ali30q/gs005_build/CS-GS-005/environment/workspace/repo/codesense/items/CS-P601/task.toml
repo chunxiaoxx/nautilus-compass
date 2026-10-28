@@ -1,0 +1,35 @@
+schema_version = "1.4"
+
+[[artifacts]]
+source = "environment/workspace/repo"
+destination = "/workspace/repo"
+
+[task]
+name = "guoshu/codesense-cs-p601"
+description = "Code Sense · P6范围遗漏漏项×D01.1(导出流水线隐含步骤:版本锁定/原子成对/登记时序)· 中档语义评测题"
+
+[[task.authors]]
+name = "上海国曙智能"
+
+[agent]
+timeout_sec = 1800
+network_mode = "no-network"
+
+[verifier]
+timeout_sec = 900
+network_mode = "no-network"
+
+[environment]
+build_timeout_sec = 900
+network_mode = "no-network"
+os = "linux"
+cpus = 2
+memory_mb = 4096
+
+[metadata]
+id = "CS-P601"
+badpattern = "P6 范围遗漏漏项 × D01.1 后端接口与业务逻辑"
+focus_points = "①执行语义与状态追踪, ③单轮反幻觉与拒绝错误前提, ⑥约束理解与tradeoff判断"
+pool = "ali-codesense-30q"
+batch = "P1P6-14"
+producer = "platform"

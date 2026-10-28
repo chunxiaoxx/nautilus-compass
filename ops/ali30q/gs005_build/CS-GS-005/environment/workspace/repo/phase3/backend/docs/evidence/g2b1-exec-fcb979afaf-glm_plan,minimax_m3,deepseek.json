@@ -1,0 +1,30 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "245bfc006718535f73abf840a11b128a0d329738",
+  "reference_fix_commit": "fcb979afafc83d0363a5454969619b496b1a0bdd",
+  "subject": "fix(capability-probe): \u53ef\u4fe1\u5316\u80fd\u529b\u9a8c\u8bc1(\u7a7a\u56de\u590d\u2192absent \u4e0d\u8bef\u5224+\u91cd\u8bd5+\u9ed8\u8ba4\u51686\u80fd\u529b)",
+  "test_files": [
+   "tests/test_capability_runner.py"
+  ],
+  "source_files": [
+   "fde_capsule/capability_probe/run_audit.py",
+   "fde_capsule/capability_probe/runner.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_capability_runner.py::test_run_probe_empty_reply_is_absent_not_facade",
+ "source_rel": "fde_capsule/capability_probe/run_audit.py",
+ "provider": "glm_plan,minimax_m3,deepseek",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

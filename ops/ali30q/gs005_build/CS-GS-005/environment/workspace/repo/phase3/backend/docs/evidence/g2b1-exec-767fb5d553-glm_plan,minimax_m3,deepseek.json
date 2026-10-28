@@ -1,0 +1,58 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "409c8fa447cfd7c9eda9c2be544520dbf85e4aeb",
+  "reference_fix_commit": "767fb5d55337453ca70278ccefaf85a1ea57aece",
+  "subject": "fix(mcp): thread-safe EventStore + session-store constants (Task 3 review)",
+  "test_files": [
+   "tests/mcp_durable/test_event_store.py"
+  ],
+  "source_files": [
+   "mcp_durable/event_store.py",
+   "mcp_server.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass"
+ },
+ "test_id": "tests/mcp_durable/test_event_store.py::test_concurrent_appends_yield_unique_contiguous_ids",
+ "source_rel": "mcp_durable\\event_store.py",
+ "provider": "glm_plan,minimax_m3,deepseek",
+ "test_passed": true,
+ "winning_diff": "--- a/mcp_durable/event_store.py\n+++ b/mcp_durable/event_store.py\n@@ -1,6 +1,7 @@\n \"\"\"Pure in-memory EventStore for durable MCP replay.\n \n The server appends every outbound frame here. Each frame is tagged with a\n strictly-increasing global id (starting at 1) and a timestamp (read only from\n ``now_fn``, the single point where real time enters the module). History is\n bounded two ways:\n@@ -13,6 +14,7 @@ This module is self-contained: no sockets, no I/O, never raises on bad input.\n \"\"\"\n \n from __future__ import annotations\n \n+import threading\n import time\n from typing import Callable, Optional\n \n@@ -33,12 +35,14 @@ class EventStore:\n         self._now_fn: Callable[[], float] = now_fn or time.monotonic\n         # Each entry: {\"id\": int, \"ts\": float, \"frame\": dict}, ascending id.\n         self._events: list[dict] = []\n         self._next_id = 1  # first append() returns 1\n+        # Serialise every mutation + every read so concurrent append/replay is safe.\n+        self._lock = threading.Lock()\n \n     def append(self, frame: dict) -> int:\n         \"\"\"Store ``frame``, return its assigned global id.\"\"\"\n-        event_id = self._next_id\n-        self._next_id += 1\n-        self._events.append(\n-            {\"id\": event_id, \"ts\": self._now_fn(), \"frame\": frame}\n-        )\n-        self._evict()\n-        return event_id\n+        with self._lock:\n+            event_id = self._next_id\n+            self._next_id += 1\n+            self._events.append(\n+                {\"id\": event_id, \"ts\": self._now_fn(), \"frame\": frame}\n+            )\n+            self._evict()\n+            return event_id\n \n     def _evict(self) -> None:\n         \"\"\"Drop oldest entries beyond the size cap or past the ttl window.\"\"\"\n@@ -69,20 +73,21 @@ class EventStore:\n         frame = event[\"frame\"]\n         return {\n             \"id\": event[\"id\"],\n             \"ts\": event[\"ts\"],\n             \"frame\": dict(frame) if isinstance(frame, dict) else frame,\n         }\n \n     def replay_since(self, last_id: int) -> Optional[list]:\n         \"\"\"Return retained events with id > ``last_id``.\n \n         \u00b7 last_id == 0          \u2192 all retained events (fresh client).\n         \u00b7 gap below window      \u2192 None (events evicted, caller must resync).\n         \u00b7 otherwise             \u2192 ascending list of newer events (maybe empty).\n \n         Returned events are copies \u2014 mutating them does not affect the store.\n         \"\"\"\n-        if last_id == 0:\n-            return [self._copy_event(e) for e in self._events]\n-\n-        if not self._events:\n+        with self._lock:\n+            if last_id == 0:\n+                return [self._copy_event(e) for e in self._events]\n+\n+            if not self._events:\n             # Nothing retained. If the client already saw everything we ever\n             # had (last_id >= high-water mark), nothing newer exists \u2192 []. If\n             # it lags behind ids we once held but evicted \u2192 unfillable gap.\n-            highest_seen = self._next_id - 1\n-            if last_id >= highest_seen:\n-                return []\n-            return None\n-\n-        oldest_id = self._events[0][\"id\"]\n-        # The gap is fillable only if the next id the client needs\n-        # (last_id + 1) is still retained, i.e. last_id + 1 >= oldest_id.\n-        if last_id + 1 < oldest_id:\n-            return None\n+                highest_seen = self._next_id - 1\n+                if last_id >= highest_seen:\n+                    return []\n+                return None\n+\n+            oldest_id = self._events[0][\"id\"]\n+            # The gap is fillable only if the next id the client needs\n+            # (last_id + 1) is still retained, i.e. last_id + 1 >= oldest_id.\n+            if last_id + 1 < oldest_id:\n+                return None\n \n-        return [self._copy_event(e) for e in self._events if e[\"id\"] > last_id]\n+            return [self._copy_event(e) for e in self._events if e[\"id\"] > last_id]\n",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 2097,
+    "output_tokens": 935,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: mcp_durable/event_store.py:1\nerror: mcp_durable/event_store.py: patch does not apply\n\n[attempt2 backend] error: patch failed: mcp_durable/event_store.py:1\nerror: mcp_durable/event_store.py: patch does not apply\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "input_tokens": 2068,
+    "output_tokens": 1152,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "event_store_thread_safety",
+ "duration_s": 61.3,
+ "verdict_post_status": 200
+}

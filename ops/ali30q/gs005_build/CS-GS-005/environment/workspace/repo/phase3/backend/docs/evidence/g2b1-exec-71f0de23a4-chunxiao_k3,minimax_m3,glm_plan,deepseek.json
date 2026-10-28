@@ -1,0 +1,116 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "a91e9a8f038d175be59e3c3ff9874df1da410a1e",
+  "reference_fix_commit": "71f0de23a4a1149306303f4e36e7dc24918c93bc",
+  "subject": "fix(s4): make quarantine fingerprints deterministic",
+  "test_files": [
+   "tests/gep/test_flywheel_log.py"
+  ],
+  "source_files": [
+   "gep/flywheel_log.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass"
+ },
+ "test_id": "tests/gep/test_flywheel_log.py::test_unknown_class_instances_have_stable_quarantine_fingerprint",
+ "source_rel": "gep\\flywheel_log.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/gep/flywheel_log.py\n+++ b/gep/flywheel_log.py\n@@ -327,10 +327,9 @@\n         items = [_fingerprint_value(item) for item in value]\n         items.sort(key=_fingerprint_json)\n         return {\"type\": \"frozenset\", \"items\": items}\n-    return {\n-        \"type\": f\"{type(value).__module__}.{type(value).__qualname__}\",\n-        \"repr\": repr(value),\n-    }\n+    return {\n+        \"type\": f\"{type(value).__module__}.{type(value).__qualname__}\",\n+    }\n \n \n def _fingerprint_json(value: Any) -> bytes:\n",
+ "budget_exceeded": false,
+ "total_tokens": 10046,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 3269,
+    "completion_tokens": 284,
+    "total_tokens": 3553,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 3013,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 284,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 3269,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: gep/flywheel_log.py:1\nerror: gep/flywheel_log.py: patch does not apply\n\n[attempt2 backend] error: patch failed: gep/flywheel_log.py:1\nerror: gep/flywheel_log.py: patch does not apply\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 3397,
+    "completion_tokens": 3096,
+    "total_tokens": 6493,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 325,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 3072,
+      "output_tokens": 3096,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 3072,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 3397,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "stable-unknown-type-fingerprint",
+ "duration_s": 103.0,
+ "verdict_post_status": 200
+}

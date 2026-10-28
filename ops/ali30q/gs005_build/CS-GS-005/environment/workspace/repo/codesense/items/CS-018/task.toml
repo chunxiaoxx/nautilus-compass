@@ -1,0 +1,37 @@
+schema_version = "1.4"
+
+[[artifacts]]
+source = "environment/workspace/repo"
+destination = "/workspace/repo"
+
+[task]
+name = "guoshu/codesense-cs-018"
+description = "Code Sense · 尾悬数据(流水末笔无换行被去尾吞笔·日终轧差)· 浅档单坑语义评测题"
+
+[[task.authors]]
+name = "上海国曙智能"
+
+[agent]
+timeout_sec = 1800
+network_mode = "no-network"
+
+[verifier]
+timeout_sec = 900
+network_mode = "no-network"
+
+[environment]
+build_timeout_sec = 900
+network_mode = "no-network"
+os = "linux"
+cpus = 2
+memory_mb = 4096
+
+[metadata]
+badpattern = "F05.02 边界与异常处理缺陷(尾悬数据)"
+ Domain = "D05.0 数据分析与取数"
+id = "CS-018"
+pool = "ali-codesense-30q"
+batch = "C"
+seed = "S0尾悬数据"
+producer = "platform"
+calibration = "tests/calibration/{perfect,deficient,guessed}"

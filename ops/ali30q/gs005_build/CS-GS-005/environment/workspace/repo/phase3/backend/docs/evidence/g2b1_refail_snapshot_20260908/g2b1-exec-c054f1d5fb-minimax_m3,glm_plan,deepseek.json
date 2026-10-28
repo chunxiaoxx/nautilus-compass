@@ -1,0 +1,71 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "1905e3fac62f8a9896f1f0fa2b85de9a5ad2e202",
+  "reference_fix_commit": "c054f1d5fb00ce26889ea54234d8d5c72281058b",
+  "subject": "fix(fde): distinguish form metadata from publication",
+  "test_files": [
+   "phase3/backend/tests/test_fde_phase3_single_submission_forms.py"
+  ],
+  "source_files": [
+   "phase3/backend/scripts/refresh_phase3_expert_form.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/test_fde_phase3_single_submission_forms.py::test_expert_form_cli_is_scoped_to_sanitized_probe_or_confirmed_refresh",
+ "source_rel": "scripts\\refresh_phase3_expert_form.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 1794,
+    "output_tokens": 682,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 root] error: patch failed: phase3/backend/scripts/refresh_phase3_expert_form.py:1\nerror: phase3/backend/scripts/refresh_phase3_expert_form.py: patch does not apply\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 1879,
+    "output_tokens": 387,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 root] error: phase3/backend/phase3/backend/scripts/refresh_phase3_expert_form.py: No such file or directory\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 2003,
+    "output_tokens": 308,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 root] error: phase3/backend/phase3/backend/scripts/refresh_phase3_expert_form.py: No such file or directory\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 13.9,
+ "verdict_post_status": 200
+}

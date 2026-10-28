@@ -1,0 +1,71 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "8929d392781c8113bc569f388c15c47b94f86581",
+  "reference_fix_commit": "762c97eef7c1b3779678992f26a553a2a8c80793",
+  "subject": "Fix double-bracketing of choices in synopsis",
+  "test_files": [
+   "tests/test_basic.py"
+  ],
+  "source_files": [
+   "src/click/core.py"
+  ],
+  "repo_path": "C:/Users/chunx/ext_mine"
+ },
+ "test_id": "tests/test_basic.py::test_choice_argument_optional_metavar",
+ "source_rel": "src\\click\\core.py",
+ "provider": "t6pool-minimax_m3",
+ "provider_used": "t6pool-minimax_m3",
+ "test_passed": true,
+ "winning_diff": "--- a/src/click/core.py\n+++ b/src/click/core.py\n@@ -2988,12 +2988,17 @@ class Argument(Parameter):\n     def make_metavar(self, ctx: Context) -> str:\n         if self.metavar is not None:\n             return self.metavar\n         var = self.type.get_metavar(param=self, ctx=ctx)\n         if not var:\n             var = self.name.upper()\n         if self.deprecated:\n             var += \"!\"\n-        if not self.required:\n-            var = f\"[{var}]\"\n-        if self.nargs != 1:\n-            var += \"...\"\n+        # If the type already provided its own brackets (e.g. ``Choice``\n+        # returns ``[a|b|c]``), don't add a second pair when the argument is\n+        # optional. Similarly, only append ``...`` when nargs != 1 and the\n+        # type did not already do so.\n+        if not self.required and not (var.startswith(\"[\") and var.endswith(\"]\")):\n+            var = f\"[{var}]\"\n+        if self.nargs != 1 and not var.endswith(\"...\"):\n+            var += \"...\"\n         return var\n",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 30831,
+    "output_tokens": 209,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: No valid patches in input (allow with \"--allow-empty\")\n\n[attempt2 backend] error: No valid patches in input (allow with \"--allow-empty\")\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 30936,
+    "output_tokens": 266,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "F                                                                        [100%]\r\n================================== FAILURES ===================================\r\n____________________ test_choice_argument_optional_metavar ____________________\r\n\r\nrunner = <click.testing.CliRunner object at 0x000001760E1AE270>\r\n\r\n    def test_choice_argument_optional_metavar(runner):\r\n        \"\"\"Optional Choice arguments reuse the type's brackets instead of doubling.\r\n    \r\n        Without this the usage line for a ``Choice`` argument with ``nargs=-1`` or\r\n        ``required=False`` rendered as ``[[a|b|c]]``: one pair from ``Choice`` to\r\n        enumerate values, a second pair from ``Argument`` to mark it optional.\r\n        \"\"\"\r\n    \r\n        @click.command()\r\n        @click.argument(\"method\", type=click.Choice([\"foo\", \"bar\", \"baz\"]), nargs=-1)\r\n        def cli_variadic(method):\r\n            pass\r\n    \r\n        @click.command()\r\n        @click.argument(\"method\", type=click.Choice([\"foo\", \"bar\", \"baz\"]), required=False)\r\n        def cli_optional(method):\r\n            pass\r\n    \r\n        variadic = runner.invoke(cli_variadic, [\"--help\"]).output\r\n        assert \"Usage: cli-variadic [OPTIONS] [foo|bar|baz]...\\n\" in variadic\r\n        assert \"[[foo|bar|baz]]\" not in variadic\r\n    \r\n        optional = runner.invoke(cli_optional, [\"--help\"]).output\r\n>       assert \"Usage: cli-optional [OPTIONS] [foo|bar|baz]\\n\" in optional\r\nE       AssertionError: assert 'Usage: cli-optional [OPTIONS] [foo|bar|baz]\\n' in 'Usage: cli-optional [OPTIONS] [foo|bar|baz]...\\n\\nOptions:\\n  --help  Show this message and exit.\\n'\r\n\r\ntests\\test_basic.py:595: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_basic.py::test_choice_argument_optional_metavar - Assertion...\r\n1 failed in 0.31s\r\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "input_tokens": 31204,
+    "output_tokens": 331,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 134,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "fix_argument_make_metavar_choice_brackets",
+ "duration_s": 27.1
+}

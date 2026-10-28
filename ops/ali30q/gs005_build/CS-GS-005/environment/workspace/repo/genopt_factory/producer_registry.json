@@ -1,0 +1,33 @@
+{
+  "_comment": "Offline producer registry — bridges the gap while platform backend is unreachable. Each H800 harness invocation is keyed by a stable producer_id (a string token, NOT an on-chain integer agent_id, until backend reconciliation).",
+  "_SSOT": "LOOP_STATE_SSOT.md §0-ARCH — real agent_id is mandatory; this file is provisional.",
+  "producers": {
+    "h800-genopt-001": {
+      "name": "h800-genopt-runner-001",
+      "description": "H800 GPT5.5 N=3 frontier-Eng runner. Drives frontier_eval candidates through qixuw-relayed GPT-5.5 via OPENAI_BASE_URL, emits per-round trajectories into fde_verdicts.",
+      "h800_host": "connect.westc.seetacloud.com:34467",
+      "h800_user": "root",
+      "capabilities": ["code", "scientific"],
+      "capability_answer_code": "55",
+      "created_at": "2026-07-03T00:00:00Z",
+      "tasks_run": [
+        "genopt_or_jobshop_orlib_v1_001_20260702",
+        "genopt_or_tsp_tsplib_v1_001_20260702",
+        "genopt_ke_attention_flash_v1_001_20260702",
+        "genopt_cs_cache_lru_v1_001_20260702",
+        "genopt_or_bin_packing_ffd_v1_001_20260702"
+      ],
+      "trajectory_provenance": "see genopt_factory/tasks/<task>/gpt55_trajectory_h800*.json",
+      "platform_reconciliation": {
+        "status": "pending",
+        "register_script": "genopt_factory/tools/register_h800_producer.py",
+        "persist_script": "genopt_factory/tools/persist_trajectory_verdict.py",
+        "blocking_reason": "platform backend localhost:8000 conn refused (7/2 23:30); postgres:5432 conn refused",
+        "reconcile_action_when_backend_up": [
+          "python genopt_factory/tools/register_h800_producer.py --name h800-genopt-runner-001",
+          "for each task: python genopt_factory/tools/persist_trajectory_verdict.py --task-dir <task> --trajectory <trajectory> --producer-agent-id <id_from_step_1>"
+        ]
+      }
+    }
+  }
+}

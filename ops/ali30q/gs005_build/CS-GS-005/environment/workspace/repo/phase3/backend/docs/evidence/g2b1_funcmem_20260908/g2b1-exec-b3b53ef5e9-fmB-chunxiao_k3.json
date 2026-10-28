@@ -1,0 +1,75 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "1b67902bd81dbaeff103a25e714d5aba86dcd920",
+  "reference_fix_commit": "b3b53ef5e94d98711b9207dc26f3e6a397d5fe68",
+  "subject": "fix(fde): stabilize schema option hashing",
+  "test_files": [
+   "phase3/backend/tests/test_fde_phase3_feishu.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/fde_phase3_feishu.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core",
+  "hist_test_id": "tests/test_fde_phase3_feishu.py::test_schema_probe_hash_is_stable_for_mixed_color_types_without_option_ids",
+  "hist_passed": false,
+  "_passed": false
+ },
+ "test_id": "tests/test_fde_phase3_feishu.py::test_schema_probe_hash_is_stable_for_mixed_color_types_without_option_ids",
+ "source_rel": "services\\fde_phase3_feishu.py",
+ "provider": "fmB-chunxiao_k3",
+ "provider_used": "fmB-chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/services/fde_phase3_feishu.py\n+++ b/services/fde_phase3_feishu.py\n@@ -308,6 +308,7 @@ def _normalize_field_options(raw_property: Any) -> tuple[SchemaOption, ...]:\n             key=lambda option: (\n                 option.name,\n                 option.option_id or \"\",\n                 \"\" if option.color is None else str(option.color),\n+                0 if option.color is None else (1 if isinstance(option.color, int) else 2),\n             ),\n         )\n     )\n",
+ "budget_exceeded": false,
+ "total_tokens": 9608,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 9173,
+    "completion_tokens": 435,
+    "total_tokens": 9608,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 8917,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 435,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 9173,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "schema_option_sort_color_type_rank",
+ "duration_s": 24.0
+}

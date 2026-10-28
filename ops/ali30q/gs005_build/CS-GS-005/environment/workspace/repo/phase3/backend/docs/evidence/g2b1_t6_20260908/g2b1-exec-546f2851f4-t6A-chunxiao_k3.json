@@ -1,0 +1,73 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "ae46cfd6bc997804893adc799589248eadcdbc29",
+  "reference_fix_commit": "546f2851f414b07413777ebcae89b2c21a685252",
+  "subject": "Fix callable ``flag_value`` being instantiated when used as a default",
+  "test_files": [
+   "tests/test_defaults.py",
+   "tests/test_options.py"
+  ],
+  "source_files": [
+   "src/click/core.py"
+  ],
+  "repo_path": "C:/Users/chunx/ext_mine"
+ },
+ "test_id": "tests/test_defaults.py::test_default_map_with_callable_flag_value",
+ "source_rel": "src\\click\\core.py",
+ "provider": "t6A-chunxiao_k3",
+ "provider_used": "t6A-chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/src/click/core.py\n+++ b/src/click/core.py\n@@ -2655,7 +2655,13 @@ class Option(Parameter):\n         # https://github.com/pallets/click/issues/3024#issuecomment-3146199461\n         # https://github.com/pallets/click/pull/3030/commits/06847da\n         if self.default is True and self.flag_value is not UNSET:\n             self.default = self.flag_value\n+            # The default was aligned with the flag value. The flag value can\n+            # be an arbitrary object, such as a class, which is itself\n+            # callable. Remember the alignment so that ``get_default`` does\n+            # not invoke the default as if it were a callable default.\n+            self._default_is_flag_value = True\n+        else:\n+            self._default_is_flag_value = False\n \n         # Set the default flag_value if it is not set.\n         if self.flag_value is UNSET:\n@@ -2815,6 +2821,21 @@ class Option(Parameter):\n \n         return name, opts, secondary_opts\n \n+    def get_default(\n+        self, ctx: Context, call: bool = True\n+    ) -> t.Any | t.Callable[[], t.Any] | None:\n+        value = super().get_default(ctx, call=False)\n+\n+        if call and callable(value):\n+            # A default that was aligned with the flag value is returned\n+            # as-is: the flag value may itself be callable (e.g. a class)\n+            # without being a lazy default.\n+            if self._default_is_flag_value and value is self.default:\n+                return value\n+            return value()\n+\n+        return value\n+\n     def add_to_parser(self, parser: _OptionParser, ctx: Context) -> None:\n         if self.multiple:\n             action = \"append\"\n",
+ "budget_exceeded": false,
+ "total_tokens": 36956,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 32750,
+    "completion_tokens": 4206,
+    "total_tokens": 36956,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 0,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 32750,
+      "output_tokens": 4206,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 32750,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 32750,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "flag_value_aligned_callable_default_not_invoked",
+ "duration_s": 2009.0
+}

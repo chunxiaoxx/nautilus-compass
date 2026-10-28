@@ -1,0 +1,360 @@
+{
+  "model": "doubao-seed-2-0-pro-260215",
+  "n": 5,
+  "seed_score": 24.6755,
+  "best_score": 82.0972,
+  "gap_closed": 0.5742,
+  "difficulty": "Medium",
+  "seed_valid": 1,
+  "valid": 1,
+  "rounds": [
+    {
+      "round": 1,
+      "elapsed": 89.44394190001185,
+      "metrics": {
+        "combined_score": 76.389,
+        "valid": 1.0,
+        "instances": 6,
+        "failures": 0,
+        "per_instance": [
+          {
+            "instance": "ft06",
+            "elapsed_s": 0.23,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 74,
+            "optimum": 55,
+            "score": 74.32432432432432
+          },
+          {
+            "instance": "ft10",
+            "elapsed_s": 0.5,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 1226,
+            "optimum": 930,
+            "score": 75.85644371941272
+          },
+          {
+            "instance": "la01",
+            "elapsed_s": 0.74,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 789,
+            "optimum": 666,
+            "score": 84.4106463878327
+          },
+          {
+            "instance": "la16",
+            "elapsed_s": 0.26,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 1306,
+            "optimum": 945,
+            "score": 72.3583460949464
+          },
+          {
+            "instance": "la21",
+            "elapsed_s": 0.27,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 1399,
+            "optimum": 1046,
+            "score": 74.76769120800571
+          },
+          {
+            "instance": "la36",
+            "elapsed_s": 0.32,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 1655,
+            "optimum": 1268,
+            "score": 76.61631419939577
+          }
+        ]
+      },
+      "source": "def solve_instance(instance: dict) -> dict:\n    num_jobs = instance[\"num_jobs\"]\n    num_machines = instance[\"num_machines\"]\n    jobs = instance[\"jobs\"]\n\n    # Precompute remaining work for each job at each operation index (sum of remaining processing times including current)\n    rem_work = []\n    for j in range(num_jobs):\n        rw = [0] * num_machines\n        rw[-1] = jobs[j][-1][1]\n        for k in range(num_machines - 2, -1, -1):\n            rw[k] = rw[k + 1] + jobs[j][k][1]\n        rem_work.append(rw)\n\n    # State tracking variables\n    starts = [[0] * num_machines for _ in range(num_jobs)]\n    job_next_op = [0] * num_jobs  # Next operation to schedule for each job\n    job_avail = [0] * num_jobs    # Time each job is free to start next operation\n    machine_avail = [0] * num_machines  # Time each machine is free for next operation\n    total_ops = num_jobs * num_machines\n    scheduled_ops = 0\n\n    # Giffler-Thompson active schedule generation with MWR priority rule\n    while scheduled_ops < total_ops:\n        # Step 1: Collect all ready-to-schedule operations\n        ready = []\n        for j in range(num_jobs):\n            op_idx = job_next_op[j]\n            if op_idx >= num_machines:\n                continue\n            m_id, proc = jobs[j][op_idx]\n            earliest_start = max(job_avail[j], machine_avail[m_id])\n            ready.append((j, op_idx, m_id, proc, earliest_start))\n\n        # Step 2: Compute minimum possible completion time across all ready ops\n        C_min = min(est + p for (j, op_idx, m_id, p, est) in ready)\n\n        # Step 3: Build candidate set of ops eligible for scheduling now\n        candidates = []\n        for op in ready:\n            j, op_idx, m_id, p, est = op\n            if machine_avail[m_id] <= C_min:\n                # Priority key: (-remaining work, -processing time, job id) for deterministic sorting\n                # Higher remaining work first, tiebreak with longer proc time, then smaller job id\n                priority = (-rem_work[j][op_idx], -p, j)\n                candidates.append((priority, op))\n\n        # Step 4: Select highest priority candidate\n        candidates.sort()\n        selected = candidates[0][1]\n        j, op_idx, m_id, p, est = selected\n\n        # Step 5: Schedule the selected operation\n        start = est\n        end = start + p\n        starts[j][op_idx] = start\n\n        # Update state\n        job_avail[j] = end\n        machine_avail[m_id] = end\n        job_next_op[j] += 1\n        scheduled_ops += 1\n\n    return {\"starts\": starts}\n",
+      "source_sha256": "2195d86516e039195b185133fd49958c3aa329794e9af4fb0952c2c7d477fa3d",
+      "source_preview": "def solve_instance(instance: dict) -> dict:\n    num_jobs = instance[\"num_jobs\"]\n    num_machines = instance[\"num_machines\"]\n    jobs = instance[\"jobs\"]\n\n    # Precompute remaining work for each job at each operation index (sum of remaining processing times including current)\n    rem_work = []\n    fo",
+      "error": null
+    },
+    {
+      "round": 2,
+      "elapsed": 102.35167679999722,
+      "metrics": {
+        "combined_score": 0.0,
+        "valid": 0.0,
+        "instances": 6,
+        "failures": 6,
+        "per_instance": [
+          {
+            "instance": "ft06",
+            "elapsed_s": 0.54,
+            "feasible": false,
+            "reason": "job 0 op 1: violates job precedence",
+            "makespan": null,
+            "optimum": 55,
+            "score": null
+          },
+          {
+            "instance": "ft10",
+            "elapsed_s": 1.09,
+            "feasible": false,
+            "reason": "job 1 op 5: violates job precedence",
+            "makespan": null,
+            "optimum": 930,
+            "score": null
+          },
+          {
+            "instance": "la01",
+            "elapsed_s": 0.23,
+            "feasible": false,
+            "reason": "job 0 op 4: violates job precedence",
+            "makespan": null,
+            "optimum": 666,
+            "score": null
+          },
+          {
+            "instance": "la16",
+            "elapsed_s": 0.54,
+            "feasible": false,
+            "reason": "job 0 op 3: violates job precedence",
+            "makespan": null,
+            "optimum": 945,
+            "score": null
+          },
+          {
+            "instance": "la21",
+            "elapsed_s": 0.34,
+            "feasible": false,
+            "reason": "job 0 op 6: violates job precedence",
+            "makespan": null,
+            "optimum": 1046,
+            "score": null
+          },
+          {
+            "instance": "la36",
+            "elapsed_s": 0.78,
+            "feasible": false,
+            "reason": "job 0 op 1: violates job precedence",
+            "makespan": null,
+            "optimum": 1268,
+            "score": null
+          }
+        ]
+      },
+      "source": "def solve_instance(instance: dict) -> dict:\n    n_jobs = instance[\"num_jobs\"]\n    n_machines = instance[\"num_machines\"]\n    jobs = instance[\"jobs\"]\n    \n    # Precompute remaining work for each job and operation index\n    remaining_work = [[0] * n_machines for _ in range(n_jobs)]\n    for j in range(n_jobs):\n        total = 0\n        for k in reversed(range(n_machines)):\n            total += jobs[j][k][1]\n            remaining_work[j][k] = total\n    \n    # Helper to compute completion times and makespan from machine sequences\n    def compute_schedule(sequences):\n        comp = [[0] * n_machines for _ in range(n_jobs)]\n        mach_avail = [0] * n_machines\n        for m in range(n_machines):\n            seq = sequences[m]\n            for (j, k, dur) in seq:\n                est = 0 if k == 0 else comp[j][k-1]\n                start = max(est, mach_avail[m])\n                comp[j][k] = start + dur\n                mach_avail[m] = comp[j][k]\n        makespan = max(comp[j][-1] for j in range(n_jobs))\n        return comp, makespan\n    \n    # Step 1: Generate initial schedule with Giffler-Thompson + MWKR priority rule\n    next_op = [0] * n_jobs\n    comp = [[0] * n_machines for _ in range(n_jobs)]\n    machine_avail = [0] * n_machines\n    machine_sequence = [[] for _ in range(n_machines)]\n    \n    while True:\n        # Collect schedulable operations\n        S = []\n        for j in range(n_jobs):\n            k = next_op[j]\n            if k >= n_machines:\n                continue\n            m, dur = jobs[j][k]\n            est = 0 if k == 0 else comp[j][k-1]\n            ect = est + dur\n            S.append((j, k, m, dur, est, ect))\n        if not S:\n            break\n        \n        # Find operation with minimal earliest completion time\n        o_min = min(S, key=lambda x: x[5])\n        min_ect = o_min[5]\n        m_min = o_min[2]\n        \n        # Build candidate set B\n        B = [op for op in S if op[2] == m_min and op[4] < min_ect]\n        \n        # Select op with highest remaining work, break ties deterministically\n        def priority(op):\n            j, k = op[0], op[1]\n            return (-remaining_work[j][k], j, k)\n        selected = min(B, key=priority)\n        j_sel, k_sel, m_sel, dur_sel, est_sel, _ = selected\n        \n        # Schedule selected operation\n        start = max(est_sel, machine_avail[m_sel])\n        comp[j_sel][k_sel] = start + dur_sel\n        machine_avail[m_sel] = comp[j_sel][k_sel]\n        machine_sequence[m_sel].append((j_sel, k_sel, dur_sel))\n        next_op[j_sel] += 1\n    \n    current_comp, current_makespan = compute_schedule(machine_sequence)\n    \n    # Step 2: Local search improvement (adjacent swap on machine sequences)\n    improved = True\n    for _ in range(3):  # Fixed 3 passes for deterministic run time\n        if not improved:\n            break\n        improved = False\n        for m in range(n_machines):\n            seq = machine_sequence[m]\n            best_seq = seq.copy()\n            best_comp = current_comp\n            best_ms = current_makespan\n            # Try all adjacent swaps\n            for i in range(len(seq) - 1):\n                new_seq = seq[:i] + [seq[i+1], seq[i]] + seq[i+2:]\n                temp_sequences = machine_sequence[:m] + [new_seq] + machine_sequence[m+1:]\n                new_comp, new_ms = compute_schedule(temp_sequences)\n                if new_ms < best_ms:\n                    best_seq = new_seq\n                    best_comp = new_comp\n                    best_ms = new_ms\n                    improved = True\n            if improved:\n                machine_sequence[m] = best_seq\n                current_comp = best_comp\n                current_makespan = best_ms\n    \n    # Convert completion times to start times\n    starts = []\n    for j in range(n_jobs):\n        job_starts = []\n        for k in range(n_machines):\n            dur = jobs[j][k][1]\n            job_starts.append(current_comp[j][k] - dur)\n        starts.append(job_starts)\n    \n    return {\"starts\": starts}\n",
+      "source_sha256": "1a980137900ced5909641a9c0c9da2e2ef11d16d4fda8383e64fe7d6d7b5ed6d",
+      "source_preview": "def solve_instance(instance: dict) -> dict:\n    n_jobs = instance[\"num_jobs\"]\n    n_machines = instance[\"num_machines\"]\n    jobs = instance[\"jobs\"]\n    \n    # Precompute remaining work for each job and operation index\n    remaining_work = [[0] * n_machines for _ in range(n_jobs)]\n    for j in range(",
+      "error": null
+    },
+    {
+      "round": 3,
+      "elapsed": 114.76482229999965,
+      "metrics": {
+        "combined_score": 0.0,
+        "valid": 0.0,
+        "instances": 6,
+        "failures": 4,
+        "per_instance": [
+          {
+            "instance": "ft06",
+            "elapsed_s": 60.03,
+            "feasible": false,
+            "reason": "timeout",
+            "makespan": null,
+            "score": null
+          },
+          {
+            "instance": "ft10",
+            "elapsed_s": 0.62,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 1053,
+            "optimum": 930,
+            "score": 88.31908831908832
+          },
+          {
+            "instance": "la01",
+            "elapsed_s": 0.22,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 695,
+            "optimum": 666,
+            "score": 95.8273381294964
+          },
+          {
+            "instance": "la16",
+            "elapsed_s": 60.02,
+            "feasible": false,
+            "reason": "timeout",
+            "makespan": null,
+            "score": null
+          },
+          {
+            "instance": "la21",
+            "elapsed_s": 60.01,
+            "feasible": false,
+            "reason": "timeout",
+            "makespan": null,
+            "score": null
+          },
+          {
+            "instance": "la36",
+            "elapsed_s": 60.1,
+            "feasible": false,
+            "reason": "timeout",
+            "makespan": null,
+            "score": null
+          }
+        ]
+      },
+      "source": "def solve_instance(instance: dict) -> dict:\n    num_jobs = instance[\"num_jobs\"]\n    num_machines = instance[\"num_machines\"]\n    jobs = instance[\"jobs\"]\n    \n    # Precompute remaining work for each job at each operation step\n    work_rem = []\n    for j in range(num_jobs):\n        rem = []\n        total = 0\n        for k in range(num_machines - 1, -1, -1):\n            total += jobs[j][k][1]\n            rem.append(total)\n        rem.reverse()\n        work_rem.append(rem)\n    \n    # ------------------- Giffler-Thompson Active Schedule Generation -------------------\n    k = [0] * num_jobs  # Next operation index per job\n    r = [0] * num_jobs  # Release time of next operation per job\n    a = [0] * num_machines  # Available time per machine\n    machine_sequences = [[] for _ in range(num_machines)]\n    start_times = [[0] * num_machines for _ in range(num_jobs)]\n    \n    total_ops = num_jobs * num_machines\n    while sum(k) < total_ops:\n        candidates = []\n        for j in range(num_jobs):\n            if k[j] >= num_machines:\n                continue\n            m_j, p_j = jobs[j][k[j]]\n            c_j = max(r[j], a[m_j]) + p_j\n            candidates.append((j, k[j], m_j, p_j, c_j, work_rem[j][k[j]]))\n        \n        c_min = min(c[4] for c in candidates)\n        m_star = next(c[2] for c in candidates if c[4] == c_min)\n        \n        # Filter valid candidates for this machine\n        gt_candidates = [c for c in candidates if c[2] == m_star and r[c[0]] < c_min]\n        # Priority rule: highest remaining work > shortest processing time > job ID > op ID (deterministic)\n        gt_candidates.sort(key=lambda x: (-x[5], x[3], x[0], x[1]))\n        selected = gt_candidates[0]\n        j_sel, op_sel, m_sel, p_sel, _, _ = selected\n        \n        # Schedule selected operation\n        s = max(r[j_sel], a[m_sel])\n        e = s + p_sel\n        start_times[j_sel][op_sel] = s\n        machine_sequences[m_sel].append((j_sel, op_sel))\n        \n        # Update state\n        a[m_sel] = e\n        r[j_sel] = e\n        k[j_sel] += 1\n    \n    # ------------------- Helper to compute schedule from machine sequences -------------------\n    def compute_schedule(mach_seqs):\n        mach_op_order = [{} for _ in range(num_machines)]\n        for m in range(num_machines):\n            for idx, (j, op) in enumerate(mach_seqs[m]):\n                mach_op_order[m][(j, op)] = idx\n        \n        starts = [[0] * num_machines for _ in range(num_jobs)]\n        changed = True\n        while changed:\n            changed = False\n            for j in range(num_jobs):\n                prev_job_end = 0\n                for k_op in range(num_machines):\n                    m, p = jobs[j][k_op]\n                    est = prev_job_end\n                    pos = mach_op_order[m][(j, k_op)]\n                    if pos > 0:\n                        prev_j, prev_op = mach_seqs[m][pos-1]\n                        est = max(est, starts[prev_j][prev_op] + jobs[prev_j][prev_op][1])\n                    if est > starts[j][k_op]:\n                        starts[j][k_op] = est\n                        changed = True\n                    prev_job_end = starts[j][k_op] + p\n        \n        makespan = max(starts[j][-1] + jobs[j][-1][1] for j in range(num_jobs))\n        return starts, makespan\n    \n    # ------------------- Local Search: Adjacent Swap Improvement -------------------\n    current_makespan = max(a)\n    current_seqs = [seq.copy() for seq in machine_sequences]\n    current_starts = [row.copy() for row in start_times]\n    \n    # Run 3 passes of swap improvement\n    for _ in range(3):\n        improved = False\n        for m in range(num_machines):\n            seq = current_seqs[m]\n            for i in range(len(seq)-1):\n                j1, op1 = seq[i]\n                j2, op2 = seq[i+1]\n                if j1 == j2:\n                    continue  # Preserve job precedence\n                # Try swap\n                seq[i], seq[i+1] = seq[i+1], seq[i]\n                new_starts, new_ms = compute_schedule(current_seqs)\n                if new_ms < current_makespan:\n                    current_makespan = new_ms\n                    current_starts = new_starts\n                    improved = True\n                else:\n                    # Revert swap\n                    seq[i], seq[i+1] = seq[i+1], seq[i]\n        if not improved:\n            break\n    \n    return {\"starts\": current_starts}\n",
+      "source_sha256": "b990c8fb397ec9e6c06d261e1111b682f75653f354aad564bb2855d53a777d64",
+      "source_preview": "def solve_instance(instance: dict) -> dict:\n    num_jobs = instance[\"num_jobs\"]\n    num_machines = instance[\"num_machines\"]\n    jobs = instance[\"jobs\"]\n    \n    # Precompute remaining work for each job at each operation step\n    work_rem = []\n    for j in range(num_jobs):\n        rem = []\n        to",
+      "error": null
+    },
+    {
+      "round": 4,
+      "elapsed": 214.99250940000638,
+      "metrics": {
+        "combined_score": 82.0972,
+        "valid": 1.0,
+        "instances": 6,
+        "failures": 0,
+        "per_instance": [
+          {
+            "instance": "ft06",
+            "elapsed_s": 0.18,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 67,
+            "optimum": 55,
+            "score": 82.08955223880596
+          },
+          {
+            "instance": "ft10",
+            "elapsed_s": 0.14,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 1178,
+            "optimum": 930,
+            "score": 78.94736842105263
+          },
+          {
+            "instance": "la01",
+            "elapsed_s": 0.22,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 735,
+            "optimum": 666,
+            "score": 90.61224489795919
+          },
+          {
+            "instance": "la16",
+            "elapsed_s": 0.24,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 1219,
+            "optimum": 945,
+            "score": 77.52255947497949
+          },
+          {
+            "instance": "la21",
+            "elapsed_s": 0.19,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 1314,
+            "optimum": 1046,
+            "score": 79.60426179604262
+          },
+          {
+            "instance": "la36",
+            "elapsed_s": 0.15,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 1513,
+            "optimum": 1268,
+            "score": 83.8070059484468
+          }
+        ]
+      },
+      "source": "def solve_instance(instance: dict) -> dict:\n    n = instance[\"num_jobs\"]\n    m = instance[\"num_machines\"]\n    jobs = instance[\"jobs\"]\n    \n    # Precompute remaining work for each job-op (including current op) for priority rule\n    remaining_work = [[0] * m for _ in range(n)]\n    for j in range(n):\n        total = 0\n        for k in reversed(range(m)):\n            total += jobs[j][k][1]\n            remaining_work[j][k] = total\n    \n    next_op = [0] * n\n    machine_avail = [0] * m\n    job_release = [0] * n\n    starts = [[0] * m for _ in range(n)]\n    \n    # Giffler-Thompson algorithm with MWR (Most Work Remaining) priority rule\n    while True:\n        # Check if all operations are scheduled\n        all_done = True\n        for j in range(n):\n            if next_op[j] < m:\n                all_done = False\n                break\n        if all_done:\n            break\n        \n        # Collect all ready operations\n        ready = []\n        for j in range(n):\n            k = next_op[j]\n            if k >= m:\n                continue\n            mach, dur = jobs[j][k]\n            es = job_release[j]\n            ec = max(es, machine_avail[mach]) + dur\n            ready.append((ec, es, mach, dur, j, k))\n        \n        # Step 1: Find minimum earliest completion time across all ready ops\n        C_min = min(r[0] for r in ready)\n        \n        # Step 2: Select conflict machine (smallest ID to break ties deterministically)\n        M_candidates = [r[2] for r in ready if r[0] == C_min]\n        M_star = min(M_candidates)\n        \n        # Step3: Build conflict set of ops eligible to be scheduled on M_star now\n        conflict = []\n        for r in ready:\n            ec, es, mach, dur, j, k = r\n            if mach == M_star and es <= C_min:\n                # Priority sort keys: highest remaining work > longest op duration > lower job ID > lower op ID\n                conflict.append((-remaining_work[j][k], -dur, j, k, dur))\n        \n        # Step4: Select highest priority op from conflict set\n        conflict.sort()\n        neg_rw, neg_dur, j, k, dur = conflict[0]\n        \n        # Step5: Schedule the selected op\n        start_time = max(job_release[j], machine_avail[M_star])\n        starts[j][k] = start_time\n        job_release[j] = start_time + dur\n        machine_avail[M_star] = start_time + dur\n        next_op[j] += 1\n    \n    return {\"starts\": starts}\n",
+      "source_sha256": "988e7aef165a147ff8a2638b7622786294a45449f2e8078f5abfefb782da7c0a",
+      "source_preview": "def solve_instance(instance: dict) -> dict:\n    n = instance[\"num_jobs\"]\n    m = instance[\"num_machines\"]\n    jobs = instance[\"jobs\"]\n    \n    # Precompute remaining work for each job-op (including current op) for priority rule\n    remaining_work = [[0] * m for _ in range(n)]\n    for j in range(n):\n",
+      "error": null
+    },
+    {
+      "round": 5,
+      "elapsed": 203.0278801999957,
+      "metrics": {
+        "combined_score": 0.0,
+        "valid": 0.0,
+        "instances": 6,
+        "failures": 6,
+        "per_instance": [
+          {
+            "instance": "ft06",
+            "elapsed_s": 60.01,
+            "feasible": false,
+            "reason": "timeout",
+            "makespan": null,
+            "score": null
+          },
+          {
+            "instance": "ft10",
+            "elapsed_s": 60.04,
+            "feasible": false,
+            "reason": "timeout",
+            "makespan": null,
+            "score": null
+          },
+          {
+            "instance": "la01",
+            "elapsed_s": 60.01,
+            "feasible": false,
+            "reason": "timeout",
+            "makespan": null,
+            "score": null
+          },
+          {
+            "instance": "la16",
+            "elapsed_s": 60.06,
+            "feasible": false,
+            "reason": "timeout",
+            "makespan": null,
+            "score": null
+          },
+          {
+            "instance": "la21",
+            "elapsed_s": 60.06,
+            "feasible": false,
+            "reason": "timeout",
+            "makespan": null,
+            "score": null
+          },
+          {
+            "instance": "la36",
+            "elapsed_s": 60.48,
+            "feasible": false,
+            "reason": "timeout",
+            "makespan": null,
+            "score": null
+          }
+        ]
+      },
+      "source": "def solve_instance(instance: dict) -> dict:\n    num_jobs = instance[\"num_jobs\"]\n    num_machines = instance[\"num_machines\"]\n    jobs = instance[\"jobs\"]\n    \n    # Precompute remaining work for each operation (job j, op k) for MWR priority rule\n    remaining_work = [[0] * num_machines for _ in range(num_jobs)]\n    for j in range(num_jobs):\n        total = 0\n        for k in reversed(range(num_machines)):\n            total += jobs[j][k][1]\n            remaining_work[j][k] = total\n    \n    # ---------------------- Giffler-Thompson Active Schedule Generation ----------------------\n    job_end = [0] * num_jobs\n    machine_end = [0] * num_machines\n    initial_starts = [[0] * num_machines for _ in range(num_jobs)]\n    machine_sequences = [[] for _ in range(num_machines)]  # Stores (job_id, op_id) per machine\n    \n    # Initial set of ready operations (first op of each job)\n    ready_ops = [(j, 0) for j in range(num_jobs)]\n    \n    while ready_ops:\n        op_details = []\n        completion_times = []\n        for (j, k) in ready_ops:\n            m, p = jobs[j][k]\n            earliest_start = max(job_end[j], machine_end[m])\n            earliest_completion = earliest_start + p\n            op_details.append((j, k, m, earliest_start, earliest_completion))\n            completion_times.append(earliest_completion)\n        \n        c_min = min(completion_times)\n        # Find bottleneck machine for this iteration\n        m_star = None\n        for (j, k, m, t, c) in op_details:\n            if c == c_min:\n                m_star = m\n                break\n        \n        # Build candidate set B: operations on m_star that can start before c_min\n        B = []\n        for (j, k, m, t, c) in op_details:\n            if m == m_star and t < c_min:\n                B.append((j, k, remaining_work[j][k]))\n        \n        # Select operation with highest remaining work, deterministic tiebreak by job then op id\n        B.sort(key=lambda x: (-x[2], x[0], x[1]))\n        selected_j, selected_k, _ = B[0]\n        \n        # Schedule selected operation\n        m_sel, p_sel = jobs[selected_j][selected_k]\n        start_time = max(job_end[selected_j], machine_end[m_sel])\n        initial_starts[selected_j][selected_k] = start_time\n        end_time = start_time + p_sel\n        job_end[selected_j] = end_time\n        machine_end[m_sel] = end_time\n        machine_sequences[m_sel].append((selected_j, selected_k))\n        \n        # Update ready operations list\n        ready_ops.remove((selected_j, selected_k))\n        next_op = selected_k + 1\n        if next_op < num_machines:\n            ready_ops.append((selected_j, next_op))\n    \n    # ---------------------- Helper to compute full schedule from machine sequences ----------------------\n    def compute_schedule(machine_seqs):\n        # Precompute position of each operation on its machine\n        pos_in_machine = [[0]*num_machines for _ in range(num_jobs)]\n        for m in range(num_machines):\n            for idx, (j, k) in enumerate(machine_seqs[m]):\n                pos_in_machine[j][k] = idx\n        \n        start = [[0]*num_machines for _ in range(num_jobs)]\n        end = [[0]*num_machines for _ in range(num_jobs)]\n        updated = True\n        while updated:\n            updated = False\n            for j in range(num_jobs):\n                for k in range(num_machines):\n                    m, p = jobs[j][k]\n                    # Precedence constraint from job sequence\n                    prev_job_end = 0 if k == 0 else end[j][k-1]\n                    # Capacity constraint from machine sequence\n                    prev_machine_end = 0\n                    pos = pos_in_machine[j][k]\n                    if pos > 0:\n                        prev_j, prev_k = machine_seqs[m][pos-1]\n                        prev_machine_end = end[prev_j][prev_k]\n                    \n                    new_start = max(prev_job_end, prev_machine_end)\n                    new_end = new_start + p\n                    if start[j][k] != new_start or end[j][k] != new_end:\n                        start[j][k] = new_start\n                        end[j][k] = new_end\n                        updated = True\n        \n        makespan = max(max(row) for row in end)\n        return start, makespan\n    \n    # ---------------------- Deterministic Tabu Search Improvement ----------------------\n    current_seqs = [s.copy() for s in machine_sequences]\n    current_starts, current_makespan = compute_schedule(current_seqs)\n    best_seqs = [s.copy() for s in current_seqs]\n    best_starts = [row.copy() for row in current_starts]\n    best_makespan = current_makespan\n    \n    tabu_list = []\n    tabu_tenure = 15\n    fixed_iterations = 200  # Fixed count for 100% determinism, no wall-clock dependency\n    \n    for _ in range(fixed_iterations):\n        best_move = None\n        best_move_makespan = float('inf')\n        best_move_seqs = None\n        best_move_starts = None\n        \n        # Evaluate all valid adjacent swap moves\n        for m in range(num_machines):\n            seq = current_seqs[m]\n            for pos in range(len(seq) - 1):\n                # Generate new sequence with swap at pos\n                new_seqs = [s.copy() for s in current_seqs]\n                new_seqs[m][pos], new_seqs[m][pos+1] = new_seqs[m][pos+1], new_seqs[m][pos]\n                new_starts, new_ms = compute_schedule(new_seqs)\n                \n                # Create deterministic move key (sorted ops to avoid reverse duplicates)\n                op_a, op_b = seq[pos], seq[pos+1]\n                if op_a > op_b:\n                    op_a, op_b = op_b, op_a\n                move_key = (m, op_a, op_b)\n                \n                # Tabu check + aspiration criterion (allow if better than global best)\n                is_tabu = move_key in tabu_list\n                if is_tabu and new_ms >= best_makespan:\n                    continue\n                \n                # Track best valid move\n                if new_ms < best_move_makespan:\n                    best_move_makespan = new_ms\n                    best_move = move_key\n                    best_move_seqs = new_seqs\n                    best_move_starts = new_starts\n        \n        if best_move is None:\n            break  # No improving moves left\n        \n        # Apply best found move\n        current_seqs = best_move_seqs\n        current_starts = best_move_starts\n        current_makespan = best_move_makespan\n        \n        # Update global best solution\n        if current_makespan < best_makespan:\n            best_makespan = current_makespan\n            best_starts = [row.copy() for row in current_starts]\n        \n        # Update tabu list\n        tabu_list.append(best_move)\n        if len(tabu_list) > tabu_tenure:\n            tabu_list.pop(0)\n    \n    return {\"starts\": best_starts}\n",
+      "source_sha256": "0ba4ceddc31b83e5072902851019cc5efecf646ae6c9efd5ede9083f6ed426e1",
+      "source_preview": "def solve_instance(instance: dict) -> dict:\n    num_jobs = instance[\"num_jobs\"]\n    num_machines = instance[\"num_machines\"]\n    jobs = instance[\"jobs\"]\n    \n    # Precompute remaining work for each operation (job j, op k) for MWR priority rule\n    remaining_work = [[0] * num_machines for _ in range(",
+      "error": null
+    }
+  ],
+  "best_round": 4,
+  "best_round_source": "def solve_instance(instance: dict) -> dict:\n    n = instance[\"num_jobs\"]\n    m = instance[\"num_machines\"]\n    jobs = instance[\"jobs\"]\n    \n    # Precompute remaining work for each job-op (including current op) for priority rule\n    remaining_work = [[0] * m for _ in range(n)]\n    for j in range(n):\n        total = 0\n        for k in reversed(range(m)):\n            total += jobs[j][k][1]\n            remaining_work[j][k] = total\n    \n    next_op = [0] * n\n    machine_avail = [0] * m\n    job_release = [0] * n\n    starts = [[0] * m for _ in range(n)]\n    \n    # Giffler-Thompson algorithm with MWR (Most Work Remaining) priority rule\n    while True:\n        # Check if all operations are scheduled\n        all_done = True\n        for j in range(n):\n            if next_op[j] < m:\n                all_done = False\n                break\n        if all_done:\n            break\n        \n        # Collect all ready operations\n        ready = []\n        for j in range(n):\n            k = next_op[j]\n            if k >= m:\n                continue\n            mach, dur = jobs[j][k]\n            es = job_release[j]\n            ec = max(es, machine_avail[mach]) + dur\n            ready.append((ec, es, mach, dur, j, k))\n        \n        # Step 1: Find minimum earliest completion time across all ready ops\n        C_min = min(r[0] for r in ready)\n        \n        # Step 2: Select conflict machine (smallest ID to break ties deterministically)\n        M_candidates = [r[2] for r in ready if r[0] == C_min]\n        M_star = min(M_candidates)\n        \n        # Step3: Build conflict set of ops eligible to be scheduled on M_star now\n        conflict = []\n        for r in ready:\n            ec, es, mach, dur, j, k = r\n            if mach == M_star and es <= C_min:\n                # Priority sort keys: highest remaining work > longest op duration > lower job ID > lower op ID\n                conflict.append((-remaining_work[j][k], -dur, j, k, dur))\n        \n        # Step4: Select highest priority op from conflict set\n        conflict.sort()\n        neg_rw, neg_dur, j, k, dur = conflict[0]\n        \n        # Step5: Schedule the selected op\n        start_time = max(job_release[j], machine_avail[M_star])\n        starts[j][k] = start_time\n        job_release[j] = start_time + dur\n        machine_avail[M_star] = start_time + dur\n        next_op[j] += 1\n    \n    return {\"starts\": starts}\n",
+  "best_solution_file": "gpt55_trajectory_doubao_5r_20260707.json.best_solution.py",
+  "best_solution_sha256": "988e7aef165a147ff8a2638b7622786294a45449f2e8078f5abfefb782da7c0a",
+  "task_dir": "JobShop_ft06_v2_v1_001",
+  "produced_by": "gpt55_local_runner.py",
+  "tls_insecure": false,
+  "cert_workaround": null
+}

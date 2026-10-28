@@ -1,0 +1,43 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "183c823883c9b8c609e6b6a9296ab259efaa691b",
+  "reference_fix_commit": "6f9265b38766def018494b011b19d397fbfa519f",
+  "subject": "fix(fde): retire forms with supported metadata body",
+  "test_files": [
+   "phase3/backend/tests/test_fde_phase3_20260722_schema.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/fde_phase3_20260722_form_publishing.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/test_fde_phase3_20260722_schema.py::test_legacy_forms_are_retired_only_after_new_public_forms_verify",
+ "source_rel": "services\\fde_phase3_20260722_form_publishing.py",
+ "provider": "glm_plan,minimax_m3,deepseek",
+ "test_passed": true,
+ "winning_diff": "--- a/services/fde_phase3_20260722_form_publishing.py\n+++ b/services/fde_phase3_20260722_form_publishing.py\n@@ -321,7 +321,7 @@ class FormPublisher:\n             if metadata.get(\"shared\"):\n                 self._client.patch_form_metadata(\n                     table_id,\n                     form_id,\n-                    {\"shared\": False, \"shared_limit\": \"off\"},\n+                    {\"shared\": False},\n                 )\n             verified = self._client.get_form_metadata(table_id, form_id)\n             if verified.get(\"shared\") is not False:\n",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "input_tokens": 3898,
+    "output_tokens": 179,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "fix_obsolete_form_retirement_metadata_patch",
+ "duration_s": 26.5,
+ "verdict_post_status": 200
+}

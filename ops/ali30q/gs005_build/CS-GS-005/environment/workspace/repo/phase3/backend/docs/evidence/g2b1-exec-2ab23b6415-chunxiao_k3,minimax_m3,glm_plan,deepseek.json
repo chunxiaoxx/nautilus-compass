@@ -1,0 +1,74 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "9d3dfd31b33450256dcceef0576a9bc2fc8a0c9f",
+  "reference_fix_commit": "2ab23b6415f8b92873320d41064650f21dcc2946",
+  "subject": "fix(s4): enforce ExperiencePacket field types",
+  "test_files": [
+   "tests/gep/test_experience_packet.py",
+   "tests/gep/test_flywheel_event.py"
+  ],
+  "source_files": [
+   "gep/experience_packet.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass"
+ },
+ "test_id": "tests/gep/test_experience_packet.py::test_scalar_fields_reject_wrong_runtime_types",
+ "source_rel": "gep\\experience_packet.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/gep/experience_packet.py\n+++ b/gep/experience_packet.py\n@@ -31,3 +31,4 @@\n     def __post_init__(self) -> None:\n         object.__setattr__(self, \"tool_chain\", _normalize_tool_chain(self.tool_chain))\n+        _validate_scalar_fields(self)\n \n@@ -35,4 +36,33 @@\n _FIELD_NAMES = tuple(field.name for field in fields(ExperiencePacket))\n-\n-\n+_STRING_FIELDS = (\n+    \"episode_id\",\n+    \"parent_episode_id\",\n+    \"task\",\n+    \"action_kind\",\n+    \"outcome\",\n+    \"failure_mode\",\n+    \"route_key\",\n+    \"policy_hint\",\n+)\n+_FLOAT_FIELDS = (\"reward_delta\", \"impact\")\n+_BOOL_FIELDS = (\"capsule_candidate\",)\n+\n+\n+def _validate_scalar_fields(packet: ExperiencePacket) -> None:\n+    for name in _STRING_FIELDS:\n+        value = getattr(packet, name)\n+        if value is not None and not isinstance(value, str):\n+            raise TypeError(f\"{name} must be a string or None\")\n+    for name in _FLOAT_FIELDS:\n+        value = getattr(packet, name)\n+        if value is not None and (\n+            isinstance(value, bool) or not isinstance(value, (int, float))\n+        ):\n+            raise TypeError(f\"{name} must be a float or None\")\n+    for name in _BOOL_FIELDS:\n+        value = getattr(packet, name)\n+        if value is not None and not isinstance(value, bool):\n+            raise TypeError(f\"{name} must be a boolean or None\")\n+\n+\n def _normalize_tool_chain(value: Any) -> tuple[str, ...] | None:\n",
+ "budget_exceeded": false,
+ "total_tokens": 8867,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 2025,
+    "completion_tokens": 6842,
+    "total_tokens": 8867,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 2025,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 6842,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 0,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 2025,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "runtime_scalar_type_validation",
+ "duration_s": 151.6,
+ "verdict_post_status": 200
+}

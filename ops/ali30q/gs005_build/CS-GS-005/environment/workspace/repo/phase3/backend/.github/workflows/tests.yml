@@ -1,0 +1,115 @@
+name: Automated Tests
+
+on:
+  push:
+    branches: [ master, main, develop ]
+  pull_request:
+    branches: [ master, main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: nautilus_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          cd backend
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov pytest-asyncio httpx
+
+      - name: Set up environment variables
+        run: |
+          cd backend
+          cp .env.example .env
+          echo "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/nautilus_test" >> .env
+          echo "TESTING=true" >> .env
+          echo "REDIS_URL=redis://localhost:6379" >> .env
+
+      - name: Run API Integration Tests
+        run: |
+          cd backend
+          pytest tests/test_api_integration.py -v --tb=short
+
+      - name: Run E2E Workflow Tests
+        run: |
+          cd backend
+          pytest tests/test_e2e_workflow.py -v --tb=short
+
+      - name: Run Performance Tests
+        run: |
+          cd backend
+          pytest tests/test_performance_suite.py -v --tb=short
+
+      - name: Run Security Tests
+        run: |
+          cd backend
+          pytest tests/test_security_suite.py -v --tb=short
+
+      - name: Run All Tests with Coverage
+        run: |
+          cd backend
+          pytest tests/test_api_integration.py tests/test_e2e_workflow.py tests/test_performance_suite.py tests/test_security_suite.py \
+            -v --cov=. --cov-report=html --cov-report=xml --cov-report=term-missing
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./backend/coverage.xml
+          flags: unittests
+          name: codecov-nautilus
+          fail_ci_if_error: false
+
+      - name: Upload coverage HTML report
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: coverage-report
+          path: backend/htmlcov/
+
+      - name: Check coverage threshold
+        run: |
+          cd backend
+          coverage report --fail-under=80
+
+      - name: Test Summary
+        if: always()
+        run: |
+          echo "## Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "✅ All automated tests completed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Coverage report available in artifacts" >> $GITHUB_STEP_SUMMARY

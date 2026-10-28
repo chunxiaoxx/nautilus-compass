@@ -1,0 +1,73 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "b08522ea5786a1eb52a4b741f882ed1eb3bc054d",
+  "reference_fix_commit": "fdaa4f5cbe09590c0a1e5fd5443286d9a64eefcb",
+  "subject": "fix(fde): claim-fallback\u2014\u2014reserved 403 \u8df3\u4e0b\u4e00\u4e2a\u8bd5\u9886,\u6cbb\u4e09\u81c2\u5171\u4eab\u961f\u5217\u5835\u95e8(cand[0]\u5e38\u662f\u4ed6\u4eba\u53d8\u4f53,\u6574\u8f6e\u7a7a\u8f6c\u6bcf\u8f6e\u649e\u540c\u4e00\u5899)",
+  "test_files": [
+   "tests/test_fde_consumer.py"
+  ],
+  "source_files": [
+   "fde_capsule/fde_consumer.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\nautilus-v5"
+ },
+ "test_id": "tests/test_fde_consumer.py::test_cycle_claim_fallback_skips_reserved",
+ "source_rel": "fde_capsule\\fde_consumer.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/fde_capsule/fde_consumer.py\n+++ b/fde_capsule/fde_consumer.py\n@@ -138,18 +138,29 @@\n     # 2026-09-17 \u9996\u8003\u671f(g2b1 \u8003\u9898\u4f18\u5148):\u961f\u5217\u6df7\u6709\u5386\u53f2 A \u7c7b\u71c3\u6599\u5355,\u8003\u9898\u5728\u540e\u4f1a\u88ab\n     # \u6c38\u4e45\u6392\u7a7a\u3002\u8003\u8bd5\u671f(g2b1: \u524d\u7f00\u5728\u5217\u65f6)\u4f18\u5148\u9886\u8003\u9898;\u65e0\u8003\u9898\u56de\u843d\u961f\u5217\u5e8f\u3002\n     # \u8c03\u5ea6\u4f18\u5148\u7ea7\u5c5e agent harness \u80fd\u529b(\u6311\u5355),\u975e\u505a\u9898\u6377\u5f84;\u5df2\u5728\u4ea4\u5377\u4e94\u4ef6\u5957\u62ab\u9732\u3002\n-    task = next((t for t in cand if str(t.get(\"task_uid\", \"\")).startswith(\"g2b1:\")),\n-                cand[0])\n-    task_uid = task.get(\"task_uid\")\n-    if not task_uid:\n-        return {\"processed\": None, \"error\": \"task missing task_uid\"}\n-\n-    # claim\n-    try:\n-        c = claim_fn(task_uid)\n-    except Exception as e:\n-        return {\"processed\": None, \"error\": f\"claim failed: {e}\"}\n-    if not (c or {}).get(\"success\"):\n-        return {\"processed\": None, \"error\": f\"claim rejected: {(c or {}).get('error')}\"}\n+    _ordered = sorted(\n+        cand, key=lambda t: 0 if str(t.get(\"task_uid\", \"\")).startswith(\"g2b1:\") else 1)\n+    # claim fallback(\u4e09\u81c2\u5171\u4eab\u961f\u5217\u4fee):\u4ed6\u4eba reserved \u53d8\u4f53 claim \u629b 403 \u5728\u524d \u2192\n+    # \u8df3\u8fc7\u8bd5\u4e0b\u4e00\u4e2a,\u9886\u5230\u7b2c\u4e00\u4e2a\u53ef\u9886\u7684;\u5168\u90e8 claim \u5931\u8d25\u624d\u8fd4\u56de error(\u4e0d\u70e7 produce)\u3002\n+    task = None\n+    task_uid = None\n+    claim_err = None\n+    for _t in _ordered:\n+        _uid = _t.get(\"task_uid\")\n+        if not _uid:\n+            continue\n+        try:\n+            c = claim_fn(_uid)\n+        except Exception as e:\n+            claim_err = f\"claim failed: {e}\"\n+            continue\n+        if not (c or {}).get(\"success\"):\n+            claim_err = f\"claim rejected: {(c or {}).get('error')}\"\n+            continue\n+        task, task_uid = _t, _uid\n+        break\n+    if task is None:\n+        return {\"processed\": None, \"error\": claim_err or \"no claimable task\"}\n \n     # produce(solve_task\u00b7daemon LLM)\n     try:",
+ "budget_exceeded": false,
+ "total_tokens": 10708,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 6658,
+    "completion_tokens": 4050,
+    "total_tokens": 10708,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 6658,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 4050,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 0,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 6658,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "cycle_claim_fallback_skips_reserved",
+ "duration_s": 79.6,
+ "verdict_post_status": 200
+}

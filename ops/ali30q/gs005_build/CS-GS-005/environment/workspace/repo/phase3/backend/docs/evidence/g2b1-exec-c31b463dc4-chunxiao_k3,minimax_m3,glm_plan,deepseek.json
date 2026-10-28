@@ -1,0 +1,73 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "7b47bb9da5a7d0f71e9b94e73f102c5ba61d98c7",
+  "reference_fix_commit": "c31b463dc449348429c4b26ed485540217129370",
+  "subject": "fix(fde): block phase 3 rows from legacy S3",
+  "test_files": [
+   "phase3/backend/tests/test_fde_delivery.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/fde_delivery.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/test_fde_delivery.py::test_is_deliverable_blocks_phase3_from_legacy_s3",
+ "source_rel": "services\\fde_delivery.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/services/fde_delivery.py\n+++ b/services/fde_delivery.py\n@@ -26,10 +26,16 @@\n }\n \n \n+# phase3 \u53ea\u8ba4 verdict-bus \u843d\u7684\u5224\u5206;legacy S3 'soul' \u76f4\u5199\u6e90\u4e00\u5f8b\u4e0d\u653e\u884c\u4ea4\u4ed8\u3002\n+_LEGACY_VERDICT_SOURCES = frozenset({\"soul\"})\n+\n+\n def is_deliverable(row: dict, verdict: dict | None) -> bool:\n     \"\"\"\u4ea4\u4ed8\u95e8:\u6709\u975e\u7a7a\u7a3f + verdict.overall_pass=True \u624d\u53ef\u4ea4\u4ed8\u3002\"\"\"\n     if not str(row.get(\"submission\") or \"\").strip():\n         return False\n     if not verdict or not verdict.get(\"overall_pass\"):\n         return False\n+    if str(verdict.get(\"source\") or \"\").strip() in _LEGACY_VERDICT_SOURCES:\n+        return False\n     return True\n",
+ "budget_exceeded": false,
+ "total_tokens": 5719,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 2888,
+    "completion_tokens": 2831,
+    "total_tokens": 5719,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 2888,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 2831,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 0,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 2888,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "block_legacy_soul_verdict_source",
+ "duration_s": 82.7,
+ "verdict_post_status": 200
+}

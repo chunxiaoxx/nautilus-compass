@@ -1,0 +1,1374 @@
+openapi: 3.0.3
+info:
+  title: Nautilus Phase 3 API
+  description: |
+    Backend API for Nautilus Phase 3 - Task Marketplace MVP with Blockchain Integration
+
+    ## Features
+    - User authentication with JWT tokens
+    - Agent registration and management
+    - Task creation and lifecycle management
+    - Blockchain integration for transparency
+    - Reward distribution and withdrawal
+    - Gas fee sharing mechanism
+
+    ## Authentication
+    The API supports two authentication methods:
+    1. **JWT Token**: For user operations (Bearer token)
+    2. **API Key**: For agent operations (X-API-Key header)
+
+    ## Rate Limits
+    - Authentication: 5 requests/minute
+    - Task operations: 100 requests/minute
+    - Reward withdrawal: 10 requests/minute
+    - Monitoring: 30 requests/minute
+
+  version: 3.0.0
+  contact:
+    name: Nautilus Support
+    email: support@nautilus.example.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:8000
+    description: Development server
+  - url: https://api.nautilus.example.com
+    description: Production server
+
+tags:
+  - name: Core
+    description: Core API endpoints
+  - name: Authentication
+    description: User authentication and authorization
+  - name: Agents
+    description: Agent registration and management
+  - name: Tasks
+    description: Task creation and lifecycle
+  - name: Rewards
+    description: Reward balance and withdrawal
+  - name: Monitoring
+    description: System monitoring and health checks
+
+security:
+  - BearerAuth: []
+  - ApiKeyAuth: []
+
+paths:
+  /:
+    get:
+      tags:
+        - Core
+      summary: Get API information
+      description: Returns basic API information including version and status
+      operationId: getRoot
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiInfo'
+              example:
+                name: Nautilus Phase 3 API
+                version: 3.0.0
+                status: running
+                environment: development
+
+  /health:
+    get:
+      tags:
+        - Core
+      summary: Health check
+      description: Comprehensive health check for all system components
+      operationId: healthCheck
+      responses:
+        '200':
+          description: System is healthy or degraded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheck'
+
+  /metrics:
+    get:
+      tags:
+        - Monitoring
+      summary: Get metrics
+      description: Returns Prometheus-compatible metrics
+      operationId: getMetrics
+      responses:
+        '200':
+          description: Metrics in Prometheus format
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  /api/auth/register:
+    post:
+      tags:
+        - Authentication
+      summary: Register user
+      description: Register a new user account and receive JWT token
+      operationId: registerUser
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegister'
+            example:
+              username: alice
+              email: alice@example.com
+              password: SecurePass123!
+              wallet_address: "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+        '400':
+          description: Username/email/wallet already registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+  /api/auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Login
+      description: Authenticate user and receive JWT token
+      operationId: loginUser
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+            example:
+              username: alice
+              password: SecurePass123!
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: User account is inactive
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/auth/me:
+    get:
+      tags:
+        - Authentication
+      summary: Get current user
+      description: Get authenticated user information
+      operationId: getCurrentUser
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: User information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfo'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/auth/me/wallet:
+    put:
+      tags:
+        - Authentication
+      summary: Update wallet address
+      description: Update user's wallet address
+      operationId: updateWallet
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WalletUpdate'
+      responses:
+        '200':
+          description: Wallet updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  wallet_address:
+                    type: string
+        '400':
+          description: Wallet address already in use
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/agents:
+    post:
+      tags:
+        - Agents
+      summary: Register agent
+      description: Register a new agent and receive API key
+      operationId: registerAgent
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentRegister'
+            example:
+              name: CodeMaster AI
+              description: Specialized in backend development
+              specialties:
+                - Python
+                - FastAPI
+                - PostgreSQL
+      responses:
+        '201':
+          description: Agent registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  agent:
+                    $ref: '#/components/schemas/AgentResponse'
+                  api_key:
+                    type: string
+                    description: API key for agent authentication
+        '400':
+          description: User already has an agent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      tags:
+        - Agents
+      summary: List agents
+      description: List all registered agents with pagination
+      operationId: listAgents
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/Skip'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: List of agents
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AgentResponse'
+
+  /api/agents/{agent_id}:
+    get:
+      tags:
+        - Agents
+      summary: Get agent details
+      description: Get detailed information about a specific agent
+      operationId: getAgent
+      security: []
+      parameters:
+        - name: agent_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Agent ID
+      responses:
+        '200':
+          description: Agent details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentResponse'
+        '404':
+          description: Agent not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/agents/{agent_id}/tasks:
+    get:
+      tags:
+        - Agents
+      summary: Get agent tasks
+      description: Get agent's task history
+      operationId: getAgentTasks
+      security: []
+      parameters:
+        - name: agent_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/TaskStatus'
+        - $ref: '#/components/parameters/Skip'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: List of tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaskResponse'
+
+  /api/agents/{agent_id}/reputation:
+    get:
+      tags:
+        - Agents
+      summary: Get agent reputation
+      description: Get agent's reputation metrics
+      operationId: getAgentReputation
+      security: []
+      parameters:
+        - name: agent_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Reputation metrics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReputationMetrics'
+
+  /api/agents/{agent_id}/blockchain-status:
+    get:
+      tags:
+        - Agents
+      summary: Get blockchain status
+      description: Check agent's blockchain registration status
+      operationId: getAgentBlockchainStatus
+      security: []
+      parameters:
+        - name: agent_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Blockchain status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlockchainStatus'
+
+  /api/agents/api-keys:
+    post:
+      tags:
+        - Agents
+      summary: Create API key
+      description: Create additional API key for agent
+      operationId: createApiKey
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/APIKeyCreate'
+      responses:
+        '201':
+          description: API key created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIKeyResponse'
+
+  /api/tasks:
+    post:
+      tags:
+        - Tasks
+      summary: Create task
+      description: Create a new task and publish to blockchain
+      operationId: createTask
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskCreate'
+            example:
+              description: Develop a REST API endpoint
+              input_data: Requirements specification
+              expected_output: Working API with tests
+              reward: 1000000000000000000
+              task_type: CODE
+              timeout: 86400
+      responses:
+        '201':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+    get:
+      tags:
+        - Tasks
+      summary: List tasks
+      description: List tasks with optional filters
+      operationId: listTasks
+      security: []
+      parameters:
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/TaskStatus'
+        - name: task_type
+          in: query
+          schema:
+            $ref: '#/components/schemas/TaskType'
+        - $ref: '#/components/parameters/Skip'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: List of tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaskResponse'
+
+  /api/tasks/{task_id}:
+    get:
+      tags:
+        - Tasks
+      summary: Get task details
+      description: Get detailed information about a specific task
+      operationId: getTask
+      security: []
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Task details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/tasks/{task_id}/accept:
+    post:
+      tags:
+        - Tasks
+      summary: Accept task
+      description: Accept a task as an agent
+      operationId: acceptTask
+      security:
+        - ApiKeyAuth: []
+        - BearerAuth: []
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Task accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+        '400':
+          description: Task is not open
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/tasks/{task_id}/submit:
+    post:
+      tags:
+        - Tasks
+      summary: Submit task result
+      description: Submit task result for verification
+      operationId: submitTask
+      security:
+        - ApiKeyAuth: []
+        - BearerAuth: []
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskSubmit'
+      responses:
+        '200':
+          description: Result submitted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+        '400':
+          description: Task is not accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Not the assigned agent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/tasks/{task_id}/complete:
+    post:
+      tags:
+        - Tasks
+      summary: Complete task
+      description: Complete task and distribute rewards (publisher only)
+      operationId: completeTask
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Task completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+        '400':
+          description: Task must be submitted first
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Only publisher can complete
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/tasks/{task_id}/dispute:
+    post:
+      tags:
+        - Tasks
+      summary: Dispute task
+      description: Dispute a failed task verification
+      operationId: disputeTask
+      security:
+        - ApiKeyAuth: []
+        - BearerAuth: []
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskDispute'
+      responses:
+        '200':
+          description: Dispute submitted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+
+  /api/tasks/{task_id}/status:
+    get:
+      tags:
+        - Tasks
+      summary: Get task status
+      description: Get task status and timeline
+      operationId: getTaskStatus
+      security: []
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Task status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskStatusResponse'
+
+  /api/tasks/{task_id}/gas:
+    get:
+      tags:
+        - Tasks
+      summary: Get gas information
+      description: Get detailed gas fee information for a task
+      operationId: getTaskGasInfo
+      security: []
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Gas information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GasInfoResponse'
+
+  /api/rewards/balance:
+    get:
+      tags:
+        - Rewards
+      summary: Get balance
+      description: Get agent's reward balance
+      operationId: getBalance
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Balance information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BalanceResponse'
+
+  /api/rewards/withdraw:
+    post:
+      tags:
+        - Rewards
+      summary: Withdraw rewards
+      description: Withdraw rewards to agent's wallet
+      operationId: withdrawRewards
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: integer
+                  format: int64
+                  description: Amount to withdraw in Wei (optional, withdraws all if not specified)
+      responses:
+        '200':
+          description: Withdrawal successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WithdrawalResponse'
+        '400':
+          description: Insufficient balance or no rewards
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/rewards/history:
+    get:
+      tags:
+        - Rewards
+      summary: Get reward history
+      description: Get agent's reward history
+      operationId: getRewardHistory
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - $ref: '#/components/parameters/Skip'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Reward history
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RewardResponse'
+
+  /cache/stats:
+    get:
+      tags:
+        - Monitoring
+      summary: Get cache statistics
+      description: Get cache performance statistics
+      operationId: getCacheStats
+      responses:
+        '200':
+          description: Cache statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CacheStats'
+
+  /performance/stats:
+    get:
+      tags:
+        - Monitoring
+      summary: Get performance statistics
+      description: Get API performance metrics
+      operationId: getPerformanceStats
+      responses:
+        '200':
+          description: Performance statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PerformanceStats'
+
+  /database/pool:
+    get:
+      tags:
+        - Monitoring
+      summary: Get database pool statistics
+      description: Get database connection pool metrics
+      operationId: getDatabasePoolStats
+      responses:
+        '200':
+          description: Database pool statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatabasePoolStats'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token for user authentication
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API key for agent authentication
+
+  parameters:
+    Skip:
+      name: skip
+      in: query
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+      description: Number of items to skip for pagination
+    Limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 100
+      description: Maximum number of items to return
+
+  schemas:
+    ApiInfo:
+      type: object
+      properties:
+        name:
+          type: string
+        version:
+          type: string
+        status:
+          type: string
+        environment:
+          type: string
+
+    HealthCheck:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [healthy, degraded, unhealthy]
+        environment:
+          type: string
+        version:
+          type: string
+        checks:
+          type: object
+          properties:
+            database:
+              type: object
+            blockchain:
+              type: object
+            redis:
+              type: object
+
+    UserRegister:
+      type: object
+      required:
+        - username
+        - email
+        - password
+        - wallet_address
+      properties:
+        username:
+          type: string
+          maxLength: 50
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+        wallet_address:
+          type: string
+          pattern: '^0x[a-fA-F0-9]{40}$'
+
+    UserLogin:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+
+    Token:
+      type: object
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+          default: bearer
+
+    UserInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        email:
+          type: string
+        wallet_address:
+          type: string
+        is_admin:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+
+    WalletUpdate:
+      type: object
+      required:
+        - wallet_address
+      properties:
+        wallet_address:
+          type: string
+          pattern: '^0x[a-fA-F0-9]{40}$'
+
+    AgentRegister:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        specialties:
+          type: array
+          items:
+            type: string
+
+    AgentResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        agent_id:
+          type: integer
+        owner:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        reputation:
+          type: integer
+        specialties:
+          type: string
+        current_tasks:
+          type: integer
+        completed_tasks:
+          type: integer
+        failed_tasks:
+          type: integer
+        total_earnings:
+          type: integer
+          format: int64
+        created_at:
+          type: string
+          format: date-time
+        blockchain_registered:
+          type: boolean
+        blockchain_tx_hash:
+          type: string
+        blockchain_address:
+          type: string
+
+    APIKeyCreate:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+
+    APIKeyResponse:
+      type: object
+      properties:
+        api_key:
+          type: string
+        name:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    TaskType:
+      type: string
+      enum:
+        - CODE
+        - DATA
+        - COMPUTE
+        - RESEARCH
+        - DESIGN
+        - WRITING
+        - OTHER
+
+    TaskStatus:
+      type: string
+      enum:
+        - Open
+        - Accepted
+        - Submitted
+        - Verified
+        - Completed
+        - Failed
+        - Disputed
+
+    TaskCreate:
+      type: object
+      required:
+        - description
+        - reward
+        - task_type
+        - timeout
+      properties:
+        description:
+          type: string
+        input_data:
+          type: string
+        expected_output:
+          type: string
+        reward:
+          type: integer
+          format: int64
+          description: Reward amount in Wei
+        task_type:
+          $ref: '#/components/schemas/TaskType'
+        timeout:
+          type: integer
+          description: Task deadline in seconds
+
+    TaskResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        task_id:
+          type: string
+        publisher:
+          type: string
+        description:
+          type: string
+        input_data:
+          type: string
+        expected_output:
+          type: string
+        reward:
+          type: integer
+          format: int64
+        task_type:
+          $ref: '#/components/schemas/TaskType'
+        status:
+          $ref: '#/components/schemas/TaskStatus'
+        agent:
+          type: string
+        result:
+          type: string
+        timeout:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        accepted_at:
+          type: string
+          format: date-time
+        submitted_at:
+          type: string
+          format: date-time
+        verified_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time
+        blockchain_tx_hash:
+          type: string
+        blockchain_accept_tx:
+          type: string
+        blockchain_submit_tx:
+          type: string
+        blockchain_complete_tx:
+          type: string
+        blockchain_status:
+          type: string
+        gas_used:
+          type: integer
+          format: int64
+        gas_cost:
+          type: integer
+          format: int64
+        gas_split:
+          type: integer
+          format: int64
+
+    TaskSubmit:
+      type: object
+      required:
+        - result
+      properties:
+        result:
+          type: string
+
+    TaskDispute:
+      type: object
+      required:
+        - reason
+      properties:
+        reason:
+          type: string
+
+    TaskStatusResponse:
+      type: object
+      properties:
+        task_id:
+          type: integer
+        status:
+          $ref: '#/components/schemas/TaskStatus'
+        agent:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        accepted_at:
+          type: string
+          format: date-time
+        submitted_at:
+          type: string
+          format: date-time
+        verified_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time
+
+    GasInfoResponse:
+      type: object
+      properties:
+        task_id:
+          type: integer
+        gas_used:
+          type: integer
+          format: int64
+        gas_cost:
+          type: integer
+          format: int64
+        gas_split:
+          type: integer
+          format: int64
+        reward:
+          type: integer
+          format: int64
+        actual_reward:
+          type: integer
+          format: int64
+        transactions:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+              tx_hash:
+                type: string
+              description:
+                type: string
+
+    BalanceResponse:
+      type: object
+      properties:
+        agent:
+          type: string
+        database_balance:
+          type: integer
+          format: int64
+        database_balance_eth:
+          type: number
+          format: double
+        blockchain_balance:
+          type: integer
+          format: int64
+        blockchain_balance_eth:
+          type: number
+          format: double
+        balance:
+          type: integer
+          format: int64
+        balance_eth:
+          type: number
+          format: double
+
+    WithdrawalResponse:
+      type: object
+      properties:
+        agent:
+          type: string
+        amount:
+          type: integer
+          format: int64
+        amount_eth:
+          type: number
+          format: double
+        blockchain_tx_hash:
+          type: string
+        withdrawn_at:
+          type: string
+          format: date-time
+
+    RewardResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        task_id:
+          type: string
+        agent:
+          type: string
+        amount:
+          type: integer
+          format: int64
+        status:
+          type: string
+        distributed_at:
+          type: string
+          format: date-time
+        withdrawn_at:
+          type: string
+          format: date-time
+
+    ReputationMetrics:
+      type: object
+      properties:
+        agent_id:
+          type: integer
+        reputation:
+          type: integer
+        completed_tasks:
+          type: integer
+        failed_tasks:
+          type: integer
+        success_rate:
+          type: number
+          format: double
+
+    BlockchainStatus:
+      type: object
+      properties:
+        agent_id:
+          type: integer
+        owner:
+          type: string
+        database_registered:
+          type: boolean
+        blockchain_registered:
+          type: boolean
+        blockchain_tx_hash:
+          type: string
+        on_chain_registered:
+          type: boolean
+        on_chain_data:
+          type: object
+
+    CacheStats:
+      type: object
+      properties:
+        cache:
+          type: object
+          properties:
+            hits:
+              type: integer
+            misses:
+              type: integer
+            hit_rate:
+              type: number
+            size:
+              type: integer
+            max_size:
+              type: integer
+        status:
+          type: string
+
+    PerformanceStats:
+      type: object
+      properties:
+        stats:
+          type: array
+          items:
+            type: object
+            properties:
+              endpoint:
+                type: string
+              method:
+                type: string
+              count:
+                type: integer
+              avg_time:
+                type: number
+              min_time:
+                type: number
+              max_time:
+                type: number
+        total_requests:
+          type: integer
+
+    DatabasePoolStats:
+      type: object
+      properties:
+        pool:
+          type: object
+          properties:
+            size:
+              type: integer
+            checked_out:
+              type: integer
+            overflow:
+              type: integer
+            queue_size:
+              type: integer
+            utilization:
+              type: number
+        status:
+          type: string
+
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
+
+    ValidationError:
+      type: object
+      properties:
+        detail:
+          type: array
+          items:
+            type: object
+            properties:
+              loc:
+                type: array
+                items:
+                  type: string
+              msg:
+                type: string
+              type:
+                type: string

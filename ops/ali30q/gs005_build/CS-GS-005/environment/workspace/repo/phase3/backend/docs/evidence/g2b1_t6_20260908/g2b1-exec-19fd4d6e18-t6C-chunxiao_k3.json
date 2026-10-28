@@ -1,0 +1,72 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "c69643b60cf971cd5d8e5d3902632807ceab9b8f",
+  "reference_fix_commit": "19fd4d6e18bc9fce451f92f422696b11169faa57",
+  "subject": "Fix: Ensure fish completion handles multiline help strings correctly (#3126)",
+  "test_files": [
+   "tests/test_shell_completion.py"
+  ],
+  "source_files": [
+   "src/click/shell_completion.py"
+  ],
+  "repo_path": "C:/Users/chunx/ext_mine"
+ },
+ "test_id": "tests/test_shell_completion.py::test_fish_multiline_help_complete",
+ "source_rel": "src\\click\\shell_completion.py",
+ "provider": "t6C-chunxiao_k3",
+ "provider_used": "t6C-chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/src/click/shell_completion.py\n+++ b/src/click/shell_completion.py\n@@ -420,10 +420,18 @@ class FishComplete(ShellComplete):\n         return args, incomplete\n \n     def format_completion(self, item: CompletionItem) -> str:\n-        if item.help:\n-            return f\"{item.type},{item.value}\\t{item.help}\"\n-\n-        return f\"{item.type},{item.value}\"\n+        \"\"\"\n+        .. versionchanged:: 8.4.0\n+            Escape newlines in value and help to fix completion errors with\n+            multi-line help strings.\n+        \"\"\"\n+        # The fish completion script reads each completion as a frame of\n+        # newline-separated fields (type, value, help), so any literal\n+        # newline in the value or help would corrupt the frame. Replace\n+        # them with the two-character escape \"\\n\" so the text round-trips\n+        # through fish without breaking the format. The \"_\" sentinel for\n+        # missing help mirrors :class:`ZshComplete`.\n+        help_ = item.help or \"_\"\n+        value = item.value.replace(\"\\n\", r\"\\n\")\n+        help_escaped = help_.replace(\"\\n\", r\"\\n\")\n+        return f\"{item.type}\\n{value}\\n{help_escaped}\"\n \n \n ShellCompleteType = t.TypeVar(\"ShellCompleteType\", bound=\"type[ShellComplete]\")\n",
+ "budget_exceeded": false,
+ "total_tokens": 9548,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 7968,
+    "completion_tokens": 1580,
+    "total_tokens": 9548,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 7712,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 1580,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 7968,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "fish_completion_newline_escape_help",
+ "duration_s": 74.9
+}

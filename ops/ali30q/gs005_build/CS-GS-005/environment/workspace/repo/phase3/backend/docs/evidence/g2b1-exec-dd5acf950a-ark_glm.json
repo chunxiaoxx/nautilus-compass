@@ -1,0 +1,28 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "873d9dff009e4a100fe82307dc9c7956a1db1238",
+  "reference_fix_commit": "dd5acf950ac342cecc9629b3aefe9158a0d22725",
+  "subject": "fix(engine): check-pipeline import-check honors PYTHONPATH (unblocks import-bearing files)",
+  "test_files": [
+   "phase3/backend/engine/tests/test_checks.py"
+  ],
+  "source_files": [
+   "phase3/backend/engine/checks.py",
+   "phase3/backend/engine/ship.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "phase3/backend/engine/tests/test_checks.py::test_check_import_fails_without_pythonpath_for_internal_import",
+ "source_rel": "phase3/backend/engine/checks.py",
+ "provider": "ark_glm",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0
+}

@@ -1,0 +1,7 @@
+fifo_baseline:
+  description: "FIFO eviction — oldest-inserted entry leaves."
+  expected_combined: "0 (it IS FIFO)"
+reference_solver:
+  path: reference/solve.py
+  description: "ARC — adaptive between LRU and LFU via ghost lists."
+  expected_combined: "~30-50 (looping+phase traces win big, scan stays 0)"

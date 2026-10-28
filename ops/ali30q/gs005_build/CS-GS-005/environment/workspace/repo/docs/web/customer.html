@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我的提测 · Nautilus</title>
+    <meta property="og:title" content="客户查询 · 我的提测单" />
+    <meta property="og:description" content="输入邮箱查询你的全部提测单与判读状态——零密码,即时可见。" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://nautilus.social/customer.html" />
+
+<style>
+  :root{--ink:#16213e;--accent:#0a5ad6;--bg:#fff;--muted:#5b6472;--line:#e5e8ee}
+  body{font-family:-apple-system,"Segoe UI","Noto Sans SC",sans-serif;color:var(--ink);background:var(--bg);margin:0;line-height:1.65}
+  .wrap{max-width:860px;margin:0 auto;padding:0 24px}
+  header{border-bottom:1px solid var(--line);padding:18px 0}
+  header .wrap{display:flex;justify-content:space-between;align-items:center}
+  .logo{font-weight:700;font-size:1.15rem}
+  nav a{color:var(--muted);text-decoration:none;margin-left:22px;font-size:.95rem}
+  h1{font-size:1.7rem;margin:40px 0 8px}
+  p.sub{color:var(--muted);margin:0 0 22px}
+  .form{display:flex;gap:10px;margin-bottom:26px}
+  input{flex:1;padding:11px 14px;border:1px solid var(--line);border-radius:8px;font-size:15px}
+  button{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:11px 22px;font-size:15px;font-weight:600;cursor:pointer}
+  table{width:100%;border-collapse:collapse;font-size:.92rem;background:#fff}
+  th,td{border:1px solid var(--line);padding:9px 12px;text-align:left}
+  th{background:#f0f4fb}
+  .st{display:inline-block;padding:1px 10px;border-radius:99px;font-size:.82rem}
+  .ok{background:#e6f6ec;color:#0a7d32}.run{background:#eef3ff;color:#0a5ad6}.wait{background:#fff7e0;color:#9a6b00}.bad{background:#fdeaea;color:#b3261e}
+  a{color:var(--accent);text-decoration:none}
+  .empty{color:var(--muted);padding:20px 0}
+  footer{border-top:1px solid var(--line);padding:22px 0;color:var(--muted);font-size:.85rem;margin-top:36px}
+</style>
+<link rel="stylesheet" href="/tokens.css">
+</head>
+<body>
+<header><div class="wrap">
+  <div class="logo">Nautilus</div>
+  <nav><a href="/">← 门面</a><a href="/status.html">按单号查</a><a href="/intake.html">提交新评测</a></nav>
+</div></header>
+<div class="wrap">
+  <h1>我的提测</h1>
+  <p class="sub">输入提测时留下的联系邮箱,查看你的全部判读单与状态——无需注册。</p>
+  <div class="form">
+    <input id="email" type="email" placeholder="you@company.com" onkeydown="if(event.key==='Enter')lookup()">
+    <button onclick="lookup()">查询</button>
+  </div>
+  <div id="result"></div>
+</div>
+<footer><div class="wrap">Nautilus · 我的提测 · <a href="/criteria/">判据披露</a> · 联系:chunxiaoxx+external@gmail.com</div></footer>
+<script>
+const MEANING = {created:"已登记", intake_validated:"受理完成·排队中", queued:"判读队列", judging:"判读中", report_draft:"报告组装中", delivered:"已交付", need_info:"需补充材料", rejected:"未受理"};
+function cls(s){return s==="delivered"?"ok":(s==="judging"||s==="report_draft")?"run":(s==="rejected"?"bad":"wait")}
+async function lookup(){
+  const email=document.getElementById("email").value.trim();
+  const box=document.getElementById("result");
+  if(!email){box.innerHTML='<p class="empty">请输入邮箱</p>';return}
+  box.innerHTML='<p class="empty">查询中…</p>';
+  try{
+    const r=await fetch("/api/platform/org/assay/submissions/by-contact/"+encodeURIComponent(email));
+    if(!r.ok){box.innerHTML='<p class="empty">查询失败('+r.status+')</p>';return}
+    const d=await r.json();
+    if(!d.count){box.innerHTML='<p class="empty">该邮箱暂无提测记录 —— <a href="/intake.html">去提交评测 →</a></p>';return}
+    let rows=d.submissions.map(s=>
+      `<tr><td><a href="/status.html?sid=${s.id}">${s.id}</a></td><td>${s.harness}</td><td>${s.lane.toUpperCase()}</td>`+
+      `<td><span class="st ${cls(s.status)}">${MEANING[s.status]||s.status}</span></td>`+
+      `<td>${s.sla_hours_left!=null?s.sla_hours_left+"h":"—"}</td><td>${(s.created_at||"").slice(0,10)}</td></tr>`).join("");
+    box.innerHTML=`<table><tr><th>单号</th><th>Harness</th><th>档位</th><th>状态</th><th>SLA 剩余</th><th>日期</th></tr>${rows}</table>`;
+  }catch(e){box.innerHTML='<p class="empty">网络异常,稍后再试</p>'}
+}
+</script>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid #ddd;text-align:center;color:#666;font-size:13px;line-height:2.2">
+<a href="https://www.nautilus.social/submit/">提交评测</a>·<a href="/pricing.html">定价</a>·<a href="https://nautilus.social/customer.html">查我的单</a>·<a href="developers.html">开发者</a>·<a href="/org/business-plan.html">商业计划书</a>
+<br/>站群:<a href="https://nautilus.social/">主站</a>·<a href="https://app.nautilus.social/">应用</a>·<a href="https://bench.nautilus.social/">榜单</a>·<a href="https://data.nautilus.social/">数据</a>·<a href="https://compass.nautilus.social/">判读</a>
+<br/>咨询与下单:service@nautilus.social(工作日 24h 回复)· Nautilus © 2026
+</footer>
+</body>
+</html>

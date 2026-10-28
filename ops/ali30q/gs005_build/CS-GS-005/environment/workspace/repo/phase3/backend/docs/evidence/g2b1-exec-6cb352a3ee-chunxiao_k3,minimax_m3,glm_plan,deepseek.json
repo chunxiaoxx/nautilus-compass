@@ -1,0 +1,159 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "b56c8f2cfbbed6d864adafa435ebc502bb038741",
+  "reference_fix_commit": "6cb352a3eed6efa11a9411b46f1562e188edcfb2",
+  "subject": "fix(fde-reconcile): line_code \u5bb9\u9519\u6587\u6863\u4e1a\u52a1\u7ebf\u53d8\u4f53(\u4e2d\u6587\u6570\u5b57/\u7b2cN\u7c7b\u5168\u540d\u2192\u6570\u5b57\u7f16\u7801)",
+  "test_files": [
+   "phase3/backend/tests/test_fde_qc_feedback.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/fde_qc_feedback_runner.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/test_fde_qc_feedback.py::test_line_code_normalizes_doc_variants",
+ "source_rel": "services\\fde_qc_feedback_runner.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 17015,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 3338,
+    "completion_tokens": 471,
+    "total_tokens": 3809,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 3082,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 471,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 3338,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_cju2p9oz\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0, httpbin-2.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 1 item\r\n\r\ntests/test_fde_qc_feedback.py::test_line_code_normalizes_doc_variants FAILED [100%]\r\n\r\n================================== FAILURES ===================================\r\n___________________ test_line_code_normalizes_doc_variants ____________________\r\ntests\\test_fde_qc_feedback.py:263: in test_line_code_normalizes_doc_variants\r\n    assert line_code(\"\u7b2c\u4e00\u7c7b-\u9898\u76ee\") == \"1\"\r\nE   AssertionError: assert '\u7b2c\u4e00\u7c7b-\u9898\u76ee' == '1'\r\nE     \r\nE     - 1\r\nE     + \u7b2c\u4e00\u7c7b-\u9898\u76ee\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_fde_qc_feedback.py::test_line_code_normalizes_doc_variants\r\n============================== 1 failed in 0.29s ==============================\r\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 3716,
+    "completion_tokens": 5093,
+    "total_tokens": 8809,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 644,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 3072,
+      "output_tokens": 5093,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 3072,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 3716,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 root] error: patch failed: phase3/backend/services/fde_qc_feedback_runner.py:28\nerror: phase3/backend/services/fde_qc_feedback_runner.py: patch does not apply\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 3439,
+    "completion_tokens": 958,
+    "total_tokens": 4397,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 367,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 3072,
+      "output_tokens": 958,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 3072,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 3439,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 root] error: phase3/backend/phase3/backend/services/fde_qc_feedback_runner.py: No such file or directory\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 149.0,
+ "verdict_post_status": 200
+}

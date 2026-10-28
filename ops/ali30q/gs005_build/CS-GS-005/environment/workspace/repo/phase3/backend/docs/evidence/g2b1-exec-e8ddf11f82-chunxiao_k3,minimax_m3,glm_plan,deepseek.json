@@ -1,0 +1,73 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "042ce374c3f426acb6f83e9464368951a539705f",
+  "reference_fix_commit": "e8ddf11f82b9b0d002ec22bcddf2efdc49d74d25",
+  "subject": "fix(fde): dispatch\u5c42\u9000\u5f79scan_bounty/score_overdue\u6267\u884c\u8def\u5f84(no-op\u00b7\u5220\u83dc\u5355\u4e0d\u591f\u00b7LLM\u4ece\u4e60\u60efemit\u2192\u6267\u884c\u5c42chokepoint)\u00b7\u9a8c\u8bc1\u53d1\u73b0bounty\u4ecd80%\u00b74TDD\u7eff",
+  "test_files": [
+   "tests/test_fde_dispatch_handlers.py"
+  ],
+  "source_files": [
+   "nautilus_v5/runtime/dispatch_mixin.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_fde_dispatch_handlers.py::test_scan_bounty_retired_no_list_bounties",
+ "source_rel": "nautilus_v5\\runtime\\dispatch_mixin.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "diff --git a/nautilus_v5/runtime/dispatch_mixin.py b/nautilus_v5/runtime/dispatch_mixin.py\nindex 1111111..2222222 100644\n--- a/nautilus_v5/runtime/dispatch_mixin.py\n+++ b/nautilus_v5/runtime/dispatch_mixin.py\n@@ -78,7 +78,9 @@ class DispatchMixin:\n             await _aio.wait_for(proc.communicate(), timeout=60)\n         elif action == \"scan_bounty\":\n-            await ag.tool_registry.dispatch(\"list_bounties\", {\"limit\": 10})\n+            # scan_bounty dispatch \u5c42\u9000\u5f79:\u4e0d\u518d\u8c03 list_bounties(\u6267\u884c\u5c42 chokepoint)\n+            logger.info(\"[SELECTOR scan_bounty] retired \u00b7 no list_bounties dispatch\")\n+            return\n         elif action == \"score_overdue\":\n             await self._auto_score_tick(min_age_min=30)\n",
+ "budget_exceeded": false,
+ "total_tokens": 11407,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 11119,
+    "completion_tokens": 288,
+    "total_tokens": 11407,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 10863,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 288,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 11119,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "retire_scan_bounty_dispatch",
+ "duration_s": 79.9,
+ "verdict_post_status": 200
+}

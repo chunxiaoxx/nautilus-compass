@@ -1,0 +1,28 @@
+[Unit]
+Description=Soul governance executor · ships accepted code-improvement proposals as DRAFT PRs
+After=network-online.target
+
+[Service]
+Type=oneshot
+# Run as the workspace owner — git refuses operations on a repo owned by
+# another user ("dubious ownership"), so root would fail branch creation.
+User=ubuntu
+Group=ubuntu
+# Executor runs as `python -m services.soul_executor`. The module path
+# `services.soul_executor` and its sibling import `utils.database` are both
+# top-level under `phase3/backend/`, so cwd must be `phase3/backend` (this
+# differs from the L1 daemon which uses `phase3` for `soul.daemon`).
+WorkingDirectory=/home/ubuntu/nautilus-soul-workspace/phase3/backend
+EnvironmentFile=/home/ubuntu/nautilus-soul-workspace/.soul-env
+# SOUL_BASE_DIR is read by services/soul_executor.py:__main__ (line 196).
+# Passed verbatim into ship_to_draft_pr() as the soul workspace root.
+Environment=SOUL_BASE_DIR=/home/ubuntu/nautilus-soul-workspace
+# Draft PRs must open against the live trunk (single trunk since 2026-08-26),
+# not the archived master branch.
+Environment=SOUL_PR_BASE=soul-distill-deploy
+# 2026-09-10 activation: sync workspace to the trunk before each cycle (the
+# executor previously relied on the L1 daemon's ExecStartPre for sync, but the
+# two timers run independently). Fail-open: next timer tick retries.
+ExecStartPre=/usr/bin/git -C /home/ubuntu/nautilus-soul-workspace fetch origin soul-distill-deploy
+ExecStartPre=/usr/bin/git -C /home/ubuntu/nautilus-soul-workspace reset --hard origin/soul-distill-deploy
+ExecStart=/usr/bin/python3 -m services.soul_executor

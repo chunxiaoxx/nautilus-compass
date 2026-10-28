@@ -1,0 +1,16 @@
+[Unit]
+Description=Run Nautilus Soul every 2 hours
+
+[Timer]
+# 2026-09-10: OnBootSec/OnUnitActiveSec left this timer with a stale 2026-06-01
+# monotonic base → next_elapse=0, never rescheduling after enable (the fresh
+# consumer unit with the same directives works because it has no history).
+# Wall-clock OnCalendar schedules deterministically from the moment of enable.
+# :07 offset avoids colliding with the executor's *:00/10 ticks — two services
+# fetching the same workspace simultaneously race on the remote-tracking ref
+# lock (observed 9/10 14:01: both fired at once, one fetch lost the lock).
+OnCalendar=*-*-* 00/2:07:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

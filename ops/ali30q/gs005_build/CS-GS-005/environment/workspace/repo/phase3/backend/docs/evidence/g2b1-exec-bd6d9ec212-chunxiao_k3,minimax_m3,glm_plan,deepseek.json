@@ -1,0 +1,74 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "af82a25e2f9eb041887cf0f4cf8d3c56bf16f7dd",
+  "reference_fix_commit": "bd6d9ec212a74aa8d8abcad089871a6592cdb63d",
+  "subject": "fix(llm-arms): completer 429\u9000\u907f\u91cd\u8bd5(20s\u4e00\u6b21)+propose\u5c42fail-soft\u2014\u2014GLM coding plan RPM\u9650\u901f\u66fe\u5d29\u6279(pilot4);TDD 10 green",
+  "test_files": [
+   "phase3/backend/tests/platform_protocol/test_g2_b1_verdict_submit.py"
+  ],
+  "source_files": [
+   "phase3/backend/tools/g2_b1_executor_agent.py",
+   "phase3/backend/tools/g2_b1_variant_gen.py"
+  ],
+  "repo_path": "C:/Users/chunx/Projects/nautilus-core"
+ },
+ "test_id": "tests/platform_protocol/test_g2_b1_verdict_submit.py::test_completer_retries_once_on_429",
+ "source_rel": "tools\\g2_b1_executor_agent.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/tools/g2_b1_executor_agent.py\n+++ b/tools/g2_b1_executor_agent.py\n@@ -130,16 +130,21 @@\n             headers = {\"Authorization\": f\"Bearer {api_key}\"}\n             text_of = None\n         # GLM-5.2 long-thinking completions can exceed 15 min on first token;\n-        # one ReadTimeout retry (cumulative token cap still guards total spend).\n+        # one ReadTimeout retry (cumulative token cap still guards total spend).\n+        # A 429 (rate limit) is likewise transient: retry exactly once.\n         for attempt in (1, 2):\n             try:\n                 with httpx.Client(base_url=origin,\n                                   timeout=httpx.Timeout(1800, connect=30),\n                                   trust_env=False) as http:\n                     response = http.post(url, headers=headers, json=body)\n-                break\n             except _httpx.ReadTimeout:\n                 if attempt == 2:\n                     raise\n+                continue\n+            if response.status_code == 429 and attempt == 1:\n+                continue\n+            break\n         if response.status_code != 200:\n             raise RuntimeError(f\"http_{response.status_code}\")\n",
+ "budget_exceeded": false,
+ "total_tokens": 7392,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 6781,
+    "completion_tokens": 611,
+    "total_tokens": 7392,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 6781,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 611,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 0,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 6781,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "retry_once_on_http_429",
+ "duration_s": 30.2,
+ "verdict_post_status": 200
+}

@@ -1,0 +1,35 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "102b77b4782bb4f4d0f6e8eeef11e45042a46438",
+  "reference_fix_commit": "60b232e42c476cb1b67a67ecb4dbbdc08a066355",
+  "subject": "fix(lint): ruff 31 \u5904\u672a\u7528 import \u6e05\u7406(6 \u8fde\u8d25 CI \u6839\u56e0)\u2014\u2014\u7eaf import \u884c\u5220\u9664,diff \u5ba1\u67e5\u901a\u8fc7,ruff All checks passed",
+  "test_files": [
+   "tests/gep/test_gate_b_v1_fuel.py",
+   "tests/test_eval_recall_tuning_hint.py",
+   "tests/test_verdict_hook.py"
+  ],
+  "source_files": [
+   "daemon.py",
+   "ops/compass_token_admin.py",
+   "ops/verify_fuel_loop.py",
+   "scripts/load_probe.py",
+   "scripts/make_deck_charts_deepdive.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass"
+ },
+ "test_id": "tests/gep/test_gate_b_v1_fuel.py",
+ "source_rel": "daemon.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

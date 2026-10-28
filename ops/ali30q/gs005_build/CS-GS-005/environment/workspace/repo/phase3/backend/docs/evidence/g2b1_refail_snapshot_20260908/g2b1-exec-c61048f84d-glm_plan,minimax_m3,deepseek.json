@@ -1,0 +1,71 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "0f9351969282fc9e8e0f81dd48c5645fc7740525",
+  "reference_fix_commit": "c61048f84d4543e00f2badf0e505516b6db39b01",
+  "subject": "fix(soul): ship_to_draft_pr cleans dangling branch on apply/push failure",
+  "test_files": [
+   "phase3/backend/tests/test_soul_service.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/soul_service.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/test_soul_service.py::test_ship_to_draft_pr_cleans_branch_on_apply_failure",
+ "source_rel": "services\\soul_service.py",
+ "provider": "glm_plan,minimax_m3,deepseek",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 1811,
+    "output_tokens": 294,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_8v0au6kd\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 1 item\r\n\r\ntests/test_soul_service.py::test_ship_to_draft_pr_cleans_branch_on_apply_failure FAILED [100%]\r\n\r\n================================== FAILURES ===================================\r\n____________ test_ship_to_draft_pr_cleans_branch_on_apply_failure _____________\r\ntests\\test_soul_service.py:121: in test_ship_to_draft_pr_cleans_branch_on_apply_failure\r\n    assert any(c == [\"git\", \"-C\", \"/tmp/ws\", \"branch\", \"-D\", \"soul/cleanup-test\"] for c in calls if isinstance(c, list))\r\nE   assert False\r\nE    +  where False = any(<generator object test_ship_to_draft_pr_cleans_branch_on_apply_failure.<locals>.<genexpr> at 0x0000024B75EA6180>)\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_soul_service.py::test_ship_to_draft_pr_cleans_branch_on_apply_failure\r\n============================== 1 failed in 0.24s ==============================\r\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 2213,
+    "output_tokens": 339,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 root] error: No valid patches in input (allow with \"--allow-empty\")\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 1742,
+    "output_tokens": 347,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_8v0au6kd\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 1 item\r\n\r\ntests/test_soul_service.py::test_ship_to_draft_pr_cleans_branch_on_apply_failure FAILED [100%]\r\n\r\n================================== FAILURES ===================================\r\n____________ test_ship_to_draft_pr_cleans_branch_on_apply_failure _____________\r\ntests\\test_soul_service.py:121: in test_ship_to_draft_pr_cleans_branch_on_apply_failure\r\n    assert any(c == [\"git\", \"-C\", \"/tmp/ws\", \"branch\", \"-D\", \"soul/cleanup-test\"] for c in calls if isinstance(c, list))\r\nE   assert False\r\nE    +  where False = any(<generator object test_ship_to_draft_pr_cleans_branch_on_apply_failure.<locals>.<genexpr> at 0x00000290CDD36180>)\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_soul_service.py::test_ship_to_draft_pr_cleans_branch_on_apply_failure\r\n============================== 1 failed in 0.24s ==============================\r\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 79.1,
+ "verdict_post_status": 200
+}

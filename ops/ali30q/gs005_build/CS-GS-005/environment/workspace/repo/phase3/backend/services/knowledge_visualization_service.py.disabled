@@ -1,0 +1,626 @@
+"""
+知识积累可视化服务
+生成知识图谱、学习进度、成长轨迹等可视化数据
+"""
+from typing import Dict, List, Optional
+from sqlalchemy.orm import Session
+from sqlalchemy import func, and_, desc
+from datetime import datetime, timedelta
+from models.epiplexity import KnowledgeNode, KnowledgeTransfer, EpiplexityMeasure
+from models.agent_survival import AgentSurvival
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+class KnowledgeVisualizationService:
+    """知识积累可视化服务"""
+
+    @staticmethod
+    def generate_knowledge_graph(
+        db: Session,
+        agent_id: int,
+        max_nodes: int = 50,
+        min_epiplexity: float = 0.0
+    ) -> Dict:
+        """
+        生成知识图谱数据
+
+        返回图数据结构，包含节点和边
+
+        参数:
+        - agent_id: Agent ID
+        - max_nodes: 最大节点数
+        - min_epiplexity: 最小Epiplexity阈值
+
+        返回:
+        {
+            "nodes": [
+                {
+                    "id": 1,
+                    "label": "Python异步编程",
+                    "type": "CODE",
+                    "epiplexity": 0.75,
+                    "complexity": "HIGH",
+                    "usage_count": 5,
+                    "quality_score": 0.82
+                }
+            ],
+            "edges": [
+                {
+                    "source": 1,
+                    "target": 2,
+                    "type": "parent",
+                    "weight": 1.0
+                }
+            ],
+            "stats": {
+                "total_nodes": 10,
+                "total_edges": 8,
+                "avg_epiplexity": 0.68,
+                "complexity_distribution": {...}
+            }
+        }
+        """
+        # 查询Agent的知识节点
+        nodes_query = db.query(KnowledgeNode).filter(
+            and_(
+                KnowledgeNode.created_by_agent_id == agent_id,
+                KnowledgeNode.epiplexity >= min_epiplexity
+            )
+        ).order_by(
+            desc(KnowledgeNode.epiplexity)
+        ).limit(max_nodes)
+
+        knowledge_nodes = nodes_query.all()
+
+        if not knowledge_nodes:
+            return {
+                "nodes": [],
+                "edges": [],
+                "stats": {
+                    "total_nodes": 0,
+                    "total_edges": 0,
+                    "avg_epiplexity": 0.0,
+                    "complexity_distribution": {}
+                }
+            }
+
+        # 构建节点列表
+        nodes = []
+        node_id_map = {}  # 映射数据库ID到图节点ID
+
+        for idx, node in enumerate(knowledge_nodes):
+            node_id_map[node.id] = idx
+            nodes.append({
+                "id": idx,
+                "db_id": node.id,
+                "label": node.content[:50] + "..." if len(node.content) > 50 else node.content,
+                "type": node.content_type,
+                "epiplexity": node.epiplexity,
+                "complexity": node.complexity_level,
+                "usage_count": node.usage_count,
+                "transfer_count": node.transfer_count,
+                "quality_score": node.quality_score,
+                "category": node.category,
+                "tags": node.tags or [],
+                "created_at": node.created_at.isoformat() if node.created_at else None
+            })
+
+        # 构建边列表
+        edges = []
+        edge_id = 0
+
+        for node in knowledge_nodes:
+            source_idx = node_id_map.get(node.id)
+            if source_idx is None:
+                continue
+
+            # 父节点关系
+            if node.parent_nodes:
+                for parent_id in node.parent_nodes:
+                    if parent_id in node_id_map:
+                        edges.append({
+                            "id": edge_id,
+                            "source": node_id_map[parent_id],
+                            "target": source_idx,
+                            "type": "parent",
+                            "weight": 1.0
+                        })
+                        edge_id += 1
+
+            # 子节点关系
+            if node.child_nodes:
+                for child_id in node.child_nodes:
+                    if child_id in node_id_map:
+                        edges.append({
+                            "id": edge_id,
+                            "source": source_idx,
+                            "target": node_id_map[child_id],
+                            "type": "child",
+                            "weight": 1.0
+                        })
+                        edge_id += 1
+
+            # 相关节点关系
+            if node.related_nodes:
+                for related_id in node.related_nodes:
+                    if related_id in node_id_map:
+                        edges.append({
+                            "id": edge_id,
+                            "source": source_idx,
+                            "target": node_id_map[related_id],
+                            "type": "related",
+                            "weight": 0.5
+                        })
+                        edge_id += 1
+
+        # 计算统计信息
+        total_epiplexity = sum(n.epiplexity for n in knowledge_nodes)
+        avg_epiplexity = total_epiplexity / len(knowledge_nodes)
+
+        complexity_distribution = {}
+        for node in knowledge_nodes:
+            level = node.complexity_level
+            complexity_distribution[level] = complexity_distribution.get(level, 0) + 1
+
+        stats = {
+            "total_nodes": len(nodes),
+            "total_edges": len(edges),
+            "avg_epiplexity": round(avg_epiplexity, 3),
+            "total_epiplexity": round(total_epiplexity, 3),
+            "complexity_distribution": complexity_distribution
+        }
+
+        logger.info(f"Generated knowledge graph for agent {agent_id}: {len(nodes)} nodes, {len(edges)} edges")
+
+        return {
+            "nodes": nodes,
+            "edges": edges,
+            "stats": stats
+        }
+
+    @staticmethod
+    def generate_learning_progress(
+        db: Session,
+        agent_id: int,
+        days: int = 30
+    ) -> Dict:
+        """
+        生成学习进度数据
+
+        时间序列数据，展示知识积累趋势
+
+        参数:
+        - agent_id: Agent ID
+        - days: 统计天数
+
+        返回:
+        {
+            "timeline": [
+                {
+                    "date": "2026-03-01",
+                    "new_nodes": 3,
+                    "total_nodes": 10,
+                    "avg_epiplexity": 0.65,
+                    "knowledge_transfers": 2
+                }
+            ],
+            "summary": {
+                "total_knowledge_nodes": 50,
+                "total_transfers": 15,
+                "avg_daily_growth": 1.67,
+                "learning_velocity": 0.05
+            }
+        }
+        """
+        start_date = datetime.utcnow() - timedelta(days=days)
+
+        # 查询时间范围内的知识节点
+        nodes = db.query(KnowledgeNode).filter(
+            and_(
+                KnowledgeNode.created_by_agent_id == agent_id,
+                KnowledgeNode.created_at >= start_date
+            )
+        ).order_by(KnowledgeNode.created_at).all()
+
+        # 查询知识迁移记录
+        transfers = db.query(KnowledgeTransfer).filter(
+            and_(
+                KnowledgeTransfer.transferred_by_agent_id == agent_id,
+                KnowledgeTransfer.created_at >= start_date
+            )
+        ).all()
+
+        # 按日期分组
+        daily_data = {}
+
+        for node in nodes:
+            date_key = node.created_at.date().isoformat()
+            if date_key not in daily_data:
+                daily_data[date_key] = {
+                    "date": date_key,
+                    "new_nodes": 0,
+                    "epiplexity_sum": 0.0,
+                    "transfers": 0
+                }
+            daily_data[date_key]["new_nodes"] += 1
+            daily_data[date_key]["epiplexity_sum"] += node.epiplexity
+
+        for transfer in transfers:
+            date_key = transfer.created_at.date().isoformat()
+            if date_key not in daily_data:
+                daily_data[date_key] = {
+                    "date": date_key,
+                    "new_nodes": 0,
+                    "epiplexity_sum": 0.0,
+                    "transfers": 0
+                }
+            daily_data[date_key]["transfers"] += 1
+
+        # 构建时间线
+        timeline = []
+        cumulative_nodes = 0
+
+        # 获取起始前的总节点数
+        initial_nodes = db.query(func.count(KnowledgeNode.id)).filter(
+            and_(
+                KnowledgeNode.created_by_agent_id == agent_id,
+                KnowledgeNode.created_at < start_date
+            )
+        ).scalar() or 0
+
+        cumulative_nodes = initial_nodes
+
+        # 填充每一天的数据
+        current_date = start_date.date()
+        end_date = datetime.utcnow().date()
+
+        while current_date <= end_date:
+            date_key = current_date.isoformat()
+            day_data = daily_data.get(date_key, {
+                "date": date_key,
+                "new_nodes": 0,
+                "epiplexity_sum": 0.0,
+                "transfers": 0
+            })
+
+            cumulative_nodes += day_data["new_nodes"]
+
+            avg_epiplexity = 0.0
+            if day_data["new_nodes"] > 0:
+                avg_epiplexity = day_data["epiplexity_sum"] / day_data["new_nodes"]
+
+            timeline.append({
+                "date": date_key,
+                "new_nodes": day_data["new_nodes"],
+                "total_nodes": cumulative_nodes,
+                "avg_epiplexity": round(avg_epiplexity, 3),
+                "knowledge_transfers": day_data["transfers"]
+            })
+
+            current_date += timedelta(days=1)
+
+        # 计算汇总统计
+        total_nodes = len(nodes)
+        total_transfers = len(transfers)
+        avg_daily_growth = total_nodes / days if days > 0 else 0.0
+
+        # 学习速度 = 最近7天平均增长 / 前7天平均增长
+        if len(timeline) >= 14:
+            recent_growth = sum(d["new_nodes"] for d in timeline[-7:]) / 7
+            previous_growth = sum(d["new_nodes"] for d in timeline[-14:-7]) / 7
+            if previous_growth > 0:
+                learning_velocity = recent_growth / previous_growth
+            else:
+                learning_velocity = 1.0 if recent_growth > 0 else 0.0
+        else:
+            learning_velocity = 1.0
+
+        summary = {
+            "total_knowledge_nodes": cumulative_nodes,
+            "new_nodes_in_period": total_nodes,
+            "total_transfers": total_transfers,
+            "avg_daily_growth": round(avg_daily_growth, 2),
+            "learning_velocity": round(learning_velocity, 2)
+        }
+
+        logger.info(f"Generated learning progress for agent {agent_id}: {total_nodes} nodes in {days} days")
+
+        return {
+            "timeline": timeline,
+            "summary": summary
+        }
+
+    @staticmethod
+    def generate_growth_trajectory(
+        db: Session,
+        agent_id: int,
+        days: int = 90
+    ) -> Dict:
+        """
+        生成成长轨迹数据
+
+        综合展示Agent的成长历程
+
+        参数:
+        - agent_id: Agent ID
+        - days: 统计天数
+
+        返回:
+        {
+            "trajectory": [
+                {
+                    "date": "2026-03-01",
+                    "knowledge_score": 0.65,
+                    "survival_score": 850,
+                    "roi": 1.5,
+                    "milestone": "达到100个知识节点"
+                }
+            ],
+            "milestones": [
+                {
+                    "date": "2026-02-15",
+                    "type": "knowledge",
+                    "description": "创建第一个HIGH复杂度知识节点"
+                }
+            ],
+            "growth_rate": {
+                "knowledge": 0.15,
+                "survival": 0.08,
+                "overall": 0.12
+            }
+        }
+        """
+        start_date = datetime.utcnow() - timedelta(days=days)
+
+        # 查询知识节点历史
+        nodes = db.query(KnowledgeNode).filter(
+            and_(
+                KnowledgeNode.created_by_agent_id == agent_id,
+                KnowledgeNode.created_at >= start_date
+            )
+        ).order_by(KnowledgeNode.created_at).all()
+
+        # 查询生存记录历史
+        survival_records = db.query(AgentSurvival).filter(
+            and_(
+                AgentSurvival.agent_id == agent_id,
+                AgentSurvival.updated_at >= start_date
+            )
+        ).order_by(AgentSurvival.updated_at).all()
+
+        # 构建轨迹数据
+        trajectory = []
+        milestones = []
+
+        # 按周聚合数据
+        weekly_data = {}
+
+        for node in nodes:
+            week_key = node.created_at.date().isocalendar()[:2]  # (year, week)
+            week_str = f"{week_key[0]}-W{week_key[1]:02d}"
+
+            if week_str not in weekly_data:
+                weekly_data[week_str] = {
+                    "nodes": [],
+                    "total_score": 0,
+                    "roi": 0.0
+                }
+            weekly_data[week_str]["nodes"].append(node)
+
+        # 添加生存数据 - 使用最新的记录
+        if survival_records:
+            latest_record = survival_records[-1]
+            for week_str in weekly_data.keys():
+                weekly_data[week_str]["total_score"] = latest_record.total_score
+                weekly_data[week_str]["roi"] = latest_record.roi
+
+        # 构建轨迹点
+        for week_str in sorted(weekly_data.keys()):
+            data = weekly_data[week_str]
+
+            knowledge_score = 0.0
+            if data["nodes"]:
+                knowledge_score = sum(n.epiplexity for n in data["nodes"]) / len(data["nodes"])
+
+            trajectory.append({
+                "week": week_str,
+                "knowledge_score": round(knowledge_score, 3),
+                "node_count": len(data["nodes"]),
+                "survival_score": data["total_score"],
+                "roi": round(data["roi"], 2)
+            })
+
+        # 识别里程碑
+        total_nodes = len(nodes)
+        high_complexity_nodes = [n for n in nodes if n.complexity_level == "HIGH"]
+
+        if total_nodes >= 1 and not any(m["type"] == "first_node" for m in milestones):
+            first_node = min(nodes, key=lambda n: n.created_at)
+            milestones.append({
+                "date": first_node.created_at.date().isoformat(),
+                "type": "first_node",
+                "description": "创建第一个知识节点"
+            })
+
+        if total_nodes >= 10 and not any(m["type"] == "10_nodes" for m in milestones):
+            milestones.append({
+                "date": nodes[9].created_at.date().isoformat() if len(nodes) >= 10 else None,
+                "type": "10_nodes",
+                "description": "知识节点达到10个"
+            })
+
+        if total_nodes >= 50 and not any(m["type"] == "50_nodes" for m in milestones):
+            milestones.append({
+                "date": nodes[49].created_at.date().isoformat() if len(nodes) >= 50 else None,
+                "type": "50_nodes",
+                "description": "知识节点达到50个"
+            })
+
+        if high_complexity_nodes and not any(m["type"] == "first_high" for m in milestones):
+            first_high = min(high_complexity_nodes, key=lambda n: n.created_at)
+            milestones.append({
+                "date": first_high.created_at.date().isoformat(),
+                "type": "first_high",
+                "description": "创建第一个HIGH复杂度知识节点"
+            })
+
+        # 计算成长率
+        if len(trajectory) >= 2:
+            first_week = trajectory[0]
+            last_week = trajectory[-1]
+
+            knowledge_growth = 0.0
+            if first_week["knowledge_score"] > 0:
+                knowledge_growth = (last_week["knowledge_score"] - first_week["knowledge_score"]) / first_week["knowledge_score"]
+
+            survival_growth = 0.0
+            if first_week["survival_score"] > 0:
+                survival_growth = (last_week["survival_score"] - first_week["survival_score"]) / first_week["survival_score"]
+
+            overall_growth = (knowledge_growth + survival_growth) / 2
+
+            growth_rate = {
+                "knowledge": round(knowledge_growth, 3),
+                "survival": round(survival_growth, 3),
+                "overall": round(overall_growth, 3)
+            }
+        else:
+            growth_rate = {
+                "knowledge": 0.0,
+                "survival": 0.0,
+                "overall": 0.0
+            }
+
+        logger.info(f"Generated growth trajectory for agent {agent_id}: {len(trajectory)} weeks, {len(milestones)} milestones")
+
+        return {
+            "trajectory": trajectory,
+            "milestones": sorted(milestones, key=lambda m: m["date"] or ""),
+            "growth_rate": growth_rate
+        }
+
+    @staticmethod
+    def generate_knowledge_heatmap(
+        db: Session,
+        agent_id: int,
+        days: int = 90
+    ) -> Dict:
+        """
+        生成知识热力图数据
+
+        展示不同类型/分类的知识分布
+
+        返回:
+        {
+            "by_type": {
+                "CODE": 20,
+                "CONCEPT": 15,
+                "PATTERN": 10
+            },
+            "by_complexity": {
+                "LOW": 10,
+                "MEDIUM": 20,
+                "HIGH": 15
+            },
+            "by_category": {
+                "backend": 18,
+                "frontend": 12,
+                "devops": 8
+            }
+        }
+        """
+        start_date = datetime.utcnow() - timedelta(days=days)
+
+        nodes = db.query(KnowledgeNode).filter(
+            and_(
+                KnowledgeNode.created_by_agent_id == agent_id,
+                KnowledgeNode.created_at >= start_date
+            )
+        ).all()
+
+        by_type = {}
+        by_complexity = {}
+        by_category = {}
+
+        for node in nodes:
+            # 按类型
+            by_type[node.content_type] = by_type.get(node.content_type, 0) + 1
+
+            # 按复杂度
+            by_complexity[node.complexity_level] = by_complexity.get(node.complexity_level, 0) + 1
+
+            # 按分类
+            category = node.category or "UNCATEGORIZED"
+            by_category[category] = by_category.get(category, 0) + 1
+
+        return {
+            "by_type": by_type,
+            "by_complexity": by_complexity,
+            "by_category": by_category
+        }
+
+    @staticmethod
+    def generate_transfer_network(
+        db: Session,
+        agent_id: int,
+        days: int = 30
+    ) -> Dict:
+        """
+        生成知识迁移网络
+
+        展示知识在不同任务间的迁移关系
+
+        返回:
+        {
+            "nodes": [
+                {"id": "task_1", "type": "task", "transfers": 3}
+            ],
+            "edges": [
+                {"source": "task_1", "target": "task_2", "knowledge_id": 5, "success": true}
+            ]
+        }
+        """
+        start_date = datetime.utcnow() - timedelta(days=days)
+
+        transfers = db.query(KnowledgeTransfer).filter(
+            and_(
+                KnowledgeTransfer.transferred_by_agent_id == agent_id,
+                KnowledgeTransfer.created_at >= start_date
+            )
+        ).all()
+
+        # 构建任务节点
+        task_nodes = {}
+        edges = []
+
+        for transfer in transfers:
+            from_task = f"task_{transfer.from_task_id}" if transfer.from_task_id else "origin"
+            to_task = f"task_{transfer.to_task_id}"
+
+            if from_task not in task_nodes:
+                task_nodes[from_task] = {"id": from_task, "type": "task", "transfers_out": 0, "transfers_in": 0}
+            if to_task not in task_nodes:
+                task_nodes[to_task] = {"id": to_task, "type": "task", "transfers_out": 0, "transfers_in": 0}
+
+            task_nodes[from_task]["transfers_out"] += 1
+            task_nodes[to_task]["transfers_in"] += 1
+
+            edges.append({
+                "source": from_task,
+                "target": to_task,
+                "knowledge_id": transfer.knowledge_node_id,
+                "success": transfer.success,
+                "adaptation_required": transfer.adaptation_required
+            })
+
+        return {
+            "nodes": list(task_nodes.values()),
+            "edges": edges,
+            "stats": {
+                "total_transfers": len(transfers),
+                "successful_transfers": sum(1 for t in transfers if t.success),
+                "success_rate": round(sum(1 for t in transfers if t.success) / len(transfers), 3) if transfers else 0.0
+            }
+        }

@@ -1,0 +1,74 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "881318c231f2af33854af43a92bfc87772d55f39",
+  "reference_fix_commit": "7e97cd8c2ea79840cc45cc71f9431fa7c179fb34",
+  "subject": "fix(T1-A3): \u7f3a\u7701\u5bf9\u9f50\u751f\u4ea7NOT NULL\u7ea6\u675f(NotNullViolation 500\u4fee\u590d)\u2014\u2014metadata\u7f3a\u7701{}/actor_type\u7f3a\u7701unspecified/target\u7a7a\u4e32;\u5217\u5bbd\u5bf9\u9f50(actor128/outcome16/target256);ip\u7f3aunknown;10 green",
+  "test_files": [
+   "phase3/backend/tests/test_org_audit.py"
+  ],
+  "source_files": [
+   "phase3/backend/api/org.py",
+   "phase3/backend/models/platform_audit.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/test_org_audit.py::test_audit_defaults_fill_notnull_columns",
+ "source_rel": "api\\org.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/api/org.py\n+++ b/api/org.py\n@@ -233,7 +233,7 @@\n         outcome=str(body[\"outcome\"])[:32],\n         input_preview=(str(body.get(\"input_preview\", \"\")) or None) and str(body.get(\"input_preview\"))[:2000],\n         output_preview=(str(body.get(\"output_preview\", \"\")) or None) and str(body.get(\"output_preview\"))[:2000],\n-        meta=meta,\n+        meta=meta if meta is not None else {},\n         ip=str(_client_ip(request) or \"\")[:64] or None)\n     db.add(row)\n     db.commit()\n",
+ "budget_exceeded": false,
+ "total_tokens": 4992,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 4282,
+    "completion_tokens": 710,
+    "total_tokens": 4992,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 4282,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 710,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 0,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 4282,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "audit_metadata_default_empty_dict",
+ "duration_s": 59.6,
+ "verdict_post_status": 200
+}

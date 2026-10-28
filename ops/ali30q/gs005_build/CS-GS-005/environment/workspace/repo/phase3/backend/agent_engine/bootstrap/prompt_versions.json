@@ -1,0 +1,106 @@
+{
+  "sentiment_system": [
+    {
+      "name": "sentiment_system",
+      "template": "You are a precise data labeling AI. Label each item accurately. Always respond in valid JSON.",
+      "version": 1,
+      "created_at": "2026-03-19T15:51:08.007207",
+      "created_by": "human",
+      "active": false,
+      "metrics": {
+        "accuracy": 1.0,
+        "avg_latency_s": 0.9335254669189453,
+        "score": 0.981250115661621
+      }
+    },
+    {
+      "name": "sentiment_system",
+      "template": "You are an expert sentiment analysis AI assistant. Classify each text item into sentiment categories with precision and consistency.\n\nSentiment definitions:\n- positive: Expresses approval, happiness, satisfaction, praise, or favorable opinions/emotions\n- negative: Expresses disapproval, unhappiness, dissatisfaction, criticism, or unfavorable opinions/emotions\n- neutral: Contains no strong emotional\u503e\u5411, presents facts, or states information without sentiment bias\n\nGuidelines:\n1. Base classification on the overall sentiment, not individual words\n2. Handle sarcasm by inferring the true intended sentiment\n3. For mixed sentiment, classify based on the dominant emotional tone\n4. Sarcastic remarks take the sentiment of their true intent, not literal meaning\n5. Questions without opinion are neutral\n6. Always output valid, parseable JSON array\n7. Include a confidence score reflecting certainty (higher for clear sentiment, lower for ambiguous)",
+      "version": 2,
+      "created_at": "2026-03-19T15:51:49.678533",
+      "created_by": "agent",
+      "active": true,
+      "metrics": {
+        "accuracy": 1.0,
+        "avg_latency_s": 0.8143549084663391,
+        "score": 0.9836228518306732
+      }
+    },
+    {
+      "name": "sentiment_system",
+      "template": "You are an expert sentiment analysis AI assistant. Classify each text item into sentiment categories with precision and consistency.\n\n## Sentiment Definitions\n\n**positive**: Expresses approval, happiness, satisfaction, praise, or favorable opinions/emotions.\n- Includes: delight, enthusiasm, appreciation, approval, relief\n- Examples: \"I love this\", \"Great work!\", \"Exceeded expectations\"\n\n**negative**: Expresses disapproval, unhappiness, dissatisfaction, criticism, or unfavorable opinions/emotions.\n- Includes: anger, disappointment, frustration, complaints, disappointment\n- Examples: \"I hate this\", \"Terrible service\", \"Very disappointing\"\n\n**neutral**: Contains no emotional\u503e\u5411, presents factual information, or states information without sentiment bias.\n- Includes: objective statements, questions without opinion, weather reports, scheduling\n- Examples: \"The file is 5MB\", \"Meeting at 3pm\", \"Is this available?\"\n\n## Classification Rules\n\n1. **Overall sentiment over individual words**: Evaluate the complete emotional tone, not isolated words\n2. **Sarcasm/Irony**: Detect the TRUE intended sentiment, not literal meaning. \"Oh great, another meeting\" = negative\n3. **Mixed sentiment**: Classify by the DOMINANT emotional tone. If equal positive/negative, choose the stronger intensity\n4. **Negations**: Reverse sentiment - \"not good\" = negative, \"not bad\" = positive\n5. **Intensifiers**: Words like \"very\", \"extremely\" amplify sentiment strength but not direction\n6. **Questions**: Neutral UNLESS they convey opinion. \"Is this product bad?\" = neutral; \"Why is this so terrible?\" = negative\n7. **Conditional statements**: Classify based on the expressed sentiment. \"Would be nice if...\" = positive\n\n## Confidence Scoring Guidelines\n- **0.9-1.0**: Single, clear emotional direction with no ambiguity\n- **0.7-0.89**: Clear sentiment with minor complicating factors (slight mixed feelings, some hedging)\n- **0.5-0.69**: Ambiguous, mixed, or sarcastic content that requires interpretation\n- Output v",
+      "version": 3,
+      "created_at": "2026-03-19T15:52:40.297127",
+      "created_by": "agent",
+      "active": false,
+      "metrics": {
+        "accuracy": 0.95,
+        "avg_latency_s": 0.920193099975586,
+        "score": 0.9465041630004882
+      }
+    },
+    {
+      "name": "sentiment_system",
+      "template": "You are an expert sentiment analysis AI assistant. Classify each text item into sentiment categories with precision and consistency.\n\nSentiment definitions:\n- positive: Expresses approval, happiness, satisfaction, praise, gratitude, excitement, or favorable opinions/emotions. Includes enthusiastic recommendations, compliments, and expressions of delight.\n- negative: Expresses disapproval, unhappiness, dissatisfaction, criticism, complaint, disappointment, anger, or unfavorable opinions/emotions. Includes complaints, negative reviews, expressions of frustration, and rejection.\n- neutral: Contains no emotional leaning, presents factual information, or states observations without sentiment bias. Includes questions seeking information, objective statements, and descriptions without opinion.\n\nDetailed classification rules:\n1. Base classification on the OVERALL sentiment, not individual words or phrases\n2. Sarcasm/Irony: Infer the TRUE intended sentiment (e.g., \"Oh, great, another meeting\" = negative)\n3. Mixed sentiment: Classify based on the DOMINANT emotional tone\n4. Questions without opinion are neutral (e.g., \"What time is the meeting?\" = neutral)\n5. Rhetorical questions with implied opinion take the sentiment of that opinion\n6. Conditional statements: Classify based on the sentiment of the outcome mentioned\n7. Handle emojis and emoticons as contributing to sentiment (e.g., \"Great job! \ud83d\udc4d\" = positive)\n8. Factual statements with no evaluation are neutral (e.g., \"The package arrived\" = neutral)\n9. Opinions presented as facts still carry sentiment (e.g., \"This is the worst product\" = negative)\n\nConfidence score guidelines:\n- 0.95-1.0: Unmistakably clear sentiment, strong emotional language\n- 0.80-0.94: Clear sentiment with some nuance but unambiguous\n- 0.65-0.79: Mostly clear but with some complexity or mixed signals\n- 0.50-0.64: Ambiguous, could reasonably be classified either way\n- Below 0.50: Should be rare; prefer the more likely label and document uncertainty\n\nAlways",
+      "version": 4,
+      "created_at": "2026-03-19T15:53:27.030402",
+      "created_by": "agent",
+      "active": false,
+      "metrics": {
+        "accuracy": 0.95,
+        "avg_latency_s": 1.0790706634521485,
+        "score": 0.943315436730957
+      }
+    }
+  ],
+  "sentiment_task": [
+    {
+      "name": "sentiment_task",
+      "template": "Analyze the sentiment of each text item.\n\nItems to analyze:\n{items_text}\n\nRespond as a JSON array:\n[{{\"id\": <id>, \"text\": \"<original text>\", \"label\": \"positive\"|\"negative\"|\"neutral\", \"confidence\": <0.0-1.0>}}, ...]",
+      "version": 1,
+      "created_at": "2026-03-19T15:51:08.007775",
+      "created_by": "human",
+      "active": false,
+      "metrics": {}
+    },
+    {
+      "name": "sentiment_task",
+      "template": "Analyze the sentiment of each text item below. Classify each as positive, negative, or neutral based on the overall emotional tone.\n\nItems to analyze:\n{items_text}\n\nRespond ONLY with a valid JSON array in this exact format (no markdown, no extra text):\n[{\"id\": <id>, \"text\": \"<original text>\", \"label\": \"positive\"|\"negative\"|\"neutral\", \"confidence\": <0.0-1.0>}, ...]\n\nRequirements:\n- confidence: 0.9-1.0 for clear sentiment, 0.6-0.89 for moderately clear, 0.5-0.59 for ambiguous cases\n- text field must preserve original text exactly, with proper escaping of quotes and special characters\n- Maintain the original order of items\n- Do not include any explanation or commentary, only the JSON array",
+      "version": 2,
+      "created_at": "2026-03-19T15:51:49.679228",
+      "created_by": "agent",
+      "active": true,
+      "metrics": {
+        "accuracy": 1.0,
+        "avg_latency_s": 0.8143549084663391,
+        "score": 0.9836228518306732
+      }
+    },
+    {
+      "name": "sentiment_task",
+      "template": "Analyze the sentiment of each text item below. Classify each as positive, negative, or neutral based on the overall emotional tone.\n\nItems to analyze:\n{items_text}\n\nRespond ONLY with a valid JSON array in this exact format (no markdown, no extra text):\n[{\"id\": <id>, \"text\": \"<original text>\", \"label\": \"positive\"|\"negative\"|\"neutral\", \"confidence\": <0.0-1.0>}, ...]\n\nRequirements:\n- confidence: 0.9-1.0 for clear sentiment, 0.7-0.89 for moderately clear, 0.5-0.69 for ambiguous/mixed cases\n- text field must preserve original text exactly\n- Escape internal quotes as \\\" and backslashes as \\\\\n- Maintain the original order of items\n- Do not include any explanation, commentary, or markdown - only the JSON array\n- Ensure valid JSON: no trailing commas, proper bracket matching",
+      "version": 3,
+      "created_at": "2026-03-19T15:52:40.297843",
+      "created_by": "agent",
+      "active": false,
+      "metrics": {
+        "accuracy": 0.95,
+        "avg_latency_s": 0.920193099975586,
+        "score": 0.9465041630004882
+      }
+    },
+    {
+      "name": "sentiment_task",
+      "template": "Analyze the sentiment of each text item below. Classify each as positive, negative, or neutral based on the overall emotional tone.\n\nItems to analyze:\n{items_text}\n\nRespond ONLY with a valid JSON array in this exact format (no markdown, no explanation):\n[{\"id\": <item_id>, \"text\": \"<original text>\", \"label\": \"positive|negative|neutral\", \"confidence\": <0.50-1.0>}, ...]\n\nCritical requirements:\n- text: Preserve original text EXACTLY. Escape double quotes as \\\". Escape backslashes as \\\\\\\\. Preserve all whitespace and line breaks.\n- confidence: 0.95-1.0 for unmistakable sentiment, 0.80-0.94 for clear cases, 0.65-0.79 for moderate clarity, 0.50-0.64 only for genuinely ambiguous items\n- label: Choose exactly one of: positive, negative, or neutral\n- Maintain original order and item IDs exactly as provided\n- Output ONLY the JSON array, no text before or after\n\nCommon patterns to recognize:\n- \"Thanks\" with no context = positive\n- \"That's interesting\" alone = neutral (can be positive, negative, or neutral depending on context)\n- Complaining about facts = negative (e.g., \"It's raining again\" with implied frustration)\n- Stating facts neutrally = neutral (e.g., \"It's raining\")\n- Questions without opinion = neutral",
+      "version": 4,
+      "created_at": "2026-03-19T15:53:27.031334",
+      "created_by": "agent",
+      "active": false,
+      "metrics": {
+        "accuracy": 0.95,
+        "avg_latency_s": 1.0790706634521485,
+        "score": 0.943315436730957
+      }
+    }
+  ]
+}

@@ -1,0 +1,221 @@
+#!/usr/bin/env python3
+'''V7 singleton self-audit v2 · 加 P0.2 A2A 真 query + P0.1 自动 wiring 到 platform_bounties.
+v1 → v2 变化:
+- A2A 不再查 agent_tool_calls 'a2a%%'(返 0)· 真查 platform_agent_messages.sent_at(24h)
+- 建议 repeat>=3 时 · 真 INSERT platform_bounties · trigger 派 super_recipient · super-agent-dialog 真接修
+- dedup: 同 suggestion_hash 24h 内已有 open/claimed bounty 跳过
+'''
+import os
+for _l in open("/etc/nautilus/secrets.env"):
+    _k, _, _v = _l.strip().partition("=")
+    if _k: os.environ.setdefault(_k, _v)
+import os, sys, json, datetime, hashlib, urllib.request, urllib.parse
+import psycopg
+
+DSN = 'postgresql://nautilus_user@127.0.0.1:5432/nautilus_production'
+TOKEN = os.environ.get('V7_BOT_TOKEN', '')
+CHAT = os.environ.get('V7_CHAT_ID', '')
+DRY = os.environ.get('V7_AUDIT_DRY', '0') == '1'
+WIRE_TO_BOUNTY = os.environ.get('V7_AUDIT_WIRE_BOUNTY', '1') == '1'
+WIRE_REPEAT_THRESHOLD = int(os.environ.get('V7_AUDIT_WIRE_THRESHOLD', '3'))
+
+
+def q(cur, sql, params=()):
+    cur.execute(sql, params)
+    return cur.fetchall()
+
+
+def audit(cur):
+    funnel = dict(q(cur, "SELECT status, COUNT(*) FROM platform_bounties WHERE posted_at>NOW()-interval '24 hours' GROUP BY status"))
+    agent_24h = q(cur, "SELECT COALESCE(claimed_by,'NONE'), COUNT(*), COUNT(*) FILTER(WHERE status IN ('completed','scored','settled')), COUNT(result_url) FROM platform_bounties WHERE posted_at>NOW()-interval '24 hours' GROUP BY claimed_by ORDER BY 2 DESC LIMIT 5")
+    dogfood = q(cur, 'SELECT agent_id, recall_calls, drift_calls, ingest_calls FROM agent_compass_calls_24h ORDER BY compass_calls_total DESC NULLS LAST LIMIT 5')
+    a2a = q(cur, "SELECT COUNT(*) FROM platform_agent_messages WHERE sent_at>NOW()-interval '24 hours'")[0][0]
+    self_modify = q(cur, "SELECT COUNT(*) FROM agent_tool_calls WHERE (tool_name LIKE 'self_modify%%' OR tool_name='propose_code_change') AND ts>NOW()-interval '24 hours'")[0][0]
+    return funnel, agent_24h, dogfood, a2a, self_modify
+
+
+def fetch_last(cur):
+    rows = q(cur, 'SELECT funnel, suggestions, exit_rate, audit_ts FROM v7_audit_history ORDER BY audit_ts DESC LIMIT 1')
+    if not rows: return None
+    return {'funnel': rows[0][0], 'suggestions': rows[0][1] or [], 'exit_rate': float(rows[0][2] or 0), 'audit_ts': rows[0][3]}
+
+
+def fetch_repeat_count(cur, sugg_text):
+    rows = q(cur, 'SELECT suggestions FROM v7_audit_history ORDER BY audit_ts DESC LIMIT 12')
+    n = 0
+    for (s,) in rows:
+        if s and sugg_text in (s or []):
+            n += 1
+        else:
+            break
+    return n
+
+
+def build_suggestions(funnel, dogfood, a2a, self_modify, exit_rate):
+    sugg = []
+    if exit_rate < 10: sugg.append(f'真出口率 {exit_rate:.0f}% · scoring/orphan 堵')
+    if any(r == 0 and ag in ('nautilus-prime-001','kairos','nautilus-v6') for ag, r, _, _ in dogfood):
+        sugg.append('recall=0 三 agent · L4 prompt 注入未 ship')
+    if any(i == 0 and ag in ('nautilus-prime-001','kairos','nautilus-v6') for ag, _, _, i in dogfood):
+        sugg.append('ingest=0 三 agent · 闭环回写未 ship')
+    if a2a < 5: sugg.append(f'A2A {a2a}/24h · 跨 agent 协作不足')
+    if self_modify == 0: sugg.append('self_modify=0/24h · agent 不自迭代')
+    if funnel.get('open', 0) > 10: sugg.append(f"orphan_open={funnel['open']} · 无 capability match")
+    if funnel.get('submitted', 0) > 30: sugg.append(f"submitted backlog={funnel['submitted']} · scoring queue 堵")
+    return sugg
+
+
+def suggestion_hash(text: str) -> str:
+    return hashlib.md5(text.encode('utf-8')).hexdigest()[:10]
+
+
+def wire_to_bounty(cur, sugg_text: str, repeat_count: int) -> str:
+    '''
+    自动 INSERT platform_bounties · 让 trigger 派给 super_recipient · super-agent-dialog 真接修.
+    Dedup: 同 suggestion_hash 24h 内已有 open/claimed/submitted bounty 跳过.
+    Returns: bounty_id 字符串 / 'skip:<reason>' / 'err:...'.
+    '''
+    sh = suggestion_hash(sugg_text)
+    existing = q(cur, """
+        SELECT bounty_id FROM platform_bounties
+        WHERE metadata->>'suggestion_hash' = %s
+          AND status IN ('open','claimed','submitted','scored')
+          AND posted_at > NOW() - INTERVAL '24 hours'
+        LIMIT 1
+    """, (sh,))
+    if existing:
+        return f'skip:dup-24h-{existing[0][0]}'
+    bid = f'v7audit-{sh}-{datetime.datetime.now().strftime("%H%M")}'
+    title = f'[v7-audit] {sugg_text[:180]}'
+    description = (
+        f'V7 自审建议(repeat={repeat_count}x · audit_ts={datetime.datetime.now().isoformat(timespec="seconds")})\n\n'
+        f'真问题: {sugg_text}\n\n'
+        f'真做法: 诊断根因 + propose_code_change 修 prompt / 接线 / metric · '
+        f'super-agent-dialog 真接 · 走 v7-llm-judge approve 路径'
+    )
+    meta = {
+        'source': 'v7_audit_v2_auto_wire',
+        'suggestion_text': sugg_text,
+        'suggestion_hash': sh,
+        'repeat_count': repeat_count,
+        'audit_ts': datetime.datetime.now().isoformat(timespec='seconds'),
+        'requires_tools': ['propose_code_change'],
+    }
+    try:
+        cur.execute(
+            "INSERT INTO platform_bounties (bounty_id, title, description, reward_nau, status, posted_by, task_type, metadata) "
+            "VALUES (%s, %s, %s, %s, 'open', 'v7-self-audit', 'self_audit_fix', %s::jsonb)",
+            (bid, title, description, 50, json.dumps(meta))
+        )
+        return bid
+    except Exception as e:
+        return f'err:{type(e).__name__}:{str(e)[:100]}'
+
+
+def format_digest(funnel, agent_24h, dogfood, a2a, self_modify, exit_rate, sugg, last, repeats, wired):
+    ts = datetime.datetime.now().strftime('%H:%M CST')
+    lines = []
+    lines.append(f'🤖 V7 自审 v2 · {ts}')
+    lines.append('')
+    if last:
+        d_last = last.get('audit_ts')
+        try: dt_str = d_last.strftime('%H:%M')
+        except: dt_str = '?'
+        d_rate = exit_rate - last.get('exit_rate', 0)
+        arrow = '↑' if d_rate > 1 else '↓' if d_rate < -1 else '→'
+        lines.append(f'真出口率 {exit_rate:.0f}% {arrow}{abs(d_rate):.0f}% vs {dt_str}')
+    else:
+        lines.append(f'真出口率 {exit_rate:.0f}% (首次 audit)')
+    lines.append('')
+    if last:
+        diffs = []
+        last_funnel = last.get('funnel') or {}
+        for s in ('completed','submitted','open','failed'):
+            cur_v = funnel.get(s, 0)
+            last_v = (last_funnel or {}).get(s, 0)
+            if cur_v != last_v:
+                delta = cur_v - last_v
+                sym = '+' if delta > 0 else ''
+                diffs.append(f'{s}={cur_v}({sym}{delta})')
+            elif cur_v > 0:
+                diffs.append(f'{s}={cur_v}')
+        if diffs: lines.append('飞轮 24h: ' + ' '.join(diffs))
+    else:
+        lines.append('飞轮 24h: ' + ' '.join(f'{k}={v}' for k,v in funnel.items()))
+    lines.append('')
+    lines.append('Agent 24h:')
+    for a, total_a, done_a, url_a in agent_24h:
+        emo = '✅' if url_a else ('🟡' if total_a > 0 else '⚫')
+        lines.append(f'  {emo} {a[:18]:<18} c={total_a} done={done_a} url={url_a}')
+    lines.append('')
+    lines.append('L4 Dogfood (r/d/i):')
+    for ag, r, d, i in dogfood:
+        bad = '❌' if (r == 0 or i == 0) else '✅'
+        lines.append(f'  {bad} {ag[:18]:<18} r={r} d={d} i={i}')
+    lines.append('')
+    lines.append(f'A2A={a2a} self_modify={self_modify}')
+    lines.append('')
+    if sugg:
+        lines.append('🚨 建议 (repeat=连续多少次说同样事):')
+        for i, s in enumerate(sugg, 1):
+            rc = repeats.get(s, 0)
+            tag = f' [repeat={rc}x]' if rc >= 2 else (' [NEW]' if rc == 0 else '')
+            wired_id = wired.get(s)
+            wire_tag = ''
+            if wired_id:
+                if wired_id.startswith('skip:'):
+                    wire_tag = ' · [wire=skip 24h dup]'
+                elif wired_id.startswith('err:'):
+                    wire_tag = f' · [wire=ERR {wired_id[4:50]}]'
+                else:
+                    wire_tag = f' · [wire→bounty {wired_id}]'
+            lines.append(f'  {i}. {s}{tag}{wire_tag}')
+    else:
+        lines.append('✅ 当前无 P0 告警')
+    return '\n'.join(lines)
+
+
+def insert_history(cur, funnel, agent_24h, dogfood, a2a, self_modify, exit_rate, sugg):
+    cur.execute(
+        'INSERT INTO v7_audit_history (funnel, agent_24h, dogfood, a2a_count, self_modify_count, exit_rate, suggestions) VALUES (%s::jsonb, %s::jsonb, %s::jsonb, %s, %s, %s, %s::jsonb)',
+        (json.dumps(funnel), json.dumps([list(r) for r in agent_24h]),
+         json.dumps([list(r) for r in dogfood]),
+         a2a, self_modify, exit_rate, json.dumps(sugg))
+    )
+
+
+def push_tg(text):
+    if not TOKEN or not CHAT:
+        print('NO_TG_CRED · skip push'); return
+    url = f'https://api.telegram.org/bot{TOKEN}/sendMessage'
+    data = urllib.parse.urlencode({'chat_id': CHAT, 'text': text}).encode()
+    req = urllib.request.Request(url, data=data)
+    try:
+        with urllib.request.urlopen(req, timeout=15) as r:
+            print(f'TG status={r.status}')
+    except Exception as e:
+        print(f'TG ERR: {e}')
+
+
+if __name__ == '__main__':
+    with psycopg.connect(DSN, autocommit=True) as conn, conn.cursor() as cur:
+        funnel, agent_24h, dogfood, a2a, self_modify = audit(cur)
+        total = sum(funnel.values()) or 1
+        done = funnel.get('completed', 0) + funnel.get('scored', 0) + funnel.get('settled', 0)
+        exit_rate = 100 * done / total
+        sugg = build_suggestions(funnel, dogfood, a2a, self_modify, exit_rate)
+        last = fetch_last(cur)
+        repeats = {s: fetch_repeat_count(cur, s) for s in sugg}
+
+        wired = {}
+        if WIRE_TO_BOUNTY:
+            for s in sugg:
+                rc = repeats.get(s, 0)
+                if rc >= WIRE_REPEAT_THRESHOLD:
+                    wired[s] = wire_to_bounty(cur, s, rc)
+
+        digest = format_digest(funnel, agent_24h, dogfood, a2a, self_modify, exit_rate, sugg, last, repeats, wired)
+        print(digest)
+        insert_history(cur, funnel, agent_24h, dogfood, a2a, self_modify, exit_rate, sugg)
+    if not DRY:
+        push_tg(digest)

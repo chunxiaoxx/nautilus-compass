@@ -1,0 +1,31 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "e5c391f2f01c2952675391e2d1fad9ad6e6cd862",
+  "reference_fix_commit": "dd27344c3af095f3c09e2fc26698d30e8c1e49f7",
+  "subject": "fix(ops): \u4e09\u4e2a\u5c0f\u6d1e\u2014\u2014\u54e8\u5175\u81ea\u6307\u566a\u97f3/\u56de\u51fd\u6d88\u8d39\u5373ack/\u6295\u51fd\u8eab\u4efd\u5b88\u536b",
+  "test_files": [
+   "phase3/backend/tests/platform_protocol/test_feishu_decision.py"
+  ],
+  "source_files": [
+   "phase3/backend/api/org.py",
+   "phase3/backend/ops/org_chain_dispatch.py",
+   "phase3/backend/ops/org_sentinel.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "phase3/backend/tests/platform_protocol/test_feishu_decision.py",
+ "source_rel": "phase3/backend/api/org.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

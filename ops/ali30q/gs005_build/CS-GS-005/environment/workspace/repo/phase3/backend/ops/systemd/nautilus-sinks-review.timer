@@ -1,0 +1,9 @@
+[Unit]
+Description=nautilus sinks review scan timer (monthly on the 3rd)
+
+[Timer]
+OnCalendar=*-*-03 09:17:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

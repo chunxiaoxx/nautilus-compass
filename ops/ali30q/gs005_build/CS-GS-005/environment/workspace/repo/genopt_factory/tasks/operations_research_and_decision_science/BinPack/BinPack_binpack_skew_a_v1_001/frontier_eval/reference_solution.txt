@@ -1,0 +1,7 @@
+ff_baseline:
+  description: "First-Fit — items in given order, first bin that fits."
+  expected_combined: "0 (it IS FF)"
+reference_solver:
+  path: reference/solve.py
+  description: "Best-Fit Decreasing — sort items descending, place in bin with smallest leftover."
+  expected_combined: "~70-90"

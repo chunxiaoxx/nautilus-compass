@@ -1,0 +1,28 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "1905e3fac62f8a9896f1f0fa2b85de9a5ad2e202",
+  "reference_fix_commit": "c054f1d5fb00ce26889ea54234d8d5c72281058b",
+  "subject": "fix(fde): distinguish form metadata from publication",
+  "test_files": [
+   "phase3/backend/tests/test_fde_phase3_single_submission_forms.py"
+  ],
+  "source_files": [
+   "phase3/backend/scripts/refresh_phase3_expert_form.py"
+  ]
+ },
+ "test_id": "phase3/backend/tests/test_fde_phase3_single_submission_forms.py",
+ "source_rel": "phase3/backend/scripts/refresh_phase3_expert_form.py",
+ "provider": "ark_glm",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

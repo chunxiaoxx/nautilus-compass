@@ -1,0 +1,72 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "bc36cd1a2b3bc18f401a98476154dbc5a2d212c9",
+  "reference_fix_commit": "c3535905c77a29afc84861b29d3ad366ce5451bd",
+  "subject": "Fix broken fish completion and multiline help string",
+  "test_files": [
+   "tests/test_shell_completion.py"
+  ],
+  "source_files": [
+   "src/click/shell_completion.py"
+  ],
+  "repo_path": "C:/Users/chunx/ext_mine"
+ },
+ "test_id": "tests/test_shell_completion.py::test_full_complete",
+ "source_rel": "src\\click\\shell_completion.py",
+ "provider": "t6pool-chunxiao_k3",
+ "provider_used": "t6pool-chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/src/click/shell_completion.py\n+++ b/src/click/shell_completion.py\n@@ -368,20 +368,14 @@ class FishComplete(ShellComplete):\n         return args, incomplete\n \n     def format_completion(self, item: CompletionItem) -> str:\n-        \"\"\"\n-        .. versionchanged:: 8.4.0\n-            Escape newlines in value and help to fix completion errors with\n-            multi-line help strings.\n-        \"\"\"\n-        # The fish completion script splits each response line on literal\n-        # newlines, so any newline in the value or help would corrupt the\n-        # frame. Replace them with the two-character escape \"\\n\" so the text\n-        # round-trips through fish without breaking the format. The \"_\"\n-        # sentinel for missing help mirrors :class:`ZshComplete`.\n-        help_ = item.help or \"_\"\n-        value = item.value.replace(\"\\n\", r\"\\n\")\n-        help_escaped = help_.replace(\"\\n\", r\"\\n\")\n-        return f\"{item.type}\\n{value}\\n{help_escaped}\"\n+        # The fish completion script expects each response line in the\n+        # form ``type,value\\thelp``. The help text and its tab separator\n+        # are only included when a help string is present. Newlines in\n+        # the value or help are escaped so they don't corrupt the frame.\n+        value = item.value.replace(\"\\n\", r\"\\n\")\n+\n+        if item.help:\n+            help_escaped = item.help.replace(\"\\n\", r\"\\n\")\n+            return f\"{item.type},{value}\\t{help_escaped}\"\n+\n+        return f\"{item.type},{value}\"\n \n \n ShellCompleteType = t.TypeVar(\"ShellCompleteType\", bound=\"type[ShellComplete]\")\n",
+ "budget_exceeded": false,
+ "total_tokens": 7506,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 6366,
+    "completion_tokens": 1140,
+    "total_tokens": 7506,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 6366,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 1140,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 0,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 6366,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "fish_completion_output_format",
+ "duration_s": 42.8
+}

@@ -1,0 +1,94 @@
+{
+  "authorization": {
+    "allowed_action": "draft_r1a_implementation_plan",
+    "business_workflow_authorized": false,
+    "database_authorized": false,
+    "deployment_authorized": false,
+    "dogfood_authorized": false,
+    "fde_authorized": false,
+    "merge_authorized": false,
+    "model_authorized": false,
+    "network_authorized": false,
+    "push_authorized": false,
+    "runtime_authorized": false,
+    "self_modify_authorized": false,
+    "tool_execution_authorized": false
+  },
+  "documents": {
+    "design": {
+      "path": "docs/plans/2026-08-09-g1-b-r1a-synthetic-repair-design.md",
+      "sha256": "15f6d4c127d3ae30afe0ff53cadddbfcf5772be0c522000bcd65b08f8de29f20"
+    },
+    "implementation_plan": {
+      "path": "docs/plans/2026-08-09-g1-b-r1a-synthetic-repair-implementation-plan.md",
+      "sha256": "ddeaf76937bb72631832be7fc5fbee2452e328f7b3ec854e2ba1ae3cd1e88c72"
+    }
+  },
+  "owner_inputs": {
+    "compass": {
+      "authority_commit": "37efc4fc2f7455202c94515b29314af9e5e2e16e",
+      "path": "docs/contracts/m1-r1a-grounding-capsule-v1.json",
+      "proposal_commit": "e87234bbdc072bd10e9b88079c21f7c574361506",
+      "role": "read_only_learning_boundary",
+      "sha256": "1387d4d12edddbe2a8b83e54160ac864760d33d8b9372010976df1279a5f53d0"
+    },
+    "v5": {
+      "authority_commit": "f560be28ecac550e754eff2b82e36ea91ecad0b6",
+      "path": "docs/contracts/v5-r1a-plan-only-authorization-v1.json",
+      "proposal_commit": "cdd55315f03c145e7d83d5a0eddbfeeb5d951c94",
+      "role": "action_owner_plan_input",
+      "sha256": "9aebc513029150af81068b13d0e454aedc7cad67bcc9d46348e7ba6de101aec6"
+    }
+  },
+  "platform": {
+    "baseline_commit": "21a36fd2cfc8a2223454d1f7c5bc542045910291",
+    "g1_a_evidence_path": "phase3/backend/docs/evidence/m1-r1a-plan-admission-v2.json",
+    "g1_a_evidence_sha256": "f96c61157a977ad30f6299d5c4cbc01b0f965033511464a349bb7f4fd3127bea",
+    "g1_a_status": "ready_for_r1a_plan"
+  },
+  "review": {
+    "allowed_responses": [
+      "ACK",
+      "CONFLICT"
+    ],
+    "fourth_coordinator_authorized": false,
+    "owner_reviewers": [
+      "v5",
+      "compass"
+    ],
+    "platform_decision_owner": "nautilus-core-platform",
+    "required_conflict_evidence": [
+      "full_commit",
+      "path",
+      "test_command",
+      "test_result"
+    ],
+    "required_findings": {
+      "high": 0,
+      "medium": 0
+    }
+  },
+  "schema_version": "g1-b-r1a-plan-package-v1",
+  "scope": {
+    "data_class": "synthetic_no_business_data",
+    "dmas_role": "platform_pure_unique_candidate_selection",
+    "evidence_level": "plan_only",
+    "operation_chain": [
+      "request",
+      "dmas_unique_candidate_selection",
+      "platform_envelope_acceptance",
+      "attempt_claim",
+      "attempt_scoped_input_binding",
+      "compass_grounding",
+      "candidate_patch",
+      "executor_signed_execution_evidence",
+      "manifest",
+      "manifest_read_grant",
+      "independent_synthetic_test",
+      "independent_receipt",
+      "platform_readback"
+    ],
+    "task_count": 1,
+    "task_id": "synthetic_code_repair_v1"
+  }
+}

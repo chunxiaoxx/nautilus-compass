@@ -1,0 +1,75 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "726708dff5241b3ad67d2e1a01b81962e909c72e",
+  "reference_fix_commit": "228bd10fb7e52c2fb7483149d783c985602897bd",
+  "subject": "fix(fde): reject bitable identities in v3 task id",
+  "test_files": [
+   "phase3/backend/tests/test_fde_phase3_feishu.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/fde_phase3_feishu.py"
+  ],
+  "repo_path": "C:/Users/chunx/Projects/nautilus-core",
+  "hist_test_id": "tests/test_fde_phase3_feishu.py::test_v5_v3_payload_rejects_any_export_readback_identity_as_task_id",
+  "hist_passed": true,
+  "_passed": true
+ },
+ "test_id": "tests/test_fde_phase3_feishu.py::test_v5_v3_payload_rejects_any_export_readback_identity_as_task_id",
+ "source_rel": "services\\fde_phase3_feishu.py",
+ "provider": "l2B-chunxiao_k3",
+ "provider_used": "l2B-chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/services/fde_phase3_feishu.py\n+++ b/services/fde_phase3_feishu.py\n@@ -375,6 +375,13 @@\n         )\n         if not isinstance(task_id, str) or not task_id.strip():\n             raise ValueError(\"derived task_id is required\")\n+        if task_id in {\n+            export_readback.task_record_id,\n+            export_readback.attempt_record_id,\n+            export_readback.review_record_id,\n+            export_readback.export_record_id,\n+        }:\n+            raise ValueError(\"derived task_id must not equal a Bitable record identity\")\n         return {\"task_id\": task_id, \"fields\": self.compass_payload(values)}\n \n     def validate_new_task(self, submission: Mapping[str, Any]) -> dict[str, Any]:",
+ "budget_exceeded": false,
+ "total_tokens": 8385,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 7992,
+    "completion_tokens": 393,
+    "total_tokens": 8385,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 7736,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 393,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 7992,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "v5_v3_payload_reject_readback_identity_task_id",
+ "duration_s": 27.1
+}

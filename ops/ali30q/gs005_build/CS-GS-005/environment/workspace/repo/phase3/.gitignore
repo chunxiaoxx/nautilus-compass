@@ -1,0 +1,152 @@
+# Environment variables
+.env
+.env.local
+.env.staging
+.env.production
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+env/
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
+.hypothesis/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+dist/
+build/
+*.tsbuildinfo
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+tmp/
+temp/
+
+# Archives
+*.tar.gz
+*.zip
+*.rar
+
+# Reports and summaries (internal documents)
+*_SUMMARY.md
+*_REPORT.md
+*_FEEDBACK*.txt
+*_REVIEW*.md
+*_STATUS*.md
+*_COMPLETE*.md
+*_FINAL*.md
+*_LOG*.md
+DIALOG_*.md
+DIALOG_*.txt
+TO_*.txt
+TO_*.md
+TASK_*.md
+TASK_*.txt
+WORK_*.md
+ANALYSIS_*.md
+EXECUTION_*.md
+VERIFICATION_*.md
+MONITORING_*.md
+DEPLOYMENT_*.md
+PERFORMANCE_*.md
+BACKUP_*.md
+PROJECT_*.md
+SYSTEM_*.md
+EVIDENCE_*.md
+OAUTH_*.md
+WEB3_*.md
+WEBSOCKET_*.md
+ACTION_*.md
+PRIORITY_*.md
+RECOMMENDATIONS.md
+NEXT_STEPS.md
+WHAT_TO_DO_NEXT.txt
+START_HERE.md
+QUICK_FIX_COMMANDS.sh
+VISUAL_SUMMARY.md
+COMPLETE.md
+TASK_DONE.md
+TEST_FIX.md
+nul
+
+# Claude Code
+.claude/
+.claude.md
+CLAUDE.md
+CLAUDE_CODE_*.md
+
+# Marketing (if separate)
+marketing/
+
+# Config (if contains secrets)
+config/
+
+# Scripts (internal)
+diagnose.sh
+deploy-full.sh
+fix-*.sh
+setup_mcp.ps1
+verify_mcp.ps1
+
+# Test files (internal)
+test-*.js
+*_test.py
+run_smoke_test.py
+
+# Monitoring (if using external service)
+monitoring/deploy-*.sh
+
+# Backup files
+backup-*.md
+
+# Package files
+package-lock.json
+package.json
+
+# Keep these important files
+!README.md
+!CONTRIBUTING.md
+!CHANGELOG.md
+!LICENSE
+!SECURITY.md
+!CODE_QUALITY_REPORT.md
+!DEPENDENCY_AUDIT_REPORT.md
+!PERFORMANCE_OPTIMIZATION_GUIDE.md
+!.env.example

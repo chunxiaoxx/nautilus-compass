@@ -1,0 +1,69 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "d9a7efaed9bb0b6f2e668d56626882d0ddd22795",
+  "reference_fix_commit": "a91e9a8f038d175be59e3c3ff9874df1da410a1e",
+  "subject": "fix(s4): preserve types in quarantine fingerprints",
+  "test_files": [
+   "tests/gep/test_flywheel_log.py"
+  ],
+  "source_files": [
+   "gep/flywheel_log.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass"
+ },
+ "test_id": "tests/gep/test_flywheel_log.py::test_quarantine_fingerprints_preserve_heterogeneous_mapping_key_types",
+ "source_rel": "gep\\flywheel_log.py",
+ "provider": "glm_plan,minimax_m3,deepseek",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 3036,
+    "output_tokens": 237,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "F                                                                        [100%]\r\n================================== FAILURES ===================================\r\n____ test_quarantine_fingerprints_preserve_heterogeneous_mapping_key_types ____\r\n\r\ntmp_path = WindowsPath('C:/Users/chunx/AppData/Local/Temp/pytest-of-chunx/pytest-6110/test_quarantine_fingerprints_p0')\r\n\r\n    def test_quarantine_fingerprints_preserve_heterogeneous_mapping_key_types(tmp_path):\r\n        path = tmp_path / \"typed-fingerprint.sqlite3\"\r\n        event_log = FlywheelEventLog(path, registered_agent_ids={7})\r\n        first = valid_mapping()\r\n        first[\"unknown_input\"] = {1: \"second\", \"1\": \"first\"}\r\n        second = valid_mapping()\r\n        second[\"unknown_input\"] = {1: \"second\", \"1\": \"second\"}\r\n    \r\n        event_log.append(first)\r\n        event_log.append(second)\r\n    \r\n        rows = event_log.list_quarantine()\r\n        event_log.close()\r\n    \r\n>       assert len(rows) == 2\r\nE       AssertionError: assert 1 == 2\r\nE        +  where 1 = len(({'episode_id': 'episode-1', 'fingerprint': 'sha256:0b27abe20449bde18eb55094555213fce3ebe67ae0ab4fac893925602d1e63ba', 'quarantined_at': '2026-08-28T21:38:11.830844Z', 'reason_code': 'invalid_schema', ...},))\r\n\r\ntests\\gep\\test_flywheel_log.py:304: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/gep/test_flywheel_log.py::test_quarantine_fingerprints_preserve_heterogeneous_mapping_key_types\r\n1 failed in 0.25s\r\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 3457,
+    "output_tokens": 390,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_301pbqnh/repo/_g2b1.patch:14\n\n[attempt2 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_301pbqnh/repo/_g2b1.patch:14\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 3039,
+    "output_tokens": 200,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: invalid path 'gep\\flywheel_log.py'\n\n[attempt2 backend] error: invalid path 'gep\\flywheel_log.py'\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 77.0,
+ "verdict_post_status": 200
+}

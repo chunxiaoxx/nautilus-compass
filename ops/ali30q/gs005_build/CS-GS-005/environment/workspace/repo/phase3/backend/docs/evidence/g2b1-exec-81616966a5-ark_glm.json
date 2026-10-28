@@ -1,0 +1,48 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "9aad060678cd50991c6b5dfc31edde45ef679bfd",
+  "reference_fix_commit": "81616966a559f789431ac553181b4b735f52356f",
+  "subject": "fix(ratchet): produce_versions parent \u53d6 latest-active \u800c\u975e latest-version(C6 lineage \u8df3 reverted)",
+  "test_files": [
+   "tests/test_produce_register_and_provenance_link.py"
+  ],
+  "source_files": [
+   "fde_capsule/produce_versions.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5"
+ },
+ "test_id": "tests/test_produce_register_and_provenance_link.py::test_decide_register_already_exists_noop",
+ "source_rel": "fde_capsule\\produce_versions.py",
+ "provider": "ark_glm",
+ "test_passed": true,
+ "winning_diff": "--- a/fde_capsule/produce_versions.py\n+++ b/fde_capsule/produce_versions.py\n@@ -23,13 +23,15 @@\n     return _REGISTER_SQL, (agent_id, version, parent, fragment_text)\n \n \n-def decide_register(latest: Optional[str], fragment_text: str) -> dict:\n+def decide_register(rows, fragment_text: str) -> dict:\n     \"\"\"\u6309\u5f53\u524d\u7247\u6bb5\u51b3\u5b9a\u662f\u5426\u767b\u8bb0\u65b0\u7248\u672c(\u8c31\u7cfb\u903b\u8f91\u00b7\u7eaf)\u3002\n \n-    latest = \u8be5 agent \u6700\u65b0\u7248\u672c\u53f7(None=\u6ca1\u6709)\u3002\u5f53\u524d\u7247\u6bb5 version == latest \u2192 \u4e0d\u91cd\u590d\u767b\u8bb0;\n-    \u5426\u5219\u767b\u8bb0\u65b0\u7248\u672c\u00b7parent=latest\u3002\u628a\u7248\u672c\u767b\u8bb0\u7ed1\u5230\"\u771f\u88ab produce \u4f7f\u7528\"\u7684\u7247\u6bb5(\u975e\u7a7a\u60f3)\u3002\n+    rows = [(version, status)] \u5168\u96c6(\u5e42\u7b49\u67e5\u5168\u96c6\u00b7\u975e\u53ea latest)\u3002\u5f53\u524d\u7247\u6bb5 version \u5728 rows(\u4efb\u610f status) \u2192 \u4e0d\u91cd\u590d\u767b\u8bb0;\n+    \u5426\u5219\u767b\u8bb0\u65b0\u7248\u672c\u00b7parent=\u6700\u65b0\u7248\u672c\u53f7\u3002\u628a\u7248\u672c\u767b\u8bb0\u7ed1\u5230\"\u771f\u88ab produce \u4f7f\u7528\"\u7684\u7247\u6bb5(\u975e\u7a7a\u60f3)\u3002\n     \"\"\"\n     version = fragment_version(fragment_text)\n-    if latest == version:\n-        return {\"should_insert\": False, \"version\": version, \"parent\": latest}\n+    latest = rows[0][0] if rows else None\n+    for v, s in rows:\n+        if v == version:\n+            return {\"should_insert\": False, \"version\": version, \"parent\": latest}\n     return {\"should_insert\": True, \"version\": version, \"parent\": latest}\n@@ -44,7 +46,7 @@\n def register_seen(agent_id: str, fragment_text: str, dsn: Optional[str] = None) -> Optional[str]:\n     \"\"\"produce \u4f7f\u7528\u67d0\u7247\u6bb5\u65f6\u767b\u8bb0\u5176\u7248\u672c(\u8c31\u7cfb\u00b7idempotent\u00b7fail-soft)\u00b7\u8fd4 version\u3002\"\"\"\n     try:\n-        d = decide_register(latest_version(agent_id, dsn=dsn), fragment_text)\n+        d = decide_register(load_versions(agent_id, dsn=dsn), fragment_text)\n         if d[\"should_insert\"]:\n             register_version(agent_id, fragment_text, parent=d[\"parent\"], dsn=dsn)\n         return d[\"version\"]\n",
+ "budget_exceeded": false,
+ "total_tokens": 18370,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "completion_tokens": 16163,
+    "prompt_tokens": 2207,
+    "total_tokens": 18370,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 15516
+    }
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "fix_decide_register_rows_param",
+ "duration_s": 198.0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

@@ -1,0 +1,18 @@
+[Unit]
+Description=Nautilus org sentinel · mailbox event watcher -> Feishu push (non-LLM)
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=oneshot
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/nautilus-mvp/phase3/backend
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/bin/python3 ops/org_sentinel.py
+StandardOutput=journal
+StandardError=journal
+TimeoutStartSec=120
+
+[Install]
+WantedBy=multi-user.target

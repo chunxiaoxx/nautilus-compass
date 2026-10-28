@@ -1,0 +1,43 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "042ce374c3f426acb6f83e9464368951a539705f",
+  "reference_fix_commit": "e8ddf11f82b9b0d002ec22bcddf2efdc49d74d25",
+  "subject": "fix(fde): dispatch\u5c42\u9000\u5f79scan_bounty/score_overdue\u6267\u884c\u8def\u5f84(no-op\u00b7\u5220\u83dc\u5355\u4e0d\u591f\u00b7LLM\u4ece\u4e60\u60efemit\u2192\u6267\u884c\u5c42chokepoint)\u00b7\u9a8c\u8bc1\u53d1\u73b0bounty\u4ecd80%\u00b74TDD\u7eff",
+  "test_files": [
+   "tests/test_fde_dispatch_handlers.py"
+  ],
+  "source_files": [
+   "nautilus_v5/runtime/dispatch_mixin.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_fde_dispatch_handlers.py::test_scan_bounty_retired_no_list_bounties",
+ "source_rel": "nautilus_v5\\runtime\\dispatch_mixin.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": true,
+ "winning_diff": "--- a/nautilus_v5/runtime/dispatch_mixin.py\n+++ b/nautilus_v5/runtime/dispatch_mixin.py\n@@ -136,8 +136,10 @@ class DispatchMixin:\n                     await _aio.wait_for(proc.communicate(), timeout=60)\n         elif action == \"scan_bounty\":\n-            await ag.tool_registry.dispatch(\"list_bounties\", {\"limit\": 10})\n+            # _PATCH_RETIRE_SCAN_BOUNTY_DISPATCH_2026_06_14\n+            # dispatch \u5c42\u9000\u5f79: LLM \u5df2\u5185\u5316 \u2192 habit \u9009 scan_bounty \u4e0d\u518d\u4e0b\u94bb list_bounties\n+            logger.info(\"[dispatch_mixin.scan_bounty] retired from dispatch layer \u00b7 habit intent logged only\")\n+            return\n         elif action == \"score_overdue\":\n             await self._auto_score_tick(min_age_min=30)\n",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "input_tokens": 11015,
+    "output_tokens": 245,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "retire_scan_bounty_dispatch_no_list_bounties",
+ "duration_s": 13.7,
+ "verdict_post_status": 200
+}

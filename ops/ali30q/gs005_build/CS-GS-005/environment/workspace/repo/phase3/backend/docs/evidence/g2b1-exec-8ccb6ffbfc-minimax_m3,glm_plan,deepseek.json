@@ -1,0 +1,29 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "dfb2cca7b8c064b41d0e174b52b5fcf1745fabff",
+  "reference_fix_commit": "8ccb6ffbfcb620a84ac294bc968d31a3b7789618",
+  "subject": "fix(swe-fuel): produce root-fix\u00b7_call_llm fallback reasoning_content(\u975e bump max_tokens)",
+  "test_files": [
+   "tests/test_fde_consumer.py"
+  ],
+  "source_files": [
+   "fde_capsule/fde_consumer.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_fde_consumer.py::test_pick_message_text_prefers_content",
+ "source_rel": "fde_capsule\\fde_consumer.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "skipped_reason": "fixture_broken_red",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 1.7,
+ "replayed": true,
+ "verdict_post_status": 200
+}

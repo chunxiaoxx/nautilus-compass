@@ -1,0 +1,27 @@
+[Unit]
+Description=Autonomous Nautilus Soul · one cycle
+After=network-online.target
+
+[Service]
+Type=oneshot
+# Run as the workspace owner — git refuses operations on a repo owned by
+# another user ("dubious ownership"), so root would fail branch creation.
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/nautilus-soul-workspace/phase3
+EnvironmentFile=/home/ubuntu/nautilus-soul-workspace/.soul-env
+# F12.1 (2026-05-30) · auto-sync cloud workspace before each cycle. Without
+# this, PR merges to the trunk never reach the cloud daemon (the workspace
+# remains the bootstrap.sh snapshot · daemon.py:5 contract guarantees the base
+# branch is never touched locally · so reset --hard is safe). 2026-09-10
+# activation: sync target moved master → soul-distill-deploy (single trunk
+# since 2026-08-26; origin/master is a frozen 2026-06-05 snapshot — resetting
+# to it would roll the workspace back three months). Fail-open: a git fetch
+# network blip does not crash the cycle (systemd treats non-zero ExecStartPre
+# as job fail · the next timer tick retries).
+ExecStartPre=/usr/bin/git -C /home/ubuntu/nautilus-soul-workspace fetch origin soul-distill-deploy
+ExecStartPre=/usr/bin/git -C /home/ubuntu/nautilus-soul-workspace reset --hard origin/soul-distill-deploy
+# Draft PRs must open against the live trunk (9/10 activation: PR #141 opened
+# against the archived master because this env was missing on the L1 unit).
+Environment=SOUL_PR_BASE=soul-distill-deploy
+ExecStart=/usr/bin/python3 -m soul.daemon

@@ -1,0 +1,73 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "84d541441d6f194744e03a98f5eccb8cea5b0025",
+  "reference_fix_commit": "24ee0351d751635ad0b664426c3b0c537ba6cfef",
+  "subject": "fix(genopt): feishu_ship defaults to None (anchor #6 secret hygiene)",
+  "test_files": [
+   "tests/test_genopt_feishu_ship.py"
+  ],
+  "source_files": [
+   "fde_capsule/genopt/feishu_ship.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_genopt_feishu_ship.py::test_defaults_are_none_for_secret_hygiene",
+ "source_rel": "fde_capsule\\genopt\\feishu_ship.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/fde_capsule/genopt/feishu_ship.py\n+++ b/fde_capsule/genopt/feishu_ship.py\n@@ -4,17 +4,16 @@\n fde_capsule.feishu.bitable_client API (anchor #5: never re-implement the\n feishu transport). Honors GENOPT_FEISHU_DRY_RUN=1 for offline verification.\n \n-Default buyer table is the FDE L3 baseline sample table anchored in CHARTER \u00a71.3:\n-  app_token=EOVhbQwA0a1HEOsgmxecgkBVnwh  table=tblhD4O4f0esTyXc\n-Override via GENOPT_FEISHU_APP_TOKEN / GENOPT_FEISHU_TABLE_ID env.\n+Anchor #6: no hardcoded secrets in code. app_token / table_id must be\n+supplied explicitly (via argument or GENOPT_FEISHU_APP_TOKEN /\n+GENOPT_FEISHU_TABLE_ID env); there are no baked-in defaults.\n \"\"\"\n import json\n import os\n import sys\n \n from fde_capsule.genopt import feishu_schema\n \n-DEFAULT_APP_TOKEN = \"EOVhbQwA0a1HEOsgmxecgkBVnwh\"\n-DEFAULT_TABLE_ID = \"tblhD4O4f0esTyXc\"\n+DEFAULT_APP_TOKEN = None\n+DEFAULT_TABLE_ID = None\n TASK_FIELDS = [\"task_id\", \"Prompt\", \"Domain\", \"Sub-domain\", \"directory\"]\n",
+ "budget_exceeded": false,
+ "total_tokens": 2251,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 1832,
+    "completion_tokens": 419,
+    "total_tokens": 2251,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 1576,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 419,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 1832,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "remove_hardcoded_feishu_secrets",
+ "duration_s": 22.5,
+ "verdict_post_status": 200
+}

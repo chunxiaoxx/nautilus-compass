@@ -1,0 +1,29 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "1accd3fbb46c4d8ed9598ceada66a7cb8e5d710b",
+  "reference_fix_commit": "d817dc273d09a640d3b4eec883b9aa0827fba9b0",
+  "subject": "fix: reject cyclic Self-Proof documents",
+  "test_files": [
+   "tests/test_selfproof_contracts.py"
+  ],
+  "source_files": [
+   "src/nautilusflywheel/selfproof_contracts.py"
+  ],
+  "repo_path": "C:/Users/chunx/Projects/nautilusflywheel"
+ },
+ "test_id": "tests/test_selfproof_contracts.py",
+ "source_rel": "src\\nautilusflywheel\\selfproof_contracts.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "skipped_reason": "fixture_broken_red",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 2.3,
+ "replayed": true,
+ "verdict_post_status": 200
+}

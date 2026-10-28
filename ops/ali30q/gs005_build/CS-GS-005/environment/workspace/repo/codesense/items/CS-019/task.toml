@@ -1,0 +1,36 @@
+schema_version = "1.4"
+
+[[artifacts]]
+source = "environment/workspace/repo"
+destination = "/workspace/repo"
+
+[task]
+name = "guoshu/codesense-cs-019"
+description = "Code Sense · 探针缺键静默默认(监控盲区漏报)· 浅中档单坑语义评测题"
+
+[[task.authors]]
+name = "上海国曙智能"
+
+[agent]
+timeout_sec = 1800
+network_mode = "no-network"
+
+[verifier]
+timeout_sec = 900
+network_mode = "no-network"
+
+[environment]
+build_timeout_sec = 900
+network_mode = "no-network"
+os = "linux"
+cpus = 2
+memory_mb = 4096
+
+[metadata]
+badpattern = "F05.02 边界与异常处理缺陷 + 第11行 明确需求或约束遗漏"
+Domain = "D01.1 后端接口与业务逻辑"
+id = "CS-019"
+pool = "ali-codesense-30q"
+batch = "C"
+seed = "S0探针缺键默认值"
+producer = "platform"

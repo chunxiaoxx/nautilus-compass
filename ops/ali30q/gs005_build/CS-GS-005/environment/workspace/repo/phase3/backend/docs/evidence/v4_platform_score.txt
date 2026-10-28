@@ -1,0 +1,91 @@
+base g2b1:767fb5d55337 False
+base g2b1:767fb5d55337 False
+base g2b1:767fb5d55337 False
+base g2b1:f08c1c9e3422 False
+base g2b1:f08c1c9e3422 False
+base g2b1:f08c1c9e3422 False
+base g2b1:ac5541e47e9e False
+base g2b1:ac5541e47e9e False
+base g2b1:ac5541e47e9e False
+base g2b1:94b002a33806 False
+base g2b1:94b002a33806 False
+base g2b1:94b002a33806 False
+base g2b1:e8ddf11f82b9 False
+base g2b1:e8ddf11f82b9 False
+base g2b1:e8ddf11f82b9 False
+base g2b1:767fb5d55337 False
+base g2b1:767fb5d55337 False
+base g2b1:767fb5d55337 False
+base g2b1:f08c1c9e3422 False
+base g2b1:f08c1c9e3422 False
+base g2b1:f08c1c9e3422 False
+base g2b1:ac5541e47e9e False
+base g2b1:ac5541e47e9e False
+base g2b1:ac5541e47e9e False
+base g2b1:94b002a33806 False
+base g2b1:94b002a33806 False
+base g2b1:94b002a33806 False
+base g2b1:e8ddf11f82b9 False
+base g2b1:e8ddf11f82b9 False
+base g2b1:e8ddf11f82b9 False
+distill g2b1:767fb5d55337 False
+distill g2b1:767fb5d55337 True
+distill g2b1:767fb5d55337 False
+distill g2b1:f08c1c9e3422 False
+distill g2b1:f08c1c9e3422 False
+distill g2b1:f08c1c9e3422 False
+distill g2b1:ac5541e47e9e False
+distill g2b1:ac5541e47e9e False
+distill g2b1:ac5541e47e9e False
+distill g2b1:94b002a33806 False
+distill g2b1:94b002a33806 False
+distill g2b1:94b002a33806 False
+distill g2b1:e8ddf11f82b9 False
+distill g2b1:e8ddf11f82b9 False
+distill g2b1:e8ddf11f82b9 False
+=== SUMMARY ===
+g2b1:767fb5d55337 base 0/6 distill 1/3
+g2b1:94b002a33806 base 0/6 distill 0/3
+g2b1:ac5541e47e9e base 0/6 distill 0/3
+g2b1:e8ddf11f82b9 base 0/6 distill 0/3
+g2b1:f08c1c9e3422 base 0/6 distill 0/3
+[holdout] base g2b1:cebce1c562e3 False
+[holdout] base g2b1:cebce1c562e3 False
+[holdout] base g2b1:cebce1c562e3 False
+[holdout] base g2b1:dc149e7ef3a9 False
+[holdout] base g2b1:dc149e7ef3a9 False
+[holdout] base g2b1:dc149e7ef3a9 False
+[holdout] base g2b1:721beb018c3d False
+[holdout] base g2b1:721beb018c3d False
+[holdout] base g2b1:721beb018c3d False
+[holdout] base g2b1:cebce1c562e3 False
+[holdout] base g2b1:cebce1c562e3 False
+[holdout] base g2b1:cebce1c562e3 False
+[holdout] base g2b1:dc149e7ef3a9 False
+[holdout] base g2b1:cebce1c562e3 False
+[holdout] base g2b1:cebce1c562e3 False
+[holdout] base g2b1:cebce1c562e3 False
+[holdout] base g2b1:dc149e7ef3a9 False
+[holdout] base g2b1:dc149e7ef3a9 False
+[holdout] base g2b1:dc149e7ef3a9 False
+[holdout] base g2b1:721beb018c3d False
+[holdout] base g2b1:721beb018c3d False
+[holdout] base g2b1:721beb018c3d False
+[holdout] distill g2b1:cebce1c562e3 False
+[holdout] distill g2b1:cebce1c562e3 False
+[holdout] distill g2b1:cebce1c562e3 False
+[holdout] distill g2b1:dc149e7ef3a9 False
+[holdout] distill g2b1:dc149e7ef3a9 False
+[holdout] distill g2b1:cebce1c562e3 False
+[holdout] distill g2b1:cebce1c562e3 False
+[holdout] distill g2b1:cebce1c562e3 False
+[holdout] distill g2b1:dc149e7ef3a9 False
+[holdout] distill g2b1:dc149e7ef3a9 False
+[holdout] distill g2b1:dc149e7ef3a9 False
+[holdout] distill g2b1:721beb018c3d False
+[holdout] distill g2b1:721beb018c3d False
+[holdout] distill g2b1:721beb018c3d False
+=== HOLDOUT SUMMARY ===
+g2b1:721beb018c3d base 0/6 distill 0/3
+g2b1:cebce1c562e3 base 0/9 distill 0/6
+g2b1:dc149e7ef3a9 base 0/7 distill 0/5

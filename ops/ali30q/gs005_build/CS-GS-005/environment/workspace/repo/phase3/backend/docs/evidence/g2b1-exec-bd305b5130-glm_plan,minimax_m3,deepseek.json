@@ -1,0 +1,43 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "85d493855112222e0467215327b75379817d4b61",
+  "reference_fix_commit": "bd305b5130e4cbc117031676ccd6e0b77b0a09f6",
+  "subject": "fix(s1): C1/I2/I3 quality\u5ba1 must-fix(claim\u5e42\u7b49-\u81ea\u5360\u00b7_http\u6355HTTPError\u00b7write_back\u9694\u79bb\u00b7+3 TDD)",
+  "test_files": [
+   "phase3/backend/tests/test_fde_assignment_runner.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/fde_assignment_runner.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/test_fde_assignment_runner.py::test_claim_fn_idempotent_when_already_claimed_by_same_expert",
+ "source_rel": "services\\fde_assignment_runner.py",
+ "provider": "glm_plan,minimax_m3,deepseek",
+ "test_passed": true,
+ "winning_diff": "--- a/services/fde_assignment_runner.py\n+++ b/services/fde_assignment_runner.py\n@@ -95,9 +95,12 @@ def make_dispatch_fn(base: str, key: str):\n def make_claim_fn(base: str):\n     def claim_fn(uid: str, agent: str) -> None:\n         res = _http(\"POST\", base + \"/api/platform/fde/claim\",\n                     body={\"task_uid\": uid, \"agent_id\": agent})\n+        # \u5e42\u7b49:\u5df2\u88ab\u540c\u4e00 expert \u5360\u5ea7(claimed_by == agent)\u89c6\u4e3a\u6210\u529f,\u4e0d\u629b\u9519\u3002\n+        err = res.get(\"error\") or \"\"\n+        if res.get(\"success\", True) or f\"(claimed_by={agent})\" in err:\n+            return\n         if not res.get(\"success\", True):\n             raise RuntimeError(f\"claim failed: {res.get('error')}\")\n     return claim_fn\n",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "input_tokens": 1990,
+    "output_tokens": 259,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "idempotent_claim_same_expert",
+ "duration_s": 26.7,
+ "verdict_post_status": 200
+}

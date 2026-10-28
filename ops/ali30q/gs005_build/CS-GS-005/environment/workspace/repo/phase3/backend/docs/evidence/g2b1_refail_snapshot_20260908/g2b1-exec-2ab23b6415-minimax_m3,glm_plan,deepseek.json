@@ -1,0 +1,72 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "9d3dfd31b33450256dcceef0576a9bc2fc8a0c9f",
+  "reference_fix_commit": "2ab23b6415f8b92873320d41064650f21dcc2946",
+  "subject": "fix(s4): enforce ExperiencePacket field types",
+  "test_files": [
+   "tests/gep/test_experience_packet.py",
+   "tests/gep/test_flywheel_event.py"
+  ],
+  "source_files": [
+   "gep/experience_packet.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass"
+ },
+ "test_id": "tests/gep/test_experience_packet.py::test_scalar_fields_reject_wrong_runtime_types",
+ "source_rel": "gep\\experience_packet.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 1955,
+    "output_tokens": 459,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: No valid patches in input (allow with \"--allow-empty\")\n\n[attempt2 backend] error: No valid patches in input (allow with \"--allow-empty\")\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 2033,
+    "output_tokens": 571,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_n3w55egb/repo/_g2b1.patch:39\n\n[attempt2 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_n3w55egb/repo/_g2b1.patch:39\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 2227,
+    "output_tokens": 822,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "h\"),\r\n        ],\r\n    )\r\n    def test_scalar_fields_reject_wrong_runtime_types(field_name, value):\r\n>       with pytest.raises(TypeError, match=rf\"{field_name} must\"):\r\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nE       Failed: DID NOT RAISE <class 'TypeError'>\r\n\r\ntests\\gep\\test_experience_packet.py:51: Failed\r\n_________ test_scalar_fields_reject_wrong_runtime_types[impact-False] _________\r\n\r\nfield_name = 'impact', value = False\r\n\r\n    @pytest.mark.parametrize(\r\n        (\"field_name\", \"value\"),\r\n        [\r\n            (\"episode_id\", 1),\r\n            (\"parent_episode_id\", 1),\r\n            (\"task\", 123),\r\n            (\"action_kind\", ()),\r\n            (\"outcome\", False),\r\n            (\"failure_mode\", {}),\r\n            (\"route_key\", []),\r\n            (\"policy_hint\", 1.5),\r\n            (\"capsule_candidate\", \"yes\"),\r\n            (\"capsule_candidate\", 1),\r\n            (\"reward_delta\", True),\r\n            (\"reward_delta\", \"1.0\"),\r\n            (\"impact\", False),\r\n            (\"impact\", \"high\"),\r\n        ],\r\n    )\r\n    def test_scalar_fields_reject_wrong_runtime_types(field_name, value):\r\n>       with pytest.raises(TypeError, match=rf\"{field_name} must\"):\r\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nE       Failed: DID NOT RAISE <class 'TypeError'>\r\n\r\ntests\\gep\\test_experience_packet.py:51: Failed\r\n_________ test_scalar_fields_reject_wrong_runtime_types[impact-high] __________\r\n\r\nfield_name = 'impact', value = 'high'\r\n\r\n    @pytest.mark.parametrize(\r\n        (\"field_name\", \"value\"),\r\n        [\r\n            (\"episode_id\", 1),\r\n            (\"parent_episode_id\", 1),\r\n            (\"task\", 123),\r\n            (\"action_kind\", ()),\r\n            (\"outcome\", False),\r\n            (\"failure_mode\", {}),\r\n            (\"route_key\", []),\r\n            (\"policy_hint\", 1.5),\r\n            (\"capsule_candidate\", \"yes\"),\r\n            (\"capsule_candidate\", 1),\r\n            (\"reward_delta\", True),\r\n            (\"reward_delta\", \"1.0\"),\r\n            (\"impact\", False),\r\n            (\"impact\", \"high\"),\r\n        ],\r\n    )\r\n    def test_scalar_fields_reject_wrong_runtime_types(field_name, value):\r\n>       with pytest.raises(TypeError, match=rf\"{field_name} must\"):\r\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nE       Failed: DID NOT RAISE <class 'TypeError'>\r\n\r\ntests\\gep\\test_experience_packet.py:51: Failed\r\n=========================== short test summary info ===========================\r\nFAILED tests/gep/test_experience_packet.py::test_scalar_fields_reject_wrong_runtime_types[episode_id-1]\r\nFAILED tests/gep/test_experience_packet.py::test_scalar_fields_reject_wrong_runtime_types[parent_episode_id-1]\r\nFAILED tests/gep/test_experience_packet.py::test_scalar_fields_reject_wrong_runtime_types[task-123]\r\nFAILED tests/gep/test_experience_packet.py::test_scalar_fields_reject_wrong_runtime_types[action_kind-value3]\r\nFAILED tests/gep/test_experience_packet.py::test_scalar_fields_reject_wrong_runtime_types[outcome-False]\r\nFAILED tests/gep/test_experience_packet.py::test_scalar_fields_reject_wrong_runtime_types[failure_mode-value5]\r\nFAILED tests/gep/test_experience_packet.py::test_scalar_fields_reject_wrong_runtime_types[route_key-value6]\r\nFAILED tests/gep/test_experience_packet.py::test_scalar_fields_reject_wrong_runtime_types[policy_hint-1.5]\r\nFAILED tests/gep/test_experience_packet.py::test_scalar_fields_reject_wrong_runtime_types[capsule_candidate-yes]\r\nFAILED tests/gep/test_experience_packet.py::test_scalar_fields_reject_wrong_runtime_types[capsule_candidate-1]\r\nFAILED tests/gep/test_experience_packet.py::test_scalar_fields_reject_wrong_runtime_types[reward_delta-True]\r\nFAILED tests/gep/test_experience_packet.py::test_scalar_fields_reject_wrong_runtime_types[reward_delta-1.0]\r\nFAILED tests/gep/test_experience_packet.py::test_scalar_fields_reject_wrong_runtime_types[impact-False]\r\nFAILED tests/gep/test_experience_packet.py::test_scalar_fields_reject_wrong_runtime_types[impact-high]\r\n14 failed in 0.29s\r\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 19.9,
+ "verdict_post_status": 200
+}

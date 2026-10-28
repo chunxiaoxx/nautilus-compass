@@ -1,0 +1,265 @@
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nautilus · 提测收录申请 /submit</title>
+<style>
+:root{--bg:#0b0e12;--card:#12161d;--line:#232a35;--ink:#f3efe5;--mut:#8b94a3;--brand:#4f8cff;--ok:#3fbf7f;--warn:#e0a13f;--bad:#e05c5c}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.7 system-ui,-apple-system,"Microsoft YaHei",sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:0 18px}
+header{padding:38px 0 22px;border-bottom:1px solid var(--line)}
+.kicker{color:var(--brand);font-size:12.5px;letter-spacing:2px;margin-bottom:8px}
+h1{font-size:26px;margin:0 0 8px}.sub{color:var(--mut);font-size:14.5px}
+h2{font-size:19px;margin:36px 0 12px;padding-left:11px;border-left:4px solid var(--brand)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px}
+label{display:block;color:var(--mut);font-size:13px;margin:14px 0 5px}
+label .req{color:var(--bad)}
+input,select,textarea{width:100%;background:#0d1118;border:1px solid var(--line);border-radius:8px;color:var(--ink);padding:9px 12px;font:14px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--brand)}
+textarea{min-height:84px;resize:vertical}
+button{display:inline-block;background:linear-gradient(135deg,#0f2a5c,#0f62fe);color:#fff;border:none;border-radius:8px;padding:10px 22px;font-size:14.5px;font-weight:700;cursor:pointer;margin-top:16px}
+button:disabled{opacity:.5;cursor:not-allowed}
+button.ghost{background:#1a2030;color:var(--ink);border:1px solid var(--line)}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px}
+.box{border-radius:10px;padding:14px 16px;margin-top:18px;font-size:13.5px;display:none}
+.box.ok{display:block;background:#0f2a1c;border:1px solid #1e5c3d}
+.box.err{display:block;background:#2a1214;border:1px solid #5c2626}
+.box.info{display:block;background:#12161d;border:1px solid var(--line)}
+.box .t{font-weight:700;margin-bottom:6px}
+.box.ok .t{color:var(--ok)}.box.err .t{color:var(--bad)}
+ul.detail{margin:8px 0 0;padding-left:20px}
+ul.detail li{margin:3px 0;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;color:#e8b9b9}
+pre{background:#0d1118;border:1px solid var(--line);border-radius:8px;padding:12px;overflow:auto;font-size:12.5px;line-height:1.55;color:#c9d4e3;max-height:340px}
+.kv{display:grid;grid-template-columns:130px 1fr;gap:4px 12px;font-size:13.5px;margin-top:8px}
+.kv .k{color:var(--mut)}.kv .v{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;word-break:break-all}
+a{color:var(--brand);text-decoration:none}
+.foot{color:var(--mut);font-size:12px;padding:22px 0;border-top:1px solid var(--line);margin-top:40px}
+.pill{display:inline-block;padding:1px 9px;border-radius:11px;font-size:12px;background:#123527;color:var(--ok)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav style="margin:18px 0 0;font-size:14px"><a href="/" style="color:#4f8cff">← 返回动态验证台</a></nav>
+<header>
+<div class="kicker">NAUTILUS · UNIPAT 判分服务 · INTAKE</div>
+<h1>提测收录申请</h1>
+<p class="sub">把你的 coding-agent harness 交给我们判一次。L1 收录免费(24h 回卡,榜单留位)· L2 深度报告 48h 交付 · 判据 sha16 预注册,负结果照报。</p>
+</header>
+
+<h2>提交提测单</h2>
+<div class="card">
+<form id="f" novalidate>
+<label>harness <span class="req">*</span></label>
+<input name="harness" required placeholder="例:my-agent-harness">
+<label>version_anchor <span class="req">*</span></label>
+<input name="version_anchor" required placeholder="例:commit 0962d14 / tag v1.3.0">
+<label>repo_url <span class="req">*</span></label>
+<input name="repo_url" type="url" required placeholder="https://github.com/you/your-harness">
+<label>lane <span class="req">*</span></label>
+<select name="lane">
+<option value="l1">l1 — 收录判读(免费 · 24h 回卡)</option>
+<option value="l2">l2 — 深度报告(48h 交付)</option>
+<option value="trajectory">trajectory — 轨迹数据验证</option>
+</select>
+<label>contact(选填)</label>
+<input name="contact" placeholder="邮箱 / TG / 飞书,用于回卡">
+<label>note(选填)</label>
+<textarea name="note" placeholder="补充说明:判读重点、复现约束、特别关注维度等"></textarea>
+<br><button type="submit" id="btn-submit">提交收录申请</button>
+</form>
+<div class="box" id="submit-result"></div>
+</div>
+
+<h2>CI 一键提测(GitHub Action)</h2>
+<div class="card">
+<p>在你的 harness 仓库 CI 里一键提交独立判读,判读卡 24h 内上榜:</p>
+<pre style="background:#f4f4f5;padding:12px;border-radius:8px;overflow:auto">- name: Nautilus Judge
+  uses: chunxiaoxx/nautilus-judge-action@main
+  with:
+    repo_url: https://github.com/you/your-harness</pre>
+<p style="font-size:.9em;color:#666">Action 仓: <a href="https://github.com/chunxiaoxx/nautilus-judge-action">chunxiaoxx/nautilus-judge-action</a>(本仓 CI 自测每 dispatch 真跑)。免 L1 收录位,深度报告 99(48h)。</p>
+</div>
+
+<h2>进度查询</h2>
+<div class="card">
+<label>受理回执 id</label>
+<input id="qid" placeholder="例:sub_8f3a2c1d">
+<button type="button" id="btn-query">查询状态</button>
+<button type="button" class="ghost" id="btn-events">事件流</button>
+<div class="box" id="query-result"></div>
+<pre id="events-out" style="display:none"></pre>
+</div>
+
+<div class="foot">Nautilus · 上海国曙人工智能科技有限公司 · API: <span class="mono">nautilus.social/api/platform/org/assay/submissions</span> · 提交即视为同意判据公开判读与负结果照报条款</div>
+</div>
+<script>
+var API = "/api/platform/org/assay/submissions";
+
+function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+
+function showBox(el, cls, html){
+  el.className = "box " + cls;
+  el.innerHTML = html;
+}
+
+function fmtRemain(deadline){
+  var t = Date.parse(deadline);
+  if(isNaN(t)) return "—";
+  var ms = t - Date.now();
+  if(ms <= 0) return "已逾期 " + Math.floor(-ms/3600000) + "h " + Math.floor((-ms%3600000)/60000) + "m";
+  var h = Math.floor(ms/3600000), m = Math.floor((ms%3600000)/60000);
+  return "剩 " + h + "h " + m + "m";
+}
+
+function pickId(d){
+  return d.id || d.submission_id || d.sid || (d.submission && (d.submission.id || d.submission.submission_id)) || "";
+}
+function pickSla(d){
+  return d.sla_deadline || d.sla_due || d.deadline || (d.submission && (d.submission.sla_deadline || d.submission.deadline)) || "";
+}
+
+function render422(box, data){
+  var items = "";
+  if(Array.isArray(data.detail)){
+    data.detail.forEach(function(it){
+      var loc = Array.isArray(it.loc) ? it.loc.join(".") : (it.loc || "");
+      items += "<li>" + esc(loc) + " — " + esc(it.msg || it.message || JSON.stringify(it)) + (it.type ? " <span style='color:#8b94a3'>(" + esc(it.type) + ")</span>" : "") + "</li>";
+    });
+  } else {
+    items = "<li>" + esc(typeof data.detail === "string" ? data.detail : JSON.stringify(data)) + "</li>";
+  }
+  showBox(box, "err", "<div class='t'>422 · 字段校验未通过</div><ul class='detail'>" + items + "</ul>");
+}
+
+function renderErr(box, status, data, raw){
+  var msg = "";
+  if(data){
+    if(typeof data.detail === "string") msg = data.detail;
+    else if(data.message) msg = data.message;
+    else if(data.error) msg = data.error;
+    else msg = JSON.stringify(data);
+  } else {
+    msg = raw || "无响应体";
+  }
+  showBox(box, "err", "<div class='t'>提交失败 · HTTP " + status + "</div><div class='mono'>" + esc(msg) + "</div>");
+}
+
+document.getElementById("f").addEventListener("submit", function(ev){
+  ev.preventDefault();
+  var form = ev.target;
+  var body = {
+    harness: form.harness.value.trim(),
+    version_anchor: form.version_anchor.value.trim(),
+    repo_url: form.repo_url.value.trim(),
+    lane: form.lane.value,
+    contact: form.contact.value.trim(),
+    note: form.note.value.trim()
+  };
+  var box = document.getElementById("submit-result");
+  var btn = document.getElementById("btn-submit");
+  btn.disabled = true;
+  btn.textContent = "提交中…";
+  fetch(API, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(body)
+  }).then(function(res){
+    return res.text().then(function(txt){
+      var data = null;
+      try{ data = txt ? JSON.parse(txt) : null; }catch(e){}
+      if(res.ok){
+        var id = pickId(data || {});
+        var sla = pickSla(data || {});
+        var html = "<div class='t'>✅ 受理成功</div><div class='kv'>";
+        html += "<div class='k'>受理回执 id</div><div class='v'>" + esc(id || "见响应体") + "</div>";
+        if(sla){
+          html += "<div class='k'>SLA 截止</div><div class='v'>" + esc(sla) + "</div>";
+          html += "<div class='k'>SLA 剩余</div><div class='v'>" + esc(fmtRemain(sla)) + "</div>";
+        }
+        html += "<div class='k'>状态</div><div class='v'><span class='pill'>" + esc((data && data.status) || "accepted") + "</span></div>";
+        html += "</div>";
+        if(id) html += "<p style='margin:10px 0 0;color:#8b94a3;font-size:12.5px'>已把回执 id 填入下方查询框,可随时查进度与事件流。</p>";
+        html += "<pre style='margin-top:10px'>" + esc(JSON.stringify(data, null, 2)) + "</pre>";
+        showBox(box, "ok", html);
+        if(id) document.getElementById("qid").value = id;
+        form.reset();
+      } else if(res.status === 422){
+        render422(box, data || {detail: txt});
+      } else {
+        renderErr(box, res.status, data, txt);
+      }
+    });
+  }).catch(function(e){
+    showBox(box, "err", "<div class='t'>网络错误</div><div class='mono'>" + esc(e.message || e) + "</div>");
+  }).finally(function(){
+    btn.disabled = false;
+    btn.textContent = "提交收录申请";
+  });
+});
+
+document.getElementById("btn-query").addEventListener("click", function(){
+  var id = document.getElementById("qid").value.trim();
+  var box = document.getElementById("query-result");
+  var evOut = document.getElementById("events-out");
+  evOut.style.display = "none";
+  if(!id){ showBox(box, "err", "<div class='t'>请先输入受理回执 id</div>"); return; }
+  showBox(box, "info", "<div class='t'>查询中…</div>");
+  fetch(API + "/" + encodeURIComponent(id)).then(function(res){
+    return res.text().then(function(txt){
+      var data = null;
+      try{ data = txt ? JSON.parse(txt) : null; }catch(e){}
+      if(res.ok){
+        var d = (data && data.submission) ? data.submission : (data || {});
+        var sla = pickSla(data) || pickSla(d);
+        var html = "<div class='t' style='color:var(--brand)'>查询结果</div><div class='kv'>";
+        html += "<div class='k'>id</div><div class='v'>" + esc(pickId(data) || id) + "</div>";
+        html += "<div class='k'>状态</div><div class='v'><span class='pill'>" + esc(d.status || data.status || "—") + "</span></div>";
+        if(d.lane) html += "<div class='k'>lane</div><div class='v'>" + esc(d.lane) + "</div>";
+        if(d.harness) html += "<div class='k'>harness</div><div class='v'>" + esc(d.harness) + "</div>";
+        if(sla){
+          html += "<div class='k'>SLA 截止</div><div class='v'>" + esc(sla) + "</div>";
+          html += "<div class='k'>SLA 剩余</div><div class='v'>" + esc(fmtRemain(sla)) + "</div>";
+        }
+        html += "</div><pre style='margin-top:10px'>" + esc(JSON.stringify(data, null, 2)) + "</pre>";
+        showBox(box, "ok", html);
+      } else if(res.status === 404){
+        var msg = (data && (typeof data.detail === "string" ? data.detail : data.message)) || "未找到该受理单,请核对回执 id。";
+        showBox(box, "err", "<div class='t'>404 · 未找到</div><div class='mono'>" + esc(msg) + "</div>");
+      } else if(res.status === 422){
+        render422(box, data || {detail: txt});
+      } else {
+        renderErr(box, res.status, data, txt);
+      }
+    });
+  }).catch(function(e){
+    showBox(box, "err", "<div class='t'>网络错误</div><div class='mono'>" + esc(e.message || e) + "</div>");
+  });
+});
+
+document.getElementById("btn-events").addEventListener("click", function(){
+  var id = document.getElementById("qid").value.trim();
+  var evOut = document.getElementById("events-out");
+  var box = document.getElementById("query-result");
+  if(!id){ showBox(box, "err", "<div class='t'>请先输入受理回执 id</div>"); return; }
+  evOut.style.display = "block";
+  evOut.textContent = "加载事件流…";
+  fetch(API + "/" + encodeURIComponent(id) + "/events").then(function(res){
+    return res.text().then(function(txt){
+      if(res.ok){
+        try{ evOut.textContent = JSON.stringify(JSON.parse(txt), null, 2); }
+        catch(e){ evOut.textContent = txt; }
+      } else if(res.status === 404){
+        evOut.textContent = "404 · 未找到该受理单的事件流\n" + txt;
+      } else {
+        evOut.textContent = "HTTP " + res.status + "\n" + txt;
+      }
+    });
+  }).catch(function(e){
+    evOut.textContent = "网络错误:" + (e.message || e);
+  });
+});
+</script>
+</body>
+</html>

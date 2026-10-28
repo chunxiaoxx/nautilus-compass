@@ -1,0 +1,71 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "7c99ebe23b931f27562d926814423cce85fd9766",
+  "reference_fix_commit": "0551bf53588ae87f462d336f24f853a156fefe3a",
+  "subject": "Fix `HelpFormatter.write_usage` producing spurious characters",
+  "test_files": [
+   "tests/test_formatting.py"
+  ],
+  "source_files": [
+   "src/click/formatting.py"
+  ],
+  "repo_path": "C:/Users/chunx/ext_mine"
+ },
+ "test_id": "tests/test_formatting.py::test_help_formatter_write_usage",
+ "source_rel": "src\\click\\formatting.py",
+ "provider": "t6pool-minimax_m3",
+ "provider_used": "t6pool-minimax_m3",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 3347,
+    "output_tokens": 615,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "ling separator tracks whether ``args`` is non-empty.\r\n        \"\"\"\r\n        f = click.HelpFormatter(**formatter_kwargs)\r\n        f.current_indent = current_indent\r\n        if prefix is None:\r\n            f.write_usage(prog, args)\r\n        else:\r\n            f.write_usage(prog, args, prefix=prefix)\r\n>       assert f.getvalue() == expected\r\nE       AssertionError: assert '\\n' == 'Usage: Program\\n'\r\nE         \r\nE         Strings contain only whitespace, escaping them using repr()\r\nE         - 'Usage: Program\\n'\r\nE         + '\\n'\r\n\r\ntests\\test_formatting.py:574: AssertionError\r\n____________ test_help_formatter_write_usage[empty-args-long-prog] ____________\r\n\r\nformatter_kwargs = {'width': 20}, current_indent = 0\r\nprog = 'VeryLongProgramName', args = '', prefix = None\r\nexpected = 'Usage: VeryLongProgramName\\n'\r\n\r\n    @pytest.mark.parametrize(\r\n        (\"formatter_kwargs\", \"current_indent\", \"prog\", \"args\", \"prefix\", \"expected\"),\r\n        [\r\n            # Issue #3360: the default prefix used to emit only\r\n            # a blank line because ``wrap_text(\"\", initial_indent=usage_prefix)``\r\n            # returned ``\"\"`` and discarded the prefix.\r\n            pytest.param(\r\n                {},\r\n                0,\r\n                \"Program\",\r\n                \"\",\r\n                None,\r\n                \"Usage: Program\\n\",\r\n                id=\"empty-args-default-prefix\",\r\n            ),\r\n            # A caller-supplied prefix is preserved verbatim.\r\n            pytest.param(\r\n                {},\r\n                0,\r\n                \"Program\",\r\n                \"\",\r\n                \"Run: \",\r\n                \"Run: Program\\n\",\r\n                id=\"empty-args-custom-prefix\",\r\n            ),\r\n            # ``current_indent`` is preserved even with no args to render.\r\n            pytest.param(\r\n                {},\r\n                4,\r\n                \"Program\",\r\n                \"\",\r\n                None,\r\n                \"Usage: Program\\n\",\r\n                id=\"empty-args-indented\",\r\n            ),\r\n            # Prog too long to share a line with args: the wrap branch must not\r\n            # emit a second line.\r\n            pytest.param(\r\n                {\"width\": 20},\r\n                0,\r\n                \"VeryLongProgramName\",\r\n                \"\",\r\n                None,\r\n                \"Usage: VeryLongProgramName\\n\",\r\n                id=\"empty-args-long-prog\",\r\n            ),\r\n            # With non-empty args, the separator space between prog and args is preserved.\r\n            pytest.param(\r\n                {},\r\n                0,\r\n                \"Program\",\r\n                \"[OPTIONS]\",\r\n                None,\r\n                \"Usage: Program [OPTIONS]\\n\",\r\n                id=\"with-args-default-prefix\",\r\n            ),\r\n        ],\r\n    )\r\n    def test_help_formatter_write_usage(\r\n        formatter_kwargs, current_indent, prog, args, prefix, expected\r\n    ):\r\n        \"\"\"``HelpFormatter.write_usage`` renders a single usage line whose\r\n        trailing separator tracks whether ``args`` is non-empty.\r\n        \"\"\"\r\n        f = click.HelpFormatter(**formatter_kwargs)\r\n        f.current_indent = current_indent\r\n        if prefix is None:\r\n            f.write_usage(prog, args)\r\n        else:\r\n            f.write_usage(prog, args, prefix=prefix)\r\n>       assert f.getvalue() == expected\r\nE       AssertionError: assert 'Usage: VeryL...ogramName\\n\\n' == 'Usage: VeryLongProgramName\\n'\r\nE         \r\nE           Usage: VeryLongProgramName\r\nE         +\r\n\r\ntests\\test_formatting.py:574: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_formatting.py::test_help_formatter_write_usage[empty-args-default-prefix]\r\nFAILED tests/test_formatting.py::test_help_formatter_write_usage[empty-args-custom-prefix]\r\nFAILED tests/test_formatting.py::test_help_formatter_write_usage[empty-args-indented]\r\nFAILED tests/test_formatting.py::test_help_formatter_write_usage[empty-args-long-prog]\r\n4 failed, 1 passed in 0.39s\r\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 4282,
+    "output_tokens": 436,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 134,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "er.write_usage`` renders a single usage line whose\r\n        trailing separator tracks whether ``args`` is non-empty.\r\n        \"\"\"\r\n        f = click.HelpFormatter(**formatter_kwargs)\r\n        f.current_indent = current_indent\r\n        if prefix is None:\r\n            f.write_usage(prog, args)\r\n        else:\r\n            f.write_usage(prog, args, prefix=prefix)\r\n>       assert f.getvalue() == expected\r\nE       AssertionError: assert 'Usage: Program\\n\\n' == 'Usage: Program\\n'\r\nE         \r\nE           Usage: Program\r\nE         +\r\n\r\ntests\\test_formatting.py:574: AssertionError\r\n____________ test_help_formatter_write_usage[empty-args-long-prog] ____________\r\n\r\nformatter_kwargs = {'width': 20}, current_indent = 0\r\nprog = 'VeryLongProgramName', args = '', prefix = None\r\nexpected = 'Usage: VeryLongProgramName\\n'\r\n\r\n    @pytest.mark.parametrize(\r\n        (\"formatter_kwargs\", \"current_indent\", \"prog\", \"args\", \"prefix\", \"expected\"),\r\n        [\r\n            # Issue #3360: the default prefix used to emit only\r\n            # a blank line because ``wrap_text(\"\", initial_indent=usage_prefix)``\r\n            # returned ``\"\"`` and discarded the prefix.\r\n            pytest.param(\r\n                {},\r\n                0,\r\n                \"Program\",\r\n                \"\",\r\n                None,\r\n                \"Usage: Program\\n\",\r\n                id=\"empty-args-default-prefix\",\r\n            ),\r\n            # A caller-supplied prefix is preserved verbatim.\r\n            pytest.param(\r\n                {},\r\n                0,\r\n                \"Program\",\r\n                \"\",\r\n                \"Run: \",\r\n                \"Run: Program\\n\",\r\n                id=\"empty-args-custom-prefix\",\r\n            ),\r\n            # ``current_indent`` is preserved even with no args to render.\r\n            pytest.param(\r\n                {},\r\n                4,\r\n                \"Program\",\r\n                \"\",\r\n                None,\r\n                \"Usage: Program\\n\",\r\n                id=\"empty-args-indented\",\r\n            ),\r\n            # Prog too long to share a line with args: the wrap branch must not\r\n            # emit a second line.\r\n            pytest.param(\r\n                {\"width\": 20},\r\n                0,\r\n                \"VeryLongProgramName\",\r\n                \"\",\r\n                None,\r\n                \"Usage: VeryLongProgramName\\n\",\r\n                id=\"empty-args-long-prog\",\r\n            ),\r\n            # With non-empty args, the separator space between prog and args is preserved.\r\n            pytest.param(\r\n                {},\r\n                0,\r\n                \"Program\",\r\n                \"[OPTIONS]\",\r\n                None,\r\n                \"Usage: Program [OPTIONS]\\n\",\r\n                id=\"with-args-default-prefix\",\r\n            ),\r\n        ],\r\n    )\r\n    def test_help_formatter_write_usage(\r\n        formatter_kwargs, current_indent, prog, args, prefix, expected\r\n    ):\r\n        \"\"\"``HelpFormatter.write_usage`` renders a single usage line whose\r\n        trailing separator tracks whether ``args`` is non-empty.\r\n        \"\"\"\r\n        f = click.HelpFormatter(**formatter_kwargs)\r\n        f.current_indent = current_indent\r\n        if prefix is None:\r\n            f.write_usage(prog, args)\r\n        else:\r\n            f.write_usage(prog, args, prefix=prefix)\r\n>       assert f.getvalue() == expected\r\nE       AssertionError: assert 'Usage: VeryL...ogramName\\n\\n' == 'Usage: VeryLongProgramName\\n'\r\nE         \r\nE           Usage: VeryLongProgramName\r\nE         +\r\n\r\ntests\\test_formatting.py:574: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_formatting.py::test_help_formatter_write_usage[empty-args-default-prefix]\r\nFAILED tests/test_formatting.py::test_help_formatter_write_usage[empty-args-custom-prefix]\r\nFAILED tests/test_formatting.py::test_help_formatter_write_usage[empty-args-indented]\r\nFAILED tests/test_formatting.py::test_help_formatter_write_usage[empty-args-long-prog]\r\n4 failed, 1 passed in 0.42s\r\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 4284,
+    "output_tokens": 652,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_epb_f24p/repo/_g2b1.patch:9\n\n[attempt2 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_epb_f24p/repo/_g2b1.patch:9\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 36.4
+}

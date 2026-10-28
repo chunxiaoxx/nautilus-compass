@@ -1,0 +1,4 @@
+input_format: "JSON with {name, capacity, ops: [(kind, ...)...]}"
+output_format: "JSON with {misses: int, miss_rate: float}"
+problem_type: "Cache eviction policy"
+reference_algorithm: "ARC (Adaptive Replacement Cache) — simplified, T1/T2/B1/B2 lists with adaptive p"

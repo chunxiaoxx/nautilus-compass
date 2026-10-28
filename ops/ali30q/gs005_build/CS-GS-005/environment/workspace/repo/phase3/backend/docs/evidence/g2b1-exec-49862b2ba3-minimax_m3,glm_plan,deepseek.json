@@ -1,0 +1,30 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "582d42f70ca1a11281fa6078ccc9346caa5f4484",
+  "reference_fix_commit": "49862b2ba3d455dc759a24436e238cc34658d82d",
+  "subject": "fix(genopt): SFT buffer records include agent_id (anchor #1 attribution)",
+  "test_files": [
+   "tests/test_genopt_buffer.py"
+  ],
+  "source_files": [
+   "fde_capsule/genopt/_buffer.py",
+   "fde_capsule/genopt/driver.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_genopt_buffer.py::test_append_round_includes_agent_id_when_provided",
+ "source_rel": "fde_capsule/genopt/_buffer.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

@@ -1,0 +1,34 @@
+schema_version = "1.3"
+artifacts = ["/logs/artifacts"]
+
+[task]
+name = "guoshu/codesense-cs-p602"
+description = "webhook分发安全(白名单/HMAC签名/幂等去重/重试上限四坑)"
+authors = [{ name = "nius" }]
+keywords = ["python", "webhook", "security", "hmac", "idempotent"]
+
+[metadata]
+domain = "backend"
+task_type = "bug-fix"
+language = "python"
+difficulty = "medium"
+knowledge_path = "计算产品/软件开发/后端服务/接口安全与分发"
+knowledge_l0 = "计算产品"
+knowledge_l1 = "软件开发"
+knowledge_l2 = "后端服务"
+knowledge_l3 = "接口安全与分发"
+tags = ["软件开发", "后端服务", "webhook", "安全", "HMAC", "幂等"]
+
+[verifier]
+timeout_sec = 1800.0
+
+[agent]
+timeout_sec = 7200.0
+
+[environment]
+network_mode = "no-network"
+build_timeout_sec = 600.0
+os = "linux"
+cpus = 2
+memory = "4g"
+storage = "10g"

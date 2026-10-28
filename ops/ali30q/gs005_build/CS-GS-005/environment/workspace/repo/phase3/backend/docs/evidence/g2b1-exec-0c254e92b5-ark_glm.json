@@ -1,0 +1,66 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "590a88f36b104a99f21d45316531f7b76ce57a60",
+  "reference_fix_commit": "0c254e92b50c0fe8c42e0314fd027c35c9fbbfd2",
+  "subject": "fix(platform): align R1a ephemeral signer v3 bindings",
+  "test_files": [
+   "phase3/backend/tests/platform_protocol/test_m1_r1a_ephemeral_key_admission.py",
+   "phase3/backend/tests/platform_protocol/test_m1_r1a_ephemeral_key_service.py"
+  ],
+  "source_files": [
+   "phase3/backend/platform_protocol/m1_r1a_ephemeral_key_admission.py",
+   "phase3/backend/platform_protocol/m1_r1a_routing.py"
+  ]
+ },
+ "test_id": "tests/platform_protocol/test_m1_r1a_ephemeral_key_admission.py::test_platform_challenge_and_live_announcement_produce_frozen_admission",
+ "source_rel": "platform_protocol\\m1_r1a_ephemeral_key_admission.py",
+ "provider": "ark_glm",
+ "test_passed": true,
+ "budget_exceeded": false,
+ "total_tokens": 20071,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "completion_tokens": 279,
+    "prompt_tokens": 2973,
+    "total_tokens": 3252,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 78
+    }
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec__kn1uhao\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 1 item\r\n\r\ntests/platform_protocol/test_m1_r1a_ephemeral_key_admission.py::test_platform_challenge_and_live_announcement_produce_frozen_admission FAILED [100%]\r\n\r\n================================== FAILURES ===================================\r\n___ test_platform_challenge_and_live_announcement_produce_frozen_admission ____\r\ntests\\platform_protocol\\test_m1_r1a_ephemeral_key_admission.py:89: in test_platform_challenge_and_live_announcement_produce_frozen_admission\r\n    assert EPHEMERAL_EXECUTOR_RELEASE == \"rel_r1a_ephemeral_v3\"\r\nE   AssertionError: assert 'rel_r1a_ephemeral_v2' == 'rel_r1a_ephemeral_v3'\r\nE     \r\nE     - rel_r1a_ephemeral_v3\r\nE     ?                    ^\r\nE     + rel_r1a_ephemeral_v2\r\nE     ?                    ^\r\n=========================== short test summary info ===========================\r\nFAILED tests/platform_protocol/test_m1_r1a_ephemeral_key_admission.py::test_platform_challenge_and_live_announcement_produce_frozen_admission\r\n============================== 1 failed in 0.25s ==============================\r\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "completion_tokens": 13420,
+    "prompt_tokens": 3399,
+    "total_tokens": 16819,
+    "prompt_tokens_details": {
+     "cached_tokens": 2048
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 12994
+    }
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "bump_announcement_and_executor_constants_to_v3",
+ "duration_s": 240.7,
+ "replayed": true,
+ "verdict_post_status": 200
+}

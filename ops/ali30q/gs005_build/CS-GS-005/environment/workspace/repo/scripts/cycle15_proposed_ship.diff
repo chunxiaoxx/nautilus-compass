@@ -1,0 +1,60 @@
+--- a/phase3/backend/engine/ship.py
++++ b/phase3/backend/engine/ship.py
+@@ -19,4 +19,5 @@
+ 
+ import json
++import re
+ import shutil
+ import subprocess
+@@ -79,4 +80,5 @@
+     """
+     base = Path(base_dir).resolve()
++    task = _inject_file_context(task, base)
+     attempts: list[dict] = []  # private records · include _blocks for retry/apply
+     last_blocks: list[dict] = []
+@@ -252,4 +254,40 @@
+         out.append(asdict(check_semantic_preservation(str(original), str(staged))))
+     return out
++
++
++def _inject_file_context(
++    task: str, base_dir: Path, max_chars_per_file: int = 8000
++) -> str:
++    """Read every file mentioned in `task` that exists under base_dir and
++    prepend its content to the prompt as a CONTEXT block. Returns the task
++    unchanged when no matches resolve.
++
++    Karpathy Fix 1 · gives the LLM ground truth so MINIMAL CHANGE MODE
++    (cycle 12 P0) has real lines to preserve.
++    """
++    pattern = re.compile(r"[\w/\-_.\\]+\.(?:py|js|ts|tsx|md|sql|yaml|yml|json|sh|go|rs)\b")
++    found = sorted(set(pattern.findall(task)))
++    blocks: list[str] = []
++    for rel in found:
++        target = (base_dir / rel).resolve()
++        try:
++            target.relative_to(base_dir)
++        except ValueError:
++            continue
++        if not target.is_file():
++            continue
++        try:
++            content = target.read_text(encoding="utf-8", errors="ignore")
++        except OSError:
++            continue
++        if len(content) > max_chars_per_file:
++            continue
++        blocks.append(
++            f"CONTEXT for {rel} (preserve unless task explicitly says otherwise):\n"
++            f"```\n{content}\n```\n"
++        )
++    if not blocks:
++        return task
++    return "\n".join(blocks) + "\n" + task
+ 
+ 
+@@ -417,3 +455,3 @@
+         return {"error": f"HTTP {e.code}", "skipped": False}
+     except Exception as e:
+-        return {"error": f"{type(e).__name__}: {str(e)[:200]}", "skipped": False}
++        return {"error": f"{type(e).__name__}: {str(e)[:200]}", "skipped": False}

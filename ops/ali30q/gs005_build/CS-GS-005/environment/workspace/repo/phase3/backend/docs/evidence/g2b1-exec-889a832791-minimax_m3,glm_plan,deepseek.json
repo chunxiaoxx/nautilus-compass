@@ -1,0 +1,43 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "45b2f9932b846037d8bf95a317a7e19d59f4060b",
+  "reference_fix_commit": "889a832791e97159d10f0adbc0e19f0734ec1565",
+  "subject": "fix(p1.3b): soul-scorer \u6392\u9664 SWE \u71c3\u6599 (\u4fee 6/20 requests-2148 facade\u00b7soul checklist \u8bef\u5224 SWE patch)",
+  "test_files": [
+   "phase3/backend/tests/test_fde_scorer_poll.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/fde_scorer_poll.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/test_fde_scorer_poll.py::test_is_deterministic_kind_true_for_swe_fuel",
+ "source_rel": "services\\fde_scorer_poll.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": true,
+ "winning_diff": "--- a/services/fde_scorer_poll.py\n+++ b/services/fde_scorer_poll.py\n@@ -10,7 +10,7 @@ import json\n from typing import Callable, Iterable, Protocol\n \n # \u7b2c3\u7c7b\u786e\u5b9a\u6027 verifier \u9898\u7684 kind \u6807\u8bb0 = compass/bench_eval \u7684 turf(\u975e soul checklist)\u3002\n-_DETERMINISTIC_KINDS = frozenset({\"code-fix-with-deterministic-verifier\"})\n+_DETERMINISTIC_KINDS = frozenset({\"code-fix-with-deterministic-verifier\", \"swe-rsi-fuel\"})\n \n \n def is_deterministic_kind(task: dict) -> bool:\n",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "input_tokens": 1811,
+    "output_tokens": 194,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "fde_scorer_poll_deterministic_kind_set",
+ "duration_s": 6.6,
+ "verdict_post_status": 200
+}

@@ -1,0 +1,270 @@
+{
+  "total": 26,
+  "single_correct": 17,
+  "consensus_correct": 14,
+  "single_accuracy": 0.6538461538461539,
+  "consensus_accuracy": 0.5384615384615384,
+  "delta": -0.11538461538461542,
+  "per_item": [
+    {
+      "id": 1,
+      "ground_truth": "buggy",
+      "single_pred": null,
+      "single_ok": false,
+      "consensus_pred": null,
+      "consensus_ok": false,
+      "algorithm": "devign",
+      "single_raw_tail": "are returned\\n\\nWith key=\"\" and IGNORE_SUFFIX (no MATCH_CASE):\\n- First check skipped\\n- Second check', type='thinking')"
+    },
+    {
+      "id": 2,
+      "ground_truth": "buggy",
+      "single_pred": "clean",
+      "single_ok": false,
+      "consensus_pred": "clean",
+      "consensus_ok": false,
+      "algorithm": "devign",
+      "single_raw_tail": "he logic flow is sound: validate input, call the platform-specific initialization, propagate the result.\n\nVERDICT: clean"
+    },
+    {
+      "id": 3,
+      "ground_truth": "buggy",
+      "single_pred": "buggy",
+      "single_ok": true,
+      "consensus_pred": "clean",
+      "consensus_ok": false,
+      "algorithm": "devign",
+      "single_raw_tail": "lk = 0; blk < s->num_blocks; blk++) {\n```\n\nThe given code uses `AC3_MAX_BLOCKS` instead, which is a bug.\n\nVERDICT: buggy"
+    },
+    {
+      "id": 4,
+      "ground_truth": "buggy",
+      "single_pred": "clean",
+      "single_ok": false,
+      "consensus_pred": "clean",
+      "consensus_ok": false,
+      "algorithm": "devign",
+      "single_raw_tail": " to maintain consistency\n\nThe aggressive TLB flush is intentional and acknowledged in the code comments.\n\nVERDICT: clean"
+    },
+    {
+      "id": 5,
+      "ground_truth": "buggy",
+      "single_pred": "clean",
+      "single_ok": false,
+      "consensus_pred": "clean",
+      "consensus_ok": false,
+      "algorithm": "devign",
+      "single_raw_tail": " the actual FFmpeg `libavutil/hwcontext_d3d11va.c` implementation, which has been working in production.\n\nVERDICT: clean"
+    },
+    {
+      "id": 6,
+      "ground_truth": "buggy",
+      "single_pred": "clean",
+      "single_ok": false,
+      "consensus_pred": "clean",
+      "consensus_ok": false,
+      "algorithm": "devign",
+      "single_raw_tail": "ars to be a standard, correct dispatcher between the two implementations based on runtime configuration.\n\nVERDICT: clean"
+    },
+    {
+      "id": 7,
+      "ground_truth": "buggy",
+      "single_pred": "buggy",
+      "single_ok": true,
+      "consensus_pred": "clean",
+      "consensus_ok": false,
+      "algorithm": "devign",
+      "single_raw_tail": "s is a real bug because:\n- Error handling is missing\n- Potential memory leak if `ff_insert_outpad` fails\n\nVERDICT: buggy"
+    },
+    {
+      "id": 8,
+      "ground_truth": "buggy",
+      "single_pred": "clean",
+      "single_ok": false,
+      "consensus_pred": "buggy",
+      "consensus_ok": true,
+      "algorithm": "devign",
+      "single_raw_tail": "eg pattern for allocating option-aware contexts, and matches the canonical implementation in libswscale.\n\nVERDICT: clean"
+    },
+    {
+      "id": 9,
+      "ground_truth": "buggy",
+      "single_pred": "buggy",
+      "single_ok": true,
+      "consensus_pred": "clean",
+      "consensus_ok": false,
+      "algorithm": "devign",
+      "single_raw_tail": "h means it will silently fail to set the iostatus error for those action types — a clear behavioral bug.\n\nVERDICT: buggy"
+    },
+    {
+      "id": 10,
+      "ground_truth": "buggy",
+      "single_pred": "buggy",
+      "single_ok": true,
+      "consensus_pred": "clean",
+      "consensus_ok": false,
+      "algorithm": "devign",
+      "single_raw_tail": "ail-fast on errors and leaves the out-parameter in an undefined state when the property retrieval fails.\n\nVERDICT: buggy"
+    },
+    {
+      "id": 11,
+      "ground_truth": "buggy",
+      "single_pred": "buggy",
+      "single_ok": true,
+      "consensus_pred": "buggy",
+      "consensus_ok": true,
+      "algorithm": "devign",
+      "single_raw_tail": "en the file size could not be set correctly. Additionally, the sector rounding silently loses precision.\n\nVERDICT: buggy"
+    },
+    {
+      "id": 12,
+      "ground_truth": "buggy",
+      "single_pred": null,
+      "single_ok": false,
+      "consensus_pred": "clean",
+      "consensus_ok": false,
+      "algorithm": "devign",
+      "single_raw_tail": " RGB = (129, 128, 127), summed over 2 pixels (R1+R2 = 258, G1+G2 = 256, B1+B2 = 254):\\nraw_U = U_R * ', type='thinking')"
+    },
+    {
+      "id": 13,
+      "ground_truth": "buggy",
+      "single_pred": "clean",
+      "single_ok": false,
+      "consensus_pred": "clean",
+      "consensus_ok": false,
+      "algorithm": "devign",
+      "single_raw_tail": "ate is validated. The pattern of assert + explicit check is a deliberate defensive style in FFmpeg code.\n\nVERDICT: clean"
+    },
+    {
+      "id": 14,
+      "ground_truth": "clean",
+      "single_pred": "clean",
+      "single_ok": true,
+      "consensus_pred": "clean",
+      "consensus_ok": true,
+      "algorithm": "devign",
+      "single_raw_tail": "ference counting with proper synchronization, and the cleanup ordering avoids any use-after-free issues.\n\nVERDICT: clean"
+    },
+    {
+      "id": 15,
+      "ground_truth": "clean",
+      "single_pred": "clean",
+      "single_ok": true,
+      "consensus_pred": "clean",
+      "consensus_ok": true,
+      "algorithm": "devign",
+      "single_raw_tail": " function correctly implements writing host data to an OpenCL buffer following standard OpenCL patterns.\n\nVERDICT: clean"
+    },
+    {
+      "id": 16,
+      "ground_truth": "clean",
+      "single_pred": "clean",
+      "single_ok": true,
+      "consensus_pred": "clean",
+      "consensus_ok": true,
+      "algorithm": "devign",
+      "single_raw_tail": " as its starting accounting value.\n\nAll fields are initialized, and no obvious logic errors are present.\n\nVERDICT: clean"
+    },
+    {
+      "id": 17,
+      "ground_truth": "clean",
+      "single_pred": "buggy",
+      "single_ok": false,
+      "consensus_pred": "buggy",
+      "consensus_ok": false,
+      "algorithm": "devign",
+      "single_raw_tail": "il;\n}\n```\n\nThis is a clear missing error-handling bug that would cause a crash in low-memory situations.\n\nVERDICT: buggy"
+    },
+    {
+      "id": 18,
+      "ground_truth": "clean",
+      "single_pred": "clean",
+      "single_ok": true,
+      "consensus_pred": "clean",
+      "consensus_ok": true,
+      "algorithm": "devign",
+      "single_raw_tail": "support.\n\nThe function follows FFmpeg conventions correctly and handles all the expected cases properly.\n\nVERDICT: clean"
+    },
+    {
+      "id": 19,
+      "ground_truth": "clean",
+      "single_pred": "clean",
+      "single_ok": true,
+      "consensus_pred": "clean",
+      "consensus_ok": true,
+      "algorithm": "devign",
+      "single_raw_tail": "ose. The `s->frame.data[0] = NULL` is defensive but harmless given the zero-initialization of priv_data.\n\nVERDICT: clean"
+    },
+    {
+      "id": 20,
+      "ground_truth": "clean",
+      "single_pred": "clean",
+      "single_ok": true,
+      "consensus_pred": "clean",
+      "consensus_ok": true,
+      "algorithm": "devign",
+      "single_raw_tail": "vices. All three cases (CD-ROM, ATA with media, ATA without media) produce the correct signature values.\n\nVERDICT: clean"
+    },
+    {
+      "id": 21,
+      "ground_truth": "clean",
+      "single_pred": "clean",
+      "single_ok": true,
+      "consensus_pred": "clean",
+      "consensus_ok": true,
+      "algorithm": "devign",
+      "single_raw_tail": " for proper struct initialization\n\nThis matches the typical QEMU coding style for this kind of function.\n\nVERDICT: clean"
+    },
+    {
+      "id": 22,
+      "ground_truth": "clean",
+      "single_pred": "clean",
+      "single_ok": true,
+      "consensus_pred": "clean",
+      "consensus_ok": true,
+      "algorithm": "devign",
+      "single_raw_tail": "\n\nThe test appears to be a straightforward validation test of nested struct parsing with proper cleanup.\n\nVERDICT: clean"
+    },
+    {
+      "id": 23,
+      "ground_truth": "clean",
+      "single_pred": "clean",
+      "single_ok": true,
+      "consensus_pred": "clean",
+      "consensus_ok": true,
+      "algorithm": "devign",
+      "single_raw_tail": "e minimal cleanup needed for the 9pfs device common state, matching the QEMU source code implementation.\n\nVERDICT: clean"
+    },
+    {
+      "id": 24,
+      "ground_truth": "clean",
+      "single_pred": "clean",
+      "single_ok": true,
+      "consensus_pred": "clean",
+      "consensus_ok": true,
+      "algorithm": "devign",
+      "single_raw_tail": "ty helper used throughout QEMU's VMState infrastructure (e.g., in xics, spapr, and other device models).\n\nVERDICT: clean"
+    },
+    {
+      "id": 25,
+      "ground_truth": "clean",
+      "single_pred": "clean",
+      "single_ok": true,
+      "consensus_pred": "clean",
+      "consensus_ok": true,
+      "algorithm": "devign",
+      "single_raw_tail": "tly handles all paths (non-hotpluggable, error, cold-plug, hot-plug) without any obvious logical issues.\n\nVERDICT: clean"
+    },
+    {
+      "id": 26,
+      "ground_truth": "clean",
+      "single_pred": "clean",
+      "single_ok": true,
+      "consensus_pred": "clean",
+      "consensus_ok": true,
+      "algorithm": "devign",
+      "single_raw_tail": "d, notify the data consumer, then wake up the USB device. All nullability concerns are properly handled.\n\nVERDICT: clean"
+    }
+  ]
+}

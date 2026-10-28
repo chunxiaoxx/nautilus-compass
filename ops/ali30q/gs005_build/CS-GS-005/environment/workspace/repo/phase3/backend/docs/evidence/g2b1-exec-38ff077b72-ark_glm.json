@@ -1,0 +1,66 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "c74346212a7605a516ab78b1488b3208d48229f6",
+  "reference_fix_commit": "38ff077b72a101bb263cb355f851e8c86e9b6496",
+  "subject": "fix(config): default LLM \u2192 MiniMax-M3 (DeepSeek \u6b20\u8d39 \u00b7 \u5bf9\u9f50 cloud .env \u00b7 \u9632 footgun) + test",
+  "test_files": [
+   "tests/test_deepseek_provider.py"
+  ],
+  "source_files": [
+   "nautilus_v5/runtime/config.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_deepseek_provider.py::test_config_defaults_minimax_m3_primary",
+ "source_rel": "nautilus_v5\\runtime\\config.py",
+ "provider": "ark_glm",
+ "test_passed": true,
+ "winning_diff": "--- a/nautilus_v5/runtime/config.py\n+++ b/nautilus_v5/runtime/config.py\n@@ -48,4 +48,4 @@\n     # env override: V5_LLM_PROVIDER / V5_LLM_MODEL (\u6362 LLM \u7eaf env \u4e0d\u52a8\u4ee3\u7801)\n-    primary_provider: str = \"deepseek-anthropic\"\n-    primary_model: str = \"deepseek-v4-pro\"\n+    primary_provider: str = \"minimax-anthropic\"\n+    primary_model: str = \"MiniMax-M3\"\n     # witness \u6682\u7559 MiniMax (\u7701\u6210\u672c \u00b7 \u53ea\u6362\u4e3b\u8ba4\u77e5)\n",
+ "budget_exceeded": false,
+ "total_tokens": 15933,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "completion_tokens": 684,
+    "prompt_tokens": 2443,
+    "total_tokens": 3127,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 426
+    }
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: nautilus_v5/runtime/config.py:57\nerror: nautilus_v5/runtime/config.py: patch does not apply\n\n[attempt2 backend] error: patch failed: nautilus_v5/runtime/config.py:57\nerror: nautilus_v5/runtime/config.py: patch does not apply\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "completion_tokens": 10252,
+    "prompt_tokens": 2554,
+    "total_tokens": 12806,
+    "prompt_tokens_details": {
+     "cached_tokens": 2368
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 10066
+    }
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "revert_primary_to_minimax_m3",
+ "duration_s": 131.1,
+ "replayed": true,
+ "verdict_post_status": 200
+}

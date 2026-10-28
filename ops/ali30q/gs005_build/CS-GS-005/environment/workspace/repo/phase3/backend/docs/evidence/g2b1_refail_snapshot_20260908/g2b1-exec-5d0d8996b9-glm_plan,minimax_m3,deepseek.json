@@ -1,0 +1,71 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "c54023338285df293b59a6aa81dd2422039f420e",
+  "reference_fix_commit": "5d0d8996b9b2a7457fa565c883d501e277d1ddb4",
+  "subject": "fix(platform): bind G2-A0 v2 budget evidence",
+  "test_files": [
+   "phase3/backend/tests/platform_protocol/test_g2_a0_model_gate_v2_fail_closed.py"
+  ],
+  "source_files": [
+   "phase3/backend/tests/platform_protocol/g2_a0_model_gate_v2_cli.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/platform_protocol/test_g2_a0_model_gate_v2_fail_closed.py::test_v2_evidence_rejects_admitted_cost_over_cny_10",
+ "source_rel": "tests\\platform_protocol\\g2_a0_model_gate_v2_cli.py",
+ "provider": "glm_plan,minimax_m3,deepseek",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 5287,
+    "output_tokens": 266,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 root] error: phase3/backend/phase3/backend/tests/platform_protocol/g2_a0_model_gate_v2_cli.py: No such file or directory\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 5361,
+    "output_tokens": 265,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 root] error: phase3/backend/phase3/backend/tests/platform_protocol/g2_a0_model_gate_v2_cli.py: No such file or directory\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 1,
+    "output_tokens": 292,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 5488,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 root] error: phase3/backend/phase3/backend/tests/platform_protocol/g2_a0_model_gate_v2_cli.py: No such file or directory\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 76.4,
+ "verdict_post_status": 200
+}

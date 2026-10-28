@@ -1,0 +1,29 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "adb76ddf182e74e13aacd10b1b147da072a356f3",
+  "reference_fix_commit": "7eed69f1f35f89690d94b609e0882bb9667901ad",
+  "subject": "fix(genopt): re-baseline 5 Rejected tasks + re-ship",
+  "test_files": [
+   "tests/test_loofold_select.py"
+  ],
+  "source_files": [
+   "fde_capsule/genopt/tasks/ComputingAndQuantumInformation/ContainerOps/real_trajectory_publish_0001/verification/evaluate.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_loofold_select.py::test_baseline_runs_and_produces_valid_zero",
+ "source_rel": "fde_capsule\\genopt\\tasks\\ComputingAndQuantumInformation\\ContainerOps\\real_trajectory_publish_0001\\verification\\evaluate.py",
+ "provider": "glm_plan,minimax_m3,deepseek",
+ "test_passed": false,
+ "skipped_reason": "fixture_broken_red",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 1.6,
+ "replayed": true,
+ "verdict_post_status": 200
+}

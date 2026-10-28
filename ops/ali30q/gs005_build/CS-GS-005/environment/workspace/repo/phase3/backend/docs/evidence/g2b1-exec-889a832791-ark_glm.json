@@ -1,0 +1,28 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "45b2f9932b846037d8bf95a317a7e19d59f4060b",
+  "reference_fix_commit": "889a832791e97159d10f0adbc0e19f0734ec1565",
+  "subject": "fix(p1.3b): soul-scorer \u6392\u9664 SWE \u71c3\u6599 (\u4fee 6/20 requests-2148 facade\u00b7soul checklist \u8bef\u5224 SWE patch)",
+  "test_files": [
+   "phase3/backend/tests/test_fde_scorer_poll.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/fde_scorer_poll.py"
+  ]
+ },
+ "test_id": "phase3/backend/tests/test_fde_scorer_poll.py::test_is_deterministic_kind_true_for_swe_fuel",
+ "source_rel": "phase3/backend/services/fde_scorer_poll.py",
+ "provider": "ark_glm",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

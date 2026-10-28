@@ -1,0 +1,71 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "7fd02bd154491a4405b36dd42351ace9ce09c1a2",
+  "reference_fix_commit": "e49e8ade7849c198fa24199010d9d94aa4385928",
+  "subject": "fix(fde): fail closed on wiki evidence errors",
+  "test_files": [
+   "tests/test_feishu_wiki_evidence.py"
+  ],
+  "source_files": [
+   "tools/fde_feishu_wiki_evidence.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-fde-phase3"
+ },
+ "test_id": "tests/test_feishu_wiki_evidence.py::test_probe_maps_feishu_stable_error_codes",
+ "source_rel": "tools\\fde_feishu_wiki_evidence.py",
+ "provider": "glm_plan,minimax_m3,deepseek",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 5712,
+    "output_tokens": 390,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: tools/fde_feishu_wiki_evidence.py:22\nerror: tools/fde_feishu_wiki_evidence.py: patch does not apply\n\n[attempt2 backend] error: patch failed: tools/fde_feishu_wiki_evidence.py:22\nerror: tools/fde_feishu_wiki_evidence.py: patch does not apply\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 5817,
+    "output_tokens": 414,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 149,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "F.                                                                       [100%]\r\n================================== FAILURES ===================================\r\n____ test_probe_maps_feishu_stable_error_codes[400-99991400-RATE_LIMITED] _____\r\n\r\nstatus = 400, code = 99991400, expected_error = 'RATE_LIMITED'\r\n\r\n    @pytest.mark.parametrize(\r\n        (\"status\", \"code\", \"expected_error\"),\r\n        [\r\n            (400, 99991400, \"RATE_LIMITED\"),\r\n            (400, 131006, \"RESOURCE_ACCESS_DENIED\"),\r\n        ],\r\n    )\r\n    def test_probe_maps_feishu_stable_error_codes(status, code, expected_error):\r\n        def denied_transport(method, url, headers=None, body=None):\r\n            return response(status, {\"code\": code})\r\n    \r\n        with pytest.raises(EvidenceError, match=expected_error):\r\n>           probe(WIKI_URL, credential_provider=credentials, transport=denied_transport)\r\n\r\ntests\\test_feishu_wiki_evidence.py:147: \r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\r\ntools\\fde_feishu_wiki_evidence.py:237: in probe\r\n    _, document_id, title, revision_id = _resolve_docx(\r\ntools\\fde_feishu_wiki_evidence.py:209: in _resolve_docx\r\n    access_token = _tenant_access_token(credential_provider, transport)\r\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\ntools\\fde_feishu_wiki_evidence.py:167: in _tenant_access_token\r\n    payload = _request_json(\r\ntools\\fde_feishu_wiki_evidence.py:154: in _request_json\r\n    _raise_for_api_failure(response)\r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\r\n\r\nresponse = ApiResponse(status=400, payload={'code': 99991400})\r\n\r\n    def _raise_for_api_failure(response: ApiResponse) -> None:\r\n        payload = _require_mapping(response.payload)\r\n        code = payload.get(\"code\")\r\n        if response.status < 400 and code == 0:\r\n            return\r\n        if code in IP_ALLOWLIST_CODES:\r\n>           raise EvidenceError(\"IP_ALLOWLIST_DENIED\")\r\nE           tools.fde_feishu_wiki_evidence.EvidenceError: IP_ALLOWLIST_DENIED\r\n\r\ntools\\fde_feishu_wiki_evidence.py:131: EvidenceError\r\n\r\nDuring handling of the above exception, another exception occurred:\r\n\r\nstatus = 400, code = 99991400, expected_error = 'RATE_LIMITED'\r\n\r\n    @pytest.mark.parametrize(\r\n        (\"status\", \"code\", \"expected_error\"),\r\n        [\r\n            (400, 99991400, \"RATE_LIMITED\"),\r\n            (400, 131006, \"RESOURCE_ACCESS_DENIED\"),\r\n        ],\r\n    )\r\n    def test_probe_maps_feishu_stable_error_codes(status, code, expected_error):\r\n        def denied_transport(method, url, headers=None, body=None):\r\n            return response(status, {\"code\": code})\r\n    \r\n>       with pytest.raises(EvidenceError, match=expected_error):\r\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nE       AssertionError: Regex pattern did not match.\r\nE         Expected regex: 'RATE_LIMITED'\r\nE         Actual message: 'IP_ALLOWLIST_DENIED'\r\n\r\ntests\\test_feishu_wiki_evidence.py:146: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_feishu_wiki_evidence.py::test_probe_maps_feishu_stable_error_codes[400-99991400-RATE_LIMITED]\r\n1 failed, 1 passed in 0.22s\r\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 6473,
+    "output_tokens": 392,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 252,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: tools/fde_feishu_wiki_evidence.py:22\nerror: tools/fde_feishu_wiki_evidence.py: patch does not apply\n\n[attempt2 backend] error: patch failed: tools/fde_feishu_wiki_evidence.py:22\nerror: tools/fde_feishu_wiki_evidence.py: patch does not apply\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 78.6,
+ "verdict_post_status": 200
+}

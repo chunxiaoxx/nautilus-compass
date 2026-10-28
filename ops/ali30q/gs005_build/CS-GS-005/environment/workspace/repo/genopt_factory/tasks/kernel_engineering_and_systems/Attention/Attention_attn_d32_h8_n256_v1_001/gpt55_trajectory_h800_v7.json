@@ -1,0 +1,188 @@
+{
+  "task_id": "attention_flash_v1_001",
+  "seed_score": 0.1368,
+  "seed_valid": 1,
+  "best_score": 23.0621,
+  "gap_closed": 0.2293,
+  "difficulty_bucket": "Hard",
+  "n": 3,
+  "model": "gpt-5.5",
+  "rounds": [
+    {
+      "round": 0,
+      "metrics": {
+        "combined_score": 0.1368,
+        "valid": 1,
+        "per_instance": [
+          {
+            "instance": "n1024_d64_b1_h2",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.5471,
+            "elapsed_s": 29.7557,
+            "t_naive": 29.9194
+          },
+          {
+            "instance": "n128_d64_b2_h8",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "elapsed_s": 3.7648,
+            "t_naive": 3.7406
+          },
+          {
+            "instance": "n256_d64_b2_h4",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "elapsed_s": 7.5477,
+            "t_naive": 7.4809
+          },
+          {
+            "instance": "n512_d64_b1_h4",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "elapsed_s": 15.0924,
+            "t_naive": 14.9867
+          }
+        ],
+        "stdout": "   \"elapsed_s\": 7.5477,\n   \"t_naive\": 7.4809\n  },\n  {\n   \"instance\": \"n512_d64_b1_h4\",\n   \"feasible\": true,\n   \"reason\": \"ok\",\n   \"score\": 0.0,\n   \"elapsed_s\": 15.0924,\n   \"t_naive\": 14.9867\n  }\n ]\n}\n"
+      },
+      "elapsed": 0
+    },
+    {
+      "round": 1,
+      "elapsed": 222.7,
+      "metrics": {
+        "combined_score": 18.5084,
+        "valid": 1,
+        "per_instance": [
+          {
+            "instance": "n1024_d64_b1_h2",
+            "feasible": true,
+            "reason": "ok",
+            "score": 18.9394,
+            "elapsed_s": 24.3652,
+            "t_naive": 30.058
+          },
+          {
+            "instance": "n128_d64_b2_h8",
+            "feasible": true,
+            "reason": "ok",
+            "score": 18.8882,
+            "elapsed_s": 3.0438,
+            "t_naive": 3.7526
+          },
+          {
+            "instance": "n256_d64_b2_h4",
+            "feasible": true,
+            "reason": "ok",
+            "score": 18.71,
+            "elapsed_s": 6.077,
+            "t_naive": 7.4757
+          },
+          {
+            "instance": "n512_d64_b1_h4",
+            "feasible": true,
+            "reason": "ok",
+            "score": 17.4959,
+            "elapsed_s": 12.4158,
+            "t_naive": 15.0487
+          }
+        ],
+        "stdout": "\"elapsed_s\": 6.077,\n   \"t_naive\": 7.4757\n  },\n  {\n   \"instance\": \"n512_d64_b1_h4\",\n   \"feasible\": true,\n   \"reason\": \"ok\",\n   \"score\": 17.4959,\n   \"elapsed_s\": 12.4158,\n   \"t_naive\": 15.0487\n  }\n ]\n}\n"
+      },
+      "source_preview": "\"\"\"Pure-stdlib scaled dot-product attention.\n\nThis implementation avoids materializing the full N x N attention matrix.\nIt computes one query row at a time, kee"
+    },
+    {
+      "round": 2,
+      "elapsed": 210.7,
+      "metrics": {
+        "combined_score": 23.0621,
+        "valid": 1,
+        "per_instance": [
+          {
+            "instance": "n1024_d64_b1_h2",
+            "feasible": true,
+            "reason": "ok",
+            "score": 23.5908,
+            "elapsed_s": 23.0033,
+            "t_naive": 30.1054
+          },
+          {
+            "instance": "n128_d64_b2_h8",
+            "feasible": true,
+            "reason": "ok",
+            "score": 23.5392,
+            "elapsed_s": 2.8919,
+            "t_naive": 3.7822
+          },
+          {
+            "instance": "n256_d64_b2_h4",
+            "feasible": true,
+            "reason": "ok",
+            "score": 22.6316,
+            "elapsed_s": 5.7805,
+            "t_naive": 7.4714
+          },
+          {
+            "instance": "n512_d64_b1_h4",
+            "feasible": true,
+            "reason": "ok",
+            "score": 22.4867,
+            "elapsed_s": 11.5915,
+            "t_naive": 14.9542
+          }
+        ],
+        "stdout": "elapsed_s\": 5.7805,\n   \"t_naive\": 7.4714\n  },\n  {\n   \"instance\": \"n512_d64_b1_h4\",\n   \"feasible\": true,\n   \"reason\": \"ok\",\n   \"score\": 22.4867,\n   \"elapsed_s\": 11.5915,\n   \"t_naive\": 14.9542\n  }\n ]\n}\n"
+      },
+      "source_preview": "\"\"\"Pure-stdlib scaled dot-product attention.\n\nThe implementation uses an online softmax pass per query row, so it never\nmaterializes the N x N attention matrix."
+    },
+    {
+      "round": 3,
+      "elapsed": 213.5,
+      "metrics": {
+        "combined_score": 22.9592,
+        "valid": 1,
+        "per_instance": [
+          {
+            "instance": "n1024_d64_b1_h2",
+            "feasible": true,
+            "reason": "ok",
+            "score": 23.2678,
+            "elapsed_s": 23.0848,
+            "t_naive": 30.0849
+          },
+          {
+            "instance": "n128_d64_b2_h8",
+            "feasible": true,
+            "reason": "ok",
+            "score": 22.9786,
+            "elapsed_s": 2.893,
+            "t_naive": 3.7561
+          },
+          {
+            "instance": "n256_d64_b2_h4",
+            "feasible": true,
+            "reason": "ok",
+            "score": 22.5859,
+            "elapsed_s": 5.7802,
+            "t_naive": 7.4666
+          },
+          {
+            "instance": "n512_d64_b1_h4",
+            "feasible": true,
+            "reason": "ok",
+            "score": 23.0045,
+            "elapsed_s": 11.5196,
+            "t_naive": 14.9614
+          }
+        ],
+        "stdout": "elapsed_s\": 5.7802,\n   \"t_naive\": 7.4666\n  },\n  {\n   \"instance\": \"n512_d64_b1_h4\",\n   \"feasible\": true,\n   \"reason\": \"ok\",\n   \"score\": 23.0045,\n   \"elapsed_s\": 11.5196,\n   \"t_naive\": 14.9614\n  }\n ]\n}\n"
+      },
+      "source_preview": "\"\"\"Pure-stdlib scaled dot-product attention.\n\nThis implementation avoids materializing the N x N attention matrix and avoids\nbuilding per-row score/weight lists"
+    }
+  ],
+  "best_round_source": "\"\"\"Pure-stdlib scaled dot-product attention.\n\nThe implementation uses an online softmax pass per query row, so it never\nmaterializes the N x N attention matrix."
+}

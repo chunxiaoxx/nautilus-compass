@@ -1,0 +1,28 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "34215951629a863d8fe050ddb726207afd7b014b",
+  "reference_fix_commit": "914b39c7bdea5fd6e61f588d651b2214e12b07d3",
+  "subject": "fix(fde): reject bitable identities in v3 task id",
+  "test_files": [
+   "phase3/backend/tests/test_fde_phase3_feishu.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/fde_phase3_feishu.py"
+  ]
+ },
+ "test_id": "phase3/backend/tests/test_fde_phase3_feishu.py::test_v5_v3_payload_rejects_any_export_readback_identity_as_task_id",
+ "source_rel": "phase3/backend/services/fde_phase3_feishu.py",
+ "provider": "ark_glm",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

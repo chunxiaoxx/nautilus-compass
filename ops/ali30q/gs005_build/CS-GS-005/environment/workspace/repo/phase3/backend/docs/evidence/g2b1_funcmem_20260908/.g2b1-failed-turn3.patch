@@ -1,0 +1,15 @@
+--- a/services/fde_auto_verify_runner.py
++++ b/services/fde_auto_verify_runner.py
+@@ -15,7 +15,7 @@
+ MAX_ATTEMPTS = 2
+-TERMINAL_STATUSES = {"NOT_REPRODUCIBLE", "MISMATCH", "NONDETERMINISTIC", "MATCH"}
++TERMINAL_STATUSES = {"NOT_REPRODUCIBLE", "MISMATCH", "NONDETERMINISTIC", "MATCH", "REJECTED"}
+@@ -37,7 +37,8 @@
+             continue  # 无产物指针 = 不可复现类(如 gate probe / 旧 preview verdict)
+         st = state.get(vid) or {}
+-        if st.get("last_status") in TERMINAL_STATUSES:
++        last_status = str(st.get("last_status") or "").strip().upper()
++        if last_status in TERMINAL_STATUSES or "REJECTED" in last_status:
+             continue
+         if int(st.get("attempts", 0)) >= MAX_ATTEMPTS:
+             continue

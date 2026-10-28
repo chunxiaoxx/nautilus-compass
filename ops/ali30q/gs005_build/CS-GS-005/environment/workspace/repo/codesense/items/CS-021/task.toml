@@ -1,0 +1,36 @@
+schema_version = "1.4"
+
+[[artifacts]]
+source = "environment/workspace/repo"
+destination = "/workspace/repo"
+
+[task]
+name = "guoshu/codesense-cs-021"
+description = "Code Sense · pickle非原子写(缓存半截污染连环崩)· 中档单坑语义评测题"
+
+[[task.authors]]
+name = "上海国曙智能"
+
+[agent]
+timeout_sec = 1800
+network_mode = "no-network"
+
+[verifier]
+timeout_sec = 900
+network_mode = "no-network"
+
+[environment]
+build_timeout_sec = 900
+network_mode = "no-network"
+os = "linux"
+cpus = 2
+memory_mb = 4096
+
+[metadata]
+badpattern = "F06 验证与质量控制不足(非原子写)"
+Domain = "D08.0 技能包开发迭代"
+id = "CS-021"
+pool = "ali-codesense-30q"
+batch = "C"
+seed = "S0 pkl非原子写"
+producer = "platform"

@@ -1,0 +1,34 @@
+schema_version = "1.3"
+artifacts = ["/logs/artifacts"]
+
+[task]
+name = "tasks/cs-p101"
+description = "退款服务口径修复(快照/单位/尾差三坑+幂等语义)"
+authors = [{ name = "nius" }]
+keywords = ["python", "bug-fix", "refund", "semantics"]
+
+[metadata]
+domain = "backend"
+task_type = "bug-fix"
+language = "python"
+difficulty = "medium"
+knowledge_path = "计算产品/软件开发/后端服务/接口口径与状态追踪"
+knowledge_l0 = "计算产品"
+knowledge_l1 = "软件开发"
+knowledge_l2 = "后端服务"
+knowledge_l3 = "接口口径与状态追踪"
+tags = ["软件开发", "后端服务", "接口口径", "幂等", "退款状态机"]
+
+[verifier]
+timeout_sec = 1800.0
+
+[agent]
+timeout_sec = 7200.0
+
+[environment]
+network_mode = "no-network"
+build_timeout_sec = 600.0
+os = "linux"
+cpus = 2
+memory = "4g"
+storage = "10g"

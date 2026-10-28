@@ -1,0 +1,28 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "1050d955ea5a219c72467ad832934ea80682b5fb",
+  "reference_fix_commit": "7eb57cff7cd292fbd526eaf861c8f945ddeb07a3",
+  "subject": "Fix pager test race by raising before yield",
+  "test_files": [
+   "tests/test_stream_lifecycle.py",
+   "tests/test_utils.py"
+  ],
+  "source_files": [
+   "src/click/_compat.py"
+  ],
+  "repo_path": "C:/Users/chunx/ext_mine"
+ },
+ "test_id": "tests/test_utils.py::test_echo_via_pager_yields_before_exception",
+ "source_rel": "src/click/_compat.py",
+ "provider": "t6pool-minimax_m3",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0
+}

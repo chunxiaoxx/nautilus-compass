@@ -1,0 +1,72 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "f1f5ea75545a59b8bf1b7020a954d85b315b1bb5",
+  "reference_fix_commit": "3ea02a08f2ab8b9d006b2976ae788ff65dac9d41",
+  "subject": "fix(proof): ts_from_filename date validation + stop_hook tweak + docs sync",
+  "test_files": [
+   "tests/test_local_outcomes.py"
+  ],
+  "source_files": [
+   "proof/local_outcomes.py",
+   "stop_hook.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass"
+ },
+ "test_id": "tests/test_local_outcomes.py::test_hash_name_session_falls_back_to_frontmatter_date",
+ "source_rel": "proof\\local_outcomes.py",
+ "provider": "glm_plan,minimax_m3,deepseek",
+ "test_passed": true,
+ "winning_diff": "--- a/proof/local_outcomes.py\n+++ b/proof/local_outcomes.py\n@@ -10,6 +10,7 @@ from __future__ import annotations\n \n import re\n from pathlib import Path\n+from datetime import datetime\n from typing import Optional\n \n from .l1_grouper_compat import parse_session_frontmatter_safe\n@@ -47,7 +48,17 @@ def local_outcomes(memory_dir, actor: str, since_iso: Optional[str] = None) -> li\n     for p in sorted(mem.glob(\"session_*.md\")):\n         ts = ts_from_filename(p.name)\n         if ts is None:\n-            continue\n+            # fallback: try to recover timestamp from frontmatter date\n+            front = parse_session_frontmatter_safe(p)\n+            date_val = front.get(\"date\")\n+            if not date_val:\n+                continue\n+            try:\n+                dt = datetime.fromisoformat(str(date_val))\n+            except (TypeError, ValueError):\n+                continue\n+            ts = dt.strftime(\"%Y-%m-%dT00:00:00+00:00\")\n         if since_iso and ts < since_iso:\n             continue\n-        front = parse_session_frontmatter_safe(p)\n         success = _drift_to_success(front.get(\"drift\", \"\"))\n         if success is None:\n             continue\n         out.append({\"agent_id\": actor, \"success\": success, \"ts\": ts})\n",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 1111,
+    "output_tokens": 621,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: proof/local_outcomes.py:49\nerror: proof/local_outcomes.py: patch does not apply\n\n[attempt2 backend] error: patch failed: proof/local_outcomes.py:49\nerror: proof/local_outcomes.py: patch does not apply\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 1213,
+    "output_tokens": 265,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "F                                                                        [100%]\r\n================================== FAILURES ===================================\r\n____________ test_hash_name_session_falls_back_to_frontmatter_date ____________\r\n\r\ntmp_path = WindowsPath('C:/Users/chunx/AppData/Local/Temp/pytest-of-chunx/pytest-6113/test_hash_name_session_falls_b0')\r\n\r\n    def test_hash_name_session_falls_back_to_frontmatter_date(tmp_path: Path):\r\n        # session filenames changed to hash form; local outcome still recovers from frontmatter date\r\n        p = tmp_path / \"session_abcd1234.md\"\r\n        p.write_text(\r\n            \"---\\nname: hash session\\ndate: 2026-06-02\\ndrift: green\\n---\\nbody\\n\",\r\n            encoding=\"utf-8\",\r\n        )\r\n        outs = LO.local_outcomes(tmp_path, actor=\"unknown\")\r\n        assert len(outs) == 1\r\n>       assert outs[0][\"ts\"] == \"2026-06-02T00:00:00+00:00\"\r\nE       AssertionError: assert '2026-06-02' == '2026-06-02T00:00:00+00:00'\r\nE         \r\nE         - 2026-06-02T00:00:00+00:00\r\nE         + 2026-06-02\r\n\r\ntests\\test_local_outcomes.py:103: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_local_outcomes.py::test_hash_name_session_falls_back_to_frontmatter_date\r\n1 failed in 0.23s\r\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "input_tokens": 1625,
+    "output_tokens": 379,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "local_outcomes_frontmatter_date_fallback",
+ "duration_s": 80.3,
+ "verdict_post_status": 200
+}

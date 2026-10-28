@@ -1,0 +1,29 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "d7fe5b32e66363d20beb07e6b5d38b94b3ff105e",
+  "reference_fix_commit": "2fe445d9ed1db25ce3361afa7a32d63d8e32b0ce",
+  "subject": "fix(soul): self-improve ship task includes target path + full-file instruction (avoids parse_error)",
+  "test_files": [
+   "phase3/soul/tests/test_daemon.py"
+  ],
+  "source_files": [
+   "phase3/soul/daemon.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests\\test_daemon.py::test_self_improve_full_path_opens_draft_pr",
+ "source_rel": "phase3\\soul\\daemon.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "skipped_reason": "anchor_missing_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

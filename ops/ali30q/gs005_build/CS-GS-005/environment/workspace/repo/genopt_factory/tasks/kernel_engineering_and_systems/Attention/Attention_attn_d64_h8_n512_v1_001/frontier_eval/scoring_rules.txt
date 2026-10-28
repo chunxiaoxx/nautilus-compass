@@ -1,0 +1,16 @@
+scoring:
+  per_instance:
+    correctness: "1 if O candidate non-empty and shape matches; 0 otherwise"
+    speedup: "max(0, 100 * (t_naive - t_candidate) / t_naive)"
+    formula: "score_i = correctness * speedup"
+  combined:
+    formula: "mean(score_i)"
+    valid_gate: "valid=0 if any instance fails; combined=0 if invalid"
+difficulty_grading:
+  source: GPT5.5 N=3 gap_closed calibration
+  formula: "gap_closed = (best_score - start_score) / 100"
+  bands:
+    Rejected: "<0.1 OR best_score >= 95 (too easy)"
+    Hard: "0.1-0.3"
+    Medium: "0.3-0.6"
+    Easy: ">=0.6 AND best < 95"

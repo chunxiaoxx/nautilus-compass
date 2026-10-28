@@ -1,0 +1,57 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "34215951629a863d8fe050ddb726207afd7b014b",
+  "reference_fix_commit": "914b39c7bdea5fd6e61f588d651b2214e12b07d3",
+  "subject": "fix(fde): reject bitable identities in v3 task id",
+  "test_files": [
+   "phase3/backend/tests/test_fde_phase3_feishu.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/fde_phase3_feishu.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/test_fde_phase3_feishu.py::test_v5_v3_payload_rejects_any_export_readback_identity_as_task_id",
+ "source_rel": "services\\fde_phase3_feishu.py",
+ "provider": "glm_plan,minimax_m3,deepseek",
+ "test_passed": true,
+ "winning_diff": "--- a/services/fde_phase3_feishu.py\n+++ b/services/fde_phase3_feishu.py\n@@ -375,6 +375,15 @@ class FieldMap:\n         if not isinstance(task_id, str) or not task_id.strip():\n             raise ValueError(\"derived task_id is required\")\n+        if task_id in {\n+            task_record_id,\n+            attempt_record_id,\n+            review_record_id,\n+            export_record_id,\n+        }:\n+            raise ValueError(\n+                \"derived task_id must not equal a Bitable record identity\"\n+            )\n         return {\"task_id\": task_id, \"fields\": self.compass_payload(values)}\n",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 5358,
+    "output_tokens": 256,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 root] error: patch with only garbage at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_sy_rzodf/repo/phase3/backend/_g2b1.patch:4\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "input_tokens": 5448,
+    "output_tokens": 208,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "v5_v3_payload_rejects_export_readback_identity_as_task_id",
+ "duration_s": 50.2,
+ "verdict_post_status": 200
+}

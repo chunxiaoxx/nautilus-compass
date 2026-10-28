@@ -1,0 +1,1 @@
+{python} {repo_root}/verification/evaluate.py --benchmark-dir {benchmark} --candidate {candidate}

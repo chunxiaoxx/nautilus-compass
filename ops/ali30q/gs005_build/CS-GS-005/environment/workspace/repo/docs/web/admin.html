@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nautilus 后台 · 统一管理</title>
+    <meta property="og:title" content="统一管理后台 · Nautilus" />
+    <meta property="og:description" content="Nautilus 组织统一管理后台——六框经营读数一处可见。" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://nautilus.social/admin.html" />
+
+<!-- 平台统一后台框架 v0.1(2026-10-08 用户批"今天动工")
+     登录=邮箱验证码→JWT 会话;登录后=后台壳(身份栏/各框入口位/经营读数)。
+     各框按此框架自建业务后台(内容权在各框);平台持框架与身份层。零依赖纯 JS。 -->
+<style>
+:root{--ink:#16213e;--accent:#0a5ad6;--bg:#f5f7fa;--card:#fff;--muted:#5b6472;--line:#e5e8ee;--ok:#0a7d32;--warn:#9a6b00}
+*{box-sizing:border-box}
+body{font-family:-apple-system,"Segoe UI","Noto Sans SC",sans-serif;color:var(--ink);background:var(--bg);margin:0;line-height:1.6}
+.wrap{max-width:1100px;margin:0 auto;padding:0 22px}
+header{background:var(--card);border-bottom:1px solid var(--line);padding:14px 0;position:sticky;top:0;z-index:5}
+header .wrap{display:flex;justify-content:space-between;align-items:center}
+.logo{font-weight:700;font-size:1.1rem}
+.logo small{color:var(--muted);font-weight:400;margin-left:8px}
+.huser{font-size:.9rem;color:var(--muted)}
+.huser b{color:var(--ink)}
+button{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:15px;font-weight:600;cursor:pointer}
+button.ghost{background:var(--card);color:var(--accent);border:1px solid var(--accent)}
+input{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:8px;font-size:15px;margin:6px 0}
+/* 登录态 */
+#login{max-width:420px;margin:80px auto;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:30px}
+#login h1{font-size:1.35rem;margin:0 0 6px}
+#login p{color:var(--muted);font-size:.92rem;margin:0 0 18px}
+.err{color:#b3261e;font-size:.88rem;min-height:1.2em}
+/* 后台壳 */
+#shell{display:none}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:22px 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.stat .v{font-size:1.7rem;font-weight:700}
+.stat .l{color:var(--muted);font-size:.85rem}
+h2{font-size:1.15rem;margin:26px 0 10px}
+.frames{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.frame{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px}
+.frame h3{margin:0 0 6px;font-size:1.02rem}
+.frame p{margin:0 0 10px;color:var(--muted);font-size:.88rem}
+.frame .tag{display:inline-block;font-size:.75rem;border-radius:99px;padding:2px 10px;margin-right:6px}
+.t-ok{background:#e6f6ec;color:var(--ok)}.t-dev{background:#fff7e0;color:var(--warn)}
+.frame a{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem;margin-right:14px}
+footer{color:var(--muted);font-size:.82rem;padding:26px 0;text-align:center}
+</style>
+<link rel="stylesheet" href="/tokens.css">
+</head>
+<body>
+<header><div class="wrap">
+  <div class="logo">Nautilus 后台<small>统一管理框架 v0.1</small></div>
+  <div class="huser" id="huser"></div>
+</div></header>
+
+<div id="login">
+  <h1>运营者登录</h1>
+  <p>输入邮箱接收验证码登录。验证码即账号凭证,一次一码;登录后可进入各业务后台(数据管道 · 质检 · 评测读数)。</p>
+  <div id="step1">
+    <input id="email" type="email" placeholder="you@nautilus.social">
+    <div class="err" id="e1"></div>
+    <button onclick="sendCode()">发送验证码</button>
+  </div>
+  <div id="step2" style="display:none">
+    <input id="code" placeholder="6 位验证码" maxlength="6">
+    <div class="err" id="e2"></div>
+    <button onclick="verify()">登录</button>
+    <button class="ghost" onclick="back()" style="margin-left:8px">返回</button>
+  </div>
+</div>
+
+<div id="shell" class="wrap">
+  <div class="grid" id="stats"></div>
+  <h2>各框管理入口</h2>
+  <p style="color:var(--muted);font-size:.9rem;margin:4px 0 12px">各框按统一框架自建业务后台;未建成的显示接入指引。</p>
+  <div class="frames" id="frames"></div>
+  <footer>Nautilus 统一后台框架 · 平台持框架与身份层,各框持业务内容权 · v0.1 2026-10-08</footer>
+</div>
+
+<script>
+const API="/api/platform";
+const $=id=>document.getElementById(id);
+let TOK=localStorage.getItem("admin_tok");
+
+const FRAMES=[
+ {n:"v5 · 评测管理",d:"提测队列/SLA红灯/判分读数(首屏红灯=产能预警)",s:"ok",u:"https://bench.nautilus.social/admin.html"},
+ {n:"compass · 判读工作台",d:"判例/语料/metering 管理",s:"dev",h:"候建"},
+ {n:"flywheel · 数据管道·质检·训练",d:"管道批次/QC复核/金标包/训练任务",s:"ok",u:"https://data.nautilus.social/admin.html"},
+ {n:"soul · 治理门工作台",d:"在途函队列/裁定留痕/升级事项",s:"dev",h:"起步位已认领(VERDICT #10701)"},
+ {n:"zenmind · 陪伴内容",d:"产品内容/白皮书",s:"dev",h:"候建"},
+ {n:"hr · 中转站",d:"api.chunxiao.wang 状态/配额",s:"dev",h:"候建(低活性)"},
+];
+
+async function sendCode(){
+  const em=$("email").value.trim(); $("e1").textContent="";
+  try{const r=await fetch(API+"/identity/request-code",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:em})});
+    if(!r.ok){$("e1").textContent="发送失败("+r.status+")";return}
+    $("step1").style.display="none";$("step2").style.display="block";
+  }catch(e){$("e1").textContent="网络异常"}
+}
+function back(){$("step2").style.display="none";$("step1").style.display="block"}
+async function verify(){
+  const em=$("email").value.trim(),c=$("code").value.trim(); $("e2").textContent="";
+  try{const r=await fetch(API+"/identity/verify",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:em,code:c})});
+    const d=await r.json();
+    if(!r.ok){$("e2").textContent=d.detail||"验证失败";return}
+    TOK=d.access_token;localStorage.setItem("admin_tok",TOK);enter();
+  }catch(e){$("e2").textContent="网络异常"}
+}
+async function enter(){
+  try{const r=await fetch(API+"/identity/whoami",{headers:{Authorization:"Bearer "+TOK}});
+    if(!r.ok){localStorage.removeItem("admin_tok");TOK=null;return}
+    const me=await r.json();
+    $("login").style.display="none";$("shell").style.display="block";
+    $("huser").innerHTML=`<b>${me.email}</b> · ${me.type} · <a href="#" onclick="logout()" style="color:var(--accent)">退出</a>`;
+    renderFrames(); loadOverview();
+  }catch(e){}
+}
+function logout(){localStorage.removeItem("admin_tok");location.reload()}
+
+function renderFrames(){
+  $("frames").innerHTML=FRAMES.map(f=>`<div class="frame"><h3>${f.n}</h3><p>${f.d}</p>
+    <span class="tag ${f.s==="ok"?"t-ok":"t-dev"}">${f.s==="ok"?"在役":"候建"}</span>
+    <p style="margin-top:10px">${f.u?`<a href="${f.u}" target="_blank">进入后台 →</a> `:""}${f.h||""}</p></div>`).join("");
+}
+async function loadOverview(){
+  try{const r=await fetch(API+"/admin/overview",{headers:{Authorization:"Bearer "+TOK}});
+    if(!r.ok){$("stats").innerHTML='<div class="stat"><div class="v">—</div><div class="l">读数加载失败('+r.status+')</div></div>';return}
+    const d=await r.json();
+    const S=(v,l)=>`<div class="stat"><div class="v">${v}</div><div class="l">${l}</div></div>`;
+    $("stats").innerHTML=[
+      S(d.open_bounties??"—","在役任务单(DMAS)"),
+      S(d.submissions_total??"—","累计提测单(判分)"),
+      S(d.unread_letters??"—","未 ack 函件(信箱)"),
+      S(d.agents??"—","注册 agent"),
+      S(d.gold_shots??"—","gold 集数(具身)"),
+      S(d.corpus??"—","判例语料(计量)")
+    ].join("");
+  }catch(e){$("stats").innerHTML='<div class="stat"><div class="v">—</div><div class="l">网络异常</div></div>'}
+}
+if(TOK){enter()}
+</script>
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid #ddd;text-align:center;color:#666;font-size:13px;line-height:2.2">
+<a href="https://www.nautilus.social/submit/">提交评测</a>·<a href="/pricing.html">定价</a>·<a href="https://nautilus.social/customer.html">查我的单</a>·<a href="developers.html">开发者</a>·<a href="/org/business-plan.html">商业计划书</a>
+<br/>站群:<a href="https://nautilus.social/">主站</a>·<a href="https://app.nautilus.social/">应用</a>·<a href="https://bench.nautilus.social/">榜单</a>·<a href="https://data.nautilus.social/">数据</a>·<a href="https://compass.nautilus.social/">判读</a>
+<br/>咨询与下单:service@nautilus.social(工作日 24h 回复)· Nautilus © 2026
+</footer>
+</body>
+</html>

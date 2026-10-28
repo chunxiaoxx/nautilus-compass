@@ -1,0 +1,37 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "99b099b462b763f330c12c75e3b7fd3fcf97a205",
+  "reference_fix_commit": "49cc01737edea1a2c41fea6f09bd58fa81163ce9",
+  "subject": "fix(ci): ruff F401 unused imports \u00b7 47 errors \u2192 0",
+  "test_files": [
+   "tests/test_hook_dispatch.py",
+   "tests/test_integration_e2e.py",
+   "tests/test_l1_grouper.py",
+   "tests/test_l1_index.py",
+   "tests/test_l1_recall_overlay.py"
+  ],
+  "source_files": [
+   "bin/cli_skill.py",
+   "contract.py",
+   "drift/gate_act.py",
+   "examples/compass_client_v15.py",
+   "ops/notify_v7_conn_close_shipped.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass"
+ },
+ "test_id": "tests/test_hook_dispatch.py",
+ "source_rel": "bin/cli_skill.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

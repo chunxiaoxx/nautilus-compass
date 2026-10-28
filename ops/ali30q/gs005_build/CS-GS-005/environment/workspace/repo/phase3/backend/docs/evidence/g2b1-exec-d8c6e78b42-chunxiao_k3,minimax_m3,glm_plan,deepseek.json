@@ -1,0 +1,29 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "2ee03a9f8a2157af5fedcb26ab8529f9c3705c5d",
+  "reference_fix_commit": "d8c6e78b4217da34fc49d3f93ec503af33768d82",
+  "subject": "fix: validate paired statistics invariants",
+  "test_files": [
+   "tests/test_selfproof_stats.py"
+  ],
+  "source_files": [
+   "src/nautilusflywheel/selfproof_stats.py"
+  ],
+  "repo_path": "C:/Users/chunx/Projects/nautilusflywheel"
+ },
+ "test_id": "tests/test_selfproof_stats.py",
+ "source_rel": "src\\nautilusflywheel\\selfproof_stats.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "skipped_reason": "fixture_broken_red",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 2.4,
+ "replayed": true,
+ "verdict_post_status": 200
+}

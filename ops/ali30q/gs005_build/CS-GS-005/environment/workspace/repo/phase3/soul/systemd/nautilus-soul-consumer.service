@@ -1,0 +1,26 @@
+[Unit]
+Description=Soul consumer · ships pending agent proposals from platform_proposals as DRAFT PRs
+After=network-online.target
+
+[Service]
+Type=oneshot
+# Run as the workspace owner — git refuses operations on a repo owned by
+# another user ("dubious ownership"), so root would fail branch creation.
+User=ubuntu
+Group=ubuntu
+# Same module layout as the governance executor: `services.soul_consumer` and
+# its sibling `utils.database` are top-level under `phase3/backend/`, so cwd
+# must be `phase3/backend`.
+WorkingDirectory=/home/ubuntu/nautilus-soul-workspace/phase3/backend
+EnvironmentFile=/home/ubuntu/nautilus-soul-workspace/.soul-env
+# SOUL_BASE_DIR is read by services/soul_consumer.py:__main__.
+Environment=SOUL_BASE_DIR=/home/ubuntu/nautilus-soul-workspace
+# Draft PRs must open against the live trunk (single trunk since 2026-08-26),
+# not the archived master branch.
+Environment=SOUL_PR_BASE=soul-distill-deploy
+# Sync workspace to the trunk before each cycle so proposals ship against
+# current code. Fail-open: a fetch network blip fails the job and the next
+# timer tick retries.
+ExecStartPre=/usr/bin/git -C /home/ubuntu/nautilus-soul-workspace fetch origin soul-distill-deploy
+ExecStartPre=/usr/bin/git -C /home/ubuntu/nautilus-soul-workspace reset --hard origin/soul-distill-deploy
+ExecStart=/usr/bin/python3 -m services.soul_consumer

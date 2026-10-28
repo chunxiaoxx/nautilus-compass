@@ -1,0 +1,24 @@
+name: 'Nautilus Judge'
+description: 'Independent, reproducible benchmarking for your coding-agent harness. Criteria sha pre-registered; judgment card in 24h.'
+branding:
+  icon: 'award'
+  color: 'blue'
+inputs:
+  repo_url:
+    description: 'Your harness repo URL (default: current repo)'
+    required: false
+  benchmark:
+    description: 'Benchmark suite id (default: mini-swe-bench-lite)'
+    required: false
+    default: 'mini-swe-bench-lite'
+  nautilus_token:
+    description: 'Nautilus API token (from https://nautilus.social/developers.html)'
+    required: false
+outputs:
+  card_url:
+    description: 'URL of the public judgment card'
+  status:
+    description: 'intake_validated | judging | delivered'
+runs:
+  using: 'node20'
+  main: 'dist/index.js'

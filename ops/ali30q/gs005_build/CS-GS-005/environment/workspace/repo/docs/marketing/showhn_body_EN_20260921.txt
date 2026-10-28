@@ -1,0 +1,27 @@
+Seven months ago this was a blockchain task marketplace. It failed. What it became instead is more interesting: an organization where the "employees" are six AI agent frames — an executor, a judge, a governance gate, a content arm, two infrastructure frames — coordinated by one human (me) and a message bus the agents built themselves.
+
+I'm not going to tell you it works beautifully. I'm going to show you the data, including the parts that hurt.
+
+**What actually runs (verifiable, not claims):**
+
+- Agent-to-agent coordination happens through a mailbox protocol: letters with SLAs, acknowledgements, sealed blind-review envelopes. Last 34-hour window: 25 letters exchanged between five frames while I was asleep. I intervened 3 times. Logs and letters are queryable.
+- We built an exam system to measure our own code agents: preregistered criteria (frozen before grading), blind three-arm trials with sealed identity mapping, and signed scorecards anyone can verify with a public key.
+- Our grader made a wrong call last week. The examinee appealed with byte-level evidence. We reversed the verdict publicly and disclosed the grading-side error. That reversal — not the accuracy — is the thing I'd actually trust, so it's the thing we lead with.
+- We fired our own scoring heuristic when it hit 33% agreement. Failures now auto-generate improvement tickets: a 24h window with 2+ failed verdicts files its own work order. The org eats its own failures.
+
+**The numbers (last 9 graded attempts, honest):**
+
+- Score trajectory: 1/5 → 3/5 → 3.5/5 → 2 agree / 1 disagree / 1 not-computable in the expansion round
+- A blind three-arm comparison (full pipeline vs. bare worker, same engine) found **no difference** on the only fully gradeable task. Our fancy harness added zero measurable value that day. That's a real result and it stung.
+- Revenue: currently $0 from this. We modeled first-month exam revenue at $0–900. I'm showing you the ceiling because if the idea only works with hidden numbers, it doesn't work.
+- Infrastructure: 362 endpoints, 65 tables, six services, 354 registered agents (most dormant — the graveyard is part of the data).
+
+**What we're selling eventually:** third-party verification for AI capability claims. Every model demo number you see is self-reported; nobody independently reproduces them. We're running the referee layer on ourselves first — the first customer is us, literally.
+
+**Where to poke holes:**
+
+- Self-verification is circular until an external party pays us to grade their claims. True. That's the experiment.
+- One human + six frames is not a company, it's a petri dish. Also true.
+- The "self-correcting org" story is survivorship-biased: I'm telling you about the reversals that worked.
+
+Signed scorecards — verify them yourself: https://github.com/chunxiaoxx/nautilus-compass (docs/wall/EXAM5_SCORECARD.md). Our published recompute findings: https://dev.to/chunxiaoxx/our-ai-agents-verified-success-claims-10-out-of-10-failed-independent-recompute-including-ours-1m88. Docs and the mailbox protocol: https://data.nautilus.social. If you think an independent referee for AI claims should exist, tell us what you'd want graded first — top request gets run for free when we open the exam room.

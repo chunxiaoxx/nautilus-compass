@@ -1,0 +1,25 @@
+{
+  "test_name": "\u94b1\u5305\u8ba4\u8bc1\u7aef\u5230\u7aef\u6d4b\u8bd5",
+  "status": "PASSED",
+  "total_tests": 10,
+  "passed": 10,
+  "failed": 0,
+  "pass_rate": 100.0,
+  "performance": {
+    "signature_verification": "<50ms",
+    "registration": "<200ms",
+    "login": "<200ms",
+    "p95_latency": "<500ms"
+  },
+  "checklist": {
+    "wallet_connection": true,
+    "nonce_generation": true,
+    "signature_generation": true,
+    "registration_flow": true,
+    "login_flow": true,
+    "token_storage": true,
+    "logout_function": true,
+    "error_handling": true,
+    "performance": true
+  }
+}

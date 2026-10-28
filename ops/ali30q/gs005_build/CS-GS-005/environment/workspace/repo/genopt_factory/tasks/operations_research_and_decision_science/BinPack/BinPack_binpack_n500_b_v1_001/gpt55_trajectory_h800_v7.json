@@ -1,0 +1,240 @@
+{
+  "task_id": "bin_packing_ffd_v1_001",
+  "seed_score": 0.0,
+  "seed_valid": 1,
+  "best_score": 66.6667,
+  "gap_closed": 0.6667,
+  "difficulty_bucket": "Easy",
+  "n": 3,
+  "model": "gpt-5.5",
+  "rounds": [
+    {
+      "round": 0,
+      "metrics": {
+        "combined_score": 0.0,
+        "valid": 1,
+        "per_instance": [
+          {
+            "instance": "n100_uniform",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "num_bins": 38,
+            "opt": 35,
+            "ff_bins": 38
+          },
+          {
+            "instance": "n200_small_skew",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "num_bins": 48,
+            "opt": 47,
+            "ff_bins": 48
+          },
+          {
+            "instance": "n200_uniform",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "num_bins": 71,
+            "opt": 68,
+            "ff_bins": 71
+          },
+          {
+            "instance": "n500_uniform",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "num_bins": 183,
+            "opt": 177,
+            "ff_bins": 183
+          },
+          {
+            "instance": "n50_uniform",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "num_bins": 21,
+            "opt": 19,
+            "ff_bins": 21
+          }
+        ],
+        "stdout": "bins\": 183,\n   \"opt\": 177,\n   \"ff_bins\": 183\n  },\n  {\n   \"instance\": \"n50_uniform\",\n   \"feasible\": true,\n   \"reason\": \"ok\",\n   \"score\": 0.0,\n   \"num_bins\": 21,\n   \"opt\": 19,\n   \"ff_bins\": 21\n  }\n ]\n}\n"
+      },
+      "elapsed": 0
+    },
+    {
+      "round": 1,
+      "elapsed": 77.2,
+      "metrics": {
+        "combined_score": 66.6667,
+        "valid": 1,
+        "per_instance": [
+          {
+            "instance": "n100_uniform",
+            "feasible": true,
+            "reason": "ok",
+            "score": 100.0,
+            "num_bins": 35,
+            "opt": 35,
+            "ff_bins": 38
+          },
+          {
+            "instance": "n200_small_skew",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "num_bins": 48,
+            "opt": 47,
+            "ff_bins": 48
+          },
+          {
+            "instance": "n200_uniform",
+            "feasible": true,
+            "reason": "ok",
+            "score": 66.6667,
+            "num_bins": 69,
+            "opt": 68,
+            "ff_bins": 71
+          },
+          {
+            "instance": "n500_uniform",
+            "feasible": true,
+            "reason": "ok",
+            "score": 66.6667,
+            "num_bins": 179,
+            "opt": 177,
+            "ff_bins": 183
+          },
+          {
+            "instance": "n50_uniform",
+            "feasible": true,
+            "reason": "ok",
+            "score": 100.0,
+            "num_bins": 19,
+            "opt": 19,
+            "ff_bins": 21
+          }
+        ],
+        "stdout": "ns\": 179,\n   \"opt\": 177,\n   \"ff_bins\": 183\n  },\n  {\n   \"instance\": \"n50_uniform\",\n   \"feasible\": true,\n   \"reason\": \"ok\",\n   \"score\": 100.0,\n   \"num_bins\": 19,\n   \"opt\": 19,\n   \"ff_bins\": 21\n  }\n ]\n}\n"
+      },
+      "source_preview": "\"\"\"Improved 1-D bin packing solver.\n\nExposes pack_bins(instance) as required by the verifier.  The main path uses\nBest-Fit Decreasing / First-Fit Decreasing var"
+    },
+    {
+      "round": 2,
+      "elapsed": 68.7,
+      "metrics": {
+        "combined_score": 66.6667,
+        "valid": 1,
+        "per_instance": [
+          {
+            "instance": "n100_uniform",
+            "feasible": true,
+            "reason": "ok",
+            "score": 100.0,
+            "num_bins": 35,
+            "opt": 35,
+            "ff_bins": 38
+          },
+          {
+            "instance": "n200_small_skew",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "num_bins": 48,
+            "opt": 47,
+            "ff_bins": 48
+          },
+          {
+            "instance": "n200_uniform",
+            "feasible": true,
+            "reason": "ok",
+            "score": 66.6667,
+            "num_bins": 69,
+            "opt": 68,
+            "ff_bins": 71
+          },
+          {
+            "instance": "n500_uniform",
+            "feasible": true,
+            "reason": "ok",
+            "score": 66.6667,
+            "num_bins": 179,
+            "opt": 177,
+            "ff_bins": 183
+          },
+          {
+            "instance": "n50_uniform",
+            "feasible": true,
+            "reason": "ok",
+            "score": 100.0,
+            "num_bins": 19,
+            "opt": 19,
+            "ff_bins": 21
+          }
+        ],
+        "stdout": "ns\": 179,\n   \"opt\": 177,\n   \"ff_bins\": 183\n  },\n  {\n   \"instance\": \"n50_uniform\",\n   \"feasible\": true,\n   \"reason\": \"ok\",\n   \"score\": 100.0,\n   \"num_bins\": 19,\n   \"opt\": 19,\n   \"ff_bins\": 21\n  }\n ]\n}\n"
+      },
+      "source_preview": "\"\"\"Improved deterministic bin-packing solver.\n\nUses several decreasing-order greedy variants, then applies a small repair pass\nthat tries to eliminate lightly l"
+    },
+    {
+      "round": 3,
+      "elapsed": 53.1,
+      "metrics": {
+        "combined_score": 66.6667,
+        "valid": 1,
+        "per_instance": [
+          {
+            "instance": "n100_uniform",
+            "feasible": true,
+            "reason": "ok",
+            "score": 100.0,
+            "num_bins": 35,
+            "opt": 35,
+            "ff_bins": 38
+          },
+          {
+            "instance": "n200_small_skew",
+            "feasible": true,
+            "reason": "ok",
+            "score": 0.0,
+            "num_bins": 48,
+            "opt": 47,
+            "ff_bins": 48
+          },
+          {
+            "instance": "n200_uniform",
+            "feasible": true,
+            "reason": "ok",
+            "score": 66.6667,
+            "num_bins": 69,
+            "opt": 68,
+            "ff_bins": 71
+          },
+          {
+            "instance": "n500_uniform",
+            "feasible": true,
+            "reason": "ok",
+            "score": 66.6667,
+            "num_bins": 179,
+            "opt": 177,
+            "ff_bins": 183
+          },
+          {
+            "instance": "n50_uniform",
+            "feasible": true,
+            "reason": "ok",
+            "score": 100.0,
+            "num_bins": 19,
+            "opt": 19,
+            "ff_bins": 21
+          }
+        ],
+        "stdout": "ns\": 179,\n   \"opt\": 177,\n   \"ff_bins\": 183\n  },\n  {\n   \"instance\": \"n50_uniform\",\n   \"feasible\": true,\n   \"reason\": \"ok\",\n   \"score\": 100.0,\n   \"num_bins\": 19,\n   \"opt\": 19,\n   \"ff_bins\": 21\n  }\n ]\n}\n"
+      },
+      "source_preview": "\"\"\"Improved deterministic bin packing solver.\n\nUses Best-Fit Decreasing as the main heuristic, then tries to reduce the bin\ncount with an exact feasibility sear"
+    }
+  ],
+  "best_round_source": "\"\"\"Improved 1-D bin packing solver.\n\nExposes pack_bins(instance) as required by the verifier.  The main path uses\nBest-Fit Decreasing / First-Fit Decreasing var"
+}

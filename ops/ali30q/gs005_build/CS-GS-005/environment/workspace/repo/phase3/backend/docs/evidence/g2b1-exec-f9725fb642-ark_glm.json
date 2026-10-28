@@ -1,0 +1,84 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "24ee0351d751635ad0b664426c3b0c537ba6cfef",
+  "reference_fix_commit": "f9725fb6426d5dcdbfcd0193f9e8ca1b803a7283",
+  "subject": "fix(genopt): cross_agent_contract default dir Windows-safe (tempfile)",
+  "test_files": [
+   "tests/test_genopt_cross_agent_contract.py"
+  ],
+  "source_files": [
+   "fde_capsule/genopt/cross_agent_contract.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5"
+ },
+ "test_id": "tests/test_genopt_cross_agent_contract.py::test_default_dir_uses_tempdir_on_unix_or_windows",
+ "source_rel": "fde_capsule\\genopt\\cross_agent_contract.py",
+ "provider": "ark_glm",
+ "test_passed": true,
+ "winning_diff": "--- a/fde_capsule/genopt/cross_agent_contract.py\n+++ b/fde_capsule/genopt/cross_agent_contract.py\n@@ -6,9 +6,10 @@\n import json\n import os\n import time\n+import tempfile\n from typing import List\n \n-DEFAULT_DIR = \"/root/autodl-tmp/genopt/contracts\"\n+DEFAULT_DIR = os.path.join(tempfile.gettempdir(), \"genopt_contracts\")\n \n \n def _dir():\n",
+ "budget_exceeded": false,
+ "total_tokens": 32009,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "completion_tokens": 1934,
+    "prompt_tokens": 843,
+    "total_tokens": 2777,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 1791
+    }
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: fde_capsule/genopt/cross_agent_contract.py:6\nerror: fde_capsule/genopt/cross_agent_contract.py: patch does not apply\n\n[attempt2 backend] error: patch failed: fde_capsule/genopt/cross_agent_contract.py:6\nerror: fde_capsule/genopt/cross_agent_contract.py: patch does not apply\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "completion_tokens": 10170,
+    "prompt_tokens": 970,
+    "total_tokens": 11140,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 9973
+    }
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: fde_capsule/genopt/cross_agent_contract.py:8\nerror: fde_capsule/genopt/cross_agent_contract.py: patch does not apply\n\n[attempt2 backend] error: patch failed: fde_capsule/genopt/cross_agent_contract.py:8\nerror: fde_capsule/genopt/cross_agent_contract.py: patch does not apply\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "completion_tokens": 17122,
+    "prompt_tokens": 970,
+    "total_tokens": 18092,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 16869
+    }
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "fix_default_dir_to_tempdir",
+ "duration_s": 440.4,
+ "replayed": true,
+ "verdict_post_status": 200
+}

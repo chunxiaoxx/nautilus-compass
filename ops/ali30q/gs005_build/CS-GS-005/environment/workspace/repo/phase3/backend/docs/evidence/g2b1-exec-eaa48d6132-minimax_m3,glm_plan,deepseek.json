@@ -1,0 +1,71 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "800d88e122131c46e47cdfaf8a9920ce6474b6b9",
+  "reference_fix_commit": "eaa48d6132c48dd08a1a7c3c4221c775a0af6785",
+  "subject": "fix(fde-t3): verifier \u89e3\u6790\u5bb9\u88f8 JSON \u884c(splay \u578b)+ fetch_instruction \u901a\u7528\u5316(grep autolab \u4efb\u52a1\u8def\u5f84\u00b7\u811a\u672c\u53d8\u91cf\u540d\u4e0d\u4e00)",
+  "test_files": [
+   "tests/test_fde_t3_produce.py"
+  ],
+  "source_files": [
+   "fde_capsule/t3_produce.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_fde_t3_produce.py::test_parse_reward_bare_json_line",
+ "source_rel": "fde_capsule\\t3_produce.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": true,
+ "winning_diff": "--- a/fde_capsule/t3_produce.py\n+++ b/fde_capsule/t3_produce.py\n@@ -79,15 +79,20 @@ def parse_verifier_reward(eval_output: str) -> Optional[float]:\n     \"\"\"\u4ece eval \u8f93\u51fa\u53d6 __VERIFIER__ \u884c\u7684 reward(\u5bb9 JSON \u4e0e key=val)\u00b7 \u65e0\u5219 None\u3002\"\"\"\n     for line in (eval_output or \"\").splitlines():\n-        if \"__VERIFIER__\" not in line:\n-            continue\n-        payload = line.split(\"__VERIFIER__\", 1)[1].strip()\n         try:\n-            obj = json.loads(payload)\n-            if isinstance(obj, dict) and \"reward\" in obj:\n-                return float(obj[\"reward\"])\n-        except (json.JSONDecodeError, ValueError):\n-            pass\n-        m = _REWARD_KV.search(payload)\n-        if m:\n-            return float(m.group(1))\n+            obj = json.loads(line.strip())\n+        except (json.JSONDecodeError, ValueError):\n+            obj = None\n+        if isinstance(obj, dict) and \"reward\" in obj:\n+            return float(obj[\"reward\"])\n+        if \"__VERIFIER__\" in line:\n+            payload = line.split(\"__VERIFIER__\", 1)[1].strip()\n+            try:\n+                obj = json.loads(payload)\n+                if isinstance(obj, dict) and \"reward\" in obj:\n+                    return float(obj[\"reward\"])\n+            except (json.JSONDecodeError, ValueError):\n+                pass\n+            m = _REWARD_KV.search(payload)\n+            if m:\n+                return float(m.group(1))\n     return None\n",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 2808,
+    "output_tokens": 473,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_zdoqmhzo/repo/_g2b1.patch:5\n\n[attempt2 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_zdoqmhzo/repo/_g2b1.patch:5\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 2950,
+    "output_tokens": 357,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: fde_capsule/t3_produce.py:79\nerror: fde_capsule/t3_produce.py: patch does not apply\n\n[attempt2 backend] error: patch failed: fde_capsule/t3_produce.py:79\nerror: fde_capsule/t3_produce.py: patch does not apply\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "input_tokens": 2930,
+    "output_tokens": 458,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "parse_verifier_reward_bare_json",
+ "duration_s": 24.8,
+ "verdict_post_status": 200
+}

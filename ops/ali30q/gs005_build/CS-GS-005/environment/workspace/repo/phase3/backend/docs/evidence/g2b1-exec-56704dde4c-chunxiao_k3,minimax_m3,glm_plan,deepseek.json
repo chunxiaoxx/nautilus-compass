@@ -1,0 +1,118 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "4a87225e5ab7bcf580e37b021cfe465ad87fb9e6",
+  "reference_fix_commit": "56704dde4c7aaeb1407e3298525448d532d7535e",
+  "subject": "fix(platform): align R1a ephemeral signer v3 bindings",
+  "test_files": [
+   "phase3/backend/tests/platform_protocol/test_m1_r1a_ephemeral_key_admission.py",
+   "phase3/backend/tests/platform_protocol/test_m1_r1a_ephemeral_key_service.py"
+  ],
+  "source_files": [
+   "phase3/backend/platform_protocol/m1_r1a_ephemeral_key_admission.py",
+   "phase3/backend/platform_protocol/m1_r1a_routing.py"
+  ],
+  "repo_path": "C:/Users/chunx/Projects/nautilus-core"
+ },
+ "test_id": "tests/platform_protocol/test_m1_r1a_ephemeral_key_admission.py::test_platform_challenge_and_live_announcement_produce_frozen_admission",
+ "source_rel": "platform_protocol\\m1_r1a_ephemeral_key_admission.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/platform_protocol/m1_r1a_ephemeral_key_admission.py\n+++ b/platform_protocol/m1_r1a_ephemeral_key_admission.py\n@@ -15,10 +15,10 @@\n from platform_protocol.m1_r1a_runtime_admission import R1aRuntimeAdmissionDecision\n \n PLATFORM_CHALLENGE_VERSION = \"m1-r1a-platform-announce-challenge-v1\"\n-ANNOUNCEMENT_VERSION = \"m1-r1a-ephemeral-signer-announcement-v1\"\n+ANNOUNCEMENT_VERSION = \"m1-r1a-ephemeral-signer-announcement-v3\"\n EPHEMERAL_EXECUTOR_ID = \"exec_r1a_synthetic_01\"\n-EPHEMERAL_EXECUTOR_RELEASE = \"rel_r1a_ephemeral_v2\"\n-EPHEMERAL_EXECUTOR_KEY_ID = \"key_r1a_ephemeral_v2\"\n+EPHEMERAL_EXECUTOR_RELEASE = \"rel_r1a_ephemeral_v3\"\n+EPHEMERAL_EXECUTOR_KEY_ID = \"key_r1a_ephemeral_v3\"\n MAX_CHALLENGE_TTL_SECONDS = 120\n \n _ADMITTED = R1aRuntimeAdmissionDecision(\n",
+ "budget_exceeded": false,
+ "total_tokens": 7587,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 3166,
+    "completion_tokens": 380,
+    "total_tokens": 3546,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 3166,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 380,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 0,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 3166,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_odpytnle\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 1 item\r\n\r\ntests/platform_protocol/test_m1_r1a_ephemeral_key_admission.py::test_platform_challenge_and_live_announcement_produce_frozen_admission FAILED [100%]\r\n\r\n================================== FAILURES ===================================\r\n___ test_platform_challenge_and_live_announcement_produce_frozen_admission ____\r\ntests\\platform_protocol\\test_m1_r1a_ephemeral_key_admission.py:89: in test_platform_challenge_and_live_announcement_produce_frozen_admission\r\n    assert EPHEMERAL_EXECUTOR_RELEASE == \"rel_r1a_ephemeral_v3\"\r\nE   AssertionError: assert 'rel_r1a_ephemeral_v2' == 'rel_r1a_ephemeral_v3'\r\nE     \r\nE     - rel_r1a_ephemeral_v3\r\nE     ?                    ^\r\nE     + rel_r1a_ephemeral_v2\r\nE     ?                    ^\r\n=========================== short test summary info ===========================\r\nFAILED tests/platform_protocol/test_m1_r1a_ephemeral_key_admission.py::test_platform_challenge_and_live_announcement_produce_frozen_admission\r\n============================== 1 failed in 1.46s ==============================\r\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 3617,
+    "completion_tokens": 424,
+    "total_tokens": 4041,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 545,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 3072,
+      "output_tokens": 424,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 3072,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 3617,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "bump_ephemeral_announcement_constants_to_v3",
+ "duration_s": 44.5,
+ "verdict_post_status": 200
+}

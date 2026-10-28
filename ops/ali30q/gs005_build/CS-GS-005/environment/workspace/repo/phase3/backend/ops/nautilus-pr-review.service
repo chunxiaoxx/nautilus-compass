@@ -1,0 +1,12 @@
+[Unit]
+Description=Nautilus soul PR 机审(Bench 重考层·不合不关) · one pass
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=ubuntu
+WorkingDirectory=/home/ubuntu/nautilus-mvp/phase3/backend
+EnvironmentFile=/home/ubuntu/nautilus-mvp/phase3/backend/.env
+ExecStart=/usr/bin/python3 ops/pr_review.py
+# 失败不告警疲劳:下一轮 timer 再来;异常行在 journal
+TimeoutStartSec=900

@@ -1,0 +1,71 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "00a508ec04c87f0db2571fb53d3480b84063f424",
+  "reference_fix_commit": "721beb018c3dedc4f51ade000c37f0527c92e7dc",
+  "subject": "fix(fde-reconcile): line_code \u5bb9\u9519\u6587\u6863\u4e1a\u52a1\u7ebf\u53d8\u4f53(\u4e2d\u6587\u6570\u5b57/\u7b2cN\u7c7b\u5168\u540d\u2192\u6570\u5b57\u7f16\u7801)",
+  "test_files": [
+   "phase3/backend/tests/test_fde_qc_feedback.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/fde_qc_feedback_runner.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/test_fde_qc_feedback.py::test_line_code_normalizes_doc_variants",
+ "source_rel": "services\\fde_qc_feedback_runner.py",
+ "provider": "glm_plan,minimax_m3,deepseek",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 3224,
+    "output_tokens": 406,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 root] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_x5zmvmwb/repo/phase3/backend/_g2b1.patch:9\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 3319,
+    "output_tokens": 330,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_x5zmvmwb\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 1 item\r\n\r\ntests/test_fde_qc_feedback.py::test_line_code_normalizes_doc_variants FAILED [100%]\r\n\r\n================================== FAILURES ===================================\r\n___________________ test_line_code_normalizes_doc_variants ____________________\r\ntests\\test_fde_qc_feedback.py:263: in test_line_code_normalizes_doc_variants\r\n    assert line_code(\"\u7b2c\u4e00\u7c7b-\u9898\u76ee\") == \"1\"\r\nE   AssertionError: assert '\u7b2c\u4e00\u7c7b-\u9898\u76ee' == '1'\r\nE     \r\nE     - 1\r\nE     + \u7b2c\u4e00\u7c7b-\u9898\u76ee\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_fde_qc_feedback.py::test_line_code_normalizes_doc_variants\r\n============================== 1 failed in 0.26s ==============================\r\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 3573,
+    "output_tokens": 344,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_x5zmvmwb\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 1 item\r\n\r\ntests/test_fde_qc_feedback.py::test_line_code_normalizes_doc_variants FAILED [100%]\r\n\r\n================================== FAILURES ===================================\r\n___________________ test_line_code_normalizes_doc_variants ____________________\r\ntests\\test_fde_qc_feedback.py:263: in test_line_code_normalizes_doc_variants\r\n    assert line_code(\"\u7b2c\u4e00\u7c7b-\u9898\u76ee\") == \"1\"\r\nE   AssertionError: assert '\u7b2c\u4e00\u7c7b-\u9898\u76ee' == '1'\r\nE     \r\nE     - 1\r\nE     + \u7b2c\u4e00\u7c7b-\u9898\u76ee\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_fde_qc_feedback.py::test_line_code_normalizes_doc_variants\r\n============================== 1 failed in 0.28s ==============================\r\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 79.5,
+ "verdict_post_status": 200
+}

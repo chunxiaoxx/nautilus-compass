@@ -1,0 +1,80 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "5d0d8996b9b2a7457fa565c883d501e277d1ddb4",
+  "reference_fix_commit": "6bfe61f276f35e2ad4a64c5bcbc8536b89a2ba62",
+  "subject": "fix(platform): preserve V2 replay on opaque budget rejection",
+  "test_files": [
+   "phase3/backend/tests/platform_protocol/test_g2_a0_model_gate_v2_cli.py"
+  ],
+  "source_files": [
+   "phase3/backend/tests/platform_protocol/g2_a0_model_gate_v2_cli.py"
+  ]
+ },
+ "test_id": "phase3/backend/tests/platform_protocol/test_g2_a0_model_gate_v2_cli.py::test_transport_budget_error_is_replay_safe_inconclusive",
+ "source_rel": "tests\\platform_protocol\\g2_a0_model_gate_v2_cli.py",
+ "provider": "ark_glm",
+ "test_passed": false,
+ "budget_exceeded": false,
+ "total_tokens": 142551,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "completion_tokens": 29682,
+    "prompt_tokens": 4899,
+    "total_tokens": 34581,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 29215
+    }
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_jihol6q8\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 0 items\r\n\r\n============================ no tests ran in 0.00s ============================\r\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "completion_tokens": 58273,
+    "prompt_tokens": 5102,
+    "total_tokens": 63375,
+    "prompt_tokens_details": {
+     "cached_tokens": 4096
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 57981
+    }
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_jihol6q8\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 0 items\r\n\r\n============================ no tests ran in 0.00s ============================\r\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "completion_tokens": 39493,
+    "prompt_tokens": 5102,
+    "total_tokens": 44595,
+    "prompt_tokens_details": {
+     "cached_tokens": 5102
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 38951
+    }
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_jihol6q8\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 0 items\r\n\r\n============================ no tests ran in 0.00s ============================\r\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 5317.5
+}

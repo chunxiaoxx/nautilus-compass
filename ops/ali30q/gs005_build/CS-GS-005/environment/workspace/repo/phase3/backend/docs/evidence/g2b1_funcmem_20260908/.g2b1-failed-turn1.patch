@@ -1,0 +1,18 @@
+--- a/src/autilus_fde_phase3/contracts.py
++++ b/src/autilus_fde_phase3/contracts.py
+@@ -106,7 +106,7 @@ def canonical_evidence_hash(payload: Any) -> str:
+     canonical_payload = json.dumps(
+         payload,
+-        ensure_ascii=True,
++        ensure_ascii=False,
+         separators=(",", ":"),
+         sort_keys=True,
+     )
+@@ -231,7 +231,7 @@ def validate_strict_s0_evidence(
+     canonical_body = json.dumps(
+         signed_envelope,
+-        ensure_ascii=True,
++        ensure_ascii=False,
+         separators=(",", ":"),
+         sort_keys=True,
+     )

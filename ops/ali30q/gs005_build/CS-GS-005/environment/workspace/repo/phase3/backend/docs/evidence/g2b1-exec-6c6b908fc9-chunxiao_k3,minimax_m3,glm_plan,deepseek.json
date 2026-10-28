@@ -1,0 +1,73 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "c88d6e65a8b1cccb44f0a8a8668655d292d7c704",
+  "reference_fix_commit": "6c6b908fc99915ae45f71d693db98044f984bf4b",
+  "subject": "fix(context): compact_text guards head/tail overlap (shared-pkg safety)",
+  "test_files": [
+   "tests/commons/context/test_compact_text.py"
+  ],
+  "source_files": [
+   "nautilus_v5/commons/context/compactor.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/commons/context/test_compact_text.py::test_head_tail_overlap_returns_original",
+ "source_rel": "nautilus_v5\\commons\\context\\compactor.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/nautilus_v5/commons/context/compactor.py\n+++ b/nautilus_v5/commons/context/compactor.py\n@@ -49,6 +49,9 @@\n     if not text or len(text) <= threshold_chars:\n         return text\n \n+    # head+tail >= len(text): no real middle to compress \u2192 return original unchanged\n+    if len(text) <= head_chars + tail_chars:\n+        return text\n+\n     head = text[:head_chars]\n     tail = text[-tail_chars:]\n     middle = text[head_chars:-tail_chars] if len(text) > head_chars + tail_chars else \"\"\n",
+ "budget_exceeded": false,
+ "total_tokens": 1662,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 1369,
+    "completion_tokens": 293,
+    "total_tokens": 1662,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 1113,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 293,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 1369,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "return_original_when_head_tail_overlap",
+ "duration_s": 68.1,
+ "verdict_post_status": 200
+}

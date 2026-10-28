@@ -1,0 +1,4 @@
+name: platform
+status: active
+waiting_on: 各框 FRAME.yaml 落地(函 #154/155/156);flywheel F4 v1 定稿回函
+deliverable: 组织总线+全框快照+订单生命周期+架构档案(362端点全景)

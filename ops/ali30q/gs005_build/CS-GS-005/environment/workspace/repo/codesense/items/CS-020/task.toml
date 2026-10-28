@@ -1,0 +1,36 @@
+schema_version = "1.4"
+
+[[artifacts]]
+source = "environment/workspace/repo"
+destination = "/workspace/repo"
+
+[task]
+name = "guoshu/codesense-cs-020"
+description = "Code Sense · 管道退出码被吃(发布流水线带病出库)· 中档单坑语义评测题"
+
+[[task.authors]]
+name = "上海国曙智能"
+
+[agent]
+timeout_sec = 1800
+network_mode = "no-network"
+
+[verifier]
+timeout_sec = 900
+network_mode = "no-network"
+
+[environment]
+build_timeout_sec = 900
+network_mode = "no-network"
+os = "linux"
+cpus = 2
+memory_mb = 4096
+
+[metadata]
+badpattern = "F05.02 边界与异常处理缺陷(管道退出码被吞)"
+Domain = "D01.1 后端接口与业务逻辑"
+id = "CS-020"
+pool = "ali-codesense-30q"
+batch = "C"
+seed = "S0管道exit code被吃"
+producer = "platform"

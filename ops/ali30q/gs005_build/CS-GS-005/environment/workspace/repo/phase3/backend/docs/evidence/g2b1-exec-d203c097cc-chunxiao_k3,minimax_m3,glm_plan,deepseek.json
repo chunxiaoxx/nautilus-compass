@@ -1,0 +1,117 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "026c1864b3832dd1b4a58fba95d71b0451761b91",
+  "reference_fix_commit": "d203c097ccb5709914e01a4efe6183b1eca27478",
+  "subject": "fix(fde): harden read-only schema probe",
+  "test_files": [
+   "phase3/backend/tests/test_fde_phase3_feishu.py"
+  ],
+  "source_files": [
+   "phase3/backend/scripts/probe_phase3_feishu_schema.py",
+   "phase3/backend/services/fde_phase3_feishu.py"
+  ],
+  "repo_path": "C:/Users/chunx/Projects/nautilus-core"
+ },
+ "test_id": "tests/test_fde_phase3_feishu.py::test_schema_cli_uses_only_fixed_tables_and_fields_get_paths",
+ "source_rel": "scripts\\probe_phase3_feishu_schema.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "diff --git a/scripts/probe_phase3_feishu_schema.py b/scripts/probe_phase3_feishu_schema.py\nindex 1111111..2222222 100644\n--- a/scripts/probe_phase3_feishu_schema.py\n+++ b/scripts/probe_phase3_feishu_schema.py\n@@ -34,7 +34,7 @@ class ReadOnlySchemaClient:\n             f\"{quote(base_token, safe='')}/tables/{quote(table_id, safe='')}/fields\",\n         )\n \n-    def _list_pages(self, endpoint: str) -> list[Mapping[str, Any]]:\n+    def _list_pages(self, route: str) -> list[Mapping[str, Any]]:\n         items: list[Mapping[str, Any]] = []\n         page_token: str | None = None\n         seen_page_tokens: set[str] = set()\n@@ -44,7 +44,7 @@ class ReadOnlySchemaClient:\n                 query[\"page_token\"] = page_token\n             response = _http(\n                 \"GET\",\n-                f\"{FEISHU}{endpoint}?{urlencode(query)}\",\n+                f\"{FEISHU}{route}?{urlencode(query)}\",\n                 token=self._tenant_access_token,\n             )\n             data = self._require_success_data(response)\n",
+ "budget_exceeded": false,
+ "total_tokens": 4270,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 1662,
+    "completion_tokens": 304,
+    "total_tokens": 1966,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 1406,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 304,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 1662,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 root] error: No valid patches in input (allow with \"--allow-empty\")\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 1739,
+    "completion_tokens": 565,
+    "total_tokens": 2304,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 203,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1536,
+      "output_tokens": 565,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 1536,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 1739,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "rename_endpoint_param_schema_probe",
+ "duration_s": 36.2,
+ "verdict_post_status": 200
+}

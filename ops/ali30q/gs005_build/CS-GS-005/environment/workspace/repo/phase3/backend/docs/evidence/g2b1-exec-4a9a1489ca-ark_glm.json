@@ -1,0 +1,28 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "f068381711525a8138c23adc152f63eb7f7fceda",
+  "reference_fix_commit": "4a9a1489ca5f2f1b695c20de05af18ea09a15709",
+  "subject": "fix(fde): block phase 3 rows from legacy S3",
+  "test_files": [
+   "phase3/backend/tests/test_fde_delivery.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/fde_delivery.py"
+  ]
+ },
+ "test_id": "phase3/backend/tests/test_fde_delivery.py::test_is_deliverable_blocks_phase3_from_legacy_s3",
+ "source_rel": "phase3/backend/services/fde_delivery.py",
+ "provider": "ark_glm",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

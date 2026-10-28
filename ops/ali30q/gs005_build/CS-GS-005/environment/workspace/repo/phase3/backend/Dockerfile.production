@@ -1,0 +1,120 @@
+# ============================================
+# Dockerfile.production - 生产环境优化镜像
+# ============================================
+# 特性：
+# - 多阶段构建最小化镜像大小
+# - 安全加固（非root用户、只读文件系统）
+# - 性能优化（预编译Python、多worker）
+# - 健康检查和优雅关闭
+# ============================================
+
+# ============================================
+# 阶段1: 依赖构建器
+# ============================================
+FROM python:3.13-slim as builder
+
+WORKDIR /build
+
+# 安装构建依赖
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    g++ \
+    libpq-dev \
+    libffi-dev \
+    libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# 复制依赖文件
+COPY requirements.txt .
+
+# 创建虚拟环境并安装依赖
+RUN python -m venv /opt/venv && \
+    /opt/venv/bin/pip install --no-cache-dir --upgrade pip setuptools wheel && \
+    /opt/venv/bin/pip install --no-cache-dir -r requirements.txt
+
+# ============================================
+# 阶段2: 应用构建器
+# ============================================
+FROM python:3.13-slim as app-builder
+
+WORKDIR /app
+
+# 复制虚拟环境
+COPY --from=builder /opt/venv /opt/venv
+
+# 设置PATH
+ENV PATH="/opt/venv/bin:$PATH"
+
+# 复制应用代码
+COPY . .
+
+# 预编译Python文件
+RUN python -m compileall -b . && \
+    find . -name "*.py" -type f -delete && \
+    find . -name "__pycache__" -type d -exec rm -rf {} + || true
+
+# ============================================
+# 阶段3: 生产运行时镜像
+# ============================================
+FROM python:3.13-slim
+
+# 设置元数据
+LABEL maintainer="Nautilus Team"
+LABEL version="1.0.0"
+LABEL description="Nautilus Backend API - Production"
+LABEL org.opencontainers.image.source="https://github.com/nautilus/backend"
+
+# 设置环境变量
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PATH="/opt/venv/bin:$PATH" \
+    ENVIRONMENT=production
+
+# 安装运行时依赖（最小化）
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpq5 \
+    curl \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean \
+    && rm -rf /tmp/* /var/tmp/*
+
+# 创建非root用户和必要目录
+RUN groupadd -r nautilus -g 1000 && \
+    useradd -r -u 1000 -g nautilus -m -s /sbin/nologin nautilus && \
+    mkdir -p /app /app/logs /tmp/nautilus && \
+    chown -R nautilus:nautilus /app /tmp/nautilus
+
+# 复制虚拟环境
+COPY --from=builder /opt/venv /opt/venv
+
+# 设置工作目录
+WORKDIR /app
+
+# 复制应用代码（预编译版本）
+COPY --from=app-builder --chown=nautilus:nautilus /app .
+
+# 切换到非root用户
+USER nautilus
+
+# 暴露端口
+EXPOSE 8000
+
+# 健康检查
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# 使用信号处理优雅关闭
+STOPSIGNAL SIGTERM
+
+# 启动命令（生产环境配置）
+CMD ["uvicorn", "main:app", \
+     "--host", "0.0.0.0", \
+     "--port", "8000", \
+     "--workers", "4", \
+     "--loop", "uvloop", \
+     "--log-level", "info", \
+     "--access-log", \
+     "--no-use-colors"]

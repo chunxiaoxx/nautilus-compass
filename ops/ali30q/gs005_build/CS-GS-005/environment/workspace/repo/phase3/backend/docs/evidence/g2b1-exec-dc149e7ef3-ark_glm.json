@@ -1,0 +1,28 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "130017ac06f0b9cd2803bc675356f20621b58b47",
+  "reference_fix_commit": "dc149e7ef3a90332481f18c018e04b788437433e",
+  "subject": "fix(dashboard): FDE \u4e1a\u52a1\u73af\u5361\u6392\u9664 my_test_*/test_* \u6b8b\u7559(\u7532\u65b9 demo \u4e0d\u9732\u6d4b\u8bd5\u6570\u636e)\u00b710 passed",
+  "test_files": [
+   "phase3/backend/tests/test_platform_rsi_fde_api.py"
+  ],
+  "source_files": [
+   "phase3/backend/api/platform_rsi_fde.py"
+  ]
+ },
+ "test_id": "phase3/backend/tests/test_platform_rsi_fde_api.py::test_fde_business_section_excludes_test_uids",
+ "source_rel": "phase3/backend/api/platform_rsi_fde.py",
+ "provider": "ark_glm",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

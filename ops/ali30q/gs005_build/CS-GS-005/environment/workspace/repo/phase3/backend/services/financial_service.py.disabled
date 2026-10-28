@@ -1,0 +1,469 @@
+"""
+财务闭环服务
+实现完整的收入-成本追踪和结算
+"""
+from typing import List, Dict, Optional
+from datetime import datetime, timedelta
+from sqlalchemy.orm import Session
+from sqlalchemy import func, and_
+from models.agent_survival import AgentSurvival, AgentTransaction
+from models.database import Task, Agent
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+class FinancialService:
+    """财务服务"""
+
+    # 成本类型和费率
+    COST_TYPES = {
+        "COMPUTE": {
+            "name": "计算成本",
+            "rate_per_second": 100,  # wei/秒
+            "description": "任务执行的计算成本"
+        },
+        "STORAGE": {
+            "name": "存储成本",
+            "rate_per_kb": 10,  # wei/KB
+            "description": "数据存储成本"
+        },
+        "NETWORK": {
+            "name": "网络成本",
+            "rate_per_kb": 5,  # wei/KB
+            "description": "网络传输成本"
+        },
+        "GAS": {
+            "name": "Gas费",
+            "base_fee": 21000,  # wei
+            "description": "区块链交易Gas费"
+        }
+    }
+
+    # 收入类型 (Week 4更新: 添加知识价值收益)
+    INCOME_TYPES = {
+        "TASK_REWARD": {
+            "name": "任务奖励",
+            "description": "完成任务的基础奖励"
+        },
+        "QUALITY_BONUS": {
+            "name": "质量奖金",
+            "multiplier": 1.5,  # 高质量任务奖励倍数
+            "threshold": 4.5,  # 评分阈值
+            "description": "高质量任务额外奖励"
+        },
+        "INNOVATION_BONUS": {
+            "name": "创新奖励",
+            "amount": 500,  # wei
+            "description": "创新解决方案奖励"
+        },
+        "REFERRAL_BONUS": {
+            "name": "推荐奖励",
+            "percentage": 0.1,  # 10%
+            "description": "推荐新Agent奖励"
+        },
+        "KNOWLEDGE_VALUE": {
+            "name": "知识价值收益",
+            "creation_reward": 100,  # wei per node
+            "transfer_reward": 50,   # wei per successful transfer
+            "usage_reward": 10,      # wei per usage
+            "quality_multiplier": 2.0,  # 高质量知识倍数
+            "description": "知识创建、迁移和使用收益"
+        }
+    }
+
+    @staticmethod
+    def calculate_task_cost(
+        execution_time: int,  # 秒
+        storage_size: int = 0,  # KB
+        network_size: int = 0,  # KB
+        include_gas: bool = True
+    ) -> Dict[str, int]:
+        """
+        计算任务成本
+
+        返回：
+        {
+            "compute_cost": 1000,
+            "storage_cost": 100,
+            "network_cost": 50,
+            "gas_cost": 21000,
+            "total_cost": 22150
+        }
+        """
+        compute_cost = execution_time * FinancialService.COST_TYPES["COMPUTE"]["rate_per_second"]
+        storage_cost = storage_size * FinancialService.COST_TYPES["STORAGE"]["rate_per_kb"]
+        network_cost = network_size * FinancialService.COST_TYPES["NETWORK"]["rate_per_kb"]
+        gas_cost = FinancialService.COST_TYPES["GAS"]["base_fee"] if include_gas else 0
+
+        total_cost = compute_cost + storage_cost + network_cost + gas_cost
+
+        return {
+            "compute_cost": compute_cost,
+            "storage_cost": storage_cost,
+            "network_cost": network_cost,
+            "gas_cost": gas_cost,
+            "total_cost": total_cost
+        }
+
+    @staticmethod
+    def calculate_knowledge_value_income(
+        db: Session,
+        agent_id: int,
+        period_days: int = 30
+    ) -> Dict[str, int]:
+        """
+        计算知识价值收益 (Week 4新增)
+
+        收益来源:
+        1. 知识创建收益 - 每个知识节点
+        2. 知识迁移收益 - 每次成功迁移
+        3. 知识使用收益 - 每次被使用
+        4. 质量奖励 - 高质量知识额外奖励
+
+        Args:
+            db: 数据库会话
+            agent_id: Agent ID
+            period_days: 统计周期（天）
+
+        Returns:
+            {
+                "creation_income": 1000,
+                "transfer_income": 500,
+                "usage_income": 200,
+                "quality_bonus": 300,
+                "total_knowledge_income": 2000
+            }
+        """
+        from models.epiplexity import KnowledgeNode, KnowledgeTransfer
+        from datetime import datetime, timedelta
+
+        # 计算时间范围
+        start_date = datetime.utcnow() - timedelta(days=period_days)
+
+        # 1. 知识创建收益
+        nodes = db.query(KnowledgeNode).filter(
+            KnowledgeNode.created_by_agent_id == agent_id,
+            KnowledgeNode.created_at >= start_date
+        ).all()
+
+        creation_income = len(nodes) * FinancialService.INCOME_TYPES["KNOWLEDGE_VALUE"]["creation_reward"]
+
+        # 2. 知识迁移收益
+        node_ids = [node.id for node in nodes]
+        if node_ids:
+            successful_transfers = db.query(KnowledgeTransfer).filter(
+                KnowledgeTransfer.knowledge_node_id.in_(node_ids),
+                KnowledgeTransfer.success == True,
+                KnowledgeTransfer.created_at >= start_date
+            ).count()
+        else:
+            successful_transfers = 0
+
+        transfer_income = successful_transfers * FinancialService.INCOME_TYPES["KNOWLEDGE_VALUE"]["transfer_reward"]
+
+        # 3. 知识使用收益
+        total_usage = sum(node.usage_count for node in nodes)
+        usage_income = total_usage * FinancialService.INCOME_TYPES["KNOWLEDGE_VALUE"]["usage_reward"]
+
+        # 4. 质量奖励（高质量知识额外奖励）
+        high_quality_nodes = [node for node in nodes if node.quality_score >= 0.8]
+        quality_bonus = 0
+        if high_quality_nodes:
+            base_quality_income = len(high_quality_nodes) * FinancialService.INCOME_TYPES["KNOWLEDGE_VALUE"]["creation_reward"]
+            quality_bonus = int(base_quality_income * (FinancialService.INCOME_TYPES["KNOWLEDGE_VALUE"]["quality_multiplier"] - 1))
+
+        total_knowledge_income = creation_income + transfer_income + usage_income + quality_bonus
+
+        logger.info(
+            f"Agent {agent_id} knowledge value income: "
+            f"creation={creation_income}, transfer={transfer_income}, "
+            f"usage={usage_income}, quality_bonus={quality_bonus}, "
+            f"total={total_knowledge_income}"
+        )
+
+        return {
+            "creation_income": creation_income,
+            "transfer_income": transfer_income,
+            "usage_income": usage_income,
+            "quality_bonus": quality_bonus,
+            "total_knowledge_income": total_knowledge_income,
+            "period_days": period_days,
+            "nodes_created": len(nodes),
+            "successful_transfers": successful_transfers,
+            "total_usage": total_usage,
+            "high_quality_nodes": len(high_quality_nodes)
+        }
+
+    @staticmethod
+    def calculate_task_income(
+        base_reward: int,  # wei
+        quality_rating: Optional[float] = None,
+        is_innovative: bool = False,
+        knowledge_value_income: int = 0  # Week 4新增
+    ) -> Dict[str, int]:
+        """
+        计算任务收入 (Week 4更新: 添加知识价值收益)
+
+        返回：
+        {
+            "base_reward": 10000,
+            "quality_bonus": 5000,
+            "innovation_bonus": 500,
+            "knowledge_value_income": 2000,
+            "total_income": 17500
+        }
+        """
+        total_income = base_reward
+        quality_bonus = 0
+        innovation_bonus = 0
+
+        # 质量奖金
+        if quality_rating and quality_rating >= FinancialService.INCOME_TYPES["QUALITY_BONUS"]["threshold"]:
+            quality_bonus = int(base_reward * (FinancialService.INCOME_TYPES["QUALITY_BONUS"]["multiplier"] - 1))
+            total_income += quality_bonus
+
+        # 创新奖励
+        if is_innovative:
+            innovation_bonus = FinancialService.INCOME_TYPES["INNOVATION_BONUS"]["amount"]
+            total_income += innovation_bonus
+
+        # 知识价值收益 (Week 4新增)
+        total_income += knowledge_value_income
+
+        return {
+            "base_reward": base_reward,
+            "quality_bonus": quality_bonus,
+            "innovation_bonus": innovation_bonus,
+            "knowledge_value_income": knowledge_value_income,
+            "total_income": total_income
+        }
+
+    @staticmethod
+    def record_task_settlement(
+        db: Session,
+        agent_id: int,
+        task_id: str,
+        income_details: Dict[str, int],
+        cost_details: Dict[str, int]
+    ) -> Dict:
+        """
+        记录任务结算
+
+        自动记录收入和成本交易
+        """
+        from services.survival_service import SurvivalService
+
+        # 记录收入
+        if income_details["total_income"] > 0:
+            SurvivalService.record_income(
+                db=db,
+                agent_id=agent_id,
+                amount=income_details["total_income"],
+                category="TASK_REWARD",
+                task_id=task_id,
+                description=f"Task {task_id} settlement: base={income_details['base_reward']}, quality_bonus={income_details['quality_bonus']}, innovation_bonus={income_details['innovation_bonus']}"
+            )
+
+        # 记录成本
+        if cost_details["total_cost"] > 0:
+            SurvivalService.record_cost(
+                db=db,
+                agent_id=agent_id,
+                amount=cost_details["total_cost"],
+                category="TASK_EXECUTION",
+                task_id=task_id,
+                description=f"Task {task_id} costs: compute={cost_details['compute_cost']}, storage={cost_details['storage_cost']}, network={cost_details['network_cost']}, gas={cost_details['gas_cost']}"
+            )
+
+        # 计算净收益
+        net_profit = income_details["total_income"] - cost_details["total_cost"]
+
+        logger.info(f"Task {task_id} settled for agent {agent_id}: income={income_details['total_income']}, cost={cost_details['total_cost']}, profit={net_profit}")
+
+        return {
+            "income": income_details,
+            "cost": cost_details,
+            "net_profit": net_profit
+        }
+
+    @staticmethod
+    def get_financial_report(
+        db: Session,
+        agent_id: int,
+        period: str = "daily"  # daily, weekly, monthly
+    ) -> Dict:
+        """
+        生成财务报表
+
+        返回：
+        - 总收入/总成本
+        - 净利润
+        - ROI
+        - 收入/成本明细
+        - 趋势分析
+        """
+        survival = db.query(AgentSurvival).filter(
+            AgentSurvival.agent_id == agent_id
+        ).first()
+
+        if not survival:
+            return {
+                "total_income": 0,
+                "total_cost": 0,
+                "net_profit": 0,
+                "roi": 0.0,
+                "period": period
+            }
+
+        # 确定时间范围
+        if period == "daily":
+            start_time = datetime.utcnow() - timedelta(days=1)
+        elif period == "weekly":
+            start_time = datetime.utcnow() - timedelta(weeks=1)
+        elif period == "monthly":
+            start_time = datetime.utcnow() - timedelta(days=30)
+        else:
+            start_time = None
+
+        # 查询期间内的交易
+        query = db.query(AgentTransaction).filter(
+            AgentTransaction.agent_id == agent_id
+        )
+
+        if start_time:
+            query = query.filter(AgentTransaction.created_at >= start_time)
+
+        transactions = query.all()
+
+        # 统计收入和成本
+        period_income = sum(t.amount for t in transactions if t.type == "INCOME")
+        period_cost = sum(t.amount for t in transactions if t.type == "COST")
+        period_profit = period_income - period_cost
+        period_roi = (period_income / period_cost) if period_cost > 0 else 0.0
+
+        # 收入明细
+        income_by_category = {}
+        for t in transactions:
+            if t.type == "INCOME":
+                income_by_category[t.category] = income_by_category.get(t.category, 0) + t.amount
+
+        # 成本明细
+        cost_by_category = {}
+        for t in transactions:
+            if t.type == "COST":
+                cost_by_category[t.category] = cost_by_category.get(t.category, 0) + t.amount
+
+        return {
+            "period": period,
+            "total_income": survival.total_income,
+            "total_cost": survival.total_cost,
+            "total_profit": survival.total_income - survival.total_cost,
+            "total_roi": survival.roi,
+            "period_income": period_income,
+            "period_cost": period_cost,
+            "period_profit": period_profit,
+            "period_roi": period_roi,
+            "income_breakdown": income_by_category,
+            "cost_breakdown": cost_by_category
+        }
+
+    @staticmethod
+    def get_transaction_history(
+        db: Session,
+        agent_id: int,
+        transaction_type: Optional[str] = None,  # INCOME, COST
+        limit: int = 100,
+        offset: int = 0
+    ) -> List[Dict]:
+        """
+        获取交易历史
+
+        返回交易列表
+        """
+        query = db.query(AgentTransaction).filter(
+            AgentTransaction.agent_id == agent_id
+        )
+
+        if transaction_type:
+            query = query.filter(AgentTransaction.type == transaction_type)
+
+        query = query.order_by(AgentTransaction.created_at.desc())
+        query = query.limit(limit).offset(offset)
+
+        transactions = query.all()
+
+        return [t.to_dict() for t in transactions]
+
+    @staticmethod
+    def analyze_financial_trend(
+        db: Session,
+        agent_id: int,
+        days: int = 30
+    ) -> Dict:
+        """
+        分析财务趋势
+
+        返回：
+        - 收入趋势
+        - 成本趋势
+        - ROI趋势
+        """
+        start_time = datetime.utcnow() - timedelta(days=days)
+
+        transactions = db.query(AgentTransaction).filter(
+            and_(
+                AgentTransaction.agent_id == agent_id,
+                AgentTransaction.created_at >= start_time
+            )
+        ).order_by(AgentTransaction.created_at).all()
+
+        # 按天分组
+        daily_data = {}
+        for t in transactions:
+            date_key = t.created_at.date().isoformat()
+            if date_key not in daily_data:
+                daily_data[date_key] = {"income": 0, "cost": 0}
+
+            if t.type == "INCOME":
+                daily_data[date_key]["income"] += t.amount
+            else:
+                daily_data[date_key]["cost"] += t.amount
+
+        # 计算每日ROI
+        for date_key in daily_data:
+            income = daily_data[date_key]["income"]
+            cost = daily_data[date_key]["cost"]
+            daily_data[date_key]["roi"] = (income / cost) if cost > 0 else 0.0
+            daily_data[date_key]["profit"] = income - cost
+
+        return {
+            "period_days": days,
+            "daily_data": daily_data,
+            "trend_summary": {
+                "total_income": sum(d["income"] for d in daily_data.values()),
+                "total_cost": sum(d["cost"] for d in daily_data.values()),
+                "avg_daily_income": sum(d["income"] for d in daily_data.values()) / len(daily_data) if daily_data else 0,
+                "avg_daily_cost": sum(d["cost"] for d in daily_data.values()) / len(daily_data) if daily_data else 0
+            }
+        }
+
+    @staticmethod
+    def auto_settle_pending_tasks(db: Session) -> Dict:
+        """
+        自动结算待结算任务
+
+        批量处理所有已完成但未结算的任务
+        """
+        # 简化实现：返回统计信息
+        settled_count = 0
+        total_income = 0
+        total_cost = 0
+
+        logger.info(f"Auto settlement completed: {settled_count} tasks settled")
+
+        return {
+            "settled_count": settled_count,
+            "total_income": total_income,
+            "total_cost": total_cost
+        }

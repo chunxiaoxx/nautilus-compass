@@ -1,0 +1,73 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "09d07269c053deb780682b241a2591322f74ead2",
+  "reference_fix_commit": "9d3dfd31b33450256dcceef0576a9bc2fc8a0c9f",
+  "subject": "fix(s4): make quarantine records append-only",
+  "test_files": [
+   "tests/gep/test_flywheel_log.py"
+  ],
+  "source_files": [
+   "gep/flywheel_log.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass"
+ },
+ "test_id": "tests/gep/test_flywheel_log.py::test_quarantine_rows_are_immutable_at_the_database_boundary",
+ "source_rel": "gep\\flywheel_log.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/gep/flywheel_log.py\n+++ b/gep/flywheel_log.py\n@@ -181,6 +181,22 @@\n             CREATE TRIGGER IF NOT EXISTS flywheel_events_immutable_delete\n             BEFORE DELETE ON flywheel_events\n             BEGIN\n                 SELECT RAISE(ABORT, 'flywheel_events rows are immutable');\n             END;\n+            \"\"\",\n+\n+            \"\"\"\n+            CREATE TRIGGER IF NOT EXISTS flywheel_quarantine_immutable_update\n+            BEFORE UPDATE ON flywheel_quarantine\n+            BEGIN\n+                SELECT RAISE(ABORT, 'flywheel_quarantine rows are immutable');\n+            END;\n+            \"\"\",\n+\n+            \"\"\"\n+            CREATE TRIGGER IF NOT EXISTS flywheel_quarantine_immutable_delete\n+            BEFORE DELETE ON flywheel_quarantine\n+            BEGIN\n+                SELECT RAISE(ABORT, 'flywheel_quarantine rows are immutable');\n+            END;\n             \"\"\",\n         )\n         for statement in statements:\n             self._connection.execute(statement)",
+ "budget_exceeded": false,
+ "total_tokens": 3778,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 3476,
+    "completion_tokens": 302,
+    "total_tokens": 3778,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 3476,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 302,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 0,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 3476,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "add_quarantine_immutable_triggers",
+ "duration_s": 15.6,
+ "verdict_post_status": 200
+}

@@ -1,0 +1,11 @@
+[Unit]
+Description=Nautilus agent 名册读数(四源合并,U16) · one pass
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=ubuntu
+WorkingDirectory=/home/ubuntu/nautilus-mvp/phase3/backend
+EnvironmentFile=/home/ubuntu/nautilus-mvp/phase3/backend/.env
+ExecStart=/usr/bin/python3 ops/agent_roster.py --emit
+TimeoutStartSec=300

@@ -1,0 +1,266 @@
+# Prometheus 告警规则配置
+# Nautilus Phase 3 Backend Alerting Rules
+
+groups:
+  # ==================== API 性能告警 ====================
+  - name: api_performance
+    interval: 30s
+    rules:
+      # API 错误率过高
+      - alert: HighAPIErrorRate
+        expr: |
+          (
+            sum(rate(nautilus_http_requests_total{status=~"5.."}[5m]))
+            /
+            sum(rate(nautilus_http_requests_total[5m]))
+          ) > 0.05
+        for: 2m
+        labels:
+          severity: critical
+          component: api
+        annotations:
+          summary: "API 错误率过高"
+          description: "API 错误率超过 5%，当前值: {{ $value | humanizePercentage }}"
+
+      # API 响应时间过长
+      - alert: HighAPILatency
+        expr: |
+          histogram_quantile(0.95,
+            sum(rate(nautilus_http_request_duration_seconds_bucket[5m])) by (le, endpoint)
+          ) > 2
+        for: 5m
+        labels:
+          severity: warning
+          component: api
+        annotations:
+          summary: "API 响应时间过长"
+          description: "端点 {{ $labels.endpoint }} 的 P95 响应时间超过 2 秒，当前值: {{ $value }}s"
+
+      # API 请求量异常下降
+      - alert: LowAPIRequestRate
+        expr: |
+          sum(rate(nautilus_http_requests_total[5m])) < 0.1
+        for: 10m
+        labels:
+          severity: warning
+          component: api
+        annotations:
+          summary: "API 请求量异常下降"
+          description: "API 请求量低于正常水平，可能服务不可用"
+
+  # ==================== 数据库告警 ====================
+  - name: database
+    interval: 30s
+    rules:
+      # 数据库连接失败
+      - alert: DatabaseConnectionFailed
+        expr: nautilus_database_connections == 0
+        for: 1m
+        labels:
+          severity: critical
+          component: database
+        annotations:
+          summary: "数据库连接失败"
+          description: "无法连接到 PostgreSQL 数据库"
+
+      # 数据库查询时间过长
+      - alert: SlowDatabaseQueries
+        expr: |
+          histogram_quantile(0.95,
+            sum(rate(nautilus_database_query_duration_seconds_bucket[5m])) by (le, operation)
+          ) > 1
+        for: 5m
+        labels:
+          severity: warning
+          component: database
+        annotations:
+          summary: "数据库查询缓慢"
+          description: "操作 {{ $labels.operation }} 的 P95 查询时间超过 1 秒，当前值: {{ $value }}s"
+
+      # 数据库错误率过高
+      - alert: HighDatabaseErrorRate
+        expr: rate(nautilus_database_errors_total[5m]) > 1
+        for: 2m
+        labels:
+          severity: critical
+          component: database
+        annotations:
+          summary: "数据库错误率过高"
+          description: "数据库错误频率: {{ $value }} 错误/秒"
+
+  # ==================== 区块链告警 ====================
+  - name: blockchain
+    interval: 30s
+    rules:
+      # 区块链连接断开
+      - alert: BlockchainDisconnected
+        expr: nautilus_blockchain_connection_status == 0
+        for: 2m
+        labels:
+          severity: critical
+          component: blockchain
+        annotations:
+          summary: "区块链连接断开"
+          description: "无法连接到区块链网络（Sepolia）"
+
+      # 区块链交易失败率过高
+      - alert: HighBlockchainTransactionFailureRate
+        expr: |
+          (
+            sum(rate(nautilus_blockchain_transactions_total{status="failed"}[5m]))
+            /
+            sum(rate(nautilus_blockchain_transactions_total[5m]))
+          ) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+          component: blockchain
+        annotations:
+          summary: "区块链交易失败率过高"
+          description: "区块链交易失败率超过 10%，当前值: {{ $value | humanizePercentage }}"
+
+      # Gas 费用异常高
+      - alert: HighGasCost
+        expr: nautilus_blockchain_gas_price_wei > 100000000000
+        for: 5m
+        labels:
+          severity: warning
+          component: blockchain
+        annotations:
+          summary: "Gas 费用异常高"
+          description: "当前 Gas 价格: {{ $value }} Wei (> 100 Gwei)"
+
+      # 待处理交易过多
+      - alert: HighPendingTransactions
+        expr: nautilus_blockchain_pending_transactions > 10
+        for: 10m
+        labels:
+          severity: warning
+          component: blockchain
+        annotations:
+          summary: "待处理区块链交易过多"
+          description: "待处理交易数量: {{ $value }}"
+
+  # ==================== 任务系统告警 ====================
+  - name: tasks
+    interval: 30s
+    rules:
+      # 任务失败率过高
+      - alert: HighTaskFailureRate
+        expr: |
+          (
+            sum(rate(nautilus_tasks_total{status="failed"}[10m]))
+            /
+            sum(rate(nautilus_tasks_total[10m]))
+          ) > 0.2
+        for: 5m
+        labels:
+          severity: warning
+          component: tasks
+        annotations:
+          summary: "任务失败率过高"
+          description: "任务失败率超过 20%，当前值: {{ $value | humanizePercentage }}"
+
+      # 任务队列积压
+      - alert: TaskQueueBacklog
+        expr: nautilus_task_queue_size > 100
+        for: 10m
+        labels:
+          severity: warning
+          component: tasks
+        annotations:
+          summary: "任务队列积压"
+          description: "任务队列大小: {{ $value }}"
+
+  # ==================== WebSocket 告警 ====================
+  - name: websocket
+    interval: 30s
+    rules:
+      # WebSocket 连接数异常
+      - alert: LowWebSocketConnections
+        expr: nautilus_websocket_connections < 1
+        for: 5m
+        labels:
+          severity: info
+          component: websocket
+        annotations:
+          summary: "WebSocket 连接数低"
+          description: "当前 WebSocket 连接数: {{ $value }}"
+
+  # ==================== 系统资源告警 ====================
+  - name: system_resources
+    interval: 30s
+    rules:
+      # CPU 使用率过高
+      - alert: HighCPUUsage
+        expr: nautilus_system_cpu_usage_percent > 80
+        for: 5m
+        labels:
+          severity: warning
+          component: system
+        annotations:
+          summary: "CPU 使用率过高"
+          description: "CPU 使用率: {{ $value }}%"
+
+      # 内存使用率过高
+      - alert: HighMemoryUsage
+        expr: nautilus_system_memory_usage_bytes > 8000000000
+        for: 5m
+        labels:
+          severity: warning
+          component: system
+        annotations:
+          summary: "内存使用率过高"
+          description: "内存使用: {{ $value | humanize }}B"
+
+  # ==================== Redis 告警 ====================
+  - name: redis
+    interval: 30s
+    rules:
+      # Redis 连接失败
+      - alert: RedisConnectionFailed
+        expr: nautilus_redis_connection_status == 0
+        for: 2m
+        labels:
+          severity: warning
+          component: redis
+        annotations:
+          summary: "Redis 连接失败"
+          description: "无法连接到 Redis 缓存服务"
+
+  # ==================== 安全事件告警 ====================
+  - name: security
+    interval: 30s
+    rules:
+      # 异常登录失败次数
+      - alert: HighLoginFailureRate
+        expr: rate(nautilus_security_events_total{event_type="login_failed"}[5m]) > 5
+        for: 2m
+        labels:
+          severity: warning
+          component: security
+        annotations:
+          summary: "登录失败次数异常"
+          description: "登录失败频率: {{ $value }} 次/秒"
+
+      # 权限拒绝事件频繁
+      - alert: HighPermissionDeniedRate
+        expr: rate(nautilus_security_events_total{event_type="permission_denied"}[5m]) > 10
+        for: 5m
+        labels:
+          severity: warning
+          component: security
+        annotations:
+          summary: "权限拒绝事件频繁"
+          description: "权限拒绝频率: {{ $value }} 次/秒"
+
+      # 异常 API 调用
+      - alert: AbnormalAPICall
+        expr: rate(nautilus_security_events_total{event_type="abnormal_api_call"}[5m]) > 1
+        for: 2m
+        labels:
+          severity: critical
+          component: security
+        annotations:
+          summary: "检测到异常 API 调用"
+          description: "异常 API 调用频率: {{ $value }} 次/秒"

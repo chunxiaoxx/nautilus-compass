@@ -1,0 +1,71 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "5b1aba82745cbde04c75e0bab995e5ddf0804196",
+  "reference_fix_commit": "b7e5fd4cc7de70280eccd39f2bb956df617e5519",
+  "subject": "Fix broken fish completion and multiline help string",
+  "test_files": [
+   "tests/test_shell_completion.py"
+  ],
+  "source_files": [
+   "src/click/shell_completion.py"
+  ],
+  "repo_path": "C:/Users/chunx/ext_mine"
+ },
+ "test_id": "tests/test_shell_completion.py::test_full_complete",
+ "source_rel": "src\\click\\shell_completion.py",
+ "provider": "t6pool-minimax_m3",
+ "provider_used": "t6pool-minimax_m3",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 6368,
+    "output_tokens": 205,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "tures(\"_patch_for_completion\")\r\n    def test_full_complete(runner, shell, env, expect):\r\n        cli = Group(\"cli\", commands=[Command(\"a\"), Command(\"b\", help=\"bee\")])\r\n        env[\"_CLI_COMPLETE\"] = f\"{shell}_complete\"\r\n        result = runner.invoke(cli, env=env)\r\n>       assert result.output == expect\r\nE       AssertionError: assert 'plain,a\\n_\\nplain,b\\nbee\\n' == 'plain,a\\nplain,b\\tbee\\n'\r\nE         \r\nE           plain,a\r\nE         + _\r\nE         - plain,b\tbee\r\nE         ?        ----\r\nE         + plain,b\r\nE         + bee\r\n\r\ntests\\test_shell_completion.py:372: AssertionError\r\n________________ test_full_complete[fish-env5-plain,b\\tbee\\n] _________________\r\n\r\nrunner = <click.testing.CliRunner object at 0x0000020170E20B90>, shell = 'fish'\r\nenv = {'COMP_CWORD': 'b', 'COMP_WORDS': 'a b', '_CLI_COMPLETE': 'fish_complete'}\r\nexpect = 'plain,b\\tbee\\n'\r\n\r\n    @pytest.mark.parametrize(\r\n        (\"shell\", \"env\", \"expect\"),\r\n        [\r\n            (\"bash\", {\"COMP_WORDS\": \"\", \"COMP_CWORD\": \"0\"}, \"plain,a\\nplain,b\\n\"),\r\n            (\"bash\", {\"COMP_WORDS\": \"a b\", \"COMP_CWORD\": \"1\"}, \"plain,b\\n\"),\r\n            (\"zsh\", {\"COMP_WORDS\": \"\", \"COMP_CWORD\": \"0\"}, \"plain\\na\\n_\\nplain\\nb\\nbee\\n\"),\r\n            (\"zsh\", {\"COMP_WORDS\": \"a b\", \"COMP_CWORD\": \"1\"}, \"plain\\nb\\nbee\\n\"),\r\n            (\"fish\", {\"COMP_WORDS\": \"\", \"COMP_CWORD\": \"\"}, \"plain,a\\nplain,b\\tbee\\n\"),\r\n            (\"fish\", {\"COMP_WORDS\": \"a b\", \"COMP_CWORD\": \"b\"}, \"plain,b\\tbee\\n\"),\r\n            (\"fish\", {\"COMP_WORDS\": 'a \"b', \"COMP_CWORD\": '\"b'}, \"plain,b\\tbee\\n\"),\r\n        ],\r\n    )\r\n    @pytest.mark.usefixtures(\"_patch_for_completion\")\r\n    def test_full_complete(runner, shell, env, expect):\r\n        cli = Group(\"cli\", commands=[Command(\"a\"), Command(\"b\", help=\"bee\")])\r\n        env[\"_CLI_COMPLETE\"] = f\"{shell}_complete\"\r\n        result = runner.invoke(cli, env=env)\r\n>       assert result.output == expect\r\nE       AssertionError: assert 'plain,b\\nbee\\n' == 'plain,b\\tbee\\n'\r\nE         \r\nE         - plain,b\tbee\r\nE         ?        ----\r\nE         + plain,b\r\nE         + bee\r\n\r\ntests\\test_shell_completion.py:372: AssertionError\r\n________________ test_full_complete[fish-env6-plain,b\\tbee\\n] _________________\r\n\r\nrunner = <click.testing.CliRunner object at 0x0000020170E3D7B0>, shell = 'fish'\r\nenv = {'COMP_CWORD': '\"b', 'COMP_WORDS': 'a \"b', '_CLI_COMPLETE': 'fish_complete'}\r\nexpect = 'plain,b\\tbee\\n'\r\n\r\n    @pytest.mark.parametrize(\r\n        (\"shell\", \"env\", \"expect\"),\r\n        [\r\n            (\"bash\", {\"COMP_WORDS\": \"\", \"COMP_CWORD\": \"0\"}, \"plain,a\\nplain,b\\n\"),\r\n            (\"bash\", {\"COMP_WORDS\": \"a b\", \"COMP_CWORD\": \"1\"}, \"plain,b\\n\"),\r\n            (\"zsh\", {\"COMP_WORDS\": \"\", \"COMP_CWORD\": \"0\"}, \"plain\\na\\n_\\nplain\\nb\\nbee\\n\"),\r\n            (\"zsh\", {\"COMP_WORDS\": \"a b\", \"COMP_CWORD\": \"1\"}, \"plain\\nb\\nbee\\n\"),\r\n            (\"fish\", {\"COMP_WORDS\": \"\", \"COMP_CWORD\": \"\"}, \"plain,a\\nplain,b\\tbee\\n\"),\r\n            (\"fish\", {\"COMP_WORDS\": \"a b\", \"COMP_CWORD\": \"b\"}, \"plain,b\\tbee\\n\"),\r\n            (\"fish\", {\"COMP_WORDS\": 'a \"b', \"COMP_CWORD\": '\"b'}, \"plain,b\\tbee\\n\"),\r\n        ],\r\n    )\r\n    @pytest.mark.usefixtures(\"_patch_for_completion\")\r\n    def test_full_complete(runner, shell, env, expect):\r\n        cli = Group(\"cli\", commands=[Command(\"a\"), Command(\"b\", help=\"bee\")])\r\n        env[\"_CLI_COMPLETE\"] = f\"{shell}_complete\"\r\n        result = runner.invoke(cli, env=env)\r\n>       assert result.output == expect\r\nE       AssertionError: assert 'plain,b\\nbee\\n' == 'plain,b\\tbee\\n'\r\nE         \r\nE         - plain,b\tbee\r\nE         ?        ----\r\nE         + plain,b\r\nE         + bee\r\n\r\ntests\\test_shell_completion.py:372: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_shell_completion.py::test_full_complete[fish-env4-plain,a\\nplain,b\\tbee\\n]\r\nFAILED tests/test_shell_completion.py::test_full_complete[fish-env5-plain,b\\tbee\\n]\r\nFAILED tests/test_shell_completion.py::test_full_complete[fish-env6-plain,b\\tbee\\n]\r\n3 failed, 4 passed in 0.34s\r\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 7638,
+    "output_tokens": 219,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: src/click/shell_completion.py:334\nerror: src/click/shell_completion.py: patch does not apply\n\n[attempt2 backend] error: patch failed: src/click/shell_completion.py:334\nerror: src/click/shell_completion.py: patch does not apply\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 6498,
+    "output_tokens": 255,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "no_json",
+   "feedback_excerpt": "{\"artifact_version\":\"g2-b1-candidate-v1\",\"claimed_test_scope\":[\"public_behavior\"],\"language\":\"python\",\"summary_code\":\"fix_fish_completion_newline_escape\",\"unified_diff\":\"--- a/src/click/shell_completion.py\\n+++ b/src/click/shell_completion.py\\n@@ -331,11 +331,10 @@\\n     def format_completion(self, item: CompletionItem) -> str:\\n         \\\"\\\"\\\"\\n         .. versionchanged:: 8.4.0\\n-            Escape newlines in value and help to fix completion errors with\\n-            multi-line help strings.\\"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 18.3
+}

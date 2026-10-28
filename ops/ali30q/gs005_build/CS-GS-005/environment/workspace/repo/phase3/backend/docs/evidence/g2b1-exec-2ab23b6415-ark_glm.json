@@ -1,0 +1,67 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "9d3dfd31b33450256dcceef0576a9bc2fc8a0c9f",
+  "reference_fix_commit": "2ab23b6415f8b92873320d41064650f21dcc2946",
+  "subject": "fix(s4): enforce ExperiencePacket field types",
+  "test_files": [
+   "tests/gep/test_experience_packet.py",
+   "tests/gep/test_flywheel_event.py"
+  ],
+  "source_files": [
+   "gep/experience_packet.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass"
+ },
+ "test_id": "tests/gep/test_experience_packet.py::test_scalar_fields_reject_wrong_runtime_types",
+ "source_rel": "gep\\experience_packet.py",
+ "provider": "ark_glm",
+ "test_passed": true,
+ "winning_diff": "--- a/gep/experience_packet.py\n+++ b/gep/experience_packet.py\n@@ -32,6 +32,17 @@\n \n     def __post_init__(self) -> None:\n         object.__setattr__(self, \"tool_chain\", _normalize_tool_chain(self.tool_chain))\n+        _validate_scalar(\"episode_id\", self.episode_id, str)\n+        _validate_scalar(\"parent_episode_id\", self.parent_episode_id, str)\n+        _validate_scalar(\"task\", self.task, str)\n+        _validate_scalar(\"action_kind\", self.action_kind, str)\n+        _validate_scalar(\"outcome\", self.outcome, str)\n+        _validate_scalar(\"failure_mode\", self.failure_mode, str)\n+        _validate_scalar(\"route_key\", self.route_key, str)\n+        _validate_scalar(\"policy_hint\", self.policy_hint, str)\n+        _validate_scalar(\"reward_delta\", self.reward_delta, float)\n+        _validate_scalar(\"impact\", self.impact, float)\n+        _validate_scalar(\"capsule_candidate\", self.capsule_candidate, bool)\n \n \n _FIELD_NAMES = tuple(field.name for field in fields(ExperiencePacket))\n@@ -50,4 +61,15 @@\n     return normalized\n \n \n+def _validate_scalar(field_name: str, value: Any, expected_type: type) -> None:\n+    if value is None:\n+        return\n+    if expected_type is float:\n+        valid = isinstance(value, (int, float)) and not isinstance(value, bool)\n+    else:\n+        valid = isinstance(value, expected_type)\n+    if not valid:\n+        raise TypeError(f\"{field_name} must be a {expected_type.__name__} or None\")\n+\n+\n def from_args(",
+ "budget_exceeded": false,
+ "total_tokens": 51875,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "completion_tokens": 14422,
+    "prompt_tokens": 1854,
+    "total_tokens": 16276,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 13761
+    }
+   },
+   "feedback_kind": "no_json",
+   "feedback_excerpt": "Looking at the failing test, the `ExperiencePacket.__post_init__` method only normalizes `tool_chain` but doesn't validate any of the scalar fields. The test expects that passing wrong types (e.g., `int` for a `str` field, `bool` for a `float` field, `str` for a `bool` field) raises a `TypeError` with a message matching `\"{field_name} must ...\"`.\n\nI need to add validation for:\n1. String fields (`episode_id`, `parent_episode_id`, `task`, `action_kind`, `outcome`, `failure_mode`, `route_key`, `pol"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "completion_tokens": 33695,
+    "prompt_tokens": 1904,
+    "total_tokens": 35599,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 33254
+    }
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "validate_scalar_field_types",
+ "duration_s": 719.9,
+ "replayed": true,
+ "verdict_post_status": 200
+}

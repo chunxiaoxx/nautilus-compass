@@ -1,0 +1,250 @@
+{
+  "contract_version": "platform-t1-interface-v1",
+  "project_name": "三期垂直领域出题",
+  "audience": "已绑定身份的外部专家",
+  "permitted_surface": "智涌导师状态卡片与同一阶段式工作台",
+  "card_template": [
+    "项目名",
+    "当前状态",
+    "当前进度详情",
+    "唯一下一动作",
+    "截止时间",
+    "Agent 检查摘要"
+  ],
+  "expert_visible_conclusions": [
+    "可以进入下一步",
+    "请补充后再提交",
+    "已转项目支持"
+  ],
+  "prohibited_disclosure": [
+    "内部数值分数",
+    "阈值和置信度",
+    "模型提示词",
+    "去重指纹",
+    "风控规则",
+    "他人数据",
+    "审核人身份",
+    "甲方内部备注"
+  ],
+  "states": [
+    {
+      "status": "准入审核中",
+      "primary_action": "等待飞书通知",
+      "headline": "当前状态：准入审核中",
+      "explanation": "等待运营审核你的准入信息。",
+      "do_not": "不要另填表、私聊绕过流程、重填 UID 或重复创建记录。"
+    },
+    {
+      "status": "准入需补充",
+      "primary_action": "补充准入信息",
+      "headline": "当前状态：准入需补充",
+      "explanation": "只补齐系统要求的准入信息。",
+      "do_not": "不要另填表、私聊绕过流程、重填 UID 或重复创建记录。"
+    },
+    {
+      "status": "可开始出题",
+      "primary_action": "开始出题",
+      "headline": "当前状态：可开始出题",
+      "explanation": "填写真实办公任务及附件来源/脱敏确认。",
+      "do_not": "不要另填表、私聊绕过流程、重填 UID 或重复创建记录。"
+    },
+    {
+      "status": "题目检查中",
+      "primary_action": "等待检查结果",
+      "headline": "当前状态：题目检查中",
+      "explanation": "等待 Agent 检查与运营确认。",
+      "do_not": "不要另填表、私聊绕过流程、重填 UID 或重复创建记录。"
+    },
+    {
+      "status": "题目需补充",
+      "primary_action": "修改题目并再次提交",
+      "headline": "当前状态：题目需补充",
+      "explanation": "根据反馈修改开放字段。",
+      "do_not": "不要另填表、私聊绕过流程、重填 UID 或重复创建记录。"
+    },
+    {
+      "status": "可开始交互",
+      "primary_action": "开始豆包交互",
+      "headline": "当前状态：可开始交互",
+      "explanation": "锁定题面只读，使用办公任务模式开始交互。",
+      "do_not": "不要另填表、私聊绕过流程、重填 UID 或重复创建记录。"
+    },
+    {
+      "status": "交互进行中",
+      "primary_action": "继续交互并完善证据",
+      "headline": "当前状态：交互进行中",
+      "explanation": "完成至少六轮有效交互，逐轮填写评价。",
+      "do_not": "不要另填表、私聊绕过流程、重填 UID 或重复创建记录。"
+    },
+    {
+      "status": "交互检查中",
+      "primary_action": "等待检查结果",
+      "headline": "当前状态：交互检查中",
+      "explanation": "等待交互证据检查与运营确认。",
+      "do_not": "不要另填表、私聊绕过流程、重填 UID 或重复创建记录。"
+    },
+    {
+      "status": "交互需补充",
+      "primary_action": "补充交互证据",
+      "headline": "当前状态：交互需补充",
+      "explanation": "补齐指定轮次或对应证据。",
+      "do_not": "不要另填表、私聊绕过流程、重填 UID 或重复创建记录。"
+    },
+    {
+      "status": "甲方审核中",
+      "primary_action": "等待甲方结果",
+      "headline": "当前状态：甲方审核中",
+      "explanation": "无需重复提交，等待通知。",
+      "do_not": "不要另填表、私聊绕过流程、重填 UID 或重复创建记录。"
+    },
+    {
+      "status": "需返修",
+      "primary_action": "开始返修",
+      "headline": "当前状态：需返修",
+      "explanation": "仅修改被退回字段，原提交保持只读。",
+      "do_not": "不要另填表、私聊绕过流程、重填 UID 或重复创建记录。"
+    },
+    {
+      "status": "已验收",
+      "primary_action": "查看结果",
+      "headline": "当前状态：已验收",
+      "explanation": "查看验收结果与后续通知。",
+      "do_not": "不要另填表、私聊绕过流程、重填 UID 或重复创建记录。"
+    },
+    {
+      "status": "已终止",
+      "primary_action": "查看原因",
+      "headline": "当前状态：已终止",
+      "explanation": "查看终止原因，等待运营指引。",
+      "do_not": "不要另填表、私聊绕过流程、重填 UID 或重复创建记录。"
+    }
+  ],
+  "p0_feedback_categories": [
+    {
+      "category": "信息不完整",
+      "correction": "补齐当前阶段所缺字段或证据。"
+    },
+    {
+      "category": "场景或题型不符合",
+      "correction": "补充真实办公动作与场景约束。"
+    },
+    {
+      "category": "真实性或来源不足",
+      "correction": "说明来源、授权和你的真实参与关系。"
+    },
+    {
+      "category": "隐私脱敏或合规风险",
+      "correction": "删除或脱敏敏感内容后重新提交。"
+    },
+    {
+      "category": "任务不可执行或不可稳定回答",
+      "correction": "明确输入、期望结果和可追问方向。"
+    },
+    {
+      "category": "重复或冲突",
+      "correction": "等待运营处理，不另建重复记录。"
+    },
+    {
+      "category": "交互证据不完整或不一致",
+      "correction": "补齐轮次、逐轮反馈或对应证据。"
+    }
+  ],
+  "p1_improvement_topics": [
+    "行业细节",
+    "数据比较",
+    "规范依据",
+    "决策结构",
+    "依赖链",
+    "时效性",
+    "真实业务动作",
+    "证据引用",
+    "结构化表达"
+  ],
+  "error_microguides": [
+    {
+      "key": "uid_or_permission",
+      "issue": "UID 未开通、填错或权限未生效",
+      "action": "从“遇到问题”选择 UID/权限，等待运营联系。",
+      "entry": "遇到问题"
+    },
+    {
+      "key": "feishu_account",
+      "issue": "使用了未绑定飞书账号",
+      "action": "从“遇到问题”选择飞书账号，勿用其他账号重新提交。",
+      "entry": "遇到问题"
+    },
+    {
+      "key": "attachment",
+      "issue": "附件隐私、脱敏、来源或访问问题",
+      "action": "移除风险内容并补充来源/授权；链接必须可访问。",
+      "entry": "遇到问题"
+    },
+    {
+      "key": "task_quality",
+      "issue": "题目通用、非办公任务或无法形成六轮",
+      "action": "补充真实场景、具体业务动作和可追问方向。",
+      "entry": "遇到问题"
+    },
+    {
+      "key": "locked_prompt",
+      "issue": "锁题后又想修改题面",
+      "action": "不要原地修改；通过异常入口由运营判断终止重建或继续。",
+      "entry": "遇到问题"
+    },
+    {
+      "key": "rounds",
+      "issue": "轮数不足、重复或偏题",
+      "action": "补做相关有效追问，不把无效轮次计入。",
+      "entry": "遇到问题"
+    },
+    {
+      "key": "per_turn_feedback",
+      "issue": "缺少点赞/踩、标签或具体理由",
+      "action": "逐轮补齐；理由说明该回答对任务的具体价值或不足。",
+      "entry": "遇到问题"
+    },
+    {
+      "key": "evidence_match",
+      "issue": "截图、链接、日志缺失或不对应",
+      "action": "补齐同一次会话的三类可访问证据。",
+      "entry": "遇到问题"
+    },
+    {
+      "key": "continuation_or_duplicate",
+      "issue": "链接过期、重复点击或网络超时",
+      "action": "不要重复造记录；从异常入口提交问题。",
+      "entry": "遇到问题"
+    },
+    {
+      "key": "readback",
+      "issue": "页面显示提交但未读回",
+      "action": "停止重复提交，等待运营按读回结果处理。",
+      "entry": "遇到问题"
+    },
+    {
+      "key": "agent_conflict",
+      "issue": "Agent 建议与身份或合规事实冲突",
+      "action": "不自行修改分数或绕过流程，等待运营升级。",
+      "entry": "遇到问题"
+    },
+    {
+      "key": "revision",
+      "issue": "甲方返修或锁题缺陷",
+      "action": "只修改开放字段；旧题关系由系统保留。",
+      "entry": "遇到问题"
+    },
+    {
+      "key": "stuck_status",
+      "issue": "状态长时间不前进",
+      "action": "使用“遇到问题”，不要另填表或私聊绕过账本。",
+      "entry": "遇到问题"
+    }
+  ],
+  "immutable_rules": [
+    "只允许一个业务主按钮",
+    "锁题后题面只读",
+    "写入以 Bitable 写入并读回成功为准",
+    "异常处理中不覆盖底层业务状态",
+    "不增加状态、字段、按钮或平行入口"
+  ]
+}

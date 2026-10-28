@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily behavioral drift cron timer
+
+[Timer]
+# Daily at 03:17 local · off-the-hour to avoid cron stampede
+OnCalendar=*-*-* 03:17:00
+Persistent=true
+Unit=behavioral-drift.service
+
+[Install]
+WantedBy=timers.target

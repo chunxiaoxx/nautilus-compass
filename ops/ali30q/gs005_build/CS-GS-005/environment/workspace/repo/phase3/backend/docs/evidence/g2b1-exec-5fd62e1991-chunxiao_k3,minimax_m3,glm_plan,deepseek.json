@@ -1,0 +1,73 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "91d1392593d5d313a029c9c5885b51b5b43721a0",
+  "reference_fix_commit": "5fd62e1991a4f38ef5871b91ed0570b74d40ac19",
+  "subject": "fix(variant-gen): propose_patch\u89e3\u5305JSON artifact\u2014\u2014SYSTEM_PROMPT\u81f4GLM\u56de{unified_diff}\u5305\u88f9,pilot proposed=0\u6839\u56e0;\u542b\u622a\u65adJSON\u6b63\u5219\u515c\u5e95;TDD 10 green",
+  "test_files": [
+   "phase3/backend/tests/platform_protocol/test_g2_b1_variant_gen.py"
+  ],
+  "source_files": [
+   "phase3/backend/tools/g2_b1_variant_gen.py"
+  ],
+  "repo_path": "C:/Users/chunx/Projects/nautilus-core"
+ },
+ "test_id": "tests/platform_protocol/test_g2_b1_variant_gen.py::test_propose_patch_unwraps_json_artifact",
+ "source_rel": "tools\\g2_b1_variant_gen.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "diff --git a/tools/g2_b1_variant_gen.py b/tools/g2_b1_variant_gen.py\n--- a/tools/g2_b1_variant_gen.py\n+++ b/tools/g2_b1_variant_gen.py\n@@ -14,5 +14,6 @@\n from __future__ import annotations\n \n import hashlib\n+import json\n import re\n from pathlib import Path\n@@ -102,5 +103,22 @@\n # ---------- OP-1 LLM \u63d0\u6848 + \u53d8\u4f53\u53cc\u95e8(\u62791 \u4e3b\u6d41\u7a0b) ----------\n \n _DIFF_FENCE = re.compile(r\"```[a-z]*\\n(.*?)```\", re.S)\n \n+_ARTIFACT_DIFF_KEYS = (\"unified_diff\", \"diff\", \"patch\", \"content\")\n+\n+\n+def _unwrap_json_artifact(reply: str) -> str:\n+    \"\"\"LLM \u53ef\u80fd\u56de JSON artifact(\u4fee\u590d\u5faa\u73af\u534f\u8bae);\u62bd\u51fa\u5176\u4e2d\u7684 diff \u6587\u672c\u3002\"\"\"\n+    try:\n+        obj = json.loads(reply)\n+    except (TypeError, ValueError):\n+        return reply\n+    if isinstance(obj, dict):\n+        for key in _ARTIFACT_DIFF_KEYS:\n+            val = obj.get(key)\n+            if isinstance(val, str) and val.strip():\n+                return val\n+    return reply\n+\n+\n PROMPT_TMPL = \"\"\"You are synthesizing a bug-injection VARIANT of a real fix, for an SWE repair benchmark.\n@@ -132,6 +150,7 @@\n     if isinstance(reply, dict):          # executor completer \u5f62\u72b6 {content, usage, ...}\n         reply = reply.get(\"content\")\n     if not reply:\n         return None\n+    reply = _unwrap_json_artifact(reply)\n     m = _DIFF_FENCE.search(reply)\n     text = (m.group(1) if m else reply).strip()\n",
+ "budget_exceeded": false,
+ "total_tokens": 8224,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 3612,
+    "completion_tokens": 4612,
+    "total_tokens": 8224,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 3612,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 4612,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 0,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 3612,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "unwrap-json-artifact-in-propose-patch",
+ "duration_s": 143.4,
+ "verdict_post_status": 200
+}

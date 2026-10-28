@@ -1,0 +1,16 @@
+delivery_status: provisional · GPT5.5 N=3 真测 · **Medium** ✓
+task_uid: genopt_?_Attention_attn_d64_h8_n512_v1_001_20260704
+spec_ref: vtf/BUYER_SPEC_GenOpt_RL_20260702.md
+platform: platform (nautilus-core)
+hand_off:
+  - platform: Task.md + baseline/init.py + reference/solve.py + verification/{evaluate,_run_one,_naive_one}.py + 9 frontier_eval/*.txt + data/SOURCE.txt + 4 data/instances/*.json + Dockerfile + README.md
+  - soul: pending verifier QC final review
+  - V5: pending batch runner hookup
+  - FDE: pending feishu table domain extension
+gap_closed_calibration:
+  seed: 0.8676
+  best: 33.7612
+  gap: 0.3289
+  difficulty: Medium
+  rounds: "r1=17.45/250s · r2=27.65/208s · r3=33.76/254s"
+  trajectory: gpt55_trajectory_h800.json (H800 真 grounded · 6.0KB)

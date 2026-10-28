@@ -1,0 +1,116 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "fdaa4f5cbe09590c0a1e5fd5443286d9a64eefcb",
+  "reference_fix_commit": "69c976dc88516d5f47ff6f3b063efee913878987",
+  "subject": "fix(fde): \u7b2c\u4e03\u4fee\u2014\u2014dead_letters\u53d6\u9996\u5217,\u6b7b\u4fe1\u8fc7\u6ee4\u81ea\u4e0a\u7ebf\u5373\u5931\u6548(\u6574\u884c\u8fdb\u96c6\u5408\u4e0euid\u6c38\u4e0d\u5339\u914d\u00b7claim/resume\u4e24\u8def\u767d\u6ee4\u00b7a379\u6b7b\u4fe1\u5728\u518c\u4ecd\u88abproduce\u5b9e\u8bc1)",
+  "test_files": [
+   "tests/test_fde_consumer.py"
+  ],
+  "source_files": [
+   "fde_capsule/fde_consumer.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\nautilus-v5"
+ },
+ "test_id": "tests/test_fde_consumer.py::test_dead_letters_parses_first_column",
+ "source_rel": "fde_capsule\\fde_consumer.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/fde_capsule/fde_consumer.py\n+++ b/fde_capsule/fde_consumer.py\n@@ -178,7 +178,7 @@\n def dead_letters() -> set:\n     try:\n-        return {l.strip() for l in _dead_letter_path().read_text(\n+        return {l.split(\"\\t\", 1)[0].strip() for l in _dead_letter_path().read_text(\n             encoding=\"utf-8\").splitlines() if l.strip()}\n     except OSError:\n         return set()\n",
+ "budget_exceeded": false,
+ "total_tokens": 14482,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 6859,
+    "completion_tokens": 291,
+    "total_tokens": 7150,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 6859,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 291,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 0,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 6859,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: No valid patches in input (allow with \"--allow-empty\")\n\n[attempt2 backend] error: No valid patches in input (allow with \"--allow-empty\")\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 6955,
+    "completion_tokens": 377,
+    "total_tokens": 7332,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 299,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 6656,
+      "output_tokens": 377,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 6656,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 6955,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "dead_letters_first_column",
+ "duration_s": 22.3,
+ "verdict_post_status": 200
+}

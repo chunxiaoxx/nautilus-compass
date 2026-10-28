@@ -1,0 +1,29 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "30262410d6916dae1ae9ea2d1ba52b90c30581bf",
+  "reference_fix_commit": "f7a3aef2cb3faf8acb938b43e3f88226cec03ec1",
+  "subject": "fix: reject untrusted Self-Proof cleanup roots",
+  "test_files": [
+   "tests/test_selfproof_runner.py"
+  ],
+  "source_files": [
+   "src/nautilusflywheel/selfproof_runner_artifacts.py"
+  ],
+  "repo_path": "C:/Users/chunx/Projects/nautilusflywheel"
+ },
+ "test_id": "tests/test_selfproof_runner.py",
+ "source_rel": "src\\nautilusflywheel\\selfproof_runner_artifacts.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "skipped_reason": "fixture_broken_red",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 2.8,
+ "replayed": true,
+ "verdict_post_status": 200
+}

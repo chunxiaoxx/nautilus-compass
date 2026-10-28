@@ -1,0 +1,38 @@
+[
+  {
+    "round": 1,
+    "baseline_score": 0.981250115661621,
+    "candidate_score": 0.9836228518306732,
+    "delta": 0.002372736169052203,
+    "improved": true,
+    "accuracy": 1.0,
+    "reasoning": "Added explicit sentiment definitions to reduce label ambiguity. Included guidance for edge cases (sarcasm, mixed sentiment, questions) which are common sources of misclassification. Changed output format requirement to 'ONLY JSON' and 'no markdown' to prevent parsing issues. Added confidence scoring guidance based on clarity level. Specified exact confidence ranges to standardize outputs. Added text escaping and ordering requirements for consistency. The system prompt now provides comprehensive classification guidelines upfront, while the task prompt serves as the immediate instruction with specific output constraints.",
+    "system_version": 2,
+    "task_version": 2,
+    "timestamp": "2026-03-19T15:52:05.968140"
+  },
+  {
+    "round": 2,
+    "baseline_score": 0.9836228518306732,
+    "candidate_score": 0.9465041630004882,
+    "delta": -0.03711868883018499,
+    "improved": false,
+    "accuracy": 0.95,
+    "reasoning": "1. Added concrete examples in sentiment definitions to reduce ambiguity about what qualifies as each category. 2. Explicitly defined negations (reverses sentiment) and intensifiers (amplify but don't change direction) which were previously implied. 3. Improved mixed sentiment handling by specifying 'dominant emotional tone' and tie-breaker rule. 4. Added specific guidance on conditional statements and rhetorical questions. 5. Refined confidence scoring thresholds (0.6-0.89 changed to 0.7-0.89) for clearer boundaries and added explicit guidance for sub-0.5 cases. 6. Task prompt now includes explicit JSON validation rules (no trailing commas, proper bracket matching) to reduce malformed output errors.",
+    "system_version": 3,
+    "task_version": 3,
+    "timestamp": "2026-03-19T15:52:58.703647"
+  },
+  {
+    "round": 3,
+    "baseline_score": 0.9836228518306732,
+    "candidate_score": 0.943315436730957,
+    "delta": -0.04030741509971625,
+    "improved": false,
+    "accuracy": 0.95,
+    "reasoning": "Key improvements: (1) Fixed the Chinese character typo ('\u503e\u5411') in the neutral definition, (2) Added specific examples for each sentiment type with clearer boundaries, (3) Expanded the classification rules with 9 detailed guidelines covering edge cases (questions, conditional statements, emojis, rhetorical questions), (4) Replaced the vague confidence scale with precise ranges and examples for each tier, (5) Added common pattern recognition guidance to handle frequent ambiguity, (6) Clarified JSON escaping requirements with specific escape sequences, (7) Added explicit instruction that questions without opinion are neutral (addressing a common classification error). The task prompt now includes concrete examples of tricky cases (thanks, 'interesting', weather statements) to reduce inconsistent labeling.",
+    "system_version": 4,
+    "task_version": 4,
+    "timestamp": "2026-03-19T15:53:48.614734"
+  }
+]

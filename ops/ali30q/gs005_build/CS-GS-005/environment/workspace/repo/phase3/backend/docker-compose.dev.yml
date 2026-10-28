@@ -1,0 +1,69 @@
+version: '3.8'
+
+# 开发环境配置
+services:
+  nexus-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: nexus-server:dev
+    container_name: nexus-server-dev
+    ports:
+      - "8001:8001"
+    environment:
+      # 服务器配置
+      - MAX_AGENTS=50
+      - MAX_QUEUE_SIZE=500
+      - CORS_ORIGINS=*
+
+      # 日志级别
+      - LOG_LEVEL=debug
+
+      # 环境
+      - ENVIRONMENT=development
+
+    # 开发环境资源限制（较宽松）
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+
+    # 重启策略
+    restart: unless-stopped
+
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8001/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "2"
+
+    # 网络模式
+    networks:
+      - nexus-network
+
+    # 卷挂载（开发环境挂载源代码）
+    volumes:
+      - ./nexus_server.py:/app/nexus_server.py
+      - ./nexus_protocol:/app/nexus_protocol
+      - nexus-logs:/app/logs
+
+volumes:
+  nexus-logs:
+    driver: local
+
+networks:
+  nexus-network:
+    driver: bridge

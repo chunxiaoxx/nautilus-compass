@@ -1,0 +1,13 @@
+[Unit]
+Description=Run Nautilus SOT 双表 reconcile daily at 03:00 UTC
+Documentation=file:///home/ubuntu/nautilus-mvp/docs/DEPLOY_SOP_2026_05_19_evening.md
+
+[Timer]
+# 真 daily 03:00 UTC(亚洲 11:00)· 真低 traffic 时段
+OnCalendar=*-*-* 03:00:00
+Unit=nautilus-sot-reconcile.service
+Persistent=true
+RandomizedDelaySec=5min
+
+[Install]
+WantedBy=timers.target

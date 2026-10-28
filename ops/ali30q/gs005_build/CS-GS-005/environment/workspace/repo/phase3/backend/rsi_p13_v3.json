@@ -1,0 +1,494 @@
+{
+  "task": "kb_l2_p13",
+  "model": "deepseek-v4-pro",
+  "k1": 8,
+  "k2": 6,
+  "turn1_best_speedup": null,
+  "turn2_best_speedup": null,
+  "delta": null,
+  "rsi_proven": false,
+  "memory_injected": false,
+  "turn1_speedups": [
+    null,
+    null,
+    null,
+    null,
+    0.40083507306889354,
+    null,
+    null,
+    null
+  ],
+  "turn2_speedups": [],
+  "best1_code": null,
+  "best2_code": null,
+  "raw_turn1": [
+    {
+      "harness": "kb_eval.py v1 (T4/Turing, guards G1-G3)",
+      "level": 2,
+      "problem_id": 13,
+      "ref_file": "/mnt/datadisk0/KernelBench/KernelBench/level2/13_ConvTranspose3d_Mean_Add_Softmax_Tanh_Scaling.py",
+      "candidate": "/mnt/datadisk0/fde_t3_harness/kb_selftest/sdiag/cand_p13_14339.py",
+      "gpu": "Tesla T4",
+      "guards": {
+        "fake_kernel": {
+          "ok": true,
+          "errors": [],
+          "details": {
+            "has_global": true,
+            "has_loader": true,
+            "custom_module_names": [
+              "fused_ops"
+            ],
+            "custom_module_used": true
+          }
+        },
+        "static_official": {
+          "valid": true,
+          "errors": [],
+          "warnings": [
+            "Uses torch.nn.functional op: F.conv",
+            "Uses torch.nn compute layer (only containers, Parameter, init allowed)"
+          ]
+        },
+        "precision_static": {
+          "suspect": false,
+          "patterns": []
+        }
+      },
+      "ref_time": {
+        "mean": 192.0,
+        "std": 4.05,
+        "min": 181.0,
+        "max": 228.0,
+        "num_trials": 100,
+        "hardware": "Tesla T4",
+        "device": "cuda:0"
+      },
+      "eval": {
+        "compiled": true,
+        "correctness": false,
+        "runtime_ms": -1.0,
+        "metadata": {
+          "hardware": "Tesla T4",
+          "device": "cuda:0",
+          "max_difference": [
+            "1.501270",
+            "1.495378",
+            "1.499054",
+            "1.495190",
+            "1.499293"
+          ],
+          "avg_difference": [
+            "0.053565",
+            "0.053563",
+            "0.053565",
+            "0.053564",
+            "0.053563"
+          ],
+          "correctness_issue": "Output mismatch",
+          "correctness_trials": "(0 / 5)"
+        }
+      },
+      "pass_final": false,
+      "reward": 0.0,
+      "reason": "official_eval_fail"
+    },
+    {
+      "harness": "kb_eval.py v1 (T4/Turing, guards G1-G3)",
+      "level": 2,
+      "problem_id": 13,
+      "ref_file": "/mnt/datadisk0/KernelBench/KernelBench/level2/13_ConvTranspose3d_Mean_Add_Softmax_Tanh_Scaling.py",
+      "candidate": "/mnt/datadisk0/fde_t3_harness/kb_selftest/sdiag/cand_p13_44636.py",
+      "gpu": "Tesla T4",
+      "guards": {
+        "fake_kernel": {
+          "ok": true,
+          "errors": [],
+          "details": {
+            "has_global": true,
+            "has_loader": true,
+            "custom_module_names": [
+              "fused_op"
+            ],
+            "custom_module_used": true
+          }
+        },
+        "static_official": {
+          "valid": true,
+          "errors": [],
+          "warnings": [
+            "Uses torch.nn.functional op: F.conv",
+            "Uses torch.nn compute layer (only containers, Parameter, init allowed)"
+          ]
+        },
+        "precision_static": {
+          "suspect": false,
+          "patterns": []
+        }
+      },
+      "ref_time": {
+        "mean": 191.0,
+        "std": 2.31,
+        "min": 178.0,
+        "max": 197.0,
+        "num_trials": 100,
+        "hardware": "Tesla T4",
+        "device": "cuda:0"
+      },
+      "eval": {
+        "compiled": true,
+        "correctness": false,
+        "runtime_ms": -1.0,
+        "metadata": {
+          "hardware": "Tesla T4",
+          "device": "cuda:0",
+          "max_difference": [
+            "0.138001",
+            "0.137246",
+            "0.138344",
+            "0.138034",
+            "0.137399"
+          ],
+          "avg_difference": [
+            "0.001551",
+            "0.001622",
+            "0.001579",
+            "0.001534",
+            "0.001633"
+          ],
+          "correctness_issue": "Output mismatch",
+          "correctness_trials": "(0 / 5)"
+        }
+      },
+      "pass_final": false,
+      "reward": 0.0,
+      "reason": "official_eval_fail"
+    },
+    {
+      "error": "no_json",
+      "raw_tail": "Using PyTorch Eager Execution on 13_ConvTranspose3d_Mean_Add_Softmax_Tanh_Scaling.py\n[Profiling] Using timing method: cuda_event\n[Profiling] Using device: cuda:0 Tesla T4, warm up 5, trials 100\n"
+    },
+    {
+      "harness": "kb_eval.py v1 (T4/Turing, guards G1-G3)",
+      "level": 2,
+      "problem_id": 13,
+      "ref_file": "/mnt/datadisk0/KernelBench/KernelBench/level2/13_ConvTranspose3d_Mean_Add_Softmax_Tanh_Scaling.py",
+      "candidate": "/mnt/datadisk0/fde_t3_harness/kb_selftest/sdiag/cand_p13_95079.py",
+      "gpu": "Tesla T4",
+      "guards": {
+        "fake_kernel": {
+          "ok": true,
+          "errors": [],
+          "details": {
+            "has_global": true,
+            "has_loader": true,
+            "custom_module_names": [
+              "fused_op"
+            ],
+            "custom_module_used": true
+          }
+        },
+        "static_official": {
+          "valid": true,
+          "errors": [],
+          "warnings": [
+            "Uses torch.nn compute layer (only containers, Parameter, init allowed)",
+            "Uses torch.nn.functional op: F.conv"
+          ]
+        },
+        "precision_static": {
+          "suspect": false,
+          "patterns": []
+        }
+      },
+      "ref_time": {
+        "mean": 192.0,
+        "std": 1.66,
+        "min": 184.0,
+        "max": 199.0,
+        "num_trials": 100,
+        "hardware": "Tesla T4",
+        "device": "cuda:0"
+      },
+      "eval": {
+        "compiled": true,
+        "correctness": false,
+        "runtime_ms": -1.0,
+        "metadata": {
+          "hardware": "Tesla T4",
+          "device": "cuda:0",
+          "max_difference": [
+            "1.501270",
+            "1.495378",
+            "1.499054",
+            "1.495190",
+            "1.499293"
+          ],
+          "avg_difference": [
+            "0.053565",
+            "0.053563",
+            "0.053565",
+            "0.053564",
+            "0.053563"
+          ],
+          "correctness_issue": "Output mismatch",
+          "correctness_trials": "(0 / 5)"
+        }
+      },
+      "pass_final": false,
+      "reward": 0.0,
+      "reason": "official_eval_fail"
+    },
+    {
+      "harness": "kb_eval.py v1 (T4/Turing, guards G1-G3)",
+      "level": 2,
+      "problem_id": 13,
+      "ref_file": "/mnt/datadisk0/KernelBench/KernelBench/level2/13_ConvTranspose3d_Mean_Add_Softmax_Tanh_Scaling.py",
+      "candidate": "/mnt/datadisk0/fde_t3_harness/kb_selftest/sdiag/cand_p13_50329.py",
+      "gpu": "Tesla T4",
+      "guards": {
+        "fake_kernel": {
+          "ok": true,
+          "errors": [],
+          "details": {
+            "has_global": true,
+            "has_loader": true,
+            "custom_module_names": [
+              "fused_op"
+            ],
+            "custom_module_used": true
+          }
+        },
+        "static_official": {
+          "valid": true,
+          "errors": [],
+          "warnings": [
+            "Uses torch.nn.functional op: F.conv",
+            "Uses torch.nn compute layer (only containers, Parameter, init allowed)"
+          ]
+        },
+        "precision_static": {
+          "suspect": false,
+          "patterns": []
+        }
+      },
+      "ref_time": {
+        "mean": 192.0,
+        "std": 1.78,
+        "min": 183.0,
+        "max": 199.0,
+        "num_trials": 100,
+        "hardware": "Tesla T4",
+        "device": "cuda:0"
+      },
+      "eval": {
+        "compiled": true,
+        "correctness": true,
+        "runtime_ms": 479.0,
+        "metadata": {
+          "hardware": "Tesla T4",
+          "device": "cuda:0",
+          "correctness_trials": "(5 / 5)"
+        }
+      },
+      "strict_recheck": {
+        "tolerance": 0.001,
+        "seed": 1337,
+        "correctness": true,
+        "metadata": {
+          "hardware": "Tesla T4",
+          "device": "cuda:0",
+          "correctness_trials": "(5 / 5)"
+        }
+      },
+      "speedup_vs_eager": 0.40083507306889354,
+      "pass_final": true,
+      "reward": 0.4008,
+      "reason": "pass"
+    },
+    {
+      "harness": "kb_eval.py v1 (T4/Turing, guards G1-G3)",
+      "level": 2,
+      "problem_id": 13,
+      "ref_file": "/mnt/datadisk0/KernelBench/KernelBench/level2/13_ConvTranspose3d_Mean_Add_Softmax_Tanh_Scaling.py",
+      "candidate": "/mnt/datadisk0/fde_t3_harness/kb_selftest/sdiag/cand_p13_80626.py",
+      "gpu": "Tesla T4",
+      "guards": {
+        "fake_kernel": {
+          "ok": true,
+          "errors": [],
+          "details": {
+            "has_global": true,
+            "has_loader": true,
+            "custom_module_names": [
+              "fused_ops"
+            ],
+            "custom_module_used": true
+          }
+        },
+        "static_official": {
+          "valid": true,
+          "errors": [],
+          "warnings": [
+            "Uses torch.nn.functional op: F.conv",
+            "Uses torch.nn compute layer (only containers, Parameter, init allowed)"
+          ]
+        },
+        "precision_static": {
+          "suspect": false,
+          "patterns": []
+        }
+      },
+      "ref_time": {
+        "mean": 194.0,
+        "std": 4.72,
+        "min": 177.0,
+        "max": 236.0,
+        "num_trials": 100,
+        "hardware": "Tesla T4",
+        "device": "cuda:0"
+      },
+      "eval": {
+        "compiled": true,
+        "correctness": false,
+        "runtime_ms": -1.0,
+        "metadata": {
+          "hardware": "Tesla T4",
+          "device": "cuda:0",
+          "runtime_error": "Given transposed=1, weight of size [64, 16, 3, 3, 3], expected input[16, 16, 32, 128, 128] to have 64 channels, but got 16 channels instead",
+          "runtime_error_name": "builtins.RuntimeError",
+          "runtime_error_traceback": "Traceback (most recent call last):\n  File \"/mnt/datadisk0/KernelBench/src/kernelbench/eval.py\", line 782, in run_and_check_correctness\n    output_new = model_new(*inputs)\n  File \"/mnt/datadisk0/KernelBench/.venv/lib/python3.10/site-packages/torch/nn/modules/module.py\", line 1776, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n  File \"/mnt/datadisk0/KernelBench/.venv/lib/python3.10/site-packages/torch/nn/modules/module.py\", line 1787, in _call_impl\n    return forward_call(*args, **kwargs)\n  File \"<string>\", line 152, in forward\nRuntimeError: Given transposed=1, weight of size [64, 16, 3, 3, 3], expected input[16, 16, 32, 128, 128] to have 64 channels, but got 16 channels instead\n"
+        }
+      },
+      "pass_final": false,
+      "reward": 0.0,
+      "reason": "official_eval_fail"
+    },
+    {
+      "harness": "kb_eval.py v1 (T4/Turing, guards G1-G3)",
+      "level": 2,
+      "problem_id": 13,
+      "ref_file": "/mnt/datadisk0/KernelBench/KernelBench/level2/13_ConvTranspose3d_Mean_Add_Softmax_Tanh_Scaling.py",
+      "candidate": "/mnt/datadisk0/fde_t3_harness/kb_selftest/sdiag/cand_p13_27435.py",
+      "gpu": "Tesla T4",
+      "guards": {
+        "fake_kernel": {
+          "ok": true,
+          "errors": [],
+          "details": {
+            "has_global": true,
+            "has_loader": true,
+            "custom_module_names": [
+              "fused_op"
+            ],
+            "custom_module_used": true
+          }
+        },
+        "static_official": {
+          "valid": true,
+          "errors": [],
+          "warnings": []
+        },
+        "precision_static": {
+          "suspect": false,
+          "patterns": []
+        }
+      },
+      "ref_time": {
+        "mean": 192.0,
+        "std": 1.87,
+        "min": 188.0,
+        "max": 199.0,
+        "num_trials": 100,
+        "hardware": "Tesla T4",
+        "device": "cuda:0"
+      },
+      "eval": {
+        "compiled": true,
+        "correctness": false,
+        "runtime_ms": -1.0,
+        "metadata": {
+          "hardware": "Tesla T4",
+          "device": "cuda:0",
+          "correctness_issue": "Output shape mismatch: Expected torch.Size([16, 64, 1, 128, 128]), got torch.Size([16, 16, 1, 128, 128])",
+          "correctness_issue_name": "correctness_issue"
+        }
+      },
+      "pass_final": false,
+      "reward": 0.0,
+      "reason": "official_eval_fail"
+    },
+    {
+      "harness": "kb_eval.py v1 (T4/Turing, guards G1-G3)",
+      "level": 2,
+      "problem_id": 13,
+      "ref_file": "/mnt/datadisk0/KernelBench/KernelBench/level2/13_ConvTranspose3d_Mean_Add_Softmax_Tanh_Scaling.py",
+      "candidate": "/mnt/datadisk0/fde_t3_harness/kb_selftest/sdiag/cand_p13_31069.py",
+      "gpu": "Tesla T4",
+      "guards": {
+        "fake_kernel": {
+          "ok": true,
+          "errors": [],
+          "details": {
+            "has_global": true,
+            "has_loader": true,
+            "custom_module_names": [
+              "fused_op"
+            ],
+            "custom_module_used": true
+          }
+        },
+        "static_official": {
+          "valid": true,
+          "errors": [],
+          "warnings": [
+            "Uses torch.nn.functional op: F.conv",
+            "Uses torch.nn compute layer (only containers, Parameter, init allowed)"
+          ]
+        },
+        "precision_static": {
+          "suspect": false,
+          "patterns": []
+        }
+      },
+      "ref_time": {
+        "mean": 192.0,
+        "std": 1.76,
+        "min": 188.0,
+        "max": 197.0,
+        "num_trials": 100,
+        "hardware": "Tesla T4",
+        "device": "cuda:0"
+      },
+      "eval": {
+        "compiled": true,
+        "correctness": false,
+        "runtime_ms": -1.0,
+        "metadata": {
+          "hardware": "Tesla T4",
+          "device": "cuda:0",
+          "max_difference": [
+            "0.177308",
+            "0.177357",
+            "0.177079",
+            "0.176361",
+            "0.176709"
+          ],
+          "avg_difference": [
+            "0.037100",
+            "0.037100",
+            "0.037100",
+            "0.037100",
+            "0.037100"
+          ],
+          "correctness_issue": "Output mismatch",
+          "correctness_trials": "(0 / 5)"
+        }
+      },
+      "pass_final": false,
+      "reward": 0.0,
+      "reason": "official_eval_fail"
+    }
+  ],
+  "raw_turn2": []
+}

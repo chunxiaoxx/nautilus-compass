@@ -1,0 +1,81 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "3ab0776af7f9eee6493b46669796334dbeae224b",
+  "reference_fix_commit": "061623c7f9c151dcacbccdd9c99ed9284c377846",
+  "subject": "fix(genopt): close final-review blockers B-1/B-2/B-3 + LOW-7/LOW-8",
+  "test_files": [
+   "tests/test_genopt_dispatch.py",
+   "tests/test_genopt_feishu_ship.py",
+   "tests/test_genopt_grounding.py",
+   "tests/test_genopt_loo.py"
+  ],
+  "source_files": [
+   "fde_capsule/genopt/dispatch.py",
+   "fde_capsule/genopt/driver.py",
+   "fde_capsule/genopt/feishu_ship.py",
+   "fde_capsule/genopt/loo_eval.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5",
+  "hist_test_id": "tests/test_genopt_dispatch.py::test_build_payload_fails_without_agent_id",
+  "hist_passed": true,
+  "_passed": true
+ },
+ "test_id": "tests/test_genopt_dispatch.py::test_build_payload_fails_without_agent_id",
+ "source_rel": "fde_capsule\\genopt\\dispatch.py",
+ "provider": "l2B-chunxiao_k3",
+ "provider_used": "l2B-chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/fde_capsule/genopt/dispatch.py\n+++ b/fde_capsule/genopt/dispatch.py\n@@ -19,12 +19,17 @@\n def build_payload(task_dir, rounds=3, effort=\"medium\", requested_by=\"v5-dialog\",\n                   agent_id=None):\n     \"\"\"Build the marketplace payload. Shape is the daemon's contract.\"\"\"\n+    resolved_agent_id = agent_id or os.environ.get(\"V5_AGENT_ID\")\n+    if not resolved_agent_id:\n+        raise RuntimeError(\n+            \"no registered agent id: pass agent_id=... or set V5_AGENT_ID \"\n+            \"(refusing to claim a default producer identity)\"\n+        )\n     return {\n         \"task_type\": \"genopt_real\",\n         \"task_dir\": os.path.abspath(task_dir),\n         \"rounds\": rounds,\n         \"effort\": effort,\n         \"requested_by\": requested_by,\n-        \"agent_id\": agent_id or os.environ.get(\"V5_AGENT_ID\", \"v5-dialog\"),\n+        \"agent_id\": resolved_agent_id,\n         \"queued_at\": int(time.time()),\n     }\n",
+ "budget_exceeded": false,
+ "total_tokens": 1841,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 1506,
+    "completion_tokens": 335,
+    "total_tokens": 1841,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 1506,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 335,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 0,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 1506,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "dispatch_fail_without_agent_id",
+ "duration_s": 17.6
+}

@@ -1,0 +1,5 @@
+instance_source: SYNTHETIC (uniform + skew size distributions)
+generator_script: genopt_factory/tools/fetch_binpack_synth.py
+master_seed: 20260702 + i
+benchmark_versions:
+  - "1.0 (2026-07-02): 5 instances, n in {50,100,200,500}"

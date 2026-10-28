@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nautilus · 数据飞轮管道平台 · 动态验证台 V0</title>
+<style>
+:root{--bg:#0b0e12;--card:#12161d;--line:#232a35;--ink:#f3efe5;--mut:#8b94a3;--brand:#4f8cff;--ok:#3fbf7f;--warn:#e0a13f;--bad:#e05c5c}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.7 system-ui,-apple-system,"Microsoft YaHei",sans-serif}
+.wrap{max-width:1100px;margin:0 auto;padding:0 18px}
+header{padding:38px 0 22px;border-bottom:1px solid var(--line)}
+.kicker{color:var(--brand);font-size:12.5px;letter-spacing:2px;margin-bottom:8px}
+h1{font-size:28px;margin:0 0 8px}.sub{color:var(--mut);font-size:14.5px;max-width:820px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:22px 0}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.kpi .n{font-size:23px;font-weight:700;color:var(--brand)}
+.kpi .l{color:var(--mut);font-size:12.5px;margin-top:2px}
+h2{font-size:19px;margin:36px 0 12px;padding-left:11px;border-left:4px solid var(--brand)}
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13.5px;background:var(--card)}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left}
+th{background:#151b25;color:var(--mut)}
+.pill{display:inline-block;padding:1px 9px;border-radius:11px;font-size:12px}
+.done{background:#123527;color:var(--ok)}.pending{background:#1a2030;color:var(--mut)}.failed{background:#3a1616;color:var(--bad)}
+.live-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ok);margin-right:6px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.refresh{color:var(--mut);font-size:12.5px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:15px}
+.card h3{margin:0 0 6px;font-size:15px}.card p{margin:0;color:var(--mut);font-size:13.5px}
+a{color:var(--brand);text-decoration:none}
+.cta{background:linear-gradient(135deg,#0f2a5c,#0f62fe);border-radius:12px;padding:24px;margin:30px 0}
+.cta h2{margin:0 0 8px;border:none;padding:0;color:#fff}
+.cta p{margin:0 0 12px;color:#cfe0ff}
+.cta a{display:inline-block;background:#fff;color:#0f2a5c;padding:9px 20px;border-radius:8px;font-weight:700;margin:0 10px 8px 0}
+.foot{color:var(--mut);font-size:12px;padding:22px 0;border-top:1px solid var(--line);margin-top:40px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+<div class="kicker"><span class="live-dot"></span>NAUTILUS · 数据飞轮管道平台 · LIVE</div>
+<h1>动态验证台 · 涡轮增压五段链</h1>
+<p class="sub">每一单数据从发单到结算,五段链状态实时可查——DB 实态驱动,非静态快照。判据 sha16 预注册,软挂载零容忍,断链逐单显形。</p>
+</header>
+
+<div class="kpis" id="kpis">
+<div class="kpi"><div class="n" id="k-pool">—</div><div class="l">轨迹池(行)</div></div>
+<div class="kpi"><div class="n" id="k-pass">—</div><div class="l">pass(四验合格)</div></div>
+<div class="kpi"><div class="n" id="k-units">—</div><div class="l">r85 在验单数</div></div>
+<div class="kpi"><div class="n" id="k-full">—</div><div class="l">五段全链闭合</div></div>
+<div class="kpi"><div class="n" id="k-broken">—</div><div class="l">断链单(逐单取证中)</div></div>
+</div>
+
+<h2>涡轮增压机制 · 产出与落地成果账(实时)</h2>
+<p class="live">机制不是叙事,是流水账——每格数字可溯源(DB/API/工件),断链逐单显形,负结果照报。</p>
+<div class="kpis">
+<div class="kpi"><div class="n">8批/195单</div><div class="l">供油段·八批全执行(r78-r86)</div></div>
+<div class="kpi"><div class="n">92单</div><div class="l">四验判读·全绿(flywheel 独立)</div></div>
+<div class="kpi"><div class="n">155/82</div><div class="l">入池·行/合格(滚动)</div></div>
+<div class="kpi"><div class="n">+711</div><div class="l">结算·NAU(判分-结算绑定)</div></div>
+<div class="kpi"><div class="n">64%</div><div class="l">r85 批 verdict 合格率(勘误口径)</div></div>
+<div class="kpi"><div class="n">+10.0pp</div><div class="l">L3 双臂配对差分(&gt;δ,判分侧)</div></div>
+<div class="kpi"><div class="n">5/5</div><div class="l">Round2 格式门·apply 烟测(根因三修后)</div></div>
+<div class="kpi"><div class="n">v1</div><div class="l">PRECOR 部署纪律·bf16/fp16 可部署</div></div>
+</div>
+<h2>逐单五段验证(r85 批 · f196-f215)</h2>
+<table id="e2e">
+<tr><th>单</th><th>池 verdict</th><th>①发单</th><th>②执行交付</th><th>③四验判读</th><th>④入池</th><th>⑤结算</th><th>全链</th></tr>
+</table>
+<p class="refresh">数据源:<a href="/api/platform/org/pipeline/e2e?lo=b-turbo-f196&hi=b-turbo-f215">GET /api/platform/org/pipeline/e2e</a> · 本页每次载入即拉 DB 实态</p>
+
+<h2>四验门(每条数据的出生证明)</h2>
+<div class="grid">
+<div class="card"><h3>G1 · render 非空</h3><p>轨迹渲染非空,禁一次性全文转储。</p></div>
+<div class="card"><h3>G2 · held-out 交集=0</h3><p>改进样本永不入测池(753 池交集=0 实证)。</p></div>
+<div class="card"><h3>G3 · qid 唯一</h3><p>幂等 traj_id,批内+跨批唯一。</p></div>
+<div class="card"><h3>G4 · gold 可解析</h3><p>判据 sha16 ea20d6fd 预注册,只许更严。</p></div>
+</div>
+
+<h2>判读产能与诚实记录</h2>
+<div class="grid">
+<div class="card"><h3>四验 92 单全绿</h3><p>flywheel 判读臂,锚 0962d14 · 延迟&lt;1h · 最快 27min</p></div>
+<div class="card"><h3>已知个例:f207 路径迷失</h3><p>sympy-21847 五十步未 submit,四验全 PASS(样本合格/任务失败分离)——归因简记公开。</p></div>
+<div class="card"><h3>r85 断链 12 单在查</h3><p>scored-无池行 7 单+结算滞后 5 单,逐单取证中——本页断链列即实时显形。</p></div>
+<div class="card"><h3>E1 复考 U 态照报</h3><p>0.9601&lt;97% 门,主判维度零翻转——判不动就明说。</p></div>
+</div>
+
+<div class="cta">
+<h2>把你的 harness 交给我们判一次</h2>
+<p>L1 收录免费(榜单留位)· L2 深度报告 $199(48h 交付)· <a style="color:#cfe0ff" href="/org/criteria.html">判据披露页</a> · <a style="color:#cfe0ff" href="/org/L2_report_sample.md">L2 样例</a></p>
+<a href="https://nautilus.social/intake.nautilus.social/">提交收录申请</a>
+</div>
+
+<div class="foot">Nautilus · 上海国曙人工智能科技有限公司 · 判据 sha16 ea20d6fd 预注册 · 本页由 DB 实态驱动(活 API),正本=nautilus-core · 数据更新 <span id="ts">—</span></div>
+</div>
+<script>
+fetch("/api/platform/org/pipeline/e2e?lo=b-turbo-f196&hi=b-turbo-f215").then(r=>r.json()).then(d=>{
+  document.getElementById("k-units").textContent = d.total;
+  document.getElementById("k-full").textContent = d.full_loop;
+  document.getElementById("k-broken").textContent = d.broken.length;
+  const t = document.getElementById("e2e");
+  d.units.forEach(u=>{
+    const s=u.stages, row=t.insertRow(-1);
+    row.insertCell(0).textContent=u.bounty_id;
+    row.insertCell(1).textContent=u.verdict||"—";
+    ["S1_dispatch","S2_delivery","S3_fourgate","S4_pool","S5_settle"].forEach(k=>{
+      const v=s[k], c=row.insertCell(-1);
+      const pill=document.createElement("span");
+      pill.className="pill "+(v==="PASS"?"done":v==="PENDING"?"pending":v==="N/A"?"pending":"failed");
+      pill.textContent=v; c.appendChild(pill);
+    });
+    const fc=row.insertCell(-1);
+    fc.textContent=u.full_loop?"✅":"❌";
+  });
+  fetch("/api/platform/org/fuel/pipeline").then(r=>r.json()).then(p=>{
+    const pool=p.pool||p;
+  }).catch(()=>{});
+}).catch(e=>{document.getElementById("k-pool").textContent="API 不可达"});
+fetch("/api/platform/org/fuel/pipeline").then(r=>r.json()).then(d=>{
+  const pool = d.pool_rows!==undefined?d:d.pool||{};
+}).catch(()=>{});
+</script>
+</body>
+</html>

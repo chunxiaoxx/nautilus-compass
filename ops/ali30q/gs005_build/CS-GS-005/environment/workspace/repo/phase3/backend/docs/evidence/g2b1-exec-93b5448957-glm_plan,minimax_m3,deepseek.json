@@ -1,0 +1,71 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "c41df275fde78befe1e8531b75a74ef21d14cd81",
+  "reference_fix_commit": "93b544895780ca1d350323ce9b4f199570718bcf",
+  "subject": "fix(ale-fuel): _extract_best_code \u672a\u95ed\u5408 fence \u56de\u9000(\u6cbb\u5047 0\u00b7confound 6/23 ahc003)",
+  "test_files": [
+   "tests/test_ale_fuel_batch.py"
+  ],
+  "source_files": [
+   "fde_capsule/ale_fuel_batch.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_ale_fuel_batch.py::test_extract_best_code_unclosed_fence_head",
+ "source_rel": "fde_capsule\\ale_fuel_batch.py",
+ "provider": "glm_plan,minimax_m3,deepseek",
+ "test_passed": true,
+ "winning_diff": "--- a/fde_capsule/ale_fuel_batch.py\n+++ b/fde_capsule/ale_fuel_batch.py\n@@ -348,6 +348,11 @@ def _extract_best_code(text: str) -> str:\n     if not text:\n         return \"\"\n     py = [b.strip() for b in\n           re.findall(r\"```(?:python|py)[^\\n]*\\n(.*?)```\", text, re.DOTALL)\n           if b.strip()]\n+    # unclosed head fence ```python (no closing ```): strip the marker line so judge doesn't\n+    # see a leading ```python and bail with compile error / 0 score.\n+    if not py and text.lstrip().startswith(\"```\"):\n+        first_nl = text.find(\"\\n\")\n+        text = text[first_nl + 1:] if first_nl != -1 else \"\"\n     if py:\n         return py[-1]\n     anyb = [b.strip() for b in",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 5774,
+    "output_tokens": 435,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: fde_capsule/ale_fuel_batch.py:201\nerror: fde_capsule/ale_fuel_batch.py: patch does not apply\n\n[attempt2 backend] error: patch failed: fde_capsule/ale_fuel_batch.py:201\nerror: fde_capsule/ale_fuel_batch.py: patch does not apply\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 5900,
+    "output_tokens": 327,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_bvxxup57/repo/_g2b1.patch:16\n\n[attempt2 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_bvxxup57/repo/_g2b1.patch:16\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "input_tokens": 167,
+    "output_tokens": 279,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 5877,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "strip_unclosed_fence_head_in_extract_best_code",
+ "duration_s": 290.6,
+ "verdict_post_status": 200
+}

@@ -1,0 +1,28 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "fc743dff947bc465e69776539db410e01f5609f9",
+  "reference_fix_commit": "c9351b9d86f77a767eada011c47d27a97d52a941",
+  "subject": "fix(fde): allow read-only legacy form retirement preview",
+  "test_files": [
+   "phase3/backend/tests/test_fde_phase3_single_submission_forms.py"
+  ],
+  "source_files": [
+   "phase3/backend/scripts/publish_phase3_single_submission_forms.py"
+  ]
+ },
+ "test_id": "phase3/backend/tests/test_fde_phase3_single_submission_forms.py",
+ "source_rel": "phase3/backend/scripts/publish_phase3_single_submission_forms.py",
+ "provider": "ark_glm",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

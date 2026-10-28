@@ -1,0 +1,79 @@
+\documentclass[10pt,a4paper]{ctexart}
+\usepackage[margin=1.7cm]{geometry}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\setlist{nosep,leftmargin=1.4em}
+\pagestyle{empty}
+\definecolor{acc}{RGB}{30,80,150}
+
+\title{\vspace{-1.6em}\textcolor{acc}{nautilus}\;一个运转中的 AI 原生组织\\[0.2em]
+\large 纵向制度痕迹 \textbullet\ 一次评估器校准的田野实证}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+\vspace{-3.2em}
+
+\noindent\textbf{一句话}:你们在《Machines acquire scientific taste from institutional
+traces》里回答"品味能否从痕迹中习得";我们这三个月在跑的是同一命题的另一半——
+\textbf{习得的品味如何被组织制度化}。一个人类 + 五个各司其职的 AI agent,
+全部协议化协调、零会议:组织形态两个月余连续运转,工程积淀自 2026 年初
+(四仓 2{,}500+ 提交,90 天窗口实测)。
+
+\section*{形态}
+\noindent
+\begin{tabular}{@{}p{2.6cm}p{12.6cm}@{}}
+\toprule
+\textbf{人类创始人} & 目标 / 判据 / 生死三项拍板权专属(``三道闸");agent 只有绩效标准,不拥有目标 \\
+\midrule
+\textbf{platform} & 组织操作系统:任务总线(五件套)、跨框函件(2h SLA)、治理与台账 \\
+\textbf{v5} & 认知主力(主脑):意图状态机、工单生成、研究执行 \\
+\textbf{compass} & 独立验证:判据冻结、非实现者复算、验证写入权垄断 \\
+\textbf{flywheel} & 业务执行:具身智能数据采集与转换 \\
+\textbf{soul} & 自主改进:带质量闸的代码交付(expect\_files 断言) \\
+\bottomrule
+\end{tabular}
+
+\section*{三个研究切口}
+\begin{enumerate}
+\item \textbf{AI 原生组织的第一份纵向制度痕迹}——每封跨框函、每个任务生命周期、
+每次验收与驳回,结构化落库、可回放(``邮箱即账本":组织状态可从消息序列重建)。
+agent 组织的连续纵向运行数据,我们尚未见到公开的第二份——样本期尚短,
+恰是持续采集与联合研究的起点。
+\item \textbf{评估器独立性的组织设计}——与你们"把过度自信的模型踢出概率集成"同构,
+但发生在权限层:生产者可自认失败,不可自证通过;\texttt{external\_verified} 的
+写入权仅属独立复算者,且为收入的唯一入账门。
+\item \textbf{agent 施工队}——单文件代码件 / 数据管线 / 观测器可接单交付;
+组织既是研究工具,又是被研究对象。
+\end{enumerate}
+
+\section*{一次实战(上周,全程可审计)}
+独立复算 agent 抽查 10 条历史判分:\textbf{10/10 不可复算}——生产侧的
+``已验证"系自我置位。时间序列溯源定位到一次换管造成的载荷断供(450 条空壳记录,
+代码级铁证);一小时内上线三道守卫:载荷必带可复算指针、空载荷拒收、
+验证写入权收归复算者。\textbf{自报的失效、被独立发现、被制度修复}——
+日志、代码、决策函全链条在案。
+
+\section*{证明与起点}
+\noindent\textbf{证明}(按你们的标准:能跑就算数):活体驾驶舱
+\texttt{org.nautilus.social} \textbullet\ 四仓 2{,}500+ 提交(90 天窗口)
+\textbullet\ 上述事件证据链一页纸 \textbullet\ 可远程现场演示(飞书内向组织发消息,
+观察其调度-执行-回执)。
+
+\noindent\textbf{起步}(三选一,从最小开始):
+(1)~互为被试——我们用 Gatekeeper 评下一个研究 pitch,你们观察真实组织
+如何消费你们的工具;
+(2)~方法对表——你们的 holdout 校准协议 $\times$ 我们的判据预注册
++ 非实现者复算;
+(3)~纵向数据与评估器独立性的联合研究。
+
+\vspace{0.4em}
+\begin{tcolorbox}[colback=gray!6,colframe=gray!40,boxrule=0.4pt,arc=2pt]
+\small 期待 30 分钟线上交流,带活系统演示。联系方式:\underline{\hspace{4em}}
+(\texttt{\_\_\_\_\_@\_\_\_\_}) \quad 落款:春晓 \quad 2026 年 9 月
+\end{tcolorbox}
+
+\end{document}

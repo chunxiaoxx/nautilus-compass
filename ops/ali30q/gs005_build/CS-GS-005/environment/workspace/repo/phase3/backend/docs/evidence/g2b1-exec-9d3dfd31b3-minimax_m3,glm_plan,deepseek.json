@@ -1,0 +1,57 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "09d07269c053deb780682b241a2591322f74ead2",
+  "reference_fix_commit": "9d3dfd31b33450256dcceef0576a9bc2fc8a0c9f",
+  "subject": "fix(s4): make quarantine records append-only",
+  "test_files": [
+   "tests/gep/test_flywheel_log.py"
+  ],
+  "source_files": [
+   "gep/flywheel_log.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass"
+ },
+ "test_id": "tests/gep/test_flywheel_log.py::test_quarantine_rows_are_immutable_at_the_database_boundary",
+ "source_rel": "gep\\flywheel_log.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": true,
+ "winning_diff": "--- a/gep/flywheel_log.py\n+++ b/gep/flywheel_log.py\n@@ -192,6 +192,22 @@ class FlywheelEventLog:\n             CREATE TRIGGER IF NOT EXISTS flywheel_events_immutable_delete\n             BEFORE DELETE ON flywheel_events\n             BEGIN\n                 SELECT RAISE(ABORT, 'flywheel_events rows are immutable');\n             END;\n             \"\"\",\n+\n+            \"\"\"\n+            CREATE TRIGGER IF NOT EXISTS flywheel_quarantine_immutable_update\n+            BEFORE UPDATE ON flywheel_quarantine\n+            BEGIN\n+                SELECT RAISE(ABORT, 'flywheel_quarantine rows are immutable');\n+            END;\n+            \"\"\",\n+\n+            \"\"\"\n+            CREATE TRIGGER IF NOT EXISTS flywheel_quarantine_immutable_delete\n+            BEFORE DELETE ON flywheel_quarantine\n+            BEGIN\n+                SELECT RAISE(ABORT, 'flywheel_quarantine rows are immutable');\n+            END;\n+            \"\"\",\n         )\n         for statement in statements:\n             self._connection.execute(statement)\n",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 3536,
+    "output_tokens": 279,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_kxjc_brj/repo/_g2b1.patch:24\n\n[attempt2 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_kxjc_brj/repo/_g2b1.patch:24\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "input_tokens": 3539,
+    "output_tokens": 292,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "add_quarantine_immutability_triggers",
+ "duration_s": 16.1,
+ "verdict_post_status": 200
+}

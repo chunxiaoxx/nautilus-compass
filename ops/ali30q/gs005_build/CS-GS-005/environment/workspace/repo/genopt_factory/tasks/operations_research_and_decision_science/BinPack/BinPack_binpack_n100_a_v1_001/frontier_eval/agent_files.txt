@@ -1,0 +1,14 @@
+agent_files:
+  - baseline/init.py
+  - verification/evaluate.py
+  - verification/_run_one.py
+reference: reference/solve.py
+data_dir: data/instances/
+data_optima: data/optima.json
+num_instances: 5
+instances:
+  - n50_uniform
+  - n100_uniform
+  - n200_uniform
+  - n500_uniform
+  - n200_small_skew

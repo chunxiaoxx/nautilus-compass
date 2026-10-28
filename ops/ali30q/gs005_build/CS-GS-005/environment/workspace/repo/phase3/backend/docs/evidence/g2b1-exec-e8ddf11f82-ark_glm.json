@@ -1,0 +1,48 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "042ce374c3f426acb6f83e9464368951a539705f",
+  "reference_fix_commit": "e8ddf11f82b9b0d002ec22bcddf2efdc49d74d25",
+  "subject": "fix(fde): dispatch\u5c42\u9000\u5f79scan_bounty/score_overdue\u6267\u884c\u8def\u5f84(no-op\u00b7\u5220\u83dc\u5355\u4e0d\u591f\u00b7LLM\u4ece\u4e60\u60efemit\u2192\u6267\u884c\u5c42chokepoint)\u00b7\u9a8c\u8bc1\u53d1\u73b0bounty\u4ecd80%\u00b74TDD\u7eff",
+  "test_files": [
+   "tests/test_fde_dispatch_handlers.py"
+  ],
+  "source_files": [
+   "nautilus_v5/runtime/dispatch_mixin.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5"
+ },
+ "test_id": "tests/test_fde_dispatch_handlers.py::test_scan_bounty_retired_no_list_bounties",
+ "source_rel": "nautilus_v5\\runtime\\dispatch_mixin.py",
+ "provider": "ark_glm",
+ "test_passed": true,
+ "winning_diff": "--- a/nautilus_v5/runtime/dispatch_mixin.py\n+++ b/nautilus_v5/runtime/dispatch_mixin.py\n@@ -80,7 +80,8 @@\n             await _aio.wait_for(proc.communicate(), timeout=60)\n         elif action == \"scan_bounty\":\n-            await ag.tool_registry.dispatch(\"list_bounties\", {\"limit\": 10})\n+            # scan_bounty retired at dispatch layer \u00b7 no longer calls list_bounties (chokepoint)\n+            logger.info(\"[dispatch_mixin] scan_bounty retired \u00b7 skip list_bounties\")\n         elif action == \"score_overdue\":\n             await self._auto_score_tick(min_age_min=30)\n",
+ "budget_exceeded": false,
+ "total_tokens": 15941,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "completion_tokens": 4991,
+    "prompt_tokens": 10950,
+    "total_tokens": 15941,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 4783
+    }
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "retire_scan_bounty_no_list_bounties",
+ "duration_s": 73.2,
+ "replayed": true,
+ "verdict_post_status": 200
+}

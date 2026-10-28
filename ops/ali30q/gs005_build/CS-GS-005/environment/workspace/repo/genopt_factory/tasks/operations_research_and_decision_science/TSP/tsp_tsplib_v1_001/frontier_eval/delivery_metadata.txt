@@ -1,0 +1,14 @@
+delivery_status: provisional
+task_uid: genopt_or_tsp_tsplib_v1_001_20260702
+spec_ref: vtf/BUYER_SPEC_GenOpt_RL_20260702.md
+platform: platform (nautilus-core)
+hand_off:
+  - platform: Task.md + baseline/init.py + reference/solve.py + verification/evaluate.py + 9 frontier_eval/*.txt + data/SOURCE.txt + data/optima.json + 6 data/instances/*.json + Dockerfile + README.md
+  - soul: pending verifier QC final review before publishing
+  - V5: pending batch runner hookup for trajectory batch
+  - FDE: pending feishu table domain extension before row insertion
+gap_closed_calibration:
+  start_score: 89.51  # measured from baseline/init.py
+  reference_score: 99.83  # measured from reference/solve.py
+  expected_gap: 0.103  # Hard band (0.1-0.3)
+  pending: gpt55_trajectory.json (running, id=byt0xttz8)

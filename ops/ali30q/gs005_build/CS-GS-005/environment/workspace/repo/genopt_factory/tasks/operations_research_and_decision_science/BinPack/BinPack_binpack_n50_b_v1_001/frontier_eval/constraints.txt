@@ -1,0 +1,8 @@
+constraints:
+  - pure_python_stdlib_only: true
+  - deterministic: true
+  - per_instance_timeout_s: 60
+  - bin_capacity: 1.0
+  - feasibility: "every item assigned to exactly one bin; bin load <= cap"
+  - scoring_formula: "score_i = max(0, 100 * (1 - (you - opt) / max(1, FF - opt)))"
+  - valid_gate: "any infeasible => combined_score = 0"

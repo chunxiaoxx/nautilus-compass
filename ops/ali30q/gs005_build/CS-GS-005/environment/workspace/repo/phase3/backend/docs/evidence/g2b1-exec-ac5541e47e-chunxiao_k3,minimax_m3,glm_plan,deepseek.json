@@ -1,0 +1,73 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "32b93cbf8b82d975b2cbd56e477c12fa9ce02735",
+  "reference_fix_commit": "ac5541e47e9e5f31c17b0682d86e6228577f933f",
+  "subject": "fix(thin): ATTEST_FAMILY \u53bb\u5192\u53f7(clean-room \u5b9e\u6d4b\u6293:\u5192\u53f7\u8fdb obs_id \u88ab compass API \u62d2\u2192\u5199\u9759\u9ed8\u5931\u8d25)",
+  "test_files": [
+   "tests/test_nautilus_thin.py"
+  ],
+  "source_files": [
+   "nautilus_thin.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_nautilus_thin.py::test_attest_family_is_obs_id_safe",
+ "source_rel": "nautilus_thin.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/nautilus_thin.py\n+++ b/nautilus_thin.py\n@@ -20,7 +20,7 @@\n import sys\n from typing import Any, Callable, Dict, List, Optional, Tuple\n \n-ATTEST_FAMILY = \"agent:install:attest\"\n+ATTEST_FAMILY = \"agent_install_attest\"\n _DELIVERABLE_HASH_FILES = (\"nautilus_thin.py\", \"compass_fleet_memory.py\")\n \n \n",
+ "budget_exceeded": false,
+ "total_tokens": 5193,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 5019,
+    "completion_tokens": 174,
+    "total_tokens": 5193,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 4763,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 174,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 5019,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "attest_family_colon_safe",
+ "duration_s": 10.5,
+ "verdict_post_status": 200
+}

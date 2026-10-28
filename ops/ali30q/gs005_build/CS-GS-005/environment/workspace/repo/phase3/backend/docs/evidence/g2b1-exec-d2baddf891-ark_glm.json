@@ -1,0 +1,48 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "f3020da8ffc92484712c188fd090725556b4e0d9",
+  "reference_fix_commit": "d2baddf891760eaeeb750d2abb7418b3ddae021a",
+  "subject": "fix(context): coalesce adjacent same-role msgs after compaction (anthropic-compat 400 guard) + drop dead _PRUNED",
+  "test_files": [
+   "tests/commons/context/test_compact_messages.py"
+  ],
+  "source_files": [
+   "nautilus_v5/commons/context/compactor.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/commons/context/test_compact_messages.py::test_no_consecutive_same_role_after_inject",
+ "source_rel": "nautilus_v5\\commons\\context\\compactor.py",
+ "provider": "ark_glm",
+ "test_passed": true,
+ "winning_diff": "--- a/nautilus_v5/commons/context/compactor.py\n+++ b/nautilus_v5/commons/context/compactor.py\n@@ -150,6 +150,14 @@\n         parts.append(f\"[{role.upper()}]: {c}\")\n     return \"\\n\\n\".join(parts)\n \n \n+def _pick_summary_role(prev_role: Optional[str], next_role: Optional[str]) -> str:\n+    \"\"\"Pick a role for the injected summary that avoids consecutive same-role messages.\"\"\"\n+    for role in (\"user\", \"assistant\", \"system\"):\n+        if role != prev_role and role != next_role:\n+            return role\n+    return \"system\"\n+\n+\n async def compact_messages(\n     messages: List[Dict[str, Any]],\n@@ -196,6 +204,10 @@\n     out = list(messages[:head_end])\n     if summary:\n-        out.append({\"role\": \"user\", \"content\": f\"{_SUMMARY_PREFIX}\\n{summary}\"})\n+        inject_role = _pick_summary_role(\n+            out[-1].get(\"role\") if out else None,\n+            messages[tail_start].get(\"role\") if tail_start < n else None,\n+        )\n+        out.append({\"role\": inject_role, \"content\": f\"{_SUMMARY_PREFIX}\\n{summary}\"})\n     out.extend(messages[tail_start:])\n     out = _sanitize_tool_pairs(out)\n     return out, (summary or None)",
+ "budget_exceeded": false,
+ "total_tokens": 42946,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "completion_tokens": 40460,
+    "prompt_tokens": 2486,
+    "total_tokens": 42946,
+    "prompt_tokens_details": {
+     "cached_tokens": 2486
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 40076
+    }
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "fix_summary_role_collision",
+ "duration_s": 2436.9,
+ "replayed": true,
+ "verdict_post_status": 200
+}

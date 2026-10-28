@@ -1,0 +1,11 @@
+[Unit]
+Description=Nautilus fuel 结算联动器(评分即结算,双账本根治) · one pass
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=ubuntu
+WorkingDirectory=/home/ubuntu/nautilus-mvp/phase3/backend
+EnvironmentFile=/home/ubuntu/nautilus-mvp/phase3/backend/.env
+ExecStart=/usr/bin/python3 ops/fuel_settle.py --apply
+TimeoutStartSec=300

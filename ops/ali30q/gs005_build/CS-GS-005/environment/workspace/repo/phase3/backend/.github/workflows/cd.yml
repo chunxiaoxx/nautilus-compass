@@ -1,0 +1,267 @@
+name: Continuous Deployment
+
+on:
+  push:
+    branches: [ main ]
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+      skip_tests:
+        description: 'Skip tests (not recommended)'
+        required: false
+        type: boolean
+        default: false
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-and-push:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    outputs:
+      image-tag: ${{ steps.meta.outputs.tags }}
+      image-digest: ${{ steps.build.outputs.digest }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Log in to Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=sha,prefix={{branch}}-
+          type=raw,value=latest,enable={{is_default_branch}}
+
+    - name: Build and push Docker image
+      id: build
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        build-args: |
+          BUILD_DATE=${{ github.event.head_commit.timestamp }}
+          VCS_REF=${{ github.sha }}
+          VERSION=${{ steps.meta.outputs.version }}
+
+    - name: Scan image for vulnerabilities
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+        severity: 'CRITICAL,HIGH'
+
+    - name: Upload Trivy results to GitHub Security
+      uses: github/codeql-action/upload-sarif@v3
+      if: always()
+      with:
+        sarif_file: 'trivy-results.sarif'
+
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    if: github.ref == 'refs/heads/main' || github.event.inputs.environment == 'staging'
+    environment:
+      name: staging
+      url: https://staging.nautilus.example.com
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: Deploy to ECS/Kubernetes (Staging)
+      run: |
+        echo "Deploying to staging environment..."
+        # 示例: 使用 kubectl 或 AWS ECS CLI
+        # kubectl set image deployment/nautilus-backend nautilus-backend=${{ needs.build-and-push.outputs.image-tag }}
+        # 或使用 docker-compose
+        echo "IMAGE_TAG=${{ github.sha }}" > .env.staging
+        # docker-compose -f docker-compose.staging.yml up -d
+
+    - name: Run smoke tests
+      run: |
+        echo "Running smoke tests on staging..."
+        sleep 30  # 等待服务启动
+        curl -f https://staging.nautilus.example.com/health || exit 1
+        curl -f https://staging.nautilus.example.com/api/v1/health || exit 1
+
+    - name: Notify deployment success
+      if: success()
+      run: |
+        echo "✅ Staging deployment successful"
+        echo "Image: ${{ needs.build-and-push.outputs.image-tag }}"
+        echo "Digest: ${{ needs.build-and-push.outputs.image-digest }}"
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [build-and-push, deploy-staging]
+    if: startsWith(github.ref, 'refs/tags/v') || github.event.inputs.environment == 'production'
+    environment:
+      name: production
+      url: https://nautilus.example.com
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: Create deployment backup
+      run: |
+        echo "Creating backup of current production deployment..."
+        # 备份当前部署配置
+        # kubectl get deployment nautilus-backend -o yaml > backup-deployment-$(date +%Y%m%d-%H%M%S).yaml
+
+    - name: Deploy to Production
+      run: |
+        echo "Deploying to production environment..."
+        echo "IMAGE_TAG=${{ github.sha }}" > .env.production
+        # 生产部署命令
+        # kubectl set image deployment/nautilus-backend nautilus-backend=${{ needs.build-and-push.outputs.image-tag }}
+        # kubectl rollout status deployment/nautilus-backend
+
+    - name: Run production smoke tests
+      run: |
+        echo "Running smoke tests on production..."
+        sleep 30
+        curl -f https://nautilus.example.com/health || exit 1
+        curl -f https://nautilus.example.com/api/v1/health || exit 1
+
+    - name: Run production health checks
+      run: |
+        echo "Running comprehensive health checks..."
+        # 运行更全面的健康检查
+        curl -f https://nautilus.example.com/api/v1/agents || exit 1
+        curl -f https://nautilus.example.com/api/v1/tasks || exit 1
+
+    - name: Notify deployment success
+      if: success()
+      run: |
+        echo "🚀 Production deployment successful"
+        echo "Version: ${{ github.ref_name }}"
+        echo "Image: ${{ needs.build-and-push.outputs.image-tag }}"
+
+    - name: Rollback on failure
+      if: failure()
+      run: |
+        echo "❌ Production deployment failed, initiating rollback..."
+        # kubectl rollout undo deployment/nautilus-backend
+        # 或恢复备份
+        exit 1
+
+  post-deployment:
+    name: Post-Deployment Tasks
+    runs-on: ubuntu-latest
+    needs: [deploy-staging, deploy-production]
+    if: always()
+
+    steps:
+    - name: Run database migrations
+      if: needs.deploy-production.result == 'success'
+      run: |
+        echo "Running database migrations..."
+        # alembic upgrade head
+
+    - name: Clear cache
+      if: needs.deploy-production.result == 'success'
+      run: |
+        echo "Clearing application cache..."
+        # redis-cli FLUSHDB
+
+    - name: Send deployment notification
+      if: always()
+      run: |
+        if [ "${{ needs.deploy-production.result }}" == "success" ]; then
+          echo "📢 Deployment notification: SUCCESS"
+          # 发送成功通知到 Slack/Discord/Email
+        else
+          echo "📢 Deployment notification: FAILED"
+          # 发送失败通知
+        fi
+
+    - name: Update deployment status
+      run: |
+        echo "## Deployment Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- Build & Push: ${{ needs.build-and-push.result }}" >> $GITHUB_STEP_SUMMARY
+        echo "- Staging: ${{ needs.deploy-staging.result }}" >> $GITHUB_STEP_SUMMARY
+        echo "- Production: ${{ needs.deploy-production.result }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "Deployed at: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+
+  rollback:
+    name: Rollback Deployment
+    runs-on: ubuntu-latest
+    if: failure() && (needs.deploy-staging.result == 'failure' || needs.deploy-production.result == 'failure')
+    needs: [deploy-staging, deploy-production]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Rollback to previous version
+      run: |
+        echo "🔄 Initiating rollback..."
+        # kubectl rollout undo deployment/nautilus-backend
+        # 或使用之前的镜像标签重新部署
+
+    - name: Verify rollback
+      run: |
+        echo "Verifying rollback..."
+        sleep 30
+        curl -f https://nautilus.example.com/health || exit 1
+
+    - name: Notify rollback
+      run: |
+        echo "⚠️ Rollback completed"
+        # 发送回滚通知

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<title>登录中…</title>
+<style>
+body{font-family:-apple-system,"Segoe UI","Noto Sans SC",sans-serif;background:#f6f8fb;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;color:#151b26}
+.box{text-align:center}
+.spin{width:36px;height:36px;border:3px solid #e5e8ee;border-top-color:#0f62fe;border-radius:50%;margin:0 auto 16px;animation:s .8s linear infinite}
+@keyframes s{to{transform:rotate(360deg)}}
+p{color:#5c6675;font-size:14px}
+</style>
+</head>
+<body>
+<div class="box">
+<div class="spin"></div>
+<p>登录成功,正在进入平台…</p>
+</div>
+<script>
+(function(){
+  try{
+    var m = location.search.match(/[?&]token=([^&]+)/);
+    if(!m){ document.querySelector("p").textContent="缺少凭据参数,请从应用页重新登录"; setTimeout(function(){location.href="https://app.nautilus.social/login";},1500); return; }
+    var token = decodeURIComponent(m[1]);
+    // 父域 cookie:全站(app/bench/data/compass)共享登录态——统一身份的第一块基石
+    var attr = "; path=/; domain=.nautilus.social; SameSite=Lax; max-age=" + 7*24*3600 + (location.protocol==="https:"?"; Secure":"");
+    document.cookie = "nt_token=" + token + attr;
+    setTimeout(function(){ location.href = "https://app.nautilus.social/?login=ok"; }, 600);
+  }catch(e){
+    document.querySelector("p").textContent = "登录处理异常: " + e.message;
+  }
+})();
+</script>
+</body>
+</html>

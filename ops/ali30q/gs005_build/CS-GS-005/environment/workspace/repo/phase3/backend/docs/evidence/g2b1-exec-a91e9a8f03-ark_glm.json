@@ -1,0 +1,66 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "d9a7efaed9bb0b6f2e668d56626882d0ddd22795",
+  "reference_fix_commit": "a91e9a8f038d175be59e3c3ff9874df1da410a1e",
+  "subject": "fix(s4): preserve types in quarantine fingerprints",
+  "test_files": [
+   "tests/gep/test_flywheel_log.py"
+  ],
+  "source_files": [
+   "gep/flywheel_log.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass"
+ },
+ "test_id": "tests/gep/test_flywheel_log.py::test_quarantine_fingerprints_preserve_heterogeneous_mapping_key_types",
+ "source_rel": "gep\\flywheel_log.py",
+ "provider": "ark_glm",
+ "test_passed": true,
+ "winning_diff": "--- a/gep/flywheel_log.py\n+++ b/gep/flywheel_log.py\n@@ -305,10 +305,10 @@\n \n def _fingerprint_value(value: Any) -> Any:\n     if isinstance(value, Mapping):\n-        return {\n-            str(key): _fingerprint_value(item)\n-            for key, item in sorted(value.items(), key=lambda pair: repr(pair[0]))\n-        }\n+        return [\n+            [_fingerprint_value(key), _fingerprint_value(item)]\n+            for key, item in sorted(value.items(), key=lambda pair: repr(pair[0]))\n+        ]\n     if isinstance(value, (list, tuple)):\n         return [_fingerprint_value(item) for item in value]\n     if isinstance(value, (str, int, bool)) or value is None:\n",
+ "budget_exceeded": false,
+ "total_tokens": 33839,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "completion_tokens": 15198,
+    "prompt_tokens": 2851,
+    "total_tokens": 18049,
+    "prompt_tokens_details": {
+     "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 14862
+    }
+   },
+   "feedback_kind": "no_json",
+   "feedback_excerpt": "Looking at the bug: the `_fingerprint_value` function converts mapping keys to `str`, causing `{1: \"second\", \"1\": \"first\"}` to collapse both keys to `\"1\"` (dict collision), making it indistinguishable from `{1: \"second\", \"1\": \"second\"}`. The quarantine dedup index `(reason_code, fingerprint)` then drops the second row via `INSERT OR IGNORE`.\n\nThe fix: represent mappings as sorted lists of `[key, value]` pairs where keys are fingerprinted with type info preserved (int `1` \u2192 JSON number, str `\"1\"`"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "completion_tokens": 12889,
+    "prompt_tokens": 2901,
+    "total_tokens": 15790,
+    "prompt_tokens_details": {
+     "cached_tokens": 2048
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 12655
+    }
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "fingerprint_preserves_mapping_key_types",
+ "duration_s": 407.4,
+ "replayed": true,
+ "verdict_post_status": 200
+}

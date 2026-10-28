@@ -1,0 +1,29 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "0ad9b912740be63227601e325fd72dfa3ff894a5",
+  "reference_fix_commit": "a3795c2f8ea9ad93797a302bffc0fe93aa569e27",
+  "subject": "fix(fde): \u5047\u6210\u529f\u5b88\u536b \u00b7 \u7a7a/\u7a7a\u767d produce \u4e0d\u4e0a\u62a5\u4e0d\u7b97 processed \u6210\u529f",
+  "test_files": [
+   "tests/test_fde_consumer.py"
+  ],
+  "source_files": [
+   "fde_capsule/fde_consumer.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_fde_consumer.py::test_is_hollow_produce_detects_empty_and_whitespace",
+ "source_rel": "fde_capsule\\fde_consumer.py",
+ "provider": "glm_plan",
+ "test_passed": false,
+ "skipped_reason": "fixture_broken_red",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 2.5,
+ "replayed": true,
+ "verdict_post_status": 200
+}

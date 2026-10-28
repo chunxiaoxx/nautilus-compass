@@ -1,0 +1,73 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "5e4b45503924251929cecbee600bf3a68f95342f",
+  "reference_fix_commit": "b812332049d43e858aa35f358fd7bfdf3755e954",
+  "subject": "fix(security): \u5185\u90e8 token \u5224\u636e\u7ea0\u504f\u2014\u2014tokens.json \u5b9e\u4e3a tools.read/write \u65e7\u683c\u5f0f\u65e0 admin,\u00a712.1 \u539f\u5047\u8bbe\u6709\u8bef;_is_internal_token(tools.*|admin)\u653e\u884c ops \u5168\u89c1 17 \u4e2a,\u81ea\u52a9\u4ecd 8 \u4e2a;\u751f\u4ea7\u4e09\u91cd\u590d\u9a8c\u901a\u8fc7",
+  "test_files": [
+   "tests/test_auth_mvp.py"
+  ],
+  "source_files": [
+   "mcp_http_server.py"
+  ],
+  "repo_path": "C:/Users/chunx/Projects/nautilus-compass"
+ },
+ "test_id": "tests/test_auth_mvp.py::test_public_tools_surface",
+ "source_rel": "mcp_http_server.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/mcp_http_server.py\n+++ b/mcp_http_server.py\n@@ -30,7 +30,7 @@\n @server.list_tools()\n async def _list_tools() -> list[types.Tool]:\n     out: list[types.Tool] = []\n-    admin = \"admin\" in _current_scopes.get()\n+    admin = _full_surface(_current_scopes.get())\n     for meta in cmp.TOOLS.values():\n         s = meta[\"schema\"]\n         if s[\"name\"] not in PUBLIC_TOOLS and not admin:\n@@ -49,7 +49,7 @@\n     # 2026-09-05 \u00b7 public-surface guard: non-public platform tools are not\n     # callable by non-admin tokens even by known name (mirror of _list_tools)\n-    if name not in PUBLIC_TOOLS and \"admin\" not in _current_scopes.get():\n+    if name not in PUBLIC_TOOLS and not _full_surface(_current_scopes.get()):\n         return [types.TextContent(\n             type=\"text\",\n             text=json.dumps({\"ok\": False, \"error\": \"forbidden: tool not public\"},\n@@ -104,6 +104,14 @@\n     \"governance_plan\", \"governance_dispatch\",\n }\n # \u5176\u4f59\u5de5\u5177\uff08\u82e5\u6709\uff09\u9ed8\u8ba4\u89c6\u4e3a write \u7ea7\u2014\u2014fail-closed\u3002\n \n \n+def _full_surface(scopes: frozenset) -> bool:\n+    \"\"\"Full tool surface (list + call) for platform-internal tools: explicit\n+    'admin' scope, or legacy ops tokens.json tokens whose old full-access\n+    semantics materialize as read:* + write:* wildcards.\"\"\"\n+    return \"admin\" in scopes or {\"read:*\", \"write:*\"} <= set(scopes)\n+\n+\n def _scopes_from_value(val) -> frozenset:\n     \"\"\"tokens.json \u503c \u2192 scope \u96c6\u5408\u3002\u65e7\u683c\u5f0f(list)\u4e0e dict \u5747\u652f\u6301\u3002\"\"\"\n     if isinstance(val, dict):\n",
+ "budget_exceeded": false,
+ "total_tokens": 6347,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 5275,
+    "completion_tokens": 1072,
+    "total_tokens": 6347,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 5019,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 1072,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 5275,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "ops_tokens_full_tool_surface",
+ "duration_s": 44.1,
+ "verdict_post_status": 200
+}

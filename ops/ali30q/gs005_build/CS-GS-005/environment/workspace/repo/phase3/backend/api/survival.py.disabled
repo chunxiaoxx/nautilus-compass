@@ -1,0 +1,345 @@
+"""
+生存机制API接口
+"""
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy.orm import Session
+from typing import Optional, List
+from pydantic import BaseModel, Field
+from datetime import datetime
+
+from utils.database import get_db
+from utils.auth import get_current_user, get_current_agent
+from models.agent_survival import AgentSurvival, AgentTransaction, AgentPenalty
+from services.survival_service import SurvivalService
+import logging
+
+router = APIRouter()
+logger = logging.getLogger(__name__)
+
+
+# Request/Response Models
+class SurvivalUpdateRequest(BaseModel):
+    """更新生存状态请求"""
+    task_score_delta: int = Field(0, description="任务积分增量")
+    quality_score: Optional[float] = Field(None, ge=0.0, le=1.0, description="质量评分 (0-1)")
+    efficiency_score: Optional[float] = Field(None, ge=0.0, le=1.0, description="效率评分 (0-1)")
+    innovation_score: Optional[float] = Field(None, ge=0.0, le=1.0, description="创新评分 (0-1)")
+    collaboration_score: Optional[float] = Field(None, ge=0.0, le=1.0, description="协作评分 (0-1)")
+
+
+class TransactionRequest(BaseModel):
+    """交易记录请求"""
+    category: str = Field(..., description="交易类别")
+    amount: int = Field(..., gt=0, description="金额 (wei)")
+    task_id: Optional[str] = Field(None, description="关联任务ID")
+    description: Optional[str] = Field(None, description="描述")
+
+
+class SurvivalResponse(BaseModel):
+    """生存状态响应"""
+    success: bool
+    data: Optional[dict]
+    error: Optional[str]
+
+
+@router.get("/agents/{agent_id}/survival", response_model=SurvivalResponse)
+async def get_agent_survival(
+    agent_id: int,
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    """
+    获取Agent生存状态
+
+    返回:
+    - 多维度评分
+    - 总积分和ROI
+    - 生存等级
+    - 财务数据
+    - 统计信息
+    """
+    try:
+        survival = db.query(AgentSurvival).filter(AgentSurvival.agent_id == agent_id).first()
+
+        if not survival:
+            # 如果不存在，自动创建
+            survival = SurvivalService.create_agent_survival(db, agent_id)
+
+        return SurvivalResponse(
+            success=True,
+            data=survival.to_dict(),
+            error=None
+        )
+
+    except Exception as e:
+        logger.error(f"Error getting survival for agent {agent_id}: {str(e)}")
+        return SurvivalResponse(
+            success=False,
+            data=None,
+            error=str(e)
+        )
+
+
+@router.post("/agents/{agent_id}/survival/update", response_model=SurvivalResponse)
+async def update_agent_survival(
+    agent_id: int,
+    request: SurvivalUpdateRequest,
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    """
+    更新Agent生存状态
+
+    可以更新:
+    - 任务积分增量
+    - 各维度评分
+
+    系统会自动:
+    - 重新计算总积分
+    - 重新计算ROI
+    - 重新判断生存等级
+    - 重新判断状态
+    """
+    try:
+        survival = SurvivalService.update_agent_survival(
+            db=db,
+            agent_id=agent_id,
+            task_score_delta=request.task_score_delta,
+            quality_score=request.quality_score,
+            efficiency_score=request.efficiency_score,
+            innovation_score=request.innovation_score,
+            collaboration_score=request.collaboration_score
+        )
+
+        return SurvivalResponse(
+            success=True,
+            data=survival.to_dict(),
+            error=None
+        )
+
+    except ValueError as e:
+        logger.error(f"Validation error updating survival for agent {agent_id}: {str(e)}")
+        raise HTTPException(status_code=404, detail=str(e))
+
+    except Exception as e:
+        logger.error(f"Error updating survival for agent {agent_id}: {str(e)}")
+        return SurvivalResponse(
+            success=False,
+            data=None,
+            error=str(e)
+        )
+
+
+@router.get("/survival/leaderboard", response_model=SurvivalResponse)
+async def get_leaderboard(
+    level: Optional[str] = Query(None, description="筛选等级: ELITE, MATURE, GROWING, etc"),
+    limit: int = Query(10, ge=1, le=100, description="返回数量"),
+    offset: int = Query(0, ge=0, description="偏移量"),
+    db: Session = Depends(get_db)
+):
+    """
+    获取排行榜
+
+    可以按等级筛选，按总积分排序
+    """
+    try:
+        survivals = SurvivalService.get_leaderboard(
+            db=db,
+            level=level,
+            limit=limit,
+            offset=offset
+        )
+
+        return SurvivalResponse(
+            success=True,
+            data={
+                "leaderboard": [s.to_dict() for s in survivals],
+                "count": len(survivals)
+            },
+            error=None
+        )
+
+    except Exception as e:
+        logger.error(f"Error getting leaderboard: {str(e)}")
+        return SurvivalResponse(
+            success=False,
+            data=None,
+            error=str(e)
+        )
+
+
+@router.post("/agents/{agent_id}/transactions/income", response_model=SurvivalResponse)
+async def record_income(
+    agent_id: int,
+    request: TransactionRequest,
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    """
+    记录收入
+
+    自动更新:
+    - 总收入
+    - ROI
+    - 生存等级
+    """
+    try:
+        transaction = SurvivalService.record_income(
+            db=db,
+            agent_id=agent_id,
+            amount=request.amount,
+            category=request.category,
+            task_id=request.task_id,
+            description=request.description
+        )
+
+        return SurvivalResponse(
+            success=True,
+            data=transaction.to_dict(),
+            error=None
+        )
+
+    except Exception as e:
+        logger.error(f"Error recording income for agent {agent_id}: {str(e)}")
+        return SurvivalResponse(
+            success=False,
+            data=None,
+            error=str(e)
+        )
+
+
+@router.post("/agents/{agent_id}/transactions/cost", response_model=SurvivalResponse)
+async def record_cost(
+    agent_id: int,
+    request: TransactionRequest,
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    """
+    记录成本
+
+    自动更新:
+    - 总成本
+    - ROI
+    - 生存等级
+    """
+    try:
+        transaction = SurvivalService.record_cost(
+            db=db,
+            agent_id=agent_id,
+            amount=request.amount,
+            category=request.category,
+            task_id=request.task_id,
+            description=request.description
+        )
+
+        return SurvivalResponse(
+            success=True,
+            data=transaction.to_dict(),
+            error=None
+        )
+
+    except Exception as e:
+        logger.error(f"Error recording cost for agent {agent_id}: {str(e)}")
+        return SurvivalResponse(
+            success=False,
+            data=None,
+            error=str(e)
+        )
+
+
+@router.get("/agents/{agent_id}/financial-report", response_model=SurvivalResponse)
+async def get_financial_report(
+    agent_id: int,
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    """
+    获取财务报表
+
+    包括:
+    - 总收入/总成本
+    - ROI
+    - 交易历史
+    """
+    try:
+        survival = db.query(AgentSurvival).filter(AgentSurvival.agent_id == agent_id).first()
+        if not survival:
+            raise HTTPException(status_code=404, detail=f"Agent {agent_id} survival record not found")
+
+        transactions = db.query(AgentTransaction).filter(
+            AgentTransaction.agent_id == agent_id
+        ).order_by(AgentTransaction.created_at.desc()).limit(100).all()
+
+        return SurvivalResponse(
+            success=True,
+            data={
+                "total_income": survival.total_income,
+                "total_cost": survival.total_cost,
+                "roi": survival.roi,
+                "transactions": [t.to_dict() for t in transactions]
+            },
+            error=None
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting financial report for agent {agent_id}: {str(e)}")
+        return SurvivalResponse(
+            success=False,
+            data=None,
+            error=str(e)
+        )
+
+
+@router.get("/survival/statistics", response_model=SurvivalResponse)
+async def get_survival_statistics(
+    db: Session = Depends(get_db)
+):
+    """
+    获取生存机制统计
+
+    包括:
+    - 各等级Agent数量
+    - 平均ROI
+    - 总体统计
+    """
+    try:
+        from sqlalchemy import func
+
+        # 各等级数量
+        level_counts = db.query(
+            AgentSurvival.survival_level,
+            func.count(AgentSurvival.id).label('count')
+        ).group_by(AgentSurvival.survival_level).all()
+
+        # 平均ROI
+        avg_roi = db.query(func.avg(AgentSurvival.roi)).scalar() or 0.0
+
+        # 总Agent数
+        total_agents = db.query(func.count(AgentSurvival.id)).scalar() or 0
+
+        # 保护期Agent数
+        protected_count = db.query(func.count(AgentSurvival.id)).filter(
+            AgentSurvival.protection_until > datetime.utcnow()
+        ).scalar() or 0
+
+        return SurvivalResponse(
+            success=True,
+            data={
+                "level_distribution": {level: count for level, count in level_counts},
+                "average_roi": float(avg_roi),
+                "total_agents": total_agents,
+                "protected_agents": protected_count
+            },
+            error=None
+        )
+
+    except Exception as e:
+        logger.error(f"Error getting survival statistics: {str(e)}")
+        return SurvivalResponse(
+            success=False,
+            data=None,
+            error=str(e)
+        )

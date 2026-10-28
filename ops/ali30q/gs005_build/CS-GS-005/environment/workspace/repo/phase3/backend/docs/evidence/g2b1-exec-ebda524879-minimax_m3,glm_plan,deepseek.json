@@ -1,0 +1,29 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "319c40bffeab751766e29fe9a90e843d0f93bef1",
+  "reference_fix_commit": "ebda524879d3d64f6a7bee746f892df153d3e366",
+  "subject": "fix(rsi-p13): rsi_proven \u52a0\u566a\u58f0\u95e8(rsi_above_noise)\u00b7\u9632 naive su2>su1 \u5047\u9633\u6027 facade",
+  "test_files": [
+   "phase3/backend/tests/test_rsi_p13_loop.py"
+  ],
+  "source_files": [
+   "phase3/backend/scripts/rsi_p13_loop.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/test_rsi_p13_loop.py",
+ "source_rel": "scripts\\rsi_p13_loop.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 1.8,
+ "replayed": true,
+ "verdict_post_status": 200
+}

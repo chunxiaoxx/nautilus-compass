@@ -1,0 +1,11 @@
+--- a/tools/org_lib/fuel_self_line.py
++++ b/tools/org_lib/fuel_self_line.py
+@@
+-# claim 主体(#2917 2026-10-04 14:32 平台裁):落账主体=数字 agent_id 悬空根治,selfline 授信
+-# 余额内自转——fn_stake_on_claim 读 claimed_by 名下余额,数字主体 9000018=115≥押金;
+-# 旧口径('v5'·#2741 双轨)经 env V5_CLAIM_EXECUTOR 可回退
+-CLAIM_EXECUTOR = os.environ.get('V5_CLAIM_EXECUTOR', '9000018')
++# claim 主体(#2927 2026-10-04 15:00 平台四函):押金通道主体='v5'名字串
++# (注资30+回冲30=60落v5),结算侧另走数字主体9000018——claim默认'v5',
++# env V5_CLAIM_EXECUTOR 可切
++CLAIM_EXECUTOR = os.environ.get('V5_CLAIM_EXECUTOR', 'v5')

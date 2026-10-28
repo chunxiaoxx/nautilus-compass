@@ -1,0 +1,24 @@
+#!/bin/bash
+# 部署纪录:cloud /home/ubuntu/fde-assignment/run.sh(fde-assignment.timer 每5min exec)
+# S1 派活 + S2 提交QC 两 poller 串行。凭据全在 cloud 侧文件(~/.fde_feishu.env chmod600 /
+# backend .env grep 提取),绝不入 repo/聊天。本文件仅为部署纪录(.example 不被执行)。
+cd /home/ubuntu/nautilus-mvp/phase3/backend
+set -a
+source /home/ubuntu/.fde_feishu.env
+set +a
+export PLATFORM_DISPATCH_KEY=$(grep "^PLATFORM_DISPATCH_KEY=" /home/ubuntu/nautilus-mvp/phase3/backend/.env | cut -d= -f2-)
+
+# S1 · 派活 poller(待派单 → dispatch+具名claim → 已派单)
+python3 -m services.fde_assignment_runner --base http://localhost:8000 \
+  --app-token EOVhbQwA0a1HEOsgmxecgkBVnwh --table-id tbl69fankpoBhJfw || true
+
+# S2 · 提交 QC poller(已提交 → QC → verdict/report → QC反馈+已通过/已打回)
+# 线2=assembler 校验(无LLM)·线1=checklist scorer(MiniMax judge·镜像 soul-scorer env)
+export MINIMAX_API_KEY=$(grep "^MINIMAX_API_KEY=" /home/ubuntu/nautilus-mvp/phase3/backend/.env | cut -d= -f2-)
+export ANTHROPIC_API_KEY=$(grep "^ANTHROPIC_API_KEY=" /home/ubuntu/nautilus-mvp/phase3/backend/.env | cut -d= -f2-)
+export FDE_SCORER_HARNESS=/home/ubuntu/soul-scorer/checklist_scorer.py
+export FDE_CHECKLIST_GEN=/home/ubuntu/soul-scorer/checklist_from_task.py
+export FDE_API_SECRETS=/dev/null
+export FDE_TUTORIAL_ASSEMBLER=/home/ubuntu/fde-toolbox/assemble_tutorial.py
+exec python3 -m services.fde_qc_feedback_runner --base http://localhost:8000 \
+  --app-token EOVhbQwA0a1HEOsgmxecgkBVnwh --table-id tbl69fankpoBhJfw

@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>nautilus · 组织驾驶舱 v0</title>
+<!--
+  org workbench v0 · 2026-08-30 · docs/plans/2026-08-29-org-workbench-design.md
+  单文件无构建 · 数据源全现成(零新后端):
+    ① 记分牌  GET /api/platform/convergence
+    ② mailbox GET /api/platform/org/mailbox?unread=false(只渲染元数据,不渲染 body)
+    ③ 台账    ./asset-ledger.md(部署时自 docs/ASSET_LEDGER_20260828.md 拷贝)
+    ④ 生产活体 ./evidence/report-YYYYMMDD.jsonl(nginx alias → 云仓 supervisor 产出)
+    ⑤ 体系沉淀 GET /api/platform/org/sinks(正本指针卡:标题→raw 外链+判据+消费方)
+  判据(预注册):上线 7 天内四框+用户日均访问 ≥1 次(nginx access log 独立计数);死页面按 §⓪-E 遗忘环退役。
+  公开页纪律(V5 条件采纳):只放可验证信号;无 SFT/DPO 正向叙事。
+-->
+<style>
+  :root { --bg:#0d1117; --card:#161b22; --edge:#30363d; --fg:#e6edf3; --dim:#8b949e;
+          --green:#3fb950; --red:#f85149; --amber:#d29922; --blue:#58a6ff; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg);
+         font:14px/1.5 -apple-system,"Segoe UI","Microsoft YaHei",sans-serif; }
+  header { display:flex; justify-content:space-between; align-items:baseline;
+           padding:14px 20px; border-bottom:1px solid var(--edge); }
+  header h1 { font-size:17px; margin:0; }
+  header .sub { color:var(--dim); font-size:12px; }
+  main { display:grid; grid-template-columns:1fr 1fr; gap:14px; padding:14px 20px; }
+  @media (max-width:900px){ main { grid-template-columns:1fr; } }
+  section { background:var(--card); border:1px solid var(--edge); border-radius:8px;
+            padding:12px 14px; min-width:0; }
+  section h2 { font-size:13px; margin:0 0 10px; color:var(--dim); font-weight:600;
+               display:flex; justify-content:space-between; }
+  .stale { color:var(--amber); font-weight:400; font-size:11px; }
+  .cards { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; }
+  @media (max-width:640px){ .cards { grid-template-columns:repeat(2,1fr); } }
+  .kpi { background:var(--bg); border:1px solid var(--edge); border-radius:6px; padding:8px; }
+  .kpi .v { font-size:20px; font-weight:700; }
+  .kpi .l { color:var(--dim); font-size:11px; margin-top:2px; }
+  .kpi .d { font-size:11px; margin-top:2px; }
+  .up { color:var(--green); } .down { color:var(--red); } .flat { color:var(--dim); }
+  .badgen { display:inline-block; padding:1px 8px; border-radius:10px; font-size:11px;
+            margin-right:6px; border:1px solid var(--edge); }
+  .mailrow { display:flex; gap:8px; padding:5px 0; border-top:1px solid var(--edge);
+             font-size:12.5px; align-items:baseline; }
+  .mailrow .t { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .mailrow .meta { color:var(--dim); font-size:11px; white-space:nowrap; }
+  .mailrow.acked { opacity:.42; }
+  .mailrow.acked .t { text-decoration:line-through; }
+  .exp { color:var(--red); } .soon { color:var(--amber); }
+  pre.ledger { margin:0; max-height:420px; overflow:auto; font-size:11.5px; line-height:1.45;
+               white-space:pre-wrap; color:var(--fg); }
+  .stateline { display:flex; gap:5px; align-items:center; flex-wrap:wrap; margin:8px 0; }
+  .dot { width:9px; height:9px; border-radius:50%; background:var(--edge); }
+  .dot.ACTIVE { background:var(--green); } .dot.CLAIM_ONLY { background:var(--amber); }
+  .dot.ZERO { background:var(--red); }
+  svg { width:100%; height:90px; }
+  footer { color:var(--dim); font-size:11px; padding:8px 20px 20px; }
+  .err { color:var(--red); font-size:12px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>nautilus · 组织驾驶舱 <span class="sub">v0</span></h1>
+  <span class="sub" id="clock"></span>
+  <div class="sub" style="margin:4px 0">
+    <a href="/leaderboard.html">Agent Harness Leaderboard</a> ·
+    <a href="https://data.nautilus.social/pipeline_dashboard.html">燃料管道 dashboard</a> ·
+    <a href="/L2_report_sample.md">L2 深度报告样例</a>
+  </div>
+</header>
+<main>
+  <section>
+    <h2>记分牌 <span class="stale" id="sb-stale"></span></h2>
+    <div class="cards" id="scoreboard"></div>
+  </section>
+  <section>
+    <h2>组织 mailbox <span class="stale" id="mb-stale"></span></h2>
+    <div id="mail-badges" style="margin-bottom:6px;"></div>
+    <div id="mail-list"></div>
+  </section>
+  <section>
+    <h2>资产台账 <span class="stale" id="lg-stale"></span></h2>
+    <pre class="ledger" id="ledger">加载中…</pre>
+  </section>
+  <section>
+    <h2>生产活体 <span class="stale" id="pr-stale"></span></h2>
+    <div class="stateline" id="states"></div>
+    <svg id="curve" viewBox="0 0 600 90" preserveAspectRatio="none"></svg>
+    <div class="sub" style="color:var(--dim);font-size:11px;" id="pr-note"></div>
+  </section>
+  <section>
+    <h2>体系沉淀 <span class="stale" id="sd-stale"></span></h2>
+    <div id="sediments">加载中…</div>
+  </section>
+</main>
+<footer>
+  判据(预注册):7 天内四框+用户日均访问 ≥1 次,死页面按 §⓪-E 遗忘环退役 ·
+  数据源:convergence API / org mailbox / ASSET_LEDGER / supervisor jsonl / org sinks(30min 轮) ·
+  公开页只放可验证信号 · org.nautilus.social(2026-08-30 正席,acme.sh 自动续期)
+</footer>
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+const fmtInt = (n) => (n === null || n === undefined) ? "—" : Number(n).toLocaleString("en-US");
+const mark = (id, ok) => { $(id).textContent = ok ? "" : "STALE"; };
+
+function kpi(v, l, d, cls) {
+  return `<div class="kpi"><div class="v">${v}</div><div class="l">${l}</div>` +
+         `<div class="d ${cls||"flat"}">${d||""}</div></div>`;
+}
+
+async function loadScoreboard() {
+  try {
+    const r = await fetch("/api/platform/convergence", {cache:"no-store"});
+    const j = await r.json();
+    if (!j.success) throw new Error(j.error||"api");
+    const d = j.data;
+    const auto = d.producer_autonomy || {};
+    $("scoreboard").innerHTML =
+      kpi(fmtInt(d.income && d.income.total), "income",
+          `7d ${d.income && d.income.delta_7d >= 0 ? "+" : ""}${fmtInt(d.income && d.income.delta_7d)}`,
+          (d.income && d.income.delta_7d > 0) ? "up" : "flat") +
+      kpi(fmtInt(d.external_verified && d.external_verified.total), "verified(外部验证)",
+          `7d +${fmtInt(d.external_verified && d.external_verified.last_7d)}`,
+          (d.external_verified && d.external_verified.last_7d > 0) ? "up" : "flat") +
+      kpi(auto.ratio != null ? (auto.ratio*100).toFixed(1)+"%" : "—", "producer 自治率", "", "up") +
+      kpi(`${fmtInt(d.settle_integrity && d.settle_integrity.externally_backed)}/${fmtInt(d.settle_integrity && d.settle_integrity.settled_total)}`,
+          "settle 外部背书", (d.settle_integrity && d.settle_integrity.settled_total > 0 && !d.settle_integrity.externally_backed) ? "0 背书" : "", "down") +
+      kpi("0/11", "甲方交付(已作废需求)", "垂域线接棒", "flat");
+    mark("sb-stale", true);
+  } catch (e) { mark("sb-stale", false); }
+}
+
+function deadlineView(iso) {
+  if (!iso) return "";
+  const dl = new Date(iso).getTime();
+  if (isNaN(dl)) return "";
+  const mins = Math.round((dl - Date.now()) / 60000);
+  if (mins < 0) return `<span class="exp">EXPIRED ${-mins}m</span>`;
+  if (mins <= 720) return `<span class="soon">${mins}m 后到期</span>`;
+  return `${Math.round(mins/60)}h`;
+}
+
+async function loadMailbox() {
+  try {
+    const r = await fetch("/api/platform/org/mailbox?unread=false", {cache:"no-store"});
+    const j = await r.json();
+    if (!j.success) throw new Error(j.error||"api");
+    const rows = j.data || [];
+    const byTo = {};
+    rows.forEach(m => { byTo[m.to_agent] = (byTo[m.to_agent]||0)+1; });
+    $("mail-badges").innerHTML = Object.entries(byTo)
+      .sort().map(([k,v]) => `<span class="badgen">${k} × ${v}</span>`).join("");
+    $("mail-list").innerHTML = rows.slice(0, 14).map(m => {
+      const acked = !!m.ack_at;
+      return `<div class="mailrow${acked?" acked":""}">` +
+        `<span class="t" title="${m.trace_id||""}"></span>` +
+        `<span class="meta">${m.from_agent} → ${m.to_agent}</span>` +
+        `<span class="meta">${acked ? "已回执" : deadlineView(m.deadline)}</span></div>`;
+    }).join("") || `<span class="flat" style="color:var(--dim)">空</span>`;
+    // 标题走 textContent 防注入
+    document.querySelectorAll("#mail-list .mailrow").forEach((el, i) => {
+      el.querySelector(".t").textContent = rows[i] ? rows[i].title : "";
+    });
+    mark("mb-stale", true);
+  } catch (e) { mark("mb-stale", false); }
+}
+
+async function loadLedger() {
+  try {
+    const r = await fetch("asset-ledger.md", {cache:"no-store"});
+    if (!r.ok) throw new Error(r.status);
+    $("ledger").textContent = await r.text();
+    mark("lg-stale", true);
+  } catch (e) { $("ledger").textContent = "台账加载失败(部署时需拷贝 docs/ASSET_LEDGER_20260828.md → asset-ledger.md)";
+    mark("lg-stale", false); }
+}
+
+function drawCurve(points) {
+  const svg = $("curve");
+  if (points.length < 2) { svg.innerHTML = ""; return; }
+  const ys = points.map(p => p.v).filter(v => v != null);
+  if (ys.length < 2) { svg.innerHTML = ""; return; }
+  const lo = Math.min(...ys), hi = Math.max(...ys), span = (hi-lo)||1;
+  const W=600, H=90, P=6;
+  const pts = points.map((p,i) => {
+    const x = P + (W-2*P) * i/(points.length-1);
+    const y = p.v==null ? null : H-P-(H-2*P)*(p.v-lo)/span;
+    return [x,y];
+  });
+  let path = "", started = false;
+  pts.forEach(([x,y]) => {
+    if (y==null) { started=false; return; }
+    path += (started?" L":" M")+x.toFixed(1)+" "+y.toFixed(1);
+    started = true;
+  });
+  const last = [...pts].reverse().find(([,y]) => y!=null);
+  svg.innerHTML =
+    `<path d="${path}" fill="none" stroke="var(--blue)" stroke-width="1.6"/>` +
+    (last ? `<circle cx="${last[0]}" cy="${last[1]}" r="3" fill="var(--blue)"/>` : "") +
+    `<text x="${W-P}" y="${P+9}" fill="var(--dim)" font-size="10" text-anchor="end">${hi}</text>` +
+    `<text x="${W-P}" y="${H-2}" fill="var(--dim)" font-size="10" text-anchor="end">${lo}</text>`;
+}
+
+async function loadProduction() {
+  const day = (d) => d.toISOString().slice(0,10).replace(/-/g,"");
+  const urls = [ `evidence/report-${day(new Date())}.jsonl`,
+                 `evidence/report-${day(new Date(Date.now()-864e5))}.jsonl` ];
+  for (const u of urls) {
+    try {
+      const r = await fetch(u, {cache:"no-store"});
+      if (!r.ok) continue;
+      const lines = (await r.text()).split("\n").filter(Boolean).map(JSON.parse);
+      const pts = lines.map(l => ({ v: l.obs && l.obs.curves && l.obs.curves.verified_total,
+                                    s: l.state }));
+      const tail = pts.slice(-24);
+      drawCurve(tail);
+      $("states").innerHTML = tail.slice(-18).map(p =>
+        `<span class="dot ${p.s||""}" title="${p.s||"?"}"></span>`).join("");
+      const lastS = pts.length ? pts[pts.length-1].s : "?";
+      const lastV = pts.length ? pts[pts.length-1].v : null;
+      $("pr-note").textContent =
+        `监督轮 ${lines.length} 次/日 · 最近状态 ${lastS} · verified_total ${fmtInt(lastV)}(点=30min 轮)`;
+      mark("pr-stale", true);
+      return;
+    } catch (e) { /* 试上一个文件 */ }
+  }
+  $("pr-note").textContent = "supervisor jsonl 暂不可读";
+  mark("pr-stale", false);
+}
+
+async function loadSediments() {
+  try {
+    const r = await fetch("/api/platform/org/sinks", {cache:"no-store"});
+    const j = await r.json();
+    if (!j.success) throw new Error(j.error||"api");
+    const rows = j.data || [];
+    const el = $("sediments");
+    el.innerHTML = rows.map(s => {
+      const raw = (s.repo && s.path) ? `https://raw.githubusercontent.com/${s.repo}/main/${s.path}` : "";
+      return `<div style="padding:6px 0;border-top:1px solid var(--edge);font-size:12.5px;">` +
+        `<a ${raw?`href="${raw}" target="_blank" rel="noopener"`:""} style="color:var(--blue);text-decoration:none;"></a> ` +
+        `<span class="meta"></span><br><span class="meta"></span></div>`;
+    }).join("") || `<span style="color:var(--dim);font-size:12px;">暂无在册沉淀物</span>`;
+    // 文本一律 textContent 填充(防注入,同 mailbox 惯例)
+    const blocks = el.querySelectorAll(":scope > div[style]");
+    rows.forEach((s, i) => {
+      const b = blocks[i]; if (!b) return;
+      const a = b.querySelector("a"), metas = b.querySelectorAll(".meta");
+      if (a) a.textContent = s.title || s.sink_id;
+      if (metas[0]) metas[0].textContent =
+        `${s.frame} · ${s.status}${s.sha16 ? " · sha16 " + String(s.sha16).slice(0, 12) : ""}`;
+      if (metas[1]) metas[1].textContent =
+        `${s.criteria_ref || ""}${s.criteria_ref && (s.consumers||[]).length ? " · 消费方: " : "消费方: "}${(s.consumers||[]).join("、") || "—"}`;
+    });
+    mark("sd-stale", true);
+  } catch (e) { mark("sd-stale", false); }
+}
+
+function tick() {
+  $("clock").textContent = new Date().toISOString().replace("T"," ").slice(0,19)+" UTC";
+  loadScoreboard(); loadMailbox(); loadProduction(); loadSediments();
+}
+loadLedger();
+tick();
+setInterval(tick, 60000);
+</script>
+</body>
+</html>

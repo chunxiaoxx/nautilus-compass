@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>具身数据线 · 作战主页</title>
+  <link rel="stylesheet" href="/embodied/fonts/fonts.css" />
+  <style>
+    :root {
+      --bg: #eef3f8;
+      --panel: #ffffff;
+      --ink: #122235;
+      --muted: #5f6f81;
+      --line: #d6deea;
+      --accent: #1d4ed8;
+      --accent2: #0f766e;
+      --good: #15803d;
+      --warn: #b45309;
+      --bad: #b91c1c;
+      --shadow: 0 12px 26px rgba(17, 39, 62, 0.12);
+      --radius: 16px;
+      --font: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      color: var(--ink);
+      background: radial-gradient(1300px 500px at 0% 0%, #dbeafe, transparent 45%), var(--bg);
+      line-height: 1.7;
+      font-size: 18px;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 24px 18px 60px;
+    }
+
+    .hero {
+      border-radius: var(--radius);
+      background: linear-gradient(130deg, #122a8f, #0ea5e9);
+      color: #eff6ff;
+      padding: 28px 28px 22px;
+      box-shadow: var(--shadow);
+    }
+    .hero h1 {
+      margin: 0;
+      font-size: 42px;
+      line-height: 1.15;
+    }
+    .hero p {
+      margin: 10px 0 0;
+      color: #d8e6ff;
+      font-size: 20px;
+      max-width: 900px;
+    }
+    .hero-note {
+      margin-top: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 16px;
+      color: #dbeafe;
+    }
+    .tag {
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 999px;
+      padding: 6px 12px;
+      background: rgba(255,255,255,0.12);
+    }
+
+    .quick {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(200px, 1fr));
+      gap: 12px;
+    }
+    .quick a {
+      display: block;
+      border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 12px;
+      padding: 14px;
+      color: #f8fbff;
+      background: rgba(15,23,42,0.25);
+      font-weight: 600;
+      transition: transform .15s ease, background .2s ease;
+    }
+    .quick a:hover {
+      text-decoration: none;
+      transform: translateY(-2px);
+      background: rgba(15,23,42,0.34);
+    }
+
+    section {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-top: 16px;
+      box-shadow: var(--shadow);
+    }
+    h2 {
+      margin: 0 0 12px;
+      font-size: 28px;
+      color: #10243d;
+    }
+    .grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(2, minmax(260px, 1fr));
+    }
+    .card {
+      border: 1px solid #e1e7f4;
+      border-radius: 12px;
+      padding: 14px;
+      background: #f9fbff;
+    }
+    .card h3 { margin: 0 0 6px; font-size: 21px; }
+    .card p { margin: 0; color: #2f4259; }
+
+    .metric {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(130px, 1fr));
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .metric > div {
+      border: 1px solid #dde7fb;
+      border-radius: 12px;
+      padding: 12px;
+      background: #fff;
+      text-align: center;
+    }
+    .metric b {
+      display: block;
+      font-size: 40px;
+      line-height: 1.1;
+      color: var(--accent2);
+      margin-bottom: 8px;
+    }
+    .metric span {
+      color: #5d6f87;
+      font-size: 14px;
+      display: block;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(120px, 1fr));
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .step, .step:last-child { border-radius: 10px; padding: 10px; border: 1px solid #d4e0f5; background: #f8fbff; text-align: center; }
+    .step strong { display: block; color: #1f2937; }
+    .arrow { place-self: center; color: #94a3b8; font-size: 20px; }
+
+    .chartWrap {
+      margin-top: 12px;
+      border: 1px solid #d8e1f0;
+      border-radius: 12px;
+      padding: 12px;
+      background: #fbfdff;
+    }
+    canvas {
+      width: 100%;
+      height: 240px;
+      display: block;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 12px;
+      margin-top: 12px;
+      align-items: start;
+    }
+    .faq details {
+      border-bottom: 1px solid #d8e2f0;
+      padding: 8px 0;
+    }
+    .faq summary {
+      cursor: pointer;
+      font-size: 20px;
+      padding: 8px 0;
+      font-weight: 600;
+    }
+    .faq p { margin: 4px 0 10px; color: #425267; }
+
+    .cta {
+      margin-top: 12px;
+      padding: 14px;
+      border: 1px dashed #a7f3d0;
+      border-radius: 12px;
+      background: #ecfdf5;
+      color: #064e3b;
+    }
+    .btn {
+      display: inline-block;
+      background: #0f766e;
+      color: white;
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-top: 8px;
+      font-weight: 700;
+      margin-right: 8px;
+    }
+    .btn.alt {
+      background: #1d4ed8;
+    }
+
+    .legend {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #61708b;
+    }
+    .small {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 980px) {
+      .grid, .metric, .flow, .row, .quick { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 34px; }
+      .hero p { font-size: 18px; }
+      h2 { font-size: 24px; }
+      .step { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <h1>具身智能数据采集飞轮 · 页面门户</h1>
+    <p>把“能交付的页面”放在这里：内部工作台、外发能力册、3天闭环演示各自独立，不互相覆盖。你要的内部资料我保留不变，新增演示只作为附加层。</p>
+    <div class="hero-note">
+      <span class="tag">内部/外部内容分离</span>
+      <span class="tag">Paris 导览图实时生成演示保留</span>
+      <span class="tag">世界模型路径与判定逻辑可复跑</span>
+    </div>
+    <div class="quick">
+      <a href="/embodied/team/">内部工作台 / 团队版本</a>
+      <a href="/embodied/public/">外发能力册 / 唯一外发版</a>
+      <a href="/embodied/pilot/">3 天闭环演示（新）</a>
+    </div>
+  </section>
+
+  <section>
+    <h2>页面结构一览</h2>
+    <div class="metric">
+      <div><b>3</b><span>主入口（内部、外部、演示）</span></div>
+      <div><b>4</b><span>演示主模块（流程、图谱、Paris、报表）</span></div>
+      <div><b>2</b><span>判定链路（QC + 外部复检）</span></div>
+      <div><b>持续</b><span>更新闭环（每日复盘）</span></div>
+    </div>
+
+    <div class="grid" style="margin-top:12px;">
+      <div class="card">
+        <h3>内部版（保密）</h3>
+        <p>用于项目管理、排班、质检规则同步、失败样本复盘与任务闭环；不对外公开。</p>
+      </div>
+      <div class="card">
+        <h3>外部版（客户）</h3>
+        <p>用于招商和对外演示，强调交付标准、计费口径、失败样本复用、训练/真机协同。</p>
+      </div>
+    </div>
+
+    <div class="flow" style="margin-top:12px;">
+      <div class="step"><strong>1. 题库与流程</strong>先定</div>
+      <div class="arrow">→</div>
+      <div class="step"><strong>2. 质检与标签</strong>先验</div>
+      <div class="arrow">→</div>
+      <div class="step"><strong>3. 复盘与交付</strong>闭环</div>
+      <div class="arrow">→</div>
+      <div class="step"><strong>4. 飞轮迭代</strong>下周期优化</div>
+    </div>
+  </section>
+
+  <div class="grid">
+    <section>
+      <h2>交付指标（演示版）</h2>
+      <div class="chartWrap">
+        <canvas id="kpi"></canvas>
+      </div>
+      <p class="small">说明：图仅用演示数据模拟，真实数据按复跑链路逐条更新。</p>
+    </section>
+
+    <section>
+      <h2>常见问题（先把术语降噪）</h2>
+      <div class="faq">
+        <details open>
+          <summary>为什么要把“内部”和“外部”拆开？</summary>
+          <p>避免展示页的管理信息与对外展示内容混在一起，保证安全边界和对外表达一致。</p>
+        </details>
+        <details>
+          <summary>世界模型演示放什么内容？</summary>
+          <p>先放“可解释的生成 + 可复跑的复核”两件事：路径导览页与失败回放判断，避免只讲模型能力不落地。</p>
+        </details>
+        <details>
+          <summary>目前怎么避免废品多？</summary>
+          <p>按 episode 级规则先验，按合格/失败模式打分，争议都可复跑复验，不合格不计账。</p>
+        </details>
+        <details>
+          <summary>3 天闭环演示能证明什么？</summary>
+          <p>证明流程链可跑通：任务接收、产出、QC、回流、复训和演示汇报不是孤立 demo。</p>
+        </details>
+      </div>
+      <div class="cta">
+        要先看演示，直接进 <a class="btn" href="/embodied/pilot/">3天闭环作战页</a>
+        或直接看可下载版本：<a class="btn alt" href="/embodied/pilot/?view=internal">对内视图</a>
+      </div>
+    </section>
+  </div>
+
+  <section>
+    <h2>对接演示导航</h2>
+    <div class="row">
+      <div>
+        <p class="small">演示顺序建议：先入口 → KPI → Paris 任务导览 → QC 分析 → 世界模型复核 → 下一步动作。</p>
+        <div class="chartWrap">
+          <canvas id="route"></canvas>
+        </div>
+      </div>
+      <div>
+        <p class="small">版本对齐说明</p>
+        <ul>
+          <li>内部页不改：仍保留旧操作系统逻辑与内容。</li>
+          <li>外部页不改：先放“可展示资产与交付口径”。</li>
+          <li>新增页只叠加演示，不替换，不覆盖原内容。</li>
+          <li>三类页面都走同一账号认证，不引入外部公开。</li>
+        </ul>
+        <p class="legend">本页不自动写入数据，仅负责入口与可视化导航。数据更新来自后续的 JSON 任务源。</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function() {
+  function drawBar(id, points) {
+    var c = document.getElementById(id);
+    if (!c) return;
+    var ctx = c.getContext('2d');
+    var w = c.clientWidth;
+    var h = c.clientHeight;
+    if (c.width !== w || c.height !== h) { c.width = w; c.height = h; }
+
+    ctx.clearRect(0,0,w,h);
+    ctx.fillStyle = '#f1f5f9';
+    ctx.fillRect(0,0,w,h);
+
+    var pad = {l:36,r:12,t:12,b:24};
+    var chartW = w - pad.l - pad.r;
+    var chartH = h - pad.t - pad.b;
+    var maxY = Math.max.apply(null, points.map(function(p){return p.v;}));
+    var xStep = chartW / (points.length - 1);
+
+    ctx.strokeStyle = '#dbe3f0';
+    ctx.beginPath();
+    ctx.moveTo(pad.l, pad.t);
+    ctx.lineTo(pad.l, h - pad.b);
+    ctx.lineTo(w - pad.r, h - pad.b);
+    ctx.stroke();
+
+    ctx.fillStyle = '#0f766e';
+    ctx.strokeStyle = 'rgba(15, 118, 110, 0.45)';
+    ctx.beginPath();
+
+    points.forEach(function(p, i){
+      var x = pad.l + i * xStep;
+      var y = pad.t + chartH - (p.v / maxY) * chartH;
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      ctx.fillRect(x - 16, y, 12, h - pad.b - y);
+      ctx.fillStyle = '#0f172a';
+      ctx.font = '12px sans-serif';
+      ctx.fillText(p.name, x - 18, h - 8);
+      ctx.fillText(p.v.toString(), x - 8, y - 6);
+      ctx.fillStyle = '#0f766e';
+    });
+    ctx.stroke();
+  }
+
+  function drawRoute(id) {
+    var c = document.getElementById(id);
+    if (!c) return;
+    var ctx = c.getContext('2d');
+    var w = c.clientWidth;
+    var h = c.clientHeight;
+    if (c.width !== w || c.height !== h) { c.width = w; c.height = h; }
+
+    var pts = [
+      {x:12,y:50,label:'接单',col:'#1d4ed8'},
+      {x:32,y:120,label:'质检',col:'#0ea5e9'},
+      {x:58,y:180,label:'复盘',col:'#0f766e'},
+      {x:82,y:80,label:'交付',col:'#0ea5e9'},
+      {x:92,y:170,label:'回流',col:'#1d4ed8'}
+    ];
+
+    ctx.clearRect(0,0,w,h);
+    ctx.fillStyle = '#f8fbff';
+    ctx.fillRect(0,0,w,h);
+
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.moveTo(16, h - 24);
+    ctx.quadraticCurveTo(140,20,280,90);
+    ctx.stroke();
+    ctx.quadraticCurveTo(380,140,560,62);
+    ctx.stroke();
+
+    pts.forEach(function(p, i) {
+      var x = (w - 40) * (p.x / 100) + 20;
+      var y = (h - 40) * (p.y / 200) + 20;
+      ctx.beginPath();
+      ctx.fillStyle = p.col;
+      ctx.arc(x,y,8,0,Math.PI*2);
+      ctx.fill();
+      ctx.fillStyle = '#0f172a';
+      ctx.font = '14px sans-serif';
+      ctx.fillText(p.label, x-18, y-12);
+      if (i > 0) {
+        var prev = pts[i-1];
+        var px = (w - 40) * (prev.x / 100) + 20;
+        var py = (h - 40) * (prev.y / 200) + 20;
+        ctx.beginPath();
+        ctx.strokeStyle = '#94a3b8';
+        ctx.moveTo(px, py);
+        ctx.lineTo(x, y);
+        ctx.setLineDash([4,4]);
+        ctx.stroke();
+      }
+    });
+
+    ctx.setLineDash([]);
+  }
+
+  drawBar('kpi', [
+    {name:'接单',v:8},
+    {name:'质检',v:6},
+    {name:'通过',v:5},
+    {name:'复用',v:3},
+    {name:'复盘',v:4}
+  ]);
+  drawRoute('route');
+
+  window.addEventListener('resize', function(){
+    drawBar('kpi', [
+      {name:'接单',v:8},
+      {name:'质检',v:6},
+      {name:'通过',v:5},
+      {name:'复用',v:3},
+      {name:'复盘',v:4}
+    ]);
+    drawRoute('route');
+  });
+})();
+</script>
+</body>
+</html>

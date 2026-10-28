@@ -1,0 +1,29 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "bb21293e14d743c40c12d9101acb3189efc4df02",
+  "reference_fix_commit": "59cf0f93f9cfd9efc1fe690229bd6a4b260616f4",
+  "subject": "fix(fde): validate role receipt array items before semantics",
+  "test_files": [
+   "tests/test_adapter_contracts.py"
+  ],
+  "source_files": [
+   "src/nautilus_fde_phase3/contracts.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-fde-phase3"
+ },
+ "test_id": "tests/test_adapter_contracts.py",
+ "source_rel": "src/nautilus_fde_phase3/contracts.py",
+ "provider": "ark_glm",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

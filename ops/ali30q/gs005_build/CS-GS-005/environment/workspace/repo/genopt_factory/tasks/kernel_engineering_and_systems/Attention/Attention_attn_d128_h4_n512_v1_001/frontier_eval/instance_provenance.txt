@@ -1,0 +1,7 @@
+instance_source: SYNTHETIC (controlled, deterministic Q/K/V tensors)
+generator_script: genopt_factory/tools/fetch_attention_synth.py
+master_seed: 20260702
+why_synthetic: "controlled workloads with known shape characteristics; reproducible across runs"
+reference_algorithm: FlashAttention2 (Dao et al. 2022) — block-tiled streaming softmax
+benchmark_versions:
+  - "1.0 (2026-07-02): 5 workloads, N in {128,256,512,1024,2048}, d=64"

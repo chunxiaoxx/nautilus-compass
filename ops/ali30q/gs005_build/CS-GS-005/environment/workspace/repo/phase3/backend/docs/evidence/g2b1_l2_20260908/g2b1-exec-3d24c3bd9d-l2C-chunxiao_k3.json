@@ -1,0 +1,161 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "29e0ddfc279f68c2bfdf5ce453a2261bde1ac842",
+  "reference_fix_commit": "3d24c3bd9dc155c30d2c93f970a60a20852d5025",
+  "subject": "fix(platform): auto-verify \u62d2\u9a8c genopt-* \u5bb6\u65cf \u2014 \u8865 8/22 \u51bb\u7ed3\u6f0f\u70b9(+88 \u5b9e\u8bc1)",
+  "test_files": [
+   "phase3/backend/tests/test_fde_auto_verify_planner.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/fde_auto_verify_runner.py"
+  ],
+  "repo_path": "C:/Users/chunx/Projects/nautilus-core",
+  "hist_test_id": "tests/test_fde_auto_verify_planner.py::test_genopt_family_rejected_freeze_semantics",
+  "hist_passed": false,
+  "_passed": false
+ },
+ "test_id": "tests/test_fde_auto_verify_planner.py::test_genopt_family_rejected_freeze_semantics",
+ "source_rel": "services\\fde_auto_verify_runner.py",
+ "provider": "l2C-chunxiao_k3",
+ "provider_used": "l2C-chunxiao_k3",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 32960,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 8546,
+    "completion_tokens": 2819,
+    "total_tokens": 11365,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 1634,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 6912,
+      "output_tokens": 2819,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 6912,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 8546,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_7i9vwg91\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 1 item\r\n\r\ntests/test_fde_auto_verify_planner.py::test_genopt_family_rejected_freeze_semantics FAILED [100%]\r\n\r\n================================== FAILURES ===================================\r\n________________ test_genopt_family_rejected_freeze_semantics _________________\r\ntests\\test_fde_auto_verify_planner.py:55: in test_genopt_family_rejected_freeze_semantics\r\n    assert [j[\"verdict_id\"] for j in jobs] == [\"v2\"]\r\nE   AssertionError: assert ['v1', 'v2'] == ['v2']\r\nE     \r\nE     At index 0 diff: 'v1' != 'v2'\r\nE     Left contains one more item: 'v2'\r\nE     \r\nE     Full diff:\r\nE       [\r\nE     +     'v1',\r\nE           'v2',\r\nE       ]\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_fde_auto_verify_planner.py::test_genopt_family_rejected_freeze_semantics\r\n============================== 1 failed in 0.29s ==============================\r\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 8978,
+    "completion_tokens": 2602,
+    "total_tokens": 11580,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 530,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 8448,
+      "output_tokens": 2602,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 8448,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 8978,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_7i9vwg91\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 1 item\r\n\r\ntests/test_fde_auto_verify_planner.py::test_genopt_family_rejected_freeze_semantics FAILED [100%]\r\n\r\n================================== FAILURES ===================================\r\n________________ test_genopt_family_rejected_freeze_semantics _________________\r\ntests\\test_fde_auto_verify_planner.py:55: in test_genopt_family_rejected_freeze_semantics\r\n    assert [j[\"verdict_id\"] for j in jobs] == [\"v2\"]\r\nE   AssertionError: assert ['v1', 'v2'] == ['v2']\r\nE     \r\nE     At index 0 diff: 'v1' != 'v2'\r\nE     Left contains one more item: 'v2'\r\nE     \r\nE     Full diff:\r\nE       [\r\nE     +     'v1',\r\nE           'v2',\r\nE       ]\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_fde_auto_verify_planner.py::test_genopt_family_rejected_freeze_semantics\r\n============================== 1 failed in 0.31s ==============================\r\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 8978,
+    "completion_tokens": 1037,
+    "total_tokens": 10015,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 274,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 8704,
+      "output_tokens": 1037,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 8704,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 8978,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_7i9vwg91\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 1 item\r\n\r\ntests/test_fde_auto_verify_planner.py::test_genopt_family_rejected_freeze_semantics FAILED [100%]\r\n\r\n================================== FAILURES ===================================\r\n________________ test_genopt_family_rejected_freeze_semantics _________________\r\ntests\\test_fde_auto_verify_planner.py:55: in test_genopt_family_rejected_freeze_semantics\r\n    assert [j[\"verdict_id\"] for j in jobs] == [\"v2\"]\r\nE   AssertionError: assert ['v1', 'v2'] == ['v2']\r\nE     \r\nE     At index 0 diff: 'v1' != 'v2'\r\nE     Left contains one more item: 'v2'\r\nE     \r\nE     Full diff:\r\nE       [\r\nE     +     'v1',\r\nE           'v2',\r\nE       ]\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_fde_auto_verify_planner.py::test_genopt_family_rejected_freeze_semantics\r\n============================== 1 failed in 0.36s ==============================\r\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 297.9
+}

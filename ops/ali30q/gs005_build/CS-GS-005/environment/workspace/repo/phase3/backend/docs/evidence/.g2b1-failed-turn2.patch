@@ -1,0 +1,19 @@
+--- a/nautilus_v5/breath/intent_router.py
++++ b/nautilus_v5/breath/intent_router.py
+@@ -185,7 +185,19 @@
+         if matches:
+             seen: Dict[str, ToolCall] = {}
+             for tc in sorted(matches, key=lambda x: -x.confidence):
+                 if tc.tool not in seen:
+                     seen[tc.tool] = tc
+-            return list(seen.values())
++            ranked = list(seen.values())
++            for i, tc in enumerate(ranked):
++                if tc.tool != 'pf_score_bounty':
++                    continue
++                has_id = bool(tc.args.get('bounty_id') or tc.args.get('task_id')) or bool(re.search(r'(b-[0-9A-Za-z]{6,})', s))
++                has_score = ('score' in tc.args) or bool(re.search(r'([0-9]+(?:[.][0-9]+)?)[ ]*(?:分|/10|points?)|score[ ]*[:=]?[ ]*([0-9]+(?:[.][0-9]+)?)', s, re.IGNORECASE))
++                if not (has_id and has_score):
++                    ranked[i] = ToolCall(tool='pf_list_bounties', args={'status': 'submitted', 'hint': s[:200]}, confidence=tc.confidence, matched_pattern='downgrade_missing_id_score')
++                break
++            return ranked

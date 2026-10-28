@@ -1,0 +1,354 @@
+name: Security Scanning
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # 每周一凌晨3点运行安全扫描
+    - cron: '0 3 * * 1'
+  workflow_dispatch:
+
+env:
+  PYTHON_VERSION: '3.13'
+
+jobs:
+  dependency-scan:
+    name: Dependency Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install scanning tools
+      run: |
+        python -m pip install --upgrade pip
+        pip install safety pip-audit
+
+    - name: Run Safety check
+      continue-on-error: true
+      run: |
+        safety check --json --output safety-report.json || true
+        safety check || echo "::warning::Vulnerabilities found in dependencies"
+
+    - name: Run pip-audit
+      continue-on-error: true
+      run: |
+        pip-audit --requirement requirements.txt --format json --output pip-audit-report.json || true
+        pip-audit --requirement requirements.txt || echo "::warning::Audit issues found"
+
+    - name: Upload dependency scan results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: dependency-scan-results
+        path: |
+          safety-report.json
+          pip-audit-report.json
+
+  code-security-scan:
+    name: Code Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install Bandit
+      run: |
+        pip install bandit[toml]
+
+    - name: Run Bandit security scan
+      continue-on-error: true
+      run: |
+        bandit -r . \
+          -f json \
+          -o bandit-report.json \
+          --exclude ./tests,./venv,./htmlcov,./.pytest_cache \
+          --skip B101,B601 || true
+
+        bandit -r . \
+          --exclude ./tests,./venv,./htmlcov,./.pytest_cache \
+          --skip B101,B601 || echo "::warning::Security issues found"
+
+    - name: Upload Bandit results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: bandit-results
+        path: bandit-report.json
+
+  secret-scan:
+    name: Secret Scanning
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Run Gitleaks
+      uses: gitleaks/gitleaks-action@v2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
+
+    - name: Run TruffleHog
+      uses: trufflesecurity/trufflehog@main
+      with:
+        path: ./
+        base: ${{ github.event.repository.default_branch }}
+        head: HEAD
+        extra_args: --debug --only-verified
+
+  sast-scan:
+    name: Static Application Security Testing
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: python
+        queries: security-and-quality
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        category: "/language:python"
+
+  docker-scan:
+    name: Docker Image Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build Docker image
+      run: |
+        docker build -t nautilus-backend:security-scan .
+
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: 'nautilus-backend:security-scan'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+        severity: 'CRITICAL,HIGH,MEDIUM'
+
+    - name: Upload Trivy results to GitHub Security
+      uses: github/codeql-action/upload-sarif@v3
+      if: always()
+      with:
+        sarif_file: 'trivy-results.sarif'
+
+    - name: Run Trivy with table output
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: 'nautilus-backend:security-scan'
+        format: 'table'
+        severity: 'CRITICAL,HIGH'
+
+    - name: Scan with Grype
+      uses: anchore/scan-action@v3
+      with:
+        image: 'nautilus-backend:security-scan'
+        fail-build: false
+        severity-cutoff: high
+
+  infrastructure-scan:
+    name: Infrastructure Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Run Checkov
+      uses: bridgecrewio/checkov-action@master
+      with:
+        directory: .
+        framework: dockerfile,secrets
+        output_format: sarif
+        output_file_path: checkov-results.sarif
+        soft_fail: true
+
+    - name: Upload Checkov results
+      uses: github/codeql-action/upload-sarif@v3
+      if: always()
+      with:
+        sarif_file: checkov-results.sarif
+
+  license-scan:
+    name: License Compliance Scan
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install dependencies
+      run: |
+        pip install pip-licenses
+
+    - name: Check licenses
+      run: |
+        pip install -r requirements.txt
+        pip-licenses --format=json --output-file=licenses.json
+        pip-licenses --format=markdown --output-file=licenses.md
+
+    - name: Upload license report
+      uses: actions/upload-artifact@v4
+      with:
+        name: license-report
+        path: |
+          licenses.json
+          licenses.md
+
+  api-security-scan:
+    name: API Security Scan
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: nautilus_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+
+    - name: Start application
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/nautilus_test
+        REDIS_URL: redis://localhost:6379
+        SECRET_KEY: test-secret-key
+        API_KEY_PREFIX: nau_
+        ENVIRONMENT: test
+      run: |
+        uvicorn main:app --host 0.0.0.0 --port 8000 &
+        sleep 15
+
+    - name: Run OWASP ZAP API scan
+      uses: zaproxy/action-api-scan@v0.7.0
+      with:
+        target: 'http://localhost:8000/openapi.json'
+        format: openapi
+        fail_action: false
+        cmd_options: '-a'
+
+    - name: Upload ZAP results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: zap-scan-results
+        path: |
+          report_html.html
+          report_json.json
+
+  security-summary:
+    name: Security Summary
+    runs-on: ubuntu-latest
+    needs: [dependency-scan, code-security-scan, secret-scan, sast-scan, docker-scan, infrastructure-scan, license-scan, api-security-scan]
+    if: always()
+
+    steps:
+    - name: Generate security summary
+      run: |
+        echo "## Security Scan Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "| Scan Type | Status |" >> $GITHUB_STEP_SUMMARY
+        echo "|-----------|--------|" >> $GITHUB_STEP_SUMMARY
+        echo "| Dependency Scan | ${{ needs.dependency-scan.result }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Code Security Scan | ${{ needs.code-security-scan.result }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Secret Scan | ${{ needs.secret-scan.result }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| SAST Scan | ${{ needs.sast-scan.result }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Docker Scan | ${{ needs.docker-scan.result }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Infrastructure Scan | ${{ needs.infrastructure-scan.result }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| License Scan | ${{ needs.license-scan.result }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| API Security Scan | ${{ needs.api-security-scan.result }} |" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "Scanned at: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+
+    - name: Check critical failures
+      run: |
+        if [ "${{ needs.secret-scan.result }}" == "failure" ]; then
+          echo "❌ CRITICAL: Secrets detected in code!"
+          exit 1
+        fi
+
+        if [ "${{ needs.sast-scan.result }}" == "failure" ]; then
+          echo "⚠️ WARNING: SAST scan found issues"
+        fi
+
+        echo "✅ Security scans completed"
+
+    - name: Create security issue
+      if: |
+        needs.dependency-scan.result == 'failure' ||
+        needs.code-security-scan.result == 'failure' ||
+        needs.docker-scan.result == 'failure'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          github.rest.issues.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: '🔒 Security Scan Alert - ' + new Date().toISOString().split('T')[0],
+            body: 'Security scans have detected potential issues. Please review the workflow results.',
+            labels: ['security', 'automated']
+          })

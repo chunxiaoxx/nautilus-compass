@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta property="og:title" content="Nautilus Bench · Agent Harness 第三方评测">
+<meta property="og:description" content="判据 sha 预注册·判分隔离·负结果照报。免费榜单收录 24h 回卡,深度报告 $199/48h。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://bench.nautilus.social/">
+<meta name="description" content="判据 sha 预注册·判分隔离·负结果照报。免费榜单收录 24h 回卡,深度报告 $199/48h。">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nautilus Bench · Agent Harness 第三方评测</title>
+<!-- bench v3 数据驱动重构(2026-10-08 深夜·用户批评三点对症)
+     ① 数据不再硬编码: live 区 fetch 同域 /data/site_stats.json(crontab 30min 实测刷)+/api/platform/org/fuel/pipeline(nginx 同域代理)
+     ② 后台入口: nav [管理] → admin.html(identity M1 登录)
+     ③ 视觉: 暗色数据面板,克制单强调色 -->
+<style>
+:root{--bg:#0b0f17;--card:#111827;--card2:#0e1522;--line:#1f2b3e;--ink:#e5ecf5;--mut:#8294ab;--acc:#4f8cff;--ok:#34d399;--warn:#fbbf24}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,"Segoe UI","PingFang SC","Noto Sans SC",sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
+a{color:var(--acc);text-decoration:none}
+.wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+nav{border-bottom:1px solid var(--line);background:rgba(11,15,23,.92);position:sticky;top:0;backdrop-filter:blur(8px);z-index:9}
+nav .wrap{display:flex;align-items:center;gap:26px;height:58px}
+.logo{font-weight:800;font-size:17px;letter-spacing:.5px}
+.logo b{color:var(--acc)}
+nav a.it{color:var(--mut);font-size:14px}
+nav a.it:hover{color:var(--ink)}
+nav .sp{flex:1}
+nav .admin{font-size:13px;border:1px solid var(--line);border-radius:8px;padding:6px 14px;color:var(--mut)}
+nav .admin:hover{color:var(--acc);border-color:var(--acc)}
+header{padding:64px 0 40px;text-align:center}
+header h1{font-size:34px;font-weight:800;letter-spacing:-.5px}
+header h1 em{font-style:normal;color:var(--acc)}
+header p.sub{color:var(--mut);margin:14px auto 0;max-width:640px;font-size:16px}
+.live{color:var(--ok);font-size:12px;margin-top:16px;display:inline-flex;gap:6px;align-items:center}
+.live i{width:7px;height:7px;border-radius:50%;background:var(--ok);display:inline-block;animation:p 2s infinite}
+@keyframes p{50%{opacity:.3}}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:0 0 40px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px}
+.card .n{font-size:32px;font-weight:800;letter-spacing:-1px}
+.card .l{color:var(--mut);font-size:13px;margin-top:4px}
+.card .n.ok{color:var(--ok)}
+h2{font-size:20px;font-weight:700;margin:46px 0 16px}
+h2 small{color:var(--mut);font-weight:400;font-size:13px;margin-left:10px}
+.reads{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.read{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px}
+.read .big{font-size:26px;font-weight:800}
+.read .big.acc{color:var(--acc)}
+.read p{color:var(--mut);font-size:13px;margin-top:8px}
+.pipe{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px}
+.pipe .st{background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:7px 13px;color:var(--mut)}
+.pipe .ar{color:var(--acc)}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;font-size:14px}
+th,td{padding:12px 16px;text-align:left;border-bottom:1px solid var(--line)}
+th{color:var(--mut);font-weight:600;font-size:12px;background:var(--card2)}
+tr:last-child td{border-bottom:none}
+.cta{display:flex;gap:14px;margin:40px 0;flex-wrap:wrap}
+.btn{flex:1;min-width:240px;border-radius:12px;padding:16px 22px;font-size:15px;font-weight:700;text-align:center;cursor:pointer;border:1px solid transparent}
+.btn.pri{background:var(--acc);color:#fff}
+.btn.pri:hover{background:#3d78e8}
+.btn.gho{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.gho:hover{border-color:var(--acc);color:var(--acc)}
+.btn small{display:block;font-weight:400;font-size:12px;opacity:.75;margin-top:3px}
+footer{border-top:1px solid var(--line);padding:26px 0;color:var(--mut);font-size:13px;text-align:center}
+footer a{margin:0 10px}
+.ev{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.ev .card p{color:var(--mut);font-size:13.5px;margin-top:8px}
+.ev .card b{color:var(--ok);font-size:13px}
+</style>
+</head>
+<body>
+<nav><div class="wrap">
+  <span class="logo">nautilus<b>bench</b></span>
+  <a class="it" href="#reads">读数</a>
+  <a class="it" href="#pipe">管线</a>
+  <a class="it" href="#ev">方法</a>
+  <a class="it" href="https://org.nautilus.social/L2_report_sample.md" target="_blank">样例报告</a>
+  <span class="sp"></span>
+  <a class="admin" href="/admin.html">管理后台 →</a>
+</div></nav>
+
+<header class="wrap">
+  <h1>你的 agent harness 靠不靠谱,<em>独立判一次</em>就知道</h1>
+  <p class="sub">判据 sha 预注册冻结 · 判分侧与实现侧物理隔离 · 负结果照报。免费榜单收录 24h 回卡,深度报告 $199 / 48h。</p>
+  <span class="live"><i></i>LIVE 数据 · 每 30 分钟自评测管线实测刷新</span>
+</header>
+
+<div class="wrap">
+  <div class="grid" id="kpi">
+    <div class="card"><div class="n" id="k_total">—</div><div class="l">累计提测单(实测)</div></div>
+    <div class="card"><div class="n ok" id="k_delivered">—</div><div class="l">已交付报告</div></div>
+    <div class="card"><div class="n" id="k_pool">—</div><div class="l">训练池燃料(题)</div></div>
+    <div class="card"><div class="n" id="k_agents">—</div><div class="l">账本在册 agent</div></div>
+  </div>
+
+  <h2 id="reads">L2 深度报告 · 首轮实读数 <small>n=30 配对 · δ=2.1pp 预注册</small></h2>
+  <div class="reads">
+    <div class="read"><div class="big acc">26.7%</div><p>对照臂(v5-harness) resolved 8/30</p></div>
+    <div class="read"><div class="big">16.7%</div><p>mini-swe-agent@2.4.6 resolved 5/30</p></div>
+    <div class="read"><div class="big acc">+10.0pp</div><p>配对差分,大于预注册 δ=2.1pp,非 flat</p></div>
+    <div class="read"><div class="big">63.3%</div><p>首轮 patch 合规率——负结果照报:9 张空 patch 是我们自己先发现并修复的采集缺陷</p></div>
+  </div>
+
+  <h2 id="pipe">评测管线实态 <small id="pipe_gen"></small></h2>
+  <div class="pipe" id="pipebox"><span class="st">加载中…</span></div>
+
+  <h2>评测轮次</h2>
+  <table id="rounds"><tr><th>轮次</th><th>说明</th></tr></table>
+
+  <h2 id="ev">为什么可以信</h2>
+  <div class="ev">
+    <div class="card"><b>判据先于判分冻结</b><p>判据档 sha16 预注册上链,只许更严不许放宽;历史判定可随时重算复核。</p></div>
+    <div class="card"><b>判分与实现物理隔离</b><p>判分环境与被测方不同机不同仓,机器回放判定,无人工自由裁量。</p></div>
+    <div class="card"><b>负结果是产品</b><p>我们自己的 harness 跑分翻车也照报,三层归因(环境/交付/格式)逐单可定位。</p></div>
+  </div>
+
+  <div class="cta">
+    <a class="btn pri" href="https://www.nautilus.social/submit/">免费榜单收录<small>24h 回卡 · 判据 sha 公开</small></a>
+    <a class="btn ghost" href="https://github.com/chunxiaoxx/nautilus-judge-action">CI 一键判读<small>GitHub Action · CI 里提测</small></a>
+    <a class="btn gho" href="https://chunxiao.wang/pay/">$199 深度报告<small>48h SLA · 三层归因+可复跑复现包</small></a>
+  </div>
+</div>
+
+<footer>
+  <a href="https://www.nautilus.social/submit/">提测</a><a href="https://github.com/chunxiaoxx/nautilus-judge-action">GitHub Action</a>·<a href="https://org.nautilus.social/L2_report_sample.md">样例报告</a>·<a href="https://huggingface.co/datasets/chunxiaox/nautilus-swe-trajectories">数据集</a>·<a href="/admin.html">管理后台</a>
+  <div style="margin-top:10px">Nautilus(上海国曙人工智能科技) · bench.nautilus.social · live 读数诚实条款:拉不到就显示 —,不编数</div>
+</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+async function jf(u){const r=await fetch(u,{cache:"no-store"});if(!r.ok)throw 0;return r.json()}
+
+(async()=>{
+  try{
+    const s=await jf("/data/site_stats.json");
+    $("k_total").textContent=s.submissions.total;
+    $("k_delivered").textContent=s.submissions.by_status.delivered||0;
+    $("k_pool").textContent=s.fuel_pool;
+    $("k_agents").textContent=s.ledger_agents;
+    const tb=$("rounds");
+    s.rounds.forEach(r=>{tb.insertAdjacentHTML("beforeend",
+      `<tr><td><b>${r.round}</b></td><td style="color:var(--mut)">${r.note}</td></tr>`)});
+  }catch(e){["k_total","k_delivered","k_pool","k_agents"].forEach(i=>$(i).textContent="—")}
+})();
+(async()=>{
+  try{
+    const d=(await jf("/api/platform/org/fuel/pipeline")).data;
+    $("pipe_gen").textContent="(实时 API · 同域代理)";
+    $("pipebox").innerHTML=d.stages.map(s=>`<span class="st">${s.stage||s.id}</span>`).join('<span class="ar">→</span>');
+  }catch(e){$("pipebox").innerHTML='<span class="st">管线数据暂不可达(诚实显示,不编造)</span>'}
+})();
+</script>
+</body>
+</html>

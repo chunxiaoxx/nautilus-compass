@@ -1,0 +1,73 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "eacc15d284f63b3bdfbc5fc342abca31ea489c9e",
+  "reference_fix_commit": "c4b01d486744351bea81566dde64140010227e1c",
+  "subject": "fix(fde): retire forms with supported metadata body",
+  "test_files": [
+   "phase3/backend/tests/test_fde_phase3_20260722_schema.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/fde_phase3_20260722_form_publishing.py"
+  ],
+  "repo_path": "C:/Users/chunx/Projects/nautilus-core"
+ },
+ "test_id": "tests/test_fde_phase3_20260722_schema.py::test_legacy_forms_are_retired_only_after_new_public_forms_verify",
+ "source_rel": "services\\fde_phase3_20260722_form_publishing.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/services/fde_phase3_20260722_form_publishing.py\n+++ b/services/fde_phase3_20260722_form_publishing.py\n@@ -307,7 +307,7 @@ class FormPublisher:\n                 self._client.patch_form_metadata(\n                     table_id,\n                     form_id,\n-                    {\"shared\": False, \"shared_limit\": \"off\"},\n+                    {\"shared\": False},\n                 )\n             verified = self._client.get_form_metadata(table_id, form_id)\n             if verified.get(\"shared\") is not False:\n",
+ "budget_exceeded": false,
+ "total_tokens": 4240,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 4025,
+    "completion_tokens": 215,
+    "total_tokens": 4240,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 3769,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 215,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 4025,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "retire_forms_shared_only_patch",
+ "duration_s": 11.4,
+ "verdict_post_status": 200
+}

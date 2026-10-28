@@ -1,0 +1,71 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "13671fada5c891c7187254abee7fb1706fc085f9",
+  "reference_fix_commit": "de6720fa3496cf349554bcbb9c1645512940721d",
+  "subject": "fix(\u7834\u5c40\u52a8\u4f5c2): settled SQL \u6539 fde_verdicts join(fde_dispatch \u65e0 updated_at \u5217)",
+  "test_files": [
+   "tests/test_behavior_mirror.py"
+  ],
+  "source_files": [
+   "nautilus_v5/commons/behavior_mirror.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_behavior_mirror.py::test_settled_count_sql",
+ "source_rel": "nautilus_v5\\commons\\behavior_mirror.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 1491,
+    "output_tokens": 201,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "F                                                                        [100%]\r\n================================== FAILURES ===================================\r\n___________________________ test_settled_count_sql ____________________________\r\n\r\n    def test_settled_count_sql():\r\n        sql, params = bm.build_settled_count_sql(\"nautilus-prime-001\")\r\n        assert \"fde_dispatch\" in sql\r\n        assert \"d.claimed_by=%s\" in sql\r\n>       assert \"d.status='settled'\" in sql\r\nE       assert \"d.status='settled'\" in \"SELECT COUNT(*) FROM fde_dispatch WHERE d.claimed_by=%s AND status='settled' AND COALESCE(updated_at, created_at) > NOW() - make_interval(hours => %s)\"\r\n\r\ntests\\test_behavior_mirror.py:27: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_behavior_mirror.py::test_settled_count_sql - assert \"d.stat...\r\n1 failed in 2.64s\r\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 1734,
+    "output_tokens": 214,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: nautilus_v5/commons/behavior_mirror.py:29\nerror: nautilus_v5/commons/behavior_mirror.py: patch does not apply\n\n[attempt2 backend] error: patch failed: nautilus_v5/commons/behavior_mirror.py:29\nerror: nautilus_v5/commons/behavior_mirror.py: patch does not apply\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 1617,
+    "output_tokens": 232,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "F                                                                        [100%]\r\n================================== FAILURES ===================================\r\n___________________________ test_settled_count_sql ____________________________\r\n\r\n    def test_settled_count_sql():\r\n        sql, params = bm.build_settled_count_sql(\"nautilus-prime-001\")\r\n        assert \"fde_dispatch\" in sql\r\n        assert \"d.claimed_by=%s\" in sql\r\n>       assert \"d.status='settled'\" in sql\r\nE       assert \"d.status='settled'\" in \"SELECT COUNT(*) FROM fde_dispatch WHERE d.claimed_by=%s AND status='settled' AND COALESCE(updated_at, created_at) > NOW() - make_interval(hours => %s)\"\r\n\r\ntests\\test_behavior_mirror.py:27: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_behavior_mirror.py::test_settled_count_sql - assert \"d.stat...\r\n1 failed in 2.58s\r\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 21.9,
+ "verdict_post_status": 200
+}

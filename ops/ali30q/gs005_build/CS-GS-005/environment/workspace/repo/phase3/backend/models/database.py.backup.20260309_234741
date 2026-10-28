@@ -1,0 +1,226 @@
+"""
+Database models for Nautilus Phase 3.
+"""
+from datetime import datetime
+from typing import Optional
+from sqlalchemy import Column, Integer, String, BigInteger, DateTime, Text, Enum, ForeignKey, Boolean, JSON
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
+import enum
+
+Base = declarative_base()
+
+
+class TaskType(enum.Enum):
+    """Task type enumeration."""
+    CODE = "CODE"
+    DATA = "DATA"
+    COMPUTE = "COMPUTE"
+    RESEARCH = "RESEARCH"
+    DESIGN = "DESIGN"
+    WRITING = "WRITING"
+    OTHER = "OTHER"
+
+
+class TaskStatus(enum.Enum):
+    """Task status enumeration."""
+    OPEN = "Open"
+    ACCEPTED = "Accepted"
+    SUBMITTED = "Submitted"
+    VERIFIED = "Verified"
+    COMPLETED = "Completed"
+    FAILED = "Failed"
+    DISPUTED = "Disputed"
+
+
+class Task(Base):
+    """Task model."""
+    __tablename__ = "tasks"
+
+    id = Column(Integer, primary_key=True, index=True)
+    task_id = Column(String(66), unique=True, nullable=False, index=True)  # Blockchain task ID
+    publisher = Column(String(42), nullable=False, index=True)
+    description = Column(Text, nullable=False)
+    input_data = Column(Text)
+    expected_output = Column(Text)
+    reward = Column(BigInteger, nullable=False)  # Wei
+    task_type = Column(Enum(TaskType), nullable=False, index=True)
+    status = Column(Enum(TaskStatus), nullable=False, index=True)
+    agent = Column(String(42), index=True)
+    result = Column(Text)
+    timeout = Column(Integer, nullable=False)  # Seconds
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow, index=True)
+    accepted_at = Column(DateTime, index=True)
+    submitted_at = Column(DateTime)
+    verified_at = Column(DateTime)
+    completed_at = Column(DateTime, index=True)
+    dispute_reason = Column(Text)
+
+    # Blockchain integration fields (Phase 2)
+    blockchain_tx_hash = Column(String(66), index=True)  # Transaction hash for task publish
+    blockchain_accept_tx = Column(String(66))  # Transaction hash for task accept
+    blockchain_submit_tx = Column(String(66))  # Transaction hash for task submit
+    blockchain_complete_tx = Column(String(66))  # Transaction hash for task complete
+    blockchain_status = Column(String(20))  # Blockchain sync status
+
+    # Gas fee sharing fields (Phase 3)
+    gas_used = Column(BigInteger)  # Total gas used for all transactions
+    gas_cost = Column(BigInteger)  # Total gas cost in Wei
+    gas_split = Column(BigInteger)  # Agent's share of gas cost (50%)
+
+    # Relationships
+    verification_logs = relationship("VerificationLog", back_populates="task")
+
+    # Composite indexes for common queries
+    __table_args__ = (
+        # Index for filtering by status and created_at (list_tasks)
+        # Index for filtering by agent and status (agent tasks)
+        # Index for filtering by publisher and status (publisher tasks)
+    )
+
+
+class Agent(Base):
+    """Agent model."""
+    __tablename__ = "agents"
+
+    id = Column(Integer, primary_key=True, index=True)
+    agent_id = Column(Integer, unique=True, nullable=False, index=True)  # Blockchain agent ID
+    owner = Column(String(42), nullable=False, index=True)
+    name = Column(String(100), nullable=False)
+    description = Column(Text)
+    reputation = Column(Integer, nullable=False, default=100, index=True)
+    specialties = Column(Text)  # JSON array stored as text
+    current_tasks = Column(Integer, default=0)
+    completed_tasks = Column(Integer, default=0)
+    failed_tasks = Column(Integer, default=0)
+    total_earnings = Column(BigInteger, default=0)  # Wei
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+
+    # Blockchain integration fields (Phase 2)
+    blockchain_registered = Column(Boolean, default=False)  # Whether registered on-chain
+    blockchain_tx_hash = Column(String(66))  # Transaction hash for agent registration
+    blockchain_address = Column(String(42))  # Agent's blockchain address (usually same as owner)
+
+    # Relationships
+    survival = relationship("AgentSurvival", back_populates="agent", uselist=False)
+
+
+class Reward(Base):
+    """Reward model."""
+    __tablename__ = "rewards"
+
+    id = Column(Integer, primary_key=True, index=True)
+    task_id = Column(String(66), nullable=False, index=True)
+    agent = Column(String(42), nullable=False, index=True)
+    amount = Column(BigInteger, nullable=False)  # Wei
+    status = Column(String(20), nullable=False, index=True)  # Pending, Distributed, Withdrawn
+    distributed_at = Column(DateTime, index=True)
+    withdrawn_at = Column(DateTime)
+
+    # Composite index for common query: agent + status
+    __table_args__ = (
+        # Index for filtering rewards by agent and status (get_balance, withdraw_reward)
+    )
+
+
+class VerificationLog(Base):
+    """Verification log model."""
+    __tablename__ = "verification_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    task_id = Column(String(66), ForeignKey("tasks.task_id"), nullable=False, index=True)
+    verification_method = Column(String(50), nullable=False)
+    is_valid = Column(Boolean, nullable=False)
+    logs = Column(Text)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+
+    # Relationships
+    task = relationship("Task", back_populates="verification_logs")
+
+
+class User(Base):
+    """User model for authentication."""
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String(50), unique=True, nullable=False, index=True)
+    email = Column(String(100), unique=True, nullable=False, index=True)
+    hashed_password = Column(String(255), nullable=False)
+    wallet_address = Column(String(42), unique=True, index=True)
+    is_active = Column(Boolean, default=True)
+    is_admin = Column(Boolean, default=False)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    updated_at = Column(DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # OAuth fields
+    github_id = Column(String(50), unique=True, index=True)
+    github_username = Column(String(100))
+    google_id = Column(String(100), unique=True, index=True)
+    google_email = Column(String(100))
+
+
+class APIKey(Base):
+    """API Key model for agent authentication."""
+    __tablename__ = "api_keys"
+
+    id = Column(Integer, primary_key=True, index=True)
+    key = Column(String(64), unique=True, nullable=False, index=True)
+    agent_id = Column(Integer, ForeignKey("agents.agent_id"), nullable=False, index=True)
+    name = Column(String(100), nullable=False)
+    is_active = Column(Boolean, default=True, index=True)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    last_used_at = Column(DateTime)
+
+    # Composite index for authentication queries
+    __table_args__ = (
+        # Index for key lookup with is_active check
+    )
+
+
+class OAuthClient(Base):
+    """OAuth client (third-party application) model."""
+    __tablename__ = "oauth_clients"
+
+    id = Column(Integer, primary_key=True, index=True)
+    client_id = Column(String(64), unique=True, nullable=False, index=True)
+    client_secret = Column(String(128), nullable=False)
+    name = Column(String(100), nullable=False)
+    description = Column(Text)
+    redirect_uris = Column(JSON, nullable=False)  # List of allowed redirect URIs
+    logo_url = Column(String(500))
+    website = Column(String(500))
+    is_active = Column(Boolean, default=True, nullable=False, index=True)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow, index=True)
+    updated_at = Column(DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+class OAuthAuthorizationCode(Base):
+    """OAuth authorization code model."""
+    __tablename__ = "oauth_authorization_codes"
+
+    id = Column(Integer, primary_key=True, index=True)
+    code = Column(String(64), unique=True, nullable=False, index=True)
+    client_id = Column(String(64), nullable=False, index=True)
+    agent_address = Column(String(42), nullable=False, index=True)
+    redirect_uri = Column(String(500), nullable=False)
+    scope = Column(String(500))
+    expires_at = Column(DateTime, nullable=False, index=True)
+    used = Column(Boolean, default=False, nullable=False)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+
+
+class OAuthAccessToken(Base):
+    """OAuth access token model."""
+    __tablename__ = "oauth_access_tokens"
+
+    id = Column(Integer, primary_key=True, index=True)
+    access_token = Column(String(64), unique=True, nullable=False, index=True)
+    refresh_token = Column(String(64), unique=True, nullable=False, index=True)
+    client_id = Column(String(64), nullable=False, index=True)
+    agent_address = Column(String(42), nullable=False, index=True)
+    scope = Column(String(500))
+    expires_at = Column(DateTime, nullable=False, index=True)
+    refresh_expires_at = Column(DateTime, nullable=False)
+    revoked = Column(Boolean, default=False, nullable=False, index=True)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    last_used_at = Column(DateTime)

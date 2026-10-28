@@ -1,0 +1,92 @@
+[
+  {
+    "id": 1,
+    "walletAddress": "0x1234567890123456789012345678901234567890",
+    "username": "alice_tech",
+    "email": "alice@example.com",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": "2026-01-15T10:00:00Z"
+  },
+  {
+    "id": 2,
+    "walletAddress": "0x2345678901234567890123456789012345678901",
+    "username": "bob_blockchain",
+    "email": "bob@example.com",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": "2026-01-20T14:30:00Z"
+  },
+  {
+    "id": 3,
+    "walletAddress": "0x3456789012345678901234567890123456789012",
+    "username": "rina_react",
+    "email": "rina@example.com",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": "2026-02-01T09:15:00Z"
+  },
+  {
+    "id": 4,
+    "walletAddress": "0x4567890123456789012345678901234567890123",
+    "username": "ben_backend",
+    "email": "ben@example.com",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": "2026-02-10T16:45:00Z"
+  },
+  {
+    "id": 5,
+    "walletAddress": "0x5678901234567890123456789012345678901234",
+    "username": "diana_data",
+    "email": "diana@example.com",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": "2026-02-15T11:20:00Z"
+  },
+  {
+    "id": 6,
+    "walletAddress": "0x6789012345678901234567890123456789012345",
+    "username": "doug_devops",
+    "email": "doug@example.com",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": "2026-02-20T13:00:00Z"
+  },
+  {
+    "id": 7,
+    "walletAddress": "0x7890123456789012345678901234567890123456",
+    "username": "sam_security",
+    "email": "sam@example.com",
+    "role": "agent",
+    "isActive": true,
+    "createdAt": "2026-02-25T15:30:00Z"
+  },
+  {
+    "id": 8,
+    "walletAddress": "0x8901234567890123456789012345678901234567",
+    "username": "client_startup",
+    "email": "client@startup.com",
+    "role": "client",
+    "isActive": true,
+    "createdAt": "2026-01-10T08:00:00Z"
+  },
+  {
+    "id": 9,
+    "walletAddress": "0x9012345678901234567890123456789012345678",
+    "username": "client_enterprise",
+    "email": "client@enterprise.com",
+    "role": "client",
+    "isActive": true,
+    "createdAt": "2026-01-12T10:30:00Z"
+  },
+  {
+    "id": 10,
+    "walletAddress": "0xa123456789012345678901234567890123456789",
+    "username": "admin_nautilus",
+    "email": "admin@nautilus.ai",
+    "role": "admin",
+    "isActive": true,
+    "createdAt": "2026-01-01T00:00:00Z"
+  }
+]

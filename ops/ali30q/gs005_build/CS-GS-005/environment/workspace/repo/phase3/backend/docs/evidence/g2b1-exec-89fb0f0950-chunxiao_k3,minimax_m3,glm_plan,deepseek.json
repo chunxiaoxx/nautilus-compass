@@ -1,0 +1,73 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "2a03d03c6be19166fcbffa68d5e1e7fecb1d32af",
+  "reference_fix_commit": "89fb0f095088e11c710b40a00f32535271361836",
+  "subject": "fix(sentinel): final\u7ec8\u62a5\u51fd\u65e0task_meta\u81f4E4\u8c41\u514d\u5931\u6548(sim50\u8bef\u50ac\u5b9e\u8bc1)\u2014\u2014final\u6309trace\u5355\u72ec\u8bc6\u522b+\u6d4b\u8bd5\u590d\u523b\u771f\u5b9e\u5f62\u72b6,11\u8fc7",
+  "test_files": [
+   "phase3/backend/tests/test_org_sentinel.py"
+  ],
+  "source_files": [
+   "phase3/backend/ops/org_sentinel.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/test_org_sentinel.py::test_e4_finished_chain_no_overdue_noise",
+ "source_rel": "ops\\org_sentinel.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/ops/org_sentinel.py\n+++ b/ops/org_sentinel.py\n@@ -84,6 +84,18 @@\n         last = r.created_at if (last_at is None or (r.created_at and r.created_at > last_at)) else last_at\n         batches[b] = (has_final or is_final, last)\n \n+    # \u6536\u5b98\u62a5\u515c\u5e95\u8bc6\u522b:final \u56de\u51fd\u53ef\u80fd\u4e0d\u5e26 task_meta(\u6216\u7f3a batch \u5b57\u6bb5)\u2014\u2014\n+    # \u6309 trace \u540e\u7f00 + m1-<batch>-final \u547d\u540d\u7ea6\u5b9a\u53cd\u89e3\u6279\u6b21,\u907f\u514d\u5df2\u6536\u5b98\u94fe\u8bef\u62a5\u8d85\u65f6\n+    for r in db.query(OrgMailbox).filter(OrgMailbox.trace_id.like(\"%-final\")).all():\n+        tm = r.task_meta or {}\n+        b = tm.get(\"batch\")\n+        if not b:\n+            tid = (r.trace_id or \"\")[:-len(\"-final\")]\n+            if tid.startswith(\"m1-\") and len(tid) > len(\"m1-\"):\n+                b = tid[len(\"m1-\"):]\n+        if not b:\n+            continue\n+        batches[b] = (True, batches.get(b, (False, None))[1])\n+\n     # E4 \u4efb\u52a1\u51fd SLA \u8d85\u65f6(9/17 \u7a7a\u8f6c\u4fdd\u9669\u4e1d v0:deadline \u5df2\u8fc7\u4e14\u672a ack \u7684\u4efb\u52a1\u51fd,\n     # \u6bcf\u51fd\u53ea\u63d0\u9192\u4e00\u6b21\u2014\u2014v5 RSI V2 \u8d85\u65f6 6h \u65e0\u4eba\u77e5\u6653\u7684\u6559\u8bad)\n     now = datetime.now()\n",
+ "budget_exceeded": false,
+ "total_tokens": 10958,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 3165,
+    "completion_tokens": 7793,
+    "total_tokens": 10958,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 3165,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 7793,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 0,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 3165,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "e4_final_fallback_batch_resolution",
+ "duration_s": 224.4,
+ "verdict_post_status": 200
+}

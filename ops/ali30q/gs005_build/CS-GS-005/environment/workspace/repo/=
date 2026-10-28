@@ -1,0 +1,4 @@
+  File "<stdin>", line 6
+    cur.execute(SELECT id, title, status, created_at FROM academic_tasks WHERE task_type=research_synthesis AND created_at %s ORDER BY created_at DESC, (since,))
+                ^^^^^^^^^
+SyntaxError: invalid syntax. Perhaps you forgot a comma?

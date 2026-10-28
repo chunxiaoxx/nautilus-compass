@@ -1,0 +1,71 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "c74346212a7605a516ab78b1488b3208d48229f6",
+  "reference_fix_commit": "38ff077b72a101bb263cb355f851e8c86e9b6496",
+  "subject": "fix(config): default LLM \u2192 MiniMax-M3 (DeepSeek \u6b20\u8d39 \u00b7 \u5bf9\u9f50 cloud .env \u00b7 \u9632 footgun) + test",
+  "test_files": [
+   "tests/test_deepseek_provider.py"
+  ],
+  "source_files": [
+   "nautilus_v5/runtime/config.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_deepseek_provider.py::test_config_defaults_minimax_m3_primary",
+ "source_rel": "nautilus_v5\\runtime\\config.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": true,
+ "winning_diff": "--- a/nautilus_v5/runtime/config.py\n+++ b/nautilus_v5/runtime/config.py\n@@ -52,8 +52,8 @@ class LLMConfig:\n     # env override: V5_LLM_PROVIDER / V5_LLM_MODEL (\u6362 LLM \u7eaf env \u4e0d\u52a8\u4ee3\u7801)\n-    primary_provider: str = \"deepseek-anthropic\"\n-    primary_model: str = \"deepseek-v4-pro\"\n+    primary_provider: str = \"minimax-anthropic\"\n+    primary_model: str = \"MiniMax-M3\"\n     # witness \u6682\u7559 MiniMax (\u7701\u6210\u672c \u00b7 \u53ea\u6362\u4e3b\u8ba4\u77e5)\n     witness_provider: str = \"minimax-anthropic\"\n     witness_model: str = \"MiniMax-M2.7-highspeed\"\n",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 2468,
+    "output_tokens": 218,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "F                                                                        [100%]\r\n================================== FAILURES ===================================\r\n___________________ test_config_defaults_minimax_m3_primary ___________________\r\n\r\n    def test_config_defaults_minimax_m3_primary():\r\n        from nautilus_v5.runtime.config import LLMConfig\r\n        llm = LLMConfig()\r\n        assert llm.primary_provider == \"minimax-anthropic\"\r\n>       assert llm.primary_model == \"MiniMax-M3\"\r\nE       AssertionError: assert 'deepseek-v4-pro' == 'MiniMax-M3'\r\nE         \r\nE         - MiniMax-M3\r\nE         + deepseek-v4-pro\r\n\r\ntests\\test_deepseek_provider.py:73: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_deepseek_provider.py::test_config_defaults_minimax_m3_primary\r\n1 failed in 4.19s\r\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 2694,
+    "output_tokens": 248,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: nautilus_v5/runtime/config.py:52\nerror: nautilus_v5/runtime/config.py: patch does not apply\n\n[attempt2 backend] error: patch failed: nautilus_v5/runtime/config.py:52\nerror: nautilus_v5/runtime/config.py: patch does not apply\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "input_tokens": 2706,
+    "output_tokens": 220,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "switch_primary_provider_to_minimax_anthropic",
+ "duration_s": 40.4,
+ "verdict_post_status": 200
+}

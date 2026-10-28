@@ -1,0 +1,71 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "087b49a42f7d6858fb370eaab65ebe8009a72e85",
+  "reference_fix_commit": "724533e03be3f05bbd3afbf670722b7764c16007",
+  "subject": "fix(loop): stop Gate B after unusable source evidence",
+  "test_files": [
+   "tests/gep/test_gate_b_reuse.py"
+  ],
+  "source_files": [
+   "gep/loop_run.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass"
+ },
+ "test_id": "tests/gep/test_gate_b_reuse.py::test_gate_b_records_repair_when_a_source_action_has_no_reusable_experience",
+ "source_rel": "gep\\loop_run.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 8571,
+    "output_tokens": 86,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: gep/loop_run.py:1\nerror: gep/loop_run.py: patch does not apply\n\n[attempt2 backend] error: patch failed: gep/loop_run.py:1\nerror: gep/loop_run.py: patch does not apply\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 8801,
+    "output_tokens": 411,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "F                                                                        [100%]\r\n================================== FAILURES ===================================\r\n_ test_gate_b_records_repair_when_a_source_action_has_no_reusable_experience __\r\n\r\ntmp_path = WindowsPath('C:/Users/chunx/AppData/Local/Temp/pytest-of-chunx/pytest-6134/test_gate_b_records_repair_whe0')\r\n\r\n    def test_gate_b_records_repair_when_a_source_action_has_no_reusable_experience(\r\n        tmp_path: Path,\r\n    ) -> None:\r\n        action = _Action(include_reuse_advice=False)\r\n>       report = run_loop(_plan(), tmp_path / \"run\", action, _Verifier())\r\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n\r\ntests\\gep\\test_gate_b_reuse.py:161: \r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\r\ngep\\loop_run.py:204: in run_loop\r\n    _execute_new_run(parsed, out, action_adapter, verifier)\r\ngep\\loop_run.py:248: in _execute_new_run\r\n    _execute_arm(plan, arm, out, log, action_adapter, verifier)\r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\r\n\r\nplan = _Plan(raw={'action_agent_id': 7, 'arms': [{'advice_from_episode_id': None, 'episode_id': 'gate-b-source', 'label': 'so...ode_id='gate-b-source')), minimum_utility_delta=1, protected_failure_classes=('safety.violation', 'oracle.regression'))\r\narm = _Arm(label='treatment', episode_id='gate-b-treatment', advice=None, occurred_at='2026-08-15T00:02:00Z', task_case_id='transfer', advice_from_episode_id='gate-b-source')\r\nout = WindowsPath('C:/Users/chunx/AppData/Local/Temp/pytest-of-chunx/pytest-6134/test_gate_b_records_repair_whe0/run')\r\nlog = <gep.flywheel_log.FlywheelEventLog object at 0x000001A28C701400>\r\naction_adapter = <test_gate_b_reuse._Action object at 0x000001A28C700EC0>\r\nverifier = <test_gate_b_reuse._Verifier object at 0x000001A28C701010>\r\n\r\n    def _execute_arm(\r\n        plan: _Plan,\r\n        arm: _Arm,\r\n        out: Path,\r\n        log: FlywheelEventLog,\r\n        action_adapter: ActionAdapter,\r\n        verifier: IndependentVerifier,\r\n    ) -> None:\r\n        action_task = _action_task(plan, arm)\r\n        try:\r\n            advice = _advice_for_arm(plan, arm, out, log)\r\n        except _DependencyUnavailable as exc:\r\n            advice_for_log = None\r\n            artifact = _failure_artifact(arm, exc.reason_code, \"dependency_skip\")\r\n        else:\r\n            try:\r\n                artifact = action_adapter.execute(\r\n                    action_task, advice, out / \"artifacts\" / arm.episode_id\r\n                )\r\n            except ActionExecutionFailure as exc:\r\n                artifact = _failure_artifact(arm, exc.reason_code, \"action_failure\")\r\n        if not isinstance(artifact, ActionArtifact):\r\n            raise LoopRunError(\"action adapter must return ActionArtifact\")\r\n        if artifact.episode_id != arm.episode_id:\r\n            raise LoopRunError(\"action artifact episode_id does not match the plan\")\r\n        if artifact.episode_event_hash is not None:\r\n            raise LoopRunError(\"action artifact must not predeclare an episode event hash\")\r\n    \r\n>       episode = _episode_event(plan, arm, artifact, advice)\r\n                                                      ^^^^^^\r\nE       UnboundLocalError: cannot access local variable 'advice' where it is not associated with a value\r\n\r\ngep\\loop_run.py:281: UnboundLocalError\r\n=========================== short test summary info ===========================\r\nFAILED tests/gep/test_gate_b_reuse.py::test_gate_b_records_repair_when_a_source_action_has_no_reusable_experience\r\n1 failed in 0.30s\r\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 9665,
+    "output_tokens": 340,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "F                                                                        [100%]\r\n================================== FAILURES ===================================\r\n_ test_gate_b_records_repair_when_a_source_action_has_no_reusable_experience __\r\n\r\ntmp_path = WindowsPath('C:/Users/chunx/AppData/Local/Temp/pytest-of-chunx/pytest-6135/test_gate_b_records_repair_whe0')\r\n\r\n    def test_gate_b_records_repair_when_a_source_action_has_no_reusable_experience(\r\n        tmp_path: Path,\r\n    ) -> None:\r\n        action = _Action(include_reuse_advice=False)\r\n        report = run_loop(_plan(), tmp_path / \"run\", action, _Verifier())\r\n    \r\n        assert report[\"decision\"] == \"Repair\"\r\n        assert report[\"reason_code\"] == \"gate_b_delta_not_positive\"\r\n        assert report[\"arms\"][\"treatment\"][\"outcome\"] == \"failure\"\r\n>       assert [task[\"task_case_id\"] for task, _advice in action.calls] == [\"source\"]\r\nE       AssertionError: assert ['source', 'transfer'] == ['source']\r\nE         \r\nE         Left contains one more item: 'transfer'\r\nE         Use -v to get more diff\r\n\r\ntests\\gep\\test_gate_b_reuse.py:166: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/gep/test_gate_b_reuse.py::test_gate_b_records_repair_when_a_source_action_has_no_reusable_experience\r\n1 failed in 0.31s\r\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 18.0,
+ "verdict_post_status": 200
+}

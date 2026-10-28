@@ -1,0 +1,71 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "78b489c2f26ca27761c311b976e344b5b8057b25",
+  "reference_fix_commit": "252c52ec6161c2cd2a8947ef3fe78fbd261d391f",
+  "subject": "fix(thin): \u7626\u5ba2\u6237\u7aef\u63a7\u5236\u53f0\u8f93\u51fa gbk-safe(\u65b0\u673a\u5668 Windows \u88c5\u4e0a\u4e0d\u5d29)",
+  "test_files": [
+   "tests/test_nautilus_thin.py"
+  ],
+  "source_files": [
+   "nautilus_thin.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_nautilus_thin.py::test_console_safe_ascii_passthrough_on_gbk",
+ "source_rel": "nautilus_thin.py",
+ "provider": "glm_plan,minimax_m3,deepseek",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 2922,
+    "output_tokens": 468,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "\r\n=================================== ERRORS ====================================\r\n________________ ERROR collecting tests/test_nautilus_thin.py _________________\r\n..\\..\\..\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\_pytest\\python.py:507: in importtestmodule\r\n    mod = import_path(\r\n..\\..\\..\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\_pytest\\pathlib.py:587: in import_path\r\n    importlib.import_module(module_name)\r\nC:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\\Lib\\importlib\\__init__.py:88: in import_module\r\n    return _bootstrap._gcd_import(name[level:], package, level)\r\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n<frozen importlib._bootstrap>:1395: in _gcd_import\r\n    ???\r\n<frozen importlib._bootstrap>:1360: in _find_and_load\r\n    ???\r\n<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked\r\n    ???\r\n<frozen importlib._bootstrap>:935: in _load_unlocked\r\n    ???\r\n..\\..\\..\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\_pytest\\assertion\\rewrite.py:197: in exec_module\r\n    exec(co, module.__dict__)\r\ntests\\test_nautilus_thin.py:2: in <module>\r\n    import nautilus_thin as nt\r\nE     File \"C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_fcegt8up\\repo\\nautilus_thin.py\", line 5\r\nE       \u4e2d\u56fd\u5316 Managed Agents \u5b9a\u4f4d\u7684\u300c\u7626\u5ba2\u6237\u7aef + \u4e91\u5171\u4eab\u5c42\u300d\u8f7d\u4f53\u3002\u88c5\u4e00\u4efd\u8fd9\u4e2a + \u540c\u76ee\u5f55\r\nE                             ^\r\nE   SyntaxError: invalid character '\u300c' (U+300C)\r\n=========================== short test summary info ===========================\r\nERROR tests/test_nautilus_thin.py\r\n1 error in 2.66s\r\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 3457,
+    "output_tokens": 434,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_fcegt8up/repo/_g2b1.patch:5\n\n[attempt2 backend] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_fcegt8up/repo/_g2b1.patch:5\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 3064,
+    "output_tokens": 197,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 backend] error: patch failed: nautilus_thin.py:1\nerror: nautilus_thin.py: patch does not apply\n\n[attempt2 backend] error: patch failed: nautilus_thin.py:1\nerror: nautilus_thin.py: patch does not apply\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 97.9,
+ "verdict_post_status": 200
+}

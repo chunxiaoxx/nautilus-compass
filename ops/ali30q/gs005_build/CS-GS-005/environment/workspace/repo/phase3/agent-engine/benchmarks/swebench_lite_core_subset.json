@@ -1,0 +1,662 @@
+[
+  {
+    "instance_id": "astropy__astropy-14182",
+    "repo": "astropy/astropy",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "astropy__astropy-14365",
+    "repo": "astropy/astropy",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "astropy__astropy-7746",
+    "repo": "astropy/astropy",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "django__django-11019",
+    "repo": "django/django",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "django__django-11099",
+    "repo": "django/django",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "django__django-11283",
+    "repo": "django/django",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "django__django-11564",
+    "repo": "django/django",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "django__django-11620",
+    "repo": "django/django",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "django__django-11630",
+    "repo": "django/django",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "django__django-11742",
+    "repo": "django/django",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "django__django-11905",
+    "repo": "django/django",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "django__django-12286",
+    "repo": "django/django",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "django__django-12453",
+    "repo": "django/django",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "django__django-12497",
+    "repo": "django/django",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "django__django-12589",
+    "repo": "django/django",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "django__django-12747",
+    "repo": "django/django",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "django__django-12915",
+    "repo": "django/django",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "django__django-13158",
+    "repo": "django/django",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "django__django-13220",
+    "repo": "django/django",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "django__django-13265",
+    "repo": "django/django",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "django__django-13448",
+    "repo": "django/django",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "django__django-13551",
+    "repo": "django/django",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "django__django-13768",
+    "repo": "django/django",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "django__django-14016",
+    "repo": "django/django",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "django__django-14608",
+    "repo": "django/django",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "django__django-14752",
+    "repo": "django/django",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "django__django-15202",
+    "repo": "django/django",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "django__django-15789",
+    "repo": "django/django",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "django__django-15790",
+    "repo": "django/django",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "django__django-15819",
+    "repo": "django/django",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "django__django-15996",
+    "repo": "django/django",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "django__django-16408",
+    "repo": "django/django",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "matplotlib__matplotlib-22711",
+    "repo": "matplotlib/matplotlib",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "matplotlib__matplotlib-22835",
+    "repo": "matplotlib/matplotlib",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "matplotlib__matplotlib-23299",
+    "repo": "matplotlib/matplotlib",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "matplotlib__matplotlib-23913",
+    "repo": "matplotlib/matplotlib",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "matplotlib__matplotlib-24265",
+    "repo": "matplotlib/matplotlib",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "matplotlib__matplotlib-25311",
+    "repo": "matplotlib/matplotlib",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "matplotlib__matplotlib-25442",
+    "repo": "matplotlib/matplotlib",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "matplotlib__matplotlib-25498",
+    "repo": "matplotlib/matplotlib",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "matplotlib__matplotlib-26020",
+    "repo": "matplotlib/matplotlib",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "pallets__flask-4045",
+    "repo": "pallets/flask",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "pallets__flask-4992",
+    "repo": "pallets/flask",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "pallets__flask-5063",
+    "repo": "pallets/flask",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "psf__requests-2148",
+    "repo": "psf/requests",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "psf__requests-2317",
+    "repo": "psf/requests",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "psf__requests-2674",
+    "repo": "psf/requests",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "pylint-dev__pylint-7114",
+    "repo": "pylint-dev/pylint",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "pylint-dev__pylint-7228",
+    "repo": "pylint-dev/pylint",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "pytest-dev__pytest-5103",
+    "repo": "pytest-dev/pytest",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "pytest-dev__pytest-5692",
+    "repo": "pytest-dev/pytest",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "pytest-dev__pytest-7220",
+    "repo": "pytest-dev/pytest",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "pytest-dev__pytest-7373",
+    "repo": "pytest-dev/pytest",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "pytest-dev__pytest-7490",
+    "repo": "pytest-dev/pytest",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "scikit-learn__scikit-learn-10297",
+    "repo": "scikit-learn/scikit-learn",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "scikit-learn__scikit-learn-10508",
+    "repo": "scikit-learn/scikit-learn",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "scikit-learn__scikit-learn-10949",
+    "repo": "scikit-learn/scikit-learn",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "scikit-learn__scikit-learn-11040",
+    "repo": "scikit-learn/scikit-learn",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "scikit-learn__scikit-learn-11281",
+    "repo": "scikit-learn/scikit-learn",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "scikit-learn__scikit-learn-13142",
+    "repo": "scikit-learn/scikit-learn",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "scikit-learn__scikit-learn-13241",
+    "repo": "scikit-learn/scikit-learn",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "scikit-learn__scikit-learn-13496",
+    "repo": "scikit-learn/scikit-learn",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "scikit-learn__scikit-learn-13497",
+    "repo": "scikit-learn/scikit-learn",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "scikit-learn__scikit-learn-14087",
+    "repo": "scikit-learn/scikit-learn",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "scikit-learn__scikit-learn-14092",
+    "repo": "scikit-learn/scikit-learn",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "scikit-learn__scikit-learn-14983",
+    "repo": "scikit-learn/scikit-learn",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "scikit-learn__scikit-learn-15512",
+    "repo": "scikit-learn/scikit-learn",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "scikit-learn__scikit-learn-25500",
+    "repo": "scikit-learn/scikit-learn",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "scikit-learn__scikit-learn-25638",
+    "repo": "scikit-learn/scikit-learn",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "scikit-learn__scikit-learn-25747",
+    "repo": "scikit-learn/scikit-learn",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "sphinx-doc__sphinx-10325",
+    "repo": "sphinx-doc/sphinx",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "sphinx-doc__sphinx-10451",
+    "repo": "sphinx-doc/sphinx",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "sphinx-doc__sphinx-11445",
+    "repo": "sphinx-doc/sphinx",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "sphinx-doc__sphinx-7686",
+    "repo": "sphinx-doc/sphinx",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "sphinx-doc__sphinx-7975",
+    "repo": "sphinx-doc/sphinx",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "sphinx-doc__sphinx-8273",
+    "repo": "sphinx-doc/sphinx",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "sphinx-doc__sphinx-8282",
+    "repo": "sphinx-doc/sphinx",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "sphinx-doc__sphinx-8435",
+    "repo": "sphinx-doc/sphinx",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "sphinx-doc__sphinx-8506",
+    "repo": "sphinx-doc/sphinx",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "sphinx-doc__sphinx-8627",
+    "repo": "sphinx-doc/sphinx",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "sympy__sympy-11870",
+    "repo": "sympy/sympy",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "sympy__sympy-12419",
+    "repo": "sympy/sympy",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "sympy__sympy-12454",
+    "repo": "sympy/sympy",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "sympy__sympy-13031",
+    "repo": "sympy/sympy",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "sympy__sympy-13043",
+    "repo": "sympy/sympy",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "sympy__sympy-13146",
+    "repo": "sympy/sympy",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "sympy__sympy-13773",
+    "repo": "sympy/sympy",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "sympy__sympy-13895",
+    "repo": "sympy/sympy",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "sympy__sympy-14024",
+    "repo": "sympy/sympy",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "sympy__sympy-14396",
+    "repo": "sympy/sympy",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "sympy__sympy-15011",
+    "repo": "sympy/sympy",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "sympy__sympy-15308",
+    "repo": "sympy/sympy",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "sympy__sympy-15345",
+    "repo": "sympy/sympy",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "sympy__sympy-16503",
+    "repo": "sympy/sympy",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "sympy__sympy-16792",
+    "repo": "sympy/sympy",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "sympy__sympy-18087",
+    "repo": "sympy/sympy",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "sympy__sympy-18199",
+    "repo": "sympy/sympy",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "sympy__sympy-18698",
+    "repo": "sympy/sympy",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "sympy__sympy-18835",
+    "repo": "sympy/sympy",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "sympy__sympy-19007",
+    "repo": "sympy/sympy",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "sympy__sympy-20154",
+    "repo": "sympy/sympy",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "sympy__sympy-20322",
+    "repo": "sympy/sympy",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "sympy__sympy-20442",
+    "repo": "sympy/sympy",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "sympy__sympy-20639",
+    "repo": "sympy/sympy",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "sympy__sympy-21055",
+    "repo": "sympy/sympy",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "sympy__sympy-21379",
+    "repo": "sympy/sympy",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "sympy__sympy-21847",
+    "repo": "sympy/sympy",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "sympy__sympy-22840",
+    "repo": "sympy/sympy",
+    "files": 1,
+    "hunks": 2
+  },
+  {
+    "instance_id": "sympy__sympy-23117",
+    "repo": "sympy/sympy",
+    "files": 1,
+    "hunks": 3
+  },
+  {
+    "instance_id": "sympy__sympy-24909",
+    "repo": "sympy/sympy",
+    "files": 1,
+    "hunks": 3
+  }
+]

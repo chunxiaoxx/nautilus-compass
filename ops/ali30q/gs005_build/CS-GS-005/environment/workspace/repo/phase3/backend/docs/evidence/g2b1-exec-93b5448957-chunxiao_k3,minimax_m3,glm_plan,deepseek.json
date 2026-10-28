@@ -1,0 +1,73 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "c41df275fde78befe1e8531b75a74ef21d14cd81",
+  "reference_fix_commit": "93b544895780ca1d350323ce9b4f199570718bcf",
+  "subject": "fix(ale-fuel): _extract_best_code \u672a\u95ed\u5408 fence \u56de\u9000(\u6cbb\u5047 0\u00b7confound 6/23 ahc003)",
+  "test_files": [
+   "tests/test_ale_fuel_batch.py"
+  ],
+  "source_files": [
+   "fde_capsule/ale_fuel_batch.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_ale_fuel_batch.py::test_extract_best_code_unclosed_fence_head",
+ "source_rel": "fde_capsule\\ale_fuel_batch.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/fde_capsule/ale_fuel_batch.py\n+++ b/fde_capsule/ale_fuel_batch.py\n@@ -79,6 +79,15 @@ def _extract_best_code(text: str) -> str:\n             re.findall(r\"```[a-zA-Z0-9]*\\s*\\n(.*?)```\", text, re.DOTALL)\n             if b.strip()]\n     if anyb:\n         return anyb[-1]\n+    # \u5f00\u5934 fence \u672a\u95ed\u5408(6/23 ahc003:reasoning \u6324\u6389\u95ed\u5408 ```\u00b7\u65e7\u903b\u8f91\u56de\u9000\u539f\u6837\n+    # \u8fd4\u56de\u5e26 ```python \u2192 judge \u7f16\u8bd1\u5931\u8d25\u5047 0)\u3002\u5265\u6389\u9996\u884c fence \u5934\u518d\u56de\u9000\u3002\n+    stripped = text.strip()\n+    head = re.match(r\"^```[a-zA-Z0-9]*[ \\t]*\\n\", stripped)\n+    if head:\n+        body = stripped[head.end():].strip()\n+        if body:\n+            return body\n     if re.search(r\"^\\s*(import |from |def |print\\()\", text, re.MULTILINE):\n         return text.strip()\n     return text.strip()\n",
+ "budget_exceeded": false,
+ "total_tokens": 6691,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 5917,
+    "completion_tokens": 774,
+    "total_tokens": 6691,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 5661,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 256,
+      "output_tokens": 774,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 256,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 5917,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "strip_unclosed_head_fence",
+ "duration_s": 30.8,
+ "verdict_post_status": 200
+}

@@ -1,0 +1,11 @@
+[Unit]
+Description=H800 GenOpt N=3 producer daemon (one-shot)
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/root/autodl-tmp/genopt/systemd/h800-genopt-runner.sh
+Nice=10
+
+[Install]
+WantedBy=multi-user.target

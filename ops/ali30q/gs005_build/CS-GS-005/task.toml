@@ -1,0 +1,81 @@
+schema_version = "1.4"
+
+[[artifacts]]
+source = "environment/workspace/repo"
+destination = "/workspace/repo"
+
+[task]
+name = "guoshu/codesense-cs-gs-005"
+description = "Code Sense · env 静默降级(依赖缺失 soft fallback 静默 110+ 天·消费侧 silent swallow·降级必须可见)· 真实教训素材题(素材卡 #005)"
+
+[[task.authors]]
+name = "上海国曙智能"
+
+[agent]
+timeout_sec = 1800
+network_mode = "no-network"
+
+[verifier]
+timeout_sec = 900
+network_mode = "no-network"
+
+[environment]
+build_timeout_sec = 900
+network_mode = "no-network"
+os = "linux"
+cpus = 2
+memory_mb = 4096
+
+[metadata]
+badpattern = "F03 静默降级族(30 条表正式 ID 候对表回执·预映射 F06.01 未验证真实目标环境)"
+Domain = "D02.0 依赖与配置治理"
+id = "CS-GS-005"
+pool = "ali-codesense-real-lesson"
+batch = "GS"
+seed = "S005 env 静默降级(REAL_LESSON_PIPELINE_V1 §五 行50)"
+producer = "compass"
+calibration = "tests/calibration/{perfect,deficient,guessed}"
+source_incident = "nautilus-v5 helix_v7 bridge 5/18 起静默降级 110+ 天(修复 nautilus-core defb148c6)"
+source_commits = "v5@0293e5ccd(消费侧切段)/core@defb148c6(补件)/core@9148b7c6d(载体)"
+
+# 23299 规范: ut_index 逐条登记 · targets_badpattern UT 对应 model_failure_modes ≥3 条
+[[ut_index]]
+id = "UT-1"
+test = "tests/test_gs005_degradation.py::test_ut1_bridge_degradation_must_be_structurally_visible"
+targets_badpattern = true
+assert = "初始化降级必须结构化可见(degradation_report 对象 + degraded 标志,仅散日志=FAIL)"
+failure_mode = "FM-1 看到 ImportError 就包 try/except 吞掉继续跑;FM-2 把 fallback 当等价实现不留降级痕迹"
+
+[[ut_index]]
+id = "UT-2"
+test = "tests/test_gs005_degradation.py::test_ut2_consumer_side_must_not_silently_swallow"
+targets_badpattern = true
+assert = "消费侧不得裸调+soft except 吞 AttributeError:必须显式跳过+计数留痕+可判读 outcome"
+failure_mode = "FM-1(复刻消费侧坑面);FM-4 校验放在降级已发生之后(时序错)"
+
+[[ut_index]]
+id = "UT-3"
+test = "tests/test_gs005_degradation.py::test_ut3_degraded_backend_must_not_masquerade"
+targets_badpattern = true
+assert = "降级后 chain_backend 必须如实标记 file_fallback,不得伪装主通路 pg"
+failure_mode = "FM-2(fallback 伪装主通路成功);FM-3 只修配置值不加防回归标记(单点修复病)"
+
+[[model_failure_modes]]
+id = "FM-1"
+desc = "看到 ImportError 就包 try/except 吞掉继续跑(精确复刻坑版行为——真实事故的发生方式)"
+anchored_ut = ["UT-1", "UT-2"]
+
+[[model_failure_modes]]
+id = "FM-2"
+desc = "把 fallback 当等价实现,不留任何降级痕迹(语义跳步:形式合规,降级不可见)"
+anchored_ut = ["UT-1", "UT-3"]
+
+[[model_failure_modes]]
+id = "FM-3"
+desc = "只修配置值不加防回归校验(下次漂移仍静默——单点修复病)"
+anchored_ut = ["UT-3"]
+
+[[model_failure_modes]]
+id = "FM-4"
+desc = "加了校验但放在降级已发生之后(时序错:事后检查≠初始化/调用前防护)"
+anchored_ut = ["UT-2"]

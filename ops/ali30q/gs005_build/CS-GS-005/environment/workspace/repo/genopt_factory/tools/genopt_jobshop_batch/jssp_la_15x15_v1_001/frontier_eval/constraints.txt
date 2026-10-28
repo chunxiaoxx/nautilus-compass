@@ -1,0 +1,1 @@
+minimize makespan; pure Python stdlib only; preserve solve_instance output {"starts": [[int]]}

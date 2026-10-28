@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Dark mode (default) */
+  .dark body,
+  body {
+    @apply bg-dark-900 text-dark-50;
+  }
+
+  /* Light mode overrides */
+  html:not(.dark) body {
+    @apply bg-white text-gray-900;
+  }
+}
+
+@layer components {
+  /* Glass effect - dark mode */
+  .glass {
+    @apply bg-white/10 backdrop-blur-lg border border-white/20;
+  }
+  html:not(.dark) .glass {
+    @apply bg-white/70 backdrop-blur-lg border border-gray-200 shadow-lg;
+  }
+
+  .gradient-primary {
+    @apply bg-gradient-to-r from-primary-600 to-purple-600;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary-400 to-purple-400 bg-clip-text text-transparent;
+  }
+  html:not(.dark) .gradient-text {
+    @apply from-primary-600 to-purple-600;
+  }
+
+  /* Page background gradient - used by many pages */
+  .page-gradient {
+    @apply bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900;
+  }
+  html:not(.dark) .page-gradient {
+    @apply bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50;
+  }
+
+  /* Panel - glass card used by dashboards */
+  .panel {
+    @apply bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl;
+  }
+  html:not(.dark) .panel {
+    @apply bg-white border border-gray-200 shadow-sm rounded-xl;
+  }
+
+  /* Panel hover variant */
+  .panel-hover {
+    @apply bg-white/10 backdrop-blur-lg border border-white/20 rounded-lg hover:bg-white/15 transition;
+  }
+  html:not(.dark) .panel-hover {
+    @apply bg-white border border-gray-200 shadow-sm rounded-lg hover:shadow-md hover:bg-gray-50 transition;
+  }
+
+  /* Tab container */
+  .tab-container {
+    @apply bg-white/10 rounded-lg p-1;
+  }
+  html:not(.dark) .tab-container {
+    @apply bg-gray-100 rounded-lg p-1;
+  }
+
+  /* Tab active */
+  .tab-active {
+    @apply bg-white text-gray-900 shadow;
+  }
+  html:not(.dark) .tab-active {
+    @apply bg-white text-gray-900 shadow;
+  }
+
+  /* Tab inactive */
+  .tab-inactive {
+    @apply text-gray-300 hover:text-white;
+  }
+  html:not(.dark) .tab-inactive {
+    @apply text-gray-500 hover:text-gray-900;
+  }
+}

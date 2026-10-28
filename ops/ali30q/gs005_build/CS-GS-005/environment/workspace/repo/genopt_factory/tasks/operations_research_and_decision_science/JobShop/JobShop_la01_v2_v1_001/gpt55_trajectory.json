@@ -1,0 +1,220 @@
+{
+  "task_id": "jobshop_orlib_v1_001",
+  "seed_score": 24.6755,
+  "seed_valid": 1.0,
+  "best_score": 94.8906,
+  "gap_closed": 0.7022,
+  "difficulty_bucket": "Easy",
+  "n": 3,
+  "model": "gpt-5.5",
+  "rounds": [
+    {
+      "round": 0,
+      "metrics": {
+        "combined_score": 24.6755,
+        "valid": 1.0,
+        "per_instance": [
+          {
+            "instance": "ft06",
+            "elapsed_s": 0.05,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 152,
+            "optimum": 55,
+            "score": 36.18421052631579
+          },
+          {
+            "instance": "ft10",
+            "elapsed_s": 0.05,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 3394,
+            "optimum": 930,
+            "score": 27.40129640542133
+          },
+          {
+            "instance": "la01",
+            "elapsed_s": 0.05,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 2272,
+            "optimum": 666,
+            "score": 29.31338028169014
+          },
+          {
+            "instance": "la16",
+            "elapsed_s": 0.05,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 3898,
+            "optimum": 945,
+            "score": 24.243201641867625
+          },
+          {
+            "instance": "la21",
+            "elapsed_s": 0.05,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 6236,
+            "optimum": 1046,
+            "score": 16.773572803078896
+          },
+          {
+            "instance": "la36",
+            "elapsed_s": 0.06,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 8969,
+            "optimum": 1268,
+            "score": 14.137585015051846
+          }
+        ],
+        "stdout": " },\n    {\n      \"instance\": \"la36\",\n      \"elapsed_s\": 0.06,\n      \"feasible\": true,\n      \"reason\": \"ok\",\n      \"makespan\": 8969,\n      \"optimum\": 1268,\n      \"score\": 14.137585015051846\n    }\n  ]\n}\n"
+      },
+      "elapsed": 0
+    },
+    {
+      "round": 1,
+      "elapsed": 302.6,
+      "metrics": {
+        "combined_score": 0.0,
+        "valid": 0.0,
+        "error": "eval_timeout>180s"
+      },
+      "source_preview": "\"\"\"Improved Job-Shop solver.\n\nPure-stdlib deterministic heuristic portfolio:\n- Builds several active schedules with Giffler-Thompson style dispatching rules.\n- "
+    },
+    {
+      "round": 2,
+      "elapsed": 150.2,
+      "metrics": {
+        "combined_score": 92.685,
+        "valid": 1.0,
+        "per_instance": [
+          {
+            "instance": "ft06",
+            "elapsed_s": 0.98,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 55,
+            "optimum": 55,
+            "score": 100.0
+          },
+          {
+            "instance": "ft10",
+            "elapsed_s": 4.01,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 1108,
+            "optimum": 930,
+            "score": 83.93501805054152
+          },
+          {
+            "instance": "la01",
+            "elapsed_s": 1.42,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 666,
+            "optimum": 666,
+            "score": 100.0
+          },
+          {
+            "instance": "la16",
+            "elapsed_s": 4.53,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 1027,
+            "optimum": 945,
+            "score": 92.01557935735151
+          },
+          {
+            "instance": "la21",
+            "elapsed_s": 6.85,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 1156,
+            "optimum": 1046,
+            "score": 90.48442906574394
+          },
+          {
+            "instance": "la36",
+            "elapsed_s": 13.28,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 1414,
+            "optimum": 1268,
+            "score": 89.67468175388967
+          }
+        ],
+        "stdout": " },\n    {\n      \"instance\": \"la36\",\n      \"elapsed_s\": 13.28,\n      \"feasible\": true,\n      \"reason\": \"ok\",\n      \"makespan\": 1414,\n      \"optimum\": 1268,\n      \"score\": 89.67468175388967\n    }\n  ]\n}\n"
+      },
+      "source_preview": "\"\"\"Improved Job-Shop Scheduling solver.\n\nPure-stdlib deterministic heuristic portfolio:\n- Giffler-Thompson active schedule generation with multiple priority rul"
+    },
+    {
+      "round": 3,
+      "elapsed": 207.3,
+      "metrics": {
+        "combined_score": 94.8906,
+        "valid": 1.0,
+        "per_instance": [
+          {
+            "instance": "ft06",
+            "elapsed_s": 5.06,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 55,
+            "optimum": 55,
+            "score": 100.0
+          },
+          {
+            "instance": "ft10",
+            "elapsed_s": 12.06,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 1007,
+            "optimum": 930,
+            "score": 92.35352532274081
+          },
+          {
+            "instance": "la01",
+            "elapsed_s": 12.06,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 666,
+            "optimum": 666,
+            "score": 100.0
+          },
+          {
+            "instance": "la16",
+            "elapsed_s": 12.06,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 979,
+            "optimum": 945,
+            "score": 96.5270684371808
+          },
+          {
+            "instance": "la21",
+            "elapsed_s": 20.06,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 1157,
+            "optimum": 1046,
+            "score": 90.40622299049265
+          },
+          {
+            "instance": "la36",
+            "elapsed_s": 20.07,
+            "feasible": true,
+            "reason": "ok",
+            "makespan": 1408,
+            "optimum": 1268,
+            "score": 90.05681818181819
+          }
+        ],
+        "stdout": " },\n    {\n      \"instance\": \"la36\",\n      \"elapsed_s\": 20.07,\n      \"feasible\": true,\n      \"reason\": \"ok\",\n      \"makespan\": 1408,\n      \"optimum\": 1268,\n      \"score\": 90.05681818181819\n    }\n  ]\n}\n"
+      },
+      "source_preview": "\"\"\"Heuristic Job-Shop solver.\n\nDeterministic pure-Python portfolio:\n- serial schedule generation with earliest gap insertion\n- many priority dispatching rules\n-"
+    }
+  ],
+  "best_round_source": "\"\"\"Heuristic Job-Shop solver.\n\nDeterministic pure-Python portfolio:\n- serial schedule generation with earliest gap insertion\n- many priority dispatching rules\n-"
+}

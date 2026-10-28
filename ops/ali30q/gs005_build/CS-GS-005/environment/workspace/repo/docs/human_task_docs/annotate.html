@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>帧标注 · Nautilus 任务</title>
+<style>
+:root{--bg:#0d1117;--card:#161b22;--line:#30363d;--fg:#e6edf3;--dim:#8b949e;--acc:#2f81f7;--ok:#3fb950;--warn:#d29922}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font:16px/1.6 -apple-system,"Segoe UI","Microsoft YaHei",sans-serif;max-width:900px;margin:0 auto;padding:16px}
+header{text-align:center;padding:12px 0}
+h1{font-size:1.2em;color:var(--dim)}
+.progress{display:flex;align-items:center;gap:8px;margin:16px 0;padding:12px;background:var(--card);border:1px solid var(--line);border-radius:8px}
+.bar{flex:1;height:6px;background:#21262d;border-radius:3px;overflow:hidden}
+.fill{height:100%;background:var(--acc);transition:width .3s}
+.count{font-size:.9em;color:var(--dim);white-space:nowrap}
+.frame{margin:16px 0;text-align:center}
+.frame img{max-width:100%;max-height:55vh;border:1px solid var(--line);border-radius:8px;background:#000}
+.fid{color:var(--dim);font-size:.85em;margin-top:4px}
+.choices{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:16px 0}
+button{padding:14px 8px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg);font-size:1em;cursor:pointer;transition:all .15s}
+button:hover{border-color:var(--acc);color:var(--acc)}
+button.sel{border-color:var(--acc);background:rgba(47,129,247,.15);color:var(--acc);font-weight:700}
+.conf{display:flex;gap:8px;margin:12px 0}
+.conf button{font-size:.85em;padding:8px}
+.hint{color:var(--warn);font-size:.85em;text-align:center;margin:8px 0;display:none}
+.nav{display:flex;justify-content:space-between;margin:16px 0}
+.nav button{padding:10px 20px}
+.done{display:none;text-align:center;padding:40px 20px;background:var(--card);border:1px solid var(--line);border-radius:8px;margin:16px 0}
+.done h2{color:var(--ok);margin-bottom:8px}
+textarea{width:100%;min-height:120px;background:#0d1117;border:1px solid var(--line);border-radius:8px;color:var(--fg);padding:10px;font:13px/1.5 monospace;margin-top:8px}
+.copy{background:var(--acc);color:#fff;border:none;padding:10px 24px;border-radius:6px;font-size:1em;cursor:pointer;margin-top:8px}
+footer{text-align:center;color:var(--dim);font-size:.8em;padding:20px 0}
+</style>
+</head>
+<body>
+<header><h1>帧质量标注 · 100 帧</h1></header>
+<div class="progress"><div class="bar"><div class="fill" id="fill"></div></div><span class="count" id="cnt">0/100</span></div>
+<div id="work">
+  <div class="frame"><img id="img" src=""><div class="fid" id="fid"></div></div>
+  <div class="choices">
+    <button data-l="black">🌑 黑帧</button>
+    <button data-l="freeze">❄️ 冻帧</button>
+    <button data-l="blur">🌫️ 模糊</button>
+    <button data-l="normal">✅ 正常</button>
+  </div>
+  <div class="conf">
+    <button data-c="high">有把握</button>
+    <button data-c="mid">不确定</button>
+    <button data-c="low">很不确定</button>
+  </div>
+  <div class="hint" id="hint">请同时选择标签和置信度</div>
+  <div class="nav">
+    <button id="prev">← 上一帧</button>
+    <button id="next" style="background:var(--acc);color:#fff;border:none">下一帧 →</button>
+  </div>
+</div>
+<div class="done" id="done">
+  <h2>🎉 标注完成！</h2>
+  <p>复制下面的结果，发回到你领任务的地方（微信/邮件）：</p>
+  <textarea id="result" readonly></textarea>
+  <button class="copy" onclick="navigator.clipboard.writeText(document.getElementById('result').value).then(()=>this.textContent='已复制 ✓')">复制结果</button>
+  <p style="color:var(--dim);font-size:.85em;margin-top:12px">验收通常 48 小时内完成，通过后报酬微信转账。</p>
+</div>
+<footer>标注提示：黑帧=几乎全黑 | 冻帧=和前一帧一样 | 模糊=看不清细节 | 正常=以上都不是</footer>
+<script>
+// 帧图URL模式:改为你的实际图床/静态文件路径
+const BASE = '/tasks-assets/frames/';  // 或完整URL如 https://nautilus.social/tasks-assets/frames/
+const N = 100;
+const S = {};
+let cur = 0;
+const img=document.getElementById('img'),fid=document.getElementById('fid');
+const fill=document.getElementById('fill'),cnt=document.getElementById('cnt');
+function pad(n){return String(n).padStart(4,'0')}
+function render(){
+  img.src = BASE+'frame_'+pad(cur+1)+'.jpg';
+  fid.textContent='帧 frame_'+pad(cur+1)+' · '+(cur+1)+'/'+N;
+  document.querySelectorAll('.choices button').forEach(b=>b.classList.toggle('sel',S[cur]?.l===b.dataset.l));
+  document.querySelectorAll('.conf button').forEach(b=>b.classList.toggle('sel',S[cur]?.c===b.dataset.c));
+  fill.style.width=(Object.keys(S).length/N*100)+'%';
+  cnt.textContent=Object.keys(S).length+'/'+N;
+}
+document.querySelectorAll('.choices button').forEach(b=>b.onclick=()=>{
+  S[cur]={...(S[cur]||{}),l:b.dataset.l};
+  document.getElementById('hint').style.display='none';
+  render();
+  // 如果已有置信度,自动跳下一帧
+  if(S[cur].c) setTimeout(()=>go(1),250);
+});
+document.querySelectorAll('.conf button').forEach(b=>b.onclick=()=>{
+  S[cur]={...(S[cur]||{}),c:b.dataset.c};
+  document.getElementById('hint').style.display='none';
+  render();
+  if(S[cur].l) setTimeout(()=>go(1),250);
+});
+function go(d){cur=Math.max(0,Math.min(N-1,cur+d));render();
+  if(cur===N-1&&Object.keys(S).length===N) finish();}
+document.getElementById('prev').onclick=()=>go(-1);
+document.getElementById('next').onclick=()=>{
+  if(!S[cur]?.l||!S[cur]?.c){document.getElementById('hint').style.display='block';return}
+  go(1);
+};
+function finish(){
+  document.getElementById('work').style.display='none';
+  document.getElementById('done').style.display='block';
+  const lines=Object.keys(S).sort((a,b)=>a-b).map(k=>{
+    const f='frame_'+pad(+k+1);
+    return f+', '+S[k].l+', '+S[k].c;
+  });
+  document.getElementById('result').value='started_at: '+(window._t0||new Date().toISOString())+'\nfinished_at: '+new Date().toISOString()+'\n\n'+lines.join('\n');
+}
+window._t0=new Date().toISOString();
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "2c90a7cdccefeba470d4c71062002403c8a71b68",
+  "reference_fix_commit": "a08542c5ffcb4756e8449c1b845ade9fe328c8e2",
+  "subject": "fix(fde): harden read-only schema probe",
+  "test_files": [
+   "phase3/backend/tests/test_fde_phase3_feishu.py"
+  ],
+  "source_files": [
+   "phase3/backend/scripts/probe_phase3_feishu_schema.py",
+   "phase3/backend/services/fde_phase3_feishu.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/test_fde_phase3_feishu.py::test_schema_cli_uses_only_fixed_tables_and_fields_get_paths",
+ "source_rel": "scripts\\probe_phase3_feishu_schema.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 1522,
+    "output_tokens": 461,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_ys7p38kj\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 1 item\r\n\r\ntests/test_fde_phase3_feishu.py::test_schema_cli_uses_only_fixed_tables_and_fields_get_paths FAILED [100%]\r\n\r\n================================== FAILURES ===================================\r\n_________ test_schema_cli_uses_only_fixed_tables_and_fields_get_paths _________\r\ntests\\test_fde_phase3_feishu.py:949: in test_schema_cli_uses_only_fixed_tables_and_fields_get_paths\r\n    assert not {\"endpoint\", \"path\", \"url\"} & set(parameter_names)\r\nE   assert not ({'endpoint', 'path', 'url'} & {'path', 'self'})\r\nE    +  where {'path', 'self'} = set(mappingproxy(OrderedDict({'self': <Parameter \"self\">, 'path': <Parameter \"path: 'str'\">})))\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_fde_phase3_feishu.py::test_schema_cli_uses_only_fixed_tables_and_fields_get_paths\r\n============================== 1 failed in 0.28s ==============================\r\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 1924,
+    "output_tokens": 473,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_ys7p38kj\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 1 item\r\n\r\ntests/test_fde_phase3_feishu.py::test_schema_cli_uses_only_fixed_tables_and_fields_get_paths FAILED [100%]\r\n\r\n================================== FAILURES ===================================\r\n_________ test_schema_cli_uses_only_fixed_tables_and_fields_get_paths _________\r\ntests\\test_fde_phase3_feishu.py:937: in test_schema_cli_uses_only_fixed_tables_and_fields_get_paths\r\n    assert client.list_tables(\"base-safe\") == [{\"table_id\": \"tbl_task\", \"name\": \"\u4efb\u52a1\"}]\r\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nscripts\\probe_phase3_feishu_schema.py:32: in list_tables\r\n    return self._list_pages(\r\nE   TypeError: ReadOnlySchemaClient._list_pages() got an unexpected keyword argument 'endpoint'\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_fde_phase3_feishu.py::test_schema_cli_uses_only_fixed_tables_and_fields_get_paths\r\n============================== 1 failed in 0.30s ==============================\r\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 1921,
+    "output_tokens": 409,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 root] warning: recount: unexpected line: ?\n\nerror: corrupt patch at C:/Users/chunx/AppData/Local/Temp/g2b1_exec_ys7p38kj/repo/phase3/backend/_g2b1.patch:8\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 18.2,
+ "verdict_post_status": 200
+}

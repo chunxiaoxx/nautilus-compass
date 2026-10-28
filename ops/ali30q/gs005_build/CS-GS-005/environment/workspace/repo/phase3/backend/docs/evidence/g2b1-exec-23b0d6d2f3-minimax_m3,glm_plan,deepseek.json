@@ -1,0 +1,29 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "cb7c78bd4fcf11118f8c693fdb1e78ee27edeb93",
+  "reference_fix_commit": "23b0d6d2f306c34086f1d67830ae468a48f6558c",
+  "subject": "fix(fde): shared_facts \u5168\u5c40\u7ed1\u5b9a\u5e38\u91cf \u2014 \u6cbb\u65b9\u6848B\u8de8\u6587\u4ef6\u4e0d\u4e00\u81f4(c11/c8)",
+  "test_files": [
+   "tests/test_solve_task.py"
+  ],
+  "source_files": [
+   "fde_capsule/solve_task.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_solve_task.py",
+ "source_rel": "fde_capsule\\solve_task.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "skipped_reason": "fixture_broken_red",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 109.2,
+ "replayed": true,
+ "verdict_post_status": 200
+}

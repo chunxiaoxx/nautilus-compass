@@ -1,0 +1,43 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "2d01cbd28c16c9ef8b6aeb5a8e59601d17f172ab",
+  "reference_fix_commit": "ffbe0dfb38ba258e7b86983c75c9601d04280f2c",
+  "subject": "fix(rsi-C gap#1): code-fix produce LLM \u957f\u8d85\u65f6+\u5927 token(\u6cbb\u5f3a\u6a21\u578b\u4ea7 kernel \u8d85\u65f6)",
+  "test_files": [
+   "tests/test_fde_consumer_codefix_wiring.py"
+  ],
+  "source_files": [
+   "fde_capsule/fde_consumer.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-v5.archived-20260827"
+ },
+ "test_id": "tests/test_fde_consumer_codefix_wiring.py::test_call_llm_accepts_timeout_param",
+ "source_rel": "fde_capsule\\fde_consumer.py",
+ "provider": "glm_plan,minimax_m3,deepseek",
+ "test_passed": true,
+ "winning_diff": "--- a/fde_capsule/fde_consumer.py\n+++ b/fde_capsule/fde_consumer.py\n@@ -118,12 +118,14 @@ def _call_llm(prompt: str, *, api_base: str = \"https://api.minimaxi.com/v1\",\n def _call_llm(prompt: str, *, api_base: str = \"https://api.minimaxi.com/v1\",\n               model: str = \"MiniMax-M2.7-highspeed\",\n-              api_key_env: str = \"MINIMAX_API_KEY\", max_tokens: int = 4000) -> str:\n+              api_key_env: str = \"MINIMAX_API_KEY\", max_tokens: int = 4000,\n+              timeout: float = 120) -> str:\n     \"\"\"sync LLM \u8c03\u7528(urllib\u00b7OpenAI \u517c\u5bb9)\u00b7 \u62bd\u51fa = produce \u7684 effect \u8fb9\u754c\u00b7\u4fbf\u4e8e\u6d4b\u8bd5 mock\u3002\"\"\"\n     import os\n     import json as _j\n     import urllib.request as _ur\n     body = _j.dumps({\"model\": model, \"messages\": [{\"role\": \"user\", \"content\": prompt}],\n                      \"temperature\": 0.3, \"max_tokens\": max_tokens}).encode(\"utf-8\")\n     req = _ur.Request(api_base.rstrip(\"/\") + \"/chat/completions\", data=body, method=\"POST\",\n                       headers={\"Content-Type\": \"application/json\",\n                                \"Authorization\": f\"Bearer {os.environ.get(api_key_env, '')}\"})\n-    with _ur.urlopen(req, timeout=120) as r:\n+    with _ur.urlopen(req, timeout=timeout) as r:\n         return _j.loads(r.read())[\"choices\"][0][\"message\"][\"content\"]\n",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "input_tokens": 4101,
+    "output_tokens": 452,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "add_timeout_param_to_call_llm",
+ "duration_s": 31.7,
+ "verdict_post_status": 200
+}

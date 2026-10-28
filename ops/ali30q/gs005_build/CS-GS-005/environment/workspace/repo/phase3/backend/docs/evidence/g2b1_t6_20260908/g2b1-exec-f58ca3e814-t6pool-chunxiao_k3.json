@@ -1,0 +1,158 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "420c8fb44eeadb537cae69d2fee3796e808558dd",
+  "reference_fix_commit": "f58ca3e81424a35626c8a475eb59ab95589008ce",
+  "subject": "Fix `copy`, `deepcopy` and `pickle` of `Sentinel` members",
+  "test_files": [
+   "tests/test_utils/test_sentinel.py"
+  ],
+  "source_files": [
+   "src/click/_utils.py"
+  ],
+  "repo_path": "C:/Users/chunx/ext_mine"
+ },
+ "test_id": "tests/test_utils/test_sentinel.py::test_sentinel_duplication_preserves_identity",
+ "source_rel": "src\\click\\_utils.py",
+ "provider": "t6pool-chunxiao_k3",
+ "provider_used": "t6pool-chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/src/click/_utils.py\n+++ b/src/click/_utils.py\n@@ -17,6 +17,14 @@ class Sentinel(enum.Enum):\n     def __repr__(self) -> str:\n         return f\"{self.__class__.__name__}.{self.name}\"\n \n+    def __reduce_ex__(\n+        self, protocol: int\n+    ) -> tuple[t.Callable[..., t.Any], tuple[t.Any, ...]]:\n+        # The member values are bare ``object()`` instances, which cannot\n+        # survive copying or pickling. Reduce to a lookup by member name so\n+        # ``copy`` and ``pickle`` return the existing singleton member.\n+        return getattr, (type(self), self.name)\n+\n \n UNSET: t.Literal[Sentinel.UNSET] = Sentinel.UNSET\n \"\"\"Sentinel used to indicate that a value is not set.\"\"\"\n",
+ "budget_exceeded": false,
+ "total_tokens": 8646,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 1590,
+    "completion_tokens": 654,
+    "total_tokens": 2244,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 1078,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 512,
+      "output_tokens": 654,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 512,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 1590,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "opy,\r\n            lambda value: pickle.loads(pickle.dumps(value)),\r\n        ),\r\n        ids=(\"copy\", \"deepcopy\", \"pickle\"),\r\n    )\r\n    def test_sentinel_duplication_preserves_identity(sentinel, duplicate):\r\n        \"\"\"Sentinels are singletons: copying or pickling one returns the member.\r\n    \r\n        The default ``Enum`` reduction is ``(cls, (member.value,))``, which cannot\r\n        round-trip a bare ``object()`` value: the copy or the unpickled value is a\r\n        new object and ``Sentinel()`` rejects it.\r\n        \"\"\"\r\n>       assert duplicate(sentinel) is sentinel\r\n               ^^^^^^^^^^^^^^^^^^^\r\n\r\ntests\\test_utils\\test_sentinel.py:78: \r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\r\ntests\\test_utils\\test_sentinel.py:67: in <lambda>\r\n    lambda value: pickle.loads(pickle.dumps(value)),\r\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nC:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\\Lib\\enum.py:728: in __call__\r\n    return cls.__new__(cls, value)\r\n           ^^^^^^^^^^^^^^^^^^^^^^^\r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\r\n\r\ncls = <enum 'Sentinel'>, value = <object object at 0x0000011732D63AF0>\r\n\r\n    def __new__(cls, value):\r\n        # all enum instances are actually created during class construction\r\n        # without calling this method; this method is called by the metaclass'\r\n        # __call__ (i.e. Color(3) ), and by pickle\r\n        if type(value) is cls:\r\n            # For lookups like Color(Color.RED)\r\n            return value\r\n        # by-value search for a matching enum member\r\n        # see if it's in the reverse mapping (for hashable values)\r\n        try:\r\n            return cls._value2member_map_[value]\r\n        except KeyError:\r\n            # Not found, no need to do long O(n) search\r\n            pass\r\n        except TypeError:\r\n            # not there, now do long search -- O(n) behavior\r\n            for name, unhashable_values in cls._unhashable_values_map_.items():\r\n                if value in unhashable_values:\r\n                    return cls[name]\r\n            for name, member in cls._member_map_.items():\r\n                if value == member._value_:\r\n                    return cls[name]\r\n        # still not found -- verify that members exist, in-case somebody got here mistakenly\r\n        # (such as via super when trying to override __new__)\r\n        if not cls._member_map_:\r\n            if getattr(cls, '_%s__in_progress' % cls.__name__, False):\r\n                raise TypeError('do not use `super().__new__; call the appropriate __new__ directly') from None\r\n            raise TypeError(\"%r has no members defined\" % cls)\r\n        #\r\n        # still not found -- try _missing_ hook\r\n        try:\r\n            exc = None\r\n            result = cls._missing_(value)\r\n        except Exception as e:\r\n            exc = e\r\n            result = None\r\n        try:\r\n            if isinstance(result, cls):\r\n                return result\r\n            elif (\r\n                    Flag is not None and issubclass(cls, Flag)\r\n                    and cls._boundary_ is EJECT and isinstance(result, int)\r\n                ):\r\n                return result\r\n            else:\r\n                ve_exc = ValueError(\"%r is not a valid %s\" % (value, cls.__qualname__))\r\n                if result is None and exc is None:\r\n>                   raise ve_exc\r\nE                   ValueError: <object object at 0x0000011732D63AF0> is not a valid Sentinel\r\n\r\nC:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\\Lib\\enum.py:1205: ValueError\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_utils/test_sentinel.py::test_sentinel_duplication_preserves_identity[pickle-Sentinel.UNSET]\r\nFAILED tests/test_utils/test_sentinel.py::test_sentinel_duplication_preserves_identity[pickle-Sentinel.FLAG_NEEDS_VALUE]\r\n2 failed, 4 passed in 0.36s\r\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 2635,
+    "completion_tokens": 545,
+    "total_tokens": 3180,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 1099,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1536,
+      "output_tokens": 545,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 1536,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 2635,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "    copy.copy,\r\n            copy.deepcopy,\r\n            lambda value: pickle.loads(pickle.dumps(value)),\r\n        ),\r\n        ids=(\"copy\", \"deepcopy\", \"pickle\"),\r\n    )\r\n    def test_sentinel_duplication_preserves_identity(sentinel, duplicate):\r\n        \"\"\"Sentinels are singletons: copying or pickling one returns the member.\r\n    \r\n        The default ``Enum`` reduction is ``(cls, (member.value,))``, which cannot\r\n        round-trip a bare ``object()`` value: the copy or the unpickled value is a\r\n        new object and ``Sentinel()`` rejects it.\r\n        \"\"\"\r\n>       assert duplicate(sentinel) is sentinel\r\n               ^^^^^^^^^^^^^^^^^^^\r\n\r\ntests\\test_utils\\test_sentinel.py:78: \r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\r\ntests\\test_utils\\test_sentinel.py:67: in <lambda>\r\n    lambda value: pickle.loads(pickle.dumps(value)),\r\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nC:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\\Lib\\enum.py:728: in __call__\r\n    return cls.__new__(cls, value)\r\n           ^^^^^^^^^^^^^^^^^^^^^^^\r\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\r\n\r\ncls = <enum 'Sentinel'>, value = 'FLAG_NEEDS_VALUE'\r\n\r\n    def __new__(cls, value):\r\n        # all enum instances are actually created during class construction\r\n        # without calling this method; this method is called by the metaclass'\r\n        # __call__ (i.e. Color(3) ), and by pickle\r\n        if type(value) is cls:\r\n            # For lookups like Color(Color.RED)\r\n            return value\r\n        # by-value search for a matching enum member\r\n        # see if it's in the reverse mapping (for hashable values)\r\n        try:\r\n            return cls._value2member_map_[value]\r\n        except KeyError:\r\n            # Not found, no need to do long O(n) search\r\n            pass\r\n        except TypeError:\r\n            # not there, now do long search -- O(n) behavior\r\n            for name, unhashable_values in cls._unhashable_values_map_.items():\r\n                if value in unhashable_values:\r\n                    return cls[name]\r\n            for name, member in cls._member_map_.items():\r\n                if value == member._value_:\r\n                    return cls[name]\r\n        # still not found -- verify that members exist, in-case somebody got here mistakenly\r\n        # (such as via super when trying to override __new__)\r\n        if not cls._member_map_:\r\n            if getattr(cls, '_%s__in_progress' % cls.__name__, False):\r\n                raise TypeError('do not use `super().__new__; call the appropriate __new__ directly') from None\r\n            raise TypeError(\"%r has no members defined\" % cls)\r\n        #\r\n        # still not found -- try _missing_ hook\r\n        try:\r\n            exc = None\r\n            result = cls._missing_(value)\r\n        except Exception as e:\r\n            exc = e\r\n            result = None\r\n        try:\r\n            if isinstance(result, cls):\r\n                return result\r\n            elif (\r\n                    Flag is not None and issubclass(cls, Flag)\r\n                    and cls._boundary_ is EJECT and isinstance(result, int)\r\n                ):\r\n                return result\r\n            else:\r\n                ve_exc = ValueError(\"%r is not a valid %s\" % (value, cls.__qualname__))\r\n                if result is None and exc is None:\r\n>                   raise ve_exc\r\nE                   ValueError: 'FLAG_NEEDS_VALUE' is not a valid Sentinel\r\n\r\nC:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\\Lib\\enum.py:1205: ValueError\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_utils/test_sentinel.py::test_sentinel_duplication_preserves_identity[pickle-Sentinel.UNSET]\r\nFAILED tests/test_utils/test_sentinel.py::test_sentinel_duplication_preserves_identity[pickle-Sentinel.FLAG_NEEDS_VALUE]\r\n2 failed, 4 passed in 0.64s\r\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 2621,
+    "completion_tokens": 601,
+    "total_tokens": 3222,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 1085,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 1536,
+      "output_tokens": 601,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 1536,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 2621,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "sentinel_reduce_ex_name_lookup",
+ "duration_s": 82.6
+}

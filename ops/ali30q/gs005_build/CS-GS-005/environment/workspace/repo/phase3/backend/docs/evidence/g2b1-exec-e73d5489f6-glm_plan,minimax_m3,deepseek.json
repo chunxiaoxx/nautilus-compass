@@ -1,0 +1,29 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "2e834776d379be6eaeab5f9147d42ff428b830ec",
+  "reference_fix_commit": "e73d5489f639045ac1a18d0ddb48043a551937b8",
+  "subject": "fix(platform): G2-B1 apply \u4e09\u6bb5\u5f0f\u8def\u5f84\u89e3\u6790 \u2014 \u4fee\u53cc\u91cd\u524d\u7f00\u541e\u6389\u9996\u8dd12/3\u8f6e",
+  "test_files": [
+   "phase3/backend/tests/platform_protocol/test_g2_b1_agentic_runner.py"
+  ],
+  "source_files": [
+   "phase3/backend/tools/g2_b1_agentic_runner.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "phase3/backend/tests/platform_protocol/test_g2_b1_agentic_runner.py::test_repo_root_relative_diff_applies",
+ "source_rel": "phase3/backend/tools/g2_b1_agentic_runner.py",
+ "provider": "glm_plan,minimax_m3,deepseek",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

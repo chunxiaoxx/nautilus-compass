@@ -1,0 +1,30 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "876fa57829c5fd090572d42cdfb022c57af6550c",
+  "reference_fix_commit": "3fa9d40962acb5e79fb04e6b70bf555af72bd698",
+  "subject": "fix(p1): gate B \u4e09\u6001\u8bed\u4e49 \u2014 OOM/eval\u5d29=inconclusive(None\u00b7hold) \u975e buyer_stump (\u4fee 6/20 facade bug)",
+  "test_files": [
+   "phase3/backend/tests/test_fde_strong_gate.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/fde_double_gate_poll.py",
+   "phase3/backend/services/fde_strong_gate.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "phase3/backend/tests/test_fde_strong_gate.py::test_eval_exception_is_inconclusive_not_buyer_stump",
+ "source_rel": "phase3/backend/services/fde_double_gate_poll.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

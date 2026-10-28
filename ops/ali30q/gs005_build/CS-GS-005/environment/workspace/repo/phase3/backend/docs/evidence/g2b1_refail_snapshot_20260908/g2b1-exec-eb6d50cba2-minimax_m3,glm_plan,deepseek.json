@@ -1,0 +1,71 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "3c602dfaab17fd748829aae6b3362d6cb455915d",
+  "reference_fix_commit": "eb6d50cba266a3998ada938491c2e354b0505459",
+  "subject": "fix(platform): auto-verify \u62d2\u9a8c genopt-* \u5bb6\u65cf \u2014 \u8865 8/22 \u51bb\u7ed3\u6f0f\u70b9(+88 \u5b9e\u8bc1)",
+  "test_files": [
+   "phase3/backend/tests/test_fde_auto_verify_planner.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/fde_auto_verify_runner.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/test_fde_auto_verify_planner.py::test_genopt_family_rejected_freeze_semantics",
+ "source_rel": "services\\fde_auto_verify_runner.py",
+ "provider": "minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 1735,
+    "output_tokens": 212,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_b8ytucry\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 1 item\r\n\r\ntests/test_fde_auto_verify_planner.py::test_genopt_family_rejected_freeze_semantics FAILED [100%]\r\n\r\n================================== FAILURES ===================================\r\n________________ test_genopt_family_rejected_freeze_semantics _________________\r\ntests\\test_fde_auto_verify_planner.py:55: in test_genopt_family_rejected_freeze_semantics\r\n    assert [j[\"verdict_id\"] for j in jobs] == [\"v2\"]\r\nE   AssertionError: assert ['v1', 'v2'] == ['v2']\r\nE     \r\nE     At index 0 diff: 'v1' != 'v2'\r\nE     Left contains one more item: 'v2'\r\nE     \r\nE     Full diff:\r\nE       [\r\nE     +     'v1',\r\nE           'v2',\r\nE       ]\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_fde_auto_verify_planner.py::test_genopt_family_rejected_freeze_semantics\r\n============================== 1 failed in 0.28s ==============================\r\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 2287,
+    "output_tokens": 319,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_b8ytucry\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 1 item\r\n\r\ntests/test_fde_auto_verify_planner.py::test_genopt_family_rejected_freeze_semantics FAILED [100%]\r\n\r\n================================== FAILURES ===================================\r\n________________ test_genopt_family_rejected_freeze_semantics _________________\r\ntests\\test_fde_auto_verify_planner.py:55: in test_genopt_family_rejected_freeze_semantics\r\n    assert [j[\"verdict_id\"] for j in jobs] == [\"v2\"]\r\nE   AssertionError: assert ['v1', 'v2'] == ['v2']\r\nE     \r\nE     At index 0 diff: 'v1' != 'v2'\r\nE     Left contains one more item: 'v2'\r\nE     \r\nE     Full diff:\r\nE       [\r\nE     +     'v1',\r\nE           'v2',\r\nE       ]\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_fde_auto_verify_planner.py::test_genopt_family_rejected_freeze_semantics\r\n============================== 1 failed in 0.27s ==============================\r\n"
+  },
+  {
+   "turn": 3,
+   "patch_applied": true,
+   "test_passed": false,
+   "usage": {
+    "input_tokens": 2148,
+    "output_tokens": 264,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 128,
+    "service_tier": "standard"
+   },
+   "feedback_kind": "applied_fail",
+   "feedback_excerpt": "============================= test session starts =============================\r\nplatform win32 -- Python 3.13.14, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: C:\\Users\\chunx\\AppData\\Local\\Temp\\g2b1_exec_b8ytucry\\repo\\phase3\\backend\r\nconfigfile: pytest.ini\r\nplugins: anyio-4.13.0, langsmith-0.10.15, asyncio-1.4.0, cov-7.1.0\r\nasyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function\r\ncollected 1 item\r\n\r\ntests/test_fde_auto_verify_planner.py::test_genopt_family_rejected_freeze_semantics FAILED [100%]\r\n\r\n================================== FAILURES ===================================\r\n________________ test_genopt_family_rejected_freeze_semantics _________________\r\ntests\\test_fde_auto_verify_planner.py:55: in test_genopt_family_rejected_freeze_semantics\r\n    assert [j[\"verdict_id\"] for j in jobs] == [\"v2\"]\r\nE   AssertionError: assert ['v1', 'v2'] == ['v2']\r\nE     \r\nE     At index 0 diff: 'v1' != 'v2'\r\nE     Left contains one more item: 'v2'\r\nE     \r\nE     Full diff:\r\nE       [\r\nE     +     'v1',\r\nE           'v2',\r\nE       ]\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_fde_auto_verify_planner.py::test_genopt_family_rejected_freeze_semantics\r\n============================== 1 failed in 0.27s ==============================\r\n"
+  }
+ ],
+ "summary_code": null,
+ "duration_s": 16.1,
+ "verdict_post_status": 200
+}

@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+# ============================================================
+# Code Sense 判分入口脚本模板(甲方 1012 表10·7条要求)
+# 用法: 将此文件复制到各题 tests/score.py,按题目调整变量
+# 甲方要求:
+#   1. 可直接运行,执行 tests/ 下全量 UT 方法
+#   2. 输出结构化 JSON(主分=UT通过率,不调用任何LLM)
+#   3. judge_type 统一为 unit_test
+#   4. 判分确定性: 同答卷连跑3次逐条UT与gating判定100%一致
+#   5. gating UT 失败即一票否决(最终分归零)
+#   6. UT 可追溯: 每个UT方法具名(test_*)并对应改动点/维度
+#   7. 不锁定表述: 只判语义命中,不判特定词汇
+# ============================================================
+
+# ── 变量区(按题目调整) ──
+UT_FILE="test_cs<QUESTION_ID>.py"     # ← 改为实际 UT 文件名
+UT_COUNT=<UT_TOTAL>                    # ← 改为实际 UT 总数
+GATING_UTS=("G1")                      # ← 填 gating UT 方法名列表
+
+# ── 判分执行 ──
+cd /workspace
+
+pip install -q pytest 2>/dev/null || true
+
+PASS=0
+FAIL=0
+FAILED_UTS=()
+GATING_FAILED=()
+
+# 逐 UT 运行(可追溯:每个UT方法独立运行+记录结果)
+UT_NAMES=$(python3 -c "
+import importlib, inspect
+sys_path = '/workspace'
+import sys; sys.path.insert(0, sys_path)
+import importlib.util
+spec = importlib.util.spec_from_file_location('ut_module', '/tests/${UT_FILE}')
+mod = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(mod)
+for name, fn in sorted(vars(mod).items()):
+    if name.startswith('test_') and callable(fn):
+        print(name)
+")
+
+for UT in $UT_NAMES; do
+    # 逐 UT 运行
+    if python3 -m pytest "/tests/${UT_FILE}::$UT" -q --tb=no > /dev/null 2>&1; then
+        PASS=$((PASS+1))
+    else
+        FAIL=$((FAIL+1))
+        FAILED_UTS+=("$UT")
+        # gating 检查
+        for G in "${GATING_UTS[@]}"; do
+            if [ "$UT" == "$G" ]; then
+                GATING_FAILED+=("$G")
+            fi
+        done
+    fi
+done
+
+# ── 结果计算 ──
+# gating 一票否决
+if [ ${#GATING_FAILED[@]} -gt 0 ]; then
+    SCORE=0
+else
+    SCORE=$(python3 -c "print(round(${PASS}/${UT_COUNT}, 4))")
+fi
+
+# ── 结构化 JSON 输出 ──
+python3 -c "
+import json
+print(json.dumps({
+    'score': ${SCORE},
+    'pass': ${PASS},
+    'fail': ${FAIL},
+    'total': ${UT_COUNT},
+    'failed_uts': $(printf '%s\n' "${FAILED_UTS[@]:-[]}" | python3 -c "import sys,json; print(json.dumps([l.strip() for l in sys.stdin if l.strip()]))" 2>/dev/null || echo '[]'),
+    'gating_failed': $(printf '%s\n' "${GATING_FAILED[@]:-[]}" | python3 -c "import sys,json; print(json.dumps([l.strip() for l in sys.stdin if l.strip()]))" 2>/dev/null || echo '[]'),
+    'judge_type': 'unit_test',
+    'deterministic': true
+}, indent=2))
+"
+
+echo "$SCORE" > /logs/verifier/reward.txt

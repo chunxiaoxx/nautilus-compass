@@ -1,0 +1,29 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "b1d3f97aab1dcbcb06e0bc84565923ce06eb333e",
+  "reference_fix_commit": "d1da6e970d5618f30ec75c88688a40befd47645a",
+  "subject": "fix(fde): model interaction quality-control entry",
+  "test_files": [
+   "tests/test_workflow_contract.py"
+  ],
+  "source_files": [
+   "src/nautilus_fde_phase3/workflow.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-fde-phase3"
+ },
+ "test_id": "tests/test_workflow_contract.py::test_accepts_interaction_p0_start_after_submission",
+ "source_rel": "src/nautilus_fde_phase3/workflow.py",
+ "provider": "glm_plan",
+ "test_passed": false,
+ "skipped_reason": "no_red_test_at_buggy_commit",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 0,
+ "replayed": true,
+ "verdict_post_status": 200
+}

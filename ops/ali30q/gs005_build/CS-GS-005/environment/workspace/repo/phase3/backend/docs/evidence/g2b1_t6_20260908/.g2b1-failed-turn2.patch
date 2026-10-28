@@ -1,0 +1,65 @@
+--- a/src/click/core.py
++++ b/src/click/core.py
+@@ -1686,18 +1686,33 @@ class Parameter:
+         :param call: If the default is a callable, call it. Disable to
+             return the callable instead.
+         """
+-        # XXX this precedence ordering is slightly weird, but it is
+-        # required for backward compatibility.
+         name = self.name
+-        value = ctx.lookup_default(name) if name is not None else None
++        # If the parameter has a default_map entry, that takes precedence
++        # over the parameter's own default. Only fall back to ``self.default``
++        # when there is no entry for this parameter in the default_map.
++        # Note: ``ctx.lookup_default`` would invoke callables found in the
++        # default_map, which is undesirable here because we need to return
++        # the raw value (e.g. a callable flag_value should NOT be called).
++        if (
++            name is not None
++            and ctx.default_map is not None
++            and name in ctx.default_map
++        ):
++            value: t.Any | t.Callable[[], t.Any] | None = ctx.default_map[name]
++        else:
++            value = None
++
++        if value is None and name is not None:
++            value = self.default
++
++        if call and callable(value):
++            # The default may be a callable, in which case invoke it. This
++            # mirrors the legacy behavior for parameters whose ``default``
++            # is a callable (e.g. a dynamically generated value).
++            value = value()
++
++        return value
+ 
+-        if value is None:
+-            value = self.default
++        if value is UNSET:
++            return value
+ 
+-        if call and callable(value):
+-            value = value()
++        if call and callable(value):
++            value = value()
+ 
+         return value
+ 
+@@ -1758,7 +1773,14 @@ class Parameter:
+             if default_map_value is not None or (
+                 ctx.default_map is not None and self.name in ctx.default_map
+             ):
+-                value = default_map_value
++                # Only use the default_map value if it was actually provided
++                # (i.e. not ``None``). A ``None`` entry in the default_map is
++                # an explicit signal to suppress the parameter's own default
++                # and the auto-aligned flag_value behavior.
++                if default_map_value is not None:
++                    value = default_map_value
++                else:
++                    # Explicit None in default_map wins over self.default.
++                    value = None
+                 source = ParameterSource.DEFAULT_MAP
+ 
+         if value is UNSET:

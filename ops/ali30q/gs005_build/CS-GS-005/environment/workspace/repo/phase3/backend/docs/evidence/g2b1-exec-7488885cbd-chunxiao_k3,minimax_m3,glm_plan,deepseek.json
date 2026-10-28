@@ -1,0 +1,116 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "fde9cb2767f118d244642825bd41977784f831bc",
+  "reference_fix_commit": "7488885cbd7035070b90d4587f654373cf5e1efb",
+  "subject": "fix(executor): verdict POST base fallback\u2014\u2014env\u7f3aNAUTILUS_BACKEND_BASE\u65f6\u9759\u9ed8\u4e22POST(8/28\u590d\u6d3b\u5b9e\u6d4b:evidence\u843d\u76d8verdict\u96f6\u5230\u4e91\u5047done),\u6539\u9ed8\u8ba4\u56de\u9000\u751f\u4ea7\u7aef\u70b9+SKIPPED_NO_BASE\u53ef\u89c1\u5316;TDD 3 green",
+  "test_files": [
+   "phase3/backend/tests/platform_protocol/test_g2_b1_verdict_submit.py"
+  ],
+  "source_files": [
+   "phase3/backend/tools/g2_b1_executor_agent.py"
+  ],
+  "repo_path": "C:/Users/chunx/Projects/nautilus-core"
+ },
+ "test_id": "tests/platform_protocol/test_g2_b1_verdict_submit.py::test_submit_verdict_falls_back_to_default_base",
+ "source_rel": "tools\\g2_b1_executor_agent.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/tools/g2_b1_executor_agent.py\n+++ b/tools/g2_b1_executor_agent.py\n@@ -38,6 +38,7 @@ PROVIDERS = {\n     \"ark_glm\": (\"https://ark.cn-beijing.volces.com/api/v3\", \"glm-5-2-260617\", \"ARK_API_KEY\"),\n }\n DEFAULT_MAX_TOTAL_TOKENS = 200_000\n+DEFAULT_BACKEND_BASE = \"http://127.0.0.1:8000\"\n \n \n # --- registration (agent-first: challenge -> integer agent_id) ---\n@@ -331,9 +332,8 @@ def submit_verdict(evidence: dict, backend_base: str | None = None,\n     W1.2 intake. This deliberately does NOT mint income \u2014 self-mined tasks are\n     B=0 fuel and income accrual for them is frozen pending compass/user.\n     \"\"\"\n-    base = backend_base or os.environ.get(\"NAUTILUS_BACKEND_BASE\")\n-    if not base:\n-        return None\n+    base = (backend_base or os.environ.get(\"NAUTILUS_BACKEND_BASE\")\n+            or DEFAULT_BACKEND_BASE)\n     task = evidence[\"task\"]\n     payload = {\n         \"verdict_id\": f\"g2b1-{task['reference_fix_commit'][:10]}-{evidence.get('provider', 'unknown')}\",\n",
+ "budget_exceeded": false,
+ "total_tokens": 15635,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": false,
+   "test_passed": false,
+   "usage": {
+    "prompt_tokens": 5581,
+    "completion_tokens": 280,
+    "total_tokens": 5861,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 5581,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 280,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 0,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 5581,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "apply_error",
+   "feedback_excerpt": "[attempt1 root] error: No valid patches in input (allow with \"--allow-empty\")\n"
+  },
+  {
+   "turn": 2,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 5658,
+    "completion_tokens": 4116,
+    "total_tokens": 9774,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 282,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 5376,
+      "output_tokens": 4116,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 5376,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 5658,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "add_default_backend_base_fallback",
+ "duration_s": 182.6,
+ "verdict_post_status": 200
+}

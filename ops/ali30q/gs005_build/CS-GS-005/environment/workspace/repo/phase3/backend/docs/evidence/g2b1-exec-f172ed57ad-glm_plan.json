@@ -1,0 +1,29 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "5106562a148146340ef0cfe702435a5be60fa54d",
+  "reference_fix_commit": "f172ed57ad6a921387ee5694bb99a65655a4d111",
+  "subject": "fix(p1.3b): SWE verify \u53ea\u63a5\u53d7\u771f unified diff (extract_swe_patch\u00b7\u9632 V5 annotated-block garbage-apply)",
+  "test_files": [
+   "phase3/backend/tests/test_fde_swe_verify.py"
+  ],
+  "source_files": [
+   "phase3/backend/services/fde_bench_runner.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-core"
+ },
+ "test_id": "tests/test_fde_swe_verify.py",
+ "source_rel": "services\\fde_bench_runner.py",
+ "provider": "glm_plan",
+ "test_passed": false,
+ "winning_diff": null,
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 2.1,
+ "replayed": true,
+ "verdict_post_status": 200
+}

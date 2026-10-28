@@ -1,0 +1,73 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "087b49a42f7d6858fb370eaab65ebe8009a72e85",
+  "reference_fix_commit": "724533e03be3f05bbd3afbf670722b7764c16007",
+  "subject": "fix(loop): stop Gate B after unusable source evidence",
+  "test_files": [
+   "tests/gep/test_gate_b_reuse.py"
+  ],
+  "source_files": [
+   "gep/loop_run.py"
+  ],
+  "repo_path": "C:\\Users\\chunx\\Projects\\nautilus-compass"
+ },
+ "test_id": "tests/gep/test_gate_b_reuse.py::test_gate_b_records_repair_when_a_source_action_has_no_reusable_experience",
+ "source_rel": "gep\\loop_run.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "provider_used": "chunxiao_k3",
+ "test_passed": true,
+ "winning_diff": "--- a/gep/loop_run.py\n+++ b/gep/loop_run.py\n@@ -200,8 +200,21 @@\n         registered_verifier_ids={plan.verifier_agent_id},\n     )\n     try:\n+        skip_reason: str | None = None\n         for arm in plan.arms:\n-            _execute_arm(plan, arm, out, log, action_adapter, verifier)\n+            artifact = _execute_arm(\n+                plan, arm, out, log, action_adapter, verifier, skip_reason\n+            )\n+            if (\n+                skip_reason is None\n+                and plan.schema_version == PLAN_SCHEMA_V2\n+                and arm.label == \"source\"\n+                and \"failure_reason\" not in artifact.content\n+            ):\n+                advice = artifact.content.get(\"reuse_advice\")\n+                if not isinstance(advice, str) or not advice.strip():\n+                    skip_reason = \"dependency.reuse_advice_missing\"\n     finally:\n         log.close()\n \n@@ -213,19 +226,24 @@\n     log: FlywheelEventLog,\n     action_adapter: ActionAdapter,\n     verifier: IndependentVerifier,\n-) -> None:\n+    skip_reason: str | None = None,\n+) -> ActionArtifact:\n     action_task = _action_task(plan, arm)\n-    try:\n-        advice = _advice_for_arm(plan, arm, out, log)\n-    except _DependencyUnavailable as exc:\n+    if skip_reason is not None:\n         advice = None\n-        artifact = _failure_artifact(arm, exc.reason_code, \"dependency_skip\")\n+        artifact = _failure_artifact(arm, skip_reason, \"dependency_skip\")\n     else:\n         try:\n-            artifact = action_adapter.execute(\n-                action_task, advice, out / \"artifacts\" / arm.episode_id\n-            )\n-        except ActionExecutionFailure as exc:\n-            artifact = _failure_artifact(arm, exc.reason_code, \"action_failure\")\n+            advice = _advice_for_arm(plan, arm, out, log)\n+        except _DependencyUnavailable as exc:\n+            advice = None\n+            artifact = _failure_artifact(arm, exc.reason_code, \"dependency_skip\")\n+        else:\n+            try:\n+                artifact = action_adapter.execute(\n+                    action_task, advice, out / \"artifacts\" / arm.episode_id\n+                )\n+            except ActionExecutionFailure as exc:\n+                artifact = _failure_artifact(arm, exc.reason_code, \"action_failure\")\n     if not isinstance(artifact, ActionArtifact):\n         raise LoopRunError(\"action adapter must return ActionArtifact\")\n     if artifact.episode_id != arm.episode_id:\n@@ -242,6 +260,7 @@\n     _validate_verdict(plan, arm, episode, bound_artifact, verdict)\n     verdict_event = _verdict_event(plan, arm, episode, verdict)\n     _require_accepted(log.append(verdict_event.to_mapping()), \"verdict\")\n+    return bound_artifact\n \n \n def _action_task(plan: _Plan, arm: _Arm) -> dict[str, object]:\n",
+ "budget_exceeded": false,
+ "total_tokens": 12549,
+ "turns": [
+  {
+   "turn": 1,
+   "patch_applied": true,
+   "test_passed": true,
+   "usage": {
+    "prompt_tokens": 8621,
+    "completion_tokens": 3928,
+    "total_tokens": 12549,
+    "usage_semantic": "openai",
+    "usage_source": "anthropic",
+    "billing_usage": {
+     "source": "claude_messages",
+     "semantic": "anthropic",
+     "claude_usage": {
+      "input_tokens": 8621,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 3928,
+      "claude_cache_creation_5_m_tokens": 0,
+      "claude_cache_creation_1_h_tokens": 0
+     }
+    },
+    "prompt_tokens_details": {
+     "cached_tokens": 0,
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0
+    },
+    "completion_tokens_details": {
+     "text_tokens": 0,
+     "audio_tokens": 0,
+     "image_tokens": 0,
+     "reasoning_tokens": 0
+    },
+    "input_tokens": 8621,
+    "output_tokens": 0,
+    "input_tokens_details": null,
+    "claude_cache_creation_5_m_tokens": 0,
+    "claude_cache_creation_1_h_tokens": 0
+   },
+   "feedback_kind": "applied_pass",
+   "feedback_excerpt": ""
+  }
+ ],
+ "summary_code": "skip_transfer_arms_when_source_lacks_reuse_advice",
+ "duration_s": 1921.8,
+ "verdict_post_status": 200
+}

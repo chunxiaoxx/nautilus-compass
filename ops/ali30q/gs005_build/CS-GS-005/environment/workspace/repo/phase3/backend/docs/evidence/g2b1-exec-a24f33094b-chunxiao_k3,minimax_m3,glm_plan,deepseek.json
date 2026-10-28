@@ -1,0 +1,29 @@
+{
+ "schema_version": "g2b1-exec-run-v1",
+ "executor": "nautilus-repair-executor-001",
+ "task": {
+  "schema_version": "g2-b1-task-v1",
+  "buggy_commit": "82a6f9aff0e49094ad5e90e60f90962fdd1cd969",
+  "reference_fix_commit": "a24f33094bc68186f1039d15a033a052b125fb02",
+  "subject": "fix: harden grounded verifier evidence",
+  "test_files": [
+   "tests/test_selfproof_verifier.py"
+  ],
+  "source_files": [
+   "src/nautilusflywheel/selfproof_verifier.py"
+  ],
+  "repo_path": "C:/Users/chunx/Projects/nautilusflywheel"
+ },
+ "test_id": "tests/test_selfproof_verifier.py",
+ "source_rel": "src\\nautilusflywheel\\selfproof_verifier.py",
+ "provider": "chunxiao_k3,minimax_m3,glm_plan,deepseek",
+ "test_passed": false,
+ "skipped_reason": "fixture_broken_red",
+ "budget_exceeded": false,
+ "total_tokens": 0,
+ "turns": [],
+ "summary_code": null,
+ "duration_s": 2.7,
+ "replayed": true,
+ "verdict_post_status": 200
+}
