@@ -17,6 +17,10 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any, Iterable
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from s5_json import latest_batch, load_s5_json  # noqa: E402
+from collect_for_quickscreen import is_empty_output  # noqa: E402
+
 CANON = {
     "qwen3.8max": "qwen3.8max",
     "qwen": "qwen3.8max",
@@ -79,15 +83,44 @@ def canonicalize_model(raw: str) -> str | None:
     return None
 
 
-def load_runs(item_dir: Path) -> list[dict[str, Any]]:
+def _dedup_alias_runs(
+    staged: list[tuple[float, dict[str, Any]]],
+) -> list[tuple[float, dict[str, Any]]]:
+    """F-014: canonicalize 后同 (model, run) 只留 mtime 最新。
+
+    kimi-k3 / kimi-k3-ark(以及 glm5.3 / glm5.3-anthropic)同窗双写会把 n 翻倍,
+    把 signature max_share 撑到刚好过门(CS-303 实证: kimi n=8 假 PASS)。
+    run 缺失的记录不去重,原样保留。
+    """
+    best: dict[tuple[str, Any], tuple[float, dict[str, Any]]] = {}
+    leftovers: list[tuple[float, dict[str, Any]]] = []
+    for mt, rec in staged:
+        model = rec.get("model")
+        run = rec.get("run")
+        if not model or run is None:
+            leftovers.append((mt, rec))
+            continue
+        key = (str(model), run)
+        prev = best.get(key)
+        if prev is None or mt >= prev[0]:
+            best[key] = (mt, rec)
+    return leftovers + list(best.values())
+
+
+def load_runs(item_dir: Path, use_latest_batch: bool = True) -> list[dict[str, Any]]:
+    """F-012: 默认按模型 mtime 聚簇只取最新批,与快筛 latest_batch 同口径。
+    F-014: 别名通道先按 (canon_model, run) 去重,再聚簇。"""
     s5 = item_dir / "_s5"
     if not s5.is_dir():
         return []
-    out: list[dict[str, Any]] = []
+    staged: list[tuple[float, dict[str, Any]]] = []
     for p in sorted(s5.glob("*_result.json")):
+        d = load_s5_json(p)
+        if not d:
+            continue
         try:
-            d = json.loads(p.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError):
+            mt = p.stat().st_mtime
+        except OSError:
             continue
         model = canonicalize_model(str(d.get("model") or ""))
         fs = fail_set(d.get("ut_vector"))
@@ -100,17 +133,34 @@ def load_runs(item_dir: Path) -> list[dict[str, Any]]:
                 binary = 1 if float(score) >= 1.0 - 1e-9 else 0
             except (TypeError, ValueError):
                 binary = None
-        out.append(
-            {
-                "path": p.name,
-                "model": model,
-                "run": d.get("run"),
-                "score": score,
-                "fail_set": fs,
-                "binary": binary,
-                "usable": fs is not None,
-            }
+        else:
+            # F-016: 完结空输出记 binary=0,仍 usable=False(无失败签名)
+            if is_empty_output(d):
+                binary = 0
+        staged.append(
+            (
+                mt,
+                {
+                    "path": p.name,
+                    "model": model,
+                    "run": d.get("run"),
+                    "score": score,
+                    "fail_set": fs,
+                    "binary": binary,
+                    "usable": fs is not None,
+                    "mtime": mt,
+                },
+            )
         )
+    staged = _dedup_alias_runs(staged)
+    if not use_latest_batch:
+        return [r for _, r in staged]
+    by_model: dict[str, list[tuple[float, dict[str, Any]]]] = defaultdict(list)
+    for mt, rec in staged:
+        by_model[rec["model"] or "_unknown"].append((mt, rec))
+    out: list[dict[str, Any]] = []
+    for files in by_model.values():
+        out.extend(rec for _, rec in latest_batch(files))
     return out
 
 
@@ -169,7 +219,15 @@ def signature_gates(runs: list[dict[str, Any]]) -> dict[str, Any]:
 
     if intra_mean is None or cross_mean is None:
         ratio, ratio_status = None, "UNVERIFIED"
-        ratio_reason = "跨模型或同模型对数不足,Jaccard 比不可算"
+        models_with_fail = sorted(m for m, ss in by_model.items() if ss)
+        if len(models_with_fail) == 1:
+            ratio_reason = (
+                f"仅{models_with_fail[0]}有非全过轮,跨模型 Jaccard 不可算"
+            )
+        elif intra_mean is None:
+            ratio_reason = "同模型失败轮<2,Jaccard 比不可算"
+        else:
+            ratio_reason = "跨模型对数不足,Jaccard 比不可算"
     elif intra_mean < 1e-12:
         if cross_mean > 0:
             ratio, ratio_status, ratio_reason = float("inf"), "PASS", "同模型距离≈0且跨模型>0"
@@ -252,6 +310,61 @@ def sota_gap_gate(
     }
 
 
+def mean_gradient_gate(item_dir: Path) -> dict[str, Any]:
+    """22811 主门(2026-10-28 甲方判据实质变更):平均分数(UT通过率)梯度。
+
+    SOTA 侧均分 − 国内侧均分 ≥ 15pp 才达标;passrate 二值梯度降为并列
+    观察列(通报要求 passrate/均分两列都要有梯度,门值见 sota_gap_gate)。
+    均分口径 = score(即该轮 UT 通过率),取模型全部 run 均值。
+    """
+    per_model = defaultdict(list)
+    s5 = Path(item_dir) / "_s5"
+    for p in sorted(s5.glob("*_result.json")):
+        try:
+            d = json.load(open(p))
+        except Exception:
+            continue
+        m = canonicalize_model(d.get("model", ""))
+        if not m:
+            continue
+        sc = d.get("score")
+        uv = d.get("ut_vector") or {}
+        if sc is None:
+            if not uv:
+                continue
+            sc = sum(int(v) for v in uv.values()) / len(uv)
+        per_model[m].append(float(sc))
+    dom = per_model.get("qwen3.8max", [])
+    sota = [x for m in SOTA for x in per_model.get(m, [])]
+    if not dom or not sota:
+        return {
+            "status": "UNVERIFIED",
+            "gap": None,
+            "dom_mean": None,
+            "sota_mean": None,
+            "reason": "qwen 或 SOTA 侧均分数据缺腿",
+        }
+    dom_mean, sota_mean = sum(dom) / len(dom), sum(sota) / len(sota)
+    gap = sota_mean - dom_mean
+    ok = gap >= 0.15
+    dom_all = [x for m in DOMESTIC for x in per_model.get(m, [])]
+    dom_all_mean = sum(dom_all) / len(dom_all) if dom_all else None
+    per_model_means = {
+        m: round(sum(v) / len(v), 4) for m, v in sorted(per_model.items()) if v
+    }
+    return {
+        "status": "PASS" if ok else "FAIL",
+        "gap": round(gap, 4),
+        "dom_mean": round(dom_mean, 4),
+        "sota_mean": round(sota_mean, 4),
+        "dom_all_mean": round(dom_all_mean, 4) if dom_all_mean is not None else None,
+        "per_model_means": per_model_means,
+        "reason": ""
+        if ok
+        else f"均分梯度(qwen vs SOTA)={gap:.1%} 未达 ≥15pp 主门(22811,甲方 507 判例同口径)",
+    }
+
+
 def evaluate(item_dir: Path) -> dict[str, Any]:
     runs = load_runs(item_dir)
     prs = {m: binary_passrate(runs, m) for m in MODELS}
@@ -262,12 +375,15 @@ def evaluate(item_dir: Path) -> dict[str, Any]:
         "n_usable_vectors": sum(1 for r in runs if r["usable"]),
         "binary_passrate": {m: {"passrate": pr, "n": n} for m, (pr, n) in prs.items()},
         "qwen_point": qwen_point_gate(qwen_pr, qwen_n),
+        # 主门(22811):均分梯度 ≥15pp;sota_gap 降为 passrate 并列观察列
+        "mean_gradient": mean_gradient_gate(item_dir),
         "sota_gap": sota_gap_gate(
             qwen_pr, {m: prs[m] for m in ("opus5.5", "gpt-6-astra")}
         ),
         "signature": signature_gates(runs),
     }
     parts = [
+        report["mean_gradient"]["status"],
         report["qwen_point"]["status"],
         report["sota_gap"]["status"],
         report["signature"]["status"],

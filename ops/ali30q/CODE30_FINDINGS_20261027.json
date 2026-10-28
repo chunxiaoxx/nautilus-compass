@@ -1,0 +1,55 @@
+{
+  "note": "code30 缺陷台账 findings 段(拟)——2026-10-27 compass 复算产出,拟并入 org_coordination_code30.json;修复后销号",
+  "findings": {
+    "F-001": {
+      "finding": "坑版被金标覆盖:items 侧 workspace 即修复态,题目零区分度",
+      "对象": "CS-507(实锤)+同批生成题(排查中)",
+      "发现框": "flywheel(函21165 提请 hash 锚定门) / compass(10-27 复算独立确认)",
+      "证据": "坑版==solution 同 hash 7587a957;golden.patch 坑版前像锚 e144e41≠现坑版;qwen 5run 均值 0.952 实为超档,终表 50% 系二值化噪声",
+      "修复": "从 patch 前像/git 历史恢复真坑版,或下架;hash 锚定门(21165)落地+出厂门 G2 实测兜底",
+      "状态": "OPEN"
+    },
+    "F-002": {
+      "finding": "UT 相对路径 open() 恒挂(FileNotFoundError),与坑版/金标无关",
+      "对象": "CS-511 tests/test_cs511.py:114(open 相对题根,文件实在 workspace)",
+      "发现框": "compass(10-27 复算,v5 原版实跑复现,非副本效应)",
+      "修复": "UT 改按 pythonpath 读 workspace 或 conftest chdir→金标自检过→qwen 重跑",
+      "状态": "OPEN"
+    },
+    "F-003": {
+      "finding": "读数过期:tests 10-27 00:30 改版后 qwen 未重跑,终表'50%(1,0)'系 10-25 23:06 旧判据产物",
+      "对象": "CS-511(实锤);CS-513 的 qwen 读数同为旧 tests 版(结构判据已过,读数需重跑定谳)",
+      "发现框": "compass",
+      "修复": "读数记录 tests 指纹,指纹不符自动失效;最小重跑批=CS-513×2run+修复后 507/511",
+      "状态": "OPEN"
+    },
+    "F-004": {
+      "finding": "ut_index 批量空→gating 一票否决机制空转(对比 CS-002 有 27 条完整索引)",
+      "对象": "CS-507/511/513 抽测全空,5xx 批疑似普遍",
+      "发现框": "compass",
+      "修复": "出厂门 G10 硬拦(ut_index 非空+gating 名在 tests 中存在)",
+      "状态": "OPEN"
+    },
+    "F-005": {
+      "finding": "gold_check 子目录 swap 静默跳过:金标自检退化为坑版自检",
+      "对象": "v5 tools/gold_check.py(CS-513 被误报 FAIL,实为 1.0)",
+      "发现框": "compass",
+      "修复": "加 basename fallback+swap 0 件时 WARN",
+      "状态": "OPEN"
+    },
+    "F-006": {
+      "finding": "CS-007 交付包缺 counterexamples 一件",
+      "对象": "CS-007(四包中唯一缺项)",
+      "发现框": "flywheel(R328b 四检)",
+      "修复": "补件后再入发队列",
+      "状态": "OPEN"
+    },
+    "CLOSED-001": {
+      "finding": "651M 嵌仓构建产物误入 git 跟踪",
+      "发现框": "flywheel(10-27 13:40 自纠,改 tar 走 NAS)",
+      "状态": "CLOSED(2026-10-27)"
+    }
+  },
+  "出厂门v2": "compass ops/ali30q/factory_gate.py 已实装 G2(坑版实跑必须挂)/G10(ut_index)/G11(读数时效)/G12(qwen均值>0.85超档),三题实弹验证拦截✓——建议施工端与裁定端出包前必跑",
+  "详情坐标": "compass 仓 ops/ali30q/RECOMPUTE_CS507_511_513_20261027.md(预注册判据档+复算报告)"
+}

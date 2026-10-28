@@ -6,12 +6,14 @@
 - 存在文件 runtime/loop/STOP(用户令停)
 - 本轮已是 runtime/loop/state.json 里 round 计数 > 200
 
-## 每轮固定动作(值守三渠道+探活)
+## 每轮固定动作(值守渠道+探活·2026-10-27 扩容版)
 
 1. **平台信箱**:`python scripts/platform_mail.py check --to compass` 有未读则逐封处理(需行动的按函执行,通报类 ack);
-2. **Gmail**:有未读商务函(非通知/营销)按判读岗口径回函;
-3. **本地 daemon 探活**:`python -c "import socket;s=socket.socket();s.settimeout(5);s.connect(('127.0.0.1',9876));print('ok')"` 失败则 `bash /Users/chunxiao.wang/.claude/plugins/nautilus-compass/daemon_start.sh`;
-4. **主件队列**:读 runtime/loop/queue.md 顶部第一个未完成任务,能自主完成的执行之(产出留痕到对应 docs/ 目录);不能自主完成的(需用户/外部输入)跳过并记一行原因。
+2. **Gmail(先探活再处理)**:`python3 -c "import json,urllib.request;at=open('$HOME/.gmail-mcp/access_token.txt').read();r=json.load(urllib.request.urlopen(urllib.request.Request('https://gmail.googleapis.com/gmail/v1/users/me/labels/INBOX',headers={'Authorization':'Bearer '+at}),timeout=10));print('unread:',r.get('threadsUnread'))"`——失败则先试刷 access_token(`~/.gmail-mcp/reauth.py` 候用户,或报 BLOCKED_ON_USER 不装活);活则查 `is:unread newer_than:7d -from:noreply -category:(social promotions)` 未读商务函,按判读岗口径回函;
+3. **GitHub**:`gh search issues --mention chunxiaoxx --sort updated --limit 5` + `gh api notifications`——外部邀请/提问按函处理(创世十家沉默件不追);
+4. **dev.to**:`curl -s -H "api-key: $(grep -oE '=.*' ~/.claude/.cache/devto_api_key.env | head -1 | tr -d '=\"')" "https://dev.to/api/articles/me/all?per_page=30"` 汇总 comments_count>0 的文,逐条对照已有回复,新增未回评论按文补答(注意:API 无发评论端点,回复走文内 Addendum/PS 追加,PATCH 必带浏览器 UA 否则 403);
+5. **本地 daemon 探活**:`python -c "import socket;s=socket.socket();s.settimeout(5);s.connect(('127.0.0.1',9876));print('ok')"` 失败则 `bash /Users/chunxiao.wang/.claude/plugins/nautilus-compass/daemon_start.sh`;另 `bash scripts/mcp_watchdog.sh`(8097/域名双探,异常自愈);
+6. **主件队列**:读 runtime/loop/queue.md 顶部第一个未完成任务,能自主完成的执行之(产出留痕到对应 docs/ 目录);不能自主完成的(需用户/外部输入)跳过并记一行原因。
 
 ## 每轮留痕(必须)
 
@@ -41,3 +43,9 @@
 - 渠道恢复: 中转站(api.chunxiao.wang)探活恢复 200 → 跑批器自动扩 5 渠道,无需干预
 - 信箱: v5/platform 新令(发卷/审计/话术审查)按 SLA 回;每轮 COLLAB_BOARD append 一行矩阵进度
 - 交付锚: B批5题矩阵 10/30 18:00;话术(APPROVE-WITH-EDITS 已回)候矩阵实证后发 feishu
+
+### 5. 管道刷新(原 prod-sync-loop 职责并入 · 每轮必做)
+- `python3 ops/ali30q/collect_for_quickscreen.py --v5 --scratch > /tmp/qs.json` && `python3 ~/Projects/nautilusflywheel/scripts/quickscreen_verdict.py < /tmp/qs.json`(快筛判定一行入 rounds.log);
+- `python3 ops/ali30q/pipeline_report.py`(刷新 v5 runtime/pipeline_state/report.md 各框消费位);
+- `bash scripts/pipeline_state_sync.sh`(qs.json 落 v5 仓共享面);
+- 生产队列(runtime/production_queue.md)只读——施工状态归 bait-loop 专管。

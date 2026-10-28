@@ -1,0 +1,277 @@
+schema_version = "1.3"
+
+[[artifacts]]
+source = "environment/workspace/repo"
+destination = "/workspace/repo"
+
+[task]
+name = "guoshu/codesense-cs-003"
+description = "Code Sense · 星历时管精度(单 JD 越界·改一查十)+批量历元聚合层(CAT-11)· bug-fix 型单轮语义推理"
+
+[[task.authors]]
+name = "上海国曙智能"
+
+[metadata]
+domain = "科学计算与数据处理"
+task_type = "bug-fix"
+language = "python"
+difficulty = "medium"
+knowledge_path = "计算产品/科学计算与数据处理/时间精度/单JD越界与聚合层"
+knowledge_l0 = "计算产品"
+knowledge_l1 = "科学计算与数据处理"
+knowledge_l2 = "时间精度"
+knowledge_l3 = "单JD越界与聚合层"
+tags = ["时间精度", "JD浮点", "微秒", "聚合层", "空集口径"]
+
+[[metadata.badpatterns.items]]
+name = "单 JD 浮点越持久化/跨模块边界(OBS-772 同类点漏修)"
+ut = ["test_ingest_lossless", "test_predict_window_lossless", "test_chain_full_lossless"]
+gating = true
+
+[[metadata.badpatterns.items]]
+name = "聚合层静默用单 JD 均值/空集占位历元(CAT-11 第二层)"
+ut = ["test_catalog_mean_lossless", "test_catalog_empty_not_valid", "test_catalog_export_no_float_jd"]
+gating = true
+
+[[metadata.ut_index]]
+ut_name = "test_predict_window_lossless"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = false
+evidence_required = "窗口起点微秒不丢"
+
+[[metadata.ut_index]]
+ut_name = "test_predict_window_value_correct"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = false
+evidence_required = "轨道外推数值正确"
+
+[[metadata.ut_index]]
+ut_name = "test_predict_multiple_orbits_no_amplification"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = false
+evidence_required = "多轨道累计不放大损失"
+
+[[metadata.ut_index]]
+ut_name = "test_predict_end_after_start"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = false
+evidence_required = "窗口终点晚于起点"
+
+[[metadata.ut_index]]
+ut_name = "test_predict_two_envs_consistent"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = false
+evidence_required = "两环境一致"
+
+[[metadata.ut_index]]
+ut_name = "test_ingest_lossless"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = false
+evidence_required = "摄入微秒不丢"
+
+[[metadata.ut_index]]
+ut_name = "test_ingest_fields_preserved"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = false
+evidence_required = "摄入字段保留"
+
+[[metadata.ut_index]]
+ut_name = "test_ingest_100ns_edge"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = false
+evidence_required = "0.1μs 边摄入"
+
+[[metadata.ut_index]]
+ut_name = "test_ingest_json_roundtrip_lossless"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = false
+evidence_required = "json 往返无损"
+
+[[metadata.ut_index]]
+ut_name = "test_ingest_two_envs_consistent"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = false
+evidence_required = "摄入两环境一致"
+
+[[metadata.ut_index]]
+ut_name = "test_store_roundtrip_lossless"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = false
+evidence_required = "落盘往返无损"
+
+[[metadata.ut_index]]
+ut_name = "test_store_keeps_fields"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = false
+evidence_required = "落盘字段保留"
+
+[[metadata.ut_index]]
+ut_name = "test_format_stays_compliant"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = false
+evidence_required = "format 对照合规"
+
+[[metadata.ut_index]]
+ut_name = "test_chain_full_lossless"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = true
+evidence_required = "端到端链路无损一票否决"
+
+[[metadata.ut_index]]
+ut_name = "test_chain_microsecond_edge"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = false
+evidence_required = "微秒进位边全链"
+
+[[metadata.ut_index]]
+ut_name = "test_ingest_precision7_roundtrip"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = false
+evidence_required = "高精度字符串摄入"
+
+[[metadata.ut_index]]
+ut_name = "test_format_preserves_microseconds"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = false
+evidence_required = "render 含微秒位"
+
+[[metadata.ut_index]]
+ut_name = "test_predict_iso_output_microseconds"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = false
+evidence_required = "对外 ISO 含微秒"
+
+[[metadata.ut_index]]
+ut_name = "test_ingest_scale_stays_utc"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = false
+evidence_required = "时基保持 UTC"
+
+[[metadata.ut_index]]
+ut_name = "test_store_two_entries_independent"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = false
+evidence_required = "两条落盘独立"
+
+[[metadata.ut_index]]
+ut_name = "test_chain_microsecond_edge_day_rollover"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = false
+evidence_required = "跨日 0.1μs 边"
+
+[[metadata.ut_index]]
+ut_name = "test_catalog_mean_lossless"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = true
+evidence_required = "批量均值历元微秒无损"
+
+[[metadata.ut_index]]
+ut_name = "test_catalog_empty_not_valid"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = true
+evidence_required = "空聚合不得报有效历元"
+
+[[metadata.ut_index]]
+ut_name = "test_catalog_export_no_float_jd"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = true
+evidence_required = "汇总落盘不得含裸浮点 JD"
+
+[[metadata.ut_index]]
+ut_name = "test_catalog_span_lossless"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = false
+evidence_required = "微秒级跨度无损"
+
+[[metadata.ut_index]]
+ut_name = "test_catalog_mean_two_times_midpoint"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = false
+evidence_required = "日级均值中点功能正确"
+
+[[metadata.ut_index]]
+ut_name = "test_catalog_missing_not_skipped"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = false
+evidence_required = "缺时间戳不得静默跳过"

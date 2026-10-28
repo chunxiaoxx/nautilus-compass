@@ -17,7 +17,10 @@ def main(item_dir):
     # 判分读数全量
     results = {}
     for f in sorted(item.glob('_s5/*_run[0-3]_result.json')):
-        d = json.load(open(f))
+        try:
+            d = json.load(open(f))
+        except Exception:
+            continue          # 坏JSON跳过(F-008 同款:破损读数不进证据包,不炸打包器)
         if d.get('score') is not None:
             results[f.stem] = {'score': d['score'], 'applied': d.get('applied_files'),
                                'elapsed': d.get('elapsed_s'), 'ut_vector': d.get('ut_vector')}

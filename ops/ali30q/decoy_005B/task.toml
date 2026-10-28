@@ -1,0 +1,112 @@
+schema_version = "1.3"
+[[artifacts]]
+source = "environment/workspace/repo"
+destination = "/workspace/repo"
+
+[task]
+name = "guoshu/codesense-cs-005b"
+description = "Code Sense · 抽样审计联审聚合层(短分片N/A借口+切分合并未贯穿)· bug-fix 型单轮语义推理"
+
+[[task.authors]]
+name = "上海国曙智能"
+
+[metadata]
+domain = "后端接口与业务逻辑"
+task_type = "bug-fix"
+language = "python"
+difficulty = "medium"
+knowledge_path = "通用软件开发/后端接口与业务逻辑/接口语义/等价关系作用域"
+knowledge_l0 = "通用软件开发"
+knowledge_l1 = "后端接口与业务逻辑"
+knowledge_l2 = "接口语义"
+knowledge_l3 = "等价关系作用域"
+tags = ["抽样审计", "切分合并", "联审聚合", "统计口径", "真实案例"]
+id = "CS-005B"
+title = "对账抽样审计联审聚合核验"
+objective = "考察模型能否把 audit_policy §4 切分合并与 §5 权重规范化贯穿到联审聚合层;识别短分片 N/A 跳过与空集当通过的半错辩护"
+focus_points = ["①执行语义与状态追踪", "④语言/运行时语义边界", "⑦表述准确性与不过度声明"]
+
+[[metadata.badpatterns.items]]
+name = "联审聚合·短分片当N/A静默跳过(漏计敞口)"
+ut = ["test_short_shard_exposure_included", "test_empty_campaign_not_ok", "test_sample_len_equals_k"]
+gating = true
+
+[[metadata.badpatterns.items]]
+name = "联审聚合·分片 sum 相加冒充整单 fsum(§4 切分合并未贯穿)"
+ut = ["test_split_merge_matches_whole_fsum"]
+gating = false
+
+[[metadata.ut_index]]
+ut_name = "test_short_shard_exposure_included"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = true
+evidence_required = "短分片金额必须并入全局敞口(N/A 跳过即挂)"
+
+[[metadata.ut_index]]
+ut_name = "test_empty_campaign_not_ok"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = true
+evidence_required = "空联审不得回 ok=True(空集≠审过)"
+
+[[metadata.ut_index]]
+ut_name = "test_sample_len_equals_k"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = true
+evidence_required = "并集抽一次样本长度=k,不是 k×分片数"
+
+[[metadata.ut_index]]
+ut_name = "test_split_merge_matches_whole_fsum"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = false
+evidence_required = "切分合并敞口等于整单 math.fsum"
+
+[[metadata.ut_index]]
+ut_name = "test_two_full_shards_ok"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = false
+evidence_required = "两份都够 k 条时 ok=True(功能正确性)"
+
+[[metadata.ut_index]]
+ut_name = "test_sample_ids_subset_of_union"
+turn = 1
+dimension = "推理与归因"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = false
+evidence_required = "样本 id 属于并集"
+
+[[metadata.ut_index]]
+ut_name = "test_campaign_reproducible"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = false
+evidence_required = "同参数重跑逐位一致"
+
+[[metadata.ut_index]]
+ut_name = "test_detail_reports_ratio"
+turn = 1
+dimension = "推理与归因"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = false
+evidence_required = "detail 含已执行/总分片比例"
+
+[verification]
+test_is_sufficient = true

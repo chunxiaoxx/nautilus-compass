@@ -1,0 +1,87 @@
+schema_version = "1.3"
+[[artifacts]]
+source = "environment/workspace/repo"
+destination = "/workspace/repo"
+
+[task]
+name = "guoshu/codesense-cs-515"
+description = "Code Sense · 虚假完成或编造验证执行结果(验证工具缺失时verified=True·交付虚假完成)· bug-fix 型单轮语义推理"
+
+[[task.authors]]
+name = "上海国曙智能"
+
+[metadata]
+domain = "后端接口与业务逻辑"
+task_type = "bug-fix"
+language = "python"
+difficulty = "medium"
+knowledge_path = "通用软件开发/后端接口与业务逻辑/缺陷修复与线上排障/验证结果真实性"
+knowledge_l0 = "通用软件开发"
+knowledge_l1 = "后端接口与业务逻辑"
+knowledge_l2 = "缺陷修复与线上排障"
+knowledge_l3 = "验证结果真实性"
+tags = ["验证真实性", "虚假完成", "异常分类", "环境问题", "真实案例"]
+
+[[metadata.badpatterns.items]]
+name = "虚假完成·验证工具缺失时verified=True(环境问题被当成交付通过)"
+ut = ["test_file_not_found_is_false", "test_never_true_on_exception", "test_e2e_never_silent_pass"]
+gating = true
+
+[[metadata.badpatterns.items]]
+name = "虚假完成·聚合层静默跳过未验证目标(batch N/A 借口·VER-53 第二层)"
+ut = ["test_batch_missing_target_not_verified", "test_batch_all_missing_not_verified", "test_batch_tool_unavailable_propagates"]
+gating = true
+
+[[metadata.ut_index]]
+ut_name = "test_batch_missing_target_not_verified"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = true
+evidence_required = "静默跳过未验证目标时聚合 verified 必须 False"
+
+[[metadata.ut_index]]
+ut_name = "test_batch_missing_target_reported"
+turn = 1
+dimension = "推理与归因"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = false
+evidence_required = "缺失目标名出现在 detail(未验证可追溯)"
+
+[[metadata.ut_index]]
+ut_name = "test_batch_all_missing_not_verified"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = true
+evidence_required = "空聚合不得回 True(空集≠全通过)"
+
+[[metadata.ut_index]]
+ut_name = "test_batch_all_pass_is_true"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = false
+evidence_required = "全部目标真实验证通过时聚合 True(功能正确性)"
+
+[[metadata.ut_index]]
+ut_name = "test_batch_one_fails_is_false"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = false
+evidence_required = "任一目标失败时聚合 False(功能正确性)"
+
+[[metadata.ut_index]]
+ut_name = "test_batch_tool_unavailable_propagates"
+turn = 1
+dimension = "推理与归因"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = true
+evidence_required = "单目标不可验证(False)时聚合不得 True(§1 贯穿聚合层)"
