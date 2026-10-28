@@ -2,7 +2,7 @@
 """合规元数据填充器:从题面内容提取+补甲方 1012 完整字段
 用法: python3 fill_metadata.py items/CS-NNN [--domain D01.1] [--trap-type 语义]
 """
-import sys, re
+import sys
 from pathlib import Path
 
 ITEMS = Path('/Users/chunxiao.wang/Projects/nautilus-v5/.claude/worktrees/codesense-a-fix/codesense/items')

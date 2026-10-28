@@ -3,7 +3,7 @@
 从 1336 jsonl 提取真实对话文本,打会话等级标,512-token 级分块,输出 blocks.jsonl
 判据: PREREG_DEEP_MEMORY_PILOT_20261023.md
 """
-import json, glob, os, re, hashlib, sys
+import json, glob, os, hashlib
 
 P = os.path.expanduser('~/.claude/projects/-Users-chunxiao-wang-Projects-nautilus-compass')
 OUT = os.path.join(os.path.dirname(__file__), 'blocks_compass.jsonl')

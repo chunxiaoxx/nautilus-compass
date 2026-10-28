@@ -8,7 +8,7 @@
 数据源: v5 items/ + scratch 改造件(515B/509B/004B)的 qwen/opus 读数
 输出: 逐题判定+可交清单(按均值/二值化/opus三门),透明列出去退化条件
 """
-import argparse, glob, json
+import argparse, json
 from pathlib import Path
 from collections import defaultdict
 

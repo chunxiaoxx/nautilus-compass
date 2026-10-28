@@ -4,7 +4,7 @@
 产出: deep_memory_<框名>.db + blocks_<框名>.jsonl
 嵌入失败可重跑(跳过库中已有 id)。
 """
-import json, glob, os, hashlib, sqlite3, time, sys, argparse, urllib.request
+import json, glob, os, hashlib, sqlite3, time, argparse, urllib.request
 
 def session_text(path):
     msgs, user_real = [], 0

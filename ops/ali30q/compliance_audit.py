@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """30 题合规矩阵:对照 ALI_REQUIREMENTS_SPEC R4/R5/R6 机器可查项逐题打勾"""
-import json, re, glob
+import re
 from pathlib import Path
 ITEMS = Path.home()/'Projects/nautilus-v5/.claude/worktrees/codesense-a-fix/codesense/items'
 print(f'{"题":8}{"R4领域标签":12}{"R5甲方badpattern":16}{"R6判分读数":10}金标')

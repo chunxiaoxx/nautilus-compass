@@ -16,7 +16,7 @@ from pathlib import Path
 import torch
 
 if not hasattr(torch, "float8_e8m0fnu"):
-    torch.float8_e8m0fnu = torch.bfloat16  # noqa: torch2.6 补丁(peft/transformers import 期)
+    torch.float8_e8m0fnu = torch.bfloat16  # torch2.6 补丁(peft/transformers import 期)
 
 import random
 

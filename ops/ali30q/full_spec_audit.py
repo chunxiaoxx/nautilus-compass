@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """甲方 1012 完整规格逐题审计(A-F 六节 40+ 条目)——判据验证持续工作"""
-import os, re, json, sys
+import re, json
 from pathlib import Path
 
 I = Path('/Users/chunxiao.wang/Projects/nautilus-v5/.claude/worktrees/codesense-a-fix/codesense/items')

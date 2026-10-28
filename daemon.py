@@ -18,6 +18,7 @@ import hashlib
 import hmac
 import json
 import os
+from pathlib import Path  # R176 · 前置:25 行 daemon_env 加载在原 61 行 import 之前,曾靠 except 吞 NameError 静默失效
 
 # R538 · 2026-10-14 · 唯一配置源:无论哪个拉起源(hook/watchdog/手动/何种解释器)
 # 启动本 daemon,env 统一从 .cache/daemon_env 读取(本地不跑 BGE,嵌入走 A100 隧道)
@@ -58,7 +59,6 @@ import threading
 import time
 from collections import deque as _deque
 from concurrent.futures import ThreadPoolExecutor
-from pathlib import Path
 
 # v3.0.2 · Stage1a /status endpoint (ported from cloud /opt fork 2026-08-25 to
 # end the repo-vs-/opt daemon divergence; psutil optional so local Windows

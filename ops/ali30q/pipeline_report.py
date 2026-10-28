@@ -7,7 +7,7 @@
   2. 排产看板: 甲方 badpattern 配额 vs 现有候选 缺口矩阵 + 各题卡点 + 工时建议
 落盘: v5 仓 codesense/runtime/pipeline_state/report.md(供各框循环消费)
 """
-import json, subprocess, sys, time
+import json, subprocess, sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))

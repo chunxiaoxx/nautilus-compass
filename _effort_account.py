@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """投入分布证据级对账:git log 全量 commit 按六线(+G)分类。
 只读;输出 月×线矩阵 + B线完整清单 + 未归类清单。口径见脚本内规则表。"""
-import subprocess, json, re
+import subprocess, re
 from collections import Counter, defaultdict
 
 out = subprocess.run(

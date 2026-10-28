@@ -7,7 +7,7 @@ import gzip
 import os
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import datetime
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 HOME = os.path.expanduser("~")

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """deep_memory 试点 · 步骤2+3:嵌入(8400 HTTP)+ sqlite-vec 入库"""
-import json, os, sqlite3, time, sys
+import json, os, sqlite3, time
 import sqlite_vec
 
 BASE = os.path.dirname(__file__)

@@ -2,7 +2,7 @@
 """从 _s5 判分结果自动提取真实答卷片段 → tests/assets/(甲方 §2.6 model_failure_modes)
 用法: python3 extract_assets.py [items_root]
 """
-import json, os, shutil, sys
+import json, shutil, sys
 from pathlib import Path
 
 I = Path(sys.argv[1] if len(sys.argv) > 1 else 

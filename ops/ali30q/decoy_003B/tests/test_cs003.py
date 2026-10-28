@@ -6,12 +6,10 @@
 Time 对象传递皆可·等价门)。gating: test_chain_full_lossless。
 """
 import json
-import os
 import subprocess
 import sys
 from pathlib import Path
 
-import pytest
 from astropy.time import Time
 import astropy.units as u
 

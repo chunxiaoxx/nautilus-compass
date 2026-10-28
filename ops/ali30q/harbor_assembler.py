@@ -8,7 +8,7 @@
   python3 harbor_assembler.py <harbor.tar.gz> <topic_dir> <out_items_dir>
   python3 harbor_assembler.py --smoke <harbor.tar.gz>   # 只验载体+列缺件
 """
-import argparse, sys, tarfile, shutil
+import argparse, tarfile, shutil
 from pathlib import Path
 
 REQ_TOPIC = ["task.toml", "instruction.md", "tests", "solution", "pytest.ini", "conftest.py"]

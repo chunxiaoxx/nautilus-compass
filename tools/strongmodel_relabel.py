@@ -14,7 +14,6 @@ import re
 import time
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
-from pathlib import Path
 
 PROVIDERS = {
     "minimax": ("https://api.minimaxi.com/v1/chat/completions", "MiniMax-M3", "MINIMAX"),

@@ -3,7 +3,7 @@
 判据:SEMANTIC_COMPACT_PREREG_20261024.md J1-J4
 产出:docs/ledgers/MAIL_LEDGER_raw.md(台账行)+ 高价值函收录标记
 """
-import os, re, json, glob, time, urllib.request
+import os, json, glob, time, urllib.request
 
 BASE = os.environ.get('ANTHROPIC_BASE_URL', '').rstrip('/')
 KEY = os.environ.get('ANTHROPIC_AUTH_TOKEN') or ''

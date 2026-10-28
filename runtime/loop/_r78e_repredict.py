@@ -4,7 +4,7 @@ import json
 import torch
 
 if not hasattr(torch, "float8_e8m0fnu"):
-    torch.float8_e8m0fnu = torch.bfloat16  # noqa: transformers5.x/torch2.6 补丁
+    torch.float8_e8m0fnu = torch.bfloat16  # transformers5.x/torch2.6 补丁
 
 import importlib.util
 import sys

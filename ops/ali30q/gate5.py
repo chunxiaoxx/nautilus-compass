@@ -13,7 +13,7 @@
 
 用法: python3 gate5.py <item_dir>  → 逐条判定+出局原因
 """
-import json, glob, sys
+import json, sys
 from pathlib import Path
 
 MODELS = ["qwen3.8max", "kimi-k3", "glm5.3", "opus5.5", "gpt-6-astra"]

@@ -6,7 +6,6 @@ import sys
 from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent / "environment" / "workspace" / "repo"
 sys.path.insert(0, str(REPO))
-import pytest
 from unittest.mock import patch, MagicMock
 from verifier.runner import run_verification
 

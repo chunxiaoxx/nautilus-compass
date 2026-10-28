@@ -6,7 +6,7 @@
   轮询模式: python3 s5_receiver.py --once | --watch
 产出: runtime/pipeline_s5/<task_id>/report.json (compass 签名效用验证报告)
 """
-import argparse, json, os, subprocess, sys, time, urllib.request
+import argparse, json, subprocess, time, urllib.request
 from pathlib import Path
 from datetime import datetime, timezone
 
