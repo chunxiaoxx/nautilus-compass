@@ -12,9 +12,11 @@
 - 修复 = nautilus-core commit `defb148c658e81e574c1c13bb334b38964b6c9e6`(10/4,"补缺失件",commit 正文自证上述事实)。
 - 坑版=修复前行为;金标=补件后真实接通。
 
-**半边2 [待补→施工轮考古]** — env DSN 双错(密码旧值+库名错)致 instrument 静默 skip:
+**半边2 [待补→候平台坐标]** — env DSN 双错(密码旧值+库名错)致 instrument 静默 skip:
 - 卡面坐标 `ops/send_letter.py` 当前树仅 1 处 environ(MAIL_FROM),git 史无该事故直配 commit;
-- 实物坐标(源文件+修复 commit)候平台给精确坐标或准 compass 跨仓考古;**补齐前本半边不计入坑真实判据**。
+- **考古补记(2026-10-29 R189 施工轮)**:core 仓全量 git 史 pickaxe(DSN/DATABASE_URL/password/instrument)+ v5/flywheel/compass 三仓文档全文检索 `proc/environ|密码旧值|库名错` 零命中[实测]——定谳法记录与配置修复 commit 均不在当前可达四仓;唯一近缘 commit 96d654c4e(10/7 v7-singleton-audit DSN 去密钥)系收编质量修复非事故本体;
+- **定性[推断]**:该半边事故=部署环境层配置漂移(经 /proc/environ 定谳),代码层无痕可溯,`ops/fde_dispatch_timeout_reap.py:12` 等硬编码 fallback DSN 形态为同族风险面(连接失败抛异常非静默,不构成坑面实物);
+- 维持:实物坐标候平台给精确坐标;**补齐前本半边不计入坑真实判据**,不阻塞半边1 施工(UT-3 候坐标定稿)。
 
 **坑面语义**:配置漂移的静默降级 / 降级必须可见(两层互锁:①引用缺失依赖→静默 fallback;②配置错→静默 skip。任何一层单独都"功能还在跑",合起来=降级 110 天无人知)。
 
