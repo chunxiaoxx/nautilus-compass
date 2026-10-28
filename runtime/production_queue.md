@@ -7,7 +7,7 @@
 |---|---|---|---|---|---|
 | 1 | CS-003(ephem·时区微秒域) | FAILED 超档 | ✅1.0/0.2593 | 0.963 | catalog层被看穿;时域+聚合=qwen强域 |
 | 2 | CS-005B(audit·联审聚合层) | BUILT·qwen阻塞 | ✅实测:坑版4挂(3gating全中+fsum)/金标8/8=1.0 | 无有效读数 | 32K双样本reasoning溢出(run1 814s/run2 797s,12:05与12:30两时段一致);tomllib门过;下轮试qwen3.8max-bl渠道或抬max_tokens取读数再定带 |
-| 3 | CS-008(skillapi·GOLD-PASS超档) | PENDING | 🔴G1缺口 | 1.0 | 515B模式试点;先解patch式解法验法(gold_check不支持golden.patch,10-28批finding) |
+| 3 | CS-008B(OCR批清洗入口·版式处置) | BUILT·qwen待筛 | ✅实测:坑版4挂(3gating全中+validate²放行)/金标6/6=1.0(det 0.01s) | 待筛 | 515B二层=白名单静默丢弃≠§1打回("1²3"→"13"静默变形,跨§1/§3互锁)+isdigit放行'²';tomllib门过;🔴finding:①原golden.patch错配(内容=quota_gate记账金标,与OCR题面无关,已隔离,金标以solution直写件为准)②原conftest挂repo_bak与模型面repo/割裂(改A面测B面),已单面化+repo_bak退役;管道已同步 |
 | 4 | CS-509B(三档加深) | PENDING | ✅闭合 | 1.0(强域) | 最低优先 |
 | — | CS-514 | SKIPPED | — | 强域 | 不投入 |
 | — | CS-004B | CANDIDATE | ✅1.0/0.4643 | 0.4643 | 候五模型面+裁决 |
@@ -15,7 +15,7 @@
 | — | CS-513 | DELIVERABLE | ✅ | 0.5二值 | 过筛✅ |
 
 ## 配方纪要
-- 有效(515B模式):双层互锁+policy枚举外语义+聚合层延伸
+- 有效(515B模式):双层互锁+policy枚举外语义+聚合层延伸;新实证 CS-008B:「处置纪律贯穿」型二层(policy §1 打回义务在批清洗入口缺位,输出形式合规但语义跳步)+校验函数字符类误判(isdigit≠ASCII)
 - 无效(509B模式):单层延伸+草稿辩护;qwen强域勿投:版本解析/常规异常分类/时域微秒+聚合层(CS-003B 0.963看穿)
 - 每道 stop-loss 35min;双态不过=FAILED 照标;**若 qwen 判分在途(队列标 BLOCKED),本轮 exit 0 不烧会话**
 - 🔴真值翻转(10-28 裁决22765/F-005修复实测):CS-003(0.07)/CS-004(0.21) 金标真挂=出题故障冻结;CS-005/514/515 金标真过 1.0。原版 GOLD-PASS 旧记录全部作废

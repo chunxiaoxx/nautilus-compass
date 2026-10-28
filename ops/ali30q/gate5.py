@@ -16,10 +16,10 @@
 import json, glob, sys
 from pathlib import Path
 
-MODELS = ["qwen3.8max", "kimi-k3", "glm5.3", "opus5.5", "gpt6-astra"]
+MODELS = ["qwen3.8max", "kimi-k3", "glm5.3", "opus5.5", "gpt-6-astra"]
 ALIAS = {"kimi-k3-ark": "kimi-k3", "glm5.3-anthropic": "glm5.3",
          "opus5.5-qixuw": "opus5.5", "gpt6-astra": "gpt-6-astra",
-         "gpt-6-astra": "gpt6-astra", "qwen3.8max": "qwen3.8max"}
+         "qwen3.8max": "qwen3.8max"}
 
 def canon(m):
     m = m.replace("_result", "")
@@ -72,20 +72,25 @@ def gate5(item: Path):
         r["reason"].append("③opus 0轮全过=过难(TopHard剔除)")
     elif opus_fp == 4:
         r["reason"].append("③opus 4轮全过=过简剔除")
-    # ④qwen 至少一次未全过 + 4轮平均通过率双低于 opus 与 gpt
-    q = per["qwen3.8max"]; g = per["gpt6-astra"]
-    q_avg = sum(x["pass_n"] for x in q) / (4 * q[0]["total"]) if q[0]["total"] else 0
-    g_avg = sum(x["pass_n"] for x in g) / (4 * g[0]["total"]) if g[0]["total"] else 0
-    o_avg = sum(x["pass_n"] for x in per["opus5.5"]) / (4 * per["opus5.5"][0]["total"])
+    # ④qwen 至少一次全挂为零 + 平均通过率双低于 opus 与 gpt(22924·行758:轮级口径,全对记1否则0)
+    q = per["qwen3.8max"]; g = per["gpt-6-astra"]
+    q_avg = full_pass["qwen3.8max"] / 4     # 轮级: 全过轮数/4(整题全对率)
+    g_avg = full_pass["gpt-6-astra"] / 4
+    o_avg = full_pass["opus5.5"] / 4
     some_fail = any(not x["all_pass"] for x in q)
     zero_round = any(x["pass_n"] == 0 for x in q)   # 行40: qwen 至少一次为零(全挂轮)
+    # 行35: glm/kimi 与 qwen 同等水平(国内组同档)
+    k_avg = full_pass["kimi-k3"] / 4
+    glm_avg = full_pass["glm5.3"] / 4
+    domestic_spread = max(q_avg, k_avg, glm_avg) - min(q_avg, k_avg, glm_avg)
+    r["domestic_spread_pp"] = round(domestic_spread * 100, 1)
     r["cond"]["④qwen双低+至少一轮零分"] = zero_round and q_avg < o_avg and q_avg < g_avg
     if not zero_round:
         r["reason"].append("④qwen 无全挂轮(行40:至少一次为零)")
     elif not (q_avg < o_avg and q_avg < g_avg):
         r["reason"].append(f"④qwen均 {q_avg:.3f} 未双低(opus {o_avg:.3f}/gpt {g_avg:.3f})")
-    # ⑤qwen passrate ∈ {25%,50%}
-    q_pr = sum(x["pass_n"] for x in q) / (4 * q[0]["total"])
+    # ⑤qwen passrate(轮级·行758) ∈ {25%,50%} = 全过轮数 1 或 2
+    q_pr = full_pass["qwen3.8max"] / 4
     r["qwen_passrate"] = round(q_pr, 4)
     r["cond"]["⑤qwen∈{25%,50%}"] = any(abs(q_pr - t) < 0.02 for t in (0.25, 0.50))
     if not r["cond"]["⑤qwen∈{25%,50%}"]:

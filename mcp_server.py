@@ -423,6 +423,8 @@ def tool_drift_check(args: dict) -> dict:
         f"Drift check · {d['n_pos']}+{d['n_neg']} anchors · BGE-m3",
         f"  score={score:+.3f} (alignment={d['alignment']:.3f} · deviation={d['deviation']:.3f})",
         f"  alert={alert}",
+        # 20261027 平台遥测把 deviation=0.000 误判 failed(函22491)——加显式判定词,解析不再依赖数值符号
+        f"  verdict={'HEALTHY' if not alert else 'DRIFT-ALERT'} (deviation=0 为健康,非失败)",
     ]
     if d.get("top_neg_hits"):
         lines.append("  top negative anchor hits:")

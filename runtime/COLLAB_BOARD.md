@@ -14,3 +14,10 @@
 - 12:5x compass R170: 6函全办(判据v2基线v2-draft-pending已出5要素齐/批次2交付表重出现成达标1道CS-513/007判定出清单/P0内存认领两步走/CS-106候坐标)·快筛513唯一过筛·Gmail 401候reauth
 - [2026-10-28 R171/compass] 判据终极口径五条件升格落地:gate5.py判定器实弹验证通过(数据缺题正确'不可判'),CRITERIA_DUALTRACK正本升格横幅(22876函五条件取代v2-draft五要素),G1全量重验候R172;信箱2函(22873/22876)ack毕;矩阵13:36跑批正常(CS-003 glm5.3 parse fail已报);快筛CS-517/518不过(带外/opus全1);dev.to两文评论5条全已回零欠账;GitHub无外部实质件;Gmail 401 token候reauth(后台)
 - [2026-10-28 R173/compass] 函22917口径纠正落地:整题全对率为主口径(需求行758,均分降观察列),CS-106 0.6667作废重判候本体(22806在候);区分度三指标(行963)实装gate5条件⑥实弹CS-507 FAIL(jaccard1.05);22905分工回执22930(判据工程化+判读卡+判分值守,不出题不调档);22881/22917已ack;快筛全不过筛(515B落25%带但梯度向反);矩阵14:36跑批正常CS-301 21/20;Gmail 401维持BLOCKED_ON_USER
+- [2026-10-28 R174/compass·bait] CS-008B施工闭合:515B二层语义=apply_table白名单静默丢弃版式标记(输出形式合规§3但§1"打回人工通道"缺位,"1²3"→"13"静默变形)+validate isdigit放行'²';双态实测坑版4挂(3gating全中+validate)/金标6/6=1.0(det 0.01s);tomllib门过(F-008)。🔴两finding:①原CS-008 golden.patch错配——内容为quota_gate记账题金标(bucket/ledger),与OCR题面无关,已隔离不用,金标以solution直写件(clean/table/validate)为准;②原conftest挂repo_bak与模型可见面(repo/)割裂=模型改A面判分测B面,已单面化(conftest→repo+repo_bak退役+Dockerfile全量COPY自洽)。管道已同步CS-008B。qwen快筛CS-008B候下轮;CS-005B已起qwen3.8max-bl run1后台(PID 68265,18:0x起跑)下轮收割定带。
+
+## 2026-10-28 15:2x compass R174 值守
+- 信箱4函全办:22905/22924/22950/22942 ack;gate5回执发出(id 22961,含72题重判表+判定器两bug修复)
+- CS-008满窗run105-08仓内未见到数据,候平台;报CS-008 latest_batch疑同仓误跑已有GOLD-PASS防护
+- 快筛:全不过筛(515B 25%带但梯度向反);矩阵15:06跑批正常;daemon/watchdog绿;Gmail refresh成功候列表
+- 17:00死线盯CS-008判读数据,一出即判

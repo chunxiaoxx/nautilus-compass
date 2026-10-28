@@ -32,10 +32,10 @@ opts out of prior context.
 ### Option A · Local daemon (recommended)
 
 ```bash
-git clone --branch v3.2.0 --depth 1 \
+git clone --branch v3.3.0 --depth 1 \
   https://github.com/chunxiaoxx/nautilus-compass ~/.claude/plugins/nautilus-compass
 # pinned to the audited commit — hard-fail if the tag ever moved:
-[ "$(git -C ~/.claude/plugins/nautilus-compass rev-parse HEAD)" = "344290b0bb252c4a28305d351bb18a7f177718be" ] || \
+[ "$(git -C ~/.claude/plugins/nautilus-compass rev-parse HEAD)" = "576dc777fc0674db46eba3793eedcf2992b726e6" ] || \
   { echo "commit mismatch: audited code != cloned code — DO NOT run install scripts"; exit 1; }
 bash ~/.claude/plugins/nautilus-compass/install.sh        # wires hooks for Claude Code
 bash ~/.claude/plugins/nautilus-compass/daemon_start.sh   # start BGE-m3 daemon (once per boot)
@@ -53,7 +53,7 @@ model, register hooks in `~/.claude/settings.json`, and patch each MCP
 client's config — every file is backed up before writing; uninstall = remove
 `~/.claude/plugins/nautilus-compass` and restore the backups.
 
-Also on PyPI: `pip install nautilus-compass==3.2.0` (CLI + MCP server + A2A adapter).
+Also on PyPI: `pip install nautilus-compass==3.3.0` (CLI + MCP server + A2A adapter).
 
 ### Option B · Hosted gateway (self-serve, no local model)
 
@@ -84,8 +84,8 @@ ed25519-signed receipt. Verify with two commands, stdlib only, no third-party
 deps:
 
 ```bash
-git clone --branch v3.2.0 --depth 1 https://github.com/chunxiaoxx/nautilus-compass && cd nautilus-compass
-[ "$(git rev-parse HEAD)" = "344290b0bb252c4a28305d351bb18a7f177718be" ] || { echo "commit mismatch — abort"; exit 1; }
+git clone --branch v3.3.0 --depth 1 https://github.com/chunxiaoxx/nautilus-compass && cd nautilus-compass
+[ "$(git rev-parse HEAD)" = "576dc777fc0674db46eba3793eedcf2992b726e6" ] || { echo "commit mismatch — abort"; exit 1; }
 # 1. full recompute (every claim recomputes from bytes — your receipt, not ours)
 python -m tools.verifypack verify runtime/verifypack/arma_summary/pack \
   --out /tmp/my_receipt.json
@@ -124,10 +124,10 @@ publishes contradicting numbers with the same prominence as favorable ones.
 本地(推荐):
 
 ```bash
-git clone --branch v3.2.0 --depth 1 \
+git clone --branch v3.3.0 --depth 1 \
   https://github.com/chunxiaoxx/nautilus-compass ~/.claude/plugins/nautilus-compass
 # 钉住已审计 commit——tag 若被动过则硬失败:
-[ "$(git -C ~/.claude/plugins/nautilus-compass rev-parse HEAD)" = "344290b0bb252c4a28305d351bb18a7f177718be" ] || \
+[ "$(git -C ~/.claude/plugins/nautilus-compass rev-parse HEAD)" = "576dc777fc0674db46eba3793eedcf2992b726e6" ] || \
   { echo "commit 不符:审查过的代码 != 克隆到的代码——勿跑安装脚本"; exit 1; }
 bash ~/.claude/plugins/nautilus-compass/install.sh        # Claude Code 钩子
 bash ~/.claude/plugins/nautilus-compass/daemon_start.sh   # 启动 BGE-m3 daemon(每次开机一次)
@@ -146,8 +146,8 @@ token → MCP 端点 `https://compass.nautilus.social/mcp/`(Bearer · streamable
 ### 如何验(不信自报)
 
 ```bash
-git clone --branch v3.2.0 --depth 1 https://github.com/chunxiaoxx/nautilus-compass && cd nautilus-compass
-[ "$(git rev-parse HEAD)" = "344290b0bb252c4a28305d351bb18a7f177718be" ] || { echo "commit 不符,中止"; exit 1; }
+git clone --branch v3.3.0 --depth 1 https://github.com/chunxiaoxx/nautilus-compass && cd nautilus-compass
+[ "$(git rev-parse HEAD)" = "576dc777fc0674db46eba3793eedcf2992b726e6" ] || { echo "commit 不符,中止"; exit 1; }
 # 1. 全量复算(每条声明从字节复算,产出你自己的回执)
 python -m tools.verifypack verify runtime/verifypack/arma_summary/pack \
   --out /tmp/my_receipt.json
