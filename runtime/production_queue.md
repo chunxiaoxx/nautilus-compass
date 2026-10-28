@@ -7,7 +7,7 @@
 |---|---|---|---|---|---|
 | 1 | CS-003(ephem·时区微秒域) | FAILED 超档 | ✅1.0/0.2593 | 0.963 | catalog层被看穿;时域+聚合=qwen强域 |
 | 2 | CS-005B(audit·联审聚合层) | BUILT·BLOCKED(qwen渠道面) | ✅实测:坑版4挂(3gating全中+fsum)/金标8/8=1.0 | 无有效读数(四连溢出) | R176定谳:32K抬限无效——qwen3.8max 828s/bl 807s双渠道双时段均content empty(16:38-17:07),reasoning系统性吃满,「抬max_tokens取读数」备选路堵死;候出路=非qwen渠道判带或渠道面修(候裁决);scratch=/tmp/csCS-005B重建完好可复跑,件仓内档ops/ali30q/decoy_005B |
-| 3 | CS-008B(OCR批清洗入口·版式处置) | IN_PROGRESS(10-28 R178重造起) | ✅实测留档:坑版4挂(3gating全中+validate²放行)/金标6/6=1.0(det 0.01s) | 未筛 | 515B二层=白名单静默丢弃≠§1打回("1²3"→"13"静默变形,跨§1/§3互锁)+isdigit放行'²';tomllib门过;🔴finding:①原golden.patch错配(内容=quota_gate记账金标,与OCR题面无关,已隔离,金标以solution直写件为准)②原conftest挂repo_bak与模型面repo/割裂(改A面测B面),已单面化+repo_bak退役;管道已同步;🔴10/28 R176:/tmp全灭连带件本体丢失,全盘无归档,重造需35min一轮(两层语义与双态结论在COLLAB_BOARD R174可考古) |
+| 3 | CS-008B(OCR批清洗入口·版式处置) | BUILT·BLOCKED(qwen渠道面溢出,候非qwen渠道裁决,同CS-005B) | ✅R178重造复测一致:坑版4挂(3gating全中+validate²放行)/金标6/6=1.0(det 0.00s两遍一致) | 溢出(800.0s empty,19:13-19:22·F-009) | 515B二层=白名单静默丢弃≠§1打回("1²3"→"13"静默变形,跨§1/§3互锁)+isdigit放行'²';tomllib门过;🔴finding:①原golden.patch错配(内容=quota_gate记账金标,与OCR题面无关,已隔离,金标以solution直写件为准)②原conftest挂repo_bak与模型面repo/割裂(改A面测B面),已单面化+repo_bak退役;管道已同步;🔴10/28 R176:/tmp全灭连带件本体丢失,全盘无归档,重造需35min一轮(两层语义与双态结论在COLLAB_BOARD R174可考古) |
 | 4 | CS-509B(三档加深) | FAILED(强域放弃) | ✅闭合 | 1.0(强域) | 10/28 R176终态更正:读数在案,无需再投 |
 | — | CS-514 | SKIPPED | — | 强域 | 不投入 |
 | — | CS-004B | CANDIDATE | ✅1.0/0.4643 | 0.4643 | 候五模型面+裁决 |
@@ -20,3 +20,5 @@
 - 每道 stop-loss 35min;双态不过=FAILED 照标;**若 qwen 判分在途(队列标 BLOCKED),本轮 exit 0 不烧会话**
 - 🔴真值翻转(10-28 裁决22765/F-005修复实测):CS-003(0.07)/CS-004(0.21) 金标真挂=出题故障冻结;CS-005/514/515 金标真过 1.0。原版 GOLD-PASS 旧记录全部作废
 - G1 全量批 10-28 起:判据=修复后 gold_check(非静默);账 /tmp/g1_batch_20261028.log
+
+- R178(10-28): CS-008B重造闭合,双态与R174定谳完全一致(重造=复原非漂移);qwen 32K再溢出800s空(渠道面系统性故障R176已定谳,未烧run2);件归档ops/ali30q/decoy_008B/14件+_s5溢出证据,管道已同步;scratch=/tmp/csCS-008B完好

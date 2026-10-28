@@ -1,0 +1,95 @@
+schema_version = "1.3"
+artifacts = ["/logs/artifacts"]
+
+[task]
+name = "tasks/CS-008B"
+description = "OCR数字列清洗子系统逐条核对Unicode清洗纪律,修复版式数字静默折算与白名单缺口,并贯穿批清洗入口与校验面"
+authors = [{ name = "nius" }]
+keywords = ["python", "bug-fix", "unicode", "data-cleaning", "ocr"]
+
+[metadata]
+domain = "scientific-computing"
+task_type = "bug-fix"
+language = "python"
+difficulty = "medium"
+knowledge_path = "计算产品/科学计算与数据处理/数据清洗/Unicode数字语义"
+knowledge_l0 = "计算产品"
+knowledge_l1 = "科学计算与数据处理"
+knowledge_l2 = "数据清洗"
+knowledge_l3 = "Unicode数字语义"
+tags = ["科学计算与数据处理", "数据清洗", "Unicode数字语义", "NFKC规范化", "OCR", "数据完整性"]
+
+[[metadata.ut_index]]
+ut_name = "test_gating_superscript_rejected_at_batch_entry"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = true
+evidence_required = "apply_table对版式标记(²⑧½)必须打回人工通道,静默过滤变形('1²3'→'13')即挂(§1)"
+
+[[metadata.ut_index]]
+ut_name = "test_gating_mixed_dirty_layout_no_silent_deform"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = true
+evidence_required = "版式+脏字符混合输入先打回后清洗,静默丢版式留残值即挂(§1§3)"
+
+[[metadata.ut_index]]
+ut_name = "test_gating_full_chain_fold_and_one_vote"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = true
+evidence_required = "全角折算义务(§2)+版式一票否决(§1)+幂等(§4)三语义互锁"
+
+[[metadata.ut_index]]
+ut_name = "test_validate_superscript_not_clean_digit"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = false
+evidence_required = "is_clean_digit('²')必须为False(isdigit对上标误判放行=§1违反)"
+
+[[metadata.ut_index]]
+ut_name = "test_parse_line_no_ascii_gate"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = false
+evidence_required = "行号列合法ASCII放行,含版式标记拒收"
+
+[[metadata.ut_index]]
+ut_name = "test_normalize_line_layout_raise_regression"
+turn = 1
+dimension = "答案正确性"
+criterion_necessity = "must"
+judge_type = "unit_test"
+gating = false
+evidence_required = "已修复面(normalize_line)回归锚:版式打回+全角折算不得改坏"
+
+[verifier]
+timeout_sec = 1800.0
+
+[verifier.env]
+
+[agent]
+timeout_sec = 7200.0
+
+[environment]
+network_mode = "public"
+build_timeout_sec = 600.0
+os = "linux"
+mcp_servers = []
+cpus = 2
+memory = "4g"
+storage = "10g"
+
+[environment.env]
+
+[solution.env]
