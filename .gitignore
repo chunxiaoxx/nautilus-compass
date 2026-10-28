@@ -80,3 +80,5 @@ ops/deep_memory/blocks_*.jsonl
 
 # 运行时队列散沙(蒸馏pending,626+文件不入git)
 vtf/fuel_pool/pending/
+
+runtime/scratch_*/
