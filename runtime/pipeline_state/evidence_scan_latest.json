@@ -145,11 +145,7 @@
   },
   {
    "item": "CS-007",
-   "CONFLICT": [
-    "opus5.5_run1_result.json: conflict致JSON损坏",
-    "opus5.5_run2_result.json: conflict致JSON损坏",
-    "opus5.5_run3_result.json: conflict致JSON损坏"
-   ],
+   "CONFLICT": [],
    "UTMIX": null,
    "SCOREMISMATCH": [],
    "EMPTYUT": [
@@ -158,7 +154,7 @@
     "glm5.3-anthropic_run2_result.json",
     "glm5.3-anthropic_run3_result.json"
    ],
-   "n_valid": 27
+   "n_valid": 14
   },
   {
    "item": "CS-008",
@@ -191,13 +187,6 @@
   {
    "item": "CS-010",
    "CONFLICT": [
-    "glm5.3_run0_result.json: conflict致JSON损坏",
-    "glm5.3_run1_result.json: conflict致JSON损坏",
-    "glm5.3_run2_result.json: conflict致JSON损坏",
-    "glm5.3_run3_result.json: conflict致JSON损坏",
-    "gpt-6-astra_run0_result.json: conflict致JSON损坏",
-    "gpt-6-astra_run1_result.json: conflict致JSON损坏",
-    "gpt-6-astra_run2_result.json: conflict致JSON损坏",
     "kimi-k3-ark_run0_result.json: conflict致JSON损坏",
     "kimi-k3-ark_run1_result.json: conflict致JSON损坏",
     "kimi-k3-ark_run2_result.json: conflict致JSON损坏",
@@ -217,9 +206,13 @@
     "glm5.3-anthropic_run0_result.json",
     "glm5.3-anthropic_run1_result.json",
     "glm5.3-anthropic_run2_result.json",
-    "glm5.3-anthropic_run3_result.json"
+    "glm5.3-anthropic_run3_result.json",
+    "glm5.3_run1_result.json",
+    "glm5.3_run3_result.json",
+    "gpt-6-astra_run0_result.json",
+    "gpt-6-astra_run1_result.json"
    ],
-   "n_valid": 5
+   "n_valid": 7
   },
   {
    "item": "CS-011",
