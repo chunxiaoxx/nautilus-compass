@@ -53,9 +53,11 @@ for item in $ITEMS; do
     for run in 0 1 2 3; do
       R="$CS/items/$item/_s5/${m}_run${run}_result.json"
       # 幂等:有 score(成功读数)才跳过;error 结果重跑
+      # 10/30 修不死僵尸:JSON 撞坏(S为空)此前被当作已完成永远跳过——CS-007 opus run1/2/3 实证
       if [ -f "$R" ]; then
         S=$(python3 -c "import json;d=json.load(open('$R'));print(d.get('score'))" 2>/dev/null)
-        [ "$S" != "None" ] && continue
+        if [ "$S" != "None" ] && [ -n "$S" ]; then continue; fi
+        [ -n "$S" ] || cp "$R" ~/Projects/nautilus-compass/runtime/scratch_corrupt_backup/$(basename $CS/items/$item)_${m}_run$(basename $R _result.json | sed 's/.*_run//')_$(date +%s).json 2>/dev/null
         rm -f "$R"
       fi
       echo "[$(date '+%H:%M')] $item × $m × run$run 开考" >> $LOG
