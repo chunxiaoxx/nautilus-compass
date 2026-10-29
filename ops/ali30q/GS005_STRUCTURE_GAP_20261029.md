@@ -10,7 +10,7 @@
 | # | 正本要求(行号) | GS-001 样板实测 | GS-005 现状 | 判定 |
 |---|---|---|---|---|
 | 1 | UT test_* ≥21(需求 line 210) | 23 条(ut_index 23,targets_badpattern 13) | **✅ 已补(R202 10/29):21 条(targets_badpattern 17 + focus 独立锚 4),每条 evidence_required,FM-1~4 全锚,tomllib 门过,双向实跑金 21 passed/坑 21 failed** | ✅ |
-| 2 | tests/score.py 判分入口(需求 line 612:全过=1 否则=0,逐条矩阵 JSON) | 有:沙盒→/logs/verifier/reward.txt+ut_matrix.json;本地 --local staging 模式 | 无 | ❌ |
+| 2 | tests/score.py 判分入口(需求 line 612:全过=1 否则=0,逐条矩阵 JSON) | 有:沙盒→/logs/verifier/reward.txt+ut_matrix.json;本地 --local staging 模式 | **✅ 已补(R205 10/29):移植 GS-001 双模式,本题契约适配(staging=容器同构 staging/tests+staging/workspace/repo,对 UT 的 parents[1]/workspace/repo 单候选定位;TASK_ID 钉死);双态实弹:坑版 0/21 all_pass=False exit1 / 金标 21/21 all_pass=True exit0,task=CS-GS-005[实测];矩阵落 _selfcheck_gs005/score_check/** | ✅ |
 | 3 | calibration 四件套 patch+result.md(需求 §3.1;line 682-685 双向预检) | full_score/defective/guessed/equivalent 各 patch+result(8 件) | perfect/deficient/guessed 三目录各 README 占位 | ❌ 命名/格式/件数全不符 |
 | 4 | solution/golden/ 子目录(answer.md+change_points.yaml) | 有 | 两件在 solution/ 根,无 golden/ 层 | ⚠️ 层级迁移即可 |
 | 5 | variants ≥2 功能等价实现,各过全部 UT(全图 B7/需求 line 158) | variant_a_twopass/variant_b_singlepass | 无 | ❌ |
@@ -30,8 +30,8 @@
 
 ## 补齐施工排期(候后续 bait/production 轮,每轮一项)
 
-1. **UT 3→21+**(-18):扩 UT 文件,13+ 条 targets_badpattern 对 FM,其余独立锚 focus_points(降级可见性/启动自检/配置校验/fallback 等价性证伪);每条补 evidence_required
-2. **score.py**:照抄 GS-001 双模式(沙盒 reward.txt+ut_matrix.json / 本地 --local staging),改 ut_name 映射本题
+1. ~~UT 3→21+~~(✅ R202 闭合)
+2. ~~score.py~~(✅ R205 闭合:双模式移植+双态实弹分叉[实测];沙盒分支 reward 写入与 GS-001 已过门件逐字同源未本地实弹[推断——/tests 与 /workspace/repo 为容器绝对路径,本地不污染根目录])
 3. **calibration 四件套**:perfect→full_score 改名,补 equivalent 态;各 patch+result.md(逐条打分单)
 4. **variants≥2**:helix bridge 功能等价实现 2 份,各过全部 UT
 5. **counterexamples**:反例程序+实跑日志(stdout/stderr+版本+平台)

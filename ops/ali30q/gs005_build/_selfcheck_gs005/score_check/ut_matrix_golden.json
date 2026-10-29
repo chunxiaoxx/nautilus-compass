@@ -1,0 +1,33 @@
+{
+ "passed": 21,
+ "total": 21,
+ "passrate": 1.0,
+ "all_pass": true,
+ "failed_ut": [],
+ "signature": [],
+ "per_ut": {
+  "test_ut1_bridge_degradation_must_be_structurally_visible": 1,
+  "test_ut2_consumer_side_must_not_silently_swallow": 1,
+  "test_ut3_degraded_backend_must_not_masquerade": 1,
+  "test_ut4_degradation_report_must_be_machine_readable": 1,
+  "test_ut5_report_stage_and_reason_nonempty": 1,
+  "test_ut6_degraded_flag_backend_consistency": 1,
+  "test_ut7_none_chain_never_marked_pg": 1,
+  "test_ut8_init_degradation_must_be_counted": 1,
+  "test_ut9_degradation_log_machine_discernible": 1,
+  "test_ut10_no_dsn_is_degradation_not_silence": 1,
+  "test_ut11_no_dsn_reason_discernible": 1,
+  "test_ut12_env_fallback_path_equally_visible": 1,
+  "test_ut13_degradation_count_persists_across_calls": 1,
+  "test_ut14_outcome_discernible_every_call": 1,
+  "test_ut15_degraded_outcome_never_carries_forge_products": 1,
+  "test_ut16_guard_must_predate_first_call": 1,
+  "test_ut17_report_timestamp_iso_parseable": 1,
+  "test_ut18_report_backend_matches_flag": 1,
+  "test_ut19_degradation_state_fully_introspectable": 1,
+  "test_ut20_whitespace_dsn_treated_as_missing": 1,
+  "test_ut21_degraded_outcome_deterministic": 1
+ },
+ "pytest_returncode": 0,
+ "task": "CS-GS-005"
+}
