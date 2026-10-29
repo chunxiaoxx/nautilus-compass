@@ -37,14 +37,18 @@ producer = "compass"
 calibration = "tests/calibration/{perfect,deficient,guessed}"
 source_incident = "nautilus-v5 helix_v7 bridge 5/18 起静默降级 110+ 天(修复 nautilus-core defb148c6)"
 source_commits = "v5@0293e5ccd(消费侧切段)/core@defb148c6(补件)/core@9148b7c6d(载体)"
+ut_count = 21
+test_is_sufficient = true
 
 # 23299 规范: ut_index 逐条登记 · targets_badpattern UT 对应 model_failure_modes ≥3 条
+# UT-4~21 为 10/29 缺口档排期第 1 项扩条(3→21),坑版挂点逐条实跑核实(坑版 21/21 挂·金标 21/21 过)
 [[ut_index]]
 id = "UT-1"
 test = "tests/test_gs005_degradation.py::test_ut1_bridge_degradation_must_be_structurally_visible"
 targets_badpattern = true
 assert = "初始化降级必须结构化可见(degradation_report 对象 + degraded 标志,仅散日志=FAIL)"
 failure_mode = "FM-1 看到 ImportError 就包 try/except 吞掉继续跑;FM-2 把 fallback 当等价实现不留降级痕迹"
+evidence_required = "宿主带非空 degradation_report 且 degraded is True,日志有 helix/fallback 痕迹"
 
 [[ut_index]]
 id = "UT-2"
@@ -52,6 +56,7 @@ test = "tests/test_gs005_degradation.py::test_ut2_consumer_side_must_not_silentl
 targets_badpattern = true
 assert = "消费侧不得裸调+soft except 吞 AttributeError:必须显式跳过+计数留痕+可判读 outcome"
 failure_mode = "FM-1(复刻消费侧坑面);FM-4 校验放在降级已发生之后(时序错)"
+evidence_required = "degradation_count>=1 且 outcome 为 dict:sealed=False/degraded=True/reason 非空"
 
 [[ut_index]]
 id = "UT-3"
@@ -59,23 +64,168 @@ test = "tests/test_gs005_degradation.py::test_ut3_degraded_backend_must_not_masq
 targets_badpattern = true
 assert = "降级后 chain_backend 必须如实标记 file_fallback,不得伪装主通路 pg"
 failure_mode = "FM-2(fallback 伪装主通路成功);FM-3 只修配置值不加防回归标记(单点修复病)"
+evidence_required = "chain_backend 非空且 =='file_fallback',helix_v7=None 时绝不 =='pg'"
+
+[[ut_index]]
+id = "UT-4"
+test = "tests/test_gs005_degradation.py::test_ut4_degradation_report_must_be_machine_readable"
+targets_badpattern = true
+assert = "降级报告必须是含 stage/reason/backend/at 四键的机器可读 dict,仅散日志=FAIL"
+failure_mode = "FM-2 把 fallback 当等价实现不留降级痕迹"
+evidence_required = "degradation_report 为 dict 且四键齐全"
+
+[[ut_index]]
+id = "UT-5"
+test = "tests/test_gs005_degradation.py::test_ut5_report_stage_and_reason_nonempty"
+targets_badpattern = true
+assert = "报告必须携带降级阶段(stage=='init')与非空 reason 字符串"
+failure_mode = "FM-1 吞异常继续跑不留原因"
+evidence_required = "report['stage']=='init' 且 report['reason'] 为非空 str"
+
+[[ut_index]]
+id = "UT-6"
+test = "tests/test_gs005_degradation.py::test_ut6_degraded_flag_backend_consistency"
+targets_badpattern = true
+assert = "degraded 置位时 chain_backend 不得仍宣称主通路 pg(标志与后端不得矛盾)"
+failure_mode = "FM-2 fallback 伪装主通路"
+evidence_required = "degraded is True 且 chain_backend!='pg'"
+
+[[ut_index]]
+id = "UT-7"
+test = "tests/test_gs005_degradation.py::test_ut7_none_chain_never_marked_pg"
+targets_badpattern = true
+assert = "启动自检不变式:helix_v7 为 None 时 chain_backend 必须显式 =='file_fallback'(None/pg 均为不可观测或伪装)"
+failure_mode = "FM-2(fallback 伪装);FM-3 只修值不加显式标记"
+evidence_required = "helix_v7 is None 前提下 chain_backend=='file_fallback'"
+
+[[ut_index]]
+id = "UT-8"
+test = "tests/test_gs005_degradation.py::test_ut8_init_degradation_must_be_counted"
+targets_badpattern = true
+assert = "初始化期降级必须计入 degradation_count(int 且 >=1),坑版零计数=FAIL"
+failure_mode = "FM-1 吞异常零计数零痕迹"
+evidence_required = "degradation_count 为 int 且 >=1"
+
+[[ut_index]]
+id = "UT-9"
+test = "tests/test_gs005_degradation.py::test_ut9_degradation_log_machine_discernible"
+targets_badpattern = true
+assert = "降级日志必须含机器可辨降级字样(degrad,大小写不敏感);纯 init failed 文本与正常软失败不可区分=FAIL"
+failure_mode = "FM-2 降级不可见(日志无降级语义标记)"
+evidence_required = "caplog 存在 message 含 'degrad' 的记录"
+
+[[ut_index]]
+id = "UT-10"
+test = "tests/test_gs005_degradation.py::test_ut10_no_dsn_is_degradation_not_silence"
+targets_badpattern = true
+assert = "无 DSN(config+env 全空)必须显式降级,完全静默(连 warning 都无)=FAIL"
+failure_mode = "FM-2 配置缺失被静默吞"
+evidence_required = "无 DSN 构造后 degraded is True"
+
+[[ut_index]]
+id = "UT-11"
+test = "tests/test_gs005_degradation.py::test_ut11_no_dsn_reason_discernible"
+targets_badpattern = true
+assert = "无 DSN 降级必须携带可判读 reason(空洞原因=不可判读降级)"
+failure_mode = "FM-2 降级不可见"
+evidence_required = "degradation_report 为 dict 且 reason 非空"
+
+[[ut_index]]
+id = "UT-12"
+test = "tests/test_gs005_degradation.py::test_ut12_env_fallback_path_equally_visible"
+targets_badpattern = true
+assert = "env 回落路径(config 不传 DSN·env 给坏值)与直传路径同等结构化可见,回落路径静默=FAIL"
+failure_mode = "FM-2 双通道降级仅单通道可见"
+evidence_required = "env 坏值构造后 degraded is True 且 report 为 dict"
+
+[[ut_index]]
+id = "UT-13"
+test = "tests/test_gs005_degradation.py::test_ut13_degradation_count_persists_across_calls"
+targets_badpattern = true
+assert = "降级账贯穿:消费侧每次降级调用必须逐一累加计数,3 次调用计数须 >=基线+3"
+failure_mode = "FM-1 soft 吞零计数(事后补账/不记账)"
+evidence_required = "三次调用后 degradation_count 相对调用前增量 >=3"
+
+[[ut_index]]
+id = "UT-14"
+test = "tests/test_gs005_degradation.py::test_ut14_outcome_discernible_every_call"
+targets_badpattern = true
+assert = "每次降级调用 outcome 均为可判读 dict(sealed=False/degraded=True/reason 非空),裸 None=FAIL"
+failure_mode = "FM-1 消费侧 silent swallow"
+evidence_required = "3 次调用逐次断言 dict+sealed+degraded+reason"
+
+[[ut_index]]
+id = "UT-15"
+test = "tests/test_gs005_degradation.py::test_ut15_degraded_outcome_never_carries_forge_products"
+targets_badpattern = true
+assert = "降级 outcome 不得携带伪造封链产物:sealed=False 却给出 left/right hash = 用 fallback 伪装主通路产物"
+failure_mode = "FM-2 伪造封链痕迹(伪装面)"
+evidence_required = "outcome['sealed'] is False 且 'left'/'right' 均不在 outcome 中"
+
+[[ut_index]]
+id = "UT-16"
+test = "tests/test_gs005_degradation.py::test_ut16_guard_must_predate_first_call"
+targets_badpattern = true
+assert = "防护时序:构造完成后、任何消费调用之前,degraded/计数/报告三件必须已就位(校验放在降级已发生之后=FM-4)"
+failure_mode = "FM-4 校验放在降级已发生之后(时序错)"
+evidence_required = "初始化返回即断言 degraded is True+count>=1+report 非空(零消费调用)"
+
+[[ut_index]]
+id = "UT-17"
+test = "tests/test_gs005_degradation.py::test_ut17_report_timestamp_iso_parseable"
+targets_badpattern = true
+assert = "降级报告时间戳必须是 ISO 可解析字符串(降级不可追溯=FAIL)"
+failure_mode = "FM-2 报告不完整不可追溯"
+evidence_required = "report['at'] 为非空 str 且 datetime.fromisoformat 解析成功"
+
+[[ut_index]]
+id = "UT-18"
+test = "tests/test_gs005_degradation.py::test_ut18_report_backend_matches_flag"
+targets_badpattern = false
+assert = "focus 降级可见性-一致性:报告内 backend 必须与宿主 chain_backend 标志一致,双口径=伪装温床"
+failure_mode = "focus: 降级可见性(报告与标志一致性)"
+evidence_required = "report['backend'] == host.chain_backend"
+
+[[ut_index]]
+id = "UT-19"
+test = "tests/test_gs005_degradation.py::test_ut19_degradation_state_fully_introspectable"
+targets_badpattern = false
+assert = "focus 启动自检:降级态四件(degraded/chain_backend/degradation_count/degradation_report)必须全部可内省,缺一即不可观测"
+failure_mode = "focus: 启动自检(内省面完整性)"
+evidence_required = "hasattr 四件逐一检查,missing 列表为空"
+
+[[ut_index]]
+id = "UT-20"
+test = "tests/test_gs005_degradation.py::test_ut20_whitespace_dsn_treated_as_missing"
+targets_badpattern = false
+assert = "focus 配置校验:纯空白 DSN 必须 strip 后按缺失处理并显式降级,不得当有效配置"
+failure_mode = "focus: 配置校验(strip 防御)"
+evidence_required = "postgres_dsn='   ' 构造后 degraded is True"
+
+[[ut_index]]
+id = "UT-21"
+test = "tests/test_gs005_degradation.py::test_ut21_degraded_outcome_deterministic"
+targets_badpattern = false
+assert = "focus fallback 等价性证伪:同态降级多次调用 outcome 必须确定一致,漂移=隐性随机"
+failure_mode = "focus: fallback 等价性(降级语义确定性)"
+evidence_required = "3 次 outcome 全等且为 dict"
 
 [[model_failure_modes]]
 id = "FM-1"
 desc = "看到 ImportError 就包 try/except 吞掉继续跑(精确复刻坑版行为——真实事故的发生方式)"
-anchored_ut = ["UT-1", "UT-2"]
+anchored_ut = ["UT-1", "UT-2", "UT-5", "UT-8", "UT-13", "UT-14"]
 
 [[model_failure_modes]]
 id = "FM-2"
 desc = "把 fallback 当等价实现,不留任何降级痕迹(语义跳步:形式合规,降级不可见)"
-anchored_ut = ["UT-1", "UT-3"]
+anchored_ut = ["UT-1", "UT-3", "UT-4", "UT-6", "UT-7", "UT-9", "UT-10", "UT-11", "UT-12", "UT-15", "UT-17", "UT-18"]
 
 [[model_failure_modes]]
 id = "FM-3"
 desc = "只修配置值不加防回归校验(下次漂移仍静默——单点修复病)"
-anchored_ut = ["UT-3"]
+anchored_ut = ["UT-3", "UT-7"]
 
 [[model_failure_modes]]
 id = "FM-4"
 desc = "加了校验但放在降级已发生之后(时序错:事后检查≠初始化/调用前防护)"
-anchored_ut = ["UT-2"]
+anchored_ut = ["UT-2", "UT-16"]

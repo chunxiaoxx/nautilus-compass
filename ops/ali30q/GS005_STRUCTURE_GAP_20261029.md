@@ -9,7 +9,7 @@
 
 | # | 正本要求(行号) | GS-001 样板实测 | GS-005 现状 | 判定 |
 |---|---|---|---|---|
-| 1 | UT test_* ≥21(需求 line 210) | 23 条(ut_index 23,targets_badpattern 13) | 3 条(targets_badpattern 3) | ❌ 差 18 条 |
+| 1 | UT test_* ≥21(需求 line 210) | 23 条(ut_index 23,targets_badpattern 13) | **✅ 已补(R202 10/29):21 条(targets_badpattern 17 + focus 独立锚 4),每条 evidence_required,FM-1~4 全锚,tomllib 门过,双向实跑金 21 passed/坑 21 failed** | ✅ |
 | 2 | tests/score.py 判分入口(需求 line 612:全过=1 否则=0,逐条矩阵 JSON) | 有:沙盒→/logs/verifier/reward.txt+ut_matrix.json;本地 --local staging 模式 | 无 | ❌ |
 | 3 | calibration 四件套 patch+result.md(需求 §3.1;line 682-685 双向预检) | full_score/defective/guessed/equivalent 各 patch+result(8 件) | perfect/deficient/guessed 三目录各 README 占位 | ❌ 命名/格式/件数全不符 |
 | 4 | solution/golden/ 子目录(answer.md+change_points.yaml) | 有 | 两件在 solution/ 根,无 golden/ 层 | ⚠️ 层级迁移即可 |
