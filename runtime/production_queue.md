@@ -38,3 +38,5 @@
 - R214(10-29): 队列维持零PENDING(005B/008B BLOCKED不解禁,bootstrap信箱0未读无裁决回函);**核对档全表复核通过+打包闭合**:全表逐项直验✅(tomllib门/UT 21=ut_index 21/badpattern 17/score.py双模式/calibration 8件/golden两件/variants md5与档一致/反例三态/baseline 1/1/0.762/0/依赖锁4件);**密钥清洗执行**(警示兑现):pkg交付副本14文件23处活形态串灭活(ghp_×7/AIza×12/GOCSPX-×2/sk-×2·首轮21+自匹配token修正2·日志secret_scrub_log_20261029.md)→复扫0命中→清洗后双向复跑零破坏(NOP 0/21 exit1·Golden 21/21 exit0·与R211基线逐字一致[实测])→tar 30M md5=8ee99a3823ba6b9a6af7a45658254795→NAS shared/codesense_real_lesson/CS-GS-005_v1_1029_clean.tar.gz(端到端md5一致)+README唯一有效包增CS-GS-005节;原始未清洗件仅存仓内(git 13密钥件剔除态不变)·pkg/+tarball入.gitignore护栏;**#005状态:结构补齐✅→已打包✅——候平台判分编排,交付/发函候用户确认,本轮不外发**
 
 - R218(10-29): 队列维持零PENDING(005B/008B BLOCKED候非qwen渠道裁决不解禁,bootstrap信箱0未读无裁决回函);无施工项不烧会话——矩阵四题21:26满额对10/30 18:00锚在轨·#005已打包候平台判分编排(外发候用户确认)·顺手卫生:_staging_calib/staging施工容器清除(tests/score与正式位逐字diff一致后删·patches/impls 17件四态证据原始层已入库不动)·git status未跟踪污染清零·本轮exit 0
+
+- R221(10-29): 队列维持零PENDING(005B/008B BLOCKED候非qwen渠道裁决不解禁,bootstrap信箱0未读无裁决回函·due_12h=0);无施工项不烧会话exit 0——#005已打包候平台判分编排(外发候用户确认)·矩阵对10/30 18:00锚在轨(R220值守23:36确认满额)·本轮exit 0
