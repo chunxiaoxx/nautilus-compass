@@ -27,14 +27,14 @@ if [ "$relay" = "200" ]; then   # OpenAI 端全恢复才扩原生渠道
   # ——559b0e1f 改名落空 KeyError 连崩;渠道表 verified 替代线=kimi-k3-ark,key 已入 env)
   # kimi-k3-ark 暂停(平台 #21909):CS-005 四槽空 body,候 ARK key/端点/配额归因后定槽补跑。
   # qwen3.8max 仍因 Mac 无 bl CLI 暂停；不可把三通道恢复表述为四通道全恢复。
-  MODELS=(glm5.3 gpt-6-astra opus5.5)
+  MODELS=(glm5.3 gpt-6-astra opus5.5 qwen3.8max)   # 10/30 百炼直连复活(用户供key·冒烟+参数双验)
 else
   # qwen3.8max 摘除(10/24):bailian 协议需 bl CLI,Windows arm 线退役后 Mac 未装
   # (shutil.which("bl") 落空→FileNotFoundError 崩循环);bl 装好后加回
   # glm5.3-anthropic 暂停(R69 2026-10-26):中转 000 时走应急通道,但 04:08-11:16
   # 连续 Errno 8 nodename nor servname(DNS) raw_len=0/score=null,同因远超三连红线;
   # 候 v5 查 Anthropic 端点主机名。中转 200 时仍走 if 分支 glm5.3/gpt/opus。
-  MODELS=(opus5.5)
+  MODELS=(opus5.5 qwen3.8max)   # 10/30 中转宕时qwen走百炼直连仍活
 fi
 # 10/29 存量盘点: CS-513 仅缺 opus 4 轮(备份后清旧轮保单批),插队首位——最近达标果
 ITEMS=(CS-513 CS-010 CS-011 CS-012 CS-013 CS-014 CS-001 CS-002 CS-003 CS-004 CS-005 CS-006 CS-007 CS-301)
