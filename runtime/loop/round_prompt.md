@@ -8,11 +8,11 @@
 
 ## 每轮固定动作(值守渠道+探活·2026-10-27 扩容版)
 
-1. **平台信箱**:`python scripts/platform_mail.py check --to compass` 有未读则逐封处理(需行动的按函执行,通报类 ack);
-2. **Gmail(先探活再处理)**:`python3 -c "import json,urllib.request;at=open('$HOME/.gmail-mcp/access_token.txt').read();r=json.load(urllib.request.urlopen(urllib.request.Request('https://gmail.googleapis.com/gmail/v1/users/me/labels/INBOX',headers={'Authorization':'Bearer '+at}),timeout=10));print('unread:',r.get('threadsUnread'))"`——失败则先试刷 access_token(`~/.gmail-mcp/reauth.py` 候用户,或报 BLOCKED_ON_USER 不装活);活则查 `is:unread newer_than:7d -from:noreply -category:(social promotions)` 未读商务函,按判读岗口径回函;
+1. **平台信箱**:`python3 scripts/platform_mail.py check --to compass` 有未读则逐封处理(需行动的按函执行,通报类 ack);
+2. **Gmail(先探活再处理)**:`curl -s -m 15 -H "Authorization: Bearer $(cat ~/.gmail-mcp/access_token.txt)" "https://gmail.googleapis.com/gmail/v1/users/me/labels/INBOX"`(🔴**Gmail API 探查一律 curl,勿用 python urllib**——threads.get 等会无限挂起而 curl 秒回,R206+R213 两次实测同 token 复现);失败则先直刷 access_token(非交互秒回:`python3` 用 `~/.gmail-mcp/client_secret.json` + `credentials.json` 里 refresh_token 走 `oauth2.googleapis.com/token` grant_type=refresh_token,回写 access_token.txt;R213 实测 3599s 绿;`reauth.py` 为交互式仅候用户兜底),仍不活报 BLOCKED_ON_USER;活则查 `is:unread newer_than:7d -from:noreply -category:(social promotions)` 未读商务函(threads.list 亦 curl),按判读岗口径回函;
 3. **GitHub**:`gh search issues --mention chunxiaoxx --sort updated --limit 5` + `gh api notifications`——外部邀请/提问按函处理(创世十家沉默件不追);
 4. **dev.to**:`curl -s -H "api-key: $(grep -oE '=.*' ~/.claude/.cache/devto_api_key.env | head -1 | tr -d '=\"')" "https://dev.to/api/articles/me/all?per_page=30"` 汇总 comments_count>0 的文,逐条对照已有回复,新增未回评论按文补答(注意:API 无发评论端点,回复走文内 Addendum/PS 追加,PATCH 必带浏览器 UA 否则 403);
-5. **本地 daemon 探活**:`python -c "import socket;s=socket.socket();s.settimeout(5);s.connect(('127.0.0.1',9876));print('ok')"` 失败则 `bash /Users/chunxiao.wang/.claude/plugins/nautilus-compass/daemon_start.sh`;另 `bash scripts/mcp_watchdog.sh`(8097/域名双探,异常自愈);
+5. **本地 daemon 探活**:`python3 -c "import socket;s=socket.socket();s.settimeout(5);s.connect(('127.0.0.1',9876));print('ok')"`(🔴headless 环境 PATH 无 `python`/`gh` 不含 homebrew——一律 `python3`,`gh` 用绝对路径 `/opt/homebrew/bin/gh`,R213 实测)失败则 `bash /Users/chunxiao.wang/.claude/plugins/nautilus-compass/daemon_start.sh`;另 `bash scripts/mcp_watchdog.sh`(8097/域名双探,异常自愈);
 6. **主件队列**:读 runtime/loop/queue.md 顶部第一个未完成任务,能自主完成的执行之(产出留痕到对应 docs/ 目录);不能自主完成的(需用户/外部输入)跳过并记一行原因。
 
 ## 每轮留痕(必须)
