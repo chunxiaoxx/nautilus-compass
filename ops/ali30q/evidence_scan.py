@@ -16,8 +16,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from collect_for_quickscreen import SCRATCHES  # noqa: E402
-from gate5_stocktake import V5_ITEMS, BASES  # noqa: E402
+from gate5_stocktake import BASES  # noqa: E402
 
 CONFLICT_MARK = "<<<<<<<"
 
