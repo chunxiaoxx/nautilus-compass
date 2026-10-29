@@ -82,3 +82,18 @@ ops/deep_memory/blocks_*.jsonl
 vtf/fuel_pool/pending/
 
 runtime/scratch_*/
+
+# 10/29 R203: push protection 实拦——含历史 PAT/sk- 的素材纪要文档不入库(本地保留作题目环境)
+ops/ali30q/gs005_build/**/docs/SESSION_SUMMARY_PLATFORM_DIALOG_20260524_25.md
+ops/ali30q/gs005_build/**/docs/NAUTILUS_WORK_SUMMARY_FOR_CLAUDE_CODE.md
+ops/ali30q/gs005_build/**/docs/WEDGE_PIVOT_DECISION_AUDIT_20260525.md
+ops/ali30q/gs005_build/**/docs/archive/root_reports_2026H1/NAUTILUS_PROJECT_SUMMARY_FOR_CLAUDE_CODE.md
+ops/ali30q/gs005_build/**/docs/_archived/SESSION_HANDOFF_20260525_TO_FRESH.md
+ops/ali30q/gs005_build/**/docs/API配置清单.md
+ops/ali30q/gs005_build/**/docs/PPT生成完整指南.md
+ops/ali30q/gs005_build/**/docs/PPT生成最终方案.md
+ops/ali30q/gs005_build/**/docs/generate_business_plan_slides.py
+ops/ali30q/gs005_build/**/docs/generate_google_slides.py
+ops/ali30q/gs005_build/**/docs/generate_pitch_deck_gemini.py
+ops/ali30q/gs005_build/**/docs/archive/DAY5_COMPLETION_REPORT.md
+ops/ali30q/gs005_build/**/phase3/docs/archive/QUICK_REFERENCE.md

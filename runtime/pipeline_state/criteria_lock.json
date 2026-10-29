@@ -1,0 +1,24 @@
+{
+  "schema": "criteria-lock-v1",
+  "locked_at": "2026-10-29T09:10:00+08:00",
+  "issued_by": "compass(判据工程化·22905分工)·本锁为 CLAUDE.md「判据v3基线」声明件的补落实物——此前声称为建、实无文件亦无 git 历史,10/29 判读补齐",
+  "sha_rule": "sha16 = sha256 前16位·LF 口径(工作区文件去 \\r 后哈希;sha锚autocrlf陷阱 10/8 纪律:一律 LF blob 口径,不符先证伪口径)",
+  "五条件冻结文本": {
+    "正本坐标": "nautilus-core/docs/feishu/质检方案_题目质量细节.md 行525/527(程序性检查节)",
+    "通过条件": "五个模型均完成 4 次运行;整体通过率(全过运行数/5×4)低于 70%;opus5.5 至少有一次全过,且不出现四次全过;qwen3.8max 至少有一次未全过,且 4 次平均通过率(全过次数/4)同时低于 opus5.5 与 gpt6-astra 的 4 次平均通过率",
+    "剔除条件": "缺少任一模型或轮次;整体通过率达到或超过 70%;opus5.5 四次均未全过(过难,Top Hard,剔除)或四次全过(过简,剔除);qwen3.8max 四次均全过,或 4 次平均通过率未同时低于 opus5.5 与 gpt6-astra 的 4 次平均通过率",
+    "口径注": "passrate=整题全对率(全对记1否则0),非 UT 通过率;五模型=qwen3.8max/kimi-k3/glm5.3/opus5.5/gpt6-astra"
+  },
+  "artifacts": [
+    {"path": "nautilus-core/docs/feishu/需求文档_题目结构与跑分结果.md", "host": "~/Projects/nautilus-core(兄弟仓)", "sha16": "2a57046d81f6cb8e", "lines": 1145},
+    {"path": "nautilus-core/docs/feishu/质检方案_题目质量细节.md", "host": "~/Projects/nautilus-core(兄弟仓)", "sha16": "5ef59ed3cedd8e22", "lines": 1677},
+    {"path": "nautilus-core/docs/ALI_REQ_STANDARD_MAP_V1.md", "host": "~/Projects/nautilus-core(兄弟仓)", "sha16": "c74f800dcd27d8a0", "lines": 56},
+    {"path": "nautilus-core/docs/ALI_FEEDBACK_LEDGER_V1.md", "host": "~/Projects/nautilus-core(兄弟仓)", "sha16": "52e0ccc2b08d1140", "lines": 33},
+    {"path": "runtime/pipeline_state/criteria_v2_baseline.json", "host": "nautilus-compass", "sha16": "b47ebbecac5ecefd"},
+    {"path": "runtime/pipeline_state/calibration_protocol_v1.md", "host": "nautilus-compass", "sha16": "c053413c57292182"},
+    {"path": "ops/ali30q/gate5.py", "host": "nautilus-compass", "sha16": "fcc310549ff390d1"},
+    {"path": "ops/ali30q/opus_prescreen.py", "host": "nautilus-compass", "sha16": "6914812ab6fb0386"}
+  ],
+  "变更纪律": "判据只许更严(预注册判据档纪律);任何一件变更=sha16 不匹配即判据漂移,须新版本锁重发并注明变更理由,禁原地改禁放宽",
+  "核验命令": "for r in $(python3 -c 'import json;print(\" \".join(a[\"path\"] for a in json.load(open(\"runtime/pipeline_state/criteria_lock.json\"))[\"artifacts\"]))'); do :; done  # 逐件 tr -d '\\r' < $r | shasum -a 256 | cut -c1-16 对照 sha16"
+}

@@ -1,0 +1,74 @@
+[
+ {
+  "card": 1,
+  "incident": "soul熔断循环(解析失败→熔断→解除→再熔断)",
+  "domain": "熔断器/限流器",
+  "badpattern": "F07.01",
+  "quota_slot": "D03",
+  "complexity": "中",
+  "status": "IN_PROGRESS"
+ },
+ {
+  "card": 2,
+  "incident": "NFS硬挂超时静默(无报错无日志)",
+  "domain": "网络存储IO",
+  "badpattern": "F06.01",
+  "quota_slot": "D14",
+  "complexity": "高",
+  "status": "IN_PROGRESS"
+ },
+ {
+  "card": 3,
+  "incident": "mailbox积压19封(frame-worker不存在=无人拉)",
+  "domain": "消息队列/事件驱动",
+  "badpattern": "F06.04",
+  "quota_slot": "D09",
+  "complexity": "中",
+  "status": "IN_PROGRESS"
+ },
+ {
+  "card": 4,
+  "incident": "BGE embedding 401(key与端点错配)",
+  "domain": "多LLM Provider路由",
+  "badpattern": "F02.02",
+  "quota_slot": "D12",
+  "complexity": "中",
+  "status": "IN_PROGRESS"
+ },
+ {
+  "card": 5,
+  "incident": "nginx stream层日志源IP全127伪影",
+  "domain": "代理层日志语义",
+  "badpattern": "F06.04",
+  "quota_slot": "D09",
+  "complexity": "高",
+  "status": "IN_PROGRESS"
+ },
+ {
+  "card": 6,
+  "incident": "JSON双源不一致(函报vs落库)",
+  "domain": "数据管线一致性",
+  "badpattern": "F08.04",
+  "quota_slot": "D13",
+  "complexity": "中",
+  "status": "IN_PROGRESS"
+ },
+ {
+  "card": 7,
+  "incident": "离线重放判分器(重放vs实时结果差异)",
+  "domain": "回放/审计",
+  "badpattern": "F06.04",
+  "quota_slot": "D09",
+  "complexity": "中",
+  "status": "IN_PROGRESS"
+ },
+ {
+  "card": 8,
+  "incident": "rm -rf变量展开误删",
+  "domain": "shell/CI脚本",
+  "badpattern": "F05.02",
+  "quota_slot": "D10",
+  "complexity": "高",
+  "status": "IN_PROGRESS"
+ }
+]

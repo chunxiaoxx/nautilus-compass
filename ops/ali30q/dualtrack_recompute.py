@@ -12,18 +12,11 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from collect_for_quickscreen import is_empty_output  # noqa: E402
+from collect_for_quickscreen import is_empty_output, SCRATCHES  # noqa: E402
 from s5_json import latest_batch, load_s5_json  # noqa: E402
 
 HOME = Path.home()
 V5 = HOME / "Projects/nautilus-v5/.claude/worktrees/codesense-a-fix/codesense/items"
-SCRATCHES = [
-    Path("/tmp/cs_decoy_20261027/codesense/items"),
-    Path("/tmp/cs_decoy_509/codesense/items"),
-    Path("/tmp/cs004b/codesense/items"),
-    Path("/tmp/cs514b/codesense/items"),
-    Path("/tmp/csCS-005B/codesense/items"),
-]
 
 
 def wilson_lb(successes: float, n: int, z: float = 1.96) -> float | None:

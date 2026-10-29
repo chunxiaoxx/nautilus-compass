@@ -36,7 +36,8 @@ else
   # 候 v5 查 Anthropic 端点主机名。中转 200 时仍走 if 分支 glm5.3/gpt/opus。
   MODELS=(opus5.5)
 fi
-ITEMS=(CS-010 CS-011 CS-012 CS-013 CS-014 CS-001 CS-002 CS-003 CS-004 CS-005 CS-006 CS-007 CS-301)
+# 10/29 存量盘点: CS-513 仅缺 opus 4 轮(备份后清旧轮保单批),插队首位——最近达标果
+ITEMS=(CS-513 CS-010 CS-011 CS-012 CS-013 CS-014 CS-001 CS-002 CS-003 CS-004 CS-005 CS-006 CS-007 CS-301)
 for item in $ITEMS; do
   # 题目就绪检查(笔记本线未交付的题跳过)
   [ -f "$CS/items/$item/task.toml" ] || { echo "[$item] 未就绪,跳过" >> $LOG; continue }

@@ -1,0 +1,4192 @@
+{
+ "schema": "gate5-stocktake-v1",
+ "generated_at": "2026-10-29T09:56:37",
+ "口径": "非终判·今日存量基线;终判=截止前最新单批+非实现者复算(见 ALI_DELIVERY_PREREG_20261029)",
+ "bases": [
+  "/Users/chunxiao.wang/Projects/nautilus-v5/.claude/worktrees/codesense-a-fix/codesense/items",
+  "/tmp/cs_decoy_20261027/codesense/items",
+  "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/scratch_cs004b/codesense/items"
+ ],
+ "n_total": 76,
+ "n_pass": 0,
+ "pass_items": [],
+ "n_judged_fail": 3,
+ "n_miss1": [],
+ "n_miss2plus": [
+  "CS-102",
+  "CS-103",
+  "CS-401"
+ ],
+ "n_undecidable": [
+  "CS-001",
+  "CS-002",
+  "CS-003",
+  "CS-004",
+  "CS-005",
+  "CS-006",
+  "CS-007",
+  "CS-008",
+  "CS-009",
+  "CS-010",
+  "CS-011",
+  "CS-012",
+  "CS-013",
+  "CS-014",
+  "CS-015",
+  "CS-016",
+  "CS-017",
+  "CS-018",
+  "CS-019",
+  "CS-020",
+  "CS-021",
+  "CS-022",
+  "CS-023",
+  "CS-024",
+  "CS-101",
+  "CS-104",
+  "CS-105",
+  "CS-201",
+  "CS-202",
+  "CS-203",
+  "CS-204",
+  "CS-205",
+  "CS-206",
+  "CS-207",
+  "CS-301",
+  "CS-302",
+  "CS-303",
+  "CS-304",
+  "CS-305",
+  "CS-402",
+  "CS-501",
+  "CS-502",
+  "CS-503",
+  "CS-504",
+  "CS-505",
+  "CS-506",
+  "CS-507",
+  "CS-508",
+  "CS-509",
+  "CS-510",
+  "CS-511",
+  "CS-512",
+  "CS-513",
+  "CS-514",
+  "CS-515",
+  "CS-516",
+  "CS-517",
+  "CS-518",
+  "CS-520",
+  "CS-521",
+  "CS-522",
+  "CS-601",
+  "CS-G1",
+  "CS-G2",
+  "CS-G3",
+  "CS-G4",
+  "CS-G5",
+  "CS-G6",
+  "CS-G7",
+  "CS-G8",
+  "CS-SK11",
+  "CS-008B",
+  "CS-004B"
+ ],
+ "rows": [
+  {
+   "item": "CS-001",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 5/20(缺轮分母失配)",
+    "③不可判: opus 仅 1 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "glm5.3-anthropic_run0_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run2_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run3_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3_direct_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "gpt-6-astra_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "gpt-6-astra_run5_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "kimi-k3_run0_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "kimi-k3_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "kimi-k3-ark_run2_result.json",
+     "reason": "同 kimi-k3 run2 双命名重件,保留 mtime 最新('kimi-k3_run2_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3_run3_result.json",
+     "reason": "同 kimi-k3 run3 双命名重件,保留 mtime 最新('kimi-k3-ark_run3_result.json'),剔除"
+    },
+    {
+     "file": "opus5.5-qixuw_run3_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "opus5.5-qixuw_run1_result.json",
+     "reason": "同 opus5.5 run1 双命名重件,保留 mtime 最新('opus5.5_run1_result.json'),剔除"
+    },
+    {
+     "file": "opus5.5-qixuw_run2_result.json",
+     "reason": "同 opus5.5 run2 双命名重件,保留 mtime 最新('opus5.5_run2_result.json'),剔除"
+    },
+    {
+     "file": "opus5.5-qixuw_run4_result.json",
+     "reason": "同 opus5.5 run4 双命名重件,保留 mtime 最新('opus5.5_run4_result.json'),剔除"
+    },
+    {
+     "file": "qwen3.8max-bl_run0_result.json",
+     "reason": "归一后模型名 'qwen3.8max-bl' 不在五模型清单,拒载(报错不静默)"
+    },
+    {
+     "file": "qwen3.8max-bl_run1_result.json",
+     "reason": "归一后模型名 'qwen3.8max-bl' 不在五模型清单,拒载(报错不静默)"
+    },
+    {
+     "file": "qwen3.8max-bl_run2_result.json",
+     "reason": "归一后模型名 'qwen3.8max-bl' 不在五模型清单,拒载(报错不静默)"
+    },
+    {
+     "file": "qwen3.8max-bl_run3_result.json",
+     "reason": "归一后模型名 'qwen3.8max-bl' 不在五模型清单,拒载(报错不静默)"
+    },
+    {
+     "file": "qwen3.8max_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3_run1_result.json",
+     "reason": "glm5.3 run1: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "glm5.3_run3_result.json",
+     "reason": "glm5.3 run3: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "glm5.3_run4_result.json",
+     "reason": "glm5.3 run4: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "glm5.3_run0_result.json",
+     "reason": "glm5.3 run0: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "gpt-6-astra_run3_result.json",
+     "reason": "gpt-6-astra run3: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "gpt-6-astra_run4_result.json",
+     "reason": "gpt-6-astra run4: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "gpt-6-astra_run0_result.json",
+     "reason": "gpt-6-astra run0: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "kimi-k3_run4_result.json",
+     "reason": "kimi-k3 run4: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run0_result.json",
+     "reason": "kimi-k3 run0: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run1_result.json",
+     "reason": "kimi-k3 run1: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run3_result.json",
+     "reason": "kimi-k3 run3: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "opus5.5_run3_result.json",
+     "reason": "opus5.5 run3: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "opus5.5_run4_result.json",
+     "reason": "opus5.5 run4: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "opus5.5_run5_result.json",
+     "reason": "opus5.5 run5: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "opus5.5_run0_result.json",
+     "reason": "opus5.5 run0: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "opus5.5_run1_result.json",
+     "reason": "opus5.5 run1: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "qwen3.8max_run0_result.json",
+     "reason": "qwen3.8max run0: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 1,
+    "kimi-k3": 1,
+    "glm5.3": 1,
+    "opus5.5": 1,
+    "gpt-6-astra": 1
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-002",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 11/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "glm5.3-anthropic_run0_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run2_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run3_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "gpt-6-astra_run0_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "kimi-k3-ark_run3_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "kimi-k3_run0_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "kimi-k3_run1_result.json",
+     "reason": "同 kimi-k3 run1 双命名重件,保留 mtime 最新('kimi-k3-ark_run1_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3_run2_result.json",
+     "reason": "同 kimi-k3 run2 双命名重件,保留 mtime 最新('kimi-k3-ark_run2_result.json'),剔除"
+    },
+    {
+     "file": "opus5.5_run0_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "opus5.5_run1_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "opus5.5_run2_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "opus5.5_run3_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "glm5.3_run1_result.json",
+     "reason": "glm5.3 run1: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "glm5.3_run2_result.json",
+     "reason": "glm5.3 run2: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "kimi-k3_run3_result.json",
+     "reason": "kimi-k3 run3: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "kimi-k3_run4_result.json",
+     "reason": "kimi-k3 run4: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 2,
+    "kimi-k3": 3,
+    "glm5.3": 2,
+    "opus5.5": 0,
+    "gpt-6-astra": 4
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 3,
+    "glm5.3": 2,
+    "opus5.5": 0,
+    "gpt-6-astra": 4
+   }
+  },
+  {
+   "item": "CS-003",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 6/20(缺轮分母失配)",
+    "③不可判: opus 仅 2 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "glm5.3-anthropic_run0_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run2_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run3_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3_run0_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3_run3_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "gpt-6-astra_run0_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "gpt-6-astra_run3_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "kimi-k3-ark_run0_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "kimi-k3-ark_run1_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "kimi-k3-ark_run2_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "kimi-k3-ark_run3_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "kimi-k3_run0_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "kimi-k3_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "kimi-k3_run3_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "opus5.5_run0_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "qwen3.8max-bl_run0_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "qwen3.8max-bl_run1_result.json",
+     "reason": "归一后模型名 'qwen3.8max-bl' 不在五模型清单,拒载(报错不静默)"
+    },
+    {
+     "file": "qwen3.8max-bl_run2_result.json",
+     "reason": "归一后模型名 'qwen3.8max-bl' 不在五模型清单,拒载(报错不静默)"
+    },
+    {
+     "file": "qwen3.8max-bl_run3_result.json",
+     "reason": "归一后模型名 'qwen3.8max-bl' 不在五模型清单,拒载(报错不静默)"
+    },
+    {
+     "file": "qwen3.8max_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "gpt-6-astra_run2_result.json",
+     "reason": "gpt-6-astra run2: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "opus5.5_run3_result.json",
+     "reason": "opus5.5 run3: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 1,
+    "kimi-k3": 1,
+    "glm5.3": 1,
+    "opus5.5": 2,
+    "gpt-6-astra": 1
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 1,
+    "kimi-k3": 1,
+    "glm5.3": 1,
+    "opus5.5": 2,
+    "gpt-6-astra": 1
+   }
+  },
+  {
+   "item": "CS-004",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 9/20(缺轮分母失配)",
+    "③不可判: opus 仅 2 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "glm5.3-anthropic_run0_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run2_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run3_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3_run0_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "gpt-6-astra_run0_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "kimi-k3_run0_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "kimi-k3_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "kimi-k3_run2_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "kimi-k3_run3_result.json",
+     "reason": "同 kimi-k3 run3 双命名重件,保留 mtime 最新('kimi-k3-ark_run3_result.json'),剔除"
+    },
+    {
+     "file": "opus5.5_run0_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "opus5.5_run3_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "qwen3.8max_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "qwen3.8max_run2_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3_run3_result.json",
+     "reason": "glm5.3 run3: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "glm5.3_run4_result.json",
+     "reason": "glm5.3 run4: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "glm5.3_run5_result.json",
+     "reason": "glm5.3 run5: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "gpt-6-astra_run3_result.json",
+     "reason": "gpt-6-astra run3: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "gpt-6-astra_run4_result.json",
+     "reason": "gpt-6-astra run4: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "gpt-6-astra_run5_result.json",
+     "reason": "gpt-6-astra run5: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "gpt-6-astra_run1_result.json",
+     "reason": "gpt-6-astra run1: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "kimi-k3_run4_result.json",
+     "reason": "kimi-k3 run4: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "kimi-k3_run5_result.json",
+     "reason": "kimi-k3 run5: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 4,
+    "glm5.3": 2,
+    "opus5.5": 2,
+    "gpt-6-astra": 1
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 4,
+    "glm5.3": 2,
+    "opus5.5": 2,
+    "gpt-6-astra": 1
+   }
+  },
+  {
+   "item": "CS-005",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 11/20(缺轮分母失配)",
+    "③不可判: opus 仅 1 轮(<4)",
+    "④⑤不可判: ['opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "glm5.3-anthropic_run0_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run2_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run3_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3_run0_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "glm5.3_run2_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "kimi-k3-ark_run0_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "kimi-k3-ark_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "kimi-k3-ark_run2_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "kimi-k3-ark_run3_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "kimi-k3_run0_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "kimi-k3_run1_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "kimi-k3_run2_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "kimi-k3_run3_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "kimi-k3-ark_run4_result.json",
+     "reason": "同 kimi-k3 run4 双命名重件,保留 mtime 最新('kimi-k3_run4_result.json'),剔除"
+    },
+    {
+     "file": "qwen3.8max-direct_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "qwen3.8max-direct_run2_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "qwen3.8max-direct_run3_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "qwen3.8max-direct_run4_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "gpt-6-astra_run1_result.json",
+     "reason": "gpt-6-astra run1: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "gpt-6-astra_run2_result.json",
+     "reason": "gpt-6-astra run2: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "gpt-6-astra_run3_result.json",
+     "reason": "gpt-6-astra run3: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "gpt-6-astra_run4_result.json",
+     "reason": "gpt-6-astra run4: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "opus5.5_run1_result.json",
+     "reason": "opus5.5 run1: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "opus5.5_run2_result.json",
+     "reason": "opus5.5 run2: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "opus5.5_run3_result.json",
+     "reason": "opus5.5 run3: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "opus5.5_run4_result.json",
+     "reason": "opus5.5 run4: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 4,
+    "kimi-k3": 1,
+    "glm5.3": 3,
+    "opus5.5": 1,
+    "gpt-6-astra": 2
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 1,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-006",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": false,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 9/20(缺轮分母失配)",
+    "③opus 4轮全过=过简剔除",
+    "④⑤不可判: ['qwen3.8max', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "glm5.3-anthropic_run0_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run2_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run3_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3_run1_result.json",
+     "reason": "glm5.3 run1: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "glm5.3_run2_result.json",
+     "reason": "glm5.3 run2: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "glm5.3_run3_result.json",
+     "reason": "glm5.3 run3: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "glm5.3_run4_result.json",
+     "reason": "glm5.3 run4: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "gpt-6-astra_run1_result.json",
+     "reason": "gpt-6-astra run1: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "gpt-6-astra_run2_result.json",
+     "reason": "gpt-6-astra run2: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "gpt-6-astra_run3_result.json",
+     "reason": "gpt-6-astra run3: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "gpt-6-astra_run4_result.json",
+     "reason": "gpt-6-astra run4: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "kimi-k3_run1_result.json",
+     "reason": "kimi-k3 run1: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "kimi-k3_run2_result.json",
+     "reason": "kimi-k3 run2: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "kimi-k3_run3_result.json",
+     "reason": "kimi-k3 run3: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "kimi-k3_run4_result.json",
+     "reason": "kimi-k3 run4: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 2,
+    "kimi-k3": 1,
+    "glm5.3": 1,
+    "opus5.5": 4,
+    "gpt-6-astra": 1
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 2,
+    "kimi-k3": 1,
+    "glm5.3": 1,
+    "opus5.5": 4,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-007",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 9/20(缺轮分母失配)",
+    "③不可判: opus 仅 2 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "glm5.3-anthropic_run0_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run2_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run3_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "kimi-k3-ark_run1_result.json",
+     "reason": "同 kimi-k3 run1 双命名重件,保留 mtime 最新('kimi-k3_run1_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run2_result.json",
+     "reason": "同 kimi-k3 run2 双命名重件,保留 mtime 最新('kimi-k3_run2_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run3_result.json",
+     "reason": "同 kimi-k3 run3 双命名重件,保留 mtime 最新('kimi-k3_run3_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run4_result.json",
+     "reason": "同 kimi-k3 run4 双命名重件,保留 mtime 最新('kimi-k3_run4_result.json'),剔除"
+    },
+    {
+     "file": "opus5.5_run1_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "opus5.5_run2_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "opus5.5_run3_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "glm5.3_run1_result.json",
+     "reason": "glm5.3 run1: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "glm5.3_run2_result.json",
+     "reason": "glm5.3 run2: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "glm5.3_run3_result.json",
+     "reason": "glm5.3 run3: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "glm5.3_run4_result.json",
+     "reason": "glm5.3 run4: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "gpt-6-astra_run1_result.json",
+     "reason": "gpt-6-astra run1: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "gpt-6-astra_run2_result.json",
+     "reason": "gpt-6-astra run2: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "gpt-6-astra_run3_result.json",
+     "reason": "gpt-6-astra run3: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "gpt-6-astra_run4_result.json",
+     "reason": "gpt-6-astra run4: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "gpt-6-astra_run0_result.json",
+     "reason": "gpt-6-astra run0: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "kimi-k3_run0_result.json",
+     "reason": "kimi-k3 轮数超规格(5>4),取 mtime 最新 4 轮,剔除"
+    },
+    {
+     "file": "qwen3.8max_run4_result.json",
+     "reason": "qwen3.8max run4: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "qwen3.8max_run0_result.json",
+     "reason": "qwen3.8max run0: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "qwen3.8max_run1_result.json",
+     "reason": "qwen3.8max run1: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "qwen3.8max_run2_result.json",
+     "reason": "qwen3.8max run2: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 1,
+    "kimi-k3": 4,
+    "glm5.3": 1,
+    "opus5.5": 2,
+    "gpt-6-astra": 1
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 4,
+    "glm5.3": 0,
+    "opus5.5": 1,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-008",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 5/20(缺轮分母失配)",
+    "③不可判: opus 仅 1 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "glm5.3_run0_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "gpt-6-astra_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "gpt-6-astra_run2_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "gpt-6-astra_run3_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "gpt-6-astra_run4_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "gpt-6-astra_run5_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "kimi-k3_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "opus5.5_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "qwen3.8max-bl_run0_result.json",
+     "reason": "归一后模型名 'qwen3.8max-bl' 不在五模型清单,拒载(报错不静默)"
+    },
+    {
+     "file": "qwen3.8max-bl_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "qwen3.8max-bl_run2_result.json",
+     "reason": "归一后模型名 'qwen3.8max-bl' 不在五模型清单,拒载(报错不静默)"
+    },
+    {
+     "file": "qwen3.8max-bl_run3_result.json",
+     "reason": "归一后模型名 'qwen3.8max-bl' 不在五模型清单,拒载(报错不静默)"
+    },
+    {
+     "file": "qwen3.8max_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 1,
+    "kimi-k3": 1,
+    "glm5.3": 1,
+    "opus5.5": 1,
+    "gpt-6-astra": 1
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-009",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 0/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-010",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 5/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "glm5.3-anthropic_run0_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run2_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run3_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3_run0_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "glm5.3_run1_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "glm5.3_run2_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "glm5.3_run3_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "gpt-6-astra_run0_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "gpt-6-astra_run1_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "gpt-6-astra_run2_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "kimi-k3-ark_run0_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "kimi-k3-ark_run1_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "kimi-k3-ark_run2_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "kimi-k3-ark_run3_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "kimi-k3_run0_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "kimi-k3_run1_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "kimi-k3_run2_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "kimi-k3_run3_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "opus5.5_run0_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "opus5.5_run1_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "opus5.5_run2_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    },
+    {
+     "file": "opus5.5_run3_result.json",
+     "reason": "JSON解析失败(JSONDecodeError,冲突残留类),拒载"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 4,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 1
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 4,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-011",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": false,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 16/20(缺轮分母失配)",
+    "③opus 4轮全过=过简剔除",
+    "④⑤不可判: ['qwen3.8max'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "glm5.3-anthropic_run0_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run2_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run3_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "kimi-k3_run0_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "kimi-k3_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "kimi-k3_run2_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "kimi-k3_run3_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 4,
+    "glm5.3": 4,
+    "opus5.5": 4,
+    "gpt-6-astra": 4
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 4,
+    "glm5.3": 4,
+    "opus5.5": 4,
+    "gpt-6-astra": 4
+   }
+  },
+  {
+   "item": "CS-012",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": true,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 16/20(缺轮分母失配)",
+    "④⑤不可判: ['qwen3.8max'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "glm5.3-anthropic_run0_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run2_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run3_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "kimi-k3_run0_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "kimi-k3_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "kimi-k3_run2_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "kimi-k3_run3_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 4,
+    "glm5.3": 4,
+    "opus5.5": 4,
+    "gpt-6-astra": 4
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 3,
+    "glm5.3": 4,
+    "opus5.5": 3,
+    "gpt-6-astra": 1
+   }
+  },
+  {
+   "item": "CS-013",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": false,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 16/20(缺轮分母失配)",
+    "③opus 4轮全过=过简剔除",
+    "④⑤不可判: ['qwen3.8max'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "glm5.3-anthropic_run0_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run2_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run3_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "kimi-k3_run0_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "kimi-k3_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "kimi-k3_run2_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "kimi-k3_run3_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 4,
+    "glm5.3": 4,
+    "opus5.5": 4,
+    "gpt-6-astra": 4
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 4,
+    "glm5.3": 4,
+    "opus5.5": 4,
+    "gpt-6-astra": 4
+   }
+  },
+  {
+   "item": "CS-014",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": true,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 16/20(缺轮分母失配)",
+    "④⑤不可判: ['qwen3.8max'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "glm5.3-anthropic_run0_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run2_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3-anthropic_run3_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "kimi-k3_run0_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "kimi-k3_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "kimi-k3_run2_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "kimi-k3_run3_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 4,
+    "glm5.3": 4,
+    "opus5.5": 4,
+    "gpt-6-astra": 4
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 4,
+    "glm5.3": 3,
+    "opus5.5": 3,
+    "gpt-6-astra": 4
+   }
+  },
+  {
+   "item": "CS-015",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 0/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-016",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 0/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-017",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 0/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-018",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 0/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-019",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 0/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-020",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 0/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-021",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 0/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-022",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 0/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-023",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 0/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-024",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 0/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-101",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": false,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'glm5.3'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 15/20(缺轮分母失配)",
+    "③opus 4轮全过=过简剔除",
+    "④⑤不可判: ['qwen3.8max'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "kimi-k3-ark_run1_result.json",
+     "reason": "同 kimi-k3 run1 双命名重件,保留 mtime 最新('kimi-k3_run1_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run2_result.json",
+     "reason": "同 kimi-k3 run2 双命名重件,保留 mtime 最新('kimi-k3_run2_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run3_result.json",
+     "reason": "同 kimi-k3 run3 双命名重件,保留 mtime 最新('kimi-k3_run3_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run4_result.json",
+     "reason": "同 kimi-k3 run4 双命名重件,保留 mtime 最新('kimi-k3_run4_result.json'),剔除"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 4,
+    "glm5.3": 3,
+    "opus5.5": 4,
+    "gpt-6-astra": 4
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 4,
+    "glm5.3": 3,
+    "opus5.5": 4,
+    "gpt-6-astra": 4
+   }
+  },
+  {
+   "item": "CS-102",
+   "cond": {
+    "①五模型各4轮": true,
+    "②整体通过率<70%": false,
+    "③opus全过轮∈[1,3]": false,
+    "④qwen双低+至少一轮零分": false,
+    "⑤qwen∈{25%,50%}": false,
+    "⑥区分度三指标": false
+   },
+   "reason": [
+    "②整体通过率 70%≥70% (过简)",
+    "③opus 4轮全过=过简剔除",
+    "④qwen 无全挂轮(行40:至少一次为零)",
+    "⑤qwen passrate 100.0% 距目标50%差 50.0pp",
+    "⑥区分度三指标 FAIL: div=0.1667/share=1.0/jaccard=0.0 (同模型与跨模型距离均为 0)"
+   ],
+   "rejected": [
+    {
+     "file": "kimi-k3-ark_run1_result.json",
+     "reason": "同 kimi-k3 run1 双命名重件,保留 mtime 最新('kimi-k3_run1_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run2_result.json",
+     "reason": "同 kimi-k3 run2 双命名重件,保留 mtime 最新('kimi-k3_run2_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run3_result.json",
+     "reason": "同 kimi-k3 run3 双命名重件,保留 mtime 最新('kimi-k3_run3_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run4_result.json",
+     "reason": "同 kimi-k3 run4 双命名重件,保留 mtime 最新('kimi-k3_run4_result.json'),剔除"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 4,
+    "kimi-k3": 4,
+    "glm5.3": 4,
+    "opus5.5": 4,
+    "gpt-6-astra": 4
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 4,
+    "kimi-k3": 4,
+    "glm5.3": 2,
+    "opus5.5": 4,
+    "gpt-6-astra": 0
+   },
+   "overall_passrate": 0.7,
+   "domestic_spread_pp": 50.0,
+   "qwen_passrate": 1.0,
+   "opulus_avg": 1.0,
+   "gpt_avg": 0.0,
+   "qwen_avg": 1.0,
+   "sig": {
+    "n_non_allpass": 6,
+    "n_unique_signatures": 1,
+    "diversity": 0.1667,
+    "diversity_pass": false,
+    "max_share": 1.0,
+    "max_share_pass": false,
+    "intra_mean": 0.0,
+    "cross_mean": 0.0,
+    "jaccard_ratio": 0.0,
+    "jaccard_status": "UNVERIFIED",
+    "jaccard_note": "同模型与跨模型距离均为 0",
+    "status": "FAIL"
+   }
+  },
+  {
+   "item": "CS-103",
+   "cond": {
+    "①五模型各4轮": true,
+    "②整体通过率<70%": true,
+    "③opus全过轮∈[1,3]": false,
+    "④qwen双低+至少一轮零分": false,
+    "⑤qwen∈{25%,50%}": false,
+    "⑥区分度三指标": false
+   },
+   "reason": [
+    "③opus 0轮全过=过难(TopHard剔除)",
+    "④qwen 无全挂轮(行40:至少一次为零)",
+    "⑤qwen passrate 0.0% 距目标25%差 25.0pp",
+    "⑥区分度三指标 FAIL: div=0.1/share=0.9/jaccard=1.5 ()"
+   ],
+   "rejected": [
+    {
+     "file": "kimi-k3-ark_run1_result.json",
+     "reason": "同 kimi-k3 run1 双命名重件,保留 mtime 最新('kimi-k3_run1_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run2_result.json",
+     "reason": "同 kimi-k3 run2 双命名重件,保留 mtime 最新('kimi-k3_run2_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run3_result.json",
+     "reason": "同 kimi-k3 run3 双命名重件,保留 mtime 最新('kimi-k3_run3_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run4_result.json",
+     "reason": "同 kimi-k3 run4 双命名重件,保留 mtime 最新('kimi-k3_run4_result.json'),剔除"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 4,
+    "kimi-k3": 4,
+    "glm5.3": 4,
+    "opus5.5": 4,
+    "gpt-6-astra": 4
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "overall_passrate": 0.0,
+   "domestic_spread_pp": 0.0,
+   "qwen_passrate": 0.0,
+   "opulus_avg": 0.0,
+   "gpt_avg": 0.0,
+   "qwen_avg": 0.0,
+   "sig": {
+    "n_non_allpass": 20,
+    "n_unique_signatures": 2,
+    "diversity": 0.1,
+    "diversity_pass": false,
+    "max_share": 0.9,
+    "max_share_pass": false,
+    "intra_mean": 0.0667,
+    "cross_mean": 0.1,
+    "jaccard_ratio": 1.5,
+    "jaccard_status": "PASS",
+    "jaccard_note": "",
+    "status": "FAIL"
+   }
+  },
+  {
+   "item": "CS-104",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": false,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 19/20(缺轮分母失配)",
+    "③opus 4轮全过=过简剔除",
+    "④⑤不可判: ['gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "gpt-6-astra_run3_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "kimi-k3-ark_run1_result.json",
+     "reason": "同 kimi-k3 run1 双命名重件,保留 mtime 最新('kimi-k3_run1_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run2_result.json",
+     "reason": "同 kimi-k3 run2 双命名重件,保留 mtime 最新('kimi-k3_run2_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run3_result.json",
+     "reason": "同 kimi-k3 run3 双命名重件,保留 mtime 最新('kimi-k3_run3_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run4_result.json",
+     "reason": "同 kimi-k3 run4 双命名重件,保留 mtime 最新('kimi-k3_run4_result.json'),剔除"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 4,
+    "kimi-k3": 4,
+    "glm5.3": 4,
+    "opus5.5": 4,
+    "gpt-6-astra": 3
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 4,
+    "kimi-k3": 4,
+    "glm5.3": 4,
+    "opus5.5": 4,
+    "gpt-6-astra": 3
+   }
+  },
+  {
+   "item": "CS-105",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'glm5.3', 'opus5.5'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 13/20(缺轮分母失配)",
+    "③不可判: opus 仅 1 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "glm5.3_run4_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "kimi-k3-ark_run1_result.json",
+     "reason": "同 kimi-k3 run1 双命名重件,保留 mtime 最新('kimi-k3_run1_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run2_result.json",
+     "reason": "同 kimi-k3 run2 双命名重件,保留 mtime 最新('kimi-k3_run2_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run3_result.json",
+     "reason": "同 kimi-k3 run3 双命名重件,保留 mtime 最新('kimi-k3_run3_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run4_result.json",
+     "reason": "同 kimi-k3 run4 双命名重件,保留 mtime 最新('kimi-k3_run4_result.json'),剔除"
+    },
+    {
+     "file": "opus5.5_run1_result.json",
+     "reason": "opus5.5 run1: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "opus5.5_run2_result.json",
+     "reason": "opus5.5 run2: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "opus5.5_run3_result.json",
+     "reason": "opus5.5 run3: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "opus5.5_run4_result.json",
+     "reason": "opus5.5 run4: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "qwen3.8max_run1_result.json",
+     "reason": "qwen3.8max run1: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "qwen3.8max_run2_result.json",
+     "reason": "qwen3.8max run2: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "qwen3.8max_run3_result.json",
+     "reason": "qwen3.8max run3: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "qwen3.8max_run4_result.json",
+     "reason": "qwen3.8max run4: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 1,
+    "kimi-k3": 4,
+    "glm5.3": 3,
+    "opus5.5": 1,
+    "gpt-6-astra": 4
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 3,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-201",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 0/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-202",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 4/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 4,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-203",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 4/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 4,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-204",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 0/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-205",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 0/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-206",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 0/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-207",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 0/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-301",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['opus5.5'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 17/20(缺轮分母失配)",
+    "③不可判: opus 仅 1 轮(<4)",
+    "④⑤不可判: ['opus5.5'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "kimi-k3-ark_run1_result.json",
+     "reason": "同 kimi-k3 run1 双命名重件,保留 mtime 最新('kimi-k3_run1_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run2_result.json",
+     "reason": "同 kimi-k3 run2 双命名重件,保留 mtime 最新('kimi-k3_run2_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run3_result.json",
+     "reason": "同 kimi-k3 run3 双命名重件,保留 mtime 最新('kimi-k3_run3_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run4_result.json",
+     "reason": "同 kimi-k3 run4 双命名重件,保留 mtime 最新('kimi-k3_run4_result.json'),剔除"
+    },
+    {
+     "file": "opus5.5_run1_result.json",
+     "reason": "opus5.5 run1: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "opus5.5_run2_result.json",
+     "reason": "opus5.5 run2: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "opus5.5_run3_result.json",
+     "reason": "opus5.5 run3: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "opus5.5_run4_result.json",
+     "reason": "opus5.5 run4: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 4,
+    "kimi-k3": 4,
+    "glm5.3": 4,
+    "opus5.5": 1,
+    "gpt-6-astra": 4
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 4,
+    "kimi-k3": 4,
+    "glm5.3": 3,
+    "opus5.5": 1,
+    "gpt-6-astra": 4
+   }
+  },
+  {
+   "item": "CS-302",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": false,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['glm5.3', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 12/20(缺轮分母失配)",
+    "③opus 4轮全过=过简剔除",
+    "④⑤不可判: ['gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "kimi-k3-ark_run1_result.json",
+     "reason": "同 kimi-k3 run1 双命名重件,保留 mtime 最新('kimi-k3_run1_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run2_result.json",
+     "reason": "同 kimi-k3 run2 双命名重件,保留 mtime 最新('kimi-k3_run2_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run3_result.json",
+     "reason": "同 kimi-k3 run3 双命名重件,保留 mtime 最新('kimi-k3_run3_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run4_result.json",
+     "reason": "同 kimi-k3 run4 双命名重件,保留 mtime 最新('kimi-k3_run4_result.json'),剔除"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 4,
+    "kimi-k3": 4,
+    "glm5.3": 0,
+    "opus5.5": 4,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 4,
+    "kimi-k3": 4,
+    "glm5.3": 0,
+    "opus5.5": 4,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-303",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": false,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['glm5.3', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 12/20(缺轮分母失配)",
+    "③opus 4轮全过=过简剔除",
+    "④⑤不可判: ['gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "kimi-k3-ark_run1_result.json",
+     "reason": "同 kimi-k3 run1 双命名重件,保留 mtime 最新('kimi-k3_run1_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run2_result.json",
+     "reason": "同 kimi-k3 run2 双命名重件,保留 mtime 最新('kimi-k3_run2_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run3_result.json",
+     "reason": "同 kimi-k3 run3 双命名重件,保留 mtime 最新('kimi-k3_run3_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run4_result.json",
+     "reason": "同 kimi-k3 run4 双命名重件,保留 mtime 最新('kimi-k3_run4_result.json'),剔除"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 4,
+    "kimi-k3": 4,
+    "glm5.3": 0,
+    "opus5.5": 4,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 2,
+    "kimi-k3": 3,
+    "glm5.3": 0,
+    "opus5.5": 4,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-304",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": true,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['glm5.3', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 12/20(缺轮分母失配)",
+    "④⑤不可判: ['gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "kimi-k3-ark_run1_result.json",
+     "reason": "同 kimi-k3 run1 双命名重件,保留 mtime 最新('kimi-k3_run1_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run2_result.json",
+     "reason": "同 kimi-k3 run2 双命名重件,保留 mtime 最新('kimi-k3_run2_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run3_result.json",
+     "reason": "同 kimi-k3 run3 双命名重件,保留 mtime 最新('kimi-k3_run3_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run4_result.json",
+     "reason": "同 kimi-k3 run4 双命名重件,保留 mtime 最新('kimi-k3_run4_result.json'),剔除"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 4,
+    "kimi-k3": 4,
+    "glm5.3": 0,
+    "opus5.5": 4,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 4,
+    "kimi-k3": 3,
+    "glm5.3": 0,
+    "opus5.5": 3,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-305",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": false,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['glm5.3', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 12/20(缺轮分母失配)",
+    "③opus 0轮全过=过难(TopHard剔除)",
+    "④⑤不可判: ['gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "kimi-k3-ark_run1_result.json",
+     "reason": "同 kimi-k3 run1 双命名重件,保留 mtime 最新('kimi-k3_run1_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run2_result.json",
+     "reason": "同 kimi-k3 run2 双命名重件,保留 mtime 最新('kimi-k3_run2_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run3_result.json",
+     "reason": "同 kimi-k3 run3 双命名重件,保留 mtime 最新('kimi-k3_run3_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run4_result.json",
+     "reason": "同 kimi-k3 run4 双命名重件,保留 mtime 最新('kimi-k3_run4_result.json'),剔除"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 4,
+    "kimi-k3": 4,
+    "glm5.3": 0,
+    "opus5.5": 4,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-401",
+   "cond": {
+    "①五模型各4轮": true,
+    "②整体通过率<70%": false,
+    "③opus全过轮∈[1,3]": false,
+    "④qwen双低+至少一轮零分": false,
+    "⑤qwen∈{25%,50%}": false,
+    "⑥区分度三指标": false
+   },
+   "reason": [
+    "②整体通过率 95%≥70% (过简)",
+    "③opus 4轮全过=过简剔除",
+    "④qwen 无全挂轮(行40:至少一次为零)",
+    "⑤qwen passrate 100.0% 距目标50%差 50.0pp",
+    "⑥区分度三指标 FAIL: div=1.0/share=1.0/jaccard=None (仅gpt-6-astra有非全过轮,跨模型 Jaccard 不可算)"
+   ],
+   "rejected": [
+    {
+     "file": "kimi-k3-ark_run1_result.json",
+     "reason": "同 kimi-k3 run1 双命名重件,保留 mtime 最新('kimi-k3_run1_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run2_result.json",
+     "reason": "同 kimi-k3 run2 双命名重件,保留 mtime 最新('kimi-k3_run2_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run3_result.json",
+     "reason": "同 kimi-k3 run3 双命名重件,保留 mtime 最新('kimi-k3_run3_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run4_result.json",
+     "reason": "同 kimi-k3 run4 双命名重件,保留 mtime 最新('kimi-k3_run4_result.json'),剔除"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 4,
+    "kimi-k3": 4,
+    "glm5.3": 4,
+    "opus5.5": 4,
+    "gpt-6-astra": 4
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 4,
+    "kimi-k3": 4,
+    "glm5.3": 4,
+    "opus5.5": 4,
+    "gpt-6-astra": 3
+   },
+   "overall_passrate": 0.95,
+   "domestic_spread_pp": 0.0,
+   "qwen_passrate": 1.0,
+   "opulus_avg": 1.0,
+   "gpt_avg": 0.75,
+   "qwen_avg": 1.0,
+   "sig": {
+    "n_non_allpass": 1,
+    "n_unique_signatures": 1,
+    "diversity": 1.0,
+    "diversity_pass": true,
+    "max_share": 1.0,
+    "max_share_pass": false,
+    "intra_mean": null,
+    "cross_mean": null,
+    "jaccard_ratio": null,
+    "jaccard_status": "UNVERIFIED",
+    "jaccard_note": "仅gpt-6-astra有非全过轮,跨模型 Jaccard 不可算",
+    "status": "FAIL"
+   }
+  },
+  {
+   "item": "CS-402",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": false,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 16/20(缺轮分母失配)",
+    "③opus 4轮全过=过简剔除",
+    "④⑤不可判: ['gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "gpt-6-astra_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "gpt-6-astra_run2_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "gpt-6-astra_run3_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "gpt-6-astra_run4_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "kimi-k3-ark_run1_result.json",
+     "reason": "同 kimi-k3 run1 双命名重件,保留 mtime 最新('kimi-k3_run1_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run2_result.json",
+     "reason": "同 kimi-k3 run2 双命名重件,保留 mtime 最新('kimi-k3_run2_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run3_result.json",
+     "reason": "同 kimi-k3 run3 双命名重件,保留 mtime 最新('kimi-k3_run3_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run4_result.json",
+     "reason": "同 kimi-k3 run4 双命名重件,保留 mtime 最新('kimi-k3_run4_result.json'),剔除"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 4,
+    "kimi-k3": 4,
+    "glm5.3": 4,
+    "opus5.5": 4,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 4,
+    "kimi-k3": 4,
+    "glm5.3": 4,
+    "opus5.5": 4,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-501",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": true,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 17/20(缺轮分母失配)",
+    "④⑤不可判: ['qwen3.8max', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "gpt-6-astra_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 2,
+    "kimi-k3": 4,
+    "glm5.3": 4,
+    "opus5.5": 4,
+    "gpt-6-astra": 3
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 3,
+    "glm5.3": 3,
+    "opus5.5": 2,
+    "gpt-6-astra": 1
+   }
+  },
+  {
+   "item": "CS-502",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'opus5.5'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 18/20(缺轮分母失配)",
+    "③不可判: opus 仅 3 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "opus5.5_run3_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "qwen3.8max_run1_result.json",
+     "reason": "qwen3.8max run1: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 3,
+    "kimi-k3": 4,
+    "glm5.3": 4,
+    "opus5.5": 3,
+    "gpt-6-astra": 4
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-503",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": false,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 18/20(缺轮分母失配)",
+    "③opus 4轮全过=过简剔除",
+    "④⑤不可判: ['qwen3.8max'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 2,
+    "kimi-k3": 4,
+    "glm5.3": 4,
+    "opus5.5": 4,
+    "gpt-6-astra": 4
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 2,
+    "kimi-k3": 4,
+    "glm5.3": 4,
+    "opus5.5": 4,
+    "gpt-6-astra": 4
+   }
+  },
+  {
+   "item": "CS-504",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": false,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'glm5.3'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 17/20(缺轮分母失配)",
+    "③opus 4轮全过=过简剔除",
+    "④⑤不可判: ['qwen3.8max'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "glm5.3_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 2,
+    "kimi-k3": 4,
+    "glm5.3": 3,
+    "opus5.5": 4,
+    "gpt-6-astra": 4
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 2,
+    "kimi-k3": 4,
+    "glm5.3": 3,
+    "opus5.5": 4,
+    "gpt-6-astra": 4
+   }
+  },
+  {
+   "item": "CS-505",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": false,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'glm5.3'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 17/20(缺轮分母失配)",
+    "③opus 4轮全过=过简剔除",
+    "④⑤不可判: ['qwen3.8max'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "glm5.3_run2_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 2,
+    "kimi-k3": 4,
+    "glm5.3": 3,
+    "opus5.5": 4,
+    "gpt-6-astra": 4
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 2,
+    "kimi-k3": 4,
+    "glm5.3": 3,
+    "opus5.5": 4,
+    "gpt-6-astra": 4
+   }
+  },
+  {
+   "item": "CS-506",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 15/20(缺轮分母失配)",
+    "③不可判: opus 仅 2 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "glm5.3_run2_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "gpt-6-astra_run2_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "opus5.5_run0_result.json",
+     "reason": "opus5.5 run0: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "opus5.5_run1_result.json",
+     "reason": "opus5.5 run1: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 3,
+    "kimi-k3": 4,
+    "glm5.3": 3,
+    "opus5.5": 2,
+    "gpt-6-astra": 3
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-507",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": false,
+    "④qwen双低+至少一轮零分": false,
+    "⑤qwen∈{25%,50%}": true,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['glm5.3'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 17/20(缺轮分母失配)",
+    "③opus 4轮全过=过简剔除",
+    "④qwen 无全挂轮(行40:至少一次为零)",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "kimi-k3-ark_run0_result.json",
+     "reason": "同 kimi-k3 run0 双命名重件,保留 mtime 最新('kimi-k3_run0_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run1_result.json",
+     "reason": "同 kimi-k3 run1 双命名重件,保留 mtime 最新('kimi-k3_run1_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run2_result.json",
+     "reason": "同 kimi-k3 run2 双命名重件,保留 mtime 最新('kimi-k3_run2_result.json'),剔除"
+    },
+    {
+     "file": "kimi-k3-ark_run3_result.json",
+     "reason": "同 kimi-k3 run3 双命名重件,保留 mtime 最新('kimi-k3_run3_result.json'),剔除"
+    },
+    {
+     "file": "glm5.3_run0_result.json",
+     "reason": "glm5.3 run0: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "glm5.3_run2_result.json",
+     "reason": "glm5.3 run2: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "glm5.3_run3_result.json",
+     "reason": "glm5.3 run3: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 4,
+    "kimi-k3": 4,
+    "glm5.3": 1,
+    "opus5.5": 4,
+    "gpt-6-astra": 4
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 2,
+    "kimi-k3": 4,
+    "glm5.3": 0,
+    "opus5.5": 4,
+    "gpt-6-astra": 4
+   },
+   "domestic_spread_pp": null,
+   "qwen_passrate": 0.5,
+   "opulus_avg": 1.0,
+   "gpt_avg": 1.0,
+   "qwen_avg": 0.5
+  },
+  {
+   "item": "CS-508",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": false,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 18/20(缺轮分母失配)",
+    "③opus 4轮全过=过简剔除",
+    "④⑤不可判: ['qwen3.8max'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 2,
+    "kimi-k3": 4,
+    "glm5.3": 4,
+    "opus5.5": 4,
+    "gpt-6-astra": 4
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 2,
+    "kimi-k3": 4,
+    "glm5.3": 4,
+    "opus5.5": 4,
+    "gpt-6-astra": 4
+   }
+  },
+  {
+   "item": "CS-509",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'opus5.5'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 17/20(缺轮分母失配)",
+    "③不可判: opus 仅 2 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "opus5.5_run2_result.json",
+     "reason": "opus5.5 run2: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "opus5.5_run3_result.json",
+     "reason": "opus5.5 run3: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "opus5.5_run6_result.json",
+     "reason": "opus5.5 run6: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "opus5.5_run7_result.json",
+     "reason": "opus5.5 run7: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 3,
+    "kimi-k3": 4,
+    "glm5.3": 4,
+    "opus5.5": 2,
+    "gpt-6-astra": 4
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 3,
+    "kimi-k3": 4,
+    "glm5.3": 4,
+    "opus5.5": 2,
+    "gpt-6-astra": 4
+   }
+  },
+  {
+   "item": "CS-510",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'glm5.3', 'opus5.5'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 14/20(缺轮分母失配)",
+    "③不可判: opus 仅 2 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "glm5.3_run2_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3_run3_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "opus5.5_run0_result.json",
+     "reason": "opus5.5 run0: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    },
+    {
+     "file": "opus5.5_run1_result.json",
+     "reason": "opus5.5 run1: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 2,
+    "kimi-k3": 4,
+    "glm5.3": 2,
+    "opus5.5": 2,
+    "gpt-6-astra": 4
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-511",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 9/20(缺轮分母失配)",
+    "③不可判: opus 仅 3 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "glm5.3_run0_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3_run2_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3_run3_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "gpt-6-astra_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "gpt-6-astra_run2_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "gpt-6-astra_run3_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "kimi-k3_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "opus5.5_run2_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 2,
+    "kimi-k3": 3,
+    "glm5.3": 0,
+    "opus5.5": 3,
+    "gpt-6-astra": 1
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 1,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-512",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": false,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'glm5.3'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 16/20(缺轮分母失配)",
+    "③opus 0轮全过=过难(TopHard剔除)",
+    "④⑤不可判: ['qwen3.8max'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "glm5.3_run0_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 2,
+    "kimi-k3": 4,
+    "glm5.3": 2,
+    "opus5.5": 4,
+    "gpt-6-astra": 4
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 2,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-513",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['opus5.5'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 18/20(缺轮分母失配)",
+    "③不可判: opus 仅 2 轮(<4)",
+    "④⑤不可判: ['opus5.5'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "opus5.5_run0_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "opus5.5_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 4,
+    "kimi-k3": 4,
+    "glm5.3": 4,
+    "opus5.5": 2,
+    "gpt-6-astra": 4
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 2,
+    "kimi-k3": 4,
+    "glm5.3": 4,
+    "opus5.5": 2,
+    "gpt-6-astra": 4
+   }
+  },
+  {
+   "item": "CS-514",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": false,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'glm5.3'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 14/20(缺轮分母失配)",
+    "③opus 0轮全过=过难(TopHard剔除)",
+    "④⑤不可判: ['qwen3.8max'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "glm5.3_run0_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3_run2_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3_run3_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 2,
+    "kimi-k3": 4,
+    "glm5.3": 0,
+    "opus5.5": 4,
+    "gpt-6-astra": 4
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 2,
+    "kimi-k3": 2,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 4
+   }
+  },
+  {
+   "item": "CS-515",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 2/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "qwen3.8max_run2_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "qwen3.8max_run3_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 2,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 2,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-516",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 4/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 4,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 4,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-517",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 2/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 2,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-518",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": false,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['glm5.3', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 14/20(缺轮分母失配)",
+    "③opus 4轮全过=过简剔除",
+    "④⑤不可判: ['gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [
+    {
+     "file": "glm5.3_run2_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3_run3_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "glm5.3_run4_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "gpt-6-astra_run1_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "gpt-6-astra_run2_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    },
+    {
+     "file": "gpt-6-astra_run3_result.json",
+     "reason": "无 ut_vector(非判读格式),拒载"
+    }
+   ],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 4,
+    "kimi-k3": 4,
+    "glm5.3": 1,
+    "opus5.5": 4,
+    "gpt-6-astra": 1
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 3,
+    "kimi-k3": 4,
+    "glm5.3": 0,
+    "opus5.5": 4,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-520",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 0/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-521",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 0/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-522",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 0/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-601",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 0/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-G1",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 0/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-G2",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 0/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-G3",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 0/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-G4",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 0/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-G5",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 0/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-G6",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 0/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-G7",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 0/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-G8",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 0/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-SK11",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 0/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-008B",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": null,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['qwen3.8max', 'kimi-k3', 'glm5.3', 'opus5.5', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 0/20(缺轮分母失配)",
+    "③不可判: opus 仅 0 轮(<4)",
+    "④⑤不可判: ['qwen3.8max', 'opus5.5', 'gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  },
+  {
+   "item": "CS-004B",
+   "cond": {
+    "①五模型各4轮": false,
+    "②整体通过率<70%": null,
+    "③opus全过轮∈[1,3]": false,
+    "④qwen双低+至少一轮零分": null,
+    "⑤qwen∈{25%,50%}": null,
+    "⑥区分度三指标": null
+   },
+   "reason": [
+    "①模型缺轮: ['glm5.3', 'gpt-6-astra'](其余条件按可判数据独立评·缺陷4修复)",
+    "②不可判: 实际入选轮数 14/20(缺轮分母失配)",
+    "③opus 0轮全过=过难(TopHard剔除)",
+    "④⑤不可判: ['gpt-6-astra'] 缺 4 轮",
+    "⑥不可判: 五模型未齐,20 轮签名池不全"
+   ],
+   "rejected": [],
+   "pass": false,
+   "rounds": {
+    "qwen3.8max": 4,
+    "kimi-k3": 4,
+    "glm5.3": 2,
+    "opus5.5": 4,
+    "gpt-6-astra": 0
+   },
+   "full_pass_rounds": {
+    "qwen3.8max": 0,
+    "kimi-k3": 0,
+    "glm5.3": 0,
+    "opus5.5": 0,
+    "gpt-6-astra": 0
+   }
+  }
+ ]
+}

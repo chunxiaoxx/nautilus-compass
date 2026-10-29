@@ -11,16 +11,12 @@ import json, subprocess, sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from collect_for_quickscreen import score_of  # noqa: E402
+from collect_for_quickscreen import score_of, SCRATCHES  # noqa: E402
 from s5_json import latest_batch, load_s5_json  # noqa: E402
 
 HOME = Path.home()
 COMPASS = HOME / "Projects/nautilus-compass"
 V5_ITEMS = HOME / "Projects/nautilus-v5/.claude/worktrees/codesense-a-fix/codesense/items"
-SCRATCHES = [Path("/tmp/cs_decoy_20261027/codesense/items"),
-             Path("/tmp/cs_decoy_509/codesense/items"),
-             Path("/tmp/cs004b/codesense/items"),
-             Path("/tmp/cs514b/codesense/items")]
 OUT = HOME / "Projects/nautilus-v5/.claude/worktrees/codesense-a-fix/codesense/runtime/pipeline_state"
 
 # 候选题名单(交付候选池:快筛过筛或 CANDIDATE)

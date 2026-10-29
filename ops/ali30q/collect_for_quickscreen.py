@@ -17,16 +17,19 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from s5_json import latest_batch as take_latest_batch, load_s5_json  # noqa: E402
 
 HOME = Path.home()
+# 10/29 实测: /tmp 周期性全灭 3/4(cs_decoy_509/cs004b/cs514b),幸存读数已迁
+# runtime/scratch_cs004b——生产判分读数禁落 /tmp(CLAUDE.md 纪律·复发第2次留痕)
+SCRATCHES = [Path("/tmp/cs_decoy_20261027/codesense/items"),
+             Path(__file__).resolve().parents[2] / "runtime/scratch_cs004b/codesense/items"]
 
 
 def dirs_from_args(a):
     if a.v5:
         yield Path(HOME / "Projects/nautilus-v5/.claude/worktrees/codesense-a-fix/codesense/items")
     if a.scratch:
-        yield Path("/tmp/cs_decoy_20261027/codesense/items")
-        yield Path("/tmp/cs_decoy_509/codesense/items")
-        yield Path("/tmp/cs004b/codesense/items")
-        yield Path("/tmp/cs514b/codesense/items")  # 与 pipeline_report.SCRATCHES 对齐
+        # SCRATCHES 唯一源=pipeline_report(10/29 /tmp 全灭 3/4 实录后收敛,勿再复制清单)
+        for s in SCRATCHES:
+            yield s
     for d in a.items_dir:
         yield Path(d)
 
