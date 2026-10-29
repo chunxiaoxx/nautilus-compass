@@ -37,11 +37,13 @@
 5. ~~counterexamples~~(✅ R211 闭合:反例程序+三态实跑日志,坑版 exit1 4 项静默证据/金标与卷B exit0[实测])
 6. ~~assets 归位+selfcheck 3 连跑+依赖声明~~(✅ R211 闭合:assets 归位/golden 层级迁移/双向 3 连跑逐字一致/requirements-lock 判分面精确版本)
 
-> **排期全清(2026-10-29 R211)。全表 10 项 ✅(第 10 项 platform 可不填维持原判)。下一步=重跑本核对档全表复核后启打包(打包前密钥清洗警示仍有效,见下节)。**
+> **排期全清(2026-10-29 R211)。全表 10 项 ✅(第 10 项 platform 可不填维持原判)。**
+> **✅ R214(10-29)全表复核通过+打包闭合**:全表逐项直验(tomllib 门 PASS·ut_count=21/ut_index 21/targets_badpattern 17·score.py 双模式·calibration 8 件·golden 两件·variants md5 cd493eb8/9b210cbe 与档一致·counterexamples 三态日志·baseline 梯度 1/1/0.762/0·requirements-lock 4 件精确版本)+清洗后双向复跑(NOP 0/21 exit1·Golden 21/21 exit0)与 R211 基线逐字一致[实测]。**打包**:pkg/CS-GS-005 密钥清洗(14 文件 23 处灭活:首轮 21+GOCSPX- 自匹配 token 修正 2,日志 secret_scrub_log_20261029.md)→ tar 30M md5=8ee99a3823ba6b9a6af7a45658254795 → NAS shared/codesense_real_lesson/CS-GS-005_v1_1029_clean.tar.gz(端到端 md5 一致)+README_唯一有效包.md 增 CS-GS-005 节。原始未清洗件仍仅存仓内 gs005_build/CS-GS-005(git 13 密钥件剔除态不变),pkg/ 与 tarball 已加 .gitignore 护栏。交付/发函动作候用户与平台编排,本轮不外发。
 
 ## 密钥警示(NAS 归档件适用)
 
 题包 environment/workspace/repo/docs 内含 5 月已知泄漏待轮换密钥形态串(GitHub PAT×4+Google OAuth×3,R195 推送事故已剔出 git 追踪,工作区保留)。NAS 归档属组织内网温层可存;**该件任何后续外发/交付前必须先做密钥清洗**。
+> ✅ 2026-10-29 R214:交付副本(pkg/+NAS tarball)已按本条清洗完毕并复验零命中;本警示对仓内原始工作副本继续有效。
 
 ## 判定证据分层
 

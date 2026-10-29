@@ -97,3 +97,8 @@ ops/ali30q/gs005_build/**/docs/generate_google_slides.py
 ops/ali30q/gs005_build/**/docs/generate_pitch_deck_gemini.py
 ops/ali30q/gs005_build/**/docs/archive/DAY5_COMPLETION_REPORT.md
 ops/ali30q/gs005_build/**/phase3/docs/archive/QUICK_REFERENCE.md
+
+# CS-GS-005 交付副本与 tarball(2026-10-29 R214 打包;清洗态,防 97M 重复入库)
+ops/ali30q/gs005_build/pkg/
+ops/ali30q/gs005_build/*.tar.gz
+ops/ali30q/gs005_build/*.tar.gz.md5
