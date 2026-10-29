@@ -1,0 +1,840 @@
+{
+ "schema": "evidence-scan-v1",
+ "bases": [
+  "/Users/chunxiao.wang/Projects/nautilus-v5/.claude/worktrees/codesense-a-fix/codesense/items",
+  "/tmp/cs_decoy_20261027/codesense/items",
+  "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/scratch_cs004b/codesense/items"
+ ],
+ "n_items": 76,
+ "n_clean": 47,
+ "n_flagged": 29,
+ "rows": [
+  {
+   "item": "CS-001",
+   "CONFLICT": [],
+   "UTMIX": "3种UT数: [24, 29, 30]",
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [
+    "glm5.3-anthropic_run0_result.json",
+    "glm5.3-anthropic_run1_result.json",
+    "glm5.3-anthropic_run2_result.json",
+    "glm5.3-anthropic_run3_result.json",
+    "glm5.3_direct_run1_result.json",
+    "gpt-6-astra_run1_result.json",
+    "gpt-6-astra_run5_result.json",
+    "kimi-k3_run0_result.json",
+    "kimi-k3_run1_result.json",
+    "opus5.5-qixuw_run3_result.json",
+    "qwen3.8max_run1_result.json"
+   ],
+   "n_valid": 31
+  },
+  {
+   "item": "CS-002",
+   "CONFLICT": [
+    "gpt-6-astra_run0_result.json: conflict致JSON损坏",
+    "kimi-k3-ark_run3_result.json: conflict致JSON损坏",
+    "opus5.5_run0_result.json: conflict致JSON损坏",
+    "opus5.5_run1_result.json: conflict致JSON损坏",
+    "opus5.5_run2_result.json: conflict致JSON损坏",
+    "opus5.5_run3_result.json: conflict致JSON损坏"
+   ],
+   "UTMIX": "2种UT数: [1, 27]",
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [
+    "glm5.3-anthropic_run0_result.json",
+    "glm5.3-anthropic_run1_result.json",
+    "glm5.3-anthropic_run2_result.json",
+    "glm5.3-anthropic_run3_result.json",
+    "kimi-k3_run0_result.json"
+   ],
+   "n_valid": 17
+  },
+  {
+   "item": "CS-003",
+   "CONFLICT": [
+    "glm5.3_run3_result.json: conflict致JSON损坏",
+    "gpt-6-astra_run0_result.json: conflict致JSON损坏",
+    "gpt-6-astra_run3_result.json: conflict致JSON损坏",
+    "kimi-k3-ark_run0_result.json: conflict致JSON损坏",
+    "kimi-k3-ark_run1_result.json: conflict致JSON损坏",
+    "kimi-k3-ark_run2_result.json: conflict致JSON损坏",
+    "kimi-k3-ark_run3_result.json: conflict致JSON损坏",
+    "kimi-k3_run0_result.json: conflict致JSON损坏",
+    "kimi-k3_run3_result.json: conflict致JSON损坏",
+    "opus5.5_run0_result.json: conflict致JSON损坏"
+   ],
+   "UTMIX": "2种UT数: [21, 28]",
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [
+    "glm5.3-anthropic_run0_result.json",
+    "glm5.3-anthropic_run1_result.json",
+    "glm5.3-anthropic_run2_result.json",
+    "glm5.3-anthropic_run3_result.json",
+    "glm5.3_run0_result.json",
+    "glm5.3_run1_result.json",
+    "kimi-k3_run1_result.json",
+    "qwen3.8max-bl_run0_result.json",
+    "qwen3.8max_run1_result.json"
+   ],
+   "n_valid": 11
+  },
+  {
+   "item": "CS-004",
+   "CONFLICT": [
+    "glm5.3_run0_result.json: conflict致JSON损坏",
+    "gpt-6-astra_run0_result.json: conflict致JSON损坏",
+    "kimi-k3_run0_result.json: conflict致JSON损坏",
+    "opus5.5_run0_result.json: conflict致JSON损坏",
+    "opus5.5_run3_result.json: conflict致JSON损坏"
+   ],
+   "UTMIX": "2种UT数: [23, 28]",
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [
+    "glm5.3-anthropic_run0_result.json",
+    "glm5.3-anthropic_run1_result.json",
+    "glm5.3-anthropic_run2_result.json",
+    "glm5.3-anthropic_run3_result.json",
+    "kimi-k3_run1_result.json",
+    "kimi-k3_run2_result.json",
+    "qwen3.8max_run1_result.json",
+    "qwen3.8max_run2_result.json"
+   ],
+   "n_valid": 19
+  },
+  {
+   "item": "CS-005",
+   "CONFLICT": [
+    "glm5.3_run0_result.json: conflict致JSON损坏",
+    "glm5.3_run2_result.json: conflict致JSON损坏",
+    "kimi-k3-ark_run3_result.json: conflict致JSON损坏",
+    "kimi-k3_run0_result.json: conflict致JSON损坏",
+    "kimi-k3_run1_result.json: conflict致JSON损坏",
+    "kimi-k3_run2_result.json: conflict致JSON损坏",
+    "kimi-k3_run3_result.json: conflict致JSON损坏"
+   ],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [
+    "glm5.3-anthropic_run0_result.json",
+    "glm5.3-anthropic_run1_result.json",
+    "glm5.3-anthropic_run2_result.json",
+    "glm5.3-anthropic_run3_result.json",
+    "kimi-k3-ark_run0_result.json",
+    "kimi-k3-ark_run1_result.json",
+    "kimi-k3-ark_run2_result.json",
+    "qwen3.8max-direct_run1_result.json",
+    "qwen3.8max-direct_run2_result.json",
+    "qwen3.8max-direct_run3_result.json",
+    "qwen3.8max-direct_run4_result.json"
+   ],
+   "n_valid": 20
+  },
+  {
+   "item": "CS-006",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [
+    "glm5.3-anthropic_run0_result.json",
+    "glm5.3-anthropic_run1_result.json",
+    "glm5.3-anthropic_run2_result.json",
+    "glm5.3-anthropic_run3_result.json"
+   ],
+   "n_valid": 21
+  },
+  {
+   "item": "CS-007",
+   "CONFLICT": [
+    "opus5.5_run1_result.json: conflict致JSON损坏",
+    "opus5.5_run2_result.json: conflict致JSON损坏",
+    "opus5.5_run3_result.json: conflict致JSON损坏"
+   ],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [
+    "glm5.3-anthropic_run0_result.json",
+    "glm5.3-anthropic_run1_result.json",
+    "glm5.3-anthropic_run2_result.json",
+    "glm5.3-anthropic_run3_result.json"
+   ],
+   "n_valid": 27
+  },
+  {
+   "item": "CS-008",
+   "CONFLICT": [],
+   "UTMIX": "2种UT数: [23, 28]",
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [
+    "glm5.3_run0_result.json",
+    "glm5.3_run1_result.json",
+    "gpt-6-astra_run1_result.json",
+    "gpt-6-astra_run2_result.json",
+    "gpt-6-astra_run3_result.json",
+    "gpt-6-astra_run4_result.json",
+    "gpt-6-astra_run5_result.json",
+    "kimi-k3_run1_result.json",
+    "opus5.5_run1_result.json",
+    "qwen3.8max-bl_run1_result.json",
+    "qwen3.8max_run1_result.json"
+   ],
+   "n_valid": 8
+  },
+  {
+   "item": "CS-009",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 0
+  },
+  {
+   "item": "CS-010",
+   "CONFLICT": [
+    "glm5.3_run0_result.json: conflict致JSON损坏",
+    "glm5.3_run1_result.json: conflict致JSON损坏",
+    "glm5.3_run2_result.json: conflict致JSON损坏",
+    "glm5.3_run3_result.json: conflict致JSON损坏",
+    "gpt-6-astra_run0_result.json: conflict致JSON损坏",
+    "gpt-6-astra_run1_result.json: conflict致JSON损坏",
+    "gpt-6-astra_run2_result.json: conflict致JSON损坏",
+    "kimi-k3-ark_run0_result.json: conflict致JSON损坏",
+    "kimi-k3-ark_run1_result.json: conflict致JSON损坏",
+    "kimi-k3-ark_run2_result.json: conflict致JSON损坏",
+    "kimi-k3-ark_run3_result.json: conflict致JSON损坏",
+    "kimi-k3_run0_result.json: conflict致JSON损坏",
+    "kimi-k3_run1_result.json: conflict致JSON损坏",
+    "kimi-k3_run2_result.json: conflict致JSON损坏",
+    "kimi-k3_run3_result.json: conflict致JSON损坏",
+    "opus5.5_run0_result.json: conflict致JSON损坏",
+    "opus5.5_run1_result.json: conflict致JSON损坏",
+    "opus5.5_run2_result.json: conflict致JSON损坏",
+    "opus5.5_run3_result.json: conflict致JSON损坏"
+   ],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [
+    "glm5.3-anthropic_run0_result.json",
+    "glm5.3-anthropic_run1_result.json",
+    "glm5.3-anthropic_run2_result.json",
+    "glm5.3-anthropic_run3_result.json"
+   ],
+   "n_valid": 5
+  },
+  {
+   "item": "CS-011",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [
+    "glm5.3-anthropic_run0_result.json",
+    "glm5.3-anthropic_run1_result.json",
+    "glm5.3-anthropic_run2_result.json",
+    "glm5.3-anthropic_run3_result.json",
+    "kimi-k3_run0_result.json",
+    "kimi-k3_run1_result.json",
+    "kimi-k3_run2_result.json",
+    "kimi-k3_run3_result.json"
+   ],
+   "n_valid": 16
+  },
+  {
+   "item": "CS-012",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [
+    "glm5.3-anthropic_run0_result.json",
+    "glm5.3-anthropic_run1_result.json",
+    "glm5.3-anthropic_run2_result.json",
+    "glm5.3-anthropic_run3_result.json",
+    "kimi-k3_run0_result.json",
+    "kimi-k3_run1_result.json",
+    "kimi-k3_run2_result.json",
+    "kimi-k3_run3_result.json"
+   ],
+   "n_valid": 16
+  },
+  {
+   "item": "CS-013",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [
+    "glm5.3-anthropic_run0_result.json",
+    "glm5.3-anthropic_run1_result.json",
+    "glm5.3-anthropic_run2_result.json",
+    "glm5.3-anthropic_run3_result.json",
+    "kimi-k3_run0_result.json",
+    "kimi-k3_run1_result.json",
+    "kimi-k3_run2_result.json",
+    "kimi-k3_run3_result.json"
+   ],
+   "n_valid": 16
+  },
+  {
+   "item": "CS-014",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [
+    "glm5.3-anthropic_run0_result.json",
+    "glm5.3-anthropic_run1_result.json",
+    "glm5.3-anthropic_run2_result.json",
+    "glm5.3-anthropic_run3_result.json",
+    "kimi-k3_run0_result.json",
+    "kimi-k3_run1_result.json",
+    "kimi-k3_run2_result.json",
+    "kimi-k3_run3_result.json"
+   ],
+   "n_valid": 16
+  },
+  {
+   "item": "CS-015",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 0
+  },
+  {
+   "item": "CS-016",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 0
+  },
+  {
+   "item": "CS-017",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 0
+  },
+  {
+   "item": "CS-018",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 0
+  },
+  {
+   "item": "CS-019",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 0
+  },
+  {
+   "item": "CS-020",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 0
+  },
+  {
+   "item": "CS-021",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 0
+  },
+  {
+   "item": "CS-022",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 0
+  },
+  {
+   "item": "CS-023",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 0
+  },
+  {
+   "item": "CS-024",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 0
+  },
+  {
+   "item": "CS-101",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 19
+  },
+  {
+   "item": "CS-102",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 24
+  },
+  {
+   "item": "CS-103",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 24
+  },
+  {
+   "item": "CS-104",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [
+    "gpt-6-astra_run3_result.json"
+   ],
+   "n_valid": 23
+  },
+  {
+   "item": "CS-105",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [
+    "glm5.3_run4_result.json"
+   ],
+   "n_valid": 25
+  },
+  {
+   "item": "CS-201",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 0
+  },
+  {
+   "item": "CS-202",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 4
+  },
+  {
+   "item": "CS-203",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 4
+  },
+  {
+   "item": "CS-204",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 0
+  },
+  {
+   "item": "CS-205",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 0
+  },
+  {
+   "item": "CS-206",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 0
+  },
+  {
+   "item": "CS-207",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 0
+  },
+  {
+   "item": "CS-301",
+   "CONFLICT": [],
+   "UTMIX": "2种UT数: [1, 21]",
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 25
+  },
+  {
+   "item": "CS-302",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 16
+  },
+  {
+   "item": "CS-303",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 16
+  },
+  {
+   "item": "CS-304",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 16
+  },
+  {
+   "item": "CS-305",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 16
+  },
+  {
+   "item": "CS-401",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 24
+  },
+  {
+   "item": "CS-402",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [
+    "gpt-6-astra_run1_result.json",
+    "gpt-6-astra_run2_result.json",
+    "gpt-6-astra_run3_result.json",
+    "gpt-6-astra_run4_result.json"
+   ],
+   "n_valid": 20
+  },
+  {
+   "item": "CS-501",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [
+    "gpt-6-astra_run1_result.json"
+   ],
+   "n_valid": 17
+  },
+  {
+   "item": "CS-502",
+   "CONFLICT": [],
+   "UTMIX": "2种UT数: [20, 21]",
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [
+    "opus5.5_run3_result.json"
+   ],
+   "n_valid": 19
+  },
+  {
+   "item": "CS-503",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 18
+  },
+  {
+   "item": "CS-504",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [
+    "glm5.3_run1_result.json"
+   ],
+   "n_valid": 17
+  },
+  {
+   "item": "CS-505",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [
+    "glm5.3_run2_result.json"
+   ],
+   "n_valid": 17
+  },
+  {
+   "item": "CS-506",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [
+    "glm5.3_run2_result.json",
+    "gpt-6-astra_run2_result.json"
+   ],
+   "n_valid": 17
+  },
+  {
+   "item": "CS-507",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 24
+  },
+  {
+   "item": "CS-508",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 18
+  },
+  {
+   "item": "CS-509",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 21
+  },
+  {
+   "item": "CS-510",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [
+    "glm5.3_run2_result.json",
+    "glm5.3_run3_result.json"
+   ],
+   "n_valid": 16
+  },
+  {
+   "item": "CS-511",
+   "CONFLICT": [],
+   "UTMIX": "2种UT数: [20, 21]",
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [
+    "glm5.3_run0_result.json",
+    "glm5.3_run1_result.json",
+    "glm5.3_run2_result.json",
+    "glm5.3_run3_result.json",
+    "gpt-6-astra_run1_result.json",
+    "gpt-6-astra_run2_result.json",
+    "gpt-6-astra_run3_result.json",
+    "kimi-k3_run1_result.json",
+    "opus5.5_run2_result.json"
+   ],
+   "n_valid": 9
+  },
+  {
+   "item": "CS-512",
+   "CONFLICT": [],
+   "UTMIX": "2种UT数: [20, 21]",
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [
+    "glm5.3_run0_result.json",
+    "glm5.3_run1_result.json"
+   ],
+   "n_valid": 16
+  },
+  {
+   "item": "CS-513",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 20
+  },
+  {
+   "item": "CS-514",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [
+    "glm5.3_run0_result.json",
+    "glm5.3_run1_result.json",
+    "glm5.3_run2_result.json",
+    "glm5.3_run3_result.json"
+   ],
+   "n_valid": 14
+  },
+  {
+   "item": "CS-515",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [
+    "qwen3.8max_run2_result.json",
+    "qwen3.8max_run3_result.json"
+   ],
+   "n_valid": 2
+  },
+  {
+   "item": "CS-516",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 4
+  },
+  {
+   "item": "CS-517",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 2
+  },
+  {
+   "item": "CS-518",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [
+    "glm5.3_run2_result.json",
+    "glm5.3_run3_result.json",
+    "glm5.3_run4_result.json",
+    "gpt-6-astra_run1_result.json",
+    "gpt-6-astra_run2_result.json",
+    "gpt-6-astra_run3_result.json"
+   ],
+   "n_valid": 14
+  },
+  {
+   "item": "CS-520",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 0
+  },
+  {
+   "item": "CS-521",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 0
+  },
+  {
+   "item": "CS-522",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 0
+  },
+  {
+   "item": "CS-601",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 0
+  },
+  {
+   "item": "CS-G1",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 0
+  },
+  {
+   "item": "CS-G2",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 0
+  },
+  {
+   "item": "CS-G3",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 0
+  },
+  {
+   "item": "CS-G4",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 0
+  },
+  {
+   "item": "CS-G5",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 0
+  },
+  {
+   "item": "CS-G6",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 0
+  },
+  {
+   "item": "CS-G7",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 0
+  },
+  {
+   "item": "CS-G8",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 0
+  },
+  {
+   "item": "CS-SK11",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 0
+  },
+  {
+   "item": "CS-008B",
+   "CONFLICT": [],
+   "UTMIX": null,
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 0
+  },
+  {
+   "item": "CS-004B",
+   "CONFLICT": [],
+   "UTMIX": "2种UT数: [33, 35]",
+   "SCOREMISMATCH": [],
+   "EMPTYUT": [],
+   "n_valid": 14
+  }
+ ]
+}

@@ -16,6 +16,9 @@
 
 - 判定器: `ops/ali30q/gate5.py`(v2·sha16 fcc310549ff390d1 在锁内)
   逐题判定+出局原因原文;分母固定 20;缺轮=该条件 None=不可判=不达标,U 显式留痕
+- **证据链门 gate-evidence(10/30 新增)**: `python3 ops/ali30q/evidence_scan.py`
+  CONFLICT(内嵌 merge conflict)/UTMIX(同题混 tests 版本)/SCOREMISMATCH 任一命中=证据链不闭合,
+  该题不得入交付清单(与达标判定独立:达标且证据干净才可交)
 - 数据面:
   - v5 items 树: `~/Projects/nautilus-v5/.claude/worktrees/codesense-a-fix/codesense/items`
   - compass 持久 scratch: `runtime/scratch_cs004b/codesense/items`
