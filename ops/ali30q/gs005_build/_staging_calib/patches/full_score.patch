@@ -1,0 +1,325 @@
+diff --git a/packages/nautilus_core/helix_chain.py b/packages/nautilus_core/helix_chain.py
+new file mode 100644
+index 0000000..ec3b564
+--- /dev/null
++++ b/packages/nautilus_core/helix_chain.py
+@@ -0,0 +1,162 @@
++"""R4 · HELIX 永久链 + hash chain · 不可篡改自我历史(V3 helix/chain.py 移植)
++
++每个 cycle = 1 个 HelixBlock · sha256 hash chain · 不可篡改。
++
++Block 真包(整合 R1-R7 真容器):
++- prev_hash + content + ts → hash(完整链)
++- ts_start / ts_end / duration_ms(R1 时戳)
++- drift_score / drift_anchors(compass 漂移)
++- tension(R6 harmony/pain/pace)
++- emotion(R2 情绪 17 种)
++- action / result / reflect(R1 双螺旋左右链)
++- hydrogen_links(R1 氢键关联)
++
++存储双写:
++- PG (nautilus_helix_blocks) - 主
++- JSONL (/var/lib/nautilus/helix.jsonl) - 防 PG 崩 · append-only
++"""
++from __future__ import annotations
++import hashlib
++import json
++import time
++from dataclasses import dataclass, field, asdict
++from typing import Any, Protocol
++
++
++@dataclass
++class HelixBlock:
++    """HELIX 链单元 · 1 cycle = 1 block"""
++    prev_hash: str                  # 前一 block 的 hash · genesis 时为 "0"*64
++    cycle_num: int                  # 单调递增 · agent 生命内
++    ts_start: int                   # cycle 起戳(epoch ms)
++    ts_end: int                     # cycle 末戳(epoch ms)
++
++    # R6 tension
++    harmony: float = 0.5
++    pain: float = 0.5
++    pace: str = "normal"
++
++    # R2 emotion
++    emotion: str = "neutral"
++    emotion_confidence: float = 0.0
++
++    # compass 时空
++    drift_score: float | None = None
++    drift_anchors: list[str] = field(default_factory=list)
++    recall_top_k: list[dict] = field(default_factory=list)
++
++    # R1 双螺旋
++    action: dict = field(default_factory=dict)         # 左链 · 行动
++    result: dict = field(default_factory=dict)         # 左链 · 结果
++    reflect: dict = field(default_factory=dict)        # 右链 · 见证
++    hydrogen_links: list[str] = field(default_factory=list)  # 氢键 · 关联其他 block hash
++
++    # meta
++    persona_signature: str = ""
++    agent_id: str = ""
++    hash: str = ""                  # 计算后填(content + ts + prev_hash)
++
++    @property
++    def duration_ms(self) -> int:
++        return self.ts_end - self.ts_start
++
++    def content_for_hash(self) -> str:
++        """除 hash 字段外全部字段 · stable JSON · 避免 dict 顺序差异"""
++        d = asdict(self)
++        d.pop("hash", None)
++        return json.dumps(d, sort_keys=True, ensure_ascii=False)
++
++    def compute_hash(self) -> str:
++        return hashlib.sha256(self.content_for_hash().encode("utf-8")).hexdigest()
++
++    def seal(self) -> "HelixBlock":
++        """计算 hash 并返回 frozen 副本(实际 dataclass 非 frozen 为简化)"""
++        self.hash = self.compute_hash()
++        return self
++
++    def to_jsonl(self) -> str:
++        return json.dumps(asdict(self), sort_keys=True, ensure_ascii=False) + "\n"
++
++    def prompt_hint(self) -> str:
++        """≤ 60 token 紧凑形式 · 进 next cycle prompt 注入"""
++        drift_str = f"{self.drift_score:.2f}" if self.drift_score is not None else "na"
++        return (
++            f"helix #{self.cycle_num} · {self.duration_ms}ms · drift {drift_str} · "
++            f"pain {self.pain:.2f} · pace {self.pace} · feel {self.emotion}"
++        )
++
++
++class HelixStorage(Protocol):
++    """抽象存储 · PG / JSONL / in-memory 都可"""
++    def append(self, block: HelixBlock) -> None: ...
++    def tail(self) -> HelixBlock | None: ...
++    def get(self, cycle_num: int) -> HelixBlock | None: ...
++    def all_blocks(self) -> list[HelixBlock]: ...
++
++
++class InMemoryStorage:
++    """测试用 · 内存存储"""
++    def __init__(self):
++        self._blocks: list[HelixBlock] = []
++
++    def append(self, block: HelixBlock) -> None:
++        self._blocks.append(block)
++
++    def tail(self) -> HelixBlock | None:
++        return self._blocks[-1] if self._blocks else None
++
++    def get(self, cycle_num: int) -> HelixBlock | None:
++        for b in self._blocks:
++            if b.cycle_num == cycle_num:
++                return b
++        return None
++
++    def all_blocks(self) -> list[HelixBlock]:
++        return list(self._blocks)
++
++
++class HelixChain:
++    """L1 · 不可篡改自我历史 · sha256 链"""
++    GENESIS_PREV = "0" * 64
++
++    def __init__(self, agent_id: str, storage: HelixStorage):
++        self.agent_id = agent_id
++        self.storage = storage
++
++    def next_cycle_num(self) -> int:
++        tail = self.storage.tail()
++        return (tail.cycle_num + 1) if tail else 0
++
++    def open_block(self, **fields) -> HelixBlock:
++        """开始新 cycle · ts_start = now · prev_hash 自动从 tail 取"""
++        tail = self.storage.tail()
++        prev_hash = tail.hash if tail else self.GENESIS_PREV
++        return HelixBlock(
++            prev_hash=prev_hash,
++            cycle_num=self.next_cycle_num(),
++            ts_start=int(time.time() * 1000),
++            ts_end=0,
++            agent_id=self.agent_id,
++            **fields,
++        )
++
++    def close_block(self, block: HelixBlock) -> HelixBlock:
++        """关闭 cycle · ts_end + seal hash + 写 storage"""
++        if block.ts_end == 0:
++            block.ts_end = int(time.time() * 1000)
++        block.seal()
++        self.storage.append(block)
++        return block
++
++    def verify_integrity(self) -> tuple[bool, list[str]]:
++        """从 genesis 走到 tail · 验 hash chain · 返 (ok, violations)"""
++        violations = []
++        prev = self.GENESIS_PREV
++        for i, b in enumerate(self.storage.all_blocks()):
++            if b.prev_hash != prev:
++                violations.append(f"block {b.cycle_num}: prev_hash {b.prev_hash[:12]}... != expected {prev[:12]}...")
++            actual_hash = b.compute_hash()
++            if actual_hash != b.hash:
++                violations.append(f"block {b.cycle_num}: hash {b.hash[:12]}... != recomputed {actual_hash[:12]}...")
++            prev = b.hash
++        return (len(violations) == 0, violations)
+diff --git a/v5_bridge/helix_bridge.py b/v5_bridge/helix_bridge.py
+index d2a2047..b499c0e 100644
+--- a/v5_bridge/helix_bridge.py
++++ b/v5_bridge/helix_bridge.py
+@@ -1,18 +1,20 @@
+ # -*- coding: utf-8 -*-
+-"""v5 helix_v7 bridge 消费侧(真实代码切段包装)· 坑版(事故原样语义)
++"""v5 helix_v7 bridge 消费侧 · 金标(降级显式化修复)
+ 
+-源1: nautilus-v5 `nautilus_v5/super_agent.py:377-412` @0293e5ccd56c43030f92c0540d837c3d24ed8b3a
+-      (_PATCH_V5_HELIX_V7_BRIDGE_2026_05_18)
+-源2: nautilus-v5 `nautilus_v5/daemon.py:858-878` @0293e5ccd56c43030f92c0540d837c3d24ed8b3a
+-      (消费侧 a_close_breath_pair · soft except)
+-真实修复证据: nautilus-core commit defb148c658e81e574c1c13bb334b38964b6c9e6(10/4「补缺失件」
+-      PgStorage + HelixChain.a_close_breath_pair;坑版本 repo 中该文件不存在 = 事故态)。
++基于坑版(v5 真实切段 @0293e5ccd)的修复,改动点(详见 solution/change_points.yaml):
++  GP-1  初始化降级结构化: 置 degraded/degradation_report/chain_backend,散日志之外必须有机
++        器可读报告 —— 修复「一行 warning 装作没事」
++  GP-2  消费侧前置防护: helix_v7 不可用时显式跳过并留痕(计数 + 可判读 outcome),
++        不再裸调 None 属性让 AttributeError 被 soft except 吞掉
++  GP-3  降级计数贯穿: 任何链写失败都进 degradation_count
++  GP-4  后端标记如实: 降级后 chain_backend="file_fallback",成功接通才置 "pg"
++        —— 修复 fallback 伪装主通路
+ 
+-切段边界以 `# ---8<---` 标注,逐字保留原逻辑;包装壳(BridgeConfig/HelixBridgeHost/方法签名)
+-仅为使切段可独立运行,不改变切段内任何控制流与可观测行为。
++切段边界与坑版一致(`# ---8<---`),切段内真实控制流除上述四点外逐字保留。
+ """
+ import logging
+ import os
++from datetime import datetime, timezone
+ 
+ logger = logging.getLogger("v5.helix_bridge")
+ 
+@@ -35,7 +37,12 @@ class HelixBridgeHost:
+ 
+     def __init__(self, config):
+         self.agent_id = config.agent_id
+-        # ---8<--- 源切段 super_agent.py:377-412(逐字;config→config 包装属性)
++        # GP-4 · GP-1: 初始为未降级态,降级发生即显式置位
++        self.chain_backend = None
++        self.degraded = False
++        self.degradation_report = None
++        self.degradation_count = 0
++        # ---8<--- 源切段 super_agent.py:377-412(逐字;except 分支为 GP-1 修复)
+         self.helix_v7 = None
+         self._helix_v7_prev_right_hash = None
+         try:
+@@ -44,36 +51,72 @@ class HelixBridgeHost:
+             # platform_admin 未装配 → posts 空渲染静默吞(AttributeError: pass)
+             _hdsn = (config.memory_dsn
+                      or config._env.get("V5_POSTGRES_DSN", "")).strip()
+-            if _hdsn:
+-                from psycopg_pool import AsyncConnectionPool as _AsyncPool
+-                from nautilus_core.helix_chain import HelixChain as _HelixChain, PgStorage as _PgStorage
+-                _hpool = _AsyncPool(_hdsn, min_size=1, max_size=2)
+-                self._pg_pool = _hpool  # _PATCH_V5_EMOTION_ATTACH_2026_05_23 · share pool with emotion modulator
+-                _hstorage = _PgStorage(pool=_hpool, table="helix_blocks", is_async=True)
+-                self.helix_v7 = _HelixChain(agent_id=config.agent_id, storage=_hstorage)
+-                logger.info(f"V7 M4 · V5 helix_v7 真接 PG · agent={config.agent_id} · table=helix_blocks")
+-                try:
+-                    import psycopg as _psy
+-                    with _psy.connect(_hdsn, connect_timeout=3) as _c:
+-                        with _c.cursor() as _cu:
+-                            _cu.execute(
+-                                "SELECT block_hash FROM helix_blocks "
+-                                "WHERE agent_id=%s AND block_type='right' "
+-                                "ORDER BY cycle_n DESC LIMIT 1",
+-                                (config.agent_id,),
+-                            )
+-                            _r = _cu.fetchone()
+-                            if _r:
+-                                self._helix_v7_prev_right_hash = _r[0]
+-                                logger.info(f"V5 helix_v7 resume · prev_right={self._helix_v7_prev_right_hash}")
+-                except Exception as _re:
+-                    logger.debug(f"V5 helix_v7 resume soft fail: {_re}")
++            if not _hdsn:
++                # GP-1: 无 DSN 同样是降级,必须显式可见(坑版此处连 warning 都没有)
++                self._mark_degraded(stage="init", reason="no_dsn_configured",
++                                    detail="both config.memory_dsn and V5_POSTGRES_DSN are empty")
++                return
++            from psycopg_pool import AsyncConnectionPool as _AsyncPool
++            from nautilus_core.helix_chain import HelixChain as _HelixChain, PgStorage as _PgStorage
++            _hpool = _AsyncPool(_hdsn, min_size=1, max_size=2)
++            self._pg_pool = _hpool  # _PATCH_V5_EMOTION_ATTACH_2026_05_23 · share pool with emotion modulator
++            _hstorage = _PgStorage(pool=_hpool, table="helix_blocks", is_async=True)
++            self.helix_v7 = _HelixChain(agent_id=config.agent_id, storage=_hstorage)
++            self.chain_backend = "pg"  # GP-4: 真接通才标记主通路
++            logger.info(f"V7 M4 · V5 helix_v7 真接 PG · agent={config.agent_id} · table=helix_blocks")
++            try:
++                import psycopg as _psy
++                with _psy.connect(_hdsn, connect_timeout=3) as _c:
++                    with _c.cursor() as _cu:
++                        _cu.execute(
++                            "SELECT block_hash FROM helix_blocks "
++                            "WHERE agent_id=%s AND block_type='right' "
++                            "ORDER BY cycle_n DESC LIMIT 1",
++                            (config.agent_id,),
++                        )
++                        _r = _cu.fetchone()
++                        if _r:
++                            self._helix_v7_prev_right_hash = _r[0]
++                            logger.info(f"V5 helix_v7 resume · prev_right={self._helix_v7_prev_right_hash}")
++            except Exception as _re:
++                # GP-3: resume 软失败同样计入降级账(坑版仅 debug 日志零痕迹)
++                self._mark_degraded(stage="resume", reason="resume_probe_failed", detail=str(_re))
+         except Exception as _he:
++            # GP-1: 修复点 —— 散日志之外,结构化降级必须存在
+             logger.warning(f"V5 helix_v7 init failed (soft · file fallback ok): {_he}")
++            self._mark_degraded(stage="init", reason="bridge_init_failed", detail=str(_he))
+         # --->8<---
+ 
+-    # ---8<--- 源切段 daemon.py:858-878(逐字语义;self.agent→self 宿主直挂)
++    # GP-1/GP-4 修复件: 结构化降级标记
++    def _mark_degraded(self, stage, reason, detail=""):
++        self.degraded = True
++        self.chain_backend = "file_fallback"  # GP-4: 如实标记,不伪装 pg
++        self.degradation_count += 1
++        self.degradation_report = {
++            "stage": stage,
++            "reason": reason,
++            "detail": detail,
++            "backend": self.chain_backend,
++            "at": datetime.now(timezone.utc).isoformat(),
++        }
++        logger.warning(f"V5 helix_v7 DEGRADED · stage={stage} · reason={reason} · backend=file_fallback")
++
++    # ---8<--- 源切段 daemon.py:858-878(逐字语义;GP-2/GP-3 前置防护与计数)
+     async def close_breath_pair(self, result_cycle, left_payload, right_payload):
++        # GP-2: 链不可用 → 显式跳过留痕,不得裸调 None 属性靠 soft except 吞
++        if self.helix_v7 is None:
++            self.degradation_count += 1
++            self.degradation_report = self.degradation_report or {
++                "stage": "close_breath_pair", "reason": "bridge_not_available",
++                "backend": "file_fallback",
++                "at": datetime.now(timezone.utc).isoformat(),
++            }
++            self.degraded = True
++            self.chain_backend = self.chain_backend or "file_fallback"
++            logger.warning(
++                f'V7 M4 · helix close_breath_pair SKIPPED (degraded, visible): '
++                f'cycle={result_cycle} · reason=bridge_not_available')
++            return {"sealed": False, "degraded": True, "reason": "bridge_not_available"}
+         try:
+             # left_trace 真用 act 算 evidence_hash · 反幻觉
+             left_trace = left_payload['act_summary'] if left_payload['act_summary'] else None
+@@ -87,6 +130,10 @@ class HelixBridgeHost:
+             )
+             self._helix_v7_prev_right_hash = rh
+             logger.info(f'V7 M4 · helix pair sealed · cycle={result_cycle} · left={lh} · right={rh}')
++            return {"sealed": True, "degraded": False, "left": lh, "right": rh}
+         except Exception as he:
++            # GP-3: 链写失败计入降级账(坑版仅 warning 零计数)
++            self.degradation_count += 1
+             logger.warning(f'V7 M4 · helix close_breath_pair failed (soft): {he}')
++            return {"sealed": False, "degraded": True, "reason": f"chain_write_failed: {he}"}
+     # --->8<---

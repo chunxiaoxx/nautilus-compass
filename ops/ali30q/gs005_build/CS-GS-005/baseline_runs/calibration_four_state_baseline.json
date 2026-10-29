@@ -1,0 +1,9 @@
+{
+  "note": "GS-005 判分基线(2026-10-29 R211)。模型面基线候 qwen 渠道修复后补(R176 定谳 32K 抬限无效·渠道面系统性故障);当前基线 = calibration 四态梯度,解释器=Python 3.12.15 darwin,UT=21 条,判分=tests/score.py 全过率口径[实测]",
+  "states": {
+    "full_score": {"score": 1.0, "passed": 21, "total": 21},
+    "equivalent": {"score": 1.0, "passed": 21, "total": 21},
+    "defective": {"score": 0.762, "passed": 16, "total": 21, "failed_ut": ["UT-2", "UT-13", "UT-14", "UT-15", "UT-21"]},
+    "guessed": {"score": 0.0, "passed": 0, "total": 21}
+  }
+}

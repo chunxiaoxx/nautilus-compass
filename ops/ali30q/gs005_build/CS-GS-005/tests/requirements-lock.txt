@@ -1,0 +1,9 @@
+# CS-GS-005 判分解释器依赖锁(ENV-04 · 2026-10-29 R211 落档)
+# 判分解释器 = Python 3.12(题包 .venv 同源;UT 与 score.py 仅依赖下述面)
+# 注意: psycopg_pool/psycopg/nautilus_core.helix_chain 为被测 repo 依赖面,
+# 判分环境刻意不装 —— 坏 DSN 场景走 ImportError 降级路径 = 题目语义场景本体
+# (selfcheck 双向留证与反例程序态1 均在此口径下实跑)。
+pytest==9.1.1
+pluggy==1.7.0
+iniconfig==2.3.1
+packaging==26.3

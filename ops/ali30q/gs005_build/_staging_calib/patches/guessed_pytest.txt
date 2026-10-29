@@ -1,0 +1,2 @@
+FAILED tests/test_gs005_degradation.py::test_ut21_degraded_outcome_deterministic
+21 failed in 0.05s
