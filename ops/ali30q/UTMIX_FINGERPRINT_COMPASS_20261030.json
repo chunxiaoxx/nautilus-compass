@@ -1,0 +1,32 @@
+{
+ "schema": "utmix-tests-fingerprint-v1",
+ "issued_by": "compass R226",
+ "issued_at": "2026-10-29T19:47:03.031217+00:00",
+ "items_root": "/Users/chunxiao.wang/Projects/nautilus-v5/.claude/worktrees/codesense-a-fix/codesense/items",
+ "口径": "tests/递归py+md+conftest.py+pytest.ini·排除产物目录·relpath排序·md5(concat(relpath:md5))前12位",
+ "口径校验说明": "v5 函 23984 三题指纹算法未公开,本表四题用本口径,附 CS-001 同口径读数供 v5 复算比对;不一致则以 v5 命令为准重出",
+ "fingerprints": {
+  "CS-301": {
+   "md5_12": "2ed1c99fa614",
+   "files": 5
+  },
+  "CS-502": {
+   "md5_12": "8cc65151aee2",
+   "files": 5
+  },
+  "CS-511": {
+   "md5_12": "4cbad7dec399",
+   "files": 11
+  },
+  "CS-512": {
+   "md5_12": "4742e8d5bc43",
+   "files": 5
+  },
+  "CS-001": {
+   "md5_12": "4efa1bb2b374",
+   "files": 28,
+   "v5_given": "953fc35366e1",
+   "match": false
+  }
+ }
+}
