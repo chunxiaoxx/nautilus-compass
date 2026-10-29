@@ -1,0 +1,140 @@
+{
+ "schema": "utmix-tests-fingerprint-v2-recheck",
+ "issued_by": "compass R228",
+ "issued_at": "2026-10-29T21:10:25.036370+00:00",
+ "实现(已按CS-001撞值坐实)": "cd tests/ 递归py+md·relpath相对tests/·按该相对路径排序·'relpath:md5hex\\n'拼接·整体md5前12位",
+ "fingerprints": {
+  "CS-001": {
+   "md5_12": "7b1585d1be46",
+   "files": 26,
+   "filelist": [
+    "calibration/deficient/__init__.py",
+    "calibration/deficient/calib.py",
+    "calibration/deficient/flux.py",
+    "calibration/deficient/photom.py",
+    "calibration/deficient/pipeline.py",
+    "calibration/deficient/qa.py",
+    "calibration/equivalent/__init__.py",
+    "calibration/equivalent/calib.py",
+    "calibration/equivalent/flux.py",
+    "calibration/equivalent/photom.py",
+    "calibration/equivalent/pipeline.py",
+    "calibration/equivalent/qa.py",
+    "calibration/guessed/__init__.py",
+    "calibration/guessed/calib.py",
+    "calibration/guessed/flux.py",
+    "calibration/guessed/photom.py",
+    "calibration/guessed/pipeline.py",
+    "calibration/guessed/qa.py",
+    "calibration/perfect/__init__.py",
+    "calibration/perfect/calib.py",
+    "calibration/perfect/flux.py",
+    "calibration/perfect/photom.py",
+    "calibration/perfect/pipeline.py",
+    "calibration/perfect/qa.py",
+    "score.py",
+    "test_cs001.py"
+   ]
+  },
+  "CS-004": {
+   "md5_12": "82398b706ea5",
+   "files": 22,
+   "filelist": [
+    "calibration/deficient/calc.py",
+    "calibration/deficient/ledger.py",
+    "calibration/deficient/refund.py",
+    "calibration/deficient/report.py",
+    "calibration/deficient/rounding.py",
+    "calibration/equivalent/calc.py",
+    "calibration/equivalent/ledger.py",
+    "calibration/equivalent/refund.py",
+    "calibration/equivalent/report.py",
+    "calibration/equivalent/rounding.py",
+    "calibration/guessed/calc.py",
+    "calibration/guessed/ledger.py",
+    "calibration/guessed/refund.py",
+    "calibration/guessed/report.py",
+    "calibration/guessed/rounding.py",
+    "calibration/perfect/calc.py",
+    "calibration/perfect/ledger.py",
+    "calibration/perfect/refund.py",
+    "calibration/perfect/report.py",
+    "calibration/perfect/rounding.py",
+    "score.py",
+    "test_cs004.py"
+   ]
+  },
+  "CS-008": {
+   "md5_12": "7475b5a7daf0",
+   "files": 24,
+   "filelist": [
+    "calibration/deficient/__init__.py",
+    "calibration/deficient/bucket.py",
+    "calibration/deficient/clean.py",
+    "calibration/deficient/ledger.py",
+    "calibration/deficient/limiter.py",
+    "calibration/deficient/table.py",
+    "calibration/deficient/validate.py",
+    "calibration/equivalent/bucket.py",
+    "calibration/equivalent/clean.py",
+    "calibration/equivalent/ledger.py",
+    "calibration/equivalent/table.py",
+    "calibration/equivalent/validate.py",
+    "calibration/guessed/bucket.py",
+    "calibration/guessed/clean.py",
+    "calibration/guessed/ledger.py",
+    "calibration/guessed/table.py",
+    "calibration/guessed/validate.py",
+    "calibration/perfect/bucket.py",
+    "calibration/perfect/clean.py",
+    "calibration/perfect/ledger.py",
+    "calibration/perfect/table.py",
+    "calibration/perfect/validate.py",
+    "score.py",
+    "test_cs008.py"
+   ]
+  },
+  "CS-301": {
+   "md5_12": "4eb953d23749",
+   "files": 3,
+   "filelist": [
+    "calibration/README.md",
+    "score.py",
+    "test_cs301.py"
+   ]
+  },
+  "CS-502": {
+   "md5_12": "81b2a857044f",
+   "files": 3,
+   "filelist": [
+    "calibration/README.md",
+    "score.py",
+    "test_cs502.py"
+   ]
+  },
+  "CS-511": {
+   "md5_12": "d34d331d5d38",
+   "files": 9,
+   "filelist": [
+    "assets/qwen_failure_snippet.md",
+    "assets/selfcheck.md",
+    "calibration/README.md",
+    "calibration/defective.md",
+    "calibration/equivalent.md",
+    "calibration/full_score.md",
+    "calibration/guessed.md",
+    "score.py",
+    "test_cs511.py"
+   ]
+  },
+  "CS-512": {
+   "md5_12": "9324a82cab60",
+   "files": 3,
+   "filelist": [
+    "calibration/README.md",
+    "score.py",
+    "test_cs512.py"
+   ]
+  }
+ }
+}
