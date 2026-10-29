@@ -82,3 +82,4 @@
 | R212 | 10-29 17:5x | 值守:PR#321今日MERGED(ai-boost·Evals&Verification收录+star·致谢评论+23875 touch报备)·Gmail刷新复活但细查API挂起候下轮·dev.to/GitHub零新增·矩阵17:25满额对10/30锚在轨·gate0 PASS·快筛维持不过筛(CS-517/518差③)·qs落v5零变化 |
 | R213 | 10-29 18:4x | 值守:四渠道零当前行动件(PR#321对话闭环/sliday·berty维持不追/CI六败=10/28历史积压已自愈8连绿·根因ruff扫gs005考场件)·Gmail细查:7d11封=8营销自动+3核对·threads.get 401疑似TTL边界直刷在途·gate0 PASS·矩阵18:25满额对10/30锚在轨·快筛维持不过筛(CS-518差③)·qs落v5 |
 | R213补 | 10-29 18:5x | Gmail细查闭环:threads.get挂起=urllib本地问题定谳(同token同端点curl 1.2s秒回200·R206同源复现)·401=旧token TTL边界(直刷3599s复活·refresh_token在credentials.json)·round_prompt配方三处修正(Gmail一律curl/直刷替代reauth.py/python→python3+gh绝对路径)·两候选函=已处理事件通知副本零行动件 |
+| R214 | 10-29 19:3x | 值守:四渠道零当前行动件(信箱0/Gmail 8封皆营销+berty#5273已知件/GitHub mentions五旧件维持不追+CI 8连绿/dev.to两文零评论)·gate0 PASS·矩阵19:26收官满额(各题≥20/20)对10/30 18:00锚在轨·快筛维持不过筛(CS-518差③·CS-513面板过=R210定谳过期读数候v5裁)·qs落v5零变化·管道刷新 |
