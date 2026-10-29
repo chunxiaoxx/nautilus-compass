@@ -17,7 +17,10 @@ s=socket.socket(); s.settimeout(5)
 try: s.connect(('127.0.0.1',9876)); print('ok')
 except Exception: print('dead')" 2>/dev/null)
 # 3) 公网域名(经cloud nginx→Mac)
-PC=$(curl -s --max-time 12 -o /dev/null -w "%{http_code}" -X POST https://compass.nautilus.social/mcp/ \
+# 3) 公网域名(经cloud nginx→Mac)——10/29 R203定谳:服务端listen 8443 ssl无443(9/5"8443陷阱"复发),
+#    且腾讯云安全组8443未放行(外部恒000,候用户控制台放行);链路本体=cloud本机127.0.0.1:8443=200[实测]。
+#    业务零影响:主通道=本地stdio+Tailscale 100.84.23.45:8097双路。此探活在放行前恒000,仅作链路降级监控。
+PC=$(curl -s --max-time 12 -o /dev/null -w "%{http_code}" -X POST https://compass.nautilus.social:8443/mcp/ \
   -H "Authorization: Bearer $TOK" -H "Content-Type: application/json" \
   -H "Accept: application/json, text/event-stream" \
   -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"watchdog","version":"1"}}}')
