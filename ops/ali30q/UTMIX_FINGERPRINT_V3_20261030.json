@@ -1,0 +1,66 @@
+{
+ "schema": "utmix-tests-fingerprint-v3",
+ "issued_by": "compass R231",
+ "issued_at": "2026-10-30",
+ "口径": "v2撞值实现(relpath相对tests/)+EXCLUDE_DIRS+calibration(v5 24022统一排除判分校准件)",
+ "fingerprints": {
+  "CS-001": {
+   "v3_md5_12": "6d978c5b1203",
+   "files": 2,
+   "filelist": [
+    "score.py",
+    "test_cs001.py"
+   ]
+  },
+  "CS-004": {
+   "v3_md5_12": "f24925d74bde",
+   "files": 2,
+   "filelist": [
+    "score.py",
+    "test_cs004.py"
+   ]
+  },
+  "CS-008": {
+   "v3_md5_12": "6d35c48e4014",
+   "files": 2,
+   "filelist": [
+    "score.py",
+    "test_cs008.py"
+   ]
+  },
+  "CS-301": {
+   "v3_md5_12": "bad384458cd4",
+   "files": 2,
+   "filelist": [
+    "score.py",
+    "test_cs301.py"
+   ]
+  },
+  "CS-502": {
+   "v3_md5_12": "e2df7e4c1941",
+   "files": 2,
+   "filelist": [
+    "score.py",
+    "test_cs502.py"
+   ]
+  },
+  "CS-511": {
+   "v3_md5_12": "34582e14fc5d",
+   "files": 4,
+   "filelist": [
+    "assets/qwen_failure_snippet.md",
+    "assets/selfcheck.md",
+    "score.py",
+    "test_cs511.py"
+   ]
+  },
+  "CS-512": {
+   "v3_md5_12": "a948ff836433",
+   "files": 2,
+   "filelist": [
+    "score.py",
+    "test_cs512.py"
+   ]
+  }
+ }
+}

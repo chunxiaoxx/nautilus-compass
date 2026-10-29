@@ -1,6 +1,16 @@
 {
-  "schema": "criteria-lock-v1",
-  "locked_at": "2026-10-29T09:10:00+08:00",
+  "schema": "criteria-lock-v2",
+  "locked_at": "2026-10-30T11:30:00+08:00",
+  "v2_changelog": "v2(2026-10-30)变更理由:按 flywheel 函 24021(互认办结)挂入 peer_lock 双锚——判据八件 sha16 零改动,纯结构增强(只许更严纪律符合)。v1 locked_at 2026-10-29T09:10:00+08:00,自身sha16(LF)=004915ae3f2d9c5c 留档。",
+  "peer_lock": {
+    "flywheel": {
+      "path": "runtime/pipeline_state/criteria_lock_flywheel.json",
+      "host": "~/Projects/nautilusflywheel",
+      "sha16_lf": "e1e6c71238244d4e",
+      "互认函": "24021(reply-23975-criteria-lock-mutual-r397 · 2026-10-30 R397)",
+      "compass实测复验": "e1e6c71238244d4e(R231 本地 tr -d \\r | sha256 前16位,与函值一致)"
+    }
+  },
   "issued_by": "compass(判据工程化·22905分工)·本锁为 CLAUDE.md「判据v3基线」声明件的补落实物——此前声称为建、实无文件亦无 git 历史,10/29 判读补齐",
   "sha_rule": "sha16 = sha256 前16位·LF 口径(工作区文件去 \\r 后哈希;sha锚autocrlf陷阱 10/8 纪律:一律 LF blob 口径,不符先证伪口径)",
   "五条件冻结文本": {
