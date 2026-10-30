@@ -4,6 +4,15 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R527 · 2026-10-30 下午(值守 R244:全渠道绿·Cloudflare 升级令全线合规·快筛 CS-007+513 双过筛但 CS-007 面板读数证伪候 v5)
+
+- **值守面全绿**:platform 信箱零未读·Gmail 401→直刷复活(token 刷新 256 字符[实测])+9 条判读=7 营销+2 核实零行动——①berty#5273 closed as completed=邀请收尾通知零提问;②🔴Cloudflare Tunnel 升级令(emSign 弱私钥中间证书事件,cloudflared<2026.10.2 受影响)逐节点盘点[实测]:cloud 生产 2026.10.5(10/27 构建)>门槛✅·Mac/manus/NAS 未装✅——全线合规零行动·GH mention 搜索换 `mentions:` 限定符(旧 `--mention` flag 已废)零新件,CI 失败通知=自家仓历史已知·dev.to 文2 单文 API 证实正文 Addendum 段(indiainfranotes/BRYDGE/receipt 关键词全中·11005 字符),两文评论全清零新增·daemon 9876 绿+watchdog 静默·哨兵绿 recall_hit=20。
+- **矩阵 16:10 收官满额**(513:20/301:22/004:28/005:31/006:24)对 18:00 锚在轨。
+- **🔴快筛 CS-007+CS-513 双过筛,但 CS-007 面板读数被 v2 净场实读证伪**:面板 CS-007 qwen=0.25/opus=1.0(梯度 75pp)判"过",而 v2 净场重判实读 qwen run0=0.9722/run2=0.9444(applied=7 真修复)[实测]——**面板读数为旧批产卷过期读数**(CS-513/CS-011 同款病),CS-007 实际过简风险高,与 10/30 存量全员过简判断一致;成因归属与处置候 v5 裁,值守不裁。
+- **CS-007 v2 判分收官在轨**:pid 57776 存活 2h49m [实测]·opus 4 轮全毕·qwen run0 0.9722/run1/run2 0.9444 全 done·run3 16:05 开考——预计 16:40 前后 16 轮全毕,"完整判分反馈 18:00 前回"承诺在轨。
+- **管道刷新**:qs.json 落 v5 共享面·pipeline_report 已刷·pipeline_state_sync 已跑。素材主线: 卡0·题0·门0(施工位 bait-loop 专管,亮牌持续)。
+- **候办主件**:「判分跑批 daemon 化」(23852 认领)排期明确=10/30 18:00 锚后开工·独立轮执行,本轮未启动。
+
 ### R526 · 2026-10-30 下午(值守 R243:全渠道绿·快筛 CS-513 首过筛·CS-007v2 判分在途健康)
 
 - **值守面全绿**:platform 信箱零未读(bootstrap 口 [实测]·`platform_mail.py` urllib 首连 SSLEOFError 为瞬时 TLS 抖动,curl 二连 200,与 R126-131 公网链超时同象,未改代码)·Gmail 活·9 线程皆营销/系统通知零商务函·GH 唯一通知=10/29 旧 CI 失败(后续 runs 全绿不追)·dev.to 6+2=8 评与 R242 基线持平零新增·daemon 9876 绿+watchdog 静默·哨兵绿 recall_hit=20。
