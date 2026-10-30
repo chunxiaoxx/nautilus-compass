@@ -102,3 +102,4 @@ ops/ali30q/gs005_build/**/phase3/docs/archive/QUICK_REFERENCE.md
 ops/ali30q/gs005_build/pkg/
 ops/ali30q/gs005_build/*.tar.gz
 ops/ali30q/gs005_build/*.tar.gz.md5
+runtime/pipeline_state/plugin_deploy_manifest.txt
