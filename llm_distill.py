@@ -65,7 +65,7 @@ def call_haiku(session_text: str) -> dict | None:
         return None
     payload = {
         "model": os.environ.get("COMPASS_WRITER_MODEL") or HAIKU_MODEL,
-        "max_tokens": 600,
+        "max_tokens": int(os.environ.get("COMPASS_WRITER_MAX_TOKENS", "1200")),  # 10/30: 600截断JSON断尾,provider路径默认1200
         "system": SYSTEM_PROMPT,
         "messages": [{"role": "user", "content": session_text[:4000]}],
     }
