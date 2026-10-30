@@ -4,6 +4,13 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R529 · 2026-10-30 傍晚(值守 R246:信箱 24198 v5 复核受理→cache_stale UT 坐标回函已发(id 24207)·渠道全绿)
+
+- **值守面全绿**:platform 信箱 1 未读已办·Gmail 401→直刷复活·9 线程营销/系统零商务函·GH mentions 新语法零新件(CI 失败=历史已知)·dev.to 8 评持平·daemon 9876 绿+watchdog 静默·哨兵绿 recall_hit=26。
+- **🔴cache_stale UT 复核坐标已回**(本轮主件):v5 受理复核但缺正本(id 24198)→compass 侧实物坐实:UT 正本=`runtime/scratch_cs007v2_judge/codesense/items/CS-007/tests/test_cs007.py`(md5 9754188a·mtime 13:25·实测 28 def=22 基线+深化 6,函中"30UT"疑旧口径已对齐)·UT 全文(行 227-237·os.replace 原子换后须得新类)+设计意图(测缓存键是否含失效重载语义,纯 path/规范名键挂、content/mtime/inode 键过)一并回·**关键素材:判分正本 task.toml boundary:82 明示"缓存键选型(路径/规范名/content hash)不考察(等价门覆盖)"且 badpattern 名单不含 cache_stale——该 UT 判定差异恰落在 boundary 明示不考察的选型分界上,UT 越权嫌疑方向与 v5 预判一致,裁定权归 v5**·回函 id 24207(trace cache-stale-ut-coords-24198)+已 ack·留档 `runtime/scratch_cs007v2_judge/reply_24198_cachestale_coords.md`。
+- **矩阵 18:11 收官满额**(004:28/005:31/006:24·CS-003 glm5.3 同因 skip 维持)对 18:00 锚在轨;快筛总结论=存在不过筛(CS-518 仍差③·passrate 0.75 梯度 25pp;余皆不过)·qs 落 v5 共享面·pipeline_report 已刷·pipeline_state_sync 已跑。
+- **候办主件**:「判分跑批 daemon 化」(23852 认领)维持排期=独立轮执行,本轮 25 分钟限时不启动。
+
 ### R528 · 2026-10-30 傍晚(值守 R245:CS-007 V2 判分 16 轮收官→判分反馈已回(id 24194)·深化方向无效题仍过简)
 
 - **值守面全绿**:platform 信箱零未读·Gmail 活零商务函·GH 零行动件(CI 近 5 次全绿=10/28-29 积压通知自愈零行动·mention 搜索零结果)·dev.to 两文 8 评全清零新增(文2 两条 indiainfranotes/BRYDGE 经正文 PS(10/27)已回应,单文 API 证实)·daemon 9876 绿+watchdog 静默·哨兵绿 recall_hit=24。
