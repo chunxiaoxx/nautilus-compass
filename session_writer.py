@@ -199,8 +199,20 @@ def parse_transcript(path: Path) -> str:
 
 
 def call_llm(text: str) -> str | None:
-    """Try ARK first · fallback Anthropic proxy · None if no key."""
+    """Provider config first · then ARK · fallback Anthropic proxy · None if no key.
+
+    2026-10-30: COMPASS_WRITER_URL/KEY/MODEL 三元组=配置驱动 provider(中转站
+    anthropic 原生面实测 200,glm-5.3);换 provider 不再改代码。
+    """
     text = text[:MAX_PROMPT_CHARS]
+
+    w_url = os.environ.get("COMPASS_WRITER_URL")
+    w_key = os.environ.get("COMPASS_WRITER_KEY")
+    if w_url and w_key:
+        w_model = os.environ.get("COMPASS_WRITER_MODEL", "glm-5.3")
+        out = _call_anthropic_compatible(w_url, w_key, w_model, text)
+        if out:
+            return out
 
     ark_key = os.environ.get("ARK_API_KEY")
     if ark_key:
