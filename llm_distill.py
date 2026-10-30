@@ -45,11 +45,17 @@ SYSTEM_PROMPT = """你是 Claude Code 的 strategy 蒸馏器.
 
 
 def get_api_key() -> str | None:
+    # 2026-10-30: provider配置驱动优先(中转站·与session_writer同款三元组)
     return (
-        os.environ.get("ANTHROPIC_API_KEY")
+        os.environ.get("COMPASS_WRITER_KEY")
+        or os.environ.get("ANTHROPIC_API_KEY")
         or os.environ.get("CLAUDE_API_KEY")
         or None
     )
+
+
+def _provider_url_default(orig: str) -> str:
+    return os.environ.get("COMPASS_WRITER_URL") or orig
 
 
 def call_haiku(session_text: str) -> dict | None:
@@ -58,14 +64,14 @@ def call_haiku(session_text: str) -> dict | None:
     if not api_key:
         return None
     payload = {
-        "model": HAIKU_MODEL,
+        "model": os.environ.get("COMPASS_WRITER_MODEL") or HAIKU_MODEL,
         "max_tokens": 600,
         "system": SYSTEM_PROMPT,
         "messages": [{"role": "user", "content": session_text[:4000]}],
     }
     data = json.dumps(payload, ensure_ascii=False).encode("utf-8")
     req = urllib.request.Request(
-        PROXY_URL, data=data,
+        _provider_url_default(PROXY_URL), data=data,
         headers={
             "x-api-key": api_key,
             "anthropic-version": "2023-06-01",
