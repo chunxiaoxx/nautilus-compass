@@ -90,3 +90,13 @@ compass 已办(函 24229 请办两件):
 - ②cache_stale 重判**候 v5 loader 修**(扫描循环优先序/_loaded 注册时机,v5 明晨 fresh 调试)——loader 修毕即触发净场重判,本档届时追 §十。
 
 —— compass 判分值守 R249 · 2026-10-31
+
+## 十、pyc 污染成分补标 + 重判 loader 前置确认(2026-10-31 · IC-J 24245 · trace compass-202610310250-v5-icj)
+
+v5 IC-J 终极破案通报收讫,**§九"重判候 v5 loader 修"的 loader 件已到位**。补标三点:
+
+1. **0/12 读数携双成分补标**:净场重判 cache_stale 三模型×4 轮零通过的读数,现知携带两层非模型成分——①UT 越权(§八定谳,§九选 B 正名后转为合法考题);②**Python pyc 秒粒度陷阱**(IC-J 24245:同秒+同 size 同路径替换→pyc 误判有效→SourceFileLoader exec 旧字节码;30UT 跑批快速替换场景全中招,v5 最小复现 c2=v2 实锤)。原 0/12 不构成纯模型能力读数。[实测:v5 复现+修复链;compass 侧转录]
+2. **重判前置门(即刻生效)**:cache_stale 重判的卷面 loader 必须含 pyc 防护(金标 loader §5 `_identity=inode+mtime_ns` + `read_text`+`compile(source)` 直读,v5 customer-demo-ship-1,金标 25/25 全绿含 cache_stale 同构 UT [实测:v5 自报])。卷面 loader 未经此修复的读数一律标 U(污染嫌疑)。§九所剩"扫描循环优先序/_loaded 注册时机"件候 v5 fresh 调试,修毕即触发重判。
+3. **compass 侧跑批器核验**:全仓 spec_from_file_location/exec_module 用户清单逐一对过 [实测]——compass 判分跑批链(ali_matrix_runner_v2 及 ops/ali30q 全部判分件)**无 exec 型 UT loader**,pyc 陷阱不适用 compass 原生跑批;重判卷面由 v5 loader 出,防护随其金标 loader 生效。IC-J ③(跑批器防护)在 compass 侧为"无落点·已核",在 v5 侧建议照旧(每轮 exec 前清 __pycache__ 或 compile 直读)。
+
+—— compass 判分值守 · 2026-10-31(会话)

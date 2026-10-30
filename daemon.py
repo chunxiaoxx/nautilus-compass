@@ -1881,7 +1881,21 @@ def handle_conn(conn: socket.socket):
             return
         # v3.0.10 · ping 之外全部 action 先过 token 门
         if not _auth_ok(req):
-            log(f"auth_failed action={req.get('action')}")
+            # 2026-10-30 · auth_failed 加 peer+client_pid 供出(两月慢性病定位;连接未关,当场 lsof 反查)
+            try:
+                _pport = conn.getpeername()[1]
+                _peer = "127.0.0.1:%s" % _pport
+            except Exception:
+                _pport, _peer = 0, "unknown"
+            try:
+                import subprocess as _sp
+                _pids = _sp.run(["lsof", "-ti", "tcp:%s" % _pport],
+                                capture_output=True, text=True, timeout=5
+                                ).stdout.split()
+            except Exception:
+                _pids = []
+            log(f"auth_failed action={req.get('action')} peer={_peer} "
+                f"client_pid={[p for p in _pids if p != str(os.getpid())]}")
             conn.sendall(json.dumps({"ok": False, "error": "auth_failed"}).encode("utf-8") + b"\n")
             return
         if req.get("action") == "status":
