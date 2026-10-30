@@ -1,0 +1,94 @@
+{
+ "item": "CS-007",
+ "cond": {
+  "①五模型各4轮": true,
+  "②整体通过率<70%": true,
+  "③opus全过轮∈[1,3]": false,
+  "④qwen双低+至少一轮零分": false,
+  "⑤qwen∈{25%,50%}": true,
+  "⑥区分度三指标": false
+ },
+ "reason": [
+  "③opus 4轮全过=过简剔除",
+  "④qwen 无全挂轮(行40:至少一次为零)",
+  "⑥区分度三指标 FAIL: div=0.1429/share=1.0/jaccard=0.0 (同模型与跨模型距离均为 0)"
+ ],
+ "rejected": [
+  {
+   "file": "kimi-k3-ark_run1_result.json",
+   "reason": "同 kimi-k3 run1 双命名重件,保留 mtime 最新('kimi-k3_run1_result.json'),剔除"
+  },
+  {
+   "file": "kimi-k3-ark_run2_result.json",
+   "reason": "同 kimi-k3 run2 双命名重件,保留 mtime 最新('kimi-k3_run2_result.json'),剔除"
+  },
+  {
+   "file": "kimi-k3-ark_run3_result.json",
+   "reason": "同 kimi-k3 run3 双命名重件,保留 mtime 最新('kimi-k3_run3_result.json'),剔除"
+  },
+  {
+   "file": "kimi-k3-ark_run4_result.json",
+   "reason": "同 kimi-k3 run4 双命名重件,保留 mtime 最新('kimi-k3_run4_result.json'),剔除"
+  },
+  {
+   "file": "glm5.3_run4_result.json",
+   "reason": "glm5.3 run4: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+  },
+  {
+   "file": "gpt-6-astra_run4_result.json",
+   "reason": "gpt-6-astra run4: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+  },
+  {
+   "file": "gpt-6-astra_run5_result.json",
+   "reason": "gpt-6-astra run5: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+  },
+  {
+   "file": "kimi-k3_run0_result.json",
+   "reason": "kimi-k3 轮数超规格(5>4),取 mtime 最新 4 轮,剔除"
+  },
+  {
+   "file": "opus5.5_run4_result.json",
+   "reason": "opus5.5 run4: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+  },
+  {
+   "file": "qwen3.8max_run4_result.json",
+   "reason": "qwen3.8max run4: 非最新 mtime 批(F-009 跨时段不混算),剔除"
+  }
+ ],
+ "pass": false,
+ "rounds": {
+  "qwen3.8max": 4,
+  "kimi-k3": 4,
+  "glm5.3": 4,
+  "opus5.5": 4,
+  "gpt-6-astra": 4
+ },
+ "full_pass_rounds": {
+  "qwen3.8max": 1,
+  "kimi-k3": 4,
+  "glm5.3": 4,
+  "opus5.5": 4,
+  "gpt-6-astra": 0
+ },
+ "overall_passrate": 0.65,
+ "domestic_spread_pp": 75.0,
+ "qwen_passrate": 0.25,
+ "opulus_avg": 1.0,
+ "gpt_avg": 0.0,
+ "qwen_avg": 0.25,
+ "sig": {
+  "n_non_allpass": 7,
+  "n_unique_signatures": 1,
+  "diversity": 0.1429,
+  "diversity_pass": false,
+  "max_share": 1.0,
+  "max_share_pass": false,
+  "intra_mean": 0.0,
+  "cross_mean": 0.0,
+  "jaccard_ratio": 0.0,
+  "jaccard_status": "UNVERIFIED",
+  "jaccard_note": "同模型与跨模型距离均为 0",
+  "status": "FAIL"
+ },
+ "archive_note": "CS-007 全量正式终判·30UT正本口径·2026-10-30 08:5x·compass判读位·20轮单批新鲜+证据门干净·返工方向=补2-3个去重捷径族深化UT修③④⑥"
+}
