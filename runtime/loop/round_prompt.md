@@ -13,6 +13,7 @@
 3. **GitHub**:`gh search issues --mention chunxiaoxx --sort updated --limit 5` + `gh api notifications`——外部邀请/提问按函处理(创世十家沉默件不追);
 4. **dev.to**:`curl -s -H "api-key: $(grep -oE '=.*' ~/.claude/.cache/devto_api_key.env | head -1 | tr -d '=\"')" "https://dev.to/api/articles/me/all?per_page=30"` 汇总 comments_count>0 的文,逐条对照已有回复,新增未回评论按文补答(注意:API 无发评论端点,回复走文内 Addendum/PS 追加,PATCH 必带浏览器 UA 否则 403);
 5. **本地 daemon 探活**:`python3 -c "import socket;s=socket.socket();s.settimeout(5);s.connect(('127.0.0.1',9876));print('ok')"`(🔴headless 环境 PATH 无 `python`/`gh` 不含 homebrew——一律 `python3`,`gh` 用绝对路径 `/opt/homebrew/bin/gh`,R213 实测)失败则 `bash /Users/chunxiao.wang/.claude/plugins/nautilus-compass/daemon_start.sh`;另 `bash scripts/mcp_watchdog.sh`(8097/域名双探,异常自愈);
+5b. **🔴注入哨兵(2026-10-30 新增·记忆死7天案报警缺口)**:`bash scripts/injection_sentinel.sh`——exit 2=今日 recall_hit=0·记忆注入链死,按亮牌处理(查 recall.py 目录解析/daemon/节流态)并记 COLLAB_BOARD;exit 0 正常;
 6. **主件队列**:读 runtime/loop/queue.md 顶部第一个未完成任务,能自主完成的执行之(产出留痕到对应 docs/ 目录);不能自主完成的(需用户/外部输入)跳过并记一行原因。
 
 ## 每轮留痕(必须)

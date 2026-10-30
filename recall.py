@@ -75,7 +75,7 @@ def strip_zhen_emphasis(text: str) -> str:
     return "".join(out)
 
 
-PLUGIN_VERSION = "nautilus-compass v2.3.0"
+PLUGIN_VERSION = "nautilus-compass v2.4.0"
 HOME = Path.home()
 PLUGIN_DIR = HOME / ".claude" / "plugins" / "nautilus-compass"
 CACHE_DIR = PLUGIN_DIR / ".cache"
@@ -227,6 +227,13 @@ def find_active_project_memory_dir() -> Path | None:
     candidate = projects_dir / encoded_cwd
     if candidate.exists() and (candidate / "memory").exists():
         return candidate / "memory"
+    # 2026-10-30 修复(记忆注入死7天根因):用户名含点(chunxiao.wang)时 Claude Code 实际项目
+    # 目录把点编码为横线("-Users-chunxiao-wang-..."),本函数保留点→精确匹配必败;回退的
+    # 公共前缀阈值16对该形态恰差一位(公共前缀15)→静默None。补点→横线变体作第二候选。
+    if "." in encoded_cwd:
+        candidate_dot = projects_dir / encoded_cwd.replace(".", "-")
+        if candidate_dot.exists() and (candidate_dot / "memory").exists():
+            return candidate_dot / "memory"
     def common_prefix_len(a: str, b: str) -> int:
         n = min(len(a), len(b))
         for i in range(n):
@@ -501,30 +508,102 @@ def is_system_injected_prompt(text: str) -> bool:
     return any(m.lower() in head for m in markers)
 
 
+# T5 · stdin 单次读缓存(2026-10-09 R432 重做): main() 节流闸与 read_user_prompt_from_stdin
+# 共享同一次 read — stdin 是流,读一次即耗尽,不缓存则闸先读后 main 再读会拿空。
+_STDIN_JSON_CACHE: dict | None = None
+
+
+def _read_stdin_json_cached() -> dict:
+    """读一次 stdin JSON 并缓存;后续调用(含 read_user_prompt_from_stdin)复用。"""
+    global _STDIN_JSON_CACHE
+    if _STDIN_JSON_CACHE is not None:
+        return _STDIN_JSON_CACHE
+    if sys.stdin.isatty():
+        _STDIN_JSON_CACHE = {}
+        return _STDIN_JSON_CACHE
+    try:
+        raw_bytes = sys.stdin.buffer.read()
+        if not raw_bytes:
+            _STDIN_JSON_CACHE = {}
+        else:
+            _STDIN_JSON_CACHE = json.loads(raw_bytes.decode("utf-8", errors="replace"))
+            if not isinstance(_STDIN_JSON_CACHE, dict):
+                _STDIN_JSON_CACHE = {}
+    except Exception:
+        _STDIN_JSON_CACHE = {}
+    return _STDIN_JSON_CACHE
+
+
 def read_user_prompt_from_stdin() -> str:
     """Claude Code hook 通过 stdin 传 JSON · 拿 prompt 字段.
 
     Windows fix: 强制 sys.stdin.buffer.read() UTF-8 解码 (避免 GBK surrogate).
+    T5: 走 _read_stdin_json_cached() — 同一进程内 stdin 只物理读一次.
     """
-    if sys.stdin.isatty():
-        return ""
+    data = _read_stdin_json_cached()
+    for key in ("prompt", "user_prompt", "message", "text", "content"):
+        v = data.get(key)
+        if v:
+            # 双重 sanitize: encode UTF-8 错替换 + str 强制
+            s = str(v)
+            # 去 surrogate (Python 内部 unpaired \udcXX)
+            s = s.encode("utf-8", errors="replace").decode("utf-8", errors="replace")
+            return s[:2000]
+    return ""
+
+
+# T5 · UserPromptSubmit 注入节流(2026-10-09 R432 重做落地)
+# 动机: 每轮 UserPromptSubmit 全量注入 2-4KB recall 块,长 session 上下文塞爆
+# (用户 10/9 点名)。机制: 以 stdin JSON 的 session_id 为键,同 session 窗口内
+# (默认 10min,COMPASS_THROTTLE_MIN 可调,0=禁用)跳过注入 — main() 闸在窗口内
+# 直接 return 0 零输出,不捕获/不重定向 stdout(R432 转义地狱的根因即 stdout 捕获)。
+# fail-open: 无 session_id / 状态损坏 / 本函数任何异常 → 一律注入,绝不因节流器断流。
+THROTTLE_STATE_DIR = Path.home() / ".cache" / "compass_hook_throttle"
+
+
+def throttle_check(session_id, now: float | None = None,
+                   state_dir: Path | None = None,
+                   window_min: float | None = None) -> tuple[bool, str]:
+    """返回 (should_skip, reason)。纯逻辑(时钟/目录/窗口可注入),便于 pytest。"""
+    if now is None:
+        now = time.time()
+    if state_dir is None:
+        state_dir = THROTTLE_STATE_DIR
+    if window_min is None:
+        try:
+            window_min = float(os.environ.get("COMPASS_THROTTLE_MIN", "10"))
+        except ValueError:
+            window_min = 10.0
+    if not window_min or window_min <= 0:
+        return (False, "disabled")
+    if not session_id or not isinstance(session_id, str):
+        return (False, "no-session-id")
     try:
-        raw_bytes = sys.stdin.buffer.read()
-        if not raw_bytes:
-            return ""
-        raw = raw_bytes.decode("utf-8", errors="replace")
-        data = json.loads(raw)
-        for key in ("prompt", "user_prompt", "message", "text", "content"):
-            v = data.get(key)
-            if v:
-                # 双重 sanitize: encode UTF-8 错替换 + str 强制
-                s = str(v)
-                # 去 surrogate (Python 内部 unpaired \udcXX)
-                s = s.encode("utf-8", errors="replace").decode("utf-8", errors="replace")
-                return s[:2000]
-        return ""
-    except Exception:
-        return ""
+        state_dir.mkdir(parents=True, exist_ok=True)
+        # TTL 清理: 48h 前的会话状态文件顺手删,防无限积累
+        cutoff = now - 48 * 3600
+        for stale in state_dir.glob("*.json"):
+            try:
+                if stale.stat().st_mtime < cutoff:
+                    stale.unlink(missing_ok=True)
+            except OSError:
+                pass
+        safe = re.sub(r"[^a-zA-Z0-9_-]", "_", session_id)[:80] or "anon"
+        sf = state_dir / f"{safe}.json"
+        if sf.exists():
+            try:
+                last = float(json.loads(sf.read_text(encoding="utf-8")).get("ts", 0))
+            except Exception:
+                last = 0.0  # 损坏视作从未注入 → 放行并覆写
+            if now - last < window_min * 60:
+                remain = int(window_min * 60 - (now - last))
+                return (True, f"window {int(window_min)}min · {remain}s remain")
+        sf.write_text(json.dumps({"ts": now}), encoding="utf-8")
+        return (False, "inject")
+    except OSError:
+        return (False, "fail-open: state dir unwritable")
+    except Exception as e:  # 任何意外都放行 — 节流器不可成为注入单点
+        return (False, f"fail-open: {type(e).__name__}")
 
 
 def load_links() -> dict:
@@ -881,135 +960,6 @@ def promote_lifecycle_tier(entry: dict, now=None) -> dict:
     }
 
 
-def _bump_reinforce_in_frontmatter(text: str):
-    """Return (new_text, new_count) with frontmatter reinforce_count +1.
-
-    Field inserted as 1 when absent. Mirrors
-    tier_promotion_driver._rewrite_tier_in_frontmatter (DRY · same flat-YAML
-    line rewrite). Returns (None, None) if text has no frontmatter delimiters.
-    """
-    import re as _re
-    if not text.startswith("---"):
-        return None, None
-    end = text.find("\n---", 4)
-    if end < 0:
-        return None, None
-    front_block = text[4:end]
-    body = text[end:]
-    new_lines = []
-    seen = False
-    new_count = None
-    for line in front_block.splitlines():
-        stripped = line.strip()
-        if stripped.startswith("reinforce_count:"):
-            m = _re.match(r"reinforce_count:\s*(-?\d+)", stripped)
-            cur = int(m.group(1)) if m else 0
-            new_count = cur + 1
-            new_lines.append(f"reinforce_count: {new_count}")
-            seen = True
-        else:
-            new_lines.append(line)
-    if not seen:
-        new_count = 1
-        new_lines.append(f"reinforce_count: {new_count}")
-    return "---\n" + "\n".join(new_lines) + body, new_count
-
-
-def reinforce_on_recall_hit(mem_dir, recall, max_files: int = 20):
-    """v2.3.0 · Phase 1 Task 1 · access-event closure for the LLM-WIKI2 lifecycle.
-
-    For each recalled file, bump its frontmatter reinforce_count by 1 (Rule A ·
-    access event · the input promote_lifecycle_tier reads to promote a capsule
-    working→episodic→…). This closes the access loop: recall hits now feed the
-    tier ladder instead of being read-only.
-
-    Defensive by contract — NEVER raises · skips files that are missing / have
-    no frontmatter / are unwritable. Designed to run as a guarded block on the
-    recall path so a failure can never break recall (same posture as the
-    emit_poi_candidate / metamemory blocks in try_daemon_recall).
-
-    Args:
-        mem_dir: project memory dir · recall paths are basenames under it.
-        recall:  list of hit dicts (each with "path") · or bare path strings.
-        max_files: safety cap on files mutated per call (bounded hot-path I/O).
-
-    Returns:
-        list of (abs_path, new_count) for files actually bumped.
-    """
-    from pathlib import Path as _Path
-    bumped = []
-    try:
-        base = _Path(mem_dir)
-        seen = set()
-        for hit in (recall or []):
-            if len(bumped) >= max_files:
-                break
-            if isinstance(hit, dict):
-                name = hit.get("path")
-            elif isinstance(hit, str):
-                name = hit
-            else:
-                name = None
-            if not name or name in seen:
-                continue
-            seen.add(name)
-            try:
-                # basename only · keep writes inside mem_dir (no traversal)
-                fp = base / _Path(name).name
-                if not fp.is_file():
-                    continue
-                text = fp.read_text(encoding="utf-8")
-                new_text, new_count = _bump_reinforce_in_frontmatter(text)
-                if new_text is None:
-                    continue
-                fp.write_text(new_text, encoding="utf-8")
-                bumped.append((str(fp), new_count))
-            except (OSError, UnicodeDecodeError):
-                continue
-    except Exception:
-        pass
-    return bumped
-
-
-# Phase 1 Task 4 · tier-aware recall re-rank · additive bonus by lifecycle tier.
-# Capped small so it breaks ties / near-ties (more-consolidated capsule wins)
-# WITHOUT overriding a meaningful cosine gap. Mirrors the LLM-WIKI2 ladder
-# (working < episodic < semantic < procedural).
-_TIER_RANK_BONUS = {
-    "working": 0.0,
-    "episodic": 0.01,
-    "semantic": 0.02,
-    "procedural": 0.03,
-}
-
-
-def apply_tier_weight(top):
-    """v2.3.0 · Phase 1 Task 4 · re-rank recall top-K by lifecycle tier.
-
-    Add a small additive bonus (≤0.03) by each entry's `tier` so that among
-    near-equal cosine scores the higher-tier (more consolidated) capsule wins.
-    The bonus is ranking-ONLY — output scores stay the original cosine. Ties
-    fall back to original order (stable). Never raises (returns input on error).
-
-    Args:
-        top: list of (score, entry) · entry dict may carry a "tier" field.
-    Returns:
-        re-sorted list of (orig_score, entry).
-    """
-    try:
-        decorated = []
-        for i, item in enumerate(top):
-            score, entry = item[0], item[1]
-            tier = (entry.get("tier") if isinstance(entry, dict) else None) or "working"
-            bonus = _TIER_RANK_BONUS.get(tier, 0.0)
-            decorated.append((score + bonus, i, score, entry))
-        # sort by boosted score desc · stable tie-break on original index
-        decorated.sort(key=lambda x: (-x[0], x[1]))
-        return [(orig_score, entry) for _, _, orig_score, entry in decorated]
-    except Exception:
-        return top
-
-
 def rrf_fusion(*ranked_lists, k: int = 60, top_k: int = 10,
                session_diversify: bool = True, max_per_session: int = 3) -> list:
     """v1.7.1 · Phase 2.C · Reciprocal Rank Fusion · agentmemory paradigm.
@@ -1128,47 +1078,19 @@ def render_v02_vector_mode(entries: list, query: str, cache: dict) -> None:
     scored.sort(key=lambda x: -x[0])
     top = scored[:TOP_K]
 
-    try:
-        from recall_pkg.lifecycle_policy import (
-            get_recall_signal_policy,
-            should_apply_poi_weight,
-            should_apply_tier_weight,
-        )
-        _signal_policy = get_recall_signal_policy()
-    except Exception:
-        _signal_policy = "guarded"
-        should_apply_poi_weight = None
-        should_apply_tier_weight = None
-
     # v2.0.0 · #1a · PoI ranking boost · re-rank top-K by each entry's
     # cumulative_impact frontmatter (positive → boost, negative → demote).
-    # v2.3 C5 default policy is flat: lifecycle signals are recorded but do not
-    # affect rank until a fresh policy gate recommends guarded/raw.
-    # Set COMPASS_NO_POI_BOOST=1 to opt out.
+    # NO-OP if no memory has cumulative_impact yet (cold start fully
+    # equivalent to v0.8). Set COMPASS_NO_POI_BOOST=1 to opt out.
     if os.environ.get("COMPASS_NO_POI_BOOST") != "1":
         try:
             from recall_pkg.poi_weighting import boost_top_k_with_snapshot
             from recall_pkg.poi_snapshot_cache import get_credit_snapshot
-            _poi_snapshot = get_credit_snapshot()
-            if should_apply_poi_weight is None or should_apply_poi_weight(_signal_policy, top, _poi_snapshot, query=q_str):
-                top = boost_top_k_with_snapshot(top, _poi_snapshot)
-                # Truncate back to TOP_K after potential re-rank
-                top = top[:TOP_K]
+            top = boost_top_k_with_snapshot(top, get_credit_snapshot())
+            # Truncate back to TOP_K after potential re-rank
+            top = top[:TOP_K]
         except Exception as _e:
             sys.stderr.write(f"[PoI boost] skipped: {_e!r}\n")
-
-    # v2.3.0 · Phase 1 Task 4 · tier-aware re-rank · among near-equal cosine
-    # scores, prefer the more-consolidated (higher-tier) capsule. Ranking-only
-    # (output scores unchanged) · tiny bonus never flips a real cosine gap ·
-    # v2.3 C5 default policy is flat: lifecycle signals are recorded but do not
-    # affect rank until a fresh policy gate recommends guarded/raw.
-    # Set COMPASS_NO_TIER_WEIGHT=1 to opt out.
-    if os.environ.get("COMPASS_NO_TIER_WEIGHT") != "1":
-        try:
-            if should_apply_tier_weight is None or should_apply_tier_weight(_signal_policy, top, query=q_str):
-                top = apply_tier_weight(top)[:TOP_K]
-        except Exception as _e:
-            sys.stderr.write(f"[tier weight] skipped: {_e!r}\n")
 
     # v2.0.0 · #1b · Layer 2 L1 overlay · collapse member L0 sessions to their
     # L1 summary entry when {mem_dir}/_l1/_l1_index.json exists. Graceful
@@ -1443,18 +1365,6 @@ def try_daemon_recall(mem_dir: Path, user_prompt: str) -> bool:
                 emit_poi_candidate(_top, query=user_prompt, agent_id=_resolve_default_actor())
         except Exception as _e:
             sys.stderr.write(f"[PoI candidate · daemon] skipped: {_e!r}\n")
-
-        # v2.3.0 · Phase 1 Task 1 · access-event closure · bump reinforce_count
-        # on each recalled file so recall hits feed the LLM-WIKI2 tier ladder
-        # (promote_lifecycle_tier Rule A). Production recall goes through the
-        # daemon, so without this the access axis never advances. Guarded by
-        # COMPASS_NO_REINFORCE=1. reinforce_on_recall_hit never raises · this
-        # try/except is belt-and-suspenders so it can NEVER break recall.
-        try:
-            if recall and os.environ.get("COMPASS_NO_REINFORCE") != "1":
-                reinforce_on_recall_hit(mem_dir, recall)
-        except Exception as _e:
-            sys.stderr.write(f"[reinforce · daemon] skipped: {_e!r}\n")
         return True
     except Exception as e:
         sys.stderr.write(f"[nautilus-compass daemon] unreachable ({e}) · fallback inline\n")
@@ -1462,6 +1372,17 @@ def try_daemon_recall(mem_dir: Path, user_prompt: str) -> bool:
 
 
 def main():
+    # T5 · 节流闸最前置(2026-10-09): 窗口内零输出直接返回 = 不注入,不碰 stdout 捕获。
+    # stdin 经 _read_stdin_json_cached() 只读一次,后续 read_user_prompt_from_stdin 复用缓存。
+    try:
+        _stdin_data = _read_stdin_json_cached()
+        _skip, _why = throttle_check(_stdin_data.get("session_id"))
+        if _skip:
+            print(f"[nautilus-compass-recall 节流 · {_why} · 调 COMPASS_THROTTLE_MIN(分钟,0=关)可调]")
+            return 0
+    except Exception:
+        pass  # 闸自身异常 → 照常全量跑(fail-open)
+
     # v0.7 · auto-promote to BGE mode if daemon alive (默认 hook 也走 daemon)
     # 旧 (v0.6 及前): hook 默认只 metadata · daemon 跑了 12 天 0 次被调 · drift/recall 全空
     # 新 (v0.7): hook 入口先 ping daemon · alive 就用 BGE (1.8s) · 不 alive 才 fallback metadata
@@ -1547,33 +1468,18 @@ def main():
     print(f"Project memory: {mem_dir.parent.name} · {len(entries)} entries")
     print(f"⚠️ 时间戳 = 关键 · 用户心智在迭代 · 不要用 7d+ 旧 memory 倒批今天判断")
 
-    # v1.8.0 · 用户战略 anchor 强制压头 · 长 session stance 衰减唯一真解
-    # 不靠 BGE 相似度命中(可能不命中) · 任何 query 都强制 surface
-    # · anchor_user_strategic_compass.md 7 条 stance
-    # · anchor_anti_patterns_history.md 10 大复发模式
+    # v1.8.0 · 用户战略 anchor 强制压头(原设计: 防 stance 衰减)
+    # v2.4 清洗(2026-09-02 用户拍"治每轮过时告警"): 5 月版 anchor 与 9/2 业务转向冲突,
+    # 每轮压头 = 反复注入过时战略 · 压成单行指针 · 需要时手读全文
     try:
         anchor_home = Path.home() / ".claude" / "projects" / "C--Users-chunx" / "memory"
-        for anchor_name, label in [
-            ("anchor_user_strategic_compass.md", "📌 用户战略 anchor · 7 条 stance"),
-            ("anchor_anti_patterns_history.md", "🔴 anti-pattern · 10 复发模式"),
-        ]:
-            anchor_path = anchor_home / anchor_name
-            if not anchor_path.exists():
-                continue
-            text = anchor_path.read_text(encoding="utf-8", errors="replace")
-            # Extract h1 + h2 titles only · 不展开正文(避免 prompt 头臃肿)
-            titles = []
-            for ln in text.splitlines():
-                s = ln.strip()
-                if s.startswith("## ") and len(titles) < 12:
-                    titles.append(s[3:].strip())
-            print()
-            print(f"[{label}]")
-            for t in titles[:10]:
-                print(f"  · {t}")
-            print(f"  → 全文: {anchor_path.name} · 第 1 个 response 必含 'active anchor: X / Y'")
-    except Exception as _ae:
-        sys.stderr.write(f"[nautilus-compass] anchor surface fail: {_ae}\n")
+        _anchors = [n for n in (
+            "anchor_user_strategic_compass.md", "anchor_anti_patterns_history.md",
+        ) if (anchor_home / n).exists()]
+        if _anchors:
+            print(f"[锚点档案] {' · '.join(_anchors)} (5月版 · 方向以各项目 CLAUDE.md 方向锚为准 · 手读)")
+    except Exception:
+        pass
 
     # v1.7 #2 · numeric_claims cross-ref · query 含数字时检查历史冲突
     try:
@@ -1606,16 +1512,18 @@ def main():
         pass
 
     # v2.3 · SSOT 副本一致性探针(2026-07-17 用户拍板)· 承重锚(CHARTER/LOOP_STATE)
-    # 跨 repo 正文哈希对比 · 漂移即对每个框亮牌 · fail-soft 不阻塞 recall
-    try:
-        from ssot_consistency import format_for_prompt_injection as _ssot_fmt
-        _s_block = _ssot_fmt()
-        if _s_block:
-            print()
-            print("[SSOT 副本一致性 · anchor drift probe]")
-            print(_s_block)
-    except Exception:
-        pass
+    # v2.4 清洗(2026-09-02): SSOT/CHARTER 9/2 起停止注入(业务转向+正文冻结),
+    # 探针每轮报退役对象 = 纯噪声 · env 门控默认关 · audit 时 COMPASS_SSOT_PROBE=1 临时开
+    if os.environ.get("COMPASS_SSOT_PROBE") == "1":
+        try:
+            from ssot_consistency import format_for_prompt_injection as _ssot_fmt
+            _s_block = _ssot_fmt()
+            if _s_block:
+                print()
+                print("[SSOT 副本一致性 · anchor drift probe]")
+                print(_s_block)
+        except Exception:
+            pass
     print()
 
     # v0.4 · Strategy lookup (hook 默认就跑 · 0 BGE · 关键词命中即可)
@@ -1638,6 +1546,12 @@ def main():
     skip_drift = is_system_injected_prompt(user_prompt)
     if skip_drift:
         log_usage("drift_skip_system_event", {"prompt_head": user_prompt[:80]})
+        # 瘦身 (platform 用户 6/18 痛点·env-gated 默认关·向后兼容): system-injected
+        # prompt (task-notification / system-reminder / Monitor 事件) 跳过整个 recall 注入,
+        # 避免每个事件重灌 2-3k token 顶满 context · 真 user prompt 仍正常注入.
+        if os.environ.get("COMPASS_SKIP_RECALL_ON_SYSTEM") == "1":
+            log_usage("recall_skip_system_event", {"prompt_head": user_prompt[:80]})
+            return 0
 
     # v0.3 · Persona drift · BGE 模式下 · daemon alive 时跳过 inline (避免双重 BGE load)
     daemon_alive = False

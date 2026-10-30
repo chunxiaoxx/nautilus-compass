@@ -44,7 +44,9 @@ def encode_cwd(cwd: Path) -> str:
     # Strip leading drive letter colon: "C:\foo" -> "C\foo"
     if len(s) >= 2 and s[1] == ":":
         s = s[0] + s[2:]
-    return s.replace("\\", "-").replace("/", "-")
+    # 2026-10-30 修复:用户名含点时 Claude Code 实际项目目录把点编码为横线
+    # (recall.py 同款根因·记忆注入死7天案)——点→横线对齐实际目录命名
+    return s.replace("\\", "-").replace("/", "-").replace(".", "-")
 
 
 def memory_dir_for(project_key: str) -> Path:
