@@ -2,8 +2,10 @@
 # 注入哨兵(2026-10-30 立·记忆死7天案的报警缺口补件)
 # 判据: 今日 usage.jsonl 里 recall_hit 事件数 = 0 且已过 09:00 → 记忆注入链死,亮牌
 # 值守轮每轮调用;退出码 2=亮牌(进值守报表),0=健康/未到判定时点
-USAGE=~/.claude/plugins/nautilus-compass/.cache/usage.jsonl
-ARCH=~/.claude/plugins/nautilus-compass/.cache/usage_archive
+# SENTINEL_HOME=假缓存目录(混沌验证用·任务书第5条)
+BASE="${SENTINEL_HOME:-$HOME/.claude/plugins/nautilus-compass/.cache}"
+USAGE="$BASE/usage.jsonl"
+ARCH="$BASE/usage_archive"
 TODAY=$(date +%Y-%m-%d)
 HOUR=$(date +%H)
 N=0
