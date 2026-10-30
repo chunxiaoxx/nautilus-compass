@@ -284,3 +284,13 @@
 ## 附录 D · v1 封版声明(2026-10-06)
 
 v1.4(16 案)即 **10/12 榜页同窗挂墙版**:判读免费线的公开判例库首版。10/12 后新案(弃权族口径澄清、E1 复考、Round 2)走 v1.5+ 追补,不改已装订任何一案的判据与结论(追补不改史)。本判例库=装订收费线的首物,同时是 caliber-bench 保真轨样例源。
+
+## 案 17 · 阿里 CodeSense 存量质检案(判据锁工业化首演·N=0 诚实交底·考场污染定谳,2026-10-25/30)
+
+- **案情**:阿里 CodeSense 委托 14 题(周五锚),要求按甲方硬判据(五条件+七门)出题质检交付。compass 按 22905 分工任判据工程化+独立判读+判分值守;v5/flywheel 任出题施工。锚前全库存量 76 题,compass 判读位对存量与判分管线全量核验。
+- **判据**(预注册·判据锁工业化):甲方五条件冻结文本(`nautilus-core/docs/feishu/质检方案_题目质量细节.md` 行525/527);预注册判据档 `ops/ali30q/ALI_DELIVERY_PREREG_20261029.md`(N 留白非实现者复算填);判据锁 `runtime/pipeline_state/criteria_lock.json` v2——八件判据实物 sha16 冻结+flywheel 互认双锚(函 24021),gate0 预检器开工强制(修改须新版本锁重发,禁放宽)。
+- **材料锚**:CS-007 终判档 `runtime/pipeline_state/CS-007_final_verdict_20261030.json`;全库盘点 `gate5_stocktake_latest.json`;证据扫描 `evidence_scan_latest.json`。
+- **判读 [实测]**:①全库 76 题 **N=0**(判负 5:CS-513/007/102/103/401;不可判 71)。②CS-007 出组织首份完整六门终判:①✓②✓(整体 65%)⑤✓(qwen 精确 25%)·③✗(opus 4/4 全过=过简剔除)④✗(qwen 无零分轮)⑥✗(唯一失败签名 test_dual_origin_coexist_e2e·div 14%/share 100%)·证据门干净(20 轮单批 30UT)。③CS-513 同判过简(qwen 50% 精确落带但 opus 横扫)。④语料伤情:CONFLICT 6 题 50 件(b898fa29 merge 事故·已提交入库·gate5 静默拒载五天)+UTMIX 混版 7 题。⑤考场污染定谳:ba65c4b5"还原坑版"实际提交修复版(md5 三方:工作区==提交版==solution·commit 语义与内容相反),连带 test 文件 shell 碎片→判分采集退化 1UT。
+- **claims**:[实测] 上述全部判读坐标可复算(命令见下);[推断] 存量可修题对当前模型代际全员过简(2 题实证,upgrade_path=variants 异质失败点加难返工·v5 已接单);[实测] qwen 车道复活(百炼直连+anthropic 协议 SSE 流式根修 504),CS-007 qwen 精确落带 25%=甲方目标带;[不可验] 甲方环境读数(本档为我方 Mac mini 32K 渠道单批口径,与甲方环境不可比·基线文件唯一对账基准节)。
+- **教训(判绩账入档)**:①判据原文未取回即生产三周(9 月教训二进宫,零达标第一根因)——散文纪律无执行器=不存在,gate0 即执行器;②件数记分剧场复发(产线 15 轮零产出自称全链自动化/"读数均满"文件计数含死件/"93项QC""147条"无出处);③修改与验证分离(commit 语义与内容相反·旧实例跑旧内容·探针退化无告警);④compass 既判又产稀释独立性(领卡 #005)——22905 分工回归。
+- **复算命令**:`python3 ops/ali30q/verify_criteria_lock.py`(gate0)→`python3 ops/ali30q/gate5_stocktake.py`→`python3 ops/ali30q/evidence_scan.py`→`python3 ops/ali30q/gate5.py <item_dir>`。判读免费线。
