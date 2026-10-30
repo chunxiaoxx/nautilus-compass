@@ -26,6 +26,16 @@ import time
 from pathlib import Path
 from typing import Any
 
+# 2026-10-20 · CONNECTION_CLOSED 根修(自插件热修正本回收):mcp_durable 只在
+# Projects 仓根可导入,顶层 import 崩 → MCP 进程秒退 → 客户端每次重连即
+# CONNECTION_CLOSED。仓根挂 sys.path(默认 Mac 路径,NAUTILUS_COMPASS_REPO 可覆盖)。
+_REPO_ROOT = Path(os.environ.get(
+    "NAUTILUS_COMPASS_REPO",
+    "/Users/chunxiao.wang/Projects/nautilus-compass",
+))
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+
 from mcp_durable.event_store import EventStore
 
 PROTOCOL_VERSION = "2024-11-05"

@@ -4,11 +4,11 @@
 
 > 🔴 开工第一动作(frame-upgrade-20260904-compass #2 · MetaGPT _observe 原则;10/19 F1 bootstrap一口):先取组织态再开始其他任何事(10/19 F1 升级 bootstrap 一口)——`curl -s "https://nautilus.social/api/platform/org/bootstrap?agent=compass"`(registry/未读函/goals/health 一口)→ 逐封 ack(需正文回函的按 trace 回函),然后才开工。本框状态自报见 `FRAME.yaml`(状态变化时顺手改)。
 
-> 🔴 方向锚(2026-10-29 更新,与仓内任何文档冲突时以此为准):
-> **当前业务 = 阿里 CodeSense 出题生产(14 题·周五交付)** + 判据工程化(gate5 七门) + 验证机构(CASSAY/JEV/VerifyPack)。
-> 旧方向锚(具身智能/垂域出题已死)已被 10/25 阿里委托取代——仓内 FDE/CHARTER/SSOT 为历史层,考古时手动读,读时牢记历史层 ≠ 现状。
-> **compass 分工(22905 平台裁定)**:判据工程化(gate5)+独立判读卡+判分值守。**不做**:出题、调档设计(判据独立防自评)。
-> **素材化路线(23249 用户拍板)**:出题用真实仓代码·spec 无素材卡号不受理·验收四判据钉死(载体真实/坑真实/>300文件/UT锚badpattern)。
+> 🔴 方向锚(2026-10-30 更新·24116 收敛令生效,与仓内任何文档冲突时以此为准):
+> **当前业务 = 记忆 IO(M5 记忆门)+ 后训练(蒸馏)+ unipat/验证机构(CASSAY/JEV/VerifyPack)+ 判分值守与复判位**。
+> **阿里 CodeSense 线(出题/判分/调档/交付)整体移交 nautilus-agent**(24116 用户拍板·回执函 24126·交割台账 `runtime/production_queue.md`);bait-loop/ali30q-loop/production-loop 已卸载;**CS-007 复判位保留**(v5 返工卷面来即判)。
+> 10/29 锚(阿里出题生产+判据工程化)及更早的具身智能/垂域出题锚均为历史层——仓内 FDE/CHARTER/SSOT 为历史层,考古时手动读,读时牢记历史层 ≠ 现状。
+> 判分值守红线不变:判据零放宽/证据分层不冒充/非实现者复算;**复判轮开工前照跑 gate0**(`python3 ops/ali30q/verify_criteria_lock.py`)。
 
 > 🔴 判据正本(2026-10-28 取回,之前全部按转述生产=结构性偏差):
 > 需求文档 = `nautilus-core/docs/feishu/需求文档_题目结构与跑分结果.md`(1145行)·质检方案 = `nautilus-core/docs/feishu/质检方案_题目质量细节.md`(1677行)
@@ -35,10 +35,10 @@
 > - user 级 `~/.claude.json` = http://127.0.0.1:8097/mcp/(笔记本/cloud 侧 agent 经 Tailscale 100.84.23.45:8097/mcp/)
 > - token 文件 `~/.claude/.cache/compass_mcp_tokens.json`(0600·20 token 合并)·**改 token 必须 kickstart 重启服务**
 
-> 🔴 循环(7 层·全 launchd 常驻):
-> bait-loop(120min·glm-5.3-flash)·compass-loop(30min·含管道刷新)·pipeline-sync(30min)·mcp-watchdog(5min)·s5_receiver(watch)·判分矩阵(每时轮)·compass-daemon(9876)
+> 🔴 循环(10/30 收敛令后收紧·launchd):
+> compass-loop(30min·含管道刷新)·pipeline-sync(30min)·mcp-watchdog(5min)·s5_receiver(watch)·判分矩阵(每时轮)·compass-daemon(9876)。~~bait-loop/ali30q-loop/production-loop~~ 已卸载(阿里线移交,plists 留 `~/Library/LaunchAgents/` 可复启)
 
-> 🔴 值守报表新增(23249): 每轮加一行"素材主线: 卡N/题N/门N"·连续2轮零进度自动亮牌
+> 🔴 值守报表锚行(10/30 收敛令修订): 每轮报一行"主线: M5·后训练·判分各一词状态";素材主线恒报"素材线: 已交割(24116)卡0题0门0"——23249 零进度亮牌规则不再适用(线已移交,亮牌只对现役主线)
 
 <!-- COMPASS-KG-NODE · 2026-07-14 从 4 个历史会话提炼 · 完整见 ~/.claude/projects/<proj>/memory/session_NODE_nautilus-compass.md -->
 ## 📍 项目现状与复发陷阱(compass 记忆提炼)
