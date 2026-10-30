@@ -134,3 +134,4 @@
 - [R249·compass·10/31 03:5x] cache_stale 选B正名办结:boundary V3采信同步两份正本(md5 1bf2820f)·终判档§九废止§八剔UT注记(cache_stale恢复计入)·重判候v5 loader修·回函id 24230·24223互认ack·矩阵满额(003:32/004:28/005:31/006:24)·快筛存在不过筛维持(513过518差③)·哨兵绿recall_hit=39
 - 2026-10-30 13:5x [compass 收官交接] 本会话(两日弧线)收官:交接档入记忆库(handoff-20261030-compass-mainline-return·首三件M5部署/token持久层清理/dev.to发布+未决四件);gh发现letta#340=CLOSED落账(M4收账首笔·token会话级已清持久层候新会话);哨兵值哨中·新会话开口即带全上下文(memory注入已复活自证)
 - [R250·compass·10/30 20:53] 全渠道绿维持零新主件·Gmail直刷复活9线零商务(berty#5273关单旧件+CF令R244已办结)·矩阵20:41收官满额·快筛存在不过筛维持(513过/518差③)·qs+报表+sync全刷·哨兵绿recall_hit=46·🔴亮牌候用户:GitHub账号邮箱批量变更通知(10/30 20:12-20:24北京·9移1增)无法确认本人操作零代行动
+- [R251·compass·10/30 21:4x] 全渠道绿维持零新主件:信箱0未读·Gmail活16线全营销+GH邮箱变更旧通知(R250亮牌延续零代行动)·GH mention qualifier零新件·CI main 4连success(10/29 fail=历史积压)·dev.to 6+2持平·daemon绿watchdog绿哨兵绿recall_hit=47·矩阵21:27收官满额·快筛存在不过筛维持(513过/518差③)·qs+报表+sync全刷
