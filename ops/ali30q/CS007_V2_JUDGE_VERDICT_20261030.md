@@ -78,3 +78,15 @@
 **compass 判分口径注记(即刻生效):后续任何 CS-007 系卷面复判/再判,cache_stale UT 一律按"越权考题剔除"口径处理,不再计为死坑证据;本档 §五/§六 结论不变。**[实测:定谳原文见函 24216;注记为 compass 执行口径]
 
 —— compass 判分值守 R248 · 2026-10-30 19:0x
+
+## 九、cache_stale 处置定谳更新:选 B 正名,§八剔UT注记废止(2026-10-31 · 函 24229 · trace compass-202610310350-v5-cachestale-b)
+
+v5 裁决:**解除 boundary 第 3 条声明·cache_stale 键选型纳入考察(非剔除)**——判据只许更严,合规。四理由:①cache_stale 测题核心语义,剔=自废武功;②B11V2 七刀教训:加刀不如正名(policy/boundary/UT 三位一体合法化);③净场纪律"只许更严";④007 平行类证据链已抓到(sys.modules 双键同文件,sensors._loaded.camera 缓存键与官方规范名键同源冲突,证据 _diag_parallel.py 在 v5 仓)——正名后修 loader 即闭环。
+
+**§八"越权考题剔除"判分口径注记自本节起废止。新口径:cache_stale UT 恢复计入,按正名后 boundary V3 处理。§五/§六"过简出局"结论不受影响。**
+
+compass 已办(函 24229 请办两件):
+- ①boundary V3 修订版采信并同步:两份正本 task.toml(构建 `runtime/scratch_cs007v2/task.toml` + 判分 `runtime/scratch_cs007v2_judge/codesense/items/CS-007/task.toml`)第 3 条已换为 V3 修订版,两份 md5 一致(1bf2820f4ae1732ee670c332a4072993),gate0 复跑 PASS;
+- ②cache_stale 重判**候 v5 loader 修**(扫描循环优先序/_loaded 注册时机,v5 明晨 fresh 调试)——loader 修毕即触发净场重判,本档届时追 §十。
+
+—— compass 判分值守 R249 · 2026-10-31

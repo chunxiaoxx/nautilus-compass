@@ -4,7 +4,14 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
-### R531 · 2026-10-30 晚(值守 R248:cache_stale 复核定谳收悉→判分口径剔 UT 注记已落+回函 id 24221·全渠道绿)
+### R532 · 2026-10-31 凌晨(值守 R249:cache_stale 选B正名办结——boundary V3 采信同步+终判档 §九+回函 id 24230·全渠道绿)
+
+- **🔴本轮主件=函 24229 v5 cache_stale 处置裁决(选B)**:解除 boundary 第3条声明·键选型纳入考察(判据只许更严·非剔除;四理由含 007 平行类证据链 _diag_parallel.py=sys.modules 双键同文件同源冲突)——compass 两件请办:①boundary V3 修订版采信同步:两份正本 task.toml(构建 `runtime/scratch_cs007v2/` + 判分 `runtime/scratch_cs007v2_judge/codesense/items/CS-007/`)第3条已换 V3 原文,md5 一致 `1bf2820f4ae1732ee670c332a4072993`[实测],gate0 复跑 PASS;②重判候 v5 loader 修(明晨 fresh 调试),修毕即触发净场重判候 §十;终判档追 §九(`ops/ali30q/CS007_V2_JUDGE_VERDICT_20261030.md`)废止 §八"越权剔除"口径注记,cache_stale 恢复计入,§五/§六 过简结论不变·回函 **id 24230**(trace compass-20261031R249-v5-cachestale-b-reply)+两函(24223/24229)均 ack,信箱归零。
+- **值守面全绿**:24223 platform 互认通报 ack(样例01/V3 物理模拟方向无冲突)·Gmail 活 9 线程判读=8 营销+berty#5273 对方关单(completed)零商务零回函·GH mentions qualifier 零新件(CI 失败=自家三仓历史积压通知维持 R530 定性)·dev.to 两文 6+2 评对照 PS(10/27) 全清零新增·daemon 9876 绿+watchdog 静默+哨兵绿 recall_hit=39。
+- **矩阵满额维持**(003:32/004:28/005:31/006:24·19:56 收官)对 18:00 锚;快筛总结论=存在不过筛(513 过·518 差③ passrate 0.75 梯度 25pp·余不过)与 R248 零变化·qs 落 v5 共享面(v5 commit 4ce6bce8)+pipeline_report 已刷+pipeline_state_sync exit 0。
+- **候办主件**:「判分跑批 daemon 化」(23852 认领)维持排期=独立轮执行;round>200 停轮条款漂移候用户裁定(R524 先例恢复值守);v5 loader 修毕=cache_stale 重判触发点(候)。
+
+
 
 - **🔴本轮主件=函 24216 v5 复核定谳处置**:v5 三框架复核走完定谳 cache_stale=UT 自身缺陷(越权考题·boundary 行 82 明示"缓存键选型不考察"而该 UT 判之·badpattern 名单不含·零通过=模型遵从声明而 UT 背之·非真死坑)——compass 判分口径即刻落实:CS-007 系后续复判剔 cache_stale 按"越权考题剔除"处理不计死坑证据,注记已落终判档新增 §八(`ops/ali30q/CS007_V2_JUDGE_VERDICT_20261030.md`,含定谳原文三条件录正本)·连带定谳照录:CS-007 V2 剔后 27/27 过简出局与 v1 同判·007 深化无路重造回素材原点候 v5 定·剔 UT/boundary 豁免二选一属题目侧调档 compass 不越位候裁·回函 **id 24221**(trace compass-202610301905-cachestale-verdict-ack)+已 ack 信箱归零。
 - **值守面全绿**:Gmail 401→直刷复活(REFRESH_OK 256 字符[实测]·3599s 有效期)+9 封判读=7 营销+berty#5273 通知(旧件已判收尾不追)+Cloudflare 升级令(R244 已办结全线合规)零新增商务·GH mentions qualifier 零新件(5 条皆旧件·notifications 全 ci_activity 历史积压)·dev.to 6+2 持平零新增·daemon 9876 绿+watchdog 静默·哨兵绿 recall_hit=33。
