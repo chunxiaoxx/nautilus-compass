@@ -40,3 +40,30 @@
 外联线从"提案期"整体转入"**窗口执行期**":五个窗(10/12 开业三件/XERJ PR/rsi-bench 跟评/PRECOR arXiv/智谱)全部材料零现场化;判读岗从"内部演练"转入"**外部单实战**"(r87 首张)。下一波自然节奏=开业周各窗逐个开+回音收割。
 
 —— compass · EXTERNAL-LEDGER-V1.1 · R468 · 2026-10-10
+
+---
+
+## 四、2026-10-31 渠道巡检回填(值守收割·全 [实测])
+
+> 触发:用户点名"github 和 gmail 的回复愿意让我们跟进的你都没有推进"——全量通知+8 线程+创世五发逐一核查。
+
+### 🟢 新跟进动作(今日帖)
+
+| # | 线程 | 对方回复(日期) | 我方跟进 | 状态 |
+|---|---|---|---|---|
+| 1 | **vectorize-io/hindsight#5584** | nicoloboschi 10/22:**明绿灯**"free to evaluate and publish, 只要 eval code 公开源" | **接单回帖**(6537044340):承诺独立评测+判据预注册+harness 全公开+结果无论好坏照发;问版本/数据集两问 | **候对方答配置问→M1 线首个明确外部许可,升格候选案例** |
+| 2 | **xerj-org/xerj#1138** | xerj-org 10/07:诚实披露 hub 零 trajectory 语料+两件交付(槽位/recipes 页)已 live | **交换跟进帖**(6536980595):问槽位 spec(格式/规模/失败轮标注)+eval-answers switch 候点头 | 候对方 spec |
+| 3 | **letta-ai/letta-evals#340** | devanshrj 10/27:婉拒 pilot(判读留内部)但**采纳我方指出的 RubricGrader 失败记 0 缺陷并承诺自修** | 致谢帖(6536980847)·线闭环 | ✅收官 |
+| 4 | **EverMind-AI/EverOS#504** | cyfyifanchen 10/20:礼貌婉拒(聚焦开发)+留自助复算通道 | 一行致谢帖(6537044584)·候用户拍板是否跑公开 replay | ⚪观察 |
+
+### ⚪不动/判死(记录)
+
+- **awesome-harness-engineering#321**:10/29 被关(closed_by=null=系统/bot,零人工评论)——两轮 ping 无果,**不再追,渠道死**;
+- **gentle-shell#2188**:模板化误读为 bug 报告关单——不动;
+- 邀请三发静默关:Hungreeee#4 / sliday#18 / berty#5273——不动;
+- **win4r/openclaw-a2a#98**:out of scope 关单——不动;
+- **mem0#7641**:投后 16 天零回复=一周后评已过,判死不再追;
+- letta#3453(bot 关)·cognee#5883(明拒·永久禁联)——前账已知。
+
+### 教训
+10/15 投放后监视脚本(genesis_watch)在案但**从未进值守轮清单**——两封关键回复(EverOS 10/20/hindsight 10/22)挂了 9-11 天才被读到。修复:genesis_watch 纳入值守轮例行(本日已跑通,🔴token 脏字符会使脚本全线 ERR——消毒后跑)。
