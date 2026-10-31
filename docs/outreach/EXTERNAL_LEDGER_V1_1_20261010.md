@@ -80,3 +80,6 @@
 ### 追记(10/31 · 主线回归)
 - **hindsight 评测预注册判据档 V1 落档**:`docs/metering/HINDSIGHT_EVAL_PREREG_V1_20261031.md`(主基准 LongMemEval-S 与 compass 56.6% 同协议·公平性四规则·judge 失败显式 error 禁记 0)——候 hindsight 答复两问(version/config+数据集)后定版开跑,7 天内出报告。
 - v5 首笔落库件验尸:记忆 IO 跨框通道实通;内容暴露 v5 侧 DEEPSEEK_API_KEY 缺失(think 报错,与 readonly_tool 同簇,已在 24319 回执函预警域内)。
+
+### 追记(10/31 · Gaurav 处置)
+- **用户拍板略过 Gaurav/Flute 试点**:保位信 24h 回表承诺自然失效,不发补充邮件(硬闸:对外发送需过稿);调查表解析件留 runtime/scratch_flute/ 备未来重启;若对方追问由值守轮收割再议。
