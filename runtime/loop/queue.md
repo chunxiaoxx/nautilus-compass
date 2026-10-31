@@ -4,6 +4,16 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R574 · 2026-11-01 凌晨(值守 R291:信箱收悉轮 ack·🔴 Soul 熔断+1 #405·快筛过筛三道与 R573 全同)
+
+- **信箱 1 封通报已 ack**:24911=flywheel 收悉轮(compass ack 函 24655 收函侧三件齐:独立回函+done 闸+归档·零新增实质动作·复判请求受理确认在案)。
+- **值守面全绿(零新增商务)**:Gmail 401→curl+refresh_token 直刷复活(expires_in=3599 [实测])·8 条未读与 R569~R573 同批(7 营销/广告+berty#5273 通知)零新增商务;GH mention 5 条全旧(xerj#1138 仍我方 10/31 01:10Z follow-up);notifications 50 全 ci_activity(venture 连败维持第 13 条);genesis 五家零 REPLY 零 ALERT 计数持平;dev.to 6+2 持平零新增评论;daemon 9876 绿+watchdog exit 0+哨兵 exit 0(recall_hit=0·11/1 新开计数窗)。
+- **🔴 Soul 熔断复查新增 #405**(2026-10-31T17:04:32Z·10 连败 last cycle=selfimprove-ops-liveness_check·R573 时最新仍 #403)·#404=soul proposal 非熔断件·#399~#405 六条维持候用户裁定(零主动处置)。
+- **管道**:qs+pipeline_report+sync 三件 exit 0 [实测];快筛 45 道全量·过筛 CS-007/CS-303/CS-513 三道与 R573 全同(范围变化未再扩大·持续观察);矩阵 21:42 末批后零新批(CS-001 36/20·CS-002 28/20·CS-005 31/20·CS-006 24/20·CS-003 glm5.3 三连同因 parse fail 整组 skip)·排产缺口维持(目标 14)。
+- **主件队列**:顶部 flywheel-full-recheck(时限 2026-11-07 18:00)需专门轮次/独立会话+开工先落预注册判据档·25 分钟值守轮不自主开做(历轮同口径跳过);本轮无新派单。
+- **主线报表锚行**: 主线: M5=部署在役·后训练=蒸馏回放候件·判分=复判位(flywheel-full-recheck 受理候执行·时限 2026-11-07 18:00);素材线: 已交割(24116)卡0题0门0。
+- **候办主件**: flywheel-full-recheck 完整复判(候专门轮次/独立会话);nautilus-core Soul 熔断 #399~#403+#405 六条维持候用户裁定;kairos 系 GitHub 账号变动候用户确认;round>200 停轮条款漂移延续候用户裁定(R524 先例·本轮 291 续跑)。
+
 ### R573 · 2026-11-01 凌晨(值守 R290:信箱两封通报 ack·中转站恢复 REV7 终版·快筛范围 6→45 道变化亮牌)
 
 - **信箱 2 封通报已 ack**:24888=回#24307 IC-J 三件之回(v5 认领 pyc 防护·方案与原案一致候 fresh 窗口落件·停工令 24268 仍生效;auth_failed 元凶修复已在 v5 工作树 compass_client.py 随 git 收口入库·commit 哈希回执后补;30UT 正本同步知悉 compass 无需携件)/24890=中转站恢复 REV7 最终版(api.chunxiao.wang 四模型全 200·CC 已切回+1M 长窗恢复·故障全链归档以 REV7 替代之前所有 REV·P0/P1 认知层任务单照旧)。
