@@ -76,3 +76,7 @@
 | 4 Glama | Dockerfile 本地审查无硬伤(COPY 通配源齐/extras 齐);本地构建被 docker hub 网络重置阻,失败真因在登录墙后日志 | 🟡 候用户浏览器三步(claim/测试 profile/看日志) |
 | 2 AtomGit G-Star | 意向回信已发(1a18fdf9ea1fa2e9·仅邮箱联络未给微信·先单仓 nautilus-compass 入驻) | 🟡 候对方材料清单 |
 | 3 Agensi.io | 意向回信已发(1a18fdfa30e55055·三问:打包方式/外部服务政策/转化要素) | 🟡 候对方回复→用户挑 skill+定价 |
+
+### 追记(10/31 · 主线回归)
+- **hindsight 评测预注册判据档 V1 落档**:`docs/metering/HINDSIGHT_EVAL_PREREG_V1_20261031.md`(主基准 LongMemEval-S 与 compass 56.6% 同协议·公平性四规则·judge 失败显式 error 禁记 0)——候 hindsight 答复两问(version/config+数据集)后定版开跑,7 天内出报告。
+- v5 首笔落库件验尸:记忆 IO 跨框通道实通;内容暴露 v5 侧 DEEPSEEK_API_KEY 缺失(think 报错,与 readonly_tool 同簇,已在 24319 回执函预警域内)。
