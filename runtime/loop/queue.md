@@ -4,6 +4,15 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R570 · 2026-10-31 深夜(值守 R287:全渠道绿零新增商务·Soul 熔断复查无新增·全项与 R569 持平)
+
+- **值守面全绿(零新函零新增商务)**:信箱 0 未读;Gmail 探活绿(access_token 有效·无需直刷)·8 条未读与 R569 同批(7 营销/广告通知+berty#5273 关闭通知)零新增商务;GH mention 5 条全旧(xerj#1138 最新仍我方 10/31 follow-up·search/issues q=mentions 实测);notifications 50 全 ci_activity(venture 连败维持第 13 条·最新失败 06:40:13Z);genesis 五家零 REPLY 零 ALERT 计数持平(EverOS#504=1/hindsight#5584=1/mem0#7641=0/letta#3453=1/cognee#5883=2);dev.to 6+2 持平零新增评论;daemon 9876 绿+watchdog exit 0+哨兵绿(recall_hit=60)。
+- **Soul 熔断复查无新增**:search 实测最新仍 #402(2026-10-31T13:02:55Z·正确 repo=chunxiaoxx/nautilus-core)·#399~#402 四条维持候用户裁定。
+- **管道**:qs+pipeline_report+sync 三件 exit 0 [实测];快筛 6 道仅 CS-513 过筛与 R569 全同(CS-512/514~518 全不过·"存在不过筛");**F-013 CS-008 退化哨兵警告维持**;矩阵 21:42 跑批正常(CS-003~006 各 24-32/20 读数)·排产缺口维持(目标 14)。
+- **主件队列**:顶部 flywheel-full-recheck(时限 2026-11-07 18:00)需专门轮次/独立会话+开工先落预注册判据档·25 分钟值守轮不自主开做(历轮同口径跳过);本轮无新派单。
+- **主线报表锚行**: 主线: M5=部署在役·后训练=蒸馏回放候件·判分=复判位(flywheel-full-recheck 受理候执行·时限 2026-11-07 18:00);素材线: 已交割(24116)卡0题0门0。
+- **候办主件**: flywheel-full-recheck 完整复判(候专门轮次/独立会话);relay 渠道补全候用户;nautilus-core Soul 熔断 #399/#400/#401/#402 维持候用户裁定;kairos 系 GitHub 账号变动候用户确认;round>200 停轮条款漂移延续候用户裁定(R524 先例·本轮 287 续跑)。
+
 ### R569 · 2026-10-31 深夜(值守 R286:全渠道绿零新增商务·🔴nautilus-core Soul 熔断新增 #402(jarvis_sig_matrix·8 连败)候用户)
 
 - **值守面全绿(零新函零新增商务)**:信箱 0 未读;Gmail 401 直刷复活(curl+refresh_token·expires_in=3599 [实测])·8 条未读=7 营销/广告通知(X Premium 广告×3/Reddit 广告/Cloudflare/AI Skill newsletter)+berty#5273 关闭通知(我方邀请 issue 10/28 闭环延续)零新增商务;GH mention 5 条全旧(xerj#1138 最新仍我方 10/31 follow-up);notifications 50 全 ci_activity;venture_daily_report 连败维持第 13 条零新增(仍 06:39:21Z run 41177496820·此后零新 run);genesis 五家零 REPLY 零 ALERT 计数持平(EverOS#504=1/hindsight#5584=1/mem0#7641=0/letta#3453=1/cognee#5883=2);dev.to 6+2 持平;daemon 9876 绿+watchdog 绿+哨兵绿(recall_hit=60)。
