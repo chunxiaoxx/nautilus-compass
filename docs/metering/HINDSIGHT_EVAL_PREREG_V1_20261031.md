@@ -28,8 +28,15 @@
 - 发布物:报告+全部原始结果文件+逐条 recompute 命令——hindsight#5584 线程回贴链接
 - 时点:hindsight 答复两问后 7 天内出报告(GPU 资源:外部 T4/A100 或本机,依其 self-host 资源需求定)
 
-## 五、待定项(候 hindsight)
+## 五、资源与技术路线(10/31 侦察后定稿)
 
-- [ ] version/commit + self-host 推荐配置
-- [ ] 代表性数据集(若有)
-- [ ] 资源需求确认(决定 GPU 租用规格·参照 GPU 实例复用纪律)
+- **hindsight 臂无需 GPU**:自托管=Docker(`ghcr.io/vectorize-io/hindsight`·API 8888/UI 9999)+一个 LLM API key(HINDSIGHT_API_LLM_PROVIDER 支持 25+ 家)——本机 Mac(Docker 29.8.2 在)或 cloud 均可跑
+- 适配器:其 API 面=`retain(bank_id, content, context, timestamp)` / `recall(bank_id, query)` / `reflect(...)`,Python 客户端 `hindsight-client`——LongMemEval 历史会话逐段 retain → 每题 recall → 召回注入 subject prompt → judge 评分;Python 客户端 `hindsight-client` MIT 协议
+- 对照臂(可选 stretch):compass 当前版同协议同跑(绝对读数为主交付,对照臂为加分项);参照读数=compass v0.8 56.6%(2026-05-04·~$3.5 成本)
+- subject/judge 模型:与参照跑同款(deepseek-v3.2 经 ARK·judge 分离),保证双臂读数互可解释
+
+## 六、待定项(候 hindsight)
+
+- [ ] version/tag + self-host 推荐配置(其一答即冻结 §三 开跑;tag 未答则用 ghcr latest+commit sha 记录)
+- [ ] 代表性数据集(若有→次跑)
+- [ ] retain 用 LLM key 选择(其 retain 提取需 LLM——用哪家=其推荐默认,不做我方偏好调优,遵守 §三.1)
