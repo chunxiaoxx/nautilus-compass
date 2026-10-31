@@ -67,3 +67,12 @@
 
 ### 教训
 10/15 投放后监视脚本(genesis_watch)在案但**从未进值守轮清单**——两封关键回复(EverOS 10/20/hindsight 10/22)挂了 9-11 天才被读到。修复:genesis_watch 纳入值守轮例行(本日已跑通,🔴token 脏字符会使脚本全线 ERR——消毒后跑)。
+
+### 追记(10/31 · 四件拍板推进 1→4→2→3)
+
+| 件 | 动作 | 状态 |
+|---|---|---|
+| 1 Gaurav/Flute | 保位回信已发(1a18fdf0d26f374d·同线程·迟到致歉+24h 内回表+诚实分离 confirmed/unconfirmed);调查表 xlsx 已解析(Sheet1 运营 11 问+Sheet2 ~90 场景 Yes/Maybe/No)落 runtime/scratch_flute/ | 🟡 候用户补运营事实→填表发送 |
+| 4 Glama | Dockerfile 本地审查无硬伤(COPY 通配源齐/extras 齐);本地构建被 docker hub 网络重置阻,失败真因在登录墙后日志 | 🟡 候用户浏览器三步(claim/测试 profile/看日志) |
+| 2 AtomGit G-Star | 意向回信已发(1a18fdf9ea1fa2e9·仅邮箱联络未给微信·先单仓 nautilus-compass 入驻) | 🟡 候对方材料清单 |
+| 3 Agensi.io | 意向回信已发(1a18fdfa30e55055·三问:打包方式/外部服务政策/转化要素) | 🟡 候对方回复→用户挑 skill+定价 |
