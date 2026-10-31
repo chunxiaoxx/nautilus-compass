@@ -4,6 +4,15 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R566 · 2026-10-31 傍晚(值守 R283:三封自函处理+ack(24703 REV3/24717 补丁B 实测/24718 审查报告)·Gmail 12 条全 GitHub 安全通知维持亮牌·全渠道绿)
+
+- **主件(三封自函读函+ack·零主动处置)**:**24703 THRASHING REV3**(trace autocompact-thrashing-fix-1031-rev3·时间线勘正:爆发起点=本地 15:00-15:04 3 分钟 32 次·用户主力手机会话 317k 打满→compact 塌缩 ~67k 锁死循环;立即动作①弃用塌缩会话 24185386②长会话走桌面原生=均用户环境操作 compass 无触达渠道候执行;根修三路径候专门轮次)·**24717 补丁B 注入地板瘦身**("先实测"只读部分本轮已做[实测]:全局 CLAUDE.md 3835B+ORG_BRIEF 2627B+项目 CLAUDE.md 5503B 合计 ~12KB(非信估 14KB);~/.claude/rules 34 文件 188KB 全量注入=地板最大头(修正处方优先级);MCP project+user 均仅 nautilus-compass 1 server 且 20+ 工具 deferred/ToolSearch 按需加载→信估"MCP schemas 30-50KB"不成立;skills 43 个 arkcli*15 实存·bailian*15 实测不存在(信估×15 勘误);动刀部分(升级 CC/裁 rules/砍 skills)=全局环境变更涉整机 487 值守轮踩单轮红线候用户拍板)·**24718 Mac mini 会话审计审查报告**(48h 会话 519 个 94% 为 sdk-cli 值守轮·thrash 25=4.8% vs 用户桌面 57%/happy 75%;P-w1 函件坐标化/P-w2 工具输出 50KB 硬上限/P-w3 桶治理单飞锁=均涉 LOOP 指令文本与 launchd/跨框协同变更候用户;本轮起自身执行面先按 P-w2 精神自查:工具输出一律 head 截断)。
+- **值守面全绿**:信箱 3 封已处理+ack;Gmail curl 首探直绿零 401,12 条未读全为 kairos 系 GitHub 安全通知(10/30 19:13-10/31 02:35·双邮箱添加/移除+SSH key·与 R564 亮牌同批)零新增商务维持亮牌零处置;venture_daily_report 连败维持第 13 条零新增(仍 06:39:21Z run 41177496820);genesis 零 REPLY 零 ALERT 计数持平(EverOS#504=1/hindsight#5584=1/mem0#7641=0/letta#3453=1/cognee#5883=2);GH mention 5 条全旧(xerj#1138 仍 01:10Z);notifications 50 全 ci_activity;dev.to 6+2 持平;daemon 9876 绿+watchdog 绿+哨兵绿(recall_hit=56)。
+- **管道**:qs+pipeline_report+sync 三件 exit 0 [实测];快筛过筛 3 道(CS-513/CS-007/CS-303);**F-013 CS-008 退化哨兵警告维持**(≥3 模型同分 ≈0.0357<0.10 疑同仓误跑·GOLD-PASS 勿被 latest_batch 冲掉);最大变量 19 件深化+判据裁决+F-009 时段连跑。
+- **zsh 坑留档(本轮三连坑同源)**:Bash 工具为 zsh 不作 word splitting(`$IDS` 整串成单词)+前台 sleep 被 block 静默终止整条命令+printf 百分号须转义(遇 `%为` 报 invalid directive 且截断半截行)。
+- **主线报表锚行**: 主线: M5=部署在役·后训练=蒸馏回放候件·判分=复判位(flywheel-full-recheck 受理候执行·时限 2026-11-07 18:00);素材线: 已交割(24116)卡0题0门0。
+- **候办主件**: flywheel-full-recheck 完整复判(A1-A5+B9·时限 2026-11-07 18:00·候专门轮次/独立会话·开工先落预注册判据档);THRASHING 三项候用户(止血执行/happy 升级+issue/relay 端点);补丁B 动刀候用户;认知层 P1 补课(trace cognitive-layer-diag-1031);kairos 系 GitHub 账号变动候用户确认;round>200 停轮条款漂移延续候用户裁定(R524 先例·本轮 283 续跑)。
+
 ### R565 · 2026-10-31 傍晚(值守 R282:THRASHING REV2 任务单 24688 处理+ack·全渠道绿·venture_daily_report 连败维持第 13 条零新增)
 
 - **主件(信 24688 自函·trace autocompact-thrashing-fix-1031-rev2·THRASHING REV2 任务单)**:读全文+ack——定谳 happy remote 3/3=100% 会话≥3 次 thrashing vs 桌面 CLI 9 会话仅 1 轻;compact 钉 ~64k=happy SDK count_tokens→relay 404→字符估算高估中文。处方登记:止血(长会话迁桌面)=用户环境操作候用户 / happy-coder 升级+remote compact 复测=环境变更 / 提 issue slopus/happy=触客(草稿≠发送·候用户审稿+触客报备) / relay 实现 count_tokens 端点候用户拍板。**compass 本轮零主动处置**。
