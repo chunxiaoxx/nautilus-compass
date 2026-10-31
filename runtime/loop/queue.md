@@ -4,6 +4,14 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R565 · 2026-10-31 傍晚(值守 R282:THRASHING REV2 任务单 24688 处理+ack·全渠道绿·venture_daily_report 连败维持第 13 条零新增)
+
+- **主件(信 24688 自函·trace autocompact-thrashing-fix-1031-rev2·THRASHING REV2 任务单)**:读全文+ack——定谳 happy remote 3/3=100% 会话≥3 次 thrashing vs 桌面 CLI 9 会话仅 1 轻;compact 钉 ~64k=happy SDK count_tokens→relay 404→字符估算高估中文。处方登记:止血(长会话迁桌面)=用户环境操作候用户 / happy-coder 升级+remote compact 复测=环境变更 / 提 issue slopus/happy=触客(草稿≠发送·候用户审稿+触客报备) / relay 实现 count_tokens 端点候用户拍板。**compass 本轮零主动处置**。
+- **值守面全绿**:信箱 1 封已处理;Gmail 401→直刷复活 3599s,8 线同批零新增商务(kairos 系 GitHub 账号安全变动维持 R564 亮牌零处置);genesis 零 REPLY 零 ALERT 计数持平(EverOS#504=1/hindsight#5584=1/mem0#7641=0/letta#3453=1/cognee#5883=2);GH mention 零命中;notifications 50 全 ci_activity;venture_daily_report 连败维持第 13 条零新增(仍 06:39:21Z run 41177496820·此后零新 run);dev.to 6+2 持平;daemon 9876 绿+watchdog exit0+哨兵绿(recall_hit=55)。
+- **管道**:qs+pipeline_report+sync 三件 exit 0 [实测];快筛过筛 3 道(CS-513/CS-007/CS-303);CS-203 ❌未入带(qwen 均值 0.0);**F-013 CS-008 退化哨兵警告**(glm5.3/kimi-k3/opus5.5/qwen3.8max 原始分≈0.0357 ≥3 模型同分<0.10 疑同仓误跑·GOLD-PASS 勿被 latest_batch 冲掉);最大变量 19 件深化(DEEPEN_TEMPLATE 已投)+判据裁决+F-009 时段连跑;矩阵 21:42 收官满额只读维持;production queue 零 PENDING 静态维持。
+- **主线报表锚行**: 主线: M5=部署在役·后训练=蒸馏回放候件·判分=复判位(flywheel-full-recheck 受理候执行·时限 2026-11-07 18:00);素材线: 已交割(24116)卡0题0门0。
+- **候办主件**: flywheel-full-recheck 完整复判(A1-A5+B9·时限 2026-11-07 18:00·候专门轮次/独立会话·开工先落预注册判据档);THRASHING REV2 三项候用户;认知层 P1 补课(trace cognitive-layer-diag-1031);kairos 系 GitHub 账号变动候用户确认;Cloudflare Tunnel 升级候归属方;round>200 停轮条款漂移延续候用户裁定(R524 先例·本轮 282 续跑)。
+
 ### R564 · 2026-10-31 傍晚(值守 R281:认知层诊断 P0 执行+回执(信 24659+24671·ORG_BRIEF 落地+全局注入)·GitHub kairos 系账号变动亮牌候用户·全渠道绿)
 
 - **认知层诊断 P0 执行+回执(本轮唯一新主件)**:信 24659+24671(trace cognitive-layer-diag-1031+supplement·时限 2026-11-01 12:00)→NAS 读报告 `~/mnt/nas-work/nautilus-migration/DIAG_cognitive_layer_20261031.md`→**P0 全项执行**:①`~/.claude/ORG_BRIEF.md` 已建(五段:平台/五框分工/主线/纪律红线/我是谁+认知面验收三问段·owner+日期+维护纪律字段+soul 正本坐标固定引用)②全局 `~/.claude/CLAUDE.md` 头部加 `@ORG_BRIEF.md` import(每会话注入)③三段式模板入 §5 ④认知面三问入永久段(infra_check.sh 工程面集成候后续轮次·涉 INFRA_BASELINE 三副本同步)→报告末尾追加**已执行回执**→两函均 ack(备注指向回执坐标)。**P1(venture/flywheel/venture_daily_report/caishen-hr hook 注册+框级 CLAUDE.md 三段式补课)本轮未启动,候专门轮次**(25min 限时)。
