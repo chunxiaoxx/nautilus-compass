@@ -4,6 +4,14 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R568 · 2026-10-31 深夜(值守 R285:24760 REV4 终版读+ack(thrashing 真因=relay 渠道映射缺口·CC/happy 平反)·全渠道绿零新增商务)
+
+- **主件(信 24760 自函 REV4 终版·trace autocompact-thrashing-fix-1031-rev4)**:读全文+ack——真因坐实=中转站渠道映射缺口(glm-5.3-flash 槽+小写 [1m] 变体无渠道映射·实测 glm-5.3[1M] ✅200/glm-5.3 裸名 ✅200/[1m] ❌503/flash[1M] ❌空响应);CC/happy 假说撤销平反;模型四键已回滚大写[1M] CC 快测通;skills 瘦身+回滚顾问已办;**happy issue 稿撤销不发**(CC 503 应激 compact 属合理容错);我侧核验零重复动作(P0/P1 已 R564 办·settings 无漂移);flash 槽观察项候用户补渠道([1m]/[1M] 双写法)。
+- **值守面全绿(零新函零新增商务)**:Gmail curl 探活绿 8 条未读=7 营销/技术通知+berty#5273(Jeff Thompson 10/28 "Closed as completed"·我方邀请 issue 闭环非新商务);GH mention 5 条中 xerj#1138 今日更新=我方自己 issue 自己 follow-up(10/31 01:10Z)非外部回复;notifications 50 全 ci_activity;venture_daily_report 连败维持第 13 条零新增(仍 06:39:21Z run 41177496820);genesis 五家零 REPLY 零 ALERT 计数持平(EverOS#504=1/hindsight#5584=1/mem0#7641=0/letta#3453=1/cognee#5883=2);dev.to 6+2 持平;daemon 9876 绿+watchdog 绿+哨兵绿(recall_hit=59)。
+- **管道**:qs+pipeline_report+sync 三件 exit 0 [实测];快筛 CS-515/516/517/518 全不过筛(qwen 1.0/1.0/0.0/0.75·opus None/None/None/1.0·"存在不过筛");**F-013 CS-008 退化哨兵警告维持**(GOLD-PASS 勿被 latest_batch 冲掉);排产缺口维持(目标 14·最大变量 19 件深化+判据裁决+F-009 时段连跑)。
+- **主线报表锚行**: 主线: M5=部署在役·后训练=蒸馏回放候件·判分=复判位(flywheel-full-recheck 受理候执行·时限 2026-11-07 18:00);素材线: 已交割(24116)卡0题0门0。
+- **候办主件**: flywheel-full-recheck 完整复判(A1-A5+B9·时限 2026-11-07 18:00·候专门轮次/独立会话·开工先落预注册判据档);relay 渠道补全候用户;nautilus-core Soul 熔断 #400/#401 维持候用户裁定;kairos 系 GitHub 账号变动候用户确认;round>200 停轮条款漂移延续候用户裁定(R524 先例·本轮 285 续跑)。
+
 ### R567 · 2026-10-31 晚(值守 R284:全渠道绿零新增商务·🔴nautilus-core Soul 熔断 issue #400/#401 亮牌候用户)
 
 - **值守面全绿(零新函零新增商务)**:信箱 0 未读;Gmail 401 直刷复活(curl+refresh_token)·19 条未读=18 封 kairos 系 GitHub 安全通知(同 R564 亮牌批 10/30 19:03-10/31 02:35 窗口)+1 封 ChatGPT Plus 到期营销提醒(非商务)·零新增商务维持亮牌;venture_daily_report 连败维持第 13 条零新增(仍 06:39:21Z run 41177496820·此后零新 run);genesis 五家零 REPLY 零 ALERT 计数持平(EverOS#504=1/hindsight#5584=1/mem0#7641=0/letta#3453=1/cognee#5883=2);GH mention 5 条全旧;notifications 50 全 ci_activity;dev.to 6+2 持平(另 10/30 第三篇 we-graded-our-own-question-bank 在库 0 评论);daemon 9876 绿+watchdog exit0+哨兵绿(recall_hit=58)。
