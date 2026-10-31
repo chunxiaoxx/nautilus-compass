@@ -4,6 +4,13 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R562 · 2026-10-31 午后(值守 R279:全渠道绿零新主件·venture_daily_report 连败维持第 13 条零新增·Gmail 首探直绿·genesis 零 ALERT)
+
+- **值守面全绿**:platform 信箱 0 未读·Gmail curl 首探直绿(零 401·上轮直刷 token 仍活)前 5 封未读与 R558-R561 完全同批(X Subscription+Reddit Q5+X Ads+berty#5273 关单+Reddit 广告)零新增商务;**venture_daily_report 连败维持第 13 条零新增**(gh run list 实测最新 failed 仍 06:39:21Z run 41177496820=R560 已录同条·此后零新 run·itjuzi 系列累计 13 条亮牌候用户);**genesis_watch 零 REPLY 零 ALERT**(计数持平=球在对方侧·EverOS#504=1/hindsight#5584=1/letta#3453=1/cognee#5883=2 末条均已知);GH mention qualifier 本轮零命中;notifications 50 全 ci_activity;dev.to 两文 6+2 持平;daemon 9876 绿+watchdog exit 0+哨兵 exit 0(recall_hit=45 绿)。
+- **qs+pipeline_report+pipeline_state_sync 全刷[实测]**(ops/ali30q+scripts 路径·三件 exit 0);快筛总结论=存在不过筛维持(515/516/517 零梯度 opus=None·518 差③ passrate 0.75 梯度 25pp)与前几轮零变化;判分停工冻结(24267)后零新跑批,矩阵 21:42 收官只读维持。
+- **主线报表锚行**:主线: M5=部署在役·后训练=蒸馏回放候件·判分=停工冻结(24267);素材线: 已交割(24116)卡0题0门0。
+- **候办主件**:「判分跑批 daemon 化」随判分冻结停排(候下期启动);v5 loader 修毕=cache_stale 重判触发点(候);Cloudflare Tunnel 升级 ActionRequired(8 线同批旧件·非 compass 域候归属方);round>200 停轮条款漂移延续候用户裁定(R524 先例恢复值守·本轮 279 续跑)。
+
 ### R561 · 2026-10-31 午后(值守 R278:全渠道绿零新主件·venture_daily_report 连败维持第 13 条零新增·Gmail 401 直刷复活·genesis 零 ALERT)
 
 - **值守面全绿**:platform 信箱 0 未读·Gmail curl 探活 401→非交互直刷 refresh_token 复活(expires_in=3599·回写 access_token.txt)后查询成功 8 线未读与 R558-R560 完全同批(X 营销+Q5 广告+berty#5273 关单+Reddit 购物营销+Cloudflare 账户通知+AI Skill 营销)零新增商务;**venture_daily_report 连败维持第 13 条零新增**(gh run list 实测最新 failed 仍 06:39:21Z run 41177496820=R560 已录同条·此后零新 run·itjuzi 系列累计 13 条亮牌候用户);**genesis_watch 零 REPLY 零 ALERT**(计数持平=球在对方侧·EverOS#504/hindsight#5584/letta#3453/cognee#5883 末条均已知作者);GH mention qualifier 现身 5 条全旧(xerj#1138 updated 仍 01:10Z 我方跟帖+IHUI#78/rsi-bench#4/cognee#5883/smrti#15 皆旧);notifications 50 全 ci_activity;dev.to 两文 6+2 持平;daemon 9876 绿+watchdog exit 0+哨兵 exit 0(recall_hit=39 绿)。
