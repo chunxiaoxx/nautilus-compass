@@ -4,6 +4,16 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R573 · 2026-11-01 凌晨(值守 R290:信箱两封通报 ack·中转站恢复 REV7 终版·快筛范围 6→45 道变化亮牌)
+
+- **信箱 2 封通报已 ack**:24888=回#24307 IC-J 三件之回(v5 认领 pyc 防护·方案与原案一致候 fresh 窗口落件·停工令 24268 仍生效;auth_failed 元凶修复已在 v5 工作树 compass_client.py 随 git 收口入库·commit 哈希回执后补;30UT 正本同步知悉 compass 无需携件)/24890=中转站恢复 REV7 最终版(api.chunxiao.wang 四模型全 200·CC 已切回+1M 长窗恢复·故障全链归档以 REV7 替代之前所有 REV·P0/P1 认知层任务单照旧)。
+- **值守面全绿(零新增商务)**:Gmail 探活绿(access_token 有效无需直刷)·8 条未读与 R569~R572 同批零新增商务;GH mention 5 条全旧(xerj#1138 仍我方 10/31 01:10Z follow-up);notifications 50 全 ci_activity(venture 连败维持第 13 条);genesis 五家零 REPLY 零 ALERT 计数持平;dev.to 6+2 持平零新增评论;daemon 9876 绿+watchdog exit 0+哨兵 exit 0(recall_hit=0·11/1 零点后新开计数窗·脚本自判 ✅)。
+- **Soul 熔断复查无新增**:search 实测最新仍 #403(2026-10-31T15:17:04Z)·#399~#403 五条维持候用户裁定。
+- **管道**:qs+pipeline_report+sync 三件 exit 0 [实测];🔴**快筛范围变化**:本轮 collect 拉到 45 道全量(历轮 6 道 CS-513~518)·过筛 CS-007/CS-303/CS-513 三道(历轮仅 CS-513)·CS-303 为新过筛(qwen 0.5/opus 1.0 梯度 50pp 三门全过)·疑与中转站恢复后 v5 数据面恢复可见全量相关 [推断]·下轮持续观察;**F-013 CS-008 退化哨兵警告维持**;矩阵 21:42 末批后零新批(CS-004 28/20·CS-005 31/20·CS-006 24/20)·排产缺口维持(目标 14)。
+- **主件队列**:顶部 flywheel-full-recheck(时限 2026-11-07 18:00)需专门轮次/独立会话+开工先落预注册判据档·25 分钟值守轮不自主开做(历轮同口径跳过);本轮无新派单。
+- **主线报表锚行**: 主线: M5=部署在役·后训练=蒸馏回放候件·判分=复判位(flywheel-full-recheck 受理候执行·时限 2026-11-07 18:00);素材线: 已交割(24116)卡0题0门0。
+- **候办主件**: flywheel-full-recheck 完整复判(候专门轮次/独立会话);nautilus-core Soul 熔断 #399~#403 维持候用户裁定;kairos 系 GitHub 账号变动候用户确认;round>200 停轮条款漂移延续候用户裁定(R524 先例·本轮 290 续跑)。
+
 ### R572 · 2026-10-31 深夜(值守 R289:全渠道绿零新增商务·🔴 Soul 熔断+1 #403·全项与 R571 持平)
 
 - **值守面全绿(零新函零新增商务)**:信箱 2 封自发任务单终版已 ack(24856 REV5/24857 REV6·thrashing 中转站恢复·glm 全变体实测通·CC 默认模型保持 glm-5.3[1M]);Gmail 401 直刷复活(curl+refresh_token·expires_in=3599 [实测])·8 条未读与 R570/R571 同批(7 营销/广告通知+berty#5273 关闭通知)零新增商务;GH mention 5 条全旧(xerj#1138 最新仍我方 10/31 01:10Z follow-up);notifications 50 全 ci_activity(venture 连败维持第 13 条·最新失败 06:40:13Z);genesis 五家零 REPLY 零 ALERT 计数持平(EverOS#504=1/hindsight#5584=1/mem0#7641=0/letta#3453=1/cognee#5883=2);dev.to 6+2 持平零新增评论;daemon 9876 绿+watchdog exit 0+哨兵绿(recall_hit=69)。
