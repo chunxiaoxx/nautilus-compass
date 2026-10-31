@@ -15,7 +15,7 @@ out = []
 has_reply = False
 for repo, n in WATCH:
     try:
-        r = subprocess.run(['gh','api',f'repos/{repo}/issues/{n}',
+        r = subprocess.run(['/opt/homebrew/bin/gh','api',f'repos/{repo}/issues/{n}',
                             '--jq','[.comments,.state,.updated_at]'],
                            capture_output=True, text=True, timeout=30)
         cmt, state, updated = json.loads(r.stdout)
