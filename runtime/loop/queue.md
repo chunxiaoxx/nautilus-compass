@@ -4,6 +4,16 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R564 · 2026-10-31 傍晚(值守 R281:认知层诊断 P0 执行+回执(信 24659+24671·ORG_BRIEF 落地+全局注入)·GitHub kairos 系账号变动亮牌候用户·全渠道绿)
+
+- **认知层诊断 P0 执行+回执(本轮唯一新主件)**:信 24659+24671(trace cognitive-layer-diag-1031+supplement·时限 2026-11-01 12:00)→NAS 读报告 `~/mnt/nas-work/nautilus-migration/DIAG_cognitive_layer_20261031.md`→**P0 全项执行**:①`~/.claude/ORG_BRIEF.md` 已建(五段:平台/五框分工/主线/纪律红线/我是谁+认知面验收三问段·owner+日期+维护纪律字段+soul 正本坐标固定引用)②全局 `~/.claude/CLAUDE.md` 头部加 `@ORG_BRIEF.md` import(每会话注入)③三段式模板入 §5 ④认知面三问入永久段(infra_check.sh 工程面集成候后续轮次·涉 INFRA_BASELINE 三副本同步)→报告末尾追加**已执行回执**→两函均 ack(备注指向回执坐标)。**P1(venture/flywheel/venture_daily_report/caishen-hr hook 注册+框级 CLAUDE.md 三段式补课)本轮未启动,候专门轮次**(25min 限时)。
+- **🔴 GitHub 账号安全变动亮牌候用户(本轮新发现)**:Gmail 抽样 4 封未读全为 kairos 系 GitHub 账号安全通知——chunxiaoxx+kairos@gmail.com 添加(10/31 02:27)·kairos9291ed@maxxspace.com 添加(10/30 22:33)·SSH key kairos-gh-identity-20261031 添加(10/30 20:34)·kairos_probe_probe@maxxspace.com 移除(10/30 20:20)——非商务·**亮牌候用户确认是否本人操作·零主动处置**。
+- **值守面全绿**:platform 信箱 2 封已处理(24659/24671);Gmail curl 首探零 401(token 存活)·8 线同批零新增商务(除上 kairos 安全通知);genesis_watch 零 REPLY 零 ALERT 计数持平球在对方侧(EverOS#504=1/hindsight#5584=1/mem0#7641=0/letta#3453=1/cognee#5883=2);GH mention 本轮零命中;notifications 50 全 ci_activity;dev.to 两文 6+2 持平;daemon 9876 绿(ok:true pid 8437)+watchdog exit 0+哨兵绿(recall_hit=48)。
+- **venture_daily_report 连败维持第 13 条零新增**(gh run list 实测最新 failed 仍 06:39:21Z run 41177496820=R560 已录同条·此后零新 run·itjuzi 系列累计 13 条亮牌候用户)。
+- **qs+pipeline_report+pipeline_state_sync 全刷[实测]三件 exit 0**(实际路径:ops/ali30q/collect_for_quickscreen.py --v5 --scratch + ops/ali30q/pipeline_report.py + scripts/pipeline_state_sync.sh;**quickscreen_verdict.py 本仓不存在**[实测 mdfind+find 仅 flywheel embedded 考场副本]·往轮"verdict"实为 collect 内产/report 覆盖·路径勘误留档);report 读数"最大变量 19 件深化(DEEPEN_TEMPLATE 已投)+判据裁决+F-009 时段连跑";矩阵 21:42 收官满额只读维持。
+- **主线报表锚行**:主线: M5=部署在役·后训练=蒸馏回放候件·判分=复判位(flywheel-full-recheck 受理候执行·时限 11-07);素材线: 已交割(24116)卡0题0门0。
+- **候办主件**:**flywheel-full-recheck 完整复判(A1-A5+B9·时限 2026-11-07 18:00·候专门轮次/独立会话·开工先落预注册判据档)**;**认知层 P1 补课(hook 注册+框级 CLAUDE.md·候专门轮次·trace cognitive-layer-diag-1031)**;kairos 系 GitHub 账号变动候用户确认;「判分跑批 daemon 化」随判分冻结停排(候下期启动);v5 loader 修毕=cache_stale 重判触发点(候);Cloudflare Tunnel 升级 ActionRequired(8 线同批旧件·非 compass 域候归属方);round>200 停轮条款漂移延续候用户裁定(R524 先例恢复值守·本轮 281 续跑)。
+
 ### R563 · 2026-10-31 午后(值守 R280:flywheel 复判请求受理(24630)+回执 24655·全渠道绿零新主件·venture_daily_report 连败维持第 13 条零新增)
 
 - **flywheel 复判受理(本轮唯一新主件·只受理不判)**:信件 24630(trace flywheel-full-recheck-20261031·用户 10/31 拍板 flywheel 全部产出交 compass 独立复判)读函+ack+回执 24655——时限 2026-11-07 18:00 接受·按函 §三条款执行(gate5+判据正本 ops/ali30q/CRITERIA_DUALTRACK_20261028.md+甲方质检两原文·flywheel 自写工具 full_gate/quad_check/completeness_kit 一律不采信·逐条三态结论)·遵守 compass 判分值守红线(判据零放宽/证据分层/非实现者复算)·A 类实验读数 5 项(A1 能力台账 29 项/A2 S5 效用 +25.26pp/A3 三臂 0.1993/0.2029/0.4554/A4 阿里 8 题 0 达标/A5 跑数 779 文件 64.1s)优先于 B 类文档 9 件·开工预注册判据档落 compass docs/·复判结论落 core 仓 docs/+回函 flywheel runtime/_mb_in/·进度逐轮记 COLLAB_BOARD。**完整复判(A1-A5+B9)留后续专门轮次/独立会话按非实现者复算执行**(值守轮 25 分钟内只受理排期)。
