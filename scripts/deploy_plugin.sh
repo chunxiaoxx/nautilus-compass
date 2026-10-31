@@ -3,6 +3,7 @@
 # 用法: deploy_plugin.sh [--check]  (--check=只比对漂移不部署)
 # 纪律来源: 10/30 冰山案——仓与插件四份编码实现漂移,手工同步是病根。
 # 10/30 扩面: 纳入 M5 记忆门三件套载体(daemon.py/mcp_server.py/session_writer.py/memgate_stamp.py)
+# 10/31 再扩: compass_hud_wrapper.py 纳管(最后一个仓缺独苗清零,manifest 8 文件全覆盖)
 set -e
 REPO=/Users/chunxiao.wang/Projects/nautilus-compass
 PLUG=~/.claude/plugins/nautilus-compass
