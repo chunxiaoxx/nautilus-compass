@@ -4,6 +4,14 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R567 · 2026-10-31 晚(值守 R284:全渠道绿零新增商务·🔴nautilus-core Soul 熔断 issue #400/#401 亮牌候用户)
+
+- **值守面全绿(零新函零新增商务)**:信箱 0 未读;Gmail 401 直刷复活(curl+refresh_token)·19 条未读=18 封 kairos 系 GitHub 安全通知(同 R564 亮牌批 10/30 19:03-10/31 02:35 窗口)+1 封 ChatGPT Plus 到期营销提醒(非商务)·零新增商务维持亮牌;venture_daily_report 连败维持第 13 条零新增(仍 06:39:21Z run 41177496820·此后零新 run);genesis 五家零 REPLY 零 ALERT 计数持平(EverOS#504=1/hindsight#5584=1/mem0#7641=0/letta#3453=1/cognee#5883=2);GH mention 5 条全旧;notifications 50 全 ci_activity;dev.to 6+2 持平(另 10/30 第三篇 we-graded-our-own-question-bank 在库 0 评论);daemon 9876 绿+watchdog exit0+哨兵绿(recall_hit=58)。
+- **🔴 新发现:nautilus-core Soul 熔断自动 issue 两条**(gh 实测:#400 2026-10-31T03:09:32Z/#401 2026-10-31T08:19:58Z·正文"Soul paused after 7 consecutive failures (last cycle selfimprove-ops-frame_worker)"·platform 域自动化留痕·按红线零主动处置·候用户裁定)。
+- **管道**:qs+pipeline_report+sync 三件 exit 0 [实测];快筛过筛 3 道(CS-513/CS-007/CS-303);**F-013 CS-008 退化哨兵警告维持**(≥3 模型同分 ≈0.0357<0.10 疑同仓误跑·GOLD-PASS 勿被 latest_batch 冲掉);排产缺口维持(目标 14·最大变量 19 件深化+判据裁决+F-009 时段连跑)。
+- **主线报表锚行**: 主线: M5=部署在役·后训练=蒸馏回放候件·判分=复判位(flywheel-full-recheck 受理候执行·时限 2026-11-07 18:00);素材线: 已交割(24116)卡0题0门0。
+- **候办主件**: flywheel-full-recheck 完整复判(A1-A5+B9·时限 2026-11-07 18:00·候专门轮次/独立会话·开工先落预注册判据档);THRASHING 三项候用户(止血执行/happy 升级+issue/relay 端点);补丁B 动刀候用户;认知层 P1 补课(trace cognitive-layer-diag-1031);kairos 系 GitHub 账号变动候用户确认;nautilus-core Soul 熔断 #400/#401 候用户裁定;round>200 停轮条款漂移延续候用户裁定(R524 先例·本轮 284 续跑)。
+
 ### R566 · 2026-10-31 傍晚(值守 R283:三封自函处理+ack(24703 REV3/24717 补丁B 实测/24718 审查报告)·Gmail 12 条全 GitHub 安全通知维持亮牌·全渠道绿)
 
 - **主件(三封自函读函+ack·零主动处置)**:**24703 THRASHING REV3**(trace autocompact-thrashing-fix-1031-rev3·时间线勘正:爆发起点=本地 15:00-15:04 3 分钟 32 次·用户主力手机会话 317k 打满→compact 塌缩 ~67k 锁死循环;立即动作①弃用塌缩会话 24185386②长会话走桌面原生=均用户环境操作 compass 无触达渠道候执行;根修三路径候专门轮次)·**24717 补丁B 注入地板瘦身**("先实测"只读部分本轮已做[实测]:全局 CLAUDE.md 3835B+ORG_BRIEF 2627B+项目 CLAUDE.md 5503B 合计 ~12KB(非信估 14KB);~/.claude/rules 34 文件 188KB 全量注入=地板最大头(修正处方优先级);MCP project+user 均仅 nautilus-compass 1 server 且 20+ 工具 deferred/ToolSearch 按需加载→信估"MCP schemas 30-50KB"不成立;skills 43 个 arkcli*15 实存·bailian*15 实测不存在(信估×15 勘误);动刀部分(升级 CC/裁 rules/砍 skills)=全局环境变更涉整机 487 值守轮踩单轮红线候用户拍板)·**24718 Mac mini 会话审计审查报告**(48h 会话 519 个 94% 为 sdk-cli 值守轮·thrash 25=4.8% vs 用户桌面 57%/happy 75%;P-w1 函件坐标化/P-w2 工具输出 50KB 硬上限/P-w3 桶治理单飞锁=均涉 LOOP 指令文本与 launchd/跨框协同变更候用户;本轮起自身执行面先按 P-w2 精神自查:工具输出一律 head 截断)。
