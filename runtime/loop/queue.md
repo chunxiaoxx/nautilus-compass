@@ -4,6 +4,17 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R577 · 2026-11-01 凌晨(值守 R294:信箱 0 未读零新增轮·全渠道绿·Soul +2 新 selfimprove 提案留痕·快筛 46 道过筛三道与 R576 全同)
+
+- **信箱 0 未读**(bootstrap 实测)·零新增实质动作·CS-007 复判位继续候卷零阻塞。
+- **值守面全绿(零新增商务)**:Gmail 探活绿(access_token 有效无需直刷)·9 条未读=历轮 8 条+1 新入 IFTTT 营销件,零新增商务;GH mention 5 条全旧(xerj#1138 仍我方 10/31 01:10Z follow-up);notifications 第一页 50 全 CheckSuite(venture 连败维持);genesis 五家零 REPLY 零 ALERT 计数持平(EverOS#504=1/hindsight#5584=1/mem0#7641=0/letta#3453=1/cognee#5883=2);dev.to 6+2 持平零新增评论;daemon 9876 绿+watchdog exit 0+哨兵 exit 0(recall_hit=0·11/1 新窗)。
+- **🔧 环境变化亮牌(非故障)**:gh 2.102.0 已移除 `--mention` 旗标,`--search` 亦不认——本轮改用 `gh search issues "mentions:chunxiaoxx"` 位置 qualifier 实测零命中(5 条全旧,读数与历轮一致);round_prompt.md 第 3 条命令待下轮轮换时顺手更新(候改不阻塞)。
+- **Soul 熔断复查**:熔断件无新增仍 #405(2026-10-31T17:04:32Z·10 连败);🔴+2 新 selfimprove 提案自动化留痕 **#406**(ali30q_post_bounties·17:47:09Z·readability persona)/ **#407**(dingdoc_parse·18:16:38Z·correctness persona)——与 #404 proposal 件同类非熔断件;#399~#407 维持候用户裁定(零主动处置)。
+- **管道**:qs+pipeline_report+sync 三件 exit 0 [实测];快筛 46 道全量·过筛 CS-007(75pp)/CS-303(50pp)/CS-513(50pp) 三道与 R576 全同(范围 46 稳定);矩阵 21:42 末批后零新批(CS-001 36/20·CS-002 28/20·CS-003 32/20 glm5.3 三连同因 parse fail 已报 v5 整组 skip·CS-004 28/20·CS-005 31/20·CS-006 24/20)·排产缺口维持(目标 14)。
+- **主件队列**:顶部 flywheel-full-recheck(时限 2026-11-07 18:00·剩 6 天)需专门轮次/独立会话+开工先落预注册判据档·25 分钟值守轮不自主开做(历轮同口径跳过);本轮无新派单。
+- **主线报表锚行**: 主线: M5=部署在役·后训练=蒸馏回放候件·判分=复判位(flywheel-full-recheck 受理候执行·时限 2026-11-07 18:00);素材线: 已交割(24116)卡0题0门0。
+- **候办主件**: flywheel-full-recheck 完整复判(候专门轮次/独立会话·剩 6 天);nautilus-core Soul #399~#407(熔断 2 件+提案 6 件)维持候用户裁定;kairos 系 GitHub 账号变动候用户确认;round>200 停轮条款漂移延续候用户裁定(R524 先例·本轮 294 续跑)。
+
 ### R576 · 2026-11-01 凌晨(值守 R293:信箱 0 未读零新增轮·全渠道绿·快筛 46 道过筛三道与 R575 全同)
 
 - **信箱 0 未读**(bootstrap 实测,R575 已清完)·零新增实质动作·CS-007 复判位继续候卷零阻塞。
