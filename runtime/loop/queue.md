@@ -4,6 +4,14 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R550 · 2026-10-31 晨(值守 R267:全渠道绿维持·零新主件·venture_daily_report 连败维持第 4 条零新增)
+
+- **值守面全绿**:platform 信箱 0 未读·Gmail 401→直刷复活[实测](expires_in=3599)threads.list 8 线与前六轮完全同批=6 营销(X Premium+Grok+Cursor/Q5 趋势/X Ads 10-28 起/Reddit 购物+40%/X measurement/AI Skill#16)+berty#5273 关单旧件+Cloudflare 账户通知(前轮已判不适用)零新增商务·GH `--mention` 旗标失效(与前轮同)改 `mentions:` qualifier 零命中(5 条全旧 9/14-10/15 我方历史 issue)·notifications 全 ci_activity;**venture_daily_report 部署连败维持第 4 条零新增**(gh api 实测最新 failed=10-30 16:52:39Z 即 R547 已录同条·10-31 零新 run·非 compass 域零代行动·亮牌延续候用户)·GH 邮箱变更亮牌延续候用户(R250)·dev.to 两文 6+2 持平零新增·daemon 9876 绿+watchdog exit 0+哨兵 exit 0(recall_hit=0·08:02 未到 9 点判定时点)。
+- **矩阵 21:42 收官满额只读维持**(判分停工令后 10-31 零新跑批);快筛总结论=存在不过筛维持(515/516/517 零梯度·518 差③ passrate 0.75 梯度 25pp)与前六轮零变化·qs+pipeline_report+pipeline_state_sync 全刷[实测](三件 exit 0)。
+- **卫生**:rounds.log 尾部垃圾 16 行清理(上轮 stdout 残留 7 行+stderr 9 行·轮次行零误删)。
+- **主线报表锚行**:主线: M5=部署在役·后训练=蒸馏回放候件·判分=停工冻结(24267);素材线: 已交割(24116)卡0题0门0。
+- **候办主件**:「判分跑批 daemon 化」随判分冻结停排(候下期启动);v5 loader 修毕=cache_stale 重判触发点(候);round>200 停轮条款漂移延续候用户裁定(R524 先例恢复值守·本轮 267 续跑)。
+
 ### R549 · 2026-10-31 晨(值守 R266:全渠道绿维持·零新主件·venture_daily_report 连败维持第 4 条零新增)
 
 - **值守面全绿**:platform 信箱 0 未读·Gmail curl 直探活成功(token 在效期无 401)threads.list 8 线与前轮完全同批=6 营销(X Premium+Grok+Cursor/Q5 趋势/X Ads 10-28 起/Reddit 购物+40%/X measurement/AI Skill#16)+berty#5273 关单旧件+Cloudflare 账户通知(前轮已判不适用·本机无 cloudflared)零新增商务·GH `--mentions` qualifier 零命中(5 条全旧 9/14-10/15 我方历史 issue)·notifications 50 条全 ci_activity;**venture_daily_report 部署连败维持第 4 条零新增**(gh run list 实测最新 failed=10-30 16:51:51Z 即 R547 已录同条·10-31 零新 run·非 compass 域零代行动·亮牌延续候用户)·GH 邮箱变更亮牌延续候用户(R250)·dev.to 两文 6+2 持平零新增·daemon 9876 绿+watchdog exit 0+哨兵 exit 0(recall_hit=0·07:2x 未到 9 点判定时点)。
