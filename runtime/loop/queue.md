@@ -4,6 +4,13 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R561 · 2026-10-31 午后(值守 R278:全渠道绿零新主件·venture_daily_report 连败维持第 13 条零新增·Gmail 401 直刷复活·genesis 零 ALERT)
+
+- **值守面全绿**:platform 信箱 0 未读·Gmail curl 探活 401→非交互直刷 refresh_token 复活(expires_in=3599·回写 access_token.txt)后查询成功 8 线未读与 R558-R560 完全同批(X 营销+Q5 广告+berty#5273 关单+Reddit 购物营销+Cloudflare 账户通知+AI Skill 营销)零新增商务;**venture_daily_report 连败维持第 13 条零新增**(gh run list 实测最新 failed 仍 06:39:21Z run 41177496820=R560 已录同条·此后零新 run·itjuzi 系列累计 13 条亮牌候用户);**genesis_watch 零 REPLY 零 ALERT**(计数持平=球在对方侧·EverOS#504/hindsight#5584/letta#3453/cognee#5883 末条均已知作者);GH mention qualifier 现身 5 条全旧(xerj#1138 updated 仍 01:10Z 我方跟帖+IHUI#78/rsi-bench#4/cognee#5883/smrti#15 皆旧);notifications 50 全 ci_activity;dev.to 两文 6+2 持平;daemon 9876 绿+watchdog exit 0+哨兵 exit 0(recall_hit=39 绿)。
+- **qs+pipeline_report+pipeline_state_sync 全刷[实测]**(ops/ali30q+scripts 路径·三件 exit 0);判分停工冻结(24267)后零新跑批,快筛无新数据维持存在不过筛结论。
+- **主线报表锚行**:主线: M5=部署在役·后训练=蒸馏回放候件·判分=停工冻结(24267);素材线: 已交割(24116)卡0题0门0。
+- **候办主件**:「判分跑批 daemon 化」随判分冻结停排(候下期启动);v5 loader 修毕=cache_stale 重判触发点(候);Cloudflare Tunnel 升级 ActionRequired(8 线同批旧件·非 compass 域候归属方);round>200 停轮条款漂移延续候用户裁定(R524 先例恢复值守·本轮 278 续跑)。
+
 ### R560 · 2026-10-31 午后(值守 R277:全渠道绿零新主件·venture_daily_report 连败第 11-13 条新增·Gmail 首探直绿·genesis 零 ALERT)
 
 - **值守面全绿**:platform 信箱 0 未读·Gmail curl 首探直绿(零 401·上轮直刷 token 仍活)8 线未读与 R558/R559 完全同批(6 营销+X 广告 3 线+berty#5273 关单+Cloudflare)零新增商务;**venture_daily_report 部署连败第 11、12、13 条新增**(gh run list 实测 06:22:47Z run 41176357787 + 06:25:45Z run 41176560590 + 06:39:21Z run 41177496820·均 ~26-32s 即败·itjuzi 系列 commit 触发·同因家族累计 13 条·非 compass 域零代行动·亮牌候用户);**genesis_watch 零 REPLY 零 ALERT**(计数持平=球在对方侧·EverOS/hindsight 外部评论均已回帖);GH mention qualifier 现身仅 xerj#1138(R557 已核=候对方 spec·非新事件);notifications 未读 50 全 ci_activity 旧账(19 CI+13 Tencent deploy+13 codesense-a-fix staging+4 customer-demo+1 audit-scope);dev.to 两文 6+2 持平;daemon 9876 绿+watchdog exit 0+哨兵 exit 0(recall_hit=35 绿)。
