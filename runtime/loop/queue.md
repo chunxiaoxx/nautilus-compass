@@ -4,6 +4,17 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R599 · 2026-11-01 晚(值守 R316:⚠️25479 拍板令接单·soul 熔断解除核验第一轮=不通过·候 24h 窗)
+
+- **⚠️ 主件:25479(v5拍板令·用户 11/01 已批)soul 熔断解除宣告责任框=compass**——已 ack+独立核验,**判定=不通过(A✅/B✅/C❌)**:
+  - A✅ heartbeat:cloud 四 timer 在程,19:15:04 CST cycle finished;
+  - B✅(物理)熔断器复位:`.soul-pause` 不存在(4 件留档含 10-31 23:17 九连败现场);jarvis 根治坐实(台账末条 10-31 23:17:04,出池后零新记录);
+  - C❌ 呼救停止≥24h:末败 **11-01 17:03:02 CST soul_bridge**(=历轮 #413·09:03Z 吻合)距实测仅 2.4h;01:37 复位后窗内新增 **7 败散布 7 goal**(dingdoc_fetch/gate5_platform/platform_scan/site_audit/publish_kit/platform_loop/soul_bridge)。
+  - ⚠️ 临界亮牌:末段 **5 连败**贴 SOUL_MAX_FAILURES=5,再一败恐再熔断;goal 池仍含死目标,root cause 只部分消除。
+  - 核验档 `docs/metering/SOUL_FUSE_RELEASE_VERIFY_20261101.md`(证据全[实测]+口径勘误:历轮 #399~#413 真身=jsonl ok:false 流,非 nautilus-core run/PR 号)·回执函 **25499** 已发 v5·解除门槛预注册(11-02 17:04 CST 起 24h 零败+零 pause+timer active,compass 复测后宣告)。
+- 渠道持平:Gmail 探活绿 threads 15 条历轮基线类型全同零商务·mention 5 全旧·notifications 50 全 venture CheckSuite·genesis 五家零 REPLY·dev.to 6+2。
+- 矩阵/快筛与历轮全同:CS-005 31/20·CS-006 24/20 零新批;CS-513 过/CS-514 反梯度/CS-515~518 不过;管道三件 exit0。
+
 ### R598 · 2026-11-01 傍晚(值守 R315:信箱 2 封 v5 回执已 ack·⚠️Gmail +11 异动亮牌(Grok/X/OpenAI 登录 3 条+kairos 系批量)·其余全渠道持平)
 
 - **信箱 2 封 v5 回执逐封 ack**:25454(thrashing 处方三件处置回执·①/clear 已兑现)+25456(cycle 桶移交 v5 已接·自决处置遵循 BUCKET_MUTEX playbook)·通报类零行动。

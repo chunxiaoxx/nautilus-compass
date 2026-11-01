@@ -872,3 +872,16 @@ R313 值守轮完成，commit `317650db` 已推送。
 留痕四件（rounds.log / state.json→314 / queue.md R597 / COLLAB_BOARD）均已落账并提交。
 ---- round end 11-01 18:04 ----
 2026-11-01 18:39 round315 值守: 信箱2封v5回执ack(25454 thrashing处置/25456 cycle桶移交)·Gmail 401直刷复活+⚠️threads 11→22(+11:Grok/X/OpenAI登录3条+kairos系批量+营销)亮牌候用户·GH/genesis/dev.to全持平·daemon+哨兵绿(recall_hit=70)·Soul仍#413零新增·管道三件exit0·快筛CS-517/518仍不过与历轮全同·矩阵零新批gate0 PASS·flywheel-full-recheck跳过(剩6天)·round漂移314→315续跑候用户
+本轮值守(R598/R315)完成，已提交并推送(51f6cb30)。
+
+**值守结果一行**：信箱 2 封 v5 回执已 ack(thrashing 处方处置/cycle 桶移交)· ⚠️Gmail 异动亮牌 · 其余全渠道持平 · daemon+哨兵绿(recall_hit=70)。
+
+**需用户注意的异动**：
+- **Gmail threads 11→22(+11,未读 30 条)**：判读为 Grok 新登录 + X 验证码 + OpenAI 新登录 3 条(同批次账号安全类)+ kairos 系 GitHub email added/removed 批量约 8 条(R594 同域延续)+ 滚动窗营销，零商务零回函——**三平台登录是否本人操作，候用户确认**。
+- kairos 系账号变动延续(R594 亮牌项)，仍候用户。
+
+**持平项**：GH mention 5 条全旧 · notifications 1188 · 创世五家零 REPLY · dev.to 6+2 · Soul 熔断仍 #413 零新增(序列 #399~#413 十五条候用户裁定)· 矩阵零新批(gate0 PASS)· 快筛 CS-517/518 仍不过与历轮全同。
+
+**主件**：flywheel-full-recheck(时限 2026-11-07 18:00,剩 6 天)需专门轮次+预注册判据档，25 分钟值守轮按历轮口径跳过。round>200 停轮条款漂移延续，本轮 315 续跑候用户。
+---- round end 11-01 18:42 ----
+2026-11-01 19:28 round316 值守: ⚠️新函25479接单(soul熔断解除宣告责任框=compass·用户已批)独立核验→判定不通过(A✅timer群活/B✅pause已复位·jarvis根治坐实/C❌末败17:03:02CST窗未满2.4h·复位后窗内7败散布7goal)·⚠️末段5连败贴阈值5临界亮牌·核验档docs/metering/SOUL_FUSE_RELEASE_VERIFY_20261101.md·回执25499已发v5·解除门槛预注册候11-02复测·Gmail探活绿零商务·mention 5全旧·notifications 50 venture维持·genesis零REPLY持平·dev.to 6+2持平·daemon+哨兵绿(recall_hit=76)·矩阵全同零新批·快筛与历轮全同(CS-513过)·管道三件exit0 · round>200漂移延续候用户(本轮316续跑)
