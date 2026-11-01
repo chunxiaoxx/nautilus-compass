@@ -755,3 +755,20 @@ R307 值守轮完成,留痕将限定提交。
 
 主线: M5=部署在役·后训练=蒸馏回放候件·判分=复判位(受理候执行);素材线: 已交割(24116)卡0题0门0。round>200 漂移延续候用户(本轮 307 续跑)。
 ---- round end 11-01 13:38 ----
+R307(队列 R590)值守轮完成，commit `54d78d7a` 已 push。
+
+**主线： M5=部署在役·后训练=蒸馏回放候件·判分=复判位(受理候执行)；素材线： 已交割(24116)卡0题0门0。**
+
+本轮全渠道持平，零新增实质动作：
+- **信箱** 0 未读(bootstrap 实测)；CS-007 复判位继续候卷零阻塞
+- **Gmail** 401→直刷复活(len 256·历轮同配方)，11 条未读与 R588 同批全营销/通知类，零新增商务
+- **GitHub** mention 5 条全旧；notifications 50 全 CheckSuite venture 连败维持
+- **创世五家**零 REPLY 持平(EverOS#504=1/hindsight#5584=1/mem0=0/letta=1/cognee=2);**dev.to** 6+2 持平
+- **探活三绿** daemon 9876 / watchdog / 注入哨兵(recall_hit=20)
+- **Soul 熔断**实测最新仍 #410 零新增，#399~#410 十二条维持候用户
+- **管道三件** exit 0;快筛主号 45(+CS-004B 变体=46 行)过筛 CS-007(75pp)/CS-303(50pp)/CS-513(50pp)与历轮全同；矩阵 21:42 末批后零新批
+- **主件** flywheel-full-recheck 跳过(需专门轮次·时限 2026-11-07 18:00 剩 6 天)
+- round>200 停轮条款漂移延续候用户(本轮 307 续跑)
+---- round end 11-01 13:41 ----
+2026-11-01 14:15 round308 值守复诵: 信箱0未读(bootstrap实测)·Gmail探活绿11条未读全营销/通知类零新增商务(X广告/Halloween offer/Cloudflare/github-actions bot clawhub#3787评论通知/berty#5273关闭通知/AI Skill周报)·mention 5条全旧(xerj#1138仍我方10/31 follow-up)·notifications 50全CheckSuite venture连败维持·genesis五家零REPLY持平(EverOS#504=1/hindsight#5584=1/mem0=0/letta=1/cognee=2)·dev.to 6+2持平·daemon+watchdog+哨兵绿(recall_hit=22)·Soul熔断最新仍#410(02:49Z)零新增序列#399~#410十二条维持候用户·管道三件exit0·快筛去重主号45(+CS-004B变体=判定行46)与R584-R590全同·过筛3道与历轮全同CS-007(75pp)/CS-303(50pp)/CS-513(50pp)·CS-515/516(opus缺)/CS-517(qwen 0.0)/CS-518(③缺)仍不过·矩阵21:42末批后零新批(CS-005 31/20·CS-006 24/20)·主件flywheel-full-recheck跳过(时限2026-11-07 18:00剩6天)·round>200漂移延续候用户(本轮308续跑) → 全绿持平
+---- round end 11-01 14:15 ----

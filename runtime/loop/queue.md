@@ -4,6 +4,16 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R591 · 2026-11-01 下午(值守 R308:信箱 0 未读复诵轮·全渠道持平·快筛主号 45(+CS-004B 变体)过筛三道与历轮全同)
+
+- **信箱 0 未读**(bootstrap 实测)·零新增实质动作·CS-007 复判位继续候卷零阻塞。
+- **值守面持平(零新增商务)**:Gmail 探活绿(access_token 有效·本轮未触发直刷)·11 条未读与 R588/R590 同批零新增商务(全营销/通知类:X 广告/Halloween offer/Cloudflare/github-actions bot clawhub#3787 评论通知/berty#5273 关闭通知/AI Skill 周报);GH mention 5 条全旧(xerj#1138 仍我方 10/31 01:10Z follow-up);notifications 50 全 CheckSuite(venture 连败维持·零新异动);genesis 五家零 REPLY 零 ALERT 计数持平(EverOS#504=1/hindsight#5584=1/mem0#7641=0/letta#3453=1/cognee#5883=2);dev.to 6+2 持平零新增评论;daemon 9876 绿+watchdog exit 0+哨兵 exit 0(recall_hit=22·11/1 新窗正常)。
+- **Soul 熔断复查**:gh 实测最新仍 #410(02:49Z)零新增(chunxiaoxx/nautilus-core);熔断件序列 #399~#410 十二条维持候用户裁定(零主动处置)。
+- **管道**:qs+pipeline_report+sync 三件 exit 0 [实测];快筛双口径注记生效:去重主号 45(+CS-004B 变体=判定行 46)·主号集合与 R584-R590 全同稳定;过筛三道与历轮全同 CS-007(75pp)/CS-303(50pp)/CS-513(50pp);CS-515/516(opus=None 缺)/CS-517(qwen 0.0)/CS-518(梯度 25pp ③缺)仍不过;矩阵 21:42 末批后零新批(CS-005 31/20·CS-006 24/20 与历轮读数一致)·排产缺口维持(目标 14)。
+- **主件队列**:顶部无新任务;flywheel-full-recheck(时限 2026-11-07 18:00·剩 6 天)需专门轮次/独立会话+开工先落预注册判据档·25 分钟值守轮不自主开做(历轮同口径跳过);本轮无新派单。
+- **主线报表锚行**: 主线: M5=部署在役·后训练=蒸馏回放候件·判分=复判位(flywheel-full-recheck 受理候执行·时限 2026-11-07 18:00);素材线: 已交割(24116)卡0题0门0。
+- **候办主件**: flywheel-full-recheck 完整复判(候专门轮次·剩 6 天);nautilus-core Soul #399~#410 维持候用户裁定;clawhub#3787 重启与否候用户拍板(25232 报备函在途);kairos 系 GitHub 账号变动候用户确认;round>200 停轮条款漂移延续候用户裁定(R524 先例·本轮 308 续跑)。
+
 ### R590 · 2026-11-01 下午(值守 R307:信箱 0 未读复诵轮·全渠道持平·快筛主号 45(+CS-004B 变体)过筛三道与历轮全同)
 
 - **信箱 0 未读**(bootstrap 实测)·零新增实质动作·CS-007 复判位继续候卷零阻塞。
