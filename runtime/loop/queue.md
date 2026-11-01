@@ -4,6 +4,16 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R593 · 2026-11-01 下午(值守 R310:信箱 0 未读复诵轮·全渠道持平·Soul 熔断实测仍 #412 零新增·快筛与 R592 全同)
+
+- **信箱 0 未读**(platform_mail 实测)·零新增实质动作·CS-007 复判位继续候卷零阻塞。
+- **值守面持平**:Gmail 探活绿(access_token 有效·本轮未触发直刷);GH mention 5 条全旧(xerj#1138 仍我方 10/31 01:10Z follow-up);notifications 分页 1188 条(1181 全 CheckSuite venture 连败维持·Issue 2/PR 5 系 author/state_change 自有件零新外部);genesis 五家零 REPLY 计数持平(EverOS#504=1/hindsight#5584=1/mem0#7641=0/letta#3453=1/cognee#5883=2);dev.to 6+2 持平零新增评论;daemon 9876 绿+watchdog exit 0+哨兵 exit 0(recall_hit=32·11/1 新窗正常)。
+- **Soul 熔断复查**:gh 实测最新仍 #412(06:32Z)零新增(chunxiaoxx/nautilus-core);熔断件序列 #399~#412 十四条维持候用户裁定(零主动处置)。
+- **管道**:qs+pipeline_report+sync 三件 exit 0 [实测];过筛三道与历轮全同 CS-007(75pp)/CS-303(50pp)/CS-513(50pp);CS-514 读数与 R592 全同(qwen=1.0/opus=0.0/梯度 -100pp 不过);CS-515/516(opus 缺)/CS-517(qwen 0.0)/CS-518(③缺)仍不过;矩阵 21:42 末批后零新批(CS-005 31/20·CS-006 24/20 与历轮读数一致)·排产缺口维持(目标 14)。
+- **主件队列**:顶部无新任务;flywheel-full-recheck(时限 2026-11-07 18:00·剩 6 天)需专门轮次/独立会话+开工先落预注册判据档·25 分钟值守轮不自主开做(历轮同口径跳过);本轮无新派单。
+- **主线报表锚行**: 主线: M5=部署在役·后训练=蒸馏回放候件·判分=复判位(flywheel-full-recheck 受理候执行·时限 2026-11-07 18:00);素材线: 已交割(24116)卡0题0门0。
+- **候办主件**: flywheel-full-recheck 完整复判(候专门轮次·剩 6 天);nautilus-core Soul #399~#412 维持候用户裁定(#411 提案 DRAFT 候人工审);clawhub#3787 重启与否候用户拍板(25232 报备函在途);kairos 系 GitHub 账号变动候用户确认;round>200 停轮条款漂移延续候用户裁定(R524 先例·本轮 310 续跑)。
+
 ### R592 · 2026-11-01 下午(值守 R309:信箱 0 未读复诵轮·两处异动亮牌:Soul 熔断新增 #412+漏计补账 #411·快筛 CS-514 新读数)
 
 - **信箱 0 未读**(bootstrap 实测)·零新增实质动作·CS-007 复判位继续候卷零阻塞。
