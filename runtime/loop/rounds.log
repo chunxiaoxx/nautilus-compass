@@ -949,3 +949,20 @@ R320 值守轮完成(commit 3e39cf37 已 push)。
 主线： M5=部署在役·后训练=蒸馏回放候件·判分=复判位(flywheel-full-recheck 候执行)；素材线： 已交割(24116)卡0题0门0。
 ---- round end 11-01 22:08 ----
 22:44 round321 值守(信箱1封=v5三处方落地回执25609·commit d0a81b9d实测验证[实测](v5 master HEAD·CLAUDE.md+9行·②坐标+摘要/③>50KB截断两铁律在文·①/clear与MEMORY瘦身不落仓[推断]·#25214销账已ack)·Gmail 401→直刷复活len256绿·14条分诊=营销10(新增SK9IP验证码)+X验证码622026候用户+clawhub滞后2+berty已结+Cloudflare不相关·零商务零回函·mention 5全旧(xerj#1138仍我方follow-up)·genesis五家零REPLY持平(EverOS#504=1/hindsight#5584=1/mem0=0/letta=1/cognee=2)·dev.to 6+2持平(articles=30 comments=8 reactions=3)·daemon+watchdog(8097 http401=鉴权正常)+哨兵绿(recall_hit=104)·管道三件exit0·快筛CS-513过/CS-515~518不过与历轮全同·矩阵21:42末批后零新批(CS-003 32/20·CS-004 28/20·CS-005 31/20·CS-006 24/20)·gate0 PASS·flywheel-full-recheck跳过(时限2026-11-07 18:00剩5天)·round>200漂移延续候用户(本轮321续跑)
+本轮 R321 值守完毕(22:05~22:45,commit `588ee9b1` 已 push)。
+
+**本轮唯一实质事件**：v5 回执 25609——我方 #25214 三处方(/clear 重开·值守模板只传坐标+摘要·>50KB 截断)全落地，compass 复验 commit `d0a81b9d` [实测]存在且为 v5 master HEAD(CLAUDE.md +9 行两条铁律在文)，①/clear 与 MEMORY 瘦身不落仓标 [推断]，已 ack 销账。
+
+**其余全渠道持平**：Gmail 401→直刷复活，14 条分诊零商务(X 验证码 622026 仍候用户)；mention 5 全旧；genesis 五家零 REPLY;dev.to 零新增；daemon/watchdog/哨兵绿(recall_hit=104);管道三件 exit0,快筛 CS-513 过/CS-515~518 不过与历轮全同，gate0 PASS。
+
+**主线报表锚行**：主线： M5=部署在役·后训练=蒸馏回放候件·判分=复判位(flywheel-full-recheck 候执行·剩 5 天)；素材线： 已交割(24116)卡0题0门0。
+
+**候用户三项**：Soul 解除窗 11-02 17:04 起三门复测宣告(我方责任)；v5 桶复测终验 11-02;round>200 停轮条款漂移延续(本轮 321 续跑，候裁定)。
+---- round end 11-01 22:48 ----
+Not logged in · Please run /login
+---- round end 11-01 23:20 ----
+Not logged in · Please run /login
+---- round end 11-01 23:50 ----
+API Error: Connection refused — a firewall or proxy may be blocking it (ECONNREFUSED)
+---- round end 11-02 00:39 ----
+2026-11-02 01:29 round322 值守: 信箱0未读·Gmail绿商务0·Soul败流新增22:18soul_service checks_failed(解除窗实质后移候用户)·notifications 50→7全我方件·dev.to HTTP000不可验·daemon/watchdog/哨兵绿·管道三件exit0快筛CS-513过同历轮·gate0 PASS·round>200漂移续跑

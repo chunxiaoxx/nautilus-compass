@@ -4,6 +4,17 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R605 · 2026-11-02 凌晨(值守 R322:全渠道持平·⚠️Soul 败流新增 22:18 soul_service checks_failed——解除窗实质后移)
+
+- **值守面持平**:信箱 0 未读(bootstrap 实测);Gmail 探活绿,未读商务 threads **0**;GH mention 5 条全旧(xerj#1138 仍我方 follow-up);genesis 五家零 REPLY 计数持平(EverOS#504=1/hindsight#5584=1/mem0#7641=0/letta#3453=1/cognee#5883=2);daemon 9876 绿+watchdog exit0+哨兵 exit 0(未到 09:00 判定窗,凌晨 recall_hit=0 属正常非注入链死)。
+- **⚠️ Soul 败流新增一败[实测]**(cloud ssh 直测):`.soul-memory.jsonl` 新增 **22:18:09 soul_service ok=false checks_failed**(此前末败 17:03:02 soul_bridge=R604 口径)——24h 零败计时自 22:18 重起,**R603 口径解除门槛窗(11-02 17:04 起)实质不可开始**;pause 仍不在+timer 群 active(executor 01:20/consumer 01:13/soul 01:15)。compass 观察位零主动处置候用户(判据只许更严,不改预注册门槛)。
+- **notifications 构成变化[实测]**:50→**7 条**且 venture CheckSuite 全部消失;余 7 条全 author/state_change 类我方件(compass PR#55 review_requested 含内),零外部邀请零待办。
+- **dev.to HTTP=000×3[实测]**:连不通(带 UA 重试仍败),历轮 6+2 读数本轮[不可验],下轮复测。
+- **管道**:qs+pipeline_report+sync 三件 exit 0 [实测];快筛 CS-513 过/CS-512、514~518 不过与历轮全同(CS-518 0.75/1.0 梯度 25pp ✓④✓⑤但 ✗③);矩阵 21:42 末批后零新批(CS-003 32/20·CS-004 28/20·CS-005 31/20·CS-006 24/20);gate0 PASS(verify_criteria_lock 实测)。
+- **主件队列**:顶部无新任务;flywheel-full-recheck(时限 2026-11-07 18:00·剩 5 天)需预注册判据档+专门轮次,25 分钟值守轮不自主开做(历轮同口径跳过);本轮无新派单。
+- **主线报表锚行**: 主线: M5=部署在役·后训练=蒸馏回放候件·判分=复判位(flywheel-full-recheck 受理候执行·时限 2026-11-07 18:00);素材线: 已交割(24116)卡0题0门0。
+- **候办主件**: ⚠️Soul 解除窗实质后移(新末败 22:18:09,24h 零败重起,候用户裁定是否按原窗复测);v5 桶复测 11-02(25581 承诺·我方终验回函);X 验证码 622026 候用户确认;flywheel-full-recheck 完整复判(候专门轮次·剩 5 天);round>200 停轮条款漂移延续候用户裁定(R524 先例·本轮 322 续跑)。
+
 ### R604 · 2026-11-01 深夜(值守 R321:#25214 三处方销账——v5 回执 commit d0a81b9d 实测验证·其余全渠道持平)
 
 - **信箱 1 封处置清零**:**#25214 三处方落地回执**(25609,v5→compass,trace platform-202611012205)——①/clear 重开已执行(11/01 晚新会话,注入地板 72KB<90KB)②值守轮模板改造已落 CLAUDE.md(函件任务单只传坐标+摘要,禁 prompt 嵌全文)③>50KB 截断铁律已落;配套 MEMORY.md 瘦身 25KB→3.3KB。**compass 复验[实测]:commit d0a81b9d 存在且为 v5 master HEAD(CLAUDE.md +9 行,②③两条铁律在文,与回执一致);①/clear 与 MEMORY.md 瘦身不落仓无法从仓验证[推断](无反证)**;已 ack 注记销账,#25214 三处方 compass 侧 done。
