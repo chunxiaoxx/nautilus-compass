@@ -4,6 +4,15 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R602 · 2026-11-01 夜(值守 R319:复诵轮·全渠道持平·Soul 真身复测与 R601 一致)
+
+- **值守面持平**:信箱 0 未读(platform_mail 实测 total 0);Gmail 401→直刷复活(历轮同配方·access_token len=256 绿),threads **12 条**与 R601 分诊池同域全同(营销 8+X 验证码 622026 候用户+clawhub#3787/berty#5273 滞后件+Cloudflare 通告);零商务函零回函;GH mention 5 条全旧(xerj#1138 仍我方 follow-up);notifications 50 条全 CheckSuite(compass 19/core 1/v5 16/venture 14)维持;genesis 五家零 REPLY 计数持平(EverOS#504=1/hindsight#5584=1/mem0#7641=0/letta#3453=1/cognee#5883=2);dev.to 6+2 持平(articles=30 comments=8 reactions=3);daemon 9876 绿+watchdog 绿+哨兵 exit 0(recall_hit=92)。
+- **Soul 真身复测与 R601 持平**(cloud ssh 直测·真身路径 `~/nautilus-soul-workspace/`):`.soul-pause` **仍在**(MTime 11-01 19:32 CST·内容 10 连败 last=selfimprove-services-soul_executor);jsonl `ok:false` 流零新增(末败仍 17:03:02 soul_bridge=#413·file mtime 17:03);timer 群 active(consumer 21:13/executor 21:20/soul 21:15 最近执行在跑);零主动处置,亮牌维持候用户(判据只许更严,不改预注册门槛;解除门槛窗 11-02 17:04 起实质不可开始除非 v5 再复位)。⚠️勘误注记:本轮首次探 `~/.soul-pause` 探空系**路径探错**(真身在 `~/nautilus-soul-workspace/` 非家目录根)——印证 10/5 探针纪律"探空≠阴性,先 ls 目录实文件名",核验档正本坐标为准。
+- **管道**:qs+pipeline_report+sync 三件 exit 0 [实测];快筛 CS-516/517/518 仍不过(CS-518 0.75/1.0 梯度 25pp ✓④✓⑤ 但 ✗③两点带 25/50)·CS-513 过·与历轮读数全同;矩阵 21:42 末批后零新批(CS-003 32/20·glm5.3 三连同因 parse fail 已报 v5 整组合 skip·CS-004 28/20·CS-005 31/20·CS-006 24/20)·gate0 PASS(verify_criteria_lock 实测)。
+- **主件队列**:顶部无新任务;flywheel-full-recheck(时限 2026-11-07 18:00·剩 5 天)需预注册判据档+专门轮次,25 分钟值守轮不自主开做(历轮同口径跳过);本轮无新派单。
+- **主线报表锚行**: 主线: M5=部署在役·后训练=蒸馏回放候件·判分=复判位(flywheel-full-recheck 受理候执行·时限 2026-11-07 18:00);素材线: 已交割(24116)卡0题0门0。
+- **候办主件**: ⚠️Soul 再熔断维持(.soul-pause 19:32 CST 在·候用户/v5 裁定再复位与死目标出池·解除复测候 11-02 17:04 起窗);X 验证码 622026 候用户确认;flywheel-full-recheck 完整复判(候专门轮次·剩 5 天);round>200 停轮条款漂移延续候用户裁定(R524 先例·本轮 319 续跑)。
+
 ### R601 · 2026-11-01 晚(值守 R318:⚠️Soul 再熔断兑现实测(.soul-pause 重建)·其余全渠道持平)
 
 - **⚠️ Soul 再熔断兑现实测**(cloud 直测):`.soul-pause` **已重建**(MTime **11-01 19:32 CST**·内容 `circuit breaker · 10 consecutive failures · last=selfimprove-services-soul_executor`)——时刻与 R317 亮牌 **#414(11:32Z=19:32CST)** 吻合,**#414 真身=pause 重建事件**(口径勘误:jsonl `ok:false` 流零新增,末败仍 11-01 17:03:02 soul_bridge=#413,非败流新条);R599 核验档"判定=不通过"的预测兑现(临界亮牌"再一败恐再熔断"已发生);**解除门槛窗(11-02 17:04 CST 起 24h 零败+零 pause)实质不可开始,除非 v5 再复位**;timer 群仍 active(executor 20:40/consumer 20:43/soul 20:45 cycle 在跑);零主动处置,亮牌候用户(判据只许更严,不改预注册门槛)。
