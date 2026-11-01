@@ -857,3 +857,18 @@ R313 值守轮完成，commit `317650db` 已推送。
 留痕四件(collab_board / rounds.log / state.json→313 / queue.md R596)均已落账。
 ---- round end 11-01 17:27 ----
 - 11-01 18:02 round314 值守复诵轮:信箱0未读(platform_mail实测)·Gmail探活绿(未触发直刷·-G编码修复)threads11条与历轮基线全同零商务·mention 5条全旧(xerj#1138仍我方follow-up)·notifications 1188持平(1181全CheckSuite venture连败维持)·genesis五家零REPLY持平(EverOS#504=1/hindsight#5584=1/mem0=0/letta=1/cognee=2)·dev.to 6+2持平·daemon+watchdog+哨兵绿(recall_hit=61)·Soul熔断实测最新仍#413零新增序列#399~#413十五条维持候用户·管道三件exit0·过筛CS-007(75pp)/CS-303(50pp)/CS-513(50pp)三道与历轮全同·CS-514读数与R592-R596全同(qwen1.0/opus0.0梯度-100pp不过)·CS-515~518仍不过·矩阵21:42末批后零新批(CS-005 31/20·CS-006 24/20)·主件flywheel-full-recheck跳过(时限2026-11-07 18:00剩6天)·round>200漂移延续候用户(本轮314续跑)
+本轮值守 R314 完成，commit `b585dbc0`，全渠道持平零新增异动。
+
+**主线： M5=部署在役 · 后训练=蒸馏回放候件 · 判分=复判位(flywheel-full-recheck 受理候执行·时限 2026-11-07 18:00)；素材线： 已交割(24116)卡0题0门0**
+
+- **信箱**：0 未读（platform_mail 实测）· CS-007 复判位继续候卷零阻塞
+- **Gmail**：探活绿未触发直刷；threads 11 条与历轮基线全同（全营销/通知）· 零商务零回函（本轮顺手修复了 R596 的查询 URL 编码问题，改用 `curl -G --data-urlencode`）
+- **GitHub**：mention 5 条全旧（xerj#1138 仍我方 follow-up）· notifications 1188 持平 · genesis 五家零 REPLY 持平
+- **dev.to**：6+2 持平 · **探活**：daemon 9876 绿 + watchdog exit0 + 哨兵绿（recall_hit=61）
+- **Soul 熔断**：实测最新仍 #413（09:03Z）零新增，序列 #399~#413 十五条维持候用户
+- **管道**：qs/report/sync 三件 exit0；过筛三道与历轮全同（CS-007 75pp / CS-303 50pp / CS-513 50pp）· CS-514 读数与 R592-R596 全同不过 · CS-515~518 仍不过 · 矩阵 21:42 末批后零新批（CS-005 31/20 · CS-006 24/20）
+- **主件**：flywheel-full-recheck 候专门轮次（剩 6 天），25 分钟值守轮按历轮口径跳过；round>200 停轮条款漂移延续候用户（本轮 314 续跑）
+
+留痕四件（rounds.log / state.json→314 / queue.md R597 / COLLAB_BOARD）均已落账并提交。
+---- round end 11-01 18:04 ----
+2026-11-01 18:39 round315 值守: 信箱2封v5回执ack(25454 thrashing处置/25456 cycle桶移交)·Gmail 401直刷复活+⚠️threads 11→22(+11:Grok/X/OpenAI登录3条+kairos系批量+营销)亮牌候用户·GH/genesis/dev.to全持平·daemon+哨兵绿(recall_hit=70)·Soul仍#413零新增·管道三件exit0·快筛CS-517/518仍不过与历轮全同·矩阵零新批gate0 PASS·flywheel-full-recheck跳过(剩6天)·round漂移314→315续跑候用户
