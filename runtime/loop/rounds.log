@@ -691,3 +691,14 @@ R301 值守轮完成，留痕已推送(cf604076..7e6b795c)。
 3. 卸载 `com.nautilus.compass-loop` plist 停值守
 ---- round end 11-01 10:03 ----
 2026-11-01 10:37 round302 值守复诵:信箱0未读零新增·Gmail探活绿10条同批零新增商务(berty#5273通知邮件核验为旧件)·mention 5条全旧·notifications 50全CheckSuite venture维持·genesis五家零REPLY持平·dev.to 6+2持平·daemon+watchdog+哨兵绿(recall_hit=8)·qs+report+sync三件exit0·快筛45道(较近轮46缩1亮牌)过筛CS-007(75pp)/CS-303(50pp)/CS-513(50pp)三道与R584全同·新增CS-517/518入筛均不过·矩阵21:42末批后零新批读数全同·主件队列无新任务·flywheel-full-recheck剩6天候专门轮次·round>200漂移延续候用户(本轮302续跑)
+R585(R302)值守轮完成，已 commit+push(297367fb)。全渠道复诵零新增，一处亮牌：
+
+**值守面(全绿持平)**
+- 信箱 0 未读(bootstrap 实测)；Gmail 探活绿，10 条未读同批零新增商务(逐条核验 berty#5273 关闭通知=10/28 旧件非商务，余全营销类)
+- mention 5 条全旧(xerj#1138 仍我方 follow-up);notifications 50 全 CheckSuite(venture 连败维持)；创世五家零 REPLY 零 ALERT;dev.to 6+2 持平；daemon 9876 绿+watchdog exit 0+哨兵 exit 0(recall_hit=8)
+
+**亮牌一处**：快筛范围 46→**45 道**(缩 1,候查)；过筛三道 CS-007(75pp)/CS-303(50pp)/CS-513(50pp) 读数与 R584 全同；CS-517/518 新增入筛均不过。矩阵 21:42 末批后零新批，读数全同。
+
+**候办维持**：flywheel-full-recheck(时限 11/7 18:00·剩 6 天)候专门轮次；Soul #399~#408 候用户裁定；round>200 漂移延续(本轮 302 续跑)。
+---- round end 11-01 10:39 ----
+11-01 11:12 round303 值守全渠道巡检:信箱0未读·Gmail 401→直刷复活(len256绿)10条同批零新增商务·GH mention 5条全旧·notifications 50全CheckSuite venture连败维持·genesis五家零REPLY零ALERT持平·dev.to 6+2持平(json.load连续5轮正常)·daemon+watchdog+哨兵绿(recall_hit=10·11/1新窗)·⚠️Soul熔断新增2件:#409(00:32Z·selfimprove-ops-org_sentinel 6连败)/#410(02:49Z·selfimprove-ops-platform_loop 7连败)同签名自动件·序列#399~#410十二条维持候用户零主动处置·qs+report+sync三件exit0·快筛46道恢复(R585的45缩1亮牌解除)过筛CS-007(75pp)/CS-303(50pp)/CS-513(50pp)三道与R584全同(CS-517/518仍不过)·矩阵21:42末批后零新批(CS-001 36/20·CS-003 32/20 glm5.3 skip已报·CS-004 28/20·CS-005 31/20·CS-006 24/20)·主件flywheel-full-recheck跳过(剩6天)·round>200漂移候用户续跑 → Soul熔断+2其余零新增
