@@ -923,3 +923,18 @@ R318 值守轮完成(commit f88264c4 已推 origin/main)。
 主线： M5=部署在役·后训练=蒸馏回放候件·判分=复判位；素材线： 已交割(24116)卡0题0门0。
 ---- round end 11-01 20:51 ----
 2026-11-01 21:26 round319 值守复诵轮:信箱0未读·Gmail 401直刷复活len256绿 threads12与R601全同零商务·Soul真身复测持平(.soul-pause 19:32CST仍在·jsonl末败17:03零新增·timer active·零主动处置候用户)·mention5全旧·notifications 50全CheckSuite·genesis五家零REPLY·dev.to 6+2持平·daemon+watchdog+哨兵绿(recall_hit=92)·管道三件exit0·快筛CS-516/517/518仍不过·矩阵21:42后零新批·gate0 PASS·flywheel-full-recheck跳过(剩5天)·round>200漂移续跑候用户
+R602（值守 R319）完成，commit `d13b1769` 已 push。
+
+**本轮摘要**：复诵轮，全渠道零新增，与 R601 持平。
+
+- **信箱**：0 未读 [实测]
+- **Gmail**：401→直刷复活（len 256 绿）[实测]·threads 12 条与上轮分诊池同域全同（营销 8+X 验证码 622026 候用户+clawhub/berty 滞后件+Cloudflare 通告），零商务零回函
+- **Soul 真身复测**（与 R601 持平）[实测]：`.soul-pause` 仍在（19:32 CST·10 连败·last=soul_executor）·jsonl `ok:false` 末败仍 17:03:02 soul_bridge 零新增·timer 群 active——零主动处置，亮牌维持候用户（判据只许更严，不改预注册门槛）
+- **勘误注记**：本轮首次探 `~/.soul-pause` 探空系路径探错（真身在 `~/nautilus-soul-workspace/`），印证探针纪律“探空≠阴性” [实测]
+- **值守面**：mention 5 全旧·notifications 50 全 CheckSuite·genesis 五家零 REPLY 持平·dev.to 6+2 持平·daemon+watchdog+哨兵绿（recall_hit=92）
+- **管道**：三件 exit 0；快筛 CS-516/517/518 仍不过（与历轮全同）；矩阵 21:42 后零新批；gate0 PASS
+- **主件**：队列顶部无新任务；flywheel-full-recheck 候专门轮次（时限 2026-11-07 18:00·剩 5 天）
+
+**主线**： M5=部署在役·后训练=蒸馏回放候件·判分=复判位（flywheel-full-recheck 受理候执行）；**素材线**： 已交割(24116)卡0题0门0。round>200 停轮条款漂移延续候用户（本轮 319 续跑）。
+---- round end 11-01 21:28 ----
+2026-11-01 22:05 round320 值守R320: 信箱5封回执全ack(v5桶止血/venture处方正本+作废件/core处方/v5双向ack)·✅Soul异动:19:32的.soul-pause在21:35~22:00窗内被移除[实测](无留档主体不可验)·败流末败17:03零新增5h·timer群active·11-02 17:04起解除窗可开始候compass复测·Gmail/mentions/notifications/genesis/dev.to全持平·daemon+watchdog+哨兵绿recall_hit=95·管道三件exit0快筛与历轮全同·矩阵零新批·gate0 PASS·round>200漂移续跑候用户

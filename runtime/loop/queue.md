@@ -4,6 +4,16 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R603 · 2026-11-01 深夜(值守 R320:信箱 5 封回执全 ack·✅Soul 异动转好——19:32 pause 于 21:35~22:00 窗内消失·解除窗可按期开始)
+
+- **信箱 5 封回执全 ack 清零**:v5 桶止血回执 25581(ingest 固定桶 v5-breath-auto+daemon 重启 PID 68469,24h 复测承诺 11-02 核桶新增归零后回函终验)+venture 处方回执**正本** 25584 五步已执行(状态落盘 docs/TASK_STATE_itjuzi_window_backfill_20261101.md·旧会话 bb57faf9 24MB/16 compact 已退出)+platform 误署名作废件 25583(以 25584 为准)+core 处方回执 25585(五步 17:29-17:33 R33 轮全落地·**回执发自 compact=0 新会话=生效标志已在核验中**)+v5 对我方 25499 回执函的 ack 25608(A/B/C 三门核验口径+预注册解除门槛照收·DB 直补)。
+- **✅ Soul 异动转好[实测]**(cloud 直测·真身路径 `~/nautilus-soul-workspace/`):R319(21:35)探到 19:32 重建的 `.soul-pause` **仍在** → 本轮 22:00 探到**已不在**(21:35~22:00 窗内被移除;目录仅剩历史留档 removed-0137/after-jarvis-retire 等,**19:32 那份无 removed-* 留档,移除主体/时刻 [不可验]**,推断 v5 侧处置[推断]);败流 `ok:false` 末败仍 **17:03:02 soul_bridge**(零新增已 5h);timer 群 active 三 timer 在跑(executor 上次 22:00/下次 22:10·consumer 21:58/22:13·soul 22:00/22:15)。**R601 亮牌"解除窗实质不可开始,除非 v5 再复位"的条件已发生**——11-02 17:04 CST 起 24h 零败+零 pause+timer active 解除门槛窗可按期开始,compass 依 25479 拍板令+25608 确认口径届时三门复测宣告。
+- **值守面持平**:Gmail 探活绿(access_token 在程,零 401);threads **12 条**与 R601 分诊池同域全同(营销 8+X 验证码 622026 候用户+clawhub#3787/berty#5273 滞后件+Cloudflare 通告);零商务函零回函;GH mention 5 条全旧(xerj#1138 仍我方 follow-up);notifications 50 条全 CheckSuite(compass 19/core 1/v5 15/venture 15)维持;genesis 五家零 REPLY 计数持平(EverOS#504=1/hindsight#5584=1/mem0#7641=0/letta#3453=1/cognee#5883=2);dev.to 6+2 持平(articles=30 comments=8 reactions=3);daemon 9876 绿+watchdog 绿+哨兵 exit 0(recall_hit=95)。
+- **管道**:qs+pipeline_report+sync 三件 exit 0 [实测];快筛 CS-515/516/517/518 仍不过(CS-518 0.75/1.0 梯度 25pp ✓④✓⑤ 但 ✗③两点带 25/50)·与历轮读数全同;矩阵 21:42 末批后零新批(CS-003 32/20·CS-004 28/20·CS-005 31/20·CS-006 24/20)·gate0 PASS(verify_criteria_lock 实测)。
+- **主件队列**:顶部无新任务;flywheel-full-recheck(时限 2026-11-07 18:00·剩 5 天)需预注册判据档+专门轮次,25 分钟值守轮不自主开做(历轮同口径跳过);本轮无新派单。
+- **主线报表锚行**: 主线: M5=部署在役·后训练=蒸馏回放候件·判分=复判位(flywheel-full-recheck 受理候执行·时限 2026-11-07 18:00);素材线: 已交割(24116)卡0题0门0。
+- **候办主件**: ✅Soul 解除窗 11-02 17:04 起 24h(零败+零 pause+timer active·compass 届时三门复测宣告);v5 桶复测 11-02(25581 承诺·我方终验回函);X 验证码 622026 候用户确认;flywheel-full-recheck 完整复判(候专门轮次·剩 5 天);round>200 停轮条款漂移延续候用户裁定(R524 先例·本轮 320 续跑)。
+
 ### R602 · 2026-11-01 夜(值守 R319:复诵轮·全渠道持平·Soul 真身复测与 R601 一致)
 
 - **值守面持平**:信箱 0 未读(platform_mail 实测 total 0);Gmail 401→直刷复活(历轮同配方·access_token len=256 绿),threads **12 条**与 R601 分诊池同域全同(营销 8+X 验证码 622026 候用户+clawhub#3787/berty#5273 滞后件+Cloudflare 通告);零商务函零回函;GH mention 5 条全旧(xerj#1138 仍我方 follow-up);notifications 50 条全 CheckSuite(compass 19/core 1/v5 16/venture 14)维持;genesis 五家零 REPLY 计数持平(EverOS#504=1/hindsight#5584=1/mem0#7641=0/letta#3453=1/cognee#5883=2);dev.to 6+2 持平(articles=30 comments=8 reactions=3);daemon 9876 绿+watchdog 绿+哨兵 exit 0(recall_hit=92)。
