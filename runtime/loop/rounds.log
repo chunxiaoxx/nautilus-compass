@@ -899,3 +899,18 @@ R316 值守完成(25min 内，commit `bf83c1f4` 已推送)。
 其余渠道全持平：Gmail 探活绿零商务·mention 5 全旧·genesis 五家零 REPLY·dev.to 6+2·daemon/哨兵绿(recall_hit=76)·矩阵零新批·快筛 CS-513 过/其余不过与历轮全同·管道三件 exit0。round>200 漂移延续候用户(本轮 316 续跑)。
 ---- round end 11-01 19:30 ----
 2026-11-01 20:10 round317 值守复诵轮: 信箱0未读·Gmail 401直刷复活(len256绿)未读商务13封分诊=营销8+X验证码(候用户)+clawhub#3787关闭通知2封(R587已处置滞后件)+berty#5273(已结)+Cloudflare通告(无cloudflared不相关)零商务·mention 5全旧·notifications全venture维持·genesis五家零REPLY持平·dev.to 6+2持平·daemon+watchdog+哨兵绿(recall_hit=79)·⚠️Soul熔断实测新增#414(19:32CST)序列#399~#414十六条——R316临界亮牌后又一败但在预注册起点11-02 17:04前不改门槛零主动处置候用户·管道三件exit0·快筛CS-517/518不过与历轮全同·矩阵零新批(CS-003 32/CS-004 28/CS-005 31/CS-006 24)·gate0 PASS·flywheel-full-recheck跳过(剩6天)·round>200漂移续跑候用户
+R317 值守完成，commit `e3624746` 已 push,与 origin 同步。
+
+**主线报表锚行**： 主线: M5=部署在役 · 后训练=蒸馏回放候件 · 判分=复判位(flywheel-full-recheck 受理候执行·时限 11-07 18:00 剩 6 天)；素材线: 已交割(24116)卡0题0门0。
+
+**本轮留痕**:
+- 信箱 0 未读；Gmail 401→直刷复活(len256 绿，历轮同配方)，未读商务 13 封分诊=营销 8+X 验证码(候用户)+clawhub#3787 关闭通知 2 封(R587 已处置件邮件侧滞后，维持不复测)+berty#5273 已结+Cloudflare 通告(无 cloudflared 进程不相关)
+- ⚠️ **Soul 熔断实测新增 #414**(19:32 CST),序列 #399~#414 十六条——R316“5 连败贴临界”亮牌后又一败兑现；但在预注册起点 11-02 17:04 CST 之前，不改解除门槛，零主动处置候用户
+- mention/notifications/创世五家/dev.to 全持平；daemon+watchdog+哨兵绿(recall_hit=79)
+- 管道三件 exit0,快筛 CS-517/518 不过与历轮全同，矩阵零新批，gate0 PASS
+
+**候用户**： ① X 验证码 622026 及 R598 三平台登录是否本人；② Soul #399~#414 维持；③ round>200 停轮条款漂移(本轮 317 续跑)。
+
+过程中一处复发已自纠：Gmail 逐封取件曾用 urllib 挂起(10/29 定谳禁令)，已停改全 curl 完成。
+---- round end 11-01 20:12 ----
+2026-11-01 20:50 round318 值守: 信箱0未读·⚠️Soul再熔断兑现(.soul-pause重建19:32CST 10连败last=soul_executor=R317亮牌#414真身·jsonl零新增·零处置候用户)·Gmail threads12同域持平零商务·genesis/dev.to/mention/notifications全持平·daemon+哨兵绿(recall_hit=85)·管道三件exit0·快筛与历轮全同·矩阵零新批·gate0 PASS
