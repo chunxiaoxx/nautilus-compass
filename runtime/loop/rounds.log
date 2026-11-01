@@ -829,3 +829,16 @@ R310 值守轮完成，已提交推送(83bdf017)。
 **候用户**：①Nautilus-agent 三仓 SSH key 部署确认；②flywheel-full-recheck 受理；③Soul #399~#412 裁定；④round>200 漂移(本轮 311 续跑)
 ---- round end 11-01 16:13 ----
 2026-11-01 16:48 round312 值守复诵: 信箱0未读零新增·Gmail探活绿 threads11条与R590-R593基线全同(R594的+8异动已退未读窗·SSH key 3条异动消退候用户)·mention 5全旧·notifications 1188持平·genesis五家零REPLY持平·dev.to 6+2持平·daemon+watchdog+哨兵绿(recall_hit=45)·Soul熔断最新仍#412零新增#399~#412维持候用户·管道三件exit0·过筛CS-007(75pp)/CS-303(50pp)/CS-513(50pp)与历轮全同·CS-514读数与R592-R594全同不过·CS-515~518仍不过·矩阵零新批(CS-005 31/20·CS-006 24/20)·flywheel-full-recheck跳过(剩6天)·round>200漂移延续候用户(本轮312续跑)
+本轮值守（R312）完成，commit `434fdc23` 已推送。
+
+**本轮结果一句话**：全渠道复诵持平轮——信箱 0 未读零新增，唯二值得注意的读数变化是 R594 亮牌的 Gmail +8 异动（SSH key 部署通知 3 条）本轮已退未读窗消退，以及哨兵 recall_hit=45 绿。
+
+- 停止条件：无 STOP；round=312>200 漂移延续候用户（R524 先例+用户 11/1 凌晨拍板 loop 持续推进，历轮同口径续跑）
+- 六渠道 [实测]：信箱 0 未读（bootstrap+platform_mail 双探）· Gmail 探活绿 threads 11 条与 R590-R593 基线全同 · mention 5 条全旧 · notifications 1188 持平 · genesis 五家零 REPLY · dev.to 6+2 持平
+- 基建三绿：daemon 9876 / mcp_watchdog / 注入哨兵（recall_hit=45）
+- Soul 熔断实测最新仍 #412 零新增，#399~#412 十四条维持候用户裁定
+- 管道三件 exit 0：过筛 CS-007(75pp)/CS-303(50pp)/CS-513(50pp) 与历轮全同；CS-514 读数与 R592-R594 全同（qwen1.0/opus0.0 梯度-100pp 不过）；CS-515~518 仍不过；矩阵 21:42 末批后零新批
+- 主件：flywheel-full-recheck（时限 2026-11-07 18:00·剩 6 天）需专门轮次+预注册判据档，25 分钟值守轮按历轮口径跳过；队列顶部无新任务
+- 留痕：rounds.log 一行 + state.json→312 + queue.md R595 条目 + COLLAB_BOARD 一行，均已入库
+---- round end 11-01 16:49 ----
+2026-11-01 17:24 round313 值守复诵轮:信箱0未读(bootstrap+platform_mail双实测)·Gmail 401→直刷复活(len256绿)threads 11条历轮基线全同零商务·mention 5全旧·notifications 1188持平·genesis五家零REPLY持平·dev.to 6+2持平·daemon+watchdog+哨兵绿(recall_hit=55)·⚠️Soul熔断新增#413(09:03Z·9连败·selfimprove-services-soul_bridge)序列#399~#413十五条候用户·管道三件exit0·过筛3道全同(CS-007 75pp/CS-303 50pp/CS-513 50pp)·CS-514与R592-R595全同·CS-515~518仍不过·矩阵零新批(CS-005 31/20·CS-006 24/20)·主件flywheel-full-recheck跳过(剩6天)·结果=复诵留痕
