@@ -742,3 +742,16 @@ R305(队列 R588)值守轮完成，留痕已限定提交 `fdcdca1c`。
 主线： M5=部署在役 · 后训练=蒸馏回放候件 · 判分=复判位候执行；素材线： 已交割(24116)卡0题0门0。round>200 漂移延续候用户(本轮 305 续跑)。
 ---- round end 11-01 12:30 ----
 2026-11-01 13:04 round306 值守复诵: 信箱0未读(bootstrap实测)零新增·Gmail探活绿商务函0零新增·mention 5条全旧·notifications全CheckSuite venture维持·genesis五家零REPLY持平·dev.to 6+2持平·daemon+watchdog+哨兵绿(recall_hit=18)·Soul熔断最新仍#410零新增·qs+report+sync三件exit0·快筛主号45(+CS-004B变体)过筛CS-007(75pp)/CS-303(50pp)/CS-513(50pp)三道与历轮全同·矩阵21:42末批后零新批·主件flywheel-full-recheck跳过(时限2026-11-07 18:00剩6天)·round>200漂移延续候用户(本轮306续跑)
+R306 值守轮完成，留痕已提交(fa80a1bb)。
+
+**本轮摘要**：信箱 0 未读(bootstrap 实测)·零新增；Gmail 探活绿商务函 0;mention 5 条全旧；genesis 五家零 REPLY 持平；dev.to 6+2 持平；daemon+watchdog+哨兵绿(recall_hit=18);Soul 熔断最新仍 #410 零新增；管道三件 exit 0;快筛主号 45(+CS-004B 变体)过筛三道与历轮全同(CS-007/CS-303/CS-513);矩阵 21:42 末批后零新批；主件 flywheel-full-recheck 跳过(时限 2026-11-07 18:00·剩 6 天)。
+
+主线： M5=部署在役·后训练=蒸馏回放候件·判分=复判位(受理候执行)；素材线： 已交割(24116)卡0题0门0。
+---- round end 11-01 13:05 ----
+2026-11-01 13:38 round307 值守复诵: 信箱0未读(bootstrap实测)零新增·Gmail 401→直刷复活(len256绿)11条同批零新增商务(全营销/通知类)·mention 5条全旧(xerj#1138仍我方follow-up)·notifications 50全CheckSuite venture连败维持·genesis五家零REPLY持平(EverOS#504=1/hindsight#5584=1/mem0=0/letta=1/cognee=2)·dev.to 6+2持平·daemon+watchdog+哨兵绿(recall_hit=20·11/1新窗)·Soul熔断实测最新仍#410零新增(chunxiaoxx/nautilus-core)·#399~#410十二条维持候用户·qs+report+sync三件exit0·快筛去重主号45(+CS-004B变体=判定行46)过筛CS-007(75pp)/CS-303(50pp)/CS-513(50pp)三道与历轮全同·矩阵21:42末批后零新批(CS-005 31/20·CS-006 24/20)·主件flywheel-full-recheck跳过(时限2026-11-07 18:00剩6天)·round>200漂移延续候用户(本轮307续跑)
+R307 值守轮完成,留痕将限定提交。
+
+**本轮摘要**:信箱 0 未读(bootstrap 实测)·零新增;Gmail 401→直刷复活(access_token len=256 绿·历轮同配方),11 条未读与 R588 同批零新增商务;mention 5 条全旧;genesis 五家零 REPLY 持平;dev.to 6+2 持平;daemon 9876 绿+watchdog exit 0+哨兵 exit 0(recall_hit=20);Soul 熔断实测最新仍 #410 零新增;管道三件 exit 0;快筛去重主号 45(+CS-004B 变体=判定行 46)过筛三道与历轮全同(CS-007 75pp/CS-303 50pp/CS-513 50pp);矩阵 21:42 末批后零新批;主件 flywheel-full-recheck 跳过(时限 2026-11-07 18:00·剩 6 天)。
+
+主线: M5=部署在役·后训练=蒸馏回放候件·判分=复判位(受理候执行);素材线: 已交割(24116)卡0题0门0。round>200 漂移延续候用户(本轮 307 续跑)。
+---- round end 11-01 13:38 ----
