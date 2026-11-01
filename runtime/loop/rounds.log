@@ -803,3 +803,17 @@ R308 值守轮完成，已提交并推送(4a851ac9)。
 **候办主件**： flywheel-full-recheck 剩 6 天(候专门轮次，值守轮不自主开做)· Soul #411 提案 DRAFT 候人工审 · clawhub#3787 候拍板 · round>200 停轮条款漂移延续(R524 先例·本轮 309 续跑)候用户裁定
 ---- round end 11-01 14:57 ----
 2026-11-01 15:32 round310 值守复诵轮: 信箱0未读零新增·Gmail探活绿·mention5全旧·notifications 1181全CheckSuite venture连败维持·genesis五家零REPLY持平·dev.to 6+2持平·daemon+watchdog+哨兵绿(recall_hit=32)·Soul熔断最新仍#412零新增(#399~#412维持候用户)·管道三件exit0·快筛过筛CS-007(75pp)/CS-303(50pp)/CS-513(50pp)与历轮全同·CS-514与R592同读数不过·CS-515~518仍不过·矩阵21:42末批后零新批(CS-005 31/20·CS-006 24/20)·主件flywheel-full-recheck跳过(时限2026-11-07 18:00剩6天)·round>200漂移延续候用户(本轮310续跑)
+R310 值守轮完成，已提交推送(83bdf017)。
+
+**主线报表锚行**： 主线： M5=部署在役·后训练=蒸馏回放候件·判分=复判位(flywheel-full-recheck 受理候执行·时限 2026-11-07 18:00);素材线： 已交割(24116)卡0题0门0
+
+**本轮结果**：
+- 信箱 0 未读，零新增；无派单
+- 全渠道持平：Gmail 探活绿(未触发直刷)·mention 5 全旧(xerj#1138)·genesis 五家零 REPLY·dev.to 6+2·notifications 1181 全 CheckSuite(venture 连败维持，Issue/PR 件均系自有 author/state_change 非新外部)
+- 哨兵/daemon/watchdog 全绿(recall_hit=32)
+- Soul 熔断实测最新仍 #412 零新增，序列 #399~#412 十四条维持候用户
+- 管道三件 exit 0;快筛过筛三道与历轮全同(CS-007 75pp/CS-303 50pp/CS-513 50pp),CS-514 读数与 R592 全同不过；矩阵 21:42 末批后零新批
+- 主件 flywheel-full-recheck 跳过(需专门轮次+预注册判据档，剩 6 天)
+- ⚠️ round>200 停轮条款漂移延续(本轮 310 续跑，R524 先例，候用户裁定)
+---- round end 11-01 15:34 ----
+2026-11-01 16:10 round311 值守轮R594:信箱0未读(platform_mail实测)·Gmail 401→直刷复活(len256绿)·⚠️threads 19条(+8 vs 历轮账面11)snippet批量判读:⚠️新增异动=Nautilus-agent/v7+flywheel+compass三仓SSH key部署通知3条(by chunxiaoxx·与kairos系账号变动同域候用户)·其余16条=历轮已知营销/通知/kairos系4条+7d滚动窗新进营销(IFTTT/ChatGPT Plus/Reddit)零商务零回函·mention 5条全旧(xerj#1138仍我方10/31 01:10Z follow-up)·notifications 1188持平(1181全CheckSuite venture连败维持)·genesis五家零REPLY持平(EverOS#504=1/hindsight#5584=1/mem0=0/letta=1/cognee=2)·dev.to 6+2持平(articles=30 comments=8 reactions=3)·daemon 9876绿+watchdog exit0+哨兵exit0(recall_hit=36·11/1新窗正常)·Soul熔断实测最新仍#412零新增序列#399~#412十四条维持候用户·管道三件exit0·过筛3道与历轮全同(CS-007 75pp/CS-303 50pp/CS-513 50pp)·CS-514读数与R592/R593全同(qwen1.0/opus0.0梯度-100pp不过)·CS-515/516(opus缺)/CS-517(qwen0.0)/CS-518(③缺)仍不过·矩阵21:42末批后零新批(CS-005 31/20·CS-006 24/20)·主件队列顶部无新任务·flywheel-full-recheck跳过(时限2026-11-07 18:00剩6天候专门轮次)·主线: M5=部署在役·后训练=蒸馏回放候件·判分=复判位候卷零阻塞;素材线: 已交割(24116)卡0题0门0·round>200漂移延续候用户(本轮311续跑)

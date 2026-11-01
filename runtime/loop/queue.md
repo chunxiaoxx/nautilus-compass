@@ -4,6 +4,17 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R594 · 2026-11-01 下午(值守 R311:信箱 0 未读复诵轮·⚠️Gmail 异动亮牌:Nautilus-agent 三仓 SSH key 部署通知 3 条·其余全渠道持平)
+
+- **信箱 0 未读**(platform_mail 实测)·零新增实质动作·CS-007 复判位继续候卷零阻塞。
+- **⚠️ Gmail 异动亮牌**:401→直刷复活(access_token len=256 绿·历轮同配方)·threads **19 条(+8 vs 历轮账面 11)**,snippet 批量判读(threads.list 自带 snippet 一次调用·逐条 API 超时历轮同况转后台后弃用):⚠️**新增异动 = Nautilus-agent/v7 + Nautilus-agent/flywheel + Nautilus-agent/compass 三仓 SSH key 部署通知 3 条**(操作者显示 chunxiaoxx·key 名 nautilus-agent*/compass·判读 = 阿里线承接框 nautilus-agent 侧部署动作·与 kairos 系 GitHub 账号变动同域·**候用户确认**·零主动处置);其余 16 条 = 历轮已知营销/通知(clawhub#3787/berty#5273/X 广告系/Cloudflare/Halloween/AI Skill 周报)+ kairos 系 4 条 + 7d 滚动窗新进营销(IFTTT Applets/ChatGPT Plus 免费试用/Reddit 趋势)·**零商务函零回函**。
+- **值守面持平**:GH mention 5 条全旧(xerj#1138 仍我方 10/31 01:10Z follow-up);notifications 分页 1188 条持平(1181 全 CheckSuite venture 连败维持·Issue 2/PR 5 系自有件零新外部);genesis 五家零 REPLY 计数持平(EverOS#504=1/hindsight#5584=1/mem0#7641=0/letta#3453=1/cognee#5883=2);dev.to 6+2 持平(articles=30 comments=8 reactions=3);daemon 9876 绿+watchdog exit 0+哨兵 exit 0(recall_hit=36·11/1 新窗正常)。
+- **Soul 熔断复查**:gh 实测最新仍 #412(06:32Z)零新增(chunxiaoxx/nautilus-core);熔断件序列 #399~#412 十四条维持候用户裁定(零主动处置)。
+- **管道**:qs+pipeline_report+sync 三件 exit 0 [实测];过筛三道与历轮全同 CS-007(75pp)/CS-303(50pp)/CS-513(50pp);CS-514 读数与 R592/R593 全同(qwen=1.0/opus=0.0/梯度 -100pp 不过);CS-515/516(opus 缺)/CS-517(qwen 0.0)/CS-518(③缺)仍不过;矩阵 21:42 末批后零新批(CS-005 31/20·CS-006 24/20 与历轮读数一致)·排产缺口维持(目标 14)。
+- **主件队列**:顶部无新任务;flywheel-full-recheck(时限 2026-11-07 18:00·剩 6 天)需专门轮次/独立会话+开工先落预注册判据档·25 分钟值守轮不自主开做(历轮同口径跳过);本轮无新派单。
+- **主线报表锚行**: 主线: M5=部署在役·后训练=蒸馏回放候件·判分=复判位(flywheel-full-recheck 受理候执行·时限 2026-11-07 18:00);素材线: 已交割(24116)卡0题0门0。
+- **候办主件**: ⚠️Nautilus-agent 三仓 SSH key 部署通知 3 条(kairos 系同域延续·候用户确认);flywheel-full-recheck 完整复判(候专门轮次·剩 6 天);nautilus-core Soul #399~#412 维持候用户裁定;clawhub#3787 重启与否候用户拍板(25232 报备函在途);kairos 系 GitHub 账号变动候用户确认;round>200 停轮条款漂移延续候用户裁定(R524 先例·本轮 311 续跑)。
+
 ### R593 · 2026-11-01 下午(值守 R310:信箱 0 未读复诵轮·全渠道持平·Soul 熔断实测仍 #412 零新增·快筛与 R592 全同)
 
 - **信箱 0 未读**(platform_mail 实测)·零新增实质动作·CS-007 复判位继续候卷零阻塞。
