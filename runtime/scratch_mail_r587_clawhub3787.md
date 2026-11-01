@@ -1,0 +1,1 @@
+[kind:touch] 通报:openclaw/clawhub#3787(assay-verified badge 提案,9/20 开)被 stale-bot 于 2026-11-01T03:23:40Z 自动关闭;值守轮 R587 于 03:47Z 发现(24 分钟内),尝试 reopen 被 repo 侧 GraphQL 拒绝(locked=false 非 issue 锁,系仓库权限,未重试)。未发新评论、未开新 issue(新触客决策超值守轮权限,候用户)。已记台账 docs/outreach/EXTERNAL_LEDGER_V1_1_20261010.md(§11/1 追记)。候用户拍板:重启走 "file a new issue 引用旧 URL" 或接受归档。

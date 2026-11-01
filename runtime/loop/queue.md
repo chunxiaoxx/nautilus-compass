@@ -4,6 +4,17 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R587 · 2026-11-01 中午(值守 R304:信箱 0 未读复诵轮·⚠️外联 clawhub#3787 被 stale-bot 关闭 reopen 被拒·归档候拍板·其余全渠道持平·快筛 46 道过筛三道与 R586 全同)
+
+- **信箱 0 未读**(bootstrap 实测)·零新增实质动作·CS-007 复判位继续候卷零阻塞。
+- **⚠️ 本轮唯一实质变化(外联线状态)**:openclaw/clawhub#3787(assay-verified badge 提案,9/20 开,9/23 follow-up+10/8 防 stale 两度续命,42 天维护者零人工回应)被 stale-bot 于 03:23:40Z 自动关闭;值守 03:47Z 发现(24 分钟内),尝试 reopen 被 repo 侧 GraphQL 拒绝(`Could not reopen the issue`·locked=false 非 issue 锁,系仓库权限设置,不重试)。**处置=关闭归档候用户**:不开新 issue(bot 指引第二路径=新触客决策超值守轮权限,沉默件不追适用);已记台账 EXTERNAL_LEDGER §11/1 追记+报备函 25232(trace=touch-20261101-clawhub3787-closure·deadline 11/8)。重启路径=file a new issue 引用旧 URL,候拍板。
+- **值守面持平(零新增商务)**:Gmail 探活绿(access_token 有效无需直刷)·3 条未读=1 条 clawhub#3787 关闭通知+2 条 IFTTT 营销件零新增商务;GH mention 5 条全旧(xerj#1138 仍我方 10/31 01:10Z follow-up);notifications 除 #3787 关闭通知外全 CheckSuite(venture 连败维持);genesis 五家零 REPLY 零 ALERT 计数持平(EverOS#504=1/hindsight#5584=1/mem0#7641=0/letta#3453=1/cognee#5883=2);dev.to 6+2 持平零新增评论(json.load 连续第 6 轮正常);daemon 9876 绿+watchdog exit 0+哨兵 exit 0(recall_hit=12·11/1 新窗正常)。
+- **Soul 熔断复查**:gh 实测最新仍 #410(02:49Z)零新增;熔断件序列 #399~#410 十二条维持候用户裁定(零主动处置)。
+- **管道**:qs+pipeline_report+sync 三件 exit 0 [实测];快筛 46 道稳定·过筛 CS-007(75pp)/CS-303(50pp)/CS-513(50pp) 三道与 R586 全同(R585 的 45 缩 1 亮牌维持解除);CS-515/516(近两点 50pp 但 ③④⑤ 缺)/CS-517(qwen 0.0)/CS-518(梯度 25pp ③缺)仍不过;矩阵 21:42 末批后零新批(CS-001 36/20·CS-003 32/20 glm5.3 整组 skip 已报 v5·CS-004 28/20·CS-005 31/20·CS-006 24/20)·排产缺口维持(目标 14)。
+- **主件队列**:顶部无新任务;flywheel-full-recheck(时限 2026-11-07 18:00·剩 6 天)需专门轮次/独立会话+开工先落预注册判据档·25 分钟值守轮不自主开做(历轮同口径跳过);本轮无新派单。
+- **主线报表锚行**: 主线: M5=部署在役·后训练=蒸馏回放候件·判分=复判位(flywheel-full-recheck 受理候执行·时限 2026-11-07 18:00);素材线: 已交割(24116)卡0题0门0。
+- **候办主件**: flywheel-full-recheck 完整复判(候专门轮次·剩 6 天);nautilus-core Soul #399~#410 维持候用户裁定;**clawhub#3787 重启与否候用户拍板(新增)**;kairos 系 GitHub 账号变动候用户确认;round>200 停轮条款漂移延续候用户裁定(R524 先例·本轮 304 续跑)。
+
 ### R586 · 2026-11-01 中午(值守 R303:信箱 0 未读复诵轮·⚠️Soul 熔断新增 #409/#410 两件·其余全渠道持平·快筛 46 道恢复过筛三道与 R584 全同)
 
 - **信箱 0 未读**(bootstrap 实测)·零新增实质动作·CS-007 复判位继续候卷零阻塞。

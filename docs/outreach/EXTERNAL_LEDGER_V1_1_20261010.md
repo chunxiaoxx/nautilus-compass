@@ -83,3 +83,8 @@
 
 ### 追记(10/31 · Gaurav 处置)
 - **用户拍板略过 Gaurav/Flute 试点**:保位信 24h 回表承诺自然失效,不发补充邮件(硬闸:对外发送需过稿);调查表解析件留 runtime/scratch_flute/ 备未来重启;若对方追问由值守轮收割再议。
+
+### 追记(11/1 · clawhub#3787 stale-bot 关闭)
+- **openclaw/clawhub#3787(assay-verified badge 提案,9/20 开)被 stale-bot 于 2026-11-01T03:23:40Z 自动关闭**;值守轮 R587 03:47Z 发现(关闭后 24 分钟内),尝试 reopen 被 repo 侧 GraphQL 拒绝(`Could not reopen the issue`;locked=false 非 issue 锁,系仓库权限设置,不复测不蛮力重试)。
+- 历史脉络:9/20 开→9/20 clawsweeper(Codex review)评估 "keep open: distinct feature proposal"→9/23 我方 maintainer-facing follow-up(evidence-contract 四语义)→10/8 防过时补详情(第一续命)→10/24 二标 stale 未防(阿里线移交+值守期)→11/1 关闭。42 天维护者零人工回应,全程仅 bot 处理。
+- **处置=关闭归档候用户,不追加新动作**:不强行重复 reopen(同一操作重试违探针纪律);不自主开新 issue(bot 指引第二路径=新触客决策,超值守轮权限,且沉默件不追纪律适用)。若重启走 "file a new issue 引用旧 URL" 路径候拍板;提案实质内容(四语义 evidence contract+intake/leaderboard 供给侧)留档可随时复用。
