@@ -842,3 +842,18 @@ R310 值守轮完成，已提交推送(83bdf017)。
 - 留痕：rounds.log 一行 + state.json→312 + queue.md R595 条目 + COLLAB_BOARD 一行，均已入库
 ---- round end 11-01 16:49 ----
 2026-11-01 17:24 round313 值守复诵轮:信箱0未读(bootstrap+platform_mail双实测)·Gmail 401→直刷复活(len256绿)threads 11条历轮基线全同零商务·mention 5全旧·notifications 1188持平·genesis五家零REPLY持平·dev.to 6+2持平·daemon+watchdog+哨兵绿(recall_hit=55)·⚠️Soul熔断新增#413(09:03Z·9连败·selfimprove-services-soul_bridge)序列#399~#413十五条候用户·管道三件exit0·过筛3道全同(CS-007 75pp/CS-303 50pp/CS-513 50pp)·CS-514与R592-R595全同·CS-515~518仍不过·矩阵零新批(CS-005 31/20·CS-006 24/20)·主件flywheel-full-recheck跳过(剩6天)·结果=复诵留痕
+R313 值守轮完成，commit `317650db` 已推送。
+
+**值守结果(R313 · queue 条目 R596)**
+
+- **信箱**：0 未读(bootstrap+platform_mail 双实测)，零新增，CS-007 复判位候卷零阻塞
+- **Gmail**:401→refresh_token 直刷复活(len256 绿)，threads 11 条与历轮基线全同(R594 的 +8 异动维持退窗消退)，零商务零回函
+- **GitHub**:mention 5 条全旧；notifications 1188 持平(1181 全 CheckSuite venture 连败维持)；genesis 五家零 REPLY 持平；dev.to 6+2 持平
+- **探活**：daemon 9876 绿 + watchdog exit0 + 注入哨兵绿(recall_hit=55)
+- **⚠️ 唯一异动——Soul 熔断实测新增 #413**(09:03Z,9 连败，末循环 `selfimprove-services-soul_bridge`,与 #412 的 engine-ship 不同循环)，序列扩为 **#399~#413 十五条**，维持零主动处置候用户裁定
+- **管道**：qs/report/sync 三件 exit0;过筛三道 CS-007(75pp)/CS-303(50pp)/CS-513(50pp) 与历轮全同；CS-514 与 R592-R595 全同不过；CS-515~518 仍不过；矩阵 21:42 末批后零新批(CS-005 31/20 · CS-006 24/20)
+- **主件**：flywheel-full-recheck(时限 2026-11-07 18:00,剩 6 天)候专门轮次，25 分钟值守轮按历轮口径跳过；round>200 停轮条款漂移延续候用户(本轮 313 续跑)
+
+留痕四件(collab_board / rounds.log / state.json→313 / queue.md R596)均已落账。
+---- round end 11-01 17:27 ----
+- 11-01 18:02 round314 值守复诵轮:信箱0未读(platform_mail实测)·Gmail探活绿(未触发直刷·-G编码修复)threads11条与历轮基线全同零商务·mention 5条全旧(xerj#1138仍我方follow-up)·notifications 1188持平(1181全CheckSuite venture连败维持)·genesis五家零REPLY持平(EverOS#504=1/hindsight#5584=1/mem0=0/letta=1/cognee=2)·dev.to 6+2持平·daemon+watchdog+哨兵绿(recall_hit=61)·Soul熔断实测最新仍#413零新增序列#399~#413十五条维持候用户·管道三件exit0·过筛CS-007(75pp)/CS-303(50pp)/CS-513(50pp)三道与历轮全同·CS-514读数与R592-R596全同(qwen1.0/opus0.0梯度-100pp不过)·CS-515~518仍不过·矩阵21:42末批后零新批(CS-005 31/20·CS-006 24/20)·主件flywheel-full-recheck跳过(时限2026-11-07 18:00剩6天)·round>200漂移延续候用户(本轮314续跑)
