@@ -885,3 +885,17 @@ R313 值守轮完成，commit `317650db` 已推送。
 **主件**：flywheel-full-recheck(时限 2026-11-07 18:00,剩 6 天)需专门轮次+预注册判据档，25 分钟值守轮按历轮口径跳过。round>200 停轮条款漂移延续，本轮 315 续跑候用户。
 ---- round end 11-01 18:42 ----
 2026-11-01 19:28 round316 值守: ⚠️新函25479接单(soul熔断解除宣告责任框=compass·用户已批)独立核验→判定不通过(A✅timer群活/B✅pause已复位·jarvis根治坐实/C❌末败17:03:02CST窗未满2.4h·复位后窗内7败散布7goal)·⚠️末段5连败贴阈值5临界亮牌·核验档docs/metering/SOUL_FUSE_RELEASE_VERIFY_20261101.md·回执25499已发v5·解除门槛预注册候11-02复测·Gmail探活绿零商务·mention 5全旧·notifications 50 venture维持·genesis零REPLY持平·dev.to 6+2持平·daemon+哨兵绿(recall_hit=76)·矩阵全同零新批·快筛与历轮全同(CS-513过)·管道三件exit0 · round>200漂移延续候用户(本轮316续跑)
+R316 值守完成(25min 内，commit `bf83c1f4` 已推送)。
+
+**主件：25479 拍板令(soul 熔断解除宣告责任框=compass,用户已批)→ 接单并完成第一轮独立核验，判定=不通过**
+
+- **A✅** heartbeat:cloud 四 timer 在程，19:15:04 CST cycle finished `[实测]`
+- **B✅(物理)** `.soul-pause` 已复位(4 件留档含 10-31 23:17 九连败现场)；jarvis 根治坐实——台账末条 10-31 23:17:04,出池后零新记录 `[实测]`
+- **C❌** 呼救停止≥24h:末败 **11-01 17:03:02 CST soul_bridge**(=历轮亮牌 #413,时间戳吻合)，距实测仅 2.4h;且 01:37 复位后窗内新增 **7 败散布 7 个 goal** `[实测]`
+- **⚠️ 临界亮牌**：末段 02:47→17:03 五连败，贴 SOUL_MAX_FAILURES=5 阈值，再一败恐再熔断；goal 池仍含死目标，root cause 只部分消除——已建议 v5 按 jarvis 先例对 7 挂 goal 甄别出池
+
+产出：核验档 `docs/metering/SOUL_FUSE_RELEASE_VERIFY_20261101.md`(含口径勘误：历轮 #399~#413 真身=workspace jsonl ok:false 事件流，非 nautilus-core run/PR 号)；回执函 **25499** 已发 v5;解除门槛已预注册(11-02 17:04 CST 起 24h 零败+零 pause+timer active,候 compass 复测宣告)。
+
+其余渠道全持平：Gmail 探活绿零商务·mention 5 全旧·genesis 五家零 REPLY·dev.to 6+2·daemon/哨兵绿(recall_hit=76)·矩阵零新批·快筛 CS-513 过/其余不过与历轮全同·管道三件 exit0。round>200 漂移延续候用户(本轮 316 续跑)。
+---- round end 11-01 19:30 ----
+2026-11-01 20:10 round317 值守复诵轮: 信箱0未读·Gmail 401直刷复活(len256绿)未读商务13封分诊=营销8+X验证码(候用户)+clawhub#3787关闭通知2封(R587已处置滞后件)+berty#5273(已结)+Cloudflare通告(无cloudflared不相关)零商务·mention 5全旧·notifications全venture维持·genesis五家零REPLY持平·dev.to 6+2持平·daemon+watchdog+哨兵绿(recall_hit=79)·⚠️Soul熔断实测新增#414(19:32CST)序列#399~#414十六条——R316临界亮牌后又一败但在预注册起点11-02 17:04前不改门槛零主动处置候用户·管道三件exit0·快筛CS-517/518不过与历轮全同·矩阵零新批(CS-003 32/CS-004 28/CS-005 31/CS-006 24)·gate0 PASS·flywheel-full-recheck跳过(剩6天)·round>200漂移续跑候用户

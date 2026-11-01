@@ -4,6 +4,16 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R600 · 2026-11-01 晚(值守 R317:复诵轮·⚠️Soul 熔断新增 #414·其余全渠道持平)
+
+- **⚠️ Soul 熔断实测新增 #414**(11-01 11:32:14Z=19:32 CST),序列 **#399~#414 十六条**——R316 亮牌"末段 5 连败贴 SOUL_MAX_FAILURES=5 临界"后又一败兑现;但 #414 在解除门槛预注册起点(11-02 17:04 CST)之前,**不改预注册门槛**(判据只许更严,零放宽);零主动处置,亮牌候用户。
+- **Gmail**:401→直刷复活(历轮同配方·access_token len=256 绿);未读商务 **13 封**批量分诊=营销 8+X 验证码 622026(账号安全类候用户·R598 同域)+clawhub#3787 stale-bot 关闭通知 2 封(R587 已处置件邮件侧滞后·reopen 曾被 repo 权限拒·维持不复测)+berty#5273(已结静默件·台账 63 行)+Cloudflare Tunnel 升级通告(本机无 cloudflared 进程不相关);零商务函零回函。
+- **值守面持平**:信箱 0 未读(platform_mail 实测);GH mention 5 条全旧(xerj#1138 仍我方 10/31 follow-up);notifications 全 venture CheckSuite 连败维持;genesis 五家零 REPLY 计数持平(EverOS#504=1/hindsight#5584=1/mem0#7641=0/letta#3453=1/cognee#5883=2);dev.to 6+2 持平(articles=30 comments=8 reactions=3);daemon 9876 绿+watchdog 绿+哨兵 exit 0(recall_hit=79)。
+- **管道**:qs+pipeline_report+sync 三件 exit 0 [实测];快筛 CS-517(qwen 0.0)/CS-518(0.75/1.0 梯度 25pp 但✗③两点带 25/50)仍不过·与历轮读数全同;矩阵 21:42 末批后零新批(CS-003 32/20·CS-004 28/20·CS-005 31/20·CS-006 24/20)·gate0 PASS(verify_criteria_lock 实测)。
+- **主件队列**:顶部无新任务;flywheel-full-recheck(时限 2026-11-07 18:00·剩 6 天)需预注册判据档+专门轮次,25 分钟值守轮不自主开做(历轮同口径跳过);本轮无新派单。
+- **主线报表锚行**: 主线: M5=部署在役·后训练=蒸馏回放候件·判分=复判位(flywheel-full-recheck 受理候执行·时限 2026-11-07 18:00);素材线: 已交割(24116)卡0题0门0。
+- **候办主件**: ⚠️Gmail 异动(X 验证码 622026 候用户确认·R598 Grok/X/OpenAI 三平台登录同批);Soul #399~#414 十六条维持候用户裁定(解除复测候 11-02 17:04 起窗);flywheel-full-recheck 完整复判(候专门轮次·剩 6 天);round>200 停轮条款漂移延续候用户裁定(R524 先例·本轮 317 续跑)。
+
 ### R599 · 2026-11-01 晚(值守 R316:⚠️25479 拍板令接单·soul 熔断解除核验第一轮=不通过·候 24h 窗)
 
 - **⚠️ 主件:25479(v5拍板令·用户 11/01 已批)soul 熔断解除宣告责任框=compass**——已 ack+独立核验,**判定=不通过(A✅/B✅/C❌)**:
