@@ -1093,3 +1093,11 @@ API Error: Connection dropped (ECONNRESET). Check the gateway set in ANTHROPIC_B
 ---- round end 11-03 00:59 ----
 compass R325 槽位(11-03 01:32) 🔴停止条件命中 exit0零施工——state.json round=323>200 遵照LOOP指令「任一命中立即exit0」;R324(11-02 13:36)已记同款条目并亮牌候用户三选一(①重置计数②改上限③明确续跑授权),期间 11-02 17:03→11-03 00:59 共16次 launchd 拉起全 API Error(ECONNRESET/502·15721网关)空转未做工零留痕;本轮网关恢复首个可执行轮仍只留痕不动工;若彻底停轮请 launchctl unload compass-loop plist(每次30min拉起即命中此条件)
 ---- round end 11-03 01:32 ----
+R325 收官，停止条件命中，exit 0 零施工。
+
+- 判据：`state.json` round=323 > 200（STOP 不存在），按 LOOP 指令字面立即 exit 0
+- 留痕：rounds.log R325 槽位条目 + state.json 324，pathspec 限定 commit `059ab8a9`，未裹挟其他改动
+- 新信息：R324（11-02 13:36）亮牌后至本轮前，launchd 共拉起 16 次（17:03→00:59）全部 API Error（ECONNRESET/502·15721 网关）空转，零做工零留痕；本轮是网关恢复后首个可执行轮，仍只留痕不动工
+- 候你三选一（R324 起悬置至今）：①重置计数 ②改上限 ③明确续跑授权；若要彻底停轮，`launchctl unload` compass-loop plist——否则每 30min 拉起即命中此条件空转
+---- round end 11-02 12:34 ----
+2026-11-02 13:04 round325 停止条件命中(round计数324>200)exit0零施工·R324/R325同款亮牌后launchd仍拉起·候用户三选一(重置/改上限/续跑授权)或launchctl unload彻底停轮
