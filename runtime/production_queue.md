@@ -1,6 +1,7 @@
 # 诱饵层生产队列(2026-10-28 重建·原文件失联,内容自此快照恢复)
 
 > 🔴 **全队列收敛(10-30 24116 组织收敛令·用户拍板即日生效)**:阿里出题任务(CodeSense/ali30q 全部:出题/判分/调档/交付)移交 nautilus-agent 框唯一推进——compass 即日停止该任务新增产出,bait-loop 诱饵层停新;在途件收尾交割(回执函 24126·在途件4项清单在案)。本文件自此转交割台账,不再投产。
+> 🔴 **状态: DONE**(11-02 R251 机械落章=24116 收敛令的机械兑现:bait-loop 包装器 `grep "DONE\|EMPTY"` 短路自此命中,后续触发零会话成本;本文件唯一程序读者=bait plist 已核。launchd 真卸载仍候用户)
 > 🔴 bait-loop 短路依赖本文件存在——缺失=grep 静默失败=短路永不命中(审计实锤的漏钱洞)。
 > 本文件由 bait 轮更新状态列;其他循环只读不写。
 
@@ -61,3 +62,5 @@
 - R247(10-30 18:15): 队列维持零PENDING(24116收敛令,诱饵层停新,本文件=交割台账);bootstrap信箱1未读=24198(v5·cache_stale复核受理·在途判分件收尾非停新范围)已办结——正本坐标+md5锚+28UT口径勘误+UT全文+设计意图+boundary第3条素材回函id24208·24198已ack·信箱归零;交割台账静态不变;本轮exit 0
 
 - R250(10-30 20:17): 队列维持零PENDING(24116收敛令,诱饵层停新,本文件=交割台账);bootstrap信箱0未读(due_12h=0)无回函;无施工项不烧会话exit 0——交割台账静态(005B/008B/005/513四项随R240回执函24126移交nautilus-agent)·本轮exit 0
+
+- R251(11-02 13:08): 队列维持零PENDING(24116收敛令,诱饵层停新,本文件=交割台账);停止条件命中exit 0零施工——🔴launchd漂移实测:bait-loop(plist 7200s)与production-loop(1800s)仍loaded未卸载(bait本轮即其触发,launchctl list实证·production_loop/state.json round=94),与CLAUDE.md"已卸载"记载相反;R240"loop卸载候用户/平台动作"三日未执行,期间bait约36次触发全空转(包装器日志显示近轮多死于15721 API Error,烧会话零产出);本轮机械落章:头部加状态行DONE=包装器grep短路自此命中,后续bait触发不再拉起会话(grep -c核0处DONE→落章;本文件程序读者仅bait plist已核);真卸载(launchctl unload -w com.nautilus.bait-loop/com.nautilus.production-loop)候用户一句话
