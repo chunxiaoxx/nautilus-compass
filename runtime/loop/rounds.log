@@ -1101,3 +1101,9 @@ R325 收官，停止条件命中，exit 0 零施工。
 - 候你三选一（R324 起悬置至今）：①重置计数 ②改上限 ③明确续跑授权；若要彻底停轮，`launchctl unload` compass-loop plist——否则每 30min 拉起即命中此条件空转
 ---- round end 11-02 12:34 ----
 2026-11-02 13:04 round325 停止条件命中(round计数324>200)exit0零施工·R324/R325同款亮牌后launchd仍拉起·候用户三选一(重置/改上限/续跑授权)或launchctl unload彻底停轮
+停止条件命中（round=324>200），本轮 exit 0 零施工。
+
+- rounds.log 已留痕，state.json 计数 +1（现 325），pathspec 限定 commit 643b5403。
+- 这是 R324/R325 同款亮牌后 launchd 再次拉起空转。每轮仍会烧一次会话成本，根治需用户三选一：重置计数 / 改上限 / 明确续跑授权，或 `launchctl unload` 彻底停轮（R251 已实测两 loop 仍 loaded，与 CLAUDE.md 记载相反）。
+---- round end 11-02 13:06 ----
+2026-11-02 13:36 round326 停止条件命中(round=325>200)exit0零施工·R324/R325/R326同款亮牌后launchd仍持续拉起空转·候用户三选一(重置/改上限/续跑授权)或launchctl unload彻底停轮
