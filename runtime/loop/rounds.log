@@ -966,3 +966,43 @@ Not logged in · Please run /login
 API Error: Connection refused — a firewall or proxy may be blocking it (ECONNREFUSED)
 ---- round end 11-02 00:39 ----
 2026-11-02 01:29 round322 值守: 信箱0未读·Gmail绿商务0·Soul败流新增22:18soul_service checks_failed(解除窗实质后移候用户)·notifications 50→7全我方件·dev.to HTTP000不可验·daemon/watchdog/哨兵绿·管道三件exit0快筛CS-513过同历轮·gate0 PASS·round>200漂移续跑
+R322 值守轮完成，已提交 dd3f0584。
+
+**主线**： M5=部署在役 · 后训练=蒸馏回放候件 · 判分=复判位(flywheel-full-recheck 受理候执行·时限 11-07 18:00 剩 5 天)；**素材线**： 已交割(24116)卡0题0门0。
+
+本轮实质异动两条，其余持平：
+
+1. **⚠️ Soul 败流新增一败[实测]**:`.soul-memory.jsonl` 新增 22:18:09 `soul_service` ok=false(checks_failed),前末败为 17:03:02 soul_bridge。24h 零败计时自 22:18 重起，R603 口径的解除门槛窗(11-02 17:04 起)**实质不可开始**。pause 仍不在+timer 群 active。compass 观察位零处置候用户。
+2. **notifications 构成变化[实测]**:50→7 条，venture CheckSuite 全部消失，余 7 条均我方 author/state_change 类件(compass PR#55 review_requested 含内)，零外部邀请。
+
+持平面：信箱 0 未读、Gmail 绿商务 0、mention 5 全旧、genesis 五家零 REPLY、管道三件 exit0、快筛 CS-513 过/其余不过与历轮全同、矩阵零新批、gate0 PASS。异常一件：dev.to 连续 HTTP=000×3 连不通，历轮 6+2 读数本轮标[不可验]，下轮复测。round>200 漂移按 R524 先例续跑候用户。
+---- round end 11-02 01:31 ----
+API Error: Connection refused — a firewall or proxy may be blocking it (ECONNREFUSED)
+---- round end 11-02 02:18 ----
+API Error: Connection refused — a firewall or proxy may be blocking it (ECONNREFUSED)
+---- round end 11-02 03:06 ----
+API Error: Connection refused — a firewall or proxy may be blocking it (ECONNREFUSED)
+---- round end 11-02 03:53 ----
+API Error: Connection refused — a firewall or proxy may be blocking it (ECONNREFUSED)
+---- round end 11-02 04:41 ----
+API Error: Connection refused — a firewall or proxy may be blocking it (ECONNREFUSED)
+---- round end 11-02 05:28 ----
+API Error: Connection refused — a firewall or proxy may be blocking it (ECONNREFUSED)
+---- round end 11-02 06:16 ----
+API Error: Connection refused — a firewall or proxy may be blocking it (ECONNREFUSED)
+---- round end 11-02 07:03 ----
+API Error: Connection refused — a firewall or proxy may be blocking it (ECONNREFUSED)
+---- round end 11-02 07:51 ----
+API Error: Connection refused — a firewall or proxy may be blocking it (ECONNREFUSED)
+---- round end 11-02 08:38 ----
+API Error: Connection refused — a firewall or proxy may be blocking it (ECONNREFUSED)
+---- round end 11-02 09:26 ----
+API Error: Connection refused — a firewall or proxy may be blocking it (ECONNREFUSED)
+---- round end 11-02 10:00 ----
+API Error: Connection refused — a firewall or proxy may be blocking it (ECONNREFUSED)
+---- round end 11-02 10:34 ----
+API Error: Connection refused — a firewall or proxy may be blocking it (ECONNREFUSED)
+---- round end 11-02 11:09 ----
+API Error: 502 请求转发失败: 上游请求失败: client error (Connect). This is a server-side issue, usually temporary — try again in a moment. If it persists, check your inference gateway (127.0.0.1:15721).
+---- round end 11-02 12:00 ----
+---- round606 12:50 R323 值守:治理令Ⅰ+Ⅱ回执26282(loop配方形态·hooks7/7·三问PASS·北极星补齐)+4函ack·OWASP#35采纳关闭致谢已回·⚠️loop 10:34/11:09两轮API Error全灭(15721通路·拓扑三步候用户)·Gmail复活9条零商务·GH mention 6(OWASP新closed·余5全旧)·notif 7全我方·dev.to 30/8/3持平·genesis零REPLY持平·daemon绿·哨兵绿recall_hit=8·管道三件exit0·快筛CS-515~518不过历轮全同·矩阵21:42后零新批·gate0 PASS · round>200漂移延续候用户(本轮323续跑)

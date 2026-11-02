@@ -4,6 +4,16 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R606 · 2026-11-02 午间(值守 R323:治理令Ⅰ+Ⅱ并轨回执 26282+4 函 ack 清零·OWASP#35 RFC 被采纳关闭·⚠️loop 轮通路故障亮牌)
+
+- **治理令Ⅰ(#+25652 loop 修法配方)+治理令Ⅱ(#+25658 认知面交接)并轨回执已发 platform(26282,deadline 超时 13h 补报)**:compass-loop launchd 30min 逐条对照五件套全符合(状态正本 runtime/loop/state.json+queue.md·新会话不 resume·绝对路径·STOP 闸+flock -f 9 -t 0+perl alarm 1800)[实测];hooks 自盘 7/7 全有 timeout(项目 1 件+全局 6 件)[实测];三问自检 PASS·交接正本 ORG_HANDOFF_V1_20261101.md 实读·CLAUDE.md 北极星行本轮补齐(引 §一-3)。
+- **⚠️首夜核验亮牌 [实测]**:rounds.log 今日 10:34/11:09 两轮 API Error 全灭(ECONNREFUSED/502·inference gateway 127.0.0.1:15721)+12:00 轮空转——loop 机制零故障,灭因=CC→网关→上游通路不稳;compass→compass 拓扑任务单(#26279 更正正本·#26254 作废)三步未执行(GUI/系统网络配置+通路敏感期·headless 不主动动配置候用户),实测现状随回执亮牌(settings 仍 15721+PROXY_MANAGED+四模型混排·Shadowrocket PID 35785 在跑)。
+- **外联战果 [实测]**:OWASP/www-project-agent-memory-guard#35(我方 RFC reply-hook pattern)被 maintainer 采纳进 main(install_guard() position 0+GuardedGroupChatManager 随其 PR#22)后 COMPLETED 关闭——致谢回帖已发(issuecomment-6569225799·台账登记+回执函 kind:touch 报备);对方邀约 test PR 留候拍板。
+- **值守面**:Gmail 401→直刷复活(len256 绿)·未读商务域 9 条=营销/通告/GitHub closed 通知,零商务零回函;GH mention 6 条=OWASP#35 新 closed(已处置)+xerj#1138/cognee#5883/IHUI#78/rsi-bench#4 全旧;notifications 7 条全我方件(terminal-bench#2017/crewAI#6263 实测 author=chunxiaoxx);genesis 五家零 REPLY 持平;dev.to 30/8/3 持平;daemon 9876 绿+哨兵 exit0(recall_hit=8)。
+- **管道**:qs+pipeline_report+sync 三件 exit 0 [实测];快筛 CS-515~518 不过与历轮全同(CS-518 25pp 梯度✓④✓⑤✗③);矩阵 21:42 末批后零新批;gate0 PASS。
+- **主线报表锚行**: 主线: M5=部署在役·后训练=蒸馏回放候件·判分=复判位(flywheel-full-recheck 受理候执行·时限 2026-11-07 18:00);素材线: 已交割(24116)卡0题0门0。
+- **候办主件**: ⚠️网络拓扑三步候用户执行(通路不稳已致 loop 轮灭·26279 正本);v5 桶复测 11-02(25581 承诺);X 验证码 622026 候用户;Soul 解除窗三门复测(24h 零败计时自 11-01 22:18 重起);flywheel-full-recheck(剩 5 天候专门轮次);round>200 漂移延续候用户(本轮 323 续跑)。
+
 ### R605 · 2026-11-02 凌晨(值守 R322:全渠道持平·⚠️Soul 败流新增 22:18 soul_service checks_failed——解除窗实质后移)
 
 - **值守面持平**:信箱 0 未读(bootstrap 实测);Gmail 探活绿,未读商务 threads **0**;GH mention 5 条全旧(xerj#1138 仍我方 follow-up);genesis 五家零 REPLY 计数持平(EverOS#504=1/hindsight#5584=1/mem0#7641=0/letta#3453=1/cognee#5883=2);daemon 9876 绿+watchdog exit0+哨兵 exit 0(未到 09:00 判定窗,凌晨 recall_hit=0 属正常非注入链死)。

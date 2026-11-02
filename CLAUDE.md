@@ -6,6 +6,7 @@
 
 > 🔴 方向锚(2026-10-30 更新·24116 收敛令生效,与仓内任何文档冲突时以此为准):
 > **当前业务 = 记忆 IO(M5 记忆门)+ 后训练(蒸馏)+ unipat/验证机构(CASSAY/JEV/VerifyPack)+ 判分值守与复判位**。
+> **北极星 = agent harness 一站式「基准评测→能力提升」平台(unipat-in-agent)· PMF 为纲·商业线工时≥50%(正本 nautilus-core `docs/ORG_HANDOFF_V1_20261101.md` §一-3 · 2026-11-01)**。
 > **阿里 CodeSense 线(出题/判分/调档/交付)整体移交 nautilus-agent**(24116 用户拍板·回执函 24126·交割台账 `runtime/production_queue.md`);bait-loop/ali30q-loop/production-loop 已卸载;**CS-007 复判位保留**(v5 返工卷面来即判)。
 > 10/29 锚(阿里出题生产+判据工程化)及更早的具身智能/垂域出题锚均为历史层——仓内 FDE/CHARTER/SSOT 为历史层,考古时手动读,读时牢记历史层 ≠ 现状。
 > 判分值守红线不变:判据零放宽/证据分层不冒充/非实现者复算;**复判轮开工前照跑 gate0**(`python3 ops/ali30q/verify_criteria_lock.py`)。
