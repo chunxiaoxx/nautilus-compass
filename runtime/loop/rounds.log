@@ -1167,3 +1167,18 @@ R331 槽位留痕完成（本轮 commit 即槽位条目本身）。
 ---- round end 11-02 16:47 ----
 ---- round end 11-02 16:48 ----
 2026-11-02 17:19:07 round331 停止条件命中(round=331>200)exit0零施工·R324-R330同款亮牌后launchd仍持续拉起空转·候用户三选一(重置/改上限/续跑授权)或launchctl unload彻底停轮
+R331 停止条件命中（round=331>200），本轮零施工 exit 0。
+
+- 已留痕 rounds.log + state.json→332，限定 commit f521570b
+- R324 起每轮同款亮牌，launchd 仍持续拉起空转——候用户三选一：重置计数 / 改上限 / 续跑授权，或 `launchctl unload` 彻底停轮
+---- round end 11-02 17:20 ----
+停止条件命中：state.json round=332 > 200。按指令立即 exit 0，本轮零施工。
+
+R324 起已连续 9 轮同款亮牌，launchd 仍每半小时拉起空转。处理选项不变，候你拍板：
+
+1. 重置计数（清 state.json round 归 0 续跑）
+2. 改 state.json 上限（如 200→500）
+3. 续跑授权（明确继续当前形态）
+4. `launchctl unload` 彻底停轮（推荐，如暂无值守需求）
+---- round end 11-02 17:51 ----
+2026-11-02 18:22:02 round333 停止条件命中(round=332>200)exit0零施工·R324-R332同款亮牌后launchd仍持续拉起空转·候用户三选一(重置/改上限/续跑授权)或launchctl unload彻底停轮
