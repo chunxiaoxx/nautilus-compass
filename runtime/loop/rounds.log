@@ -1133,3 +1133,12 @@ R325 收官，停止条件命中，exit 0 零施工。
 - R324–R328 已连续 5 轮同款亮牌，launchd 仍每轮拉起空转。候用户三选一：重置计数 / 改上限 / 续跑授权，或 `launchctl unload` 两个 loop 任务彻底停轮。
 ---- round end 11-02 14:41 ----
 2026-11-02 15:11 round328 停止条件命中(round=327>200)exit0零施工·R324-R327同款亮牌后launchd仍持续拉起空转·候用户三选一(重置/改上限/续跑授权)或launchctl unload彻底停轮
+R328 完成。
+
+- 停止条件命中：round=327 > 200,exit 0 零施工
+- 亮牌前快速核验：信箱 0 未读、GitHub mentions 无新件
+- 留痕：rounds.log 追加 + state.json round→328，限定 commit `98304cde`
+
+R324-R328 已连续五轮同款亮牌，launchd 仍每约 20-30 分钟拉起一次空转。候用户三选一：重置计数 / 改上限 / 续跑授权，或 `launchctl unload` 彻底停轮。
+---- round end 11-02 15:12 ----
+2026-11-02 15:43:07-0500 round329 槽位条目——停止条件命中(round=328>200)exit0零施工·R324-R328同款亮牌后launchd仍持续拉起空转·候用户三选一(重置/改上限/续跑授权)或launchctl unload彻底停轮
