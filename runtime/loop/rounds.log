@@ -1182,3 +1182,16 @@ R324 起已连续 9 轮同款亮牌，launchd 仍每半小时拉起空转。处�
 4. `launchctl unload` 彻底停轮（推荐，如暂无值守需求）
 ---- round end 11-02 17:51 ----
 2026-11-02 18:22:02 round333 停止条件命中(round=332>200)exit0零施工·R324-R332同款亮牌后launchd仍持续拉起空转·候用户三选一(重置/改上限/续跑授权)或launchctl unload彻底停轮
+R333 收轮。
+
+- 停止条件命中：state.json round=332 > 200，按令 exit 0 零施工
+- 留痕已 commit（a7271fdb，限定 pathspec 两文件，与 R324-R332 同款）
+- 持续空转待用户三选一：重置计数 / 改上限 / 续跑授权，或 `launchctl unload` 彻底停轮
+---- round end 11-02 18:23 ----
+2026-11-02 18:53:52 round334 停止条件命中(round=333>200)exit0零施工·R324-R333同款亮牌后launchd仍持续拉起空转·候用户三选一(重置/改上限/续跑授权)或launchctl unload彻底停轮
+R334 收轮。
+
+- 停止条件命中：state.json round=333 > 200，按令 exit 0 零施工
+- 留痕 commit 限定 pathspec 两文件（与 R324-R333 同款）
+- 持续空转待用户三选一：重置计数 / 改上限 / 续跑授权，或 `launchctl unload` 彻底停轮
+---- round end 11-02 18:53 ----
