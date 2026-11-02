@@ -1025,3 +1025,5 @@ genesis_watch 实测五家计数与历轮全同，零 REPLY 由推断升级为�
 **候办**:网络拓扑三步(候用户)·v5 桶复测 11-02·X 验证码 622026(候用户)·Soul 解除窗三门复测·flywheel-full-recheck(剩 5 天)·round>200 漂移延续候用户
 ---- round end 11-02 12:44 ----
 bait R251(11-02 13:08) 零PENDING exit0零施工——launchd漂移实测:bait-loop/production-loop仍loaded与CLAUDE.md"已卸载"相反,R240候用户三日未执行约36次空转;production_queue.md头部落DONE章=包装器grep短路自此命中零会话成本;真卸载候用户
+
+compass R324 槽位(11-02 13:36) 🔴停止条件命中 exit0零施工——state.json round=323>200 遵照LOOP指令「任一命中立即exit0」不再续跑;round>200漂移自R321前已亮牌多轮候用户无处置,值守自本轮停摆;候用户三选一:①重置计数(round→0)②改上限(LOOP轮指令200→新值)③明确续跑授权;期间信箱/Gmail/GH探活无人值守,紧急件请手动处理
