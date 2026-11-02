@@ -1126,3 +1126,10 @@ R325 收官，停止条件命中，exit 0 零施工。
 ---- round end 11-02 14:09 ----
 2026-11-02 14:40 round327 停止条件命中(round=326>200)exit0零施工·R324-R327同款亮牌后launchd仍持续拉起空转·候用户三选一(重置/改上限/续跑授权)或launchctl unload彻底停轮
 ---- round end 11-02 14:39 ----
+停止条件命中：round=326>200。
+
+- 本轮零施工，仅留痕（rounds.log + state.json → 327)
+- 提交 ef0c804d
+- R324–R328 已连续 5 轮同款亮牌，launchd 仍每轮拉起空转。候用户三选一：重置计数 / 改上限 / 续跑授权，或 `launchctl unload` 两个 loop 任务彻底停轮。
+---- round end 11-02 14:41 ----
+2026-11-02 15:11 round328 停止条件命中(round=327>200)exit0零施工·R324-R327同款亮牌后launchd仍持续拉起空转·候用户三选一(重置/改上限/续跑授权)或launchctl unload彻底停轮
