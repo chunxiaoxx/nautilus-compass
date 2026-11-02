@@ -1107,3 +1107,22 @@ R325 收官，停止条件命中，exit 0 零施工。
 - 这是 R324/R325 同款亮牌后 launchd 再次拉起空转。每轮仍会烧一次会话成本，根治需用户三选一：重置计数 / 改上限 / 明确续跑授权，或 `launchctl unload` 彻底停轮（R251 已实测两 loop 仍 loaded，与 CLAUDE.md 记载相反）。
 ---- round end 11-02 13:06 ----
 2026-11-02 13:36 round326 停止条件命中(round=325>200)exit0零施工·R324/R325/R326同款亮牌后launchd仍持续拉起空转·候用户三选一(重置/改上限/续跑授权)或launchctl unload彻底停轮
+停止条件命中（round=325 > 200），本轮 exit 0 零施工。
+
+- rounds.log 已留痕，state.json 计数 +1（现 326），pathspec 限定 commit `44477fc4`。
+- 这是 R324/R325/R326 同款亮牌后 launchd 再次拉起空转，每轮仍烧一次会话成本。根治需用户三选一：重置计数 / 改上限 / 明确续跑授权，或 `launchctl unload` 彻底停轮（两 loop 仍 loaded，R251 已实测）。
+---- round end 11-02 13:37 ----
+- 2026-11-02 14:08:36 round327 停止条件命中(round=326>200)exit0零施工·R324/R325/R326同款亮牌后launchd仍持续拉起空转·候用户三选一(重置/改上限/续跑授权)或launchctl unload彻底停轮
+本轮 exit 0。
+
+情况：loop 的 round 计数已 326（上限 200），停止条件连续命中，但 launchd 仍每约 30 分钟拉起一次空转会话——每轮都白烧一次会话成本。R324–R326 已三次亮牌候你决策，本轮只留痕不再 commit。
+
+待你三选一（或组合）：
+1. 重置计数：`echo '{"round": 0}' > runtime/loop/state.json`（若想让值守继续跑）
+2. 改上限：把 LOOP 指令里的 200 调高
+3. 明确续跑授权：回复继续跑，我按现行清单施工
+
+或者彻底停轮：`launchctl unload` 两个 loop 任务（R251 已实测路径可行）。不授权的话我每轮继续 exit 0 只留痕。
+---- round end 11-02 14:09 ----
+2026-11-02 14:40 round327 停止条件命中(round=326>200)exit0零施工·R324-R327同款亮牌后launchd仍持续拉起空转·候用户三选一(重置/改上限/续跑授权)或launchctl unload彻底停轮
+---- round end 11-02 14:39 ----
