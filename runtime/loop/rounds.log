@@ -1434,3 +1434,14 @@ R357 轮结果：**停止条件命中（round=356 > 200），exit 0 零施工**�
 ---- round end 11-03 07:49 ----
 11-03 08:21 round359 停止条件命中(round=358>200)exit0零施工·补R358未及commit的亮牌留痕·R325-R358共34空转轮·候用户三选一(重置/改上限/续跑授权)或launchctl unload彻底停轮 结果=exit0
 ---- round end 11-03 08:21 ----
+**⚠️ 亮牌(第 34 个空转轮)**:停止条件命中(round=358>200),本轮 exit 0 零施工，已补 R358 未及 commit 的亮牌留痕(79f681dd)。
+
+launchd 仍在持续拉起已达停止条件的 loop。候您处置三选一：
+
+1. **重置上限**——改 state.json 的 200 阈值或 round 计数，loop 续跑值守清单(信箱/GitHub/dev.to/管道刷新等每轮固定动作已停摆 34 轮)
+2. **续跑授权**——认可当前计数继续亮牌模式
+3. **彻底停轮**——`launchctl unload`(或建 `runtime/loop/STOP` 文件，下轮即静默退出)
+
+exit 0
+---- round end 11-03 08:22 ----
+11-03 08:53 round360 停止条件命中(round=360>200)exit0零施工·R325-R359共35空转轮launchd持续拉起·候用户三选一(重置/改上限/续跑授权)或launchctl unload/建STOP文件彻底停轮
