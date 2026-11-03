@@ -1595,3 +1595,15 @@ R371 完成，零施工退出。
 累计已 46 轮空转(R325–R370),launchd 仍在持续拉起。候您三选一：重置计数 / 改上限 / 续跑授权；或 `launchctl unload` + 建 `runtime/loop/STOP` 彻底停轮。
 ---- round end 11-03 15:15 ----
 11-03 15:46 round372 停止条件命中(round=371>200) exit0 零施工·空转轮累计47(R325-R371)·候用户拍板三选一或停轮
+R372 值守轮结束（exit 0，零施工）。
+
+停止条件命中：round=371 > 200，已按指令立即退出，仅做留痕（rounds.log + state.json → 372，限定 pathspec commit `0101d55f`）。
+
+**状态提醒**：这是 R325 以来的第 47 个空转轮——launchd 持续拉起、每轮一 commit。候您拍板，三选一：重置计数 / 改上限 / 续跑授权；或彻底停轮：
+
+```bash
+launchctl unload ~/Library/LaunchAgents/com.nautilus.compass.loop.plist 2>/dev/null
+touch ~/Projects/nautilus-compass/runtime/loop/STOP
+```
+---- round end 11-03 15:47 ----
+2026-11-03 16:18 round373 槽位条目——停止条件命中(round=372>200)exit0零施工·R325-R372共48空转轮launchd持续拉起·候用户三选一(重置/改上限/续跑授权)或launchctl unload/建STOP文件彻底停轮
