@@ -1259,3 +1259,16 @@ R340 停轮完成。本轮情况：
 在你看板前每轮我会保持同款最小退出：仅信箱探查+留痕，不 commit、不施工。
 ---- round end 11-02 22:08 ----
 2026-11-02T22:39-0500 round340 槽位条目——停止条件命中(round=340>200)exit0零施工·R325-R339同款亮牌后launchd仍持续拉起空转·候用户三选一(重置/改上限/续跑授权)或launchctl unload彻底停轮
+R340 停轮完成，exit 0。
+
+**本轮情况**
+- **停止条件命中**:state.json round=340 > 200,无 STOP 文件，零施工。round 已进位 → 341,留痕入 `runtime/loop/rounds.log`,限定 pathspec 提交 `83fb1cca`(仅 loop 两文件；顺带裹入了 R338–R340 三轮 headless 会话遗留未 commit 的同款留痕行，已复核全是 loop 台账、无夹带)。
+- **未做信箱探查**:R340 轮已探过(仅 1 封 zenmind 自动 digest,通报类)，本轮按停止条件零施工直接退出。
+
+**待你处置(R325 起已连续 16 轮同款亮牌，launchd 仍在拉起空转)**
+1. 重置 round 计数继续跑
+2. 调高 state.json 上限
+3. 授权续跑
+4. `launchctl unload ~/Library/LaunchAgents/com.nautilus.compass-loop.plist` 彻底停轮
+---- round end 11-02 22:41 ----
+2026-11-02T22:52-0500 round341 槽位条目——停止条件命中(round=341>200)exit0零施工·R325-R340同款亮牌后launchd仍持续拉起空转·候用户三选一(重置/改上限/续跑授权)或launchctl unload彻底停轮
