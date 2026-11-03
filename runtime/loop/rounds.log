@@ -1664,3 +1664,10 @@ touch ~/Projects/nautilus-compass/runtime/loop/STOP
 ```
 ---- round end 11-03 17:55 ----
 2026-11-03T18:26 round377 槽位条目——停止条件命中(round=376>200)exit0零施工·候用户三选一(重置/改上限/续跑授权)或launchctl unload/建STOP文件彻底停轮
+R377 槽位轮办结，exit 0。
+
+- 停止条件命中：round=377 > 200,零施工
+- 留痕：rounds.log +1 行、state.json round=377,限定 commit `fe8254ff`(仅两处留痕文件，核验未裹挟其他 staged 改动；diff 里多出的 13 行是此前几轮已写入未提交的 log 尾巴，一并落账)
+- R325 起累计 52 个空转轮，launchd 仍在持续拉起。候用户拍板：重置计数 / 改上限 / 续跑授权，或 `launchctl unload` + 建 STOP 文件彻底停轮
+---- round end 11-03 18:27 ----
+2026-11-03T18:58 round378 槽位条目——停止条件命中(round=377>200)exit0零施工·R325-R377共53空转轮launchd持续拉起·候用户三选一(重置/改上限/续跑授权)或launchctl unload/建STOP文件彻底停轮
