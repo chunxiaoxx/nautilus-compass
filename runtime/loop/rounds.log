@@ -1219,3 +1219,10 @@ R336 完成：停止条件命中（round=335>200），零施工 exit 0。已留�
 等你指示。
 ---- round end 11-02 19:57 ----
 2026-11-02 20:28 round336 停止条件命中(round=336>200)exit0零施工·R325-R336同款亮牌后launchd仍持续拉起空转·候用户三选一(重置/改上限/续跑授权)或launchctl unload彻底停轮
+本轮 round=336 > 200，停止条件命中，exit 0 零施工。
+
+留痕完成（rounds.log 一行 + state.json 337 + 限定 commit b533a3f7）。
+
+R325–R337 已连续 13 轮同款亮牌，launchd 仍每 ~90 分钟拉起一次空转。候用户处置：重置 round 计数 / 调高上限 / 续跑授权，或 `launchctl unload` 彻底停轮。
+---- round end 11-02 20:29 ----
+2026-11-02 20:59:54 round338 停止条件命中(round=337>200)exit0零施工·R325-R338同款亮牌后launchd仍持续拉起空转·候用户三选一(重置/改上限/续跑授权)或launchctl unload彻底停轮
