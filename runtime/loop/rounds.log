@@ -1510,3 +1510,13 @@ R365 停止条件命中，零施工收官。
 
 候用户拍板(三选一)：重置计数 / 改上限 / 授权续跑；或彻底停轮:`launchctl unload`(compass-loop)或建 `runtime/loop/STOP` 文件。exit 0。
 ---- round end 11-03 11:31 ----
+R365 完成，已按停止条件 exit 0。
+
+- 停止条件命中：round=365 > 200(无 STOP 文件，属超上限空转非用户令停)
+- 留痕:rounds.log 追加 R365 条目、state.json 计数 364→365
+- 提交:`565887ef`(限定 pathspec,仅两个 loop 文件，未裹挟工作区其他修改)
+- 状态：R325-R365 已连续 41 个空转轮，launchd 持续拉起
+
+候您拍板(三选一)：重置计数 / 改上限 / 授权续跑；或彻底停轮:`launchctl unload`(compass-loop)或建 `runtime/loop/STOP` 文件。
+---- round end 11-03 11:33 ----
+  2026-11-03 12:04 round366 槽位条目——停止条件命中(round=365>200)exit0零施工·R325-R365共41空转轮launchd持续拉起·候用户三选一(重置/改上限/续跑授权)或launchctl unload/建STOP文件彻底停轮
