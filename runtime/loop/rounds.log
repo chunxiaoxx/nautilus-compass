@@ -1342,3 +1342,28 @@ R349 留痕已提交(`0c9f1546`,pathspec 限定，未裹挟工作区其他改动
 或您确认后我可直接 `launchctl unload` 彻底停轮。exit 0。
 ---- round end 11-03 02:58 ----
 2026-11-03 03:29:21 round350 停止条件命中(round=349>200)exit0零施工·R325-R349同款亮牌后launchd仍持续拉起空转·候用户三选一(重置/改上限/续跑授权)或launchctl unload彻底停轮
+R350 槽位条目已落账（commit 90a50f05），零施工 exit 0。
+
+停止条件命中：round=349 > 200 上限。这是第 26 次亮牌（R325 起），launchd 仍在每轮拉起空转。候用户拍板三选一：
+
+1. **重置计数** — 把 state.json 的 round 归零续跑（恢复值守施工）
+2. **改上限** — 调高 200 的阈值
+3. **续跑授权** — 维持亮牌模式
+
+或确认后我可执行 `launchctl unload` 彻底停轮。
+---- round end 11-03 03:30 ----
+---- round 351 11-03 (EST) ----
+停止条件命中(round=350>200) exit0 零施工·R350 亮牌仍有效·本轮不再复诵空 commit(git 噪音已 26 连刷)·候用户三选一或 launchctl unload com.nautilus.compass-loop
+---- round end 11-03 ----
+本轮（R351）命中停止条件，已 exit 0 零施工。留痕完成：rounds.log 追加一行，state.json round → 351。
+
+**当前状态**：`launchd` 的 `com.nautilus.compass-loop`（PID 66148）仍在持续拉起，R325-R350 已连刷 26 个空转 commit，R350 亮牌候你拍板仍有效。本轮起不再复诵空 commit，只留一行日志。
+
+**待你三选一**：
+1. **重置** round 计数重新开跑
+2. **改上限** —— 调高 200 阈值
+3. **续跑授权** —— 维持亮牌模式
+
+或确认后我执行 `launchctl unload ~/Library/LaunchAgents/com.nautilus.compass-loop.plist` 彻底停轮（daemon `com.nautilus.compass-daemon` 不受影响，继续在跑）。
+---- round end 11-03 04:02 ----
+11-03T04:36-EST round352 停止条件命中(round=351>200)exit0零施工·R325-R351同款亮牌后launchd仍持续拉起空转·候用户三选一(重置/改上限/续跑授权)或launchctl unload彻底停轮·顺手修复state.json游离头行(裸351行致json.load失败,回写规范JSON)
