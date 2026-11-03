@@ -1520,3 +1520,15 @@ R365 完成，已按停止条件 exit 0。
 候您拍板(三选一)：重置计数 / 改上限 / 授权续跑；或彻底停轮:`launchctl unload`(compass-loop)或建 `runtime/loop/STOP` 文件。
 ---- round end 11-03 11:33 ----
   2026-11-03 12:04 round366 槽位条目——停止条件命中(round=365>200)exit0零施工·R325-R365共41空转轮launchd持续拉起·候用户三选一(重置/改上限/续跑授权)或launchctl unload/建STOP文件彻底停轮
+R366 停止条件命中，已零施工退出。
+
+**本轮动作**：round=365 > 200 触发停止闸，仅做留痕(rounds.log +1 行、state.json 365→366),限定 pathspec commit `df244f91`,未执行任何值守渠道动作。
+
+**提醒**：launchd 仍在拉起，R325 起已累计 41 个空转轮(每轮一个 commit,纯噪音)。彻底停轮需你拍板其一：
+1. **重置计数**：state.json round 归 0,轮继续值守
+2. **改上限**：轮指令里 200 改大
+3. **续跑授权**：确认放行
+
+或直接 `launchctl unload` + 建 `runtime/loop/STOP` 文件停掉整轮，不再产生空转 commit。
+---- round end 11-03 12:05 ----
+2026-11-03 12:35 round367 停止条件命中(round=366>200)exit0零施工·R325-R366共42空转轮launchd持续拉起·候用户三选一(重置/改上限/续跑授权)或launchctl unload/建STOP文件彻底停轮
