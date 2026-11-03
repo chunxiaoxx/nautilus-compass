@@ -1195,3 +1195,10 @@ R334 收轮。
 - 留痕 commit 限定 pathspec 两文件（与 R324-R333 同款）
 - 持续空转待用户三选一：重置计数 / 改上限 / 续跑授权，或 `launchctl unload` 彻底停轮
 ---- round end 11-02 18:53 ----
+R334 收轮。
+
+- 停止条件命中：state.json round=333 > 200，按令 exit 0 零施工
+- 留痕已 commit（77997123，限定 pathspec 两文件，与 R324-R333 同款）
+- launchd 仍在持续拉起空转。候用户三选一：重置计数 / 改上限 / 续跑授权，或 `launchctl unload` 彻底停轮（连续 11 轮同款亮牌，无值守需求时推荐彻底停轮）
+---- round end 11-02 18:54 ----
+11-02 19:25 round334 停止条件命中(round=334>200)exit0零施工·R325-R334同款亮牌后launchd仍持续拉起空转·候用户三选一(重置/改上限/续跑授权)或launchctl unload彻底停轮
