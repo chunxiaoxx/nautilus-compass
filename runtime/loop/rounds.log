@@ -1367,3 +1367,12 @@ R350 槽位条目已落账（commit 90a50f05），零施工 exit 0。
 或确认后我执行 `launchctl unload ~/Library/LaunchAgents/com.nautilus.compass-loop.plist` 彻底停轮（daemon `com.nautilus.compass-daemon` 不受影响，继续在跑）。
 ---- round end 11-03 04:02 ----
 11-03T04:36-EST round352 停止条件命中(round=351>200)exit0零施工·R325-R351同款亮牌后launchd仍持续拉起空转·候用户三选一(重置/改上限/续跑授权)或launchctl unload彻底停轮·顺手修复state.json游离头行(裸351行致json.load失败,回写规范JSON)
+R352 槽位轮完成，exit 0 零施工。三处验证全绿：
+
+- **停止条件命中**：round=351 > 200,STOP 未设——按 R325-R351 同款只留痕不开工
+- **顺手修复**:`runtime/loop/state.json` 头部游离裸行 `351` 导致 `json.load` 报 "Extra data"(首轮 `R=$(...)` 解析即败、`&&` 链中断的根因)，已回写为规范 JSON(round=352,回读无损)
+- **留痕+提交**:rounds.log 追加 R352 行，与 state.json 以 pathspec 限定提交 `da59a43b`(未 push)
+
+⚠️ 提醒：launchd 仍在持续拉起空转轮，你在候的三选一(重置计数 / 改上限 / 续跑授权)或 `launchctl unload` 彻底停轮，拍板后本轮即不再复诵。
+---- round end 11-03 04:36 ----
+2026-11-03T05:07-EST round353 停止条件命中(round=352>200)exit0零施工·R325起同款亮牌·候用户三选一(重置/改上限/续跑授权)或launchctl unload停轮
