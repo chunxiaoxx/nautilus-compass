@@ -1287,3 +1287,15 @@ R341 槽位轮完成，exit 0。
 在你看板前每轮保持同款最小退出：亮牌+留痕+限定 commit，不施工。
 ---- round end 11-02 23:12 ----
 2026-11-02 23:30 round343 停止条件命中(round=342>200)exit0零施工·R325-R342同款亮牌后launchd仍持续拉起空转·候用户三选一(重置/改上限/续跑授权)或launchctl unload彻底停轮
+R343 槽位轮完毕，exit 0。
+
+- 停止条件命中：round=342 > 200（STOP 文件不存在）
+- 零施工，仅留痕：state.json round→343，rounds.log 追加一行，已 pathspec 限定提交（7ba15826）
+- 已连续 18 轮（R325-R343）亮牌后 launchd 仍持续拉起空转
+
+候你决断，三选一：
+1. 重置 state.json round 计数（接受新上限续跑）
+2. 调高 200 上限（续跑授权）
+3. `launchctl unload` 彻底停轮（需你本机执行或授权我办）
+---- round end 11-02 23:44 ----
+2026-11-03 00:16 round344 停止条件命中(round=343>200)exit0零施工·R325-R343同款亮牌后launchd仍持续拉起空转·候用户三选一(重置/改上限/续跑授权)或launchctl unload彻底停轮
