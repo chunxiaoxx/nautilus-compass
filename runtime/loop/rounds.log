@@ -1893,3 +1893,27 @@ R400 空转轮记账完成(commit 563df36a),exit 0。
 - 本轮零施工：仅 state.json(round 400→401)+ rounds.log 留痕，pathspec 限定提交，未裹挟其他 staged 改动
 - R325–R401 空转轮累计 77 轮，持续候用户决断：**重置计数 / 改上限 / 续跑授权**，或 `launchctl unload` + 建 `runtime/loop/STOP` 彻底停轮
 ---- round end 11-04 07:11 ----
+R401 空转轮记账完成（commit `c8bf80fd`）。
+
+停止条件命中：`state.json` round=400 > 200，无 STOP 文件。按轮指令立即 exit 0，本轮零施工（信箱/渠道/队列均未执行）。
+
+R325–R401 空转轮已累计 **77 轮**，持续候您决断：
+
+1. **重置计数**——清零 round 继续值守
+2. **改上限**——调高 200 的停止阈值
+3. **续跑授权**——授权超限续跑
+
+或彻底停轮：`launchctl unload` + 建 `runtime/loop/STOP`。
+---- round end 11-04 07:12 ----
+R402 空转轮记账完成。
+
+停止条件命中：`state.json` round=401 > 200，无 STOP 文件。按轮指令立即 exit 0，本轮零施工（信箱/渠道/队列均未执行）。
+
+R325–R402 空转轮已累计 **78 轮**，持续候您决断：
+
+1. **重置计数**——清零 round 继续值守
+2. **改上限**——调高 200 的停止阈值
+3. **续跑授权**——授权超限续跑
+
+或彻底停轮：`launchctl unload` + 建 `runtime/loop/STOP`。
+---- round end 11-04 07:44 ----
