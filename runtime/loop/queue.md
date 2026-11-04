@@ -4,6 +4,14 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R609 · 2026-11-04 午后(值守 R326:GitHub 安全披露请求件 #66 处置——按既有 SECURITY.md 档回帖指路+closed·报备函 30525·全渠道持平)
+
+- **🆕issue #66 安全披露请求处置[实测]**:shaikn6(11-04 19:04Z)要求私下报告渠道(PVR 或 security email)。处置=按既有 SECURITY.md 档回帖指路(chunxiaoxx@gmail.com·PGP nautilus.social/security·72h 响应·90-day 披露政策)+closed 保持 tracker 无安全线索(comment 6639991589)。PVR 专用端点 404 未确认开启(Web UI 兜底候用户);零漏洞细节公开。报备函 [kind:touch] 已发 platform(id 30525)·台账 EXTERNAL_LEDGER 登记。
+- **值守面持平**:信箱 0 未读;Gmail 401→直刷复活(3599s 绿),15 threads 全营销/通告+#66 通知零商务;mention 5 条全旧;notifications 9 条=7 我方旧件+CI 旧红(R413 已根修,最新两 run 49c98f45/f3be5233 均 success 实测)+security issue 已处置;genesis 五家零 REPLY 持平;dev.to 6+2 持平(articles=30);daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=77)。
+- **管道**:qs+pipeline_report+sync 三件 exit 0;快筛 CS-513 过/CS-512·514~518 不过与历轮全同;gate0 PASS(verify_criteria_lock.py 实测)。
+- **主线报表锚行**: 主线: M5=部署在役·后训练=蒸馏回放候件·判分=复判位(flywheel-full-recheck 受理候执行·时限 2026-11-07 18:00 剩 3 天);素材线: 已交割(24116)卡0题0门0。
+- **候办主件**: ⚠️flywheel-full-recheck 完整复判(剩 3 天·需预注册判据档+专门轮次,25 分钟值守轮历轮同口径跳过);两函 400 拒候改道三选项;X 验证码 622026 候用户;PVR Web UI 开启候用户兜底;round>200 漂移延续候用户四选项(本轮 414 续跑)。
+
 ### R608 · 2026-11-04 午后(值守 R325:CI Lint 红→根修闭环——scan_bucket.py F401 修复·push 49c98f45 CI 13 job 全绿实测·全渠道持平)
 
 - **⚠️CI Lint 红新发现→根修闭环[实测]**:notifications 新增 "CI workflow run failed for main branch"(run 41884544773·fcca4bae push 后首红·Lint job `ruff check .` exit1,其余 12 job 全绿)。根因=11-01 后 73 个积压 commit 首次过 CI,暴露 abedba1c(蒸馏试点)引入的 `tools/distill_pilot/scan_bucket.py:17` 未用导入 `field`(F401)——该文件从未被 CI 检过。修复=删未用导入(功能零改动),本地 ruff 单文件 CLEAN+`--help` 可加载验证,commit 49c98f45 pathspec 限定 push→CI 复跑 **13 job 全绿 success**(`gh run watch` exit0 实测)。

@@ -89,3 +89,6 @@
 - 历史脉络:9/20 开→9/20 clawsweeper(Codex review)评估 "keep open: distinct feature proposal"→9/23 我方 maintainer-facing follow-up(evidence-contract 四语义)→10/8 防过时补详情(第一续命)→10/24 二标 stale 未防(阿里线移交+值守期)→11/1 关闭。42 天维护者零人工回应,全程仅 bot 处理。
 - **处置=关闭归档候用户,不追加新动作**:不强行重复 reopen(同一操作重试违探针纪律);不自主开新 issue(bot 指引第二路径=新触客决策,超值守轮权限,且沉默件不追纪律适用)。若重启走 "file a new issue 引用旧 URL" 路径候拍板;提案实质内容(四语义 evidence contract+intake/leaderboard 供给侧)留档可随时复用。
 - **OWASP/www-project-agent-memory-guard#35(RFC: install_guard() reply-hook pattern)对方采纳后关闭[实测 2026-11-02 值守轮]**:maintainer vgudur-dev 末评(11-01T21:18Z)确认 reply-hook 方案已进 main(`install_guard()` 注册 position 0 + `GuardedGroupChatManager` 随 PR#22 落地,GroupChat dispatch 已覆盖),issue 以 stateReason=COMPLETED 关闭(03:48Z)。**我方 RFC 方案被外部安全项目采纳进主干=外联实质战果**。处置:24h 跟进窗内致谢回帖(值班轮执笔·报备见当日值守回执函);对方邀约的 Nautilus GroupChat test PR 留候拍板,不自主承诺。
+
+### 追记(11/4 · compass#66 安全披露渠道请求)
+- **chunxiaoxx/nautilus-compass#66(shaikn6·2026-11-04T19:04Z 开)「Potential security issue — requesting a private contact」[值守轮 R326/loop R414 处置]**:研究者称发现安全问题,要求私下渠道(PVR 或 security email)。处置=按既有 SECURITY.md 档回帖指路(邮箱 chunxiaoxx@gmail.com·PGP nautilus.social/security·72h 响应承诺·90-day 披露政策)+关闭 issue 保持公开 tracker 无安全讨论线(comment 6639991589)。PVR 专用 API 端点 404 未确认开启(Web UI 兜底候用户);待其邮件到达即按 72h SLA 接报。零漏洞细节公开暴露,无外泄。
