@@ -1929,3 +1929,22 @@ R402 记账完成，exit 0。
 - 仅记账:state.json 402->403、rounds.log 追加 R403 行,pathspec 限定提交,未裹挟其他工作区改动
 - R325–R403 空转轮累计 **79 轮**，仍在候您决断：**重置计数 / 改上限 / 续跑授权**，或 `launchctl unload` + 建 `runtime/loop/STOP` 彻底停轮
 ---- round end 11-04 08:16 ----
+R403 空转轮记账完成，exit 0 零施工。
+
+- 停止条件命中:round=402 > 200,无 STOP 文件
+- 仅记账:state.json 402→403、rounds.log 追加 R403 行,pathspec 限定提交 `64b4b708`,未裹挟其他工作区改动
+- R325–R403 空转轮已累计 **79 轮**，每轮只烧一个记账 commit
+
+这事持续候您决断，三选一：
+1. **重置计数**(如重置到 0 继续跑)
+2. **改上限**(轮指令里 `>200` 改成更大值)
+3. **续跑授权**(明确授权忽略上限)
+
+或彻底停轮:`launchctl unload` + 建 `runtime/loop/STOP` 文件。
+---- round end 11-04 08:17 ----
+
+## R404 空转轮记账 (11-04 08:47)
+- 停止条件命中：round=403 > 200,无 STOP 文件；按轮指令本轮零施工(信箱/GitHub/dev.to/队列均未执行)
+- 仅记账:state.json 403->404、rounds.log 追加 R404 行,pathspec 限定提交,未裹挟其他工作区改动
+- R325–R404 空转轮累计 **80 轮**，仍在候您决断：**重置计数 / 改上限 / 续跑授权**，或 `launchctl unload` + 建 `runtime/loop/STOP` 彻底停轮
+---- round end 11-04 08:47 ----
