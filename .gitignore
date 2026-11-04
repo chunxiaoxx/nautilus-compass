@@ -103,3 +103,5 @@ ops/ali30q/gs005_build/pkg/
 ops/ali30q/gs005_build/*.tar.gz
 ops/ali30q/gs005_build/*.tar.gz.md5
 runtime/pipeline_state/plugin_deploy_manifest.txt
+# distill pilot: scratch 全目录已被 runtime/scratch* 规则覆盖,台账在 ops/distill_pilot/
+tools/distill_pilot/__pycache__/

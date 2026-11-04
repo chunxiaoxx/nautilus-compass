@@ -1,0 +1,48 @@
+{
+ "threshold_0.01": {
+  "C_hits": 5,
+  "C_total": 10,
+  "AB_false_positives": [
+   [
+    "e01698b5",
+    "B_high_value",
+    0.0091
+   ],
+   [
+    "ea8fe589",
+    "B_high_value",
+    0.0085
+   ]
+  ]
+ },
+ "threshold_0.005": {
+  "C_hits": 0,
+  "C_total": 10,
+  "AB_false_positives": []
+ },
+ "threshold_0.002": {
+  "C_hits": 0,
+  "C_total": 10,
+  "AB_false_positives": []
+ },
+ "C_ratios": [
+  0.0072,
+  0.0076,
+  0.0085,
+  0.0092,
+  0.0099,
+  0.0122,
+  0.0127,
+  0.0132,
+  0.0137,
+  0.0144
+ ],
+ "AB_ratio_min5": [
+  0.0085,
+  0.0091,
+  0.0133,
+  0.0133,
+  0.0134
+ ],
+ "AB_ratio_median": 0.0143
+}
