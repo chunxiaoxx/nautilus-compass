@@ -1701,3 +1701,15 @@ touch ~/Projects/nautilus-compass/runtime/loop/STOP
 
 本轮结束(exit 0)。
 ---- round end 11-03 19:30 ----
+R379 值守轮办结，exit 0。摘要：
+
+- **停止条件命中**：round=378 > 200,无 STOP 文件。按条款零施工，仅留痕：rounds.log +1 条、state.json 378→379、限定路径 commit `55c36aeb`(仅两处 loop 留痕文件，上轮未提交的 15 行 R378 详情一并落账，未裹挟工作区其他 staged/未跟踪改动)。
+- **R325 起累计 54 个空转轮**，launchd(`com.nautilus.compass-loop.plist` 仍加载)持续每 30min 拉起。循环机制本身零故障，API 通路正常。
+- **候您拍板**(与 R377/R378 相同三选一)：重置计数 / 改上限 / 续跑授权；或彻底停轮：
+
+```bash
+launchctl unload ~/Library/LaunchAgents/com.nautilus.compass-loop.plist 2>/dev/null
+touch ~/Projects/nautilus-compass/runtime/loop/STOP
+```
+---- round end 11-03 19:31 ----
+2026-11-03T20:02 round380 停止条件命中(round=379>200)exit0零施工·候用户三选一(重置/改上限/续跑授权)或launchctl unload/建STOP文件
