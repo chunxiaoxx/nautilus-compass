@@ -1950,3 +1950,14 @@ R403 空转轮记账完成，exit 0 零施工。
 ---- round end 11-04 08:47 ----
 ---- round end 11-04 08:49 ----
 2026-11-04 09:19 round405 空转轮记账——停止条件命中(round=404>200)exit0零施工·候用户三选一(重置/改上限/续跑授权)或launchctl unload+建STOP彻底停轮
+R405 记账完成，exit 0。
+
+- 停止条件命中：round=404 > 200（STOP 文件不存在）
+- 零施工：仅 `state.json` round→405、`rounds.log` 追加一行，pathspec 限定提交 `399d520f`
+- R325 起空转轮已累计 81 轮，持续候用户决断：重置计数 / 改上限 / 续跑授权，或 `launchctl unload` + 建 `runtime/loop/STOP` 彻底停轮
+---- round end 11-04 09:20 ----
+- ---- round start 11-04 09:51 ----
+- 停止条件命中：round=405 > 200（STOP 文件不存在）
+- 零施工：仅 `state.json` round→406、`rounds.log` 追加一行，pathspec 限定提交
+- R325 起空转轮累计 82 轮，候用户决断：重置计数 / 改上限 / 续跑授权，或 `launchctl unload` + 建 `runtime/loop/STOP` 彻底停轮
+---- round end 11-04 09:51 ----
