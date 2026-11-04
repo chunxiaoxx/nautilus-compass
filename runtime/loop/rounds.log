@@ -1671,3 +1671,33 @@ R377 槽位轮办结，exit 0。
 - R325 起累计 52 个空转轮，launchd 仍在持续拉起。候用户拍板：重置计数 / 改上限 / 续跑授权，或 `launchctl unload` + 建 STOP 文件彻底停轮
 ---- round end 11-03 18:27 ----
 2026-11-03T18:58 round378 槽位条目——停止条件命中(round=377>200)exit0零施工·R325-R377共53空转轮launchd持续拉起·候用户三选一(重置/改上限/续跑授权)或launchctl unload/建STOP文件彻底停轮
+停止条件命中，本轮按条款办结，exit 0。摘要：
+
+- **停止条件命中**：round=377 > 200,无 STOP 文件。按 R325 以来惯例零施工，仅留痕：rounds.log +1 行、state.json 377→378、限定路径 commit `151a51e6`(仅两处 loop 留痕文件，未裹挟工作区其他 staged/未跟踪改动)。
+- **R325 起累计 53 个空转轮**，launchd(`com.nautilus.compass-loop.plist` 仍加载)持续每 30min 拉起。循环机制本身零故障——上轮及本轮模型 API 通路正常(与 11-02 上午网关 502 故障期不同)。
+- **候您拍板**(与 R377 相同三选一)：重置计数 / 改上限 / 续跑授权；或彻底停轮：
+
+```bash
+launchctl unload ~/Library/LaunchAgents/com.nautilus.compass-loop.plist 2>/dev/null
+touch ~/Projects/nautilus-compass/runtime/loop/STOP
+```
+
+- **附带提醒**：R376 记录的信箱探查 DNS 解析失败(gaierror)因停止条件一直未深挖；若您选择续跑授权，下轮值守将按全清单复测信箱/各渠道。
+
+本轮结束(exit 0)。
+---- round end 11-03 18:59 ----
+2026-11-03T19:30 round379 槽位条目——停止条件命中(round=378>200)exit0零施工·R325-R378共54空转轮launchd持续拉起·候用户三选一(重置/改上限/续跑授权)或launchctl unload/建STOP文件彻底停轮
+
+停止条件命中,本轮按条款办结,exit 0。摘要:
+
+- **停止条件命中**:round=378 > 200,无 STOP 文件。按 R325 以来惯例零施工,仅留痕:rounds.log +1 行、state.json 378→379、限定路径 commit(仅两处 loop 留痕文件;上轮 R378 commit 后写入未提交的 15 行详情尾巴一并落账,不裹挟工作区其他 staged/未跟踪改动)。
+- **R325 起累计 54 个空转轮**,launchd(`com.nautilus.compass-loop.plist` 仍加载)持续每 30min 拉起。循环机制本身零故障,模型 API 通路正常。
+- **候您拍板**(与 R377/R378 相同三选一):重置计数 / 改上限 / 续跑授权;或彻底停轮:
+
+```bash
+launchctl unload ~/Library/LaunchAgents/com.nautilus.compass-loop.plist 2>/dev/null
+touch ~/Projects/nautilus-compass/runtime/loop/STOP
+```
+
+本轮结束(exit 0)。
+---- round end 11-03 19:30 ----
