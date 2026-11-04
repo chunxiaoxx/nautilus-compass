@@ -1883,3 +1883,13 @@ R399 轮完成（exit 0，零施工）：
 或彻底停轮：`launchctl unload`（停 compass 值守轮）+ 建 `runtime/loop/STOP` 文件，此后每轮直接秒退不再产生 commit。
 ---- round end 11-04 06:09 ----
 11-04 06:40 round400 空转轮:停止条件命中(round=399>200)exit0零施工·R325-R400空转轮累计76·候用户三选一(重置/改上限/续跑授权)或launchctl unload+建STOP彻底停轮
+R400 空转轮记账完成(commit 563df36a),exit 0。
+
+- 停止条件命中：round=399 > 200,STOP 文件不存在
+- 本轮零施工：仅 state.json(round 399→400)+ rounds.log 留痕，pathspec 限定提交，未裹挟其他 staged 改动
+- R325–R400 空转轮累计 76 轮，持续候用户决断：**重置计数 / 改上限 / 续跑授权**，或 `launchctl unload` + 建 `runtime/loop/STOP` 彻底停轮
+---- round end 11-04 06:41 ----
+---- round 401 11-04 07:11 | 停止条件命中(round=400>200) exit0 ----
+- 本轮零施工：仅 state.json(round 400→401)+ rounds.log 留痕，pathspec 限定提交，未裹挟其他 staged 改动
+- R325–R401 空转轮累计 77 轮，持续候用户决断：**重置计数 / 改上限 / 续跑授权**，或 `launchctl unload` + 建 `runtime/loop/STOP` 彻底停轮
+---- round end 11-04 07:11 ----
