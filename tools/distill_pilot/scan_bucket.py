@@ -14,7 +14,7 @@ import json
 import re
 import sys
 import time
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass
 from pathlib import Path
 
 PATROL_RE = re.compile(r"值守|轮值|loop 轮|R\d{3}|patrol", re.IGNORECASE)
