@@ -4,6 +4,13 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R612 · 2026-11-04 午后(值守 R329:全渠道持平零事件轮——R416 收官后重触发·六渠道零新)
+
+- **值守面持平[实测]**:信箱 0 未读;Gmail 探活绿(秒回),threads 10 条全营销/通告+#66 通知副本(已 R414 处置)零商务零回函;mention 5 条全旧;notifications 9 条时间戳与 R416 全同零新动态(#66 19:26Z self 处置件·CI failed 18:14Z R412 旧红已根修·soul bridge 13:29Z 旧件);genesis 五家零 REPLY 持平;dev.to 6+2 持平零新评论;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=80)。
+- **管道**:qs+pipeline_report+sync 三件 exit 0;快筛 CS-513 过/CS-512·514~518 不过与历轮全同(CS-515~517 opus=None 梯度 None);矩阵 21:42 末批后零新批;gate0 PASS(verify_criteria_lock.py 实测)。
+- **主线报表锚行**: 主线: M5=部署在役·后训练=蒸馏回放候件·判分=复判位(flywheel-full-recheck 受理候执行·时限 2026-11-07 18:00 剩 3 天);素材线: 已交割(24116)卡0题0门0。
+- **候办主件**: ⚠️flywheel-full-recheck 完整复判(剩 3 天·需预注册判据档+专门轮次,25 分钟值守轮历轮同口径跳过);两函 400 拒候改道三选项;X 验证码 622026 候用户;PVR Web UI 开启候用户兜底;round>200 漂移延续候用户四选项(本轮 417 续跑)。
+
 ### R611 · 2026-11-04 午后(值守 R328:全渠道持平零事件轮——#66 新动态核验为 R414 self 处置件·六渠道零新)
 
 - **值守面持平[实测]**:信箱 0 未读;Gmail 401→直刷复活(REFRESH_OK 3599s),10 threads 全营销/通告+#66 通知副本零商务零回函;mention 5 条全旧;notifications 9 条核验——#66 新动态(11-04 19:26Z)=R414 self 处置两回帖+close(comment 6639991589/6639992446·author=chunxiaoxx)非外部新增,CI failed 通知(18:14Z)=R412 旧红已根修(最新 3 run 全 success·41902708300/d9b72793 实测),余 7 条旧我方件;genesis 五家零 REPLY 持平;dev.to 6+2 持平零新评论(articles=30);daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=79)。
