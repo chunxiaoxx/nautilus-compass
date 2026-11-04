@@ -1961,3 +1961,15 @@ R405 记账完成，exit 0。
 - 零施工：仅 `state.json` round→406、`rounds.log` 追加一行，pathspec 限定提交
 - R325 起空转轮累计 82 轮，候用户决断：重置计数 / 改上限 / 续跑授权，或 `launchctl unload` + 建 `runtime/loop/STOP` 彻底停轮
 ---- round end 11-04 09:51 ----
+R406 空转轮记账完成，exit 0。
+
+- 停止条件命中：round=405 > 200（STOP 文件不存在）
+- 零施工：仅 `state.json` round→406、`rounds.log` 追加一行，pathspec 限定提交 `eb86cfb2`（2 files changed，未裹挟 staged 区其他改动）
+- R325 起空转轮累计 82 轮，持续候用户决断：重置计数 / 改上限 / 续跑授权，或 `launchctl unload` + 建 `runtime/loop/STOP` 彻底停轮
+---- round end 11-04 09:52 ----
+R407 空转轮记账完成，exit 0。
+
+- 停止条件命中：round=406 > 200（STOP 文件不存在）
+- 零施工：仅 `state.json` round→407、`rounds.log` 追加（R406 漏账 6 行一并入账），pathspec 限定提交
+- R325 起空转轮累计 83 轮，持续候用户决断：重置计数 / 改上限 / 续跑授权，或 `launchctl unload` + 建 `runtime/loop/STOP` 彻底停轮
+---- round end 11-04 23:24 ----
