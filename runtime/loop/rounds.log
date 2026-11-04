@@ -1801,3 +1801,49 @@ round=388 > 200,停止条件命中，已按规程记账：state.json round→389
 ---- round end 11-04 00:52 ----
 2026-11-04T01:23 round390 空转轮:停止条件命中(round=389>200)exit0零施工·R388-R390记账欠账随本轮pathspec限定commit收账·loop仍launchd拉起候用户三选一(重置/改上限/续跑授权)或建STOP停轮
 ---- round end 11-04 01:23 ----
+---- round end 11-04 01:24 ----
+2026-11-04T01:55 round391 停止条件命中(round=390>200)exit0零施工·空转轮记账·R325-R391空转轮累计67·候用户三选一(重置/改上限/续跑授权)或launchctl unload+建STOP彻底停轮
+本轮 R391 停止条件命中（round 390 > 200），按降噪流程零施工：rounds.log 已记账、state.json 递增至 391，exit 0。
+
+R325 起空转轮已累计 67 个，持续候你三选一：① 重置计数续跑 ② 提高上限 ③ `launchctl unload` + 建 `runtime/loop/STOP` 彻底停轮。
+---- round end 11-04 01:56 ----
+2026-11-04T02:26 round392 停止条件命中(round=391>200)exit0零施工·空转轮记账·R325-R392空转轮累计68·候用户三选一(重置/改上限/续跑授权)或launchctl unload+建STOP彻底停轮
+R392 记账完成，按降噪模式零施工 exit 0。
+
+- 停止条件命中：round 391 > 200,无 STOP 文件(launchd 仍会持续拉起)
+- `state.json` 递增至 392,`rounds.log` 已记账；累计空转轮 R325-R392 共 68 个
+- 按 R382 起降噪纪律不堆槽位 commit
+
+仍候你三选一：① 重置计数续跑 ② 提高上限 ③ `launchctl unload` + 建 `runtime/loop/STOP` 彻底停轮。
+---- round end 11-04 02:27 ----
+2026-11-04T02:58 round393 停止条件命中(round=392>200)exit0零施工·R382起降噪模式仅记账不commit
+R393 记账完毕，exit 0。停止条件命中(round=393>200),本轮零施工，无新函件处理。
+
+待决事项仍挂账：R325 起已累计 68 个空转轮，launchd 持续拉起。三选一等你拍板：**重置轮数上限 / 改停止条件 / `launchctl unload` + 建 `runtime/loop/STOP` 彻底停轮**。若确认停轮，回复一声即可，我来执行。
+---- round end 11-04 02:59 ----
+2026-11-04T03:30 round394 停止条件命中(round=393>200)exit0零施工·R382起降噪模式仅记账不commit
+R394 记账完毕，exit 0。停止条件命中（round=393>200），本轮零施工，无新函件处理（信箱/GitHub/Gmail 均不查——按 R382 起降噪模式，纯记账不 commit）。
+
+待决事项仍挂账：R325 起已累计 69 个空转轮，launchd 持续拉起。三选一等你拍板：**① 重置轮数上限续跑 ② 改停止条件 ③ `launchctl unload` + 建 `runtime/loop/STOP` 彻底停轮**。若确认停轮，回复一声即可，我来执行。
+---- round end 11-04 03:31 ----
+2026-11-04T04:01 round395 停止条件命中(round=394>200)exit0零施工·R382起降噪模式仅记账不commit
+R395 记账完毕，exit 0。
+
+**本轮状态**:停止条件命中(round=394 > 200),零施工，仅 rounds.log/state.json 记账(R382 起降噪模式，不 commit)。信箱/GitHub/Gmail 均不查。
+
+**待决事项仍挂账**:R325 起已累计 **70 个空转轮**，launchd 持续拉起，每 ~30 分钟烧一次会话。三选一等你拍板：
+
+1. **重置轮数上限**续跑(改 state.json round 归零或停止条件阈值调高)
+2. **改停止条件**(如改为「连续 N 轮无任务才停」)
+3. **彻底停轮**:`launchctl unload` + 建 `runtime/loop/STOP`
+
+若确认停轮，回复一声即可，我来执行。
+---- round end 11-04 04:02 ----
+2026-11-04T04:33 round396 空转轮停止条件命中(round=395>200)exit0零施工·候用户三选一(重置/改上限/续跑授权)或launchctl unload+建STOP彻底停轮
+R396 记账完成，零施工退出。
+
+- **停止条件**：round=395 > 200 命中（STOP 文件不存在，launchd 持续拉起）
+- **留痕**：`runtime/loop/rounds.log` 追加 R396 行，`state.json` → round 396
+- **状态**：R325 起 71 个空转轮，候用户三选一——重置计数 / 改上限 / 续跑授权，或 `launchctl unload` + 建 `runtime/loop/STOP` 彻底停轮
+---- round end 11-04 04:34 ----
+- R397 (11-04 05:04) 空转轮：停止条件命中 round=396>200 · exit0 零施工 · 仅 rounds.log/state.json 记账 · R325-R397 空转轮累计 73 · 候用户三选一（重置计数/改上限/续跑授权）或 launchctl unload + 建 runtime/loop/STOP 彻底停轮
