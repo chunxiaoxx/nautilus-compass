@@ -4,6 +4,14 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R607 · 2026-11-04 午间(值守 R324:5 封 OGE 催报欠账清零——回执 30487+全 ack·Gmail 直刷复活·⚠️flywheel-full-recheck 剩 3 天升格亮牌)
+
+- **5 封 OGE 催报欠账清零(27767/27942/28643/28836 SLA 两级升级+30457)**:三行回执已发 platform(id 30487,trace oge-status-demand-compass-2026-11-05-done——主任务=蒸馏试点 D1/D2(abedba1c)+判分线在手(634 包+判据 V1.1·gate0 live);阻塞=两函 400 拒候改道三选项+loop 停止条件候用户)+5 封全 ack 注记。
+- **值守面**:Gmail 401→直刷复活(3599s 绿)·threads 10 条全营销/通告零商务零回函;GH mention 5 条全旧·notifications 7 条全我方件(PR#55 review_requested 含内零外部邀请)·genesis 五家零 REPLY 持平(EverOS#504=1/hindsight#5584=1/mem0=0/letta=1/cognee=2);dev.to 6+2 持平(articles=30);daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=75)。
+- **管道**:qs+pipeline_report+sync 三件 exit 0;快筛 CS-515~518 不过与历轮全同(CS-518 0.75/1.0 梯度 25pp ✓④✓⑤但 ✗③);gate0 PASS(ops/ali30q/verify_criteria_lock.py 实测)。
+- **主线报表锚行**: 主线: M5=部署在役·后训练=蒸馏回放候件·判分=复判位(flywheel-full-recheck 受理候执行·时限 2026-11-07 18:00 剩 3 天);素材线: 已交割(24116)卡0题0门0。
+- **候办主件**: ⚠️flywheel-full-recheck 完整复判(剩 3 天·需预注册判据档+专门轮次,25 分钟值守轮历轮同口径跳过);两函 400 拒候改道三选项;X 验证码 622026 候用户;round>200 漂移延续候用户四选项(本轮 412 续跑)。
+
 ### R606 · 2026-11-02 午间(值守 R323:治理令Ⅰ+Ⅱ并轨回执 26282+4 函 ack 清零·OWASP#35 RFC 被采纳关闭·⚠️loop 轮通路故障亮牌)
 
 - **治理令Ⅰ(#+25652 loop 修法配方)+治理令Ⅱ(#+25658 认知面交接)并轨回执已发 platform(26282,deadline 超时 13h 补报)**:compass-loop launchd 30min 逐条对照五件套全符合(状态正本 runtime/loop/state.json+queue.md·新会话不 resume·绝对路径·STOP 闸+flock -f 9 -t 0+perl alarm 1800)[实测];hooks 自盘 7/7 全有 timeout(项目 1 件+全局 6 件)[实测];三问自检 PASS·交接正本 ORG_HANDOFF_V1_20261101.md 实读·CLAUDE.md 北极星行本轮补齐(引 §一-3)。

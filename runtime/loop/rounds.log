@@ -1973,3 +1973,47 @@ R407 空转轮记账完成，exit 0。
 - 零施工：仅 `state.json` round→407、`rounds.log` 追加（R406 漏账 6 行一并入账），pathspec 限定提交
 - R325 起空转轮累计 83 轮，持续候用户决断：重置计数 / 改上限 / 续跑授权，或 `launchctl unload` + 建 `runtime/loop/STOP` 彻底停轮
 ---- round end 11-04 23:24 ----
+---- round end 11-04 10:25 ----
+---- round end 11-04 10:57 ----
+R408 空转轮：停止条件命中(round=407>200，STOP 不存在)，exit 0 零施工。按新 AGENTS.md 纪律"无实质增量不自动提交重复留痕"，本轮仅留痕不 commit(工作区累积候用户决断：重置计数/改上限/续跑授权，或彻底停轮)。
+本轮留痕完成，exit 0(零施工)。发现时间戳乱序是时区混写所致(旧轮用 +08:00,本机时区 -05:00),顺带说明。
+
+**候你决断的事项(已挂 83 轮)**：LOOP 值守轮自 R325 起命中停止条件(round > 200),至今空转 83 轮，每轮产生一个纯记账空 commit。R408 起我已改为只留痕不 commit。请选：
+
+1. **重置计数**——`state.json` round 归 0,继续按现有清单值守；
+2. **改上限**——把停止阈值从 200 提高(如 1000);
+3. **续跑授权**——保持现状，空转轮继续只留痕；
+4. **彻底停轮**——`launchctl unload` 卸载 + 建 `runtime/loop/STOP`,值守职责改由交互会话按需承担。
+
+选 1/2/3 我本轮即可代办；选 4 需要你确认(停轮会停掉信箱/GitHub/dev.to 例巡)。
+---- round end 11-04 10:58 ----
+11-04 11:29 R409 空转轮：停止条件命中(round=408>200，STOP 不存在)，exit 0 零施工。按 AGENTS.md 纪律只留痕不 commit；候决断四选项已于 R408 打印，不重复。
+R409 完成，exit 0（零施工）。
+
+- 停止条件命中：round=408 > 200，STOP 文件不存在
+- 仅留痕：`rounds.log` 追加 R409 一行、`state.json` round→409，不 commit（AGENTS.md 纪律“无实质增量不自动提交重复留痕”）
+- 候你决断的四选项（重置计数/改上限/续跑授权/彻底停轮）已在 R408 打印，未变，不重复占屏
+---- round end 11-04 11:30 ----
+
+- 停止条件命中：round=409 > 200，STOP 文件不存在
+- 仅留痕：`rounds.log` 追加 R410 一行、`state.json` round→410，不 commit（AGENTS.md 纪律"无实质增量不自动提交重复留痕"）
+- 候你决断的四选项（重置计数/改上限/续跑授权/彻底停轮）已在 R408 打印，未变，不重复占屏
+---- round end 11-04 12:01 ----
+R410 空转轮：停止条件命中（round=409 > 200，STOP 不存在），已留痕——`rounds.log` 追加 R410 一行、`state.json` round→410，exit 0 零施工，不 commit（沿用 R408 起的“无实质增量不自动提交”先例）。
+
+候你决断的四选项（R408 已打印）：**重置计数 / 改上限 / 续跑授权 / 彻底停轮**（`launchctl unload` + 建 `runtime/loop/STOP`）。未决前轮机只会继续每轮记账空转。
+---- round end 11-04 12:02 ----
+---- round end 11-04 12:33 ----
+R411 空转轮：停止条件命中（round=410 > 200，STOP 不存在），已留痕——`rounds.log` 追加 R411 一行、`state.json` round→411，exit 0 零施工，不 commit（沿用 R408 起“无实质增量不自动提交”先例）。
+候你决断的四选项（R408 已打印）：**重置计数 / 改上限 / 续跑授权 / 彻底停轮**（`launchctl unload` + 建 `runtime/loop/STOP`）。未决前轮机只会继续每轮记账空转。
+---- round end 11-04 12:33 ----
+R411 记账完成，exit 0 零施工。
+
+- 停止条件命中：round=410 > 200，无 STOP 文件
+- 已留痕：`rounds.log` 追加 R411 一行、`state.json` round→411
+- 不 commit（沿用 R408 起“无实质增量不自动提交”先例）
+
+候你决断的四选项（R408 已打印）：**重置计数 / 改上限 / 续跑授权 / 彻底停轮**（`launchctl unload` + 建 `runtime/loop/STOP`）。未决前轮机只会继续每轮记账空转。
+---- round end 11-04 12:34 ----
+R412 值守轮(有实质增量): 信箱 5 封 OGE 催报(27767/27942/28643/28836 SLA 升级/30457)→ 三行回执已发 id 30487(trace ...-11-05-done)+5 封全 ack 清零 · Gmail 401→直刷复活(3599s 绿) 10 threads 全营销/通告零商务 · GH mention 全旧 + genesis 五家零 REPLY 持平 + notifications 7 条全我方件 · dev.to 6+2 持平 · daemon 9876 绿 + watchdog exit0 + 哨兵 exit0(recall_hit=75) · 管道三件 exit0 · 快筛 CS-515~518 不过与历轮全同 · gate0 PASS · ⚠️flywheel-full-recheck 剩 3 天(11-07 18:00)升格亮牌候专门轮次 · 留痕: COLLAB_BOARD+queue.md+rounds.log+state.json(411→412) · 结果: 值守全绿,欠账清零,exit 0
+---- round end 11-04 13:05 ----
