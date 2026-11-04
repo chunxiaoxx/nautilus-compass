@@ -1718,3 +1718,42 @@ R380 值守轮：停止条件命中(round=379>200),按指令立即 exit 0,零实
 当前状态：R325-R379 共 55 个空转轮，launchd 持续拉起，无 STOP 文件、round 未重置。候用户决断(三选一：重置计数/改上限/授权续跑，或 `launchctl unload` + 建 `runtime/loop/STOP` 彻底停轮)。
 ---- round end 11-03 20:03 ----
 2026-11-03T20:33 round381 停止条件命中(round=380>200)exit0零施工·R325-R380共56空转轮launchd持续拉起·候用户三选一(重置/改上限/续跑授权)或launchctl unload/建STOP文件彻底停轮
+R381 值守轮:停止条件命中(round=380>200),零施工 exit 0。
+
+- 留痕:rounds.log +1 行,state.json → 381,限定提交 `8c641f1b`
+- 状态:R325-R381 共 56 轮空转，launchd 仍在拉起。候你三选一(重置计数/改上限/续跑授权)，或 `launchctl unload` + 建 `runtime/loop/STOP` 彻底停轮
+---- round end 11-03 20:34 ----
+R382 值守轮:停止条件命中(round=381>200),零施工 exit 0。本轮起停止堆重复槽位 commit(56 个同文条目已充分留痕,后续空转轮仅 rounds.log+state.json 记账)。候用户三选一(重置/改上限/续跑授权)或建 STOP 文件彻底停轮。
+R382 轮值守完成，exit 0 零施工。
+
+- 停止条件命中：round=381 > 200,无 STOP 文件，按指令立即退出
+- 留痕：rounds.log +1 行，state.json → 382
+- 变化：本轮起停止堆重复槽位 commit——R325-R381 已有 56 个同文 commit,继续堆是纯噪音；后续空转轮仅做 rounds.log/state.json 记账
+- 仍候你决定(多轮未决)：三选一(重置计数 / 改上限 / 续跑授权)，或直接 `launchctl unload` + 建 `runtime/loop/STOP` 彻底停轮
+---- round end 11-03 21:07 ----
+- 11-03 21:38 round383 停止条件命中(round=382>200)exit0零施工·空转轮仅记账不堆commit(续R382约定)·候用户三选一(重置/改上限/续跑授权)或launchctl unload+建STOP停轮
+R383 停止条件命中，已按指令退出：
+
+- **round=382 > 200** → 零施工，仅留痕(rounds.log +1 行，state.json → 383)
+- 未堆槽位 commit(续 R382 起的降噪约定，R325-R381 已有 56 个同文 commit)
+- 本轮未做信箱/GitHub/daemon 等检查——停止条件优先于清单
+
+仍待你拍板(已多轮未决)：三选一(重置计数 / 改上限 / 续跑授权)，或直接 `launchctl unload` + 建 `runtime/loop/STOP` 彻底停轮。exit 0。
+---- round end 11-03 21:39 ----
+- 11-03 22:08 round384 停止条件命中(round=383>200)exit0零施工·空转轮仅记账不堆commit(续R382约定)·候用户三选一(重置/改上限/续跑授权)或launchctl unload+建STOP停轮
+---- round end 11-03 22:08 ----
+R384 值守轮办结，exit 0 零施工。
+
+- **停止条件命中**：round=383 > 200,无 STOP 文件，按指令立即退出
+- 留痕：rounds.log +1 行，state.json → 384;续 R382 降噪约定，不堆槽位 commit
+- 本轮未做信箱/GitHub/daemon 检查——停止条件优先于清单
+
+**仍候你拍板**(已多轮未决，R325 起累计 59 个空转轮，launchd 每 30min 持续拉起)：三选一(重置计数 / 改上限 >200 / 授权续跑)，或直接彻底停轮：
+
+```bash
+launchctl unload ~/Library/LaunchAgents/com.nautilus.compass-loop.plist 2>/dev/null
+touch ~/Projects/nautilus-compass/runtime/loop/STOP
+```
+---- round end 11-03 22:11 ----
+- 11-03 22:43 round385 停止条件命中(round=384>200)exit0零施工·空转轮仅记账不堆commit(续R382约定)·并R382-R384欠账汇总commit·候用户三选一(重置/改上限/续跑授权)或launchctl unload+建STOP停轮
+---- round end 11-03 22:43 ----
