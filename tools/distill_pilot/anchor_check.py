@@ -26,6 +26,7 @@ ANCHOR_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
 PATH_MIN_LEN = 6
 CJK_RE = re.compile(r"[一-鿿]")
 SUMMARY_BODY_MARK = "# 总纪要"
+TRAILING_PUNCT = "`'\".,;:：，。；、)]）】》"
 
 
 def date_variants(value: str) -> list[str]:
@@ -62,6 +63,9 @@ def collect_anchors(text: str) -> list[dict]:
     for start, end, name, value in spans:
         if start < last_end:
             continue  # 与已选锚点重叠,先到先得
+        value = value.rstrip(TRAILING_PUNCT)  # 模型复述常粘尾标点(反引号/引号/全角括号)
+        if len(value) < 4:
+            continue
         picked.append({"type": name, "value": value})
         last_end = end
     return picked
