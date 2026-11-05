@@ -4,6 +4,13 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R628 · 2026-11-05 晨(值守 loop R434:全渠道持平零事件轮——幂等复诵·Gmail 401→直刷复活 3599s·最新 HEAD CI 复核验绿)
+
+- **值守面持平[实测]**:信箱 0 未读;Gmail 401→refresh_token 直刷复活(3599s 绿),37 条 7d 未读逐条甄别=零新面孔,全为历轮已甄别件复诵或纯营销(codex-connector 回声×17、substack 折扣轰炸、X Money、X Lead Ads、ngrok、Daytona GPU 调价(11-15 起)、dnb、PostHog、PH fmerian、温室 ChatGPT 案例、中文集团管控营销)+三件已知候用户件(#66 闭环回声、Google OAuth 告警、AtomGit 指南);零新商务函零回函;notifications 26 条与历轮同构=soul selfimprove PR×16 state_change(作者全=chunxiaoxx·codex-connector 自用连接器常态·平台域只读不动)+CI failed 03:29Z×2=R427 失败 run(41961588286)复诵历轮已定谳+compass#66 安全件 subscribed 回声(11-04 用户已处置 closed,R428 定谳);本轮复核最新 HEAD CI run **41985181914**(323a017b R433 提交)=**success 验绿**,零新增红;mention 5 条全旧持平(OWASP 11-02 closed·xerj 10-31 closed·cognee 10-15 closed·IHUI 10-13·rsi-bench 10-10);genesis 五家零 REPLY 持平(EverOS 1/hindsight 1/mem0 0/letta 1/cognee 2);dev.to 30 文 6+2 持平零新评论;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=27)。
+- **管道**:qs+pipeline_report+sync 三件 exit 0;快筛 CS-513 过/CS-512·514~518 不过与历轮全同(CS-515~517 opus=None 梯度 None,CS-518 25pp ✓④✓⑤✗③);矩阵 21:42 后零新批(CS-005 31/20·CS-006 24/20)无断点;gate0 PASS(ops/ali30q/verify_criteria_lock.py 实测)。
+- **主线报表锚行**: 主线: M5=部署在役·后训练=蒸馏回放候件·判分=复判位(flywheel-full-recheck 受理候执行·时限 2026-11-07 18:00 剩约 2 天);素材线: 已交割(24116)卡0题0门0。
+- **候办主件**: ⚠️flywheel-full-recheck 完整复判(剩约 2 天·需预注册判据档+专门轮次,25 分钟值守轮历轮同口径跳过);两函 400 拒候改道三选项;X 验证码 622026 候用户;PVR Web UI 开启候用户兜底;round>200 漂移延续候用户四选项(本轮 434 续跑);AtomGit G-Star 入驻拍板候用户;Google 账号 OpenAI OAuth 授权自核候用户;GitHub 账号 SSH 公钥/邮箱增删自核候用户;Google Play 交易者声明拍板候用户。
+
 ### R627 · 2026-11-05 晨(值守 loop R433:全渠道持平零事件轮——幂等复诵·Gmail 探活绿·compass#66 安全件复诵确认已闭环·最新 HEAD CI 复核验绿)
 
 - **值守面持平[实测]**:信箱 0 未读;Gmail 探活绿(labels 端点秒回),30 条 7d 未读逐条甄别=零新面孔,全为历轮已甄别件复诵或纯营销(codex-connector 回声×17(11-04 21~22Z 批次 PR#438~#446 系列)、substack 折扣轰炸、X Money、ngrok、Daytona GPU 调价、dnb 中文集团管控营销、Claude Design、compass#66 安全报呄件(shaikn6 11-04 件,11-04 19:26Z 用户已按 SECURITY.md 私有渠道处置并 closed,R428 已定谳))+三件已知候用户件(#66 闭环回声、Google OAuth 告警、AtomGit 指南);零新商务函零回函;notifications 26 条=soul selfimprove PR×16 state_change(作者全=chunxiaoxx·codex-connector 自用连接器常态·平台域只读不动)+CI failed 03:29Z=R427 失败 run(41961588286)复诵历轮已定谳,本轮复核最新 HEAD CI run **41980924698**(f1c5e4eb R432 提交)=**success 验绿**,零新增红;mention 5 条全旧持平(OWASP 11-02 closed·xerj 10-31 closed·cognee 10-15 closed·IHUI 10-13·rsi-bench 10-10);genesis 五家零 REPLY 持平(EverOS 1/hindsight 1/mem0 0/letta 1/cognee 2);dev.to 30 文 6+2 持平零新评论;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=22)。
