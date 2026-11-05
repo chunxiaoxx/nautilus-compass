@@ -4,6 +4,13 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R621 · 2026-11-05 凌晨(值守 R338:差量轮——Gmail 口径放宽照出 GitHub 账号层事件流+Google Play 声明函)
+
+- **值守面差量[实测]**:信箱 0 未读;Gmail 401→直刷复活(REFRESH_OK 3599s);threads.list 带排他查询 400 "Invalid id value"(新坑,改 messages.list+逐封 metadata 绕行);本轮去 -from:noreply 过滤放宽口径,30 条 7d 未读逐条甄别=营销/通告 27+件+3 新甄别:①🆕GitHub 账号层事件流首次照出(历轮过滤把 noreply@github.com 账号通知全屏蔽):11-04 14:44Z 新增 SSH authentication public key+19:59Z 新增邮箱+11-03~11-04 十余次邮箱增删脉冲——安全面件候用户自核(本人迁移期配置 vs 异常,不动账号);②🆕Google Play 交易者身份声明函 22:50Z 到(上轮后新到,要求完成声明以继续在 Play 分发;组织无已知 Play 在架应用,初判=Google 全量开发者政策函)候用户拍板;③PostHog changelog 纯营销。mention 5 条全旧持平;notifications 9 条全同零新动态;genesis 五家零 REPLY 持平(EverOS 1/hindsight 1/mem0 0/letta 1/cognee 2);dev.to 30 文 6+2 持平零新评论;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=84)。
+- **管道**:qs+pipeline_report+sync 三件 exit 0;快筛 CS-513 过/CS-512·514~518 不过与历轮全同(CS-515~517 opus=None 梯度 None,CS-518 25pp ✓④✓⑤✗③);矩阵 21:42 末批后零新批(CS-003 glm5.3 三连同因 parse fail 已报 v5 整组 skip);gate0 PASS(ops/ali30q/verify_criteria_lock.py 实测)。
+- **主线报表锚行**: 主线: M5=部署在役·后训练=蒸馏回放候件·判分=复判位(flywheel-full-recheck 受理候执行·时限 2026-11-07 18:00 剩约 2.5 天);素材线: 已交割(24116)卡0题0门0。
+- **候办主件**: ⚠️flywheel-full-recheck 完整复判(剩约 2.5 天·需预注册判据档+专门轮次,25 分钟值守轮历轮同口径跳过);两函 400 拒候改道三选项;X 验证码 622026 候用户;PVR Web UI 开启候用户兜底;round>200 漂移延续候用户四选项(本轮 426 续跑);AtomGit G-Star 入驻拍板候用户;Google 账号 OpenAI OAuth 授权自核候用户;🆕GitHub 账号 SSH 公钥/邮箱增删自核候用户;🆕Google Play 交易者声明拍板候用户。
+
 ### R620 · 2026-11-04 晚(值守 R337:全渠道持平零事件轮——幂等复诵·六渠道零新·两件新甄别)
 
 - **值守面持平[实测]**:信箱 0 未读;Gmail 探活绿(秒回),20 条未读逐条甄别=17 纯营销+#66 回声件+两件新甄别:①GitCode 官方 AtomGit G-Star 入驻指南(11-02 01:30 到,自助操作指南非商务函,入驻需创建 AtomGit 账号=外部注册动作,候用户拍板,不擅动)②Google 安全提醒(11-02 06:26 到,chunxiaoxx@gmail.com 出现"OpenAI"OAuth 数据授权告警,初判=用户自用 ChatGPT 连接器常态,候用户自核账号活动页);mention 5 条全旧(OWASP 11-02 closed·xerj 10-31 closed·cognee 10-15 closed·IHUI 10-13·rsi-bench 10-10);notifications 9 条全同零新动态(三条今日时间戳逐一实测:#66 19:26Z self 处置件/CI failed 18:14Z 旧红已根修最新 5 run 全 success/soul PR#438 13:29Z MERGED 平台域只读);genesis 五家零 REPLY 持平(EverOS 1/hindsight 1/mem0 0/letta 1/cognee 2 全同上态);dev.to 30 文 6+2 持平零新评论;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=84)。
