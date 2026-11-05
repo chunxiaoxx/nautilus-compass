@@ -4,6 +4,13 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R634 · 2026-11-05 晨(值守 loop R440:全渠道持平零事件轮——幂等复诵·Gmail 401→直刷复活·最新 HEAD CI 复核验绿)
+
+- **值守面持平[实测]**:信箱 0 未读;Gmail 401→refresh_token 直刷复活(3599s 绿),37 条 7d 未读逐条甄别=零新面孔,全为历轮已甄别件复诵或纯营销(codex-connector 回声×17、substack 折扣轰炸、X Money、防火墙营销、X Lead Ads、GPU 调价(11-15 起)、中文集团管控营销、温室 ChatGPT 案例、PostHog、Claude Design、AtomGit 入驻)+compass#66 回声(11-04 用户已处置 closed,R428 定谳);零新商务函零回函;notifications 与历轮同构=soul selfimprove PR×N state_change(作者全=chunxiaoxx·codex-connector 自用连接器常态·平台域只读不动)+CI failed=R427 旧 run 复诵历轮已定谳;本轮复核最新 HEAD CI run **42013775007**(abe287ce R439 提交)=**success 验绿**,零新增红;mention 5 条全旧持平(OWASP 11-02 closed·xerj 10-31 closed·cognee 10-15 closed·IHUI 10-13·rsi-bench 10-10);genesis 五家零 REPLY 持平(EverOS 1/hindsight 1/mem0 0/letta 1/cognee 2);dev.to 30 文 6+2 持平零新评论;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=57)。
+- **管道**:qs+pipeline_report+sync 三件 exit 0;快筛 CS-513 过/CS-512·514~518 不过与历轮全同(CS-515~517 opus=None 梯度 None,CS-518 25pp ✓④✓⑤✗③);矩阵 21:42 后零新批(CS-003 32/20·CS-004 28/20·CS-005 31/20·CS-006 24/20)无断点;gate0 PASS(ops/ali30q/verify_criteria_lock.py 实测)。
+- **主线报表锚行**: 主线: M5=部署在役·后训练=蒸馏回放候件·判分=FS03 独立复核已交付+复判位(flywheel-full-recheck 时限 2026-11-07 18:00 剩约 2 天);素材线: 已交割(24116)卡0题0门0。
+- **候办主件**: ⚠️flywheel-full-recheck 完整复判(剩约 2 天·需预注册判据档+专门轮次,25 分钟值守轮历轮同口径跳过);两函 400 拒候改道三选项;X 验证码 622026 候用户;PVR Web UI 开启候用户兜底;round>200 漂移延续候用户四选项(本轮 440 续跑);AtomGit G-Star 入驻拍板候用户;Google 账号 OpenAI OAuth 授权自核候用户;GitHub 账号 SSH 公钥/邮箱增删自核候用户;Google Play 交易者声明拍板候用户。
+
 ### R633 · 2026-11-05 晨(值守 loop R439 事件轮:判读岗派单 31006 ALI-FS03-INDEPENDENT-REVIEW 独立复核通过并回执交付)
 
 - **判读岗主件[完成·SLA内]**:平台派单 31006(ALI-FS03-INDEPENDENT-REVIEW-20261105,producer=platform 9000002,deadline 20:35)ack 受理;独立复核 FS03 v023 单次本地 Golden 证据(**未重跑/未部署/未调收费模型**):输入 SHA 14/14 独立重算 MATCH(readback.evidence 全对上,frontend.log 空文件哈希自洽);冻结源 61/61 重算 MATCH(frozen-source-sha.json vs source/ 0 mismatch 0 missing,run.json.source_sha256 与 frozen 全等);8 项 g1~g8 全 passed(kind=unscored_local_validation,g8 与 container-browser-result.json 相符);exit_code=0(elapsed 23.17s);重启三响应 compass 独立 diff 成立(state 相等+snapshots 相等+after 仅多 'me' 会话身份=保留);清理实物核查通过(无 pid/data/role.json 残留,端口断言在 exit 0 链内);limits 四条与实物一致(单次 bounded Golden run·ARM64 跑既有 AMD64 镜像 --pull=never·无 AP/Harbor/收费模型/人判/客户验收·v023 独立目录未晋级主包 v022 未动)。结论 **passed(7/7 项,0 failed,3 unverifiable 属声明范围外)**,未因 1 次通过外推 3 次或客户通过。回执 `compass-independent-receipt.json` 已写入 platform-followup-20261105 目录(仅新增此一件,原证据与主 HANDOFF 零改动);回函 id 31031。执行者回避满足(compass 非 producer)。
