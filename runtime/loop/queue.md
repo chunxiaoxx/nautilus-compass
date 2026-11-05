@@ -4,6 +4,12 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R644 · 2026-11-05(值守 loop R451:幂等复诵持平轮——全渠道零新事件·CI 红项定谳=R447 历史 run 复诵非新增)
+
+- **值守面持平[实测]**:信箱 0 未读;Gmail 探活秒回,7d 未读商务查询 threads=0 零新商务函零回函;notifications 红项判读=CI failed ×3(15:50Z×2+14:38Z)与 03:29Z 系 R447 双红历史 run 复诵(GitHub 通知不消号),**最新三 run 42063551849(8b25e23c)/42063814371(805198b7)/42076474056(51aa8eae=R450)均 success 零新增红**;soul selfimprove state_change ×N 平台域只读不动;security 通知=compass#66 回声 11-04 已 closed;mention 5 条全旧持平(OWASP 11-02/xerj 10-31/cognee 10-15/IHUI 10-13/rsi-bench 10-10);genesis 五家零 REPLY 持平(EverOS 1/hindsight 1/mem0 0/letta 1/cognee 2);dev.to 30 文 6+2 持平零新评论;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=94)。
+- **管道**:qs+pipeline_report+sync 三件 exit0;快筛 CS-513 过/CS-512·514~518 不过与历轮全同(CS-515~517 opus=None,CS-518 25pp ✓④✓⑤✗③);矩阵 21:42 收官满额(CS-003 32/20·CS-004 28/20·CS-005 31/20·CS-006 24/20)零新批无断点;gate0 PASS(verify_criteria_lock 实跑)。
+- **候办主件**: 🔴安全报告修复拍板(三选项·90 天 disclosure 窗口自 11-05 起算)+回函草稿候审;⚠️flywheel-full-recheck 完整复判(2026-11-07 18:00 止,剩约 2 天·需预注册判据档+专门轮次);两函 400 拒候改道三选项;X 验证码 622026 候用户;PVR Web UI 候用户兜底;round>200 漂移延续候用户(本轮 451 续跑,R524 裁定先例过阈继续);AtomGit G-Star 入驻拍板候用户;Google/GitHub 账号自核候用户;Google Play 交易者声明拍板候用户。
+
 ### R643 · 2026-11-05(值守 loop R450:幂等复诵持平轮——补跑 R449 未竟管道两件·Gmail 直刷复活·零新事件)
 
 - **值守面持平[实测]**:信箱 0 未读;Gmail 401→refresh_token 直刷复活(3599s 绿,R448 配方复用一次成功),30 条 7d 未读逐条甄别=**零新面孔**,全为历轮已甄别件复诵(19 条 soul selfimprove PR 回声=平台域只读不动、10 条推广/newsletter(Reddit Ads/substack 折扣×5/D&B/ngrok/Daytona GPU 调价/X Money/X Lead Ads/PostHog)、1 条 security 通知=compass#66 回声 11-04 已 closed);零新商务函零回函;notifications 4 条 CI failed(15:45Z×2+14:38Z+03:29Z)=R447 双红历史 run 复诵,**最新两 run 42063551849(8b25e23c)/42063814371(805198b7)均 success**,CI 闭环 R449 轮已复核,零新增红;mention 5 条全旧持平;genesis 五家零 REPLY 持平(1/1/0/1/2);dev.to 30 文 6+2 持平零新评论;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=92)。

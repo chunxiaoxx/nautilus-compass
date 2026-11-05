@@ -2597,3 +2597,22 @@ R448 值守轮完成(限时内)，两 commit 已 push。
 ---- round end 11-05 12:03 ----
 
 2026-11-05 12:36 round450 值守:Gmail 401→refresh_token直刷复活(3599s绿)·补跑R449未竟两件 pipeline_report+state_sync exit0·gate0 PASS实跑·CI零新增红(42063551849/42063814371均success,R449轮已复核·notifications 4条failed=15:45 R447双红历史run复诵)·信箱0未读·Gmail 30条7d=零新面孔全复诵(19条soul PR回声+10推广+1条#66回声)·mention5全旧·genesis五家零REPLY(1/1/0/1/2)·dev.to 30文6+2持平·daemon 9876绿+哨兵exit0(hit=92)+watchdog exit0·快筛/矩阵与历轮全同(21:42收官无断点)
+R450 值守轮完成，commit `51aa8eae` 已 push。本轮摘要：
+
+**处置事件(2 件)**
+- **补跑 R449 未竟两件**:`pipeline_report` + `pipeline_state_sync` exit0;`gate0 PASS` 实跑(R449 轮曾跳过)
+- **Gmail 401→直刷复活**：refresh_token 直刷 3599s 绿(R448 纠偏配方复用一次成功)
+
+**复核项**
+- CI 零新增红：最新两 run 42063551849(8b25e23c)/42063814371(805198b7)均 success,notifications 里 4 条 failed 全为 15:45Z R447 双红历史 run 复诵
+- 快筛 CS-513 过/512·514~518 不过与历轮全同；矩阵 21:42 收官满额零新批无断点
+
+**持平面**：信箱 0 未读 · Gmail 30 条 7d 未读=零新面孔全复诵(soul PR 回声×19+推广×10+#66 回声×1)· mentions 5 全旧 · genesis 五家零 REPLY(1/1/0/1/2) · dev.to 6+2 持平 · daemon 9876 绿+watchdog exit0+哨兵 exit0(hit=92)
+
+**留痕**：rounds.log/state.json(→450)/queue.md R643/COLLAB_BOARD 四件齐，gate0 PASS
+
+**一处披露**:COLLAB_BOARD.md 此前一直 untracked,本次随 pathspec commit 首次入库(内容=值守进展行，无敏感物)；如需保持不入库可候用户裁定加 gitignore。
+
+**候用户主件不变**：🔴安全报告修复三选项(90 天窗口自 11-05 起算)、⚠️flywheel-full-recheck(11-07 18:00 止，剩约 2 天)、两函 400 拒改道、X 验证码、round>200 漂移延续(450 续跑，R524 先例)。
+---- round end 11-05 12:38 ----
+**round 451 11-05 13:12** 值守持平轮(幂等复诵):信箱0未读·Gmail活零新商务函(threads=0)·CI红=R447历史run复诵(通知不消号),最新三run均success零新增红·mentions全旧·genesis零REPLY(1/1/0/1/2)·dev.to 6+2持平·daemon绿+watchdog exit0+哨兵exit0(recall_hit=94)·qs/report/sync三件exit0·gate0 PASS·矩阵与历轮全同无断点·queue R644已记·候办主件全部候用户(安全报告三选项/flywheel-recheck 11-07止/400拒改道/X验证码)
