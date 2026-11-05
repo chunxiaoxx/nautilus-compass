@@ -2181,3 +2181,21 @@ R420 值守轮收官。本轮 push `5067a513` 对应 run 41931459354 queued，�
 **亮牌延续**：⚠️ flywheel-full-recheck 时限 2026-11-07 18:00 剩 3 天（需预注册判据档+专门轮次）；两函 400 拒候改道三选项 / X 验证码 622026 / PVR Web UI / round>200 漂移——均候用户
 ---- round end 11-04 18:11 ----
 18:43 round421 值守R333 幂等复诵:信箱0未读/Gmail探活绿10条全营销通告零商务/mention5全旧/notifications9条与R615全同零新(#66 self处置件·CI旧红已根修·soul bridge旧件)/genesis五家零REPLY持平/dev.to 6+2持平/daemon 9876绿+watchdog exit0+哨兵exit0(recall_hit=84)/管道三件exit0·快筛CS-007·CS-513过余不过与历轮全同·矩阵零新批/gate0 PASS·round>200漂移续跑候用户 → 全渠道持平零事件轮
+R421 值守轮收官，commit `eb1fea87` 已 push(仅 4 个留痕文件，零裹挟)。
+
+**本轮读数(全渠道持平零事件轮·幂等复诵)**
+
+- **停止条件**：无 STOP 文件;round=420>200 为已知漂移(上轮已亮牌候用户四选项，本轮 421 续跑)
+- **信箱**：0 未读
+- **Gmail**:探活绿秒回；threads 10 条甄别全营销/通告(ngrok/substack 折扣×2/Daytona GPU 调价/Claude Cowork/D&B/newsletter)+GitHub 转发，零商务零回函
+- **GitHub**:mention 5 条全旧;notifications 9 条与 R615 时间戳全同零新动态(#66 19:26Z=R414 self 处置件、CI failed 18:14Z=R412 旧红已根修、soul bridge 13:29Z 平台域旧件)
+- **创世监视**：五家零 REPLY(EverOS 1/hindsight 1/mem0 0/letta 1/cognee 2 与上态全同)
+- **dev.to**:6+2 持平零新评论(articles=30)
+- **本地设施**:daemon 9876 绿、watchdog exit0、注入哨兵 exit0(recall_hit=84)
+- **管道**：qs/report/sync 三件 exit0;快筛 CS-007·CS-513 过、CS-512·514~518 不过与历轮全同；矩阵 21:42 末批后零新批；gate0 PASS
+
+**亮牌延续**：⚠️ flywheel-full-recheck 时限 2026-11-07 18:00 剩 3 天(需预注册判据档+专门轮次)；两函 400 拒候改道三选项 / X 验证码 622026 / PVR Web UI / round>200 漂移——均候用户
+
+**留痕**：COLLAB_BOARD + queue.md(R616) + rounds.log + state.json round=421 四件落仓，限定 commit `eb1fea87` 已 push
+---- round end 11-04 18:45 ----
+2026-11-04 19:17 round422 值守R334幂等复诵轮——信箱0未读·Gmail 401→直刷复活3599s绿15条未读甄别全营销零商务·mention 5全旧·notifications 9条全同零新·genesis五家零REPLY持平·dev.to 6+2持平·daemon 9876绿+watchdog exit0+哨兵exit0(recall_hit=84)·管道三件exit0·快筛CS-515~518不过与历轮全同·矩阵零新批·gate0 PASS·留痕COLLAB_BOARD+queue(R617)+rounds.log+state.json四件落仓 → 全渠道持平零事件
