@@ -4,6 +4,13 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R623 · 2026-11-05 凌晨(值守 loop R429:全渠道持平零事件轮——幂等复诵·CI 红通知定谳=R427 失败 run 延迟通知·R428 根修已验绿)
+
+- **值守面持平[实测]**:信箱 0 未读;Gmail 探活绿(秒回),20 条 7d 未读逐条甄别=全部为历轮已甄别件复诵或纯营销系列(Claude Cowork/Design substack 折扣轰炸×5、X Money、X Lead Ads、ngrok、Daytona 调价、dnb、PostHog、PH fmerian、anymodel、ChatGPT for Pros)+三件已知候用户件(#66 闭环回声、Google OAuth 告警、AtomGit 指南);零新商务函零回函;🆕notifications 唯一新面孔=CI failed 03:29Z 通知,逐一实测定谳=对应 R427 提交 9c983871 失败 run(41961588286,03:26 启动)的延迟通知,其红已被 R428(78031e1a)根修,**最新 HEAD CI run 41965353602=success 验绿**,零新增红;mention 5 条全旧持平(OWASP 11-02 closed·xerj 10-31 closed·cognee 10-15 closed·IHUI 10-13·rsi-bench 10-10);genesis 五家零 REPLY 持平(EverOS 1/hindsight 1/mem0 0/letta 1/cognee 2);dev.to 30 文 6+2 持平零新评论;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=84)。
+- **管道**:qs+pipeline_report+sync 三件 exit 0;快筛 CS-513 过/CS-512·514~518 不过与历轮全同(CS-515~517 opus=None 梯度 None,CS-518 25pp ✓④✓⑤✗③);矩阵 21:42 末批后零新批;gate0 PASS(ops/ali30q/verify_criteria_lock.py 实测)。
+- **主线报表锚行**: 主线: M5=部署在役·后训练=蒸馏回放候件·判分=复判位(flywheel-full-recheck 受理候执行·时限 2026-11-07 18:00 剩约 2 天);素材线: 已交割(24116)卡0题0门0。
+- **候办主件**: ⚠️flywheel-full-recheck 完整复判(剩约 2 天·需预注册判据档+专门轮次,25 分钟值守轮历轮同口径跳过);两函 400 拒候改道三选项;X 验证码 622026 候用户;PVR Web UI 开启候用户兜底;round>200 漂移延续候用户四选项(本轮 429 续跑);AtomGit G-Star 入驻拍板候用户;Google 账号 OpenAI OAuth 授权自核候用户;GitHub 账号 SSH 公钥/邮箱增删自核候用户;Google Play 交易者声明拍板候用户。
+
 ### R622 · 2026-11-04 深夜(值守 R339:全渠道持平零事件轮——幂等复诵·R426 放宽口径复扫·零新事件)
 
 - **值守面持平[实测]**:信箱 0 未读;Gmail 探活绿(秒回),沿用 R426 放宽口径按 1d 差量扫 16 条未读逐条甄别=全部为 R425/R426 已甄别件复诵+纯营销(Google Play 声明函/GitHub 账号层事件流 SSH 公钥+邮箱移除×3/#66 回声件/Daytona 调价/Claude Cowork 折扣×2/X Money newsletter/PayPal/ngrok/dnb 中文营销);唯一新面孔=chatgpt-codex-connector[bot] 回声件(05:28 到,Re: soul_bridge PR#438,与 R425 已判读的 Google OAuth 告警同源=用户自用 ChatGPT 连接器常态,平台域只读不动);零新商务函零回函;mention 5 条全旧持平(OWASP 11-02 closed·xerj 10-31 closed·cognee 10-15 closed·IHUI 10-13·rsi-bench 10-10);notifications 9 条全同零新动态;genesis 五家零 REPLY 持平(EverOS 1/hindsight 1/mem0 0/letta 1/cognee 2);dev.to 30 文 6+2 持平零新评论;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=84)。
