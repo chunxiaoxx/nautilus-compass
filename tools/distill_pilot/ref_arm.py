@@ -27,13 +27,13 @@ from compress_arm import (  # noqa: E402
 API_URL = "https://api.chunxiao.wang/v1/messages"
 
 
-def chat_anthropic(system: str, user: str, key: str, model: str, max_tokens: int, base_url: str | None = None) -> str:
+def chat_anthropic(system: str, user: str, key: str, model: str, max_tokens: int, base_url: str | None = None, temperature: float = 0.2) -> str:
     payload = json.dumps({
         "model": model,
         "max_tokens": max(8000, max_tokens),  # 思考型模型:reasoning 先吃预算,地板 8000(8/31 doubao 陷阱同款)
         "system": system,
         "messages": [{"role": "user", "content": user}],
-        "temperature": 0.2,
+        "temperature": temperature,
         "thinking": {"type": "disabled"},
     }).encode("utf-8")
     req = urllib.request.Request(

@@ -88,8 +88,8 @@ def split_chunks(text: str, chunk_chars: int) -> list[str]:
     return chunks
 
 
-def hierarchical_rollup(summaries: list[str], api: str, model: str, batch: int = 6) -> str:
-    """块纪要超多时分层汇总(每 batch 份并一层),防 rollup 输入爆上下文。"""
+def hierarchical_rollup(summaries: list[str], api: str, model: str, batch: int = 6, system: str = SYSTEM_ROLLUP) -> str:
+    """块纪要超多时分层汇总(每 batch 份并一层),防 rollup 输入爆上下文;system 可换 v2。"""
     current = list(summaries)
     while len(current) > 1:
         nxt: list[str] = []
@@ -99,7 +99,7 @@ def hierarchical_rollup(summaries: list[str], api: str, model: str, batch: int =
                 nxt.append(group[0])
             else:
                 joined = "\n\n---\n\n".join(group)
-                nxt.append(chat(api, model, SYSTEM_ROLLUP, joined, 2500))
+                nxt.append(chat(api, model, system, joined, 2500))
         current = nxt
     return current[0]
 

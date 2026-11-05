@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.nautilus.distill-incremental</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/bin/python3</string>
+        <string>/Users/chunxiao.wang/Projects/nautilus-compass/tools/distill_pilot/incremental_distill.py</string>
+    </array>
+    <key>StartInterval</key>
+    <integer>7200</integer>
+    <key>RunAtLoad</key>
+    <false/>
+    <key>StandardOutPath</key>
+    <string>/Users/chunxiao.wang/Projects/nautilus-compass/runtime/scratch_distill_pilot_20261104/incremental.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/chunxiao.wang/Projects/nautilus-compass/runtime/scratch_distill_pilot_20261104/incremental.log</string>
+</dict>
+</plist>
