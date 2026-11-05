@@ -27,7 +27,7 @@ from compress_arm import (  # noqa: E402
 API_URL = "https://api.chunxiao.wang/v1/messages"
 
 
-def chat_anthropic(system: str, user: str, key: str, model: str, max_tokens: int) -> str:
+def chat_anthropic(system: str, user: str, key: str, model: str, max_tokens: int, base_url: str | None = None) -> str:
     payload = json.dumps({
         "model": model,
         "max_tokens": max(8000, max_tokens),  # 思考型模型:reasoning 先吃预算,地板 8000(8/31 doubao 陷阱同款)
@@ -37,11 +37,12 @@ def chat_anthropic(system: str, user: str, key: str, model: str, max_tokens: int
         "thinking": {"type": "disabled"},
     }).encode("utf-8")
     req = urllib.request.Request(
-        API_URL,
+        base_url or API_URL,
         data=payload,
         headers={
             "Content-Type": "application/json",
             "x-api-key": key,
+            "Authorization": f"Bearer {key}",
             "anthropic-version": "2023-06-01",
         },
     )

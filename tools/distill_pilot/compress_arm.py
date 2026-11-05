@@ -142,14 +142,15 @@ def main() -> int:
     parser.add_argument("--out", required=True)
     parser.add_argument("--groups", default="A_recent_active,B_high_value")
     parser.add_argument("--chunk-chars", type=int, default=18000)
+    parser.add_argument("--sum-dir", default="summaries_local", help="纪要输出子目录(9B 臂用 summaries_9b)")
     parser.add_argument("--limit", type=int, default=0, help="只跑前 N 个(验证用)")
     parser.add_argument("--only", default="", help="只跑指定 session_id(逗号分隔)")
     args = parser.parse_args()
 
     out_dir = Path(args.out).expanduser()
-    sum_dir = out_dir / "summaries_local"
+    sum_dir = out_dir / args.sum_dir
     sum_dir.mkdir(parents=True, exist_ok=True)
-    stats_path = out_dir / "compress_stats.jsonl"
+    stats_path = out_dir / f"compress_stats_{args.sum_dir}.jsonl"
 
     manifest = json.loads(Path(args.manifest).read_text(encoding="utf-8"))
     wanted = set(args.groups.split(","))

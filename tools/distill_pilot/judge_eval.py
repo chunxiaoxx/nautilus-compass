@@ -78,12 +78,12 @@ def cmd_j3(args: argparse.Namespace) -> None:
     json.dump(report, open(out / "j3_results.json", "w"), ensure_ascii=False, indent=1)
 
 
-def j2_one(summ_id: str, arm_folder: Path, out: Path, key: str, model: str) -> dict:
+def j2_one(summ_id: str, arm_folder: Path, out: Path, key: str, model: str, base_url: str | None = None) -> dict:
     md = next(arm_folder.glob(f"{summ_id}*.md"))
     src = out / "extracted" / f"{md.stem}.txt"
     final = final_section(md.read_text(encoding="utf-8", errors="replace"))
     user = f"【源文】\n{scrub(src.read_text(encoding='utf-8', errors='replace'))[:140000]}\n\n【纪要】\n{final}"
-    raw = chat_anthropic(JUDGE_SYSTEM, user, key, model, 1500)
+    raw = chat_anthropic(JUDGE_SYSTEM, user, key, model, 1500, base_url=base_url)
     m = re.search(r"\{.*\}", raw, re.DOTALL)
     if not m:
         return {"session": summ_id[:8], "parse_fail": raw[:120]}
@@ -98,16 +98,17 @@ def j2_one(summ_id: str, arm_folder: Path, out: Path, key: str, model: str) -> d
 def cmd_j2(args: argparse.Namespace) -> None:
     out = Path(args.out).expanduser()
     key = os.environ.get("COMPASS_WRITER_KEY", "")
+    base_url = os.environ.get("JUDGE_BASE_URL") or None
     if not key:
-        print("缺 COMPASS_WRITER_KEY", file=sys.stderr)
+        print("缺 COMPASS_WRITER_KEY(或判官 key)", file=sys.stderr)
         sys.exit(2)
     results = {"local": [], "ref": []}
     for sid in [x for x in args.ids.split(",") if x]:
-        for arm, folder in (("local", out / "summaries_local"), ("ref", out / "summaries_ref")):
+        for arm, folder in (("local", out / args.local_dir), ("ref", out / "summaries_ref")):
             if not list(folder.glob(f"{sid}*.md")):
                 continue
             try:
-                r = j2_one(sid, folder, out, key, args.model)
+                r = j2_one(sid, folder, out, key, args.model, base_url=base_url)
             except RuntimeError as exc:
                 r = {"session": sid[:8], "error": str(exc)[:150]}
                 time.sleep(3)
@@ -116,8 +117,8 @@ def cmd_j2(args: argparse.Namespace) -> None:
     for arm in results:
         rates = [r["j2_rate"] for r in results[arm] if r.get("j2_rate") is not None]
         if rates:
-            print(f"{arm}: mean_j2={round(sum(rates)/len(rates),4)} n={len(rates)}", file=sys.stderr)
-    json.dump(results, open(out / "j2_results.json", "w"), ensure_ascii=False, indent=1)
+            print(f"{arm}({args.local_dir if arm=='local' else 'ref'}): mean_j2={round(sum(rates)/len(rates),4)} n={len(rates)}", file=sys.stderr)
+    json.dump(results, open(out / f"j2_results_{args.tag}.json", "w"), ensure_ascii=False, indent=1)
 
 
 def main() -> int:
@@ -131,6 +132,8 @@ def main() -> int:
     p2.add_argument("--out", required=True)
     p2.add_argument("--ids", required=True)
     p2.add_argument("--model", default="glm-5.3")
+    p2.add_argument("--local-dir", default="summaries_local")
+    p2.add_argument("--tag", default="v1")
     p2.set_defaults(func=cmd_j2)
     args = parser.parse_args()
     args.func(args)
