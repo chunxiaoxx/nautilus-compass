@@ -4,6 +4,12 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R638 · 2026-11-05(值守 loop R444:全渠道持平零事件轮——幂等复诵·30 封 7d 未读甄别零新面孔·HEAD CI 验绿)
+
+- **值守面持平[实测]**:信箱 0 未读;Gmail 401→refresh_token 直刷复活,30 条 7d 未读逐条甄别=**零新面孔**,全为历轮已甄别件复诵或纯营销(codex-connector 回声×16、substack 折扣轰炸×8(Claude Cowork 31%×5/Claude Design×2/ChatGPT for Pros)、X Money、X Lead Ads、ngrok、Daytona GPU 调价(11-15 起)、dnb 集团管控、PostHog、Product Hunt、anymodel、Google 安全提醒、GitCode/AtomGit G-Star 候用户拍板、Nagizaaz 安全报告=R442 已留档候审);零新商务函零回函;notifications 与历轮同构=soul selfimprove PR×N state_change(作者全=chunxiaoxx 自用连接器常态·平台域只读不动)+CI failed 11-05 03:29Z=R427 旧 run 复诵历轮已定谳+compass#66 回声(11-04 用户已处置 closed R428 定谳)+terminal-bench/crewAI 等 author 旧件持平;本轮复核最新 HEAD CI run **42034926195**(7bf8bdae R443 提交)=**success 验绿**零新增红;mention 5 条全旧持平(OWASP 11-02 closed·xerj 10-31 closed·cognee 10-15 closed·IHUI 10-13·rsi-bench 10-10);genesis 五家零 REPLY 持平(EverOS 1/hindsight 1/mem0 0/letta 1/cognee 2);dev.to 30 文 6+2 持平零新评论;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=68)。
+- **管道**:qs+pipeline_report+sync 三件 exit 0;快筛 CS-513 过/CS-512·514~518 不过与历轮全同(CS-515~517 opus=None,CS-518 25pp ✓④✓⑤✗③);矩阵 21:42 后零新批(CS-003 32/20·CS-004 28/20·CS-005 31/20·CS-006 24/20)无断点;gate0 PASS(ops/ali30q/verify_criteria_lock.py 实测)。
+- **候办主件**: 🔴安全报告修复拍板(三选项·90 天 disclosure 窗口自 11-05 起算)+回函草稿候审;⚠️flywheel-full-recheck 完整复判(剩约 2 天·需预注册判据档+专门轮次);两函 400 拒候改道三选项;X 验证码 622026 候用户;PVR Web UI 候用户兜底;round>200 漂移延续候用户四选项(本轮 444 续跑);AtomGit G-Star 入驻拍板候用户;Google/GitHub 账号自核候用户;Google Play 交易者声明拍板候用户。
+
 ### R637 · 2026-11-05 晨(值守 loop R443:全渠道持平零事件轮——幂等复诵·40 封 7d 未读甄别零新面孔·HEAD CI 验绿)
 
 - **值守面持平[实测]**:信箱 0 未读;Gmail 探活绿(labels 端点秒回),40 条 7d 未读逐条甄别=**零新面孔**,全为 R442 已甄别件复诵(codex-connector 回声×20、Nagizaaz 安全报告 Gmail 直发+GitHub 通知版×2=R442 已留档候审、substack 折扣轰炸×9(Claude Cowork 31%×5/Claude Design×2/ChatGPT for Pros)、X Money、X Lead Ads、Product Hunt、PostHog、dnb 集团管控营销、anymodel、Google 安全提醒、Daytona GPU 调价(11-15 起)、ngrok、GitCode/AtomGit G-Star 候用户拍板);零新商务函零回函;notifications 与历轮同构=soul selfimprove PR×N state_change+CI failed=R427 旧 run 复诵已定谳+compass#66 回声(updated=11-04T19:26Z 与 R428 定谳一致·state=closed 幂等);本轮复核最新 HEAD CI run **42028966764**(853280e8 R442 提交)=**success 验绿**零新增红;mention 5 条全旧持平(OWASP 11-02 closed·xerj 10-31 closed·cognee 10-15 closed·IHUI 10-13·rsi-bench 10-10);genesis 五家零 REPLY 持平(EverOS 1/hindsight 1/mem0 0/letta 1/cognee 2);dev.to 30 文 6+2 持平零新评论;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=64)。
