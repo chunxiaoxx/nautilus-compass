@@ -17,7 +17,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 from anchor_check import CJK_RE, collect_anchors  # noqa: E402
-from compress_arm import SYSTEM_ROLLUP, chat, hierarchical_rollup  # noqa: E402
+from compress_arm import SYSTEM_ROLLUP, hierarchical_rollup  # noqa: E402
 
 SYSTEM_ROLLUP_V2 = (
     "把同一会话的多段纪要合并为一份总纪要。铁律: 只保留各段中有依据的内容,"
