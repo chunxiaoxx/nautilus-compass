@@ -4,6 +4,13 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R626 · 2026-11-05 晨(值守 loop R432:全渠道持平零事件轮——幂等复诵·notifications 26 条新面孔仅 soul PR×16 扩容(自用连接器常态)·最新 HEAD CI 复核验绿)
+
+- **值守面持平[实测]**:信箱 0 未读;Gmail 401→refresh_token 直刷复活(3599s 绿),30 条 7d 未读逐条甄别=零新面孔,全为历轮已甄别件复诵或纯营销(codex-connector 回声×14(#438~#446/#213/#218/#219/#221/#241/#274/#290)、substack 折扣轰炸、X Money、X Lead Ads、ngrok、Daytona GPU 调价、dnb、PostHog、PH fmerian、ChatGPT for Pros、中文集团管控营销、温室 ChatGPT 案例)+三件已知候用户件(#66 闭环回声、Google OAuth 告警、AtomGit 指南);零新商务函零回函;notifications 9→26 条:唯一新面孔=soul selfimprove PR×16 更新通知(11-05 05:13~06:13Z,PR#438~#446 系列,作者全=chunxiaoxx·codex-connector 自用连接器常态·平台域只读不动,R426 已定谳口径);CI failed 03:29Z=R427 失败 run(41961588286)复诵历轮已定谳,本轮复核最新 HEAD CI run **41977022539**(1240c2fa R431 提交)=**success 验绿**,零新增红;mention 5 条全旧持平(OWASP 11-02 closed·xerj 10-31 closed·cognee 10-15 closed·IHUI 10-13·rsi-bench 10-10);genesis 五家零 REPLY 持平(EverOS 1/hindsight 1/mem0 0/letta 1/cognee 2);dev.to 30 文 6+2 持平零新评论;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=17)。
+- **管道**:qs+pipeline_report+sync 三件 exit 0;快筛 CS-513 过/CS-512·514~518 不过与历轮全同(CS-515~517 opus=None 梯度 None,CS-518 25pp ✓④✓⑤✗③);矩阵 21:42 后零新批无断点;gate0 PASS(ops/ali30q/verify_criteria_lock.py 实测)。
+- **主线报表锚行**: 主线: M5=部署在役·后训练=蒸馏回放候件·判分=复判位(flywheel-full-recheck 受理候执行·时限 2026-11-07 18:00 剩约 2 天);素材线: 已交割(24116)卡0题0门0。
+- **候办主件**: ⚠️flywheel-full-recheck 完整复判(剩约 2 天·需预注册判据档+专门轮次,25 分钟值守轮历轮同口径跳过);两函 400 拒候改道三选项;X 验证码 622026 候用户;PVR Web UI 开启候用户兜底;round>200 漂移延续候用户四选项(本轮 432 续跑);AtomGit G-Star 入驻拍板候用户;Google 账号 OpenAI OAuth 授权自核候用户;GitHub 账号 SSH 公钥/邮箱增删自核候用户;Google Play 交易者声明拍板候用户。
+
 ### R625 · 2026-11-05 凌晨(值守 loop R431:全渠道持平零事件轮——幂等复诵·CI 红通知定谳=R427 旧 run 复诵已验绿·soul PR 更新=自用连接器常态)
 
 - **值守面持平[实测]**:信箱 0 未读;Gmail 探活绿(秒回),25 条 7d 未读逐条甄别=零新面孔,全为历轮已甄别件复诵或纯营销(codex-connector 回声×5、substack 折扣轰炸×5、X Money、X Lead Ads、ngrok、Daytona 调价、dnb、PostHog、PH fmerian、anymodel、ChatGPT for Pros、中文集团管控营销、温室 ChatGPT 案例)+三件已知候用户件(#66 闭环回声、Google OAuth 告警、AtomGit 指南);零新商务函零回函;notifications:CI failed 03:29Z 通知=R427 失败 run(41961588286)复诵历轮已定谳,本轮复核最新 HEAD CI run **41973037942**(8d8ac1af R430 提交)=**success 验绿**,零新增红;soul selfimprove PR×4 state_change(05:13-14Z,PR#445 soul_executor 05:49Z 更新,作者全=chunxiaoxx·codex-connector 自用连接器常态·平台域只读不动);mention 5 条全旧持平(OWASP 11-02 closed·xerj 10-31 closed·cognee 10-15 closed·IHUI 10-13·rsi-bench 10-10);genesis 五家零 REPLY 持平(EverOS 1/hindsight 1/mem0 0/letta 1/cognee 2);dev.to 30 文 6+2 持平零新评论;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=15)。
