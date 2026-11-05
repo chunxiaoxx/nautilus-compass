@@ -4,6 +4,12 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R643 · 2026-11-05(值守 loop R450:幂等复诵持平轮——补跑 R449 未竟管道两件·Gmail 直刷复活·零新事件)
+
+- **值守面持平[实测]**:信箱 0 未读;Gmail 401→refresh_token 直刷复活(3599s 绿,R448 配方复用一次成功),30 条 7d 未读逐条甄别=**零新面孔**,全为历轮已甄别件复诵(19 条 soul selfimprove PR 回声=平台域只读不动、10 条推广/newsletter(Reddit Ads/substack 折扣×5/D&B/ngrok/Daytona GPU 调价/X Money/X Lead Ads/PostHog)、1 条 security 通知=compass#66 回声 11-04 已 closed);零新商务函零回函;notifications 4 条 CI failed(15:45Z×2+14:38Z+03:29Z)=R447 双红历史 run 复诵,**最新两 run 42063551849(8b25e23c)/42063814371(805198b7)均 success**,CI 闭环 R449 轮已复核,零新增红;mention 5 条全旧持平;genesis 五家零 REPLY 持平(1/1/0/1/2);dev.to 30 文 6+2 持平零新评论;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=92)。
+- **补跑 R449 未竟两件**:pipeline_report + pipeline_state_sync exit0;gate0 PASS(实跑,R449 轮曾跳过);快筛 CS-513 过/CS-512·514~518 不过与历轮全同(CS-515~517 opus=None,CS-518 25pp ✓④✓⑤✗③);矩阵 21:42 收官满额(CS-004 28/20·CS-005 31/20·CS-006 24/20)零新批无断点。
+- **候办主件**: 🔴安全报告修复拍板(三选项·90 天 disclosure 窗口自 11-05 起算)+回函草稿候审;⚠️flywheel-full-recheck 完整复判(2026-11-07 18:00 止,剩约 2 天·需预注册判据档+专门轮次);两函 400 拒候改道三选项;X 验证码 622026 候用户;PVR Web UI 候用户兜底;round>200 漂移延续候用户(本轮 450 续跑,R524 裁定先例过阈继续);AtomGit G-Star 入驻拍板候用户;Google/GitHub 账号自核候用户;Google Play 交易者声明拍板候用户。
+
 ### R642 · 2026-11-05(值守 loop R448:R447 CI 双红根修=lint 真回归已修 push——Gmail 直刷配方纠偏·全渠道其余持平)
 
 - **🔴唯一新事件(已处置)**:R447 两 commit(25dbac7f/5c102c3f)CI **双红=真回归**——[实测] `gh run view --log-failed`:两 run 同因 `tools/egress/egress_probe.py:13` **F401 `shlex` imported but unused**(D4 出口探针套件 30d7a680 带入 repo 时未过 lint 预检),非上游 504;根修=删该 import,本地 ruff `All checks passed`,commit **8b25e23c** 已 push,触发 run 42063551849(in_progress)候下轮复核复绿。教训:带新 .py 入 repo 的 commit 前须本地 `ruff check` 预检,CI 是唯一闸=发现即已双红。
