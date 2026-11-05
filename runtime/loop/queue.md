@@ -4,6 +4,12 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R652 · 2026-11-05(值守 loop R459:幂等复诵持平轮——全渠道零新事件·CI R458 双 run 复验绿·Gmail 探活绿免直刷·双账本对齐)
+
+- **值守面持平[实测]**:信箱 0 未读;Gmail 探活秒回(access_token 仍活免直刷,INBOX 4349 未读积压常态),7d 未读商务函查询 0 条,零新商务函零回函;**CI 复验绿确认:notifications CI failed×4 全部=R457 历史 run 42115032850 复诵(F401 已 R458 修复闭环,通知不消号),最新两 run 全 success——R458 主 commit 3d7aece0 run 42120297478 + 补记 commit 943951cb run 42121032233,零新增红**;soul selfimprove PR ×N 平台域只读不动;mention 5 条全旧持平(OWASP 11-02/xerj 10-31/cognee 10-15/IHUI 10-13/rsi-bench 10-10);genesis 五家零 REPLY 持平(EverOS 1/hindsight 1/mem0 0/letta 1/cognee 2);dev.to 30 文 6+2 持平零新评论;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=108)。
+- **管道**:qs+pipeline_report+sync 三件 exit0;快筛 CS-513 过/CS-510·511·512·514~518 不过与历轮全同(CS-515~517 opus=None,CS-518 25pp ✓④✓⑤✗③);矩阵 21:42 收官满额零新批无断点;gate0 PASS(ops/ali30q/verify_criteria_lock.py 实跑)。
+- **候办主件**: 🔴安全报告修复拍板(三选项·90 天 disclosure 窗口自 11-05 起算)+回函草稿候审;⚠️flywheel-full-recheck 完整复判(2026-11-07 18:00 止,剩约 2 天·需预注册判据档+专门轮次);两函 400 拒候改道三选项;X 验证码 622026 候用户;PVR Web UI 候用户兜底;round>200 漂移本轮 459 续跑候用户(R524 裁定先例过阈继续);AtomGit G-Star 入驻拍板候用户;Google/GitHub 账号自核候用户;Google Play 交易者声明拍板候用户。
+
 ### R651 · 2026-11-05(值守 loop R458:幂等复诵+CI 红修复轮——R457 Lint F401(D5 引入)已修·Gmail 401→直刷复活·其余全持平)
 
 - **值守面持平[实测]**:信箱 0 未读;Gmail 401→refresh_token 直刷复活(R448 配方一次成功 REFRESH_OK 回写),探活 200 绿,30 条 7d 未读逐条甄别=零新面孔(bot 回声×23/推广×8:Claude Cowork·Reddit·IFTTT·X·ngrok·Daytona·dnb/安全 issue 通知回声),零新商务函零回函;**🔴CI 新增红:R457 commit 789da840 run 42115032850 Lint failure**——ruff F401 `tools/distill_pilot/rerollup_v2.py:20` unused `chat` import,引入点=D5 提交 e6136395(与 R457 同次 push 才触发 run,R456 树无此文件故此前全绿);已修(去 unused import),本地 `ruff check .` All checks passed,随本轮 commit push,**CI 复验绿:R458 commit 3d7aece0 run 42120297478 全 job success(含 Lint)**;mention 5 条全旧持平(OWASP 11-02/xerj 10-31/cognee 10-15/IHUI 10-13/rsi-bench 10-10);genesis 五家零 REPLY 持平(EverOS 1/hindsight 1/mem0 0/letta 1/cognee 2);dev.to 30 文 6+2 持平零新评论;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=106)。
