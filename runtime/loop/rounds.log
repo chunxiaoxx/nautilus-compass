@@ -2250,3 +2250,16 @@ R424 值守轮完成，commit a113fb70 已 push。
 - 2026-11-04 21:12 round425 值守R337全渠道持平零事件轮(幂等复诵):信箱0未读·Gmail 探活绿秒回20条未读逐条甄别=17纯营销+#66回声件+两件新甄别(①GitCode AtomGit G-Star入驻指南11-02到·自助指南非商务·入驻需创建AtomGit账号=外部注册动作候用户拍板不擅动②Google安全提醒11-02=chunxiaoxx@gmail.com出现"OpenAI"OAuth授权告警·初判用户自用ChatGPT连接器常态·候用户自核账号活动页)·mention 5全旧·notifications 9条全同(三条今日时间戳逐一实测:#66 19:26Z self处置件/CI failed 18:14Z旧红已根修最新5run全success/soul PR#438 13:29Z MERGED平台域只读)·genesis零REPLY持平(1/1/0/1/2)·dev.to 30文6+2持平·daemon 9876绿+watchdog exit0+哨兵exit0(recall_hit=84)·管道三件exit0·快筛CS-513过/512·514~518不过与历轮全同·矩阵21:42末批后零新批·gate0 PASS·flywheel-full-recheck剩3天亮牌延续(候专门轮次+预注册判据档)·AtomGit入驻拍板新增候用户
 ---- round end 11-04 21:07 ----
 - 2026-11-05 02:45 round426 值守R338差量轮(Gmail口径放宽照出新件):信箱0未读·Gmail 401→直刷复活3599s·threads.list带排他查询400 "Invalid id value"(新坑·改messages.list+逐封metadata绕行)·30条7d未读逐条甄别=纯营销/通告27+件3新甄别:①GitHub账号层事件流首次照出(历轮-from:noreply过滤屏蔽·本轮去过滤):11-04 14:44Z新增SSH公钥+19:59Z新增邮箱+11-03~11-04十余次邮箱增删脉冲·安全面件候用户自核(本人迁移期配置vs异常·不动账号)②Google Play交易者身份声明函22:50Z到(上轮后新到·要求完成声明以继续Play分发·组织无已知Play在架应用初判全量政策函)候用户拍板③PostHog changelog纯营销·mention 5全旧·notifications 9条全同零新·genesis零REPLY持平(1/1/0/1/2)·dev.to 30文6+2持平·daemon 9876绿+watchdog exit0+哨兵exit0(recall_hit=84)·管道三件exit0·快筛CS-513过/512·514~518不过与历轮全同·矩阵21:42末批后零新批(CS-003 glm5.3 parse fail已报v5整组skip)·gate0 PASS·flywheel-full-recheck时限2026-11-07 18:00剩约2.5天亮牌延续·两件新甄别候用户(SSH公钥/邮箱增删自核+Play申报拍板)
+R426(值守 R338)完成，commit `a4fc0209` 已推送 origin/main。
+
+**本轮非幂等复诵，有差量**——Gmail 查询去掉 `-from:noreply` 过滤后，首次照出被历轮屏蔽的 GitHub 账号层通知：
+
+- 🆕 **GitHub 账号安全面(候用户自核，本轮不动账号)**：11-04 14:44Z 新增 SSH authentication public key、19:59Z 新增邮箱地址，叠加 11-03~11-04 十余次邮箱增删脉冲。若是迁移期本人配置属常态；若非本人操作需立即处理(GitHub Settings → SSH keys / Emails)。
+- 🆕 **Google Play 交易者身份声明函**(22:50Z,上轮后新到)：要求完成声明以继续在 Play 分发。组织无已知 Play 在架应用，初判=Google 全量开发者政策函，候拍板是否申报。
+
+其余持平：信箱 0 未读 · mention 5 全旧 · notifications 9 条全同(#66/CI/PR#438 均已判读旧件)· genesis 五家零 REPLY(1/1/0/1/2)· dev.to 30 文 6+2 · daemon 9876 绿+watchdog+哨兵 exit0(recall_hit=84)· 管道三件 exit0 · 快筛 CS-513 过/CS-512·514~518 不过全同历轮 · 矩阵 21:42 后零新批(CS-003 glm5.3 parse fail 已报 v5 整组 skip)· gate0 PASS。
+
+配方注记：Gmail threads.list 带排他查询报 400 "Invalid id value"(新坑)，已改 messages.list+逐封 metadata 绕行；access_token 401→直刷复活 3599s。flywheel-full-recheck 时限 2026-11-07 18:00,剩约 2.5 天。
+---- round end 11-04 21:50 ----
+- 2026-11-04 22:25 round427 值守R339全渠道持平零事件轮(幂等复诵·R426放宽口径复扫):信箱0未读·Gmail 探活绿秒回·1d口径16条未读逐条甄别=全部R425/426已甄别件复诵+纯营销(Play声明函/GitHub账号层事件流SSH公钥+邮箱增删×3/#66回声/Daytona调价/Claude Cowork×2/X Money/PayPal/ngrok/dnb)·唯一新面孔=codex-connector[bot]回声件(05:28到·Re:soul_bridge PR#438·用户自用ChatGPT连接器常态·平台域只读不动)·零新商务函零回函·mention 5全旧持平·notifications 9条全同零新·genesis零REPLY持平(1/1/0/1/2)·dev.to 30文6+2持平零新评论·daemon 9876绿+watchdog exit0+哨兵exit0(recall_hit=84)·管道三件exit0·快筛CS-513过/512·514~518不过与历轮全同·矩阵21:42末批后零新批·gate0 PASS·flywheel-full-recheck时限2026-11-07 18:00剩约2天亮牌延续·候用户件不新增(SSH公钥自核/Play拍板/AtomGit/round>200漂移本轮427续跑)
+---- round end 11-04 22:25 ----
