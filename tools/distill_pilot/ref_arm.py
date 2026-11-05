@@ -10,7 +10,6 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import re
 import sys
 import time
 import urllib.error
@@ -21,7 +20,6 @@ sys.path.insert(0, str(Path(__file__).parent))
 from compress_arm import (  # noqa: E402
     SYSTEM_CHUNK,
     SYSTEM_ROLLUP,
-    hierarchical_rollup,
     scrub,
     split_chunks,
 )
