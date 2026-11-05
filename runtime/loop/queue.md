@@ -4,6 +4,12 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R637 · 2026-11-05 晨(值守 loop R443:全渠道持平零事件轮——幂等复诵·40 封 7d 未读甄别零新面孔·HEAD CI 验绿)
+
+- **值守面持平[实测]**:信箱 0 未读;Gmail 探活绿(labels 端点秒回),40 条 7d 未读逐条甄别=**零新面孔**,全为 R442 已甄别件复诵(codex-connector 回声×20、Nagizaaz 安全报告 Gmail 直发+GitHub 通知版×2=R442 已留档候审、substack 折扣轰炸×9(Claude Cowork 31%×5/Claude Design×2/ChatGPT for Pros)、X Money、X Lead Ads、Product Hunt、PostHog、dnb 集团管控营销、anymodel、Google 安全提醒、Daytona GPU 调价(11-15 起)、ngrok、GitCode/AtomGit G-Star 候用户拍板);零新商务函零回函;notifications 与历轮同构=soul selfimprove PR×N state_change+CI failed=R427 旧 run 复诵已定谳+compass#66 回声(updated=11-04T19:26Z 与 R428 定谳一致·state=closed 幂等);本轮复核最新 HEAD CI run **42028966764**(853280e8 R442 提交)=**success 验绿**零新增红;mention 5 条全旧持平(OWASP 11-02 closed·xerj 10-31 closed·cognee 10-15 closed·IHUI 10-13·rsi-bench 10-10);genesis 五家零 REPLY 持平(EverOS 1/hindsight 1/mem0 0/letta 1/cognee 2);dev.to 30 文 6+2 持平零新评论;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=64)。
+- **管道**:qs+pipeline_report+sync 三件 exit 0;快筛 CS-513 过/CS-512·514~518 不过与历轮全同(CS-515~517 opus=None,CS-518 25pp ✓④✓⑤✗③);矩阵 21:42 后零新批(CS-003 32/20·CS-004 28/20·CS-005 31/20·CS-006 24/20)无断点;gate0 PASS(ops/ali30q/verify_criteria_lock.py 实测)。
+- **候办主件**: 🔴安全报告修复拍板(三选项·90 天 disclosure 窗口自 11-05 起算)+回函草稿候审;⚠️flywheel-full-recheck 完整复判(剩约 2 天·需预注册判据档+专门轮次);两函 400 拒候改道三选项;X 验证码 622026 候用户;PVR Web UI 候用户兜底;round>200 漂移延续候用户四选项(本轮 443 续跑);AtomGit G-Star 入驻拍板候用户;Google/GitHub 账号自核候用户;Google Play 交易者声明拍板候用户。
+
 ### R636 · 2026-11-05(值守 loop R442 事件轮:Nagizaaz 安全报告直发 Gmail·两洞源码独立验证属实·修复候用户)
 
 - **🔴安全事件(本轮唯一新事件)**:Nagizaaz Shaik <nagizaazs@gmail.com> 直发 Gmail(11-05 06:59 -0500),延续 compass#66(11-04 用户已处置 closed·R428 定谳)按 SECURITY.md 私下补发细节——非回声,内容超出 #66 原报:①主洞 `/v1/v14/recall` 无 `Depends(auth_user)`(compass_http_v09.py:1509,tenant=X-Tenant-ID header 可伪造,scope=user 跨项目 UNION 全 ~/.claude/projects 扫描→未认证跨项目记忆披露;对照全文件 12 处 auth 覆盖、2026-08-30 修复漏掉此路由)②次洞 `/v1/v14/ingest_obs` project 参数零清洗直接拼 out_dir(:1612/:1640,`../../` 逃逸→任意目录写/跨租户记忆投毒;前提=JWT,而 signup 开放注册 :551 可满足)。报告人声明仅源码审查未发请求、愿 coordinated disclosure。**compass 域独立验证两洞均属实**(docs/security/SECURITY_V14_RECALL_20261105.md),未发请求未部署未外发;修复三选项(A 完整修复需协调 v5 消费者/B 次洞先修+主洞临时缓解/C 留档候用户主导 90 天窗口)候用户拍板,回函草稿候审(外发硬闸)。

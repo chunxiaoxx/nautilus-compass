@@ -2463,3 +2463,28 @@ R441 值守轮完成，零事件轮(幂等复诵)，commit `db50c717` 已推送�
 **亮牌延续**：flywheel-full-recheck 时限 2026-11-07 18:00 剩约 2 天；round>200 漂移本轮 441 续跑候用户。留痕四件(rounds.log/state.json/queue.md R635/COLLAB_BOARD)。
 ---- round end 11-05 07:01 ----
 2026-11-05 07:38 round442 事件轮:Nagizaaz 直发 Gmail 安全报告(v14_recall 无auth跨项目读+ingest_obs路径逃逸)compass域独立验证两洞均属实→docs/security/SECURITY_V14_RECALL_20261105.md 留档候用户·未外发未部署·Gmail 401直刷复活3599s·其余渠道全持平·HEAD CI 42023454866 success验绿·快筛CS-513过同历轮·gate0 PASS
+R442 事件轮完成(commit 853280e8 已 push)。需你拍板的事：
+
+## 🔴 安全报告(本轮唯一新事件)
+
+Nagizaaz Shaik(nagizaazs@gmail.com)11-05 直发 Gmail,延续 compass#66(你 11-04 已处置 closed)按 SECURITY.md 私下补发细节。报告人声明仅源码审查、未对活服务发请求，愿 coordinated disclosure(90 天窗口自今日起算)。
+
+**compass 域独立源码验证：两洞均属实**(未发请求、未部署、未外发)：
+
+1. **主洞**:`/v1/v14/recall` 无 `Depends(auth_user)`(compass_http_v09.py:1509)——8-30 那轮修复补了 drift_check/ingest_obs 却漏掉此路由；tenant 取自可伪造的 X-Tenant-ID header,`scope=user` 跨项目 UNION 扫描 → 未认证读其他项目记忆。
+2. **次洞**:`/v1/v14/ingest_obs` 的 project 参数零清洗直接拼路径(:1612/:1640)→ `../../` 任意目录写/跨租户记忆投毒；前提需 JWT,但 signup 是开放注册，可满足。
+
+正本:`docs/security/SECURITY_V14_RECALL_20261105.md`
+
+**修复三选项候拍板**：
+- A. 完整修复——加 auth + project 白名单；但加 auth 会打断 v5 等现有消费者(它们用无 JWT 的 X-Tenant-ID 方式调 scope=user),需协调升级
+- B. 次洞先修(白名单，低风险)+ 主洞临时缓解(内网绑定/收窄 scope=user)
+- C. 留档，由你主导协调
+
+对报告人的致谢/回函草稿候你审后才能发(外发硬闸)。
+
+## 其余值守面全持平
+
+信箱 0 未读；Gmail 401→直刷复活(3599s),40 条 7d 未读甄别=安全报告 1 新面孔+24 条 codex-connector 回声+纯营销，零新商务函；HEAD CI run 42023454866 success 验绿；mention 5 全旧；genesis 五家零 REPLY;dev.to 6+2 持平；daemon 绿+哨兵 exit0(recall_hit=61);快筛 CS-513 过同历轮；gate0 PASS。
+---- round end 11-05 07:40 ----
+11-05 08:19 round443 值守持平轮·全渠道幂等复诵零新事件: 信箱0未读·Gmail探活绿·40条7d未读甄别零新面孔(codex-connector回声×20+Nagizaaz安全报告2封=R442已留档候审+substack折扣轰炸×9+纯营销)·notifications同构(compass#66回声updated=11-04与R428定谳一致)·HEAD CI 42028966764 success验绿·mention 5全旧·genesis零REPLY(1/1/0/1/2)·dev.to 30文6+2持平·daemon绿+watchdog exit0+哨兵exit0(recall_hit=64)·快筛CS-513过/512·514~518不过同历轮·矩阵21:42后零新批无断点·gate0 PASS·flywheel-full-recheck时限2026-11-07 18:00剩约2天亮牌延续·round>200漂移本轮443续跑候用户
