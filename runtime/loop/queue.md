@@ -4,6 +4,14 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R642 · 2026-11-05(值守 loop R448:R447 CI 双红根修=lint 真回归已修 push——Gmail 直刷配方纠偏·全渠道其余持平)
+
+- **🔴唯一新事件(已处置)**:R447 两 commit(25dbac7f/5c102c3f)CI **双红=真回归**——[实测] `gh run view --log-failed`:两 run 同因 `tools/egress/egress_probe.py:13` **F401 `shlex` imported but unused**(D4 出口探针套件 30d7a680 带入 repo 时未过 lint 预检),非上游 504;根修=删该 import,本地 ruff `All checks passed`,commit **8b25e23c** 已 push,触发 run 42063551849(in_progress)候下轮复核复绿。教训:带新 .py 入 repo 的 commit 前须本地 `ruff check` 预检,CI 是唯一闸=发现即已双红。
+- **Gmail 401→直刷首试 400(invalid_grant)→纠偏复活**:R213 直刷配方本轮实测误读——`credentials.json` 是**完整 OAuth 对象**(keys: access_token/refresh_token/scope/…),`refresh_token` 须取字段而非整文件读 `.strip()`(整文件当 token 提交=invalid_grant);纠偏后 grant 直刷 **3599s 绿**,探活秒回。
+- **值守面持平[实测]**:信箱 0 未读;Gmail 30 条 7d 未读=**1 新面孔**(Reddit for Business 广告推广 $500 matched credit→归推广类不动)其余历轮回声(codex-connector 回声×N/年终推广/substack 折扣/X Money);零新商务函零回函;notifications 28 条=同构(soul selfimprove 自用 PR×N 平台域只读不动+CI failed ×3=本轮双红已根修+security 通知=**compass#66 回声**(11-04 用户已 closed,R442/R428 定谳零新动作);mention 5 条全旧持平(OWASP/xerj/cognee closed·IHUI/rsi-bench);genesis 五家零 REPLY 持平(1/1/0/1/2);dev.to 30 文 6+2 持平零新评论;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=86)。
+- **管道**:qs+pipeline_report+sync 三件 exit0;快筛 CS-513 过/CS-512·514~518 不过与历轮全同(CS-515~517 opus=None,CS-518 25pp ✓④✓⑤✗③);矩阵 21:42 收官满额(CS-004 28/20·CS-005 31/20·CS-006 24/20)无断点;gate0 PASS。
+- **候办主件**: 🔴安全报告修复拍板(三选项·90 天 disclosure 窗口自 11-05 起算)+回函草稿候审;⚠️flywheel-full-recheck 完整复判(2026-11-07 18:00 止,剩约 2 天·需预注册判据档+专门轮次);两函 400 拒候改道三选项;X 验证码 622026 候用户;PVR Web UI 候用户兜底;round>200 漂移延续候用户四选项(本轮 448 续跑,R524 裁定先例过阈继续);AtomGit G-Star 入驻拍板候用户;Google/GitHub 账号自核候用户;Google Play 交易者声明拍板候用户。
+
 ### R641 · 2026-11-05(值守 loop R447:全渠道持平零事件轮——幂等复诵·R446 CI rerun 待办闭环复绿·HEAD 30d7a680 未推定谳)
 
 - **值守面持平[实测]**:信箱 0 未读;Gmail 探活绿(labels 端点秒回无需直刷),30 条 7d 未读全为已知复诵零新面孔(codex-connector 回声/substack 折扣轰炸/Daytona GPU 调价(11-15 起)/Nagizaaz 安全报告=R442 已留档候审/compass#66 回声=11-04 已处置 closed);零新商务函零回函;notifications 与历轮同构(soul selfimprove 自用 PR×N·平台域只读不动+CI failed=R445 旧 run 复诵已定谳);mention 5 条全旧持平(OWASP 11-02 closed·xerj 10-31 closed·cognee 10-15 closed·IHUI 10-13·rsi-bench 10-10);genesis 五家零 REPLY 持平(EverOS 1/hindsight 1/mem0 0/letta 1/cognee 2);dev.to 30 文 6+2 持平零新评论;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=81)。

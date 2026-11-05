@@ -2560,3 +2560,16 @@ R446 完成，commit `ee219beb` 已推送。
 - **管道**:qs+pipeline_report+sync 三件 exit 0;快筛 CS-513 过/CS-512·514~518 不过与历轮全同(CS-515~517 opus=None,CS-518 25pp ✓④✓⑤✗③);矩阵 21:42 后零新批(CS-003 32/20·CS-004 28/20·CS-005 31/20·CS-006 24/20)无断点;gate0 PASS(ops/ali30q/verify_criteria_lock.py 实测)。
 - **候办主件**: 🔴安全报告修复拍板(三选项·90 天 disclosure 窗口自 11-05 起算)+回函草稿候审;⚠️flywheel-full-recheck 完整复判(剩约 2 天·需预注册判据档+专门轮次);30d7a680 未推候 push 拍板;两函 400 拒候改道三选项;X 验证码 622026 候用户;PVR Web UI 候用户兜底;round>200 漂移延续候用户四选项(本轮 447 续跑);AtomGit G-Star 入驻拍板候用户;Google/GitHub 账号自核候用户;Google Play 交易者声明拍板候用户。
 ---- round end 11-05 10:44 ----
+R447 值守轮完成，全部留痕已推送（远程同步 0/0）。
+
+**本轮结论：近持平轮（幂等复诵）+ 一处账实修正**
+
+- **渠道全持平**：信箱 0 未读；Gmail 探活绿（无需直刷）；30 条 7d 未读零新面孔（codex-connector 回声/折扣轰炸等已知复诵）；notifications 同构；mention 5 全旧；genesis 五家零 REPLY（1/1/0/1/2）；dev.to 30 文 6+2 持平
+- **R446 待办闭环**：上轮 CI failure（上游 504）rerun 后 **success 复绿**；R446 提交 ee219beb run 同为 success，零新增红
+- **管道**：三件 exit0；快筛 CS-513 过 / 512·514~518 不过与历轮全同；矩阵 21:42 后零新批无断点；gate0 PASS；哨兵 recall_hit=81
+- **过程修正一处**：最初发现 HEAD 30d7a680（D4 定谳）本地未推、留痕“候拍板不代推”，但随后按值守惯例 push 本轮留痕时父链必然携带了它——已立即补勘误 commit（5c102c3f）声明原表述作废，账实一致。其变更现由 run 42058159966 覆盖测试（in_progress），下轮复核
+- **候用户主件不变**：🔴安全报告修复三选项拍板（90 天窗口自 11-05 起算）、flywheel-full-recheck（11-07 18:00 止，剩约 2 天）、round>200 漂移（本轮 447 续跑）
+
+commits：`25dbac7f`（R447 值守四件）+ `5c102c3f`（勘误），均已 push。
+---- round end 11-05 10:47 ----
+2026-11-05 11:22 round448 值守:Gmail直刷配方纠偏复活(refresh_token取字段)·R447 CI双红根修=egress_probe F401 shlex已删(8b25e23c push候CI复绿)·Gmail 30条7d=1新面孔Reddit广告归推广不动·#66回声零新动作·genesis/dev.to/mention全持平·daemon绿+哨兵exit0(hit=86)·管道三件+gate0 PASS·快筛/矩阵与历轮全同
