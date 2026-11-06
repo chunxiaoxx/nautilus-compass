@@ -145,6 +145,21 @@ def main() -> int:
                       src.read_text(encoding="utf-8", errors="replace"))
             stat["j1"] = r["traceable_rate"]
             stat["gate"] = "ok" if (r["traceable_rate"] or 0) >= 0.95 else "review"
+            if stat["gate"] == "ok":
+                # 生产形态: 锚点 sidecar(源文直提) + 发布进 memory → recall 闭环
+                import subprocess as _sp
+                from collections import Counter as _C
+                from anchor_check import collect_anchors as _ca, CJK_RE as _CJK
+                s_txt = src.read_text(encoding="utf-8", errors="replace")
+                _cnt = _C(a["value"] for a in _ca(s_txt)
+                          if a["type"] in ("path", "date", "tag_id", "url") and not _CJK.search(a["value"]))
+                (RUNTIME / "summaries_9b_prod").mkdir(exist_ok=True)
+                (RUNTIME / "summaries_9b_prod" / f"{p.stem}.md").write_text(
+                    out.read_text(encoding="utf-8", errors="replace").split("## 附")[0], encoding="utf-8")
+                (RUNTIME / "summaries_9b_prod" / f"{p.stem}.anchors.txt").write_text(
+                    "\n".join(sorted(v for v, c in _cnt.items() if c >= 3)), encoding="utf-8")
+                _sp.run([sys.executable, str(Path(__file__).parent / "publish_to_memory.py"),
+                         "--only", p.stem], capture_output=True)
             with (RUNTIME / "incremental_stats.jsonl").open("a") as fh:
                 fh.write(json.dumps(stat, ensure_ascii=False) + "\n")
             print(f"[incr] {p.stem[:8]} j1={stat['j1']} {stat['gate']}", file=sys.stderr)
