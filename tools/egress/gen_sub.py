@@ -98,11 +98,21 @@ def main() -> int:
         "port": int(env["HOME_PORT"]),
         "udp": True,
     }
-    # 多前置链: 机场节点池含死键,给最多 3 条 US 链手机上择活
+    # 附加节点(如小火箭切片的中转 trojan,凭据在 EXTRA_NODES_FILE,不进仓)
+    extras_path = env.get("EXTRA_NODES_FILE")
+    extras = []
+    if extras_path and Path(extras_path).exists():
+        extras = yaml.safe_load(Path(extras_path).read_text(encoding="utf-8")) or []
+        existing = {p.get("name") for p in proxies}
+        extras = [e for e in extras if isinstance(e, dict) and e.get("name") not in existing]
+        proxies = proxies + extras
+    # 多前置链: 机场节点池含死键,给最多 4 条链择活;附加节点优先(用户手动指定=首选)
     real = [p for p in proxies
             if not str(p.get("name", "")).startswith(("Expire", "Traffic", "Sync", "剩余", "过期"))
             and str(p.get("type", "")).lower() in USABLE_PREPROXY]
-    us_nodes = [p["name"] for p in real if "美国" in str(p.get("name", "")) or "US" in str(p.get("name", ""))][:3] or [pre_name]
+    us_pool = [p["name"] for p in real if "美国" in str(p.get("name", "")) or "US" in str(p.get("name", ""))]
+    extra_names = [e["name"] for e in extras]
+    us_nodes = (extra_names + [n for n in us_pool if n not in extra_names])[:4] or [pre_name]
     chain_nodes = []
     for i, pn in enumerate(us_nodes):
         n = dict(home_plain)
@@ -117,10 +127,18 @@ def main() -> int:
 
     cfg["proxies"] = chain_nodes + [home_plain] + proxies
     groups = cfg.setdefault("proxy-groups", [])
+    auto_group = f"{CHAIN_GROUP}-自动"
     groups.insert(0, {
         "name": CHAIN_GROUP,
         "type": "select",
-        "proxies": [c["name"] for c in chain_nodes] + [PLAIN_NODE],
+        "proxies": [auto_group] + [c["name"] for c in chain_nodes] + [PLAIN_NODE],
+    })
+    groups.insert(1, {
+        "name": auto_group,
+        "type": "fallback",
+        "proxies": [c["name"] for c in chain_nodes],
+        "url": f"http://nautilus.social/api/egress-check?expect={env['HOME_HOST']}",
+        "interval": 300,
     })
 
     out = Path(env.get("OUT") or DEFAULT_OUT)
