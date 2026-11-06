@@ -1,4 +1,12 @@
 {
-  "round": 463,
-  "last_round_ts": "20:13"
+  "round": 464,
+  "last_round_ts": "20:13",
+  "history": [
+    {
+      "round": 464,
+      "ts": "2026-11-06T05:05",
+      "result": "idle-repeat",
+      "note": "全渠道零新事件持平轮"
+    }
+  ]
 }
