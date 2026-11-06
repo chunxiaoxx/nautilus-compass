@@ -4,6 +4,12 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R660 · 2026-11-05(值守 loop R467:新事件 CI 新增红 run 42153941691 Lint ruff F401——根因 distill 线引入 publish_to_memory.py unused import re 首扫即红,已修复本轮带上·余全渠道零新事件持平·Gmail 探活绿免直刷·双账本对齐)
+
+- **值守面[实测]**:信箱 0 未读;Gmail 探活 200 绿(access_token 仍活免直刷,INBOX 4348 未读积压常态),15 条 7d 未读全量甄别=零新面孔(orb#1074 通知×2/MemOS#2440 stale-bot/Claude Cowork substack newsletter/codex-connector bot 回声 nautilus-core PR×N),零新商务函零回函;**新事件:CI 新增红 run 42153941691(head=b3eea725/R466)Lint job ruff check F401 挂(其余 11 job 全绿)——根因定谳=distill 线三 commit(dbfadbfe 起)引入 tools/distill_pilot/publish_to_memory.py:10 unused `import re`,该三件与 R466 同次 push CI 只扫 head 故首扫即红(非 ruff 版本浮动,本地 0.17.3 同报);已修复=删 import re 一行零行为变化,本地复验 All checks passed+脚本 --help smoke ok,本轮 commit 带上下轮 CI 应转绿**;notifications 另有 orb#1074(上轮已办结)/MemOS#2440(上轮已记)/soul selfimprove PR ×N 平台域只读不动/「Potential security issue」11-04 旧件持平;mention 5 条全旧持平(OWASP 11-02/xerj 10-31/cognee 10-15/IHUI 10-13/rsi-bench 10-10);genesis 五家零 REPLY 持平(EverOS 1/hindsight 1/mem0 0/letta 1/cognee 2);dev.to 30 文 6+2 持平零新评论;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=111)。
+- **管道**:qs+pipeline_report+sync 三件 exit0;快筛 CS-513 过/CS-505~512·514~518 不过与历轮全同(CS-515~517 opus=None,CS-518 25pp ✓④✓⑤✗③);矩阵 21:42 收官满额零新批无断点(CS-003 32/CS-004 28/CS-005 31/CS-006 24);gate0 PASS。
+- **候办主件**: 🔴安全报告修复拍板(三选项·90 天 disclosure 窗口自 11-05 起算)+回函草稿候审;⚠️flywheel-full-recheck 完整复判(2026-11-07 18:00 止,剩约 1 天·需预注册判据档+专门轮次);两函 400 拒候改道三选项;X 验证码 622026 候用户;PVR Web UI 候用户兜底;round>200 漂移本轮 467 续跑候用户(R524 裁定先例过阈继续);AtomGit G-Star 入驻拍板候用户;Google/GitHub 账号自核候用户;Google Play 交易者声明拍板候用户。
+
 ### R659 · 2026-11-06(值守 loop R466:新事件 orb#1074 对方婉拒关闭——定位不合记台账不动·余全渠道零新事件持平·CI 通知×4 全 R457 历史复诵·Gmail 401→直刷复活·双账本对齐)
 
 - **值守面[实测]**:信箱 0 未读;Gmail 401→refresh_token 直刷复活(R448 配方一次成功 REFRESH_OK 3599s 回写),15 条 7d 未读抽查甄别=零新面孔(orb#1074 回复通知/MemOS#2440 stale-bot/推广 newsletter/codex-connector bot 回声 nautilus-core PR×N),零新商务函零回函;**新事件:Th0rgal/orb#1074(我方免费独立复算 L1 名额外联)对方 Th0rgal 11-06T02:48Z 末评婉拒并关闭——orb/Core 定位=编排控制面非独立 benchmark harness,leaderboard 名额不合,礼貌收尾;分类=婉拒类记台账不动(已关闭无回帖必要)**;CI notifications ci_activity×4 全部=R457 历史 run 42115032850 复诵(R462 已定谳·通知不消号),最新 run=R464 commit aefcf827 run 42146303397 success,零新增红;soul selfimprove PR ×N 平台域只读不动;mention 5 条全旧持平(OWASP 11-02/xerj 10-31/cognee 10-15/IHUI 10-13/rsi-bench 10-10);genesis 五家零 REPLY 持平(EverOS 1/hindsight 1/mem0 0/letta 1/cognee 2);dev.to 30 文 6+2 持平零新评论;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=111)。
