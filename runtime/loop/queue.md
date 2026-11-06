@@ -4,6 +4,12 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R682 · 2026-11-07(值守 loop R490:幂等复诵持平轮——全渠道零新事件·platform RED 47 条持平·CI main 最新 6 run 全绿)
+
+- **值守面[实测]**:信箱 compass 0 未读;platform RED 47 条与 R489 口径一致总数持平零新增(最新 soul-distress-202611062323 复诵);Gmail 401→R448 配方直刷复活 REFRESH_OK,30 条 7d 未读全量甄别=零新面孔(WgetCloud 订单×2/codex-bot 回声×16/营销件/#66 安件复诵),零新商务函;**notifications CheckSuite 6 条全历史复诵不消号,实测 main 最新 6 run 全绿——最新 42255809842(R489 head 234f345b)16:48:37Z success,零新增红**;mention 5 条全旧持平(OWASP 11-02/xerj 10-31/cognee 10-15/IHUI 10-13/rsi-bench 10-10);genesis 五家零 REPLY 持平(EverOS 1/hindsight 1/mem0 0/letta 1/cognee 2);dev.to 30 文 6+2=8 评论持平零新增;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=146)。
+- **管道**:qs+pipeline_report+sync 三件 exit0;快筛与历轮全同(CS-513 过/CS-515~517 不过含 opus=None,CS-518 25pp ✓④✓⑤✗③,总结论存在不过筛);矩阵 21:42 收官满额零新批无断点(CS-004 28/CS-005 31/CS-006 24);GATE0 PASS(ops/ali30q/verify_criteria_lock.py)。
+- **候办主件**: 🔴安全报告修复拍板(三选项·90 天 disclosure 窗口自 11-05 起算)+回函草稿候审;⚠️flywheel-full-recheck 完整复判(2026-11-07 18:00 止,剩约 16.5 小时·需预注册判据档+专门轮次,不能自主完成记因跳过);soul distress×7 处置候用户;两函 400 拒候改道三选项;X 验证码 622026 候用户;PVR Web UI 候用户兜底;round>200 漂移本轮 490 续跑候用户(R524 先例);AtomGit G-Star 入驻拍板候用户;Google/GitHub 账号自核候用户;Google Play 交易者声明候办拍板候用户。
+
 ### R681 · 2026-11-07(值守 loop R489:幂等复诵持平轮——全渠道零新事件·platform RED 47 条持平·CI main 最新 6 run 全绿)
 
 - **值守面[实测]**:信箱 compass 0 未读;platform RED 47 条与 R488 全量甄别口径一致总数持平零新增(最新 soul-distress-202611062323 复诵);Gmail 200 探活绿免直刷,37 条 7d 未读全量甄别=零新面孔(WgetCloud 新订单 W2611061647IVXQ×2 已知面孔/codex-bot 回声/营销件/#66 安件复诵/AtomGit 入驻候拍板件),零新商务函;**notifications CheckSuite 6 条全历史复诵不消号,实测 main 最新 6 run 全绿——最新 42250346792(R488 head 772de9b9)16:13:29Z success,零新增红**;mention 5 条全旧持平(OWASP 11-02/xerj 10-31/cognee 10-15/IHUI 10-13/rsi-bench 10-10);genesis 五家零 REPLY 持平(EverOS 1/hindsight 1/mem0 0/letta 1/cognee 2);dev.to 30 文 6+2=8 评论持平零新增;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=142)。
