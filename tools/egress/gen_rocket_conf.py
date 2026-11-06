@@ -79,13 +79,12 @@ def main() -> int:
                 seen_auth.add(p["uuid"])
                 fronts.append(vless_entry(p, p["uuid"]))
     for p in extras[:1]:
-        fronts.insert(0, trojan_entry(p, str(uuidlib.uuid4()).upper()))
-    fronts = fronts[:3]
+        fronts.append(trojan_entry(p, str(uuidlib.uuid4()).upper()))  # trojan=备链(Reality 主)
     servers, first = [], None
     for f in fronts:
         c = chain_entry(env, f["uuid"], f["title"])
         if first is None:
-            first = c["title"]
+            first = c["title"]  # 首条=vless-Reality(用户指定主协议)
         servers.append(c)
         servers.append(f)
     conf = {"servers": servers,
