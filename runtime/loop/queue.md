@@ -4,6 +4,12 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R680 · 2026-11-06(值守 loop R488:复诵+platform RED 甄别修正——RED 实测 47 条非 10 条·soul distress×7 新事件通报)
+
+- **值守面[实测]**:信箱 compass 0 未读;**🔴platform RED 甄别修正:全量甄别实测 47 条(历轮 R484~487 记"10 条"系 check 输出 head 截断漏甄别)**,增量全部=11-05~11-06 soul 框 RSI 自改进通报 batch(soul-pr-440/442/443/445~456/462+step0×2+done×2+v5 OGE/RSI V2.1 通报×4)+**soul distress 熔断通报×7(11-06 01:48→23:23,selfimprove 循环 5→9 consecutive failures→重置→5→6,保活通道发函机制生效中)**——收件方 platform,处置权 platform/用户,compass 零行动需求,已通报用户候拍板;Gmail 401→R448 配方直刷复活 REFRESH_OK,30 条 7d 未读零新面孔(WgetCloud 订单×2/codex-bot 回声×16/营销件/#66 安件复诵)零新商务函;**notifications CheckSuite 11-06 两条(09:39Z/03:04Z)已知历史复诵不消号,实测 main 最新 6 run 全绿——最新 42244569658(R487 head 77561aff)15:36Z success,零新增红**;mention 5 条全旧持平(OWASP 11-02/xerj 10-31/cognee 10-15/IHUI 10-13/rsi-bench 10-10);genesis 五家零 REPLY 持平(EverOS 1/hindsight 1/mem0 0/letta 1/cognee 2);dev.to 30 文 6+2=8 评论持平零新增;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=137)。
+- **管道**:qs+pipeline_report+sync 三件 exit0;快筛与历轮全同(CS-513 过/CS-515~517 不过含 opus=None,CS-518 25pp ✓④✓⑤✗③);矩阵 21:42 收官满额零新批无断点(CS-003 32/CS-004 28/CS-005 31/CS-006 24);GATE0 PASS(ops/ali30q/verify_criteria_lock.py)。
+- **候办主件**: 🔴安全报告修复拍板(三选项·90 天 disclosure 窗口自 11-05 起算)+回函草稿候审;⚠️flywheel-full-recheck 完整复判(2026-11-07 18:00 止,剩约 18 小时·需预注册判据档+专门轮次,不能自主完成记因跳过);🆕soul selfimprove 连续失败 distress 通报×7 处置候用户(soul 熔断保活机制生效中,compass 无处置权);两函 400 拒候改道三选项;X 验证码 622026 候用户;PVR Web UI 候用户兜底;round>200 漂移本轮 488 续跑候用户(R524 先例);AtomGit G-Star 入驻拍板候用户;Google/GitHub 账号自核候用户;Google Play 交易者声明候办拍板候用户。
+
 ### R679 · 2026-11-06(值守 loop R487:幂等复诵持平轮——全渠道零新事件·CI main 最新 6 run 全绿·Gmail 200 活免直刷)
 
 - **值守面[实测]**:信箱 0 未读;platform RED 10 条全 ≤11-05 历史件持平(24318/24510/24394/25478/24549/24523/29604/30387/30435/30436,ID 列与 R486 一致);Gmail 200 探活绿免直刷,7d 30 条持平,近 24h 增量甄别仅 WgetCloud 订单×2(订单生效/购买成功,已知面孔),零新商务函;**notifications CheckSuite 11-06 两条(09:39Z/03:04Z)已知历史复诵不消号,实测 main 最新 6 run 全绿——最新 42238706196(R486 head 29cec342)14:58Z success,零新增红**;mention 5 条全旧持平(OWASP 11-02/xerj 10-31/cognee 10-15/IHUI 10-13/rsi-bench 10-10);genesis 五家零 REPLY 持平(EverOS 1/hindsight 1/mem0 0/letta 1/cognee 2);dev.to 30 文 6+2=8 评论持平零新增;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=131)。
