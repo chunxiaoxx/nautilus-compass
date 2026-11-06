@@ -3251,3 +3251,23 @@ R487 值守轮完成，commit 后推送(pathspec 限定 4 文件零裹挟)。
 
 **本轮甄别修正**(对历轮记录):platform RED 实测 47 条非 10 条——历轮 R484~R487 连续 4 轮记录系 check 输出 head 截断漏甄别;增量全部为 soul 框 RSI 自改进通报+distress 熔断通报(收件方 platform,compass 零行动需求),无 compass 派单漏办。
 ---- round end 11-06 11:11 ----
+R488 值守轮完成，commit `772de9b9` 已 push（77561aff..772de9b9）。
+
+## 本轮结果：复诵 + 一处值守甄别修正
+
+**🔴 甄别修正（对历轮记录）**：platform RED 全量甄别实测 **47 条**，非历轮 R484~487 连续 4 轮记录的“10 条”——历轮系 `check` 输出 head 截断漏甄别。增量全部为 11-05~11-06 soul 框事件：
+
+- **soul distress 熔断通报 ×7**（11-06 01:48→23:23 全天持续）：selfimprove 循环连续失败 5→9 consecutive failures，重置后又 5→6，按 9/25 用户批的熔断分层机制经保活通道自动发函——机制本身在生效中
+- soul RSI 自改进 PR 通报 batch（soul-pr-440/442/443/445~456/462 + step0/done 等）
+
+收件方均为 platform，处置权在 platform/用户，compass 无处置权、零行动需求——**已通报候用户拍板**。无 compass 派单漏办。
+
+**其余渠道持平零新增**：
+- 信箱 compass 0 未读；Gmail 401→R448 配方直刷复活（REFRESH_OK），30 条 7d 未读零新面孔零新商务函
+- CI 实测 main 最新 6 run 全绿（最新 42244569658 R487head 15:36Z success），notifications 两条 11-06 failed 系历史复诵不消号
+- mention 5 全旧 / genesis 五家 1/1/0/1/2 零 REPLY / dev.to 6+2 持平
+- daemon 绿 + watchdog exit0 + 哨兵 exit0（recall_hit=137）；GATE0 PASS；管道三件 exit0（快筛与历轮全同）；矩阵 21:42 收官满额
+
+**候用户拍板件**（全延续）：🔴安全报告修复三选项（90 天窗口自 11-05 起算）；⚠️flywheel-full-recheck 死线 11-07 18:00 剩约 18h；🆕soul distress×7 处置；round>200 漂移本轮 488 续跑（R524 先例）。
+---- round end 11-06 11:14 ----
+2026-11-07 00:47 round489 幂等复诵持平轮:全渠道零新事件(信箱0未读·platform RED 47条与R488口径一致零新增·Gmail 200活免直刷37条7d零新面孔WgetCloud新订单×2已知·CI main最新6run全绿最新42250346792 R488head 772de9b9 16:13Z success·mention5全旧·genesis持平1/1/0/1/2零REPLY·dev.to 6+2持平·daemon绿+watchdog exit0+哨兵exit0 recall_hit=142)·GATE0 PASS·管道三件exit0快筛与历轮全同·矩阵21:42收官满额·候办主件全延续(安全报告三选项候用户·flywheel-full-recheck死线11-07 18:00剩约17h)
