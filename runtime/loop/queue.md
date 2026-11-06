@@ -4,6 +4,12 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R686 · 2026-11-07(值守 loop R494:幂等复诵持平轮——全渠道零新事件·platform RED 49 条持平·CI main 最新 6 run 全绿含 R493 head 过绿)
+
+- **值守面[实测]**:信箱 compass 0 未读;platform RED 实测 49 条与 R493 口径一致总数持平零新增(最新=id 33161 compass 自发 OGE 回函+33119 soul-distress-202611070132 复诵);Gmail 401→R448 配方直刷复活 REFRESH_OK 3599s,37 条 7d 未读全量甄别=零新面孔(codex-bot 回声×16/营销件×16/WgetCloud 订单×2/#66 安件复诵 Nagizaaz/AtomGit 候拍板 GitCode 回信/Google 安全提醒),零新商务函;**实测 main 最新 6 run 全绿——最新 42277818592(R493 head 2dd5300d)19:14:08Z success=R493 推送 CI 已过绿,零新增红**(CheckSuite 6 条全历史复诵不消号);mention 5 条全旧持平(OWASP 11-02/xerj 10-31/cognee 10-15/IHUI 10-13/rsi-bench 10-10);genesis 五家零 REPLY 持平(EverOS 1/hindsight 1/mem0 0/letta 1/cognee 2);dev.to 30 文 6+2=8 评论持平零新增;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=166)。
+- **管道**:qs+pipeline_report+sync 三件 exit0;快筛与历轮全同(CS-513 过/CS-515~517 不过含 opus=None,CS-518 25pp ✓④✓⑤✗③,总结论存在不过筛);GATE0 PASS(ops/ali30q/verify_criteria_lock.py);矩阵 matrix_run.log mtime=10-30 09:42 维持 7 天零写入,停摆根因(R493 勘误 1)维持,恢复候用户解锁屏幕。**复诵三必核全过**:计数全量 grep(Gmail 37 条逐条甄别/platform RED total 49/CI 6 run 实测/dev.to 30 文全扫)+log stat mtime(matrix_run.log·COLLAB_BOARD)+台账必验(root COLLAB_BOARD R493 行实证在 mtime 14:13 与 R493 吻合;runtime/ 副本滞后 R492 系旧路径,本轮归 root 单源)。
+- **候办主件**: 🔴安全报告修复拍板(三选项·90 天 disclosure 窗口自 11-05 起算)+回函草稿候审;⚠️flywheel-full-recheck 完整复判(2026-11-07 18:00 止,剩约 14.2 小时·需预注册判据档+专门轮次,不能自主完成记因跳过);soul distress 熔断持续(累计×8·处置候用户);两函 400 拒候改道三选项;X 验证码 622026 候用户;PVR Web UI 候用户兜底;round>200 漂移本轮 494 续跑候用户(R524 先例);AtomGit G-Star 入驻拍板候用户;Google/GitHub 账号自核候用户;Google Play 交易者声明候办拍板候用户;🆕矩阵/phase2 恢复候用户解锁屏幕。
+
 ### R685 · 2026-11-07(值守 loop R493:幂等复诵持平+两处勘误轮——矩阵停摆根因坐实·COLLAB_BOARD 断档补录·全渠道零新事件·CI 全绿)
 
 - **值守面[实测]**:信箱 compass 0 未读;platform RED 实测 49 条与 R492 口径一致总数持平零新增;Gmail 200 探活绿免直刷,37 条 7d 未读全量甄别=零新面孔(codex-bot 回声×16/营销件×14/#66 安件复诵 Nagizaaz/AtomGit 候拍板/WgetCloud 订单×2/Google 安全提醒),零新商务函;实测 main 最新 6 run 全绿——最新 42272149193(R492 head f9cf2f50)18:35:52Z success,零新增红(CheckSuite 6 条全历史复诵不消号);mention 5 条全旧持平(OWASP 11-02/xerj 10-31/cognee 10-15/IHUI 10-13/rsi-bench 10-10);genesis 五家零 REPLY 持平(EverOS 1/hindsight 1/mem0 0/letta 1/cognee 2);dev.to 30 文 6+2=8 评论持平零新增;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=162)。
