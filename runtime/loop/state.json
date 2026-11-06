@@ -1,13 +1,7 @@
 {
-  "round": 471,
-  "last_round_ts": "2026-11-06T01:02+08:00",
+  "round": 472,
+  "last_round_ts": "2026-11-06T01:36+08:00",
   "history": [
-    {
-      "round": 465,
-      "ts": "2026-11-06T10:23",
-      "result": "idle-repeat",
-      "note": "全渠道零新事件持平轮;MemOS#2440 stale-bot标记零人工回复"
-    },
     {
       "round": 466,
       "ts": "2026-11-06T21:59",
@@ -31,7 +25,13 @@
       "ts": "2026-11-06T01:02",
       "result": "idle-repeat",
       "note": "幂等复诵持平轮:全渠道零新事件;orb#1074=R466已定谳婉拒件复诵台账在档;CI最新run 42168600937 success全绿"
+    },
+    {
+      "round": 472,
+      "ts": "2026-11-06T01:36",
+      "result": "idle-repeat",
+      "note": "幂等复诵持平轮:全渠道零新事件;Gmail 401→直刷复活;CI最新run 42172045354 R471 head success全绿零新增红"
     }
   ],
-  "last_round_time": "2026-11-06 01:02"
+  "last_round_time": "2026-11-06 01:36"
 }
