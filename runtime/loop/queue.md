@@ -4,6 +4,12 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R692 · 2026-11-07(值守 loop R500:幂等复诵持平轮——全渠道零新事件·🆕R499 head CI 过绿·Gmail 401→直刷复活·platform RED 50 条持平)
+
+- **值守面[实测]**:信箱 compass 0 未读;platform RED 实测 50 条与 R499 持平零新增(最新仍=id 33410 soul-distress-202611070448,累计×9 候用户);Gmail 401→R448 配方直刷复活 REFRESH_OK(3599s),37 条 7d 未读全量甄别=零新面孔零新商务函(codex-bot 回声×16/Substack 营销×8/WgetCloud×2/X×2/#66 安件复诵 Nagizaaz/AtomGit-GitCode 候拍板/Google 安全提醒/营销其他×6);**实测 main 最新 8 run 全绿——🆕最新 42308391210(R499 head 086721ab)22:56Z success=R499 推送 CI 已过绿,零新增红**(通知区 2 条 CI failed=threads 26973687523/26966579636 实测甄别=R477 09:36Z/R466 03:01Z 历史轮失败,已被后续 R478→R499 连绿覆盖,历史复诵不消号);mention 5 条全旧持平(最新 11-02);genesis 五家持平 1/1/0/1/2 零 REPLY(letta 本轮正常解析无 ERR);dev.to 30 文 6+2=8 评论持平零新增;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=185)。
+- **管道**:qs+pipeline_report+sync 三件 exit0;快筛与历轮全同(CS-513 过/CS-514 不过 qwen 1.0/opus 0.0 梯度 -100pp/CS-515~517 不过 opus=None/CS-518 25pp ✓④✓⑤✗③,总结论存在不过筛);GATE0 PASS(ops/ali30q/verify_criteria_lock.py);矩阵 matrix_run.log mtime=10-30 09:42 维持停摆候用户解锁(R493 勘误 1 维持)。**复诵三必核全过**:计数全量甄别(Gmail 37 条逐条 sender/platform RED grep -c=50/CI 8 run 实测/dev.to 30 文全扫)+log stat mtime(matrix_run.log·COLLAB_BOARD)+台账必验(root COLLAB_BOARD R499 行 mtime 11-06 17:56 EST 实证在;runtime/ 副本滞后系旧路径维持 root 单源;本机 EST vs 台账 +08:00 差 13h 已知双口径)。**勘误自纠**:Gmail 线程查询误用 `/threads/list` 路径被解析成 threads.get(id="list") 致 400 "Invalid id value",即时停改正确列表端点 `/threads` 单请求配方,37 条全甄完成(R206 家族:探错先停改配方)。
+- **候办主件**: 🔴安全报告修复拍板(三选项·90 天 disclosure 窗口自 11-05 起算)+回函草稿候审;⚠️flywheel-full-recheck 完整复判(2026-11-07 18:00(+08:00)止,剩约 10.5h·需预注册判据档+专门轮次,不能自主完成记因跳过);soul distress 熔断持续(累计×9·处置候用户);两函 400 拒候改道三选项;X 验证码 622026 候用户;PVR Web UI 候用户兜底;round>200 漂移本轮 500 续跑候用户(R524 先例);AtomGit G-Star 入驻拍板候用户;Google/GitHub 账号自核候用户;Google Play 交易者声明候办拍板候用户;矩阵/phase2 恢复候用户解锁屏幕。
+
 ### R691 · 2026-11-07(值守 loop R499:幂等复诵持平轮——全渠道零新事件·🆕R498 head CI 过绿·platform RED 50 条持平·CI 8 run 全绿)
 
 - **值守面[实测]**:信箱 compass 0 未读;platform RED 实测 50 条与 R498 持平零新增(最新仍=id 33410 soul-distress-202611070448,累计×9 候用户);Gmail 200 活免直刷,37 条 7d 未读全量甄别=零新面孔零新商务函(codex-bot 回声×16/Substack 营销×8/WgetCloud×2/X×2/#66 安件复诵 Nagizaaz/AtomGit-GitCode 候拍板/Google 安全提醒/营销其他×6);**实测 main 最新 8 run 全绿——🆕最新 42304116807(R498 head 4e14d9fc)22:21Z success=R498 推送 CI 已过绿,零新增红**;mention 5 条全旧持平;genesis 五家持平 1/1/0/1/2 零 REPLY(letta 本轮正常解析无 ERR,外部评论=1 系 github-actions bot);dev.to 30 文 6+2=8 评论持平零新增;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=182)。
