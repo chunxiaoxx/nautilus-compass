@@ -119,7 +119,18 @@ def main() -> int:
     out.write_text(yaml.safe_dump(cfg, allow_unicode=True, sort_keys=False), encoding="utf-8")
     os.chmod(out, 0o600)
     print(f"OK: {len(proxies)} 订阅节点 + 链式节点(前置={pre_name}) -> {out}", file=sys.stderr)
-    print(f"上传到自有域名随机长路径后,小火箭/Clash 订阅填该 URL;选组 [{CHAIN_GROUP}]", file=sys.stderr)
+
+    token = env.get("DEPLOY_TOKEN") or (Path.home() / ".config/nautilus/sub_token.txt").read_text().strip() if (Path.home() / ".config/nautilus/sub_token.txt").exists() else env.get("DEPLOY_TOKEN")
+    if token:
+        import subprocess
+        remote = f"cloud:/var/www/subs/{token}/clash.yaml"
+        r = subprocess.run(["scp", "-q", str(out), remote], timeout=60)
+        if r.returncode == 0:
+            print(f"已部署: https://nautilus.social/subs/{token}/clash.yaml (小火箭/Clash 填此 URL,选组 [{CHAIN_GROUP}])", file=sys.stderr)
+        else:
+            print(f"scp 部署失败(rc={r.returncode}),文件在本地 {out},手动上传 {remote}", file=sys.stderr)
+    else:
+        print(f"上传到自有域名随机长路径后,小火箭/Clash 订阅填该 URL;选组 [{CHAIN_GROUP}]", file=sys.stderr)
     return 0
 
 
