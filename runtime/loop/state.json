@@ -1,18 +1,18 @@
 {
-  "round": 465,
-  "last_round_ts": "10:23",
+  "round": 466,
+  "last_round_ts": "now",
   "history": [
-    {
-      "round": 464,
-      "ts": "2026-11-06T05:05",
-      "result": "idle-repeat",
-      "note": "全渠道零新事件持平轮"
-    },
     {
       "round": 465,
       "ts": "2026-11-06T10:23",
       "result": "idle-repeat",
       "note": "全渠道零新事件持平轮;MemOS#2440 stale-bot标记零人工回复"
+    },
+    {
+      "round": 466,
+      "ts": "2026-11-06T21:59",
+      "result": "minor-event",
+      "note": "新事件orb#1074对方婉拒关闭记台账不动;余持平;Gmail直刷复活"
     }
   ]
 }

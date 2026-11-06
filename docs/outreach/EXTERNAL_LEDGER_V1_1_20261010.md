@@ -92,3 +92,6 @@
 
 ### 追记(11/4 · compass#66 安全披露渠道请求)
 - **chunxiaoxx/nautilus-compass#66(shaikn6·2026-11-04T19:04Z 开)「Potential security issue — requesting a private contact」[值守轮 R326/loop R414 处置]**:研究者称发现安全问题,要求私下渠道(PVR 或 security email)。处置=按既有 SECURITY.md 档回帖指路(邮箱 chunxiaoxx@gmail.com·PGP nautilus.social/security·72h 响应承诺·90-day 披露政策)+关闭 issue 保持公开 tracker 无安全讨论线(comment 6639991589)。PVR 专用 API 端点 404 未确认开启(Web UI 兜底候用户);待其邮件到达即按 72h SLA 接报。零漏洞细节公开暴露,无外泄。
+
+### 追记(11/6 · Th0rgal/orb#1074 婉拒关闭)
+- **Th0rgal/orb#1074(我方外联:免费独立复算 L1 名额 offer·launched Oct 12)对方婉拒并关闭[值守轮 loop R466 处置]**:Th0rgal 末评(11-06T02:48:56Z)说明 orb/Core 定位=编排控制面(client and control plane,编排 Claude Code/Codex/OpenCode/Antigravity/Grok 于本地与远程机器),非独立 benchmark harness,leaderboard 名额不合,issue 已关闭并礼貌收尾("congrats on the launch!")。**分类=婉拒类,按纪律记台账不动**(对方已收尾关闭,无回帖必要,不追)。
