@@ -4,6 +4,12 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R689 · 2026-11-07(值守 loop R497:幂等复诵持平轮——全渠道零新事件·🆕R496 head CI 过绿·platform RED 50 条持平·CI 8 run 全绿)
+
+- **值守面[实测]**:信箱 compass 0 未读;platform RED 实测 50 条与 R496 持平零新增;Gmail 200 探活绿免直刷,37 条 7d 未读全量甄别=零新面孔(codex-bot 回声×16/Substack 营销×8/WgetCloud×2/X×2/#66 安件复诵 Nagizaaz/AtomGit-GitCode 候拍板/Google 安全提醒/营销其他×6),零新商务函;**实测 main 最新 8 run 全绿——🆕最新 42294127072(R496 head 4d556321)21:07Z success=R496 推送 CI 已过绿,零新增红**(CheckSuite 历史失败条目复诵不消号);mention 5 条全旧持平;genesis 五家持平 1/1/0/1/2 零 REPLY;dev.to 30 文 6+2=8 评论持平零新增;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=176)。
+- **管道**:qs+pipeline_report+sync 三件 exit0;快筛与 R496 全同(CS-513 过/CS-514 新入窗不过 qwen 1.0/opus 0.0 梯度 -100pp/CS-515~517 不过 opus=None/CS-518 25pp ✓④✓⑤✗③,总结论存在不过筛);GATE0 PASS;矩阵 matrix_run.log mtime=10-30 09:42 维持 7 天零写入停摆候用户解锁(R493 勘误 1 维持)。**复诵三必核全过**:计数全量甄别(Gmail 37 条逐条 sender/platform RED total 50/CI 8 run 实测/dev.to 30 文全扫)+log stat mtime(matrix_run.log·COLLAB_BOARD)+台账必验(root COLLAB_BOARD R496 行 mtime 16:06 实证在;runtime/ 副本滞后系旧路径维持 root 单源)。
+- **候办主件**: 🔴安全报告修复拍板(三选项·90 天 disclosure 窗口自 11-05 起算)+回函草稿候审;⚠️flywheel-full-recheck 完整复判(2026-11-07 18:00 止·需预注册判据档+专门轮次,不能自主完成记因跳过);soul distress 熔断持续(累计×9·处置候用户);两函 400 拒候改道三选项;X 验证码 622026 候用户;PVR Web UI 候用户兜底;round>200 漂移本轮 497 续跑候用户(R524 先例);AtomGit G-Star 入驻拍板候用户;Google/GitHub 账号自核候用户;Google Play 交易者声明候办拍板候用户;矩阵/phase2 恢复候用户解锁屏幕。
+
 ### R688 · 2026-11-07(值守 loop R496:幂等复诵+1 新事件甄别轮——platform RED 49→50(+1 soul-distress 累计×9)·其余全渠道零新·GATE0 PASS)
 
 - **值守面[实测]**:信箱 compass 0 未读;**platform RED 49→50 条,唯一增量=id 33410 soul→platform soul-distress-202611070448(soul distress 熔断累计×9,处置候用户)**;Gmail 401→R448 配方直刷复活 REFRESH_OK,37 条 7d 未读全量甄别=零新面孔零新商务函(codex-bot 回声×16/Substack 营销×7/WgetCloud×2/X×2/营销×6/#66 安件复诵 Nagizaaz/AtomGit-GitCode 候拍板/Google 安全提醒);实测 main 最新 8 run 全绿(最新 42288505264=R495 head 14cbe439 20:27Z success=R495 推送 CI 已过绿)零新增红(CheckSuite 6 条历史复诵不消号;soul 自改进 draft PR 通知=走机审 platform 域 compass 零行动);mention 5 全旧;genesis 持平 1/1/0/1/2 零 REPLY;dev.to 6+2 持平;daemon 绿+watchdog exit0+哨兵 exit0(recall_hit=173)。
