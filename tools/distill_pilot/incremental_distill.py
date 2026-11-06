@@ -28,7 +28,7 @@ PATROL_RE = re.compile(r"值守|轮值|LOOP 轮|loop 轮指令", re.IGNORECASE)
 MIN_SIZE = 10_000
 WRITING_WINDOW = 1800  # 30 分钟内仍在写的会话不碰
 SERVER_CMD = [
-    "llama-server", "-m", str(Path.home() / "models/distill/Qwen3.5-9B-Q4_K_M.gguf"),
+    "/opt/homebrew/bin/llama-server", "-m", str(Path.home() / "models/distill/Qwen3.5-9B-Q4_K_M.gguf"),
     "--host", "127.0.0.1", "--port", "8765", "-c", "32768", "-ngl", "99",
     "--chat-template-kwargs", '{"enable_thinking": false}',
 ]
