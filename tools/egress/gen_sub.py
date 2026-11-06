@@ -68,10 +68,16 @@ def pick_preproxy(proxies: list[dict], want: str | None) -> str:
         if want not in names:
             sys.exit(f"PREPROXY_NAME={want} 不在订阅节点里;可选: {sorted(names)[:10]}...")
         return want
-    for p in proxies:
-        if str(p.get("type", "")).lower() in USABLE_PREPROXY:
+    real = [p for p in proxies
+            if not str(p.get("name", "")).startswith(("Expire", "Traffic", "Sync", "剩余", "过期"))
+            and str(p.get("type", "")).lower() in USABLE_PREPROXY]
+    if not real:
+        sys.exit("订阅里没有可用作前置的节点")
+    # 链式最短路径: 优先美国节点做前置(机场节点→同国家宽出口,少绕一洲)
+    for p in real:
+        if "美国" in str(p.get("name", "")) or "US" in str(p.get("name", "")):
             return p["name"]
-    sys.exit("订阅里没有可用作前置的节点")
+    return real[0]["name"]
 
 
 def main() -> int:
@@ -85,14 +91,6 @@ def main() -> int:
         sys.exit("订阅 proxies 为空")
 
     pre_name = pick_preproxy(proxies, env.get("PREPROXY_NAME") or None)
-    home = {
-        "name": CHAIN_NODE,
-        "type": "socks5",
-        "server": env["HOME_HOST"],
-        "port": int(env["HOME_PORT"]),
-        "udp": True,
-        "dialer-proxy": pre_name,  # mihomo/Clash Meta: 跨境段走订阅节点加密
-    }
     home_plain = {
         "name": PLAIN_NODE,
         "type": "socks5",
@@ -100,16 +98,29 @@ def main() -> int:
         "port": int(env["HOME_PORT"]),
         "udp": True,
     }
+    # 多前置链: 机场节点池含死键,给最多 3 条 US 链手机上择活
+    real = [p for p in proxies
+            if not str(p.get("name", "")).startswith(("Expire", "Traffic", "Sync", "剩余", "过期"))
+            and str(p.get("type", "")).lower() in USABLE_PREPROXY]
+    us_nodes = [p["name"] for p in real if "美国" in str(p.get("name", "")) or "US" in str(p.get("name", ""))][:3] or [pre_name]
+    chain_nodes = []
+    for i, pn in enumerate(us_nodes):
+        n = dict(home_plain)
+        n["name"] = CHAIN_NODE if i == 0 else f"{CHAIN_NODE}-via{pn[:12]}"
+        n["dialer-proxy"] = pn
+        chain_nodes.append(n)
     for key in ("username", "password"):
         if env.get(key.upper()) or env.get(key):
-            home[key] = home_plain[key] = env.get(key.upper()) or env[key]
+            home_plain[key] = env.get(key.upper()) or env[key]
+            for cn in chain_nodes:
+                cn[key] = home_plain[key]
 
-    cfg["proxies"] = [home, home_plain] + proxies
+    cfg["proxies"] = chain_nodes + [home_plain] + proxies
     groups = cfg.setdefault("proxy-groups", [])
     groups.insert(0, {
         "name": CHAIN_GROUP,
         "type": "select",
-        "proxies": [CHAIN_NODE, PLAIN_NODE, pre_name],
+        "proxies": [c["name"] for c in chain_nodes] + [PLAIN_NODE],
     })
 
     out = Path(env.get("OUT") or DEFAULT_OUT)
