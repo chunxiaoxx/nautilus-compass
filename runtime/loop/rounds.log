@@ -3312,3 +3312,17 @@ R490 值守轮完成，commit `d0303152` 已推送(仅含四件留痕，未裹�
 **候用户拍板件全延续**：🔴安全报告三选项(90 天窗口自 11-05 起算)；⚠️flywheel-full-recheck 死线 11-07 18:00 **剩约 16.5h**(需预注册判据档，历轮口径不能自主完成，本轮继续记因跳过——如需赶死线请明示)；soul distress×7 处置；round>200 漂移本轮 490 照 R524 先例续跑。exit 0。
 ---- round end 11-06 12:24 ----
 2026-11-07 01:59 round491 OGE函处置轮:信箱compass 1未读=OGE状态索取函id 33160(SLA 2h)→按函执行:三行回函已发id 33161(oge-status-demand-compass-2026-11-07-done)+ack办结SLA内·platform RED实测49条47→49增量=soul-distress-202611070132(7连fail熔断5→6→7保活通道生效中候用户)+自发OGE回函入列收件方platform零行动需求·其余零新事件:Gmail 200活免直刷7d商务过滤0条零新商务函·CI main最新6run全绿最新42261208757 R490head d0303152 17:23Z success·CheckSuite 6条历史复诵不消号·mention5全旧·genesis持平1/1/0/1/2零REPLY·dev.to 6+2持平·daemon绿+watchdog exit0+哨兵exit0 recall_hit=150·GATE0 PASS·管道三件exit0快筛与历轮全同(CS-513过/CS-515~517不过opus=None/CS-518 25pp✓④✓⑤✗③)·矩阵21:42收官满额零新批(CS-004 28/CS-005 31/CS-006 24)·候办主件全延续(安全报告三选项候用户·flywheel-full-recheck死线11-07 18:00剩约16h·soul distress×8处置候用户)
+R491 完成，已提交推送(d0303152..23103acd)。
+
+**本轮纪要(R491 · OGE 函处置轮)**：
+
+- **新事件+处置**：信箱 compass 1 未读 = OGE 状态索取函 id 33160(SLA 2h,03:53 止)→ 按函三行回函已发 **id 33161**(trace `oge-status-demand-compass-2026-11-07-done`,SLA 内)，并 ack 办结来函
+- **platform RED 甄别**：实测 49 条(47→49),增量两条 = 🆕soul-distress-202611070132(熔断 7 连 fail,5→6→7,保活通道生效中，处置候用户)+ 本轮自发 OGE 回函入列；收件方 platform,compass 零行动需求
+- **其余渠道零新事件**：Gmail 200 活免直刷，7d 商务过滤 0 条；CI main 最新 6 run 全绿(最新 42261208757,R490 head 17:23Z success);mentions 5 条全旧；genesis 五家 1/1/0/1/2 零 REPLY;dev.to 6+2 持平
+- **探活**：daemon 9876 绿 + watchdog exit0 + 注入哨兵 exit0(recall_hit=150);GATE0 PASS
+- **管道三件** exit0,快筛与历轮全同(CS-513 过/CS-515~517 不过 opus=None/CS-518 25pp ✓④✓⑤✗③);矩阵 21:42 收官满额零断点
+- **候办主件全延续**：安全报告三选项候用户、flywheel-full-recheck 死线 11-07 18:00 剩约 16h、soul distress 熔断持续×8 候用户；round>200 漂移本轮 491 续跑候用户(R524 先例)
+
+留痕：rounds.log/state.json/queue.md(R683)/COLLAB_BOARD 四件，pathspec 限定 commit,零裹挟。
+---- round end 11-06 13:00 ----
+2026-11-07 02:34 round492 幂等复诵持平轮:全渠道零新事件(信箱compass 0未读·platform RED 49条与R491口径一致总数持平零新增最新=id 33119 soul-distress-202611070132复诵+compass自发OGE回函33161入列·Gmail 401→R448配方直刷复活REFRESH_OK 3599s·40条7d未读全量甄别零新面孔codex-bot回声×19/WgetCloud订单×2/营销件/#66安件复诵/AtomGit候拍板/Google安全提醒零新商务函·实测main最新6run全绿最新42266686417 R491head 23103acd 17:59:58Z success零新增红·CheckSuite 6条全历史复诵不消号·mention5全旧·genesis持平1/1/0/1/2零REPLY·dev.to 6+2持平·daemon 9876绿+watchdog exit0+哨兵exit0 recall_hit=156)·GATE0 PASS·管道三件exit0快筛与历轮全同(CS-513过/CS-515~517不过opus=None/CS-518 25pp✓④✓⑤✗③)·矩阵21:42收官满额零新批无断点(CS-003 32/CS-004 28/CS-005 31/CS-006 24)·候办主件全延续(安全报告三选项候用户·flywheel-full-recheck死线11-07 18:00剩约15.5h·soul distress×8处置候用户)·round>200漂移本轮492续跑候用户(R524先例)

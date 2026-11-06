@@ -4,6 +4,12 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R684 · 2026-11-07(值守 loop R492:幂等复诵持平轮——全渠道零新事件·platform RED 49 条持平·CI main 最新 6 run 全绿)
+
+- **值守面[实测]**:信箱 compass 0 未读;platform RED 49 条与 R491 口径一致总数持平零新增(最新=id 33119 soul-distress-202611070132 复诵+compass 自发 OGE 回函 33161 入列);Gmail 401→R448 配方直刷复活 REFRESH_OK 3599s,40 条 7d 未读全量甄别=零新面孔(codex-bot 回声×19/WgetCloud 订单×2/营销件/#66 安件复诵/AtomGit 候拍板/Google 安全提醒),零新商务函;**实测 main 最新 6 run 全绿——最新 42266686417(R491 head 23103acd)17:59:58Z success,零新增红**(CheckSuite 6 条全历史复诵不消号);mention 5 条全旧持平(OWASP 11-02/xerj 10-31/cognee 10-15/IHUI 10-13/rsi-bench 10-10);genesis 五家零 REPLY 持平(EverOS 1/hindsight 1/mem0 0/letta 1/cognee 2);dev.to 30 文 6+2=8 评论持平零新增;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=156)。
+- **管道**:qs+pipeline_report+sync 三件 exit0;快筛与历轮全同(CS-513 过/CS-515~517 不过含 opus=None,CS-518 25pp ✓④✓⑤✗③,总结论存在不过筛);矩阵 21:42 收官满额零新批无断点(CS-003 32/CS-004 28/CS-005 31/CS-006 24);GATE0 PASS(ops/ali30q/verify_criteria_lock.py)。
+- **候办主件**: 🔴安全报告修复拍板(三选项·90 天 disclosure 窗口自 11-05 起算)+回函草稿候审;⚠️flywheel-full-recheck 完整复判(2026-11-07 18:00 止,剩约 15.5 小时·需预注册判据档+专门轮次,不能自主完成记因跳过);soul distress 熔断持续(最新 202611070132=7 consecutive failures·累计×8·处置候用户);两函 400 拒候改道三选项;X 验证码 622026 候用户;PVR Web UI 候用户兜底;round>200 漂移本轮 492 续跑候用户(R524 先例);AtomGit G-Star 入驻拍板候用户;Google/GitHub 账号自核候用户;Google Play 交易者声明候办拍板候用户。
+
 ### R683 · 2026-11-07(值守 loop R491:OGE 状态索取函处置轮——三行回函+ack 办结·全渠道零新事件·CI main 最新 6 run 全绿)
 
 - **值守面[实测]**:信箱 compass 1 未读=OGE 状态索取函 id 33160(SLA 2h·03:53 止)——按函执行:三行回函已发 id 33161(oge-status-demand-compass-2026-11-07-done,01:5x 发·SLA 内)+ack 办结;platform RED 实测 49 条(47→49:增量=🆕soul-distress-202611070132(7 consecutive failures,熔断 5→6→7 保活通道生效中)+compass 自发 OGE 回函 33161 入列,收件方 platform 处置权 platform/用户 compass 零行动需求);Gmail 200 探活绿免直刷,7d 未读商务过滤=0 条零新商务函;实测 main 最新 6 run 全绿——最新 42261208757(R490 head d0303152)17:23:33Z success,零新增红(notifications 6 条 failed 全历史复诵不消号);mention 5 条全旧持平(OWASP 11-02/xerj 10-31/cognee 10-15/IHUI 10-13/rsi-bench 10-10);genesis 五家零 REPLY 持平(EverOS 1/hindsight 1/mem0 0/letta 1/cognee 2);dev.to 30 文 6+2=8 评论持平零新增;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=150)。
