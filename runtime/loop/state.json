@@ -1,7 +1,13 @@
 {
-  "round": 473,
-  "last_round_ts": "2026-11-06T15:11+08:00",
+  "round": 474,
+  "last_round_ts": "2026-11-06T15:46+08:00",
   "history": [
+    {
+      "round": 474,
+      "ts": "2026-11-06T15:46",
+      "result": "idle-repeat",
+      "note": "幂等复诵持平轮:全渠道零新事件;CI最新run 42179614136 1d3f5465=R473值守 07:14Z success全绿;Gmail 401→直刷复活REFRESH_OK 3599s;30条7d未读零新面孔"
+    },
     {
       "round": 473,
       "ts": "2026-11-06T15:11",
