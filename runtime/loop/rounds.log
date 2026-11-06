@@ -3052,3 +3052,39 @@ R476 值守轮完成，commit `ed4fd0e2` 已上 origin/main（672ca952..ed4fd0e2
 **候办主件全延续**：🔴安全报告修复三选项拍板+回函草稿候审（90 天窗口自 11-05 起算）；⚠️flywheel-full-recheck 死线 11-07 18:00 剩约 1 天；两函 400 拒改道、X 验证码、PVR Web UI、round>200 漂移续跑（R524 先例）等均候用户。
 ---- round end 11-06 04:03 ----
 ** R477 值守 11-06 09:35Z 幂等复诵持平轮:信箱0未读·Gmail 200活免直刷(30条7d未读全甄别零新面孔·零新商务函)·CI failed×5=历史run42153941691不消号,实测最新run 42191944898 ed4fd0e2=R476值守 09:01Z success全绿零新增红·mention5全旧持平·genesis五家零REPLY持平1/1/0/1/2·dev.to 30文6+2=8持平·daemon 9876绿+watchdog+哨兵exit0 recall_hit=69·管道三件exit0·快筛与历轮全同·gate0 PASS·矩阵21:42收官满额零新批·候办主件全延续(flywheel-full-recheck死线11-07 18:00剩约32h)·round>200漂移本轮477续跑候用户(R524先例)
+R477 值守轮完成，commit `64fc90e3` 已推上 origin/main（ed4fd0e2..64fc90e3）。
+
+**本轮=幂等复诵持平轮，全渠道零新事件**：
+
+| 渠道 | 结果 |
+|---|---|
+| 平台信箱 | 0 未读 |
+| Gmail | 200 活免直刷；7d 未读甄别全旧面孔（bot 回声×16/WgetCloud×2），零新商务函 |
+| GitHub | mention 5 全旧持平；CI failed 通知×5=历史 run 42153941691 不消号，实测最新 run 42191944898（R476 head ed4fd0e2）09:01Z success 全绿 |
+| 创世监视 | 五家零 REPLY 持平 1/1/0/1/2 |
+| dev.to | 30 文 6+2=8 评论持平零新增 |
+| daemon/watchdog/哨兵 | 9876 绿 / exit0 / exit0（recall_hit=69） |
+
+**管道**：三件 exit0，快筛与历轮全同，gate0 PASS，矩阵 21:42 收官满额零新批无断点。
+
+**候办主件全延续**：🔴安全报告修复三选项拍板+回函草稿候审；⚠️flywheel-full-recheck 死线 11-07 18:00 剩约 32h；round>200 漂移本轮 477 续跑候用户（R524 先例）。
+
+留痕四件齐：rounds.log / state.json(round=477) / queue.md(R670 条目) / COLLAB_BOARD。
+---- round end 11-06 04:37 ----
+
+## R478 · 2026-11-06 18:12(+08:00) · CI 真新增红甄别修复轮
+
+**值守面[实测]**:信箱 0 未读;Gmail 401→refresh_token 直刷复活(R448 配方一次成功 REFRESH_OK 3599s 回写);30 条 7d 未读全量甄别=零新面孔(codex-connector bot 回声 nautilus-core PR×19/WgetCloud 订单×2/营销件 substack 31%off×4·X Money·ngrok·Daytona GPU 11-15·dnb/#66 安件 shaikn6 复诵=11-05 安全报告已处置),零新商务函;mention 5 条全旧持平(OWASP 11-02/xerj 10-31/cognee 10-15/IHUI 10-13/rsi-bench 10-10);genesis 五家零 REPLY 持平(EverOS 1/hindsight 1/mem0 0/letta 1/cognee 2);dev.to 30 文 6+2=8 评论持平零新增;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=74)。
+
+**🔴CI 新增红处置(本轮实质动作)**:notifications 新增 failed(09:39:55Z)甄别=run 42196312736(R477 head 64fc90e3)Lint job failure——ruff F401×2 tools/egress/gen_sub.py unused imports re/stat;其余 12 job 全 success,排除测试面回归。处置链:git stash 工作区 pick_preproxy WIP(非本轮改动保全)→.venv/bin/ruff 0.17.3 本地复现一致(2 F401)→--fix 删 2 行→All checks passed→ast.parse 完整性 OK→限定 pathspec commit 702cab0a→stash pop 恢复 WIP 无损→全仓 ruff check . 绿→push 64fc90e3..702cab0a(CI 重跑中,下轮复验)。
+
+**管道**:三件 exit0,快筛与历轮全同(CS-303 过/CS-513 过/CS-515~517 opus=None/CS-518 25pp ✓④✓⑤✗③),gate0 PASS,矩阵 21:42 收官满额零新批无断点(CS-003 32/CS-004 28/CS-005 31/CS-006 24)。
+
+**候办主件全延续(均需用户/外部输入,按令跳过记因)**:🔴安全报告修复三选项拍板+回函草稿候审;⚠️flywheel-full-recheck 死线 11-07 18:00 剩约 24h(需预注册判据档+专门轮次);两函 400 拒候改道;X 验证码 622026 候用户;PVR Web UI 候用户;round>200 漂移本轮 478 续跑候用户(R524 先例);AtomGit G-Star/账号自核/Google Play 声明候用户。
+
+| 渠道 | 信箱 | Gmail | GitHub | genesis | dev.to | daemon/watchdog/哨兵 |
+|------|------|-------|--------|---------|--------|----------------------|
+| 读数 | 0 未读 | 401→直刷绿 | mention5 全旧·notif=CI 红已修 | 持平 1/1/0/1/2 | 6+2 持平 | 绿 / exit0 / exit0(recall_hit=74) |
+
+留痕四件齐:rounds.log / state.json(round=478) / queue.md(R671 条目) / COLLAB_BOARD。
+---- round end 11-06 05:12 ----
