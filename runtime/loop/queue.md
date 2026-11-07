@@ -4,6 +4,13 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R703 · 2026-11-07(值守 loop R512:观测增量轮——distress 序列 20:15 后停摆实证)
+
+- **🆕观测**:platform 全量(from-agent 口径 330 封)max_id=35159 实测——**soul-distress 序列 20:15(+08:00)后停摆**,最新=id 35153 ×28,较 R511 的 ×34 持平零新增,15min 节奏打破静默 2.5h+;根因未知三可能(soul 熔断/主通道修复/进程死),候用户,不消号。⚠️勘误注记:R511"满窗 100 截断"口径下 distress 计数受窗口限,本轮改用 from-agent 全量口径实测坐实,序列终态以停摆记录。
+- **值守面[实测]**:信箱 compass 0 未读;Gmail 401→R448 配方直刷 REFRESH_OK 3599s,40 条 7d 未读逐封 sender 全甄零新面孔零新商务函(构成与 R511 持平:codex-bot×16/Claude Cowork6+Design2+Pros1/WgetCloud2/X2/PayPal+PacoAI R503 已甄/#66Nagizaaz 复诵/GitCode 候拍板/Google 安全/ngrok/D&B/PostHog/ProductHunt/anymodel/Daytona 历轮已甄);CI main 最新 8 run 全绿零新增 run(最新 42365076746 2758fbba 10:42Z=R511 同款);⚠️本地 HEAD 96de16fa 领先 origin/main 9 commits(评测线在途:轮询断连容忍重试5次+retain DB 幂等防御 96de16fa/adapter json e9ac3d46/op 轮询 REST 直询 2c83068b/等)不代推;mention 5 全旧;notifications 零新增(6 条 CI failed 均 11-05/06 历史件);genesis 持平 1/1/0/1/2 零 REPLY;dev.to 30 文 6+2=8 持平;触客双 issue VISTA#5+mem0#7863 均 open 0 comments 候回(~34h);daemon 绿+watchdog 静默过+哨兵 exit0 recall_hit=65。
+- **管道**:三件 exit0 快筛与历轮全同(CS-515~517 opus=None 不过/CS-518 25pp ✗③✓④✓⑤)总结论存在不过筛;GATE0 PASS;矩阵 mtime=10-30 09:42 停摆维持候用户解锁(R493 勘误 1 维持)。复诵三必核全过(40 条逐封 sender 全甄/RED 全量 max_id 实测甄别/CI 8 run 实测/台账 R511 行 mtime 07:50 实证在+本轮 R512 行 append 实证在)。
+- **候办主件**:🔴distress 停摆候用户(根因未知);hindsight 评测步骤 2-5 候评测线(本地 9 commits 在途);安全报告三选项;两函 400 拒候改道;X 验证码 622026;PVR Web UI;round>200 漂移本轮 512 续跑候用户(R524 先例);矩阵/phase2 恢复候用户解锁屏幕;gaurav 转化包 v1 候用户审批。
+
 ### R702 · 2026-11-07(值守 loop R511:复诵持平+distress 恶化升级——RED 满窗 100·×21→×34·28 连败)
 
 - **值守面[实测]**: 信箱 compass 0 未读;Gmail 401→R448 配方直刷 REFRESH_OK 3599s,40 条 7d 未读逐封 sender 全甄=零新面孔零新商务函(较 R510 的 43 条 -3 出窗);**platform RED 输出窗口满 100 截断(命令内置上限,实际≥100)**,较 R510 的 92 条增量逐条甄别=①soul-distress 保活序列续升 **×21→×34**(15min 节奏 15:45→20:15 共 13 封新增,最新 id 35153,正文实证 **28 consecutive failures · mailbox-34207 持续失败**,处置候用户)②零星常规件 v5#34478+soul-done#35159,零新类型零 compass 行动件;实测 main 最新 8 run 全绿=42365076746 2758fbba(R510 留痕)10:42Z success+42364912319 c4ad331e(R510 判据 head)10:40Z success=**R510 推送 CI 已过绿**,零新增红;⚠️本地 HEAD f7038b4f 领先 origin/main 2 commits(efdd7712 op_id 单复数+f7038b4f verify 停滞阈 45min=hindsight 评测线 fix)归属评测线在途,R511 不代推;mention 5 全旧;genesis 持平 1/1/0/1/2 零 REPLY;dev.to 30 文 6+2=8 持平;触客双 issue 实测 joshhhhhan/VISTA#5+mem0#7863 均 OPEN 0 comments 候回(~24h 正常未回);daemon 绿+哨兵 exit0 recall_hit=64。
