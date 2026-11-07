@@ -120,14 +120,21 @@ class HindsightMemory:
             pending = []
             for op in op_ids:
                 # REST 直询(低层 client 的 get_operation_status 是 async,误用即
-                # coroutine bug——run log 修正记录)
+                # coroutine bug——run log 修正记录)。瞬时断连重试 5 次(16 并发
+                # 实测 Connection reset by peer 非致命)。
                 url = (f"{self.base_url}/v1/default/banks/{self.bank_id}"
                        f"/operations/{op}")
-                try:
-                    with _rq.urlopen(url, timeout=15) as r:
-                        st = json.loads(r.read()).get("status", "")
-                except Exception as e:  # noqa: BLE001
-                    raise HindsightError(f"op poll {op} failed: {e}") from e
+                st = None
+                for attempt in range(5):
+                    try:
+                        with _rq.urlopen(url, timeout=15) as r:
+                            st = json.loads(r.read()).get("status", "")
+                        break
+                    except Exception as e:  # noqa: BLE001
+                        if attempt == 4:
+                            raise HindsightError(
+                                f"op poll {op} failed: {e}") from e
+                        _time.sleep(5 * (attempt + 1))
                 if st == "completed":
                     continue
                 if st in ("failed", "cancelled"):

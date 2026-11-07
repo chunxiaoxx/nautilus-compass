@@ -79,12 +79,44 @@ def _client():
     return Hindsight(base_url=hsa.DEFAULT_BASE_URL, timeout=hsa.CLIENT_TIMEOUT)
 
 
+def _docs_count(bank: str) -> int:
+    import urllib.request
+    try:
+        with urllib.request.urlopen(
+            f"{hsa.DEFAULT_BASE_URL}/v1/default/banks/{bank}/documents",
+            timeout=15) as r:
+            return len(json.load(r).get("items", []))
+    except Exception:
+        return -1
+
+
+def _expected_items(q: dict) -> int:
+    seen_ids, n = set(), 0
+    for sid, sess in zip(q["haystack_session_ids"], q["haystack_sessions"]):
+        if sid in seen_ids:
+            continue
+        if not session_to_text(sess, max_chars=600, date=None).strip():
+            continue
+        seen_ids.add(sid)
+        n += 1
+    return n
+
+
 def phase_retain(data: list[dict], workers: int) -> None:
     done: set[str] = set()
     if BANKS_DONE.exists():
         for line in BANKS_DONE.read_text(encoding="utf-8").splitlines():
             if line.strip():
                 done.add(json.loads(line)["bank"])
+    # DB 幂等防御:崩前已提交在途的 bank,服务端可能已落库——按 DB 数跳过,防重复 retain
+    for q in data:
+        bank = hsa.bank_id_for(q["haystack_session_ids"])
+        if bank in done:
+            continue
+        if _docs_count(bank) >= _expected_items(q):
+            done.add(bank)
+            with open(BANKS_DONE, "a", encoding="utf-8") as f:
+                f.write(json.dumps({"bank": bank, "n": "db-verified"}) + "\n")
     todo = [q for q in data if hsa.bank_id_for(q["haystack_session_ids"]) not in done]
     print(f"banks: {len(done)} done · {len(todo)} to retain · workers={workers}")
     t0 = time.time()
