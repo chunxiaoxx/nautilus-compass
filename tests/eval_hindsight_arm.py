@@ -257,7 +257,8 @@ def phase_verify(data: list[dict]) -> None:
         if not pending:
             print("VERIFY_ALL_DONE")
             return
-        if done == last_progress[0] and time.time() - last_progress[1] > 900:
+        if done == last_progress[0] and time.time() - last_progress[1] > float(
+                os.environ.get("HS_VERIFY_STALL_S", "2700")):
             short = sorted(pending.items(),
                            key=lambda kv: docs_count(kv[0]))[:5]
             raise SystemExit(f"VERIFY_STALLED pending={len(pending)} "
