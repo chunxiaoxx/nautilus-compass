@@ -109,6 +109,9 @@ class HindsightMemory:
         except Exception as e:  # noqa: BLE001 — 统一转显式错误(fail loud 纪律)
             raise HindsightError(f"retain_batch bank={self.bank_id} failed: {e}") from e
         op_ids = list(getattr(resp, "operation_ids", None) or [])
+        single = getattr(resp, "operation_id", None)
+        if single:
+            op_ids.append(single)
         deadline = _time.time() + float(os.environ.get("HS_RETAIN_OP_TIMEOUT", "2700"))
         while _time.time() < deadline:
             pending = []

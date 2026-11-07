@@ -212,9 +212,64 @@ def summarize() -> None:
               f"hit={s['hit']/s['n']:.3f}")
 
 
+def phase_verify(data: list[dict]) -> None:
+    """以 DB 落库数收账(async 提交后服务端消化可能滞后;不重提交防重复)。
+
+    expected = 该 bank 去空/去重后的 item 数(与 adapter 逻辑同款)。
+    bank 达标→verified_banks.jsonl;15 分钟零进展→报告退出(fail loud)。
+    """
+    import urllib.request
+    expected: dict[str, int] = {}
+    for q in data:
+        bank = hsa.bank_id_for(q["haystack_session_ids"])
+        # 逐 id 去重+跳空(与 adapter 相同口径)
+        seen_ids, n = set(), 0
+        for sid, sess in zip(q["haystack_session_ids"], q["haystack_sessions"]):
+            if sid in seen_ids:
+                continue
+            if not session_to_text(sess, max_chars=600, date=None).strip():
+                continue
+            seen_ids.add(sid)
+            n += 1
+        expected[bank] = n
+
+    def docs_count(bank: str) -> int:
+        try:
+            with urllib.request.urlopen(
+                f"{hsa.DEFAULT_BASE_URL}/v1/default/banks/{bank}/documents",
+                timeout=15) as r:
+                import json as _json
+                return len(_json.load(r).get("items", []))
+        except Exception:
+            return -1
+
+    t0 = time.time()
+    last_progress = (0, time.time())
+    while True:
+        pending = {b: e for b, e in expected.items()
+                   if docs_count(b) < e}
+        done = len(expected) - len(pending)
+        el = time.time() - t0
+        print(f"verify: {done}/{len(expected)} banks complete · "
+              f"{len(pending)} pending · {el:.0f}s", flush=True)
+        (Path("/tmp/hs_eval/verified_banks.txt")).write_text(
+            "\n".join(b for b in expected if b not in pending), encoding="utf-8")
+        if not pending:
+            print("VERIFY_ALL_DONE")
+            return
+        if done == last_progress[0] and time.time() - last_progress[1] > 900:
+            short = sorted(pending.items(),
+                           key=lambda kv: docs_count(kv[0]))[:5]
+            raise SystemExit(f"VERIFY_STALLED pending={len(pending)} "
+                             f"sample={[(b, docs_count(b), e) for b, e in short]}")
+        if done != last_progress[0]:
+            last_progress = (done, time.time())
+        time.sleep(60)
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--phase", choices=["retain", "eval", "summarize"], required=True)
+    ap.add_argument("--phase", choices=["retain", "verify", "eval", "summarize"], required=True)
     ap.add_argument("--full", action="store_true")
     ap.add_argument("--subset", type=int, default=30)
     ap.add_argument("--start", type=int, default=0)
@@ -229,6 +284,8 @@ def main():
     data = load_data(args.full, args.subset, args.start, args.end)
     if args.phase == "retain":
         phase_retain(data, args.workers)
+    elif args.phase == "verify":
+        phase_verify(data)
     else:
         phase_eval(data)
 
