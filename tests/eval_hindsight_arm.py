@@ -5,8 +5,9 @@
   · subject/judge prompt、judge 解析、temporal 抽取、温度、单 vote——全部
     逐字复用 tests/eval_longmemeval_accuracy.py(import 而非复制,冻结文件零改动)
   · 唯一置换:检索步 = hindsight retain→recall(官方 hindsight-client,默认参数)
-  · subject=judge=MiniMax-M3(V1.1 附录:参照车道 deepseek-v3.2/ARK coding 已死,
-    11/7 实测订阅过期;MiniMax-M3 为 hindsight 官方 provider 表内默认模型之一)
+  · subject=judge=qwen3.8-max(V1.2 附录:参照车道 deepseek-v3.2/ARK coding 已死,
+    11/7 实测订阅过期;qwen 车道=百炼 TokenPlan 订阅,用户 11/7 指定;MiniMax-M3 为
+    已验证 fallback)
 
 Run(两阶段,均可断点续跑):
   python tests/eval_hindsight_arm.py --phase retain --workers 6
@@ -31,16 +32,17 @@ os.environ.setdefault("PYTHONUTF8", "1")
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent))
 
-# === LLM 车道(V1.1 附录冻结):MiniMax-M3 OpenAI 兼容端点 ===
+# === LLM 车道(V1.2 附录冻结):qwen3.8-max @ 百炼 TokenPlan compatible-mode ===
+# (V1.1 的 MiniMax-M3 为已验证 fallback;key 经 QWEN_TOKENPLAN_API_KEY 注入)
 # 必须在 import 冻结 harness 前落位(harness 在模块级读 env)。
 os.environ.setdefault("ZMM_LLM_PROVIDER", "openai")
-os.environ.setdefault("ZMM_LLM_BASE_URL", "https://api.minimax.chat/v1")
-os.environ.setdefault("ZMM_LLM_API_KEY", os.environ.get("MINIMAX_API_KEY", ""))
-os.environ.setdefault("ZMM_SUBJECT_MODEL", "MiniMax-M3")
+os.environ.setdefault("ZMM_LLM_BASE_URL", "https://token-plan.cn-beijing.maas.aliyuncs.com/compatible-mode/v1")
+os.environ.setdefault("ZMM_LLM_API_KEY", os.environ.get("QWEN_TOKENPLAN_API_KEY", ""))
+os.environ.setdefault("ZMM_SUBJECT_MODEL", "qwen3.8-max")
 os.environ.setdefault("ZMM_JUDGE_PROVIDER", "openai")
-os.environ.setdefault("ZMM_JUDGE_BASE_URL", "https://api.minimax.chat/v1")
-os.environ.setdefault("ZMM_JUDGE_API_KEY", os.environ.get("MINIMAX_API_KEY", ""))
-os.environ.setdefault("ZMM_JUDGE_MODEL", "MiniMax-M3")
+os.environ.setdefault("ZMM_JUDGE_BASE_URL", "https://token-plan.cn-beijing.maas.aliyuncs.com/compatible-mode/v1")
+os.environ.setdefault("ZMM_JUDGE_API_KEY", os.environ.get("QWEN_TOKENPLAN_API_KEY", ""))
+os.environ.setdefault("ZMM_JUDGE_MODEL", "qwen3.8-max")
 os.environ.setdefault("ZMM_LONGMEMEVAL_PATH", "/tmp/longmemeval_s.json")
 
 from tests import hindsight_adapter as hsa  # noqa: E402
