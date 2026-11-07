@@ -4,6 +4,17 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R699 · 2026-11-07(指针注记·值守 loop R508 缺行补录)
+
+- R508 轮(对齐令回执办结轮)当时漏 append 轮志行,实物账以 commit `0e694bcb`+COLLAB_BOARD R508 行为准,不伪造历史行(R493 勘误先例)。本轮 R509 补此指针注记。
+
+### R700 · 2026-11-07(值守 loop R509:实质增量轮——flywheel 对齐令回报处理+platform RED +33 甄别·触客双 issue 候回)
+
+- **值守面[实测]**:信箱 compass 1 封新函 **#34487 flywheel→compass 对齐令回报**全文读+ack——严格口径「外部主动来找验证/复算」0 件实证不冒充+gaurav EGO 数据询价唯一外部主动上门件(转化包 v1 候用户审批)+数聚变/蚂蚁灵波均我方主动不计北极星+A100 停机 12.5d 候用户拍板,compass 零后续动作(均候用户/通报类);**platform RED 实测 84 条(较 R508 的 51 条 +33)逐条甄别**:①对齐令 V2.1 各框回执潮(v5 十余封状态呈报/turf 澄清/四件回报 RSI V2.1/#24936 桶治理销账+soul 四件回执+flywheel 五账同销 #34230,均通报类零行动)②soul-distress 保活序列 14:30→16:30 九封 failure 计数升至 ×13(候用户,较 R508 ×10 续升)③compass 自发四函(34296/34481/34484/34485=commit 9f4c647a);**触客双 issue 实测:VISTA#5+mem0#7863 均 open 零 comments 候回**(发出 ~12h 正常未回);Gmail 401→R448 配方直刷 REFRESH_OK 3599s,43 条 7d 未读逐封 sender 全甄=零新面孔零新商务函(codex-bot×19 含 #66Nagizaaz/Substack 营销×9/Claude Cowork×6+Design×2+ChatGPT for Pros/历轮已甄营销件/WgetCloud×2/X×2/Google 安全/GitCode 候拍板)。
+- **CI/探活[实测]**:实测 main 最新 8 run 全绿——🆕最新 42347016986(R508 head 0e694bcb)06:26Z success=R508 推送 CI 已过绿,零新增红;mention 5 条全旧(最新 11-02);genesis 五家持平 1/1/0/1/2 零 REPLY;dev.to 30 文 6+2=8 评论持平;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=55)。
+- **管道**:qs+pipeline_report+sync 三件 exit0;快筛与历轮全同(CS-513 过/CS-514 不过 -100pp/CS-515~517 opus=None/CS-518 25pp ✗③✓④✓⑤,总结论存在不过筛);GATE0 PASS;矩阵 matrix_run.log mtime=10-30 09:42 维持停摆候用户解锁(R493 勘误 1 维持)。**复诵三必核全过**(43 条逐封 sender 全甄/RED 84 条实测甄别/CI 8 run 实测/台账本轮 R509 行 append 后核验在;本机 EST vs 台账 +08:00 差 13h 已知双口径)。
+- **候办主件**:安全报告三选项候用户;soul distress ×13 候用户;两函 400 拒候改道;X 验证码 622026;PVR Web UI;round>200 漂移本轮 509 续跑候用户(R524 先例);矩阵/phase2 恢复候用户解锁屏幕;gaurav 转化包 v1 候用户审批;flywheel-full-recheck 死线 11-07 18:00 剩约 1.5h 候用户。
+
 ### R698 · 2026-11-07(值守 loop R507:幂等复诵持平轮——全渠道零新事件·🆕R506 head CI 过绿·Gmail 200 活 42 条全甄·platform RED 51 条持平)
 
 - **值守面[实测]**:信箱 compass 0 未读;**platform RED 实测 51 条与 R506 持平零新增**(最新仍=id 33789 soul-distress,累计×10 候用户);Gmail 200 活免直刷,42 条 7d 未读逐封 sender 全量甄别=零新面孔零新商务函(较 R506 的 39 条 +3,新增均为营销 newsletter:Claude Cowork×6/Claude Design×2/ChatGPT for Pros 等 31% 折扣营销件零行动;构成=codex-bot 回声×19+历轮已甄营销件(ngrok/D&B/PostHog/PH/anymodel/Daytona)+2 WgetCloud+X×2+PayPal/PacoAI-EthanSun(R503 已甄)+Google 安全+#66 Nagizaaz 复诵+GitCode(AtomGit 候拍板));**实测 main 最新 8 run 全绿——🆕最新 42333457208(R506 head c5dbe2a5)03:19Z success=R506 推送 CI 已过绿,零新增红**;mention 5 条全旧持平(最新 11-02);genesis 五家持平 1/1/0/1/2 零 REPLY;dev.to 30 文 6+2=8 评论持平零新增;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=186);S0 池分支远端不存在=零新增零行动。
