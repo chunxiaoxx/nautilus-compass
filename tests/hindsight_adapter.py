@@ -78,6 +78,8 @@ class HindsightMemory:
             raise HindsightError("retain_corpus 需注入 session_to_text(同源公平性纪律)")
         items = []
         n_empty = 0
+        n_dup = 0
+        seen: set[str] = set()
         for i, sess in enumerate(sessions):
             raw = dates[i] if dates and i < len(dates) else None
             iso = _iso_date(raw)
@@ -85,7 +87,14 @@ class HindsightMemory:
             if not text.strip():
                 n_empty += 1  # LongMemEval 空会话(run log 披露总数·无信号可 retain)
                 continue
-            item = {"content": text, "document_id": session_ids[i]}
+            sid = session_ids[i]
+            if sid in seen:
+                # LongMemEval haystack 内重复 session_id(15 bank×1 条·内容实测
+                # 逐字相同)→ 去重(async batch 要求 document_id 唯一)。infra fix。
+                n_dup += 1
+                continue
+            seen.add(sid)
+            item = {"content": text, "document_id": sid}
             if iso:
                 item["timestamp"] = iso
             items.append(item)
@@ -114,8 +123,9 @@ class HindsightMemory:
                 pending.append(op)
             if not pending:
                 self.retained += len(items)
-                if n_empty:
-                    print(f"  [adapter] bank={self.bank_id} skipped {n_empty} empty sessions")
+                if n_empty or n_dup:
+                    print(f"  [adapter] bank={self.bank_id} skipped "
+                          f"{n_empty} empty / {n_dup} duplicate sessions")
                 return len(items)
             _time.sleep(10)
         raise HindsightError(
