@@ -1,0 +1,25 @@
+{
+  "tool": "mcp__nautilus_compass__recall",
+  "request": {
+    "project": "-Users-chunxiao-wang-Projects-nautilus-compass",
+    "query": "anchor_v01.jsonl P0-full metadata arrays 2026-10-02 条件点火 授权 备份 数据 manifest CV 压缩 验证 因果倒置",
+    "top_k": 3
+  },
+  "status": "success",
+  "safe_response": [
+    "Recall · query='anchor_v01.jsonl P0-full metadata arrays 2026-10-02 条件点火 授权 备份 数据 manifest CV 压缩 验证 因果倒置' · scope=project, project=-Users-chunxiao-wang-Projects-nautilus-compass · 3 hits",
+    "  · score=0.588 · 1mo · day-log-20261002-gtaras7-erratum.md",
+    "    10/2 全日主 log——gtaras7 勘误闭环(方法论被采纳)/daemon 真部署抓出 10/1 假部署/提前点火 A 系列三 RED 转 P0-full/超长会话升格-疲劳定律",
+    "  · score=0.563 · 14d · session_auto_20261019-1545_你是会话档案蒸馏器-以下是一段-Claude-Code.md",
+    "    ",
+    "  · score=0.559 · 11d · session_auto_20261019-1835_开轮-bootstrap-一口-recall.md",
+    "    "
+  ],
+  "source_readback": {
+    "path": "/Users/chunxiao.wang/.claude/projects/-Users-chunxiao-wang-Projects-nautilus-compass/memory/day-log-20261002-gtaras7-erratum.md",
+    "sha256": "5caaf37611d15bdbe08bcf110d3c45a12728b7cbbe2c4bd0a62c0caad426f33d",
+    "lines": "1-22"
+  },
+  "receipt_value_persisted": false,
+  "ingest_or_ack": false
+}

@@ -1,0 +1,57 @@
+[
+  {
+    "name": "A100_READONLY.json",
+    "bytes": 444,
+    "sha256": "3e8cab362ffeb84bb7dc5e3c7112ee20d9b71b17012559ebbdb2e89d4118497d"
+  },
+  {
+    "name": "BOOTSTRAP_READONLY.json",
+    "bytes": 267,
+    "sha256": "7656fc3c52418303c8ff4a1ad66243ff76e08f235cd09a7bd4b05c88b5edb993"
+  },
+  {
+    "name": "CANDIDATES.json",
+    "bytes": 5852,
+    "sha256": "a9e54d0186e701dc46546117981a887231e9e4cba556963ae3725c41d995c403"
+  },
+  {
+    "name": "DELIVERY_CHECK.json",
+    "bytes": 3081,
+    "sha256": "bbfd461da264aba617c9a4f809a697431b11716a4d0ec33939454dd6e3a0e07d"
+  },
+  {
+    "name": "HANDOFF.md",
+    "bytes": 6825,
+    "sha256": "87fcdf62cf3a855158879b6e614f648bb8dda4d8e4fe9fdfffe2766f047c6a5a"
+  },
+  {
+    "name": "INPUT_VERSION_CHECK.json",
+    "bytes": 2458,
+    "sha256": "a0a1c64a86e5d7182fe35250d9fd601d4209810c7892c9df5c12a9decbcfbbd9"
+  },
+  {
+    "name": "MCP_RECALL.json",
+    "bytes": 1399,
+    "sha256": "2bc5078aa4d3ca03beb95bec41f98f54db27b9c1e6ce37b75e9dd7f8a66cd2ec"
+  },
+  {
+    "name": "SOURCE_CHECKS.json",
+    "bytes": 32199,
+    "sha256": "0843746488a9166dd752b6fe4644d2c2aa76b63e1b89984572ae27973d6ec4ac"
+  },
+  {
+    "name": "SOURCE_CHECKS.lock",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "STARTUP_ACCEPTANCE.json",
+    "bytes": 16536,
+    "sha256": "f22a24e43f061eba7364d6fad8b955206861dae1bb2edf89024c2085bba32afd"
+  },
+  {
+    "name": "read_evidence.py",
+    "bytes": 3821,
+    "sha256": "ad45fa15305c61882ff832fdafc530aa77a6a8f6814ab9ec75b90264530b67fb"
+  }
+]

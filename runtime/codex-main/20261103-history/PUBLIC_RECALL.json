@@ -1,0 +1,24 @@
+{
+  "time": "2026-11-03T05:17:17.676612+00:00",
+  "method": "tools/call recall",
+  "project": "-Users-chunxiao-wang-Projects-nautilus-compass",
+  "query": "NACRE 10月19日 自产语料 自举无效 官方真值",
+  "top_k": 3,
+  "http": 200,
+  "elapsed_ms": 6655.6,
+  "responses": [
+    {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"content\": [\n    {\n      \"type\": \"text\",\n      \"text\": \"Recall · query='NACRE 10月19日 自产语料 自举无效 官方真值' · scope=project, project=-Users-chunxiao-wang-Projects-nautilus-compass · 3 hits\\nrecall_token: [RECALL_CORRELATION_REDACTED]  (cite ≥1 snippet in next ingest_obs · 30 min TTL · proof-of-recall)\\n  · score=0.684 · 14d · session_auto_20261019-2054_你是会话档案蒸馏器-以下是一段-Claude-Code.md\\n    \\n  · score=0.683 · 14d · session_auto_20261019-2100_你是会话档案蒸馏器-以下是一段-Claude-Code.md\\n    \\n  · score=0.681 · 14d · session_auto_20261019-2109_你是会话档案蒸馏器-以下是一段-Claude-Code.md\\n    \"\n    }\n  ]\n}"
+          }
+        ],
+        "isError": false
+      }
+    }
+  ]
+}

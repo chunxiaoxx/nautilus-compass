@@ -1,0 +1,51 @@
+{
+  "at_utc": "2026-11-03T03:23:44.628252+00:00",
+  "operation": "GET org bootstrap?agent=compass; read mailbox summary from same package",
+  "network_access_declared": true,
+  "authenticated_request": false,
+  "attempt_count": 1,
+  "ack_count": 0,
+  "outgoing_messages": 0,
+  "first_round_failure_preserved": {
+    "path": "../BOOTSTRAP_READONLY.json",
+    "error_type": "URLError",
+    "precise_cause_not_in_first_round_record": true,
+    "historical_user_description": "DNS failure; not independently reclassified from missing error detail"
+  },
+  "http_status": 200,
+  "response_bytes": 2678,
+  "response_sha256": "3a64e2801dd2a55d400e6dff088db02c3ab2961014fb2ec1127d0240a4cadbc7",
+  "top_level_keys": [
+    "success",
+    "data",
+    "error"
+  ],
+  "safe_summary": {
+    "success": true,
+    "identity": {
+      "agent_id": 9000017,
+      "name": "compass"
+    },
+    "agent": "compass"
+  },
+  "status": "HTTP_JSON_READ_SUCCESS",
+  "mailbox_present": true,
+  "mailbox_verification": "仅概要；未取正文、未ack",
+  "mailbox_summary": {
+    "source": "data.mailbox",
+    "unread_summary_count": 0,
+    "due_12h": 0,
+    "items": [],
+    "scope": "仅本次bootstrap返回的本框概要，不扩为信箱全量审计"
+  },
+  "registry_compass_snapshot": {
+    "role": "判分执行+触客外联(assay/创新模型/校验评测)",
+    "agent_id": 9000017,
+    "channel": {
+      "total_entries": 6,
+      "entries": []
+    },
+    "status": "active"
+  },
+  "registry_boundary": "远端registry角色文字仍为旧口径；当前用户指令和本地catalog决定职责，不修改注册表、不采纳旧外联任务。"
+}

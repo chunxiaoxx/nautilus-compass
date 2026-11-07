@@ -108,7 +108,7 @@ import hashlib as _hashlib_p9
 from collections import OrderedDict as _OrderedDict_p9
 RECALL_CACHE_MAX = int(os.environ.get("COMPASS_RECALL_CACHE_MAX", "10000"))
 RECALL_CACHE_TTL = int(os.environ.get("COMPASS_RECALL_CACHE_TTL", "3600"))
-_RECALL_CACHE = _OrderedDict_p9()   # key → (timestamp, result)
+_RECALL_CACHE = _OrderedDict_p9()   # key → (timestamp, result, entries snapshots)
 _RECALL_CACHE_LOCK = threading.Lock()
 _RECALL_CACHE_STATS = {"hit": 0, "miss": 0, "expire": 0, "evict": 0}
 _RECALL_CACHE_LAST_LOG = 0.0  # P9-instr: throttled stats log timestamp
@@ -139,6 +139,84 @@ _RERANKER_MODEL = os.environ.get(
 _RERANK_CANDIDATES = int(os.environ.get("COMPASS_RERANK_CANDIDATES", "30"))
 _RERANKER_SINGLETON = None  # lazy in-process singleton (loaded on first use)
 _RERANKER_LOCK = threading.Lock()
+_RERANK_TRACE = threading.local()
+
+
+def _remote_rerank_contract():
+    """Bind remote inference to the same locally cached CPU model/input contract."""
+    if _RERANKER_MODEL != "BAAI/bge-reranker-v2-m3":
+        raise ValueError("remote model identity unavailable for configured local model")
+    hub = Path.home() / ".cache/huggingface/hub/models--BAAI--bge-reranker-v2-m3"
+    revision = (hub / "refs/main").read_text().strip()
+    snapshot = hub / "snapshots" / revision
+    config = json.loads((snapshot / "config.json").read_text())
+    tokenizer = json.loads((snapshot / "tokenizer_config.json").read_text())
+    maximum = tokenizer["model_max_length"]
+    activation = ((config.get("sentence_transformers") or {}).get("activation_fn")
+                  or config.get("sbert_ce_default_activation_function"))
+    if (type(maximum) is not int or not 1 <= maximum <= 8192
+            or (activation and not activation.endswith("Sigmoid"))
+            or len(config.get("id2label", {"0": "LABEL_0"})) != 1):
+        raise ValueError("remote input/activation contract unsupported")
+    return {"model": "BAAI/bge-reranker-v2-m3", "revision": revision,
+            "cache_weight_blob_id": (snapshot / "model.safetensors").resolve().name,
+            "max_length": maximum, "activation": "sigmoid"}
+
+
+def _remote_rerank_rpc(address, request, deadline):
+    remaining = deadline - time.monotonic()
+    if remaining <= 0:
+        raise TimeoutError("remote rerank deadline")
+    with socket.create_connection(address, timeout=min(3.0, remaining)) as conn:
+        conn.settimeout(max(0.001, deadline - time.monotonic()))
+        conn.sendall(json.dumps(request, ensure_ascii=False).encode() + b"\n")
+        chunks = bytearray()
+        while b"\n" not in chunks:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise TimeoutError("remote rerank deadline")
+            conn.settimeout(remaining)
+            chunk = conn.recv(65536)
+            if not chunk:
+                break
+            chunks.extend(chunk)
+            if len(chunks) > 65536:
+                raise ValueError("remote rerank response too large")
+    return json.loads(bytes(chunks).split(b"\n", 1)[0])
+
+
+def _remote_rerank_scores(query, candidates):
+    import math
+    endpoint = os.environ.get("COMPASS_RERANK_REMOTE", "").strip()
+    host, port = endpoint.rsplit(":", 1)
+    if not host or "@" in host or "/" in host:
+        raise ValueError("invalid remote rerank endpoint")
+    address = host, int(port)
+    timeout = min(60.0, max(0.1, float(os.environ.get("COMPASS_RERANK_REMOTE_TIMEOUT", "30"))))
+    deadline = time.monotonic() + timeout
+    token = (Path.home() / "bge-embed/rerank_token").read_text().strip()
+    contract = _remote_rerank_contract()
+    # Check old/incompatible services before spending inference time on them.
+    health = _remote_rerank_rpc(address, {"action": "health", "token": token}, deadline)
+    identity_keys = ("model", "revision", "cache_weight_blob_id")
+    if (not health.get("ok") or any(health.get(k) != contract[k] for k in identity_keys)
+            or health.get("max_length_supported", 0) < contract["max_length"]):
+        raise ValueError("remote rerank identity/input mismatch")
+    request = {"action": "rerank", "token": token, "query": query,
+               "docs": [e.get("embed_text") or e.get("description") or "" for _, e in candidates],
+               "max_length": contract["max_length"], "activation": contract["activation"],
+               "batch_size": min(4, health.get("batch_size_limit", 4))}
+    response = _remote_rerank_rpc(address, request, deadline)
+    scores = response.get("scores")
+    if (not response.get("ok") or any(response.get(k) != contract[k] for k in identity_keys)
+            or response.get("max_length") != contract["max_length"]
+            or response.get("activation") != contract["activation"]
+            or not isinstance(scores, list) or len(scores) != len(candidates)
+            or any(type(s) not in (int, float) or not math.isfinite(s) for s in scores)):
+        raise ValueError("remote rerank output contract mismatch")
+    return scores, {"backend": "remote_" + str(response.get("device", "unknown")),
+                    "remote_server_ms": response.get("ms"), "revision": response.get("revision"),
+                    "max_length": contract["max_length"]}
 
 # v2.3.0 · production lifecycle forget-filter · opt-in via COMPASS_PROD_LIFECYCLE=1
 # Activates the dormant LLM-WIKI2 Ebbinghaus forgetting (README:104) in recall:
@@ -280,10 +358,27 @@ def _rerank_top(query, top, top_k):
     (recall must never crash on a reranker fault). Original dense_score kept in
     the returned tuples (downstream surfaces the dense score, not rerank score).
     """
+    started = time.monotonic()
+    trace = {"backend": "disabled", "candidate_count": min(len(top), _RERANK_CANDIDATES),
+             "fallback": False}
+    _RERANK_TRACE.last = trace
     if not _PROD_RERANK_USE or not top:
         return top[:top_k]
     candidates = top[:_RERANK_CANDIDATES]
+    remote = bool(os.environ.get("COMPASS_RERANK_REMOTE", "").strip())
+    if remote:
+        remote_started = time.monotonic()
+        try:
+            scores, metadata = _remote_rerank_scores(query, candidates)
+            trace.update(metadata)
+            trace["total_ms"] = round((time.monotonic() - started) * 1000, 2)
+            return [item for item, _ in sorted(zip(candidates, scores), key=lambda p: -float(p[1]))][:top_k]
+        except Exception as exc:
+            trace.update(fallback=True, remote_error_type=type(exc).__name__,
+                         remote_attempt_ms=round((time.monotonic() - remote_started) * 1000, 2))
+            log(f"remote rerank unavailable · {type(exc).__name__} · fallback to local crossencoder")
     try:
+        trace["backend"] = "local_crossencoder"
         reranker = _get_reranker()
         pairs = [(query, (e.get("embed_text") or e.get("description") or ""))
                  for _s, e in candidates]
@@ -297,8 +392,12 @@ def _rerank_top(query, top, top_k):
                 torch.cuda.empty_cache()
             except Exception:
                 pass
+        trace["total_ms"] = round((time.monotonic() - started) * 1000, 2)
         return [item for item, _rscore in reordered][:top_k]
     except Exception as e:
+        trace.update(backend="dense_failure_fallback", fallback=True,
+                     local_error_type=type(e).__name__,
+                     total_ms=round((time.monotonic() - started) * 1000, 2))
         log(f"reranker failed · fallback to dense order: {e}")
         return top[:top_k]
 
@@ -349,12 +448,12 @@ def _apply_tier_weight_prod(top, top_k):
 
 # v2.0.9 · inotify-based cache invalidation · Layer 2 cure for 23k-file dir scan
 _INOTIFY_USE = os.environ.get("COMPASS_USE_INOTIFY", "1") == "1"
+_ENTRIES_CACHE_TTL = max(0.0, float(os.environ.get("COMPASS_ENTRIES_CACHE_TTL", "30")))
 if not _INOTIFY_USE:
-    # 2026-08-28(workbuddy 反馈 P1·2.2): 关闭 inotify = 新写入不被 recall 索引,
-    # 曾完全静默。启动时大声说一遍。
-    print("⚠️ COMPASS_USE_INOTIFY=0 · new-file discovery DISABLED — fresh writes "
-          "won't appear in recall until a manual rescan", file=sys.stderr)
+    print("COMPASS_USE_INOTIFY=0 · using directory-mtime + "
+          f"{_ENTRIES_CACHE_TTL:g}s TTL refresh", file=sys.stderr)
 _ENTRIES_CACHE = {}  # proj_key -> list of entries (with embeddings) · last scan
+_ENTRIES_CACHE_META = {}  # proj_key -> (monotonic scan start, directory stamp)
 _ENTRIES_CACHE_LOCK = threading.Lock()
 _DIR_DIRTY = set()   # proj_keys flagged for re-scan by inotify watcher
 _DIR_DIRTY_LOCK = threading.Lock()
@@ -434,8 +533,10 @@ def _p9_cache_get(key):
             _RECALL_CACHE_STATS["miss"] += 1
             _result = None
         else:
-            ts, result = entry
-            if time.time() - ts > RECALL_CACHE_TTL:
+            ts, result, snapshots = entry
+            ttl = min(RECALL_CACHE_TTL, _ENTRIES_CACHE_TTL) if "recall" in result else RECALL_CACHE_TTL
+            if (time.time() - ts > ttl
+                    or ("recall" in result and not _recall_snapshot_is_current(result, snapshots))):
                 del _RECALL_CACHE[key]
                 _RECALL_CACHE_STATS["expire"] += 1
                 _RECALL_CACHE_STATS["miss"] += 1
@@ -443,7 +544,7 @@ def _p9_cache_get(key):
             else:
                 _RECALL_CACHE.move_to_end(key)
                 _RECALL_CACHE_STATS["hit"] += 1
-                _result = result
+                _result = _refresh_recall_ages(result, time.time() - ts)
     _p9_maybe_log_stats()
     return _result
 
@@ -453,7 +554,7 @@ def _p9_cache_put(key, result):
         if len(_RECALL_CACHE) >= RECALL_CACHE_MAX:
             _RECALL_CACHE.popitem(last=False)
             _RECALL_CACHE_STATS["evict"] += 1
-        _RECALL_CACHE[key] = (time.time(), result)
+        _RECALL_CACHE[key] = (time.time(), result, _recall_entry_snapshots(result))
 
 
 def _p9_maybe_log_stats():
@@ -768,7 +869,8 @@ def _handle_score(req: dict) -> dict:
 def parse_memory_file(path: Path) -> dict:
     try:
         text = path.read_text(encoding="utf-8")
-    except Exception:
+        mtime = path.stat().st_mtime
+    except (OSError, UnicodeError):
         return {}
     fm = {}
     body = text
@@ -780,10 +882,8 @@ def parse_memory_file(path: Path) -> dict:
                     k, _, v = line.partition(":")
                     fm[k.strip()] = v.strip()
             body = text[end+4:].strip()
-    age_s = time.time() - path.stat().st_mtime
-    if age_s < 86400: age_str = f"{age_s/3600:.1f}h"
-    elif age_s < 30*86400: age_str = f"{int(age_s/86400)}d"
-    else: age_str = f"{int(age_s/86400/30)}mo"
+    age_s = time.time() - mtime
+    age_str = _age_str(age_s)
     return {
         "path": path.name, "fullpath": str(path),
         "name": fm.get("name", path.stem),
@@ -793,7 +893,7 @@ def parse_memory_file(path: Path) -> dict:
         "type": fm.get("type","?"),
         "age_seconds": age_s, "age_str": age_str,
         "embed_text": (fm.get("description","") + "\n" + body)[:EMBED_MAX_CHARS],
-        "mtime": path.stat().st_mtime,
+        "mtime": mtime,
         # v2.3.0 · lifecycle · surface forget_at for production forget-filter
         "forget_at": fm.get("forget_at", ""),
         # v2.5 · #48 修复一 · fact_status 写入门(measured|inferred|heard)· 随条目带出注入
@@ -856,22 +956,90 @@ def _flush_memory_pkl(proj_key: str, cache: dict) -> None:
                 time.sleep(0.2)
 
 
+def _age_str(seconds: float) -> str:
+    if seconds < 86400:
+        return f"{seconds / 3600:.1f}h"
+    if seconds < 30 * 86400:
+        return f"{int(seconds / 86400)}d"
+    return f"{int(seconds / 86400 / 30)}mo"
+
+
+def _refresh_entry_ages(entries):
+    """Age belongs to the response clock, not the time a file was first parsed."""
+    now = time.time()
+    return [{**e, "age_seconds": now - e["mtime"],
+             "age_str": _age_str(now - e["mtime"])} for e in entries]
+
+
+def _refresh_recall_ages(result, elapsed):
+    """Keep cached response ages/freshness current without mutating earlier callers."""
+    out = dict(result)
+    for field in ("recall", "fresh_extra"):
+        if field not in result:
+            continue
+        rows = []
+        for row in result[field]:
+            item = dict(row)
+            if "age_seconds" in item:
+                age = item["age_seconds"] + elapsed
+                item.update(age_seconds=age, age_str=_age_str(age))
+                if field == "fresh_extra" and age >= 86400:
+                    continue
+            rows.append(item)
+        out[field] = rows
+    return out
+
+
+def _memory_dir_stamp(mem_dir):
+    try:
+        st = mem_dir.stat()
+        return st.st_dev, st.st_ino, st.st_mtime_ns
+    except OSError:
+        return None
+
+
+def _entries_snapshot_is_current(mem_dir):
+    """mtime catches adds/deletes; bounded TTL catches edits or a dead watcher."""
+    key = str(mem_dir)
+    with _DIR_DIRTY_LOCK:
+        if key in _DIR_DIRTY:
+            return False
+    with _ENTRIES_CACHE_LOCK:
+        if key not in _ENTRIES_CACHE:
+            return False
+        meta = _ENTRIES_CACHE_META.get(key)
+    return (meta is not None
+            and 0 <= time.monotonic() - meta[0] < _ENTRIES_CACHE_TTL
+            and meta[1] == _memory_dir_stamp(mem_dir))
+
+
+def _recall_entry_snapshots(result):
+    with _ENTRIES_CACHE_LOCK:
+        return {project: _ENTRIES_CACHE_META.get(str(
+            Path.home() / ".claude" / "projects" / project / "memory"))
+            for project in result.get("projects_scanned", [])}
+
+
+def _recall_snapshot_is_current(result, snapshots):
+    # P9 must not bypass directory/TTL invalidation of the entries it was ranked on.
+    return snapshots == _recall_entry_snapshots(result) and all(_entries_snapshot_is_current(
+        Path.home() / ".claude" / "projects" / project / "memory")
+        for project in result.get("projects_scanned", []))
+
+
 def get_memory_entries(mem_dir: Path):
     proj_key = str(mem_dir)
-    # v2.0.9 · inotify fast path · skip O(N) glob+stat+parse if dir not dirty
-    if _INOTIFY_USE:
-        with _DIR_DIRTY_LOCK:
-            is_dirty = proj_key in _DIR_DIRTY
-            if is_dirty:
-                _DIR_DIRTY.discard(proj_key)
+    # A missing/failed platform watcher must never turn this into a permanent cache.
+    if _entries_snapshot_is_current(mem_dir):
         with _ENTRIES_CACHE_LOCK:
-            cached = _ENTRIES_CACHE.get(proj_key)
-        if cached is not None and not is_dirty:
-            _INOTIFY_STATS["rescans_avoided"] += 1
-            _inotify_maybe_log_stats()
-            return cached
-        if is_dirty:
-            _INOTIFY_STATS["rescans_done"] += 1
+            cached = _ENTRIES_CACHE[proj_key]
+        _INOTIFY_STATS["rescans_avoided"] += 1
+        _inotify_maybe_log_stats()
+        return _refresh_entry_ages(cached)
+    with _DIR_DIRTY_LOCK:
+        _DIR_DIRTY.discard(proj_key)
+    _INOTIFY_STATS["rescans_done"] += 1
+    scan_meta = time.monotonic(), _memory_dir_stamp(mem_dir)
     embedder = get_embedder()
     files = sorted(mem_dir.glob("*.md"))
     entries = []
@@ -968,11 +1136,10 @@ def get_memory_entries(mem_dir: Path):
                         e["chunk_embs"] = []
         if updated:
             _flush_memory_pkl(proj_key, cache)
-    # v2.0.9 · cache full entries for next recall · invalidated by inotify watcher
-    if _INOTIFY_USE:
-        with _ENTRIES_CACHE_LOCK:
-            _ENTRIES_CACHE[proj_key] = entries
-    return entries
+    with _ENTRIES_CACHE_LOCK:
+        _ENTRIES_CACHE[proj_key] = entries
+        _ENTRIES_CACHE_META[proj_key] = scan_meta
+    return _refresh_entry_ages(entries)
 
 
 def _inotify_maybe_log_stats():
@@ -1003,12 +1170,12 @@ def _inotify_watcher_thread():
     try:
         from inotify_simple import INotify, flags as _iflags
     except Exception as _e:
-        log(f"inotify_simple import fail · entries cache disabled: {_e}")
+        log(f"inotify_simple import fail · directory-mtime + {_ENTRIES_CACHE_TTL:g}s TTL refresh: {_e}")
         return
     try:
         inotify = INotify()
     except Exception as _e:
-        log(f"INotify() init fail: {_e}")
+        log(f"INotify() init fail · directory-mtime + {_ENTRIES_CACHE_TTL:g}s TTL refresh: {_e}")
         return
     # v3.0.9 · 收窄事件:CREATE/MODIFY/MOVED_FROM 冗余(一次文件写入原产生
     # 3-4 个事件;云上 20min 打了 3509 个)。CLOSE_WRITE=写完成 · 原子写
@@ -1247,6 +1414,8 @@ def expand_chain_links(top: list, all_entries: list, cap: int = _CHAIN_CAP_DEFAU
 
 
 def handle_request(req: dict) -> dict:
+    performance_started = time.monotonic()
+    performance = {}
     action = req.get("action", "both")
     query = (req.get("query") or "").strip()[:2000]
     project = req.get("project", "")
@@ -1277,6 +1446,8 @@ def handle_request(req: dict) -> dict:
         # shallow copy + mark · avoid mutating cached dict on subsequent hits
         _p9_resp = dict(_p9_cached)
         _p9_resp["from_cache"] = True
+        _p9_resp["performance"] = {"result_cache_hit": True,
+                                  "total_compute_ms": round((time.monotonic() - performance_started) * 1000, 2)}
         return _p9_resp
 
     # 找 mem_dir(s) · scope-aware
@@ -1299,11 +1470,13 @@ def handle_request(req: dict) -> dict:
     # 行成 1 真 effective 并发 · 真 root cause 真 CLOSE_WAIT 蓄积(209 案).
     # 期望 throughput 4-8x · CLOSE_WAIT 不再爆炸.
     embedder = get_embedder()  # eager-loaded at daemon startup · idempotent
+    embedding_started = time.monotonic()
     try:
         v = embedder.encode(query)
         q_emb = v.tolist() if hasattr(v, "tolist") else v
     except Exception as e:
         return {"ok": False, "error": f"query embed fail: {e}"}
+    performance["query_embedding_ms"] = round((time.monotonic() - embedding_started) * 1000, 2)
 
     result = {
         "ok": True,
@@ -1314,6 +1487,7 @@ def handle_request(req: dict) -> dict:
     }
 
     if action in ("recall", "both"):
+        entries_started = time.monotonic()
         # Union entries across all mem_dirs · tag each with its origin project
         all_entries: list[dict] = []
         for proj_name, mdir in mem_dirs:
@@ -1322,6 +1496,8 @@ def handle_request(req: dict) -> dict:
                 if "project" not in e:
                     e["project"] = proj_name
                 all_entries.append(e)
+        performance["entries_scan_and_embedding_ms"] = round((time.monotonic() - entries_started) * 1000, 2)
+        ranking_started = time.monotonic()
         # v2.3.0 · lifecycle forget-filter (opt-in COMPASS_PROD_LIFECYCLE=1) ·
         # drop forgotten memories before scoring; default off = no-op.
         all_entries = _apply_lifecycle_filter(all_entries)
@@ -1392,7 +1568,11 @@ def handle_request(req: dict) -> dict:
 
         # v2.3.0 · production cross-encoder rerank (opt-in COMPASS_PROD_RERANK=1).
         # flag off → returns top[:top_k] unchanged; flag on → reorder then truncate.
+        performance["ranking_before_rerank_ms"] = round((time.monotonic() - ranking_started) * 1000, 2)
+        rerank_started = time.monotonic()
         top = _rerank_top(query, top, top_k)
+        performance["rerank_ms"] = round((time.monotonic() - rerank_started) * 1000, 2)
+        performance["rerank"] = dict(getattr(_RERANK_TRACE, "last", {}))
         if _PROD_RERANK_USE:
             result["_v230_reranked"] = True
 
@@ -1425,7 +1605,8 @@ def handle_request(req: dict) -> dict:
         ]
         result["fresh_extra"] = [
             {"path": e["path"], "project": e.get("project", ""),
-             "age_str": e["age_str"], "description": e["description"]}
+             "age_str": e["age_str"], "age_seconds": e["age_seconds"],
+             "description": e["description"]}
             for e in sorted(fresh_extra, key=lambda x: x["age_seconds"])
         ]
 
@@ -1490,6 +1671,8 @@ def handle_request(req: dict) -> dict:
                 "n_neg": anchors["n_neg"],
             }
 
+    performance["total_compute_ms"] = round((time.monotonic() - performance_started) * 1000, 2)
+    result["performance"] = performance
     # ─── verification_log · 7 天对照实验数据 ───────────────
     try:
         log_path = CACHE_DIR / "verification_log.jsonl"
@@ -1505,6 +1688,7 @@ def handle_request(req: dict) -> dict:
                 for r in (result.get("recall") or [])[:5]
             ],
             "fresh_n": len(result.get("fresh_extra") or []),
+            "performance": performance,
             "drift_score": (result.get("drift") or {}).get("score"),
             "drift_alert": (result.get("drift") or {}).get("should_alert"),
             # v2 是 active firing 路径(reconcile 后)· 保留 rule_hit + drift_alert_v2 供 log 连续性

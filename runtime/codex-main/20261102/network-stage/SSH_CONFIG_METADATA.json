@@ -1,0 +1,30 @@
+{
+  "path": "/Users/chunxiao.wang/.ssh/config",
+  "bytes": 1861,
+  "sha256": "b8cb59aea7d6efb9bea70f5f922673cb6f17b56bf0e004fb33094a1eef76ce88",
+  "a100_exact_block_present": true,
+  "a100_option_lines": [
+    {
+      "line": 53,
+      "option": "Host",
+      "value_withheld": false
+    },
+    {
+      "line": 54,
+      "option": "HostName",
+      "value_withheld": true
+    },
+    {
+      "line": 55,
+      "option": "Port",
+      "value_withheld": true
+    },
+    {
+      "line": 56,
+      "option": "User",
+      "value_withheld": true
+    }
+  ],
+  "sensitive_pattern_findings": [],
+  "contents_or_connection_values_emitted": false
+}

@@ -1,0 +1,30 @@
+{
+  "at_utc": "2026-11-03T05:19:21.767335+00:00",
+  "source": "runtime/robust_exp/enacre1_results.csv",
+  "source_sha256": "6f347e3e967937faa6920418dff41ed0395d902ce86440f8bd08f0861f067c43",
+  "method": "CSV DictReader; group A-champion vs B-route*, accuracy=sum(label==truth)/n; cross-check ok for every row",
+  "arms": {
+    "A": {
+      "n_rows": 292,
+      "unique_qid": 291,
+      "label_truth_equal": 256,
+      "accuracy": 0.8767123287671232,
+      "ok_matches_label_truth": true,
+      "duplicate_qids": [
+        "T31-1"
+      ]
+    },
+    "B": {
+      "n_rows": 292,
+      "unique_qid": 291,
+      "label_truth_equal": 149,
+      "accuracy": 0.5102739726027398,
+      "ok_matches_label_truth": true,
+      "duplicate_qids": [
+        "T31-1"
+      ]
+    }
+  },
+  "delta_pp": -36.643835616438345,
+  "scope": "Statistics over preserved historical labels, no inference rerun or semantic gold validation; 292 rows per arm, 291 unique qids, duplicated T31-1 preserved."
+}

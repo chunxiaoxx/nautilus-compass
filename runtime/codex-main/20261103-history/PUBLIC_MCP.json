@@ -1,0 +1,109 @@
+{
+  "time": "2026-11-03T05:16:31.710873+00:00",
+  "url": "https://compass.nautilus.social/mcp/",
+  "requests": [
+    {
+      "method": "initialize",
+      "http": 200,
+      "elapsed_ms": 3218.2,
+      "responses": [
+        {
+          "jsonrpc": "2.0",
+          "id": 1,
+          "result": {
+            "protocolVersion": "2024-11-05",
+            "capabilities": {
+              "experimental": {},
+              "tools": {
+                "listChanged": false
+              }
+            },
+            "serverInfo": {
+              "name": "nautilus-compass",
+              "version": "3.3.1-mac-scoped"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "method": "tools/list",
+      "http": 200,
+      "elapsed_ms": 5115.5,
+      "responses": [
+        {
+          "tools": [
+            {
+              "name": "ingest_obs",
+              "description": "v0.9 · Write one observation to the user's cross-agent memory. Use after a discrete task/decision/discovery. Includes drift self-audit (claude-mem can't do this)."
+            },
+            {
+              "name": "drift_history",
+              "description": "v0.9 · Cross-project AI drift timeline. green/yellow/red counts, top RED sessions with signals. compass-only feature."
+            },
+            {
+              "name": "session_search",
+              "description": "v0.9 · Keyword search across all session_*.md files in user's projects. Supports drift/type filter."
+            },
+            {
+              "name": "profile",
+              "description": "v0.9 · User profile derived from session aggregate (top projects · work types · drift dist). v1.0 will add client-side E2EE aggregation."
+            },
+            {
+              "name": "recall",
+              "description": "Semantic recall over user's persistent memory (BGE-m3 over .md files in ~/.claude/projects/<project>/memory/). Returns top-k matches by cosine similarity, plus any memories from the last 24h not already in top-k."
+            },
+            {
+              "name": "thread_recall",
+              "description": "v1.1 · L3 dogfood · Multi-turn thread recall by thread_id frontmatter tag. Returns the chronological message stream for a long-running back-and-forth (e.g. agent ↔ commenter / founder partnership negotiation, multi-day support thread). Whereas `recall` does semantic top-k across all memory, `thread_recall` returns the full ordered sequence for one thread_id. Pair with `ingest_obs(thread_id=..., thread_role='outbound'|'inbound'|'self_note')` to populate the thread. Compass keeps raw bodies — white-box memory loses the thread when it abstracts into facts."
+            },
+            {
+              "name": "drift_check",
+              "description": "Black-box persona drift detection. Embeds the prompt and compares to 25 task-shaped positive anchors (aligned behavior) vs 35 negative anchors (drift exemplars). Returns drift score, alignment/deviation cosines, and an alert flag if score < threshold or any negative anchor strongly matches."
+            },
+            {
+              "name": "feedback_log",
+              "description": "Log a true-positive (good) or false-positive (bad) signal for adaptive anchor retraining. After accumulating signals, run `python feedback.py retrain` to update anchor weights."
+            },
+            {
+              "name": "long_task",
+              "description": "v1.0 · Demo tool for notifications/progress + cancelled. Emits N progress frames · checks cancellation between frames. Use as a smoke tool for MCP clients that want to exercise the progress/cancel wire."
+            },
+            {
+              "name": "submit_platform_task",
+              "description": "v1.0+ · BP1 · Queue a task for the Nautilus platform (V5 cycle / platform_agents). File-based by default; HTTP POST when COMPASS_PLATFORM_QUEUE_URL is set. Use this to hand work from a compass dialog to the platform: publishing, code review, content generation, anything platform agents can specialize in. Pair with ingest_platform_task_result for the return leg."
+            },
+            {
+              "name": "ingest_platform_task_result",
+              "description": "v1.0+ · BP3 · Platform agent reports a completed task back to compass. Writes a JSON archive AND a session_*.md so the result becomes searchable cross-session. Closes the loop submit_platform_task → V5 cycle → ingest_platform_task_result. Typically called by the platform callback handler, not directly by users."
+            },
+            {
+              "name": "governance_dispatch",
+              "description": "v1.0+ · V7 governance · Decompose a complex multi-channel task into routed sub-tasks. V7 sits ABOVE V5/V6/Kairos and assigns each channel to the right executor (V5 for marketing/publish, V6 for code-review/github, Kairos for kg/memory-audit). Writes one queue file per sub-task; platform v7-monitor cron mints bounties. V7 does not execute itself — pure governance/routing."
+            },
+            {
+              "name": "governance_audit",
+              "description": "v1.0+ · V7 governance · Cross-agent fake-closure audit. Scans recent session_*.md for: drift=red, status=completed with empty body, platform task results without published channels. Returns suspects but does not auto-correct. Run weekly or on-demand before releases."
+            },
+            {
+              "name": "governance_lock_check",
+              "description": "v1.0+ · V7 governance · L0/L1 hash lock verification. Compares SHA256 of L0 immutable core files (compass.py, anchors_*.json, selftest.py) against governance.lock. If lock missing or bootstrap=true, writes a fresh lock. Detects tampering of core layer."
+            },
+            {
+              "name": "governance_plan",
+              "description": "v1.0+ · V7 v0.2 · Capability-driven complex-task plan. Reads platform_anchor_packs phase registry + platform_agents capability registry · produces a DAG of (phase_id, executor, depends_on) routed sub-tasks · emits one queue file per node with depends_on so v7-monitor can mint bounties in the right order. No templates · no LLM-chat · pure registry queries. Adding a new vertical = 1 row in registry, no V7 code change. Use over governance_dispatch when one logical goal needs sequential phases (research → write → publish → measure) rather than fan-out to channels."
+            },
+            {
+              "name": "proof_of_impact",
+              "description": "v1.7.1 · S4 · Proof-of-Impact · trace agent action to cited memory · deterministic impact score (LLM-free formula) · emits NAU records to .cache/poi_emit.jsonl + full event log + frontmatter cumulative_impact update. Suppresses self-cite by default. action_outcome enum: success/failure/partial/pending. See paper/SPEC_PROOF_OF_IMPACT.md."
+            },
+            {
+              "name": "add_worker",
+              "description": "v1.7.1 · Phase 2.B · agentmemory iii worker plug paradigm · register deterministic worker spec for super-agent self-evolving runtime. Records to .cache/workers.jsonl · no code execution · narrow scope (cron/pubsub/queue/http/custom). Super-agent declares 'I want a iii-cron-daily worker' and this tool persists the spec."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,742 @@
+{
+  "task_id": "COMPASS-HISTORY-PRESENT-FUTURE-20261103-R2",
+  "owner": "Compass 本仓主会话 / Codex",
+  "at_new_york": "2026-11-03T11:08:23.275187-05:00",
+  "at_utc": "2026-11-03T16:08:23.275187+00:00",
+  "preflight": {
+    "goal": null,
+    "previous_thread_turn": "completed",
+    "current_turn_is_history_audit_only": true
+  },
+  "write_scope": [
+    "docs/soul/COMPASS_PAST_PRESENT_FUTURE_20261103.md",
+    "runtime/codex-main/20261103-history/HANDOFF.md",
+    "runtime/codex-main/20261103-history/ADDENDUM_20261103_R2_EVIDENCE.json"
+  ],
+  "previous_files": [
+    {
+      "path": "docs/soul/COMPASS_PAST_PRESENT_FUTURE_20261103.md",
+      "sha256": "5370c73d08c25ef3115647b3919eac6fac98ad1a1b43c742b9e7224b784fbaa0",
+      "bytes": 18279
+    },
+    {
+      "path": "runtime/codex-main/20261103-history/HANDOFF.md",
+      "sha256": "76af37a1da77d13e2fd5915eac7864f320e4d74cd8096248dfd51a041604ce3e",
+      "bytes": 3265
+    }
+  ],
+  "sources": [
+    {
+      "path": "AGENTS.md",
+      "resolved_path": "/Users/chunxiao.wang/Projects/nautilus-compass/AGENTS.md",
+      "sha256": "923cc6024b0f47b9ca2412096dd78c2b864ff23ffa9fa208bdd94967c2257e7d",
+      "bytes": 2793
+    },
+    {
+      "path": "../nautilus-core/docs/org/agent_catalog.json",
+      "resolved_path": "/Users/chunxiao.wang/Projects/nautilus-core/docs/org/agent_catalog.json",
+      "sha256": "c4b8aaf2c1ef1eea2bbaef8f004ca6deb16e6034efc62e9db44b34f190c8510f",
+      "bytes": 12244
+    },
+    {
+      "path": "docs/agent-memory.index.md",
+      "resolved_path": "/Users/chunxiao.wang/Projects/nautilus-compass/docs/agent-memory.index.md",
+      "sha256": "f70b120e2ffc1e7d8ac8d9327330f045d2597d1bd2bfc4ec0b02491387816bac",
+      "bytes": 4158
+    },
+    {
+      "path": "docs/soul/MAINLINE_ANCHOR_20261008.md",
+      "resolved_path": "/Users/chunxiao.wang/Projects/nautilus-compass/docs/soul/MAINLINE_ANCHOR_20261008.md",
+      "sha256": "4a390940fadad377fa9730d91a3ea22705910b878db098cdf7414fc6ea1dfbcc",
+      "bytes": 1235
+    },
+    {
+      "path": "../verification-learning-papers/docs/CV_eta_engineering_spec_v3.md",
+      "resolved_path": "/Users/chunxiao.wang/Projects/verification-learning-papers/docs/CV_eta_engineering_spec_v3.md",
+      "sha256": "d1d3c334960dabe1fcd27f93e6e725ffea60c711e511f5b3fd6935b682befe18",
+      "bytes": 15701
+    },
+    {
+      "path": "../verification-learning-papers/docs/training_blueprint_cv_arch_20261001.md",
+      "resolved_path": "/Users/chunxiao.wang/Projects/verification-learning-papers/docs/training_blueprint_cv_arch_20261001.md",
+      "sha256": "c15a137c10092540feb14f057b0deb0eb9e4498a3db72cee15a2404c4f46cac8",
+      "bytes": 6023
+    },
+    {
+      "path": "../verification-learning-papers/docs/CV_falsification_core_20261001.md",
+      "resolved_path": "/Users/chunxiao.wang/Projects/verification-learning-papers/docs/CV_falsification_core_20261001.md",
+      "sha256": "80513a32d2152af0d49b0dcbff8f557d1a4b3b5578f47a91aeff05f6b0218a8f",
+      "bytes": 2643
+    },
+    {
+      "path": "docs/metering/ERRATA_NACRE_SELFBOOT_20261019.md",
+      "resolved_path": "/Users/chunxiao.wang/Projects/nautilus-compass/docs/metering/ERRATA_NACRE_SELFBOOT_20261019.md",
+      "sha256": "c41a612c36dfee71c653db09ff1b6749b63583e79cc7ad32e8c3589afeeee8d6",
+      "bytes": 5462
+    },
+    {
+      "path": "runtime/codex-main/20261102/network-stage/HANDOFF.md",
+      "resolved_path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/codex-main/20261102/network-stage/HANDOFF.md",
+      "sha256": "7a4cb52317922acc7fa5a7bda5e10dc397062ecf00b260047bc210c5e0a7dc70",
+      "bytes": 3691
+    },
+    {
+      "path": "runtime/judge_lora_p2v2/eval_report.json",
+      "resolved_path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/judge_lora_p2v2/eval_report.json",
+      "sha256": "cb8cdd08b771896f0af87522bcc98210c9248eec4367ba8e530dbd697f4b86b8",
+      "bytes": 290
+    },
+    {
+      "path": "runtime/robust_exp/enacre1_results.csv",
+      "resolved_path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/robust_exp/enacre1_results.csv",
+      "sha256": "6f347e3e967937faa6920418dff41ed0395d902ce86440f8bd08f0861f067c43",
+      "bytes": 34668
+    },
+    {
+      "path": "runtime/codex-main/20261103-history/ENACRE1_RECOMPUTE.json",
+      "resolved_path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/codex-main/20261103-history/ENACRE1_RECOMPUTE.json",
+      "sha256": "846d39163fddac27fb67a2d5d69bd50d1317a1fd4698b285b17c885ee7d72855",
+      "bytes": 977
+    },
+    {
+      "path": "outputs/recall_usefulness_20260823.json",
+      "resolved_path": "/Users/chunxiao.wang/Projects/nautilus-compass/outputs/recall_usefulness_20260823.json",
+      "sha256": "506b56d1bccb4d4667ac73b8e413b51c0e1f512843089b0b3a30b2498456ac83",
+      "bytes": 4287
+    },
+    {
+      "path": "outputs/recall_usefulness_baseline_20260823.json",
+      "resolved_path": "/Users/chunxiao.wang/Projects/nautilus-compass/outputs/recall_usefulness_baseline_20260823.json",
+      "sha256": "ecffdd3334bfc0a613be869af4013e737d0cfd6dfd74fa64dd8554043e0b959f",
+      "bytes": 4632
+    }
+  ],
+  "original_records": [
+    {
+      "id": "U01",
+      "path": "/Users/chunxiao.wang/.claude/projects_pre_cwdrw2/C--Users-chunx-Projects-nautilus-compass/429d1cf1-d031-4ca2-a9f4-a8a85cab432d.jsonl",
+      "line": 539,
+      "event_time_utc": "2026-10-01T16:27:20.601Z",
+      "event_time_new_york": "2026-10-01T12:27:20.601000-04:00",
+      "role": "user",
+      "type": "user",
+      "isMeta": false,
+      "isSidechain": false,
+      "record_sha256": "a46ebdcb5cc61ea289e75cfee6d30bf65907e7215e2793b5698ea6665a66e6ea",
+      "matches_previous_custody": true,
+      "text_sha256": "7306ffcc62e0850201f863da8003af8665a5ce040f75e01c31ac1a7f26e20891",
+      "excerpt": "准备就 智能 =压缩×验证，因果倒置×量子计算来做新的模型训练和架构创新，融合 LLM+SSI+JEV。使用我们的 A100 来训练专属模型",
+      "authority": "original_user"
+    },
+    {
+      "id": "A01",
+      "path": "/Users/chunxiao.wang/.claude/projects_pre_cwdrw2/C--Users-chunx-Projects-nautilus-compass/429d1cf1-d031-4ca2-a9f4-a8a85cab432d.jsonl",
+      "line": 2319,
+      "event_time_utc": "2026-10-02T08:29:35.346Z",
+      "event_time_new_york": "2026-10-02T04:29:35.346000-04:00",
+      "role": "assistant",
+      "type": "assistant",
+      "isMeta": false,
+      "isSidechain": false,
+      "record_sha256": "82ea3a2e48be41df800604342fcc1ecfd1611f59215f2b45ba581e0c4d579d4c",
+      "matches_previous_custody": true,
+      "text_sha256": "a664da25f3811ba72f1f698ca2cff4a0499888ce3a56aed44cd5d50345fbe18c",
+      "excerpt": "蓝图 | 已冻结待命(你之前拍的 10/26 M1 复盘后点火)",
+      "authority": "assistant_context"
+    },
+    {
+      "id": "U02",
+      "path": "/Users/chunxiao.wang/.claude/projects_pre_cwdrw2/C--Users-chunx-Projects-nautilus-compass/429d1cf1-d031-4ca2-a9f4-a8a85cab432d.jsonl",
+      "line": 2326,
+      "event_time_utc": "2026-10-02T08:32:22.007Z",
+      "event_time_new_york": "2026-10-02T04:32:22.007000-04:00",
+      "role": "user",
+      "type": "user",
+      "isMeta": false,
+      "isSidechain": false,
+      "record_sha256": "8c37fa6eed8f97729001a5cb3a66f00441775e4e383bcd1abe14c05c1e17fd02",
+      "matches_previous_custody": true,
+      "text_sha256": "27a140310984c2c2d3907afa1dfe5856a3ce5bed404c59f748c2f98d0f343a04",
+      "excerpt": "新模型提前点火(A100 空闲即可开训)",
+      "authority": "original_user"
+    },
+    {
+      "id": "U03",
+      "path": "/Users/chunxiao.wang/.claude/projects_pre_cwdrw2/C--Users-chunx-Projects-nautilus-compass/429d1cf1-d031-4ca2-a9f4-a8a85cab432d.jsonl",
+      "line": 2365,
+      "event_time_utc": "2026-10-02T08:37:21.553Z",
+      "event_time_new_york": "2026-10-02T04:37:21.553000-04:00",
+      "role": "user",
+      "type": "user",
+      "isMeta": false,
+      "isSidechain": false,
+      "record_sha256": "cf334adbc91c32a8d39aa0b224de923e675c751fde7a16e1f5a2d9db5f058579",
+      "matches_previous_custody": true,
+      "text_sha256": "bc5b1ed10b47a6f1b1a95f62de9e74aa60cdb60dac3733aeab95aff090735537",
+      "excerpt": "蓝图加 SSI 持续学习对照臂",
+      "authority": "original_user"
+    },
+    {
+      "id": "U05",
+      "path": "/Users/chunxiao.wang/.claude/projects_pre_cwdrw2/C--Users-chunx-Projects-nautilus-compass/429d1cf1-d031-4ca2-a9f4-a8a85cab432d.jsonl",
+      "line": 2404,
+      "event_time_utc": "2026-10-02T09:11:43.732Z",
+      "event_time_new_york": "2026-10-02T05:11:43.732000-04:00",
+      "role": "user",
+      "type": "user",
+      "isMeta": false,
+      "isSidechain": false,
+      "record_sha256": "cc6decacbc2e6c29639ba6ef016e7afa1287ef095c06d11b2ec0cc9da96207b7",
+      "matches_previous_custody": true,
+      "text_sha256": "a741d8385f9f5fc60ab204e3e500c471c0a80ee8cb5d0b38e94146fefe8275fd",
+      "excerpt": "A+B:判据重定义今晚测,14B 并行下载备料",
+      "authority": "original_user"
+    },
+    {
+      "id": "U06",
+      "path": "/Users/chunxiao.wang/.claude/projects_pre_cwdrw2/C--Users-chunx-Projects-nautilus-compass/429d1cf1-d031-4ca2-a9f4-a8a85cab432d.jsonl",
+      "line": 2658,
+      "event_time_utc": "2026-10-02T09:55:01.633Z",
+      "event_time_new_york": "2026-10-02T05:55:01.633000-04:00",
+      "role": "user",
+      "type": "user",
+      "isMeta": false,
+      "isSidechain": false,
+      "record_sha256": "2e6d394982b387acc9de4aca5b1084de61f52b98d8ae089e438b19b022721a1c",
+      "matches_previous_custody": true,
+      "text_sha256": "f1073a2f4b057d7a2b25be75251bde682680bf8a26914eed37c16204266e1372",
+      "excerpt": "H3 转告 flywheel+等双 14B 下完做 P0-full 对拍",
+      "authority": "original_user"
+    },
+    {
+      "id": "U12",
+      "path": "/Users/chunxiao.wang/.claude/projects_pre_cwdrw2/C--Users-chunx-Projects-nautilus-compass/f5c5b189-5288-4869-9436-f0ef6160b475.jsonl",
+      "line": 855,
+      "event_time_utc": "2026-10-03T05:20:15.856Z",
+      "event_time_new_york": "2026-10-03T01:20:15.856000-04:00",
+      "role": "user",
+      "type": "user",
+      "isMeta": false,
+      "isSidechain": false,
+      "record_sha256": "5f9cb0d38838cd0dc3b738e348ba1fde355a32b4654d61af8f0415d3c3f80e66",
+      "matches_previous_custody": true,
+      "text_sha256": "3c04cd317f558f84a84929a669e15bef71e1d51c8f0dd60074a8c543d1e1245d",
+      "excerpt": "我说的模型训练是基于智能=压缩×验证+因果倒置的基础上来做动态权重 SSI+融合 JEV 等创新架构的模型，未来可以演化适配我们的具身智能数据有效性验证，我们的记忆验证，我们 agent 的 harness 轨迹验证等",
+      "authority": "original_user"
+    },
+    {
+      "id": "U14",
+      "path": "/Users/chunxiao.wang/.claude/projects_pre_cwdrw2/C--Users-chunx-Projects-nautilus-compass/f5c5b189-5288-4869-9436-f0ef6160b475.jsonl",
+      "line": 1219,
+      "event_time_utc": "2026-10-03T06:45:01.361Z",
+      "event_time_new_york": "2026-10-03T02:45:01.361000-04:00",
+      "role": "user",
+      "type": "user",
+      "isMeta": false,
+      "isSidechain": false,
+      "record_sha256": "e74391837893aa2dc722b8c1972ddc12f9685ad879c051c6cb6825cf77afbb4b",
+      "matches_previous_custody": true,
+      "text_sha256": "445e16271230763bfe2ab579ac1fdfe83242c2928a8df6231f0f94d4d1785f52",
+      "excerpt": "停止 LOOP 和值守，同步全部对话框，梳理复盘未完成的工作，回归主线任务，模型训练的准备",
+      "authority": "original_user"
+    },
+    {
+      "id": "U16",
+      "path": "/Users/chunxiao.wang/.claude/projects_pre_cwdrw2/C--Users-chunx-Projects-nautilus-compass/f5c5b189-5288-4869-9436-f0ef6160b475.jsonl",
+      "line": 2392,
+      "event_time_utc": "2026-10-03T11:52:39.768Z",
+      "event_time_new_york": "2026-10-03T07:52:39.768000-04:00",
+      "role": "user",
+      "type": "user",
+      "isMeta": false,
+      "isSidechain": false,
+      "record_sha256": "47210b6c243767354969b83ce478d1b9373a8b6c1f94a08f217e5c5708746b2f",
+      "matches_previous_custody": true,
+      "text_sha256": "b871f2713c15478ad16b891e297ef701e0a854ed6df51fc153a703cbf62614b2",
+      "excerpt": "我们是要推进 compass 与 assay 的能力，学术论文和创新的智能=压缩×验证×因果倒置的模型训练",
+      "authority": "original_user"
+    },
+    {
+      "id": "U18",
+      "path": "/Users/chunxiao.wang/.claude/projects_pre_cwdrw2/C--Users-chunx-Projects-nautilus-compass/44761907-86fe-49f8-b0ef-fc3ff9c0567b.jsonl",
+      "line": 5475,
+      "event_time_utc": "2026-10-07T03:11:28.124Z",
+      "event_time_new_york": "2026-10-06T23:11:28.124000-04:00",
+      "role": "user",
+      "type": "user",
+      "isMeta": false,
+      "isSidechain": false,
+      "record_sha256": "5ca6035071fe58a9da17826a3da00d832561be371fe951530624af5a158a012d",
+      "text_sha256": "82552050a0c5c35b77463ac4fcd9ad72789e710a0d3fb06d490673a336cfcac3",
+      "excerpt": "NACRE=“压缩×验证×因果倒置”+原生动态权重算法+原生 RSI 自进化涡轮增压数据飞轮能力+compass 原生记忆能力+原生 JEV 和 assay 判断能力+原生核心专家技能能力",
+      "authority": "original_user"
+    },
+    {
+      "id": "U19",
+      "path": "/Users/chunxiao.wang/.claude/projects_pre_cwdrw2/C--Users-chunx-Projects-nautilus-compass/44761907-86fe-49f8-b0ef-fc3ff9c0567b.jsonl",
+      "line": 9036,
+      "event_time_utc": "2026-10-08T00:57:46.664Z",
+      "event_time_new_york": "2026-10-07T20:57:46.664000-04:00",
+      "role": "user",
+      "type": "user",
+      "isMeta": false,
+      "isSidechain": false,
+      "record_sha256": "d3e1ded8b06f35bc9e71b75da8999d96e9aac38b69c51289ca8577112af452eb",
+      "text_sha256": "9f9ab6ed3a8ddf9e0a141825b4f6791bc6e05b25d390f10b3965ef9dbb27f54b",
+      "excerpt": "1.compass assay jev\n2.创新模型架构，智能=压缩×验证+因果倒置+assay+jev+原生 compass 记忆+技能内化的垂直创新模型也 compass 对话框等主线\n3.基于 1 和 2 的评测和燃料和判分等，都是 compass 对话框的业务",
+      "authority": "original_user"
+    }
+  ],
+  "recall_usefulness_versions": [
+    {
+      "commit": "4df273251ec8b57073363ecff85c40eac12a3c1a",
+      "commit_metadata": "2026-08-24T10:48:31-06:00 2026-08-24T10:48:31-06:00 docs: 押送并入 main(不用分支)·README 与回复函同步改口径",
+      "blob_path": "outputs/recall_usefulness_20260823.json",
+      "sha256": "ecffdd3334bfc0a613be869af4013e737d0cfd6dfd74fa64dd8554043e0b959f",
+      "stats": [
+        {
+          "id": "F1-feishu-id",
+          "n": 3,
+          "hits": 3,
+          "control_ok": 0,
+          "treatment_ok": 0,
+          "classes": [
+            "inject_fail",
+            "inject_fail",
+            "inject_fail"
+          ]
+        },
+        {
+          "id": "F2-daemon-port",
+          "n": 3,
+          "hits": 3,
+          "control_ok": 0,
+          "treatment_ok": 3,
+          "classes": [
+            "pass",
+            "pass",
+            "pass"
+          ]
+        },
+        {
+          "id": "F3-utf8-negative",
+          "n": 3,
+          "hits": 3,
+          "control_ok": 3,
+          "treatment_ok": 3,
+          "classes": [
+            "pass",
+            "pass",
+            "pass"
+          ]
+        }
+      ]
+    },
+    {
+      "commit": "6c691c8110b1c4563aa732fa066781b52c3e348d",
+      "commit_metadata": "2026-09-02T13:33:47+08:00 2026-09-02T13:33:47+08:00 test(N2b): 记忆池治理回归门通过·N2b 关账——治理后(68.8k→2967条)recall-usefulness 三 fact 复测 hit@3 仍 9/9·F2 delta=1 首证复现·F3 对照 delta=0,与 8/23 基线逐项一致零退化;基线另存 baseline 文件防下次覆盖(原实验脚本会覆写基线文件,本次抢救式备份);GOAL_SSOT N2b ✅ 9/6 due 提前关",
+      "blob_path": "outputs/recall_usefulness_20260823.json",
+      "sha256": "506b56d1bccb4d4667ac73b8e413b51c0e1f512843089b0b3a30b2498456ac83",
+      "stats": [
+        {
+          "id": "F1-feishu-id",
+          "n": 3,
+          "hits": 3,
+          "control_ok": 0,
+          "treatment_ok": 0,
+          "classes": [
+            "inject_fail",
+            "inject_fail",
+            "inject_fail"
+          ]
+        },
+        {
+          "id": "F2-daemon-port",
+          "n": 3,
+          "hits": 3,
+          "control_ok": 0,
+          "treatment_ok": 3,
+          "classes": [
+            "pass",
+            "pass",
+            "pass"
+          ]
+        },
+        {
+          "id": "F3-utf8-negative",
+          "n": 3,
+          "hits": 3,
+          "control_ok": 3,
+          "treatment_ok": 3,
+          "classes": [
+            "pass",
+            "pass",
+            "pass"
+          ]
+        }
+      ]
+    }
+  ],
+  "code_bindings": [
+    {
+      "path": "daemon.py",
+      "worktree_sha256": "9e51aa287b75e00caf5e70b84a7cb4e087ca8ab8df06387886c9529d860b3b43",
+      "last_commit": "dfb21953f9d7bb31cc51c7355393550f543648eb",
+      "last_commit_sha256": "c4a6a4e7db25bcacaf1ee732622b6ed5e0a1abe0047af4b7aec5a143bf881299",
+      "matches_last_committed_file": false
+    },
+    {
+      "path": "assay/submit.py",
+      "worktree_sha256": "654cf6fe9e317f13caa7e736b5f998e6fd54a559165a9dd7e962ed350e8ad17a",
+      "last_commit": "a38e198bf36cb35bf53c5f44dbcc6c8cb34d57e2",
+      "last_commit_sha256": "654cf6fe9e317f13caa7e736b5f998e6fd54a559165a9dd7e962ed350e8ad17a",
+      "matches_last_committed_file": true
+    },
+    {
+      "path": "tools/verifypack/checks.py",
+      "worktree_sha256": "e6b792f8203ca09895ae6fb8cfae34d6a979f87dbd03ed293a301dab9059c38e",
+      "last_commit": "147ad18e83c0dbd3418058b447d48c0aa697b1b3",
+      "last_commit_sha256": "e6b792f8203ca09895ae6fb8cfae34d6a979f87dbd03ed293a301dab9059c38e",
+      "matches_last_committed_file": true
+    },
+    {
+      "path": "sdks/jev-trust/jev_trust/trust.py",
+      "worktree_sha256": "af7ce96b906303a3c5bc7c7d49bfc7b24eae25f0f2d08767da89ed2846c6be5f",
+      "last_commit": "147ad18e83c0dbd3418058b447d48c0aa697b1b3",
+      "last_commit_sha256": "af7ce96b906303a3c5bc7c7d49bfc7b24eae25f0f2d08767da89ed2846c6be5f",
+      "matches_last_committed_file": true
+    },
+    {
+      "path": "sdks/jev-trust/jev_trust/calib.py",
+      "worktree_sha256": "0649e33b5a0b722a4c18bfc40ac6c82f8c9dc9f4b8601c590dd015935c7fe39a",
+      "last_commit": "2cae900b898187d61a4e52833dbc9e244380a273",
+      "last_commit_sha256": "0649e33b5a0b722a4c18bfc40ac6c82f8c9dc9f4b8601c590dd015935c7fe39a",
+      "matches_last_committed_file": true
+    },
+    {
+      "path": "tools/p0_full_extract.py",
+      "worktree_sha256": "db9d4ca8bb61b7e99455b2ce6ad8c517b093d5dc43241f6e7e316c965f1d0dd5",
+      "last_commit": "7bbc0b7881dae20d9f0a79ced4551e771e23f0ef",
+      "last_commit_sha256": "db9d4ca8bb61b7e99455b2ce6ad8c517b093d5dc43241f6e7e316c965f1d0dd5",
+      "matches_last_committed_file": true
+    },
+    {
+      "path": "tools/p0_full_eval.py",
+      "worktree_sha256": "8b9a5dd27f20f51a1fc97e0758fe9d633e570eb4a7bea99fe9c16aac91fb9f67",
+      "last_commit": "114f425f8964a5823d9788afacfeedfba47444a6",
+      "last_commit_sha256": "8b9a5dd27f20f51a1fc97e0758fe9d633e570eb4a7bea99fe9c16aac91fb9f67",
+      "matches_last_committed_file": true
+    },
+    {
+      "path": "tools/anchor_build_v01.py",
+      "worktree_sha256": "7513f807ec6089d09def1cd63080efb53b5afc092b631a024a6b5086575037bd",
+      "last_commit": "1923d8cf91215681c3777b4339774ef08d265d01",
+      "last_commit_sha256": "7513f807ec6089d09def1cd63080efb53b5afc092b631a024a6b5086575037bd",
+      "matches_last_committed_file": true
+    },
+    {
+      "path": "tools/recall_usefulness_exp.py",
+      "worktree_sha256": "a08b3b03fc7cfcd6af119b4c6cb960d45a6a0210af0038058f546a852c9fd05c",
+      "last_commit": "07f6775605376cc4061a6d5ef4a38269cf86efed",
+      "last_commit_sha256": "a08b3b03fc7cfcd6af119b4c6cb960d45a6a0210af0038058f546a852c9fd05c",
+      "matches_last_committed_file": true
+    }
+  ],
+  "existing_evidence_continuity": [
+    {
+      "id": "S19",
+      "path": "../verification-learning-papers/docs/CV_eta_engineering_spec_v3.md",
+      "previous_sha256": "d1d3c334960dabe1fcd27f93e6e725ffea60c711e511f5b3fd6935b682befe18",
+      "current_sha256": "d1d3c334960dabe1fcd27f93e6e725ffea60c711e511f5b3fd6935b682befe18",
+      "unchanged": true
+    },
+    {
+      "id": "S20",
+      "path": "../verification-learning-papers/docs/training_blueprint_cv_arch_20261001.md",
+      "previous_sha256": "c15a137c10092540feb14f057b0deb0eb9e4498a3db72cee15a2404c4f46cac8",
+      "current_sha256": "c15a137c10092540feb14f057b0deb0eb9e4498a3db72cee15a2404c4f46cac8",
+      "unchanged": true
+    },
+    {
+      "id": "S21",
+      "path": "../verification-learning-papers/docs/CV_falsification_core_20261001.md",
+      "previous_sha256": "80513a32d2152af0d49b0dcbff8f557d1a4b3b5578f47a91aeff05f6b0218a8f",
+      "current_sha256": "80513a32d2152af0d49b0dcbff8f557d1a4b3b5578f47a91aeff05f6b0218a8f",
+      "unchanged": true
+    },
+    {
+      "id": "S23",
+      "path": "runtime/judge_lora_p2v2/eval_report.json",
+      "previous_sha256": "cb8cdd08b771896f0af87522bcc98210c9248eec4367ba8e530dbd697f4b86b8",
+      "current_sha256": "cb8cdd08b771896f0af87522bcc98210c9248eec4367ba8e530dbd697f4b86b8",
+      "unchanged": true
+    },
+    {
+      "id": "S25",
+      "path": "docs/metering/PRECOR_ENACRE1_VERDICT_20261007.md",
+      "previous_sha256": "6f1f57e3cf8184b3ba3c7f6752801ede8c90d02cf6f5590e916649c8d1737a72",
+      "current_sha256": "6f1f57e3cf8184b3ba3c7f6752801ede8c90d02cf6f5590e916649c8d1737a72",
+      "unchanged": true
+    },
+    {
+      "id": "S26",
+      "path": "runtime/robust_exp/enacre1_results.csv",
+      "previous_sha256": "6f347e3e967937faa6920418dff41ed0395d902ce86440f8bd08f0861f067c43",
+      "current_sha256": "6f347e3e967937faa6920418dff41ed0395d902ce86440f8bd08f0861f067c43",
+      "unchanged": true
+    },
+    {
+      "id": "S27",
+      "path": "runtime/verdict_corpus/p0_lite_report.json",
+      "previous_sha256": "dfbdffc1b3d223ee752794f2c77e53a07688410aafc19d84b47e069a00807926",
+      "current_sha256": "dfbdffc1b3d223ee752794f2c77e53a07688410aafc19d84b47e069a00807926",
+      "unchanged": true
+    },
+    {
+      "id": "S29",
+      "path": "daemon.py",
+      "previous_sha256": "9e51aa287b75e00caf5e70b84a7cb4e087ca8ab8df06387886c9529d860b3b43",
+      "current_sha256": "9e51aa287b75e00caf5e70b84a7cb4e087ca8ab8df06387886c9529d860b3b43",
+      "unchanged": true
+    },
+    {
+      "id": "S32",
+      "path": "assay/submit.py",
+      "previous_sha256": "654cf6fe9e317f13caa7e736b5f998e6fd54a559165a9dd7e962ed350e8ad17a",
+      "current_sha256": "654cf6fe9e317f13caa7e736b5f998e6fd54a559165a9dd7e962ed350e8ad17a",
+      "unchanged": true
+    }
+  ],
+  "data_inputs": [
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/verdict_corpus/split_train_v1.jsonl",
+      "sha256": "a98889e43c34a9860bc27a215f74607a571cc551fe513d54d47a3349bc1bc52b",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/verdict_corpus/split_dev_v1.jsonl",
+      "sha256": "0219d65d7940eb18fff6628764ac2b0a97c030179100251367fe4878190968e3",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/verdict_corpus/split_test_v1.jsonl",
+      "sha256": "eb079cf3679c031579114632181ef74efbdd25115c78499f0284882edfc820ca",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/verdict_corpus/anchor_v0.jsonl",
+      "sha256": "5eda68151af8c73e1be9ef41d55c77b9db3826af09d5c2ec13b3d999bf2d01a3",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/verdict_corpus/reg100.jsonl",
+      "sha256": "fa9f5fb84996b2d7a02dc9b07c920746664c3ed900f494584683930a19b71f31",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/verdict_corpus/split_stats.json",
+      "sha256": "81cb59be061e988f80d6f286b976c95dfd832db7018a6ebca312e4c71370b0c7",
+      "unchanged": true
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/verdict_corpus/anchor_v01_manifest.json",
+      "sha256": "04cc24cb777fef842b0387b9f0fc8b805315a61bb0fbadd06760b3a914b40d11",
+      "unchanged": true
+    }
+  ],
+  "missing_exact_local_paths": [
+    {
+      "path": "runtime/verdict_corpus/anchor_v01.jsonl",
+      "exists": false
+    },
+    {
+      "path": "runtime/p0_full",
+      "exists": false
+    }
+  ],
+  "CU04_current_matrix": {
+    "path": "/Users/chunxiao.wang/Projects/nautilus-core-worktrees/platform-fullstack-20261102/fullstack-bench/repair-evidence/cu04-v021-formal-r03/matrix-result.json",
+    "sha256": "51c4d8021d6003361ecee1377c0a9fa4a6b1288269afa6110591b59b88fddb8d",
+    "recorded_at_utc": "2026-11-03T09:23:19.666302+00:00",
+    "recorded_at_new_york": "2026-11-03T04:23:19.666302-05:00",
+    "version": "0.2.1",
+    "matrix_id": "CU04-V021-QWEN5-OPUS55-5-MIXED-TRANSPORT-R03",
+    "results": [
+      {
+        "run_id": "cu04-v021-qwen-02-r02",
+        "path": "/Users/chunxiao.wang/Projects/nautilus-core-worktrees/platform-fullstack-20261102/fullstack-bench/repair-evidence/cu04-v021-formal-r02/runs/cu04-v021-qwen-02-r02/result.json",
+        "sha256": "34f889233aadfd51ef80964daf222e0089ddde72ff53528965672338094e65ac",
+        "matches_matrix": true,
+        "model": "bl-qwen3.8-max",
+        "classification": "completed",
+        "is_model_rollout": true,
+        "score": 1.0
+      },
+      {
+        "run_id": "cu04-v021-opus55-01-r02",
+        "path": "/Users/chunxiao.wang/Projects/nautilus-core-worktrees/platform-fullstack-20261102/fullstack-bench/repair-evidence/cu04-v021-formal-r02/runs/cu04-v021-opus55-01-r02/result.json",
+        "sha256": "7fdd2f76f0ac3a20a3463001a0d3d60cf698f2fd8fd7af4a0d1f96f1882fa127",
+        "matches_matrix": true,
+        "model": "claude-opus-5-5",
+        "classification": "completed",
+        "is_model_rollout": true,
+        "score": 1.0
+      },
+      {
+        "run_id": "cu04-v021-opus55-02-r03",
+        "path": "/Users/chunxiao.wang/Projects/nautilus-core-worktrees/platform-fullstack-20261102/fullstack-bench/repair-evidence/cu04-v021-formal-r03/runs/cu04-v021-opus55-02-r03/result.json",
+        "sha256": "37f4afbced979e57fdbd5883cfdaca7d12b7be2126a7d7427cdf54f2130d3b86",
+        "matches_matrix": true,
+        "model": "claude-opus-5-5",
+        "classification": "completed",
+        "is_model_rollout": true,
+        "score": 1.0
+      },
+      {
+        "run_id": "cu04-v021-qwen-01-r03",
+        "path": "/Users/chunxiao.wang/Projects/nautilus-core-worktrees/platform-fullstack-20261102/fullstack-bench/repair-evidence/cu04-v021-formal-r03/runs/cu04-v021-qwen-01-r03/result.json",
+        "sha256": "8adf4e75428d9f351ba8cd5fa1ad2d8450b28e13fe4b86fb106273e43fb1c2c8",
+        "matches_matrix": true,
+        "model": "bl-qwen3.8-max",
+        "classification": "completed",
+        "is_model_rollout": true,
+        "score": 1.0
+      },
+      {
+        "run_id": "cu04-v021-opus55-03-r03",
+        "path": "/Users/chunxiao.wang/Projects/nautilus-core-worktrees/platform-fullstack-20261102/fullstack-bench/repair-evidence/cu04-v021-formal-r03/runs/cu04-v021-opus55-03-r03/result.json",
+        "sha256": "450a6eb1343da95e1f793ac62a10c9a18572df7f20fca572ad9a309c789b153f",
+        "matches_matrix": true,
+        "model": "claude-opus-5-5",
+        "classification": "completed",
+        "is_model_rollout": true,
+        "score": 1.0
+      },
+      {
+        "run_id": "cu04-v021-qwen-03-r03",
+        "path": "/Users/chunxiao.wang/Projects/nautilus-core-worktrees/platform-fullstack-20261102/fullstack-bench/repair-evidence/cu04-v021-formal-r03/runs/cu04-v021-qwen-03-r03/result.json",
+        "sha256": "bcb0ffc0d1480756010c1b8c9e55069ea8f185c28491e5b7da55229e5646de2f",
+        "matches_matrix": true,
+        "model": "bl-qwen3.8-max",
+        "classification": "completed",
+        "is_model_rollout": true,
+        "score": 1.0
+      },
+      {
+        "run_id": "cu04-v021-opus55-04-r03",
+        "path": "/Users/chunxiao.wang/Projects/nautilus-core-worktrees/platform-fullstack-20261102/fullstack-bench/repair-evidence/cu04-v021-formal-r03/runs/cu04-v021-opus55-04-r03/result.json",
+        "sha256": "7696b88e51f98866070fec63fa5ee8993d540601daba516613d0cd569706bcc6",
+        "matches_matrix": true,
+        "model": "claude-opus-5-5",
+        "classification": "completed",
+        "is_model_rollout": true,
+        "score": 1.0
+      },
+      {
+        "run_id": "cu04-v021-qwen-04-r03",
+        "path": "/Users/chunxiao.wang/Projects/nautilus-core-worktrees/platform-fullstack-20261102/fullstack-bench/repair-evidence/cu04-v021-formal-r03/runs/cu04-v021-qwen-04-r03/result.json",
+        "sha256": "b54b16ee67b8d12ee21c74272e1634e8418019ca69144f328db35b195d25699d",
+        "matches_matrix": true,
+        "model": "bl-qwen3.8-max",
+        "classification": "completed",
+        "is_model_rollout": true,
+        "score": 1.0
+      },
+      {
+        "run_id": "cu04-v021-opus55-05-r03",
+        "path": "/Users/chunxiao.wang/Projects/nautilus-core-worktrees/platform-fullstack-20261102/fullstack-bench/repair-evidence/cu04-v021-formal-r03/runs/cu04-v021-opus55-05-r03/result.json",
+        "sha256": "7ef0d2681c91d8c70df5c0291e6ce93f22a46fc228ad32c8366b892b3a0034e9",
+        "matches_matrix": true,
+        "model": "claude-opus-5-5",
+        "classification": "completed",
+        "is_model_rollout": true,
+        "score": 1.0
+      },
+      {
+        "run_id": "cu04-v021-qwen-05-r03",
+        "path": "/Users/chunxiao.wang/Projects/nautilus-core-worktrees/platform-fullstack-20261102/fullstack-bench/repair-evidence/cu04-v021-formal-r03/runs/cu04-v021-qwen-05-r03/result.json",
+        "sha256": "d64292c5f61e21003ba4b660abf069dea20f56dff298bab857ad443ffe26124c",
+        "matches_matrix": true,
+        "model": "bl-qwen3.8-max",
+        "classification": "completed",
+        "is_model_rollout": true,
+        "score": 1.0
+      }
+    ],
+    "counts": {
+      "bl-qwen3.8-max": 5,
+      "claude-opus-5-5": 5
+    },
+    "means": {
+      "bl-qwen3.8-max": 1.0,
+      "claude-opus-5-5": 1.0
+    },
+    "qwen_threshold": 0.4,
+    "numeric_gate_passed": false,
+    "composition": {
+      "new_attempts": 8,
+      "retained_legacy_cells": 2,
+      "transport_provenance": "2legacyb70/551+8newV2.1ifcomplete"
+    },
+    "old_invalid": {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-core-worktrees/platform-fullstack-20261102/fullstack-bench/repair-evidence/cu04-v021-formal-r02/runs/cu04-v021-qwen-01-r02/result.json",
+      "sha256": "d562af00a41aeb4abae8a201c151a497c2fc32c3145555ae1b3ca58bebc92f8f",
+      "matches_matrix": true,
+      "score": null,
+      "classification": "indeterminate_provider_routing"
+    },
+    "scope": "Independent hash/readback and arithmetic over saved result files; original provider/SQLite/workflow validity remains within their existing receipts."
+  },
+  "repo_head": "140b06df2277c1ab6a6ee4bcd60f6588ccc6e9f0",
+  "scope": {
+    "training_or_paid_model_runs": 0,
+    "new_services_or_loops_started": 0,
+    "credentials_read": false,
+    "external_sends": 0,
+    "other_frame_state_writes": 0
+  },
+  "boundary": "Bounded source review; time-limited selected records and exact local paths. Current training gate resolution remains open.",
+  "service_entry_snapshot": {
+    "bootstrap_http": 200,
+    "bootstrap_generated_at": "2026-11-03T16:02:39.969366",
+    "identity": {
+      "name": "compass",
+      "agent_id": 9000017
+    },
+    "mailbox_scope": "unread title summary only; no acknowledgement or external send",
+    "recall_project": "-Users-chunxiao-wang-Projects-nautilus-compass",
+    "recall_query": "Compass 主线 用户三点拍板 原生记忆 创新模型 10月8日 自产语料10月19日 由果溯因",
+    "top_k": 3,
+    "source_read_back": "mainline-anchor-20261008.md; subsequent original user record at 44761907 line9036",
+    "scope": "Entry availability only; task usefulness assessed separately."
+  },
+  "delivery_validation": {
+    "historical_prefixes": [
+      {
+        "path": "docs/soul/COMPASS_PAST_PRESENT_FUTURE_20261103.md",
+        "bytes_preserved": 18279,
+        "prefix_sha256": "5370c73d08c25ef3115647b3919eac6fac98ad1a1b43c742b9e7224b784fbaa0",
+        "matches_before": true,
+        "current_sha256": "8e7734275fba42559f4501fa53b0a2a92c9949fd941a844baa18690c7ff7fb04"
+      },
+      {
+        "path": "runtime/codex-main/20261103-history/HANDOFF.md",
+        "bytes_preserved": 3265,
+        "prefix_sha256": "76af37a1da77d13e2fd5915eac7864f320e4d74cd8096248dfd51a041604ce3e",
+        "matches_before": true,
+        "current_sha256": "07da354db56f18b50863870033731c4c3f9243d26558dcf245bb784e2d666282"
+      }
+    ],
+    "links_checked": 42,
+    "missing_links": [],
+    "source_drift": [],
+    "code_drift": [],
+    "matrix_sha_unchanged": true,
+    "all_original_authority_records_classified": true,
+    "all_matrix_result_hashes_match": true,
+    "before_head": "140b06df2277c1ab6a6ee4bcd60f6588ccc6e9f0",
+    "after_head": "140b06df2277c1ab6a6ee4bcd60f6588ccc6e9f0",
+    "validated_at_new_york": "2026-11-03T11:12:25.926062-05:00",
+    "pass": true
+  }
+}

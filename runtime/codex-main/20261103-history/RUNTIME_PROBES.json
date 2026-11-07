@@ -1,0 +1,114 @@
+{
+  "time": "2026-11-03T05:15:50.750881+00:00",
+  "probes": {
+    "ping": {
+      "ok": true,
+      "pong": true,
+      "pid": 14136,
+      "python_executable": "/Users/chunxiao.wang/.local/share/uv/python/cpython-3.12.15-macos-aarch64-none/bin/python3.12",
+      "source_root": "/Users/chunxiao.wang/.claude/plugins/nautilus-compass",
+      "daemon_hash": "sha256:9e51aa287b75e00caf5e70b84a7cb4e087ca8ab8df06387886c9529d860b3b43"
+    },
+    "status": {
+      "ok": true,
+      "ts": "2026-11-03T05:15:50.752937+00:00",
+      "uptime_s": 41134,
+      "pid": 14136,
+      "cpu_pct": 0.0,
+      "rss_mb": 0,
+      "load_avg": [
+        4.4716796875,
+        3.8291015625,
+        3.076171875
+      ],
+      "recall": {
+        "p9_cache": {
+          "hit": 0,
+          "miss": 92,
+          "expire": 59,
+          "evict": 0
+        },
+        "sliding_5min": {
+          "count_5min": 7,
+          "p95_ms": 11667.4,
+          "avg_ms": 6305.96,
+          "overload_5min": 0
+        },
+        "inotify": {
+          "watches": 0,
+          "events": 0,
+          "avoid_rate": 7.6
+        }
+      },
+      "memory": {
+        "pkl_count": 3597,
+        "pkl_total_mb": 93
+      }
+    },
+    "bge": {
+      "http": 200,
+      "data": {
+        "status": "ok",
+        "device": "mps",
+        "model": "bge-m3",
+        "port": 8400
+      },
+      "sha256": "8cc4283821c0eb78b3f1960fd943c71e6fec4633a41ad1a586ab5a0267d32ce7"
+    },
+    "public_discovery": {
+      "http": 200,
+      "data": {
+        "schema_version": "v0.0.1-a2a",
+        "agent": {
+          "id": "compass.nautilus.social",
+          "name": "Nautilus Compass",
+          "description": "Cross-agent memory layer · MCP streamable-http · drift-aware (AUC 0.83 held-out) · Official LongMemEval-V2 small tier: tuned web 40.0% / enterprise 38.4% (untuned 19.6/12.8; doubao judge + hygiene protocol) · e2e 500-question context-engineering eval 75.4% (81.6% excl. judge-disconnect) vs 42.6% baseline · sub-second memory_query (p95 0.34-0.80s vs 26.9s LLM-controller baseline)",
+          "version": "1.1.1",
+          "homepage": "https://github.com/chunxiaoxx/nautilus-compass",
+          "capabilities": [
+            {
+              "name": "STORE_OBS",
+              "endpoint": "/mcp/",
+              "method": "MCP tool: ingest_obs",
+              "description": "Write a single observation (with drift signal) to user memory"
+            },
+            {
+              "name": "RETRIEVE_MEMORY",
+              "endpoint": "/mcp/",
+              "method": "MCP tool: recall",
+              "description": "Cross-agent semantic + keyword recall"
+            },
+            {
+              "name": "QUERY_PROFILE",
+              "endpoint": "/mcp/",
+              "method": "MCP tool: profile",
+              "description": "User work profile aggregate"
+            },
+            {
+              "name": "QUERY_DRIFT",
+              "endpoint": "/mcp/",
+              "method": "MCP tool: drift_check",
+              "description": "AI drift timeline (compass-exclusive feature)"
+            }
+          ],
+          "auth": {
+            "type": "bearer-token",
+            "transport": "Authorization: Bearer <token> on https://compass.nautilus.social/mcp/",
+            "acquisition": "self-serve open beta - sign up at https://compass.nautilus.social/signup, then create a scoped token in the console (or POST /tokens); scope is server-bound to your own space (read+write)",
+            "scopes": [
+              "read:<project>",
+              "write:<project>"
+            ]
+          },
+          "mcp_alternative": {
+            "transport": "streamable-http",
+            "server_url": "https://compass.nautilus.social/mcp/",
+            "note": "any MCP-compatible client; open registration - no invitation needed"
+          },
+          "documentation": "https://github.com/chunxiaoxx/nautilus-compass#a2a-protocol"
+        }
+      },
+      "sha256": "72e961691c4fb39414633deaa4a8eaad4a8af64ea8c1bd78bac3c691d7a5a3d2"
+    }
+  }
+}

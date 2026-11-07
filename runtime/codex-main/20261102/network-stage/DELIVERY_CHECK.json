@@ -1,0 +1,124 @@
+{
+  "task_id": "COMPASS-MAIN-20261102-NETWORK-STAGE-01",
+  "at_utc": "2026-11-03T03:31:27.357963+00:00",
+  "status": "PASS_BOUNDED_NETWORK_RECHECK_DELIVERY",
+  "bootstrap_http_200": true,
+  "mail_summary_read": true,
+  "ssh_attempt_count": 1,
+  "ssh_result": "SSH_AUTHENTICATION_DENIED",
+  "remote_file_existence_verified": false,
+  "remote_probe_ast_valid_only": true,
+  "remote_probe_executed": false,
+  "first_round_files_unchanged": [
+    {
+      "name": "A100_READONLY.json",
+      "unchanged": true
+    },
+    {
+      "name": "BOOTSTRAP_READONLY.json",
+      "unchanged": true
+    },
+    {
+      "name": "CANDIDATES.json",
+      "unchanged": true
+    },
+    {
+      "name": "DELIVERY_CHECK.json",
+      "unchanged": true
+    },
+    {
+      "name": "HANDOFF.md",
+      "unchanged": true
+    },
+    {
+      "name": "INPUT_VERSION_CHECK.json",
+      "unchanged": true
+    },
+    {
+      "name": "MCP_RECALL.json",
+      "unchanged": true
+    },
+    {
+      "name": "SOURCE_CHECKS.json",
+      "unchanged": true
+    },
+    {
+      "name": "SOURCE_CHECKS.lock",
+      "unchanged": true
+    },
+    {
+      "name": "STARTUP_ACCEPTANCE.json",
+      "unchanged": true
+    },
+    {
+      "name": "read_evidence.py",
+      "unchanged": true
+    }
+  ],
+  "ssh_config_sha_unchanged": true,
+  "head_unchanged": true,
+  "output_sensitive_pattern_findings": [],
+  "files": [
+    {
+      "name": "BOOTSTRAP_MAIL_READBACK.json",
+      "bytes": 1633,
+      "sha256": "a59933e67ea9119af8281a2772b378f92548e24e274adcbed13db4ca3c70da12",
+      "json_valid": true
+    },
+    {
+      "name": "CANDIDATE5_DELTA.json",
+      "bytes": 2138,
+      "sha256": "70e6bc3d1ec3ffa7173676ff56e82a576147f0c98b0437130998ced6cc200a87",
+      "json_valid": true
+    },
+    {
+      "name": "FIRST_ROUND_BASELINE.json",
+      "bytes": 1574,
+      "sha256": "82615aa0c6dfd1e3de57189a9010d5dc2ab430742e4a8fb92c1e187f8130a2b0",
+      "json_valid": true
+    },
+    {
+      "name": "FIRST_ROUND_PRESERVATION.json",
+      "bytes": 2918,
+      "sha256": "95da25f284b7284fee86b5be5303a3adce4c32a6c85f8fd59d88f18fae2735aa",
+      "json_valid": true
+    },
+    {
+      "name": "HANDOFF.md",
+      "bytes": 3691,
+      "sha256": "7a4cb52317922acc7fa5a7bda5e10dc397062ecf00b260047bc210c5e0a7dc70",
+      "json_valid": false
+    },
+    {
+      "name": "SSH_ATTEMPT.json",
+      "bytes": 400,
+      "sha256": "2e25ea47e7551e4fa20e7b555763de568ae43199fe30ff2ee7a2254680c8c336",
+      "json_valid": true
+    },
+    {
+      "name": "SSH_CONFIG_METADATA.json",
+      "bytes": 638,
+      "sha256": "0095519e45df5483221c506098cfb3bc4cbc7758ccf8b9e91903f9b743a9dbff",
+      "json_valid": true
+    },
+    {
+      "name": "SSH_INDEX_READBACK.json",
+      "bytes": 1180,
+      "sha256": "1af9b2ceae4026a3e7c49ffee8dcd8ee33df3cfde756ef934287f109ba6da1cc",
+      "json_valid": true
+    },
+    {
+      "name": "STARTUP_ACCEPTANCE.json",
+      "bytes": 5908,
+      "sha256": "bcfbbc06be394c087ae03012b467fffaa0febf398ec1b97c10af0f21662e4317",
+      "json_valid": true
+    },
+    {
+      "name": "remote_index_probe.py",
+      "bytes": 8275,
+      "sha256": "f4e8cfde1a89db60260d8bd060ee5613915021b1bd464845858d282058079b1b",
+      "json_valid": false
+    }
+  ],
+  "stop_wait_for_coordination": true
+}

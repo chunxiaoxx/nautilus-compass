@@ -1,0 +1,52 @@
+{
+ "ts": "2026-11-05T09:25:03",
+ "label": "baseline-current",
+ "exit_ip": {
+  "v4": "205.214.48.74",
+  "v6": "FAIL(rc=6)"
+ },
+ "timing": {
+  "targets": {
+   "https://www.baidu.com": {
+    "ok": true,
+    "http": "200",
+    "dns_s": 0.022788,
+    "tcp_s": 0.023145,
+    "tls_s": 0.096697,
+    "ttfb_s": 0.116668,
+    "total_s": 0.116822
+   },
+   "https://api.chunxiao.wang": {
+    "ok": true,
+    "http": "200",
+    "dns_s": 0.293007,
+    "tcp_s": 0.293205,
+    "tls_s": 0.350406,
+    "ttfb_s": 0.377554,
+    "total_s": 0.377613
+   },
+   "https://www.google.com": {
+    "ok": true,
+    "http": "200",
+    "dns_s": 0.234952,
+    "tcp_s": 0.235278,
+    "tls_s": 1.681367,
+    "ttfb_s": 2.013665,
+    "total_s": 2.4556
+   }
+  },
+  "ttfb_p50_s": 0.377554
+ },
+ "dns": {
+  "egress_geoloc_city": "Washington",
+  "system_resolves": true,
+  "raw": ""
+ },
+ "udp_dns": {
+  "udp_dns_ok": true,
+  "answer": "172.66.147.243\n104.20.23.154"
+ },
+ "quic": {
+  "quic": "[不可验] 本机 curl 无 HTTP3 支持"
+ }
+}

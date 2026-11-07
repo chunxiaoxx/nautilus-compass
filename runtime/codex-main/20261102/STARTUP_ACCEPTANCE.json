@@ -1,0 +1,330 @@
+{
+  "schema": "compass.codex.startup-acceptance.v1",
+  "task_id": "COMPASS-MAIN-20261102-ARTIFACT-LOCATE-01",
+  "owner": "Compass 本仓长期主会话 / Codex",
+  "identity": {
+    "role": "长期记忆、assay/jev、压缩×验证与因果倒置模型",
+    "historical_ali_support_session": false,
+    "authority": "当前用户指令及 agent_catalog.json 中 compass 条目",
+    "principle": "智能＝压缩×验证",
+    "live_bootstrap_identity_verified": false
+  },
+  "at_utc": "2026-11-03T03:14:42.125267+00:00",
+  "at_america_new_york": "2026-11-02T22:14:42.125267-05:00",
+  "repo": {
+    "path": "/Users/chunxiao.wang/Projects/nautilus-compass",
+    "head_start": "e6fe8d55c147bff90b1b90077280ebd2d4c80f01",
+    "head_end": "e6fe8d55c147bff90b1b90077280ebd2d4c80f01",
+    "existing_dirty_status_at_start": [
+      " M AGENTS.md",
+      " M CLAUDE.md",
+      " M daemon.py",
+      " M runtime/loop/rounds.log",
+      " M runtime/loop/state.json",
+      " M runtime/production_loop/state.json",
+      "?? .claude/settings.json",
+      "?? .codex/",
+      "?? docs/agent-memory.index.md",
+      "?? docs/soul/MAINLINE_ROADMAP_20261101.md",
+      "?? docs/soul/ORG_FOUR_Q_AUDIT_20261031.md",
+      "?? docs/soul/TASK_MEMORY_FUEL_20261101.md",
+      "?? ops/BUCKET_MUTEX_PLAYBOOK_20261101.md",
+      "?? tests/test_daemon_memory_cache_fallback.py",
+      "?? tests/test_daemon_rerank_remote.py",
+      "?? tests/test_mps_service_serialization.py",
+      "?? tools/guard_bigread.py",
+      "?? tools/orgup_preflight.py"
+    ],
+    "dirty_status_at_end": [
+      " M AGENTS.md",
+      " M CLAUDE.md",
+      " M daemon.py",
+      " M runtime/loop/rounds.log",
+      " M runtime/loop/state.json",
+      " M runtime/production_loop/state.json",
+      "?? .claude/settings.json",
+      "?? .codex/",
+      "?? docs/agent-memory.index.md",
+      "?? docs/soul/MAINLINE_ROADMAP_20261101.md",
+      "?? docs/soul/ORG_FOUR_Q_AUDIT_20261031.md",
+      "?? docs/soul/TASK_MEMORY_FUEL_20261101.md",
+      "?? ops/BUCKET_MUTEX_PLAYBOOK_20261101.md",
+      "?? runtime/codex-main/",
+      "?? tests/test_daemon_memory_cache_fallback.py",
+      "?? tests/test_daemon_rerank_remote.py",
+      "?? tests/test_mps_service_serialization.py",
+      "?? tools/guard_bigread.py",
+      "?? tools/orgup_preflight.py"
+    ],
+    "outside_runtime_status_same_as_start": true,
+    "git_write_operations": [],
+    "note": "已有工作区改动保留；本轮只写本任务 runtime，未对这些既有改动归属作推断。",
+    "status_delta": {
+      "added": [
+        "?? runtime/codex-main/"
+      ],
+      "removed": []
+    }
+  },
+  "round_scope": {
+    "acceptance": "最多5个有来源候选，寻找现成 anchor_v01 与 P0-full metadata/arrays；能读则核 SHA/ID/fold/label/manifest，不能读保留缺口；给出可执行下一步。",
+    "write_root": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/codex-main/20261102",
+    "candidate_limit": 5,
+    "candidate_count": 5,
+    "round_finished": true,
+    "data_recovered": false,
+    "stop_after_round": true
+  },
+  "startup_sources": [
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/AGENTS.md",
+      "sha256": "923cc6024b0f47b9ca2412096dd78c2b864ff23ffa9fa208bdd94967c2257e7d",
+      "lines": "1-36"
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/docs/agent-memory.index.md",
+      "sha256": "f70b120e2ffc1e7d8ac8d9327330f045d2597d1bd2bfc4ec0b02491387816bac",
+      "lines": "1-28"
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-core/docs/org/agent_catalog.json",
+      "sha256": "c4b8aaf2c1ef1eea2bbaef8f004ca6deb16e6034efc62e9db44b34f190c8510f",
+      "lines": "compass entry"
+    }
+  ],
+  "bootstrap_and_mail": {
+    "operation": "GET org bootstrap, agent=compass",
+    "request_status": "unverified_request_failed",
+    "error_type": "URLError",
+    "http_status": null,
+    "evidence": "BOOTSTRAP_READONLY.json",
+    "mailbox_status": "不可验：bootstrap 包应包含 mailbox；请求失败，未取得信箱摘要。未请求独立 mailbox 路由。",
+    "mailbox_route_source": {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-core/docs/org-bootstrap-onboarding.md",
+      "sha256": "ed9f8fa278b41bc0d00b9dc233ec89f78b20b670181409fcefd092a2c3fd8451",
+      "lines": "8-15"
+    },
+    "ack_count": 0,
+    "outgoing_message_count": 0
+  },
+  "mcp": {
+    "tool": "mcp__nautilus_compass__recall",
+    "request": {
+      "project": "-Users-chunxiao-wang-Projects-nautilus-compass",
+      "query": "anchor_v01.jsonl P0-full metadata arrays 2026-10-02 条件点火 授权 备份 数据 manifest CV 压缩 验证 因果倒置",
+      "top_k": 3
+    },
+    "status": "success",
+    "hits_returned": 3,
+    "selected_relevant_source": {
+      "path": "/Users/chunxiao.wang/.claude/projects/-Users-chunxiao-wang-Projects-nautilus-compass/memory/day-log-20261002-gtaras7-erratum.md",
+      "sha256": "5caaf37611d15bdbe08bcf110d3c45a12728b7cbbe2c4bd0a62c0caad426f33d",
+      "lines": "1-22"
+    },
+    "other_hits_read": false,
+    "source_scan_before_text_output": true,
+    "evidence": "MCP_RECALL.json",
+    "ingest_performed": false,
+    "memory_usefulness_boundary": "本次命中并回读了相关历史来源；不据此宣称一般召回质量或业务任务成功率。"
+  },
+  "original_task_evidence": {
+    "requested_audits": [
+      {
+        "path": "/Users/chunxiao.wang/nautilus-audit/2026-11-02/phase4/compass-original-decision-readback.json",
+        "sha256": "d482b8b94c954126f1d12ecd406f0679c5350cd9e217fd389f98b9ca33b1c45c",
+        "lines": "minimal_next_action; claims_and_authority; records.U02/U05/U06/U12"
+      },
+      {
+        "path": "/Users/chunxiao.wang/nautilus-audit/2026-11-02/phase4/compass-training-prerequisites-readback.json",
+        "sha256": "4ad7ca924eaebc4b74f2424e21b71cfcdd357c066fc95f4de624836f135a08ab",
+        "lines": "minimal_next_actions[0]; source_registry; readiness_matrix"
+      }
+    ],
+    "authority_records": {
+      "U02": {
+        "path": "/Users/chunxiao.wang/.claude/projects_pre_cwdrw2/C--Users-chunx-Projects-nautilus-compass/429d1cf1-d031-4ca2-a9f4-a8a85cab432d.jsonl",
+        "line": 2326,
+        "record_sha256_including_newline": "8c37fa6eed8f97729001a5cb3a66f00441775e4e383bcd1abe14c05c1e17fd02",
+        "event_time_utc": "2026-10-02T08:32:22.007Z",
+        "scope_or_caveat": "explicit conditional earlier ignition decision"
+      },
+      "U05": {
+        "path": "/Users/chunxiao.wang/.claude/projects_pre_cwdrw2/C--Users-chunx-Projects-nautilus-compass/429d1cf1-d031-4ca2-a9f4-a8a85cab432d.jsonl",
+        "line": 2404,
+        "record_sha256_including_newline": "cc6decacbc2e6c29639ba6ef016e7afa1287ef095c06d11b2ec0cc9da96207b7",
+        "event_time_utc": "2026-10-02T09:11:43.732Z",
+        "scope_or_caveat": "explicit A+B experiment-and-download preparation choice"
+      },
+      "U06": {
+        "path": "/Users/chunxiao.wang/.claude/projects_pre_cwdrw2/C--Users-chunx-Projects-nautilus-compass/429d1cf1-d031-4ca2-a9f4-a8a85cab432d.jsonl",
+        "line": 2658,
+        "record_sha256_including_newline": "2e6d394982b387acc9de4aca5b1084de61f52b98d8ae089e438b19b022721a1c",
+        "event_time_utc": "2026-10-02T09:55:01.633Z",
+        "scope_or_caveat": "explicit P0-full comparison after both14B downloads"
+      },
+      "U12": {
+        "path": "/Users/chunxiao.wang/.claude/projects_pre_cwdrw2/C--Users-chunx-Projects-nautilus-compass/f5c5b189-5288-4869-9436-f0ef6160b475.jsonl",
+        "line": 855,
+        "record_sha256_including_newline": "5f9cb0d38838cd0dc3b738e348ba1fde355a32b4654d61af8f0415d3c3f80e66",
+        "event_time_utc": "2026-10-03T05:20:15.856Z",
+        "scope_or_caveat": "explicit correction of innovative-model meaning and intended domains"
+      },
+      "readback_boundary": "本轮读回现有决策审计中这些记录的坐标与 SHA；没有再次读取原始会话 JSONL。"
+    },
+    "backup_indexes": [
+      {
+        "path": "/Users/chunxiao.wang/mnt/nas-work/nautilus-migration/INVENTORY_projects.json",
+        "sha256": "789beec7d92b202bf51825897e89bc27c036385ab0e052075f21472bbb14bfce",
+        "lines": "158-161,429-488"
+      },
+      {
+        "path": "/Users/chunxiao.wang/mnt/nas-work/backup-projects/backup.log",
+        "sha256": "b063f491dac29de5704b143d6f1ad1e9ef04a66fd2ea2cbcab5806c0be748da8",
+        "lines": "1"
+      },
+      {
+        "path": "/Users/chunxiao.wang/mnt/nas-work/migrated-dataroot/nautilus_bigfile_backup.sha256清单.txt",
+        "sha256": "e9d8646bc1b4a935782fa635dcf9e6b7d88a48aa7cfc6344ba2cc687af13190a",
+        "lines": "1-18"
+      }
+    ],
+    "candidate_details": "CANDIDATES.json",
+    "input_version_details": "INPUT_VERSION_CHECK.json",
+    "source_metadata_and_sensitivity_checks": "SOURCE_CHECKS.json"
+  },
+  "results": {
+    "measured": [
+      "当前 Compass MCP 的一次定向 recall 成功；已回读首个相关源，记录文件 SHA。",
+      "本机、NAS latest、NAS 2026-10-19 的 anchor_v01_manifest.json 字节相同：SHA256 04cc24cb777fef842b0387b9f0fc8b805315a61bb0fbadd06760b3a914b40d11，n=1454，原数据 SHA16=e710a70105df50e7。manifest 存在不等于数据已找回。",
+      "三个候选中的 runtime/verdict_corpus/anchor_v01.jsonl、runtime/p0_full、runtime/p0_full/out、p0_full_out 均不在已检查的精确路径。",
+      "大文件备份现有18行清单无目标项；其三个精确目标路径也未找到。清单覆盖范围未获证明，不能据此认定全备份缺失。",
+      "旧 A100 /root/vdd2/p0_full/out 坐标有历史源；单次 SSH 只读元数据请求退出255，无远端文件输出。",
+      "7个既有输入的原始字节 SHA 与上一轮相同，未重复1454拆分/分组/标签/REG100整套验证。",
+      "四份理论/度量正本 SHA 与上一轮相同。",
+      "静态代码 tools/p0_full_extract.py:81-99 的 metadata 仅绑定 n、ids_sha16、形状等，不写数组 SHA 或 fold/label；tools/anchor_build_v01.py:131-153 定义了 anchor 行字段和数据 SHA16。"
+    ],
+    "inferred": [
+      "只在上述坐标未找到数据，不说明历史产物从未生成、其他备份没有或路线须永久冻结。",
+      "latest 与 2026-10-19 可能来自同一备份时点；相同 manifest 不作三次独立实验。",
+      "找回数组后仍须以原 anchor 顺序及已有 split 标签绑定；metadata 形状与短哈希单独不足以证明完整溯源。"
+    ],
+    "unverifiable": [
+      "目标 anchor_v01 数据的当前完整 SHA、ID/fold/label 与原始 manifest 一致性：本轮未拿到数据。",
+      "P0-full meta、effect/cause 数组、原始数组 SHA 与评测输出：远端不可达且已检查备份路径无文件。",
+      "历史检索成绩、F1-F4 全链、完整创新架构效率与对照胜负：本轮未重新独立验证，不将旧文档自报升级。",
+      "当前 bootstrap 运行身份、未读信箱、A100 资源、M1复盘和后续改令：未核。",
+      "最终三基准/阈值/头/对照执行 manifest、CPU C/V 原始结果及500重判逐条金标来源：本轮仅压缩已有缺口，未扩展检索。"
+    ]
+  },
+  "historical_authority_boundary": {
+    "conditional_ignition_preserved": true,
+    "expanded_to_current_training": false,
+    "blanket_or_permanent_freeze_inferred": false,
+    "statement": "U02 历史条件点火授权与当前资源/前置验收分开。当前任务明确不训练；未将找不到文件或旧冻结日期到期解释为新授权或永久冻结。"
+  },
+  "canonical_theory_sources": [
+    {
+      "path": "/Users/chunxiao.wang/Projects/verification-learning-papers/docs/CV_eta_engineering_spec_v3.md",
+      "sha256": "d1d3c334960dabe1fcd27f93e6e725ffea60c711e511f5b3fd6935b682befe18",
+      "lines": "20-76,119-166,269-270",
+      "same_sha_as_previous_audit": true
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/verification-learning-papers/docs/training_blueprint_cv_arch_20261001.md",
+      "sha256": "c15a137c10092540feb14f057b0deb0eb9e4498a3db72cee15a2404c4f46cac8",
+      "lines": "12-55,81-85",
+      "same_sha_as_previous_audit": true
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/verification-learning-papers/docs/CV_falsification_core_20261001.md",
+      "sha256": "80513a32d2152af0d49b0dcbff8f557d1a4b3b5578f47a91aeff05f6b0218a8f",
+      "lines": "10-28",
+      "same_sha_as_previous_audit": true
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/verification-learning-papers/docs/unified_metrics_charter_20261001.md",
+      "sha256": "9a1a804f4c88e6376ce9b19b5256ae417a22822bbd2ae7669bb45c0d283a536b",
+      "lines": "25-61,79-90",
+      "same_sha_as_previous_audit": true
+    }
+  ],
+  "next_round_contract": {
+    "owner": "协调框安排可达的既有只读入口，Compass 继续核物料",
+    "first_action": "只针对候选5的旧目录获取现成文件索引，先 meta 与 anchor，再按索引核数组；按协调框给定边界继续，不提特征、不下载、不训练。",
+    "acceptance": "anchor 原始/LF/必要时显式CRLF口径SHA、1454唯一ID/顺序/fold/truth_label，与原manifest和未变化的split绑定；meta ids_sha16 与数组头形状/类型一致；数组现算SHA与可找到的原始SHA分别列出。",
+    "checklist": "HANDOFF.md"
+  },
+  "sensitive_sources": {
+    "pattern_findings": [
+      {
+        "path": "/Users/chunxiao.wang/mnt/nas-work/nautilus-migration/INVENTORY_projects.json",
+        "line": 5302,
+        "file_sha256": "789beec7d92b202bf51825897e89bc27c036385ab0e052075f21472bbb14bfce",
+        "line_sha256": "8ccd52cf5fbbde427750c52b560088142cc7529a18d585cd97ec591b68575686",
+        "status": "命中凭据格式；未抄录值，未做凭据有效性验证"
+      }
+    ],
+    "raw_sensitive_values_persisted": false,
+    "detector_limit": "启发式敏感扫描不是无秘密证明。"
+  },
+  "execution_boundary": {
+    "model_start": false,
+    "feature_extraction": false,
+    "weight_download": false,
+    "gpu_training": false,
+    "service_restart": false,
+    "legacy_loop_started": false,
+    "subagents_spawned": false,
+    "shared_services_modified": false,
+    "other_repos_modified": false,
+    "commit_push_deploy_settlement_external_send": false,
+    "thread_settings": "OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1；未导入模型/数值计算库",
+    "nas_scope": "仅若干已列出的迁移/备份目录直接元数据、现有小索引与5候选精确路径；无递归NAS/全盘/会话库扫描",
+    "raw_session_bodies_read": 0,
+    "heavy_cpu_or_video_jobs_started": 0
+  },
+  "skills_used": [
+    "/Users/chunxiao.wang/.codex/skills/nautilus-ops-readonly/SKILL.md",
+    "/Users/chunxiao.wang/.codex/skills/nautilus-verify-results/SKILL.md"
+  ],
+  "evidence_files": [
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/codex-main/20261102/CANDIDATES.json",
+      "bytes": 5852,
+      "sha256": "a9e54d0186e701dc46546117981a887231e9e4cba556963ae3725c41d995c403"
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/codex-main/20261102/INPUT_VERSION_CHECK.json",
+      "bytes": 2458,
+      "sha256": "a0a1c64a86e5d7182fe35250d9fd601d4209810c7892c9df5c12a9decbcfbbd9"
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/codex-main/20261102/MCP_RECALL.json",
+      "bytes": 1399,
+      "sha256": "2bc5078aa4d3ca03beb95bec41f98f54db27b9c1e6ce37b75e9dd7f8a66cd2ec"
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/codex-main/20261102/BOOTSTRAP_READONLY.json",
+      "bytes": 267,
+      "sha256": "7656fc3c52418303c8ff4a1ad66243ff76e08f235cd09a7bd4b05c88b5edb993"
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/codex-main/20261102/A100_READONLY.json",
+      "bytes": 444,
+      "sha256": "3e8cab362ffeb84bb7dc5e3c7112ee20d9b71b17012559ebbdb2e89d4118497d"
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/codex-main/20261102/read_evidence.py",
+      "bytes": 3821,
+      "sha256": "ad45fa15305c61882ff832fdafc530aa77a6a8f6814ab9ec75b90264530b67fb"
+    }
+  ],
+  "delivery_verification": {
+    "details": "DELIVERY_CHECK.json",
+    "json_syntax": "PASS",
+    "candidate_limit": "PASS",
+    "unchanged_input_versions": "7/7",
+    "output_sensitive_scan": "PASS_HEURISTIC_NO_MATCHES",
+    "source_preservation": "仓库HEAD不变，已有Git状态均保留；新增Git状态仅在授权runtime目录。"
+  }
+}

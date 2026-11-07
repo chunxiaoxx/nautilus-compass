@@ -1,0 +1,135 @@
+{
+  "schema": "compass.codex.network-stage-acceptance.v1",
+  "task_id": "COMPASS-MAIN-20261102-NETWORK-STAGE-01",
+  "owner": "Compass 本仓长期主会话 / Codex",
+  "principle": "智能＝压缩×验证",
+  "at_utc": "2026-11-03T03:30:12.066866+00:00",
+  "at_america_new_york": "2026-11-02T22:30:12.066866-05:00",
+  "repo": {
+    "path": "/Users/chunxiao.wang/Projects/nautilus-compass",
+    "head": "e6fe8d55c147bff90b1b90077280ebd2d4c80f01",
+    "same_head_as_first_round": true
+  },
+  "task_scope": {
+    "write_root": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/codex-main/20261102/network-stage",
+    "network_access_enabled_for_this_task": true,
+    "global_configuration_changed": false,
+    "ssh_aliases_allowed": [
+      "a100"
+    ],
+    "ssh_targets_allowed": [
+      "/root/vdd2/p0_full/out"
+    ],
+    "ssh_attempts_performed": 1,
+    "metadata_budget_bytes": 65536,
+    "array_payload_download_allowed": false
+  },
+  "bootstrap_and_mail": {
+    "evidence": "BOOTSTRAP_MAIL_READBACK.json",
+    "status": "HTTP_JSON_READ_SUCCESS",
+    "http_status": 200,
+    "identity": {
+      "agent_id": 9000017,
+      "name": "compass"
+    },
+    "mailbox_summary": {
+      "source": "data.mailbox",
+      "unread_summary_count": 0,
+      "due_12h": 0,
+      "items": [],
+      "scope": "仅本次bootstrap返回的本框概要，不扩为信箱全量审计"
+    },
+    "mailbox_scope": "同一次bootstrap包的本框概要；未另取正文或全量历史",
+    "ack_count": 0,
+    "outgoing_message_count": 0,
+    "remote_registry_role_boundary": "远端registry角色文字仍为旧口径；当前用户指令和本地catalog决定职责，不修改注册表、不采纳旧外联任务。"
+  },
+  "candidate5_delta": "CANDIDATE5_DELTA.json",
+  "ssh": {
+    "evidence": "SSH_INDEX_READBACK.json",
+    "config_evidence": "SSH_CONFIG_METADATA.json",
+    "current_config_sha256": "b8cb59aea7d6efb9bea70f5f922673cb6f17b56bf0e004fb33094a1eef76ce88",
+    "same_config_sha_as_first_round": true,
+    "attempt_evidence": "SSH_ATTEMPT.json",
+    "exit_code": 255,
+    "error_category": "SSH_AUTHENTICATION_DENIED",
+    "phase": "ssh_authentication",
+    "program_spawn_succeeded": true,
+    "execution_permission_eperm_reported": false,
+    "stdout_bytes": 0,
+    "remote_probe_executed": false,
+    "small_metadata_obtained": false,
+    "array_headers_obtained": false,
+    "other_aliases_or_routes_attempted": false
+  },
+  "first_round_preservation": {
+    "evidence": "FIRST_ROUND_PRESERVATION.json",
+    "files_checked": 11,
+    "all_unchanged": true,
+    "bootstrap_failure_original": {
+      "path": "../BOOTSTRAP_READONLY.json",
+      "error_type": "URLError",
+      "prior_user_description": "DNS失败",
+      "precise_underlying_cause_not_captured": true
+    },
+    "ssh_failure_original": {
+      "path": "../A100_READONLY.json",
+      "exit_code": 255,
+      "underlying_error_text_not_persisted": true
+    }
+  },
+  "conclusions": {
+    "measured": [
+      "本次bootstrap返回HTTP 200、success=true，agent=compass，agent_id=9000017。",
+      "本次bootstrap.mailbox未读概要为0项，due_12h=0；未ack、未外发。",
+      "现有a100配置SHA与首轮相同；唯一一次SSH调用可启动，退出255，stderr命中SSH_AUTHENTICATION_DENIED。",
+      "本次未报告Operation not permitted，本地执行/网络EPERM类别与SSH认证拒绝分开记录。",
+      "SSH无stdout，未拿到目录索引、小metadata或数组头。",
+      "首轮11个文件的SHA保持不变，所有新增产物只写network-stage。"
+    ],
+    "inferred": [
+      "本次SSH错误表明请求进入认证阶段；不能当成本轮命令被本地执行权限拦截。",
+      "bootstrap当前可达；不能据本次读通反推首轮DNS/网络失败的唯一根因。",
+      "远端registry角色文字较当前catalog旧；不会覆盖本轮长期主会话职责或扩大外联授权。"
+    ],
+    "unverifiable": [
+      "首轮URLError和SSH255的精确底层原因：原记录缺少细分错误，保留用户所述DNS背景，不重写成已证权限问题。",
+      "SSH认证拒绝的具体配置原因；没有尝试新密钥、改认证设置、换别名或重试。",
+      "目标目录是否存在、现成文件索引/大小/日期、metadata、数组头及anchor实际坐标。",
+      "当前GPU/模型/训练资源和完整实验可执行性；没有检查或运行。"
+    ]
+  },
+  "historical_authority": "10月条件点火授权保留；当前数据、资源和实验可执行性分别未核，不扩张为当前训练授权，也不制造永久冻结。",
+  "operational_boundary": {
+    "existing_memory_service_reused": true,
+    "new_memory_or_model_service_started": false,
+    "additional_mcp_recall_call": false,
+    "model_import": false,
+    "gpu_or_training": false,
+    "feature_extraction": false,
+    "big_arrays_or_weights_downloaded": false,
+    "services_restarted": false,
+    "tunnels_created": false,
+    "other_candidates_probed": false,
+    "global_config_changed": false,
+    "historical_loop_started": false,
+    "subagents_spawned": false,
+    "commit_push_deploy_settlement_external_send": false,
+    "threads": "OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1；远端脚本仅标准库，认证失败未执行",
+    "secret_or_connection_values_persisted": false
+  },
+  "round_complete": true,
+  "recovery_complete": false,
+  "stop_wait_for_coordination": true,
+  "next_action": "协调框核对既有a100入口的认证条件；续轮仍先在原out目录取得索引和小metadata，anchor坐标由索引证明，不使用默认路径冒充现有文件。",
+  "evidence_files": [
+    "BOOTSTRAP_MAIL_READBACK.json",
+    "SSH_CONFIG_METADATA.json",
+    "SSH_ATTEMPT.json",
+    "SSH_INDEX_READBACK.json",
+    "CANDIDATE5_DELTA.json",
+    "FIRST_ROUND_BASELINE.json",
+    "FIRST_ROUND_PRESERVATION.json",
+    "remote_index_probe.py"
+  ]
+}

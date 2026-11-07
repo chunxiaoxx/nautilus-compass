@@ -1,0 +1,13 @@
+{
+  "at_utc": "2026-11-03T03:08:28.600447+00:00",
+  "operation": "single read-only SSH metadata request",
+  "alias": "a100",
+  "candidate_root": "/root/vdd2/p0_full",
+  "source": "p0-full-verdict-20261002.md:22",
+  "connection_details_emitted": false,
+  "exit_code": 255,
+  "stderr_present": true,
+  "stderr_sha256": "b9ba2b7d091f40022b55d0a47507cb68492498df88c9ff84a46817486c22087f",
+  "stdout_bytes": 0,
+  "status": "unverified_ssh_failed"
+}

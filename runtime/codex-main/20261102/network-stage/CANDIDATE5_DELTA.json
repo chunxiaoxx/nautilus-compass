@@ -1,0 +1,41 @@
+{
+  "task_id": "COMPASS-MAIN-20261102-NETWORK-STAGE-01",
+  "candidate": 5,
+  "authorized_alias": "a100",
+  "authorized_root": "/root/vdd2/p0_full/out",
+  "coordinate_basis": "../CANDIDATES.json candidate 5; p0-full-verdict-20261002.md:22; P0_FULL_PREREG_V2_20261002.md:54-65",
+  "first_round": {
+    "evidence": "../A100_READONLY.json",
+    "exit_code": 255,
+    "stderr_sha256": "b9ba2b7d091f40022b55d0a47507cb68492498df88c9ff84a46817486c22087f",
+    "precise_error_category": "未记录，不能从哈希恢复根因",
+    "remote_file_state": "未核"
+  },
+  "network_stage": {
+    "evidence": "SSH_INDEX_READBACK.json",
+    "network_access_declared": true,
+    "connection_attempts": 1,
+    "exit_code": 255,
+    "error_category": "SSH_AUTHENTICATION_DENIED",
+    "error_phase": "ssh_authentication",
+    "local_program_spawn_succeeded": true,
+    "execution_or_network_eperm_reported": false,
+    "stderr_sha256": "aa4cbd92696273cb737cc53235211a1c875cd28a24c4b8fccd78d9e7f77af79f",
+    "remote_file_state": "未核，认证失败不能说明文件不存在"
+  },
+  "increment": "错误类别明确到 SSH 认证拒绝；不是本轮观察到的本地命令执行权限拒绝。没有获得远端目录内容。",
+  "remote_directory_index_obtained": false,
+  "small_metadata_obtained": false,
+  "array_headers_obtained": false,
+  "metadata_budget_bytes": 65536,
+  "remote_array_payload_bytes_downloaded": 0,
+  "anchor_coordinate_evidence_obtained": false,
+  "anchor_default_path_used_as_existence_evidence": false,
+  "ssh_command_retries": 0,
+  "fallback_candidates_connected": 0,
+  "historical_conditional_ignition_authority": "保留，不删除、不扩张",
+  "current_data_readiness": "候选5目标文件存在性及完整性仍不可验",
+  "current_resource_readiness": "未探测GPU/模型/训练资源，不据网络可达推断资源可用",
+  "current_experiment_executability": "未核，本轮没有跑模型或实验",
+  "next_action": "协调框核对既有a100入口的认证条件；续轮仍先在原out目录取得索引和小metadata，anchor坐标由索引证明，不使用默认路径冒充现有文件。"
+}

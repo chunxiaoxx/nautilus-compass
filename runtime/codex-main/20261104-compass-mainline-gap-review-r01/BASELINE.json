@@ -1,0 +1,46 @@
+{
+  "time_ny": "2026-11-04T11:54:39.964729-05:00",
+  "head": "366309da1ce5e929081130c1e1500ca234e48e88",
+  "files": [
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/AGENTS.md",
+      "sha256": "923cc6024b0f47b9ca2412096dd78c2b864ff23ffa9fa208bdd94967c2257e7d",
+      "bytes": 2793
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/CLAUDE.md",
+      "sha256": "68ac121e1a925aff6522a61641d6f9739c504ee06cfb2685ff450e9efd0ff302",
+      "bytes": 526
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/daemon.py",
+      "sha256": "9e51aa287b75e00caf5e70b84a7cb4e087ca8ab8df06387886c9529d860b3b43",
+      "bytes": 97528
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/docs/agent-memory.index.md",
+      "sha256": "f70b120e2ffc1e7d8ac8d9327330f045d2597d1bd2bfc4ec0b02491387816bac",
+      "bytes": 4158
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/docs/soul/COMPASS_PAST_PRESENT_FUTURE_20261103.md",
+      "sha256": "8e7734275fba42559f4501fa53b0a2a92c9949fd941a844baa18690c7ff7fb04",
+      "bytes": 30555
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/docs/soul/TASK_MEMORY_FUEL_20261101.md",
+      "sha256": "8996d93f3181a3963aac4e3f7a613dae22bc0d12aedaef80dcfb30ba3875e0db",
+      "bytes": 3540
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/docs/soul/MAINLINE_ROADMAP_20261101.md",
+      "sha256": "9510954c50d74e55d47e29978224f8aeeae4a9197d37d213486defa6f7ab5ab2",
+      "bytes": 5606
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/docs/soul/SESSION_DISTILL_PILOT_20261104.md",
+      "sha256": "29af8373604c05bd333a6c35d1b59af428b794d22a3275ac1484ade14a29b3f5",
+      "bytes": 3521
+    }
+  ]
+}

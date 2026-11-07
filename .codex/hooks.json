@@ -1,0 +1,39 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/chunxiao.wang/Projects/nautilus-compass/.venv/bin/python /Users/chunxiao.wang/Projects/nautilus-compass/tools/guard_bigread.py",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/chunxiao.wang/Projects/nautilus-compass/.venv/bin/python -I -B /Users/chunxiao.wang/Documents/Codex/2026-11-02/task/core-restore-review-zsy5wfc_/skill/nautilus-ops-readonly/scripts/hook_adapter.py --manifest /Users/chunxiao.wang/Documents/Codex/2026-11-02/task/core-restore-review-zsy5wfc_/frames.candidate.json --frame compass --event SessionStart",
+            "timeout": 5,
+            "additionalContextLimit": 1500
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/chunxiao.wang/Projects/nautilus-compass/.venv/bin/python -I -B /Users/chunxiao.wang/Documents/Codex/2026-11-02/task/core-restore-review-zsy5wfc_/skill/nautilus-ops-readonly/scripts/hook_adapter.py --manifest /Users/chunxiao.wang/Documents/Codex/2026-11-02/task/core-restore-review-zsy5wfc_/frames.candidate.json --frame compass --event UserPromptSubmit",
+            "timeout": 5,
+            "additionalContextLimit": 1500
+          }
+        ]
+      }
+    ]
+  }
+}

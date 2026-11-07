@@ -1,0 +1,12 @@
+{
+  "at_utc": "2026-11-03T03:27:06.831727+00:00",
+  "stage_attempt_number": 1,
+  "alias": "a100",
+  "authorized_root": "/root/vdd2/p0_full/out",
+  "network_access_declared": true,
+  "existing_ssh_config_used": true,
+  "remote_probe_sha256": "f4e8cfde1a89db60260d8bd060ee5613915021b1bd464845858d282058079b1b",
+  "tunnels_or_forwardings_created": false,
+  "automatic_fallback": false,
+  "retries": 0
+}

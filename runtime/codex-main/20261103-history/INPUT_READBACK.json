@@ -1,0 +1,52 @@
+{
+  "at_utc": "2026-11-03T05:19:21.847540+00:00",
+  "inputs": [
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/verdict_corpus/split_train_v1.jsonl",
+      "sha256_now": "a98889e43c34a9860bc27a215f74607a571cc551fe513d54d47a3349bc1bc52b",
+      "same_as_previous": true
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/verdict_corpus/split_dev_v1.jsonl",
+      "sha256_now": "0219d65d7940eb18fff6628764ac2b0a97c030179100251367fe4878190968e3",
+      "same_as_previous": true
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/verdict_corpus/split_test_v1.jsonl",
+      "sha256_now": "eb079cf3679c031579114632181ef74efbdd25115c78499f0284882edfc820ca",
+      "same_as_previous": true
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/verdict_corpus/anchor_v0.jsonl",
+      "sha256_now": "5eda68151af8c73e1be9ef41d55c77b9db3826af09d5c2ec13b3d999bf2d01a3",
+      "same_as_previous": true
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/verdict_corpus/reg100.jsonl",
+      "sha256_now": "fa9f5fb84996b2d7a02dc9b07c920746664c3ed900f494584683930a19b71f31",
+      "same_as_previous": true
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/verdict_corpus/split_stats.json",
+      "sha256_now": "81cb59be061e988f80d6f286b976c95dfd832db7018a6ebca312e4c71370b0c7",
+      "same_as_previous": true
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/verdict_corpus/anchor_v01_manifest.json",
+      "sha256_now": "04cc24cb777fef842b0387b9f0fc8b805315a61bb0fbadd06760b3a914b40d11",
+      "same_as_previous": true
+    }
+  ],
+  "exact_local_paths": [
+    {
+      "path": "runtime/verdict_corpus/anchor_v01.jsonl",
+      "exists": false
+    },
+    {
+      "path": "runtime/p0_full",
+      "exists": false
+    }
+  ],
+  "remote": "Not retried in this task. Prior bounded SSH authentication failure retained in S18; does not establish remote absence.",
+  "validation": "Hash binding only; previous semantic/line-level limits preserved."
+}

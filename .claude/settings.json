@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/chunxiao.wang/Projects/nautilus-compass/.venv/bin/python /Users/chunxiao.wang/Projects/nautilus-compass/tools/guard_bigread.py",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

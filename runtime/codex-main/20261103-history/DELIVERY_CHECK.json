@@ -1,0 +1,199 @@
+{
+  "task_id": "COMPASS-HISTORY-PRESENT-FUTURE-20261103",
+  "at_utc": "2026-11-03T05:22:55.025627+00:00",
+  "report_sha256": "5370c73d08c25ef3115647b3919eac6fac98ad1a1b43c742b9e7224b784fbaa0",
+  "head_first_observed": "7ba15826",
+  "head_at_source_snapshot": "bfd72a4d7876122eeeea3d9ad00c0487d766042a",
+  "head_end": "bfd72a4d7876122eeeea3d9ad00c0487d766042a",
+  "files": [
+    {
+      "path": "runtime/codex-main/20261103-history/BOOTSTRAP_READBACK.json",
+      "valid_json": true,
+      "sha256": "31c5b6e83bea420e62b4a67ad4d3288663040cdbce9671eaca3dd7ab32c62ac7"
+    },
+    {
+      "path": "runtime/codex-main/20261103-history/ENACRE1_RECOMPUTE.json",
+      "valid_json": true,
+      "sha256": "846d39163fddac27fb67a2d5d69bd50d1317a1fd4698b285b17c885ee7d72855"
+    },
+    {
+      "path": "runtime/codex-main/20261103-history/INPUT_READBACK.json",
+      "valid_json": true,
+      "sha256": "0d35e9fe25f601eb56df78455456ac0bc1801924af506d4e295addc6123d42b7"
+    },
+    {
+      "path": "runtime/codex-main/20261103-history/PUBLIC_MCP.json",
+      "valid_json": true,
+      "sha256": "716af07e8a046d6a94437c88b831f7451aa12d4bc88d13dd5d8fb1033eb4a54e"
+    },
+    {
+      "path": "runtime/codex-main/20261103-history/PUBLIC_RECALL.json",
+      "valid_json": true,
+      "sha256": "429e0f848ac3155a7ddc52713d2541cff942ad5b9a80a34cb1ee45104d7ba3f0"
+    },
+    {
+      "path": "runtime/codex-main/20261103-history/PYPI_READBACK.json",
+      "valid_json": true,
+      "sha256": "e22949c2130663cd10862e7bf38a0333d1747cec9be14ea908a5caa091c278d1"
+    },
+    {
+      "path": "runtime/codex-main/20261103-history/RUNTIME_PROBES.json",
+      "valid_json": true,
+      "sha256": "963dcd89912b7f35be609b6504fab359efeac7d9c9277eb21de83108d60b0bd7"
+    },
+    {
+      "path": "runtime/codex-main/20261103-history/SOURCES.json",
+      "valid_json": true,
+      "sha256": "e689d4e8cc0699104446559ddda6b3549a310c6ac5d360ea83839ef0c7564f00"
+    }
+  ],
+  "links": [
+    {
+      "file": "docs/soul/COMPASS_PAST_PRESENT_FUTURE_20261103.md",
+      "target": "../../runtime/codex-main/20261103-history/RUNTIME_PROBES.json",
+      "exists": true
+    },
+    {
+      "file": "docs/soul/COMPASS_PAST_PRESENT_FUTURE_20261103.md",
+      "target": "../../runtime/codex-main/20261103-history/PUBLIC_MCP.json",
+      "exists": true
+    },
+    {
+      "file": "docs/soul/COMPASS_PAST_PRESENT_FUTURE_20261103.md",
+      "target": "../../runtime/codex-main/20261103-history/PUBLIC_RECALL.json",
+      "exists": true
+    },
+    {
+      "file": "docs/soul/COMPASS_PAST_PRESENT_FUTURE_20261103.md",
+      "target": "../../runtime/codex-main/20261103-history/BOOTSTRAP_READBACK.json",
+      "exists": true
+    },
+    {
+      "file": "docs/soul/COMPASS_PAST_PRESENT_FUTURE_20261103.md",
+      "target": "../../runtime/codex-main/20261103-history/PYPI_READBACK.json",
+      "exists": true
+    },
+    {
+      "file": "docs/soul/COMPASS_PAST_PRESENT_FUTURE_20261103.md",
+      "target": "../../runtime/codex-main/20261103-history/ENACRE1_RECOMPUTE.json",
+      "exists": true
+    },
+    {
+      "file": "docs/soul/COMPASS_PAST_PRESENT_FUTURE_20261103.md",
+      "target": "../../runtime/codex-main/20261103-history/HANDOFF.md",
+      "exists": true
+    },
+    {
+      "file": "docs/soul/COMPASS_PAST_PRESENT_FUTURE_20261103.md",
+      "target": "../../runtime/codex-main/20261103-history/SOURCES.json",
+      "exists": true
+    },
+    {
+      "file": "docs/soul/COMPASS_PAST_PRESENT_FUTURE_20261103.md",
+      "target": "../../AGENTS.md",
+      "exists": true
+    },
+    {
+      "file": "docs/soul/COMPASS_PAST_PRESENT_FUTURE_20261103.md",
+      "target": "../../../nautilus-core/docs/org/agent_catalog.json",
+      "exists": true
+    },
+    {
+      "file": "docs/soul/COMPASS_PAST_PRESENT_FUTURE_20261103.md",
+      "target": "../HANDOFF_20260531_compass_state_goals_roadmap.md",
+      "exists": true
+    },
+    {
+      "file": "docs/soul/COMPASS_PAST_PRESENT_FUTURE_20261103.md",
+      "target": "../RETROSPECTIVE_20260715_20260915.md",
+      "exists": true
+    },
+    {
+      "file": "docs/soul/COMPASS_PAST_PRESENT_FUTURE_20261103.md",
+      "target": "../protocol/ASSAY_PROTOCOL_V0.md",
+      "exists": true
+    },
+    {
+      "file": "docs/soul/COMPASS_PAST_PRESENT_FUTURE_20261103.md",
+      "target": "MAINLINE_ANCHOR_20261008.md",
+      "exists": true
+    },
+    {
+      "file": "docs/soul/COMPASS_PAST_PRESENT_FUTURE_20261103.md",
+      "target": "../metering/ERRATA_NACRE_SELFBOOT_20261019.md",
+      "exists": true
+    },
+    {
+      "file": "docs/soul/COMPASS_PAST_PRESENT_FUTURE_20261103.md",
+      "target": "../RETROSPECT_ORG_14D_20261016-29.md",
+      "exists": true
+    },
+    {
+      "file": "docs/soul/COMPASS_PAST_PRESENT_FUTURE_20261103.md",
+      "target": "MAINLINE_ROADMAP_20261101.md",
+      "exists": true
+    },
+    {
+      "file": "docs/soul/COMPASS_PAST_PRESENT_FUTURE_20261103.md",
+      "target": "TASK_MEMORY_FUEL_20261101.md",
+      "exists": true
+    },
+    {
+      "file": "docs/soul/COMPASS_PAST_PRESENT_FUTURE_20261103.md",
+      "target": "../../runtime/codex-main/20261102/HANDOFF.md",
+      "exists": true
+    },
+    {
+      "file": "docs/soul/COMPASS_PAST_PRESENT_FUTURE_20261103.md",
+      "target": "../../runtime/codex-main/20261102/network-stage/HANDOFF.md",
+      "exists": true
+    },
+    {
+      "file": "docs/soul/COMPASS_PAST_PRESENT_FUTURE_20261103.md",
+      "target": "../../../verification-learning-papers/docs/CV_eta_engineering_spec_v3.md",
+      "exists": true
+    },
+    {
+      "file": "docs/soul/COMPASS_PAST_PRESENT_FUTURE_20261103.md",
+      "target": "../../../verification-learning-papers/docs/training_blueprint_cv_arch_20261001.md",
+      "exists": true
+    },
+    {
+      "file": "docs/soul/COMPASS_PAST_PRESENT_FUTURE_20261103.md",
+      "target": "../../../verification-learning-papers/docs/CV_falsification_core_20261001.md",
+      "exists": true
+    },
+    {
+      "file": "runtime/codex-main/20261103-history/HANDOFF.md",
+      "target": "../../../docs/soul/COMPASS_PAST_PRESENT_FUTURE_20261103.md",
+      "exists": true
+    }
+  ],
+  "source_drift": [],
+  "all_links_exist": true,
+  "json_parse_pass": true,
+  "scope_note": "Document and evidence checks only. No model inference, training or product tests. Source drift is retained as a limit on snapshot coherence; no source-state mutations by this task.",
+  "status_end": [
+    "## main...origin/main [ahead 24]",
+    " M AGENTS.md",
+    " M CLAUDE.md",
+    " M daemon.py",
+    " M runtime/loop/rounds.log",
+    " M runtime/production_loop/state.json",
+    "?? .claude/settings.json",
+    "?? .codex/",
+    "?? docs/agent-memory.index.md",
+    "?? docs/soul/COMPASS_PAST_PRESENT_FUTURE_20261103.md",
+    "?? docs/soul/MAINLINE_ROADMAP_20261101.md",
+    "?? docs/soul/ORG_FOUR_Q_AUDIT_20261031.md",
+    "?? docs/soul/TASK_MEMORY_FUEL_20261101.md",
+    "?? ops/BUCKET_MUTEX_PLAYBOOK_20261101.md",
+    "?? runtime/codex-main/",
+    "?? tests/test_daemon_memory_cache_fallback.py",
+    "?? tests/test_daemon_rerank_remote.py",
+    "?? tests/test_mps_service_serialization.py",
+    "?? tools/guard_bigread.py",
+    "?? tools/orgup_preflight.py"
+  ],
+  "artifact_validation_pass": true
+}

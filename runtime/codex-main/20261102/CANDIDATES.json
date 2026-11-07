@@ -1,0 +1,164 @@
+[
+  {
+    "candidate": 1,
+    "root": "/Users/chunxiao.wang/Projects/nautilus-compass",
+    "exists": true,
+    "targets": [
+      {
+        "relative_path": "runtime/verdict_corpus/anchor_v01.jsonl",
+        "exists": false
+      },
+      {
+        "relative_path": "runtime/verdict_corpus/anchor_v01_manifest.json",
+        "exists": true,
+        "size": 1541,
+        "is_file": true,
+        "inode": 5089716,
+        "device": 16777233
+      },
+      {
+        "relative_path": "runtime/p0_full",
+        "exists": false
+      },
+      {
+        "relative_path": "runtime/p0_full/out",
+        "exists": false
+      },
+      {
+        "relative_path": "p0_full_out",
+        "exists": false
+      }
+    ],
+    "checked_at_utc": "2026-11-03T03:06:27+00:00",
+    "basis": "compass-training-prerequisites-readback.json /missing_local_references",
+    "original_manifest": {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/verdict_corpus/anchor_v01_manifest.json",
+      "size_bytes": 1541,
+      "sha256": "04cc24cb777fef842b0387b9f0fc8b805315a61bb0fbadd06760b3a914b40d11",
+      "normalized_lf_sha256": "04cc24cb777fef842b0387b9f0fc8b805315a61bb0fbadd06760b3a914b40d11",
+      "n": 1454,
+      "anchor_v01_sha16": "e710a70105df50e7",
+      "F1b_pass": true
+    },
+    "status": "指定路径未发现目标数据与数组；manifest 可读，不能替代数据"
+  },
+  {
+    "candidate": 2,
+    "root": "/Users/chunxiao.wang/mnt/nas-work/backup-projects/latest/nautilus-compass",
+    "exists": true,
+    "targets": [
+      {
+        "relative_path": "runtime/verdict_corpus/anchor_v01.jsonl",
+        "exists": false
+      },
+      {
+        "relative_path": "runtime/verdict_corpus/anchor_v01_manifest.json",
+        "exists": true,
+        "size": 1541,
+        "is_file": true,
+        "inode": 223478035,
+        "device": 436207668
+      },
+      {
+        "relative_path": "runtime/p0_full",
+        "exists": false
+      },
+      {
+        "relative_path": "runtime/p0_full/out",
+        "exists": false
+      },
+      {
+        "relative_path": "p0_full_out",
+        "exists": false
+      }
+    ],
+    "checked_at_utc": "2026-11-03T03:06:27+00:00",
+    "basis": "backup-projects/backup.log:1 and nautilus-migration/INVENTORY_projects.json:429-488; exact snapshot directory",
+    "original_manifest": {
+      "path": "/Users/chunxiao.wang/mnt/nas-work/backup-projects/latest/nautilus-compass/runtime/verdict_corpus/anchor_v01_manifest.json",
+      "size_bytes": 1541,
+      "sha256": "04cc24cb777fef842b0387b9f0fc8b805315a61bb0fbadd06760b3a914b40d11",
+      "normalized_lf_sha256": "04cc24cb777fef842b0387b9f0fc8b805315a61bb0fbadd06760b3a914b40d11",
+      "n": 1454,
+      "anchor_v01_sha16": "e710a70105df50e7",
+      "F1b_pass": true
+    },
+    "status": "指定路径未发现目标数据与数组；manifest 可读，不能替代数据",
+    "independent_provenance_warning": "两份备份的 manifest 与本机字节相同，不构成三次独立实验。latest 的日志时间为 2026-10-19。"
+  },
+  {
+    "candidate": 3,
+    "root": "/Users/chunxiao.wang/mnt/nas-work/backup-projects/2026-10-19/nautilus-compass",
+    "exists": true,
+    "targets": [
+      {
+        "relative_path": "runtime/verdict_corpus/anchor_v01.jsonl",
+        "exists": false
+      },
+      {
+        "relative_path": "runtime/verdict_corpus/anchor_v01_manifest.json",
+        "exists": true,
+        "size": 1541,
+        "is_file": true,
+        "inode": 192086780,
+        "device": 436207668
+      },
+      {
+        "relative_path": "runtime/p0_full",
+        "exists": false
+      },
+      {
+        "relative_path": "runtime/p0_full/out",
+        "exists": false
+      },
+      {
+        "relative_path": "p0_full_out",
+        "exists": false
+      }
+    ],
+    "checked_at_utc": "2026-11-03T03:06:27+00:00",
+    "basis": "backup-projects/backup.log:1 and nautilus-migration/INVENTORY_projects.json:429-488; exact snapshot directory",
+    "original_manifest": {
+      "path": "/Users/chunxiao.wang/mnt/nas-work/backup-projects/2026-10-19/nautilus-compass/runtime/verdict_corpus/anchor_v01_manifest.json",
+      "size_bytes": 1541,
+      "sha256": "04cc24cb777fef842b0387b9f0fc8b805315a61bb0fbadd06760b3a914b40d11",
+      "normalized_lf_sha256": "04cc24cb777fef842b0387b9f0fc8b805315a61bb0fbadd06760b3a914b40d11",
+      "n": 1454,
+      "anchor_v01_sha16": "e710a70105df50e7",
+      "F1b_pass": true
+    },
+    "status": "指定路径未发现目标数据与数组；manifest 可读，不能替代数据",
+    "independent_provenance_warning": "两份备份的 manifest 与本机字节相同，不构成三次独立实验。latest 的日志时间为 2026-10-19。"
+  },
+  {
+    "candidate": 4,
+    "root": "/Users/chunxiao.wang/mnt/nas-work/migrated-dataroot/nautilus_bigfile_backup",
+    "basis": "migrated-dataroot/nautilus_bigfile_backup.sha256清单.txt:1-18",
+    "index_target_hits": 0,
+    "targets": [
+      {
+        "relative_path": "runtime/verdict_corpus/anchor_v01.jsonl",
+        "exists": false
+      },
+      {
+        "relative_path": "runtime/p0_full",
+        "exists": false
+      },
+      {
+        "relative_path": "runtime/p0_full/out",
+        "exists": false
+      }
+    ],
+    "status": "现有哈希清单无目标项；只核对三个明确路径，不推断全备份不存在"
+  },
+  {
+    "candidate": 5,
+    "root": "a100:/root/vdd2/p0_full",
+    "basis": "p0-full-verdict-20261002.md:22; P0_FULL_PREREG_V2_20261002.md:54-65",
+    "status": "不可验：当前 SSH 请求失败，未读取远端文件",
+    "ssh_evidence": "A100_READONLY.json",
+    "ssh_exit_code": 255,
+    "inferred_anchor_default_not_original_manifest": "/root/vdd2/p0_full/anchor_v01.jsonl 是生产脚本默认文件名推导，尚无原始路径证明",
+    "expected_explicit_output_root": "/root/vdd2/p0_full/out"
+  }
+]

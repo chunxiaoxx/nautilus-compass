@@ -1,0 +1,10 @@
+{
+  "at_utc": "2026-11-03T03:03:32.194955+00:00",
+  "operation": "GET org bootstrap, agent=compass",
+  "authenticated": false,
+  "ack_sent": false,
+  "messages_sent": false,
+  "error_type": "URLError",
+  "http_status": null,
+  "status": "unverified_request_failed"
+}

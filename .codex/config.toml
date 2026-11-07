@@ -1,0 +1,17 @@
+[mcp_servers.nautilus-compass]
+command = "/Users/chunxiao.wang/Projects/nautilus-compass/.venv/bin/python"
+args = ["/Users/chunxiao.wang/.claude/plugins/nautilus-compass/mcp_server.py"]
+
+[mcp_servers.nautilus-compass.env]
+PYTHONPATH = "/Users/chunxiao.wang/Projects/nautilus-compass"
+NAUTILUS_COMPASS_REPO = "/Users/chunxiao.wang/Projects/nautilus-compass"
+PYTHONIOENCODING = "utf-8"
+
+[mcp_servers.nautilus_compass_plugin]
+command = "/Users/chunxiao.wang/Projects/nautilus-compass/.venv/bin/python"
+args = ["/Users/chunxiao.wang/.claude/plugins/nautilus-compass/mcp_server.py"]
+
+[mcp_servers.nautilus_compass_plugin.env]
+PYTHONPATH = "/Users/chunxiao.wang/Projects/nautilus-compass"
+NAUTILUS_COMPASS_REPO = "/Users/chunxiao.wang/Projects/nautilus-compass"
+PYTHONIOENCODING = "utf-8"

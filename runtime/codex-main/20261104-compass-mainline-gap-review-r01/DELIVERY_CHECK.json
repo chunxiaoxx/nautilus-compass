@@ -1,0 +1,52 @@
+{
+  "task_id": "COMPASS-MAINLINE-GAP-REVIEW-20261104-R01",
+  "at_new_york": "2026-11-04T12:04:31.040446-05:00",
+  "pass": true,
+  "source_groups": 10,
+  "source_files": 38,
+  "links": 27,
+  "missing_links": [],
+  "report_number_check": {
+    "rows": 22,
+    "j1_n": 21,
+    "j1_valid": 855,
+    "j1_matched": 794,
+    "j1_below": 13
+  },
+  "all_baseline_files_preserved": true,
+  "archive_drift": [],
+  "D2_live_source_drift": [],
+  "head_at_start": "366309da1ce5e929081130c1e1500ca234e48e88",
+  "head_at_end": "366309da1ce5e929081130c1e1500ca234e48e88",
+  "write_scope": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/codex-main/20261104-compass-mainline-gap-review-r01",
+  "first_validation_failure": {
+    "step": "report literal check",
+    "observation": "Assertion required the literal 794/855; report previously expressed operands separately. Presentation made explicit, evidence and calculations unchanged."
+  },
+  "outputs": [
+    {
+      "name": "BASELINE.json",
+      "sha256": "498509b86f562bfb232b8c4f2ef4844a618de88587efc414fc5798bdf9e2dbce"
+    },
+    {
+      "name": "EVIDENCE.json",
+      "sha256": "300601650965f0404bca8bfa26fd30bc1177a612e11854c66d08736ff8f99587"
+    },
+    {
+      "name": "HANDOFF.md",
+      "sha256": "41119970277f06f9a85c9bfc8fbaca9d5e3a988c4e6ca17fd9bdde6a4ae73f36"
+    },
+    {
+      "name": "MAINLINE_ENTRY.md",
+      "sha256": "1faa1ba96a927cfb692aeebb9fe27f16939855670753c1f91d2355ba49293781"
+    },
+    {
+      "name": "REPORT.md",
+      "sha256": "feadb2fedb4fdbe2eaa50c3e2120eb3d5203c46a920ed22b5afd3d6c2d7c3cff"
+    },
+    {
+      "name": "verify_evidence.py",
+      "sha256": "c6b4e021bb2dc7c367dca42d5d38b2dda4f6e4759e095647d09755ac18a81fc6"
+    }
+  ]
+}

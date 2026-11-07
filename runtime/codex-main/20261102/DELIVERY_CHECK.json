@@ -1,0 +1,77 @@
+{
+  "task_id": "COMPASS-MAIN-20261102-ARTIFACT-LOCATE-01",
+  "at_utc": "2026-11-03T03:16:27.977493+00:00",
+  "status": "PASS_FOR_BOUNDED_DELIVERY_ONLY",
+  "does_not_verify_artifact_recovery_or_experiment_success": true,
+  "candidate_count": 5,
+  "json_valid": true,
+  "output_sensitive_pattern_findings": [],
+  "head_unchanged": true,
+  "git_status_delta_only_authorized_runtime": true,
+  "files": [
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/codex-main/20261102/A100_READONLY.json",
+      "bytes": 444,
+      "sha256": "3e8cab362ffeb84bb7dc5e3c7112ee20d9b71b17012559ebbdb2e89d4118497d",
+      "json_parsed": true,
+      "sensitive_pattern_lines": []
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/codex-main/20261102/BOOTSTRAP_READONLY.json",
+      "bytes": 267,
+      "sha256": "7656fc3c52418303c8ff4a1ad66243ff76e08f235cd09a7bd4b05c88b5edb993",
+      "json_parsed": true,
+      "sensitive_pattern_lines": []
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/codex-main/20261102/CANDIDATES.json",
+      "bytes": 5852,
+      "sha256": "a9e54d0186e701dc46546117981a887231e9e4cba556963ae3725c41d995c403",
+      "json_parsed": true,
+      "sensitive_pattern_lines": []
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/codex-main/20261102/HANDOFF.md",
+      "bytes": 6825,
+      "sha256": "87fcdf62cf3a855158879b6e614f648bb8dda4d8e4fe9fdfffe2766f047c6a5a",
+      "json_parsed": false,
+      "sensitive_pattern_lines": []
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/codex-main/20261102/INPUT_VERSION_CHECK.json",
+      "bytes": 2458,
+      "sha256": "a0a1c64a86e5d7182fe35250d9fd601d4209810c7892c9df5c12a9decbcfbbd9",
+      "json_parsed": true,
+      "sensitive_pattern_lines": []
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/codex-main/20261102/MCP_RECALL.json",
+      "bytes": 1399,
+      "sha256": "2bc5078aa4d3ca03beb95bec41f98f54db27b9c1e6ce37b75e9dd7f8a66cd2ec",
+      "json_parsed": true,
+      "sensitive_pattern_lines": []
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/codex-main/20261102/SOURCE_CHECKS.json",
+      "bytes": 32199,
+      "sha256": "0843746488a9166dd752b6fe4644d2c2aa76b63e1b89984572ae27973d6ec4ac",
+      "json_parsed": true,
+      "sensitive_pattern_lines": []
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/codex-main/20261102/STARTUP_ACCEPTANCE.json",
+      "bytes": 16536,
+      "sha256": "f22a24e43f061eba7364d6fad8b955206861dae1bb2edf89024c2085bba32afd",
+      "json_parsed": true,
+      "sensitive_pattern_lines": []
+    },
+    {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/codex-main/20261102/read_evidence.py",
+      "bytes": 3821,
+      "sha256": "ad45fa15305c61882ff832fdafc530aa77a6a8f6814ab9ec75b90264530b67fb",
+      "json_parsed": false,
+      "sensitive_pattern_lines": []
+    }
+  ],
+  "no_training_or_full_1454_suite_run": true
+}

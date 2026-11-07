@@ -1,0 +1,17 @@
+{
+  "at_utc": "2026-11-03T05:15:24.831107",
+  "url": "https://nautilus.social/api/platform/org/bootstrap?agent=compass",
+  "http": 200,
+  "success": true,
+  "identity": {
+    "agent_id": 9000017,
+    "name": "compass"
+  },
+  "registry_updated": "2026-10-19",
+  "registry_compass_role": "判分执行+触客外联(assay/创新模型/校验评测)",
+  "unread_count": 1,
+  "due_12h": 1,
+  "mail_relevance": "OGE status demand uses historical organization milestones; no action taken. Local 2026-11-02 catalog remains role authority.",
+  "business_state_mirrored": false,
+  "ack_or_send": false
+}

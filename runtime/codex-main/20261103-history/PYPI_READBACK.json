@@ -1,0 +1,36 @@
+{
+  "at_utc": "2026-11-03T05:17:48.964121+00:00",
+  "packages": [
+    {
+      "name": "nautilus-compass",
+      "http": 200,
+      "version": "3.3.0",
+      "published": [
+        "2026-10-04T11:39:16.554244Z",
+        "2026-10-04T11:39:18.265363Z"
+      ]
+    },
+    {
+      "name": "nautilus-compass-assay",
+      "error": "HTTPError: HTTP Error 404: Not Found"
+    },
+    {
+      "name": "jev-trust",
+      "http": 200,
+      "version": "0.2.1",
+      "published": [
+        "2026-09-23T02:31:52.613982Z",
+        "2026-09-23T02:31:53.971300Z"
+      ]
+    },
+    {
+      "name": "assay-verify",
+      "http": 200,
+      "version": "0.1.0",
+      "published": [
+        "2026-09-19T11:12:30.541921Z",
+        "2026-09-19T11:12:31.833039Z"
+      ]
+    }
+  ]
+}
