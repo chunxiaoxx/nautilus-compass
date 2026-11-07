@@ -88,12 +88,35 @@ class HindsightMemory:
             if iso:
                 item["timestamp"] = iso
             items.append(item)
+        # run-freeze 修正 2(2026-11-07·run log):sync retain 的 HTTP 响应在 ~50 条
+        # 批上挂死(服务端落库完成、响应不返回,6 连接挂 45min 实测)→ 改
+        # retain_async=True + 轮询 operation 状态。服务端提取/嵌入/落库管道与
+        # sync 完全同一条(async 标志只解耦 HTTP 生命周期)——判据零变更。
+        import time as _time
         try:
-            resp = self._client.retain_batch(bank_id=self.bank_id, items=items)
+            resp = self._client.retain_batch(
+                bank_id=self.bank_id, items=items, retain_async=True)
         except Exception as e:  # noqa: BLE001 — 统一转显式错误(fail loud 纪律)
             raise HindsightError(f"retain_batch bank={self.bank_id} failed: {e}") from e
-        self.retained += len(items)
-        return len(items)
+        op_ids = list(getattr(resp, "operation_ids", None) or [])
+        deadline = _time.time() + float(os.environ.get("HS_RETAIN_OP_TIMEOUT", "2700"))
+        while _time.time() < deadline:
+            pending = []
+            for op in op_ids:
+                st = self._client.operations.get_operation_status(
+                    self.bank_id, op).status
+                if st in ("completed", "succeeded", "done"):
+                    continue
+                if st in ("failed", "cancelled"):
+                    raise HindsightError(
+                        f"retain op {op} bank={self.bank_id} status={st}")
+                pending.append(op)
+            if not pending:
+                self.retained += len(items)
+                return len(items)
+            _time.sleep(10)
+        raise HindsightError(
+            f"retain ops {op_ids} bank={self.bank_id} poll timeout")
 
     # --- read side ---
     def recall_memory(self, query: str) -> list[dict]:
