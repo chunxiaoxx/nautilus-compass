@@ -58,9 +58,10 @@ class HindsightMemory:
 
     def __init__(self, bank_id: str, base_url: str | None = None, client=None):
         self.bank_id = bank_id
+        self.base_url = (base_url or DEFAULT_BASE_URL).rstrip("/")
         if client is None:
             from hindsight_client import Hindsight  # 官方客户端(PyPI hindsight-client)
-            client = Hindsight(base_url=base_url or DEFAULT_BASE_URL,
+            client = Hindsight(base_url=self.base_url,
                                timeout=CLIENT_TIMEOUT)
         self._client = client
         self.retained = 0
@@ -113,12 +114,20 @@ class HindsightMemory:
         if single:
             op_ids.append(single)
         deadline = _time.time() + float(os.environ.get("HS_RETAIN_OP_TIMEOUT", "2700"))
+        import urllib.request as _rq
         while _time.time() < deadline:
             pending = []
             for op in op_ids:
-                st = self._client.operations.get_operation_status(
-                    self.bank_id, op).status
-                if st in ("completed", "succeeded", "done"):
+                # REST 直询(低层 client 的 get_operation_status 是 async,误用即
+                # coroutine bug——run log 修正记录)
+                url = (f"{self.base_url}/v1/default/banks/{self.bank_id}"
+                       f"/operations/{op}")
+                try:
+                    with _rq.urlopen(url, timeout=15) as r:
+                        st = json.loads(r.read()).get("status", "")
+                except Exception as e:  # noqa: BLE001
+                    raise HindsightError(f"op poll {op} failed: {e}") from e
+                if st == "completed":
                     continue
                 if st in ("failed", "cancelled"):
                     raise HindsightError(
