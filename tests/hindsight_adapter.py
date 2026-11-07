@@ -36,6 +36,23 @@ def bank_id_for(session_ids: list[str]) -> str:
     return f"lme2-{digest}"
 
 
+def _iso_date(raw: str | None) -> str | None:
+    """LongMemEval haystack_dates('2023/05/20 (Sat) 03:29')→ ISO('2023-05-20T03:29:00')。
+
+    run-freeze 修正(2026-11-07·run log 记录):首 bank 422 实测 hindsight 拒收原生格式;
+    本函数只做格式归一,不增删任何时间信号(判据零变更)。解析失败→返回 None
+    (该 session 不带 timestamp,计数记 run log)。
+    """
+    if not raw:
+        return None
+    import re
+    m = re.match(r"(\d{4})/(\d{2})/(\d{2}) \([A-Za-z]{3}\) (\d{2}):(\d{2})", raw)
+    if m:
+        y, mo, d, h, mi = m.groups()
+        return f"{y}-{mo}-{d}T{h}:{mi}:00"
+    return None
+
+
 class HindsightMemory:
     """一次评测 run 的 hindsight bank 封装(官方 hindsight-client 包裹)。"""
 
@@ -60,12 +77,16 @@ class HindsightMemory:
         if session_to_text is None:
             raise HindsightError("retain_corpus 需注入 session_to_text(同源公平性纪律)")
         items = []
+        n_no_date = 0
         for i, sess in enumerate(sessions):
-            date = dates[i] if dates and i < len(dates) else None
+            raw = dates[i] if dates and i < len(dates) else None
+            iso = _iso_date(raw)
+            if raw and not iso:
+                n_no_date += 1
             text = session_to_text(sess, max_chars=max_chars, date=None)
             item = {"content": text, "document_id": session_ids[i]}
-            if date:
-                item["timestamp"] = date
+            if iso:
+                item["timestamp"] = iso
             items.append(item)
         try:
             resp = self._client.retain_batch(bank_id=self.bank_id, items=items)
