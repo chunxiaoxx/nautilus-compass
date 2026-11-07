@@ -21,6 +21,7 @@
 
 - 追加一行到 runtime/loop/rounds.log:`<时间> round<N> <做了什么一句话> <结果>`
 - state.json 的 round 计数 +1
+- 🔴**零增量不 commit**(2026-11-06 D件拍板):若本轮无实质增量(全渠道持平/零事件/零新函/零新判),**只留 rounds.log 一行,不 git commit**——留痕≠产出,空转不占主干
 
 ## 判读岗特别令(有派单时优先)
 
