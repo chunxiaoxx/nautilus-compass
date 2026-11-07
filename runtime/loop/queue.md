@@ -4,6 +4,12 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R696 · 2026-11-07(值守 loop R504:幂等复诵持平轮——零新商务事件·🆕R503 head CI 过绿·🆕platform RED 51 条(+1 distress×10)·Gmail 401→直刷复活 39 条全甄)
+
+- **值守面[实测]**:信箱 compass 0 未读;**platform RED 实测 51 条(+1)**——🆕新增 id 33789 soul-distress-202611070933(9 consecutive failures · last cycle selfimprove-eng,distress 保活函序列第 10 封累计×10,与 id33410×9 同源续升,处置候用户);Gmail 401→R448 配方直刷复活 REFRESH_OK 3599s,39 条 7d 未读 threads 逐封全甄 0err(并行甄别偶发 ERR×1 复跑全过)=零新面孔零新商务函(=37 历轮+2 R503 已甄 PayPal 收据/PacoAI;codex-bot 回声×16/Substack 营销×8/WgetCloud×2/X×2/AtomGit-GitCode 候拍板/#66 安件复诵 Nagizaaz/Google 安全提醒/营销其他×5(dnb/Malachi/Daytona/PH/PostHog));**实测 main 最新 8 run 全绿——🆕最新 42323796730(R503 head c6420393)01:23Z success=R503 推送 CI 已过绿,零新增红**;mention 5 条全旧持平(最新 11-02);genesis 五家持平 1/1/0/1/2 零 REPLY;dev.to 30 文 6+2=8 评论持平零新增;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=186);S0 池分支远端不存在=零新增零行动。
+- **管道**:qs+pipeline_report+sync 三件 exit0;快筛与历轮全同(CS-513 过/CS-514 不过 qwen 1.0/opus 0.0 梯度 -100pp/CS-515~517 不过 opus=None/CS-518 25pp ✓④✓⑤✗③,总结论存在不过筛);GATE0 PASS(ops/ali30q/verify_criteria_lock.py);矩阵 matrix_run.log mtime=10-30 09:42 维持停摆候用户解锁(R493 勘误 1 维持)。**复诵三必核全过**:计数全量甄别(Gmail 39 条逐封全甄/platform RED total=51/CI 8 run 实测/dev.to 30 文全扫)+log stat mtime(matrix_run.log·COLLAB_BOARD)+台账必验(root COLLAB_BOARD R503 行 mtime 11-06 20:22 EST 实证在,R504 行 21:04 append 实证在;runtime/ 副本滞后系旧路径维持 root 单源;本机 EST vs 台账 +08:00 差 13h 已知双口径)。
+- **候办主件**: 🔴安全报告修复拍板(三选项·90 天 disclosure 窗口自 11-05 起算)+回函草稿候审;⚠️flywheel-full-recheck 完整复判(2026-11-07 18:00(+08:00)止,剩约 7.9h·需预注册判据档+专门轮次,不能自主完成记因跳过);soul distress 熔断持续(🆕累计×10·处置候用户);两函 400 拒候改道三选项;X 验证码 622026 候用户;PVR Web UI 候用户兜底;round>200 漂移本轮 504 续跑候用户(R524 先例);AtomGit G-Star 入驻拍板候用户;Google/GitHub 账号自核候用户;Google Play 交易者声明候办拍板候用户;PacoAI Pana beta 邀请领取与否候用户;矩阵/phase2 恢复候用户解锁屏幕。
+
 ### R695 · 2026-11-07(值守 loop R503:幂等复诵持平轮——全渠道零新事件·🆕R502 head CI 过绿·Gmail 200 活 42 条全甄·platform RED 50 条持平)
 
 - **值守面[实测]**:信箱 compass 0 未读;platform RED 实测 50 条与 R502 持平零新增(最新仍=id 33410 soul-distress-202611070448,累计×9 候用户);Gmail 200 活免直刷,42 条 7d 未读逐封全甄 0err=零新商务函(🆕2 条新面孔甄别:PayPal 用户个人 Apple Services $3.99 收据零行动/PacoAI Pana beta 席位邀请=产品营销候用户自决;老件:GitHub 通知×20 均 11-04~05 历轮已甄/Substack×8/X×2/Google 安全/AtomGit 候拍板/wget×2/营销其他×6);**实测 main 最新 8 run 全绿——🆕最新 42320072329(R502 head b749d5b0)00:44Z success=R502 推送 CI 已过绿,零新增红**(通知区 31 条全旧,CI failed 09:39Z 历轮已甄);mention 5 条全旧持平(最新 11-02);genesis 五家持平 1/1/0/1/2 零 REPLY;dev.to 30 文 6+2=8 评论持平零新增;daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=186)。
