@@ -19,6 +19,7 @@ eval 必须中止留证);"recall 返回空"是数据不是错误(照报 0 分)�
 from __future__ import annotations
 
 import hashlib
+import json
 import os
 
 # === RUN-FREEZE(2026-11-07 实测)·冻结后禁改 ===
