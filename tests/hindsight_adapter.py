@@ -77,13 +77,14 @@ class HindsightMemory:
         if session_to_text is None:
             raise HindsightError("retain_corpus 需注入 session_to_text(同源公平性纪律)")
         items = []
-        n_no_date = 0
+        n_empty = 0
         for i, sess in enumerate(sessions):
             raw = dates[i] if dates and i < len(dates) else None
             iso = _iso_date(raw)
-            if raw and not iso:
-                n_no_date += 1
             text = session_to_text(sess, max_chars=max_chars, date=None)
+            if not text.strip():
+                n_empty += 1  # LongMemEval 空会话(run log 披露总数·无信号可 retain)
+                continue
             item = {"content": text, "document_id": session_ids[i]}
             if iso:
                 item["timestamp"] = iso
@@ -113,6 +114,8 @@ class HindsightMemory:
                 pending.append(op)
             if not pending:
                 self.retained += len(items)
+                if n_empty:
+                    print(f"  [adapter] bank={self.bank_id} skipped {n_empty} empty sessions")
                 return len(items)
             _time.sleep(10)
         raise HindsightError(
