@@ -32,17 +32,18 @@ os.environ.setdefault("PYTHONUTF8", "1")
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent))
 
-# === LLM 车道(V1.2 附录冻结):qwen3.8-max @ 百炼 TokenPlan compatible-mode ===
-# (V1.1 的 MiniMax-M3 为已验证 fallback;key 经 QWEN_TOKENPLAN_API_KEY 注入)
+# === LLM 车道(V1.3 附录冻结):自建中转站 ===
+# 提取=glm-5.3-flash(服务端容器 env) · subject=kimi-k3 · judge=opus-5-5(code80)
+# key 经 RELAY_API_KEY/CODE80_API_KEY 注入(v5 .env 同源)
 # 必须在 import 冻结 harness 前落位(harness 在模块级读 env)。
 os.environ.setdefault("ZMM_LLM_PROVIDER", "openai")
-os.environ.setdefault("ZMM_LLM_BASE_URL", "https://token-plan.cn-beijing.maas.aliyuncs.com/compatible-mode/v1")
-os.environ.setdefault("ZMM_LLM_API_KEY", os.environ.get("QWEN_TOKENPLAN_API_KEY", ""))
-os.environ.setdefault("ZMM_SUBJECT_MODEL", "qwen3.8-max")
+os.environ.setdefault("ZMM_LLM_BASE_URL", "https://api.chunxiao.wang/v1")
+os.environ.setdefault("ZMM_LLM_API_KEY", os.environ.get("RELAY_API_KEY", ""))
+os.environ.setdefault("ZMM_SUBJECT_MODEL", "k3")
 os.environ.setdefault("ZMM_JUDGE_PROVIDER", "openai")
-os.environ.setdefault("ZMM_JUDGE_BASE_URL", "https://token-plan.cn-beijing.maas.aliyuncs.com/compatible-mode/v1")
-os.environ.setdefault("ZMM_JUDGE_API_KEY", os.environ.get("QWEN_TOKENPLAN_API_KEY", ""))
-os.environ.setdefault("ZMM_JUDGE_MODEL", "qwen3.8-max")
+os.environ.setdefault("ZMM_JUDGE_BASE_URL", "https://code.ai80.vip/v1")
+os.environ.setdefault("ZMM_JUDGE_API_KEY", os.environ.get("CODE80_API_KEY", ""))
+os.environ.setdefault("ZMM_JUDGE_MODEL", "claude-opus-5-5")
 os.environ.setdefault("ZMM_LONGMEMEVAL_PATH", "/tmp/longmemeval_s.json")
 
 from tests import hindsight_adapter as hsa  # noqa: E402
