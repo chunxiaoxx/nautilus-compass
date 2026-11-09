@@ -1834,3 +1834,10 @@
 - **工具债**:platform_mail.py urllib 走 https 报 SSLEOFError(curl 同端点 1.9s 绿)——与 Gmail urllib 长挂同构,信箱读写本轮全改 curl 配方(读 ?to=compass·ack/id/ack·POST body)。候修:platform_mail.py 换 requests 或 subprocess curl,留档候用户。
 - **值守面**:Gmail 401→直刷复活 3599s 绿[实测]·15 线程皆营销/系统通知零商务函(berty#5273 关闭=R219 已判收尾)·GH mentions 零新增·dev.to 两文 6+2 评与 R219 口径一致零新增·daemon 9876 绿+watchdog 静默·gate0 PASS·矩阵 23:56 收官满额对 10/30 18:00 锚在轨·快筛维持不过筛(CS-517/518 差③)·qs 落 v5 共享面零变化(4628B·13d9858f 后无新 commit)。
 - **round>200 停轮条件**:维持 R524 裁定(先例过阈继续+候用户建 STOP 或抬阈值)。
+
+### R710 · 2026-11-09(值守 loop R519:实质增量轮——nautilus-core main 追平+PR#516 codex-review 首报+distress ×18→×19)
+
+- **🆕实质增量①主干追平**:本地 HEAD 4627138e=origin/main,R518 时领先的 17 commits 已全部推送落地(评测线在途件正式入主干,候办清单"hindsight 步骤2-5 候评测线 17commits 在途"的落地半边销账),compass CI 最新 2 run=4627138e 17:45:51Z success×2 零红。
+- **🆕实质增量②PR#516 review 首报**:PR#516(feat ops/ali_phase2 二期产线资产同步 master·81 文件纯新增·open 未 merge)首现 chatgpt-codex-connector bot 8 条 review comments——P1×1(assembly_kit_cs507_v1/assemble.py 装配模块缺失)+P2×7(score_py 确定性/ERROR-SKIPPED 误计/lockcheck 权限/相对路径/空响应重试/gating 排除 all_pass/自检 exit 码),全 v5 侧产线 PR 处置范围,compass 通报不代处置。
+- **🆕实质增量③distress ×18→×19**:platform RED 窗口口径实测 **141 封**(id 24318→44890·较 R518 的 140 +1),唯一新函=**id44890 soul-distress ×18→×19**(trace 202611100203=EST 13:03·19 consecutive failures·last cycle selfimprove-engine-checks·熔断分层保活通道·解除=人工删 .soul-pause 人监门候用户)。
+- **值守面持平**:信箱 0 未读;Gmail 401→直刷 REFRESH_OK,**55 条**逐封 sender 全甄零新面孔(+9 全为 codex-bot 机器回声与 notifications 同源);a2a-x402#198 零新评论(草稿候用户 SLA 窗 11-10 09:31Z);mention 5 全旧;genesis 持平 1/1/0/1/2;dev.to 6+2=8;daemon 绿+watchdog+哨兵 exit0 recall_hit=63;GATE0 PASS;管道三件 exit0 快筛全同(CS-515~517 opus=None/CS-518 25pp ✗③✓④✓⑤);矩阵 mtime=10-30 停摆维持。复诵三必核全过(55 条逐封/RED 增量实测=唯一 44890/CI 8 run 实测/台账 R518 行在+R519 行 append 在)。
