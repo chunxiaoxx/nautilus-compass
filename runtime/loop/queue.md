@@ -4,6 +4,14 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R705 · 2026-11-08(值守 loop R514:实质增量轮——阿里二期收题勘误 PR#512 merge+RED +3 甄别全通报类+distress ×14)
+
+- **🆕实质增量①阿里二线进展**:nautilus-core PR#512(二期收题规模勘误 70/60 道→首轮 20 道逐批解锁·需求侧 2 文档覆盖横幅+题单 20 行解除已答闸)已 **MERGED**(11-08 22:19 EST=11-09T03:19Z)+codex 机审 COMMENTED(reviewed commit 2173be9c)——通报类零 compass 行动;新 notification 1 条即此件(reason=author)已甄。
+- **🆕实质增量②platform RED 130→133(+3 甄别全通报类)**:id 41711+42096 Mac哨兵 2h cron 自动告警同因重复(五模型探针 3/5·判分采样依赖渠道修复前挂起 #35157 口径·零行动)+id 41807 **soul-distress ×13→×14**(trace 202611091036=EST 21:36·14 consecutive failures·last cycle selfimprove-en…·节奏 2-3.5h 维持·候用户人监门不消号)。
+- **值守面[实测]**:信箱 compass 0 未读;Gmail 401→R448 配方直刷 REFRESH_OK 3599s,**42 条** 7d 未读逐封 sender 全甄零新面孔零新商务函(较 R513 的 44 条 -2 出窗;+2 新入窗=Google 服务通知 Two changes Nov23+GPU rates Nov15 均零行动);CI main 最新 8 run 全绿零新增 run(最新 42365076746 2758fbba 与 R511-513 同);⚠️本地 HEAD b180f476 领先 origin/main **11 commits**(评测线 9+R512/R513 留痕)不代推;mention 5 全旧;genesis 持平 1/1/0/1/2 零 REPLY;dev.to 30 文 6+2=8 持平;触客双 issue VISTA#5+mem0#7863 均 OPEN 0 comments 候回(~46h);daemon 绿+watchdog 静默过+哨兵 exit0 recall_hit=60。
+- **管道**:三件 exit0 快筛与历轮全同(CS-513 过/CS-514 不过 -100pp/CS-515~517 opus=None/CS-518 25pp ✗③✓④✓⑤)总结论存在不过筛;GATE0 PASS;矩阵 mtime=10-30 09:42 停摆维持候用户解锁(R493 勘误 1 维持)。复诵三必核全过(42 条逐封 sender 全甄/RED 133 封实测甄别/CI 8 run 实测/台账 R513 行 line54 实证在+本轮 R514 行 append 在)。补录注记:R513 会话 rounds.log 报告块 12 行漏 add,本轮 commit 补齐(实物账在工作区不伪造历史行)。
+- **候办主件**:🔴soul 熔断保活 **×14** 解除=人工删 .soul-pause 候用户(compass 不代删);hindsight 评测步骤 2-5 候评测线(本地 11 commits 在途+工作区评测线脏文件不裹挟);安全报告三选项;两函 400 拒;X 验证码 622026;PVR Web UI;round>200 漂移本轮 514 续跑候用户(R524 先例);矩阵/phase2 恢复候用户解锁屏幕;gaurav 转化包 v1 候用户审批。
+
 ### R704 · 2026-11-08(值守 loop R513:实质增量轮——distress 熔断分层实证+R512 停摆判读勘误+11-08 三连 429 实证)
 
 - **🆕实质增量①distress 熔断分层实证·勘误 R512**:R512"20:15 后停摆·根因未知"判读**勘误为熔断分层切换实证**——distress 函正文新形态实证:"熔断分层(9/25 用户批)生效:本函经保活通道发出…解除=人工删 .soul-pause(人监门)"(id 41238 全文实测);时间线:11-07 20:15→11-08 10:35(+08:00)间隔约 14h=熔断切换非停摆,恢复后节奏 **15min→2-3.5h/封**(10:35/12:47/16:03/19:33/22:34/00:46/04:02/07:31 共 8 封),最新 id 41238 trace 202611090731(+08:00 07:31=EST 11-08 18:31);**failure 计数 ×28→×13 重置,last cycle 由 mailbox-34207 换为 selfimprove-services-soul_self_audit**(ship/selfimprove 已断·回函通道保活中);解除=人工删 .soul-pause 人监门,compass 不代删候用户。

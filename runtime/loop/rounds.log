@@ -3728,3 +3728,16 @@ API Error: Request rejected (429) · [1310][您已达到每周/每月使用上�
 API Error: Request rejected (429) · [1310][您已达到每周/每月使用上限，您的限额将在 2026-11-09 09:14:41 重置。][20261109075252e482944030834ab2]
 ---- round end 11-08 18:52 ----
 11-08 21:06 round513 实质增量轮:distress熔断分层实证+R512停摆判读勘误(非停摆:soul按熔断分层9/25用户批切保活通道·11-07 20:15→11-08 10:35+08:00间隔14h=切换·恢复后15min→2-3.5h节奏·最新id41238·failure×28→×13重置last cycle=mailbox-34207→selfimprove-services-soul_self_audit·解除=人工删.soul-pause人监门候用户)+11-08三连429零执行实证(14:46/16:49/18:52三轮qwen限额拒绝·本轮重置后首跑成功) 全渠道其余持平(commit R513)
+R513 值守轮完成（commit `b180f476`，4 文件留痕，distill/生产 loop 文件未裹挟）。
+
+## 本轮报告（R513 · 实质增量轮）
+
+**🆕 实质增量①——distress 序列判读勘误**：R512“20:15 后停摆·根因未知”**勘误为熔断分层切换实证**。id 41238 全文实测：soul 按“熔断分层(9/25 用户批)”把 distress 切到保活通道（“本函经保活通道发出…解除=人工删 .soul-pause 人监门”）。11-07 20:15→11-08 10:35(+08:00) 的 14h 静默=熔断切换非停摆；恢复后节奏 15min→2-3.5h/封共 8 封，最新 41238（+08:00 07:31=EST 18:31）；**failure 计数 ×28→×13 重置，失败对象由 mailbox-34207 换为 selfimprove-services-soul_self_audit**（ship/selfimprove 已断）。解除需人工删 `.soul-pause`，compass 不代删，候用户。
+
+**🆕 实质增量②——11-08 三连 429 实证**：14:46/16:49/18:52(EST) 三轮值守全被 qwen 周/月限额 429 拒绝零执行；本轮 21:05 EST 为限额重置后首跑成功。
+
+**值守面持平**：信箱 compass 0 未读；Gmail 直刷后 44 条 7d 未读逐封全甄零新面孔（codex-bot 16→19 增量全为 soul 自改进 PR 机器通知）；RED 实测 130 封窗口+41710 flywheel OGE 通报（Flora 主任务，零行动）；CI 8 run 全绿零新增 run；notifications 31 条聚类全为 11-06 前历史件；genesis 零 REPLY；dev.to 8 评论持平；daemon 绿+哨兵 exit0（recall_hit=60）；GATE0 PASS；管道三件 exit0 快筛与历轮全同；矩阵停摆维持候解锁。
+
+**候办主件（候用户）**：🔴 soul 熔断保活 ×13（人监门）；hindsight 评测步骤 2-5（本地 ahead 11 不代推）；安全报告三选项；两函 400 拒；X 验证码 622026；PVR Web UI；round>200 漂移（512→513 续跑，R524 先例）；矩阵/phase2 解锁；gaurav 转化包审批。
+---- round end 11-08 21:03 ----
+11-08 23:10 round514 实质增量轮:阿里二期收题勘误PR#512已MERGED(11-08 22:19 EST+codex机审COMMENTED·通报类零行动)+platform RED 130→133(+3甄别全通报类:41711+42096哨兵2h cron同因重复五模型探针3/5判分挂起#35157口径+41807 distress ×13→×14 trace1036=EST21:36·14 consecutive failures·人监门候用户)+补录R513会话rounds.log报告块12行漏add;全渠道其余持平:信箱compass 0未读·Gmail直刷REFRESH_OK 42条逐封全甄零新商务函·CI 8run全绿零新增(42365076746与R511-513同)·HEAD b180f476领先origin 11commits评测线在途不代推·mention5全旧·genesis持平1/1/0/1/2零REPLY·dev.to 8持平·触客双issue OPEN 0comments候回~46h·daemon绿+watchdog过+哨兵exit0 recall_hit=60·GATE0 PASS·管道三件exit0快筛与历轮全同(CS-513过/CS-514不过/CS-515~517 opus=None/CS-518 25pp)·矩阵mtime=10-30 09:42停摆维持候解锁·复诵三必核全过(42条逐封/RED 133封实测/CI 8run/台账R513行line54在+R514行append在)·候办主件全延续(soul熔断保活×14人监门/hindsight步骤2-5候评测线/安全报告三选项/两函400拒/X验证码/PVR/round>200漂移514续跑R524先例/矩阵phase2候解锁/gaurav候审批) (commit R514)
