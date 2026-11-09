@@ -4,6 +4,17 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R708 · 2026-11-09(值守 loop R517:实质增量轮——distress ×16→×17·含 R516 留痕补录 commit)
+
+- **🆕实质增量**:platform RED 全量口径实测 **373 封**(id 1847→43769·R512 先例全量口径),较 R516 增量甄别=🆕**id43769 soul-distress ×16→×17**(trace 202611092038=EST 07:38·17 consecutive failures·last cycle selfimprove-engine-checks·熔断分层保活通道·解除=人工删 .soul-pause 人监门候用户)+id43371 自发 OGE 回执(R516 已计入其 138 口径)。
+- **值守面[实测]**:信箱 compass 0 未读(⚠️本轮出口网络间歇抖动:platform_mail urllib connection reset×2+curl 首探 HTTP:000+gh api notifications reset×3,重试全恢复,Gmail API/healthz 全程通);Gmail 401→R448 配方直刷 REFRESH_OK 3599s,**46 条** 7d 未读逐封 sender 全甄零新增新面孔零新商务函(Grab×2=R516 已甄/Ethan Sun Pana=R503 已甄/alanwang100=R515 已甄 a2a 件,较 R516 的 50 条 -4 出窗);a2a-x402#198 零新评论(仍 1 条 alanwang100 原件·草稿候用户审批 SLA 窗 11-10 09:31Z);CI main 最新 8 run 全绿零新增 run(最新 42365076746 2758fbba 与 R511-515 同);⚠️本地 HEAD fbef12dd 领先 origin/main **16 commits**(评测线 9+勘误 2+R512-516 留痕)不代推;mention 5 全旧;genesis 持平 1/1/0/1/2 零 REPLY;dev.to 30 文 6+2=8 持平;daemon 绿 9876+watchdog 静默过+哨兵 exit0 recall_hit=45;GATE0 PASS;管道三件 exit0 快筛与历轮全同(CS-514 -100pp/CS-515~517 opus=None/CS-518 25pp ✗③✓④✓⑤)总结论存在不过筛;矩阵 mtime=10-30 09:42 停摆维持候用户解锁(R493 勘误 1 维持)。复诵三必核全过(46 条逐封 sender 全甄/RED 全量 373 封实测 id>43172 增量 2 封逐封/CI 8 run 实测/台账 R516 行实证在+本轮 R517 行 append 在)。
+- **留痕注记**:R516 零增量轮按当时纪律只留工作区未 commit,本轮实质 commit 以 pathspec 限定顺带入主干(R514 补录 R513 先例),不伪造历史行。
+
+### R707 · 2026-11-09(值守 loop R516:零增量轮——全渠道持平·不 commit 只留痕)
+
+- **零增量判定**:RED 137→138 唯一增量=自发 OGE 回执 id43371 入窗(零新增外部件);Gmail 50 条逐封全甄唯一新面孔=Grab×2(账户验证+营销欢迎件 11-09 11:06Z,非 compass 渠道,零行动);distress ×16 无新增(最新仍 id43172);a2a-x402#198 无新评论(草稿候用户,SLA 窗 11-10 09:31Z);CI 8 run 全绿零新增;genesis/dev.to/mention 全持平;daemon 绿 recall_hit=42+watchdog+哨兵绿;GATE0 PASS;管道三件 exit0 快筛全同;矩阵停摆维持。**按 2026-11-06 D 件纪律:只留 rounds.log/COLLAB_BOARD/state.json 一行,不 git commit**(留痕≠产出,空转不占主干)。
+- **候办主件全延续**:🔴distress ×16 人监门候用户;a2a-x402 草稿审批(SLA 窗);hindsight 步骤 2-5;安全报告三选项;两函 400 拒;X 验证码 622026;PVR;round>200 漂移 516 续跑(R524 先例);矩阵/phase2 候解锁;gaurav 转化包。
+
 ### R706 · 2026-11-09(值守 loop R515:实质增量轮——OGE 两函回执 id43371+a2a-x402#198 外部触客回复首现登记+distress ×16)
 
 - **🆕实质增量①OGE 两函回执**:OGE 状态呈报令 #42289 + SLA 升级函 #42776(沉默 24h 自动升级)回执 **id43371 已发 platform**(trace=oge-status-demand-compass-2026-11-09-done):三行=主任务(阿里二期 PR#512 merge+判据 V1.3 车道终局定版 e7a05319+蒸馏管线在途)/判分基建位(UMI 交付与首笔收入主体在 platform/v5,compass 供判分基建)/三阻塞(矩阵停摆候用户解锁+hindsight 双车道候 qwen 11/18 重置+平台五模型探针 3/5 既定 #35157 口径);两函已 ack。
