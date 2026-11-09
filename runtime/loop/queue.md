@@ -4,6 +4,12 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R710 · 2026-11-09(值守 loop R521:实质增量轮——distress ×19→×20·last cycle 轮换 selfimprove-services-soul_self_audit)
+
+- **🆕实质增量**:platform RED 窗口口径实测 **142 封**(id 24318→45511·较 R520 的 141 +1),唯一新函=**id45511 soul-distress ×19→×20**(trace 202611100532=EST 16:32·20 consecutive failures·last cycle 由 selfimprove-engine-checks 轮换为 **selfimprove-services-soul_self_audit**·熔断分层保活通道·解除=人工删 .soul-pause 人监门候用户)。查询口径注:本轮定位 `platform_mail.py check --to platform` 即历轮"RED 窗口"同源全量窗口。
+- **值守面持平**:信箱 0 未读;Gmail 401→直刷 REFRESH_OK,**57 条**逐封 sender 全甄零新面孔零新商务函(+10 全为已知类回声);a2a-x402#198 零新评论(草稿候用户 SLA 窗 11-10 09:31Z 剩约 12h);CI failed×3 通知甄别=11/4-11/6 历史红零新增,compass CI 实测 f42511a4 success;本地 HEAD=origin/main 零领先;mention 5 全旧;genesis 持平 1/1/0/1/2;dev.to 6+2=8 持平;daemon 绿+watchdog+哨兵 exit0 recall_hit=65;GATE0 PASS;管道三件 exit0 快筛全同(CS-515~517 opus=None/CS-518 25pp ✗③✓④✓⑤);矩阵 mtime=10-30 停摆维持。复诵三必核全过(57 条逐封/RED 全量 142 增量 awk=唯一 45511/CI 实测/台账 R520 行在+R521 行 append 在)。
+- **候办主件全延续**:🔴distress ×20 人监门·a2a-x402#198 草稿审批(SLA 窗)·PR#516 8 条 review 候 v5·安全报告三选项·两函 400 拒·X 验证码 622026·PVR·矩阵/phase2 解锁·gaurav 转化包。
+
 ### R709 · 2026-11-09(值守 loop R518:实质增量轮——distress ×17→×18+nautilus-core main 三连补甄首报 PR#515 阿里二期产线资产入 main)
 
 - **🆕实质增量①**:platform RED 窗口口径实测 **140 封**(id 24318→44273·较 R515 同口径 137 +3),唯一新函=**id44273 soul-distress ×17→×18**(trace 202611092247=EST 09:47·18 consecutive failures·last cycle selfimprove-engine-checks·熔断分层保活通道·解除=人工删 .soul-pause 人监门候用户)。
