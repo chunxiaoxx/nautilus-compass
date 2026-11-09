@@ -3741,3 +3741,22 @@ R513 值守轮完成（commit `b180f476`，4 文件留痕，distill/生产 loop 
 **候办主件（候用户）**：🔴 soul 熔断保活 ×13（人监门）；hindsight 评测步骤 2-5（本地 ahead 11 不代推）；安全报告三选项；两函 400 拒；X 验证码 622026；PVR Web UI；round>200 漂移（512→513 续跑，R524 先例）；矩阵/phase2 解锁；gaurav 转化包审批。
 ---- round end 11-08 21:03 ----
 11-08 23:10 round514 实质增量轮:阿里二期收题勘误PR#512已MERGED(11-08 22:19 EST+codex机审COMMENTED·通报类零行动)+platform RED 130→133(+3甄别全通报类:41711+42096哨兵2h cron同因重复五模型探针3/5判分挂起#35157口径+41807 distress ×13→×14 trace1036=EST21:36·14 consecutive failures·人监门候用户)+补录R513会话rounds.log报告块12行漏add;全渠道其余持平:信箱compass 0未读·Gmail直刷REFRESH_OK 42条逐封全甄零新商务函·CI 8run全绿零新增(42365076746与R511-513同)·HEAD b180f476领先origin 11commits评测线在途不代推·mention5全旧·genesis持平1/1/0/1/2零REPLY·dev.to 8持平·触客双issue OPEN 0comments候回~46h·daemon绿+watchdog过+哨兵exit0 recall_hit=60·GATE0 PASS·管道三件exit0快筛与历轮全同(CS-513过/CS-514不过/CS-515~517 opus=None/CS-518 25pp)·矩阵mtime=10-30 09:42停摆维持候解锁·复诵三必核全过(42条逐封/RED 133封实测/CI 8run/台账R513行line54在+R514行append在)·候办主件全延续(soul熔断保活×14人监门/hindsight步骤2-5候评测线/安全报告三选项/两函400拒/X验证码/PVR/round>200漂移514续跑R524先例/矩阵phase2候解锁/gaurav候审批) (commit R514)
+R514 值守轮完成（commit `e9c6c19e`，值守四文件留痕，评测线/生产 loop 在途文件未裹挟，不代推——本地领先 origin/main 12 commits 归评测线）。
+
+## 本轮报告（R514 · 实质增量轮）
+
+**🆕 实质增量①——阿里二线进展**：nautilus-core PR#512（二期收题规模勘误 70/60 道→首轮 20 道逐批解锁+题单 20 行解除已答闸）**已 MERGED**（11-08 22:19 EST），codex 机审 COMMENTED（2173be9c）。通报类，零 compass 行动。
+
+**🆕 实质增量②——platform RED 130→133（+3 甄别全通报类）**：id 41711+42096 = Mac哨兵 2h cron 同因重复告警（五模型探针 3/5·判分采样挂起 #35157 口径）；id 41807 = **soul-distress ×13→×14**（14 consecutive failures，节奏 2-3.5h/封维持）。解除=人工删 `.soul-pause` 人监门，compass 不代删，候用户。
+
+**值守面持平**：信箱 compass 0 未读；Gmail 401→R448 配方直刷 REFRESH_OK，42 条 7d 未读逐封全甄零新商务函；CI main 8 run 全绿零新增；mention5 全旧；genesis 持平 1/1/0/1/2 零 REPLY；dev.to 8 评论持平；触客双 issue（VISTA#5+mem0#7863）OPEN 0 comments 候回 ~46h；daemon 绿+watchdog 过+哨兵 exit0（recall_hit=60）；GATE0 PASS；管道三件 exit0 快筛与历轮全同（总结论存在不过筛）；矩阵 mtime=10-30 09:42 停摆维持候解锁。
+
+**补录注记**：R513 会话的 rounds.log 报告块 12 行漏 add（commit 外残留），本轮随 commit 补齐，不伪造历史行。
+
+**候办主件全延续**：🔴soul 熔断保活 ×14（人监门候用户）；hindsight 评测步骤 2-5 候评测线；安全报告三选项；两函 400 拒；X 验证码 622026；PVR Web UI；round>200 漂移本轮 514 续跑（R524 先例）；矩阵/phase2 候解锁；gaurav 转化包候审批。
+---- round end 11-08 23:12 ----
+API Error: Request rejected (429) · [1302][您的账户已达到速率限制，请您控制请求频率][2026110914155890c4242c6c234e07]
+---- round end 11-09 01:15 ----
+API Error: Request rejected (429) · [1302][您的账户已达到速率限制，请您控制请求频率][20261109161918d281fbe7458046e3]
+---- round end 11-09 03:19 ----
+2026-11-09 05:28 EST round515 OGE两函(#42289+#42776升级)回执id43371发platform+两ack·a2a-x402#198外部回复首现(alanwang100/JiZhiMCP两问NAU结算细节)登记台账+草稿候用户SLA窗11-10·RED 137甄别(+4:哨兵×2+distress×16经保活通道)·Gmail 401→直刷REFRESH_OK 50条全甄零新商务函·CI 8run全绿持平·GATE0 PASS·管道快筛持平·daemon/watchdog/哨兵绿·实质增量commit

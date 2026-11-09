@@ -95,3 +95,6 @@
 
 ### 追记(11/6 · Th0rgal/orb#1074 婉拒关闭)
 - **Th0rgal/orb#1074(我方外联:免费独立复算 L1 名额 offer·launched Oct 12)对方婉拒并关闭[值守轮 loop R466 处置]**:Th0rgal 末评(11-06T02:48:56Z)说明 orb/Core 定位=编排控制面(client and control plane,编排 Claude Code/Codex/OpenCode/Antigravity/Grok 于本地与远程机器),非独立 benchmark harness,leaderboard 名额不合,issue 已关闭并礼貌收尾("congrats on the launch!")。**分类=婉拒类,按纪律记台账不动**(对方已收尾关闭,无回帖必要,不追)。
+
+### 追记(11/9 · a2a-x402#198 JiZhiMCP 技术回复·候口径)
+- **google-agentic-commerce/a2a-x402#198(我方 10-20 触客函·chunxiaoxx)外部回复首现[值守轮 loop R515 处置]**:alanwang100(JiZhiMCP 作者·github.com/alanwang100/jizhineng-mcp)11-09T09:31Z 回帖——对方自述 MCP 网关+hash-chained 防篡改结算账本,提两问:①无人参与双 agent 结算如何保账本防篡改/可审计 ②stake/delegate 释放前如何验证"已交付工作"(oracle 还是委托人确认);并给出活端点 mcp.xn--5kvtwv52d.com/mcp(settlement.*)邀对拍。**分类=绿灯类(技术交流/合作意向)**。⚠️未即时回帖原因:两问均为 NAU 结算核心实现细节,compass 框无档可引(红线"对外发函须引用既有档"),凭印象代答有编造风险;按外发硬闸纪律(概括性授权只到草稿)起草回复草稿存 docs/outreach/draft_a2ax402_198_reply_20261109.md 候用户审批或 prime-001 域口径,SLA 窗 24h(11-10 09:31Z 前)至少确认性回帖。
