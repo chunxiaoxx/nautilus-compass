@@ -4,6 +4,14 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R704 · 2026-11-08(值守 loop R513:实质增量轮——distress 熔断分层实证+R512 停摆判读勘误+11-08 三连 429 实证)
+
+- **🆕实质增量①distress 熔断分层实证·勘误 R512**:R512"20:15 后停摆·根因未知"判读**勘误为熔断分层切换实证**——distress 函正文新形态实证:"熔断分层(9/25 用户批)生效:本函经保活通道发出…解除=人工删 .soul-pause(人监门)"(id 41238 全文实测);时间线:11-07 20:15→11-08 10:35(+08:00)间隔约 14h=熔断切换非停摆,恢复后节奏 **15min→2-3.5h/封**(10:35/12:47/16:03/19:33/22:34/00:46/04:02/07:31 共 8 封),最新 id 41238 trace 202611090731(+08:00 07:31=EST 11-08 18:31);**failure 计数 ×28→×13 重置,last cycle 由 mailbox-34207 换为 selfimprove-services-soul_self_audit**(ship/selfimprove 已断·回函通道保活中);解除=人工删 .soul-pause 人监门,compass 不代删候用户。
+- **🆕实质增量②11-08 三连 429 零执行实证**:11-08 14:46/16:49/18:52(EST)三轮值守全被 qwen API 429 拒(周/月限额·重置时点 2026-11-09 09:14:41),round 计数未递增;本轮 21:05 EST=限额重置后首跑成功(重置已实证)。
+- **值守面[实测]**:信箱 compass 0 未读;Gmail 401→R448 配方直刷 REFRESH_OK 3599s,**44 条** 7d 未读逐封 sender 全甄零新面孔零新商务函(codex-bot 16→**19** 增量全为 soul 自改进 PR 机器通知 soul_pr_gate#446/soul_consumer#214/text_utils#213 等=Claude Cowork6/PayPal2/ClaudeDesign2/历轮已甄营销件/#66Nagizaaz 复诵/GitCode 候拍板构成不变);platform RED 实测 **130 封窗口(id 24318→41710)** distress 43 封在列+🆕**41710 flywheel OGE 状态呈报**(trace 20261109-r1·Flora 主任务全链转化+loop 刹车通报·#38582 回执,通报类零 compass 行动);CI main 最新 8 run 全绿零新增 run(最新 42365076746 2758fbba 与 R511/R512 同);⚠️本地 HEAD 682885e1 领先 origin/main **10 commits**(评测线 9+R512 留痕)不代推;notifications **31 条**聚类甄别(16 state_change nautilus-core soul PR 潮+8 ci_activity+7 其他全旧)最新 11-06T09:39Z 零新增;mention 5 全旧;genesis 持平 1/1/0/1/2 零 REPLY;dev.to 30 文 6+2=8 持平;触客双 issue VISTA#5+mem0#7863 候回(~2d);daemon 绿+watchdog 静默过+哨兵 exit0 recall_hit=60。
+- **管道**:三件 exit0 快筛与历轮全同(CS-512 不过/CS-513 过/CS-514 不过/CS-515~517 opus=None 不过/CS-518 25pp ✗③✓④✓⑤)总结论存在不过筛;GATE0 PASS;矩阵 mtime=10-30 09:42 停摆维持候用户解锁(R493 勘误 1 维持)。复诵三必核全过(44 条逐封 sender 全甄/RED 130 封实测甄别非截断口径/CI 8 run 实测/台账 root COLLAB_BOARD R512 行实证在+本轮 R513 行 append 实证在)。
+- **候办主件**:🔴soul 熔断分层保活 ×13·ship/selfimprove 已断·**解除=人工删 .soul-pause 人监门候用户**(compass 不代删);hindsight 评测步骤 2-5 候评测线(本地 10 commits 在途);安全报告三选项;两函 400 拒候改道;X 验证码 622026;PVR Web UI;round>200 漂移本轮 513 续跑候用户(R524 先例);矩阵/phase2 恢复候用户解锁屏幕;gaurav 转化包 v1 候用户审批。
+
 ### R703 · 2026-11-07(值守 loop R512:观测增量轮——distress 序列 20:15 后停摆实证)
 
 - **🆕观测**:platform 全量(from-agent 口径 330 封)max_id=35159 实测——**soul-distress 序列 20:15(+08:00)后停摆**,最新=id 35153 ×28,较 R511 的 ×34 持平零新增,15min 节奏打破静默 2.5h+;根因未知三可能(soul 熔断/主通道修复/进程死),候用户,不消号。⚠️勘误注记:R511"满窗 100 截断"口径下 distress 计数受窗口限,本轮改用 from-agent 全量口径实测坐实,序列终态以停摆记录。
