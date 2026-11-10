@@ -4,6 +4,13 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R712 · 2026-11-10(值守 loop R523:实质增量轮——distress ×20→×21 + PR#518 首报通报)
+
+- **🆕实质增量①**:platform RED 窗口口径实测 **143 封**(id 24318→46448·较 R522 的 142 +1),唯一新函=**id46448 soul-distress ×20→×21**(trace 202611101005=EST 21:05·21 consecutive failures·last cycle selfimprove-engine 类·熔断分层保活通道·解除=人工删 .soul-pause 人监门候用户)。
+- **🆕实质增量②首报通报**:nautilus-core **PR#518**(feat ops/ali_phase2 T01 题包四件套入正本路径·分支 kairos/t01-pack-into-core-main·02:47:42Z 创建)**OPEN 施工中**,codex review 5 条 findings(P1×4+P2×1·集中于 T01 score.py/output_spec.md/solution)——活跃施工期,修复归施工 session,零 compass 行动(R519 PR#516 首报先例)。
+- **值守面持平**:信箱 compass 0 未读;Gmail 401→R448 直刷 REFRESH_OK 3599s,**49 条**逐封 sender 全甄零新面孔零新商务函(较 R522 的 62 条 -13 出窗·全为已知类回声);a2a-x402#198 零新评论(草稿候用户 SLA 窗 11-10 09:31Z 剩约 6h);compass CI 实测 42736341402 ceed84fc 01:31Z success(R522 head);nautilus-core main CI 42623919518 fcee3dad 13:15Z success;本地 HEAD=origin/main 零领先;mention5 全旧;genesis 持平 1/1/0/1/2 零 REPLY;dev.to 30 文 6+2=8 持平;daemon 绿+watchdog+哨兵 exit0 recall_hit=65;GATE0 PASS;管道三件 exit0 快筛全同(CS-515~517 opus=None/CS-518 25pp ✗③✓④✓⑤);矩阵 mtime=10-30 停摆维持。复诵三必核全过(49 条逐封/RED 全量 143 增量唯一 46448/CI 双仓实测/台账 R522 行在+R523 行 append 在)。
+- **候办主件全延续**:🔴distress ×21 人监门·a2a-x402#198 草稿审批(SLA 窗 09:31Z)·安全报告三选项·两函 400 拒·X 验证码 622026·PVR·矩阵/phase2 解锁·gaurav 转化包。
+
 ### R711 · 2026-11-09(值守 loop R522:实质增量轮——PR#516 CLOSED+PR#517 cherry-pick MERGED·二期产线资产入 master 三线同形·候办销账)
 
 - **🆕实质增量**:nautilus-core **PR#516**(二期产线资产同步 master·R519 首报 8 条 review)**11-09 21:22:24Z CLOSED 未 merge**,被替代件 **PR#517**(chore ops/ali_phase2 cherry-pick 到 master·对齐 main 三线同形)21:29:03Z **MERGED**——v5 侧产线处置通报类零 compass 行动;候办"PR#516 8条 review 候 v5 处置"**销账更新**(资产经 #517 入 master,review 意见随 #516 关闭归档)。
