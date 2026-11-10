@@ -3858,3 +3858,18 @@ R521 收官(实质增量轮,18:19 EST,commit 入主干)。
 
 **候用户**:🔴distress ×20 人监门(解除=人工删 .soul-pause)· a2a-x402#198 草稿审批(SLA 窗 11-10 09:31Z·剩约 12h,超窗前至少发确认性回帖)· PR#516 8 条 review 候 v5 · 安全报告三选项 · 两函 400 拒 · X 验证码 622026 · PVR · 矩阵/phase2 解锁 · gaurav 转化包。
 ---- round end 11-09 18:19 ----
+R521 值守轮收官(commit 73f9711e,本地领先 1 不代推，照 R517/R518 先例)。
+
+**本轮唯一实质增量：distress ×19→×20**(id45511,trace 202611100532=EST 16:32)——20 consecutive failures,**last cycle 由 selfimprove-engine-checks 轮换为 selfimprove-services-soul_self_audit**(failure 源轮换，熔断仍在保活通道，非恢复信号)；窗口 141→142 封，增量 awk 实测唯一此封。解除条件不变=人工删 .soul-pause,人监门候用户。
+
+**持平面全甄**：
+- 信箱 compass 0 未读；Gmail 401→R448 配方直刷 REFRESH_OK 3599s,57 条逐封 sender 全甄**零新面孔零新商务函**(+10 全为 codex-bot×31/Substack×9 等已知类回声)
+- a2a-x402#198 零新评论(仍 1 条 alanwang100 原件=R515 已甄件；草稿候审批 **SLA 窗 11-10 09:31Z 剩约 12h**,超窗前至少发确认性回帖)
+- notifications 38 条甄别：CI failed×3=11/4-11/6 历史红零今日新增，compass CI 实测 f42511a4 success;本地 HEAD=origin/main
+- genesis 1/1/0/1/2 零 REPLY;dev.to 6+2=8;daemon 绿 recall_hit=65+watchdog+哨兵 exit0;GATE0 PASS;管道三件 exit0 快筛全同(存在不过筛)；矩阵 mtime=10-30 停摆维持
+
+**留痕四件**(rounds.log/state.json round→521/COLLAB_BOARD/queue.md R710)pathspec 限定 commit,蒸馏线脏文件留工作区未裹挟。复诵三必核全过。
+
+**候用户**：🔴distress ×20 人监门 · a2a-x402#198 草稿审批(SLA 窗)· PR#516 8 条 review 候 v5 · 安全报告三选项 · 两函 400 拒 · X 验证码 622026 · PVR · 矩阵/phase2 解锁 · gaurav 转化包。
+---- round end 11-09 18:21 ----
+11-09 20:29 round522 nautilus-core PR#516 CLOSED未merge(21:22Z)+PR#517 cherry-pick产线资产21:29Z MERGED入master三线同形(候办销账)+其余持平(RED 142零新增/Gmail 62条全甄+5滑窗边缘营销回声/a2a#198零新评论/CI 4run全绿/GATE0 PASS/管道快筛全同/矩阵停摆维持)

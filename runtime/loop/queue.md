@@ -4,6 +4,12 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R711 · 2026-11-09(值守 loop R522:实质增量轮——PR#516 CLOSED+PR#517 cherry-pick MERGED·二期产线资产入 master 三线同形·候办销账)
+
+- **🆕实质增量**:nautilus-core **PR#516**(二期产线资产同步 master·R519 首报 8 条 review)**11-09 21:22:24Z CLOSED 未 merge**,被替代件 **PR#517**(chore ops/ali_phase2 cherry-pick 到 master·对齐 main 三线同形)21:29:03Z **MERGED**——v5 侧产线处置通报类零 compass 行动;候办"PR#516 8条 review 候 v5 处置"**销账更新**(资产经 #517 入 master,review 意见随 #516 关闭归档)。
+- **值守面持平**:信箱 compass 0 未读;platform RED 窗口 **142 封**(id 24318→45511·与 R521 持平零新增,最新仍 id45511 soul-distress ×20 人监门候用户);Gmail 401→R448 直刷 REFRESH_OK 3599s,**62 条**逐封 sender 全甄零新面孔零新商务函(+5 全为 7d 滑窗边缘 11-03 03:57-04:08Z 滑入的已甄营销回声·R521 后零新到信实测);a2a-x402#198 零新评论(草稿候用户 SLA 窗 11-10 09:31Z 剩约 6.5h);notifications R521(23:21Z)后零新增;compass CI 最新 4 run 全绿(42680228478 f42511a4 19:06Z success=R521 后新 run 同 sha 零新增红);本地 HEAD 73f9711e 领先 origin 1 commit=R521 留痕,本轮随 R522 一并推送;mention 5 全旧;genesis 持平 1/1/0/1/2 零 REPLY;dev.to 30 文 6+2=8 持平;daemon 绿+watchdog+哨兵 exit0 recall_hit=65;GATE0 PASS;管道三件 exit0 快筛全同(CS-515~517 opus=None/CS-518 25pp ✗③✓④✓⑤);矩阵 mtime=10-30 停摆维持。复诵三必核全过(62 条逐封/RED 全量 142 实测零新增/CI 4 run 实测/台账 R521 行在+R522 行 append 在)。
+- **候办主件**:🔴distress ×20 人监门候用户·a2a-x402#198 草稿审批(SLA 窗 11-10 09:31Z)·安全报告三选项·两函 400 拒·X 验证码 622026·PVR·矩阵/phase2 解锁·gaurav 转化包(PR#516 件已销账)。
+
 ### R710 · 2026-11-09(值守 loop R521:实质增量轮——distress ×19→×20·last cycle 轮换 selfimprove-services-soul_self_audit)
 
 - **🆕实质增量**:platform RED 窗口口径实测 **142 封**(id 24318→45511·较 R520 的 141 +1),唯一新函=**id45511 soul-distress ×19→×20**(trace 202611100532=EST 16:32·20 consecutive failures·last cycle 由 selfimprove-engine-checks 轮换为 **selfimprove-services-soul_self_audit**·熔断分层保活通道·解除=人工删 .soul-pause 人监门候用户)。查询口径注:本轮定位 `platform_mail.py check --to platform` 即历轮"RED 窗口"同源全量窗口。
