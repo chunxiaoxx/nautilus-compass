@@ -4,6 +4,15 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R714 · 2026-11-10(值守 loop R525:实质增量轮——Gmail 新面孔 AnyModelBot 营销冷邮件甄别 + COLLAB_BOARD 断更 32 轮坐实修复 + a2a#198 SLA 窗升级标注)
+
+- **🆕实质增量①甄别**:Gmail 401→R448 直刷 REFRESH_OK 3599s,**58 条**(较 R524 的 47 +11·增量全为 PR#518 merge 后 codex-bot 通知回声涌入 ×33)逐封 sender 全甄,零新商务函;**1 新面孔=Malachi Chen** (malachi@anymodel.bot) AnyModelBot 开源 AI 助手营销冷邮件(11-03 13:08Z·WeChat/Feishu 多模型网关推广·群发口吻零具体合作提议→判读:营销类零行动记台账)。
+- **🆕实质增量②修复**:COLLAB_BOARD 断更坐实恶化——尾行停 **R492**(11-07 02:34),R493-R524 共 **32 轮**未 append(11/7 R488 警报"断更 12 轮"后未修复反恶化);非轮次死亡(R520-R524 rounds.log/state.json/CI 全在),纯留痕缺口;本轮修复 append R525 行恢复更新链。
+- **🆕实质增量③升级标注**:a2a-x402#198 零新评论(1 条已知 alanwang100),**SLA 窗 11-10 09:31Z 将过期**(本轮 07:57Z 实测剩约 1.5h),草稿 docs/outreach/draft_a2ax402_198_reply_20261109.md 候用户硬闸不能自主发——候办升级标注候用户拍板;S0 池两仓 codesense-s0-pool 分支均 404 不存在(该线退役态)零行动。
+- **值守面持平**:信箱 compass 0 未读;platform RED 窗口 **144 封**与 R524 持平零新增(distress ×22 维持 id47186·22 consecutive failures·查询口径=check --to platform,本轮独立再定位与 R521 注记一致);notifications 全旧(PR#518 merge 后 author 通知 04:00:08Z+其余历史件);mention 5 全旧;genesis 持平 1/1/0/1/2 零 REPLY;dev.to 30 文 6+2=8 持平;CI 双仓全绿(compass 42765060072 R524 head success/core merge 后双 run 42753358084+42752975738 success);本地 HEAD=origin/main 零领先;daemon 绿 9876+watchdog+哨兵 exit0 recall_hit=22;GATE0 PASS;管道三件 exit0 快筛全同(CS-515~517 opus=None/CS-518 25pp ✗③✓④✓⑤);矩阵 mtime=10-30 停摆维持。复诵三必核全过(58 条逐封/RED 全量 144 无截断/矩阵 mtime 实核/COLLAB_BOARD 断更核查并修复)。
+- **工具坑两条留档**:①Gmail messages.list `fields=messageIds` 名无效(正确=不传 fields),400 错误被 `.get('messages',[])` 吞成假 0——本轮分层 sanity check 识破;②`while read` 循环内嵌 python 吞 stdin 致循环卡死——`xargs -P 8` 并发 curl 替代实测 58 封秒级全拉。
+- **候办主件全延续**:🔴distress ×22 人监门·a2a-x402#198 草稿审批(SLA 窗将过期·升级标注)·安全报告三选项·两函 400 拒·X 验证码 622026·PVR·矩阵/phase2 解锁·gaurav 转化包。
+
 ### R713 · 2026-11-10(值守 loop R524:实质增量轮——distress ×21→×22 + PR#518 MERGED 销账)
 
 - **🆕实质增量①**:platform RED 窗口口径实测 **144 封**(id 24318→47186·较 R523 的 143 +1),唯一新函=**id47186 soul-distress ×21→×22**(trace 202611101332=EST 00:32·22 consecutive failures·last cycle selfimprove-se 类(截断=se·较 ×21 engine 类轮换)·熔断分层保活通道·解除=人工删 .soul-pause 人监门候用户)。
