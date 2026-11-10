@@ -4,6 +4,15 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R715 · 2026-11-10(值守 loop R526:实质增量轮——CI 红甄别修复(Ubuntu 26.04 无 Python 3.9) + distress ×22→×23 + Gmail 端点坑再踩留档)
+
+- **🆕实质增量①CI 红甄别+修复**:compass CI **42780785907(=R525 head 09256b22·08:12:14Z) FAILURE**,失败 job=`S4 GEP minimum Python (3.9)`·step=`actions/setup-python@v5`——rerun 复现坐实持久;根因=**GitHub runner 镜像滚动升级 Ubuntu 26.04 不再提供 Python 3.9 x64 工具链**(`The version '3.9' was not found for Ubuntu 26.04`·setup 层失败非代码问题·R525 只改留痕文件);修复=`ci.yml` S4 job `runs-on: ubuntu-latest`→`ubuntu-24.04`(一行·保住"minimum Python 3.9"测试语义)随本轮 commit 推送观察转绿。
+- **🆕实质增量②**:platform RED 窗口口径实测 **145 封**(id 24318→47927·较 R525 的 144 +1),唯一新函=**id47927 soul-distress ×22→×23**(trace 202611101645=EST 03:45·熔断分层保活通道·解除=人工删 .soul-pause 人监门候用户)。
+- **工具坑留档**:Gmail REST 集合端点**无 `/list` 后缀**——`/threads/list` 把字面量 "list" 当 thread id → `400 Invalid id value`(R500 勘误坑再踩;正确=`/users/me/threads`,本轮首探 COUNT=0 假 0 被分层 sanity check 识破,改端点后 47 条秒回)。
+- **留痕勘误**:R525 声明的 COLLAB_BOARD "R525 行 append"实物**误落 runtime/ 旧路径副本且行格式异**(root 单源无 R525 行·两副本表格行数 root 13/runtime 7)——本轮 R526 行注记,不伪造 R525 行(R493 补录先例)。
+- **值守面持平**:信箱 compass 0 未读;Gmail 401→R448 直刷 REFRESH_OK 3599s,**47 条**逐封 sender 全甄零新面孔零新商务函(较 R525 58 条 -11 出窗·33 条 codex-bot 回声=PR#518 merge 后已知源);a2a-x402#198 零新评论(仍 1 条 alanwang100)——**SLA 窗 09:31Z 已过期**(约 +48min),草稿 docs/outreach/draft_a2ax402_198_reply_20261109.md 候用户硬闸不能自主发照实记;nautilus-core main CI 全绿(42753358084+42752975738);mention5 全旧;genesis 持平 1/1/0/1/2 零 REPLY;dev.to 30 文 6+2=8 持平;daemon 绿 9876+watchdog+哨兵 exit0 recall_hit=27;GATE0 PASS;管道三件 exit0 快筛全同(CS-513 过/CS-515~517 opus=None/CS-518 25pp ✗③✓④✓⑤);矩阵 mtime=10-30 停摆维持;S0 池两仓分支 404 退役态零行动。复诵三必核全过(47 条逐封/RED 全量 145 实测增量唯一 47927/CI rerun 实测/台账 root R524 行在+本轮 R526 行 append 在)。
+- **候办主件全延续**:🔴distress ×23 人监门·a2a-x402#198 草稿审批(SLA 窗已过期)·安全报告三选项·两函 400 拒·X 验证码 622026·PVR·矩阵/phase2 解锁·gaurav 转化包。
+
 ### R714 · 2026-11-10(值守 loop R525:实质增量轮——Gmail 新面孔 AnyModelBot 营销冷邮件甄别 + COLLAB_BOARD 断更 32 轮坐实修复 + a2a#198 SLA 窗升级标注)
 
 - **🆕实质增量①甄别**:Gmail 401→R448 直刷 REFRESH_OK 3599s,**58 条**(较 R524 的 47 +11·增量全为 PR#518 merge 后 codex-bot 通知回声涌入 ×33)逐封 sender 全甄,零新商务函;**1 新面孔=Malachi Chen** (malachi@anymodel.bot) AnyModelBot 开源 AI 助手营销冷邮件(11-03 13:08Z·WeChat/Feishu 多模型网关推广·群发口吻零具体合作提议→判读:营销类零行动记台账)。

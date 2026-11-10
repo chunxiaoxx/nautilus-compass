@@ -70,7 +70,9 @@ jobs:
 
   s4-gep-py39:
     name: S4 GEP minimum Python (3.9)
-    runs-on: ubuntu-latest
+    # 2026-11-10 R526: ubuntu-latest 已滚动到 26.04,不再提供 Python 3.9 x64 工具链
+    # (run 42780785907 实证);pin 24.04 保住 "minimum Python" 测试语义。
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-python@v5
