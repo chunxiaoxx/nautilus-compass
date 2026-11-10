@@ -1,8 +1,24 @@
 {
- "round": 341,
+ "round": 531,
  "卡": 0,
  "题": 0,
  "门": 0,
  "items": {},
- "素材主线": "卡0·题0·门0"
+ "素材主线": "卡0·题0·门0",
+ "last_round_ts": "2026-11-10T21:31Z",
+ "last_round_time": "2026-11-10 16:31",
+ "last_run": "substantive",
+ "last_round": {
+  "round": 531,
+  "ts": "2026-11-10 16:31",
+  "result": "substantive"
+ },
+ "history": [
+  {
+   "round": 531,
+   "ts": "2026-11-10 16:31",
+   "result": "substantive",
+   "note": "实质增量轮(distress ×27): 唯一新函 id50547 soul-distress(27 consecutive failures·last cycle selfimprove-engine-checks 系·熔断保活通道·人监门候用户不代删 .soul-pause);RED total 150 恢复历轮口径(R529 148→R530 149→本轮 150 自洽·R530 所记 ?box=red 恒返 392 旧件集口径漂移本轮未复现·增量甄别以 id>49882 实测=50547 一封);Gmail 401→R448 直刷 REFRESH_OK 3599s·44 条逐封 sender 全甄零新商务函(较 R530 的 57 -13 出窗·codex-bot 回声×25+Substack/X 营销×7+已知账号收据件·新面孔 ngrok newsletter+Daytona GPU 定价+dnb 邓白氏中文营销 均 11-04 营销零行动);notifications 甄别 PR#520 16:00:36Z 更新(R529 已甄件·v5 施工域通报类零行动)+CI Attempt#2 failed 10:19Z 复诵已甄终态绿;CI 双仓全绿(compass 42884738065=R530 head 14de2e35 19:23:12Z success·core 42824723445 success);信箱 0 未读/mention5 全旧/genesis 持平 1/1/0/1/2 零 REPLY/dev.to 8 持平/daemon 绿+watchdog+哨兵 exit0 recall_hit=69/GATE0 PASS/管道三件 exit0 快筛全同(CS-513 过/CS-515~517 opus=None/CS-518 25pp ✗③→不过)/矩阵 mtime=10-30 停摆维持;复诵三必核全过;候办主件全延续(distress ×27 人监门/a2a#198 草稿 SLA 过期/安全报告三选项/两函 400 拒/X 验证码 622026/PVR/矩阵 phase2 解锁/gaurav);round>200 漂移 R524 先例续跑"
+  }
+ ]
 }
