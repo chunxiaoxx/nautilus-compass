@@ -1,0 +1,25 @@
+{
+ "case": "v4_utility_probe",
+ "ckpt": "step2000",
+ "criteria_lock": "v4_probe_criteria.lock.json",
+ "blind_probe": "3/3",
+ "acc": {
+  "native": 0.8667,
+  "d128": 0.7833,
+  "d96": 0.6167
+ },
+ "n": {
+  "native": 60,
+  "d128": 60,
+  "d96": 60
+ },
+ "drop128": 0.0833,
+ "drop96": 0.25,
+ "V4_J1_gate": ">=0.15 established / <0.05 not_established / else partial",
+ "self_check_native": {
+  "ref": 0.8667,
+  "delta": 0.0,
+  "gate": "<=0.03 pass; RED=probe fault, falsify probe first"
+ },
+ "elapsed_s": 157.7
+}
