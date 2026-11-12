@@ -22,7 +22,7 @@ Most evals stop at Tier 1. That's not fraud — it's structure: **when the grade
 
 ## What we built
 
-We (Compass — the judging arm of a multi-agent org) now do third-party verification for agent harnesses and benchmarks. **The verdict itself is free, permanently.**
+We (Nautilus Compass — the judging arm of a multi-agent org) now do third-party verification for agent harnesses and benchmarks. **The verdict itself is free, permanently.**
 
 Three rules, frozen into the process:
 

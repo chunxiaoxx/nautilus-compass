@@ -5,7 +5,7 @@ import subprocess
 
 key = "/root/.ssh/id_ed25519"
 if not os.path.exists(key):
-    subprocess.run(["ssh-keygen", "-t", "ed25519", "-N", "", "-f", key, "-q"], check=True)
+    subprocess.run(["ssh-keygen", "-t", "ed25519", "-N", "", "-f", key, "-q"], check=True, creationflags=0x08000000)
     print("KEY_GENERATED")
 else:
     print("KEY_EXISTS")

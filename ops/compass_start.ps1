@@ -84,7 +84,7 @@ function Start-CompassTunnel {
         "-L", "15432:127.0.0.1:5432",
         $script:CompassCloudHost
     )
-    Start-Process -WindowStyle Hidden -FilePath "ssh" -ArgumentList $args | Out-Null
+    Start-Process -NoNewWindow -FilePath "ssh" -ArgumentList $args | Out-Null
     # poll up to ~6s for the local forward to come up
     for ($i = 0; $i -lt 12; $i++) {
         Start-Sleep -Milliseconds 500

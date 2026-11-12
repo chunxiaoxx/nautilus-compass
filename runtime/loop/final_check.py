@@ -86,7 +86,7 @@ RENDER_POINTS = [
 
 def curl(url: str, timeout: int = 20) -> tuple[int, str]:
     r = subprocess.run(["curl", "-s", "--max-time", str(timeout), "-w", "\n%{http_code}", url],
-                       capture_output=True, text=True, timeout=timeout + 10)
+                       capture_output=True, text=True, timeout=timeout + 10, creationflags=0x08000000)
     body, _, code = r.stdout.rpartition("\n")
     return int(code or 0), body
 

@@ -58,7 +58,7 @@ def _remote(payload: dict) -> dict:
            f"python3 -c \"import sys;exec(sys.argv[1])\" {_shq(_REMOTE_WRITE)}")
     proc = subprocess.run(["ssh", "-o", "ConnectTimeout=15", "-o", "BatchMode=yes", SSH_HOST, cmd],
                           input=json.dumps(payload), capture_output=True, text=True,
-                          encoding="utf-8", errors="replace", timeout=120)
+                          encoding="utf-8", errors="replace", timeout=120, creationflags=0x08000000)
     if proc.returncode != 0:
         sys.exit(f"[err] ssh/remote rc={proc.returncode}: {proc.stderr[:300]}")
     return json.loads(proc.stdout.strip().splitlines()[-1])

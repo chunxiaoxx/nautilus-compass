@@ -54,7 +54,7 @@ async def main():
         'textLen:(ev.clipboardData||{}).getData?ev.clipboardData.getData("text/plain").length:-1,'
         'htmlLen:(ev.clipboardData||{}).getData?ev.clipboardData.getData("text/html").length:-1})}, true)')
     subprocess.run(["powershell", "-NoProfile", "-Command",
-                    'Set-Clipboard -Value "PROBE_TXT_ABCDEF"'], capture_output=True)
+                    'Set-Clipboard -Value "PROBE_TXT_ABCDEF"'], capture_output=True, creationflags=0x08000000)
     await ev('var e=document.querySelector("[contenteditable=true]");if(e){e.focus();document.hasFocus()}')
     await asyncio.sleep(0.3)
     for t_ in ("keyDown", "keyUp"):

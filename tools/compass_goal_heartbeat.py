@@ -94,8 +94,9 @@ def ingest_obs(name: str, body: str) -> None:
         # 孙进程持管道,Windows 超时 kill 后 run 仍卡管道回收),bat 循环被冻结到次日。
         # obs 是尽力而为件,60s 不回即弃。
         subprocess.run(
-            ["python", r"C:\Users\chunx\.claude\plugins\nautilus-compass\mcp_server.py"],
-            input=stdin, capture_output=True, text=True, env=env, timeout=60)
+            [sys.executable, r"C:\Users\chunx\.claude\plugins\nautilus-compass\mcp_server.py"],
+            input=stdin, capture_output=True, text=True, env=env, timeout=60,
+            creationflags=0x08000000)
     except Exception:
         pass
 
@@ -107,7 +108,7 @@ def main() -> None:
         # 自愈:daemon 死了就拉起(ops/daemon_start_compass.bat:短路径 torch + 新版代码)
         try:
             bat = ROOT / "ops" / "daemon_start_compass.bat"
-            subprocess.Popen(["cmd", "/c", "start", "", "/min", str(bat)], shell=False)
+            subprocess.Popen(["cmd", "/c", "start", "", "/min", str(bat)], shell=False, creationflags=0x08000000)
             time.sleep(120)
             ok, secs, err = probe_recall()
         except Exception as heal_err:

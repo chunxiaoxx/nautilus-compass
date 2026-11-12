@@ -129,7 +129,7 @@ if not _hc_fresh and _spawn_ok:
                    f"CP={HUD_CACHE_P!r}\n"
                    "try:\n"
                    f"    p=subprocess.run(['node',{hud_bin!r}],input=raw,capture_output=True,"
-                   "text=True,encoding='utf-8',timeout=20)\n"
+                   "text=True,encoding='utf-8',timeout=20,creationflags=0x08000000)\n"
                    "    out=(p.stdout or '').strip()\n"
                    "    if out:\n"
                    "        try:cwd=json.loads(raw).get('cwd','')\n"

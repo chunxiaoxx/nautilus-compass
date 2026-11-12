@@ -50,7 +50,7 @@ async def main():
     await asyncio.sleep(0.5)
     subprocess.run(["powershell", "-NoProfile", "-Command",
                     'Set-Clipboard -Value "PLAINTEXT_PASTE_TEST_98765"'],
-                   capture_output=True)
+                   capture_output=True, creationflags=0x08000000)
     for t_ in ("keyDown", "keyUp"):
         await send("Input.dispatchKeyEvent",
                    {"type": t_, "key": "v", "code": "KeyV",

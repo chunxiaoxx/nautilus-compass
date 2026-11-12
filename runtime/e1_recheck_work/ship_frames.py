@@ -13,7 +13,7 @@ TARGETS = {"goldpack_frames.tgz": "634a3f7266942657", "ood_frames.tgz": "2a705d4
 
 def run(cmd: str, timeout=110):
     r = subprocess.run(["python", "scripts/remote.py", "exec", cmd],
-                       capture_output=True, text=True, timeout=timeout, encoding="utf-8", errors="replace")
+                       capture_output=True, text=True, timeout=timeout, encoding="utf-8", errors="replace", creationflags=0x08000000)
     return (r.stdout or "") + (r.stderr or "")
 
 
@@ -24,7 +24,7 @@ def main() -> int:
         remote_part = f"{REMOTE_DIR}/parts/{blk.name}"
         for attempt in range(4):
             r = subprocess.run(["python", "scripts/remote.py", "put", str(blk), remote_part],
-                               capture_output=True, text=True, timeout=110, encoding="utf-8", errors="replace")
+                               capture_output=True, text=True, timeout=110, encoding="utf-8", errors="replace", creationflags=0x08000000)
             out = (r.stdout or "") + (r.stderr or "")
             if "wc -c" in out or "[got]" in out or out.strip():
                 # 校验块大小

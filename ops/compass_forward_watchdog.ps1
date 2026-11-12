@@ -40,9 +40,9 @@ if (Test-Daemon) {
 } else {
     Write-Log '[daemon] DOWN · starting via daemon_start.sh'
     if (Test-Path $GitBash) {
-        Start-Process -FilePath $GitBash -ArgumentList @($DaemonStart) -WindowStyle Hidden
+        Start-Process -FilePath $GitBash -ArgumentList @($DaemonStart) -NoNewWindow
     } else {
-        Start-Process -FilePath 'bash' -ArgumentList @($DaemonStart) -WindowStyle Hidden
+        Start-Process -FilePath 'bash' -ArgumentList @($DaemonStart) -NoNewWindow
     }
     Start-Sleep -Seconds 20
     if (Test-Daemon) { Write-Log '[daemon] UP after start' } else { Write-Log '[daemon] STILL DOWN · needs manual check (BGE cold load may take longer)' }
@@ -103,8 +103,8 @@ Get-CimInstance Win32_Process -Filter "Name='ssh.exe'" -ErrorAction SilentlyCont
     Where-Object { $_.CommandLine -match '-R\s+9876:' } |
     ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }
 Start-Sleep -Seconds 2
-Start-Process -FilePath 'ssh' -WindowStyle Hidden -ArgumentList @(
-    '-fN', '-o', 'ServerAliveInterval=30', '-o', 'ServerAliveCountMax=3',
+Start-Process -FilePath 'ssh' -NoNewWindow -ArgumentList @(
+    '-N', '-o', 'ServerAliveInterval=30', '-o', 'ServerAliveCountMax=3',
     '-o', 'ExitOnForwardFailure=yes', '-L', '9877:127.0.0.1:9877', '-R', '9876:127.0.0.1:9876', 'cloud'
 )
 Start-Sleep -Seconds 3

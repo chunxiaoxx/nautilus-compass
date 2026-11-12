@@ -85,7 +85,7 @@ def main():
            "--strip-components=1 && "
            "ls /home/ubuntu/.claude/projects/orgfuel-corpus/memory | wc -l && "
            "rm /tmp/orgfuel.tgz")
-    subprocess.run(["ssh", "-o", "ConnectTimeout=15", "cloud", cmd], check=True)
+    subprocess.run(["ssh", "-o", "ConnectTimeout=15", "cloud", cmd], check=True, creationflags=0x08000000)
     print("[OK] deployed. daemon inotify will pick up; query with scope=user project=orgfuel-corpus")
 
 
