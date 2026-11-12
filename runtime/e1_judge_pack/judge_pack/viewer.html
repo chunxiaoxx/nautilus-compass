@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>E1 金标盲判 · 判官台</title>
+<style>
+  :root { --bg:#0f1115; --card:#1a1e26; --line:#2a3040; --txt:#e8eaf0; --dim:#8a93a6; --acc:#4f8cff; --warn:#e8b04a; }
+  * { box-sizing:border-box; margin:0; }
+  body { background:var(--bg); color:var(--txt); font:15px/1.5 system-ui,"Microsoft YaHei",sans-serif; }
+  .wrap { max-width:980px; margin:0 auto; padding:16px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px; margin-bottom:12px; }
+  .banner { background:#24304a; border:1px solid #3a4f7a; color:#bcd0ff; border-radius:8px; padding:8px 12px; margin-bottom:12px; font-size:13px; }
+  .row { display:flex; gap:12px; align-items:flex-start; flex-wrap:wrap; }
+  .qimg { max-width:640px; max-height:58vh; border:1px solid var(--line); border-radius:8px; display:block; }
+  .task { flex:1; min-width:280px; }
+  .task .zh { font-size:19px; font-weight:600; margin:4px 0; }
+  .task .en { color:var(--dim); font-size:13px; }
+  .badge { display:inline-block; background:#2a2438; color:#d3b8ff; border-radius:6px; padding:2px 10px; font-size:13px; margin:6px 6px 6px 0; }
+  .grp { margin:10px 0 4px; }
+  .grp .lab { color:var(--dim); font-size:13px; margin-bottom:4px; }
+  button { background:#222836; color:var(--txt); border:1px solid var(--line); border-radius:8px; padding:8px 14px; font-size:15px; cursor:pointer; margin:2px 4px 2px 0; }
+  button.on { background:var(--acc); border-color:var(--acc); color:#fff; }
+  button.dim2on { background:var(--warn); border-color:var(--warn); color:#1a1a00; }
+  .head { display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; }
+  .bar { height:6px; background:#222836; border-radius:3px; overflow:hidden; margin-top:8px; }
+  .bar>i { display:block; height:100%; background:var(--acc); width:0; }
+  .timer { font-size:22px; font-weight:700; min-width:64px; text-align:right; }
+  .timer.low { color:var(--warn); }
+  .hint { color:var(--dim); font-size:12px; margin-top:6px; }
+  input[type=text] { background:#222836; color:var(--txt); border:1px solid var(--line); border-radius:8px; padding:8px 12px; font-size:15px; width:220px; }
+  h1 { font-size:20px; margin-bottom:8px; }
+  .done { font-size:16px; }
+  .kv { color:var(--dim); font-size:13px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div id="start" class="card">
+  <h1>E1 金标盲判 · 判官台</h1>
+  <div class="banner">纪律:每题限时 60 秒(倒计时归零自动记「无法判断」并跳下一题);回答「无法判断」不计错;独立作答,不与他人讨论,不看任何臂标识。</div>
+  <p class="kv" id="meta"></p>
+  <p style="margin:10px 0">输入判官代号开始(三人各自独立,顺序互不相同):</p>
+  <input type="text" id="jname" placeholder="判官代号,如 J1" maxlength="12">
+  <button id="go">开始 / 继续</button>
+  <p class="hint" id="resume"></p>
+</div>
+
+<div id="quiz" style="display:none">
+  <div class="card">
+    <div class="head">
+      <div>题 <b id="qno">1</b> / <span id="qtotal"></span> <span class="kv" id="savedkv"></span></div>
+      <div class="timer" id="timer">60</div>
+    </div>
+    <div class="bar"><i id="pbar"></i></div>
+  </div>
+  <div class="card">
+    <div class="row">
+      <div><img id="qimg" class="qimg" alt="轨迹帧"></div>
+      <div class="task">
+        <span class="badge" id="prog"></span><span class="badge" id="qid"></span>
+        <div class="zh" id="tzh"></div>
+        <div class="en" id="ten"></div>
+        <div class="grp"><div class="lab">完成度(键 1/2/3)</div><span id="g1"></span></div>
+        <div class="grp"><div class="lab">执行质量(键 Q/W/E,无法判断不计错)</div><span id="g2"></span></div>
+        <div class="grp"><div class="lab">置信(键 A/S/D)</div><span id="g3"></span></div>
+        <div class="grp"><div class="lab">正问(键 Z/X)· <span id="qpos"></span></div><span id="g4"></span></div>
+        <div class="grp"><div class="lab">反问(键 C/V)· <span id="qneg"></span></div><span id="g5"></span></div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <button id="prev">← 上一题</button>
+    <button id="skip">跳过(记超时)</button>
+    <button id="next" style="background:var(--acc);border-color:var(--acc)">下一题(Enter) →</button>
+    <button id="finish">收卷导出 CSV</button>
+    <span class="kv" id="finishkv"></span>
+  </div>
+</div>
+
+<div id="final" class="card" style="display:none">
+  <h1>收卷</h1>
+  <p class="done" id="fdone"></p>
+  <button id="dl">下载 CSV(交回)</button>
+  <button id="back">返回继续作答</button>
+</div>
+
+</div>
+<script src="blind_data.js"></script>
+<script>
+const D1=["完成","部分","未动"], D2=["正常","异常","无法判断"], D3=["高","中","低"], YN=["是","否"];
+const S=window.GOLD_BLIND.samples, KEY="goldpack_v1_" ;
+let st=null, timer=null, t0=0, order=[];
+
+function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function hash(s){let h=2166136261;for(const c of s){h^=c.codePointAt(0);h=Math.imul(h,16777619)}return h>>>0}
+
+const $=id=>document.getElementById(id);
+function save(){localStorage.setItem(KEY+st.name,JSON.stringify(st))}
+function cur(){return order[st.i]}
+
+function render(){
+  const s=S[cur()], a=st.ans[s.id]||{};
+  $("qno").textContent=st.i+1; $("qtotal").textContent=S.length; $("qimg").src=s.frame;
+  $("prog").textContent="轨迹进度 "+s.progress_pct+"%"; $("qid").textContent=s.id;
+  $("tzh").textContent=s.task_zh; $("ten").textContent=s.task_en;
+  $("qpos").textContent=s.q_pos; $("qneg").textContent=s.q_neg;
+  grp($("g1"),D1,a.d1,"d1"); grp($("g2"),D2,a.d2,"d2",true); grp($("g3"),D3,a.d3,"d3");
+  grp($("g4"),YN,a.pos,"pos"); grp($("g5"),YN,a.neg,"neg");
+  $("pbar").style.width=(100*st.i/S.length)+"%";
+  $("savedkv").textContent=a.t? "·本题超时记法": (Object.keys(a).length?"·已作答":"");
+  clearInterval(timer); t0=Date.now(); let left=60;
+  const tick=()=>{ left=60-Math.floor((Date.now()-t0)/1000);
+    const el=$("timer"); el.textContent=Math.max(0,left); el.className="timer"+(left<=10?" low":"");
+    if(left<=0){ clearTimeout(); a.d2=a.d2||"无法判断"; a.d3=a.d3||"低"; a.t=true; st.ans[s.id]=a; save(); next(); } };
+  tick(); timer=setInterval(tick,500);
+}
+function clearTimeout(){clearInterval(timer)}
+function grp(el,opts,val,f,isD2){
+  el.innerHTML="";
+  opts.forEach(o=>{ const b=document.createElement("button");
+    b.textContent=o; if(val===o)b.className="on"+(isD2&&o==="无法判断"?" dim2on":"");
+    b.onclick=()=>{ const s=S[cur()], a=st.ans[s.id]||{}; a[f]=o; st.ans[s.id]=a; save(); render(); };
+    el.appendChild(b); });
+}
+function next(){ if(st.i<S.length-1){st.i++; save(); render()} else finish(); }
+function prev(){ if(st.i>0){st.i--; save(); render()} }
+function finAns(){ const s=S[cur()], a=st.ans[s.id]||{};
+  a.d2=a.d2||"无法判断"; a.d3=a.d3||"低"; a.t=a.t||false; st.ans[s.id]=a; save(); }
+
+function start(){
+  const name=$("jname").value.trim(); if(!name){alert("请输入判官代号");return}
+  const raw=localStorage.getItem(KEY+name);
+  st=raw? JSON.parse(raw) : {name,i:0,ans:{},ts:Date.now()};
+  order=[]; const idx=[...S.keys()];
+  const rng=mulberry(hash(name+"goldpack-20260926"));
+  while(idx.length)order.push(idx.splice(Math.floor(rng()*idx.length),1)[0]);
+  $("start").style.display="none"; $("quiz").style.display="block";
+  render();
+}
+function finish(){
+  clearTimeout(); finAns();
+  $("quiz").style.display="none"; $("final").style.display="block";
+  const n=Object.keys(st.ans).length;
+  $("fdone").textContent=`已作答 ${n}/${S.length} 题。点「下载 CSV」保存文件,把文件发给发起人即可。可先「返回继续作答」补题。`;
+}
+function csv(){
+  const rows=[["judge","id","dim1","dim2","dim3","pos","neg","timeout","ts"]];
+  for(const [id,a] of Object.entries(st.ans))
+    rows.push([st.name,id,a.d1||"",a.d2||"",a.d3||"",a.pos||"",a.neg||"",a.t?"1":"0",a.ts||""]);
+  const txt=rows.map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(",")).join("\r\n");
+  const blob=new Blob(["﻿"+txt],{type:"text/csv"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=`goldpack_${st.name}.csv`; a.click();
+}
+
+$("go").onclick=start; $("jname").addEventListener("keydown",e=>e.key==="Enter"&&start());
+$("next").onclick=()=>{finAns();next()}; $("prev").onclick=prev;
+$("skip").onclick=()=>{const s=S[cur()],a=st.ans[s.id]||{};a.d2=a.d2||"无法判断";a.d3=a.d3||"低";a.t=true;st.ans[s.id]=a;save();next()};
+$("finish").onclick=finish; $("dl").onclick=csv; $("back").onclick=()=>{$("final").style.display="none";$("quiz").style.display="block";render()};
+document.addEventListener("keydown",e=>{
+  if($("quiz").style.display==="none"||e.target.tagName==="INPUT")return;
+  const s=S[cur()], a=st.ans[s.id]||{}, k=e.key.toLowerCase();
+  const map={"1":["d1",0],"2":["d1",1],"3":["d1",2],"q":["d2",0],"w":["d2",1],"e":["d2",2],
+             "a":["d3",0],"s":["d3",1],"d":["d3",2],"z":["pos",0],"x":["pos",1],"c":["neg",0],"v":["neg",1]};
+  if(k==="enter"){finAns();next();return}
+  if(k==="arrowleft"){prev();return}
+  const m=map[k]; if(!m)return;
+  const vals=[D1,D2,D3,YN,YN][["d1","d2","d3","pos","neg"].indexOf(m[0])];
+  st.ans[s.id]={...a,[m[0]]:vals[m[1]]}; save(); render();
+});
+window.addEventListener("beforeunload",()=>{if(st)save()});
+$("meta").textContent=`样本 ${S.length} 条 · 模式 ${window.GOLD_BLIND.tag||"GOLD"} · 每题60秒 · 自动保存`;
+</script>
+</body>
+</html>
