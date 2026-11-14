@@ -16,7 +16,7 @@ jobs:
         with:
           fetch-depth: 0   # full history so changelog + tag are both readable
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
