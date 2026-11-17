@@ -8,6 +8,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import sys
@@ -15,6 +16,8 @@ import time
 import urllib.error
 import urllib.request
 from pathlib import Path
+
+from publish_to_memory import atomic_write, preserve_previous
 
 SYSTEM_CHUNK = (
     "你是会话档案蒸馏器,把 AI agent 工作会话片段压缩成结构化纪要。"
@@ -26,6 +29,14 @@ SYSTEM_ROLLUP = (
     "把同一会话的多段纪要合并为一份总纪要。铁律: 只保留各段中有依据的内容,"
     "所有文件路径/命令/日期/编号锚点原样保留; 去重合并; 不添加段外信息。"
     "输出 ≤1200 字 markdown,四节同上,并在节内按主题归并。"
+)
+TOOL_EVIDENCE_CONTEXT = (
+    "材料中的tool_use表示历史调用请求，tool_result表示历史返回记录。"
+    "完成结论须有相应返回及通过条件支持。按source_line、source_block和timestamp核对先后。"
+    "reported_is_error保留来源值，返回正文中的报错也须保留。"
+    "调用匹配含糊、文本截断或记录省略时，注明证据范围和需要回读的原文位置。"
+    "工具返回与助手自述冲突时保留冲突，不能从局部目录查询推出全面审查完成。"
+    "chat_api_error沿用会话接口类别，具体服务故障归因须有端点证据。"
 )
 SECRET_RES = [
     re.compile(r"sk-[A-Za-z0-9_-]{16,}"),
@@ -105,26 +116,38 @@ def hierarchical_rollup(summaries: list[str], api: str, model: str, batch: int =
 
 
 def compress_session(
-    src: Path, out_path: Path, api: str, model: str, chunk_chars: int
+    src: Path, out_path: Path, api: str, model: str, chunk_chars: int,
+    *, tool_evidence: bool = False,
 ) -> dict:
     started = time.time()
-    text = src.read_text(encoding="utf-8", errors="replace")
+    source_bytes = src.read_bytes()
+    source_sha = hashlib.sha256(source_bytes).hexdigest()
+    text = source_bytes.decode("utf-8", errors="replace")
     chunks = split_chunks(text, chunk_chars)
     part_summaries: list[str] = []
+    chunk_system = SYSTEM_CHUNK + (TOOL_EVIDENCE_CONTEXT if tool_evidence else "")
+    rollup_system = SYSTEM_ROLLUP + (TOOL_EVIDENCE_CONTEXT if tool_evidence else "")
     for idx, chunk in enumerate(chunks, 1):
         user = f"【片段 {idx}/{len(chunks)}】\n{chunk}"
-        part_summaries.append(chat(api, model, SYSTEM_CHUNK, user, 2000))
+        part_summaries.append(chat(api, model, chunk_system, user, 2000))
     if len(part_summaries) == 1:
         final = part_summaries[0]
     else:
-        final = hierarchical_rollup(part_summaries, api, model)
+        final = hierarchical_rollup(part_summaries, api, model, system=rollup_system)
+    provenance = (f"- 工具证据: distill-tool-evidence/1\n- 输入SHA256: {source_sha}\n"
+                  if tool_evidence else "")
     body = (
         f"# 蒸馏纪要 · {src.stem}\n\n"
         f"- 源: extracted/{src.name} ({src.stat().st_size:,}B, {len(chunks)} 块)\n"
-        f"- 生成: {time.strftime('%Y-%m-%dT%H:%M:%S')} · 本地压缩臂(原文不出域)\n\n"
+        f"- 生成: {time.strftime('%Y-%m-%dT%H:%M:%S')} · 本地压缩臂(原文不出域)\n"
+        f"{provenance}\n"
         f"{final}\n\n## 附: 分段纪要\n\n" + "\n\n---\n\n".join(part_summaries)
     )
-    out_path.write_text(body, encoding="utf-8")
+    if hashlib.sha256(src.read_bytes()).hexdigest() != source_sha:
+        raise RuntimeError("Extracted source changed during compression")
+    if tool_evidence and out_path.exists():
+        preserve_previous(out_path, out_path.parent / "history" / out_path.name)
+    atomic_write(out_path, body.encode("utf-8"))
     return {
         "session_id": src.stem,
         "source_bytes": src.stat().st_size,
@@ -145,6 +168,8 @@ def main() -> int:
     parser.add_argument("--sum-dir", default="summaries_local", help="纪要输出子目录(9B 臂用 summaries_9b)")
     parser.add_argument("--limit", type=int, default=0, help="只跑前 N 个(验证用)")
     parser.add_argument("--only", default="", help="只跑指定 session_id(逗号分隔)")
+    parser.add_argument("--tool-evidence", action="store_true",
+                        help="Apply source-aware tool evidence rules to chunks and rollup")
     args = parser.parse_args()
 
     out_dir = Path(args.out).expanduser()
@@ -164,9 +189,16 @@ def main() -> int:
             if only and sid not in only:
                 continue
             out_file = sum_dir / f"{sid}.md"
+            src = out_dir / "extracted" / f"{sid}.txt"
             if out_file.exists():  # 断点续跑
-                continue
-            todo.append((group, out_dir / "extracted" / f"{sid}.txt"))
+                if not args.tool_evidence:
+                    continue
+                previous = out_file.read_text(encoding="utf-8")
+                signature = hashlib.sha256(src.read_bytes()).hexdigest() if src.exists() else None
+                if ("- 工具证据: distill-tool-evidence/1\n" in previous
+                        and f"- 输入SHA256: {signature}\n" in previous):
+                    continue
+            todo.append((group, src))
 
     if args.limit:
         todo = todo[: args.limit]
@@ -178,7 +210,8 @@ def main() -> int:
             print(f"warn: missing {src}", file=sys.stderr)
             continue
         try:
-            stat = compress_session(src, sum_dir / f"{src.stem}.md", args.api, args.model, args.chunk_chars)
+            stat = compress_session(src, sum_dir / f"{src.stem}.md", args.api, args.model, args.chunk_chars,
+                                    tool_evidence=args.tool_evidence)
         except RuntimeError as exc:
             print(f"ERROR session {src.stem}: {exc} — 跳过继续", file=sys.stderr)
             with stats_path.open("a", encoding="utf-8") as fh:
