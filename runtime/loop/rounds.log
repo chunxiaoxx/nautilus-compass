@@ -4599,3 +4599,23 @@ R560 值守轮完成（实质增量轮）。
 **候用户拍板**（R559 三选项 + 本轮新三项合并为四项）：①**distill 写入侧**三选项（仅停 launchd / 停+落账+修完再开 / 保持停用）②**distill 召回侧**新方案 A(只堵召回)/B(只堵写入)/C(同时)③**未决前提**「~2000 个旧会话是否本应进正式库」④**共享插件边界**「daemon.py 属 nautilus-compass 共享插件·改动影响所有框·是否授权 compass 改」；另：distress ×82 人监门 / 通道配额 / 磁盘 96% 零清理 / a2a#198 草稿 / Reddit Ads 冷销售。
 
 ---- round end 11-17 15:12 ----
+---- round end 11-17 15:14 ----
+2026-11-17 17:35 round561 实质增量值守轮(🔴 distill 方案 A 离线预演出精确收益表 + 库内噪声口径修正 84.0%→86.7% + 召回损害复算 75.8% + distress ×82→×83 + distill 续写第 7 张)
+
+R561 值守轮完成（实质增量轮）。
+
+**本轮实质增量**：R560 把召回侧损害**量化**了，但没回答用户拍板时真正要问的那句——「改成方案 A 之后，召回窗口会变成什么样？」本轮补上**离线预演表**（零生产改动、零生产动作），并修正 R560 的库内口径。
+
+**动作与读数**
+- **🔴 方案 A 离线预演（决策信息，零生产改动）**：离线复刻 `recall.py:1443-1455` 两条闸（`session_` 前缀闸 + 30d 归档衰减闸）实算 → **hook 索引 494 条（主题 188 + distill 306，噪声 61.9%）→ 加 distill 闸后 188 条、噪声 0%**；**daemon 索引 1417 条（噪声 86.7%）→ 189 条、噪声 0%**。主题卡供给 188 ≥ top30 ⇒ **加闸后每个 top30 必然全为主题卡 = 结构性确定收益，不是估计**。自洽校验：R560 记 hook 索引 492（当时库 1416），本轮库 +2 ⇒ 494，**与复刻值完全对上**，证明复刻方法与 R560 同源可信。
+- **🔴 库内噪声占比口径修正**：库 1418 张逐张前缀/ frontmatter 实读 → `session_auto_*` 883 + `distill-*` 306 + **`session_*`（非 auto）40** + 纯主题 187 + 归档 1 + MEMORY.md 1 ⇒ **噪声 1229/1418 = 86.7%**（R560 的 84.0% 把 **40 张 `session_*` 流水卡误计入「主题卡」·低估 2.7pp**）。40 张中 38 张无 `drift:` 字段、2 张被 30d 归档衰减 drop。
+- **🔴 召回损害复算对拍（daemon 实时·同 8 查询×top30=240 位）**：R561 **182/240 = 75.8%** vs R560 183/240 = 76.2%。「distill 回填 旧会话 正式记忆库 污染」那条**唯一主题卡从第 22 位顶到第 1 位**——因为 **R560 自己写的量化卡进了库** ⇒ **「多写主题卡对冲污染」速率仅 1 位/轮 = 0.4pp/轮**，与污染增速（每 2h 灌 1 张）对不上 ⇒ **自助路径杯水车薪，解法只能是闸门（方案 A/B/C）**。
+- **🔴 distill 续写第 7 张（证伪后仍灌）**：`incremental_stats.jsonl` **353 行**（published **272** / review 78 / failed 1）；最新卡 `distill-bed43658-74f7-48d4-ab80-ad0bd29c7b1a`，源会话 mtime **2026-10-19 23:35:32 = 28.8 天前**；**published 中源会话 >7d 占比 272/272 = 100.0%**（272 张全部可定位，最老 8.2d）⇒ R559「freeze 被证伪」结论继续成立；库卡 1416 → **1418**。
+- **值守面**：RED `to=platform` 全量 216 → **217**（唯一增量 **id98784 soul-distress ×83**·trace `soul-distress-202611180519`·soul→platform 非 compass 零行动·解除=人工删 `.soul-pause` 人监门候用户不代删）·信箱 compass 0 未读 ·Gmail 401→直刷 REFRESH_OK 3599s→全量口径 7d **58→59 封 / 未读 32→33 封**（新到 1 封 `Joel @ ngrok`「Your coding agent can drive ngrok now」11-17 20:53Z=营销 newsletter·零商务函零新面孔）·**草稿实为 35 封**（R560 记 20 封=分页上限口径·最新仍 11-16 14:42Z「待审:GitHub 验证合作跟进」⇒ **零新草稿**·外发硬闸起草≠发送）·mentions 5 全旧 ·notifications 45 全旧 ·genesis 5 家(1/1/0/1/2)零 REPLY ·dev.to 30 文 6+2 全旧 ·a2a-x402#198 仍 1 条(alanwang100 11-09·草稿 SLA 过期候用户硬闸) ·CI compass **44167116497**(=R560 head 80ca7e8f) success ·core 43558665734 success ·本地 HEAD=origin/main=80ca7e8f 零领先 ·daemon 绿 9876 ·watchdog exit0 ·哨兵 exit0 **recall_hit=97** ·GATE0 PASS ·快筛 CS-513 过/CS-514~518 不过=历轮全同 ·管道三件 exit0 ·矩阵 mtime 仍停 10-30 09:42 ·S0 池两仓 codesense-s0-pool 分支 404 退役态 ·生产队列 bait 层 DONE compass 只读 ·磁盘数据卷 **97% avail 17Gi**（R560 15Gi +2Gi·≥10Gi alarm 线）。
+- **留痕缺口第 13 次坐实**：11-17 **15:14** 的 `---- round end ----` 标记无对应内容块（累计 7 个无块标记）。
+- **本轮零生产动作**：未 bootout / 未改 plist / 未改 `recall.py`·`daemon.py` / 未删未移任何记忆卡 / 未碰他线 4 个未提交文件（`extract_sample.py`/`publish_to_memory.py`/`p3_delta.py`/`fuel_intake.py` 保持 ` M`）/ 未代推他线提交 / 未裹挟他线 untracked 新件（`export_fuel_candidates.py` + 3 新测试）。
+- **产出** `docs/distill/DISTILL_SCHEME_A_PREVIEW_20261117.md`（方案 A 预演表 + 口径修正 + 复算方法 + 证据坐标）。
+
+**候用户拍板（四选项带数字）**：**A 只堵召回**（hook 494→188 / daemon 1417→189·噪声 0%·**但库内 86.7% 不变**·`daemon.py` 属 nautilus-compass 共享插件改动影响所有框·需授权）｜**B 只堵写入**（bootout launchd + 落账 4 文件·库内不再增）｜**C 同时**（A+B+清 1229 张存量 ⇒ 库内降到 13.3%·不可逆需授权）｜**未决前提**「~2000 旧会话是否本应进正式库」；另：distress ×83 人监门 / 通道配额 / 磁盘 97% 零清理 / a2a#198 草稿 / Gmail 35 封草稿审稿 / 矩阵 phase2 解锁 / Reddit Ads 冷销售。
+
+---- round end 11-17 17:35 ----
