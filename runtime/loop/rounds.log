@@ -4561,3 +4561,41 @@ R559 值守轮完成（实质增量轮）。
 - 其余持平：mentions 5 全旧 / notifications 45 全旧 / a2a-x402#198 仍 1 条 / genesis 零 REPLY / dev.to 6+2 全旧 / CI 44038011401 绿 / daemon 绿 + watchdog + 哨兵 exit0 recall_hit=85 / GATE0 PASS / 快筛 CS-508~518 历轮全同 / 管道三件 exit0 / 矩阵 10-30 停摆 / 磁盘 96% avail 19Gi（较 14Gi 回升 5Gi）。
 
 **产出**：`docs/distill/DISTILL_FREEZE_DISPROVEN_20261117.md`（证伪卡 + 最小刹车可逆命令 + 三选项 + 未决前提）。
+R559 值守轮完成（实质增量轮，已提交并推送 `0a1e6fd5`，origin/main 零领先）。
+
+**本轮实质增量**
+
+1. **OGE 需求函已办结** — id97205（platform→compass·沉默 24h·SLA 2h）→ 三行实况回函 **id97382** 发 platform（trace `oge-status-demand-compass-2026-11-18-done`，正文 2798B 复核在册）+ 原函 ack，compass 收件箱归零。
+2. **RED distress ×78→×81** — 全量 458 封实查（端点 `?from-agent=compass` 实测忽略该过滤，返回全库），`to_platform` 214 封（+3）：id94621/95306/96511，收件方 soul→platform，零 compass 行动。
+3. **Gmail 全量口径新到 6 封，零商务函** — 401→直刷 REFRESH_OK 3599s→7d 窗口 57 封/未读 31 封，逐封 `format=full` 实拉正文：PayPal 信用卡推广 / Daytona macOS sandbox / Reddit Ads（新域名 redditads.com）/ Google「与 Manus 共享账号数据」通知（11-17 21:10 自用账号登录·明示无需措施）/ ChatGPT $200 额度 / HTX 周边。
+4. **🔴 distill「freeze」被证伪** — 他线 `dd821259`（11-17 02:09:22）落地后 **10 小时内又发 5 张卡**进正式记忆库（04:14/06:16/08:18/10:21/12:23，间隔 ≈2h = launchd `StartInterval 7200`），源会话 mtime **全为 2026-10-19 23:40-23:45 EDT（28 天前）**。根因：线上 `collect_pending`（`incremental_distill.py:147-165`）排除条件仅 4 项 = **无时间下界**；`argparse` 实读**无 `--max-age` 类参数** = 无配置级刹车。量化：桶内 2043 会话/1958 个 >7d，**published 270 张 100% 来自 >7d 旧会话**，余量 ≈1688 张 ≈ **141 天**（12 张/天）。产出 `docs/distill/DISTILL_FREEZE_DISPROVEN_20261117.md`，含最小刹车 `launchctl bootout`/`bootstrap` 可逆命令 + 三选项 + **未决前提：~2000 个旧会话是否本应进正式库**。
+5. **留痕缺口第 3-6 次坐实** — rounds.log 有 5 个 round-end 标记（02:23/04:27/06:30/08:33/10:37）无内容块、state 未落该5 轮 = **4 轮 429 零留痕**（与11-16 同源，间歇性）。
+
+**本轮零生产动作**：未 bootout/未改 plist/未碰他线 4 个未提交文件（`extract_sample.py`/`publish_to_memory.py`/`p3_delta.py`/`fuel_intake.py` 保持 ` M`）、未代推他线提交。
+
+**持平面**：mentions 5 全旧 / notifications 45 全旧 / a2a-x402#198 仍 1 条 / genesis 零 REPLY / dev.to 6+2 / CI 44038011401 绿 / daemon+watchdog+哨兵 exit0 recall_hit=85 / GATE0 PASS / 快筛 CS-508~518 历轮全同 / 管道三件 exit0 / 矩阵仍停 10-30 09:42 / 磁盘 96% avail 19Gi（较 14Gi 回升 5Gi）。
+
+**候用户拍板**：①distill 收口三选项（含未决前提）②通道配额 ③distress ×81 人监门 ④磁盘零清理 ⑤a2a#198 草稿硬闸 ⑥矩阵 phase2 解锁 ⑦Reddit Ads 冷销售是否接。
+---- round end 11-17 12:44 ----
+2026-11-17 15:12 round560 实质增量值守轮(🔴 distill 污染的**召回侧**损害首次量化·distress ×81→×82 + Gmail 全量口径 +1 封零商务函)
+
+R560 值守轮完成（实质增量轮）。
+
+**本轮实质增量**：🔴 **第一次量化「distill 回填已经造成的召回损害」**——前三轮(R557/R558/R559)证的都是**写入侧**（旧会话仍在灌入正式库），本轮补上**当下**账：污染已不是「将来会发生的风险」，而是**此刻正在发生的召回质量损失**。
+
+**动作与读数**
+- **🔴 召回侧损害实测（新，核心增量）**：daemon(MCP recall 实际服务路径·token 鉴权直连 127.0.0.1:9876)8 条日常查询 × top30 = 240 候选位 → **噪声 76.2%**(curated 57 / distill-* 79 / session_auto_* 104)。最尖锐一条「distill 回填 旧会话 正式记忆库 污染」→ **top30 里 29 张噪声、唯一主题卡被压到第 22 位**。
+- **库内构成**（`~/.claude/projects/-Users-chunxiao-wang-Projects-nautilus-compass/memory/`，1415 .md 不含 MEMORY.md）：`session_auto_*` **883**(62.4%)+ `distill-*` **305**(21.6%)+ 主题卡 **227**(16.0%)⇒ **噪声合计 84.0%**；distill 卡 description **99.7%(304/305) 是模板句**「蒸馏纪要 <id> 蒸馏纪要 · <uuid>」；**305 张全部未经语义复核**（244 张标 `semantic_status: unreviewed_j1_only`，61 张 11-05 旧格式无该字段）。
+- **两条路径闸门覆盖不一样（根因，实测代码坐标）**：hook 路径 `recall.py:1447` 闸只拦 `session_` 前缀 ⇒ **distill-* 全量绕过**；daemon 路径 `~/.claude/plugins/nautilus-compass/daemon.py:1044-1049` `get_memory_entries` **无任何前缀闸**（只 skip MEMORY.MD/INDEX.MD）⇒ 两类噪声全进索引。复刻 recall.py 闸实算：921 张被 `session_` 闸 drop、2 张被 30d 衰减 drop ⇒ hook 索引 **492 条 = 主题卡 187 + distill 卡 305（噪声 62.0%）**，与 hook 自报 `entries 492` 一致。
+- **产出** `docs/distill/RECALL_NOISE_QUANTIFIED_20261117.md`（损害量化 + 三方案 A/B/C + 未应用补丁 + 取数方法 + 复算坐标）。
+- **RED 全量 216 封**（to_platform）实查：id>96511 增量 = **97382**（我方 R559 OGE 回函）+ **97729** soul-distress **×82**（trace `soul-distress-202611180216`·收件方 soul→platform·零 compass 行动·解除=人工删 .soul-pause 人监门候用户不代删）。
+- **Gmail** 401 → 直刷 REFRESH_OK 3599s → 全量口径 7d 窗口 **58 封/未读 32 封**（较 R559 的 57/31 各 +1）→ 新到 **1 封**：`Sentry Newsletter <learn@sentry.io>`「The Misprint Monthly」（11-17 19:19Z·无 text/plain 正文·营销 newsletter）→ **零商务函零新面孔**。
+- **🔴 distill 续写第 6 张（证伪后仍在灌）**：`incremental_stats.jsonl` 352 行（published **271**/review 78/failed 1），**published 中源会话 >7d 占比 271/271 = 100%**；新卡 `distill-ff4cfbca`（14:25·源会话 mtime **2026-10-19** = 28 天前）⇒ R559「freeze 被证伪」结论继续成立。库卡 1416。
+- **留痕缺口第 7-12 次坐实**：11-17 已有 **6 个** `---- round end ----` 标记无内容块（**00:15**/02:23/04:27/06:30/08:33/10:37）——比 R559 记的 5 个多 **00:15**（R558 已单独记过该次），本轮统一口径复核坐实。
+- 其余持平：信箱 compass 0 未读 + mentions 5 全旧 + notifications 45 全旧 + genesis 5 家(1/1/0/1/2) 零 REPLY + dev.to 30 文 6+2 全旧 + a2a-x402#198 仍 1 条(alanwang100 11-09·草稿 SLA 过期候用户硬闸) + CI 双仓全绿(compass **44140182399**=R559 head 0a1e6fd5 success·core 43558665734 success) + 本地 HEAD=origin/main 零领先 + daemon 绿 9876 + watchdog exit0 + 哨兵 exit0 **recall_hit=92** + **GATE0 PASS** + 快筛 CS-508~518 历轮全同(CS-513 过) + 管道三件 exit0 + 矩阵 mtime 仍停 10-30 09:42 + 磁盘数据卷 **96% avail 20Gi**（较 R559 的 19Gi +1Gi·仍 ≥10Gi alarm 线）。
+
+**本轮零生产动作**：未 bootout/未改 plist/未改 recall.py/daemon.py/未删未移任何记忆卡/未碰他线 4 个未提交文件(`extract_sample.py`/`publish_to_memory.py`/`p3_delta.py`/`fuel_intake.py` 保持 ` M`)/未代推他线提交/未提交他线 untracked 新件(`export_fuel_candidates.py` + 3 新测试)——按 R556/R557 先例不裹挟落账。
+
+**候用户拍板**（R559 三选项 + 本轮新三项合并为四项）：①**distill 写入侧**三选项（仅停 launchd / 停+落账+修完再开 / 保持停用）②**distill 召回侧**新方案 A(只堵召回)/B(只堵写入)/C(同时)③**未决前提**「~2000 个旧会话是否本应进正式库」④**共享插件边界**「daemon.py 属 nautilus-compass 共享插件·改动影响所有框·是否授权 compass 改」；另：distress ×82 人监门 / 通道配额 / 磁盘 96% 零清理 / a2a#198 草稿 / Reddit Ads 冷销售。
+
+---- round end 11-17 15:12 ----
