@@ -4498,3 +4498,21 @@ R557 值守轮完成（实质增量轮）。
 **候用户拍板**：①distress ×77 删 `.soul-pause` ②通道配额（不擅自升级/改凭据）③磁盘 97% 掉速趋势零清理 ④a2a#198 草稿审批 ⑤安全报告三选项 ⑥两函 400 拒 ⑦X 验证码 ⑧PVR ⑨阿里矩阵 phase2 解锁 ⑩gaurav 转化包 ⑪Reddit Ads 冷销售是否接 ⑫Gmail 20 封草稿审稿（最新 MemOS #2440/#2534 跟进件） ⑬他线蒸馏施工件落账裁定。
 
 ---- round end 11-16 22:01 ----
+
+2026-11-16 22:30 round557 追记 🔴 distill 线上链路审计——工作区未提交代码**已在生产跑**（launchd 每 2h 执行工作区文件）+ 待处理队列 1085 全为 >7d 旧会话
+
+R557 追记（审查结论落地，产出独立卡 `docs/distill/DISTILL_LIVE_BACKFILL_RISK_20261116.md`）。
+
+**核心事实[实测]**：`com.nautilus.distill-incremental` launchd 任务**已加载**，ProgramArguments 直接执行**工作区未提交**的 `tools/distill_pilot/incremental_distill.py`（`--max-sessions 1`，StartInterval 7200，plist mtime 11-16 11:12，launchctl 显示上次退出码 0）→ 其产出落在**正式记忆库** `~/.claude/projects/-Users-chunxiao-wang-Projects-nautilus-compass/memory`（**1409 张卡，24h 内新增 25 张**，recall 侧已可见）。即：distill_pilot 那批 11/8-10 未提交改动**已在线上生效**，不是待评审死代码。
+
+**阻断级 4 条**：
+- **B1[实测]** 真实待处理队列 **1085 个，100% 是 >7d 旧会话**（10-18 21:43 → 11-09 12:46）。关键坑：`select_pending()` 在**打印计数之前**就 `pending[:args.max_sessions]`（`incremental_distill.py:325-326`），故线上日志那句「新增或待发布版本 1」**不是队列长度**——照日志读会误判"无积压"。排序 newest-first ⇒ 每 2h 放行 1 个最旧待处理之外的最新件 ⇒ **12 卡/天 × 约 90 天**把历史会话逐批写进正式记忆库，且这批历史会话**从未语义复核**。
+- **B2[实测]** `publish_to_memory.py:56-96` 的 `validate_review()` 实现完整（含源文件哈希校验），**但线上路径从不传 `--review-file`**（`incremental_distill.py:186-191`），且全仓**除测试外无任何 review receipt 生产者** ⇒ 复核分支不可达 ⇒ `source_sha256` 只被记录不被校验 ⇒ 已发布卡证据链为调用方自述。
+- **B3[实测+他测]** `p3_delta.py:105` 去重只按 `content_hash`，与 `export_fuel_candidates.py` 的修订语义（`candidate_revision_sha256`/`supersedes`）断链；被拒件不再写指纹却从不 absorb ⇒ 同一被拒件**每轮重计**（沙箱连跑 3 次每次 `"rejected":1`，inbox 恒留、指纹账恒空）。
+- **B4[他测]** `p3_delta.py` 无 argparse ⇒ `--help` **真的执行收集器**（新建未跟踪空目录 + 重写 `accepted_hashes.json`）。**[实测] repo 未被污染**：`git status --porcelain runtime/verdict_corpus` 空、指纹账与 HEAD 逐字节相同（1494 条）。
+
+**非阻断[实测]**：时间戳改 UTC 是**修 bug**（本机 TZ=EST，旧 `+08:00` 是硬写 +08:00 的 13 小时谎报；全仓无人解析该字段）；`extract_sample.py:120-129` 三处静默 `continue` 无计数（丢件不可见）；`compress_session` 空源 IndexError（HEAD 已有）；`publish_one` 无调用方（兼容壳）。
+
+**本轮零动作声明**：停/改 launchd 属他线生产状态变更，按红线与「候用户拍板」纪律**本轮未停任何任务、未改任何生产配置**；候选四选项（①保持现状 ②仅停 launchd ③停+落账+修完再开 ④落账但任务保持停用）连代价写入审计卡待用户裁定。未提交改动按 R556 先例**不裹挟落账**（3 新测试实测 37 passed）。
+
+**复诵三必核**：队列 1085 亲自取数（非照抄代理口径）· 线上 plist/launchctl/记忆库三处实物核对 · repo 污染点复查为空。
