@@ -55,7 +55,7 @@
   ],
   "next_action": {
     "owner": "compass",
-    "action": "Review a bounded batch from the hash-bound queue with an independent reviewer, then re-enable distill from a fixed committed release.",
+    "action": "Obtain a second independent reviewer channel or explicit relay authorization, then review the same five held candidates; do not publish on local 9B self-review.",
     "required_fields": [
       "source_sha256",
       "summary_sha256",
@@ -75,5 +75,11 @@
       "missing_artifact": 0,
       "source_reviewed_scoped": 1
     }
+  },
+  "review_batch_attempt": {
+    "path": "runtime/cross-dialog-receipts/20261118-review-batch-1.json",
+    "sha256": "b079c2bfc343f6d9b34e25eb67999702bd79b1f74d221da379d87263322f30dd",
+    "status": "hold_all",
+    "reason": "glm-5.3 HTTP503; relay credential absent; mechanical anchor checks only"
   }
 }

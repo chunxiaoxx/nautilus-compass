@@ -1,0 +1,90 @@
+{
+  "schema": "distill-review-batch-attempt/1",
+  "generated_at_utc": "2026-11-18T15:51:31.548063+00:00",
+  "batch_size": 5,
+  "candidate_ids": [
+    "01769e9f-6627-4320-8477-94201950324d",
+    "024ffe20-57df-4662-ac00-95503534b06f",
+    "02e3f72c-1ed3-4404-9752-d663b46e1da8",
+    "03612a3e-4bad-417c-a17f-daad3f979a0a",
+    "03bba014-f9e9-4359-a427-877ca2c5c228"
+  ],
+  "channel_attempts": [
+    {
+      "reviewer": "glm-5.3 via COMPASS_WRITER_KEY",
+      "status": "failed",
+      "http_status": 503,
+      "error_class": "provider_unavailable"
+    },
+    {
+      "reviewer": "gpt-6-astra relay",
+      "status": "not_attempted",
+      "reason": "RELAY_API_KEY not present in current environment"
+    }
+  ],
+  "mechanical_checks": [
+    {
+      "session_id": "01769e9f-6627-4320-8477-94201950324d",
+      "j1": 1.0,
+      "source_sha256": "f776be88dda521e4ebd6077ea6369de27847b58f64019ba91a6f125baa650b62",
+      "summary_sha256": "a11d2b0854a41be93ae1130c60d6d4d6ffe9f6ecb7e67ed12632892b53d4e856",
+      "anchors_sha256": "9f2abc6e8bb0893aeca81e91a6ffa64ac8c9a2fc23360734ad01637b19b6f9ad",
+      "anchor_count": 8,
+      "anchors_covered": 7,
+      "anchor_recall": 0.875,
+      "semantic_decision": "hold",
+      "reason": "independent reviewer unavailable"
+    },
+    {
+      "session_id": "024ffe20-57df-4662-ac00-95503534b06f",
+      "j1": 1.0,
+      "source_sha256": "8f570051c259434ba749b8d1d4582aa28f35d5ca4a5642ea30ce51da2fe82de8",
+      "summary_sha256": "4fa069a65dfeafed744e80a1f69ece8e4f766f74b13efcfbb36f20ab15f87258",
+      "anchors_sha256": "085e6af08b9327c20a03a5411fc302b89e38c98b7de0a230c5676717a9f7e902",
+      "anchor_count": 9,
+      "anchors_covered": 0,
+      "anchor_recall": 0.0,
+      "semantic_decision": "hold",
+      "reason": "independent reviewer unavailable"
+    },
+    {
+      "session_id": "02e3f72c-1ed3-4404-9752-d663b46e1da8",
+      "j1": 0.7142857142857143,
+      "source_sha256": "b07dbd94edbb593a67510b44d8c60a3f43c5189f79268b657d857f50de82e6b6",
+      "summary_sha256": "38e603db628ce1b2001b97c352d0dab594ad4ce00f74ace9e42c847ce8b4ddc2",
+      "anchors_sha256": "f39a418bad47ff70c5dd662225dbf883f5860281922887126e9cd180571da79d",
+      "anchor_count": 22,
+      "anchors_covered": 3,
+      "anchor_recall": 0.1364,
+      "semantic_decision": "hold",
+      "reason": "independent reviewer unavailable"
+    },
+    {
+      "session_id": "03612a3e-4bad-417c-a17f-daad3f979a0a",
+      "j1": 0.7777777777777778,
+      "source_sha256": "4f48f515d69c5dd9aefd61e85fcef70a309cb0170c2e8606b1c481ffbfe2e344",
+      "summary_sha256": "4d35ae580efc9a4b6382fe7ff10c8b3e0648b896cd8b300aeb73b3c4102032d5",
+      "anchors_sha256": "312a30af7b3ea6bc09ef5b7289e8ff66b91c8f9d19c3fe0bfdf9cc0134982cdc",
+      "anchor_count": 60,
+      "anchors_covered": 2,
+      "anchor_recall": 0.0333,
+      "semantic_decision": "hold",
+      "reason": "independent reviewer unavailable"
+    },
+    {
+      "session_id": "03bba014-f9e9-4359-a427-877ca2c5c228",
+      "j1": 0.8181818181818182,
+      "source_sha256": "4ff71004db875fcdfcfc3b00d3e385615a064e5130b14059db45ffdf48182d01",
+      "summary_sha256": "88f2d2b7999fb93e21cfd0e85049b9358dbfe5f1cb0ea62e26d1bf3b7eb3b637",
+      "anchors_sha256": "3ba91f73961309e3fae673db6f6a8fcf53982b7cf7b8a4263fae61a4806dcc02",
+      "anchor_count": 57,
+      "anchors_covered": 4,
+      "anchor_recall": 0.0702,
+      "semantic_decision": "hold",
+      "reason": "independent reviewer unavailable"
+    }
+  ],
+  "promotion": "hold_all",
+  "published": false,
+  "policy": "A local compression model cannot independently review its own summaries."
+}
