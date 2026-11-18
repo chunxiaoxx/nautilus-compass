@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import fcntl
 import hashlib
 import json
 import os
@@ -220,7 +221,6 @@ def main(argv: list[str] | None = None) -> int:
                         help="Comma-separated reviewers: minimax-m3,kimi-k3-256k")
     args = parser.parse_args(argv)
     rows = load_rows(args.queue)
-    selected = rows[args.offset: args.offset + args.limit if args.limit else None]
     seen = set()
     if args.out.exists():
         for line in args.out.read_text(encoding="utf-8", errors="replace").splitlines():
@@ -228,24 +228,35 @@ def main(argv: list[str] | None = None) -> int:
                 seen.add(json.loads(line)["session_id"])
             except (json.JSONDecodeError, KeyError):
                 continue
+    pending = [row for row in rows if row["session_id"] not in seen]
+    selected = pending[args.offset: args.offset + args.limit if args.limit else None]
     args.out.parent.mkdir(parents=True, exist_ok=True)
+    lock_path = args.out.with_suffix(args.out.suffix + ".lock")
+    lock = lock_path.open("a")
+    try:
+        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError:
+        print(json.dumps({"status": "busy", "out": str(args.out)}, ensure_ascii=False))
+        return 75
     processed = 0
     reviewers = tuple(name.strip() for name in args.reviewers.split(",") if name.strip())
     allowed = {"minimax-m3", "kimi-k3-256k"}
     if not reviewers or any(name not in allowed for name in reviewers):
         parser.error("--reviewers must use minimax-m3 and/or kimi-k3-256k")
-    with args.out.open("a", encoding="utf-8") as handle:
-        for row in selected:
-            if row["session_id"] in seen:
-                continue
-            result = review_one(row, reviewers)
-            handle.write(json.dumps(result, ensure_ascii=False) + "\n")
-            handle.flush()
-            processed += 1
-            print(json.dumps({"session_id": row["session_id"], "status": result["status"],
-                              "anchor_recall": result.get("anchor_recall")}, ensure_ascii=False), flush=True)
-            if args.sleep_seconds > 0:
-                time.sleep(args.sleep_seconds)
+    try:
+        with args.out.open("a", encoding="utf-8") as handle:
+            for row in selected:
+                result = review_one(row, reviewers)
+                handle.write(json.dumps(result, ensure_ascii=False) + "\n")
+                handle.flush()
+                processed += 1
+                print(json.dumps({"session_id": row["session_id"], "status": result["status"],
+                                  "anchor_recall": result.get("anchor_recall")}, ensure_ascii=False), flush=True)
+                if args.sleep_seconds > 0:
+                    time.sleep(args.sleep_seconds)
+    finally:
+        fcntl.flock(lock, fcntl.LOCK_UN)
+        lock.close()
     print(json.dumps({"selected": len(selected), "processed": processed,
                       "out": str(args.out)}, ensure_ascii=False))
     return 0
