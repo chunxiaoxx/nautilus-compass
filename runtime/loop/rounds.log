@@ -4917,3 +4917,43 @@ R564 的 A 方案前提需修正：hub 里 bge-m3 本身就是 symlink（A 实�
   【本轮零生产动作】未改 launchd plist/未改插件 daemon.py/未改任何 symlink/未 bootout distill/未删未移记忆卡/未碰 NAS/未回帖未开 issue 未发邮件/未碰他线 5 个未提交文件(保持 M)/未代推他线提交/未裹挟他线 untracked 新件
   【候拍板】①两起关闭事件是否换渠道跟进(建议默认不追·对方已收尾+零回复)②fallback 地雷修法 B(一行 env·零代码·R565 已实证)③distill 方案 A/B/C(含未决前提「~2000 旧会话是否本应进正式库」)④distress ×87 人监门(人工删 .soul-pause·不代删)⑤磁盘 97% avail 16Gi 零清理·NAS 侧 NFS 读阻塞根因(框外)·nas-work2 建议 unmount·v5 框 MLX 同类雷⑥a2a#198 草稿·Gmail 35 封草稿审稿·模真真三诉求·矩阵 phase2 解锁·py-spy 仍缺
 ---- round end 11-18 05:05 ----
+CI 绿。R566 收尾完成。
+
+## R566 值守轮完成（实质增量轮）
+
+**🔴 本轮核心发现：我方两处外联件被对方关闭**（同 20 分钟窗内）
+
+| 事件 | 实测读数 |
+|---|---|
+| `alibaba/page-agent#770`（我方 11-08 开出的合作邀请，11-11 已澄清「非 bounty task」） | **2026-11-18T07:28:53Z 被 gaomeng1900(Simon) 以 `not_planned` 关闭**，关闭事件无 body、评论数=1（仅我方帖）=**对方零回复直接关闭** |
+| HF `challenge-2026/challenge_data` discussion #2（我方 10-05 的独立数据-QC 五维读数+预注册判据） | **2026-11-18T07:48:38Z 被 PrimeBot（该 dataset owner）status-change closed**，对方回复 0 条 |
+
+归属核验[实测]：我方 HF 组织 = `nautilus-compass`，`challenge-2026` 是数据集 owner 账号（`PrimeBot.isOwner=true`）⇒ **非我方 bot 动作**。
+
+**同型性登记刻意谨慎[推断]**：两起共同特征=对方均未留任何回复内容，但**分属不同平台/不同对象，无共因证据** ⇒ 不断言「我方账号被限流/被判推广」；只有再现第 3 起同型才具统计意义。
+
+**处置**：对方收尾关闭类 ⇒ 记台账不动（沿 R466 `Th0rgal/orb#1074` + R587 `clawhub#3787` 先例），**本轮零外发**（未回帖/未重开/未发邮件）。
+
+**两条工具坑留档**
+- 🔴 Gmail `after:` 必须用**秒**，用毫秒会静默返回 0 条（假零，连 error 字段都没有）——与 R500/R506 同族，任何空结果必须第二口径复算才可判零
+- `gh api repos/<org>/<repo>` org/repo 顺序写反 → 404，误判「仓库已删」
+
+**值守面**：RED to=platform 220→**221**（唯一新函 id103051 soul-distress ×87，soul→platform 非 compass 零行动）· 信箱 compass 0 未读 · Gmail 7d 53 封/未读 32/草稿 35 零新（新到 2 封均为本次关闭事件的通知回声，**零新商务函**）· notifications 45→46 · mentions 5 全旧 · genesis 零 REPLY · dev.to 8 全旧 · daemon 绿 9876 · watchdog exit0 · 哨兵 exit0 recall_hit=34 · GATE0 PASS · 快筛仅 CS-513 过（历轮全同）· 管道三件 exit0 · 矩阵仍停 10-30 09:42 · 记忆库 1426 张（噪声 86.6%）· distill published 278，**278/278 源会话 >7d** ⇒ R559「freeze 被证伪」继续成立 · **磁盘 avail 16Gi（R565 13Gi → +3Gi 回升）**
+
+**产出**：`docs/incidents/INC_20261118_EXTERNAL_OUTREACH_CLOSED_R566.md` + 台账追记 2 条 · commit `66d0470d` 已推 origin/main，**CI 44279781204 success**。
+
+**候你拍板**：① 两起关闭事件是否换渠道跟进（建议默认不追）② fallback 地雷修法 B（一行 env·零代码·R565 已实证）③ distill 方案 A/B/C ④ distress ×87 人监门 ⑤ 磁盘 97% avail 16Gi 零清理 + NAS 侧 NFS 根因（框外）⑥ a2a#198 草稿 / Gmail 35 封草稿审稿 / 模真真三诉求 / 矩阵 phase2 / py-spy 仍缺
+---- round end 11-18 04:54 ----
+API Error: Request rejected (429) · 已达到 Token Plan 用量上限：请升级 Token Plan 套餐或购买积分补充用量。 (2056)
+---- round end 11-18 06:57 ----
+
+2026-11-18 09:06 round567 实质增量轮·召回侧损害同口径复算(90.0%)+ dev.to 应答深核坐实(已答双答) + RED distress ×88
+  【召回·同口径复算】用 R560 原 query「distill 回填 旧会话 正式记忆库 污染」top30 逐张点数(避免口径漂移):噪声 27/30=90.0%(distill-* 空纪要 25 + session_auto 2)·主题卡 3 张占第 1/2/23 位(R560 同 query 29/30=96.7% 唯一主题卡被压到第 22 位·R561 已顶到第 1 位)⇒ 主题卡可及性已恢复,但噪声绝对占比仍约 90% ⇒ R561 账仍成立(主题卡供给约 1 位/轮 vs 污染每 2h 灌 1 张)·解法只能是闸门
+  【库级】compass memory 1430 张(R566 1426 +4)·噪声 session_auto 883 + distill 314 + session 45 = 1242 → 1242/1429 = 86.9%(R560 84.0% 口径错/R561 86.7%/R564 86.5%/R566 86.6% ⇒ 横盘未实质下降)
+  【distill 仍在写】published 278→280(+2)·review 78·failed 1·published 中源会话 >7d = 280/280 = 100.0%(max 29.4d/median 29.1d/min 9.5d)·今日 05:00 后新增 2 张(06:43 distill-71e13745 / 08:45 distill-628f538c)同为旧会话 ⇒ R559「freeze 后仍发旧会话卡」证伪继续成立·损害持续累积(非静态存量)
+  【dev.to 深核·新增核验深度】R566 仅核到「8 条全旧」;本轮拉评论正文 + 两文正文尾部对账 ⇒ 4805943 正文 PS(2026-10-27)已双答 indiainfranotes(transcript vs receipt→signed evidence packs + implementer never grades own work)/devansh_kontey(BRYDGE=complementary layer·拒试用·保持独立);4825866 正文「On receipts」+「@devansh_kontey」两段已答 ⇒ 无遗漏零新评论 ⇒ 本轮零外发 ⇒ 教训:只核条数没变=未核到是否已答·dev.to 应答形态是文内 PS/Addendum 须拉正文对账
+  【值守面】platform RED 221→222(唯一新函 id103772 soul-distress ×88 trace soul-distress-202611181933·soul→platform 零 compass 行动)·信箱 compass 0 未读·Gmail 401→直刷 REFRESH_OK 3599s→2d 窗口 19 封逐封 sender 全甄·最大 internalDate 仍 11-18 07:48:38Z(R566 事件 B 通知)⇒ R566 后零新到零新商务函零新面孔·7d 未读 28·mentions 5 全旧·notifications 45 最新 11-13 全旧·genesis 5 家(1/1/0/1/2)零 REPLY·a2a-x402#198 仍 1 条(alanwang100 11-09·正确路径 google-agentic-commerce/a2a-x402·org/repo 顺序坑复现并规避)·IHUI-AI#78 末条 10-13·rsi-bench#4 末条 10-10·mem0#7641 零评论 ⇒ 外联件零新评论·CI compass 44279781204 success + core 43558665734 success·daemon 绿 9876·watchdog exit0·哨兵 exit0 recall_hit=44·GATE0 PASS·快筛 仅 CS-513 过=历轮全同·管道三件 exit0·矩阵 mtime 仍停 10-30 09:42·磁盘数据卷 97% avail 14Gi(R566 16Gi→-2Gi/约 4h·仍逼近 10Gi alarm 线·零清理候用户)
+  【本轮零生产动作】未改 plist/未改插件 daemon.py/未改 symlink/未 bootout distill/未删未移记忆卡/未碰 NAS/未回帖未开 issue 未发邮件未 PATCH dev.to/未碰他线 5 个未提交文件(保持 M)/未代推他线提交/未裹挟他线 untracked 新件
+  【产出】docs/incidents/INC_20261118_RECALL_NOISE_RECHECK_R567.md
+  【候拍板·本轮不新增】①fallback 地雷修法 B(一行 env·零代码·R565 已实证)⭐ ②distill A/B/C(损害持续累积)③distress ×88 人监门(人工删 .soul-pause·不代删)④磁盘 97% avail 14Gi 零清理 + NAS 侧 NFS 读阻塞根因(框外)⑤通道配额 ⑥a2a#198 草稿 ⑦Gmail 35 封草稿审稿 ⑧模真真三诉求 ⑨矩阵 phase2 解锁 ⑩py-spy 仍缺
+---- round end 09:06 ----
