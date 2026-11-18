@@ -4993,3 +4993,23 @@ R567 值守轮完成（实质增量轮）。commit `b30184d5` 已推 origin/main
 
 **候你拍板（9 项，本轮不新增）**：①distill **写入侧已止血**·**存量 1197 张清理未做**（②拆 a/b）②**同口径 top30 复算**候下轮 ③distress **×89** 人监门 ④磁盘 97% avail 15Gi 零清理 + NAS NFS 根因（框外）⑤通道配额 ⑥a2a#198 草稿 SLA 过期 ⑦Gmail 35 封草稿审稿 ⑧模真真三诉求 ⑨矩阵 phase2 解锁 / py-spy 仍缺
 ---- round end 11-18 11:40 ----
+---- round end 11-18 11:17 ----
+
+## R569 · 2026-11-18 13:18–13:26 EST · 值守轮（🔴 同口径 top30 复算结清·读取侧损害结论反转）
+
+| # | 发现 | 读数 |
+|---|---|---|
+| ① | **同口径 top30 复算（R568 欠账结清）** | MCP `tool_recall` → daemon 9876 `action=recall`（与 R567 同一条调用链·**可同口径相减**）：R560/R567 逐字同 query「distill 回填 旧会话 正式记忆库 污染」top30 ⇒ 噪声 **3/30 = 10.0%**（R567 27/30=90.0%·R560 29/30=96.7%），噪声位次 3/4/12，主题卡占 1/2/5–30；**第二口径** 4q×top30=120 位 ⇒ 噪声 **11/120 = 9.2%**（R560 原口径 8q×30=76.2%）⇒ 非单 query 侥幸 |
+| ② | **机制定位（反转根因）** | `daemon.py:913-920`（`distill-*` 仅 `semantic_status=="source_reviewed_scoped"` 入索引）+ `recall.py:1438-1446`（hook 同闸：distill- 前缀 + `session_` 需 `drift=red`）；两文件 mtime **11-18 10:29**、daemon 进程启动 **11-18 10:59:31** ⇒ 新闸门已加载；R567 测于 09:10 ⇒ **属闸门落地前旧读数**；幸存 3 张 distill 卡 frontmatter 确有 `semantic_status`（已复核卡·按设计该进索引） |
+| ③ | **纠正继承结论** | 「根因=`recall.py:1447` 只拦 `session_` 前缀 + `daemon.py:1044` 无前缀闸」**现码已不成立**；「B 只停写入不治已发生损害」——读取侧已由闸门治，**只剩存量清理** |
+| ④ | **存量未清** | 1431 张 md：`session_auto_*` 883 + `distill-*` 306 = **1189 = 83.1%**（R568 记 distill 314，本轮实测 306，差 8 张来源[不可验]）⇒ 闸只挡读不删库；候拍板项②只剩 **②-a 存量清理** |
+| ⑥ | 🔴 **新发现·写入侧止血只是「当前态」不是「持久态」** | R568 复核的是 `ai.nautilus.distill-incremental.plist`(确已移出);但 **`com.nautilus.distill-incremental.plist` 仍在 `~/Library/LaunchAgents/`**(mtime 11-16 11:12),内容 = `incremental_distill.py --max-sessions 1` + **StartInterval 7200s + RunAtLoad**;当前**未加载**(`launchctl list \| grep -c distill-incremental`=0)·无进程·08:50 后新增卡 0 张(最新仍 08:45)⇒ **当前确实停着**;但**下次登录/重启即被 launchd 拉起 → 2h 一灌的旧会话回填自动复现** ⇒ **「去 plist」这一步未做**。另 `com.nautilus.distill-review-worker`(PID `-` 未运行)仍在册,它产出的 `semantic_status: source_reviewed_scoped` 正是读取闸门放行 distill 卡进索引的钥匙(本轮 top30 幸存 3 张 distill 卡均有此字段) |
+| ⑤ | 🔴 **新发现·死代码** | MCP 侧 `from recall import reinforce_on_recall_hit` **必然失败**（仓根 `recall.py` 与 plugin `recall.py` 均无该函数；live MCP PID 78450 cwd=仓根）⇒ v2.3.2 access-event closure 不执行，`reinforce_count` 真实召回不再递增 ⇒ **tier ladder Rule A 无信号源**（不影响召回质量·只影响分层信号）。探针先自证伪：系统 `python3` 3.9.6 报 `TypeError: X | None` → 换 `.venv/bin/python` 3.12.15 见真 `ImportError` ⇒ **量 MCP 侧一律 .venv python** |
+
+**值守面**：OGE 主动状态索取函 id106137（SLA 2h·deadline 11-19 03:59）→ 三行实况回函 **id106322**（trace `oge-status-demand-compass-2026-11-19-done`）+ ack 办结 · RED to=platform 223 持平（soul-distress ×89·零 compass 行动）· Gmail 401→直刷 REFRESH_OK 3599s→**7d 全量 50 封逐封 GET**（未用 `ids=` 批量端点·R568 坑）·未读 **30**·最新 internalDate **11-18 17:17:53Z**（Medium）·新到 2 封（Medium 17:17Z / Daytona 16:25Z）均营销 ⇒ **零新商务函零新面孔** · mentions 5 全旧（最新 11-02）· notifications 45 全旧（最新 11-13）· genesis 5 家零 REPLY · dev.to 30 文 8 评论（6+2）与 R567/R568 同 ⇒ **零新评论** ⇒ 零外发 · CI compass `5b852a7f` success · core 最新可见 Deploy contract 11-14 success · daemon 9876 绿 + watchdog exit0 + 哨兵 exit0 **recall_hit=74** · 管道三件全 exit0 · 快筛 CS-517/518 不过（总结论「存在不过筛」）· 矩阵仍停 10-30 09:42 · 磁盘数据卷 97% **avail 13Gi**（R568 15Gi → **-2Gi**·逼近 10Gi alarm 线·零清理候用户）。
+
+**产出**：`docs/incidents/INC_20261118_RECALL_NOISE_RECHECK_R569.md` + COLLAB_BOARD R569 行 + 记忆卡 `recall-noise-76pct` 描述级反转（旧结论作废）+ rounds.log/state.json（round=569）。本轮**零生产动作**：未改任何代码（含 plugin `daemon.py`/`recall.py`）·未改 plist/symlink·未 bootout·未删未移记忆卡·未碰 NAS·未回帖/未开 issue/未发邮件/未 PATCH dev.to·他线 5 个未提交文件保持 M·未代推。**对外动作**=向 platform 回函 id106322 + **勘误 id106323**(trace `...-done-fix`:订正①时间窗 13:18–13:26 非 13:50 ②「未发函」=除本呈报函/勘误函外未发其他 ③写入侧三项精确读数 ④新增「去 plist 未做」)。
+
+**两处如实报告**：本轮**在 25 分钟限时内完成**（13:18–13:26，耗时约 8 分钟；Gmail 逐封 50 封 + 4q×top30 双口径复算 + 机制定位）；**首封 id106322 有一处时间窗写错(13:18-13:50)与「未发函」措辞含混，已于 id106323 勘误**；**库级 distill 314→306 的 8 张差额来源[不可验]**（本轮我方未删任何卡，口径差与他线删除两解并列）。
+
+**候你拍板（10 项）**：⓪🔴**「去 plist」未做**（`com.nautilus.distill-incremental.plist` 仍在加载目录·StartInterval 7200+RunAtLoad ⇒ 下次登录即复灌）①**存量 1189 张清理**（该项唯一剩余部分）②**MCP `reinforce_on_recall_hit` 死代码**（共享插件·需授权）③distress **×89** 人监门 ④磁盘 97% avail 13Gi 零清理 + NAS NFS 根因（框外）⑤通道双 429 配额（禁擅自付费/改凭据）⑥a2a#198 草稿 / Gmail 35 封草稿审稿 / 模真真三诉求（对外硬闸）⑦阿里矩阵 phase2 解锁 · py-spy 仍缺
