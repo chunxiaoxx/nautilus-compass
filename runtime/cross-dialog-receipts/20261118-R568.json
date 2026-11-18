@@ -136,7 +136,7 @@
     "approved_receipts": 0,
     "published": false
   },
-  "updated_at_utc": "2026-11-18T17:13:51.552412+00:00",
+  "updated_at_utc": "2026-11-18T17:16:36.826275+00:00",
   "review_worker": {
     "status": "running_bounded_no_publish",
     "launchd_label": "com.nautilus.distill-review-worker",
@@ -150,12 +150,13 @@
     ],
     "batch_size": 5,
     "interval_seconds": 900,
-    "current_result_rows": 8,
-    "current_new_worker_rows": 3,
+    "current_result_rows": 10,
+    "current_new_worker_rows": 5,
     "queue_review_required": 355,
     "approved_receipts": 0,
     "published": false,
-    "verified_at_utc": "2026-11-18T17:13:51.552412+00:00",
-    "policy": "Every row is source/hash bound; hold on any unsupported claim or anchor_recall below 0.9; never publish memory."
+    "verified_at_utc": "2026-11-18T17:16:36.826275+00:00",
+    "policy": "Every row is source/hash bound; hold on any unsupported claim or anchor_recall below 0.9; never publish memory.",
+    "last_kickstart_utc": "2026-11-18T17:16:36.826275+00:00"
   }
 }
