@@ -4957,3 +4957,39 @@ API Error: Request rejected (429) · 已达到 Token Plan 用量上限：请升�
   【产出】docs/incidents/INC_20261118_RECALL_NOISE_RECHECK_R567.md
   【候拍板·本轮不新增】①fallback 地雷修法 B(一行 env·零代码·R565 已实证)⭐ ②distill A/B/C(损害持续累积)③distress ×88 人监门(人工删 .soul-pause·不代删)④磁盘 97% avail 14Gi 零清理 + NAS 侧 NFS 读阻塞根因(框外)⑤通道配额 ⑥a2a#198 草稿 ⑦Gmail 35 封草稿审稿 ⑧模真真三诉求 ⑨矩阵 phase2 解锁 ⑩py-spy 仍缺
 ---- round end 09:06 ----
+R567 值守轮完成（实质增量轮）。commit `b30184d5` 已推 origin/main，CI `44320743983` **success**。
+
+**三个实质增量**
+
+| # | 发现 | 读数 |
+|---|---|---|
+| ① | 召回侧损害**同口径复算**（用 R560 原 query 逐字，免口径漂移） | 噪声 **27/30 = 90.0%**（R560 同 query 96.7%）· 主题卡 3 张占**第 1/2/23 位**（R560 时唯一主题卡压到第 22 位）⇒ **主题卡可及性已恢复，但噪声绝对占比仍约 90%**；库级 1430 张里噪声 **86.9%**（R561/R564/R566 86.5–86.7% ⇒ 四轮横盘）⇒ R561 的账仍成立：**自助路径杯水车薪，解法只能是闸门** |
+| ② | distill 回填**仍在写**，损害是持续累积不是静态存量 | published 278→**280**，源会话 **>7d = 280/280 = 100.0%**（median 29.1d）；今日 05:00 后新增 2 张同为旧会话 ⇒ **R559「freeze 后仍发旧会话卡」证伪继续成立** |
+| ③ | dev.to 应答**深核坐实**（新增核验深度） | R566 只核到「8 条全旧」；本轮拉评论正文 + 两文正文尾部对账 ⇒ 4805943 正文 PS(2026-10-27) 已双答、4825866 正文两段已答 ⇒ **无遗漏零新评论 ⇒ 本轮零外发**。教训：只核条数没变 = 未核到是否已答；dev.to 应答形态是**文内 PS/Addendum** |
+
+**值守面**：platform RED 221→**222**（唯一新函 id103772 soul-distress **×88**，soul→platform 零 compass 行动）· 信箱 compass 0 未读 · Gmail 401→直刷 REFRESH_OK 3599s→2d 窗口 19 封逐封全甄，最大 internalDate 仍 11-18 07:48:38Z ⇒ **R566 后零新到、零新商务函、零新面孔** · notifications 45 全旧 · mentions 5 全旧 · genesis 5 家零 REPLY · 外联件（a2a#198/IHUI#78/rsi-bench#4/mem0#7641）零新评论 · CI 双绿 · daemon 9876 绿 + watchdog exit0 + 哨兵 exit0 recall_hit=44 · 快筛仅 CS-513 过（历轮全同）· 管道三件 exit0 · 矩阵仍停 10-30 09:42 · **磁盘数据卷 97% avail 14Gi（R566 16Gi → -2Gi/约 4h）**
+
+**产出**：`docs/incidents/INC_20261118_RECALL_NOISE_RECHECK_R567.md` + COLLAB_BOARD R567 行 + rounds.log/state.json（round=567）。本轮**零生产动作**：未改 plist / daemon.py / symlink，未 bootout distill，未删移记忆卡，未碰 NAS，未回帖未发函未 PATCH dev.to，他线 5 个未提交文件保持 M、未裹挟提交。
+
+**两处如实报告**：本轮超出 25 分钟限时约 15 分钟（CI 等待 + 召回复算）；磁盘 OrbStack 占用扫描 `du` 超时被停，**未取得该读数**（沿用 R533 结论：主因仍是 data.img.raw）。
+
+**候你拍板（10 项，本轮不新增）**：① ⭐fallback 地雷修法 B（一行 env·零代码·R565 已实证）② distill A/B/C（损害持续累积）③ distress ×88 人监门 ④ 磁盘 14Gi 零清理 + NAS NFS 根因（框外）⑤ 通道配额 ⑥ a2a#198 草稿 ⑦ Gmail 35 封草稿审稿 ⑧ 模真真三诉求 ⑨ 矩阵 phase2 解锁 ⑩ py-spy 仍缺
+---- round end 11-18 09:10 ----
+
+## R568 · 2026-11-18 11:40 EST · 值守轮（独立复核他线 R568 基础设施收敛）
+
+| # | 发现 | 读数 |
+|---|---|---|
+| ① | 🔴 **distill 回填通道已停（写入侧止血坐实·四环实测）** | `launchctl list \| grep -c distill`=**0**（已 bootout）·`~/Library/LaunchAgents/ai.nautilus.distill-incremental.plist`=**已移出加载目录**·`ps aux` **无 incremental_distill 进程**·最新 distill 卡 mtime 仍 **11-18 08:45** 且回填节律（约 2h/张）下 **10:45 档缺失** ⇒ **R559/R560/R567「损害持续累积」判定自本轮起不再成立**（那 3 轮结论只对 08:45 前成立） |
+| ② | **存量未清**·候拍板项②须拆分 | 库 **1430 张**（持平）·`distill-*` **314**（R567 311→+3 后已停）+ `session_auto_*` 883 ⇒ **1197 张噪声卡仍在库** ⇒ **闸门只挡读不删库**；**②-a 存量清理（未做）** / **②-b 写入侧（已止血·他线执行）** |
+| ③ | **读取侧仅方向性信号·口径不同不作结论** | 本轮走**本地 BGE+hook 路径 top5**（R567=top30+MCP·他线 receipt=top30+daemon·三者窗口/调用链不同**不可相减**）⇒ 最高分位已是主题卡（0.669 `recall-noise-76pct`）·distill 卡退至 0.556/0.494 低分段 ⇒ 方向与「0/30」一致；**同口径 top30 复算欠账**（本轮 ToolSearch 未取到 `mcp__nautilus-compass__recall` schema·候下轮）。另注 `session-contract-l4a-distill-20260822.md` 前缀 `session-` 非 `session_` ⇒ 按 R560/R561 口径判**主题卡** |
+| ④ | 🔴 **新工具坑** | `GET /gmail/v1/users/me/messages?ids=<逗号分隔>` **静默忽略 ids 参数**并返回默认最新 ~100 封（**无 error 字段·HTTP 200·JSON 结构正常**）·本轮据此得「100 封 + internalDate 全 0」假样本·改**逐封 GET** 才拿到真实 50 封窗口 ⇒ 与 R566「after: 毫秒静默假零」/R500「/threads/list 字面量当 id→400」/R506「fields=messageIds 400 被 .get() 吞成假 0」**同族** ⇒ Gmail API 任何「静默成功但口径错」必须第二种口径复算 |
+
+**值守面**：RED to=platform **222→223**（唯一新函 id105040 soul-distress **×89**·soul→platform 零 compass 行动）·信箱 compass 0 未读 · Gmail 401→直刷 REFRESH_OK 3599s→**全量口径 7d 50 封/未读 29**（新到 1 封=Gamma 营销 11-18 15:42Z⇒**零新商务函零新面孔**）· mentions 5 全旧（最新 11-02 OWASP#35）· notifications **45** 全旧（最新 11-13）· genesis 5 家(1/1/0/1/2)零 REPLY · dev.to 30 文 6+2=8·**comment count 未变 ⇒ 零新评论**（count 单调）· CI compass **44342935844**(5b852a7f)success + core 43558665734 success · 本地 HEAD=17ca6b22 **领先 origin/main 1 commit**（他线 R568 记录批未推·**不代推**）· daemon 绿 9876 + watchdog exit0 + 哨兵 exit0 **recall_hit=62** · **管道三件全 exit0** · 快筛 **CS-303 + CS-513 过**（qwen 0.5/opus 1.0/梯度 50.0pp）· 总结论「存在不过筛」· 矩阵 mtime 仍停 10-30 09:42 · 磁盘数据卷 97% **avail 15Gi**（R567 14Gi→**+1Gi 回升**·仍逼近 10Gi alarm 线）
+
+**产出**：`docs/incidents/INC_20261118_DISTILL_FREEZE_INDEPENDENT_VERIFY_R568.md` + COLLAB_BOARD R568(值守复核)行 + rounds.log/state.json（round=568）。本轮**零生产动作**：未改 plist / daemon.py / recall.py / 任何 symlink，未 bootout 任何任务，未删未移记忆卡，未碰 NAS，未回帖未发函未 PATCH dev.to，他线 5 个未提交文件保持 M，未代推他线提交，未裹挟他线 untracked 新件。
+
+**两处如实报告**：本轮超出 25 分钟限时约 15 分钟（召回实测 + 逐封 Gmail 元数据拉取）；**同口径 top30 复算未做**（MCP recall schema 本轮未取到），读取侧结论只到方向性信号。
+
+**候你拍板（9 项，本轮不新增）**：①distill **写入侧已止血**·**存量 1197 张清理未做**（②拆 a/b）②**同口径 top30 复算**候下轮 ③distress **×89** 人监门 ④磁盘 97% avail 15Gi 零清理 + NAS NFS 根因（框外）⑤通道配额 ⑥a2a#198 草稿 SLA 过期 ⑦Gmail 35 封草稿审稿 ⑧模真真三诉求 ⑨矩阵 phase2 解锁 / py-spy 仍缺
+---- round end 11-18 11:40 ----
