@@ -4738,3 +4738,49 @@ RED 217→218(唯一 id99489 soul-distress **×84**)·信箱 0 未读·Gmail 401
 本轮动过:HF symlink 切本地 + 拉模型 2.27GB + kickstart 两个 launchd 服务(8401/9876)。未动插件 daemon.py、未 bootout distill、未删记忆卡、未碰他线 5 个未提交文件(保持 M)、未代推他线提交、未裹挟他线 untracked 新件。
 
 ---- round end 11-17 22:25 ----
+---- round end 11-17 22:15 ----
+
+## R564 · 2026-11-18 00:52 EST（值守 loop：🔴 R563「bge-m3 本地化」候拍板项**误判更正** + 唯一残余地雷定位 + 全渠道零增量）
+
+- **🆕实质增量①[R563 更正·误判撤回]**：R563 候拍板清单里的「**bge-m3 本地化**（8400 因常驻内存而活·一旦重启将同样卡死·约 2.2GB 同法 SSH 拉）」——本轮三条现场实测证明**前提不成立**：①`bge-embed/embed_server.py:11` = `MODEL_DIR = ~/bge-embed/models/bge-m3`（第 21-22 行 `AutoTokenizer/AutoModel.from_pretrained(MODEL_DIR)`·**全文无 huggingface/HF_HOME/snapshot_download 引用**）②该本地目录在位完整（4.3GB·`pytorch_model.bin` 2,271,145,830B + `tokenizer.json` + `sentencepiece.bpe.model` + `special_tokens_map.json` + `config.json` + `modules.json` + `1_Pooling/`）③`/health` ok(device=mps) + `/embed` 实测 **0.03s / dim=1024** ⇒ **8400 全程不读 HF 缓存、不读 NAS**，不是「靠常驻内存侥幸活着」而是**模型本来就在本地盘** ⇒ 「重启会卡死」不成立、「拉 2.2GB」**无作用** ⇒ **该候拍板项应撤销而非执行**（照原文执行会在 avail 18Gi 时白占 2.2GB）。
+- **🆕实质增量②[唯一残余地雷定位]**：R563 修的是 reranker（8401）；**另一条路径仍在同一坏 NFS 子树上**——daemon plist 实读 `COMPASS_EMBED_PROXY=http://127.0.0.1:8400` + `HF_HUB_OFFLINE=1`；`daemon.py:740-760` `get_embedder()` 走 `_ProxyEmbedder`(8400)·docstring 明示「proxy 不可达时**由调用侧 fallback 本地**」→ `daemon.py:765-774` `SentenceTransformer(EMBEDDER_MODEL)`；`daemon.py:592-597` `EMBEDDER_MODEL` = modelscope 本地路径**若存在**否则 **HF repo id `"BAAI/bge-m3"`**——实测 **`~/.cache/modelscope/hub/models/BAAI/` 不存在** ⇒ fallback **必然**走 HF repo id ⇒ 落到 `~/.cache/huggingface/hub/models--BAAI--bge-m3`（现指 NAS）。**本轮对该子树独立复现同型阻塞**：读 `refs/main` **12.15s 超时** / 列目录 **5.09s EINTR** / `snapshots/*` glob 5.73s **返回空** / safetensors 头 **找不到文件** ⇒ **一旦 8400 掉线，daemon 本地 fallback 会重演 R562/R563 同一个 open() 永久阻塞**——这是当前唯一剩余的同类地雷，**R563 修法不覆盖**。
+- **🆕候选修法（候用户拍板·本轮零执行）**：**A 零字节改指（推荐）**——`models--BAAI--bge-m3/` 构造 HF 布局 shim（`refs/main` 写 "main" + `snapshots/main -> ~/bge-embed/models/bge-m3`）⇒ `SentenceTransformer("BAAI/bge-m3")` 在 `HF_HUB_OFFLINE=1` 下命中本地权重，**不复制 2.2GB**；**B** plist 增 `ZMM_EMBEDDER_MODEL=<绝对路径>`（改生产配置需授权）；**C** SSH 拉 2.2GB（**冗余**·本地已有 4.3GB 同款）。验证法已写进档（离线加载自测 + kickstart daemon + 跑一次 recall），**变更前须备份原 symlink 目标**（改坏会让启动 eager-load 失败并被 `daemon.py:1782` 吞掉）。
+- **产出**：`docs/incidents/INC_20261118_HF_NFS_FALLBACK_LANDMINE.md`（含更正/地雷/候选修法/全渠道读数/三条教训）。
+
+### 值守面（全零增量·逐面实测）
+
+| 面 | 读数 |
+|---|---|
+| 信箱 compass | **0** 未读 |
+| RED to=platform | **219 封**（与 R563 **持平**·最新仍 id100729 ×85·**零增量**） |
+| Gmail | 401→直刷 REFRESH_OK 3599s→全量口径 7d **53 封**（R563 记 59·-6 出窗）/未读 **32** 持平/草稿 **35** 封零新/最大 internalDate 11-18 02:09Z(IFTTT 营销)**早于 R563·零新商务函零新面孔** |
+| mentions | 5 条全旧（最新 11-02） |
+| notifications | 45 条全旧（最新 11-13） |
+| genesis | 5 家(1/1/0/1/2)零 REPLY |
+| dev.to | 30 文·有评论 2 篇(6+2)全旧 |
+| a2a-x402#198 | 仍 1 条(alanwang100 11-09)·草稿 SLA 过期候用户硬闸 |
+| CI | compass **44228981191**(=R563 head 6731f4af)success·core 43558665734 success |
+| 本地 HEAD | = origin/main = 6731f4af **零领先** |
+| daemon/watchdog/哨兵 | 9876 ok / exit0 / exit0 **recall_hit=11** |
+| **recall 端到端** | **MCP recall 实打可用**（R563 修复持续有效） |
+| GATE0 | **PASS** |
+| 快筛 | CS-513 过·CS-512/514/515/516/517/518 不过=历轮全同 |
+| 管道三件 | exit0（collect_for_quickscreen / pipeline_report / pipeline_state_state_sync） |
+| 矩阵 | mtime 仍停 10-30 09:42 |
+| S0 池 | 两仓分支 404 退役态 |
+| 记忆库 | **1424 张**（session_auto 883 + distill 309 + session_非auto 40 + 主题 191 + MEMORY.md 1）⇒ **噪声 1232 = 86.5%**（R561 的 86.7% 基本持平·24h 内新/改 19 = distill 13 + 主题 6） |
+| 磁盘 | 数据卷 96% avail 18Gi（≥10Gi alarm 线） |
+
+### 本轮动作边界
+
+**零生产改动**：未改 launchd plist / 未改插件 daemon.py / 未改任何 symlink / 未 bootout distill / 未删未移记忆卡 / 未碰他线 5 个未提交文件（保持 M）/ 未代推他线提交 / 未裹挟他线 untracked 新件。
+
+### 候用户拍板（更新）
+
+① **bge-m3 本地化项撤销**（误判，见上）→ 替换为 **fallback 地雷三修法 A/B/C**
+② distill 方案 A/B/C（沿 R561 四选项·未决前提「~2000 旧会话是否本应进正式库」+「共享插件 daemon.py 改它影响所有框·是否授权 compass 改」）
+③ distress **×85** 人监门（人工删 `.soul-pause`·不代删）
+④ NAS 侧 NFS 读阻塞根因（框外·INFRA_BASELINE 责任域）+ `~/mnt/nas-work2` 建议 unmount
+⑤ 通道配额 · 磁盘 96% 零清理 · a2a#198 草稿 · Gmail 35 封草稿审稿 · 模真真三诉求 · 矩阵 phase2 解锁 · **py-spy 仍缺**
+
+---- round end 2026-11-18 00:52 ----
