@@ -64,7 +64,7 @@ def _minimax_call(user: str) -> str:
     body = json.dumps({
         "model": "MiniMax-M3", "system": SYSTEM,
         "messages": [{"role": "user", "content": user[:150000]}],
-        "max_tokens": 16000, "temperature": 0,
+        "max_tokens": 8000, "temperature": 0,
     }).encode()
     req = Request(
         "https://api.minimaxi.com/anthropic/v1/messages", data=body,
@@ -79,7 +79,7 @@ def _minimax_call(user: str) -> str:
 
 def _kimi_call(user: str) -> str:
     return mb.call_model("k3-256k", SYSTEM + "\n\n" + user[:150000],
-                         max_tokens=16000, retries=2, channel="relay", stream=False)
+                         max_tokens=8000, retries=2, channel="relay", stream=False)
 
 
 def parse_claims(raw: str, source: str) -> list[dict]:
@@ -194,6 +194,12 @@ def review_one(row: dict, reviewers: tuple[str, ...]) -> dict:
         combined = item["reviewers"][reviewers[0]]["claims_detail"]
         item["status"] = "approved_receipt_candidate"
         item["review_receipt"] = build_receipt(row, source_raw, combined, list(reviewers))
+    else:
+        # Hold reports need only counts and short unsupported examples. Keep
+        # the full claims in memory for an approved receipt, but avoid making
+        # the all-history JSONL grow by tens of megabytes of repeated quotes.
+        for result in item["reviewers"].values():
+            result.pop("claims_detail", None)
     return item
 
 
