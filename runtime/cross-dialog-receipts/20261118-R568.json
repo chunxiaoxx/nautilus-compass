@@ -55,7 +55,7 @@
   ],
   "next_action": {
     "owner": "compass",
-    "action": "Produce independent semantic review receipts for a bounded batch, then re-enable distill from a fixed committed release.",
+    "action": "Review a bounded batch from the hash-bound queue with an independent reviewer, then re-enable distill from a fixed committed release.",
     "required_fields": [
       "source_sha256",
       "summary_sha256",
@@ -65,5 +65,15 @@
       "decision",
       "evidence"
     ]
+  },
+  "semantic_review_queue": {
+    "path": "runtime/scratch_distill_pilot_20261104/semantic-review-queue-20261118.json",
+    "sha256": "0ad59a1d830ec1165f1e45fba5324909e71416a366285de1d5dbe24c00d2583f",
+    "counts": {
+      "review_required": 355,
+      "ready_for_independent_review": 0,
+      "missing_artifact": 0,
+      "source_reviewed_scoped": 1
+    }
   }
 }
