@@ -4,6 +4,15 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R717 · 2026-11-18(值守 loop R570:实质增量轮——distress ×89→×91 + R569 后两轮 429 空转账结清 + COLLAB_BOARD 根单源补录 R569)
+
+- **🆕实质增量①[实测]**:`platform_mail.py check --to platform` 全量 total=**228**,最新两封新函=**id106319 soul-distress-202611190216**(90 consecutive failures·last cycle selfimprove-se)+**id107436 soul-distress-202611190519**(91 consecutive·last cycle selfimprove-en)⇒ 较 R569 的 ×89 **+2**;熔断分层保活通道照旧,解除=人工删 .soul-pause(人监门候用户)。本轮信箱 compass 0 未读、无 OGE 派单(id106322 呈报 + id106323 勘误已由 R569 回函)。
+- **🆕实质增量②[实测]**:**R569 之后两轮(14:xx / 15:32)零产出空转**——rounds.log 仅留 `---- round end ----` 标记、正文为 `API Error 429 Token Plan 用量上限`;本轮通道恢复,全流程正常完成。属配额侧,禁擅自付费升级/改凭据(用户令)。
+- **🆕实质增量③[实测]留痕缺口修复**:R569 的 COLLAB_BOARD 行**误落 runtime/ 副本**(runtime/COLLAB_BOARD.md:292),根单源 `COLLAB_BOARD.md` 缺 R569 行(尾行仍 12:16 review worker)⇒ 本轮按 root 单源惯例补录 R569 行(注记实物坐标,不伪造)+ append R570 行;queue.md 的 **R716 段仍在文件尾 1889 行**(惯例位=顶部,R716 位置漂移沿袭 R528 先例,留档候用户·本轮不迁移以守"单轮不做大迁移"红线)。
+- **值守面 [实测]**:Gmail **401→直刷 REFRESH_OK 3599s**→7d 全量 **48 封**逐封 GET(**未用 `ids=` 批量端点**,遵 R567 坑)·未读 **30**·**零新商务函**·新到 2 封均营销(Daytona SDK/CLI 2.0.0 默认公告、Gamma 品牌设置)·Mathawar Sharma(Reddit Ads SMB 销售·gong.io 序列)两封判读=广告销售非合作方零行动;mentions 5 全旧/notifications 45 全旧/genesis 5 家零 REPLY/dev.to 8 评论全旧(最新 10-15);daemon 绿 9876+watchdog exit0+**哨兵 exit0 recall_hit=76**(R569=74);compass CI **44342935844 success**(16:04Z)全绿·core 43558665734 success;管道三件 exit0·快筛全同(CS-513 过/CS-518 25pp ✗③✓④✓⑤/CS-515~517 opus=None);矩阵 mtime 10-30 停摆维持;磁盘 avail **14.0Gi**(R569 13Gi→+1Gi·未触 10Gi alarm·零清理)。
+- **零生产动作**:未改代码/plist/symlink、未 bootout、未删卡、未碰 NAS、未外发邮件/未 PATCH dev.to;他线 5 个未提交文件保持 M 未裹挤;仅留痕文件走限定 pathspec commit。
+- **候办主件**:🔴distress ×91 人监门(较 ×89 恶化)·通道配额(连续空转两轮)·存量 1189 张噪声卡清理·MCP reinforce 死代码·a2a#198 / Gmail 审稿 / 模真真三诉求·矩阵 phase2 解锁·py-spy 仍缺·queue R716 段迁移(低)。
+
 ### R715 · 2026-11-10(值守 loop R526:实质增量轮——CI 红甄别修复(Ubuntu 26.04 无 Python 3.9) + distress ×22→×23 + Gmail 端点坑再踩留档)
 
 - **🆕实质增量①CI 红甄别+修复**:compass CI **42780785907(=R525 head 09256b22·08:12:14Z) FAILURE**,失败 job=`S4 GEP minimum Python (3.9)`·step=`actions/setup-python@v5`——rerun 复现坐实持久;根因=**GitHub runner 镜像滚动升级 Ubuntu 26.04 不再提供 Python 3.9 x64 工具链**(`The version '3.9' was not found for Ubuntu 26.04`·setup 层失败非代码问题·R525 只改留痕文件);修复=`ci.yml` S4 job `runs-on: ubuntu-latest`→`ubuntu-24.04`(一行·保住"minimum Python 3.9"测试语义)随本轮 commit 推送观察转绿。

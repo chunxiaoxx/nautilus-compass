@@ -5013,3 +5013,50 @@ R567 值守轮完成（实质增量轮）。commit `b30184d5` 已推 origin/main
 **两处如实报告**：本轮**在 25 分钟限时内完成**（13:18–13:26，耗时约 8 分钟；Gmail 逐封 50 封 + 4q×top30 双口径复算 + 机制定位）；**首封 id106322 有一处时间窗写错(13:18-13:50)与「未发函」措辞含混，已于 id106323 勘误**；**库级 distill 314→306 的 8 张差额来源[不可验]**（本轮我方未删任何卡，口径差与他线删除两解并列）。
 
 **候你拍板（10 项）**：⓪🔴**「去 plist」未做**（`com.nautilus.distill-incremental.plist` 仍在加载目录·StartInterval 7200+RunAtLoad ⇒ 下次登录即复灌）①**存量 1189 张清理**（该项唯一剩余部分）②**MCP `reinforce_on_recall_hit` 死代码**（共享插件·需授权）③distress **×89** 人监门 ④磁盘 97% avail 13Gi 零清理 + NAS NFS 根因（框外）⑤通道双 429 配额（禁擅自付费/改凭据）⑥a2a#198 草稿 / Gmail 35 封草稿审稿 / 模真真三诉求（对外硬闸）⑦阿里矩阵 phase2 解锁 · py-spy 仍缺
+R569 值守轮完成（13:18–13:26，在 25 分钟限时内）。核心产出是**一条继承结论被推翻**。
+
+## 🔴 本轮主发现：读取侧噪声 90.0% → 10.0%，R567 的结论已作废
+
+R568 留了一笔欠账「同口径 top30 复算」，本轮结清（MCP `tool_recall` → daemon 9876，与 R567 同一条调用链，可同口径相减）：
+
+| 口径 | R560 | R567 | **R569** |
+|---|---|---|---|
+| 同 query 逐字 top30 | 29/30 = 96.7% | 27/30 = 90.0% | **3/30 = 10.0%** |
+| 多 query 候选位 | 8q×30=240 位 76.2% | — | **4q×30=120 位 9.2%** |
+
+机制坐实：`daemon.py:913-920`（`distill-*` 仅 `semantic_status=="source_reviewed_scoped"` 入索引）+ `recall.py:1438-1446`（hook 同闸），两文件 mtime **11-18 10:29**、daemon 进程启动 **10:59:31** ⇒ 新闸门已加载，而 R567 测于 09:10，属**闸门落地前旧读数**。幸存3 张 distill 卡 frontmatter 确有 `semantic_status`（已复核卡，按设计该进索引）。
+
+**纠正的继承结论**：①「根因=`recall.py:1447` 只拦 `session_`+`daemon.py:1044` 无前缀闸」现码已不成立；②「B 只停写入不治已发生损害」——读取侧已治，只剩存量清理。
+
+## 🔴 新发现两则
+
+1. **写入侧止血只是「当前态」不是「持久态」**：R568 移出的是 `ai.nautilus.distill-incremental.plist`，但 **`com.nautilus.distill-incremental.plist` 仍在加载目录**（mtime 11-16）+ `StartInterval 7200` + `RunAtLoad` ⇒ 当前未加载、确实停着（最新卡仍 08:45），但**下次登录即自动复灌**。「去 plist」这一步没做。
+2. **MCP `reinforce_on_recall_hit` 是死代码**：仓根与 plugin 的 `recall.py` 均无该函数，live MCP（cwd=仓根）import 必然失败且被 `except` 吞掉 ⇒ `reinforce_count` 真实召回不再递增 ⇒ tier ladder Rule A 无信号源（不影响召回质量）。探针先自证伪一次：系统 python3.9 报 `X | None` TypeError，换 `.venv` 3.12.15 才见真 ImportError ⇒ **量 MCP 侧一律 .venv python**。
+
+## 值守面
+OGE 状态索取函 id106137（SLA 2h）→ 回函 id106322 + **自查后勘误 id106323**（首函时间窗写错 13:18-13:50、实为 13:18-13:26；「未发函」措辞含混 ⇒ 错数不留已改）；Gmail 401→直刷 3599s→7d 全量 50 封逐封 GET（未用 `ids=` 批量端点）·未读 30·新到 2 封均营销·**零新商务函**；mentions 5 / notifications 45 / genesis 5 家 / dev.to 8 评论全旧；daemon 绿 + watchdog exit0 + 哨兵 exit0 recall_hit=74；管道三件全 exit0；磁盘数据卷 97% **avail 13Gi**（R568 15Gi → -2Gi，逼近 10Gi alarm 线，零清理候用户）。
+
+**零生产动作**：未改代码/plist/symlink、未 bootout、未删记忆卡、未碰 NAS、未外发邮件/未 PATCH dev.to；他线 5 个未提交文件保持 M 未裹挟；本地 commit `29868678`（4 文件）**未推**。
+
+**候拍板（10 项）**：⓪去 plist 未做（下次登录即复灌）①存量 1189 张清理（该项唯一剩余）②MCP reinforce 死代码 ③distress ×89 人监门 ④磁盘 13Gi 零清理 + NAS NFS 根因（框外）⑤通道双 429 ⑥a2a#198 / Gmail 35 封 / 模真真三诉求审稿 ⑦矩阵 phase2 解锁 · py-spy 仍缺。
+
+**证据**：`docs/incidents/INC_20261118_RECALL_NOISE_RECHECK_R569.md`；记忆卡 `recall-noise-76pct` 已作描述级反转（🔴→🟡）。
+---- round end 11-18 13:28 ----
+API Error: Request rejected (429) · 已达到 Token Plan 用量上限：请升级 Token Plan 套餐或购买积分补充用量。 (2056)
+---- round end 11-18 15:32 ----
+
+R570 值守轮完成（17:12–17:36，在 25 分钟限时内）。本轮实质增量：**distress ×89→×91** + **R569 后两轮 429 空转账结清**。
+
+**🆕实质增量① [实测] platform RED distress ×89→×91**：`python3 scripts/platform_mail.py check --to platform` 全量 **total=228**，最新两封新函=**id106319 soul-distress-202611190216**（90 consecutive failures·last cycle selfimprove-se）+ **id107436 soul-distress-202611190519**（91 consecutive·last cycle selfimprove-en）⇒ 较 R569 的 ×89 **+2**；熔断分层保活通道照旧，解除=人工删 .soul-pause（人监门候用户）。本轮信箱 compass 0 未读、无 OGE 派单（OGE 状态呈报 id106322 + 勘误 id106323 已于 R569 回函）。
+
+**🆕实质增量② [实测] 通道账结清**：R569（13:26）之后两轮 **14:xx 与 15:32** 的 rounds.log 仅留 `---- round end ----` 标记、正文为 `API Error: Request rejected (429) · 已达到 Token Plan 用量上限` ⇒ **连续两轮零产出空转**；本轮通道恢复，全流程（信箱/Gmail/GitHub/dev.to/daemon/哨兵/管道三件）正常完成。通道稳定性判读：非我方代码问题，属配额侧，须用户拍板（禁擅自付费升级/改凭据）。
+
+**🆕实质增量③ [实测] 留痕缺口修复**：R569 的 COLLAB_BOARD 行**误落 runtime/ 副本**（runtime/COLLAB_BOARD.md:292），根单源 `COLLAB_BOARD.md` 缺 R569 行（尾行仍为 12:16 review worker）⇒ 本轮按 root 单源惯例**补录 R569 行**（注记实物坐标 runtime:292，不伪造）+ append R570 行；queue.md 的 R716 段仍在**文件尾 1889 行**（惯例位为顶部，R716 段位置漂移沿袭 R528 先例，留档候用户，本轮不迁移以守"单轮不做大迁移"红线）。
+
+**值守面 [实测]**：Gmail **401 → 直刷 refresh REFRESH_OK 3599s** → 7d 全量 **48 封**逐封 GET（**未用 `ids=` 批量端点**，遵 R567 静默忽略 ids 坑）·未读 **30**·**零新商务函**·新到 2 封均营销（Daytona SDK/CLI 2.0.0 默认公告 16:25、Gamma 品牌设置 15:42）·Mathawar Sharma(Reddit Ads SMB 销售·gong.io 序列) 两封判读=**广告销售非合作方**零行动；平台信箱 compass 0 未读；GitHub mentions 5 全旧（最新 11-02·3 closed 2 open 皆已甄）、notifications 45 全旧；genesis 5 家零 REPLY（1/1/0/1/2 持平）；dev.to 8 评论全旧（两文 6+2·最新 10-15·无新增未回）；daemon 绿 9876 + watchdog exit0 + **注入哨兵 exit0 recall_hit=76**（R569=74）；compass CI 最新 **44342935844 success**（11-18 16:04Z）全绿、core 最新 43558665734 success（11-14）；管道三件 exit0·快筛全同（CS-513 过 / CS-518 25pp ✗③✓④✓⑤ / CS-515~517 opus=None）；矩阵 mtime 10-30 停摆维持；磁盘 avail **14.0Gi**（R569 13Gi → +1Gi·未触 10Gi alarm 线·零清理）。
+
+**零生产动作**：未改代码/plist/symlink、未 bootout、未删记忆卡、未碰 NAS、未外发邮件/未 PATCH dev.to；他线 5 个未提交文件保持 M 未裹挟；仅留痕文件改动走限定 pathspec commit。
+
+**候选拍板（延续 + 新增）**：🔴distress ×91 人监门（较 ×89 恶化）· 通道双 429 配额（连续空转两轮·禁擅自付费）· 存量 1189 张噪声卡清理（唯一剩余）· MCP reinforce 死代码 · a2a#198 / Gmail 审稿 / 模真真三诉求 · 矩阵 phase2 解锁 · py-spy 仍缺 · queue.md R716 段位置迁移（低优先）。
+
+---- round end 11-18 17:36 ----
