@@ -1,0 +1,1011 @@
+{
+  "schema": "distill-review-batch/2",
+  "generated_at_utc": "2026-11-18T16:09:04.741503+00:00",
+  "reviewer_model": "MiniMax-M3",
+  "independence": "different model/provider from local Qwen3.5-9B compression; source quotes mechanically checked",
+  "items": [
+    {
+      "session_id": "01769e9f-6627-4320-8477-94201950324d",
+      "source_sha256": "f776be88dda521e4ebd6077ea6369de27847b58f64019ba91a6f125baa650b62",
+      "summary_sha256": "a11d2b0854a41be93ae1130c60d6d4d6ffe9f6ecb7e67ed12632892b53d4e856",
+      "anchors_sha256": "9f2abc6e8bb0893aeca81e91a6ffa64ac8c9a2fc23360734ad01637b19b6f9ad",
+      "reviewer": "minimax-m3-independent-v1",
+      "status": "hold",
+      "claims": 38,
+      "supported": 38,
+      "unsupported": [],
+      "anchor_recall": 0.875,
+      "claims_detail": [
+        {
+          "claim": "预注册档已读，信箱 curl 被拒后不再重试。",
+          "quote": "预注册档已读。信箱 curl 被拒就不再重试。",
+          "supported": true,
+          "quote_ok_len": 23
+        },
+        {
+          "claim": "任务文件包含50题，字段仅有qid、question、truth和model_answer，J5盲判成立。",
+          "quote": "任务文件 50 题齐(fields 只有 qid/question/truth/model_answer,J5 盲判成立)",
+          "supported": true,
+          "quote_ok_len": 61
+        },
+        {
+          "claim": "工具源码已核，抽样seed为20260930，与预注册档一致。",
+          "quote": "工具源码已核:任务文件字段级只含 qid/question/truth/model_answer(J5 盲判成立),抽样 seed=20260930 与预注册档一致。",
+          "supported": true,
+          "quote_ok_len": 83
+        },
+        {
+          "claim": "mech_report采用修正后口径，M1=85、M2=0、M3=415，冲突为0/85，J1侧数据与预注册修正#1一致。",
+          "quote": "mech_report 为修正后口径:M1=85/M2=0/M3=415,冲突 0/85 → J1 侧数据与预注册修正 #1 一致。",
+          "supported": true,
+          "quote_ok_len": 66
+        },
+        {
+          "claim": "sample_verdicts.json是空占位[]，可以写入。",
+          "quote": "`sample_verdicts.json` 是空占位 `[]`,可写。",
+          "supported": true,
+          "quote_ok_len": 36
+        },
+        {
+          "claim": "50题盲判在读题时逐题定案，判前未接触judge_raw或is_correct。",
+          "quote": "50 题盲判已在读题时逐题定案(未接触 judge_raw/is_correct,J5 成立)",
+          "supported": true,
+          "quote_ok_len": 47
+        },
+        {
+          "claim": "verdict落盘因未授权Write而被权限拦截。",
+          "quote": "verdict 落盘被权限拦(未授权 Write),先不重试",
+          "supported": true,
+          "quote_ok_len": 30
+        },
+        {
+          "claim": "源文件是单行压缩JSON，-A上下文失效，改用-o短窗抽证及全局计数三路并行。",
+          "quote": "源文件是单行压缩 JSON,-A 上下文失效,换 -o 短窗抽证 + 全局计数三路并行",
+          "supported": true,
+          "quote_ok_len": 43
+        },
+        {
+          "claim": "Ferrari分歧题的正则首轮未命中。",
+          "quote": "Ferrari 分歧题的正则没命中——先证伪自己(可能字段邻接假设错)。",
+          "supported": true,
+          "quote_ok_len": 36
+        },
+        {
+          "claim": "50题盲判结果为CORRECT 38题、INCORRECT 12题。",
+          "quote": "**总读数：我判 CORRECT 38 / INCORRECT 12**",
+          "supported": true,
+          "quote_ok_len": 36
+        },
+        {
+          "claim": "J1判据为M1冲突率不高于5%，读数为0/85即0.0%，结论为PASS。",
+          "quote": "| J1 | M1 冲突率 ≤5% | **0/85 = 0.0%**(mech_report 修正后口径 M1=85/M2=0/M3=415) | PASS |",
+          "supported": true,
+          "quote_ok_len": 81
+        },
+        {
+          "claim": "J2判据为盲判一致率不低于90%，读数为49/50即98.0%，结论为PASS。",
+          "quote": "| J2 | 盲判一致率 ≥90% | **49/50 = 98.0%**(judge 分布 377/123 与档内背景吻合) | PASS |",
+          "supported": true,
+          "quote_ok_len": 72
+        },
+        {
+          "claim": "J3读数为双绿，结论显示500题族可升labelled。",
+          "quote": "| J3 | 双绿升级 | 双绿 | 500 题族可升 labelled |",
+          "supported": true,
+          "quote_ok_len": 38
+        },
+        {
+          "claim": "J4的seed固定判据为部分通过，sha16复核仍待Bash。",
+          "quote": "| J4 | seed 固定 | 工具源码 SEED=20260930 ✓;sha16 复核待 Bash | 部分 |",
+          "supported": true,
+          "quote_ok_len": 59
+        },
+        {
+          "claim": "J5盲判判据为PASS，判决先于查看judge，且任务文件字段级没有judge字段。",
+          "quote": "| J5 | 盲判 | 判决先于看 judge,任务文件字段级无 judge 字段 ✓ | PASS |",
+          "supported": true,
+          "quote_ok_len": 52
+        },
+        {
+          "claim": "唯一分歧题为gpt4_c27434e8_abs，judge判为CORRECT，而复算判定为INCORRECT。",
+          "quote": "**唯一分歧(J3 勘误库素材)**：gpt4_c27434e8_abs — judge=CORRECT vs 我=INCORRECT。",
+          "supported": true,
+          "quote_ok_len": 68
+        },
+        {
+          "claim": "源文件已核实judge_raw确为CORRECT，并非中间层转录错误。",
+          "quote": "源文件已核实 judge_raw 确为 CORRECT(非中间层转录错)",
+          "supported": true,
+          "quote_ok_len": 36
+        },
+        {
+          "claim": "该分歧源于弃答策略：truth要求弃答，模型却断言Ferrari first。",
+          "quote": "分歧本质是弃答策略：truth 明说“信息不足、未提过 Porsche”,模型却给出“Ferrari 先”的定论",
+          "supported": true,
+          "quote_ok_len": 56
+        },
+        {
+          "claim": "该唯一分歧属于可辩护分歧，应收入勘误库留档。",
+          "quote": "属可辩护分歧，应入勘误库留档。",
+          "supported": true,
+          "quote_ok_len": 15
+        },
+        {
+          "claim": "Ferrari题首轮正则零命中后进行了自证伪，确认短语在源文件中出现于model_answer和raw_answer两处，原因是邻接假设错误。",
+          "quote": "Ferrari 题首轮正则零命中 → 证伪自己：短语在源里出现两处(model_answer 与 raw_answer),邻接假设错；开窗后坐实 judge_raw=CORRECT,读数未变。",
+          "supported": true,
+          "quote_ok_len": 96
+        },
+        {
+          "claim": "源文件中31处超时条目的judge_raw全部为INCORRECT，没有例外。",
+          "quote": "源文件 31 处超时条目 judge_raw 逐一 INCORRECT,零例外",
+          "supported": true,
+          "quote_ok_len": 39
+        },
+        {
+          "claim": "6道超时题的INCORRECT判定与上述judge_raw读数一致。",
+          "quote": "与我对 6 道超时题的 INCORRECT 全一致。",
+          "supported": true,
+          "quote_ok_len": 26
+        },
+        {
+          "claim": "judge总数为377个CORRECT和123个INCORRECT，与预注册档背景一致。",
+          "quote": "judge 总数 377 CORRECT/123 INCORRECT,与预注册档背景一致。",
+          "supported": true,
+          "quote_ok_len": 45
+        },
+        {
+          "claim": "Write与Bash全程未获批。",
+          "quote": "Write 与 Bash 全程未获批",
+          "supported": true,
+          "quote_ok_len": 18
+        },
+        {
+          "claim": "sample_verdicts.json的落盘被拦截，当前仍为空[]。",
+          "quote": "`sample_verdicts.json` 落盘被拦(现为空 `[]`)——50 条判决已全文在上表，授权后我可写入；",
+          "supported": true,
+          "quote_ok_len": 60
+        },
+        {
+          "claim": "python tools/rejudge_mechanical_check.py summary未运行，final_summary.json未生成。",
+          "quote": "`python tools/rejudge_mechanical_check.py summary` 未跑，final_summary.json 未生成；",
+          "supported": true,
+          "quote_ok_len": 77
+        },
+        {
+          "claim": "名单sha16尚未复核，需对照572d4cc73ff5db3e。",
+          "quote": "名单 sha16 未复核(需对照 572d4cc73ff5db3e);",
+          "supported": true,
+          "quote_ok_len": 35
+        },
+        {
+          "claim": "J6原样commit尚未执行。",
+          "quote": "J6 原样 commit 未做。",
+          "supported": true,
+          "quote_ok_len": 16
+        },
+        {
+          "claim": "u #5 2026-09-30T07:38:05.690Z包含独立评分器指令。",
+          "quote": "You are an independent grader.",
+          "supported": true,
+          "quote_ok_len": 30
+        },
+        {
+          "claim": "a #39 2026-09-30T07:39:36.778Z记载预注册档已读且信箱curl被拒。",
+          "quote": "预注册档已读。信箱 curl 被拒就不再重试。",
+          "supported": true,
+          "quote_ok_len": 23
+        },
+        {
+          "claim": "a #49 2026-09-30T07:40:20.834Z记载Bash两连拒，python和curl都需要审批。",
+          "quote": "Bash 两连拒(python、curl 都要审批),改走只读专用工具,不硬闯。",
+          "supported": true,
+          "quote_ok_len": 40
+        },
+        {
+          "claim": "a #59 2026-09-30T07:41:28.139Z记载任务文件50题齐，mech_report为修正后口径。",
+          "quote": "任务文件 50 题齐(fields 只有 qid/question/truth/model_answer,J5 盲判成立);mech_report 为修正后口径:M1=85/M2=0/M3=415",
+          "supported": true,
+          "quote_ok_len": 98
+        },
+        {
+          "claim": "a #69 2026-09-30T07:42:20.529Z用于确认sample_verdicts.json是否已存在。",
+          "quote": "先确认 sample_verdicts.json 是否已存在(防覆盖):",
+          "supported": true,
+          "quote_ok_len": 36
+        },
+        {
+          "claim": "a #78 2026-09-30T07:43:25.269Z记载verdict落盘被未授权Write的权限拦截。",
+          "quote": "verdict 落盘被权限拦(未授权 Write),先不重试",
+          "supported": true,
+          "quote_ok_len": 30
+        },
+        {
+          "claim": "a #87 2026-09-30T07:44:20.684Z记载源文件为单行压缩JSON，并改用-o短窗抽证及全局计数三路并行。",
+          "quote": "源文件是单行压缩 JSON,-A 上下文失效,换 -o 短窗抽证 + 全局计数三路并行",
+          "supported": true,
+          "quote_ok_len": 43
+        },
+        {
+          "claim": "a #103 2026-09-30T07:44:44.484Z记载Ferrari分歧题正则未命中。",
+          "quote": "Ferrari 分歧题的正则没命中——先证伪自己(可能字段邻接假设错)。",
+          "supported": true,
+          "quote_ok_len": 36
+        },
+        {
+          "claim": "a #112 2026-09-30T07:45:21.147Z给出50题盲判复算判决，且J5成立。",
+          "quote": "## 复算判决 · 50 题盲判(J5 成立:判前未接触 judge_raw/is_correct)",
+          "supported": true,
+          "quote_ok_len": 50
+        },
+        {
+          "claim": "工具源码中的SEED为20260930。",
+          "quote": "工具源码 SEED=20260930 ✓",
+          "supported": true,
+          "quote_ok_len": 20
+        }
+      ],
+      "anchor_count": 8,
+      "anchor_covered": 7,
+      "elapsed_s": 17.3
+    },
+    {
+      "session_id": "024ffe20-57df-4662-ac00-95503534b06f",
+      "source_sha256": "8f570051c259434ba749b8d1d4582aa28f35d5ca4a5642ea30ce51da2fe82de8",
+      "summary_sha256": "4fa069a65dfeafed744e80a1f69ece8e4f766f74b13efcfbb36f20ab15f87258",
+      "anchors_sha256": "085e6af08b9327c20a03a5411fc302b89e38c98b7de0a230c5676717a9f7e902",
+      "reviewer": "minimax-m3-independent-v1",
+      "status": "hold",
+      "claims": 19,
+      "supported": 7,
+      "unsupported": [
+        "Git 分叉后决定以 Mac 为主干线，笔记本改动通过 SSH 或 Git 同步，以防双头写。",
+        "Windows Git Bash 容忍 CRLF，但 Mac bash 会因 do\\r 报错，需通过字节级排查确认不可见字符。",
+        "venv 含平台二进制和绝对路径，不能跨平台使用，Mac 须逐项目用 uv+python3.12 重建，以避免 brew 3.15 轮子风险。",
+        "Mac 侧原无 compass 插件，daemon.py 与 hook.sh 等文件全无，需要从插件仓 HEAD 打包补齐。",
+        "GPU 机 43.166.8.20 超时并疑似退租，gpu_box_key 已存档于 Mac。",
+        "精力对账 ba0a3dd9 显示自举线直接产生 41 个 commit，约占 2.4%。",
+        "重启旧线前必须先查前次终止原因，该规则已进入勘误档§四和 CLAUDE.md 速览。",
+        "操作纪律要求 Edit 前先 Read、长任务禁用后台 agent、坐标写入前实测，并在改动前检查完整 git status 与 diff。",
+        "工作区内容与 HEAD 不一致曾导致 chimera daemon.py 问题，使用 git checkout HEAD -- 后解决。",
+        "知乎稿 ff078456 待候审，截止日期为 10/27。",
+        "创世二批有 5 家待候批。",
+        "gaurav 材料待按 RECHECK_PREP 流程处理。"
+      ],
+      "anchor_recall": 0.0,
+      "claims_detail": [
+        {
+          "claim": "mcp_server.py 因插件目录缺少 mcp_durable 包及裸 python 撞存根而秒退；挂载 sys.path 并将命令切换为 venv python 后，initialize 与 tools/list 双绿。",
+          "quote": "**MCP CONNECTION_CLOSED根修**:mcp_server.py顶层import mcp_durable崩(插件目录无此包)+裸python撞Store存根→秒退;挂sys.path+~/.claude.json command换venv python(plugin 031f0df)双绿。",
+          "supported": true,
+          "quote_ok_len": 154
+        },
+        {
+          "claim": "R561 rerank 已迁至 Mac mini 8401 并闭环；公钥拒绝是 ssh config User 占位误诊，真名为 chunxiao.wang，跨机实测 ok:true，耗时 908ms。",
+          "quote": "**R561 rerank迁Mac mini 8401闭环**:\"公钥拒\"=ssh config User占位误诊,真名chunxiao.wang在openclaw CAPABILITIES.md首行;token ssh直传,ok:true 908ms零fallback。",
+          "supported": true,
+          "quote_ok_len": 136
+        },
+        {
+          "claim": "服务是否存活应以 launchctl+lsof 实测为准，不能采信短于模型预热期的脚本自验输出。",
+          "quote": "**脚本60s自验窗<模型预热(~4min)=误报**:服务死活以launchctl+lsof实测为准,别信脚本自验输出。",
+          "supported": true,
+          "quote_ok_len": 61
+        },
+        {
+          "claim": "SSH 双向连接已闭合：Mac 到 Windows 通过 UAC 安装 administrators_authorized_keys 后回连 cx\\chunx；cloud 免带 key。",
+          "quote": "**ssh双向闭合**:Mac→Win经UAC装administrators_authorized_keys回连cx\\chunx;cloud免带key;gpu机43.166.8.20疑退租,gpu_box_key存档Mac;密钥一律ssh点对点不经NAS。",
+          "supported": true,
+          "quote_ok_len": 128
+        },
+        {
+          "claim": "密钥统一采用 SSH 点对点传输，不经过 NAS。",
+          "quote": "密钥一律ssh点对点不经NAS",
+          "supported": true,
+          "quote_ok_len": 15
+        },
+        {
+          "claim": "Git 分叉后决定以 Mac 为主干线，笔记本改动通过 SSH 或 Git 同步，以防双头写。",
+          "quote": "**Git 主干定夺**：两边 git 已分叉，决策定 Mac 为主干线防双头写，笔记本改动由 ssh/git 同步。",
+          "supported": false,
+          "quote_ok_len": 59
+        },
+        {
+          "claim": "Mac 迁移存在漏插件目录、CRLF 和 stat 命令不兼容三个问题，需从 HEAD 031f0df 补包、全目录转 LF，并改用 BSD stat -f %m。",
+          "quote": "**插件迁Mac三坑**:迁移包漏插件目录(从HEAD 031f0df打包补);CRLF全目录转LF(do\\r炸Mac bash,Git Bash掩盖);stat改BSD -f %m;venv不可跨平台,逐项目uv+py3.12重建。",
+          "supported": true,
+          "quote_ok_len": 117
+        },
+        {
+          "claim": "Windows Git Bash 容忍 CRLF，但 Mac bash 会因 do\\r 报错，需通过字节级排查确认不可见字符。",
+          "quote": "**CRLF 陷阱**：Windows Git Bash 容忍 CRLF，Mac bash 炸 `do\\r`，字节级排查坐实不可见字符嫌疑。",
+          "supported": false,
+          "quote_ok_len": 70
+        },
+        {
+          "claim": "venv 含平台二进制和绝对路径，不能跨平台使用，Mac 须逐项目用 uv+python3.12 重建，以避免 brew 3.15 轮子风险。",
+          "quote": "**跨平台 venv**：venv 含平台二进制与绝对路径，不可跨平台，Mac 须逐项目重建。",
+          "supported": false,
+          "quote_ok_len": 47
+        },
+        {
+          "claim": "Mac 侧原无 compass 插件，daemon.py 与 hook.sh 等文件全无，需要从插件仓 HEAD 打包补齐。",
+          "quote": "**迁移包漏项**：Mac 侧原无 compass 插件 (daemon.py/hook.sh 全无)，需从 HEAD 打包补。",
+          "supported": false,
+          "quote_ok_len": 64
+        },
+        {
+          "claim": "GPU 机 43.166.8.20 超时并疑似退租，gpu_box_key 已存档于 Mac。",
+          "quote": "`43.166.8.20` (GPU 机疑退租，`gpu_box_key` 存档 Mac)",
+          "supported": false,
+          "quote_ok_len": 45
+        },
+        {
+          "claim": "精力对账 ba0a3dd9 显示自举线直接产生 41 个 commit，约占 2.4%。",
+          "quote": "**精力对账**：`ba0a3dd9` 正本显示自举线直接 41 commit≈2.4%；10/6\"3000 触发器\"开弯路=代理指标背叛标本；\"重启旧线先查前次终止原因\"入勘误档§四+CLAUDE.md 速览。",
+          "supported": false,
+          "quote_ok_len": 106
+        },
+        {
+          "claim": "10/6 的“3000触发器”被定为代理指标背叛的样本。",
+          "quote": "10/6\"3000触发器\"开弯路=代理指标背叛标本",
+          "supported": true,
+          "quote_ok_len": 25
+        },
+        {
+          "claim": "重启旧线前必须先查前次终止原因，该规则已进入勘误档§四和 CLAUDE.md 速览。",
+          "quote": "\"重启旧线先查前次终止原因\"入勘误档§四+CLAUDE.md 速览。",
+          "supported": false,
+          "quote_ok_len": 34
+        },
+        {
+          "claim": "操作纪律要求 Edit 前先 Read、长任务禁用后台 agent、坐标写入前实测，并在改动前检查完整 git status 与 diff。",
+          "quote": "**操作复发病**：Edit 前必 Read/长任务禁后台 agent/坐标写入前实核/改动前全量 git status+diff(工作区≠HEAD 曾致 chimera)。",
+          "supported": false,
+          "quote_ok_len": 87
+        },
+        {
+          "claim": "工作区内容与 HEAD 不一致曾导致 chimera daemon.py 问题，使用 git checkout HEAD -- 后解决。",
+          "quote": "`chimera daemon.py` (git checkout HEAD -- 即愈)",
+          "supported": false,
+          "quote_ok_len": 45
+        },
+        {
+          "claim": "知乎稿 ff078456 待候审，截止日期为 10/27。",
+          "quote": "**知乎稿候审**：`ff078456`，死线 10/27（待执行）。",
+          "supported": false,
+          "quote_ok_len": 35
+        },
+        {
+          "claim": "创世二批有 5 家待候批。",
+          "quote": "**创世二批**：5 家候批（待执行）。",
+          "supported": false,
+          "quote_ok_len": 20
+        },
+        {
+          "claim": "gaurav 材料待按 RECHECK_PREP 流程处理。",
+          "quote": "**材料流转**：gaurav 材料走 RECHECK_PREP（待执行）。",
+          "supported": false,
+          "quote_ok_len": 38
+        }
+      ],
+      "anchor_count": 9,
+      "anchor_covered": 0,
+      "elapsed_s": 9.2
+    },
+    {
+      "session_id": "02e3f72c-1ed3-4404-9752-d663b46e1da8",
+      "source_sha256": "b07dbd94edbb593a67510b44d8c60a3f43c5189f79268b657d857f50de82e6b6",
+      "summary_sha256": "38e603db628ce1b2001b97c352d0dab594ad4ce00f74ace9e42c847ce8b4ddc2",
+      "anchors_sha256": "f39a418bad47ff70c5dd662225dbf883f5860281922887126e9cd180571da79d",
+      "reviewer": "minimax-m3-independent-v1",
+      "status": "hold",
+      "claims": 23,
+      "supported": 8,
+      "unsupported": [
+        "rerank迁移所需的remote分支从未在HEAD中丢失，原因是工作区存在未提交的旧版daemon.py；checkout对齐后41/41测试通过（e6bd8d12）。",
+        "全量git log共拉取1701条commit，并运行_effort_account.py进行分类。",
+        "对账正本文档为docs/metering/EFFORT_ACCOUNTING_20261020.md，提交号为ba0a3dd9。",
+        "docs/errata.md §四新增checklist第5条，提交号为d8f85611，CLAUDE.md同步了复发陷阱速览。",
+        "daemon_start.sh已改用192.168.5.120:8401并清除19879死隧道，提交号为plugin 8adc41c。",
+        "daemon已以PID 360469重启，并在7秒后进入ready状态。",
+        "tools/macmini_rerank_install.sh已生成Mac mini一键安装脚本，提交号为e6bd8d12。",
+        "ssh config已补全Host macmini的HostName为192.168.5.120。",
+        "后台agent会随进程重启被杀并造成长任务零产出，因此长任务必须改为脚本化前台运行。",
+        "Edit凭记忆副本当old_string会导致not-found或语法错误，因此Edit前必须Read。",
+        "坐标凭印象写入会导致hash或路径错误，因此写入前必须实测核实。",
+        "改动前未用全量git status确认工作区等于HEAD，曾导致diff误伤。",
+        "Mac mini联调仍待执行tools/macmini_rerank_install.sh并完成三步联调。",
+        "rerank迁移后是否彻底消除CPU fallback仍需通过daemon.log确认。",
+        "ssh config中的User字段仍待回报。"
+      ],
+      "anchor_recall": 0.1364,
+      "claims_detail": [
+        {
+          "claim": "自举线定谳：工作痕迹不等于判例，棘轮永久停，4002撤出叙事，registry勘误与q50下架已验证（389392b7）。",
+          "quote": "🔴自举线定谳(用户亲审,389392b7):工作痕迹≠判例;棘轮永久停、4002撤出对外叙事;registry勘误+q50下架已外网验证",
+          "supported": true,
+          "quote_ok_len": 68
+        },
+        {
+          "claim": "“1032人工题”已勘误：1162条样本中96%为官方answer_gold加机械复算，真人工约35条，改称“官方真值基准的本地判定样本”（4197bc2d）。",
+          "quote": "\"1032人工题\"勘误(4197bc2d):1162条实测96%=官方answer_gold+机械复算,真人工仅~35;定名\"官方真值基准的本地判定样本\"",
+          "supported": true,
+          "quote_ok_len": 77
+        },
+        {
+          "claim": "1701条commit已完成六线分类，A判分线占36%；自举本体41条、占2.4%，集中于10/6至10/13，广义弯路约70条、占4.1%（ba0a3dd9）。",
+          "quote": "精力对账(ba0a3dd9,`_effort_account.py`可复跑):1701 commit六线分类,A判分线36%最大;自举本体41条=2.4%(10/6-13集中弯路),广义弯路~70条=4.1%",
+          "supported": true,
+          "quote_ok_len": 104
+        },
+        {
+          "claim": "病根是10月6日设定的“3000触发器”数量里程碑劫持方向，属于代理指标背叛真值；8月同型原型过期未获引鉴成为再发条件。",
+          "quote": "病根定谳:10/6\"3000触发器\"数量里程碑劫持方向=代理指标背叛真值标本;8月同型原型过期无引鉴=再发条件",
+          "supported": true,
+          "quote_ok_len": 55
+        },
+        {
+          "claim": "checklist正本设为勘误档§四，新增“重启旧线先查前次终止原因”，并同步至CLAUDE.md；不另建新档以防SSOT漂移（d8f85611）。",
+          "quote": "checklist正本=勘误档§四(d8f85611):新增\"重启旧线先查前次终止原因\";CLAUDE.md同步;刻意不造新档防SSOT drift",
+          "supported": true,
+          "quote_ok_len": 74
+        },
+        {
+          "claim": "daemon未响应的根因链是19879死隧道导致CPU rerank堵塞accept，ping超时后被误判为半死并进入重启循环。",
+          "quote": "daemon未响应根修(plugin 7a33a98):19879死隧道→CPU rerank堵accept→ping超时误判半死循环;hook自拉起+GRACE 600→60;\"[节流]\"是设计非故障",
+          "supported": true,
+          "quote_ok_len": 101
+        },
+        {
+          "claim": "daemon修复方案为hook未就绪时自动启动daemon_start，并将GRACE从600秒降至60秒（plugin 7a33a98）。",
+          "quote": "修法=hook未就绪自动踢daemon_start+GRACE 600→60",
+          "supported": true,
+          "quote_ok_len": 38
+        },
+        {
+          "claim": "rerank迁移所需的remote分支从未在HEAD中丢失，原因是工作区存在未提交的旧版daemon.py；checkout对齐后41/41测试通过（e6bd8d12）。",
+          "quote": "rerank迁Mac mini 8401(e6bd8d12):HEAD从未丢remote分支,真因=工作区躺未提交旧版daemon.py,checkout对齐即愈41/41绿;客户端已切8401;候Mac跑install脚本联调",
+          "supported": false,
+          "quote_ok_len": 114
+        },
+        {
+          "claim": "操作复发病四规为：Edit前必Read、长任务禁后台agent、坐标写入前实核、改动前确认工作区等于HEAD。",
+          "quote": "操作复发病四规:Edit前必Read/长任务禁后台agent(两轮随重启被杀零产出)/坐标写入前实核/改动前确认工作区=HEAD",
+          "supported": true,
+          "quote_ok_len": 64
+        },
+        {
+          "claim": "全量git log共拉取1701条commit，并运行_effort_account.py进行分类。",
+          "quote": "**数据拉取与分类**：`git log` 全量拉取 1701 条 commit 用于分类脚本；运行 `_effort_account.py` 输出 A/F/E/B/D/C/G/U 六线占比。",
+          "supported": false,
+          "quote_ok_len": 96
+        },
+        {
+          "claim": "对账正本文档为docs/metering/EFFORT_ACCOUNTING_20261020.md，提交号为ba0a3dd9。",
+          "quote": "**文档更新**：`docs/metering/EFFORT_ACCOUNTING_20261020.md` 提交对账正本 (ba0a3dd9)；`docs/errata.md` §四 新增 checklist 第 5 条，提交 (d8f85611)；`CLAUDE.md` 同步复发陷阱速览。",
+          "supported": false,
+          "quote_ok_len": 147
+        },
+        {
+          "claim": "docs/errata.md §四新增checklist第5条，提交号为d8f85611，CLAUDE.md同步了复发陷阱速览。",
+          "quote": "`docs/errata.md` §四 新增 checklist 第 5 条，提交 (d8f85611)；`CLAUDE.md` 同步复发陷阱速览。",
+          "supported": false,
+          "quote_ok_len": 74
+        },
+        {
+          "claim": "daemon_start.sh已改用192.168.5.120:8401并清除19879死隧道，提交号为plugin 8adc41c。",
+          "quote": "**Daemon 修复与部署**：`daemon_start.sh` 修改端点 `192.168.5.120:8401` 并清死隧道 19879 (plugin 8adc41c)；`daemon.py` 工作区 checkout HEAD 对齐，恢复 remote 分支 (e6bd8d12)；`daemon` 重启 (PID 360469, 7s ready) 验证恢复版代码。",
+          "supported": false,
+          "quote_ok_len": 190
+        },
+        {
+          "claim": "daemon已以PID 360469重启，并在7秒后进入ready状态。",
+          "quote": "`daemon` 重启 (PID 360469, 7s ready) 验证恢复版代码",
+          "supported": false,
+          "quote_ok_len": 42
+        },
+        {
+          "claim": "tools/macmini_rerank_install.sh已生成Mac mini一键安装脚本，提交号为e6bd8d12。",
+          "quote": "**Mac mini 环境**：`tools/macmini_rerank_install.sh` 生成 Mac mini 一键安装脚本 (e6bd8d12)；`ssh config` 补全 Host macmini HostName 为 192.168.5.120。",
+          "supported": false,
+          "quote_ok_len": 134
+        },
+        {
+          "claim": "ssh config已补全Host macmini的HostName为192.168.5.120。",
+          "quote": "`ssh config` 补全 Host macmini HostName 为 192.168.5.120",
+          "supported": false,
+          "quote_ok_len": 53
+        },
+        {
+          "claim": "后台agent会随进程重启被杀并造成长任务零产出，因此长任务必须改为脚本化前台运行。",
+          "quote": "后台 agent 随进程重启被杀导致长任务零产出，必须脚本化前台跑。",
+          "supported": false,
+          "quote_ok_len": 34
+        },
+        {
+          "claim": "Edit凭记忆副本当old_string会导致not-found或语法错误，因此Edit前必须Read。",
+          "quote": "Edit 凭记忆副本当 old_string 导致 not-found 或语法错误，Edit 前必 Read。",
+          "supported": false,
+          "quote_ok_len": 55
+        },
+        {
+          "claim": "坐标凭印象写入会导致hash或路径错误，因此写入前必须实测核实。",
+          "quote": "坐标凭印象写导致 hash/路径错误，写入前必实核。",
+          "supported": false,
+          "quote_ok_len": 26
+        },
+        {
+          "claim": "改动前未用全量git status确认工作区等于HEAD，曾导致diff误伤。",
+          "quote": "改动前未全量 git status 确认工作区=HEAD，导致 diff 误伤。",
+          "supported": false,
+          "quote_ok_len": 40
+        },
+        {
+          "claim": "Mac mini联调仍待执行tools/macmini_rerank_install.sh并完成三步联调。",
+          "quote": "**Mac mini 联调**：执行 `tools/macmini_rerank_install.sh` 后三步联调状态待反馈。",
+          "supported": false,
+          "quote_ok_len": 64
+        },
+        {
+          "claim": "rerank迁移后是否彻底消除CPU fallback仍需通过daemon.log确认。",
+          "quote": "**CPU fallback 验证**：rerank 迁 Mac mini 后是否彻底消除 CPU fallback 需 daemon.log 确认。",
+          "supported": false,
+          "quote_ok_len": 75
+        },
+        {
+          "claim": "ssh config中的User字段仍待回报。",
+          "quote": "**SSH 配置**：ssh config 中 User 字段仍待回报。",
+          "supported": false,
+          "quote_ok_len": 36
+        }
+      ],
+      "anchor_count": 22,
+      "anchor_covered": 3,
+      "elapsed_s": 12.8
+    },
+    {
+      "session_id": "03612a3e-4bad-417c-a17f-daad3f979a0a",
+      "source_sha256": "4f48f515d69c5dd9aefd61e85fcef70a309cb0170c2e8606b1c481ffbfe2e344",
+      "summary_sha256": "4d35ae580efc9a4b6382fe7ff10c8b3e0648b896cd8b300aeb73b3c4102032d5",
+      "anchors_sha256": "312a30af7b3ea6bc09ef5b7289e8ff66b91c8f9d19c3fe0bfdf9cc0134982cdc",
+      "reviewer": "minimax-m3-independent-v1",
+      "status": "hold",
+      "claims": 32,
+      "supported": 0,
+      "unsupported": [
+        "BGE 架构已收敛到 Mac mini M6（192.168.5.120:8400），A100 已停机。",
+        "Mac mini BGE 单条响应为 63ms，批量吞吐为 244 条/s；A100 隧道吞吐为 5 条/s。",
+        "记忆服务修复了 hook.sh 解释器断链、旧版 daemon.py 互踩和 embedding=None 缓存污染。",
+        "记忆服务采用仓版同步单真源、daemon_env 文件权威配置和 None 校验，并禁用 SYSTEM watchdog。",
+        "创世十家首批外联共发出5封，其中 EverOS、Hindsight、mem0 仍在观察，cognee、letta 已处置。",
+        "11196 判读卡 nautilus-l1-0007 提前 SLA 11.5 小时出卡并公网上线。",
+        "待办包括确认 token 路径以完成 cloud recall 端到端验证。",
+        "v5 首考材料仍待 v5 方补齐三处缺口。",
+        "11213 判读仍等待 platform 提供收款凭证坐标。",
+        "Mac mini 数据迁移需筹备 Claude Code 会话记录迁移至 Mac mini，NAS 中转方案尚待执行。",
+        "清理 SYSTEM 权限孤儿进程使用 Stop-Process -Id 17376 -Force。",
+        "清理 nautilus_compass_daemon_watchdog 拉起的实例使用 Stop-Process -Id 8560 -Force。",
+        "禁用 SYSTEM 级拉起源的命令是 schtasks /change /tn \"nautilus_compass_daemon_watchdog\" /disable。",
+        "Mac mini SSH 连接验证命令是 ssh chunxiao.wang@192.168.5.120。",
+        "BGE 服务在线验证命令是 curl http://192.168.5.120:8400/health。",
+        "Mac mini 的 BGE 安装脚本为 bash macmini_bge_install.sh。",
+        "内网穿透方案文档路径是 docs/plans/CLOUD_EMBED_MACMINI_PENETRATION_20261016.md。",
+        "A100 停机止损使用的 API 是 stop_instance_with_refund。",
+        "cloud 连接 Mac mini 嵌入服务使用 ssh -R 19988 反向隧道。",
+        "reflog 被用于证伪 merge 问题。",
+        "daemon_env 用于文件权威配置。",
+        "首考判据编号是 b81eca8436887785。",
+        "首考 finding 是 is_smoke 字段断链。",
+        "Mac mini 的 BGE 统一地址是 192.168.5.120:8400。",
+        "Mac mini 编号为 11183。",
+        "测试脚本误读 hits 而协议键是 recall，导致连续误报“零召回”。",
+        "untracked 文件导致 merge 静默 Abort，曾被误判为 platform 回滚；应改用 reflog。",
+        "插件目录旧版 daemon.py 副本会造成双实例互踩，仓版本必须覆盖插件副本。",
+        "paramiko 每连接新建会打爆 A100 sshd 限额，终解是 SSH 密钥长连接复用。",
+        "首考因无评测产物判为 insufficient_evidence，并发现 action 到 platform 的 is_smoke 字段断链。",
+        "cognee 明确要求勿再联系，应永久移除；letta 未走7项模板而被 bot 关闭。",
+        "11183 的 Mac mini 凭据是未替换的变量字面量，已退回重发。"
+      ],
+      "anchor_recall": 0.0333,
+      "claims_detail": [
+        {
+          "claim": "BGE 架构已收敛到 Mac mini M6（192.168.5.120:8400），A100 已停机。",
+          "quote": "BGE 架构收敛：A100 已停机（退 1.79 元，累计消费定格 1071.14 元），本地 daemon 经 SSH 反向隧道（19988）连接 Mac mini M6 (192.168.5.120:8400)，实现零公网暴露。",
+          "supported": false,
+          "quote_ok_len": 116
+        },
+        {
+          "claim": "Mac mini BGE 单条响应为 63ms，批量吞吐为 244 条/s；A100 隧道吞吐为 5 条/s。",
+          "quote": "单条响应 63ms，批量 244 条/s（A100 隧道仅 5 条/s），笔记本内存占用 743MB 且无本地 BGE 实例。",
+          "supported": false,
+          "quote_ok_len": 63
+        },
+        {
+          "claim": "记忆服务修复了 hook.sh 解释器断链、旧版 daemon.py 互踩和 embedding=None 缓存污染。",
+          "quote": "记忆服务根修：修复 hook.sh 解释器断链、插件目录旧版 `daemon.py` 互踩、pkl 缓存 `embedding=None` 污染；确认协议键为 `recall` 而非 `hits`，消除误报。",
+          "supported": false,
+          "quote_ok_len": 104
+        },
+        {
+          "claim": "记忆服务采用仓版同步单真源、daemon_env 文件权威配置和 None 校验，并禁用 SYSTEM watchdog。",
+          "quote": "执行仓版同步单真源 + 文件权威配置 (`daemon_env`) + None 校验，禁用 SYSTEM watchdog。",
+          "supported": false,
+          "quote_ok_len": 63
+        },
+        {
+          "claim": "创世十家首批外联共发出5封，其中 EverOS、Hindsight、mem0 仍在观察，cognee、letta 已处置。",
+          "quote": "外联进展：创世十家首批 5 发（EverOS/Hindsight/mem0 观察中，cognee/letta 已处置）；dev.to 三条回复全部上墙。",
+          "supported": false,
+          "quote_ok_len": 76
+        },
+        {
+          "claim": "11196 判读卡 nautilus-l1-0007 提前 SLA 11.5 小时出卡并公网上线。",
+          "quote": "首考闭环：11196 判读卡（nautilus-l1-0007）提前 SLA 11.5h 出卡并公网上线，验证自动化闭环。",
+          "supported": false,
+          "quote_ok_len": 61
+        },
+        {
+          "claim": "待办包括确认 token 路径以完成 cloud recall 端到端验证。",
+          "quote": "Cloud Recall 验证：需确认 token 文件路径以完成 cloud daemon 端到端验证。",
+          "supported": false,
+          "quote_ok_len": 53
+        },
+        {
+          "claim": "v5 首考材料仍待 v5 方补齐三处缺口。",
+          "quote": "v5 首考材料：等待 v5 方提供三缺口材料（SLA 今晚 20:00）。",
+          "supported": false,
+          "quote_ok_len": 37
+        },
+        {
+          "claim": "11213 判读仍等待 platform 提供收款凭证坐标。",
+          "quote": "11213 判读：等待 platform 提供收款凭证坐标。",
+          "supported": false,
+          "quote_ok_len": 30
+        },
+        {
+          "claim": "Mac mini 数据迁移需筹备 Claude Code 会话记录迁移至 Mac mini，NAS 中转方案尚待执行。",
+          "quote": "Mac mini 数据迁移：需筹备 Claude Code 会话记录迁移至 Mac mini（NAS 中转方案待执行）。",
+          "supported": false,
+          "quote_ok_len": 60
+        },
+        {
+          "claim": "清理 SYSTEM 权限孤儿进程使用 Stop-Process -Id 17376 -Force。",
+          "quote": "`Stop-Process -Id 17376 -Force`：清理 SYSTEM 权限孤儿进程。",
+          "supported": false,
+          "quote_ok_len": 49
+        },
+        {
+          "claim": "清理 nautilus_compass_daemon_watchdog 拉起的实例使用 Stop-Process -Id 8560 -Force。",
+          "quote": "`Stop-Process -Id 8560 -Force`：清理 `nautilus_compass_daemon_watchdog` 拉起的新实例。",
+          "supported": false,
+          "quote_ok_len": 76
+        },
+        {
+          "claim": "禁用 SYSTEM 级拉起源的命令是 schtasks /change /tn \"nautilus_compass_daemon_watchdog\" /disable。",
+          "quote": "`schtasks /change /tn \"nautilus_compass_daemon_watchdog\" /disable`：禁用 SYSTEM 级拉起源。",
+          "supported": false,
+          "quote_ok_len": 82
+        },
+        {
+          "claim": "Mac mini SSH 连接验证命令是 ssh chunxiao.wang@192.168.5.120。",
+          "quote": "`ssh chunxiao.wang@192.168.5.120`：验证 Mac mini 连接。",
+          "supported": false,
+          "quote_ok_len": 49
+        },
+        {
+          "claim": "BGE 服务在线验证命令是 curl http://192.168.5.120:8400/health。",
+          "quote": "`curl http://192.168.5.120:8400/health`：验证 BGE 服务在线。",
+          "supported": false,
+          "quote_ok_len": 52
+        },
+        {
+          "claim": "Mac mini 的 BGE 安装脚本为 bash macmini_bge_install.sh。",
+          "quote": "`bash macmini_bge_install.sh`：Mac mini 安装脚本（由 openclaw 执行）。",
+          "supported": false,
+          "quote_ok_len": 59
+        },
+        {
+          "claim": "内网穿透方案文档路径是 docs/plans/CLOUD_EMBED_MACMINI_PENETRATION_20261016.md。",
+          "quote": "`docs/plans/CLOUD_EMBED_MACMINI_PENETRATION_20261016.md`：内网穿透方案文档。",
+          "supported": false,
+          "quote_ok_len": 66
+        },
+        {
+          "claim": "A100 停机止损使用的 API 是 stop_instance_with_refund。",
+          "quote": "`stop_instance_with_refund` (A100 停机止损)",
+          "supported": false,
+          "quote_ok_len": 39
+        },
+        {
+          "claim": "cloud 连接 Mac mini 嵌入服务使用 ssh -R 19988 反向隧道。",
+          "quote": "`ssh -R 19988` (cloud 反向隧道)",
+          "supported": false,
+          "quote_ok_len": 27
+        },
+        {
+          "claim": "reflog 被用于证伪 merge 问题。",
+          "quote": "`reflog` (证伪 merge 问题)",
+          "supported": false,
+          "quote_ok_len": 22
+        },
+        {
+          "claim": "daemon_env 用于文件权威配置。",
+          "quote": "`daemon_env` (文件权威配置)",
+          "supported": false,
+          "quote_ok_len": 21
+        },
+        {
+          "claim": "首考判据编号是 b81eca8436887785。",
+          "quote": "`b81eca8436887785` (判据)",
+          "supported": false,
+          "quote_ok_len": 23
+        },
+        {
+          "claim": "首考 finding 是 is_smoke 字段断链。",
+          "quote": "`finding=is_smoke` (字段)",
+          "supported": false,
+          "quote_ok_len": 23
+        },
+        {
+          "claim": "Mac mini 的 BGE 统一地址是 192.168.5.120:8400。",
+          "quote": "192.168.5.120:8400 (BGE 统一 Mac mini 地址)",
+          "supported": false,
+          "quote_ok_len": 39
+        },
+        {
+          "claim": "Mac mini 编号为 11183。",
+          "quote": "11183 (Mac mini 编号)",
+          "supported": false,
+          "quote_ok_len": 19
+        },
+        {
+          "claim": "测试脚本误读 hits 而协议键是 recall，导致连续误报“零召回”。",
+          "quote": "测试脚本误读协议键（`hits` vs `recall`）导致连续误报“零召回”，需严格对照协议注释。",
+          "supported": false,
+          "quote_ok_len": 51
+        },
+        {
+          "claim": "untracked 文件导致 merge 静默 Abort，曾被误判为 platform 回滚；应改用 reflog。",
+          "quote": "将 `untracked` 文件导致的 merge 静默 Abort 误判为 platform 回滚，需禁止 `tail -1` 截断输出，改用 reflog。",
+          "supported": false,
+          "quote_ok_len": 80
+        },
+        {
+          "claim": "插件目录旧版 daemon.py 副本会造成双实例互踩，仓版本必须覆盖插件副本。",
+          "quote": "插件目录存在旧版 `daemon.py` 副本，导致双实例互踩，需确保仓版本覆盖插件副本。",
+          "supported": false,
+          "quote_ok_len": 45
+        },
+        {
+          "claim": "paramiko 每连接新建会打爆 A100 sshd 限额，终解是 SSH 密钥长连接复用。",
+          "quote": "paramiko 每连接新建导致 A100 sshd 限额打爆，终解为 ssh 密钥长连接复用。",
+          "supported": false,
+          "quote_ok_len": 48
+        },
+        {
+          "claim": "首考因无评测产物判为 insufficient_evidence，并发现 action 到 platform 的 is_smoke 字段断链。",
+          "quote": "首考断链：无评测产物判 `insufficient_evidence`，`finding=is_smoke` 字段 action→platform 断链。",
+          "supported": false,
+          "quote_ok_len": 77
+        },
+        {
+          "claim": "cognee 明确要求勿再联系，应永久移除；letta 未走7项模板而被 bot 关闭。",
+          "quote": "外联教训：cognee“勿再联系”=永久移除；letta 未走 7 项模板被 bot 关；平台信箱漏巡 11 封=Gmail 教训复发。",
+          "supported": false,
+          "quote_ok_len": 68
+        },
+        {
+          "claim": "11183 的 Mac mini 凭据是未替换的变量字面量，已退回重发。",
+          "quote": "配置错误：11183 Mac mini 凭据系未替换变量字面量，退回重发。",
+          "supported": false,
+          "quote_ok_len": 37
+        }
+      ],
+      "anchor_count": 60,
+      "anchor_covered": 2,
+      "elapsed_s": 9.7
+    },
+    {
+      "session_id": "03bba014-f9e9-4359-a427-877ca2c5c228",
+      "source_sha256": "4ff71004db875fcdfcfc3b00d3e385615a064e5130b14059db45ffdf48182d01",
+      "summary_sha256": "88f2d2b7999fb93e21cfd0e85049b9358dbfe5f1cb0ea62e26d1bf3b7eb3b637",
+      "anchors_sha256": "3ba91f73961309e3fae673db6f6a8fcf53982b7cf7b8a4263fae61a4806dcc02",
+      "reviewer": "minimax-m3-independent-v1",
+      "status": "hold",
+      "claims": 26,
+      "supported": 0,
+      "unsupported": [
+        "自产工作记录作为 NACRE 训练燃料被判定为“从底层无效”，原因是缺乏客观对错且自居模型审计全 pass。",
+        "数量棘轮永久停止，4002 条无效数据撤出对外叙事。",
+        "1162 条训练数据中，96% 源自官方基准真值并通过机械复算，仅约 35 条为真人工标注。",
+        "原“1032 人工题”口径作废，术语统一为“官方真值基准的本地判定样本”。",
+        "NACRE 燃料仅认外部真评测题或官方基准题，自产语料仅保留用于 RAG 检索。",
+        "新燃料来源确定为客户真值回执、判读员认证众包和收购标注三路，其中客户真值回执为首选，收购标注为最后手段。",
+        "1701 条 commit 全量分析显示，无效自举线占 2.4%，共 41 条，集中于 10/6–10/13。",
+        "有效燃料约 10 条现役，判分与验证主线占比 36%。",
+        "数量里程碑劫持了方向，形式严谨的流程未覆盖“材料是否有客观对错”的验证。",
+        "rerank 服务已迁至 Mac mini 的 8401 端口，本地 daemon 已对齐 HEAD 并恢复 remote 分支，死隧道 19879 已清理。",
+        "registry.html 插入勘误横幅，声明“8B 触发”语义作废，提交为 389392b7。",
+        "errata.html 追加 10/19 勘误行，修正“1032 人工题”并记录自举线定谳，提交为 4197bc2d。",
+        "精力对账报告保存于 docs/metering/EFFORT_ACCOUNTING_20261020.md，提交为 ba0a3dd9，包含 1701 条 commit 分类矩阵。",
+        "ERRATA_NACRE_SELFBOOT_20261019.md 的 §五已更新，明确真值构成与术语修正。",
+        "通过 git checkout HEAD -- daemon.py 恢复工作区漂移后，remote rerank 分支回归，41/41 测试通过。",
+        "daemon_start.sh 的端点已改为 192.168.5.120:8401，并清理 19879 死隧道，plugin 提交为 8adc41c。",
+        "tools/macmini_rerank_install.sh 是 Mac mini rerank 服务的一键安装脚本，提交为 e6bd8d12，并配置 MPS fp32 与 LaunchD 常驻。",
+        "CLAUDE.md 已新增复发陷阱速览，提交为 d8f85611，包含“重启旧线先查前次终止原因”和“Edit 前必 Read”规则。",
+        "独立验证铁律未用于自家产物，导致 SELFLABEL 审计全 pass 及 P2 盲评失效。",
+        "操作复发病包括 Edit 凭记忆副本导致 not-found 或语法错误、坐标凭印象写入、后台 agent 随进程重启被杀，以及工作区未提交旧版漂移。",
+        "19879 死隧道导致 CPU rerank 堵死 accept 循环，ping 超时触发强杀重启，GRACE 600s 窗口加剧静默。",
+        "勘误档 §四被设为 checklist 正本，CLAUDE.md 同步，禁止新建档案以防 SSOT drift。",
+        "确立操作四规：Edit 前必 Read、长任务禁后台 agent、坐标写入前实核、改动前确认工作区与 HEAD 一致。",
+        "Mac mini 部署尚未完成，执行 tools/macmini_rerank_install.sh 时需用户设置 token 并运行脚本。",
+        "待 gaurav 试检材料到位后，启动客户真值回执字段收集，作为 NACRE 新燃料来源。",
+        "外部真评测题收购与众包路径的具体执行细节仍未决。"
+      ],
+      "anchor_recall": 0.0702,
+      "claims_detail": [
+        {
+          "claim": "自产工作记录作为 NACRE 训练燃料被判定为“从底层无效”，原因是缺乏客观对错且自居模型审计全 pass。",
+          "quote": "自产工作记录作为 NACRE 训练燃料被判定为“从底层无效”，因缺乏客观对错且自居模型审计全 pass。",
+          "supported": false,
+          "quote_ok_len": 52
+        },
+        {
+          "claim": "数量棘轮永久停止，4002 条无效数据撤出对外叙事。",
+          "quote": "数量棘轮永久停止，4002 条无效数据撤出对外叙事。",
+          "supported": false,
+          "quote_ok_len": 26
+        },
+        {
+          "claim": "1162 条训练数据中，96% 源自官方基准真值并通过机械复算，仅约 35 条为真人工标注。",
+          "quote": "实测 1162 条训练数据中 96% 源自官方基准真值（机械复算），仅约 35 条为真人工标注。",
+          "supported": false,
+          "quote_ok_len": 48
+        },
+        {
+          "claim": "原“1032 人工题”口径作废，术语统一为“官方真值基准的本地判定样本”。",
+          "quote": "原\"1032 人工题”口径作废，术语统一为“官方真值基准的本地判定样本”。",
+          "supported": false,
+          "quote_ok_len": 37
+        },
+        {
+          "claim": "NACRE 燃料仅认外部真评测题或官方基准题，自产语料仅保留用于 RAG 检索。",
+          "quote": "NACRE 燃料仅认外部真评测题（客户验收回执/co-build 为主）或官方基准题，自产语料仅保留用于 RAG 检索。",
+          "supported": false,
+          "quote_ok_len": 60
+        },
+        {
+          "claim": "新燃料来源确定为客户真值回执、判读员认证众包和收购标注三路，其中客户真值回执为首选，收购标注为最后手段。",
+          "quote": "新燃料来源确定为三路：客户真值回执（co-build 首选）、判读员认证众包、收购标注（最后手段，预计 65% 回旋镖）。",
+          "supported": false,
+          "quote_ok_len": 61
+        },
+        {
+          "claim": "1701 条 commit 全量分析显示，无效自举线占 2.4%，共 41 条，集中于 10/6–10/13。",
+          "quote": "1701 条 commit 全量分析显示，无效自举线仅占 2.4%（41 条，集中在 10/6–10/13 九天）",
+          "supported": false,
+          "quote_ok_len": 57
+        },
+        {
+          "claim": "有效燃料约 10 条现役，判分与验证主线占比 36%。",
+          "quote": "有效燃料约 10 条现役，主线（判分/验证）占比 36%。",
+          "supported": false,
+          "quote_ok_len": 29
+        },
+        {
+          "claim": "数量里程碑劫持了方向，形式严谨的流程未覆盖“材料是否有客观对错”的验证。",
+          "quote": "病根确认为数量里程碑劫持方向，形式严谨（预注册/复算）未覆盖“材料是否有客观对错”的验证。",
+          "supported": false,
+          "quote_ok_len": 45
+        },
+        {
+          "claim": "rerank 服务已迁至 Mac mini 的 8401 端口，本地 daemon 已对齐 HEAD 并恢复 remote 分支，死隧道 19879 已清理。",
+          "quote": "rerank 服务已迁至 Mac mini (8401 端口)，本地 daemon 代码对齐 HEAD 恢复 remote 分支，死隧道 19879 已清理。",
+          "supported": false,
+          "quote_ok_len": 79
+        },
+        {
+          "claim": "registry.html 插入勘误横幅，声明“8B 触发”语义作废，提交为 389392b7。",
+          "quote": "`registry.html` 插入勘误横幅 (commit 389392b7)，声明\"8B 触发”语义作废；",
+          "supported": false,
+          "quote_ok_len": 55
+        },
+        {
+          "claim": "errata.html 追加 10/19 勘误行，修正“1032 人工题”并记录自举线定谳，提交为 4197bc2d。",
+          "quote": "`errata.html` 追加 10/19 勘误行 (commit 4197bc2d)，修正\"1032 人工题”并记录自举线定谳。",
+          "supported": false,
+          "quote_ok_len": 66
+        },
+        {
+          "claim": "精力对账报告保存于 docs/metering/EFFORT_ACCOUNTING_20261020.md，提交为 ba0a3dd9，包含 1701 条 commit 分类矩阵。",
+          "quote": "`docs/metering/EFFORT_ACCOUNTING_20261020.md` 提交对账报告 (commit ba0a3dd9)，含 1701 条 commit 分类矩阵；",
+          "supported": false,
+          "quote_ok_len": 92
+        },
+        {
+          "claim": "ERRATA_NACRE_SELFBOOT_20261019.md 的 §五已更新，明确真值构成与术语修正。",
+          "quote": "`docs/metering/ERRATA_NACRE_SELFBOOT_20261019.md` 更新 §五，明确真值构成与术语修正。",
+          "supported": false,
+          "quote_ok_len": 68
+        },
+        {
+          "claim": "通过 git checkout HEAD -- daemon.py 恢复工作区漂移后，remote rerank 分支回归，41/41 测试通过。",
+          "quote": "`git checkout HEAD -- daemon.py` 恢复工作区漂移，确保 remote rerank 分支回归 (41/41 测试绿)；",
+          "supported": false,
+          "quote_ok_len": 75
+        },
+        {
+          "claim": "daemon_start.sh 的端点已改为 192.168.5.120:8401，并清理 19879 死隧道，plugin 提交为 8adc41c。",
+          "quote": "`daemon_start.sh` 修改端点为 `192.168.5.120:8401` 并清理 19879 死隧道 (plugin 8adc41c)；",
+          "supported": false,
+          "quote_ok_len": 76
+        },
+        {
+          "claim": "tools/macmini_rerank_install.sh 是 Mac mini rerank 服务的一键安装脚本，提交为 e6bd8d12，并配置 MPS fp32 与 LaunchD 常驻。",
+          "quote": "`tools/macmini_rerank_install.sh` 创建一键安装脚本 (commit e6bd8d12)，配置 MPS fp32 与 LaunchD 常驻。",
+          "supported": false,
+          "quote_ok_len": 86
+        },
+        {
+          "claim": "CLAUDE.md 已新增复发陷阱速览，提交为 d8f85611，包含“重启旧线先查前次终止原因”和“Edit 前必 Read”规则。",
+          "quote": "`CLAUDE.md` 新增复发陷阱速览 (commit d8f85611)，包含“重启旧线先查前次终止原因”及\"Edit 前必 Read\"规则。",
+          "supported": false,
+          "quote_ok_len": 73
+        },
+        {
+          "claim": "独立验证铁律未用于自家产物，导致 SELFLABEL 审计全 pass 及 P2 盲评失效。",
+          "quote": "验证盲区：独立验证铁律未用于自家产物，导致 SELFLABEL 审计全 pass 及 P2 盲评（实为参与管线者）失效。",
+          "supported": false,
+          "quote_ok_len": 60
+        },
+        {
+          "claim": "操作复发病包括 Edit 凭记忆副本导致 not-found 或语法错误、坐标凭印象写入、后台 agent 随进程重启被杀，以及工作区未提交旧版漂移。",
+          "quote": "- **编辑失误**：Edit 凭记忆副本导致 not-found 或语法错误（如漏掉 `]`）；坐标凭印象写入（如 346b06fe 误标）。\n- **进程管理**：长任务押注后台 agent 三次随进程重启被杀；工作区未提交旧版漂移导致 checkout 失败。",
+          "supported": false,
+          "quote_ok_len": 133
+        },
+        {
+          "claim": "19879 死隧道导致 CPU rerank 堵死 accept 循环，ping 超时触发强杀重启，GRACE 600s 窗口加剧静默。",
+          "quote": "- **死循环**：19879 死隧道导致 CPU rerank 堵死 accept 循环，ping 超时触发强杀重启，GRACE 600s 窗口过长加剧静默。",
+          "supported": false,
+          "quote_ok_len": 80
+        },
+        {
+          "claim": "勘误档 §四被设为 checklist 正本，CLAUDE.md 同步，禁止新建档案以防 SSOT drift。",
+          "quote": "教训入档（哈希：d8f85611）：勘误档§四设为 checklist 正本（新增“重启旧线先查前次终止原因”），CLAUDE.md 同步；禁止新建档案以防 SSOT drift。",
+          "supported": false,
+          "quote_ok_len": 90
+        },
+        {
+          "claim": "确立操作四规：Edit 前必 Read、长任务禁后台 agent、坐标写入前实核、改动前确认工作区与 HEAD 一致。",
+          "quote": "确立操作四规：Edit 前必 Read/长任务禁后台 agent（三轮被杀零产出）/坐标写入前实核/改动前确认工作区=HEAD。",
+          "supported": false,
+          "quote_ok_len": 64
+        },
+        {
+          "claim": "Mac mini 部署尚未完成，执行 tools/macmini_rerank_install.sh 时需用户设置 token 并运行脚本。",
+          "quote": "执行 `tools/macmini_rerank_install.sh` 完成 rerank 服务部署（需用户设置 token 并运行脚本）。",
+          "supported": false,
+          "quote_ok_len": 71
+        },
+        {
+          "claim": "待 gaurav 试检材料到位后，启动客户真值回执字段收集，作为 NACRE 新燃料来源。",
+          "quote": "待 gaurav 试检材料到位后，启动客户真值回执字段收集，作为 NACRE 新燃料来源。",
+          "supported": false,
+          "quote_ok_len": 45
+        },
+        {
+          "claim": "外部真评测题收购与众包路径的具体执行细节仍未决。",
+          "quote": "外部真评测题收购/众包路径的具体执行细节（若用户选择推进）。",
+          "supported": false,
+          "quote_ok_len": 30
+        }
+      ],
+      "anchor_count": 57,
+      "anchor_covered": 4,
+      "elapsed_s": 6.9
+    }
+  ],
+  "published": false
+}

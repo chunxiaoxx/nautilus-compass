@@ -55,7 +55,7 @@
   ],
   "next_action": {
     "owner": "compass",
-    "action": "Obtain a second independent reviewer channel or explicit relay authorization, then review the same five held candidates; do not publish on local 9B self-review.",
+    "action": "Keep the five candidates on hold; use MiniMax-M3 as the independent reviewer for the next bounded batch only after fixing or explicitly accepting the low anchor-recall cases.",
     "required_fields": [
       "source_sha256",
       "summary_sha256",
@@ -90,5 +90,50 @@
     "bootstrap_verified": true,
     "recall_after_bootstrap_seconds": 5.1,
     "remote_rerank_fallback": false
+  },
+  "minimax_review_batch": {
+    "path": "runtime/cross-dialog-receipts/20261118-review-batch-1-minimax.json",
+    "sha256": "88e222852aef50f6e58ce39d5fb6ac05da9aca5a84798158c181c5c27802b325",
+    "model": "MiniMax-M3",
+    "channel_probe": "HTTP200",
+    "items": [
+      [
+        "01769e9f-6627-4320-8477-94201950324d",
+        "hold",
+        38,
+        38,
+        0.875
+      ],
+      [
+        "024ffe20-57df-4662-ac00-95503534b06f",
+        "hold",
+        19,
+        7,
+        0.0
+      ],
+      [
+        "02e3f72c-1ed3-4404-9752-d663b46e1da8",
+        "hold",
+        23,
+        8,
+        0.1364
+      ],
+      [
+        "03612a3e-4bad-417c-a17f-daad3f979a0a",
+        "hold",
+        32,
+        0,
+        0.0333
+      ],
+      [
+        "03bba014-f9e9-4359-a427-877ca2c5c228",
+        "hold",
+        26,
+        0,
+        0.0702
+      ]
+    ],
+    "approved_receipts": 0,
+    "published": false
   }
 }
