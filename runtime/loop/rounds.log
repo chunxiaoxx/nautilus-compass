@@ -4784,3 +4784,123 @@ RED 217→218(唯一 id99489 soul-distress **×84**)·信箱 0 未读·Gmail 401
 ⑤ 通道配额 · 磁盘 96% 零清理 · a2a#198 草稿 · Gmail 35 封草稿审稿 · 模真真三诉求 · 矩阵 phase2 解锁 · **py-spy 仍缺**
 
 ---- round end 2026-11-18 00:52 ----
+R564 值守轮完成，已提交并推送（`6731f4af..04abf91f`）。
+
+## 本轮实质增量
+
+**① 更正 R563 的一条候拍板项（误判，应撤销而非执行）**
+
+R563 留了「**bge-m3 本地化**（8400 因常驻内存而活·一旦重启将同样卡死·约 2.2GB 同法 SSH 拉）」。三条现场实测证明前提不成立：
+
+- `embed_server.py:11` = `MODEL_DIR = ~/bge-embed/models/bge-m3`，全文无 `huggingface`/`HF_HOME`/`snapshot_download` 引用
+- 该本地目录在位完整（4.3GB：`pytorch_model.bin` 2,271,145,830B + tokenizer + sentencepiece + config + modules + `1_Pooling/`）
+- `/health` ok(device=mps)；`/embed` 实测 **0.03s / dim=1024**
+
+⇒ 8400 **全程不读 HF 缓存、不读 NAS**。它不是「靠常驻内存侥幸活」，是**模型本来就在本地盘**。照原文执行会在 avail 18Gi 时白占 2.2GB。
+
+**② 定位到唯一残余地雷（R563 修法未覆盖）**
+
+R563 只修了 reranker（8401）。daemon 的**本地 fallback** 仍指向同一坏 NFS 子树：plist 实读 `COMPASS_EMBED_PROXY=127.0.0.1:8400` + `HF_HUB_OFFLINE=1`；`daemon.py:740-760` docstring 明示「proxy 不可达时由调用侧 fallback 本地」→ `daemon.py:765-774` `SentenceTransformer(EMBEDDER_MODEL)`；`daemon.py:592-597` 在 `~/.cache/modelscope/...` **不存在**（实测）时用 HF repo id `"BAAI/bge-m3"` → 落回坏子树。本轮独立复现同型阻塞（`refs/main` 12.15s 超时 / 列目录 5.09s EINTR / snapshots glob 返回空）。**8400 一掉线即重演 R562/R563 同一个 open() 永久阻塞。**
+
+候选修法（候拍板，本轮零执行）：**A 零字节改指**（造 HF 布局 shim，`snapshots/main -> 本地模型`·不复制 2.2GB）／**B** plist 增 `ZMM_EMBEDDER_MODEL` 绝对路径／**C** SSH 拉 2.2GB（冗余）。验证法与回滚已写档。
+
+档：`docs/incidents/INC_20261118_HF_NFS_FALLBACK_LANDMINE.md`
+
+## 值守面（全零增量）
+
+信箱 compass 0 未读 · RED to=platform **219 封持平**（最新仍 id100729 ×85）· Gmail 401→直刷 REFRESH_OK 3599s→7d 53 封/未读 32 持平/草稿 35 封零新，最大 internalDate 早于 R563 ⇒ **零新商务函** · mentions 5 全旧 · notifications 45 全旧 · genesis 5 家零 REPLY · dev.to 6+2 全旧 · a2a#198 仍 1 条 · CI compass 44228981191 success · 本地 HEAD=origin/main 零领先 · daemon 绿/watchdog exit0/哨兵 exit0 recall_hit=11 · **MCP recall 实打可用**（R563 修复持续有效）· GATE0 PASS · 快筛 CS-513 过其余不过 · 管道三件 exit0 · 矩阵 10-30 停摆 · 记忆库 1424 张噪声 86.5% · 磁盘 96% avail 18Gi。
+
+本轮**零生产改动**：未改 plist / 未改插件 daemon.py / 未改 symlink / 未 bootout distill / 未删记忆卡；未碰他线 5 个未提交文件、未代推他线提交、未裹挟他线 untracked 新件。
+
+记忆库已同步更正（原 memory 第 5 条误判已划改为「勿执行」并写入真残留项）。
+
+**候你拍板**：① fallback 地雷三修法 A/B/C ② distill 方案 A/B/C（含「共享插件 daemon.py 是否授权 compass 改」）③ distress ×85 人监门 ④ NAS 侧 NFS 读阻塞根因（框外）+ `~/mnt/nas-work2` 建议 unmount ⑤ 通道配额 / 磁盘 96% 零清理 / a2a#198 草稿 / Gmail 35 封草稿审稿 / 模真真三诉求 / 矩阵 phase2 解锁 / py-spy 仍缺
+---- round end 11-18 00:22 ----
+
+## R565（2026-11-18 01:55–02:29 EST）· 🔴 daemon 本地 fallback 地雷**实锤坐实** + 修法 B **实证可执行** + 解掉一个跨轮授权顾虑
+
+### 一、🔴 核心：R564 说的「唯一残余地雷」从推断 → 实锤
+
+`~/.cache/huggingface` → `~/.cache/hf-local`（R563 换的顶层 symlink）之下，**hub 条目逐一 `islink`/`readlink`/`realpath` 实测**：
+
+| hub 条目 | islink | 指向 | 在 NAS |
+|---|---|---|---|
+| `models--BAAI--bge-m3` | **是** | `~/mnt/nas-work/model-cache/huggingface/hub/models--BAAI--bge-m3` | **是** ← 坏子树 |
+| `models--BAAI--bge-reranker-v2-m3` | 否 | 本地真实目录（Nov 17 22:07 复制） | 否 ← R563 修好的那条 |
+| `models--mlx-community--Qwen3.5-9B-4bit` | **是** | `~/mnt/nas-work/model-cache/...` | **是** ← 🆕v5 框 MLX 侧同类雷（框外只报不动） |
+
+⇒ **R563 的「本地化」只做了 reranker，embedder 那条压根没本地化**。R564 的判断成立且更精确：地雷是**实锤**，触发条件不变（8400 一掉线 → daemon fallback `SentenceTransformer("BAAI/bge-m3")` → 命中坏子树 → 重演 R562/R563 的 open() 永久阻塞）。当前**待触发未爆**（8400 在跑）。
+
+### 二、NAS 读阻塞仍在·且 `stat` 会骗人
+
+带 SIGALRM 硬超时的逐步实测：
+
+| 操作 | 实测 |
+|---|---|
+| `os.stat(NAS 路径)` | **OK 0.00s** ← 属性缓存秒回·**不能当「路径健康」的证据** |
+| `os.listdir(NAS 路径)` | **ERR 5.67s `InterruptedError(4)`** |
+| `open(NAS refs/main)` | **TIMEOUT >10.07s** |
+| `listdir(~/.cache/hf-local)` / `listdir(hub)` | OK 0.00s（顶层换 symlink 确实生效·但只到第二层） |
+| `listdir(hub/models--BAAI--bge-m3)`（穿 symlink） | **ERR EINTR** |
+
+### 三、🔴 修法 B 实证可执行 + **顺带解掉 R561 遗留的授权顾虑**
+
+- `daemon.py:590-598` 实读：`EMBEDDER_MODEL = os.environ.get("ZMM_EMBEDDER_MODEL", …)` ⇒ **该 env 是既有开关**，修法 B = **一行 env·零代码**
+- ⇒ **R561 遗留的「共享插件 daemon.py 属所有框·compass 是否授权改它」对修法 B 不成立**（B 不碰共享代码）
+- 目标路径 `~/bge-embed/models/bge-m3` 结构完备（`1_Pooling/`、`modules.json`、`sentence_bert_config.json`、`tokenizer.json`、`sentencepiece.bpe.model`、`pytorch_model.bin` 2,271,145,830B）
+- **端到端实加载**（daemon 同一 venv：ST 6.0.1·py3.12；系统/homebrew/v5 `.venv` 均 IMPORT_FAIL）：
+
+```
+Loading weights: 100%|##########| 391/391 [00:00<00:00, 54914.71it/s]
+LOAD_OK  sec=2.9
+ENCODE_OK dim=1024 sec=3.72
+```
+
+⇒ 零拷贝 · 零下载 · 零 NAS 依赖。
+
+### 四、修法排序更正 **B > A > C**
+
+R564 的 A 方案前提需修正：hub 里 bge-m3 本身就是 symlink（A 实为「改指它」），且仍要赌 HF `refs/main → snapshots/<sha>` 布局被 ST 正确解析（本地模型无 hub 的 commit sha）⇒ 比 B 多一层不确定性；C（SSH 再拉 2.2GB）纯冗余（数据卷 97%）。
+
+### 五、最小变更面（候授权·**本轮零执行**）
+
+```diff
+  ~/Library/LaunchAgents/com.nautilus.compass-daemon.plist
+  EnvironmentVariables:
++   ZMM_EMBEDDER_MODEL = /Users/chunxiao.wang/bge-embed/models/bge-m3
+```
+
+生效：`launchctl kickstart -k gui/$UID/com.nautilus.compass-daemon`｜验证：daemon.log 出现 `BGE loaded · ~3s` + 故意停 8400 后 MCP recall 仍秒回 + `launchctl print` 确认 env｜回滚：删该行再 kickstart｜风险低（proxy 正常时 8400 路径不变）。
+
+### 六、NAS 侧根因新事实（框外）
+
+该子树**只读不写 = 数据完好但读不动** ⇒ 排查方向指向**挂载参数 / NFS 客户端重连 / 属性缓存与 mmap 交互**，而非数据修复（`INFRA_BASELINE` 责任域）。
+
+### 七、值守面（全零外部增量）
+
+| 面 | 读数 |
+|---|---|
+| 信箱 compass | **0** 未读 |
+| RED `to=platform` | **220 封**（R564 219 → **+1**：唯一新函 id101974 soul-distress ×86·soul→platform 非 compass·零行动） |
+| Gmail | 401 → 直刷 REFRESH_OK 3599s → 全量口径 7d **51 封**/未读 **30**（R564 53/32 · -2 出窗）/ 草稿 **35** 封零新 / 最大 internalDate 仍 **11-18 02:09Z IFTTT 营销**·早于 R564 ⇒ **零新商务函零新面孔** |
+| mentions / notifications | 5 条全旧（最新 11-02）/ 45 条全旧（最新 11-13） |
+| genesis / dev.to / a2a | 5 家零 REPLY / 30 文 6+2 全旧 / x402#198 仍 1 条（alanwang100 11-09） |
+| CI | compass **44243758143**（= R564 head 04abf91f）success · core 43558665734 success |
+| 本地 HEAD | = origin/main = 04abf91f **零领先** |
+| daemon / watchdog / 哨兵 | 9876 ok / exit0 / exit0 **recall_hit=28** |
+| **MCP recall** | **实打可用**（返回 3 hits + recall_token） |
+| GATE0 / 快筛 / 管道三件 | PASS / CS-513 过其余不过=历轮全同 / exit0 |
+| 矩阵 / S0 池 / 生产队列 | 10-30 09:42 停摆 / 两仓分支 404 退役态 / bait 层 DONE·只读 |
+| 记忆库 | **1425 张**（24h 内新改 18） |
+| 磁盘 | 数据卷 97% avail **13Gi**（较 R564 的 18Gi **-5Gi**·逼近 10Gi alarm 线·零清理候用户） |
+
+### 八、本轮边界与教训
+
+**零生产改动**：未改 plist / 未改插件 daemon.py / 未改 symlink / 未删未移记忆卡 / 未碰 NAS / 未碰他线 5 个未提交文件（保持 M）/ 未代推他线提交 / 未裹挟他线 untracked 新件。
+
+四条教训：① **「换顶层 symlink」≠「本地化」**——必须逐层枚举条目；② **「stat 秒回」是属性缓存的谎言**——判路径可用必须 readdir/open；③ 修法按「是否需改共享代码」重排——B 优于 A，且**解掉一个跨轮继承的授权顾虑**（候拍板项的阻塞点常藏在「谁有权改」而非技术难度）；④ 端到端实加载优先于结构核对。
+
+产出：`docs/incidents/INC_20261118_HF_NFS_FALLBACK_LANDMINE_R565_PROOF.md`
+
+**候你拍板**：① **fallback 地雷修法 B（一行 env·零代码·已实证）** ⭐本轮新证据 ② A 方案（改 symlink·多一层不确定性）③ distill 方案 A/B/C（含「共享插件 daemon.py 是否授权 compass 改」——**注：修法 B 不涉及此项**）④ distress **×86** 人监门（人工删 `.soul-pause`·不代删）⑤ NAS 侧 NFS 读阻塞根因（框外·只读不写·查挂载/重连/mmap）+ `~/mnt/nas-work2` 建议 unmount + v5 框 MLX 同类雷 ⑥ 🔴 **磁盘 97% avail 13Gi 且 -5Gi/轮**（零清理候用户·逼近 10Gi alarm 线）⑦ 通道配额 · a2a#198 草稿 · Gmail 35 封草稿审稿 · 模真真三诉求 · 矩阵 phase2 解锁 · py-spy 仍缺
+---- round end 11-18 02:29 ----

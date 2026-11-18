@@ -1,7 +1,13 @@
 {
-  "round": 564,
-  "last_round_ts": "2026-11-18 00:52",
+  "round": 565,
+  "last_round_ts": "2026-11-18 02:29",
   "history": [
+    {
+      "round": 565,
+      "ts": "2026-11-18 02:29",
+      "result": "substantive",
+      "note": "R565 实质增量值守轮(🔴 daemon 本地 fallback 地雷实锤坐实 + 修法 B 实证可执行 + 解掉跨轮授权顾虑 + 磁盘 -5Gi 逼近 alarm 线)①【实锤】R564 说的「唯一残余地雷」不再是推断:hf-local/hub 三条目逐一 islink/readlink 实测——models--BAAI--bge-m3 仍是 NAS symlink(→~/mnt/nas-work/model-cache/huggingface/hub/...)=R563 的「本地化」只做了 reranker 一条,embedder 那条压根没本地化;models--BAAI--bge-reranker-v2-m3 是本地真实目录(R563 修好);🆕models--mlx-community--Qwen3.5-9B-4bit 也是 NAS symlink=v5 框 MLX 侧同类雷(框外只报不动)。②【NAS 阻塞仍在·stat 骗人】带 SIGALRM 硬超时实测:os.stat 0.00s 秒回(=属性缓存假象)·listdir 5.67s EINTR·open refs/main >10.07s TIMEOUT;穿过 symlink 的 listdir 同样 EINTR;hf-local 顶层与 hub 层 listdir 0.00s 秒回⇒R563 顶层换 symlink 确实生效但只到第二层。③【修法 B 实证可执行·本轮新增】daemon.py:590-598 实读确认 ZMM_EMBEDDER_MODEL 是既有开关(非需新增)⇒修法 B 是【一行 env·零代码】⇒🔴顺带解掉 R561 遗留的跨轮授权顾虑「共享插件 daemon.py 属所有框·compass 是否授权改它」——对 B 不成立(B 不碰共享代码)。④【端到端实测】目标路径 ~/bge-embed/models/bge-m3 结构完备(ST 所需 1_Pooling/modules.json/sentence_bert_config.json/tokenizer.json/sentencepiece 等全在·pytorch_model.bin 2,271,145,830B),用 daemon 同一 venv(ST 6.0.1·py3.12;系统/homebrew/v5 .venv 均 IMPORT_FAIL)实加载:LOAD_OK 2.9s(391/391 权重全载)+ENCODE_OK dim=1024 3.72s ⇒ 零拷贝零下载零NAS。⑤【修法排序更正 B>A>C】R564 的 A 方案前提需修正:hub 里 bge-m3 本身就是 symlink(A=改指它)且仍要赌 HF refs/main→snapshots/<sha> 布局被 ST 正确解析(本地模型无 hub sha)⇒比 B 多一层不确定性;C(再拉 2.2GB)纯冗余。⑥【最小变更面·候授权·本轮零执行】plist 增 ZMM_EMBEDDER_MODEL=/Users/chunxiao.wang/bge-embed/models/bge-m3 一行⇒launchctl kickstart -k⇒验证 daemon.log 出现 'BGE loaded · ~3s' + 故意停 8400 后 MCP recall 仍秒回⇒回滚=删该行再 kickstart。⑦【NAS 侧根因·新事实】该子树只读不写=数据完好但读不动⇒排查方向指向挂载参数/NFS 客户端重连/属性缓存与 mmap 交互,而非数据修复(框外·INFRA_BASELINE 责任域)。⑧【值守面】RED to=platform 220(较 R564 的 219 +1=唯一新函 id101974 soul-distress ×86·soul→platform 非 compass 零行动)·信箱 compass 0 未读·Gmail 401→直刷 REFRESH_OK 3599s→全量口径 7d 51 封/未读 30 封(R564 记 53/32·-2 出窗)/草稿 35 封零新·最大 internalDate 仍 11-18 02:09Z IFTTT 营销·早于 R564⇒零新商务函零新面孔·mentions 5 全旧·notifications 45 全旧·genesis 5 家零 REPLY·dev.to 30 文 6+2 全旧·CI compass 44243758143(=R564 head 04abf91f) success·core 43558665734 success·本地 HEAD=origin/main=04abf91f 零领先·daemon 绿 9876·watchdog exit0·哨兵 exit0 recall_hit=28·MCP recall 实打可用(返回 3 hits + recall_token)·GATE0 PASS·快筛 CS-513 过其余不过=历轮全同·管道三件 exit0·矩阵 10-30 09:42 停摆·S0 池两仓分支仍 404 退役态·生产队列 bait 层 DONE compass 只读·记忆库 1425 张(24h 内新改 18)·🔴磁盘数据卷 97% avail 13Gi(较 R564 的 18Gi **-5Gi**·逼近 10Gi alarm 线·零清理候用户)。⑨【本轮零生产动作】未改 plist/未改插件 daemon.py/未改 symlink/未删未移记忆卡/未碰 NAS/未碰他线 5 个未提交文件(保持 M)/未代推他线提交/未裹挟他线 untracked 新件;产出 docs/incidents/INC_20261118_HF_NFS_FALLBACK_LANDMINE_R565_PROOF.md。⑩【本轮四条教训】(1)「换顶层 symlink」≠「本地化」——必须逐层枚举条目 islink/readlink/realpath;(2)「stat 秒回」是属性缓存的谎言——判路径可用必须 readdir/open;(3)修法要按「是否需要改共享代码」重排——B(一行 env 零代码)优于 A(要赌 HF 布局),且顺带解掉跨轮继承的授权顾虑;(4)端到端实加载优先于结构核对。"
+    },
     {
       "round": 561,
       "ts": "2026-11-17 17:35",
