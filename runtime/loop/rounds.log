@@ -4677,3 +4677,64 @@ RED to=platform 216→217（唯一增量 id98784 soul-distress **×83**）·Gmai
 
 **本轮生产动作仅一条**:kickstart daemon(等价于 watchdog 自带命令·可逆)+ 仓内 watchdog 脚本探活口径改动(已单测);未改插件副本 daemon.py / 未 bootout distill / 未删记忆卡 / 未碰他线 5 个未提交文件。
 ---- round end 11-17 19:50 ----
+R562 值守轮完成(实质增量轮),已提交推送 `22da2ff9`。
+
+## 🔴 事故:Compass 召回入口全停(本地 daemon 过载 livelock)
+
+**症状**:本轮会话 hook 自报「daemon 未就绪·本轮跳过注入」+ MCP recall 返 `daemon overloaded - retry` → 记忆召回链全灭。
+
+**根因(实测证据链)**:
+- 旧 daemon PID 69627(Sun01AM 起·0.0% CPU)in-flight 槽 32 全占满 → 每连接 reject-fast,进程上仍挂 30+ CLOSED 客户端套接字,本轮拒绝约 244 行
+- **自愈三盲点**:①`daemon_start.sh` 遇「Address already in use」×4 起不来新实例 ②`.cache/daemon.pid` 记的是死 PID 77653 ③**`mcp_watchdog.sh` 探活=裸 TCP connect** → 端口仍 LISTEN 就判 ok → 永不 kickstart(watchdog exit 0 而 recall 全挂)
+- **复发定谳**:与 `docs/incidents/CLOUD_RECALL_LIVELOCK_20261012.md` 云端同型。10-12 的根修 `COMPASS_FILL_BUDGET_S` 只落在云端 `daemon_v33.py`(不在 git);本地插件 `daemon.py` 与仓内 `daemon.py` **字节相同且均无该预算** → 本地从未拿到根修。
+
+**已恢复(实测)**:`launchctl kickstart -k gui/uid/com.nautilus.compass-daemon` → 新 PID 80947·ping/status 秒回·**重启后 overload 拒绝 0 行**。
+
+**⚠ 负结果照报:查询路径仍挂**。MCP recall 连续 2 次超时、带 token 直连 150s 无响应、status 报 `count_5min=0 / p9 hit=0 miss=5`(5 次请求无一完成)、CPU 0.0%、**daemon 无任何出向 TCP**(8400/8401 均健康)→ 阻塞在进程内锁等待[推断];**精确阻塞点[不可验]**——本机 py-spy 未装、venv 无 pip、PATH 无 uv,只有 macOS `sample`(无 Python 帧),10-12 档留的「复发先 py-spy 抓现场」行动项直接落空。
+
+## 🆕 本轮落地(可验收)
+`scripts/mcp_watchdog.sh` 探活改用 daemon 免鉴权 `{"action":"ping"}`,三态分开:**overloaded/dead → kickstart**、**busy → 不重启**(避免打断正在做的 fill)。mock 单测三态判定全过,实跑落 `local=200 daemon=ok public=000`。产出 `docs/incidents/DAEMON_RECALL_LIVELOCK_RECURRENCE_20261117.md`。
+
+## 值守面(持平)
+RED 217→218(唯一 id99489 soul-distress **×84**)·信箱 0 未读·Gmail 401→直刷 REFRESH_OK→7d 58 封/未读 33 封与 R561 持平,逐封 sender 全甄零新商务函·草稿 35 封零新·mentions/notifications 全旧·genesis 5 家零 REPLY·dev.to 6+2=8·CI 新 head 已排队(前一轮绿)·哨兵 exit0 recall_hit=102·快筛历轮全同·矩阵仍停 10-30 09:42·磁盘 97% avail 14Gi(-3Gi)·**distill 又发布 1 张**(库 1418→1419,R559 证伪继续)。
+
+## 候你拍板(四项)
+1. **装 py-spy**——诊断前置,本轮最大盲点(brew 或 ensurepip+pip)
+2. **移植 `COMPASS_FILL_BUDGET_S` 到本地 daemon.py**——仓内+插件副本须同步(共享面·影响所有框)→ 需授权
+3. daemon.pid 写实 PID
+4. 库体量:3597 chunk/363MB,噪声 1229 张=86.7% → fill 冷启动成本随噪声线性增长,与「堵召回/清存量」是同一根因两面
+
+未动插件 daemon.py、未 bootout distill、未删记忆卡、未碰他线 5 个未提交文件(保持原状)。
+---- round end 11-17 19:50 ----
+
+**R563 · 2026-11-17 22:25 — 召回入口全停根因定位并修复 + 模真真新商务函**
+
+**🆕实质增量①:召回入口全停的根因定位并修复(R562 遗留"查询路径仍挂·不可验")**
+
+分层定位[实测]:
+- 传输层健康:daemon `ping` 秒回 / `status` 0.20s / `drift` 0.04s 能出 compass 项目评分 ⇒ **池未占满**(推翻 R562 的过载猜测)
+- 查询层:`recall` 直连 daemon(带 token)**120s 超时**;MCP recall 同样超时
+- 进程层:`sample` 8 个 worker **100% 采样命中**卡在 `_io_open → __open` ⇒ 阻塞在 **open() 系统调用**
+- 文件系统层:`~/.cache/huggingface` 是 **symlink → NAS**(`~/mnt/nas-work/model-cache/huggingface`)
+
+根因链(逐环实测·无推断跳跃):
+1. **NAS 挂载对该目录的读取永久阻塞**:`stat` 秒回(属性缓存)/readdir 中断/**读 `refs/main` 卡死 >15s**;三条路径(NFS `/share/NFSv=4/work`、NFS `/work`、SMB)**全卡**;**按 CLAUDE.md 配方新建 `~/mnt/nas-work2` 同样卡**;**SSH 直连 NAS 读同一文件秒回** ⇒ 服务端数据完好·故障只在 NFS/SMB 协议路径
+2. **8401 rerank 服务从未加载成功模型**:常驻 3d15h **RSS 仅 14MB**(正常加载后 >400MB)—— `rerank_server.py` 与 daemon 的 `_remote_rerank_contract()` 硬编码读同一 `~/.cache/huggingface/.../refs/main`
+3. **daemon 的 recall 独有段永久阻塞**:`_rerank_top → _remote_rerank_scores → _remote_rerank_contract() → read_text(refs/main)`;30s deadline 到期后 fallback 本地 cross-encoder **又读同一缓存 → 二次卡死**(无出路)→ 8 worker 全卡同一 open → 32 in-flight 槽占满 → 拒绝连接 ⇒ **这才是 R562「传输层已恢复·查询路径仍挂」的机制**
+4. 旁证自洽:`drift` 不走 rerank 秒回;`status`/`ping` 不读文件秒回
+
+修复(已执行+已验证):SSH 拉 reranker 到本地 `~/.cache/hf-local`(**2.27GB `model.safetensors` 逐字节核对一致**·tar 仅报 macOS xattr 元数据还原告警·数据无损)·其余模型(bge-m3/Qwen3.5-9B-4bit)保留指向原 NAS(维持现状语义)·`ln -sfn` 切 symlink(**坑:`mv -f` 对 symlink-to-dir 会把源移进目标目录**,本轮踩过一次)·`launchctl kickstart -k` 精确重启 8401+9876 → **recall 首次 14.00s(remote_mps·fallback=false·rerank_ms=13581)·稳态 3.28s/4.06s·命中 `daemon-overload-livelock-recurrence-20261117.md`(0.697)与 `recall-noise-76pct`(0.708)** ⇒ **召回入口恢复**
+档:`docs/incidents/INC_20261118_HF_NFS_CACHE_ROOTCAUSE.md`
+
+**🆕实质增量②:新商务函「模真真」开源合作邀请(首现)**
+模真真 <bd@mozhenzhen.com>(11-18 09:30+0800)《关于 nautilus-compass 的开源合作邀请》·自称"完全免费·不售卖 AI 服务"的购前决策平台(自述 97,457 份"官方模型指纹逐题比对"验真报告/5,544 家 API 中转站/媒体矩阵 10 月播放 >160 万)·诉求三项:①专稿/发布我方介绍并推其媒体矩阵 ②README 顶部推荐区或"配置模型与填 API 地址"处加「查真假、比价格」入口 ③小额赞助。
+判读:三项**均需用户拍板**(②产品面第三方联盟导流 ③财务 ①对外发文)→ **不承诺任何一项**;我方唯一可自主推进=**先要方法做独立复算**(索要①掺假判定依据(维度/题集/阈值)②3 个可复算案例 ③报告可导出方式——我方要原始数据不要结论),沿既有姿态(OWASP agent-memory-guard 采纳我方 RFC / 对 mem0 免费独立复算 offer)。
+草稿落 `docs/outreach/draft_mozhenzhen_reply_20261118.md`(**起草≠发送·候用户审稿**);台账追记已上 `EXTERNAL_LEDGER_V1_1_20261010.md`。
+
+**值守面**:RED to=platform **217→219**(新增 id99489 **×84** trace soul-distress-202611180732 + id100729 **×85** trace soul-distress-202611181050·soul→platform 零 compass 行动·解除=人工删 `.soul-pause` 人监门候用户)·信箱 compass 0 未读·Gmail 401→直刷 REFRESH_OK 3599s→7d **59 封持平/未读 32**(新到 3 封:IFTTT 营销/模真真商务/Code80 使用报告 20133213@qq.com;零新商务函)·草稿 35 封零新·mentions 5 全旧·notifications 45 全旧·genesis 5 家(1/1/0/1/2)零 REPLY·dev.to 30 文 6+2 全旧·CI compass 44211039811(=R562 head)success·core 43558665734 success·哨兵 exit0 recall_hit=102·watchdog exit0·daemon 绿 9876·快筛 CS-513 过/CS-508~518 其余不过=历轮同型·管道三件 exit0·矩阵 mtime 仍停 10-30 09:42·S0 池两仓 404 退役态·生产队列 bait 层 DONE compass 只读·磁盘 avail 17Gi(拉模型 -2.3Gi)
+
+**候用户拍板**:**bge-m3 本地化**(8400 embed server 因常驻内存而活·**一旦重启将同样卡死**·约 2.2GB 同法 SSH 拉)·**NFS 读取为何卡需查 NAS 侧**(超出 compass 框·INFRA_BASELINE 责任域)·`~/mnt/nas-work2` 建议 unmount·distill 方案 A/B/C(沿 R561 四选项)·distress ×85 人监门·通道配额·磁盘 97% 零清理·a2a-x402#198 草稿·Gmail 35 封草稿审稿·模真真三诉求·**py-spy 仍缺**
+
+本轮动过:HF symlink 切本地 + 拉模型 2.27GB + kickstart 两个 launchd 服务(8401/9876)。未动插件 daemon.py、未 bootout distill、未删记忆卡、未碰他线 5 个未提交文件(保持 M)、未代推他线提交、未裹挟他线 untracked 新件。
+
+---- round end 11-17 22:25 ----
