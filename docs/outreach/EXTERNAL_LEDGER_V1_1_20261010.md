@@ -105,3 +105,18 @@
 - **分类=🟢绿灯类但三项诉求均需用户拍板**(②=产品面第三方联盟导流位 ③=财务 ①=对外发文需审稿)·**不承诺任何一项**。
 - **我方可自主推进的唯一动作=先要方法做独立复算**(沿既有姿态:OWASP agent-memory-guard 采纳我方 RFC / 对 mem0 的免费独立复算 offer):索要①掺假判定依据(维度/题集/阈值)②3 个可复算案例③报告可导出方式(我方要原始数据不要结论)。复算结果出来再谈形式。
 - **草稿落档** `docs/outreach/draft_mozhenzhen_reply_20261118.md`——**起草≠发送,未发**,候用户审稿放行(外发硬闸 10/31)。
+
+### 追记(11/18 · alibaba/page-agent#770 我方邀请 issue 被对方 not_planned 关闭)
+- **alibaba/page-agent#770「[Nautilus] Invitation to join the agent platform」**(我方 chunxiaoxx 11-08T09:53:25Z 开出的合作邀请·历经 11-10 Luando-tester 就赏金/支付/验收三问·我方 11-11T02:00:51Z 澄清「本 issue 是开放协作邀请、非 bounty task·无赏金/付款排期/验收标准」comment 6784787173)—— **2026-11-18T07:28:53Z 被 gaomeng1900(Simon) 以 state_reason="not_planned" 关闭**,关闭事件**无 body**、issue 总评论数=1(仅我方澄清帖)⇒ **对方零回复直接关闭**。
+- 关闭者权限[推断]:gaomeng1900 同日 07:31:04Z 关闭**他人**所开 #774(tonylate520·MCP ServerList 上架通知)⇒ 对该仓有 triage 权限;但 `/repos/alibaba/page-agent/collaborators` 403(无 push 权限)⇒ **是否 collaborator 成员本身[不可验]**。
+- 通知到达:GitHub notification id 27019691762(reason=author·unread)+ Gmail 11-18T07:29Z「Re: [alibaba/page-agent] … (Issue #770)」。
+- **分类=对方收尾关闭类,按纪律记台账不动**(沿 R466 Th0rgal/orb#1074 婉拒关闭先例 + R587 openclaw/clawhub#3787 stale-bot 关闭先例)。**本轮零外发**:未回帖未重开未发邮件(外发硬闸·是否换渠道跟进候用户拍板)。
+- 详见 `docs/incidents/INC_20261118_EXTERNAL_OUTREACH_CLOSED_R566.md`。
+
+### 追记(11/18 · HF challenge-2026/challenge_data discussion #2 被数据集 owner 关闭)
+- **datasets/challenge-2026/challenge_data/discussions/2**「Independent 5-dim QC of LeRobot-compatible datasets (13 embodiments, 15 sets) — incl. a pre-registered utility criterion」——我方 **chunxiaox(王春晓/Nautilus) 10-05T06:19:48Z** 发出的独立数据-QC 五维读数 + 预注册下游效用判据 + 邀请争议/协作——**2026-11-18T07:48:38Z 被 PrimeBot(challenge-2026 账号) 以 status-change closed 关闭**,关闭前**对方回复 0 条**(该讨论评论数=1·仅我方原帖)。
+- 归属核验[实测]:challenge-2026 = 该 dataset 的 owner 账号(repoOwner.name=challenge-2026·PrimeBot.isOwner=true);我方 HF 组织 = **nautilus-compass**(`/api/organizations/nautilus-compass/overview` 200·numDatasets=3),**两账号不同域 ⇒ 非我方 bot 动作**;`/api/organizations/nautilusflywheel` 404(我方 flywheel 无独立 HF org)。
+- 通知到达:Gmail 11-18T07:48:38Z(discussions_participating@notifications.huggingface.co)。
+- **语义**:我方对外提供的「独立数据有效性验证 + 预注册判据」入口被数据 owner 直接关掉(无回复无理由)。**分类=对方收尾关闭类,记台账不动**,零外发。
+- **同型性[推断·谨慎]**:两起「我方外联被对方关闭」发生在同一 20 分钟窗口(07:28:53Z / 07:48:38Z),共同特征=对方均未留任何回复内容;但**分属不同平台、不同对象,无共因证据** ⇒ **不得据此断定我方账号被限流/被标记推广/平台策略收紧**。若再出现第 3 起同型关闭,方具备统计意义,届时议换渠道(邮件/表单)而非继续开 issue。
+- 详见 `docs/incidents/INC_20261118_EXTERNAL_OUTREACH_CLOSED_R566.md`。
