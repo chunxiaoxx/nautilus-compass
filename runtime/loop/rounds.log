@@ -4619,3 +4619,61 @@ R561 值守轮完成（实质增量轮）。
 **候用户拍板（四选项带数字）**：**A 只堵召回**（hook 494→188 / daemon 1417→189·噪声 0%·**但库内 86.7% 不变**·`daemon.py` 属 nautilus-compass 共享插件改动影响所有框·需授权）｜**B 只堵写入**（bootout launchd + 落账 4 文件·库内不再增）｜**C 同时**（A+B+清 1229 张存量 ⇒ 库内降到 13.3%·不可逆需授权）｜**未决前提**「~2000 旧会话是否本应进正式库」；另：distress ×83 人监门 / 通道配额 / 磁盘 97% 零清理 / a2a#198 草稿 / Gmail 35 封草稿审稿 / 矩阵 phase2 解锁 / Reddit Ads 冷销售。
 
 ---- round end 11-17 17:35 ----
+R561 值守轮完成（实质增量轮），已提交并推送 `0dbcbaaf`（HEAD = origin/main）。
+
+## 本轮实质增量
+
+**🔴 方案 A 离线预演（首次给出带数字的收益表，零生产改动）**
+离线复刻 `recall.py:1443-1455` 两条闸实算：
+
+| 路径 | 现状索引 | 现状噪声 | 方案 A 后 | 噪声 |
+|---|---|---|---|---|
+| hook（会话注入） | 494 条（主题 188 + distill 306） | 61.9% | 188 条 | **0%** |
+| daemon（MCP recall 实际服务） | 1417 条 | 86.7% | 189 条 | **0%** |
+
+主题卡供给 188 ≥ top30 ⇒ 加闸后每窗口**必然全为主题卡**——结构性确定收益，不是估计。自洽校验：R560 记 492 + 库 +2 = 494，与复刻完全对上。
+
+**🔴 库内噪声口径修正**：库 1418 张逐张实读 ⇒噪声 **1229/1418 = 86.7%**（R560 的 84.0% 把 **40 张 `session_*` 流水卡误计入「主题卡」**，低估 2.7pp）。
+
+**🔴 召回损害复算对拍**：daemon 实时同 8 查询 × top30 → **182/240 = 75.8%**（R560 76.2%）。「distill 回填」那条唯一主题卡**从第 22 位顶到第 1 位**——因为 R560 自己写的量化卡进了库 ⇒ **写主题卡对冲污染速率仅 0.4pp/轮**，对不上污染增速（每 2h 灌 1 张）⇒ 自助路径杯水车薪，解法只能是闸门。
+
+**🔴 distill 续写第 7 张**：stats 353 行（published 272），最新 `distill-bed43658` 源会话 28.8 天前，published 中 >7d 占比 **272/272 = 100%** ⇒ R559 证伪继续成立。
+
+## 值守面
+RED to=platform 216→217（唯一增量 id98784 soul-distress **×83**）·Gmail 7d 58→59 / 未读 32→33（新到 1 封 ngrok newsletter，零商务函）·草稿实为 35 封、R560 记20 封是分页上限口径，**零新草稿** ·CI 44167116497 绿 ·daemon/watchdog/哨兵 exit0 recall_hit=97 ·GATE0 PASS ·快筛历轮全同 ·矩阵仍停 10-30 09:42 ·磁盘 97% avail 17Gi ·留痕缺口第 13 次（11-17 15:14 无块）
+
+产出 `docs/distill/DISTILL_SCHEME_A_PREVIEW_20261117.md`。**本轮零生产动作**：未 bootout / 未改 plist / 未改 recall.py·daemon.py / 未删记忆卡 / 未碰他线 4 个未提交文件（保持 ` M`）。
+
+## 候拍板（带数字的四选项）
+- **A 只堵召回**：噪声→0%，但**库内 86.7% 不变**；`daemon.py` 属共享插件，改动影响所有框，需授权
+- **B 只堵写入**：bootout launchd + 落账 4 文件
+- **C 同时**：A+B+清 1229 张存量 ⇒ 库内降到 13.3%（不可逆，需授权）
+- **未决前提**：~2000 旧会话是否本应进正式库
+
+另：distress ×83 人监门 / 通道配额 / 磁盘 97% 零清理 / a2a#198 草稿 / Gmail 35 封草稿审稿 / Reddit Ads 冷销售。
+
+后台任务 `b0e1kmyqq`（全盘 `find ~` 扫描定位 `incremental_stats.jsonl`）已超时终止 —— **不影响 R561 结论**：该文件已通过直接路径 `runtime/scratch_distill_pilot_20261104/incremental_stats.jsonl` 定位并实读（353 行 / published 272 / review 78 / failed 1，published源会话 >7d 占比 272/272 = 100%），全部读数与产出卡均已落账。
+
+无需重跑：那条 `find` 只是初期的全盘搜索手段，后续一律走仓内直接路径。
+---- round end 11-17 17:33 ----
+
+2026-11-17 19:50 round562 实质增量值守轮(🔴 Compass recall 入口全停·daemon 过载 livelock·10-12 云端同型复发 + 已恢复传输层 + watchdog 探活口径升级)
+
+**🔴 事故①[实测]**:本轮会话 hook 报「daemon 未就绪·本轮跳过注入」+ MCP recall 返 `daemon overloaded - retry` → **Compass 记忆召回入口全停**。旧 daemon PID 69627(Sun01AM 起·0.0% CPU)in-flight 槽 32 全占满 → 每连接 reject-fast,进程上仍挂 30+ CLOSED 客户端套接字,本轮拒绝约 244 行。
+
+**🔴 事故②[实测]自愈链三盲点**:①`daemon_start.sh` 连续 4 次「Address already in use」起不来新实例(废进程还占着端口);②`.cache/daemon.pid` 记 77653(已死)而实况 69627(PID 失真);③**`scripts/mcp_watchdog.sh` 探活=裸 TCP connect** → 端口仍 LISTEN → 判 ok → **不 kickstart** → 自愈链对「端口在听但全拒」完全盲(本轮 watchdog exit 0 而 recall 全挂)。
+
+**✅ 恢复[实测]**:`launchctl kickstart -k gui/$(id -u)/com.nautilus.compass-daemon` → 新 PID 80947·pkl warmup 0.7s·ping/status 秒回·**重启后 overload 拒绝 0 行**(log 161867→161881)。
+
+**⚠ 残留[实测+推断]**:传输层恢复但**查询路径仍挂** —— MCP recall 连续 2 次超时·带 token 直连 recall 150s socket 超时无响应·status 报 `count_5min=0 / p9 hit=0 miss=5`(5 次请求无一完成)·CPU 0.0%·**daemon 无任何出向 TCP**(不连 8400 embed 代理/8401 rerank,两者均健康:8400 /embed 200·8401 health 0.0s ok:true)⇒ 阻塞点在进程内锁等待 [推断];**精确阻塞点 [不可验]**——10-12 事故档留过「候复发第一时间 py-spy 抓现场」,而本机 py-spy 未安装·venv 无 pip·PATH 无 uv,只能 macOS `sample`(无 Python 帧)。
+
+**🆕 复发定谳[实测]**:10-12 云端同型事故档(`docs/incidents/CLOUD_RECALL_LIVELOCK_20261012.md`)根因=fill 霸 `_mem_lock` 无时间预算 + 32 槽全局;根修 `COMPASS_FILL_BUDGET_S` **只落云端 daemon_v33.py(不在 git)**。本地核对:插件 `daemon.py` 与仓内 `daemon.py` **字节相同(md5 一致·2186 行)且均无 FILL_BUDGET** ⇒ **本地从未拿到根修**,今日复发与 10-12 同型。
+
+**🆕 本轮落地改动[实测]**:watchdog 探活口径升级(裸 connect → daemon 免鉴权 `{"action":"ping"}`·三态分开:overloaded/dead → kickstart;busy → **不重启**避免打断正在做的 fill)·**mock 单测三态判定全过**(overloaded/ok/busy)·实跑 watchdog 落 `local=200 daemon=ok public=000`。
+
+**值守面[实测]**:RED 217→218(唯一 id99489 soul-distress ×84·人监门候用户不代删)·信箱 compass 0 未读·Gmail 401→直刷 REFRESH_OK 3599s→全量 7d 58 封/未读 33 封与 R561 持平·逐封 sender 全甄零新面孔零新商务函·草稿 35 封零新·mentions 5 全旧·notifications 45 全旧·genesis 5 家零 REPLY·dev.to 6+2=8 持平·CI 44189839879 success·哨兵 exit0 recall_hit=102·快筛历轮全同(CS-513 过)·矩阵仍停 10-30 09:42·磁盘 97% avail 14Gi(R561 17Gi −3Gi)·**distill 又发布 1 张**(stats 353→354·库 1418→1419)→ R559 证伪继续成立。
+
+产出 `docs/incidents/DAEMON_RECALL_LIVELOCK_RECURRENCE_20261117.md`。**候拍板**:P1 装 py-spy(诊断前置)/P2 移植 FILL_BUDGET 到本地 daemon.py(仓内+插件副本同步·共享面需授权)/P3 daemon.pid 写实 PID/P4 库体量(3597 chunk·363MB·噪声 1229 张)——fill 冷启动成本随噪声卡线性增长,与「堵召回/清存量」同根因两面。
+
+**本轮生产动作仅一条**:kickstart daemon(等价于 watchdog 自带命令·可逆)+ 仓内 watchdog 脚本探活口径改动(已单测);未改插件副本 daemon.py / 未 bootout distill / 未删记忆卡 / 未碰他线 5 个未提交文件。
+---- round end 11-17 19:50 ----

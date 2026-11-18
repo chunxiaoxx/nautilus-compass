@@ -1,6 +1,6 @@
 {
-  "round": 561,
-  "last_round_ts": "2026-11-17 17:35",
+  "round": 562,
+  "last_round_ts": "2026-11-17 19:50",
   "history": [
     {
       "round": 561,
@@ -109,6 +109,12 @@
       "ts": "2026-11-17 15:12",
       "result": "substantive",
       "note": "🔴 distill 污染的召回侧损害首次量化：daemon(MCP recall 实际服务路径)8 查询×top30=240 候选位噪声 76.2%，最尖锐一条「distill 回填」query top30 里 29 噪声/唯一主题卡被压到第 22 位；库内噪声 84.0%(session_auto_* 883 + distill-* 305 vs 主题卡 227)；根因=recall.py:1447 闸只拦 session_ 前缀故 distill-* 全绕过 + daemon.py:1044-1049 get_memory_entries 无任何前缀闸；产出 docs/distill/RECALL_NOISE_QUANTIFIED_20261117.md(三方案 A/B/C+未应用补丁)。另：RED 216 封 distress ×81→×82(id97729)、Gmail 全量 58/32 新到 1 封 Sentry newsletter 零商务函、distill published 271(100% >7d 旧会话·证伪后续写第 6 张)、11-17 留痕缺口 6 次(00:15/02:23/04:27/06:30/08:33/10:37)、磁盘 96% avail 20Gi、CI 双仓绿 44140182399、GATE0 PASS、哨兵 recall_hit=92。本轮零生产动作。"
+    },
+    {
+      "round": 562,
+      "ts": "2026-11-17 19:50",
+      "result": "substantive",
+      "note": "R562 实质增量值守轮(🔴 Compass recall 入口全停·daemon 过载 livelock·本地 10-12 同型复发 + 已恢复传输层 + watchdog 探活口径升级)①【事故·实测】本轮会话 hook 报「daemon 未就绪·跳过注入」+ MCP recall 返 daemon overloaded - retry → Compass 召回入口全停;旧 daemon PID 69627(Sun01AM 起·0.0% CPU)in-flight 槽 32 全占满→每连接 reject-fast·进程挂 30+ CLOSED 套接字·本轮拒绝约 244 行;②【自愈三盲点·实测】daemon_start.sh 连续 4 次 Address already in use 起不来新实例 + .cache/daemon.pid 记死 PID 77653(实况 69627) + scripts/mcp_watchdog.sh 探活=裸 TCP connect(端口仍 LISTEN→判 ok→不 kickstart)→ 对「端口在听但全拒」完全盲(watchdog exit 0 而 recall 全挂);③【恢复·实测】launchctl kickstart -k gui/uid/com.nautilus.compass-daemon → 新 PID 80947·pkl warmup 0.7s·ping/status 秒回·重启后 overload 拒绝 0 行;④【残留·实测+推断】传输层恢复但查询路径仍挂:MCP recall 连续 2 次超时 + 带 token 直连 150s socket 超时无响应 + status 报 count_5min=0/p9 hit=0 miss=5(5 次请求无一完成) + CPU 0.0% + daemon 无任何出向 TCP(8400 embed 代理 200 健康·8401 rerank health 0.0s ok)⇒ 阻塞点在进程内锁等待[推断];精确阻塞点[不可验](10-12 档留过「复发先 py-spy 抓现场」·本机 py-spy 未装·venv 无 pip·PATH 无 uv·只有 macOS sample 无 Python 帧);⑤【复发定谳·实测】10-12 云端同型档(CLOUD_RECALL_LIVELOCK_20261012.md)根因=fill 霸 _mem_lock 无时间预算+32 槽全局·根修 COMPASS_FILL_BUDGET_S 只落云端 daemon_v33.py(不在 git);本地插件 daemon.py 与仓内 daemon.py 字节相同(md5 一致·2186 行)且均无 FILL_BUDGET ⇒ 本地从未拿到根修 → 今日复发与 10-12 同型;⑥【本轮落地·实测】watchdog 探活口径升级:裸 connect → daemon 免鉴权 {\"action\":\"ping\"}·三态分开(overloaded/dead→kickstart·busy→不重启避免打断正在做的 fill)·mock 单测三态判定全过·实跑落 local=200 daemon=ok public=000;⑦【值守面·实测】RED 217→218(唯一 id99489 soul-distress ×84·人监门候用户不代删)·信箱 compass 0 未读·Gmail 401→直刷 REFRESH_OK 3599s→全量 7d 58 封/未读 33 封与 R561 持平·逐封 sender 全甄零新面孔零新商务函·草稿 35 封零新·mentions 5 全旧·notifications 45 全旧·genesis 5 家零 REPLY·dev.to 6+2=8 持平·CI 44189839879 success·哨兵 exit0 recall_hit=102·快筛历轮全同(CS-513 过)·矩阵仍停 10-30 09:42·磁盘 97% avail 14Gi(R561 17Gi−3Gi)·⑧【附带增量】distill 又发布 1 张(stats 353→354·库 1418→1419)→ R559 冻结被证伪继续成立;⑨产出 docs/incidents/DAEMON_RECALL_LIVELOCK_RECURRENCE_20261117.md·候拍板 P1 装 py-spy / P2 移植 FILL_BUDGET(仓内+插件副本同步·共享面需授权)/ P3 daemon.pid 写实 / P4 库体量(3597 chunk·363MB·噪声 1229 张=86.7%)与堵召回同根因两面;⑩本轮生产动作仅 kickstart daemon(等价 watchdog 自带命令·可逆)+ 仓内 watchdog 脚本探活口径改动(已单测)·未改插件 daemon.py/未 bootout distill/未删记忆卡/未碰他线 5 个未提交文件"
     }
   ],
   "last_round_time": "2026-11-17 17:35",
