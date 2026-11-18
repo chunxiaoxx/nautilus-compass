@@ -899,7 +899,28 @@ def parse_memory_file(path: Path) -> dict:
         # v2.5 · #48 修复一 · fact_status 写入门(measured|inferred|heard)· 随条目带出注入
         "fact_status": fm.get("fact_status", ""),
         "verified_at": fm.get("verified_at", ""),
+        # v3.1 · memory quality gate: unreviewed distill cards stay on disk
+        # but do not enter the production recall index. Raw history remains
+        # available for explicit review and direct file readback.
+        "semantic_status": str(fm.get("semantic_status", "")).strip().strip("\"'").lower(),
+        "drift": str(fm.get("drift", "")).strip().strip("\"'").lower(),
     }
+
+
+def _memory_index_eligible(info: dict) -> bool:
+    """Keep recall truthful while preserving raw files for later review.
+
+    ``distill-*`` cards are generated candidates until an exact source-bound
+    semantic review receipt marks them ``source_reviewed_scoped``. The hook
+    path already applies the same red-drift rule to ``session_*`` cards; the
+    daemon must enforce it too or the two production paths disagree.
+    """
+    name = str(info.get("path", ""))
+    if name.startswith("distill-"):
+        return info.get("semantic_status") == "source_reviewed_scoped"
+    if name.startswith("session_"):
+        return info.get("drift", "") == "red"
+    return True
 
 
 # v3.0.1 · atomic pkl writes + periodic flush · 2026-08-24 cloud incident:
@@ -1046,7 +1067,7 @@ def get_memory_entries(mem_dir: Path):
     for f in files:
         if f.name.upper() in ("MEMORY.MD","INDEX.MD"): continue
         info = parse_memory_file(f)
-        if info: entries.append(info)
+        if info and _memory_index_eligible(info): entries.append(info)
     # cache lookup
     proj_key = str(mem_dir)
     cache = _state["memory_caches"].setdefault(proj_key, {})

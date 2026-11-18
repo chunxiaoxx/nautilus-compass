@@ -320,6 +320,8 @@ def parse_memory_file(path: Path) -> dict:
         "depends_on": _dep if isinstance(_dep, list) else [],
         "declaration_type": fm.get("declaration_type", "none") if isinstance(fm.get("declaration_type"), str) else "none",
         "supersedes": _sup if isinstance(_sup, list) else [],
+        "semantic_status": str(fm.get("semantic_status", "")).strip().strip("\"'").lower(),
+        "drift": str(fm.get("drift", "")).strip().strip("\"'").lower(),
     }
 
 
@@ -1429,18 +1431,13 @@ def main():
         info = parse_memory_file(f)
         if not info:
             continue
-        # gate · drop plain green session 流水 unless they're high-signal types
+        # gate · keep the hook and daemon paths on the same evidence policy.
+        # Raw files remain on disk; only the production recall index is gated.
         ftype = (info.get("type") or "").lower()
-        # parse drift from frontmatter (re-read · cheap on small files)
-        try:
-            text_head = Path(info["fullpath"]).read_text(encoding="utf-8")[:2000]
-            drift_val = ""
-            for ln in text_head.split("\n"):
-                if ln.startswith("drift:"):
-                    drift_val = ln.split(":", 1)[1].strip().lower()
-                    break
-        except Exception:
-            drift_val = ""
+        drift_val = info.get("drift", "")
+        if f.name.startswith("distill-") and info.get("semantic_status") != "source_reviewed_scoped":
+            n_dropped_noise += 1
+            continue
         # v1.7 #1 · session_*.md 必须 drift=red 才进 recall index
         # · 96% session 标 green/yellow · LLM 自评太松 · 不能用 type 区分
         # · feedback_*/reference_*/anchor_* 等非 session 文件全保留

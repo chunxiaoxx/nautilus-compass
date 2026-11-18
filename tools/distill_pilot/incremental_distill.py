@@ -10,6 +10,7 @@ import argparse
 from collections import Counter
 import fcntl
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
@@ -29,6 +30,11 @@ BUCKET = Path.home() / ".claude/projects/-Users-chunxiao-wang-Projects-nautilus-
 PATROL_RE = re.compile(r"值守|轮值|LOOP 轮|loop 轮指令", re.IGNORECASE)
 MIN_SIZE = 10_000
 WRITING_WINDOW = 1800
+AUTO_MAX_AGE_SECONDS = int(os.environ.get("DISTILL_AUTO_MAX_AGE_SECONDS", str(7 * 86400)))
+SELF_REFERENCE_RE = re.compile(
+    r"(?:蒸馏器|distill).{0,240}(?:提示词|prompt).{0,240}(?:蒸馏纪要|distill-)",
+    re.IGNORECASE | re.DOTALL,
+)
 SERVER_CMD = [
     "/opt/homebrew/bin/llama-server", "-m", str(Path.home() / "models/distill/Qwen3.5-9B-Q4_K_M.gguf"),
     "--host", "127.0.0.1", "--port", "8765", "-c", "32768", "-ngl", "99",
@@ -144,20 +150,26 @@ def publication_valid(record: dict, memory_dir: Path) -> bool:
         return False
 
 
-def collect_pending(bucket: Path, runtime: Path, state: dict) -> list[tuple[Path, dict]]:
+def collect_pending(bucket: Path, runtime: Path, state: dict,
+                    include_archive: bool = False) -> list[tuple[Path, dict]]:
     pending = []
     now = time.time()
     for path in sorted(bucket.glob("*.jsonl")):
         stat = path.stat()
         if stat.st_size < MIN_SIZE or now - stat.st_mtime < WRITING_WINDOW:
             continue
-        if PATROL_RE.search(light_first_user(path)):
+        first_user = light_first_user(path)
+        if PATROL_RE.search(first_user) or SELF_REFERENCE_RE.search(first_user):
+            continue
+        if (not include_archive and AUTO_MAX_AGE_SECONDS > 0
+                and now - stat.st_mtime > AUTO_MAX_AGE_SECONDS):
             continue
         revision = source_revision(path)
         record = state["sessions"].get(path.stem, {})
         paths = version_paths(runtime, path.stem, revision["sha256"])
         if record.get("source_sha256") == revision["sha256"] and cache_valid(record, paths):
-            if record.get("status") == "review":
+            review_path = runtime / "semantic_reviews" / f"{path.stem}.json"
+            if record.get("status") == "review" and not review_path.is_file():
                 continue
             if record.get("status") == "published" and publication_valid(record, Path(state["memory_dir"])):
                 continue
@@ -183,12 +195,23 @@ def update_latest(runtime: Path, paths: dict[str, Path], include_production: boo
         atomic_write(destination, data)
 
 
-def publish_revision(paths: dict[str, Path], memory_dir: Path, source_sha: str) -> dict:
-    result = subprocess.run([
+def publish_revision(paths: dict[str, Path], memory_dir: Path, source_sha: str,
+                     review_file: Path | None = None) -> dict:
+    if review_file is None or not review_file.is_file():
+        return {
+            "status": "review_required", "changed": False,
+            "reason": "semantic_review_receipt_required",
+            "session_id": paths["narrative"].stem, "source_sha256": source_sha,
+            "summary_sha256": sha256(paths["narrative"].read_bytes()),
+            "anchors_sha256": sha256(paths["anchors"].read_bytes()),
+        }
+    command = [
         sys.executable, str(Path(__file__).with_name("publish_to_memory.py")),
         "--prod-dir", str(paths["narrative"].parent), "--memory-dir", str(memory_dir),
         "--only", paths["narrative"].stem, "--source-sha256", source_sha,
-    ], check=True, capture_output=True, text=True, timeout=60)
+        "--review-file", str(review_file),
+    ]
+    result = subprocess.run(command, check=True, capture_output=True, text=True, timeout=60)
     output = json.loads(result.stdout)
     publications = output.get("publications", [])
     if output.get("errors") or len(publications) != 1:
@@ -245,9 +268,13 @@ def run_batch(args: argparse.Namespace, state: dict, pending: list[tuple[Path, d
                         server_checked = True
                     for destination in paths.values():
                         destination.parent.mkdir(parents=True, exist_ok=True)
-                    extract_file(path, paths["source"])
+                    # Preserve bounded tool call/return evidence so semantic
+                    # review can distinguish a model claim from an observed
+                    # command result. The raw session remains local-only.
+                    extract_file(path, paths["source"], include_tool_evidence=True)
                     stat = compress_session(paths["source"], paths["summary"],
-                                            "http://127.0.0.1:8765/v1", "local", 14000)
+                                            "http://127.0.0.1:8765/v1", "local", 14000,
+                                            tool_evidence=True)
                     source_text = paths["source"].read_text(encoding="utf-8")
                     summary_text = paths["summary"].read_text(encoding="utf-8")
                     checked = check(summary_text, source_text)
@@ -268,7 +295,11 @@ def run_batch(args: argparse.Namespace, state: dict, pending: list[tuple[Path, d
                 save_state(runtime, state)
                 update_latest(runtime, paths, include_production=False)
                 if record["gate"] == "ok":
-                    publication = publish_revision(paths, memory_dir, source_sha)
+                    review_file = runtime / "semantic_reviews" / f"{path.stem}.json"
+                    publication = publish_revision(
+                        paths, memory_dir, source_sha,
+                        review_file if review_file.is_file() else None,
+                    )
                     if source_revision(path)["sha256"] != source_sha:
                         raise RuntimeError("Session changed during publication")
                     if publication["status"] == "review_required":
@@ -314,7 +345,8 @@ def load_state(runtime: Path, memory_dir: Path) -> dict:
 
 
 def select_pending(args: argparse.Namespace, state: dict) -> list[tuple[Path, dict]]:
-    pending = collect_pending(args.bucket, args.runtime, state)
+    pending = collect_pending(args.bucket, args.runtime, state,
+                              getattr(args, "include_archive", False))
     requested = {name for name in args.only.split(",") if name}
     if requested:
         pending = [(path, revision) for path, revision in pending if path.stem in requested]
@@ -337,6 +369,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--only", default="", help="Comma-separated complete session IDs")
     parser.add_argument("--max-sessions", type=int, default=0,
                         help="Maximum sessions in this invocation; zero processes the full queue")
+    parser.add_argument("--include-archive", action="store_true",
+                        help="Explicitly allow sessions older than DISTILL_AUTO_MAX_AGE_SECONDS")
     args = parser.parse_args(argv)
     if args.max_sessions < 0:
         parser.error("--max-sessions must be zero or a positive integer")

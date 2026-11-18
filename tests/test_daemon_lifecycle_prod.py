@@ -38,6 +38,19 @@ def _write_mem(tmp_path: Path, name: str, forget_at: str | None) -> Path:
     return p
 
 
+def _write_quality_mem(tmp_path: Path, name: str, *, semantic_status: str = "",
+                       drift: str = "") -> Path:
+    fm = ["---", f"name: {name}", "description: test entry", "type: ingest"]
+    if semantic_status:
+        fm.append(f"semantic_status: {semantic_status}")
+    if drift:
+        fm.append(f"drift: {drift}")
+    fm += ["---", "", "body text here"]
+    p = tmp_path / f"{name}.md"
+    p.write_text("\n".join(fm), encoding="utf-8")
+    return p
+
+
 def test_parse_surfaces_forget_at(tmp_path):
     future = (datetime.now(timezone.utc) + timedelta(days=5)).isoformat()
     p = _write_mem(tmp_path, "m1", future)
@@ -49,6 +62,26 @@ def test_parse_no_forget_at_is_empty(tmp_path):
     p = _write_mem(tmp_path, "m2", None)
     info = zmd.parse_memory_file(p)
     assert info.get("forget_at", "") == ""
+
+
+def test_memory_quality_metadata_is_exposed(tmp_path):
+    p = _write_quality_mem(tmp_path, "distill-reviewed", semantic_status="source_reviewed_scoped")
+    info = zmd.parse_memory_file(p)
+    assert info["semantic_status"] == "source_reviewed_scoped"
+
+
+def test_unreviewed_distill_is_kept_out_of_recall_index(tmp_path):
+    raw = _write_quality_mem(tmp_path, "distill-raw", semantic_status="unreviewed_j1_only")
+    reviewed = _write_quality_mem(tmp_path, "distill-reviewed", semantic_status="source_reviewed_scoped")
+    assert zmd._memory_index_eligible(zmd.parse_memory_file(raw)) is False
+    assert zmd._memory_index_eligible(zmd.parse_memory_file(reviewed)) is True
+
+
+def test_session_recall_requires_red_drift(tmp_path):
+    green = _write_quality_mem(tmp_path, "session_auto_green", drift="green")
+    red = _write_quality_mem(tmp_path, "session_auto_red", drift="red")
+    assert zmd._memory_index_eligible(zmd.parse_memory_file(green)) is False
+    assert zmd._memory_index_eligible(zmd.parse_memory_file(red)) is True
 
 
 def test_filter_helper_exists():

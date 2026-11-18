@@ -1,0 +1,29 @@
+{
+  "schema": "local-9b-verification-smoke/1",
+  "source": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/scratch_distill_pilot_20261104/extracted/0602f5e6-c50e-403b-8417-4487be84a634.txt",
+  "source_sha256": "3c3b09f858f657152fa7b01dd6adacb6604ce3c52de83c1f41dffacceec5267b",
+  "summary": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/scratch_distill_pilot_20261104/verification_smoke_20261118/0602f5e6-c50e-403b-8417-4487be84a634.md",
+  "summary_sha256": "ee1f96b0b01592bd6fc609fc400b144795311166dd69ed907262db0afe75e6f8",
+  "model": "Qwen3.5-9B-Q4_K_M.gguf",
+  "endpoint": "http://127.0.0.1:8765/v1",
+  "server_started_by_smoke": true,
+  "compression": {
+    "session_id": "0602f5e6-c50e-403b-8417-4487be84a634",
+    "source_bytes": 1525,
+    "n_chunks": 1,
+    "summary_bytes": 3409,
+    "seconds": 23.3
+  },
+  "published_to_memory": false,
+  "elapsed_s": 29.3,
+  "mechanical_verification": {
+    "required_sections": true,
+    "source_sha256_recomputed": "3c3b09f858f657152fa7b01dd6adacb6604ce3c52de83c1f41dffacceec5267b",
+    "summary_sha256_recomputed": "ee1f96b0b01592bd6fc609fc400b144795311166dd69ed907262db0afe75e6f8",
+    "anchor_count": 4,
+    "anchors_covered": 4,
+    "anchor_recall": 1.0,
+    "promotion": "hold_review_required",
+    "reason": "smoke only; no independent semantic review receipt and no memory publication"
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "schema": "cross-dialog-receipt/1",
+  "receipt_id": "compass-foundation-R568",
+  "generated_at_utc": "2026-11-18T15:37:38.180849+00:00",
+  "owner": "compass",
+  "participants": [
+    "compass",
+    "platform",
+    "agent",
+    "v5",
+    "flywheel"
+  ],
+  "status": "partial_ready",
+  "scope": "memory-service quality gate, local 9B compression verification, cross-dialog handoff",
+  "gates": {
+    "daemon_ping": "pass",
+    "recall_correctness_noise_gate": "pass",
+    "local_9b_smoke": "pass",
+    "semantic_review_for_promotion": "hold",
+    "distill_scheduler": "frozen",
+    "platform_or_customer_acceptance": "not_applicable"
+  },
+  "metrics": {
+    "recall_seconds": 4.92,
+    "recall_top30_unreviewed_noise": 0,
+    "local_9b_smoke_seconds": 29.3,
+    "local_9b_anchor_recall": 1.0,
+    "offline_regression_tests": {
+      "passed": 29,
+      "failed": 0
+    }
+  },
+  "evidence": [
+    {
+      "path": "runtime/scratch_distill_pilot_20261104/verification_smoke_20261118/receipt.json",
+      "sha256": "62efe61a2189372c0402b840f9c37bd71de93e88f9569910f5409afaed71d4da"
+    },
+    {
+      "path": "runtime/cross-dialog-inventory-20261116.json",
+      "sha256": "0bd1ff37763d085ffa9a0c4e776bda302710af660401399c56d7b64424b8fabc"
+    },
+    {
+      "path": "runtime/maintenance_backups/20261118-memory-gate/SHA256SUMS.before",
+      "sha256": "332ad1b386b56fceb5af95c58f0da48395ce3be85805bbee04620f7bd98bc1f8"
+    },
+    {
+      "path": "runtime/maintenance_backups/20261118-distill-freeze/SHA256SUMS.before",
+      "sha256": "d56030f64577a5d127b71e03c978b03b0d54e70849781352136d943e8fe48961"
+    }
+  ],
+  "limitations": [
+    "Existing raw memory cards are retained; unreviewed cards are excluded from production recall, not deleted.",
+    "9B smoke is one historical extracted session; it is not full-history semantic acceptance.",
+    "All four repositories remain dirty; this receipt does not claim migration or customer delivery."
+  ],
+  "next_action": {
+    "owner": "compass",
+    "action": "Produce independent semantic review receipts for a bounded batch, then re-enable distill from a fixed committed release.",
+    "required_fields": [
+      "source_sha256",
+      "summary_sha256",
+      "anchors_sha256",
+      "reviewer",
+      "reviewed_at_utc",
+      "decision",
+      "evidence"
+    ]
+  }
+}
