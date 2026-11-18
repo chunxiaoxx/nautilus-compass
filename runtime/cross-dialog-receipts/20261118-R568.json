@@ -81,5 +81,14 @@
     "sha256": "b079c2bfc343f6d9b34e25eb67999702bd79b1f74d221da379d87263322f30dd",
     "status": "hold_all",
     "reason": "glm-5.3 HTTP503; relay credential absent; mechanical anchor checks only"
+  },
+  "fallback_protection": {
+    "config": "/Users/chunxiao.wang/Library/LaunchAgents/com.nautilus.compass-daemon.plist",
+    "env": "ZMM_EMBEDDER_MODEL=/Users/chunxiao.wang/bge-embed/models/bge-m3",
+    "backup": "runtime/maintenance_backups/20261118-daemon-fallback/com.nautilus.compass-daemon.plist.before",
+    "backup_sha256": "6e6b827548e104ddce5d4f3ba7db6073efbce64f2052249467efe138d1b5ff88",
+    "bootstrap_verified": true,
+    "recall_after_bootstrap_seconds": 5.1,
+    "remote_rerank_fallback": false
   }
 }
