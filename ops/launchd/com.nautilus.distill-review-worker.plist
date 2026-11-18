@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.nautilus.distill-review-worker</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/Users/chunxiao.wang/.local/bin/python3</string>
+    <string>/Users/chunxiao.wang/Projects/nautilus-compass/tools/distill_pilot/semantic_review_worker.py</string>
+    <string>--queue</string>
+    <string>/Users/chunxiao.wang/Projects/nautilus-compass/runtime/scratch_distill_pilot_20261104/semantic-review-queue-20261118.json</string>
+    <string>--out</string>
+    <string>/Users/chunxiao.wang/Projects/nautilus-compass/runtime/scratch_distill_pilot_20261104/semantic-review-worker-results.jsonl</string>
+    <string>--limit</string>
+    <string>5</string>
+    <string>--sleep-seconds</string>
+    <string>1</string>
+    <string>--reviewers</string>
+    <string>minimax-m3,kimi-k3-256k</string>
+  </array>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PYTHONUNBUFFERED</key>
+    <string>1</string>
+  </dict>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>StartInterval</key>
+  <integer>900</integer>
+  <key>ProcessType</key>
+  <string>Background</string>
+  <key>StandardOutPath</key>
+  <string>/Users/chunxiao.wang/Projects/nautilus-compass/runtime/scratch_distill_pilot_20261104/semantic-review-worker.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/chunxiao.wang/Projects/nautilus-compass/runtime/scratch_distill_pilot_20261104/semantic-review-worker.log</string>
+</dict>
+</plist>
