@@ -1,0 +1,57 @@
+{
+  "schema": "cross-dialog-sync/2",
+  "generated_at_utc": "2026-11-19T14:20:53.392511+00:00",
+  "source_sync": "runtime/org-continuity/20261119-cross-dialog-sync.json",
+  "policy": "Read-only synchronization update. Service, execution, delivery, and acceptance remain separate.",
+  "delta_since_r1": [
+    "V5 prompt-builder signature fix loaded and old HTTP 500 removed",
+    "V5 exact execution smoke now returns HTTP 200 with provider failure content, so execution gate remains fail",
+    "Platform r12 subtask 99234145 raw result/job.log/verifier tree independently read back",
+    "r13 local 21/21 and reward=1 confirmed, upload held because platform OSS/artifact boundary is unresolved"
+  ],
+  "v5": {
+    "service_health": "pass",
+    "chat_http_status": 200,
+    "chat_content": "[LLM error after all fallbacks] All 0 providers attempted (skipped broken). Last error: None",
+    "execution_gate": "fail_provider",
+    "code_fix": "PromptBuilderMixin now accepts skills_catalog and service restarted",
+    "next": "repair provider authentication/eligibility, rerun exact V5_EXECUTION_SMOKE_OK request",
+    "evidence": "runtime/org-continuity/20261119-v5-execution-smoke-r2.json"
+  },
+  "platform": {
+    "task_id": "91237",
+    "subtask_id": "99234145",
+    "package_id": "57048066",
+    "job_id": "40d9e2aa-6110-4b33-aef0-26f3142bd5bb",
+    "task_pre_valid": "fail",
+    "n_trials": 1,
+    "n_errors": 1,
+    "exception": "RewardFileNotFoundError",
+    "artifact": "no reward.txt or score_out.json, test-stdout.txt empty",
+    "platform_boundary": "OSS mirror repeatedly failed and requested OSS_ACCESS_KEY_ID",
+    "r13_local": "docker build pass, solve/verifier 21/21, reward.txt=1",
+    "r13_upload": "held",
+    "formal_submit": false,
+    "customer_qa": false,
+    "next": "fix/confirm platform OSS artifact path, then upload r13 once and run only task-pre-valid",
+    "evidence": "/Users/chunxiao.wang/Projects/nautilus-core/ops/ali_phase2/codesense_1113_platform_pilot_r13_path_audit_20261119.json"
+  },
+  "compass": {
+    "services": "9876/8097/8770/8400/8401 pass/open",
+    "memory_review": "280/355 reviewed,75 pending,7 approved_receipt_candidate,0 published",
+    "mcp_3ce8": "timeout_over_90s",
+    "mcp_6558": "pass_about_2s",
+    "next": "regenerate current-head capsule and finish Agent consumer readback, keep publish frozen"
+  },
+  "organization_decision": {
+    "current_order": [
+      "V5 provider execution",
+      "Platform OSS/artifact gate",
+      "Compass current-head consumer readback",
+      "9B signed memory promotion",
+      "Flywheel SIM-L1 executable pack"
+    ],
+    "reason": "The current blockers are execution and acceptance boundaries. Adding variants or research documents before closing them increases state divergence.",
+    "goal_contract": "runtime/org-continuity/20261119-goal-contract.json"
+  }
+}
