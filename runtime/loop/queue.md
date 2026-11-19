@@ -4,6 +4,20 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R719 · 2026-11-18(值守 loop R572:实质增量轮——记忆库「噪声」计数口径缺陷坐实【前缀口径虚高 2 张人工主题卡】+ 存量真实数 1197→**1196** + 🔴清理口径禁令(禁按 `distill-*` 前缀批删)+ Gmail 未读双口径 30(勘误 R571 的 29)+ Gmail 刷新取键坑 + Code80 通道活旁证)
+
+- **🆕实质增量①[实测]计数口径缺陷坐实**:库总卡 **1432**(R571 1431,+1);`distill-*` 前缀匹配 **315**(R571 314,+1)。命名形态四分:uuid 自动 **270** + 11-05 批 8hex **36** + `distill-agent-*` **7** + **人工主题卡 2**(`distill-live-uncommitted-code-20261116.md` 11-17 12:43、`distill-rearm-downgraded-r571-20261118.md` **11-18 19:45 = R571 自己写的降级档**)⇒ 前缀口径把**人工主题卡**计成噪声,**虚高 2 张**。
+- **🆕实质增量②[实测]存量真实数修正**:自动噪声卡 = 270+36+7+**883** session_auto = **1196**(R571 的 1197 = 313 自动 distill + 883 + 1 张人工卡混入);占比 **1196/1432 = 83.5%**(R571 口径 1197/1431=83.7%)⇒ 候拍板「存量清理」须按 **1196** 重算。
+- **🆕实质增量③[实测]清理口径禁令(新)**:🔴**不得按 `distill-*` 前缀批量清理**——会**误删 2 张人工主题卡**,其中一张正是 R571 降级档(清理动作会删掉自己的执行依据);正确对象 = 1196 张自动噪声卡,按命名形态分层排除主题卡。
+- **🆕实质增量④[实测]写入侧止血再加一轮**:08:46 后自动噪声卡新增 **0 张**(命名形态+时间双条件)⇒ 止血**连续保持 13h05m**(08:45→21:50);库总量 +1 全部来自 R571 主题卡落盘,**非复灌复发** ⇒ 「写入侧止血」结论不变且更强。
+- **🆕实质增量⑤[实测]Gmail 未读双口径复算**:7d 全量 **47 封**(与 R571 同);未读按 `labelIds` 逐封 GET = **30**、按 `q=after:<秒> is:unread` = **30**、**symdiff=0** ⇒ 权威值 **30**;R571 记 **29** 系逐封 GET 漏计 1 封 ⇒ 勘误登记。零新商务函。
+- **🆕实质增量⑥[实测]Gmail 刷新取键坑 + 不轮换实证**:首刷 401 invalid_client ⇒ 真因=自写脚本取 `client_secret` 时误取 `client_id`(通用 `pick()` fallback 硬编码 client_id);按正本配方 `client_secret.json['installed']['client_secret']` + `credentials.json['refresh_token']` + `token_uri` 即刻 **REFRESH_OK expires_in=3599**。刷新响应 keys = access_token/expires_in/scope/token_type、**无 refresh_token** ⇒ **不轮换 refresh_token**(只存 access_token 即安全)。
+- **🆕实质增量⑦[实测]Code80 通道活旁证**:Gmail 11-18 日报(code80.ai「AI编程巴士」·账号 wx_8E3cgs):昨日 **421** 次调用·总费 $124.33 / 实扣 $69.03 / 缓存命中 **89.0%**;claude-sonnet-5-5 **303** 次($38.77)·claude-opus-5-5 **42** 次($2.41)·gpt-6-astra 61·gpt-6.1-sol 14·gpt-5.6-sol 1 ⇒ 对 11-16「双 429 断供」案给出旁证:11-18 opus 路径经 Code80 仍有实际调用(仅旁证,不推翻双 429 结论)。
+- **值守面 [实测·全渠道持平]**:信箱 compass 0 未读·platform RED total **229** 持平(最新 id108181 soul-distress-202611190735 = ×92,**本轮未再升**);mentions 5 全旧·notifications 45 全旧·a2a-x402/google-agentic-commerce#198 仍 open/1 评论(updated 11-09 零新增)·genesis 5 家零 REPLY(1/1/0/1/2)·dev.to 30 文评论 **8**(6+2)持平;CI compass 44342935844 success + core 43558665734 success 双绿;daemon 9876 绿 + watchdog exit0 + 哨兵 exit0 recall_hit=76;管道三件 exit0(快筛「存在不过筛」持平)·矩阵 mtime 仍 **10-30 09:42** 停摆;磁盘 avail **13Gi**(R571 14Gi,-1Gi,离 10Gi 告警线有余量)。
+- **dev.to 首次逐条核到「已答」层级[实测]**:4825866 三条外部评论(arhancanli/baumgaerben/mp6nfjxhrlxc,10-10)均有我方 in-thread reply(10-15);4805943 两条外部评论(indiainfranotes 10-06 / devansh_kontey 10-08)已在**正文 PS(2026-10-27)** 逐条 @ 具名答复 ⇒ **8 条外部评论零漏答**,与「持平」计数互证。
+- **零生产动作**:未改代码/plist/symlink·未 bootout·未移 plist·**未删任何记忆卡**(只读计数)·未碰 NAS·未外发邮件/未 PATCH dev.to·他线 5 个未提交文件(tools/distill_pilot/*、tools/fuel_intake.py、tools/p3_delta.py、.codex/config.toml、runtime/production_loop/state.json)保持 M 未裹挤;留痕四件走限定 pathspec commit。
+- **候拍板**:🔴 distress ×92 人监门·**存量清理口径 = 1196 自动噪声卡 + 禁前缀批删**·通道配额(Code80 旁证)·a2a#198/Gmail 审稿/模真真三诉求·矩阵 phase2 解锁·py-spy 仍缺;🟡复灌(plist 留加载目录·RunAtLoad=false·三层闸已收口⇒建议移出或明确接受)。
+
 ### R718 · 2026-11-18(值守 loop R571:实质增量轮——distress ×91→×92 + distill 复灌向量降级 🔴→🟡 + 存量计数勘误 1197 非 1189 + 写入侧止血持续性复核)
 
 - **🆕实质增量①[实测]写入侧止血持续性**:库 **1431** 张·distill-* **314** + session_auto_* **883** = 噪声 **1197 张/83.7%**;最新 distill 卡 mtime 仍 **11-18 08:45**,08:46 后 distill/session_auto 新增 **0 张**(按 2h/张 节律本应新增约 5 张)⇒ 止血**连续保持 11h12m**;ps 无 incremental_distill 进程;launchctl 无 distill-incremental label(仅 review-worker)⇒ R569「持续累积」继续不成立(本次为跨轮持续性验证,非单点快照)。

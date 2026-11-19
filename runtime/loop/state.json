@@ -1,6 +1,6 @@
 {
-  "round": 571,
-  "last_round_ts": "2026-11-18 20:05",
+  "round": 572,
+  "last_round_ts": "2026-11-18 21:55",
   "history": [
     {
       "round": 566,
@@ -163,11 +163,17 @@
       "ts": "2026-11-18 20:05",
       "result": "substantive",
       "note": "R571 实质增量轮(🔴 distress ×91→×92 + distill 复灌向量降级 🔴→🟡 + 存量计数勘误 1197 非 1189 + 写入侧止血持续性 11h12m 复核): ①[实测]写入侧止血持续性(推进 R569 欠账·非单点快照):库 1431 张·distill-* 314+session_auto_* 883=1197 张/83.7%;最新 distill 卡 mtime 仍 11-18 08:45,08:46 后新增 0 张(按 2h/张 节律本应约 5 张)⇒ 止血连续保持 11h12m;ps 无 incremental_distill 进程;launchctl 无 distill-incremental label(仅 review-worker)⇒ R569「持续累积」继续不成立。②[实测]计数勘误:R568 记 314 与 R569 记 306 互斥→双口径(find/ls)均 314 且零新增零删除⇒ R569 少计 8 张属计数错误非删除;正确存量 1197/83.7%。③[实测]复灌向量降级:plist com.nautilus.distill-incremental.plist 仍在 LaunchAgents 但未加载(现状止血有效);勘误 R569——plutil 实测 RunAtLoad=false(非 true)、StartInterval=7200 ⇒ 登录后约 2h 首次触发;代码闸门三层已落地(08af5b02):AUTO_MAX_AGE_SECONDS(7d)真被用于 collect_pending:164-165·publish_revision(review_file=None) 返回 review_required 且不调 publish_to_memory.py·回执三 sha256 绑定 + publication_valid 回读;review worker approved=0/published=0 全 hold ⇒ 即便复灌最坏路径=≤7d 候选排进 review 队列,不再灌噪声卡进库 ⇒ 候拍板项 🔴→🟡;本轮未移 plist/未 bootout/未改他线文件。④[实测]残余:publish_to_memory.py(+243)/extract_sample.py(+188)/p3_delta.py 仍为未提交工作区版本(他线 R557-R560 产物)。值守面:信箱 compass 0 未读;RED total 228→229·新函 id108181 soul-distress-202611190735(92 consecutive)⇒ distress ×92(人监门候用户);Gmail 401→直刷 REFRESH_OK 3599s→7d 全量 47 封逐封 GET(未用 ids= 批量端点)·未读 29⇒ 零新商务函(Mathawar Sharma Reddit Ads 同线回信=广告销售零行动);mentions 5 全旧/notifications 45 全旧/genesis 5 家零 REPLY/dev.to 8 评论持平;daemon 绿 9876+watchdog exit0+哨兵 exit0 recall_hit=76;CI compass 44342935844 success+core 43558665734 success;管道三件 exit0·快筛全同;矩阵 mtime 10-30 停摆;磁盘 avail 14Gi;a2a#198 仍 1 评论零新增。零生产动作(未改代码/plist/symlink·未 bootout·未移 plist·未删卡·未碰 NAS·未外发·未 PATCH dev.to·他线未提交文件未裹挟);产出 docs/incidents/INC_20261118_DISTILL_REARM_GATE_RECHECK_R571.md;留痕五件限定 pathspec commit。"
+    },
+    {
+      "round": 572,
+      "ts": "2026-11-18 21:55",
+      "result": "substantive",
+      "note": "记忆库「噪声」计数口径缺陷坐实:`distill-*` 前缀口径 315 张虚高 **2 张人工主题卡**(含 R571 自己写的 `distill-rearm-downgraded-r571-20261118.md`)·存量真实数 1197→**1196 自动噪声卡**(270 uuid + 36 批 8hex + 7 agent + 883 session_auto)/1432=83.5%·🔴清理口径禁令:不得按 `distill-*` 前缀批删(会误删主题卡=删掉清理依据)·写入侧止血再复核 08:46 后自动噪声新增 0 张(连续 13h05m,非复灌复发)·Gmail 未读双口径(labelIds vs q)均 30 symdiff=0 ⇒ 勘误 R571 的 29(漏计 1 封)·Gmail 刷新 401 invalid_client 真因=自写脚本误取 client_id 当 client_secret,按正本配方即刻 REFRESH_OK 3599s;刷新响应**不轮换 refresh_token** ·Code80 通道活旁证(11-18 421 次调用/opus-5-5 42 次)·dev.to 首次逐条核到「已答」层级(8 条零漏答)·全渠道持平(RED 229·distress ×92 未升·mentions 5·notif 45·a2a#198 1·genesis 零 REPLY·CI 双 success·daemon/哨兵绿·矩阵 10-30 停摆·磁盘 13Gi)·零生产动作。"
     }
   ],
-  "last_round_time": "2026-11-18 17:45",
-  "last_run": "2026-11-18 17:45",
-  "last_round": 570,
-  "note": "R570 值守轮(实质增量:distress ×89→×91 + 上轮后两轮 429 空转账 + 通道恢复实测)①【platform RED 实测】check --to platform 全量 total=228·最新两封新函=id106319 soul-distress-202611190216(90 consecutive failures·last cycle selfimprove-se)+id107436 soul-distress-202611190519(91 consecutive·last cycle selfimprove-en)⇒ ×89→×91(+2·熔断分层保活通道·解除=人工删 .soul-pause 人监门候用户);本轮无 OGE 派单(OGE 状态呈报 id106322+勘误 id106323 已于 R569 回函).②【通道账】R569 之后两轮(11-18 14:xx 与 15:32)rounds.log 仅留 round-end 标记·正文为 API Error 429(Token Plan 用量上限)⇒ 零产出空转两轮;本轮通道恢复·全流程正常完成.③【值守面】Gmail 401→直刷 refresh OK 3599s→7d 全量 48 封逐封 GET(未用 ids= 批量端点·遵 R567 坑)·未读 30·零新商务函·新到 2 封均营销(Daytona SDK2.0 公告 16:25 / Gamma 品牌 15:42)·Mathawar Sharma(Reddit Ads SMB 销售)gong.io 序列两封判读=广告销售非合作方零行动;平台信箱 compass 0 未读;mentions 5 全旧;notifications 45 全旧;genesis 5 家零 REPLY;dev.to 8 评论全旧(最新 10-15·无新增);daemon 绿 9876+watchdog exit0+哨兵 exit0 recall_hit=76(R569=74);compass CI 最新 44342935844 success(11-18 16:04Z)全绿·core 最新 43558665734 success(11-14);管道三件 exit0·快筛全同(CS-513 过/CS-518 25pp ✗③✓④✓⑤/CS-515~517 opus=None);矩阵 mtime 10-30 停摆维持;磁盘 avail 14.0Gi(R569 13Gi→+1Gi·未触 10Gi alarm·零清理).④【留痕缺口修复】R569 COLLAB_BOARD 行误落 runtime/ 副本(line292)·根单源缺行⇒ 本轮按 root 单源补录 R569 行+append R570 行;queue.md R716 段仍在文件尾 1889 行(惯例位漂移·留档候用户).",
-  "last_round_at": "2026-11-18 17:45"
+  "last_round_time": "2026-11-18 21:55",
+  "last_run": "2026-11-18 21:55",
+  "last_round": 572,
+  "note": "R572 值守轮(实质增量:记忆库计数口径缺陷坐实+存量真实数 1197→1196+清理口径禁令+Gmail 未读双口径 30+刷新取键坑+Code80 通道活旁证)①【口径缺陷】`distill-*` 前缀 315 张虚高 2 张人工主题卡(含 R571 自己写的降级档)·自动噪声真实 1196(270 uuid+36 批 8hex+7 agent+883 session_auto)/1432=83.5%·🔴禁按前缀批删②【止血】08:46 后自动噪声新增 0 张(连续 13h05m,非复灌复发)③【Gmail】47 封·未读双口径均 30 symdiff=0(勘误 R571 的 29)·401 根因=误取 client_id 当 client_secret,正本配方 REFRESH_OK 3599s·刷新不轮换 refresh_token ④【Code80】11-18 日报 421 次调用·opus-5-5 42 次(双 429 案旁证)⑤dev.to 8 条外部评论逐条核到已答·全渠道持平·零生产动作。",
+  "last_round_at": "2026-11-18 21:55"
 }
