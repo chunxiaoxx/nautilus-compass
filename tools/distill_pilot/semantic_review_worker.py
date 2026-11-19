@@ -23,12 +23,10 @@ import re
 import time
 from collections import Counter
 from pathlib import Path
-from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
 from anchor_check import CJK_RE, collect_anchors
 from compress_arm import scrub
-from incremental_distill import MEMORY_DIR
 
 import sys
 sys.path.insert(0, "/Users/chunxiao.wang/Projects/nautilusflywheel/scripts/pipeline")

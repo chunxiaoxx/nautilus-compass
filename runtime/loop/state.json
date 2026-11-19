@@ -1,6 +1,6 @@
 {
-  "round": 572,
-  "last_round_ts": "2026-11-18 21:55",
+  "round": 573,
+  "last_round_ts": "2026-11-19 02:30",
   "history": [
     {
       "round": 566,
@@ -169,11 +169,17 @@
       "ts": "2026-11-18 21:55",
       "result": "substantive",
       "note": "记忆库「噪声」计数口径缺陷坐实:`distill-*` 前缀口径 315 张虚高 **2 张人工主题卡**(含 R571 自己写的 `distill-rearm-downgraded-r571-20261118.md`)·存量真实数 1197→**1196 自动噪声卡**(270 uuid + 36 批 8hex + 7 agent + 883 session_auto)/1432=83.5%·🔴清理口径禁令:不得按 `distill-*` 前缀批删(会误删主题卡=删掉清理依据)·写入侧止血再复核 08:46 后自动噪声新增 0 张(连续 13h05m,非复灌复发)·Gmail 未读双口径(labelIds vs q)均 30 symdiff=0 ⇒ 勘误 R571 的 29(漏计 1 封)·Gmail 刷新 401 invalid_client 真因=自写脚本误取 client_id 当 client_secret,按正本配方即刻 REFRESH_OK 3599s;刷新响应**不轮换 refresh_token** ·Code80 通道活旁证(11-18 421 次调用/opus-5-5 42 次)·dev.to 首次逐条核到「已答」层级(8 条零漏答)·全渠道持平(RED 229·distress ×92 未升·mentions 5·notif 45·a2a#198 1·genesis 零 REPLY·CI 双 success·daemon/哨兵绿·矩阵 10-30 停摆·磁盘 13Gi)·零生产动作。"
+    },
+    {
+      "round": 573,
+      "ts": "2026-11-19 02:30",
+      "result": "substantive",
+      "note": "R573 值守轮(实质增量:🔴 main CI 红坐实并已修——Lint job `ruff check .` F401×3 全在 tools/distill_pilot/semantic_review_worker.py,CI run 44447592289 head=fde3c74a;pristine HEAD 导出复跑 HEAD 报 2 条亦红;根因 44c4993f 新增文件时带了只写不用的导入 os/HTTPError/MEMORY_DIR;修复=删 2 行未使用导入, 改后 ruff 全绿+import_ok+--help exit0+CI 等价测试集全绿;检测缺口=该批提交从未各自触发 CI run(攒批 push),R572「CI 44342935844 success」是过期读数(实测该 run head=5b852a7f 属上一批)⇒ 须核 head_sha==被检提交; 新增 tests/test_ci_lint_clean.py 护栏并负控制实测可抓;②review-worker minimax 429 已恢复(210 行,最后一段 45 连 429 于 index 204 结束,205-209 连续 5 行双审齐全)⇒ R572 双 429 在 minimax 侧不再成立,150 pending 未审; ③distress ×92→×94(RED 229→231,id109491 93con/id110806 94con,人工删 .soul-pause 人监门候用户);④Gmail 401→直刷 REFRESH_OK 3599s,7d 45/未读 28,零新商务函;daemon+watchdog+哨兵绿,管道三件 exit0,矩阵停 10-30,磁盘 15Gi)"
     }
   ],
-  "last_round_time": "2026-11-18 21:55",
-  "last_run": "2026-11-18 21:55",
-  "last_round": 572,
-  "note": "R572 值守轮(实质增量:记忆库计数口径缺陷坐实+存量真实数 1197→1196+清理口径禁令+Gmail 未读双口径 30+刷新取键坑+Code80 通道活旁证)①【口径缺陷】`distill-*` 前缀 315 张虚高 2 张人工主题卡(含 R571 自己写的降级档)·自动噪声真实 1196(270 uuid+36 批 8hex+7 agent+883 session_auto)/1432=83.5%·🔴禁按前缀批删②【止血】08:46 后自动噪声新增 0 张(连续 13h05m,非复灌复发)③【Gmail】47 封·未读双口径均 30 symdiff=0(勘误 R571 的 29)·401 根因=误取 client_id 当 client_secret,正本配方 REFRESH_OK 3599s·刷新不轮换 refresh_token ④【Code80】11-18 日报 421 次调用·opus-5-5 42 次(双 429 案旁证)⑤dev.to 8 条外部评论逐条核到已答·全渠道持平·零生产动作。",
-  "last_round_at": "2026-11-18 21:55"
+  "last_round_time": "2026-11-19 02:30",
+  "last_run": "2026-11-19 02:30",
+  "last_round": 573,
+  "note": "R573 值守轮(实质增量:🔴 main CI 红坐实并已修——Lint job `ruff check .` F401×3 全在 tools/distill_pilot/semantic_review_worker.py,CI run 44447592289 head=fde3c74a;pristine HEAD 导出复跑 HEAD 报 2 条亦红;根因 44c4993f 新增文件时带了只写不用的导入 os/HTTPError/MEMORY_DIR;修复=删 2 行未使用导入, 改后 ruff 全绿+import_ok+--help exit0+CI 等价测试集全绿;检测缺口=该批提交从未各自触发 CI run(攒批 push),R572「CI 44342935844 success」是过期读数(实测该 run head=5b852a7f 属上一批)⇒ 须核 head_sha==被检提交; 新增 tests/test_ci_lint_clean.py 护栏并负控制实测可抓;②review-worker minimax 429 已恢复(210 行,最后一段 45 连 429 于 index 204 结束,205-209 连续 5 行双审齐全)⇒ R572 双 429 在 minimax 侧不再成立,150 pending 未审; ③distress ×92→×94(RED 229→231,id109491 93con/id110806 94con,人工删 .soul-pause 人监门候用户);④Gmail 401→直刷 REFRESH_OK 3599s,7d 45/未读 28,零新商务函;daemon+watchdog+哨兵绿,管道三件 exit0,矩阵停 10-30,磁盘 15Gi)",
+  "last_round_at": "2026-11-19 02:30"
 }
