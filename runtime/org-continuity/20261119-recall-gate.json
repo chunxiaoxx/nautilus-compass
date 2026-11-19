@@ -1,0 +1,29 @@
+{
+  "schema": "organization-recall-gate/1",
+  "observed_at_utc": "2026-11-19T12:55:11Z",
+  "policy": "Transport ping, authenticated daemon recall, and MCP connector recall are separate gates.",
+  "mcp_connector_recall": {
+    "tool": "mcp__nautilus_compass_3ce8f1b07d61__recall",
+    "query_class": "organization continuity",
+    "timeout_seconds": 90,
+    "status": "timeout_no_result",
+    "action": "call terminated after three 30-second waits; no memory publication or write was performed"
+  },
+  "local_authenticated_daemon_recall": {
+    "endpoint": "127.0.0.1:9876",
+    "action": "both",
+    "project": "-Users-chunxiao-wang-Projects-nautilus-compass",
+    "top_k": 3,
+    "elapsed_ms": 2079.3,
+    "status": "pass",
+    "reranked": true,
+    "hits_returned": 3
+  },
+  "interpretation": {
+    "daemon_transport": "pass",
+    "daemon_authenticated_recall": "pass_for_one_probe",
+    "mcp_connector_recall": "unresolved_timeout",
+    "organization_memory_acceptance": "not_done"
+  },
+  "next_action": "Trace the MCP connector path and its timeout/fallback behavior; preserve the direct daemon probe as a control and do not call the Compass service fully recovered until the MCP-level recall returns with a source path."
+}
