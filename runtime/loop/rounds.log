@@ -5173,3 +5173,47 @@ API Error: Request rejected (429) · 已达到 Token Plan 用量上限：请升�
 ---- round end 11-19 12:12 ----
 **[磁盘升级·P0 告警·收尾复核]** R575 收尾 `df -h /System/Volumes/Data` → **avail 7.0Gi / 99% 满**(开工 8.6Gi ⇒ **−1.6Gi / 约 25min ≈ 3.9GB/h**;R574 12Gi → 开工 8.6Gi 已首破 10Gi alarm 线 ⇒ **距 ENOSPC 约 1.8h**)。根因复核边界:`~/.orbstack` 仅 5.0M(配置/套接字)、VM 数据在 `~/Library/Group Containers/HUAQ24HBR6.dev.orbstack/` 本轮 `ls`/`find` **只见空目录**、`du` 60s 超时无输出、`lsof -c OrbStack` 未取到映像条目 ⇒ **TCC 不可读,与 11-10 基线一致**(11-10 靠 lsof 实锤 data.img.raw≈460.4GB)⇒ **本轮未复测映像大小,不下新根因结论**。**本轮零清理**(零删除,候用户)。
 ---- round end 11-19 12:30 ----
+R575 值守轮完成（loop 计数 R574→575，state.json 已落）。
+
+## 本轮实质增量
+
+**① 🔴 CI 盲区第二次复发（规模 3 笔 → 18 笔）**
+开工 `git status -sb` = `ahead 18` —— 跨对话会话 11-19 09:19–09:33 的 18 笔（context capsule / org continuity snapshot 等，29 文件 +2341 行）未 push、未进 loop 留痕轴。push 前实测 `actions/runs?head_sha=5c5bd5d8` → **total_count=0 ⇒ CI 从未跑过**。R574 立的「每笔提交至少触发一次 CI」前置纪律第二次被违反，且它只是档面文字、**无任何自动闸执行**。
+
+**② 🔴 push 前本地 CI 等价集抓到 4 条 F401（main 免于一次红 run）**
+R573 同款坑换文件复发：`tests/test_context_capsule.py:1 json` / `tools/org_continuity_snapshot.py:16 os` / `:20 sys` / `:21 time`。AST 核 4 名字 `ast.Name uses=False` 且模块级零引用（该文件 `sys` 真在用 → 只删 `json`）→ 修复=删 4 行，commit `5b6bdf94`（pathspec 限定）。改后全绿：ruff `All checks passed` / **453 passed** / v09 **7-7** / a2a selftest ok / 本批新增测试 **9 passed** ⇒ 把红挡在 push 之前。
+
+**③ 🔴 闭环（本轮 4 笔提交全部 head_sha 绑定且 CI success）**
+`5b6bdf94`→run 44566551790（12 job 全绿含 Lint）· `df38f745`→44567036335 · `e90e1bc1`→44567944875 · `c8723d11`→44568687524（0 job 非 success）。
+
+**④ 🔴 磁盘 avail 跌破 10Gi alarm 线**
+开工 8.6Gi → 收尾 7.0Gi（99% 满，≈3.9GB/h ⇒ 距 ENOSPC 约 1.8h），收尾复读回弹到 7.9Gi（APFS 可清除空间波动，仍在 alarm 线内）。根因复核边界：`~/.orbstack` 仅 5.0M，VM 数据在 TCC 不可读的 Group Containers 目录（ls/find 只见空目录、du 60s 超时、lsof 无映像条目）⇒ 与 11-10 lsof 基线一致，**本轮未复测 ⇒ 不下新根因结论**。**本轮零清理**。
+
+**⑤ distress ×95→×97**（RED 232→234，id112704 96con / id114042 97con，人监门候用户）
+
+## 值守面（全实测，持平）
+信箱 compass 0 未读 · Gmail 401→直刷 REFRESH_OK 3599s→7d 47 封/未读 30（双口径 symdiff=0）·新到 3 封全为营销/服务通知（Product Hunt / Infini 验证码 / Reddit Ads）⇒ 零新商务函零新面孔 · mentions 5 全旧 · notifications 46（唯一新项仍是 CI 过期通知）· genesis 5 家零 REPLY · a2a#198 仍 1 评论 · dev.to 8 评论持平 · daemon 9876 绿 + watchdog exit0 + 哨兵 exit0（recall_hit=79）· GATE0 PASS · 快筛 CS-515~518 存在不过筛 · 矩阵仍停 10-30 09:42 · 管道三件 exit0。
+
+**留痕缺口**：`rounds.log` 的 `11-19 06:49` / `09:19` 两个 round end 标记无内容块（09:19 与跨对话提交时点重合 ⇒ 不判空转）。
+
+## 未动 / 限制
+未改 daemon.py·plist·symlink，未 bootout、未删记忆卡、未碰 NAS、未外发、未 PATCH dev.to、未动 `.soul-pause`；他线 8 个未提交文件保持 M 未裹挤。限制一处：磁盘升级那笔 commit message 里 `~/.orbstack` 被 zsh 展开成空（文件级记录完整），已 push 不可改写，未 force。
+
+产出：`docs/incidents/INC_20261119_CI_BLINDSPOT_RECURRENCE_R575.md` + 记忆卡 `ci-blindspot-recurrence-r575-20261119.md` + rounds.log/state.json(R575)/queue.md R722/COLLAB_BOARD。
+
+## 候拍板（按急迫）
+1. 🔴 磁盘 7.9Gi/99%（建议 unmount `~/mnt/nas-work2` + OrbStack 映像处置，VM 路径 TCC 不可读需用 OrbStack 自身工具或 lsof 定位）
+2. 🔴 **CI 盲区闸自动化**（同坑三次复发全靠人工巡检才发现 —— 建议 pre-push hook 或 CI 侧「落后 origin 即不判绿」）
+3. 🔴 CI ruff 版本未 pin（三次复发共用放大器）· distress ×97 人工删 `.soul-pause`
+4. 🟡 a2a#198 草稿 · Gmail 审稿 · 模真真三诉求 · 矩阵 phase2 · py-spy 仍缺 · review-worker pending 未审
+---- round end 11-19 11:43 ----
+2026-11-19 14:10 EST round576 实质增量轮·🔴 磁盘根因归属修正(OrbStack 映像=稀疏文件·460.4GiB 表面 vs 103.88GB 实际)+ 🔴 R575 的 -3.9GB/h 速率被 5 点采样证伪 + ✅ CI 对当前 HEAD 闭环核验成立 + distress ×97→×98:
+**🆕实质增量①[实测]🔴 磁盘根因归属修正——旧基线「根因=VM映像460.4GB」不成立**:`lsof -nP` 定位 `~/Library/Group Containers/HUAQ24HBR6.dev.orbstack/data/data.img.raw`;`stat -f %z` 表面尺寸 = **494,333,346,304 B = 460.4 GiB**,但 `stat -f %b`×blksize(25,361,840×4096)= **实际分配仅 103.88 GB** ⇒ **稀疏文件**;R533/R573/R575 沿用的「460.4GB」是**按表面尺寸(apparent size)得出**,对稀疏文件严重高估。Data 卷 used 420,072 MB ⇒ OrbStack 映像仅占 **≈25%**,**其余 ≈316 GB 落点本轮未定位**(TCC:`ls`/`find` 只见空目录、`du` 不可读 ⇒ **只能用 `lsof` 定位路径 + `stat %b` 量分配块**)。60s 窗内映像增长 96 blocks=393,216 B ⇒ **≈23.6 MB/h**。
+**🆕实质增量②[实测]🔴 速率证伪 + 方法论落账**:R575 记「avail 8.6Gi→7.0Gi(25min)≈3.9GB/h ⇒ 距 ENOSPC 约 1.8h」;本轮 **5 个采样点** 6,124 / 6,135 / 6,149 / 6,137 / 6,144 MB(13:45–13:58)⇒ **窗口内基本持平甚至微升**;跨轮 11:50(7.0Gi)→13:45(6.0Gi)≈ **0.53 GB/h**,比旧估**慢 7 倍** ⇒ **单轮两点差分不足以支撑 ENOSPC 倒计时**(可能跨越一次已完成的回收)。纪律:报速率/倒计时须 **≥3 采样点跨 ≥10min**;报根因须 **apparent 与 allocated 双口径**。
+**🆕实质增量③[实测]✅ CI 对当前 HEAD 闭环核验成立(R573/R574 立的「每笔提交至少触发一次 CI」纪律首次被验证)**:开工 ahead=**0**(无未 push 提交);`actions/runs?head_sha=c8723d11` → total_count=1 → run **44568687524** head_sha=`c8723d11` == 本地 HEAD == origin/main tip ⇒ `conclusion=success`;另 `df38f745`→44567036335 / `e90e1bc1`→44567944875 亦各 success ⇒ **本轮零 CI 盲区**。⚠️`gh api` 直连管道 `json.load` 曾报 `Extra data`(gh 输出非纯 JSON)⇒ 改用 `--jq` 取值(工具坑,留档)。
+**🆕实质增量④[实测]Gmail 逐封核读 24h 新到 6 封 ⇒ 零新商务函零新面孔**:401 → 直刷 REFRESH_OK(3599s) → 7d 全量 **47** 封 / 未读纯口径 **30**(与 R575 **持平**,零增长;加 `-from:noreply -category:(social promotions)` 过滤后 23)。**24h 内新到 6 封逐封核 From/Subject/Body**:① Product Hunt 讨论(11-19 17:33Z)**新于 R575** ② Product Hunt 讨论(12:00Z)③ Reddit Ads webinar ④ **Mathawar Sharma <v.mathawar.sharma@reddit.com>「Re: …」= Reddit 广告销售跟进**(核全文:「Checking in—how's your first campaign coming along?…free support setting up your first campaigns」⇒ **是 Reddit 向我方推销广告服务,非对我方外联的回复**,不构成待回商务函)⑤ Infini 验证码 ⑥ `[Code80] 使用报告 - 2026-11-18`(HTML 信封,text/plain 为空,正文未取到)⇒ **全为营销/服务通知/自有渠道报告 ⇒ 零新商务函**。
+**🆕实质增量⑤[实测]distress ×97→×98 + 新增跨框函**:RED `check --to platform` total 234→**236**;新 distress `id115388 soul-distress-202611200217`(**98 consecutive**)⇒ 解除=人工删 `.soul-pause` ⇒ **人监门候用户**(只读未动);另一件 = `id114619 flywheel→platform`「Nautilus 组织接入与 API canonical host 协调」—— 收件方为 platform,**compass 信箱仍 0 未读** ⇒ 未 ack,但内容涉 API canonical host(与 compass 记忆/MCP 服务相关)⇒ **记为跨框候联动,ack 权限与口径待定**(不代 platform 回函)。
+**值守面[实测,全持平]**:信箱 compass **0 未读**·mentions 5 全旧(最新 11-02 OWASP#35)·notifications **46**(首条仍 11-19T02:57:35Z 的 CI **过期通知**;R575 已判)·genesis 5 家(1/1/0/1/2)**零 REPLY**(最新 2026-10-22)·dev.to 30 文 **8 评论**(6+2)持平—— 逐条核评论时间戳:最新一条为**我方 chunxiaoxx 2026-10-15**,外部评论最新 2026-10-10 ⇒ **零新增待回**·daemon 9876 绿+watchdog exit0+哨兵 exit0(**recall_hit=89**)·GATE0 PASS·快筛 CS-515~518 **存在不过筛**持平·矩阵 mtime 仍 **10-30 09:42** 停摆·管道三件 exit0(pipeline_report 提示 CS-008 最新批退化≈0.0357 疑同仓误跑,沿用既有告警)。
+**本轮动作**:**零生产动作**——未改 daemon.py/plist/symlink·未 bootout·未移 LaunchAgents·未删任何记忆卡·未碰 NAS·未外发邮件·未 PATCH dev.to·未动 `.soul-pause`·未改 workflow·**未删任何磁盘文件**(定位到的可回收候选仅报用户);他线 6 个未提交文件保持 M **未裹挤**。产出 `docs/incidents/INC_20261119_DISK_SPARSE_ROOTCAUSE_R576.md` + 记忆卡 `disk-sparse-rootcause-r576-20261119.md`。
+**候拍板**:🔴磁盘(根因表述已修正;≈316GB 落点未定位 + 已定位可回收候选 ~/Library/Caches 9.8GB/codex 4.0/DingTalk 2.3/Google 1.3、~/.cache 6.2GB、App Support 2.7GB——**删除不可逆,候用户拍板**)·🔴**CI 盲区闸自动化**(三次复发全靠人工巡检)·🔴CI ruff 版本未 pin·🔴distress **×98** 人监门·🟡flywheel→platform #114619 跨框协同口径·a2a#198 草稿·Gmail 审稿·模真真三诉求·矩阵 phase2·py-spy 仍缺·review-worker pending 未审。
+---- round end 11-19 14:10 ----

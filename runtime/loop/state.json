@@ -1,6 +1,6 @@
 {
-  "round": 575,
-  "last_round_ts": "2026-11-19 11:50",
+  "round": 576,
+  "last_round_ts": "2026-11-19 14:10",
   "history": [
     {
       "round": 574,
@@ -187,11 +187,17 @@
       "ts": "2026-11-19 11:50",
       "result": "substantive",
       "note": "R575 值守轮(实质增量:🔴 CI 盲区第二次复发·规模 3 笔→18 笔——开工 ahead 18,跨对话会话 11-19 09:19-09:33 的 18 笔(audit/assay/feat: context capsule + org continuity snapshot)未 push 未留痕,push 前实测 actions/runs?head_sha=5c5bd5d8 → total_count=0 ⇒ CI 从未跑过;🔴 push 前本地 CI 等价集抓到 4 条 F401(R573 同款坑换文件复发:tests/test_context_capsule.py:1 json / tools/org_continuity_snapshot.py:16 os / :20 sys / :21 time),AST 核 4 名字 ast.Name uses=False 且模块级零引用 ⇒ 修复=删 4 行,commit 5b6bdf94(pathspec 限定);改后 CI 等价集全绿(ruff All checks passed / 453 passed / test_compass_v09 7-7 / a2a selftest ok / 新增 test_context_capsule+verifypack 9 passed)⇒ main 不经过红 run;🔴 闭环:push d372bde2..5b6bdf94(19 笔,未 force)→ CI run 44566551790 head_sha=5b6bdf94 == 本地 HEAD == origin/main tip ⇒ 绑定成立,Lint job success;🔴 磁盘 avail 8.6Gi→收尾 7.0Gi/99% 满(R574 12Gi,−1.6Gi/25min ≈3.9GB/h ⇒ 距 ENOSPC 约 1.8h)首次跌破 10Gi alarm 线,零清理候用户;根因复核边界:`~/.orbstack` 仅 5.0M、VM 数据在 TCC 不可读的 Group Containers 目录(ls/find 只见空目录·du 60s 超时·lsof 未取到映像)⇒ 本轮未复测,沿用 11-10 lsof 基线,不下新根因结论;distress ×95→×97(RED 232→234, id112704 96con / id114042 97con, 人监门候用户);值守面:信箱 compass 0 未读;Gmail 401→直刷 REFRESH_OK 3599s→7d 47 封/未读 30(双口径 symdiff=0),新到 3 封(Product Hunt 讨论 / Infini 验证码 / Reddit Ads webinar)全营销通知类 ⇒ 零新商务函零新面孔;mentions 5 全旧;notifications 46(唯一新项=CI 过期通知);genesis 5 家零 REPLY;a2a#198 仍 1 评论零新增;dev.to 8 评论持平;daemon 9876 绿+watchdog exit0+哨兵 exit0 recall_hit=79;GATE0 PASS;快筛 CS-515~518 存在不过筛持平;矩阵仍 10-30 停摆;管道三件 exit0。留痕缺口:rounds.log 存 06:49/09:19 两个 round end 标记无内容块(09:19 与跨对话会话提交时点重合⇒不判空转)。零生产动作:未改 daemon.py/plist/symlink·未 bootout·未移 LaunchAgents·未删记忆卡·未碰 NAS·未外发·未 PATCH dev.to·未动 .soul-pause·未改 workflow;他线 6 个未提交文件保持 M 未裹挤。产出 docs/incidents/INC_20261119_CI_BLINDSPOT_RECURRENCE_R575.md + 记忆卡 ci-blindspot-recurrence-r575-20261119.md。"
+    },
+    {
+      "round": 576,
+      "ts": "2026-11-19 14:10",
+      "result": "substantive",
+      "note": "R576 值守轮(实质增量:🔴 磁盘根因归属修正——OrbStack data.img.raw 为稀疏文件:表面 460.4GiB(stat %z)/实际分配仅 103.88GB(stat %b×4096),Data 卷 used 420GB 中仅占≈25%,剩余≈316GB 落点未定位 ⇒ 旧基线「根因=VM映像460.4GB」(按 apparent size 得出)不成立;60s 窗内映像增长 96 blocks=393KB≈23.6MB/h;🔴 速率证伪:R575 记 -3.9GB/h 距 ENOSPC 1.8h,本轮 5 采样点(6124/6135/6149/6137/6144MB)窗口内基本持平甚至微升,跨轮 11:50(7.0Gi)→13:45(6.0Gi)≈0.53GB/h 慢 7 倍 ⇒ 单轮两点差分不得给倒计时;TCC 边界:Group Containers/Containers 的 du 不可读,须 lsof 定位路径+stat %b 量分配块;本轮零清理候用户(已定位可回收候选 ~/Library/Caches 9.8GB(codex4.0/DingTalk2.3/Google1.3)、~/.cache 6.2GB、App Support 2.7GB);✅ CI 对当前 HEAD 闭环核验成立(R573/R574 立的「每笔提交至少触发一次 CI」纪律首次被验"
     }
   ],
-  "last_round_time": "2026-11-19 11:50",
-  "last_run": "2026-11-19 11:50",
-  "last_round": 575,
-  "note": "R575 值守轮(实质增量:🔴 CI 盲区第二次复发·规模 3 笔→18 笔——开工 ahead 18,跨对话会话 11-19 09:19-09:33 的 18 笔(audit/assay/feat: context capsule + org continuity snapshot)未 push 未留痕,push 前实测 actions/runs?head_sha=5c5bd5d8 → total_count=0 ⇒ CI 从未跑过;🔴 push 前本地 CI 等价集抓到 4 条 F401(R573 同款坑换文件复发:tests/test_context_capsule.py:1 json / tools/org_continuity_snapshot.py:16 os / :20 sys / :21 time),AST 核 4 名字 ast.Name uses=False 且模块级零引用 ⇒ 修复=删 4 行,commit 5b6bdf94(pathspec 限定);改后 CI 等价集全绿(ruff All checks passed / 453 passed / test_compass_v09 7-7 / a2a selftest ok / 新增 test_context_capsule+verifypack 9 passed)⇒ main 不经过红 run;🔴 闭环:push d372bde2..5b6bdf94(19 笔,未 force)→ CI run 44566551790 head_sha=5b6bdf94 == 本地 HEAD == origin/main tip ⇒ 绑定成立,Lint job success;🔴 磁盘 avail 8.6Gi→收尾 7.0Gi/99% 满(R574 12Gi,−1.6Gi/25min ≈3.9GB/h ⇒ 距 ENOSPC 约 1.8h)首次跌破 10Gi alarm 线,零清理候用户;根因复核边界:`~/.orbstack` 仅 5.0M、VM 数据在 TCC 不可读的 Group Containers 目录(ls/find 只见空目录·du 60s 超时·lsof 未取到映像)⇒ 本轮未复测,沿用 11-10 lsof 基线,不下新根因结论;distress ×95→×97(RED 232→234, id112704 96con / id114042 97con, 人监门候用户);值守面:信箱 compass 0 未读;Gmail 401→直刷 REFRESH_OK 3599s→7d 47 封/未读 30(双口径 symdiff=0),新到 3 封(Product Hunt 讨论 / Infini 验证码 / Reddit Ads webinar)全营销通知类 ⇒ 零新商务函零新面孔;mentions 5 全旧;notifications 46(唯一新项=CI 过期通知);genesis 5 家零 REPLY;a2a#198 仍 1 评论零新增;dev.to 8 评论持平;daemon 9876 绿+watchdog exit0+哨兵 exit0 recall_hit=79;GATE0 PASS;快筛 CS-515~518 存在不过筛持平;矩阵仍 10-30 停摆;管道三件 exit0。留痕缺口:rounds.log 存 06:49/09:19 两个 round end 标记无内容块(09:19 与跨对话会话提交时点重合⇒不判空转)。零生产动作:未改 daemon.py/plist/symlink·未 bootout·未移 LaunchAgents·未删记忆卡·未碰 NAS·未外发·未 PATCH dev.to·未动 .soul-pause·未改 workflow;他线 6 个未提交文件保持 M 未裹挤。产出 docs/incidents/INC_20261119_CI_BLINDSPOT_RECURRENCE_R575.md + 记忆卡 ci-blindspot-recurrence-r575-20261119.md。",
-  "last_round_at": "2026-11-19 11:50"
+  "last_round_time": "2026-11-19 14:10",
+  "last_run": "2026-11-19 14:10",
+  "last_round": 576,
+  "note": "R576 值守轮(实质增量:🔴 磁盘根因归属修正——OrbStack data.img.raw 为稀疏文件:表面 460.4GiB(stat %z)/实际分配仅 103.88GB(stat %b×4096),Data 卷 used 420GB 中仅占≈25%,剩余≈316GB 落点未定位 ⇒ 旧基线「根因=VM映像460.4GB」(按 apparent size 得出)不成立;60s 窗内映像增长 96 blocks=393KB≈23.6MB/h;🔴 速率证伪:R575 记 -3.9GB/h 距 ENOSPC 1.8h,本轮 5 采样点(6124/6135/6149/6137/6144MB)窗口内基本持平甚至微升,跨轮 11:50(7.0Gi)→13:45(6.0Gi)≈0.53GB/h 慢 7 倍 ⇒ 单轮两点差分不得给倒计时;TCC 边界:Group Containers/Containers 的 du 不可读,须 lsof 定位路径+stat %b 量分配块;本轮零清理候用户(已定位可回收候选 ~/Library/Caches 9.8GB(codex4.0/DingTalk2.3/Google1.3)、~/.cache 6.2GB、App Support 2.7GB);✅ CI 对当前 HEAD 闭环核验成立(R573/R574 立的「每笔提交至少触发一次 CI」纪律首次被验证):run 44568687524 head_sha=c8723d11==本地 HEAD==origin/main tip conclusion=success,另 df38f745/e90e1bc1 两笔亦各绿,开工 ahead=0 ⇒ 无未 push 提交、无 CI 盲区;✅ Gmail 逐封核读 24h 新到 6 封(Product Hunt×2/Reddit Ads×2 含 Mathawar Sharma 销售跟进/Infini 验证码/[Code80] 使用报告 HTML 空正文)⇒ 零新商务函零新面孔;7d 全量 47 封、未读纯口径 30(与 R575 持平,加 from/category 过滤后 23)⇒ 未读零增长;distress ×97→×98(RED total 234→236,新增 id115388 soul-distress-202611200217;另一件=flywheel→platform id114619 协调函),人监门候用户;值守面:信箱 compass 0 未读·mentions 5 全旧·notifications 46(无新项,唯一新项仍为 11-19 02:57 的 CI 过期通知)·genesis 5 家零 REPLY(最新 2026-10-22)·dev.to 30 文 8 评论(6+2,逐条核时间戳最新 10-15)持平·daemon 9876 绿+watchdog exit0+哨兵 exit0 recall_hit=89·快筛 CS-515~518 存在不过筛持平·矩阵仍停 10-30 09:42·管道三件 exit0;零生产动作:未改 daemon.py/plist/symlink·未 bootout·未删记忆卡·未碰 NAS·未外发·未 PATCH dev.to·未动 .soul-pause·未改 workflow;他线 6 个未提交文件保持 M 未裹挤。产出 docs/incidents/INC_20261119_DISK_SPARSE_ROOTCAUSE_R576.md + 记忆卡 disk-sparse-rootcause-r576-20261119.md。",
+  "last_round_at": "2026-11-19 14:10"
 }
