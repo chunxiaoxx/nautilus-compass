@@ -80,6 +80,17 @@ def test_full_pipeline(tmp_path, spec_and_out, monkeypatch):
     assert summary["agree"] == 3 and summary["disagree"] == 0
 
 
+def test_verify_relative_pack_path_runs_script_claims(tmp_path, spec_and_out, monkeypatch):
+    sp, out, _ = spec_and_out
+    assert _run("build", "--spec", str(sp), "--out", str(out)) == 0
+    monkeypatch.chdir(tmp_path)
+    # Regression: checks.kind=script must work when the caller supplies a
+    # relative pack path; the verifier runs the repro from pack_dir.
+    assert _run("verify", "out") == 0
+    rec = json.loads((out / "receipts" / "receipt.json").read_text(encoding="utf-8"))
+    assert rec["summary"]["agree"] == 3
+
+
 def test_disagree_exit_code(tmp_path, spec_and_out, monkeypatch):
     sp, out, tmp = spec_and_out
     _run("build", "--spec", str(sp), "--out", str(out))

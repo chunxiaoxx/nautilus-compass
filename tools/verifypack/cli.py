@@ -63,7 +63,10 @@ def cmd_build(a: argparse.Namespace) -> int:
 # ── verify ───────────────────────────────────────────────────────────────
 
 def cmd_verify(a: argparse.Namespace) -> int:
-    pack_dir = Path(a.pack)
+    # Normalize before running script claims.  With a relative pack path and
+    # cwd=pack_dir, subprocess would otherwise receive the pack prefix twice
+    # (a false disagree that disappears when callers pass an absolute path).
+    pack_dir = Path(a.pack).resolve()
     pack = _read_pack(pack_dir)
     env_caps = set(a.env or [])
 
