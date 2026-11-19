@@ -4,6 +4,20 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R721 · 2026-11-19(值守 loop R574:实质增量轮——🔴 未 push 提交造成 CI 盲区【跨对话会话 3 笔含 daemon.py 生产改动·CI 从未跑】→补推+核 head_sha 闭环 + 🔴 GitHub CI 失败通知=过期读数 + 无仓/线上漂移坐实 + distress ×94→×95)
+
+> ⚠️**编号撞号留档**:COLLAB_BOARD 已有三行「compass R574」(11-19 03:40/04:00/04:21)属**跨对话任务轴**(rerank 延迟调参);本条 R721 为 **loop 轮次轴**,loop 计数以 `state.json` 为准(R573→**574**)。本轮**不改写**他行。
+
+- **🆕实质增量①[实测]🔴 CI 盲区坐实并闭环**:开工 `git status -sb` = `main...origin/main [ahead 3]` ⇒ 未 push 三笔 `91850f2a perf(bound interactive rerank context)` / `3c80cd1e docs(clarify same-host rerank topology)` / `f4c00fac test(record local rerank quality probe)`,触及 `daemon.py`(生产)+ `ops/launchd` plist + 新 `tools/benchmark_rerank_latency.py`(189 行)+ `runtime/cross-dialog-receipts/20261119-rerank-ab.json`(845 行)。**push 前实测** `actions/runs?head_sha=f4c00fac…` → `total_count=0` ⇒ **CI 从未跑过**。产出源=11-19 03:40–04:21 的**跨对话会话**(已写 COLLAB_BOARD 三行)但**未 push、未更新 loop 留痕** ⇒ loop 轴看不见。**R573 纪律边界**:「CI 绿须核 head_sha==被检提交」只对**已跑过的 run** 有效,对**从未触发 run 的提交**无从核起 ⇒ 补前置纪律:**先确保每笔提交至少触发过一次 CI**。
+- **🆕实质增量②[实测]push 前 CI 等价本地集全绿**:`ruff check .` → `All checks passed!`(ruff 0.17.1)· `pytest -q tests/gep` → **413 passed** · `tests/test_compass_v09.py` → **7/7** · `sdk/a2a_adapter.py selftest` → `"status":"ok"` · `tests/test_ci_lint_clean.py` → 1 passed。
+- **🆕实质增量③[实测]闭环(绑定核验)**:普通 push `5db29eec..f4c00fac`(未 force)→ run `44497348634`,**head_sha=`f4c00fac…` == 本地 HEAD == origin/main tip** → `conclusion=success`,**12 job 全 success**(含 `Lint`)⇒ **main 绿且绑定成立**。
+- **🆕实质增量④[实测]🔴 GitHub CI 失败通知=过期读数(不绑当前 HEAD)**:`gh api notifications` 首条「CI failed」(updated 11-19T02:57:35Z)对应 run `44447592289` **head=`fde3c74a`**(=R572 提交),**已被 R573 修复**并被 `44479046804`(head=1ebf465e)/`44479511335`(head=5db29eec) 两笔绿覆盖 ⇒ 直接按通知判「CI 红」会误判;须回 run 层核 head_sha。
+- **🆕实质增量⑤[实测]无仓/线上漂移**:仓内 plist vs 已装 `~/Library/LaunchAgents/` → **逐字节相同**;插件 `~/.claude/plugins/nautilus-compass/daemon.py` vs 仓内 `daemon.py` → sha256 **相同**(`701152b7…`) ⇒ `91850f2a` 改动**确在跑**(launchctl PID 31330 在册)。⚠️读法坑:`plutil -extract` 缺 `EnvironmentVariables.` 前缀会误报键缺失。
+- **🆕实质增量⑥[实测]distress ×94→×95**:RED total 231→**232**,新函 `id111943 soul-distress-202611191724`(95 consecutive)⇒ 解除=人工删 `.soul-pause` ⇒ **人监门候用户**(只读未动)。
+- **值守面[实测]**:信箱 compass **0 未读**;Gmail 401→直刷 **REFRESH_OK 3599s**→7d 未读**双口径 27**(symdiff=0,逐封 `labelIds` 27/27 全未读),R573 记 28 差=出窗,最新到件 **11-18 20:02** ⇒ **自 R573 后 0 封新到** ⇒ **零新商务函**;mentions 5 全旧·notifications 46(唯一新项=CI 过期通知)·genesis 5 家零 REPLY·a2a#198 仍 open/1 评论零新增·dev.to 8 评论持平·daemon 9876 绿+watchdog exit0+哨兵 exit0(recall_hit=**22**)·管道三件 exit0 快筛「存在不过筛」持平·矩阵仍 10-30 09:42 停摆·磁盘 avail **12Gi**(R573 15Gi,−3Gi,未触 10Gi alarm)。
+- **零生产动作**:本轮唯一动作=**补推既有提交 + 核 CI + 留痕**;未改代码/plist·未 bootout·未删记忆卡·未碰 NAS·未外发·未 PATCH dev.to·未动 `.soul-pause`·未改 workflow;他线 6 个未提交文件保持 M 未裹挤。产出 `docs/incidents/INC_20261119_UNPUSHED_COMMITS_CI_BLINDSPOT_R574.md` + 记忆卡 `ci-blindspot-unpushed-cross-dialog-r574-20261119.md`。
+- **候拍板**:🔴distress **×95** 人监门·CI 无 ruff 版本 pin·a2a#198 草稿·Gmail 审稿·模真真三诉求·矩阵 phase2 解锁·py-spy 仍缺·磁盘 12Gi 逼近 10Gi alarm;🟡 review-worker pending 未审·复灌 plist 仍在加载目录。
+
 ### R720 · 2026-11-19(值守 loop R573:实质增量轮——🔴 main CI 红坐实并已修【Lint job ruff F401×3,根因 44c4993f 只写不用的导入】+ 检测缺口=攒批 push + review-worker minimax 429 已恢复 + distress ×92→×94)
 
 - **🆕实质增量①[实测]🔴 main 分支 CI 红坐实并已修**:CI run `44447592289`(head=`fde3c74a`,11-19 02:53:50Z)唯一失败 job=`Lint`(step `ruff check .`,ci.yml:91),13 个 job 其余全 success;报错 **3 条 F401** 全在 `tools/distill_pilot/semantic_review_worker.py`(`os` / `urllib.error.HTTPError` / `incremental_distill.MEMORY_DIR`)。pristine HEAD 导出(`git archive HEAD | tar -x`)复跑 ruff:CI 失败点报 **3** 条、当前 HEAD `2e314369` 报 **2** 条(`os` 已被 `2e314369` 的 `os.replace` 真正使用)⇒ **HEAD 亦红**。根因=`44c4993f` 新增该文件时带了三个**只写不用**的导入(worker 走 `except Exception` + `type(error).__name__` 记名故不需 `HTTPError`;worker 契约 never publish 故不需 `MEMORY_DIR`)。
