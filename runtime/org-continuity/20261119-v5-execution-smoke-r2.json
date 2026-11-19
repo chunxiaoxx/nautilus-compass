@@ -1,0 +1,28 @@
+{
+  "schema": "v5-execution-smoke/2",
+  "observed_at_utc": "2026-11-19T14:19:17.619975+00:00",
+  "endpoint": "http://127.0.0.1:8001/v1/chat/completions",
+  "request": {
+    "model": "nautilus-v5",
+    "user": "codex-p0-execution-smoke",
+    "prompt": "Return exactly V5_EXECUTION_SMOKE_OK and nothing else."
+  },
+  "result": {
+    "http_status": 200,
+    "response_content": "[LLM error after all fallbacks] All 0 providers attempted (skipped broken). Last error: None",
+    "execution_status": "fail_provider",
+    "elapsed_s": 0.227
+  },
+  "repair_effect": {
+    "previous_failure": "HTTP 500 TypeError skills_catalog argument",
+    "current_failure": "HTTP 200 response but no provider produced model content",
+    "v5_dialog_report": "upstream provider returned 401 Invalid token during post-restart smoke",
+    "service_restart": "completed by V5 dialog via ai.nautilus.v5-brain2"
+  },
+  "evidence": {
+    "err_log_path": "/Users/chunxiao.wang/Library/Logs/v5-brain.err.log",
+    "err_log_sha256": "8cdbb216d3ced4bd6b8b39739d1723b8d4ca599463ea7780f25dc62707597d9c"
+  },
+  "gate": "execution_smoke_not_pass",
+  "next_action": "Repair provider authentication or provider eligibility in the V5-owned dialog, then rerun the exact request and require literal V5_EXECUTION_SMOKE_OK."
+}

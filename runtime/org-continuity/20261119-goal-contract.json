@@ -46,7 +46,7 @@
       "owner": "v5",
       "goal": "证明 V5 能完成一次最小任务闭环。",
       "done_when": "输入、工具调用、结果、持久化和回执完整，且能被独立读回。",
-      "blocked_by": "UI 主对话框 notLoaded。健康检查通过，但当前 chat/completions 返回 HTTP 500，根因是 super_agent.py 调用了不接受 skills_catalog 参数的 PromptBuilderMixin._build_system_prompt。",
+      "blocked_by": "PromptBuilderMixin 参数契约已经修复并重启加载。当前 chat/completions 返回 HTTP 200，但内容是 All 0 providers attempted (skipped broken)，V5 上游 provider 仍不可用。",
       "next_action": "运行一次最小 agent-loop smoke，记录失败边界和结果。"
     }
   ],
