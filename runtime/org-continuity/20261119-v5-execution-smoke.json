@@ -1,0 +1,30 @@
+{
+  "schema": "v5-execution-smoke/1",
+  "observed_at_utc": "2026-11-19T13:49:20.073447+00:00",
+  "endpoint": "http://127.0.0.1:8001/v1/chat/completions",
+  "request": {
+    "model": "nautilus-v5",
+    "user": "codex-p0-execution-smoke",
+    "prompt": "Return exactly V5_EXECUTION_SMOKE_OK and nothing else."
+  },
+  "result": {
+    "http_status": 500,
+    "response_body": "Internal Server Error",
+    "elapsed_s": 0.067,
+    "execution_status": "fail"
+  },
+  "root_cause": {
+    "exception": "TypeError: PromptBuilderMixin._build_system_prompt() got an unexpected keyword argument 'skills_catalog'",
+    "source": "/Users/chunxiao.wang/Projects/nautilus-v5/nautilus_v5/super_agent.py:906",
+    "caller": "chat_completions -> agent.respond -> _build_system_prompt",
+    "log_path": "/Users/chunxiao.wang/Library/Logs/v5-brain.err.log",
+    "log_sha256": "0bd488fa8591ecc432743d3f376d775fa483e4bb340f8aa4f1c8d7251fda08c4",
+    "evidence_tail": "python3.13/site-packages/starlette/_exception_handler.py\", line 42, in wrapped_app\n    await app(scope, receive, sender)\n  File \"/Users/chunxiao.wang/Projects/nautilus-v5/.venv/lib/python3.13/site-packages/starlette/routing.py\", line 73, in app\n    response = await f(request)\n               ^^^^^^^^^^^^^^^^\n  File \"/Users/chunxiao.wang/Projects/nautilus-v5/.venv/lib/python3.13/site-packages/fastapi/routing.py\", line 301, in app\n    raw_response = await run_endpoint_function(\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<3 lines>...\n    )\n    ^\n  File \"/Users/chunxiao.wang/Projects/nautilus-v5/.venv/lib/python3.13/site-packages/fastapi/routing.py\", line 212, in run_endpoint_function\n    return await dependant.call(**values)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/chunxiao.wang/Projects/nautilus-v5/nautilus_v5/api/openai_api.py\", line 1598, in chat_completions\n    async for c in agent.respond(user_msg, user_id=user_id, chat_mode=True):\n        chunks.append(c)\n  File \"/Users/chunxiao.wang/Projects/nautilus-v5/nautilus_v5/super_agent.py\", line 906, in respond\n    system = self._build_system_prompt(user_emotion, user_msg=user_msg, skills_catalog=_skills_cat)\nTypeError: PromptBuilderMixin._build_system_prompt() got an unexpected keyword argument 'skills_catalog'\n2026-11-19 08:48:55,653 INFO nautilus_v5 · [V8-P2 BROKEN_PROMISE] count=10706 intensity=0.95 action=下次: Break pattern. Try the opposite strategy.\n2026-11-19 08:48:55,829 INFO httpx · HTTP Request: GE"
+  },
+  "health_boundary": {
+    "api_health": "pass",
+    "v1_status": "pass",
+    "chat_execution": "fail"
+  },
+  "next_action": "Fix the PromptBuilderMixin signature/call contract in the V5-owned dialog, then rerun this exact request and require a non-error choices[0].message.content receipt."
+}
