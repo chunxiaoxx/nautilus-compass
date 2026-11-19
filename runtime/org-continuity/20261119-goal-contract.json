@@ -30,8 +30,8 @@
       "owner": "platform",
       "goal": "只核当前 CodeSense 实例的原始 task-pre-valid 回执。",
       "done_when": "当前包在当前沙箱中取得明确 reward=1.0，result.json 和 job.log 可读。",
-      "blocked_by": "r10 已在镜像层失败，r11 本地 21/21 通过但平台重新上传未闭合，r12 预检结果待读回。",
-      "next_action": "读 r12 的 result.json/job.log。若未通过，冻结版本扩张并记录平台边界。"
+      "blocked_by": "r12 当前子任务 99234145 的 task-pre-valid 已独立回读为 RewardFileNotFoundError。result/job.log/verifier 树显示 OSS mirror 反复失败并要求 OSS_ACCESS_KEY_ID，未产生 reward.txt 或 score_out.json。",
+      "next_action": "暂不上传 r13。先修复或确认平台 OSS/artifact 链路，链路恢复后只上传 r13 并重跑一次 task-pre-valid。"
     },
     {
       "id": "P0-compass-continuity",
