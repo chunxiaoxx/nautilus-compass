@@ -1,0 +1,11 @@
+{
+ "manifest_version": "0.2",
+ "files": {
+  "pack.json": "17cc0d7907de42a09ee9a84222b4bc08b835593c7451298ff4ceea28d8c08776",
+  "payload/context_capsule.json": "49e8cdcf388efc971461a938bf57f8636d0aeb85831c15380bd19ef1caea447c",
+  "payload/context_validation.json": "2e6ac42e21600afaa23072e9d68e044096de10e72b4c9abced4b7ce5106c04e4",
+  "repro/verify_context_binding.py": "93e22922ed41015c7ace13dfd301b597b1fd96a7fc6ed7053ba04d2709ca088b"
+ },
+ "inputs": {},
+ "input_decls": []
+}

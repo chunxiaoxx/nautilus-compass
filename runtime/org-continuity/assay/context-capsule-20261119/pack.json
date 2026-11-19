@@ -1,0 +1,51 @@
+{
+ "pack": "context-capsule-20261119",
+ "protocol_version": "verifypack-0.3",
+ "subject": {
+  "code_hash": "2a61fe215487adcf3d9d8ce2485fb5d64fc2efa8a17ac24de49c86cb3fdb74d5",
+  "config_hash": "80f70aec2df4c582bab88de1d434de8078b5448ec413ffa26d375324fa17d8fb"
+ },
+ "claims": [
+  {
+   "id": "capsule_bytes",
+   "statement": "criteria:context_capsule@catalog-v1 capsule bytes remain source-bound",
+   "level": "L1",
+   "value": "sha256-match",
+   "checks": {
+    "primary": {
+     "kind": "file_hash",
+     "file": "payload/context_capsule.json",
+     "algo": "sha256",
+     "expect": "49e8cdcf388efc971461a938bf57f8636d0aeb85831c15380bd19ef1caea447c"
+    }
+   }
+  },
+  {
+   "id": "validation_bytes",
+   "statement": "criteria:context_capsule@catalog-v1 validation receipt remains source-bound",
+   "level": "L1",
+   "value": "sha256-match",
+   "checks": {
+    "primary": {
+     "kind": "file_hash",
+     "file": "payload/context_validation.json",
+     "algo": "sha256",
+     "expect": "2e6ac42e21600afaa23072e9d68e044096de10e72b4c9abced4b7ce5106c04e4"
+    }
+   }
+  },
+  {
+   "id": "mapping_and_boundary",
+   "statement": "criteria:context_capsule@catalog-v1 project/task mapping and no-external-action boundary recompute to true",
+   "level": "L1",
+   "value": 1,
+   "checks": {
+    "primary": {
+     "kind": "script",
+     "repro": "repro/verify_context_binding.py",
+     "timeout_s": 30
+    }
+   }
+  }
+ ]
+}

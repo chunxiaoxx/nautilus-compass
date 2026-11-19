@@ -1,0 +1,35 @@
+{
+  "schema": "consumer-readback/1",
+  "observed_at_utc": "2026-11-19T13:31:00Z",
+  "pack": "context-capsule-20261119",
+  "boundary": "internal context binding only; no customer acceptance, deployment, publication, or external send",
+  "local_assay_check": {
+    "consumer": "local-verifypack-check-process",
+    "status": "pass",
+    "manifest_sha256": "28a763a6b35b208f650f6e8ede43cbc0398fbe337a5aab7a077dd1f9fd0d0caa",
+    "receipt_sha256": "8a8134bececae69aec600534d7e54f3d5f62217a70291ec8c1ea23ff30532232",
+    "signature_sha256": "2e1df77286558b73afc3a588d1b313fc9483ecb70bc79f423c1c2b9cd55f3d80",
+    "public_key_sha256": "6cbdc6a218d8213b5e884240ff7c519d935bbd2816a4e00329f49e195ff6b8a9",
+    "summary": {
+      "agree": 3,
+      "disagree": 0,
+      "degraded": 0,
+      "seal_fail": 0
+    }
+  },
+  "alternate_mcp_control": {
+    "tool": "mcp__nautilus_compass_6558a670788c__recall",
+    "status": "pass",
+    "elapsed_class": "about_2s",
+    "hits_returned": 3,
+    "meaning": "alternate MCP path is live and can consume project memory; the new capsule was deliberately not published to memory in this step"
+  },
+  "codex_agent_consumer": {
+    "thread_id": "01a19fd4-cfc1-7e72-89a0-6f08b8bba0d2",
+    "message_sent": true,
+    "status": "pending_agent_readback",
+    "evidence": "thread remained inProgress on an existing CodeSense task when checked; no consumer verdict returned yet"
+  },
+  "overall_status": "partial_ready",
+  "next_action": "When the Agent thread is free, read its CONSUMER_READBACK and compare its hashes/fields; do not close the consumer gate from the send receipt alone."
+}

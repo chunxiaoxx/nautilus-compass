@@ -1,0 +1,18 @@
+{
+  "status": "agree",
+  "checks": {
+    "schema": true,
+    "project_id": true,
+    "memory_namespace": true,
+    "project_path": true,
+    "git_root": true,
+    "task_id_present": true,
+    "thread_id_present": true,
+    "branch_unchanged": true,
+    "source_head_unchanged": true,
+    "daemon_ping": true
+  },
+  "mismatches": [],
+  "validated_at_utc": "2026-11-19T13:08:35.819675+00:00",
+  "note": "A changed head or project path invalidates this capsule; regenerate instead of guessing."
+}

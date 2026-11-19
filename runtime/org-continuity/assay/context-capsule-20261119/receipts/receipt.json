@@ -1,0 +1,43 @@
+{
+ "receipt_version": "0.3",
+ "pack": "context-capsule-20261119",
+ "pack_manifest_hash": "28a763a6b35b208f650f6e8ede43cbc0398fbe337a5aab7a077dd1f9fd0d0caa",
+ "verifier": "compass-context-verifier",
+ "verified_at": "2026-11-19T08:27:22",
+ "environment": "Darwin 27.0.0 · python 3.12.15",
+ "results": [
+  {
+   "id": "capsule_bytes",
+   "level": "L1",
+   "verdict": "agree",
+   "recomputed": "49e8cdcf388efc971461a938bf57f8636d0aeb85831c15380bd19ef1caea447c",
+   "claimed": "sha256-match"
+  },
+  {
+   "id": "validation_bytes",
+   "level": "L1",
+   "verdict": "agree",
+   "recomputed": "2e6ac42e21600afaa23072e9d68e044096de10e72b4c9abced4b7ce5106c04e4",
+   "claimed": "sha256-match"
+  },
+  {
+   "id": "mapping_and_boundary",
+   "level": "L1",
+   "verdict": "agree",
+   "recomputed": "1",
+   "claimed": "1"
+  }
+ ],
+ "summary": {
+  "agree": 3,
+  "disagree": 0,
+  "degraded": 0,
+  "seal_fail": 0
+ },
+ "boundary": "独立技术验证与回执,不作客户验收或结算决定",
+ "subject": {
+  "code_hash": "2a61fe215487adcf3d9d8ce2485fb5d64fc2efa8a17ac24de49c86cb3fdb74d5",
+  "config_hash": "80f70aec2df4c582bab88de1d434de8078b5448ec413ffa26d375324fa17d8fb"
+ },
+ "subject_fp": "8ef4dd9a1196b198"
+}

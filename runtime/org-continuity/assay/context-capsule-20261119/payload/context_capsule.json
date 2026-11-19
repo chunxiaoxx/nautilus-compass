@@ -1,0 +1,83 @@
+{
+  "schema": "context-capsule/1",
+  "capsule_id": "compass-continuity-p0-recall-gate-20261119:01a1ea00-9c51-7bb0-92d1-2d79b4947675",
+  "created_at_utc": "2026-11-19T13:08:35.709274+00:00",
+  "authorization_basis": "current_user_instruction_continue",
+  "scope": "organization-continuity-and-recall-gate",
+  "actor": {
+    "user_id": "local:chunxiao.wang",
+    "identity_source": "git_user_email_sha256_prefix",
+    "identity_sha256_prefix": "364e1a518e0fc0e5",
+    "role": "compass"
+  },
+  "project": {
+    "project_id": "nautilus-compass",
+    "memory_namespace": "-Users-chunxiao-wang-Projects-nautilus-compass",
+    "project_path": "/Users/chunxiao.wang/Projects/nautilus-compass",
+    "git_root": "/Users/chunxiao.wang/Projects/nautilus-compass",
+    "branch": "main",
+    "source_head": "60da22fce976ffd87f8ffe7f648c4cf55af8ef86",
+    "dirty_count": 22,
+    "dirty_sample": [
+      "M .codex/config.toml",
+      " M runtime/loop/rounds.log",
+      " M runtime/production_loop/state.json",
+      " M tools/distill_pilot/extract_sample.py",
+      " M tools/distill_pilot/publish_to_memory.py",
+      " M tools/fuel_intake.py",
+      " M tools/p3_delta.py",
+      "?? _INBOUND_FROM_FLYWHEEL_20261119_academic_research_handoff.md"
+    ],
+    "agents_sha256": "923cc6024b0f47b9ca2412096dd78c2b864ff23ffa9fa208bdd94967c2257e7d"
+  },
+  "task": {
+    "task_id": "compass-continuity-p0-recall-gate-20261119",
+    "owner": "compass",
+    "thread_id": "01a1ea00-9c51-7bb0-92d1-2d79b4947675",
+    "goal": "repair_or_replace_the_stale_3ce_mcp_path_then_validate_project_scoped_continuity"
+  },
+  "permissions": {
+    "allowed": [
+      "read:organization-state",
+      "run:local-probes",
+      "write:compass/runtime/org-continuity"
+    ],
+    "denied": [
+      "external-send",
+      "external-reply",
+      "deploy",
+      "publish-memory",
+      "ack-mailbox",
+      "clean-unrelated-worktrees"
+    ]
+  },
+  "live_evidence": {
+    "daemon_source_sha256": "701152b72b070d5894a3a9146e7e0aa96e6ad204c8abd5b48d82af31ab8fc016",
+    "daemon_ping": {
+      "endpoint": "127.0.0.1:9876",
+      "status": "pass",
+      "payload": {
+        "ok": true,
+        "pong": true,
+        "pid": 31330,
+        "python_executable": "/Users/chunxiao.wang/.local/share/uv/python/cpython-3.12.15-macos-aarch64-none/bin/python3.12",
+        "source_root": "/Users/chunxiao.wang/.claude/plugins/nautilus-compass",
+        "daemon_hash": "sha256:701152b72b070d5894a3a9146e7e0aa96e6ad204c8abd5b48d82af31ab8fc016"
+      }
+    }
+  },
+  "gates": {
+    "user_project_task_mapping": "bound_if_validation_passes",
+    "assay_signature": "not_signed",
+    "consumer_readback": "pending"
+  },
+  "integrity": {
+    "algorithm": "sha256",
+    "status": "computed",
+    "sha256": "87c40117e1021d7ce7ed93211873bd04aacdd5a43b1894a2104e9c74ed785d15"
+  },
+  "signature": {
+    "status": "not_signed",
+    "reason": "Context binding is hash-bound in this P0 step; Assay Ed25519 receipt is a later gate."
+  }
+}
