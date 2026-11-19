@@ -41,10 +41,43 @@
       4,
       2
     ],
-    "quality_status": "performance_delta_verified; retrieval-equivalence benchmark still required",
+    "quality_status": "small eligible-card regression probe passes; formal LongMemEval/customer benchmark still required",
     "remote_model_revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
     "backup_dir": "runtime/maintenance_backups/20261119-rerank-latency",
-    "architecture_note": "Memory files and bge-m3 embedder are local; daemon sends only top candidate text over loopback to a separate same-host reranker process."
+    "architecture_note": "Memory files and bge-m3 embedder are local; daemon sends only top candidate text over loopback to a separate same-host reranker process.",
+    "quality_ab_probe": {
+      "path": "runtime/cross-dialog-receipts/20261119-rerank-ab.json",
+      "sha256": "e3bf51675f708c8bff3a939c6bf6332309de30b23b3097c859c41ed6487029df",
+      "cases": 10,
+      "eligible_entries": 24,
+      "expected_card_coverage": {
+        "available": 5,
+        "unavailable_due_to_memory_gate": 5
+      },
+      "summary": {
+        "dense": {
+          "hit_at_5_all_cases": 0.5,
+          "hit_at_5_when_expected_card_is_eligible": 1.0,
+          "median_server_elapsed_ms": null
+        },
+        "30x8192": {
+          "hit_at_5_all_cases": 0.5,
+          "hit_at_5_when_expected_card_is_eligible": 1.0,
+          "median_server_elapsed_ms": 3554.48
+        },
+        "30x512": {
+          "hit_at_5_all_cases": 0.5,
+          "hit_at_5_when_expected_card_is_eligible": 1.0,
+          "median_server_elapsed_ms": 2206.44
+        },
+        "16x512": {
+          "hit_at_5_all_cases": 0.5,
+          "hit_at_5_when_expected_card_is_eligible": 1.0,
+          "median_server_elapsed_ms": 1485.51
+        }
+      },
+      "interpretation": "Hit@5 uses expected local memory cards as a regression signal; it is not customer or LongMemEval acceptance."
+    }
   },
   "services": {
     "daemon_9876": {
@@ -81,12 +114,12 @@
   },
   "organization_memory": {
     "queue_total": 355,
-    "reviewed_unique": 219,
-    "pending_unique": 136,
+    "reviewed_unique": 223,
+    "pending_unique": 132,
     "status_counts": {
       "legacy_hold": 5,
-      "hold": 212,
-      "approved_receipt_candidate": 2
+      "hold": 215,
+      "approved_receipt_candidate": 3
     },
     "reviewers": [
       "minimax-m3",
@@ -94,7 +127,7 @@
     ],
     "published": false,
     "progress_path": "runtime/scratch_distill_pilot_20261104/semantic-review-progress.json",
-    "progress_sha256": "ebd3d725c209fe357e894d01460dd4a2854ae4c9767c3aa91eb98ecac056fa8c",
+    "progress_sha256": "95209750e7c246f277e08f2b0696e460ffd2581a05e7ff222f36eaf7bffc35d5",
     "raw_cards_retained": true,
     "distill_write_frozen": true
   },
@@ -110,6 +143,10 @@
     {
       "path": "runtime/scratch_distill_pilot_20261104/semantic-review-progress.json",
       "sha256": "ebd3d725c209fe357e894d01460dd4a2854ae4c9767c3aa91eb98ecac056fa8c"
+    },
+    {
+      "path": "runtime/cross-dialog-receipts/20261119-rerank-ab.json",
+      "sha256": "e3bf51675f708c8bff3a939c6bf6332309de30b23b3097c859c41ed6487029df"
     }
   ],
   "limitations": [
@@ -122,5 +159,5 @@
     "owner": "compass",
     "action": "Run a fixed retrieval-quality A/B benchmark for 30/8192 versus 16/512; keep tuned latency config only if quality gate passes, while continuing the 355-row dual review with no publication."
   },
-  "updated_at_utc": "2026-11-19T09:00:07.809434+00:00"
+  "updated_at_utc": "2026-11-19T09:21:22.230814+00:00"
 }

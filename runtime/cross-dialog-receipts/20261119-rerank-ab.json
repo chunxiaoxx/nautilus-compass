@@ -1,0 +1,845 @@
+{
+  "schema": "compass-rerank-ab/1",
+  "generated_at_utc": "2026-11-19T09:20:36.493866+00:00",
+  "project": "-Users-chunxiao-wang-Projects-nautilus-compass",
+  "memory_dir": "/Users/chunxiao.wang/.claude/projects/-Users-chunxiao-wang-Projects-nautilus-compass/memory",
+  "memory_dir_sha256_unavailable": true,
+  "eligible_entries": 24,
+  "reranker_health": {
+    "model": "BAAI/bge-reranker-v2-m3",
+    "device": "mps",
+    "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+    "max_length_supported": 8192,
+    "batch_size_limit": 4
+  },
+  "cases": 10,
+  "summary": {
+    "dense": {
+      "hit_at_5_all_cases": 0.5,
+      "hit_at_5_when_expected_card_is_eligible": 1.0,
+      "median_server_elapsed_ms": null
+    },
+    "30x8192": {
+      "hit_at_5_all_cases": 0.5,
+      "hit_at_5_when_expected_card_is_eligible": 1.0,
+      "median_server_elapsed_ms": 3554.48
+    },
+    "30x512": {
+      "hit_at_5_all_cases": 0.5,
+      "hit_at_5_when_expected_card_is_eligible": 1.0,
+      "median_server_elapsed_ms": 2206.44
+    },
+    "16x512": {
+      "hit_at_5_all_cases": 0.5,
+      "hit_at_5_when_expected_card_is_eligible": 1.0,
+      "median_server_elapsed_ms": 1485.51
+    }
+  },
+  "expected_card_coverage": {
+    "available": 5,
+    "unavailable_due_to_memory_gate": 5
+  },
+  "interpretation": "Hit@5 uses expected local memory cards as a regression signal; it is not customer or LongMemEval acceptance.",
+  "rows": [
+    {
+      "query": "召回噪声 distill 污染",
+      "expected": "recall-noise-76pct-distill-pollution-20261117.md",
+      "expected_available": true,
+      "configs": {
+        "dense": {
+          "top5": [
+            "recall-noise-76pct-distill-pollution-20261117.md",
+            "memory-counting-basis-noise-cards-r572-20261118.md",
+            "MEMORY_archived_20261106.md",
+            "daemon-overload-livelock-recurrence-20261117.md",
+            "distill-3e11f289-4fe9-49b9-9f7f-da49f291619a.md"
+          ],
+          "expected_rank": 1,
+          "hit_at_5": true,
+          "elapsed_ms": null,
+          "meta": {
+            "candidate_count": 5,
+            "max_length": null
+          }
+        },
+        "30x8192": {
+          "top5": [
+            "recall-noise-76pct-distill-pollution-20261117.md",
+            "memory-counting-basis-noise-cards-r572-20261118.md",
+            "gmail-batch-ids-silently-ignored-20261118.md",
+            "daemon-overload-livelock-recurrence-20261117.md",
+            "ci-lint-regression-r573-20261119.md"
+          ],
+          "expected_rank": 1,
+          "hit_at_5": true,
+          "elapsed_ms": 3849.75,
+          "meta": {
+            "server_ms": 3848,
+            "device": "mps",
+            "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+            "max_length": 8192,
+            "candidate_count": 30
+          }
+        },
+        "30x512": {
+          "top5": [
+            "recall-noise-76pct-distill-pollution-20261117.md",
+            "memory-counting-basis-noise-cards-r572-20261118.md",
+            "ci-lint-regression-r573-20261119.md",
+            "MEMORY_archived_20261106.md",
+            "distill-3e11f289-4fe9-49b9-9f7f-da49f291619a.md"
+          ],
+          "expected_rank": 1,
+          "hit_at_5": true,
+          "elapsed_ms": 2276.48,
+          "meta": {
+            "server_ms": 2275,
+            "device": "mps",
+            "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+            "max_length": 512,
+            "candidate_count": 30
+          }
+        },
+        "16x512": {
+          "top5": [
+            "recall-noise-76pct-distill-pollution-20261117.md",
+            "memory-counting-basis-noise-cards-r572-20261118.md",
+            "ci-lint-regression-r573-20261119.md",
+            "MEMORY_archived_20261106.md",
+            "distill-3e11f289-4fe9-49b9-9f7f-da49f291619a.md"
+          ],
+          "expected_rank": 1,
+          "hit_at_5": true,
+          "elapsed_ms": 1485.51,
+          "meta": {
+            "server_ms": 1485,
+            "device": "mps",
+            "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+            "max_length": 512,
+            "candidate_count": 16
+          }
+        }
+      }
+    },
+    {
+      "query": "记忆库噪声计数口径",
+      "expected": "memory-counting-basis-noise-cards-r572-20261118.md",
+      "expected_available": true,
+      "configs": {
+        "dense": {
+          "top5": [
+            "memory-counting-basis-noise-cards-r572-20261118.md",
+            "recall-noise-76pct-distill-pollution-20261117.md",
+            "disk-p0-orbstack-460g-20261110.md",
+            "gmail-window-filter-mask-20261116.md",
+            "patrol-repeat-verification-discipline.md"
+          ],
+          "expected_rank": 1,
+          "hit_at_5": true,
+          "elapsed_ms": null,
+          "meta": {
+            "candidate_count": 5,
+            "max_length": null
+          }
+        },
+        "30x8192": {
+          "top5": [
+            "memory-counting-basis-noise-cards-r572-20261118.md",
+            "recall-noise-76pct-distill-pollution-20261117.md",
+            "disk-p0-orbstack-460g-20261110.md",
+            "ci-lint-regression-r573-20261119.md",
+            "patrol-repeat-verification-discipline.md"
+          ],
+          "expected_rank": 1,
+          "hit_at_5": true,
+          "elapsed_ms": 3530.01,
+          "meta": {
+            "server_ms": 3529,
+            "device": "mps",
+            "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+            "max_length": 8192,
+            "candidate_count": 30
+          }
+        },
+        "30x512": {
+          "top5": [
+            "memory-counting-basis-noise-cards-r572-20261118.md",
+            "recall-noise-76pct-distill-pollution-20261117.md",
+            "disk-p0-orbstack-460g-20261110.md",
+            "ci-lint-regression-r573-20261119.md",
+            "patrol-repeat-verification-discipline.md"
+          ],
+          "expected_rank": 1,
+          "hit_at_5": true,
+          "elapsed_ms": 2202.57,
+          "meta": {
+            "server_ms": 2202,
+            "device": "mps",
+            "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+            "max_length": 512,
+            "candidate_count": 30
+          }
+        },
+        "16x512": {
+          "top5": [
+            "memory-counting-basis-noise-cards-r572-20261118.md",
+            "recall-noise-76pct-distill-pollution-20261117.md",
+            "disk-p0-orbstack-460g-20261110.md",
+            "patrol-repeat-verification-discipline.md",
+            "daemon-overload-livelock-recurrence-20261117.md"
+          ],
+          "expected_rank": 1,
+          "hit_at_5": true,
+          "elapsed_ms": 1467.0,
+          "meta": {
+            "server_ms": 1466,
+            "device": "mps",
+            "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+            "max_length": 512,
+            "candidate_count": 16
+          }
+        }
+      }
+    },
+    {
+      "query": "Compass CI lint 回归修复",
+      "expected": "ci-lint-regression-r573-20261119.md",
+      "expected_available": true,
+      "configs": {
+        "dense": {
+          "top5": [
+            "ci-lint-regression-r573-20261119.md",
+            "daemon-overload-livelock-recurrence-20261117.md",
+            "cloud-bge-daemon-stopped-20261107.md",
+            "recall-noise-76pct-distill-pollution-20261117.md",
+            "model-channel-quota-blocked-20261116.md"
+          ],
+          "expected_rank": 1,
+          "hit_at_5": true,
+          "elapsed_ms": null,
+          "meta": {
+            "candidate_count": 5,
+            "max_length": null
+          }
+        },
+        "30x8192": {
+          "top5": [
+            "ci-lint-regression-r573-20261119.md",
+            "distill-7d96d1c2-1da5-4d32-9e74-728a370cb67e.md",
+            "handoff-20261107-hindsight-eval-next.md",
+            "recall-down-nfs-hf-cache-20261118.md",
+            "distill-3e11f289-4fe9-49b9-9f7f-da49f291619a.md"
+          ],
+          "expected_rank": 1,
+          "hit_at_5": true,
+          "elapsed_ms": 3524.35,
+          "meta": {
+            "server_ms": 3523,
+            "device": "mps",
+            "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+            "max_length": 8192,
+            "candidate_count": 30
+          }
+        },
+        "30x512": {
+          "top5": [
+            "ci-lint-regression-r573-20261119.md",
+            "distill-7d96d1c2-1da5-4d32-9e74-728a370cb67e.md",
+            "recall-down-nfs-hf-cache-20261118.md",
+            "security-v14-recall-noauth-20261105.md",
+            "patrol-repeat-verification-discipline.md"
+          ],
+          "expected_rank": 1,
+          "hit_at_5": true,
+          "elapsed_ms": 2157.22,
+          "meta": {
+            "server_ms": 2156,
+            "device": "mps",
+            "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+            "max_length": 512,
+            "candidate_count": 30
+          }
+        },
+        "16x512": {
+          "top5": [
+            "ci-lint-regression-r573-20261119.md",
+            "distill-7d96d1c2-1da5-4d32-9e74-728a370cb67e.md",
+            "recall-down-nfs-hf-cache-20261118.md",
+            "security-v14-recall-noauth-20261105.md",
+            "patrol-repeat-verification-discipline.md"
+          ],
+          "expected_rank": 1,
+          "hit_at_5": true,
+          "elapsed_ms": 1458.76,
+          "meta": {
+            "server_ms": 1458,
+            "device": "mps",
+            "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+            "max_length": 512,
+            "candidate_count": 16
+          }
+        }
+      }
+    },
+    {
+      "query": "Mac mini rerank 迁移",
+      "expected": "rerank-macmini-migration-r561.md",
+      "expected_available": false,
+      "configs": {
+        "dense": {
+          "top5": [
+            "cloud-bge-daemon-stopped-20261107.md",
+            "recall-noise-76pct-distill-pollution-20261117.md",
+            "gmail-revive-external-patrol-20261027.md",
+            "hindsight-eval-lane-park-20261107.md",
+            "recall-down-nfs-hf-cache-20261118.md"
+          ],
+          "expected_rank": null,
+          "hit_at_5": false,
+          "elapsed_ms": null,
+          "meta": {
+            "candidate_count": 5,
+            "max_length": null
+          }
+        },
+        "30x8192": {
+          "top5": [
+            "cloud-bge-daemon-stopped-20261107.md",
+            "recall-down-nfs-hf-cache-20261118.md",
+            "handoff-20261107-hindsight-eval-next.md",
+            "handoff-20261101-thrash-arc-whitelist-closeout.md",
+            "gmail-revive-external-patrol-20261027.md"
+          ],
+          "expected_rank": null,
+          "hit_at_5": false,
+          "elapsed_ms": 3510.67,
+          "meta": {
+            "server_ms": 3510,
+            "device": "mps",
+            "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+            "max_length": 8192,
+            "candidate_count": 30
+          }
+        },
+        "30x512": {
+          "top5": [
+            "cloud-bge-daemon-stopped-20261107.md",
+            "recall-down-nfs-hf-cache-20261118.md",
+            "handoff-20261107-hindsight-eval-next.md",
+            "patrol-repeat-verification-discipline.md",
+            "handoff-20261101-thrash-arc-whitelist-closeout.md"
+          ],
+          "expected_rank": null,
+          "hit_at_5": false,
+          "elapsed_ms": 2242.41,
+          "meta": {
+            "server_ms": 2241,
+            "device": "mps",
+            "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+            "max_length": 512,
+            "candidate_count": 30
+          }
+        },
+        "16x512": {
+          "top5": [
+            "cloud-bge-daemon-stopped-20261107.md",
+            "recall-down-nfs-hf-cache-20261118.md",
+            "handoff-20261107-hindsight-eval-next.md",
+            "patrol-repeat-verification-discipline.md",
+            "handoff-20261101-thrash-arc-whitelist-closeout.md"
+          ],
+          "expected_rank": null,
+          "hit_at_5": false,
+          "elapsed_ms": 1517.48,
+          "meta": {
+            "server_ms": 1516,
+            "device": "mps",
+            "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+            "max_length": 512,
+            "candidate_count": 16
+          }
+        }
+      }
+    },
+    {
+      "query": "HF NFS 缓存召回故障",
+      "expected": "recall-down-nfs-hf-cache-20261118.md",
+      "expected_available": true,
+      "configs": {
+        "dense": {
+          "top5": [
+            "recall-down-nfs-hf-cache-20261118.md",
+            "daemon-overload-livelock-recurrence-20261117.md",
+            "recall-noise-76pct-distill-pollution-20261117.md",
+            "hindsight-eval-lane-park-20261107.md",
+            "distill-3e11f289-4fe9-49b9-9f7f-da49f291619a.md"
+          ],
+          "expected_rank": 1,
+          "hit_at_5": true,
+          "elapsed_ms": null,
+          "meta": {
+            "candidate_count": 5,
+            "max_length": null
+          }
+        },
+        "30x8192": {
+          "top5": [
+            "recall-down-nfs-hf-cache-20261118.md",
+            "recall-noise-76pct-distill-pollution-20261117.md",
+            "mozhenzhen-open-source-invite-20261118.md",
+            "external-outreach-closed-twice-r566-20261118.md",
+            "MEMORY_archived_20261106.md"
+          ],
+          "expected_rank": 1,
+          "hit_at_5": true,
+          "elapsed_ms": 3554.48,
+          "meta": {
+            "server_ms": 3553,
+            "device": "mps",
+            "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+            "max_length": 8192,
+            "candidate_count": 30
+          }
+        },
+        "30x512": {
+          "top5": [
+            "recall-down-nfs-hf-cache-20261118.md",
+            "recall-noise-76pct-distill-pollution-20261117.md",
+            "external-outreach-closed-twice-r566-20261118.md",
+            "MEMORY_archived_20261106.md",
+            "daemon-overload-livelock-recurrence-20261117.md"
+          ],
+          "expected_rank": 1,
+          "hit_at_5": true,
+          "elapsed_ms": 2206.44,
+          "meta": {
+            "server_ms": 2206,
+            "device": "mps",
+            "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+            "max_length": 512,
+            "candidate_count": 30
+          }
+        },
+        "16x512": {
+          "top5": [
+            "recall-down-nfs-hf-cache-20261118.md",
+            "recall-noise-76pct-distill-pollution-20261117.md",
+            "external-outreach-closed-twice-r566-20261118.md",
+            "daemon-overload-livelock-recurrence-20261117.md",
+            "handoff-20261107-hindsight-eval-next.md"
+          ],
+          "expected_rank": 1,
+          "hit_at_5": true,
+          "elapsed_ms": 1474.0,
+          "meta": {
+            "server_ms": 1473,
+            "device": "mps",
+            "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+            "max_length": 512,
+            "candidate_count": 16
+          }
+        }
+      }
+    },
+    {
+      "query": "cloud BGE daemon 停用",
+      "expected": "cloud-bge-daemon-stopped-20261107.md",
+      "expected_available": true,
+      "configs": {
+        "dense": {
+          "top5": [
+            "cloud-bge-daemon-stopped-20261107.md",
+            "daemon-overload-livelock-recurrence-20261117.md",
+            "recall-down-nfs-hf-cache-20261118.md",
+            "disk-full-enospc-bash-blocked-20261110.md",
+            "model-channel-quota-blocked-20261116.md"
+          ],
+          "expected_rank": 1,
+          "hit_at_5": true,
+          "elapsed_ms": null,
+          "meta": {
+            "candidate_count": 5,
+            "max_length": null
+          }
+        },
+        "30x8192": {
+          "top5": [
+            "cloud-bge-daemon-stopped-20261107.md",
+            "recall-down-nfs-hf-cache-20261118.md",
+            "distill-fa3a4db7-ea66-42ac-8ec3-485084f27487.md",
+            "MEMORY_archived_20261106.md",
+            "recall-noise-76pct-distill-pollution-20261117.md"
+          ],
+          "expected_rank": 1,
+          "hit_at_5": true,
+          "elapsed_ms": 3522.56,
+          "meta": {
+            "server_ms": 3522,
+            "device": "mps",
+            "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+            "max_length": 8192,
+            "candidate_count": 30
+          }
+        },
+        "30x512": {
+          "top5": [
+            "cloud-bge-daemon-stopped-20261107.md",
+            "recall-down-nfs-hf-cache-20261118.md",
+            "MEMORY_archived_20261106.md",
+            "daemon-overload-livelock-recurrence-20261117.md",
+            "distill-fa3a4db7-ea66-42ac-8ec3-485084f27487.md"
+          ],
+          "expected_rank": 1,
+          "hit_at_5": true,
+          "elapsed_ms": 2148.74,
+          "meta": {
+            "server_ms": 2148,
+            "device": "mps",
+            "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+            "max_length": 512,
+            "candidate_count": 30
+          }
+        },
+        "16x512": {
+          "top5": [
+            "cloud-bge-daemon-stopped-20261107.md",
+            "recall-down-nfs-hf-cache-20261118.md",
+            "MEMORY_archived_20261106.md",
+            "daemon-overload-livelock-recurrence-20261117.md",
+            "distill-fa3a4db7-ea66-42ac-8ec3-485084f27487.md"
+          ],
+          "expected_rank": 1,
+          "hit_at_5": true,
+          "elapsed_ms": 1502.81,
+          "meta": {
+            "server_ms": 1502,
+            "device": "mps",
+            "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+            "max_length": 512,
+            "candidate_count": 16
+          }
+        }
+      }
+    },
+    {
+      "query": "BGE 模型选择对拍",
+      "expected": "emb-bakeoff-bge-stays-20260925.md",
+      "expected_available": false,
+      "configs": {
+        "dense": {
+          "top5": [
+            "handoff-20261107-hindsight-eval-next.md",
+            "distill-fa3a4db7-ea66-42ac-8ec3-485084f27487.md",
+            "gmail-batch-ids-silently-ignored-20261118.md",
+            "disk-p0-orbstack-460g-20261110.md",
+            "cloud-bge-daemon-stopped-20261107.md"
+          ],
+          "expected_rank": null,
+          "hit_at_5": false,
+          "elapsed_ms": null,
+          "meta": {
+            "candidate_count": 5,
+            "max_length": null
+          }
+        },
+        "30x8192": {
+          "top5": [
+            "distill-fa3a4db7-ea66-42ac-8ec3-485084f27487.md",
+            "recall-down-nfs-hf-cache-20261118.md",
+            "cloud-bge-daemon-stopped-20261107.md",
+            "handoff-20261101-thrash-arc-whitelist-closeout.md",
+            "gmail-revive-external-patrol-20261027.md"
+          ],
+          "expected_rank": null,
+          "hit_at_5": false,
+          "elapsed_ms": 3549.47,
+          "meta": {
+            "server_ms": 3548,
+            "device": "mps",
+            "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+            "max_length": 8192,
+            "candidate_count": 30
+          }
+        },
+        "30x512": {
+          "top5": [
+            "distill-fa3a4db7-ea66-42ac-8ec3-485084f27487.md",
+            "recall-down-nfs-hf-cache-20261118.md",
+            "cloud-bge-daemon-stopped-20261107.md",
+            "handoff-20261101-thrash-arc-whitelist-closeout.md",
+            "external-outreach-closed-twice-r566-20261118.md"
+          ],
+          "expected_rank": null,
+          "hit_at_5": false,
+          "elapsed_ms": 2157.34,
+          "meta": {
+            "server_ms": 2156,
+            "device": "mps",
+            "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+            "max_length": 512,
+            "candidate_count": 30
+          }
+        },
+        "16x512": {
+          "top5": [
+            "distill-fa3a4db7-ea66-42ac-8ec3-485084f27487.md",
+            "recall-down-nfs-hf-cache-20261118.md",
+            "cloud-bge-daemon-stopped-20261107.md",
+            "handoff-20261101-thrash-arc-whitelist-closeout.md",
+            "handoff-20261107-hindsight-eval-next.md"
+          ],
+          "expected_rank": null,
+          "hit_at_5": false,
+          "elapsed_ms": 1501.84,
+          "meta": {
+            "server_ms": 1500,
+            "device": "mps",
+            "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+            "max_length": 512,
+            "candidate_count": 16
+          }
+        }
+      }
+    },
+    {
+      "query": "Compass MCP dogfood bridge",
+      "expected": "session-contract-dogfood-bridge-20260822.md",
+      "expected_available": false,
+      "configs": {
+        "dense": {
+          "top5": [
+            "daemon-overload-livelock-recurrence-20261117.md",
+            "model-channel-quota-blocked-20261116.md",
+            "recall-noise-76pct-distill-pollution-20261117.md",
+            "handoff-20261101-thrash-arc-whitelist-closeout.md",
+            "cloud-bge-daemon-stopped-20261107.md"
+          ],
+          "expected_rank": null,
+          "hit_at_5": false,
+          "elapsed_ms": null,
+          "meta": {
+            "candidate_count": 5,
+            "max_length": null
+          }
+        },
+        "30x8192": {
+          "top5": [
+            "recall-noise-76pct-distill-pollution-20261117.md",
+            "handoff-20261107-hindsight-eval-next.md",
+            "daemon-overload-livelock-recurrence-20261117.md",
+            "ci-lint-regression-r573-20261119.md",
+            "handoff-20261101-thrash-arc-whitelist-closeout.md"
+          ],
+          "expected_rank": null,
+          "hit_at_5": false,
+          "elapsed_ms": 3596.8,
+          "meta": {
+            "server_ms": 3593,
+            "device": "mps",
+            "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+            "max_length": 8192,
+            "candidate_count": 30
+          }
+        },
+        "30x512": {
+          "top5": [
+            "recall-noise-76pct-distill-pollution-20261117.md",
+            "daemon-overload-livelock-recurrence-20261117.md",
+            "handoff-20261101-thrash-arc-whitelist-closeout.md",
+            "handoff-20261107-hindsight-eval-next.md",
+            "gmail-revive-external-patrol-20261027.md"
+          ],
+          "expected_rank": null,
+          "hit_at_5": false,
+          "elapsed_ms": 2217.26,
+          "meta": {
+            "server_ms": 2216,
+            "device": "mps",
+            "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+            "max_length": 512,
+            "candidate_count": 30
+          }
+        },
+        "16x512": {
+          "top5": [
+            "recall-noise-76pct-distill-pollution-20261117.md",
+            "daemon-overload-livelock-recurrence-20261117.md",
+            "handoff-20261101-thrash-arc-whitelist-closeout.md",
+            "handoff-20261107-hindsight-eval-next.md",
+            "gmail-revive-external-patrol-20261027.md"
+          ],
+          "expected_rank": null,
+          "hit_at_5": false,
+          "elapsed_ms": 1485.37,
+          "meta": {
+            "server_ms": 1484,
+            "device": "mps",
+            "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+            "max_length": 512,
+            "candidate_count": 16
+          }
+        }
+      }
+    },
+    {
+      "query": "daemon pylibs 根因",
+      "expected": "compass-daemon-pylibs-rootcause-20260830.md",
+      "expected_available": false,
+      "configs": {
+        "dense": {
+          "top5": [
+            "MEMORY_archived_20261106.md",
+            "daemon-overload-livelock-recurrence-20261117.md",
+            "recall-noise-76pct-distill-pollution-20261117.md",
+            "recall-down-nfs-hf-cache-20261118.md",
+            "disk-p0-orbstack-460g-20261110.md"
+          ],
+          "expected_rank": null,
+          "hit_at_5": false,
+          "elapsed_ms": null,
+          "meta": {
+            "candidate_count": 5,
+            "max_length": null
+          }
+        },
+        "30x8192": {
+          "top5": [
+            "MEMORY_archived_20261106.md",
+            "recall-noise-76pct-distill-pollution-20261117.md",
+            "recall-down-nfs-hf-cache-20261118.md",
+            "daemon-overload-livelock-recurrence-20261117.md",
+            "distill-fa3a4db7-ea66-42ac-8ec3-485084f27487.md"
+          ],
+          "expected_rank": null,
+          "hit_at_5": false,
+          "elapsed_ms": 3572.3,
+          "meta": {
+            "server_ms": 3571,
+            "device": "mps",
+            "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+            "max_length": 8192,
+            "candidate_count": 30
+          }
+        },
+        "30x512": {
+          "top5": [
+            "MEMORY_archived_20261106.md",
+            "recall-noise-76pct-distill-pollution-20261117.md",
+            "recall-down-nfs-hf-cache-20261118.md",
+            "daemon-overload-livelock-recurrence-20261117.md",
+            "ci-lint-regression-r573-20261119.md"
+          ],
+          "expected_rank": null,
+          "hit_at_5": false,
+          "elapsed_ms": 2192.04,
+          "meta": {
+            "server_ms": 2191,
+            "device": "mps",
+            "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+            "max_length": 512,
+            "candidate_count": 30
+          }
+        },
+        "16x512": {
+          "top5": [
+            "MEMORY_archived_20261106.md",
+            "recall-noise-76pct-distill-pollution-20261117.md",
+            "recall-down-nfs-hf-cache-20261118.md",
+            "daemon-overload-livelock-recurrence-20261117.md",
+            "ci-lint-regression-r573-20261119.md"
+          ],
+          "expected_rank": null,
+          "hit_at_5": false,
+          "elapsed_ms": 1477.18,
+          "meta": {
+            "server_ms": 1476,
+            "device": "mps",
+            "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+            "max_length": 512,
+            "candidate_count": 16
+          }
+        }
+      }
+    },
+    {
+      "query": "Compass 四优先级路线",
+      "expected": "compass-strategy-four-priorities-20260910.md",
+      "expected_available": false,
+      "configs": {
+        "dense": {
+          "top5": [
+            "model-channel-quota-blocked-20261116.md",
+            "handoff-20261101-thrash-arc-whitelist-closeout.md",
+            "daemon-overload-livelock-recurrence-20261117.md",
+            "distill-fa3a4db7-ea66-42ac-8ec3-485084f27487.md",
+            "recall-noise-76pct-distill-pollution-20261117.md"
+          ],
+          "expected_rank": null,
+          "hit_at_5": false,
+          "elapsed_ms": null,
+          "meta": {
+            "candidate_count": 5,
+            "max_length": null
+          }
+        },
+        "30x8192": {
+          "top5": [
+            "handoff-20261101-thrash-arc-whitelist-closeout.md",
+            "distill-fa3a4db7-ea66-42ac-8ec3-485084f27487.md",
+            "handoff-20261107-hindsight-eval-next.md",
+            "recall-down-nfs-hf-cache-20261118.md",
+            "recall-noise-76pct-distill-pollution-20261117.md"
+          ],
+          "expected_rank": null,
+          "hit_at_5": false,
+          "elapsed_ms": 3661.16,
+          "meta": {
+            "server_ms": 3660,
+            "device": "mps",
+            "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+            "max_length": 8192,
+            "candidate_count": 30
+          }
+        },
+        "30x512": {
+          "top5": [
+            "handoff-20261101-thrash-arc-whitelist-closeout.md",
+            "distill-fa3a4db7-ea66-42ac-8ec3-485084f27487.md",
+            "recall-down-nfs-hf-cache-20261118.md",
+            "handoff-20261107-hindsight-eval-next.md",
+            "patrol-repeat-verification-discipline.md"
+          ],
+          "expected_rank": null,
+          "hit_at_5": false,
+          "elapsed_ms": 2400.2,
+          "meta": {
+            "server_ms": 2399,
+            "device": "mps",
+            "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+            "max_length": 512,
+            "candidate_count": 30
+          }
+        },
+        "16x512": {
+          "top5": [
+            "handoff-20261101-thrash-arc-whitelist-closeout.md",
+            "distill-fa3a4db7-ea66-42ac-8ec3-485084f27487.md",
+            "recall-down-nfs-hf-cache-20261118.md",
+            "handoff-20261107-hindsight-eval-next.md",
+            "recall-noise-76pct-distill-pollution-20261117.md"
+          ],
+          "expected_rank": null,
+          "hit_at_5": false,
+          "elapsed_ms": 1616.16,
+          "meta": {
+            "server_ms": 1615,
+            "device": "mps",
+            "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+            "max_length": 512,
+            "candidate_count": 16
+          }
+        }
+      }
+    }
+  ]
+}
