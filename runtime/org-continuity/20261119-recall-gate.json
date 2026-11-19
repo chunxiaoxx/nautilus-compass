@@ -9,6 +9,20 @@
     "status": "timeout_no_result",
     "action": "call terminated after three 30-second waits; no memory publication or write was performed"
   },
+  "mcp_control_recalls": [
+    {
+      "tool": "mcp__nautilus_compass_plugin__recall",
+      "elapsed_class": "about_2s",
+      "status": "pass",
+      "top_k": 1
+    },
+    {
+      "tool": "mcp__nautilus_compass_6558a670788c__recall",
+      "elapsed_class": "about_2s",
+      "status": "pass",
+      "top_k": 1
+    }
+  ],
   "local_authenticated_daemon_recall": {
     "endpoint": "127.0.0.1:9876",
     "action": "both",
@@ -22,8 +36,8 @@
   "interpretation": {
     "daemon_transport": "pass",
     "daemon_authenticated_recall": "pass_for_one_probe",
-    "mcp_connector_recall": "unresolved_timeout",
+    "mcp_connector_recall": "3ce8_connector_timeout_only",
     "organization_memory_acceptance": "not_done"
   },
-  "next_action": "Trace the MCP connector path and its timeout/fallback behavior; preserve the direct daemon probe as a control and do not call the Compass service fully recovered until the MCP-level recall returns with a source path."
+  "next_action": "Repair or retire the 3ce8 MCP connection and make the working plugin/6558 path the explicit control; keep the service recovery claim scoped until the affected Codex dialog is re-probed."
 }
