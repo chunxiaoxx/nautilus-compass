@@ -12,6 +12,8 @@
     <string>/Users/chunxiao.wang/Projects/nautilus-compass/runtime/scratch_distill_pilot_20261104/semantic-review-queue-20261118.json</string>
     <string>--out</string>
     <string>/Users/chunxiao.wang/Projects/nautilus-compass/runtime/scratch_distill_pilot_20261104/semantic-review-worker-results.jsonl</string>
+    <string>--progress</string>
+    <string>/Users/chunxiao.wang/Projects/nautilus-compass/runtime/scratch_distill_pilot_20261104/semantic-review-progress.json</string>
     <string>--limit</string>
     <string>5</string>
     <string>--sleep-seconds</string>

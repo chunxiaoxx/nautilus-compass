@@ -21,6 +21,7 @@ import json
 import os
 import re
 import time
+from collections import Counter
 from pathlib import Path
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
@@ -208,12 +209,71 @@ def load_rows(queue_path: Path) -> list[dict]:
     return json.loads(queue_path.read_text(encoding="utf-8"))["items"]
 
 
+def _progress_snapshot(out_path: Path) -> tuple[int, dict[str, int], str | None]:
+    """Read the append-only result log into a small, user-readable status."""
+    counts: Counter[str] = Counter()
+    sessions: set[str] = set()
+    last_session = None
+    if out_path.exists():
+        for line in out_path.read_text(encoding="utf-8", errors="replace").splitlines():
+            try:
+                row = json.loads(line)
+                session_id = str(row["session_id"])
+            except (json.JSONDecodeError, KeyError, TypeError):
+                continue
+            sessions.add(session_id)
+            last_session = session_id
+            status = row.get("status")
+            if not status and ("minimax" in row or "kimi" in row):
+                status = "legacy_hold"
+            counts[str(status or "unknown")] += 1
+    return len(sessions), dict(counts), last_session
+
+
+def write_progress(
+    progress_path: Path,
+    out_path: Path,
+    queue_total: int,
+    selected: int,
+    processed: int,
+    state: str,
+    reviewers: tuple[str, ...],
+    started_at_utc: str,
+    last_result: dict | None = None,
+) -> None:
+    """Atomically expose live progress without changing promotion state."""
+    reviewed, status_counts, last_session = _progress_snapshot(out_path)
+    payload = {
+        "schema": "semantic-review-progress/1",
+        "state": state,
+        "updated_at_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
+        "started_at_utc": started_at_utc,
+        "queue_total": queue_total,
+        "reviewed_unique": reviewed,
+        "pending_unique": max(queue_total - reviewed, 0),
+        "status_counts": status_counts,
+        "batch_selected": selected,
+        "batch_processed": processed,
+        "reviewers": list(reviewers),
+        "output_path": str(out_path.resolve()),
+        "last_session_id": last_session or (last_result or {}).get("session_id"),
+        "last_decision": (last_result or {}).get("status"),
+        "policy": "Source/hash-bound review only; hold on unsupported claims or low anchor recall; never publish.",
+    }
+    progress_path.parent.mkdir(parents=True, exist_ok=True)
+    temp_path = progress_path.with_name(progress_path.name + ".tmp")
+    temp_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    os.replace(temp_path, progress_path)
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--queue", type=Path,
                         default=Path("runtime/scratch_distill_pilot_20261104/semantic-review-queue-20261118.json"))
     parser.add_argument("--out", type=Path,
                         default=Path("runtime/scratch_distill_pilot_20261104/semantic-review-worker-results.jsonl"))
+    parser.add_argument("--progress", type=Path,
+                        default=Path("runtime/scratch_distill_pilot_20261104/semantic-review-progress.json"))
     parser.add_argument("--offset", type=int, default=0)
     parser.add_argument("--limit", type=int, default=0)
     parser.add_argument("--sleep-seconds", type=float, default=1.0)
@@ -243,6 +303,10 @@ def main(argv: list[str] | None = None) -> int:
     allowed = {"minimax-m3", "kimi-k3-256k"}
     if not reviewers or any(name not in allowed for name in reviewers):
         parser.error("--reviewers must use minimax-m3 and/or kimi-k3-256k")
+    started_at_utc = dt.datetime.now(dt.timezone.utc).isoformat()
+    write_progress(args.progress, args.out, len(rows), len(selected), 0, "running",
+                   reviewers, started_at_utc)
+    last_result = None
     try:
         with args.out.open("a", encoding="utf-8") as handle:
             for row in selected:
@@ -250,11 +314,16 @@ def main(argv: list[str] | None = None) -> int:
                 handle.write(json.dumps(result, ensure_ascii=False) + "\n")
                 handle.flush()
                 processed += 1
+                last_result = result
+                write_progress(args.progress, args.out, len(rows), len(selected), processed, "running",
+                               reviewers, started_at_utc, result)
                 print(json.dumps({"session_id": row["session_id"], "status": result["status"],
                                   "anchor_recall": result.get("anchor_recall")}, ensure_ascii=False), flush=True)
                 if args.sleep_seconds > 0:
                     time.sleep(args.sleep_seconds)
     finally:
+        write_progress(args.progress, args.out, len(rows), len(selected), processed, "batch_complete",
+                       reviewers, started_at_utc, last_result)
         fcntl.flock(lock, fcntl.LOCK_UN)
         lock.close()
     print(json.dumps({"selected": len(selected), "processed": processed,
