@@ -1,6 +1,6 @@
 {
-  "round": 570,
-  "last_round_ts": "2026-11-18 17:45",
+  "round": 571,
+  "last_round_ts": "2026-11-18 20:05",
   "history": [
     {
       "round": 566,
@@ -157,6 +157,12 @@
       "ts": "2026-11-18 17:45",
       "result": "substantive",
       "note": "R570 值守轮(实质增量:distress ×89→×91 + 上轮后两轮 429 空转账 + 通道恢复实测)①【platform RED 实测】check --to platform 全量 total=228·最新两封新函=id106319 soul-distress-202611190216(90 consecutive failures·last cycle selfimprove-se)"
+    },
+    {
+      "round": 571,
+      "ts": "2026-11-18 20:05",
+      "result": "substantive",
+      "note": "R571 实质增量轮(🔴 distress ×91→×92 + distill 复灌向量降级 🔴→🟡 + 存量计数勘误 1197 非 1189 + 写入侧止血持续性 11h12m 复核): ①[实测]写入侧止血持续性(推进 R569 欠账·非单点快照):库 1431 张·distill-* 314+session_auto_* 883=1197 张/83.7%;最新 distill 卡 mtime 仍 11-18 08:45,08:46 后新增 0 张(按 2h/张 节律本应约 5 张)⇒ 止血连续保持 11h12m;ps 无 incremental_distill 进程;launchctl 无 distill-incremental label(仅 review-worker)⇒ R569「持续累积」继续不成立。②[实测]计数勘误:R568 记 314 与 R569 记 306 互斥→双口径(find/ls)均 314 且零新增零删除⇒ R569 少计 8 张属计数错误非删除;正确存量 1197/83.7%。③[实测]复灌向量降级:plist com.nautilus.distill-incremental.plist 仍在 LaunchAgents 但未加载(现状止血有效);勘误 R569——plutil 实测 RunAtLoad=false(非 true)、StartInterval=7200 ⇒ 登录后约 2h 首次触发;代码闸门三层已落地(08af5b02):AUTO_MAX_AGE_SECONDS(7d)真被用于 collect_pending:164-165·publish_revision(review_file=None) 返回 review_required 且不调 publish_to_memory.py·回执三 sha256 绑定 + publication_valid 回读;review worker approved=0/published=0 全 hold ⇒ 即便复灌最坏路径=≤7d 候选排进 review 队列,不再灌噪声卡进库 ⇒ 候拍板项 🔴→🟡;本轮未移 plist/未 bootout/未改他线文件。④[实测]残余:publish_to_memory.py(+243)/extract_sample.py(+188)/p3_delta.py 仍为未提交工作区版本(他线 R557-R560 产物)。值守面:信箱 compass 0 未读;RED total 228→229·新函 id108181 soul-distress-202611190735(92 consecutive)⇒ distress ×92(人监门候用户);Gmail 401→直刷 REFRESH_OK 3599s→7d 全量 47 封逐封 GET(未用 ids= 批量端点)·未读 29⇒ 零新商务函(Mathawar Sharma Reddit Ads 同线回信=广告销售零行动);mentions 5 全旧/notifications 45 全旧/genesis 5 家零 REPLY/dev.to 8 评论持平;daemon 绿 9876+watchdog exit0+哨兵 exit0 recall_hit=76;CI compass 44342935844 success+core 43558665734 success;管道三件 exit0·快筛全同;矩阵 mtime 10-30 停摆;磁盘 avail 14Gi;a2a#198 仍 1 评论零新增。零生产动作(未改代码/plist/symlink·未 bootout·未移 plist·未删卡·未碰 NAS·未外发·未 PATCH dev.to·他线未提交文件未裹挟);产出 docs/incidents/INC_20261118_DISTILL_REARM_GATE_RECHECK_R571.md;留痕五件限定 pathspec commit。"
     }
   ],
   "last_round_time": "2026-11-18 17:45",

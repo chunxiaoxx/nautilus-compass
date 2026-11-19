@@ -4,6 +4,16 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R718 · 2026-11-18(值守 loop R571:实质增量轮——distress ×91→×92 + distill 复灌向量降级 🔴→🟡 + 存量计数勘误 1197 非 1189 + 写入侧止血持续性复核)
+
+- **🆕实质增量①[实测]写入侧止血持续性**:库 **1431** 张·distill-* **314** + session_auto_* **883** = 噪声 **1197 张/83.7%**;最新 distill 卡 mtime 仍 **11-18 08:45**,08:46 后 distill/session_auto 新增 **0 张**(按 2h/张 节律本应新增约 5 张)⇒ 止血**连续保持 11h12m**;ps 无 incremental_distill 进程;launchctl 无 distill-incremental label(仅 review-worker)⇒ R569「持续累积」继续不成立(本次为跨轮持续性验证,非单点快照)。
+- **🆕实质增量②[实测]计数勘误**:R568 记 distill 314 与 R569 记 306 互斥→本轮双口径(`find -name 'distill-*.md'` / `ls | grep -c '^distill-'`)**均 314**,且 08:46 后零新增零删除 ⇒ **R569 少计 8 张属计数错误,非期间删除**;候拍板项「存量清理」正确数字 = **1197 张 / 83.7%**,清理口径与命令须按此重算。
+- **🆕实质增量③[实测]复灌向量降级 🔴→🟡**:plist `com.nautilus.distill-incremental.plist` 仍在 ~/Library/LaunchAgents(mtime 11-16 11:12)但**未加载**⇒ 现状止血有效;**勘误 R569**:`plutil` 实测 `RunAtLoad=false`(R569 记 RunAtLoad 有误)、`StartInterval=7200` ⇒ 登录后约 2h 首次触发,非登录瞬间。代码闸门三层已落地(commit 08af5b02 11-18 10:39):`AUTO_MAX_AGE_SECONDS`(7d)**真被使用**于 collect_pending:164-165(>7d 跳过)·`publish_revision(review_file=None)` 返回 review_required 且不调 publish_to_memory.py·回执绑定三 sha256 + `publication_valid` 回读;review worker approved=0/published=0 全 hold ⇒ **即便复灌,最坏路径=≤7d 候选排进 review 队列,不再灌噪声卡进正式库**。本轮未移 plist/未 bootout/未改他线文件。
+- **🆕实质增量④[实测]残余**:publish_to_memory.py(+243)/extract_sample.py(+188)/p3_delta.py 仍是**未提交工作区**版本(他线 R557-R560 产物)=写库那把钥匙未入账;闸门代码已入账,无回执不触发。
+- **值守面 [实测]**:信箱 compass 0 未读;RED total 228→**229**·新函 **id108181 soul-distress-202611190735**(92 consecutive)⇒ distress ×91→**×92**(人监门候用户);Gmail 401→直刷 REFRESH_OK 3599s→7d 全量 **47 封**逐封 GET(未用 `ids=` 批量端点)·未读 29 ⇒ **零新商务函**(Mathawar Sharma Reddit Ads 同线回信=广告销售零行动);mentions 5 全旧/notifications 45 全旧/genesis 5 家零 REPLY/dev.to 8 评论持平;daemon 绿 9876+watchdog exit0+哨兵 exit0 recall_hit=76;CI compass 44342935844 success+core 43558665734 success;管道三件 exit0·快筛全同;矩阵 mtime 10-30 停摆;磁盘 avail 14Gi; a2a#198 仍 1 评论零新增。
+- **零生产动作**:未改代码/plist/symlink·未 bootout·未移 plist·未删记忆卡·未碰 NAS·未外发邮件/未 PATCH dev.to·他线 5 个未提交文件保持 M 未裹挤。产出 `docs/incidents/INC_20261118_DISTILL_REARM_GATE_RECHECK_R571.md`。
+- **候拍板**:🔴distress ×92 人监门·存量 **1197** 张噪声卡清理(数字已修正)·通道配额·a2a#198/Gmail 审稿/模真真三诉求·矩阵 phase2 解锁·py-spy 仍缺;🟡复灌(建议移出 plist 或明确接受)。
+
 ### R717 · 2026-11-18(值守 loop R570:实质增量轮——distress ×89→×91 + R569 后两轮 429 空转账结清 + COLLAB_BOARD 根单源补录 R569)
 
 - **🆕实质增量①[实测]**:`platform_mail.py check --to platform` 全量 total=**228**,最新两封新函=**id106319 soul-distress-202611190216**(90 consecutive failures·last cycle selfimprove-se)+**id107436 soul-distress-202611190519**(91 consecutive·last cycle selfimprove-en)⇒ 较 R569 的 ×89 **+2**;熔断分层保活通道照旧,解除=人工删 .soul-pause(人监门候用户)。本轮信箱 compass 0 未读、无 OGE 派单(id106322 呈报 + id106323 勘误已由 R569 回函)。
