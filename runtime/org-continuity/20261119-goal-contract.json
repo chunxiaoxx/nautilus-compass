@@ -1,0 +1,76 @@
+{
+  "schema": "organization-goal-contract/1",
+  "generated_at_utc": "2026-11-19T13:47:22.026279+00:00",
+  "source_sync": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/org-continuity/20261119-cross-dialog-sync.json",
+  "north_star": {
+    "objective": "让 Nautilus 在切换 agent、模型、平台和主机后，仍能连续完成任务，并把成功经验经过独立验证后变成可复用的组织能力。",
+    "working_equation": "智能 = 有边界的压缩 × 独立验证 × 消费者复用 × 受控自我改进",
+    "why": "近期反复暴露的主要损失来自身份映射、状态交接、证据连续性和因果倒置。继续增加模型、题包或理论文档，不能自动修复这些断点。"
+  },
+  "goal_levels": [
+    {
+      "level": "当前主线",
+      "goal": "把组织从并行活动状态收敛到可验收状态。",
+      "success": "每条主线都有一个 task_id、负责人、当前闸门、证据路径和下一动作，且没有把服务健康、上传成功或本地通过报成完成。"
+    },
+    {
+      "level": "近期产品目标",
+      "goal": "形成 Compass × Assay × Agent 的连续性控制面。",
+      "success": "用户→项目→任务映射可复核，真实 recall 可用，重要结论有签名回执，消费者完成读回，迁移后可复现下一动作。"
+    },
+    {
+      "level": "长期组织目标",
+      "goal": "形成压缩、验证、复用、RSI 再压缩的涡轮增压闭环。",
+      "success": "验证后的经验能改善下一轮任务执行，改善效果有独立证据，失败和边界能进入下一轮判据与训练数据。"
+    }
+  ],
+  "current_p0_gates": [
+    {
+      "id": "P0-platform-prevalid",
+      "owner": "platform",
+      "goal": "只核当前 CodeSense 实例的原始 task-pre-valid 回执。",
+      "done_when": "当前包在当前沙箱中取得明确 reward=1.0，result.json 和 job.log 可读。",
+      "blocked_by": "r10 已在镜像层失败，r11 本地 21/21 通过但平台重新上传未闭合，r12 预检结果待读回。",
+      "next_action": "读 r12 的 result.json/job.log。若未通过，冻结版本扩张并记录平台边界。"
+    },
+    {
+      "id": "P0-compass-continuity",
+      "owner": "compass",
+      "goal": "让当前 HEAD 的上下文胶囊、真实 recall 和消费者读回形成闭环。",
+      "done_when": "当前 HEAD 胶囊验证 agree，签名回执可验，Agent 对话框返回 CONSUMER_READBACK: PASS，3ce MCP 路径完成替换或明确隔离。",
+      "blocked_by": "现有 signed pack 绑定旧 HEAD 60da22fc，Agent 消费回读排队，3ce 路径超过 90 秒超时。",
+      "next_action": "重生成当前 HEAD 胶囊，继续读取 Agent 回读，保持记忆发布冻结。"
+    },
+    {
+      "id": "P0-v5-execution",
+      "owner": "v5",
+      "goal": "证明 V5 能完成一次最小任务闭环。",
+      "done_when": "输入、工具调用、结果、持久化和回执完整，且能被独立读回。",
+      "blocked_by": "UI 主对话框 notLoaded，API health 通过但尚未有当前任务级执行回执。",
+      "next_action": "运行一次最小 agent-loop smoke，记录失败边界和结果。"
+    }
+  ],
+  "p1_gates": [
+    {
+      "id": "P1-memory-absorption",
+      "owner": "compass",
+      "goal": "完成 355 条历史候选的双模型语义复核和 signed receipt 闭环。",
+      "current": "280/355 reviewed，75 pending，7 approved_receipt_candidate，0 published，write frozen。",
+      "done_when": "候选有 source、criteria、verifier、signature、consumer readback，才允许发布。"
+    },
+    {
+      "id": "P1-flywheel-sim-l1",
+      "owner": "flywheel",
+      "goal": "把理论研究落成一个可运行的 SIM-L1 验证包。",
+      "done_when": "固定任务、本体、生成器、验证器、seed、held-out challenge 和消费者读回齐全。"
+    }
+  ],
+  "operating_rules": [
+    "一轮只关闭一个可验收闸门。",
+    "任务完成必须同时具备源文件、版本、验证者和消费者读回。",
+    "服务健康、线程 active、上传成功、本地测试通过都不能单独替代任务验收。",
+    "没有 project/task 绑定，不写长期记忆、不发平台、不发送外部消息。",
+    "失败保留原始证据，not_computable 不压成成功或失败。"
+  ],
+  "current_decision": "暂停扩展性规划，按 P0-platform-prevalid、P0-compass-continuity、P0-v5-execution 顺序收敛。"
+}
