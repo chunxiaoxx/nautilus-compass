@@ -86,15 +86,22 @@ F401  tools/org_continuity_snapshot.py:21    time
 
 > 闭环终态见本文末「CI 终态复核」小节（留痕提交自身亦须触发一次 CI，故留痕 commit 再推一笔并复核）。
 
-## 四、🔴 磁盘 avail 跌破 10Gi alarm 线
+## 四、🔴 磁盘 avail 跌破 10Gi alarm 线（收尾时进一步恶化至 7.0Gi / 99%）
 
-`df -h /System/Volumes/Data` → **avail 8.6Gi**（容量 98%）。
+| 时点 | avail | 容量 | 变化 |
+|---|---|---|---|
+| R573（11-19 02:30） | 15Gi | 97% | — |
+| R574（11-19 04:52） | 12Gi | — | −3Gi |
+| R575 开工（11-19 11:20） | **8.6Gi** | 98% | **−3.4Gi / 约 6.5h** ⇒ **首次跌破 10Gi alarm 线** |
+| R575 收尾（11-19 12:25） | **7.0Gi** | **99%** | **−1.6Gi / 约 25min ⇒ ≈3.9GB/h** |
 
-- R574 记 12Gi → 本轮 **−3.4Gi**（约 6.5h 内），**首次跌破 10Gi alarm 线**；
-- 历史基线：11-10 曾达 avail 5.8Gi（掉速 5.3GB/h），根因记为 OrbStack 容器 VM 映像（`data.img.raw`≈460GB），
-  属**容器 IO 合计 20GB 排除疯写源**的量级；本轮**未做清理**（零删除，候用户），仅报警；
-- 本轮 `du ~/Library/Containers/com.orbstack.OrbStack` 因 TCC 权限/耗时未取到读数（命令超时后置后台）⇒
-  本轮**不对根因下新结论**，沿用 11-10 实测基线并标注「本轮未复测」。
+- **本轮实测的根因复核边界**：`~/.orbstack` 仅 5.0M（只是配置/套接字）；VM 数据在
+  `~/Library/Group Containers/HUAQ24HBR6.dev.orbstack/`，本轮 `ls`/`find` **只见空目录**、`du` 60s 超时无输出、
+  `lsof -c OrbStack` 未取到映像条目 ⇒ **TCC 不可读，与 11-10 基线一致**（11-10 靠 `lsof` 实锤
+  `data.img.raw`≈460.4GB）。本轮**无法复测映像大小 ⇒ 不下新根因结论**，沿用 11-10 基线并标注「本轮未复测」。
+- **量化告警**：按收尾速率 ≈3.9GB/h，avail 7.0Gi ⇒ **距 ENOSPC 约 1.8h**（11-10 曾实测同类掉速 5.3GB/h）。
+- 本轮**零清理**（零删除，候用户）：仅报警 + 给出候拍板项。
+- 另：本轮 `~/mnt/nas-work2` 未动（R565/R566 建议 unmount 仍候用户）。
 
 ## 五、值守面读数（本轮实测）
 
@@ -131,7 +138,7 @@ F401  tools/org_continuity_snapshot.py:21    time
    才发现。建议加 pre-push hook 或 CI 侧「分支落后 origin 则不判绿」闸，把「每笔提交至少触发一次 CI」
    从档面纪律变成机器执行。
 2. 🔴 **CI ruff 版本未 pin**（三次复发共用放大器）：CI `pip install ruff` 取最新版，本地 .venv 0.17.1 ⇒ 规则集漂移风险。
-3. 🔴 **磁盘 avail 8.6Gi 跌破 10Gi**（本轮新增）：零清理候用户；建议 `~/mnt/nas-work2` unmount + OrbStack 映像处置。
+3. 🔴 **磁盘 avail 7.0Gi / 99% 满（本轮新增·最急）**：开工 8.6Gi → 收尾 7.0Gi（≈3.9GB/h ⇒ 距 ENOSPC 约 1.8h）。零清理候用户；建议 `~/mnt/nas-work2` unmount + OrbStack 映像处置（VM 数据在 TCC 不可读的 Group Containers 目录，需用 lsof 或 OrbStack 自身工具定位）。
 4. 🔴 distress **×97** 人监门（人工删 `.soul-pause`）。
 5. 🟡 a2a-x402#198 草稿审批 · Gmail 草稿审稿 · 模真真三诉求 · 矩阵 phase2 解锁 · py-spy 仍缺 ·
    review-worker pending 未审 · 复灌 plist 仍在加载目录。
