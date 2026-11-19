@@ -1,0 +1,60 @@
+{
+  "schema": "v5-provider-boundary/1",
+  "observed_at_utc": "2026-11-19T14:33:13.914737+00:00",
+  "execution_smoke": "NOT_PASS",
+  "status": "BLOCKED_ON_PROVIDER_AUTH",
+  "service_boundary": {
+    "health": "pass",
+    "v1_status": "pass",
+    "chat_endpoint": "http_200_but_provider_error"
+  },
+  "providers": [
+    {
+      "name": "deepseek-anthropic",
+      "model": "deepseek-v4-pro",
+      "status": "skipped_no_key"
+    },
+    {
+      "name": "relay",
+      "model": "MiniMax-M3",
+      "status": "skipped_no_RELAY_API_KEY"
+    },
+    {
+      "name": "minimax-anthropic",
+      "status": "401_auth_cooldown_3600s"
+    },
+    {
+      "name": "glm",
+      "status": "401_invalid_token_cooldown"
+    },
+    {
+      "name": "claude",
+      "status": "401_invalid_api_key_probe"
+    },
+    {
+      "name": "minimax-cn",
+      "status": "configured_but_not_in_current_fallback"
+    },
+    {
+      "name": "openai",
+      "status": "configured_but_not_in_current_fallback"
+    },
+    {
+      "name": "glm-anthropic",
+      "status": "configured_but_not_in_current_fallback"
+    }
+  ],
+  "current_response": "All 0 providers attempted (skipped broken). Last error: None",
+  "discipline": {
+    "credentials_read_or_output": false,
+    "credentials_modified": false,
+    "provider_registry_modified": false,
+    "service_restarted_again": false
+  },
+  "evidence": {
+    "v5_llm_client": "/Users/chunxiao.wang/Projects/nautilus-v5/nautilus_v5/runtime/llm_client.py:582",
+    "v5_super_agent": "/Users/chunxiao.wang/Projects/nautilus-v5/nautilus_v5/super_agent.py",
+    "smoke": "runtime/org-continuity/20261119-v5-execution-smoke-r2.json"
+  },
+  "next_action": "Provider owner must restore an authorized key or explicitly approve a currently configured fallback route. Then rerun the exact V5_EXECUTION_SMOKE_OK request."
+}
