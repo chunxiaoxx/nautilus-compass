@@ -15,7 +15,7 @@
     "cross_dialog_task_acceptance": "not_applicable"
   },
   "latency_probe": {
-    "cause": "remote MPS cross-encoder rerank, not BGE query embedding",
+    "cause": "same-Mac MPS cross-encoder rerank via localhost:8401; legacy env key COMPASS_RERANK_REMOTE does not mean cloud",
     "baseline": {
       "candidate_count": 30,
       "max_length": 8192,
@@ -43,13 +43,14 @@
     ],
     "quality_status": "performance_delta_verified; retrieval-equivalence benchmark still required",
     "remote_model_revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
-    "backup_dir": "runtime/maintenance_backups/20261119-rerank-latency"
+    "backup_dir": "runtime/maintenance_backups/20261119-rerank-latency",
+    "architecture_note": "Memory files and bge-m3 embedder are local; daemon sends only top candidate text over loopback to a separate same-host reranker process."
   },
   "services": {
     "daemon_9876": {
       "status": "pass",
-      "pid": 13393,
-      "daemon_hash": "sha256:5b306892124e22ff35f0928b2a4822a038ec7d4c1cfd54fe017d66549d7de924",
+      "pid": 31330,
+      "daemon_hash": "sha256:701152b72b070d5894a3a9146e7e0aa96e6ad204c8abd5b48d82af31ab8fc016",
       "config": {
         "COMPASS_RERANK_CANDIDATES": 16,
         "COMPASS_RERANK_MAX_LENGTH": 512,
@@ -65,8 +66,10 @@
       "healthz": "HTTP200",
       "readyz": "not_exposed"
     },
-    "bge_embed_8400": "tcp_open",
-    "bge_rerank_8401": "tcp_open"
+    "bge_embed_8400": "same-host local process",
+    "bge_rerank_8401": "same-host local MPS process via 127.0.0.1",
+    "memory_files": "local regular directory; no symlink to NAS",
+    "huggingface_cache": "local /Users/chunxiao.wang/.cache/hf-local"
   },
   "dialogs": {
     "compass": "active",
@@ -118,5 +121,6 @@
   "next_action": {
     "owner": "compass",
     "action": "Run a fixed retrieval-quality A/B benchmark for 30/8192 versus 16/512; keep tuned latency config only if quality gate passes, while continuing the 355-row dual review with no publication."
-  }
+  },
+  "updated_at_utc": "2026-11-19T09:00:07.809434+00:00"
 }

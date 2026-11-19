@@ -136,6 +136,9 @@ _RERANKER_MODEL = os.environ.get(
 )
 # how many top candidates to feed the cross-encoder before truncating to top_k.
 # benchmark used full haystack (50); production keeps it bounded for latency.
+# ``COMPASS_RERANK_REMOTE`` is a legacy variable name. In the current Mac
+# deployment it points to 127.0.0.1:8401, a separate same-host MPS process;
+# it does not mean that memory text is sent to a cloud service.
 _RERANK_CANDIDATES = int(os.environ.get("COMPASS_RERANK_CANDIDATES", "30"))
 # Interactive recall should use the model's normal 512-token context. The full
 # 8192-token contract remains available for explicit benchmarks/audits via

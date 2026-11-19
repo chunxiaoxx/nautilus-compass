@@ -8,6 +8,7 @@
   </array>
   <key>EnvironmentVariables</key><dict>
     <key>COMPASS_EMBED_PROXY</key><string>http://127.0.0.1:8400</string>
+    <!-- Legacy key name; current endpoint is a same-Mac loopback MPS process. -->
     <key>COMPASS_RERANK_REMOTE</key><string>127.0.0.1:8401</string>
     <key>COMPASS_RERANK_REMOTE_TIMEOUT</key><string>4</string>
     <key>COMPASS_PROD_RERANK</key><string>1</string>
