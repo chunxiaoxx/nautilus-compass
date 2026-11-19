@@ -75,10 +75,10 @@ not_computable  缺输入、权限或消费者证据，不能冒充通过
 
 每个 agent 角色都要有固定的迁移动作：
 
-**开工前**：读 agent catalog、项目 AGENTS、当前合同、版本和资源账本。  
-**切换时**：生成 context capsule、记录旧环境和新环境、跑最小 smoke。  
-**执行中**：所有关键动作写 evidence capsule；失败保留原始错误。  
-**收尾时**：写 handoff capsule、consumer receipt、下一件；未 push、未验收、未消费不得写 done。  
+**开工前**：读 agent catalog、项目 AGENTS、当前合同、版本和资源账本。
+**切换时**：生成 context capsule、记录旧环境和新环境、跑最小 smoke。
+**执行中**：所有关键动作写 evidence capsule；失败保留原始错误。
+**收尾时**：写 handoff capsule、consumer receipt、下一件；未 push、未验收、未消费不得写 done。
 **复盘后**：把新事故加入 failure corpus 和 Assay criteria，不只写一篇回顾文章。
 
 ## 分阶段落地
