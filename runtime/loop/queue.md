@@ -4,6 +4,13 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R724 · 2026-11-19(主件:飞轮→Compass 学术研究材料入站两件——论文核验口径由 Compass 承接·本轮已完成 arXiv 编号级核验)
+
+- **入站物(工作区未跟踪文件,不经平台信箱)**:①`_INBOUND_FROM_FLYWHEEL_20261119_academic_research_handoff.md`——飞轮→Compass「近期学术研究交接」,文件自述 **接收框=nautilus-compass**、飞轮不继续编辑论文正文;②`_INBOUND_FROM_FLYWHEEL_20261119_apple_robot_paper_verification.md`——「苹果机器人论文核验交接」,论文正文/引用/投稿由 Compass 决定。**平台信箱 compass 侧 0 未读** ⇒ 属**跨框文件入站**通道,值守轮的信箱巡检看不到 ⇒ 需人工/后续轮次按工作区未跟踪文件巡检。
+- **本轮已做(只读核验,arXiv 官方 API)**:①`2611.06908` = **HALO「Perceptive Humanoid Motion from Simulation」**·2026-11-04·Siyuan Hu 等 ⇒ ✅;②`2611.09892` = **AMP1「On Agentic Manipulation Policies」**·2026-11-06·Chen Chen 等 ⇒ ✅;③「ARMOR / EgoDex(Apple ML 官方页)」—— arXiv 命中 `2412.00396`「ARMOR: Egocentric Perception for Humanoid Robot Collision Avoidance and Motion Planning」(2024 旧文,作者机构不同)⇒ ⚠️**同名碰撞**,引用须落到 Apple ML Research 官方页,不可引该 arXiv 条目。⚠️`export.arxiv.org` 的 **http 端点 301**,须用 https。
+- **未做(留待后续/用户)**:核 Apple 官方页正文与 EgoDex 数据集版本·核「本地未找到用户上传附件」这一前提(仍为交接方自述)·按「不自动 ack/发送」纪律**未回函飞轮**·未改写飞轮文件。
+- **责任边界(依 ORG_BRIEF)**:Compass 负责论文/形式化学术材料/论文实验口径与投稿推进;飞轮负责具身数据管道与世界模型工程。
+
 ### R723 · 2026-11-19(值守 loop R576:实质增量轮——🔴 磁盘根因归属修正【OrbStack 映像=稀疏文件,460.4GiB 表面 vs 103.88GB 实际,旧「根因=VM映像460G」不成立】+ 🔴 R575 的 -3.9GB/h 速率被 5 点采样证伪 + ✅ CI 对当前 HEAD 闭环核验成立 + distress ×97→×98)
 
 - **🆕实质增量①[实测]🔴 磁盘根因归属修正**:R533/R573/R575 沿用的「根因=VM 映像 460.4GB」是**按表面尺寸(apparent size)**得出的,对**稀疏文件**严重高估。`lsof -nP` 定位 `~/Library/Group Containers/HUAQ24HBR6.dev.orbstack/data/data.img.raw`;`stat -f %z`=**494,333,346,304 B(460.4 GiB)**,`stat -f %b`×4096=25,361,840×4096=**实际分配仅 103.88 GB**。Data 卷 used 420,072 MB ⇒ OrbStack 仅占 **≈25%**,**其余 ≈316 GB 落点未定位**(TCC:`ls`/`find` 只见空目录、`du` 不可读 ⇒ **只能 `lsof` 定位路径 + `stat %b` 量分配块**)。60s 窗内增长 96 blocks=393,216 B ⇒ **≈23.6 MB/h**。
