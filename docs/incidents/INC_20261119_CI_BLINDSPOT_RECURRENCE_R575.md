@@ -138,4 +138,11 @@ F401  tools/org_continuity_snapshot.py:21    time
 
 ## CI 终态复核
 
-（本节由留痕 commit 触发后回填，见 rounds.log 同轮「CI 闭环实测」行。）
+| run | head_sha | 绑定核验 | conclusion | jobs |
+|---|---|---|---|---|
+| `44566551790` | `5b6bdf94…` | == 本地 HEAD == origin/main tip | **success** | 12 job 全 success（含 `Lint`） |
+| `44567036335` | `df38f745…`（本轮留痕提交） | == 本地 HEAD == origin/main tip | **success** | — |
+
+⇒ 本轮**两笔提交**（代码修复+批内 19 笔 / 留痕提交）**均至少触发过一次 CI 且通过**，
+遵 R573 立、R574 补的「每笔提交至少触发一次 CI + 核 head_sha==被检提交」前置纪律
+（R574 的补记 `d372bde2` 同法）。
