@@ -1,6 +1,6 @@
 {
-  "round": 576,
-  "last_round_ts": "2026-11-19 14:10",
+  "round": 577,
+  "last_round_ts": "2026-11-19 15:35",
   "history": [
     {
       "round": 574,
@@ -193,6 +193,12 @@
       "ts": "2026-11-19 14:10",
       "result": "substantive",
       "note": "R576 值守轮(实质增量:🔴 磁盘根因归属修正——OrbStack data.img.raw 为稀疏文件:表面 460.4GiB(stat %z)/实际分配仅 103.88GB(stat %b×4096),Data 卷 used 420GB 中仅占≈25%,剩余≈316GB 落点未定位 ⇒ 旧基线「根因=VM映像460.4GB」(按 apparent size 得出)不成立;60s 窗内映像增长 96 blocks=393KB≈23.6MB/h;🔴 速率证伪:R575 记 -3.9GB/h 距 ENOSPC 1.8h,本轮 5 采样点(6124/6135/6149/6137/6144MB)窗口内基本持平甚至微升,跨轮 11:50(7.0Gi)→13:45(6.0Gi)≈0.53GB/h 慢 7 倍 ⇒ 单轮两点差分不得给倒计时;TCC 边界:Group Containers/Containers 的 du 不可读,须 lsof 定位路径+stat %b 量分配块;本轮零清理候用户(已定位可回收候选 ~/Library/Caches 9.8GB(codex4.0/DingTalk2.3/Google1.3)、~/.cache 6.2GB、App Support 2.7GB);✅ CI 对当前 HEAD 闭环核验成立(R573/R574 立的「每笔提交至少触发一次 CI」纪律首次被验"
+    },
+    {
+      "round": 577,
+      "ts": "2026-11-19 15:35",
+      "result": "substantive",
+      "note": "R577 实质增量值守轮(✅ Apple ML 官方页一手回读 + 🔴 推翻本框 R576「ARMOR 同名碰撞·不可直引」自报结论 + ✅ OGE 状态函 2h SLA 内回函办结)①[实测]Apple 官方 detail 页:ARMOR=/research/armor-egocentric(published Feb 2025·Daehwa Kim, Mario Srouji, Chen Chen, Jian Zhang)·EgoDex=/research/egodex-learning-dexterous-manipulation(published Jul 2025·ICLR·Ryan Hoque*, Peide Huang*, David J. Yoon*, Mouli Sivapurapu, Jian Zhang);官方摘要数字:ARMOR ≈86h AMASS·碰撞 −63.7%/成功率 +78.7%(vs 稠密多相机)·碰撞 −31.6%/成功率 +16.9%/延迟 −26×(vs cuRobo)·真机 Fourier GR1;EgoDex 829h ego 视频+同步 3D 手/指追踪+194 桌面任务(与飞轮交接件自报一致=独立确认)②[实测·🔴勘误]R576 记「ARMOR 与 arXiv 2412.00396 同名碰撞·该 arXiv 不是 Apple 的 ARMOR·不可直引」——不成立:arXiv 2412.00396(v1 2024-11-30)标题/4 作者/摘要与 Apple 官方页逐条一致=同一篇⇒可直引并与官方页互证;R576 误读根因=读 Apple 列表页 JSON 时跨条目取相邻论文作者串(Siqi Shen 等·另一篇 2025-02-14 论文 / EgoDex 处 Dan Busbridge 等)⇒新纪律:官方列表页只用于定位,事实一律落到 detail 页再读③[实测]交接件缺口由推断升为实证:ARMOR 官方页仍无 任务数/seed/碰撞定义/置信区间/真机 GR1 碰撞成功数字;官方明写「will update the link to source code, HW description, 3D CAD files」⇒代码/硬件/3D CAD 未开放;EgoDex 官方训练对象=手部轨迹预测 ⇒压缩/数据端证据不可写成机器人迁移;HALO/AMP1 编号级结论沿用 R576 未重核④[实测]OGE 需求函 id115584(trace oge-status-demand-compass-2026-11-20·SLA 2h·deadline 2026-11-20 04:59:58)→三行回函已发 id116359(trace ...-done)→需求函 ack 办结⑤[实测·全持平]信箱 compass 1 未读(=OGE 函,办结后 0)·Gmail 401→直刷 REFRESH_OK 3599s→7d 全量 43/未读 26(双口径 symdiff=0)·最新到件 11-19 17:33Z 与 R576 同 ⇒零新到件零新商务函·mentions 5 全旧·notifications 46(CI 过期读数)·genesis 5 家零 REPLY·dev.to 8 评论(6+2)持平·daemon 绿+watchdog exit0+哨兵 exit0 recall_hit=91·CI compass 44593384953(head=23cb7112==HEAD==origin/main)success·core 43558665734 success·ahead/behind 0/0·快筛「存在不过筛」持平·矩阵仍停 10-30 09:42·管道三件 exit0·RED to=platform 实查 236(soul-distress 最新仍 id115388 ×98)⇒零新增 distress⑥🔴磁盘数据卷 avail 5.2Gi/99% 满(R575 记 7.0Gi⇒继续下滑,已在 10Gi alarm 线之下)·零删除零清理候用户拍板⑦零生产动作(未改 daemon.py/plist/symlink·未 bootout·未删记忆卡·未碰 NAS·未外发·未 PATCH dev.to·未动 .soul-pause·未删任何磁盘文件;他线 6 个未提交文件保持 M 未裹挤;未回函飞轮未改写飞轮文件)产出 docs/incidents/INC_20261119_APPLE_ARMOR_EGODEX_OFFICIAL_VERIFY_R577.md + 记忆卡 apple-armor-egodex-verify-r577-20261119.md,并勘误 R724/记忆卡 inbound-cross-frame-via-workdir-20261119.md 的「同名碰撞」表述(原句保留存史+加勘误块)"
     }
   ],
   "last_round_time": "2026-11-19 14:10",
