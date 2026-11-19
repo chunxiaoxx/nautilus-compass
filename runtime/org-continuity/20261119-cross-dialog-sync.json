@@ -1,0 +1,240 @@
+{
+  "schema": "cross-dialog-sync/1",
+  "generated_at_utc": "2026-11-19T13:43:15.344588+00:00",
+  "policy": "Read-only organization synchronization; UI activity, service health, local artifacts, delivery, and acceptance remain separate.",
+  "dialogs": [
+    {
+      "role": "compass",
+      "thread_id": "01a1ea00-9c51-7bb0-92d1-2d79b4947675",
+      "status": "active",
+      "cwd": "/Users/chunxiao.wang/Projects/nautilus-compass",
+      "latest": "正在做本次全组织真实同步；服务与本地证据可读。"
+    },
+    {
+      "role": "agent",
+      "thread_id": "01a19fd4-cfc1-7e72-89a0-6f08b8bba0d2",
+      "status": "active",
+      "cwd": "/Users/chunxiao.wang/Documents/Codex/2026-11-17/new-chat",
+      "latest": "CodeSense 镜像问题已解决，正在处理题包绝对路径导致的 RewardFileNotFoundError；消费者回读消息已排队，尚未返回。"
+    },
+    {
+      "role": "platform",
+      "thread_id": "01a1aa06-cc0c-7321-8594-91b26b2b6112",
+      "status": "active",
+      "cwd": "/Users/chunxiao.wang/Projects/nautilus-core",
+      "latest": "r12 已上传并生成沙箱，正在读取原始 result.json/job.log；r10 曾在镜像层失败，尚未证明预检通过。"
+    },
+    {
+      "role": "flywheel",
+      "thread_id": "01a1ed6f-a14e-7ef1-a7cf-3f100c020bfd",
+      "status": "active",
+      "cwd": "/Users/chunxiao.wang/Projects/nautilusflywheel",
+      "latest": "正在推进苹果机器人论文、压缩×验证×RSI、量子/仿真理论线；当前主仓最新提交仍是 R691，未形成新的客户交付提交。"
+    },
+    {
+      "role": "v5",
+      "thread_id": "01a1e473-8251-7611-a34b-f877079826aa",
+      "status": "notLoaded",
+      "cwd": "/Users/chunxiao.wang/Projects/nautilus_v5",
+      "latest": "主对话框未加载；服务端口和 API 健康检查仍可返回。"
+    }
+  ],
+  "repositories": {
+    "compass": {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass",
+      "branch": "main",
+      "head": "7c39c65a49a9527024f1c3cb2b3a374989adc2cf",
+      "dirty_count": 20,
+      "ahead_behind": {
+        "ahead": 9,
+        "behind": 0
+      },
+      "dirty_sample": [
+        "M .codex/config.toml",
+        " M runtime/loop/rounds.log",
+        " M runtime/production_loop/state.json",
+        " M tools/distill_pilot/extract_sample.py",
+        " M tools/distill_pilot/publish_to_memory.py",
+        " M tools/fuel_intake.py"
+      ]
+    },
+    "core": {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-core",
+      "branch": "soul-distill-deploy",
+      "head": "c344152558ad5b76f85f953d5f725c40e95b9bcb",
+      "dirty_count": 83,
+      "ahead_behind": {
+        "ahead": 37,
+        "behind": 0
+      },
+      "dirty_sample": [
+        "M .claude/settings.json",
+        " M .gitignore",
+        " M codesense/assembly_kit_cs507_v1/assemble.py",
+        " M docs/org/ali-zen-pilot/agent-handoff.md",
+        " M docs/org/ali-zen-pilot/platform-coordination.md",
+        " M docs/org/ali-zen-pilot/self-agent-cooperation.md"
+      ]
+    },
+    "v5": {
+      "path": "/Users/chunxiao.wang/Projects/nautilus-v5",
+      "branch": "master",
+      "head": "d0a81b9d1b00ddd59620a9eca088493187d618c0",
+      "dirty_count": 358,
+      "ahead_behind": {
+        "ahead": 6,
+        "behind": 364
+      },
+      "dirty_sample": [
+        "M CLAUDE.md",
+        " M docs/RETRO_V5_FULL_REVIEW_20261031.md",
+        "?? .cache/",
+        "?? .codex/",
+        "?? .dockerignore",
+        "?? .env.example"
+      ]
+    },
+    "flywheel": {
+      "path": "/Users/chunxiao.wang/Projects/nautilusflywheel",
+      "branch": "main",
+      "head": "d6fc6f3f273af70a3ccc03f05639423f723c89ec",
+      "dirty_count": 138,
+      "ahead_behind": {
+        "ahead": 261,
+        "behind": 0
+      },
+      "dirty_sample": [
+        "M .claude/hooks/fw_session_start.py",
+        " M AGENTS.md",
+        " M CLAUDE.md",
+        " M docs/11-01_主线四块梳理_七力标注小模型前后端管道.md",
+        " M docs/11-02_loop治理令25654_自盘与改造.md",
+        " M docs/sources/SOURCE_REGISTER.md"
+      ]
+    }
+  },
+  "compass_services": {
+    "daemon_9876": "protocol_ping_pass_pid_31330_hash_701152b7",
+    "mcp_8097": "tcp_open",
+    "gateway_8770": "http_200",
+    "embed_8400": "tcp_open",
+    "rerank_8401": "tcp_open",
+    "mcp_recall_control": "6558_path_pass_about_2s",
+    "mcp_3ce8": "timeout_over_90s_unresolved"
+  },
+  "memory_review": {
+    "queue_total": 355,
+    "reviewed_unique": 280,
+    "pending_unique": 75,
+    "status_counts": {
+      "legacy_hold": 5,
+      "hold": 268,
+      "approved_receipt_candidate": 7
+    },
+    "reviewers": [
+      "minimax-m3",
+      "kimi-k3-256k"
+    ],
+    "published": false,
+    "write_frozen": true,
+    "evidence_sha256": "992d7f84abbfea124d0ad5161d4a82c0b5844696595f5b806ad528c95b9d817c"
+  },
+  "nine_b_smoke": {
+    "model": "Qwen3.5-9B-Q4_K_M.gguf",
+    "anchor_recall": 1.0,
+    "published": false,
+    "promotion": "hold_review_required",
+    "source": "runtime/scratch_distill_pilot_20261104/verification_smoke_20261118/receipt.json"
+  },
+  "assay_context_capsule": {
+    "pack": "context-capsule-20261119",
+    "receipt_summary": {
+      "agree": 3,
+      "disagree": 0,
+      "degraded": 0,
+      "seal_fail": 0
+    },
+    "signature_check": "pass",
+    "consumer_readback": "partial_ready",
+    "capsule_snapshot_head": "60da22fc",
+    "current_compass_head": "7c39c65a49a9527024f1c3cb2b3a374989adc2cf",
+    "boundary": "internal context binding only; no customer acceptance or memory publication"
+  },
+  "platform_acceptance": {
+    "task_id": "91237",
+    "r9_subtask": "99216022",
+    "r9_sandbox": "a3faa0024d7542b99f1a001ab2a35114",
+    "r9_prevalid": "not_verified",
+    "r10_subtask": "99199634",
+    "r10_prevalid": "fail_image_pull",
+    "r11_local_score": "21/21_pass",
+    "r11_platform_upload": "pending_confirmation",
+    "model_runs": false,
+    "formal_submit": false,
+    "customer_qa": false,
+    "evidence_paths": [
+      "nautilus-core/ops/ali_phase2/codesense_1113_platform_pilot_r9_subtask_99216022_20261119.json",
+      "nautilus-core/ops/ali_phase2/codesense_1113_platform_pilot_r10_subtask_99199634_20261119.json",
+      "nautilus-core/ops/ali_phase2/codesense_1113_platform_pilot_r11_staged_20261119.json"
+    ]
+  },
+  "v5_service": {
+    "health": {
+      "status": "pass",
+      "body": "{\"status\":\"ok\",\"agent_id\":\"nautilus-prime-001\"}"
+    },
+    "status": {
+      "status": "pass",
+      "body": "{\"agent_id\":\"nautilus-prime-001\",\"persona\":\"Nautilus Prime\",\"mood\":\"serene\",\"mood_intensity\":0.3,\"cycle\":45309,\"harmony\":1.0,\"nau_balance\":840,\"survival_tier\":\"high\",\"cycles_since_user\":0,\"helix_last_hash\":\"1207b9c532bc99da\",\"iteration_count\":45309,\"helix_observability_error\":\"AttributeError\"}"
+    },
+    "brain_health": {
+      "status": "pass",
+      "body": "{\"status\":\"ok\",\"agent_id\":\"nautilus-prime-001\"}"
+    },
+    "interpretation": "service/API live; UI thread notLoaded and health does not prove full agent-loop execution acceptance"
+  },
+  "organization_verdict": {
+    "state": "parallel_activity_serial_acceptance",
+    "what_is_done": [
+      "Compass local services and alternate recall control",
+      "context capsule signed internal VerifyPack 3/3 agree",
+      "9B mechanical smoke and 280/355 dual review progress",
+      "Platform local r11 score 21/21"
+    ],
+    "what_is_not_done": [
+      "Agent consumer readback",
+      "current-head context capsule regeneration after later commits",
+      "9B semantic acceptance/publication",
+      "Platform task-pre-valid on current r12/r11 and formal submission",
+      "V5 full agent-loop acceptance",
+      "Flywheel new durable customer deliverable"
+    ]
+  },
+  "recommendations": [
+    {
+      "priority": "P0",
+      "owner": "Platform",
+      "action": "Stop producing new package variants. Read r12 current sandbox result.json and job.log once; if reward is not 1.0, freeze the line and report the platform boundary."
+    },
+    {
+      "priority": "P0",
+      "owner": "Compass",
+      "action": "Regenerate a current-head context capsule, then obtain Agent consumer readback; keep memory publication frozen until the signed receipt is consumed."
+    },
+    {
+      "priority": "P1",
+      "owner": "V5",
+      "action": "Run one minimal agent-loop smoke and capture execution receipt; health/API/UI status cannot substitute for it."
+    },
+    {
+      "priority": "P1",
+      "owner": "Flywheel",
+      "action": "Separate research writing from delivery; next artifact must be one executable SIM-L1/verification pack or a clearly marked research receipt."
+    },
+    {
+      "priority": "P0",
+      "owner": "Organization",
+      "action": "Use one task registry with task_id, owner, current gate, evidence path, and next action; do not create another broad visual or parallel planning thread."
+    }
+  ]
+}
