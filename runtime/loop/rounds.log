@@ -5152,3 +5152,5 @@ API Error: Request rejected (429) · 已达到 Token Plan 用量上限：请升�
 **本轮唯一动作**:**补推既有提交 + 核 CI + 留痕**;**未改** `daemon.py`/plist/symlink·**未** bootout·**未**移 LaunchAgents·**未**删任何记忆卡·**未**碰 NAS·**未**外发邮件·**未** PATCH dev.to·**未**动 `.soul-pause`·**未**改 workflow;他线 6 个未提交文件(`tools/distill_pilot/extract_sample.py`/`publish_to_memory.py`/`tools/fuel_intake.py`/`tools/p3_delta.py`/`.codex/config.toml`/`runtime/production_loop/state.json`)保持 M **未裹挤**。产出 `docs/incidents/INC_20261119_UNPUSHED_COMMITS_CI_BLINDSPOT_R574.md` + 记忆卡 `ci-blindspot-unpushed-cross-dialog-r574-20261119.md`。
 **候拍板**:🔴distress **×95** 人监门·CI 无 ruff 版本 pin(升级可能再撞红)·a2a#198 草稿审批·Gmail 审稿·模真真三诉求·矩阵 phase2 解锁·py-spy 仍缺·磁盘 avail 12Gi 逼近 10Gi alarm 线;🟡 review-worker pending 未审·复灌 plist 仍在加载目录(建议移出或明确接受)。
 ---- round end 11-19 04:52 ----
+**[CI 闭环实测·本轮留痕提交自身]** 本轮留痕 commit `7e55bda8` push 后 CI run `44498526761`(head_sha=`7e55bda8` == 本地 HEAD == origin/main tip)conclusion=**success**(12 job 全 success)⇒ **留痕提交亦经 head_sha 绑定核验**(遵本轮新立「每笔提交至少触发一次 CI + 核 head_sha」前置纪律)。
+---- round end 11-19 05:02 ----
