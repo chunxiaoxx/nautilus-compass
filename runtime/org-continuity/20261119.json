@@ -1,0 +1,398 @@
+{
+  "schema": "organization-continuity-snapshot/1",
+  "generated_at_utc": "2026-11-19T12:47:31.742799+00:00",
+  "policy": "Read-only audit receipt; local/live/delivered/accepted gates remain separate; no cleanup, ack, send, deploy, or publish.",
+  "repositories": [
+    {
+      "name": "compass",
+      "path": "/Users/chunxiao.wang/Projects/nautilus-compass",
+      "exists": true,
+      "branch": "main",
+      "head": "7b570e72eb31dac10451cd3407095b9070ed009b",
+      "upstream": "origin/main",
+      "ahead_behind": {
+        "ahead": 3,
+        "behind": 0
+      },
+      "dirty_count": 21,
+      "dirty_sample": [
+        "M .codex/config.toml",
+        " M runtime/loop/rounds.log",
+        " M runtime/production_loop/state.json",
+        " M tools/distill_pilot/extract_sample.py",
+        " M tools/distill_pilot/publish_to_memory.py",
+        " M tools/fuel_intake.py",
+        " M tools/p3_delta.py",
+        "?? _INBOUND_FROM_FLYWHEEL_20261119_academic_research_handoff.md"
+      ],
+      "worktree_count": 1,
+      "agents_md": {
+        "exists": true,
+        "sha256": "923cc6024b0f47b9ca2412096dd78c2b864ff23ffa9fa208bdd94967c2257e7d"
+      },
+      "recent_commits": [
+        "7b570e72 2026-11-19T05:53:40-05:00 docs(roadmap): clean migration roadmap formatting",
+        "8e5dfb45 2026-11-19T05:53:25-05:00 docs(roadmap): turn migration failures into evolution gates",
+        "03df511d 2026-11-19T05:29:54-05:00 docs(assay): audit compass 3x capability adoption"
+      ]
+    },
+    {
+      "name": "core",
+      "path": "/Users/chunxiao.wang/Projects/nautilus-core",
+      "exists": true,
+      "branch": "soul-distill-deploy",
+      "head": "c344152558ad5b76f85f953d5f725c40e95b9bcb",
+      "upstream": "origin/soul-distill-deploy",
+      "ahead_behind": {
+        "ahead": 37,
+        "behind": 0
+      },
+      "dirty_count": 82,
+      "dirty_sample": [
+        "M .claude/settings.json",
+        " M .gitignore",
+        " M codesense/assembly_kit_cs507_v1/assemble.py",
+        " M docs/org/ali-zen-pilot/agent-handoff.md",
+        " M docs/org/ali-zen-pilot/platform-coordination.md",
+        " M docs/org/ali-zen-pilot/self-agent-cooperation.md",
+        " M fullstack-bench/dist/试标提交说明_nbody_1031.md",
+        " M fullstack-bench/sample02-nbody-sandbox/environment/Dockerfile"
+      ],
+      "worktree_count": 5,
+      "agents_md": {
+        "exists": true,
+        "sha256": "08f2e7997a3e5129f2fd2b83bc91c714be05f24ad4cf2a8289604442def8c89b"
+      },
+      "recent_commits": [
+        "c34415255 2026-11-17T07:15:53-05:00 chore(二期R121): 完成T01单格烟测与渠道刷新",
+        "00d701e45 2026-11-17T06:39:41-05:00 docs(全栈): 补充sample03未提交证据",
+        "5afdffdb3 2026-11-17T06:19:26-05:00 chore(二期): 切换Codex执行器并核验晓天荟聚提交状态"
+      ]
+    },
+    {
+      "name": "v5",
+      "path": "/Users/chunxiao.wang/Projects/nautilus-v5",
+      "exists": true,
+      "branch": "master",
+      "head": "d0a81b9d1b00ddd59620a9eca088493187d618c0",
+      "upstream": "cloud-origin/master",
+      "ahead_behind": {
+        "ahead": 6,
+        "behind": 364
+      },
+      "dirty_count": 358,
+      "dirty_sample": [
+        "M CLAUDE.md",
+        " M docs/RETRO_V5_FULL_REVIEW_20261031.md",
+        "?? .cache/",
+        "?? .codex/",
+        "?? .dockerignore",
+        "?? .env.example",
+        "?? .github/",
+        "?? .nas_stashes_archive.txt"
+      ],
+      "worktree_count": 2,
+      "agents_md": {
+        "exists": true,
+        "sha256": "71dbc3b8a865731737f19e173b4fba981bb812163b0878c877f0c0f287aea530"
+      },
+      "recent_commits": [
+        "d0a81b9d 2026-11-01T22:04:50+08:00 docs(CLAUDE.md): 值守纪律节落地(#25214②③ thrashing 处方)",
+        "857e929d 2026-11-01T17:25:50+08:00 docs(组织盘点): 全景半月报+催办机失能定谳终局两正本入库",
+        "a840c4f5 2026-11-01T12:18:02+08:00 fix(ops): probe_gate 四门校准全绿 + SSOT autocompact 行真值更正"
+      ]
+    },
+    {
+      "name": "flywheel",
+      "path": "/Users/chunxiao.wang/Projects/nautilusflywheel",
+      "exists": true,
+      "branch": "main",
+      "head": "d6fc6f3f273af70a3ccc03f05639423f723c89ec",
+      "upstream": "origin/main",
+      "ahead_behind": {
+        "ahead": 261,
+        "behind": 0
+      },
+      "dirty_count": 131,
+      "dirty_sample": [
+        "M .claude/hooks/fw_session_start.py",
+        " M AGENTS.md",
+        " M CLAUDE.md",
+        " M docs/11-01_主线四块梳理_七力标注小模型前后端管道.md",
+        " M docs/11-02_loop治理令25654_自盘与改造.md",
+        " M docs/sources/SOURCE_REGISTER.md",
+        " M runtime/fuel_codesense/素材主线进度锚_账本.md",
+        " M runtime/mailbox_task_state.json"
+      ],
+      "worktree_count": 2,
+      "agents_md": {
+        "exists": true,
+        "sha256": "c95a144fce7571f377380b552db81c9dbbe4981c60d1ba93420bc05af8f0a045"
+      },
+      "recent_commits": [
+        "d6fc6f3f 2026-11-13T05:58:30-05:00 chore(ops): R691——OGE函65603[主动状态呈报·沉默24h三问催报]同族第9id首办+R690搁浅账收口:done闸查65603零命中判新id首办非复诵(此前25660/26921/28644/30803/32322/38582/46659/52125八id在案);R690(52125首办11/10)账务四件已写工作树但限定commit实测搁浅(git log --grep=R690零命中·开工前HEAD=898f5640=R689·R656/R659/R663/R666/R667/R668/R670/R676/R687同款模式),本轮核验账务完好可续收:52125归档/回函md5与R690账面两两MATCH(5decd235fddab88afbfb60ab7a41c546/a035df0d08864c513d8eaf0e1f73ed6f)·state语义diff相对HEAD纯新增(mb-52125条目+trace一条·367/536键集·零改动零删除无外帧)·台账diff仅R690新增一行;本轮R691落归档+回函+done闸mb-65603+trace+台账R691行,限定commit一次裹R690搁浅账+R691首办六件;三问按11/13实物口径如实作答:11/10后零新commit[实测](git log复核)无新增业务成果纯维护轮·研究线末次实质commit仍c19ed112(11/09 06:58 Flora pinned 80GB启动包)·MLX线11/03报面本轮未重勘;判分复产候A100恢复(算力前置候用户拍板=首障·同时是Flora首轮GPU实测共同前置)·首笔收入用户侧推动本框无在途动作;'沉默24h'本次字面属实(距上轮值守11/10 23:55约3天断档·同族第9次首次属实,前8次系平台ack断环伪沉默),值守连续性依赖外层调度;候拍板六项维持R690报面(A100恢复首障/标注员招募稿候用户转发/存储池三方案A推荐/R456三项/平台ack断环/本机数据盘清理·本轮df实测49%已用与R690报94%系APFS卷共享快照口径差异·ENOSPC本轮未复现项不撤),本轮未逐项重核如实标注未核;函内里程碑系9月旧口径(UMI 9月/9·21 SLA/9·23 T1均成历史层)按当前实物口径作答;判据零改动未动remote未产出判分读数;挂账=平台ack/409候外层投递轮补环——回函照盘上正本原文照读值守打印交付不外发(headless值守无MCP投递通道·非SENT不虚报409);unstaged区AGENTS.md/CLAUDE.md/docs/scripts及untracked(.codex//runtime/codex-main//runtime/reports/等)系外帧并发及另案工作不裹挟 [evidence:runtime/_mb_in/20261113_65603_platform_OGE主动状态呈报_沉默24h三问催报.md:md5:396eb3271e2e468e56c6d970f5fc9ccc] [evidence:runtime/_reply65603_body.txt:md5:bade4906acbd6972f644f7d4945452e9]",
+        "898f5640 2026-11-10T23:49:47-05:00 chore(ops): R689——OGE函46659[主动状态呈报·沉默24h三问催报]第38次触发幂等复诵处置:done闸mb-46659在案(R652 11/09首办·R653补账·R654第3次·R655第4次·R656第5次·R657第6次·R658第7次·R659第8次·R660第9次·R661第10次·R662第11次·R663第12次·R664第13次·R665第14次·R666第15次·R667第16次·R668第17次·R669第18次·R670第19次·R671第20次·R672第21次·R673第22次·R674第23次·R675第24次·R676第25次·R677第26次·R678第27次·R679第28次·R680第29次·R681第30次·R682第31次·R683第32次·R684第33次·R685第34次·R686第35次·R687第36次·R688第37次),判幂等复诵轮,零新增实质动作;R688账务commit实测已落(开工前HEAD=be13f8ef·git log --grep=R688命中·state+台账两账务文件开工前md5与R688账面evidence逐一MATCH 7fd3b95fa0901651d28f501dc0bb9eae/d1c9d39fefafe350c80018a58caf1179·无搁浅·R687+R688两轮账并裹已收口),本轮注记+台账R689行+限定commit一次落齐;四件实物md5复验[实测·R689独立hashlib]逐一MATCH(38582归档=078f9533744f9c4763b1caf7688ecd6f/回函=91e1bbed0a2f7ee3df2b656251d9edda·46659归档=25f39d2a050dd7d7cb4121d7991fc009/回函=e9456b2415cb6c77e61febd4123d7b00·done闸基线值);state语义diff相对HEAD(be13f8ef)仅mb-46659 note纯APPEND(R689段655字符)实测(tasks/traces键集一致·其他task条目全等·traces全等·status/done_at未动·无外帧裹挟),台账diff仅R689新增一行;判据零改动未动remote未产出判分读数(判分线复产候A100恢复为算力前置·A100恢复候用户拍板仍为首障);候拍板六项维持R688报面(A100恢复首障/标注员招募稿候用户/存储池三方案A推荐/R456三项维持/平台ack断环/本机数据盘满清理);挂账=平台ack/409候外层投递轮断环(信箱两本账纪律)——46659已第38次unread重触发,请外层投递轮尽快补环;回函照盘上正本原文照读值守打印交付不外发(headless值守无MCP投递通道·非SENT不虚报409);unstaged区AGENTS.md/CLAUDE.md/docs-11-01/SOURCE_REGISTER/scripts等文件及untracked(.codex//runtime/codex-main//runtime/reports/等)系外帧并发及MLX线另案工作不裹挟 [evidence:runtime/mailbox_task_state.json:md5:f8ffeb8dd808aa0b3bbf733a8ddc0e19] [evidence:runtime/fuel_codesense/素材主线进度锚_账本.md:md5:518ae76a18de2cb1675dda8b6205b295]",
+        "be13f8ef 2026-11-10T22:44:32-05:00 chore(ops): R688——OGE函46659[主动状态呈报·沉默24h三问催报]第37次触发幂等复诵处置+R687搁浅账收口:done闸mb-46659在案(R652 11/09首办·R653补账·R654第3次·R655第4次·R656第5次·R657第6次·R658第7次·R659第8次·R660第9次·R661第10次·R662第11次·R663第12次·R664第13次·R665第14次·R666第15次·R667第16次·R668第17次·R669第18次·R670第19次·R671第20次·R672第21次·R673第22次·R674第23次·R675第24次·R676第25次·R677第26次·R678第27次·R679第28次·R680第29次·R681第30次·R682第31次·R683第32次·R684第33次·R685第34次·R686第35次·R687第36次),判幂等复诵轮,零新增实质动作;本轮发现并收口=先前R687实例注记段(896字符·含ENOSPC盘满新事实)已写工作树但限定commit实测搁浅(git log --grep=R687零命中·开工前HEAD=f5b41409=R686·台账R687行未写,R656/R659/R663/R666/R667/R668/R670/R676同款模式),本会话收口:state注记R688段+代补台账R687行+台账R688行+限定commit一次裹R687+R688两轮账;R686对账=开工前HEAD=f5b41409·台账md5与R686账面MATCH bbc3a1a96b3d506b0d5f7196b5d1c4cb·state语义diff相对HEAD仅mb-46659 note纯APPEND(R687段)实测(tasks/traces键集一致366/535·traces全等·顶层除tasks全等·status/done_at未动·无外帧裹挟);四件实物md5复验[实测·R688独立hashlib]逐一MATCH(38582归档=078f9533744f9c4763b1caf7688ecd6f/回函=91e1bbed0a2f7ee3df2b656251d9edda·46659归档=25f39d2a050dd7d7cb4121d7991fc009/回函=e9456b2415cb6c77e61febd4123d7b00·done闸基线值);ENOSPC追踪=R687段报盘满事件本轮df独立复核460Gi总量13Gi已用4.7Gi可用(purgeable口径抖动中·可用仍偏紧),盘满风险未解除,候拍板第六项(本机数据盘满清理)维持R687新增项;判据零改动未动remote未产出判分读数(判分线复产候A100恢复为算力前置·A100恢复候用户拍板仍为首障);候拍板六项=R534报面五项(A100恢复首障/标注员招募稿候用户/存储池三方案A推荐/R456三项维持/平台ack断环)+第六项本机数据盘满清理;挂账=平台ack/409候外层投递轮断环(信箱两本账纪律)——46659已第37次unread重触发,请外层投递轮尽快补环;回函照盘上正本原文照读值守打印交付不外发(headless值守无MCP投递通道·非SENT不虚报409);unstaged区AGENTS.md/CLAUDE.md/docs-11-01/SOURCE_REGISTER/scripts等文件及untracked(.codex//runtime/codex-main//runtime/reports/等)系外帧并发及MLX线另案工作不裹挟 [evidence:runtime/mailbox_task_state.json:md5:7fd3b95fa0901651d28f501dc0bb9eae] [evidence:runtime/fuel_codesense/素材主线进度锚_账本.md:md5:d1c9d39fefafe350c80018a58caf1179]"
+      ]
+    }
+  ],
+  "memory": {
+    "root": "/Users/chunxiao.wang/.claude/projects",
+    "exists": true,
+    "namespace_count": 37,
+    "all_files": 74192,
+    "unique_content_hashes": 59455,
+    "duplicate_hash_groups": 9202,
+    "duplicate_files_beyond_first": 14737,
+    "largest_namespaces": [
+      {
+        "namespace": "v5-breath-auto",
+        "files": 36562,
+        "markdown": 36300
+      },
+      {
+        "namespace": "-Users-chunxiao-wang-Projects-nautilus-compass",
+        "files": 5445,
+        "markdown": 2346
+      },
+      {
+        "namespace": "-Users-chunxiao-wang-Projects-nautilusflywheel",
+        "files": 4636,
+        "markdown": 220
+      },
+      {
+        "namespace": "C--Users-chunx-Projects-nautilusflywheel.migrated",
+        "files": 2588,
+        "markdown": 193
+      },
+      {
+        "namespace": "C--Users-chunx-Projects-nautilusflywheel.dup20261023",
+        "files": 2584,
+        "markdown": 192
+      },
+      {
+        "namespace": "projects",
+        "files": 2409,
+        "markdown": 2408
+      },
+      {
+        "namespace": "C--Users-chunx-nautilus-v5.dup20261023",
+        "files": 2294,
+        "markdown": 517
+      },
+      {
+        "namespace": "-Users-chunxiao-wang-Projects-arm-worker-prime",
+        "files": 2261,
+        "markdown": 22
+      },
+      {
+        "namespace": "C--Users-chunx-nautilus-v5.migrated",
+        "files": 2248,
+        "markdown": 517
+      },
+      {
+        "namespace": "-Users-chunxiao-wang-Projects-nautilus-core",
+        "files": 1790,
+        "markdown": 418
+      }
+    ],
+    "active_projects": {
+      "compass": {
+        "namespace": "-Users-chunxiao-wang-Projects-nautilus-compass",
+        "path": "/Users/chunxiao.wang/.claude/projects/-Users-chunxiao-wang-Projects-nautilus-compass/memory",
+        "exists": true,
+        "all_files": 3029,
+        "markdown_files": 2346,
+        "semantic_status": {
+          "missing": 2346
+        },
+        "drift": {
+          "green": 31,
+          "missing": 2313,
+          "red": 2
+        }
+      },
+      "core": {
+        "namespace": "-Users-chunxiao-wang-Projects-nautilus-core",
+        "path": "/Users/chunxiao.wang/.claude/projects/-Users-chunxiao-wang-Projects-nautilus-core/memory",
+        "exists": true,
+        "all_files": 535,
+        "markdown_files": 418,
+        "semantic_status": {
+          "missing": 418
+        },
+        "drift": {
+          "green": 81,
+          "missing": 332,
+          "red": 1,
+          "yellow": 4
+        }
+      },
+      "v5": {
+        "namespace": "-Users-chunxiao-wang-Projects-nautilus-v5",
+        "path": "/Users/chunxiao.wang/.claude/projects/-Users-chunxiao-wang-Projects-nautilus-v5/memory",
+        "exists": true,
+        "all_files": 773,
+        "markdown_files": 525,
+        "semantic_status": {
+          "missing": 525
+        },
+        "drift": {
+          "green": 97,
+          "missing": 426,
+          "yellow": 2
+        }
+      },
+      "flywheel": {
+        "namespace": "-Users-chunxiao-wang-Projects-nautilusflywheel",
+        "path": "/Users/chunxiao.wang/.claude/projects/-Users-chunxiao-wang-Projects-nautilusflywheel/memory",
+        "exists": true,
+        "all_files": 669,
+        "markdown_files": 220,
+        "semantic_status": {
+          "missing": 220
+        },
+        "drift": {
+          "green": 1,
+          "missing": 218,
+          "yellow": 1
+        }
+      }
+    }
+  },
+  "services": {
+    "daemon_9876": {
+      "host": "127.0.0.1",
+      "port": 9876,
+      "tcp": true,
+      "ping": {
+        "ok": true,
+        "pong": true,
+        "pid": 31330,
+        "python_executable": "/Users/chunxiao.wang/.local/share/uv/python/cpython-3.12.15-macos-aarch64-none/bin/python3.12",
+        "source_root": "/Users/chunxiao.wang/.claude/plugins/nautilus-compass",
+        "daemon_hash": "sha256:701152b72b070d5894a3a9146e7e0aa96e6ad204c8abd5b48d82af31ab8fc016"
+      }
+    },
+    "mcp_http_8097": {
+      "port": 8097,
+      "tcp": true
+    },
+    "gateway_8770_healthz": "200",
+    "embed_8400": {
+      "port": 8400,
+      "tcp": true
+    },
+    "rerank_8401": {
+      "port": 8401,
+      "tcp": true
+    }
+  },
+  "semantic_review": {
+    "path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/scratch_distill_pilot_20261104/semantic-review-progress.json",
+    "exists": true,
+    "sha256": "3bdf3486239fcec50ed5ac981423daacab3dabe0ce3678f941c2119c840d3810",
+    "state": {
+      "schema": "semantic-review-progress/1",
+      "state": "running",
+      "updated_at_utc": "2026-11-19T12:47:09.652213+00:00",
+      "started_at_utc": "2026-11-19T12:40:36.452364+00:00",
+      "queue_total": 355,
+      "reviewed_unique": 269,
+      "pending_unique": 86,
+      "status_counts": {
+        "legacy_hold": 5,
+        "hold": 258,
+        "approved_receipt_candidate": 6
+      },
+      "batch_selected": 5,
+      "batch_processed": 4,
+      "reviewers": [
+        "minimax-m3",
+        "kimi-k3-256k"
+      ],
+      "output_path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/scratch_distill_pilot_20261104/semantic-review-worker-results.jsonl",
+      "last_session_id": "b8efc551-57ce-4511-9faa-c6c811bf8616",
+      "last_decision": "hold",
+      "policy": "Source/hash-bound review only; hold on unsupported claims or low anchor recall; never publish."
+    }
+  },
+  "local_9b_smoke": {
+    "schema": "local-9b-verification-smoke/1",
+    "path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/scratch_distill_pilot_20261104/verification_smoke_20261118/receipt.json",
+    "sha256": "62efe61a2189372c0402b840f9c37bd71de93e88f9569910f5409afaed71d4da",
+    "model": "Qwen3.5-9B-Q4_K_M.gguf",
+    "endpoint": "http://127.0.0.1:8765/v1",
+    "compression": {
+      "session_id": "0602f5e6-c50e-403b-8417-4487be84a634",
+      "source_bytes": 1525,
+      "n_chunks": 1,
+      "summary_bytes": 3409,
+      "seconds": 23.3
+    },
+    "published_to_memory": false,
+    "mechanical_verification": {
+      "required_sections": true,
+      "source_sha256_recomputed": "3c3b09f858f657152fa7b01dd6adacb6604ce3c52de83c1f41dffacceec5267b",
+      "summary_sha256_recomputed": "ee1f96b0b01592bd6fc609fc400b144795311166dd69ed907262db0afe75e6f8",
+      "anchor_count": 4,
+      "anchors_covered": 4,
+      "anchor_recall": 1.0,
+      "promotion": "hold_review_required",
+      "reason": "smoke only; no independent semantic review receipt and no memory publication"
+    }
+  },
+  "platform_validation": {
+    "path": "/Users/chunxiao.wang/Projects/nautilus-core/docs/org/ali-zen-pilot/client-requirements-validation.json",
+    "exists": true,
+    "sha256": "d46ed7137d2edeb059e30b9199b0e833cbc95d0af038f1ed990213b0e1112f64",
+    "at_utc": "2026-11-06T15:35:34.732681+00:00",
+    "row_count": 59,
+    "pc_rows": 46,
+    "mobile_rows": 13,
+    "conflict_count": 11,
+    "all_document_checks_passed": true,
+    "engineering_evidence_checks": {
+      "FS03_source61_matches_actual_package": true,
+      "FS03_index104_hashes_match": true,
+      "FS03_native_Golden3x8_and_cleanup_verified": true,
+      "FS03_real_wrong3_rejected_starter_separate": true,
+      "mobile_r03_source321_and_APK_hash_match": true,
+      "mobile_component_5_plus_2_controls_pass": true,
+      "P04_P06_local_copy_committed_bytes_match": true,
+      "P08_not_substituted_by_mobile_ZIP": true,
+      "no_AP_model_human_customer_pass_inferred": true,
+      "matrix_criteria_and_conflicts_unchanged_after_attachment_status_update": true,
+      "matrix_and_source_index_attachment_status_updated_with_prior_bytes_retained": true
+    },
+    "row_status_counts": {
+      "FORMAL_OR_MODEL_HUMAN_EVIDENCE_PENDING": 5,
+      "LOCAL_ATTACHMENT_COPY_FOUND_VERSION_LIMIT_RETAINED": 4,
+      "LOCAL_NATIVE_ENGINEERING_EVIDENCE_VERIFIED": 10,
+      "PARTIAL_ENGINEERING_BINDINGS_VERIFIED": 5,
+      "R03_COMPONENT_PASS_NATIVE_ACCEPTANCE_PENDING": 6,
+      "REQUIRED_EVIDENCE_STILL_PENDING": 12
+    },
+    "customer_acceptance": false,
+    "model_runs_verified": 0,
+    "human_grades_verified": 0,
+    "external_messages_sent": 0,
+    "latest_native_scoped_evidence_readback": {
+      "path": "/Users/chunxiao.wang/nautilus-audit/2026-11-06/ali-mobile-engineering-delivery-r01/independent-verifier/compass-contract-r01/capture-short-text-r02/DEVICE_EVIDENCE_BINDING_READBACK.json",
+      "capture_files_hash_verified": 21,
+      "native_Golden3_complete": false,
+      "native_mutant_rejections": 0,
+      "customer_accepted": false
+    }
+  },
+  "gates": {
+    "organization_continuity": "observed_snapshot_only",
+    "memory_publication": "blocked_until_signed_independent_receipt_and_consumer_readback",
+    "9b_full_history_acceptance": "not_done",
+    "customer_acceptance": "not_claimed"
+  },
+  "next_action": {
+    "owner": "compass",
+    "action": "Use this snapshot as the single readback for the next coordination round; then close one P0 gate: trusted user-to-project-task mapping or signed Assay receipt plus consumer readback."
+  }
+}

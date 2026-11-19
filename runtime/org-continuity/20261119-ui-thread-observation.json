@@ -1,0 +1,47 @@
+{
+  "schema": "codex-ui-thread-observation/1",
+  "observed_at_utc": "2026-11-19T12:48:00Z",
+  "source": "mcp__codex_app__list_threads(mode=recent, limit=50)",
+  "policy": "UI status is transport/activity evidence only; it is not task acceptance.",
+  "threads": [
+    {
+      "role": "compass",
+      "title": "Compass｜记忆验证与工作总览",
+      "status": "active",
+      "cwd": "/Users/chunxiao.wang/Projects/nautilus-compass",
+      "thread_id": "01a1ea00-9c51-7bb0-92d1-2d79b4947675"
+    },
+    {
+      "role": "agent",
+      "title": "Agent｜任务执行与运行排障",
+      "status": "active",
+      "cwd": "/Users/chunxiao.wang/Documents/Codex/2026-11-17/new-chat",
+      "thread_id": "01a19fd4-cfc1-7e72-89a0-6f08b8bba0d2"
+    },
+    {
+      "role": "platform",
+      "title": "Platform｜组织协调与客户交付",
+      "status": "active",
+      "cwd": "/Users/chunxiao.wang/Projects/nautilus-core",
+      "thread_id": "01a1aa06-cc0c-7321-8594-91b26b2b6112"
+    },
+    {
+      "role": "flywheel",
+      "title": "评估飞轮管道演示与网站现状",
+      "status": "active",
+      "cwd": "/Users/chunxiao.wang/Projects/nautilusflywheel",
+      "thread_id": "01a1ed6f-a14e-7ef1-a7cf-3f100c020bfd"
+    },
+    {
+      "role": "v5",
+      "title": "承接平台调度并推进阿里二期",
+      "status": "notLoaded",
+      "cwd": "/Users/chunxiao.wang/Projects/nautilus_v5",
+      "thread_id": "01a1e473-8251-7611-a34b-f877079826aa"
+    }
+  ],
+  "negative_evidence": [
+    "V5 主对话框当前未加载；这不等于 V5 Memory Daemon 未运行。",
+    "active 只表示线程处于活动态，不表示该线程已完成任务、已提交平台或已被甲方验收。"
+  ]
+}
