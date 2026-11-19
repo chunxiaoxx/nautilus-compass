@@ -1,0 +1,122 @@
+{
+  "schema": "cross-dialog-receipt/1",
+  "receipt_id": "compass-latency-and-recovery-R574",
+  "generated_at_utc": "2026-11-19T08:40:25.651984+00:00",
+  "owner": "compass",
+  "status": "partial_ready",
+  "scope": "BGE recall latency, MCP service probes, cross-dialog status, organization-memory review continuation",
+  "gates": {
+    "daemon_ping": "pass",
+    "recall_latency": "improved_with_quality_recheck_pending",
+    "mcp_gateway_healthz": "pass",
+    "local_mcp_http_auth_boundary": "pass_unauthorized_without_token",
+    "organization_memory_review": "running_no_publish",
+    "9b_full_history_acceptance": "not_done",
+    "cross_dialog_task_acceptance": "not_applicable"
+  },
+  "latency_probe": {
+    "cause": "remote MPS cross-encoder rerank, not BGE query embedding",
+    "baseline": {
+      "candidate_count": 30,
+      "max_length": 8192,
+      "median_ms": 4684.2,
+      "range_ms": [
+        4377.5,
+        5032.0
+      ],
+      "remote_fallback": false
+    },
+    "live_tuning": {
+      "candidate_count": 16,
+      "max_length": 512,
+      "median_ms": 1491.3,
+      "range_ms": [
+        1458.6,
+        2299.0
+      ],
+      "remote_fallback": false
+    },
+    "same_query_top5_overlap": [
+      3,
+      4,
+      2
+    ],
+    "quality_status": "performance_delta_verified; retrieval-equivalence benchmark still required",
+    "remote_model_revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+    "backup_dir": "runtime/maintenance_backups/20261119-rerank-latency"
+  },
+  "services": {
+    "daemon_9876": {
+      "status": "pass",
+      "pid": 13393,
+      "daemon_hash": "sha256:5b306892124e22ff35f0928b2a4822a038ec7d4c1cfd54fe017d66549d7de924",
+      "config": {
+        "COMPASS_RERANK_CANDIDATES": 16,
+        "COMPASS_RERANK_MAX_LENGTH": 512,
+        "COMPASS_PROD_RERANK": 1
+      }
+    },
+    "mcp_http_8097": {
+      "tcp": "open",
+      "unauthenticated_mcp": "401_expected",
+      "health_path": "not_applicable_streamable_http"
+    },
+    "compass_gateway_8770": {
+      "healthz": "HTTP200",
+      "readyz": "not_exposed"
+    },
+    "bge_embed_8400": "tcp_open",
+    "bge_rerank_8401": "tcp_open"
+  },
+  "dialogs": {
+    "compass": "active",
+    "agent": "active",
+    "platform": "active",
+    "v5_main": "notLoaded",
+    "flywheel_main": "idle",
+    "note": "Thread UI status is not task acceptance; V5 daemon service is separately verified."
+  },
+  "organization_memory": {
+    "queue_total": 355,
+    "reviewed_unique": 219,
+    "pending_unique": 136,
+    "status_counts": {
+      "legacy_hold": 5,
+      "hold": 212,
+      "approved_receipt_candidate": 2
+    },
+    "reviewers": [
+      "minimax-m3",
+      "kimi-k3-256k"
+    ],
+    "published": false,
+    "progress_path": "runtime/scratch_distill_pilot_20261104/semantic-review-progress.json",
+    "progress_sha256": "ebd3d725c209fe357e894d01460dd4a2854ae4c9767c3aa91eb98ecac056fa8c",
+    "raw_cards_retained": true,
+    "distill_write_frozen": true
+  },
+  "evidence": [
+    {
+      "path": "ops/launchd/com.nautilus.compass-daemon.plist",
+      "sha256": "55471a54a482484b9f8087328c9d2fe8e553d3d17a4aabd3df799be4b9965452"
+    },
+    {
+      "path": "daemon.py",
+      "sha256": "5b306892124e22ff35f0928b2a4822a038ec7d4c1cfd54fe017d66549d7de924"
+    },
+    {
+      "path": "runtime/scratch_distill_pilot_20261104/semantic-review-progress.json",
+      "sha256": "ebd3d725c209fe357e894d01460dd4a2854ae4c9767c3aa91eb98ecac056fa8c"
+    }
+  ],
+  "limitations": [
+    "top5 overlap is a probe, not LongMemEval or organization-memory acceptance",
+    "V5 main Codex thread is notLoaded even though the local V5 daemon is live",
+    "all four repositories have unrelated dirty work; no cleanup or push was performed",
+    "trusted user-to-project authorization mapping is not fully accepted"
+  ],
+  "next_action": {
+    "owner": "compass",
+    "action": "Run a fixed retrieval-quality A/B benchmark for 30/8192 versus 16/512; keep tuned latency config only if quality gate passes, while continuing the 355-row dual review with no publication."
+  }
+}

@@ -11,6 +11,8 @@
     <key>COMPASS_RERANK_REMOTE</key><string>127.0.0.1:8401</string>
     <key>COMPASS_RERANK_REMOTE_TIMEOUT</key><string>4</string>
     <key>COMPASS_PROD_RERANK</key><string>1</string>
+    <key>COMPASS_RERANK_CANDIDATES</key><string>16</string>
+    <key>COMPASS_RERANK_MAX_LENGTH</key><string>512</string>
     <key>HF_HUB_OFFLINE</key><string>1</string>
   </dict>
   <key>RunAtLoad</key><true/>

@@ -137,6 +137,10 @@ _RERANKER_MODEL = os.environ.get(
 # how many top candidates to feed the cross-encoder before truncating to top_k.
 # benchmark used full haystack (50); production keeps it bounded for latency.
 _RERANK_CANDIDATES = int(os.environ.get("COMPASS_RERANK_CANDIDATES", "30"))
+# Interactive recall should use the model's normal 512-token context. The full
+# 8192-token contract remains available for explicit benchmarks/audits via
+# COMPASS_RERANK_MAX_LENGTH=8192.
+_RERANK_MAX_LENGTH = int(os.environ.get("COMPASS_RERANK_MAX_LENGTH", "8192"))
 _RERANKER_SINGLETON = None  # lazy in-process singleton (loaded on first use)
 _RERANKER_LOCK = threading.Lock()
 _RERANK_TRACE = threading.local()
@@ -151,10 +155,12 @@ def _remote_rerank_contract():
     snapshot = hub / "snapshots" / revision
     config = json.loads((snapshot / "config.json").read_text())
     tokenizer = json.loads((snapshot / "tokenizer_config.json").read_text())
-    maximum = tokenizer["model_max_length"]
+    configured_maximum = _RERANK_MAX_LENGTH
+    maximum = min(tokenizer["model_max_length"], configured_maximum)
     activation = ((config.get("sentence_transformers") or {}).get("activation_fn")
                   or config.get("sbert_ce_default_activation_function"))
-    if (type(maximum) is not int or not 1 <= maximum <= 8192
+    if (type(configured_maximum) is not int or not 1 <= configured_maximum <= 8192
+            or type(maximum) is not int or not 1 <= maximum <= 8192
             or (activation and not activation.endswith("Sigmoid"))
             or len(config.get("id2label", {"0": "LABEL_0"})) != 1):
         raise ValueError("remote input/activation contract unsupported")
