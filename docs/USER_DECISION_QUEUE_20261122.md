@@ -6,7 +6,11 @@
 
 ---
 
-## D1 · Token Plan 断供 → loop 复活(最优先,影响一切值守)
+## D1 · Token Plan 断供 → loop 复活 —— ✅ 已闭环(2026-11-22,中转站恢复)
+
+**处置记录**:①11/19-20 Mac 侧已自建降级 loop(`tools/local_loop_runner.py`,纯本地巡检+9B 摘要,只读不写)顶着;②用户 11/22 恢复自建中转站后,本席实弹验证通道绿(claude CLI 默认通道 CHANNEL_OK);③从 11/16 备份重建全能力 plist(去掉 `--model glm-5.3-flash` 硬编码,2h 节奏),替换降级版(备份 `.bak-localrunner-20261122`),bootstrap+kickstart 即刻点火 R578(PID 23891,05:23 锁文件为证)。遗留:R578 完成读数候验(rounds.log 新 round-end + state.json round=578);降级 runner 留仓可随时回切。
+
+**(原始决策面存档)**
 
 **背景**:loop 模型通道三线全断——GLM Token Plan 429(11/19 起,rounds.log 每轮 `已达到 Token Plan 用量上限`)+ MiniMax token plan 429 + Kimi weekly quota 429(11/16 档 `model-channel-quota-blocked-20261116`)。断供是间歇性的,单轮正常≠已修复。纪律:配额问题不擅自付费/不改凭据。
 
