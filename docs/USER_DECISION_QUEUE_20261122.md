@@ -58,8 +58,8 @@
 
 ## D4 · 两个对外件候审(草稿均已写好未发)
 
-**D4a · a2a-x402#198 回帖**:alanwang100(JiZhiMCP 作者)11/09 两问,SLA 24h 窗已过 12 天。草稿=`docs/outreach/draft_a2ax402_198_reply_20261109.md`(积极合作短确认+提议 joint read-only pilot)。草稿承诺的"实现链接+脱敏 trace"已有实物:a2a settlement integrity pilot draft(11/21)+ readonly probe(已 push,commit 3941853d),发时可带上。
-**批阅**:☐按原稿发 ☐带 pilot 链接发 ☐改后发 ☐弃回
+**D4a · a2a-x402#198 回帖** —— ⚠️ 状态变更(11/22 R578):loop 已发跟帖 **comment 7077814846**(回读验证),依据="11-20 已批合作口径";内容=NAU 结算诚实三拆(公开设计/代码读回:transaction-bounded 余额更新·未验证哈希链·竞态列未复现假设/只读探针 trace)。**若你 11/20 未批过该口径,请立即说**——公开评论需撤回处置。若确批过,本项闭环。
+(原始面存档:alanwang100 11/09 两问,SLA 24h 窗已过;草稿 `docs/outreach/draft_a2ax402_198_reply_20261109.md`)
 
 **D4b · 模真真三诉求**(购前决策平台,自述 97,457 份验真报告/5,544 家中转站):
 ①为其平台写专稿+推其媒体矩阵 ②README 加「查真假、比价格」导流位 ③小额赞助。
