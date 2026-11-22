@@ -1,2 +1,3 @@
 - 20261122-2336 · **AMBER** · Mac 值守 loop=AMBER; 通道金丝雀=GREEN; 仓 CI 盲区(ahead)=GREEN; 治理欠账 M1-M3=AMBER; soul 自改(cloud)=GREEN; PR 机审器(cloud)=GREEN; 平台信箱未读=GREEN; GitHub 草稿 PR 积压=GREEN
 - 20261122-2337 · **AMBER** · Mac 值守 loop=GREEN; 通道金丝雀=GREEN; 仓 CI 盲区(ahead)=GREEN; 治理欠账 M1-M3=AMBER; soul 自改(cloud)=GREEN; PR 机审器(cloud)=GREEN; 平台信箱未读=GREEN; GitHub 草稿 PR 积压=GREEN
+- 20261122-2337 · **AMBER** · Mac 值守 loop=GREEN; 通道金丝雀=GREEN; 仓 CI 盲区(ahead)=GREEN; 治理欠账 M1-M3=AMBER; soul 自改(cloud)=GREEN; PR 机审器(cloud)=GREEN; 平台信箱未读=GREEN; GitHub 草稿 PR 积压=GREEN
