@@ -10,6 +10,7 @@
 
 | 日期 | 载体 | 批准内容 | 执行动作+证据 | 记录框 |
 |---|---|---|---|---|
+| 2026-11-22 | 笔记本对话框 | D2-a:soul 自改冷静期扩到 services 家族,只跑小目标 | 已执行:6 个 soul_* stem 入 cooldown 至 12/06(共 17 stem),daemon 同款 collect_eligible 干跑候选池=[];注:平台侧同晚 S5 已把范围结构性砍到仅 services/soul_*.py(>12KB 出池)→池空=自改优雅空转(不计失败),等 00:00 首轮验证 | compass 审计席 |
 | 2026-11-22 | 笔记本对话框 | 审计常态化(笔记本审计席每日只读体检)+ 判官全同色警报(改判官器,此行即批件) | ✅ 已执行:①`ops/audit_seat_round.py` 八探针只读体检(首轮自证伪两处:state.json 时间戳为北京时间/日志窗口取近轮)+计划任务 `compass-audit-seat` 每日 09:30(实跑 LastTaskResult=0,报告 runtime/audit/seat_rounds/);②`pr_review.py` 加 `_monotone_alarm`(≥3 且单色 100% 投函 platform·6h 节流),分支 `soul-distill-deploy@bd2c1ae0a`,部署副本同步,单元四用例+15 测试+真服务一轮 `monotone_alert: False` | compass 审计席 |
 | 2026-11-22 | 笔记本对话框 | 修复机审器 `ops/pr_review.py` 假红 bug(FETCH_HEAD per-worktree)——改判官器须经批准,此行即批件 | ✅ 已执行:修在正本分支 soul-distill-deploy@`84d27fe42`(首推被热线分支拒,cherry-pick 重基后推成,远端尖核对一致);部署副本 nautilus-mvp 同步(本地 master@d7927b755,cmp 一致);验证=现有 15 测试全绿+ruff 绿+实弹 3 PR 真判词+真服务一轮 9 审/1 红/8 灰(原 21 全假红),#463/#507 评注已换真依据 | compass 审计席 |
 | 2026-11-22 | 笔记本对话框 | 批量机审+关闭 nautilus-core 上 soul 过时草稿 PR(21 drafts,11/05-08 零评审;#520 codex 线不在范围) | ✅ 已执行:12 个 selfimprove 草稿关闭(#447-456/462/496,逐 PR 留言带批准溯源);9 个提案草稿(#463-509)经独立复核可干净合入**不关**;🔴 机审器 `pr_review.py` 假红根因定位=主克隆 fetch/worktree 内 merge FETCH_HEAD(per-worktree 不共享)→一行修复建议交平台 | compass 审计席 |
