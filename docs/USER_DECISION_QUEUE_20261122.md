@@ -26,18 +26,19 @@
 
 ---
 
-## D2 · soul distress 人监门(.soul-pause)
+## D2 · soul distress 人监门 —— ✅ 根因已查实(2026-11-22 审计席)
 
-**背景**:v5 soul 自愈引擎连续失败计数波动 ×13→×34(11/10 报面 ×25),熔断保活通道持续发 distress 函积压平台 RED。解除=人工删 `.soul-pause`,compass 纪律不代删。精确坐标删除时由 v5 框提供(本轮探测未命中)。
+**排查结论**(全部 [实测],坐标 cloud `/home/ubuntu/nautilus-soul-workspace/`):
+- soul 引擎=cloud systemd 常驻(15min 一轮),**不在 Mac/v5**——`.soul-pause` 在工作区根,内容=`circuit breaker · 120 consecutive failures · last=selfimprove-engine-nautilus_engine`。
+- **根因不是通道/平台/钱,是"自改质量"**:引擎每轮对 `phase3/backend/engine/nautilus_engine.py`(它自己的引擎文件)提出的修改被自己的质量门打回——最后两例失败标本(11/22 17:22/19:33 journal 原文):①截断 `DEFAULT_SYSTEM_PROMPT` 字符串中途 ②把 prompt 里的示例文件 `count.py` 当真文件去创建 ③想删被语义保持门禁保护的 import。failed_checks 含 py_compile/import/ruff/semantic/line_count/docstring_preserve。
+- **门卫尽责、生成器太弱**:质量门全部正确拦截(该系统按设计工作);生成侧 LLMClient 走 MiniMax/Gemini/Anthropic 回退链,MiniMax 配额 11/16 已 429——弱模型改大文件+严格保持门=必刷屏。[推断:弱模型归因;拦截行为=实测]
+- 熔断器 MAX_CONSECUTIVE_FAILURES=5 即跳闸;跳闸后每轮 "breaker pause · skipping self-improve (letters stay live)" —— distress 函持续续命的机制即此。
 
-| 选项 | 代价 | 效果 |
-|---|---|---|
-| A 直接删 | 零成本 | 引擎重挂;根因未修=大概率再熔断再刷屏 |
-| B 保持熔断 | 零成本 | distress 函继续积压 |
-| C 先查 N 次失败根因(v5 selfimprove-engine-checks 日志)再定 | 半小时级 | 治本判定 |
-
-**建议**:C——根因不明就解锁等于重启刷屏循环。
-**批阅**:☐A ☐B ☐C ☐搁置
+**处方**(顺序不可倒):
+1. 引擎 LLMClient 切到已恢复的强通道(改 cloud 侧配置,零成本);
+2. 给 `engine/nautilus_engine.py` 这个自指目标加 goal cooldown(`.soul-goal-cooldown.json` 机制现成)——小模型别啃自己;
+3. 前两步落地后,用户删 `.soul-pause` 解闸;成功连跑即 distress 停。
+**若只删闸不改 1/2 = 重启刷屏循环**(今天 11:33 曾有人重挂,17:22/19:33 又失败两次坐实)。
 
 ---
 
