@@ -22,7 +22,6 @@ rounds.log 只留一行小字,降级巡检看到了也只能写给自己看,无�
 from __future__ import annotations
 
 import json
-import os
 import subprocess
 import sys
 import time

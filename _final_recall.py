@@ -1,4 +1,4 @@
-import socket, json, time, subprocess, glob, os
+import socket, json, subprocess, glob
 # find daemon pid by listing processes matching daemon.py
 r = subprocess.run(['ps','aux'],capture_output=True,text=True)
 pid = None

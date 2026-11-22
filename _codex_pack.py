@@ -1,4 +1,4 @@
-import tarfile, time
+import tarfile
 from pathlib import Path
 out = Path(r'C:/Users/chunx/nas-outbox/nautilus-migration/04_codex/sessions_codex_full.tar')
 src = Path(r'C:/Users/chunx/.codex/sessions')
