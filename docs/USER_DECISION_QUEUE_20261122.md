@@ -70,6 +70,7 @@
 - 本席执行:6 个 soul_* stem 入 cooldown 至 12/06(共 17 stem);daemon 同款 `collect_eligible` 干跑 → **候选池=[]**;池空路径代码确认=优雅跳过不计失败(`no eligible module found · skipping` → return 0)。
 - **效果等价于"自改空转暂停"**(与 D2-b 殊途同归,但零代码改动、删条目即恢复)。soul 的信箱/提案消费/执行等其他职能照常。
 - 验证时序教训:23:46 那轮 23:45:01 开跑早于冷静期写入 26 秒(选靶时池尚有 4 件→554 行补丁被 LOC 门拒→连败 3/5);手动 systemctl start 被合并进已跑周期。**真验证=00:00 首轮**,观察哨已挂。
+- **✅ 00:00 首轮验证通过(观察哨回读,[实测])**:`self-improve: no eligible module found · skipping`,连败计数保持 3/5 未动,无跳闸。D2-a 闭环。
 - 旁证:该轮日志见 api.chunxiao.wang 对 glm-5.3 连续 3 次 503 后重试成功——**中转站有间歇 503**;Mac 金丝雀探的是智谱直连端点,不覆盖中转站路径(待补第二探针)。
 
 ---
