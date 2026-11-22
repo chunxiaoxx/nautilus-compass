@@ -59,6 +59,12 @@
 - 处置:12 个 selfimprove 草稿**关闭**(7 engine=冷静期政策+5 services=劣化期产物且阻塞去重;逐 PR 留言溯源);9 个提案草稿(463/467/494/495/497/502/503/507/509,纯新增 57-237 行)**保留**,待机审器修复后真评。
 - 结果:开放 PR 22→10;services 去重死结解除,loop 下轮可对 services 目标重新生成补丁争取首次成功。
 
+**11/22 23:25 机审器根修落地(用户批准"顺手修",[实测])**:
+- 修复=`_review_one` 在主克隆 `rev-parse FETCH_HEAD` 取 sha,再把 sha 交给 worktree 合并(+8/-1,带根因注释);正本分支 `soul-distill-deploy@84d27fe42`(首推被热线分支拒绝——几分钟内有人连推,`set -e` 语义导致后半段空跑无损;cherry-pick 到新尖重推成功,远端尖核对一致);部署副本 `nautilus-mvp`(不同步目录)本地 master 同步 @d7927b755,cmp 逐字一致。
+- 验证四层:py_compile ✓ / ruff ✓ / 现有 `tests/test_pr_review.py` 15 passed ✓ / 实弹=隔离 worktree 跑修后 `_review_one` 3 PR 出真判词(#463 RED 路径门禁·97 行/#507 GREY pytest 信号不可用·162 行/#509 GREY·14 行)✓;真服务一轮 `reviewed 9/red 1/grey 8`(原 21 全假红),#463/#507 评注已换真依据 ✓。
+- **审计席教训两条**:①修复脚本用了 `set -e`+`&&` 混排,推送被拒后脚本未停、后半段空跑(靠回读才发现未上分支)——多步远程脚本每步必须回读,不能靠退出码;②部署目录(nautilus-mvp)与同步目录(soul-workspace)是两套,修正本≠修部署,两处都要落并 cmp。
+- **新发现(交平台,未修)**:真判词暴露第二层缺口——platform_backend/*、v1/* 路径"pytest 信号不可用"(判灰),判官对这些路径没有测试覆盖;engine/v7 路径"路径门禁未过"。8 个灰 PR 在补测试信号前永远评不出绿。
+
 ---
 
 ## D3 · A100 恢复(判分线 + Flora GPU 实测共同前置)
