@@ -4,6 +4,14 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R727 · 2026-11-22(值守 loop R581:a2a#198 canonical serialization 离线验证轮——✅ 对方修复我方发现的 ts 暴露缺陷·本地 SHA-256 复算 t1 逐字节 MATCH·回帖 7082496866)
+
+- **🆕增量①[实测]✅ 缺陷被对方确认+修复**:alanwang100 14:55Z 回帖承认 check#4 抓到真缺陷——digest preimage 含 `ts`(`new Date().toISOString()`)未持久化未暴露(内容寻址但 preimage 字段不可观测)⇒ 已修复:`ts` 持久化入 `settlement_ledger` 并在 `settlement.transfer`/`settlement.ledger` 响应暴露;另勘误其评论 `seed` 笔误(实况=fixture-seed,与我方读回一致)。
+- **🆕增量②[实测]✅ canonical serialization 独立验证通过**:规范=键序固定 `v,prev_hash,from,to,amount,unit,reason,ts`·compact 分隔·`amount` 十进制字符串·`ts` ISO-8601 毫秒串。本地复算:SHA-256(t1 preimage)=`49b710bdb1761dc7b27c1796c382c112ad581c48f74a7e3caaacd3eaeba8c970` **逐字节 MATCH**;SHA-256(t2 preimage)=`e40bb972abcab34b603a8712ebf8fc2159073a7cba324b9615bdd09dd45e56af`(对方截断前缀 `e40bb972abcab34b…` 一致)且 t2 `prev_hash`=t1 digest 链成立 ⇒ 规范可确定性复现。
+- **🆕增量③[实测]✅ 回帖发布**:comment **7082496866**(1481 字符·回读验证)·沿 11-20 已批积极合作口径·纯事实读回·未做任何承诺。**欠账**:活体复验(只读 `settlement.ledger` 确认每条 `ts` 暴露+live full t2 digest 与复算值对比→comparison table 回帖收口)——网关经 MCP 工具调用,本会话不可达,留后续会话;复算值已存记忆卡 `a2a-x402-198-canonical-serialization-verified-20261122.md`。
+- **值守面[实测]**:信箱 compass 0 未读;Gmail 探活绿·7d 过滤未读 **0**(R580 15 全营销已出窗·零新商务函);mentions 5 全旧;notifications 6=compass CI×4(R580 已修红 run 的过期通知)+v5 CI×2(他域通报);genesis 8 家零 REPLY(supermemory#1831 仅 linear-code[bot] 非人类);dev.to 8(6+2)持平;daemon 9876 绿+watchdog exit0+哨兵 exit0 recall_hit=41;管道三件 exit0·快筛「存在不过筛」持平(CS-518 梯度 25.0pp 同);矩阵仍停 10-30;磁盘 avail **12Gi**(R580 14Gi·98%·未破 10Gi alarm 线·续观);开工 behind 2(aa9b1afe/4f3959fc D2-a 决策档·他线)已 ff 拉齐·拉齐后 CI 三连绿。
+- **零生产动作边界**:除 a2a#198 回帖外未改代码/plist/symlink·未 bootout·未删记忆卡·未碰 NAS·未 PATCH dev.to·他线未提交文件未裹挤。候拍板:磁盘 12Gi 续观·活体 ledger 复验·v5 staging·矩阵 phase2·distill 存量 1196·Gmail 草稿·模真真三诉求。
+
 ### R726 · 2026-11-22(值守 loop R578:通道恢复轮——✅ SLA 积压补回【OGE 状态函过期 14.5h+升级函+v5 裁夺函三函办结】+ ✅ a2a#198 绿灯跟帖发布【28h·comment 7077814846】+ ✅ 管道 AppleDouble 断点修复)
 
 - **🆕增量①[实测]✅ SLA 积压补回(429 断供善后)**:loop 通道 11-19 16:20 后三轮 429(MiniMax Token Plan 耗尽),11-22 恢复后首轮信箱积压三函 ⇒ OGE 状态函 id134659(deadline 11-22 04:00+08 过期 14.5h)+升级函 id135727(L2 接管预警)→ 三行回函 **id141801**(trace=`oge-status-demand-compass-2026-11-22-done`·违约如实记账:根因=通道断供非沉默拒复)+两函 ack 办结;v5 专函 id141798(触客优先序·死线内)→ 裁夺回函 **id141802**:**首选=案1 阿里二期交付本身**(甲方按题验收=外部真实复算·北极星最短路径),案2(dsh 判分插件)列二期后;预警 B 批矩阵停摆 23 天卡首选时间线。
@@ -2007,3 +2015,10 @@
 - **其余值守面持平**:a2a#198 实测仍 1 评论(alanwang100 11-09)草稿候用户维持;T02 题包四件套 13:28Z 入 core 正本(v5 产线通报零行动);mention5 全旧;genesis 持平 1/1/0/1/2 零 REPLY;dev.to 30 文 6+2=8 评论持平;daemon 绿 9876+watchdog+哨兵 exit0 recall_hit=39;GATE0 PASS;管道三件 exit0 快筛全同(CS-515~517 opus=None/CS-518 25pp ✗③✓④✓⑤);矩阵 mtime=10-30 停摆维持。磁盘 R527 的 100%→55%(avail 10Gi)巡检条件恢复。
 - **留痕勘误**:R527 rounds.log 两条空 `---- round end ----` 标记行(07:30/07:55)+1 失控碎片行——实读数未受影响,不删史只注记。
 - **候办主件全延续**:🔴distress ×25 人监门·a2a#198 草稿审批(SLA 窗已过)·安全报告三选项·两函 400 拒·X 验证码 622026·PVR·矩阵/phase2 解锁·gaurav 转化包。
+
+### 【外部输入】2026-11-22 用户批阅结果+新方针(笔记本审计席代录,坐标 docs/USER_DECISION_QUEUE_20261122.md 与 docs/APPROVAL_LEDGER.md)
+- 🔴 **常设方针(用户 11-22 原话):对外联系一律积极对接、积极合作、打开局面**——模真真回函(docs/outreach/draft_mozhenzhen_reply_20261118.md·未发)与 gaurav 转化包 v1 等待发对外件按此方针积极处置;产品面导流位/财务赞助仍单项过批。
+- **已闭环**:D1 loop 复活(R578 验收过)/D4a a2a#198(11-20 首帖+对方积极回复+R578 二帖,线程暖,继续跟)/通道金丝雀已常驻(ops/compass_channel_canary.py·30min·断供不再静默)。
+- **D3 A100**:lyg1132=关机非死亡(数据盘在),重启零技术障碍;账户余额 ¥37.55≈13h,开机前需用户充值(不新租纪律)。**候钱,勿自行开机。**
+- **D2 soul 人监门**:维持候用户(建议先查根因)。
+- **审批协议生效**:外发/花钱前查 docs/APPROVAL_LEDGER.md,批准后当轮补行。

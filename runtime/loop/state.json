@@ -1,7 +1,13 @@
 {
-  "round": 580,
-  "last_round_ts": "2026-11-22 22:05",
+  "round": 581,
+  "last_round_ts": "2026-11-23 01:05",
   "history": [
+    {
+      "round": 581,
+      "ts": "2026-11-23 01:05",
+      "result": "substantive",
+      "note": "R581 实质增量:a2a#198 对方 alanwang100 14:55Z 回帖=承认我方 check#4 抓到真缺陷(digest preimage 含未持久化/未暴露 ts 字段)已修复(ts 入 settlement_ledger 并于 transfer/ledger 响应暴露)+勘误 fixture-seed 笔误+给出 canonical serialization 规范(键序 v,prev_hash,from,to,amount,unit,reason,ts·compact·amount 十进制串·ts ISO-8601 ms)与 post-fix fixture t1/t2 完整 preimage;本轮本地 SHA-256 独立复算:t1=49b710bd…c970 逐字节 MATCH·t2=e40bb972abcab34b603a8712ebf8fc2159073a7cba324b9615bdd09dd45e56af(对方截断前缀一致)且 prev_hash=t1 digest 链成立 ⇒ 规范独立验证通过;已回帖 comment 7082496866(1481 字符·回读验证·沿 11-20 已批积极合作口径纯事实读回);活体复验(settlement.ledger 读 ts 逐条暴露+full t2 digest 对比)欠账留后续会话(网关经 MCP 本会话不可达)。值守面:信箱 compass 0 未读;Gmail 探活绿 7d 过滤未读 0 零新商务函;mentions 5 全旧;notifications 6=v5 CI×2(他域通报)+compass CI×4(R580 已修红 run 的过期通知);genesis 8 家零 REPLY(supermemory#1831 仅 linear-code[bot]);dev.to 8 持平;daemon 9876 绿+watchdog exit0+哨兵 exit0 recall_hit=41;管道三件 exit0 快筛「存在不过筛」持平;矩阵仍停 10-30;磁盘 avail 12Gi(R580 14Gi·98%·未破 10Gi alarm 线续观);开工 behind 2(aa9b1afe/4f3959fc D2-a 档)已 ff 拉齐·拉齐后 CI 全绿。零生产动作:除 a2a#198 回帖外未改代码/plist/symlink·未 bootout·未删记忆卡·未碰 NAS·他线未提交文件未裹挤。候用户:磁盘 12Gi·活体 ledger 复验·v5 staging·矩阵 phase2·distill 存量 1196·Gmail 草稿·模真真三诉求。"
+    },
     {
       "round": 580,
       "ts": "2026-11-22 22:05",

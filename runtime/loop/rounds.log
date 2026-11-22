@@ -5306,3 +5306,31 @@ R579 闭轮。CI run 45023889926 已触发(head=df5bfc9d 绑定成立,in_progres
 **候用户**:a2a#198 对方若给 preimage 后的第 4 项复核、v5 staging 连续失败(v5 域)、Gmail 草稿审稿等候办延续。
 ---- round end 11-22 07:45 ----
 2026-11-22 09:51 round580 值守轮:main红4连修复(F401×4删3文件,ruff全绿+护栏过,a64dc5de push,run45034841090 success闭环)+a2a#198已闭环(对方10:54Z fixture ledger,我方12:43Z回帖3PASS+digest负结果如实报)+值守面持平(Gmail 15全营销/genesis linear-bot NEW不追/dev.to 8/daemon绿+哨兵recall_hit=35/磁盘14Gi回升/快筛持平) 结果:实质增量
+R580 轮完成。全链验证闭环。
+
+## R580 值守轮总结
+
+**🔴 主件（实质增量）：main CI 红 4 连修复闭环**
+- 诊断：红 run 链 52e5a0a2→8535be53→055a512e→e23536ea（11-22 12:59–14:43Z），非过期读数（最新红 head=当时 origin/main tip）。notifications 因 6h 节流只露 3 条，实查 runs 尾部得 4 红。
+- 根因：F401×4 —— `_codex_pack.py`/`_final_recall.py`（8353d0ab「迁移期脚本留档」入库的一次性脚本，自带未用 import）+ `ops/compass_channel_canary.py:25`（52e5a0a2 canary 首版）。**R573/R575 同款第三次复发，新变体=留档脚本入主干自身带毒，留档≠免检**。
+- 修复：删 3 行 unused import，本地 ruff 全绿+护栏过，a64dc5de push → run 45034841090 **success 0 非绿 job**。
+- 开工 behind 2 已 pull 拉齐（R574 纪律）；后续留痕+merge 提交 f03de701 冲突合并为 3ac1acde，CI 亦绿——本轮 3 笔提交全部触发 CI 且绿。
+
+**a2a#198 状态确认**：对方 alanwang100 10:54Z 双发 fixture ledger（积极跟进），我方跨对话会话 12:43Z 已回帖：前向哈希链 4/4 PASS + 读稳定性 PASS + 余额三角 PASS + digest 重算**负结果如实报**，附 evidence bundle。候对方给 canonical serialization，无本轮动作。
+
+**值守面（全实测）**：信箱 compass 0 未读 · Gmail 401→直刷→7d 未读 15 封全营销（最新到件 Gemini 04:15 属 R579 已见范围，零新商务函零新面孔）· mentions 5 全旧 · genesis supermemory#1831 NEW=linear-code[bot] 同步评论非人类不追 · dev.to 8 持平 · daemon 9876 绿+watchdog+哨兵 recall_hit=35 · 管道三件 exit0 快筛持平 · 矩阵仍停 10-30 · 磁盘 avail **14Gi**（R579 12.75→续回升，脱离 alarm 线）· v5 staging 红（customer-demo-ship-1）他域通报不越框。
+
+**留痕**：rounds.log + state.json(round 580) + COLLAB_BOARD 两行 + 记忆卡 `ci-f401-third-recurrence-r580-20261122.md`（MEMORY.md 已索引），pathspec 限定 commit 已 push。
+
+**候用户**：v5 staging 连续失败（v5 域）· 矩阵 phase2 解锁 · distill 存量 1196 · Gmail 草稿审稿 · 模真真三诉求 · a2a#198 对方若给 preimage 序列化规范。
+---- round end 11-22 09:55 ----
+
+## R581 值守轮总结（2026-11-22 12:12 EST / 北京 11-23 01:05）
+
+- **实质增量①**：a2a#198 对方 alanwang100 14:55Z 回帖——承认我方 check#4（digest 复算失败）抓到真缺陷（preimage 含未持久化/未暴露的 `ts` 字段），已修复（`ts` 入库+双端点暴露）+勘误 fixture-seed 笔误+给出 canonical serialization 规范与 post-fix fixture t1/t2 完整 preimage。
+- **实质增量②**：本地 SHA-256 独立复算——t1=`49b710bd…c970` 逐字节 MATCH；t2=`e40bb972abcab34b603a8712ebf8fc2159073a7cba324b9615bdd09dd45e56af`（对方截断前缀一致）且 prev_hash 链到 t1 ⇒ 规范验证通过。已回帖 comment **7082496866**（回读验证 1481 字符）。活体 `settlement.ledger` 复验（ts 逐条暴露+full t2 digest 对比）欠账留后续会话（网关经 MCP 本会话不可达）。
+- **值守面**：信箱 compass 0 未读；Gmail 探活绿·7d 过滤未读 0（零新商务函）；mentions 5 全旧；notifications 6=v5 CI×2（他域）+compass CI×4（R580 已修红 run 的过期读数）；genesis 8 家零 REPLY；dev.to 8 持平；daemon 9876 绿+watchdog exit0+哨兵 exit0 recall_hit=41；管道三件 exit0·快筛「存在不过筛」持平；矩阵仍停 10-30；磁盘 avail **12Gi**（R580 14Gi·98%·未破 10Gi alarm 线续观）；开工 behind 2（aa9b1afe/4f3959fc D2-a 决策档）已 ff 拉齐·CI 全绿。
+- **零生产动作边界**：除 a2a#198 回帖外未改代码/plist/symlink·未 bootout·未删记忆卡·未碰 NAS·他线未提交文件未裹挤。
+
+**候用户**：磁盘 12Gi 续观 · 活体 ledger 复验（下会话） · v5 staging · 矩阵 phase2 解锁 · distill 存量 1196 · Gmail 草稿审稿 · 模真真三诉求。
+---- round end 11-22 12:12 ----
