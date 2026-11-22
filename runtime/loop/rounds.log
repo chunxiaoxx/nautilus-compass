@@ -5347,3 +5347,24 @@ R581 值守轮完成（25 分钟内），CI 对本轮提交 `3d101d95` 结论 su
 留痕四处（rounds.log / state.json round581 / queue.md R727 / COLLAB_BOARD）+ 记忆卡 + pathspec 限定 commit 已 push，他线未提交文件零裹挟。
 ---- round end 11-22 12:04 ----
 2026-11-23 02:09 round582 a2a#198活体复验收口:只读ledger双账户 t1三方一致/t2 full=e40bb972…45e56af MATCH/链活体成立·ts仅post-fix暴露(诚实注记)·回帖7084146798(回读验证)check#4关闭;新面孔pydantic#14167=我方新发邀请函(bot分诊非人类·记台账);值守面全绿(Gmail直刷后14全营销/genesis零REPLY/daemon绿/哨兵0/快筛持平/git 0/0 CI绿/磁盘16Gi回升) 实质增量
+push 成功，CI run 已触发(head_sha 绑定 HEAD·in_progress·结果留下轮核验)。
+
+## R582 值守轮收口
+
+**实质增量：a2a#198 活体复验收口(R581 欠账结清)**
+- 网关经 `tools/a2a_readonly_probe.py`(白名单只读两工具·零写入)实测可达——R581 判「MCP 不可达」系工具通道非网关本身
+- **t1**(fixture-101):live `ts`=14:55:13.314Z → canonical 复算 digest `49b710bd…c970` = live = 公布值，三方一致
+- **t2**(fixture-102):live full digest `e40bb972…45e56af`(对方截断值补全)与离线复算逐字节一致;`t2.prev_hash`=t1 digest 活体链成立
+- 跨账户链核：pre-fix 段 `f002.prev=f001.dig`✓ `f003.prev=f002.dig`✓(单账户视角「断链」实为全局链)；双边记账 digest 一致
+- 诚实注记：ts 仅 post-fix 条目暴露，pre-fix 5 条仍 null(forward-only 修复)，回帖已明示口径
+- comparison table 回帖 **7084146798**(回读验证)→ **check#4 我方关闭**，evidence 双档入库
+
+**新面孔**:pydantic/pydantic-ai#14167 = 我方 17:40Z 新发邀请函(他线/用户所发)，pydanty[bot] 分诊 needs information 非人类回复，记台账不追。
+
+**值守面全绿**：信箱 0·Gmail 直刷 3599s 后 7d 未读 14 全营销零商务函·genesis 8 家零 REPLY·dev.to 8 持平·daemon/watchdog/哨兵全绿·管道三件 exit0 快筛持平·磁盘 avail **16Gi**(R581 12Gi→回升+4Gi 续观)。
+
+**留痕**:rounds.log/state.json(582)/queue.md R728/COLLAB_BOARD 四件 + commit `3acfc0d1`(pathspec 限定六件)已 push,CI 已触发。另修正时间口径：本 shell TZ=UTC-4,三处留痕已统一为北京口径 02:09。
+
+候拍板不变：磁盘续观·v5 staging(他域)·矩阵 phase2·distill 存量 1196·Gmail 草稿·模真真三诉求。
+---- round end 11-22 14:11 ----
+2026-11-23 05:15 round583 值守持平轮:全渠道绿(信箱0/Gmail0新函/genesis零REPLY/daemon哨兵51/快筛持平/git0-0 CI绿/磁盘20Gi)·pydantic#14167被bot关闭落台账·a2a#198候对方·矩阵复活CS-005/006有读数 结果:零事件零新函·台账补pydantic终态一行
