@@ -1,6 +1,6 @@
 {
-  "round": 577,
-  "last_round_ts": "2026-11-19 15:35",
+  "round": 578,
+  "last_round_ts": "2026-11-22 05:30",
   "history": [
     {
       "round": 574,
@@ -199,6 +199,12 @@
       "ts": "2026-11-19 15:35",
       "result": "substantive",
       "note": "R577 实质增量值守轮(✅ Apple ML 官方页一手回读 + 🔴 推翻本框 R576「ARMOR 同名碰撞·不可直引」自报结论 + ✅ OGE 状态函 2h SLA 内回函办结)①[实测]Apple 官方 detail 页:ARMOR=/research/armor-egocentric(published Feb 2025·Daehwa Kim, Mario Srouji, Chen Chen, Jian Zhang)·EgoDex=/research/egodex-learning-dexterous-manipulation(published Jul 2025·ICLR·Ryan Hoque*, Peide Huang*, David J. Yoon*, Mouli Sivapurapu, Jian Zhang);官方摘要数字:ARMOR ≈86h AMASS·碰撞 −63.7%/成功率 +78.7%(vs 稠密多相机)·碰撞 −31.6%/成功率 +16.9%/延迟 −26×(vs cuRobo)·真机 Fourier GR1;EgoDex 829h ego 视频+同步 3D 手/指追踪+194 桌面任务(与飞轮交接件自报一致=独立确认)②[实测·🔴勘误]R576 记「ARMOR 与 arXiv 2412.00396 同名碰撞·该 arXiv 不是 Apple 的 ARMOR·不可直引」——不成立:arXiv 2412.00396(v1 2024-11-30)标题/4 作者/摘要与 Apple 官方页逐条一致=同一篇⇒可直引并与官方页互证;R576 误读根因=读 Apple 列表页 JSON 时跨条目取相邻论文作者串(Siqi Shen 等·另一篇 2025-02-14 论文 / EgoDex 处 Dan Busbridge 等)⇒新纪律:官方列表页只用于定位,事实一律落到 detail 页再读③[实测]交接件缺口由推断升为实证:ARMOR 官方页仍无 任务数/seed/碰撞定义/置信区间/真机 GR1 碰撞成功数字;官方明写「will update the link to source code, HW description, 3D CAD files」⇒代码/硬件/3D CAD 未开放;EgoDex 官方训练对象=手部轨迹预测 ⇒压缩/数据端证据不可写成机器人迁移;HALO/AMP1 编号级结论沿用 R576 未重核④[实测]OGE 需求函 id115584(trace oge-status-demand-compass-2026-11-20·SLA 2h·deadline 2026-11-20 04:59:58)→三行回函已发 id116359(trace ...-done)→需求函 ack 办结⑤[实测·全持平]信箱 compass 1 未读(=OGE 函,办结后 0)·Gmail 401→直刷 REFRESH_OK 3599s→7d 全量 43/未读 26(双口径 symdiff=0)·最新到件 11-19 17:33Z 与 R576 同 ⇒零新到件零新商务函·mentions 5 全旧·notifications 46(CI 过期读数)·genesis 5 家零 REPLY·dev.to 8 评论(6+2)持平·daemon 绿+watchdog exit0+哨兵 exit0 recall_hit=91·CI compass 44593384953(head=23cb7112==HEAD==origin/main)success·core 43558665734 success·ahead/behind 0/0·快筛「存在不过筛」持平·矩阵仍停 10-30 09:42·管道三件 exit0·RED to=platform 实查 236(soul-distress 最新仍 id115388 ×98)⇒零新增 distress⑥🔴磁盘数据卷 avail 5.2Gi/99% 满(R575 记 7.0Gi⇒继续下滑,已在 10Gi alarm 线之下)·零删除零清理候用户拍板⑦零生产动作(未改 daemon.py/plist/symlink·未 bootout·未删记忆卡·未碰 NAS·未外发·未 PATCH dev.to·未动 .soul-pause·未删任何磁盘文件;他线 6 个未提交文件保持 M 未裹挤;未回函飞轮未改写飞轮文件)产出 docs/incidents/INC_20261119_APPLE_ARMOR_EGODEX_OFFICIAL_VERIFY_R577.md + 记忆卡 apple-armor-egodex-verify-r577-20261119.md,并勘误 R724/记忆卡 inbound-cross-frame-via-workdir-20261119.md 的「同名碰撞」表述(原句保留存史+加勘误块)"
+    },
+    {
+      "round": 578,
+      "ts": "2026-11-22 05:30",
+      "result": "substantive",
+      "note": "R578 实质增量值守轮(通道恢复轮·429 断供 3 天后首轮)①【SLA 补回·实测】loop 模型通道 11-19 16:20 后三轮 429(MiniMax Token Plan 耗尽,rounds.log 留痕),11-22 恢复后首轮发现信箱积压三函:OGE 状态函 id134659(deadline 11-22 04:00+08 已过 14.5h)+SLA 升级函 id135727(L2 接管预警)+v5 专函 id141798(触客优先序裁夺,死线内)⇒ OGE 三行回函已发 id141801(trace=-done,违约如实记账:根因=通道断供非沉默拒复)+两函均 ack 办结;v5 裁夺回函已发 id141802(首选=案1 阿里二期交付本身·案2 dsh 判分插件列二期后跟进件·理由=北极星对齐/外联关闭风险对冲/矩阵停摆预警),SLA 内办结。②【a2a#198 绿灯跟帖·实测】对方 alanwang100(JiZhiMCP)11-21 05:56Z 催等我方 11-20 承诺的 NAU 结算实现三拆(设计/代码路径/可复现 trace),已 28h 超 24h 跟进线;发送前依赖(真实实现读回+脱敏 trace)已由今晨 commit 3941853d 满足(pilot draft+只读探针+trace 证据包)⇒ 按 11-20 行动队列用户已批准的积极合作口径发布跟帖 comment id 7077814846(回读验证 2318 字符):诚实拆分=生产路径实为 transaction-bounded balance-field update、未验证 hash-chained ledger/统一幂等键、并发双结算竞态列为未复现假设不称生产事故;附只读探针实测(零余额 fixture 200/0 credits/tx_count=0·SHA-256 摘要);提议对方给 ≥2 条目 fixture 账本以验前向哈希链与重复读摘要稳定性。③【管道断点修复·实测】pipeline_report.py 抛 UnicodeDecodeError(byte 0xff@366)⇒ 根因=v5 worktree 新增 glm5.3 run 文件带入 macOS AppleDouble ._* 资源叉垃圾(实测 43 个坏文件)被 *_result.json glob 命中且非 UTF-8 ⇒ 修复=load_s5_json 前置 ._* 文件名跳过+UnicodeDecodeError 一并捕获(s5_json.py 单咽喉点)⇒ 复跑管道三件全 exit0。④【磁盘回升·实测】avail 三点采样 12.77/12.75/12.75 Gi(R577 5.2Gi ⇒ +7.5Gi 回升,脱离 10Gi alarm 线;窗口内持平;回升来源未定位,稀疏文件根因档不变)。⑤【值守面】Gmail 401→直刷 REFRESH_OK→7d 未读 18 封逐封核=全营销/通知(Reddit 销售×2/Product Hunt/Docker 等)⇒ 零新商务函零新面孔;mentions 5 全旧;notifications 新顶项=v5 仓 customer-demo-ship-1 分支 Deploy to Staging 失败 11-22T10:16Z(v5 侧产线·不越框只通报);genesis 5 家(1/1/0/1/2)零 REPLY;dev.to 8 评论持平;daemon 9876 绿+watchdog exit0+哨兵 exit0 recall_hit=25;快筛「存在不过筛」持平;矩阵仍停 10-30 09:42(23 天);ahead/behind 0/0。⑥【零生产动作边界】本轮动作=SLA 回函×2+ack×2+a2a#198 跟帖(11-20 已批口径)+s5_json.py 修复+留痕;未改 daemon.py/plist/symlink·未 bootout·未删记忆卡·未碰 NAS·未删任何磁盘文件·未动 .soul-pause·他线未提交文件未裹挤。候拍板:磁盘回升来源核验·v5 staging CI 红·矩阵 phase2 解锁·distill 存量 1196·Gmail 草稿审稿·模真真三诉求。"
     }
   ],
   "last_round_time": "2026-11-19 14:10",

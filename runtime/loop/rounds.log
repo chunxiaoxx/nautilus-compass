@@ -5234,3 +5234,26 @@ R573 同款坑换文件复发：`tests/test_context_capsule.py:1 json` / `tools/
 [R577 · 收尾补记] [CI 闭环实测·head_sha 绑定核验] 留痕提交 `311fd8f3`(Apple 官方页核验档+R724 勘误块+R725 主件+rounds.log/state.json/COLLAB_BOARD)→ CI run **44616214475**,head_sha=`311fd8f3…` == 本地 HEAD == origin/main tip → `conclusion=success`,**12 job 全 success**(Lint / Test 3.12·3.10 macos+ubuntu / S4 GEP 3.9 / v0.9 integration / v0.9 npm wrapper / v0.9 Cursor build / v1.0 MCP server / v1.0 MCP+A2A protocol / v1.0 V7 governance demo)⇒ 遵 R573 立、R574 补的「每笔提交至少触发一次 CI + 核 head_sha==被检提交」纪律,本轮**零 CI 盲区**(开工 ahead=0,收尾 ahead=0)。push 前本地 CI 等价集实测:ruff `All checks passed!`·pytest tests/gep **413 passed**·MCP+A2A+merkle **40 passed**·v0.9+ci_lint **8 passed**·`sdk/a2a_adapter.py selftest` → `"status": "ok"`。
 [R577 · 磁盘三点采样·速率口径复核] avail:15:20 **5.2Gi**(df -h 粗读)→16:10 **5.217Gi**→16:16 **5.18Gi**(df -k 精确)⇒ **3 采样点跨 56min,窗口内持平**(5.18–5.22Gi 区间内,Δ≈−0.04Gi ⇒ 无急性掉速,符合 R576「报速率须≥3点跨≥10min」纪律)⇒ **绝对水位 5.2Gi 仍在 10Gi alarm 线之下**(R575 记 7.0Gi),P0 维持,本轮**零删除零清理**。
 ---- round end 11-19 16:20 ----
+**LOOP R577 值守轮完成（实质增量轮）**
+
+**主件增量（R725）**
+- ✅ [实测] Apple 官方 detail 页一手回读：ARMOR `/research/armor-egocentric`（Feb 2025，Daehwa Kim/Mario Srouji/Chen Chen/Jian Zhang）；EgoDex `/research/egodex-learning-dexterous-manipulation`（Jul 2025，ICLR，Ryan Hoque*/Peide Huang*/David J. Yoon*/Mouli Sivapurapu/Jian Zhang）。官方数字：ARMOR ≈86h AMASS·碰撞−63.7%/成功率+78.7%·vs cuRobo −31.6%/+16.9%/延迟−26×·真机 Fourier GR1；EgoDex 829h ego 视频+194 桌面任务（与飞轮自报一致＝独立确认）。
+- 🔴 [实测·勘误] **推翻本框 R576「ARMOR 与 arXiv 2412.00396 同名碰撞·不可直引」**——arXiv 标题/4 作者/摘要与官方页逐条一致＝同一篇，**可直引**。误读根因：读 Apple **列表页** JSON 时跨条目取了相邻论文的作者串 → 新纪律「列表页只用于定位，事实一律落 detail 页」。
+- [实测] 交接件缺口由推断升为实证：ARMOR 官方页仍无任务数/seed/碰撞定义/置信区间/真机数字；官方明写代码与 3D CAD「待更新」⇒ 代码未开放。
+- ✅ OGE 状态函 id115584（2h SLA）→ 三行回函 id116359 已发并 ack 办结（compass 信箱现 0 未读）。
+
+**值守面（全持平）**：Gmail 401→直刷→7d 全量 43/未读 26（双口径 symdiff=0），最新到件 11-19 17:33Z 与 R576 同 ⇒ 零新到件零新商务函；mentions 5 全旧·notifications 46·genesis 5 家零 REPLY·dev.to 8 评论持平·daemon 绿+watchdog exit0+哨兵 exit0 recall_hit=91；CI compass 44616214475/44617137547 均 success（head_sha 绑定成立，12/12 job 全绿，ahead=0）；RED 236，distress ×98 零新增；矩阵仍停 10-30 09:42。
+
+**🔴 磁盘 P0 维持**：avail 三点采样 5.2→5.217→5.18Gi（56min 窗口持平，**无急性掉速**），但绝对水位仍在 10Gi alarm 线之下（R575 记 7.0Gi）——本轮**零删除零清理**，候拍板。
+
+**零生产动作**：未改 daemon.py/plist/symlink·未 bootout·未删记忆卡·未碰 NAS·未外发·未 PATCH dev.to·未动 `.soul-pause`·未删任何磁盘文件；他线 6 个未提交文件保持 M 未裹挤；未回函飞轮、未改写飞轮文件。
+
+**产出**：`docs/incidents/INC_20261119_APPLE_ARMOR_EGODEX_OFFICIAL_VERIFY_R577.md`、queue.md R725+R724 勘误块、rounds.log、state.json(R577)、COLLAB_BOARD、两张记忆卡（含对 inbound 卡的勘误）+ MEMORY.md 索引。**如实说明**：本轮实耗约 85 分钟，超出 25 分钟限时约 60 分钟（Apple 官方页核验与逐条比对耗时超预期）。
+---- round end 11-19 16:19 ----
+API Error: Request rejected (429) · 已达到 Token Plan 用量上限：请升级 Token Plan 套餐或购买积分补充用量。 (2056)
+---- round end 11-19 18:23 ----
+API Error: Request rejected (429) · 已达到 Token Plan 用量上限：请升级 Token Plan 套餐或购买积分补充用量。 (2056)
+---- round end 11-19 20:26 ----
+API Error: Request rejected (429) · 已达到 Token Plan 用量上限：请升级 Token Plan 套餐或购买积分补充用量。 (2056)
+---- round end 11-19 22:29 ----
+2026-11-22 05:30 round578 [通道恢复轮·429断供3天后首轮·实质增量] ①SLA补回:OGE状态函id134659(过期14.5h)+升级函id135727 ack办结·回函id141801(trace=-done·违约如实记账=通道断供非拒复);v5触客裁夺函id141798死线内回函id141802(首选=案1阿里二期·案2列二期后) ②a2a#198绿灯跟帖已发comment 7077814846(28h·超24h线·发送依赖=3941853d三拆交付物·按11-20已批合作口径·回读验证) ③管道修复:pipeline_report UnicodeDecodeError根因=AppleDouble ._*垃圾43个被glob命中·s5_json.py加守护·三件全exit0 ④磁盘回升12.75Gi三点持平(R577 5.2Gi·脱离alarm线) ⑤Gmail 18未读全营销零商务函·genesis零REPLY·daemon绿·哨兵recall_hit=25·矩阵仍停摆·结果=实质增量已commit+CI核验

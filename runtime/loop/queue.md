@@ -4,6 +4,15 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R726 · 2026-11-22(值守 loop R578:通道恢复轮——✅ SLA 积压补回【OGE 状态函过期 14.5h+升级函+v5 裁夺函三函办结】+ ✅ a2a#198 绿灯跟帖发布【28h·comment 7077814846】+ ✅ 管道 AppleDouble 断点修复)
+
+- **🆕增量①[实测]✅ SLA 积压补回(429 断供善后)**:loop 通道 11-19 16:20 后三轮 429(MiniMax Token Plan 耗尽),11-22 恢复后首轮信箱积压三函 ⇒ OGE 状态函 id134659(deadline 11-22 04:00+08 过期 14.5h)+升级函 id135727(L2 接管预警)→ 三行回函 **id141801**(trace=`oge-status-demand-compass-2026-11-22-done`·违约如实记账:根因=通道断供非沉默拒复)+两函 ack 办结;v5 专函 id141798(触客优先序·死线内)→ 裁夺回函 **id141802**:**首选=案1 阿里二期交付本身**(甲方按题验收=外部真实复算·北极星最短路径),案2(dsh 判分插件)列二期后;预警 B 批矩阵停摆 23 天卡首选时间线。
+- **🆕增量②[实测]✅ a2a#198 绿灯跟帖发布**:对方 alanwang100(JiZhiMCP)11-21 05:56Z 催等三拆交付,已 28h 超 24h 线;发送前依赖(真实实现读回+脱敏 trace,见 OUTREACH_ACTION_QUEUE_20261120)已由 commit `3941853d` 满足 ⇒ 按 11-20 用户已批积极合作口径发布 comment **7077814846**(回读验证 2318 字符)。内容三拆:①公开设计;②诚实代码读回(生产路径=transaction-bounded balance-field update·未验证 hash-chained ledger/统一幂等键·并发竞态列为未复现假设不称生产事故);③只读探针 trace(零余额 fixture `agent-demo-verify` 200/0 credits/tx_count=0·request/response SHA-256 摘要·零写入)。提议下一步=对方出 ≥2 条目 fixture 验前向哈希链+重复读摘要稳定性。坑:issue 新增第三方 AI 自我推广评论(tedTorus·L2 bridge 目录)非相关方。
+- **🆕增量③[实测]✅ 管道断点修复**:pipeline_report.py 抛 UnicodeDecodeError(byte 0xff@366)⇒ 根因=v5 worktree codesense items 新增 glm5.3 run 文件时带入 **macOS AppleDouble `._*` 资源叉垃圾(实测 43 个)**,被 `*_result.json` glob 命中且非 UTF-8 ⇒ 修复=`s5_json.py load_s5_json` 前置 `._` 文件名跳过 + UnicodeDecodeError 捕获(单咽喉点·collect_for_quickscreen 的 `{model}_run*` 前缀 glob 不受影响故快筛未炸)⇒ 复跑管道三件全 exit0。
+- **🆕增量④[实测]✅ 磁盘回升**:avail 三点采样 12.77/12.75/12.75 Gi(R577 5.2Gi ⇒ **+7.5Gi 回升·脱离 10Gi alarm 线**·窗口内持平·**回升来源未定位**·R576 稀疏文件根因档不变·仍零清理)。
+- **值守面[实测]**:Gmail 401→直刷 REFRESH_OK→7d 未读 **18** 封逐封核=全营销/通知(Reddit 销售×2/Product Hunt/Docker 等)⇒ 零新商务函零新面孔;mentions 5 全旧;notifications 新顶项=**v5 仓 customer-demo-ship-1 Staging CI 红 11-22T10:16Z(v5 侧产线·通报不越框)**;genesis 5 家(1/1/0/1/2)零 REPLY;dev.to 8 评论持平;daemon 9876 绿+watchdog exit0+哨兵 exit0 recall_hit=25;快筛「存在不过筛」持平;矩阵仍停 **10-30 09:42**;ahead/behind=0/0。
+- **零生产动作边界**:本轮动作=SLA 回函×2+ack×2+a2a#198 跟帖(11-20 已批口径)+s5_json.py 修复+留痕;未改 daemon.py/plist/symlink·未 bootout·未删记忆卡·未碰 NAS·未删任何磁盘文件·未动 `.soul-pause`·他线未提交文件未裹挤。候拍板:磁盘回升来源核验·v5 staging CI 红·矩阵 phase2 解锁·distill 存量 1196·Gmail 草稿审稿·模真真三诉求。
+
 ### R725 · 2026-11-19(值守 loop R577:实质增量轮——✅ Apple ML 官方页一手回读【ARMOR/EgoDex 定位+数字独立核验】+ 🔴 推翻本框 R576「ARMOR 同名碰撞·不可直引」自报结论 + ✅ OGE 状态函 2h SLA 内回函 id116359)
 
 - **🆕实质增量①[实测]✅ Apple 官方页一手回读(补完 R724 未做项)**:ARMOR detail 页 = `machinelearning.apple.com/research/armor-egocentric`(published **February 2025**·Authors **Daehwa Kim, Mario Srouji, Chen Chen, Jian Zhang**);EgoDex detail 页 = `/research/egodex-learning-dexterous-manipulation`(published **July 2025**·conference **ICLR**·Authors **Ryan Hoque\*, Peide Huang\*, David J. Yoon\*, Mouli Sivapurapu, Jian Zhang**)。官方摘要数字逐条回读:ARMOR ≈86h AMASS·较稠密多相机基线碰撞 **−63.7%**/成功率 **+78.7%**·较 cuRobo 碰撞 **−31.6%**/成功率 **+16.9%**/延迟 **−26×**·真机部署 **Fourier Intelligence GR1**;EgoDex **829 小时**第一视角视频+同步 3D 手/指追踪+**194 个桌面任务**(与飞轮交接件自报一致 ⇒ 构成独立确认)。

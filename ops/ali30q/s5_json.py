@@ -65,9 +65,13 @@ def latest_batch(
 
 
 def load_s5_json(path: Path) -> dict[str, Any] | None:
+    # macOS AppleDouble 资源叉垃圾(._foo.json)会被 *_result.json glob 命中,
+    # 且非 UTF-8 → 在读取前按文件名跳过(2026-11-22 R578 实测 43 个坏文件)
+    if path.name.startswith("._"):
+        return None
     try:
         text = path.read_text(encoding="utf-8")
-    except OSError:
+    except (OSError, UnicodeDecodeError):
         return None
     try:
         data = json.loads(text)
