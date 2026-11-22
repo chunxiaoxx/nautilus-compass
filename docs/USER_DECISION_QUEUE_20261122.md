@@ -47,6 +47,12 @@
 - **闸已被系统自动提起**(非人工):`maybe_auto_release` 超期释放,`.soul-pause` 已不存在,用户无需再删。22:30 轮已正常选目标(repo_map,因开放 PR 反重复跳过,零失败)。
 - **残余风险**:失败计数器仍 120(`record_success` 一次成功即清零)——**首次成功前任何一次失败都会瞬间再跳闸**;冷静期已排除两大病灶目标,余目标风险低。观察哨已挂。此闸历史上被提起 6 次(10/10/10/30/11/1×2/11/4/11-22), cooldown 是首个"治目标不治闸"的处方。
 
+**11/22 23:00 终局(观察哨+亲办,[实测])**:
+- 22:48 风险兑现:轮次转攻第三个兄弟 `engine/ship.py`,同款整文件重写六门全拒 → 121 次再跳闸。**病理=整个 engine 家族**(10 模块),非个别文件。
+- **冷静期扩至全家族 11 stem**(a2a_review/checks/nautilus_engine/outcome_emit/outcomes/pytest_runner/repo_map/ship/text_utils/__init__/__main__,至 12/06),daemon 同款读取验证通过。
+- 按处方第 3 步解闸(等价 auto-release:`engaged_at=None`+移除 pause,备份 `.lifted-20261122-audit`),手动触发一轮:**选 `services/soul_bridge`(非 engine,冷静期生效)→ 因开放 PR 反重复跳过 → 零失败未再跳闸**。distress 函停止续命。
+- **遗留两项**(交 platform/soul 维护方):①计数器仍 121,首次真成功前任何失败即再跳闸;②反重复跳过揭示**开放 draft PR 积压**(repo_map/soul_bridge 等)是下一瓶颈——PR 不审不合,loop 永远"跳过"而非"成功"。
+
 ---
 
 ## D3 · A100 恢复(判分线 + Flora GPU 实测共同前置)
