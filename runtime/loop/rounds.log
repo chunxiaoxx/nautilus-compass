@@ -5257,3 +5257,13 @@ API Error: Request rejected (429) · 已达到 Token Plan 用量上限：请升�
 API Error: Request rejected (429) · 已达到 Token Plan 用量上限：请升级 Token Plan 套餐或购买积分补充用量。 (2056)
 ---- round end 11-19 22:29 ----
 2026-11-22 05:30 round578 [通道恢复轮·429断供3天后首轮·实质增量] ①SLA补回:OGE状态函id134659(过期14.5h)+升级函id135727 ack办结·回函id141801(trace=-done·违约如实记账=通道断供非拒复);v5触客裁夺函id141798死线内回函id141802(首选=案1阿里二期·案2列二期后) ②a2a#198绿灯跟帖已发comment 7077814846(28h·超24h线·发送依赖=3941853d三拆交付物·按11-20已批合作口径·回读验证) ③管道修复:pipeline_report UnicodeDecodeError根因=AppleDouble ._*垃圾43个被glob命中·s5_json.py加守护·三件全exit0 ④磁盘回升12.75Gi三点持平(R577 5.2Gi·脱离alarm线) ⑤Gmail 18未读全营销零商务函·genesis零REPLY·daemon绿·哨兵recall_hit=25·矩阵仍停摆·结果=实质增量已commit+CI核验
+R578 主体已完成，CI 终态监控中(run 45012906151,head=731bc097 已绑定)。等通知后闭环。
+
+**R578(通道恢复轮)摘要：**
+- **SLA 积压补回**:OGE 状态函(过期 14.5h,根因=429 断供 3 天非拒复，如实记账)+升级函 ack 办结，回函 id141801;v5 触客裁夺函死线内回函 id141802(首选=阿里二期交付本身，案2 dsh 插件列二期后；预警 B 批矩阵停摆 23 天)
+- **a2a#198 绿灯跟帖已发**(comment 7077814846,28h·按 11-20 已批口径·回读验证)：诚实三拆——生产路径实为 transaction-bounded 余额更新、未验证哈希链账本/统一幂律键、并发竞态列为未复现假设；附只读探针 trace
+- **管道断点修复**：AppleDouble `._*` 垃圾(43 个)炸 pipeline_report → s5_json.py 加守护 → 三件全 exit0
+- **磁盘回升**：5.2Gi→12.75Gi 三点持平，脱离 alarm 线(回升来源未定位)
+- 值守面：Gmail 18 未读全营销零商务函；genesis 零 REPLY;v5 仓 Staging CI 红(通报不越框)；矩阵仍停摆
+[R578 · 收尾补记] CI 闭环实测:留痕提交 731bc097(s5_json.py 修复+R578 留痕四件)→ CI run 45012906151,head_sha=731bc097 == 本地 HEAD == origin/main tip → conclusion=success ⇒ 遵 R573/R574 纪律(每笔提交至少触发一次 CI+核 head_sha 绑定),本轮开工 ahead=0/收尾 ahead=0,零 CI 盲区。push 前本地等价集:ruff(.venv) All checks passed + py_compile ok。本轮实耗约 50 分钟(超出 25 分钟限时,SLA 积压件善后+a2a#198 跟帖起草占用)。
+---- round end 2026-11-22 05:59 ----
