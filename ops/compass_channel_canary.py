@@ -50,10 +50,21 @@ def _log(line: str) -> None:
         f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')} {line}\n")
 
 
-def _probe(env: dict) -> tuple[bool, str]:
+def _pick_model(env: dict) -> str:
+    """裸端点只认无后缀模型名:优先 *_NAME 变量(bare),再退 ANTHROPIC_MODEL 剥 [1M] 后缀。"""
+    for k in ("ANTHROPIC_DEFAULT_SONNET_MODEL_NAME", "ANTHROPIC_DEFAULT_HAIKU_MODEL_NAME",
+              "ANTHROPIC_DEFAULT_OPUS_MODEL_NAME"):
+        if env.get(k):
+            return env[k]
+    raw = env.get("ANTHROPIC_MODEL", "")
+    return raw.split("[", 1)[0] if raw else "glm-5.3-flash"
+
+
+def _probe(env: dict) -> tuple[bool, str, bool]:
+    """returns (ok, reason, counts_as_outage)。HTTP 400=探针自身配置错,不算通道死。"""
     base = env.get("ANTHROPIC_BASE_URL", "https://open.bigmodel.cn/api/anthropic").rstrip("/")
     token = env.get("ANTHROPIC_AUTH_TOKEN", "")
-    model = env.get("ANTHROPIC_MODEL") or env.get("ANTHROPIC_DEFAULT_SONNET_MODEL", "")
+    model = _pick_model(env)
     body = json.dumps({"model": model, "max_tokens": 1,
                        "messages": [{"role": "user", "content": "ok"}]}).encode()
     req = urllib.request.Request(
@@ -64,16 +75,16 @@ def _probe(env: dict) -> tuple[bool, str]:
                  "anthropic-version": "2023-06-01"})
     try:
         with urllib.request.urlopen(req, timeout=25) as r:
-            return r.status == 200, f"HTTP {r.status}"
+            return r.status == 200, f"HTTP {r.status}", True
     except urllib.error.HTTPError as e:
         snippet = ""
         try:
             snippet = e.read(200).decode(errors="replace")
         except Exception:
             pass
-        return False, f"HTTP {e.code} {snippet}"
+        return False, f"HTTP {e.code} {snippet}", e.code not in (400, 401, 404)
     except Exception as e:
-        return False, f"{type(e).__name__}: {e}"
+        return False, f"{type(e).__name__}: {e}", True
 
 
 def _send_platform_letter(reason: str) -> None:
@@ -103,12 +114,14 @@ def main() -> int:
         st.update(json.loads(STATE.read_text(encoding="utf-8")))
     except Exception:
         pass
-    ok, reason = _probe(_env())
+    ok, reason, counts = _probe(_env())
     if ok:
         if st["streak"] >= FAIL_THRESHOLD or DOWN_MARKER.exists():
             _log(f"RECOVERED (was down streak={st['streak']})")
         st.update(streak=0, last_ok=now)
         DOWN_MARKER.unlink(missing_ok=True)
+    elif not counts:
+        _log(f"PROBE_ERR (探针配置问题,不计通道死) · {reason}")
     else:
         st["streak"] = int(st.get("streak", 0)) + 1
         _log(f"FAIL streak={st['streak']} · {reason}")
