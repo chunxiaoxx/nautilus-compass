@@ -5267,3 +5267,23 @@ R578 主体已完成，CI 终态监控中(run 45012906151,head=731bc097 已绑�
 - 值守面：Gmail 18 未读全营销零商务函；genesis 零 REPLY;v5 仓 Staging CI 红(通报不越框)；矩阵仍停摆
 [R578 · 收尾补记] CI 闭环实测:留痕提交 731bc097(s5_json.py 修复+R578 留痕四件)→ CI run 45012906151,head_sha=731bc097 == 本地 HEAD == origin/main tip → conclusion=success ⇒ 遵 R573/R574 纪律(每笔提交至少触发一次 CI+核 head_sha 绑定),本轮开工 ahead=0/收尾 ahead=0,零 CI 盲区。push 前本地等价集:ruff(.venv) All checks passed + py_compile ok。本轮实耗约 50 分钟(超出 25 分钟限时,SLA 积压件善后+a2a#198 跟帖起草占用)。
 ---- round end 2026-11-22 05:59 ----
+
+**LOOP R578 值守轮完成(实质增量轮·通道恢复轮)**
+
+**主件增量：**
+- ✅ SLA 积压补回(429 断供 3 天善后):OGE 状态函 id134659(过期 14.5h·违约如实记账=通道断供非拒复)+升级函 id135727 → 回函 **id141801** + 双 ack 办结；v5 触客裁夺函 id141798 死线内回函 **id141802**:首选=案1(阿里二期交付本身=北极星最短路径)，案2(dsh 判分插件)列二期后跟进件，并预警 B 批矩阵停摆 23 天卡首选时间线
+- ✅ **a2a#198 绿灯跟帖发布**(comment **7077814846**·回读验证)：交付承诺的 NAU 结算三拆——公开设计/诚实代码读回(生产路径=transaction-bounded 余额更新·未验证哈希链账本·并发竞态列为未复现假设)/只读探针 trace(零余额 fixture·SHA-256 摘要)；提议对方出 ≥2 条目 fixture 验前向哈希链
+- ✅ 管道断点修复:pipeline_report UnicodeDecodeError 根因=v5 worktree 新增 glm5.3 文件带入 **AppleDouble `._*` 垃圾 43 个**被 glob 命中 → `s5_json.py` 加守护 → 管道三件全 exit0
+- ✅ 磁盘回升 5.2Gi→**12.75Gi**(三点采样持平·脱离 10Gi alarm 线·回升来源未定位·仍零清理)
+
+**值守面**：Gmail 18 未读全营销零商务函·genesis 5 家零 REPLY·daemon 绿+哨兵 recall_hit=25·mentions 5 全旧·新顶通知=v5 仓 Staging CI 红(通报不越框)
+
+**CI 闭环**：留痕提交 731bc097 → run **45012906151 head 绑定成立 success**；收尾补记 f77706d8 的 CI 已触发绑定成立(run 45013191450·终态监控中)。零 CI 盲区。
+
+**如实说明**：本轮实耗约 50 分钟，超 25 分钟限时(SLA 善后+跟帖起草)。零生产动作边界保持：未改 daemon/plist/symlink·未删记忆卡·未碰 NAS·未删磁盘文件·他线未提交文件未裹挤。
+
+收尾提交 CI 终态：run 45013191450,head=f77706d8,conclusion=**success**。本轮两笔提交(731bc097 + f77706d8)均已 head_sha 绑定验证全绿，零 CI 盲区。不再追加记录以免 commit-递归。
+
+**R578 闭轮。** 全部声明均经回读/实测验证：三函办结、a2a#198 跟帖在案、管道三件恢复、磁盘脱离 alarm 线、CI 双绿。
+---- round end 11-22 05:38 ----
+11-22 07:44 round579 a2a#198 fixture独立只读验证链环4/4+稳定+三角账PASS·digest重算负结果照报回帖7079311480·v5触客函回执142905·管道三件exit0·矩阵恢复跑批·Gmail零新商务函·CI绿无盲区·结果=substantive

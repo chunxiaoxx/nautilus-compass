@@ -1,0 +1,92 @@
+{
+  "verify_round": "R579 2026-11-22",
+  "issue": "google-agentic-commerce/a2a-x402#198",
+  "gateway": "https://mcp.xn--5kvtwv52d.com/mcp/gateway",
+  "tools_used": [
+    "settlement.account",
+    "settlement.ledger"
+  ],
+  "writes_attempted": false,
+  "results": {
+    "chain_linkage": {
+      "checked": 4,
+      "passed": 4,
+      "links": [
+        "GENESIS->seed",
+        "seed->fixture-001",
+        "fixture-001->fixture-002",
+        "fixture-002->fixture-003"
+      ]
+    },
+    "read_stability": {
+      "fixture-agent-a two reads": "byte-identical PASS"
+    },
+    "balance_triangle": {
+      "a": 50,
+      "b": 15,
+      "c": 35,
+      "invariant": "100 = 50+30+20; b=30-15; c=15+20",
+      "verdict": "PASS"
+    },
+    "digest_recompute": {
+      "formula_per_partner": "SHA-256({v:1, prev_hash, from, to, amount, unit, reason, ts})",
+      "variants_tried": "key-order x whitespace x ts-format(ISO/ISO-no-ms/epoch-s/epoch-ms) x amount(int/str) x from-to-swap x comment-reason",
+      "verdict": "NO MATCH — canonical serialization not disclosed; negative result reported",
+      "field_discrepancy": "seed reason on live ledger = 'fixture-seed' vs comment 'seed'"
+    }
+  },
+  "raw_probes": {
+    "agent_a": {
+      "settlement.account": {
+        "status": 200,
+        "elapsed_ms": 1159.05,
+        "response_sha256": "1e673f1b993a83279e289c54b29d5110f00e4d564acdfc34066e8a6e565c6d7d"
+      },
+      "settlement.ledger": {
+        "status": 200,
+        "elapsed_ms": 99.85,
+        "response_sha256": "9681d386731970481045c2a5d705adca01661143d1a7957c343cbf5065286e76"
+      }
+    },
+    "agent_a_file_sha256": "3562eb7d822c8d2b07cfd691af9970fed2b43f077890d0b883e43076441f752a",
+    "agent_b": {
+      "settlement.account": {
+        "status": 200,
+        "elapsed_ms": 102.47,
+        "response_sha256": "076823af192eca9afb63fa24a796f46bfe1243c05e7cd689df4a98fd19974001"
+      },
+      "settlement.ledger": {
+        "status": 200,
+        "elapsed_ms": 100.66,
+        "response_sha256": "eff27a45322ba4fc5e708f64cb7b4cf96216b163e10463e581c6f6acdcd1c7d8"
+      }
+    },
+    "agent_b_file_sha256": "bdcb07f95e9b01b935a2adf19692b46de65cfe0f095ed2f97358282be2b4a16e",
+    "agent_c": {
+      "settlement.account": {
+        "status": 200,
+        "elapsed_ms": 97.15,
+        "response_sha256": "e8137f6d0cbb5b068c00ec5b3e1c5d63e2a1251605ae336246e3665ebe51e32f"
+      },
+      "settlement.ledger": {
+        "status": 200,
+        "elapsed_ms": 103.57,
+        "response_sha256": "ba6d02a2252b6d0c3b4f10aedca153a432a66362ffe32d1b20c5629355faedf9"
+      }
+    },
+    "agent_c_file_sha256": "e82ff843801a7ede8c70ddfe3ad93c5279c08cdd9e8e5079f7ba2e72dbee9c2e",
+    "agent_a_r2": {
+      "settlement.account": {
+        "status": 200,
+        "elapsed_ms": 99.65,
+        "response_sha256": "1e673f1b993a83279e289c54b29d5110f00e4d564acdfc34066e8a6e565c6d7d"
+      },
+      "settlement.ledger": {
+        "status": 200,
+        "elapsed_ms": 99.94,
+        "response_sha256": "9681d386731970481045c2a5d705adca01661143d1a7957c343cbf5065286e76"
+      }
+    },
+    "agent_a_r2_file_sha256": "7a8e5bba08165f076c1312f26240c9b0be7927e9a37ed024ab14f7264939b641"
+  }
+}

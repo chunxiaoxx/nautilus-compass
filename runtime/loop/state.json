@@ -1,6 +1,6 @@
 {
-  "round": 578,
-  "last_round_ts": "2026-11-22 05:30",
+  "round": 579,
+  "last_round_ts": "2026-11-22 21:20",
   "history": [
     {
       "round": 574,
@@ -205,6 +205,12 @@
       "ts": "2026-11-22 05:30",
       "result": "substantive",
       "note": "R578 实质增量值守轮(通道恢复轮·429 断供 3 天后首轮)①【SLA 补回·实测】loop 模型通道 11-19 16:20 后三轮 429(MiniMax Token Plan 耗尽,rounds.log 留痕),11-22 恢复后首轮发现信箱积压三函:OGE 状态函 id134659(deadline 11-22 04:00+08 已过 14.5h)+SLA 升级函 id135727(L2 接管预警)+v5 专函 id141798(触客优先序裁夺,死线内)⇒ OGE 三行回函已发 id141801(trace=-done,违约如实记账:根因=通道断供非沉默拒复)+两函均 ack 办结;v5 裁夺回函已发 id141802(首选=案1 阿里二期交付本身·案2 dsh 判分插件列二期后跟进件·理由=北极星对齐/外联关闭风险对冲/矩阵停摆预警),SLA 内办结。②【a2a#198 绿灯跟帖·实测】对方 alanwang100(JiZhiMCP)11-21 05:56Z 催等我方 11-20 承诺的 NAU 结算实现三拆(设计/代码路径/可复现 trace),已 28h 超 24h 跟进线;发送前依赖(真实实现读回+脱敏 trace)已由今晨 commit 3941853d 满足(pilot draft+只读探针+trace 证据包)⇒ 按 11-20 行动队列用户已批准的积极合作口径发布跟帖 comment id 7077814846(回读验证 2318 字符):诚实拆分=生产路径实为 transaction-bounded balance-field update、未验证 hash-chained ledger/统一幂等键、并发双结算竞态列为未复现假设不称生产事故;附只读探针实测(零余额 fixture 200/0 credits/tx_count=0·SHA-256 摘要);提议对方给 ≥2 条目 fixture 账本以验前向哈希链与重复读摘要稳定性。③【管道断点修复·实测】pipeline_report.py 抛 UnicodeDecodeError(byte 0xff@366)⇒ 根因=v5 worktree 新增 glm5.3 run 文件带入 macOS AppleDouble ._* 资源叉垃圾(实测 43 个坏文件)被 *_result.json glob 命中且非 UTF-8 ⇒ 修复=load_s5_json 前置 ._* 文件名跳过+UnicodeDecodeError 一并捕获(s5_json.py 单咽喉点)⇒ 复跑管道三件全 exit0。④【磁盘回升·实测】avail 三点采样 12.77/12.75/12.75 Gi(R577 5.2Gi ⇒ +7.5Gi 回升,脱离 10Gi alarm 线;窗口内持平;回升来源未定位,稀疏文件根因档不变)。⑤【值守面】Gmail 401→直刷 REFRESH_OK→7d 未读 18 封逐封核=全营销/通知(Reddit 销售×2/Product Hunt/Docker 等)⇒ 零新商务函零新面孔;mentions 5 全旧;notifications 新顶项=v5 仓 customer-demo-ship-1 分支 Deploy to Staging 失败 11-22T10:16Z(v5 侧产线·不越框只通报);genesis 5 家(1/1/0/1/2)零 REPLY;dev.to 8 评论持平;daemon 9876 绿+watchdog exit0+哨兵 exit0 recall_hit=25;快筛「存在不过筛」持平;矩阵仍停 10-30 09:42(23 天);ahead/behind 0/0。⑥【零生产动作边界】本轮动作=SLA 回函×2+ack×2+a2a#198 跟帖(11-20 已批口径)+s5_json.py 修复+留痕;未改 daemon.py/plist/symlink·未 bootout·未删记忆卡·未碰 NAS·未删任何磁盘文件·未动 .soul-pause·他线未提交文件未裹挤。候拍板:磁盘回升来源核验·v5 staging CI 红·矩阵 phase2 解锁·distill 存量 1196·Gmail 草稿审稿·模真真三诉求。"
+    },
+    {
+      "round": 579,
+      "ts": "2026-11-22 21:20",
+      "result": "substantive",
+      "note": "R579 实质增量值守轮(a2a#198 fixture ledger 独立只读验证 3/4 PASS + digest 重算负结果照报 + 回帖 7079311480 + v5 触客函回执 142905)①【a2a#198·实测】对方 alanwang100 11-22 10:54Z 提供 fixture ledger(a/b/c 三账户·4 条目)并给三步验证协议→compass 用既有只读探针 tools/a2a_readonly_probe.py(3941853d,仅 settlement.account/settlement.ledger 两只读工具)实测:链环 4/4 PASS(GENESIS→seed→fixture-001→002→003,prev_hash 全 64 位匹配)+重复读 byte-identical PASS+三角账 PASS(a=50/b=15/c=35 与 100=50+30+20 吻合);digest 重算 SHA-256({v:1,prev_hash,from,to,amount,unit,reason,ts}) 数百序列化变体(键序×空白×ts 四格式×amount 编码×from/to 互换×评论版 reason)全不匹配⇒内容寻址未证成=负结果照报,回帖请求 canonical serialization/preimage 样例;另发现字段出入:seed reason 实物=fixture-seed vs 评论=seed。证据档 docs/evidence/a2a_fixture_verify_20261122.json(每探针调用带 request/response sha256)。②【信箱】1 未读 id141798(v5→compass 触客动作候选排序)→三行实况回函 id142905 发 v5(fixture 验证实况+同意北极星排序+矩阵恢复+外发硬闸不变)+原函 ack 办结。③【值守面】Gmail 401→直刷 REFRESH_OK 3599s→3d 未读 6 封逐封甄别:2 封=a2a#198 alanwang100 回复通知回声(已处理)+Gemini/Product Hunt/Docker/Reddit 全营销⇒零新商务函零新面孔;genesis 5 家零 REPLY;dev.to 30 文 8 评论持平零新增;CI compass run 45013191450 head=f77706d8==HEAD 绑定成立 success(无 CI 盲区·main 与 origin 零领先);v5 staging 失败 3 条通知=v5 域零行动;mentions 最新 a2a#198 11-22(本轮已处理);daemon 绿 9876+watchdog exit0+哨兵 exit0 recall_hit=30;管道三件 exit0·快筛存在不过筛(历轮同)·矩阵已恢复跑批([21:42] 本轮跑批结束·脱离 10-30 停摆态);磁盘 avail 18Gi(脱离 alarm 线)。④【本轮生产动作】a2a#198 跟帖 1 条(引用实测证据·绿灯 24h 跟进窗内·R578 跟帖先例)+platform 回函 1 封(内部函件);零删除零改码零 bootout;他线未提交文件未裹挟。"
     }
   ],
   "last_round_time": "2026-11-19 14:10",
