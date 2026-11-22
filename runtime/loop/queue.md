@@ -4,6 +4,16 @@
 > 最早历史(队列 v1 时代)见 runtime/loop/queue_archive_20261009.md。
 > 每轮格式:### R<编号> · 日期(主件轮:标题)——正文要点;完成后 commit+push。
 
+### R728 · 2026-11-23(值守 loop R582:a2a#198 活体复验收口轮——✅ R581 欠账结清·只读双账户 ledger 探针·t1/t2 digest 全 MATCH·comparison table 回帖 7084146798·check#4 关闭)
+
+- **🆕增量①[实测]✅ 活体 settlement.ledger 复验(R581 欠账结清)**:网关 `https://mcp.xn--5kvtwv52d.com/mcp/gateway` 经 `tools/a2a_readonly_probe.py`(白名单仅 settlement.account/settlement.ledger·零写入·R578 已批模式)curl 可达(R581 判 MCP 不可达系工具通道非网关本身)⇒ 双账户只读:**t1**(fixture-101·a→b·30 credits):live `ts`=`2026-11-22T14:55:13.314Z`·canonical spec 现场复算 digest=`49b710bd…c970` **=live=对方公布值三方一致**;**t2**(fixture-102·b→c·15 credits):live full digest=`e40bb972abcab34b603a8712ebf8fc2159073a7cba324b9615bdd09dd45e56af`(对方截断前缀补全)与 R581 离线复算**逐字节一致**;`t2.prev_hash`=t1 digest 活体链成立。evidence:`docs/evidence/a2a_ledger_fixture-{a,b}_20261123.json`(含 req/resp SHA-256)。
+- **🆕增量②[实测]✅ 链完整性三核+双边一致**:pre-fix 段跨账户链亦连贯——`fixture-002.prev_hash`=`fixture-001.digest` ✓·`fixture-003.prev_hash`=`fixture-002.digest` ✓(单账户视角「断链」实为全局链跨账户条目·b 侧 ledger 补齐后闭环);genesis seed(`prev_hash:"GENESIS"`)起两代 fixture 全链无断点;双边记账一致:fixture-101/fixture-001 在 sender/receiver 两侧返回同 digest ✓。
+- **🆕增量③[实测·诚实注记] ts 暴露口径**:post-fix 条目(a/b 各 2 条·14:55Z 后)**全部**暴露 ts;pre-fix 旧条目(a 侧 3+b 侧 2·10:53Z)`ts:null`——forward-only 修复,回帖已明示「every entry=every post-fix entry」防过度承诺。
+- **🆕增量④[实测]✅ comparison table 回帖**:comment **7084146798**(1859 字符·回读验证)·R581 承诺的活体复验+对比表一次结清·**check#4 我方关闭**·沿 11-20 已批积极合作口径纯事实读回零承诺。
+- **🆕增量⑤[台账] 新面孔 pydantic/pydantic-ai#14167**:我方(chunxiaoxx)17:40:24Z 创建的邀请函(他线/用户所发·R581 值守面未含)·pydanty[bot] 18:07Z 自动分诊 needs information(建议 close as promotional)非人类回复·记台账不追·候人类维护者表态。
+- **值守面[实测]**:信箱 compass 0;Gmail 401→直刷 3599s→7d 过滤未读 **14**(顶项=pydanty[bot] 镜像·余 13 全营销 Reddit/PH/Docker/Daytona/Gamma/IFTTT/Sentry/X·零新商务函零新面孔);mentions 5 全旧;genesis 8 家零 REPLY;dev.to 8(6+2)持平(comments 端点 404 需 path·计数权威口径持平即零新);daemon 9876 绿+watchdog exit0+哨兵 exit0;管道三件 exit0·快筛「存在不过筛」持平;git ahead/behind **0/0**·HEAD CI **success**;磁盘 avail **16Gi**(R581 12Gi→回升+4Gi·续观)。🔴时间口径:本 shell TZ=UTC-4(date 返 11-22 14:09)·历史行=北京口径⇒本轮留痕三处已统一修正为北京 2026-11-23 02:09。
+- **零生产动作边界**:除 a2a#198 回帖+两份 evidence 新档+留痕四件外未改代码/plist/symlink·未 bootout·未删记忆卡·未碰 NAS·他线未提交文件未裹挤。候拍板:磁盘 16Gi 续观·v5 staging CI 红(他域通报)·矩阵 phase2·distill 存量 1196·Gmail 草稿·模真真三诉求·pydantic#14167 人类回复跟进。
+
 ### R727 · 2026-11-22(值守 loop R581:a2a#198 canonical serialization 离线验证轮——✅ 对方修复我方发现的 ts 暴露缺陷·本地 SHA-256 复算 t1 逐字节 MATCH·回帖 7082496866)
 
 - **🆕增量①[实测]✅ 缺陷被对方确认+修复**:alanwang100 14:55Z 回帖承认 check#4 抓到真缺陷——digest preimage 含 `ts`(`new Date().toISOString()`)未持久化未暴露(内容寻址但 preimage 字段不可观测)⇒ 已修复:`ts` 持久化入 `settlement_ledger` 并在 `settlement.transfer`/`settlement.ledger` 响应暴露;另勘误其评论 `seed` 笔误(实况=fixture-seed,与我方读回一致)。

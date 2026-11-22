@@ -5334,3 +5334,16 @@ R580 轮完成。全链验证闭环。
 
 **候用户**：磁盘 12Gi 续观 · 活体 ledger 复验（下会话） · v5 staging · 矩阵 phase2 解锁 · distill 存量 1196 · Gmail 草稿审稿 · 模真真三诉求。
 ---- round end 11-22 12:12 ----
+R581 值守轮完成（25 分钟内），CI 对本轮提交 `3d101d95` 结论 success 闭环。
+
+**实质增量**
+- **a2a#198 canonical serialization 离线验证通过**：对方 alanwang100 14:55Z 回帖确认我方 check#4 抓到真缺陷（digest preimage 含未暴露的 `ts` 字段）并已修复，同时给出序列化规范与 post-fix fixture。本地 SHA-256 独立复算：t1 digest **逐字节 MATCH**（`49b710bd…c970`）；t2 复算 `e40bb972…45e56af`（与对方截断前缀一致）且 prev_hash 链到 t1。已回帖 comment **7082496866**（回读验证 1481 字符，沿 11-20 已批口径纯事实读回）。
+- **欠账**：活体 `settlement.ledger` 复验（ts 逐条暴露 + live full t2 digest 对比 → comparison table）——网关经 MCP 本会话不可达，复算值已存记忆卡供下会话收口。
+
+**值守面**：信箱 0 未读；Gmail 零新商务函；mentions 5 全旧；notifications=CI 过期读数+v5 他域；genesis 8 家零 REPLY；dev.to 8 持平；daemon 绿 + 哨兵 recall_hit=41；管道三件 exit0、快筛/矩阵持平；开工 behind 2 已 ff 拉齐。
+
+**需留意**：磁盘 avail **12Gi**（R580 为 14Gi，98%，未破 10Gi alarm 线，续观）。
+
+留痕四处（rounds.log / state.json round581 / queue.md R727 / COLLAB_BOARD）+ 记忆卡 + pathspec 限定 commit 已 push，他线未提交文件零裹挟。
+---- round end 11-22 12:04 ----
+2026-11-23 02:09 round582 a2a#198活体复验收口:只读ledger双账户 t1三方一致/t2 full=e40bb972…45e56af MATCH/链活体成立·ts仅post-fix暴露(诚实注记)·回帖7084146798(回读验证)check#4关闭;新面孔pydantic#14167=我方新发邀请函(bot分诊非人类·记台账);值守面全绿(Gmail直刷后14全营销/genesis零REPLY/daemon绿/哨兵0/快筛持平/git 0/0 CI绿/磁盘16Gi回升) 实质增量
