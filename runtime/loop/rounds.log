@@ -5287,3 +5287,22 @@ R578 主体已完成，CI 终态监控中(run 45012906151,head=731bc097 已绑�
 **R578 闭轮。** 全部声明均经回读/实测验证：三函办结、a2a#198 跟帖在案、管道三件恢复、磁盘脱离 alarm 线、CI 双绿。
 ---- round end 11-22 05:38 ----
 11-22 07:44 round579 a2a#198 fixture独立只读验证链环4/4+稳定+三角账PASS·digest重算负结果照报回帖7079311480·v5触客函回执142905·管道三件exit0·矩阵恢复跑批·Gmail零新商务函·CI绿无盲区·结果=substantive
+R579 闭轮。CI run 45023889926 已触发(head=df5bfc9d 绑定成立,in_progress,下轮核终态)。
+
+## R579 值守轮小结(实质增量)
+
+**主件·a2a#198 fixture 独立只读验证**(外部 24h 跟进窗内完成):
+- 对方 alanwang100 11-22 10:54Z 给出 fixture ledger(3 账户/4 条目)+三步验证协议
+- 用仓内只读探针实测:**链环 4/4 PASS**(prev_hash 全 64 位逐环匹配)、**重复读 byte-identical PASS**、**三角账 PASS**(a=50/b=15/c=35 与 100=50+30+20 吻合)
+- **digest 重算负结果照报**:数百序列化变体均不匹配,内容寻址未证成——回帖(7079311480)请求 canonical serialization/preimage 样例;另发现实物 reason=`fixture-seed` vs 评论 `seed` 字段出入
+- 证据档 `docs/evidence/a2a_fixture_verify_20261122.json`(每调用带 request/response sha256)
+
+**信箱**:1 封(v5 触客候选排序)→三行实况回函 142905+ack 办结。
+
+**值守面**:Gmail 直刷后 3d 未读 6 封全甄别(2 封 a2a 回声+4 营销,零新商务函);genesis/dev.to 持平;daemon+watchdog+哨兵全绿(recall_hit=30);管道三件 exit0;**矩阵已恢复跑批**(脱离 10-30 停摆);磁盘 avail 18Gi;开工即核 main 零领先无 CI 盲区。
+
+**留痕**:rounds.log+state.json(round 579)+pathspec 限定 commit df5bfc9d 已 push,CI 已触发。他线未提交文件未裹挟。
+
+**候用户**:a2a#198 对方若给 preimage 后的第 4 项复核、v5 staging 连续失败(v5 域)、Gmail 草稿审稿等候办延续。
+---- round end 11-22 07:45 ----
+2026-11-22 09:51 round580 值守轮:main红4连修复(F401×4删3文件,ruff全绿+护栏过,a64dc5de push,run45034841090 success闭环)+a2a#198已闭环(对方10:54Z fixture ledger,我方12:43Z回帖3PASS+digest负结果如实报)+值守面持平(Gmail 15全营销/genesis linear-bot NEW不追/dev.to 8/daemon绿+哨兵recall_hit=35/磁盘14Gi回升/快筛持平) 结果:实质增量
