@@ -1,0 +1,25 @@
+{
+  "url": "https://mcp.xn--5kvtwv52d.com/mcp/gateway",
+  "account": "agent-demo-verify",
+  "read_only": true,
+  "writes_attempted": false,
+  "results": [
+    {
+      "tool": "settlement.account",
+      "status": 200,
+      "elapsed_ms": 98.73,
+      "request_sha256": "a0f0052dcc4fa387de10c9ad09648e50f06aa98d9f006b9e035792ba98397fb3",
+      "response_sha256": "72dea0aad6f9cc650846c9a56890b2b7aedf61198af25a29ad2a50b253672e63",
+      "response": "{\"jsonrpc\":\"2.0\",\"id\":\"settlement.account\",\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"account_id\\\": \\\"agent-demo-verify\\\",\\n  \\\"exists\\\": true,\\n  \\\"balance\\\": 0,\\n  \\\"unit\\\": \\\"credits\\\",\\n  \\\"created_at\\\": \\\"2026-11-20T17:18:30.200Z\\\"\\n}\"}],\"structuredContent\":{\"account_id\":\"agent-demo-verify\",\"exists\":true,\"balance\":0,\"unit\":\"credits\",\"created_at\":\"2026-11-20T17:18:30.200Z\"},\"isError\":false}}"
+    },
+    {
+      "tool": "settlement.ledger",
+      "status": 200,
+      "elapsed_ms": 94.38,
+      "request_sha256": "fb8a5ff41a1ab8d1a2001b7f5a5ce5880e5db1b92d0c83533aae7e6d58e282c9",
+      "response_sha256": "3cf0b02cc7e30e7da680fb137fd8d99a4956a855496a2243cebcfd3e888f3243",
+      "response": "{\"jsonrpc\":\"2.0\",\"id\":\"settlement.ledger\",\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"{\\n  \\\"account_id\\\": \\\"agent-demo-verify\\\",\\n  \\\"balance\\\": 0,\\n  \\\"unit\\\": \\\"credits\\\",\\n  \\\"tx_count\\\": 0,\\n  \\\"entries\\\": []\\n}\"}],\"structuredContent\":{\"account_id\":\"agent-demo-verify\",\"balance\":0,\"unit\":\"credits\",\"tx_count\":0,\"entries\":[]},\"isError\":false}}"
+    }
+  ],
+  "errors": []
+}
