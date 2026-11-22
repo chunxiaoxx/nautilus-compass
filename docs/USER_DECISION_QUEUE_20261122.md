@@ -53,6 +53,12 @@
 - 按处方第 3 步解闸(等价 auto-release:`engaged_at=None`+移除 pause,备份 `.lifted-20261122-audit`),手动触发一轮:**选 `services/soul_bridge`(非 engine,冷静期生效)→ 因开放 PR 反重复跳过 → 零失败未再跳闸**。distress 函停止续命。
 - **遗留两项**(交 platform/soul 维护方):①计数器仍 121,首次真成功前任何失败即再跳闸;②反重复跳过揭示**开放 draft PR 积压**(repo_map/soul_bridge 等)是下一瓶颈——PR 不审不合,loop 永远"跳过"而非"成功"。
 
+**11/22 23:30 PR 积压处置(用户批准"批量机审+关闭过时草稿",[实测])**:
+- 积压实况:22 开放 PR=21 草稿(11/05-08 两天生成,零人工评审)+1 codex(#520 不在范围)。
+- **🔴 机审器 `ops/pr_review.py`(Assay Bench 重考层)假红坐实**:对 21 PR 全判"与当前主干冲突"(自 11-12 评注起),审计席用独立 worktree `merge --no-commit` 复核 **21/21 全部干净合入零冲突**。**根因(代码级)**:`_review_one` 在 REVIEW_CLONE 执行 `fetch origin pull/N/head`,随后 `worktree add` 新建 wt 并在 **wt 内** `merge FETCH_HEAD`——FETCH_HEAD 为 per-worktree 文件,新 wt 无此文件 → merge 必败 → 记为不可合。**一行修复**:fetch 移入 wt 内执行(或先在主克隆 `rev-parse FETCH_HEAD` 取 sha 再于 wt 内 merge 该 sha)。判官器 100% 假红=判分机构自身的 P0,修复合入前其所有"冲突"判词不可信。
+- 处置:12 个 selfimprove 草稿**关闭**(7 engine=冷静期政策+5 services=劣化期产物且阻塞去重;逐 PR 留言溯源);9 个提案草稿(463/467/494/495/497/502/503/507/509,纯新增 57-237 行)**保留**,待机审器修复后真评。
+- 结果:开放 PR 22→10;services 去重死结解除,loop 下轮可对 services 目标重新生成补丁争取首次成功。
+
 ---
 
 ## D3 · A100 恢复(判分线 + Flora GPU 实测共同前置)
