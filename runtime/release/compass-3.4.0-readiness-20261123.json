@@ -1,8 +1,8 @@
 {
   "schema": "compass-release-readiness/1",
-  "observed_at": "2026-11-23T12:14:43-0500",
+  "observed_at": "2026-11-23T19:06:00Z",
   "candidate": "3.4.0",
-  "current_head": "8a1ef1cd836831b60e1dc7a1c9f4ba012bc54a44",
+  "current_head": "bf21b4a6",
   "latest_tags": [
     "v3.3.0",
     "v3.2.0",
@@ -37,9 +37,25 @@
     "CHANGELOG has no 3.4.0 section",
     "release worktree and clean-head manifest not created",
     "full test, wheel build, fresh install and local canary not yet run for candidate",
-    "customer_acceptance not assessed"
+    "customer_acceptance not assessed",
+    "CodeSense R25 is uploaded to subtask 100332011 but pre-valid remains unresolved with running=1, n_trials=0 and rewards=[]; this is negative evidence and not a platform pass"
   ],
   "external_publish": false,
   "tag_created": false,
-  "push_performed": false
+  "push_performed": false,
+  "platform_evidence": {
+    "code_sense_r25": {
+      "task_id": "91240",
+      "subtask_id": "100332011",
+      "revision": "R25",
+      "package_sha256": "d5971391bcdd61ab7fe9044a7ca25086ee8bea5f7a21c0d7cfe0e9135e233dad",
+      "pre_valid": "running",
+      "finished_at": null,
+      "n_trials": 0,
+      "rewards": [],
+      "task_submit": "not_run",
+      "customer_acceptance": "not_observed",
+      "receipt": "nautilus-core/ops/ali_phase2/pipeline/reports/CS-guoshu-507-r25_gate_20261123.json"
+    }
+  }
 }
