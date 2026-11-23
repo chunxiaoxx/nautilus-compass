@@ -1,0 +1,73 @@
+{
+  "schema": "launch-baseline-delta-v0",
+  "baseline_period": "2026-09-10 to 2026-10-31",
+  "current_readback_date": "2026-11-20",
+  "evidence_rule": "历史计划只作为基线，当前状态需要新鲜证据，不能把开业计划自报当作现状",
+  "baselines": [
+    {
+      "id": "north_star",
+      "planned": "成为 agent harness 的独立第三方评测与能力提升机构，解决 AI 自报不可信",
+      "launch_evidence": "10/11 北极星合议将独立性、负结果照报和免费度量衡收敛为共同目标",
+      "current_gap": "组织仍有多个 runtime 和状态源，独立性、执行、验收和商业结果尚未由统一 receipt 串起",
+      "next_validation": "跨组织 golden task 完成 identity、execution、verification、business acceptance、consumer readback 五段闭环"
+    },
+    {
+      "id": "external_recompute",
+      "planned": "首个外部主动复算请求是反剧场主尺，优先于内部件数",
+      "launch_evidence": "9/10 Compass 四优先级和 10/31 组织审计都把 external recompute > 0 作为主信号",
+      "current_gap": "10/31 记录的外部复算请求仍为 0，GitHub/Gmail 外联存在草稿和沉默件，持续消费闭环未形成",
+      "next_validation": "取得一个外部真实请求，完成预注册判据、独立复算、回卡和对方读回"
+    },
+    {
+      "id": "launch_story",
+      "planned": "开业时公开给自己打出 26.7 分，以负结果证明裁判敢于判自己",
+      "launch_evidence": "10/12 开业事件计划明确负结果前置、判据和复算命令公开",
+      "current_gap": "开业叙事和公开资产曾准备，但当前是否持续带来外部复算、引用或交易需要重新核验",
+      "next_validation": "把公开案例绑定到外部请求、复算卡、消费者反馈和后续引用，而不只统计页面访问"
+    },
+    {
+      "id": "product_ladder",
+      "planned": "L1 免费判读获客、L2 深度报告收费、L3 定制与管道托管，数据产品和具身 Audit 作为交叉线",
+      "launch_evidence": "商业计划书和开业作战案已明确价格、SLA、榜单 CTA 与交叉销售路径",
+      "current_gap": "产品外壳和样例较完整，外部持续付费、客户验收和消费者读回仍需逐单区分；阿里真实交付不等于 L2 外部复算 PMF",
+      "next_validation": "分别登记 L1 采用、L2 付费、L3 定制、具身业务验收四类结果，不合并成一个成功数"
+    },
+    {
+      "id": "assay_protocol",
+      "planned": "compass 负责判分与验证，assay 负责 VerifyPack、replay 认证和 UNVERIFIABLE 墙",
+      "launch_evidence": "rsi-bench PR #2 已采纳 replay certification、Ed25519 收据、allowlist 和 UNVERIFIABLE 机制",
+      "current_gap": "第三方采纳是外部方法背书，但持续样例包、外部复算请求和商业协议植入尚未形成稳定流水",
+      "next_validation": "交付机读四件套并取得独立消费者复算回执，再把协议采纳与持续使用分开计数"
+    },
+    {
+      "id": "nacre",
+      "planned": "NACRE 作为验证驱动的创新模型，训练燃料只认人工题和外部真评测题",
+      "launch_evidence": "10/19 已否决自产自举语料作为 SFT 正向燃料，NACRE 当时仍是准备态",
+      "current_gap": "当前本地 9B 训练预览只有 7 条合格样本，MLX 预检尚未通过，NACRE 权重尚未生成",
+      "next_validation": "完成 32/8/8 gold 数据、独立复核和 9B 基线对拍，再开始隔离 LoRA 训练"
+    },
+    {
+      "id": "memory_io",
+      "planned": "M5 记忆门、蒸馏、判分值守和复判位共同支撑组织学习",
+      "launch_evidence": "9/10 四优先级和 10/31 四问都把 M5、蒸馏和验证机构列为主线",
+      "current_gap": "本地 9B 已接语义召回和证据门，但 MCP projection 仍 catalog changed/read_only，用户到项目映射和远端 8770 负向验证未闭环",
+      "next_validation": "完成 canonical identity、用户到项目授权、fresh recall、独立验证和消费者读回五项检查"
+    },
+    {
+      "id": "organization_self_proof",
+      "planned": "AI 组织先验证自己，执行历史成为不可复制的信任资产",
+      "launch_evidence": "开业计划、北极星合议和 10/31 审计都把组织自证作为核心叙事",
+      "current_gap": "V5 main、Reborn、V7、Kairos 的身份、执行、产物和验收证据仍不完全同构，服务 active 不能直接推出组织交付",
+      "next_validation": "Platform 牵头 roster reconciliation，并用一项真实跨组织任务形成完整 task packet 和 acceptance receipt"
+    },
+    {
+      "id": "commercial_pmf",
+      "planned": "外部真值、首单和收入让组织进入自我供养循环",
+      "launch_evidence": "法人 Agent 倒推方案和商业计划把客户付费、人工接单、训练回流作为长期闭环",
+      "current_gap": "内部基础设施和治理产出很多，外部价值读数、客户接受和可持续收入仍需单独复核，不能用内部交付件替代",
+      "next_validation": "以一项真实客户或外部消费者闭环作为商业验证，不用内部任务数量替代 PMF"
+    }
+  ],
+  "cross_cutting_gap": "开业计划已经把叙事、产品、协议和组织设计写出，但缺少一条持续的外部消费者闭环，把身份、执行、独立验证、业务验收和交易连接起来",
+  "next_action": "先选一项真实跨组织任务做 end-to-end golden task，再用其结果决定外联恢复、NACRE 训练和产品化推进顺序"
+}

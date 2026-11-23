@@ -1,0 +1,41 @@
+{
+  "schema": "compass-rerank-local-cutover/v1",
+  "recorded_at": "2026-11-20T06:42:00-05:00",
+  "status": "measured_local_loopback",
+  "change": {
+    "old_candidate_count": 16,
+    "new_candidate_count": 8,
+    "max_length": 512,
+    "remote_endpoint_config": "127.0.0.1:8401",
+    "endpoint_interpretation": "loopback local Mac MPS process",
+    "source_config": "ops/launchd/com.nautilus.compass-daemon.plist",
+    "runtime_config": "/Users/chunxiao.wang/.claude/plugins/nautilus-compass/.cache/daemon_env"
+  },
+  "evidence": {
+    "pre_cutover_benchmark_16x512_median_server_ms": 1427.8,
+    "pre_cutover_live_rerank_ms": 1841.91,
+    "post_cutover_live_rerank_ms": 1059.21,
+    "post_cutover_warm_rerank_ms": 1002.44,
+    "post_cutover_cache_hit_total_compute_ms": 0.17,
+    "post_cutover_endpoint_scope": "loopback",
+    "post_cutover_rerank_backend": "remote_mps_legacy_label",
+    "post_cutover_candidate_count": 8,
+    "post_cutover_max_length": 512,
+    "ping_rerank_candidates": 8,
+    "ping_rerank_candidates_env": "8",
+    "ping_prod_rerank": true,
+    "ping_rerank_endpoint": "127.0.0.1:8401",
+    "live_source_hash": "sha256:031eb0946552ec9df44830e641c6ad9d2e9766f42585c643b0601897f6f29bc4"
+  },
+  "backups": {
+    "plist_before": "runtime/maintenance_backups/20261120-rerank-local-cutover/com.nautilus.compass-daemon.plist.before",
+    "daemon_env_before": "runtime/maintenance_backups/20261120-rerank-local-cutover/daemon_env.before",
+    "daemon_before": "runtime/maintenance_backups/20261120-rerank-local-cutover/daemon.py.before"
+  },
+  "boundary": {
+    "external_send": false,
+    "deployment_scope": "local launchd only",
+    "customer_acceptance": "not_assessed",
+    "quality_tradeoff": "8x512 matched the 10-case local benchmark hit@5 of 16x512 on eligible expected cards, but this is a regression signal, not LongMemEval or customer acceptance."
+  }
+}

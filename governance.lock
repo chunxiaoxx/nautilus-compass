@@ -1,10 +1,10 @@
 {
   "version": "v0.1",
-  "locked_at": "2026-05-09T15:49:44Z",
+  "locked_at": "2026-11-19T14:16:44Z",
   "files": {
-    "recall.py": "256ce2d4d569d920d39974d904c183c8a3c108e32896c1455b51a21d29b1d89e",
-    "merkle_chain.py": "a1e09816d133389e5fb9d2fa08978ef9bc5507bdefb9cfe4fd9af5bf1b4a9e11",
+    "recall.py": "4bdac13223c446cf4d4ad0c8743412c470c606f4d9a6e9d4981bc5441e0322d0",
+    "merkle_chain.py": "2381d08d762d55096ccf87d85f7b30e13a1d749b9d5d946d17bfb9caa7f3aead",
     "anchors.json": "bfd5cbdae0cb35db50ea338443141b2058405e35b24ea0de291010d1cce2fb2a",
-    "selftest.py": "681929262d24a610c52fa4f164f60c33a5046ece261a319c48ab8be88ef281ee"
+    "selftest.py": "40b9ea5a146513dc94c881e9e60ed76e11b7f29da07938578ddfea9dbbe282ac"
   }
 }

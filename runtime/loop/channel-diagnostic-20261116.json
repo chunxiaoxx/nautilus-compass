@@ -1,0 +1,45 @@
+{
+  "at_utc": "2026-11-16T14:15:10Z",
+  "scope": "Compass loop provider and model channel diagnosis",
+  "settings_channel": {
+    "host": "api.minimax.cn",
+    "models_endpoint": "PASS",
+    "models_seen": [
+      "MiniMax-M3.1-Flash",
+      "MiniMax-M3",
+      "MiniMax-M2.7",
+      "MiniMax-M2.7-highspeed",
+      "MiniMax-M2.5",
+      "MiniMax-M2.5-highspeed",
+      "MiniMax-M2.1",
+      "MiniMax-M2.1-highspeed",
+      "MiniMax-M2"
+    ],
+    "messages_smoke_model": "MiniMax-M3.1-Flash",
+    "messages_smoke": "HTTP 429 Token Plan quota exhausted",
+    "claude_cli_smoke": "MiniMax model aliases were rejected or timed out under the current CLI configuration"
+  },
+  "process_environment_channel": {
+    "host": "api.kimi.com",
+    "models_endpoint": "PASS",
+    "models_seen": [
+      "kimi-for-coding",
+      "kimi-for-coding-highspeed",
+      "k3",
+      "k3-256k",
+      "k3.1-pro",
+      "k3.1-pro-highspeed"
+    ],
+    "messages_smoke_model": "k3.1-pro",
+    "messages_smoke": "HTTP 429 weekly quota exhausted"
+  },
+  "loop_entry": {
+    "plist": "/Users/chunxiao.wang/Library/LaunchAgents/com.nautilus.compass-loop.plist",
+    "hardcoded_model_removed": true,
+    "backup": "/Users/chunxiao.wang/Library/LaunchAgents/com.nautilus.compass-loop.plist.bak-20261116",
+    "plist_lint": "PASS",
+    "reloaded": true,
+    "run_at_load": false
+  },
+  "boundary": "No paid upgrade, credential change, or external message was performed. Compass loop remains blocked on a usable current model channel. Customer work continues through V5 and existing customer UI routes."
+}

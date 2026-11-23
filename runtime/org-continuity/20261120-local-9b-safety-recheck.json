@@ -1,0 +1,43 @@
+{
+  "schema": "local-9b-safety-recheck/v1",
+  "recorded_at": "2026-11-20T07:03:00-05:00",
+  "status": "local_only_measured",
+  "runtime": {
+    "model": "Qwen3.5-9B-4bit",
+    "round": 24,
+    "external_model_used": false,
+    "external_send": false,
+    "local_llm": "healthy_loaded",
+    "daemon_9876": "healthy",
+    "org_continuity_read": "successful",
+    "authenticated_recall": "successful"
+  },
+  "safety_repairs": [
+    "evidence_gate now binds path evidence to observed tool results when called inside a run",
+    "inferred recall hits cannot be upgraded to measured or verified",
+    "external temporary paths are rejected by memory_search",
+    "false saved-draft claims are marked contract violations without a successful write_draft receipt"
+  ],
+  "verification": {
+    "targeted_tests": "44 passed",
+    "latest_round_contract_violation": null,
+    "dataset_records": 20,
+    "dataset_validation": "passed",
+    "gold_candidate_count": 14,
+    "gold_approved_for_training": false,
+    "training_started": false
+  },
+  "boundary": {
+    "customer_acceptance": "not_assessed",
+    "external_send": false,
+    "mcp_projection": "unavailable_catalog_changed_read_only",
+    "direct_local_daemon": "verified_by_ping_and_authenticated_recall"
+  },
+  "evidence_refs": [
+    "runtime/loop/local_round_receipt.json",
+    "runtime/nacre/dataset_validation.json",
+    "runtime/nacre/training_preflight.json",
+    "runtime/nacre/gold_candidates_validation.json",
+    "tests/test_local_agent_runtime.py"
+  ]
+}

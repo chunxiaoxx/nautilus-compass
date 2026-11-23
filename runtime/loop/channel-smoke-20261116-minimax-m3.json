@@ -1,0 +1,19 @@
+{
+  "started_utc": "2026-11-16T14:10:21.158332+00:00",
+  "finished_utc": "2026-11-16T14:11:51.175045+00:00",
+  "command": [
+    "claude",
+    "-p",
+    "<smoke>",
+    "--model",
+    "MiniMax-M3",
+    "--output-format",
+    "text"
+  ],
+  "exit_code": 124,
+  "timed_out": true,
+  "stdout": "",
+  "stderr": "Permission allow rule (../../.claude/settings.json): Bash(ssh -o ConnectTimeout* -p 23620 root@*) has a wildcard before the rest of the command, so it also matches any options inserted at that position and approves them without a prompt. Replace that * with the exact value you mean, or only use * after the subcommand.\n[claude-code:unrecognized_model] {\"model\":\"MiniMax-M3\",\"query_source\":\"sdk\"}",
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "2175e3227b339059efe2c45860470777988ac1a3a5449ff6d24ccfe649607a00"
+}

@@ -1,0 +1,422 @@
+{
+  "schema": "zhiyong-organization-synthesis-v0",
+  "date": "2026-11-20",
+  "scope": "智涌组织整体，不把任何单一对话框或服务当作组织本身",
+  "north_star": "让组织能够接收目标、正确分工、真实执行、独立验证、完成业务验收，并把验证过的结果沉淀为下一轮能力",
+  "principle": "智能＝压缩×验证",
+  "root_causes": [
+    {
+      "id": "identity_split",
+      "finding": "V5、Reborn、V7、Compass actor、平台 registry 和历史 alias 之间存在未收敛映射",
+      "impact": "同一主体可能被重复统计、错误授权或错误写回",
+      "owner": "platform",
+      "gate": "每个 alias 映射到唯一 canonical_id，无法映射时保留 unresolved 和责任人"
+    },
+    {
+      "id": "truth_split",
+      "finding": "服务状态、任务状态、产物状态、验证状态和客户验收状态分散在不同系统",
+      "impact": "active、submitted、verified 和 accepted 容易被混为一个 DONE",
+      "owner": "platform + compass + business owner",
+      "gate": "统一 task packet 和五状态 receipt"
+    },
+    {
+      "id": "memory_runtime_mix",
+      "finding": "组织记忆、实时运行状态和业务正本之间边界不清",
+      "impact": "历史经验被当成实时状态，服务心跳被当成能力验收",
+      "owner": "compass",
+      "gate": "memory 只沉淀经验和证据索引，live state 只认运行回读，业务状态只认业务仓"
+    },
+    {
+      "id": "execution_acceptance_mix",
+      "finding": "V5/V7 负责执行，Platform 负责平台任务，Flywheel 负责业务验收，但交接字段不统一",
+      "impact": "模型回复、内部 artifact 和客户接受被混为一件事",
+      "owner": "platform",
+      "gate": "执行者、独立验证者、业务验收者和消费者读回分别留证"
+    },
+    {
+      "id": "loop_proliferation",
+      "finding": "旧 loop、服务、timer、对话框和模型 provider 并行存在",
+      "impact": "重复执行、配额浪费、状态竞争和用户无法判断主线",
+      "owner": "platform + each runtime owner",
+      "gate": "每条 loop 有唯一消费者、停止条件和 receipt，其他路径冻结或标记 legacy"
+    },
+    {
+      "id": "external_boundary",
+      "finding": "Gmail、GitHub、飞书、客户平台和中转站是多个外部边界",
+      "impact": "内部完成容易被误报成外部交付，通道错误被误报成模型失败",
+      "owner": "channel owner + assay",
+      "gate": "外发前人工审核，外发后保存平台回执和消费者读回"
+    },
+    {
+      "id": "attention_and_value_split",
+      "finding": "组织把基础设施数量、内部任务数量和报告数量当成推进信号，用户认知负担和外部价值没有成为同一条主线",
+      "impact": "出现更多面板、文档和 loop，却没有同步增加客户验收、首单或可复用能力",
+      "owner": "platform strategic layer + user decision layer",
+      "gate": "每轮只保留一个可验收主件，异常才打扰用户，外部消费者或收入读数优先于内部件数"
+    },
+    {
+      "id": "mode_mix",
+      "finding": "研究、生产、治理和商业推进混在同一批 loop 与对话里",
+      "impact": "等待外部模型或客户回执时仍不断扩展内部机制，导致系统复杂度增长而主线不收敛",
+      "owner": "platform",
+      "gate": "每项工作显式标记 research、production、governance 或 commercial，生产主线优先"
+    }
+  ],
+  "organization_model": {
+    "control_plane": "Platform",
+    "execution_plane": "V5、V7、Reborn 和其他明确 canonical identity 的 runtime",
+    "evidence_plane": "Compass、Assay、JEV、VerifyPack",
+    "business_plane": "Flywheel 及其客户、数据权利、QC、结算正本",
+    "channel_plane": "Gmail、GitHub、飞书、A2A、org_mailbox、客户平台",
+    "learning_plane": "9B 运行轨迹、gold set、NACRE、离线评测",
+    "boundary_rule": "保留职责域，统一 task packet、identity、receipt 和 acceptance，不合并所有 agent"
+  },
+  "shared_task_packet": [
+    "task_id",
+    "canonical_owner",
+    "input_reference_and_hash",
+    "allowed_actions",
+    "execution_trace",
+    "artifact_reference_and_hash",
+    "independent_verification",
+    "business_acceptance",
+    "consumer_readback",
+    "next_action"
+  ],
+  "state_layers": {
+    "identity": "谁在执行",
+    "contract": "要完成什么以及谁验收",
+    "execution": "实际调用了什么并生成什么",
+    "verification": "证据是否支持结论",
+    "acceptance": "消费者或客户是否真正收到并接受"
+  },
+  "strategic_layers": {
+    "user_decision_layer": "目标、生死、对外承诺、组织成员和判据宽松化由用户保留",
+    "operating_layer": "Platform 在用户可否决范围内进行路由、调度、对账和收敛",
+    "execution_layer": "各 runtime 在冻结合同和预算内执行并留证",
+    "verification_layer": "Compass/Assay/JEV 独立复算和暴露失败",
+    "commercial_layer": "客户接受、首单、收入和可计价节省是外部价值读数"
+  },
+  "current_stage": {
+    "name": "stage_one_connect_existing_loops",
+    "meaning": "当前重点是把已有身份、任务、记忆、验证、执行和业务验收接成闭环",
+    "do_not_infer": "不能因已有 stage_two 或 stage_three 的机制草案而宣称组织已经具备机器自生目标或外部真值驱动",
+    "promotion_gate": "三条曲线自然增长，用户介入下降，且至少有一个外部消费者或商业闭环读数"
+  },
+  "attention_policy": {
+    "user_view": "一个主线摘要和异常推送",
+    "internal_view": "各框保留详细日志和证据，不把所有内部状态推给用户",
+    "new_artifact_rule": "新增面板或报告必须替代旧入口并减少用户判断成本，否则不新增",
+    "primary_metric": "外部验收、首单、收入或可计价节省优先于内部件数和轮数"
+  },
+  "convergence_order": [
+    {
+      "step": 1,
+      "name": "canonical roster reconciliation",
+      "owner": "platform",
+      "output": "每个自研 runtime 的唯一身份、服务、代码、模型和状态",
+      "stop_condition": "所有 alias 有唯一映射或明确 unresolved owner"
+    },
+    {
+      "step": 2,
+      "name": "task packet and receipt contract",
+      "owner": "platform + compass",
+      "output": "执行、验证、验收和消费者回读的统一字段",
+      "stop_condition": "一项任务能从输入追到 acceptance，不依赖聊天叙述"
+    },
+    {
+      "step": 3,
+      "name": "one end-to-end golden task",
+      "owner": "platform with V5/V7/Compass/Flywheel",
+      "output": "一项真实任务的跨组织闭环回执",
+      "stop_condition": "identity、artifact、verification、business acceptance、consumer readback 全部存在"
+    },
+    {
+      "step": 4,
+      "name": "memory and learning admission",
+      "owner": "compass",
+      "output": "只有闭环任务进入组织记忆和 gold set",
+      "stop_condition": "未经验证的聊天、心跳和模型自报不能进入正向训练"
+    },
+    {
+      "step": 5,
+      "name": "NACRE promotion",
+      "owner": "compass + assay",
+      "output": "9B 与 NACRE 冻结集对拍和候选模型回执",
+      "stop_condition": "模型在安全、证据、任务和业务回归门全部通过"
+    }
+  ],
+  "current_blockers": [
+    "V5 main、Reborn、V7 的 identity mapping 尚未完全收敛",
+    "8770 v14 用户到项目映射和远端负向验证尚未闭合",
+    "V5 provider 和中转站供血不稳定，能力分数无法有效生成",
+    "Kairos inactive，不能当作当前执行主体",
+    "Flywheel 业务状态必须保持单一正本，不能被组织层镜像推进",
+    "Compass MCP projection 当前 catalog changed/read_only，组织级实时读回不完整"
+  ],
+  "success_definition": [
+    "用户看到一个组织级状态入口，而不是多个对话框各自叙述",
+    "每项任务只有一个 owner、一个 task_id、一个验收链",
+    "服务活跃、执行成功、证据通过、客户接受和消费者读回分别可查",
+    "Compass 记忆保存经验和证据索引，NACRE 只从闭环样本学习",
+    "外部沟通不会把内部完成误报成客户交付"
+  ],
+  "next_action": "由 Platform 牵头组织 roster reconciliation，Compass 提供独立证据检查，V5/V7 提供 runtime readback，Flywheel 保留并提供业务 acceptance。",
+  "historical_baseline_delta": "runtime/org-continuity/20261120-launch-baseline-delta.json",
+  "historical_window": "2026-09-10 strategic priorities -> 2026-10-12 launch -> 2026-10-13 L3 inversion -> 2026-10-19 NACRE fuel correction -> 2026-10-31 audit",
+  "golden_task_probe": {
+    "source": "nautilusflywheel cross-frame SJB Gate A 2026-11-20",
+    "status": "gate_a_not_passed",
+    "required_episode_files": "passed for two UMI episodes",
+    "episode_0053": "FAIL_GATE_A due fail/frame_loss, tactile track, and zero task-window overlap",
+    "episodes_p1_to_p3": "UNVERIFIABLE_GATE_A because task_start_s/task_stop_s are zero",
+    "usb_time_sync": "passed",
+    "max_absolute_offset_ms": 0.246086,
+    "training_eligible_episode_count": 0,
+    "meaning": "Flywheel currently supplies data-admission and negative evidence, not an accepted customer or training closure",
+    "evidence_refs": [
+      "nautilusflywheel/runtime/reports/sjb-gate-a-20261120.json",
+      "nautilusflywheel/runtime/reports/sjb-training-eligibility-20261120.json",
+      "nautilusflywheel/runtime/reports/sjb-gate-a-remediation-request-20261120.md"
+    ]
+  },
+  "current_cross_org_fact": "The first canonical golden task is still blocked before training admission. The next task must close identity, artifact, independent verification, business acceptance, and consumer readback without upgrading a failed Gate A episode.",
+  "latest_recheck": {
+    "recorded_at": "2026-11-20T08:40:00-05:00",
+    "compass": {
+      "local_9b": "measured_healthy",
+      "local_model": "Qwen3.5-9B-4bit",
+      "daemon_9876": "measured_healthy",
+      "authenticated_recall": "measured_success",
+      "rerank_endpoint": "127.0.0.1:8401",
+      "rerank_endpoint_scope": "loopback_local_mac_mps",
+      "rerank_candidates": 8,
+      "rerank_max_length": 512,
+      "warm_rerank_ms": 1002.44,
+      "cache_hit_total_compute_ms": 0.17,
+      "receipt": "runtime/cross-dialog-receipts/20261120-rerank-local-cutover.json",
+      "current_truth_tool": "org_continuity_read",
+      "latest_local_loop_round": 24,
+      "latest_local_agent_verdict": "measured_local_9b_with_org_continuity_read",
+      "latest_local_agent_summary": "组织连续性处于数据接入阻塞阶段，无有效训练闭环",
+      "safety_receipt": "runtime/org-continuity/20261120-local-9b-safety-recheck.json",
+      "mcp_agent_type": "codex",
+      "proof_of_recall": "pass_in_independent_stdio_replay"
+    },
+    "nacre": {
+      "dataset_records": 20,
+      "train_count": 15,
+      "validation_count": 2,
+      "test_count": 3,
+      "dataset_validation": "passed",
+      "training_preflight": "blocked",
+      "blockers": [
+        "train_count_below_32",
+        "validation_count_below_8",
+        "test_count_below_8"
+      ],
+      "external_model_records": 0,
+      "external_send_records": 0,
+      "latest_negative_control": "round_21_false_draft_claim_blocked_and_marked_contract_violation",
+      "meaning": "9B is running and producing auditable traces, but no weights have been trained or promoted",
+      "runtime_event_count": 24,
+      "gold_candidate_count": 14,
+      "gold_set_approved_for_training": false
+    },
+    "flywheel": {
+      "sjb_gate_a": "blocked",
+      "training_eligible_episode_count": 0,
+      "episode_0053": "FAIL_GATE_A",
+      "episode_p1_3": "UNVERIFIABLE_GATE_A",
+      "meaning": "raw-data remediation is still required before tokenizer or world-model training",
+      "evidence_refs": [
+        "nautilusflywheel/runtime/reports/sjb-gate-a-20261120.json",
+        "nautilusflywheel/runtime/reports/sjb-training-eligibility-20261120.json",
+        "nautilusflywheel/runtime/reports/sjb-gate-a-remediation-request-20261120.md"
+      ]
+    },
+    "organization_decision": "keep the first golden task blocked at data admission, keep local 9B as the only loop model, and use new receipts to drive roster/task-packet convergence",
+    "flywheel_task_packet": {
+      "validator_verdict": "PASS_PACKET_CONTRACT",
+      "packet_status": "blocked_precondition",
+      "business_acceptance": "not_assessed",
+      "consumer_readback": "not_available",
+      "next_action": "acquire_or_repair_episode_boundary",
+      "evidence_refs": [
+        "../nautilusflywheel/runtime/reports/golden-task-packet-validation-20261120.json",
+        "../nautilusflywheel/runtime/reports/golden-task-packet-sjb-provisional-20261120.json"
+      ],
+      "test_count": "18 passed",
+      "state": "paused_for_missing_precondition"
+    },
+    "compass_memory_write": {
+      "write_status": "written_to_project_memory",
+      "proof_of_recall": "failed_agent_type_mismatch",
+      "correct_project_entry": "session_20261120-0746_local-9b-sjb-recheck-proof.md",
+      "fresh_recall_surface": "not_yet_confirmed",
+      "boundary": "filesystem memory entry exists, semantic recall acceptance remains unverified"
+    },
+    "rsi_cycle": {
+      "cycle_id": "rsi-proof-of-recall-20261120-01",
+      "status": "pass",
+      "delta": "proof_of_recall fail -> pass",
+      "receipt": "runtime/org-continuity/20261120-rsi-proof-cycle.json",
+      "config": "COMPASS_AGENT_TYPE=codex",
+      "next_action": "keep agent_type=codex on the normal GUI MCP path and recheck after configuration changes"
+    },
+    "flywheel_rsi_round": {
+      "round_id": "flywheel-rsi-sjb-20261120-01",
+      "state": "paused_for_missing_precondition",
+      "next_action": "acquire_or_repair_episode_boundary",
+      "requires_gpu": false,
+      "requires_external_send": false,
+      "packet_contract": "PASS_PACKET_CONTRACT",
+      "business_acceptance": "not_assessed",
+      "consumer_readback": "not_available",
+      "source": "../nautilusflywheel/runtime/reports/flywheel-rsi-round-20261120.json"
+    },
+    "rsi_fallback": {
+      "status": "pass",
+      "tool": "tools/rsi_mcp_cycle.py",
+      "receipt": "runtime/org-continuity/rsi-proof-of-recall-latest.json",
+      "proof_of_recall": "pass",
+      "fresh_recall_ok": true,
+      "memory_file_written": true,
+      "gui_transport": "verified_normal_path"
+    },
+    "breakthrough_decision": "Use durable stdio RSI cycle as fallback and the verified normal GUI MCP path with explicit agent_type=codex",
+    "flywheel_authoritative_boundary": {
+      "adapter": "../nautilusflywheel/scripts/qc/apply_authoritative_boundary.py",
+      "tests": "25 passed",
+      "episode_p1_3": "what_if_would_pass_technical_gates",
+      "episode_0053": "FAIL_GATE_A",
+      "authoritative_manifest": "missing",
+      "source_provenance": {
+        "provider_name": "数聚变",
+        "basis": "user_confirmed_prior_pipeline_test_delivery",
+        "delivery_id": "missing",
+        "data_owner": "missing"
+      },
+      "boundary_request": {
+        "status": "sent_waiting_reply",
+        "recipient": "数聚变",
+        "basis": "user_confirmed_sent",
+        "request_artifact": "../nautilusflywheel/runtime/reports/p1-3-authoritative-boundary-request-draft-20261120.md"
+      },
+      "training_eligible": "false_until_authority",
+      "next_action": "attach device_marker/operator_marker/customer_manifest for p1-3, then rerun intake→Gate A→eligibility→canonical packet→consumer readback",
+      "raw_data_mutated": false,
+      "evidence": "../nautilusflywheel/runtime/reports/p1-3-task-boundary-proposal-20261120.json"
+    },
+    "flywheel_boundary_source_discovery": {
+      "episode": "p1-3",
+      "scanned_file_count": 25,
+      "text_file_count": 8,
+      "authority_candidate_file_count": 0,
+      "status": "NO_AUTHORITATIVE_BOUNDARY_SOURCE_FOUND",
+      "raw_payload_copied": false,
+      "next_action": "request external device_marker/operator_marker/customer_manifest",
+      "evidence": "../nautilusflywheel/runtime/reports/sjb-boundary-source-discovery-p1-3-20261120.json"
+    },
+    "parallel_work_20261120": {
+      "gui_mcp": {
+        "status": "protocol_verified",
+        "proof_of_recall": "pass",
+        "transport_closed_reproduced": false,
+        "agent_type_required": "codex",
+        "receipt": "runtime/maintenance_backups/20261120-rsi-proof-of-recall/gui-mcp-normal-path-receipt.json"
+      },
+      "flywheel_compass_handoff": {
+        "status": "created_and_validated",
+        "packet_contract": "PASS_PACKET_CONTRACT",
+        "tests": "18 passed",
+        "artifact": "../nautilusflywheel/runtime/reports/flywheel-compass-handoff-20261120.json"
+      },
+      "local_9b_nacre": {
+        "model": "Qwen3.5-9B-4bit",
+        "service": "healthy_loaded",
+        "dataset": "train=15,valid=2,test=3,gold_candidates=14",
+        "preflight": "blocked",
+        "training_started": false,
+        "next_action": "add_independently_reviewed events and freeze valid/test/gold",
+        "artifact": "runtime/nacre/20261120-local-readiness-recheck.json"
+      },
+      "local_9b_thinking_policy": {
+        "health_probe": "thinking_disabled",
+        "operational_tool_router": "thinking_disabled",
+        "semantic_review": "thinking_enabled_and_parseable",
+        "strict_router_thinking": "not_accepted_due_invalid_json_or_timeout",
+        "artifact": "runtime/nacre/20261120-local-thinking-policy-recheck.json",
+        "semantic_receipt": "runtime/nacre/20261120-local-semantic-thinking-smoke.json"
+      },
+      "external_channel_triage": {
+        "mode": "read_only",
+        "sjb_reply_found_in_current_gmail_search": false,
+        "github_issue_78": "open_waiting_for_funded_brief",
+        "github_rsi_bench_4": "open_no_new_inbound_comment",
+        "github_compass_8": "open_existing_dataset_linkage_reply",
+        "artifact": "runtime/org-continuity/20261120-parallel-channel-triage.json"
+      },
+      "verifier_replication_20261120": {
+        "status": "informative_synthetic_replication",
+        "replication_count": 2,
+        "heldout_recall_observations": [1.0],
+        "heldout_recall_missing_count": 1,
+        "queue_rows_total": 136,
+        "verifier_readback": "119/119 raw_rollout_matched",
+        "negative_evidence": "one replication had zero heldout failures, so failure recall is missing rather than zero",
+        "synthetic_only": true,
+        "physical_execution_performed": false,
+        "promotion_allowed": false,
+        "artifact": "../nautilusflywheel/runtime/reports/mvp-causal-world-model-cross-disciplinary-plan/autonomous-rounds/20261120-challenge-replication-summary.json"
+      },
+      "unified_work_plan_20261120": {
+        "artifact": "../nautilusflywheel/runtime/reports/unified-work-plan-20261120.md",
+        "codesense": {
+          "task_id": "91240",
+          "subtask_id": "99356508",
+          "package_id": "57035605",
+          "reward": "failed",
+          "task_submit": "not_run",
+          "customer_feedback": "rejected_revise",
+          "customer_acceptance": "not_closed",
+          "sandbox_id": "39368b8a12a949239754a57af3deaa72",
+          "r4_model_reward": "opus,qwen,glm,qwen3.5 all finalReward=null",
+          "r4_readback_sha256": "af76b61f99e90c2db8e8224cc2c5c49acdf29be8b2a0ac24915b5abd756c2c75",
+          "follow_up_platform_mail_id": 124509
+        },
+        "venture": {
+          "state": "review_pending",
+          "review_verdict": "revise",
+          "content_pass": false,
+          "published": false
+        },
+        "platform_governance": {
+          "parent_task": "v7tk_1795190863904",
+          "structured_receipt": "missing",
+          "mailbox_unread": 244,
+          "mailbox_due_12h": 244
+        },
+        "boundary": "keep technical execution, platform receipt, customer acceptance, and promotion as separate gates"
+      },
+      "outreach_20261120": {
+        "approval": "user_confirmed_all_reviewed_outreach",
+        "gmail_sent": [
+          "Nagizaaz security report",
+          "模真真合作"
+        ],
+        "github_sent": [
+          "MemOS #2534",
+          "supermemory #1831",
+          "MIRIX #141",
+          "Graphiti #1950",
+          "mem0 #7514",
+          "LongMemEval-V2 #13",
+          "a2a-x402 #198"
+        ],
+        "codesense": "sent_internal_platform_waiting_external_route",
+        "receipt": "runtime/org-continuity/20261120-outreach-send-receipts.json"
+      }
+    }
+  }
+}

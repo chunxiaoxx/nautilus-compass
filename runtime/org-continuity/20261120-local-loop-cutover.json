@@ -1,0 +1,34 @@
+{
+  "observed_at": "2026-11-20T00:21:28-05:00",
+  "change": "switch Compass headless loop to local Qwen3.5-9B read-only runner",
+  "local_model": "Qwen3.5-9B-4bit",
+  "local_endpoint": "http://127.0.0.1:11435/v1/chat/completions",
+  "local_health": {
+    "status": "ok",
+    "loaded": true,
+    "max_tokens": 8192
+  },
+  "active_label": "com.nautilus.compass-loop",
+  "active_program": "/Users/chunxiao.wang/Projects/nautilus-compass/tools/local_loop_runner.py",
+  "external_labels_disabled": [
+    "com.nautilus.bait-loop",
+    "com.nautilus.distill-review-worker"
+  ],
+  "external_model_used": false,
+  "local_rounds_completed": 2,
+  "checks": [
+    "compass_daemon_9876",
+    "platform_mail_read",
+    "github_mentions_read",
+    "gmail_inbox_probe",
+    "injection_sentinel"
+  ],
+  "side_effects": {
+    "external_messages_sent": false,
+    "github_comments_posted": false,
+    "gmail_sent": false,
+    "platform_state_written": false
+  },
+  "backup_dir": "runtime/loop/maintenance_backups/20261120-local-model",
+  "receipt": "runtime/loop/local_round_receipt.json"
+}

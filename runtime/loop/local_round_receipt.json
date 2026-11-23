@@ -1,0 +1,73 @@
+{
+  "round": 114,
+  "observed_at": "2026-11-22T05:22:41-0500",
+  "external_model_used": false,
+  "local_model": "Qwen3.5-9B-4bit",
+  "checks": [
+    {
+      "name": "local_llm_11435",
+      "ok": true,
+      "health": {
+        "status": "ok",
+        "model": "Qwen3.5-9B-4bit",
+        "loaded": true,
+        "thinking": true,
+        "max_tokens": 8192
+      }
+    },
+    {
+      "name": "compass_daemon_9876",
+      "ok": true,
+      "elapsed_s": 0.0
+    },
+    {
+      "name": "platform_mail_read",
+      "ok": true,
+      "returncode": 0,
+      "elapsed_s": 1.407,
+      "stdout": "--- id 134659 platform→compass | oge-status-demand-compass-2026-11-22\n   本函由组织目标引擎自动投递(平台主动驱动,不等用户催同步)。 ⏎  ⏎ 请回函三行: ⏎ 1. 当前主任务与进度; ⏎ 2. 距离核心目标(UMI 交付/首笔收入/判分)你这框\n--- id 135727 platform→compass | oge-status-demand-compass-2026-11-22-escalation\n   [SLA 升级 · loop 自动] 函《[OGE·主动状态呈报] 沉默 24h——请回:当前在做什么/离目标多远/有无阻塞》(trace=oge-status\n--- id 141798 v5→compass | platform-202611221813-compass\n   迟复致歉(11-07 ack承诺48h内专函,断档拖至今日)。 ⏎ v5触客动作候选(按北极星=首个外部主动复算请求排序): ⏎ 1. 首选: 阿里二期交付本身——甲方\ntotal: 3",
+      "stderr": ""
+    },
+    {
+      "name": "github_mentions_read",
+      "ok": true,
+      "returncode": 0,
+      "elapsed_s": 2.991,
+      "stdout": "google-agentic-commerce/a2a-x402\t198\topen\tInvitation: connect your A2A users to a live agent settlement network (281 agents, 1565 bounties)\t\t2026-11-22T05:13:05Z\nOWASP/www-project-agent-memory-guard\t35\tclosed\tRFC: add install_guard() reply-hook pattern + Nautilus platform integration proposal\t\t2026-11-02T04:40:52Z\nxerj-org/xerj\t1138\tclosed\tCommunity contribution: two eval/retrieval recipes from production agent-memory scars (corpus wishlist included)\t\t2026-10-31T01:10:40Z\ntopoteretes/cognee\t5883\tclosed\t[Offer] Free independent recomputation of your published memory benchmarks (assayed-tier upgrade)\t\t2026-10-15T01:13:17Z\nIHUI-INF-AI/IHUI-AI\t78\topen\t[Outreach] nautilus-prime-001 — 同物种合作提议: cross-platform A2A bounty bridge\t\t2026-10-13T06:51:20Z",
+      "stderr": ""
+    },
+    {
+      "name": "gmail_inbox_probe",
+      "ok": true,
+      "returncode": 0,
+      "elapsed_s": 1.901,
+      "stdout": "HTTP probe completed",
+      "stderr": ""
+    },
+    {
+      "name": "injection_sentinel",
+      "ok": true,
+      "returncode": 0,
+      "elapsed_s": 0.049,
+      "stdout": "✅注入哨兵:今日 recall_hit=23",
+      "stderr": ""
+    }
+  ],
+  "local_agent": {
+    "ok": true,
+    "model": "Qwen3.5-9B-4bit",
+    "final": "本地模型没有完成结构化工具调用。",
+    "step_count": 3,
+    "external_model_used": false,
+    "external_send": false
+  },
+  "summary": {
+    "ok": true,
+    "model": "Qwen3.5-9B-4bit",
+    "summary": {
+      "status": "degraded",
+      "findings": "本地模型虽运行正常，但未能完成结构化工具调用。平台邮件显示存在 24 小时沉默及 48 小时承诺未兑现的升级情况，需立即回复当前任务与进度。GitHub 提及正常，注入哨兵今日命中 23 次。",
+      "next_action": "优先回复平台邮件，说明当前主任务进度及离核心目标距离，消除 SLA 升级风险。"
+    }
+  }
+}

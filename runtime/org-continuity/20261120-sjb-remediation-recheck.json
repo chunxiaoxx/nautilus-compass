@@ -1,0 +1,49 @@
+{
+  "schema": "cross-org-sjb-remediation-recheck/v1",
+  "recorded_at": "2026-11-20T06:53:00-05:00",
+  "status": "blocked_on_raw_data_owner",
+  "measured": {
+    "gate_a_overall": "BLOCKED_GATE_A",
+    "episode_20261016_0053": {
+      "verdict": "FAIL_GATE_A",
+      "quality_check": "fail/frame_loss",
+      "frame_loss_dropped_frames": {
+        "stereo_left.mkv": 1,
+        "stereo_right.mkv": 1
+      },
+      "tactile_task_overlap_s": 0.0,
+      "task_boundary": "available"
+    },
+    "p1-3": {
+      "verdict": "UNVERIFIABLE_GATE_A",
+      "task_start_s": 0.0,
+      "task_stop_s": 0.0,
+      "recording_duration_s": 139.875,
+      "task_boundary": "missing"
+    },
+    "both_required_files_complete": true,
+    "both_mcap_channels_decoded": true,
+    "both_ego_time_sync_ok": true,
+    "p1_3_max_abs_offset_ms": 0.246086,
+    "training_eligible_episode_count": 0,
+    "validator_tests": "14 passed"
+  },
+  "remediation_required": [
+    "0053: provide corrected source or a traceable disposition for the two reported frame-loss events and a tactile track that covers the task window",
+    "p1-3: provide task_start_utc_us and task_stop_utc_us with a traceable device/operator/customer manifest source",
+    "after补数: rerun read-only Gate A against the cloud raw root, then regenerate training eligibility"
+  ],
+  "negative_evidence": [
+    "recording lifecycle bounds cannot substitute for task bounds",
+    "MCAP decode and USB clock health do not upgrade an episode to PASS_GATE_A",
+    "local checkout has no /srv/sjb_trial or /mnt/data_disk raw source, so Compass cannot repair raw metadata here"
+  ],
+  "evidence_refs": [
+    "../nautilusflywheel/runtime/reports/sjb-gate-a-20261120.json",
+    "../nautilusflywheel/runtime/reports/sjb-training-eligibility-20261120.json",
+    "../nautilusflywheel/runtime/reports/sjb-gate-a-remediation-request-20261120.md",
+    "../nautilusflywheel/tests/test_sjb_feedback_corrections.py"
+  ],
+  "external_send": false,
+  "customer_acceptance": "not_assessed"
+}

@@ -1,0 +1,38 @@
+{
+  "schema": "compass-security-recheck-v0",
+  "observed_at": "2026-11-20",
+  "scope": "read-only probes plus local source/test hardening",
+  "live_probes": {
+    "8097_mcp_without_auth": {
+      "status_code": 401,
+      "result": "auth_boundary_present"
+    },
+    "8770_v14_recall_without_auth": {
+      "status_code": null,
+      "timeout_seconds": 8,
+      "result": "transport_timeout",
+      "interpretation": "not an authorization pass and not a remediation proof"
+    },
+    "9876_daemon_auth": {
+      "result": "targeted auth tests passed",
+      "coverage": "ping allowed, status/recall without token rejected"
+    }
+  },
+  "local_hardening": {
+    "v14_recall": "requires Bearer JWT and explicit COMPASS_V14_PROJECT_MAP ownership",
+    "v14_scope_user": "disabled until mapped-project filtering exists",
+    "daemon_auth_failure": "avoids lsof tcp:0 delay on Unix socket callers",
+    "legacy_token_scope": "tools.read/tools.write remain bounded to read/write classes"
+  },
+  "verification": {
+    "targeted_tests": "101 passed across MCP, daemon, auth, scope, and v14 boundary suites",
+    "deployment": "not performed",
+    "external_reply": "not sent",
+    "environment_blocker": "v14_poi_emission_patch test needs fastapi, absent from .venv; source py_compile passed"
+  },
+  "remaining": [
+    "configure and independently verify the production user-to-project map",
+    "implement filtered mapped-project union before re-enabling scope=user",
+    "re-run the remote 8770 negative probe after the deployed adapter is changed"
+  ]
+}

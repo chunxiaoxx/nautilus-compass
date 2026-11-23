@@ -1,0 +1,1274 @@
+{
+  "schema": "distill-review-batch-dual/1",
+  "generated_at_utc": "2026-11-18T17:04:16.012285+00:00",
+  "reviewers": [
+    "MiniMax-M3",
+    "Kimi k3-256k"
+  ],
+  "independence": "two distinct models/channels review the same source-bound candidates",
+  "items": [
+    {
+      "session_id": "01769e9f-6627-4320-8477-94201950324d",
+      "minimax": {
+        "status": "hold",
+        "claims": 38,
+        "supported": 38,
+        "anchor_recall": 0.875
+      },
+      "kimi": {
+        "status": "hold",
+        "reviewers": {
+          "kimi-k3-256k": {
+            "reviewer": "kimi-k3-256k",
+            "claims": 33,
+            "supported": 32,
+            "unsupported": [
+              "纪要称 J3 双绿升级状态需确认。"
+            ],
+            "claims_detail": [
+              {
+                "claim": "预注册档已读，信箱 curl 被拒后不再重试。",
+                "quote": "预注册档已读。信箱 curl 被拒就不再重试。",
+                "supported": true,
+                "quote_ok_len": 23
+              },
+              {
+                "claim": "Bash 中 python 与 curl 都需审批并被拒，因此改走只读专用工具。",
+                "quote": "Bash 两连拒(python、curl 都要审批),改走只读专用工具,不硬闯。",
+                "supported": true,
+                "quote_ok_len": 40
+              },
+              {
+                "claim": "任务文件 50 题齐全，字段只有 qid/question/truth/model_answer，J5 盲判成立。",
+                "quote": "任务文件 50 题齐(fields 只有 qid/question/truth/model_answer,J5 盲判成立)",
+                "supported": true,
+                "quote_ok_len": 61
+              },
+              {
+                "claim": "抽样 seed=20260930 与预注册档一致。",
+                "quote": "抽样 seed=20260930 与预注册档一致",
+                "supported": true,
+                "quote_ok_len": 24
+              },
+              {
+                "claim": "mech_report 修正后口径为 M1=85/M2=0/M3=415，冲突 0/85，J1 侧数据与预注册修正 #1 一致。",
+                "quote": "mech_report 为修正后口径:M1=85/M2=0/M3=415,冲突 0/85 → J1 侧数据与预注册修正 #1 一致",
+                "supported": true,
+                "quote_ok_len": 65
+              },
+              {
+                "claim": "名单 sha16 复核需要 Bash，暂被拒并记为待验项。",
+                "quote": "名单 sha16 复核需要 Bash,暂被拒,先记为待验项",
+                "supported": true,
+                "quote_ok_len": 29
+              },
+              {
+                "claim": "sample_verdicts.json 是空占位 []，可写。",
+                "quote": "`sample_verdicts.json` 是空占位 `[]`,可写",
+                "supported": true,
+                "quote_ok_len": 35
+              },
+              {
+                "claim": "50 题盲判在读题时逐题定案，未接触 judge_raw/is_correct。",
+                "quote": "50 题盲判已在读题时逐题定案(未接触 judge_raw/is_correct,J5 成立)",
+                "supported": true,
+                "quote_ok_len": 47
+              },
+              {
+                "claim": "verdict 落盘因未授权 Write 被权限拦，先不重试。",
+                "quote": "verdict 落盘被权限拦(未授权 Write),先不重试",
+                "supported": true,
+                "quote_ok_len": 30
+              },
+              {
+                "claim": "源文件是单行压缩 JSON，-A 上下文失效，改换 -o 短窗抽证加全局计数三路并行。",
+                "quote": "源文件是单行压缩 JSON,-A 上下文失效,换 -o 短窗抽证 + 全局计数三路并行",
+                "supported": true,
+                "quote_ok_len": 43
+              },
+              {
+                "claim": "Ferrari 分歧题正则未命中，先证伪自己并怀疑字段邻接假设错。",
+                "quote": "Ferrari 分歧题的正则没命中——先证伪自己(可能字段邻接假设错)",
+                "supported": true,
+                "quote_ok_len": 35
+              },
+              {
+                "claim": "复算判决总读数为我判 CORRECT 38、INCORRECT 12。",
+                "quote": "**总读数：我判 CORRECT 38 / INCORRECT 12**",
+                "supported": true,
+                "quote_ok_len": 36
+              },
+              {
+                "claim": "J1 判据 M1 冲突率 ≤5% 的读数为 0/85 = 0.0%，结论 PASS。",
+                "quote": "| J1 | M1 冲突率 ≤5% | **0/85 = 0.0%**(mech_report 修正后口径 M1=85/M2=0/M3=415) | PASS |",
+                "supported": true,
+                "quote_ok_len": 81
+              },
+              {
+                "claim": "J2 盲判一致率 ≥90% 的读数为 49/50 = 98.0%，结论 PASS。",
+                "quote": "| J2 | 盲判一致率 ≥90% | **49/50 = 98.0%**(judge 分布 377/123 与档内背景吻合) | PASS |",
+                "supported": true,
+                "quote_ok_len": 72
+              },
+              {
+                "claim": "J3 双绿升级读数为双绿，结论为 500 题族可升 labelled。",
+                "quote": "| J3 | 双绿升级 | 双绿 | 500 题族可升 labelled |",
+                "supported": true,
+                "quote_ok_len": 38
+              },
+              {
+                "claim": "J4 seed 固定：工具源码 SEED=20260930，sha16 复核待 Bash，结论部分。",
+                "quote": "| J4 | seed 固定 | 工具源码 SEED=20260930 ✓;sha16 复核待 Bash | 部分 |",
+                "supported": true,
+                "quote_ok_len": 59
+              },
+              {
+                "claim": "J5 盲判：判决先于看 judge，任务文件字段级无 judge 字段，结论 PASS。",
+                "quote": "| J5 | 盲判 | 判决先于看 judge,任务文件字段级无 judge 字段 ✓ | PASS |",
+                "supported": true,
+                "quote_ok_len": 52
+              },
+              {
+                "claim": "唯一分歧题是 gpt4_c27434e8_abs，judge=CORRECT 而我=INCORRECT。",
+                "quote": "**唯一分歧(J3 勘误库素材)**：gpt4_c27434e8_abs — judge=CORRECT vs 我=INCORRECT。",
+                "supported": true,
+                "quote_ok_len": 68
+              },
+              {
+                "claim": "源文件已核实该分歧题 judge_raw 确为 CORRECT，非中间层转录错。",
+                "quote": "源文件已核实 judge_raw 确为 CORRECT(非中间层转录错)",
+                "supported": true,
+                "quote_ok_len": 36
+              },
+              {
+                "claim": "该分歧本质是弃答策略：truth 明说信息不足、未提过 Porsche，模型却给出 Ferrari 先的定论。",
+                "quote": "分歧本质是弃答策略：truth 明说“信息不足、未提过 Porsche”,模型却给出“Ferrari 先”的定论",
+                "supported": true,
+                "quote_ok_len": 56
+              },
+              {
+                "claim": "judge 按只剩一个项目判对，而我按 abstention 判错。",
+                "quote": "judge 按只剩一个项目判对，我按 abstention 判错",
+                "supported": true,
+                "quote_ok_len": 32
+              },
+              {
+                "claim": "该分歧属可辩护分歧，应入勘误库留档。",
+                "quote": "属可辩护分歧，应入勘误库留档",
+                "supported": true,
+                "quote_ok_len": 14
+              },
+              {
+                "claim": "Ferrari 题短语在源里出现两处：model_answer 与 raw_answer，邻接假设错。",
+                "quote": "短语在源里出现两处(model_answer 与 raw_answer),邻接假设错",
+                "supported": true,
+                "quote_ok_len": 42
+              },
+              {
+                "claim": "源文件 31 处超时条目 judge_raw 逐一 INCORRECT，零例外，且与 6 道超时题 INCORRECT 判定一致。",
+                "quote": "源文件 31 处超时条目 judge_raw 逐一 INCORRECT,零例外——超时类无 judge 放水，与我对 6 道超时题的 INCORRECT 全一致",
+                "supported": true,
+                "quote_ok_len": 80
+              },
+              {
+                "claim": "judge 总数为 377 CORRECT / 123 INCORRECT，与预注册档背景一致。",
+                "quote": "judge 总数 377 CORRECT/123 INCORRECT,与预注册档背景一致",
+                "supported": true,
+                "quote_ok_len": 44
+              },
+              {
+                "claim": "Write 与 Bash 全程未获批，相关动作没做且不声称完成。",
+                "quote": "Write 与 Bash 全程未获批，以下动作没做、不声称完成",
+                "supported": true,
+                "quote_ok_len": 31
+              },
+              {
+                "claim": "sample_verdicts.json 落盘被拦，现为空 []。",
+                "quote": "`sample_verdicts.json` 落盘被拦(现为空 `[]`)",
+                "supported": true,
+                "quote_ok_len": 37
+              },
+              {
+                "claim": "50 条判决已全文在上表，授权后可写入。",
+                "quote": "50 条判决已全文在上表，授权后我可写入",
+                "supported": true,
+                "quote_ok_len": 20
+              },
+              {
+                "claim": "python tools/rejudge_mechanical_check.py summary 未跑，final_summary.json 未生成。",
+                "quote": "`python tools/rejudge_mechanical_check.py summary` 未跑，final_summary.json 未生成",
+                "supported": true,
+                "quote_ok_len": 76
+              },
+              {
+                "claim": "名单 sha16 未复核，需对照 572d4cc73ff5db3e。",
+                "quote": "名单 sha16 未复核(需对照 572d4cc73ff5db3e)",
+                "supported": true,
+                "quote_ok_len": 34
+              },
+              {
+                "claim": "J6 原样 commit 未做。",
+                "quote": "J6 原样 commit 未做",
+                "supported": true,
+                "quote_ok_len": 15
+              },
+              {
+                "claim": "授权任一即可收口，或自己跑 summary 前先把上表 verdicts 落盘。",
+                "quote": "授权任一即可收口；或你自己跑 summary 前先把上表 verdicts 落盘。",
+                "supported": true,
+                "quote_ok_len": 41
+              },
+              {
+                "claim": "纪要称 J3 双绿升级状态需确认。",
+                "quote": "",
+                "supported": false,
+                "quote_ok_len": 0
+              }
+            ]
+          }
+        },
+        "anchor_recall": 0.875
+      },
+      "decision": "hold"
+    },
+    {
+      "session_id": "024ffe20-57df-4662-ac00-95503534b06f",
+      "minimax": {
+        "status": "hold",
+        "claims": 19,
+        "supported": 7,
+        "anchor_recall": 0.0
+      },
+      "kimi": {
+        "status": "hold",
+        "reviewers": {
+          "kimi-k3-256k": {
+            "reviewer": "kimi-k3-256k",
+            "claims": 39,
+            "supported": 37,
+            "unsupported": [
+              "坐标条目称回连cx\\chun",
+              "venv不可跨平台(平台二进制+绝对路径)"
+            ],
+            "claims_detail": [
+              {
+                "claim": "mcp_server.py顶层import mcp_durable崩(插件目录无此包)",
+                "quote": "mcp_server.py顶层import mcp_durable崩(插件目录无此包)",
+                "supported": true,
+                "quote_ok_len": 43
+              },
+              {
+                "claim": "裸python撞Store存根导致进程秒退",
+                "quote": "裸python撞Store存根→秒退",
+                "supported": true,
+                "quote_ok_len": 18
+              },
+              {
+                "claim": "MCP修复决策为挂sys.path并把~/.claude.json command换为venv python(plugin 031f0df)",
+                "quote": "挂sys.path+~/.claude.json command换venv python(plugin 031f0df)双绿",
+                "supported": true,
+                "quote_ok_len": 62
+              },
+              {
+                "claim": "MCP修复后initialize与tools/list双绿",
+                "quote": "initialize+tools/list双绿",
+                "supported": true,
+                "quote_ok_len": 23
+              },
+              {
+                "claim": "R561 rerank迁Mac mini 8401闭环",
+                "quote": "R561 rerank迁Mac mini 8401闭环",
+                "supported": true,
+                "quote_ok_len": 27
+              },
+              {
+                "claim": "rerank\"公钥拒\"实为ssh config User占位误诊",
+                "quote": "\"公钥拒\"=ssh config User占位误诊",
+                "supported": true,
+                "quote_ok_len": 25
+              },
+              {
+                "claim": "ssh真名chunxiao.wang在openclaw CAPABILITIES.md首行",
+                "quote": "真名chunxiao.wang在openclaw CAPABILITIES.md首行",
+                "supported": true,
+                "quote_ok_len": 42
+              },
+              {
+                "claim": "rerank token经ssh直传且跨机ok:true 908ms零fallback",
+                "quote": "token ssh直传,ok:true 908ms零fallback",
+                "supported": true,
+                "quote_ok_len": 34
+              },
+              {
+                "claim": "脚本60s自验窗短于模型预热约4min导致误报",
+                "quote": "脚本60s自验窗<模型预热(~4min)=误报",
+                "supported": true,
+                "quote_ok_len": 23
+              },
+              {
+                "claim": "服务死活以launchctl+lsof实测为准,别信脚本自验输出",
+                "quote": "服务死活以launchctl+lsof实测为准,别信脚本自验输出",
+                "supported": true,
+                "quote_ok_len": 32
+              },
+              {
+                "claim": "安装脚本自验拒连不等于服务未起,属误报",
+                "quote": "自验拒连≠服务未起,属误报",
+                "supported": true,
+                "quote_ok_len": 13
+              },
+              {
+                "claim": "Mac→Win经UAC装administrators_authorized_keys回连cx\\chunx",
+                "quote": "Mac→Win经UAC装administrators_authorized_keys回连cx\\chunx",
+                "supported": true,
+                "quote_ok_len": 52
+              },
+              {
+                "claim": "坐标条目称回连cx\\chun",
+                "quote": "",
+                "supported": false,
+                "quote_ok_len": 0
+              },
+              {
+                "claim": "cloud免带key(openclaw已装Mac公钥)",
+                "quote": "cloud免带key(openclaw已装Mac公钥)",
+                "supported": true,
+                "quote_ok_len": 27
+              },
+              {
+                "claim": "gpu机43.166.8.20疑退租,gpu_box_key存档Mac",
+                "quote": "gpu机43.166.8.20疑退租,gpu_box_key存档Mac",
+                "supported": true,
+                "quote_ok_len": 35
+              },
+              {
+                "claim": "密钥一律ssh点对点不经NAS",
+                "quote": "密钥一律ssh点对点不经NAS",
+                "supported": true,
+                "quote_ok_len": 15
+              },
+              {
+                "claim": "迁移包漏插件目录,从HEAD 031f0df打包补",
+                "quote": "迁移包漏插件目录(从HEAD 031f0df打包补)",
+                "supported": true,
+                "quote_ok_len": 26
+              },
+              {
+                "claim": "Mac侧daemon.py/hook.sh/daemon_start.sh全无",
+                "quote": "Mac侧 daemon.py/hook.sh/daemon_start.sh 全无",
+                "supported": true,
+                "quote_ok_len": 41
+              },
+              {
+                "claim": "插件CRLF全目录转LF,do\\r炸Mac bash且Git Bash掩盖",
+                "quote": "CRLF全目录转LF(do\\r炸Mac bash,Git Bash掩盖)",
+                "supported": true,
+                "quote_ok_len": 36
+              },
+              {
+                "claim": "daemon_start.sh改BSD stat -f %m,GNU -c %Y静默失败",
+                "quote": "daemon_start.sh改BSD `stat -f %m`(GNU `-c %Y`静默失败)",
+                "supported": true,
+                "quote_ok_len": 49
+              },
+              {
+                "claim": "字节级排查坐实行内容对但语法报错即不可见字符嫌疑",
+                "quote": "字节级排查坐实(行内容对但语法报错=不可见字符嫌疑)",
+                "supported": true,
+                "quote_ok_len": 26
+              },
+              {
+                "claim": "venv不可跨平台(平台二进制+绝对路径)",
+                "quote": "venv不可跨平台(平台二进制+绝对路径)",
+                "supported": false,
+                "quote_ok_len": 21
+              },
+              {
+                "claim": "Mac逐项目以uv+python3.12重建venv",
+                "quote": "venv不可跨平台,逐项目uv+py3.12重建",
+                "supported": true,
+                "quote_ok_len": 24
+              },
+              {
+                "claim": "Mac重建走uv+python3.12以避brew 3.15轮子风险",
+                "quote": "Mac重建走uv+python3.12(避brew 3.15轮子风险)",
+                "supported": true,
+                "quote_ok_len": 35
+              },
+              {
+                "claim": "精力对账正本commit为ba0a3dd9",
+                "quote": "精力对账ba0a3dd9",
+                "supported": true,
+                "quote_ok_len": 12
+              },
+              {
+                "claim": "自举线直接41 commit约2.4%",
+                "quote": "自举线直接41 commit≈2.4%",
+                "supported": true,
+                "quote_ok_len": 19
+              },
+              {
+                "claim": "10/6\"3000触发器\"开弯路被定性为代理指标背叛标本",
+                "quote": "10/6\"3000触发器\"开弯路=代理指标背叛标本",
+                "supported": true,
+                "quote_ok_len": 25
+              },
+              {
+                "claim": "\"重启旧线先查前次终止原因\"入勘误档§四+CLAUDE.md速览",
+                "quote": "\"重启旧线先查前次终止原因\"入勘误档§四+CLAUDE.md速览",
+                "supported": true,
+                "quote_ok_len": 32
+              },
+              {
+                "claim": "操作复发病四条:Edit前必Read/长任务禁后台agent/坐标写入前实核/改动前全量git status+diff",
+                "quote": "Edit前必Read/长任务禁后台agent/坐标写入前实核/改动前全量git status+diff",
+                "supported": true,
+                "quote_ok_len": 51
+              },
+              {
+                "claim": "工作区≠HEAD曾致chimera daemon.py,git checkout HEAD --即愈",
+                "quote": "chimera daemon.py,git checkout HEAD --即愈",
+                "supported": true,
+                "quote_ok_len": 40
+              },
+              {
+                "claim": "知乎稿候审ff078456,死线10/27",
+                "quote": "知乎稿候审(ff078456,死线10/27)",
+                "supported": true,
+                "quote_ok_len": 23
+              },
+              {
+                "claim": "创世二批5家候批",
+                "quote": "创世二批5家候批",
+                "supported": true,
+                "quote_ok_len": 8
+              },
+              {
+                "claim": "两边git已分叉,须定Mac为主干防双头写",
+                "quote": "git分叉须定Mac为主干防双头写",
+                "supported": true,
+                "quote_ok_len": 17
+              },
+              {
+                "claim": "笔记本改动由ssh/git同步",
+                "quote": "笔记本改动由ssh/git同步",
+                "supported": true,
+                "quote_ok_len": 15
+              },
+              {
+                "claim": "gaurav材料走RECHECK_PREP",
+                "quote": "gaurav材料走RECHECK_PREP",
+                "supported": true,
+                "quote_ok_len": 21
+              },
+              {
+                "claim": "云端MCP一直顶着故本地MCP问题未暴露",
+                "quote": "云端MCP一直顶着故未暴露",
+                "supported": true,
+                "quote_ok_len": 13
+              },
+              {
+                "claim": "官方依赖仅sentence-transformers",
+                "quote": "官方依赖仅sentence-transformers",
+                "supported": true,
+                "quote_ok_len": 26
+              },
+              {
+                "claim": "收尾四步为venv→起daemon→recall实弹→MCP实弹",
+                "quote": "收尾四步=venv→起daemon→recall实弹→MCP实弹",
+                "supported": true,
+                "quote_ok_len": 32
+              },
+              {
+                "claim": "档案来源日期为2026-10-20会话蒸馏(自动)",
+                "quote": "来源: 2026-10-20 会话蒸馏(自动)",
+                "supported": true,
+                "quote_ok_len": 23
+              }
+            ]
+          }
+        },
+        "anchor_recall": 0.0
+      },
+      "decision": "hold"
+    },
+    {
+      "session_id": "02e3f72c-1ed3-4404-9752-d663b46e1da8",
+      "minimax": {
+        "status": "hold",
+        "claims": 23,
+        "supported": 8,
+        "anchor_recall": 0.1364
+      },
+      "kimi": {
+        "status": "hold",
+        "reviewers": {
+          "kimi-k3-256k": {
+            "reviewer": "kimi-k3-256k",
+            "claims": 37,
+            "supported": 37,
+            "unsupported": [],
+            "claims_detail": [
+              {
+                "claim": "自举线被定谳：工作痕迹≠判例，棘轮永久停、4002撤出对外叙事，registry勘误与q50下架已外网验证。",
+                "quote": "🔴自举线定谳(用户亲审,389392b7):工作痕迹≠判例;棘轮永久停、4002撤出对外叙事;registry勘误+q50下架已外网验证",
+                "supported": true,
+                "quote_ok_len": 68
+              },
+              {
+                "claim": "“1032人工题”被勘误为1162条中96%来自官方answer_gold加机械复算，真人工约35条。",
+                "quote": "\"1032人工题\"勘误(4197bc2d):1162条实测96%=官方answer_gold+机械复算,真人工仅~35;定名\"官方真值基准的本地判定样本\"",
+                "supported": true,
+                "quote_ok_len": 77
+              },
+              {
+                "claim": "对账对象是1701条commit。",
+                "quote": "1701 条 commit——写分类脚本跑：",
+                "supported": true,
+                "quote_ok_len": 22
+              },
+              {
+                "claim": "对账正本提交为ba0a3dd9，路径含docs/metering/EFFORT_ACCOUNTING_20261020.md与_effort_account.py，且3秒可复跑。",
+                "quote": "对账完成，正本已提交(ba0a3dd9):`docs/metering/EFFORT_ACCOUNTING_20261020.md` + 脚本 `_effort_account.py`(3 秒可复跑)。",
+                "supported": true,
+                "quote_ok_len": 101
+              },
+              {
+                "claim": "A判分/验证主线为610条、占35.9%。",
+                "quote": "| A 判分/验证主线 | 610 | 35.9% |",
+                "supported": true,
+                "quote_ok_len": 27
+              },
+              {
+                "claim": "U未细分杂项降到80条、占4.7%。",
+                "quote": "U 降到 80(4.7%),可接受。",
+                "supported": true,
+                "quote_ok_len": 18
+              },
+              {
+                "claim": "B线165条清单经过手工校正。",
+                "quote": "B 子类噪声偏大(B1 里混了 README/理论档等误入)。基于已过目的全部 165 条 B 清单做手工校正，数字已在握。现在写对账报告正本：",
+                "supported": true,
+                "quote_ok_len": 72
+              },
+              {
+                "claim": "自举线本体为41条、约占总量2.4%，且主要是10/6–10/13的集中弯路。",
+                "quote": "- **自举线本体 = 41 条 ≈ 总量的 2.4%**。不是常态投入，是**10/6–10/13 九天的集中弯路**(当月 32 条)，外加 8 月一次早期原型(6 条，当年自然过期收场)",
+                "supported": true,
+                "quote_ok_len": 96
+              },
+              {
+                "claim": "有效燃料约10条且现役。",
+                "quote": "- **有效燃料 ≈ 10 条，现役**(9/30 北极星：官方真值语料 + champion LoRA 88.51%)",
+                "supported": true,
+                "quote_ok_len": 60
+              },
+              {
+                "claim": "广义弯路约70条、约占4.1%。",
+                "quote": "- **广义弯路**(自举线 + 为“语料 3000 触发 8B”服务的重训实验链)≈ 70 条 ≈ 4.1%",
+                "supported": true,
+                "quote_ok_len": 55
+              },
+              {
+                "claim": "因果链为9/30有效燃料线成立，10/6立3000触发器，10/13达标并对拍FAIL，10/14 P2 FAIL，10/19定谳。",
+                "quote": "**9/30 有效燃料线先成立**(88.51%,官方真值 1454)→ **10/6 拍板“先攒 3000 再对拍”立触发器** → 10/7–13 为凑 743 条缺口连开 6 个自产源，1453→4002,每次达标都在 registry 页庆祝 → 10/13 同日达标宣布+对拍 FAIL → 10/14 P2 FAIL → 10/19 您定谳。",
+                "supported": true,
+                "quote_ok_len": 177
+              },
+              {
+                "claim": "病根被定为数量里程碑接管方向，“3000触发器”是代理指标背叛Ground Truth的标本。",
+                "quote": "1. **不是不知道好燃料在哪——是数量里程碑接管了方向**。“3000 触发器”是代理指标背叛 Ground Truth 的完整标本。",
+                "supported": true,
+                "quote_ok_len": 68
+              },
+              {
+                "claim": "同一错误犯了两次：8月原型自然止损，10月重启未引用前次终止原因，教训未入checklist是再发条件。",
+                "quote": "2. **同一错误犯了两次**：8 月原型自然止损过，10 月重启时没有人在立项档里引用那次终止原因——教训未入 checklist 是再发条件。",
+                "supported": true,
+                "quote_ok_len": 73
+              },
+              {
+                "claim": "教训入档提交为d8f85611。",
+                "quote": "已入档，复验通过(两档各含两条)，提交 d8f85611:",
+                "supported": true,
+                "quote_ok_len": 29
+              },
+              {
+                "claim": "勘误档§四作为checklist正本，新增第5条“重启旧线先查前次终止原因”。",
+                "quote": "**勘误档 §四 checklist 正本**：新增第 5 条“重启旧线先查前次终止原因”",
+                "supported": true,
+                "quote_ok_len": 45
+              },
+              {
+                "claim": "CLAUDE.md复发陷阱速览同步落位两条。",
+                "quote": "**CLAUDE.md 复发陷阱速览**：两条同步落位——这是每 session 必载的层，不写在这里等于没写",
+                "supported": true,
+                "quote_ok_len": 55
+              },
+              {
+                "claim": "刻意不造新checklist文档，理由是防SSOT drift并复用勘误档§四。",
+                "quote": "刻意**不造新 checklist 文档**：本项目病根之一是 SSOT drift,复用勘误档 §四 为 checklist 正本，CLAUDE.md 只放指针式速览",
+                "supported": true,
+                "quote_ok_len": 84
+              },
+              {
+                "claim": "daemon当天4次换PID：16752→345961→42340→41768。",
+                "quote": "1. **daemon 频繁半死** [实测]：今天 4 次换 PID(16752→345961→42340→41768)。",
+                "supported": true,
+                "quote_ok_len": 62
+              },
+              {
+                "claim": "42340在09:59:36健康启动、10:05仍记日志，约10:08 ping超时，被判断为accept循环堵塞。",
+                "quote": "42340 于 09:59:36 健康启动、10:05 还在记日志，~10:08 我 ping 超时——accept 循环被堵的“活体”当场抓到；",
+                "supported": true,
+                "quote_ok_len": 73
+              },
+              {
+                "claim": "19879隧道当时无人监听，导致回退本地CPU bge-reranker。",
+                "quote": "rerank remote 隧道 19879 当前无人监听(netstat 空)，回退本地 CPU bge-reranker",
+                "supported": true,
+                "quote_ok_len": 62
+              },
+              {
+                "claim": "重查询期间ping排队超时，触发启动脚本判半死并taskkill，形成重启循环。",
+                "quote": "重查询期间 ping 排队超时→启动脚本判“半死”taskkill→重启循环",
+                "supported": true,
+                "quote_ok_len": 38
+              },
+              {
+                "claim": "老hook.sh ping不通只喊一声就退出，UserPromptSubmit不拉起，且GRACE=600s会让窗内崩溃最长10分钟没人管。",
+                "quote": "3. **未就绪后无自愈** [实测]：老 hook.sh ping 不通只喊一声就退出，UserPromptSubmit 从不拉起，只能等下次 SessionStart→**整段 session 静默**；再叠加 GRACE=600s(BGE 本地时代 349s 冷启动的遗产)，窗内崩溃最长 10 分钟没人管。",
+                "supported": true,
+                "quote_ok_len": 157
+              },
+              {
+                "claim": "修复提交为plugin仓7a33a98：未就绪后台踢daemon_start.sh，GRACE 600→60，并标注节流为设计非故障。",
+                "quote": "**已修**(plugin 仓提交 7a33a98,分支 feat/memory-gate-trio;语法过+服务现 pong OK):未就绪时后台踢一次 daemon_start.sh(实测冷启动 5.3 秒，下一条 prompt 恢复，竞态锁防双实例)；GRACE 600→60;节流文案标注“设计如此非故障”。",
+                "supported": true,
+                "quote_ok_len": 158
+              },
+              {
+                "claim": "嵌入BGE已迁Mac mini，地址192.168.5.120:8400。",
+                "quote": "| **嵌入(BGE)** | **已迁 Mac mini**(R540 接管，`192.168.5.120:8400`) | 刚探：HTTP 200 / 18ms;daemon 日志 `embed proxy ON → 192.168.5.120:8400`,本机不算嵌入 |",
+                "supported": true,
+                "quote_ok_len": 139
+              },
+              {
+                "claim": "重排reranker未迁移，落在本地CPU，配置仍指已死的127.0.0.1:19879隧道。",
+                "quote": "| **重排(reranker)** | **没迁，落在本地 CPU** | 日志 `bge-reranker-v2-m3 on cpu`;配置仍指 A100 隧道 `127.0.0.1:19879`——隧道已死(端口空)，三级回退最后一级=CPU |",
+                "supported": true,
+                "quote_ok_len": 126
+              },
+              {
+                "claim": "HEAD里的daemon.py根本没丢，丢的是工作区未提交旧版副本。",
+                "quote": "真相大白：**HEAD 里的 daemon.py 根本没丢**——`26ff8b3` 与 HEAD 零差异，R500 全版(含 remote rerank)完好在库。丢的只是**工作区副本**(未提交的旧版漂移)，daemon 一直在跑这份旧文件；",
+                "supported": true,
+                "quote_ok_len": 124
+              },
+              {
+                "claim": "工作区checkout对齐HEAD后，测试41/41全绿。",
+                "quote": "工作区已对齐 HEAD,41/41 全绿。",
+                "supported": true,
+                "quote_ok_len": 21
+              },
+              {
+                "claim": "daemon_start.sh切到192.168.5.120:8401，清死隧道19879，超时4s，plugin仓8adc41c。",
+                "quote": "| daemon_start.sh | 切 `192.168.5.120:8401` + 清死隧道 19879 + 超时 4s(plugin 仓 8adc41c) |",
+                "supported": true,
+                "quote_ok_len": 83
+              },
+              {
+                "claim": "Mac服务端一键安装脚本为tools/macmini_rerank_install.sh，Projects仓e6bd8d12，端口8401。",
+                "quote": "| Mac 服务端一键安装脚本 | `tools/macmini_rerank_install.sh`(Projects 仓 e6bd8d12):9879 协议同构/端口 8401/MPS fp32/复用 ~/bge-embed venv/LaunchD 常驻/装完自验 |",
+                "supported": true,
+                "quote_ok_len": 137
+              },
+              {
+                "claim": "ssh config的Host macmini已补HostName 192.168.5.120，User仍待回报。",
+                "quote": "| ssh config | `Host macmini` HostName 已补 192.168.5.120(IP 实测)，User 仍待回报 |",
+                "supported": true,
+                "quote_ok_len": 74
+              },
+              {
+                "claim": "本地daemon已带恢复版代码重启，PID 360469，7s ready。",
+                "quote": "daemon 已带恢复版代码重启(360469,7s ready)。",
+                "supported": true,
+                "quote_ok_len": 34
+              },
+              {
+                "claim": "后续三步联调为跨机实弹Windows→8401、重启本地daemon、daemon.log确认不再fallback。",
+                "quote": "之后我这边三步联调收口：跨机实弹(Windows→8401)→ 重启本地 daemon → daemon.log 确认不再 fallback。",
+                "supported": true,
+                "quote_ok_len": 71
+              },
+              {
+                "claim": "操作复发病四规为Edit前必Read、长任务禁后台agent、坐标写入前实核、改动前确认工作区=HEAD。",
+                "quote": "操作复发病四规:Edit前必Read/长任务禁后台agent(两轮随重启被杀零产出)/坐标写入前实核/改动前确认工作区=HEAD",
+                "supported": true,
+                "quote_ok_len": 64
+              },
+              {
+                "claim": "长任务禁后台agent的依据是后台agent随进程重启被杀、零产出。",
+                "quote": "两次后台 agent 都随进程重启被杀——改为前台直接做，更稳。",
+                "supported": true,
+                "quote_ok_len": 32
+              },
+              {
+                "claim": "Edit前必Read的规则来自Edit凭记忆副本当old_string导致失败。",
+                "quote": "1. **Edit 凭记忆副本当 old_string**——昨天 memory 档、今天 `_effort_account.py` 两次 not-found,还有一次 Edit 漏掉列表收尾 `]` 把脚本改坏(运行才炸)。规则已立：同一文件 Edit 前必 Read,Edit 后必复验语法/锚点。",
+                "supported": true,
+                "quote_ok_len": 151
+              },
+              {
+                "claim": "坐标写入前必实核的规则来自坐标凭印象写造成错误。",
+                "quote": "3. **坐标凭印象写**——昨天对账报告把 346b06fe 写成\"fuel-loop 过期”，实为垂域 fuel-pool 归档，提交前自查纠正。这与“1032 人工题”同病(转述未实测)。规则已立：hash/路径写入前必实核。",
+                "supported": true,
+                "quote_ok_len": 116
+              },
+              {
+                "claim": "改动前必须全量git status/diff确认底稿等于HEAD。",
+                "quote": "教训入档：改动前必全量 git status/diff 确认底稿=HEAD(操作复发病第 4 条)。",
+                "supported": true,
+                "quote_ok_len": 50
+              }
+            ]
+          }
+        },
+        "anchor_recall": 0.1364
+      },
+      "decision": "hold"
+    },
+    {
+      "session_id": "03612a3e-4bad-417c-a17f-daad3f979a0a",
+      "minimax": {
+        "status": "hold",
+        "claims": 32,
+        "supported": 0,
+        "anchor_recall": 0.0333
+      },
+      "kimi": {
+        "status": "hold",
+        "reviewers": {
+          "kimi-k3-256k": {
+            "reviewer": "kimi-k3-256k",
+            "claims": 40,
+            "supported": 39,
+            "unsupported": [
+              "cognee 维护者明确拒绝并要求勿再联系，处置为永久移除"
+            ],
+            "claims_detail": [
+              {
+                "claim": "A100 已停机，状态从运行变为已停",
+                "quote": "| 状态 | Status 1(运行)→ **8(已停)** |",
+                "supported": true,
+                "quote_ok_len": 32
+              },
+              {
+                "claim": "A100 停机退 1.79 元，累计消费定格 1071.14 元",
+                "quote": "**1.79 元**已退(累计消费定格 1071.14 元)",
+                "supported": true,
+                "quote_ok_len": 30
+              },
+              {
+                "claim": "cloud 经反向隧道 19988 连接 Mac mini",
+                "quote": "**Mac mini→cloud 反向隧道** | ✅ LaunchD 常驻(`-R 19988`),断线 KeepAlive 自拉",
+                "supported": true,
+                "quote_ok_len": 66
+              },
+              {
+                "claim": "BGE 统一迁移至 Mac mini(192.168.5.120:8400,M6 MPS,LaunchD 常驻)",
+                "quote": "BGE统一Mac mini(192.168.5.120:8400,M6 MPS,LaunchD常驻)",
+                "supported": true,
+                "quote_ok_len": 50
+              },
+              {
+                "claim": "Mac mini 单条嵌入延迟 63ms 中位（含局域网往返）",
+                "quote": "单条 **63ms 中位**(含局域网往返)",
+                "supported": true,
+                "quote_ok_len": 22
+              },
+              {
+                "claim": "Mac mini 批量嵌入速率 244 条/秒，A100 隧道 5 条/s、cloud CPU 3 条/s",
+                "quote": "批量 **244 条/秒**——全历史最快配置(A100 隧道 5 条/s、cloud CPU 3 条/s)",
+                "supported": true,
+                "quote_ok_len": 54
+              },
+              {
+                "claim": "笔记本 daemon 743MB，无本地 BGE",
+                "quote": "✅ **已迁走**——daemon 743MB,无本地 BGE",
+                "supported": true,
+                "quote_ok_len": 31
+              },
+              {
+                "claim": "记忆服务未响应根因：hook.sh Python 候选链断，首选解释器指向已迁移的 nautilus-v5/.venv",
+                "quote": "是 hook.sh 的 Python 候选链断了：首选解释器指向 nautilus-v5/.venv(已迁移不存在)，备用链也失效→探活静默失败→每轮误报“未就绪”",
+                "supported": true,
+                "quote_ok_len": 82
+              },
+              {
+                "claim": "插件目录躺着旧版 daemon.py 副本被 watchdog 一直运行，导致双副本互踩",
+                "quote": "**插件目录躺着一份旧版 daemon.py**(无云 BGE 支持，eager 本地加载)，watchdog 一直在跑它",
+                "supported": true,
+                "quote_ok_len": 61
+              },
+              {
+                "claim": "pkl 缓存里 154 条存的是 embedding=None，历史上 embed 失败时污染且永不自愈",
+                "quote": "pkl 缓存里 154 条存的是 `embedding=None`(历史上 embed 失败时污染),fill 的 mtime 命中**连 None 也照赋**，永不自愈",
+                "supported": true,
+                "quote_ok_len": 85
+              },
+              {
+                "claim": "误诊根因：daemon 协议响应键是 recall 不是 hits，测试脚本读错键连报假零召回",
+                "quote": "daemon 协议响应键是 `recall`,不是 `hits`!(daemon.py 第 9 行白纸黑字)",
+                "supported": true,
+                "quote_ok_len": 54
+              },
+              {
+                "claim": "setdefault 被进程已有 env 挡住导致文件配置失效",
+                "quote": "`os.environ.setdefault` 被进程已有 env(daemon_start.sh export 的死值 19987)挡住，文件配置失效",
+                "supported": true,
+                "quote_ok_len": 76
+              },
+              {
+                "claim": "禁用 SYSTEM 级 watchdog 拉起源的命令",
+                "quote": "schtasks /change /tn \"nautilus_compass_daemon_watchdog\" /disable",
+                "supported": true,
+                "quote_ok_len": 64
+              },
+              {
+                "claim": "清理 SYSTEM 权限孤儿进程 17376 的命令",
+                "quote": "Stop-Process -Id 17376 -Force",
+                "supported": true,
+                "quote_ok_len": 29
+              },
+              {
+                "claim": "清理 watchdog 拉起的实例 8560 的命令",
+                "quote": "Stop-Process -Id 8560 -Force",
+                "supported": true,
+                "quote_ok_len": 28
+              },
+              {
+                "claim": "修复方式：仓版同步插件副本单一真源+文件权威配置+None 校验，禁用 SYSTEM watchdog",
+                "quote": "✅ 仓版同步插件副本+SYSTEM watchdog 禁用",
+                "supported": true,
+                "quote_ok_len": 29
+              },
+              {
+                "claim": "daemon.py 加配置文件注入 .cache/daemon_env 统一各拉起源 env",
+                "quote": "**daemon.py 加了配置文件注入**(`.cache/daemon_env`)——无论哪个拉起源(hook/watchdog/手动)用哪个解释器启动，env 统一从文件读取",
+                "supported": true,
+                "quote_ok_len": 90
+              },
+              {
+                "claim": "记忆服务彻底恢复，hook 实际链路端到端全通，下轮对话不再报未就绪",
+                "quote": "**记忆服务彻底恢复——hook 实际链路(hook.sh 的 ping→recall.py 口径)端到端全通，下轮对话 hook 不再报“未就绪”且正常注入记忆。**",
+                "supported": true,
+                "quote_ok_len": 84
+              },
+              {
+                "claim": "验证 Mac mini SSH 连接命令",
+                "quote": "ssh chunxiao.wang@192.168.5.120",
+                "supported": true,
+                "quote_ok_len": 31
+              },
+              {
+                "claim": "验证 BGE 服务在线命令 curl http://192.168.5.120:8400/health",
+                "quote": "BGE 服务状态检查：curl http://192.168.5.120:8400/health（在线，已验证）。",
+                "supported": true,
+                "quote_ok_len": 57
+              },
+              {
+                "claim": "Mac mini 安装脚本为 bash macmini_bge_install.sh，由 openclaw 执行",
+                "quote": "执行脚本:`bash macmini_bge_install.sh`(脚本在 nautilus-compass 仓 `tools/` 下，或直接转发文件)",
+                "supported": true,
+                "quote_ok_len": 77
+              },
+              {
+                "claim": "cloud 嵌入切 Mac mini 内网穿透方案落档路径",
+                "quote": "**内网穿透方案已出并落档(`docs/plans/CLOUD_EMBED_MACMINI_PENETRATION_20261016.md`)。**",
+                "supported": true,
+                "quote_ok_len": 74
+              },
+              {
+                "claim": "A100 停机使用智星云 API stop_instance_with_refund",
+                "quote": "停机 API | 智星云 `stop_instance_with_refund`(停机+退未用费用)",
+                "supported": true,
+                "quote_ok_len": 50
+              },
+              {
+                "claim": "cloud daemon EMBED_PROXY 已切 http://127.0.0.1:19988",
+                "quote": "cloud daemon EMBED_PROXY | ✅ 已切 `http://127.0.0.1:19988`(drop-in `embed_proxy_macmini.conf`,daemon active)",
+                "supported": true,
+                "quote_ok_len": 106
+              },
+              {
+                "claim": "paramiko 每请求新建 SSH 连接把 A100 sshd 连接限额打爆致间歇 10054（自伤）",
+                "quote": "**paramiko 隧道每个请求新建一条 SSH 连接**——今晚几十次重试把 A100 的 sshd 连接限额打爆，服务器随机拒连(自伤)",
+                "supported": true,
+                "quote_ok_len": 71
+              },
+              {
+                "claim": "终解为 ssh 密钥长连接单连接复用，五连测 5/5 稳定",
+                "quote": "**改用 ssh 密钥长连接**(单连接复用所有请求)，五连测 5/5 稳定",
+                "supported": true,
+                "quote_ok_len": 38
+              },
+              {
+                "claim": "untracked 文件挡住 git merge 致每次 merge 静默 Abort，被误判为 platform 回滚",
+                "quote": "它们挡住了 git merge(git 拒绝覆盖 untracked 文件)，**每次 merge 都在静默 Abort**",
+                "supported": true,
+                "quote_ok_len": 62
+              },
+              {
+                "claim": "诊断时用 tail -1 截断输出导致误读，教训：诊断 git 问题禁止 tail 截断，reflog 一步证伪",
+                "quote": "而我诊断时用 `tail -1` 截断了输出，只看到误导性的 \"Updating...\" 行，把“merge 没成功”误读成“platform 回滚”",
+                "supported": true,
+                "quote_ok_len": 75
+              },
+              {
+                "claim": "平台信箱堆了 11 封（10/14 凌晨起），含首考派单和 judge_status 全崩红灯，系 Gmail 漏巡教训复发",
+                "quote": "平台信箱堆了 **11 封**(10/14 凌晨起)，含两件急的：**首考派单**和 **judge_status 全崩红灯**",
+                "supported": true,
+                "quote_ok_len": 64
+              },
+              {
+                "claim": "三渠道例巡（平台信箱/Gmail/GitHub）固化为开工铁律",
+                "quote": "并把“三渠道例巡”(平台信箱/Gmail/GitHub)固化为开工铁律",
+                "supported": true,
+                "quote_ok_len": 35
+              },
+              {
+                "claim": "11183 Mac mini token 函凭据是未替换的变量字面量，实际 key 没发出，已退回重发",
+                "quote": "发现函体凭据是**未替换的变量字面量**(`$(cat ...)`),实际 key 根本没发出来——已退回请平台重发",
+                "supported": true,
+                "quote_ok_len": 58
+              },
+              {
+                "claim": "首考 11196 判读卡 nautilus-l1-0007 公网上线，全闭环完成",
+                "quote": "**0007 卡公网 live——首考全闭环完成。**",
+                "supported": true,
+                "quote_ok_len": 27
+              },
+              {
+                "claim": "首考提前 SLA 11.5h：死线明晨 08:45，实际完成 13:32(+08)",
+                "quote": "死线明晨 08:45,**实际完成 13:32(+08),提前 11.5h** ✅",
+                "supported": true,
+                "quote_ok_len": 41
+              },
+              {
+                "claim": "判据锚 b81eca8436887785（L3_HARNESS_BOARD_ROUND1，与 #11185 对表口径一致）",
+                "quote": "b81eca8436887785(L3_HARNESS_BOARD_ROUND1,与 #11185 对表口径一致)",
+                "supported": true,
+                "quote_ok_len": 57
+              },
+              {
+                "claim": "finding：is_smoke 字段 action→platform 断链（action 日志 true，submission API 返回 false）",
+                "quote": "is_smoke 字段 action→platform 断链(action 日志声称 true,submission API 返回 false)——smoke 提单可能混入正式队列，请 platform 核查 intake 字段映射",
+                "supported": true,
+                "quote_ok_len": 116
+              },
+              {
+                "claim": "创世十家首批 5 发全部投出",
+                "quote": "**创世十家首批 5 发全部投出——外联主件落地。**",
+                "supported": true,
+                "quote_ok_len": 27
+              },
+              {
+                "claim": "cognee 维护者明确拒绝并要求勿再联系，处置为永久移除",
+                "quote": "维护者明确拒绝:\"We are not interested. **Please do not contact us again.**\"",
+                "supported": false,
+                "quote_ok_len": 68
+              },
+              {
+                "claim": "letta issue 被 bot 自动关闭（未走其 7 项模板）",
+                "quote": "issue 被 bot 自动关闭(未走其 7 项模板：ack 短语/AI 政策声明/authorship 等)",
+                "supported": true,
+                "quote_ok_len": 55
+              },
+              {
+                "claim": "dev.to 三条回复全部上墙并经 API 复验",
+                "quote": "## 一、dev.to 三条回复全部上墙 ✅ [API 复验]",
+                "supported": true,
+                "quote_ok_len": 31
+              },
+              {
+                "claim": "cloud recall 端到端验证遗留：token 文件路径因 SSH 限流未找到",
+                "quote": "cloud daemon recall 端到端 | 📋 明早收尾(token 文件路径今晚 SSH 限流没找到，daemon.py 里有定义)",
+                "supported": true,
+                "quote_ok_len": 71
+              }
+            ]
+          }
+        },
+        "anchor_recall": 0.0333
+      },
+      "decision": "hold"
+    },
+    {
+      "session_id": "03bba014-f9e9-4359-a427-877ca2c5c228",
+      "minimax": {
+        "status": "hold",
+        "claims": 26,
+        "supported": 0,
+        "anchor_recall": 0.0702
+      },
+      "kimi": {
+        "status": "hold",
+        "reviewers": {
+          "kimi-k3-256k": {
+            "reviewer": "kimi-k3-256k",
+            "claims": 40,
+            "supported": 40,
+            "unsupported": [],
+            "claims_detail": [
+              {
+                "claim": "自产工作记录作为 NACRE 训练燃料被用户判定从底层无效",
+                "quote": "这说明从底层就是错误的无效的",
+                "supported": true,
+                "quote_ok_len": 14
+              },
+              {
+                "claim": "数量棘轮永久停止，4002/3000 类数字撤出对外进展",
+                "quote": "数量棘轮**永久停止**，4002/3000 这类数字不再出现在任何对外进展里",
+                "supported": true,
+                "quote_ok_len": 39
+              },
+              {
+                "claim": "自产语料仅保留 compass 记忆检索（RAG）用途",
+                "quote": "自产语料只保留一个用途：compass 记忆检索(这个不需要标签对错，用着有效)",
+                "supported": true,
+                "quote_ok_len": 40
+              },
+              {
+                "claim": "1162 条 train 中 1120 条(96%)为上游官方 answer_gold+机械复算，真人工约 35 条",
+                "quote": "1162 条逐条溯源：720+400=1120 条(96%)为上游官方 answer_gold+机械复算，真人工约 35 条",
+                "supported": true,
+                "quote_ok_len": 62
+              },
+              {
+                "claim": "术语统一为“官方真值基准的本地判定样本”，禁用“人工题”",
+                "quote": "今后一律叫“官方真值基准的本地判定样本”，禁用“人工题”",
+                "supported": true,
+                "quote_ok_len": 28
+              },
+              {
+                "claim": "NACRE 新定位=判分业务附属品，外部燃料三路",
+                "quote": "外部燃料三路：客户真值回执(co-build首选)/判读员认证众包/收购标注(最后手段，65%回旋镖)",
+                "supported": true,
+                "quote_ok_len": 51
+              },
+              {
+                "claim": "外部燃料三路具体为：co-build 主线、众包第二梯队、收购最后手段",
+                "quote": "**① Co-build(跟业务合流)——主线，边际成本零**",
+                "supported": true,
+                "quote_ok_len": 31
+              },
+              {
+                "claim": "收购标注市价：1000 条专业判定约几千到几万人民币",
+                "quote": "1000 条专业判定市价约几千到几万人民币",
+                "supported": true,
+                "quote_ok_len": 21
+              },
+              {
+                "claim": "众包种子人 arhancanli 曾在 dev.to 抓出 flips 数字数学矛盾",
+                "quote": "在 dev.to 上抓出我们 flips 数字数学矛盾的那位外部读者",
+                "supported": true,
+                "quote_ok_len": 34
+              },
+              {
+                "claim": "1701 条 commit 全量对账",
+                "quote": "对账完成，正本已提交(ba0a3dd9):`docs/metering/EFFORT_ACCOUNTING_20261020.md`",
+                "supported": true,
+                "quote_ok_len": 66
+              },
+              {
+                "claim": "A 判分/验证主线 610 条占 35.9%",
+                "quote": "| A 判分/验证主线 | 610 | 35.9% |",
+                "supported": true,
+                "quote_ok_len": 27
+              },
+              {
+                "claim": "自举线本体 41 条约占总量的 2.4%",
+                "quote": "41 条 ≈ 总量的 2.4%",
+                "supported": true,
+                "quote_ok_len": 15
+              },
+              {
+                "claim": "自举线集中于 10/6–10/13 九天",
+                "quote": "10/6–10/13 九天的集中弯路",
+                "supported": true,
+                "quote_ok_len": 18
+              },
+              {
+                "claim": "有效燃料约 10 条现役（9/30 北极星 88.51%）",
+                "quote": "有效燃料 ≈ 10 条，现役**(9/30 北极星：官方真值语料 + champion LoRA 88.51%)",
+                "supported": true,
+                "quote_ok_len": 56
+              },
+              {
+                "claim": "病根=数量里程碑接管方向",
+                "quote": "是数量里程碑接管了方向",
+                "supported": true,
+                "quote_ok_len": 11
+              },
+              {
+                "claim": "10/6 拍板“先攒 3000 再对拍”立触发器",
+                "quote": "10/6 拍板“先攒 3000 再对拍”立触发器",
+                "supported": true,
+                "quote_ok_len": 24
+              },
+              {
+                "claim": "SELFLABEL 审计 58/58 全 pass、空输入也判 pass",
+                "quote": "SELFLABEL 审计抓到过 58/58 全 pass、空输入也判 pass",
+                "supported": true,
+                "quote_ok_len": 39
+              },
+              {
+                "claim": "P2 盲评 65/100 FAIL，盲评者为带管线参与背景的 Claude session",
+                "quote": "P2 FAIL 65/100, blind reviewer = Claude session with pipeline-involvement caveat",
+                "supported": true,
+                "quote_ok_len": 80
+              },
+              {
+                "claim": "10/13 第一次盲评审计一致率 37.9%",
+                "quote": "10/13 第一次盲评审计(37.9%,惨案曝光)",
+                "supported": true,
+                "quote_ok_len": 25
+              },
+              {
+                "claim": "从曝光到定谳 6 天，此前 30 天零人类盲评",
+                "quote": "从曝光到定谳 6 天",
+                "supported": true,
+                "quote_ok_len": 10
+              },
+              {
+                "claim": "真正的窟窿是曝光之前的 30 天零人类盲评",
+                "quote": "真正的窟窿是曝光之前的 30 天零人类盲评",
+                "supported": true,
+                "quote_ok_len": 21
+              },
+              {
+                "claim": "8B FAIL(+1.0pp)当天归因“数据不够”",
+                "quote": "8B FAIL(+1.0pp)当天归因“数据不够”，结论“继续攒”",
+                "supported": true,
+                "quote_ok_len": 33
+              },
+              {
+                "claim": "registry 页挂勘误横幅（commit 389392b7）",
+                "quote": "`runtime/site/registry.html` (edited, commit 389392b7)",
+                "supported": true,
+                "quote_ok_len": 54
+              },
+              {
+                "claim": "errata.html 追加 10/19 勘误行",
+                "quote": "`runtime/site/errata.html` (edited + deployed): 10/19 errata row appended",
+                "supported": true,
+                "quote_ok_len": 73
+              },
+              {
+                "claim": "真人卷（q50）已下架",
+                "quote": "真人卷已下架",
+                "supported": true,
+                "quote_ok_len": 6
+              },
+              {
+                "claim": "ERRATA 档 §五 勘误（commit 4197bc2d）",
+                "quote": "edited 4197bc2d): added §五",
+                "supported": true,
+                "quote_ok_len": 26
+              },
+              {
+                "claim": "daemon_start.sh 切 192.168.5.120:8401 并清死隧道 19879（plugin 仓 8adc41c）",
+                "quote": "切 `192.168.5.120:8401` + 清死隧道 19879 + 超时 4s(plugin 仓 8adc41c)",
+                "supported": true,
+                "quote_ok_len": 61
+              },
+              {
+                "claim": "rerank 配置曾指向 A100 隧道 127.0.0.1:19879，隧道已死，回退到 CPU",
+                "quote": "配置仍指 A100 隧道 `127.0.0.1:19879`——隧道已死(端口空)，三级回退最后一级=CPU",
+                "supported": true,
+                "quote_ok_len": 54
+              },
+              {
+                "claim": "daemon.py 工作区对齐 HEAD 后 41/41 测试全绿",
+                "quote": "工作区已对齐 HEAD,41/41 全绿",
+                "supported": true,
+                "quote_ok_len": 20
+              },
+              {
+                "claim": "创建 Mac mini 一键安装脚本 tools/macmini_rerank_install.sh（commit e6bd8d12）",
+                "quote": "`tools/macmini_rerank_install.sh`(Projects 仓 e6bd8d12)",
+                "supported": true,
+                "quote_ok_len": 54
+              },
+              {
+                "claim": "教训入档提交 d8f85611，两档各含两条",
+                "quote": "已入档，复验通过(两档各含两条)，提交 d8f85611",
+                "supported": true,
+                "quote_ok_len": 28
+              },
+              {
+                "claim": "checklist 正本落在勘误档 §四，CLAUDE.md 只放速览，刻意不造新 checklist 文档",
+                "quote": "不造新 checklist 文档",
+                "supported": true,
+                "quote_ok_len": 16
+              },
+              {
+                "claim": "CPU rerank 期间 ping 排队超时触发“半死”判定与重启循环",
+                "quote": "重查询期间 ping 排队超时→启动脚本判“半死”taskkill→重启循环",
+                "supported": true,
+                "quote_ok_len": 38
+              },
+              {
+                "claim": "GRACE=600s 窗口内崩溃最长 10 分钟无人管",
+                "quote": "GRACE=600s(BGE 本地时代 349s 冷启动的遗产)，窗内崩溃最长 10 分钟没人管",
+                "supported": true,
+                "quote_ok_len": 48
+              },
+              {
+                "claim": "长任务押注后台 agent 三轮全部随进程重启被杀、零产出",
+                "quote": "对账任务三轮后台 agent 全部随进程重启被杀，零产出",
+                "supported": true,
+                "quote_ok_len": 28
+              },
+              {
+                "claim": "规则确立：同一文件 Edit 前必 Read，Edit 后必复验语法/锚点",
+                "quote": "同一文件 Edit 前必 Read,Edit 后必复验语法/锚点",
+                "supported": true,
+                "quote_ok_len": 32
+              },
+              {
+                "claim": "346b06fe 实为垂域 fuel-pool 归档而非 fuel-loop 过期",
+                "quote": "实为垂域 fuel-pool 归档",
+                "supported": true,
+                "quote_ok_len": 17
+              },
+              {
+                "claim": "嵌入(BGE)已迁 Mac mini（R540，192.168.5.120:8400），日志显示 embed proxy 开启",
+                "quote": "embed proxy ON → 192.168.5.120:8400",
+                "supported": true,
+                "quote_ok_len": 35
+              },
+              {
+                "claim": "hook.sh 修复提交 plugin 仓 7a33a98（分支 feat/memory-gate-trio），含 GRACE 600→60",
+                "quote": "plugin 仓提交 7a33a98,分支 feat/memory-gate-trio",
+                "supported": true,
+                "quote_ok_len": 43
+              },
+              {
+                "claim": "判分业务真实交付存活：首卡、G1、E1 均为真实外部消费",
+                "quote": "判分业务本身(首卡、平台复现、G1 终判、E1 判官席，都是真实外部消费)",
+                "supported": true,
+                "quote_ok_len": 37
+              }
+            ]
+          }
+        },
+        "anchor_recall": 0.0702
+      },
+      "decision": "hold"
+    }
+  ],
+  "approved_receipts": 0,
+  "published": false
+}

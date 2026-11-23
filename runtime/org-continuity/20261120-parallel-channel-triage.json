@@ -1,0 +1,32 @@
+{
+  "generated_at": "2026-11-20",
+  "mode": "read_only",
+  "gmail": {
+    "sjb_search": "newer_than:30d {数聚变 sjb p1-3 UMI}",
+    "matching_messages": 4,
+    "historical_sent_to": "shujubian@yeah.net",
+    "reply_found_in_current_search": false,
+    "note": "The current search returned four prior outbound messages from 2026-10-22 to 2026-10-23. It does not prove whether the newly sent request was delivered or indexed yet."
+  },
+  "github": [
+    {
+      "issue": "IHUI-INF-AI/IHUI-AI#78",
+      "status": "open",
+      "latest_direction": "standing co-delivery alliance, waiting for a funded brief",
+      "action": "no reply sent; no funded customer brief present"
+    },
+    {
+      "issue": "sunghunkwag/rsi-bench#4",
+      "status": "open",
+      "latest_direction": "our correction/reply is present; no new inbound comment in fetched comments",
+      "action": "no reply sent"
+    },
+    {
+      "issue": "chunxiaoxx/nautilus-compass#8",
+      "status": "open",
+      "latest_direction": "Hugging Face dataset discoverability thread; existing README linkage reply recorded",
+      "action": "no reply sent; any new dataset/config release needs a separate reviewed draft"
+    }
+  ],
+  "external_send_policy": "No external reply or comment was sent in this triage."
+}

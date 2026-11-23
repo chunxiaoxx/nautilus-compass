@@ -1,0 +1,24 @@
+{
+  "observed_at": "2026-11-19",
+  "purpose": "read-only verification of the private report without storing memory contents",
+  "endpoint": "local forward to Compass 8770 /v1/v14/recall",
+  "authorization_headers": false,
+  "probes": [
+    {
+      "scope": "project",
+      "project": "nautilus-v5",
+      "status_code": 200,
+      "ok": true,
+      "hit_count": 5,
+      "raw_memory_saved": false
+    },
+    {
+      "scope": "user",
+      "status_code": null,
+      "timeout_seconds": 20,
+      "result": "timeout",
+      "raw_memory_saved": false
+    }
+  ],
+  "conclusion": "The forwarded v14 project route accepted an unauthenticated request and returned project-scoped memory summaries. This is a P0 security finding, not an acceptance of the service. No deployment or external reply was made."
+}

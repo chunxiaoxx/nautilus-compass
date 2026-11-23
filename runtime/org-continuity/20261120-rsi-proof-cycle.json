@@ -1,0 +1,55 @@
+{
+  "schema": "rsi-proof-of-recall-cycle/v1",
+  "recorded_at": "2026-11-20T07:58:00-05:00",
+  "cycle_id": "rsi-proof-of-recall-20261120-01",
+  "objective": "使 Compass MCP 的 recall token 与 ingest_obs 使用同一个 Codex agent_type，并通过新鲜召回验收",
+  "baseline": {
+    "mcp_config_agent_type": "missing",
+    "ingest_proof": "fail",
+    "failure_reason": "agent_type_mismatch",
+    "memory_write": "filesystem_write_only",
+    "fresh_recall_acceptance": "unverified"
+  },
+  "change": {
+    "file": ".mcp.json",
+    "added": "COMPASS_AGENT_TYPE=codex",
+    "backup": "runtime/maintenance_backups/20261120-rsi-proof-of-recall/mcp.json.before",
+    "config_sha256": "01c393245f677a4af92aec3ace0fccfd58b0a9ee0ab9da1c6ccdc943f1b68fe5"
+  },
+  "independent_retest": {
+    "transport": "stdio",
+    "server": "/Users/chunxiao.wang/.claude/plugins/nautilus-compass/mcp_server.py",
+    "process_env_agent_type": "codex",
+    "sequence": [
+      "initialize",
+      "recall",
+      "ingest_obs",
+      "recall"
+    ],
+    "ingest_receipt": "proof_of_recall=pass",
+    "fresh_recall_receipt": "returned recall_token and current RSI hits",
+    "external_model_used": false,
+    "external_send": false
+  },
+  "delta": {
+    "proof_of_recall": "fail → pass",
+    "memory_gate": "unverified → independently replayed",
+    "criteria_changed": false,
+    "holdout_changed": false,
+    "gpu_started": false
+  },
+  "remaining": [
+    "currently running Codex MCP process must be reloaded to consume .mcp.json change",
+    "MCP projection still reports catalog changed/read_only",
+    "SJB Gate A remains blocked on raw episode precondition",
+    "GUI MCP child requires app-server reconnect after targeted process restart"
+  ],
+  "boundary": "This cycle proves the memory write/read proof path. It does not prove organization customer acceptance or SJB training readiness.",
+  "gui_retest": {
+    "before_reload": "proof_of_recall=fail agent_type_mismatch",
+    "action": "terminated exact Compass plugin MCP child PID 7057",
+    "after_reload": "transport_closed_no_auto_respawn_observed",
+    "status": "pending_codex_appserver_mcp_reconnect",
+    "stdio_acceptance": "pass"
+  }
+}

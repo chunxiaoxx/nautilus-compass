@@ -1,0 +1,23 @@
+{
+  "schema": "rsi-proof-of-recall-cycle/v2",
+  "recorded_at": "2026-11-20T08:29:41-0500",
+  "status": "pass",
+  "agent_type": "codex",
+  "project": "-Users-chunxiao-wang-Projects-nautilus-compass",
+  "sequence": [
+    "initialize",
+    "recall",
+    "ingest_obs",
+    "fresh_recall"
+  ],
+  "proof_of_recall": "pass",
+  "ingest_receipt": "obs written · session_20261120-0829_rsi-breakthrough-cycle-2026112.md · agent_type=codex · drift=green · proof_of_recall=pass",
+  "memory_file_written": true,
+  "fresh_recall_ok": true,
+  "memory_files": [
+    "/Users/chunxiao.wang/.claude/projects/-Users-chunxiao-wang-Projects-nautilus-compass/memory/session_20261120-0829_rsi-breakthrough-cycle-2026112.md"
+  ],
+  "external_model_used": false,
+  "external_send": false,
+  "acceptance_boundary": "memory proof path only"
+}

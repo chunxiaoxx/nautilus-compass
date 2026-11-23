@@ -46,8 +46,9 @@
       "owner": "v5",
       "goal": "证明 V5 能完成一次最小任务闭环。",
       "done_when": "输入、工具调用、结果、持久化和回执完整，且能被独立读回。",
-      "blocked_by": "PromptBuilderMixin 参数契约已经修复并重启加载。当前 chat/completions 返回 HTTP 200，但所有 provider 都被跳过或熔断。deepseek/relay 无 key，minimax-anthropic、glm、claude 探针返回 401。",
-      "next_action": "由 V5 provider owner 恢复一个授权 key 或明确批准可用 fallback，再复跑同一 V5_EXECUTION_SMOKE_OK 请求。"
+      "blocked_by": "none",
+      "evidence": "[实测] 最小任务闭环已通过：自建 relay/k3-256k 可用，V5 8001/18001 smoke 通过，强制 get_time 工具调用成功，HELIX cycle 56238 写入工具轨迹，agent_tool_calls id=3/result_status=ok/args_hash 存在，并由独立进程读回。当前活动读写路径已完成迁移字段兼容，平台 stats 和社区文章读回均 HTTP 200。",
+      "next_action": "保留 HELIX 历史链断点的负证据，不重写历史；HR calc_salary、check_contract 和平台健康工具已通过，accounting 已切到本地 relay 但当前先后遇到 429 和 503，8770 已确认项目隔离但当前无命中。下一轮继续验证不依赖外部模型的工具，并等待或处理 relay 可用性。"
     }
   ],
   "p1_gates": [

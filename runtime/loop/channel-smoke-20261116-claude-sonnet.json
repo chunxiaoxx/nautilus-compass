@@ -1,0 +1,19 @@
+{
+  "started_utc": "2026-11-16T14:06:11.428376+00:00",
+  "finished_utc": "2026-11-16T14:07:41.448521+00:00",
+  "command": [
+    "claude",
+    "-p",
+    "<smoke>",
+    "--model",
+    "claude-sonnet-4-5",
+    "--output-format",
+    "text"
+  ],
+  "exit_code": 124,
+  "timed_out": true,
+  "stdout": "",
+  "stderr": "Permission allow rule (../../.claude/settings.json): Bash(ssh -o ConnectTimeout* -p 23620 root@*) has a wildcard before the rest of the command, so it also matches any options inserted at that position and approves them without a prompt. Replace that * with the exact value you mean, or only use * after the subcommand.",
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "fcb7cf6b1694c0b87f1076efa143129345b03fe33f71f52e78ac4c98507f44d3"
+}

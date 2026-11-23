@@ -1,0 +1,21 @@
+{
+  "observed_at": "2026-11-19",
+  "project": "-Users-chunxiao-wang-Projects-nautilus-compass",
+  "write": {
+    "status": "pass",
+    "session_file": "session_20261119-2323_外联主线回收.md",
+    "source": "mcp__nautilus_compass_plugin__ingest_obs"
+  },
+  "keyword_readback": {
+    "status": "pass",
+    "tool": "mcp__nautilus_compass_6558a670788c__session_search",
+    "hits": 1
+  },
+  "semantic_readback": {
+    "status": "no_hit",
+    "tool": "mcp__nautilus_compass_6558a670788c__recall",
+    "attempts": 2,
+    "query": "外联主线回收 模真真 GitHub 安全报告"
+  },
+  "conclusion": "The observation is persisted and keyword-searchable. Fresh BGE semantic indexing was not independently confirmed in this round."
+}

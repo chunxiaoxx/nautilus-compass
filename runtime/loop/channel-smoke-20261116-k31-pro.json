@@ -1,0 +1,19 @@
+{
+  "started_utc": "2026-11-16T14:09:02.040128+00:00",
+  "finished_utc": "2026-11-16T14:09:13.622809+00:00",
+  "command": [
+    "claude",
+    "-p",
+    "<smoke>",
+    "--model",
+    "k3.1-pro",
+    "--output-format",
+    "text"
+  ],
+  "exit_code": 1,
+  "timed_out": false,
+  "stdout": "API Error: 400 invalid params, unknown model 'k3.1-pro' (2013)",
+  "stderr": "Permission allow rule (../../.claude/settings.json): Bash(ssh -o ConnectTimeout* -p 23620 root@*) has a wildcard before the rest of the command, so it also matches any options inserted at that position and approves them without a prompt. Replace that * with the exact value you mean, or only use * after the subcommand.\n[claude-code:unrecognized_model] {\"model\":\"k3.1-pro\",\"query_source\":\"sdk\"}",
+  "stdout_sha256": "44a6e236f2cdfb388f59bf53f830380430d7da587d580b5f7dc67eb9856abfc2",
+  "stderr_sha256": "c5aeb371f2028da3792c35a8644dc87764fa9e1b7b61358898f462f211e53bc7"
+}

@@ -1,0 +1,383 @@
+{
+  "schema": "v5-relay-recovery/1",
+  "task_id": "v5-relay-route-recovery-20261119",
+  "observed_at_utc": "2026-11-20T02:02:33+00:00",
+  "identity": {
+    "memory_daemon": "V5 Memory Daemon / Compass BGE daemon at 127.0.0.1:9876",
+    "execution_runtime": "nautilus-v5 Super Agent runtime, API ports 8001 and 18001",
+    "relay": "self-hosted OpenAI-compatible relay at https://api.chunxiao.wang/v1"
+  },
+  "memory_daemon_probe": {
+    "protocol_ping": {
+      "status": "pass",
+      "pid": 31330,
+      "daemon_hash": "sha256:701152b72b070d5894a3a9146e7e0aa96e6ad204c8abd5b48d82af31ab8fc016"
+    },
+    "authenticated_recall": {
+      "status": "pass",
+      "elapsed_s": 2.098,
+      "project": "-Users-chunxiao-wang-Projects-nautilus-compass",
+      "hits": 3,
+      "reranked": true
+    }
+  },
+  "relay_probe": {
+    "credentials_source": "/Users/chunxiao.wang/.claude/.cache/.fde_api_secrets.env:NAUTILUS_RELAY_API_KEY",
+    "credential_value_recorded": false,
+    "models_http_status": 200,
+    "model_count": 22,
+    "verified_models_present": [
+      "k3",
+      "k3-256k"
+    ],
+    "k3_256k_chat_http_status": 200,
+    "k3_256k_finish_reason": "stop",
+    "k3_256k_content": "OK",
+    "known_boundary": "MiniMax-M3 returned 429 Token Plan exhausted during this run. The relay service and k3-256k route remained available."
+  },
+  "v5_execution_smoke": {
+    "request": "Return exactly V5_EXECUTION_SMOKE_OK and nothing else.",
+    "results": [
+      {
+        "port": 8001,
+        "http_status": 200,
+        "elapsed_s": 3.42,
+        "content": "V5_EXECUTION_SMOKE_OK",
+        "finish_reason": "stop"
+      },
+      {
+        "port": 18001,
+        "http_status": 200,
+        "elapsed_s": 3.736,
+        "content": "V5_EXECUTION_SMOKE_OK",
+        "finish_reason": "stop"
+      }
+    ],
+    "status": "pass"
+  },
+  "runtime_change": {
+    "local_env": "/Users/chunxiao.wang/Projects/nautilus-v5/.env",
+    "env_overrides": [
+      "V5_LLM_PROVIDER=relay",
+      "V5_LLM_MODEL=k3-256k",
+      "RELAY_MODEL=k3-256k",
+      "RELAY_API_KEY loaded from local cache"
+    ],
+    "code_change": "nautilus_v5/runtime/llm_client.py resolves relay default model at request time so .env load order cannot freeze MiniMax-M3",
+    "code_sha256": "d3eeb0a8b676132bd3540223397b972b5b3c21412e8d247175c89033babe5594",
+    "services_restarted": [
+      "ai.nautilus.v5-brain2",
+      "ai.nautilus.v5-api"
+    ],
+    "pids_after_restart": {
+      "brain": [
+        52342
+      ],
+      "api": [
+        50338
+      ]
+    },
+    "tool_validation_default": "V5_CHAT_FORCE_TOOL=0 after validation"
+  },
+  "remaining_issues": [
+    "Historical pre-repair breath-act readonly_tool errors remain in the append-only log. No new readonly_tool error was observed after restoring the kernel signature and restarting V5.",
+    "The HELIX history is readable but its imported prefix is not chain-valid: the latest readback reports helix_chain_ok=false with one external-anchor mismatch and 14 historical/internal ordering mismatches. Gene compression records are now validated with their original hash rule. No historical rewrite was performed.",
+    "The optional MCP servers are now listening through three local LaunchAgents. Their long-term health and tool-call behavior still need a later consumer-level audit beyond startup/list_tools success.",
+    "The remote 8770 Compass API is a separate tunneled service and does not use the local project directory. Its project scope must be verified independently before treating remote recall as local-memory recall."
+  ],
+  "verdict": "provider_route_recovered_execution_smoke_pass_memory_daemon_recall_pass",
+  "agent_loop_repair": {
+    "status": "pass",
+    "source_commit": "a90eb016603d182218e93a9e4a0401e29687fbed",
+    "source_commit_subject": "feat(内核·KV cache 纪理·借dsh:只读预算与前缀纪律)",
+    "restored_file": "/Users/chunxiao.wang/Projects/nautilus-v5/nautilus_v5/commons/agent_loop.py",
+    "async_signature_accepts": [
+      "readonly_tool",
+      "readonly_limit"
+    ],
+    "behavior_tests": {
+      "test_file": "tests/test_agent_loop.py",
+      "passed": 8,
+      "failed": 0,
+      "runner": "direct invocation because v5 venv has no pytest module"
+    },
+    "respond_tail_fix": "kernel chat now continues through common billing, HELIX, trace and micro-reflect tail instead of returning early",
+    "code_sha256": {
+      "nautilus_v5/commons/agent_loop.py": "e0a572c246c9e1747252c0a2a376022b3f7b2956411510cbd85d10dfb126cd53",
+      "nautilus_v5/tools/gateway.py": "2e02ee5927e057975fa232d921662b2c6defae2b8eac7aa6ac72c19dffe96795",
+      "nautilus_v5/super_agent.py": "2e8f6fd35be1dd53f315427aa2df32cd6f18516b06b98157701e1892128c4991",
+      "nautilus_v5/runtime/llm_client.py": "d3eeb0a8b676132bd3540223397b972b5b3c21412e8d247175c89033babe5594"
+    }
+  },
+  "tool_persistence_validation": {
+    "status": "pass",
+    "validation_user": "codex-schema-smoke-20261119",
+    "forced_tool": "get_time",
+    "api_content": "TOOL_SCHEMA_SMOKE_OK",
+    "helix": {
+      "path": "/Users/chunxiao.wang/.nautilus-v5/prime/HELIX.jsonl",
+      "cycle": 56238,
+      "user_id": "codex-schema-smoke-20261119",
+      "tools": [
+        {
+          "tool": "get_time",
+          "ok": true
+        }
+      ]
+    },
+    "shared_db": {
+      "table": "agent_tool_calls",
+      "schema_columns": [
+        "id",
+        "agent_id",
+        "tool_name",
+        "cycle",
+        "called_at",
+        "args_hash",
+        "result_status",
+        "error_msg"
+      ],
+      "row_id": 3,
+      "agent_id": "nautilus-prime-001",
+      "tool_name": "get_time",
+      "cycle": 0,
+      "called_at": "2026-11-20T00:04:55.702598+08:00",
+      "args_hash_present": true,
+      "result_status": "ok",
+      "error_msg_empty": true
+    },
+    "writer_change": "ToolGateway introspects current shared schema and writes args_hash/result_status/error_msg, with legacy-column compatibility.",
+    "schema_change_made": false,
+    "post_restart_instrument_warning": "not observed for the validation call"
+  },
+  "schema_read_audit": {
+    "status": "partial",
+    "change": "nautilus_v5/api/openai_api.py now uses called_at for current agent_tool_calls time filtering. Legacy direct duplicate telemetry insert was removed from super_agent.py because ToolGateway is the single writer.",
+    "verification": {
+      "py_compile": "pass",
+      "/api/platform/stats": "HTTP 200 but logs still report missing relation platform_comments",
+      "/v1/status": "HTTP 200",
+      "new_agent_tool_calls_column_errors": "not observed after current writer restart",
+      "metrics_snapshot": "current migrated columns written successfully; old pre-restart failure retained in log"
+    },
+    "remaining": "Current active readers and writers used by the live V5 path now use called_at/result_status or schema introspection. Historical backup files still contain old SQL and must not be treated as live code."
+  },
+  "final_runtime_smoke": {
+    "v5": [
+      {
+        "port": 8001,
+        "http_status": 200,
+        "content": "V5_EXECUTION_SMOKE_OK",
+        "elapsed_s": 4.474
+      },
+      {
+        "port": 18001,
+        "http_status": 200,
+        "content": "V5_EXECUTION_SMOKE_OK",
+        "elapsed_s": 4.409
+      }
+    ],
+    "compass_daemon_recall": {
+      "status": "pass",
+      "elapsed_s": 2.033,
+      "hits": 3,
+      "reranked": true
+    },
+    "force_tool_validation_default": "off",
+    "v5_after_mcp_preflight": {
+      "8001": "health 200",
+      "18001": "health 200"
+    }
+  },
+  "metrics_snapshot_repair": {
+    "status": "pass",
+    "table": "platform_metrics_snapshots",
+    "latest_row": {
+      "id": 16629,
+      "nau_circulation": 14335,
+      "agent_count": 4,
+      "open_bounties": 441,
+      "pending_scores": 0,
+      "health_score": 50
+    },
+    "repair": "writer now fills migrated non-null fields and keeps the old three-column insert as compatibility fallback",
+    "post_restart_error": "not observed",
+    "historical_error": "one pre-restart failure remains in append-only log at 11:20:11"
+  },
+  "mcp_dependency_repair": {
+    "status": "pass_with_consumer_boundary",
+    "installed": "mcp==1.30.0",
+    "compatibility_pins": {
+      "fastapi": "0.115.6",
+      "starlette": "0.41.3",
+      "sse-starlette": "2.4.1",
+      "uvicorn": "0.54.0"
+    },
+    "client_import": "pass",
+    "provider_servers": {
+      "hr_api_8091": "listening_and_employees_http_200",
+      "hr_8090": "listening_and_v5_mounted_9_tools",
+      "nautilus_8096": "listening_and_platform_health_fields_nonnull"
+    },
+    "fail_soft_change": "HttpMCPProvider catches asyncio.CancelledError so an unavailable optional MCP server does not abort V5 boot.",
+    "runtime": "8001 and 18001 healthy after restart; V5_EXECUTION_SMOKE_OK returned from both ports.",
+    "launch_agents": {
+      "hr_api_8091": {"label": "com.nautilus.local-hr-api", "pid": 47908},
+      "hr_mcp_8090": {"label": "com.nautilus.local-hr-mcp", "pid": 48009, "tools": 9},
+      "platform_mcp_8096": {"label": "com.nautilus.local-platform-mcp", "pid": 52114, "health_http": 200}
+    },
+    "compatibility_fix": "Removed unused cgi import from agent-factory/hr-agent-web/server.py because Python 3.13 no longer ships cgi. Installed openpyxl 3.1.5, python-docx 1.2.0, and pdfplumber 0.11.10 in the V5 runtime for the existing HR export/parser paths.",
+    "hr_calc_consumer_probe": {
+      "transport": "MCP streamable-http 8090",
+      "tool": "calc_salary",
+      "status": "pass",
+      "engine": "payroll_engine_v2",
+      "employee_count": 1,
+      "export_files": 3,
+      "first_attempt": "failed with missing openpyxl",
+      "second_attempt": "passed after dependency repair"
+    },
+    "platform_health_consumer_probe": {
+      "tool": "nautilus_platform_health",
+      "agents": 4,
+      "active": 1,
+      "tasks_today": 2707,
+      "nau_supply": 14388,
+      "db": "ok"
+    },
+    "platform_route_fix": "Updated ops/mcp/mcp_server.py from retired /api/hub/stats to /api/platform/stats and pointed the local MCP service at V5 port 8001.",
+    "api_process_isolation": "V5_MCP_SERVERS is explicitly empty for ai.nautilus.v5-api. The main 8001 singleton is the sole long-lived MCP session owner.",
+    "post_restart_logs": "Main brain mounted 9 HR tools + 8 Nautilus tools. API mounted none by design. No new cross-task cancel-scope traceback after the isolation change. Older 12:21:20 traceback remains in append-only stderr log."
+  },
+  "channel_isolation_repair": {
+    "status": "pass",
+    "change": "optional channel startup failures are logged and skipped so the shared HTTP API remains available",
+    "validation": "8001 health and V5_FINAL_SMOKE_OK passed after Telegram startup timeout/retry behavior"
+  },
+  "schema_read_path_repair": {
+    "status": "pass_with_boundary",
+    "changes": [
+      "Updated active V5 writers/readers for agent_tool_calls migrated columns called_at/result_status/args_hash/error_msg.",
+      "Updated provenance collector and PoI reader to degrade honestly when raw args are no longer stored.",
+      "Updated platform stats to use platform_agents and optional RAID/comment relations without logging relation errors.",
+      "Fixed V5 self-key Path import, HELIX status length/tuple handling, added Helix.length(), and taught verification to validate historical gene compression records."
+    ],
+    "tests": {
+      "compileall": "pass",
+      "direct_unit_tests": "42 passed, 0 failed",
+      "api_stats_8001": "HTTP 200",
+      "api_stats_18001": "HTTP 200",
+      "community_post_read": "HTTP 200",
+      "post_restart_log_scan": "no new stats/dmas/agent_tool_calls/metrics relation errors"
+    },
+    "live_db": {
+      "latest_platform_metrics_snapshot": {
+        "id": 16644,
+        "nau_circulation": 14388,
+        "agent_count": 4,
+        "open_bounties": 440,
+        "pending_scores": 0,
+        "health_score": 65
+      },
+      "tool_schema_smoke": {
+        "tool": "get_time",
+        "result_status": "ok",
+        "latest_row_id": 217,
+        "args_hash_present": true,
+        "error_msg": null
+      }
+    }
+  },
+  "memory_client_route_repair": {
+    "status": "pass",
+    "change": "V5MemoryClient now reads the Compass daemon token and canonicalizes macOS project paths. SuperAgent now points to -Users-chunxiao-wang-Projects-nautilus-core instead of the retired C--Users-chunx-Projects-nautilus-core key.",
+    "direct_recall": {
+      "daemon": "127.0.0.1:9876",
+      "project": "-Users-chunxiao-wang-Projects-nautilus-core",
+      "auth": "pass",
+      "elapsed_s": 1.977,
+      "hits": 3,
+      "warm_repeat_probe": {
+        "samples_s": [2.054, 1.585, 0.001],
+        "average_s": 1.213,
+        "cache_hit_s": 0.001,
+        "all_ok": true
+      }
+    },
+    "consumer_readback": {
+      "v5_chat": "HTTP 200",
+      "log": "[v5-mem] injected 394 chars to system prompt after the gene-verifier restart"
+    },
+    "boundary": "The remote 8770 API remains a separate tunnel and was not counted as proof of local project recall."
+  },
+  "hr_readonly_consumer_validation": {
+    "status": "pass",
+    "observed_at_utc": "2026-11-20T01:56:55+00:00",
+    "transport": "MCP streamable-http 8090 -> HR API 8091",
+    "tool": "check_contract",
+    "elapsed_s": 0.184,
+    "input": "2 employees with contract and identity expiry dates",
+    "result": {
+      "error": null,
+      "analysis_present": true,
+      "summary_present": true,
+      "report_present": true,
+      "urgent_count": 2,
+      "warning_count": 0
+    },
+    "accounting_probe": {
+      "status": "blocked_external_dependency",
+      "tool": "accounting",
+      "error": "after routing HR to the local k3-256k relay, the first probe returned HTTP 429 Too Many Requests and a 20-second retry returned HTTP 503 Service Unavailable.",
+      "effect": "The accounting code path and MCP transport are wired, but the result remains unavailable until relay quota/service availability is restored."
+    },
+    "boundary": "This validates one read-only HR consumer path. Other HR tools remain separately unverified."
+  },
+  "remote_8770_scope_probe": {
+    "status": "scope_isolated_but_no_current_hits",
+    "observed_at_utc": "2026-11-20T01:56:55+00:00",
+    "endpoint": "local tunnel to remote Compass API 8770",
+    "query": "迁移后 Compass 记忆服务与历史验证的当前状态",
+    "results": {
+      "nautilus-v5": {"http": 200, "ok": true, "hits": 0, "backend": "v1.4-bge-m3"},
+      "-Users-chunxiao-wang-Projects-nautilus-core": {"http": 200, "ok": true, "hits": 0, "backend": "v1.4-bge-m3"},
+      "-Users-chunxiao-wang-Projects-nautilus-compass": {"http": 200, "ok": true, "hits": 0, "backend": "v1.4-bge-m3"}
+    },
+    "conclusion": "The remote route is reachable and project-scoped, but it is not evidence of local 9876 memory recall and currently returns no hits for these project keys."
+  },
+  "latest_v5_runtime_smoke": {
+    "services": {
+      "8001": "health 200",
+      "18001": "health 200",
+      "brain_pid": 52342,
+      "api_pid": 50338
+    },
+    "execution_smoke": {
+      "8001": "V5_EXECUTION_SMOKE_OK",
+      "18001": "V5_EXECUTION_SMOKE_OK"
+    },
+    "memory_daemon": {
+      "pid": 31330,
+      "protocol_ping": "pass",
+      "authenticated_local_recall": "pass"
+    },
+    "mcp_mount": {
+      "main_brain": {"hr": 9, "nautilus": 8, "compass": 3},
+      "api": {"mcp_auto_mount": "disabled_by_design", "compass": 3}
+    }
+  },
+  "helix_history_validation": {
+    "status": "pass_with_historical_breaks",
+    "snapshot_cycle": 56301,
+    "block_count": 10234,
+    "gene_unknown_type_errors": 0,
+    "chain_error_count": 15,
+    "chain_error_classes": {
+      "external_prefix_anchor_mismatch": 1,
+      "historical_internal_order_mismatch": 14,
+      "gene_hash_tamper": 0,
+      "unknown_gene_type": 0
+    },
+    "consumer_status": "8001 and 18001 report helix_chain_ok=false with first 10 errors exposed"
+  }
+}

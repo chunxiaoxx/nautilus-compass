@@ -1,0 +1,38 @@
+{
+  "schema": "compass-task-handoff-v0",
+  "task_id": "compass-nacre-local-9b-capability-and-training-prep-20261120",
+  "owner": "compass",
+  "acceptance": {
+    "local_9b_health": "Qwen3.5-9B-4bit loaded on 127.0.0.1:11435",
+    "bounded_tools": "all executed tool names belong to the allowlist",
+    "external_boundary": "external_model_used=false and external_send=false",
+    "training_data": "dataset manifest and independent structural validation agree",
+    "training_gate": "MLX preflight ready only at 32/8/8 train/validation/test plus reviewed gold set"
+  },
+  "evidence": [
+    "runtime/loop/local_round_receipt.json",
+    "runtime/org-continuity/20261120-nacre-capability-smoke.json",
+    "runtime/nacre/eval_report.json",
+    "runtime/nacre/dataset_manifest.json",
+    "runtime/nacre/dataset_validation.json",
+    "runtime/nacre/training_preflight.json",
+    "runtime/nacre/gold_candidates_v0.jsonl",
+    "runtime/nacre/gold_candidates_validation.json",
+    "runtime/org-continuity/20261120-security-recheck.json"
+  ],
+  "current_result": {
+    "local_loop_round": 11,
+    "runtime_eval_overall_gate": false,
+    "training_started": false,
+    "gold_candidates": 12,
+    "gold_candidates_approved": false
+  },
+  "remaining": [
+    "raise draft postcondition and fail-closed rates using reviewed examples",
+    "review and freeze the 12 gold candidates, then expand to 32/8/8",
+    "resolve user-to-project permission mapping",
+    "measure local reranker or controlled fallback for remote_mps latency",
+    "re-run remote 8770 negative probes after a separately authorized deployment"
+  ],
+  "next_action": "human review gold candidates, then run a deliberate isolated MLX-LoRA comparison against the Qwen3.5-9B baseline"
+}

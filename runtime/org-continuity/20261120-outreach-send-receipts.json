@@ -1,0 +1,47 @@
+{
+  "schema": "outreach-send-receipts/v1",
+  "sent_at_utc": "2026-11-20T17:04:00Z",
+  "approval": "user_confirmed_all_reviewed_outreach",
+  "gmail": [
+    {
+      "name": "Nagizaaz security report",
+      "draft_id": "r-5263494868167853311",
+      "sent_message_id": "1a1f9e74735155a1",
+      "thread_id": "1a1ab9487dc51507",
+      "status": "sent"
+    },
+    {
+      "name": "模真真合作",
+      "draft_id": "r-3694436972631367095",
+      "sent_message_id": "1a1f9e74c70b070a",
+      "thread_id": "1a1ec46eb8783d00",
+      "status": "sent"
+    }
+  ],
+  "github": [
+    {"name": "MemOS #2534", "repo": "MemTensor/MemOS", "issue": 2534, "comment_id": 7045537714, "status": "sent"},
+    {"name": "supermemory #1831", "repo": "supermemoryai/supermemory", "issue": 1831, "comment_id": 7045538203, "status": "sent"},
+    {"name": "Graphiti #1950", "repo": "getzep/graphiti", "issue": 1950, "comment_id": 7045538900, "status": "sent"},
+    {"name": "MIRIX #141", "repo": "Mirix-AI/MIRIX", "issue": 141, "comment_id": 7045582037, "status": "sent_via_gh_cli_after_connector_403"},
+    {"name": "mem0 #7514", "repo": "mem0ai/mem0", "issue": 7514, "comment_id": 7045583009, "status": "sent_via_gh_cli_after_connector_403"},
+    {"name": "LongMemEval-V2 #13", "repo": "xiaowu0162/LongMemEval-V2", "issue": 13, "comment_id": 7045584066, "status": "sent_via_gh_cli_after_connector_403"},
+    {"name": "a2a-x402 #198", "repo": "google-agentic-commerce/a2a-x402", "issue": 198, "comment_id": 7045584975, "status": "sent_via_gh_cli_after_connector_403"}
+  ],
+  "pending": [
+    {
+      "name": "CodeSense current platform cooperation",
+      "reason": "Forwarded to Platform internal mailbox for current-task routing to platform/甲方",
+      "trace_id": "codesense-current-cooperation-20261120",
+      "platform_mail_id": 124305,
+      "follow_up_trace_id": "codesense-r4-reward-readback-20261120",
+      "follow_up_platform_mail_id": 124509,
+      "status": "sent_internal_platform_waiting_external_route"
+    },
+    {
+      "name": "数聚变 p1-3 boundary",
+      "reason": "Already sent earlier, waiting for manifest reply",
+      "status": "sent_waiting_reply"
+    }
+  ],
+  "external_send_policy": "No further send without a new user instruction or an already approved queued draft."
+}

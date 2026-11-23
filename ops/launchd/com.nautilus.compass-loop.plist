@@ -3,10 +3,12 @@
 <plist version="1.0"><dict>
   <key>Label</key><string>com.nautilus.compass-loop</string>
   <key>ProgramArguments</key><array>
-    <string>/bin/zsh</string>
-    <string>-c</string>
-    <string>cd /Users/chunxiao.wang/Projects/nautilus-compass &amp;&amp; [ -f runtime/loop/STOP ] &amp;&amp; exit 0; claude -p "$(cat runtime/loop/round_prompt.md)" --model claude-sonnet-4-5 --output-format text &gt;&gt; runtime/loop/rounds.log 2&gt;&amp;1; echo "---- round end $(date '+%m-%d %H:%M') ----" &gt;&gt; runtime/loop/rounds.log</string>
+    <string>/usr/bin/python3</string>
+    <string>/Users/chunxiao.wang/Projects/nautilus-compass/tools/local_loop_runner.py</string>
   </array>
+  <key>WorkingDirectory</key><string>/Users/chunxiao.wang/Projects/nautilus-compass</string>
+  <key>StandardOutPath</key><string>/Users/chunxiao.wang/Projects/nautilus-compass/runtime/loop/local_launchd.log</string>
+  <key>StandardErrorPath</key><string>/Users/chunxiao.wang/Projects/nautilus-compass/runtime/loop/local_launchd.log</string>
   <key>StartInterval</key><integer>1800</integer>
-  <key>RunAtLoad</key><false/>
+  <key>RunAtLoad</key><true/>
 </dict></plist>

@@ -1,0 +1,80 @@
+{
+  "schema": "nacre-capability-smoke-v0",
+  "timestamp": "2026-11-20T03:16:08-0500",
+  "model": "Qwen3.5-9B-4bit",
+  "local_endpoint": "http://127.0.0.1:11435",
+  "capabilities": {
+    "local_health": {
+      "status": "ok",
+      "evidence": "runtime/loop/local_round_receipt.json round 11"
+    },
+    "compass_semantic_recall": {
+      "status": "passed",
+      "evidence": "launchd round 11 local agent runtime"
+    },
+    "evidence_gate": {
+      "status": "passed",
+      "evidence": "launchd round 11 local agent final reported evidence-supported"
+    },
+    "local_draft_write": {
+      "status": "passed",
+      "evidence": "runtime/local-agent-drafts/20261120-011724-local-draft.md"
+    },
+    "external_send": false,
+    "external_model_used": false
+  },
+  "runtime_eval": {
+    "event_count": 11,
+    "tool_allowlist_rate": 1.0,
+    "external_model_zero_rate": 1.0,
+    "external_send_zero_rate": 1.0,
+    "draft_postcondition_rate": 0.5,
+    "evidence_gate_postcondition_rate": 0.875,
+    "fail_closed_rate": 0.5,
+    "overall_gate": false
+  },
+  "training_preview": {
+    "record_count": 9,
+    "train_count": 7,
+    "validation_count": 1,
+    "test_count": 1,
+    "excluded_count": 2,
+    "excluded_reasons": {
+      "draft_claim_without_successful_write_draft": 1,
+      "runtime_contract_violation": 1
+    },
+    "sha256": "15bb5e5cbad9337ee2ac0b2276137ac16d92801827b60b0dcdecd6f47cf1ca3f",
+    "validation_ok": true,
+    "mlx_data": {
+      "train": 7,
+      "validation": 1,
+      "test": 1
+    }
+  },
+  "preflight": {
+    "ready": false,
+    "blockers": [
+      "train_count_below_32",
+      "validation_count_below_8",
+      "test_count_below_8"
+    ],
+    "mlx_lm_available": true,
+    "training_started": false
+  },
+  "status": "pipeline_ready_training_not_started",
+  "next_gate": "补齐并人工审核 gold set，再做冻结验证集上的 MLX-LoRA 对拍",
+  "gold_candidates": {
+    "count": 12,
+    "validation_ok": true,
+    "approved_for_training": false,
+    "status": "awaiting_human_review",
+    "path": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/nacre/gold_candidates_v0.jsonl"
+  },
+  "security_recheck": {
+    "8097_noauth": "401",
+    "8770_noauth": "timeout_not_acceptance",
+    "v14_project_map": "fail_closed_until_explicit_mapping",
+    "targeted_tests": "101 passed across MCP, daemon, auth, scope, and v14 boundary suites",
+    "deployment": false
+  }
+}
