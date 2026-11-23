@@ -98,6 +98,7 @@ nautilus-compass
 - `C--Users-chunx` 有 55,513 份 Markdown，其中 55,509 份为 session 机器卡。daemon 日志显示 300 秒填充预算耗尽时只处理约 198–250 份；把 HTTP 超时从 15 秒继续加大只会拖死调用方，不是修复。
 - 新增 `COMPASS_V14_UNION_PROJECT_MAP`，把“允许显式访问的项目”与“参与 `scope=user` 联合召回的项目”分开。联合配置只能缩小授权集合，不能扩大； malformed 配置 fail-closed。当前授权项目不变，联合召回只扫描健康的 `nautilus-v5`，响应的 `projects_scanned` 明确披露实际范围。
 - **遗留限制**：`C--Users-chunx` 的显式语义召回仍受大型机器卡索引性能影响；本项目 ingest 正常。该问题另案处理，不能宣称大项目检索性能已修复。
+- **遗留限制进展(2026-11-23 晚)**：检索池治理已执行——46,842 张 >30 天机器卡移入 `_archive/`(可逆+manifest 每周 cron 例行),fill 改最新优先,陈旧缓存键清理(pkl 598MB→546KB)。机制层收敛,池内向量数小时内自然补齐;收敛完成前 C 项目召回在填充进行期仍可能超时,详见 `docs/ops/BGE_CUTOVER_20261123.md`。
 
 **本地回归 [实测]**
 - 本轮核心边界与调用方测试 12 passed；compile 与 ruff 通过。

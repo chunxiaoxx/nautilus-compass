@@ -911,6 +911,20 @@ def _flush_memory_pkl(proj_key: str, cache: dict) -> None:
         log(f"pkl flush fail {proj_hash}: {_e}")
 
 
+def _fill_order(entries: list) -> list:
+    """2026-11-23 · fill 嵌入次序改为最新优先。
+
+    旧序 = 文件名序(session 卡按时间戳命名 = 最旧在前),300s fill 预算窗口
+    只会嵌入最旧的卡;5.5 万卡大项目上最近内容长期拿不到向量(检索质量差的
+    可修根因之一)。新序:mtime 降序,预算窗口始终先覆盖最新变更。
+    仅影响嵌入次序,不影响召回打分(打分遍历全部条目)。
+    """
+    try:
+        return sorted(entries, key=lambda e: -(e.get("mtime") or 0))
+    except Exception:
+        return entries
+
+
 def get_memory_entries(mem_dir: Path):
     proj_key = str(mem_dir)
     # v2.0.9 · inotify fast path · skip O(N) glob+stat+parse if dir not dirty
@@ -957,10 +971,24 @@ def get_memory_entries(mem_dir: Path):
                         _state["memory_caches"][proj_key] = cache = _npify_cache(_c_rr)  # v3.3
         except Exception:
             pass
+    # 2026-11-23 · 归档层配套:清掉已移动/删除文件的陈旧缓存键(含 |chunks 衍生键),
+    # 否则 pkl 永不收缩、"巨物 lazy-skip"永久生效。仅删当前条目集中不存在的键。
+    _pruned_n = 0
+    try:
+        _live_keys = {e["fullpath"] for e in entries}
+        _stale = [k for k in list(cache.keys())
+                  if k.split("|chunks")[0] not in _live_keys]
+        for k in _stale:
+            cache.pop(k, None)
+        _pruned_n = len(_stale)
+        if _pruned_n:
+            log(f"cache prune stale keys proj~{str(proj_key)[-20:]}: {_pruned_n}")
+    except Exception:
+        _pruned_n = 0
     with _mem_lock(proj_key):  # v3.0.3 · serialize fill+flush per project
         updated = 0
         _fill_t0 = time.time()
-        for _ei, e in enumerate(entries):
+        for _ei, e in enumerate(_fill_order(entries)):
             # v3.3.6 · fill 时间预算:超时出部分结果(缺 embedding 的条目在下游
             # 打分点 e.get("embedding")→None 自动跳过),不再让单项目 fill 霸锁
             # 数分钟把 32 槽全局耗尽(2026-10-11 23:05→10-12 12:19 全局 recall
@@ -1016,7 +1044,7 @@ def get_memory_entries(mem_dir: Path):
                     except Exception as ex:
                         log(f"embed chunks fail {e['path']}: {ex}")
                         e["chunk_embs"] = []
-        if updated:
+        if updated or _pruned_n:
             _flush_memory_pkl(proj_key, cache)
     # v2.0.9 · cache full entries for next recall · invalidated by inotify watcher
     if _INOTIFY_USE:
