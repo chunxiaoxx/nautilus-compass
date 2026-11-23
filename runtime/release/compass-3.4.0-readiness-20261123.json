@@ -1,0 +1,45 @@
+{
+  "schema": "compass-release-readiness/1",
+  "observed_at": "2026-11-23T12:14:43-0500",
+  "candidate": "3.4.0",
+  "current_head": "8a1ef1cd836831b60e1dc7a1c9f4ba012bc54a44",
+  "latest_tags": [
+    "v3.3.0",
+    "v3.2.0",
+    "v3.1.0",
+    "v3.0.1",
+    "v3.0.0"
+  ],
+  "metadata_lines": {
+    "pyproject.toml": [
+      "version = \"3.3.0\"",
+      "target-version = \"py310\""
+    ],
+    "package.json": [
+      "\"version\": \"3.3.0\","
+    ],
+    ".claude-plugin/plugin.json": [
+      "\"version\": \"3.3.0\","
+    ],
+    "server.json": [
+      "\"version\": \"3.1.1\",",
+      "\"version\": \"3.0.1\",",
+      "\"version\": \"1.0.0\","
+    ],
+    ".registry/server.json": [
+      "\"version\": \"3.2.0\",",
+      "\"version\": \"3.2.0\","
+    ]
+  },
+  "metadata_alignment": "blocked",
+  "blockers": [
+    "pyproject/package/plugin declare 3.3.0 while server.json and registry metadata declare older versions",
+    "CHANGELOG has no 3.4.0 section",
+    "release worktree and clean-head manifest not created",
+    "full test, wheel build, fresh install and local canary not yet run for candidate",
+    "customer_acceptance not assessed"
+  ],
+  "external_publish": false,
+  "tag_created": false,
+  "push_performed": false
+}
