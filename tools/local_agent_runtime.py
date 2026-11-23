@@ -421,6 +421,8 @@ def _finalize_after_tool_budget(messages: list[dict[str, str]]) -> str:
         "role": "user",
         "content": (
             "工具调用步数已经用完。现在不要调用任何工具，也不要写草稿。"
+            "只有 evidence_gate 明确返回 supported 时才可以说‘已验证’。"
+            "否则只写已实测的检查结果和仍未闭合的边界。"
             "只输出最终 JSON，格式为 {\"tool_calls\":[],\"final\":\"简短中文结论\"}。"
         ),
     })
