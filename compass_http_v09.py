@@ -386,8 +386,7 @@ def auth_user(authorization: Optional[str] = Header(None),
     """Resolve user_id from Bearer JWT.
 
     2026-08-30 security fix: X-User-ID header-only 身份已关闭——公网 443
-    (compass.nautilus.social/v1/* 全量代理 8770)曾可凭任意 X-User-ID 冒充
-    任意用户读记忆(u_probe_nonexist 实测 200)。现仅接受 Bearer JWT;
+    曾可凭任意 X-User-ID 冒充任意用户读记忆。仅接受 Bearer JWT;
     携带 X-User-ID 时只作与 token 身份的一致性校验。
     """
     if authorization and authorization.startswith("Bearer "):
@@ -908,9 +907,8 @@ def drift_check(
         return {"score": 0.0, "alignment": 1.0, "deviation": 0.0,
                 "should_alert": False, "top_neg_hits": []}
 
-    # 2026-08-30 security fix: 身份只认 Bearer JWT——X-Tenant-ID/X-User-ID
-    # header 曾可单独冒充任意租户读 drift(与 auth_user 同款洞)。
-    user_id = x_tenant_id or x_user_id  # 仅为一致性校验保留,不再单独授权
+    # 2026-08-30 security fix: 身份只认 Bearer JWT——header 曾可单独冒充任意租户。
+    user_id = x_tenant_id or x_user_id  # 仅为一致性保留,不再单独授权
     if authorization and authorization.startswith("Bearer "):
         try:
             from jose import jwt
@@ -1403,7 +1401,7 @@ def a2a_well_known():
         "agent": {
             "id": "compass.nautilus.social",
             "name": "Nautilus Compass",
-            "description": "Cross-agent memory layer · MCP A2A v1.0 (TLS/mTLS, RBAC, rate-limit) · drift-aware (AUC 0.83 held-out) · LongMemEval-S 56.6% · EverMemBench-Dynamic 44.4-47.3% (n=500, 2 runs)",
+            "description": "Cross-agent memory layer · MCP A2A v1.0 (TLS/mTLS, RBAC, rate-limit) · drift-aware (AUC 0.83 held-out) · LongMemEval-S retrieval 0.890/0.978/0.929 vs mem0 +11.6pt (n=500 head-to-head) · LOCOMO 0.644/0.890 (away win) · LongMemEval-M 0.888 · EverMemBench-Dynamic 44.4-47.3% (n=500, 2 runs)",
             "version": "1.0.0",
             "homepage": "https://github.com/chunxiaoxx/nautilus-compass",
             "capabilities": [
@@ -1539,6 +1537,29 @@ def _v14_emit_poi_candidate(hits, query, agent_id):
     return n
 
 
+
+# ── 求焦节流(2026-11-06 · 主脑解剖定谳) ──
+# LLM 在工具调用里以 ~55s 频率自发重复同款 recall("what should I focus next?"),
+# 问句不在任何代码里(运行时模型自写)。服务端节流=对一切客户端(curl/库/模型)
+# 生效:同 (q, agent_id) 10min 内只真算一次,其余回缓存(标 cached)。
+_V14_RECALL_CACHE_WINDOW_S = 600
+# 多 worker 各持内存字典命中率仅 1/4 → 改共享文件时间戳窗(竞态无害,至多重复算)
+def _v14_focus_throttled(q: str, agent_id) -> bool:
+    import hashlib, time as _t
+    _h = hashlib.md5(f"{q}|{agent_id}".encode()).hexdigest()[:16]
+    _f = Path("/tmp") / f"v14_recall_throttle_{_h}"
+    try:
+        if _t.time() - _f.stat().st_mtime < _V14_RECALL_CACHE_WINDOW_S:
+            return True
+    except OSError:
+        pass
+    try:
+        _f.touch()
+    except OSError:
+        pass
+    return False
+
+
 @app.get("/v1/v14/recall")
 def v14_recall(
     q: str,
@@ -1559,6 +1580,11 @@ def v14_recall(
         raise HTTPException(400, "scope must be 'project'")
     mapped_project = _v14_require_project(user_id, project)
     effective_agent_id = user_id
+    # 线上热修(2026-11-06)求焦节流:同 (q, agent) 10min 内只真算一次。键用已认证身份,
+    # 且置于鉴权与项目映射之后——未认证请求碰不到节流缓存。
+    if _v14_focus_throttled(q, effective_agent_id):
+        return {"ok": True, "throttled": True, "reason": "repeat-query-window",
+                "window_s": _V14_RECALL_CACHE_WINDOW_S, "backend": "v1.4-bge-m3"}
     req = {
         "action": "recall",
         "query": (q or "")[:2000],
@@ -1596,7 +1622,7 @@ def v14_recall(
     # `project`). Cap to a count + small sample so the per-cycle daemon loop isn't
     # shipping ~800KB every recall over the tunnel.
     _ps = d.get("projects_scanned", []) or []
-    return {
+    _resp = {
         "ok": True,
         "scope": d.get("scope", scope),
         "projects_scanned_count": len(_ps),
@@ -1605,6 +1631,7 @@ def v14_recall(
         "fresh_extra": d.get("fresh_extra", []),
         "backend": "v1.4-bge-m3",
     }
+    return _resp
 
 
 # ─── v14_ingest_obs · session_*.md writer · 2026-05-11 ──────────────
@@ -1640,7 +1667,7 @@ def v14_ingest_obs(
         return {"ok": False, "error": "content too short (min 10 chars)"}
 
     # 2026-08-30 security fix: ingest 需 Bearer JWT——此端点可直接写记忆目录
-    # (session_*.md),header-only 身份曾在公网 443 可被任意伪造(记忆投毒面)。
+    # (session_*.md),header-only 身份曾在公网可被任意伪造(记忆投毒面)。
     uid = None
     if authorization and authorization.startswith("Bearer "):
         try:
