@@ -1,0 +1,15 @@
+{
+  "schema": "local-semantic-review/v1",
+  "model": "Qwen3.5-9B-4bit",
+  "thinking_enabled": true,
+  "external_model_used": false,
+  "external_send": false,
+  "raw_sha256": "9ad870bd0e1269775ef8c34ed9f80db151ff4d9a2a4270186501965e226c850a",
+  "raw_length": 193,
+  "parse_status": "pass",
+  "result": {
+    "verdict": "evidence_insufficient",
+    "findings": "当前上下文中未提供任何关于本地模型 Qwen3.5-9B-4bit 的服务探针数据。且 Qwen3.5 版本目前尚未正式发布，无法基于现有公开事实确认其功能特性。",
+    "next_action": "请提供该模型实例的实际服务探针日志或 API 响应内容以进行验证。"
+  }
+}

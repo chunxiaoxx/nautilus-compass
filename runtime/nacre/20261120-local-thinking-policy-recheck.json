@@ -1,0 +1,41 @@
+{
+  "schema": "local-9b-thinking-policy-recheck/v1",
+  "generated_at_local": "2026-11-20T11:00:00-05:00",
+  "model": "Qwen3.5-9B-4bit",
+  "service": {
+    "endpoint": "http://127.0.0.1:11435",
+    "health": "ok",
+    "loaded": true,
+    "health_thinking": true,
+    "max_tokens": 8192
+  },
+  "observations": {
+    "short_probe": {
+      "enable_thinking": false,
+      "verdict": "pass",
+      "reason": "只验证服务可用性和可解析短响应"
+    },
+    "semantic_review": {
+      "enable_thinking": true,
+      "verdict": "pass",
+      "parse_status": "pass",
+      "receipt": "runtime/nacre/20261120-local-semantic-thinking-smoke.json"
+    },
+    "strict_tool_router_thinking": {
+      "enable_thinking": true,
+      "verdict": "not_accepted",
+      "negative_evidence": [
+        "复杂工具路由提示下 512 token 只产生思考文本，未返回 JSON",
+        "扩大到 4096 token 后请求超过 120 秒超时"
+      ],
+      "meaning": "不能把思考模式直接塞进受限工具路由协议"
+    }
+  },
+  "policy": {
+    "health_probe": "thinking_disabled",
+    "operational_tool_router": "thinking_disabled",
+    "semantic_review_and_evaluation": "thinking_enabled",
+    "reason": "前两者要求低延迟和严格 JSON，后者需要推理预算和独立语义回执"
+  },
+  "training_boundary": "本报告证明运行策略和接口行为，不证明语义准确率或训练准入"
+}

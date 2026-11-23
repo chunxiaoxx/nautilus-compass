@@ -1,0 +1,22 @@
+{
+  "schema": "nacre-dataset-manifest-v0",
+  "source": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/nacre/training_events.jsonl",
+  "output": "/Users/chunxiao.wang/Projects/nautilus-compass/runtime/nacre/dataset_preview.jsonl",
+  "record_count": 20,
+  "train_count": 15,
+  "validation_count": 2,
+  "test_count": 3,
+  "excluded_count": 4,
+  "excluded_reasons": {
+    "draft_claim_without_successful_write_draft": 2,
+    "runtime_contract_violation": 2
+  },
+  "sha256": "89936bb856149c11b6d95477b3fa327069a0b5d7b269d59945a79a1cbe3c3c77",
+  "external_model_records": 0,
+  "external_send_records": 0,
+  "notes": [
+    "Only local-agent events are eligible.",
+    "No email body, credential, external send, or arbitrary shell trace is included.",
+    "A larger training run requires an independently reviewed gold set."
+  ]
+}

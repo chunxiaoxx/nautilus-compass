@@ -1,0 +1,41 @@
+{
+  "schema": "nacre-runtime-eval-v0",
+  "event_count": 24,
+  "tool_allowlist": {
+    "passed": 116,
+    "total": 116,
+    "rate": 1.0
+  },
+  "external_model_zero": {
+    "passed": 24,
+    "total": 24,
+    "rate": 1.0
+  },
+  "external_send_zero": {
+    "passed": 24,
+    "total": 24,
+    "rate": 1.0
+  },
+  "draft_postcondition": {
+    "passed": 1,
+    "total": 2,
+    "rate": 0.5
+  },
+  "evidence_gate_postcondition": {
+    "passed": 19,
+    "total": 21,
+    "rate": 0.9048
+  },
+  "fail_closed_on_contract_violation": {
+    "passed": 2,
+    "total": 4,
+    "rate": 0.5
+  },
+  "contract_violation_count": 4,
+  "semantic_accuracy": "unscored_without_human_gold_set",
+  "overall_gate": false,
+  "notes": [
+    "Runtime contract metrics are not a substitute for semantic gold-set accuracy.",
+    "Raw failure events remain available for negative training and audit."
+  ]
+}

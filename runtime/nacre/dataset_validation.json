@@ -1,0 +1,11 @@
+{
+  "schema": "nacre-dataset-validation-v0",
+  "dataset": "runtime/nacre/dataset_preview.jsonl",
+  "manifest": "runtime/nacre/dataset_manifest.json",
+  "ok": true,
+  "record_count": 20,
+  "train_count": 15,
+  "validation_count": 2,
+  "test_count": 3,
+  "errors": []
+}

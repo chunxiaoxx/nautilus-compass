@@ -1,0 +1,17 @@
+{
+  "schema": "nacre-mlx-data-manifest-v0",
+  "source": "runtime/nacre/dataset_preview.jsonl",
+  "output": "runtime/nacre/mlx_data",
+  "source_sha256": "89936bb856149c11b6d95477b3fa327069a0b5d7b269d59945a79a1cbe3c3c77",
+  "counts": {
+    "train": 15,
+    "validation": 2,
+    "test": 3
+  },
+  "format": "mlx-lm chat messages",
+  "training_started": false,
+  "notes": [
+    "This is staging data only.",
+    "A human-reviewed gold set and independent validation are required before training."
+  ]
+}

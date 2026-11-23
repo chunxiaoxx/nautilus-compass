@@ -1,0 +1,21 @@
+{
+  "schema": "nacre-training-preflight-v0",
+  "config": "configs/nacre/mlx_lora_stage_a.yaml",
+  "model": "/Users/chunxiao.wang/mnt/nas-work/model-cache/qwen/Qwen3.5-9B-4bit",
+  "data": "runtime/nacre/mlx_data",
+  "python": "/Users/chunxiao.wang/infra/mlx-venv/bin/python",
+  "counts": {
+    "train": 15,
+    "validation": 2,
+    "test": 3
+  },
+  "mlx_lm_available": true,
+  "ready": false,
+  "blockers": [
+    "train_count_below_32",
+    "validation_count_below_8",
+    "test_count_below_8"
+  ],
+  "training_started": false,
+  "reason": "gold_set_and_frozen_validation_required"
+}

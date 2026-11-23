@@ -1,0 +1,18 @@
+# NACRE Stage A · local MLX-LoRA dry-run configuration.
+# This file is intentionally not invoked by a scheduler.
+model: /Users/chunxiao.wang/mnt/nas-work/model-cache/qwen/Qwen3.5-9B-4bit
+data: /Users/chunxiao.wang/Projects/nautilus-compass/runtime/nacre/mlx_data
+fine_tune_type: lora
+optimizer: adamw
+num_layers: 8
+batch_size: 1
+iters: 200
+val_batches: -1
+learning_rate: 0.00001
+steps_per_report: 10
+steps_per_eval: 50
+adapter_path: /Users/chunxiao.wang/Projects/nautilus-compass/runtime/nacre/adapters/stage_a
+save_every: 50
+max_seq_length: 4096
+mask_prompt: false
+seed: 17

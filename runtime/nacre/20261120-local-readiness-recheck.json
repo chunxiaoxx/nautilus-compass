@@ -1,0 +1,138 @@
+{
+  "schema": "nacre-local-readiness-recheck-v1",
+  "generated_at_utc": "2026-11-20T15:39:58.625601+00:00",
+  "scope": "read_only_local_9b_and_nacre_preflight",
+  "model_service": {
+    "endpoint": "http://127.0.0.1:11435",
+    "health_probe": {
+      "returncode": 0,
+      "elapsed_s": 0.011,
+      "parseable_json": true,
+      "body": {
+        "status": "ok",
+        "model": "Qwen3.5-9B-4bit",
+        "loaded": true,
+        "thinking": true,
+        "max_tokens": 8192
+      },
+      "stderr_tail": ""
+    },
+    "models_probe": {
+      "returncode": 0,
+      "elapsed_s": 0.006,
+      "parseable_json": true,
+      "body": {
+        "object": "list",
+        "data": [
+          {
+            "id": "Qwen3.5-9B-4bit",
+            "object": "model",
+            "created": 1795189217,
+            "owned_by": "local-mlx"
+          }
+        ]
+      },
+      "stderr_tail": ""
+    },
+    "generation_smoke": {
+      "request": {
+        "model": "Qwen3.5-9B-4bit",
+        "max_tokens": 8,
+        "temperature": 0,
+        "enable_thinking": false,
+        "prompt": "只回复 OK"
+      },
+      "returncode": 0,
+      "response": {
+        "id": "chatcmpl-b82eeadbeb7c4414aeb522ba",
+        "object": "chat.completion",
+        "created": 1795189198,
+        "model": "Qwen3.5-9B-4bit",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "OK"
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 15,
+          "completion_tokens": 2,
+          "total_tokens": 17
+        }
+      },
+      "passed": true,
+      "stderr_tail": "",
+      "note": "本地 9B 服务可用；关闭思考模式做短响应探活，不代表训练或语义准确率通过。"
+    }
+  },
+  "dataset": {
+    "manifest_counts": {
+      "record_count": 20,
+      "train": 15,
+      "validation": 2,
+      "test": 3,
+      "excluded": 4
+    },
+    "validation": {
+      "ok": true,
+      "errors": []
+    },
+    "gold_candidates": {
+      "candidate_count": 14,
+      "ok": true,
+      "approved_for_training": false
+    },
+    "runtime_eval": {
+      "event_count": 24,
+      "external_model_zero": {
+        "passed": 24,
+        "total": 24,
+        "rate": 1.0
+      },
+      "external_send_zero": {
+        "passed": 24,
+        "total": 24,
+        "rate": 1.0
+      },
+      "semantic_accuracy": "unscored_without_human_gold_set",
+      "overall_gate": false
+    }
+  },
+  "preflight": {
+    "ready": false,
+    "training_started": false,
+    "blockers": [
+      "train_count_below_32",
+      "validation_count_below_8",
+      "test_count_below_8"
+    ],
+    "shortages_to_threshold": {
+      "train_to_32": 17,
+      "validation_to_8": 6,
+      "test_to_8": 5
+    },
+    "mlx_lm_available": true,
+    "base_model_path": "/Users/chunxiao.wang/mnt/nas-work/model-cache/qwen/Qwen3.5-9B-4bit"
+  },
+  "decision": {
+    "status": "blocked_preflight",
+    "action": "do_not_start_training",
+    "reason": "数据结构可读，但样本量和独立金标/冻结验证集门槛未满足。"
+  },
+  "safe_next_actions": [
+    "补充独立复核过的有效事件，至少填补 train +17、validation +6、test +5 的当前门槛缺口。",
+    "先冻结 validation/test 和金标审阅记录，再重新运行 preflight。",
+    "继续使用本地 9B 做受限运行和合同评估，不把 runtime contract 指标写成语义准确率。"
+  ],
+  "evidence_hashes": {
+    "dataset_manifest.json": "c2742b88dc0776db55df50e0d7743154fa86ffde4fee0b11cd899b9f6df8ce19",
+    "dataset_validation.json": "837e7e170d74b5a10cce4851f3493ce068091a8ee169a1cf7dd82afd46852dff",
+    "gold_candidates_validation.json": "d2b007d176ba8e69e546ceb9a389db46d85e0a1e542d30b9b9be17863249e7ea",
+    "training_preflight.json": "d3697d35151f411a11f921265045b5bcdff8c8932448c020b1df6d7aa26555b1",
+    "eval_report.json": "fb316d5b11d1223b265884e6eaff99f177925d6e0bc086e5b350c7bbe41e1757"
+  }
+}

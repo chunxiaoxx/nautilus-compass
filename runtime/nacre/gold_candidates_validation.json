@@ -1,0 +1,8 @@
+{
+  "schema": "nacre-gold-candidate-validation-v0",
+  "source": "runtime/nacre/gold_candidates_v0.jsonl",
+  "ok": true,
+  "candidate_count": 14,
+  "errors": [],
+  "approved_for_training": false
+}
