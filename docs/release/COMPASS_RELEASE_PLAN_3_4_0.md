@@ -42,6 +42,7 @@
 - 受保护认知金库路径和哈希
 - 分支、HEAD、daemon ping 和 AGENTS hash 记录
 - 胶囊失效后的 `not_computable`
+- 胶囊可以作为单文件证据提交。提交后只有在新提交是胶囊记录头部的直接子提交，且提交只包含该胶囊文件时才保持有效。任何夹带代码或配置变化的提交都必须重新生成胶囊。
 
 #### 认知金库
 
@@ -88,6 +89,7 @@
 ### R1 契约和测试
 
 - 运行 Context Capsule 测试。
+- 覆盖胶囊单文件提交可验证、夹带其他文件的提交会失效两种情况。
 - 运行核心认知金库生成和 stale hash 测试。
 - 运行 9B local-agent 测试。
 - 运行 daemon rerank remote、timeout 和 production fallback 测试。
