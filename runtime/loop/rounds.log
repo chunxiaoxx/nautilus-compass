@@ -5368,3 +5368,61 @@ push 成功，CI run 已触发(head_sha 绑定 HEAD·in_progress·结果留下�
 候拍板不变：磁盘续观·v5 staging(他域)·矩阵 phase2·distill 存量 1196·Gmail 草稿·模真真三诉求。
 ---- round end 11-22 14:11 ----
 2026-11-23 05:15 round583 值守持平轮:全渠道绿(信箱0/Gmail0新函/genesis零REPLY/daemon哨兵51/快筛持平/git0-0 CI绿/磁盘20Gi)·pydantic#14167被bot关闭落台账·a2a#198候对方·矩阵复活CS-005/006有读数 结果:零事件零新函·台账补pydantic终态一行
+R583 值守轮执行完毕(commit fc5ee04b 已 push,CI 终态由后台监视器盯守,head_sha 绑定核验中)。
+
+**本轮读数汇总:**
+
+| 值守面 | 读数 |
+|---|---|
+| 平台信箱 | 0 未读 |
+| Gmail | 探活绿,7d 过滤未读 **0**(零新商务函) |
+| GitHub | a2a#198 的 19:08Z 更新=**我方 R582 自身回帖 7084146798**,对方未答、零欠账;mentions 5 全旧 |
+| genesis | 8 家零 REPLY |
+| dev.to | 8 评论持平,最新活动停在 10-15(39 天) |
+| daemon/哨兵 | 9876 绿 + watchdog exit0 + 哨兵 recall_hit=51 |
+| 管道 | 三件 exit0,快筛「存在不过筛」持平 |
+| git/CI | 0/0 同步,R583 提交已触发 CI |
+| 磁盘 | avail **20Gi**(R581 12→R582 16→本轮 20,续回升) |
+
+**两件落档:**
+1. **pydantic#14167 终态**:pydanty[bot] 18:07Z 分诊 needs information 后关闭——婉拒口径,已落 EXTERNAL_LEDGER_V1_2(该台账首次入库),不重开,后续触达改走邮件/discussions。
+2. **矩阵复活**:CS-005 31/20、CS-006 24/20,跑批 21:42 正常结束(R728 时还停摆 10-30)——v5 侧跑批器已复活。
+
+**坑记一条**:GitHub comments API 的 `sort/direction` 参数失效会返回最早页,须 `per_page=100` 取尾(与 R578 的 gh 旗标坑同族,已入 rounds.log)。
+
+**他域通报不越框**:v5 staging CI 三连败(customer-demo-ship,15:34-17:26 三次 push)。
+
+CI 终态确认：run_id 45071075050,conclusion=**success**,head_sha=fc5ee04b 绑定核验通过(R574 纪律闭环)。R583 轮全部动作完成——纯 docs 提交无代码变更，CI 绿符合预期，无遗留脏区。
+---- round end 11-22 16:18 ----
+2026-11-23 07:21 round584 值守轮全绿持平:信箱0/Gmail 401→直刷3599s→7d过滤17逐封实查(13营销+2 codex bot+2 pydantic关闭通知·David SF=19:24Z关闭者无留言·终态与R583台账一致零新函)/mentions 5全旧+通知2条全我方自身(PR#566=codex bot用量提示)/genesis零REPLY/dev.to 8持平/daemon绿+哨兵recall_hit=63/矩阵持平(CS-005 31/20·CS-006 24/20·21:42跑批正常)/管道三件exit0快筛持平/git 0-0·HEAD fc5ee04b CI success绑定核验/磁盘18Gi(20→18续观) → 零增量不commit
+**R584 值守轮完成**（07:21 北京口径）——全绿持平，零增量，按纪律不 commit。
+
+关键甄别：
+- **pydantic#14167**：Gmail 新面孔 David SF 实为 19:24Z 关闭动作通知（邮件头时差核清），comments API 仅 pydanty[bot] 一条，人类维护者零留言——R583 台账终态（bot needs information 后 closed·婉拒不重开）核清不变
+- **Gmail**：401→直刷 3599s；7d 过滤 17 封逐封实查 = 13 营销 + 2 codex bot（PR#566 用量提示）+ 2 pydantic 通知，零新商务函
+- 值守面：信箱 0 / mentions 5 全旧 / genesis 零 REPLY / dev.to 8 持平 / daemon 绿 + 哨兵 recall_hit=63 / 矩阵持平（CS-005 31/20·CS-006 24/20·21:42 跑批正常）/ 管道三件 exit0 快筛持平
+- git 0-0，HEAD fc5ee04b CI success·head_sha 绑定核验通过；磁盘 18Gi（20→18 续观，>10Gi 线）
+
+留痕：rounds.log 一行 + state.json→584 + COLLAB_BOARD 一行。
+---- round end 11-22 18:22 ----
+- 2026-11-23 09:25 · compass R585 持平轮:值守面全绿(信箱0/Gmail 401→直刷3599s→7d全量未读17全营销零商务函·含Google-Manus数据共享通知=用户自有节点正常产物注记/mentions 5全旧/genesis 8家零REPLY/dev.to 8持平)·a2a#198零新动作(最新=我方19:08Z回帖·候对方)·notifications里compass CI红4连=过期读数(R580已修复的F401事件·实测最新6 run全success·HEAD fc5ee04b head_sha绑定核验)·v5 staging 9连败=他域通报·矩阵4题读数CS-003 32/20 CS-004 28/20 CS-005 31/20 CS-006 24/20(21:42跑批·无新跑批持平)·快筛「存在不过筛」持平·daemon绿+哨兵recall_hit=66·管道三件exit0·git 0/0·磁盘avail 16Gi(20→18→16连续两轮回落·-2Gi/2h续观·>10Gi线)·R584计数遗漏已补(state 584→585)
+R585 轮完成(北京 09:25,零增量不 commit):
+
+**值守面全绿**
+- 信箱 0;Gmail 401→refresh_token 直刷成功(3599s),7d 全量未读 17 封全营销零商务函(含 1 封 Google/Manus 数据共享通知=用户自有节点正常产物,已注记不行动)
+- mentions 5 全旧;genesis 8 家零 REPLY;dev.to 8(6+2)持平
+- a2a#198 零新动作(最新 3 条=对方 alanwang100 修复+我方两回帖,候对方)
+- daemon 绿+哨兵 recall_hit=66;管道三件 exit0,快筛「存在不过筛」持平(CS-518)
+
+**两处判读澄清**
+- notifications 里 compass CI 红 4 连=**过期读数**:R580 已修复的 F401 旧事件;实测最新 6 run 全 success,HEAD=fc5ee04b head_sha 绑定核验成立
+- v5 staging 9 连败=他域,通报不越框
+
+**矩阵**:CS-003 32/20·CS-004 28/20·CS-005 31/20·CS-006 24/20,21:42 跑批正常,无新跑批持平
+
+**关注项**
+- 磁盘 avail 16Gi:20→18→16 连续两轮回落(-2Gi/2h),仍 >10Gi alarm 线,续观;若持续此速率约 5-6h 触线
+- R584 轮遗漏 state 计数 +1,本轮已补(584→585)
+- 留痕三件已写:rounds.log / COLLAB_BOARD / state.json
+---- round end 11-22 20:25 ----
+2026-11-22 22:33 round586 平台函#148685办结:flood排除两处同改+fixture修复+3测试绿+真实库实测(默认项目v5-breath-auto→本仓,显式不受限)·commit 21f222b2已push·回执149358已发已ack;Gmail 401→直刷3599s→15未读全营销/自家镜像零新商务函;mentions5全旧;genesis零REPLY;dev.to持平;daemon绿哨兵66;管道三件exit0快筛持平(CS-518不过③);origin前进1笔(5e62df30他线v14档)已ff同步

@@ -1,7 +1,13 @@
 {
-  "round": 583,
-  "last_round_ts": "2026-11-23 02:09",
+  "round": 586,
+  "last_round_ts": "2026-11-23 03:33",
   "history": [
+    {
+      "round": 586,
+      "ts": "2026-11-23 03:33",
+      "result": "substantive",
+      "note": "R586 实质增量:平台函#148685(flywheel→compass,用户11/23已批,时限11/25)办结——默认项目洪水排除两处同改(mcp_server.resolve_project+compass_http._resolve_project 增 _is_auto_journal_flood 闸:ingest_*.md占九成以上且总数≥200不参与默认竞选,显式project照常,env优先级不变);修测试fixture home层级bug(.claude中间层,layout.parents[1]);3测试绿+真实库实测(默认项目v5-breath-auto→本仓compass,显式访问不受影响,0.3s);全量回归1843过5败均既有(stash复跑证实:drift/eval_recall_modes×3/loop_cli);commit 21f222b2 pathspec限定3文件已push·CI run 45106593864 head绑定成立;回执149358已发原函已ack。值守面:信箱处理毕0未读;Gmail 401→直刷3599s→15未读(新+1=codex-connector镜像nautilus-core ali_phase2 PR,余全营销零新商务函);mentions5全旧(a2a#198最新外部=tedTorus 11-22垃圾推广非我方);genesis 8家零REPLY;dev.to 2文(6+2)持平;daemon 9876绿+哨兵recall_hit=66+watchdog正常;管道三件exit0·快筛存在不过筛持平(CS-518 qwen0.75/opus1.0不过③两点带);origin/main他线前进1笔5e62df30(v14处置档23行)已ff-only同步·CI绿。边界:洪水文件本体4.2万仍在库候用户裁决清退;stat全库性能项未裹入;未碰他线其余未提交文件。"
+    },
     {
       "round": 582,
       "ts": "2026-11-23 02:09",
