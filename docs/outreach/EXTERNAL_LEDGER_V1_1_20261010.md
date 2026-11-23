@@ -126,3 +126,9 @@
 - **事件**:六 GitHub 独立复算邀请之一(4fc2f678 已发)。对方维护者 kausmeows 2026-11-23T07:22Z 回复 `not relevant` 并关闭 issue。
 - **分类=婉拒类,记台账不追**(与 R566 两起同型;对方关闭计数=3 起,但平台/对象各异,仍无共因证据)。
 - **Gmail 新面孔登记(同轮)**:Andy <andy@dm.metaver.vip>(Reply-To: supera6@qq.com)2026-11-23 13:37+0800 来函,自称帮「连尚 AI 孵化器」荐种子轮项目,附专属申请链接+1.4MB PDF 附件,「全程不收费」。冷触达 BD,链接疑似带推荐追踪。**候用户拍板,不自主回复**。
+
+## 2026-11-23 · R588 追加:AgnesAI-Labs/agnes-harness#458 婉拒关闭(L1 评测邀请之第 4 起对方关闭)
+
+- **事件**:我方(chunxiaoxx)10 月中旬发出的 harness L1 免费评测邀请(issue #458,对应 bench.nautilus.social 排行榜冷触达线)。对方 Qiaoran 2026-11-23T13:21Z 回复 `We'll pass on participating for now. Best of luck with the benchmark.` 并由其自行关闭 issue。
+- **分类=婉拒类,记台账不追**(礼貌明确,零跟进价值)。对方关闭计数=4 起(R566×2 + agno + 本起);本起与 agno 同日但类型不同(L1 排行榜邀请 vs 复算邀请),仍无共因证据,不升级处置。
+- **口径注记**:GitHub notifications 中同名 Issue 通知与 Gmail 镜像 ×2 同源,勿重复计数。
