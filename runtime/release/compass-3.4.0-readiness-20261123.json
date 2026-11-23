@@ -1,8 +1,8 @@
 {
   "schema": "compass-release-readiness/1",
-  "observed_at": "2026-11-23T19:09:00Z",
+  "observed_at": "2026-11-23T19:10:00Z",
   "candidate": "3.4.0",
-  "current_head": "0eca9322",
+  "current_head": "22f0f0dc",
   "latest_tags": [
     "v3.3.0",
     "v3.2.0",
