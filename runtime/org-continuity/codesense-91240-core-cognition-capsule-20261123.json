@@ -1,7 +1,7 @@
 {
   "schema": "context-capsule/1",
   "capsule_id": "codesense-91240:codex-core-cognition-vault-20261123-r25",
-  "created_at_utc": "2026-11-23T19:09:23.863588+00:00",
+  "created_at_utc": "2026-11-23T19:19:41.352566+00:00",
   "authorization_basis": "current_user_instruction_continue",
   "scope": "organization-continuity-and-recall-gate",
   "actor": {
@@ -16,7 +16,7 @@
     "project_path": "/Users/chunxiao.wang/Projects/nautilus-compass",
     "git_root": "/Users/chunxiao.wang/Projects/nautilus-compass",
     "branch": "main",
-    "source_head": "de20c65abf801d4b641e6b6104d4e9c20a9cca5f",
+    "source_head": "5bf02adec866ce7534fcfdbe3ecd24a34ccc2c7d",
     "dirty_count": 14,
     "dirty_sample": [
       "M .codex/config.toml",
@@ -41,7 +41,7 @@
     "required": true,
     "status": "bound",
     "path": "../nautilus-core/ops/ali_phase2/core_cognition_vault_v1.json",
-    "sha256": "330d662e42bc20eb9d5bc02692046274d20e93c739c01bec70bae99d0c90fdb8",
+    "sha256": "1ce0e022dd8a0747201b0edaf92e38978913f0d0959f5defab65e95e50edc432",
     "vault_id": "codesense-core-cognition-v1"
   },
   "permissions": {
@@ -87,7 +87,7 @@
   "integrity": {
     "algorithm": "sha256",
     "status": "computed",
-    "sha256": "9635cc5b7ae9e3ad7aa6ace548774658333f0fc2393447696ee1488012520033"
+    "sha256": "b0ba4e34cfc595dade1ea28d25717e6b43850affa2a25d414ab83bb3e8892feb"
   },
   "signature": {
     "status": "not_signed",
