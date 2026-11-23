@@ -65,6 +65,31 @@ def test_semantic_review_uses_thinking_without_tool_router(monkeypatch):
     assert captured["timeout"] == 300
 
 
+def test_run_task_stops_repeated_tool_plan_and_requests_final(monkeypatch):
+    calls = []
+    repeated_plan = {
+        "tool_calls": [{"name": "local_health", "arguments": {}}],
+        "final": None,
+    }
+
+    def fake_call(messages, max_tokens=512, *, enable_thinking=False, timeout=120):
+        calls.append(messages[-1]["content"])
+        if len(calls) <= 2:
+            return json.dumps(repeated_plan, ensure_ascii=False)
+        return '{"tool_calls":[],"final":"本地健康证据已取得，停止重复调用。"}'
+
+    monkeypatch.setattr(runtime, "_call_model", fake_call)
+    monkeypatch.setattr(runtime, "_record_training_event", lambda event: None)
+    monkeypatch.setitem(runtime.TOOL_REGISTRY, "local_health", lambda _: {"status": "ok", "loaded": True})
+
+    result = runtime.run_task("只读检查本地健康，不发送任何内容。", max_steps=3)
+
+    assert result["final"] == "本地健康证据已取得，停止重复调用。"
+    assert result["external_model_used"] is False
+    assert any(step.get("result") == "repeated_tool_plan" for step in result["steps"])
+    assert len(calls) == 3
+
+
 def test_org_continuity_read_is_bounded_and_local():
     result = runtime.org_continuity_read({})
 

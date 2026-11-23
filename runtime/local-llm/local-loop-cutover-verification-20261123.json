@@ -1,0 +1,44 @@
+{
+  "observed_at": "2026-11-23T10:11:15-0500",
+  "scope": "local_compass_loop_cutover_and_9b_repeat_guard",
+  "launchd": {
+    "label": "com.nautilus.compass-loop",
+    "installed_program": "/usr/bin/python3",
+    "installed_script": "tools/local_loop_runner.py",
+    "installed_plist_sha256": "2f522c83705f37c2baca117498baefbdb820da4119ca82c76ee9915913afc05f",
+    "repo_plist_sha256": "2f522c83705f37c2baca117498baefbdb820da4119ca82c76ee9915913afc05f",
+    "hash_match": true,
+    "previous_plist_backup": "runtime/loop/maintenance_backups/local-cutover-20261123/com.nautilus.compass-loop.plist.before",
+    "run_interval_seconds": 1800,
+    "external_claude_command_removed_from_loaded_plist": true
+  },
+  "local_model": {
+    "endpoint": "http://127.0.0.1:11435",
+    "health": {
+      "status": "ok",
+      "model": "Qwen3.5-9B-4bit",
+      "loaded": true,
+      "thinking": true,
+      "max_tokens": 8192
+    },
+    "external_model_used": false
+  },
+  "controlled_round": {
+    "receipt_round": 115,
+    "observed_at": "2026-11-23T10:07:19-0500",
+    "external_model_used": false,
+    "local_agent_ok": true,
+    "pre_patch_finding": "达到本地工具调用步数上限，保留现有证据。",
+    "pre_patch_steps": 3
+  },
+  "repeat_guard": {
+    "implementation": "tools/local_agent_runtime.py",
+    "test": "tests/test_local_agent_runtime.py",
+    "test_result": "20 passed",
+    "direct_smoke": "local 9B produced final conclusion after 2 steps with local_health and compass_daemon_probe",
+    "external_model_used": false,
+    "external_send": false
+  },
+  "platform_upload": false,
+  "external_send": false
+}

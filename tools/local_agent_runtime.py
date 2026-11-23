@@ -444,6 +444,7 @@ def run_task(task: str, max_steps: int = 4) -> dict[str, Any]:
     draft_requested = draft_requested and not draft_prohibited
     draft_repair_attempted = False
     observed_evidence: list[dict[str, Any]] = []
+    seen_plan_fingerprints: set[str] = set()
     for _ in range(max_steps):
         raw = _call_model(messages, max_tokens=512, enable_thinking=False)
         plan = _parse_json(raw)
@@ -469,6 +470,32 @@ def run_task(task: str, max_steps: int = 4) -> dict[str, Any]:
             steps.append({"model_output": plan, "result": "final"})
             final = plan.get("final") or "本地模型未给出最终摘要。"
             break
+        fingerprint = json.dumps(calls, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        if fingerprint in seen_plan_fingerprints:
+            steps.append({"model_output": plan, "result": "repeated_tool_plan"})
+            messages.append({"role": "assistant", "content": json.dumps(plan, ensure_ascii=False)})
+            messages.append({
+                "role": "user",
+                "content": (
+                    "你刚才重复了已经执行过的工具调用。不要再次调用这些工具。"
+                    "请根据已有工具结果，只输出最终 JSON，格式为 "
+                    '{"tool_calls":[],"final":"简短中文结论"}'
+                ),
+            })
+            try:
+                final_raw = _call_model(messages, max_tokens=256, enable_thinking=False, timeout=60)
+                final_plan = _parse_json(final_raw)
+            except Exception as exc:
+                final_plan = None
+                steps.append({"finalization_error": f"{type(exc).__name__}: {exc}"})
+            if final_plan and not (final_plan.get("tool_calls") or []):
+                final = final_plan.get("final") or "本地模型在重复工具计划后给出空结论。"
+                steps.append({"model_output": final_plan, "result": "final_after_repeat_guard"})
+            else:
+                final = "本地模型重复工具计划，已停止重复执行并保留现有证据。"
+                steps.append({"result": "repeat_guard_fallback"})
+            break
+        seen_plan_fingerprints.add(fingerprint)
         results = []
         for call in calls[:3]:
             if not isinstance(call, dict) or call.get("name") not in TOOL_REGISTRY:
