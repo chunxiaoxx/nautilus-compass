@@ -67,5 +67,22 @@ any self-report.
 - Subsets are welcome but must be labeled as subsets.
 - Found a protocol flaw? It gets fixed and re-run, not buried.
 
+## Errata (wall's own, ugly entries included)
+
+- **2026-11-23 — Three receipts failed verification on committed bytes for
+  two months.** An independent audit found that of the wall's signed
+  receipts, `EXAM5_SCORECARD` and `EXAM5_SCORECARD_RETAKE1` verified only on
+  the original author's Windows working tree: their signatures were made
+  over bytes containing CRLF, while the repository normalizes to LF — so the
+  README's one-command verification returned `INVALID` on fresh Linux/macOS
+  clones. The original signed bytes have been re-committed verbatim under a
+  `-text` attribute (signatures unchanged; content byte-identical apart from
+  line endings). `MEMORY_SYSTEMS_DIRECTORY` is a living board whose content
+  was updated after its 9/22 signature; it has been re-signed over the
+  current committed content (old sig retained in history). Going forward
+  `tests/test_wall_receipts_verify.py` verifies **every** wall receipt
+  against committed bytes on each push — "fresh-clone one-command
+  verification" is now a CI assertion, not a slogan.
+
 *Related: the judge-hygiene paper (LLM-as-judge failure taxonomy + protocol,
 arXiv in submission) and the dual-accounting e2e report in the README.*

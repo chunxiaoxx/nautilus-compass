@@ -7,3 +7,9 @@
 *.json text eol=lf
 docs/metering/** text eol=lf
 docs/cases/** text eol=lf
+
+# 公开墙回执:签名绑定的是字节(2026-11-23)。EXAM5 两张的原始签名是对着含 CR 的工作区字节做出的,
+# 任何换行转换都会让"新克隆一命令验证"变成 INVALID——墙文件一律原字节入库、原字节检出。
+# 每次提交由 tests/test_wall_receipts_verify.py 按入库字节逐张验签把关。
+docs/wall/*.md -text
+docs/wall/*.sig -text
