@@ -1,7 +1,7 @@
 {
   "schema": "context-capsule/1",
-  "capsule_id": "codesense-91240:codex-core-cognition-vault-20261123",
-  "created_at_utc": "2026-11-23T16:45:03.256582+00:00",
+  "capsule_id": "codesense-91240:codex-core-cognition-vault-20261123-r25",
+  "created_at_utc": "2026-11-23T19:04:33.199374+00:00",
   "authorization_basis": "current_user_instruction_continue",
   "scope": "organization-continuity-and-recall-gate",
   "actor": {
@@ -16,31 +16,31 @@
     "project_path": "/Users/chunxiao.wang/Projects/nautilus-compass",
     "git_root": "/Users/chunxiao.wang/Projects/nautilus-compass",
     "branch": "main",
-    "source_head": "06d79eae5b34e27182b47921974246856b1410e1",
-    "dirty_count": 16,
+    "source_head": "9ca9eeb3a83a5bcf4a7963878d2c44fdba8a539a",
+    "dirty_count": 15,
     "dirty_sample": [
       "M .codex/config.toml",
       " M runtime/loop/channel_canary_state.json",
       " M runtime/loop/local_round_receipt.json",
       " M runtime/loop/local_state.json",
       " M runtime/loop/rounds.log",
+      " M runtime/org-continuity/codesense-91240-core-cognition-capsule-20261123.json",
       " M runtime/production_loop/state.json",
-      " M tests/test_context_capsule.py",
-      " M tools/context_capsule.py"
+      "?? _INBOUND_FROM_FLYWHEEL_20261123_uncommitted_worktree_alert.md"
     ],
     "agents_sha256": "923cc6024b0f47b9ca2412096dd78c2b864ff23ffa9fa208bdd94967c2257e7d"
   },
   "task": {
     "task_id": "codesense-91240",
     "owner": "compass",
-    "thread_id": "codex-core-cognition-vault-20261123",
-    "goal": "protect CodeSense task identity, negative evidence and promotion boundaries"
+    "thread_id": "codex-core-cognition-vault-20261123-r25",
+    "goal": "protect CodeSense R25 task identity, negative evidence and promotion boundaries"
   },
   "cognition_vault": {
     "required": true,
     "status": "bound",
     "path": "../nautilus-core/ops/ali_phase2/core_cognition_vault_v1.json",
-    "sha256": "1166c428efe4e9ceb36536bbefbcd47057c3d91ebd96c6e1ccc428a3f3835613",
+    "sha256": "330d662e42bc20eb9d5bc02692046274d20e93c739c01bec70bae99d0c90fdb8",
     "vault_id": "codesense-core-cognition-v1"
   },
   "permissions": {
@@ -86,7 +86,7 @@
   "integrity": {
     "algorithm": "sha256",
     "status": "computed",
-    "sha256": "28fe27084c218adcbbb9fc1f9839dfb5ffc6443549845a5feaf709b69aeb9f14"
+    "sha256": "2f19bb952d719f4b9f649593c8e252a82e8e48001a6c8e7b70d04904a3a660da"
   },
   "signature": {
     "status": "not_signed",
