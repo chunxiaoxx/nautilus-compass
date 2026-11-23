@@ -31,6 +31,14 @@
     "pre_patch_finding": "达到本地工具调用步数上限，保留现有证据。",
     "pre_patch_steps": 3
   },
+  "post_patch_launchd_round": {
+    "receipt_round": 119,
+    "local_agent_ok": true,
+    "external_model_used": false,
+    "external_send": false,
+    "final": "已实测：本地 9B 服务健康、Compass 语义记忆服务运行正常、组织连续性处于数据接入阻塞阶段。证据不足：memory_search 结果未直接证实当前会话的本地连通性，evidence_gate 判定证据链不完整。",
+    "launchd_exit_code": 0
+  },
   "repeat_guard": {
     "implementation": "tools/local_agent_runtime.py",
     "test": "tests/test_local_agent_runtime.py",
