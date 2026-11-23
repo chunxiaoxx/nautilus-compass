@@ -28,7 +28,7 @@ except Exception:  # 服务器依赖(mcp SDK)缺失时只测纯函数
 
 def test_scopes_from_value():
     assert m._scopes_from_value({"scopes": ["read:P"]}) == frozenset({"read:P"})
-    assert m._scopes_from_value(["tools.read"]) == frozenset({"read:*", "write:*"})
+    assert m._scopes_from_value(["tools.read"]) == frozenset({"tools.read"})
     assert m._scopes_from_value([]) == frozenset()
     assert m._scopes_from_value("garbage") == frozenset()
 
@@ -43,6 +43,8 @@ def test_read_scope():
     assert deny and "read:*" in deny
     assert m._check_scope(frozenset({"read:*"}), "recall",
                           {"project": "whatever", "scope": "user"}) is None
+    assert m._check_scope(frozenset({"tools.read"}), "recall",
+                          {"project": "legacy-project"}) is None
 
 
 def test_write_fail_closed():
@@ -52,6 +54,8 @@ def test_write_fail_closed():
     assert "write" in m._check_scope(s, "some_new_tool", {"project": "ProjA"})
     assert m._check_scope(frozenset({"write:ProjA"}), "ingest_obs",
                           {"project": "ProjA"}) is None
+    assert m._check_scope(frozenset({"tools.write"}), "ingest_obs",
+                          {"project": "legacy-project"}) is None
 
 
 def test_admin_and_star():

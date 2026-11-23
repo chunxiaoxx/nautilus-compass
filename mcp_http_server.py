@@ -206,6 +206,10 @@ def _check_scope(scopes: frozenset, tool_name: str, arguments: dict) -> str | No
     project = str((arguments or {}).get("project")
                   or _current_user.get() or "")
     if want_read:
+        # Legacy ops-issued tokens use tool-level scopes.  Keep them scoped to
+        # the read/write class while project-scoped tokens stay fail-closed.
+        if "tools.read" in scopes:
+            return None
         if "read:*" in scopes:
             return None
         # scope=user 跨项目全域读 → 需 read:*（普通 scoped token 不给）
@@ -215,6 +219,8 @@ def _check_scope(scopes: frozenset, tool_name: str, arguments: dict) -> str | No
             return None
         return f"token lacks read scope for project '{project}'"
     if want_write:
+        if "tools.write" in scopes:
+            return None
         if "write:*" in scopes:
             return None
         if f"write:{project}" in scopes:

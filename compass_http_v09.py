@@ -160,6 +160,39 @@ _V14_DEFAULT_PROJECT = _v14_os.environ.get("COMPASS_V14_PROJECT", "C--Users-chun
 _V14_TIMEOUT_S = float(_v14_os.environ.get("COMPASS_V14_TIMEOUT_S", "8.0"))
 
 
+def _v14_allowed_projects(user_id: str) -> set[str]:
+    """Return the explicit user→project mapping for the v14 file store.
+
+    The old v14 route had a process-wide default project and accepted a caller
+    supplied project string.  That cannot establish ownership.  Until an
+    explicit JSON mapping is configured, the safe result is an empty set.
+    """
+    raw = _v14_os.environ.get("COMPASS_V14_PROJECT_MAP", "").strip()
+    if not raw or not user_id:
+        return set()
+    try:
+        mapping = _v14_json.loads(raw)
+    except Exception:
+        return set()
+    values = mapping.get(user_id) if isinstance(mapping, dict) else None
+    if isinstance(values, str):
+        values = [values]
+    if not isinstance(values, list):
+        return set()
+    return {str(project).strip() for project in values if str(project).strip()}
+
+
+def _v14_require_project(user_id: str, project: Optional[str]) -> str:
+    """Require a mapped project and reject an unscoped v14 request."""
+    requested = str(project or "").strip()
+    allowed = _v14_allowed_projects(user_id)
+    if not allowed:
+        raise HTTPException(403, "v14 project mapping unavailable")
+    if not requested or requested not in allowed:
+        raise HTTPException(403, "project is not mapped to the authenticated user")
+    return requested
+
+
 def _call_v14_daemon(req, timeout=None):
     """v1.5.8 · Forward request to v1.4 BGE daemon · 3-tier fallback ladder.
     Try 9876 (local GPU via reverse tunnel) then 9886 (cloud CPU). Returns
@@ -1514,17 +1547,26 @@ def v14_recall(
     project: Optional[str] = None,
     agent_id: Optional[str] = None,
     x_tenant_id: Optional[str] = Header(None, alias="X-Tenant-ID"),
+    user_id: str = Depends(auth_user),
 ):
-    """v1.4 BGE-m3 recall · scope=project (default) or scope=user (cross-project)."""
+    """v1.4 BGE-m3 recall with explicit authenticated project ownership."""
+    if scope == "user":
+        # The daemon's legacy scope=user scans every project before returning
+        # hits.  Keep this route fail-closed until a mapped-project union is
+        # implemented at the adapter layer.
+        raise HTTPException(403, "scope=user disabled until mapped-project filtering is enabled")
+    if scope != "project":
+        raise HTTPException(400, "scope must be 'project'")
+    mapped_project = _v14_require_project(user_id, project)
+    effective_agent_id = user_id
     req = {
         "action": "recall",
         "query": (q or "")[:2000],
         "top_k": int(top_k),
-        "scope": scope,
-        "agent_type": x_tenant_id or "unknown",
+        "scope": "project",
+        "project": mapped_project,
+        "agent_type": user_id,
     }
-    if project:
-        req["project"] = project
     # v1.5.9 · scope=user is a cross-project UNION scan over ALL ~/.claude/projects
     # dirs (37k+ episodic cycle dirs · cold scan ~14s steady). The default 15s
     # timeout RACES that scan → any jitter pushes it over → _call_v14_daemon raises
@@ -1546,7 +1588,7 @@ def v14_recall(
         _h = d.get("recall", [])
         _v14_poi_boost(_h)  # rerank in place by PoI credit snapshot (env-gated)
         if _h and _v14_os.environ.get("COMPASS_NO_POI_CANDIDATE") != "1":
-            _v14_emit_poi_candidate(_h, q, agent_id)
+            _v14_emit_poi_candidate(_h, q, effective_agent_id)
     except Exception:
         pass
     # v1.5.9 · scope=user returns the full 37k+ project-name list (~793KB · 95% of
