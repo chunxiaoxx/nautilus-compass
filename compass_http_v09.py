@@ -179,7 +179,41 @@ def _v14_allowed_projects(user_id: str) -> set[str]:
         values = [values]
     if not isinstance(values, list):
         return set()
-    return {str(project).strip() for project in values if str(project).strip()}
+    projects = set()
+    for value in values:
+        project = str(value).strip()
+        if (
+            not project
+            or project in {".", ".."}
+            or any(char in project for char in ("/", "\\", "\x00"))
+        ):
+            continue
+        projects.add(project)
+    return projects
+
+
+def _v14_union_projects(user_id: str) -> set[str]:
+    """Return the optional curated subset used by scope=user recall.
+
+    Authorization remains COMPASS_V14_PROJECT_MAP. The union map can only
+    narrow that set, never widen it. This keeps chronically slow or noisy
+    projects explicitly addressable without blocking every union caller.
+    """
+    allowed = _v14_allowed_projects(user_id)
+    raw = _v14_os.environ.get("COMPASS_V14_UNION_PROJECT_MAP", "").strip()
+    if not raw:
+        return allowed
+    try:
+        mapping = _v14_json.loads(raw)
+    except Exception:
+        return set()
+    values = mapping.get(user_id) if isinstance(mapping, dict) else None
+    if isinstance(values, str):
+        values = [values]
+    if not isinstance(values, list):
+        return set()
+    configured = {str(project).strip() for project in values}
+    return allowed & configured
 
 
 def _v14_require_project(user_id: str, project: Optional[str]) -> str:
@@ -188,7 +222,12 @@ def _v14_require_project(user_id: str, project: Optional[str]) -> str:
     allowed = _v14_allowed_projects(user_id)
     if not allowed:
         raise HTTPException(403, "v14 project mapping unavailable")
-    if not requested or requested not in allowed:
+    if (
+        not requested
+        or requested in {".", ".."}
+        or any(char in requested for char in ("/", "\\", "\x00"))
+        or requested not in allowed
+    ):
         raise HTTPException(403, "project is not mapped to the authenticated user")
     return requested
 
@@ -1570,65 +1609,65 @@ def v14_recall(
     x_tenant_id: Optional[str] = Header(None, alias="X-Tenant-ID"),
     user_id: str = Depends(auth_user),
 ):
-    """v1.4 BGE-m3 recall with explicit authenticated project ownership."""
+    """BGE-m3 recall; user scope is a union of explicitly mapped projects only."""
+    if scope not in ("project", "user"):
+        raise HTTPException(400, "scope must be 'project' or 'user'")
     if scope == "user":
-        # The daemon's legacy scope=user scans every project before returning
-        # hits.  Keep this route fail-closed until a mapped-project union is
-        # implemented at the adapter layer.
-        raise HTTPException(403, "scope=user disabled until mapped-project filtering is enabled")
-    if scope != "project":
-        raise HTTPException(400, "scope must be 'project'")
-    mapped_project = _v14_require_project(user_id, project)
+        mapped_projects = sorted(_v14_union_projects(user_id))
+        if not mapped_projects:
+            raise HTTPException(403, "v14 union project mapping unavailable")
+    else:
+        mapped_projects = [_v14_require_project(user_id, project)]
     effective_agent_id = user_id
     # 线上热修(2026-11-06)求焦节流:同 (q, agent) 10min 内只真算一次。键用已认证身份,
     # 且置于鉴权与项目映射之后——未认证请求碰不到节流缓存。
     if _v14_focus_throttled(q, effective_agent_id):
         return {"ok": True, "throttled": True, "reason": "repeat-query-window",
                 "window_s": _V14_RECALL_CACHE_WINDOW_S, "backend": "v1.4-bge-m3"}
-    req = {
-        "action": "recall",
-        "query": (q or "")[:2000],
-        "top_k": int(top_k),
-        "scope": "project",
-        "project": mapped_project,
-        "agent_type": user_id,
-    }
-    # v1.5.9 · scope=user is a cross-project UNION scan over ALL ~/.claude/projects
-    # dirs (37k+ episodic cycle dirs · cold scan ~14s steady). The default 15s
-    # timeout RACES that scan → any jitter pushes it over → _call_v14_daemon raises
-    # → laundered as "daemon unreachable" → caller sees empty (the V5 "user-scope
-    # union returns empty" report · 2026-06-21). The union is NOT broken; the
-    # serving timeout was just too tight. Give the union path real headroom.
-    # (Perf root = 37k-dir scan · fixed by consolidation/胶囊化 · tracked separately.)
-    _timeout = 45.0 if scope == "user" else 15.0
-    d = _call_v14_daemon(req, timeout=_timeout)
-    if not d:
-        # v1.5.8 · only true transport fail · daemon never answered
-        return {"ok": False, "error": "v14 daemon unreachable · all ports transport-failed",
-                "backend": "v1.4-bge-m3"}
-    if not d.get("ok"):
-        # v1.5.8 · daemon answered but rejected request · pass through real reason
-        return {"ok": False, "error": d.get("error", "daemon returned ok=false"),
-                "backend": "v1.4-bge-m3"}
+    # The daemon's legacy scope=user scans every project on disk. Instead, issue
+    # explicit per-project requests inside the authenticated allowlist and merge.
+    _h = []
+    _ps = []
+    _fresh = []
+    for mapped_project in mapped_projects:
+        req = {
+            "action": "recall",
+            "query": (q or "")[:2000],
+            "top_k": int(top_k),
+            "scope": "project",
+            "project": mapped_project,
+            "agent_type": user_id,
+        }
+        d = _call_v14_daemon(req, timeout=15.0)
+        if not d:
+            return {"ok": False, "error": "v14 daemon unreachable · all ports transport-failed",
+                    "backend": "v1.4-bge-m3"}
+        if not d.get("ok"):
+            return {"ok": False,
+                    "error": f"{mapped_project}: {d.get('error', 'daemon returned ok=false')}",
+                    "backend": "v1.4-bge-m3"}
+        for hit in d.get("recall", []):
+            hit_project = str(hit.get("project") or "").strip()
+            if not hit_project or hit_project == mapped_project:
+                _h.append(hit)
+        _ps.append(mapped_project)
+        _fresh.extend(d.get("fresh_extra", []) or [])
+    if scope == "user":
+        _h.sort(key=lambda hit: float(hit.get("score") or 0), reverse=True)
+        _h = _h[:max(0, int(top_k))]
     try:
-        _h = d.get("recall", [])
         _v14_poi_boost(_h)  # rerank in place by PoI credit snapshot (env-gated)
         if _h and _v14_os.environ.get("COMPASS_NO_POI_CANDIDATE") != "1":
             _v14_emit_poi_candidate(_h, q, effective_agent_id)
     except Exception:
         pass
-    # v1.5.9 · scope=user returns the full 37k+ project-name list (~793KB · 95% of
-    # the response) · pure noise to the caller (each hit already carries its own
-    # `project`). Cap to a count + small sample so the per-cycle daemon loop isn't
-    # shipping ~800KB every recall over the tunnel.
-    _ps = d.get("projects_scanned", []) or []
     _resp = {
         "ok": True,
-        "scope": d.get("scope", scope),
+        "scope": scope,
         "projects_scanned_count": len(_ps),
         "projects_scanned": _ps[:20],
-        "hits": d.get("recall", []),
-        "fresh_extra": d.get("fresh_extra", []),
+        "hits": _h,
+        "fresh_extra": _fresh,
         "backend": "v1.4-bge-m3",
     }
     return _resp
@@ -1640,9 +1679,7 @@ def v14_recall(
 @app.post("/v1/v14/ingest_obs")
 def v14_ingest_obs(
     body: dict,
-    x_tenant_id: Optional[str] = Header(None, alias="X-Tenant-ID"),
-    x_user_id: Optional[str] = Header(None, alias="X-User-ID"),
-    authorization: Optional[str] = Header(None),
+    user_id: str = Depends(auth_user),
 ):
     """v1.4 ingest observation · writes session_*.md directly.
 
@@ -1653,7 +1690,7 @@ def v14_ingest_obs(
       drift (optional · green/yellow/red · default green)
       thread_id (optional)            · for thread_recall pairing
       thread_role (optional · outbound/inbound/self_note)
-      project (optional · default C--Users-chunx)
+      project (required)              · must be mapped to the authenticated user
       tags (optional list[str])
       recall_id (optional)            · self-reported proof-of-recall claim
       cited_snippets (optional list)  · self-reported snippet citations
@@ -1662,23 +1699,14 @@ def v14_ingest_obs(
     from datetime import datetime as _dt_v14
     from pathlib import Path as _P_v14
 
+    project = _v14_require_project(user_id, (body or {}).get("project"))
     content = (body or {}).get("content", "")
     if not isinstance(content, str) or len(content.strip()) < 10:
         return {"ok": False, "error": "content too short (min 10 chars)"}
 
-    # 2026-08-30 security fix: ingest 需 Bearer JWT——此端点可直接写记忆目录
-    # (session_*.md),header-only 身份曾在公网可被任意伪造(记忆投毒面)。
-    uid = None
-    if authorization and authorization.startswith("Bearer "):
-        try:
-            from jose import jwt
-            uid = jwt.decode(authorization[7:], JWT_SECRET, algorithms=["HS256"]).get("user_id")
-        except Exception:
-            raise HTTPException(401, "invalid JWT")
-    if not uid:
-        raise HTTPException(401, "auth required (Bearer JWT)")
-    agent_type = uid[:60]
-    project = (body or {}).get("project") or _V14_DEFAULT_PROJECT
+    # The only identity and writable-project source is the verified JWT plus
+    # COMPASS_V14_PROJECT_MAP. Caller-supplied identity headers cannot authorize writes.
+    agent_type = user_id[:60]
     name = ((body or {}).get("name") or content[:30].strip())[:80]
     description = ((body or {}).get("description") or content[:200])[:200]
     drift = (body or {}).get("drift") or "green"

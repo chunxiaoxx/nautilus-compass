@@ -27,7 +27,15 @@ CLOUD_URL = os.environ.get(
     "COMPASS_CLOUD_INGEST_URL", "http://127.0.0.1:8770/v1/v14/ingest_obs"
 )
 AGENT_TYPE = os.environ.get("COMPASS_AGENT_TYPE", "claude-code-compass-dialog")
+V14_AUTH_HEADER_FILE = os.environ.get(
+    "COMPASS_V14_AUTH_HEADER_FILE", "$HOME/.config/compass/v14_bridge_auth_header"
+)
 TIMEOUT_S = 12
+
+
+def _ingest_project() -> str:
+    """Keep the historical destination explicit so the server can enforce ownership."""
+    return os.environ.get("COMPASS_V14_INGEST_PROJECT", "C--Users-chunx").strip() or "C--Users-chunx"
 
 
 def _already_pushed(session_name: str) -> bool:
@@ -126,20 +134,21 @@ def ingest_session_to_cloud(session_path: Path) -> Optional[dict]:
         "description": description,
         "drift": drift,
         "thread_role": "self_note",
+        "project": _ingest_project(),
     }
     payload_json = json.dumps(payload, ensure_ascii=False)
 
-    # SSH inline: pipe payload to curl on cloud. Avoids needing a local tunnel.
-    # curl --data-binary @- reads stdin · we pipe via ssh stdin.
+    # curl reads the Authorization header from a mode-0600 file on cloud. The JWT
+    # never enters this repository, the SSH command, logs, or curl's process argv.
     cmd = [
         "ssh",
         "-o", "ConnectTimeout=8",
         "-o", "ServerAliveInterval=5",
         CLOUD_HOST,
-        # POST via curl on cloud localhost · trust X-Tenant-ID for auth
+        f"python3 $HOME/compass/ops/v14_auth_header_refresh.py "
+        f"--header-file {V14_AUTH_HEADER_FILE} && "
         f"curl -s -X POST {CLOUD_URL} "
-        f"-H 'X-Tenant-ID: {AGENT_TYPE}' "
-        f"-H 'X-User-ID: {AGENT_TYPE}' "
+        f"-H @{V14_AUTH_HEADER_FILE} "
         f"-H 'Content-Type: application/json' "
         f"--data-binary @- --max-time 10",
     ]

@@ -1,9 +1,9 @@
 # v14 recall 安全报告跟进卡
 
 > 报告来源：Nagizaaz Shaik，Gmail thread `1a1ab9487dc51507`，2026-11-05。
-> 本卡只记录当前源码核对与处理边界，不代表已修复或已部署。
+> 本卡记录报告、源码核对、部署与验收全过程。2026-11-23 鉴权版已部署，最终实测状态见文末“调用方迁移与生产验收”；此前小节保留当时状态，不再代表当前部署结论。
 
-## 当前结论
+## 2026-11-19 初核结论(历史)
 
 - [实测] 报告人指出的两个风险在当前工作树仍有对应代码形态。
 - [实测] `GET /v1/v14/recall` 的函数签名没有 `Depends(auth_user)`，`scope=user` 仍可触发跨项目扫描。
@@ -75,3 +75,33 @@ At this stage we are not claiming that the issue is fixed or that a production d
 Best regards,
 Chunxiao Wang
 nautilus-compass
+
+## 2026-11-23 调用方迁移与生产验收(当前)
+
+**部署与边界 [实测]**
+- `compass.service` 仍只监听 `127.0.0.1:8770`；生产 `compass_http_v09.py` SHA256 为 `489418975aeb5040a31732d788a14679d1547307dee9c286a864076a540ce6d1`。
+- recall 与 ingest 都只从已验证 JWT 取得用户身份；`COMPASS_V14_PROJECT_MAP` 是该用户可访问项目的白名单。无 JWT、无效 JWT、伪造或不匹配身份头、未映射项目、缺失项目及路径逃逸均被拒绝。
+- 服务凭据与 curl Authorization header 文件均为 0600；JWT 从文件读取，不进入仓库、命令行参数或日志。`ops/v14_auth_header_refresh.py` 只在缓存临期时重新登录并原子换新。
+
+**14 项生产验收全部通过 [实测]**
+- health 200；服务登录 200；映射项目 recall 200；受限 `scope=user` 联合召回 200；映射项目 ingest 200 且云端文件回读一致。
+- 无 JWT recall 401；无 JWT 伪造身份头 ingest 401；无效 JWT 401；JWT 与旧身份头不匹配 401。
+- 未映射 recall 403；recall 路径逃逸 403；ingest 缺项目 403；ingest 未映射项目 403；ingest 路径逃逸 403，且未创建逃逸目录。
+
+**真实调用方 [实测]**
+- 云端 v5 自有客户端 `_get` / `_post` 均返回 `ok:true`，写入回读通过；三项 v5 服务为 active。
+- v7 自有工具 `v7tool_compass_recall` 0.807 秒返回成功，`v7tool_compass_ingest_obs` 写入回读通过。
+- 笔记本与 Mac 的实际插件 `cloud_ingest.py` 在服务端切换后各自重新写入成功，两个云端文件均独立回读通过。
+- 持续 401 的最后一处来源是 Mac mini 上运行了三天、经 SSH 隧道访问云端的 `ai.nautilus.v5-brain2`。已定点合并 JWT 登录/缓存/401 刷新与显式项目，迁移后真实 GET/POST 和云端回读通过；LaunchAgent 已定点重启，连续三个后台固定求焦周期均为 200、零 401。
+
+**受限联合召回的明确口径 [实测]**
+- `C--Users-chunx` 有 55,513 份 Markdown，其中 55,509 份为 session 机器卡。daemon 日志显示 300 秒填充预算耗尽时只处理约 198–250 份；把 HTTP 超时从 15 秒继续加大只会拖死调用方，不是修复。
+- 新增 `COMPASS_V14_UNION_PROJECT_MAP`，把“允许显式访问的项目”与“参与 `scope=user` 联合召回的项目”分开。联合配置只能缩小授权集合，不能扩大； malformed 配置 fail-closed。当前授权项目不变，联合召回只扫描健康的 `nautilus-v5`，响应的 `projects_scanned` 明确披露实际范围。
+- **遗留限制**：`C--Users-chunx` 的显式语义召回仍受大型机器卡索引性能影响；本项目 ingest 正常。该问题另案处理，不能宣称大项目检索性能已修复。
+
+**本地回归 [实测]**
+- 本轮核心边界与调用方测试 12 passed；compile 与 ruff 通过。
+- 扩大相关套件为 93 passed、7 skipped、2 failed。两项失败均非本轮改动：`test_auth_mvp.py::test_unqualified_project_resolves_to_owner` 依赖已停用的本机 9876 daemon；`test_consumer_matrix.py::test_registry_is_complete_known_ports` 命中早前未登记的 `ops/compass_service_probe.py`。未为表面全绿扩大无关改动。
+
+**对外边界**
+- 本卡更新不等于已通知报告人。Nagizaaz 回信与 GitHub issue #66 仍需按实际验收结果起草，并经用户审稿后发送。

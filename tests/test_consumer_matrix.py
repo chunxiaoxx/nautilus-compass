@@ -50,6 +50,7 @@ CONSUMERS_HTTP = [
     "ops/smoke_keepalive_fix.py",     # smokes 8770 /v1/v14/recall keepalive
     "ops/smoke_long_idle.py",         # smokes 8770 recall after long idle
     "ops/v0.9_to_v14_adapter_patch.py",  # v0.9->v14 adapter patch tooling
+    "ops/v14_auth_header_refresh.py",   # refreshes the protected v14 Bearer header
     "examples/full_capability_demo.py",
 ]
 
