@@ -202,6 +202,18 @@ class MCPToolCallReq(BaseModel):
 
 # ─── tool dispatch ─────────────────────────────────────────────────
 
+def _is_auto_journal_flood(mem) -> bool:
+    """ingest_*.md 占九成以上且总数过两百的目录（如 v5 呼吸日志，日增约两千个）。
+
+    平台函 #148685（飞轮→compass · 2026-11-23 · 用户已批改法）：这类自动日志目录
+    不参与"最近修改项目"的默认竞选；显式传 project 时照常可访问。
+    与 mcp_server.resolve_project 同款逻辑，两处同改。
+    """
+    files = list(mem.glob("*.md"))
+    total = len(files)
+    return total >= 200 and sum(1 for f in files if f.name.startswith("ingest_")) * 10 >= total * 9
+
+
 def _resolve_project(explicit: str | None) -> str | None:
     if explicit:
         return explicit
@@ -216,6 +228,8 @@ def _resolve_project(explicit: str | None) -> str | None:
         mem = d / "memory"
         if not mem.is_dir():
             continue
+        if _is_auto_journal_flood(mem):
+            continue   # 不参与默认项目竞选；显式传 project 时照常可访问
         try:
             mtime = max((f.stat().st_mtime for f in mem.glob("*.md")), default=0)
         except Exception:
