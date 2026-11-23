@@ -14,7 +14,12 @@ import pathlib
 import sys
 import time
 
-SRC = pathlib.Path.home() / ".claude/projects/C--Users-chunx/memory"
+# The Mac migration uses a project-scoped directory. Keep the root explicit so
+# a future migration cannot silently archive an empty or unrelated directory.
+DEFAULT_SRC = pathlib.Path.home() / ".claude/projects/-Users-chunxiao-wang-Projects-nautilus-compass/memory"
+SRC = pathlib.Path(
+    os.environ.get("COMPASS_MEMORY_ROOT", str(DEFAULT_SRC))
+).expanduser()
 ARCHIVE = SRC / "_archive"
 MANIFEST = ARCHIVE / "ARCHIVE_MANIFEST.jsonl"
 
@@ -25,6 +30,14 @@ def main():
     parser.add_argument("--age-days", type=int,
                         default=int(os.environ.get("ARCHIVE_AGE_DAYS", "30")))
     args = parser.parse_args()
+
+    if not SRC.is_dir():
+        print(json.dumps({
+            "mode": "error",
+            "src": str(SRC),
+            "error": "memory root does not exist",
+        }, ensure_ascii=False))
+        return 2
 
     cutoff = time.time() - args.age_days * 86400
     cards = sorted(SRC.glob("session_*.md"))

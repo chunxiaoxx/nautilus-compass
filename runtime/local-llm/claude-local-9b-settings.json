@@ -1,0 +1,11 @@
+{
+  "env": {
+    "ANTHROPIC_BASE_URL": "http://127.0.0.1:11435",
+    "ANTHROPIC_AUTH_TOKEN": "local",
+    "ANTHROPIC_API_KEY": "local",
+    "ANTHROPIC_MODEL": "sonnet",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "Qwen3.5-9B-4bit",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "Qwen3.5-9B-4bit",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "Qwen3.5-9B-4bit"
+  }
+}

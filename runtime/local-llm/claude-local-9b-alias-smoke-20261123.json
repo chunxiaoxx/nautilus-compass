@@ -1,0 +1,15 @@
+{
+  "schema": "local-llm-route-smoke/v1",
+  "timestamp_utc": "2026-11-23T14:51:43Z",
+  "endpoint": "http://127.0.0.1:11435",
+  "model_alias": "sonnet",
+  "resolved_model": "Qwen3.5-9B-4bit",
+  "client": "claude-code --bare --settings runtime/local-llm/claude-local-9b-settings.json",
+  "thinking_mode": "claude_endpoint_default_disabled",
+  "stdout": "LOCAL_CLAUDE_ALIAS_OK",
+  "stdout_sha256": "39ca594b975bc21f0e2f34e3b8b938880cbc31339fe26646acd223f32e1b84c8",
+  "stderr_tail": "Permission allow rule (../../.claude/settings.json): Bash(ssh -o ConnectTimeout* -p 23620 root@*) has a wildcard before the rest of the command, so it also matches any options inserted at that position and approves them without a prompt. Replace that * with the exact value you mean, or only use * after the subcommand.\n[claude-code:unrecognized_model] {\"model\":\"Qwen3.5-9B-4bit\",\"query_source\":\"sdk\"}",
+  "stderr_sha256": "ea801162a724bb98b26b3380941ae72872f9169d723ddf854b0da77ed1240a42",
+  "known_warning": "unrecognized_model for local resolved model; stdout route succeeded",
+  "verdict": "PASS"
+}
