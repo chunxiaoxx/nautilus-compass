@@ -4,7 +4,13 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from tools.context_capsule import build_capsule, canonical_bytes, sha256_bytes, validate_capsule
+from tools.context_capsule import (
+    artifact_only_commit_matches,
+    build_capsule,
+    canonical_bytes,
+    sha256_bytes,
+    validate_capsule,
+)
 
 
 def test_capsule_has_required_binding_and_permissions():
@@ -64,3 +70,17 @@ def test_required_vault_hash_mismatch_is_not_computable(tmp_path):
 
     assert result["status"] == "not_computable"
     assert "cognition_vault" in result["mismatches"]
+
+
+def test_artifact_only_commit_is_a_valid_capsule_rebind(monkeypatch):
+    def fake_run(cmd, cwd=None, timeout=5.0):
+        if cmd[:4] == ["git", "rev-list", "--parents", "-n"]:
+            return "child parent"
+        if cmd[:3] == ["git", "diff", "--name-only"]:
+            return "runtime/org-continuity/capsule.json"
+        return ""
+
+    monkeypatch.setattr("tools.context_capsule.run", fake_run)
+    assert artifact_only_commit_matches(
+        "parent", "child", "runtime/org-continuity/capsule.json"
+    )

@@ -51,6 +51,15 @@ def sha256_file(path: Path) -> str | None:
         return None
 
 
+def repo_relative(path: Path) -> str:
+    """Return a stable repository-relative path for an artifact."""
+    resolved = (path if path.is_absolute() else ROOT / path).resolve()
+    try:
+        return resolved.relative_to(ROOT.resolve()).as_posix()
+    except ValueError:
+        return str(path)
+
+
 def cognition_vault_binding(path: Path | None = None, *, required: bool = False) -> dict[str, Any]:
     """Bind an optional protected cognition projection by path and hash."""
     selected = path or (Path(os.environ["NAUTILUS_CORE_COGNITION_VAULT"]) if os.environ.get("NAUTILUS_CORE_COGNITION_VAULT") else None)
@@ -92,12 +101,12 @@ def actor_identity() -> dict[str, str]:
     }
 
 
-def git_binding() -> dict[str, Any]:
+def git_binding(capsule_path: Path | None = None) -> dict[str, Any]:
     root = run(["git", "rev-parse", "--show-toplevel"])
     branch = run(["git", "branch", "--show-current"])
     head = run(["git", "rev-parse", "HEAD"])
     dirty = run(["git", "status", "--short"]).splitlines()
-    return {
+    binding = {
         "project_path": str(ROOT),
         "git_root": root,
         "branch": branch,
@@ -105,6 +114,20 @@ def git_binding() -> dict[str, Any]:
         "dirty_count": len(dirty),
         "dirty_sample": dirty[:8],
     }
+    if capsule_path is not None:
+        binding["capsule_path"] = repo_relative(capsule_path)
+    return binding
+
+
+def artifact_only_commit_matches(recorded_head: str, current_head: str, capsule_path: str) -> bool:
+    """Allow the commit that adds only this capsule artifact."""
+    if not recorded_head or not current_head or not capsule_path:
+        return False
+    parents = run(["git", "rev-list", "--parents", "-n", "1", current_head]).split()
+    if len(parents) != 2 or parents[1] != recorded_head:
+        return False
+    changed = run(["git", "diff", "--name-only", f"{recorded_head}..{current_head}"]).splitlines()
+    return changed == [capsule_path]
 
 
 def daemon_ping() -> dict[str, Any]:
@@ -133,8 +156,9 @@ def build_capsule(
     goal: str | None = None,
     vault_path: Path | None = None,
     require_vault: bool = False,
+    artifact_path: Path | None = None,
 ) -> dict[str, Any]:
-    binding = git_binding()
+    binding = git_binding(artifact_path)
     capsule: dict[str, Any] = {
         "schema": "context-capsule/1",
         "capsule_id": f"{task_id}:{thread_id}",
@@ -205,7 +229,14 @@ def validate_capsule(capsule: dict[str, Any]) -> dict[str, Any]:
     checks["thread_id_present"] = bool(task.get("thread_id"))
     current = git_binding()
     checks["branch_unchanged"] = project.get("branch") == current.get("branch")
-    checks["source_head_unchanged"] = project.get("source_head") == current.get("source_head")
+    exact_head = project.get("source_head") == current.get("source_head")
+    artifact_commit = artifact_only_commit_matches(
+        str(project.get("source_head", "")),
+        str(current.get("source_head", "")),
+        str(project.get("capsule_path", "")),
+    )
+    checks["source_head_unchanged"] = exact_head or artifact_commit
+    checks["artifact_only_commit"] = artifact_commit if not exact_head else True
     checks["daemon_ping"] = daemon_ping().get("status") == "pass"
     vault = capsule.get("cognition_vault") or {}
     checks["cognition_vault"] = True
@@ -226,7 +257,7 @@ def validate_capsule(capsule: dict[str, Any]) -> dict[str, Any]:
         "checks": checks,
         "mismatches": mismatches,
         "validated_at_utc": now_utc(),
-        "note": "A changed head or project path invalidates this capsule; regenerate instead of guessing.",
+        "note": "A changed head invalidates this capsule unless the only new commit is this capsule artifact; regenerate instead of guessing.",
     }
 
 
@@ -253,6 +284,7 @@ def main() -> int:
             goal=args.goal,
             vault_path=args.vault,
             require_vault=args.require_vault,
+            artifact_path=args.output,
         )
         args.output.parent.mkdir(parents=True, exist_ok=True)
         tmp = args.output.with_suffix(args.output.suffix + ".tmp")
