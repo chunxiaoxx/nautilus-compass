@@ -34,9 +34,10 @@
   "repeat_guard": {
     "implementation": "tools/local_agent_runtime.py",
     "test": "tests/test_local_agent_runtime.py",
-    "test_result": "21 passed",
+    "test_result": "22 passed",
     "direct_smoke": "local 9B produced final conclusion after 2 steps with local_health and compass_daemon_probe",
     "read_only_write_guard": "write_draft is rejected at runtime when the task forbids drafts",
+    "budget_finalizer": "tool-budget exhaustion requests a final JSON conclusion without another tool call",
     "external_model_used": false,
     "external_send": false
   },

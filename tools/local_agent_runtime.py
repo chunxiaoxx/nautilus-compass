@@ -415,6 +415,25 @@ def _parse_json(text: str) -> dict[str, Any] | None:
             return None
 
 
+def _finalize_after_tool_budget(messages: list[dict[str, str]]) -> str:
+    """Ask the local model for a conclusion without allowing another tool pass."""
+    messages.append({
+        "role": "user",
+        "content": (
+            "工具调用步数已经用完。现在不要调用任何工具，也不要写草稿。"
+            "只输出最终 JSON，格式为 {\"tool_calls\":[],\"final\":\"简短中文结论\"}。"
+        ),
+    })
+    try:
+        raw = _call_model(messages, max_tokens=256, enable_thinking=False, timeout=60)
+        plan = _parse_json(raw)
+    except Exception:
+        plan = None
+    if plan and not (plan.get("tool_calls") or []):
+        return plan.get("final") or "本地模型完成工具检查，但没有给出最终摘要。"
+    return "本地模型达到工具调用上限，已停止继续调用并保留现有证据。"
+
+
 def _record_training_event(event: dict[str, Any]) -> None:
     TRAINING_DIR.mkdir(parents=True, exist_ok=True)
     with TRAINING_EVENTS.open("a", encoding="utf-8") as handle:
@@ -545,7 +564,7 @@ def run_task(task: str, max_steps: int = 4) -> dict[str, Any]:
         messages.append({"role": "assistant", "content": json.dumps(plan, ensure_ascii=False)})
         messages.append({"role": "user", "content": "工具结果如下。继续只输出下一轮 JSON。\n" + json.dumps(results, ensure_ascii=False)})
     else:
-        final = "达到本地工具调用步数上限，保留现有证据。"
+        final = _finalize_after_tool_budget(messages)
 
     violations = []
     final_claims_saved_draft = bool(re.search(r"草稿.*(?:已保存|保存至|写入)", str(final)))

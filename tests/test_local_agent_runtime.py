@@ -117,6 +117,28 @@ def test_run_task_rejects_write_draft_when_task_is_read_only(monkeypatch):
     assert blocked[0]["result"]["error"] == "task_forbids_draft"
 
 
+def test_run_task_finalizes_after_tool_budget(monkeypatch):
+    calls = []
+
+    def fake_call(messages, max_tokens=512, *, enable_thinking=False, timeout=120):
+        calls.append(messages[-1]["content"])
+        if len(calls) == 1:
+            return '{"tool_calls":[{"name":"local_health","arguments":{}}],"final":null}'
+        if len(calls) == 2:
+            return '{"tool_calls":[{"name":"compass_daemon_probe","arguments":{}}],"final":null}'
+        return '{"tool_calls":[],"final":"工具检查已完成，结论已整理。"}'
+
+    monkeypatch.setattr(runtime, "_call_model", fake_call)
+    monkeypatch.setattr(runtime, "_record_training_event", lambda event: None)
+    monkeypatch.setitem(runtime.TOOL_REGISTRY, "local_health", lambda _: {"status": "ok"})
+    monkeypatch.setitem(runtime.TOOL_REGISTRY, "compass_daemon_probe", lambda _: {"ok": True})
+
+    result = runtime.run_task("只读检查健康，不要写草稿。", max_steps=2)
+
+    assert result["final"] == "工具检查已完成，结论已整理。"
+    assert len(calls) == 3
+
+
 def test_org_continuity_read_is_bounded_and_local():
     result = runtime.org_continuity_read({})
 
