@@ -1,8 +1,8 @@
 {
   "schema": "compass-release-readiness/1",
-  "observed_at": "2026-11-23T19:10:00Z",
+  "observed_at": "2026-11-23T19:12:00Z",
   "candidate": "3.4.0",
-  "current_head": "22f0f0dc",
+  "current_head": "87b1f84f97a1ddb0eb0a89db3b36abc1e563727d",
   "latest_tags": [
     "v3.3.0",
     "v3.2.0",
@@ -38,7 +38,7 @@
     "release worktree and clean-head manifest not created",
     "full test, wheel build, fresh install and local canary not yet run for candidate",
     "customer_acceptance not assessed",
-    "CodeSense R25 is uploaded to subtask 100332011 but pre-valid remains unresolved with running=1, n_trials=0 and rewards=[]; this is negative evidence and not a platform pass"
+    "CodeSense R25 current package is uploaded to subtask 100332011 but sandbox address acquisition and container generation failed twice, including one platform retry; pre-valid/build/eval/check/submit did not run"
   ],
   "external_publish": false,
   "tag_created": false,
@@ -48,13 +48,20 @@
       "task_id": "91240",
       "subtask_id": "100332011",
       "revision": "R25",
-      "package_sha256": "d5971391bcdd61ab7fe9044a7ca25086ee8bea5f7a21c0d7cfe0e9135e233dad",
-      "pre_valid": "running",
+      "package_sha256": "07e5583d116ac8c5b076263f901ffed73d9eba855767d4d49079c4c2f5a1e842",
+      "upload": "observed",
+      "sandbox_address": "failed",
+      "container_generation": "failed_twice_including_platform_retry",
+      "pre_valid": "not_reached",
       "finished_at": null,
       "n_trials": 0,
       "rewards": [],
+      "task_build": "not_run",
+      "model_eval": "not_run",
+      "coderl_check": "not_run",
       "task_submit": "not_run",
       "customer_acceptance": "not_observed",
+      "superseded_package_sha256": "d5971391bcdd61ab7fe9044a7ca25086ee8bea5f7a21c0d7cfe0e9135e233dad",
       "receipt": "nautilus-core/ops/ali_phase2/pipeline/reports/CS-guoshu-507-r25_gate_20261123.json"
     }
   }
