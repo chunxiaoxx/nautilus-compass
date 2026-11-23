@@ -103,5 +103,6 @@ nautilus-compass
 - 本轮核心边界与调用方测试 12 passed；compile 与 ruff 通过。
 - 扩大相关套件为 93 passed、7 skipped、2 failed。两项失败均非本轮改动：`test_auth_mvp.py::test_unqualified_project_resolves_to_owner` 依赖已停用的本机 9876 daemon；`test_consumer_matrix.py::test_registry_is_complete_known_ports` 命中早前未登记的 `ops/compass_service_probe.py`。未为表面全绿扩大无关改动。
 
-**对外边界**
-- 本卡更新不等于已通知报告人。Nagizaaz 回信与 GitHub issue #66 仍需按实际验收结果起草，并经用户审稿后发送。
+**对外边界(2026-11-23 用户批准后已执行)**
+- 邮件回复已发送并回读验证:thread `1a1ab9487dc51507`,消息 `1a2080fa584b36b1`,线程 2→3 封,主题与报告线程一致;文本为用户审稿放行的批准版。
+- issue #66 状态更新已发布并回读:comment `issuecomment-7098856694`(作者 chunxiaoxx;issue 本身状态为 CLOSED,评论为追加留痕)。
