@@ -130,4 +130,6 @@ def test_readme_example_command_succeeds_on_committed_bytes(tmp_path):
 def test_wall_attrs_preserve_bytes():
     """docs/wall 必须声明 -text:签名绑定的是字节,任何换行转换都会让签名失效。"""
     attrs = (ROOT / ".gitattributes").read_text(encoding="utf-8")
-    assert "docs/wall/** -text" in attrs or "docs/wall/* -text" in attrs
+    assert "docs/wall/*.md -text" in attrs and "docs/wall/*.sig -text" in attrs, (
+        "墙文件缺 -text 属性:换行转换会让签名失效"
+    )
