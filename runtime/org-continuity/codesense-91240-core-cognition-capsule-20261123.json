@@ -1,0 +1,95 @@
+{
+  "schema": "context-capsule/1",
+  "capsule_id": "codesense-91240:codex-core-cognition-vault-20261123",
+  "created_at_utc": "2026-11-23T16:45:03.256582+00:00",
+  "authorization_basis": "current_user_instruction_continue",
+  "scope": "organization-continuity-and-recall-gate",
+  "actor": {
+    "user_id": "local:chunxiao.wang",
+    "identity_source": "git_user_email_sha256_prefix",
+    "identity_sha256_prefix": "364e1a518e0fc0e5",
+    "role": "compass"
+  },
+  "project": {
+    "project_id": "nautilus-compass",
+    "memory_namespace": "-Users-chunxiao-wang-Projects-nautilus-compass",
+    "project_path": "/Users/chunxiao.wang/Projects/nautilus-compass",
+    "git_root": "/Users/chunxiao.wang/Projects/nautilus-compass",
+    "branch": "main",
+    "source_head": "06d79eae5b34e27182b47921974246856b1410e1",
+    "dirty_count": 16,
+    "dirty_sample": [
+      "M .codex/config.toml",
+      " M runtime/loop/channel_canary_state.json",
+      " M runtime/loop/local_round_receipt.json",
+      " M runtime/loop/local_state.json",
+      " M runtime/loop/rounds.log",
+      " M runtime/production_loop/state.json",
+      " M tests/test_context_capsule.py",
+      " M tools/context_capsule.py"
+    ],
+    "agents_sha256": "923cc6024b0f47b9ca2412096dd78c2b864ff23ffa9fa208bdd94967c2257e7d"
+  },
+  "task": {
+    "task_id": "codesense-91240",
+    "owner": "compass",
+    "thread_id": "codex-core-cognition-vault-20261123",
+    "goal": "protect CodeSense task identity, negative evidence and promotion boundaries"
+  },
+  "cognition_vault": {
+    "required": true,
+    "status": "bound",
+    "path": "../nautilus-core/ops/ali_phase2/core_cognition_vault_v1.json",
+    "sha256": "1166c428efe4e9ceb36536bbefbcd47057c3d91ebd96c6e1ccc428a3f3835613",
+    "vault_id": "codesense-core-cognition-v1"
+  },
+  "permissions": {
+    "allowed": [
+      "read:organization-state",
+      "run:local-probes",
+      "write:compass/runtime/org-continuity"
+    ],
+    "denied": [
+      "external-send",
+      "external-reply",
+      "deploy",
+      "publish-memory",
+      "ack-mailbox",
+      "clean-unrelated-worktrees"
+    ]
+  },
+  "live_evidence": {
+    "daemon_source_sha256": "bf52cf66d7c9f59e5944ea45ba883c35e5f5da4a14f6b071b6deb9eb2fdbb1cc",
+    "daemon_ping": {
+      "endpoint": "127.0.0.1:9876",
+      "status": "pass",
+      "payload": {
+        "ok": true,
+        "pong": true,
+        "pid": 98073,
+        "python_executable": "/Users/chunxiao.wang/.local/share/uv/python/cpython-3.12.15-macos-aarch64-none/bin/python3.12",
+        "source_root": "/Users/chunxiao.wang/.claude/plugins/nautilus-compass",
+        "daemon_hash": "sha256:bf52cf66d7c9f59e5944ea45ba883c35e5f5da4a14f6b071b6deb9eb2fdbb1cc",
+        "rerank_candidates": 8,
+        "rerank_candidates_env": "8",
+        "rerank_max_length": 512,
+        "prod_rerank": true,
+        "rerank_endpoint": "127.0.0.1:8401"
+      }
+    }
+  },
+  "gates": {
+    "user_project_task_mapping": "bound_if_validation_passes",
+    "assay_signature": "not_signed",
+    "consumer_readback": "pending"
+  },
+  "integrity": {
+    "algorithm": "sha256",
+    "status": "computed",
+    "sha256": "28fe27084c218adcbbb9fc1f9839dfb5ffc6443549845a5feaf709b69aeb9f14"
+  },
+  "signature": {
+    "status": "not_signed",
+    "reason": "Context binding is hash-bound in this P0 step; Assay Ed25519 receipt is a later gate."
+  }
+}

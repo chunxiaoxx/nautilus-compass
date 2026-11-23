@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import socket
 import subprocess
 from datetime import datetime, timezone
@@ -48,6 +49,33 @@ def sha256_file(path: Path) -> str | None:
         return sha256_bytes(path.read_bytes())
     except OSError:
         return None
+
+
+def cognition_vault_binding(path: Path | None = None, *, required: bool = False) -> dict[str, Any]:
+    """Bind an optional protected cognition projection by path and hash."""
+    selected = path or (Path(os.environ["NAUTILUS_CORE_COGNITION_VAULT"]) if os.environ.get("NAUTILUS_CORE_COGNITION_VAULT") else None)
+    binding: dict[str, Any] = {
+        "required": required,
+        "status": "unbound",
+        "path": str(selected) if selected else "",
+        "sha256": "",
+        "vault_id": "",
+    }
+    if selected is None:
+        return binding
+    digest = sha256_file(selected)
+    binding["sha256"] = digest or ""
+    if digest is None:
+        binding["status"] = "missing"
+        return binding
+    try:
+        doc = json.loads(selected.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        binding["status"] = "invalid"
+        return binding
+    binding["vault_id"] = str(doc.get("vault_id", ""))
+    binding["status"] = "bound" if binding["vault_id"] else "invalid"
+    return binding
 
 
 def canonical_bytes(doc: dict[str, Any]) -> bytes:
@@ -97,7 +125,15 @@ def daemon_ping() -> dict[str, Any]:
     return result
 
 
-def build_capsule(task_id: str, thread_id: str, owner: str = "compass") -> dict[str, Any]:
+def build_capsule(
+    task_id: str,
+    thread_id: str,
+    owner: str = "compass",
+    *,
+    goal: str | None = None,
+    vault_path: Path | None = None,
+    require_vault: bool = False,
+) -> dict[str, Any]:
     binding = git_binding()
     capsule: dict[str, Any] = {
         "schema": "context-capsule/1",
@@ -116,8 +152,9 @@ def build_capsule(task_id: str, thread_id: str, owner: str = "compass") -> dict[
             "task_id": task_id,
             "owner": owner,
             "thread_id": thread_id,
-            "goal": "repair_or_replace_the_stale_3ce_mcp_path_then_validate_project_scoped_continuity",
+            "goal": goal or "project-scoped continuity task",
         },
+        "cognition_vault": cognition_vault_binding(vault_path, required=require_vault),
         "permissions": {
             "allowed": [
                 "read:organization-state",
@@ -170,6 +207,16 @@ def validate_capsule(capsule: dict[str, Any]) -> dict[str, Any]:
     checks["branch_unchanged"] = project.get("branch") == current.get("branch")
     checks["source_head_unchanged"] = project.get("source_head") == current.get("source_head")
     checks["daemon_ping"] = daemon_ping().get("status") == "pass"
+    vault = capsule.get("cognition_vault") or {}
+    checks["cognition_vault"] = True
+    if vault.get("required"):
+        vault_path = Path(str(vault.get("path", "")))
+        current_hash = sha256_file(vault_path) if vault_path else None
+        checks["cognition_vault"] = (
+            vault.get("status") == "bound"
+            and bool(vault.get("vault_id"))
+            and current_hash == vault.get("sha256")
+        )
     for key, ok in checks.items():
         if not ok:
             mismatches.append(key)
@@ -190,12 +237,23 @@ def main() -> int:
     make.add_argument("--task-id", required=True)
     make.add_argument("--thread-id", required=True)
     make.add_argument("--owner", default="compass")
+    make.add_argument("--goal")
+    make.add_argument("--vault", type=Path)
+    make.add_argument("--require-vault", action="store_true")
     make.add_argument("--output", type=Path, required=True)
     val = sub.add_parser("validate")
     val.add_argument("--capsule", type=Path, required=True)
+    val.add_argument("--require-vault", action="store_true")
     args = parser.parse_args()
     if args.command == "make":
-        doc = build_capsule(args.task_id, args.thread_id, args.owner)
+        doc = build_capsule(
+            args.task_id,
+            args.thread_id,
+            args.owner,
+            goal=args.goal,
+            vault_path=args.vault,
+            require_vault=args.require_vault,
+        )
         args.output.parent.mkdir(parents=True, exist_ok=True)
         tmp = args.output.with_suffix(args.output.suffix + ".tmp")
         tmp.write_text(json.dumps(doc, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
@@ -207,6 +265,8 @@ def main() -> int:
     except (OSError, json.JSONDecodeError) as exc:
         print(json.dumps({"status": "not_computable", "error": str(exc)}, ensure_ascii=False))
         return 2
+    if args.require_vault:
+        capsule.setdefault("cognition_vault", {})["required"] = True
     result = validate_capsule(capsule)
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0 if result["status"] == "agree" else 1
