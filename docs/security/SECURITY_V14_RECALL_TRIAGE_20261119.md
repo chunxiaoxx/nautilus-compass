@@ -49,6 +49,29 @@ At this stage we are not claiming that the issue is fixed or that a production d
 - [实测] 相关 MCP、daemon、auth、scope 和 v14 边界测试共通过 101 条。没有部署到 8770，也没有发送外部回复。
 - [未核] 8770 远端转发本轮无认证请求超时，不能把超时当作权限修复。
 
+## 2026-11-23 处置状态(审计席,用户令"提交并部署")
+
+**暴露面复核 [实测]**
+- 公网:443 域名对 `/v1/*` 返回 404(nginx 已不代理);裸端口 8770 被云防火墙拦截(本机与 Mac 直连超时,同主机 SSH 端口可通)。
+- 内网:云主机在 Tailscale 网内(100.109.6.13),服务原监听 0.0.0.0 → 网内任意设备免鉴权可达。**这是唯一的真实暴露面。**
+
+**已做**
+1. ✅ 修复入库:`2743d840`(Codex 11/19 写的修复与负向测试,一直未提交)。入库时发现**线上文件含 11/06 直打的热修**(v14 求焦节流,仓内没有),已做三方合并 `ceb89309`(冲突一处手工消解:鉴权与项目映射在前,节流键改用已认证身份在后),仓内版 = 线上版 + 安全修复;ruff 绿、8 条相关测试通过。
+2. ✅ **临时缓解已部署**:`compass.service` 由 `--host 0.0.0.0` 改为 `--host 127.0.0.1`(备份 `.bak-20261123`)。验证:服务 active、healthz 200、启动零错误;**经 Tailscale 地址访问 healthz 与 v14 均被拒绝**;经 SSH 隧道(内部调用方路径)仍 200。暴露面归零,内部调用方零影响。
+
+**未做:默认全关的鉴权修复尚未部署**——原因是有活跃调用方
+- [实测] `compass.service` 近 7 天 v14 请求 646 次(召回 347、入库 297,全 200),最近一次 11/23 11:16;来源全部为 127.0.0.1,即经 Mac 的 SSH 隧道。
+- 调用方 [实测·文件定位]:插件 `stop_hook.py` → `cloud_ingest.py`(每次对话框停止后把会话卡推到云端,走 `/v1/v14/ingest_obs`);`ops/compass_health_cron.py`(健康巡检,走 `/v1/v14/recall`)。两者都不带 JWT。
+- 修复设计是 fail-closed:无 JWT → 401;有 JWT 但 `COMPASS_V14_PROJECT_MAP` 无映射 → 403;`scope=user` 一律 403。现在部署会让这两条管线立刻断掉。
+
+**待办(调用方迁移,之后才部署修复)**
+1. 为 stop_hook/cloud_ingest 与 health_cron 签发服务身份(JWT),并把各自项目写进 `COMPASS_V14_PROJECT_MAP`。
+2. 改两个调用方带 JWT 与显式 project;`scope=user` 的调用改为按映射项目逐个查。
+3. 部署 `ceb89309` 版到 `/home/ubuntu/compass/compass_http_v09.py`,重启,跑负向验证(无 JWT 401 / 未映射 403 / 映射内 200),保存请求、状态码与响应哈希。
+4. 确认 7 天内调用方 200 恢复后,再向报告人发"已修复"状态;同步 GitHub issue #66。
+
+**对外口径**:现在可以如实说"入口已限制为本机回环,网络上不可达;鉴权修复已完成待部署"。不能说"漏洞已修复"。
+
 Best regards,
 Chunxiao Wang
 nautilus-compass
