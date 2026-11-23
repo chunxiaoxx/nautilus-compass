@@ -33,7 +33,7 @@
 
 ## 遗留(候办)
 
-1. 嵌入批量打捆(fill 逐条单呼→批量 POST),消除隧道 RTT 开销——v3.5.0 候。
+1. 嵌入批量打捆(fill 逐条单呼→批量 POST),消除隧道 RTT 开销——v3.5.0 候。已挂临时 fill 加速器 cron(每 7 分钟触发一次填充,标注 `TEMP-FILL-ACCELERATOR-convergence-20261123`,池补齐后应移除)。
 2. 隧道走 Tailscale 直连路径评估(当前 SSH over 公网)。
 3. 故障期首笔超时:daemon 侧后台预热兜底模型或 v14 层部分结果语义(路线图六-2)。
 4. Mac 双 9B 服务合并(11435 MLX / 8765 GGUF)。
