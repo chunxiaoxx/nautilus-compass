@@ -21,6 +21,7 @@ def remote(monkeypatch):
     monkeypatch.setattr(Path, "read_text", lambda p, *a, **k:
                         "fixture-only" if p.name == "rerank_token" else real_read(p, *a, **k))
     monkeypatch.setattr(d, "_PROD_RERANK_USE", True)
+    monkeypatch.setattr(d, "_REMOTE_RERANK_COOLDOWN_UNTIL", 0.0)
     monkeypatch.setattr(d, "log", lambda *_: None)
     top = [(i / 100, {"path": f"d{i}", "embed_text": "x" * (600 + i)}) for i in range(30)]
     replies = [dict(ok=True, **contract, device="mps", max_length_supported=8192, batch_size_limit=4),
@@ -74,10 +75,22 @@ def test_remote_timeout_does_not_retry_and_falls_back(remote, monkeypatch):
         calls.append(args)
         raise TimeoutError("fixture")
     monkeypatch.setattr(d, "_remote_rerank_rpc", timeout)
-    monkeypatch.setattr(d, "_get_reranker", lambda: SimpleNamespace(predict=lambda pairs: [0.0]*len(pairs)))
+    monkeypatch.setattr(d, "_get_reranker", lambda: pytest.fail("timeout must use dense fallback"))
     assert d._rerank_top("q", remote.top, 3) == remote.top[:3]
     assert len(calls) == 1
     assert d._RERANK_TRACE.last["remote_error_type"] == "TimeoutError"
+    assert d._RERANK_TRACE.last["backend"] == "dense_timeout_fallback"
+    assert d._RERANK_TRACE.last["cooldown_s"] == 30.0
+
+
+def test_remote_timeout_cooldown_skips_remote_and_local_reranker(remote, monkeypatch):
+    monkeypatch.setattr(d, "_REMOTE_RERANK_COOLDOWN_UNTIL", d.time.monotonic() + 10)
+    monkeypatch.setattr(d, "_remote_rerank_rpc", lambda *_: pytest.fail("cooldown must skip remote"))
+    monkeypatch.setattr(d, "_get_reranker", lambda: pytest.fail("cooldown must skip local reranker"))
+
+    assert d._rerank_top("q", remote.top, 3) == remote.top[:3]
+    assert d._RERANK_TRACE.last["backend"] == "dense_timeout_cooldown"
+    assert d._RERANK_TRACE.last["fallback"] is True
 
 
 def test_remote_ties_are_stable(remote, monkeypatch):

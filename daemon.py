@@ -147,6 +147,10 @@ _RERANK_MAX_LENGTH = int(os.environ.get("COMPASS_RERANK_MAX_LENGTH", "8192"))
 _RERANKER_SINGLETON = None  # lazy in-process singleton (loaded on first use)
 _RERANKER_LOCK = threading.Lock()
 _RERANK_TRACE = threading.local()
+_REMOTE_RERANK_COOLDOWN_UNTIL = 0.0
+_REMOTE_RERANK_TIMEOUT_COOLDOWN_S = max(
+    0.0, float(os.environ.get("COMPASS_RERANK_TIMEOUT_COOLDOWN", "30"))
+)
 
 
 def _remote_rerank_contract():
@@ -377,6 +381,7 @@ def _rerank_top(query, top, top_k):
     (recall must never crash on a reranker fault). Original dense_score kept in
     the returned tuples (downstream surfaces the dense score, not rerank score).
     """
+    global _REMOTE_RERANK_COOLDOWN_UNTIL
     started = time.monotonic()
     trace = {"backend": "disabled", "candidate_count": min(len(top), _RERANK_CANDIDATES),
              "fallback": False}
@@ -385,6 +390,17 @@ def _rerank_top(query, top, top_k):
         return top[:top_k]
     candidates = top[:_RERANK_CANDIDATES]
     remote = bool(os.environ.get("COMPASS_RERANK_REMOTE", "").strip())
+    if remote and time.monotonic() < _REMOTE_RERANK_COOLDOWN_UNTIL:
+        trace.update(
+            backend="dense_timeout_cooldown",
+            fallback=True,
+            cooldown_remaining_ms=round(
+                max(0.0, _REMOTE_RERANK_COOLDOWN_UNTIL - time.monotonic()) * 1000,
+                2,
+            ),
+            total_ms=round((time.monotonic() - started) * 1000, 2),
+        )
+        return top[:top_k]
     if remote:
         remote_started = time.monotonic()
         try:
@@ -395,6 +411,17 @@ def _rerank_top(query, top, top_k):
         except Exception as exc:
             trace.update(fallback=True, remote_error_type=type(exc).__name__,
                          remote_attempt_ms=round((time.monotonic() - remote_started) * 1000, 2))
+            if isinstance(exc, TimeoutError):
+                _REMOTE_RERANK_COOLDOWN_UNTIL = (
+                    time.monotonic() + _REMOTE_RERANK_TIMEOUT_COOLDOWN_S
+                )
+                trace.update(
+                    backend="dense_timeout_fallback",
+                    cooldown_s=_REMOTE_RERANK_TIMEOUT_COOLDOWN_S,
+                    total_ms=round((time.monotonic() - started) * 1000, 2),
+                )
+                log("remote rerank timeout · dense fallback · cooldown started")
+                return top[:top_k]
             log(f"remote rerank unavailable · {type(exc).__name__} · fallback to local crossencoder")
     try:
         trace["backend"] = "local_crossencoder"

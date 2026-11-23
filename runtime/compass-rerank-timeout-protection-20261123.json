@@ -1,0 +1,50 @@
+{
+  "observed_at": "2026-11-23T10:57:36-0500",
+  "scope": "compass_remote_rerank_timeout_protection",
+  "change": {
+    "repo_file": "daemon.py",
+    "installed_file": "/Users/chunxiao.wang/.claude/plugins/nautilus-compass/daemon.py",
+    "timeout_behavior": "dense order immediately on TimeoutError",
+    "cooldown_seconds": 30,
+    "contract_error_behavior": "retain local crossencoder fallback"
+  },
+  "hashes": {
+    "repo_daemon_sha256": "1ae418cca4c0cd1a4dad2499f1a90432abc3217808f2c6fe5a775651cecb425e",
+    "installed_daemon_sha256": "bf52cf66d7c9f59e5944ea45ba883c35e5f5da4a14f6b071b6deb9eb2fdbb1cc",
+    "pre_change_installed_daemon_sha256": "031eb0946552ec9df44830e641c6ad9d2e9766f42585c643b0601897f6f29bc4"
+  },
+  "tests": {
+    "command": " .venv/bin/python -m pytest tests/test_daemon_rerank_remote.py tests/test_daemon_rerank_prod.py -q",
+    "result": "25 passed",
+    "compile": "python3 -m py_compile daemon.py and installed plugin daemon.py"
+  },
+  "production": {
+    "daemon_pid_after_restart": 98073,
+    "ports": [
+      "9876 LISTEN",
+      "8400 LISTEN",
+      "8401 LISTEN"
+    ],
+    "first_post_restart_recall": {
+      "elapsed_ms": 4716.4,
+      "rerank_backend": "dense_timeout_fallback",
+      "remote_error_type": "TimeoutError",
+      "remote_attempt_ms": 4001.96,
+      "local_crossencoder_used": false,
+      "cooldown_s": 30.0
+    },
+    "cooldown_recall": {
+      "elapsed_ms": 142.99,
+      "rerank_backend": "dense_timeout_cooldown",
+      "cooldown_remaining_ms": 15741.85,
+      "local_crossencoder_used": false
+    },
+    "baseline_negative_observation": {
+      "elapsed_ms": 22097.56,
+      "fallback_backend": "local_crossencoder",
+      "meaning": "pre-fix timeout path amplified a 4 second remote timeout into a 22 second response"
+    }
+  },
+  "external_send": false,
+  "rollback": "restore runtime/maintenance_backups/20261123-rerank-timeout/daemon.py.before and kickstart com.nautilus.compass-daemon"
+}
