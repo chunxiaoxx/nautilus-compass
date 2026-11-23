@@ -45,6 +45,8 @@ def test_remote_success_preserves30_inputs_dense_scores_and_model(remote, monkey
     assert remote.requests[1][1]["max_length"] == 8192
     assert remote.requests[1][1]["activation"] == "sigmoid"
     assert d._RERANK_TRACE.last["backend"] == "remote_mps"
+    assert d._RERANK_TRACE.last["endpoint_scope"] == "loopback"
+    assert d._RERANK_TRACE.last["endpoint"] == "127.0.0.1:8401"
     assert d._RERANK_TRACE.last["fallback"] is False
 
 

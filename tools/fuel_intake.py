@@ -81,6 +81,11 @@ def extract_lessons(text: str) -> list[str]:
 
 
 def main() -> int:
+    # Explicit offline adapter. Existing stop-hook behavior remains the default.
+    if len(sys.argv) > 1 and sys.argv[1] == "--verified-memory-candidates":
+        sys.path.insert(0, str(ROOT / "tools/distill_pilot"))
+        from export_fuel_candidates import main as export_memory_candidates
+        return export_memory_candidates(sys.argv[2:])
     latest = find_latest_session_memory()
     if latest is None:
         return 0

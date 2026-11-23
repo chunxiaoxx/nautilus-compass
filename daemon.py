@@ -223,9 +223,19 @@ def _remote_rerank_scores(query, candidates):
             or not isinstance(scores, list) or len(scores) != len(candidates)
             or any(type(s) not in (int, float) or not math.isfinite(s) for s in scores)):
         raise ValueError("remote rerank output contract mismatch")
-    return scores, {"backend": "remote_" + str(response.get("device", "unknown")),
-                    "remote_server_ms": response.get("ms"), "revision": response.get("revision"),
-                    "max_length": contract["max_length"]}
+    loopback = host in {"127.0.0.1", "localhost", "::1"}
+    return scores, {
+        # Keep the historical backend value for consumers that already parse it.
+        # endpoint_scope makes the physical boundary explicit. A loopback
+        # endpoint is a local Mac process, even though the old field says
+        # "remote".
+        "backend": "remote_" + str(response.get("device", "unknown")),
+        "endpoint": f"{host}:{port}",
+        "endpoint_scope": "loopback" if loopback else "network",
+        "remote_server_ms": response.get("ms"),
+        "revision": response.get("revision"),
+        "max_length": contract["max_length"],
+    }
 
 # v2.3.0 · production lifecycle forget-filter · opt-in via COMPASS_PROD_LIFECYCLE=1
 # Activates the dormant LLM-WIKI2 Ebbinghaus forgetting (README:104) in recall:
@@ -2101,12 +2111,18 @@ def handle_conn(conn: socket.socket):
                 _peer = "127.0.0.1:%s" % _pport
             except Exception:
                 _pport, _peer = 0, "unknown"
-            try:
-                import subprocess as _sp
-                _pids = _sp.run(["lsof", "-ti", "tcp:%s" % _pport],
-                                capture_output=True, text=True, timeout=5
-                                ).stdout.split()
-            except Exception:
+            # Unix socket tests and local probes do not expose a TCP peer
+            # port.  Skip lsof for that case so auth_failed is returned
+            # immediately instead of waiting on lsof tcp:0.
+            if _pport:
+                try:
+                    import subprocess as _sp
+                    _pids = _sp.run(["lsof", "-ti", "tcp:%s" % _pport],
+                                    capture_output=True, text=True, timeout=1
+                                    ).stdout.split()
+                except Exception:
+                    _pids = []
+            else:
                 _pids = []
             log(f"auth_failed action={req.get('action')} peer={_peer} "
                 f"client_pid={[p for p in _pids if p != str(os.getpid())]}")
@@ -2161,6 +2177,11 @@ def _runtime_identity_payload() -> dict:
         "python_executable": str(Path(sys.executable).resolve()),
         "source_root": str(daemon_path.parent),
         "daemon_hash": f"sha256:{hashlib.sha256(daemon_path.read_bytes()).hexdigest()}",
+        "rerank_candidates": _RERANK_CANDIDATES,
+        "rerank_candidates_env": os.environ.get("COMPASS_RERANK_CANDIDATES"),
+        "rerank_max_length": _RERANK_MAX_LENGTH,
+        "prod_rerank": _PROD_RERANK_USE,
+        "rerank_endpoint": os.environ.get("COMPASS_RERANK_REMOTE", "") or None,
     }
 
 

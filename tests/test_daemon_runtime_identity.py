@@ -17,3 +17,6 @@ def test_runtime_identity_payload_binds_running_process_to_source() -> None:
     assert Path(payload["python_executable"]).resolve() == Path(sys.executable).resolve()
     assert Path(payload["source_root"]).resolve() == Path(__file__).parents[1].resolve()
     assert re.fullmatch(r"sha256:[0-9a-f]{64}", payload["daemon_hash"])
+    assert isinstance(payload["rerank_candidates"], int)
+    assert isinstance(payload["rerank_max_length"], int)
+    assert isinstance(payload["prod_rerank"], bool)

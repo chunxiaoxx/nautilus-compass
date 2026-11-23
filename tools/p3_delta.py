@@ -18,7 +18,7 @@ from __future__ import annotations
 import json
 import shutil
 import sys
-import time
+from datetime import datetime, timezone
 from pathlib import Path
 
 try:
@@ -39,6 +39,33 @@ WHITELIST = {"independent_recompute", "human_review", "official_rule",
 # 件若自带 domain 字段,必须属判读域;叙事/活性类(state_narrative 等)不入燃料
 # (delta_0003 S2 移出案的制度化——manifest_delta_0003.erratum.md)。无 domain 字段=老格式,放行。
 JUDGMENT_DOMAINS = {"artifact_judgment", "judge_output", "judge_verdict"}
+
+
+def admission_error(row: dict) -> str | None:
+    """Honor explicit candidate restrictions before the legacy origin gate.
+
+    This is a collector guard, not independent verification of label authorship
+    or authorization to launch training. Legacy rows without candidate fields
+    retain their existing schema, but null/unknown labels are never admitted.
+    """
+    if row.get("truth_label") not in {"pass", "fail", "insufficient_evidence"}:
+        return "invalid_truth_label"
+    rights = row.get("rights") or {}
+    admission = row.get("training_admission") or {}
+    if ("training_allowed" in rights and rights["training_allowed"] is not True
+            or "allowed" in admission and admission["allowed"] is not True):
+        return "training_explicitly_not_allowed"
+    if row.get("candidate_status") is not None:
+        if (row["candidate_status"] != "approved_for_training"
+                or rights.get("training_allowed") is not True
+                or admission.get("allowed") is not True):
+            return "candidate_not_admitted_for_training"
+    if row.get("label_origin") not in WHITELIST:
+        return "label_origin_not_whitelisted"
+    dom = (row.get("artifact") or {}).get("domain") or row.get("domain")
+    if dom is not None and dom not in JUDGMENT_DOMAINS:
+        return "non_judgment_domain"
+    return None
 
 
 def load_fingerprints() -> set:
@@ -66,7 +93,8 @@ def main() -> int:
     INBOX.mkdir(parents=True, exist_ok=True)
     ABSORBED.mkdir(parents=True, exist_ok=True)
     fps = load_fingerprints()
-    fresh, rejected, seen_files = [], 0, []
+    fresh, rejected, seen_files, rejection_reasons = [], 0, [], {}
+    rejected_this_run = set()
     for f in sorted(INBOX.glob("*.jsonl")):
         seen_files.append(f.name)
         for line in f.read_text(encoding="utf-8").splitlines():
@@ -76,21 +104,22 @@ def main() -> int:
             h = row.get("content_hash")
             if not h or h in fps:
                 continue
-            if row.get("label_origin") not in WHITELIST:
-                rejected += 1
-                fps.add(h)  # 拒绝件也记指纹,防反复投递反复计数
-                continue
-            dom = (row.get("artifact") or {}).get("domain") or row.get("domain")
-            if dom is not None and dom not in JUDGMENT_DOMAINS:
-                rejected += 1
-                fps.add(h)
+            reason = admission_error(row)
+            if reason:
+                key = (h, reason)
+                if key not in rejected_this_run:
+                    rejected += 1
+                    rejection_reasons[reason] = rejection_reasons.get(reason, 0) + 1
+                    rejected_this_run.add(key)
+                # Rejected candidates are not accepted fingerprints. A later
+                # independently corrected submission must still be evaluated.
                 continue
             fresh.append(row)
             fps.add(h)
     if not fresh:
-        out = {"ts": time.strftime("%Y-%m-%dT%H:%M:%S+08:00"), "cycle": next_cycle() - 1,
+        out = {"ts": datetime.now(timezone.utc).isoformat(), "cycle": next_cycle() - 1,
                "verdict": "SKIP", "new": 0, "rejected": rejected,
-               "inbox_files": seen_files}
+               "inbox_files": seen_files, "rejection_reasons": rejection_reasons}
         print(json.dumps(out, ensure_ascii=False))
         FINGERPRINTS.write_text(json.dumps(sorted(fps)), encoding="utf-8")
         return 0
@@ -101,9 +130,9 @@ def main() -> int:
     dist = {}
     for r in fresh:
         dist[r["truth_label"]] = dist.get(r["truth_label"], 0) + 1
-    manifest = {"delta_id": f"delta_{n:04d}", "exported_at": time.strftime("%Y-%m-%dT%H:%M:%S+08:00"),
+    manifest = {"delta_id": f"delta_{n:04d}", "exported_at": datetime.now(timezone.utc).isoformat(),
                 "n_new": len(fresh), "label_distribution": dist, "whitelist_rejected": rejected,
-                "inbox_files": seen_files}
+                "inbox_files": seen_files, "rejection_reasons": rejection_reasons}
     (DELTA / f"manifest_delta_{n:04d}.json").write_text(
         json.dumps(manifest, ensure_ascii=False, indent=1), encoding="utf-8")
     for f in INBOX.glob("*.jsonl"):
