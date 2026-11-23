@@ -39,6 +39,21 @@
     "final": "已实测：本地 9B 服务健康、Compass 语义记忆服务运行正常、组织连续性处于数据接入阻塞阶段。证据不足：memory_search 结果未直接证实当前会话的本地连通性，evidence_gate 判定证据链不完整。",
     "launchd_exit_code": 0
   },
+  "authenticated_recall_probe": {
+    "query": "本地 9B、Compass 记忆服务和组织连续性当前状态",
+    "latest_elapsed_ms": 1364.23,
+    "latest_backend": "remote_mps",
+    "latest_fallback": false,
+    "latest_candidate_count": 8,
+    "latest_remote_server_ms": 1192,
+    "latest_endpoint_scope": "loopback",
+    "negative_observation": {
+      "elapsed_ms": 22097.56,
+      "remote_attempt_ms": 4001.6,
+      "fallback_backend": "local_crossencoder",
+      "meaning": "一次远端重排超时后触发本地 CPU 重排，造成约 22 秒响应；当前暖机读数已恢复，但仍需持续观察超时率。"
+    }
+  },
   "repeat_guard": {
     "implementation": "tools/local_agent_runtime.py",
     "test": "tests/test_local_agent_runtime.py",
