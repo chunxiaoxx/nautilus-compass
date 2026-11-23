@@ -90,6 +90,33 @@ def test_run_task_stops_repeated_tool_plan_and_requests_final(monkeypatch):
     assert len(calls) == 3
 
 
+def test_run_task_rejects_write_draft_when_task_is_read_only(monkeypatch):
+    plans = [
+        '{"tool_calls":[{"name":"write_draft","arguments":{"title":"x","body":"should not write"}}],"final":null}',
+        '{"tool_calls":[],"final":"只读检查完成。"}',
+    ]
+    writes = []
+
+    def fake_call(messages, max_tokens=512, *, enable_thinking=False, timeout=120):
+        return plans.pop(0)
+
+    monkeypatch.setattr(runtime, "_call_model", fake_call)
+    monkeypatch.setattr(runtime, "_record_training_event", lambda event: None)
+    monkeypatch.setitem(runtime.TOOL_REGISTRY, "write_draft", lambda args: writes.append(args) or {"ok": True})
+
+    result = runtime.run_task("只读检查，不要写草稿，不发送任何内容。", max_steps=2)
+
+    assert result["final"] == "只读检查完成。"
+    assert writes == []
+    blocked = [
+        item
+        for step in result["steps"]
+        for item in (step.get("results") or [])
+        if item.get("tool") == "write_draft"
+    ]
+    assert blocked[0]["result"]["error"] == "task_forbids_draft"
+
+
 def test_org_continuity_read_is_bounded_and_local():
     result = runtime.org_continuity_read({})
 

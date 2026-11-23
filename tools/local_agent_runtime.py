@@ -501,6 +501,15 @@ def run_task(task: str, max_steps: int = 4) -> dict[str, Any]:
             if not isinstance(call, dict) or call.get("name") not in TOOL_REGISTRY:
                 results.append({"ok": False, "error": "tool_not_allowlisted", "call": call})
                 continue
+            if call.get("name") == "write_draft" and draft_prohibited:
+                result = {
+                    "ok": False,
+                    "status": "draft_rejected",
+                    "error": "task_forbids_draft",
+                }
+                executed_tools.append("write_draft")
+                results.append({"tool": "write_draft", "result": result})
+                continue
             args = call.get("arguments") if isinstance(call.get("arguments"), dict) else {}
             tool_args = dict(args)
             if call["name"] == "evidence_gate":
