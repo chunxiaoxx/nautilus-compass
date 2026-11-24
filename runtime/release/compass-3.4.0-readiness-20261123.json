@@ -1,8 +1,8 @@
 {
   "schema": "compass-release-readiness/1",
-  "observed_at": "2026-11-24T00:18:00-0500",
+  "observed_at": "2026-11-24T00:31:30-0500",
   "candidate": "3.4.0",
-  "current_head": "6477f87d8899084b2a7d6bac7d82cbde2a5f4f03",
+  "current_head": "64df1dfe4409d496fb2afe915960954121174097",
   "latest_tags": [
     "v3.3.0",
     "v3.2.0",
@@ -66,13 +66,13 @@
     }
   },
   "mainline_health": {
-    "observed_at": "2026-11-24T00:14:13-0500",
+    "observed_at": "2026-11-24T00:31:00-0500",
     "local_loop_round": 152,
     "local_model": "Qwen3.5-9B-4bit",
     "local_llm": "healthy_loaded",
     "compass_daemon": "protocol_ping_pass",
     "network_health": "15/15",
-    "tests": "30 passed for local-agent and context-capsule suites",
+    "tests": "30 passed for local-agent-runtime and context-capsule suites",
     "external_model_used": false,
     "external_send": false,
     "receipt": "runtime/loop/local_round_receipt.json"
