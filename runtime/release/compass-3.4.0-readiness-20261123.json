@@ -1,8 +1,8 @@
 {
   "schema": "compass-release-readiness/1",
-  "observed_at": "2026-11-23T19:12:00Z",
+  "observed_at": "2026-11-24T00:18:00-0500",
   "candidate": "3.4.0",
-  "current_head": "87b1f84f97a1ddb0eb0a89db3b36abc1e563727d",
+  "current_head": "6477f87d8899084b2a7d6bac7d82cbde2a5f4f03",
   "latest_tags": [
     "v3.3.0",
     "v3.2.0",
@@ -64,5 +64,28 @@
       "superseded_package_sha256": "d5971391bcdd61ab7fe9044a7ca25086ee8bea5f7a21c0d7cfe0e9135e233dad",
       "receipt": "nautilus-core/ops/ali_phase2/pipeline/reports/CS-guoshu-507-r25_gate_20261123.json"
     }
+  },
+  "mainline_health": {
+    "observed_at": "2026-11-24T00:14:13-0500",
+    "local_loop_round": 152,
+    "local_model": "Qwen3.5-9B-4bit",
+    "local_llm": "healthy_loaded",
+    "compass_daemon": "protocol_ping_pass",
+    "network_health": "15/15",
+    "tests": "30 passed for local-agent and context-capsule suites",
+    "external_model_used": false,
+    "external_send": false,
+    "receipt": "runtime/loop/local_round_receipt.json"
+  },
+  "catalog_projection": {
+    "catalog_sha256": "36ac4fb33506919b3270e0745b26eb9a135c36568a77edeff946db1c0aad1a83",
+    "roots_refreshed": [
+      "nautilus-compass",
+      "nautilus-v5",
+      "nautilusflywheel",
+      "nautilus-core"
+    ],
+    "content_changed": false,
+    "activation_check": "Compass recall restored after projection refresh"
   }
 }
