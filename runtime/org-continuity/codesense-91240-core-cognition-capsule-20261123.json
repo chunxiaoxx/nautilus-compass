@@ -1,7 +1,7 @@
 {
   "schema": "context-capsule/1",
   "capsule_id": "codesense-91240:codex-core-cognition-vault-20261123-r25",
-  "created_at_utc": "2026-11-23T19:19:41.352566+00:00",
+  "created_at_utc": "2026-11-24T05:30:43.053787+00:00",
   "authorization_basis": "current_user_instruction_continue",
   "scope": "organization-continuity-and-recall-gate",
   "actor": {
@@ -16,7 +16,7 @@
     "project_path": "/Users/chunxiao.wang/Projects/nautilus-compass",
     "git_root": "/Users/chunxiao.wang/Projects/nautilus-compass",
     "branch": "main",
-    "source_head": "5bf02adec866ce7534fcfdbe3ecd24a34ccc2c7d",
+    "source_head": "c64da2c1c652ec90e369fb7d86425d367c69666a",
     "dirty_count": 14,
     "dirty_sample": [
       "M .codex/config.toml",
@@ -29,7 +29,7 @@
       "?? runtime/loop/.canary_alert_body.txt"
     ],
     "capsule_path": "runtime/org-continuity/codesense-91240-core-cognition-capsule-20261123.json",
-    "agents_sha256": "923cc6024b0f47b9ca2412096dd78c2b864ff23ffa9fa208bdd94967c2257e7d"
+    "agents_sha256": "3d3a753aa1cbd0c0894f3c263faa0e486ec9c4e2074b31ab90ee8e6083cce874"
   },
   "task": {
     "task_id": "codesense-91240",
@@ -67,7 +67,7 @@
       "payload": {
         "ok": true,
         "pong": true,
-        "pid": 98073,
+        "pid": 2977,
         "python_executable": "/Users/chunxiao.wang/.local/share/uv/python/cpython-3.12.15-macos-aarch64-none/bin/python3.12",
         "source_root": "/Users/chunxiao.wang/.claude/plugins/nautilus-compass",
         "daemon_hash": "sha256:bf52cf66d7c9f59e5944ea45ba883c35e5f5da4a14f6b071b6deb9eb2fdbb1cc",
@@ -87,7 +87,7 @@
   "integrity": {
     "algorithm": "sha256",
     "status": "computed",
-    "sha256": "b0ba4e34cfc595dade1ea28d25717e6b43850affa2a25d414ab83bb3e8892feb"
+    "sha256": "deea365b5e7e0b064896a0acc32be23c8a9ee818440d062b4a12996926f05331"
   },
   "signature": {
     "status": "not_signed",
