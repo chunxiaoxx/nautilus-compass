@@ -1,6 +1,6 @@
 # Compass 记忆与验证 启动卡
 
-<!-- org-context:user-roles-20261102 catalog-sha256:c4b8aaf2c1ef1eea2bbaef8f004ca6deb16e6034efc62e9db44b34f190c8510f -->
+<!-- org-context:user-roles-20261102 catalog-sha256:36ac4fb33506919b3270e0745b26eb9a135c36568a77edeff946db1c0aad1a83 -->
 
 职责来源：2026-11-02 用户确认；单一目录 `../nautilus-core/docs/org/agent_catalog.json`。
 

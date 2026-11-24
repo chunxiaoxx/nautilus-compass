@@ -1,6 +1,6 @@
 # Compass 记忆与验证 Claude Code 入口
 
-<!-- org-context:user-roles-20261102 catalog-sha256:c4b8aaf2c1ef1eea2bbaef8f004ca6deb16e6034efc62e9db44b34f190c8510f -->
+<!-- org-context:user-roles-20261102 catalog-sha256:36ac4fb33506919b3270e0745b26eb9a135c36568a77edeff946db1c0aad1a83 -->
 
 执行任务前用文件工具读取同目录 `AGENTS.md`，按其中当前职责、状态入口与纪律工作。它与 Codex 共用同一启动卡；不依赖 `@文件` 自动展开。
 
