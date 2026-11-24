@@ -190,11 +190,13 @@ def _run_local_agent_round() -> dict[str, Any]:
         from tools.local_agent_runtime import run_task
 
         event = run_task(
-            "本轮只读核对本地 9B、Compass 语义记忆和组织连续性。"
-            "先检查 local_health、compass_daemon_probe 和 org_continuity_read，调用 compass_recall 时使用 query='本地 9B、Compass 记忆服务和组织连续性当前状态'，"
-            "再用 evidence_gate 检查一条带路径的 measured 或 healthy 证据。"
-            "不要写草稿，不要发送邮件、GitHub 评论、部署或执行任意 shell。",
-            max_steps=3,
+            "本轮只读核对本地 9B、Compass daemon 和语义记忆。"
+            "必须按顺序调用 local_health、compass_daemon_probe、compass_recall，"
+            "compass_recall 的 query 固定为‘本地 9B、Compass 记忆服务和组织连续性当前状态’，top_k=3，metadata_only=true。"
+            "完成这三个工具后，必须调用 evidence_gate，用工具回执中的 source 或 path 和 status 或 fact_status 逐条组成证据。"
+            "不要把 recall 返回的历史命中内容当作当前服务状态，尤其不要根据历史描述推断 daemon 当前停用。"
+            "不要调用 memory_search 或 org_continuity_read，不要写草稿，不要发送邮件、GitHub 评论、部署或执行任意 shell。",
+            max_steps=4,
         )
         return {
             "ok": not event.get("contract_violations"),

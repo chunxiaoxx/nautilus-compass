@@ -132,7 +132,7 @@ def compass_recall(args: dict[str, Any]) -> dict[str, Any]:
     elapsed_ms = round((time.perf_counter() - started) * 1000, 2)
     if not response.get("ok"):
         return {"ok": False, "error": response.get("error", "compass_recall_failed"), "elapsed_ms": elapsed_ms}
-    hits = []
+    raw_hits = []
     for hit in response.get("recall") or []:
         if not isinstance(hit, dict):
             continue
@@ -147,12 +147,20 @@ def compass_recall(args: dict[str, Any]) -> dict[str, Any]:
         }
         if args.get("include_body"):
             item["body_excerpt"] = _short(hit.get("body", ""), 1200)
-        hits.append(item)
+        raw_hits.append(item)
+    metadata_only = bool(args.get("metadata_only"))
+    hits = [] if metadata_only else raw_hits
     return {
         "ok": True,
+        "source": "compass_daemon_9876",
+        "status": "measured",
+        "service_status": "healthy",
+        "historical_hits_only": True,
+        "metadata_only": metadata_only,
         "scope": response.get("scope", scope),
         "projects_scanned": response.get("projects_scanned", []),
         "recall": hits,
+        "hit_count": len(raw_hits),
         "performance": response.get("performance", {}),
         "elapsed_ms": elapsed_ms,
     }
@@ -309,7 +317,10 @@ TOOL_DESCRIPTIONS = {
         "compass_recall": (
             "通过本地认证 TCP 接口做 Compass BGE 语义记忆召回。"
             "必须提供非空 query，例如 {query: '本地 9B 当前状态', top_k: 3}。"
-            "只读并返回带路径的证据"
+            "只读并返回带路径的证据。顶层 status=measured 和 service_status=healthy "
+            "只代表本次本地召回请求成功。historical_hits_only=true 时，单条记忆内容只是历史上下文，"
+            "不能用来推断当前服务状态。metadata_only=true 时只报告召回请求状态和命中数量，"
+            "不返回历史文本。单条记忆的 fact_status 仍需单独判断"
         ),
     "evidence_gate": (
         "检查结论是否有证据。参数必须是 {claim: 简短结论, evidence: "
@@ -464,6 +475,7 @@ def run_task(task: str, max_steps: int = 4) -> dict[str, Any]:
     draft_prohibited = bool(re.search(r"不要.{0,4}(?:写|生成|保存).{0,20}(?:草稿|draft)", task, flags=re.IGNORECASE))
     draft_requested = draft_requested and not draft_prohibited
     draft_repair_attempted = False
+    invalid_plan_repair_attempted = False
     observed_evidence: list[dict[str, Any]] = []
     seen_plan_fingerprints: set[str] = set()
     for _ in range(max_steps):
@@ -472,6 +484,18 @@ def run_task(task: str, max_steps: int = 4) -> dict[str, Any]:
         if not plan:
             result = {"status": "model_output_invalid", "raw": _short(raw, 1000)}
             steps.append({"model_output": raw, "result": result})
+            if not invalid_plan_repair_attempted:
+                invalid_plan_repair_attempted = True
+                messages.append({"role": "assistant", "content": _short(raw, 1000)})
+                messages.append({
+                    "role": "user",
+                    "content": (
+                        "上一轮不是合法 JSON，且没有执行任何工具。"
+                        "请只输出一个合法 JSON 对象，不要 Markdown，格式必须是 "
+                        '{"tool_calls":[],"final":"简短中文结论"}'
+                    ),
+                })
+                continue
             break
         calls = plan.get("tool_calls") or []
         if not isinstance(calls, list) or not calls:

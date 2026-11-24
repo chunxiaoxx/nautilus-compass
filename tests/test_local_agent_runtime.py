@@ -90,6 +90,24 @@ def test_run_task_stops_repeated_tool_plan_and_requests_final(monkeypatch):
     assert len(calls) == 3
 
 
+def test_run_task_repairs_one_invalid_json_plan(monkeypatch):
+    outputs = [
+        "不是 JSON",
+        '{"tool_calls":[],"final":"格式已修复。"}',
+    ]
+
+    def fake_call(messages, max_tokens=512, *, enable_thinking=False, timeout=120):
+        return outputs.pop(0)
+
+    monkeypatch.setattr(runtime, "_call_model", fake_call)
+    monkeypatch.setattr(runtime, "_record_training_event", lambda event: None)
+
+    result = runtime.run_task("只读检查，不要写草稿。", max_steps=2)
+
+    assert result["final"] == "格式已修复。"
+    assert result["external_model_used"] is False
+
+
 def test_run_task_rejects_write_draft_when_task_is_read_only(monkeypatch):
     plans = [
         '{"tool_calls":[{"name":"write_draft","arguments":{"title":"x","body":"should not write"}}],"final":null}',
@@ -230,9 +248,33 @@ def test_compass_recall_returns_bounded_evidence(monkeypatch):
     result = runtime.compass_recall({"query": "verified", "top_k": 1})
 
     assert result["ok"] is True
+    assert result["source"] == "compass_daemon_9876"
+    assert result["status"] == "measured"
+    assert result["service_status"] == "healthy"
+    assert result["historical_hits_only"] is True
+    assert result["metadata_only"] is False
+    assert result["hit_count"] == 1
     assert result["recall"][0]["path"] == "memory.md"
     assert "body_excerpt" not in result["recall"][0]
     assert result["performance"]["total_compute_ms"] == 12
+
+
+def test_compass_recall_metadata_only_hides_historical_hits(monkeypatch):
+    monkeypatch.setattr(
+        runtime,
+        "_compass_daemon_request",
+        lambda request, timeout=30.0: {
+            "ok": True,
+            "scope": request["scope"],
+            "recall": [{"path": "old.md", "fact_status": "measured"}],
+        },
+    )
+
+    result = runtime.compass_recall({"query": "health", "metadata_only": True})
+
+    assert result["metadata_only"] is True
+    assert result["hit_count"] == 1
+    assert result["recall"] == []
 
 
 def test_evidence_gate_requires_source_and_success_status():
