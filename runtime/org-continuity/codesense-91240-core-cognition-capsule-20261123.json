@@ -1,7 +1,7 @@
 {
   "schema": "context-capsule/1",
   "capsule_id": "codesense-91240:codex-core-cognition-vault-20261123-r25",
-  "created_at_utc": "2026-11-25T04:37:46.975547+00:00",
+  "created_at_utc": "2026-11-25T09:35:36.402073+00:00",
   "authorization_basis": "current_user_instruction_continue",
   "scope": "organization-continuity-and-recall-gate",
   "actor": {
@@ -16,7 +16,7 @@
     "project_path": "/Users/chunxiao.wang/Projects/nautilus-compass",
     "git_root": "/Users/chunxiao.wang/Projects/nautilus-compass",
     "branch": "main",
-    "source_head": "5088ecdf626b578d4e7e3c4ed2184706aee6602a",
+    "source_head": "8606fdb4a4d9063f13c8196ec09e733d9e90a4a3",
     "dirty_count": 13,
     "dirty_sample": [
       "M runtime/loop/channel_canary_state.json",
@@ -87,7 +87,7 @@
   "integrity": {
     "algorithm": "sha256",
     "status": "computed",
-    "sha256": "ba40f3b718971e5366f0c473c3bd5a14413b17098458a90e113bd32f276bef49"
+    "sha256": "0a7be220e6e7858884168bd146a3ce7d5ca4e319708ec7886e52f1f532b99b30"
   },
   "signature": {
     "status": "not_signed",
