@@ -217,6 +217,15 @@ def _run_local_agent_round() -> dict[str, Any]:
 
 
 def main() -> int:
+    if (LOOP_DIR / "STOP").exists():
+        print("local loop stopped by runtime/loop/STOP")
+        return 0
+
+    initial_state = _load_state()
+    if int(initial_state.get("round", 0)) > 200:
+        print("local loop stopped by round > 200")
+        return 0
+
     LOOP_DIR.mkdir(parents=True, exist_ok=True)
     with LOCK_PATH.open("w", encoding="utf-8") as lock:
         try:
@@ -230,6 +239,10 @@ def main() -> int:
             return 0
 
         state = _load_state()
+        if int(state.get("round", 0)) > 200:
+            print("local loop stopped by round > 200")
+            return 0
+
         state["round"] = int(state.get("round", 0)) + 1
         round_id = state["round"]
         state["last_started_at"] = time.strftime("%Y-%m-%dT%H:%M:%S%z")
