@@ -1,7 +1,7 @@
 {
   "schema": "context-capsule/1",
   "capsule_id": "codesense-91240:codex-core-cognition-vault-20261123-r25",
-  "created_at_utc": "2026-11-24T05:32:21.763562+00:00",
+  "created_at_utc": "2026-11-25T04:12:55.125294+00:00",
   "authorization_basis": "current_user_instruction_continue",
   "scope": "organization-continuity-and-recall-gate",
   "actor": {
@@ -16,17 +16,17 @@
     "project_path": "/Users/chunxiao.wang/Projects/nautilus-compass",
     "git_root": "/Users/chunxiao.wang/Projects/nautilus-compass",
     "branch": "main",
-    "source_head": "4f2171c4cd3a40edf35485688b6e395c6daa6f1f",
-    "dirty_count": 14,
+    "source_head": "767b65e7487f5415a566dc444d1ef3ec30e0228a",
+    "dirty_count": 13,
     "dirty_sample": [
-      "M .codex/config.toml",
-      " M runtime/loop/channel_canary_state.json",
+      "M runtime/loop/channel_canary_state.json",
       " M runtime/loop/local_round_receipt.json",
       " M runtime/loop/local_state.json",
       " M runtime/loop/rounds.log",
       " M runtime/production_loop/state.json",
       "?? _INBOUND_FROM_FLYWHEEL_20261123_uncommitted_worktree_alert.md",
-      "?? runtime/loop/.canary_alert_body.txt"
+      "?? runtime/loop/.canary_alert_body.txt",
+      "?? runtime/loop/maintenance_backups/"
     ],
     "capsule_path": "runtime/org-continuity/codesense-91240-core-cognition-capsule-20261123.json",
     "agents_sha256": "3d3a753aa1cbd0c0894f3c263faa0e486ec9c4e2074b31ab90ee8e6083cce874"
@@ -40,7 +40,7 @@
   "cognition_vault": {
     "required": true,
     "status": "bound",
-    "path": "../nautilus-core/ops/ali_phase2/core_cognition_vault_v1.json",
+    "path": "/Users/chunxiao.wang/Projects/nautilus-core/ops/ali_phase2/core_cognition_vault_v1.json",
     "sha256": "1ce0e022dd8a0747201b0edaf92e38978913f0d0959f5defab65e95e50edc432",
     "vault_id": "codesense-core-cognition-v1"
   },
@@ -87,7 +87,7 @@
   "integrity": {
     "algorithm": "sha256",
     "status": "computed",
-    "sha256": "4493b5efddc0dbd1da68244748aca81afc3181e83d1fa7c4a15e2b690ccecda9"
+    "sha256": "c481a1dfef797a6ff8d2a4298d512b0080b1ceaed4b44fc95eb3a7cd716cf235"
   },
   "signature": {
     "status": "not_signed",
