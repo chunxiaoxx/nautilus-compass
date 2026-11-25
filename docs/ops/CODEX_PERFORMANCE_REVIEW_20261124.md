@@ -49,3 +49,11 @@
 
 - [推断] 当前新会话仍慢的首要原因是桌面 app-server 没有重载 `medium`，每个线程仍以 `max` 运行，并叠加超大历史数据库、多个活动线程和系统 swap 压力。
 - [不可验] 在不重启桌面 app-server、释放文件系统阻塞和降低历史数据库压力前，无法确认新配置是否能改善首条响应时间。
+
+## 2026-11-25 存储处置
+
+- [实测] 数据卷当前约 96% 使用率，可用空间约 18GiB。`.codex` 从约 7.8G 降到约 3.5G。
+- [实测] `~/.codex/archived_sessions` 已完成 checksum dry-run，2078 个文件、约 4.6GB，已切换为 NAS 软链接。迁移记录位于 `mnt/nas-work/archives/codex/archived_sessions.migration.json`。
+- [实测] `.claude/projects_pre_cwdrw2` 已完成复制、文件数和字节总量核对，五个样本 SHA256 一致，约 9.7G 已切换为 NAS 软链接。迁移记录位于 `mnt/nas-work/archives/claude/projects_pre_cwdrw2.migration.json`。
+- [实测] `.claude/projects_nas_import` 和 `.claude/projects-archived-1031` 的 NAS 复制出现 NFS 不可中断等待，源目录保留，目标目录为部分复制。卡住的重复 rsync 已停止，后续应按更小批次重试。
+- [实测] Codex hook 在轻量路径约 0.045 秒。显式 full recall 路径本轮约 1.4 秒。读取 `hook.sh` 文件本身没有造成全局卡顿。
