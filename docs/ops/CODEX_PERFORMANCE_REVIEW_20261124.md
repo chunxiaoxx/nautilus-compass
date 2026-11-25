@@ -36,3 +36,16 @@
 ## 下一步
 
 继续观察新会话的首条响应时间、`catalog changed` 是否再出现、9B 是否保持本地调用。只有出现新的实测回归，才继续修改 hook 或模型配置。
+
+## 2026-11-25 现场复核
+
+- [实测] 当前 `~/.codex` 约 7.7G，`sessions` 约 3.1G，`thread_history_1.sqlite` 约 862MiB。旧 Compass 主线程 `01a1ea00-9c51-7bb0-92d1-2d79b4947675` 累计 tokens 约 1.13B，对应 rollout 约 94MiB，检测到约 249 个 compact 标记，Codex 列表状态为 `notLoaded`。该线程已通过 Codex app 工具归档，历史仍保留。
+- [实测] 最近 Compass 线程 `01a211b2-02f2-70d0-8574-83d2dcb98a64` 的 app-server 日志仍记录 `gpt-6.2-sol` 与 `reasoning_effort=max`。仓库 `.codex/config.toml` 已写入 `medium`，但桌面 ChatGPT/Codex 进程自 11 月 24 日 20:12 启动，早于配置文件 20:59 的修改时间，因此运行中的 app-server 尚未重新加载该配置。
+- [实测] 当前 Compass、V5、core 和 Flywheel 各有活动线程，共用一个 Codex app-server。进程中还存在 32 并发的远端 exec-server 和 5 个 Compass `mcp_server.py` 实例。
+- [实测] 数据盘可用空间约 19GiB，使用率 96%，swap 已使用约 6.36GiB。系统中发现 10 个启动时间为 4–11 小时前的 `find /` 全盘扫描，父进程属于 V5 singleton。已对这些明确的扫描/管线 PID 发送终止信号，部分进程处于不可中断 I/O 状态，等待文件系统调用返回后才能消失。
+- [实测] Compass SessionStart 与 UserPromptSubmit hook 当前单次约 0.04 秒，轻量 hook 路径不是本轮卡顿主因。
+
+## 现场复核后的边界
+
+- [推断] 当前新会话仍慢的首要原因是桌面 app-server 没有重载 `medium`，每个线程仍以 `max` 运行，并叠加超大历史数据库、多个活动线程和系统 swap 压力。
+- [不可验] 在不重启桌面 app-server、释放文件系统阻塞和降低历史数据库压力前，无法确认新配置是否能改善首条响应时间。
