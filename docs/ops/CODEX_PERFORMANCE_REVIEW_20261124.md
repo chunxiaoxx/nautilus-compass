@@ -2,13 +2,13 @@
 
 ## 结论
 
-本次卡顿由多条慢路径叠加造成。主要因素是全局 `gpt-6.2-sol + max`、长线程和重复 duty/smoke 会话、每条 Codex 消息触发一次 Compass 全量语义召回，以及 Compass 只读 hook 使用了过期的组织目录投影。
+本次卡顿由多条慢路径叠加造成。主要因素是曾经观测到的全局 `gpt-6.2-sol + max` 慢档、长线程和重复 duty/smoke 会话、每条 Codex 消息触发一次 Compass 全量语义召回，以及 Compass 只读 hook 使用了过期的组织目录投影。当前复读的全局配置为 `gpt-6.1-sol + medium`，Compass 项目单独固定为 `gpt-6.2-sol + medium`。
 
 这几项会同时拉长等待时间，并把历史状态放进当前判断，增加“服务已恢复却被旧记忆判成故障”的误判概率。
 
 ## 已实测修复
 
-- 全局 Codex 推理档位从 `max` 收敛到 `medium`。
+- 全局 Codex 推理档位当前复读为 `medium`。全局模型名可能被桌面界面写回，因此主线以项目级配置为准。
 - Compass 项目固定为 `gpt-6.2-sol + medium`，复杂任务仍可在新任务中显式升档。
 - Codex 调用 Compass 自动召回改为轻量路径。需要历史时由任务按需调用 MCP `recall`。
 - Codex SessionStart 的 daemon 探活不再等待冷启动轮询。健康时立即返回，未健康时后台启动完整守卫。
