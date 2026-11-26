@@ -57,3 +57,12 @@
 - [实测] `.claude/projects_pre_cwdrw2` 已完成复制、文件数和字节总量核对，五个样本 SHA256 一致，约 9.7G 已切换为 NAS 软链接。迁移记录位于 `mnt/nas-work/archives/claude/projects_pre_cwdrw2.migration.json`。
 - [实测] `.claude/projects_nas_import` 和 `.claude/projects-archived-1031` 的 NAS 复制出现 NFS 不可中断等待，源目录保留，目标目录为部分复制。卡住的重复 rsync 已停止，后续应按更小批次重试。
 - [实测] Codex hook 在轻量路径约 0.045 秒。显式 full recall 路径本轮约 1.4 秒。读取 `hook.sh` 文件本身没有造成全局卡顿。
+
+## 2026-11-26 分批迁移收尾
+
+- [实测] `.claude/projects_nas_import` 的 18 个顶层目录均已切换为 NAS 软链接。
+- [实测] `.claude/projects-archived-1031` 的 5 个顶层目录均已切换为 NAS 软链接。
+- [实测] `projects-archived-cycle-buckets-1107` 已完成第一批 125 个 cycle 目录的逐目录校验和软链接切换，剩余 3422 个小目录保留本地，等待后续批次。
+- [实测] 当前本地数据卷约 58% 使用率，可用空间约 185GiB。swap 使用量约 1.2GiB，Codex app-server CPU 约 0.6%，当前没有迁移 rsync 进程。
+- [实测] 当前 Compass UserPromptSubmit 轻量 hook 约 0.046 秒。日志仍记录当前线程 `gpt-6.2-sol` 使用 `reasoning_effort=max`，所以模型档位仍是响应延迟的独立变量。
+- [不可验] 现有 thread_turns 中仍有历史长 turn，单次约 0.97–11.7Ms，无法仅凭这些累计记录确认新一轮交互已经变快。需要后续新 turn 重新测量。
