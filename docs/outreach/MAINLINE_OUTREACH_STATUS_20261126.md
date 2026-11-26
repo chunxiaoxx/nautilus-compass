@@ -23,7 +23,7 @@
 - **M5 记忆门**　[实测] 直接向 `127.0.0.1:9876` 发送 `{"action":"ping"}` 返回 `pong=true`，当前 PID 为 2285，daemon 源哈希前缀为 `bf52cf66`，重排端点为 `127.0.0.1:8401`。这证明传输层可响应，不替代召回质量或消费者验收。
 - **停止边界**　[实测] `python3 runtime/loop/stop_gate.py --json` 返回 `blocked=true`。canonical round 为 589，local round 为 207，production round 为 1267，均超过硬停阈值 200。当前不应继续启动值守轮、读队列或写循环状态。
 - **验证产品**　[推断] assay、jev、VerifyPack 的下一瓶颈已经从“是否存在”转为“是否有外部版本、数据、判据和非实现者回读”。本轮 A2A 复算证明只读核验路径可用，但没有替代记忆基准试点。
-- **发布门**　[实测] 取证时基线 HEAD 为 `ae9ab1ba30a74b3502fed4c5505ad6a49d8fe038`，本地领先 `origin/main` 43 个提交，工作树有 13 个既有运行态改动。本快照随后以 `3b4816c6` 归档，因此当前分支领先 44 个提交。`runtime/release/compass-3.4.0-readiness-20261123.json` 是 11 月 24 日快照，记录的 3.4.0 元数据对齐、完整测试、构建、全新安装、canary、客户验收和 CodeSense R25 平台前置验证仍未闭合。该快照早于当前 HEAD，不能直接当作当前构建结果。
+- **发布门**　[实测] 取证时基线 HEAD 为 `ae9ab1ba30a74b3502fed4c5505ad6a49d8fe038`，本地领先 `origin/main` 43 个提交，工作树有 13 个既有运行态改动。本快照及其基线修订随后以 `3b4816c6`、`6de39c53` 归档。`runtime/release/compass-3.4.0-readiness-20261123.json` 是 11 月 24 日快照，记录的 3.4.0 元数据对齐、完整测试、构建、全新安装、canary、客户验收和 CodeSense R25 平台前置验证仍未闭合。该快照早于当前 HEAD，不能直接当作当前构建结果。
 - **连续性门**　[实测] `runtime/org-continuity/codesense-91240-core-cognition-capsule-20261123.json` 记录的 `source_head` 仍为 `8606fdb4`，已经落后当前 HEAD。其 `assay_signature` 为 `not_signed`，`consumer_readback` 为 `pending`。这是一项待补的交接一致性问题，不能把 capsule 当作当前 HEAD 的完整证明。
 
 ### 主线判断
