@@ -911,6 +911,32 @@ def _flush_memory_pkl(proj_key: str, cache: dict) -> None:
         log(f"pkl flush fail {proj_hash}: {_e}")
 
 
+# 2026-11-27 · 检索池过滤:文件名匹配该正则的卡不进检索池(文件留在盘上,只是不解析、
+# 不嵌入、不打分)。动机:C 项目 99% 是 v5 循环自动卡(session_*_cycle-NNNNNN-*.md,约 1050 张/天),
+# 把 6 万向量预算挤到 56% 以上、把知识卡淹掉(实测 10 条查询前三名全是循环卡)。
+# 默认空 = 不过滤,行为与此前一致。
+_RETRIEVAL_SKIP_PATTERN = None
+
+
+def _retrieval_skip_pattern():
+    """惰性编译 COMPASS_RETRIEVAL_SKIP_RE;未配置时返回 False(不过滤)。"""
+    global _RETRIEVAL_SKIP_PATTERN
+    if _RETRIEVAL_SKIP_PATTERN is None:
+        import re as _re
+        raw = (os.environ.get("COMPASS_RETRIEVAL_SKIP_RE") or "").strip()
+        try:
+            _RETRIEVAL_SKIP_PATTERN = _re.compile(raw) if raw else False
+        except _re.error:  # 配置写错不能拖垮召回:记一行日志后按不过滤处理
+            log(f"COMPASS_RETRIEVAL_SKIP_RE invalid regex, ignored: {raw!r}")
+            _RETRIEVAL_SKIP_PATTERN = False
+    return _RETRIEVAL_SKIP_PATTERN
+
+
+def _retrieval_skip(name: str) -> bool:
+    pattern = _retrieval_skip_pattern()
+    return bool(pattern) and pattern.search(name) is not None
+
+
 def _fill_order(entries: list) -> list:
     """2026-11-23 · fill 嵌入次序改为最新优先。
 
@@ -945,6 +971,7 @@ def get_memory_entries(mem_dir: Path):
             _INOTIFY_STATS["rescans_done"] += 1
     embedder = get_embedder()
     files = sorted(mem_dir.glob("*.md"))
+    files = [f for f in files if not _retrieval_skip(f.name)]
     entries = []
     for f in files:
         if f.name.upper() in ("MEMORY.MD","INDEX.MD"): continue

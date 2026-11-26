@@ -215,6 +215,24 @@ def _is_auto_journal_flood(mem) -> bool:
     return total >= 200 and sum(1 for f in files if f.name.startswith("ingest_")) * 10 >= total * 9
 
 
+# 2026-11-27 · 默认项目判定的短时缓存。原实现每次调用都遍历全部项目目录并 stat 每个记忆文件
+# 找"最近修改"(云上实测 12,167 个目录 / 61,518 次 stat / 2.76 秒)——不指定 project 的每次
+# recall 都先付这 2.76 秒。默认项目一分钟内变不变没有业务后果,缓存 TTL 内复用上一次结果。
+# 缓存键带项目根目录路径:换根目录(测试 / 多实例)不串台。
+_DEFAULT_PROJECT_TTL_S = 60.0
+_DEFAULT_PROJECT_CACHE = ("", 0.0, None)
+
+
+def _default_project_cached(now: float, root) -> str | None:
+    key, stamp, name = _DEFAULT_PROJECT_CACHE
+    return name if (name and key == str(root) and now - stamp < _DEFAULT_PROJECT_TTL_S) else None
+
+
+def _default_project_remember(now: float, root, name) -> None:
+    global _DEFAULT_PROJECT_CACHE
+    _DEFAULT_PROJECT_CACHE = (str(root), now, name)
+
+
 def resolve_project(explicit: str | None) -> str | None:
     """Pick project memory dir name. Explicit > env > most-recently-modified."""
     if explicit:
@@ -224,6 +242,9 @@ def resolve_project(explicit: str | None) -> str | None:
         return env
     if not PROJECTS_DIR.exists():
         return None
+    cached = _default_project_cached(time.time(), PROJECTS_DIR)
+    if cached is not None:
+        return cached
     best, best_mtime = None, 0.0
     for d in PROJECTS_DIR.iterdir():
         mem = d / "memory"
@@ -237,6 +258,7 @@ def resolve_project(explicit: str | None) -> str | None:
             mtime = 0
         if mtime > best_mtime:
             best, best_mtime = d.name, mtime
+    _default_project_remember(time.time(), PROJECTS_DIR, best)
     return best
 
 
