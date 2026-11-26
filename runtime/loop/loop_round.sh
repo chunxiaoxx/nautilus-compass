@@ -2,9 +2,12 @@
 # compass LOOP 单轮执行器(schtasks 每 30 分钟触发)
 cd "C:/Users/chunx/Projects/nautilus-compass" || exit 1
 [ -f runtime/loop/STOP ] && exit 0
+PYTHON="C:/Users/chunx/Projects/nautilus-compass/.venv/Scripts/python.exe"
+"$PYTHON" runtime/loop/stop_gate.py --check >/dev/null 2>&1
+[ "$?" -eq 0 ] || exit 0
 PROMPT=$(cat runtime/loop/round_prompt.md)
 export COMPASS_EMBED_PROXY=http://127.0.0.1:19987
-"C:/Users/chunx/Projects/nautilus-compass/.venv/Scripts/python.exe" - <<'PYEOF' >/dev/null 2>&1 || true
+"$PYTHON" - <<'PYEOF' >/dev/null 2>&1 || true
 # 隧道保活:19987 无监听则重启 ssh -L 长连接
 import socket, subprocess, sys
 try:

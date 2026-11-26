@@ -217,13 +217,13 @@ def _run_local_agent_round() -> dict[str, Any]:
 
 
 def main() -> int:
-    if (LOOP_DIR / "STOP").exists():
-        print("local loop stopped by runtime/loop/STOP")
-        return 0
+    if str(ROOT) not in sys.path:
+        sys.path.insert(0, str(ROOT))
+    from runtime.loop.stop_gate import inspect_stop_gate
 
-    initial_state = _load_state()
-    if int(initial_state.get("round", 0)) > 200:
-        print("local loop stopped by round > 200")
+    initial_gate = inspect_stop_gate(ROOT)
+    if initial_gate["blocked"]:
+        print(f"local loop stopped by shared stop gate: {initial_gate['reasons']}")
         return 0
 
     LOOP_DIR.mkdir(parents=True, exist_ok=True)
@@ -234,14 +234,12 @@ def main() -> int:
             print("local loop already running")
             return 0
 
-        if (LOOP_DIR / "STOP").exists():
-            print("local loop stopped by runtime/loop/STOP")
+        gate = inspect_stop_gate(ROOT)
+        if gate["blocked"]:
+            print(f"local loop stopped by shared stop gate: {gate['reasons']}")
             return 0
 
         state = _load_state()
-        if int(state.get("round", 0)) > 200:
-            print("local loop stopped by round > 200")
-            return 0
 
         state["round"] = int(state.get("round", 0)) + 1
         round_id = state["round"]

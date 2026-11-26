@@ -10,10 +10,17 @@
  results: runtime/production_loop/results/
 """
 import json
+import sys
 from pathlib import Path
 from datetime import datetime
 
 BASE = Path(__file__).resolve().parent
+REPO_ROOT = BASE.parent.parent
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from runtime.loop.stop_gate import inspect_stop_gate
+
 QUEUE = BASE / "queue.json"
 LOG = BASE / "rounds.log"
 STATE = BASE / "state.json"
@@ -38,6 +45,11 @@ def log(msg):
 
 
 def main():
+    gate = inspect_stop_gate(REPO_ROOT)
+    if gate["blocked"]:
+        print(f"production loop stopped by shared stop gate: {gate['reasons']}")
+        return 0
+
     state = load_state()
     state["round"] += 1
     rn = state["round"]
