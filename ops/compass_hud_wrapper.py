@@ -1,5 +1,14 @@
 #!/usr/bin/env python
-# statusLine 包装器 v3.0.9:claude-hud 原生段 + compass 段(人话版)
+# statusLine 包装器 v3.1.0:claude-hud 原生段 + compass 段(人话版)
+#
+# v3.1.0 (2026-11-26) · 治两处"状态栏说谎"(实测根因):
+#   ① 记忆健康探测读错配置:v3.0.x 回退读 ~/.claude.json 的 nautilus-compass(本机 stdio
+#      条目,无 url),云端 MCP 的 url 其实在项目级 .mcp.json → 笔记本上永远"服务未响应"。
+#      探测逻辑移到同目录 compass_hud_probe.py:按 cwd 向上找 .mcp.json,状态分级
+#      正常/慢/未响应/鉴权失败/未配置;健康缓存也按 cwd 分桶(多窗口不同目录曾共用一份)。
+#   ② Context 显示 0%:GLM 等网关流式响应开头 usage 全零(实测 message_start input_tokens=0),
+#      模型生成期间 context_window 归零 → 渲染 0%。同一会话内零值样本不覆盖最近有效读数。
+#   自测(含阴性对照):python ops/hud_probe_selftest.py
 #
 # v3.0.9 (2026-09-01) · 治"HUD 又不正常显示"+"内容看不懂":
 #   根因① claude-hud 移到 plugins\cache\ 下,硬编码 0.0.10 路径失效 →
@@ -19,9 +28,26 @@ def _cwd_tag():
 CACHE_P = os.path.join(os.path.expanduser("~"), ".claude", ".cache", "hud_daemon_cache.json")
 HUD_CACHE_P = os.path.join(os.path.expanduser("~"), ".claude", ".cache", "hud_out_cache.txt")
 HUD_BIN_CACHE = os.path.join(os.path.expanduser("~"), ".claude", ".cache", "hud_bin_path.txt")
+LKG_P = os.path.join(os.path.expanduser("~"), ".claude", ".cache", "hud_ctx_lkg.json")
 VL_P = os.path.join(os.path.expanduser("~"), ".claude", "plugins", "nautilus-compass",
                     ".cache", "verification_log.jsonl")
 CWD = ""
+_LKG_TTL_S = 86400.0
+
+
+def _load_json(path, default):
+    try:
+        with open(path, encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return default
+
+
+def _cache_entry(tag):
+    # v3.1.0 · 健康缓存按 cwd 分桶:{tag: {ts, ok, state, ...}}
+    data = _load_json(CACHE_P, {})
+    entry = data.get(tag) if isinstance(data, dict) else None
+    return entry if isinstance(entry, dict) else None
 
 
 def _mem_count():
@@ -36,8 +62,7 @@ def _mem_count():
 
 def _watchdog():
     try:
-        with open(CACHE_P, encoding="utf-8") as f:
-            c = json.load(f)
+        c = _cache_entry(_cwd_tag()) or {}
         hit = f" · 今日召回{c['hits_today']}" if c.get("hits_today") else ""
         st = "正常" if c.get("ok") else "服务未响应"
         print(f"\x1b[36m🧭 记忆{st}\x1b[0m{hit} · {_mem_count()}条 \x1b[2m(降级)\x1b[0m")
@@ -53,13 +78,41 @@ _wd.start()
 
 
 def _load_cache(ttl=60.0):
-    try:
-        with open(CACHE_P, encoding="utf-8") as f:
-            c = json.load(f)
-        return c, (time.time() - float(c.get("ts", 0))) < ttl
-    except Exception:
+    entry = _cache_entry(_cwd_tag())
+    if entry is None:
         return None, False
+    return entry, (time.time() - float(entry.get("ts", 0))) < ttl
 
+
+def _context_hold(raw):
+    """v3.1.0 · 上下文读数保持:同一会话内零值样本不覆盖最近一次有效读数。
+    新会话 / clear 后没有历史读数则原样放行(此时 0% 是对的)。"""
+    try:
+        info = json.loads(raw)
+        window = info.get("context_window") or {}
+        session = info.get("session_id") or CWD
+        known = _load_json(LKG_P, {})
+        if not isinstance(known, dict):
+            known = {}
+        now = time.time()
+        if window.get("total_input_tokens"):
+            kept = {k: v for k, v in known.items()
+                    if isinstance(v, dict) and now - float(v.get("ts", 0) or 0) < _LKG_TTL_S}
+            kept[session] = {"ts": now, "context_window": window}
+            os.makedirs(os.path.dirname(LKG_P), exist_ok=True)
+            tmp = "%s.%s.tmp" % (LKG_P, _cwd_tag())
+            with open(tmp, "w", encoding="utf-8") as f:
+                json.dump(kept, f)
+            os.replace(tmp, LKG_P)
+            return raw
+        previous = known.get(session)
+        if not previous or now - float(previous.get("ts", 0)) > _LKG_TTL_S:
+            return raw
+        held = dict(info)
+        held["context_window"] = previous.get("context_window") or {}
+        return json.dumps(held, ensure_ascii=False)
+    except Exception:
+        return raw
 
 raw = sys.stdin.read()
 try:
@@ -123,7 +176,7 @@ if not _hc_fresh and _spawn_ok:
             raw_p = "%s.%s.in" % (HUD_CACHE_P, _cwd_tag())
             os.makedirs(os.path.dirname(HUD_CACHE_P), exist_ok=True)
             with open(raw_p, "w", encoding="utf-8") as f:
-                f.write(raw)
+                f.write(_context_hold(raw))
             _bg = ("import json,time,subprocess,os\n"
                    f"raw=open({raw_p!r},encoding='utf-8').read()\n"
                    f"CP={HUD_CACHE_P!r}\n"
@@ -147,71 +200,14 @@ if not _hc_fresh and _spawn_ok:
         except Exception:
             pass
 
-# 2. compass daemon 段:主流程零网络,读 60s 缓存;过期/缺失派后台刷新。
-#    v3.0.9 · 后台进程顺带算"今日召回"(54.8MB log 尾部解析移出主流程)。
+# 2. compass 健康段:主流程零网络,读 60s 缓存;过期/缺失派后台刷新。
+#    v3.1.0 · 探测逻辑在 compass_hud_probe.py(按 cwd 找端点、状态分级、顺带算今日召回)。
 def _refresh_async():
-    _bg = (
-        "import json,socket,time,os\n"
-        f"C={CACHE_P!r}\nVL={VL_P!r}\n"
-        "TOK=''\n"
-        "try:TOK=open(os.path.expanduser('~/.claude/.cache/compass_daemon_token'),"
-        "encoding='utf-8').read().strip()\n"
-        "except Exception:pass\n"
-        "out={'ts':time.time(),'ok':False,'p95':0,'ovl':False,'hits_today':0}\n"
-        "try:\n"
-        "    s=socket.socket();s.settimeout(2.0);s.connect(('127.0.0.1',9876))\n"
-        "    s.sendall((json.dumps({'action':'recall','query':'ping','top_k':1,"
-        "'scope':'project','project':'C--Users-chunx','token':TOK})+'\\n').encode())\n"
-        "    buf=b'';dl=time.time()+3.0\n"
-        "    while True:\n"
-        "        c=s.recv(65536)\n"
-        "        if not c:break\n"
-        "        buf+=c\n"
-        "        if time.time()>dl:break\n"
-        "        try:json.loads(buf.decode());break\n"
-        "        except Exception:continue\n"
-        "    s.close()\n"
-        "    out['ok']=json.loads(buf.decode()).get('ok',False)\n"
-        "    s2=socket.socket();s2.settimeout(2.0);s2.connect(('127.0.0.1',9876))\n"
-        "    s2.sendall((json.dumps({'action':'status','token':TOK})+'\\n').encode())\n"
-        "    st=json.loads(s2.recv(65536).decode());s2.close()\n"
-        "    sl=st.get('recall',{}).get('sliding_5min',{})\n"
-        "    out['p95']=sl.get('p95_ms',0)\n"
-        "    out['ovl']=bool(sl.get('overload_5min'))\n"
-        "except Exception:\n"
-        "    pass\n"
-        # 2026-11-23:本机无 daemon(记忆主库 10/20 迁 Mac mini)时,退探已配置的 MCP HTTP 端点。
-        # 此前写死 127.0.0.1:9876 → 笔记本上永远"服务未响应"(假警报)。
-        "if not out['ok']:\n"
-        "    try:\n"
-        "        import urllib.request\n"
-        "        cfg=json.load(open(os.path.expanduser('~/.claude.json'),encoding='utf-8'))['mcpServers']['nautilus-compass']\n"
-        "        if cfg.get('url'):\n"
-        "            body=json.dumps({'jsonrpc':'2.0','id':1,'method':'initialize','params':{'protocolVersion':'2025-03-26','capabilities':{},'clientInfo':{'name':'hud','version':'1'}}}).encode()\n"
-        "            hd={'Content-Type':'application/json','Accept':'application/json, text/event-stream'}\n"
-        "            hd.update(cfg.get('headers') or {})\n"
-        "            out['ok']=urllib.request.urlopen(urllib.request.Request(cfg['url'],data=body,headers=hd),timeout=8).status==200\n"
-        "            out['via']='mcp-http'\n"
-        "    except Exception:\n"
-        "        pass\n"
-        "try:\n"
-        "    with open(VL,'rb') as f:\n"
-        "        f.seek(0,2);sz=f.tell();f.seek(max(0,sz-400000))\n"
-        "        lines=f.read().decode('utf-8','replace').strip().splitlines()\n"
-        "    today=time.strftime('%Y-%m-%d')\n"
-        "    n=0\n"
-        "    for ln in lines:\n"
-        "        try:\n"
-        "            r=json.loads(ln)\n"
-        "            if r.get('top5') and str(r.get('ts',''))[:10]==today: n+=1\n"
-        "        except Exception:continue\n"
-        "    out['hits_today']=n\n"
-        "except Exception:\n"
-        "    pass\n"
-        "try:json.dump(out,open(C,'w',encoding='utf-8'))\n"
-        "except Exception:pass\n")
     try:
-        subprocess.Popen([sys.executable, "-c", _bg], stdin=subprocess.DEVNULL,
+        probe = os.path.join(os.path.dirname(os.path.abspath(__file__)), "compass_hud_probe.py")
+        if not os.path.exists(probe):
+            return
+        subprocess.Popen([sys.executable, probe, CACHE_P, CWD], stdin=subprocess.DEVNULL,
                          stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
                          creationflags=0x08000000)  # CREATE_NO_WINDOW
     except Exception:
@@ -255,13 +251,21 @@ except Exception:
     pass
 
 # 4. 组装人话段:状态 · N条 · 今日召回N · drift
+#    v3.1.0 · 状态分级:未配置(灰)不再是红色"未响应";握手慢单独报"慢"。
 seg = "\x1b[36m🧭 记忆\x1b[0m"
+state = (cached or {}).get("state") or ("ok" if ok else "down")
 if cached is None:
     seg += "\x1b[33m检测中\x1b[0m"
+elif ok and state == "slow":
+    seg += f"\x1b[33m慢({int(cached.get('latency_s') or 0)}s)\x1b[0m"
 elif ok and cache_age is None:
     seg += "\x1b[32m正常\x1b[0m"
 elif ok:
     seg += f"\x1b[32m正常\x1b[0m\x1b[2m·缓存{cache_age}s前\x1b[0m"
+elif state == "unconfigured":
+    seg += "\x1b[2m未配置\x1b[0m"
+elif state == "auth":
+    seg += "\x1b[31m鉴权失败\x1b[0m"
 else:
     seg += "\x1b[31m服务未响应\x1b[0m"
 n = _mem_count()
