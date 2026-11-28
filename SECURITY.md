@@ -81,7 +81,12 @@ We follow a **90-day disclosure** policy:
 (Reporters who responsibly disclosed vulnerabilities will be listed
 here · with permission.)
 
-- *None yet*
+- **Nagizaaz Shaik** (November 2026) — unauthenticated cross-project memory
+  disclosure through the `/v1/v14/recall` and `/v1/v14/ingest_obs` routes:
+  identity was taken from request headers and project names allowed a path
+  escape. Reported privately, fixed in `17e89e78`; the reporter reviewed the
+  fix commit and specified the two deployment checks we now run. Public
+  record: #66.
 
 ## Bug bounty
 
