@@ -901,12 +901,50 @@ def _pkl_write_atomic(path, obj) -> None:
     os.replace(tmp, path)
 
 
+# 2026-11-28 · 向量缓存按内容判有效(修"命中加成改写文件 → 向量全部重算 → 单次召回 20–30 秒")。
+# 机制:MCP 每次召回后把命中的文件整个改写一遍(文件头命中计数 +1),mtime 变化;原缓存只按
+# (路径, mtime) 判有效,于是这几个文件的整段向量与分块向量被全部重算。向量只取决于嵌入文本,
+# 所以给每条缓存记一份"嵌入文本的内容指纹":mtime 变了但指纹没变,向量照用。
+# 指纹与向量同存于一个 pkl(键 content_hashes);旧格式 pkl 没有指纹时仍按 mtime 判,命中时顺手补记。
+_CONTENT_HASHES: dict = {}   # {proj_key: {cache_key: 指纹}}
+
+
+def _content_digest(texts) -> str:
+    """嵌入文本的内容指纹。前缀带嵌入模型名:换了模型,旧向量不该再按内容命中。"""
+    digest = hashlib.sha256(EMBEDDER_MODEL.encode("utf-8", "replace"))
+    for text in texts:
+        digest.update(b"\x00")
+        digest.update(text.encode("utf-8", "replace"))
+    return digest.hexdigest()
+
+
+def _reusable_vector(cache: dict, hashes: dict, key: str, mtime: float, digest_of):
+    """返回 (向量, 是否新记了指纹);缓存未命中返回 (None, False)。
+
+    mtime 相同直接命中;此时若还没有指纹(旧格式缓存)就补记,之后只改文件头不用重算。
+    mtime 不同但指纹相同也算命中,并把缓存里的 mtime 对齐。digest_of 只在需要指纹时才计算。
+    """
+    cached = cache.get(key)
+    if not cached:
+        return None, False
+    if cached[0] == mtime:
+        if key not in hashes:
+            hashes[key] = digest_of()
+            return cached[1], True
+        return cached[1], False
+    if hashes.get(key) == digest_of():
+        cache[key] = (mtime, cached[1])
+        return cached[1], False
+    return None, False
+
+
 def _flush_memory_pkl(proj_key: str, cache: dict) -> None:
     """v3.0.1 · persist one project's embedding cache (atomic)."""
-    import hashlib
     proj_hash = hashlib.sha256(proj_key.encode()).hexdigest()[:12]
     try:
-        _pkl_write_atomic(CACHE_DIR / f"{proj_hash}.pkl", {"embeddings": cache})
+        _pkl_write_atomic(CACHE_DIR / f"{proj_hash}.pkl",
+                          {"embeddings": cache,
+                           "content_hashes": dict(_CONTENT_HASHES.get(proj_key, {}))})
     except Exception as _e:
         log(f"pkl flush fail {proj_hash}: {_e}")
 
@@ -996,11 +1034,14 @@ def get_memory_entries(mem_dir: Path):
                     _c_rr = _data_rr.get("embeddings", {}) if isinstance(_data_rr, dict) else {}
                     if _c_rr:
                         _state["memory_caches"][proj_key] = cache = _npify_cache(_c_rr)  # v3.3
+                        _h_rr = _data_rr.get("content_hashes") if isinstance(_data_rr, dict) else None
+                        _CONTENT_HASHES[proj_key] = dict(_h_rr) if isinstance(_h_rr, dict) else {}
         except Exception:
             pass
     # 2026-11-23 · 归档层配套:清掉已移动/删除文件的陈旧缓存键(含 |chunks 衍生键),
     # 否则 pkl 永不收缩、"巨物 lazy-skip"永久生效。仅删当前条目集中不存在的键。
     _pruned_n = 0
+    hashes = _CONTENT_HASHES.setdefault(proj_key, {})
     try:
         _live_keys = {e["fullpath"] for e in entries}
         _stale = [k for k in list(cache.keys())
@@ -1008,12 +1049,16 @@ def get_memory_entries(mem_dir: Path):
         for k in _stale:
             cache.pop(k, None)
         _pruned_n = len(_stale)
+        # 2026-11-28 · 指纹跟着向量一起清:文件已不在,指纹没有保留价值
+        for k in [k for k in list(hashes.keys()) if k.split("|chunks")[0] not in _live_keys]:
+            hashes.pop(k, None)
         if _pruned_n:
             log(f"cache prune stale keys proj~{str(proj_key)[-20:]}: {_pruned_n}")
     except Exception:
         _pruned_n = 0
     with _mem_lock(proj_key):  # v3.0.3 · serialize fill+flush per project
         updated = 0
+        _hashes_added = 0
         _fill_t0 = time.time()
         for _ei, e in enumerate(_fill_order(entries)):
             # v3.3.6 · fill 时间预算:超时出部分结果(缺 embedding 的条目在下游
@@ -1023,9 +1068,10 @@ def get_memory_entries(mem_dir: Path):
             if time.time() - _fill_t0 > _FILL_BUDGET_S:
                 log(f"fill budget exceed {_FILL_BUDGET_S}s proj~{str(proj_key)[-20:]} partial {updated}/{len(entries)}")
                 break
-            cached = cache.get(e["fullpath"])
-            if cached and cached[0] == e["mtime"]:
-                vec = cached[1]
+            # 2026-11-28 · mtime 命中或内容指纹命中都复用向量(只改文件头不再触发重算)
+            vec, _hash_added = _reusable_vector(cache, hashes, e["fullpath"], e["mtime"],
+                                                lambda: _content_digest([e["embed_text"]]))
+            if vec is not None:
                 if np is not None and not isinstance(vec, np.ndarray):
                     # v3.2 · 旧 pkl PyList 惰性转 np(一次性,此后 pkl 落盘即 np)
                     vec = np.asarray(vec, dtype=np.float32)
@@ -1036,6 +1082,7 @@ def get_memory_entries(mem_dir: Path):
                     vec = (np.asarray(embedder.encode(e["embed_text"]), dtype=np.float32)
                            if np is not None else embedder.encode(e["embed_text"]))
                     cache[e["fullpath"]] = (e["mtime"], vec)
+                    hashes[e["fullpath"]] = _content_digest([e["embed_text"]])
                     e["embedding"] = vec
                     updated += 1
                     # v3.0.1 · periodic flush · 大项目(数千文件)re-embed 中途被
@@ -1051,9 +1098,9 @@ def get_memory_entries(mem_dir: Path):
             # + order is deterministic from body, recomputed on cache miss).
             if _CHUNK_RECALL_USE:
                 ck = e["fullpath"] + "|chunks"
-                cch = cache.get(ck)
-                if cch and cch[0] == e["mtime"]:
-                    vecs = cch[1]
+                vecs, _hash_added = _reusable_vector(cache, hashes, ck, e["mtime"],
+                                                     lambda: _content_digest(_entry_chunks(e.get("body", ""))))
+                if vecs is not None:
                     if np is not None and vecs is not None and len(vecs) and not isinstance(vecs[0], np.ndarray):
                         # v3.2 · 旧 pkl PyList chunks 惰性转 np
                         vecs = [np.asarray(v, dtype=np.float32) for v in vecs]
@@ -1066,12 +1113,14 @@ def get_memory_entries(mem_dir: Path):
                             cv = embedder.encode(c)
                             vecs.append(np.asarray(cv, dtype=np.float32) if np is not None else cv)
                         cache[ck] = (e["mtime"], vecs)
+                        hashes[ck] = _content_digest(_entry_chunks(e.get("body", "")))
                         e["chunk_embs"] = vecs
                         updated += 1
                     except Exception as ex:
                         log(f"embed chunks fail {e['path']}: {ex}")
                         e["chunk_embs"] = []
-        if updated or _pruned_n:
+            _hashes_added += _hash_added
+        if updated or _pruned_n or _hashes_added:
             _flush_memory_pkl(proj_key, cache)
     # v2.0.9 · cache full entries for next recall · invalidated by inotify watcher
     if _INOTIFY_USE:
@@ -1119,6 +1168,7 @@ def _entries_cache_lru_trim(just_used: str) -> None:
         oldest_n = _proj_embed_count(oldest)
         _ENTRIES_CACHE.pop(oldest, None)
         _state["memory_caches"].pop(oldest, None)
+        _CONTENT_HASHES.pop(oldest, None)  # 2026-11-28 · 指纹随向量一起逐出(重进时从 pkl 回读)
         _LRU_STATS["evicted"] += 1
         log(f"entries-cache budget evict {oldest} "
             f"(total={total} budget={_EMBED_BUDGET} evicted={_LRU_STATS['evicted']})")
@@ -1730,6 +1780,8 @@ def _load_pkl_caches():
             cache = data.get("embeddings", {}) if isinstance(data, dict) else {}
             if cache:
                 _state["memory_caches"][proj_key] = _npify_cache(cache)  # v3.3
+                hashes_w = data.get("content_hashes")  # 2026-11-28 · 内容指纹与向量同车回读
+                _CONTENT_HASHES[proj_key] = dict(hashes_w) if isinstance(hashes_w, dict) else {}
                 loaded += 1
             else:
                 skipped += 1
